@@ -5,11 +5,11 @@ import { useForceUpdate } from "../../services/utils";
 
 export default function EditableTd({
 	width = "",
+	content = "",
 	rowId = -1,
 	cellId = -1,
 	onSaveClick = null,
 }) {
-	const [text, setText] = useState("");
 	const [textArea, setTextArea] = useState("");
 	const tdRef = useRef();
 	const textAreaRef = useRef();
@@ -29,10 +29,14 @@ export default function EditableTd({
 
 	useEffect(() => {
 		if (textAreaRef.current) {
-			textAreaRef.current.selectionStart = text.length;
-			textAreaRef.current.selectionEnd = text.length;
+			textAreaRef.current.selectionStart = content.length;
+			textAreaRef.current.selectionEnd = content.length;
 		}
 	}, [textAreaRef.current]);
+
+	useEffect(() => {
+		setTextArea(content);
+	}, [content]);
 
 	function handleCellClick(e) {
 		if (clickedCell.height > 0) return;
@@ -43,14 +47,13 @@ export default function EditableTd({
 	}
 
 	function handleOutsideClick() {
-		setText(textArea);
 		setClickedCell(initialClickCell);
-		onSaveClick(rowId, cellId, textArea);
+		onSaveClick({ rowId, cellId, value: textArea });
 	}
 
 	return (
 		<td ref={tdRef} style={{ width }} onClick={handleCellClick}>
-			<p>{text}</p>
+			<p>{content}</p>
 			<Menu
 				hide={clickedCell.height === 0}
 				top={clickedCell.top}
