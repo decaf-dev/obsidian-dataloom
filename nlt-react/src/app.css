@@ -1,0 +1,44 @@
+.NLT__menu {
+	padding: 0 !important;
+}
+
+.NLT__Table th {
+	cursor: default;
+}
+
+.NLT__Table td {
+	vertical-align: top;
+	width: 5rem;
+	height: 2rem;
+	max-width: 10rem;
+	cursor: default;
+}
+
+.NLT__Table p {
+	margin: 0;
+}
+
+.NLT__Table textarea {
+	height: 100%;
+	padding: 4px 10px;
+	border: 0;
+}
+
+/* .NLT__inner-menu {
+	padding: 0.5rem 1rem;
+	font-size: 0.9rem;
+}
+
+.NLT__inner-menu-item {
+	padding: 0;
+	margin: 0.25rem 0px;
+} */
+
+/* .NLT__inner-menu-item:hover {
+	background-color: rgba(0, 0, 0, 0.25);
+}
+
+.NLT__inner-menu-title {
+	font-size: 0.8rem;
+	margin-top: 0.5rem;
+} */
