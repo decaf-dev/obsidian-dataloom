@@ -52,15 +52,23 @@ export default function EditableTd({
 	}
 
 	return (
-		<td ref={tdRef} style={{ width }} onClick={handleCellClick}>
-			<p>{content}</p>
+		<td
+			className="NLT__td"
+			ref={tdRef}
+			style={{ width }}
+			onClick={handleCellClick}
+		>
+			<p className="NLT__p">{content}</p>
 			<Menu
 				hide={clickedCell.height === 0}
-				top={clickedCell.top}
-				left={clickedCell.left}
-				height={clickedCell.height}
+				style={{
+					top: clickedCell.top,
+					left: clickedCell.left,
+					height: clickedCell.height,
+				}}
 				content={
 					<textarea
+						className="NLT__textarea"
 						ref={textAreaRef}
 						autoFocus
 						value={textArea}

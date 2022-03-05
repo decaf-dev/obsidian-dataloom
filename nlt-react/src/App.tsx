@@ -1,20 +1,29 @@
 import React, { useState } from "react";
 
+import { v4 as uuidv4 } from "uuid";
+
 import EditableTd from "./components/EditableTd";
-import HeaderMenu from "./components/Menu";
+import Table from "./components/Table";
+import ArrowGroup from "./components/ArrowGroup";
+import DragMenu from "./components/DragMenu";
+
+import { ARROW } from "./components/ArrowGroup/constants";
 
 import "./app.css";
 
 export default function App() {
 	const initialHeader = (id) => {
-		return { id, content: "Column", width: "5rem" };
+		return { id, content: "Column", arrow: ARROW.NONE, width: "5rem" };
+	};
+
+	const initialCell = (id, content = "") => {
+		return { id, content };
 	};
 
 	const [headers, setHeaders] = useState([initialHeader(0)]);
-
 	const [rows, setRows] = useState([]);
 
-	const initialClickedHeaderState = {
+	const initialClickedHeader = {
 		clicked: false,
 		left: 0,
 		top: 0,
@@ -22,32 +31,42 @@ export default function App() {
 		content: "",
 	};
 
-	const [clickedHeader, setClickedHeader] = useState(
-		initialClickedHeaderState
-	);
+	const [clickedHeader, setClickedHeader] = useState(initialClickedHeader);
 
 	function handleAddColumn() {
 		setHeaders((prevState) => [
 			...prevState,
 			initialHeader(headers.length),
 		]);
+
+		setRows((prevState) =>
+			prevState.map((row) => {
+				return {
+					...row,
+					cells: [...row.cells, initialCell(row.cells.length)],
+				};
+			})
+		);
 	}
 
 	function handleAddRow() {
 		setRows((prevState) => [
 			...prevState,
-			Object.fromEntries(headers.map((header) => ["id", header.id])),
+			{
+				id: uuidv4(),
+				cells: headers.map((i) => initialCell(i)),
+			},
 		]);
 	}
 
-	function handleHeaderClick(e, id, content) {
+	function handleHeaderClick(e, header) {
 		const { x, y, height } = e.target.getBoundingClientRect();
 		setClickedHeader({
 			clicked: true,
 			left: x,
 			top: y + height,
-			id,
-			content,
+			id: header.id,
+			content: header.id,
 		});
 	}
 
@@ -56,62 +75,106 @@ export default function App() {
 		arr = arr.filter((header) => header.id !== id);
 		arr.push({ ...initialHeader(id), content: text });
 		setHeaders(arr);
-		setClickedHeader(initialClickedHeaderState);
+		setClickedHeader(initialClickedHeader);
+	}
+
+	function handleArrowClick(headerId, arrow) {
+		setHeaders((prevState) =>
+			prevState.map((header) => {
+				if (headerId === header.id) return { ...header, arrow };
+				return { ...header, arrow: ARROW.NONE };
+			})
+		);
+		sortRows(headerId, arrow);
+	}
+
+	function handleCellSave(cell) {
+		setRows((prevState) => {
+			const arr = [...prevState];
+			return arr.map((row) => {
+				if (row.id === cell.rowId) {
+					const arr2 = [...row.cells];
+					arr2[cell.cellId] = initialCell(cell.cellId, cell.value);
+					return {
+						...row,
+						cells: arr2,
+					};
+				}
+				return row;
+			});
+		});
+	}
+
+	function sortRows(cellId, arrow) {
+		setRows((prevState) => {
+			const arr = [...prevState];
+			return arr.sort((a, b) => {
+				const cellA = a.cells[cellId];
+				const cellB = b.cells[cellId];
+
+				if (arrow === ARROW.UP) {
+					return cellB.content.localeCompare(cellA.content);
+				} else if (arrow === ARROW.DOWN) {
+					return cellA.content.localeCompare(cellB.content);
+				} else {
+					return a.id - b.id;
+				}
+			});
+		});
+	}
+
+	function handleDeleteClick(rowId) {
+		setRows(rows.filter((row) => row.id !== rowId));
 	}
 
 	return (
 		<div>
-			<table className="NLT__Table">
-				<thead>
-					<tr>
-						{headers.map((header) => (
-							<th
-								key={header.id}
-								onClick={(e) =>
-									handleHeaderClick(
-										e,
-										header.id,
-										header.content
-									)
-								}
-							>
-								{header.content}
-							</th>
-						))}
-						<th>
-							<button onClick={handleAddColumn}>New</button>
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					{rows.map((row, i) => {
-						return (
-							<tr key={i}>
-								{headers.map((header, j) => (
+			<Table
+				headers={headers.map((header) => {
+					return {
+						id: header.id,
+						content: (
+							<div className="NLT__grid NLT__grid--gap-lg">
+								<p className="NLT__p">{header.content}</p>
+								<ArrowGroup
+									selected={header.arrow}
+									onArrowClick={(arrow) =>
+										handleArrowClick(header.id, arrow)
+									}
+								/>
+							</div>
+						),
+						onClick: handleHeaderClick,
+					};
+				})}
+				rows={rows.map((row) => {
+					return {
+						id: row.id,
+						content: (
+							<>
+								<DragMenu
+									onDeleteClick={() =>
+										handleDeleteClick(row.id)
+									}
+								/>
+								{headers.map((header, i) => (
 									<EditableTd
 										key={header.id}
+										content={row.cells[i].content}
 										width={header.width}
 										rowId={row.id}
 										cellId={header.id}
-										onSaveClick={() => {}}
+										onSaveClick={handleCellSave}
 									/>
 								))}
 								<td></td>
-							</tr>
-						);
-					})}
-				</tbody>
-				<tfoot>
-					<tr>
-						<td>
-							<button onClick={handleAddRow}>New</button>
-						</td>
-						{headers.map((header) => (
-							<td key={header.id}></td>
-						))}
-					</tr>
-				</tfoot>
-			</table>
+							</>
+						),
+					};
+				})}
+				onAddColumn={handleAddColumn}
+				onAddRow={handleAddRow}
+			/>
 			{/* <HeaderMenu
 				hide={!clickedHeader.clicked}
 				left={clickedHeader.left}

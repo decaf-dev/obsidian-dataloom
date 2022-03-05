@@ -32,15 +32,5 @@ export default function ClickableComponent({
 		};
 	}, [ref, clickable, onOutsideClick]);
 
-	return (
-		<div
-			ref={ref}
-			style={{
-				width: "100%",
-				height: "100%",
-			}}
-		>
-			{clickable ? renderClickable : render}
-		</div>
-	);
+	return <div ref={ref}>{clickable ? renderClickable : render}</div>;
 }

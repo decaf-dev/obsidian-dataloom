@@ -1,27 +1,101 @@
-.NLT__menu {
-	padding: 0 !important;
+/*
+* Table Styles
+*/
+.NLT__hidden-column {
+	border: 0 !important;
+	width: 50px;
 }
 
-.NLT__Table th {
+.NLT__th {
 	cursor: default;
+	max-width: 10rem;
 }
 
-.NLT__Table td {
+.NLT__td {
 	vertical-align: top;
-	width: 5rem;
 	height: 2rem;
 	max-width: 10rem;
 	cursor: default;
 }
 
-.NLT__Table p {
+/*
+* Grid
+*/
+.NLT__grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	grid-gap: 0px;
+	place-items: center;
+}
+
+.NLT__grid--gap-sm {
+	grid-gap: 5px;
+}
+
+.NLT__grid--gap-md {
+	grid-gap: 10px;
+}
+
+.NLT__grid--gap-lg {
+	grid-gap: 20px;
+}
+
+/*
+* General
+*/
+.NLT__button--reset {
+	padding: 0;
+	border: 0;
 	margin: 0;
 }
 
-.NLT__Table textarea {
+.NLT__button--selected {
+	background-color: rgba(0, 0, 0, 0.25);
+}
+
+.NLT__button--selected:hover {
+	background-color: rgba(0, 0, 0, 0.3);
+}
+
+.NLT__p {
+	margin: 0;
+}
+
+.NLT__textarea {
 	height: 100%;
+	width: 11rem;
 	padding: 4px 10px;
 	border: 0;
+}
+
+/*
+* Menu
+*/
+.NLT__menu {
+	position: relative;
+}
+
+.NLT__menu--reset {
+	padding: 0 !important;
+}
+
+.NLT__drag-menu-inner {
+	padding: 10px 5px;
+	width: 100%;
+	font-size: 0.9rem;
+}
+
+.NLT__selectable:hover {
+	background-color: rgba(0, 0, 0, 0.1);
+}
+
+/*
+* Icon
+*/
+.NLT__icon-item {
+	display: flex;
+	align-items: center;
+	padding: 0px 10px;
 }
 
 /* .NLT__inner-menu {

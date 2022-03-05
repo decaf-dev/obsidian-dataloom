@@ -19,6 +19,7 @@ export default function ArrowIcon({
 
 	return (
 		<button
+			style={{ height: "1rem" }}
 			className={className}
 			onClick={() => onClick(up ? ARROW.UP : ARROW.DOWN)}
 		>

@@ -3,9 +3,7 @@ import ClickableComponent from "../ClickableComponent";
 
 export default function Menu({
 	hide = false,
-	left = 0,
-	top = 0,
-	height = "initial",
+	style = {},
 	content = "",
 	onOutsideClick = null,
 }) {
@@ -17,7 +15,7 @@ export default function Menu({
 			onClick={() => {}}
 			onOutsideClick={onOutsideClick}
 			renderClickable={
-				<div className="menu NLT__menu" style={{ left, top, height }}>
+				<div className="menu NLT__menu--reset" style={style}>
 					{content}
 				</div>
 			}

@@ -10,8 +10,10 @@ export default function Table({
 		<table className="NLT__Table">
 			<thead>
 				<tr>
+					<th className="NLT__hidden-column"></th>
 					{headers.map((header) => (
 						<th
+							className="NLT__th"
 							key={header.id}
 							onClick={(e) => header.onClick(e, header)}
 						>
@@ -30,6 +32,7 @@ export default function Table({
 			</tbody>
 			<tfoot>
 				<tr>
+					<td className="NLT__hidden-column"></td>
 					<td>
 						<button onClick={onAddRow}>New</button>
 					</td>
