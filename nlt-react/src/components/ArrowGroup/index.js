@@ -13,7 +13,7 @@ export default function ArrowGroup({ selected, onArrowClick = null }) {
 	}
 
 	return (
-		<div className="NLT__grid NLT__grid--gap-sm">
+		<div className="NLT__button-group">
 			<ArrowIcon
 				up={true}
 				selected={selected === ARROW.UP}

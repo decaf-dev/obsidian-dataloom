@@ -55,13 +55,15 @@ export default function EditableTd({
 		<td
 			className="NLT__td"
 			ref={tdRef}
-			style={{ width }}
+			style={{ maxWidth: width }}
 			onClick={handleCellClick}
 		>
 			<p className="NLT__p">{content}</p>
 			<Menu
 				hide={clickedCell.height === 0}
 				style={{
+					minWidth: "11rem",
+					width: tdRef.current ? tdRef.current.offsetWidth : 0,
 					top: clickedCell.top,
 					left: clickedCell.left,
 					height: clickedCell.height,

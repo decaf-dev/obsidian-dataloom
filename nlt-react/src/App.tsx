@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -10,10 +10,11 @@ import DragMenu from "./components/DragMenu";
 import { ARROW } from "./components/ArrowGroup/constants";
 
 import "./app.css";
+import HeaderMenu from "./components/HeaderMenu";
 
 export default function App() {
-	const initialHeader = (id) => {
-		return { id, content: "Column", arrow: ARROW.NONE, width: "5rem" };
+	const initialHeader = (id, content = "Column") => {
+		return { id, content, arrow: ARROW.NONE, width: "15rem" };
 	};
 
 	const initialCell = (id, content = "") => {
@@ -24,7 +25,6 @@ export default function App() {
 	const [rows, setRows] = useState([]);
 
 	const initialClickedHeader = {
-		clicked: false,
 		left: 0,
 		top: 0,
 		id: 0,
@@ -59,21 +59,23 @@ export default function App() {
 		]);
 	}
 
-	function handleHeaderClick(e, header) {
+	function handleHeaderClick(e, id, content) {
+		if (e.target.nodeName !== "DIV") return;
+
 		const { x, y, height } = e.target.getBoundingClientRect();
 		setClickedHeader({
-			clicked: true,
 			left: x,
 			top: y + height,
-			id: header.id,
-			content: header.id,
+			id,
+			content,
 		});
 	}
 
-	function handleOutsideClick(id, text) {
-		let arr = [...headers];
-		arr = arr.filter((header) => header.id !== id);
-		arr.push({ ...initialHeader(id), content: text });
+	function handleHeaderSave(id, updatedContent) {
+		const arr = [...headers];
+		const header = headers.filter((header) => header.id === id)[0];
+		const index = headers.indexOf(header);
+		arr[index] = { ...header, content: updatedContent };
 		setHeaders(arr);
 		setClickedHeader(initialClickedHeader);
 	}
@@ -89,6 +91,7 @@ export default function App() {
 	}
 
 	function handleCellSave(cell) {
+		console.log(cell);
 		setRows((prevState) => {
 			const arr = [...prevState];
 			return arr.map((row) => {
@@ -134,8 +137,10 @@ export default function App() {
 					return {
 						id: header.id,
 						content: (
-							<div className="NLT__grid NLT__grid--gap-lg">
-								<p className="NLT__p">{header.content}</p>
+							<div className="NLT__header-group">
+								<div className="NLT__header-content">
+									{header.content}
+								</div>
 								<ArrowGroup
 									selected={header.arrow}
 									onArrowClick={(arrow) =>
@@ -144,7 +149,9 @@ export default function App() {
 								/>
 							</div>
 						),
-						onClick: handleHeaderClick,
+						width: header.width,
+						onClick: (e) =>
+							handleHeaderClick(e, header.id, header.content),
 					};
 				})}
 				rows={rows.map((row) => {
@@ -175,24 +182,16 @@ export default function App() {
 				onAddColumn={handleAddColumn}
 				onAddRow={handleAddRow}
 			/>
-			{/* <HeaderMenu
-				hide={!clickedHeader.clicked}
-				left={clickedHeader.left}
-				top={clickedHeader.top}
-				name={clickedHeader.name}
-				content={					<input
-						autoFocus
-						type="text"
-						value={text}
-						onChange={(e) => setText(e.target.value)}
-					/>
-					<div className="NLT__inner-menu-title">Property Type</div>
-					<p className="NLT__inner-menu-item">Text</p>
-					<p className="NLT__inner-menu-item">Number</p>
-					<p className="NLT__inner-menu-item">Tag</p>
-					<p className="NLT__inner-menu-item">Multi-Tag</p>
-				onOutsideClick={handleOutsideClick}
-			/> */}
+			<HeaderMenu
+				hide={clickedHeader.left === 0}
+				style={{
+					top: clickedHeader.top,
+					left: clickedHeader.left,
+				}}
+				id={clickedHeader.id}
+				content={clickedHeader.content}
+				onOutsideClick={handleHeaderSave}
+			/>
 		</div>
 	);
 }

@@ -14,8 +14,9 @@ export default function Table({
 					{headers.map((header) => (
 						<th
 							className="NLT__th"
+							style={{ maxWidth: header.width }}
 							key={header.id}
-							onClick={(e) => header.onClick(e, header)}
+							onClick={header.onClick}
 						>
 							{header.content}
 						</th>
