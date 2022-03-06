@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 
-import { ARROW } from "./constants";
+import { ARROW } from "../../constants";
 import ArrowIcon from "./components/ArrowIcon";
 
 export default function ArrowGroup({ selected, onArrowClick = null }) {

@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 
 import Menu from "../Menu";
+import { CELL_TYPE } from "../../constants";
 
 export default function HeaderMenu({
-	id = 0,
-	content = "",
-	style = {},
 	hide = false,
+	style = {},
+	id = 0,
+	position = 0,
+	content = "",
+	type = "",
+	onItemClick = null,
 	onOutsideClick = null,
 }) {
 	const [text, setText] = useState("");
@@ -14,6 +18,32 @@ export default function HeaderMenu({
 	useEffect(() => {
 		setText(content);
 	}, [content]);
+
+	function renderMenuItems() {
+		const items = [
+			{ name: "text", content: "Text", type: CELL_TYPE.TEXT },
+			{ name: "number", content: "Number", type: CELL_TYPE.NUMBER },
+			{ name: "tag", content: "Tag", type: CELL_TYPE.TAG },
+			{
+				name: "multi-tag",
+				content: "Multi-Tag",
+				type: CELL_TYPE.MULTI_TAG,
+			},
+		];
+		return items.map((item) => {
+			let className = "NLT__menu-item";
+			if (item.type === type) className += " NLT__menu-item--selected";
+			return (
+				<p
+					key={item.name}
+					className={className}
+					onClick={() => onItemClick(id, position, item.type)}
+				>
+					{item.content}
+				</p>
+			);
+		});
+	}
 
 	return (
 		<Menu
@@ -28,10 +58,7 @@ export default function HeaderMenu({
 						onChange={(e) => setText(e.target.value)}
 					/>
 					<div className="NLT__menu-header">Property Type</div>
-					<p className="NLT__menu-item">Text</p>
-					<p className="NLT__menu-item">Number</p>
-					<p className="NLT__menu-item">Tag</p>
-					<p className="NLT__menu-item">Multi-Tag</p>
+					{renderMenuItems(id)}
 				</div>
 			}
 			onOutsideClick={() => onOutsideClick(id, text)}
