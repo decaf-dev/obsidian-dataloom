@@ -13,9 +13,9 @@ export default function ClickableComponent({
 		const handleClick = (e) => {
 			if (ref.current && !ref.current.contains(e.target)) {
 				onOutsideClick();
-			} else {
-				onClick();
+				return;
 			}
+			onClick();
 		};
 
 		function handleKeyUp(e) {

@@ -1,7 +1,10 @@
 import React from "react";
 
+import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUp from "@mui/icons-material/KeyboardArrowUp";
+
+import IconButton from "../IconButton";
 import { ARROW } from "../../constants";
-import ArrowIcon from "./components/ArrowIcon";
 
 export default function ArrowGroup({ selected, onArrowClick = null }) {
 	function handleArrowClick(arrow) {
@@ -13,16 +16,16 @@ export default function ArrowGroup({ selected, onArrowClick = null }) {
 	}
 
 	return (
-		<div className="NLT__button-group">
-			<ArrowIcon
-				up={true}
+		<div className="NLT__icon-group">
+			<IconButton
 				selected={selected === ARROW.UP}
-				onClick={handleArrowClick}
+				icon={<KeyboardArrowUp className="NLT__icon--md" />}
+				onClick={() => handleArrowClick(ARROW.UP)}
 			/>
-			<ArrowIcon
-				up={false}
+			<IconButton
 				selected={selected === ARROW.DOWN}
-				onClick={handleArrowClick}
+				icon={<KeyboardArrowDown className="NLT__icon--md" />}
+				onClick={() => handleArrowClick(ARROW.DOWN)}
 			/>
 		</div>
 	);

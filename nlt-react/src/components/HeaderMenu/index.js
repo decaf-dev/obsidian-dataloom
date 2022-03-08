@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 
 import Menu from "../Menu";
+
+import "./styles.css";
+
 import { CELL_TYPE } from "../../constants";
 
 export default function HeaderMenu({
@@ -31,8 +34,8 @@ export default function HeaderMenu({
 			},
 		];
 		return items.map((item) => {
-			let className = "NLT__menu-item";
-			if (item.type === type) className += " NLT__menu-item--selected";
+			let className = "NLT__header-menu-item";
+			if (item.type === type) className += " NLT__selected";
 			return (
 				<p
 					key={item.name}
@@ -50,14 +53,14 @@ export default function HeaderMenu({
 			hide={hide}
 			style={style}
 			content={
-				<div className="NLT__menu-container">
+				<div className="NLT__header-menu-container">
 					<input
 						autoFocus
 						type="text"
 						value={text}
 						onChange={(e) => setText(e.target.value)}
 					/>
-					<div className="NLT__menu-header">Property Type</div>
+					<div className="NLT__header-menu-header">Property Type</div>
 					{renderMenuItems(id)}
 				</div>
 			}

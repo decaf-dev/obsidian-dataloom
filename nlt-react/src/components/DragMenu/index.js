@@ -1,11 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import Icon from "../Icon";
+import IconButton from "../IconButton";
 import Menu from "../Menu";
 
 import DragIndicator from "@mui/icons-material/DragIndicator";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useForceUpdate } from "../../services/utils";
+
+import IconText from "../IconText";
+
+import "./styles.css";
 
 export default function DragMenu({ onDeleteClick = null }) {
 	const initialClickedButton = {
@@ -38,7 +42,7 @@ export default function DragMenu({ onDeleteClick = null }) {
 
 	return (
 		<td className="NLT__hidden-column">
-			<Icon
+			<IconButton
 				icon={<DragIndicator />}
 				ref={buttonRef}
 				onClick={handleDragClick}
@@ -50,16 +54,14 @@ export default function DragMenu({ onDeleteClick = null }) {
 					left: clickedButton.left + clickedButton.width,
 				}}
 				content={
-					<div className="NLT__drag-menu-inner">
-						<div
-							className="NLT__icon-item NLT__selectable"
+					<div className="NLT__drag-menu-container">
+						<IconText
+							icon={
+								<DeleteIcon className="NLT__icon--md NLT__margin-right" />
+							}
+							iconText="Delete"
 							onClick={onDeleteClick}
-						>
-							<DeleteIcon
-								style={{ width: "1rem", marginRight: "5px" }}
-							/>
-							Delete
-						</div>
+						/>
 					</div>
 				}
 				onOutsideClick={handleOutsideClick}

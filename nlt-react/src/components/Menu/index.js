@@ -15,7 +15,7 @@ export default function Menu({
 			onClick={() => {}}
 			onOutsideClick={onOutsideClick}
 			renderClickable={
-				<div className="menu NLT__menu--reset" style={style}>
+				<div className="menu NLT__menu" style={style}>
 					{content}
 				</div>
 			}

@@ -1,8 +1,18 @@
 import React, { useState, useRef, useEffect } from "react";
 
+import { v4 as uuidv4 } from "uuid";
+
 import Menu from "../Menu";
+import TextCell from "../TextCell";
+import TagCell from "../TagCell";
+import MultiTagCell from "../MultiTagCell";
+import TagMenu from "../TagMenu";
+
 import { useForceUpdate } from "../../services/utils";
+
 import { CELL_TYPE } from "../../constants";
+
+import "./styles.css";
 
 export default function EditableTd({
 	width = "",
@@ -11,9 +21,7 @@ export default function EditableTd({
 	onSaveClick = null,
 }) {
 	const [text, setText] = useState("");
-	const [number, setNumber] = useState("");
-	// const [tag, setTag] = useState("");
-	// const [multiTag, setMultiTag] = useState([]);
+	const [tags, setTags] = useState([]);
 
 	const tdRef = useRef();
 	const textAreaRef = useRef();
@@ -39,20 +47,8 @@ export default function EditableTd({
 	}, [textAreaRef.current]);
 
 	useEffect(() => {
-		switch (type) {
-			case CELL_TYPE.TEXT:
-				setText(content);
-				break;
-			case CELL_TYPE.NUMBER:
-				setNumber(content);
-				break;
-			case CELL_TYPE.TAG:
-				break;
-			case CELL_TYPE.MULTI_TAG:
-				break;
-			default:
-				break;
-		}
+		if (type === CELL_TYPE.TEXT || type === CELL_TYPE.NUMBER)
+			setText(content);
 	}, [content]);
 
 	function handleCellClick(e) {
@@ -66,12 +62,13 @@ export default function EditableTd({
 	function handleOutsideClick() {
 		switch (type) {
 			case CELL_TYPE.TEXT:
+			case CELL_TYPE.NUMBER:
 				onSaveClick(text);
 				break;
-			case CELL_TYPE.NUMBER:
-				onSaveClick(number);
-				break;
 			case CELL_TYPE.TAG:
+				const selected = tags.find((tag) => tag.selected === true);
+				if (selected) onSaveClick(selected.content);
+				else onSaveClick("");
 				break;
 			case CELL_TYPE.MULTI_TAG:
 				break;
@@ -80,9 +77,46 @@ export default function EditableTd({
 		}
 		setClickedCell(initialClickCell);
 	}
-	console.log(type);
+
+	function handleRemoveTagClick(id) {
+		//TODO if referenced multiple places, then keep
+		setTags((prevState) => prevState.filter((tag) => tag.id !== id));
+	}
+
+	function handleTagClick() {}
+
+	function handleAddTag(text) {
+		//If already exists then return
+		const tag = tags.find((tag) => tag.content === text);
+		if (tag !== undefined) return;
+
+		//Set all previous to not selected
+		//Add this and set to selected
+		setTags((prevState) => [
+			// ...prevState.map((tag) => {
+			// 	return { ...tag, selected: false };
+			// }),
+			{ id: uuidv4(), content: text, selected: true },
+		]);
+		setText("");
+	}
 
 	function renderContent() {
+		switch (type) {
+			case CELL_TYPE.TEXT:
+				return <TextCell content={content} />;
+			case CELL_TYPE.NUMBER:
+				return <TextCell content={content} />;
+			case CELL_TYPE.TAG:
+				return <TagCell content={content} hide={content === ""} />;
+			case CELL_TYPE.MULTI_TAG:
+				return <MultiTagCell />;
+			default:
+				return <></>;
+		}
+	}
+
+	function renderClickContent() {
 		switch (type) {
 			case CELL_TYPE.TEXT:
 				return (
@@ -102,16 +136,46 @@ export default function EditableTd({
 						className="NLT__input NLT__input--number"
 						type="number"
 						autoFocus
-						value={number}
-						onChange={(e) => setNumber(e.target.value)}
+						value={text}
+						onChange={(e) => setText(e.target.value)}
 					/>
 				);
 			case CELL_TYPE.TAG:
-				return;
+				return (
+					<TagMenu
+						selectedTag={tags.find((tag) => tag.selected === true)}
+						tags={tags}
+						text={text}
+						onAddTag={handleAddTag}
+						onTextChange={(e) => setText(e.target.value)}
+						onRemoveTagClick={handleRemoveTagClick}
+						onTagClick={handleTagClick}
+					/>
+				);
 			case CELL_TYPE.MULTI_TAG:
 				return;
 			default:
 				return <></>;
+		}
+	}
+
+	function getMenuWidth() {
+		switch (type) {
+			case CELL_TYPE.TAG:
+				return "fit-content";
+			default:
+				return tdRef.current ? tdRef.current.offsetWidth : 0;
+		}
+	}
+
+	function getMenuHeight() {
+		switch (type) {
+			case CELL_TYPE.NUMBER:
+				return "2rem";
+			case CELL_TYPE.TAG:
+				return "fit-content";
+			default:
+				return clickedCell.height;
 		}
 	}
 
@@ -125,18 +189,17 @@ export default function EditableTd({
 			style={{ maxWidth: width }}
 			onClick={handleCellClick}
 		>
-			<p className="NLT__p">{content}</p>
+			{renderContent()}
 			<Menu
 				hide={clickedCell.height === 0}
 				style={{
 					minWidth: type === CELL_TYPE.TEXT ? "11rem" : 0,
-					width: tdRef.current ? tdRef.current.offsetWidth : 0,
+					width: getMenuWidth(),
 					top: clickedCell.top,
 					left: clickedCell.left,
-					height:
-						type === CELL_TYPE.NUMBER ? "2rem" : clickedCell.height,
+					height: getMenuHeight(),
 				}}
-				content={renderContent()}
+				content={renderClickContent()}
 				onOutsideClick={handleOutsideClick}
 			/>
 		</td>

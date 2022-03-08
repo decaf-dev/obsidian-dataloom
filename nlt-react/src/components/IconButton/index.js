@@ -1,9 +1,9 @@
 import React, { forwardRef } from "react";
 
-const Icon = forwardRef(
+const IconButton = forwardRef(
 	({ selected = false, icon = null, onClick = null }, ref) => {
 		let className = "NLT__button--reset";
-		if (selected) className += " NLT__button--selected";
+		if (selected) className += " NLT__selected";
 
 		return (
 			<button className={className} ref={ref} onClick={onClick}>
@@ -13,4 +13,4 @@ const Icon = forwardRef(
 	}
 );
 
-export default Icon;
+export default IconButton;

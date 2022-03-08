@@ -10,3 +10,12 @@ export const ARROW = {
 	DOWN: "down",
 	NONE: "none",
 };
+
+export const CELL_COLOR = {
+	YELLOW: "yellow",
+	RED: "red",
+	PINK: "pink",
+	ORANGE: "orange",
+	GRAY: "gray",
+	PURPLE: "purple",
+};

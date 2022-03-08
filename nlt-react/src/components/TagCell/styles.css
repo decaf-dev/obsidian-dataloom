@@ -1,0 +1,31 @@
+.NLT__tag-cell {
+	display: flex;
+	align-items: center;
+	border-radius: 8px;
+	padding: 2px 8px;
+	width: fit-content;
+}
+
+.NLT__tag-cell--red {
+	background-color: #ff6961;
+}
+
+.NLT__tag-cell--yellow {
+	background-color: #faffc7;
+}
+
+.NLT__tag-cell--orange {
+	background-color: #ffdfd3;
+}
+
+.NLT__tag-cell--pink {
+	background-color: #fec8d8;
+}
+
+.NLT__tag-cell--gray {
+	background-color: #cfcfc4;
+}
+
+.NLT__tag-cell--purple {
+	background-color: #e0bbe4;
+}

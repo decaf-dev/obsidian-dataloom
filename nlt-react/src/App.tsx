@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -6,44 +6,54 @@ import EditableTd from "./components/EditableTd";
 import Table from "./components/Table";
 import ArrowGroup from "./components/ArrowGroup";
 import DragMenu from "./components/DragMenu";
-
-import { ARROW } from "./components/ArrowGroup/constants";
-
-import "./app.css";
 import HeaderMenu from "./components/HeaderMenu";
 
+import { CELL_TYPE, ARROW } from "./constants";
+import "./app.css";
+
 export default function App() {
-	const initialHeader = (id, content = "Column") => {
-		return { id, content, arrow: ARROW.NONE, width: "15rem" };
+	const initialHeader = (content, position) => {
+		return {
+			id: uuidv4(),
+			position,
+			content,
+			arrow: ARROW.NONE,
+			width: "15rem",
+			type: CELL_TYPE.TEXT,
+		};
 	};
 
-	const initialCell = (id, content = "") => {
-		return { id, content };
+	const initialCell = (content = "", type = CELL_TYPE.TEXT) => {
+		return { id: uuidv4(), content, type };
 	};
 
-	const [headers, setHeaders] = useState([initialHeader(0)]);
+	const [headers, setHeaders] = useState([initialHeader("Column", 0)]);
 	const [rows, setRows] = useState([]);
 
 	const initialClickedHeader = {
 		left: 0,
 		top: 0,
 		id: 0,
+		position: 0,
 		content: "",
+		type: "",
 	};
 
 	const [clickedHeader, setClickedHeader] = useState(initialClickedHeader);
 
 	function handleAddColumn() {
+		//Add a new initial header
 		setHeaders((prevState) => [
 			...prevState,
-			initialHeader(headers.length),
+			initialHeader("Column", headers.length),
 		]);
 
+		//Add a new cell to each existing row
 		setRows((prevState) =>
 			prevState.map((row) => {
 				return {
 					...row,
-					cells: [...row.cells, initialCell(row.cells.length)],
+					cells: [...row.cells, initialCell()],
 				};
 			})
 		);
@@ -54,12 +64,14 @@ export default function App() {
 			...prevState,
 			{
 				id: uuidv4(),
-				cells: headers.map((i) => initialCell(i)),
+				cells: headers.map((header, i) => initialCell("", header.type)),
+				time: Date.now(),
 			},
 		]);
 	}
 
-	function handleHeaderClick(e, id, content) {
+	function handleHeaderClick(e, id, position, content, type) {
+		//Only open on header div click
 		if (e.target.nodeName !== "DIV") return;
 
 		const { x, y, height } = e.target.getBoundingClientRect();
@@ -67,67 +79,125 @@ export default function App() {
 			left: x,
 			top: y + height,
 			id,
+			position,
 			content,
+			type,
 		});
 	}
 
 	function handleHeaderSave(id, updatedContent) {
-		const arr = [...headers];
-		const header = headers.filter((header) => header.id === id)[0];
-		const index = headers.indexOf(header);
-		arr[index] = { ...header, content: updatedContent };
-		setHeaders(arr);
+		setHeaders((prevState) =>
+			prevState.map((header) => {
+				if (header.id === id)
+					return {
+						...header,
+						content: updatedContent,
+					};
+				return header;
+			})
+		);
 		setClickedHeader(initialClickedHeader);
 	}
 
-	function handleArrowClick(headerId, arrow) {
+	function handleArrowClick(headerId, headerPosition, arrow) {
+		//Set header arrow
 		setHeaders((prevState) =>
 			prevState.map((header) => {
 				if (headerId === header.id) return { ...header, arrow };
 				return { ...header, arrow: ARROW.NONE };
 			})
 		);
-		sortRows(headerId, arrow);
+		//Sort rows based off the arrow selection
+		sortRows(headerPosition, arrow);
 	}
 
-	function handleCellSave(cell) {
-		console.log(cell);
-		setRows((prevState) => {
-			const arr = [...prevState];
-			return arr.map((row) => {
-				if (row.id === cell.rowId) {
-					const arr2 = [...row.cells];
-					arr2[cell.cellId] = initialCell(cell.cellId, cell.value);
+	function handleCellSave(rowId, headerPosition, updatedContent) {
+		setRows((prevState) =>
+			prevState.map((row) => {
+				if (row.id === rowId)
 					return {
 						...row,
-						cells: arr2,
+						cells: row.cells.map((c, i) => {
+							//This makes the assumption that the cell index
+							//will always make the header position
+							if (i === headerPosition) {
+								return {
+									...c,
+									content: updatedContent,
+								};
+							}
+							return c;
+						}),
 					};
-				}
 				return row;
-			});
-		});
+			})
+		);
 	}
 
-	function sortRows(cellId, arrow) {
+	function sortRows(headerPosition, arrow) {
 		setRows((prevState) => {
+			//Create a new array because the sort function mutates
+			//the original array
 			const arr = [...prevState];
 			return arr.sort((a, b) => {
-				const cellA = a.cells[cellId];
-				const cellB = b.cells[cellId];
+				const cellA = a.cells[headerPosition];
+				const cellB = b.cells[headerPosition];
 
+				//Sort based on content if arrow is selected
 				if (arrow === ARROW.UP) {
 					return cellB.content.localeCompare(cellA.content);
 				} else if (arrow === ARROW.DOWN) {
 					return cellA.content.localeCompare(cellB.content);
+					//Otherwise sort on when the row was added
 				} else {
-					return a.id - b.id;
+					return a.time - b.time;
 				}
 			});
 		});
 	}
 
-	function handleDeleteClick(rowId) {
+	//TODO implement
+	function handleDeleteColumnClick(columnId) {
+		//Change the position of the rows
+	}
+
+	function handleDeleteRowClick(rowId) {
 		setRows(rows.filter((row) => row.id !== rowId));
+	}
+
+	function handleMenuItemClick(headerId, headerPosition, cellType) {
+		//If same header type return
+		const header = headers.find((header) => header.id === headerId);
+		if (header.type === cellType) return;
+
+		//Update header to new cell type
+		setHeaders((prevState) =>
+			prevState.map((header) => {
+				if (headerId === header.id)
+					return { ...header, type: cellType };
+				return header;
+			})
+		);
+		//Update cell that matches header id to the new cell type
+		setRows((prevState) =>
+			prevState.map((row) => {
+				const cells = row.cells.map((cell, i) => {
+					if (i === headerPosition)
+						return {
+							...cell,
+							type: cellType,
+							content: "",
+						};
+					return cell;
+				});
+				return {
+					...row,
+					cells,
+				};
+			})
+		);
+		//Close the menu
+		setClickedHeader(initialClickedHeader);
 	}
 
 	return (
@@ -144,14 +214,24 @@ export default function App() {
 								<ArrowGroup
 									selected={header.arrow}
 									onArrowClick={(arrow) =>
-										handleArrowClick(header.id, arrow)
+										handleArrowClick(
+											header.id,
+											header.position,
+											arrow
+										)
 									}
 								/>
 							</div>
 						),
 						width: header.width,
 						onClick: (e) =>
-							handleHeaderClick(e, header.id, header.content),
+							handleHeaderClick(
+								e,
+								header.id,
+								header.position,
+								header.content,
+								header.type
+							),
 					};
 				})}
 				rows={rows.map((row) => {
@@ -161,17 +241,22 @@ export default function App() {
 							<>
 								<DragMenu
 									onDeleteClick={() =>
-										handleDeleteClick(row.id)
+										handleDeleteRowClick(row.id)
 									}
 								/>
 								{headers.map((header, i) => (
 									<EditableTd
 										key={header.id}
 										content={row.cells[i].content}
+										type={row.cells[i].type}
 										width={header.width}
-										rowId={row.id}
-										cellId={header.id}
-										onSaveClick={handleCellSave}
+										onSaveClick={(updatedContent) =>
+											handleCellSave(
+												row.id,
+												header.position,
+												updatedContent
+											)
+										}
 									/>
 								))}
 								<td></td>
@@ -190,7 +275,10 @@ export default function App() {
 				}}
 				id={clickedHeader.id}
 				content={clickedHeader.content}
+				position={clickedHeader.position}
+				type={clickedHeader.type}
 				onOutsideClick={handleHeaderSave}
+				onItemClick={handleMenuItemClick}
 			/>
 		</div>
 	);

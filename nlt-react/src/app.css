@@ -1,28 +1,5 @@
 /*
-* Table Styles
-*/
-.NLT__hidden-column {
-	border: 0 !important;
-	width: 50px;
-}
-
-.NLT__th {
-	cursor: default;
-}
-
-.NLT__td {
-	vertical-align: top;
-	height: 2rem;
-	cursor: default;
-}
-
-.NLT__header {
-	display: flex;
-	width: 100%;
-}
-
-/*
-* General
+* Button
 */
 .NLT__button--reset {
 	padding: 0;
@@ -30,28 +7,76 @@
 	margin: 0;
 }
 
-.NLT__button--selected {
-	background-color: rgba(0, 0, 0, 0.25);
-}
-
-.NLT__button--selected:hover {
-	background-color: rgba(0, 0, 0, 0.3);
-}
-
-.NLT__button-group {
+/*
+* Icon
+*/
+.NLT__icon-group {
 	display: flex;
 	align-items: center;
 }
 
+.NLT__icon--md {
+	width: 1rem !important;
+	height: 1rem !important;
+}
+
+/*
+* Selectable and selected
+*/
+.NLT__selectable {
+	cursor: pointer;
+}
+
+.NLT__selectable:hover {
+	background-color: rgba(0, 0, 0, 0.1);
+}
+
+.NLT__selected {
+	background-color: rgba(0, 0, 0, 0.15);
+}
+
+.NLT__selected:hover {
+	background-color: rgba(0, 0, 0, 0.2);
+}
+
+/*
+* Margin
+*/
+.NLT__margin-right {
+	margin-right: 5px;
+}
+
+.NLT__margin-left {
+	margin-left: 5px;
+}
+
+/*
+* Table
+*/
+.NLT__hidden-column {
+	border: 0 !important;
+	width: 50px;
+}
+
+/*
+* Paragraph
+*/
 .NLT__p {
 	margin: 0;
 }
 
-.NLT__textarea {
+/*
+* Input
+*/
+.NLT__input {
 	height: 100%;
 	width: 100%;
-	padding: 4px 10px;
-	border: 0;
+	padding: 4px 10px !important;
+	border: 0 !important;
+}
+
+.NLT__input--number {
+	text-align: right;
 }
 
 /*
@@ -72,47 +97,5 @@
 * Menu
 */
 .NLT__menu {
-	position: relative;
-}
-
-.NLT__menu--reset {
 	padding: 0 !important;
-}
-
-.NLT__drag-menu-inner {
-	padding: 10px 5px;
-	width: 100%;
-	font-size: 0.9rem;
-}
-
-.NLT__selectable:hover {
-	background-color: rgba(0, 0, 0, 0.1);
-}
-
-.NLT__menu-container {
-	padding: 0.5rem 1rem;
-	font-size: 0.9rem;
-}
-
-.NLT__menu-item {
-	padding: 0;
-	margin: 0.25rem 0px;
-}
-
-.NLT__menu-item:hover {
-	background-color: rgba(0, 0, 0, 0.1);
-}
-
-.NLT__menu-header {
-	font-size: 0.8rem;
-	margin-top: 0.5rem;
-}
-
-/*
-* Icon
-*/
-.NLT__icon-item {
-	display: flex;
-	align-items: center;
-	padding: 0px 10px;
 }
