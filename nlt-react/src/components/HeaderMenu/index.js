@@ -14,6 +14,7 @@ export default function HeaderMenu({
 	content = "",
 	type = "",
 	onItemClick = null,
+	onDeleteClick = null,
 	onOutsideClick = null,
 }) {
 	const [text, setText] = useState("");
@@ -62,6 +63,9 @@ export default function HeaderMenu({
 					/>
 					<div className="NLT__header-menu-header">Property Type</div>
 					{renderMenuItems(id)}
+					<button onClick={() => onDeleteClick(id, position)}>
+						Delete
+					</button>
 				</div>
 			}
 			onOutsideClick={() => onOutsideClick(id, text)}

@@ -157,8 +157,29 @@ export default function App() {
 	}
 
 	//TODO implement
-	function handleDeleteColumnClick(columnId) {
-		//Change the position of the rows
+	function handleDeleteHeaderClick(id, position) {
+		setHeaders((prevState) =>
+			prevState
+				.filter((header) => header.id !== id)
+				.map((header) => {
+					if (header.position > position) {
+						return {
+							...header,
+							position: header.position - 1,
+						};
+					}
+					return header;
+				})
+		);
+		setRows((prevState) =>
+			prevState.map((row) => {
+				return {
+					...row,
+					cells: row.cells.filter((cell, i) => i !== position),
+				};
+			})
+		);
+		setClickedHeader(initialClickedHeader);
 	}
 
 	function handleDeleteRowClick(rowId) {
@@ -279,6 +300,7 @@ export default function App() {
 				type={clickedHeader.type}
 				onOutsideClick={handleHeaderSave}
 				onItemClick={handleMenuItemClick}
+				onDeleteClick={handleDeleteHeaderClick}
 			/>
 		</div>
 	);
