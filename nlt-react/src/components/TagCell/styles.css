@@ -1,31 +1,35 @@
 .NLT__tag-cell {
 	display: flex;
+}
+
+.NLT__tag {
+	display: flex;
 	align-items: center;
 	border-radius: 8px;
 	padding: 2px 8px;
 	width: fit-content;
 }
 
-.NLT__tag-cell--red {
+.NLT__tag--red {
 	background-color: #ff6961;
 }
 
-.NLT__tag-cell--yellow {
+.NLT__tag--yellow {
 	background-color: #faffc7;
 }
 
-.NLT__tag-cell--orange {
+.NLT__tag--orange {
 	background-color: #ffdfd3;
 }
 
-.NLT__tag-cell--pink {
+.NLT__tag--pink {
 	background-color: #fec8d8;
 }
 
-.NLT__tag-cell--gray {
+.NLT__tag--gray {
 	background-color: #cfcfc4;
 }
 
-.NLT__tag-cell--purple {
+.NLT__tag--purple {
 	background-color: #e0bbe4;
 }

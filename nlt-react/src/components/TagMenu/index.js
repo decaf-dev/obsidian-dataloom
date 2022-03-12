@@ -4,7 +4,6 @@ import TagCell from "../TagCell";
 import "./styles.css";
 
 export default function TagMenu({
-	selectedTag = "",
 	tags = [],
 	text = "",
 	onTagClick = null,
@@ -12,17 +11,21 @@ export default function TagMenu({
 	onTextChange = null,
 	onRemoveTagClick = null,
 }) {
+	console.log("TAG MENU", tags);
 	return (
 		<div className="NLT__tag-menu-container">
 			<div className="NLT__tag-menu-top">
-				{selectedTag && (
-					<TagCell
-						key={selectedTag.id}
-						content={selectedTag.content}
-						showClose={true}
-						onRemoveClick={() => onRemoveTagClick(selectedTag.id)}
-					/>
-				)}
+				{tags
+					.filter((tag) => tag.selected === true)
+					.map((tag) => (
+						<TagCell
+							key={tag.id}
+							id={tag.id}
+							content={tag.content}
+							showRemove={true}
+							onRemoveClick={onRemoveTagClick}
+						/>
+					))}
 				<input
 					className="NLT__tag-menu-input"
 					autoFocus
@@ -40,8 +43,8 @@ export default function TagMenu({
 						<TagCell
 							key="new-tag"
 							content={text}
+							isCreate={true}
 							selectable={true}
-							showClose={false}
 							onClick={() => onAddTag(text)}
 						/>
 					)}
@@ -49,7 +52,7 @@ export default function TagMenu({
 						<TagCell
 							key={tag.id}
 							content={tag.content}
-							showClose={false}
+							selectable={true}
 							onClick={() => onTagClick(tag.id)}
 						/>
 					))}

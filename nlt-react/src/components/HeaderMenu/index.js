@@ -4,7 +4,7 @@ import Menu from "../Menu";
 
 import "./styles.css";
 
-import { CELL_TYPE } from "../../constants";
+import { MENU_ACTION, MENU_ITEMS } from "./constants";
 
 export default function HeaderMenu({
 	hide = false,
@@ -16,6 +16,7 @@ export default function HeaderMenu({
 	onItemClick = null,
 	onDeleteClick = null,
 	onOutsideClick = null,
+	onClose = null,
 }) {
 	const [text, setText] = useState("");
 
@@ -24,29 +25,43 @@ export default function HeaderMenu({
 	}, [content]);
 
 	function renderMenuItems() {
-		const items = [
-			{ name: "text", content: "Text", type: CELL_TYPE.TEXT },
-			{ name: "number", content: "Number", type: CELL_TYPE.NUMBER },
-			{ name: "tag", content: "Tag", type: CELL_TYPE.TAG },
-			{
-				name: "multi-tag",
-				content: "Multi-Tag",
-				type: CELL_TYPE.MULTI_TAG,
-			},
-		];
-		return items.map((item) => {
+		return MENU_ITEMS.map((item) => {
 			let className = "NLT__header-menu-item";
 			if (item.type === type) className += " NLT__selected";
 			return (
 				<p
 					key={item.name}
 					className={className}
-					onClick={() => onItemClick(id, position, item.type)}
+					onClick={() =>
+						handleClick(
+							MENU_ACTION.ITEM_CLICK,
+							id,
+							position,
+							item.type
+						)
+					}
 				>
 					{item.content}
 				</p>
 			);
 		});
+	}
+
+	function handleClick(action, ...props) {
+		switch (action) {
+			case MENU_ACTION.ITEM_CLICK:
+				onItemClick(...props);
+				break;
+			case MENU_ACTION.DELETE:
+				onDeleteClick(...props);
+				break;
+			case MENU_ACTION.OUTSIDE_CLICK:
+				onOutsideClick(...props);
+				break;
+			default:
+				break;
+		}
+		onClose();
 	}
 
 	return (
@@ -63,12 +78,18 @@ export default function HeaderMenu({
 					/>
 					<div className="NLT__header-menu-header">Property Type</div>
 					{renderMenuItems(id)}
-					<button onClick={() => onDeleteClick(id, position)}>
+					<button
+						onClick={() =>
+							handleClick(MENU_ACTION.DELETE, id, position)
+						}
+					>
 						Delete
 					</button>
 				</div>
 			}
-			onOutsideClick={() => onOutsideClick(id, text)}
+			onOutsideClick={() =>
+				handleClick(MENU_ACTION.OUTSIDE_CLICK, id, text)
+			}
 		/>
 	);
 }

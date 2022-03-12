@@ -6,42 +6,48 @@ import CloseIcon from "@mui/icons-material/Close";
 import "./styles.css";
 
 export default function TagCell({
+	id = "",
 	content = "",
 	hide = false,
 	color = CELL_COLOR.RED,
-	showClose = false,
+	showRemove = false,
 	selectable = false,
+	isCreate = false,
 	onRemoveClick = null,
 	onClick = null,
 }) {
-	let className = "NLT__tag-cell";
+	let tagClass = "NLT__tag";
 	if (color === CELL_COLOR.RED) {
-		className += " NLT__tag-cell--red";
+		tagClass += " NLT__tag--red";
 	} else if (color === CELL_COLOR.YELLOW) {
-		className += " NLT__tag-cell--yellow";
+		tagClass += " NLT__tag--yellow";
 	} else if (color === CELL_COLOR.ORANGE) {
-		className += " NLT__tag-cell--orange";
+		tagClass += " NLT__tag--orange";
 	} else if (color === CELL_COLOR.PINK) {
-		className += " NLT__tag-cell--pink";
+		tagClass += " NLT__tag--pink";
 	} else if (color === CELL_COLOR.PURPLE) {
-		className += " NLT__tag-cell--purple";
+		tagClass += " NLT__tag--purple";
 	} else if (color === CELL_COLOR.GRAY) {
-		className += " NLT__tag-cell--gray";
+		tagClass += " NLT__tag--gray";
 	}
 
-	if (selectable) className += " NLT__selectable";
+	let cellClass = "NLT__tag-cell";
+	if (selectable) cellClass += " NLT__selectable";
 
 	if (hide) return <></>;
 
 	return (
-		<div className={className} onClick={onClick}>
-			<div>{content}</div>
-			{showClose && (
-				<CloseIcon
-					className="NLT__icon--md NLT__margin-left"
-					onClick={onRemoveClick}
-				/>
-			)}
+		<div className={cellClass} onClick={onClick}>
+			{isCreate && <div>Create</div>}
+			<div className={tagClass}>
+				<div>{content}</div>
+				{showRemove && (
+					<CloseIcon
+						className="NLT__icon--md NLT__margin-left"
+						onClick={() => onRemoveClick(id)}
+					/>
+				)}
+			</div>
 		</div>
 	);
 }

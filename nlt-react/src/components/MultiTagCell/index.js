@@ -1,5 +1,13 @@
 import React from "react";
 
-export default function MultiTagCell({}) {
-	return <div className="NLT__multi-tag-cell">test</div>;
+import TagCell from "../TagCell";
+
+export default function MultiTagCell({ tags = [] }) {
+	return (
+		<div className="NLT__multi-tag-cell">
+			{tags.map((tag) => (
+				<TagCell key={tag.id} content={tag.content} />
+			))}
+		</div>
+	);
 }

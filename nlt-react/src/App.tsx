@@ -23,12 +23,14 @@ export default function App() {
 		};
 	};
 
-	const initialCell = (content = "", type = CELL_TYPE.TEXT) => {
-		return { id: uuidv4(), content, type };
+	const initialCell = (type = CELL_TYPE.TEXT) => {
+		return {
+			id: uuidv4(),
+			text: "",
+			tags: [],
+			type,
+		};
 	};
-
-	const [headers, setHeaders] = useState([initialHeader("Column", 0)]);
-	const [rows, setRows] = useState([]);
 
 	const initialClickedHeader = {
 		left: 0,
@@ -36,8 +38,11 @@ export default function App() {
 		id: 0,
 		position: 0,
 		content: "",
-		type: "",
+		type: CELL_TYPE.TEXT,
 	};
+
+	const [headers, setHeaders] = useState([initialHeader("Column", 0)]);
+	const [rows, setRows] = useState([]);
 
 	const [clickedHeader, setClickedHeader] = useState(initialClickedHeader);
 
@@ -64,7 +69,7 @@ export default function App() {
 			...prevState,
 			{
 				id: uuidv4(),
-				cells: headers.map((header, i) => initialCell("", header.type)),
+				cells: headers.map((header) => initialCell(header.type)),
 				time: Date.now(),
 			},
 		]);
@@ -96,22 +101,26 @@ export default function App() {
 				return header;
 			})
 		);
-		setClickedHeader(initialClickedHeader);
 	}
 
-	function handleArrowClick(headerId, headerPosition, arrow) {
+	function handleHeaderArrowClick(id, position, arrow) {
 		//Set header arrow
 		setHeaders((prevState) =>
 			prevState.map((header) => {
-				if (headerId === header.id) return { ...header, arrow };
+				if (id === header.id) return { ...header, arrow };
 				return { ...header, arrow: ARROW.NONE };
 			})
 		);
 		//Sort rows based off the arrow selection
-		sortRows(headerPosition, arrow);
+		sortRows(position, arrow);
 	}
 
-	function handleCellSave(rowId, headerPosition, updatedContent) {
+	function handleCellSave(
+		rowId,
+		headerPosition,
+		updatedContent,
+		updatedTags
+	) {
 		setRows((prevState) =>
 			prevState.map((row) => {
 				if (row.id === rowId)
@@ -123,7 +132,8 @@ export default function App() {
 							if (i === headerPosition) {
 								return {
 									...c,
-									content: updatedContent,
+									text: updatedContent,
+									tags: updatedTags,
 								};
 							}
 							return c;
@@ -135,28 +145,27 @@ export default function App() {
 	}
 
 	function sortRows(headerPosition, arrow) {
-		setRows((prevState) => {
-			//Create a new array because the sort function mutates
-			//the original array
-			const arr = [...prevState];
-			return arr.sort((a, b) => {
-				const cellA = a.cells[headerPosition];
-				const cellB = b.cells[headerPosition];
-
-				//Sort based on content if arrow is selected
-				if (arrow === ARROW.UP) {
-					return cellB.content.localeCompare(cellA.content);
-				} else if (arrow === ARROW.DOWN) {
-					return cellA.content.localeCompare(cellB.content);
-					//Otherwise sort on when the row was added
-				} else {
-					return a.time - b.time;
-				}
-			});
-		});
+		//TODO fix for tags
+		// setRows((prevState) => {
+		// 	//Create a new array because the sort function mutates
+		// 	//the original array
+		// 	const arr = [...prevState];
+		// 	return arr.sort((a, b) => {
+		// 		const cellA = a.cells[headerPosition];
+		// 		const cellB = b.cells[headerPosition];
+		// 		//Sort based on content if arrow is selected
+		// 		if (arrow === ARROW.UP) {
+		// 			return cellB.content.localeCompare(cellA.content);
+		// 		} else if (arrow === ARROW.DOWN) {
+		// 			return cellA.content.localeCompare(cellB.content);
+		// 			//Otherwise sort on when the row was added
+		// 		} else {
+		// 			return a.time - b.time;
+		// 		}
+		// 	});
+		// });
 	}
 
-	//TODO implement
 	function handleDeleteHeaderClick(id, position) {
 		setHeaders((prevState) =>
 			prevState
@@ -179,7 +188,6 @@ export default function App() {
 				};
 			})
 		);
-		setClickedHeader(initialClickedHeader);
 	}
 
 	function handleDeleteRowClick(rowId) {
@@ -207,7 +215,8 @@ export default function App() {
 						return {
 							...cell,
 							type: cellType,
-							content: "",
+							text: "",
+							tags: [],
 						};
 					return cell;
 				});
@@ -217,8 +226,31 @@ export default function App() {
 				};
 			})
 		);
-		//Close the menu
-		setClickedHeader(initialClickedHeader);
+	}
+
+	//Find all cell tags that don't belong to the cell
+	function findCellTags(id) {
+		const tags = [];
+		rows.forEach((row) => {
+			row.cells.forEach((cell) => {
+				if (cell.id === id) return;
+				cell.tags.forEach((tag) => {
+					if (!tag.selected) return;
+					const find = tags.find(
+						(t) =>
+							t.content.toLowerCase() ===
+							tag.content.toLowerCase()
+					);
+					if (!find) {
+						tags.push({
+							...tag,
+							selected: false,
+						});
+					}
+				});
+			});
+		});
+		return tags;
 	}
 
 	return (
@@ -235,7 +267,7 @@ export default function App() {
 								<ArrowGroup
 									selected={header.arrow}
 									onArrowClick={(arrow) =>
-										handleArrowClick(
+										handleHeaderArrowClick(
 											header.id,
 											header.position,
 											arrow
@@ -268,14 +300,21 @@ export default function App() {
 								{headers.map((header, i) => (
 									<EditableTd
 										key={header.id}
-										content={row.cells[i].content}
+										id={row.cells[i].id}
 										type={row.cells[i].type}
+										oldText={row.cells[i].text}
+										oldTags={row.cells[i].tags}
 										width={header.width}
-										onSaveClick={(updatedContent) =>
+										findCellTags={findCellTags}
+										onSaveClick={(
+											updatedContent,
+											updatedTags
+										) =>
 											handleCellSave(
 												row.id,
 												header.position,
-												updatedContent
+												updatedContent,
+												updatedTags
 											)
 										}
 									/>
@@ -301,6 +340,7 @@ export default function App() {
 				onOutsideClick={handleHeaderSave}
 				onItemClick={handleMenuItemClick}
 				onDeleteClick={handleDeleteHeaderClick}
+				onClose={() => setClickedHeader(initialClickedHeader)}
 			/>
 		</div>
 	);
