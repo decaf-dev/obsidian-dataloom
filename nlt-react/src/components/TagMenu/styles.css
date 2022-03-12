@@ -5,7 +5,7 @@
 }
 
 .NLT__tag-menu-bottom {
-	height: 100px;
+	min-height: 100px;
 	padding: 4px 10px;
 }
 
