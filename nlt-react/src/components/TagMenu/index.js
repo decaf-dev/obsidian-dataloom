@@ -11,6 +11,31 @@ export default function TagMenu({
 	onTextChange = null,
 	onRemoveTagClick = null,
 }) {
+	function renderSelectableTags() {
+		const filteredTags = tags.filter((tag) => tag.content.includes(text));
+		const found = tags.find((tag) => tag.content === text);
+		return (
+			<>
+				{!found && text !== "" && (
+					<TagCell
+						key="new-tag"
+						content={text}
+						isCreate={true}
+						selectable={true}
+						onClick={() => onAddTag(text)}
+					/>
+				)}
+				{filteredTags.map((tag) => (
+					<TagCell
+						key={tag.id}
+						content={tag.content}
+						selectable={true}
+						onClick={() => onTagClick(tag.id)}
+					/>
+				))}
+			</>
+		);
+	}
 	return (
 		<div className="NLT__tag-menu-container">
 			<div className="NLT__tag-menu-top">
@@ -37,25 +62,7 @@ export default function TagMenu({
 				<p className="NLT__tag-menu-text">
 					Select an option or create one
 				</p>
-				<div>
-					{text !== "" && (
-						<TagCell
-							key="new-tag"
-							content={text}
-							isCreate={true}
-							selectable={true}
-							onClick={() => onAddTag(text)}
-						/>
-					)}
-					{tags.map((tag) => (
-						<TagCell
-							key={tag.id}
-							content={tag.content}
-							selectable={true}
-							onClick={() => onTagClick(tag.id)}
-						/>
-					))}
-				</div>
+				<div>{renderSelectableTags()}</div>
 			</div>
 		</div>
 	);
