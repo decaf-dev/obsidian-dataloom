@@ -84,7 +84,7 @@ export default function EditableTd({
 		switch (type) {
 			case CELL_TYPE.TEXT:
 			case CELL_TYPE.NUMBER:
-				onSaveText(inputText);
+				onSaveText(cellId, inputText);
 				break;
 			case CELL_TYPE.TAG:
 				if (inputText !== "") {

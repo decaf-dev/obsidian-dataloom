@@ -1,3 +1,5 @@
+export const DEBUG = false;
+
 export const CELL_TYPE = {
 	TEXT: "text",
 	NUMBER: "number",

@@ -8,42 +8,22 @@ import ArrowGroup from "./components/ArrowGroup";
 import DragMenu from "./components/DragMenu";
 import HeaderMenu from "./components/HeaderMenu";
 
-import { CELL_TYPE, ARROW } from "./constants";
+import {
+	initialHeader,
+	initialCell,
+	initialClickedHeader,
+	initialRow,
+	initialTag,
+} from "./services/utils";
+
+import { ARROW, CELL_TYPE, DEBUG } from "./constants";
 import "./app.css";
 
 export default function App() {
-	const initialHeader = (content, position) => {
-		return {
-			id: uuidv4(),
-			position,
-			content,
-			arrow: ARROW.NONE,
-			width: "15rem",
-			type: CELL_TYPE.TEXT,
-		};
-	};
-
-	const initialCell = (type = CELL_TYPE.TEXT) => {
-		return {
-			id: uuidv4(),
-			text: "",
-			tags: [],
-			type,
-		};
-	};
-
-	const initialClickedHeader = {
-		left: 0,
-		top: 0,
-		id: 0,
-		position: 0,
-		content: "",
-		type: CELL_TYPE.TEXT,
-	};
-
 	const [headers, setHeaders] = useState([initialHeader("Column", 0)]);
 	const [rows, setRows] = useState([]);
-
+	const [cells, setCells] = useState([]);
+	const [tags, setTags] = useState([]);
 	const [clickedHeader, setClickedHeader] = useState(initialClickedHeader);
 
 	function handleAddColumn() {
@@ -54,24 +34,27 @@ export default function App() {
 		]);
 
 		//Add a new cell to each existing row
-		setRows((prevState) =>
-			prevState.map((row) => {
-				return {
-					...row,
-					cells: [...row.cells, initialCell()],
-				};
-			})
-		);
+		setCells((prevState) => {
+			const arr = [...prevState];
+			rows.forEach((row) => {
+				arr.push(initialCell(row.id, headers.length));
+			});
+			return arr;
+		});
+	}
+
+	if (DEBUG) {
+		console.log("ROWS", rows);
+		console.log("CELLS", cells);
+		console.log("TAGS", tags);
 	}
 
 	function handleAddRow() {
-		setRows((prevState) => [
+		const id = uuidv4();
+		setRows((prevState) => [...prevState, initialRow(id)]);
+		setCells((prevState) => [
 			...prevState,
-			{
-				id: uuidv4(),
-				cells: headers.map((header) => initialCell(header.type)),
-				time: Date.now(),
-			},
+			...headers.map((header, i) => initialCell(id, i, header.type)),
 		]);
 	}
 
@@ -103,7 +86,7 @@ export default function App() {
 		);
 	}
 
-	function handleHeaderArrowClick(id, position, arrow) {
+	function handleHeaderArrowClick(id, position, type, arrow) {
 		//Set header arrow
 		setHeaders((prevState) =>
 			prevState.map((header) => {
@@ -112,58 +95,130 @@ export default function App() {
 			})
 		);
 		//Sort rows based off the arrow selection
-		sortRows(position, arrow);
+		sortRows(position, type, arrow);
 	}
 
-	function handleCellSave(
-		rowId,
-		headerPosition,
-		updatedContent,
-		updatedTags
-	) {
-		setRows((prevState) =>
-			prevState.map((row) => {
-				if (row.id === rowId)
+	function handleSaveText(id, text) {
+		setCells((prevState) =>
+			prevState.map((cell) => {
+				if (cell.id === id) {
 					return {
-						...row,
-						cells: row.cells.map((c, i) => {
-							//This makes the assumption that the cell index
-							//will always make the header position
-							if (i === headerPosition) {
-								return {
-									...c,
-									text: updatedContent,
-									tags: updatedTags,
-								};
-							}
-							return c;
-						}),
+						...cell,
+						text,
 					};
-				return row;
+				}
+				return cell;
 			})
 		);
 	}
 
-	function sortRows(headerPosition, arrow) {
-		//TODO fix for tags
-		// setRows((prevState) => {
-		// 	//Create a new array because the sort function mutates
-		// 	//the original array
-		// 	const arr = [...prevState];
-		// 	return arr.sort((a, b) => {
-		// 		const cellA = a.cells[headerPosition];
-		// 		const cellB = b.cells[headerPosition];
-		// 		//Sort based on content if arrow is selected
-		// 		if (arrow === ARROW.UP) {
-		// 			return cellB.content.localeCompare(cellA.content);
-		// 		} else if (arrow === ARROW.DOWN) {
-		// 			return cellA.content.localeCompare(cellB.content);
-		// 			//Otherwise sort on when the row was added
-		// 		} else {
-		// 			return a.time - b.time;
-		// 		}
-		// 	});
-		// });
+	function handleAddTag(cellId, text) {
+		let tag = tags.find((tag) => tag.content === text);
+		if (tag) {
+			//If our cell id has already selected the tag then return
+			if (tag.selected.includes(cellId)) return;
+			//Otherwise select our cell id
+			setTags((prevState) => {
+				const arr = removeTagReferences(prevState, cellId);
+				return arr.map((tag) => {
+					if (tag.content === text) {
+						return {
+							...tag,
+							selected: [...tag.selected, cellId],
+						};
+					}
+					return tag;
+				});
+			});
+		} else {
+			//If tag doesn't exist, add it
+			setTags((prevState) => {
+				const arr = removeTagReferences(prevState, cellId);
+				return [...arr, initialTag(text, cellId)];
+			});
+		}
+	}
+
+	function removeTagReferences(tags, cellId) {
+		return tags
+			.map((tag) => {
+				return {
+					...tag,
+					selected: tag.selected.filter((id) => id !== cellId),
+				};
+			})
+			.filter((tag) => tag.selected.length !== 0);
+	}
+
+	function handleTagClick(cellId, tagId) {
+		//If our cell id has already selected the tag then return
+		const found = tags.find((tag) => tag.id === tagId);
+		if (found.selected.includes(cellId)) return;
+
+		setTags((prevState) => {
+			const arr = removeTagReferences(prevState, cellId);
+			return arr.map((tag) => {
+				//Add cell id to selected list
+				if (tag.id === tagId) {
+					return {
+						...tag,
+						selected: [...tag.selected, cellId],
+					};
+				}
+				return tag;
+			});
+		});
+	}
+
+	function handleRemoveTagClick(cellId, tagId) {
+		setTags((prevState) => removeTagReferences(prevState, cellId));
+	}
+
+	function sortRows(headerPosition, headerType, arrow) {
+		setRows((prevState) => {
+			//Create a new array because the sort function mutates
+			//the original array
+			const arr = [...prevState];
+			return arr.sort((a, b) => {
+				const cellA = cells.find(
+					(cell) =>
+						cell.position === headerPosition && cell.rowId === a.id
+				);
+				const cellB = cells.find(
+					(cell) =>
+						cell.position === headerPosition && cell.rowId === b.id
+				);
+				//Sort based on content if arrow is selected
+				if (arrow === ARROW.UP) {
+					if (headerType === CELL_TYPE.TAG) {
+						const tagA = tags.find((tag) =>
+							tag.selected.includes(cellA.id)
+						);
+						const tagB = tags.find((tag) =>
+							tag.selected.includes(cellB.id)
+						);
+						return tagA.content.localeCompare(tagB.content);
+					} else {
+						return cellA.text.localeCompare(cellB.text);
+					}
+				} else if (arrow === ARROW.DOWN) {
+					if (headerType === CELL_TYPE.TAG) {
+						const tagA = tags.find((tag) =>
+							tag.selected.includes(cellA.id)
+						);
+						const tagB = tags.find((tag) =>
+							tag.selected.includes(cellB.id)
+						);
+						return tagB.content.localeCompare(tagA.content);
+					} else {
+						return cellB.text.localeCompare(cellA.text);
+					}
+				} else {
+					//Otherwise sort on when the row was added
+					return a.time - b.time;
+				}
+			});
+		});
 	}
 
 	function handleDeleteHeaderClick(id, position) {
@@ -180,18 +235,24 @@ export default function App() {
 					return header;
 				})
 		);
-		setRows((prevState) =>
-			prevState.map((row) => {
-				return {
-					...row,
-					cells: row.cells.filter((cell, i) => i !== position),
-				};
-			})
+		setCells((prevState) =>
+			prevState
+				.filter((cell) => cell.position !== position)
+				.map((cell) => {
+					if (cell.position > position) {
+						return {
+							...cell,
+							position: cell.position - 1,
+						};
+					}
+					return cell;
+				})
 		);
 	}
 
 	function handleDeleteRowClick(rowId) {
 		setRows(rows.filter((row) => row.id !== rowId));
+		setCells(cells.filter((cell) => cell.rowId !== rowId));
 	}
 
 	function handleMenuItemClick(headerId, headerPosition, cellType) {
@@ -208,49 +269,19 @@ export default function App() {
 			})
 		);
 		//Update cell that matches header id to the new cell type
-		setRows((prevState) =>
-			prevState.map((row) => {
-				const cells = row.cells.map((cell, i) => {
-					if (i === headerPosition)
-						return {
-							...cell,
-							type: cellType,
-							text: "",
-							tags: [],
-						};
-					return cell;
-				});
-				return {
-					...row,
-					cells,
-				};
+		setCells((prevState) =>
+			prevState.map((cell) => {
+				if (cell.position === headerPosition) {
+					return {
+						...cell,
+						type: cellType,
+						text: "",
+					};
+				}
+				return cell;
 			})
 		);
-	}
-
-	//Find all cell tags that don't belong to the cell
-	function findCellTags(id) {
-		const tags = [];
-		rows.forEach((row) => {
-			row.cells.forEach((cell) => {
-				if (cell.id === id) return;
-				cell.tags.forEach((tag) => {
-					if (!tag.selected) return;
-					const find = tags.find(
-						(t) =>
-							t.content.toLowerCase() ===
-							tag.content.toLowerCase()
-					);
-					if (!find) {
-						tags.push({
-							...tag,
-							selected: false,
-						});
-					}
-				});
-			});
-		});
-		return tags;
+		setTags([]);
 	}
 
 	return (
@@ -270,6 +301,7 @@ export default function App() {
 										handleHeaderArrowClick(
 											header.id,
 											header.position,
+											header.type,
 											arrow
 										)
 									}
@@ -297,28 +329,29 @@ export default function App() {
 										handleDeleteRowClick(row.id)
 									}
 								/>
-								{headers.map((header, i) => (
-									<EditableTd
-										key={header.id}
-										id={row.cells[i].id}
-										type={row.cells[i].type}
-										oldText={row.cells[i].text}
-										oldTags={row.cells[i].tags}
-										width={header.width}
-										findCellTags={findCellTags}
-										onSaveClick={(
-											updatedContent,
-											updatedTags
-										) =>
-											handleCellSave(
-												row.id,
-												header.position,
-												updatedContent,
-												updatedTags
-											)
-										}
-									/>
-								))}
+								{headers.map((header, index) => {
+									const { id, type, text } = cells.find(
+										(cell) =>
+											cell.rowId === row.id &&
+											cell.position === index
+									);
+									return (
+										<EditableTd
+											key={id}
+											cellId={id}
+											type={type}
+											text={text}
+											tags={tags}
+											onTagClick={handleTagClick}
+											onRemoveTagClick={
+												handleRemoveTagClick
+											}
+											width={header.width}
+											onSaveText={handleSaveText}
+											onAddTag={handleAddTag}
+										/>
+									);
+								})}
 								<td></td>
 							</>
 						),
