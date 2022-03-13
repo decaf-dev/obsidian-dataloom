@@ -11,7 +11,6 @@ export default function TagMenu({
 	onTextChange = null,
 	onRemoveTagClick = null,
 }) {
-	console.log("TAG MENU", tags);
 	return (
 		<div className="NLT__tag-menu-container">
 			<div className="NLT__tag-menu-top">

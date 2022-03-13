@@ -1,6 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
-
-import { v4 as uuidv4 } from "uuid";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 
 import Menu from "../Menu";
 import TextCell from "../TextCell";
@@ -15,23 +13,18 @@ import { CELL_TYPE } from "../../constants";
 import "./styles.css";
 
 export default function EditableTd({
-	id = "",
+	cellId = "",
 	width = "",
-	oldText = "",
-	oldTags = [],
+	text = "",
+	tags = [],
 	type = "",
-	findCellTags = null,
-	onSaveClick = null,
+	onTagClick = null,
+	onSaveText = null,
+	onAddTag = null,
 }) {
-	const initialTag = (text) => {
-		return { id: uuidv4(), cellId: id, content: text, selected: true };
-	};
-
-	const [text, setText] = useState("");
-	const [tags, setTags] = useState([]);
+	const [inputText, setInputText] = useState("");
 
 	const tdRef = useRef();
-	const textAreaRef = useRef();
 
 	const forceUpdate = useForceUpdate();
 
@@ -46,88 +39,57 @@ export default function EditableTd({
 		if (clickedCell.height > 0) forceUpdate();
 	}, [clickedCell.height, forceUpdate]);
 
-	//Add textAreaRef.current as a dependency with callback
-	useEffect(() => {
-		if (type === CELL_TYPE.TEXT || type === CELL_TYPE.NUMBER)
-			if (textAreaRef.current) {
-				textAreaRef.current.selectionStart = text.length;
-				textAreaRef.current.selectionEnd = text.length;
-			}
-	}, [type, text]);
+	const textAreaRef = useCallback(
+		(node) => {
+			if (type === CELL_TYPE.TEXT || type === CELL_TYPE.NUMBER)
+				if (node) {
+					node.selectionStart = inputText.length;
+					node.selectionEnd = inputText.length;
+				}
+		},
+		[type, inputText.length]
+	);
 
 	useEffect(() => {
 		switch (type) {
 			case CELL_TYPE.TEXT:
 			case CELL_TYPE.NUMBER:
-				setText(oldText);
-				break;
-			case CELL_TYPE.TAG:
-			case CELL_TYPE.MULTI_TAG:
-				console.log("OLD TAGS", oldTags);
-				setTags(oldTags);
+				setInputText(text);
 				break;
 			default:
 				break;
 		}
-	}, [type, oldText, oldTags]);
+	}, [type, text]);
 
 	function handleCellClick(e) {
 		if (clickedCell.height > 0) return;
 
 		const { x, y, height } = tdRef.current.getBoundingClientRect();
 		setClickedCell({ top: y, left: x, height });
-
-		if (type === CELL_TYPE.TAG || type === CELL_TYPE.MULTI_TAG) {
-			//These are all the tags that don't belong to this cell
-			const arr = findCellTags(id);
-			console.log("CELL TAGS", arr);
-			//Combine our current tags with the other cell tags found from other arrays
-			setTags((prevState) => [
-				...prevState.filter((tag) => {
-					//Remove if one of our cell's tags that no longer exists
-					if (tag.cellId === id) {
-						if (!tag.selected) return false;
-						return true;
-					} else {
-						//Remove if tag from other cell that no longer exists
-						const found = arr.find(
-							(t) => t.content === tag.content
-						);
-						if (found) return true;
-						return false;
-					}
-				}),
-				//Add new tags
-				...arr.filter((tag) => {
-					const found = tags.find((t) => t.content === tag.content);
-					if (found) return false;
-					return true;
-				}),
-			]);
-		}
 	}
 
-	console.log("RENDERED TAGS", tags);
+	function handleAddTag(text) {
+		onAddTag(cellId, text);
+		setInputText("");
+		setClickedCell(initialClickCell);
+	}
+
+	function handleTagClick(tagId) {
+		onTagClick(cellId, tagId);
+		setClickedCell(initialClickCell);
+	}
 
 	function handleOutsideClick() {
 		switch (type) {
 			case CELL_TYPE.TEXT:
 			case CELL_TYPE.NUMBER:
-				onSaveClick(text, []);
+				onSaveText(inputText);
 				break;
 			case CELL_TYPE.TAG:
-				if (text !== "") {
-					//Check if current text exists as a tag, otherwise add it,
-					const found = tags.find((tag) => tag.content === text);
-					if (!found) {
-						//Remove old ids
-						const arr = tags.filter((tag) => tag.cellId !== id);
-						onSaveClick("", [initialTag(text), ...arr]);
-						setText("");
-						break;
-					}
+				if (inputText !== "") {
+					onAddTag(cellId, inputText);
+					setInputText("");
 				}
-				onSaveClick("", tags);
 				break;
 			case CELL_TYPE.MULTI_TAG:
 				// if (text !== "") {
@@ -135,7 +97,7 @@ export default function EditableTd({
 				// 	const found = tags.find((tag) => tag.content === text);
 				// 	if (!found) {
 				// 		onSaveClick("", [initialTag(text), ...tags]);
-				// 		setText("");
+				// 		setInputText("");
 				// 		break;
 				// 	}
 				// }
@@ -165,32 +127,6 @@ export default function EditableTd({
 		// });
 	}
 
-	function handleAddTag(text) {
-		//If already exists then return
-		if (tags.find((tag) => tag.content === text)) return;
-		//Filter and remove tag if it doesn't come from this cell
-		setTags((prevState) => [
-			initialTag(text),
-			...prevState
-				.filter((tag) => tag.cellId !== id)
-				.map((tag) => {
-					return { ...tag, selected: false };
-				}),
-		]);
-		setText("");
-		setClickedCell(initialClickCell);
-	}
-
-	function handleTagClick(tagId) {
-		setTags((prevState) =>
-			prevState.map((tag) => {
-				if (tag.id === tagId) return { ...tag, selected: true };
-				return { ...tag, selected: false };
-			})
-		);
-		setClickedCell(initialClickCell);
-	}
-
 	function handleMultiTagClick(id) {}
 
 	function handleAddMultiTag(text) {
@@ -198,17 +134,17 @@ export default function EditableTd({
 		// const tag = tags.find((tag) => tag.content === text);
 		// if (tag !== undefined) return;
 		// setTags((prevState) => [initialTag(text), ...prevState]);
-		// setText("");
+		// setInputText("");
 	}
 
 	function renderCell() {
 		switch (type) {
 			case CELL_TYPE.TEXT:
-				return <TextCell content={text} />;
+				return <TextCell content={inputText} />;
 			case CELL_TYPE.NUMBER:
-				return <TextCell content={text} />;
+				return <TextCell content={inputText} />;
 			case CELL_TYPE.TAG:
-				const tag = tags.find((tag) => tag.selected === true);
+				const tag = tags.find((tag) => tag.selected.includes(cellId));
 				return (
 					<TagCell
 						content={tag !== undefined ? tag.content : ""}
@@ -230,9 +166,9 @@ export default function EditableTd({
 						className="NLT__input"
 						ref={textAreaRef}
 						autoFocus
-						value={text}
+						value={inputText}
 						onChange={(e) =>
-							setText(e.target.value.replace("\n", ""))
+							setInputText(e.target.value.replace("\n", ""))
 						}
 					/>
 				);
@@ -242,17 +178,18 @@ export default function EditableTd({
 						className="NLT__input NLT__input--number"
 						type="number"
 						autoFocus
-						value={text}
-						onChange={(e) => setText(e.target.value)}
+						value={inputText}
+						onChange={(e) => setInputText(e.target.value)}
 					/>
 				);
 			case CELL_TYPE.TAG:
 				return (
 					<TagMenu
+						cellId={cellId}
 						tags={tags}
-						text={text}
+						text={inputText}
 						onAddTag={handleAddTag}
-						onTextChange={(e) => setText(e.target.value)}
+						onTextChange={(e) => setInputText(e.target.value)}
 						onRemoveTagClick={handleRemoveTagClick}
 						onTagClick={handleTagClick}
 					/>
@@ -260,10 +197,11 @@ export default function EditableTd({
 			case CELL_TYPE.MULTI_TAG:
 				return (
 					<TagMenu
+						cellId={cellId}
 						tags={tags}
-						text={text}
+						text={inputText}
 						onAddTag={handleAddMultiTag}
-						onTextChange={(e) => setText(e.target.value)}
+						onTextChange={(e) => setInputText(e.target.value)}
 						onRemoveTagClick={handleRemoveTagClick}
 						onTagClick={handleMultiTagClick}
 					/>
