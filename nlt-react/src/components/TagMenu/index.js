@@ -4,6 +4,7 @@ import TagCell from "../TagCell";
 import "./styles.css";
 
 export default function TagMenu({
+	cellId = "",
 	tags = [],
 	text = "",
 	onTagClick = null,
@@ -40,14 +41,16 @@ export default function TagMenu({
 		<div className="NLT__tag-menu-container">
 			<div className="NLT__tag-menu-top">
 				{tags
-					.filter((tag) => tag.selected === true)
+					.filter((tag) => tag.selected.includes(cellId) === true)
 					.map((tag) => (
 						<TagCell
 							key={tag.id}
 							id={tag.id}
 							content={tag.content}
 							showRemove={true}
-							onRemoveClick={onRemoveTagClick}
+							onRemoveClick={() =>
+								onRemoveTagClick(cellId, tag.id)
+							}
 						/>
 					))}
 				<input

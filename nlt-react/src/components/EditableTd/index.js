@@ -18,6 +18,7 @@ export default function EditableTd({
 	text = "",
 	tags = [],
 	type = "",
+	onRemoveTagClick = null,
 	onTagClick = null,
 	onSaveText = null,
 	onAddTag = null,
@@ -109,24 +110,6 @@ export default function EditableTd({
 		setClickedCell(initialClickCell);
 	}
 
-	function handleRemoveTagClick(tagId) {
-		// //TODO if referenced multiple places, then keep
-		// setTags((prevState) => {
-		// 	const tag = prevState.find((tag) => tag.id === tagId);
-		// 	if (tag.cellId === id) {
-		// 		return prevState.filter((tag) => tag.id === tagId);
-		// 	} else {
-		// 		//Set selected to false
-		// 		return prevState.map((tag) => {
-		// 			return {
-		// 				...tag,
-		// 				selected: false,
-		// 			};
-		// 		});
-		// 	}
-		// });
-	}
-
 	function handleMultiTagClick(id) {}
 
 	function handleAddMultiTag(text) {
@@ -190,7 +173,7 @@ export default function EditableTd({
 						text={inputText}
 						onAddTag={handleAddTag}
 						onTextChange={(e) => setInputText(e.target.value)}
-						onRemoveTagClick={handleRemoveTagClick}
+						onRemoveTagClick={onRemoveTagClick}
 						onTagClick={handleTagClick}
 					/>
 				);
@@ -202,7 +185,6 @@ export default function EditableTd({
 						text={inputText}
 						onAddTag={handleAddMultiTag}
 						onTextChange={(e) => setInputText(e.target.value)}
-						onRemoveTagClick={handleRemoveTagClick}
 						onTagClick={handleMultiTagClick}
 					/>
 				);
