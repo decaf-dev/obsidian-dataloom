@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import Menu from "../Menu";
 import TextCell from "../TextCell";
 import TagCell from "../TagCell";
-import MultiTagCell from "../MultiTagCell";
+// import MultiTagCell from "../MultiTagCell";
 import TagMenu from "../TagMenu";
 
 import { useForceUpdate } from "../../services/utils";
@@ -92,32 +92,12 @@ export default function EditableTd({
 					setInputText("");
 				}
 				break;
-			case CELL_TYPE.MULTI_TAG:
-				// if (text !== "") {
-				// 	//Check if current text exists as a tag, otherwise add it,
-				// 	const found = tags.find((tag) => tag.content === text);
-				// 	if (!found) {
-				// 		onSaveClick("", [initialTag(text), ...tags]);
-				// 		setInputText("");
-				// 		break;
-				// 	}
-				// }
-				// onSaveClick("", tags);
-				break;
+			// case CELL_TYPE.MULTI_TAG:
+			// 	break;
 			default:
 				break;
 		}
 		setClickedCell(initialClickCell);
-	}
-
-	function handleMultiTagClick(id) {}
-
-	function handleAddMultiTag(text) {
-		// //If already exists then return
-		// const tag = tags.find((tag) => tag.content === text);
-		// if (tag !== undefined) return;
-		// setTags((prevState) => [initialTag(text), ...prevState]);
-		// setInputText("");
 	}
 
 	function renderCell() {
@@ -134,8 +114,8 @@ export default function EditableTd({
 						hide={tag === undefined}
 					/>
 				);
-			case CELL_TYPE.MULTI_TAG:
-				return <MultiTagCell tags={tags} />;
+			// case CELL_TYPE.MULTI_TAG:
+			// 	return <MultiTagCell tags={tags} />;
 			default:
 				return <></>;
 		}
@@ -177,17 +157,9 @@ export default function EditableTd({
 						onTagClick={handleTagClick}
 					/>
 				);
-			case CELL_TYPE.MULTI_TAG:
-				return (
-					<TagMenu
-						cellId={cellId}
-						tags={tags}
-						text={inputText}
-						onAddTag={handleAddMultiTag}
-						onTextChange={(e) => setInputText(e.target.value)}
-						onTagClick={handleMultiTagClick}
-					/>
-				);
+			// case CELL_TYPE.MULTI_TAG:
+			// 	return (
+			// 	);
 			default:
 				return <></>;
 		}
@@ -196,7 +168,7 @@ export default function EditableTd({
 	function getMenuWidth() {
 		switch (type) {
 			case CELL_TYPE.TAG:
-			case CELL_TYPE.MULTI_TAG:
+				// case CELL_TYPE.MULTI_TAG:
 				return "fit-content";
 			default:
 				return tdRef.current ? tdRef.current.offsetWidth : 0;
@@ -208,7 +180,7 @@ export default function EditableTd({
 			case CELL_TYPE.NUMBER:
 				return "2rem";
 			case CELL_TYPE.TAG:
-			case CELL_TYPE.MULTI_TAG:
+				// case CELL_TYPE.MULTI_TAG:
 				return "fit-content";
 			default:
 				return clickedCell.height;
