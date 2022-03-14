@@ -6,7 +6,7 @@ import TagCell from "../TagCell";
 // import MultiTagCell from "../MultiTagCell";
 import TagMenu from "../TagMenu";
 
-import { useForceUpdate, Tag } from "../../services/utils";
+import { useForceUpdate, Tag, useApp } from "../../services/utils";
 
 import { CELL_TYPE } from "../../constants";
 
@@ -48,6 +48,8 @@ export default function EditableTd({
 	};
 	const [clickedCell, setClickedCell] = useState(initialClickCell);
 
+	const { workspace } = useApp();
+
 	useEffect(() => {
 		if (clickedCell.height > 0) forceUpdate();
 	}, [clickedCell.height, forceUpdate]);
@@ -78,8 +80,21 @@ export default function EditableTd({
 		if (clickedCell.height > 0) return;
 
 		if (tdRef.current) {
+			const el = workspace.containerEl;
+			const ribbon = el.getElementsByClassName(
+				"workspace-ribbon"
+			)[0] as HTMLElement;
+			const fileExplorer = el.getElementsByClassName(
+				"workspace-split"
+			)[0] as HTMLElement;
+
 			const { x, y, height } = tdRef.current.getBoundingClientRect();
-			setClickedCell({ top: y, left: x, height });
+
+			setClickedCell({
+				left: x - ribbon.offsetWidth - fileExplorer.offsetWidth,
+				top: y - 22,
+				height,
+			});
 		}
 	}
 
