@@ -18,7 +18,7 @@ import {
 
 import { ARROW, CELL_TYPE, DEBUG } from "./constants";
 import "./app.css";
-import { useApp } from "./utils";
+import { useApp } from "./services/utils";
 
 export default function App() {
 	const [headers, setHeaders] = useState([initialHeader("Column", 0)]);
