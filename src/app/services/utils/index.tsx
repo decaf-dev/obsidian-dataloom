@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 
 import { v4 as uuidv4 } from "uuid";
 import { CELL_TYPE, ARROW } from "../../constants";
@@ -8,7 +8,13 @@ export const useForceUpdate = () => {
 	return useCallback(() => setValue((value) => value + 1), []);
 };
 
-export const initialHeader = (content, position) => {
+export const AppContext = React.createContext(undefined);
+
+export const useApp = (): App | undefined => {
+	return React.useContext(AppContext);
+};
+
+export const initialHeader = (content: string, position: number) => {
 	return {
 		id: uuidv4(),
 		position,
@@ -19,7 +25,11 @@ export const initialHeader = (content, position) => {
 	};
 };
 
-export const initialCell = (rowId, position, type = CELL_TYPE.TEXT) => {
+export const initialCell = (
+	rowId: number,
+	position: number,
+	type = CELL_TYPE.TEXT
+) => {
 	return {
 		id: uuidv4(),
 		rowId,
@@ -30,14 +40,14 @@ export const initialCell = (rowId, position, type = CELL_TYPE.TEXT) => {
 	};
 };
 
-export const initialRow = (id) => {
+export const initialRow = (id: number) => {
 	return {
 		id,
 		time: Date.now(),
 	};
 };
 
-export const initialTag = (text, cellId) => {
+export const initialTag = (text: string, cellId: string) => {
 	return { id: uuidv4(), content: text, selected: [cellId] };
 };
 
