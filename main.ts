@@ -2,8 +2,6 @@ import { Plugin } from "obsidian";
 
 import { NLTTable } from "src/NLTTable";
 
-// Remember to rename these classes and interfaces!
-
 interface NltSettings {
 	mySetting: string;
 }

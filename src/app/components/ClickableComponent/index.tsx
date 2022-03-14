@@ -1,24 +1,32 @@
 import React, { useEffect, useRef } from "react";
 
+interface Props {
+	clickable: boolean;
+	render: React.ReactNode;
+	renderClickable: React.ReactNode;
+	onOutsideClick: Function;
+	onClick?: Function;
+}
+
 export default function ClickableComponent({
 	clickable = false,
-	render = null,
-	renderClickable = null,
-	onOutsideClick = null,
-	onClick = null,
-}) {
+	render,
+	renderClickable,
+	onOutsideClick,
+	onClick,
+}: Props) {
 	const ref = useRef(null);
 
 	useEffect(() => {
-		const handleClick = (e) => {
+		const handleClick = (e: MouseEvent) => {
 			if (ref.current && !ref.current.contains(e.target)) {
 				onOutsideClick();
 				return;
 			}
-			onClick();
+			onClick && onClick();
 		};
 
-		function handleKeyUp(e) {
+		function handleKeyUp(e: KeyboardEvent) {
 			if (!clickable) return;
 
 			if (e.key === "Enter") onOutsideClick();

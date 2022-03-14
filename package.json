@@ -27,6 +27,7 @@
     "esbuild": "0.13.12",
     "obsidian": "^0.13.26",
     "react-scripts": "^5.0.0",
+    "renamer": "^4.0.0",
     "tslib": "2.3.1",
     "typescript": "4.4.4",
     "uninstall": "^0.0.0",

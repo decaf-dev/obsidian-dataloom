@@ -4,24 +4,41 @@ import Menu from "../Menu";
 
 import "./styles.css";
 
-import { MENU_ACTION, MENU_ITEMS } from "./constants";
+import { MENU_ITEMS } from "./constants";
+
+interface Props {
+	hide: boolean;
+	style: object;
+	id: string;
+	position: number;
+	content: string;
+	type: string;
+	onItemClick: (
+		headerId: string,
+		headerPosition: number,
+		headerType: string
+	) => void;
+	onDeleteClick: (headerId: string, headerPosition: number) => void;
+	onOutsideClick: (headerId: string, inputText: string) => void;
+	onClose: Function;
+}
 
 export default function HeaderMenu({
-	hide = false,
-	style = {},
-	id = 0,
-	position = 0,
-	content = "",
-	type = "",
-	onItemClick = null,
-	onDeleteClick = null,
-	onOutsideClick = null,
-	onClose = null,
-}) {
-	const [text, setText] = useState("");
+	hide,
+	style,
+	id,
+	position,
+	content,
+	type,
+	onItemClick,
+	onDeleteClick,
+	onOutsideClick,
+	onClose,
+}: Props) {
+	const [inputText, setInputText] = useState("");
 
 	useEffect(() => {
-		setText(content);
+		setInputText(content);
 	}, [content]);
 
 	function renderMenuItems() {
@@ -32,14 +49,7 @@ export default function HeaderMenu({
 				<p
 					key={item.name}
 					className={className}
-					onClick={() =>
-						handleClick(
-							MENU_ACTION.ITEM_CLICK,
-							id,
-							position,
-							item.type
-						)
-					}
+					onClick={() => handleItemClick(id, position, item.type)}
 				>
 					{item.content}
 				</p>
@@ -47,20 +57,18 @@ export default function HeaderMenu({
 		});
 	}
 
-	function handleClick(action, ...props) {
-		switch (action) {
-			case MENU_ACTION.ITEM_CLICK:
-				onItemClick(...props);
-				break;
-			case MENU_ACTION.DELETE:
-				onDeleteClick(...props);
-				break;
-			case MENU_ACTION.OUTSIDE_CLICK:
-				onOutsideClick(...props);
-				break;
-			default:
-				break;
-		}
+	function handleItemClick(id: string, position: number, type: string) {
+		onItemClick(id, position, type);
+		onClose();
+	}
+
+	function handleOutsideClick(id: string, text: string) {
+		onOutsideClick(id, text);
+		onClose();
+	}
+
+	function handleDeleteClick(id: string, position: number) {
+		onDeleteClick(id, position);
 		onClose();
 	}
 
@@ -73,24 +81,20 @@ export default function HeaderMenu({
 					<input
 						autoFocus
 						type="text"
-						value={text}
-						onChange={(e) => setText(e.target.value)}
+						value={inputText}
+						onChange={(e) => setInputText(e.target.value)}
 					/>
 					<div className="NLT__header-menu-header">Property Type</div>
-					{renderMenuItems(id)}
+					{renderMenuItems()}
 					<button
 						className="NLT__button"
-						onClick={() =>
-							handleClick(MENU_ACTION.DELETE, id, position)
-						}
+						onClick={() => handleDeleteClick(id, position)}
 					>
 						Delete
 					</button>
 				</div>
 			}
-			onOutsideClick={() =>
-				handleClick(MENU_ACTION.OUTSIDE_CLICK, id, text)
-			}
+			onOutsideClick={() => handleOutsideClick(id, inputText)}
 		/>
 	);
 }

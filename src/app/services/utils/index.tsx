@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from "react";
 
+import { App } from "obsidian";
 import { v4 as uuidv4 } from "uuid";
 import { CELL_TYPE, ARROW } from "../../constants";
 
@@ -14,7 +15,32 @@ export const useApp = (): App | undefined => {
 	return React.useContext(AppContext);
 };
 
-export const initialHeader = (content: string, position: number) => {
+export const initialTag = (text: string, cellId: string) => {
+	return { id: uuidv4(), content: text, selected: [cellId] };
+};
+
+export interface Tag {
+	id: string;
+	content: string;
+	selected: string[];
+}
+
+export interface HeaderComposition {
+	id: string;
+	content: React.ReactNode;
+	width: string;
+	onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+}
+export interface Header {
+	id: string;
+	position: number;
+	content: string;
+	arrow: string;
+	width: string;
+	type: string;
+}
+
+export const initialHeader = (content: string, position: number): Header => {
 	return {
 		id: uuidv4(),
 		position,
@@ -25,11 +51,20 @@ export const initialHeader = (content: string, position: number) => {
 	};
 };
 
+interface Cell {
+	id: string;
+	rowId: string;
+	position: number;
+	text: string;
+	tags: Tag[];
+	type: string;
+}
+
 export const initialCell = (
-	rowId: number,
+	rowId: string,
 	position: number,
-	type = CELL_TYPE.TEXT
-) => {
+	type: string
+): Cell => {
 	return {
 		id: uuidv4(),
 		rowId,
@@ -40,21 +75,24 @@ export const initialCell = (
 	};
 };
 
-export const initialRow = (id: number) => {
+export interface Row {
+	id: string;
+	time?: number;
+	content: React.ReactNode;
+}
+
+export const initialRow = (id: string): Row => {
 	return {
 		id,
 		time: Date.now(),
+		content: <></>,
 	};
-};
-
-export const initialTag = (text: string, cellId: string) => {
-	return { id: uuidv4(), content: text, selected: [cellId] };
 };
 
 export const initialClickedHeader = {
 	left: 0,
 	top: 0,
-	id: 0,
+	id: "",
 	position: 0,
 	content: "",
 	type: CELL_TYPE.TEXT,

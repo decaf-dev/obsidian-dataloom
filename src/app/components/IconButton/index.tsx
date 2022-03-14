@@ -1,7 +1,13 @@
 import React, { forwardRef } from "react";
 
-const IconButton = forwardRef(
-	({ selected = false, icon = null, onClick = null }, ref) => {
+interface Props {
+	selected?: boolean;
+	icon: React.ReactNode;
+	onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+}
+
+const IconButton = forwardRef<HTMLInputElement, Props>(
+	({ selected = false, icon, onClick }, ref) => {
 		let className = "NLT__button--reset";
 		if (selected) className += " NLT__selected";
 

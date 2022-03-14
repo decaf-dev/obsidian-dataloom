@@ -6,26 +6,38 @@ import TagCell from "../TagCell";
 // import MultiTagCell from "../MultiTagCell";
 import TagMenu from "../TagMenu";
 
-import { useForceUpdate } from "../../services/utils";
+import { useForceUpdate, Tag } from "../../services/utils";
 
 import { CELL_TYPE } from "../../constants";
 
 import "./styles.css";
 
+interface Props {
+	cellId: string;
+	width: string;
+	text: string;
+	tags: Tag[];
+	type: string;
+	onRemoveTagClick: (cellId: string, tagId: string) => void;
+	onTagClick: (cellId: string, inputText: string) => void;
+	onSaveText: (cellId: string, inputText: string) => void;
+	onAddTag: (cellId: string, inputText: string) => void;
+}
+
 export default function EditableTd({
-	cellId = "",
-	width = "",
-	text = "",
-	tags = [],
-	type = "",
-	onRemoveTagClick = null,
-	onTagClick = null,
-	onSaveText = null,
-	onAddTag = null,
-}) {
+	cellId,
+	width,
+	text,
+	tags,
+	type,
+	onRemoveTagClick,
+	onTagClick,
+	onSaveText,
+	onAddTag,
+}: Props) {
 	const [inputText, setInputText] = useState("");
 
-	const tdRef = useRef();
+	const tdRef = useRef<HTMLDivElement>();
 
 	const forceUpdate = useForceUpdate();
 
@@ -62,21 +74,23 @@ export default function EditableTd({
 		}
 	}, [type, text]);
 
-	function handleCellClick(e) {
+	function handleCellClick() {
 		if (clickedCell.height > 0) return;
 
-		const { x, y, height } = tdRef.current.getBoundingClientRect();
-		setClickedCell({ top: y, left: x, height });
+		if (tdRef.current) {
+			const { x, y, height } = tdRef.current.getBoundingClientRect();
+			setClickedCell({ top: y, left: x, height });
+		}
 	}
 
-	function handleAddTag(text) {
+	function handleAddTag(text: string) {
 		onAddTag(cellId, text);
 		setInputText("");
 		setClickedCell(initialClickCell);
 	}
 
-	function handleTagClick(tagId) {
-		onTagClick(cellId, tagId);
+	function handleTagClick(id: string) {
+		onTagClick(cellId, id);
 		setClickedCell(initialClickCell);
 	}
 
@@ -150,7 +164,7 @@ export default function EditableTd({
 					<TagMenu
 						cellId={cellId}
 						tags={tags}
-						text={inputText}
+						inputText={inputText}
 						onAddTag={handleAddTag}
 						onTextChange={(e) => setInputText(e.target.value)}
 						onRemoveTagClick={onRemoveTagClick}

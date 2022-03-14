@@ -4,6 +4,7 @@ import App from "./app/App.tsx";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 
+//This is for testing with create-react-app (npm run start)
 ReactDOM.render(
 	<React.StrictMode>
 		<div className="theme-light">

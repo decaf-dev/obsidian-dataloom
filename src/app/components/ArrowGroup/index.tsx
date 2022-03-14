@@ -6,8 +6,13 @@ import KeyboardArrowUp from "@mui/icons-material/KeyboardArrowUp";
 import IconButton from "../IconButton";
 import { ARROW } from "../../constants";
 
-export default function ArrowGroup({ selected, onArrowClick = null }) {
-	function handleArrowClick(arrow) {
+interface Props {
+	selected: string;
+	onArrowClick: (arrow: string) => void;
+}
+
+export default function ArrowGroup({ selected, onArrowClick = null }: Props) {
+	function handleArrowClick(arrow: string) {
 		if (selected === arrow) {
 			onArrowClick(ARROW.NONE);
 		} else {

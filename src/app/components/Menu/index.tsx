@@ -1,12 +1,13 @@
 import React from "react";
 import ClickableComponent from "../ClickableComponent";
 
-export default function Menu({
-	hide = false,
-	style = {},
-	content = "",
-	onOutsideClick = null,
-}) {
+interface Props {
+	hide: boolean;
+	style: object;
+	content: React.ReactNode;
+	onOutsideClick: Function;
+}
+export default function Menu({ hide, style, content, onOutsideClick }: Props) {
 	if (hide) return <></>;
 
 	return (
@@ -14,6 +15,7 @@ export default function Menu({
 			clickable={true}
 			onClick={() => {}}
 			onOutsideClick={onOutsideClick}
+			render={() => {}}
 			renderClickable={
 				<div className="menu NLT__menu" style={style}>
 					{content}

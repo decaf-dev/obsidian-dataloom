@@ -5,13 +5,17 @@ import Menu from "../Menu";
 
 import DragIndicator from "@mui/icons-material/DragIndicator";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useForceUpdate } from "../../services/utils";
+import { useApp, useForceUpdate } from "../../services/utils";
 
 import IconText from "../IconText";
 
 import "./styles.css";
 
-export default function DragMenu({ onDeleteClick = null }) {
+interface Props {
+	onDeleteClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+}
+
+export default function DragMenu({ onDeleteClick }: Props) {
 	const initialClickedButton = {
 		top: 0,
 		left: 0,
@@ -20,8 +24,9 @@ export default function DragMenu({ onDeleteClick = null }) {
 	};
 	const [clickedButton, setClickedButton] = useState(initialClickedButton);
 
-	const buttonRef = useRef();
+	const buttonRef = useRef<HTMLInputElement>();
 	const forceUpdate = useForceUpdate();
+	const { workspace } = useApp();
 
 	function handleOutsideClick() {
 		setClickedButton(initialClickedButton);
@@ -30,10 +35,26 @@ export default function DragMenu({ onDeleteClick = null }) {
 	function handleDragClick() {
 		if (clickedButton.height > 0) return;
 
-		const { x, y, width, height } =
-			buttonRef.current.getBoundingClientRect();
-		setClickedButton({ top: y, left: x, width, height });
-		forceUpdate();
+		if (buttonRef.current) {
+			const el = workspace.containerEl;
+			const ribbon = el.getElementsByClassName(
+				"workspace-ribbon"
+			)[0] as HTMLElement;
+			const fileExplorer = el.getElementsByClassName(
+				"workspace-split"
+			)[0] as HTMLElement;
+
+			const { x, y, width, height } =
+				buttonRef.current.getBoundingClientRect();
+
+			setClickedButton({
+				left: x - ribbon.offsetWidth - fileExplorer.offsetWidth - 22,
+				top: y,
+				width,
+				height,
+			});
+			forceUpdate();
+		}
 	}
 
 	useEffect(() => {

@@ -14,6 +14,7 @@ import {
 	initialClickedHeader,
 	initialRow,
 	initialTag,
+	Tag,
 } from "./services/utils";
 
 import { ARROW, CELL_TYPE, DEBUG } from "./constants";
@@ -40,7 +41,7 @@ export default function App() {
 		setCells((prevState) => {
 			const arr = [...prevState];
 			rows.forEach((row) => {
-				arr.push(initialCell(row.id, headers.length));
+				arr.push(initialCell(row.id, headers.length, CELL_TYPE.TEXT));
 			});
 			return arr;
 		});
@@ -61,14 +62,26 @@ export default function App() {
 		]);
 	}
 
-	function handleHeaderClick(e, id, position, content, type) {
+	function handleHeaderClick(
+		e: React.MouseEvent<HTMLDivElement>,
+		id: string,
+		position: number,
+		content: string,
+		type: string
+	) {
+		const target = e.target as HTMLDivElement;
 		//Only open on header div click
-		if (e.target.className !== "NLT__header-content") return;
+		if (target.className !== "NLT__header-content") return;
 
 		const el = workspace.containerEl;
-		const ribbon = el.getElementsByClassName("workspace-ribbon")[0];
-		const fileExplorer = el.getElementsByClassName("workspace-split")[0];
-		const { x, y, height } = e.target.getBoundingClientRect();
+		const ribbon = el.getElementsByClassName(
+			"workspace-ribbon"
+		)[0] as HTMLElement;
+		const fileExplorer = el.getElementsByClassName(
+			"workspace-split"
+		)[0] as HTMLElement;
+
+		const { x, y } = target.getBoundingClientRect();
 
 		setClickedHeader({
 			left: x - fileExplorer.offsetWidth - ribbon.offsetWidth - 12,
@@ -80,7 +93,7 @@ export default function App() {
 		});
 	}
 
-	function handleHeaderSave(id, updatedContent) {
+	function handleHeaderSave(id: string, updatedContent: string) {
 		setHeaders((prevState) =>
 			prevState.map((header) => {
 				if (header.id === id)
@@ -93,7 +106,12 @@ export default function App() {
 		);
 	}
 
-	function handleHeaderArrowClick(id, position, type, arrow) {
+	function handleHeaderArrowClick(
+		id: string,
+		position: number,
+		type: string,
+		arrow: string
+	) {
 		//Set header arrow
 		setHeaders((prevState) =>
 			prevState.map((header) => {
@@ -105,7 +123,7 @@ export default function App() {
 		sortRows(position, type, arrow);
 	}
 
-	function handleSaveText(id, text) {
+	function handleSaveText(id: string, text: string) {
 		setCells((prevState) =>
 			prevState.map((cell) => {
 				if (cell.id === id) {
@@ -119,7 +137,7 @@ export default function App() {
 		);
 	}
 
-	function handleAddTag(cellId, text) {
+	function handleAddTag(cellId: string, text: string) {
 		let tag = tags.find((tag) => tag.content === text);
 		if (tag) {
 			//If our cell id has already selected the tag then return
@@ -146,18 +164,20 @@ export default function App() {
 		}
 	}
 
-	function removeTagReferences(tags, cellId) {
+	function removeTagReferences(tags: Tag[], cellId: string) {
 		return tags
 			.map((tag) => {
 				return {
 					...tag,
-					selected: tag.selected.filter((id) => id !== cellId),
+					selected: tag.selected.filter(
+						(id: string) => id !== cellId
+					),
 				};
 			})
 			.filter((tag) => tag.selected.length !== 0);
 	}
 
-	function handleTagClick(cellId, tagId) {
+	function handleTagClick(cellId: string, tagId: string) {
 		//If our cell id has already selected the tag then return
 		const found = tags.find((tag) => tag.id === tagId);
 		if (found.selected.includes(cellId)) return;
@@ -177,11 +197,15 @@ export default function App() {
 		});
 	}
 
-	function handleRemoveTagClick(cellId, tagId) {
+	function handleRemoveTagClick(cellId: string, tagId: string) {
 		setTags((prevState) => removeTagReferences(prevState, cellId));
 	}
 
-	function sortRows(headerPosition, headerType, arrow) {
+	function sortRows(
+		headerPosition: number,
+		headerType: string,
+		arrow: string
+	) {
 		setRows((prevState) => {
 			//Create a new array because the sort function mutates
 			//the original array
@@ -228,7 +252,7 @@ export default function App() {
 		});
 	}
 
-	function handleDeleteHeaderClick(id, position) {
+	function handleDeleteHeaderClick(id: string, position: number) {
 		setHeaders((prevState) =>
 			prevState
 				.filter((header) => header.id !== id)
@@ -257,12 +281,16 @@ export default function App() {
 		);
 	}
 
-	function handleDeleteRowClick(rowId) {
+	function handleDeleteRowClick(rowId: string) {
 		setRows(rows.filter((row) => row.id !== rowId));
 		setCells(cells.filter((cell) => cell.rowId !== rowId));
 	}
 
-	function handleMenuItemClick(headerId, headerPosition, cellType) {
+	function handleMenuItemClick(
+		headerId: string,
+		headerPosition: number,
+		cellType: string
+	) {
 		//If same header type return
 		const header = headers.find((header) => header.id === headerId);
 		if (header.type === cellType) return;
@@ -316,7 +344,7 @@ export default function App() {
 							</div>
 						),
 						width: header.width,
-						onClick: (e) =>
+						onClick: (e: React.MouseEvent<HTMLDivElement>) =>
 							handleHeaderClick(
 								e,
 								header.id,

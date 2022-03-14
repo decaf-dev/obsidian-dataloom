@@ -1,37 +1,52 @@
 import React from "react";
 import TagCell from "../TagCell";
 
+import { Tag } from "../../services/utils";
+
 import "./styles.css";
 
+interface Props {
+	cellId: string;
+	tags: Tag[];
+	inputText: string;
+	onTagClick: (tagId: string) => void;
+	onAddTag: (inputText: string) => void;
+	onTextChange: React.ChangeEventHandler<HTMLInputElement>;
+	onRemoveTagClick: (cellId: string, tagId: string) => void;
+}
+
 export default function TagMenu({
-	cellId = "",
+	cellId,
 	tags = [],
-	text = "",
-	onTagClick = null,
-	onAddTag = null,
-	onTextChange = null,
-	onRemoveTagClick = null,
-}) {
+	inputText,
+	onTagClick,
+	onAddTag,
+	onTextChange,
+	onRemoveTagClick,
+}: Props) {
 	function renderSelectableTags() {
-		const filteredTags = tags.filter((tag) => tag.content.includes(text));
-		const found = tags.find((tag) => tag.content === text);
+		const filteredTags = tags.filter((tag: Tag) =>
+			tag.content.includes(inputText)
+		);
+		const found = tags.find((tag: Tag) => tag.content === inputText);
 		return (
 			<>
-				{!found && text !== "" && (
+				{!found && inputText !== "" && (
 					<TagCell
 						key="new-tag"
-						content={text}
+						content={inputText}
 						isCreate={true}
 						selectable={true}
-						onClick={() => onAddTag(text)}
+						onClick={() => onAddTag(inputText)}
 					/>
 				)}
-				{filteredTags.map((tag) => (
+				{filteredTags.map((tag: Tag) => (
 					<TagCell
 						key={tag.id}
+						id={tag.id}
 						content={tag.content}
 						selectable={true}
-						onClick={() => onTagClick(tag.id)}
+						onClick={onTagClick}
 					/>
 				))}
 			</>
@@ -41,23 +56,23 @@ export default function TagMenu({
 		<div className="NLT__tag-menu-container">
 			<div className="NLT__tag-menu-top">
 				{tags
-					.filter((tag) => tag.selected.includes(cellId) === true)
-					.map((tag) => (
+					.filter(
+						(tag: Tag) => tag.selected.includes(cellId) === true
+					)
+					.map((tag: Tag) => (
 						<TagCell
 							key={tag.id}
 							id={tag.id}
 							content={tag.content}
 							showRemove={true}
-							onRemoveClick={() =>
-								onRemoveTagClick(cellId, tag.id)
-							}
+							onRemoveClick={onRemoveTagClick}
 						/>
 					))}
 				<input
 					className="NLT__tag-menu-input"
 					autoFocus
 					type="text"
-					value={text}
+					value={inputText}
 					onChange={onTextChange}
 				/>
 			</div>

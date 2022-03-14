@@ -5,17 +5,31 @@ import CloseIcon from "@mui/icons-material/Close";
 
 import "./styles.css";
 
+interface Props {
+	cellId?: string;
+	id?: string;
+	content: string;
+	hide?: boolean;
+	color?: string;
+	showRemove?: boolean;
+	selectable?: boolean;
+	isCreate?: boolean;
+	onRemoveClick?: (cellId: string, tagId: string) => void;
+	onClick?: (tagId: string) => void;
+}
+
 export default function TagCell({
-	id = "",
-	content = "",
-	hide = false,
-	color = CELL_COLOR.RED,
-	showRemove = false,
-	selectable = false,
-	isCreate = false,
-	onRemoveClick = null,
-	onClick = null,
-}) {
+	cellId,
+	id,
+	content,
+	hide,
+	color,
+	showRemove,
+	selectable,
+	isCreate,
+	onRemoveClick,
+	onClick,
+}: Props) {
 	let tagClass = "NLT__tag";
 	if (color === CELL_COLOR.RED) {
 		tagClass += " NLT__tag--red";
@@ -37,14 +51,14 @@ export default function TagCell({
 	if (hide) return <></>;
 
 	return (
-		<div className={cellClass} onClick={onClick}>
+		<div className={cellClass} onClick={() => onClick(id)}>
 			{isCreate && <div>Create</div>}
 			<div className={tagClass}>
 				<div>{content}</div>
 				{showRemove && (
 					<CloseIcon
 						className="NLT__icon--md NLT__margin-left"
-						onClick={() => onRemoveClick(id)}
+						onClick={() => onRemoveClick(cellId, id)}
 					/>
 				)}
 			</div>

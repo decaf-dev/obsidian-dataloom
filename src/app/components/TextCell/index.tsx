@@ -1,5 +1,9 @@
 import React from "react";
 
-export default function TextCell({ content = "" }) {
+interface Props {
+	content: string;
+}
+
+export default function TextCell({ content }: Props) {
 	return <p className="NLT__p">{content}</p>;
 }

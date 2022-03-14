@@ -5,6 +5,7 @@ import * as ReactDOM from "react-dom";
 import { AppContext } from "./app/services/utils";
 import App from "./app/App";
 
+//This is our main class that will render the React app to the Obsidian container element
 export class NLTTable extends MarkdownRenderChild {
 	app: ObsidianApp;
 	el: HTMLElement;
