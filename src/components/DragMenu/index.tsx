@@ -41,7 +41,7 @@ export default function DragMenu({ onDeleteClick = null }) {
 	}, [clickedButton.height]);
 
 	return (
-		<td className="NLT__hidden-column">
+		<div className="NLT__td NLT__hidden-column">
 			<IconButton
 				icon={<DragIndicator />}
 				ref={buttonRef}
@@ -66,6 +66,6 @@ export default function DragMenu({ onDeleteClick = null }) {
 				}
 				onOutsideClick={handleOutsideClick}
 			/>
-		</td>
+		</div>
 	);
 }

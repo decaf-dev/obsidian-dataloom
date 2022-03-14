@@ -191,7 +191,7 @@ export default function EditableTd({
 	if (type === CELL_TYPE.NUMBER) tdClassName += " NLT__td--number";
 
 	return (
-		<td
+		<div
 			className={tdClassName}
 			ref={tdRef}
 			style={{ maxWidth: width }}
@@ -210,6 +210,6 @@ export default function EditableTd({
 				content={renderCellMenu()}
 				onOutsideClick={handleOutsideClick}
 			/>
-		</td>
+		</div>
 	);
 }

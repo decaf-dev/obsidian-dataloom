@@ -1,0 +1,48 @@
+.NLT__table {
+	display: table;
+}
+
+.NLT__thead {
+	display: table-header-group;
+}
+
+.NLT__tbody {
+	display: table-row-group;
+}
+
+.NLT__tfoot {
+	display: table-footer-group;
+}
+
+.NLT__th {
+	cursor: default;
+	display: table-cell;
+	border: 1px solid gray;
+	border-top: 1px solid gray;
+	border-right: 1px solid gray;
+	border-bottom: 1px solid gray;
+	border-left: none;
+	padding: 10px;
+	font-weight: 700;
+}
+
+.NLT__th:nth-child(2) {
+	border-left: 1px solid gray;
+}
+
+.NLT__td {
+	display: table-cell;
+	padding: 5px 10px;
+	vertical-align: middle;
+	border-top: none;
+	border-right: 1px solid gray;
+	border-bottom: 1px solid gray;
+}
+
+.NLT__td:nth-child(2) {
+	border-left: 1px solid gray;
+}
+
+.NLT__tr {
+	display: table-row;
+}

@@ -79,6 +79,7 @@ export default function HeaderMenu({
 					<div className="NLT__header-menu-header">Property Type</div>
 					{renderMenuItems(id)}
 					<button
+						className="NLT__button"
 						onClick={() =>
 							handleClick(MENU_ACTION.DELETE, id, position)
 						}

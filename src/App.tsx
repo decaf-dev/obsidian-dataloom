@@ -18,6 +18,7 @@ import {
 
 import { ARROW, CELL_TYPE, DEBUG } from "./constants";
 import "./app.css";
+import { useApp } from "./utils";
 
 export default function App() {
 	const [headers, setHeaders] = useState([initialHeader("Column", 0)]);
@@ -25,6 +26,8 @@ export default function App() {
 	const [cells, setCells] = useState([]);
 	const [tags, setTags] = useState([]);
 	const [clickedHeader, setClickedHeader] = useState(initialClickedHeader);
+
+	const { workspace } = useApp();
 
 	function handleAddColumn() {
 		//Add a new initial header
@@ -60,12 +63,16 @@ export default function App() {
 
 	function handleHeaderClick(e, id, position, content, type) {
 		//Only open on header div click
-		if (e.target.nodeName !== "DIV") return;
+		if (e.target.className !== "NLT__header-content") return;
 
+		const el = workspace.containerEl;
+		const ribbon = el.getElementsByClassName("workspace-ribbon")[0];
+		const fileExplorer = el.getElementsByClassName("workspace-split")[0];
 		const { x, y, height } = e.target.getBoundingClientRect();
+
 		setClickedHeader({
-			left: x,
-			top: y + height,
+			left: x - fileExplorer.offsetWidth - ribbon.offsetWidth - 12,
+			top: y + 11,
 			id,
 			position,
 			content,
@@ -352,7 +359,7 @@ export default function App() {
 										/>
 									);
 								})}
-								<td></td>
+								<div className="NLT__td"></div>
 							</>
 						),
 					};

@@ -1,6 +1,10 @@
 /*
 * Button
 */
+.NLT__button {
+	padding: 4px !important;
+}
+
 .NLT__button--reset {
 	padding: 0;
 	border: 0;
