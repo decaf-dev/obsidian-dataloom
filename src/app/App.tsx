@@ -30,6 +30,12 @@ export default function App() {
 
 	const { workspace } = useApp();
 
+	if (DEBUG) {
+		console.log("ROWS", rows);
+		console.log("CELLS", cells);
+		console.log("TAGS", tags);
+	}
+
 	function handleAddColumn() {
 		//Add a new initial header
 		setHeaders((prevState) => [
@@ -45,12 +51,6 @@ export default function App() {
 			});
 			return arr;
 		});
-	}
-
-	if (DEBUG) {
-		console.log("ROWS", rows);
-		console.log("CELLS", cells);
-		console.log("TAGS", tags);
 	}
 
 	function handleAddRow() {

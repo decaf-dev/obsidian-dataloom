@@ -141,6 +141,7 @@ export default function EditableTd({
 					<TagCell
 						content={tag !== undefined ? tag.content : ""}
 						hide={tag === undefined}
+						onClick={() => {}}
 					/>
 				);
 			// case CELL_TYPE.MULTI_TAG:

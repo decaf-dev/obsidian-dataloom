@@ -23,7 +23,7 @@ export default function TagCell({
 	id,
 	content,
 	hide,
-	color,
+	color = CELL_COLOR.RED,
 	showRemove,
 	selectable,
 	isCreate,
@@ -51,14 +51,17 @@ export default function TagCell({
 	if (hide) return <></>;
 
 	return (
-		<div className={cellClass} onClick={() => onClick(id)}>
+		<div className={cellClass} onClick={() => onClick && onClick(id)}>
 			{isCreate && <div>Create</div>}
 			<div className={tagClass}>
 				<div>{content}</div>
 				{showRemove && (
 					<CloseIcon
 						className="NLT__icon--md NLT__margin-left"
-						onClick={() => onRemoveClick(cellId, id)}
+						onClick={(e) => {
+							e.stopPropagation();
+							onRemoveClick(cellId, id);
+						}}
 					/>
 				)}
 			</div>

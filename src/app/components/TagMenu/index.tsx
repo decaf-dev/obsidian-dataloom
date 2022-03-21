@@ -62,6 +62,7 @@ export default function TagMenu({
 					.map((tag: Tag) => (
 						<TagCell
 							key={tag.id}
+							cellId={cellId}
 							id={tag.id}
 							content={tag.content}
 							showRemove={true}
