@@ -3,7 +3,8 @@ import React, { useState, useEffect, useRef } from "react";
 import IconButton from "../IconButton";
 import Menu from "../Menu";
 
-import DragIndicator from "@mui/icons-material/DragIndicator";
+// import DragIndicator from "@mui/icons-material/DragIndicator";
+import MoreVert from "@mui/icons-material/MoreVert";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useApp, useForceUpdate } from "../../services/utils";
 
@@ -64,7 +65,7 @@ export default function DragMenu({ onDeleteClick }: Props) {
 	return (
 		<div className="NLT__td NLT__hidden-column">
 			<IconButton
-				icon={<DragIndicator />}
+				icon={<MoreVert />}
 				ref={buttonRef}
 				onClick={handleDragClick}
 			/>

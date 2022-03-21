@@ -359,11 +359,6 @@ export default function App() {
 						id: row.id,
 						content: (
 							<>
-								<DragMenu
-									onDeleteClick={() =>
-										handleDeleteRowClick(row.id)
-									}
-								/>
 								{headers.map((header, index) => {
 									const { id, type, text } = cells.find(
 										(cell) =>
@@ -388,6 +383,11 @@ export default function App() {
 									);
 								})}
 								<div className="NLT__td"></div>
+								<DragMenu
+									onDeleteClick={() =>
+										handleDeleteRowClick(row.id)
+									}
+								/>
 							</>
 						),
 					};

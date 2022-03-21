@@ -1,3 +1,7 @@
+:root {
+	--table-color: rgba(0, 0, 0, 0.15);
+}
+
 .NLT__table {
 	display: table;
 }
@@ -17,17 +21,16 @@
 .NLT__th {
 	cursor: default;
 	display: table-cell;
-	border: 1px solid gray;
-	border-top: 1px solid gray;
-	border-right: 1px solid gray;
-	border-bottom: 1px solid gray;
+	border-top: 1px solid var(--table-color);
+	border-right: 1px solid var(--table-color);
+	border-bottom: 1px solid var(--table-color);
 	border-left: none;
 	padding: 10px;
 	font-weight: 700;
 }
 
-.NLT__th:nth-child(2) {
-	border-left: 1px solid gray;
+.NLT__th:first-child {
+	border-left: 1px solid var(--table-color);
 }
 
 .NLT__td {
@@ -35,12 +38,12 @@
 	padding: 5px 10px;
 	vertical-align: middle;
 	border-top: none;
-	border-right: 1px solid gray;
-	border-bottom: 1px solid gray;
+	border-right: 1px solid var(--table-color);
+	border-bottom: 1px solid var(--table-color);
 }
 
-.NLT__td:nth-child(2) {
-	border-left: 1px solid gray;
+.NLT__td:first-child {
+	border-left: 1px solid var(--table-color);
 }
 
 .NLT__tr {

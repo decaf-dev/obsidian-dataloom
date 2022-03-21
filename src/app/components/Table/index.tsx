@@ -15,7 +15,6 @@ export default function Table({ headers, rows, onAddColumn, onAddRow }: Props) {
 		<div className="NLT__table">
 			<div className="NLT__thead">
 				<div className="NLT__tr">
-					<div className="NLT__th NLT__hidden-column"></div>
 					{headers.map((header) => (
 						<div
 							className="NLT__th"
@@ -45,7 +44,6 @@ export default function Table({ headers, rows, onAddColumn, onAddRow }: Props) {
 			</div>
 			<div className="NLT__tfoot">
 				<div className="NLT__tr">
-					<div className="NLT__td NLT__hidden-column"></div>
 					<div className="NLT__td">
 						<button
 							className="NLT__button"
