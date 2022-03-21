@@ -10,7 +10,7 @@ interface Props {
 	id?: string;
 	content: string;
 	hide?: boolean;
-	color?: string;
+	color: string;
 	showRemove?: boolean;
 	selectable?: boolean;
 	isCreate?: boolean;
@@ -23,7 +23,7 @@ export default function TagCell({
 	id,
 	content,
 	hide,
-	color = CELL_COLOR.RED,
+	color,
 	showRemove,
 	selectable,
 	isCreate,

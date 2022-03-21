@@ -28,7 +28,8 @@ export default function App() {
 	const [tags, setTags] = useState([]);
 	const [clickedHeader, setClickedHeader] = useState(initialClickedHeader);
 
-	const { workspace } = useApp();
+	//We use the shortcircuit operator if we're developing using react-scripts
+	const { workspace } = useApp() || {};
 
 	if (DEBUG) {
 		console.log("ROWS", rows);
@@ -73,18 +74,28 @@ export default function App() {
 		//Only open on header div click
 		if (target.className !== "NLT__header-content") return;
 
-		const el = workspace.containerEl;
-		const ribbon = el.getElementsByClassName(
-			"workspace-ribbon"
-		)[0] as HTMLElement;
-		const fileExplorer = el.getElementsByClassName(
-			"workspace-split"
-		)[0] as HTMLElement;
+		let fileExplorerWidth = 0;
+		let ribbonWidth = 0;
+
+		//Check if defined, it will be undefined if we're developing using react-scripts
+		//and not rendering in Obsidian
+		if (workspace) {
+			const el = workspace.containerEl;
+			const ribbon = el.getElementsByClassName(
+				"workspace-ribbon"
+			)[0] as HTMLElement;
+			const fileExplorer = el.getElementsByClassName(
+				"workspace-split"
+			)[0] as HTMLElement;
+
+			fileExplorerWidth = fileExplorer.offsetWidth;
+			ribbonWidth = ribbon.offsetWidth;
+		}
 
 		const { x, y } = target.getBoundingClientRect();
 
 		setClickedHeader({
-			left: x - fileExplorer.offsetWidth - ribbon.offsetWidth - 12,
+			left: x - fileExplorerWidth - ribbonWidth - 12,
 			top: y + 11,
 			id,
 			position,
@@ -138,7 +149,7 @@ export default function App() {
 	}
 
 	function handleAddTag(cellId: string, text: string) {
-		let tag = tags.find((tag) => tag.content === text);
+		const tag = tags.find((tag) => tag.content === text);
 		if (tag) {
 			//If our cell id has already selected the tag then return
 			if (tag.selected.includes(cellId)) return;

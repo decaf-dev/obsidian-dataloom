@@ -48,7 +48,7 @@ export default function EditableTd({
 	};
 	const [clickedCell, setClickedCell] = useState(initialClickCell);
 
-	const { workspace } = useApp();
+	const { workspace } = useApp() || {};
 
 	useEffect(() => {
 		if (clickedCell.height > 0) forceUpdate();
@@ -80,18 +80,28 @@ export default function EditableTd({
 		if (clickedCell.height > 0) return;
 
 		if (tdRef.current) {
-			const el = workspace.containerEl;
-			const ribbon = el.getElementsByClassName(
-				"workspace-ribbon"
-			)[0] as HTMLElement;
-			const fileExplorer = el.getElementsByClassName(
-				"workspace-split"
-			)[0] as HTMLElement;
+			let fileExplorerWidth = 0;
+			let ribbonWidth = 0;
+
+			//Check if defined, it will be undefined if we're developing using react-scripts
+			//and not rendering in Obsidian
+			if (workspace) {
+				const el = workspace.containerEl;
+				const ribbon = el.getElementsByClassName(
+					"workspace-ribbon"
+				)[0] as HTMLElement;
+				const fileExplorer = el.getElementsByClassName(
+					"workspace-split"
+				)[0] as HTMLElement;
+
+				fileExplorerWidth = fileExplorer.offsetWidth;
+				ribbonWidth = ribbon.offsetWidth;
+			}
 
 			const { x, y, height } = tdRef.current.getBoundingClientRect();
 
 			setClickedCell({
-				left: x - ribbon.offsetWidth - fileExplorer.offsetWidth,
+				left: x - fileExplorerWidth - ribbonWidth,
 				top: y - 22,
 				height,
 			});
@@ -130,20 +140,24 @@ export default function EditableTd({
 	}
 
 	function renderCell() {
+		const tag = tags.find((tag) => tag.selected.includes(cellId));
 		switch (type) {
 			case CELL_TYPE.TEXT:
 				return <TextCell content={inputText} />;
 			case CELL_TYPE.NUMBER:
 				return <TextCell content={inputText} />;
 			case CELL_TYPE.TAG:
-				const tag = tags.find((tag) => tag.selected.includes(cellId));
-				return (
-					<TagCell
-						content={tag !== undefined ? tag.content : ""}
-						hide={tag === undefined}
-						onClick={() => {}}
-					/>
-				);
+				if (tag === undefined) {
+					return "";
+				} else {
+					return (
+						<TagCell
+							content={tag !== undefined ? tag.content : ""}
+							color={tag.color}
+							hide={tag === undefined}
+						/>
+					);
+				}
 			// case CELL_TYPE.MULTI_TAG:
 			// 	return <MultiTagCell tags={tags} />;
 			default:

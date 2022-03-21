@@ -1,7 +1,7 @@
 import React from "react";
 import TagCell from "../TagCell";
 
-import { Tag } from "../../services/utils";
+import { Tag, randomColor } from "../../services/utils";
 
 import "./styles.css";
 
@@ -35,6 +35,7 @@ export default function TagMenu({
 					<TagCell
 						key="new-tag"
 						content={inputText}
+						color={randomColor()}
 						isCreate={true}
 						selectable={true}
 						onClick={() => onAddTag(inputText)}
@@ -44,6 +45,7 @@ export default function TagMenu({
 					<TagCell
 						key={tag.id}
 						id={tag.id}
+						color={tag.color}
 						content={tag.content}
 						selectable={true}
 						onClick={onTagClick}
@@ -64,6 +66,7 @@ export default function TagMenu({
 							key={tag.id}
 							cellId={cellId}
 							id={tag.id}
+							color={tag.color}
 							content={tag.content}
 							showRemove={true}
 							onRemoveClick={onRemoveTagClick}

@@ -2,7 +2,7 @@ import React, { useCallback, useState } from "react";
 
 import { App } from "obsidian";
 import { v4 as uuidv4 } from "uuid";
-import { CELL_TYPE, ARROW } from "../../constants";
+import { CELL_TYPE, ARROW, CELL_COLOR } from "../../constants";
 
 export const useForceUpdate = () => {
 	const [, setValue] = useState(0);
@@ -15,14 +15,26 @@ export const useApp = (): App | undefined => {
 	return React.useContext(AppContext);
 };
 
+export const randomColor = () => {
+	const index = Math.floor(Math.random() * Object.keys(CELL_COLOR).length);
+	console.log(Object.keys(CELL_COLOR)[index]);
+	return Object.values(CELL_COLOR)[index];
+};
+
 export const initialTag = (text: string, cellId: string) => {
-	return { id: uuidv4(), content: text, selected: [cellId] };
+	return {
+		id: uuidv4(),
+		content: text,
+		color: randomColor(),
+		selected: [cellId],
+	};
 };
 
 export interface Tag {
 	id: string;
 	content: string;
 	selected: string[];
+	color: string;
 }
 
 export interface HeaderComposition {

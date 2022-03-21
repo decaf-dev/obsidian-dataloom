@@ -27,7 +27,7 @@ export default function DragMenu({ onDeleteClick }: Props) {
 
 	const buttonRef = useRef<HTMLInputElement>();
 	const forceUpdate = useForceUpdate();
-	const { workspace } = useApp();
+	const { workspace } = useApp() || {};
 
 	function handleOutsideClick() {
 		setClickedButton(initialClickedButton);
@@ -37,19 +37,29 @@ export default function DragMenu({ onDeleteClick }: Props) {
 		if (clickedButton.height > 0) return;
 
 		if (buttonRef.current) {
-			const el = workspace.containerEl;
-			const ribbon = el.getElementsByClassName(
-				"workspace-ribbon"
-			)[0] as HTMLElement;
-			const fileExplorer = el.getElementsByClassName(
-				"workspace-split"
-			)[0] as HTMLElement;
+			let fileExplorerWidth = 0;
+			let ribbonWidth = 0;
+
+			//Check if defined, it will be undefined if we're developing using react-scripts
+			//and not rendering in Obsidian
+			if (workspace) {
+				const el = workspace.containerEl;
+				const ribbon = el.getElementsByClassName(
+					"workspace-ribbon"
+				)[0] as HTMLElement;
+				const fileExplorer = el.getElementsByClassName(
+					"workspace-split"
+				)[0] as HTMLElement;
+
+				fileExplorerWidth = fileExplorer.offsetWidth;
+				ribbonWidth = ribbon.offsetWidth;
+			}
 
 			const { x, y, width, height } =
 				buttonRef.current.getBoundingClientRect();
 
 			setClickedButton({
-				left: x - ribbon.offsetWidth - fileExplorer.offsetWidth - 22,
+				left: x - fileExplorerWidth - ribbonWidth - 22,
 				top: y,
 				width,
 				height,

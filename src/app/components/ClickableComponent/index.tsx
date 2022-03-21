@@ -4,8 +4,8 @@ interface Props {
 	clickable: boolean;
 	render: React.ReactNode;
 	renderClickable: React.ReactNode;
-	onOutsideClick: Function;
-	onClick?: Function;
+	onOutsideClick: () => void;
+	onClick?: () => void;
 }
 
 export default function ClickableComponent({

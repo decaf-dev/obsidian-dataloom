@@ -20,7 +20,7 @@ interface Props {
 	) => void;
 	onDeleteClick: (headerId: string, headerPosition: number) => void;
 	onOutsideClick: (headerId: string, inputText: string) => void;
-	onClose: Function;
+	onClose: () => void;
 }
 
 export default function HeaderMenu({
