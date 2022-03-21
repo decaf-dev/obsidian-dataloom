@@ -17,15 +17,21 @@ import {
 	Tag,
 } from "./services/utils";
 
+import { AppData } from "./services/dataUtils";
+
 import { ARROW, CELL_TYPE, DEBUG } from "./constants";
 import "./app.css";
 import { useApp } from "./services/utils";
 
-export default function App() {
-	const [headers, setHeaders] = useState([initialHeader("Column", 0)]);
-	const [rows, setRows] = useState([]);
-	const [cells, setCells] = useState([]);
-	const [tags, setTags] = useState([]);
+interface Props {
+	data: AppData;
+}
+
+export default function App({ data }: Props) {
+	const [headers, setHeaders] = useState(data.headers);
+	const [rows, setRows] = useState(data.rows);
+	const [cells, setCells] = useState(data.cells);
+	const [tags, setTags] = useState(data.tags);
 	const [clickedHeader, setClickedHeader] = useState(initialClickedHeader);
 
 	//We use the shortcircuit operator if we're developing using react-scripts
@@ -48,18 +54,27 @@ export default function App() {
 		setCells((prevState) => {
 			const arr = [...prevState];
 			rows.forEach((row) => {
-				arr.push(initialCell(row.id, headers.length, CELL_TYPE.TEXT));
+				arr.push(
+					initialCell(
+						uuidv4(),
+						row.id,
+						headers.length,
+						CELL_TYPE.TEXT
+					)
+				);
 			});
 			return arr;
 		});
 	}
 
 	function handleAddRow() {
-		const id = uuidv4();
-		setRows((prevState) => [...prevState, initialRow(id)]);
+		const rowId = uuidv4();
+		setRows((prevState) => [...prevState, initialRow(rowId)]);
 		setCells((prevState) => [
 			...prevState,
-			...headers.map((header, i) => initialCell(id, i, header.type)),
+			...headers.map((header, i) =>
+				initialCell(uuidv4(), rowId, i, header.type)
+			),
 		]);
 	}
 

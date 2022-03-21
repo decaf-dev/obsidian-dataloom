@@ -17,11 +17,14 @@ export const useApp = (): App | undefined => {
 
 export const randomColor = () => {
 	const index = Math.floor(Math.random() * Object.keys(CELL_COLOR).length);
-	console.log(Object.keys(CELL_COLOR)[index]);
 	return Object.values(CELL_COLOR)[index];
 };
 
-export const initialTag = (text: string, cellId: string, color: string) => {
+export const initialTag = (
+	text: string,
+	cellId: string,
+	color: string
+): Tag => {
 	return {
 		id: uuidv4(),
 		content: text,
@@ -33,8 +36,8 @@ export const initialTag = (text: string, cellId: string, color: string) => {
 export interface Tag {
 	id: string;
 	content: string;
-	selected: string[];
 	color: string;
+	selected: string[];
 }
 
 export interface HeaderComposition {
@@ -63,26 +66,26 @@ export const initialHeader = (content: string, position: number): Header => {
 	};
 };
 
-interface Cell {
+export interface Cell {
 	id: string;
 	rowId: string;
 	position: number;
 	text: string;
-	tags: Tag[];
 	type: string;
 }
 
 export const initialCell = (
+	id: string,
 	rowId: string,
 	position: number,
-	type: string
+	type: string,
+	text: string = ""
 ): Cell => {
 	return {
-		id: uuidv4(),
+		id,
 		rowId,
 		position,
-		text: "",
-		tags: [],
+		text,
 		type,
 	};
 };

@@ -1,7 +1,9 @@
 import React from "react";
 
-import { CELL_COLOR } from "../../constants";
+import parse from "html-react-parser";
 import CloseIcon from "@mui/icons-material/Close";
+
+import { CELL_COLOR } from "../../constants";
 
 import "./styles.css";
 
@@ -54,7 +56,7 @@ export default function TagCell({
 		<div className={cellClass} onClick={() => onClick && onClick(id)}>
 			{isCreate && <div>Create&nbsp;</div>}
 			<div className={tagClass}>
-				<div className="NLT__tag-content">{content}</div>
+				<div className="NLT__tag-content">{parse(content)}</div>
 				{showRemove && (
 					<CloseIcon
 						className="NLT__icon--md NLT__margin-left"
