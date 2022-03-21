@@ -148,7 +148,7 @@ export default function App() {
 		);
 	}
 
-	function handleAddTag(cellId: string, text: string) {
+	function handleAddTag(cellId: string, text: string, color: string) {
 		const tag = tags.find((tag) => tag.content === text);
 		if (tag) {
 			//If our cell id has already selected the tag then return
@@ -170,7 +170,7 @@ export default function App() {
 			//If tag doesn't exist, add it
 			setTags((prevState) => {
 				const arr = removeTagReferences(prevState, cellId);
-				return [...arr, initialTag(text, cellId)];
+				return [...arr, initialTag(text, cellId, color)];
 			});
 		}
 	}

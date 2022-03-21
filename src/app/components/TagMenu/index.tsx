@@ -1,13 +1,14 @@
 import React from "react";
 import TagCell from "../TagCell";
 
-import { Tag, randomColor } from "../../services/utils";
+import { Tag } from "../../services/utils";
 
 import "./styles.css";
 
 interface Props {
 	cellId: string;
 	tags: Tag[];
+	color: string;
 	inputText: string;
 	onTagClick: (tagId: string) => void;
 	onAddTag: (inputText: string) => void;
@@ -18,6 +19,7 @@ interface Props {
 export default function TagMenu({
 	cellId,
 	tags = [],
+	color = "",
 	inputText,
 	onTagClick,
 	onAddTag,
@@ -35,7 +37,7 @@ export default function TagMenu({
 					<TagCell
 						key="new-tag"
 						content={inputText}
-						color={randomColor()}
+						color={color}
 						isCreate={true}
 						selectable={true}
 						onClick={() => onAddTag(inputText)}

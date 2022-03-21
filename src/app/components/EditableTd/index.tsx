@@ -6,7 +6,7 @@ import TagCell from "../TagCell";
 // import MultiTagCell from "../MultiTagCell";
 import TagMenu from "../TagMenu";
 
-import { useForceUpdate, Tag, useApp } from "../../services/utils";
+import { useForceUpdate, Tag, useApp, randomColor } from "../../services/utils";
 
 import { CELL_TYPE } from "../../constants";
 
@@ -21,7 +21,7 @@ interface Props {
 	onRemoveTagClick: (cellId: string, tagId: string) => void;
 	onTagClick: (cellId: string, inputText: string) => void;
 	onSaveText: (cellId: string, inputText: string) => void;
-	onAddTag: (cellId: string, inputText: string) => void;
+	onAddTag: (cellId: string, inputText: string, color: string) => void;
 }
 
 export default function EditableTd({
@@ -45,6 +45,7 @@ export default function EditableTd({
 		top: 0,
 		left: 0,
 		height: 0,
+		tagColor: "",
 	};
 	const [clickedCell, setClickedCell] = useState(initialClickCell);
 
@@ -104,12 +105,13 @@ export default function EditableTd({
 				left: x - fileExplorerWidth - ribbonWidth,
 				top: y - 22,
 				height,
+				tagColor: randomColor(),
 			});
 		}
 	}
 
 	function handleAddTag(text: string) {
-		onAddTag(cellId, text);
+		onAddTag(cellId, text, clickedCell.tagColor);
 		setInputText("");
 		setClickedCell(initialClickCell);
 	}
@@ -127,7 +129,7 @@ export default function EditableTd({
 				break;
 			case CELL_TYPE.TAG:
 				if (inputText !== "") {
-					onAddTag(cellId, inputText);
+					onAddTag(cellId, inputText, clickedCell.tagColor);
 					setInputText("");
 				}
 				break;
@@ -194,6 +196,7 @@ export default function EditableTd({
 					<TagMenu
 						cellId={cellId}
 						tags={tags}
+						color={clickedCell.tagColor}
 						inputText={inputText}
 						onAddTag={handleAddTag}
 						onTextChange={(e) => setInputText(e.target.value)}

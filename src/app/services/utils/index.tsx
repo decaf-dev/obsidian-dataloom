@@ -21,11 +21,11 @@ export const randomColor = () => {
 	return Object.values(CELL_COLOR)[index];
 };
 
-export const initialTag = (text: string, cellId: string) => {
+export const initialTag = (text: string, cellId: string, color: string) => {
 	return {
 		id: uuidv4(),
 		content: text,
-		color: randomColor(),
+		color,
 		selected: [cellId],
 	};
 };
