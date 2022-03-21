@@ -52,9 +52,9 @@ export default function TagCell({
 
 	return (
 		<div className={cellClass} onClick={() => onClick && onClick(id)}>
-			{isCreate && <div>Create</div>}
+			{isCreate && <div>Create&nbsp;</div>}
 			<div className={tagClass}>
-				<div>{content}</div>
+				<div className="NLT__tag-content">{content}</div>
 				{showRemove && (
 					<CloseIcon
 						className="NLT__icon--md NLT__margin-left"

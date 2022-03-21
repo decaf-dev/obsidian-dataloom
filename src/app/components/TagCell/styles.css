@@ -1,5 +1,8 @@
 .NLT__tag-cell {
 	display: flex;
+	align-items: center;
+	padding: 4px 8px;
+	overflow: clip;
 }
 
 .NLT__tag {
@@ -8,6 +11,10 @@
 	border-radius: 8px;
 	padding: 2px 8px;
 	width: fit-content;
+}
+
+.NLT__tag-content {
+	width: 100%;
 }
 
 .NLT__tag--red {
