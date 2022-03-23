@@ -336,7 +336,7 @@ export default function App({ data }: Props) {
 					return {
 						...cell,
 						type: cellType,
-						text: "",
+						content: "",
 					};
 				}
 				return cell;

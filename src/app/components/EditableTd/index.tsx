@@ -75,24 +75,10 @@ export default function EditableTd({
 
 	console.log("INPUT", inputText);
 
-	useEffect(() => {
-		switch (type) {
-			case CELL_TYPE.TEXT:
-			case CELL_TYPE.NUMBER:
-				setInputText(stripLink(content));
-				break;
-			default:
-				break;
-		}
-	}, [type, content]);
-
 	function handleCellClick(e: React.MouseEvent<HTMLElement>) {
 		const el = e.target as HTMLInputElement;
 		//If we clicked on the link for a file or tag, return
 		if (el.nodeName === "A") return;
-
-		//If we've already clicked a cell
-		if (clickedCell.height > 0) return;
 
 		if (tdRef.current) {
 			let fileExplorerWidth = 0;
@@ -121,6 +107,7 @@ export default function EditableTd({
 				height,
 				tagColor: randomColor(),
 			});
+			setInputText(stripLink(content));
 		}
 	}
 
@@ -140,6 +127,7 @@ export default function EditableTd({
 			case CELL_TYPE.TEXT:
 			case CELL_TYPE.NUMBER:
 				onUpdateContent(cellId, toFileLink(inputText));
+				setInputText("");
 				break;
 			case CELL_TYPE.TAG:
 				setInputText("");
@@ -209,9 +197,6 @@ export default function EditableTd({
 						onTagClick={handleTagClick}
 					/>
 				);
-			// case CELL_TYPE.MULTI_TAG:
-			// 	return (
-			// 	);
 			default:
 				return <></>;
 		}
@@ -220,7 +205,6 @@ export default function EditableTd({
 	function getMenuWidth() {
 		switch (type) {
 			case CELL_TYPE.TAG:
-				// case CELL_TYPE.MULTI_TAG:
 				return "fit-content";
 			default:
 				return tdRef.current ? tdRef.current.offsetWidth : 0;
@@ -232,7 +216,6 @@ export default function EditableTd({
 			case CELL_TYPE.NUMBER:
 				return "2rem";
 			case CELL_TYPE.TAG:
-				// case CELL_TYPE.MULTI_TAG:
 				return "fit-content";
 			default:
 				return clickedCell.height;
