@@ -86,7 +86,25 @@ export const stripLink = (content: string): string => {
 	return content;
 };
 
+export const stripFileLink = (content: string): string => {
+	content = stripLink(content);
+	return `[[${content}]]`;
+};
+
+export const hasLink = (content: string): boolean => {
+	if (content.match(/^<a.*?>.*?<\/a>$/)) return true;
+	return false;
+};
+
+export const hasSquareBrackets = (content: string): boolean => {
+	if (content.match(/(^\[\[)(.*)(]]$)/)) return true;
+	return false;
+};
+
 export const toFileLink = (content: string): string => {
+	//Replace square brackets
+	content = content.replace(/^\[\[/, "");
+	content = content.replace(/]]$/, "");
 	return `<a data-href="${content}" href="${content}" class="internal-link" target="_blank" rel="noopener">${content}</a>`;
 };
 

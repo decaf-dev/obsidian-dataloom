@@ -10,9 +10,11 @@ import { useForceUpdate, useApp, randomColor } from "../../services/utils";
 import { Tag } from "../../services/state";
 import {
 	tagLinkForDisplay,
-	stripLink,
+	stripFileLink,
 	toFileLink,
 	toTagLink,
+	hasLink,
+	hasSquareBrackets,
 } from "../../services/dataUtils";
 
 import { CELL_TYPE } from "../../constants";
@@ -107,7 +109,7 @@ export default function EditableTd({
 				height,
 				tagColor: randomColor(),
 			});
-			setInputText(stripLink(content));
+			setInputText(hasLink(content) ? stripFileLink(content) : content);
 		}
 	}
 
@@ -125,8 +127,16 @@ export default function EditableTd({
 	function handleOutsideClick() {
 		switch (type) {
 			case CELL_TYPE.TEXT:
+				onUpdateContent(
+					cellId,
+					hasSquareBrackets(inputText)
+						? toFileLink(inputText)
+						: inputText
+				);
+				setInputText("");
+				break;
 			case CELL_TYPE.NUMBER:
-				onUpdateContent(cellId, toFileLink(inputText));
+				onUpdateContent(cellId, inputText);
 				setInputText("");
 				break;
 			case CELL_TYPE.TAG:
