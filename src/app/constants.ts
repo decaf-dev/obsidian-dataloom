@@ -5,6 +5,7 @@ interface CellType {
 	NUMBER: string;
 	TAG: string;
 	MULTI_TAG: string;
+	ERROR: string;
 }
 
 interface Arrow {
@@ -27,6 +28,7 @@ export const CELL_TYPE: CellType = {
 	NUMBER: "number",
 	TAG: "tag",
 	MULTI_TAG: "multi-tag",
+	ERROR: "error",
 };
 
 export const ARROW: Arrow = {

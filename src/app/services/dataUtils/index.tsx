@@ -45,13 +45,32 @@ export const loadData = (el: HTMLElement): AppData => {
 		rows.push(initialRow(rowId));
 
 		const td = tr.querySelectorAll("td");
-		td.forEach((td, i) => {
-			// const isNumber = td.innerHTML.match(/^\d+/) ? true : false;
-			const isTag = td.innerHTML.includes('<a href="#') ? true : false;
+		td.forEach((td, j) => {
 			const cellId = uuidv4();
-			if (isTag) {
-				headers[i].type = CELL_TYPE.TAG;
-				cells.push(initialCell(cellId, rowId, i, CELL_TYPE.TAG, ""));
+			const cellType = getCellType(td.innerHTML);
+
+			//Set header type based off of the first row's cell type
+			if (i === 1) {
+				headers[j].type = cellType;
+			}
+
+			//Check if doesn't match header
+			if (cellType !== headers[j].type) {
+				cells.push(
+					initialCell(
+						cellId,
+						rowId,
+						j,
+						CELL_TYPE.ERROR,
+						`Invalid data. Expected ${headers[j].type}`
+					)
+				);
+				return;
+			}
+
+			if (cellType === CELL_TYPE.TAG) {
+				headers[j].type = CELL_TYPE.TAG;
+				cells.push(initialCell(cellId, rowId, j, CELL_TYPE.TAG, ""));
 
 				//Check if tag already exists, otherwise create a new
 				const tag = tags.find((tag) => tag.content === td.innerHTML);
@@ -63,7 +82,7 @@ export const loadData = (el: HTMLElement): AppData => {
 				}
 			} else {
 				cells.push(
-					initialCell(cellId, rowId, i, CELL_TYPE.TEXT, td.innerHTML)
+					initialCell(cellId, rowId, j, CELL_TYPE.TEXT, td.innerHTML)
 				);
 			}
 		});
@@ -74,6 +93,16 @@ export const loadData = (el: HTMLElement): AppData => {
 		cells,
 		tags,
 	};
+};
+
+export const getCellType = (innerHTML: string) => {
+	if (innerHTML.match(/^\d+/)) {
+		return CELL_TYPE.NUMBER;
+	} else if (innerHTML.match(/(^<a href=\"#)(.+?)(<\/a>$)/)) {
+		return CELL_TYPE.TAG;
+	} else {
+		return CELL_TYPE.TEXT;
+	}
 };
 
 export const tagLinkForDisplay = (content: string) => {

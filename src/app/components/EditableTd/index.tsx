@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import Menu from "../Menu";
 import TextCell from "../TextCell";
 import TagCell from "../TagCell";
-// import MultiTagCell from "../MultiTagCell";
+import ErrorCell from "../ErrorCell";
 import TagMenu from "../TagMenu";
 
 import { useForceUpdate, useApp, randomColor } from "../../services/utils";
@@ -50,19 +50,20 @@ export default function EditableTd({
 
 	const forceUpdate = useForceUpdate();
 
-	const initialClickCell = {
+	const initialCellMenuState = {
+		isOpen: false,
 		top: 0,
 		left: 0,
 		height: 0,
 		tagColor: "",
 	};
-	const [clickedCell, setClickedCell] = useState(initialClickCell);
+	const [cellMenu, setCellMenu] = useState(initialCellMenuState);
 
 	const { workspace } = useApp() || {};
 
 	useEffect(() => {
-		if (clickedCell.height > 0) forceUpdate();
-	}, [clickedCell.height, forceUpdate]);
+		if (cellMenu.isOpen) forceUpdate();
+	}, [cellMenu.isOpen, forceUpdate]);
 
 	const textAreaRef = useCallback(
 		(node) => {
@@ -81,6 +82,8 @@ export default function EditableTd({
 		const el = e.target as HTMLInputElement;
 		//If we clicked on the link for a file or tag, return
 		if (el.nodeName === "A") return;
+
+		if (type === CELL_TYPE.ERROR) return;
 
 		if (tdRef.current) {
 			let fileExplorerWidth = 0;
@@ -103,7 +106,8 @@ export default function EditableTd({
 
 			const { x, y, height } = tdRef.current.getBoundingClientRect();
 
-			setClickedCell({
+			setCellMenu({
+				isOpen: true,
 				left: x - fileExplorerWidth - ribbonWidth,
 				top: y - 22,
 				height,
@@ -114,14 +118,14 @@ export default function EditableTd({
 	}
 
 	function handleAddTag(text: string) {
-		onAddTag(cellId, toTagLink(text), clickedCell.tagColor);
+		onAddTag(cellId, toTagLink(text), cellMenu.tagColor);
 		setInputText("");
-		setClickedCell(initialClickCell);
+		setCellMenu(initialCellMenuState);
 	}
 
 	function handleTagClick(id: string) {
 		onTagClick(cellId, id);
-		setClickedCell(initialClickCell);
+		setCellMenu(initialCellMenuState);
 	}
 
 	function handleOutsideClick() {
@@ -145,7 +149,7 @@ export default function EditableTd({
 			default:
 				break;
 		}
-		setClickedCell(initialClickCell);
+		setCellMenu(initialCellMenuState);
 	}
 
 	function renderCell() {
@@ -165,6 +169,8 @@ export default function EditableTd({
 					);
 				}
 				return <></>;
+			case CELL_TYPE.ERROR:
+				return <ErrorCell content={content} />;
 			default:
 				return <></>;
 		}
@@ -199,7 +205,7 @@ export default function EditableTd({
 					<TagMenu
 						cellId={cellId}
 						tags={tags}
-						color={clickedCell.tagColor}
+						color={cellMenu.tagColor}
 						inputText={inputText}
 						onAddTag={handleAddTag}
 						onTextChange={(e) => setInputText(e.target.value)}
@@ -228,7 +234,7 @@ export default function EditableTd({
 			case CELL_TYPE.TAG:
 				return "fit-content";
 			default:
-				return clickedCell.height;
+				return cellMenu.height;
 		}
 	}
 
@@ -244,12 +250,12 @@ export default function EditableTd({
 		>
 			{renderCell()}
 			<Menu
-				hide={clickedCell.height === 0}
+				hide={!cellMenu.isOpen}
 				style={{
 					minWidth: type === CELL_TYPE.TEXT ? "11rem" : 0,
 					width: getMenuWidth(),
-					top: clickedCell.top,
-					left: clickedCell.left,
+					top: cellMenu.top,
+					left: cellMenu.left,
 					height: getMenuHeight(),
 				}}
 				content={renderCellMenu()}
