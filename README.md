@@ -6,7 +6,9 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 
 ## Built With
 
--   [Obsidian.md Plugin Template](https://github.com/obsidianmd/obsidian-sample-plugin)
+-   [ReactJS](https://reactjs.org/)
+-   [TypeScript](https://github.com/microsoft/TypeScript)
+-   [Obsidian API](https://github.com/obsidianmd/obsidian-api)
 
 ## Development
 
@@ -46,6 +48,7 @@ Create build script
 
 -   [Obsidian API Documentation](https://github.com/obsidianmd/obsidian-api)
 -   [Hot Reload Plugin](https://github.com/pjeby/hot-reload)
+-   [Obsidian Plugin Docs](https://marcus.se.net/obsidian-plugin-docs)
 
 ## License
 
