@@ -1,11 +1,11 @@
 import React from "react";
+
+import { TableHeader, TableRow } from "src/app/services/state";
 import "./styles.css";
 
-import { HeaderComposition, Row } from "../../services/utils";
-
 interface Props {
-	headers: HeaderComposition[];
-	rows: Row[];
+	headers: TableHeader[];
+	rows: TableRow[];
 	onAddColumn: () => void;
 	onAddRow: () => void;
 }
@@ -38,7 +38,7 @@ export default function Table({ headers, rows, onAddColumn, onAddRow }: Props) {
 			<div className="NLT__tbody">
 				{rows.map((row) => (
 					<div className="NLT__tr" key={row.id}>
-						{row.content}
+						{row.component}
 					</div>
 				))}
 			</div>

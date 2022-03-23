@@ -11,17 +11,17 @@ import HeaderMenu from "./components/HeaderMenu";
 import {
 	initialHeader,
 	initialCell,
-	initialClickedHeader,
+	initialHeaderMenuState,
 	initialRow,
 	initialTag,
 	Tag,
-} from "./services/utils";
-
+} from "./services/state";
 import { AppData } from "./services/dataUtils";
+import { useApp } from "./services/utils";
 
 import { ARROW, CELL_TYPE, DEBUG } from "./constants";
+
 import "./app.css";
-import { useApp } from "./services/utils";
 
 interface Props {
 	data: AppData;
@@ -32,7 +32,8 @@ export default function App({ data }: Props) {
 	const [rows, setRows] = useState(data.rows);
 	const [cells, setCells] = useState(data.cells);
 	const [tags, setTags] = useState(data.tags);
-	const [clickedHeader, setClickedHeader] = useState(initialClickedHeader);
+
+	const [headerMenu, setHeaderMenu] = useState(initialHeaderMenuState);
 
 	//We use the shortcircuit operator if we're developing using react-scripts
 	const { workspace } = useApp() || {};
@@ -86,8 +87,6 @@ export default function App({ data }: Props) {
 		type: string
 	) {
 		const target = e.target as HTMLDivElement;
-		//Only open on header div click
-		if (target.className !== "NLT__header-content") return;
 
 		let fileExplorerWidth = 0;
 		let ribbonWidth = 0;
@@ -109,7 +108,8 @@ export default function App({ data }: Props) {
 
 		const { x, y } = target.getBoundingClientRect();
 
-		setClickedHeader({
+		setHeaderMenu({
+			isOpen: true,
 			left: x - fileExplorerWidth - ribbonWidth - 12,
 			top: y + 11,
 			id,
@@ -149,13 +149,13 @@ export default function App({ data }: Props) {
 		sortRows(position, type, arrow);
 	}
 
-	function handleSaveText(id: string, text: string) {
+	function handleUpdateContent(id: string, content: string) {
 		setCells((prevState) =>
 			prevState.map((cell) => {
 				if (cell.id === id) {
 					return {
 						...cell,
-						text,
+						content,
 					};
 				}
 				return cell;
@@ -256,7 +256,7 @@ export default function App({ data }: Props) {
 						);
 						return tagA.content.localeCompare(tagB.content);
 					} else {
-						return cellA.text.localeCompare(cellB.text);
+						return cellA.content.localeCompare(cellB.content);
 					}
 				} else if (arrow === ARROW.DOWN) {
 					if (headerType === CELL_TYPE.TAG) {
@@ -268,11 +268,11 @@ export default function App({ data }: Props) {
 						);
 						return tagB.content.localeCompare(tagA.content);
 					} else {
-						return cellB.text.localeCompare(cellA.text);
+						return cellB.content.localeCompare(cellA.content);
 					}
 				} else {
 					//Otherwise sort on when the row was added
-					return a.time - b.time;
+					return a.creationTime - b.creationTime;
 				}
 			});
 		});
@@ -350,8 +350,8 @@ export default function App({ data }: Props) {
 			<Table
 				headers={headers.map((header) => {
 					return {
-						id: header.id,
-						content: (
+						...header,
+						component: (
 							<div className="NLT__header-group">
 								<div className="NLT__header-content">
 									{header.content}
@@ -369,7 +369,6 @@ export default function App({ data }: Props) {
 								/>
 							</div>
 						),
-						width: header.width,
 						onClick: (e: React.MouseEvent<HTMLDivElement>) =>
 							handleHeaderClick(
 								e,
@@ -382,11 +381,11 @@ export default function App({ data }: Props) {
 				})}
 				rows={rows.map((row) => {
 					return {
-						id: row.id,
-						content: (
+						...row,
+						component: (
 							<>
 								{headers.map((header, index) => {
-									const { id, type, text } = cells.find(
+									const { id, type, content } = cells.find(
 										(cell) =>
 											cell.rowId === row.id &&
 											cell.position === index
@@ -396,14 +395,16 @@ export default function App({ data }: Props) {
 											key={id}
 											cellId={id}
 											type={type}
-											text={text}
+											content={content}
 											tags={tags}
 											onTagClick={handleTagClick}
 											onRemoveTagClick={
 												handleRemoveTagClick
 											}
 											width={header.width}
-											onSaveText={handleSaveText}
+											onUpdateContent={
+												handleUpdateContent
+											}
 											onAddTag={handleAddTag}
 										/>
 									);
@@ -422,19 +423,19 @@ export default function App({ data }: Props) {
 				onAddRow={handleAddRow}
 			/>
 			<HeaderMenu
-				hide={clickedHeader.left === 0}
+				hide={headerMenu.isOpen === false}
 				style={{
-					top: clickedHeader.top,
-					left: clickedHeader.left,
+					top: headerMenu.top,
+					left: headerMenu.left,
 				}}
-				id={clickedHeader.id}
-				content={clickedHeader.content}
-				position={clickedHeader.position}
-				type={clickedHeader.type}
+				id={headerMenu.id}
+				content={headerMenu.content}
+				position={headerMenu.position}
+				type={headerMenu.type}
 				onOutsideClick={handleHeaderSave}
 				onItemClick={handleMenuItemClick}
 				onDeleteClick={handleDeleteHeaderClick}
-				onClose={() => setClickedHeader(initialClickedHeader)}
+				onClose={() => setHeaderMenu(initialHeaderMenuState)}
 			/>
 		</div>
 	);

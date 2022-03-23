@@ -6,7 +6,14 @@ import TagCell from "../TagCell";
 // import MultiTagCell from "../MultiTagCell";
 import TagMenu from "../TagMenu";
 
-import { useForceUpdate, Tag, useApp, randomColor } from "../../services/utils";
+import { useForceUpdate, useApp, randomColor } from "../../services/utils";
+import { Tag } from "../../services/state";
+import {
+	tagLinkForDisplay,
+	stripLink,
+	toFileLink,
+	toTagLink,
+} from "../../services/dataUtils";
 
 import { CELL_TYPE } from "../../constants";
 
@@ -15,24 +22,24 @@ import "./styles.css";
 interface Props {
 	cellId: string;
 	width: string;
-	text: string;
+	content: string;
 	tags: Tag[];
 	type: string;
 	onRemoveTagClick: (cellId: string, tagId: string) => void;
 	onTagClick: (cellId: string, inputText: string) => void;
-	onSaveText: (cellId: string, inputText: string) => void;
+	onUpdateContent: (cellId: string, inputText: string) => void;
 	onAddTag: (cellId: string, inputText: string, color: string) => void;
 }
 
 export default function EditableTd({
 	cellId,
 	width,
-	text,
+	content,
 	tags,
 	type,
 	onRemoveTagClick,
 	onTagClick,
-	onSaveText,
+	onUpdateContent,
 	onAddTag,
 }: Props) {
 	const [inputText, setInputText] = useState("");
@@ -66,18 +73,25 @@ export default function EditableTd({
 		[type, inputText.length]
 	);
 
+	console.log("INPUT", inputText);
+
 	useEffect(() => {
 		switch (type) {
 			case CELL_TYPE.TEXT:
 			case CELL_TYPE.NUMBER:
-				setInputText(text);
+				setInputText(stripLink(content));
 				break;
 			default:
 				break;
 		}
-	}, [type, text]);
+	}, [type, content]);
 
-	function handleCellClick() {
+	function handleCellClick(e: React.MouseEvent<HTMLElement>) {
+		const el = e.target as HTMLInputElement;
+		//If we clicked on the link for a file or tag, return
+		if (el.nodeName === "A") return;
+
+		//If we've already clicked a cell
 		if (clickedCell.height > 0) return;
 
 		if (tdRef.current) {
@@ -111,7 +125,7 @@ export default function EditableTd({
 	}
 
 	function handleAddTag(text: string) {
-		onAddTag(cellId, text, clickedCell.tagColor);
+		onAddTag(cellId, toTagLink(text), clickedCell.tagColor);
 		setInputText("");
 		setClickedCell(initialClickCell);
 	}
@@ -125,16 +139,11 @@ export default function EditableTd({
 		switch (type) {
 			case CELL_TYPE.TEXT:
 			case CELL_TYPE.NUMBER:
-				onSaveText(cellId, inputText);
+				onUpdateContent(cellId, toFileLink(inputText));
 				break;
 			case CELL_TYPE.TAG:
-				if (inputText !== "") {
-					onAddTag(cellId, inputText, clickedCell.tagColor);
-					setInputText("");
-				}
+				setInputText("");
 				break;
-			// case CELL_TYPE.MULTI_TAG:
-			// 	break;
 			default:
 				break;
 		}
@@ -145,23 +154,19 @@ export default function EditableTd({
 		const tag = tags.find((tag) => tag.selected.includes(cellId));
 		switch (type) {
 			case CELL_TYPE.TEXT:
-				return <TextCell content={inputText} />;
+				return <TextCell content={content} />;
 			case CELL_TYPE.NUMBER:
-				return <TextCell content={inputText} />;
+				return <TextCell content={content} />;
 			case CELL_TYPE.TAG:
-				if (tag === undefined) {
-					return "";
-				} else {
+				if (tag) {
 					return (
 						<TagCell
-							content={tag !== undefined ? tag.content : ""}
+							content={tagLinkForDisplay(tag.content)}
 							color={tag.color}
-							hide={tag === undefined}
 						/>
 					);
 				}
-			// case CELL_TYPE.MULTI_TAG:
-			// 	return <MultiTagCell tags={tags} />;
+				return <></>;
 			default:
 				return <></>;
 		}

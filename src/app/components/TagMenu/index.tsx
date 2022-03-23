@@ -2,7 +2,8 @@ import React from "react";
 
 import TagCell from "../TagCell";
 
-import { Tag } from "../../services/utils";
+import { Tag } from "../../services/state";
+import { stripLink, tagLinkForDisplay } from "src/app/services/dataUtils";
 
 import "./styles.css";
 
@@ -39,6 +40,7 @@ export default function TagMenu({
 						key="new-tag"
 						content={inputText}
 						color={color}
+						hideLink={true}
 						isCreate={true}
 						selectable={true}
 						onClick={() => onAddTag(inputText)}
@@ -48,8 +50,9 @@ export default function TagMenu({
 					<TagCell
 						key={tag.id}
 						id={tag.id}
+						hideLink={true}
 						color={tag.color}
-						content={tag.content}
+						content={stripLink(tagLinkForDisplay(tag.content))}
 						selectable={true}
 						onClick={onTagClick}
 					/>
@@ -69,8 +72,9 @@ export default function TagMenu({
 							key={tag.id}
 							cellId={cellId}
 							id={tag.id}
+							hideLink={true}
 							color={tag.color}
-							content={tag.content}
+							content={stripLink(tagLinkForDisplay(tag.content))}
 							showRemove={true}
 							onRemoveClick={onRemoveTagClick}
 						/>

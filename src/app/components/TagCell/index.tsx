@@ -6,12 +6,12 @@ import CloseIcon from "@mui/icons-material/Close";
 import { CELL_COLOR } from "../../constants";
 
 import "./styles.css";
-
 interface Props {
 	cellId?: string;
 	id?: string;
 	content: string;
 	hide?: boolean;
+	hideLink?: boolean;
 	color: string;
 	showRemove?: boolean;
 	selectable?: boolean;
@@ -24,7 +24,6 @@ export default function TagCell({
 	cellId,
 	id,
 	content,
-	hide,
 	color,
 	showRemove,
 	selectable,
@@ -49,8 +48,6 @@ export default function TagCell({
 
 	let cellClass = "NLT__tag-cell";
 	if (selectable) cellClass += " NLT__selectable";
-
-	if (hide) return <></>;
 
 	return (
 		<div className={cellClass} onClick={() => onClick && onClick(id)}>

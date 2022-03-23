@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from "uuid";
+
 import {
 	Header,
 	Tag,
@@ -7,11 +9,10 @@ import {
 	initialCell,
 	initialRow,
 	initialTag,
-	randomColor,
-} from "../../services/utils";
+} from "../../services/state";
+import { randomColor } from "../../services/utils";
 
 import { CELL_TYPE } from "../../constants";
-import { v4 as uuidv4 } from "uuid";
 export interface AppData {
 	headers: Header[];
 	rows: Row[];
@@ -19,6 +20,11 @@ export interface AppData {
 	tags: Tag[];
 }
 
+/**
+ *
+ * @param el The root table element
+ * @returns AppData - The loaded data which the app will use to initialize its state
+ */
 export const loadData = (el: HTMLElement): AppData => {
 	const headers: Header[] = [];
 	const rows: Row[] = [];
@@ -40,12 +46,21 @@ export const loadData = (el: HTMLElement): AppData => {
 
 		const td = tr.querySelectorAll("td");
 		td.forEach((td, i) => {
+			// const isNumber = td.innerHTML.match(/^\d+/) ? true : false;
 			const isTag = td.innerHTML.includes('<a href="#') ? true : false;
 			const cellId = uuidv4();
 			if (isTag) {
 				headers[i].type = CELL_TYPE.TAG;
 				cells.push(initialCell(cellId, rowId, i, CELL_TYPE.TAG, ""));
-				tags.push(initialTag(td.innerHTML, cellId, randomColor()));
+
+				//Check if tag already exists, otherwise create a new
+				const tag = tags.find((tag) => tag.content === td.innerHTML);
+				if (tag !== undefined) {
+					const index = tags.indexOf(tag);
+					tags[index].selected.push(cellId);
+				} else {
+					tags.push(initialTag(td.innerHTML, cellId, randomColor()));
+				}
 			} else {
 				cells.push(
 					initialCell(cellId, rowId, i, CELL_TYPE.TEXT, td.innerHTML)
@@ -59,4 +74,22 @@ export const loadData = (el: HTMLElement): AppData => {
 		cells,
 		tags,
 	};
+};
+
+export const tagLinkForDisplay = (content: string) => {
+	return content.replace(">#", ">");
+};
+
+export const stripLink = (content: string): string => {
+	content = content.replace(/^<a.*?>/, "");
+	content = content.replace(/<\/a>$/, "");
+	return content;
+};
+
+export const toFileLink = (content: string): string => {
+	return `<a data-href="${content}" href="${content}" class="internal-link" target="_blank" rel="noopener">${content}</a>`;
+};
+
+export const toTagLink = (content: string): string => {
+	return `<a href="#${content}" class="tag" target="_blank" rel="noopener">#${content}</a>`;
 };

@@ -1,7 +1,6 @@
 import React from "react";
 
 import parse from "html-react-parser";
-
 interface Props {
 	content: string;
 }
