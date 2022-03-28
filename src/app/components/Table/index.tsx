@@ -22,7 +22,7 @@ export default function Table({ headers, rows, onAddColumn, onAddRow }: Props) {
 							key={header.id}
 							onClick={(e) => header.onClick(e)}
 						>
-							{header.content}
+							{header.component}
 						</div>
 					))}
 					<div className="NLT__th">

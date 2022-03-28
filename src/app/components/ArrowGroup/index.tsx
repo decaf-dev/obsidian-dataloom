@@ -25,12 +25,18 @@ export default function ArrowGroup({ selected, onArrowClick = null }: Props) {
 			<IconButton
 				selected={selected === ARROW.UP}
 				icon={<KeyboardArrowUp className="NLT__icon--md" />}
-				onClick={() => handleArrowClick(ARROW.UP)}
+				onClick={(e) => {
+					e.stopPropagation();
+					handleArrowClick(ARROW.UP);
+				}}
 			/>
 			<IconButton
 				selected={selected === ARROW.DOWN}
 				icon={<KeyboardArrowDown className="NLT__icon--md" />}
-				onClick={() => handleArrowClick(ARROW.DOWN)}
+				onClick={(e) => {
+					e.stopPropagation();
+					handleArrowClick(ARROW.DOWN);
+				}}
 			/>
 		</div>
 	);
