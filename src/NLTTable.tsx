@@ -2,7 +2,7 @@ import { MarkdownRenderChild, App as ObsidianApp } from "obsidian";
 import React from "react";
 import ReactDOM from "react-dom";
 
-import { AppContext } from "./app/services/utils";
+import { AppContext } from "./app/services/hooks";
 import App from "./app/App";
 import ErrorDisplay from "./app/components/ErrorDisplay";
 import { loadData, instanceOfErrorData } from "./app/services/dataUtils";

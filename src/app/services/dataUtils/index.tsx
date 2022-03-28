@@ -13,7 +13,10 @@ import {
 import { randomColor } from "../../services/utils";
 
 import { CELL_TYPE } from "../../constants";
+import { App, MarkdownView } from "obsidian";
+import { ViewHeadline } from "@mui/icons-material";
 export interface AppData {
+	updateTime?: number;
 	headers: Header[];
 	rows: Row[];
 	cells: Cell[];
@@ -144,6 +147,29 @@ export const loadData = (el: HTMLElement): AppData | ErrorData => {
 		return data;
 	} else {
 		return findAppData(el);
+	}
+};
+
+export const saveData = (app: App, data: AppData) => {
+	const view = app.workspace.getActiveViewOfType(MarkdownView);
+	if (view) {
+		view.editor.replaceRange(
+			"noob",
+			{
+				line: 0,
+				ch: 0,
+			},
+			{ line: 1, ch: 0 }
+		);
+		console.log(
+			view.editor.getRange(
+				{
+					line: 0,
+					ch: 0,
+				},
+				{ line: 1, ch: 0 }
+			)
+		);
 	}
 };
 

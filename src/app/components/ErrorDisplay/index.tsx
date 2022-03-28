@@ -11,7 +11,7 @@ export default function ErrorDisplay({ data }: Props) {
 		<ul>
 			{data.columnIds.map((column, i) => (
 				<li key={i} className="NLT__error">
-					Invalid type in column {column}
+					Invalid type definition in column {column}
 				</li>
 			))}
 		</ul>

@@ -6,7 +6,8 @@ import TagCell from "../TagCell";
 import ErrorCell from "../ErrorCell";
 import TagMenu from "../TagMenu";
 
-import { useForceUpdate, useApp, randomColor } from "../../services/utils";
+import { useForceUpdate, useApp } from "../../services/hooks";
+import { randomColor } from "../../services/utils";
 import { Tag } from "../../services/state";
 import {
 	tagLinkForDisplay,

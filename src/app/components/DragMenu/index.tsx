@@ -6,7 +6,7 @@ import Menu from "../Menu";
 // import DragIndicator from "@mui/icons-material/DragIndicator";
 import MoreVert from "@mui/icons-material/MoreVert";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useApp, useForceUpdate } from "../../services/utils";
+import { useApp, useForceUpdate } from "../../services/hooks";
 
 import IconText from "../IconText";
 
