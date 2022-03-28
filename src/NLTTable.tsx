@@ -4,7 +4,8 @@ import ReactDOM from "react-dom";
 
 import { AppContext } from "./app/services/utils";
 import App from "./app/App";
-import { loadData } from "./app/services/dataUtils";
+import ErrorDisplay from "./app/components/ErrorDisplay";
+import { loadData, instanceOfErrorData } from "./app/services/dataUtils";
 
 //This is our main class that will render the React app to the Obsidian container element
 export class NLTTable extends MarkdownRenderChild {
@@ -19,12 +20,17 @@ export class NLTTable extends MarkdownRenderChild {
 	onload() {
 		const data = loadData(this.containerEl);
 		this.el = this.containerEl.createEl("div");
-		ReactDOM.render(
-			<AppContext.Provider value={this.app}>
-				<App data={data} />
-			</AppContext.Provider>,
-			this.el
-		);
+
+		if (instanceOfErrorData(data)) {
+			ReactDOM.render(<ErrorDisplay data={data} />, this.el);
+		} else {
+			ReactDOM.render(
+				<AppContext.Provider value={this.app}>
+					<App data={data} />
+				</AppContext.Provider>,
+				this.el
+			);
+		}
 		this.containerEl.replaceWith(this.el);
 	}
 

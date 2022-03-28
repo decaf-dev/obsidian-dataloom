@@ -1,4 +1,11 @@
 /*
+* Error
+*/
+.NLT__error {
+	color: red;
+}
+
+/*
 * Button
 */
 .NLT__button {

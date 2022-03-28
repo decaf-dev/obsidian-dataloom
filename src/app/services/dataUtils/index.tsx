@@ -19,13 +19,36 @@ export interface AppData {
 	cells: Cell[];
 	tags: Tag[];
 }
+export interface ErrorData {
+	columnIds: number[];
+}
 
-/**
- *
- * @param el The root table element
- * @returns AppData - The loaded data which the app will use to initialize its state
- */
-export const loadData = (el: HTMLElement): AppData => {
+export const instanceOfErrorData = (object: any): object is ErrorData => {
+	return "columnIds" in object;
+};
+
+export const findErrorData = (el: HTMLElement): ErrorData | null => {
+	const tr = el.querySelectorAll("tr");
+	const typeRowEl = tr[1];
+	const td = typeRowEl.querySelectorAll("td");
+
+	const errors: number[] = [];
+
+	td.forEach((td, i) => {
+		let cellType = getCellType(td.innerHTML, true);
+		if (cellType === CELL_TYPE.ERROR) {
+			errors.push(i);
+		}
+	});
+
+	if (errors.length === 0) {
+		return null;
+	} else {
+		return { columnIds: errors };
+	}
+};
+
+export const findAppData = (el: HTMLElement): AppData => {
 	const headers: Header[] = [];
 	const rows: Row[] = [];
 	const cells: Cell[] = [];
@@ -42,16 +65,31 @@ export const loadData = (el: HTMLElement): AppData => {
 		if (i === 0) return;
 
 		const rowId = uuidv4();
-		rows.push(initialRow(rowId));
+
+		//Only parse from below the type row
+		if (i !== 1) {
+			rows.push(initialRow(rowId));
+		}
 
 		const td = tr.querySelectorAll("td");
 		td.forEach((td, j) => {
 			const cellId = uuidv4();
-			const cellType = getCellType(td.innerHTML);
-
-			//Set header type based off of the first row's cell type
+			let cellType = "";
+			//Set header type based off of the first row's specified cell type
 			if (i === 1) {
+				cellType = getCellType(td.innerHTML, true);
 				headers[j].type = cellType;
+				console.log(cellType, j);
+				return;
+			} else {
+				cellType = getCellType(td.innerHTML, false);
+				//A single tag will be read in as CELL_TYPE.TAG, so if we have
+				//a header type of multi-tag selected, we will need to change it to MULTI_TAG
+				if (headers[j].type === CELL_TYPE.MULTI_TAG) {
+					if (cellType === CELL_TYPE.TAG) {
+						cellType = CELL_TYPE.MULTI_TAG;
+					}
+				}
 			}
 
 			//Check if doesn't match header
@@ -95,14 +133,52 @@ export const loadData = (el: HTMLElement): AppData => {
 	};
 };
 
-export const getCellType = (innerHTML: string) => {
-	if (innerHTML.match(/^\d+/)) {
-		return CELL_TYPE.NUMBER;
-	} else if (innerHTML.match(/(^<a href=\"#)(.+?)(<\/a>$)/)) {
-		return CELL_TYPE.TAG;
+/**
+ *
+ * @param el The root table element
+ * @returns AppData - The loaded data which the app will use to initialize its state
+ */
+export const loadData = (el: HTMLElement): AppData | ErrorData => {
+	let data = findErrorData(el);
+	if (data !== null) {
+		return data;
 	} else {
-		return CELL_TYPE.TEXT;
+		return findAppData(el);
 	}
+};
+
+export const getCellType = (innerHTML: string, firstRow: boolean) => {
+	if (firstRow) {
+		switch (innerHTML) {
+			case CELL_TYPE.TEXT:
+				return CELL_TYPE.TEXT;
+			case CELL_TYPE.NUMBER:
+				return CELL_TYPE.NUMBER;
+			case CELL_TYPE.TAG:
+				return CELL_TYPE.TAG;
+			case CELL_TYPE.MULTI_TAG:
+				return CELL_TYPE.MULTI_TAG;
+			default:
+				return CELL_TYPE.ERROR;
+		}
+	} else {
+		if (innerHTML.match(/^\d+$/)) {
+			return CELL_TYPE.NUMBER;
+		} else {
+			const numTags = countNumTags(innerHTML);
+			if (numTags === 0) {
+				return CELL_TYPE.TEXT;
+			} else if (numTags === 1) {
+				return CELL_TYPE.TAG;
+			} else {
+				return CELL_TYPE.MULTI_TAG;
+			}
+		}
+	}
+};
+
+export const countNumTags = (innerHTML: string): number => {
+	return (innerHTML.match(/href=\"#/g) || []).length;
 };
 
 export const tagLinkForDisplay = (content: string) => {
