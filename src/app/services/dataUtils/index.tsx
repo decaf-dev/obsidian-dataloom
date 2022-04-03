@@ -86,13 +86,6 @@ export const findAppData = (el: HTMLElement): AppData => {
 				return;
 			} else {
 				cellType = getCellType(td.innerHTML, false);
-				// //A single tag will be read in as CELL_TYPE.TAG, so if we have
-				// //a header type of multi-tag selected, we will need to change it to MULTI_TAG
-				// if (headers[j].type === CELL_TYPE.MULTI_TAG) {
-				// 	if (cellType === CELL_TYPE.TAG) {
-				// 		cellType = CELL_TYPE.MULTI_TAG;
-				// 	}
-				// }
 			}
 
 			//Check if doesn't match header
@@ -167,40 +160,39 @@ export const loadData = (el: HTMLElement): AppData | ErrorData => {
 
 export const saveData = (app: App, data: AppData) => {
 	const maxColumnCharLength: any = {};
-	//Iterate over headers
+	//Iterate over each header
 	data.headers.forEach((header, i) => {
 		maxColumnCharLength[i] = header.content.length;
 	});
 
-	//Iterate over type
+	//Iterate over each type
 	Object.values(CELL_TYPE).forEach((type, i) => {
 		if (maxColumnCharLength[i] < type.length) {
 			maxColumnCharLength[i] = type.length;
 		}
 	});
 
-	//Iterate over the cell
+	//Iterate over each cell
 	data.cells.forEach((cell, i) => {
 		if (cell.type === CELL_TYPE.TAG || cell.type === CELL_TYPE.MULTI_TAG) {
 			const tags = data.tags.filter((tag) =>
 				tag.selected.includes(cell.id)
 			);
+
+			let content = "";
 			tags.forEach((tag, i) => {
-				const content = stripLink(tag.content);
-				if (maxColumnCharLength[cell.position] < content.length) {
-					maxColumnCharLength[cell.position] = content.length;
-				}
+				if (i === 0) content += addPound(tag.content);
+				else content += " " + addPound(tag.content);
 			});
-		} else {
-			const content = stripLink(cell.content);
-			if (maxColumnCharLength[cell.position] < content.length) {
+			if (maxColumnCharLength[cell.position] < content.length)
 				maxColumnCharLength[cell.position] = content.length;
-			}
+		} else {
+			if (maxColumnCharLength[cell.position] < cell.content.length)
+				maxColumnCharLength[cell.position] = cell.content.length;
 		}
 	});
 
 	//Now that we have the max character length, produce the document
-
 	let fileData = "";
 	fileData += "|";
 
@@ -233,19 +225,25 @@ export const saveData = (app: App, data: AppData) => {
 				cell.type === CELL_TYPE.TAG ||
 				cell.type === CELL_TYPE.MULTI_TAG
 			) {
-				// const tags = data.tags.filter((tag) =>
-				// 	tag.selected.includes(cell.id)
-				// );
-				// tags.forEach((tag, i) => {
-				// 	//Write tags
-				// });
-			} else {
-				const content = hasLink(cell.content)
-					? addBrackets(stripLink(cell.content))
-					: cell.content;
+				const tags = data.tags.filter((tag) =>
+					tag.selected.includes(cell.id)
+				);
+
+				let content = "";
+
+				tags.forEach((tag, i) => {
+					if (i === 0) content += addPound(tag.content);
+					else content += " " + addPound(tag.content);
+				});
 				fileData = writeContentToDataString(
 					fileData,
 					content,
+					maxColumnCharLength[j]
+				);
+			} else {
+				fileData = writeContentToDataString(
+					fileData,
+					cell.content,
 					maxColumnCharLength[j]
 				);
 			}
@@ -254,6 +252,7 @@ export const saveData = (app: App, data: AppData) => {
 
 	const view = app.workspace.getActiveViewOfType(MarkdownView);
 	if (view) {
+		console.log(fileData);
 		let data = view.getViewData();
 		//data += fileData;
 		//console.log(fileData);
@@ -312,22 +311,6 @@ export const countNumTags = (innerHTML: string): number => {
 	return (innerHTML.match(/href=\"#/g) || []).length;
 };
 
-export const stripLink = (content: string): string => {
-	content = content.replace(/^<a.*?>/, "");
-	content = content.replace(/<\/a>$/, "");
-	return content;
-};
-
-export const addBrackets = (content: string): string => {
-	return `[[${content}]]`;
-};
-
-export const stripBrackets = (content: string): string => {
-	content = content.replace(/^\[\[/, "");
-	content = content.replace(/]]$/, "");
-	return content;
-};
-
 export const hasLink = (content: string): boolean => {
 	if (content.match(/^<a.*?>.*?<\/a>$/)) return true;
 	return false;
@@ -344,8 +327,22 @@ export const stripSquareBrackets = (content: string): string => {
 	return content;
 };
 
+export const stripLink = (content: string): string => {
+	content = content.replace(/^<a.*?>/, "");
+	content = content.replace(/<\/a>$/, "");
+	return content;
+};
+
 export const stripPound = (content: string) => {
 	return content.replace("#", "");
+};
+
+export const addPound = (content: string) => {
+	return `#${content}`;
+};
+
+export const addBrackets = (content: string): string => {
+	return `[[${content}]]`;
 };
 
 export const toFileLink = (content: string): string => {
