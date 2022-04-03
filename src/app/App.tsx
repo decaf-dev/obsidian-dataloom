@@ -44,10 +44,15 @@ export default function App({ data }: Props) {
 		//If we're running in Obsidian
 		if (app) {
 			if (appData.updateTime === 0) {
+				console.log("Setting Old Data");
 				setOldData(appDataToString(data));
 			} else {
-				const newData = appDataToString(data);
-				if (saveData(app, oldData, newData)) setOldData(newData);
+				console.log("Saving Data");
+				const newData = appDataToString(appData);
+				saveData(app, oldData, newData).then(() => {
+					console.log("OK");
+				});
+				// saveData(app, oldData, newData).then(() => setOldData(newData));
 			}
 		}
 	}, [appData.updateTime]);

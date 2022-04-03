@@ -17,11 +17,11 @@ export default class NltPlugin extends Plugin {
 		await this.loadSettings();
 
 		this.registerMarkdownPostProcessor((element, context) => {
+			console.log("registerMarkdownPostProcessor callback rerunning!");
 			const table = element.getElementsByTagName("table");
 			if (table.length === 1) {
 				context.addChild(new NLTTable(table[0], this.app));
 			}
-			console.log("Reloading processor item!");
 		});
 	}
 

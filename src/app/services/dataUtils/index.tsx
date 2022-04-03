@@ -166,8 +166,6 @@ export const loadData = (el: HTMLElement): AppData | ErrorData => {
 };
 
 export const saveData = async (app: App, oldData: string, newData: string) => {
-	const file = app.workspace.getActiveFile();
-
 	if (DEBUG) {
 		console.log("OLD DATA");
 		console.log(oldData);
@@ -175,13 +173,21 @@ export const saveData = async (app: App, oldData: string, newData: string) => {
 		console.log(newData);
 	}
 	try {
+		const file = app.workspace.getActiveFile();
 		let content = await app.vault.read(file);
+		console.log("CONTENT");
+		console.log(content);
+
+		console.log(content.localeCompare(oldData));
 		content = content.replace(oldData, newData);
+
+		if (DEBUG) {
+			console.log("REPLACED");
+			console.log(content);
+		}
 		app.vault.modify(file, content);
-		return newData;
 	} catch (err) {
 		console.log(err);
-		return null;
 	}
 };
 
@@ -205,9 +211,7 @@ export const appDataToString = (data: AppData): string => {
 
 	fileData += "\n|";
 	data.headers.forEach((header, i) => {
-		const content = Array(columnCharLengths[i] - 2)
-			.fill("-")
-			.join("");
+		const content = Array(columnCharLengths[i]).fill("-").join("");
 		fileData = writeContentToDataString(
 			fileData,
 			content,
@@ -306,7 +310,7 @@ export const writeContentToDataString = (
 	contentToWrite: string,
 	columnCharacters: number
 ) => {
-	data += "";
+	data += " ";
 	data += contentToWrite;
 
 	const numWhiteSpace = columnCharacters - contentToWrite.length;
