@@ -12,7 +12,7 @@ import {
 } from "../../services/state";
 import { randomColor } from "../../services/utils";
 
-import { CELL_TYPE } from "../../constants";
+import { CELL_TYPE, DEBUG } from "../../constants";
 import { App, MarkdownView, Vault } from "obsidian";
 
 export interface AppData {
@@ -167,8 +167,13 @@ export const loadData = (el: HTMLElement): AppData | ErrorData => {
 
 export const saveData = async (app: App, oldData: string, newData: string) => {
 	const file = app.workspace.getActiveFile();
-	console.log(oldData);
-	console.log(newData);
+
+	if (DEBUG) {
+		console.log("OLD DATA");
+		console.log(oldData);
+		console.log("NEW DATA");
+		console.log(newData);
+	}
 	try {
 		let content = await app.vault.read(file);
 		content = content.replace(oldData, newData);
