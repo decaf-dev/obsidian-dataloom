@@ -165,62 +165,48 @@ export const loadData = (el: HTMLElement): AppData | ErrorData => {
 	}
 };
 
-export const saveData = async (app: App, data: AppData) => {
-	const maxColumnCharLength: any = {};
-	//Iterate over each header
-	data.headers.forEach((header, i) => {
-		maxColumnCharLength[i] = header.content.length;
-	});
+export const saveData = async (app: App, oldData: string, newData: string) => {
+	const file = app.workspace.getActiveFile();
+	console.log(oldData);
+	console.log(newData);
+	try {
+		let content = await app.vault.read(file);
+		content = content.replace(oldData, newData);
+		app.vault.modify(file, content);
+		return newData;
+	} catch (err) {
+		console.log(err);
+		return null;
+	}
+};
 
-	//Iterate over each type
-	Object.values(CELL_TYPE).forEach((type, i) => {
-		if (maxColumnCharLength[i] < type.length) {
-			maxColumnCharLength[i] = type.length;
-		}
-	});
-
-	//Iterate over each cell
-	data.cells.forEach((cell, i) => {
-		if (cell.type === CELL_TYPE.TAG || cell.type === CELL_TYPE.MULTI_TAG) {
-			const tags = data.tags.filter((tag) =>
-				tag.selected.includes(cell.id)
-			);
-
-			let content = "";
-			tags.forEach((tag, i) => {
-				if (tag.content === "") return;
-				if (i === 0) content += addPound(tag.content);
-				else content += " " + addPound(tag.content);
-			});
-			if (maxColumnCharLength[cell.position] < content.length)
-				maxColumnCharLength[cell.position] = content.length;
-		} else {
-			if (maxColumnCharLength[cell.position] < cell.content.length)
-				maxColumnCharLength[cell.position] = cell.content.length;
-		}
-	});
-
-	//Now that we have the max character length, produce the document
+export const appDataToString = (data: AppData): string => {
 	let fileData = "";
+	const columnCharLengths = calcColumnCharLengths(
+		data.headers,
+		data.cells,
+		data.tags
+	);
+
 	fileData += "|";
 
 	data.headers.forEach((header, i) => {
 		fileData = writeContentToDataString(
 			fileData,
 			header.content,
-			maxColumnCharLength[i]
+			columnCharLengths[i]
 		);
 	});
 
 	fileData += "\n|";
 	data.headers.forEach((header, i) => {
-		const content = Array(maxColumnCharLength[i] - 2)
+		const content = Array(columnCharLengths[i] - 2)
 			.fill("-")
 			.join("");
 		fileData = writeContentToDataString(
 			fileData,
 			content,
-			maxColumnCharLength[i]
+			columnCharLengths[i]
 		);
 	});
 
@@ -230,7 +216,7 @@ export const saveData = async (app: App, data: AppData) => {
 		fileData = writeContentToDataString(
 			fileData,
 			header.type,
-			maxColumnCharLength[i]
+			columnCharLengths[i]
 		);
 	});
 
@@ -259,23 +245,55 @@ export const saveData = async (app: App, data: AppData) => {
 				fileData = writeContentToDataString(
 					fileData,
 					content,
-					maxColumnCharLength[j]
+					columnCharLengths[j]
 				);
 			} else {
 				fileData = writeContentToDataString(
 					fileData,
 					cell.content,
-					maxColumnCharLength[j]
+					columnCharLengths[j]
 				);
 			}
 		});
 	});
+	return fileData;
+};
 
-	const file = app.workspace.getActiveFile();
-	console.log(fileData);
-	try {
-		app.vault.modify(file, fileData);
-	} catch (err) {}
+export const calcColumnCharLengths = (
+	headers: Header[],
+	cells: Cell[],
+	tags: Tag[]
+): number[] => {
+	const columnCharLengths: number[] = [];
+	headers.forEach((header, i) => {
+		columnCharLengths.push(header.content.length);
+	});
+
+	//Iterate over each type
+	Object.values(CELL_TYPE).forEach((type, i) => {
+		if (columnCharLengths[i] < type.length)
+			columnCharLengths[i] = type.length;
+	});
+
+	//Iterate over each cell
+	cells.forEach((cell, i) => {
+		if (cell.type === CELL_TYPE.TAG || cell.type === CELL_TYPE.MULTI_TAG) {
+			const arr = tags.filter((tag) => tag.selected.includes(cell.id));
+
+			let content = "";
+			arr.forEach((tag, i) => {
+				if (tag.content === "") return;
+				if (i === 0) content += addPound(tag.content);
+				else content += " " + addPound(tag.content);
+			});
+			if (columnCharLengths[cell.position] < content.length)
+				columnCharLengths[cell.position] = content.length;
+		} else {
+			if (columnCharLengths[cell.position] < cell.content.length)
+				columnCharLengths[cell.position] = cell.content.length;
+		}
+	});
+	return columnCharLengths;
 };
 
 export const writeContentToDataString = (
@@ -320,26 +338,6 @@ export const getCellType = (innerHTML: string, firstRow: boolean) => {
 				return CELL_TYPE.TEXT;
 			}
 		}
-	}
-};
-
-export const getFileContents = async (app: App, fileName: string) => {
-	try {
-		return await app.vault.adapter.read(fileName);
-	} catch (err) {
-		console.log(err);
-	}
-};
-
-export const updateFile = async (
-	app: App,
-	fileName: string,
-	fileContents: string
-) => {
-	try {
-		return await app.vault.adapter.write(fileName, fileContents);
-	} catch (err) {
-		console.log(err);
 	}
 };
 

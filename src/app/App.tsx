@@ -16,7 +16,7 @@ import {
 	initialTag,
 	Tag,
 } from "./services/state";
-import { AppData, saveData } from "./services/dataUtils";
+import { AppData, appDataToString, saveData } from "./services/dataUtils";
 import { useApp } from "./services/hooks";
 
 import { ARROW, CELL_TYPE, DEBUG } from "./constants";
@@ -28,6 +28,7 @@ interface Props {
 }
 
 export default function App({ data }: Props) {
+	const [oldData, setOldData] = useState("");
 	const [appData, setAppData] = useState<AppData>(data);
 	const [headerMenu, setHeaderMenu] = useState(initialHeaderMenuState);
 
@@ -40,7 +41,15 @@ export default function App({ data }: Props) {
 	}
 
 	useEffect(() => {
-		if (app && appData.updateTime !== 0) saveData(app, appData);
+		//If we're running in Obsidian
+		if (app) {
+			if (appData.updateTime === 0) {
+				setOldData(appDataToString(data));
+			} else {
+				const newData = appDataToString(data);
+				if (saveData(app, oldData, newData)) setOldData(newData);
+			}
+		}
 	}, [appData.updateTime]);
 
 	function handleAddColumn() {
