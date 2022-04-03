@@ -6,6 +6,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { CELL_COLOR } from "../../constants";
 
 import "./styles.css";
+import { toTagLink } from "src/app/services/dataUtils";
 interface Props {
 	cellId?: string;
 	id?: string;
@@ -16,6 +17,7 @@ interface Props {
 	showRemove?: boolean;
 	selectable?: boolean;
 	isCreate?: boolean;
+	showLink?: boolean;
 	onRemoveClick?: (cellId: string, tagId: string) => void;
 	onClick?: (tagId: string) => void;
 }
@@ -28,6 +30,7 @@ export default function TagCell({
 	showRemove,
 	selectable,
 	isCreate,
+	showLink = false,
 	onRemoveClick,
 	onClick,
 }: Props) {
@@ -48,6 +51,10 @@ export default function TagCell({
 
 	let cellClass = "NLT__tag-cell";
 	if (selectable) cellClass += " NLT__selectable";
+
+	if (showLink) {
+		content = toTagLink(content);
+	}
 
 	return (
 		<div className={cellClass} onClick={() => onClick && onClick(id)}>

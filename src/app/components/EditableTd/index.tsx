@@ -9,14 +9,7 @@ import TagMenu from "../TagMenu";
 import { useForceUpdate, useApp } from "../../services/hooks";
 import { randomColor } from "../../services/utils";
 import { Tag } from "../../services/state";
-import {
-	tagLinkForDisplay,
-	stripFileLink,
-	toFileLink,
-	toTagLink,
-	hasLink,
-	hasSquareBrackets,
-} from "../../services/dataUtils";
+import { toFileLink, hasSquareBrackets } from "../../services/dataUtils";
 
 import { CELL_TYPE } from "../../constants";
 
@@ -114,12 +107,12 @@ export default function EditableTd({
 				height,
 				tagColor: randomColor(),
 			});
-			setInputText(hasLink(content) ? stripFileLink(content) : content);
+			setInputText(content);
 		}
 	}
 
 	function handleAddTag(text: string) {
-		onAddTag(cellId, toTagLink(text), cellMenu.tagColor);
+		onAddTag(cellId, text, cellMenu.tagColor);
 		setInputText("");
 		setCellMenu(initialCellMenuState);
 	}
@@ -132,12 +125,7 @@ export default function EditableTd({
 	function handleOutsideClick() {
 		switch (type) {
 			case CELL_TYPE.TEXT:
-				onUpdateContent(
-					cellId,
-					hasSquareBrackets(inputText)
-						? toFileLink(inputText)
-						: inputText
-				);
+				onUpdateContent(cellId, inputText);
 				setInputText("");
 				break;
 			case CELL_TYPE.NUMBER:
@@ -154,22 +142,23 @@ export default function EditableTd({
 	}
 
 	function renderCell() {
-		const tag = tags.find((tag) => tag.selected.includes(cellId));
 		switch (type) {
 			case CELL_TYPE.TEXT:
 				return <TextCell content={content} />;
 			case CELL_TYPE.NUMBER:
 				return <TextCell content={content} />;
-			case CELL_TYPE.TAG:
-				if (tag) {
+			case CELL_TYPE.TAG: {
+				const tag = tags.find((tag) => tag.selected.includes(cellId));
+				if (tag)
 					return (
 						<TagCell
-							content={tagLinkForDisplay(tag.content)}
+							content={tag.content}
 							color={tag.color}
+							showLink={true}
 						/>
 					);
-				}
 				return <></>;
+			}
 			case CELL_TYPE.ERROR:
 				return <ErrorCell content={content} />;
 			default:
