@@ -40,9 +40,7 @@ export default function App({ data }: Props) {
 	}
 
 	useEffect(() => {
-		if (app) {
-			saveData(app, appData);
-		}
+		if (app && appData.updateTime !== 0) saveData(app, appData);
 	}, [appData.updateTime]);
 
 	function handleAddColumn() {

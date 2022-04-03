@@ -13,7 +13,7 @@ import {
 import { randomColor } from "../../services/utils";
 
 import { CELL_TYPE } from "../../constants";
-import { App, MarkdownView } from "obsidian";
+import { App, MarkdownView, Vault } from "obsidian";
 
 export interface AppData {
 	updateTime?: number;
@@ -141,6 +141,7 @@ export const findAppData = (el: HTMLElement): AppData => {
 		rows,
 		cells,
 		tags,
+		updateTime: 0,
 	};
 };
 
@@ -158,7 +159,7 @@ export const loadData = (el: HTMLElement): AppData | ErrorData => {
 	}
 };
 
-export const saveData = (app: App, data: AppData) => {
+export const saveData = async (app: App, data: AppData) => {
 	const maxColumnCharLength: any = {};
 	//Iterate over each header
 	data.headers.forEach((header, i) => {
@@ -200,6 +201,18 @@ export const saveData = (app: App, data: AppData) => {
 		fileData = writeContentToDataString(
 			fileData,
 			header.content,
+			maxColumnCharLength[i]
+		);
+	});
+
+	fileData += "\n|";
+	data.headers.forEach((header, i) => {
+		const content = Array(maxColumnCharLength[i] - 2)
+			.fill("-")
+			.join("");
+		fileData = writeContentToDataString(
+			fileData,
+			content,
 			maxColumnCharLength[i]
 		);
 	});
@@ -250,16 +263,23 @@ export const saveData = (app: App, data: AppData) => {
 		});
 	});
 
-	const view = app.workspace.getActiveViewOfType(MarkdownView);
-	if (view) {
-		console.log(fileData);
-		let data = view.getViewData();
-		//data += fileData;
-		//console.log(fileData);
+	const file = app.workspace.getActiveFile();
+	console.log(fileData);
+	try {
+		const fileContent = await app.vault.adapter.read(file.name);
+		//updateFile(app, file.name, fileData);
+		app.vault.modify(file, fileData);
+	} catch (err) {}
+	// const view = app.workspace.getActiveViewOfType(MarkdownView);
+	// if (view) {
+	// 	console.log(fileData);
+	// 	let data = view.getViewData();
+	// 	//data += fileData;
+	// 	//console.log(fileData);
 
-		const file = app.workspace.getActiveFile();
-		// app.vault.modify(file, fileData);
-	}
+	// 	const file = app.workspace.getActiveFile();
+	// 	// app.vault.modify(file, fileData);
+	// }
 };
 
 export const writeContentToDataString = (
@@ -267,7 +287,7 @@ export const writeContentToDataString = (
 	contentToWrite: string,
 	columnCharacters: number
 ) => {
-	data += " ";
+	data += "";
 	data += contentToWrite;
 
 	const numWhiteSpace = columnCharacters - contentToWrite.length;
@@ -304,6 +324,26 @@ export const getCellType = (innerHTML: string, firstRow: boolean) => {
 				return CELL_TYPE.TEXT;
 			}
 		}
+	}
+};
+
+export const getFileContents = async (app: App, fileName: string) => {
+	try {
+		return await app.vault.adapter.read(fileName);
+	} catch (err) {
+		console.log(err);
+	}
+};
+
+export const updateFile = async (
+	app: App,
+	fileName: string,
+	fileContents: string
+) => {
+	try {
+		return await app.vault.adapter.write(fileName, fileContents);
+	} catch (err) {
+		console.log(err);
 	}
 };
 
