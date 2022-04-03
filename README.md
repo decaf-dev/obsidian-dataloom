@@ -14,6 +14,8 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 
 ### Installation
 
+Clone the repository
+
 Install packages
 
 -   `npm install`
@@ -32,12 +34,6 @@ Make a symbolic link between where you cloned the repo and your vault plugins fo
 
 -   `ln -s ./obsidian-collaboration/plugin /Desktop/my-vault/.obsidian/plugins/`
 
-Clone the hot reload plugin into your plugins folder
-
--   `cd /Desktop/my-vault/.obsidian/plugins && git clone https://github.com/pjeby/hot-reload.git`
-
-Now enable the hot reload plugin in Obsidian
-
 ### Plugin
 
 Create build script
@@ -47,7 +43,6 @@ Create build script
 ## Resources
 
 -   [Obsidian API Documentation](https://github.com/obsidianmd/obsidian-api)
--   [Hot Reload Plugin](https://github.com/pjeby/hot-reload)
 -   [Obsidian Plugin Docs](https://marcus.se.net/obsidian-plugin-docs)
 
 ## License

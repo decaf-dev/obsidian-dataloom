@@ -13,7 +13,7 @@ import {
 import { randomColor } from "../../services/utils";
 
 import { CELL_TYPE, DEBUG } from "../../constants";
-import { App, MarkdownView, Vault } from "obsidian";
+import { App } from "obsidian";
 
 export interface AppData {
 	updateTime?: number;
