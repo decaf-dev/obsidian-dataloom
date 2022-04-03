@@ -52,9 +52,11 @@ export default function TagCell({
 	let cellClass = "NLT__tag-cell";
 	if (selectable) cellClass += " NLT__selectable";
 
-	if (showLink) {
-		content = toTagLink(content);
-	}
+	//If we have an empty cell, then don't return anything
+	if (content === "") return <></>;
+
+	//If on render view, add the link to make it a clickable tag
+	if (showLink) content = toTagLink(content);
 
 	return (
 		<div

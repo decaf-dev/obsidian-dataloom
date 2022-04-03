@@ -18,6 +18,7 @@ export class NLTTable extends MarkdownRenderChild {
 	}
 
 	onload() {
+		console.log("On Load Called!");
 		const data = loadData(this.containerEl);
 		this.el = this.containerEl.createEl("div");
 

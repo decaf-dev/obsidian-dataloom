@@ -21,6 +21,7 @@ export default class NltPlugin extends Plugin {
 			if (table.length === 1) {
 				context.addChild(new NLTTable(table[0], this.app));
 			}
+			console.log("Reloading processor item!");
 		});
 	}
 

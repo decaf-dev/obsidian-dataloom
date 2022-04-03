@@ -84,7 +84,13 @@ export const findAppData = (el: HTMLElement): AppData => {
 				headers[j].type = cellType;
 				return;
 			} else {
-				cellType = getCellType(td.innerHTML, false);
+				//If empty then just set it to the type it's supposed to be.
+				//We do this to allow blank cells
+				if (td.innerHTML === "") {
+					cellType = headers[j].type;
+				} else {
+					cellType = getCellType(td.innerHTML, false);
+				}
 			}
 
 			//Check if doesn't match header
@@ -182,6 +188,7 @@ export const saveData = async (app: App, data: AppData) => {
 
 			let content = "";
 			tags.forEach((tag, i) => {
+				if (tag.content === "") return;
 				if (i === 0) content += addPound(tag.content);
 				else content += " " + addPound(tag.content);
 			});
@@ -245,6 +252,7 @@ export const saveData = async (app: App, data: AppData) => {
 				let content = "";
 
 				tags.forEach((tag, i) => {
+					if (tag.content === "") return;
 					if (i === 0) content += addPound(tag.content);
 					else content += " " + addPound(tag.content);
 				});
