@@ -31,6 +31,7 @@ export interface Cell {
 	position: number;
 	content: string;
 	type: string;
+	expectedType: string | null;
 }
 
 export interface Tag {
@@ -63,7 +64,8 @@ export const initialCell = (
 	rowId: string,
 	position: number,
 	type: string,
-	content = ""
+	content: string,
+	expectedType: string | null = null
 ): Cell => {
 	return {
 		id,
@@ -71,6 +73,7 @@ export const initialCell = (
 		position,
 		type,
 		content,
+		expectedType,
 	};
 };
 

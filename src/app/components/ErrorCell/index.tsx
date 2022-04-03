@@ -1,9 +1,11 @@
 import React from "react";
 
 interface Props {
-	content: string;
+	type: string;
 }
 
-export default function ErrorCell({ content }: Props) {
-	return <div className="NLT__error">{content}</div>;
+export default function ErrorCell({ type }: Props) {
+	return (
+		<div className="NLT__error">Invalid data. Expected type: {type}</div>
+	);
 }

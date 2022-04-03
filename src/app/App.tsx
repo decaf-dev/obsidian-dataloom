@@ -52,7 +52,8 @@ export default function App({ data }: Props) {
 						uuidv4(),
 						row.id,
 						prevState.headers.length,
-						CELL_TYPE.TEXT
+						CELL_TYPE.TEXT,
+						""
 					)
 				);
 			});
@@ -78,7 +79,7 @@ export default function App({ data }: Props) {
 				cells: [
 					...prevState.cells,
 					...prevState.headers.map((header, i) =>
-						initialCell(uuidv4(), rowId, i, header.type)
+						initialCell(uuidv4(), rowId, i, header.type, "")
 					),
 				],
 			};
@@ -437,7 +438,7 @@ export default function App({ data }: Props) {
 						component: (
 							<>
 								{appData.headers.map((header, index) => {
-									const { id, type, content } =
+									const { id, type, content, expectedType } =
 										appData.cells.find(
 											(cell) =>
 												cell.rowId === row.id &&
@@ -449,6 +450,7 @@ export default function App({ data }: Props) {
 											cellId={id}
 											type={type}
 											content={content}
+											expectedType={expectedType}
 											tags={appData.tags}
 											onTagClick={handleTagClick}
 											onRemoveTagClick={

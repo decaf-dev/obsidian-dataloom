@@ -76,7 +76,6 @@ export const findAppData = (el: HTMLElement): AppData => {
 
 		const td = tr.querySelectorAll("td");
 		td.forEach((td, j) => {
-			console.log(td.innerHTML);
 			const cellId = uuidv4();
 			let cellType = "";
 			//Set header type based off of the first row's specified cell type
@@ -96,7 +95,8 @@ export const findAppData = (el: HTMLElement): AppData => {
 						rowId,
 						j,
 						CELL_TYPE.ERROR,
-						`Invalid data. Expected ${headers[j].type}`
+						td.innerHTML,
+						headers[j].type
 					)
 				);
 				return;
@@ -266,20 +266,8 @@ export const saveData = async (app: App, data: AppData) => {
 	const file = app.workspace.getActiveFile();
 	console.log(fileData);
 	try {
-		const fileContent = await app.vault.adapter.read(file.name);
-		//updateFile(app, file.name, fileData);
 		app.vault.modify(file, fileData);
 	} catch (err) {}
-	// const view = app.workspace.getActiveViewOfType(MarkdownView);
-	// if (view) {
-	// 	console.log(fileData);
-	// 	let data = view.getViewData();
-	// 	//data += fileData;
-	// 	//console.log(fileData);
-
-	// 	const file = app.workspace.getActiveFile();
-	// 	// app.vault.modify(file, fileData);
-	// }
 };
 
 export const writeContentToDataString = (

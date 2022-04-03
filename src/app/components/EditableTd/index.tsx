@@ -20,6 +20,7 @@ interface Props {
 	content: string;
 	tags: Tag[];
 	type: string;
+	expectedType: string | null;
 	onRemoveTagClick: (cellId: string, tagId: string) => void;
 	onTagClick: (cellId: string, inputText: string) => void;
 	onUpdateContent: (cellId: string, inputText: string) => void;
@@ -32,6 +33,7 @@ export default function EditableTd({
 	content,
 	tags,
 	type,
+	expectedType,
 	onRemoveTagClick,
 	onTagClick,
 	onUpdateContent,
@@ -71,7 +73,6 @@ export default function EditableTd({
 
 	function handleCellClick(e: React.MouseEvent<HTMLElement>) {
 		const el = e.target as HTMLInputElement;
-		console.log(el.nodeName);
 		//If we clicked on the link for a file or tag, return
 		if (el.nodeName === "A") return;
 
@@ -158,7 +159,7 @@ export default function EditableTd({
 				return <></>;
 			}
 			case CELL_TYPE.ERROR:
-				return <ErrorCell content={content} />;
+				return <ErrorCell type={expectedType} />;
 			default:
 				return <></>;
 		}
