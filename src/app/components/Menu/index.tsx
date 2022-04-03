@@ -7,6 +7,7 @@ interface Props {
 	content: React.ReactNode;
 	onOutsideClick: () => void;
 }
+
 export default function Menu({ hide, style, content, onOutsideClick }: Props) {
 	if (hide) return <></>;
 

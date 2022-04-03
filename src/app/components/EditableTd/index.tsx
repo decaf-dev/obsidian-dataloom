@@ -9,7 +9,6 @@ import TagMenu from "../TagMenu";
 import { useForceUpdate, useApp } from "../../services/hooks";
 import { randomColor } from "../../services/utils";
 import { Tag } from "../../services/state";
-import { toFileLink, hasSquareBrackets } from "../../services/dataUtils";
 
 import { CELL_TYPE } from "../../constants";
 
@@ -70,10 +69,9 @@ export default function EditableTd({
 		[type, inputText.length]
 	);
 
-	console.log("INPUT", inputText);
-
 	function handleCellClick(e: React.MouseEvent<HTMLElement>) {
 		const el = e.target as HTMLInputElement;
+		console.log(el.nodeName);
 		//If we clicked on the link for a file or tag, return
 		if (el.nodeName === "A") return;
 
