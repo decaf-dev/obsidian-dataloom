@@ -1,0 +1,9 @@
+.NLT__td {
+	vertical-align: top;
+	height: 2rem;
+	cursor: default;
+}
+
+.NLT__td--number {
+	text-align: right;
+}
