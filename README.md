@@ -4,6 +4,8 @@
 
 Obsidian Notion-Like Tables allows you to create markdown tables using an interface similar to that found in Notion.so.
 
+![Screenshot](.readme/preview.png)
+
 ## Built With
 
 -   [ReactJS](https://reactjs.org/)
