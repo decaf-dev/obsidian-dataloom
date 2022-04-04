@@ -17,11 +17,7 @@ import {
 	Tag,
 	NltSettings,
 } from "./services/state";
-import {
-	appDataToString,
-	findTableCRCFromHeaders,
-	saveData,
-} from "./services/dataUtils";
+import { saveData } from "./services/dataUtils";
 import { useApp } from "./services/hooks";
 import { AppData } from "./services/state";
 
