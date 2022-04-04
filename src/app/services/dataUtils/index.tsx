@@ -195,11 +195,14 @@ export const saveData = async (
 
 export const getOldDataRegex = (headers: Header[], rows: Row[]): RegExp => {
 	const regex: string[] = [];
-	regex[0] = headers.map((header) => `\\|.*${header.content}.*\\|`).join("");
+	regex[0] = "\\|";
+	regex[0] += headers.map((header) => `.*${header.content}.*\\|`).join("");
 	//Hyphen row, type definition row, and then all other rows
 	for (let i = 0; i < rows.length + 2; i++) regex[i + 1] = "\\|.*\\|";
 
-	return new RegExp(regex.join("\n"));
+	const expression = new RegExp(regex.join("\n"));
+	if (DEBUG) console.log(expression);
+	return expression;
 };
 
 export const appDataToString = (data: AppData): string => {
