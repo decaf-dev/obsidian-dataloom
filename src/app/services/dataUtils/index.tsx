@@ -1,5 +1,4 @@
 import { v4 as uuidv4 } from "uuid";
-import CRC32 from "crc-32";
 import { App } from "obsidian";
 import { NltSettings } from "../../services/state";
 
