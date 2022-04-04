@@ -1,30 +1,29 @@
 name: Build and Release
-
 on:
     push:
         tags:
             - "*"
-
 jobs:
     build:
         runs-on: ubuntu-latest
-
         steps:
             - uses: actions/checkout@v2
+              with:
+                  fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
             - name: Use Node.js
               uses: actions/setup-node@v1
               with:
                   node-version: "14.x"
+            - name: Get Version
+              id: version
+              run: |
+                  echo "::set-output name=tag::$(git describe --abbrev=0)"
             - name: Build
               id: build
               run: |
-                  npm install
-                  npm run build --if-present
-                  mkdir ${{ env.PLUGIN_NAME }}
-                  cp dist/main.js manifest.json ${{ env.PLUGIN_NAME }}
-                  zip -r ${{ env.PLUGIN_NAME }}.zip ${{ env.PLUGIN_NAME }}
-                  ls
-                  echo "::set-output name=tag_name::$(git tag --sort version:refname | tail -n 1)"
+                  yarn
+                  yarn run release
+            # Create the release on github
             - name: Create Release
               id: create_release
               uses: actions/create-release@v1
@@ -36,16 +35,7 @@ jobs:
                   release_name: ${{ github.ref }}
                   draft: false
                   prerelease: false
-            - name: Upload zip file
-              id: upload-zip
-              uses: actions/upload-release-asset@v1
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                  upload_url: ${{ steps.create_release.outputs.upload_url }}
-                  asset_path: ./${{ env.PLUGIN_NAME }}.zip
-                  asset_name: ${{ env.PLUGIN_NAME }}-${{ steps.build.outputs.tag_name }}.zip
-                  asset_content_type: application/zip
+            # Upload the main.js
             - name: Upload main.js
               id: upload-main
               uses: actions/upload-release-asset@v1
@@ -56,6 +46,7 @@ jobs:
                   asset_path: ./dist/main.js
                   asset_name: main.js
                   asset_content_type: text/javascript
+            # Upload the manifest.json
             - name: Upload manifest.json
               id: upload-manifest
               uses: actions/upload-release-asset@v1
@@ -63,9 +54,10 @@ jobs:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
                   upload_url: ${{ steps.create_release.outputs.upload_url }}
-                  asset_path: ./manifest.json
+                  asset_path: ./dist/manifest.json
                   asset_name: manifest.json
                   asset_content_type: application/json
+            # Upload the style.css
             - name: Upload styles.css
               id: upload-css
               uses: actions/upload-release-asset@v1
@@ -73,6 +65,6 @@ jobs:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
                   upload_url: ${{ steps.create_release.outputs.upload_url }}
-                  asset_path: ./styles.css
+                  asset_path: ./dist/styles.css
                   asset_name: styles.css
                   asset_content_type: text/css
