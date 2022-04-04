@@ -5,7 +5,7 @@ import ReactDOM from "react-dom";
 import { AppContext } from "./app/services/hooks";
 import App from "./app/App";
 import ErrorDisplay from "./app/components/ErrorDisplay";
-import { findTableCRCFromEl, loadData } from "./app/services/dataUtils";
+import { loadData } from "./app/services/dataUtils";
 import { instanceOfErrorData, NltSettings } from "./app/services/state";
 import NltPlugin from "main";
 

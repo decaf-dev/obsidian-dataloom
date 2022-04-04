@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ErrorData } from "src/app/services/dataUtils";
+import { ErrorData } from "src/app/services/state";
 
 interface Props {
 	data: ErrorData;
