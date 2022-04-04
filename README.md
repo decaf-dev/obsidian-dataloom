@@ -91,12 +91,6 @@ Run development server
 
 -   `npm run start`
 
-### Plugin
-
-Create build script
-
--   `npm run build`
-
 ## Resources
 
 -   [Obsidian API Documentation](https://github.com/obsidianmd/obsidian-api)
