@@ -166,26 +166,6 @@ export const loadData = (
 	}
 };
 
-export const findTableCRCFromEl = (el: HTMLElement): number => {
-	const tr = el.querySelectorAll("tr");
-	const typeRowEl = tr[0];
-	const td = typeRowEl.querySelectorAll("td");
-
-	let hash = "";
-	td.forEach((td) => {
-		hash += td.innerHTML;
-	});
-	return CRC32.str(hash, 0);
-};
-
-export const findTableCRCFromHeaders = (headers: Header[]): number => {
-	let hash = "";
-	headers.forEach((header) => {
-		hash += header.content;
-	});
-	return CRC32.str(hash, 0);
-};
-
 export const saveData = async (app: App, oldData: string, newData: string) => {
 	if (DEBUG) {
 		console.log("OLD DATA");
