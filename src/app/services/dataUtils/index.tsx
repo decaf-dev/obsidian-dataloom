@@ -113,7 +113,6 @@ export const findAppData = (
 					tags[index].selected.push(cellId);
 				} else {
 					let color = "";
-					console.log(settings.tagData);
 					if (settings.tagData[content]) {
 						color = settings.tagData[content];
 					} else {
@@ -166,8 +165,14 @@ export const loadData = (
 	}
 };
 
-export const saveData = async (app: App, oldData: string, newData: string) => {
+export const saveData = async (
+	app: App,
+	oldAppData: AppData,
+	newAppData: AppData
+) => {
+	const newData = appDataToString(newAppData);
 	if (DEBUG) {
+		const oldData = appDataToString(oldAppData);
 		console.log("OLD DATA");
 		console.log(oldData);
 		console.log("NEW DATA");
@@ -177,16 +182,24 @@ export const saveData = async (app: App, oldData: string, newData: string) => {
 		const file = app.workspace.getActiveFile();
 		let content = await app.vault.read(file);
 
-		content = content.replace(oldData, newData);
-		if (DEBUG) {
-			console.log("REPLACED");
-			console.log(content);
-		}
+		content = content.replace(
+			getOldDataRegex(oldAppData.headers, oldAppData.rows),
+			newData
+		);
 
 		app.vault.modify(file, content);
 	} catch (err) {
 		console.log(err);
 	}
+};
+
+export const getOldDataRegex = (headers: Header[], rows: Row[]): RegExp => {
+	const regex: string[] = [];
+	regex[0] = headers.map((header) => `\\|.*${header.content}.*\\|`).join("");
+	//Hyphen row, type definition row, and then all other rows
+	for (let i = 0; i < rows.length + 2; i++) regex[i + 1] = "\\|.*\\|";
+
+	return new RegExp(regex.join("\n"));
 };
 
 export const appDataToString = (data: AppData): string => {

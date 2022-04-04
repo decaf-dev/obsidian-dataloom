@@ -58,10 +58,8 @@ export default function App({ plugin, settings, data }: Props) {
 					setOldAppData(data);
 				} else {
 					console.log("Saving Data");
-					const oldData = appDataToString(oldAppData);
-					const newData = appDataToString(appData);
 					try {
-						await saveData(app, oldData, newData);
+						await saveData(app, oldAppData, appData);
 					} catch (err) {}
 				}
 			}
