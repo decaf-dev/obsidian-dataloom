@@ -6,6 +6,41 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 
 ![Screenshot](.readme/preview.png)
 
+## Usage
+
+Make a table using normal markdown syntax. Under the hyphen row, specify the types of each column.
+
+The table currently supports 3 types: text, number, and tag.
+
+![Screenshot](.readme/markdown.png)
+
+Toggle to preview mode and the table will automatically render.
+
+Click on a header name to edit the header title and change the column type.
+
+![Screenshot](.readme/header.png)
+
+If you want to render a link in text, just add square brackets [[My Link]]. Tags do not require the pound sign.
+
+![Screenshot](.readme/text-link-1.png)
+![Screenshot](.readme/text-link-2.png)
+
+### Errors
+
+A type definition error will occur if you do not specify valid types in a type row. Please correct this error in your markdown to continue.
+
+![Screenshot](.readme/type-definition-error-1.png)
+![Screenshot](.readme/type-definition-error-2.png)
+
+A cell type error will occur if you enter data which doesn't match the type of data specified. Please correct this error in your markdown to continue.
+
+![Screenshot](.readme/cell-error-1.png)
+![Screenshot](.readme/cell-error-2.png)
+
+### Mobile and Live Preview
+
+NOTE: This plugin is in beginning stages and has not been tested with mobile or with live preview. I recommend turning live preview off for now.
+
 ## Built With
 
 -   [ReactJS](https://reactjs.org/)
@@ -36,7 +71,7 @@ Make a symbolic link between where you cloned the repo and your vault plugins fo
 
 -   `ln -s ./obsidian-collaboration/plugin /Desktop/my-vault/.obsidian/plugins/`
 
-### Devleopment using React Scripts
+### Development using React Scripts
 
 Install packages
 
