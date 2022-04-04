@@ -1,7 +1,29 @@
 import React from "react";
 import { v4 as uuidv4 } from "uuid";
+
 import { CELL_TYPE, ARROW } from "../../constants";
 
+export interface AppData {
+	updateTime: number;
+	headers: Header[];
+	rows: Row[];
+	cells: Cell[];
+	tags: Tag[];
+}
+export interface ErrorData {
+	columnIds: number[];
+}
+
+export const instanceOfErrorData = (object: any): object is ErrorData => {
+	return "columnIds" in object;
+};
+export interface NltSettings {
+	tagData: { [id: string]: string };
+}
+
+export const DEFAULT_SETTINGS: NltSettings = {
+	tagData: {},
+};
 export interface Header {
 	id: string;
 	position: number;
@@ -10,7 +32,6 @@ export interface Header {
 	width: string;
 	type: string;
 }
-
 export interface TableHeader extends Header {
 	component: React.ReactNode;
 	onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
@@ -78,13 +99,13 @@ export const initialCell = (
 };
 
 export const initialTag = (
-	text: string,
+	content: string,
 	cellId: string,
 	color: string
 ): Tag => {
 	return {
 		id: uuidv4(),
-		content: text,
+		content,
 		color,
 		selected: [cellId],
 	};

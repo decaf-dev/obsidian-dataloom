@@ -15,20 +15,29 @@ import {
 	initialRow,
 	initialTag,
 	Tag,
+	NltSettings,
 } from "./services/state";
-import { AppData, appDataToString, saveData } from "./services/dataUtils";
+import {
+	appDataToString,
+	findTableCRCFromHeaders,
+	saveData,
+} from "./services/dataUtils";
 import { useApp } from "./services/hooks";
+import { AppData } from "./services/state";
 
 import { ARROW, CELL_TYPE, DEBUG } from "./constants";
 
 import "./app.css";
+import NltPlugin from "main";
 
 interface Props {
+	plugin: NltPlugin;
+	settings: NltSettings;
 	data: AppData;
 }
 
-export default function App({ data }: Props) {
-	const [oldData, setOldData] = useState("");
+export default function App({ plugin, settings, data }: Props) {
+	const [oldAppData, setOldAppData] = useState<AppData>(data);
 	const [appData, setAppData] = useState<AppData>(data);
 	const [headerMenu, setHeaderMenu] = useState(initialHeaderMenuState);
 
@@ -41,20 +50,23 @@ export default function App({ data }: Props) {
 	}
 
 	useEffect(() => {
-		//If we're running in Obsidian
-		if (app) {
-			if (appData.updateTime === 0) {
-				console.log("Setting Old Data");
-				setOldData(appDataToString(data));
-			} else {
-				console.log("Saving Data");
-				const newData = appDataToString(appData);
-				saveData(app, oldData, newData).then(() => {
-					console.log("OK");
-				});
-				// saveData(app, oldData, newData).then(() => setOldData(newData));
+		async function handleUpdate() {
+			//If we're running in Obsidian
+			if (app) {
+				if (appData.updateTime === 0) {
+					console.log("Setting Old Data");
+					setOldAppData(data);
+				} else {
+					console.log("Saving Data");
+					const oldData = appDataToString(oldAppData);
+					const newData = appDataToString(appData);
+					try {
+						await saveData(app, oldData, newData);
+					} catch (err) {}
+				}
 			}
 		}
+		handleUpdate();
 	}, [appData.updateTime]);
 
 	function handleAddColumn() {
@@ -196,42 +208,51 @@ export default function App({ data }: Props) {
 		});
 	}
 
-	function handleAddTag(cellId: string, text: string, color: string) {
-		const tag = appData.tags.find((tag) => tag.content === text);
-		if (tag) {
-			//If our cell id has already selected the tag then return
-			if (tag.selected.includes(cellId)) return;
-			//Otherwise select our cell id
-			setAppData((prevState) => {
-				const arr = removeTagReferences(prevState.tags, cellId);
-				return {
-					...prevState,
-					updateTime: Date.now(),
-					tags: arr.map((tag) => {
-						if (tag.content === text) {
-							return {
-								...tag,
-								selected: [...tag.selected, cellId],
-							};
-						}
-						return tag;
-					}),
-				};
-			});
-		} else {
-			setAppData((prevState) => {
-				return {
-					...prevState,
-					updateTime: Date.now(),
-					tags: [
-						...removeTagReferences(prevState.tags, cellId),
-						initialTag(text, cellId, color),
-					],
-				};
-			});
-		}
+	function handleAddTag(cellId: string, content: string, color: string) {
+		// const tag = appData.tags.find((tag) => tag.content === text);
+		// if (tag) {
+		// 	console.log("HERE");
+		// 	//If our cell id has already selected the tag then return
+		// 	if (tag.selected.includes(cellId)) return;
+		// 	//Otherwise select our cell id
+		// 	setAppData((prevState) => {
+		// 		const arr = removeTagReferences(prevState.tags, cellId);
+		// 		return {
+		// 			...prevState,
+		// 			updateTime: Date.now(),
+		// 			tags: arr.map((tag) => {
+		// 				if (tag.content === text) {
+		// 					return {
+		// 						...tag,
+		// 						selected: [...tag.selected, cellId],
+		// 					};
+		// 				}
+		// 				return tag;
+		// 			}),
+		// 		};
+		// 	});
+		// } else {
+		setAppData((prevState) => {
+			return {
+				...prevState,
+				updateTime: Date.now(),
+				tags: [
+					...removeTagReferences(prevState.tags, cellId),
+					initialTag(content, cellId, color),
+				],
+			};
+		});
+		settings.tagData[content] = color;
+		plugin.saveSettings();
+		//}
 	}
 
+	/**
+	 * Removes tag references for a specified cell id
+	 * @param tags The tag array
+	 * @param cellId The cell id
+	 * @returns An array of tags with selected arrays that do not contain the specific cell id
+	 */
 	function removeTagReferences(tags: Tag[], cellId: string) {
 		return tags
 			.map((tag) => {
@@ -242,7 +263,14 @@ export default function App({ data }: Props) {
 					),
 				};
 			})
-			.filter((tag) => tag.selected.length !== 0);
+			.filter((tag) => {
+				//Remove the tag from settings
+				if (tag.selected.length === 0) {
+					delete settings.tagData[tag.content];
+					plugin.saveSettings();
+				}
+				return tag.selected.length !== 0;
+			});
 	}
 
 	function handleTagClick(cellId: string, tagId: string) {

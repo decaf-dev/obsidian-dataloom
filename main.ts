@@ -1,15 +1,7 @@
 import { Plugin } from "obsidian";
 
 import { NLTTable } from "src/NLTTable";
-
-interface NltSettings {
-	mySetting: string;
-}
-
-const DEFAULT_SETTINGS: NltSettings = {
-	mySetting: "default",
-};
-
+import { NltSettings, DEFAULT_SETTINGS } from "src/app/services/state";
 export default class NltPlugin extends Plugin {
 	settings: NltSettings;
 
@@ -17,10 +9,11 @@ export default class NltPlugin extends Plugin {
 		await this.loadSettings();
 
 		this.registerMarkdownPostProcessor((element, context) => {
-			console.log("registerMarkdownPostProcessor callback rerunning!");
 			const table = element.getElementsByTagName("table");
 			if (table.length === 1) {
-				context.addChild(new NLTTable(table[0], this.app));
+				context.addChild(
+					new NLTTable(table[0], this.app, this, this.settings)
+				);
 			}
 		});
 	}

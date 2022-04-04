@@ -1,4 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
+import CRC32 from "crc-32";
+import { App } from "obsidian";
+import { NltSettings } from "../../services/state";
+
+import { AppData, ErrorData } from "../../services/state";
 
 import {
 	Header,
@@ -13,22 +18,6 @@ import {
 import { randomColor } from "../../services/utils";
 
 import { CELL_TYPE, DEBUG } from "../../constants";
-import { App } from "obsidian";
-
-export interface AppData {
-	updateTime?: number;
-	headers: Header[];
-	rows: Row[];
-	cells: Cell[];
-	tags: Tag[];
-}
-export interface ErrorData {
-	columnIds: number[];
-}
-
-export const instanceOfErrorData = (object: any): object is ErrorData => {
-	return "columnIds" in object;
-};
 
 export const findErrorData = (el: HTMLElement): ErrorData | null => {
 	const tr = el.querySelectorAll("tr");
@@ -51,7 +40,10 @@ export const findErrorData = (el: HTMLElement): ErrorData | null => {
 	}
 };
 
-export const findAppData = (el: HTMLElement): AppData => {
+export const findAppData = (
+	el: HTMLElement,
+	settings: NltSettings
+): AppData => {
 	const headers: Header[] = [];
 	const rows: Row[] = [];
 	const cells: Cell[] = [];
@@ -121,7 +113,14 @@ export const findAppData = (el: HTMLElement): AppData => {
 					const index = tags.indexOf(tag);
 					tags[index].selected.push(cellId);
 				} else {
-					tags.push(initialTag(content, cellId, randomColor()));
+					let color = "";
+					console.log(settings.tagData);
+					if (settings.tagData[content]) {
+						color = settings.tagData[content];
+					} else {
+						color = randomColor();
+					}
+					tags.push(initialTag(content, cellId, color));
 				}
 				//TODO handle multi-tag
 			} else if (cellType === CELL_TYPE.MULTI_TAG) {
@@ -156,13 +155,36 @@ export const findAppData = (el: HTMLElement): AppData => {
  * @param el The root table element
  * @returns AppData - The loaded data which the app will use to initialize its state
  */
-export const loadData = (el: HTMLElement): AppData | ErrorData => {
+export const loadData = (
+	el: HTMLElement,
+	settings: NltSettings
+): AppData | ErrorData => {
 	let data = findErrorData(el);
 	if (data !== null) {
 		return data;
 	} else {
-		return findAppData(el);
+		return findAppData(el, settings);
 	}
+};
+
+export const findTableCRCFromEl = (el: HTMLElement): number => {
+	const tr = el.querySelectorAll("tr");
+	const typeRowEl = tr[0];
+	const td = typeRowEl.querySelectorAll("td");
+
+	let hash = "";
+	td.forEach((td) => {
+		hash += td.innerHTML;
+	});
+	return CRC32.str(hash, 0);
+};
+
+export const findTableCRCFromHeaders = (headers: Header[]): number => {
+	let hash = "";
+	headers.forEach((header) => {
+		hash += header.content;
+	});
+	return CRC32.str(hash, 0);
 };
 
 export const saveData = async (app: App, oldData: string, newData: string) => {
@@ -175,16 +197,13 @@ export const saveData = async (app: App, oldData: string, newData: string) => {
 	try {
 		const file = app.workspace.getActiveFile();
 		let content = await app.vault.read(file);
-		console.log("CONTENT");
-		console.log(content);
 
-		console.log(content.localeCompare(oldData));
 		content = content.replace(oldData, newData);
-
 		if (DEBUG) {
 			console.log("REPLACED");
 			console.log(content);
 		}
+
 		app.vault.modify(file, content);
 	} catch (err) {
 		console.log(err);
