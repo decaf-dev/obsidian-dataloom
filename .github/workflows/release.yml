@@ -2,33 +2,27 @@ name: Build and Release
 on:
     push:
         tags:
-            - "*"
+            - "v*"
 jobs:
     build:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
-              with:
-                  fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
             - name: Use Node.js
               uses: actions/setup-node@v1
               with:
                   node-version: "14.x"
-            - name: Get Version
-              id: version
-              run: |
-                  echo "::set-output name=tag::$(git describe --abbrev=0)"
             - name: Build
               id: build
               run: |
-                  yarn
-                  yarn run release
+                  npm install
+                  npm build
             # Create the release on github
             - name: Create Release
               id: create_release
               uses: actions/create-release@v1
               env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
                   VERSION: ${{ github.ref }}
               with:
                   tag_name: ${{ github.ref }}
@@ -40,7 +34,7 @@ jobs:
               id: upload-main
               uses: actions/upload-release-asset@v1
               env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
               with:
                   upload_url: ${{ steps.create_release.outputs.upload_url }}
                   asset_path: ./dist/main.js
@@ -51,7 +45,7 @@ jobs:
               id: upload-manifest
               uses: actions/upload-release-asset@v1
               env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
               with:
                   upload_url: ${{ steps.create_release.outputs.upload_url }}
                   asset_path: ./dist/manifest.json
@@ -62,7 +56,7 @@ jobs:
               id: upload-css
               uses: actions/upload-release-asset@v1
               env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
               with:
                   upload_url: ${{ steps.create_release.outputs.upload_url }}
                   asset_path: ./dist/styles.css
