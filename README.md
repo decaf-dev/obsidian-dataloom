@@ -8,31 +8,41 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 
 ## Usage
 
+### Making a Table
+
 Make a table using normal markdown syntax. Under the hyphen row, specify the types of each column.
 
-The table currently supports 3 types: text, number, and tag.
+The plugin currently supports 3 cell types: `text`, `number`, and `tag`.
 
 ![Screenshot](.readme/markdown.png)
 
 Toggle to preview mode and the table will automatically render.
 
+### Editing Cells
+
+To edit a cell, just click on it. Changes made to the cell will be propagated to the markdown.
+
+### Headers
+
 Click on a header name to edit the header title and change the column type.
 
 ![Screenshot](.readme/header.png)
 
-If you want to render a link in text, just add square brackets [[My Link]]. Tags do not require the pound sign.
+### Links
+
+If you want to render a link in text, just add square brackets [[My Link]].
 
 ![Screenshot](.readme/text-link-1.png)
 ![Screenshot](.readme/text-link-2.png)
 
 ### Errors
 
-A type definition error will occur if you do not specify valid types in a type row. Please correct this error in your markdown to continue.
+A type definition error will occur if you do not specify valid types in a type row (text, number, or tag). Please correct this error in your markdown to continue.
 
-![Screenshot](.readme/type-definition-error-1.png)
-![Screenshot](.readme/type-definition-error-2.png)
+![Screenshot](.readme/type-def-error-1.png)
+![Screenshot](.readme/type-def-error-2.png)
 
-A cell type error will occur if you enter data which doesn't match the type of data specified. Please correct this error in your markdown to continue.
+A cell type error will occur if you enter data which doesn't match the column data type. Please correct this error in your markdown to continue.
 
 ![Screenshot](.readme/cell-error-1.png)
 ![Screenshot](.readme/cell-error-2.png)
