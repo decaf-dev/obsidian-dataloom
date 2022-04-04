@@ -1,4 +1,4 @@
-import { Plugin } from "obsidian";
+import { Plugin, Editor, MarkdownView } from "obsidian";
 
 import { NLTTable } from "src/NLTTable";
 import { NltSettings, DEFAULT_SETTINGS } from "src/app/services/state";
@@ -16,6 +16,29 @@ export default class NltPlugin extends Plugin {
 				);
 			}
 		});
+
+		this.registerCommands();
+	}
+
+	registerCommands() {
+		this.addCommand({
+			id: "nlt-add-table",
+			name: "Add table",
+			editorCallback: (editor: Editor, view: MarkdownView) => {
+				editor.replaceSelection(this.emptyTable());
+			},
+		});
+	}
+
+	emptyTable(): string {
+		const columnName = "Column 1";
+		const rows = [];
+		rows[0] = `|  ${columnName}  |`;
+		rows[1] = `|  ${Array(columnName.length).fill("-").join("")}  |`;
+		rows[2] = `|  text ${Array(columnName.length - 3)
+			.fill(" ")
+			.join("")}  |`;
+		return rows.join("\n");
 	}
 
 	async loadSettings() {
