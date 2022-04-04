@@ -12,9 +12,9 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 
 ## Development
 
-### Installation
+The app can be development in either Obsidian or in your browser using `react-scripts`.
 
-Clone the repository
+### Development in Obsidian
 
 Install packages
 
@@ -34,6 +34,16 @@ Make a symbolic link between where you cloned the repo and your vault plugins fo
 
 -   `ln -s ./obsidian-collaboration/plugin /Desktop/my-vault/.obsidian/plugins/`
 
+### Devleopment using React Scripts
+
+Install packages
+
+-   `npm install`
+
+Run development server
+
+-   `npm run start`
+
 ### Plugin
 
 Create build script
@@ -47,8 +57,12 @@ Create build script
 
 ## License
 
--   MIT
+-   GNU GPLv3
 
 ## Author
 
 -   Trey Wallis
+
+## Donate
+
+-   If you find this plugin helpful, please consider [buying me an herbal tea](https://www.buymeacoffee.com/treywallis) ;)
