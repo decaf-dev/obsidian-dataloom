@@ -18,7 +18,7 @@ jobs:
                   npm install
                   npm run build
                   cp main.css styles.css
-                  sed -i 's/0.1.0/${{ github.ref }}/' manifest.json
+                  sed -i 's/0\.1\.0/${{ github.ref }}/' manifest.json
             # Create the release on github
             - name: Create Release
               id: create_release
