@@ -62,4 +62,11 @@ esbuild
 		treeShaking: true,
 		outfile: "main.js",
 	})
+	.then(() => {
+		if (prod) {
+			fs.rename("./main.css", "./styles.css", (err) => {
+				if (err) console.log(err);
+			});
+		}
+	})
 	.catch(() => process.exit(1));
