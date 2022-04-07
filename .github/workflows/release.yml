@@ -22,7 +22,7 @@ jobs:
               env:
                   TAG: ${{ github.ref }}
               run: |
-                  sed -i "s/0\.1\.0/$TAG/" manifest.json
+                  sed "s/0\.1\.0/$TAG/" manifest.json
             # Create the release on github
             - name: Create Release
               id: create_release
