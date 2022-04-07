@@ -19,10 +19,10 @@ jobs:
                   npm run build
             - name: Update version in manifest.json
               id: update-version
-              env:
-                  TAG: ${{ github.ref }}
               run: |
                   sed "s/0\.1\.0/$TAG/" manifest.json
+              env:
+                  TAG: ${{ github.ref }}
             # Create the release on github
             - name: Create Release
               id: create_release
