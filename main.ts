@@ -24,7 +24,7 @@ export default class NltPlugin extends Plugin {
 		this.addCommand({
 			id: "nlt-add-table",
 			name: "Add table",
-			editorCallback: (editor: Editor, view: MarkdownView) => {
+			editorCallback: (editor: Editor) => {
 				editor.replaceSelection(this.emptyTable());
 			},
 		});
@@ -51,5 +51,9 @@ export default class NltPlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
+	}
+
+	async onunload() {
+		console.log("UNLOADING PLUGIN!");
 	}
 }
