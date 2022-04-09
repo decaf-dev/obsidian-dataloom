@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -36,6 +36,7 @@ export default function App({ plugin, settings, data }: Props) {
 	const [oldAppData, setOldAppData] = useState<AppData>(data);
 	const [appData, setAppData] = useState<AppData>(data);
 	const [headerMenu, setHeaderMenu] = useState(initialHeaderMenuState);
+	const appRef = useRef<HTMLInputElement>();
 
 	const app = useApp();
 
@@ -114,12 +115,14 @@ export default function App({ plugin, settings, data }: Props) {
 		type: string
 	) {
 		const target = e.target as HTMLDivElement;
-		const { x, y } = target.getBoundingClientRect();
+
+		let offsetY = 0;
+		if (appRef.current) offsetY = appRef.current.clientHeight;
 
 		setHeaderMenu({
 			isOpen: true,
 			left: 0,
-			top: 0,
+			top: -offsetY,
 			id,
 			position,
 			content,
@@ -415,7 +418,7 @@ export default function App({ plugin, settings, data }: Props) {
 	}
 
 	return (
-		<div className="NLT__overflow">
+		<div className="NLT__overflow" ref={appRef}>
 			<Table
 				headers={appData.headers.map((header) => {
 					return {

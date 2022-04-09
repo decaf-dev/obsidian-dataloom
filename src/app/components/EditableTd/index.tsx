@@ -4,7 +4,7 @@ import Menu from "../Menu";
 import TextCell from "../TextCell";
 import TagCell from "../TagCell";
 import ErrorCell from "../ErrorCell";
-import TagMenu from "../TagMenu";
+import TagMenuContent from "../TagMenuContent";
 
 import { useForceUpdate, useApp } from "../../services/hooks";
 import { randomColor } from "../../services/utils";
@@ -165,7 +165,7 @@ export default function EditableTd({
 		}
 	}
 
-	function renderCellMenu() {
+	function renderCellMenuContent() {
 		switch (type) {
 			case CELL_TYPE.TEXT:
 				return (
@@ -191,7 +191,7 @@ export default function EditableTd({
 				);
 			case CELL_TYPE.TAG:
 				return (
-					<TagMenu
+					<TagMenuContent
 						cellId={cellId}
 						tags={tags}
 						color={cellMenu.tagColor}
@@ -247,7 +247,7 @@ export default function EditableTd({
 					left: cellMenu.left,
 					height: getMenuHeight(),
 				}}
-				content={renderCellMenu()}
+				content={renderCellMenuContent()}
 				onOutsideClick={handleOutsideClick}
 			/>
 		</div>

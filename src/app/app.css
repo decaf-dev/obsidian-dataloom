@@ -122,5 +122,9 @@
 .NLT__menu {
 	position: absolute;
 	padding: 0 !important;
-	background-color: var(--interactive-normal);
+	border-radius: 4px;
+	background-color:var(--background-primary);
+	border: 1px solid var(--background-modifier-border);
+	box-shadow: 0 2px 8px var(--background-modifier-box-shadow);
+	z-index: var(--layer-menu);
 }
