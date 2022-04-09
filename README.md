@@ -47,9 +47,10 @@ A cell type error will occur if you enter data which doesn't match the column da
 ![Screenshot](.readme/cell-error-1.png)
 ![Screenshot](.readme/cell-error-2.png)
 
-### Mobile and Live Preview
+### Live Preview
 
-NOTE: This plugin is in beginning stages and has not been tested with mobile or with live preview. I recommend turning live preview off for now.
+April 9, 2022:
+Tables display with live preview is still being developed in Obsidian. If you're using live preview, please always use the table in "Reading" mode not "Editing" mode.
 
 ## Built With
 
