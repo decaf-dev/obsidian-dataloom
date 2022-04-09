@@ -116,13 +116,11 @@ export default function App({ plugin, settings, data }: Props) {
 	) {
 		const target = e.target as HTMLDivElement;
 
-		let offsetY = 0;
-		if (appRef.current) offsetY = appRef.current.clientHeight;
-
+		// let offsetY = 0;
+		// if (appRef.current) offsetY = appRef.current.clientHeight;
 		setHeaderMenu({
-			isOpen: true,
 			left: 0,
-			top: -offsetY,
+			top: 0,
 			id,
 			position,
 			content,
@@ -425,6 +423,23 @@ export default function App({ plugin, settings, data }: Props) {
 						...header,
 						component: (
 							<div className="NLT__header-group">
+								<HeaderMenu
+									hide={headerMenu.id !== header.id}
+									style={{
+										top: headerMenu.top,
+										left: headerMenu.left,
+									}}
+									id={headerMenu.id}
+									content={headerMenu.content}
+									position={headerMenu.position}
+									type={headerMenu.type}
+									onOutsideClick={handleHeaderSave}
+									onItemClick={handleMenuItemClick}
+									onDeleteClick={handleDeleteHeaderClick}
+									onClose={() =>
+										setHeaderMenu(initialHeaderMenuState)
+									}
+								/>
 								<div className="NLT__header-content">
 									{header.content}
 								</div>
@@ -495,21 +510,6 @@ export default function App({ plugin, settings, data }: Props) {
 				})}
 				onAddColumn={handleAddColumn}
 				onAddRow={handleAddRow}
-			/>
-			<HeaderMenu
-				hide={headerMenu.isOpen === false}
-				style={{
-					top: headerMenu.top,
-					left: headerMenu.left,
-				}}
-				id={headerMenu.id}
-				content={headerMenu.content}
-				position={headerMenu.position}
-				type={headerMenu.type}
-				onOutsideClick={handleHeaderSave}
-				onItemClick={handleMenuItemClick}
-				onDeleteClick={handleDeleteHeaderClick}
-				onClose={() => setHeaderMenu(initialHeaderMenuState)}
 			/>
 		</div>
 	);

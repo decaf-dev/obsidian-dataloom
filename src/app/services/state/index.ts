@@ -112,7 +112,6 @@ export const initialTag = (
 };
 
 export const initialHeaderMenuState = {
-	isOpen: false,
 	left: 0,
 	top: 0,
 	id: "",
