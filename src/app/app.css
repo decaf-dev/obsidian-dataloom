@@ -5,11 +5,19 @@
 	color: red;
 }
 
+.NLT__overflow {
+	overflow: auto;
+}
+
 /*
 * Button
 */
 .NLT__button {
 	padding: 4px !important;
+}
+
+.NLT__button--sm {
+	width: 50px;
 }
 
 .NLT__button--reset {

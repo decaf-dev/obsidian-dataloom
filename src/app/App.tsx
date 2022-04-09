@@ -435,7 +435,7 @@ export default function App({ plugin, settings, data }: Props) {
 	}
 
 	return (
-		<div>
+		<div className="NLT__overflow">
 			<Table
 				headers={appData.headers.map((header) => {
 					return {
