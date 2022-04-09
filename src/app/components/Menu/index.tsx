@@ -3,9 +3,9 @@ import ClickableComponent from "../ClickableComponent";
 
 interface Props {
 	hide: boolean;
-	style: object;
+	style?: object;
 	content: React.ReactNode;
-	onOutsideClick: () => void;
+	onOutsideClick: (e: MouseEvent | undefined) => void;
 }
 
 export default function Menu({ hide, style, content, onOutsideClick }: Props) {
@@ -18,7 +18,7 @@ export default function Menu({ hide, style, content, onOutsideClick }: Props) {
 			onOutsideClick={onOutsideClick}
 			render={() => {}}
 			renderClickable={
-				<div className="menu NLT__menu" style={style}>
+				<div className="NLT__menu" style={style}>
 					{content}
 				</div>
 			}

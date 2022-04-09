@@ -20,57 +20,45 @@ export default function DragMenu({ onDeleteClick }: Props) {
 	const initialClickedButton = {
 		top: 0,
 		left: 0,
-		width: 0,
-		height: 0,
+		isClicked: false,
 	};
 	const [clickedButton, setClickedButton] = useState(initialClickedButton);
 
 	const buttonRef = useRef<HTMLInputElement>();
-	const forceUpdate = useForceUpdate();
-	const { workspace } = useApp() || {};
 
-	function handleOutsideClick() {
+	function handleOutsideClick(e: MouseEvent | undefined) {
+		if (e) {
+			const el = e.target as HTMLInputElement;
+			console.log(el.nodeName);
+			if (el.nodeName === "svg" || el.nodeName === "path") return;
+		}
 		setClickedButton(initialClickedButton);
 	}
 
+	// function getOffset(el: HTMLElement) {
+	// 	const rect = el.getBoundingClientRect();
+	// 	return {
+	// 		left: rect.left + window.scrollX,
+	// 		top: rect.top + window.scrollY,
+	// 	};
+	// }
+
 	function handleDragClick() {
-		if (clickedButton.height > 0) return;
+		if (clickedButton.isClicked) {
+			setClickedButton(initialClickedButton);
+			return;
+		}
 
 		if (buttonRef.current) {
-			let fileExplorerWidth = 0;
-			let ribbonWidth = 0;
-
-			//Check if defined, it will be undefined if we're developing using react-scripts
-			//and not rendering in Obsidian
-			if (workspace) {
-				const el = workspace.containerEl;
-				const ribbon = el.getElementsByClassName(
-					"workspace-ribbon"
-				)[0] as HTMLElement;
-				const fileExplorer = el.getElementsByClassName(
-					"workspace-split"
-				)[0] as HTMLElement;
-
-				fileExplorerWidth = fileExplorer.offsetWidth;
-				ribbonWidth = ribbon.offsetWidth;
-			}
-
-			const { x, y, width, height } =
-				buttonRef.current.getBoundingClientRect();
+			const { width, height } = buttonRef.current.getBoundingClientRect();
 
 			setClickedButton({
-				left: x - fileExplorerWidth - ribbonWidth - 22,
-				top: y,
-				width,
-				height,
+				left: -width - 62,
+				top: -height,
+				isClicked: true,
 			});
-			forceUpdate();
 		}
 	}
-
-	useEffect(() => {
-		if (clickedButton.height > 0) forceUpdate();
-	}, [clickedButton.height]);
 
 	return (
 		<div className="NLT__td NLT__hidden-column">
@@ -80,10 +68,10 @@ export default function DragMenu({ onDeleteClick }: Props) {
 				onClick={handleDragClick}
 			/>
 			<Menu
-				hide={clickedButton.height === 0}
+				hide={clickedButton.isClicked === false}
 				style={{
-					top: clickedButton.top,
-					left: clickedButton.left + clickedButton.width,
+					top: `${clickedButton.top}px`,
+					left: `${clickedButton.left}px`,
 				}}
 				content={
 					<div className="NLT__drag-menu-container">

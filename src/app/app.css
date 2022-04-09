@@ -115,6 +115,12 @@
 /*
 * Menu
 */
+.NLT__clickable {
+	position: relative;
+}
+
 .NLT__menu {
+	position: absolute;
 	padding: 0 !important;
+	background-color: var(--interactive-normal);
 }

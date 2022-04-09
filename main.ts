@@ -11,7 +11,6 @@ export default class NltPlugin extends Plugin {
 		await this.forcePostProcessorReload();
 
 		this.registerMarkdownPostProcessor((element, context) => {
-			console.log("REGISTERING!");
 			const table = element.getElementsByTagName("table");
 			if (table.length === 1) {
 				context.addChild(

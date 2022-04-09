@@ -50,10 +50,10 @@ export default function App({ plugin, settings, data }: Props) {
 			//If we're running in Obsidian
 			if (app) {
 				if (appData.updateTime === 0) {
-					console.log("Setting Old Data");
+					if (DEBUG) console.log("Setting Old Data");
 					setOldAppData(data);
 				} else {
-					console.log("Saving Data");
+					if (DEBUG) console.log("Saving Data");
 					try {
 						await saveData(app, oldAppData, appData);
 					} catch (err) {}
@@ -114,31 +114,12 @@ export default function App({ plugin, settings, data }: Props) {
 		type: string
 	) {
 		const target = e.target as HTMLDivElement;
-
-		let fileExplorerWidth = 0;
-		let ribbonWidth = 0;
-
-		//Check if defined, it will be undefined if we're developing using react-scripts
-		//and not rendering in Obsidian
-		if (app) {
-			const el = app.workspace.containerEl;
-			const ribbon = el.getElementsByClassName(
-				"workspace-ribbon"
-			)[0] as HTMLElement;
-			const fileExplorer = el.getElementsByClassName(
-				"workspace-split"
-			)[0] as HTMLElement;
-
-			fileExplorerWidth = fileExplorer.offsetWidth;
-			ribbonWidth = ribbon.offsetWidth;
-		}
-
 		const { x, y } = target.getBoundingClientRect();
 
 		setHeaderMenu({
 			isOpen: true,
-			left: x - fileExplorerWidth - ribbonWidth - 12,
-			top: y + 11,
+			left: 0,
+			top: 0,
 			id,
 			position,
 			content,
@@ -205,7 +186,6 @@ export default function App({ plugin, settings, data }: Props) {
 	function handleAddTag(cellId: string, content: string, color: string) {
 		// const tag = appData.tags.find((tag) => tag.content === text);
 		// if (tag) {
-		// 	console.log("HERE");
 		// 	//If our cell id has already selected the tag then return
 		// 	if (tag.selected.includes(cellId)) return;
 		// 	//Otherwise select our cell id
