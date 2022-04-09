@@ -54,8 +54,6 @@ export default function EditableTd({
 	};
 	const [cellMenu, setCellMenu] = useState(initialCellMenuState);
 
-	const { workspace } = useApp() || {};
-
 	useEffect(() => {
 		if (cellMenu.isOpen) forceUpdate();
 	}, [cellMenu.isOpen, forceUpdate]);
@@ -73,36 +71,18 @@ export default function EditableTd({
 
 	function handleCellClick(e: React.MouseEvent<HTMLElement>) {
 		const el = e.target as HTMLInputElement;
+
 		//If we clicked on the link for a file or tag, return
 		if (el.nodeName === "A") return;
-
 		if (type === CELL_TYPE.ERROR) return;
 
 		if (tdRef.current) {
-			let fileExplorerWidth = 0;
-			let ribbonWidth = 0;
-
-			//Check if defined, it will be undefined if we're developing using react-scripts
-			//and not rendering in Obsidian
-			if (workspace) {
-				const el = workspace.containerEl;
-				const ribbon = el.getElementsByClassName(
-					"workspace-ribbon"
-				)[0] as HTMLElement;
-				const fileExplorer = el.getElementsByClassName(
-					"workspace-split"
-				)[0] as HTMLElement;
-
-				fileExplorerWidth = fileExplorer.offsetWidth;
-				ribbonWidth = ribbon.offsetWidth;
-			}
-
-			const { x, y, height } = tdRef.current.getBoundingClientRect();
-
+			const { height } = tdRef.current.getBoundingClientRect();
+			console.log(height);
 			setCellMenu({
 				isOpen: true,
-				left: x - fileExplorerWidth - ribbonWidth,
-				top: y - 22,
+				left: -10,
+				top: -5,
 				height,
 				tagColor: randomColor(),
 			});
@@ -237,19 +217,19 @@ export default function EditableTd({
 			style={{ maxWidth: width }}
 			onClick={handleCellClick}
 		>
-			{renderCell()}
 			<Menu
 				hide={!cellMenu.isOpen}
 				style={{
 					minWidth: type === CELL_TYPE.TEXT ? "11rem" : 0,
 					width: getMenuWidth(),
-					top: cellMenu.top,
-					left: cellMenu.left,
+					top: `${cellMenu.top}px`,
+					left: `${cellMenu.left}px`,
 					height: getMenuHeight(),
 				}}
 				content={renderCellMenuContent()}
 				onOutsideClick={handleOutsideClick}
 			/>
+			{renderCell()}
 		</div>
 	);
 }

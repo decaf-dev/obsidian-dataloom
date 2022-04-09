@@ -36,7 +36,6 @@
 .NLT__td {
 	display: table-cell;
 	padding: 5px 10px;
-	vertical-align: middle;
 	border-top: none;
 	border-right: 1px solid var(--table-color);
 	border-bottom: 1px solid var(--table-color);
