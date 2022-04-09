@@ -20,7 +20,7 @@ export default function DragMenu({ onDeleteClick }: Props) {
 	const initialClickedButton = {
 		top: 0,
 		left: 0,
-		isClicked: false,
+		isOpen: false,
 	};
 	const [clickedButton, setClickedButton] = useState(initialClickedButton);
 
@@ -44,7 +44,7 @@ export default function DragMenu({ onDeleteClick }: Props) {
 	// }
 
 	function handleDragClick() {
-		if (clickedButton.isClicked) {
+		if (clickedButton.isOpen) {
 			setClickedButton(initialClickedButton);
 			return;
 		}
@@ -55,7 +55,7 @@ export default function DragMenu({ onDeleteClick }: Props) {
 			setClickedButton({
 				left: -width - 62,
 				top: -height,
-				isClicked: true,
+				isOpen: true,
 			});
 		}
 	}
@@ -68,7 +68,7 @@ export default function DragMenu({ onDeleteClick }: Props) {
 				onClick={handleDragClick}
 			/>
 			<Menu
-				hide={clickedButton.isClicked === false}
+				isOpen={clickedButton.isOpen}
 				style={{
 					top: `${clickedButton.top}px`,
 					left: `${clickedButton.left}px`,

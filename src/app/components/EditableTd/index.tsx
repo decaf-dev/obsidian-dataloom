@@ -218,7 +218,7 @@ export default function EditableTd({
 			onClick={handleCellClick}
 		>
 			<Menu
-				hide={!cellMenu.isOpen}
+				isOpen={cellMenu.isOpen}
 				style={{
 					minWidth: type === CELL_TYPE.TEXT ? "11rem" : 0,
 					width: getMenuWidth(),

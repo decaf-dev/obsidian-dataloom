@@ -34,7 +34,6 @@ export interface Header {
 }
 export interface TableHeader extends Header {
 	component: React.ReactNode;
-	onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 export interface Row {

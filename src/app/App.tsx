@@ -4,9 +4,8 @@ import { v4 as uuidv4 } from "uuid";
 
 import EditableTd from "./components/EditableTd";
 import Table from "./components/Table";
-import ArrowGroup from "./components/ArrowGroup";
 import DragMenu from "./components/DragMenu";
-import HeaderMenu from "./components/HeaderMenu";
+import EditableTh from "./components/EditableTh";
 
 import {
 	initialHeader,
@@ -104,27 +103,6 @@ export default function App({ plugin, settings, data }: Props) {
 					),
 				],
 			};
-		});
-	}
-
-	function handleHeaderClick(
-		e: React.MouseEvent<HTMLDivElement>,
-		id: string,
-		position: number,
-		content: string,
-		type: string
-	) {
-		const target = e.target as HTMLDivElement;
-
-		// let offsetY = 0;
-		// if (appRef.current) offsetY = appRef.current.clientHeight;
-		setHeaderMenu({
-			left: -10,
-			top: -10,
-			id,
-			position,
-			content,
-			type,
 		});
 	}
 
@@ -381,7 +359,7 @@ export default function App({ plugin, settings, data }: Props) {
 		});
 	}
 
-	function handleMenuItemClick(
+	function handleHeaderItemClick(
 		headerId: string,
 		headerPosition: number,
 		cellType: string
@@ -419,51 +397,23 @@ export default function App({ plugin, settings, data }: Props) {
 		<div className="NLT__overflow" ref={appRef}>
 			<Table
 				headers={appData.headers.map((header) => {
+					const { id, content, position, type, arrow } = header;
 					return {
 						...header,
 						component: (
-							<div className="NLT__header-group">
-								<HeaderMenu
-									hide={headerMenu.id !== header.id}
-									style={{
-										top: headerMenu.top,
-										left: headerMenu.left,
-									}}
-									id={headerMenu.id}
-									content={headerMenu.content}
-									position={headerMenu.position}
-									type={headerMenu.type}
-									onOutsideClick={handleHeaderSave}
-									onItemClick={handleMenuItemClick}
-									onDeleteClick={handleDeleteHeaderClick}
-									onClose={() =>
-										setHeaderMenu(initialHeaderMenuState)
-									}
-								/>
-								<div className="NLT__header-content">
-									{header.content}
-								</div>
-								<ArrowGroup
-									selected={header.arrow}
-									onArrowClick={(arrow) =>
-										handleHeaderArrowClick(
-											header.id,
-											header.position,
-											header.type,
-											arrow
-										)
-									}
-								/>
-							</div>
+							<EditableTh
+								key={id}
+								id={id}
+								content={content}
+								position={position}
+								type={type}
+								arrow={arrow}
+								onArrowClick={handleHeaderArrowClick}
+								onDeleteClick={handleDeleteHeaderClick}
+								onSaveClick={handleHeaderSave}
+								onItemClick={handleHeaderItemClick}
+							/>
 						),
-						onClick: (e: React.MouseEvent<HTMLDivElement>) =>
-							handleHeaderClick(
-								e,
-								header.id,
-								header.position,
-								header.content,
-								header.type
-							),
 					};
 				})}
 				rows={appData.rows.map((row) => {

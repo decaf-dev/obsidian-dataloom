@@ -2,14 +2,19 @@ import React from "react";
 import ClickableComponent from "../ClickableComponent";
 
 interface Props {
-	hide: boolean;
+	isOpen: boolean;
 	style?: object;
 	content: React.ReactNode;
 	onOutsideClick: (e: MouseEvent | undefined) => void;
 }
 
-export default function Menu({ hide, style, content, onOutsideClick }: Props) {
-	if (hide) return <></>;
+export default function Menu({
+	isOpen,
+	style,
+	content,
+	onOutsideClick,
+}: Props) {
+	if (!isOpen) return <></>;
 
 	return (
 		<ClickableComponent
