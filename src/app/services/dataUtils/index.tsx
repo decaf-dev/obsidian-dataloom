@@ -21,21 +21,26 @@ import { CELL_TYPE, DEBUG } from "../../constants";
 export const findErrorData = (el: HTMLElement): ErrorData | null => {
 	const tr = el.querySelectorAll("tr");
 	const typeRowEl = tr[1];
-	const td = typeRowEl.querySelectorAll("td");
 
-	const errors: number[] = [];
+	if (typeRowEl) {
+		const td = typeRowEl.querySelectorAll("td");
 
-	td.forEach((td, i) => {
-		let cellType = getCellType(td.textContent, true);
-		if (cellType === CELL_TYPE.ERROR) {
-			errors.push(i);
+		const errors: number[] = [];
+
+		td.forEach((td, i) => {
+			let cellType = getCellType(td.textContent, true);
+			if (cellType === CELL_TYPE.ERROR) {
+				errors.push(i);
+			}
+		});
+
+		if (errors.length === 0) {
+			return null;
+		} else {
+			return { columnIds: errors };
 		}
-	});
-
-	if (errors.length === 0) {
-		return null;
 	} else {
-		return { columnIds: errors };
+		return { columnIds: [] };
 	}
 };
 
