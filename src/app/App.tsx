@@ -119,8 +119,8 @@ export default function App({ plugin, settings, data }: Props) {
 		// let offsetY = 0;
 		// if (appRef.current) offsetY = appRef.current.clientHeight;
 		setHeaderMenu({
-			left: 0,
-			top: 0,
+			left: -10,
+			top: -10,
 			id,
 			position,
 			content,
