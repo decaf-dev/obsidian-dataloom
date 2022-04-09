@@ -21,21 +21,26 @@ import { CELL_TYPE, DEBUG } from "../../constants";
 export const findErrorData = (el: HTMLElement): ErrorData | null => {
 	const tr = el.querySelectorAll("tr");
 	const typeRowEl = tr[1];
-	const td = typeRowEl.querySelectorAll("td");
 
-	const errors: number[] = [];
+	if (typeRowEl) {
+		const td = typeRowEl.querySelectorAll("td");
 
-	td.forEach((td, i) => {
-		let cellType = getCellType(td.innerHTML, true);
-		if (cellType === CELL_TYPE.ERROR) {
-			errors.push(i);
+		const errors: number[] = [];
+
+		td.forEach((td, i) => {
+			let cellType = getCellType(td.textContent, true);
+			if (cellType === CELL_TYPE.ERROR) {
+				errors.push(i);
+			}
+		});
+
+		if (errors.length === 0) {
+			return null;
+		} else {
+			return { columnIds: errors };
 		}
-	});
-
-	if (errors.length === 0) {
-		return null;
 	} else {
-		return { columnIds: errors };
+		return { columnIds: [] };
 	}
 };
 
@@ -50,7 +55,7 @@ export const findAppData = (
 
 	const th = el.querySelectorAll("th");
 	th.forEach((header, i) => {
-		headers.push(initialHeader(header.innerHTML, i));
+		headers.push(initialHeader(header.textContent, i));
 	});
 
 	const tr = el.querySelectorAll("tr");
@@ -71,16 +76,16 @@ export const findAppData = (
 			let cellType = "";
 			//Set header type based off of the first row's specified cell type
 			if (i === 1) {
-				cellType = getCellType(td.innerHTML, true);
+				cellType = getCellType(td.textContent, true);
 				headers[j].type = cellType;
 				return;
 			} else {
 				//If empty then just set it to the type it's supposed to be.
 				//We do this to allow blank cells
-				if (td.innerHTML === "") {
+				if (td.textContent === "") {
 					cellType = headers[j].type;
 				} else {
-					cellType = getCellType(td.innerHTML, false);
+					cellType = getCellType(td.textContent, false);
 				}
 			}
 
@@ -92,7 +97,7 @@ export const findAppData = (
 						rowId,
 						j,
 						CELL_TYPE.ERROR,
-						td.innerHTML,
+						td.textContent,
 						headers[j].type
 					)
 				);
@@ -102,7 +107,7 @@ export const findAppData = (
 			if (cellType === CELL_TYPE.TAG) {
 				cells.push(initialCell(cellId, rowId, j, CELL_TYPE.TAG, ""));
 
-				let content = td.innerHTML;
+				let content = td.textContent;
 				content = stripLink(content);
 				content = stripPound(content);
 
@@ -125,11 +130,17 @@ export const findAppData = (
 				cells.push(initialCell(cellId, rowId, j, CELL_TYPE.TAG, ""));
 			} else if (cellType === CELL_TYPE.NUMBER) {
 				cells.push(
-					initialCell(cellId, rowId, j, CELL_TYPE.TEXT, td.innerHTML)
+					initialCell(
+						cellId,
+						rowId,
+						j,
+						CELL_TYPE.TEXT,
+						td.textContent
+					)
 				);
 			} else if (cellType === CELL_TYPE.TEXT) {
-				let content = td.innerHTML;
-				if (hasLink(td.innerHTML)) {
+				let content = td.textContent;
+				if (hasLink(td.textContent)) {
 					content = stripLink(content);
 					content = addBrackets(content);
 				}
@@ -334,9 +345,9 @@ export const writeContentToDataString = (
 	return data;
 };
 
-export const getCellType = (innerHTML: string, firstRow: boolean) => {
+export const getCellType = (textContent: string, firstRow: boolean) => {
 	if (firstRow) {
-		switch (innerHTML) {
+		switch (textContent) {
 			case CELL_TYPE.TEXT:
 				return CELL_TYPE.TEXT;
 			case CELL_TYPE.NUMBER:
@@ -349,10 +360,10 @@ export const getCellType = (innerHTML: string, firstRow: boolean) => {
 				return CELL_TYPE.ERROR;
 		}
 	} else {
-		if (innerHTML.match(/^\d+$/)) {
+		if (textContent.match(/^\d+$/)) {
 			return CELL_TYPE.NUMBER;
 		} else {
-			const numTags = countNumTags(innerHTML);
+			const numTags = countNumTags(textContent);
 			if (numTags === 1) {
 				return CELL_TYPE.TAG;
 			} else if (numTags > 1) {
@@ -364,8 +375,8 @@ export const getCellType = (innerHTML: string, firstRow: boolean) => {
 	}
 };
 
-export const countNumTags = (innerHTML: string): number => {
-	return (innerHTML.match(/href=\"#/g) || []).length;
+export const countNumTags = (textContent: string): number => {
+	return (textContent.match(/#\w+/g) || []).length;
 };
 
 export const hasLink = (content: string): boolean => {

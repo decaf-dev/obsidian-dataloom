@@ -46,7 +46,7 @@ export default function Table({ headers, rows, onAddColumn, onAddRow }: Props) {
 				<div className="NLT__tr">
 					<div className="NLT__td">
 						<button
-							className="NLT__button"
+							className="NLT__button NLT__button--sm"
 							onClick={() => onAddRow()}
 						>
 							New
