@@ -48,6 +48,4 @@ export class NLTTable extends MarkdownRenderChild {
 		}
 		this.containerEl.replaceWith(this.el);
 	}
-
-	onunload(): void {}
 }
