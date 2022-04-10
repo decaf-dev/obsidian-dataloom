@@ -16,13 +16,20 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 	- Add hover to header
 - 0.3.0
 	- Multi-tagging
-- 0.3.0
-	- Editable table width
 - 0.4.0
+	- Editable table width
+- 0.5.0
 	- Draggable columns
 	- Draggable rows
-- 0.5.0
-	- Search bar
+- 0.6.0
+	- Search bar?
+	- TBA
+
+### Known Bugs
+- Column header doesn't save currently
+- Tags are not unique per column
+- A text cell with numbers only is considered a number cell and will throw an error
+- Tags with spaces causes issues
 
 ## Usage
 
@@ -109,6 +116,9 @@ Install packages
 Run development server
 
 -   `npm run start`
+
+## Reporting Bugs
+If you find a bug, please open an issue. I will try to respond as soon as possible.
 
 ## Resources
 
