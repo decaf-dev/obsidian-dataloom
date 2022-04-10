@@ -11,12 +11,6 @@ interface Props {
 	content: string;
 	type: string;
 	arrow: string;
-	onClick: (
-		id: string,
-		position: number,
-		content: string,
-		type: string
-	) => void;
 	onArrowClick: (
 		id: string,
 		position: number,
