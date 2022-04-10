@@ -6,6 +6,24 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 
 ![Screenshot](.readme/preview.png)
 
+## Roadmap
+- 0.1.0
+	- MVP
+- 0.2.0
+	- Make sort 1 button
+	- Remove empty cells along side and bottom
+	- Add ability to create new tag on "Enter" press
+	- Add hover to header
+- 0.3.0
+	- Multi-tagging
+- 0.3.0
+	- Editable table width
+- 0.4.0
+	- Draggable columns
+	- Draggable rows
+- 0.5.0
+	- Search bar
+
 ## Usage
 
 ### Making a Table
