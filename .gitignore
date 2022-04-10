@@ -24,7 +24,4 @@ data.json
 # Ignore build files
 main.css
 main.js
-styles.css
-
-# Ignore data file
-data.json
+/styles.css
