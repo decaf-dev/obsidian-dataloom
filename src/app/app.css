@@ -99,22 +99,19 @@
 }
 
 /*
-* Th Body
-*/
-.NLT__header-group {
-	display: flex;
-}
-
-.NLT__header-content {
-	margin-right: 5px;
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-}
-
-/*
 * Menu
 */
+.NLT__clickable {
+	position: relative;
+}
+
 .NLT__menu {
+	position: absolute;
 	padding: 0 !important;
+	border-radius: 4px;
+	font-weight: 400;
+	background-color:var(--background-primary);
+	border: 1px solid var(--background-modifier-border);
+	box-shadow: 0 2px 8px var(--background-modifier-box-shadow);
+	z-index: var(--layer-menu);
 }

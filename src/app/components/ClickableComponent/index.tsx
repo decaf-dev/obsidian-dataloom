@@ -4,7 +4,7 @@ interface Props {
 	clickable: boolean;
 	render: React.ReactNode;
 	renderClickable: React.ReactNode;
-	onOutsideClick: () => void;
+	onOutsideClick: (e: MouseEvent | undefined) => void;
 	onClick?: () => void;
 }
 
@@ -20,7 +20,7 @@ export default function ClickableComponent({
 	useEffect(() => {
 		const handleClick = (e: MouseEvent) => {
 			if (ref.current && !ref.current.contains(e.target)) {
-				onOutsideClick();
+				onOutsideClick(e);
 				return;
 			}
 			onClick && onClick();
@@ -29,7 +29,7 @@ export default function ClickableComponent({
 		function handleKeyUp(e: KeyboardEvent) {
 			if (!clickable) return;
 
-			if (e.key === "Enter") onOutsideClick();
+			if (e.key === "Enter") onOutsideClick(undefined);
 		}
 
 		document.addEventListener("mousedown", handleClick);
@@ -40,5 +40,9 @@ export default function ClickableComponent({
 		};
 	}, [ref, clickable, onOutsideClick]);
 
-	return <div ref={ref}>{clickable ? renderClickable : render}</div>;
+	return (
+		<div className="NLT__clickable" ref={ref}>
+			{clickable ? renderClickable : render}
+		</div>
+	);
 }

@@ -17,7 +17,7 @@ interface Props {
 	onRemoveTagClick: (cellId: string, tagId: string) => void;
 }
 
-export default function TagMenu({
+export default function TagMenuContent({
 	cellId,
 	tags = [],
 	color = "",

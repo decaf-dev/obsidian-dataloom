@@ -11,7 +11,6 @@ export default class NltPlugin extends Plugin {
 		await this.forcePostProcessorReload();
 
 		this.registerMarkdownPostProcessor((element, context) => {
-			console.log("REGISTERING!");
 			const table = element.getElementsByTagName("table");
 			if (table.length === 1) {
 				context.addChild(
@@ -69,21 +68,21 @@ export default class NltPlugin extends Plugin {
 			const leaf = leaves[i];
 			let view = null;
 			if (leaf.view instanceof MarkdownView) view = leaf.view;
-			const file = this.app.vault.getAbstractFileByPath(view.file.path);
-			if (file instanceof TFile) {
-				let content = await this.app.vault.read(file);
+			this.app.workspace.duplicateLeaf(leaf);
+			leaf.detach();
 
-				//Find tables
-				//Match |---| or | --- |
-				//This is uniquely identity a new table
-				const hyphenRows = content.match(/\|\s{0,1}-{3,}\s{0,1}\|\n/g);
-				for (let i = 0; i < hyphenRows.length; i++) {
-					const old = hyphenRows[i];
-					const updated = old.replace("-", "--");
-					content = content.replace(old, updated);
-				}
-				this.app.vault.modify(file, content);
-			}
+			//TODO remove
+			// 	//Find tables
+			// 	//Match |---| or | --- |
+			// 	//This is uniquely identity a new table
+			// 	const hyphenRows = content.match(/\|\s{0,1}-{3,}\s{0,1}\|\n/g);
+			// 	for (let i = 0; i < hyphenRows.length; i++) {
+			// 		const old = hyphenRows[i];
+			// 		const updated = old.replace("-", "--");
+			// 		content = content.replace(old, updated);
+			// 	}
+			// 	await this.app.vault.modify(file, content);
+			// }
 		}
 	}
 }

@@ -12,3 +12,7 @@
 	padding: 0;
 	margin: 0.25rem 0px;
 }
+
+.NLT__header-menu-item:hover {
+	background-color: rgba(0,0,0,0.15);
+}

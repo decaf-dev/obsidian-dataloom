@@ -16,18 +16,13 @@ export default function Table({ headers, rows, onAddColumn, onAddRow }: Props) {
 			<div className="NLT__thead">
 				<div className="NLT__tr">
 					{headers.map((header) => (
-						<div
-							className="NLT__th"
-							style={{ maxWidth: header.width }}
-							key={header.id}
-							onClick={(e) => header.onClick(e)}
-						>
+						<div className="NLT__th" key={header.id}>
 							{header.component}
 						</div>
 					))}
 					<div className="NLT__th">
 						<button
-							className="NLT__button"
+							className="NLT__button NLT__button--sm"
 							onClick={() => onAddColumn()}
 						>
 							New
