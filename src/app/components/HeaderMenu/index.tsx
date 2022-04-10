@@ -7,7 +7,7 @@ import "./styles.css";
 import { MENU_ITEMS } from "./constants";
 
 interface Props {
-	hide: boolean;
+	isOpen: boolean;
 	style: object;
 	id: string;
 	position: number;
@@ -16,7 +16,7 @@ interface Props {
 	onItemClick: (
 		headerId: string,
 		headerPosition: number,
-		headerType: string
+		cellType: string
 	) => void;
 	onDeleteClick: (headerId: string, headerPosition: number) => void;
 	onOutsideClick: (headerId: string, inputText: string) => void;
@@ -24,7 +24,7 @@ interface Props {
 }
 
 export default function HeaderMenu({
-	hide,
+	isOpen,
 	style,
 	id,
 	position,
@@ -74,7 +74,7 @@ export default function HeaderMenu({
 
 	return (
 		<Menu
-			hide={hide}
+			isOpen={isOpen}
 			style={style}
 			content={
 				<div className="NLT__header-menu-container">
