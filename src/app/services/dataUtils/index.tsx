@@ -349,7 +349,12 @@ export const findCellType = (textContent: string, expectedType: string) => {
 
 	const numTags = countNumTags(textContent);
 	if (numTags === 1) {
-		return CELL_TYPE.TAG;
+		//If we have a tag like "#test test" the first will match, but it's technically invalid
+		if (textContent.match(/\s/)) {
+			return CELL_TYPE.ERROR;
+		} else {
+			return CELL_TYPE.TAG;
+		}
 	} else if (numTags > 1) {
 		return CELL_TYPE.MULTI_TAG;
 	} else {
@@ -363,7 +368,7 @@ export const findCellType = (textContent: string, expectedType: string) => {
 };
 
 export const countNumTags = (textContent: string): number => {
-	return (textContent.match(/#\w+/g) || []).length;
+	return (textContent.match(/#[a-zA-z0-9-_]+/g) || []).length;
 };
 
 export const hasLink = (content: string): boolean => {
