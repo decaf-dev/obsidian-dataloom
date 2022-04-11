@@ -28,10 +28,13 @@ export const findErrorData = (el: HTMLElement): ErrorData | null => {
 		const errors: number[] = [];
 
 		td.forEach((td, i) => {
-			let cellType = getCellType(td.textContent, true);
-			if (cellType === CELL_TYPE.ERROR) {
+			const cellType = td.textContent;
+			if (
+				cellType !== CELL_TYPE.TEXT &&
+				cellType != CELL_TYPE.NUMBER &&
+				cellType !== CELL_TYPE.TAG
+			)
 				errors.push(i);
-			}
 		});
 
 		if (errors.length === 0) {
@@ -76,17 +79,11 @@ export const findAppData = (
 			let cellType = "";
 			//Set header type based off of the first row's specified cell type
 			if (i === 1) {
-				cellType = getCellType(td.textContent, true);
+				cellType = td.textContent;
 				headers[j].type = cellType;
 				return;
 			} else {
-				//If empty then just set it to the type it's supposed to be.
-				//We do this to allow blank cells
-				if (td.textContent === "") {
-					cellType = headers[j].type;
-				} else {
-					cellType = getCellType(td.textContent, false);
-				}
+				cellType = findCellType(td.textContent, headers[j].type);
 			}
 
 			//Check if doesn't match header
@@ -168,7 +165,7 @@ export const loadData = (
 	el: HTMLElement,
 	settings: NltSettings
 ): AppData | ErrorData => {
-	let data = findErrorData(el);
+	const data = findErrorData(el);
 	if (data !== null) {
 		return data;
 	} else {
@@ -345,38 +342,33 @@ export const writeContentToDataString = (
 	return data;
 };
 
-export const getCellType = (textContent: string, firstRow: boolean) => {
-	if (firstRow) {
-		switch (textContent) {
-			case CELL_TYPE.TEXT:
-				return CELL_TYPE.TEXT;
-			case CELL_TYPE.NUMBER:
-				return CELL_TYPE.NUMBER;
-			case CELL_TYPE.TAG:
-				return CELL_TYPE.TAG;
-			case CELL_TYPE.MULTI_TAG:
-				return CELL_TYPE.MULTI_TAG;
-			default:
-				return CELL_TYPE.ERROR;
+export const findCellType = (textContent: string, expectedType: string) => {
+	//If empty then just set it to the type it's supposed to be.
+	//We do this to allow blank cells
+	if (textContent === "") return expectedType;
+
+	const numTags = countNumTags(textContent);
+	if (numTags === 1) {
+		//If we have a tag like "#test test" the first will match, but it's technically invalid
+		if (textContent.match(/\s/)) {
+			return CELL_TYPE.ERROR;
+		} else {
+			return CELL_TYPE.TAG;
 		}
+	} else if (numTags > 1) {
+		return CELL_TYPE.MULTI_TAG;
 	} else {
 		if (textContent.match(/^\d+$/)) {
-			return CELL_TYPE.NUMBER;
+			if (expectedType === CELL_TYPE.TEXT) return CELL_TYPE.TEXT;
+			else return CELL_TYPE.NUMBER;
 		} else {
-			const numTags = countNumTags(textContent);
-			if (numTags === 1) {
-				return CELL_TYPE.TAG;
-			} else if (numTags > 1) {
-				return CELL_TYPE.MULTI_TAG;
-			} else {
-				return CELL_TYPE.TEXT;
-			}
+			return CELL_TYPE.TEXT;
 		}
 	}
 };
 
 export const countNumTags = (textContent: string): number => {
-	return (textContent.match(/#\w+/g) || []).length;
+	return (textContent.match(/#[a-zA-z0-9-_]+/g) || []).length;
 };
 
 export const hasLink = (content: string): boolean => {

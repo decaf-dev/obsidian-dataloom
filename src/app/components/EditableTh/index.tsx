@@ -52,11 +52,6 @@ export default function EditableTh({
 		});
 	}
 
-	function handleOutsideClick() {
-		setHeaderMenu(initialHeaderMenuState);
-		onSaveClick(id, content);
-	}
-
 	return (
 		<div className="NLT__header-group" onClick={handleHeaderClick}>
 			<HeaderMenu
@@ -69,7 +64,7 @@ export default function EditableTh({
 				content={content}
 				position={position}
 				type={type}
-				onOutsideClick={handleOutsideClick}
+				onOutsideClick={onSaveClick}
 				onItemClick={onItemClick}
 				onDeleteClick={onDeleteClick}
 				onClose={() => setHeaderMenu(initialHeaderMenuState)}
