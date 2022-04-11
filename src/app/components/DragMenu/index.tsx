@@ -1,12 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 import IconButton from "../IconButton";
 import Menu from "../Menu";
 
-// import DragIndicator from "@mui/icons-material/DragIndicator";
 import MoreVert from "@mui/icons-material/MoreVert";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useApp, useForceUpdate } from "../../services/hooks";
 
 import IconText from "../IconText";
 
@@ -23,14 +22,14 @@ export default function DragMenu({ onDeleteClick }: Props) {
 		isOpen: false,
 	};
 	const [clickedButton, setClickedButton] = useState(initialClickedButton);
+	const [buttonId] = useState(uuidv4());
 
 	const buttonRef = useRef<HTMLInputElement>();
 
 	function handleOutsideClick(e: MouseEvent | undefined) {
 		if (e) {
 			const el = e.target as HTMLInputElement;
-			console.log(el.nodeName);
-			if (el.nodeName === "svg" || el.nodeName === "path") return;
+			if (el.id === buttonId) return;
 		}
 		setClickedButton(initialClickedButton);
 	}
@@ -63,6 +62,7 @@ export default function DragMenu({ onDeleteClick }: Props) {
 	return (
 		<div className="NLT__td NLT__hidden-column">
 			<IconButton
+				id={buttonId}
 				icon={<MoreVert />}
 				ref={buttonRef}
 				onClick={handleDragClick}

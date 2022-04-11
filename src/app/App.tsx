@@ -10,7 +10,6 @@ import EditableTh from "./components/EditableTh";
 import {
 	initialHeader,
 	initialCell,
-	initialHeaderMenuState,
 	initialRow,
 	initialTag,
 	Tag,
@@ -34,7 +33,6 @@ interface Props {
 export default function App({ plugin, settings, data }: Props) {
 	const [oldAppData, setOldAppData] = useState<AppData>(data);
 	const [appData, setAppData] = useState<AppData>(data);
-	const [headerMenu, setHeaderMenu] = useState(initialHeaderMenuState);
 	const appRef = useRef<HTMLInputElement>();
 
 	const app = useApp();
@@ -56,7 +54,9 @@ export default function App({ plugin, settings, data }: Props) {
 					if (DEBUG) console.log("Saving Data");
 					try {
 						await saveData(app, oldAppData, appData);
-					} catch (err) {}
+					} catch (err) {
+						console.log(err);
+					}
 				}
 			}
 		}
