@@ -4,13 +4,19 @@ import App from "./app/App.tsx";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 
+const data = {
+	headers: [],
+	rows: [],
+	cells: [],
+	tags: [],
+};
 //This is for testing with react-scripts (npm run start)
 ReactDOM.render(
 	<React.StrictMode>
 		<div className="theme-light">
 			<div className="markdown-reading-view">
 				<div className="markdown-preview-view">
-					<App />
+					<App data={data} />
 				</div>
 			</div>
 		</div>

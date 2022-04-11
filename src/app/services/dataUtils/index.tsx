@@ -165,7 +165,7 @@ export const loadData = (
 	el: HTMLElement,
 	settings: NltSettings
 ): AppData | ErrorData => {
-	let data = findErrorData(el);
+	const data = findErrorData(el);
 	if (data !== null) {
 		return data;
 	} else {
