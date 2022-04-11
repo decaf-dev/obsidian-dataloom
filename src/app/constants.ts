@@ -1,4 +1,4 @@
-export const DEBUG = false;
+export const DEBUG = true;
 
 interface CellType {
 	TEXT: string;
