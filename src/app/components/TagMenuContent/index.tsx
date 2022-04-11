@@ -27,6 +27,14 @@ export default function TagMenuContent({
 	onTextChange,
 	onRemoveTagClick,
 }: Props) {
+	function handleTextChange(e: React.ChangeEvent<HTMLInputElement>) {
+		//Disallow pound
+		if (e.target.value.match("#")) return;
+		//Disallow whitespace
+		if (e.target.value.match(/\s/)) return;
+		onTextChange(e);
+	}
+
 	function renderSelectableTags() {
 		const filteredTags = tags.filter((tag: Tag) =>
 			tag.content.includes(inputText)
@@ -83,7 +91,7 @@ export default function TagMenuContent({
 					autoFocus
 					type="text"
 					value={inputText}
-					onChange={onTextChange}
+					onChange={handleTextChange}
 				/>
 			</div>
 			<div className="NLT__tag-menu-bottom">
