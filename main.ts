@@ -36,14 +36,11 @@ export default class NltPlugin extends Plugin {
 			this.app.vault.on("rename", (file, oldPath) => {
 				//If filepath exists for our settings, then we want to rename it
 				//So that we can keep our app data matched to each file
-				console.log("Renaming/Moving File");
 				if (this.settings.appData[oldPath]) {
-					console.log("Found old path", oldPath);
 					const newPath = file.path;
 					const data = { ...this.settings.appData[oldPath] };
 					delete this.settings.appData[oldPath];
 					this.settings.appData[newPath] = data;
-					console.log("Setting to new path", newPath);
 					this.saveSettings();
 				}
 			})

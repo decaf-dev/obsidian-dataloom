@@ -59,10 +59,7 @@ export const findErrorData = (el: HTMLElement): ErrorData | null => {
 	}
 };
 
-export const findAppData = (
-	el: HTMLElement,
-	settings: NltSettings
-): AppData => {
+export const findAppData = (el: HTMLElement): AppData => {
 	const headers: Header[] = [];
 	const rows: Row[] = [];
 	const cells: Cell[] = [];
@@ -181,10 +178,8 @@ export const loadAppData = (
 	el: HTMLElement,
 	sourcePath: string
 ): AppData | ErrorData => {
-	//The el.textContent will return the textContent found in the default markdown table
-	//rendered by Obsidian
-	//It returns the text with no pipe symbols and no hyphens but includes whitespace
-	const formatted = el.textContent.replace(/\s/g, "");
+	const headerRow = el.querySelector("tr");
+	const formatted = headerRow.textContent.replace(/\s/g, "");
 	const hash = crc32.str(formatted);
 
 	//Check settings file for old data
@@ -198,7 +193,7 @@ export const loadAppData = (
 
 	let data: AppData | ErrorData = findErrorData(el);
 	if (data === null) {
-		data = findAppData(el, settings);
+		data = findAppData(el);
 		//When we find the data, save it in the cache immediately
 		//USE CASE:
 		//if a user makes a table with tags but never edits it
@@ -237,15 +232,11 @@ const pruneAppData = async (
 
 const parseTables = (input: string): string[] => {
 	return input.match(/(\|.*\|\n){1,}/g).map((tableString) => {
-		return formatTableStringForCRC(tableString);
+		return tableString
+			.match(/\|.*\|\n/)[0]
+			.replace(/\s/g, "")
+			.replace(/\|/g, "");
 	});
-};
-
-const formatTableStringForCRC = (input: string) => {
-	return input
-		.replace(/\s/g, "") //Replace all whitespace characters
-		.replace(/[---]+\|/g, "") //Replace where at least 3 hyphens exist
-		.replace(/\|/g, ""); //Replace pipes
 };
 
 const persistAppData = (
@@ -254,11 +245,10 @@ const persistAppData = (
 	appData: AppData,
 	sourcePath: string
 ) => {
-	//The table element will be different than that is returned originally from the markdown
-	//processor. Therefore, we need to format it so that it will be the same. Otherwise the CRC32
-	//values will not match
-	const appDataString = appDataToString(appData);
-	const formatted = formatTableStringForCRC(appDataString);
+	const formatted = appData.headers
+		.map((header) => header.content)
+		.join("")
+		.replace(/\s/g, "");
 	const hash = crc32.str(formatted);
 	if (!settings.appData[sourcePath]) settings.appData[sourcePath] = {};
 	settings.appData[sourcePath][hash] = appData;
@@ -293,7 +283,6 @@ export const saveAppData = async (
 		const file = app.workspace.getActiveFile();
 		let content = await app.vault.read(file);
 
-		console.log(content);
 		content = content.replace(
 			findTableRegex(oldAppData.headers, oldAppData.rows),
 			newData
@@ -321,9 +310,6 @@ export const findTableRegex = (headers: Header[], rows: Row[]): RegExp => {
 	const regex: string[] = [];
 	regex[0] = "\\|";
 	regex[0] += headers.map((header) => `.*${header.content}.*\\|`).join("");
-
-	//TODO add type definition row
-	//If we have a table with the same header names, then we will overwrite it
 
 	//Hyphen row, type definition row, and then all other rows
 	for (let i = 0; i < rows.length + 2; i++) regex[i + 1] = "\\|.*\\|";
