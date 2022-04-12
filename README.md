@@ -11,20 +11,16 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 -   0.1.0
     -   MVP
 -   0.2.0
-    -   Make sort 1 button
-    -   Remove empty cells along side and bottom
-    -   Add ability to create new tag on "Enter" press
-    -   Add hover to header
+    -   Semantic table tags
 -   0.3.0
-    -   Multi-tagging
+    -   UI and accessibility updates
 -   0.4.0
-    -   Editable table width
+    -   Multi-tagging
 -   0.5.0
+    -   Editable table width
+-   0.6.0
     -   Draggable columns
     -   Draggable rows
--   0.6.0
-    -   Search bar?
-    -   TBA
 
 ## Usage
 
@@ -56,12 +52,6 @@ If you want to render a link in text, just add square brackets [[My Link]].
 ![Screenshot](.readme/text-link-2.png)
 
 ### Errors
-
-A type definition error will occur if you do not specify valid types in a type row (text, number, or tag). Please correct this error in your markdown to continue.
-
-![Screenshot](.readme/type-def-error-1.png)
-![Screenshot](.readme/type-def-error-2.png)
-
 A cell type error will occur if you enter data which doesn't match the column data type. Please correct this error in your markdown to continue.
 
 ![Screenshot](.readme/cell-error-1.png)
@@ -71,6 +61,9 @@ A cell type error will occur if you enter data which doesn't match the column da
 
 April 9, 2022:
 Tables display with live preview is still being developed in Obsidian. If you're using live preview, please always use the table in "Reading" mode not "Editing" mode.
+
+### Theming
+NLT tables uses normal table semantic elements (table, th, tr, td, etc) to render. If you wish to edit the style of the table, just style those elements in your css.
 
 ## Built With
 
