@@ -47,7 +47,7 @@ export default function EditableTh({
 	function handleHeaderClick() {
 		setHeaderMenu({
 			left: -10,
-			top: -10,
+			top: -5,
 			isOpen: true,
 		});
 	}
