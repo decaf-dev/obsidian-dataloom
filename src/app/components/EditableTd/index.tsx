@@ -48,7 +48,7 @@ export default function EditableTd({
 }: Props) {
 	const [inputText, setInputText] = useState("");
 
-	const tdRef = useRef<HTMLDivElement>();
+	const tdRef = useRef<HTMLTableCellElement>();
 
 	const forceUpdate = useForceUpdate();
 
@@ -217,7 +217,7 @@ export default function EditableTd({
 	if (type === CELL_TYPE.NUMBER) tdClassName += " NLT__td--number";
 
 	return (
-		<div
+		<td
 			className={tdClassName}
 			ref={tdRef}
 			style={{ maxWidth: width }}
@@ -236,6 +236,6 @@ export default function EditableTd({
 				onOutsideClick={handleOutsideClick}
 			/>
 			{renderCell()}
-		</div>
+		</td>
 	);
 }
