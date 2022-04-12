@@ -20,6 +20,28 @@ import { randomColor } from "../../services/utils";
 import { CELL_TYPE, DEBUG } from "../../constants";
 import NltPlugin from "main";
 
+export const hasTypeDefinitionRow = (el: HTMLElement): boolean => {
+	const tr = el.querySelectorAll("tr");
+	const typeDefinitionEl = tr[1];
+	if (typeDefinitionEl) {
+		const td = typeDefinitionEl.querySelectorAll("td");
+
+		for (let i = 0; i < td.length; i++) {
+			const el = td[i];
+			const cellType = el.textContent;
+			if (
+				cellType !== CELL_TYPE.TEXT &&
+				cellType != CELL_TYPE.NUMBER &&
+				cellType !== CELL_TYPE.TAG
+			) {
+				return false;
+			}
+		}
+		return true;
+	} else {
+		return false;
+	}
+};
 /**
  * Validates the type definition row of the table and returns ErrorData if not valid
  * @param el The html element received from the MarkdownPostProcessor
@@ -31,31 +53,26 @@ export const findErrorData = (el: HTMLElement): ErrorData | null => {
 	//Get the type definition row
 	const typeRowEl = tr[1];
 
-	if (typeRowEl) {
-		const td = typeRowEl.querySelectorAll("td");
+	const td = typeRowEl.querySelectorAll("td");
 
-		const errors: number[] = [];
+	const errors: number[] = [];
 
-		td.forEach((td, i) => {
-			const cellType = td.textContent;
-			if (
-				cellType !== CELL_TYPE.TEXT &&
-				cellType != CELL_TYPE.NUMBER &&
-				cellType !== CELL_TYPE.TAG
-			)
-				errors.push(i);
-		});
+	td.forEach((td, i) => {
+		const cellType = td.textContent;
+		if (
+			cellType !== CELL_TYPE.TEXT &&
+			cellType != CELL_TYPE.NUMBER &&
+			cellType !== CELL_TYPE.TAG
+		)
+			errors.push(i);
+	});
 
-		if (errors.length === 0) {
-			//No error
-			return null;
-		} else {
-			//There are type definition errors
-			return { columnIds: errors };
-		}
+	if (errors.length === 0) {
+		//No error
+		return null;
 	} else {
-		//Type definition row didn't exist
-		return { columnIds: [] };
+		//There are type definition errors
+		return { columnIds: errors };
 	}
 };
 
@@ -177,7 +194,7 @@ export const loadAppData = (
 	settings: NltSettings,
 	el: HTMLElement,
 	sourcePath: string
-): AppData | ErrorData => {
+): AppData | ErrorData | null => {
 	const headerRow = el.querySelector("tr");
 	const formatted = headerRow.textContent.replace(/\s/g, "");
 	const hash = crc32.str(formatted);
@@ -190,6 +207,9 @@ export const loadAppData = (
 			return settings.appData[sourcePath][hash];
 		}
 	}
+
+	//If we don't have a type definition row return null
+	if (!hasTypeDefinitionRow(el)) return null;
 
 	let data: AppData | ErrorData = findErrorData(el);
 	if (data === null) {

@@ -32,8 +32,6 @@ export class NLTTable extends MarkdownRenderChild {
 	}
 
 	onload() {
-		this.el = this.containerEl.createEl("div");
-
 		const data = loadAppData(
 			this.plugin,
 			this.app,
@@ -41,21 +39,27 @@ export class NLTTable extends MarkdownRenderChild {
 			this.containerEl,
 			this.sourcePath
 		);
-		if (instanceOfErrorData(data)) {
-			ReactDOM.render(<ErrorDisplay data={data} />, this.el);
-		} else {
-			ReactDOM.render(
-				<AppContext.Provider value={this.app}>
-					<App
-						plugin={this.plugin}
-						settings={this.settings}
-						data={data}
-						sourcePath={this.sourcePath}
-					/>
-				</AppContext.Provider>,
-				this.el
-			);
+
+		//If data is not defined then that means that the table doesn't have a type
+		//defintion row. Therefore, it's not a valid NLT table
+		if (data) {
+			this.el = this.containerEl.createEl("div");
+			if (instanceOfErrorData(data)) {
+				ReactDOM.render(<ErrorDisplay data={data} />, this.el);
+			} else {
+				ReactDOM.render(
+					<AppContext.Provider value={this.app}>
+						<App
+							plugin={this.plugin}
+							settings={this.settings}
+							data={data}
+							sourcePath={this.sourcePath}
+						/>
+					</AppContext.Provider>,
+					this.el
+				);
+			}
+			this.containerEl.replaceWith(this.el);
 		}
-		this.containerEl.replaceWith(this.el);
 	}
 }
