@@ -15,7 +15,7 @@ import {
 	Tag,
 	NltSettings,
 } from "./services/state";
-import { saveData } from "./services/dataUtils";
+import { saveAppData } from "./services/dataUtils";
 import { useApp } from "./services/hooks";
 import { AppData } from "./services/state";
 
@@ -28,9 +28,10 @@ interface Props {
 	plugin: NltPlugin;
 	settings: NltSettings;
 	data: AppData;
+	sourcePath: string;
 }
 
-export default function App({ plugin, settings, data }: Props) {
+export default function App({ plugin, settings, data, sourcePath }: Props) {
 	const [oldAppData, setOldAppData] = useState<AppData>(data);
 	const [appData, setAppData] = useState<AppData>(data);
 	const appRef = useRef<HTMLInputElement>();
@@ -47,13 +48,17 @@ export default function App({ plugin, settings, data }: Props) {
 		async function handleUpdate() {
 			//If we're running in Obsidian
 			if (app) {
-				if (appData.updateTime === 0) {
-					if (DEBUG) console.log("Setting Old Data");
-					setOldAppData(data);
-				} else {
+				if (appData.updateTime !== 0) {
 					if (DEBUG) console.log("Saving Data");
 					try {
-						await saveData(app, oldAppData, appData);
+						await saveAppData(
+							plugin,
+							settings,
+							app,
+							oldAppData,
+							appData,
+							sourcePath
+						);
 					} catch (err) {
 						console.log(err);
 					}
@@ -162,7 +167,12 @@ export default function App({ plugin, settings, data }: Props) {
 		});
 	}
 
-	function handleAddTag(cellId: string, content: string, color: string) {
+	function handleAddTag(
+		headerId: string,
+		cellId: string,
+		content: string,
+		color: string
+	) {
 		// const tag = appData.tags.find((tag) => tag.content === text);
 		// if (tag) {
 		// 	//If our cell id has already selected the tag then return
@@ -191,12 +201,10 @@ export default function App({ plugin, settings, data }: Props) {
 				updateTime: Date.now(),
 				tags: [
 					...removeTagReferences(prevState.tags, cellId),
-					initialTag(content, cellId, color),
+					initialTag(content, cellId, headerId, color),
 				],
 			};
 		});
-		settings.tagData[content] = color;
-		plugin.saveSettings();
 		//}
 	}
 
@@ -216,14 +224,7 @@ export default function App({ plugin, settings, data }: Props) {
 					),
 				};
 			})
-			.filter((tag) => {
-				//Remove the tag from settings
-				if (tag.selected.length === 0) {
-					delete settings.tagData[tag.content];
-					plugin.saveSettings();
-				}
-				return tag.selected.length !== 0;
-			});
+			.filter((tag) => tag.selected.length !== 0);
 	}
 
 	function handleTagClick(cellId: string, tagId: string) {
@@ -431,11 +432,15 @@ export default function App({ plugin, settings, data }: Props) {
 									return (
 										<EditableTd
 											key={id}
+											headerId={header.id}
 											cellId={id}
 											type={type}
 											content={content}
 											expectedType={expectedType}
-											tags={appData.tags}
+											tags={appData.tags.filter(
+												(tag) =>
+													tag.headerId === header.id
+											)}
 											onTagClick={handleTagClick}
 											onRemoveTagClick={
 												handleRemoveTagClick

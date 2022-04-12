@@ -8,18 +8,12 @@ interface Props {
 
 export default function ErrorDisplay({ data }: Props) {
 	return (
-		<>
-			{data.columnIds.length > 0 ? (
-				<ul>
-					{data.columnIds.map((column, i) => (
-						<li key={i} className="NLT__error">
-							Invalid type definition in column {column}
-						</li>
-					))}
-				</ul>
-			) : (
-				<div className="NLT__error">Missing type definition row</div>
-			)}
-		</>
+		<ul>
+			{data.columnIds.map((column, i) => (
+				<li key={i} className="NLT__error">
+					Invalid type definition in column {column}
+				</li>
+			))}
+		</ul>
 	);
 }

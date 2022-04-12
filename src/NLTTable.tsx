@@ -5,7 +5,7 @@ import ReactDOM from "react-dom";
 import { AppContext } from "./app/services/hooks";
 import App from "./app/App";
 import ErrorDisplay from "./app/components/ErrorDisplay";
-import { loadData } from "./app/services/dataUtils";
+import { loadAppData } from "./app/services/dataUtils";
 import { instanceOfErrorData, NltSettings } from "./app/services/state";
 import NltPlugin from "main";
 
@@ -15,37 +15,51 @@ export class NLTTable extends MarkdownRenderChild {
 	plugin: NltPlugin;
 	settings: NltSettings;
 	el: HTMLElement;
+	sourcePath: string;
 
 	constructor(
 		containerEl: HTMLElement,
 		app: ObsidianApp,
 		plugin: NltPlugin,
-		settings: NltSettings
+		settings: NltSettings,
+		sourcePath: string
 	) {
 		super(containerEl);
 		this.app = app;
 		this.plugin = plugin;
 		this.settings = settings;
+		this.sourcePath = sourcePath;
 	}
 
 	onload() {
-		this.el = this.containerEl.createEl("div");
+		const data = loadAppData(
+			this.plugin,
+			this.app,
+			this.settings,
+			this.containerEl,
+			this.sourcePath
+		);
 
-		const data = loadData(this.containerEl, this.settings);
-		if (instanceOfErrorData(data)) {
-			ReactDOM.render(<ErrorDisplay data={data} />, this.el);
-		} else {
-			ReactDOM.render(
-				<AppContext.Provider value={this.app}>
-					<App
-						plugin={this.plugin}
-						settings={this.settings}
-						data={data}
-					/>
-				</AppContext.Provider>,
-				this.el
-			);
+		//If data is not defined then that means that the table doesn't have a type
+		//defintion row. Therefore, it's not a valid NLT table
+		if (data) {
+			this.el = this.containerEl.createEl("div");
+			if (instanceOfErrorData(data)) {
+				ReactDOM.render(<ErrorDisplay data={data} />, this.el);
+			} else {
+				ReactDOM.render(
+					<AppContext.Provider value={this.app}>
+						<App
+							plugin={this.plugin}
+							settings={this.settings}
+							data={data}
+							sourcePath={this.sourcePath}
+						/>
+					</AppContext.Provider>,
+					this.el
+				);
+			}
+			this.containerEl.replaceWith(this.el);
 		}
-		this.containerEl.replaceWith(this.el);
 	}
 }

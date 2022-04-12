@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
-import { App } from "obsidian";
+import { App, TFile } from "obsidian";
 import { NltSettings } from "../../services/state";
+import crc32 from "crc-32";
 
 import { AppData, ErrorData } from "../../services/state";
 
@@ -17,40 +18,65 @@ import {
 import { randomColor } from "../../services/utils";
 
 import { CELL_TYPE, DEBUG } from "../../constants";
+import NltPlugin from "main";
 
-export const findErrorData = (el: HTMLElement): ErrorData | null => {
+export const hasTypeDefinitionRow = (el: HTMLElement): boolean => {
 	const tr = el.querySelectorAll("tr");
-	const typeRowEl = tr[1];
+	const typeDefinitionEl = tr[1];
+	if (typeDefinitionEl) {
+		const td = typeDefinitionEl.querySelectorAll("td");
 
-	if (typeRowEl) {
-		const td = typeRowEl.querySelectorAll("td");
-
-		const errors: number[] = [];
-
-		td.forEach((td, i) => {
-			const cellType = td.textContent;
+		for (let i = 0; i < td.length; i++) {
+			const el = td[i];
+			const cellType = el.textContent;
 			if (
 				cellType !== CELL_TYPE.TEXT &&
 				cellType != CELL_TYPE.NUMBER &&
 				cellType !== CELL_TYPE.TAG
-			)
-				errors.push(i);
-		});
-
-		if (errors.length === 0) {
-			return null;
-		} else {
-			return { columnIds: errors };
+			) {
+				return false;
+			}
 		}
+		return true;
 	} else {
-		return { columnIds: [] };
+		return false;
+	}
+};
+/**
+ * Validates the type definition row of the table and returns ErrorData if not valid
+ * @param el The html element received from the MarkdownPostProcessor
+ * This is a normally rendered Obsidian markdown table
+ * @returns The ErrorData
+ */
+export const findErrorData = (el: HTMLElement): ErrorData | null => {
+	const tr = el.querySelectorAll("tr");
+	//Get the type definition row
+	const typeRowEl = tr[1];
+
+	const td = typeRowEl.querySelectorAll("td");
+
+	const errors: number[] = [];
+
+	td.forEach((td, i) => {
+		const cellType = td.textContent;
+		if (
+			cellType !== CELL_TYPE.TEXT &&
+			cellType != CELL_TYPE.NUMBER &&
+			cellType !== CELL_TYPE.TAG
+		)
+			errors.push(i);
+	});
+
+	if (errors.length === 0) {
+		//No error
+		return null;
+	} else {
+		//There are type definition errors
+		return { columnIds: errors };
 	}
 };
 
-export const findAppData = (
-	el: HTMLElement,
-	settings: NltSettings
-): AppData => {
+export const findAppData = (el: HTMLElement): AppData => {
 	const headers: Header[] = [];
 	const rows: Row[] = [];
 	const cells: Cell[] = [];
@@ -114,13 +140,14 @@ export const findAppData = (
 					const index = tags.indexOf(tag);
 					tags[index].selected.push(cellId);
 				} else {
-					let color = "";
-					if (settings.tagData[content]) {
-						color = settings.tagData[content];
-					} else {
-						color = randomColor();
-					}
-					tags.push(initialTag(content, cellId, color));
+					tags.push(
+						initialTag(
+							content,
+							cellId,
+							headers[j].id,
+							randomColor()
+						)
+					);
 				}
 				//TODO handle multi-tag
 			} else if (cellType === CELL_TYPE.MULTI_TAG) {
@@ -157,26 +184,112 @@ export const findAppData = (
 };
 
 /**
- *
+ * Loads app data
  * @param el The root table element
  * @returns AppData - The loaded data which the app will use to initialize its state
  */
-export const loadData = (
+export const loadAppData = (
+	plugin: NltPlugin,
+	app: App,
+	settings: NltSettings,
 	el: HTMLElement,
-	settings: NltSettings
-): AppData | ErrorData => {
-	const data = findErrorData(el);
-	if (data !== null) {
-		return data;
-	} else {
-		return findAppData(el, settings);
+	sourcePath: string
+): AppData | ErrorData | null => {
+	const headerRow = el.querySelector("tr");
+	const formatted = headerRow.textContent.replace(/\s/g, "");
+	const hash = crc32.str(formatted);
+
+	//Check settings file for old data
+	if (settings.appData[sourcePath]) {
+		//Just in time garbage collection for old tables
+		pruneAppData(app, settings, sourcePath);
+		if (settings.appData[sourcePath][hash]) {
+			return settings.appData[sourcePath][hash];
+		}
+	}
+
+	//If we don't have a type definition row return null
+	if (!hasTypeDefinitionRow(el)) return null;
+
+	let data: AppData | ErrorData = findErrorData(el);
+	if (data === null) {
+		data = findAppData(el);
+		//When we find the data, save it in the cache immediately
+		//USE CASE:
+		//if a user makes a table with tags but never edits it
+		//they can open and close the app and the tags will change colors
+		persistAppData(plugin, settings, data, sourcePath);
+	}
+	return data;
+};
+
+const pruneAppData = async (
+	app: App,
+	settings: NltSettings,
+	sourcePath: string
+) => {
+	const file = app.vault.getAbstractFileByPath(sourcePath);
+	if (file instanceof TFile) {
+		const data = await app.vault.read(file);
+		const tables = parseTables(data);
+
+		const tableHashes: number[] = tables.map((table) => {
+			return crc32.str(table);
+		});
+
+		const hashes: number[] = Object.keys(settings.appData[sourcePath]).map(
+			(key) => parseInt(key)
+		);
+		//Iterate over each hash. If our table hashes don't include that hash
+		//then delete it from the settings
+		hashes.forEach((hash: number) => {
+			if (!tableHashes.includes(hash))
+				//Mark for deletion
+				delete settings.appData[sourcePath][hash];
+		});
 	}
 };
 
-export const saveData = async (
+const parseTables = (input: string): string[] => {
+	return input.match(/(\|.*\|\n){1,}/g).map((tableString) => {
+		return tableString
+			.match(/\|.*\|\n/)[0]
+			.replace(/\s/g, "")
+			.replace(/\|/g, "");
+	});
+};
+
+const persistAppData = (
+	plugin: NltPlugin,
+	settings: NltSettings,
+	appData: AppData,
+	sourcePath: string
+) => {
+	const formatted = appData.headers
+		.map((header) => header.content)
+		.join("")
+		.replace(/\s/g, "");
+	const hash = crc32.str(formatted);
+	if (!settings.appData[sourcePath]) settings.appData[sourcePath] = {};
+	settings.appData[sourcePath][hash] = appData;
+	plugin.saveData(settings);
+};
+
+/**
+ * Saves app data
+ * @param plugin
+ * @param settings
+ * @param app
+ * @param oldAppData
+ * @param newAppData
+ */
+export const saveAppData = async (
+	plugin: NltPlugin,
+	settings: NltSettings,
 	app: App,
 	oldAppData: AppData,
-	newAppData: AppData
+	newAppData: AppData,
+	sourcePath: string
 ) => {
 	const newData = appDataToString(newAppData);
 	if (DEBUG) {
@@ -191,60 +304,77 @@ export const saveData = async (
 		let content = await app.vault.read(file);
 
 		content = content.replace(
-			getOldDataRegex(oldAppData.headers, oldAppData.rows),
+			findTableRegex(oldAppData.headers, oldAppData.rows),
 			newData
 		);
 
+		//Reset update time to 0 so we don't update on load
+		newAppData.updateTime = 0;
+		persistAppData(plugin, settings, newAppData, sourcePath);
+
+		//Save the open file with the new table data
 		app.vault.modify(file, content);
 	} catch (err) {
 		console.log(err);
 	}
 };
 
-export const getOldDataRegex = (headers: Header[], rows: Row[]): RegExp => {
+/**
+ * Finds a regex that will match a table based on header content, type definition row,
+ * and number of cells
+ * @param headers The headers
+ * @param rows The rows
+ * @returns A regex that matches this table
+ */
+export const findTableRegex = (headers: Header[], rows: Row[]): RegExp => {
 	const regex: string[] = [];
 	regex[0] = "\\|";
 	regex[0] += headers.map((header) => `.*${header.content}.*\\|`).join("");
+
 	//Hyphen row, type definition row, and then all other rows
 	for (let i = 0; i < rows.length + 2; i++) regex[i + 1] = "\\|.*\\|";
 
 	const expression = new RegExp(regex.join("\n"));
-	if (DEBUG) console.log(expression);
 	return expression;
 };
 
+/**
+ * Converts app data to a valid Obsidian markdown string
+ * @param data The app data
+ * @returns An Obsidian markdown string
+ */
 export const appDataToString = (data: AppData): string => {
-	let fileData = "";
 	const columnCharLengths = calcColumnCharLengths(
 		data.headers,
 		data.cells,
 		data.tags
 	);
 
-	fileData += "|";
+	let fileData = "|";
 
 	data.headers.forEach((header, i) => {
-		fileData = writeContentToDataString(
+		fileData = writeMarkdownTableCell(
 			fileData,
 			header.content,
 			columnCharLengths[i]
 		);
 	});
 
-	fileData += "\n|";
-	data.headers.forEach((header, i) => {
+	fileData += "\n";
+
+	for (let i = 0; i < data.headers.length; i++) {
 		const content = Array(columnCharLengths[i]).fill("-").join("");
-		fileData = writeContentToDataString(
+		fileData = writeMarkdownTableCell(
 			fileData,
 			content,
 			columnCharLengths[i]
 		);
-	});
+	}
 
-	fileData += "\n|";
+	fileData += "\n";
 
 	data.headers.forEach((header, i) => {
-		fileData = writeContentToDataString(
+		fileData = writeMarkdownTableCell(
 			fileData,
 			header.type,
 			columnCharLengths[i]
@@ -252,7 +382,7 @@ export const appDataToString = (data: AppData): string => {
 	});
 
 	data.rows.forEach((row) => {
-		fileData += "\n|";
+		fileData += "\n";
 
 		//TODO fix when I add the ability to drag columns
 		//I will probably need to sort the cells
@@ -273,13 +403,13 @@ export const appDataToString = (data: AppData): string => {
 					if (i === 0) content += addPound(tag.content);
 					else content += " " + addPound(tag.content);
 				});
-				fileData = writeContentToDataString(
+				fileData = writeMarkdownTableCell(
 					fileData,
 					content,
 					columnCharLengths[j]
 				);
 			} else {
-				fileData = writeContentToDataString(
+				fileData = writeMarkdownTableCell(
 					fileData,
 					cell.content,
 					columnCharLengths[j]
@@ -290,27 +420,59 @@ export const appDataToString = (data: AppData): string => {
 	return fileData;
 };
 
+export const writeMarkdownTableCell = (
+	data: string,
+	contentToWrite: string,
+	columnCharacters: number
+) => {
+	//If we're starting a new row
+	if (data[data.length - 1] === "\n") data += "|";
+
+	data += " ";
+	data += contentToWrite;
+
+	const numWhiteSpace = columnCharacters - contentToWrite.length;
+
+	//Pads the cell with white space
+	for (let i = 0; i < numWhiteSpace; i++) data += " ";
+	data += " ";
+	data += "|";
+	return data;
+};
+
+/**
+ * Calculates the max char length for each column.
+ * This is used to know how much padding to add to cell.
+ * @param headers An array of headers
+ * @param cells An array of cells
+ * @param tags An array of tags
+ * @returns An object containing the calculated lengths
+ */
 export const calcColumnCharLengths = (
 	headers: Header[],
 	cells: Cell[],
 	tags: Tag[]
-): number[] => {
-	const columnCharLengths: number[] = [];
+): { [columnPosition: number]: number } => {
+	const columnCharLengths: { [columnPosition: number]: number } = [];
+
+	//Check headers
 	headers.forEach((header, i) => {
-		columnCharLengths.push(header.content.length);
+		columnCharLengths[i] = header.content.length;
 	});
 
-	//Iterate over each type
+	//Check types
 	Object.values(CELL_TYPE).forEach((type, i) => {
 		if (columnCharLengths[i] < type.length)
 			columnCharLengths[i] = type.length;
 	});
 
-	//Iterate over each cell
+	//Check cells
 	cells.forEach((cell, i) => {
 		if (cell.type === CELL_TYPE.TAG || cell.type === CELL_TYPE.MULTI_TAG) {
 			const arr = tags.filter((tag) => tag.selected.includes(cell.id));
 
+			//TODO edit for multi-tag
+			//Do we want the tags on one line?
 			let content = "";
 			arr.forEach((tag, i) => {
 				if (tag.content === "") return;
@@ -325,21 +487,6 @@ export const calcColumnCharLengths = (
 		}
 	});
 	return columnCharLengths;
-};
-
-export const writeContentToDataString = (
-	data: string,
-	contentToWrite: string,
-	columnCharacters: number
-) => {
-	data += " ";
-	data += contentToWrite;
-
-	const numWhiteSpace = columnCharacters - contentToWrite.length;
-	for (let i = 0; i < numWhiteSpace; i++) data += " ";
-	data += " ";
-	data += "|";
-	return data;
 };
 
 export const findCellType = (textContent: string, expectedType: string) => {
@@ -367,48 +514,100 @@ export const findCellType = (textContent: string, expectedType: string) => {
 	}
 };
 
-export const countNumTags = (textContent: string): number => {
-	return (textContent.match(/#[a-zA-z0-9-_]+/g) || []).length;
+/**
+ * Counts the number of tags in a string.
+ * A tag in this case is a value with a pound sign and text.
+ * e.g #test
+ * @param input The input string
+ * @returns The number of tags in the input string
+ */
+export const countNumTags = (input: string): number => {
+	return (input.match(/#[a-zA-z0-9-_]+/g) || []).length;
 };
 
-export const hasLink = (content: string): boolean => {
-	if (content.match(/^<a.*?>.*?<\/a>$/)) return true;
+/**
+ * Checks to see if input string contains hyperlinks (<a>)
+ * @param input The input string
+ * @returns Has hyperlinks or not
+ */
+export const hasLink = (input: string): boolean => {
+	if (input.match(/^<a.*?>.*?<\/a>$/)) return true;
 	return false;
 };
 
-export const hasSquareBrackets = (content: string): boolean => {
-	if (content.match(/(^\[\[)(.*)(]]$)/)) return true;
+/**
+ * Checks to see if input string starts and ends with double square brackets
+ * @param input The input string
+ * @returns Has square brackets or not
+ */
+export const hasSquareBrackets = (input: string): boolean => {
+	if (input.match(/(^\[\[)(.*)(]]$)/)) return true;
 	return false;
 };
 
-export const stripSquareBrackets = (content: string): string => {
-	content = content.replace(/^\[\[/, "");
-	content = content.replace(/]]$/, "");
-	return content;
+/**
+ * Removes double square brackets from input string
+ * @param input The input string
+ * @returns A string without double square brackets ([[ ]])
+ */
+export const stripSquareBrackets = (input: string): string => {
+	input = input.replace(/^\[\[/, "");
+	input = input.replace(/]]$/, "");
+	return input;
 };
 
-export const stripLink = (content: string): string => {
-	content = content.replace(/^<a.*?>/, "");
-	content = content.replace(/<\/a>$/, "");
-	return content;
+/**
+ * Removes all hyperlinks from input string
+ * @param input The input string
+ * @returns A string with no hyperlinks (<a>)
+ */
+export const stripLink = (input: string): string => {
+	input = input.replace(/^<a.*?>/, "");
+	input = input.replace(/<\/a>$/, "");
+	return input;
 };
 
-export const stripPound = (content: string) => {
-	return content.replace("#", "");
+/**
+ * Removes pound sign from input string
+ * @param input The input string
+ * @returns A string with no pound (#) symbol
+ */
+export const stripPound = (input: string) => {
+	return input.replace("#", "");
 };
 
-export const addPound = (content: string) => {
-	return `#${content}`;
+/**
+ * Add a pounds sign to input string
+ * @param input The input string
+ * @returns A string starting with a pound (#) symbol
+ */
+export const addPound = (input: string) => {
+	return `#${input}`;
 };
 
-export const addBrackets = (content: string): string => {
-	return `[[${content}]]`;
+/**
+ * Adds double square brackets to input string
+ * @param input The input string
+ * @returns A string surrounded by double square brackets ([[ ]])
+ */
+export const addBrackets = (input: string): string => {
+	return `[[${input}]]`;
 };
 
-export const toFileLink = (content: string): string => {
-	return `<a data-href="${content}" href="${content}" class="internal-link" target="_blank" rel="noopener">${content}</a>`;
+/**
+ * Converts file name to an Obsidian file hyperlink
+ * @param fileName The file name without double square brackets
+ * @returns A hyperlink (<a>) link for an Obsidian file
+ */
+export const toFileLink = (fileName: string): string => {
+	return `<a data-href="${fileName}" href="${fileName}" class="internal-link" target="_blank" rel="noopener">${fileName}</a>`;
 };
 
-export const toTagLink = (content: string): string => {
-	return `<a href="#${content}" class="tag" target="_blank" rel="noopener">${content}</a>`;
+/**
+ * Converts tag name to an Obsidian tag hyperlink
+ * @param tagName The tagName
+ * @returns A hyperlink (<a>) for an Obsidian tag
+ */
+export const toTagLink = (tagName: string): string => {
+	return `<a href="#${tagName}" class="tag" target="_blank" rel="noopener">${tagName}</a>`;
 };

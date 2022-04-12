@@ -18,11 +18,11 @@ export const instanceOfErrorData = (object: any): object is ErrorData => {
 	return "columnIds" in object;
 };
 export interface NltSettings {
-	tagData: { [id: string]: string };
+	appData: { [filePath: string]: { [hash: number]: AppData } };
 }
 
 export const DEFAULT_SETTINGS: NltSettings = {
-	tagData: {},
+	appData: {},
 };
 export interface Header {
 	id: string;
@@ -57,6 +57,7 @@ export interface Cell {
 export interface Tag {
 	id: string;
 	content: string;
+	headerId: string;
 	color: string;
 	selected: string[];
 }
@@ -100,10 +101,12 @@ export const initialCell = (
 export const initialTag = (
 	content: string,
 	cellId: string,
+	headerId: string,
 	color: string
 ): Tag => {
 	return {
 		id: uuidv4(),
+		headerId,
 		content,
 		color,
 		selected: [cellId],
