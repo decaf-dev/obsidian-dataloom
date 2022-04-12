@@ -66,23 +66,10 @@ export default class NltPlugin extends Plugin {
 		];
 		for (let i = 0; i < leaves.length; i++) {
 			const leaf = leaves[i];
-			let view = null;
-			if (leaf.view instanceof MarkdownView) view = leaf.view;
-			this.app.workspace.duplicateLeaf(leaf);
-			leaf.detach();
-
-			//TODO remove
-			// 	//Find tables
-			// 	//Match |---| or | --- |
-			// 	//This is uniquely identity a new table
-			// 	const hyphenRows = content.match(/\|\s{0,1}-{3,}\s{0,1}\|\n/g);
-			// 	for (let i = 0; i < hyphenRows.length; i++) {
-			// 		const old = hyphenRows[i];
-			// 		const updated = old.replace("-", "--");
-			// 		content = content.replace(old, updated);
-			// 	}
-			// 	await this.app.vault.modify(file, content);
-			// }
+			if (leaf.view instanceof MarkdownView) {
+				this.app.workspace.duplicateLeaf(leaf);
+				leaf.detach();
+			}
 		}
 	}
 }

@@ -63,7 +63,6 @@ export interface Tag {
 }
 
 export const initialHeader = (content: string, position: number): Header => {
-	console.log("CREATING INITIAL HEADER!");
 	return {
 		id: uuidv4(),
 		position,
