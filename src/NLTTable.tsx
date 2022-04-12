@@ -5,7 +5,7 @@ import ReactDOM from "react-dom";
 import { AppContext } from "./app/services/hooks";
 import App from "./app/App";
 import ErrorDisplay from "./app/components/ErrorDisplay";
-import { loadData } from "./app/services/dataUtils";
+import { loadAppData } from "./app/services/dataUtils";
 import { instanceOfErrorData, NltSettings } from "./app/services/state";
 import NltPlugin from "main";
 
@@ -15,23 +15,32 @@ export class NLTTable extends MarkdownRenderChild {
 	plugin: NltPlugin;
 	settings: NltSettings;
 	el: HTMLElement;
+	sourcePath: string;
 
 	constructor(
 		containerEl: HTMLElement,
 		app: ObsidianApp,
 		plugin: NltPlugin,
-		settings: NltSettings
+		settings: NltSettings,
+		sourcePath: string
 	) {
 		super(containerEl);
 		this.app = app;
 		this.plugin = plugin;
 		this.settings = settings;
+		this.sourcePath = sourcePath;
 	}
 
 	onload() {
 		this.el = this.containerEl.createEl("div");
 
-		const data = loadData(this.containerEl, this.settings);
+		const data = loadAppData(
+			this.plugin,
+			this.app,
+			this.settings,
+			this.containerEl,
+			this.sourcePath
+		);
 		if (instanceOfErrorData(data)) {
 			ReactDOM.render(<ErrorDisplay data={data} />, this.el);
 		} else {
@@ -41,6 +50,7 @@ export class NLTTable extends MarkdownRenderChild {
 						plugin={this.plugin}
 						settings={this.settings}
 						data={data}
+						sourcePath={this.sourcePath}
 					/>
 				</AppContext.Provider>,
 				this.el

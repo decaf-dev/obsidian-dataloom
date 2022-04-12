@@ -85,7 +85,6 @@ export default function EditableTd({
 
 		if (tdRef.current) {
 			const { height } = tdRef.current.getBoundingClientRect();
-			console.log(height);
 			setCellMenu({
 				isOpen: true,
 				left: -10,

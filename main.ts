@@ -1,11 +1,14 @@
-import { Plugin, Editor, MarkdownView, TFile } from "obsidian";
+import { Plugin, Editor } from "obsidian";
 
 import { NLTTable } from "src/NLTTable";
 import { NltSettings, DEFAULT_SETTINGS } from "src/app/services/state";
 export default class NltPlugin extends Plugin {
 	settings: NltSettings;
-	containerElements: HTMLElement[] = [];
 
+	/**
+	 * Called on plugin load.
+	 * This can be when the plugin is enabled or Obsidian is first opened.
+	 */
 	async onload() {
 		await this.loadSettings();
 		await this.forcePostProcessorReload();
@@ -14,12 +17,37 @@ export default class NltPlugin extends Plugin {
 			const table = element.getElementsByTagName("table");
 			if (table.length === 1) {
 				context.addChild(
-					new NLTTable(table[0], this.app, this, this.settings)
+					new NLTTable(
+						table[0],
+						this.app,
+						this,
+						this.settings,
+						context.sourcePath
+					)
 				);
 			}
 		});
-
 		this.registerCommands();
+		this.registerFileHandlers();
+	}
+
+	registerFileHandlers() {
+		this.registerEvent(
+			this.app.vault.on("rename", (file, oldPath) => {
+				//If filepath exists for our settings, then we want to rename it
+				//So that we can keep our app data matched to each file
+				console.log("Renaming/Moving File");
+				if (this.settings.appData[oldPath]) {
+					console.log("Found old path", oldPath);
+					const newPath = file.path;
+					const data = { ...this.settings.appData[oldPath] };
+					delete this.settings.appData[oldPath];
+					this.settings.appData[newPath] = data;
+					console.log("Setting to new path", newPath);
+					this.saveSettings();
+				}
+			})
+		);
 	}
 
 	registerCommands() {
@@ -32,6 +60,10 @@ export default class NltPlugin extends Plugin {
 		});
 	}
 
+	/**
+	 * Creates a 1 column NLT markdown table
+	 * @returns An NLT markdown table
+	 */
 	emptyTable(): string {
 		const columnName = "Column 1";
 		const rows = [];
@@ -55,10 +87,19 @@ export default class NltPlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 
+	/**
+	 * Called on plugin unload.
+	 * This can be when the plugin is disabled or Obsidian is closed.
+	 */
 	async onunload() {
 		await this.forcePostProcessorReload();
 	}
 
+	/**
+	 * Forces the post processor to be called again.
+	 * This is necessary for clean up purposes on unload and causing NLT tables
+	 * to be rendered onload.
+	 */
 	async forcePostProcessorReload() {
 		const leaves = [
 			...this.app.workspace.getLeavesOfType("markdown"),
@@ -66,10 +107,8 @@ export default class NltPlugin extends Plugin {
 		];
 		for (let i = 0; i < leaves.length; i++) {
 			const leaf = leaves[i];
-			if (leaf.view instanceof MarkdownView) {
-				this.app.workspace.duplicateLeaf(leaf);
-				leaf.detach();
-			}
+			this.app.workspace.duplicateLeaf(leaf);
+			leaf.detach();
 		}
 	}
 }
