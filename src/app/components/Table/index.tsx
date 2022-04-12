@@ -12,46 +12,44 @@ interface Props {
 
 export default function Table({ headers, rows, onAddColumn, onAddRow }: Props) {
 	return (
-		<div className="NLT__table">
-			<div className="NLT__thead">
-				<div className="NLT__tr">
+		<table>
+			<thead>
+				<tr>
 					{headers.map((header) => (
-						<div className="NLT__th" key={header.id}>
+						<th className="NLT__th" key={header.id}>
 							{header.component}
-						</div>
+						</th>
 					))}
-					<div className="NLT__th">
+					<th className="NLT__th">
 						<button
 							className="NLT__button NLT__button--sm"
 							onClick={() => onAddColumn()}
 						>
 							New
 						</button>
-					</div>
-				</div>
-			</div>
-			<div className="NLT__tbody">
+					</th>
+				</tr>
+			</thead>
+			<tbody>
 				{rows.map((row) => (
-					<div className="NLT__tr" key={row.id}>
-						{row.component}
-					</div>
+					<tr key={row.id}>{row.component}</tr>
 				))}
-			</div>
-			<div className="NLT__tfoot">
-				<div className="NLT__tr">
-					<div className="NLT__td">
+			</tbody>
+			<tfoot>
+				<tr>
+					<td>
 						<button
 							className="NLT__button NLT__button--sm"
 							onClick={() => onAddRow()}
 						>
 							New
 						</button>
-					</div>
+					</td>
 					{headers.map((header) => (
-						<div className="NLT__td" key={header.id}></div>
+						<td key={header.id}></td>
 					))}
-				</div>
-			</div>
-		</div>
+				</tr>
+			</tfoot>
+		</table>
 	);
 }
