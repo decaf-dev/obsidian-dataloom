@@ -162,7 +162,12 @@ export default function App({ plugin, settings, data }: Props) {
 		});
 	}
 
-	function handleAddTag(cellId: string, content: string, color: string) {
+	function handleAddTag(
+		headerId: string,
+		cellId: string,
+		content: string,
+		color: string
+	) {
 		// const tag = appData.tags.find((tag) => tag.content === text);
 		// if (tag) {
 		// 	//If our cell id has already selected the tag then return
@@ -191,7 +196,7 @@ export default function App({ plugin, settings, data }: Props) {
 				updateTime: Date.now(),
 				tags: [
 					...removeTagReferences(prevState.tags, cellId),
-					initialTag(content, cellId, color),
+					initialTag(content, cellId, headerId, color),
 				],
 			};
 		});
@@ -431,11 +436,15 @@ export default function App({ plugin, settings, data }: Props) {
 									return (
 										<EditableTd
 											key={id}
+											headerId={header.id}
 											cellId={id}
 											type={type}
 											content={content}
 											expectedType={expectedType}
-											tags={appData.tags}
+											tags={appData.tags.filter(
+												(tag) =>
+													tag.headerId === header.id
+											)}
 											onTagClick={handleTagClick}
 											onRemoveTagClick={
 												handleRemoveTagClick

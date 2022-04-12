@@ -57,11 +57,13 @@ export interface Cell {
 export interface Tag {
 	id: string;
 	content: string;
+	headerId: string;
 	color: string;
 	selected: string[];
 }
 
 export const initialHeader = (content: string, position: number): Header => {
+	console.log("CREATING INITIAL HEADER!");
 	return {
 		id: uuidv4(),
 		position,
@@ -100,10 +102,12 @@ export const initialCell = (
 export const initialTag = (
 	content: string,
 	cellId: string,
+	headerId: string,
 	color: string
 ): Tag => {
 	return {
 		id: uuidv4(),
+		headerId,
 		content,
 		color,
 		selected: [cellId],

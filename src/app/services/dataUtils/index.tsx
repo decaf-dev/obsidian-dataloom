@@ -120,7 +120,9 @@ export const findAppData = (
 					} else {
 						color = randomColor();
 					}
-					tags.push(initialTag(content, cellId, color));
+					tags.push(
+						initialTag(content, cellId, headers[j].id, color)
+					);
 				}
 				//TODO handle multi-tag
 			} else if (cellType === CELL_TYPE.MULTI_TAG) {
