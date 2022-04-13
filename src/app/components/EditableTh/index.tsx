@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import HeaderMenu from "../HeaderMenu";
-import ArrowGroup from "../ArrowGroup";
+import SortButton from "../SortButton";
 
 import "./styles.css";
 
@@ -11,7 +11,7 @@ interface Props {
 	content: string;
 	type: string;
 	arrow: string;
-	onArrowClick: (
+	onSortClick: (
 		id: string,
 		position: number,
 		type: string,
@@ -32,7 +32,7 @@ export default function EditableTh({
 	content,
 	type,
 	arrow,
-	onArrowClick,
+	onSortClick,
 	onItemClick,
 	onDeleteClick,
 	onSaveClick,
@@ -70,11 +70,9 @@ export default function EditableTh({
 				onClose={() => setHeaderMenu(initialHeaderMenuState)}
 			/>
 			<div className="NLT__header-content">{content}</div>
-			<ArrowGroup
+			<SortButton
 				selected={arrow}
-				onArrowClick={(arrow) =>
-					onArrowClick(id, position, type, arrow)
-				}
+				onClick={(arrow) => onSortClick(id, position, type, arrow)}
 			/>
 		</div>
 	);

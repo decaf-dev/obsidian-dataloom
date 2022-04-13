@@ -29,10 +29,6 @@
 /*
 * Icon
 */
-.NLT__icon-group {
-	display: flex;
-	align-items: center;
-}
 
 .NLT__icon--md {
 	width: 1rem !important;

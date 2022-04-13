@@ -128,7 +128,7 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 		});
 	}
 
-	function handleHeaderArrowClick(
+	function handleHeaderSortClick(
 		id: string,
 		position: number,
 		type: string,
@@ -282,7 +282,7 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 						cell.position === headerPosition && cell.rowId === b.id
 				);
 				//Sort based on content if arrow is selected
-				if (arrow === ARROW.UP) {
+				if (arrow === ARROW.DOWN) {
 					if (headerType === CELL_TYPE.TAG) {
 						const tagA = appData.tags.find((tag) =>
 							tag.selected.includes(cellA.id)
@@ -294,7 +294,7 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 					} else {
 						return cellA.content.localeCompare(cellB.content);
 					}
-				} else if (arrow === ARROW.DOWN) {
+				} else if (arrow === ARROW.UP) {
 					if (headerType === CELL_TYPE.TAG) {
 						const tagA = appData.tags.find((tag) =>
 							tag.selected.includes(cellA.id)
@@ -409,7 +409,7 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 								position={position}
 								type={type}
 								arrow={arrow}
-								onArrowClick={handleHeaderArrowClick}
+								onSortClick={handleHeaderSortClick}
 								onDeleteClick={handleDeleteHeaderClick}
 								onSaveClick={handleHeaderSave}
 								onItemClick={handleHeaderItemClick}
