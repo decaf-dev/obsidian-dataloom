@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
 import HeaderMenu from "../HeaderMenu";
-import SortButton from "../SortButton";
 
 import "./styles.css";
 
@@ -9,21 +8,18 @@ interface Props {
 	id: string;
 	position: number;
 	content: string;
+	sortName: string;
 	type: string;
 	arrow: string;
-	onSortClick: (
+	onSortSelect: (
 		id: string,
 		position: number,
 		type: string,
-		arrow: string
+		sortName: string
 	) => void;
-	onItemClick: (
-		headerId: string,
-		headerPosition: number,
-		headerType: string
-	) => void;
-	onDeleteClick: (headerId: string, headerPosition: number) => void;
-	onSaveClick: (headerId: string, content: string) => void;
+	onTypeSelect: (id: string, position: number, type: string) => void;
+	onDeleteClick: (id: string, position: number) => void;
+	onSaveClick: (id: string, content: string) => void;
 }
 
 export default function EditableTh({
@@ -31,9 +27,9 @@ export default function EditableTh({
 	position,
 	content,
 	type,
-	arrow,
-	onSortClick,
-	onItemClick,
+	sortName,
+	onSortSelect,
+	onTypeSelect,
 	onDeleteClick,
 	onSaveClick,
 }: Props) {
@@ -63,17 +59,15 @@ export default function EditableTh({
 				id={id}
 				content={content}
 				position={position}
+				sortName={sortName}
 				type={type}
 				onOutsideClick={onSaveClick}
-				onItemClick={onItemClick}
+				onSortSelect={onSortSelect}
+				onTypeSelect={onTypeSelect}
 				onDeleteClick={onDeleteClick}
 				onClose={() => setHeaderMenu(initialHeaderMenuState)}
 			/>
 			<div className="NLT__header-content">{content}</div>
-			<SortButton
-				selected={arrow}
-				onClick={(arrow) => onSortClick(id, position, type, arrow)}
-			/>
 		</div>
 	);
 }

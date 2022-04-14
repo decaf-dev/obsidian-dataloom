@@ -16,7 +16,7 @@ export default function Table({ headers, rows, onAddColumn, onAddRow }: Props) {
 			<thead>
 				<tr>
 					{headers.map((header) => (
-						<th className="NLT__th" key={header.id}>
+						<th className="NLT__th NLT__selectable" key={header.id}>
 							{header.component}
 						</th>
 					))}

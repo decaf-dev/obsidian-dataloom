@@ -43,15 +43,11 @@
 }
 
 .NLT__selectable:hover {
-	background-color: rgba(0, 0, 0, 0.1);
+	background-color: var(--interactive-hover)
 }
 
 .NLT__selected {
-	background-color: rgba(0, 0, 0, 0.15);
-}
-
-.NLT__selected:hover {
-	background-color: rgba(0, 0, 0, 0.2);
+	background-color: var(--interactive-normal);
 }
 
 /*
