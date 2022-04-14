@@ -2,6 +2,15 @@
 	text-align: left;
 }
 
-.NLT__td {
-	
+.NLT__th:last-child {
+	border: 0!important;
+}
+
+tbody > tr > .NLT__td:last-child {
+	border: 0 !important;
+	vertical-align: middle;
+}
+
+tfoot > tr > .NLT__td {
+	border: 0 !important;
 }

@@ -453,12 +453,13 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 										/>
 									);
 								})}
-								<td className="NLT__td"></td>
-								<DragMenu
-									onDeleteClick={() =>
-										handleDeleteRowClick(row.id)
-									}
-								/>
+								<td className="NLT__td">
+									<DragMenu
+										onDeleteClick={() =>
+											handleDeleteRowClick(row.id)
+										}
+									/>
+								</td>
 							</>
 						),
 					};

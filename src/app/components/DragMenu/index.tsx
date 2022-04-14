@@ -60,7 +60,7 @@ export default function DragMenu({ onDeleteClick }: Props) {
 	}
 
 	return (
-		<td className="NLT__td NLT__hidden-column">
+		<>
 			<IconButton
 				id={buttonId}
 				icon={<MoreVert />}
@@ -86,6 +86,6 @@ export default function DragMenu({ onDeleteClick }: Props) {
 				}
 				onOutsideClick={handleOutsideClick}
 			/>
-		</td>
+		</>
 	);
 }

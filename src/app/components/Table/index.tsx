@@ -37,7 +37,7 @@ export default function Table({ headers, rows, onAddColumn, onAddRow }: Props) {
 			</tbody>
 			<tfoot>
 				<tr>
-					<td>
+					<td className="NLT__td">
 						<button
 							className="NLT__button NLT__button--sm"
 							onClick={() => onAddRow()}
@@ -46,7 +46,7 @@ export default function Table({ headers, rows, onAddColumn, onAddRow }: Props) {
 						</button>
 					</td>
 					{headers.map((header) => (
-						<td key={header.id}></td>
+						<td key={header.id} className="NLT__td"></td>
 					))}
 				</tr>
 			</tfoot>
