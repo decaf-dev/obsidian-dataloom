@@ -23,6 +23,7 @@ import { ARROW, CELL_TYPE, DEBUG } from "./constants";
 
 import "./app.css";
 import NltPlugin from "main";
+import { SORT } from "./components/HeaderMenu/constants";
 
 interface Props {
 	plugin: NltPlugin;
@@ -128,25 +129,23 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 		});
 	}
 
-	function handleHeaderArrowClick(
+	function handleHeaderSortSelect(
 		id: string,
 		position: number,
 		type: string,
-		arrow: string
+		sortName: string
 	) {
-		//Set header arrow
 		setAppData((prevState) => {
 			return {
 				...prevState,
 				updateTime: Date.now(),
 				headers: prevState.headers.map((header) => {
-					if (id === header.id) return { ...header, arrow };
-					return { ...header, arrow: ARROW.NONE };
+					if (id === header.id) return { ...header, sortName };
+					return { ...header, sortName: SORT.name };
 				}),
 			};
 		});
-		//Sort rows based off the arrow selection
-		sortRows(position, type, arrow);
+		sortRows(position, type, sortName);
 	}
 
 	function handleUpdateContent(id: string, content: string) {
@@ -266,7 +265,7 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 	function sortRows(
 		headerPosition: number,
 		headerType: string,
-		arrow: string
+		sortName: string
 	) {
 		setAppData((prevState) => {
 			//Create a new array because the sort function mutates
@@ -281,8 +280,7 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 					(cell) =>
 						cell.position === headerPosition && cell.rowId === b.id
 				);
-				//Sort based on content if arrow is selected
-				if (arrow === ARROW.UP) {
+				if (sortName === SORT.DESC.name) {
 					if (headerType === CELL_TYPE.TAG) {
 						const tagA = appData.tags.find((tag) =>
 							tag.selected.includes(cellA.id)
@@ -294,7 +292,7 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 					} else {
 						return cellA.content.localeCompare(cellB.content);
 					}
-				} else if (arrow === ARROW.DOWN) {
+				} else if (sortName === SORT.ASC.name) {
 					if (headerType === CELL_TYPE.TAG) {
 						const tagA = appData.tags.find((tag) =>
 							tag.selected.includes(cellA.id)
@@ -314,6 +312,7 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 			return {
 				...prevState,
 				rows: arr,
+				updateTime: Date.now(),
 			};
 		});
 	}
@@ -360,7 +359,7 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 		});
 	}
 
-	function handleHeaderItemClick(
+	function handleHeaderTypeSelect(
 		headerId: string,
 		headerPosition: number,
 		cellType: string
@@ -398,7 +397,7 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 		<div className="NLT__overflow" ref={appRef}>
 			<Table
 				headers={appData.headers.map((header) => {
-					const { id, content, position, type, arrow } = header;
+					const { id, content, position, type, sortName } = header;
 					return {
 						...header,
 						component: (
@@ -408,11 +407,11 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 								content={content}
 								position={position}
 								type={type}
-								arrow={arrow}
-								onArrowClick={handleHeaderArrowClick}
+								sortName={sortName}
+								onSortSelect={handleHeaderSortSelect}
 								onDeleteClick={handleDeleteHeaderClick}
 								onSaveClick={handleHeaderSave}
-								onItemClick={handleHeaderItemClick}
+								onTypeSelect={handleHeaderTypeSelect}
 							/>
 						),
 					};
@@ -453,12 +452,13 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 										/>
 									);
 								})}
-								<td className="NLT__td"></td>
-								<DragMenu
-									onDeleteClick={() =>
-										handleDeleteRowClick(row.id)
-									}
-								/>
+								<td className="NLT__td">
+									<DragMenu
+										onDeleteClick={() =>
+											handleDeleteRowClick(row.id)
+										}
+									/>
+								</td>
 							</>
 						),
 					};

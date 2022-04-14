@@ -1,6 +1,6 @@
 export const DEBUG = false;
 
-interface CellType {
+export interface CellType {
 	TEXT: string;
 	NUMBER: string;
 	TAG: string;

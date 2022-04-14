@@ -2,21 +2,28 @@ import React, { useEffect, useState } from "react";
 
 import Menu from "../Menu";
 
-import "./styles.css";
+import { SORT, MENU_ITEMS } from "./constants";
 
-import { MENU_ITEMS } from "./constants";
+import "./styles.css";
 
 interface Props {
 	isOpen: boolean;
 	style: object;
 	id: string;
 	position: number;
+	sortName: string;
 	content: string;
 	type: string;
-	onItemClick: (
+	onTypeSelect: (
 		headerId: string,
 		headerPosition: number,
-		cellType: string
+		headerType: string
+	) => void;
+	onSortSelect: (
+		headerId: string,
+		headerPosition: number,
+		headerType: string,
+		sortName: string
 	) => void;
 	onDeleteClick: (headerId: string, headerPosition: number) => void;
 	onOutsideClick: (headerId: string, inputText: string) => void;
@@ -30,7 +37,9 @@ export default function HeaderMenu({
 	position,
 	content,
 	type,
-	onItemClick,
+	sortName,
+	onTypeSelect,
+	onSortSelect,
 	onDeleteClick,
 	onOutsideClick,
 	onClose,
@@ -43,13 +52,13 @@ export default function HeaderMenu({
 
 	function renderMenuItems() {
 		return MENU_ITEMS.map((item) => {
-			let className = "NLT__header-menu-item";
+			let className = "NLT__header-menu-item NLT__selectable";
 			if (item.type === type) className += " NLT__selected";
 			return (
 				<p
 					key={item.name}
 					className={className}
-					onClick={() => handleItemClick(id, position, item.type)}
+					onClick={() => handleTypeSelect(id, position, item.type)}
 				>
 					{item.content}
 				</p>
@@ -57,8 +66,36 @@ export default function HeaderMenu({
 		});
 	}
 
-	function handleItemClick(id: string, position: number, type: string) {
-		onItemClick(id, position, type);
+	function renderSortItems() {
+		return Object.values(SORT).map((item) => {
+			let className = "NLT__header-menu-item NLT__selectable";
+			if (sortName === item.name) className += " NLT__selected";
+			return (
+				<p
+					key={item.name}
+					className={className}
+					onClick={() =>
+						handleSortSelect(id, position, type, item.name)
+					}
+				>
+					{item.icon} Sort {item.content}
+				</p>
+			);
+		});
+	}
+
+	function handleSortSelect(
+		id: string,
+		position: number,
+		type: string,
+		sortName: string
+	) {
+		onSortSelect(id, position, type, sortName);
+		onClose();
+	}
+
+	function handleTypeSelect(id: string, position: number, type: string) {
+		onTypeSelect(id, position, type);
 		onClose();
 	}
 
@@ -84,6 +121,8 @@ export default function HeaderMenu({
 						value={inputText}
 						onChange={(e) => setInputText(e.target.value)}
 					/>
+					<div className="NLT__header-menu-header">Sort</div>
+					{renderSortItems()}
 					<div className="NLT__header-menu-header">Property Type</div>
 					{renderMenuItems()}
 					<button
