@@ -58,7 +58,10 @@ export default function HeaderMenu({
 				<p
 					key={item.name}
 					className={className}
-					onClick={() => handleTypeSelect(id, position, item.type)}
+					onClick={(e) => {
+						e.stopPropagation();
+						handleTypeSelect(id, position, item.type);
+					}}
 				>
 					{item.content}
 				</p>
@@ -74,9 +77,10 @@ export default function HeaderMenu({
 				<p
 					key={item.name}
 					className={className}
-					onClick={() =>
-						handleSortSelect(id, position, type, item.name)
-					}
+					onClick={(e) => {
+						e.stopPropagation();
+						handleSortSelect(id, position, type, item.name);
+					}}
 				>
 					{item.icon} Sort {item.content}
 				</p>
