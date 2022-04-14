@@ -19,7 +19,7 @@ import { saveAppData } from "./services/dataUtils";
 import { useApp } from "./services/hooks";
 import { AppData } from "./services/state";
 
-import { ARROW, CELL_TYPE, DEBUG } from "./constants";
+import { CELL_TYPE, DEBUG } from "./constants";
 
 import "./app.css";
 import NltPlugin from "main";
@@ -141,7 +141,7 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 				updateTime: Date.now(),
 				headers: prevState.headers.map((header) => {
 					if (id === header.id) return { ...header, sortName };
-					return { ...header, sortName: SORT.name };
+					return { ...header, sortName: SORT.DEFAULT.name };
 				}),
 			};
 		});
