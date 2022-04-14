@@ -203,18 +203,14 @@ export const loadAppData = (
 	}
 
 	const formatted = tableText.replace(/\s/g, "");
-	console.log("LOADED");
-	console.log(formatted);
 	const hash = crc32.str(formatted);
 
 	//Check settings file for old data
 	if (settings.appData[sourcePath]) {
 		//Just in time garbage collection for old tables
 		pruneAppData(app, settings, sourcePath);
-		if (settings.appData[sourcePath][hash]) {
-			console.log("FOUND DATA!");
+		if (settings.appData[sourcePath][hash])
 			return settings.appData[sourcePath][hash];
-		}
 	}
 
 	//If we don't have a type definition row return null
@@ -262,8 +258,8 @@ const pruneAppData = async (
 const parseTables = (input: string): string[] => {
 	return input.match(/(\|.*\|\n){1,}/g).map((tableString) => {
 		return tableString
-			.match(/\|.*\|\n/)[0]
 			.replace(/\s/g, "")
+			.replace(/[---]+\|/g, "") //Replace where at least 3 hyphens exist
 			.replace(/\|/g, "");
 	});
 };
@@ -278,8 +274,6 @@ const persistAppData = (
 		.replace(/\s/g, "")
 		.replace(/[---]+\|/g, "") //Replace where at least 3 hyphens exist
 		.replace(/\|/g, "");
-	console.log("PERSISTING DATA");
-	console.log(formatted);
 	const hash = crc32.str(formatted);
 	if (!settings.appData[sourcePath]) settings.appData[sourcePath] = {};
 	settings.appData[sourcePath][hash] = appData;
