@@ -312,6 +312,7 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 			return {
 				...prevState,
 				rows: arr,
+				updateTime: Date.now(),
 			};
 		});
 	}
