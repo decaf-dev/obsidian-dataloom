@@ -1,7 +1,8 @@
 import React from "react";
+import { SORT } from "src/app/components/HeaderMenu/constants";
 import { v4 as uuidv4 } from "uuid";
 
-import { CELL_TYPE, ARROW } from "../../constants";
+import { CELL_TYPE } from "../../constants";
 
 export interface AppData {
 	updateTime: number;
@@ -67,7 +68,7 @@ export const initialHeader = (content: string, position: number): Header => {
 		id: uuidv4(),
 		position,
 		content,
-		arrow: ARROW.NONE,
+		sortName: SORT.DEFAULT.name,
 		width: "15rem",
 		type: CELL_TYPE.TEXT,
 	};

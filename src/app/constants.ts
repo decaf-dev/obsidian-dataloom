@@ -31,12 +31,6 @@ export const CELL_TYPE: CellType = {
 	ERROR: "error",
 };
 
-export const ARROW: Arrow = {
-	UP: "up",
-	DOWN: "down",
-	NONE: "none",
-};
-
 export const CELL_COLOR: CellColor = {
 	YELLOW: "yellow",
 	RED: "red",
