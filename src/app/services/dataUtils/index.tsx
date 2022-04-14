@@ -195,22 +195,17 @@ export const loadAppData = (
 	el: HTMLElement,
 	sourcePath: string
 ): AppData | ErrorData | null => {
-	const rows = el.getElementsByTagName("tr");
-
-	let tableText = "";
-	for (let i = 0; i < rows.length; i++) {
-		tableText += rows[i].textContent;
-	}
-
-	const formatted = tableText.replace(/\s/g, "");
+	const headerRow = el.querySelector("tr");
+	const formatted = headerRow.textContent.replace(/\s/g, "");
 	const hash = crc32.str(formatted);
 
 	//Check settings file for old data
 	if (settings.appData[sourcePath]) {
 		//Just in time garbage collection for old tables
 		pruneAppData(app, settings, sourcePath);
-		if (settings.appData[sourcePath][hash])
+		if (settings.appData[sourcePath][hash]) {
 			return settings.appData[sourcePath][hash];
+		}
 	}
 
 	//If we don't have a type definition row return null
@@ -258,8 +253,8 @@ const pruneAppData = async (
 const parseTables = (input: string): string[] => {
 	return input.match(/(\|.*\|\n){1,}/g).map((tableString) => {
 		return tableString
+			.match(/\|.*\|\n/)[0]
 			.replace(/\s/g, "")
-			.replace(/[---]+\|/g, "") //Replace where at least 3 hyphens exist
 			.replace(/\|/g, "");
 	});
 };
@@ -270,10 +265,10 @@ const persistAppData = (
 	appData: AppData,
 	sourcePath: string
 ) => {
-	const formatted = appDataToString(appData)
-		.replace(/\s/g, "")
-		.replace(/[---]+\|/g, "") //Replace where at least 3 hyphens exist
-		.replace(/\|/g, "");
+	const formatted = appData.headers
+		.map((header) => header.content)
+		.join("")
+		.replace(/\s/g, "");
 	const hash = crc32.str(formatted);
 	if (!settings.appData[sourcePath]) settings.appData[sourcePath] = {};
 	settings.appData[sourcePath][hash] = appData;
