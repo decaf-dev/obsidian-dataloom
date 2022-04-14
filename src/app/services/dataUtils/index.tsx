@@ -195,8 +195,16 @@ export const loadAppData = (
 	el: HTMLElement,
 	sourcePath: string
 ): AppData | ErrorData | null => {
-	const headerRow = el.querySelector("tr");
-	const formatted = headerRow.textContent.replace(/\s/g, "");
+	const rows = el.getElementsByTagName("tr");
+
+	let tableText = "";
+	for (let i = 0; i < rows.length; i++) {
+		tableText += rows[i].textContent;
+	}
+
+	const formatted = tableText.replace(/\s/g, "");
+	console.log("LOADED");
+	console.log(formatted);
 	const hash = crc32.str(formatted);
 
 	//Check settings file for old data
@@ -204,6 +212,7 @@ export const loadAppData = (
 		//Just in time garbage collection for old tables
 		pruneAppData(app, settings, sourcePath);
 		if (settings.appData[sourcePath][hash]) {
+			console.log("FOUND DATA!");
 			return settings.appData[sourcePath][hash];
 		}
 	}
@@ -265,10 +274,12 @@ const persistAppData = (
 	appData: AppData,
 	sourcePath: string
 ) => {
-	const formatted = appData.headers
-		.map((header) => header.content)
-		.join("")
-		.replace(/\s/g, "");
+	const formatted = appDataToString(appData)
+		.replace(/\s/g, "")
+		.replace(/[---]+\|/g, "") //Replace where at least 3 hyphens exist
+		.replace(/\|/g, "");
+	console.log("PERSISTING DATA");
+	console.log(formatted);
 	const hash = crc32.str(formatted);
 	if (!settings.appData[sourcePath]) settings.appData[sourcePath] = {};
 	settings.appData[sourcePath][hash] = appData;
