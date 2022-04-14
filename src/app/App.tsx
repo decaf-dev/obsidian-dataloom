@@ -98,16 +98,19 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 	function handleAddRow() {
 		const rowId = uuidv4();
 		setAppData((prevState: AppData) => {
+			const tags: Tag[] = [];
+			const cells = prevState.headers.map((header, i) => {
+				const cellId = uuidv4();
+				if (header.type === CELL_TYPE.TAG)
+					tags.push(initialTag("", cellId, header.id, ""));
+				return initialCell(cellId, rowId, i, header.type, "");
+			});
 			return {
 				...prevState,
 				updateTime: Date.now(),
 				rows: [...prevState.rows, initialRow(rowId)],
-				cells: [
-					...prevState.cells,
-					...prevState.headers.map((header, i) =>
-						initialCell(uuidv4(), rowId, i, header.type, "")
-					),
-				],
+				cells: [...prevState.cells, ...cells],
+				tags: [...prevState.tags, ...tags],
 			};
 		});
 	}
@@ -300,6 +303,8 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 						const tagB = appData.tags.find((tag) =>
 							tag.selected.includes(cellB.id)
 						);
+						console.log(tagA);
+						console.log(tagB);
 						return tagB.content.localeCompare(tagA.content);
 					} else {
 						return cellB.content.localeCompare(cellA.content);
