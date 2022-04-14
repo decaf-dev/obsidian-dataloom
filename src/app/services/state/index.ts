@@ -28,7 +28,7 @@ export interface Header {
 	id: string;
 	position: number;
 	content: string;
-	arrow: string;
+	sortName: string;
 	width: string;
 	type: string;
 }
