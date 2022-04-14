@@ -16,9 +16,9 @@ export default function Table({ headers, rows, onAddColumn, onAddRow }: Props) {
 			<thead>
 				<tr>
 					{headers.map((header) => (
-						<th className="NLT__th NLT__selectable" key={header.id}>
+						<React.Fragment key={header.id}>
 							{header.component}
-						</th>
+						</React.Fragment>
 					))}
 					<th className="NLT__th">
 						<button

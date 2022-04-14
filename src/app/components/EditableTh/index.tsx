@@ -10,7 +10,6 @@ interface Props {
 	content: string;
 	sortName: string;
 	type: string;
-	arrow: string;
 	onSortSelect: (
 		id: string,
 		position: number,
@@ -49,7 +48,7 @@ export default function EditableTh({
 	}
 
 	return (
-		<div className="NLT__header-group" onClick={handleHeaderClick}>
+		<th className="NLT__th NLT__selectable" onClick={handleHeaderClick}>
 			<HeaderMenu
 				isOpen={headerMenu.isOpen}
 				style={{
@@ -68,6 +67,6 @@ export default function EditableTh({
 				onClose={() => setHeaderMenu(initialHeaderMenuState)}
 			/>
 			<div className="NLT__header-content">{content}</div>
-		</div>
+		</th>
 	);
 }
