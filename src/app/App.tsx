@@ -33,13 +33,14 @@ interface Props {
 }
 
 export default function App({ plugin, settings, data, sourcePath }: Props) {
-	const [oldAppData, setOldAppData] = useState<AppData>(data);
+	const [oldAppData] = useState<AppData>(data);
 	const [appData, setAppData] = useState<AppData>(data);
 	const appRef = useRef<HTMLInputElement>();
 
 	const app = useApp();
 
 	if (DEBUG) {
+		console.log("HEADERS", appData.headers);
 		console.log("ROWS", appData.rows);
 		console.log("CELLS", appData.cells);
 		console.log("TAGS", appData.tags);

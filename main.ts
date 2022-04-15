@@ -2,6 +2,15 @@ import { Plugin, Editor } from "obsidian";
 
 import { NLTTable } from "src/NLTTable";
 import { NltSettings, DEFAULT_SETTINGS } from "src/app/services/state";
+import { Header } from "src/app/services/state";
+import {
+	findMarkdownTablesFromFileData,
+	parseTableFromMarkdown,
+	validTypeDefinitionRow,
+	findAppData,
+	hashParsedTable,
+	mergeAppData,
+} from "src/app/services/utils";
 export default class NltPlugin extends Plugin {
 	settings: NltSettings;
 
@@ -32,16 +41,97 @@ export default class NltPlugin extends Plugin {
 	}
 
 	registerFileHandlers() {
+		//Our persisted data uses a key of the file path and then stores an object mapping
+		//to a CRC32 key and an AppData object
+		//If the file we have data for changes, we want to update our cache
 		this.registerEvent(
 			this.app.vault.on("rename", (file, oldPath) => {
-				//If filepath exists for our settings, then we want to rename it
-				//So that we can keep our app data matched to each file
 				if (this.settings.appData[oldPath]) {
 					const newPath = file.path;
 					const data = { ...this.settings.appData[oldPath] };
 					delete this.settings.appData[oldPath];
 					this.settings.appData[newPath] = data;
 					this.saveSettings();
+				}
+			})
+		);
+
+		//The loadAppData and saveAppData functions handle markdown editing caused from the app.
+		//However if a user updates the source markdown of a table and a cached version already existed,
+		//since the CRC32 value is different, it will recreate brand new app data. This will cause things
+		//like the tag colors to change.
+		//We can avoid this by handling editor changes. If a file that was edited contains a table
+		//and that table has a reference in the cache, then we should update it with new data.
+		this.registerEvent(
+			this.app.workspace.on("editor-change", async (editor) => {
+				const file = this.app.workspace.getActiveFile();
+				const markdownTables = findMarkdownTablesFromFileData(
+					editor.getValue()
+				);
+				if (markdownTables.length !== 0) {
+					markdownTables.forEach((markdownTable) => {
+						const parsedTable =
+							parseTableFromMarkdown(markdownTable);
+						//Validate table
+						if (!validTypeDefinitionRow(parsedTable)) return;
+
+						const headers = parsedTable[0];
+
+						console.log("");
+						console.log("");
+						console.log("HANDLING MARKDOWN TABLE CHANGE");
+						console.log("Parsed table");
+						console.log(parsedTable);
+
+						//Get the saved entry
+						if (this.settings.appData[file.path]) {
+							const savedData = this.settings.appData[file.path];
+							console.log("FILE HAS CACHE ENTRY");
+							//Check headers of the save data
+							Object.entries(savedData).map((entry) => {
+								const [key, value] = entry;
+								//If the headers match, update the data and the CRC
+								if (
+									value.headers.every((header: Header) =>
+										headers.includes(header.content)
+									)
+								) {
+									console.log("FOUND ENTRY THAT MATCHES");
+									console.log(key);
+									console.log(value);
+
+									const hash = hashParsedTable(parsedTable);
+
+									console.log("CALCULATING NEW HASH");
+									console.log(hash);
+									const newAppData = findAppData(parsedTable);
+									const merged = mergeAppData(
+										this.settings.appData[file.path][key],
+										newAppData
+									);
+									this.settings.appData[file.path][hash] =
+										merged;
+									console.log(
+										this.settings.appData[file.path][hash]
+									);
+									console.log("SAVING DATA");
+									delete this.settings.appData[file.path][
+										key
+									];
+									console.log("DELETING HASH", key);
+									console.log("NEW SETTINGS");
+									console.log(
+										this.settings.appData[file.path]
+									);
+									console.log(
+										"CHECKING THAT SETTINGS HAS",
+										hash
+									);
+									this.saveSettings();
+								}
+							});
+						}
+					});
 				}
 			})
 		);

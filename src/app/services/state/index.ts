@@ -45,7 +45,6 @@ export interface Row {
 export interface TableRow extends Row {
 	component: React.ReactNode;
 }
-
 export interface Cell {
 	id: string;
 	rowId: string;
