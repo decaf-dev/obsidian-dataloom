@@ -58,6 +58,8 @@ Click on a header name to edit the header title and change the column type.
 
 ![Screenshot](.readme/header.png)
 
+Please do not edit headers in the markdown once you have rendered your table for the first time. These are what are used to identify a unique table. I plan on finding a better system for this, potentially using the line ID of the table in the document. If you have any suggestions for this, please place it in a feature request.
+
 ### Links
 
 If you want to render a link in text, just add square brackets [[My Link]].

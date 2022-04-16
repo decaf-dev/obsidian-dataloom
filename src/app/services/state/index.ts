@@ -27,7 +27,7 @@ export const DEFAULT_SETTINGS: NltSettings = {
 };
 export interface Header {
 	id: string;
-	position: number;
+	index: number;
 	content: string;
 	sortName: string;
 	width: string;
@@ -48,7 +48,7 @@ export interface TableRow extends Row {
 export interface Cell {
 	id: string;
 	rowId: string;
-	position: number;
+	headerIndex: number;
 	content: string;
 	type: string;
 	expectedType: string | null;
@@ -56,16 +56,17 @@ export interface Cell {
 
 export interface Tag {
 	id: string;
+	headerIndex: number;
+	rowIndex: number;
 	content: string;
-	headerId: string;
 	color: string;
 	selected: string[];
 }
 
-export const initialHeader = (content: string, position: number): Header => {
+export const initialHeader = (content: string, index: number): Header => {
 	return {
 		id: uuidv4(),
-		position,
+		index,
 		content,
 		sortName: SORT.DEFAULT.name,
 		width: "15rem",
@@ -83,7 +84,7 @@ export const initialRow = (id: string): Row => {
 export const initialCell = (
 	id: string,
 	rowId: string,
-	position: number,
+	headerIndex: number,
 	type: string,
 	content: string,
 	expectedType: string | null = null
@@ -91,7 +92,7 @@ export const initialCell = (
 	return {
 		id,
 		rowId,
-		position,
+		headerIndex,
 		type,
 		content,
 		expectedType,
@@ -99,14 +100,16 @@ export const initialCell = (
 };
 
 export const initialTag = (
-	content: string,
+	headerIndex: number,
+	rowIndex: number,
 	cellId: string,
-	headerId: string,
+	content: string,
 	color: string
 ): Tag => {
 	return {
 		id: uuidv4(),
-		headerId,
+		headerIndex,
+		rowIndex,
 		content,
 		color,
 		selected: [cellId],
@@ -117,7 +120,7 @@ export const initialHeaderMenuState = {
 	left: 0,
 	top: 0,
 	id: "",
-	position: 0,
+	index: 0,
 	content: "",
 	type: CELL_TYPE.TEXT,
 };

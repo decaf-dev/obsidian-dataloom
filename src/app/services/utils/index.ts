@@ -27,19 +27,23 @@ export const mergeAppData = (
 	oldAppData: AppData,
 	newAppData: AppData
 ): AppData => {
-	//Iterate over cells
-	//If update, then change
-	const merged = { ...oldAppData };
-	oldAppData.cells.forEach((cell, i) => {
-		const oldContent = cell.content;
-		const newContent = newAppData.cells[i].content;
-		if (oldContent !== newContent) merged.cells[i].content = newContent;
+	//Grab sort settings
+	const merged = { ...newAppData };
+	oldAppData.headers.forEach((headers, i) => {
+		merged.headers[i].sortName = headers.sortName;
 	});
 
+	//Grab tag settings
 	oldAppData.tags.forEach((tag, i) => {
-		const oldContent = tag.content;
-		const newContent = newAppData.tags[i].content;
-		if (oldContent !== newContent) merged.tags[i].content = newContent;
+		const found = merged.tags.find(
+			(t) =>
+				t.headerIndex === tag.headerIndex && t.rowIndex === tag.rowIndex
+		);
+		if (found) {
+			const index = merged.tags.indexOf(found);
+			merged.tags[index].color = tag.color;
+			merged.tags[i].color = tag.color;
+		}
 	});
 	return merged;
 };
@@ -107,9 +111,10 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 					} else {
 						tags.push(
 							initialTag(
-								content,
+								headers[j].index,
+								i - 2, //Subtract both the header row and type def row
 								cellId,
-								headers[j].id,
+								content,
 								randomColor()
 							)
 						);

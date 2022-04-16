@@ -230,8 +230,6 @@ export const appDataToString = (data: AppData): string => {
 	data.rows.forEach((row) => {
 		fileData += "\n";
 
-		//TODO fix when I add the ability to drag columns
-		//I will probably need to sort the cells
 		const cells = data.cells.filter((cell) => cell.rowId === row.id);
 		cells.forEach((cell, j) => {
 			if (
@@ -325,11 +323,11 @@ export const calcColumnCharLengths = (
 				if (i === 0) content += addPound(tag.content);
 				else content += " " + addPound(tag.content);
 			});
-			if (columnCharLengths[cell.position] < content.length)
-				columnCharLengths[cell.position] = content.length;
+			if (columnCharLengths[cell.headerIndex] < content.length)
+				columnCharLengths[cell.headerIndex] = content.length;
 		} else {
-			if (columnCharLengths[cell.position] < cell.content.length)
-				columnCharLengths[cell.position] = cell.content.length;
+			if (columnCharLengths[cell.headerIndex] < cell.content.length)
+				columnCharLengths[cell.headerIndex] = cell.content.length;
 		}
 	});
 	return columnCharLengths;

@@ -42,19 +42,25 @@ describe("hashParsedTable", () => {
 describe("mergeAppData", () => {
 	it("merges new cell content", () => {
 		const oldAppData = findAppData([
-			["column1", "column2"],
-			["text", "text"],
-			["test1", "test2"],
+			["column1", "column2", "column3"],
+			["text", "tag", "tag"],
+			["test1", "#test2", "#test3"],
 		]);
 		const newAppData = findAppData([
-			["column1", "column2"],
-			["text", "text"],
-			["updated1", "updated2"],
+			["column1", "column2", "column3"],
+			["text", "tag", "tag"],
+			["updated1", "#updated2", "#updated3"],
 		]);
 
 		const merged = mergeAppData(oldAppData, newAppData);
+		//Check content
 		expect(merged.cells[0].content).toEqual("updated1");
-		expect(merged.cells[1].content).toEqual("updated2");
+
+		//Check tags
+		expect(merged.tags[0].color).toEqual(oldAppData.tags[0].color);
+		expect(merged.tags[1].color).toEqual(oldAppData.tags[1].color);
+		expect(merged.tags[0].content).toEqual("updated2");
+		expect(merged.tags[1].content).toEqual("updated3");
 	});
 
 	it("merges new tag content", () => {

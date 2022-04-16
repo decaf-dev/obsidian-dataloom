@@ -103,7 +103,15 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 			const cells = prevState.headers.map((header, i) => {
 				const cellId = uuidv4();
 				if (header.type === CELL_TYPE.TAG)
-					tags.push(initialTag("", cellId, header.id, ""));
+					tags.push(
+						initialTag(
+							header.index,
+							prevState.rows.length,
+							cellId,
+							"",
+							""
+						)
+					);
 				return initialCell(cellId, rowId, i, header.type, "");
 			});
 			return {
@@ -135,7 +143,7 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 
 	function handleHeaderSortSelect(
 		id: string,
-		position: number,
+		headerIndex: number,
 		type: string,
 		sortName: string
 	) {
@@ -149,7 +157,7 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 				}),
 			};
 		});
-		sortRows(position, type, sortName);
+		sortRows(headerIndex, type, sortName);
 	}
 
 	function handleUpdateContent(id: string, content: string) {
@@ -171,44 +179,22 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 	}
 
 	function handleAddTag(
-		headerId: string,
+		headerIndex: number,
+		rowIndex: number,
 		cellId: string,
 		content: string,
 		color: string
 	) {
-		// const tag = appData.tags.find((tag) => tag.content === text);
-		// if (tag) {
-		// 	//If our cell id has already selected the tag then return
-		// 	if (tag.selected.includes(cellId)) return;
-		// 	//Otherwise select our cell id
-		// 	setAppData((prevState) => {
-		// 		const arr = removeTagReferences(prevState.tags, cellId);
-		// 		return {
-		// 			...prevState,
-		// 			updateTime: Date.now(),
-		// 			tags: arr.map((tag) => {
-		// 				if (tag.content === text) {
-		// 					return {
-		// 						...tag,
-		// 						selected: [...tag.selected, cellId],
-		// 					};
-		// 				}
-		// 				return tag;
-		// 			}),
-		// 		};
-		// 	});
-		// } else {
 		setAppData((prevState) => {
 			return {
 				...prevState,
 				updateTime: Date.now(),
 				tags: [
 					...removeTagReferences(prevState.tags, cellId),
-					initialTag(content, cellId, headerId, color),
+					initialTag(headerIndex, rowIndex, cellId, content, color),
 				],
 			};
 		});
-		//}
 	}
 
 	/**
@@ -267,7 +253,7 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 	}
 
 	function sortRows(
-		headerPosition: number,
+		headerIndex: number,
 		headerType: string,
 		sortName: string
 	) {
@@ -278,11 +264,11 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 			arr.sort((a, b) => {
 				const cellA = appData.cells.find(
 					(cell) =>
-						cell.position === headerPosition && cell.rowId === a.id
+						cell.headerIndex === headerIndex && cell.rowId === a.id
 				);
 				const cellB = appData.cells.find(
 					(cell) =>
-						cell.position === headerPosition && cell.rowId === b.id
+						cell.headerIndex === headerIndex && cell.rowId === b.id
 				);
 				if (sortName === SORT.DESC.name) {
 					if (headerType === CELL_TYPE.TAG) {
@@ -304,8 +290,6 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 						const tagB = appData.tags.find((tag) =>
 							tag.selected.includes(cellB.id)
 						);
-						console.log(tagA);
-						console.log(tagB);
 						return tagB.content.localeCompare(tagA.content);
 					} else {
 						return cellB.content.localeCompare(cellA.content);
@@ -323,7 +307,7 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 		});
 	}
 
-	function handleDeleteHeaderClick(id: string, position: number) {
+	function handleDeleteHeaderClick(id: string, index: number) {
 		setAppData((prevState) => {
 			return {
 				...prevState,
@@ -331,21 +315,21 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 				headers: prevState.headers
 					.filter((header) => header.id !== id)
 					.map((header) => {
-						if (header.position > position) {
+						if (header.index > index) {
 							return {
 								...header,
-								position: header.position - 1,
+								index: header.index - 1,
 							};
 						}
 						return header;
 					}),
 				cells: prevState.cells
-					.filter((cell) => cell.position !== position)
+					.filter((cell) => cell.headerIndex !== index)
 					.map((cell) => {
-						if (cell.position > position) {
+						if (cell.headerIndex > index) {
 							return {
 								...cell,
-								position: cell.position - 1,
+								headerIndex: cell.headerIndex - 1,
 							};
 						}
 						return cell;
@@ -366,12 +350,12 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 	}
 
 	function handleHeaderTypeSelect(
-		headerId: string,
-		headerPosition: number,
+		id: string,
+		index: number,
 		cellType: string
 	) {
 		//If same header type return
-		const header = appData.headers.find((header) => header.id === headerId);
+		const header = appData.headers.find((header) => header.id === id);
 		if (header.type === cellType) return;
 
 		setAppData((prevState) => {
@@ -380,13 +364,12 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 				updateTime: Date.now(),
 				//Update header to new cell type
 				headers: prevState.headers.map((header) => {
-					if (headerId === header.id)
-						return { ...header, type: cellType };
+					if (id === header.id) return { ...header, type: cellType };
 					return header;
 				}),
 				//Update cell that matches header id to the new cell type
 				cells: prevState.cells.map((cell) => {
-					if (cell.position === headerPosition) {
+					if (cell.headerIndex === index) {
 						return {
 							...cell,
 							type: cellType,
@@ -403,15 +386,15 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 		<div className="NLT__overflow" ref={appRef}>
 			<Table
 				headers={appData.headers.map((header) => {
-					const { id, content, position, type, sortName } = header;
+					const { id, content, index, type, sortName } = header;
 					return {
 						...header,
 						component: (
 							<EditableTh
 								key={id}
 								id={id}
+								index={index}
 								content={content}
-								position={position}
 								type={type}
 								sortName={sortName}
 								onSortSelect={handleHeaderSortSelect}
@@ -422,7 +405,7 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 						),
 					};
 				})}
-				rows={appData.rows.map((row) => {
+				rows={appData.rows.map((row, i) => {
 					return {
 						...row,
 						component: (
@@ -432,19 +415,21 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 										appData.cells.find(
 											(cell) =>
 												cell.rowId === row.id &&
-												cell.position === index
+												cell.headerIndex === index
 										);
 									return (
 										<EditableTd
 											key={id}
-											headerId={header.id}
+											headerIndex={header.index}
+											rowIndex={i}
 											cellId={id}
 											type={type}
 											content={content}
 											expectedType={expectedType}
 											tags={appData.tags.filter(
 												(tag) =>
-													tag.headerId === header.id
+													tag.headerIndex ===
+													header.index
 											)}
 											onTagClick={handleTagClick}
 											onRemoveTagClick={
