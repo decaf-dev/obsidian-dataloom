@@ -235,10 +235,7 @@ export const mergeAppData = (
 
 	//Grab tag settings
 	oldAppData.tags.forEach((tag, i) => {
-		const found = merged.tags.find(
-			(t) =>
-				t.headerIndex === tag.headerIndex && t.rowIndex === tag.rowIndex
-		);
+		const found = merged.tags.find((t) => t.content === tag.content);
 		if (found) {
 			const index = merged.tags.indexOf(found);
 			merged.tags[index].color = tag.color;
