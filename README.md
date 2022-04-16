@@ -30,9 +30,17 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 
 ## Usage
 
-### Making a Table
+### Making a Table via Command
 
-Make a table using normal markdown syntax. Under the hyphen row, specify the types of each column.
+To quickly make a table you can use the add table command. Press `CMD-P` on your keyboard search "Add table".
+
+Note: you must be in editing mode for this command to appear
+
+Toggle to preview mode and the table will automatically render.
+
+### Making a Table Manually
+
+Make a table manually using normal markdown syntax. Under the hyphen row, specify the types of each column.
 
 The plugin currently supports 3 cell types: `text`, `number`, and `tag`.
 
@@ -49,6 +57,8 @@ To edit a cell, just click on it. Changes made to the cell will be propagated to
 Click on a header name to edit the header title and change the column type.
 
 ![Screenshot](.readme/header.png)
+
+Please do not edit headers in the markdown once you have rendered your table for the first time. These are what are used to identify a unique table. I plan on finding a better system for this, potentially using the line ID of the table in the document. If you have any suggestions for this, please place it in a feature request.
 
 ### Links
 
@@ -71,7 +81,7 @@ Tables display with live preview is still being developed in Obsidian. If you're
 
 ### Theming
 
-NLT tables uses normal table semantic elements (table, th, tr, td, etc) to render. If you wish to edit the style of the table, just style those elements in your css.
+NLT tables uses normal table semantic elements (`table`, `th`, `tr`, `td`, etc) to render. If you wish to edit the display of the table, just style those elements in your CSS.
 
 ## Built With
 
