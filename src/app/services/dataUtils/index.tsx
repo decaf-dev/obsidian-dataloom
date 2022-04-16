@@ -36,6 +36,7 @@ export const loadAppData = (
 		garbageCollect(plugin, app, settings, sourcePath);
 		if (settings.appData[sourcePath][hash])
 			return settings.appData[sourcePath][hash];
+		}
 	}
 
 	//If we don't have a type definition row return null
