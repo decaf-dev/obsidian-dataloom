@@ -9,11 +9,11 @@ import {
 	findTableRegex,
 	parseTableFromEl,
 	validTypeDefinitionRow,
+	hashMarkdownTable,
 	hashParsedTable,
 	pruneSettingsCache,
 } from "../../services/utils";
 
-import { DEBUG } from "../../constants";
 import NltPlugin from "main";
 
 /**
@@ -70,18 +70,10 @@ const persistAppData = (
 	appData: AppData,
 	sourcePath: string
 ) => {
-	const formatted = appDataToString(appData)
-		.replace(/\s/g, "")
-		.replace(/[---]+\|/g, "") //Replace where at least 3 hyphens exist
-		.replace(/\|/g, "");
-	const hash = crc32.str(formatted);
-	if (!settings.appData[sourcePath]) {
-		console.log("Setting empty path");
-		settings.appData[sourcePath] = {};
-	}
+	const markdownTable = appDataToString(appData);
+	const hash = hashMarkdownTable(markdownTable);
+	if (!settings.appData[sourcePath]) settings.appData[sourcePath] = {};
 	settings.appData[sourcePath][hash] = appData;
-	console.log("Persisting data", hash);
-	console.log(appData);
 	plugin.saveData(settings);
 };
 

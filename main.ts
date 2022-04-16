@@ -100,17 +100,16 @@ export default class NltPlugin extends Plugin {
 									if (parseInt(key) === hash) return;
 
 									const newAppData = findAppData(parsedTable);
+									console.log("MERGING DATA");
 									const merged = mergeAppData(
 										this.settings.appData[file.path][key],
 										newAppData
 									);
 									this.settings.appData[file.path][hash] =
 										merged;
-									console.log(hash);
 									delete this.settings.appData[file.path][
 										key
 									];
-									console.log("Deleting data", key);
 									this.saveSettings();
 								}
 							});

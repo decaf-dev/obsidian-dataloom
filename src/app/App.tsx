@@ -39,6 +39,10 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 
 	const app = useApp();
 
+	console.log(appData.rows.map((row) => row.creationTime));
+	console.log(appData.cells.map((cell) => cell.rowId));
+	console.log(appData.cells.map((cell) => cell.headerIndex));
+
 	useEffect(() => {
 		async function handleUpdate() {
 			//If we're running in Obsidian
@@ -109,7 +113,7 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 			return {
 				...prevState,
 				updateTime: Date.now(),
-				rows: [...prevState.rows, initialRow(rowId)],
+				rows: [...prevState.rows, initialRow(rowId, Date.now())],
 				cells: [...prevState.cells, ...cells],
 				tags: [...prevState.tags, ...tags],
 			};

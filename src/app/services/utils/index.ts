@@ -32,10 +32,8 @@ export const pruneSettingsCache = (
 
 		Object.keys(obj.appData[sourcePath]).forEach((key) => {
 			const hash = parseInt(key);
-			if (!tableHashes.includes(hash)) {
-				console.log("Deleting hash", hash);
+			if (!tableHashes.includes(hash))
 				delete obj.appData[sourcePath][hash];
-			}
 		});
 	}
 	return obj;
@@ -260,7 +258,11 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 
 			//Only parse from below the type row
 			if (i !== 1) {
-				rows.push(initialRow(rowId));
+				//Since these operations are preformed very quickly, it's possible
+				//for our to get the same time
+				//Add a timeoffset to make sure the time is different
+				const time = Date.now() + i;
+				rows.push(initialRow(rowId, time));
 			}
 
 			row.forEach((td, j) => {

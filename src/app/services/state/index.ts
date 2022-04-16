@@ -74,10 +74,10 @@ export const initialHeader = (content: string, index: number): Header => {
 	};
 };
 
-export const initialRow = (id: string): Row => {
+export const initialRow = (id: string, creationTime: number): Row => {
 	return {
 		id,
-		creationTime: Date.now(),
+		creationTime,
 	};
 };
 
