@@ -39,19 +39,11 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 
 	const app = useApp();
 
-	if (DEBUG) {
-		console.log("HEADERS", appData.headers);
-		console.log("ROWS", appData.rows);
-		console.log("CELLS", appData.cells);
-		console.log("TAGS", appData.tags);
-	}
-
 	useEffect(() => {
 		async function handleUpdate() {
 			//If we're running in Obsidian
 			if (app) {
 				if (appData.updateTime !== 0) {
-					if (DEBUG) console.log("Saving Data");
 					try {
 						await saveAppData(
 							plugin,

@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from "uuid";
 import { CELL_COLOR, CELL_TYPE } from "../../constants";
 import {
 	Header,
@@ -10,7 +11,7 @@ import {
 	initialTag,
 } from "../../services/state";
 import { AppData } from "../../services/state";
-import { v4 as uuidv4 } from "uuid";
+import { NltSettings } from "../../services/state";
 import crc32 from "crc-32";
 
 export const randomColor = (): string => {
@@ -18,9 +19,208 @@ export const randomColor = (): string => {
 	return Object.values(CELL_COLOR)[index];
 };
 
+export const pruneSettingsCache = (
+	settings: NltSettings,
+	sourcePath: string,
+	fileData: string
+): NltSettings => {
+	const obj = { ...settings };
+	if (obj.appData[sourcePath]) {
+		const tableHashes = findMarkdownTablesFromFileData(fileData).map(
+			(markdownTable) => hashMarkdownTable(markdownTable)
+		);
+
+		Object.keys(obj.appData[sourcePath]).forEach((key) => {
+			const hash = parseInt(key);
+			if (!tableHashes.includes(hash)) {
+				console.log("Deleting hash", hash);
+				delete obj.appData[sourcePath][hash];
+			}
+		});
+	}
+	return obj;
+};
+
+export const hashMarkdownTable = (markdownTable: string): number => {
+	const output = markdownTable
+		.replace(/\s/g, "")
+		.replace(/[---]+\|/g, "")
+		.replace(/\|/g, "");
+	return crc32.str(output);
+};
+
 export const hashParsedTable = (parsedTable: string[][]): number => {
 	const output = parsedTable.join("").replace(/,/g, "").replace(/\s/g, "");
 	return crc32.str(output);
+};
+
+/**
+ * Finds a regex that will match a table based on header content, type definition row,
+ * and number of cells
+ * @param headers The headers
+ * @param rows The rows
+ * @returns A regex that matches this table
+ */
+export const findTableRegex = (headers: Header[], rows: Row[]): RegExp => {
+	const regex: string[] = [];
+	regex[0] = "\\|";
+	regex[0] += headers.map((header) => `.*${header.content}.*\\|`).join("");
+
+	//Hyphen row, type definition row, and then all other rows
+	for (let i = 0; i < rows.length + 2; i++) regex[i + 1] = "\\|.*\\|";
+
+	const expression = new RegExp(regex.join("\n"));
+	return expression;
+};
+
+/**
+ * Converts app data to a valid Obsidian markdown string
+ * @param data The app data
+ * @returns An Obsidian markdown string
+ */
+export const appDataToString = (data: AppData): string => {
+	//TODO write tests
+	const columnCharLengths = calcColumnCharLengths(
+		data.headers,
+		data.cells,
+		data.tags
+	);
+
+	let fileData = "|";
+
+	data.headers.forEach((header, i) => {
+		fileData = writeMarkdownTableCell(
+			fileData,
+			header.content,
+			columnCharLengths[i]
+		);
+	});
+
+	fileData += "\n";
+
+	for (let i = 0; i < data.headers.length; i++) {
+		const content = Array(columnCharLengths[i]).fill("-").join("");
+		fileData = writeMarkdownTableCell(
+			fileData,
+			content,
+			columnCharLengths[i]
+		);
+	}
+
+	fileData += "\n";
+
+	data.headers.forEach((header, i) => {
+		fileData = writeMarkdownTableCell(
+			fileData,
+			header.type,
+			columnCharLengths[i]
+		);
+	});
+
+	data.rows.forEach((row) => {
+		fileData += "\n";
+
+		const cells = data.cells.filter((cell) => cell.rowId === row.id);
+		cells.forEach((cell, j) => {
+			if (
+				cell.type === CELL_TYPE.TAG ||
+				cell.type === CELL_TYPE.MULTI_TAG
+			) {
+				const tags = data.tags.filter((tag) =>
+					tag.selected.includes(cell.id)
+				);
+
+				let content = "";
+
+				tags.forEach((tag, i) => {
+					if (tag.content === "") return;
+					if (i === 0) content += addPound(tag.content);
+					else content += " " + addPound(tag.content);
+				});
+				fileData = writeMarkdownTableCell(
+					fileData,
+					content,
+					columnCharLengths[j]
+				);
+			} else {
+				fileData = writeMarkdownTableCell(
+					fileData,
+					cell.content,
+					columnCharLengths[j]
+				);
+			}
+		});
+	});
+	return fileData;
+};
+
+export const writeMarkdownTableCell = (
+	data: string,
+	contentToWrite: string,
+	columnCharacters: number
+) => {
+	//If we're starting a new row
+	if (data[data.length - 1] === "\n") data += "|";
+
+	data += " ";
+	data += contentToWrite;
+
+	const numWhiteSpace = columnCharacters - contentToWrite.length;
+
+	//Pads the cell with white space
+	for (let i = 0; i < numWhiteSpace; i++) data += " ";
+	data += " ";
+	data += "|";
+	return data;
+};
+
+/**
+ * Calculates the max char length for each column.
+ * This is used to know how much padding to add to cell.
+ * @param headers An array of headers
+ * @param cells An array of cells
+ * @param tags An array of tags
+ * @returns An object containing the calculated lengths
+ */
+export const calcColumnCharLengths = (
+	headers: Header[],
+	cells: Cell[],
+	tags: Tag[]
+): { [columnPosition: number]: number } => {
+	const columnCharLengths: { [columnPosition: number]: number } = [];
+
+	//Check headers
+	headers.forEach((header, i) => {
+		columnCharLengths[i] = header.content.length;
+	});
+
+	//Check types
+	Object.values(CELL_TYPE).forEach((type, i) => {
+		if (columnCharLengths[i] < type.length)
+			columnCharLengths[i] = type.length;
+	});
+
+	//Check cells
+	cells.forEach((cell, i) => {
+		if (cell.type === CELL_TYPE.TAG || cell.type === CELL_TYPE.MULTI_TAG) {
+			const arr = tags.filter((tag) => tag.selected.includes(cell.id));
+
+			//TODO edit for multi-tag
+			//Do we want the tags on one line?
+			let content = "";
+			arr.forEach((tag, i) => {
+				if (tag.content === "") return;
+				if (i === 0) content += addPound(tag.content);
+				else content += " " + addPound(tag.content);
+			});
+			if (columnCharLengths[cell.headerIndex] < content.length)
+				columnCharLengths[cell.headerIndex] = content.length;
+		} else {
+			if (columnCharLengths[cell.headerIndex] < cell.content.length)
+				columnCharLengths[cell.headerIndex] = cell.content.length;
+		}
+	});
+	return columnCharLengths;
 };
 
 export const mergeAppData = (
@@ -42,7 +242,6 @@ export const mergeAppData = (
 		if (found) {
 			const index = merged.tags.indexOf(found);
 			merged.tags[index].color = tag.color;
-			merged.tags[i].color = tag.color;
 		}
 	});
 	return merged;

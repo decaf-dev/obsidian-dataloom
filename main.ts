@@ -77,18 +77,12 @@ export default class NltPlugin extends Plugin {
 
 						const headers = parsedTable[0];
 
-						console.log("");
-						console.log("");
-						console.log("HANDLING MARKDOWN TABLE CHANGE");
-						console.log("Parsed table");
-						console.log(parsedTable);
-
 						//Get the saved entry
 						if (this.settings.appData[file.path]) {
 							const savedData = this.settings.appData[file.path];
-							console.log("FILE HAS CACHE ENTRY");
+							console.log(savedData);
 							//Check headers of the save data
-							Object.entries(savedData).map((entry) => {
+							Object.entries(savedData).forEach((entry) => {
 								const [key, value] = entry;
 								//If the headers match, update the data and the CRC
 								if (
@@ -96,14 +90,15 @@ export default class NltPlugin extends Plugin {
 										headers.includes(header.content)
 									)
 								) {
-									console.log("FOUND ENTRY THAT MATCHES");
-									console.log(key);
-									console.log(value);
-
 									const hash = hashParsedTable(parsedTable);
 
-									console.log("CALCULATING NEW HASH");
-									console.log(hash);
+									//If you change something in reading mode, we will persist
+									//that data in the settings cache. However, if you go back
+									//to editing mode, the editor-change callback will be ran.
+									//Since the hashes are the same, no data has updated, so we
+									//don't need to do anything
+									if (parseInt(key) === hash) return;
+
 									const newAppData = findAppData(parsedTable);
 									const merged = mergeAppData(
 										this.settings.appData[file.path][key],
@@ -111,22 +106,11 @@ export default class NltPlugin extends Plugin {
 									);
 									this.settings.appData[file.path][hash] =
 										merged;
-									console.log(
-										this.settings.appData[file.path][hash]
-									);
-									console.log("SAVING DATA");
+									console.log(hash);
 									delete this.settings.appData[file.path][
 										key
 									];
-									console.log("DELETING HASH", key);
-									console.log("NEW SETTINGS");
-									console.log(
-										this.settings.appData[file.path]
-									);
-									console.log(
-										"CHECKING THAT SETTINGS HAS",
-										hash
-									);
+									console.log("Deleting data", key);
 									this.saveSettings();
 								}
 							});

@@ -21,10 +21,76 @@ import {
 	isMarkdownTable,
 	hashParsedTable,
 	mergeAppData,
+	hashMarkdownTable,
+	appDataToString,
+	pruneSettingsCache,
 } from "./index";
 
 import { CELL_TYPE } from "../../constants";
 import { mockTable } from "../mockData";
+
+describe("pruneSettingsCache", () => {
+	it("keeps hashes that are found in the file", () => {
+		const parsedTable = [
+			["Column 1", "Column 2"],
+			["text", "text"],
+			["some text", "some more text"],
+		];
+		const appData = findAppData(parsedTable);
+		const markdownTable = appDataToString(appData);
+		const fileData = `test ${markdownTable} test`;
+		const hash = hashMarkdownTable(markdownTable);
+		const sourcePath = "test";
+
+		const settings = { appData: { [sourcePath]: { [hash]: appData } } };
+		const newSettings = pruneSettingsCache(settings, sourcePath, fileData);
+		expect(newSettings.appData[sourcePath][hash]).toEqual(appData);
+	});
+
+	it("removes hash that doesn't exist", () => {
+		const parsedTable = [
+			["Column 1", "Column 2"],
+			["text", "text"],
+			["some text", "some more text"],
+		];
+		const appData = findAppData(parsedTable);
+		const markdownTable = appDataToString(appData);
+		const fileData = `test ${markdownTable} test`;
+		const sourcePath = "test";
+
+		const settings = { appData: { [sourcePath]: { [123456]: appData } } };
+		const newSettings = pruneSettingsCache(settings, sourcePath, fileData);
+		expect(newSettings.appData[sourcePath][1233456]).toBe(undefined);
+	});
+});
+
+describe("hashMarkdownTable", () => {
+	it("returns the same hash for the same data", () => {
+		const parsedTable = [
+			["Column 1", "Column 2"],
+			["text", "text"],
+			["some text", "some more text"],
+		];
+		const appData = findAppData(parsedTable);
+		const markdownTable = appDataToString(appData);
+		const hash1 = hashMarkdownTable(markdownTable);
+		const hash2 = hashMarkdownTable(markdownTable);
+		expect(hash1).toEqual(hash2);
+	});
+
+	it("returns the same hash as hashParsedTable", () => {
+		const parsedTable = [
+			["Column 1", "Column 2"],
+			["text", "text"],
+			["some text", "some more text"],
+		];
+		const appData = findAppData(parsedTable);
+		const markdownTable = appDataToString(appData);
+		const hash1 = hashMarkdownTable(markdownTable);
+		const hash2 = hashParsedTable(parsedTable);
+		expect(hash1).toEqual(hash2);
+	});
+});
 
 describe("hashParsedTable", () => {
 	it("returns the same hash for the same data", () => {

@@ -30,7 +30,7 @@ export class NLTTable extends MarkdownRenderChild {
 		this.sourcePath = sourcePath;
 	}
 
-	onload() {
+	async onload() {
 		const data = loadAppData(
 			this.plugin,
 			this.app,
