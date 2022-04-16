@@ -6,7 +6,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { CELL_COLOR } from "../../constants";
 
 import "./styles.css";
-import { toTagLink } from "src/app/services/utils";
+import { toTagLink } from "src/app/services/dataUtils";
 interface Props {
 	cellId?: string;
 	id?: string;

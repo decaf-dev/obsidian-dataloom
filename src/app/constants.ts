@@ -1,4 +1,4 @@
-export const DEBUG = true;
+export const DEBUG = false;
 
 export interface CellType {
 	TEXT: string;
@@ -6,6 +6,12 @@ export interface CellType {
 	TAG: string;
 	MULTI_TAG: string;
 	ERROR: string;
+}
+
+interface Arrow {
+	UP: string;
+	DOWN: string;
+	NONE: string;
 }
 
 interface CellColor {
