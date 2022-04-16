@@ -4,8 +4,9 @@ import ReactDOM from "react-dom";
 
 import { AppContext } from "./app/services/hooks";
 import App from "./app/App";
+import ErrorDisplay from "./app/components/ErrorDisplay";
 import { loadAppData } from "./app/services/dataUtils";
-import { NltSettings } from "./app/services/state";
+import { instanceOfErrorData, NltSettings } from "./app/services/state";
 import NltPlugin from "main";
 
 //This is our main class that will render the React app to the Obsidian container element
@@ -30,7 +31,7 @@ export class NLTTable extends MarkdownRenderChild {
 		this.sourcePath = sourcePath;
 	}
 
-	async onload() {
+	onload() {
 		const data = loadAppData(
 			this.plugin,
 			this.app,
@@ -43,17 +44,21 @@ export class NLTTable extends MarkdownRenderChild {
 		//defintion row. Therefore, it's not a valid NLT table
 		if (data) {
 			this.el = this.containerEl.createEl("div");
-			ReactDOM.render(
-				<AppContext.Provider value={this.app}>
-					<App
-						plugin={this.plugin}
-						settings={this.settings}
-						data={data}
-						sourcePath={this.sourcePath}
-					/>
-				</AppContext.Provider>,
-				this.el
-			);
+			if (instanceOfErrorData(data)) {
+				ReactDOM.render(<ErrorDisplay data={data} />, this.el);
+			} else {
+				ReactDOM.render(
+					<AppContext.Provider value={this.app}>
+						<App
+							plugin={this.plugin}
+							settings={this.settings}
+							data={data}
+							sourcePath={this.sourcePath}
+						/>
+					</AppContext.Provider>,
+					this.el
+				);
+			}
 			this.containerEl.replaceWith(this.el);
 		}
 	}

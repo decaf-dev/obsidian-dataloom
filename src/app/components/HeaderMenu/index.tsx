@@ -10,19 +10,23 @@ interface Props {
 	isOpen: boolean;
 	style: object;
 	id: string;
-	index: number;
+	position: number;
 	sortName: string;
 	content: string;
 	type: string;
-	onTypeSelect: (id: string, index: number, type: string) => void;
+	onTypeSelect: (
+		headerId: string,
+		headerPosition: number,
+		headerType: string
+	) => void;
 	onSortSelect: (
-		id: string,
-		index: number,
-		type: string,
+		headerId: string,
+		headerPosition: number,
+		headerType: string,
 		sortName: string
 	) => void;
-	onDeleteClick: (id: string, index: number) => void;
-	onOutsideClick: (id: string, inputText: string) => void;
+	onDeleteClick: (headerId: string, headerPosition: number) => void;
+	onOutsideClick: (headerId: string, inputText: string) => void;
 	onClose: () => void;
 }
 
@@ -30,7 +34,7 @@ export default function HeaderMenu({
 	isOpen,
 	style,
 	id,
-	index,
+	position,
 	content,
 	type,
 	sortName,
@@ -54,10 +58,7 @@ export default function HeaderMenu({
 				<p
 					key={item.name}
 					className={className}
-					onClick={(e) => {
-						e.stopPropagation();
-						handleTypeSelect(id, index, item.type);
-					}}
+					onClick={() => handleTypeSelect(id, position, item.type)}
 				>
 					{item.content}
 				</p>
@@ -73,10 +74,9 @@ export default function HeaderMenu({
 				<p
 					key={item.name}
 					className={className}
-					onClick={(e) => {
-						e.stopPropagation();
-						handleSortSelect(id, index, type, item.name);
-					}}
+					onClick={() =>
+						handleSortSelect(id, position, type, item.name)
+					}
 				>
 					{item.icon} Sort {item.content}
 				</p>
@@ -86,16 +86,16 @@ export default function HeaderMenu({
 
 	function handleSortSelect(
 		id: string,
-		index: number,
+		position: number,
 		type: string,
 		sortName: string
 	) {
-		onSortSelect(id, index, type, sortName);
+		onSortSelect(id, position, type, sortName);
 		onClose();
 	}
 
-	function handleTypeSelect(id: string, index: number, type: string) {
-		onTypeSelect(id, index, type);
+	function handleTypeSelect(id: string, position: number, type: string) {
+		onTypeSelect(id, position, type);
 		onClose();
 	}
 
@@ -104,8 +104,8 @@ export default function HeaderMenu({
 		onClose();
 	}
 
-	function handleDeleteClick(id: string, index: number) {
-		onDeleteClick(id, index);
+	function handleDeleteClick(id: string, position: number) {
+		onDeleteClick(id, position);
 		onClose();
 	}
 
@@ -127,7 +127,7 @@ export default function HeaderMenu({
 					{renderMenuItems()}
 					<button
 						className="NLT__button"
-						onClick={() => handleDeleteClick(id, index)}
+						onClick={() => handleDeleteClick(id, position)}
 					>
 						Delete
 					</button>

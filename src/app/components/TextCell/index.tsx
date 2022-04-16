@@ -5,7 +5,7 @@ import {
 	hasSquareBrackets,
 	stripSquareBrackets,
 	toFileLink,
-} from "src/app/services/utils";
+} from "src/app/services/dataUtils";
 interface Props {
 	content: string;
 }

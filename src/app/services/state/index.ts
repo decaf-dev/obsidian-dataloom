@@ -27,7 +27,7 @@ export const DEFAULT_SETTINGS: NltSettings = {
 };
 export interface Header {
 	id: string;
-	index: number;
+	position: number;
 	content: string;
 	sortName: string;
 	width: string;
@@ -39,16 +39,17 @@ export interface TableHeader extends Header {
 
 export interface Row {
 	id: string;
-	creationTime: number;
+	creationTime?: number;
 }
 
 export interface TableRow extends Row {
 	component: React.ReactNode;
 }
+
 export interface Cell {
 	id: string;
 	rowId: string;
-	headerIndex: number;
+	position: number;
 	content: string;
 	type: string;
 	expectedType: string | null;
@@ -56,17 +57,16 @@ export interface Cell {
 
 export interface Tag {
 	id: string;
-	headerIndex: number;
-	rowIndex: number;
 	content: string;
+	headerId: string;
 	color: string;
 	selected: string[];
 }
 
-export const initialHeader = (content: string, index: number): Header => {
+export const initialHeader = (content: string, position: number): Header => {
 	return {
 		id: uuidv4(),
-		index,
+		position,
 		content,
 		sortName: SORT.DEFAULT.name,
 		width: "15rem",
@@ -74,17 +74,17 @@ export const initialHeader = (content: string, index: number): Header => {
 	};
 };
 
-export const initialRow = (id: string, creationTime: number): Row => {
+export const initialRow = (id: string): Row => {
 	return {
 		id,
-		creationTime,
+		creationTime: Date.now(),
 	};
 };
 
 export const initialCell = (
 	id: string,
 	rowId: string,
-	headerIndex: number,
+	position: number,
 	type: string,
 	content: string,
 	expectedType: string | null = null
@@ -92,7 +92,7 @@ export const initialCell = (
 	return {
 		id,
 		rowId,
-		headerIndex,
+		position,
 		type,
 		content,
 		expectedType,
@@ -100,16 +100,14 @@ export const initialCell = (
 };
 
 export const initialTag = (
-	headerIndex: number,
-	rowIndex: number,
-	cellId: string,
 	content: string,
+	cellId: string,
+	headerId: string,
 	color: string
 ): Tag => {
 	return {
 		id: uuidv4(),
-		headerIndex,
-		rowIndex,
+		headerId,
 		content,
 		color,
 		selected: [cellId],
@@ -120,7 +118,7 @@ export const initialHeaderMenuState = {
 	left: 0,
 	top: 0,
 	id: "",
-	index: 0,
+	position: 0,
 	content: "",
 	type: CELL_TYPE.TEXT,
 };
