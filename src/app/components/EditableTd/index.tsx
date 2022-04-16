@@ -15,7 +15,8 @@ import { CELL_TYPE } from "../../constants";
 import "./styles.css";
 
 interface Props {
-	headerId: string;
+	headerIndex: number;
+	rowIndex: number;
 	cellId: string;
 	width: string;
 	content: string;
@@ -26,7 +27,8 @@ interface Props {
 	onTagClick: (cellId: string, inputText: string) => void;
 	onUpdateContent: (cellId: string, inputText: string) => void;
 	onAddTag: (
-		headerId: string,
+		headerIndex: number,
+		rowIndex: number,
 		cellId: string,
 		inputText: string,
 		color: string
@@ -34,7 +36,8 @@ interface Props {
 }
 
 export default function EditableTd({
-	headerId,
+	headerIndex,
+	rowIndex,
 	cellId,
 	width,
 	content,
@@ -97,7 +100,7 @@ export default function EditableTd({
 	}
 
 	function handleAddTag(text: string) {
-		onAddTag(headerId, cellId, text, cellMenu.tagColor);
+		onAddTag(headerIndex, rowIndex, cellId, text, cellMenu.tagColor);
 		setInputText("");
 		setCellMenu(initialCellMenuState);
 	}
