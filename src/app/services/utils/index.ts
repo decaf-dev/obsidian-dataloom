@@ -231,6 +231,11 @@ export const mergeAppData = (
 		merged.headers[i].sortName = headers.sortName;
 	});
 
+	//Grab row settings
+	oldAppData.rows.forEach((row, i) => {
+		merged.rows[i].creationTime = row.creationTime;
+	});
+
 	//Grab tag settings
 	oldAppData.tags.forEach((tag, i) => {
 		const found = merged.tags.find((t) => t.content === tag.content);
