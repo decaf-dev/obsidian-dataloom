@@ -80,7 +80,6 @@ export default class NltPlugin extends Plugin {
 						//Get the saved entry
 						if (this.settings.appData[file.path]) {
 							const savedData = this.settings.appData[file.path];
-							console.log(savedData);
 							//Check headers of the save data
 							Object.entries(savedData).forEach((entry) => {
 								const [key, value] = entry;
@@ -100,7 +99,6 @@ export default class NltPlugin extends Plugin {
 									if (parseInt(key) === hash) return;
 
 									const newAppData = findAppData(parsedTable);
-									console.log("MERGING DATA");
 									const merged = mergeAppData(
 										this.settings.appData[file.path][key],
 										newAppData

@@ -159,6 +159,29 @@ describe("mergeAppData", () => {
 		expect(merged.tags[0].content).toEqual("tag2");
 		expect(merged.tags[1].content).toEqual("tag3");
 	});
+
+	it("merges row creation times", () => {
+		const oldAppData = findAppData([
+			["column1", "column2"],
+			["text", "text"],
+			["row1-cell1", "row1-cell2"],
+			["row2-cell1", "row2-cell2"],
+		]);
+		const newAppData = findAppData([
+			["column1", "column2"],
+			["text", "text"],
+			["updated-row1-cell1", "updated-row1-cell2"],
+			["updated-row2-cell1", "updated-row2-cell2"],
+		]);
+
+		const merged = mergeAppData(oldAppData, newAppData);
+		expect(merged.rows[0].creationTime).toEqual(
+			oldAppData.rows[0].creationTime
+		);
+		expect(merged.rows[1].creationTime).toEqual(
+			newAppData.rows[1].creationTime
+		);
+	});
 });
 
 describe("findAppData", () => {

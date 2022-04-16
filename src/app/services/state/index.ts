@@ -39,7 +39,7 @@ export interface TableHeader extends Header {
 
 export interface Row {
 	id: string;
-	creationTime?: number;
+	creationTime: number;
 }
 
 export interface TableRow extends Row {
