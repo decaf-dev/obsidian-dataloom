@@ -57,7 +57,6 @@ export interface Cell {
 export interface Tag {
 	id: string;
 	headerIndex: number;
-	rowIndex: number;
 	content: string;
 	color: string;
 	selected: string[];
@@ -101,7 +100,6 @@ export const initialCell = (
 
 export const initialTag = (
 	headerIndex: number,
-	rowIndex: number,
 	cellId: string,
 	content: string,
 	color: string
@@ -109,7 +107,6 @@ export const initialTag = (
 	return {
 		id: uuidv4(),
 		headerIndex,
-		rowIndex,
 		content,
 		color,
 		selected: [cellId],

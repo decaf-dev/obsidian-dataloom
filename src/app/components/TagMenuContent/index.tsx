@@ -35,6 +35,12 @@ export default function TagMenuContent({
 		onTextChange(e);
 	}
 
+	function handleKeyDown(e: React.KeyboardEvent) {
+		if (e.key === "Enter") {
+			onAddTag(inputText);
+		}
+	}
+
 	function renderSelectableTags() {
 		const filteredTags = tags.filter((tag: Tag) =>
 			tag.content.includes(inputText)
@@ -68,7 +74,7 @@ export default function TagMenuContent({
 		);
 	}
 	return (
-		<div className="NLT__tag-menu-container">
+		<div className="NLT__tag-menu-container" onKeyDown={handleKeyDown}>
 			<div className="NLT__tag-menu-top">
 				{tags
 					.filter(

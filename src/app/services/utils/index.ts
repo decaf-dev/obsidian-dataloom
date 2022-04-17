@@ -315,7 +315,6 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 						tags.push(
 							initialTag(
 								headers[j].index,
-								i - 2, //Subtract both the header row and type def row
 								cellId,
 								content,
 								randomColor()
