@@ -6,16 +6,24 @@ import Menu from "../Menu";
 
 import MoreVert from "@mui/icons-material/MoreVert";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 
 import IconText from "../IconText";
 
 import "./styles.css";
 
 interface Props {
-	onDeleteClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+	rowId: string;
+	onDeleteClick: (id: string) => void;
+	onInsertRowClick: (id: string, insertBelow: boolean) => void;
 }
 
-export default function DragMenu({ onDeleteClick }: Props) {
+export default function DragMenu({
+	rowId,
+	onDeleteClick,
+	onInsertRowClick,
+}: Props) {
 	const initialClickedButton = {
 		top: 0,
 		left: 0,
@@ -31,16 +39,12 @@ export default function DragMenu({ onDeleteClick }: Props) {
 			const el = e.target as HTMLInputElement;
 			if (el.id === buttonId) return;
 		}
-		setClickedButton(initialClickedButton);
+		onClose();
 	}
 
-	// function getOffset(el: HTMLElement) {
-	// 	const rect = el.getBoundingClientRect();
-	// 	return {
-	// 		left: rect.left + window.scrollX,
-	// 		top: rect.top + window.scrollY,
-	// 	};
-	// }
+	function onClose() {
+		setClickedButton(initialClickedButton);
+	}
 
 	function handleDragClick() {
 		if (clickedButton.isOpen) {
@@ -57,6 +61,16 @@ export default function DragMenu({ onDeleteClick }: Props) {
 				isOpen: true,
 			});
 		}
+	}
+
+	function handleDeleteClick(id: string) {
+		onClose();
+		onDeleteClick(id);
+	}
+
+	function handleInsertRowClick(id: string, insertBelow: boolean) {
+		onClose();
+		onInsertRowClick(id, insertBelow);
 	}
 
 	return (
@@ -77,10 +91,24 @@ export default function DragMenu({ onDeleteClick }: Props) {
 					<div className="NLT__drag-menu-container">
 						<IconText
 							icon={
+								<ArrowUpwardIcon className="NLT__icon--md NLT__margin-right" />
+							}
+							iconText="Insert Row Above"
+							onClick={() => handleInsertRowClick(rowId, false)}
+						/>
+						<IconText
+							icon={
+								<ArrowDownwardIcon className="NLT__icon--md NLT__margin-right" />
+							}
+							iconText="Insert Row Below"
+							onClick={() => handleInsertRowClick(rowId, true)}
+						/>
+						<IconText
+							icon={
 								<DeleteIcon className="NLT__icon--md NLT__margin-right" />
 							}
 							iconText="Delete"
-							onClick={onDeleteClick}
+							onClick={() => handleDeleteClick(rowId)}
 						/>
 					</div>
 				}
