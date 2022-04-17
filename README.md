@@ -13,20 +13,22 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 -   0.2.0
     -   Semantic table tags
 -   0.3.0
-    -   Moved sorting into header menu
--   0.4.0
-    -   Select
-    -   Currency
-    -   Support for http links
--   0.5.0
-    -   UI and accessibility updates
--   0.6.0
-    -   Multi-tagging
--   0.7.0
-    -   Editable table width
--   0.8.0
-    -   Draggable columns
-    -   Draggable rows
+    -   Notion-Like sort menu
+-   1.0.0
+    -   Settings cache system to persist app data
+    -   Added jest tests
+    -   Sorting updates source markdown
+-   1.1.0
+    -   Support for http/https links
+-   1.2.0
+    -   UI updates
+    -   Insert row above or below an existing row
+-   1.3.0
+    -   Create new row with keyboard
+-   1.4.0
+    -   Navigate cells with arrow key and tab key
+-   1.5.0
+    -   TBA
 
 ## Usage
 
