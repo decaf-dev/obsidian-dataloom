@@ -5,8 +5,9 @@
 	color: red;
 }
 
-.NLT__overflow {
+.NLT__app {
 	overflow: auto;
+	min-height: 300px;
 }
 
 /*

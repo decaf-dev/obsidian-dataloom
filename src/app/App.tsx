@@ -394,7 +394,7 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 	}
 
 	return (
-		<div className="NLT__overflow" ref={appRef}>
+		<div className="NLT__app" ref={appRef}>
 			<Table
 				headers={appData.headers.map((header) => {
 					const { id, content, index, type, sortName } = header;
