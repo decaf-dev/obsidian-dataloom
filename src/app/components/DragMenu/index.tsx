@@ -16,7 +16,7 @@ import "./styles.css";
 interface Props {
 	rowId: string;
 	onDeleteClick: (id: string) => void;
-	onInsertRowClick: (id: string, insertAbove: boolean) => void;
+	onInsertRowClick: (id: string, insertBelow: boolean) => void;
 }
 
 export default function DragMenu({
@@ -39,6 +39,10 @@ export default function DragMenu({
 			const el = e.target as HTMLInputElement;
 			if (el.id === buttonId) return;
 		}
+		onClose();
+	}
+
+	function onClose() {
 		setClickedButton(initialClickedButton);
 	}
 
@@ -57,6 +61,16 @@ export default function DragMenu({
 				isOpen: true,
 			});
 		}
+	}
+
+	function handleDeleteClick(id: string) {
+		onClose();
+		onDeleteClick(id);
+	}
+
+	function handleInsertRowClick(id: string, insertBelow: boolean) {
+		onClose();
+		onInsertRowClick(id, insertBelow);
 	}
 
 	return (
@@ -80,21 +94,21 @@ export default function DragMenu({
 								<ArrowUpwardIcon className="NLT__icon--md NLT__margin-right" />
 							}
 							iconText="Insert Row Above"
-							onClick={() => onInsertRowClick(rowId, false)}
+							onClick={() => handleInsertRowClick(rowId, false)}
 						/>
 						<IconText
 							icon={
 								<ArrowDownwardIcon className="NLT__icon--md NLT__margin-right" />
 							}
 							iconText="Insert Row Below"
-							onClick={() => onInsertRowClick(rowId, true)}
+							onClick={() => handleInsertRowClick(rowId, true)}
 						/>
 						<IconText
 							icon={
 								<DeleteIcon className="NLT__icon--md NLT__margin-right" />
 							}
 							iconText="Delete"
-							onClick={() => onDeleteClick(rowId)}
+							onClick={() => handleDeleteClick(rowId)}
 						/>
 					</div>
 				}
