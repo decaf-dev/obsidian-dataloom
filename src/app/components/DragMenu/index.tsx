@@ -42,14 +42,6 @@ export default function DragMenu({
 		setClickedButton(initialClickedButton);
 	}
 
-	// function getOffset(el: HTMLElement) {
-	// 	const rect = el.getBoundingClientRect();
-	// 	return {
-	// 		left: rect.left + window.scrollX,
-	// 		top: rect.top + window.scrollY,
-	// 	};
-	// }
-
 	function handleDragClick() {
 		if (clickedButton.isOpen) {
 			setClickedButton(initialClickedButton);
