@@ -7,11 +7,11 @@ import {
 	markdownRowsRegex,
 	markdownCellsRegex,
 	toFileLink,
-	addBrackets,
+	stripLink,
 	addPound,
 	stripPound,
-	stripLink,
-	hasLink,
+	stripLinks,
+	toExternalLink,
 	stripSquareBrackets,
 	hasSquareBrackets,
 	parseTableFromEl,
@@ -23,6 +23,8 @@ import {
 	mergeAppData,
 	hashMarkdownTable,
 	appDataToString,
+	parseURLs,
+	parseFileLinks,
 	pruneSettingsCache,
 } from "./index";
 
@@ -506,35 +508,10 @@ describe("countNumTags", () => {
 	});
 });
 
-describe("hasLink", () => {
-	it("returns true if there is a link", () => {
-		const output = hasLink("<a>#test</a>");
-		expect(output).toEqual(true);
-	});
-
-	it("returns true if there are many links", () => {
-		const output = hasLink("<a>#test</a><a>#test</a>");
-		expect(output).toEqual(true);
-	});
-
-	it("returns true if there links embedded in text", () => {
-		const output = hasLink("text <a>#test</a> text");
-		expect(output).toEqual(true);
-	});
-
-	it("returns true if there is a link with attributes", () => {
-		const output = hasLink('<a href="test">#test</a>');
-		expect(output).toEqual(true);
-	});
-
-	it("return false if there is no link", () => {
-		const output = hasLink("test");
-		expect(output).toEqual(false);
-	});
-
-	it("returns false if there is an incomplete link", () => {
-		const output = hasLink("test</a>");
-		expect(output).toEqual(false);
+describe("stripSquareBrackets", () => {
+	it("strips square brackets ", () => {
+		const output = stripSquareBrackets("[[test file name]]");
+		expect(output).toEqual("test file name");
 	});
 });
 
@@ -555,42 +532,83 @@ describe("hasSquareBrackets", () => {
 	});
 });
 
-describe("stripSquareBrackets", () => {
-	it("strips square brackets ", () => {
-		const output = stripSquareBrackets("[[test file name]]");
-		expect(output).toEqual("test file name");
+describe("parseFileLinks", () => {
+	it("parses a file link", () => {
+		const parsed = parseFileLinks("[[test]]");
+		expect(parsed).toEqual(
+			'<a data-href="test" href="test" class="internal-link" target="_blank" rel="noopener">test</a>'
+		);
 	});
+
+	it("parses multiple file links", () => {
+		const parsed = parseFileLinks("[[test]] [[test2]]");
+		expect(parsed).toEqual(
+			'<a data-href="test" href="test" class="internal-link" target="_blank" rel="noopener">test</a> <a data-href="test2" href="test2" class="internal-link" target="_blank" rel="noopener">test2</a>'
+		);
+	});
+
+	//TODO parses same link
 });
 
-describe("stripLink", () => {
+describe("parseURLs", () => {
+	it("parses a url", () => {
+		const parsed = parseURLs("https://test.com");
+		expect(parsed).toEqual(
+			'<a href="https://test.com" target="_blank" rel="noopener">https://test.com</a>'
+		);
+	});
+
+	it("parses multiple urls", () => {
+		const parsed = parseURLs("https://test.com https://test2.com");
+		expect(parsed).toEqual(
+			'<a href="https://test.com" target="_blank" rel="noopener">https://test.com</a> <a href="https://test2.com" target="_blank" rel="noopener">https://test2.com</a>'
+		);
+	});
+
+	//TODO parses same link
+});
+
+describe("stripLinks", () => {
 	it("strips link", () => {
-		const output = stripLink("<a>#test</a>");
+		const output = stripLinks("<a>#test</a>");
 		expect(output).toEqual("#test");
 	});
 
 	it("strips link with attributes", () => {
-		const output = stripLink('<a href="test">#test</a>');
+		const output = stripLinks('<a href="test">#test</a>');
 		expect(output).toEqual("#test");
 	});
 
 	it("strips links in text", () => {
-		const output = stripLink('text <a href="test">#test</a> text');
+		const output = stripLinks('text <a href="test">#test</a> text');
 		expect(output).toEqual("text #test text");
 	});
 
 	it("strips multiple links in text", () => {
-		const output = stripLink(
+		const output = stripLinks(
 			'text <a href="test">#test</a> text <a href="test">#test2</a>'
 		);
 		expect(output).toEqual("text #test text #test2");
 	});
 
-	it("replaces links with square bracket", () => {
-		const output = stripLink(
+	it("replaces links with square brackets", () => {
+		const output = stripLinks(
 			'text <a href="test">test</a> text <a href="test">test2</a>',
 			true
 		);
 		expect(output).toEqual("text [[test]] text [[test2]]");
+	});
+});
+
+describe("stripLink", () => {
+	it("strips link", () => {
+		const output = stripLink("<a>test</a>");
+		expect(output).toEqual("test");
+	});
+
+	it("strips link with attributes", () => {
+		const output = stripLink('<a href="test">test</a>');
+		expect(output).toEqual("test");
 	});
 });
 
@@ -608,15 +626,17 @@ describe("addPound", () => {
 	});
 });
 
-describe("addBrackets", () => {
-	it("addBrackets", () => {
-		const output = addBrackets("test");
-		expect(output).toEqual("[[test]]");
+describe("toExternalLink", () => {
+	it("creates a external link", () => {
+		const link = toExternalLink("https://test.com");
+		expect(link).toEqual(
+			'<a href="https://test.com" target="_blank" rel="noopener">https://test.com</a>'
+		);
 	});
 });
 
 describe("toFileLink", () => {
-	it("creates a file link", () => {
+	it("creates an internal file link", () => {
 		const link = toFileLink("test");
 		expect(link).toEqual(
 			'<a data-href="test" href="test" class="internal-link" target="_blank" rel="noopener">test</a>'
@@ -625,7 +645,7 @@ describe("toFileLink", () => {
 });
 
 describe("toTagLink", () => {
-	it("creates a tag link", () => {
+	it("creates an internal tag link", () => {
 		const link = toTagLink("test");
 		expect(link).toEqual(
 			'<a href="#test" class="tag" target="_blank" rel="noopener">test</a>'
