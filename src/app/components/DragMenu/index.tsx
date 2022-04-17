@@ -6,16 +6,24 @@ import Menu from "../Menu";
 
 import MoreVert from "@mui/icons-material/MoreVert";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 
 import IconText from "../IconText";
 
 import "./styles.css";
 
 interface Props {
-	onDeleteClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+	rowId: string;
+	onDeleteClick: (id: string) => void;
+	onInsertRowClick: (id: string, insertAbove: boolean) => void;
 }
 
-export default function DragMenu({ onDeleteClick }: Props) {
+export default function DragMenu({
+	rowId,
+	onDeleteClick,
+	onInsertRowClick,
+}: Props) {
 	const initialClickedButton = {
 		top: 0,
 		left: 0,
@@ -77,10 +85,24 @@ export default function DragMenu({ onDeleteClick }: Props) {
 					<div className="NLT__drag-menu-container">
 						<IconText
 							icon={
+								<ArrowUpwardIcon className="NLT__icon--md NLT__margin-right" />
+							}
+							iconText="Insert Row Above"
+							onClick={() => onInsertRowClick(rowId, false)}
+						/>
+						<IconText
+							icon={
+								<ArrowDownwardIcon className="NLT__icon--md NLT__margin-right" />
+							}
+							iconText="Insert Row Below"
+							onClick={() => onInsertRowClick(rowId, true)}
+						/>
+						<IconText
+							icon={
 								<DeleteIcon className="NLT__icon--md NLT__margin-right" />
 							}
 							iconText="Delete"
-							onClick={onDeleteClick}
+							onClick={() => onDeleteClick(rowId)}
 						/>
 					</div>
 				}

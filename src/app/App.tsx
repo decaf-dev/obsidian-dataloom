@@ -19,7 +19,7 @@ import { saveAppData } from "./services/dataUtils";
 import { useApp } from "./services/hooks";
 import { AppData } from "./services/state";
 
-import { CELL_TYPE, DEBUG } from "./constants";
+import { CELL_TYPE } from "./constants";
 
 import "./app.css";
 import NltPlugin from "main";
@@ -95,15 +95,7 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 			const cells = prevState.headers.map((header, i) => {
 				const cellId = uuidv4();
 				if (header.type === CELL_TYPE.TAG)
-					tags.push(
-						initialTag(
-							header.index,
-							prevState.rows.length,
-							cellId,
-							"",
-							""
-						)
-					);
+					tags.push(initialTag(header.index, cellId, "", ""));
 				return initialCell(cellId, rowId, i, header.type, "");
 			});
 			return {
@@ -172,7 +164,6 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 
 	function handleAddTag(
 		headerIndex: number,
-		rowIndex: number,
 		cellId: string,
 		content: string,
 		color: string
@@ -183,7 +174,7 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 				updateTime: Date.now(),
 				tags: [
 					...removeTagReferences(prevState.tags, cellId),
-					initialTag(headerIndex, rowIndex, cellId, content, color),
+					initialTag(headerIndex, cellId, content, color),
 				],
 			};
 		});
@@ -341,6 +332,34 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 		});
 	}
 
+	function handleInsertRowClick(id: string, insertBelow = false) {
+		const rowId = uuidv4();
+		setAppData((prevState: AppData) => {
+			const tags: Tag[] = [];
+			const row = prevState.rows.find((row) => row.id === id);
+
+			const index = prevState.rows.indexOf(row);
+			const cells = prevState.headers.map((header, i) => {
+				const cellId = uuidv4();
+				if (header.type === CELL_TYPE.TAG)
+					tags.push(initialTag(header.index, cellId, "", ""));
+				return initialCell(cellId, rowId, i, header.type, "");
+			});
+
+			const rows = [...prevState.rows];
+
+			const insertIndex = insertBelow ? index + 1 : index;
+			rows.splice(insertIndex, 0, initialRow(rowId, Date.now()));
+			return {
+				...prevState,
+				updateTime: Date.now(),
+				rows,
+				cells: [...prevState.cells, ...cells],
+				tags: [...prevState.tags, ...tags],
+			};
+		});
+	}
+
 	function handleHeaderTypeSelect(
 		id: string,
 		index: number,
@@ -413,7 +432,6 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 										<EditableTd
 											key={id}
 											headerIndex={header.index}
-											rowIndex={i}
 											cellId={id}
 											type={type}
 											content={content}
@@ -437,9 +455,9 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 								})}
 								<td className="NLT__td">
 									<DragMenu
-										onDeleteClick={() =>
-											handleDeleteRowClick(row.id)
-										}
+										rowId={row.id}
+										onDeleteClick={handleDeleteRowClick}
+										onInsertRowClick={handleInsertRowClick}
 									/>
 								</td>
 							</>
