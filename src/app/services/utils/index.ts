@@ -328,10 +328,7 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 					);
 				} else if (cellType === CELL_TYPE.TEXT) {
 					let content = td;
-					if (hasLink(td)) {
-						content = stripLink(content);
-						content = addBrackets(content);
-					}
+					content = stripLinks(content, true);
 					cells.push(
 						initialCell(cellId, rowId, j, CELL_TYPE.TEXT, content)
 					);
@@ -501,24 +498,24 @@ export const countNumTags = (input: string): number => {
 	return (input.match(/#[^ \t]+/g) || []).length;
 };
 
-/**
- * Checks to see if input string contains hyperlinks (<a>)
- * @param input The input string
- * @returns Has hyperlinks or not
- */
-export const hasLink = (input: string): boolean => {
-	if (input.match(/^<a.*?>.*?<\/a>$/)) return true;
-	return false;
+export const parseFileLinks = (input: string): string => {
+	//Check if it has has urls
+	const matches = input.match(/\[\[[^\s]+]]/g) || [];
+	matches.forEach((match) => {
+		const replacement = toFileLink(stripSquareBrackets(match));
+		input = input.replace(match, replacement);
+	});
+	return input;
 };
 
-/**
- * Checks to see if input string starts and ends with double square brackets
- * @param input The input string
- * @returns Has square brackets or not
- */
-export const hasSquareBrackets = (input: string): boolean => {
-	if (input.match(/(^\[\[)(.*)(]]$)/)) return true;
-	return false;
+export const parseURLs = (input: string): string => {
+	//Check if it has has urls
+	const matches = input.match(/https{0,1}:\/\/[^\s]*/g) || [];
+	matches.forEach((match) => {
+		const replacement = toExternalLink(match);
+		input = input.replace(match, replacement);
+	});
+	return input;
 };
 
 /**
@@ -533,14 +530,38 @@ export const stripSquareBrackets = (input: string): string => {
 };
 
 /**
+ * Checks to see if input string starts and ends with double square brackets
+ * @param input The input string
+ * @returns Has square brackets or not
+ */
+export const hasSquareBrackets = (input: string): boolean => {
+	if (input.match(/(^\[\[)(.*)(]]$)/)) return true;
+	return false;
+};
+
+/**
  * Removes all hyperlinks from input string
  * @param input The input string
  * @returns A string with no hyperlinks (<a>)
  */
-export const stripLink = (input: string): string => {
-	input = input.replace(/^<a.*?>/, "");
-	input = input.replace(/<\/a>$/, "");
+export const stripLinks = (
+	input: string,
+	replaceWithSquareBrackets = false
+): string => {
+	const matches = input.match(/<a.*?>.*?<\/a>/g) || [];
+	matches.forEach((match) => {
+		input = input.replace(
+			match,
+			stripLink(match, replaceWithSquareBrackets)
+		);
+	});
 	return input;
+};
+
+export const stripLink = (input: string, replaceWithSquareBrackets = false) => {
+	return input
+		.replace(/<a.*?>/, replaceWithSquareBrackets ? "[[" : "")
+		.replace(/<\/a>/, replaceWithSquareBrackets ? "]]" : "");
 };
 
 /**
@@ -562,12 +583,12 @@ export const addPound = (input: string) => {
 };
 
 /**
- * Adds double square brackets to input string
- * @param input The input string
- * @returns A string surrounded by double square brackets ([[ ]])
+ * Converts file name to an external hyperlink
+ * @param url The url
+ * @returns A hyperlink (<a>) link for an Obsidian file
  */
-export const addBrackets = (input: string): string => {
-	return `[[${input}]]`;
+export const toExternalLink = (url: string): string => {
+	return `<a href="${url}" target="_blank" rel="noopener">${url}</a>`;
 };
 
 /**
