@@ -75,7 +75,7 @@ export default function TagCell({
 				<div className="NLT__tag-content">{parse(content)}</div>
 				{showRemove && (
 					<CloseIcon
-						className="NLT__icon--md NLT__margin-left"
+						className="NLT__icon--md NLT__margin-left NLT__icon--selectable"
 						onClick={(e) => {
 							e.stopPropagation();
 							onRemoveClick(cellId, id);
