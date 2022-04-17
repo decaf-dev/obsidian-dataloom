@@ -328,10 +328,7 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 					);
 				} else if (cellType === CELL_TYPE.TEXT) {
 					let content = td;
-					if (hasLink(td)) {
-						content = stripLink(content);
-						content = addBrackets(content);
-					}
+					if (hasLink(td)) content = stripLink(content, true);
 					cells.push(
 						initialCell(cellId, rowId, j, CELL_TYPE.TEXT, content)
 					);
@@ -506,8 +503,18 @@ export const countNumTags = (input: string): number => {
  * @param input The input string
  * @returns Has hyperlinks or not
  */
+export const hasURL = (input: string): boolean => {
+	if (input.match(/<a.*?>.*?<\/a>/)) return true;
+	return false;
+};
+
+/**
+ * Checks to see if input string contains hyperlinks (<a>)
+ * @param input The input string
+ * @returns Has hyperlinks or not
+ */
 export const hasLink = (input: string): boolean => {
-	if (input.match(/^<a.*?>.*?<\/a>$/)) return true;
+	if ((input.match(/<a.*?>.*?<\/a>/) || []).length > 0) return true;
 	return false;
 };
 
@@ -537,9 +544,12 @@ export const stripSquareBrackets = (input: string): string => {
  * @param input The input string
  * @returns A string with no hyperlinks (<a>)
  */
-export const stripLink = (input: string): string => {
-	input = input.replace(/^<a.*?>/, "");
-	input = input.replace(/<\/a>$/, "");
+export const stripLink = (
+	input: string,
+	replaceWithSquareBrackets = false
+): string => {
+	input = input.replace(/<a.*?>/g, replaceWithSquareBrackets ? "[[" : "");
+	input = input.replace(/<\/a>/g, replaceWithSquareBrackets ? "]]" : "");
 	return input;
 };
 

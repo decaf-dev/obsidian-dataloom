@@ -507,12 +507,22 @@ describe("countNumTags", () => {
 });
 
 describe("hasLink", () => {
-	it("return true if there is a link", () => {
+	it("returns true if there is a link", () => {
 		const output = hasLink("<a>#test</a>");
 		expect(output).toEqual(true);
 	});
 
-	it("return true if there is a link with attributes", () => {
+	it("returns true if there are many links", () => {
+		const output = hasLink("<a>#test</a><a>#test</a>");
+		expect(output).toEqual(true);
+	});
+
+	it("returns true if there links embedded in text", () => {
+		const output = hasLink("text <a>#test</a> text");
+		expect(output).toEqual(true);
+	});
+
+	it("returns true if there is a link with attributes", () => {
 		const output = hasLink('<a href="test">#test</a>');
 		expect(output).toEqual(true);
 	});
@@ -522,7 +532,7 @@ describe("hasLink", () => {
 		expect(output).toEqual(false);
 	});
 
-	it("return false if there is an incomplete link", () => {
+	it("returns false if there is an incomplete link", () => {
 		const output = hasLink("test</a>");
 		expect(output).toEqual(false);
 	});
@@ -561,6 +571,26 @@ describe("stripLink", () => {
 	it("strips link with attributes", () => {
 		const output = stripLink('<a href="test">#test</a>');
 		expect(output).toEqual("#test");
+	});
+
+	it("strips links in text", () => {
+		const output = stripLink('text <a href="test">#test</a> text');
+		expect(output).toEqual("text #test text");
+	});
+
+	it("strips multiple links in text", () => {
+		const output = stripLink(
+			'text <a href="test">#test</a> text <a href="test">#test2</a>'
+		);
+		expect(output).toEqual("text #test text #test2");
+	});
+
+	it("replaces links with square bracket", () => {
+		const output = stripLink(
+			'text <a href="test">test</a> text <a href="test">test2</a>',
+			true
+		);
+		expect(output).toEqual("text [[test]] text [[test2]]");
 	});
 });
 
