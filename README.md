@@ -25,6 +25,7 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
     -   Insert row above or below an existing row
 -   1.3.0
     -   Create new row with keyboard
+    -   Add new tag colors
 -   1.4.0
     -   Navigate cells with arrow key and tab key
 -   1.5.0
