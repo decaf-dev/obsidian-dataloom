@@ -32,8 +32,10 @@ export const pruneSettingsCache = (
 
 		Object.keys(obj.appData[sourcePath]).forEach((key) => {
 			const hash = parseInt(key);
-			if (!tableHashes.includes(hash))
+			if (!tableHashes.includes(hash)) {
+				//console.log("PRUNING DATA", hash);
 				delete obj.appData[sourcePath][hash];
+			}
 		});
 	}
 	return obj;
@@ -48,7 +50,12 @@ export const hashMarkdownTable = (markdownTable: string): number => {
 };
 
 export const hashParsedTable = (parsedTable: string[][]): number => {
-	const output = parsedTable.join("").replace(/,/g, "").replace(/\s/g, "");
+	let output = "";
+	for (let i = 0; i < parsedTable.length; i++) {
+		for (let j = 0; j < parsedTable[i].length; j++) {
+			output += parsedTable[i][j].replace(/\s/g, "");
+		}
+	}
 	return crc32.str(output);
 };
 

@@ -1,6 +1,5 @@
 import { App, TFile } from "obsidian";
 import { NltSettings } from "../../services/state";
-import crc32 from "crc-32";
 
 import { AppData } from "../../services/state";
 import {
@@ -30,24 +29,24 @@ export const loadAppData = (
 ): AppData | null => {
 	const parsedTable = parseTableFromEl(el);
 	const hash = hashParsedTable(parsedTable);
+	// console.log("LOADING DATA");
+	// console.log(parsedTable);
+	// console.log(hash);
 
 	if (settings.appData[sourcePath]) {
 		//Just in time garbage collection for old tables
 		garbageCollect(plugin, app, settings, sourcePath);
-		if (settings.appData[sourcePath][hash])
+		if (settings.appData[sourcePath][hash]) {
+			// console.log("LOADING OLD DATA", hash);
 			return settings.appData[sourcePath][hash];
+		}
 	}
 
 	//If we don't have a type definition row return null
 	if (!validTypeDefinitionRow(parsedTable)) return null;
 
-	let data = findAppData(parsedTable);
-	//When we find the data, save it in the cache immediately
-	//USE CASE:
-	//if a user makes a table with tags but never edits it
-	//they can open and close the app and the tags will change colors
-	persistAppData(plugin, settings, data, sourcePath);
-	return data;
+	// console.log("LOADING NEW DATA");
+	return findAppData(parsedTable);
 };
 
 const garbageCollect = async (
@@ -71,8 +70,10 @@ const persistAppData = (
 	sourcePath: string
 ) => {
 	const markdownTable = appDataToString(appData);
+	//console.log(markdownTable);
 	const hash = hashMarkdownTable(markdownTable);
 	if (!settings.appData[sourcePath]) settings.appData[sourcePath] = {};
+	// console.log("PERSISTING APP DATA", hash);
 	settings.appData[sourcePath][hash] = appData;
 	plugin.saveData(settings);
 };

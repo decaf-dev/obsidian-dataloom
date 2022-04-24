@@ -64,6 +64,7 @@ export default class NltPlugin extends Plugin {
 		//and that table has a reference in the cache, then we should update it with new data.
 		this.registerEvent(
 			this.app.workspace.on("editor-change", async (editor) => {
+				console.log("EDITOR CHANGE!");
 				const file = this.app.workspace.getActiveFile();
 				const markdownTables = findMarkdownTablesFromFileData(
 					editor.getValue()

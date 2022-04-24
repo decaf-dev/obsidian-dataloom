@@ -84,7 +84,7 @@ describe("hashMarkdownTable", () => {
 		const parsedTable = [
 			["Column 1", "Column 2"],
 			["text", "text"],
-			["some text", "some more text"],
+			["some text", "some more text, with comma"],
 		];
 		const appData = findAppData(parsedTable);
 		const markdownTable = appDataToString(appData);
