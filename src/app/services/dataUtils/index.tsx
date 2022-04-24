@@ -108,7 +108,7 @@ export const saveAppData = async (
 		persistAppData(plugin, settings, newAppData, sourcePath);
 
 		//Save the open file with the new table data
-		app.vault.modify(file, content);
+		await app.vault.modify(file, content);
 	} catch (err) {
 		console.log(err);
 	}
