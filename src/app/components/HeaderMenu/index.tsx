@@ -100,7 +100,11 @@ export default function HeaderMenu({
 	}
 
 	function handleOutsideClick(id: string, text: string) {
-		onOutsideClick(id, text);
+		//If we're in Live Preview mode and we click on the header and then click on the outside of
+		//the component, the header will close, set the data (which didn't change), which cause an update
+		//which persists the data again. We can prevent this by only calling onOutsideClick
+		//if the data has actually changed
+		if (text !== content) onOutsideClick(id, text);
 		onClose();
 	}
 
