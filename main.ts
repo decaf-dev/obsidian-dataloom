@@ -1,4 +1,4 @@
-import { Plugin, Editor } from "obsidian";
+import { Plugin, Editor, MarkdownView } from "obsidian";
 
 import { NLTTable } from "src/NLTTable";
 import { NltSettings, DEFAULT_SETTINGS } from "src/app/services/state";
@@ -163,20 +163,18 @@ export default class NltPlugin extends Plugin {
 		await this.forcePostProcessorReload();
 	}
 
-	/**
+	/*
 	 * Forces the post processor to be called again.
 	 * This is necessary for clean up purposes on unload and causing NLT tables
 	 * to be rendered onload.
 	 */
 	async forcePostProcessorReload() {
-		const leaves = [
-			...this.app.workspace.getLeavesOfType("markdown"),
-			...this.app.workspace.getLeavesOfType("edit"),
-		];
-		for (let i = 0; i < leaves.length; i++) {
-			const leaf = leaves[i];
-			this.app.workspace.duplicateLeaf(leaf);
-			leaf.detach();
-		}
+		this.app.workspace.iterateAllLeaves((leaf) => {
+			const view = leaf.view;
+			if (view.getViewType() === "markdown") {
+				if (view instanceof MarkdownView)
+					view.previewMode.rerender(true);
+			}
+		});
 	}
 }
