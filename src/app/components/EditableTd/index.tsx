@@ -108,20 +108,26 @@ export default function EditableTd({
 	}
 
 	function handleOutsideClick() {
-		switch (type) {
-			case CELL_TYPE.TEXT:
-				onUpdateContent(cellId, inputText);
-				setInputText("");
-				break;
-			case CELL_TYPE.NUMBER:
-				onUpdateContent(cellId, inputText);
-				setInputText("");
-				break;
-			case CELL_TYPE.TAG:
-				setInputText("");
-				break;
-			default:
-				break;
+		//If we're in Live Preview mode and we click on the header and then click on the outside of
+		//the component, the header will close, set the data (which didn't change), which cause an update
+		//which persists the data again. We can prevent this by only calling onOutsideClick
+		//if the data has actually changed
+		if (inputText !== content) {
+			switch (type) {
+				case CELL_TYPE.TEXT:
+					onUpdateContent(cellId, inputText);
+					setInputText("");
+					break;
+				case CELL_TYPE.NUMBER:
+					onUpdateContent(cellId, inputText);
+					setInputText("");
+					break;
+				case CELL_TYPE.TAG:
+					setInputText("");
+					break;
+				default:
+					break;
+			}
 		}
 		setCellMenu(initialCellMenuState);
 	}
