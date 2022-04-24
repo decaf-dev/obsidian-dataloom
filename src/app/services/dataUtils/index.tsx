@@ -96,7 +96,7 @@ export const saveAppData = async (
 	const newData = appDataToString(newAppData);
 	try {
 		const file = app.workspace.getActiveFile();
-		let content = await app.vault.read(file);
+		let content = await app.vault.cachedRead(file);
 
 		content = content.replace(
 			findTableRegex(oldAppData.headers, oldAppData.rows),
