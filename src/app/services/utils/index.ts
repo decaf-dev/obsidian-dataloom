@@ -394,7 +394,6 @@ export const findCellType = (textContent: string, expectedType: string) => {
 		//Don't allow spaces in tags
 		if (!textContent.match(/\s/)) cellType = CELL_TYPE.TAG;
 	} else if (numTags > 1) {
-		console.log(numTags);
 		return CELL_TYPE.MULTI_TAG;
 	} else if (textContent.match(/^\d+$/)) {
 		if (expectedType === CELL_TYPE.TEXT) cellType = CELL_TYPE.TEXT;
