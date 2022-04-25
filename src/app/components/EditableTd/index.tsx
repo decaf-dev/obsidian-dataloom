@@ -60,6 +60,7 @@ export default function EditableTd({
 		tagColor: "",
 	};
 	const [cellMenu, setCellMenu] = useState(initialCellMenuState);
+	const firstRender = useRef(false);
 
 	useEffect(() => {
 		if (cellMenu.isOpen) forceUpdate();
@@ -69,8 +70,11 @@ export default function EditableTd({
 		(node) => {
 			if (type === CELL_TYPE.TEXT || type === CELL_TYPE.NUMBER)
 				if (node) {
-					node.selectionStart = inputText.length;
-					node.selectionEnd = inputText.length;
+					if (!firstRender.current) {
+						node.selectionStart = inputText.length;
+						node.selectionEnd = inputText.length;
+						firstRender.current = true;
+					}
 				}
 		},
 		[type, inputText.length]
