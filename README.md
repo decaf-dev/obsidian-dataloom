@@ -56,17 +56,11 @@ A Notion-Like Table uses normal Obsidian table markdown syntax with 2 additional
 
 The table id row is a normal markdown row with the first column containing a unique string. This string must be unique per table per file. If you use the same id in another file that's fine. The id is used to map a table to its data in the settings. If you change this id, your table will not be able to find its settings and will create new ones. If you omit this id, your table will not be rendered as an NLT table.
 
-Example row:
-| my-table-id | | |
-
 ![Screenshot](.readme/table-id-row.png)
 
 ##### Type Definition Row
 
 The type definition row is a normal markdown row with each column defining the type of data you want that column to accept. The plugin currently supports 3 column types: `text`, `number` and `tag`.
-
-Example row:
-| text | number | tag |
 
 ![Screenshot](.readme/type-definition-row.png)
 
