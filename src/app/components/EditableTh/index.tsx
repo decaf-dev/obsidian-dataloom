@@ -10,14 +10,10 @@ interface Props {
 	content: string;
 	sortName: string;
 	type: string;
-	onSortSelect: (
-		id: string,
-		index: number,
-		type: string,
-		sortName: string
-	) => void;
-	onTypeSelect: (id: string, index: number, type: string) => void;
-	onDeleteClick: (id: string, index: number) => void;
+	onSortSelect: (id: string, type: string, sortName: string) => void;
+	onInsertColumnClick: (id: string, insertRight: boolean) => void;
+	onTypeSelect: (id: string, type: string) => void;
+	onDeleteClick: (id: string) => void;
 	onSaveClick: (id: string, content: string) => void;
 }
 
@@ -27,6 +23,7 @@ export default function EditableTh({
 	content,
 	type,
 	sortName,
+	onInsertColumnClick,
 	onSortSelect,
 	onTypeSelect,
 	onDeleteClick,
@@ -62,6 +59,7 @@ export default function EditableTh({
 				type={type}
 				onOutsideClick={onSaveClick}
 				onSortSelect={onSortSelect}
+				onInsertColumnClick={onInsertColumnClick}
 				onTypeSelect={onTypeSelect}
 				onDeleteClick={onDeleteClick}
 				onClose={() => setHeaderMenu(initialHeaderMenuState)}

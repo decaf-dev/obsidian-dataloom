@@ -46,7 +46,7 @@
 .NLT__hidden-textarea {
 	position: absolute;
 	cursor: default;
-	z-index: 999;
+	z-index: var(--layer-cover);
 	width: 100%;
 	height: 100%;
 	top: 0;

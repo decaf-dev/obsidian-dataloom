@@ -18,6 +18,13 @@ export const randomColor = (): string => {
 	return Object.values(CELL_COLOR)[index];
 };
 
+export const getCurrentTimeWithOffset = (): number => {
+	//Since operations are preformed very quickly, it's possible
+	//for our to get the same time
+	//Add a timeoffset to make sure the time is different
+	return Math.round(Date.now() - Math.random() * 1000);
+};
+
 export const randomTableId = (): string => {
 	return Math.random().toString(36).replace("0.", "").substring(0, 6);
 };
@@ -109,8 +116,12 @@ export const appDataToMarkdown = (tableId: string, data: AppData): string => {
 	data.rows.forEach((row) => {
 		buffer.createRow();
 
-		const cells = data.cells.filter((cell) => cell.rowId === row.id);
-		cells.forEach((cell, j) => {
+		for (let i = 0; i < data.headers.length; i++) {
+			const cell = data.cells.find(
+				(cell) =>
+					cell.rowId === row.id &&
+					cell.headerId === data.headers[i].id
+			);
 			if (
 				cell.type === CELL_TYPE.TAG ||
 				cell.type === CELL_TYPE.MULTI_TAG
@@ -121,16 +132,16 @@ export const appDataToMarkdown = (tableId: string, data: AppData): string => {
 
 				let content = "";
 
-				tags.forEach((tag, i) => {
+				tags.forEach((tag, j) => {
 					if (tag.content === "") return;
-					if (i === 0) content += addPound(tag.content);
+					if (j === 0) content += addPound(tag.content);
 					else content += " " + addPound(tag.content);
 				});
-				buffer.writeColumn(content, columnCharLengths[j]);
+				buffer.writeColumn(content, columnCharLengths[i]);
 			} else {
-				buffer.writeColumn(cell.content, columnCharLengths[j]);
+				buffer.writeColumn(cell.content, columnCharLengths[i]);
 			}
-		});
+		}
 	});
 	return buffer.toString();
 };
@@ -201,6 +212,8 @@ export const calcColumnCharLengths = (
 
 	//Check cells
 	cells.forEach((cell) => {
+		const header = headers.find((header) => header.id === cell.headerId);
+		const index = headers.indexOf(header);
 		if (cell.type === CELL_TYPE.TAG || cell.type === CELL_TYPE.MULTI_TAG) {
 			const arr = tags.filter((tag) => tag.selected.includes(cell.id));
 
@@ -211,11 +224,11 @@ export const calcColumnCharLengths = (
 					else content += " " + addPound(tag.content);
 				}
 			});
-			if (columnCharLengths[cell.headerIndex] < content.length)
-				columnCharLengths[cell.headerIndex] = content.length;
+			if (columnCharLengths[index] < content.length)
+				columnCharLengths[index] = content.length;
 		} else {
-			if (columnCharLengths[cell.headerIndex] < cell.content.length)
-				columnCharLengths[cell.headerIndex] = cell.content.length;
+			if (columnCharLengths[index] < cell.content.length)
+				columnCharLengths[index] = cell.content.length;
 		}
 	});
 	return columnCharLengths;
@@ -267,8 +280,8 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 
 	parsedTable.forEach((row, i) => {
 		if (i === HEADER_ROW_INDEX) {
-			row.forEach((th, j) => {
-				headers.push(initialHeader(th, j));
+			row.forEach((th) => {
+				headers.push(initialHeader(th));
 			});
 		} else if (i === TYPE_DEFINITION_ROW_INDEX) {
 			row.forEach((td, j) => {
@@ -277,11 +290,7 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 			});
 		} else if (i !== TABLE_ID_ROW_INDEX) {
 			const rowId = uuidv4();
-			//Since these operations are preformed very quickly, it's possible
-			//for our to get the same time
-			//Add a timeoffset to make sure the time is different
-			const time = Math.round(Date.now() - Math.random() * 1000);
-			rows.push(initialRow(rowId, time));
+			rows.push(initialRow(rowId, getCurrentTimeWithOffset()));
 
 			row.forEach((td, j) => {
 				const cellId = uuidv4();
@@ -301,7 +310,7 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 						initialCell(
 							cellId,
 							rowId,
-							j,
+							headers[j].id,
 							CELL_TYPE.ERROR,
 							td,
 							headers[j].type
@@ -312,7 +321,13 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 
 				if (cellType === CELL_TYPE.TAG) {
 					cells.push(
-						initialCell(cellId, rowId, j, CELL_TYPE.TAG, "")
+						initialCell(
+							cellId,
+							rowId,
+							headers[j].id,
+							CELL_TYPE.TAG,
+							""
+						)
 					);
 
 					let content = stripPound(td);
@@ -325,7 +340,7 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 					} else {
 						tags.push(
 							initialTag(
-								headers[j].index,
+								headers[j].id,
 								cellId,
 								content,
 								randomColor()
@@ -334,11 +349,23 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 					}
 				} else if (cellType === CELL_TYPE.NUMBER) {
 					cells.push(
-						initialCell(cellId, rowId, j, CELL_TYPE.TEXT, td)
+						initialCell(
+							cellId,
+							rowId,
+							headers[j].id,
+							CELL_TYPE.TEXT,
+							td
+						)
 					);
 				} else if (cellType === CELL_TYPE.TEXT) {
 					cells.push(
-						initialCell(cellId, rowId, j, CELL_TYPE.TEXT, td)
+						initialCell(
+							cellId,
+							rowId,
+							headers[j].id,
+							CELL_TYPE.TEXT,
+							td
+						)
 					);
 				}
 			});

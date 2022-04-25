@@ -34,7 +34,6 @@ import {
 
 import { CELL_TYPE } from "../../constants";
 import { mockTable } from "../mockData";
-import { execPath } from "process";
 
 describe("sanitizeHTML", () => {
 	it("escapes html characters", () => {
@@ -139,6 +138,7 @@ describe("calcColumnCharLengths", () => {
 		];
 		const data = findAppData(table);
 		const lengths = calcColumnCharLengths(
+			tableId,
 			data.headers,
 			data.cells,
 			data.tags
@@ -156,11 +156,12 @@ describe("calcColumnCharLengths", () => {
 		];
 		const data = findAppData(table);
 		const lengths = calcColumnCharLengths(
+			tableId,
 			data.headers,
 			data.cells,
 			data.tags
 		);
-		expect(lengths).toEqual([18, 14]);
+		expect(lengths).toEqual([19, 14]);
 	});
 });
 

@@ -15,8 +15,8 @@ import { CELL_TYPE } from "../../constants";
 import "./styles.css";
 
 interface Props {
-	headerIndex: number;
 	cellId: string;
+	headerId: string;
 	width: string;
 	content: string;
 	tags: Tag[];
@@ -26,16 +26,16 @@ interface Props {
 	onTagClick: (cellId: string, inputText: string) => void;
 	onUpdateContent: (cellId: string, inputText: string) => void;
 	onAddTag: (
-		headerIndex: number,
 		cellId: string,
+		headerId: string,
 		inputText: string,
 		color: string
 	) => void;
 }
 
 export default function EditableTd({
-	headerIndex,
 	cellId,
+	headerId,
 	width,
 	content,
 	tags,
@@ -49,7 +49,6 @@ export default function EditableTd({
 	const [inputText, setInputText] = useState("");
 
 	const tdRef = useRef<HTMLTableCellElement>();
-	const copyRef = useRef(false);
 	const forceUpdate = useForceUpdate();
 
 	const initialCellMenuState = {
@@ -79,21 +78,6 @@ export default function EditableTd({
 		},
 		[type, inputText.length]
 	);
-
-	useEffect(() => {
-		async function copyContent() {
-			try {
-				setTimeout(() => navigator.clipboard.writeText(content), 1000);
-				console.log(content);
-			} catch (err) {
-				console.log(err);
-			}
-		}
-		if (copyRef.current) {
-			copyRef.current = false;
-			copyContent();
-		}
-	});
 
 	async function handleCellContextClick(e: React.MouseEvent<HTMLElement>) {
 		try {
@@ -129,7 +113,7 @@ export default function EditableTd({
 	}
 
 	function handleAddTag(text: string) {
-		onAddTag(headerIndex, cellId, text, cellMenu.tagColor);
+		onAddTag(cellId, headerId, text, cellMenu.tagColor);
 		setInputText("");
 		setCellMenu(initialCellMenuState);
 	}
