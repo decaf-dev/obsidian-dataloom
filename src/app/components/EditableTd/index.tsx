@@ -7,7 +7,7 @@ import ErrorCell from "../ErrorCell";
 import TagMenuContent from "../TagMenuContent";
 
 import { useForceUpdate } from "../../services/hooks";
-import { randomColor } from "../../services/utils";
+import { randomColor, addPound } from "../../services/utils";
 import { Tag } from "../../services/state";
 
 import { CELL_TYPE } from "../../constants";
@@ -49,7 +49,7 @@ export default function EditableTd({
 	const [inputText, setInputText] = useState("");
 
 	const tdRef = useRef<HTMLTableCellElement>();
-
+	const copyRef = useRef(false);
 	const forceUpdate = useForceUpdate();
 
 	const initialCellMenuState = {
@@ -79,6 +79,34 @@ export default function EditableTd({
 		},
 		[type, inputText.length]
 	);
+
+	useEffect(() => {
+		async function copyContent() {
+			try {
+				setTimeout(() => navigator.clipboard.writeText(content), 1000);
+				console.log(content);
+			} catch (err) {
+				console.log(err);
+			}
+		}
+		if (copyRef.current) {
+			copyRef.current = false;
+			copyContent();
+		}
+	});
+
+	async function handleCellContextClick(e: React.MouseEvent<HTMLElement>) {
+		try {
+			let text = content;
+			if (type === CELL_TYPE.TAG) {
+				const tag = tags.find((tag) => tag.selected.includes(cellId));
+				text = addPound(tag.content);
+			}
+			navigator.clipboard.writeText(text);
+		} catch (err) {
+			console.log(err);
+		}
+	}
 
 	function handleCellClick(e: React.MouseEvent<HTMLElement>) {
 		const el = e.target as HTMLInputElement;
@@ -232,6 +260,7 @@ export default function EditableTd({
 			ref={tdRef}
 			style={{ maxWidth: width }}
 			onClick={handleCellClick}
+			onContextMenu={handleCellContextClick}
 		>
 			<Menu
 				isOpen={cellMenu.isOpen}
@@ -245,7 +274,10 @@ export default function EditableTd({
 				content={renderCellMenuContent()}
 				onOutsideClick={handleOutsideClick}
 			/>
-			{renderCell()}
+			<>
+				{renderCell()}
+				<textarea readOnly className="NLT__hidden-textarea" />
+			</>
 		</td>
 	);
 }
