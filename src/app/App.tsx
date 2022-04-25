@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -42,9 +42,6 @@ export default function App({
 }: Props) {
 	const [oldAppData] = useState<AppData>(data);
 	const [appData, setAppData] = useState<AppData>(data);
-	const appRef = useRef<HTMLInputElement>();
-
-	const app = useApp();
 
 	useEffect(() => {
 		//Sort on first render
@@ -416,7 +413,7 @@ export default function App({
 	}
 
 	return (
-		<div className="NLT__app" ref={appRef}>
+		<div className="NLT__app">
 			<Table
 				headers={appData.headers.map((header) => {
 					const { id, content, index, type, sortName } = header;
