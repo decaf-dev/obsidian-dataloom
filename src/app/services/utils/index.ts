@@ -22,6 +22,12 @@ export const randomTableId = (): string => {
 	return Math.random().toString(36).replace("0.", "").substring(0, 6);
 };
 
+export const sanitizeHTML = (innerHTML: string) => {
+	var temp = document.createElement("div");
+	temp.textContent = innerHTML;
+	return temp.innerHTML;
+};
+
 /**
  * Creates a 1 column NLT markdown table
  * @returns An NLT markdown table
@@ -309,9 +315,7 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 						initialCell(cellId, rowId, j, CELL_TYPE.TAG, "")
 					);
 
-					let content = td;
-					content = stripLink(content);
-					content = stripPound(content);
+					let content = stripPound(td);
 
 					//Check if tag already exists, otherwise create a new
 					const tag = tags.find((tag) => tag.content === content);
@@ -333,10 +337,8 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 						initialCell(cellId, rowId, j, CELL_TYPE.TEXT, td)
 					);
 				} else if (cellType === CELL_TYPE.TEXT) {
-					let content = td;
-					content = stripLinks(content, true);
 					cells.push(
-						initialCell(cellId, rowId, j, CELL_TYPE.TEXT, content)
+						initialCell(cellId, rowId, j, CELL_TYPE.TEXT, td)
 					);
 				}
 			});
@@ -473,7 +475,11 @@ export const parseTableFromEl = (el: HTMLElement) => {
 	for (let i = 1; i < tr.length; i++) {
 		const td = tr[i].getElementsByTagName("td");
 		row = [];
-		for (let j = 0; j < td.length; j++) row.push(td[j].textContent);
+		for (let j = 0; j < td.length; j++) {
+			let sanitized = sanitizeHTML(td[j].innerHTML);
+			sanitized = stripLinks(sanitized);
+			row.push(sanitized);
+		}
 		table.push(row);
 	}
 	return table;
@@ -518,7 +524,7 @@ export const countNumTags = (input: string): number => {
 
 export const parseFileLinks = (input: string): string => {
 	//Check if it has has urls
-	const matches = input.match(/\[\[[^\s]+]]/g) || [];
+	const matches = input.match(/\[\[[^\n\r\]]+]]/g) || [];
 	matches.forEach((match) => {
 		const replacement = toFileLink(stripSquareBrackets(match));
 		input = input.replace(match, replacement);
@@ -562,24 +568,20 @@ export const hasSquareBrackets = (input: string): boolean => {
  * @param input The input string
  * @returns A string with no hyperlinks (<a>)
  */
-export const stripLinks = (
-	input: string,
-	replaceWithSquareBrackets = false
-): string => {
-	const matches = input.match(/<a.*?>.*?<\/a>/g) || [];
+export const stripLinks = (input: string): string => {
+	const matches = input.match(/&lt;a.*?&gt;.*?&lt;\/a&gt;/g) || [];
 	matches.forEach((match) => {
-		input = input.replace(
-			match,
-			stripLink(match, replaceWithSquareBrackets)
-		);
+		input = input.replace(match, stripLink(match));
 	});
 	return input;
 };
 
-export const stripLink = (input: string, replaceWithSquareBrackets = false) => {
+export const stripLink = (input: string) => {
+	const replaceWithSquareBrackets =
+		(input.match(/class=\"tag\"/) || []).length === 0;
 	return input
-		.replace(/<a.*?>/, replaceWithSquareBrackets ? "[[" : "")
-		.replace(/<\/a>/, replaceWithSquareBrackets ? "]]" : "");
+		.replace(/&lt;a.*?&gt;/, replaceWithSquareBrackets ? "[[" : "")
+		.replace(/&lt;\/a&gt;/, replaceWithSquareBrackets ? "]]" : "");
 };
 
 /**

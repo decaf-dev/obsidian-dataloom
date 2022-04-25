@@ -29,13 +29,22 @@ import {
 	appDataToMarkdown,
 	calcColumnCharLengths,
 	AppDataStringBuffer,
+	sanitizeHTML,
 } from "./index";
 
 import { CELL_TYPE } from "../../constants";
 import { mockTable } from "../mockData";
+import { execPath } from "process";
+
+describe("sanitizeHTML", () => {
+	it("escapes html characters", () => {
+		const html = "<script></script>";
+		expect(sanitizeHTML(html)).toEqual("&lt;script&gt;&lt;/script&gt;");
+	});
+});
 
 describe("appDataToMarkdown", () => {
-	it("", () => {
+	it("converts appData to valid markdown", () => {
 		const tableId = "123456";
 		const table = [
 			["Column 1", "Column 2"],
@@ -403,6 +412,20 @@ describe("findAppData", () => {
 		expect(data.cells.length).toEqual(2);
 		expect(data.tags.length).toEqual(2);
 	});
+
+	it("finds tag data", () => {
+		const table = [
+			["Column 1", "Column 2"],
+			["12345", ""],
+			["tag", "tag"],
+			["#tag1", "#tag2"],
+		];
+		const data = findAppData(table);
+		expect(data.headers.length).toEqual(2);
+		expect(data.rows.length).toEqual(1);
+		expect(data.cells.length).toEqual(2);
+		expect(data.tags.length).toEqual(2);
+	});
 });
 
 describe("validTypeDefinitionRow", () => {
@@ -740,6 +763,13 @@ describe("parseFileLinks", () => {
 		);
 	});
 
+	it("parses file links with spaces", () => {
+		const parsed = parseFileLinks("[[this is my file]]");
+		expect(parsed).toEqual(
+			'<a data-href="this is my file" href="this is my file" class="internal-link" target="_blank" rel="noopener">this is my file</a>'
+		);
+	});
+
 	//TODO parses same link
 });
 
@@ -762,46 +792,44 @@ describe("parseURLs", () => {
 });
 
 describe("stripLinks", () => {
-	it("strips link", () => {
-		const output = stripLinks("<a>#test</a>");
-		expect(output).toEqual("#test");
+	it("strips file link", () => {
+		const output = stripLinks('&lt;a href="test"&gt;test&lt;/a&gt;');
+		expect(output).toEqual("[[test]]");
 	});
 
-	it("strips link with attributes", () => {
-		const output = stripLinks('<a href="test">#test</a>');
-		expect(output).toEqual("#test");
-	});
-
-	it("strips links in text", () => {
-		const output = stripLinks('text <a href="test">#test</a> text');
-		expect(output).toEqual("text #test text");
-	});
-
-	it("strips multiple links in text", () => {
+	it("strips file link in text", () => {
 		const output = stripLinks(
-			'text <a href="test">#test</a> text <a href="test">#test2</a>'
+			'text &lt;a href="test"&gt;test&lt;/a&gt; text'
 		);
-		expect(output).toEqual("text #test text #test2");
+		expect(output).toEqual("text [[test]] text");
 	});
 
-	it("replaces links with square brackets", () => {
+	it("strips file links in text", () => {
 		const output = stripLinks(
-			'text <a href="test">test</a> text <a href="test">test2</a>',
-			true
+			'text &lt;a href="test"&gt;test&lt;/a&gt; text &lt;a href="test"&gt;test2&lt;/a&gt;'
 		);
 		expect(output).toEqual("text [[test]] text [[test2]]");
+	});
+
+	it("strips tag links", () => {
+		const output = stripLinks(
+			'text &lt;a href="test" class="tag"&gt;#test&lt;/a&gt; text &lt;a href="test"&gt;test2&lt;/a&gt;'
+		);
+		expect(output).toEqual("text #test text [[test2]]");
 	});
 });
 
 describe("stripLink", () => {
-	it("strips link", () => {
-		const output = stripLink("<a>test</a>");
-		expect(output).toEqual("test");
+	it("strips link and replaces with square brackets", () => {
+		const output = stripLink("&lt;a&gt;test&lt;/a&gt;", true);
+		expect(output).toEqual("[[test]]");
 	});
 
-	it("strips link with attributes", () => {
-		const output = stripLink('<a href="test">test</a>');
-		expect(output).toEqual("test");
+	it("strips tag link", () => {
+		const output = stripLink(
+			'&lt;a href="#Productivity" class="tag" target="_blank" rel="noopener"&gt;#Productivity&lt;/a&gt;'
+		);
+		expect(output).toEqual("#Productivity");
 	});
 });
 
