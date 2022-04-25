@@ -225,9 +225,17 @@ export const mergeAppData = (
 		merged.headers[i].sortName = headers.sortName;
 	});
 
+	//Algorithm:
+	//Sort by default first and then find
+	//This allows the user to add new rows or delete existing rows
+	//and still have the correct creationTime
 	//Grab row settings
-	oldAppData.rows.forEach((row, i) => {
-		merged.rows[i].creationTime = row.creationTime;
+	newAppData.rows.forEach((row, i) => {
+		if (oldAppData.rows.length >= i + 1) {
+			merged.rows[i].creationTime = oldAppData.rows[i].creationTime;
+		} else {
+			merged.rows[i].creationTime = row.creationTime;
+		}
 	});
 
 	//Grab tag settings
@@ -266,7 +274,7 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 			//Since these operations are preformed very quickly, it's possible
 			//for our to get the same time
 			//Add a timeoffset to make sure the time is different
-			const time = Date.now() + i;
+			const time = Math.round(Date.now() - Math.random() * 1000);
 			rows.push(initialRow(rowId, time));
 
 			row.forEach((td, j) => {

@@ -327,6 +327,52 @@ describe("mergeAppData", () => {
 			newAppData.rows[1].creationTime
 		);
 	});
+
+	it("merges table with row removed from bottom", () => {
+		const oldAppData = findAppData([
+			["Column 1", "Column 2"],
+			["123456", ""],
+			["text", "text"],
+			["test 1", "test 2"],
+			["test 3", "test 4"],
+		]);
+		const newAppData = findAppData([
+			["Column 1", "Column 2"],
+			["123456", ""],
+			["text", "text"],
+			["test 3", "test 4"],
+		]);
+
+		const merged = mergeAppData(oldAppData, newAppData);
+		expect(merged.rows[0].creationTime).toEqual(
+			oldAppData.rows[0].creationTime
+		);
+	});
+
+	it("merges table with row added to bottom", () => {
+		const oldAppData = findAppData([
+			["Column 1", "Column 2"],
+			["123456", ""],
+			["text", "text"],
+			["test 1", "test 2"],
+		]);
+		const newAppData = findAppData([
+			["Column 1", "Column 2"],
+			["123456", ""],
+			["text", "text"],
+			["test 1", "test 2"],
+			["test 3", "test 4"],
+		]);
+
+		const merged = mergeAppData(oldAppData, newAppData);
+		//Check content
+		expect(merged.rows[0].creationTime).toEqual(
+			oldAppData.rows[0].creationTime
+		);
+		expect(merged.rows[1].creationTime).toEqual(
+			newAppData.rows[1].creationTime
+		);
+	});
 });
 
 describe("findAppData", () => {
