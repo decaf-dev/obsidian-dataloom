@@ -47,6 +47,19 @@ export default function App({
 	const app = useApp();
 
 	useEffect(() => {
+		//Sort on first render
+		//Use case:
+		//If a user deletes or adds a new row (by copying and pasting, for example)
+		//then we want to make sure that value is sorted in
+
+		for (let i = 0; i < appData.headers.length; i++) {
+			const header = appData.headers[i];
+			if (header.sortName !== SORT.DEFAULT.name)
+				sortRows(header.index, header.type, header.sortName, false);
+		}
+	}, []);
+
+	useEffect(() => {
 		async function handleUpdate() {
 			//If we're running in Obsidian
 			if (app) {
@@ -246,7 +259,8 @@ export default function App({
 	function sortRows(
 		headerIndex: number,
 		headerType: string,
-		sortName: string
+		sortName: string,
+		shouldUpdate = true
 	) {
 		setAppData((prevState) => {
 			//Create a new array because the sort function mutates
@@ -293,7 +307,7 @@ export default function App({
 			return {
 				...prevState,
 				rows: arr,
-				updateTime: Date.now(),
+				updateTime: shouldUpdate ? Date.now() : 0,
 			};
 		});
 	}
