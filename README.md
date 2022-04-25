@@ -84,10 +84,6 @@ Tags have a special notion-like menu that will appear. Tags are scoped to each c
 
 Click on a header name to view the header menu. In the header menu you can rename the header, sort your column values or change the header type.
 
-#### Undoing a Type Change
-
-If you accidently change your column to a different type, all data will be erased. It this happens, go to editng mode and use `ctrl+z` or `option-z` on your keyboard to undo the change.
-
 ![Screenshot](.readme/header.png)
 
 ### Links
@@ -101,6 +97,10 @@ If you want to render a link in text, just add square brackets [[My Link]].
 If you want to display a url, type the url making sure it begins with `http://` or `https://`. NLT will automatically render it in the table.
 
 ![Screenshot](.readme/url.png)
+
+### Undoing a Type Change
+
+If you accidently change your column to a different type, all data will be erased. It this happens, go to editing mode and use `ctrl+z` or `option-z` on your keyboard to undo the change.
 
 ### Errors
 
