@@ -275,7 +275,7 @@ export default function App({
 					(cell) =>
 						cell.headerIndex === headerIndex && cell.rowId === b.id
 				);
-				if (sortName === SORT.DESC.name) {
+				if (sortName === SORT.ASC.name) {
 					if (headerType === CELL_TYPE.TAG) {
 						const tagA = appData.tags.find((tag) =>
 							tag.selected.includes(cellA.id)
@@ -287,7 +287,7 @@ export default function App({
 					} else {
 						return cellA.content.localeCompare(cellB.content);
 					}
-				} else if (sortName === SORT.ASC.name) {
+				} else if (sortName === SORT.DESC.name) {
 					if (headerType === CELL_TYPE.TAG) {
 						const tagA = appData.tags.find((tag) =>
 							tag.selected.includes(cellA.id)
