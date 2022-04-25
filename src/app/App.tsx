@@ -30,9 +30,16 @@ interface Props {
 	settings: NltSettings;
 	data: AppData;
 	sourcePath: string;
+	tableId: string;
 }
 
-export default function App({ plugin, settings, data, sourcePath }: Props) {
+export default function App({
+	plugin,
+	settings,
+	data,
+	sourcePath,
+	tableId,
+}: Props) {
 	const [oldAppData] = useState<AppData>(data);
 	const [appData, setAppData] = useState<AppData>(data);
 	const appRef = useRef<HTMLInputElement>();
@@ -51,7 +58,8 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 							app,
 							oldAppData,
 							appData,
-							sourcePath
+							sourcePath,
+							tableId
 						);
 					} catch (err) {
 						console.log(err);

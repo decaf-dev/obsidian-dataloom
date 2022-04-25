@@ -1,4 +1,6 @@
+import { buffer } from "stream/consumers";
 import { v4 as uuidv4 } from "uuid";
+
 import { CELL_COLOR, CELL_TYPE } from "../../constants";
 import {
 	Header,
@@ -11,52 +13,27 @@ import {
 	initialTag,
 } from "../../services/state";
 import { AppData } from "../../services/state";
-import { NltSettings } from "../../services/state";
-import crc32 from "crc-32";
 
 export const randomColor = (): string => {
 	const index = Math.floor(Math.random() * Object.keys(CELL_COLOR).length);
 	return Object.values(CELL_COLOR)[index];
 };
 
-export const pruneSettingsCache = (
-	settings: NltSettings,
-	sourcePath: string,
-	fileData: string
-): NltSettings => {
-	const obj = { ...settings };
-	if (obj.appData[sourcePath]) {
-		const tableHashes = findMarkdownTablesFromFileData(fileData).map(
-			(markdownTable) => hashMarkdownTable(markdownTable)
-		);
-
-		Object.keys(obj.appData[sourcePath]).forEach((key) => {
-			const hash = parseInt(key);
-			if (!tableHashes.includes(hash)) {
-				//console.log("PRUNING DATA", hash);
-				delete obj.appData[sourcePath][hash];
-			}
-		});
-	}
-	return obj;
+export const randomTableId = (): string => {
+	return Math.random().toString(36).replace("0.", "").substring(0, 6);
 };
 
-export const hashMarkdownTable = (markdownTable: string): number => {
-	const output = markdownTable
-		.replace(/\s/g, "")
-		.replace(/[---]+\|/g, "")
-		.replace(/\|/g, "");
-	return crc32.str(output);
-};
-
-export const hashParsedTable = (parsedTable: string[][]): number => {
-	let output = "";
-	for (let i = 0; i < parsedTable.length; i++) {
-		for (let j = 0; j < parsedTable[i].length; j++) {
-			output += parsedTable[i][j].replace(/\s/g, "");
-		}
-	}
-	return crc32.str(output);
+/**
+ * Creates a 1 column NLT markdown table
+ * @returns An NLT markdown table
+ */
+export const createEmptyTable = (uuid: string): string => {
+	const rows = [];
+	rows[0] = "| Column 1 |";
+	rows[1] = "| -------- |";
+	rows[2] = `| ${uuid} |`;
+	rows[3] = "| text |";
+	return rows.join("\n");
 };
 
 /**
@@ -66,13 +43,20 @@ export const hashParsedTable = (parsedTable: string[][]): number => {
  * @param rows The rows
  * @returns A regex that matches this table
  */
-export const findTableRegex = (headers: Header[], rows: Row[]): RegExp => {
+export const findTableRegex = (
+	tableId: string,
+	headers: Header[],
+	rows: Row[]
+): RegExp => {
 	const regex: string[] = [];
-	regex[0] = "\\|";
-	regex[0] += headers.map((header) => `.*${header.content}.*\\|`).join("");
+	regex[0] = "\\|.*\\|"; //Header row
+	regex[1] = "\\|.*\\|"; //Hyphen row
+	regex[2] = `\\|[\\t ]+${tableId}[\\t ]+\\|`; //Table id row
 
-	//Hyphen row, type definition row, and then all other rows
-	for (let i = 0; i < rows.length + 2; i++) regex[i + 1] = "\\|.*\\|";
+	for (let i = 1; i < headers.length; i++) regex[2] += ".*\\|";
+
+	//Type definition row and all other rows
+	for (let i = 3; i < rows.length + 4; i++) regex[i] = "\\|.*\\|";
 
 	const expression = new RegExp(regex.join("\n"));
 	return expression;
@@ -83,47 +67,42 @@ export const findTableRegex = (headers: Header[], rows: Row[]): RegExp => {
  * @param data The app data
  * @returns An Obsidian markdown string
  */
-export const appDataToString = (data: AppData): string => {
-	//TODO write tests
+export const appDataToMarkdown = (tableId: string, data: AppData): string => {
 	const columnCharLengths = calcColumnCharLengths(
+		tableId,
 		data.headers,
 		data.cells,
 		data.tags
 	);
 
-	let fileData = "|";
+	const buffer = new AppDataStringBuffer();
+	buffer.createRow();
 
-	data.headers.forEach((header, i) => {
-		fileData = writeMarkdownTableCell(
-			fileData,
-			header.content,
-			columnCharLengths[i]
-		);
+	data.headers.forEach((header, i) =>
+		buffer.writeColumn(header.content, columnCharLengths[i])
+	);
+
+	buffer.createRow();
+
+	data.headers.forEach((_header, i) => {
+		const content = Array(columnCharLengths[i]).fill("-").join("");
+		buffer.writeColumn(content, columnCharLengths[i]);
 	});
 
-	fileData += "\n";
+	buffer.createRow();
 
-	for (let i = 0; i < data.headers.length; i++) {
-		const content = Array(columnCharLengths[i]).fill("-").join("");
-		fileData = writeMarkdownTableCell(
-			fileData,
-			content,
-			columnCharLengths[i]
-		);
-	}
+	data.headers.forEach((_header, i) => {
+		buffer.writeColumn(i === 0 ? tableId : "", columnCharLengths[i]);
+	});
 
-	fileData += "\n";
+	buffer.createRow();
 
 	data.headers.forEach((header, i) => {
-		fileData = writeMarkdownTableCell(
-			fileData,
-			header.type,
-			columnCharLengths[i]
-		);
+		buffer.writeColumn(header.type, columnCharLengths[i]);
 	});
 
 	data.rows.forEach((row) => {
-		fileData += "\n";
+		buffer.createRow();
 
 		const cells = data.cells.filter((cell) => cell.rowId === row.id);
 		cells.forEach((cell, j) => {
@@ -142,42 +121,47 @@ export const appDataToString = (data: AppData): string => {
 					if (i === 0) content += addPound(tag.content);
 					else content += " " + addPound(tag.content);
 				});
-				fileData = writeMarkdownTableCell(
-					fileData,
-					content,
-					columnCharLengths[j]
-				);
+				buffer.writeColumn(content, columnCharLengths[j]);
 			} else {
-				fileData = writeMarkdownTableCell(
-					fileData,
-					cell.content,
-					columnCharLengths[j]
-				);
+				buffer.writeColumn(cell.content, columnCharLengths[j]);
 			}
 		});
 	});
-	return fileData;
+	return buffer.toString();
 };
 
-export const writeMarkdownTableCell = (
-	data: string,
-	contentToWrite: string,
-	columnCharacters: number
-) => {
-	//If we're starting a new row
-	if (data[data.length - 1] === "\n") data += "|";
+export class AppDataStringBuffer {
+	string: string;
 
-	data += " ";
-	data += contentToWrite;
+	constructor() {
+		this.string = "";
+	}
 
-	const numWhiteSpace = columnCharacters - contentToWrite.length;
+	createRow() {
+		if (this.string !== "") this.string += "\n";
+		this.string += "|";
+	}
 
-	//Pads the cell with white space
-	for (let i = 0; i < numWhiteSpace; i++) data += " ";
-	data += " ";
-	data += "|";
-	return data;
-};
+	writeColumn(content: string, columnCharLength: number) {
+		this.string += " ";
+		this.string += content;
+
+		const numWhiteSpace = columnCharLength - content.length;
+
+		//Pads the cell with white space
+		for (let i = 0; i < numWhiteSpace; i++) this.string += " ";
+		this.string += " ";
+		this.string += "|";
+	}
+
+	toString() {
+		return this.string;
+	}
+}
+
+interface ColumnCharLengths {
+	[columnPosition: number]: number;
+}
 
 /**
  * Calculates the max char length for each column.
@@ -188,10 +172,11 @@ export const writeMarkdownTableCell = (
  * @returns An object containing the calculated lengths
  */
 export const calcColumnCharLengths = (
+	tableId: string,
 	headers: Header[],
 	cells: Cell[],
 	tags: Tag[]
-): { [columnPosition: number]: number } => {
+): ColumnCharLengths => {
 	const columnCharLengths: { [columnPosition: number]: number } = [];
 
 	//Check headers
@@ -199,24 +184,27 @@ export const calcColumnCharLengths = (
 		columnCharLengths[i] = header.content.length;
 	});
 
+	//Check table id
+	if (columnCharLengths[0] < tableId.length)
+		columnCharLengths[0] = tableId.length;
+
 	//Check types
-	Object.values(CELL_TYPE).forEach((type, i) => {
-		if (columnCharLengths[i] < type.length)
-			columnCharLengths[i] = type.length;
+	headers.forEach((header, i) => {
+		if (columnCharLengths[i] < header.type.length)
+			columnCharLengths[i] = header.type.length;
 	});
 
 	//Check cells
-	cells.forEach((cell, i) => {
+	cells.forEach((cell) => {
 		if (cell.type === CELL_TYPE.TAG || cell.type === CELL_TYPE.MULTI_TAG) {
 			const arr = tags.filter((tag) => tag.selected.includes(cell.id));
 
-			//TODO edit for multi-tag
-			//Do we want the tags on one line?
 			let content = "";
 			arr.forEach((tag, i) => {
-				if (tag.content === "") return;
-				if (i === 0) content += addPound(tag.content);
-				else content += " " + addPound(tag.content);
+				if (tag.content !== "") {
+					if (i === 0) content += addPound(tag.content);
+					else content += " " + addPound(tag.content);
+				}
 			});
 			if (columnCharLengths[cell.headerIndex] < content.length)
 				columnCharLengths[cell.headerIndex] = content.length;
@@ -254,6 +242,10 @@ export const mergeAppData = (
 	return merged;
 };
 
+const HEADER_ROW_INDEX = 0;
+const TABLE_ID_ROW_INDEX = 1;
+const TYPE_DEFINITION_ROW_INDEX = 2;
+
 export const findAppData = (parsedTable: string[][]): AppData => {
 	const headers: Header[] = [];
 	const rows: Row[] = [];
@@ -261,21 +253,22 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 	const tags: Tag[] = [];
 
 	parsedTable.forEach((row, i) => {
-		if (i === 0) {
+		if (i === HEADER_ROW_INDEX) {
 			row.forEach((th, j) => {
 				headers.push(initialHeader(th, j));
 			});
-		} else {
+		} else if (i === TYPE_DEFINITION_ROW_INDEX) {
+			row.forEach((td, j) => {
+				//Set header type based off of the first row's specified cell type
+				headers[j].type = td;
+			});
+		} else if (i !== TABLE_ID_ROW_INDEX) {
 			const rowId = uuidv4();
-
-			//Only parse from below the type row
-			if (i !== 1) {
-				//Since these operations are preformed very quickly, it's possible
-				//for our to get the same time
-				//Add a timeoffset to make sure the time is different
-				const time = Date.now() + i;
-				rows.push(initialRow(rowId, time));
-			}
+			//Since these operations are preformed very quickly, it's possible
+			//for our to get the same time
+			//Add a timeoffset to make sure the time is different
+			const time = Date.now() + i;
+			rows.push(initialRow(rowId, time));
 
 			row.forEach((td, j) => {
 				const cellId = uuidv4();
@@ -352,14 +345,26 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 	};
 };
 
+export const findTableId = (parsedTable: string[][]): string | null => {
+	if (parsedTable.length < 2) return null;
+	const row = parsedTable[1];
+	const id = row[0];
+
+	//If there is no table id row
+	if (!Object.values(CELL_TYPE).every((type) => type !== id)) return null;
+	//If the table id row is there but omitted
+	if (id == "") return null;
+	return id;
+};
+
 export const validTypeDefinitionRow = (parsedTable: string[][]): boolean => {
-	const typeDefRow = parsedTable[1];
-	if (!typeDefRow) return false;
+	if (parsedTable.length < 3) return false;
+	const row = parsedTable[2];
 
 	let valid = true;
 
-	for (let i = 0; i < typeDefRow.length; i++) {
-		const cell = typeDefRow[i];
+	for (let i = 0; i < row.length; i++) {
+		const cell = row[i];
 		const didntMatch = Object.values(CELL_TYPE).every(
 			(type) => type !== cell
 		);

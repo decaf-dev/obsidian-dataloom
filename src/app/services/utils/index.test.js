@@ -19,177 +19,290 @@ import {
 	parseTableFromMarkdown,
 	markdownHyphenCellRegex,
 	isMarkdownTable,
-	hashParsedTable,
 	mergeAppData,
-	hashMarkdownTable,
-	appDataToString,
 	parseURLs,
 	parseFileLinks,
-	pruneSettingsCache,
+	findTableId,
+	createEmptyTable,
+	randomTableId,
+	findTableRegex,
+	appDataToMarkdown,
+	calcColumnCharLengths,
+	AppDataStringBuffer,
 } from "./index";
 
 import { CELL_TYPE } from "../../constants";
 import { mockTable } from "../mockData";
 
-describe("pruneSettingsCache", () => {
-	it("keeps hashes that are found in the file", () => {
-		const parsedTable = [
+describe("appDataToMarkdown", () => {
+	it("", () => {
+		const tableId = "123456";
+		const table = [
 			["Column 1", "Column 2"],
+			[tableId, ""],
 			["text", "text"],
 			["some text", "some more text"],
 		];
-		const appData = findAppData(parsedTable);
-		const markdownTable = appDataToString(appData);
-		const fileData = `test ${markdownTable} test`;
-		const hash = hashMarkdownTable(markdownTable);
-		const sourcePath = "test";
-
-		const settings = { appData: { [sourcePath]: { [hash]: appData } } };
-		const newSettings = pruneSettingsCache(settings, sourcePath, fileData);
-		expect(newSettings.appData[sourcePath][hash]).toEqual(appData);
-	});
-
-	it("removes hash that doesn't exist", () => {
-		const parsedTable = [
-			["Column 1", "Column 2"],
-			["text", "text"],
-			["some text", "some more text"],
-		];
-		const appData = findAppData(parsedTable);
-		const markdownTable = appDataToString(appData);
-		const fileData = `test ${markdownTable} test`;
-		const sourcePath = "test";
-
-		const settings = { appData: { [sourcePath]: { [123456]: appData } } };
-		const newSettings = pruneSettingsCache(settings, sourcePath, fileData);
-		expect(newSettings.appData[sourcePath][1233456]).toBe(undefined);
+		const data = findAppData(table);
+		const markdown = appDataToMarkdown(tableId, data);
+		expect(markdown).toEqual(
+			"| Column 1  | Column 2       |\n| --------- | -------------- |\n| 123456    |                |\n| text      | text           |\n| some text | some more text |"
+		);
 	});
 });
 
-describe("hashMarkdownTable", () => {
-	it("returns the same hash for the same data", () => {
-		const parsedTable = [
-			["Column 1", "Column 2"],
-			["text", "text"],
-			["some text", "some more text"],
-		];
-		const appData = findAppData(parsedTable);
-		const markdownTable = appDataToString(appData);
-		const hash1 = hashMarkdownTable(markdownTable);
-		const hash2 = hashMarkdownTable(markdownTable);
-		expect(hash1).toEqual(hash2);
-	});
-
-	it("returns the same hash as hashParsedTable", () => {
-		const parsedTable = [
-			["Column 1", "Column 2"],
-			["text", "text"],
-			["some text", "some more text, with comma"],
-		];
-		const appData = findAppData(parsedTable);
-		const markdownTable = appDataToString(appData);
-		const hash1 = hashMarkdownTable(markdownTable);
-		const hash2 = hashParsedTable(parsedTable);
-		expect(hash1).toEqual(hash2);
+describe("AppDataStringBuffer", () => {
+	it("toString returns current value", () => {
+		const buffer = new AppDataStringBuffer();
+		buffer.createRow();
+		buffer.writeColumn("Column 1", 10);
+		buffer.writeColumn("Column 2", 8);
+		buffer.createRow();
+		buffer.writeColumn("Text", 4);
+		expect(buffer.toString()).toEqual(
+			"| Column 1   | Column 2 |\n| Text |"
+		);
 	});
 });
 
-describe("hashParsedTable", () => {
-	it("returns the same hash for the same data", () => {
-		const parsedTable = [
-			["Column 1", "Column 2"],
+describe("calcColumnCharLengths", () => {
+	it("calculates largest string length from header row", () => {
+		const tableId = "123456";
+		const table = [
+			["This is some long text", "Column 2"],
+			[tableId, ""],
 			["text", "text"],
 			["some text", "some more text"],
 		];
-		const hash1 = hashParsedTable(parsedTable);
-		const hash2 = hashParsedTable(parsedTable);
-		expect(hash1).toEqual(hash2);
+		const data = findAppData(table);
+		const lengths = calcColumnCharLengths(
+			tableId,
+			data.headers,
+			data.cells,
+			data.tags
+		);
+		expect(lengths).toEqual([22, 14]);
+	});
+
+	it("calculates largest string length from tableId row", () => {
+		const tableId = "this-is-a-long-table-id";
+		const table = [
+			["Column 1", "Column 2"],
+			[tableId, ""],
+			["text", "text"],
+			["some text", "some more text"],
+		];
+		const data = findAppData(table);
+		const lengths = calcColumnCharLengths(
+			tableId,
+			data.headers,
+			data.cells,
+			data.tags
+		);
+		expect(lengths).toEqual([23, 14]);
+	});
+
+	it("calculates largest string length from type definition row", () => {
+		const tableId = "123456";
+		const table = [
+			["Column 1", "Column 2"],
+			[tableId, ""],
+			["this-is-a-long-value", "text"],
+			["some text", "some more text"],
+		];
+		const data = findAppData(table);
+		const lengths = calcColumnCharLengths(
+			tableId,
+			data.headers,
+			data.cells,
+			data.tags
+		);
+		expect(lengths).toEqual([20, 14]);
+	});
+
+	it("calculates largest string length from text row", () => {
+		const tableId = "123456";
+		const table = [
+			["Column 1", "Column 2"],
+			[tableId, ""],
+			["text", "text"],
+			["This is a long value", "some more text"],
+		];
+		const data = findAppData(table);
+		const lengths = calcColumnCharLengths(
+			data.headers,
+			data.cells,
+			data.tags
+		);
+		expect(lengths).toEqual([20, 14]);
+	});
+
+	it("calculates largest string length from tag row", () => {
+		const tableId = "123456";
+		const table = [
+			["Column 1", "Column 2"],
+			[tableId, ""],
+			["tag", "text"],
+			["#this-is-a-long-tag", "some more text"],
+		];
+		const data = findAppData(table);
+		const lengths = calcColumnCharLengths(
+			data.headers,
+			data.cells,
+			data.tags
+		);
+		expect(lengths).toEqual([18, 14]);
 	});
 });
 
-describe("mergeAppData", () => {
-	it("merges new cell content", () => {
-		const oldAppData = findAppData([
+describe("findTableRegex", () => {
+	it("produces a regex that matches the data", () => {
+		const tableId = "123456";
+		const table = [
+			["Column 1", "Column 2"],
+			[tableId, ""],
+			["text", "text"],
+			["some text", "some more text"],
+		];
+		const data = findAppData(table);
+		const regex = findTableRegex(tableId, data.headers, data.rows);
+		expect(regex.toString()).toEqual(
+			"/\\|.*\\|\\n\\|.*\\|\\n\\|[\\t ]+123456[\\t ]+\\|.*\\|\\n\\|.*\\|\\n\\|.*\\|/"
+		);
+
+		const string = appDataToMarkdown(tableId, data);
+		expect((string.match(regex) || []).length).toEqual(1);
+	});
+});
+
+describe("createEmptyTable", () => {
+	it("creates an empty 1 column table", () => {
+		const uuid = randomTableId();
+		const table = createEmptyTable(uuid);
+		expect(table).toMatch(
+			`| Column 1 |\n| -------- |\n| ${uuid} |\n| text |`
+		);
+	});
+});
+
+describe("findTableId", () => {
+	it("returns the table id", () => {
+		const parsedTable = [
+			["column1", "column2"],
+			["12345", ""],
+			["text", "text"],
+			["test1", "test2"],
+		];
+		const id = findTableId(parsedTable);
+		expect(id).toEqual("12345");
+	});
+
+	it("returns null if row doesn't exist", () => {
+		const parsedTable = [
 			["column1", "column2"],
 			["text", "text"],
 			["test1", "test2"],
-		]);
-		const newAppData = findAppData([
-			["column1", "column2"],
-			["text", "text"],
-			["updated1", "updated2"],
-		]);
-
-		const merged = mergeAppData(oldAppData, newAppData);
-		//Check content
-		expect(merged.cells[0].content).toEqual("updated1");
-		expect(merged.cells[1].content).toEqual("updated2");
+		];
+		const id = findTableId(parsedTable);
+		expect(id).toEqual(null);
 	});
 
-	it("merges new tag content", () => {
-		const oldAppData = findAppData([
+	it("returns null if id is blank", () => {
+		const parsedTable = [
 			["column1", "column2"],
-			["tag", "tag"],
-			["#tag1", "#tag2"],
-		]);
-		const newAppData = findAppData([
-			["column1", "column2"],
-			["tag", "tag"],
-			["#updated1", "#updated2"],
-		]);
-
-		const merged = mergeAppData(oldAppData, newAppData);
-		expect(merged.tags[0].content).toEqual("updated1");
-		expect(merged.tags[1].content).toEqual("updated2");
-	});
-
-	it("merges new cell content", () => {
-		const oldAppData = findAppData([
-			["column1", "column2"],
-			["tag", "tag"],
-			["#tag1", "#tag2"],
-		]);
-		const newAppData = findAppData([
-			["column1", "column2"],
-			["tag", "tag"],
-			["#tag2", "#tag3"],
-		]);
-
-		const merged = mergeAppData(oldAppData, newAppData);
-		expect(merged.tags[0].color).toEqual(oldAppData.tags[1].color);
-		expect(merged.tags[1].color).toEqual(newAppData.tags[1].color);
-		expect(merged.tags[0].content).toEqual("tag2");
-		expect(merged.tags[1].content).toEqual("tag3");
-	});
-
-	it("merges row creation times", () => {
-		const oldAppData = findAppData([
-			["column1", "column2"],
+			["", ""],
 			["text", "text"],
-			["row1-cell1", "row1-cell2"],
-			["row2-cell1", "row2-cell2"],
-		]);
-		const newAppData = findAppData([
-			["column1", "column2"],
-			["text", "text"],
-			["updated-row1-cell1", "updated-row1-cell2"],
-			["updated-row2-cell1", "updated-row2-cell2"],
-		]);
-
-		const merged = mergeAppData(oldAppData, newAppData);
-		expect(merged.rows[0].creationTime).toEqual(
-			oldAppData.rows[0].creationTime
-		);
-		expect(merged.rows[1].creationTime).toEqual(
-			newAppData.rows[1].creationTime
-		);
+			["test1", "test2"],
+		];
+		const id = findTableId(parsedTable);
+		expect(id).toEqual(null);
 	});
 });
+
+// describe("mergeAppData", () => {
+// 	it("merges new cell content", () => {
+// 		const oldAppData = findAppData([
+// 			["column1", "column2"],
+// 			["text", "text"],
+// 			["test1", "test2"],
+// 		]);
+// 		const newAppData = findAppData([
+// 			["column1", "column2"],
+// 			["text", "text"],
+// 			["updated1", "updated2"],
+// 		]);
+
+// 		const merged = mergeAppData(oldAppData, newAppData);
+// 		//Check content
+// 		expect(merged.cells[0].content).toEqual("updated1");
+// 		expect(merged.cells[1].content).toEqual("updated2");
+// 	});
+
+// 	it("merges new tag content", () => {
+// 		const oldAppData = findAppData([
+// 			["column1", "column2"],
+// 			["tag", "tag"],
+// 			["#tag1", "#tag2"],
+// 		]);
+// 		const newAppData = findAppData([
+// 			["column1", "column2"],
+// 			["tag", "tag"],
+// 			["#updated1", "#updated2"],
+// 		]);
+
+// 		const merged = mergeAppData(oldAppData, newAppData);
+// 		expect(merged.tags[0].content).toEqual("updated1");
+// 		expect(merged.tags[1].content).toEqual("updated2");
+// 	});
+
+// 	it("merges new cell content", () => {
+// 		const oldAppData = findAppData([
+// 			["column1", "column2"],
+// 			["tag", "tag"],
+// 			["#tag1", "#tag2"],
+// 		]);
+// 		const newAppData = findAppData([
+// 			["column1", "column2"],
+// 			["tag", "tag"],
+// 			["#tag2", "#tag3"],
+// 		]);
+
+// 		const merged = mergeAppData(oldAppData, newAppData);
+// 		expect(merged.tags[0].color).toEqual(oldAppData.tags[1].color);
+// 		expect(merged.tags[1].color).toEqual(newAppData.tags[1].color);
+// 		expect(merged.tags[0].content).toEqual("tag2");
+// 		expect(merged.tags[1].content).toEqual("tag3");
+// 	});
+
+// 	it("merges row creation times", () => {
+// 		const oldAppData = findAppData([
+// 			["column1", "column2"],
+// 			["text", "text"],
+// 			["row1-cell1", "row1-cell2"],
+// 			["row2-cell1", "row2-cell2"],
+// 		]);
+// 		const newAppData = findAppData([
+// 			["column1", "column2"],
+// 			["text", "text"],
+// 			["updated-row1-cell1", "updated-row1-cell2"],
+// 			["updated-row2-cell1", "updated-row2-cell2"],
+// 		]);
+
+// 		const merged = mergeAppData(oldAppData, newAppData);
+// 		expect(merged.rows[0].creationTime).toEqual(
+// 			oldAppData.rows[0].creationTime
+// 		);
+// 		expect(merged.rows[1].creationTime).toEqual(
+// 			newAppData.rows[1].creationTime
+// 		);
+// 	});
+// });
 
 describe("findAppData", () => {
 	it("finds text data", () => {
 		const table = [
 			["Column 1", "Column 2"],
+			["12345", ""],
 			["text", "text"],
 			["some text", "some more text"],
 		];
@@ -203,6 +316,7 @@ describe("findAppData", () => {
 	it("finds tag data", () => {
 		const table = [
 			["Column 1", "Column 2"],
+			["12345", ""],
 			["tag", "tag"],
 			["#tag1", "#tag2"],
 		];
@@ -216,26 +330,28 @@ describe("findAppData", () => {
 
 describe("validTypeDefinitionRow", () => {
 	it("returns true if row exists", () => {
-		const table = [
+		const parsedTable = [
 			["Column 1", "Column 2"],
+			["12345", ""],
 			["text", "text"],
 		];
-		const hasTDR = validTypeDefinitionRow(table);
+		const hasTDR = validTypeDefinitionRow(parsedTable);
 		expect(hasTDR).toBe(true);
 	});
 
 	it("returns false if no row exists", () => {
-		const table = [["Column 1", "Column 2"]];
-		const hasTDR = validTypeDefinitionRow(table);
+		const parsedTable = [["Column 1", "Column 2"]];
+		const hasTDR = validTypeDefinitionRow(parsedTable);
 		expect(hasTDR).toBe(false);
 	});
 
 	it("returns false if invalid types", () => {
-		const table = [
+		const parsedTable = [
 			["Column 1", "Column 2"],
+			["12345", ""],
 			["text", "invalid"],
 		];
-		const hasTDR = validTypeDefinitionRow(table);
+		const hasTDR = validTypeDefinitionRow(parsedTable);
 		expect(hasTDR).toBe(false);
 	});
 });

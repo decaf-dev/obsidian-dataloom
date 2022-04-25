@@ -1,19 +1,24 @@
-import { App, TFile } from "obsidian";
+import { App } from "obsidian";
 import { NltSettings } from "../../services/state";
 
 import { AppData } from "../../services/state";
 import {
 	findAppData,
-	appDataToString,
+	appDataToMarkdown,
 	findTableRegex,
 	parseTableFromEl,
 	validTypeDefinitionRow,
-	hashMarkdownTable,
-	hashParsedTable,
-	pruneSettingsCache,
+	findTableId,
 } from "../../services/utils";
 
+import { DEBUG } from "../../constants";
+
 import NltPlugin from "main";
+
+interface LoadedData {
+	tableId: string;
+	data: AppData;
+}
 
 /**
  * Loads app data
@@ -21,60 +26,63 @@ import NltPlugin from "main";
  * @returns AppData - The loaded data which the app will use to initialize its state
  */
 export const loadAppData = (
-	plugin: NltPlugin,
-	app: App,
 	settings: NltSettings,
 	el: HTMLElement,
 	sourcePath: string
-): AppData | null => {
+): LoadedData | null => {
 	const parsedTable = parseTableFromEl(el);
-	const hash = hashParsedTable(parsedTable);
-	// console.log("LOADING DATA");
-	// console.log(parsedTable);
-	// console.log(hash);
+	console.log(parsedTable);
+
+	const tableId = findTableId(parsedTable);
+	if (!tableId) return null;
+	if (!validTypeDefinitionRow(parsedTable)) return null;
+
+	if (DEBUG) {
+		console.log("FOUND TABLE ID", tableId);
+		console.log("LOADING DATA");
+	}
 
 	if (settings.appData[sourcePath]) {
-		//Just in time garbage collection for old tables
-		garbageCollect(plugin, app, settings, sourcePath);
-		if (settings.appData[sourcePath][hash]) {
-			// console.log("LOADING OLD DATA", hash);
-			return settings.appData[sourcePath][hash];
+		if (settings.appData[sourcePath][tableId]) {
+			if (DEBUG) console.log("LOADING OLD DATA");
+
+			//TODO merge new data with old data
+			// const newAppData =
+			// 	findAppData(parsedTable);
+			// const merged = mergeAppData(
+			// 	this.settings.appData[file.path][
+			// 		key
+			// 	],
+			// 	newAppData
+			// );
+			// this.settings.appData[file.path][hash] =
+			// 	merged;
+			// delete this.settings.appData[file.path][
+			// 	key
+			// ];
+			// console.log(
+			// 	"REPLACING OLD DATA WITH NEW DATA"
+			// );
+			// console.log(newAppData.updateTime);
+			// this.saveSettings();
+			return { tableId, data: settings.appData[sourcePath][tableId] };
 		}
 	}
 
-	//If we don't have a type definition row return null
-	if (!validTypeDefinitionRow(parsedTable)) return null;
-
-	// console.log("LOADING NEW DATA");
-	return findAppData(parsedTable);
-};
-
-const garbageCollect = async (
-	plugin: NltPlugin,
-	app: App,
-	settings: NltSettings,
-	sourcePath: string
-) => {
-	const file = app.vault.getAbstractFileByPath(sourcePath);
-	if (file instanceof TFile) {
-		const fileData = await app.vault.read(file);
-		const newSettings = pruneSettingsCache(settings, sourcePath, fileData);
-		plugin.saveData(newSettings);
-	}
+	if (DEBUG) console.log("LOADING NEW DATA");
+	return { tableId, data: findAppData(parsedTable) };
 };
 
 const persistAppData = (
 	plugin: NltPlugin,
 	settings: NltSettings,
 	appData: AppData,
-	sourcePath: string
+	sourcePath: string,
+	tableId: string
 ) => {
-	const markdownTable = appDataToString(appData);
-	//console.log(markdownTable);
-	const hash = hashMarkdownTable(markdownTable);
 	if (!settings.appData[sourcePath]) settings.appData[sourcePath] = {};
-	// console.log("PERSISTING APP DATA", hash);
-	settings.appData[sourcePath][hash] = appData;
+	if (DEBUG) console.log("PERSISTING APP DATA");
+	settings.appData[sourcePath][tableId] = appData;
 	plugin.saveData(settings);
 };
 
@@ -92,21 +100,22 @@ export const saveAppData = async (
 	app: App,
 	oldAppData: AppData,
 	newAppData: AppData,
-	sourcePath: string
+	sourcePath: string,
+	tableId: string
 ) => {
-	const newData = appDataToString(newAppData);
+	const newData = appDataToMarkdown(tableId, newAppData);
 	try {
 		const file = app.workspace.getActiveFile();
 		let content = await app.vault.cachedRead(file);
 
 		content = content.replace(
-			findTableRegex(oldAppData.headers, oldAppData.rows),
+			findTableRegex(tableId, oldAppData.headers, oldAppData.rows),
 			newData
 		);
 
 		//Reset update time to 0 so we don't update on load
 		newAppData.updateTime = 0;
-		persistAppData(plugin, settings, newAppData, sourcePath);
+		persistAppData(plugin, settings, newAppData, sourcePath, tableId);
 
 		//Save the open file with the new table data
 		await app.vault.modify(file, content);

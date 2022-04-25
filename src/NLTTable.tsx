@@ -31,9 +31,7 @@ export class NLTTable extends MarkdownRenderChild {
 	}
 
 	async onload() {
-		const data = loadAppData(
-			this.plugin,
-			this.app,
+		const { tableId, data } = loadAppData(
 			this.settings,
 			this.containerEl,
 			this.sourcePath
@@ -50,6 +48,7 @@ export class NLTTable extends MarkdownRenderChild {
 						settings={this.settings}
 						data={data}
 						sourcePath={this.sourcePath}
+						tableId={tableId}
 					/>
 				</AppContext.Provider>,
 				this.el
