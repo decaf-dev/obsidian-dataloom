@@ -9,6 +9,7 @@ import {
 	parseTableFromEl,
 	validTypeDefinitionRow,
 	findTableId,
+	mergeAppData,
 } from "../../services/utils";
 
 import { DEBUG } from "../../constants";
@@ -26,12 +27,16 @@ interface LoadedData {
  * @returns AppData - The loaded data which the app will use to initialize its state
  */
 export const loadAppData = (
+	plugin: NltPlugin,
 	settings: NltSettings,
 	el: HTMLElement,
 	sourcePath: string
 ): LoadedData | null => {
 	const parsedTable = parseTableFromEl(el);
-	console.log(parsedTable);
+	if (DEBUG) {
+		console.log("PARSING TABLE FROM ELEMENT");
+		console.log(parsedTable);
+	}
 
 	const tableId = findTableId(parsedTable);
 	if (!tableId) return null;
@@ -39,32 +44,19 @@ export const loadAppData = (
 
 	if (DEBUG) {
 		console.log("FOUND TABLE ID", tableId);
-		console.log("LOADING DATA");
 	}
 
 	if (settings.appData[sourcePath]) {
 		if (settings.appData[sourcePath][tableId]) {
 			if (DEBUG) console.log("LOADING OLD DATA");
 
-			//TODO merge new data with old data
-			// const newAppData =
-			// 	findAppData(parsedTable);
-			// const merged = mergeAppData(
-			// 	this.settings.appData[file.path][
-			// 		key
-			// 	],
-			// 	newAppData
-			// );
-			// this.settings.appData[file.path][hash] =
-			// 	merged;
-			// delete this.settings.appData[file.path][
-			// 	key
-			// ];
-			// console.log(
-			// 	"REPLACING OLD DATA WITH NEW DATA"
-			// );
-			// console.log(newAppData.updateTime);
-			// this.saveSettings();
+			const newAppData = findAppData(parsedTable);
+			const merged = mergeAppData(
+				settings.appData[sourcePath][tableId],
+				newAppData
+			);
+			settings.appData[sourcePath][tableId] = merged;
+			plugin.saveSettings();
 			return { tableId, data: settings.appData[sourcePath][tableId] };
 		}
 	}
