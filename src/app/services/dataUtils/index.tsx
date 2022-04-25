@@ -39,8 +39,9 @@ export const loadAppData = (
 	}
 
 	const tableId = findTableId(parsedTable);
-	if (!tableId) return null;
-	if (!validTypeDefinitionRow(parsedTable)) return null;
+	if (!tableId) return { tableId: null, data: null };
+	if (!validTypeDefinitionRow(parsedTable))
+		return { tableId: null, data: null };
 
 	if (DEBUG) {
 		console.log("FOUND TABLE ID", tableId);
