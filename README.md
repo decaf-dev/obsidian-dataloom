@@ -35,21 +35,31 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 
 ### Making a Table via Command
 
-To quickly make a table you can use the add table command. Press `CMD-P` on your keyboard search "Add table".
+To quickly make a table you can use the add table command. Press `cmd + p` on your keyboard search "Add table".
 
-Note: you must be in editing mode for this command to appear
+Note: you must be in editing mode for this command to appear.
 
-Toggle to preview mode and the table will automatically render.
+Toggle to reading mode and the table will automatically render.
 
 ### Making a Table Manually
 
-Make a table manually using normal markdown syntax. Under the hyphen row, specify the types of each column.
+A Notion-Like Table uses normal Obsidian table markdown syntax with 2 additional rows:
 
-The plugin currently supports 3 cell types: `text`, `number`, and `tag`.
+-   A table id row
+-   A type definition row
+
+#### Table ID Row
+
+The table id row is a normal markdown row with the first column containing a unique string. This string must be unique per table per file. If you use the same id in another file that's fine. The id is used to map a table to its data in the settings. If you change this id, your table will not be able to find its settings and will create new ones. If you omit this id, your table will not be rendered as an NLT table.
+
+Example row:
+| my-table-id | | |
+
+##### Type Definition Row
+
+The type definition row is a normal markdown row with each column defining the type of data you want that column to accept. The plugin currently supports 3 column types: `text`, `number` and `tag`.
 
 ![Screenshot](.readme/markdown.png)
-
-Toggle to preview mode and the table will automatically render.
 
 ### Editing Cells
 
@@ -76,11 +86,6 @@ A cell type error will occur if you enter data which doesn't match the column da
 
 ![Screenshot](.readme/cell-error-1.png)
 ![Screenshot](.readme/cell-error-2.png)
-
-### Live Preview
-
-April 9, 2022:
-Tables display with live preview is still being developed in Obsidian. If you're using live preview, please always use the table in "Reading" mode not "Editing" mode.
 
 ### Theming
 

@@ -30,14 +30,34 @@ interface Props {
 	settings: NltSettings;
 	data: AppData;
 	sourcePath: string;
+	tableId: string;
 }
 
-export default function App({ plugin, settings, data, sourcePath }: Props) {
+export default function App({
+	plugin,
+	settings,
+	data,
+	sourcePath,
+	tableId,
+}: Props) {
 	const [oldAppData] = useState<AppData>(data);
 	const [appData, setAppData] = useState<AppData>(data);
 	const appRef = useRef<HTMLInputElement>();
 
 	const app = useApp();
+
+	useEffect(() => {
+		//Sort on first render
+		//Use case:
+		//If a user deletes or adds a new row (by copying and pasting, for example)
+		//then we want to make sure that value is sorted in
+
+		for (let i = 0; i < appData.headers.length; i++) {
+			const header = appData.headers[i];
+			if (header.sortName !== SORT.DEFAULT.name)
+				sortRows(header.index, header.type, header.sortName, false);
+		}
+	}, []);
 
 	useEffect(() => {
 		async function handleUpdate() {
@@ -51,7 +71,8 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 							app,
 							oldAppData,
 							appData,
-							sourcePath
+							sourcePath,
+							tableId
 						);
 					} catch (err) {
 						console.log(err);
@@ -238,7 +259,8 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 	function sortRows(
 		headerIndex: number,
 		headerType: string,
-		sortName: string
+		sortName: string,
+		shouldUpdate = true
 	) {
 		setAppData((prevState) => {
 			//Create a new array because the sort function mutates
@@ -285,7 +307,7 @@ export default function App({ plugin, settings, data, sourcePath }: Props) {
 			return {
 				...prevState,
 				rows: arr,
-				updateTime: Date.now(),
+				updateTime: shouldUpdate ? Date.now() : 0,
 			};
 		});
 	}
