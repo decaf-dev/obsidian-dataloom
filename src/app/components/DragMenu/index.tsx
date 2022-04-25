@@ -93,14 +93,14 @@ export default function DragMenu({
 							icon={
 								<ArrowUpwardIcon className="NLT__icon--md NLT__margin-right" />
 							}
-							iconText="Insert Row Above"
+							iconText="Insert Above"
 							onClick={() => handleInsertRowClick(rowId, false)}
 						/>
 						<IconText
 							icon={
 								<ArrowDownwardIcon className="NLT__icon--md NLT__margin-right" />
 							}
-							iconText="Insert Row Below"
+							iconText="Insert Below"
 							onClick={() => handleInsertRowClick(rowId, true)}
 						/>
 						<IconText
