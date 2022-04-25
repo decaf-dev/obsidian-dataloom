@@ -9,78 +9,105 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 ## Roadmap
 
 -   0.1.0
-    -   MVP
+    -   MVP (basic NLT table)
 -   0.2.0
-    -   Semantic table tags
+    -   Semantic table tags for theming (table, tr, td, etc)
 -   0.3.0
-    -   Notion-Like sort menu
+    -   Notion-Like sort menu (default, ascending, descending)
 -   1.0.0
     -   Settings cache system to persist app data
-    -   Added jest tests
     -   Sorting updates source markdown
 -   1.1.0
     -   Support for http/https links
 -   1.2.0
     -   UI updates
     -   Insert row above or below an existing row
--   1.3.0
+-   2.0.0
+    -   Table id row support & upgrading caching system
+-   2.1.0
     -   Create new row with keyboard
-    -   Add new tag colors
--   1.4.0
+    -   Insert new column
+    -   New tag colors
+-   2.2.0
     -   Navigate cells with arrow key and tab key
--   1.5.0
+-   2.3.0
     -   TBA
 
 ## Usage
 
 ### Making a Table via Command
 
-To quickly make a table you can use the add table command. Press `CMD-P` on your keyboard search "Add table".
+To quickly make a table you can use the add table command. Press `cmd + p` on your keyboard search "Add table".
 
-Note: you must be in editing mode for this command to appear
+Note: you must be in editing mode for this command to appear.
 
-Toggle to preview mode and the table will automatically render.
+Toggle to reading mode and the table will automatically render.
+
+![Screenshot](.readme/add-table-command.png)
 
 ### Making a Table Manually
 
-Make a table manually using normal markdown syntax. Under the hyphen row, specify the types of each column.
+A Notion-Like Table uses normal Obsidian table markdown syntax with 2 additional rows:
 
-The plugin currently supports 3 cell types: `text`, `number`, and `tag`.
+-   A table id row
+-   A type definition row
 
-![Screenshot](.readme/markdown.png)
+#### Table ID Row
 
-Toggle to preview mode and the table will automatically render.
+The table id row is a normal markdown row with the first column containing a unique string. This string must be unique per table per file. If you use the same id in another file that's fine. The id is used to map a table to its data in the settings. If you change this id, your table will not be able to find its settings and will create new ones. If you omit this id, your table will not be rendered as an NLT table.
+
+![Screenshot](.readme/table-id-row.png)
+
+##### Type Definition Row
+
+The type definition row is a normal markdown row with each column defining the type of data you want that column to accept. The plugin currently supports 3 column types: `text`, `number` and `tag`.
+
+![Screenshot](.readme/type-definition-row.png)
 
 ### Editing Cells
 
 To edit a cell, just click on it. Changes made to the cell will be propagated to the markdown.
 
+#### Tags
+
+Tags have a special notion-like menu that will appear. Tags are scoped to each column of a table. You can type text to filter existing tags and select one. Or you can create a new tag by typing text and clicking "Create New" or pressing enter.
+
+![Screenshot](.readme/tag-menu.png)
+
 ### Headers
 
-Click on a header name to edit the header title and change the column type.
+Click on a header name to view the header menu. In the header menu you can rename the header, sort your column values or change the header type.
 
 ![Screenshot](.readme/header.png)
-
-Please do not edit headers in the markdown once you have rendered your table for the first time. These are what are used to identify a unique table. I plan on finding a better system for this, potentially using the line ID of the table in the document. If you have any suggestions for this, please place it in a feature request.
 
 ### Links
 
 If you want to render a link in text, just add square brackets [[My Link]].
 
-![Screenshot](.readme/text-link-1.png)
-![Screenshot](.readme/text-link-2.png)
+![Screenshot](.readme/internal-link-edit.png)
+
+### URLs
+
+If you want to display a url, type the url making sure it begins with `http://` or `https://`. NLT will automatically render it in the table.
+
+![Screenshot](.readme/url.png)
+
+### Undoing a Type Change
+
+If you accidently change your column to a different type, all data will be erased. It this happens, go to editing mode and use `ctrl+z` or `option-z` on your keyboard to undo the change.
 
 ### Errors
+
+#### Not Rendering
+
+If your table is missing a table id row or type definition row then it will not be rendered as a Notion-Like Table. Likewise, if you use an invalid column type other than the accepted types `text`, `number`, or `tag`. The table will not be rendered.
+
+#### Cell Type Errors
 
 A cell type error will occur if you enter data which doesn't match the column data type. Please correct this error in your markdown to continue.
 
 ![Screenshot](.readme/cell-error-1.png)
 ![Screenshot](.readme/cell-error-2.png)
-
-### Live Preview
-
-April 9, 2022:
-Tables display with live preview is still being developed in Obsidian. If you're using live preview, please always use the table in "Reading" mode not "Editing" mode.
 
 ### Theming
 

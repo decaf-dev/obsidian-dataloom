@@ -19,7 +19,7 @@ export const instanceOfErrorData = (object: any): object is ErrorData => {
 	return "columnIds" in object;
 };
 export interface NltSettings {
-	appData: { [filePath: string]: { [hash: number]: AppData } };
+	appData: { [filePath: string]: { [tableId: string]: AppData } };
 }
 
 export const DEFAULT_SETTINGS: NltSettings = {

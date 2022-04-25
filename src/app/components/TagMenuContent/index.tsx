@@ -37,7 +37,13 @@ export default function TagMenuContent({
 
 	function handleKeyDown(e: React.KeyboardEvent) {
 		if (e.key === "Enter") {
-			onAddTag(inputText);
+			//If this tag content already exists then we will select that tag, otherwise add a new one
+			const tag = tags.filter((tag) => tag.content === inputText)[0];
+			if (tag) {
+				onTagClick(tag.id);
+			} else {
+				onAddTag(inputText);
+			}
 		}
 	}
 

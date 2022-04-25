@@ -1,6 +1,6 @@
 {
   "name": "obsidian-notion-like-tables",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "Notion-like tables for Obsidian.md",
   "main": "main.js",
   "scripts": {
@@ -36,7 +36,6 @@
   },
   "dependencies": {
     "@mui/icons-material": "^5.5.0",
-    "crc-32": "^1.2.2",
     "html-react-parser": "^1.4.9",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
