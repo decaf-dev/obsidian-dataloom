@@ -323,6 +323,30 @@ export default function App({
 		});
 	}
 
+	function handleMoveRowClick(id: string, moveBelow: boolean) {
+		setAppData((prevState: AppData) => {
+			const index = prevState.rows.findIndex((row) => row.id === id);
+			//We assume that there is checking to make sure you don't move the first row up or last row down
+			const moveIndex = moveBelow ? index + 1 : index - 1;
+			const rows = [...prevState.rows];
+
+			//Swap values
+			const oldTime = rows[moveIndex].creationTime;
+			const newTime = rows[index].creationTime;
+			const old = rows[moveIndex];
+			rows[moveIndex] = rows[index];
+			rows[moveIndex].creationTime = oldTime;
+			rows[index] = old;
+			rows[index].creationTime = newTime;
+
+			return {
+				...prevState,
+				rows,
+				updateTime: Date.now(),
+			};
+		});
+	}
+
 	function handleMoveColumnClick(id: string, moveRight: boolean) {
 		setAppData((prevState: AppData) => {
 			const index = prevState.headers.findIndex(
@@ -338,6 +362,7 @@ export default function App({
 			return {
 				...prevState,
 				headers,
+				updateTime: Date.now(),
 			};
 		});
 	}
@@ -498,6 +523,11 @@ export default function App({
 								<td className="NLT__td">
 									<DragMenu
 										rowId={row.id}
+										isFirstRow={i === 0}
+										isLastRow={
+											i === appData.rows.length - 1
+										}
+										onMoveRowClick={handleMoveRowClick}
 										onDeleteClick={handleDeleteRowClick}
 										onInsertRowClick={handleInsertRowClick}
 									/>
