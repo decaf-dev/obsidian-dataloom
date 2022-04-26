@@ -6,8 +6,10 @@ import Menu from "../Menu";
 
 import MoreVert from "@mui/icons-material/MoreVert";
 import DeleteIcon from "@mui/icons-material/Delete";
-import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
-import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
+import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
 
 import IconText from "../IconText";
 
@@ -15,12 +17,18 @@ import "./styles.css";
 
 interface Props {
 	rowId: string;
+	isFirstRow: boolean;
+	isLastRow: boolean;
+	onMoveRowClick: (id: string, moveBelow: boolean) => void;
 	onDeleteClick: (id: string) => void;
 	onInsertRowClick: (id: string, insertBelow: boolean) => void;
 }
 
 export default function DragMenu({
 	rowId,
+	isFirstRow,
+	isLastRow,
+	onMoveRowClick,
 	onDeleteClick,
 	onInsertRowClick,
 }: Props) {
@@ -64,13 +72,20 @@ export default function DragMenu({
 	}
 
 	function handleDeleteClick(id: string) {
-		onClose();
 		onDeleteClick(id);
+		onClose();
 	}
 
 	function handleInsertRowClick(id: string, insertBelow: boolean) {
-		onClose();
+		//TODO
+		//Pick an order for close and handlers and stay consistant
 		onInsertRowClick(id, insertBelow);
+		onClose();
+	}
+
+	function handleMoveRowClick(id: string, moveBelow: boolean) {
+		onMoveRowClick(id, moveBelow);
+		onClose();
 	}
 
 	return (
@@ -89,16 +104,34 @@ export default function DragMenu({
 				}}
 				content={
 					<div className="NLT__drag-menu-container">
+						{!isFirstRow && (
+							<IconText
+								icon={
+									<KeyboardDoubleArrowUpIcon className="NLT__icon--md NLT__margin-right" />
+								}
+								iconText="Move Up"
+								onClick={() => handleMoveRowClick(rowId, false)}
+							/>
+						)}
+						{!isLastRow && (
+							<IconText
+								icon={
+									<KeyboardDoubleArrowDownIcon className="NLT__icon--md NLT__margin-right" />
+								}
+								iconText="Move Down"
+								onClick={() => handleMoveRowClick(rowId, true)}
+							/>
+						)}
 						<IconText
 							icon={
-								<ArrowUpwardIcon className="NLT__icon--md NLT__margin-right" />
+								<KeyboardArrowUpIcon className="NLT__icon--md NLT__margin-right" />
 							}
 							iconText="Insert Above"
 							onClick={() => handleInsertRowClick(rowId, false)}
 						/>
 						<IconText
 							icon={
-								<ArrowDownwardIcon className="NLT__icon--md NLT__margin-right" />
+								<KeyboardArrowDownIcon className="NLT__icon--md NLT__margin-right" />
 							}
 							iconText="Insert Below"
 							onClick={() => handleInsertRowClick(rowId, true)}
