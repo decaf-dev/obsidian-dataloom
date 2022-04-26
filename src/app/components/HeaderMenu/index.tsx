@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
-
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
-import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import IconText from "../IconText";
 
 import Menu from "../Menu";
 
 import { SORT, MENU_ITEMS } from "./constants";
+import { ICON } from "../../constants";
 
 import "./styles.css";
+import HeaderMenuItem from "./components/HeaderMenuItem";
 
 interface Props {
 	isOpen: boolean;
@@ -56,64 +54,69 @@ export default function HeaderMenu({
 
 	function renderMenuItems() {
 		return MENU_ITEMS.map((item) => {
-			let className = "NLT__header-menu-item NLT__selectable";
-			if (item.type === type) className += " NLT__selected";
 			return (
-				<p
+				<HeaderMenuItem
 					key={item.name}
-					className={className}
-					onClick={(e) => {
-						e.stopPropagation();
-						handleTypeSelect(id, item.type);
-					}}
-				>
-					{item.content}
-				</p>
+					icon=""
+					iconText={item.content}
+					onClick={() => handleTypeSelect(id, item.type)}
+					selected={item.type === type}
+				/>
 			);
 		});
 	}
 
 	function renderSortItems() {
-		return Object.values(SORT).map((item) => {
-			let className = "NLT__header-menu-item NLT__selectable";
-			if (sortName === item.name) className += " NLT__selected";
-			return (
-				<p
-					key={item.name}
-					className={className}
-					onClick={(e) => {
-						e.stopPropagation();
-						handleSortSelect(id, type, item.name);
-					}}
-				>
-					{item.icon} Sort {item.content}
-				</p>
-			);
-		});
+		return (
+			<ul className="NLT__header-menu-ul">
+				{Object.values(SORT).map((item) => (
+					<HeaderMenuItem
+						key={item.name}
+						icon={item.icon}
+						iconText={`Sort ${item.content}`}
+						onClick={() => handleSortSelect(id, type, item.name)}
+						selected={sortName === item.name}
+					/>
+				))}
+			</ul>
+		);
 	}
 
 	function renderInsertItems() {
 		return (
-			<>
-				<div
-					className="NLT__header-menu-item NLT__selectable"
-					onClick={(e) => {
-						e.stopPropagation();
-						handleInsertColumnClick(id, false);
-					}}
-				>
-					<KeyboardArrowLeftIcon /> Insert Left
-				</div>
-				<div
-					className="NLT__header-menu-item NLT__selectable"
-					onClick={(e) => {
-						e.stopPropagation();
-						handleInsertColumnClick(id, true);
-					}}
-				>
-					<KeyboardArrowRightIcon /> Insert Right
-				</div>
-			</>
+			<ul className="NLT__header-menu-ul">
+				<HeaderMenuItem
+					icon={ICON.KEYBOARD_ARROW_LEFT}
+					iconText="Insert Left"
+					onClick={() => handleInsertColumnClick(id, false)}
+				/>
+				<HeaderMenuItem
+					icon={ICON.KEYBOARD_ARROW_RIGHT}
+					iconText="Insert Right"
+					onClick={() => handleInsertColumnClick(id, true)}
+				/>
+			</ul>
+		);
+	}
+
+	function renderMoveItems() {
+		return (
+			<ul className="NLT__header-menu-ul">
+				{!inFirstHeader && (
+					<HeaderMenuItem
+						icon={ICON.KEYBOARD_DOUBLE_ARROW_LEFT}
+						iconText="Move Left"
+						onClick={() => handleMoveColumnClick(id, false)}
+					/>
+				)}
+				{!inLastHeader && (
+					<HeaderMenuItem
+						icon={ICON.KEYBOARD_DOUBLE_ARROW_RIGHT}
+						iconText="Move Right"
+						onClick={() => handleMoveColumnClick(id, true)}
+					/>
+				)}
+			</ul>
 		);
 	}
 
@@ -165,28 +168,8 @@ export default function HeaderMenu({
 					/>
 					<div className="NLT__header-menu-header">Sort</div>
 					{renderSortItems()}
-					{!inFirstHeader && (
-						<div
-							className="NLT__header-menu-item NLT__selectable"
-							onClick={(e) => {
-								e.stopPropagation();
-								handleMoveColumnClick(id, false);
-							}}
-						>
-							<KeyboardDoubleArrowLeftIcon /> Move Left
-						</div>
-					)}
-					{!inLastHeader && (
-						<div
-							className="NLT__header-menu-item NLT__selectable"
-							onClick={(e) => {
-								e.stopPropagation();
-								handleMoveColumnClick(id, true);
-							}}
-						>
-							<KeyboardDoubleArrowRightIcon /> Move Right
-						</div>
-					)}
+					<div className="NLT__header-menu-header">Move</div>
+					{renderMoveItems()}
 					<div className="NLT__header-menu-header">Insert</div>
 					{renderInsertItems()}
 					<div className="NLT__header-menu-header">Property Type</div>

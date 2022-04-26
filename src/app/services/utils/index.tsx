@@ -1,6 +1,21 @@
+import React from "react";
+
 import { v4 as uuidv4 } from "uuid";
 
 import { CELL_COLOR, CELL_TYPE } from "../../constants";
+
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import DeleteIcon from "@mui/icons-material/Delete";
+import SortIcon from "@mui/icons-material/Sort";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
+import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+
 import {
 	Header,
 	Tag,
@@ -10,8 +25,38 @@ import {
 	initialCell,
 	initialRow,
 	initialTag,
-} from "../../services/state";
-import { AppData } from "../../services/state";
+} from "../state";
+import { AppData } from "../state";
+import { ICON } from "../../constants";
+
+export const findIcon = (icon: string, className: string): React.ReactNode => {
+	switch (icon) {
+		case ICON.KEYBOARD_ARROW_UP:
+			return <KeyboardArrowUpIcon className={className} />;
+		case ICON.KEYBOARD_ARROW_DOWN:
+			return <KeyboardArrowDownIcon className={className} />;
+		case ICON.KEYBOARD_DOUBLE_ARROW_UP:
+			return <KeyboardDoubleArrowUpIcon className={className} />;
+		case ICON.KEYBOARD_DOUBLE_ARROW_DOWN:
+			return <KeyboardDoubleArrowDownIcon className={className} />;
+		case ICON.KEYBOARD_ARROW_LEFT:
+			return <KeyboardArrowLeftIcon className={className} />;
+		case ICON.KEYBOARD_ARROW_RIGHT:
+			return <KeyboardArrowRightIcon className={className} />;
+		case ICON.KEYBOARD_DOUBLE_ARROW_LEFT:
+			return <KeyboardDoubleArrowLeftIcon className={className} />;
+		case ICON.KEYBOARD_DOUBLE_ARROW_RIGHT:
+			return <KeyboardDoubleArrowRightIcon className={className} />;
+		case ICON.DELETE:
+			return <DeleteIcon className={className} />;
+		case ICON.MORE_VERT:
+			return <MoreVertIcon className={className} />;
+		case ICON.SORT:
+			return <SortIcon className={className} />;
+		default:
+			return "";
+	}
+};
 
 export const randomColor = (): string => {
 	const index = Math.floor(Math.random() * Object.keys(CELL_COLOR).length);

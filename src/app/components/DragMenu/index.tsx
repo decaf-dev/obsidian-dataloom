@@ -4,16 +4,10 @@ import { v4 as uuidv4 } from "uuid";
 import IconButton from "../IconButton";
 import Menu from "../Menu";
 
-import MoreVert from "@mui/icons-material/MoreVert";
-import DeleteIcon from "@mui/icons-material/Delete";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
-import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
-
 import IconText from "../IconText";
 
 import "./styles.css";
+import { ICON } from "src/app/constants";
 
 interface Props {
 	rowId: string;
@@ -77,8 +71,6 @@ export default function DragMenu({
 	}
 
 	function handleInsertRowClick(id: string, insertBelow: boolean) {
-		//TODO
-		//Pick an order for close and handlers and stay consistant
 		onInsertRowClick(id, insertBelow);
 		onClose();
 	}
@@ -92,7 +84,7 @@ export default function DragMenu({
 		<>
 			<IconButton
 				id={buttonId}
-				icon={<MoreVert />}
+				icon={ICON.MORE_VERT}
 				ref={buttonRef}
 				onClick={handleDragClick}
 			/>
@@ -106,40 +98,30 @@ export default function DragMenu({
 					<div className="NLT__drag-menu-container">
 						{!isFirstRow && (
 							<IconText
-								icon={
-									<KeyboardDoubleArrowUpIcon className="NLT__icon--md NLT__margin-right" />
-								}
+								icon={ICON.KEYBOARD_DOUBLE_ARROW_UP}
 								iconText="Move Up"
 								onClick={() => handleMoveRowClick(rowId, false)}
 							/>
 						)}
 						{!isLastRow && (
 							<IconText
-								icon={
-									<KeyboardDoubleArrowDownIcon className="NLT__icon--md NLT__margin-right" />
-								}
+								icon={ICON.KEYBOARD_DOUBLE_ARROW_DOWN}
 								iconText="Move Down"
 								onClick={() => handleMoveRowClick(rowId, true)}
 							/>
 						)}
 						<IconText
-							icon={
-								<KeyboardArrowUpIcon className="NLT__icon--md NLT__margin-right" />
-							}
+							icon={ICON.KEYBOARD_ARROW_UP}
 							iconText="Insert Above"
 							onClick={() => handleInsertRowClick(rowId, false)}
 						/>
 						<IconText
-							icon={
-								<KeyboardArrowDownIcon className="NLT__icon--md NLT__margin-right" />
-							}
+							icon={ICON.KEYBOARD_ARROW_DOWN}
 							iconText="Insert Below"
 							onClick={() => handleInsertRowClick(rowId, true)}
 						/>
 						<IconText
-							icon={
-								<DeleteIcon className="NLT__icon--md NLT__margin-right" />
-							}
+							icon={ICON.DELETE}
 							iconText="Delete"
 							onClick={() => handleDeleteClick(rowId)}
 						/>

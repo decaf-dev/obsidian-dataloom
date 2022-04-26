@@ -1,5 +1,8 @@
 .NLT__icon-text {
 	display: flex;
 	align-items: center;
-	padding: 0px 10px;
+}
+
+.NLT__icon-text > p {
+	margin: 0;
 }

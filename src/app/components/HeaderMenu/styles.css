@@ -1,7 +1,11 @@
 .NLT__header-menu-container {
 	padding: 4px 10px;
-	font-size: 0.9rem;
 	cursor: default;
+}
+
+.NLT__header-menu-ul {
+	padding: 0;
+	margin: 0;
 }
 
 .NLT__header-menu-header {
@@ -10,8 +14,9 @@
 }
 
 .NLT__header-menu-item {
+	font-size: 0.9rem;
 	display: flex;
 	align-items: center;
 	padding: 0;
-	margin: 0.25rem 0px;
+	margin: 0;
 }
