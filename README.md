@@ -94,6 +94,10 @@ If you want to display a url, type the url making sure it begins with `http://` 
 
 ![Screenshot](.readme/url.png)
 
+### Copy Cell Content
+
+Right click a cell and its content will be added to your clipboard
+
 ### Undoing a Type Change
 
 If you accidently change your column to a different type, all data will be erased. It this happens, go to editing mode and use `ctrl+z` or `option-z` on your keyboard to undo the change.
