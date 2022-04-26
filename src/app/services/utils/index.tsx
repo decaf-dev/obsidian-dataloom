@@ -1,6 +1,21 @@
+import React from "react";
+
 import { v4 as uuidv4 } from "uuid";
 
 import { CELL_COLOR, CELL_TYPE } from "../../constants";
+
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import DeleteIcon from "@mui/icons-material/Delete";
+import SortIcon from "@mui/icons-material/Sort";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
+import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+
 import {
 	Header,
 	Tag,
@@ -10,12 +25,49 @@ import {
 	initialCell,
 	initialRow,
 	initialTag,
-} from "../../services/state";
-import { AppData } from "../../services/state";
+} from "../state";
+import { AppData } from "../state";
+import { ICON } from "../../constants";
+
+export const findIcon = (icon: string, className: string): React.ReactNode => {
+	switch (icon) {
+		case ICON.KEYBOARD_ARROW_UP:
+			return <KeyboardArrowUpIcon className={className} />;
+		case ICON.KEYBOARD_ARROW_DOWN:
+			return <KeyboardArrowDownIcon className={className} />;
+		case ICON.KEYBOARD_DOUBLE_ARROW_UP:
+			return <KeyboardDoubleArrowUpIcon className={className} />;
+		case ICON.KEYBOARD_DOUBLE_ARROW_DOWN:
+			return <KeyboardDoubleArrowDownIcon className={className} />;
+		case ICON.KEYBOARD_ARROW_LEFT:
+			return <KeyboardArrowLeftIcon className={className} />;
+		case ICON.KEYBOARD_ARROW_RIGHT:
+			return <KeyboardArrowRightIcon className={className} />;
+		case ICON.KEYBOARD_DOUBLE_ARROW_LEFT:
+			return <KeyboardDoubleArrowLeftIcon className={className} />;
+		case ICON.KEYBOARD_DOUBLE_ARROW_RIGHT:
+			return <KeyboardDoubleArrowRightIcon className={className} />;
+		case ICON.DELETE:
+			return <DeleteIcon className={className} />;
+		case ICON.MORE_VERT:
+			return <MoreVertIcon className={className} />;
+		case ICON.SORT:
+			return <SortIcon className={className} />;
+		default:
+			return "";
+	}
+};
 
 export const randomColor = (): string => {
 	const index = Math.floor(Math.random() * Object.keys(CELL_COLOR).length);
 	return Object.values(CELL_COLOR)[index];
+};
+
+export const getCurrentTimeWithOffset = (): number => {
+	//Since operations are preformed very quickly, it's possible
+	//for our to get the same time
+	//Add a timeoffset to make sure the time is different
+	return Math.round(Date.now() - Math.random() * 1000);
 };
 
 export const randomTableId = (): string => {
@@ -109,8 +161,12 @@ export const appDataToMarkdown = (tableId: string, data: AppData): string => {
 	data.rows.forEach((row) => {
 		buffer.createRow();
 
-		const cells = data.cells.filter((cell) => cell.rowId === row.id);
-		cells.forEach((cell, j) => {
+		for (let i = 0; i < data.headers.length; i++) {
+			const cell = data.cells.find(
+				(cell) =>
+					cell.rowId === row.id &&
+					cell.headerId === data.headers[i].id
+			);
 			if (
 				cell.type === CELL_TYPE.TAG ||
 				cell.type === CELL_TYPE.MULTI_TAG
@@ -121,16 +177,16 @@ export const appDataToMarkdown = (tableId: string, data: AppData): string => {
 
 				let content = "";
 
-				tags.forEach((tag, i) => {
+				tags.forEach((tag, j) => {
 					if (tag.content === "") return;
-					if (i === 0) content += addPound(tag.content);
+					if (j === 0) content += addPound(tag.content);
 					else content += " " + addPound(tag.content);
 				});
-				buffer.writeColumn(content, columnCharLengths[j]);
+				buffer.writeColumn(content, columnCharLengths[i]);
 			} else {
-				buffer.writeColumn(cell.content, columnCharLengths[j]);
+				buffer.writeColumn(cell.content, columnCharLengths[i]);
 			}
-		});
+		}
 	});
 	return buffer.toString();
 };
@@ -201,6 +257,9 @@ export const calcColumnCharLengths = (
 
 	//Check cells
 	cells.forEach((cell) => {
+		const index = headers.findIndex(
+			(header) => header.id === cell.headerId
+		);
 		if (cell.type === CELL_TYPE.TAG || cell.type === CELL_TYPE.MULTI_TAG) {
 			const arr = tags.filter((tag) => tag.selected.includes(cell.id));
 
@@ -211,11 +270,11 @@ export const calcColumnCharLengths = (
 					else content += " " + addPound(tag.content);
 				}
 			});
-			if (columnCharLengths[cell.headerIndex] < content.length)
-				columnCharLengths[cell.headerIndex] = content.length;
+			if (columnCharLengths[index] < content.length)
+				columnCharLengths[index] = content.length;
 		} else {
-			if (columnCharLengths[cell.headerIndex] < cell.content.length)
-				columnCharLengths[cell.headerIndex] = cell.content.length;
+			if (columnCharLengths[index] < cell.content.length)
+				columnCharLengths[index] = cell.content.length;
 		}
 	});
 	return columnCharLengths;
@@ -246,11 +305,8 @@ export const mergeAppData = (
 
 	//Grab tag settings
 	oldAppData.tags.forEach((tag, i) => {
-		const found = merged.tags.find((t) => t.content === tag.content);
-		if (found) {
-			const index = merged.tags.indexOf(found);
-			merged.tags[index].color = tag.color;
-		}
+		const index = merged.tags.findIndex((t) => t.content === tag.content);
+		if (index !== -1) merged.tags[index].color = tag.color;
 	});
 	return merged;
 };
@@ -267,8 +323,8 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 
 	parsedTable.forEach((row, i) => {
 		if (i === HEADER_ROW_INDEX) {
-			row.forEach((th, j) => {
-				headers.push(initialHeader(th, j));
+			row.forEach((th) => {
+				headers.push(initialHeader(th));
 			});
 		} else if (i === TYPE_DEFINITION_ROW_INDEX) {
 			row.forEach((td, j) => {
@@ -277,11 +333,7 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 			});
 		} else if (i !== TABLE_ID_ROW_INDEX) {
 			const rowId = uuidv4();
-			//Since these operations are preformed very quickly, it's possible
-			//for our to get the same time
-			//Add a timeoffset to make sure the time is different
-			const time = Math.round(Date.now() - Math.random() * 1000);
-			rows.push(initialRow(rowId, time));
+			rows.push(initialRow(rowId, getCurrentTimeWithOffset()));
 
 			row.forEach((td, j) => {
 				const cellId = uuidv4();
@@ -301,7 +353,7 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 						initialCell(
 							cellId,
 							rowId,
-							j,
+							headers[j].id,
 							CELL_TYPE.ERROR,
 							td,
 							headers[j].type
@@ -312,20 +364,27 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 
 				if (cellType === CELL_TYPE.TAG) {
 					cells.push(
-						initialCell(cellId, rowId, j, CELL_TYPE.TAG, "")
+						initialCell(
+							cellId,
+							rowId,
+							headers[j].id,
+							CELL_TYPE.TAG,
+							""
+						)
 					);
 
 					let content = stripPound(td);
 
 					//Check if tag already exists, otherwise create a new
-					const tag = tags.find((tag) => tag.content === content);
-					if (tag !== undefined) {
-						const index = tags.indexOf(tag);
+					const index = tags.findIndex(
+						(tag) => tag.content === content
+					);
+					if (index !== -1) {
 						tags[index].selected.push(cellId);
 					} else {
 						tags.push(
 							initialTag(
-								headers[j].index,
+								headers[j].id,
 								cellId,
 								content,
 								randomColor()
@@ -334,11 +393,23 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 					}
 				} else if (cellType === CELL_TYPE.NUMBER) {
 					cells.push(
-						initialCell(cellId, rowId, j, CELL_TYPE.TEXT, td)
+						initialCell(
+							cellId,
+							rowId,
+							headers[j].id,
+							CELL_TYPE.TEXT,
+							td
+						)
 					);
 				} else if (cellType === CELL_TYPE.TEXT) {
 					cells.push(
-						initialCell(cellId, rowId, j, CELL_TYPE.TEXT, td)
+						initialCell(
+							cellId,
+							rowId,
+							headers[j].id,
+							CELL_TYPE.TEXT,
+							td
+						)
 					);
 				}
 			});

@@ -19,11 +19,12 @@ import { saveAppData } from "./services/dataUtils";
 import { useApp } from "./services/hooks";
 import { AppData } from "./services/state";
 
-import { CELL_TYPE } from "./constants";
+import { CELL_TYPE, DEBUG } from "./constants";
 
 import "./app.css";
 import NltPlugin from "main";
 import { SORT } from "./components/HeaderMenu/constants";
+import { getCurrentTimeWithOffset } from "./services/utils";
 
 interface Props {
 	plugin: NltPlugin;
@@ -52,9 +53,11 @@ export default function App({
 		for (let i = 0; i < appData.headers.length; i++) {
 			const header = appData.headers[i];
 			if (header.sortName !== SORT.DEFAULT.name)
-				sortRows(header.index, header.type, header.sortName, false);
+				sortRows(header.id, header.type, header.sortName, false);
 		}
 	}, []);
+
+	console.log("RERENDERING APP");
 
 	useEffect(() => {
 		async function handleUpdate() {
@@ -82,25 +85,17 @@ export default function App({
 
 	function handleAddColumn() {
 		setAppData((prevState) => {
+			const header = initialHeader(`Column ${prevState.headers.length}`);
 			const cells = [...prevState.cells];
 			prevState.rows.forEach((row) => {
 				cells.push(
-					initialCell(
-						uuidv4(),
-						row.id,
-						prevState.headers.length,
-						CELL_TYPE.TEXT,
-						""
-					)
+					initialCell(uuidv4(), row.id, header.id, CELL_TYPE.TEXT, "")
 				);
 			});
 			return {
 				...prevState,
 				updateTime: Date.now(),
-				headers: [
-					...prevState.headers,
-					initialHeader("Column", prevState.headers.length),
-				],
+				headers: [...prevState.headers, header],
 				cells,
 			};
 		});
@@ -113,8 +108,8 @@ export default function App({
 			const cells = prevState.headers.map((header, i) => {
 				const cellId = uuidv4();
 				if (header.type === CELL_TYPE.TAG)
-					tags.push(initialTag(header.index, cellId, "", ""));
-				return initialCell(cellId, rowId, i, header.type, "");
+					tags.push(initialTag(header.id, cellId, "", ""));
+				return initialCell(cellId, rowId, header.id, header.type, "");
 			});
 			return {
 				...prevState,
@@ -145,7 +140,6 @@ export default function App({
 
 	function handleHeaderSortSelect(
 		id: string,
-		headerIndex: number,
 		type: string,
 		sortName: string
 	) {
@@ -159,7 +153,7 @@ export default function App({
 				}),
 			};
 		});
-		sortRows(headerIndex, type, sortName);
+		sortRows(id, type, sortName);
 	}
 
 	function handleUpdateContent(id: string, content: string) {
@@ -181,8 +175,8 @@ export default function App({
 	}
 
 	function handleAddTag(
-		headerIndex: number,
 		cellId: string,
+		headerId: string,
 		content: string,
 		color: string
 	) {
@@ -192,7 +186,7 @@ export default function App({
 				updateTime: Date.now(),
 				tags: [
 					...removeTagReferences(prevState.tags, cellId),
-					initialTag(headerIndex, cellId, content, color),
+					initialTag(headerId, cellId, content, color),
 				],
 			};
 		});
@@ -254,7 +248,7 @@ export default function App({
 	}
 
 	function sortRows(
-		headerIndex: number,
+		headerId: string,
 		headerType: string,
 		sortName: string,
 		shouldUpdate = true
@@ -265,12 +259,10 @@ export default function App({
 			const arr = [...prevState.rows];
 			arr.sort((a, b) => {
 				const cellA = appData.cells.find(
-					(cell) =>
-						cell.headerIndex === headerIndex && cell.rowId === a.id
+					(cell) => cell.headerId === headerId && cell.rowId === a.id
 				);
 				const cellB = appData.cells.find(
-					(cell) =>
-						cell.headerIndex === headerIndex && cell.rowId === b.id
+					(cell) => cell.headerId === headerId && cell.rowId === b.id
 				);
 				if (sortName === SORT.ASC.name) {
 					if (headerType === CELL_TYPE.TAG) {
@@ -309,33 +301,13 @@ export default function App({
 		});
 	}
 
-	function handleDeleteHeaderClick(id: string, index: number) {
+	function handleDeleteHeaderClick(id: string) {
 		setAppData((prevState) => {
 			return {
 				...prevState,
 				updateTime: Date.now(),
-				headers: prevState.headers
-					.filter((header) => header.id !== id)
-					.map((header) => {
-						if (header.index > index) {
-							return {
-								...header,
-								index: header.index - 1,
-							};
-						}
-						return header;
-					}),
-				cells: prevState.cells
-					.filter((cell) => cell.headerIndex !== index)
-					.map((cell) => {
-						if (cell.headerIndex > index) {
-							return {
-								...cell,
-								headerIndex: cell.headerIndex - 1,
-							};
-						}
-						return cell;
-					}),
+				headers: prevState.headers.filter((header) => header.id !== id),
+				cells: prevState.cells.filter((cell) => cell.headerId !== id),
 			};
 		});
 	}
@@ -351,22 +323,94 @@ export default function App({
 		});
 	}
 
+	function handleMoveRowClick(id: string, moveBelow: boolean) {
+		setAppData((prevState: AppData) => {
+			const index = prevState.rows.findIndex((row) => row.id === id);
+			//We assume that there is checking to make sure you don't move the first row up or last row down
+			const moveIndex = moveBelow ? index + 1 : index - 1;
+			const rows = [...prevState.rows];
+
+			//Swap values
+			const oldTime = rows[moveIndex].creationTime;
+			const newTime = rows[index].creationTime;
+			const old = rows[moveIndex];
+			rows[moveIndex] = rows[index];
+			rows[moveIndex].creationTime = oldTime;
+			rows[index] = old;
+			rows[index].creationTime = newTime;
+
+			return {
+				...prevState,
+				rows,
+				updateTime: Date.now(),
+			};
+		});
+	}
+
+	function handleMoveColumnClick(id: string, moveRight: boolean) {
+		setAppData((prevState: AppData) => {
+			const index = prevState.headers.findIndex(
+				(header) => header.id === id
+			);
+			const moveIndex = moveRight ? index + 1 : index - 1;
+			const headers = [...prevState.headers];
+
+			//Swap values
+			const old = headers[moveIndex];
+			headers[moveIndex] = headers[index];
+			headers[index] = old;
+			return {
+				...prevState,
+				headers,
+				updateTime: Date.now(),
+			};
+		});
+	}
+
+	function handleInsertColumnClick(id: string, insertRight: boolean) {
+		setAppData((prevState: AppData) => {
+			const header = prevState.headers.find((header) => header.id === id);
+			const index = prevState.headers.indexOf(header);
+			const insertIndex = insertRight ? index + 1 : index;
+			const headerToInsert = initialHeader(`Column ${insertIndex + 1}`);
+
+			const cells = prevState.rows.map((row) =>
+				initialCell(
+					uuidv4(),
+					row.id,
+					headerToInsert.id,
+					headerToInsert.type,
+					""
+				)
+			);
+
+			const headers = [...prevState.headers];
+			headers.splice(insertIndex, 0, headerToInsert);
+
+			return {
+				...prevState,
+				updateTime: Date.now(),
+				headers,
+				cells: [...prevState.cells, ...cells],
+			};
+		});
+	}
+
 	function handleInsertRowClick(id: string, insertBelow = false) {
 		const rowId = uuidv4();
 		setAppData((prevState: AppData) => {
 			const tags: Tag[] = [];
-			const row = prevState.rows.find((row) => row.id === id);
 
-			const index = prevState.rows.indexOf(row);
-			const cells = prevState.headers.map((header, i) => {
+			const cells = prevState.headers.map((header) => {
 				const cellId = uuidv4();
 				if (header.type === CELL_TYPE.TAG)
-					tags.push(initialTag(header.index, cellId, "", ""));
-				return initialCell(cellId, rowId, i, header.type, "");
+					tags.push(initialTag(header.id, cellId, "", ""));
+				return initialCell(cellId, rowId, header.id, header.type, "");
 			});
 
 			const rows = [...prevState.rows];
 
+			const index = prevState.rows.findIndex((row) => row.id === id);
 			const insertIndex = insertBelow ? index + 1 : index;
 			rows.splice(insertIndex, 0, initialRow(rowId, Date.now()));
 			return {
@@ -379,11 +423,7 @@ export default function App({
 		});
 	}
 
-	function handleHeaderTypeSelect(
-		id: string,
-		index: number,
-		cellType: string
-	) {
+	function handleHeaderTypeSelect(id: string, cellType: string) {
 		//If same header type return
 		const header = appData.headers.find((header) => header.id === id);
 		if (header.type === cellType) return;
@@ -399,7 +439,7 @@ export default function App({
 				}),
 				//Update cell that matches header id to the new cell type
 				cells: prevState.cells.map((cell) => {
-					if (cell.headerIndex === index) {
+					if (cell.headerId === id) {
 						return {
 							...cell,
 							type: cellType,
@@ -415,19 +455,23 @@ export default function App({
 	return (
 		<div className="NLT__app">
 			<Table
-				headers={appData.headers.map((header) => {
-					const { id, content, index, type, sortName } = header;
+				headers={appData.headers.map((header, j) => {
+					const { id, content, type, sortName } = header;
 					return {
 						...header,
 						component: (
 							<EditableTh
 								key={id}
 								id={id}
-								index={index}
+								index={j}
 								content={content}
 								type={type}
 								sortName={sortName}
+								inFirstHeader={j === 0}
+								inLastHeader={j === appData.headers.length - 1}
 								onSortSelect={handleHeaderSortSelect}
+								onInsertColumnClick={handleInsertColumnClick}
+								onMoveColumnClick={handleMoveColumnClick}
 								onDeleteClick={handleDeleteHeaderClick}
 								onSaveClick={handleHeaderSave}
 								onTypeSelect={handleHeaderTypeSelect}
@@ -440,25 +484,29 @@ export default function App({
 						...row,
 						component: (
 							<>
-								{appData.headers.map((header, index) => {
-									const { id, type, content, expectedType } =
-										appData.cells.find(
-											(cell) =>
-												cell.rowId === row.id &&
-												cell.headerIndex === index
-										);
+								{appData.headers.map((header, j) => {
+									const {
+										id,
+										type,
+										headerId,
+										content,
+										expectedType,
+									} = appData.cells.find(
+										(cell) =>
+											cell.rowId === row.id &&
+											cell.headerId === header.id
+									);
 									return (
 										<EditableTd
 											key={id}
-											headerIndex={header.index}
+											headerId={headerId}
 											cellId={id}
 											type={type}
 											content={content}
 											expectedType={expectedType}
 											tags={appData.tags.filter(
 												(tag) =>
-													tag.headerIndex ===
-													header.index
+													tag.headerId === header.id
 											)}
 											onTagClick={handleTagClick}
 											onRemoveTagClick={
@@ -475,6 +523,11 @@ export default function App({
 								<td className="NLT__td">
 									<DragMenu
 										rowId={row.id}
+										isFirstRow={i === 0}
+										isLastRow={
+											i === appData.rows.length - 1
+										}
+										onMoveRowClick={handleMoveRowClick}
 										onDeleteClick={handleDeleteRowClick}
 										onInsertRowClick={handleInsertRowClick}
 									/>

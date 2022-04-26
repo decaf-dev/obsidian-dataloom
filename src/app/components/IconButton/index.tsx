@@ -1,9 +1,11 @@
 import React, { forwardRef } from "react";
 
+import { findIcon } from "../../services/utils";
+
 interface Props {
 	id?: string;
 	selected?: boolean;
-	icon: React.ReactNode;
+	icon: string;
 	onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
@@ -19,7 +21,7 @@ const IconButton = forwardRef<HTMLInputElement, Props>(
 				ref={ref}
 				onClick={onClick}
 			>
-				{icon}
+				{icon !== "" && findIcon(icon, "NLT__icon--md")}
 			</button>
 		);
 	}
