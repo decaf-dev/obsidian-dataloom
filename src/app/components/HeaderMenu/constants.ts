@@ -1,10 +1,4 @@
-import React from "react";
-
-import { CELL_TYPE } from "../../constants";
-import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowUp from "@mui/icons-material/KeyboardArrowUp";
-import Sort from "@mui/icons-material/Sort";
-
+import { CELL_TYPE, ICON } from "../../constants";
 interface MenuItem {
 	name: string;
 	content: string;
@@ -25,11 +19,23 @@ export const MENU_ITEMS: MenuItem[] = [
 interface SortItem {
 	name: string;
 	content: string;
-	icon: React.ReactNode;
+	icon: string;
 }
 
 export const SORT: { [name: string]: SortItem } = {
-	DEFAULT: { name: "default", content: "Default", icon: <Sort /> },
-	ASC: { name: "asc", content: "Ascending", icon: <KeyboardArrowUp /> },
-	DESC: { name: "desc", content: "Descending", icon: <KeyboardArrowDown /> },
+	DEFAULT: {
+		name: "default",
+		content: "Default",
+		icon: ICON.SORT,
+	},
+	ASC: {
+		name: "asc",
+		content: "Ascending",
+		icon: ICON.KEYBOARD_ARROW_UP,
+	},
+	DESC: {
+		name: "desc",
+		content: "Descending",
+		icon: ICON.KEYBOARD_ARROW_DOWN,
+	},
 };

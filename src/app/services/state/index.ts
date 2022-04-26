@@ -27,7 +27,6 @@ export const DEFAULT_SETTINGS: NltSettings = {
 };
 export interface Header {
 	id: string;
-	index: number;
 	content: string;
 	sortName: string;
 	width: string;
@@ -48,7 +47,7 @@ export interface TableRow extends Row {
 export interface Cell {
 	id: string;
 	rowId: string;
-	headerIndex: number;
+	headerId: string;
 	content: string;
 	type: string;
 	expectedType: string | null;
@@ -56,16 +55,15 @@ export interface Cell {
 
 export interface Tag {
 	id: string;
-	headerIndex: number;
+	headerId: string;
 	content: string;
 	color: string;
 	selected: string[];
 }
 
-export const initialHeader = (content: string, index: number): Header => {
+export const initialHeader = (content: string): Header => {
 	return {
 		id: uuidv4(),
-		index,
 		content,
 		sortName: SORT.DEFAULT.name,
 		width: "15rem",
@@ -83,7 +81,7 @@ export const initialRow = (id: string, creationTime: number): Row => {
 export const initialCell = (
 	id: string,
 	rowId: string,
-	headerIndex: number,
+	headerId: string,
 	type: string,
 	content: string,
 	expectedType: string | null = null
@@ -91,7 +89,7 @@ export const initialCell = (
 	return {
 		id,
 		rowId,
-		headerIndex,
+		headerId,
 		type,
 		content,
 		expectedType,
@@ -99,14 +97,14 @@ export const initialCell = (
 };
 
 export const initialTag = (
-	headerIndex: number,
+	headerId: string,
 	cellId: string,
 	content: string,
 	color: string
 ): Tag => {
 	return {
 		id: uuidv4(),
-		headerIndex,
+		headerId,
 		content,
 		color,
 		selected: [cellId],

@@ -25,11 +25,13 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 -   2.0.0
     -   Table id row support & upgrading caching system
 -   2.1.0
-    -   Create new row with keyboard
-    -   Insert new column
-    -   New tag colors
+    -   Insert new column to the left or right of an existing column
+    -   Move column to the left or right
+    -   Move row up or down
+    -   Right click to copy cell contents
 -   2.2.0
     -   Navigate cells with arrow key and tab key
+    -   Create new row with keyboard
 -   2.3.0
     -   TBA
 
@@ -91,6 +93,10 @@ If you want to render a link in text, just add square brackets [[My Link]].
 If you want to display a url, type the url making sure it begins with `http://` or `https://`. NLT will automatically render it in the table.
 
 ![Screenshot](.readme/url.png)
+
+### Copy Cell Content
+
+Right click a cell and its content will be added to your clipboard
 
 ### Undoing a Type Change
 

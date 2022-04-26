@@ -7,7 +7,7 @@ import ErrorCell from "../ErrorCell";
 import TagMenuContent from "../TagMenuContent";
 
 import { useForceUpdate } from "../../services/hooks";
-import { randomColor } from "../../services/utils";
+import { randomColor, addPound } from "../../services/utils";
 import { Tag } from "../../services/state";
 
 import { CELL_TYPE } from "../../constants";
@@ -15,8 +15,8 @@ import { CELL_TYPE } from "../../constants";
 import "./styles.css";
 
 interface Props {
-	headerIndex: number;
 	cellId: string;
+	headerId: string;
 	width: string;
 	content: string;
 	tags: Tag[];
@@ -26,16 +26,16 @@ interface Props {
 	onTagClick: (cellId: string, inputText: string) => void;
 	onUpdateContent: (cellId: string, inputText: string) => void;
 	onAddTag: (
-		headerIndex: number,
 		cellId: string,
+		headerId: string,
 		inputText: string,
 		color: string
 	) => void;
 }
 
 export default function EditableTd({
-	headerIndex,
 	cellId,
+	headerId,
 	width,
 	content,
 	tags,
@@ -49,7 +49,6 @@ export default function EditableTd({
 	const [inputText, setInputText] = useState("");
 
 	const tdRef = useRef<HTMLTableCellElement>();
-
 	const forceUpdate = useForceUpdate();
 
 	const initialCellMenuState = {
@@ -80,6 +79,19 @@ export default function EditableTd({
 		[type, inputText.length]
 	);
 
+	async function handleCellContextClick(e: React.MouseEvent<HTMLElement>) {
+		try {
+			let text = content;
+			if (type === CELL_TYPE.TAG) {
+				const tag = tags.find((tag) => tag.selected.includes(cellId));
+				text = addPound(tag.content);
+			}
+			navigator.clipboard.writeText(text);
+		} catch (err) {
+			console.log(err);
+		}
+	}
+
 	function handleCellClick(e: React.MouseEvent<HTMLElement>) {
 		const el = e.target as HTMLInputElement;
 
@@ -101,7 +113,7 @@ export default function EditableTd({
 	}
 
 	function handleAddTag(text: string) {
-		onAddTag(headerIndex, cellId, text, cellMenu.tagColor);
+		onAddTag(cellId, headerId, text, cellMenu.tagColor);
 		setInputText("");
 		setCellMenu(initialCellMenuState);
 	}
@@ -232,6 +244,7 @@ export default function EditableTd({
 			ref={tdRef}
 			style={{ maxWidth: width }}
 			onClick={handleCellClick}
+			onContextMenu={handleCellContextClick}
 		>
 			<Menu
 				isOpen={cellMenu.isOpen}
@@ -245,7 +258,10 @@ export default function EditableTd({
 				content={renderCellMenuContent()}
 				onOutsideClick={handleOutsideClick}
 			/>
-			{renderCell()}
+			<>
+				{renderCell()}
+				<textarea readOnly className="NLT__hidden-textarea" />
+			</>
 		</td>
 	);
 }

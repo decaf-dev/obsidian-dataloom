@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
+import IconText from "../IconText";
 
 import Menu from "../Menu";
 
 import { SORT, MENU_ITEMS } from "./constants";
+import { ICON } from "../../constants";
 
 import "./styles.css";
+import HeaderMenuItem from "./components/HeaderMenuItem";
 
 interface Props {
 	isOpen: boolean;
@@ -14,14 +17,13 @@ interface Props {
 	sortName: string;
 	content: string;
 	type: string;
-	onTypeSelect: (id: string, index: number, type: string) => void;
-	onSortSelect: (
-		id: string,
-		index: number,
-		type: string,
-		sortName: string
-	) => void;
-	onDeleteClick: (id: string, index: number) => void;
+	inFirstHeader: boolean;
+	inLastHeader: boolean;
+	onInsertColumnClick: (id: string, insertRight: boolean) => void;
+	onMoveColumnClick: (id: string, moveRight: boolean) => void;
+	onTypeSelect: (id: string, type: string) => void;
+	onSortSelect: (id: string, type: string, sortName: string) => void;
+	onDeleteClick: (id: string) => void;
 	onOutsideClick: (id: string, inputText: string) => void;
 	onClose: () => void;
 }
@@ -30,16 +32,20 @@ export default function HeaderMenu({
 	isOpen,
 	style,
 	id,
-	index,
 	content,
 	type,
 	sortName,
+	inFirstHeader,
+	inLastHeader,
 	onTypeSelect,
 	onSortSelect,
 	onDeleteClick,
 	onOutsideClick,
+	onInsertColumnClick,
+	onMoveColumnClick,
 	onClose,
 }: Props) {
+	//TODO refactor this code and make it more neat
 	const [inputText, setInputText] = useState("");
 
 	useEffect(() => {
@@ -48,54 +54,89 @@ export default function HeaderMenu({
 
 	function renderMenuItems() {
 		return MENU_ITEMS.map((item) => {
-			let className = "NLT__header-menu-item NLT__selectable";
-			if (item.type === type) className += " NLT__selected";
 			return (
-				<p
+				<HeaderMenuItem
 					key={item.name}
-					className={className}
-					onClick={(e) => {
-						e.stopPropagation();
-						handleTypeSelect(id, index, item.type);
-					}}
-				>
-					{item.content}
-				</p>
+					icon=""
+					iconText={item.content}
+					onClick={() => handleTypeSelect(id, item.type)}
+					selected={item.type === type}
+				/>
 			);
 		});
 	}
 
 	function renderSortItems() {
-		return Object.values(SORT).map((item) => {
-			let className = "NLT__header-menu-item NLT__selectable";
-			if (sortName === item.name) className += " NLT__selected";
-			return (
-				<p
-					key={item.name}
-					className={className}
-					onClick={(e) => {
-						e.stopPropagation();
-						handleSortSelect(id, index, type, item.name);
-					}}
-				>
-					{item.icon} Sort {item.content}
-				</p>
-			);
-		});
+		return (
+			<ul className="NLT__header-menu-ul">
+				{Object.values(SORT).map((item) => (
+					<HeaderMenuItem
+						key={item.name}
+						icon={item.icon}
+						iconText={`Sort ${item.content}`}
+						onClick={() => handleSortSelect(id, type, item.name)}
+						selected={sortName === item.name}
+					/>
+				))}
+			</ul>
+		);
 	}
 
-	function handleSortSelect(
-		id: string,
-		index: number,
-		type: string,
-		sortName: string
-	) {
-		onSortSelect(id, index, type, sortName);
+	function renderInsertItems() {
+		return (
+			<ul className="NLT__header-menu-ul">
+				<HeaderMenuItem
+					icon={ICON.KEYBOARD_ARROW_LEFT}
+					iconText="Insert Left"
+					onClick={() => handleInsertColumnClick(id, false)}
+				/>
+				<HeaderMenuItem
+					icon={ICON.KEYBOARD_ARROW_RIGHT}
+					iconText="Insert Right"
+					onClick={() => handleInsertColumnClick(id, true)}
+				/>
+			</ul>
+		);
+	}
+
+	function renderMoveItems() {
+		return (
+			<ul className="NLT__header-menu-ul">
+				{!inFirstHeader && (
+					<HeaderMenuItem
+						icon={ICON.KEYBOARD_DOUBLE_ARROW_LEFT}
+						iconText="Move Left"
+						onClick={() => handleMoveColumnClick(id, false)}
+					/>
+				)}
+				{!inLastHeader && (
+					<HeaderMenuItem
+						icon={ICON.KEYBOARD_DOUBLE_ARROW_RIGHT}
+						iconText="Move Right"
+						onClick={() => handleMoveColumnClick(id, true)}
+					/>
+				)}
+			</ul>
+		);
+	}
+
+	function handleMoveColumnClick(id: string, moveRight: boolean) {
+		onMoveColumnClick(id, moveRight);
 		onClose();
 	}
 
-	function handleTypeSelect(id: string, index: number, type: string) {
-		onTypeSelect(id, index, type);
+	function handleSortSelect(id: string, type: string, sortName: string) {
+		onSortSelect(id, type, sortName);
+		onClose();
+	}
+
+	function handleInsertColumnClick(id: string, insertRight: boolean) {
+		onClose();
+		onInsertColumnClick(id, insertRight);
+	}
+
+	function handleTypeSelect(id: string, type: string) {
+		onTypeSelect(id, type);
 		onClose();
 	}
 
@@ -108,8 +149,8 @@ export default function HeaderMenu({
 		onClose();
 	}
 
-	function handleDeleteClick(id: string, index: number) {
-		onDeleteClick(id, index);
+	function handleDeleteClick(id: string) {
+		onDeleteClick(id);
 		onClose();
 	}
 
@@ -127,11 +168,15 @@ export default function HeaderMenu({
 					/>
 					<div className="NLT__header-menu-header">Sort</div>
 					{renderSortItems()}
+					<div className="NLT__header-menu-header">Move</div>
+					{renderMoveItems()}
+					<div className="NLT__header-menu-header">Insert</div>
+					{renderInsertItems()}
 					<div className="NLT__header-menu-header">Property Type</div>
 					{renderMenuItems()}
 					<button
 						className="NLT__button"
-						onClick={() => handleDeleteClick(id, index)}
+						onClick={() => handleDeleteClick(id)}
 					>
 						Delete
 					</button>

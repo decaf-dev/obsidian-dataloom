@@ -41,6 +41,21 @@
 }
 
 /*
+* Input
+*/
+.NLT__hidden-textarea {
+	position: absolute;
+	cursor: default;
+	z-index: var(--layer-cover);
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	border: 0;
+	opacity: 0;
+}
+
+/*
 * Selectable and selected
 */
 .NLT__selectable {
@@ -59,11 +74,11 @@
 * Margin
 */
 .NLT__margin-right {
-	margin-right: 5px;
+	margin-right: 4px;
 }
 
 .NLT__margin-left {
-	margin-left: 5px;
+	margin-left: 4px;
 }
 
 /*
