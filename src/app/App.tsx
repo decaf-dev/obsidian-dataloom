@@ -323,6 +323,25 @@ export default function App({
 		});
 	}
 
+	function handleMoveColumnClick(id: string, moveRight: boolean) {
+		setAppData((prevState: AppData) => {
+			const index = prevState.headers.findIndex(
+				(header) => header.id === id
+			);
+			const moveIndex = moveRight ? index + 1 : index - 1;
+			const headers = [...prevState.headers];
+
+			//Swap values
+			const old = headers[moveIndex];
+			headers[moveIndex] = headers[index];
+			headers[index] = old;
+			return {
+				...prevState,
+				headers,
+			};
+		});
+	}
+
 	function handleInsertColumnClick(id: string, insertRight: boolean) {
 		setAppData((prevState: AppData) => {
 			const header = prevState.headers.find((header) => header.id === id);
@@ -356,9 +375,7 @@ export default function App({
 		const rowId = uuidv4();
 		setAppData((prevState: AppData) => {
 			const tags: Tag[] = [];
-			const row = prevState.rows.find((row) => row.id === id);
 
-			const index = prevState.rows.indexOf(row);
 			const cells = prevState.headers.map((header) => {
 				const cellId = uuidv4();
 				if (header.type === CELL_TYPE.TAG)
@@ -368,6 +385,7 @@ export default function App({
 
 			const rows = [...prevState.rows];
 
+			const index = prevState.rows.findIndex((row) => row.id === id);
 			const insertIndex = insertBelow ? index + 1 : index;
 			rows.splice(insertIndex, 0, initialRow(rowId, Date.now()));
 			return {
@@ -424,8 +442,11 @@ export default function App({
 								content={content}
 								type={type}
 								sortName={sortName}
+								inFirstHeader={j === 0}
+								inLastHeader={j === appData.headers.length - 1}
 								onSortSelect={handleHeaderSortSelect}
 								onInsertColumnClick={handleInsertColumnClick}
+								onMoveColumnClick={handleMoveColumnClick}
 								onDeleteClick={handleDeleteHeaderClick}
 								onSaveClick={handleHeaderSave}
 								onTypeSelect={handleHeaderTypeSelect}

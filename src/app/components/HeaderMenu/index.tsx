@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 
-import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
-import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 
 import Menu from "../Menu";
 
@@ -17,7 +19,10 @@ interface Props {
 	sortName: string;
 	content: string;
 	type: string;
+	inFirstHeader: boolean;
+	inLastHeader: boolean;
 	onInsertColumnClick: (id: string, insertRight: boolean) => void;
+	onMoveColumnClick: (id: string, moveRight: boolean) => void;
 	onTypeSelect: (id: string, type: string) => void;
 	onSortSelect: (id: string, type: string, sortName: string) => void;
 	onDeleteClick: (id: string) => void;
@@ -29,17 +34,20 @@ export default function HeaderMenu({
 	isOpen,
 	style,
 	id,
-	index,
 	content,
 	type,
 	sortName,
+	inFirstHeader,
+	inLastHeader,
 	onTypeSelect,
 	onSortSelect,
 	onDeleteClick,
 	onOutsideClick,
 	onInsertColumnClick,
+	onMoveColumnClick,
 	onClose,
 }: Props) {
+	//TODO refactor this code and make it more neat
 	const [inputText, setInputText] = useState("");
 
 	useEffect(() => {
@@ -94,7 +102,7 @@ export default function HeaderMenu({
 						handleInsertColumnClick(id, false);
 					}}
 				>
-					<ArrowLeftIcon /> Insert Left
+					<KeyboardArrowLeftIcon /> Insert Left
 				</div>
 				<div
 					className="NLT__header-menu-item NLT__selectable"
@@ -103,10 +111,15 @@ export default function HeaderMenu({
 						handleInsertColumnClick(id, true);
 					}}
 				>
-					<ArrowRightIcon /> Insert Right
+					<KeyboardArrowRightIcon /> Insert Right
 				</div>
 			</>
 		);
+	}
+
+	function handleMoveColumnClick(id: string, moveRight: boolean) {
+		onMoveColumnClick(id, moveRight);
+		onClose();
 	}
 
 	function handleSortSelect(id: string, type: string, sortName: string) {
@@ -152,6 +165,28 @@ export default function HeaderMenu({
 					/>
 					<div className="NLT__header-menu-header">Sort</div>
 					{renderSortItems()}
+					{!inFirstHeader && (
+						<div
+							className="NLT__header-menu-item NLT__selectable"
+							onClick={(e) => {
+								e.stopPropagation();
+								handleMoveColumnClick(id, false);
+							}}
+						>
+							<KeyboardDoubleArrowLeftIcon /> Move Left
+						</div>
+					)}
+					{!inLastHeader && (
+						<div
+							className="NLT__header-menu-item NLT__selectable"
+							onClick={(e) => {
+								e.stopPropagation();
+								handleMoveColumnClick(id, true);
+							}}
+						>
+							<KeyboardDoubleArrowRightIcon /> Move Right
+						</div>
+					)}
 					<div className="NLT__header-menu-header">Insert</div>
 					{renderInsertItems()}
 					<div className="NLT__header-menu-header">Property Type</div>

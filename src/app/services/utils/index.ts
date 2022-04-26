@@ -212,8 +212,9 @@ export const calcColumnCharLengths = (
 
 	//Check cells
 	cells.forEach((cell) => {
-		const header = headers.find((header) => header.id === cell.headerId);
-		const index = headers.indexOf(header);
+		const index = headers.findIndex(
+			(header) => header.id === cell.headerId
+		);
 		if (cell.type === CELL_TYPE.TAG || cell.type === CELL_TYPE.MULTI_TAG) {
 			const arr = tags.filter((tag) => tag.selected.includes(cell.id));
 
@@ -259,11 +260,8 @@ export const mergeAppData = (
 
 	//Grab tag settings
 	oldAppData.tags.forEach((tag, i) => {
-		const found = merged.tags.find((t) => t.content === tag.content);
-		if (found) {
-			const index = merged.tags.indexOf(found);
-			merged.tags[index].color = tag.color;
-		}
+		const index = merged.tags.findIndex((t) => t.content === tag.content);
+		if (index !== -1) merged.tags[index].color = tag.color;
 	});
 	return merged;
 };
@@ -333,9 +331,10 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 					let content = stripPound(td);
 
 					//Check if tag already exists, otherwise create a new
-					const tag = tags.find((tag) => tag.content === content);
-					if (tag !== undefined) {
-						const index = tags.indexOf(tag);
+					const index = tags.findIndex(
+						(tag) => tag.content === content
+					);
+					if (index !== -1) {
 						tags[index].selected.push(cellId);
 					} else {
 						tags.push(
