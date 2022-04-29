@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -23,6 +23,7 @@ import { CELL_TYPE } from "./constants";
 import "./app.css";
 import NltPlugin from "main";
 import { SORT } from "./components/HeaderMenu/constants";
+import { addColumn, addRow } from "./services/appDataUtils";
 
 interface Props {
 	plugin: NltPlugin;
@@ -83,39 +84,13 @@ export default function App({
 
 	function handleAddColumn() {
 		setAppData((prevState) => {
-			const header = initialHeader(`Column ${prevState.headers.length}`);
-			const cells = [...prevState.cells];
-			prevState.rows.forEach((row) => {
-				cells.push(
-					initialCell(uuidv4(), row.id, header.id, CELL_TYPE.TEXT, "")
-				);
-			});
-			return {
-				...prevState,
-				updateTime: Date.now(),
-				headers: [...prevState.headers, header],
-				cells,
-			};
+			return addColumn(prevState);
 		});
 	}
 
 	function handleAddRow() {
-		const rowId = uuidv4();
 		setAppData((prevState: AppData) => {
-			const tags: Tag[] = [];
-			const cells = prevState.headers.map((header, i) => {
-				const cellId = uuidv4();
-				if (header.type === CELL_TYPE.TAG)
-					tags.push(initialTag(header.id, cellId, "", ""));
-				return initialCell(cellId, rowId, header.id, header.type, "");
-			});
-			return {
-				...prevState,
-				updateTime: Date.now(),
-				rows: [...prevState.rows, initialRow(rowId, Date.now())],
-				cells: [...prevState.cells, ...cells],
-				tags: [...prevState.tags, ...tags],
-			};
+			return addRow(prevState);
 		});
 	}
 
@@ -469,7 +444,11 @@ export default function App({
 	}
 
 	return (
-		<div className="NLT__app">
+		<div
+			className="NLT__app"
+			tabIndex={0}
+			onFocus={() => plugin.focusTable(tableId, sourcePath)}
+		>
 			<Table
 				headers={appData.headers.map((header, j) => {
 					const { id, content, width, type, sortName } = header;

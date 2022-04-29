@@ -3,8 +3,11 @@ import { Plugin, Editor, MarkdownView } from "obsidian";
 import { NLTTable } from "src/NLTTable";
 import { NltSettings, DEFAULT_SETTINGS } from "src/app/services/state";
 import { createEmptyTable, randomTableId } from "src/app/services/utils";
+import { addColumn, addRow } from "src/app/services/appDataUtils";
+import { saveAppData } from "src/app/services/dataUtils";
 export default class NltPlugin extends Plugin {
 	settings: NltSettings;
+	focused: { tableId: string; sourcePath: string } | null = null;
 
 	/**
 	 * Called on plugin load.
@@ -53,11 +56,63 @@ export default class NltPlugin extends Plugin {
 		this.addCommand({
 			id: "nlt-add-table",
 			name: "Add table",
+			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "=" }],
 			editorCallback: (editor: Editor) => {
 				editor.replaceSelection(createEmptyTable(randomTableId()));
 			},
 		});
+
+		this.addCommand({
+			id: "nlt-add-column",
+			name: "Add column to focused table",
+			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "\\" }],
+			callback: async () => {
+				if (this.focused) {
+					const { tableId, sourcePath } = this.focused;
+					const oldData = this.settings.appData[sourcePath][tableId];
+					const newData = addColumn(oldData);
+					await saveAppData(
+						this,
+						this.settings,
+						app,
+						oldData,
+						newData,
+						sourcePath,
+						tableId
+					);
+				}
+			},
+		});
+
+		this.addCommand({
+			id: "nlt-add-row",
+			name: "Add row to focused table",
+			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Enter" }],
+			callback: async () => {
+				if (this.focused) {
+					const { tableId, sourcePath } = this.focused;
+					const oldData = this.settings.appData[sourcePath][tableId];
+					const newData = addRow(oldData);
+					await saveAppData(
+						this,
+						this.settings,
+						app,
+						oldData,
+						newData,
+						sourcePath,
+						tableId
+					);
+				}
+			},
+		});
 	}
+
+	focusTable = (tableId: string, sourcePath: string) => {
+		this.focused = {
+			tableId,
+			sourcePath,
+		};
+	};
 
 	async loadSettings() {
 		this.settings = Object.assign(
