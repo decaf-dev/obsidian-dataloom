@@ -8,6 +8,7 @@
 .NLT__app {
 	margin-bottom: 20px;
 	overflow: auto;
+	resize: vertical;
 }
 
 /*
