@@ -352,11 +352,11 @@ export default function App({
 						return {
 							...header,
 							width: `${newWidth}px`,
-							updateTime: Date.now(),
 						};
 					}
 					return header;
 				}),
+				updateTime: Date.now(),
 			};
 		});
 	}
