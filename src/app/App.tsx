@@ -61,6 +61,8 @@ export default function App({
 			if (app) {
 				if (appData.updateTime !== 0) {
 					try {
+						//TODO debounce?
+						//I don't think it's necessary. It seems like .cachedRead and .modify don't update
 						await saveAppData(
 							plugin,
 							settings,
