@@ -6,6 +6,14 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/preview.png)
 
+## What's New?
+
+**Version 2.2.0**
+
+-   Columns can now be resized
+-   Added commands for adding a new row or column to a focused table
+-   Added hotkeys for all commands
+
 ## Usage
 
 ### Making a Table via Command
@@ -95,10 +103,6 @@ A cell type error will occur if you enter data which doesn't match the column da
 ## Custom Themes
 
 NLT tables uses normal table semantic elements (`table`, `th`, `tr`, `td`, etc) to render. If you wish to edit the display of the table, just style those elements in your CSS.
-
-## Roadmap
-
-[[See issues]](https://github.com/trey-wallis/obsidian-notion-like-tables/issues)
 
 ## Bugs/Feature Requests
 
