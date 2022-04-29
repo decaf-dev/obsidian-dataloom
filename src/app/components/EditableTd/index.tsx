@@ -245,7 +245,6 @@ export default function EditableTd({
 			className={tdClassName}
 			tabIndex={0}
 			ref={tdRef}
-			style={{ maxWidth: width }}
 			onClick={handleCellClick}
 			onContextMenu={handleCellContextClick}
 		>
@@ -261,7 +260,9 @@ export default function EditableTd({
 				content={renderCellMenuContent()}
 				onOutsideClick={handleOutsideClick}
 			/>
-			<>{renderCell()}</>
+			<div className="NLT__td-content-container" style={{ width }}>
+				{renderCell()}
+			</div>
 		</td>
 	);
 }

@@ -6,7 +6,9 @@
 }
 
 .NLT__app {
+	margin-bottom: 20px;
 	overflow: auto;
+	resize: vertical;
 }
 
 /*
@@ -38,22 +40,6 @@
 	width: 1rem !important;
 	height: 1rem !important;
 }
-
-/*
-* Input
-*/
-.NLT__hidden-textarea {
-	position: absolute;
-	cursor: default;
-	z-index: var(--layer-cover);
-	width: 100%;
-	height: 100%;
-	top: 0;
-	left: 0;
-	border: 0;
-	opacity: 0;
-}
-
 /*
 * Selectable and selected
 */
@@ -78,14 +64,6 @@
 
 .NLT__margin-left {
 	margin-left: 4px;
-}
-
-/*
-* Table
-*/
-.NLT__hidden-column {
-	border: 0 !important;
-	width: 50px;
 }
 
 /*

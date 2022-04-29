@@ -286,8 +286,9 @@ export const mergeAppData = (
 ): AppData => {
 	//Grab sort settings
 	const merged = { ...newAppData };
-	oldAppData.headers.forEach((headers, i) => {
-		merged.headers[i].sortName = headers.sortName;
+	oldAppData.headers.forEach((header, i) => {
+		merged.headers[i].sortName = header.sortName;
+		merged.headers[i].width = header.width;
 	});
 
 	//Algorithm:

@@ -39,9 +39,14 @@ export const loadAppData = (
 	}
 
 	const tableId = findTableId(parsedTable);
-	if (!tableId) return { tableId: null, data: null };
-	if (!validTypeDefinitionRow(parsedTable))
+	if (!tableId) {
+		if (DEBUG) console.log("Invalid table id");
 		return { tableId: null, data: null };
+	}
+	if (!validTypeDefinitionRow(parsedTable)) {
+		if (DEBUG) console.log("Invalid type definition row");
+		return { tableId: null, data: null };
+	}
 
 	if (DEBUG) {
 		console.log("FOUND TABLE ID", tableId);

@@ -1,6 +1,27 @@
+.NLT__header-content-container {
+    display: flex;
+}
+
+.NLT__header-resize-container {
+    position: relative;
+}
+
+
 .NLT__header-content {
+    width: 100%;
+    padding-right: 10px;
     margin-right: 5px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    user-select: none;
+}
+
+.NLT__header-resize {
+    position: absolute;
+    cursor: col-resize;
+    width: 10px;
+    margin-left: 7px;
+    min-height: 25px;
+    height: 100%;
 }

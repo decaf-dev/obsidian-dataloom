@@ -8,3 +8,7 @@
 .NLT__td--number {
 	text-align: right;
 }
+
+.NLT__td-content-container {
+	user-select: none;
+}

@@ -1,7 +1,6 @@
 import { MarkdownRenderChild, App as ObsidianApp } from "obsidian";
 import React from "react";
 import ReactDOM from "react-dom";
-
 import { AppContext } from "./app/services/hooks";
 import App from "./app/App";
 import { loadAppData } from "./app/services/dataUtils";
@@ -15,6 +14,7 @@ export class NLTTable extends MarkdownRenderChild {
 	settings: NltSettings;
 	el: HTMLElement;
 	sourcePath: string;
+	parent: HTMLElement;
 
 	constructor(
 		containerEl: HTMLElement,
