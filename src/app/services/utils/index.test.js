@@ -313,6 +313,16 @@ describe("mergeAppData", () => {
 		expect(merged.tags[1].content).toEqual("tag3");
 	});
 
+	//TODO
+	// it("merges header sort name", () => {
+
+	// });
+
+	//TODO
+	// it("merges header width", () => {
+
+	// });
+
 	it("merges row creation times", () => {
 		const oldAppData = findAppData([
 			["Column 1", "Column 2"],
