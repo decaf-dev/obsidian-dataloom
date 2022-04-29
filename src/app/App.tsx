@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useEffect, useState } from "react";
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -16,15 +16,13 @@ import {
 	NltSettings,
 } from "./services/state";
 import { saveAppData } from "./services/dataUtils";
-import { useApp } from "./services/hooks";
 import { AppData } from "./services/state";
 
-import { CELL_TYPE, DEBUG } from "./constants";
+import { CELL_TYPE } from "./constants";
 
 import "./app.css";
 import NltPlugin from "main";
 import { SORT } from "./components/HeaderMenu/constants";
-import { getCurrentTimeWithOffset } from "./services/utils";
 
 interface Props {
 	plugin: NltPlugin;
@@ -56,8 +54,6 @@ export default function App({
 				sortRows(header.id, header.type, header.sortName, false);
 		}
 	}, []);
-
-	console.log("RERENDERING APP");
 
 	useEffect(() => {
 		async function handleUpdate() {
