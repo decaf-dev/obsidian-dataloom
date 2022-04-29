@@ -649,7 +649,7 @@ export const stripLinks = (input: string): string => {
 
 export const stripLink = (input: string) => {
 	const replaceWithSquareBrackets =
-		(input.match(/class=\"tag\"/) || []).length === 0;
+		(input.match(/class=\"internal-link\"/) || []).length !== 0;
 	return input
 		.replace(/&lt;a.*?&gt;/, replaceWithSquareBrackets ? "[[" : "")
 		.replace(/&lt;\/a&gt;/, replaceWithSquareBrackets ? "]]" : "");
@@ -698,5 +698,5 @@ export const toFileLink = (fileName: string): string => {
  */
 export const toTagLink = (tagName: string): string => {
 	if (tagName.startsWith("#")) throw "tagName cannot start with pound symbol";
-	return `<a href="#${tagName}" class="tag" target="_blank" rel="noopener">${tagName}</a>`;
+	return `<a href="#${tagName}" class="tag" target="_blank" rel="noopener">#${tagName}</a>`;
 };
