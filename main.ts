@@ -29,10 +29,10 @@ export default class NltPlugin extends Plugin {
 			}
 		});
 		this.registerCommands();
-		this.registerFileHandlers();
+		this.registerEvents();
 	}
 
-	registerFileHandlers() {
+	registerEvents() {
 		//Our persisted data uses a key of the file path and then stores an object mapping
 		//to a table id and an AppData object.
 		//If the file path changes, we want to update our cache so that the data is still accessible.
