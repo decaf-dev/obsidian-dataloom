@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
+import { Notice } from "obsidian";
 
 import Menu from "../Menu";
 import TextCell from "../TextCell";
@@ -86,7 +87,8 @@ export default function EditableTd({
 				const tag = tags.find((tag) => tag.selected.includes(cellId));
 				text = addPound(tag.content);
 			}
-			navigator.clipboard.writeText(text);
+			await navigator.clipboard.writeText(text);
+			new Notice("Cell text copied");
 		} catch (err) {
 			console.log(err);
 		}
