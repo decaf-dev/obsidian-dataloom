@@ -27,7 +27,11 @@ A Notion-Like Table uses normal Obsidian table markdown syntax with 2 additional
 
 #### Table ID Row
 
-The table id row is a normal markdown row with the first column containing a unique string. This string must be unique per table per file. If you use the same id in another file that's fine. The id is used to map a table to its data in the settings. If you change this id, your table will not be able to find its settings and will create new ones. If you omit this id, your table will not be rendered as an NLT table.
+The table id row is a normal markdown row with the first column containing a unique string. This string must be unique for each table in a file (if you use the same id in another file that's fine).
+
+The id is used to map a table to its data in the settings. If you change this id, your table will not be able to find its settings and will create new ones.
+
+If you omit this id, your table will not be rendered as an NLT table.
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/table-id-row.png)
 
@@ -39,7 +43,7 @@ The type definition row is a normal markdown row with each column defining the t
 
 ### Editing Cells
 
-To edit a cell, just click on it. Changes made to the cell will be propagated to the markdown.
+To edit a cell, just click on it. A textarea will appear which will allow you to edit the cell's content. Just click outside the box or press enter to save the text. Notion-Like tables will automatically handle updating your markdown ;)
 
 #### Tags
 
@@ -55,7 +59,7 @@ Click on a header name to view the header menu. In the header menu you can renam
 
 ### Links
 
-If you want to render a link in text, just add square brackets [[My Link]].
+If you want to render a link in text, just add square brackets `[[My Link]]`.
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/internal-link-edit.png)
 
@@ -67,15 +71,17 @@ If you want to display a url, type the url making sure it begins with `http://` 
 
 ### Copy Cell Content
 
-Right click a cell and its content will be added to your clipboard
+Right click a cell and its content will be added to your clipboard.
+
+NOTE: The table must be in focus for this to work. Click on the table to focus it.
 
 ### Undoing a Type Change
 
-If you accidently change your column to a different type, all data will be erased. It this happens, go to editing mode and use `ctrl+z` or `option-z` on your keyboard to undo the change.
+NLTs does not currently have built in history. If you need to undo changes, go to editing mode and undo markdown changes using `ctrl+z` (or `option-z`on mac). Then go back to reading mode.
 
 ### Errors
 
-#### Not Rendering
+#### NLT Tables Not Rendering
 
 If your table is missing a table id row or type definition row then it will not be rendered as a Notion-Like Table. Likewise, if you use an invalid column type other than the accepted types `text`, `number`, or `tag`. The table will not be rendered.
 
@@ -108,7 +114,7 @@ NLT tables uses normal table semantic elements (`table`, `th`, `tr`, `td`, etc) 
     -   Insert row above or below an existing row
 -   2.0.0
     -   Table id row support & upgrading caching system
--   2.1.0
+-   **2.1.0** - Current Version
     -   Insert new column to the left or right of an existing column
     -   Move column to the left or right
     -   Move row up or down
@@ -118,12 +124,6 @@ NLT tables uses normal table semantic elements (`table`, `th`, `tr`, `td`, etc) 
     -   Create new row with keyboard
 -   2.3.0
     -   TBA
-
-## Build With
-
--   [ReactJS](https://reactjs.org/)
--   [TypeScript](https://github.com/microsoft/TypeScript)
--   [Obsidian API](https://github.com/obsidianmd/obsidian-api)
 
 ## Development
 
@@ -163,9 +163,9 @@ Run development server
 
 If you find a bug or would like to suggest a feature, please open an issue [here](https://github.com/trey-wallis/obsidian-notion-like-tables/issues). I will try to respond as soon as possible.
 
-## Donate
+## Support Plugin Development
 
--   If you find this plugin helpful, please consider [buying me an herbal tea](https://www.buymeacoffee.com/treywallis) ;)
+-   I have a lot of features that I am excited to add to this plugin. If you would like to help support plugin development, you can [buy me an herbal tea](https://www.buymeacoffee.com/treywallis) ;)
 
 ## License
 
