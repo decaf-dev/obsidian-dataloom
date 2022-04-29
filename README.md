@@ -98,66 +98,7 @@ NLT tables uses normal table semantic elements (`table`, `th`, `tr`, `td`, etc) 
 
 ## Roadmap
 
--   0.1.0
-    -   MVP (basic NLT table)
--   0.2.0
-    -   Semantic table tags for theming (table, tr, td, etc)
--   0.3.0
-    -   Notion-Like sort menu (default, ascending, descending)
--   1.0.0
-    -   Settings cache system to persist app data
-    -   Sorting updates source markdown
--   1.1.0
-    -   Support for http/https links
--   1.2.0
-    -   UI updates
-    -   Insert row above or below an existing row
--   2.0.0
-    -   Table id row support & upgrading caching system
--   **2.1.0** - Current Version
-    -   Insert new column to the left or right of an existing column
-    -   Move column to the left or right
-    -   Move row up or down
-    -   Right click to copy cell contents
--   2.2.0
-    -   Navigate cells with arrow key and tab key
-    -   Create new row with keyboard
--   2.3.0
-    -   TBA
-
-## Development
-
-The app can be development in either Obsidian or in your browser using `react-scripts`.
-
-### Development in Obsidian
-
-Install packages
-
--   `npm install`
-
-Run development script
-
--   `npm run dev`
-
-Go to community plugins in Obsidian and disable safe mode.
-
-Create a plugins folder if one doesn't already exist
-
--   `mkdir /Desktop/my-vault/.obsidian/plugins`
-
-Make a symbolic link between where you cloned the repo and your vault plugins folder
-
--   `ln -s ./obsidian-collaboration/plugin /Desktop/my-vault/.obsidian/plugins/`
-
-### Development using React Scripts
-
-Install packages
-
--   `npm install`
-
-Run development server
-
--   `npm run start`
+[[See issues]](https://github.com/trey-wallis/obsidian-notion-like-tables/issues)
 
 ## Bugs/Feature Requests
 
