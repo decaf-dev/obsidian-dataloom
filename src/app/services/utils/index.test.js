@@ -313,6 +313,16 @@ describe("mergeAppData", () => {
 		expect(merged.tags[1].content).toEqual("tag3");
 	});
 
+	//TODO
+	// it("merges header sort name", () => {
+
+	// });
+
+	//TODO
+	// it("merges header width", () => {
+
+	// });
+
 	it("merges row creation times", () => {
 		const oldAppData = findAppData([
 			["Column 1", "Column 2"],
@@ -794,35 +804,41 @@ describe("parseURLs", () => {
 
 describe("stripLinks", () => {
 	it("strips file link", () => {
-		const output = stripLinks('&lt;a href="test"&gt;test&lt;/a&gt;');
+		const output = stripLinks(
+			'&lt;a href="test" class="internal-link"&gt;test&lt;/a&gt;'
+		);
 		expect(output).toEqual("[[test]]");
 	});
 
 	it("strips file link in text", () => {
 		const output = stripLinks(
-			'text &lt;a href="test"&gt;test&lt;/a&gt; text'
+			'text &lt;a href="test" class="internal-link"&gt;test&lt;/a&gt; text'
 		);
 		expect(output).toEqual("text [[test]] text");
 	});
 
 	it("strips file links in text", () => {
 		const output = stripLinks(
-			'text &lt;a href="test"&gt;test&lt;/a&gt; text &lt;a href="test"&gt;test2&lt;/a&gt;'
+			'text &lt;a href="test" class="internal-link"&gt;test&lt;/a&gt; text &lt;a href="test" class="internal-link"&gt;test2&lt;/a&gt;'
 		);
 		expect(output).toEqual("text [[test]] text [[test2]]");
 	});
 
 	it("strips tag links", () => {
 		const output = stripLinks(
-			'text &lt;a href="test" class="tag"&gt;#test&lt;/a&gt; text &lt;a href="test"&gt;test2&lt;/a&gt;'
+			'text &lt;a href="test" class="tag"&gt;#test&lt;/a&gt; text &lt;a href="test" class="internal-link"&gt;test2&lt;/a&gt;'
 		);
 		expect(output).toEqual("text #test text [[test2]]");
 	});
 });
 
+//TODO make a function for mock tag and file links
 describe("stripLink", () => {
 	it("strips link and replaces with square brackets", () => {
-		const output = stripLink("&lt;a&gt;test&lt;/a&gt;", true);
+		const output = stripLink(
+			'&lt;a class="internal-link"&gt;test&lt;/a&gt;',
+			true
+		);
 		expect(output).toEqual("[[test]]");
 	});
 
@@ -870,7 +886,7 @@ describe("toTagLink", () => {
 	it("creates an internal tag link", () => {
 		const link = toTagLink("test");
 		expect(link).toEqual(
-			'<a href="#test" class="tag" target="_blank" rel="noopener">test</a>'
+			'<a href="#test" class="tag" target="_blank" rel="noopener">#test</a>'
 		);
 	});
 
