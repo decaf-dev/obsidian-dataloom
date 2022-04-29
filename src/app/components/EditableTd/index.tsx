@@ -241,6 +241,7 @@ export default function EditableTd({
 	return (
 		<td
 			className={tdClassName}
+			tabIndex={0}
 			ref={tdRef}
 			style={{ maxWidth: width }}
 			onClick={handleCellClick}
@@ -258,10 +259,7 @@ export default function EditableTd({
 				content={renderCellMenuContent()}
 				onOutsideClick={handleOutsideClick}
 			/>
-			<>
-				{renderCell()}
-				<textarea readOnly className="NLT__hidden-textarea" />
-			</>
+			<>{renderCell()}</>
 		</td>
 	);
 }
