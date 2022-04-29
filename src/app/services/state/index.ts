@@ -66,7 +66,7 @@ export const initialHeader = (content: string): Header => {
 		id: uuidv4(),
 		content,
 		sortName: SORT.DEFAULT.name,
-		width: "15rem",
+		width: "100px",
 		type: CELL_TYPE.TEXT,
 	};
 };

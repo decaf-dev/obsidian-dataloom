@@ -343,6 +343,24 @@ export default function App({
 		});
 	}
 
+	function handleWidthChange(id: string, newWidth: number) {
+		setAppData((prevState: AppData) => {
+			return {
+				...prevState,
+				headers: prevState.headers.map((header) => {
+					if (header.id === id) {
+						return {
+							...header,
+							width: `${newWidth}px`,
+							updateTime: Date.now(),
+						};
+					}
+					return header;
+				}),
+			};
+		});
+	}
+
 	function handleMoveColumnClick(id: string, moveRight: boolean) {
 		setAppData((prevState: AppData) => {
 			const index = prevState.headers.findIndex(
@@ -452,13 +470,14 @@ export default function App({
 		<div className="NLT__app">
 			<Table
 				headers={appData.headers.map((header, j) => {
-					const { id, content, type, sortName } = header;
+					const { id, content, width, type, sortName } = header;
 					return {
 						...header,
 						component: (
 							<EditableTh
 								key={id}
 								id={id}
+								width={width}
 								index={j}
 								content={content}
 								type={type}
@@ -468,6 +487,7 @@ export default function App({
 								onSortSelect={handleHeaderSortSelect}
 								onInsertColumnClick={handleInsertColumnClick}
 								onMoveColumnClick={handleMoveColumnClick}
+								onWidthChange={handleWidthChange}
 								onDeleteClick={handleDeleteHeaderClick}
 								onSaveClick={handleHeaderSave}
 								onTypeSelect={handleHeaderTypeSelect}
@@ -496,6 +516,7 @@ export default function App({
 										<EditableTd
 											key={id}
 											headerId={headerId}
+											width={header.width}
 											cellId={id}
 											type={type}
 											content={content}
@@ -508,7 +529,6 @@ export default function App({
 											onRemoveTagClick={
 												handleRemoveTagClick
 											}
-											width={header.width}
 											onUpdateContent={
 												handleUpdateContent
 											}
