@@ -413,7 +413,7 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 							cellId,
 							rowId,
 							headers[j].id,
-							CELL_TYPE.TEXT,
+							CELL_TYPE.NUMBER,
 							td
 						)
 					);

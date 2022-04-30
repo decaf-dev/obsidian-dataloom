@@ -18,7 +18,7 @@ import {
 import { saveAppData } from "./services/dataUtils";
 import { AppData } from "./services/state";
 
-import { CELL_TYPE } from "./constants";
+import { CELL_TYPE, DEBUG } from "./constants";
 
 import "./app.css";
 import NltPlugin from "main";
@@ -55,6 +55,11 @@ export default function App({
 				sortRows(header.id, header.type, header.sortName, false);
 		}
 	}, []);
+
+	if (DEBUG) {
+		console.log("RERENDERING!");
+		console.log(appData);
+	}
 
 	useEffect(() => {
 		async function handleUpdate() {
