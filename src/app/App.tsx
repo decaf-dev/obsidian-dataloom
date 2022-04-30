@@ -446,7 +446,7 @@ export default function App({
 	return (
 		<div
 			className="NLT__app"
-			tabIndex={0}
+			tabIndex={-1}
 			onFocus={() => plugin.focusTable(tableId, sourcePath)}
 		>
 			<Table

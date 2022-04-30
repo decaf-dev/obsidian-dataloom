@@ -15,7 +15,11 @@
 * Button
 */
 .NLT__button {
-	padding: 4px !important;
+	padding: 4px;
+}
+
+.NLT__button:focus {
+	outline: 1px solid blue;
 }
 
 .NLT__button--sm {

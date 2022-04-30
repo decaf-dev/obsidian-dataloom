@@ -50,8 +50,16 @@ export default function EditableTh({
 	const thRef = useRef(null);
 	const forceUpdate = useForceUpdate();
 
+	function handleKeyUp(e: React.KeyboardEvent) {
+		if (e.key === "Enter") openMenu();
+	}
+
 	function handleHeaderClick() {
 		if (dragRef.current) return;
+		openMenu();
+	}
+
+	function openMenu() {
 		setHeaderMenu({
 			left: -10,
 			top: -5,
@@ -59,7 +67,7 @@ export default function EditableTh({
 		});
 	}
 
-	function resize(e: MouseEvent) {
+	function handleMouseMove(e: MouseEvent) {
 		const target = e.target;
 		if (target instanceof HTMLElement) {
 			dragRef.current = true;
@@ -71,7 +79,7 @@ export default function EditableTh({
 	}
 
 	function removeEventListeners() {
-		window.removeEventListener("mousemove", resize);
+		window.removeEventListener("mousemove", handleMouseMove);
 		window.removeEventListener("drag", removeEventListeners);
 		window.removeEventListener("mouseup", removeEventListeners);
 
@@ -86,8 +94,10 @@ export default function EditableTh({
 
 	return (
 		<th
+			tabIndex={0}
 			className="NLT__th NLT__selectable"
 			ref={thRef}
+			onKeyUp={handleKeyUp}
 			onClick={handleHeaderClick}
 		>
 			<HeaderMenu
@@ -117,7 +127,10 @@ export default function EditableTh({
 					<div
 						className="NLT__header-resize"
 						onMouseDown={() => {
-							window.addEventListener("mousemove", resize);
+							window.addEventListener(
+								"mousemove",
+								handleMouseMove
+							);
 							window.addEventListener(
 								"mouseup",
 								removeEventListeners

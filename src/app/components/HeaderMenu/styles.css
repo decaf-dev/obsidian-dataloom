@@ -3,6 +3,10 @@
 	cursor: default;
 }
 
+.NLT__header-menu-item:focus {
+	outline: 1px solid blue;
+}
+
 .NLT__header-menu-header-container {
 	display: flex;
 	margin-bottom: 5px;
