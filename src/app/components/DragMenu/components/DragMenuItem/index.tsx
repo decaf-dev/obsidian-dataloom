@@ -8,9 +8,17 @@ interface Props {
 	onClick: () => void;
 }
 export default function DragMenuItem({ icon, iconText, onClick }: Props) {
+	function handleKeyUp(e: React.KeyboardEvent<HTMLElement>) {
+		if (e.key === "Enter") onClick();
+	}
 	return (
-		<div tabIndex={0} className="NLT__drag-menu-item">
-			<IconText icon={icon} iconText={iconText} onClick={onClick} />
+		<div
+			tabIndex={0}
+			onKeyUp={handleKeyUp}
+			onClick={onClick}
+			className="NLT__drag-menu-item"
+		>
+			<IconText icon={icon} iconText={iconText} />
 		</div>
 	);
 }

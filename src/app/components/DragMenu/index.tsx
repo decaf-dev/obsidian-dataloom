@@ -37,16 +37,14 @@ export default function DragMenu({
 
 	const buttonRef = useRef<HTMLInputElement>();
 
-	function handleButtonClick() {
+	function handleButtonClick(e: React.MouseEvent) {
+		if (dragMenu.isOpen) return;
+		e.stopPropagation();
 		openMenu();
 	}
 
-	function handleKeyUp(e: React.KeyboardEvent) {
-		if (e.key === "Enter") openMenu();
-	}
-
 	function handleOutsideClick(e: MouseEvent | null) {
-		closeMenu();
+		if (e !== null) closeMenu();
 	}
 
 	function openMenu() {
@@ -90,7 +88,6 @@ export default function DragMenu({
 				id={buttonId}
 				icon={ICON.MORE_VERT}
 				ref={buttonRef}
-				onKeyUp={handleKeyUp}
 				onClick={handleButtonClick}
 			/>
 			<Menu
@@ -122,10 +119,10 @@ export default function DragMenu({
 										case DRAG_MENU_ITEM.MOVE_DOWN.name:
 											handleMoveRowClick(rowId, true);
 											break;
-										case DRAG_MENU_ITEM.INSERT_UP.name:
+										case DRAG_MENU_ITEM.INSERT_ABOVE.name:
 											handleInsertRowClick(rowId, false);
 											break;
-										case DRAG_MENU_ITEM.INSERT_DOWN.name:
+										case DRAG_MENU_ITEM.INSERT_BELOW.name:
 											handleInsertRowClick(rowId, true);
 											break;
 										case DRAG_MENU_ITEM.DELETE.name:

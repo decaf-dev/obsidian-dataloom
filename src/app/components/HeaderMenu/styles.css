@@ -1,6 +1,7 @@
 .NLT__header-menu {
 	padding: 4px 10px;
 	cursor: default;
+	min-width: 100px;
 }
 
 .NLT__header-menu-item:focus {

@@ -37,7 +37,7 @@ export default function Menu({
 			document.addEventListener("keyup", handleKeyUp);
 		}
 		return () => cleanup();
-	}, [menuRef, onOutsideClick]);
+	}, [menuRef, onOutsideClick, isOpen]);
 
 	if (!isOpen) return <></>;
 
