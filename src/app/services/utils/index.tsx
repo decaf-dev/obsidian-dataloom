@@ -15,6 +15,11 @@ import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+import MoveUpIcon from "@mui/icons-material/MoveUp";
+import MoveDownIcon from "@mui/icons-material/MoveDown";
+import TextSnippetIcon from "@mui/icons-material/TextSnippet";
+import EditIcon from "@mui/icons-material/Edit";
 
 import {
 	Header,
@@ -53,6 +58,16 @@ export const findIcon = (icon: string, className: string): React.ReactNode => {
 			return <MoreVertIcon className={className} />;
 		case ICON.SORT:
 			return <SortIcon className={className} />;
+		case ICON.KEYBOARD_BACKSPACE:
+			return <KeyboardBackspaceIcon className={className} />;
+		case ICON.MOVE_UP:
+			return <MoveUpIcon className={className} />;
+		case ICON.MOVE_DOWN:
+			return <MoveDownIcon className={className} />;
+		case ICON.TEXT_SNIPPET:
+			return <TextSnippetIcon className={className} />;
+		case ICON.EDIT:
+			return <EditIcon className={className} />;
 		default:
 			return "";
 	}

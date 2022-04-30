@@ -94,41 +94,40 @@ export default function DragMenu({
 					top: `${clickedButton.top}px`,
 					left: `${clickedButton.left}px`,
 				}}
-				content={
-					<div className="NLT__drag-menu-container">
-						{!isFirstRow && (
-							<IconText
-								icon={ICON.KEYBOARD_DOUBLE_ARROW_UP}
-								iconText="Move Up"
-								onClick={() => handleMoveRowClick(rowId, false)}
-							/>
-						)}
-						{!isLastRow && (
-							<IconText
-								icon={ICON.KEYBOARD_DOUBLE_ARROW_DOWN}
-								iconText="Move Down"
-								onClick={() => handleMoveRowClick(rowId, true)}
-							/>
-						)}
-						<IconText
-							icon={ICON.KEYBOARD_ARROW_UP}
-							iconText="Insert Above"
-							onClick={() => handleInsertRowClick(rowId, false)}
-						/>
-						<IconText
-							icon={ICON.KEYBOARD_ARROW_DOWN}
-							iconText="Insert Below"
-							onClick={() => handleInsertRowClick(rowId, true)}
-						/>
-						<IconText
-							icon={ICON.DELETE}
-							iconText="Delete"
-							onClick={() => handleDeleteClick(rowId)}
-						/>
-					</div>
-				}
 				onOutsideClick={handleOutsideClick}
-			/>
+			>
+				<div className="NLT__drag-menu">
+					{!isFirstRow && (
+						<IconText
+							icon={ICON.MOVE_UP}
+							iconText="Move Up"
+							onClick={() => handleMoveRowClick(rowId, false)}
+						/>
+					)}
+					{!isLastRow && (
+						<IconText
+							icon={ICON.MOVE_DOWN}
+							iconText="Move Down"
+							onClick={() => handleMoveRowClick(rowId, true)}
+						/>
+					)}
+					<IconText
+						icon={ICON.KEYBOARD_DOUBLE_ARROW_UP}
+						iconText="Insert Above"
+						onClick={() => handleInsertRowClick(rowId, false)}
+					/>
+					<IconText
+						icon={ICON.KEYBOARD_DOUBLE_ARROW_DOWN}
+						iconText="Insert Below"
+						onClick={() => handleInsertRowClick(rowId, true)}
+					/>
+					<IconText
+						icon={ICON.DELETE}
+						iconText="Delete"
+						onClick={() => handleDeleteClick(rowId)}
+					/>
+				</div>
+			</Menu>
 		</>
 	);
 }

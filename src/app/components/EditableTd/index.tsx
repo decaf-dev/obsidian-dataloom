@@ -257,9 +257,10 @@ export default function EditableTd({
 					left: `${cellMenu.left}px`,
 					height: getMenuHeight(),
 				}}
-				content={renderCellMenuContent()}
 				onOutsideClick={handleOutsideClick}
-			/>
+			>
+				{renderCellMenuContent()}
+			</Menu>
 			<div className="NLT__td-content-container" style={{ width }}>
 				{renderCell()}
 			</div>
