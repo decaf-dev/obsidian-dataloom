@@ -413,7 +413,7 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 							cellId,
 							rowId,
 							headers[j].id,
-							CELL_TYPE.TEXT,
+							CELL_TYPE.NUMBER,
 							td
 						)
 					);
@@ -474,23 +474,15 @@ export const findCellType = (textContent: string, expectedType: string) => {
 	//We do this to allow blank cells
 	if (textContent === "") return expectedType;
 
-	let cellType = CELL_TYPE.ERROR;
-
-	const numTags = countNumTags(textContent);
-	if (numTags === 1) {
-		//Don't allow spaces in tags
-		if (!textContent.match(/\s/)) cellType = CELL_TYPE.TAG;
-	} else if (numTags > 1) {
-		return CELL_TYPE.MULTI_TAG;
-	} else if (textContent.match(/^\d+$/)) {
-		if (expectedType === CELL_TYPE.TEXT) cellType = CELL_TYPE.TEXT;
-		else cellType = CELL_TYPE.NUMBER;
-	} else {
-		cellType = CELL_TYPE.TEXT;
+	//Allow everything
+	if (expectedType === CELL_TYPE.TEXT) {
+		return CELL_TYPE.TEXT;
+	} else if (expectedType === CELL_TYPE.NUMBER) {
+		if (isNumber(textContent)) return CELL_TYPE.NUMBER;
+	} else if (expectedType === CELL_TYPE.TAG) {
+		if (isTag(textContent)) return CELL_TYPE.TAG;
 	}
-
-	if (cellType !== expectedType) return CELL_TYPE.ERROR;
-	return cellType;
+	return CELL_TYPE.ERROR;
 };
 
 export const findMarkdownTablesFromFileData = (data: string): string[] => {
@@ -583,6 +575,18 @@ export const markdownHyphenCellRegex = new RegExp(
 	/[ \t]{0,}[-]{3,}[ \t]{0,}\|/
 );
 
+export const NUMBER_REGEX = new RegExp(/^\d+$/);
+
+export const isNumber = (input: string) => {
+	return input.match(NUMBER_REGEX) ? true : false;
+};
+
+export const TAG_REGEX = new RegExp(/^#.[^\s]+$/);
+
+export const isTag = (input: string) => {
+	return input.match(TAG_REGEX) ? true : false;
+};
+
 /**
  * Matches an individual markdown cell
  * e.g. "\t thisismycell\t|""
@@ -619,9 +623,13 @@ export const parseFileLinks = (input: string): string => {
 	return input;
 };
 
+export const matchURLs = (input: string) => {
+	return input.match(/https{0,1}:\/\/[^\s]*/g) || [];
+};
+
 export const parseURLs = (input: string): string => {
 	//Check if it has has urls
-	const matches = input.match(/https{0,1}:\/\/[^\s]*/g) || [];
+	const matches = matchURLs(input);
 	matches.forEach((match) => {
 		const replacement = toExternalLink(match);
 		input = input.replace(match, replacement);

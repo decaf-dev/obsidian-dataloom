@@ -30,6 +30,9 @@ import {
 	calcColumnCharLengths,
 	AppDataStringBuffer,
 	sanitizeHTML,
+	matchURLs,
+	isNumber,
+	isTag,
 } from "./index";
 
 import { CELL_TYPE } from "../../constants";
@@ -488,11 +491,6 @@ describe("findCellType", () => {
 		expect(type).toEqual(CELL_TYPE.TAG);
 	});
 
-	it("returns TAG if there are multiple tags", () => {
-		const type = findCellType("#test #test2", CELL_TYPE.MULTI_TAG);
-		expect(type).toEqual(CELL_TYPE.MULTI_TAG);
-	});
-
 	it("returns ERROR if doesn't include only a tag", () => {
 		const type = findCellType("#test test", CELL_TYPE.TAG);
 		expect(type).toEqual(CELL_TYPE.ERROR);
@@ -501,6 +499,58 @@ describe("findCellType", () => {
 	it("returns ERROR if expected doesn't match cell type", () => {
 		const type = findCellType("1234", CELL_TYPE.TAG);
 		expect(type).toEqual(CELL_TYPE.ERROR);
+	});
+
+	it("returns TEXT if url with tags", () => {
+		const type = findCellType(
+			"https://chakra-ui.com/blog/the-beginners-guide-to-building-an-accessible-web#build-a-web-thats-inclusive-of-everyone",
+			CELL_TYPE.TEXT
+		);
+		expect(type).toEqual(CELL_TYPE.TEXT);
+	});
+
+	it("returns ERROR if url with tags", () => {
+		const type = findCellType(
+			"https://chakra-ui.com/blog/the-beginners-guide-to-building-an-accessible-web#build-a-web-thats-inclusive-of-everyone",
+			CELL_TYPE.TAG
+		);
+		expect(type).toEqual(CELL_TYPE.ERROR);
+	});
+});
+
+describe("isNumber", () => {
+	it("returns true if number", () => {
+		const value = isNumber("123456");
+		expect(value).toEqual(true);
+	});
+
+	it("returns false if a number with a space", () => {
+		const value = isNumber("123 567");
+		expect(value).toEqual(false);
+	});
+
+	it("returns false if text", () => {
+		const value = isNumber("ABC123");
+		expect(value).toEqual(false);
+	});
+});
+
+describe("isTag", () => {
+	it("matches a tag", () => {
+		const value = isTag("#tag");
+		expect(value).toEqual(true);
+	});
+
+	it("doesn't match multiple tags", () => {
+		const value = isTag("#tag1 #tag2");
+		expect(value).toEqual(false);
+	});
+
+	it("doesn't match tag in a link", () => {
+		const value = isTag(
+			"https://chakra-ui.com/blog/the-beginners-guide-to-building-an-accessible-web#build-a-web-thats-inclusive-of-everyone "
+		);
+		expect(value).toEqual(false);
 	});
 });
 
@@ -800,6 +850,23 @@ describe("parseURLs", () => {
 	});
 
 	//TODO parses same link
+});
+
+describe("matchURLs", () => {
+	it("matches http", () => {
+		const matched = matchURLs("https://google.com");
+		expect(matched).toEqual(["https://google.com"]);
+	});
+	it("matches https", () => {
+		const matched = matchURLs("https://google.com");
+		expect(matched).toEqual(["https://google.com"]);
+	});
+	it("matches multiple urls", () => {
+		const matched = matchURLs(
+			"test https://google.com test https://yahoo.com"
+		);
+		expect(matched).toEqual(["https://google.com", "https://yahoo.com"]);
+	});
 });
 
 describe("stripLinks", () => {
