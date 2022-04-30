@@ -1,4 +1,8 @@
-.NLT__drag-menu-container {
+.NLT__drag-menu {
 	width: 180px;
 	font-size: 0.9rem;
+}
+
+.NLT__drag-menu-item:focus {
+	outline: 1px solid blue;
 }

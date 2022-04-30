@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import IconText from "../IconText";
 
 import Menu from "../Menu";
 
-import { SORT, MENU_ITEMS } from "./constants";
+import { SORT, PROPERTY_TYPE_ITEMS, SUBMENU } from "./constants";
 import { ICON } from "../../constants";
 
 import "./styles.css";
 import HeaderMenuItem from "./components/HeaderMenuItem";
+import IconButton from "../IconButton";
 
 interface Props {
 	isOpen: boolean;
@@ -45,15 +45,15 @@ export default function HeaderMenu({
 	onMoveColumnClick,
 	onClose,
 }: Props) {
-	//TODO refactor this code and make it more neat
 	const [inputText, setInputText] = useState("");
+	const [submenu, setSubmenu] = useState(null);
 
 	useEffect(() => {
 		setInputText(content);
 	}, [content]);
 
-	function renderMenuItems() {
-		return MENU_ITEMS.map((item) => {
+	function renderPropertyTypeItems() {
+		return PROPERTY_TYPE_ITEMS.map((item) => {
 			return (
 				<HeaderMenuItem
 					key={item.name}
@@ -86,12 +86,12 @@ export default function HeaderMenu({
 		return (
 			<ul className="NLT__header-menu-ul">
 				<HeaderMenuItem
-					icon={ICON.KEYBOARD_ARROW_LEFT}
+					icon={ICON.KEYBOARD_DOUBLE_ARROW_LEFT}
 					iconText="Insert Left"
 					onClick={() => handleInsertColumnClick(id, false)}
 				/>
 				<HeaderMenuItem
-					icon={ICON.KEYBOARD_ARROW_RIGHT}
+					icon={ICON.KEYBOARD_DOUBLE_ARROW_RIGHT}
 					iconText="Insert Right"
 					onClick={() => handleInsertColumnClick(id, true)}
 				/>
@@ -120,6 +120,25 @@ export default function HeaderMenu({
 		);
 	}
 
+	function renderEditItems() {
+		return (
+			<>
+				<input
+					autoFocus
+					type="text"
+					value={inputText}
+					onChange={(e) => setInputText(e.target.value)}
+				/>
+				<button
+					className="NLT__button NLT__header-menu-delete-button"
+					onClick={() => handleDeleteClick(id)}
+				>
+					Delete
+				</button>
+			</>
+		);
+	}
+
 	function handleMoveColumnClick(id: string, moveRight: boolean) {
 		onMoveColumnClick(id, moveRight);
 		onClose();
@@ -131,8 +150,8 @@ export default function HeaderMenu({
 	}
 
 	function handleInsertColumnClick(id: string, insertRight: boolean) {
-		onClose();
 		onInsertColumnClick(id, insertRight);
+		onClose();
 	}
 
 	function handleTypeSelect(id: string, type: string) {
@@ -154,35 +173,59 @@ export default function HeaderMenu({
 		onClose();
 	}
 
+	function renderMenu() {
+		return Object.values(SUBMENU).map((item) => (
+			<HeaderMenuItem
+				key={item.name}
+				iconText={item.content}
+				icon={item.icon}
+				onClick={() => setSubmenu(item)}
+			/>
+		));
+	}
+
+	function Submenu() {
+		function renderSubmenuItems() {
+			switch (submenu.name) {
+				case SUBMENU.EDIT.name:
+					return renderEditItems();
+				case SUBMENU.INSERT.name:
+					return renderInsertItems();
+				case SUBMENU.SORT.name:
+					return renderSortItems();
+				case SUBMENU.MOVE.name:
+					return renderMoveItems();
+				case SUBMENU.PROPERTY_TYPE.name:
+					return renderPropertyTypeItems();
+				default:
+					return <></>;
+			}
+		}
+		return (
+			<div>
+				<div className="NLT__header-menu-header-container">
+					<IconButton
+						icon={ICON.KEYBOARD_BACKSPACE}
+						onClick={() => setSubmenu(null)}
+					/>
+					<div className="NLT__header-menu-header">
+						{submenu.content}
+					</div>
+				</div>
+				{renderSubmenuItems()}
+			</div>
+		);
+	}
+
 	return (
 		<Menu
 			isOpen={isOpen}
 			style={style}
-			content={
-				<div className="NLT__header-menu-container">
-					<input
-						autoFocus
-						type="text"
-						value={inputText}
-						onChange={(e) => setInputText(e.target.value)}
-					/>
-					<div className="NLT__header-menu-header">Sort</div>
-					{renderSortItems()}
-					<div className="NLT__header-menu-header">Move</div>
-					{renderMoveItems()}
-					<div className="NLT__header-menu-header">Insert</div>
-					{renderInsertItems()}
-					<div className="NLT__header-menu-header">Property Type</div>
-					{renderMenuItems()}
-					<button
-						className="NLT__button"
-						onClick={() => handleDeleteClick(id)}
-					>
-						Delete
-					</button>
-				</div>
-			}
 			onOutsideClick={() => handleOutsideClick(id, inputText)}
-		/>
+		>
+			<div className="NLT__header-menu">
+				{submenu !== null ? <Submenu /> : renderMenu()}
+			</div>
+		</Menu>
 	);
 }

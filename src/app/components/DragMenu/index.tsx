@@ -4,9 +4,10 @@ import { v4 as uuidv4 } from "uuid";
 import IconButton from "../IconButton";
 import Menu from "../Menu";
 
-import IconText from "../IconText";
+import DragMenuItem from "./components/DragMenuItem";
 
 import "./styles.css";
+import { DRAG_MENU_ITEM } from "./constants";
 import { ICON } from "src/app/constants";
 
 interface Props {
@@ -26,38 +27,35 @@ export default function DragMenu({
 	onDeleteClick,
 	onInsertRowClick,
 }: Props) {
-	const initialClickedButton = {
+	const initialdragMenu = {
 		top: 0,
 		left: 0,
 		isOpen: false,
 	};
-	const [clickedButton, setClickedButton] = useState(initialClickedButton);
+	const [dragMenu, setDragMenu] = useState(initialdragMenu);
 	const [buttonId] = useState(uuidv4());
 
 	const buttonRef = useRef<HTMLInputElement>();
 
-	function handleOutsideClick(e: MouseEvent | undefined) {
-		if (e) {
-			const el = e.target as HTMLInputElement;
-			if (el.id === buttonId) return;
-		}
-		onClose();
+	function handleButtonClick(e: React.MouseEvent) {
+		if (dragMenu.isOpen) return;
+		e.stopPropagation();
+		openMenu();
 	}
 
-	function onClose() {
-		setClickedButton(initialClickedButton);
+	function handleOutsideClick(e: MouseEvent | null) {
+		if (e !== null) closeMenu();
 	}
 
-	function handleDragClick() {
-		if (clickedButton.isOpen) {
-			setClickedButton(initialClickedButton);
+	function openMenu() {
+		if (dragMenu.isOpen) {
+			setDragMenu(initialdragMenu);
 			return;
 		}
-
 		if (buttonRef.current) {
 			const { width, height } = buttonRef.current.getBoundingClientRect();
 
-			setClickedButton({
+			setDragMenu({
 				left: -width - 62,
 				top: -height,
 				isOpen: true,
@@ -65,19 +63,23 @@ export default function DragMenu({
 		}
 	}
 
+	function closeMenu() {
+		setDragMenu(initialdragMenu);
+	}
+
 	function handleDeleteClick(id: string) {
 		onDeleteClick(id);
-		onClose();
+		closeMenu();
 	}
 
 	function handleInsertRowClick(id: string, insertBelow: boolean) {
 		onInsertRowClick(id, insertBelow);
-		onClose();
+		closeMenu();
 	}
 
 	function handleMoveRowClick(id: string, moveBelow: boolean) {
 		onMoveRowClick(id, moveBelow);
-		onClose();
+		closeMenu();
 	}
 
 	return (
@@ -86,49 +88,53 @@ export default function DragMenu({
 				id={buttonId}
 				icon={ICON.MORE_VERT}
 				ref={buttonRef}
-				onClick={handleDragClick}
+				onClick={handleButtonClick}
 			/>
 			<Menu
-				isOpen={clickedButton.isOpen}
+				isOpen={dragMenu.isOpen}
 				style={{
-					top: `${clickedButton.top}px`,
-					left: `${clickedButton.left}px`,
+					top: `${dragMenu.top}px`,
+					left: `${dragMenu.left}px`,
 				}}
-				content={
-					<div className="NLT__drag-menu-container">
-						{!isFirstRow && (
-							<IconText
-								icon={ICON.KEYBOARD_DOUBLE_ARROW_UP}
-								iconText="Move Up"
-								onClick={() => handleMoveRowClick(rowId, false)}
-							/>
-						)}
-						{!isLastRow && (
-							<IconText
-								icon={ICON.KEYBOARD_DOUBLE_ARROW_DOWN}
-								iconText="Move Down"
-								onClick={() => handleMoveRowClick(rowId, true)}
-							/>
-						)}
-						<IconText
-							icon={ICON.KEYBOARD_ARROW_UP}
-							iconText="Insert Above"
-							onClick={() => handleInsertRowClick(rowId, false)}
-						/>
-						<IconText
-							icon={ICON.KEYBOARD_ARROW_DOWN}
-							iconText="Insert Below"
-							onClick={() => handleInsertRowClick(rowId, true)}
-						/>
-						<IconText
-							icon={ICON.DELETE}
-							iconText="Delete"
-							onClick={() => handleDeleteClick(rowId)}
-						/>
-					</div>
-				}
 				onOutsideClick={handleOutsideClick}
-			/>
+			>
+				<div className="NLT__drag-menu">
+					{Object.values(DRAG_MENU_ITEM).map((item) => {
+						if (item.name === DRAG_MENU_ITEM.MOVE_UP.name) {
+							if (isFirstRow) return;
+						}
+						if (item.name === DRAG_MENU_ITEM.MOVE_DOWN.name) {
+							if (isLastRow) return;
+						}
+						return (
+							<DragMenuItem
+								key={item.name}
+								icon={item.icon}
+								iconText={item.content}
+								onClick={() => {
+									switch (item.name) {
+										case DRAG_MENU_ITEM.MOVE_UP.name:
+											handleMoveRowClick(rowId, false);
+											break;
+										case DRAG_MENU_ITEM.MOVE_DOWN.name:
+											handleMoveRowClick(rowId, true);
+											break;
+										case DRAG_MENU_ITEM.INSERT_ABOVE.name:
+											handleInsertRowClick(rowId, false);
+											break;
+										case DRAG_MENU_ITEM.INSERT_BELOW.name:
+											handleInsertRowClick(rowId, true);
+											break;
+										case DRAG_MENU_ITEM.DELETE.name:
+											handleDeleteClick(rowId);
+											break;
+									}
+								}}
+							/>
+						);
+					})}
+				</div>
+			</Menu>
 		</>
 	);
 }

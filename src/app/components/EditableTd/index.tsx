@@ -94,6 +94,10 @@ export default function EditableTd({
 		}
 	}
 
+	function handleKeyUp(e: React.KeyboardEvent) {
+		if (type === CELL_TYPE.ERROR) return;
+		if (e.key === "Enter") openMenu();
+	}
 	function handleCellClick(e: React.MouseEvent<HTMLElement>) {
 		const el = e.target as HTMLInputElement;
 
@@ -101,6 +105,14 @@ export default function EditableTd({
 		if (el.nodeName === "A") return;
 		if (type === CELL_TYPE.ERROR) return;
 
+		openMenu();
+	}
+
+	function closeMenu() {
+		setCellMenu(initialCellMenuState);
+	}
+
+	function openMenu() {
 		if (tdRef.current) {
 			const { height } = tdRef.current.getBoundingClientRect();
 			setCellMenu({
@@ -117,12 +129,12 @@ export default function EditableTd({
 	function handleAddTag(text: string) {
 		onAddTag(cellId, headerId, text, cellMenu.tagColor);
 		setInputText("");
-		setCellMenu(initialCellMenuState);
+		closeMenu();
 	}
 
 	function handleTagClick(id: string) {
 		onTagClick(cellId, id);
-		setCellMenu(initialCellMenuState);
+		closeMenu();
 	}
 
 	function handleOutsideClick() {
@@ -147,7 +159,7 @@ export default function EditableTd({
 					break;
 			}
 		}
-		setCellMenu(initialCellMenuState);
+		closeMenu();
 	}
 
 	function renderCell() {
@@ -246,6 +258,7 @@ export default function EditableTd({
 			tabIndex={0}
 			ref={tdRef}
 			onClick={handleCellClick}
+			onKeyUp={handleKeyUp}
 			onContextMenu={handleCellContextClick}
 		>
 			<Menu
@@ -257,9 +270,10 @@ export default function EditableTd({
 					left: `${cellMenu.left}px`,
 					height: getMenuHeight(),
 				}}
-				content={renderCellMenuContent()}
 				onOutsideClick={handleOutsideClick}
-			/>
+			>
+				{renderCellMenuContent()}
+			</Menu>
 			<div className="NLT__td-content-container" style={{ width }}>
 				{renderCell()}
 			</div>

@@ -43,7 +43,12 @@ export const ICON = {
 	KEYBOARD_ARROW_RIGHT: "KeyboardArrowRight",
 	KEYBOARD_DOUBLE_ARROW_LEFT: "KeyboardDoubleArrowLeft",
 	KEYBOARD_DOUBLE_ARROW_RIGHT: "KeyboardDoubleArrowRight",
+	KEYBOARD_BACKSPACE: "KeyboardBackspace",
 	DELETE: "Delete",
 	MORE_VERT: "MoreVert",
 	SORT: "Sort",
+	MOVE_UP: "MoveUp",
+	MOVE_DOWN: "MoveDown",
+	TEXT_SNIPPET: "TextSnippet",
+	EDIT: "Edit",
 };

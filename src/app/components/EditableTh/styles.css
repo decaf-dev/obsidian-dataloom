@@ -1,3 +1,16 @@
+.NLT__th {
+    text-align: left;
+}
+
+.NLT__th:focus {
+    border: 1px solid blue;
+    border-style: double;
+}
+
+.NLT__th:last-child {
+    border: 0 !important;
+}
+
 .NLT__header-content-container {
     display: flex;
 }
