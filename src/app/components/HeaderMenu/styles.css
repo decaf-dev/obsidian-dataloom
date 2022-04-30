@@ -1,6 +1,11 @@
 .NLT__header-menu {
 	padding: 4px 10px;
 	cursor: default;
+	min-width: 100px;
+}
+
+.NLT__header-menu-item:focus {
+	outline: 1px solid blue;
 }
 
 .NLT__header-menu-header-container {

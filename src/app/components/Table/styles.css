@@ -1,11 +1,3 @@
-.NLT__th {
-	text-align: left;
-}
-
-.NLT__th:last-child {
-	border: 0!important;
-}
-
 tbody > tr > .NLT__td:last-child {
 	border: 0 !important;
 	vertical-align: middle;

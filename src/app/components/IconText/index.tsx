@@ -6,12 +6,11 @@ import "./styles.css";
 interface Props {
 	iconText: string;
 	icon: string;
-	onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
-export default function IconText({ iconText, icon, onClick }: Props) {
+export default function IconText({ iconText, icon }: Props) {
 	return (
-		<div className="NLT__icon-text NLT__selectable" onClick={onClick}>
+		<div className="NLT__icon-text NLT__selectable">
 			{icon !== "" && findIcon(icon, "NLT__icon--md NLT__margin-right")}
 			<p>{iconText}</p>
 		</div>

@@ -35,7 +35,7 @@ export default function TagMenuContent({
 		onTextChange(e);
 	}
 
-	function handleKeyDown(e: React.KeyboardEvent) {
+	function handleKeyUp(e: React.KeyboardEvent) {
 		if (e.key === "Enter") {
 			//If this tag content already exists then we will select that tag, otherwise add a new one
 			const tag = tags.filter((tag) => tag.content === inputText)[0];
@@ -80,7 +80,7 @@ export default function TagMenuContent({
 		);
 	}
 	return (
-		<div className="NLT__tag-menu-container" onKeyDown={handleKeyDown}>
+		<div className="NLT__tag-menu-container" onKeyUp={handleKeyUp}>
 			<div className="NLT__tag-menu-top">
 				{tags
 					.filter(

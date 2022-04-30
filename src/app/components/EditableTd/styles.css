@@ -5,6 +5,11 @@
 	cursor: default;
 }
 
+.NLT__td:focus {
+	border: 1px solid blue;
+	border-style: double;
+}
+
 .NLT__td--number {
 	text-align: right;
 }
