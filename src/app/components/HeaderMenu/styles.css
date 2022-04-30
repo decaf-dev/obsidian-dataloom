@@ -3,14 +3,20 @@
 	cursor: default;
 }
 
+.NLT__header-menu-header-container {
+	display: flex;
+	margin-bottom: 5px;
+	font-size: 0.95rem;
+}
+
 .NLT__header-menu-ul {
 	padding: 0;
 	margin: 0;
 }
 
 .NLT__header-menu-header {
-	font-size: 0.8rem;
-	margin-top: 0.5rem;
+	font-weight: 700;
+	padding-left: 5px;
 }
 
 .NLT__header-menu-item {

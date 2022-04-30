@@ -3,13 +3,13 @@ import React from "react";
 import IconText from "../../../IconText";
 
 interface Props {
-	icon: string;
+	icon?: string;
 	iconText: string;
 	onClick: any;
 	selected?: boolean;
 }
 export default function HeaderMenuItem({
-	icon,
+	icon = "",
 	iconText,
 	onClick,
 	selected = false,
