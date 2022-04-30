@@ -90,13 +90,13 @@
 /*
 * Menu
 */
-.NLT__clickable {
+
+.NLT__menu {
 	position: relative;
 }
 
-.NLT__menu {
+.NLT__menu-container {
 	position: absolute;
-	padding: 0 !important;
 	border-radius: 4px;
 	font-weight: 400;
 	background-color:var(--background-primary);
