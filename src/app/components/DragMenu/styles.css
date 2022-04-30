@@ -3,6 +3,6 @@
 	font-size: 0.9rem;
 }
 
-.NLT__drag-menu-item:focus {
+.NLT__drag-menu-item:focus-visible {
 	outline: 1px solid blue;
 }

@@ -4,7 +4,7 @@
 	min-width: 100px;
 }
 
-.NLT__header-menu-item:focus {
+.NLT__header-menu-item:focus-visible {
 	outline: 1px solid blue;
 }
 

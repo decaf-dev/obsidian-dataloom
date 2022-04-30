@@ -22,7 +22,7 @@ export default class NltPlugin extends Plugin {
 			if (table.length === 1) {
 				context.addChild(
 					new NLTTable(
-						table[0],
+						element,
 						this.app,
 						this,
 						this.settings,

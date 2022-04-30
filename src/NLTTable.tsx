@@ -54,7 +54,7 @@ export class NLTTable extends MarkdownRenderChild {
 				</AppContext.Provider>,
 				this.el
 			);
-			this.containerEl.replaceWith(this.el);
+			this.containerEl.children[0].replaceWith(this.el);
 		}
 	}
 }
