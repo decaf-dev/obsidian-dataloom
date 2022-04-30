@@ -5,7 +5,7 @@
 	cursor: default;
 }
 
-.NLT__td:focus {
+.NLT__td:focus-visible {
 	border: 1px solid blue;
 	border-style: double;
 }

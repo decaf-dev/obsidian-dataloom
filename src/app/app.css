@@ -18,7 +18,7 @@
 	padding: 4px;
 }
 
-.NLT__button:focus {
+.NLT__button:focus-visible {
 	outline: 1px solid blue;
 }
 

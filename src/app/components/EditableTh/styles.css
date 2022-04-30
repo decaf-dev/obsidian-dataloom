@@ -2,7 +2,7 @@
     text-align: left;
 }
 
-.NLT__th:focus {
+.NLT__th:focus-visible {
     border: 1px solid blue;
     border-style: double;
 }
