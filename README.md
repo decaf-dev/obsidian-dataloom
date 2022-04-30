@@ -21,17 +21,17 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 
 ## Usage
 
-### Shortcuts
+### Hotkeys
 
 -   Add a new NLT markdown table
-    -   `ctrl+shift++` (Windows) (Press + once)
-    -   `cmd+shift++` (Mac)
+    -   `ctrl + shift + +` (Windows) (Press + once)
+    -   `cmd + shift + +` (Mac)
 -   Add a new column to a focused table
-    -   `ctrl+shift+\` (Windows)
-    -   `cmd+shift+\ ` (Mac)
+    -   `ctrl + shift + \` (Windows)
+    -   `cmd + shift + \ ` (Mac)
 -   Add a new row to a focused table
-    -   `ctrl+shift+enter` (Windows)
-    -   `cmd+shift+enter` (Mac)
+    -   `ctrl + shift + enter` (Windows)
+    -   `cmd + shift + enter` (Mac)
 
 ### Making a Table via Command
 
