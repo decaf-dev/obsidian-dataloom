@@ -1,5 +1,7 @@
 import React, { useRef, useEffect } from "react";
 
+import "./styles.css";
+
 interface Props {
 	isOpen: boolean;
 	style?: object;
@@ -16,6 +18,11 @@ export default function Menu({
 	const menuRef = useRef(null);
 
 	useEffect(() => {
+		function cleanup() {
+			document.removeEventListener("mousedown", handleClick);
+			document.removeEventListener("keyup", handleKeyUp);
+		}
+
 		const handleClick = (e: MouseEvent) => {
 			if (menuRef.current && !menuRef.current.contains(e.target))
 				onOutsideClick(e);
@@ -25,12 +32,11 @@ export default function Menu({
 			if (e.key === "Enter") onOutsideClick(null);
 		}
 
-		document.addEventListener("mousedown", handleClick);
-		document.addEventListener("keyup", handleKeyUp);
-		return () => {
-			document.removeEventListener("mousedown", handleClick);
-			document.removeEventListener("keyup", handleKeyUp);
-		};
+		if (isOpen) {
+			document.addEventListener("mousedown", handleClick);
+			document.addEventListener("keyup", handleKeyUp);
+		}
+		return () => cleanup();
 	}, [menuRef, onOutsideClick]);
 
 	if (!isOpen) return <></>;
