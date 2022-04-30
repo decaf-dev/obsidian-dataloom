@@ -8,6 +8,11 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 
 ## What's New?
 
+### Version 2.3.0
+
+-   Refactored menu into submenus (More like Notion ;)
+-   Add basic tabbing for accessibility
+
 ### Version 2.2.0
 
 -   Columns can now be resized by dragging a right header border
