@@ -60,7 +60,10 @@ export default function App({
 		async function handleUpdate() {
 			//If we're running in Obsidian
 			if (app) {
-				if (appData.updateTime !== 0) {
+				if (
+					appData.updateTime !== 0 ||
+					!settings.appData[sourcePath][tableId]
+				) {
 					try {
 						//TODO debounce?
 						//I don't think it's necessary. It seems like .cachedRead and .modify don't update
