@@ -99,25 +99,25 @@ export default function DragMenu({
 				<div className="NLT__drag-menu">
 					{!isFirstRow && (
 						<IconText
-							icon={ICON.KEYBOARD_DOUBLE_ARROW_UP}
+							icon={ICON.MOVE_UP}
 							iconText="Move Up"
 							onClick={() => handleMoveRowClick(rowId, false)}
 						/>
 					)}
 					{!isLastRow && (
 						<IconText
-							icon={ICON.KEYBOARD_DOUBLE_ARROW_DOWN}
+							icon={ICON.MOVE_DOWN}
 							iconText="Move Down"
 							onClick={() => handleMoveRowClick(rowId, true)}
 						/>
 					)}
 					<IconText
-						icon={ICON.KEYBOARD_ARROW_UP}
+						icon={ICON.KEYBOARD_DOUBLE_ARROW_UP}
 						iconText="Insert Above"
 						onClick={() => handleInsertRowClick(rowId, false)}
 					/>
 					<IconText
-						icon={ICON.KEYBOARD_ARROW_DOWN}
+						icon={ICON.KEYBOARD_DOUBLE_ARROW_DOWN}
 						iconText="Insert Below"
 						onClick={() => handleInsertRowClick(rowId, true)}
 					/>

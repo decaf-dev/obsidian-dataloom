@@ -130,7 +130,7 @@ export default function HeaderMenu({
 					onChange={(e) => setInputText(e.target.value)}
 				/>
 				<button
-					className="NLT__button"
+					className="NLT__button NLT__header-menu-delete-button"
 					onClick={() => handleDeleteClick(id)}
 				>
 					Delete
