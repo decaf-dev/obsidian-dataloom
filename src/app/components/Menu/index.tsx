@@ -3,14 +3,14 @@ import React, { useRef, useEffect } from "react";
 interface Props {
 	isOpen: boolean;
 	style?: object;
-	content: React.ReactNode;
+	children: React.ReactNode;
 	onOutsideClick: (e: MouseEvent | null) => void;
 }
 
 export default function Menu({
 	isOpen,
 	style,
-	content,
+	children,
 	onOutsideClick,
 }: Props) {
 	const menuRef = useRef(null);
@@ -38,7 +38,7 @@ export default function Menu({
 	return (
 		<div className="NLT__menu" ref={menuRef}>
 			<div className="NLT__menu-container" style={style}>
-				{content}
+				{children}
 			</div>
 		</div>
 	);

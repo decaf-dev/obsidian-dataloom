@@ -158,31 +158,30 @@ export default function HeaderMenu({
 		<Menu
 			isOpen={isOpen}
 			style={style}
-			content={
-				<div className="NLT__header-menu-container">
-					<input
-						autoFocus
-						type="text"
-						value={inputText}
-						onChange={(e) => setInputText(e.target.value)}
-					/>
-					<div className="NLT__header-menu-header">Sort</div>
-					{renderSortItems()}
-					<div className="NLT__header-menu-header">Move</div>
-					{renderMoveItems()}
-					<div className="NLT__header-menu-header">Insert</div>
-					{renderInsertItems()}
-					<div className="NLT__header-menu-header">Property Type</div>
-					{renderMenuItems()}
-					<button
-						className="NLT__button"
-						onClick={() => handleDeleteClick(id)}
-					>
-						Delete
-					</button>
-				</div>
-			}
 			onOutsideClick={() => handleOutsideClick(id, inputText)}
-		/>
+		>
+			<div className="NLT__header-menu">
+				<input
+					autoFocus
+					type="text"
+					value={inputText}
+					onChange={(e) => setInputText(e.target.value)}
+				/>
+				<div className="NLT__header-menu-header">Sort</div>
+				{renderSortItems()}
+				<div className="NLT__header-menu-header">Move</div>
+				{renderMoveItems()}
+				<div className="NLT__header-menu-header">Insert</div>
+				{renderInsertItems()}
+				<div className="NLT__header-menu-header">Property Type</div>
+				{renderMenuItems()}
+				<button
+					className="NLT__button"
+					onClick={() => handleDeleteClick(id)}
+				>
+					Delete
+				</button>
+			</div>
+		</Menu>
 	);
 }
