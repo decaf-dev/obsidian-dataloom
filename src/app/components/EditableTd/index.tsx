@@ -54,13 +54,13 @@ export default function EditableTd({
 
 	const initialCellMenuState = {
 		isOpen: false,
+		moveCursor: false,
 		top: 0,
 		left: 0,
 		height: 0,
 		tagColor: "",
 	};
 	const [cellMenu, setCellMenu] = useState(initialCellMenuState);
-	const firstRender = useRef(false);
 
 	useEffect(() => {
 		if (cellMenu.isOpen) forceUpdate();
@@ -70,10 +70,15 @@ export default function EditableTd({
 		(node) => {
 			if (type === CELL_TYPE.TEXT || type === CELL_TYPE.NUMBER)
 				if (node) {
-					if (!firstRender.current) {
+					if (cellMenu.moveCursor) {
 						node.selectionStart = inputText.length;
 						node.selectionEnd = inputText.length;
-						firstRender.current = true;
+						setCellMenu((prevState) => {
+							return {
+								...prevState,
+								moveCursor: false,
+							};
+						});
 					}
 				}
 		},
@@ -119,6 +124,7 @@ export default function EditableTd({
 				isOpen: true,
 				left: -10,
 				top: -5,
+				moveCursor: true,
 				height,
 				tagColor: randomColor(),
 			});
@@ -257,6 +263,8 @@ export default function EditableTd({
 			className={tdClassName}
 			tabIndex={0}
 			ref={tdRef}
+			onFocus={() => openMenu()}
+			onBlur={() => handleOutsideClick()}
 			onClick={handleCellClick}
 			onKeyUp={handleKeyUp}
 			onContextMenu={handleCellContextClick}
