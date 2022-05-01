@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Notice } from "obsidian";
 
 import CellEditMenu from "../CellEditMenu";
@@ -35,6 +35,7 @@ interface Props {
 		inputText: string,
 		color: string
 	) => void;
+	onFocusClick: (cellId: string) => void;
 }
 
 export default function EditableTd({
@@ -48,6 +49,7 @@ export default function EditableTd({
 	expectedType,
 	onRemoveTagClick,
 	onTagClick,
+	onFocusClick,
 	onContentChange,
 	onAddTag,
 }: Props) {
@@ -57,30 +59,40 @@ export default function EditableTd({
 		isOpen: false,
 		top: 0,
 		left: 0,
-		width: 0,
-		height: 0,
+		width: "",
+		height: "",
 		tagColor: "",
 	};
 	const [cellMenu, setCellMenu] = useState(initialCellMenuState);
 
-	useEffect(() => {
-		if (isFocused) {
-			openMenu();
-		}
-	}, [isFocused]);
+	// useEffect(() => {
+	// 	if (isFocused) {
+	// 		if (cellMenu.isOpen) return;
+	// 		openMenu();
+	// 	}
+	// }, [isFocused]);
 
 	const tdRef = useCallback(
 		(node) => {
 			if (node) {
 				if (node instanceof HTMLElement) {
+					//Set timeout to overcome bug where all values in the node are 0
+					//See: https://github.com/facebook/react/issues/13108
 					setTimeout(() => {
 						setCellMenu((prevState) => {
 							const { width, height } =
 								node.getBoundingClientRect();
+
 							return {
 								...prevState,
-								width,
-								height,
+								width:
+									type === CELL_TYPE.TAG
+										? "15rem"
+										: `${width}px`,
+								height:
+									type === CELL_TYPE.TAG
+										? "fit-content"
+										: `${height}px`,
 							};
 						});
 					}, 1);
@@ -91,6 +103,7 @@ export default function EditableTd({
 	);
 
 	function handleTabPress() {
+		console.log("[HANDLER] handleTabPress");
 		updateContent(false);
 	}
 
@@ -108,11 +121,6 @@ export default function EditableTd({
 		}
 	}
 
-	function handleKeyUp(e: React.KeyboardEvent) {
-		if (type === CELL_TYPE.ERROR) return;
-		if (e.key === "Enter") openMenu();
-	}
-
 	function handleCellClick(e: React.MouseEvent<HTMLElement>) {
 		const el = e.target as HTMLInputElement;
 
@@ -120,6 +128,7 @@ export default function EditableTd({
 		if (el.nodeName === "A") return;
 		if (type === CELL_TYPE.ERROR) return;
 
+		onFocusClick(cellId);
 		openMenu();
 	}
 
@@ -141,36 +150,41 @@ export default function EditableTd({
 	}
 
 	function handleAddTag(text: string) {
+		console.log("ADD TAG");
 		onAddTag(cellId, headerId, text, cellMenu.tagColor);
 		setInputText("");
 		closeMenu();
 	}
 
 	function handleTagClick(id: string) {
+		console.log("TAG CLICK!");
 		onTagClick(cellId, id);
 		closeMenu();
 	}
 
 	function updateContent(shouldUpdate: boolean) {
-		switch (type) {
-			case CELL_TYPE.TEXT:
-				onContentChange(cellId, inputText, shouldUpdate);
-				setInputText("");
-				break;
-			case CELL_TYPE.NUMBER:
-				onContentChange(cellId, inputText, shouldUpdate);
-				setInputText("");
-				break;
-			case CELL_TYPE.TAG:
-				setInputText("");
-				break;
-			default:
-				break;
+		if (content !== inputText) {
+			switch (type) {
+				case CELL_TYPE.TEXT:
+					onContentChange(cellId, inputText, shouldUpdate);
+					setInputText("");
+					break;
+				case CELL_TYPE.NUMBER:
+					onContentChange(cellId, inputText, shouldUpdate);
+					setInputText("");
+					break;
+				case CELL_TYPE.TAG:
+					setInputText("");
+					break;
+				default:
+					break;
+			}
 		}
 		closeMenu();
 	}
 
 	function handleOutsideClick() {
+		console.log("[HANDLER] handleOusideClick");
 		updateContent(true);
 	}
 
@@ -206,14 +220,13 @@ export default function EditableTd({
 			className={tdClassName}
 			ref={tdRef}
 			onClick={handleCellClick}
-			onKeyUp={handleKeyUp}
 			onContextMenu={handleCellContextClick}
 		>
 			<CellEditMenu
 				style={{
 					minHeight: "3rem",
-					height: `${cellMenu.height}px`,
-					width: `${cellMenu.width}px`,
+					height: cellMenu.height,
+					width: cellMenu.width,
 					top: `${cellMenu.top}px`,
 					left: `${cellMenu.left}px`,
 				}}

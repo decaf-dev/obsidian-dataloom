@@ -33,8 +33,6 @@ describe("findNextTabbableElement", () => {
 			["test", "test"],
 		];
 		const data = findAppData(parsedTable);
-		console.log(data.cells[0].id);
-		console.log(data.cells[1].id);
 		const found = findNextTabbableElement(data, data.cells[0].id);
 		expect(found).toEqual({
 			id: data.cells[1].id,

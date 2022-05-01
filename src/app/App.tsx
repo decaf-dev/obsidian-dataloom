@@ -28,7 +28,9 @@ import {
 	addRow,
 	TabbableElement,
 	findNextTabbableElement,
+	findTabbableElement,
 } from "./services/appDataUtils";
+import { appDataToMarkdown } from "./services/utils";
 
 interface Props {
 	plugin: NltPlugin;
@@ -62,12 +64,16 @@ export default function App({
 		await updateFocusedElement(INITIAL_FOCUSED_ELEMENT);
 	}
 
+	async function handleCellFocusClick(id: string) {
+		const element = findTabbableElement(appData, id);
+		await updateFocusedElement(element);
+	}
+
 	useEffect(() => {
 		if (DEBUG) console.log("[useEffect] Sorting rows.");
 
 		const element = settings.focusedElement;
 		setFocusedElement(element);
-		console.log("GRABBING FOCUSED ELEMENT FROM CACHE", element);
 		//Sort on first render
 		//Use case:
 		//If a user deletes or adds a new row (by copying and pasting, for example)
@@ -85,7 +91,6 @@ export default function App({
 	}
 
 	function handleFocus() {
-		console.log("HANDLING FOCUS");
 		plugin.focusTable(tableId, sourcePath);
 	}
 
@@ -98,6 +103,9 @@ export default function App({
 				prevElement.id
 			);
 			updateFocusedElement(nextElement);
+			setAppData((prevState) => {
+				return { ...prevState, updateTime: Date.now() };
+			});
 		}
 	}
 
@@ -111,7 +119,11 @@ export default function App({
 					!Object.keys(settings.appData[sourcePath]).includes(tableId)
 				) {
 					try {
-						console.log("SAVING DATA!");
+						console.log("SAVING DATA");
+						// const oldData = appDataToMarkdown(tableId, oldAppData);
+						// const newData = appDataToMarkdown(tableId, appData);
+						// console.log(oldData);
+						// console.log(newData);
 						await saveAppData(
 							plugin,
 							settings,
@@ -187,9 +199,7 @@ export default function App({
 		shouldUpdate: boolean
 	) {
 		if (DEBUG) console.log("[HANDLER]: handleCellContentChange called.");
-		if (shouldUpdate) {
-			resetFocusedElement();
-		}
+		if (shouldUpdate) resetFocusedElement();
 		setAppData((prevState) => {
 			return {
 				...prevState,
@@ -570,6 +580,7 @@ export default function App({
 											key={id}
 											headerId={headerId}
 											width={header.width}
+											onFocusClick={handleCellFocusClick}
 											isFocused={focusedElement.id === id}
 											cellId={id}
 											type={type}

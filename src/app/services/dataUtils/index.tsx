@@ -8,6 +8,7 @@ import {
 	findTableRegex,
 	parseTableFromEl,
 	validTypeDefinitionRow,
+	appDataIdsToMarkdown,
 	findTableId,
 	mergeAppData,
 } from "../../services/utils";
@@ -61,6 +62,10 @@ export const loadAppData = (
 				settings.appData[sourcePath][tableId],
 				newAppData
 			);
+			const newData = appDataIdsToMarkdown(tableId, newAppData);
+			const mergedData = appDataIdsToMarkdown(tableId, merged);
+			console.log(newData);
+			console.log(mergedData);
 			settings.appData[sourcePath][tableId] = merged;
 			plugin.saveSettings();
 			return { tableId, data: settings.appData[sourcePath][tableId] };

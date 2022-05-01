@@ -47,6 +47,15 @@ export const addColumn = (data: AppData): AppData => {
 	};
 };
 
+export const findTabbableElement = (
+	data: AppData,
+	id: string
+): TabbableElement => {
+	const matrix = findTabbableElementMatrix(data);
+	const index = matrix.findIndex((obj) => obj.id === id);
+	return matrix[index];
+};
+
 export const findNextTabbableElement = (
 	data: AppData,
 	id: string
