@@ -6,6 +6,7 @@ interface Props {
 	isOpen: boolean;
 	style?: object;
 	children: React.ReactNode;
+	onTabPress?: () => void;
 	onOutsideClick: (e: MouseEvent | null) => void;
 }
 
@@ -13,6 +14,7 @@ export default function Menu({
 	isOpen,
 	style,
 	children,
+	onTabPress,
 	onOutsideClick,
 }: Props) {
 	const menuRef = useRef(null);
@@ -30,6 +32,7 @@ export default function Menu({
 
 		function handleKeyUp(e: KeyboardEvent) {
 			if (e.key === "Enter") onOutsideClick(null);
+			if (e.key === "Tab") onTabPress();
 		}
 
 		if (isOpen) {

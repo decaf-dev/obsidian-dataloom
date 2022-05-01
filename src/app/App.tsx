@@ -51,8 +51,6 @@ export default function App({
 	const [focusedElement, setFocusedElement] = useState<TabbableElement>(
 		INITIAL_FOCUSED_ELEMENT
 	);
-	const focusedRef = useRef(null);
-	focusedRef.current = focusedElement;
 
 	useEffect(() => {
 		if (DEBUG) console.log("[useEffect] Sorting rows.");
@@ -70,63 +68,42 @@ export default function App({
 
 	if (DEBUG) {
 		console.log("RERENDERING!");
-		console.log(appData);
 	}
 
 	function handleFocus() {
 		console.log("HANDLING FOCUS");
-		// plugin.focusTable(tableId, sourcePath);
-	}
-
-	function handleBlur() {
-		console.log("BLUR!");
-		// setFocusedElement(INITIAL_FOCUSED_ELEMENT);
-		// setAppData((prevState) => {
-		// 	return {
-		// 		...prevState,
-		// 		udpateTime: Date.now(),
-		// 		cells: prevState.cells.map((cell) => {
-		// 			return {
-		// 				...cell,
-		// 				isFocused: false,
-		// 			};
-		// 		}),
-		// 	};
-		// });
+		plugin.focusTable(tableId, sourcePath);
 	}
 
 	function handleKeyUp(e: React.KeyboardEvent) {
 		if (DEBUG) console.log("[HANDLER] handleKeyUp called.");
 		if (e.key === "Tab") {
-			const prevElement = { ...focusedRef.current };
-			console.log(prevElement);
-			const nextTabbableElement = findNextTabbableElement(
+			const prevElement = { ...focusedElement };
+			const nextElement = findNextTabbableElement(
 				appData,
 				Object.keys(prevElement)[0]
 			);
-			setFocusedElement(nextTabbableElement);
-			console.log(nextTabbableElement);
-			setAppData((prevState) => {
-				return {
-					...prevState,
-					cells: prevState.cells.map((cell) => {
-						if (cell.id === Object.keys(prevElement)[0]) {
-							return {
-								...cell,
-								isFocused: false,
-							};
-						} else if (
-							cell.id === Object.keys(nextTabbableElement)[0]
-						) {
-							return {
-								...cell,
-								isFocused: true,
-							};
-						}
-						return cell;
-					}),
-				};
-			});
+			setFocusedElement(nextElement);
+			if (
+				Object.values(prevElement)[0] === TABBABLE_ELEMENT_TYPE.CELL ||
+				Object.values(nextElement)[0] === TABBABLE_ELEMENT_TYPE.CELL
+			) {
+				setAppData((prevState) => {
+					return {
+						...prevState,
+						updateTime: Date.now(),
+						cells: prevState.cells.map((cell) => {
+							if (cell.id === Object.keys(nextElement)[0]) {
+								return {
+									...cell,
+									isFocused: true,
+								};
+							}
+							return cell;
+						}),
+					};
+				});
+			}
 		}
 	}
 
@@ -140,16 +117,16 @@ export default function App({
 					!Object.keys(settings.appData[sourcePath]).includes(tableId)
 				) {
 					try {
-						console.log("SAVING!");
-						await saveAppData(
-							plugin,
-							settings,
-							app,
-							oldAppData,
-							appData,
-							sourcePath,
-							tableId
-						);
+						console.log("SAVING DATA!");
+						// await saveAppData(
+						// 	plugin,
+						// 	settings,
+						// 	app,
+						// 	oldAppData,
+						// 	appData,
+						// 	sourcePath,
+						// 	tableId
+						// );
 					} catch (err) {
 						console.log(err);
 					}
@@ -542,7 +519,12 @@ export default function App({
 	}
 
 	return (
-		<div className="NLT__app" tabIndex={0} onKeyUp={handleKeyUp}>
+		<div
+			className="NLT__app"
+			tabIndex={0}
+			onKeyUp={handleKeyUp}
+			onClick={handleFocus}
+		>
 			<Table
 				headers={appData.headers.map((header, j) => {
 					const { id, content, width, type, sortName } = header;

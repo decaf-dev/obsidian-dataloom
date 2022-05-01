@@ -16,6 +16,7 @@ interface Props {
 	onInputChange: (value: string) => void;
 	onTagClick: (tagId: string) => void;
 	onAddTag: (inputText: string) => void;
+	onTabPress: () => void;
 	onRemoveTagClick: (cellId: string, tagId: string) => void;
 	onOutsideClick: () => void;
 }
@@ -29,6 +30,7 @@ export default function CellEditMenu({
 	tagColor,
 	style,
 	onInputChange,
+	onTabPress,
 	onRemoveTagClick,
 	onAddTag,
 	onTagClick,
@@ -101,7 +103,12 @@ export default function CellEditMenu({
 	}
 
 	return (
-		<Menu isOpen={isOpen} style={style} onOutsideClick={onOutsideClick}>
+		<Menu
+			isOpen={isOpen}
+			style={style}
+			onTabPress={onTabPress}
+			onOutsideClick={onOutsideClick}
+		>
 			{renderContent()}
 		</Menu>
 	);

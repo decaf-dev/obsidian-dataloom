@@ -12,6 +12,7 @@ import { Tag } from "../../services/state";
 import { CELL_TYPE } from "../../constants";
 
 import "./styles.css";
+import { useForceUpdate } from "src/app/services/hooks";
 
 interface Props {
 	cellId: string;
@@ -53,8 +54,6 @@ export default function EditableTd({
 }: Props) {
 	const [inputText, setInputText] = useState("");
 
-	const tdRef = useRef<HTMLTableCellElement>();
-
 	const initialCellMenuState = {
 		isOpen: false,
 		top: 0,
@@ -68,10 +67,33 @@ export default function EditableTd({
 	useEffect(() => {
 		if (isFocused) {
 			openMenu();
-		} else {
-			updateContent(false);
 		}
 	}, [isFocused]);
+
+	const tdRef = useCallback(
+		(node) => {
+			if (node) {
+				if (node instanceof HTMLElement) {
+					setTimeout(() => {
+						setCellMenu((prevState) => {
+							const { width, height } =
+								node.getBoundingClientRect();
+							return {
+								...prevState,
+								width,
+								height,
+							};
+						});
+					}, 1);
+				}
+			}
+		},
+		[content.length, cellMenu.isOpen]
+	);
+
+	function handleTabPress() {
+		updateContent(false);
+	}
 
 	async function handleCellContextClick(e: React.MouseEvent<HTMLElement>) {
 		try {
@@ -107,18 +129,16 @@ export default function EditableTd({
 	}
 
 	function openMenu() {
-		if (tdRef.current) {
-			const { width, height } = tdRef.current.getBoundingClientRect();
-			setCellMenu({
+		setCellMenu((prevState) => {
+			return {
+				...prevState,
 				isOpen: true,
 				left: -10,
 				top: -5,
-				width,
-				height,
 				tagColor: randomColor(),
-			});
-			setInputText(content);
-		}
+			};
+		});
+		setInputText(content);
 	}
 
 	function handleAddTag(text: string) {
@@ -133,26 +153,20 @@ export default function EditableTd({
 	}
 
 	function updateContent(shouldUpdate: boolean) {
-		//If we're in Live Preview mode and we click on the header and then click on the outside of
-		//the component, the menu will close, set the data (which didn't change), which cause an update
-		//which persists the data again. We can prevent this by only calling onOutsideClick
-		//if the data has actually changed
-		if (inputText !== content) {
-			switch (type) {
-				case CELL_TYPE.TEXT:
-					onContentChange(cellId, inputText, shouldUpdate);
-					setInputText("");
-					break;
-				case CELL_TYPE.NUMBER:
-					onContentChange(cellId, inputText, shouldUpdate);
-					setInputText("");
-					break;
-				case CELL_TYPE.TAG:
-					setInputText("");
-					break;
-				default:
-					break;
-			}
+		switch (type) {
+			case CELL_TYPE.TEXT:
+				onContentChange(cellId, inputText, shouldUpdate);
+				setInputText("");
+				break;
+			case CELL_TYPE.NUMBER:
+				onContentChange(cellId, inputText, shouldUpdate);
+				setInputText("");
+				break;
+			case CELL_TYPE.TAG:
+				setInputText("");
+				break;
+			default:
+				break;
 		}
 		closeMenu();
 	}
@@ -212,6 +226,7 @@ export default function EditableTd({
 				inputText={inputText}
 				onInputChange={setInputText}
 				onOutsideClick={handleOutsideClick}
+				onTabPress={handleTabPress}
 				onAddTag={handleAddTag}
 				onRemoveTagClick={onRemoveTagClick}
 				onTagClick={handleTagClick}

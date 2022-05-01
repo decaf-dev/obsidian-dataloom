@@ -62,12 +62,12 @@ export interface TabbableElement {
 
 export const findTabbableElementMatrix = (data: AppData): TabbableElement[] => {
 	const tabbableElementMatrix: TabbableElement[] = [];
-	data.headers.forEach((header) => {
-		tabbableElementMatrix.push({
-			[header.id]: TABBABLE_ELEMENT_TYPE.HEADER,
-		});
-	});
-	tabbableElementMatrix.push({ [`button-0`]: TABBABLE_ELEMENT_TYPE.BUTTON });
+	// data.headers.forEach((header) => {
+	// 	tabbableElementMatrix.push({
+	// 		[header.id]: TABBABLE_ELEMENT_TYPE.HEADER,
+	// 	});
+	// });
+	//tabbableElementMatrix.push({ [`button-0`]: TABBABLE_ELEMENT_TYPE.BUTTON });
 
 	data.rows.forEach((row, i) => {
 		data.headers.forEach((header) => {
@@ -78,12 +78,12 @@ export const findTabbableElementMatrix = (data: AppData): TabbableElement[] => {
 				[cell.id]: TABBABLE_ELEMENT_TYPE.CELL,
 			});
 		});
-		tabbableElementMatrix.push({
-			[`button-${i + 1}`]: TABBABLE_ELEMENT_TYPE.BUTTON,
-		});
+		// tabbableElementMatrix.push({
+		// 	[`button-${i + 1}`]: TABBABLE_ELEMENT_TYPE.BUTTON,
+		// });
 	});
-	tabbableElementMatrix.push({
-		[`button-${data.rows.length + 1}`]: TABBABLE_ELEMENT_TYPE.BUTTON,
-	});
+	// tabbableElementMatrix.push({
+	// 	[`button-${data.rows.length + 1}`]: TABBABLE_ELEMENT_TYPE.BUTTON,
+	// });
 	return tabbableElementMatrix;
 };

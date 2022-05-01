@@ -306,14 +306,6 @@ export const mergeAppData = (
 		merged.headers[i].width = header.width;
 	});
 
-	oldAppData.cells.forEach((cell, i) => {
-		//TODO why is there an undefined value here??
-		// console.log(merged.cells[i]);
-		if (merged.cells[i]) {
-			merged.cells[i].isFocused = cell.isFocused;
-		}
-	});
-
 	//TODO fix potential bugs with adding data
 	//This allows the user to add new rows or delete existing rows
 	//and still have the correct creationTime
