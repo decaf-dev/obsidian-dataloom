@@ -12,7 +12,6 @@ import { Tag } from "../../services/state";
 import { CELL_TYPE } from "../../constants";
 
 import "./styles.css";
-import { useForceUpdate } from "src/app/services/hooks";
 
 interface Props {
 	cellId: string;
