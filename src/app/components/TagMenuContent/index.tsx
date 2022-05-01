@@ -11,9 +11,9 @@ interface Props {
 	tags: Tag[];
 	color: string;
 	inputText: string;
+	onTextChange: React.ChangeEventHandler<HTMLInputElement>;
 	onTagClick: (tagId: string) => void;
 	onAddTag: (inputText: string) => void;
-	onTextChange: React.ChangeEventHandler<HTMLInputElement>;
 	onRemoveTagClick: (cellId: string, tagId: string) => void;
 }
 

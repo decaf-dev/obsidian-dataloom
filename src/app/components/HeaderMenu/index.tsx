@@ -132,6 +132,7 @@ export default function HeaderMenu({
 					/>
 				</div>
 				<button
+					tabIndex={-1}
 					className="NLT__button NLT__header-menu-delete-button"
 					onClick={() => handleDeleteClick(id)}
 				>

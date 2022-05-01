@@ -43,6 +43,7 @@ export default function CellEditMenu({
 			firstOpen.current = false;
 		}
 	}, [isOpen]);
+
 	const textAreaRef = useCallback(
 		(node) => {
 			if (node) {

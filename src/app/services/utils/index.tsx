@@ -306,11 +306,17 @@ export const mergeAppData = (
 		merged.headers[i].width = header.width;
 	});
 
-	//Algorithm:
-	//Sort by default first and then find
+	oldAppData.cells.forEach((cell, i) => {
+		//TODO why is there an undefined value here??
+		// console.log(merged.cells[i]);
+		if (merged.cells[i]) {
+			merged.cells[i].isFocused = cell.isFocused;
+		}
+	});
+
+	//TODO fix potential bugs with adding data
 	//This allows the user to add new rows or delete existing rows
 	//and still have the correct creationTime
-	//Grab row settings
 	newAppData.rows.forEach((row, i) => {
 		if (oldAppData.rows.length >= i + 1) {
 			merged.rows[i].creationTime = oldAppData.rows[i].creationTime;

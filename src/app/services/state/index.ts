@@ -50,6 +50,7 @@ export interface Cell {
 	headerId: string;
 	content: string;
 	type: string;
+	isFocused: boolean;
 	expectedType: string | null;
 }
 
@@ -91,6 +92,7 @@ export const initialCell = (
 		rowId,
 		headerId,
 		type,
+		isFocused: false,
 		content,
 		expectedType,
 	};

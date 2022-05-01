@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -18,12 +18,17 @@ import {
 import { saveAppData } from "./services/dataUtils";
 import { AppData } from "./services/state";
 
-import { CELL_TYPE, DEBUG } from "./constants";
+import { CELL_TYPE, DEBUG, TABBABLE_ELEMENT_TYPE } from "./constants";
 
 import "./app.css";
 import NltPlugin from "main";
 import { SORT } from "./components/HeaderMenu/constants";
-import { addColumn, addRow } from "./services/appDataUtils";
+import {
+	addColumn,
+	addRow,
+	TabbableElement,
+	findNextTabbableElement,
+} from "./services/appDataUtils";
 
 interface Props {
 	plugin: NltPlugin;
@@ -33,6 +38,7 @@ interface Props {
 	tableId: string;
 }
 
+const INITIAL_FOCUSED_ELEMENT = { [-1]: TABBABLE_ELEMENT_TYPE.UNFOCUSED };
 export default function App({
 	plugin,
 	settings,
@@ -42,8 +48,14 @@ export default function App({
 }: Props) {
 	const [oldAppData] = useState<AppData>(data);
 	const [appData, setAppData] = useState<AppData>(data);
+	const [focusedElement, setFocusedElement] = useState<TabbableElement>(
+		INITIAL_FOCUSED_ELEMENT
+	);
+	const focusedRef = useRef(null);
+	focusedRef.current = focusedElement;
 
 	useEffect(() => {
+		if (DEBUG) console.log("[useEffect] Sorting rows.");
 		//Sort on first render
 		//Use case:
 		//If a user deletes or adds a new row (by copying and pasting, for example)
@@ -61,6 +73,63 @@ export default function App({
 		console.log(appData);
 	}
 
+	function handleFocus() {
+		console.log("HANDLING FOCUS");
+		// plugin.focusTable(tableId, sourcePath);
+	}
+
+	function handleBlur() {
+		console.log("BLUR!");
+		// setFocusedElement(INITIAL_FOCUSED_ELEMENT);
+		// setAppData((prevState) => {
+		// 	return {
+		// 		...prevState,
+		// 		udpateTime: Date.now(),
+		// 		cells: prevState.cells.map((cell) => {
+		// 			return {
+		// 				...cell,
+		// 				isFocused: false,
+		// 			};
+		// 		}),
+		// 	};
+		// });
+	}
+
+	function handleKeyUp(e: React.KeyboardEvent) {
+		if (DEBUG) console.log("[HANDLER] handleKeyUp called.");
+		if (e.key === "Tab") {
+			const prevElement = { ...focusedRef.current };
+			console.log(prevElement);
+			const nextTabbableElement = findNextTabbableElement(
+				appData,
+				Object.keys(prevElement)[0]
+			);
+			setFocusedElement(nextTabbableElement);
+			console.log(nextTabbableElement);
+			setAppData((prevState) => {
+				return {
+					...prevState,
+					cells: prevState.cells.map((cell) => {
+						if (cell.id === Object.keys(prevElement)[0]) {
+							return {
+								...cell,
+								isFocused: false,
+							};
+						} else if (
+							cell.id === Object.keys(nextTabbableElement)[0]
+						) {
+							return {
+								...cell,
+								isFocused: true,
+							};
+						}
+						return cell;
+					}),
+				};
+			});
+		}
+	}
+
 	useEffect(() => {
 		async function handleUpdate() {
 			//If we're running in Obsidian
@@ -71,8 +140,7 @@ export default function App({
 					!Object.keys(settings.appData[sourcePath]).includes(tableId)
 				) {
 					try {
-						//TODO debounce?
-						//I don't think it's necessary. It seems like .cachedRead and .modify don't update
+						console.log("SAVING!");
 						await saveAppData(
 							plugin,
 							settings,
@@ -92,18 +160,21 @@ export default function App({
 	}, [appData.updateTime]);
 
 	function handleAddColumn() {
+		if (DEBUG) console.log("[HANDLER]: handleAddColumn called.");
 		setAppData((prevState) => {
 			return addColumn(prevState);
 		});
 	}
 
 	function handleAddRow() {
+		if (DEBUG) console.log("[HANDLER]: handleAddRow called.");
 		setAppData((prevState: AppData) => {
 			return addRow(prevState);
 		});
 	}
 
 	function handleHeaderSave(id: string, updatedContent: string) {
+		if (DEBUG) console.log("[HANDLER]: handleHeaderSave called.");
 		setAppData((prevState) => {
 			return {
 				...prevState,
@@ -125,6 +196,7 @@ export default function App({
 		type: string,
 		sortName: string
 	) {
+		if (DEBUG) console.log("[HANDLER]: handleHeaderSort called.");
 		setAppData((prevState) => {
 			return {
 				...prevState,
@@ -138,16 +210,22 @@ export default function App({
 		sortRows(id, type, sortName);
 	}
 
-	function handleUpdateContent(id: string, content: string) {
+	function handleCellContentChange(
+		id: string,
+		content: string,
+		shouldUpdate: boolean
+	) {
+		if (DEBUG) console.log("[HANDLER]: handleCellContentChange called.");
 		setAppData((prevState) => {
 			return {
 				...prevState,
-				updateTime: Date.now(),
+				updateTime: shouldUpdate ? Date.now() : 0,
 				cells: prevState.cells.map((cell) => {
 					if (cell.id === id) {
 						return {
 							...cell,
 							content,
+							isFocused: false,
 						};
 					}
 					return cell;
@@ -162,6 +240,7 @@ export default function App({
 		content: string,
 		color: string
 	) {
+		if (DEBUG) console.log("[HANDLER]: handleAddTag called.");
 		setAppData((prevState) => {
 			return {
 				...prevState,
@@ -194,6 +273,7 @@ export default function App({
 	}
 
 	function handleTagClick(cellId: string, tagId: string) {
+		if (DEBUG) console.log("[HANDLER]: handleTagClick called.");
 		//If our cell id has already selected the tag then return
 		const found = appData.tags.find((tag) => tag.id === tagId);
 		if (found.selected.includes(cellId)) return;
@@ -220,6 +300,7 @@ export default function App({
 	}
 
 	function handleRemoveTagClick(cellId: string, tagId: string) {
+		if (DEBUG) console.log("[HANDLER]: handleRemoveTagClick called.");
 		setAppData((prevState) => {
 			return {
 				...prevState,
@@ -284,6 +365,7 @@ export default function App({
 	}
 
 	function handleDeleteHeaderClick(id: string) {
+		if (DEBUG) console.log("[HANDLER]: handleDeleteHeaderClick called.");
 		setAppData((prevState) => {
 			return {
 				...prevState,
@@ -295,6 +377,7 @@ export default function App({
 	}
 
 	function handleDeleteRowClick(rowId: string) {
+		if (DEBUG) console.log("[HANDLER]: handleDeleteRowClick called.");
 		setAppData((prevState) => {
 			return {
 				...prevState,
@@ -306,6 +389,7 @@ export default function App({
 	}
 
 	function handleMoveRowClick(id: string, moveBelow: boolean) {
+		if (DEBUG) console.log("[HANDLER]: handleMoveRowClick called.");
 		setAppData((prevState: AppData) => {
 			const index = prevState.rows.findIndex((row) => row.id === id);
 			//We assume that there is checking to make sure you don't move the first row up or last row down
@@ -330,6 +414,7 @@ export default function App({
 	}
 
 	function handleWidthChange(id: string, newWidth: number) {
+		if (DEBUG) console.log("[HANDLER]: handleWidthChange called.");
 		setAppData((prevState: AppData) => {
 			return {
 				...prevState,
@@ -348,6 +433,7 @@ export default function App({
 	}
 
 	function handleMoveColumnClick(id: string, moveRight: boolean) {
+		if (DEBUG) console.log("[HANDLER]: handleMoveColumnClick called.");
 		setAppData((prevState: AppData) => {
 			const index = prevState.headers.findIndex(
 				(header) => header.id === id
@@ -368,6 +454,7 @@ export default function App({
 	}
 
 	function handleInsertColumnClick(id: string, insertRight: boolean) {
+		if (DEBUG) console.log("[HANDLER]: handleInsertColumnClick called.");
 		setAppData((prevState: AppData) => {
 			const header = prevState.headers.find((header) => header.id === id);
 			const index = prevState.headers.indexOf(header);
@@ -397,6 +484,7 @@ export default function App({
 	}
 
 	function handleInsertRowClick(id: string, insertBelow = false) {
+		if (DEBUG) console.log("[HANDLER]: handleHeaderInsertRowClick called.");
 		const rowId = uuidv4();
 		setAppData((prevState: AppData) => {
 			const tags: Tag[] = [];
@@ -424,6 +512,7 @@ export default function App({
 	}
 
 	function handleHeaderTypeSelect(id: string, cellType: string) {
+		if (DEBUG) console.log("[HANDLER]: handleHeaderTypeSelect called.");
 		//If same header type return
 		const header = appData.headers.find((header) => header.id === id);
 		if (header.type === cellType) return;
@@ -453,11 +542,7 @@ export default function App({
 	}
 
 	return (
-		<div
-			className="NLT__app"
-			tabIndex={-1}
-			onFocus={() => plugin.focusTable(tableId, sourcePath)}
-		>
+		<div className="NLT__app" tabIndex={0} onKeyUp={handleKeyUp}>
 			<Table
 				headers={appData.headers.map((header, j) => {
 					const { id, content, width, type, sortName } = header;
@@ -496,6 +581,7 @@ export default function App({
 										type,
 										headerId,
 										content,
+										isFocused,
 										expectedType,
 									} = appData.cells.find(
 										(cell) =>
@@ -507,6 +593,7 @@ export default function App({
 											key={id}
 											headerId={headerId}
 											width={header.width}
+											isFocused={isFocused}
 											cellId={id}
 											type={type}
 											content={content}
@@ -519,8 +606,8 @@ export default function App({
 											onRemoveTagClick={
 												handleRemoveTagClick
 											}
-											onUpdateContent={
-												handleUpdateContent
+											onContentChange={
+												handleCellContentChange
 											}
 											onAddTag={handleAddTag}
 										/>

@@ -16,7 +16,7 @@ const IconButton = forwardRef<HTMLInputElement, Props>(
 
 		return (
 			<button
-				tabIndex={0}
+				tabIndex={-1}
 				id={id !== "" ? id : ""}
 				className={className}
 				ref={ref}
