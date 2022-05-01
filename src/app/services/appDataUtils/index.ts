@@ -52,7 +52,7 @@ export const findNextTabbableElement = (
 	id: string
 ): TabbableElement => {
 	const matrix = findTabbableElementMatrix(data);
-	const index = matrix.findIndex((obj) => Object.keys(obj)[0] === id);
+	const index = matrix.findIndex((obj) => obj.id === id);
 	return matrix[(index + 1) % matrix.length];
 };
 
@@ -75,7 +75,8 @@ export const findTabbableElementMatrix = (data: AppData): TabbableElement[] => {
 				(cell) => cell.rowId === row.id && cell.headerId === header.id
 			);
 			tabbableElementMatrix.push({
-				[cell.id]: TABBABLE_ELEMENT_TYPE.CELL,
+				id: cell.id,
+				type: TABBABLE_ELEMENT_TYPE.CELL,
 			});
 		});
 		// tabbableElementMatrix.push({

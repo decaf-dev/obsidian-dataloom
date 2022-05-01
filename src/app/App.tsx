@@ -81,19 +81,19 @@ export default function App({
 			const prevElement = { ...focusedElement };
 			const nextElement = findNextTabbableElement(
 				appData,
-				Object.keys(prevElement)[0]
+				prevElement.id
 			);
 			setFocusedElement(nextElement);
 			if (
-				Object.values(prevElement)[0] === TABBABLE_ELEMENT_TYPE.CELL ||
-				Object.values(nextElement)[0] === TABBABLE_ELEMENT_TYPE.CELL
+				prevElement.type === TABBABLE_ELEMENT_TYPE.CELL ||
+				nextElement.type === TABBABLE_ELEMENT_TYPE.CELL
 			) {
 				setAppData((prevState) => {
 					return {
 						...prevState,
 						updateTime: Date.now(),
 						cells: prevState.cells.map((cell) => {
-							if (cell.id === Object.keys(nextElement)[0]) {
+							if (cell.id === nextElement.id) {
 								return {
 									...cell,
 									isFocused: true,

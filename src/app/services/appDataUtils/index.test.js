@@ -13,13 +13,13 @@ describe("findTabbableElementMatrix", () => {
 		const data = findAppData(parsedTable);
 		const matrix = findTabbableElementMatrix(data);
 		expect(matrix).toEqual([
-			{ [data.headers[0].id]: TABBABLE_ELEMENT_TYPE.HEADER },
-			{ [data.headers[1].id]: TABBABLE_ELEMENT_TYPE.HEADER },
-			{ "button-0": TABBABLE_ELEMENT_TYPE.BUTTON },
-			{ [data.cells[0].id]: TABBABLE_ELEMENT_TYPE.CELL },
-			{ [data.cells[1].id]: TABBABLE_ELEMENT_TYPE.CELL },
-			{ "button-1": TABBABLE_ELEMENT_TYPE.BUTTON },
-			{ "button-2": TABBABLE_ELEMENT_TYPE.BUTTON },
+			// { id: data.headers[0].id, type: TABBABLE_ELEMENT_TYPE.HEADER },
+			// { id: data.headers[1].id, type: TABBABLE_ELEMENT_TYPE.HEADER },
+			// { id: "button-0", type: TABBABLE_ELEMENT_TYPE.BUTTON },
+			{ id: data.cells[0].id, type: TABBABLE_ELEMENT_TYPE.CELL },
+			{ id: data.cells[1].id, type: TABBABLE_ELEMENT_TYPE.CELL },
+			// { id: "button-1", type: TABBABLE_ELEMENT_TYPE.BUTTON },
+			// { id: "button-2", type: TABBABLE_ELEMENT_TYPE.BUTTON },
 		]);
 	});
 });
@@ -33,9 +33,12 @@ describe("findNextTabbableElement", () => {
 			["test", "test"],
 		];
 		const data = findAppData(parsedTable);
+		console.log(data.cells[0].id);
+		console.log(data.cells[1].id);
 		const found = findNextTabbableElement(data, data.cells[0].id);
 		expect(found).toEqual({
-			[data.cells[1].id]: TABBABLE_ELEMENT_TYPE.CELL,
+			id: data.cells[1].id,
+			type: TABBABLE_ELEMENT_TYPE.CELL,
 		});
 	});
 	it("finds loops element at end", () => {
@@ -46,9 +49,10 @@ describe("findNextTabbableElement", () => {
 			["test", "test"],
 		];
 		const data = findAppData(parsedTable);
-		const found = findNextTabbableElement(data, "button-2");
+		const found = findNextTabbableElement(data, data.cells[1].id);
 		expect(found).toEqual({
-			[data.headers[0].id]: TABBABLE_ELEMENT_TYPE.HEADER,
+			id: data.cells[0].id,
+			type: TABBABLE_ELEMENT_TYPE.CELL,
 		});
 	});
 });
