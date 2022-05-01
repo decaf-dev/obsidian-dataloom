@@ -257,6 +257,8 @@ export default function EditableTd({
 			className={tdClassName}
 			tabIndex={0}
 			ref={tdRef}
+			onFocus={() => openMenu()}
+			onBlur={() => handleOutsideClick()}
 			onClick={handleCellClick}
 			onKeyUp={handleKeyUp}
 			onContextMenu={handleCellContextClick}
