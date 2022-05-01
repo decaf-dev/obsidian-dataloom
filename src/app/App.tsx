@@ -67,7 +67,8 @@ export default function App({
 			if (app) {
 				if (
 					appData.updateTime !== 0 ||
-					!settings.appData[sourcePath][tableId]
+					!Object.keys(settings.appData).includes(sourcePath) ||
+					!Object.keys(settings.appData[sourcePath]).includes(tableId)
 				) {
 					try {
 						//TODO debounce?
