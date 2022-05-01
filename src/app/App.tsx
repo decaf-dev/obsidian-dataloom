@@ -52,8 +52,22 @@ export default function App({
 		INITIAL_FOCUSED_ELEMENT
 	);
 
+	async function updateFocusedElement(element: TabbableElement) {
+		settings.focusedElement = element;
+		await plugin.saveSettings();
+		setFocusedElement(element);
+	}
+
+	async function resetFocusedElement() {
+		await updateFocusedElement(INITIAL_FOCUSED_ELEMENT);
+	}
+
 	useEffect(() => {
 		if (DEBUG) console.log("[useEffect] Sorting rows.");
+
+		const element = settings.focusedElement;
+		setFocusedElement(element);
+		console.log("GRABBING FOCUSED ELEMENT FROM CACHE", element);
 		//Sort on first render
 		//Use case:
 		//If a user deletes or adds a new row (by copying and pasting, for example)
@@ -75,7 +89,7 @@ export default function App({
 		plugin.focusTable(tableId, sourcePath);
 	}
 
-	function handleKeyUp(e: React.KeyboardEvent) {
+	async function handleKeyUp(e: React.KeyboardEvent) {
 		if (DEBUG) console.log("[HANDLER] handleKeyUp called.");
 		if (e.key === "Tab") {
 			const prevElement = { ...focusedElement };
@@ -83,27 +97,7 @@ export default function App({
 				appData,
 				prevElement.id
 			);
-			setFocusedElement(nextElement);
-			if (
-				prevElement.type === TABBABLE_ELEMENT_TYPE.CELL ||
-				nextElement.type === TABBABLE_ELEMENT_TYPE.CELL
-			) {
-				setAppData((prevState) => {
-					return {
-						...prevState,
-						updateTime: Date.now(),
-						cells: prevState.cells.map((cell) => {
-							if (cell.id === nextElement.id) {
-								return {
-									...cell,
-									isFocused: true,
-								};
-							}
-							return cell;
-						}),
-					};
-				});
-			}
+			updateFocusedElement(nextElement);
 		}
 	}
 
@@ -118,15 +112,15 @@ export default function App({
 				) {
 					try {
 						console.log("SAVING DATA!");
-						// await saveAppData(
-						// 	plugin,
-						// 	settings,
-						// 	app,
-						// 	oldAppData,
-						// 	appData,
-						// 	sourcePath,
-						// 	tableId
-						// );
+						await saveAppData(
+							plugin,
+							settings,
+							app,
+							oldAppData,
+							appData,
+							sourcePath,
+							tableId
+						);
 					} catch (err) {
 						console.log(err);
 					}
@@ -193,6 +187,9 @@ export default function App({
 		shouldUpdate: boolean
 	) {
 		if (DEBUG) console.log("[HANDLER]: handleCellContentChange called.");
+		if (shouldUpdate) {
+			resetFocusedElement();
+		}
 		setAppData((prevState) => {
 			return {
 				...prevState,
@@ -202,7 +199,6 @@ export default function App({
 						return {
 							...cell,
 							content,
-							isFocused: false,
 						};
 					}
 					return cell;
@@ -563,7 +559,6 @@ export default function App({
 										type,
 										headerId,
 										content,
-										isFocused,
 										expectedType,
 									} = appData.cells.find(
 										(cell) =>
@@ -575,7 +570,7 @@ export default function App({
 											key={id}
 											headerId={headerId}
 											width={header.width}
-											isFocused={isFocused}
+											isFocused={focusedElement.id === id}
 											cellId={id}
 											type={type}
 											content={content}

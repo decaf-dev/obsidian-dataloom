@@ -50,14 +50,14 @@ export default function CellEditMenu({
 		(node) => {
 			if (node) {
 				if (cellType === CELL_TYPE.TEXT) {
-					if (firstOpen && isOpen) {
+					if (firstOpen.current && isOpen) {
 						node.selectionStart = inputText.length;
 						node.selectionEnd = inputText.length;
 					}
 				}
 			}
 		},
-		[cellType, inputText.length, isOpen, firstOpen]
+		[cellType, inputText.length, isOpen, firstOpen.current]
 	);
 
 	function renderContent() {

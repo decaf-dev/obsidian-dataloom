@@ -2,7 +2,8 @@ import React from "react";
 import { SORT } from "src/app/components/HeaderMenu/constants";
 import { v4 as uuidv4 } from "uuid";
 
-import { CELL_TYPE } from "../../constants";
+import { CELL_TYPE, TABBABLE_ELEMENT_TYPE } from "../../constants";
+import { TabbableElement } from "../appDataUtils";
 
 export interface AppData {
 	updateTime: number;
@@ -20,10 +21,12 @@ export const instanceOfErrorData = (object: any): object is ErrorData => {
 };
 export interface NltSettings {
 	appData: { [filePath: string]: { [tableId: string]: AppData } };
+	focusedElement: TabbableElement;
 }
 
 export const DEFAULT_SETTINGS: NltSettings = {
 	appData: {},
+	focusedElement: { id: "-1", type: TABBABLE_ELEMENT_TYPE.UNFOCUSED },
 };
 export interface Header {
 	id: string;
@@ -50,7 +53,6 @@ export interface Cell {
 	headerId: string;
 	content: string;
 	type: string;
-	isFocused: boolean;
 	expectedType: string | null;
 }
 
@@ -92,7 +94,6 @@ export const initialCell = (
 		rowId,
 		headerId,
 		type,
-		isFocused: false,
 		content,
 		expectedType,
 	};

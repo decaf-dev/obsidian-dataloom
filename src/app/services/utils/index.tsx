@@ -307,6 +307,14 @@ export const mergeAppData = (
 	});
 
 	//TODO fix potential bugs with adding data
+	oldAppData.cells.forEach((cell, i) => {
+		merged.cells[i].id = cell.id;
+	});
+
+	console.log(oldAppData.cells.length);
+	console.log(merged.cells.length);
+
+	//TODO fix potential bugs with adding data
 	//This allows the user to add new rows or delete existing rows
 	//and still have the correct creationTime
 	newAppData.rows.forEach((row, i) => {
