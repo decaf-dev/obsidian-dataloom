@@ -86,10 +86,6 @@ export default function App({
 		}
 	}, []);
 
-	if (DEBUG) {
-		console.log("RERENDERING!");
-	}
-
 	function handleFocus() {
 		plugin.focusTable(tableId, sourcePath);
 	}
@@ -116,7 +112,7 @@ export default function App({
 					!Object.keys(settings.appData[sourcePath]).includes(tableId)
 				) {
 					try {
-						console.log("SAVING DATA");
+						if (DEBUG) console.log("SAVING DATA");
 						// const oldData = appDataToMarkdown(tableId, oldAppData);
 						// const newData = appDataToMarkdown(tableId, appData);
 						// console.log(oldData);

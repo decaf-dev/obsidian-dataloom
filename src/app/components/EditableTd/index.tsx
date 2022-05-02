@@ -66,7 +66,6 @@ export default function EditableTd({
 	useEffect(() => {
 		if (isFocused) {
 			if (cellMenu.isOpen) return;
-			console.log("OPENING");
 			openMenu();
 		} else {
 			if (!cellMenu.isOpen) return;
@@ -105,7 +104,6 @@ export default function EditableTd({
 	);
 
 	function handleTabPress() {
-		console.log("[handler] handleTabPress");
 		updateContent();
 	}
 
@@ -194,7 +192,6 @@ export default function EditableTd({
 	}
 
 	function handleOutsideClick() {
-		console.log("[handler] handleOusideClick");
 		updateContent();
 		onOutsideClick();
 	}

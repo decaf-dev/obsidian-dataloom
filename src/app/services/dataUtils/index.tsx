@@ -81,7 +81,6 @@ const persistAppData = (
 	tableId: string
 ) => {
 	if (!settings.appData[sourcePath]) settings.appData[sourcePath] = {};
-	if (DEBUG) console.log("PERSISTING APP DATA");
 	settings.appData[sourcePath][tableId] = appData;
 	plugin.saveData(settings);
 };
