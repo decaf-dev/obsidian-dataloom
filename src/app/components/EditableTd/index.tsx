@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Notice } from "obsidian";
 
 import CellEditMenu from "../CellEditMenu";
@@ -24,7 +24,11 @@ interface Props {
 	expectedType: string | null;
 	onRemoveTagClick: (cellId: string, tagId: string) => void;
 	onTagClick: (cellId: string, tagId: string) => void;
-	onContentChange: (cellId: string, inputText: string) => void;
+	onContentChange: (
+		cellId: string,
+		inputText: string,
+		shouldLock: boolean
+	) => void;
 	onAddTag: (
 		cellId: string,
 		headerId: string,
@@ -52,6 +56,7 @@ export default function EditableTd({
 	onAddTag,
 }: Props) {
 	const [inputText, setInputText] = useState("");
+	const closingMenu = useRef(false);
 
 	const initialCellMenuState = {
 		isOpen: false,
@@ -84,27 +89,43 @@ export default function EditableTd({
 							const { width, height } =
 								node.getBoundingClientRect();
 
+							function findWidth() {
+								switch (type) {
+									case CELL_TYPE.TAG:
+										return "fit-content";
+									case CELL_TYPE.TEXT:
+										return `${width}px`;
+									default:
+										return `${width}px`;
+								}
+							}
+
+							function findHeight() {
+								switch (type) {
+									case CELL_TYPE.TEXT:
+									case CELL_TYPE.TAG:
+										return "fit-content";
+									case CELL_TYPE.NUMBER:
+										return "3rem";
+									default:
+										return `${height}px`;
+								}
+							}
 							return {
 								...prevState,
-								width:
-									type === CELL_TYPE.TAG
-										? "fit-content"
-										: `${width}px`,
-								height:
-									type === CELL_TYPE.TAG
-										? "fit-content"
-										: `${height}px`,
+								width: findWidth(),
+								height: findHeight(),
 							};
 						});
 					}, 1);
 				}
 			}
 		},
-		[content.length, cellMenu.isOpen]
+		[inputText, cellMenu.isOpen]
 	);
 
 	function handleTabPress() {
-		updateContent();
+		updateContent(true);
 	}
 
 	async function handleCellContextClick(e: React.MouseEvent<HTMLElement>) {
@@ -160,17 +181,18 @@ export default function EditableTd({
 		onOutsideClick();
 	}
 
-	function updateContent() {
+	function updateContent(shouldLock: boolean) {
 		if (content !== inputText) {
 			switch (type) {
 				case CELL_TYPE.TEXT:
-					onContentChange(cellId, inputText);
+					onContentChange(cellId, inputText, shouldLock);
 					setInputText("");
 					break;
 				case CELL_TYPE.NUMBER:
-					onContentChange(cellId, inputText);
+					onContentChange(cellId, inputText, shouldLock);
 					setInputText("");
 					break;
+				//TODO add lock
 				case CELL_TYPE.TAG:
 					const tag = tags.find((tag) => tag.content === inputText);
 					if (tag) {
@@ -192,9 +214,20 @@ export default function EditableTd({
 	}
 
 	function handleOutsideClick() {
-		updateContent();
+		closingMenu.current = true;
 		onOutsideClick();
 	}
+
+	//Synchronous handler
+	//Runs after handle outside click
+	useEffect(() => {
+		if (closingMenu.current && !isFocused) {
+			//Set updated false
+			//handle update
+			closingMenu.current = false;
+			updateContent(false);
+		}
+	}, [isFocused, closingMenu.current]);
 
 	function renderCell() {
 		switch (type) {
@@ -233,7 +266,7 @@ export default function EditableTd({
 		>
 			<CellEditMenu
 				style={{
-					minHeight: "3rem",
+					minWidth: type === CELL_TYPE.TAG ? "15rem" : "100px",
 					height: cellMenu.height,
 					width: cellMenu.width,
 					top: `${cellMenu.top}px`,

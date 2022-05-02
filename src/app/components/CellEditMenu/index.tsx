@@ -1,9 +1,10 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react";
 
 import Menu from "../Menu";
 import TagMenuContent from "../TagMenuContent";
 import { Tag } from "../../services/state";
 import { CELL_TYPE } from "../../constants";
+import "./styles.css";
 
 interface Props {
 	isOpen: boolean;
@@ -36,28 +37,45 @@ export default function CellEditMenu({
 	onTagClick,
 	onOutsideClick,
 }: Props) {
-	const firstOpen = useRef(false);
-
-	useEffect(() => {
-		if (isOpen) {
-			firstOpen.current = true;
-		} else {
-			firstOpen.current = false;
-		}
-	}, [isOpen]);
+	const [textareaHeight, setTextareaHeight] = useState("auto");
 
 	const textAreaRef = useCallback(
 		(node) => {
 			if (node) {
-				if (cellType === CELL_TYPE.TEXT) {
-					if (firstOpen.current && isOpen) {
-						node.selectionStart = inputText.length;
-						node.selectionEnd = inputText.length;
-					}
+				if (isOpen) {
+					console.log("SETTING HEIGHT");
+					//Sometimes the node won't focus. This seems to be a reoccuring issue
+					//with using this inputRef
+					node.selectionStart = inputText.length;
+					node.selectionEnd = inputText.length;
+
+					console.log(node.getBoundingClientRect());
+					setTimeout(() => {
+						node.focus();
+						if (node instanceof HTMLElement) {
+							setTextareaHeight(`${node.scrollHeight}px`);
+						}
+					}, 1);
 				}
 			}
 		},
-		[cellType, inputText.length, isOpen, firstOpen.current]
+		[isOpen]
+	);
+
+	const inputRef = useCallback(
+		(node) => {
+			if (node) {
+				if (isOpen) {
+					//Sometimes the node won't focus. This seems to be a reoccuring issue
+					//with using this inputRef
+					console.log(node.getBoundingClientRect());
+					setTimeout(() => {
+						node.focus();
+					}, 1);
+				}
+			}
+		},
+		[isOpen]
 	);
 
 	function renderContent() {
@@ -65,8 +83,11 @@ export default function CellEditMenu({
 			case CELL_TYPE.TEXT:
 				return (
 					<textarea
-						className="NLT__input"
+						className="NLT__input NLT__input--textarea"
 						ref={textAreaRef}
+						style={{
+							height: textareaHeight,
+						}}
 						autoFocus
 						value={inputText}
 						onChange={(e) =>
@@ -77,6 +98,7 @@ export default function CellEditMenu({
 			case CELL_TYPE.NUMBER:
 				return (
 					<input
+						ref={inputRef}
 						className="NLT__input NLT__input--number"
 						type="number"
 						autoFocus
@@ -87,6 +109,7 @@ export default function CellEditMenu({
 			case CELL_TYPE.TAG:
 				return (
 					<TagMenuContent
+						isOpen={isOpen}
 						cellId={cellId}
 						tags={tags}
 						color={tagColor}
@@ -109,7 +132,7 @@ export default function CellEditMenu({
 			onTabPress={onTabPress}
 			onOutsideClick={onOutsideClick}
 		>
-			{renderContent()}
+			<div className="NLT__cell-edit-menu">{renderContent()}</div>
 		</Menu>
 	);
 }
