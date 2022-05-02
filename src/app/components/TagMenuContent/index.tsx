@@ -30,8 +30,13 @@ export default function TagMenuContent({
 	const inputRef = useCallback((node) => {
 		if (node) {
 			if (node instanceof HTMLElement) {
+				console.log(node);
 				console.log("[inputRef] Setting focus.");
-				node.focus();
+				//Sometimes the node won't focus. This seems to be a reoccuring issue
+				//with using this inputRef
+				setTimeout(() => {
+					node.focus();
+				}, 1);
 			}
 		}
 	}, []);
