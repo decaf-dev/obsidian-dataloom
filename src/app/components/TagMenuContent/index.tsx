@@ -30,28 +30,18 @@ export default function TagMenuContent({
 	const inputRef = useCallback((node) => {
 		if (node) {
 			if (node instanceof HTMLElement) {
+				console.log("[inputRef] Setting focus.");
 				node.focus();
 			}
 		}
 	}, []);
+
 	function handleTextChange(e: React.ChangeEvent<HTMLInputElement>) {
 		//Disallow pound
 		if (e.target.value.match("#")) return;
 		//Disallow whitespace
 		if (e.target.value.match(/\s/)) return;
 		onTextChange(e);
-	}
-
-	function handleKeyUp(e: React.KeyboardEvent) {
-		if (e.key === "Enter") {
-			//If this tag content already exists then we will select that tag, otherwise add a new one
-			const tag = tags.find((tag) => tag.content === inputText);
-			if (tag) {
-				onTagClick(tag.id);
-			} else {
-				onAddTag(inputText);
-			}
-		}
 	}
 
 	function renderSelectableTags() {
@@ -87,7 +77,7 @@ export default function TagMenuContent({
 		);
 	}
 	return (
-		<div className="NLT__tag-menu-container" onKeyUp={handleKeyUp}>
+		<div className="NLT__tag-menu-container">
 			<div className="NLT__tag-menu-top">
 				{tags
 					.filter(

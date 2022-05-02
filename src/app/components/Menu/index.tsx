@@ -20,11 +20,6 @@ export default function Menu({
 	const menuRef = useRef(null);
 
 	useEffect(() => {
-		function cleanup() {
-			document.removeEventListener("mousedown", handleClick);
-			document.removeEventListener("keyup", handleKeyUp);
-		}
-
 		const handleClick = (e: MouseEvent) => {
 			if (menuRef.current && !menuRef.current.contains(e.target))
 				onOutsideClick(e);
@@ -39,7 +34,10 @@ export default function Menu({
 			document.addEventListener("mousedown", handleClick);
 			document.addEventListener("keyup", handleKeyUp);
 		}
-		return () => cleanup();
+		return () => {
+			document.removeEventListener("mousedown", handleClick);
+			document.removeEventListener("keyup", handleKeyUp);
+		};
 	}, [menuRef, onOutsideClick, isOpen]);
 
 	if (!isOpen) return <></>;

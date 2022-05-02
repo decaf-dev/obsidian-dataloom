@@ -54,19 +54,19 @@ export default function App({
 		INITIAL_FOCUSED_ELEMENT
 	);
 
-	async function updateFocusedElement(element: TabbableElement) {
+	function updateFocusedElement(element: TabbableElement) {
 		settings.focusedElement = element;
-		await plugin.saveSettings();
+		plugin.saveSettings();
 		setFocusedElement(element);
 	}
 
-	async function resetFocusedElement() {
-		await updateFocusedElement(INITIAL_FOCUSED_ELEMENT);
+	function resetFocusedElement() {
+		updateFocusedElement(INITIAL_FOCUSED_ELEMENT);
 	}
 
-	async function handleCellFocusClick(id: string) {
+	function handleCellFocusClick(id: string) {
 		const element = findTabbableElement(appData, id);
-		await updateFocusedElement(element);
+		updateFocusedElement(element);
 	}
 
 	useEffect(() => {
@@ -95,7 +95,7 @@ export default function App({
 	}
 
 	async function handleKeyUp(e: React.KeyboardEvent) {
-		if (DEBUG) console.log("[HANDLER] handleKeyUp called.");
+		if (DEBUG) console.log("[handler] handleKeyUp called.");
 		if (e.key === "Tab") {
 			const prevElement = { ...focusedElement };
 			const nextElement = findNextTabbableElement(
@@ -140,21 +140,21 @@ export default function App({
 	}, [appData.updateTime]);
 
 	function handleAddColumn() {
-		if (DEBUG) console.log("[HANDLER]: handleAddColumn called.");
+		if (DEBUG) console.log("[handler]: handleAddColumn called.");
 		setAppData((prevState) => {
 			return addColumn(prevState);
 		});
 	}
 
 	function handleAddRow() {
-		if (DEBUG) console.log("[HANDLER]: handleAddRow called.");
+		if (DEBUG) console.log("[handler]: handleAddRow called.");
 		setAppData((prevState: AppData) => {
 			return addRow(prevState);
 		});
 	}
 
 	function handleHeaderSave(id: string, updatedContent: string) {
-		if (DEBUG) console.log("[HANDLER]: handleHeaderSave called.");
+		if (DEBUG) console.log("[handler]: handleHeaderSave called.");
 		setAppData((prevState) => {
 			return {
 				...prevState,
@@ -176,7 +176,7 @@ export default function App({
 		type: string,
 		sortName: string
 	) {
-		if (DEBUG) console.log("[HANDLER]: handleHeaderSort called.");
+		if (DEBUG) console.log("[handler]: handleHeaderSort called.");
 		setAppData((prevState) => {
 			return {
 				...prevState,
@@ -190,13 +190,8 @@ export default function App({
 		sortRows(id, type, sortName);
 	}
 
-	function handleCellContentChange(
-		id: string,
-		content: string,
-		tabPress: boolean
-	) {
-		if (DEBUG) console.log("[HANDLER]: handleCellContentChange called.");
-		if (!tabPress) resetFocusedElement();
+	function handleCellContentChange(id: string, content: string) {
+		if (DEBUG) console.log("[handler]: handleCellContentChange called.");
 		setAppData((prevState) => {
 			return {
 				...prevState,
@@ -220,11 +215,8 @@ export default function App({
 		content: string,
 		color: string
 	) {
-		if (DEBUG) console.log("[HANDLER]: handleAddTag called.");
-		resetFocusedElement();
+		if (DEBUG) console.log("[handler]: handleAddTag called.");
 		setAppData((prevState) => {
-			console.log(cellId);
-			console.log(headerId);
 			return {
 				...prevState,
 				updateTime: Date.now(),
@@ -256,8 +248,7 @@ export default function App({
 	}
 
 	function handleTagClick(cellId: string, tagId: string) {
-		if (DEBUG) console.log("[HANDLER]: handleTagClick called.");
-		resetFocusedElement();
+		if (DEBUG) console.log("[handler]: handleTagClick called.");
 		//If our cell id has already selected the tag then return
 		const found = appData.tags.find((tag) => tag.id === tagId);
 		if (found.selected.includes(cellId)) return;
@@ -284,7 +275,7 @@ export default function App({
 	}
 
 	function handleRemoveTagClick(cellId: string, tagId: string) {
-		if (DEBUG) console.log("[HANDLER]: handleRemoveTagClick called.");
+		if (DEBUG) console.log("[handler]: handleRemoveTagClick called.");
 		setAppData((prevState) => {
 			return {
 				...prevState,
@@ -349,7 +340,7 @@ export default function App({
 	}
 
 	function handleDeleteHeaderClick(id: string) {
-		if (DEBUG) console.log("[HANDLER]: handleDeleteHeaderClick called.");
+		if (DEBUG) console.log("[handler]: handleDeleteHeaderClick called.");
 		setAppData((prevState) => {
 			return {
 				...prevState,
@@ -361,7 +352,7 @@ export default function App({
 	}
 
 	function handleDeleteRowClick(rowId: string) {
-		if (DEBUG) console.log("[HANDLER]: handleDeleteRowClick called.");
+		if (DEBUG) console.log("[handler]: handleDeleteRowClick called.");
 		setAppData((prevState) => {
 			return {
 				...prevState,
@@ -373,7 +364,7 @@ export default function App({
 	}
 
 	function handleMoveRowClick(id: string, moveBelow: boolean) {
-		if (DEBUG) console.log("[HANDLER]: handleMoveRowClick called.");
+		if (DEBUG) console.log("[handler]: handleMoveRowClick called.");
 		setAppData((prevState: AppData) => {
 			const index = prevState.rows.findIndex((row) => row.id === id);
 			//We assume that there is checking to make sure you don't move the first row up or last row down
@@ -398,7 +389,7 @@ export default function App({
 	}
 
 	function handleWidthChange(id: string, newWidth: number) {
-		if (DEBUG) console.log("[HANDLER]: handleWidthChange called.");
+		if (DEBUG) console.log("[handler]: handleWidthChange called.");
 		setAppData((prevState: AppData) => {
 			return {
 				...prevState,
@@ -417,7 +408,7 @@ export default function App({
 	}
 
 	function handleMoveColumnClick(id: string, moveRight: boolean) {
-		if (DEBUG) console.log("[HANDLER]: handleMoveColumnClick called.");
+		if (DEBUG) console.log("[handler]: handleMoveColumnClick called.");
 		setAppData((prevState: AppData) => {
 			const index = prevState.headers.findIndex(
 				(header) => header.id === id
@@ -438,7 +429,7 @@ export default function App({
 	}
 
 	function handleInsertColumnClick(id: string, insertRight: boolean) {
-		if (DEBUG) console.log("[HANDLER]: handleInsertColumnClick called.");
+		if (DEBUG) console.log("[handler]: handleInsertColumnClick called.");
 		setAppData((prevState: AppData) => {
 			const header = prevState.headers.find((header) => header.id === id);
 			const index = prevState.headers.indexOf(header);
@@ -468,7 +459,7 @@ export default function App({
 	}
 
 	function handleInsertRowClick(id: string, insertBelow = false) {
-		if (DEBUG) console.log("[HANDLER]: handleHeaderInsertRowClick called.");
+		if (DEBUG) console.log("[handler]: handleHeaderInsertRowClick called.");
 		const rowId = uuidv4();
 		setAppData((prevState: AppData) => {
 			const tags: Tag[] = [];
@@ -496,7 +487,7 @@ export default function App({
 	}
 
 	function handleHeaderTypeSelect(id: string, cellType: string) {
-		if (DEBUG) console.log("[HANDLER]: handleHeaderTypeSelect called.");
+		if (DEBUG) console.log("[handler]: handleHeaderTypeSelect called.");
 		//If same header type return
 		const header = appData.headers.find((header) => header.id === id);
 		if (header.type === cellType) return;
@@ -523,6 +514,10 @@ export default function App({
 				}),
 			};
 		});
+	}
+
+	function handleCellOutsideClick() {
+		resetFocusedElement();
 	}
 
 	return (
@@ -582,6 +577,9 @@ export default function App({
 											headerId={headerId}
 											width={header.width}
 											onFocusClick={handleCellFocusClick}
+											onOutsideClick={
+												handleCellOutsideClick
+											}
 											isFocused={focusedElement.id === id}
 											cellId={id}
 											type={type}

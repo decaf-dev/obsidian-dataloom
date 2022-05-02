@@ -24,11 +24,7 @@ interface Props {
 	expectedType: string | null;
 	onRemoveTagClick: (cellId: string, tagId: string) => void;
 	onTagClick: (cellId: string, tagId: string) => void;
-	onContentChange: (
-		cellId: string,
-		inputText: string,
-		tabPress: boolean
-	) => void;
+	onContentChange: (cellId: string, inputText: string) => void;
 	onAddTag: (
 		cellId: string,
 		headerId: string,
@@ -36,6 +32,7 @@ interface Props {
 		color: string
 	) => void;
 	onFocusClick: (cellId: string) => void;
+	onOutsideClick: () => void;
 }
 
 export default function EditableTd({
@@ -47,6 +44,7 @@ export default function EditableTd({
 	tags,
 	type,
 	expectedType,
+	onOutsideClick,
 	onRemoveTagClick,
 	onTagClick,
 	onFocusClick,
@@ -68,9 +66,13 @@ export default function EditableTd({
 	useEffect(() => {
 		if (isFocused) {
 			if (cellMenu.isOpen) return;
+			console.log("OPENING");
 			openMenu();
+		} else {
+			if (!cellMenu.isOpen) return;
+			closeMenu();
 		}
-	}, [isFocused]);
+	}, [isFocused, cellMenu.isOpen]);
 
 	const tdRef = useCallback(
 		(node) => {
@@ -103,8 +105,8 @@ export default function EditableTd({
 	);
 
 	function handleTabPress() {
-		console.log("[HANDLER] handleTabPress");
-		updateContent(true);
+		console.log("[handler] handleTabPress");
+		updateContent();
 	}
 
 	async function handleCellContextClick(e: React.MouseEvent<HTMLElement>) {
@@ -129,7 +131,7 @@ export default function EditableTd({
 		if (type === CELL_TYPE.ERROR) return;
 
 		onFocusClick(cellId);
-		openMenu();
+		//openMenu();
 	}
 
 	function closeMenu() {
@@ -150,32 +152,29 @@ export default function EditableTd({
 	}
 
 	function handleAddTag(text: string) {
-		console.log("ADD TAG");
 		onAddTag(cellId, headerId, text, cellMenu.tagColor);
 		setInputText("");
-		closeMenu();
+		onOutsideClick();
 	}
 
 	function handleTagClick(id: string) {
-		console.log("TAG CLICK!");
 		onTagClick(cellId, id);
-		closeMenu();
+		onOutsideClick();
 	}
 
-	function updateContent(tabPress: boolean) {
+	function updateContent() {
 		if (content !== inputText) {
 			switch (type) {
 				case CELL_TYPE.TEXT:
-					onContentChange(cellId, inputText, tabPress);
+					onContentChange(cellId, inputText);
 					setInputText("");
 					break;
 				case CELL_TYPE.NUMBER:
-					onContentChange(cellId, inputText, tabPress);
+					onContentChange(cellId, inputText);
 					setInputText("");
 					break;
 				case CELL_TYPE.TAG:
 					const tag = tags.find((tag) => tag.content === inputText);
-					console.log(tag);
 					if (tag) {
 						onTagClick(cellId, tag.id);
 					} else {
@@ -192,12 +191,12 @@ export default function EditableTd({
 					break;
 			}
 		}
-		closeMenu();
 	}
 
 	function handleOutsideClick() {
-		console.log("[HANDLER] handleOusideClick");
-		updateContent(false);
+		console.log("[handler] handleOusideClick");
+		updateContent();
+		onOutsideClick();
 	}
 
 	function renderCell() {
