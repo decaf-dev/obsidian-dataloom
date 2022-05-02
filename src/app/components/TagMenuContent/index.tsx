@@ -43,8 +43,7 @@ export default function TagMenuContent({
 					if (isOpen) {
 						//Sometimes the node won't focus. This seems to be a reoccuring issue
 						//with using this inputRef
-						console.log(node.getBoundingClientRect());
-						console.log("FOCUSING");
+						//console.log(node.getBoundingClientRect());
 						setTimeout(() => {
 							node.focus();
 						}, 1);

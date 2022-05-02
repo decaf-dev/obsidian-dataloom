@@ -43,13 +43,12 @@ export default function CellEditMenu({
 		(node) => {
 			if (node) {
 				if (isOpen) {
-					console.log("SETTING HEIGHT");
 					//Sometimes the node won't focus. This seems to be a reoccuring issue
 					//with using this inputRef
 					node.selectionStart = inputText.length;
 					node.selectionEnd = inputText.length;
 
-					console.log(node.getBoundingClientRect());
+					//console.log(node.getBoundingClientRect());
 					setTimeout(() => {
 						node.focus();
 						if (node instanceof HTMLElement) {
@@ -68,7 +67,7 @@ export default function CellEditMenu({
 				if (isOpen) {
 					//Sometimes the node won't focus. This seems to be a reoccuring issue
 					//with using this inputRef
-					console.log(node.getBoundingClientRect());
+					//console.log(node.getBoundingClientRect());
 					setTimeout(() => {
 						node.focus();
 					}, 1);

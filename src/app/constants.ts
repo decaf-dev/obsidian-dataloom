@@ -1,4 +1,9 @@
-export const DEBUG = true;
+//TODO make debug rules
+//tags
+//cells
+//handlers, etc
+//[component][handler] ...
+export const DEBUG = false;
 
 export interface CellType {
 	TEXT: string;

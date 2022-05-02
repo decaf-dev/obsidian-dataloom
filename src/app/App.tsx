@@ -147,7 +147,14 @@ export default function App({
 	function handleAddRow() {
 		if (DEBUG) console.log("[handler]: handleAddRow called.");
 		setAppData((prevState: AppData) => {
-			return addRow(prevState);
+			const newData = addRow(prevState);
+			const focusedElement = {
+				id: newData.cells[newData.cells.length - newData.headers.length]
+					.id,
+				type: TABBABLE_ELEMENT_TYPE.CELL,
+			};
+			settings.focusedElement = focusedElement;
+			return newData;
 		});
 	}
 
