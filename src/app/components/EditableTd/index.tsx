@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Notice } from "obsidian";
 
 import CellEditMenu from "../CellEditMenu";
@@ -52,6 +52,7 @@ export default function EditableTd({
 	onAddTag,
 }: Props) {
 	const [inputText, setInputText] = useState("");
+	const closingMenu = useRef(false);
 
 	const initialCellMenuState = {
 		isOpen: false,
@@ -208,10 +209,20 @@ export default function EditableTd({
 	}
 
 	function handleOutsideClick() {
-		//TODO fix flashing
-		updateContent();
+		closingMenu.current = true;
 		onOutsideClick();
 	}
+
+	//Synchronous handler
+	//Runs after handle outside click
+	useEffect(() => {
+		if (closingMenu.current && !isFocused) {
+			//Set updated false
+			//handle update
+			closingMenu.current = false;
+			updateContent();
+		}
+	}, [isFocused, closingMenu.current]);
 
 	function renderCell() {
 		switch (type) {
@@ -250,7 +261,6 @@ export default function EditableTd({
 		>
 			<CellEditMenu
 				style={{
-					//TODO fix this scroll
 					minWidth: type === CELL_TYPE.TAG ? "15rem" : "100px",
 					height: cellMenu.height,
 					width: cellMenu.width,

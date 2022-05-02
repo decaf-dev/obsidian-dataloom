@@ -371,7 +371,7 @@ export const mergeAppData = (
 		}
 	});
 
-	//TODO fix potential bugs with adding data
+	//TODO change
 	//This allows the user to add new rows or delete existing rows
 	//and still have the correct creationTime
 	newAppData.rows.forEach((row, i) => {

@@ -40,7 +40,9 @@ export default function Menu({
 		};
 	}, [menuRef, onOutsideClick, isOpen]);
 
-	if (!isOpen) return <></>;
+	if (!isOpen) {
+		style = { ...style, display: "none" };
+	}
 
 	return (
 		<div className="NLT__menu" ref={menuRef}>

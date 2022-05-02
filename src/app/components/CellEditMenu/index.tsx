@@ -49,24 +49,16 @@ export default function CellEditMenu({
 		}
 	}, [isOpen]);
 
-	useEffect(() => {
-		if (textareaHeight === "auto") {
-			setTextareaHeight(scrollHeight.current);
-		}
-	}, [textareaHeight]);
-
 	const textAreaRef = useCallback(
 		(node) => {
 			if (node) {
 				if (cellType === CELL_TYPE.TEXT) {
 					if (firstOpen.current && isOpen) {
+						node.focus();
 						node.selectionStart = inputText.length;
 						node.selectionEnd = inputText.length;
 						if (node instanceof HTMLElement) {
-							setTimeout(() => {
-								scrollHeight.current = `${node.scrollHeight}px`;
-								setTextareaHeight("auto");
-							}, 1);
+							setTextareaHeight(`${node.scrollHeight}px`);
 						}
 					}
 				}
