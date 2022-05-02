@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 
 import TagCell from "../TagCell";
 
@@ -27,6 +27,13 @@ export default function TagMenuContent({
 	onTextChange,
 	onRemoveTagClick,
 }: Props) {
+	const inputRef = useCallback((node) => {
+		if (node) {
+			if (node instanceof HTMLElement) {
+				node.focus();
+			}
+		}
+	}, []);
 	function handleTextChange(e: React.ChangeEvent<HTMLInputElement>) {
 		//Disallow pound
 		if (e.target.value.match("#")) return;
@@ -38,7 +45,7 @@ export default function TagMenuContent({
 	function handleKeyUp(e: React.KeyboardEvent) {
 		if (e.key === "Enter") {
 			//If this tag content already exists then we will select that tag, otherwise add a new one
-			const tag = tags.filter((tag) => tag.content === inputText)[0];
+			const tag = tags.find((tag) => tag.content === inputText);
 			if (tag) {
 				onTagClick(tag.id);
 			} else {
@@ -100,7 +107,7 @@ export default function TagMenuContent({
 					))}
 				<input
 					className="NLT__tag-menu-input"
-					autoFocus
+					ref={inputRef}
 					type="text"
 					value={inputText}
 					onChange={handleTextChange}

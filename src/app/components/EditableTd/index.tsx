@@ -23,7 +23,7 @@ interface Props {
 	type: string;
 	expectedType: string | null;
 	onRemoveTagClick: (cellId: string, tagId: string) => void;
-	onTagClick: (cellId: string, inputText: string) => void;
+	onTagClick: (cellId: string, tagId: string) => void;
 	onContentChange: (
 		cellId: string,
 		inputText: string,
@@ -174,6 +174,18 @@ export default function EditableTd({
 					setInputText("");
 					break;
 				case CELL_TYPE.TAG:
+					const tag = tags.find((tag) => tag.content === inputText);
+					console.log(tag);
+					if (tag) {
+						onTagClick(cellId, tag.id);
+					} else {
+						onAddTag(
+							cellId,
+							headerId,
+							inputText,
+							cellMenu.tagColor
+						);
+					}
 					setInputText("");
 					break;
 				default:

@@ -221,7 +221,10 @@ export default function App({
 		color: string
 	) {
 		if (DEBUG) console.log("[HANDLER]: handleAddTag called.");
+		resetFocusedElement();
 		setAppData((prevState) => {
+			console.log(cellId);
+			console.log(headerId);
 			return {
 				...prevState,
 				updateTime: Date.now(),
@@ -254,6 +257,7 @@ export default function App({
 
 	function handleTagClick(cellId: string, tagId: string) {
 		if (DEBUG) console.log("[HANDLER]: handleTagClick called.");
+		resetFocusedElement();
 		//If our cell id has already selected the tag then return
 		const found = appData.tags.find((tag) => tag.id === tagId);
 		if (found.selected.includes(cellId)) return;
