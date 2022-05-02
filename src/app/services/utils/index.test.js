@@ -749,6 +749,11 @@ describe("markdownRowsRegex", () => {
 });
 
 describe("countNumTags", () => {
+	it("counts single letter tag", () => {
+		const numTags = countNumTags("#t");
+		expect(numTags).toEqual(1);
+	});
+
 	it("counts single tag", () => {
 		const numTags = countNumTags("#test");
 		expect(numTags).toEqual(1);
