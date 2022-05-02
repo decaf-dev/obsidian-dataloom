@@ -10,14 +10,9 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 
 ## Version 2.3.5
 
-2.3.4 introduced a bug that made it impossible to edit cells. I apologize for the inconveniece this caused anyone.
+Between 2.3.3 and 2.3.5 I introduced a bug that made it impossible to edit cells. I apologize for the inconveniece this caused anyone. I rolled back the previous 2.3.5 and am releasing a new version.
 
-**In order to fix this bug, I had to remove source markdown edit capabilities of the app.**
-
-The app will now read from source markdown for a table id, create cached data, and then use the cached data indefinitely. **This means that once your table has loaded the source markdown, if you change the markdown manually, the app will not reload it.** Thus, please make changes to your table using NLT UI in reading mode. This will be changed in the future releases. However, if you do need to make changes manually, you can change the table id. However, you will lose your settings for this table.
-
-Version 2.3.5 includes a lot of bug fixes/refactored code. All in all, the functionality is the same, but you
-should notice that some UI discrepencies were fixed, including how the edit menu for cells appear.
+Version 2.3.5 (newly updated) includes a lot of bug fixes/refactored code. All in all, the functionality is the same, but you should notice that some UI discrepencies were fixed, including how the edit menu for cells appear.
 
 I also replaced the tabbing system for a custom focus system. Press tab to see how things work now.
 In addition, when you add a new row, the first cell of that row will focus.
