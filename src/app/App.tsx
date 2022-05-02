@@ -30,7 +30,6 @@ import {
 	findNextTabbableElement,
 	findTabbableElement,
 } from "./services/appDataUtils";
-import { appDataToMarkdown } from "./services/utils";
 
 interface Props {
 	plugin: NltPlugin;
@@ -53,21 +52,7 @@ export default function App({
 	const [focusedElement, setFocusedElement] = useState<TabbableElement>(
 		INITIAL_FOCUSED_ELEMENT
 	);
-
-	function updateFocusedElement(element: TabbableElement) {
-		setFocusedElement(element);
-		settings.focusedElement = element;
-		plugin.saveSettings();
-	}
-
-	function resetFocusedElement() {
-		updateFocusedElement(INITIAL_FOCUSED_ELEMENT);
-	}
-
-	function handleCellFocusClick(id: string) {
-		const element = findTabbableElement(appData, id);
-		updateFocusedElement(element);
-	}
+	const saveLock = useRef(false);
 
 	useEffect(() => {
 		if (DEBUG) console.log("[useEffect] Sorting rows.");
@@ -86,6 +71,56 @@ export default function App({
 		}
 	}, []);
 
+	useEffect(() => {
+		async function handleUpdate() {
+			//If we're running in Obsidian
+			if (app) {
+				if (appData.updateTime === 0) return;
+				if (!settings.appData[sourcePath]) return;
+				if (!settings.appData[sourcePath][tableId]) return;
+				//The save lock ensures that updates only happen after we have pushed our changes
+				//to the cache
+				if (saveLock.current) return;
+				try {
+					if (DEBUG) console.log("SAVING DATA");
+					await saveAppData(
+						plugin,
+						settings,
+						app,
+						oldAppData,
+						appData,
+						sourcePath,
+						tableId
+					);
+				} catch (err) {
+					console.log(err);
+				}
+			}
+		}
+		handleUpdate();
+	}, [appData.updateTime, saveLock.current]);
+
+	useEffect(() => {
+		if (saveLock) {
+			saveLock.current = false;
+		}
+	}, [focusedElement]);
+
+	function resetFocusedElement() {
+		updateFocusedElement(INITIAL_FOCUSED_ELEMENT);
+	}
+
+	function updateFocusedElement(element: TabbableElement) {
+		setFocusedElement(element);
+		settings.focusedElement = element;
+		plugin.saveSettings();
+	}
+
+	function handleCellFocusClick(id: string) {
+		const element = findTabbableElement(appData, id);
+		updateFocusedElement(element);
+	}
+
 	function handleFocus() {
 		plugin.focusTable(tableId, sourcePath);
 	}
@@ -101,39 +136,6 @@ export default function App({
 			updateFocusedElement(nextElement);
 		}
 	}
-
-	useEffect(() => {
-		async function handleUpdate() {
-			//If we're running in Obsidian
-			if (app) {
-				if (
-					appData.updateTime !== 0 ||
-					!Object.keys(settings.appData).includes(sourcePath) ||
-					!Object.keys(settings.appData[sourcePath]).includes(tableId)
-				) {
-					try {
-						if (DEBUG) console.log("SAVING DATA");
-						// const oldData = appDataToMarkdown(tableId, oldAppData);
-						// const newData = appDataToMarkdown(tableId, appData);
-						// console.log(oldData);
-						// console.log(newData);
-						await saveAppData(
-							plugin,
-							settings,
-							app,
-							oldAppData,
-							appData,
-							sourcePath,
-							tableId
-						);
-					} catch (err) {
-						console.log(err);
-					}
-				}
-			}
-		}
-		handleUpdate();
-	}, [appData.updateTime]);
 
 	function handleAddColumn() {
 		if (DEBUG) console.log("[handler]: handleAddColumn called.");
@@ -186,8 +188,16 @@ export default function App({
 		sortRows(id, type, sortName);
 	}
 
-	function handleCellContentChange(id: string, content: string) {
+	function handleCellContentChange(
+		id: string,
+		content: string,
+		shouldLock: boolean
+	) {
 		if (DEBUG) console.log("[handler]: handleCellContentChange called.");
+
+		if (shouldLock) {
+			saveLock.current = true;
+		}
 		setAppData((prevState) => {
 			return {
 				...prevState,

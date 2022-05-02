@@ -43,23 +43,35 @@ export default function CellEditMenu({
 		(node) => {
 			if (node) {
 				if (isOpen) {
-					node.focus();
+					console.log("SETTING HEIGHT");
+					//Sometimes the node won't focus. This seems to be a reoccuring issue
+					//with using this inputRef
 					node.selectionStart = inputText.length;
 					node.selectionEnd = inputText.length;
-					if (node instanceof HTMLElement) {
-						setTextareaHeight(`${node.scrollHeight}px`);
-					}
+
+					console.log(node.getBoundingClientRect());
+					setTimeout(() => {
+						node.focus();
+						if (node instanceof HTMLElement) {
+							setTextareaHeight(`${node.scrollHeight}px`);
+						}
+					}, 1);
 				}
 			}
 		},
-		[cellType, inputText.length, isOpen]
+		[isOpen]
 	);
 
 	const inputRef = useCallback(
 		(node) => {
 			if (node) {
 				if (isOpen) {
-					node.focus();
+					//Sometimes the node won't focus. This seems to be a reoccuring issue
+					//with using this inputRef
+					console.log(node.getBoundingClientRect());
+					setTimeout(() => {
+						node.focus();
+					}, 1);
 				}
 			}
 		},

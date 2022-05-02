@@ -1,10 +1,11 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 
 import TagCell from "../TagCell";
 
 import { Tag } from "../../services/state";
 
 import "./styles.css";
+import { useForceUpdate } from "src/app/services/hooks";
 
 interface Props {
 	cellId: string;
@@ -29,6 +30,12 @@ export default function TagMenuContent({
 	onTextChange,
 	onRemoveTagClick,
 }: Props) {
+	const forceUpdate = useForceUpdate();
+
+	useEffect(() => {
+		forceUpdate();
+	}, [forceUpdate]);
+
 	const inputRef = useCallback(
 		(node) => {
 			if (node) {

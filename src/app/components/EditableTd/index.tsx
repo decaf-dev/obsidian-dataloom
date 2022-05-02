@@ -24,7 +24,11 @@ interface Props {
 	expectedType: string | null;
 	onRemoveTagClick: (cellId: string, tagId: string) => void;
 	onTagClick: (cellId: string, tagId: string) => void;
-	onContentChange: (cellId: string, inputText: string) => void;
+	onContentChange: (
+		cellId: string,
+		inputText: string,
+		shouldLock: boolean
+	) => void;
 	onAddTag: (
 		cellId: string,
 		headerId: string,
@@ -121,7 +125,7 @@ export default function EditableTd({
 	);
 
 	function handleTabPress() {
-		updateContent();
+		updateContent(true);
 	}
 
 	async function handleCellContextClick(e: React.MouseEvent<HTMLElement>) {
@@ -177,17 +181,18 @@ export default function EditableTd({
 		onOutsideClick();
 	}
 
-	function updateContent() {
+	function updateContent(shouldLock: boolean) {
 		if (content !== inputText) {
 			switch (type) {
 				case CELL_TYPE.TEXT:
-					onContentChange(cellId, inputText);
+					onContentChange(cellId, inputText, shouldLock);
 					setInputText("");
 					break;
 				case CELL_TYPE.NUMBER:
-					onContentChange(cellId, inputText);
+					onContentChange(cellId, inputText, shouldLock);
 					setInputText("");
 					break;
+				//TODO add lock
 				case CELL_TYPE.TAG:
 					const tag = tags.find((tag) => tag.content === inputText);
 					if (tag) {
@@ -220,7 +225,7 @@ export default function EditableTd({
 			//Set updated false
 			//handle update
 			closingMenu.current = false;
-			updateContent();
+			updateContent(false);
 		}
 	}, [isFocused, closingMenu.current]);
 
