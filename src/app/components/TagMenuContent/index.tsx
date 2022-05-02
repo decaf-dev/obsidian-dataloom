@@ -10,6 +10,7 @@ interface Props {
 	cellId: string;
 	tags: Tag[];
 	color: string;
+	isOpen: boolean;
 	inputText: string;
 	onTextChange: React.ChangeEventHandler<HTMLInputElement>;
 	onTagClick: (tagId: string) => void;
@@ -22,22 +23,30 @@ export default function TagMenuContent({
 	tags = [],
 	color = "",
 	inputText,
+	isOpen,
 	onTagClick,
 	onAddTag,
 	onTextChange,
 	onRemoveTagClick,
 }: Props) {
-	const inputRef = useCallback((node) => {
-		if (node) {
-			if (node instanceof HTMLElement) {
-				//Sometimes the node won't focus. This seems to be a reoccuring issue
-				//with using this inputRef
-				setTimeout(() => {
-					node.focus();
-				}, 1);
+	const inputRef = useCallback(
+		(node) => {
+			if (node) {
+				if (node instanceof HTMLElement) {
+					if (isOpen) {
+						//Sometimes the node won't focus. This seems to be a reoccuring issue
+						//with using this inputRef
+						console.log(node.getBoundingClientRect());
+						console.log("FOCUSING");
+						setTimeout(() => {
+							node.focus();
+						}, 1);
+					}
+				}
 			}
-		}
-	}, []);
+		},
+		[isOpen]
+	);
 
 	function handleTextChange(e: React.ChangeEvent<HTMLInputElement>) {
 		//Disallow pound

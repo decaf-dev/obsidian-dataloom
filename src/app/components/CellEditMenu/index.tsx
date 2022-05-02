@@ -37,34 +37,33 @@ export default function CellEditMenu({
 	onTagClick,
 	onOutsideClick,
 }: Props) {
-	const firstOpen = useRef(false);
 	const [textareaHeight, setTextareaHeight] = useState("auto");
-	const scrollHeight = useRef("");
-
-	useEffect(() => {
-		if (isOpen) {
-			firstOpen.current = true;
-		} else {
-			firstOpen.current = false;
-		}
-	}, [isOpen]);
 
 	const textAreaRef = useCallback(
 		(node) => {
 			if (node) {
-				if (cellType === CELL_TYPE.TEXT) {
-					if (firstOpen.current && isOpen) {
-						node.focus();
-						node.selectionStart = inputText.length;
-						node.selectionEnd = inputText.length;
-						if (node instanceof HTMLElement) {
-							setTextareaHeight(`${node.scrollHeight}px`);
-						}
+				if (isOpen) {
+					node.focus();
+					node.selectionStart = inputText.length;
+					node.selectionEnd = inputText.length;
+					if (node instanceof HTMLElement) {
+						setTextareaHeight(`${node.scrollHeight}px`);
 					}
 				}
 			}
 		},
-		[cellType, inputText.length, isOpen, firstOpen.current]
+		[cellType, inputText.length, isOpen]
+	);
+
+	const inputRef = useCallback(
+		(node) => {
+			if (node) {
+				if (isOpen) {
+					node.focus();
+				}
+			}
+		},
+		[isOpen]
 	);
 
 	function renderContent() {
@@ -87,6 +86,7 @@ export default function CellEditMenu({
 			case CELL_TYPE.NUMBER:
 				return (
 					<input
+						ref={inputRef}
 						className="NLT__input NLT__input--number"
 						type="number"
 						autoFocus
@@ -97,6 +97,7 @@ export default function CellEditMenu({
 			case CELL_TYPE.TAG:
 				return (
 					<TagMenuContent
+						isOpen={isOpen}
 						cellId={cellId}
 						tags={tags}
 						color={tagColor}
