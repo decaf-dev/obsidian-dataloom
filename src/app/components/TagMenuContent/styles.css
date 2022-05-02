@@ -18,4 +18,6 @@
 .NLT__tag-menu-input {
 	background-color: transparent !important;
 	border: 0 !important;
+	width: 100%;
+	min-width: 100px;
 }

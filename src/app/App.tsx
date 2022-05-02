@@ -103,9 +103,6 @@ export default function App({
 				prevElement.id
 			);
 			updateFocusedElement(nextElement);
-			setAppData((prevState) => {
-				return { ...prevState, updateTime: Date.now() };
-			});
 		}
 	}
 
@@ -196,14 +193,14 @@ export default function App({
 	function handleCellContentChange(
 		id: string,
 		content: string,
-		shouldUpdate: boolean
+		tabPress: boolean
 	) {
 		if (DEBUG) console.log("[HANDLER]: handleCellContentChange called.");
-		if (shouldUpdate) resetFocusedElement();
+		if (!tabPress) resetFocusedElement();
 		setAppData((prevState) => {
 			return {
 				...prevState,
-				updateTime: shouldUpdate ? Date.now() : 0,
+				updateTime: Date.now(),
 				cells: prevState.cells.map((cell) => {
 					if (cell.id === id) {
 						return {

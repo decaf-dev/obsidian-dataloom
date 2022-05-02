@@ -57,17 +57,14 @@ export const loadAppData = (
 		if (settings.appData[sourcePath][tableId]) {
 			if (DEBUG) console.log("LOADING OLD DATA");
 
-			const newAppData = findAppData(parsedTable);
-			const merged = mergeAppData(
-				settings.appData[sourcePath][tableId],
-				newAppData
-			);
-			const newData = appDataIdsToMarkdown(tableId, newAppData);
-			const mergedData = appDataIdsToMarkdown(tableId, merged);
-			console.log(newData);
-			console.log(mergedData);
-			settings.appData[sourcePath][tableId] = merged;
-			plugin.saveSettings();
+			// TODO add merging back in
+			// const newAppData = findAppData(parsedTable);
+			// const merged = mergeAppData(
+			// 	settings.appData[sourcePath][tableId],
+			// 	newAppData
+			// );
+			// settings.appData[sourcePath][tableId] = merged;
+			// plugin.saveSettings();
 			return { tableId, data: settings.appData[sourcePath][tableId] };
 		}
 	}

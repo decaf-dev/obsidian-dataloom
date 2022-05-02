@@ -27,7 +27,7 @@ interface Props {
 	onContentChange: (
 		cellId: string,
 		inputText: string,
-		shouldUpdate: boolean
+		tabPress: boolean
 	) => void;
 	onAddTag: (
 		cellId: string,
@@ -65,12 +65,12 @@ export default function EditableTd({
 	};
 	const [cellMenu, setCellMenu] = useState(initialCellMenuState);
 
-	// useEffect(() => {
-	// 	if (isFocused) {
-	// 		if (cellMenu.isOpen) return;
-	// 		openMenu();
-	// 	}
-	// }, [isFocused]);
+	useEffect(() => {
+		if (isFocused) {
+			if (cellMenu.isOpen) return;
+			openMenu();
+		}
+	}, [isFocused]);
 
 	const tdRef = useCallback(
 		(node) => {
@@ -87,7 +87,7 @@ export default function EditableTd({
 								...prevState,
 								width:
 									type === CELL_TYPE.TAG
-										? "15rem"
+										? "fit-content"
 										: `${width}px`,
 								height:
 									type === CELL_TYPE.TAG
@@ -104,7 +104,7 @@ export default function EditableTd({
 
 	function handleTabPress() {
 		console.log("[HANDLER] handleTabPress");
-		updateContent(false);
+		updateContent(true);
 	}
 
 	async function handleCellContextClick(e: React.MouseEvent<HTMLElement>) {
@@ -162,15 +162,15 @@ export default function EditableTd({
 		closeMenu();
 	}
 
-	function updateContent(shouldUpdate: boolean) {
+	function updateContent(tabPress: boolean) {
 		if (content !== inputText) {
 			switch (type) {
 				case CELL_TYPE.TEXT:
-					onContentChange(cellId, inputText, shouldUpdate);
+					onContentChange(cellId, inputText, tabPress);
 					setInputText("");
 					break;
 				case CELL_TYPE.NUMBER:
-					onContentChange(cellId, inputText, shouldUpdate);
+					onContentChange(cellId, inputText, tabPress);
 					setInputText("");
 					break;
 				case CELL_TYPE.TAG:
@@ -185,7 +185,7 @@ export default function EditableTd({
 
 	function handleOutsideClick() {
 		console.log("[HANDLER] handleOusideClick");
-		updateContent(true);
+		updateContent(false);
 	}
 
 	function renderCell() {
