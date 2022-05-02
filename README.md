@@ -8,11 +8,11 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 
 ## What's New?
 
-## Version 2.3.5
+## Version 2.3.6
 
-Between 2.3.3 and 2.3.5 I introduced a bug that made it impossible to edit cells. I apologize for the inconveniece this caused anyone. I rolled back the previous 2.3.5 and am releasing a new version.
+In 2.3.4 I introduced a bug that made it impossible to edit cells. This persisted until 2.3.5. I apologize for the inconveniece this caused anyone.
 
-Version 2.3.5 (newly updated) includes a lot of bug fixes/refactored code. All in all, the functionality is the same, but you should notice that some UI discrepencies were fixed, including how the edit menu for cells appear.
+Version 2.3.6 (newly updated) includes a lot of bug fixes/refactored code. All in all, the functionality is the same, but you should notice that some UI discrepencies were fixed, including how the edit menu for cells appear.
 
 I also replaced the tabbing system for a custom focus system. Press tab to see how things work now.
 In addition, when you add a new row, the first cell of that row will focus.
