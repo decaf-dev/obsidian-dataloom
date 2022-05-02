@@ -55,9 +55,9 @@ export default function App({
 	);
 
 	function updateFocusedElement(element: TabbableElement) {
+		setFocusedElement(element);
 		settings.focusedElement = element;
 		plugin.saveSettings();
-		setFocusedElement(element);
 	}
 
 	function resetFocusedElement() {

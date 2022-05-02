@@ -1,9 +1,10 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react";
 
 import Menu from "../Menu";
 import TagMenuContent from "../TagMenuContent";
 import { Tag } from "../../services/state";
 import { CELL_TYPE } from "../../constants";
+import "./styles.css";
 
 interface Props {
 	isOpen: boolean;
@@ -37,6 +38,8 @@ export default function CellEditMenu({
 	onOutsideClick,
 }: Props) {
 	const firstOpen = useRef(false);
+	const [textareaHeight, setTextareaHeight] = useState("auto");
+	const scrollHeight = useRef("");
 
 	useEffect(() => {
 		if (isOpen) {
@@ -46,6 +49,12 @@ export default function CellEditMenu({
 		}
 	}, [isOpen]);
 
+	useEffect(() => {
+		if (textareaHeight === "auto") {
+			setTextareaHeight(scrollHeight.current);
+		}
+	}, [textareaHeight]);
+
 	const textAreaRef = useCallback(
 		(node) => {
 			if (node) {
@@ -53,6 +62,12 @@ export default function CellEditMenu({
 					if (firstOpen.current && isOpen) {
 						node.selectionStart = inputText.length;
 						node.selectionEnd = inputText.length;
+						if (node instanceof HTMLElement) {
+							setTimeout(() => {
+								scrollHeight.current = `${node.scrollHeight}px`;
+								setTextareaHeight("auto");
+							}, 1);
+						}
 					}
 				}
 			}
@@ -65,8 +80,11 @@ export default function CellEditMenu({
 			case CELL_TYPE.TEXT:
 				return (
 					<textarea
-						className="NLT__input"
+						className="NLT__input NLT__input--textarea"
 						ref={textAreaRef}
+						style={{
+							height: textareaHeight,
+						}}
 						autoFocus
 						value={inputText}
 						onChange={(e) =>
@@ -109,7 +127,7 @@ export default function CellEditMenu({
 			onTabPress={onTabPress}
 			onOutsideClick={onOutsideClick}
 		>
-			{renderContent()}
+			<div className="NLT__cell-edit-menu">{renderContent()}</div>
 		</Menu>
 	);
 }

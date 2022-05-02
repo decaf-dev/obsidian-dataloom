@@ -84,23 +84,39 @@ export default function EditableTd({
 							const { width, height } =
 								node.getBoundingClientRect();
 
+							function findWidth() {
+								switch (type) {
+									case CELL_TYPE.TAG:
+										return "fit-content";
+									case CELL_TYPE.TEXT:
+										return `${width}px`;
+									default:
+										return `${width}px`;
+								}
+							}
+
+							function findHeight() {
+								switch (type) {
+									case CELL_TYPE.TEXT:
+									case CELL_TYPE.TAG:
+										return "fit-content";
+									case CELL_TYPE.NUMBER:
+										return "3rem";
+									default:
+										return `${height}px`;
+								}
+							}
 							return {
 								...prevState,
-								width:
-									type === CELL_TYPE.TAG
-										? "fit-content"
-										: `${width}px`,
-								height:
-									type === CELL_TYPE.TAG
-										? "fit-content"
-										: `${height}px`,
+								width: findWidth(),
+								height: findHeight(),
 							};
 						});
 					}, 1);
 				}
 			}
 		},
-		[content.length, cellMenu.isOpen]
+		[inputText, cellMenu.isOpen]
 	);
 
 	function handleTabPress() {
@@ -192,6 +208,7 @@ export default function EditableTd({
 	}
 
 	function handleOutsideClick() {
+		//TODO fix flashing
 		updateContent();
 		onOutsideClick();
 	}
@@ -233,7 +250,8 @@ export default function EditableTd({
 		>
 			<CellEditMenu
 				style={{
-					minHeight: "3rem",
+					//TODO fix this scroll
+					minWidth: type === CELL_TYPE.TAG ? "15rem" : "100px",
 					height: cellMenu.height,
 					width: cellMenu.width,
 					top: `${cellMenu.top}px`,
