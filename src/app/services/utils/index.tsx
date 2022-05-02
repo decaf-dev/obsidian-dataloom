@@ -387,6 +387,7 @@ export const mergeAppData = (
 		const index = merged.tags.findIndex((t) => t.content === tag.content);
 		if (index !== -1) {
 			merged.tags[index].id = tag.id;
+			merged.tags[index].selected = tag.selected;
 			merged.tags[index].color = tag.color;
 		}
 	});
