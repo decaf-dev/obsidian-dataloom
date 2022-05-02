@@ -17,7 +17,7 @@ Version 2.3.5 (newly updated) includes a lot of bug fixes/refactored code. All i
 I also replaced the tabbing system for a custom focus system. Press tab to see how things work now.
 In addition, when you add a new row, the first cell of that row will focus.
 
-Thank you to [https://github.com/imeed166](imeed166) for his help and suggestions.
+Thank you to [https://github.com/imeed166](imeed166) for his help and suggestions. :)
 
 ### Version 2.3.0
 
