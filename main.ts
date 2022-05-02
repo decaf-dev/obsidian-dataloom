@@ -5,6 +5,7 @@ import { NltSettings, DEFAULT_SETTINGS } from "src/app/services/state";
 import { createEmptyTable, randomTableId } from "src/app/services/utils";
 import { addColumn, addRow } from "src/app/services/appDataUtils";
 import { saveAppData } from "src/app/services/dataUtils";
+import { TABBABLE_ELEMENT_TYPE } from "src/app/constants";
 export default class NltPlugin extends Plugin {
 	settings: NltSettings;
 	focused: { tableId: string; sourcePath: string } | null = null;
@@ -93,6 +94,14 @@ export default class NltPlugin extends Plugin {
 					const { tableId, sourcePath } = this.focused;
 					const oldData = this.settings.appData[sourcePath][tableId];
 					const newData = addRow(oldData);
+					const focusedElement = {
+						id: newData.cells[
+							newData.cells.length - newData.headers.length
+						].id,
+						type: TABBABLE_ELEMENT_TYPE.CELL,
+					};
+					this.settings.focusedElement = focusedElement;
+					await this.saveSettings();
 					await saveAppData(
 						this,
 						this.settings,
