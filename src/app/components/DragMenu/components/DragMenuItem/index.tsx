@@ -13,7 +13,6 @@ export default function DragMenuItem({ icon, iconText, onClick }: Props) {
 	}
 	return (
 		<div
-			tabIndex={0}
 			onKeyUp={handleKeyUp}
 			onClick={onClick}
 			className="NLT__drag-menu-item"

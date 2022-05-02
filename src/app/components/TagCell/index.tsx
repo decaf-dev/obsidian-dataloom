@@ -16,6 +16,7 @@ interface Props {
 	color: string;
 	showRemove?: boolean;
 	selectable?: boolean;
+	style?: object;
 	isCreate?: boolean;
 	showLink?: boolean;
 	onRemoveClick?: (cellId: string, tagId: string) => void;
@@ -29,6 +30,7 @@ export default function TagCell({
 	color,
 	showRemove,
 	selectable,
+	style,
 	isCreate,
 	showLink = false,
 	onRemoveClick,
@@ -61,6 +63,7 @@ export default function TagCell({
 	return (
 		<div
 			className={cellClass}
+			style={style}
 			onClick={(e) => {
 				//If we're showing a link, that means we're rendering a tag
 				//and we want event propagation since the cell has an on click handler.

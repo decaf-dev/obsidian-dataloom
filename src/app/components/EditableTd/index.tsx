@@ -1,13 +1,11 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Notice } from "obsidian";
 
-import Menu from "../Menu";
+import CellEditMenu from "../CellEditMenu";
 import TextCell from "../TextCell";
 import TagCell from "../TagCell";
 import ErrorCell from "../ErrorCell";
-import TagMenuContent from "../TagMenuContent";
 
-import { useForceUpdate } from "../../services/hooks";
 import { randomColor, addPound } from "../../services/utils";
 import { Tag } from "../../services/state";
 
@@ -20,18 +18,25 @@ interface Props {
 	headerId: string;
 	width: string;
 	content: string;
+	isFocused: boolean;
 	tags: Tag[];
 	type: string;
 	expectedType: string | null;
 	onRemoveTagClick: (cellId: string, tagId: string) => void;
-	onTagClick: (cellId: string, inputText: string) => void;
-	onUpdateContent: (cellId: string, inputText: string) => void;
+	onTagClick: (cellId: string, tagId: string) => void;
+	onContentChange: (
+		cellId: string,
+		inputText: string,
+		shouldLock: boolean
+	) => void;
 	onAddTag: (
 		cellId: string,
 		headerId: string,
 		inputText: string,
 		color: string
 	) => void;
+	onFocusClick: (cellId: string) => void;
+	onOutsideClick: () => void;
 }
 
 export default function EditableTd({
@@ -39,51 +44,89 @@ export default function EditableTd({
 	headerId,
 	width,
 	content,
+	isFocused,
 	tags,
 	type,
 	expectedType,
+	onOutsideClick,
 	onRemoveTagClick,
 	onTagClick,
-	onUpdateContent,
+	onFocusClick,
+	onContentChange,
 	onAddTag,
 }: Props) {
 	const [inputText, setInputText] = useState("");
-
-	const tdRef = useRef<HTMLTableCellElement>();
-	const forceUpdate = useForceUpdate();
+	const closingMenu = useRef(false);
 
 	const initialCellMenuState = {
 		isOpen: false,
-		moveCursor: false,
 		top: 0,
 		left: 0,
-		height: 0,
+		width: "",
+		height: "",
 		tagColor: "",
 	};
 	const [cellMenu, setCellMenu] = useState(initialCellMenuState);
 
 	useEffect(() => {
-		if (cellMenu.isOpen) forceUpdate();
-	}, [cellMenu.isOpen, forceUpdate]);
+		if (isFocused) {
+			if (cellMenu.isOpen) return;
+			openMenu();
+		} else {
+			if (!cellMenu.isOpen) return;
+			closeMenu();
+		}
+	}, [isFocused, cellMenu.isOpen]);
 
-	const textAreaRef = useCallback(
+	const tdRef = useCallback(
 		(node) => {
-			if (type === CELL_TYPE.TEXT || type === CELL_TYPE.NUMBER)
-				if (node) {
-					if (cellMenu.moveCursor) {
-						node.selectionStart = inputText.length;
-						node.selectionEnd = inputText.length;
+			if (node) {
+				if (node instanceof HTMLElement) {
+					//Set timeout to overcome bug where all values in the node are 0
+					//See: https://github.com/facebook/react/issues/13108
+					setTimeout(() => {
 						setCellMenu((prevState) => {
+							const { width, height } =
+								node.getBoundingClientRect();
+
+							function findWidth() {
+								switch (type) {
+									case CELL_TYPE.TAG:
+										return "fit-content";
+									case CELL_TYPE.TEXT:
+										return `${width}px`;
+									default:
+										return `${width}px`;
+								}
+							}
+
+							function findHeight() {
+								switch (type) {
+									case CELL_TYPE.TEXT:
+									case CELL_TYPE.TAG:
+										return "fit-content";
+									case CELL_TYPE.NUMBER:
+										return "3rem";
+									default:
+										return `${height}px`;
+								}
+							}
 							return {
 								...prevState,
-								moveCursor: false,
+								width: findWidth(),
+								height: findHeight(),
 							};
 						});
-					}
+					}, 1);
 				}
+			}
 		},
-		[type, inputText.length]
+		[inputText, cellMenu.isOpen]
 	);
+
+	function handleTabPress() {
+		updateContent(true);
+	}
 
 	async function handleCellContextClick(e: React.MouseEvent<HTMLElement>) {
 		try {
@@ -99,10 +142,6 @@ export default function EditableTd({
 		}
 	}
 
-	function handleKeyUp(e: React.KeyboardEvent) {
-		if (type === CELL_TYPE.ERROR) return;
-		if (e.key === "Enter") openMenu();
-	}
 	function handleCellClick(e: React.MouseEvent<HTMLElement>) {
 		const el = e.target as HTMLInputElement;
 
@@ -110,7 +149,8 @@ export default function EditableTd({
 		if (el.nodeName === "A") return;
 		if (type === CELL_TYPE.ERROR) return;
 
-		openMenu();
+		onFocusClick(cellId);
+		//openMenu();
 	}
 
 	function closeMenu() {
@@ -118,60 +158,80 @@ export default function EditableTd({
 	}
 
 	function openMenu() {
-		if (tdRef.current) {
-			const { height } = tdRef.current.getBoundingClientRect();
-			setCellMenu({
+		setCellMenu((prevState) => {
+			return {
+				...prevState,
 				isOpen: true,
 				left: -10,
 				top: -5,
-				moveCursor: true,
-				height,
 				tagColor: randomColor(),
-			});
-			setInputText(content);
-		}
+			};
+		});
+		setInputText(content);
 	}
 
 	function handleAddTag(text: string) {
 		onAddTag(cellId, headerId, text, cellMenu.tagColor);
 		setInputText("");
-		closeMenu();
+		onOutsideClick();
 	}
 
 	function handleTagClick(id: string) {
 		onTagClick(cellId, id);
-		closeMenu();
+		onOutsideClick();
 	}
 
-	function handleOutsideClick() {
-		//If we're in Live Preview mode and we click on the header and then click on the outside of
-		//the component, the header will close, set the data (which didn't change), which cause an update
-		//which persists the data again. We can prevent this by only calling onOutsideClick
-		//if the data has actually changed
-		if (inputText !== content) {
+	function updateContent(shouldLock: boolean) {
+		if (content !== inputText) {
 			switch (type) {
 				case CELL_TYPE.TEXT:
-					onUpdateContent(cellId, inputText);
+					onContentChange(cellId, inputText, shouldLock);
 					setInputText("");
 					break;
 				case CELL_TYPE.NUMBER:
-					onUpdateContent(cellId, inputText);
+					onContentChange(cellId, inputText, shouldLock);
 					setInputText("");
 					break;
+				//TODO add lock
 				case CELL_TYPE.TAG:
+					const tag = tags.find((tag) => tag.content === inputText);
+					if (tag) {
+						onTagClick(cellId, tag.id);
+					} else {
+						onAddTag(
+							cellId,
+							headerId,
+							inputText,
+							cellMenu.tagColor
+						);
+					}
 					setInputText("");
 					break;
 				default:
 					break;
 			}
 		}
-		closeMenu();
 	}
+
+	function handleOutsideClick() {
+		closingMenu.current = true;
+		onOutsideClick();
+	}
+
+	//Synchronous handler
+	//Runs after handle outside click
+	useEffect(() => {
+		if (closingMenu.current && !isFocused) {
+			//Set updated false
+			//handle update
+			closingMenu.current = false;
+			updateContent(false);
+		}
+	}, [isFocused, closingMenu.current]);
 
 	function renderCell() {
 		switch (type) {
 			case CELL_TYPE.TEXT:
-				return <TextCell content={content} />;
 			case CELL_TYPE.NUMBER:
 				return <TextCell content={content} />;
 			case CELL_TYPE.TAG: {
@@ -179,6 +239,7 @@ export default function EditableTd({
 				if (tag)
 					return (
 						<TagCell
+							style={{ overflow: "hidden" }}
 							content={tag.content}
 							color={tag.color}
 							showLink={true}
@@ -193,95 +254,37 @@ export default function EditableTd({
 		}
 	}
 
-	function renderCellMenuContent() {
-		switch (type) {
-			case CELL_TYPE.TEXT:
-				return (
-					<textarea
-						className="NLT__input"
-						ref={textAreaRef}
-						autoFocus
-						value={inputText}
-						onChange={(e) =>
-							setInputText(e.target.value.replace("\n", ""))
-						}
-					/>
-				);
-			case CELL_TYPE.NUMBER:
-				return (
-					<input
-						className="NLT__input NLT__input--number"
-						type="number"
-						autoFocus
-						value={inputText}
-						onChange={(e) => setInputText(e.target.value)}
-					/>
-				);
-			case CELL_TYPE.TAG:
-				return (
-					<TagMenuContent
-						cellId={cellId}
-						tags={tags}
-						color={cellMenu.tagColor}
-						inputText={inputText}
-						onAddTag={handleAddTag}
-						onTextChange={(e) => setInputText(e.target.value)}
-						onRemoveTagClick={onRemoveTagClick}
-						onTagClick={handleTagClick}
-					/>
-				);
-			default:
-				return <></>;
-		}
-	}
-
-	function getMenuWidth() {
-		switch (type) {
-			case CELL_TYPE.TAG:
-				return "fit-content";
-			default:
-				return tdRef.current ? tdRef.current.offsetWidth : 0;
-		}
-	}
-
-	function getMenuHeight() {
-		switch (type) {
-			case CELL_TYPE.NUMBER:
-				return "2rem";
-			case CELL_TYPE.TAG:
-				return "fit-content";
-			default:
-				return cellMenu.height;
-		}
-	}
-
 	let tdClassName = "NLT__td";
 	if (type === CELL_TYPE.NUMBER) tdClassName += " NLT__td--number";
 
 	return (
 		<td
 			className={tdClassName}
-			tabIndex={0}
 			ref={tdRef}
-			onFocus={() => openMenu()}
-			onBlur={() => handleOutsideClick()}
 			onClick={handleCellClick}
-			onKeyUp={handleKeyUp}
 			onContextMenu={handleCellContextClick}
 		>
-			<Menu
-				isOpen={cellMenu.isOpen}
+			<CellEditMenu
 				style={{
-					minWidth: type === CELL_TYPE.TEXT ? "11rem" : 0,
-					width: getMenuWidth(),
+					minWidth: type === CELL_TYPE.TAG ? "15rem" : "100px",
+					height: cellMenu.height,
+					width: cellMenu.width,
 					top: `${cellMenu.top}px`,
 					left: `${cellMenu.left}px`,
-					height: getMenuHeight(),
 				}}
+				isOpen={cellMenu.isOpen}
+				cellType={type}
+				tags={tags}
+				cellId={cellId}
+				tagColor={cellMenu.tagColor}
+				inputText={inputText}
+				onInputChange={setInputText}
 				onOutsideClick={handleOutsideClick}
-			>
-				{renderCellMenuContent()}
-			</Menu>
+				onTabPress={handleTabPress}
+				onAddTag={handleAddTag}
+				onRemoveTagClick={onRemoveTagClick}
+				onTagClick={handleTagClick}
+			/>
 			<div className="NLT__td-content-container" style={{ width }}>
 				{renderCell()}
 			</div>

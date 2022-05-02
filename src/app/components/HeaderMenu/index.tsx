@@ -123,13 +123,16 @@ export default function HeaderMenu({
 	function renderEditItems() {
 		return (
 			<>
-				<input
-					autoFocus
-					type="text"
-					value={inputText}
-					onChange={(e) => setInputText(e.target.value)}
-				/>
+				<div>
+					<input
+						autoFocus
+						type="text"
+						value={inputText}
+						onChange={(e) => setInputText(e.target.value)}
+					/>
+				</div>
 				<button
+					tabIndex={-1}
 					className="NLT__button NLT__header-menu-delete-button"
 					onClick={() => handleDeleteClick(id)}
 				>

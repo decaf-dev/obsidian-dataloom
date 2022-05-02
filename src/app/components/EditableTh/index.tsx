@@ -54,7 +54,8 @@ export default function EditableTh({
 		if (e.key === "Enter") openMenu();
 	}
 
-	function handleHeaderClick() {
+	function handleHeaderClick(e: React.MouseEvent) {
+		e.stopPropagation();
 		if (dragRef.current) return;
 		openMenu();
 	}
@@ -78,6 +79,14 @@ export default function EditableTh({
 		}
 	}
 
+	function closeMenu() {
+		setHeaderMenu(initialHeaderMenuState);
+	}
+
+	function handleClose() {
+		closeMenu();
+	}
+
 	function removeEventListeners() {
 		window.removeEventListener("mousemove", handleMouseMove);
 		window.removeEventListener("drag", removeEventListeners);
@@ -94,7 +103,6 @@ export default function EditableTh({
 
 	return (
 		<th
-			tabIndex={0}
 			className="NLT__th NLT__selectable"
 			ref={thRef}
 			onKeyUp={handleKeyUp}
@@ -119,7 +127,7 @@ export default function EditableTh({
 				onInsertColumnClick={onInsertColumnClick}
 				onTypeSelect={onTypeSelect}
 				onDeleteClick={onDeleteClick}
-				onClose={() => setHeaderMenu(initialHeaderMenuState)}
+				onClose={handleClose}
 			/>
 			<div className="NLT__header-content-container" style={{ width }}>
 				<div className="NLT__header-content">{content}</div>

@@ -1,3 +1,8 @@
+//TODO make debug rules
+//tags
+//cells
+//handlers, etc
+//[component][handler] ...
 export const DEBUG = false;
 
 export interface CellType {
@@ -16,6 +21,20 @@ interface CellColor {
 	GRAY: string;
 	PURPLE: string;
 }
+
+export interface TabbableElementType {
+	UNFOCUSED: string;
+	BUTTON: string;
+	HEADER: string;
+	CELL: string;
+}
+
+export const TABBABLE_ELEMENT_TYPE: TabbableElementType = {
+	UNFOCUSED: "unfocused",
+	BUTTON: "button",
+	HEADER: "header",
+	CELL: "cell",
+};
 
 export const CELL_TYPE: CellType = {
 	TEXT: "text",

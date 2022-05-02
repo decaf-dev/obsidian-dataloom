@@ -206,6 +206,63 @@ export const appDataToMarkdown = (tableId: string, data: AppData): string => {
 	return buffer.toString();
 };
 
+export const appDataIdsToMarkdown = (
+	tableId: string,
+	data: AppData
+): string => {
+	const COLUMN_SIZE = 40;
+	const buffer = new AppDataStringBuffer();
+	buffer.createRow();
+
+	data.headers.forEach((header, i) =>
+		buffer.writeColumn(header.id, COLUMN_SIZE)
+	);
+
+	buffer.createRow();
+
+	data.headers.forEach((_header, i) => {
+		const content = Array(COLUMN_SIZE).fill("-").join("");
+		buffer.writeColumn(content, COLUMN_SIZE);
+	});
+
+	buffer.createRow();
+
+	data.headers.forEach((_header, i) => {
+		buffer.writeColumn(i === 0 ? tableId : "", COLUMN_SIZE);
+	});
+
+	buffer.createRow();
+
+	data.headers.forEach((header, i) => {
+		buffer.writeColumn(header.type, COLUMN_SIZE);
+	});
+
+	data.rows.forEach((row) => {
+		buffer.createRow();
+
+		for (let i = 0; i < data.headers.length; i++) {
+			const cell = data.cells.find(
+				(cell) =>
+					cell.rowId === row.id &&
+					cell.headerId === data.headers[i].id
+			);
+			if (cell.type === CELL_TYPE.TAG) {
+				const tag = data.tags.find((tag) =>
+					tag.selected.includes(cell.id)
+				);
+				if (tag) {
+					buffer.writeColumn(tag.id, COLUMN_SIZE);
+				} else {
+					buffer.writeColumn("", COLUMN_SIZE);
+				}
+			} else {
+				buffer.writeColumn(cell.id, COLUMN_SIZE);
+			}
+		}
+	});
+	return buffer.toString();
+};
+
 export class AppDataStringBuffer {
 	string: string;
 
@@ -306,11 +363,17 @@ export const mergeAppData = (
 		merged.headers[i].width = header.width;
 	});
 
-	//Algorithm:
-	//Sort by default first and then find
+	newAppData.cells.forEach((cell, i) => {
+		if (oldAppData.cells.length >= i + 1) {
+			merged.cells[i].id = oldAppData.cells[i].id;
+		} else {
+			merged.cells[i].id = cell.id;
+		}
+	});
+
+	//TODO change
 	//This allows the user to add new rows or delete existing rows
 	//and still have the correct creationTime
-	//Grab row settings
 	newAppData.rows.forEach((row, i) => {
 		if (oldAppData.rows.length >= i + 1) {
 			merged.rows[i].creationTime = oldAppData.rows[i].creationTime;
@@ -322,7 +385,11 @@ export const mergeAppData = (
 	//Grab tag settings
 	oldAppData.tags.forEach((tag, i) => {
 		const index = merged.tags.findIndex((t) => t.content === tag.content);
-		if (index !== -1) merged.tags[index].color = tag.color;
+		if (index !== -1) {
+			merged.tags[index].id = tag.id;
+			merged.tags[index].selected = tag.selected;
+			merged.tags[index].color = tag.color;
+		}
 	});
 	return merged;
 };
@@ -703,7 +770,7 @@ export const addPound = (input: string) => {
  * @returns A hyperlink (<a>) link for an Obsidian file
  */
 export const toExternalLink = (url: string): string => {
-	return `<a href="${url}" target="_blank" rel="noopener">${url}</a>`;
+	return `<a tabIndex={-1} href="${url}" target="_blank" rel="noopener">${url}</a>`;
 };
 
 /**
@@ -712,7 +779,7 @@ export const toExternalLink = (url: string): string => {
  * @returns A hyperlink (<a>) link for an Obsidian file
  */
 export const toFileLink = (fileName: string): string => {
-	return `<a data-href="${fileName}" href="${fileName}" class="internal-link" target="_blank" rel="noopener">${fileName}</a>`;
+	return `<a tabIndex={-1} data-href="${fileName}" href="${fileName}" class="internal-link" target="_blank" rel="noopener">${fileName}</a>`;
 };
 
 /**
@@ -722,5 +789,5 @@ export const toFileLink = (fileName: string): string => {
  */
 export const toTagLink = (tagName: string): string => {
 	if (tagName.startsWith("#")) throw "tagName cannot start with pound symbol";
-	return `<a href="#${tagName}" class="tag" target="_blank" rel="noopener">#${tagName}</a>`;
+	return `<a tabIndex={-1} href="#${tagName}" class="tag" target="_blank" rel="noopener">#${tagName}</a>`;
 };

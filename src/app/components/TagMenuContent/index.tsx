@@ -1,19 +1,21 @@
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 
 import TagCell from "../TagCell";
 
 import { Tag } from "../../services/state";
 
 import "./styles.css";
+import { useForceUpdate } from "src/app/services/hooks";
 
 interface Props {
 	cellId: string;
 	tags: Tag[];
 	color: string;
+	isOpen: boolean;
 	inputText: string;
+	onTextChange: React.ChangeEventHandler<HTMLInputElement>;
 	onTagClick: (tagId: string) => void;
 	onAddTag: (inputText: string) => void;
-	onTextChange: React.ChangeEventHandler<HTMLInputElement>;
 	onRemoveTagClick: (cellId: string, tagId: string) => void;
 }
 
@@ -22,29 +24,42 @@ export default function TagMenuContent({
 	tags = [],
 	color = "",
 	inputText,
+	isOpen,
 	onTagClick,
 	onAddTag,
 	onTextChange,
 	onRemoveTagClick,
 }: Props) {
+	const forceUpdate = useForceUpdate();
+
+	useEffect(() => {
+		forceUpdate();
+	}, [forceUpdate]);
+
+	const inputRef = useCallback(
+		(node) => {
+			if (node) {
+				if (node instanceof HTMLElement) {
+					if (isOpen) {
+						//Sometimes the node won't focus. This seems to be a reoccuring issue
+						//with using this inputRef
+						//console.log(node.getBoundingClientRect());
+						setTimeout(() => {
+							node.focus();
+						}, 1);
+					}
+				}
+			}
+		},
+		[isOpen]
+	);
+
 	function handleTextChange(e: React.ChangeEvent<HTMLInputElement>) {
 		//Disallow pound
 		if (e.target.value.match("#")) return;
 		//Disallow whitespace
 		if (e.target.value.match(/\s/)) return;
 		onTextChange(e);
-	}
-
-	function handleKeyUp(e: React.KeyboardEvent) {
-		if (e.key === "Enter") {
-			//If this tag content already exists then we will select that tag, otherwise add a new one
-			const tag = tags.filter((tag) => tag.content === inputText)[0];
-			if (tag) {
-				onTagClick(tag.id);
-			} else {
-				onAddTag(inputText);
-			}
-		}
 	}
 
 	function renderSelectableTags() {
@@ -80,7 +95,7 @@ export default function TagMenuContent({
 		);
 	}
 	return (
-		<div className="NLT__tag-menu-container" onKeyUp={handleKeyUp}>
+		<div className="NLT__tag-menu-container">
 			<div className="NLT__tag-menu-top">
 				{tags
 					.filter(
@@ -100,7 +115,7 @@ export default function TagMenuContent({
 					))}
 				<input
 					className="NLT__tag-menu-input"
-					autoFocus
+					ref={inputRef}
 					type="text"
 					value={inputText}
 					onChange={handleTextChange}
