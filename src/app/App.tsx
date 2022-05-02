@@ -76,8 +76,9 @@ export default function App({
 			//If we're running in Obsidian
 			if (app) {
 				if (appData.updateTime === 0) return;
-				if (!settings.appData[sourcePath]) return;
-				if (!settings.appData[sourcePath][tableId]) return;
+				// if (!settings.appData[sourcePath]) return;
+				// console.log(settings.appData[sourcePath][tableId]);
+				// if (!settings.appData[sourcePath][tableId]) return;
 				//The save lock ensures that updates only happen after we have pushed our changes
 				//to the cache
 				if (saveLock.current) return;
@@ -403,6 +404,7 @@ export default function App({
 
 	function handleWidthChange(id: string, newWidth: number) {
 		if (DEBUG) console.log("[handler]: handleWidthChange called.");
+		//TODO debounce?
 		setAppData((prevState: AppData) => {
 			return {
 				...prevState,

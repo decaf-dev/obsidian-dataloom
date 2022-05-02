@@ -13,7 +13,7 @@ import {
 	mergeAppData,
 } from "../../services/utils";
 
-import { DEBUG } from "../../constants";
+import { CELL_TYPE, DEBUG } from "../../constants";
 
 import NltPlugin from "main";
 
@@ -53,19 +53,22 @@ export const loadAppData = (
 		console.log("FOUND TABLE ID", tableId);
 	}
 
+	//Check to make sure it doesn't have errors
 	if (settings.appData[sourcePath]) {
 		if (settings.appData[sourcePath][tableId]) {
 			if (DEBUG) console.log("LOADING OLD DATA");
 
 			// TODO add merging back in
-			// const newAppData = findAppData(parsedTable);
-			// const merged = mergeAppData(
-			// 	settings.appData[sourcePath][tableId],
-			// 	newAppData
-			// );
-			// settings.appData[sourcePath][tableId] = merged;
-			// plugin.saveSettings();
-			return { tableId, data: settings.appData[sourcePath][tableId] };
+			const newAppData = findAppData(parsedTable);
+			const merged = mergeAppData(
+				settings.appData[sourcePath][tableId],
+				newAppData
+			);
+			settings.appData[sourcePath][tableId] = merged;
+			//TODO add await
+			plugin.saveSettings();
+			//Check to see if it has errors, if it does, don't return
+			return { tableId, data: merged };
 		}
 	}
 
