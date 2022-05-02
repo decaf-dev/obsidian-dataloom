@@ -22,6 +22,7 @@ export default function Table({ headers, rows, onAddColumn, onAddRow }: Props) {
 					))}
 					<th className="NLT__th">
 						<button
+							tabIndex={-1}
 							className="NLT__button NLT__button--sm"
 							onClick={() => onAddColumn()}
 						>
@@ -39,6 +40,7 @@ export default function Table({ headers, rows, onAddColumn, onAddRow }: Props) {
 				<tr>
 					<td className="NLT__td">
 						<button
+							tabIndex={-1}
 							className="NLT__button NLT__button--sm"
 							onClick={() => onAddRow()}
 						>

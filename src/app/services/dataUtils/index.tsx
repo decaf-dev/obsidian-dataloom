@@ -8,6 +8,7 @@ import {
 	findTableRegex,
 	parseTableFromEl,
 	validTypeDefinitionRow,
+	appDataIdsToMarkdown,
 	findTableId,
 	mergeAppData,
 } from "../../services/utils";
@@ -56,13 +57,14 @@ export const loadAppData = (
 		if (settings.appData[sourcePath][tableId]) {
 			if (DEBUG) console.log("LOADING OLD DATA");
 
-			const newAppData = findAppData(parsedTable);
-			const merged = mergeAppData(
-				settings.appData[sourcePath][tableId],
-				newAppData
-			);
-			settings.appData[sourcePath][tableId] = merged;
-			plugin.saveSettings();
+			// TODO add merging back in
+			// const newAppData = findAppData(parsedTable);
+			// const merged = mergeAppData(
+			// 	settings.appData[sourcePath][tableId],
+			// 	newAppData
+			// );
+			// settings.appData[sourcePath][tableId] = merged;
+			// plugin.saveSettings();
 			return { tableId, data: settings.appData[sourcePath][tableId] };
 		}
 	}
@@ -79,7 +81,6 @@ const persistAppData = (
 	tableId: string
 ) => {
 	if (!settings.appData[sourcePath]) settings.appData[sourcePath] = {};
-	if (DEBUG) console.log("PERSISTING APP DATA");
 	settings.appData[sourcePath][tableId] = appData;
 	plugin.saveData(settings);
 };

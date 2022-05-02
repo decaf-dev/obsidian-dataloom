@@ -26,7 +26,6 @@ export default function HeaderMenuItem({
 
 	return (
 		<li
-			tabIndex={0}
 			className={className}
 			onClick={(e) => {
 				e.stopPropagation();

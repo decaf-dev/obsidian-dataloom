@@ -2,7 +2,6 @@
 	display: flex;
 	align-items: center;
 	padding: 4px 8px;
-	overflow: clip;
 }
 
 .NLT__tag {

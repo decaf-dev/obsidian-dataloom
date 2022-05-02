@@ -17,6 +17,20 @@ interface CellColor {
 	PURPLE: string;
 }
 
+export interface TabbableElementType {
+	UNFOCUSED: string;
+	BUTTON: string;
+	HEADER: string;
+	CELL: string;
+}
+
+export const TABBABLE_ELEMENT_TYPE: TabbableElementType = {
+	UNFOCUSED: "unfocused",
+	BUTTON: "button",
+	HEADER: "header",
+	CELL: "cell",
+};
+
 export const CELL_TYPE: CellType = {
 	TEXT: "text",
 	NUMBER: "number",
