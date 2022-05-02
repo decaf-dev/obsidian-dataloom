@@ -198,6 +198,7 @@ export default function EditableTd({
 				if (tag)
 					return (
 						<TagCell
+							style={{ overflow: "hidden" }}
 							content={tag.content}
 							color={tag.color}
 							showLink={true}
