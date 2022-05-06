@@ -12,13 +12,6 @@ export interface AppData {
 	cells: Cell[];
 	tags: Tag[];
 }
-export interface ErrorData {
-	columnIds: number[];
-}
-
-export const instanceOfErrorData = (object: any): object is ErrorData => {
-	return "columnIds" in object;
-};
 export interface NltSettings {
 	appData: { [filePath: string]: { [tableId: string]: AppData } };
 	focusedElement: TabbableElement;
