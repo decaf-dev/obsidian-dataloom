@@ -5,6 +5,8 @@ import { mergeAppData } from "./merge";
 import { isValidTypeDefinitionRow } from "../../string/validators";
 import { DEBUG } from "src/app/constants";
 import { findAppData } from "./saveUtils";
+import { findTableId } from "./saveUtils";
+import { LoadedData } from "../state/loadedData";
 
 /**
  * Loads app data

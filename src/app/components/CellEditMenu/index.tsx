@@ -2,7 +2,7 @@ import React, { useCallback, useState } from "react";
 
 import Menu from "../Menu";
 import TagMenuContent from "../TagMenuContent";
-import { Tag } from "../../services/appData/state/Tag";
+import { Tag } from "src/app/services/appData/state/tag";
 import { CELL_TYPE } from "../../constants";
 import "./styles.css";
 

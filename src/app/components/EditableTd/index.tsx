@@ -194,7 +194,7 @@ export default function EditableTd({
 					setInputText("");
 					break;
 				//TODO add lock
-				case CELL_TYPE.TAG:
+				case CELL_TYPE.TAG: {
 					const tag = tags.find((tag) => tag.content === inputText);
 					if (tag) {
 						onTagClick(cellId, tag.id);
@@ -208,6 +208,7 @@ export default function EditableTd({
 					}
 					setInputText("");
 					break;
+				}
 				default:
 					break;
 			}

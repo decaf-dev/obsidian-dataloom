@@ -73,7 +73,7 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 						)
 					);
 
-					let content = stripPound(td);
+					const content = stripPound(td);
 
 					//Check if tag already exists, otherwise create a new
 					const index = tags.findIndex(

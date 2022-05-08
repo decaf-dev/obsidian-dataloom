@@ -9,7 +9,7 @@ export const stripPound = (input: string) => {
 
 export const stripLink = (input: string) => {
 	const replaceWithSquareBrackets =
-		(input.match(/class=\"internal-link\"/) || []).length !== 0;
+		(input.match(/class="internal-link"/) || []).length !== 0;
 	return input
 		.replace(/&lt;a.*?&gt;/, replaceWithSquareBrackets ? "[[" : "")
 		.replace(/&lt;\/a&gt;/, replaceWithSquareBrackets ? "]]" : "");
@@ -40,7 +40,7 @@ export const stripSquareBrackets = (input: string): string => {
 };
 
 export const sanitizeHTML = (innerHTML: string) => {
-	var temp = document.createElement("div");
+	const temp = document.createElement("div");
 	temp.textContent = innerHTML;
 	return temp.innerHTML;
 };

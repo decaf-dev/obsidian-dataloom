@@ -1,5 +1,5 @@
-import { AppData } from "src/app/services/state";
-import { TabbableElement } from "../state/tabbableElement";
+import { AppData } from "../appData/state/appData";
+import { TabbableElement } from "../appData/state/tabbableElement";
 import { TABBABLE_ELEMENT_TYPE } from "src/app/constants";
 
 export interface NltSettings {
