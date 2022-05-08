@@ -1,7 +1,6 @@
 import React, { forwardRef } from "react";
 
-import { findIcon } from "../../services/utils";
-
+import { findIcon } from "src/app/services/icon";
 interface Props {
 	id?: string;
 	selected?: boolean;

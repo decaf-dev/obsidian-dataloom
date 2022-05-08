@@ -1,6 +1,7 @@
 import React from "react";
 
-import { TableHeader, TableRow } from "src/app/services/state";
+import { TableHeader } from "src/app/services/appData/state/header";
+import { TableRow } from "src/app/services/appData/state/row";
 import "./styles.css";
 
 interface Props {

@@ -1,4 +1,5 @@
-import { mockTable } from "./index";
+import { mockTable, createEmptyMarkdownTable } from "./index";
+import { randomTableId } from "../../random";
 
 describe("mockTable", () => {
 	it("creates a mock table", () => {
@@ -20,5 +21,15 @@ describe("mockTable", () => {
 
 		td = tr[2].querySelectorAll("td");
 		expect(td.length).toEqual(2);
+	});
+});
+
+describe("createEmptyMarkdownTable", () => {
+	it("creates an empty 1 column table", () => {
+		const uuid = randomTableId();
+		const table = createEmptyMarkdownTable(uuid);
+		expect(table).toMatch(
+			`| Column 1 |\n| -------- |\n| ${uuid} |\n| text |`
+		);
 	});
 });

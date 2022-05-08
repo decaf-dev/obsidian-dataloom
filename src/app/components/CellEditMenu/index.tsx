@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useState, useRef } from "react";
+import React, { useCallback, useState } from "react";
 
 import Menu from "../Menu";
 import TagMenuContent from "../TagMenuContent";
-import { Tag } from "../../services/state";
+import { Tag } from "src/app/services/appData/state/tag";
 import { CELL_TYPE } from "../../constants";
 import "./styles.css";
 

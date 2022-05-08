@@ -27,3 +27,16 @@ export const mockTable = (headers: string[] = [], rows: string[][] = []) => {
 	table.appendChild(tbody);
 	return table;
 };
+
+/**
+ * Creates a 1 column NLT markdown table
+ * @returns An NLT markdown table
+ */
+export const createEmptyMarkdownTable = (uuid: string): string => {
+	const rows = [];
+	rows[0] = "| Column 1 |";
+	rows[1] = "| -------- |";
+	rows[2] = `| ${uuid} |`;
+	rows[3] = "| text |";
+	return rows.join("\n");
+};

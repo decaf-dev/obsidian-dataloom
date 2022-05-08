@@ -7,29 +7,25 @@ import Table from "./components/Table";
 import DragMenu from "./components/DragMenu";
 import EditableTh from "./components/EditableTh";
 
+import { initialHeader } from "./services/appData/state/header";
+import { initialTag, Tag } from "./services/appData/state/tag";
+import { initialRow } from "./services/appData/state/row";
+import { initialCell } from "./services/appData/state/cell";
+import { AppData } from "./services/appData/state/appData";
+import { NltSettings } from "./services/settings";
+import { saveAppData } from "./services/appData/external/save";
 import {
-	initialHeader,
-	initialCell,
-	initialRow,
-	initialTag,
-	Tag,
-	NltSettings,
-} from "./services/state";
-import { saveAppData } from "./services/dataUtils";
-import { AppData } from "./services/state";
+	findNextTabbableElement,
+	findTabbableElement,
+} from "./services/appData/internal/tabbable";
+import { TabbableElement } from "./services/appData/state/tabbableElement";
 
 import { CELL_TYPE, DEBUG, TABBABLE_ELEMENT_TYPE } from "./constants";
 
 import "./app.css";
 import NltPlugin from "main";
 import { SORT } from "./components/HeaderMenu/constants";
-import {
-	addColumn,
-	addRow,
-	TabbableElement,
-	findNextTabbableElement,
-	findTabbableElement,
-} from "./services/appDataUtils";
+import { addRow, addColumn } from "./services/appData/internal/add";
 
 interface Props {
 	plugin: NltPlugin;
