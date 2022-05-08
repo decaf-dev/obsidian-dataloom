@@ -2,7 +2,7 @@ import { Plugin, Editor, MarkdownView } from "obsidian";
 
 import { NLTTable } from "src/NLTTable";
 import { NltSettings, DEFAULT_SETTINGS } from "src/app/services/state";
-import { createEmptyTable, randomTableId } from "src/app/services/utils";
+import { createEmptyMarkdownTable, randomTableId } from "src/app/services/utils";
 import { addColumn, addRow } from "src/app/services/appDataUtils";
 import { saveAppData } from "src/app/services/dataUtils";
 import { TABBABLE_ELEMENT_TYPE } from "src/app/constants";
@@ -59,7 +59,7 @@ export default class NltPlugin extends Plugin {
 			name: "Add table",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "=" }],
 			editorCallback: (editor: Editor) => {
-				editor.replaceSelection(createEmptyTable(randomTableId()));
+				editor.replaceSelection(createEmptyMarkdownTable(randomTableId()));
 			},
 		});
 

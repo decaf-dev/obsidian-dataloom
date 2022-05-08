@@ -22,3 +22,13 @@ describe("mockTable", () => {
 		expect(td.length).toEqual(2);
 	});
 });
+
+describe("createEmptyMarkdownTable", () => {
+	it("creates an empty 1 column table", () => {
+		const uuid = randomTableId();
+		const table = createEmptyMarkdownTable(uuid);
+		expect(table).toMatch(
+			`| Column 1 |\n| -------- |\n| ${uuid} |\n| text |`
+		);
+	});
+});
