@@ -1,13 +1,13 @@
 import { v4 as uuidv4 } from "uuid";
 
-import { Tag, initialTag } from "src/app/services/state/tag";
-import { initialCell } from "src/app/services/state/cell";
-import { initialRow } from "src/app/services/state/row";
-import { initialHeader } from "src/app/services/state/header";
-import { AppData } from "src/app/services/state";
-
+import { AppData } from "../state/appData";
+import { initialCell } from "../state/cell";
+import { initialHeader } from "../state/header";
+import { initialRow } from "../state/row";
+import { initialTag, Tag } from "../state/tag";
 import { CELL_TYPE } from "src/app/constants";
 
+//TODO add tests
 export const addRow = (data: AppData): AppData => {
 	const rowId = uuidv4();
 	const tags: Tag[] = [];

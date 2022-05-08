@@ -1,3 +1,7 @@
+import { AppData } from "../state/appData";
+import { TabbableElement } from "../state/tabbableElement";
+import { TABBABLE_ELEMENT_TYPE } from "src/app/constants";
+
 export const findTabbableElement = (
 	data: AppData,
 	id: string

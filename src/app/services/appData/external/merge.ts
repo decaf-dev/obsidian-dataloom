@@ -1,3 +1,5 @@
+import { AppData } from "../state/appData";
+
 export const mergeAppData = (
 	oldAppData: AppData,
 	newAppData: AppData

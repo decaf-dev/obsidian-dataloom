@@ -1,9 +1,6 @@
-import {
-	findNextTabbableElement,
-	findTabbableElementMatrix,
-} from "../../appDataUtils/index";
-import { findAppData } from "../utils";
-import { TABBABLE_ELEMENT_TYPE } from "../../../constants";
+import { findTabbableElementMatrix, findNextTabbableElement } from "./tabbable";
+import { findAppData } from "../external/saveUtils";
+import { TABBABLE_ELEMENT_TYPE } from "src/app/constants";
 
 describe("findTabbableElementMatrix", () => {
 	it("finds a correct matrx", () => {

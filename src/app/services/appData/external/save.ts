@@ -1,3 +1,10 @@
+import { AppData } from "../state/appData";
+import { appDataToMarkdown, findTableRegex } from "./saveUtils";
+import { App } from "obsidian";
+import { NltSettings } from "../../settings";
+import { persistAppData } from "./persist";
+import NltPlugin from "../../../../../main";
+
 /**
  * Saves app data
  * @param plugin

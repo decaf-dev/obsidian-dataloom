@@ -1,4 +1,5 @@
-import { matchURLs } from "./index";
+import { matchURLs, countNumTags, findCellType } from "./index";
+import { CELL_TYPE } from "src/app/constants";
 
 describe("matchURLs", () => {
 	it("matches http", () => {

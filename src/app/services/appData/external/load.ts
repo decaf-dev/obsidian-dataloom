@@ -1,3 +1,11 @@
+import { NltSettings } from "../../settings";
+import NltPlugin from "main";
+import { parseTableFromEl } from "./loadUtils";
+import { mergeAppData } from "./merge";
+import { isValidTypeDefinitionRow } from "../../string/validators";
+import { DEBUG } from "src/app/constants";
+import { findAppData } from "./saveUtils";
+
 /**
  * Loads app data
  * @param el The root table element
@@ -20,7 +28,7 @@ export const loadAppData = (
 		if (DEBUG) console.log("Invalid table id");
 		return { tableId: null, data: null };
 	}
-	if (!validTypeDefinitionRow(parsedTable)) {
+	if (!isValidTypeDefinitionRow(parsedTable)) {
 		if (DEBUG) console.log("Invalid type definition row");
 		return { tableId: null, data: null };
 	}

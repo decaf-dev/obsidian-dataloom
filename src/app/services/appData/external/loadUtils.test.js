@@ -1,3 +1,6 @@
+import { mockTable } from "../mock";
+import { parseTableFromEl, parseTableFromMarkdown } from "./loadUtils";
+
 describe("parseTableFromEl", () => {
 	it("parses table", () => {
 		const table = mockTable(

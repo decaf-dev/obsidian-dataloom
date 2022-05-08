@@ -1,7 +1,11 @@
+import { isValidTypeDefinitionRow } from "../../string/validators";
 import {
 	findTableRegex,
 	calcColumnCharLengths,
 	appDataToMarkdown,
+	findAppData,
+	findTableId,
+	AppDataStringBuffer,
 } from "./saveUtils";
 
 describe("findAppData", () => {
@@ -48,20 +52,20 @@ describe("findAppData", () => {
 	});
 });
 
-describe("validTypeDefinitionRow", () => {
+describe("isValidTypeDefinitionRow", () => {
 	it("returns true if row exists", () => {
 		const parsedTable = [
 			["Column 1", "Column 2"],
 			["12345", ""],
 			["text", "text"],
 		];
-		const hasTDR = validTypeDefinitionRow(parsedTable);
+		const hasTDR = isValidTypeDefinitionRow(parsedTable);
 		expect(hasTDR).toBe(true);
 	});
 
 	it("returns false if no row exists", () => {
 		const parsedTable = [["Column 1", "Column 2"]];
-		const hasTDR = validTypeDefinitionRow(parsedTable);
+		const hasTDR = isValidTypeDefinitionRow(parsedTable);
 		expect(hasTDR).toBe(false);
 	});
 
@@ -71,7 +75,7 @@ describe("validTypeDefinitionRow", () => {
 			["12345", ""],
 			["text", "invalid"],
 		];
-		const hasTDR = validTypeDefinitionRow(parsedTable);
+		const hasTDR = isValidTypeDefinitionRow(parsedTable);
 		expect(hasTDR).toBe(false);
 	});
 });

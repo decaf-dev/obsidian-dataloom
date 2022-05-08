@@ -1,6 +1,6 @@
 import { toFileLink } from "../toLink";
 import { stripSquareBrackets } from "../strippers";
-import { matchURLs } from "../matchers";
+import { matchURLs, matchFileLinks } from "../matchers";
 import { toExternalLink } from "../toLink";
 
 export const parseFileLinks = (input: string): string => {

@@ -1,3 +1,9 @@
+import {
+	MARKDOWN_CELLS_REGEX,
+	MARKDOWN_HYPHEN_CELL_REGEX,
+	MARKDOWN_ROWS_REGEX,
+} from "./";
+
 describe("MARKDOWN_HYPHEN_CELL_REGEX", () => {
 	it("matches hyphen cell", () => {
 		const match = "------|".match(MARKDOWN_HYPHEN_CELL_REGEX);

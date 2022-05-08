@@ -1,3 +1,7 @@
+import { findAppData } from "./saveUtils";
+import { mergeAppData } from "./merge";
+import { CELL_TYPE } from "src/app/constants";
+
 describe("mergeAppData", () => {
 	it("merges new header content", () => {
 		const oldAppData = findAppData([

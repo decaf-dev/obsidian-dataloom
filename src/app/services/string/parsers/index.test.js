@@ -1,3 +1,5 @@
+import { parseURLs, parseFileLinks } from "./";
+
 describe("parseURLs", () => {
 	it("parses a url", () => {
 		const parsed = parseURLs("https://test.com");

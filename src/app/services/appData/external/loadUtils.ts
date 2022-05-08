@@ -1,3 +1,8 @@
+import { MARKDOWN_CELLS_REGEX, MARKDOWN_ROWS_REGEX } from "../../string/regex";
+import { isMarkdownTable } from "../../string/validators";
+import { stripLinks, sanitizeHTML } from "../../string/strippers";
+import { CELL_TYPE } from "src/app/constants";
+
 /**
  * Parses data for an individual table.
  * This is not used for all file data. It is intended to be used

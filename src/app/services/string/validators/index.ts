@@ -6,6 +6,8 @@ import {
 	TAG_REGEX,
 } from "src/app/services/string/regex";
 
+import { CELL_TYPE } from "src/app/constants";
+
 export const isMarkdownTable = (data: string): boolean => {
 	const rows = data.match(MARKDOWN_ROWS_REGEX);
 

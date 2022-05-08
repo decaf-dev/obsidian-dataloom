@@ -1,3 +1,16 @@
+import { v4 as uuidv4 } from "uuid";
+
+import { AppData } from "../state/appData";
+import { Header, initialHeader } from "../state/header";
+import { Row, initialRow } from "../state/row";
+import { Cell, initialCell } from "../state/cell";
+import { Tag, initialTag } from "../state/tag";
+import { findCellType } from "../../string/matchers";
+import { stripPound } from "../../string/strippers";
+import { addPound } from "../../string/adders";
+import { CELL_TYPE } from "src/app/constants";
+import { randomColor, getCurrentTimeWithOffset } from "../../random";
+
 const HEADER_ROW_INDEX = 0;
 const TABLE_ID_ROW_INDEX = 1;
 const TYPE_DEFINITION_ROW_INDEX = 2;
@@ -297,4 +310,16 @@ export const calcColumnCharLengths = (
 		}
 	});
 	return columnCharLengths;
+};
+
+export const findTableId = (parsedTable: string[][]): string | null => {
+	if (parsedTable.length < 2) return null;
+	const row = parsedTable[1];
+	const id = row[0];
+
+	//If there is no table id row
+	if (!Object.values(CELL_TYPE).every((type) => type !== id)) return null;
+	//If the table id row is there but omitted
+	if (id == "") return null;
+	return id;
 };

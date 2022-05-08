@@ -1,3 +1,7 @@
+import { AppData } from "../state/appData";
+import { AppDataStringBuffer } from "../external/saveUtils";
+import { CELL_TYPE } from "src/app/constants";
+
 export const printDataIds = (tableId: string, data: AppData): string => {
 	const COLUMN_SIZE = 40;
 	const buffer = new AppDataStringBuffer();

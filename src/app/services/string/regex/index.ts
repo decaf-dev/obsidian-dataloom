@@ -36,4 +36,5 @@ export const EXTERNAL_LINK_REGEX = new RegExp(/https{0,1}:\/\/[^\s]*/g);
 
 export const TAGS_REGEX = new RegExp(/#[^ \t]+/g);
 
+//TODO write tests
 export const FILE_LINK_REGEX = new RegExp(/\[\[[^\n\r\]]+]]/g);

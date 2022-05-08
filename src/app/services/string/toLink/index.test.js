@@ -1,3 +1,5 @@
+import { toExternalLink, toTagLink, toFileLink } from "./";
+
 describe("toExternalLink", () => {
 	it("creates a external link", () => {
 		const link = toExternalLink("https://test.com");
