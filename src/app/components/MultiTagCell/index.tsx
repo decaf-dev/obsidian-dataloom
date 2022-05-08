@@ -2,7 +2,7 @@ import React from "react";
 
 import TagCell from "../TagCell";
 
-import { Tag } from "../../services/state";
+import { Tag } from "src/app/services/appData/state/tag";
 interface Props {
 	tags: Tag[];
 }

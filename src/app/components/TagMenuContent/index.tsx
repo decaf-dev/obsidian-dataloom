@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect } from "react";
 
 import TagCell from "../TagCell";
-
-import { Tag } from "../../services/state";
+import { Tag } from "src/app/services/appData/state/tag";
 
 import "./styles.css";
 import { useForceUpdate } from "src/app/services/hooks";

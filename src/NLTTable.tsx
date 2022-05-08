@@ -3,8 +3,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { AppContext } from "./app/services/hooks";
 import App from "./app/App";
-import { loadAppData } from "./app/services/dataUtils";
-import { NltSettings } from "./app/services/state";
+import { loadAppData } from "./app/services/appData/external/load";
+import { NltSettings } from "./app/services/settings";
 import NltPlugin from "main";
 
 //This is our main class that will render the React app to the Obsidian container element

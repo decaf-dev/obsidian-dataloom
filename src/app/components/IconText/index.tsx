@@ -1,6 +1,6 @@
 import React from "react";
 
-import { findIcon } from "../../services/utils";
+import { findIcon } from "src/app/services/icon";
 import "./styles.css";
 
 interface Props {

@@ -6,8 +6,9 @@ import TextCell from "../TextCell";
 import TagCell from "../TagCell";
 import ErrorCell from "../ErrorCell";
 
-import { randomColor, addPound } from "../../services/utils";
-import { Tag } from "../../services/state";
+import { randomColor } from "src/app/services/random";
+import { addPound } from "src/app/services/string/adders";
+import { Tag } from "src/app/services/appData/state/tag";
 
 import { CELL_TYPE } from "../../constants";
 
