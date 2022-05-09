@@ -1,18 +1,17 @@
-import { v4 as uuidv4 } from "uuid";
-
 import { AppData } from "../state/appData";
 import { initialCell } from "../state/cell";
 import { initialHeader } from "../state/header";
 import { initialRow } from "../state/row";
 import { initialTag, Tag } from "../state/tag";
 import { CELL_TYPE } from "src/app/constants";
+import { randomCellId, randomColumnId, randomRowId } from "../../random";
 
 //TODO add tests
 export const addRow = (data: AppData): AppData => {
-	const rowId = uuidv4();
+	const rowId = randomRowId();
 	const tags: Tag[] = [];
 	const cells = data.headers.map((header, i) => {
-		const cellId = uuidv4();
+		const cellId = randomCellId();
 		if (header.type === CELL_TYPE.TAG)
 			tags.push(initialTag(header.id, cellId, "", ""));
 		return initialCell(cellId, rowId, header.id, header.type, "");
@@ -27,11 +26,14 @@ export const addRow = (data: AppData): AppData => {
 };
 
 export const addColumn = (data: AppData): AppData => {
-	const header = initialHeader(`Column ${data.headers.length}`);
+	const header = initialHeader(
+		randomColumnId(),
+		`Column ${data.headers.length}`
+	);
 	const cells = [...data.cells];
 	data.rows.forEach((row) => {
 		cells.push(
-			initialCell(uuidv4(), row.id, header.id, CELL_TYPE.TEXT, "")
+			initialCell(randomCellId(), row.id, header.id, CELL_TYPE.TEXT, "")
 		);
 	});
 	return {

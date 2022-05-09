@@ -2,7 +2,12 @@ import { NltSettings } from "../../settings";
 import NltPlugin from "main";
 import { parseTableFromEl } from "./loadUtils";
 import { mergeAppData } from "./merge";
-import { isValidTypeDefinitionRow } from "../../string/validators";
+import {
+	hasValidHeaderRow,
+	hasValidTypeDefinitionRow,
+	hasValidRowIds,
+	hasValidColumnIds,
+} from "../../string/validators";
 import { DEBUG } from "src/app/constants";
 import { findAppData } from "./saveUtils";
 import { findTableId } from "./saveUtils";
@@ -30,8 +35,24 @@ export const loadAppData = (
 		if (DEBUG) console.log("Invalid table id");
 		return { tableId: null, data: null };
 	}
-	if (!isValidTypeDefinitionRow(parsedTable)) {
+
+	if (!hasValidHeaderRow(parsedTable)) {
+		if (DEBUG) console.log("Invalid header row");
+		return { tableId: null, data: null };
+	}
+
+	if (!hasValidTypeDefinitionRow(parsedTable)) {
 		if (DEBUG) console.log("Invalid type definition row");
+		return { tableId: null, data: null };
+	}
+
+	if (!hasValidColumnIds(parsedTable)) {
+		if (DEBUG) console.log("Invalid column ids");
+		return { tableId: null, data: null };
+	}
+
+	if (!hasValidRowIds(parsedTable)) {
+		if (DEBUG) console.log("Invalid row ids");
 		return { tableId: null, data: null };
 	}
 
@@ -39,22 +60,22 @@ export const loadAppData = (
 		console.log("FOUND TABLE ID", tableId);
 	}
 
-	//Check to make sure it doesn't have errors
 	if (settings.appData[sourcePath]) {
 		if (settings.appData[sourcePath][tableId]) {
 			if (DEBUG) console.log("LOADING OLD DATA");
 
-			// TODO add merging back in
+			//We merge because if a user adds to the markdown, or takes away from the markdown
+			//we want to handle those updates
 			const newAppData = findAppData(parsedTable);
-			const merged = mergeAppData(
-				settings.appData[sourcePath][tableId],
-				newAppData
-			);
-			settings.appData[sourcePath][tableId] = merged;
+			// const merged = mergeAppData(
+			// 	settings.appData[sourcePath][tableId],
+			// 	newAppData
+			// );
+			settings.appData[sourcePath][tableId] = newAppData;
 			//TODO add await
 			plugin.saveSettings();
 			//Check to see if it has errors, if it does, don't return
-			return { tableId, data: merged };
+			return { tableId, data: newAppData };
 		}
 	}
 

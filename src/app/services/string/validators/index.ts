@@ -1,9 +1,11 @@
 import {
+	COLUMN_ID_REGEX,
 	MARKDOWN_CELLS_REGEX,
 	MARKDOWN_HYPHEN_CELL_REGEX,
 	MARKDOWN_ROWS_REGEX,
 	NUMBER_REGEX,
 	TAG_REGEX,
+	ROW_ID_REGEX,
 } from "src/app/services/string/regex";
 
 import { CELL_TYPE } from "src/app/constants";
@@ -46,13 +48,69 @@ export const hasSquareBrackets = (input: string): boolean => {
 	return false;
 };
 
-export const isValidTypeDefinitionRow = (parsedTable: string[][]): boolean => {
-	if (parsedTable.length < 3) return false;
-	const row = parsedTable[2];
+export const hasValidHeaderRow = (parsedTable: string[][]): boolean => {
+	const row = parsedTable[0];
+	if (row) {
+		for (let i = 0; i < row.length; i++) {
+			const cell = row[i];
+			if (i === 0) {
+				if (cell !== "") return false;
+			}
+		}
+		return true;
+	} else {
+		return false;
+	}
+};
 
-	for (let i = 0; i < row.length; i++) {
-		const cell = row[i];
-		if (!Object.values(CELL_TYPE).includes(cell)) return false;
+export const hasValidTypeDefinitionRow = (parsedTable: string[][]): boolean => {
+	const row = parsedTable[1];
+	if (row) {
+		for (let i = 0; i < row.length; i++) {
+			const cell = row[i];
+			if (i === 0) {
+				if (cell !== "") return false;
+			} else {
+				if (!Object.values(CELL_TYPE).includes(cell)) return false;
+			}
+		}
+		return true;
+	} else {
+		return false;
+	}
+};
+
+export const hasValidColumnIds = (parsedTable: string[][]): boolean => {
+	const ids: string[] = [];
+	const row = parsedTable[2];
+	if (row) {
+		for (let i = 1; i < row.length; i++) {
+			const cell = row[i];
+			if (!cell.match(COLUMN_ID_REGEX)) return false;
+			const id = cell.split("column-id-")[1];
+			if (ids.includes(id)) return false;
+
+			ids.push(id);
+		}
+		return true;
+	} else {
+		return false;
+	}
+};
+
+export const hasValidRowIds = (parsedTable: string[][]): boolean => {
+	const ids: string[] = [];
+	if (parsedTable.length < 3) return false;
+
+	for (let i = 3; i < parsedTable.length; i++) {
+		const row = parsedTable[i];
+		const cell = row[0];
+
+		if (!cell.match(ROW_ID_REGEX)) return false;
+		const id = cell.split("row-id-")[1];
+		if (ids.includes(id)) return false;
+
+		ids.push(id);
 	}
 	return true;
 };
