@@ -131,8 +131,8 @@ describe("findTableRegex", () => {
 		const data = findAppData(parsedTable);
 		const regex = findTableRegex(
 			"table-id-123456",
-			data.headers,
-			data.rows
+			data.headers.length,
+			data.rows.length
 		);
 		expect(regex.toString()).toEqual(
 			"/\\|.*\\|\\n\\|.*\\|\\n\\|.*\\|\\n\\|[\\t ]+table-id-123456[\\t ]+\\|.*\\|\\n\\|.*\\|/"
@@ -151,7 +151,7 @@ describe("findTableId", () => {
 			["table-id-123456", "row-id-123456", "row-id-123457"],
 		];
 		const id = findTableId(parsedTable);
-		expect(id).toEqual("123456");
+		expect(id).toEqual("table-id-123456");
 	});
 
 	it("returns null if row doesn't exist", () => {

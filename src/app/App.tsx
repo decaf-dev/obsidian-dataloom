@@ -79,15 +79,15 @@ export default function App({
 				if (saveLock.current) return;
 				try {
 					if (DEBUG) console.log("SAVING DATA");
-					// await saveAppData(
-					// 	plugin,
-					// 	settings,
-					// 	app,
-					// 	oldAppData,
-					// 	appData,
-					// 	sourcePath,
-					// 	tableId
-					// );
+					await saveAppData(
+						plugin,
+						settings,
+						app,
+						oldAppData,
+						appData,
+						sourcePath,
+						tableId
+					);
 				} catch (err) {
 					console.log(err);
 				}
@@ -412,7 +412,7 @@ export default function App({
 					}
 					return header;
 				}),
-				updateTime: Date.now(),
+				// updateTime: Date.now(),
 			};
 		});
 	}

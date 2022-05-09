@@ -207,8 +207,8 @@ export const appDataToMarkdown = (tableId: string, data: AppData): string => {
  */
 export const findTableRegex = (
 	tableId: string,
-	headers: Header[],
-	rows: Row[]
+	numHeaders: number,
+	numRows: number
 ): RegExp => {
 	const regex: string[] = [];
 	regex[0] = "\\|.*\\|"; //Header row
@@ -216,10 +216,10 @@ export const findTableRegex = (
 	regex[2] = "\\|.*\\|"; //Type definition row
 	regex[3] = `\\|[\\t ]+${tableId}[\\t ]+\\|`; //Table id row
 
-	for (let i = 1; i < headers.length; i++) regex[3] += ".*\\|";
+	for (let i = 1; i < numHeaders; i++) regex[3] += ".*\\|";
 
 	//Type definition row and all other rows
-	for (let i = 4; i < rows.length + 4; i++) regex[i] = "\\|.*\\|";
+	for (let i = 4; i < numRows + 4; i++) regex[i] = "\\|.*\\|";
 
 	const expression = new RegExp(regex.join("\n"));
 	return expression;
@@ -323,7 +323,7 @@ export const findTableId = (parsedTable: string[][]): string | null => {
 	if (row) {
 		const cell = row[0];
 		if (!cell.match(TABLE_ID_REGEX)) return null;
-		return cell.split("table-id-")[1];
+		return cell;
 	} else {
 		return null;
 	}
