@@ -73,23 +73,25 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 							)
 						);
 
-						const content = stripPound(td);
+						if (td !== "") {
+							const content = stripPound(td);
 
-						//Check if tag already exists, otherwise create a new
-						const index = tags.findIndex(
-							(tag) => tag.content === content
-						);
-						if (index !== -1) {
-							tags[index].selected.push(cellId);
-						} else {
-							tags.push(
-								initialTag(
-									headers[j - 1].id,
-									cellId,
-									content,
-									randomColor()
-								)
+							//Check if tag already exists, otherwise create a new
+							const index = tags.findIndex(
+								(tag) => tag.content === content
 							);
+							if (index !== -1) {
+								tags[index].selected.push(cellId);
+							} else {
+								tags.push(
+									initialTag(
+										headers[j - 1].id,
+										cellId,
+										content,
+										randomColor()
+									)
+								);
+							}
 						}
 					} else if (cellType === CELL_TYPE.NUMBER) {
 						cells.push(
@@ -216,7 +218,7 @@ export const findTableRegex = (
 	regex[2] = "\\|.*\\|"; //Type definition row
 	regex[3] = `\\|[\\t ]+${tableId}[\\t ]+\\|`; //Table id row
 
-	for (let i = 1; i < numHeaders; i++) regex[3] += ".*\\|";
+	for (let i = 0; i < numHeaders; i++) regex[3] += ".*\\|";
 
 	//Type definition row and all other rows
 	for (let i = 4; i < numRows + 4; i++) regex[i] = "\\|.*\\|";

@@ -30,7 +30,7 @@ describe("createEmptyMarkdownTable", () => {
 		const columnId = randomColumnId();
 		const table = createEmptyMarkdownTable(tableId, columnId);
 		expect(table).toMatch(
-			`|                 | Column 1          |\n| --------------- | ---------------- |\n|                 | text             |\n| ${tableId} | ${columnId} |`
+			`|                 | New Column       |\n| --------------- | ---------------- |\n|                 | text             |\n| ${tableId} | ${columnId} |`
 		);
 	});
 });

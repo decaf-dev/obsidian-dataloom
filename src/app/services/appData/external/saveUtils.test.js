@@ -135,7 +135,7 @@ describe("findTableRegex", () => {
 			data.rows.length
 		);
 		expect(regex.toString()).toEqual(
-			"/\\|.*\\|\\n\\|.*\\|\\n\\|.*\\|\\n\\|[\\t ]+table-id-123456[\\t ]+\\|.*\\|\\n\\|.*\\|/"
+			"/\\|.*\\|\\n\\|.*\\|\\n\\|.*\\|\\n\\|[\\t ]+table-id-123456[\\t ]+\\|.*\\|.*\\|\\n\\|.*\\|/"
 		);
 
 		const string = appDataToMarkdown("table-id-123456", data);

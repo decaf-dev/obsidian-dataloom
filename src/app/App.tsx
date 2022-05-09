@@ -446,7 +446,7 @@ export default function App({
 			const insertIndex = insertRight ? index + 1 : index;
 			const headerToInsert = initialHeader(
 				randomColumnId(),
-				`Column ${insertIndex + 1}`
+				"New Column"
 			);
 
 			const cells = prevState.rows.map((row) =>

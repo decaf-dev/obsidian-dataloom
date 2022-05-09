@@ -12,8 +12,6 @@ export const addRow = (data: AppData): AppData => {
 	const tags: Tag[] = [];
 	const cells = data.headers.map((header, i) => {
 		const cellId = randomCellId();
-		if (header.type === CELL_TYPE.TAG)
-			tags.push(initialTag(header.id, cellId, "", ""));
 		return initialCell(cellId, rowId, header.id, header.type, "");
 	});
 	return {
@@ -26,10 +24,7 @@ export const addRow = (data: AppData): AppData => {
 };
 
 export const addColumn = (data: AppData): AppData => {
-	const header = initialHeader(
-		randomColumnId(),
-		`Column ${data.headers.length}`
-	);
+	const header = initialHeader(randomColumnId(), "New Column");
 	const cells = [...data.cells];
 	data.rows.forEach((row) => {
 		cells.push(

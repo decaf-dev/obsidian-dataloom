@@ -1,7 +1,7 @@
 import { NltSettings } from "../../settings";
 import NltPlugin from "main";
 import { parseTableFromEl } from "./loadUtils";
-import { mergeAppData } from "./merge";
+import { updateAppDataFromSavedState } from "./merge";
 import {
 	hasValidHeaderRow,
 	hasValidTypeDefinitionRow,
@@ -62,20 +62,18 @@ export const loadAppData = (
 
 	if (settings.appData[sourcePath]) {
 		if (settings.appData[sourcePath][tableId]) {
-			if (DEBUG) console.log("LOADING OLD DATA");
+			//This is a compatibility fix for v2.3.6 and less
+			if (settings.appData[sourcePath][tableId].headers) {
+				if (DEBUG) console.log("LOADING OLD DATA");
 
-			//We merge because if a user adds to the markdown, or takes away from the markdown
-			//we want to handle those updates
-			const newAppData = findAppData(parsedTable);
-			// const merged = mergeAppData(
-			// 	settings.appData[sourcePath][tableId],
-			// 	newAppData
-			// );
-			settings.appData[sourcePath][tableId] = newAppData;
-			//TODO add await
-			plugin.saveSettings();
-			//Check to see if it has errors, if it does, don't return
-			return { tableId, data: newAppData };
+				const data = findAppData(parsedTable);
+				const updated = updateAppDataFromSavedState(
+					settings.appData[sourcePath][tableId],
+					data
+				);
+				plugin.saveSettings();
+				return { tableId, data: updated };
+			}
 		}
 	}
 
