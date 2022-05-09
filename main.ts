@@ -5,7 +5,7 @@ import { NltSettings, DEFAULT_SETTINGS } from "src/app/services/settings";
 import { addRow, addColumn } from "src/app/services/appData/internal/add";
 import { saveAppData } from "src/app/services/appData/external/save";
 import { createEmptyMarkdownTable } from "src/app/services/appData/mock";
-import { randomTableId } from "src/app/services/random";
+import { randomColumnId, randomTableId } from "src/app/services/random";
 import { TABBABLE_ELEMENT_TYPE } from "src/app/constants";
 export default class NltPlugin extends Plugin {
 	settings: NltSettings;
@@ -61,7 +61,7 @@ export default class NltPlugin extends Plugin {
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "=" }],
 			editorCallback: (editor: Editor) => {
 				editor.replaceSelection(
-					createEmptyMarkdownTable(randomTableId())
+					createEmptyMarkdownTable(randomTableId(), randomColumnId())
 				);
 			},
 		});

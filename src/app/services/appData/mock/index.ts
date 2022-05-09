@@ -32,11 +32,14 @@ export const mockTable = (headers: string[] = [], rows: string[][] = []) => {
  * Creates a 1 column NLT markdown table
  * @returns An NLT markdown table
  */
-export const createEmptyMarkdownTable = (uuid: string): string => {
+export const createEmptyMarkdownTable = (
+	tableId: string,
+	columnId: string
+): string => {
 	const rows = [];
-	rows[0] = "| Column 1 |";
-	rows[1] = "| -------- |";
-	rows[2] = `| ${uuid} |`;
-	rows[3] = "| text |";
+	rows[0] = "|                 | Column 1          |";
+	rows[1] = "| --------------- | ---------------- |";
+	rows[2] = "|                 | text             |";
+	rows[3] = `| ${tableId} | ${columnId} |`;
 	return rows.join("\n");
 };
