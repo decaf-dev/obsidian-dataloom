@@ -22,15 +22,29 @@ export const saveAppData = async (
 	sourcePath: string,
 	tableId: string
 ) => {
-	const newData = appDataToMarkdown(tableId, newAppData);
+	const markdown = appDataToMarkdown(tableId, newAppData);
 	try {
 		const file = app.workspace.getActiveFile();
 		let content = await app.vault.cachedRead(file);
 
 		content = content.replace(
-			findTableRegex(tableId, oldAppData.headers, oldAppData.rows),
-			newData
+			findTableRegex(
+				tableId,
+				oldAppData.headers.length,
+				oldAppData.rows.length
+			),
+			markdown
 		);
+
+		console.log(
+			findTableRegex(
+				tableId,
+				oldAppData.headers.length,
+				oldAppData.rows.length
+			)
+		);
+		console.log(content);
+		console.log(markdown);
 
 		//Reset update time to 0 so we don't update on load
 		newAppData.updateTime = 0;

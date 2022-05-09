@@ -1,4 +1,5 @@
-import { v4 as uuidv4 } from "uuid";
+import { randomTagId } from "../../random";
+
 export interface Tag {
 	id: string;
 	headerId: string;
@@ -14,7 +15,7 @@ export const initialTag = (
 	color: string
 ): Tag => {
 	return {
-		id: uuidv4(),
+		id: randomTagId(),
 		headerId,
 		content,
 		color,

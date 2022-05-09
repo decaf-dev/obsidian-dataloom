@@ -1,7 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
 
-import { v4 as uuidv4 } from "uuid";
-
 import EditableTd from "./components/EditableTd";
 import Table from "./components/Table";
 import DragMenu from "./components/DragMenu";
@@ -26,6 +24,7 @@ import "./app.css";
 import NltPlugin from "main";
 import { SORT } from "./components/HeaderMenu/constants";
 import { addRow, addColumn } from "./services/appData/internal/add";
+import { randomCellId, randomColumnId, randomRowId } from "./services/random";
 
 interface Props {
 	plugin: NltPlugin;
@@ -413,7 +412,7 @@ export default function App({
 					}
 					return header;
 				}),
-				updateTime: Date.now(),
+				// updateTime: Date.now(),
 			};
 		});
 	}
@@ -445,11 +444,14 @@ export default function App({
 			const header = prevState.headers.find((header) => header.id === id);
 			const index = prevState.headers.indexOf(header);
 			const insertIndex = insertRight ? index + 1 : index;
-			const headerToInsert = initialHeader(`Column ${insertIndex + 1}`);
+			const headerToInsert = initialHeader(
+				randomColumnId(),
+				"New Column"
+			);
 
 			const cells = prevState.rows.map((row) =>
 				initialCell(
-					uuidv4(),
+					randomCellId(),
 					row.id,
 					headerToInsert.id,
 					headerToInsert.type,
@@ -471,21 +473,19 @@ export default function App({
 
 	function handleInsertRowClick(id: string, insertBelow = false) {
 		if (DEBUG) console.log("[handler]: handleHeaderInsertRowClick called.");
-		const rowId = uuidv4();
+		const rowId = randomRowId();
 		setAppData((prevState: AppData) => {
 			const tags: Tag[] = [];
 
-			const cells = prevState.headers.map((header) => {
-				const cellId = uuidv4();
-				if (header.type === CELL_TYPE.TAG)
-					tags.push(initialTag(header.id, cellId, "", ""));
-				return initialCell(cellId, rowId, header.id, header.type, "");
-			});
+			const cells = prevState.headers.map((header) =>
+				initialCell(randomCellId(), rowId, header.id, header.type, "")
+			);
 
 			const rows = [...prevState.rows];
 
 			const index = prevState.rows.findIndex((row) => row.id === id);
 			const insertIndex = insertBelow ? index + 1 : index;
+			//If you insert a new row, then we want to resort?
 			rows.splice(insertIndex, 0, initialRow(rowId, Date.now()));
 			return {
 				...prevState,

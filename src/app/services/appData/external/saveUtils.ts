@@ -1,5 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
-
 import { AppData } from "../state/appData";
 import { Header, initialHeader } from "../state/header";
 import { Row, initialRow } from "../state/row";
@@ -9,110 +7,117 @@ import { findCellType } from "../../string/matchers";
 import { stripPound } from "../../string/strippers";
 import { addPound } from "../../string/adders";
 import { CELL_TYPE } from "src/app/constants";
-import { randomColor, getCurrentTimeWithOffset } from "../../random";
-
-const HEADER_ROW_INDEX = 0;
-const TABLE_ID_ROW_INDEX = 1;
-const TYPE_DEFINITION_ROW_INDEX = 2;
+import {
+	randomColor,
+	getCurrentTimeWithOffset,
+	randomCellId,
+} from "../../random";
+import { TABLE_ID_REGEX } from "../../string/regex";
 
 export const findAppData = (parsedTable: string[][]): AppData => {
+	const HEADER_ROW = 0;
+	const TYPE_DEFINITION_ROW = 1;
+	const COLUMN_ID_ROW = 2;
+
 	const headers: Header[] = [];
 	const rows: Row[] = [];
 	const cells: Cell[] = [];
 	const tags: Tag[] = [];
 
-	parsedTable.forEach((row, i) => {
-		if (i === HEADER_ROW_INDEX) {
-			row.forEach((th) => {
-				headers.push(initialHeader(th));
+	parsedTable.forEach((parsedRow, i) => {
+		if (i === HEADER_ROW) {
+			parsedRow.forEach((th, j) => {
+				if (j !== 0) headers.push(initialHeader("", th));
 			});
-		} else if (i === TYPE_DEFINITION_ROW_INDEX) {
-			row.forEach((td, j) => {
-				//Set header type based off of the first row's specified cell type
-				headers[j].type = td;
+		} else if (i === TYPE_DEFINITION_ROW) {
+			parsedRow.forEach((td, j) => {
+				if (j !== 0) headers[j - 1].type = td;
 			});
-		} else if (i !== TABLE_ID_ROW_INDEX) {
-			const rowId = uuidv4();
-			rows.push(initialRow(rowId, getCurrentTimeWithOffset()));
+		} else if (i === COLUMN_ID_ROW) {
+			parsedRow.forEach((td, j) => {
+				if (j !== 0) headers[j - 1].id = td;
+			});
+		} else {
+			const row = initialRow("", getCurrentTimeWithOffset());
 
-			row.forEach((td, j) => {
-				const cellId = uuidv4();
-				let cellType = "";
-				//Set header type based off of the first row's specified cell type
-				if (i === 1) {
-					cellType = td;
-					headers[j].type = cellType;
-					return;
+			parsedRow.forEach((td, j) => {
+				if (j === 0) {
+					row.id = td;
 				} else {
-					cellType = findCellType(td, headers[j].type);
-				}
+					const cellId = randomCellId();
+					const cellType = findCellType(td, headers[j - 1].type);
 
-				//Check if doesn't match header
-				if (cellType !== headers[j].type) {
-					cells.push(
-						initialCell(
-							cellId,
-							rowId,
-							headers[j].id,
-							CELL_TYPE.ERROR,
-							td,
-							headers[j].type
-						)
-					);
-					return;
-				}
-
-				if (cellType === CELL_TYPE.TAG) {
-					cells.push(
-						initialCell(
-							cellId,
-							rowId,
-							headers[j].id,
-							CELL_TYPE.TAG,
-							""
-						)
-					);
-
-					const content = stripPound(td);
-
-					//Check if tag already exists, otherwise create a new
-					const index = tags.findIndex(
-						(tag) => tag.content === content
-					);
-					if (index !== -1) {
-						tags[index].selected.push(cellId);
-					} else {
-						tags.push(
-							initialTag(
-								headers[j].id,
+					//Check if doesn't match header
+					if (cellType !== headers[j - 1].type) {
+						cells.push(
+							initialCell(
 								cellId,
-								content,
-								randomColor()
+								row.id,
+								headers[j - 1].id,
+								CELL_TYPE.ERROR,
+								td,
+								headers[j - 1].type
+							)
+						);
+						return;
+					}
+
+					if (cellType === CELL_TYPE.TAG) {
+						cells.push(
+							initialCell(
+								cellId,
+								row.id,
+								headers[j - 1].id,
+								CELL_TYPE.TAG,
+								""
+							)
+						);
+
+						if (td !== "") {
+							const content = stripPound(td);
+
+							//Check if tag already exists, otherwise create a new
+							const index = tags.findIndex(
+								(tag) => tag.content === content
+							);
+							if (index !== -1) {
+								tags[index].selected.push(cellId);
+							} else {
+								tags.push(
+									initialTag(
+										headers[j - 1].id,
+										cellId,
+										content,
+										randomColor()
+									)
+								);
+							}
+						}
+					} else if (cellType === CELL_TYPE.NUMBER) {
+						cells.push(
+							initialCell(
+								cellId,
+								row.id,
+								headers[j - 1].id,
+								CELL_TYPE.NUMBER,
+								td
+							)
+						);
+					} else if (cellType === CELL_TYPE.TEXT) {
+						cells.push(
+							initialCell(
+								cellId,
+								row.id,
+								headers[j - 1].id,
+								CELL_TYPE.TEXT,
+								td
 							)
 						);
 					}
-				} else if (cellType === CELL_TYPE.NUMBER) {
-					cells.push(
-						initialCell(
-							cellId,
-							rowId,
-							headers[j].id,
-							CELL_TYPE.NUMBER,
-							td
-						)
-					);
-				} else if (cellType === CELL_TYPE.TEXT) {
-					cells.push(
-						initialCell(
-							cellId,
-							rowId,
-							headers[j].id,
-							CELL_TYPE.TEXT,
-							td
-						)
-					);
 				}
 			});
+
+			rows.push(row);
 		}
 	});
 
@@ -131,41 +136,42 @@ export const findAppData = (parsedTable: string[][]): AppData => {
  * @returns An Obsidian markdown string
  */
 export const appDataToMarkdown = (tableId: string, data: AppData): string => {
-	const columnCharLengths = calcColumnCharLengths(
-		tableId,
-		data.headers,
-		data.cells,
-		data.tags
-	);
+	const columnCharLengths = calcColumnCharLengths(tableId, data);
 
 	const buffer = new AppDataStringBuffer();
 	buffer.createRow();
 
+	buffer.writeColumn("", columnCharLengths[0]);
 	data.headers.forEach((header, i) =>
-		buffer.writeColumn(header.content, columnCharLengths[i])
+		buffer.writeColumn(header.content, columnCharLengths[i + 1])
 	);
 
 	buffer.createRow();
 
-	data.headers.forEach((_header, i) => {
+	for (let i = 0; i < data.headers.length + 1; i++) {
 		const content = Array(columnCharLengths[i]).fill("-").join("");
 		buffer.writeColumn(content, columnCharLengths[i]);
-	});
+	}
 
 	buffer.createRow();
 
-	data.headers.forEach((_header, i) => {
-		buffer.writeColumn(i === 0 ? tableId : "", columnCharLengths[i]);
-	});
-
-	buffer.createRow();
+	buffer.writeColumn("", columnCharLengths[0]);
 
 	data.headers.forEach((header, i) => {
-		buffer.writeColumn(header.type, columnCharLengths[i]);
+		buffer.writeColumn(header.type, columnCharLengths[i + 1]);
+	});
+
+	buffer.createRow();
+
+	buffer.writeColumn(tableId, columnCharLengths[0]);
+	data.headers.forEach((header, i) => {
+		buffer.writeColumn(header.id, columnCharLengths[i + 1]);
 	});
 
 	data.rows.forEach((row) => {
 		buffer.createRow();
+
+		buffer.writeColumn(row.id, columnCharLengths[0]);
 
 		for (let i = 0; i < data.headers.length; i++) {
 			const cell = data.cells.find(
@@ -173,10 +179,7 @@ export const appDataToMarkdown = (tableId: string, data: AppData): string => {
 					cell.rowId === row.id &&
 					cell.headerId === data.headers[i].id
 			);
-			if (
-				cell.type === CELL_TYPE.TAG ||
-				cell.type === CELL_TYPE.MULTI_TAG
-			) {
+			if (cell.type === CELL_TYPE.TAG) {
 				const tags = data.tags.filter((tag) =>
 					tag.selected.includes(cell.id)
 				);
@@ -188,9 +191,9 @@ export const appDataToMarkdown = (tableId: string, data: AppData): string => {
 					if (j === 0) content += addPound(tag.content);
 					else content += " " + addPound(tag.content);
 				});
-				buffer.writeColumn(content, columnCharLengths[i]);
+				buffer.writeColumn(content, columnCharLengths[i + 1]);
 			} else {
-				buffer.writeColumn(cell.content, columnCharLengths[i]);
+				buffer.writeColumn(cell.content, columnCharLengths[i + 1]);
 			}
 		}
 	});
@@ -206,18 +209,19 @@ export const appDataToMarkdown = (tableId: string, data: AppData): string => {
  */
 export const findTableRegex = (
 	tableId: string,
-	headers: Header[],
-	rows: Row[]
+	numHeaders: number,
+	numRows: number
 ): RegExp => {
 	const regex: string[] = [];
 	regex[0] = "\\|.*\\|"; //Header row
 	regex[1] = "\\|.*\\|"; //Hyphen row
-	regex[2] = `\\|[\\t ]+${tableId}[\\t ]+\\|`; //Table id row
+	regex[2] = "\\|.*\\|"; //Type definition row
+	regex[3] = `\\|[\\t ]+${tableId}[\\t ]+\\|`; //Table id row
 
-	for (let i = 1; i < headers.length; i++) regex[2] += ".*\\|";
+	for (let i = 0; i < numHeaders; i++) regex[3] += ".*\\|";
 
 	//Type definition row and all other rows
-	for (let i = 3; i < rows.length + 4; i++) regex[i] = "\\|.*\\|";
+	for (let i = 4; i < numRows + 4; i++) regex[i] = "\\|.*\\|";
 
 	const expression = new RegExp(regex.join("\n"));
 	return expression;
@@ -266,34 +270,38 @@ interface ColumnCharLengths {
  */
 export const calcColumnCharLengths = (
 	tableId: string,
-	headers: Header[],
-	cells: Cell[],
-	tags: Tag[]
+	data: AppData
 ): ColumnCharLengths => {
 	const columnCharLengths: { [columnPosition: number]: number } = [];
 
-	//Check headers
-	headers.forEach((header, i) => {
-		columnCharLengths[i] = header.content.length;
+	//Get first row
+	columnCharLengths[0] = tableId.length;
+
+	data.rows.forEach((row) => {
+		if (columnCharLengths[0] < row.id.length)
+			columnCharLengths[0] = row.id.length;
 	});
 
-	//Check table id
-	if (columnCharLengths[0] < tableId.length)
-		columnCharLengths[0] = tableId.length;
+	//Check headers
+	data.headers.forEach((header, i) => {
+		columnCharLengths[i + 1] = header.content.length;
 
-	//Check types
-	headers.forEach((header, i) => {
-		if (columnCharLengths[i] < header.type.length)
-			columnCharLengths[i] = header.type.length;
+		if (columnCharLengths[i + 1] < header.type.length)
+			columnCharLengths[i + 1] = header.type.length;
+
+		if (columnCharLengths[i + 1] < header.id.length)
+			columnCharLengths[i + 1] = header.id.length;
 	});
 
 	//Check cells
-	cells.forEach((cell) => {
-		const index = headers.findIndex(
+	data.cells.forEach((cell) => {
+		const index = data.headers.findIndex(
 			(header) => header.id === cell.headerId
 		);
-		if (cell.type === CELL_TYPE.TAG || cell.type === CELL_TYPE.MULTI_TAG) {
-			const arr = tags.filter((tag) => tag.selected.includes(cell.id));
+		if (cell.type === CELL_TYPE.TAG) {
+			const arr = data.tags.filter((tag) =>
+				tag.selected.includes(cell.id)
+			);
 
 			let content = "";
 			arr.forEach((tag, i) => {
@@ -302,24 +310,23 @@ export const calcColumnCharLengths = (
 					else content += " " + addPound(tag.content);
 				}
 			});
-			if (columnCharLengths[index] < content.length)
-				columnCharLengths[index] = content.length;
+			if (columnCharLengths[index + 1] < content.length)
+				columnCharLengths[index + 1] = content.length;
 		} else {
-			if (columnCharLengths[index] < cell.content.length)
-				columnCharLengths[index] = cell.content.length;
+			if (columnCharLengths[index + 1] < cell.content.length)
+				columnCharLengths[index + 1] = cell.content.length;
 		}
 	});
 	return columnCharLengths;
 };
 
 export const findTableId = (parsedTable: string[][]): string | null => {
-	if (parsedTable.length < 2) return null;
-	const row = parsedTable[1];
-	const id = row[0];
-
-	//If there is no table id row
-	if (!Object.values(CELL_TYPE).every((type) => type !== id)) return null;
-	//If the table id row is there but omitted
-	if (id == "") return null;
-	return id;
+	const row = parsedTable[2];
+	if (row) {
+		const cell = row[0];
+		if (!cell.match(TABLE_ID_REGEX)) return null;
+		return cell;
+	} else {
+		return null;
+	}
 };

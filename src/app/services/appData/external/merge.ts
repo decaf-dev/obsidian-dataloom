@@ -1,43 +1,37 @@
 import { AppData } from "../state/appData";
+import { AppSaveState } from "../state/appSaveState";
 
-export const mergeAppData = (
-	oldAppData: AppData,
-	newAppData: AppData
+export const updateAppDataFromSavedState = (
+	saveState: AppSaveState,
+	data: AppData
 ): AppData => {
-	//Grab sort settings
-	const merged = { ...newAppData };
-	oldAppData.headers.forEach((header, i) => {
-		merged.headers[i].sortName = header.sortName;
-		merged.headers[i].width = header.width;
-	});
+	const updated = { ...data };
 
-	newAppData.cells.forEach((cell, i) => {
-		if (oldAppData.cells.length >= i + 1) {
-			merged.cells[i].id = oldAppData.cells[i].id;
-		} else {
-			merged.cells[i].id = cell.id;
+	//Grab sort and width settings
+	data.headers.forEach((header, i) => {
+		if (saveState.headers[header.id]) {
+			const { sortName, width } = saveState.headers[header.id];
+			updated.headers[i].sortName = sortName;
+			updated.headers[i].width = width;
 		}
 	});
 
-	//TODO change
-	//This allows the user to add new rows or delete existing rows
-	//and still have the correct creationTime
-	newAppData.rows.forEach((row, i) => {
-		if (oldAppData.rows.length >= i + 1) {
-			merged.rows[i].creationTime = oldAppData.rows[i].creationTime;
-		} else {
-			merged.rows[i].creationTime = row.creationTime;
+	//Grab creation times
+	data.rows.forEach((row, i) => {
+		if (saveState.rows[row.id]) {
+			const { creationTime } = saveState.rows[row.id];
+			updated.rows[i].creationTime = creationTime;
 		}
 	});
 
-	//Grab tag settings
-	oldAppData.tags.forEach((tag, i) => {
-		const index = merged.tags.findIndex((t) => t.content === tag.content);
-		if (index !== -1) {
-			merged.tags[index].id = tag.id;
-			merged.tags[index].selected = tag.selected;
-			merged.tags[index].color = tag.color;
+	data.tags.forEach((tag, i) => {
+		if (saveState.headers[tag.headerId]) {
+			if (saveState.headers[tag.headerId].tags[tag.content]) {
+				const { color } =
+					saveState.headers[tag.headerId].tags[tag.content];
+				updated.tags[i].color = color;
+			}
 		}
 	});
-	return merged;
+	return updated;
 };

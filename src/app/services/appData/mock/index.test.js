@@ -1,5 +1,5 @@
 import { mockTable, createEmptyMarkdownTable } from "./index";
-import { randomTableId } from "../../random";
+import { randomColumnId, randomTableId } from "../../random";
 
 describe("mockTable", () => {
 	it("creates a mock table", () => {
@@ -26,10 +26,11 @@ describe("mockTable", () => {
 
 describe("createEmptyMarkdownTable", () => {
 	it("creates an empty 1 column table", () => {
-		const uuid = randomTableId();
-		const table = createEmptyMarkdownTable(uuid);
+		const tableId = randomTableId();
+		const columnId = randomColumnId();
+		const table = createEmptyMarkdownTable(tableId, columnId);
 		expect(table).toMatch(
-			`| Column 1 |\n| -------- |\n| ${uuid} |\n| text |`
+			`|                 | New Column       |\n| --------------- | ---------------- |\n|                 | text             |\n| ${tableId} | ${columnId} |`
 		);
 	});
 });

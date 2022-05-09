@@ -19,6 +19,26 @@ export const getCurrentTimeWithOffset = (): number => {
  * Creates a random table id
  * @returns A 6 alpha-numeric length string
  */
-export const randomTableId = (): string => {
+export const randomId = (): string => {
 	return Math.random().toString(36).replace("0.", "").substring(0, 6);
+};
+
+export const randomTableId = (): string => {
+	return `table-id-${randomId()}`;
+};
+
+export const randomCellId = (): string => {
+	return `cell-id-${randomId()}`;
+};
+
+export const randomRowId = (): string => {
+	return `row-id-${randomId()}`;
+};
+
+export const randomColumnId = (): string => {
+	return `column-id-${randomId()}`;
+};
+
+export const randomTagId = (): string => {
+	return `tag-id-${randomId()}`;
 };

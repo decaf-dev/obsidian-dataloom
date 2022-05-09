@@ -27,12 +27,12 @@ export default function DragMenu({
 	onDeleteClick,
 	onInsertRowClick,
 }: Props) {
-	const initialdragMenu = {
+	const initialDragMenu = {
 		top: 0,
 		left: 0,
 		isOpen: false,
 	};
-	const [dragMenu, setDragMenu] = useState(initialdragMenu);
+	const [dragMenu, setDragMenu] = useState(initialDragMenu);
 	const [buttonId] = useState(uuidv4());
 
 	const buttonRef = useRef<HTMLInputElement>();
@@ -49,7 +49,7 @@ export default function DragMenu({
 
 	function openMenu() {
 		if (dragMenu.isOpen) {
-			setDragMenu(initialdragMenu);
+			setDragMenu(initialDragMenu);
 			return;
 		}
 		if (buttonRef.current) {
@@ -64,7 +64,7 @@ export default function DragMenu({
 	}
 
 	function closeMenu() {
-		setDragMenu(initialdragMenu);
+		setDragMenu(initialDragMenu);
 	}
 
 	function handleDeleteClick(id: string) {

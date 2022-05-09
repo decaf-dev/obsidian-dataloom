@@ -1,4 +1,4 @@
-import { isValidTypeDefinitionRow } from "../../string/validators";
+import { CELL_TYPE } from "../../../constants";
 import {
 	findTableRegex,
 	calcColumnCharLengths,
@@ -9,110 +9,136 @@ import {
 } from "./saveUtils";
 
 describe("findAppData", () => {
-	it("finds text data", () => {
-		const table = [
-			["Column 1", "Column 2"],
-			["12345", ""],
-			["text", "text"],
-			["some text", "some more text"],
+	it("parses correct ids", () => {
+		const parsedTable = [
+			["", "Column 1", "Column 2", "Column 3"],
+			["", "text", "text", "text"],
+			[
+				"table-id-123456",
+				"column-id-123456",
+				"column-id-234567",
+				"column-id-345678",
+			],
+			["row-id-123456", "Test 1", "Test 2", "Test 3"],
 		];
-		const data = findAppData(table);
-		expect(data.headers.length).toEqual(2);
+		const data = findAppData(parsedTable);
+		expect(data.headers.length).toEqual(3);
 		expect(data.rows.length).toEqual(1);
-		expect(data.cells.length).toEqual(2);
+		expect(data.cells.length).toEqual(3);
 		expect(data.tags.length).toEqual(0);
+		expect(data.headers[0].id).toEqual("column-id-123456");
+		expect(data.headers[1].id).toEqual("column-id-234567");
+		expect(data.headers[2].id).toEqual("column-id-345678");
+		expect(data.rows[0].id).toEqual("row-id-123456");
+	});
+
+	it("parses column names", () => {
+		const parsedTable = [
+			["", "Column 1", "Column 2", "Column 3"],
+			["", "text", "text", "text"],
+			[
+				"table-id-123456",
+				"column-id-123456",
+				"column-id-234567",
+				"column-id-345678",
+			],
+			["row-id-123456", "Test 1", "Test 2", "Test 3"],
+		];
+		const data = findAppData(parsedTable);
+		expect(data.headers[0].content).toEqual("Column 1");
+		expect(data.headers[1].content).toEqual("Column 2");
+		expect(data.headers[2].content).toEqual("Column 3");
+	});
+
+	it("finds text data", () => {
+		const parsedTable = [
+			["", "Column 1", "Column 2", "Column 3"],
+			["", "text", "text", "text"],
+			[
+				"table-id-123456",
+				"column-id-123456",
+				"column-id-234567",
+				"column-id-345678",
+			],
+			["row-id-123456", "Test 1", "Test 2", "Test 3"],
+		];
+		const data = findAppData(parsedTable);
+		expect(data.cells[0].content).toEqual("Test 1");
+		expect(data.cells[1].content).toEqual("Test 2");
+		expect(data.cells[2].content).toEqual("Test 3");
 	});
 
 	it("finds tag data", () => {
-		const table = [
-			["Column 1", "Column 2"],
-			["12345", ""],
-			["tag", "tag"],
-			["#tag1", "#tag2"],
-		];
-		const data = findAppData(table);
-		expect(data.headers.length).toEqual(2);
-		expect(data.rows.length).toEqual(1);
-		expect(data.cells.length).toEqual(2);
-		expect(data.tags.length).toEqual(2);
-	});
-
-	it("finds tag data", () => {
-		const table = [
-			["Column 1", "Column 2"],
-			["12345", ""],
-			["tag", "tag"],
-			["#tag1", "#tag2"],
-		];
-		const data = findAppData(table);
-		expect(data.headers.length).toEqual(2);
-		expect(data.rows.length).toEqual(1);
-		expect(data.cells.length).toEqual(2);
-		expect(data.tags.length).toEqual(2);
-	});
-});
-
-describe("isValidTypeDefinitionRow", () => {
-	it("returns true if row exists", () => {
 		const parsedTable = [
-			["Column 1", "Column 2"],
-			["12345", ""],
-			["text", "text"],
+			["", "Column 1", "Column 2", "Column 3"],
+			["", "tag", "tag", "tag"],
+			[
+				"table-id-123456",
+				"column-id-123456",
+				"column-id-234567",
+				"column-id-345678",
+			],
+			["row-id-123456", "#tag1", "#tag2", "#tag3"],
 		];
-		const hasTDR = isValidTypeDefinitionRow(parsedTable);
-		expect(hasTDR).toBe(true);
+		const data = findAppData(parsedTable);
+		expect(data.tags.length).toEqual(3);
+		expect(data.tags[0].content).toEqual("tag1");
+		expect(data.tags[1].content).toEqual("tag2");
+		expect(data.tags[2].content).toEqual("tag3");
 	});
 
-	it("returns false if no row exists", () => {
-		const parsedTable = [["Column 1", "Column 2"]];
-		const hasTDR = isValidTypeDefinitionRow(parsedTable);
-		expect(hasTDR).toBe(false);
-	});
-
-	it("returns false if invalid types", () => {
+	it("finds errors", () => {
 		const parsedTable = [
-			["Column 1", "Column 2"],
-			["12345", ""],
-			["text", "invalid"],
+			["", "Column 1", "Column 2", "Column 3"],
+			["", "tag", "tag", "tag"],
+			[
+				"table-id-123456",
+				"column-id-123456",
+				"column-id-234567",
+				"column-id-345678",
+			],
+			["row-id-123456", "tag1", "#tag2", "#tag3"],
 		];
-		const hasTDR = isValidTypeDefinitionRow(parsedTable);
-		expect(hasTDR).toBe(false);
+		const data = findAppData(parsedTable);
+		expect(data.cells[0].type).toEqual(CELL_TYPE.ERROR);
 	});
 });
 
 describe("appDataToMarkdown", () => {
 	it("converts appData to valid markdown", () => {
-		const tableId = "123456";
-		const table = [
-			["Column 1", "Column 2"],
-			[tableId, ""],
-			["text", "text"],
-			["some text", "some more text"],
+		const parsedTable = [
+			["", "Column 1", "Column 2"],
+			["", "text", "text"],
+			["table-id-123456", "column-id-123456", "column-id-234567"],
+			["row-id-123456", "Test 1", "Test 2"],
 		];
-		const data = findAppData(table);
-		const markdown = appDataToMarkdown(tableId, data);
+		const data = findAppData(parsedTable);
+		const markdown = appDataToMarkdown("table-id-123456", data);
 		expect(markdown).toEqual(
-			"| Column 1  | Column 2       |\n| --------- | -------------- |\n| 123456    |                |\n| text      | text           |\n| some text | some more text |"
+			"|                 | Column 1         | Column 2         |\n| --------------- | ---------------- | ---------------- |\n|                 | text             | text             |\n| table-id-123456 | column-id-123456 | column-id-234567 |\n| row-id-123456   | Test 1           | Test 2           |"
 		);
 	});
 });
 
 describe("findTableRegex", () => {
-	it("produces a regex that matches the data", () => {
-		const tableId = "123456";
-		const table = [
-			["Column 1", "Column 2"],
-			[tableId, ""],
-			["text", "text"],
-			["some text", "some more text"],
+	it("produces a regex that matches markdown", () => {
+		const parsedTable = [
+			["", "Column 1", "Column 2"],
+			["", "text", "text"],
+			["table-id-123456", "column-id-123456", "column-id-234567"],
+			["row-id-123456", "Test 1", "Test 2"],
 		];
-		const data = findAppData(table);
-		const regex = findTableRegex(tableId, data.headers, data.rows);
+		const data = findAppData(parsedTable);
+		const regex = findTableRegex(
+			"table-id-123456",
+			data.headers.length,
+			data.rows.length
+		);
 		expect(regex.toString()).toEqual(
-			"/\\|.*\\|\\n\\|.*\\|\\n\\|[\\t ]+123456[\\t ]+\\|.*\\|\\n\\|.*\\|\\n\\|.*\\|/"
+			"/\\|.*\\|\\n\\|.*\\|\\n\\|.*\\|\\n\\|[\\t ]+table-id-123456[\\t ]+\\|.*\\|.*\\|\\n\\|.*\\|/"
 		);
 
-		const string = appDataToMarkdown(tableId, data);
+		const string = appDataToMarkdown("table-id-123456", data);
 		expect((string.match(regex) || []).length).toEqual(1);
 	});
 });
@@ -120,20 +146,18 @@ describe("findTableRegex", () => {
 describe("findTableId", () => {
 	it("returns the table id", () => {
 		const parsedTable = [
-			["column1", "column2"],
-			["12345", ""],
-			["text", "text"],
-			["test1", "test2"],
+			["", "Column 1", "Column 2"],
+			["", "text", "text"],
+			["table-id-123456", "row-id-123456", "row-id-123457"],
 		];
 		const id = findTableId(parsedTable);
-		expect(id).toEqual("12345");
+		expect(id).toEqual("table-id-123456");
 	});
 
 	it("returns null if row doesn't exist", () => {
 		const parsedTable = [
-			["column1", "column2"],
-			["text", "text"],
-			["test1", "test2"],
+			["", "Column 1", "Column 2"],
+			["", "text", "text"],
 		];
 		const id = findTableId(parsedTable);
 		expect(id).toEqual(null);
@@ -141,10 +165,19 @@ describe("findTableId", () => {
 
 	it("returns null if id is blank", () => {
 		const parsedTable = [
-			["column1", "column2"],
-			["", ""],
-			["text", "text"],
-			["test1", "test2"],
+			["", "Column 1", "Column 2"],
+			["", "text", "text"],
+			["", "row-id-123456", "row-id-123457"],
+		];
+		const id = findTableId(parsedTable);
+		expect(id).toEqual(null);
+	});
+
+	it("returns null if id doesn't contain table-id", () => {
+		const parsedTable = [
+			["", "Column 1", "Column 2"],
+			["", "text", "text"],
+			["123456", "row-id-123456", "row-id-123457"],
 		];
 		const id = findTableId(parsedTable);
 		expect(id).toEqual(null);
@@ -152,94 +185,16 @@ describe("findTableId", () => {
 });
 
 describe("calcColumnCharLengths", () => {
-	it("calculates largest string length from header row", () => {
-		const tableId = "123456";
-		const table = [
-			["This is some long text", "Column 2"],
-			[tableId, ""],
-			["text", "text"],
-			["some text", "some more text"],
+	it("calculates largest string length", () => {
+		const parsedTable = [
+			["", "Column 1", "Column 2"],
+			["", "text", "text"],
+			["table-id-123456", "column-id-123456", "column-id-234567"],
+			["row-id-123456", "Test 1", "Test 2"],
 		];
-		const data = findAppData(table);
-		const lengths = calcColumnCharLengths(
-			tableId,
-			data.headers,
-			data.cells,
-			data.tags
-		);
-		expect(lengths).toEqual([22, 14]);
-	});
-
-	it("calculates largest string length from tableId row", () => {
-		const tableId = "this-is-a-long-table-id";
-		const table = [
-			["Column 1", "Column 2"],
-			[tableId, ""],
-			["text", "text"],
-			["some text", "some more text"],
-		];
-		const data = findAppData(table);
-		const lengths = calcColumnCharLengths(
-			tableId,
-			data.headers,
-			data.cells,
-			data.tags
-		);
-		expect(lengths).toEqual([23, 14]);
-	});
-
-	it("calculates largest string length from type definition row", () => {
-		const tableId = "123456";
-		const table = [
-			["Column 1", "Column 2"],
-			[tableId, ""],
-			["this-is-a-long-value", "text"],
-			["some text", "some more text"],
-		];
-		const data = findAppData(table);
-		const lengths = calcColumnCharLengths(
-			tableId,
-			data.headers,
-			data.cells,
-			data.tags
-		);
-		expect(lengths).toEqual([20, 14]);
-	});
-
-	it("calculates largest string length from text row", () => {
-		const tableId = "123456";
-		const table = [
-			["Column 1", "Column 2"],
-			[tableId, ""],
-			["text", "text"],
-			["This is a long value", "some more text"],
-		];
-		const data = findAppData(table);
-		const lengths = calcColumnCharLengths(
-			tableId,
-			data.headers,
-			data.cells,
-			data.tags
-		);
-		expect(lengths).toEqual([20, 14]);
-	});
-
-	it("calculates largest string length from tag row", () => {
-		const tableId = "123456";
-		const table = [
-			["Column 1", "Column 2"],
-			[tableId, ""],
-			["tag", "text"],
-			["#this-is-a-long-tag", "some more text"],
-		];
-		const data = findAppData(table);
-		const lengths = calcColumnCharLengths(
-			tableId,
-			data.headers,
-			data.cells,
-			data.tags
-		);
-		expect(lengths).toEqual([19, 14]);
+		const data = findAppData(parsedTable);
+		const lengths = calcColumnCharLengths("table-id-123456", data);
+		expect(lengths).toEqual([15, 16, 16]);
 	});
 });
 
