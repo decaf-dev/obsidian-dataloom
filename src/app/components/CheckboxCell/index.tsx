@@ -7,10 +7,19 @@ interface Props {
 
 export default function CheckboxCell({ isChecked, onCheckboxChange }: Props) {
 	return (
-		<input
-			type="checkbox"
-			checked={isChecked}
-			onChange={() => onCheckboxChange(!isChecked)}
-		></input>
+		<div
+			style={{ width: "100%" }}
+			onClick={() => onCheckboxChange(!isChecked)}
+		>
+			<input
+				className="task-list-item-checkbox"
+				type="checkbox"
+				checked={isChecked}
+				onChange={(e) => {
+					e.stopPropagation();
+					onCheckboxChange(!isChecked);
+				}}
+			/>
+		</div>
 	);
 }
