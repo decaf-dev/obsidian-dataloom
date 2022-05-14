@@ -66,28 +66,28 @@ export const hasValidTypeDefinitionRow = (parsedTable: string[][]): boolean => {
 	if (row) {
 		for (let i = 0; i < row.length; i++) {
 			const cell = row[i];
-			if (i === 0) {
+			if (i === row.length - 1) {
 				if (cell !== "") return false;
 			} else {
 				if (!Object.values(CELL_TYPE).includes(cell)) return false;
 			}
 		}
 		return true;
-	} else {
-		return false;
 	}
+	return false;
 };
 
 export const hasValidColumnIds = (parsedTable: string[][]): boolean => {
 	const ids: string[] = [];
 	const row = parsedTable[2];
 	if (row) {
-		for (let i = 1; i < row.length; i++) {
+		for (let i = 0; i < row.length - 1; i++) {
 			const cell = row[i];
 			if (!cell.match(COLUMN_ID_REGEX)) return false;
+
+			//Check to see if the id has already been added
 			const id = cell.split("column-id-")[1];
 			if (ids.includes(id)) return false;
-
 			ids.push(id);
 		}
 		return true;
