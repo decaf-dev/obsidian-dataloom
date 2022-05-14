@@ -11,15 +11,15 @@ import {
 describe("findAppData", () => {
 	it("parses correct ids", () => {
 		const parsedTable = [
-			["", "Column 1", "Column 2", "Column 3"],
-			["", "text", "text", "text"],
+			["Column 1", "Column 2", "Column 3", ""],
+			["text", "text", "text", ""],
 			[
-				"table-id-123456",
 				"column-id-123456",
 				"column-id-234567",
 				"column-id-345678",
+				"table-id-123456",
 			],
-			["row-id-123456", "Test 1", "Test 2", "Test 3"],
+			["Test 1", "Test 2", "Test 3", "row-id-123456"],
 		];
 		const data = findAppData(parsedTable);
 		expect(data.headers.length).toEqual(3);
@@ -34,15 +34,15 @@ describe("findAppData", () => {
 
 	it("parses column names", () => {
 		const parsedTable = [
-			["", "Column 1", "Column 2", "Column 3"],
-			["", "text", "text", "text"],
+			["Column 1", "Column 2", "Column 3", ""],
+			["text", "text", "text", ""],
 			[
-				"table-id-123456",
 				"column-id-123456",
 				"column-id-234567",
 				"column-id-345678",
+				"table-id-123456",
 			],
-			["row-id-123456", "Test 1", "Test 2", "Test 3"],
+			["Test 1", "Test 2", "Test 3", "row-id-123456"],
 		];
 		const data = findAppData(parsedTable);
 		expect(data.headers[0].content).toEqual("Column 1");
@@ -52,15 +52,15 @@ describe("findAppData", () => {
 
 	it("finds text data", () => {
 		const parsedTable = [
-			["", "Column 1", "Column 2", "Column 3"],
-			["", "text", "text", "text"],
+			["Column 1", "Column 2", "Column 3", ""],
+			["text", "text", "text", ""],
 			[
-				"table-id-123456",
 				"column-id-123456",
 				"column-id-234567",
 				"column-id-345678",
+				"table-id-123456",
 			],
-			["row-id-123456", "Test 1", "Test 2", "Test 3"],
+			["Test 1", "Test 2", "Test 3", "row-id-123456"],
 		];
 		const data = findAppData(parsedTable);
 		expect(data.cells[0].content).toEqual("Test 1");
@@ -70,15 +70,15 @@ describe("findAppData", () => {
 
 	it("finds tag data", () => {
 		const parsedTable = [
-			["", "Column 1", "Column 2", "Column 3"],
-			["", "tag", "tag", "tag"],
+			["Column 1", "Column 2", "Column 3", ""],
+			["tag", "tag", "tag", ""],
 			[
-				"table-id-123456",
 				"column-id-123456",
 				"column-id-234567",
 				"column-id-345678",
+				"table-id-123456",
 			],
-			["row-id-123456", "#tag1", "#tag2", "#tag3"],
+			["#tag1", "#tag2", "#tag3", "row-id-123456"],
 		];
 		const data = findAppData(parsedTable);
 		expect(data.tags.length).toEqual(3);
@@ -89,15 +89,15 @@ describe("findAppData", () => {
 
 	it("finds errors", () => {
 		const parsedTable = [
-			["", "Column 1", "Column 2", "Column 3"],
-			["", "tag", "tag", "tag"],
+			["Column 1", "Column 2", "Column 3", ""],
+			["tag", "tag", "tag", ""],
 			[
-				"table-id-123456",
 				"column-id-123456",
 				"column-id-234567",
 				"column-id-345678",
+				"table-id-123456",
 			],
-			["row-id-123456", "tag1", "#tag2", "#tag3"],
+			["tag1", "#tag2", "#tag3", "row-id-123456"],
 		];
 		const data = findAppData(parsedTable);
 		expect(data.cells[0].type).toEqual(CELL_TYPE.ERROR);

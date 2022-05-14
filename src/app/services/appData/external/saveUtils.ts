@@ -27,36 +27,37 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 	parsedTable.forEach((parsedRow, i) => {
 		if (i === HEADER_ROW) {
 			parsedRow.forEach((th, j) => {
-				if (j !== 0) headers.push(initialHeader("", th));
+				if (j !== parsedRow.length - 1)
+					headers.push(initialHeader("", th));
 			});
 		} else if (i === TYPE_DEFINITION_ROW) {
 			parsedRow.forEach((td, j) => {
-				if (j !== 0) headers[j - 1].type = td;
+				if (j !== parsedRow.length - 1) headers[j].type = td;
 			});
 		} else if (i === COLUMN_ID_ROW) {
 			parsedRow.forEach((td, j) => {
-				if (j !== 0) headers[j - 1].id = td;
+				if (j !== parsedRow.length - 1) headers[j].id = td;
 			});
 		} else {
 			const row = initialRow("", getCurrentTimeWithOffset());
 
 			parsedRow.forEach((td, j) => {
-				if (j === 0) {
+				if (j === parsedRow.length - 1) {
 					row.id = td;
 				} else {
 					const cellId = randomCellId();
-					const cellType = findCellType(td, headers[j - 1].type);
+					const cellType = findCellType(td, headers[j].type);
 
 					//Check if doesn't match header
-					if (cellType !== headers[j - 1].type) {
+					if (cellType !== headers[j].type) {
 						cells.push(
 							initialCell(
 								cellId,
 								row.id,
-								headers[j - 1].id,
+								headers[j].id,
 								CELL_TYPE.ERROR,
 								td,
-								headers[j - 1].type
+								headers[j].type
 							)
 						);
 						return;
@@ -67,7 +68,7 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 							initialCell(
 								cellId,
 								row.id,
-								headers[j - 1].id,
+								headers[j].id,
 								CELL_TYPE.TAG,
 								""
 							)
@@ -85,7 +86,7 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 							} else {
 								tags.push(
 									initialTag(
-										headers[j - 1].id,
+										headers[j].id,
 										cellId,
 										content,
 										randomColor()
@@ -98,7 +99,7 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 							initialCell(
 								cellId,
 								row.id,
-								headers[j - 1].id,
+								headers[j].id,
 								CELL_TYPE.NUMBER,
 								td
 							)
@@ -108,7 +109,7 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 							initialCell(
 								cellId,
 								row.id,
-								headers[j - 1].id,
+								headers[j].id,
 								CELL_TYPE.TEXT,
 								td
 							)

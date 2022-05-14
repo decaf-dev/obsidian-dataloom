@@ -31,28 +31,33 @@ export const loadAppData = (
 	}
 
 	const tableId = findTableId(parsedTable);
+	let isValidTable = true;
 	if (!tableId) {
 		if (DEBUG) console.log("Invalid table id");
-		return { tableId: null, data: null };
+		isValidTable = false;
 	}
 
 	if (!hasValidHeaderRow(parsedTable)) {
 		if (DEBUG) console.log("Invalid header row");
-		return { tableId: null, data: null };
+		isValidTable = false;
 	}
 
 	if (!hasValidTypeDefinitionRow(parsedTable)) {
 		if (DEBUG) console.log("Invalid type definition row");
-		return { tableId: null, data: null };
+		isValidTable = false;
 	}
 
 	if (!hasValidColumnIds(parsedTable)) {
 		if (DEBUG) console.log("Invalid column ids");
-		return { tableId: null, data: null };
+		isValidTable = false;
 	}
 
 	if (!hasValidRowIds(parsedTable)) {
 		if (DEBUG) console.log("Invalid row ids");
+		isValidTable = false;
+	}
+
+	if (!isValidTable) {
 		return { tableId: null, data: null };
 	}
 
