@@ -4,6 +4,7 @@ import { App } from "obsidian";
 import { NltSettings } from "../../settings";
 import { persistAppData } from "./persist";
 import NltPlugin from "../../../../../main";
+import { DEBUG } from "src/app/constants";
 
 /**
  * Saves app data
@@ -31,6 +32,17 @@ export const saveAppData = async (
 			findTableRegex(tableId, oldAppData.headers, oldAppData.rows),
 			markdown
 		);
+
+		if (DEBUG) {
+			console.log("TABLE");
+			console.log(markdown);
+			console.log("REGEX");
+			console.log(
+				findTableRegex(tableId, oldAppData.headers, oldAppData.rows)
+			);
+			console.log("CONTENT");
+			console.log(content);
+		}
 
 		//Reset update time to 0 so we don't update on load
 		newAppData.updateTime = 0;

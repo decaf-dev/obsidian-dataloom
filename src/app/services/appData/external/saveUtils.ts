@@ -236,7 +236,7 @@ const findHeaderRow = (headers: Header[]) => {
 	headers.forEach((header) => {
 		regex += `[ \\t]{0,}${header.content}[ \\t]{0,}\\|`;
 	});
-	regex += ".*\\|";
+	regex += ".*\\|[ ]*";
 	return regex;
 };
 
@@ -244,6 +244,7 @@ const findHyphenRow = (numColumns: number): string => {
 	let regex = "\\|";
 	for (let i = 0; i < numColumns + 1; i++)
 		regex += "[ \\t]{0,}[-]{3,}[ \\t]{0,}\\|";
+	regex += "[ ]*";
 	return regex;
 };
 
@@ -251,7 +252,7 @@ const findTypeDefinitionRow = (headers: Header[]): string => {
 	let regex = "\\|";
 	for (let i = 0; i < headers.length; i++)
 		regex += `[ \\t]{0,}${headers[i].type}[ \\t]{0,}\\|`;
-	regex += ".*\\|";
+	regex += ".*\\|[ ]*";
 	return regex;
 };
 
@@ -259,13 +260,14 @@ const findColumnRow = (tableId: string, headers: Header[]): string => {
 	let regex = "\\|";
 	for (let i = 0; i < headers.length; i++)
 		regex += `[ \\t]{0,}${headers[i].id}[ \\t]{0,}\\|`;
-	regex += `[ \\t]{0,}${tableId}[ \\t]{0,}\\|`;
+	regex += `[ \\t]{0,}${tableId}[ \\t]{0,}\\|[ ]*`;
 	return regex;
 };
 
 const findRegexRow = (numColumns: number): string => {
 	let regex = "\\|.*\\|";
 	for (let i = 0; i < numColumns; i++) regex += ".*\\|";
+	regex += "[ ]*"; //Allow white space at the end of each row
 	return regex;
 };
 
