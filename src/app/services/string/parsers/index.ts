@@ -22,7 +22,9 @@ export const parseURLs = (input: string): string => {
 };
 
 export const parseInputDate = (date: string): Date => {
-	return new Date(date);
+	//We need to replace hyphens with slashes to not by 1 day off
+	//See: https://stackoverflow.com/questions/7556591/is-the-javascript-date-object-always-one-day-off
+	return new Date(date.replace(/-/g, "/"));
 };
 
 export const parseDateForInput = (date: string): string => {
