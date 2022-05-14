@@ -10,11 +10,13 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 
 ## Version 3.0.0
 
+**WARNING: BREAKING CHANGES**
+
 Notion Like Tables now supports a new table format that will facilitate better development in the plugin.
 
 Please upgrade your tables to this new format. This update also includes several bug fixes that could only be fixed by placing column and row ids into the table.
 
-To migrate to the new format please see the section below: `Making a Table Manually`
+**To migrate to the new format please see the section below: `Making a Table Manually`**
 
 ## Usage
 
