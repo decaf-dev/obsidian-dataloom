@@ -8,21 +8,13 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 
 ## What's New?
 
-## Version 2.3.6
+## Version 3.0.0
 
-In 2.3.4 I introduced a bug that made it impossible to edit cells. This persisted until 2.3.5. I apologize for the inconveniece this caused anyone.
+Notion Like Tables now supports a new table format that will facilitate better development in the plugin.
 
-Version 2.3.6 (newly updated) includes a lot of bug fixes/refactored code. All in all, the functionality is the same, but you should notice that some UI discrepencies were fixed, including how the edit menu for cells appear.
+Please upgrade your tables to this new format. This update also includes several bug fixes that could only be fixed by placing column and row ids into the table.
 
-I also replaced the tabbing system for a custom focus system. Press tab to see how things work now.
-In addition, when you add a new row, the first cell of that row will focus.
-
-Thank you to [imeed166](https://github.com/imeed166) for his help and suggestions. :)
-
-### Version 2.3.0
-
--   Refactored menu into submenus (More like Notion ;)
--   Added cell tabbing for accessibility
+To migrate to the new format please see the section below: `Making a Table Manually`
 
 ## Usage
 
@@ -50,26 +42,39 @@ Toggle to reading mode and the table will automatically render.
 
 ### Making a Table Manually
 
-A Notion-Like Table uses normal Obsidian table markdown syntax with 2 additional rows:
+A Notion-Like Table uses normal Obsidian table markdown syntax with 2 additional rows and 1 column for meta-data:
 
--   A table id row
--   A type definition row
-
-#### Table ID Row
-
-The table id row is a normal markdown row with the first column containing a unique string. This string must be unique for each table in a file (if you use the same id in another file that's fine).
-
-The id is used to map a table to its data in the settings. If you change this id, your table will not be able to find its settings and will create new ones.
-
-If you omit this id, your table will not be rendered as an NLT table.
-
-![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/table-id-row.png)
+-   A type defintion row
+-   A column id row
+-   A row id column
 
 ##### Type Definition Row
 
-The type definition row is a normal markdown row with each column defining the type of data you want that column to accept. The plugin currently supports 3 column types: `text`, `number` and `tag`.
+The type definition row is a normal markdown row with each cell containing the type of data you want that column to accept. The plugin currently supports 3 column types: `text`, `number` and `tag`. The last cell of the row must only contain whitespace for a Notion-Like Table to render.
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/type-definition-row.png)
+
+##### Column Id Row
+
+The column id row is a normal markdown row with each cell containing a unique column id. A column id starts with `column-id-` followed by alpha-numeric characters. This id must be unique to each table, but may be reused in other tables.
+
+![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/column-id-row.png)
+
+#### Row Id Column
+
+The row id column is the last column of the table and contains both a table id and the unique ids for each row.
+
+#### Table Id
+
+A table id starts with `table-id-` followed by alpha-numeric characters. This id must be unique to each note, but may be reused in other notes.
+
+![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/table-id.png)
+
+#### Row Ids
+
+A row id starts with `row-id-` followed by alpha-numeric characters. This id must be unique to each table, but may be reused in other tables.
+
+![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/row-ids.png)
 
 ### Editing Cells
 
@@ -113,7 +118,7 @@ NLTs does not currently have built in history. If you need to undo changes, go t
 
 #### NLT Tables Not Rendering
 
-If your table is missing a table id row or type definition row then it will not be rendered as a Notion-Like Table. Likewise, if you use an invalid column type other than the accepted types `text`, `number`, or `tag`. The table will not be rendered.
+If your table is missing a table id row or type definition row then it will not be rendered as a Notion-Like Table. Likewise, if you use an invalid column type other than the accepted types `text`, `number`, or `tag`. A Notion-Like Table will not be rendered.
 
 #### Cell Type Errors
 
@@ -126,7 +131,7 @@ A cell type error will occur if you enter data which doesn't match the column da
 
 NLT tables uses normal table semantic elements (`table`, `th`, `tr`, `td`, etc) to render. If you wish to edit the display of the table, just style those elements in your CSS.
 
-## Bugs/Feature Requests
+## Bugs and Feature Requests
 
 If you find a bug or would like to suggest a feature, please open an issue [here](https://github.com/trey-wallis/obsidian-notion-like-tables/issues). I will try to respond as soon as possible.
 
