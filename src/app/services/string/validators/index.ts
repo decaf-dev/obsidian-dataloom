@@ -48,19 +48,17 @@ export const hasSquareBrackets = (input: string): boolean => {
 	return false;
 };
 
+/**
+ * Checks to see if the header's last cell is empty
+ * @param parsedTable The parsed table
+ * @returns Whether or not the header is valid
+ */
 export const hasValidHeaderRow = (parsedTable: string[][]): boolean => {
 	const row = parsedTable[0];
 	if (row) {
-		for (let i = 0; i < row.length; i++) {
-			const cell = row[i];
-			if (i === 0) {
-				if (cell !== "") return false;
-			}
-		}
-		return true;
-	} else {
-		return false;
+		if (row[row.length - 1] === "") return true;
 	}
+	return false;
 };
 
 export const hasValidTypeDefinitionRow = (parsedTable: string[][]): boolean => {

@@ -10,8 +10,8 @@ import {
 } from ".";
 
 describe("hasValidHeaderRow", () => {
-	it("returns true if the parsed table contains a valid header row", () => {
-		const parsedTable = [["", "Column 1", "Column 2"]];
+	it("returns true if the last cell is empty", () => {
+		const parsedTable = [["Column 1", "Column 2", ""]];
 		const isValid = hasValidHeaderRow(parsedTable);
 		expect(isValid).toEqual(true);
 	});
@@ -22,8 +22,8 @@ describe("hasValidHeaderRow", () => {
 		expect(isValid).toEqual(false);
 	});
 
-	it("returns false if the first cell is not empty", () => {
-		const parsedTable = [["Not Empty", "Column 1", "Column 2"]];
+	it("returns false if the last cell is not empty", () => {
+		const parsedTable = [["Column 1", "Column 2", "Column 3"]];
 		const isValid = hasValidHeaderRow(parsedTable);
 		expect(isValid).toEqual(false);
 	});
