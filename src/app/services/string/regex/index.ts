@@ -43,3 +43,5 @@ export const TABLE_ID_REGEX = new RegExp(/^table-id-[a-zA-Z0-9]{1,}$/);
 export const ROW_ID_REGEX = new RegExp(/^row-id-[a-zA-Z0-9]{1,}$/);
 
 export const COLUMN_ID_REGEX = new RegExp(/^column-id-[a-zA-Z0-9]{1,}$/);
+
+export const DATE_REGEX = new RegExp(/^\d{2}\/\d{2}\/\d{4}$/);

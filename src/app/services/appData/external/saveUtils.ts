@@ -1,7 +1,14 @@
 import { AppData } from "../state/appData";
 import { Header, initialHeader } from "../state/header";
 import { Row, initialRow } from "../state/row";
-import { Cell, initialCell } from "../state/cell";
+import {
+	Cell,
+	ErrorCell,
+	NumberCell,
+	TagCell,
+	TextCell,
+	DateCell,
+} from "../state/cell";
 import { Tag, initialTag } from "../state/tag";
 import { findCellType } from "../../string/matchers";
 import { stripPound } from "../../string/strippers";
@@ -13,7 +20,6 @@ import {
 	randomCellId,
 } from "../../random";
 import { TABLE_ID_REGEX } from "../../string/regex";
-import { ForkLeft } from "@mui/icons-material";
 
 export const findAppData = (parsedTable: string[][]): AppData => {
 	const HEADER_ROW = 0;
@@ -53,28 +59,41 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 					//Check if doesn't match header
 					if (cellType !== headers[j].type) {
 						cells.push(
-							initialCell(
+							new ErrorCell(
 								cellId,
 								row.id,
 								headers[j].id,
-								CELL_TYPE.ERROR,
-								td,
-								headers[j].type
+								headers[j].type,
+								td
 							)
 						);
 						return;
 					}
 
-					if (cellType === CELL_TYPE.TAG) {
+					if (cellType === CELL_TYPE.TEXT) {
 						cells.push(
-							initialCell(
+							new TextCell(cellId, row.id, headers[j].id, td)
+						);
+					} else if (cellType === CELL_TYPE.NUMBER) {
+						cells.push(
+							new NumberCell(
 								cellId,
 								row.id,
 								headers[j].id,
-								CELL_TYPE.TAG,
-								""
+								parseInt(td)
 							)
 						);
+					} else if (cellType === CELL_TYPE.DATE) {
+						cells.push(
+							new DateCell(
+								cellId,
+								row.id,
+								headers[j].id,
+								new Date(td)
+							)
+						);
+					} else if (cellType === CELL_TYPE.TAG) {
+						cells.push(new TagCell(cellId, row.id, headers[j].id));
 
 						if (td !== "") {
 							const content = stripPound(td);
@@ -96,26 +115,6 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 								);
 							}
 						}
-					} else if (cellType === CELL_TYPE.NUMBER) {
-						cells.push(
-							initialCell(
-								cellId,
-								row.id,
-								headers[j].id,
-								CELL_TYPE.NUMBER,
-								td
-							)
-						);
-					} else if (cellType === CELL_TYPE.TEXT) {
-						cells.push(
-							initialCell(
-								cellId,
-								row.id,
-								headers[j].id,
-								CELL_TYPE.TEXT,
-								td
-							)
-						);
 					}
 				}
 			});
@@ -195,7 +194,7 @@ export const appDataToMarkdown = (tableId: string, data: AppData): string => {
 				});
 				buffer.writeColumn(content, columnCharLengths[i]);
 			} else {
-				buffer.writeColumn(cell.content, columnCharLengths[i]);
+				buffer.writeColumn(cell.toString(), columnCharLengths[i]);
 			}
 		}
 
@@ -357,8 +356,8 @@ export const calcColumnCharLengths = (
 			if (columnCharLengths[index] < content.length)
 				columnCharLengths[index] = content.length;
 		} else {
-			if (columnCharLengths[index] < cell.content.length)
-				columnCharLengths[index] = cell.content.length;
+			if (columnCharLengths[index] < cell.length())
+				columnCharLengths[index] = cell.length();
 		}
 	});
 	return columnCharLengths;

@@ -5,6 +5,7 @@ import {
 	MARKDOWN_ROWS_REGEX,
 	NUMBER_REGEX,
 	TAG_REGEX,
+	DATE_REGEX,
 	ROW_ID_REGEX,
 } from "src/app/services/string/regex";
 
@@ -32,6 +33,10 @@ export const isMarkdownTable = (data: string): boolean => {
 
 export const isNumber = (input: string) => {
 	return (input.match(NUMBER_REGEX) || []).length !== 0;
+};
+
+export const isDate = (input: string) => {
+	return (input.match(DATE_REGEX) || []).length !== 0;
 };
 
 export const isTag = (input: string) => {

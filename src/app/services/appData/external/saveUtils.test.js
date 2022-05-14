@@ -63,9 +63,9 @@ describe("findAppData", () => {
 			["Test 1", "Test 2", "Test 3", "row-id-123456"],
 		];
 		const data = findAppData(parsedTable);
-		expect(data.cells[0].content).toEqual("Test 1");
-		expect(data.cells[1].content).toEqual("Test 2");
-		expect(data.cells[2].content).toEqual("Test 3");
+		expect(data.cells[0].toString()).toEqual("Test 1");
+		expect(data.cells[1].toString()).toEqual("Test 2");
+		expect(data.cells[2].toString()).toEqual("Test 3");
 	});
 
 	it("finds tag data", () => {

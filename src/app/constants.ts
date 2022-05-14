@@ -1,14 +1,24 @@
-//TODO make debug rules
-//tags
-//cells
-//handlers, etc
-//[component][handler] ...
-export const DEBUG = false;
+export const DEBUG = {
+	LOAD_APP_DATA: {
+		LOG_MESSAGE: true,
+		IDS: true,
+		TYPES: true,
+	},
+	SAVE_APP_DATA: {
+		LOG_MESSAGE: true,
+		APP_DATA: true,
+		TABLE_REGEX: false,
+		UPDATED_CONTENT: false,
+	},
+};
+export const DEBUG_TYPES = true;
 
 export interface CellType {
 	TEXT: string;
 	NUMBER: string;
 	TAG: string;
+	DATE: string;
+	CHECKBOX: string;
 	MULTI_TAG: string;
 	ERROR: string;
 }
@@ -40,6 +50,8 @@ export const CELL_TYPE: CellType = {
 	TEXT: "text",
 	NUMBER: "number",
 	TAG: "tag",
+	DATE: "date",
+	CHECKBOX: "checkbox",
 	MULTI_TAG: "multi-tag",
 	ERROR: "error",
 };
