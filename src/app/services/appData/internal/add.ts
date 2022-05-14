@@ -6,7 +6,6 @@ import { Tag } from "../state/tag";
 import { CELL_TYPE } from "src/app/constants";
 import { randomCellId, randomColumnId, randomRowId } from "../../random";
 
-//TODO add tests
 export const addRow = (data: AppData): AppData => {
 	const rowId = randomRowId();
 	const tags: Tag[] = [];

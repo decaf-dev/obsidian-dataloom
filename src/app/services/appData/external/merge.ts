@@ -1,36 +1,37 @@
 import { AppData } from "../state/appData";
-import { AppSaveState } from "../state/appSaveState";
 
 export const updateAppDataFromSavedState = (
-	saveState: AppSaveState,
-	data: AppData
+	oldData: AppData,
+	newData: AppData
 ): AppData => {
-	const updated = { ...data };
+	const updated = { ...newData };
 
 	//Grab sort and width settings
-	data.headers.forEach((header, i) => {
-		if (saveState.headers[header.id]) {
-			const { sortName, width } = saveState.headers[header.id];
+	newData.headers.forEach((header, i) => {
+		const oldHeader = oldData.headers.find((h) => h.id === header.id);
+		if (oldHeader) {
+			const { sortName, width } = oldHeader;
 			updated.headers[i].sortName = sortName;
 			updated.headers[i].width = width;
 		}
 	});
 
 	//Grab creation times
-	data.rows.forEach((row, i) => {
-		if (saveState.rows[row.id]) {
-			const { creationTime } = saveState.rows[row.id];
+	newData.rows.forEach((row, i) => {
+		const oldRow = oldData.rows.find((row) => row.id === row.id);
+		if (oldRow) {
+			const { creationTime } = oldRow;
 			updated.rows[i].creationTime = creationTime;
 		}
 	});
 
-	data.tags.forEach((tag, i) => {
-		if (saveState.headers[tag.headerId]) {
-			if (saveState.headers[tag.headerId].tags[tag.content]) {
-				const { color } =
-					saveState.headers[tag.headerId].tags[tag.content];
-				updated.tags[i].color = color;
-			}
+	newData.tags.forEach((tag, i) => {
+		const oldTag = oldData.tags.find(
+			(t) => t.headerId === tag.headerId && t.content === tag.content
+		);
+		if (oldTag) {
+			const { color } = oldTag;
+			updated.tags[i].color = color;
 		}
 	});
 	return updated;
