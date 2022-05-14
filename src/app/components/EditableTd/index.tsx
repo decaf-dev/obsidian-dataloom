@@ -9,6 +9,7 @@ import ErrorCell from "../ErrorCell";
 import { randomColor } from "src/app/services/random";
 import { addPound } from "src/app/services/string/adders";
 import { Tag } from "src/app/services/appData/state/tag";
+import CheckboxCell from "../CheckboxCell";
 
 import { CELL_TYPE } from "../../constants";
 
@@ -72,6 +73,7 @@ export default function EditableTd({
 	useEffect(() => {
 		if (isFocused) {
 			if (cellMenu.isOpen) return;
+			if (type === CELL_TYPE.CHECKBOX) return;
 			openMenu();
 		} else {
 			if (!cellMenu.isOpen) return;
@@ -92,10 +94,9 @@ export default function EditableTd({
 
 							function findWidth() {
 								switch (type) {
+									case CELL_TYPE.DATE:
 									case CELL_TYPE.TAG:
 										return "fit-content";
-									case CELL_TYPE.TEXT:
-										return `${width}px`;
 									default:
 										return `${width}px`;
 								}
@@ -223,6 +224,8 @@ export default function EditableTd({
 		onOutsideClick();
 	}
 
+	//TODO relook at this
+
 	//Synchronous handler
 	//Runs after handle outside click
 	useEffect(() => {
@@ -234,12 +237,23 @@ export default function EditableTd({
 		}
 	}, [isFocused, closingMenu.current]);
 
+	function handleCheckboxChange(isChecked: boolean) {
+		onContentChange(id, false, isChecked);
+	}
+
 	function renderCell() {
 		switch (type) {
 			case CELL_TYPE.TEXT:
 			case CELL_TYPE.NUMBER:
 			case CELL_TYPE.DATE:
 				return <TextCell content={content} />;
+			case CELL_TYPE.CHECKBOX:
+				return (
+					<CheckboxCell
+						isChecked={content.includes("x")}
+						onCheckboxChange={handleCheckboxChange}
+					/>
+				);
 			case CELL_TYPE.TAG: {
 				const tag = tags.find((tag) => tag.selected.includes(id));
 				if (tag)

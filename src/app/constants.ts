@@ -1,14 +1,14 @@
 export const DEBUG = {
 	LOAD_APP_DATA: {
-		LOG_MESSAGE: true,
-		IDS: true,
-		TYPES: true,
+		LOG_MESSAGE: false,
+		IDS: false,
+		TYPES: false,
 	},
 	SAVE_APP_DATA: {
 		LOG_MESSAGE: true,
-		APP_DATA: true,
+		APP_DATA: false,
 		TABLE_REGEX: false,
-		UPDATED_CONTENT: false,
+		UPDATED_CONTENT: true,
 	},
 };
 export const DEBUG_TYPES = true;

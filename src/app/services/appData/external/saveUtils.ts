@@ -8,7 +8,10 @@ import {
 	TagCell,
 	TextCell,
 	DateCell,
+	CheckBoxCell,
 } from "../state/cell";
+
+import { isCheckBoxChecked } from "../../string/validators";
 import { Tag, initialTag } from "../state/tag";
 import { findCellType } from "../../string/matchers";
 import { stripPound } from "../../string/strippers";
@@ -88,6 +91,16 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 						const date = td === "" ? null : new Date(td);
 						cells.push(
 							new DateCell(cellId, row.id, headers[j].id, date)
+						);
+					} else if (cellType === CELL_TYPE.CHECKBOX) {
+						const isChecked = isCheckBoxChecked(td);
+						cells.push(
+							new CheckBoxCell(
+								cellId,
+								row.id,
+								headers[j].id,
+								isChecked
+							)
 						);
 					} else if (cellType === CELL_TYPE.TAG) {
 						cells.push(new TagCell(cellId, row.id, headers[j].id));
