@@ -138,9 +138,10 @@ export class DateCell extends Cell {
 
 	toString() {
 		if (this.date === null) return "";
-		return `${
-			this.date.getMonth() + 1
-		}/${this.date.getDate()}/${this.date.getFullYear()}`;
+		const day = ("0" + this.date.getDate()).slice(-2);
+		const month = ("0" + this.date.getMonth() + 1).slice(-2);
+		const year = this.date.getFullYear();
+		return `${month}/${day}/${year}`;
 	}
 }
 

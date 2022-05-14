@@ -105,6 +105,17 @@ export default function CellEditMenu({
 						onChange={(e) => onInputChange(e.target.value)}
 					/>
 				);
+			case CELL_TYPE.DATE:
+				return (
+					<input
+						ref={inputRef}
+						className="NLT__input"
+						type="date"
+						autoFocus
+						value={inputText}
+						onChange={(e) => onInputChange(e.target.value)}
+					/>
+				);
 			case CELL_TYPE.TAG:
 				return (
 					<TagMenuContent

@@ -14,6 +14,10 @@ import { CELL_TYPE } from "../../constants";
 
 import "./styles.css";
 import { Cell } from "src/app/services/appData/state/cell";
+import {
+	parseDateForInput,
+	parseInputDate,
+} from "src/app/services/string/parsers";
 
 interface Props {
 	cell: Cell;
@@ -164,7 +168,11 @@ export default function EditableTd({
 				tagColor: randomColor(),
 			};
 		});
-		setInputText(content);
+		if (type === CELL_TYPE.DATE) {
+			setInputText(parseDateForInput(content));
+		} else {
+			setInputText(content);
+		}
 	}
 
 	function handleAddTag(text: string) {
@@ -190,7 +198,7 @@ export default function EditableTd({
 					setInputText("");
 					break;
 				case CELL_TYPE.DATE:
-					onContentChange(id, shouldLock);
+					onContentChange(id, shouldLock, parseInputDate(inputText));
 					setInputText("");
 					break;
 				//TODO add lock
