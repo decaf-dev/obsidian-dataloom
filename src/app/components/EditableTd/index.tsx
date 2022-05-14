@@ -6,8 +6,9 @@ import TextCell from "../TextCell";
 import TagCell from "../TagCell";
 import ErrorCell from "../ErrorCell";
 
-import { randomColor, addPound } from "../../services/utils";
-import { Tag } from "../../services/state";
+import { randomColor } from "src/app/services/random";
+import { addPound } from "src/app/services/string/adders";
+import { Tag } from "src/app/services/appData/state/tag";
 
 import { CELL_TYPE } from "../../constants";
 
@@ -193,7 +194,7 @@ export default function EditableTd({
 					setInputText("");
 					break;
 				//TODO add lock
-				case CELL_TYPE.TAG:
+				case CELL_TYPE.TAG: {
 					const tag = tags.find((tag) => tag.content === inputText);
 					if (tag) {
 						onTagClick(cellId, tag.id);
@@ -207,6 +208,7 @@ export default function EditableTd({
 					}
 					setInputText("");
 					break;
+				}
 				default:
 					break;
 			}

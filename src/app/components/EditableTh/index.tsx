@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useForceUpdate } from "src/app/services/hooks";
 
 import HeaderMenu from "../HeaderMenu";

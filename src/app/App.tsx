@@ -1,35 +1,30 @@
 import React, { useEffect, useState, useRef } from "react";
 
-import { v4 as uuidv4 } from "uuid";
-
 import EditableTd from "./components/EditableTd";
 import Table from "./components/Table";
 import DragMenu from "./components/DragMenu";
 import EditableTh from "./components/EditableTh";
 
+import { initialHeader } from "./services/appData/state/header";
+import { initialTag, Tag } from "./services/appData/state/tag";
+import { initialRow } from "./services/appData/state/row";
+import { initialCell } from "./services/appData/state/cell";
+import { AppData } from "./services/appData/state/appData";
+import { NltSettings } from "./services/settings";
+import { saveAppData } from "./services/appData/external/save";
 import {
-	initialHeader,
-	initialCell,
-	initialRow,
-	initialTag,
-	Tag,
-	NltSettings,
-} from "./services/state";
-import { saveAppData } from "./services/dataUtils";
-import { AppData } from "./services/state";
+	findNextTabbableElement,
+	findTabbableElement,
+} from "./services/appData/internal/tabbable";
+import { TabbableElement } from "./services/appData/state/tabbableElement";
 
 import { CELL_TYPE, DEBUG, TABBABLE_ELEMENT_TYPE } from "./constants";
 
 import "./app.css";
 import NltPlugin from "main";
 import { SORT } from "./components/HeaderMenu/constants";
-import {
-	addColumn,
-	addRow,
-	TabbableElement,
-	findNextTabbableElement,
-	findTabbableElement,
-} from "./services/appDataUtils";
+import { addRow, addColumn } from "./services/appData/internal/add";
+import { randomCellId, randomColumnId, randomRowId } from "./services/random";
 
 interface Props {
 	plugin: NltPlugin;
@@ -52,6 +47,7 @@ export default function App({
 	const [focusedElement, setFocusedElement] = useState<TabbableElement>(
 		INITIAL_FOCUSED_ELEMENT
 	);
+	const [debounceUpdate, setDebounceUpdate] = useState(0);
 	const saveLock = useRef(false);
 
 	useEffect(() => {
@@ -76,6 +72,7 @@ export default function App({
 			//If we're running in Obsidian
 			if (app) {
 				if (appData.updateTime === 0) return;
+
 				// if (!settings.appData[sourcePath]) return;
 				// console.log(settings.appData[sourcePath][tableId]);
 				// if (!settings.appData[sourcePath][tableId]) return;
@@ -98,8 +95,32 @@ export default function App({
 				}
 			}
 		}
+
 		handleUpdate();
 	}, [appData.updateTime, saveLock.current]);
+
+	useEffect(() => {
+		let intervalId: NodeJS.Timer = null;
+		function startTimer() {
+			intervalId = setInterval(() => {
+				//When debounce update is called, we will only save after
+				//250ms have pass since the last update
+				if (Date.now() - debounceUpdate < 250) return;
+				clearInterval(intervalId);
+				setDebounceUpdate(0);
+				setAppData((prevState) => {
+					return {
+						...prevState,
+						updateTime: Date.now(),
+					};
+				});
+			}, 100);
+		}
+		if (debounceUpdate !== 0) startTimer();
+		return () => {
+			clearInterval(intervalId);
+		};
+	}, [debounceUpdate]);
 
 	useEffect(() => {
 		if (saveLock) {
@@ -404,7 +425,6 @@ export default function App({
 
 	function handleWidthChange(id: string, newWidth: number) {
 		if (DEBUG) console.log("[handler]: handleWidthChange called.");
-		//TODO debounce?
 		setAppData((prevState: AppData) => {
 			return {
 				...prevState,
@@ -417,9 +437,9 @@ export default function App({
 					}
 					return header;
 				}),
-				updateTime: Date.now(),
 			};
 		});
+		setDebounceUpdate(Date.now());
 	}
 
 	function handleMoveColumnClick(id: string, moveRight: boolean) {
@@ -449,11 +469,14 @@ export default function App({
 			const header = prevState.headers.find((header) => header.id === id);
 			const index = prevState.headers.indexOf(header);
 			const insertIndex = insertRight ? index + 1 : index;
-			const headerToInsert = initialHeader(`Column ${insertIndex + 1}`);
+			const headerToInsert = initialHeader(
+				randomColumnId(),
+				"New Column"
+			);
 
 			const cells = prevState.rows.map((row) =>
 				initialCell(
-					uuidv4(),
+					randomCellId(),
 					row.id,
 					headerToInsert.id,
 					headerToInsert.type,
@@ -475,21 +498,19 @@ export default function App({
 
 	function handleInsertRowClick(id: string, insertBelow = false) {
 		if (DEBUG) console.log("[handler]: handleHeaderInsertRowClick called.");
-		const rowId = uuidv4();
+		const rowId = randomRowId();
 		setAppData((prevState: AppData) => {
 			const tags: Tag[] = [];
 
-			const cells = prevState.headers.map((header) => {
-				const cellId = uuidv4();
-				if (header.type === CELL_TYPE.TAG)
-					tags.push(initialTag(header.id, cellId, "", ""));
-				return initialCell(cellId, rowId, header.id, header.type, "");
-			});
+			const cells = prevState.headers.map((header) =>
+				initialCell(randomCellId(), rowId, header.id, header.type, "")
+			);
 
 			const rows = [...prevState.rows];
 
 			const index = prevState.rows.findIndex((row) => row.id === id);
 			const insertIndex = insertBelow ? index + 1 : index;
+			//If you insert a new row, then we want to resort?
 			rows.splice(insertIndex, 0, initialRow(rowId, Date.now()));
 			return {
 				...prevState,

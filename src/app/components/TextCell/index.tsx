@@ -1,7 +1,7 @@
 import React from "react";
 
 import parse from "html-react-parser";
-import { parseFileLinks, parseURLs } from "src/app/services/utils";
+import { parseFileLinks, parseURLs } from "src/app/services/string/parsers";
 interface Props {
 	content: string;
 }
