@@ -13,6 +13,7 @@ import {
 	randomCellId,
 } from "../../random";
 import { TABLE_ID_REGEX } from "../../string/regex";
+import { ForkLeft } from "@mui/icons-material";
 
 export const findAppData = (parsedTable: string[][]): AppData => {
 	const HEADER_ROW = 0;
@@ -143,10 +144,10 @@ export const appDataToMarkdown = (tableId: string, data: AppData): string => {
 	const buffer = new AppDataStringBuffer();
 	buffer.createRow();
 
-	buffer.writeColumn("", columnCharLengths[0]);
-	data.headers.forEach((header, i) =>
-		buffer.writeColumn(header.content, columnCharLengths[i + 1])
-	);
+	data.headers.forEach((header, i) => {
+		buffer.writeColumn(header.content, columnCharLengths[i]);
+	});
+	buffer.writeColumn("", columnCharLengths[data.headers.length]);
 
 	buffer.createRow();
 
@@ -157,23 +158,22 @@ export const appDataToMarkdown = (tableId: string, data: AppData): string => {
 
 	buffer.createRow();
 
-	buffer.writeColumn("", columnCharLengths[0]);
-
 	data.headers.forEach((header, i) => {
-		buffer.writeColumn(header.type, columnCharLengths[i + 1]);
+		buffer.writeColumn(header.type, columnCharLengths[i]);
 	});
+
+	buffer.writeColumn("", columnCharLengths[data.headers.length]);
 
 	buffer.createRow();
 
-	buffer.writeColumn(tableId, columnCharLengths[0]);
 	data.headers.forEach((header, i) => {
-		buffer.writeColumn(header.id, columnCharLengths[i + 1]);
+		buffer.writeColumn(header.id, columnCharLengths[i]);
 	});
+
+	buffer.writeColumn(tableId, columnCharLengths[data.headers.length]);
 
 	data.rows.forEach((row) => {
 		buffer.createRow();
-
-		buffer.writeColumn(row.id, columnCharLengths[0]);
 
 		for (let i = 0; i < data.headers.length; i++) {
 			const cell = data.cells.find(
@@ -193,11 +193,13 @@ export const appDataToMarkdown = (tableId: string, data: AppData): string => {
 					if (j === 0) content += addPound(tag.content);
 					else content += " " + addPound(tag.content);
 				});
-				buffer.writeColumn(content, columnCharLengths[i + 1]);
+				buffer.writeColumn(content, columnCharLengths[i]);
 			} else {
-				buffer.writeColumn(cell.content, columnCharLengths[i + 1]);
+				buffer.writeColumn(cell.content, columnCharLengths[i]);
 			}
 		}
+
+		buffer.writeColumn(row.id, columnCharLengths[data.headers.length]);
 	});
 	return buffer.toString();
 };
@@ -211,22 +213,60 @@ export const appDataToMarkdown = (tableId: string, data: AppData): string => {
  */
 export const findTableRegex = (
 	tableId: string,
-	numHeaders: number,
-	numRows: number
+	headers: Header[],
+	rows: Row[]
 ): RegExp => {
 	const regex: string[] = [];
-	regex[0] = "\\|.*\\|"; //Header row
-	regex[1] = "\\|.*\\|"; //Hyphen row
-	regex[2] = "\\|.*\\|"; //Type definition row
-	regex[3] = `\\|[\\t ]+${tableId}[\\t ]+\\|`; //Table id row
+	regex[0] = findHeaderRow(headers);
+	regex[1] = findHyphenRow(headers.length);
+	regex[2] = findTypeDefinitionRow(headers);
+	regex[3] = findColumnRow(tableId, headers);
 
-	for (let i = 0; i < numHeaders; i++) regex[3] += ".*\\|";
-
-	//Type definition row and all other rows
-	for (let i = 4; i < numRows + 4; i++) regex[i] = "\\|.*\\|";
+	//All the rows
+	for (let i = 0; i < rows.length; i++) {
+		regex[i + 4] = findRegexRow(headers.length);
+	}
 
 	const expression = new RegExp(regex.join("\n"));
 	return expression;
+};
+
+const findHeaderRow = (headers: Header[]) => {
+	let regex = "\\|";
+	headers.forEach((header) => {
+		regex += `[ \\t]{0,}${header.content}[ \\t]{0,}\\|`;
+	});
+	regex += ".*\\|";
+	return regex;
+};
+
+const findHyphenRow = (numColumns: number): string => {
+	let regex = "\\|";
+	for (let i = 0; i < numColumns + 1; i++)
+		regex += "[ \\t]{0,}[-]{3,}[ \\t]{0,}\\|";
+	return regex;
+};
+
+const findTypeDefinitionRow = (headers: Header[]): string => {
+	let regex = "\\|";
+	for (let i = 0; i < headers.length; i++)
+		regex += `[ \\t]{0,}${headers[i].type}[ \\t]{0,}\\|`;
+	regex += ".*\\|";
+	return regex;
+};
+
+const findColumnRow = (tableId: string, headers: Header[]): string => {
+	let regex = "\\|";
+	for (let i = 0; i < headers.length; i++)
+		regex += `[ \\t]{0,}${headers[i].id}[ \\t]{0,}\\|`;
+	regex += `[ \\t]{0,}${tableId}[ \\t]{0,}\\|`;
+	return regex;
+};
+
+const findRegexRow = (numColumns: number): string => {
+	let regex = "\\|.*\\|";
+	for (let i = 0; i < numColumns; i++) regex += ".*\\|";
+	return regex;
 };
 
 export class AppDataStringBuffer {
@@ -276,9 +316,6 @@ export const calcColumnCharLengths = (
 ): ColumnCharLengths => {
 	const columnCharLengths: { [columnPosition: number]: number } = [];
 
-	//Get first row
-	columnCharLengths[0] = tableId.length;
-
 	data.rows.forEach((row) => {
 		if (columnCharLengths[0] < row.id.length)
 			columnCharLengths[0] = row.id.length;
@@ -286,14 +323,17 @@ export const calcColumnCharLengths = (
 
 	//Check headers
 	data.headers.forEach((header, i) => {
-		columnCharLengths[i + 1] = header.content.length;
+		columnCharLengths[i] = header.content.length;
 
-		if (columnCharLengths[i + 1] < header.type.length)
-			columnCharLengths[i + 1] = header.type.length;
+		if (columnCharLengths[i] < header.type.length)
+			columnCharLengths[i] = header.type.length;
 
-		if (columnCharLengths[i + 1] < header.id.length)
-			columnCharLengths[i + 1] = header.id.length;
+		if (columnCharLengths[i] < header.id.length)
+			columnCharLengths[i] = header.id.length;
 	});
+
+	//Get first row
+	columnCharLengths[data.headers.length] = tableId.length;
 
 	//Check cells
 	data.cells.forEach((cell) => {
@@ -312,11 +352,11 @@ export const calcColumnCharLengths = (
 					else content += " " + addPound(tag.content);
 				}
 			});
-			if (columnCharLengths[index + 1] < content.length)
-				columnCharLengths[index + 1] = content.length;
+			if (columnCharLengths[index] < content.length)
+				columnCharLengths[index] = content.length;
 		} else {
-			if (columnCharLengths[index + 1] < cell.content.length)
-				columnCharLengths[index + 1] = cell.content.length;
+			if (columnCharLengths[index] < cell.content.length)
+				columnCharLengths[index] = cell.content.length;
 		}
 	});
 	return columnCharLengths;

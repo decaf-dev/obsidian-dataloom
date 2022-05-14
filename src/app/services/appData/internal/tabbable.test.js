@@ -11,7 +11,6 @@ describe("findTabbableElementMatrix", () => {
 			["Test 1", "Test 2", "row-id-123456"],
 		];
 		const data = findAppData(parsedTable);
-		console.log(data);
 		const matrix = findTabbableElementMatrix(data);
 		expect(matrix).toEqual([
 			{ id: data.cells[0].id, type: TABBABLE_ELEMENT_TYPE.CELL },

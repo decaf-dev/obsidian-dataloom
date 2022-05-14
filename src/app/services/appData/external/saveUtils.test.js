@@ -107,15 +107,15 @@ describe("findAppData", () => {
 describe("appDataToMarkdown", () => {
 	it("converts appData to valid markdown", () => {
 		const parsedTable = [
-			["", "Column 1", "Column 2"],
-			["", "text", "text"],
-			["table-id-123456", "column-id-123456", "column-id-234567"],
-			["row-id-123456", "Test 1", "Test 2"],
+			["Column 1", "Column 2", ""],
+			["text", "text", ""],
+			["column-id-123456", "column-id-234567", "table-id-123456"],
+			["Test 1", "Test 2", "row-id-123456"],
 		];
 		const data = findAppData(parsedTable);
 		const markdown = appDataToMarkdown("table-id-123456", data);
 		expect(markdown).toEqual(
-			"|                 | Column 1         | Column 2         |\n| --------------- | ---------------- | ---------------- |\n|                 | text             | text             |\n| table-id-123456 | column-id-123456 | column-id-234567 |\n| row-id-123456   | Test 1           | Test 2           |"
+			"| Column 1         | Column 2         |                 |\n| ---------------- | ---------------- | --------------- |\n| text             | text             |                 |\n| column-id-123456 | column-id-234567 | table-id-123456 |\n| Test 1           | Test 2           | row-id-123456   |"
 		);
 	});
 });
@@ -123,19 +123,19 @@ describe("appDataToMarkdown", () => {
 describe("findTableRegex", () => {
 	it("produces a regex that matches markdown", () => {
 		const parsedTable = [
-			["", "Column 1", "Column 2"],
-			["", "text", "text"],
-			["table-id-123456", "column-id-123456", "column-id-234567"],
-			["row-id-123456", "Test 1", "Test 2"],
+			["Column 1", "Column 2", ""],
+			["text", "text", ""],
+			["column-id-123456", "column-id-234567", "table-id-123456"],
+			["Test 1", "Test 2", "row-id-123456"],
 		];
 		const data = findAppData(parsedTable);
 		const regex = findTableRegex(
 			"table-id-123456",
-			data.headers.length,
-			data.rows.length
+			data.headers,
+			data.rows
 		);
 		expect(regex.toString()).toEqual(
-			"/\\|.*\\|\\n\\|.*\\|\\n\\|.*\\|\\n\\|[\\t ]+table-id-123456[\\t ]+\\|.*\\|.*\\|\\n\\|.*\\|/"
+			"/\\|[ \\t]{0,}Column 1[ \\t]{0,}\\|[ \\t]{0,}Column 2[ \\t]{0,}\\|.*\\|\\n\\|[ \\t]{0,}[-]{3,}[ \\t]{0,}\\|[ \\t]{0,}[-]{3,}[ \\t]{0,}\\|[ \\t]{0,}[-]{3,}[ \\t]{0,}\\|\\n\\|[ \\t]{0,}text[ \\t]{0,}\\|[ \\t]{0,}text[ \\t]{0,}\\|.*\\|\\n\\|[ \\t]{0,}column-id-123456[ \\t]{0,}\\|[ \\t]{0,}column-id-234567[ \\t]{0,}\\|[ \\t]{0,}table-id-123456[ \\t]{0,}\\|\\n\\|.*\\|.*\\|.*\\|/"
 		);
 
 		const string = appDataToMarkdown("table-id-123456", data);
@@ -187,14 +187,14 @@ describe("findTableId", () => {
 describe("calcColumnCharLengths", () => {
 	it("calculates largest string length", () => {
 		const parsedTable = [
-			["", "Column 1", "Column 2"],
-			["", "text", "text"],
-			["table-id-123456", "column-id-123456", "column-id-234567"],
-			["row-id-123456", "Test 1", "Test 2"],
+			["Column 1", "Column 2", ""],
+			["text", "text", ""],
+			["column-id-123456", "column-id-234567", "table-id-123456"],
+			["Test 1", "Test 2", "row-id-123456"],
 		];
 		const data = findAppData(parsedTable);
 		const lengths = calcColumnCharLengths("table-id-123456", data);
-		expect(lengths).toEqual([15, 16, 16]);
+		expect(lengths).toEqual([16, 16, 15]);
 	});
 });
 
