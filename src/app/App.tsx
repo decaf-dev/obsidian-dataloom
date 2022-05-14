@@ -51,7 +51,7 @@ export default function App({
 	const saveLock = useRef(false);
 
 	useEffect(() => {
-		if (DEBUG) console.log("[useEffect] Sorting rows.");
+		// if (DEBUG) console.log("[useEffect] Sorting rows.");
 
 		const element = settings.focusedElement;
 		setFocusedElement(element);
