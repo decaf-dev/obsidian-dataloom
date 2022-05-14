@@ -10,8 +10,8 @@ import {
 } from ".";
 
 describe("hasValidHeaderRow", () => {
-	it("returns true if the parsed table contains a valid header row", () => {
-		const parsedTable = [["", "Column 1", "Column 2"]];
+	it("returns true if the last cell is empty", () => {
+		const parsedTable = [["Column 1", "Column 2", ""]];
 		const isValid = hasValidHeaderRow(parsedTable);
 		expect(isValid).toEqual(true);
 	});
@@ -22,33 +22,33 @@ describe("hasValidHeaderRow", () => {
 		expect(isValid).toEqual(false);
 	});
 
-	it("returns false if the first cell is not empty", () => {
-		const parsedTable = [["Not Empty", "Column 1", "Column 2"]];
+	it("returns false if the last cell is not empty", () => {
+		const parsedTable = [["Column 1", "Column 2", "Column 3"]];
 		const isValid = hasValidHeaderRow(parsedTable);
 		expect(isValid).toEqual(false);
 	});
 });
 
 describe("hasValidTypeDefinitionRow", () => {
-	it("returns true if the parsed table contains a valid type definition row", () => {
+	it("returns true if last cell is empty", () => {
 		const parsedTable = [
-			["", "Column 1", "Column 2", "Column 3"],
-			["", "text", "number", "tag"],
+			["Column 1", "Column 2", "Column 3", ""],
+			["text", "number", "tag", ""],
 		];
 		const isValid = hasValidTypeDefinitionRow(parsedTable);
 		expect(isValid).toEqual(true);
 	});
 
 	it("returns false if the parsed table only contains a header row", () => {
-		const parsedTable = [["", "Column 1", "Column 2", "Column 3"]];
+		const parsedTable = [["Column 1", "Column 2", "Column 3", ""]];
 		const isValid = hasValidTypeDefinitionRow(parsedTable);
 		expect(isValid).toEqual(false);
 	});
 
 	it("returns false if the first cell is not empty", () => {
 		const parsedTable = [
-			["", "Column 1", "Column 2", "Column 3"],
-			["Not Empty", "text", "number", "tag"],
+			["Column 1", "Column 2", "Column 3", ""],
+			["text", "number", "tag", "text"],
 		];
 		const isValid = hasValidTypeDefinitionRow(parsedTable);
 		expect(isValid).toEqual(false);
@@ -56,8 +56,8 @@ describe("hasValidTypeDefinitionRow", () => {
 
 	it("returns false if the type definition row contains unsupported types", () => {
 		const parsedTable = [
-			["", "Column 1", "Column 2", "Column 3"],
-			["", "text", "number", "unsupported"],
+			["Column 1", "Column 2", "Column 3", ""],
+			["text", "number", "unsupported", ""],
 		];
 		const isValid = hasValidTypeDefinitionRow(parsedTable);
 		expect(isValid).toEqual(false);
@@ -65,15 +65,15 @@ describe("hasValidTypeDefinitionRow", () => {
 });
 
 describe("hasValidColumnIds", () => {
-	it("returns true if the parsed table contains a valid column ids", () => {
+	it("returns true if the parsed table contains valid column ids", () => {
 		const parsedTable = [
-			["", "Column 1", "Column 2", "Column 3"],
-			["", "text", "number", "tag"],
+			["Column 1", "Column 2", "Column 3", ""],
+			["text", "number", "tag", ""],
 			[
-				"table-id-123456",
 				"column-id-123456",
 				"column-id-234567",
 				"column-id-345678",
+				"table-id-123456",
 			],
 		];
 		const isValid = hasValidColumnIds(parsedTable);
@@ -82,8 +82,8 @@ describe("hasValidColumnIds", () => {
 
 	it("returns false if the parsed table is missing the column id row", () => {
 		const parsedTable = [
-			["", "Column 1", "Column 2", "Column 3"],
-			["", "text", "number", "tag"],
+			["Column 1", "Column 2", "Column 3", ""],
+			["text", "number", "tag", ""],
 		];
 		const isValid = hasValidColumnIds(parsedTable);
 		expect(isValid).toEqual(false);
@@ -91,13 +91,13 @@ describe("hasValidColumnIds", () => {
 
 	it("returns false if the row contains invalid ids", () => {
 		const parsedTable = [
-			["", "Column 1", "Column 2", "Column 3"],
-			["", "text", "number", "tag"],
+			["Column 1", "Column 2", "Column 3", ""],
+			["text", "number", "tag", ""],
 			[
-				"table-id-123456",
 				"column-id-123456",
 				"column-id-234567",
 				"column-id-345",
+				"table-id-123456",
 			],
 		];
 		const isValid = hasValidColumnIds(parsedTable);
@@ -106,13 +106,13 @@ describe("hasValidColumnIds", () => {
 
 	it("returns false if column ids are the same", () => {
 		const parsedTable = [
-			["", "Column 1", "Column 2", "Column 3"],
-			["", "text", "number", "tag"],
+			["Column 1", "Column 2", "Column 3", ""],
+			["text", "number", "tag", ""],
 			[
-				"table-id-123456",
 				"column-id-123456",
 				"column-id-123456",
 				"column-id-345678",
+				"table-id-123456",
 			],
 		];
 		const isValid = hasValidColumnIds(parsedTable);
@@ -123,9 +123,14 @@ describe("hasValidColumnIds", () => {
 describe("hasValidRowIds", () => {
 	it("returns true if there are no rows", () => {
 		const parsedTable = [
-			["", "Column 1", "Column 2", "Column 3"],
-			["", "text", "number", "tag"],
-			["", "column-id-123456", "column-id-234567", "column-id-345678"],
+			["Column 1", "Column 2", "Column 3", ""],
+			["text", "number", "tag", ""],
+			[
+				"column-id-123456",
+				"column-id-234567",
+				"column-id-345678",
+				"table-id-123456",
+			],
 		];
 		const isValid = hasValidRowIds(parsedTable);
 		expect(isValid).toEqual(true);
@@ -133,21 +138,26 @@ describe("hasValidRowIds", () => {
 
 	it("returns true if there are rows with valid ids", () => {
 		const parsedTable = [
-			["", "Column 1", "Column 2", "Column 3"],
-			["", "text", "number", "tag"],
-			["", "column-id-123456", "column-id-234567", "column-id-345678"],
-			["row-id-123456", "Test 1", "Test 2", "Test 3"],
+			["Column 1", "Column 2", "Column 3", ""],
+			["text", "number", "tag", ""],
+			[
+				"column-id-123456",
+				"column-id-234567",
+				"column-id-345678",
+				"table-id-123456",
+			],
+			["Test 1", "Test 2", "Test 3", "row-id-123456"],
 		];
 		const isValid = hasValidRowIds(parsedTable);
 		expect(isValid).toEqual(true);
 	});
 
-	it("returns false if the first cell is empty", () => {
+	it("returns false if the last cell is empty", () => {
 		const parsedTable = [
-			["", "Column 1", "Column 2", "Column 3"],
-			["", "text", "number", "tag"],
-			["", "column-id-123456", "column-id-234567", "column-id-345678"],
-			["", "Test 1", "Test 2", "Test 3"],
+			["Column 1", "Column 2", "Column 3", ""],
+			["text", "number", "tag", ""],
+			["column-id-123456", "column-id-234567", "column-id-345678", ""],
+			["Test 1", "Test 2", "Test 3", ""],
 		];
 		const isValid = hasValidRowIds(parsedTable);
 		expect(isValid).toEqual(false);
@@ -155,11 +165,16 @@ describe("hasValidRowIds", () => {
 
 	it("returns false if the row contains invalid ids", () => {
 		const parsedTable = [
-			["", "Column 1", "Column 2", "Column 3"],
-			["", "text", "number", "tag"],
-			["", "column-id-123456", "column-id-234567", "column-id-345678"],
-			["row-id-123456", "Test 1", "Test 2", "Test 3"],
-			["row-id-1234", "Test 1", "Test 2", "Test 3"],
+			["Column 1", "Column 2", "Column 3", ""],
+			["text", "number", "tag", ""],
+			[
+				"column-id-123456",
+				"column-id-234567",
+				"column-id-345678",
+				"table-id-123456",
+			],
+			["Test 1", "Test 2", "Test 3", "row-id-123456"],
+			["Test 1", "Test 2", "Test 3", "row-id-2345"],
 		];
 		const isValid = hasValidRowIds(parsedTable);
 		expect(isValid).toEqual(false);
@@ -167,11 +182,16 @@ describe("hasValidRowIds", () => {
 
 	it("returns false if the row ids are the same", () => {
 		const parsedTable = [
-			["", "Column 1", "Column 2", "Column 3"],
-			["", "text", "number", "tag"],
-			["", "column-id-123456", "column-id-234567", "column-id-345678"],
-			["row-id-123456", "Test 1", "Test 2", "Test 3"],
-			["row-id-123456", "Test 1", "Test 2", "Test 3"],
+			["Column 1", "Column 2", "Column 3", ""],
+			["text", "number", "tag", ""],
+			[
+				"column-id-123456",
+				"column-id-234567",
+				"column-id-345678",
+				"table-id-123456",
+			],
+			["Test 1", "Test 2", "Test 3", "row-id-123456"],
+			["Test 1", "Test 2", "Test 3", "row-id-123456"],
 		];
 		const isValid = hasValidRowIds(parsedTable);
 		expect(isValid).toEqual(false);

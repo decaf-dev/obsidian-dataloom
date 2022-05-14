@@ -4,7 +4,7 @@ import {
 	MARKDOWN_ROWS_REGEX,
 } from "./";
 
-describe("MARKDOWN_HYPHEN_CELL_REGEX", () => {
+describe("HYPHEN_CELL_REGEX", () => {
 	it("matches hyphen cell", () => {
 		const match = "------|".match(MARKDOWN_HYPHEN_CELL_REGEX);
 		expect(match.length).toEqual(1);

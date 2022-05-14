@@ -36,9 +36,10 @@ export const EXTERNAL_LINK_REGEX = new RegExp(/https{0,1}:\/\/[^\s]*/g);
 
 export const TAGS_REGEX = new RegExp(/#[^ \t]+/g);
 
-//TODO write tests
 export const FILE_LINK_REGEX = new RegExp(/\[\[[^\n\r\]]+]]/g);
 
-export const TABLE_ID_REGEX = new RegExp(/^table-id-[a-z0-9]{6}$/);
-export const ROW_ID_REGEX = new RegExp(/^row-id-[a-z0-9]{6}$/);
-export const COLUMN_ID_REGEX = new RegExp(/^column-id-[a-z0-9]{6}$/);
+export const TABLE_ID_REGEX = new RegExp(/^table-id-[a-zA-Z0-9]{1,}$/);
+
+export const ROW_ID_REGEX = new RegExp(/^row-id-[a-zA-Z0-9]{1,}$/);
+
+export const COLUMN_ID_REGEX = new RegExp(/^column-id-[a-zA-Z0-9]{1,}$/);
