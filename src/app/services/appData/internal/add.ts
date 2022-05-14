@@ -2,7 +2,7 @@ import { AppData } from "../state/appData";
 import { initialCell } from "../state/cell";
 import { initialHeader } from "../state/header";
 import { initialRow } from "../state/row";
-import { initialTag, Tag } from "../state/tag";
+import { Tag } from "../state/tag";
 import { CELL_TYPE } from "src/app/constants";
 import { randomCellId, randomColumnId, randomRowId } from "../../random";
 
