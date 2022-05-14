@@ -54,7 +54,7 @@ A Notion-Like Table uses normal Obsidian table markdown syntax with 2 additional
 
 The type definition row is a normal markdown row with each cell containing the type of data you want that column to accept. The plugin currently supports 3 column types: `text`, `number` and `tag`. The last cell of the row must only contain whitespace for a Notion-Like Table to render.
 
-![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/type-definition-row.png)
+![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/type-def-row.png)
 
 ##### Column Id Row
 
