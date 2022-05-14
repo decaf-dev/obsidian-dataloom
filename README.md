@@ -62,7 +62,7 @@ The column id row is a normal markdown row with each cell containing a unique co
 
 #### Row Id Column
 
-The row id column is the last column of the table and contains both a table id and the unique ids for each row.
+The row id column is the last column of the table and contains both a table id and the unique ids for each row. Note that the cell that resides in the header must only contain whitespace for a Notion-Like table to render.
 
 #### Table Id
 
