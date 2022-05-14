@@ -47,6 +47,7 @@ export default function App({
 	const [focusedElement, setFocusedElement] = useState<TabbableElement>(
 		INITIAL_FOCUSED_ELEMENT
 	);
+	const [debounceUpdate, setDebounceUpdate] = useState(0);
 	const saveLock = useRef(false);
 
 	useEffect(() => {
@@ -71,6 +72,7 @@ export default function App({
 			//If we're running in Obsidian
 			if (app) {
 				if (appData.updateTime === 0) return;
+
 				// if (!settings.appData[sourcePath]) return;
 				// console.log(settings.appData[sourcePath][tableId]);
 				// if (!settings.appData[sourcePath][tableId]) return;
@@ -93,8 +95,32 @@ export default function App({
 				}
 			}
 		}
+
 		handleUpdate();
 	}, [appData.updateTime, saveLock.current]);
+
+	useEffect(() => {
+		let intervalId: NodeJS.Timer = null;
+		function startTimer() {
+			intervalId = setInterval(() => {
+				//When debounce update is called, we will only save after
+				//250ms have pass since the last update
+				if (Date.now() - debounceUpdate < 250) return;
+				clearInterval(intervalId);
+				setDebounceUpdate(0);
+				setAppData((prevState) => {
+					return {
+						...prevState,
+						updateTime: Date.now(),
+					};
+				});
+			}, 100);
+		}
+		if (debounceUpdate !== 0) startTimer();
+		return () => {
+			clearInterval(intervalId);
+		};
+	}, [debounceUpdate]);
 
 	useEffect(() => {
 		if (saveLock) {
@@ -399,7 +425,6 @@ export default function App({
 
 	function handleWidthChange(id: string, newWidth: number) {
 		if (DEBUG) console.log("[handler]: handleWidthChange called.");
-		//TODO debounce?
 		setAppData((prevState: AppData) => {
 			return {
 				...prevState,
@@ -412,9 +437,9 @@ export default function App({
 					}
 					return header;
 				}),
-				// updateTime: Date.now(),
 			};
 		});
+		setDebounceUpdate(Date.now());
 	}
 
 	function handleMoveColumnClick(id: string, moveRight: boolean) {
