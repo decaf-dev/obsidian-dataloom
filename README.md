@@ -8,6 +8,10 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 
 ## What's New?
 
+## Version 3.1.0
+
+I am excited to announce that the NLT app has 2 new property types: `date` and `checkbox`. Please check them out :)
+
 ## Version 3.0.0
 
 **WARNING: BREAKING CHANGES**
@@ -52,7 +56,7 @@ A Notion-Like Table uses normal Obsidian table markdown syntax with 2 additional
 
 ##### Type Definition Row
 
-The type definition row is a normal markdown row with each cell containing the type of data you want that column to accept. The plugin currently supports 3 column types: `text`, `number` and `tag`. The last cell of the row must only contain whitespace for a Notion-Like Table to render.
+The type definition row is a normal markdown row with each cell containing the type of data you want that column to accept. The plugin currently supports 5 column types: `text`, `number`, `tag`, `date` and `checkbox`. The last cell of the row must only contain whitespace for a Notion-Like Table to render.
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/type-def-row.png)
 

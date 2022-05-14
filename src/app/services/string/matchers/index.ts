@@ -1,5 +1,5 @@
 import { EXTERNAL_LINK_REGEX, FILE_LINK_REGEX } from "../regex";
-import { isNumber, isTag } from "../validators";
+import { isNumber, isTag, isDate, isCheckBox } from "../validators";
 import { CELL_TYPE } from "src/app/constants";
 
 export const matchURLs = (input: string) => {
@@ -31,6 +31,10 @@ export const findCellType = (textContent: string, expectedType: string) => {
 		if (isNumber(textContent)) return CELL_TYPE.NUMBER;
 	} else if (expectedType === CELL_TYPE.TAG) {
 		if (isTag(textContent)) return CELL_TYPE.TAG;
+	} else if (expectedType === CELL_TYPE.DATE) {
+		if (isDate(textContent)) return CELL_TYPE.DATE;
+	} else if (expectedType === CELL_TYPE.CHECKBOX) {
+		if (isCheckBox(textContent)) return CELL_TYPE.CHECKBOX;
 	}
 	return CELL_TYPE.ERROR;
 };

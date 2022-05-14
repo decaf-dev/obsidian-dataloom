@@ -12,6 +12,7 @@ import { DEBUG } from "src/app/constants";
 import { findAppData } from "./saveUtils";
 import { findTableId } from "./saveUtils";
 import { LoadedData } from "../state/loadedData";
+import { appDataIdsToMarkdown, appDataTypesToMarkdown } from "../debug";
 
 /**
  * Loads app data
@@ -25,35 +26,35 @@ export const loadAppData = (
 	sourcePath: string
 ): LoadedData | null => {
 	const parsedTable = parseTableFromEl(el);
-	if (DEBUG) {
-		console.log("PARSING TABLE FROM ELEMENT");
-		console.log(parsedTable);
-	}
+	// if (DEBUG) {
+	// 	console.log("PARSING TABLE FROM ELEMENT");
+	// 	console.log(parsedTable);
+	// }
 
 	const tableId = findTableId(parsedTable);
 	let isValidTable = true;
 	if (!tableId) {
-		if (DEBUG) console.log("Invalid table id");
+		// if (DEBUG) console.log("Invalid table id");
 		isValidTable = false;
 	}
 
 	if (!hasValidHeaderRow(parsedTable)) {
-		if (DEBUG) console.log("Invalid header row");
+		// if (DEBUG) console.log("Invalid header row");
 		isValidTable = false;
 	}
 
 	if (!hasValidTypeDefinitionRow(parsedTable)) {
-		if (DEBUG) console.log("Invalid type definition row");
+		// if (DEBUG) console.log("Invalid type definition row");
 		isValidTable = false;
 	}
 
 	if (!hasValidColumnIds(parsedTable)) {
-		if (DEBUG) console.log("Invalid column ids");
+		// if (DEBUG) console.log("Invalid column ids");
 		isValidTable = false;
 	}
 
 	if (!hasValidRowIds(parsedTable)) {
-		if (DEBUG) console.log("Invalid row ids");
+		// if (DEBUG) console.log("Invalid row ids");
 		isValidTable = false;
 	}
 
@@ -61,15 +62,16 @@ export const loadAppData = (
 		return { tableId: null, data: null };
 	}
 
-	if (DEBUG) {
-		console.log("FOUND TABLE ID", tableId);
-	}
+	// if (DEBUG) {
+	// 	console.log("FOUND TABLE ID", tableId);
+	// }
 
 	if (settings.appData[sourcePath]) {
 		if (settings.appData[sourcePath][tableId]) {
 			//This is a compatibility fix for v2.3.6 and less
 			if (settings.appData[sourcePath][tableId].headers) {
-				if (DEBUG) console.log("LOADING OLD DATA");
+				if (DEBUG.LOAD_APP_DATA.LOG_MESSAGE)
+					console.log("LOADING CACHED APP DATA");
 
 				const data = findAppData(parsedTable);
 				const updated = updateAppDataFromSavedState(
@@ -77,11 +79,20 @@ export const loadAppData = (
 					data
 				);
 				plugin.saveSettings();
+				if (DEBUG.LOAD_APP_DATA.IDS)
+					console.log(appDataIdsToMarkdown(tableId, data));
+				if (DEBUG.LOAD_APP_DATA.TYPES)
+					console.log(appDataTypesToMarkdown(tableId, data));
 				return { tableId, data: updated };
 			}
 		}
 	}
 
-	if (DEBUG) console.log("LOADING NEW DATA");
-	return { tableId, data: findAppData(parsedTable) };
+	const data = findAppData(parsedTable);
+	if (DEBUG.LOAD_APP_DATA.LOG_MESSAGE) console.log("LOADING NEW APP DATA");
+	if (DEBUG.LOAD_APP_DATA.IDS)
+		console.log(appDataIdsToMarkdown(tableId, data));
+	if (DEBUG.LOAD_APP_DATA.TYPES)
+		console.log(appDataTypesToMarkdown(tableId, data));
+	return { tableId, data };
 };

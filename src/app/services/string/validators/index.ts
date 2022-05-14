@@ -5,7 +5,10 @@ import {
 	MARKDOWN_ROWS_REGEX,
 	NUMBER_REGEX,
 	TAG_REGEX,
+	DATE_REGEX,
 	ROW_ID_REGEX,
+	CHECKBOX_REGEX,
+	CHECKBOX_CHECKED_REGEX,
 } from "src/app/services/string/regex";
 
 import { CELL_TYPE } from "src/app/constants";
@@ -30,12 +33,24 @@ export const isMarkdownTable = (data: string): boolean => {
 	return false;
 };
 
-export const isNumber = (input: string) => {
+export const isNumber = (input: string): boolean => {
 	return (input.match(NUMBER_REGEX) || []).length !== 0;
 };
 
-export const isTag = (input: string) => {
+export const isDate = (input: string): boolean => {
+	return (input.match(DATE_REGEX) || []).length !== 0;
+};
+
+export const isCheckBox = (input: string): boolean => {
+	return (input.match(CHECKBOX_REGEX) || []).length !== 0;
+};
+
+export const isTag = (input: string): boolean => {
 	return (input.match(TAG_REGEX) || []).length !== 0;
+};
+
+export const isCheckBoxChecked = (input: string): boolean => {
+	return (input.match(CHECKBOX_CHECKED_REGEX) || []).length !== 0;
 };
 
 /**

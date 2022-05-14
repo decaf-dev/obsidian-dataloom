@@ -9,26 +9,28 @@ import ErrorCell from "../ErrorCell";
 import { randomColor } from "src/app/services/random";
 import { addPound } from "src/app/services/string/adders";
 import { Tag } from "src/app/services/appData/state/tag";
+import CheckboxCell from "../CheckboxCell";
 
 import { CELL_TYPE } from "../../constants";
 
 import "./styles.css";
+import { Cell } from "src/app/services/appData/state/cell";
+import {
+	parseDateForInput,
+	parseInputDate,
+} from "src/app/services/string/parsers";
 
 interface Props {
-	cellId: string;
-	headerId: string;
+	cell: Cell;
 	width: string;
-	content: string;
 	isFocused: boolean;
 	tags: Tag[];
-	type: string;
-	expectedType: string | null;
 	onRemoveTagClick: (cellId: string, tagId: string) => void;
 	onTagClick: (cellId: string, tagId: string) => void;
 	onContentChange: (
 		cellId: string,
-		inputText: string,
-		shouldLock: boolean
+		shouldLock: boolean,
+		...rest: any
 	) => void;
 	onAddTag: (
 		cellId: string,
@@ -41,14 +43,10 @@ interface Props {
 }
 
 export default function EditableTd({
-	cellId,
-	headerId,
+	cell,
 	width,
-	content,
 	isFocused,
 	tags,
-	type,
-	expectedType,
 	onOutsideClick,
 	onRemoveTagClick,
 	onTagClick,
@@ -69,9 +67,13 @@ export default function EditableTd({
 	};
 	const [cellMenu, setCellMenu] = useState(initialCellMenuState);
 
+	const content = cell.toString();
+	const { id, headerId, type, expectedType } = cell;
+
 	useEffect(() => {
 		if (isFocused) {
 			if (cellMenu.isOpen) return;
+			if (type === CELL_TYPE.CHECKBOX) return;
 			openMenu();
 		} else {
 			if (!cellMenu.isOpen) return;
@@ -92,10 +94,9 @@ export default function EditableTd({
 
 							function findWidth() {
 								switch (type) {
+									case CELL_TYPE.DATE:
 									case CELL_TYPE.TAG:
 										return "fit-content";
-									case CELL_TYPE.TEXT:
-										return `${width}px`;
 									default:
 										return `${width}px`;
 								}
@@ -133,7 +134,7 @@ export default function EditableTd({
 		try {
 			let text = content;
 			if (type === CELL_TYPE.TAG) {
-				const tag = tags.find((tag) => tag.selected.includes(cellId));
+				const tag = tags.find((tag) => tag.selected.includes(id));
 				text = addPound(tag.content);
 			}
 			await navigator.clipboard.writeText(text);
@@ -150,7 +151,7 @@ export default function EditableTd({
 		if (el.nodeName === "A") return;
 		if (type === CELL_TYPE.ERROR) return;
 
-		onFocusClick(cellId);
+		onFocusClick(id);
 		//openMenu();
 	}
 
@@ -168,17 +169,21 @@ export default function EditableTd({
 				tagColor: randomColor(),
 			};
 		});
-		setInputText(content);
+		if (type === CELL_TYPE.DATE) {
+			setInputText(parseDateForInput(content));
+		} else {
+			setInputText(content);
+		}
 	}
 
 	function handleAddTag(text: string) {
-		onAddTag(cellId, headerId, text, cellMenu.tagColor);
+		onAddTag(id, headerId, text, cellMenu.tagColor);
 		setInputText("");
 		onOutsideClick();
 	}
 
 	function handleTagClick(id: string) {
-		onTagClick(cellId, id);
+		onTagClick(id, id);
 		onOutsideClick();
 	}
 
@@ -186,25 +191,24 @@ export default function EditableTd({
 		if (content !== inputText) {
 			switch (type) {
 				case CELL_TYPE.TEXT:
-					onContentChange(cellId, inputText, shouldLock);
+					onContentChange(id, shouldLock, inputText);
 					setInputText("");
 					break;
 				case CELL_TYPE.NUMBER:
-					onContentChange(cellId, inputText, shouldLock);
+					onContentChange(id, shouldLock, parseInt(inputText));
+					setInputText("");
+					break;
+				case CELL_TYPE.DATE:
+					onContentChange(id, shouldLock, parseInputDate(inputText));
 					setInputText("");
 					break;
 				//TODO add lock
 				case CELL_TYPE.TAG: {
 					const tag = tags.find((tag) => tag.content === inputText);
 					if (tag) {
-						onTagClick(cellId, tag.id);
+						onTagClick(id, tag.id);
 					} else {
-						onAddTag(
-							cellId,
-							headerId,
-							inputText,
-							cellMenu.tagColor
-						);
+						onAddTag(id, headerId, inputText, cellMenu.tagColor);
 					}
 					setInputText("");
 					break;
@@ -220,6 +224,8 @@ export default function EditableTd({
 		onOutsideClick();
 	}
 
+	//TODO relook at this
+
 	//Synchronous handler
 	//Runs after handle outside click
 	useEffect(() => {
@@ -231,13 +237,25 @@ export default function EditableTd({
 		}
 	}, [isFocused, closingMenu.current]);
 
+	function handleCheckboxChange(isChecked: boolean) {
+		onContentChange(id, false, isChecked);
+	}
+
 	function renderCell() {
 		switch (type) {
 			case CELL_TYPE.TEXT:
 			case CELL_TYPE.NUMBER:
+			case CELL_TYPE.DATE:
 				return <TextCell content={content} />;
+			case CELL_TYPE.CHECKBOX:
+				return (
+					<CheckboxCell
+						isChecked={content.includes("x")}
+						onCheckboxChange={handleCheckboxChange}
+					/>
+				);
 			case CELL_TYPE.TAG: {
-				const tag = tags.find((tag) => tag.selected.includes(cellId));
+				const tag = tags.find((tag) => tag.selected.includes(id));
 				if (tag)
 					return (
 						<TagCell
@@ -277,7 +295,7 @@ export default function EditableTd({
 				isOpen={cellMenu.isOpen}
 				cellType={type}
 				tags={tags}
-				cellId={cellId}
+				cellId={id}
 				tagColor={cellMenu.tagColor}
 				inputText={inputText}
 				onInputChange={setInputText}
