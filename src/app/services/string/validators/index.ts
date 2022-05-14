@@ -102,12 +102,13 @@ export const hasValidRowIds = (parsedTable: string[][]): boolean => {
 
 	for (let i = 3; i < parsedTable.length; i++) {
 		const row = parsedTable[i];
-		const cell = row[0];
+		const cell = row[row.length - 1];
 
 		if (!cell.match(ROW_ID_REGEX)) return false;
+
+		//Check the id has already been added
 		const id = cell.split("row-id-")[1];
 		if (ids.includes(id)) return false;
-
 		ids.push(id);
 	}
 	return true;

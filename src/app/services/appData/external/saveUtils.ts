@@ -323,7 +323,7 @@ export const calcColumnCharLengths = (
 export const findTableId = (parsedTable: string[][]): string | null => {
 	const row = parsedTable[2];
 	if (row) {
-		const cell = row[0];
+		const cell = row[row.length - 1];
 		if (!cell.match(TABLE_ID_REGEX)) return null;
 		return cell;
 	} else {
