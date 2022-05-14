@@ -76,6 +76,16 @@ A row id starts with `row-id-` followed by alpha-numeric characters. This id mus
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/row-ids.png)
 
+### Renaming IDs
+
+#### Renaming table ids
+
+Renaming a table id will cause your table to become orphaned from its saved data in the cache and create new data from the markdown. This can cause you to lose the saved column width, sorting, or tag colors on your table. If you would like to rename your table-id to something meaningful, I recommend doing this at the creation of your table.
+
+#### Renaming column ids
+
+Renaming column ids is less severe than renaming a table id, as you will only lose orphan that column from its saved state. Once again, I recommend renaming this at the creation of your table before you have started to adjust the settings.
+
 ### Editing Cells
 
 To edit a cell, just click on it. A textarea will appear which will allow you to edit the cell's content. Just click outside the box or press enter to save the text. Notion-Like tables will automatically handle updating your markdown ;)
