@@ -96,7 +96,7 @@ describe("hasValidColumnIds", () => {
 			[
 				"column-id-123456",
 				"column-id-234567",
-				"column-id-345",
+				"column-id-%%%%%%",
 				"table-id-123456",
 			],
 		];
@@ -174,7 +174,7 @@ describe("hasValidRowIds", () => {
 				"table-id-123456",
 			],
 			["Test 1", "Test 2", "Test 3", "row-id-123456"],
-			["Test 1", "Test 2", "Test 3", "row-id-2345"],
+			["Test 1", "Test 2", "Test 3", "row-id-%%%%%%"],
 		];
 		const isValid = hasValidRowIds(parsedTable);
 		expect(isValid).toEqual(false);
