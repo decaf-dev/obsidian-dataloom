@@ -5,13 +5,12 @@ export const DEBUG = {
 		TYPES: false,
 	},
 	SAVE_APP_DATA: {
-		LOG_MESSAGE: true,
+		LOG_MESSAGE: false,
 		APP_DATA: false,
 		TABLE_REGEX: false,
-		UPDATED_CONTENT: true,
+		UPDATED_CONTENT: false,
 	},
 };
-export const DEBUG_TYPES = true;
 
 export interface CellType {
 	TEXT: string;
