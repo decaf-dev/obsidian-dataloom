@@ -37,9 +37,9 @@ export const createEmptyMarkdownTable = (
 	columnId: string
 ): string => {
 	const rows = [];
-	rows[0] = "|                 | New Column       |";
-	rows[1] = "| --------------- | ---------------- |";
-	rows[2] = "|                 | text             |";
-	rows[3] = `| ${tableId} | ${columnId} |`;
+	rows[0] = "| New Column       |                  |";
+	rows[1] = "| ---------------- | ---------------- |";
+	rows[2] = "| text             |                  |";
+	rows[3] = `| ${columnId} | ${tableId}  |`;
 	return rows.join("\n");
 };
