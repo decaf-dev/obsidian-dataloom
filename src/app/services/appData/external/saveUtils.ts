@@ -39,12 +39,13 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 				if (j !== parsedRow.length - 1) headers[j].id = td;
 			});
 		} else {
-			const row = initialRow("", getCurrentTimeWithOffset());
+			const row = initialRow(
+				parsedRow[parsedRow.length - 1],
+				getCurrentTimeWithOffset()
+			);
 
 			parsedRow.forEach((td, j) => {
-				if (j === parsedRow.length - 1) {
-					row.id = td;
-				} else {
+				if (j !== parsedRow.length - 1) {
 					const cellId = randomCellId();
 					const cellType = findCellType(td, headers[j].type);
 
