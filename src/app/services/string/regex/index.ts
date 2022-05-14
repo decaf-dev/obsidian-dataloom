@@ -43,3 +43,18 @@ export const TABLE_ID_REGEX = new RegExp(/^table-id-[a-zA-Z0-9]{1,}$/);
 export const ROW_ID_REGEX = new RegExp(/^row-id-[a-zA-Z0-9]{1,}$/);
 
 export const COLUMN_ID_REGEX = new RegExp(/^column-id-[a-zA-Z0-9]{1,}$/);
+
+/**
+ * Matches a date with the format mm/dd/yyyy
+ */
+export const DATE_REGEX = new RegExp(/^\d{2}\/\d{2}\/\d{4}$/);
+
+/**
+ * Matches a markdown checkbox [ ] or [x]
+ */
+export const CHECKBOX_REGEX = new RegExp(/^\[[x ]{0,1}\]$/);
+
+/**
+ * Matches a checked markdown checkbox [x]
+ */
+export const CHECKBOX_CHECKED_REGEX = new RegExp(/^\[[x]\]$/);

@@ -1,9 +1,9 @@
 import { AppData } from "../state/appData";
-import { initialCell } from "../state/cell";
 import { initialHeader } from "../state/header";
 import { initialRow } from "../state/row";
 import { Tag } from "../state/tag";
 import { CELL_TYPE } from "src/app/constants";
+import { initialCell } from "../state/cell";
 import { randomCellId, randomColumnId, randomRowId } from "../../random";
 
 export const addRow = (data: AppData): AppData => {
@@ -11,7 +11,7 @@ export const addRow = (data: AppData): AppData => {
 	const tags: Tag[] = [];
 	const cells = data.headers.map((header, i) => {
 		const cellId = randomCellId();
-		return initialCell(cellId, rowId, header.id, header.type, "");
+		return initialCell(cellId, rowId, header.id, header.type);
 	});
 	return {
 		...data,
@@ -27,7 +27,7 @@ export const addColumn = (data: AppData): AppData => {
 	const cells = [...data.cells];
 	data.rows.forEach((row) => {
 		cells.push(
-			initialCell(randomCellId(), row.id, header.id, CELL_TYPE.TEXT, "")
+			initialCell(randomCellId(), row.id, header.id, CELL_TYPE.TEXT)
 		);
 	});
 	return {

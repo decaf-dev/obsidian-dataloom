@@ -58,7 +58,7 @@ esbuild
 			  },
 		target: "es2016",
 		logLevel: "info",
-		sourcemap: prod ? false : "inline",
+		sourcemap: !prod,
 		treeShaking: true,
 		outfile: "main.js",
 	})

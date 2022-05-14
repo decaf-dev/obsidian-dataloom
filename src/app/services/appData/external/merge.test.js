@@ -38,8 +38,8 @@ describe("updateAppDataFromSavedState", () => {
 
 		const merged = updateAppDataFromSavedState(oldAppData, newAppData);
 		//Check content
-		expect(merged.cells[0].content).toEqual("Cell 1 Updated");
-		expect(merged.cells[1].content).toEqual("Cell 2 Updated");
+		expect(merged.cells[0].toString()).toEqual("Cell 1 Updated");
+		expect(merged.cells[1].toString()).toEqual("Cell 2 Updated");
 	});
 
 	it("merges updated column type", () => {

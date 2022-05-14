@@ -1,34 +1,44 @@
 import { AppData } from "../state/appData";
 import { AppDataStringBuffer } from "../external/saveUtils";
+import { calcColumnCharLengths } from "../external/saveUtils";
 import { CELL_TYPE } from "src/app/constants";
 
-export const printDataIds = (tableId: string, data: AppData): string => {
-	const COLUMN_SIZE = 40;
+export const appDataIdsToMarkdown = (
+	tableId: string,
+	data: AppData
+): string => {
+	const columnCharLengths = calcColumnCharLengths(tableId, data);
+
 	const buffer = new AppDataStringBuffer();
 	buffer.createRow();
 
-	data.headers.forEach((header, i) =>
-		buffer.writeColumn(header.id, COLUMN_SIZE)
-	);
+	data.headers.forEach((header, i) => {
+		buffer.writeColumn(header.content, columnCharLengths[i]);
+	});
+	buffer.writeColumn("", columnCharLengths[data.headers.length]);
 
 	buffer.createRow();
 
-	data.headers.forEach((_header, i) => {
-		const content = Array(COLUMN_SIZE).fill("-").join("");
-		buffer.writeColumn(content, COLUMN_SIZE);
-	});
-
-	buffer.createRow();
-
-	data.headers.forEach((_header, i) => {
-		buffer.writeColumn(i === 0 ? tableId : "", COLUMN_SIZE);
-	});
+	for (let i = 0; i < data.headers.length + 1; i++) {
+		const content = Array(columnCharLengths[i]).fill("-").join("");
+		buffer.writeColumn(content, columnCharLengths[i]);
+	}
 
 	buffer.createRow();
 
 	data.headers.forEach((header, i) => {
-		buffer.writeColumn(header.type, COLUMN_SIZE);
+		buffer.writeColumn(header.type, columnCharLengths[i]);
 	});
+
+	buffer.writeColumn("", columnCharLengths[data.headers.length]);
+
+	buffer.createRow();
+
+	data.headers.forEach((header, i) => {
+		buffer.writeColumn(header.id, columnCharLengths[i]);
+	});
+
+	buffer.writeColumn(tableId, columnCharLengths[data.headers.length]);
 
 	data.rows.forEach((row) => {
 		buffer.createRow();
@@ -40,18 +50,70 @@ export const printDataIds = (tableId: string, data: AppData): string => {
 					cell.headerId === data.headers[i].id
 			);
 			if (cell.type === CELL_TYPE.TAG) {
-				const tag = data.tags.find((tag) =>
-					tag.selected.includes(cell.id)
-				);
-				if (tag) {
-					buffer.writeColumn(tag.id, COLUMN_SIZE);
-				} else {
-					buffer.writeColumn("", COLUMN_SIZE);
-				}
+				const tagIds = data.tags
+					.filter((tag) => tag.selected.includes(cell.id))
+					.map((tag) => tag.id);
+				buffer.writeColumn(tagIds.join(", "), columnCharLengths[i]);
 			} else {
-				buffer.writeColumn(cell.id, COLUMN_SIZE);
+				buffer.writeColumn(cell.id, columnCharLengths[i]);
 			}
 		}
+
+		buffer.writeColumn(row.id, columnCharLengths[data.headers.length]);
+	});
+	return buffer.toString();
+};
+
+export const appDataTypesToMarkdown = (
+	tableId: string,
+	data: AppData
+): string => {
+	const columnCharLengths = calcColumnCharLengths(tableId, data);
+
+	const buffer = new AppDataStringBuffer();
+	buffer.createRow();
+
+	data.headers.forEach((header, i) => {
+		buffer.writeColumn(header.content, columnCharLengths[i]);
+	});
+	buffer.writeColumn("", columnCharLengths[data.headers.length]);
+
+	buffer.createRow();
+
+	for (let i = 0; i < data.headers.length + 1; i++) {
+		const content = Array(columnCharLengths[i]).fill("-").join("");
+		buffer.writeColumn(content, columnCharLengths[i]);
+	}
+
+	buffer.createRow();
+
+	data.headers.forEach((header, i) => {
+		buffer.writeColumn(header.type, columnCharLengths[i]);
+	});
+
+	buffer.writeColumn("", columnCharLengths[data.headers.length]);
+
+	buffer.createRow();
+
+	data.headers.forEach((header, i) => {
+		buffer.writeColumn(header.id, columnCharLengths[i]);
+	});
+
+	buffer.writeColumn(tableId, columnCharLengths[data.headers.length]);
+
+	data.rows.forEach((row) => {
+		buffer.createRow();
+
+		for (let i = 0; i < data.headers.length; i++) {
+			const cell = data.cells.find(
+				(cell) =>
+					cell.rowId === row.id &&
+					cell.headerId === data.headers[i].id
+			);
+			buffer.writeColumn(cell.type, columnCharLengths[i]);
+		}
+
+		buffer.writeColumn(row.id, columnCharLengths[data.headers.length]);
 	});
 	return buffer.toString();
 };
