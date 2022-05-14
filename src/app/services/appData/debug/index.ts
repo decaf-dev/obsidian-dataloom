@@ -7,7 +7,6 @@ export const appDataIdsToMarkdown = (
 	tableId: string,
 	data: AppData
 ): string => {
-	console.log(data);
 	const columnCharLengths = calcColumnCharLengths(tableId, data);
 
 	const buffer = new AppDataStringBuffer();

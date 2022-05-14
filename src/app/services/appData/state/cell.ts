@@ -51,7 +51,7 @@ export class ErrorCell extends Cell {
 export class TextCell extends Cell {
 	text: string;
 
-	constructor(id: string, rowId: string, headerId: string, text: string) {
+	constructor(id: string, rowId: string, headerId: string, text = "") {
 		super(id, rowId, headerId, CELL_TYPE.TEXT, null);
 		this.text = text;
 	}
@@ -68,7 +68,7 @@ export class TextCell extends Cell {
 export class NumberCell extends Cell {
 	number: number;
 
-	constructor(id: string, rowId: string, headerId: string, number: number) {
+	constructor(id: string, rowId: string, headerId: string, number = -1) {
 		super(id, rowId, headerId, CELL_TYPE.NUMBER, null);
 		this.number = number;
 	}
@@ -96,7 +96,7 @@ export class CheckBoxCell extends Cell {
 		id: string,
 		rowId: string,
 		headerId: string,
-		isChecked: boolean
+		isChecked = false
 	) {
 		super(id, rowId, headerId, CELL_TYPE.CHECKBOX, null);
 		this.isChecked = isChecked;
@@ -139,7 +139,7 @@ export class DateCell extends Cell {
 	toString() {
 		if (this.date === null) return "";
 		const day = ("0" + this.date.getDate()).slice(-2);
-		const month = ("0" + this.date.getMonth() + 1).slice(-2);
+		const month = ("0" + (this.date.getMonth() + 1)).slice(-2);
 		const year = this.date.getFullYear();
 		return `${month}/${day}/${year}`;
 	}

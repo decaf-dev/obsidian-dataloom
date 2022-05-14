@@ -37,6 +37,7 @@ export const PROPERTY_TYPE_ITEMS: MenuItem[] = [
 	{ name: "text", content: "Text", type: CELL_TYPE.TEXT },
 	{ name: "number", content: "Number", type: CELL_TYPE.NUMBER },
 	{ name: "tag", content: "Tag", type: CELL_TYPE.TAG },
+	{ name: "date", content: "Date", type: CELL_TYPE.DATE },
 ];
 
 interface SortItem {

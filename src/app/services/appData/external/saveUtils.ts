@@ -75,22 +75,19 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 							new TextCell(cellId, row.id, headers[j].id, td)
 						);
 					} else if (cellType === CELL_TYPE.NUMBER) {
+						const number = td === "" ? -1 : parseInt(td);
 						cells.push(
 							new NumberCell(
 								cellId,
 								row.id,
 								headers[j].id,
-								parseInt(td)
+								number
 							)
 						);
 					} else if (cellType === CELL_TYPE.DATE) {
+						const date = td === "" ? null : new Date(td);
 						cells.push(
-							new DateCell(
-								cellId,
-								row.id,
-								headers[j].id,
-								new Date(td)
-							)
+							new DateCell(cellId, row.id, headers[j].id, date)
 						);
 					} else if (cellType === CELL_TYPE.TAG) {
 						cells.push(new TagCell(cellId, row.id, headers[j].id));

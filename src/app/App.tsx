@@ -538,13 +538,14 @@ export default function App({
 					if (id === header.id) return { ...header, type: cellType };
 					return header;
 				}),
+
 				//Update cell that matches header id to the new cell type
 				cells: prevState.cells.map((cell) => {
 					if (cell.headerId === id) {
 						return initialCell(
 							cell.id,
-							cell.headerId,
 							cell.rowId,
+							cell.headerId,
 							cellType
 						);
 					}
