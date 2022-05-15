@@ -36,21 +36,33 @@ export default function TagCell({
 	onRemoveClick,
 	onClick,
 }: Props) {
-	let tagClass = "NLT__tag";
-	if (color === CELL_COLOR.RED) {
-		tagClass += " NLT__tag--red";
-	} else if (color === CELL_COLOR.YELLOW) {
-		tagClass += " NLT__tag--yellow";
-	} else if (color === CELL_COLOR.ORANGE) {
-		tagClass += " NLT__tag--orange";
-	} else if (color === CELL_COLOR.PINK) {
-		tagClass += " NLT__tag--pink";
-	} else if (color === CELL_COLOR.PURPLE) {
-		tagClass += " NLT__tag--purple";
-	} else if (color === CELL_COLOR.GRAY) {
-		tagClass += " NLT__tag--gray";
+	function findTagColorClass(color: string) {
+		switch (color) {
+			case CELL_COLOR.LIGHT_GRAY:
+				return "NLT__tag--light-gray";
+			case CELL_COLOR.GRAY:
+				return "NLT__tag--gray";
+			case CELL_COLOR.BROWN:
+				return "NLT__tag--brown";
+			case CELL_COLOR.ORANGE:
+				return "NLT__tag--orange";
+			case CELL_COLOR.YELLOW:
+				return "NLT__tag--yellow";
+			case CELL_COLOR.GREEN:
+				return "NLT__tag--green";
+			case CELL_COLOR.BLUE:
+				return "NLT__tag--blue";
+			case CELL_COLOR.PURPLE:
+				return "NLT__tag--purple";
+			case CELL_COLOR.PINK:
+				return "NLT__tag--pink";
+			case CELL_COLOR.RED:
+				return "NLT__tag--red";
+		}
 	}
 
+	let tagClass = "NLT__tag";
+	tagClass += " " + findTagColorClass(color);
 	let cellClass = "NLT__tag-cell";
 	if (selectable) cellClass += " NLT__selectable";
 
