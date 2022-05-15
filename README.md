@@ -8,11 +8,11 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 
 ## What's New?
 
-## Version 3.1.0
+### Version 3.1.0
 
-I am excited to announce that the NLT app has 2 new column types: `date` and `checkbox`. Please check them out :)
+I am excited to announce that the NLT app has 2 new column types: `date` and `checkbox`. Please see `Dates` and `Checkboxes` below for usage details.
 
-## Version 3.0.0
+### Version 3.0.0
 
 **WARNING: BREAKING CHANGES**
 
@@ -54,13 +54,13 @@ A Notion-Like Table uses normal Obsidian table markdown syntax with 2 additional
 -   A column id row
 -   A row id column
 
-##### Type Definition Row
+#### Type Definition Row
 
 The type definition row is a normal markdown row with each cell containing the type of data you want that column to accept. The plugin currently supports 5 column types: `text`, `number`, `tag`, `date` and `checkbox`. The last cell of the row must only contain whitespace for a Notion-Like Table to render.
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/type-def-row.png)
 
-##### Column Id Row
+#### Column Id Row
 
 The column id row is a normal markdown row with each cell containing a unique column id. A column id starts with `column-id-` followed by alpha-numeric characters. This id must be unique to each table, but may be reused in other tables.
 
@@ -70,13 +70,13 @@ The column id row is a normal markdown row with each cell containing a unique co
 
 The row id column is the last column of the table and contains both a table id and the unique ids for each row. Note that the cell that resides in the header must only contain whitespace for a Notion-Like table to render.
 
-#### Table Id
+##### Table Id
 
 A table id starts with `table-id-` followed by alpha-numeric characters. This id must be unique to each note, but may be reused in other notes.
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/table-id.png)
 
-#### Row Ids
+##### Row Ids
 
 A row id starts with `row-id-` followed by alpha-numeric characters. This id must be unique to each table, but may be reused in other tables.
 
@@ -92,25 +92,33 @@ Renaming a table id will cause your table to become orphaned from its saved data
 
 Renaming column ids is less severe than renaming a table id, as you will only lose orphan that column from its saved state. Once again, I recommend renaming this at the creation of your table before you have started to adjust the settings.
 
-### Editing Cells
-
-To edit a cell, just click on it. A textarea will appear which will allow you to edit the cell's content. Just click outside the box or press enter to save the text. Notion-Like tables will automatically handle updating your markdown ;)
-
-#### Tags
-
-Tags have a special notion-like menu that will appear. Tags are scoped to each column of a table. You can type text to filter existing tags and select one. Or you can create a new tag by typing text and clicking "Create New" or pressing enter.
-
-![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/tag-menu.png)
-
 ### Headers
 
 Click on a header name to view the header menu. In the header menu you can rename the header, sort your column values or change the header type.
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/header.png)
 
+### Editing Cells
+
+To edit a cell, just click on it. A textarea will appear which will allow you to edit the cell's content. Just click outside the box or press enter to save the text. Notion-Like tables will automatically handle updating your markdown ;)
+
+### Tags
+
+Tags have a special notion-like menu that will appear. Tags are scoped to each column of a table. You can type text to filter existing tags and select one. Or you can create a new tag by typing text and clicking "Create New" or pressing enter.
+
+![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/tag-menu.png)
+
+### Dates
+
+Dates can be rendered in cells that are in a column with the `date` type set. To render a date please follow the format `mm/dd/yyyy` in your markdown.
+
+### Checkboxes
+
+Checkboxes can be rendered in cells that are in a column with the `checkbox` type set. To render a checkbox, add two square brackets with a space `[ ]` for unchecked or two square brackets surrounding an x `[x]` for checked.
+
 ### Links
 
-If you want to render a link in text, just add square brackets `[[My Link]]`.
+Links can be rendered in cells that are in a column with the `text` column type is set. To render a link, add double squares surrounding text `[[My Link]]`.
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/internal-link-edit.png)
 
