@@ -1,4 +1,54 @@
 /*
+* Colors
+*/
+.NLT__color-light-gray {
+	/* background-color: #cfcfc4; */
+	background-color: hsl(0, 3, 94);
+}
+
+.NLT__color--gray {
+	/* background-color: #cfcfc4; */
+	background-color: hsl(40, 5, 88);
+}
+
+.NLT__color--brown {
+	background-color: hsl(18, 31, 89);
+}
+
+.NLT__color--orange {
+	/* background-color: #ffdfd3; */
+	background-color: hsl(28, 67, 88);
+}
+
+.NLT__color--yellow {
+	/* background-color: #faffc7; */
+	background-color: hsl(43, 82, 89);
+}
+
+.NLT__color--green {
+	background-color: hsl(113, 30, 89);
+}
+
+.NLT__color--blue {
+	background-color: hsl(205, 41, 89);
+}
+
+.NLT__color--purple {
+	/* background-color: #e0bbe4; */
+	background-color: hsl(272, 29, 90);
+}
+
+.NLT__color--pink {
+	/* background-color: #fec8d8; */
+	background-color: hsl(330, 36, 91);
+}
+
+.NLT__color--red {
+	background-color: hsl(11, 64, 91);
+	/* background-color: #ff6961; */
+}
+
+/*
 * Error
 */
 .NLT__error {

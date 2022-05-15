@@ -1,8 +1,8 @@
-import { CELL_COLOR } from "src/app/constants";
+import { COLOR } from "src/app/constants";
 
 export const randomColor = (): string => {
-	const index = Math.floor(Math.random() * Object.keys(CELL_COLOR).length);
-	return Object.values(CELL_COLOR)[index];
+	const index = Math.floor(Math.random() * Object.keys(COLOR).length);
+	return Object.values(COLOR)[index];
 };
 
 /**

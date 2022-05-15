@@ -3,10 +3,10 @@ import React from "react";
 import parse from "html-react-parser";
 import CloseIcon from "@mui/icons-material/Close";
 
-import { CELL_COLOR } from "../../constants";
+import { findColorClass } from "src/app/services/color";
+import { toTagLink } from "src/app/services/string/toLink";
 
 import "./styles.css";
-import { toTagLink } from "src/app/services/string/toLink";
 interface Props {
 	cellId?: string;
 	id?: string;
@@ -36,33 +36,8 @@ export default function TagCell({
 	onRemoveClick,
 	onClick,
 }: Props) {
-	function findTagColorClass(color: string) {
-		switch (color) {
-			case CELL_COLOR.LIGHT_GRAY:
-				return "NLT__tag--light-gray";
-			case CELL_COLOR.GRAY:
-				return "NLT__tag--gray";
-			case CELL_COLOR.BROWN:
-				return "NLT__tag--brown";
-			case CELL_COLOR.ORANGE:
-				return "NLT__tag--orange";
-			case CELL_COLOR.YELLOW:
-				return "NLT__tag--yellow";
-			case CELL_COLOR.GREEN:
-				return "NLT__tag--green";
-			case CELL_COLOR.BLUE:
-				return "NLT__tag--blue";
-			case CELL_COLOR.PURPLE:
-				return "NLT__tag--purple";
-			case CELL_COLOR.PINK:
-				return "NLT__tag--pink";
-			case CELL_COLOR.RED:
-				return "NLT__tag--red";
-		}
-	}
-
 	let tagClass = "NLT__tag";
-	tagClass += " " + findTagColorClass(color);
+	tagClass += " " + findColorClass(color);
 	let cellClass = "NLT__tag-cell";
 	if (selectable) cellClass += " NLT__selectable";
 

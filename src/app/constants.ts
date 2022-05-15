@@ -46,7 +46,7 @@ export const CELL_TYPE: CellType = {
 	ERROR: "error",
 };
 
-export const CELL_COLOR: { [color: string]: string } = {
+export const COLOR: { [color: string]: string } = {
 	LIGHT_GRAY: "light-gray",
 	GRAY: "gray",
 	BROWN: "brown",
