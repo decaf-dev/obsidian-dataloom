@@ -47,16 +47,16 @@ export const CELL_TYPE: CellType = {
 };
 
 export const COLOR: { [color: string]: string } = {
-	LIGHT_GRAY: "light-gray",
-	GRAY: "gray",
-	BROWN: "brown",
-	ORAGNE: "orange",
-	YELLOW: "yellow",
-	GREEN: "green",
-	BLUE: "blue",
-	PURPLE: "purple",
-	PINK: "pink",
-	RED: "red",
+	LIGHT_GRAY: "Light gray",
+	GRAY: "Gray",
+	BROWN: "Brown",
+	ORAGNE: "Orange",
+	YELLOW: "Yellow",
+	GREEN: "Green",
+	BLUE: "Blue",
+	PURPLE: "Purple",
+	PINK: "Pink",
+	RED: "Red",
 };
 
 export const ICON = {
