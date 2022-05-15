@@ -10,7 +10,7 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 
 ## Version 3.1.0
 
-I am excited to announce that the NLT app has 2 new property types: `date` and `checkbox`. Please check them out :)
+I am excited to announce that the NLT app has 2 new column types: `date` and `checkbox`. Please check them out :)
 
 ## Version 3.0.0
 
