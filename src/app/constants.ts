@@ -22,15 +22,6 @@ export interface CellType {
 	ERROR: string;
 }
 
-interface CellColor {
-	YELLOW: string;
-	RED: string;
-	PINK: string;
-	ORANGE: string;
-	GRAY: string;
-	PURPLE: string;
-}
-
 export interface TabbableElementType {
 	UNFOCUSED: string;
 	BUTTON: string;
@@ -55,13 +46,17 @@ export const CELL_TYPE: CellType = {
 	ERROR: "error",
 };
 
-export const CELL_COLOR: CellColor = {
-	YELLOW: "yellow",
-	RED: "red",
-	PINK: "pink",
-	ORANGE: "orange",
+export const CELL_COLOR: { [color: string]: string } = {
+	LIGHT_GRAY: "light-gray",
 	GRAY: "gray",
+	BROWN: "brown",
+	ORAGNE: "orange",
+	YELLOW: "yellow",
+	GREEN: "green",
+	BLUE: "blue",
 	PURPLE: "purple",
+	PINK: "pink",
+	RED: "red",
 };
 
 export const ICON = {
