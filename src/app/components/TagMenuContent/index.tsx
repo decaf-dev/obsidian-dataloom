@@ -17,6 +17,7 @@ interface Props {
 	onTagClick: (tagId: string) => void;
 	onAddTag: (inputText: string) => void;
 	onRemoveTagClick: (cellId: string, tagId: string) => void;
+	onColorChange: (tagId: string, color: string) => void;
 }
 
 export default function TagMenuContent({
@@ -27,6 +28,7 @@ export default function TagMenuContent({
 	isOpen,
 	onTagClick,
 	onAddTag,
+	onColorChange,
 	onTextChange,
 	onRemoveTagClick,
 }: Props) {
@@ -86,6 +88,7 @@ export default function TagMenuContent({
 						id={tag.id}
 						color={tag.color}
 						content={tag.content}
+						onColorChange={onColorChange}
 						onClick={onTagClick}
 					/>
 				))}

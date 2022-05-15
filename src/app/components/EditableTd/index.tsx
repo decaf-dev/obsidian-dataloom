@@ -40,6 +40,7 @@ interface Props {
 	) => void;
 	onFocusClick: (cellId: string) => void;
 	onOutsideClick: () => void;
+	onColorChange: (tagId: string, color: string) => void;
 }
 
 export default function EditableTd({
@@ -49,6 +50,7 @@ export default function EditableTd({
 	tags,
 	onOutsideClick,
 	onRemoveTagClick,
+	onColorChange,
 	onTagClick,
 	onFocusClick,
 	onContentChange,
@@ -182,8 +184,8 @@ export default function EditableTd({
 		onOutsideClick();
 	}
 
-	function handleTagClick(id: string) {
-		onTagClick(id, id);
+	function handleTagClick(tagId: string) {
+		onTagClick(id, tagId);
 		onOutsideClick();
 	}
 
@@ -297,6 +299,7 @@ export default function EditableTd({
 				tags={tags}
 				cellId={id}
 				tagColor={cellMenu.tagColor}
+				onColorChange={onColorChange}
 				inputText={inputText}
 				onInputChange={setInputText}
 				onOutsideClick={handleOutsideClick}

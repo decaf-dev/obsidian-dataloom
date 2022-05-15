@@ -50,7 +50,7 @@ export const COLOR: { [color: string]: string } = {
 	LIGHT_GRAY: "light gray",
 	GRAY: "gray",
 	BROWN: "brown",
-	ORAGNE: "orange",
+	ORANGE: "orange",
 	YELLOW: "yellow",
 	GREEN: "green",
 	BLUE: "blue",

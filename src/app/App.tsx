@@ -559,6 +559,24 @@ export default function App({
 		resetFocusedElement();
 	}
 
+	function handleChangeColor(tagId: string, color: string) {
+		setAppData((prevState) => {
+			return {
+				...prevState,
+				tags: prevState.tags.map((tag) => {
+					if (tag.id === tagId) {
+						return {
+							...tag,
+							color,
+						};
+					}
+					return tag;
+				}),
+				updateTime: Date.now(),
+			};
+		});
+	}
+
 	return (
 		<div
 			className="NLT__app"
@@ -627,6 +645,7 @@ export default function App({
 											onContentChange={
 												handleCellContentChange
 											}
+											onColorChange={handleChangeColor}
 											onAddTag={handleAddTag}
 										/>
 									);

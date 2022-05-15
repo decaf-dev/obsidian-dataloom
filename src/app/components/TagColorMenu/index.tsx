@@ -9,8 +9,6 @@ import "./styles.css";
 interface Props {
 	isOpen: boolean;
 	style: object;
-	top: string;
-	left: string;
 	selectedColor: string;
 	onColorClick: (color: string) => void;
 	onOutsideClick: () => void;
@@ -30,6 +28,7 @@ export default function TagColorMenu({
 				<ul className="NLT__tag-color-ul">
 					{Object.values(COLOR).map((color) => (
 						<ColorItem
+							key={color}
 							color={color}
 							onColorClick={onColorClick}
 							isSelected={selectedColor === color}
