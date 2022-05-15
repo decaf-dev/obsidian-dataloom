@@ -2,10 +2,11 @@ import React, { useCallback, useEffect } from "react";
 
 import TagCell from "../TagCell";
 import { Tag } from "src/app/services/appData/state/tag";
+import SelectableTag from "./component/SelectableTag";
 
-import "./styles.css";
 import { useForceUpdate } from "src/app/services/hooks";
 
+import "./styles.css";
 interface Props {
 	cellId: string;
 	tags: Tag[];
@@ -80,13 +81,11 @@ export default function TagMenuContent({
 					/>
 				)}
 				{filteredTags.map((tag: Tag) => (
-					<TagCell
+					<SelectableTag
 						key={tag.id}
 						id={tag.id}
-						hideLink={true}
 						color={tag.color}
 						content={tag.content}
-						selectable={true}
 						onClick={onTagClick}
 					/>
 				))}
