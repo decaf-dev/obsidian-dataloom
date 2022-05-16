@@ -1,7 +1,6 @@
 import { MarkdownRenderChild, App as ObsidianApp } from "obsidian";
 import React from "react";
 import ReactDOM from "react-dom";
-import { AppContext } from "./app/services/hooks";
 import App from "./app/App";
 import { loadAppData } from "./app/services/appData/external/load";
 import { NltSettings } from "./app/services/settings";
@@ -43,15 +42,13 @@ export class NLTTable extends MarkdownRenderChild {
 		if (data) {
 			this.el = this.containerEl.createEl("div");
 			ReactDOM.render(
-				<AppContext.Provider value={this.app}>
-					<App
-						plugin={this.plugin}
-						settings={this.settings}
-						data={data}
-						sourcePath={this.sourcePath}
-						tableId={tableId}
-					/>
-				</AppContext.Provider>,
+				<App
+					plugin={this.plugin}
+					settings={this.settings}
+					data={data}
+					sourcePath={this.sourcePath}
+					tableId={tableId}
+				/>,
 				this.el
 			);
 			this.containerEl.children[0].replaceWith(this.el);
