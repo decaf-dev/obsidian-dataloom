@@ -28,7 +28,7 @@ export const SUBMENU = {
 	},
 	PROPERTY_TYPE: {
 		name: "prop-type",
-		content: "Property Type",
+		content: "Column Type",
 		icon: ICON.TEXT_SNIPPET,
 	},
 };
