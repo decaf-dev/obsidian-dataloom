@@ -4,5 +4,6 @@
 }
 
 .NLT__icon-text > p {
+	white-space: nowrap;
 	margin: 0;
 }
