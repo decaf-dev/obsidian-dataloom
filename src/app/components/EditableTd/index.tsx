@@ -1,24 +1,31 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { Notice } from "obsidian";
 
-import CellEditMenu from "../CellEditMenu";
+import { Notice } from "obsidian";
+import { v4 as uuidv4 } from "uuid";
+
 import TextCell from "../TextCell";
 import TagCell from "../TagCell";
 import ErrorCell from "../ErrorCell";
+import CheckboxCell from "../CheckboxCell";
+import DateCell from "../DateCell";
+import NumberCell from "../NumberCell";
+import DateCellEdit from "../DateCellEdit";
+import NumberCellEdit from "../NumberCellEdit";
+import TextCellEdit from "../TextCellEdit";
+import TagCellEdit from "../TagCellEdit";
 
 import { randomColor } from "src/app/services/random";
 import { addPound } from "src/app/services/string/adders";
 import { Tag } from "src/app/services/appData/state/tag";
-import CheckboxCell from "../CheckboxCell";
-
-import { CELL_TYPE } from "../../constants";
-
-import "./styles.css";
 import { Cell } from "src/app/services/appData/state/cell";
 import {
 	parseDateForInput,
 	parseInputDate,
 } from "src/app/services/string/parsers";
+
+import "./styles.css";
+
+import { CELL_TYPE } from "../../constants";
 
 interface Props {
 	cell: Cell;
@@ -68,6 +75,8 @@ export default function EditableTd({
 		tagColor: "",
 	};
 	const [cellMenu, setCellMenu] = useState(initialCellMenuState);
+
+	const [menuId] = useState(uuidv4());
 
 	const content = cell.toString();
 	const { id, headerId, type, expectedType } = cell;
@@ -243,19 +252,12 @@ export default function EditableTd({
 		onContentChange(id, false, isChecked);
 	}
 
-	function renderCell() {
+	function renderCell(): React.ReactNode {
 		switch (type) {
 			case CELL_TYPE.TEXT:
+				return <TextCell text={content} />;
 			case CELL_TYPE.NUMBER:
-			case CELL_TYPE.DATE:
-				return <TextCell content={content} />;
-			case CELL_TYPE.CHECKBOX:
-				return (
-					<CheckboxCell
-						isChecked={content.includes("x")}
-						onCheckboxChange={handleCheckboxChange}
-					/>
-				);
+				return <NumberCell number={content} />;
 			case CELL_TYPE.TAG: {
 				const tag = tags.find((tag) => tag.selected.includes(id));
 				if (tag)
@@ -269,8 +271,81 @@ export default function EditableTd({
 					);
 				return <></>;
 			}
+			case CELL_TYPE.DATE:
+				return <DateCell date={content} />;
+			case CELL_TYPE.CHECKBOX:
+				return (
+					<CheckboxCell
+						isChecked={content.includes("x")}
+						onCheckboxChange={handleCheckboxChange}
+					/>
+				);
 			case CELL_TYPE.ERROR:
 				return <ErrorCell type={expectedType} />;
+			default:
+				return <></>;
+		}
+	}
+
+	function handleInputChange(value: string) {
+		setInputText(value);
+	}
+
+	function renderCellMenu() {
+		// 		minWidth: type === CELL_TYPE.TAG ? "15rem" : "100px",
+		// height: cellMenu.height,
+		// width: cellMenu.width,
+		switch (type) {
+			case CELL_TYPE.TEXT:
+				return (
+					<TextCellEdit
+						menuId={menuId}
+						isOpen={cellMenu.isOpen}
+						top={cellMenu.top}
+						left={cellMenu.left}
+						inputText={inputText}
+						onInputChange={handleInputChange}
+					/>
+				);
+			case CELL_TYPE.NUMBER:
+				return (
+					<NumberCellEdit
+						menuId={menuId}
+						isOpen={cellMenu.isOpen}
+						top={cellMenu.top}
+						left={cellMenu.left}
+						inputText={inputText}
+						onInputChange={handleInputChange}
+					/>
+				);
+			case CELL_TYPE.TAG:
+				return (
+					<TagCellEdit
+						cellId={id}
+						tags={tags}
+						menuId={menuId}
+						isOpen={cellMenu.isOpen}
+						top={cellMenu.top}
+						left={cellMenu.left}
+						inputText={inputText}
+						onInputChange={handleInputChange}
+						onColorChange={onColorChange}
+						onAddTag={handleAddTag}
+						onRemoveTagClick={onRemoveTagClick}
+						onTagClick={handleTagClick}
+					/>
+				);
+			case CELL_TYPE.DATE:
+				return (
+					<DateCellEdit
+						menuId={menuId}
+						isOpen={cellMenu.isOpen}
+						top={cellMenu.top}
+						left={cellMenu.left}
+						inputText={inputText}
+						onInputChange={handleInputChange}
+					/>
+				);
 			default:
 				return <></>;
 		}
@@ -286,28 +361,7 @@ export default function EditableTd({
 			onClick={handleCellClick}
 			onContextMenu={handleCellContextClick}
 		>
-			<CellEditMenu
-				style={{
-					minWidth: type === CELL_TYPE.TAG ? "15rem" : "100px",
-					height: cellMenu.height,
-					width: cellMenu.width,
-					top: `${cellMenu.top}px`,
-					left: `${cellMenu.left}px`,
-				}}
-				isOpen={cellMenu.isOpen}
-				cellType={type}
-				tags={tags}
-				cellId={id}
-				tagColor={cellMenu.tagColor}
-				onColorChange={onColorChange}
-				inputText={inputText}
-				onInputChange={setInputText}
-				onOutsideClick={handleOutsideClick}
-				onTabPress={handleTabPress}
-				onAddTag={handleAddTag}
-				onRemoveTagClick={onRemoveTagClick}
-				onTagClick={handleTagClick}
-			/>
+			{renderCellMenu()}
 			<div className="NLT__td-content-container" style={{ width }}>
 				{renderCell()}
 			</div>

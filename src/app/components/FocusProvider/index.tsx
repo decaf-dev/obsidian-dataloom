@@ -23,13 +23,11 @@ export default function FocusProvider({
 	const [isFocused, setFocus] = useState(false);
 
 	function handleFocus() {
-		console.log("HANDLE FOCUS");
 		setFocus(true);
 		plugin.focusTable(tableId, sourcePath);
 	}
 
 	function handleBlur() {
-		console.log("HANDLE BLUR");
 		setFocus(false);
 		plugin.blurTable();
 	}

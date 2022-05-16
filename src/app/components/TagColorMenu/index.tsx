@@ -7,22 +7,24 @@ import ColorItem from "./components/ColorItem";
 import "./styles.css";
 
 interface Props {
+	menuId: string;
 	isOpen: boolean;
-	style: object;
+	top: number;
+	left: number;
 	selectedColor: string;
 	onColorClick: (color: string) => void;
-	onOutsideClick: () => void;
 }
 
 export default function TagColorMenu({
+	menuId,
 	isOpen,
-	style,
+	top,
+	left,
 	selectedColor,
 	onColorClick,
-	onOutsideClick,
 }: Props) {
 	return (
-		<Menu isOpen={isOpen} style={style} onOutsideClick={onOutsideClick}>
+		<Menu id={menuId} isOpen={isOpen} top={top} left={left}>
 			<div className="NLT__tag-color-menu">
 				<div>Colors</div>
 				<ul className="NLT__tag-color-ul">

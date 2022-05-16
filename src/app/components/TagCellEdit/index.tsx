@@ -1,43 +1,42 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useState } from "react";
+
+import Menu from "../Menu";
 
 import TagCell from "../TagCell";
 import { Tag } from "src/app/services/appData/state/tag";
-import SelectableTag from "./component/SelectableTag";
+import SelectableTag from "../TagCellEdit/component/SelectableTag";
+import { randomColor } from "src/app/services/random";
 
-import { useForceUpdate } from "src/app/services/hooks";
-
-import "./styles.css";
 interface Props {
+	menuId: string;
+	isOpen: boolean;
+	top: number;
+	left: number;
+	inputText: string;
 	cellId: string;
 	tags: Tag[];
-	color: string;
-	isOpen: boolean;
-	inputText: string;
-	onTextChange: React.ChangeEventHandler<HTMLInputElement>;
+	onInputChange: (value: string) => void;
 	onTagClick: (tagId: string) => void;
 	onAddTag: (inputText: string) => void;
 	onRemoveTagClick: (cellId: string, tagId: string) => void;
 	onColorChange: (tagId: string, color: string) => void;
 }
 
-export default function TagMenuContent({
-	cellId,
-	tags = [],
-	color = "",
-	inputText,
+export default function TagCellEdit({
+	menuId,
 	isOpen,
+	top,
+	left,
+	inputText,
+	cellId,
+	tags,
+	onInputChange,
 	onTagClick,
 	onAddTag,
 	onColorChange,
-	onTextChange,
 	onRemoveTagClick,
 }: Props) {
-	const forceUpdate = useForceUpdate();
-
-	useEffect(() => {
-		forceUpdate();
-	}, [forceUpdate]);
-
+	const [color] = useState(randomColor());
 	const inputRef = useCallback(
 		(node) => {
 			if (node) {
@@ -61,7 +60,7 @@ export default function TagMenuContent({
 		if (e.target.value.match("#")) return;
 		//Disallow whitespace
 		if (e.target.value.match(/\s/)) return;
-		onTextChange(e);
+		onInputChange(e.target.value);
 	}
 
 	function renderSelectableTags() {
@@ -95,39 +94,42 @@ export default function TagMenuContent({
 			</>
 		);
 	}
+
 	return (
-		<div className="NLT__tag-menu-container">
-			<div className="NLT__tag-menu-top">
-				{tags
-					.filter(
-						(tag: Tag) => tag.selected.includes(cellId) === true
-					)
-					.map((tag: Tag) => (
-						<TagCell
-							key={tag.id}
-							cellId={cellId}
-							id={tag.id}
-							hideLink={true}
-							color={tag.color}
-							content={tag.content}
-							showRemove={true}
-							onRemoveClick={onRemoveTagClick}
-						/>
-					))}
-				<input
-					className="NLT__tag-menu-input"
-					ref={inputRef}
-					type="text"
-					value={inputText}
-					onChange={handleTextChange}
-				/>
+		<Menu id={menuId} isOpen={isOpen} top={top} left={left}>
+			<div className="NLT__tag-menu-container">
+				<div className="NLT__tag-menu-top">
+					{tags
+						.filter(
+							(tag: Tag) => tag.selected.includes(cellId) === true
+						)
+						.map((tag: Tag) => (
+							<TagCell
+								key={tag.id}
+								cellId={cellId}
+								id={tag.id}
+								hideLink={true}
+								color={tag.color}
+								content={tag.content}
+								showRemove={true}
+								onRemoveClick={onRemoveTagClick}
+							/>
+						))}
+					<input
+						className="NLT__tag-menu-input"
+						ref={inputRef}
+						type="text"
+						value={inputText}
+						onChange={handleTextChange}
+					/>
+				</div>
+				<div className="NLT__tag-menu-bottom">
+					<p className="NLT__tag-menu-text">
+						Select an option or create one
+					</p>
+					<div>{renderSelectableTags()}</div>
+				</div>
 			</div>
-			<div className="NLT__tag-menu-bottom">
-				<p className="NLT__tag-menu-text">
-					Select an option or create one
-				</p>
-				<div>{renderSelectableTags()}</div>
-			</div>
-		</div>
+		</Menu>
 	);
 }
