@@ -37,11 +37,11 @@ export default function MenuProvider({ children }: Props) {
 
 	const closeMenu = (id: string) => {
 		console.log("CLOSING MENU", id);
+		console.log(openMenus);
 		setOpenMenus((prevState) => prevState.filter((menu) => menu.id !== id));
 	};
 
 	function handleClick(e: React.MouseEvent) {
-		console.log("HANDLE CLICK");
 		if (isFocused && openMenus.length !== 0) {
 			if (e.target instanceof HTMLElement) {
 				let el = e.target;
@@ -57,7 +57,6 @@ export default function MenuProvider({ children }: Props) {
 	}
 
 	function handleKeyUp(e: React.KeyboardEvent) {
-		console.log("HANDLE KEY UP");
 		if (isFocused && openMenus.length !== 0) {
 			//This will work with the last added menu
 			if (e.key === "Enter") {

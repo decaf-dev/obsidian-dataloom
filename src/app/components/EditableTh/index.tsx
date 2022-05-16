@@ -53,8 +53,8 @@ export default function EditableTh({
 	const { isMenuOpen, openMenu, closeMenu } = useMenu();
 
 	function handleHeaderClick(e: React.MouseEvent) {
-		e.stopPropagation();
 		if (dragRef.current) return;
+		if (isMenuOpen(menuId)) return;
 		openMenu(menuId, MENU_LEVEL.ONE);
 	}
 
@@ -63,6 +63,7 @@ export default function EditableTh({
 		if (target instanceof HTMLElement) {
 			dragRef.current = true;
 			const width = e.pageX - headerPosition.left - 17;
+			console.log(width);
 			if (width < 100) return;
 			onWidthChange(id, width);
 		}
