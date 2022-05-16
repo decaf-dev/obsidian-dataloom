@@ -75,7 +75,7 @@ export default function EditableTh({
 
 	function removeEventListeners() {
 		window.removeEventListener("mousemove", handleMouseMove);
-		//window.removeEventListener("drag", removeEventListeners);
+		window.removeEventListener("drag", removeEventListeners);
 		window.removeEventListener("mouseup", removeEventListeners);
 
 		setTimeout(() => {
@@ -138,10 +138,10 @@ export default function EditableTh({
 								"mouseup",
 								removeEventListeners
 							);
-							// window.addEventListener(
-							// 	"drag",
-							// 	removeEventListeners
-							// );
+							window.addEventListener(
+								"drag",
+								removeEventListeners
+							);
 						}}
 					/>
 				</div>

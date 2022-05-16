@@ -80,7 +80,7 @@ export default function CellEditMenu({
 			case CELL_TYPE.TEXT:
 				return (
 					<textarea
-						className="NLT__input NLT__input--textarea"
+						className="NLT__input NLT__input--textarea NLT__input--no-border"
 						ref={textAreaRef}
 						style={{
 							height: textareaHeight,
@@ -96,7 +96,7 @@ export default function CellEditMenu({
 				return (
 					<input
 						ref={inputRef}
-						className="NLT__input NLT__input--number"
+						className="NLT__input NLT__input--number NLT__input--no-border"
 						type="number"
 						autoFocus
 						value={inputText}
@@ -107,7 +107,7 @@ export default function CellEditMenu({
 				return (
 					<input
 						ref={inputRef}
-						className="NLT__input"
+						className="NLT__input NLT__input--no-border"
 						type="date"
 						autoFocus
 						value={inputText}

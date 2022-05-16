@@ -127,6 +127,7 @@ export default function HeaderMenu({
 			<>
 				<div>
 					<input
+						className="NLT__input NLT__header-menu-input"
 						autoFocus
 						type="text"
 						value={inputText}
