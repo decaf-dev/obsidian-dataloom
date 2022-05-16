@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from "react";
+import React, { useState, useRef, useCallback } from "react";
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -106,10 +106,10 @@ export default function EditableTh({
 			ref={thRef}
 			onClick={handleHeaderClick}
 		>
-			{/* <HeaderMenu
+			<HeaderMenu
 				isOpen={isMenuOpen(menuId)}
-				top={headerPosition.top}
-				left={headerPosition.left}
+				top={-3}
+				left={-10}
 				id={id}
 				menuId={menuId}
 				content={content}
@@ -125,7 +125,7 @@ export default function EditableTh({
 				onTypeSelect={onTypeSelect}
 				onDeleteClick={onDeleteClick}
 				onClose={handleClose}
-			/> */}
+			/>
 			<div className="NLT__header-content-container">
 				<div className="NLT__header-content">{content}</div>
 				<div className="NLT__header-resize-container">

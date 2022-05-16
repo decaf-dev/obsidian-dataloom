@@ -1,5 +1,5 @@
 import NltPlugin from "main";
-import React, { useContext, useState, useCallback, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useTableFocus } from "../FocusProvider";
 
 interface IMenuContext {
