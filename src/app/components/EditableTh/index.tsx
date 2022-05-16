@@ -100,7 +100,6 @@ export default function EditableTh({
 	return (
 		<th
 			className="NLT__th NLT__selectable"
-			style={{ width }}
 			ref={thRef}
 			onClick={handleHeaderClick}
 		>
@@ -124,7 +123,7 @@ export default function EditableTh({
 				onDeleteClick={onDeleteClick}
 				onClose={handleClose}
 			/>
-			<div className="NLT__header-content-container">
+			<div className="NLT__header-content-container" style={{ width }}>
 				<div className="NLT__header-content">{content}</div>
 				<div className="NLT__header-resize-container">
 					<div

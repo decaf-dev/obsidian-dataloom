@@ -24,6 +24,8 @@
 
 
 .NLT__header-content {
+    /* Use 100% so that the resize indicator appears at the end */
+    width: 100%;
     padding-right: 10px;
     margin-right: 5px;
     overflow: hidden;
@@ -36,7 +38,7 @@
     position: absolute;
     cursor: col-resize;
     width: 10px;
-    margin-left: 7px;
+    left: 7px;
     min-height: 25px;
     height: 100%;
 }
