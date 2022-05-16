@@ -7,6 +7,8 @@ interface Props {
 	isOpen: boolean;
 	top: number;
 	left: number;
+	width: string;
+	height: string;
 	inputText: string;
 	onInputChange: (value: string) => void;
 }
@@ -16,6 +18,8 @@ export default function TextCellEdit({
 	isOpen,
 	top,
 	left,
+	width,
+	height,
 	inputText,
 	onInputChange,
 }: Props) {
@@ -42,7 +46,14 @@ export default function TextCellEdit({
 		[isOpen]
 	);
 	return (
-		<Menu id={menuId} isOpen={isOpen} top={top} left={left}>
+		<Menu
+			id={menuId}
+			isOpen={isOpen}
+			top={top}
+			left={left}
+			width={width}
+			height={height}
+		>
 			<textarea
 				className="NLT__input NLT__input--textarea NLT__input--no-border"
 				ref={textAreaRef}

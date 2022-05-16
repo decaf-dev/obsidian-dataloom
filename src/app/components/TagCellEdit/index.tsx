@@ -12,6 +12,9 @@ interface Props {
 	isOpen: boolean;
 	top: number;
 	left: number;
+	width: string;
+	height: string;
+	color: string;
 	inputText: string;
 	cellId: string;
 	tags: Tag[];
@@ -27,6 +30,9 @@ export default function TagCellEdit({
 	isOpen,
 	top,
 	left,
+	width,
+	height,
+	color,
 	inputText,
 	cellId,
 	tags,
@@ -36,7 +42,6 @@ export default function TagCellEdit({
 	onColorChange,
 	onRemoveTagClick,
 }: Props) {
-	const [color] = useState(randomColor());
 	const inputRef = useCallback(
 		(node) => {
 			if (node) {
@@ -96,7 +101,14 @@ export default function TagCellEdit({
 	}
 
 	return (
-		<Menu id={menuId} isOpen={isOpen} top={top} left={left}>
+		<Menu
+			id={menuId}
+			isOpen={isOpen}
+			top={top}
+			left={left}
+			width={width}
+			height={height}
+		>
 			<div className="NLT__tag-menu-container">
 				<div className="NLT__tag-menu-top">
 					{tags

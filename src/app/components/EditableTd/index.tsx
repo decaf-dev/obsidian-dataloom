@@ -14,6 +14,7 @@ import NumberCellEdit from "../NumberCellEdit";
 import TextCellEdit from "../TextCellEdit";
 import TagCellEdit from "../TagCellEdit";
 
+import { useMenu } from "../MenuProvider";
 import { randomColor } from "src/app/services/random";
 import { addPound } from "src/app/services/string/adders";
 import { Tag } from "src/app/services/appData/state/tag";
@@ -25,7 +26,7 @@ import {
 
 import "./styles.css";
 
-import { CELL_TYPE } from "../../constants";
+import { CELL_TYPE, MENU_LEVEL } from "../../constants";
 
 interface Props {
 	cell: Cell;
@@ -65,16 +66,14 @@ export default function EditableTd({
 }: Props) {
 	const [inputText, setInputText] = useState("");
 	const closingMenu = useRef(false);
-
-	const initialCellMenuState = {
-		isOpen: false,
-		top: 0,
-		left: 0,
-		width: "",
-		height: "",
-		tagColor: "",
-	};
-	const [cellMenu, setCellMenu] = useState(initialCellMenuState);
+	const [cellMenu, setCellMenu] = useState({
+		top: -3,
+		left: -10,
+		width: "0px",
+		height: "0px",
+		tagColor: randomColor(),
+	});
+	const { isMenuOpen, openMenu, closeMenu } = useMenu();
 
 	const [menuId] = useState(uuidv4());
 
@@ -83,14 +82,14 @@ export default function EditableTd({
 
 	useEffect(() => {
 		if (isFocused) {
-			if (cellMenu.isOpen) return;
+			if (isMenuOpen(menuId)) return;
 			if (type === CELL_TYPE.CHECKBOX) return;
-			openMenu();
+			openMenu(menuId, MENU_LEVEL.ONE);
 		} else {
-			if (!cellMenu.isOpen) return;
-			closeMenu();
+			if (!isMenuOpen(menuId)) return;
+			closeMenu(menuId);
 		}
-	}, [isFocused, cellMenu.isOpen]);
+	}, [isFocused, isMenuOpen(menuId)]);
 
 	const tdRef = useCallback(
 		(node) => {
@@ -102,7 +101,6 @@ export default function EditableTd({
 						setCellMenu((prevState) => {
 							const { width, height } =
 								node.getBoundingClientRect();
-
 							function findWidth() {
 								switch (type) {
 									case CELL_TYPE.DATE:
@@ -112,7 +110,6 @@ export default function EditableTd({
 										return `${width}px`;
 								}
 							}
-
 							function findHeight() {
 								switch (type) {
 									case CELL_TYPE.TEXT:
@@ -134,7 +131,7 @@ export default function EditableTd({
 				}
 			}
 		},
-		[inputText, cellMenu.isOpen]
+		[inputText, isMenuOpen(menuId)]
 	);
 
 	function handleTabPress() {
@@ -163,29 +160,16 @@ export default function EditableTd({
 		if (type === CELL_TYPE.ERROR) return;
 
 		onFocusClick(id);
-		//openMenu();
 	}
 
-	function closeMenu() {
-		setCellMenu(initialCellMenuState);
-	}
+	// if (type === CELL_TYPE.DATE) {
+	// 	setInputText(parseDateForInput(content));
+	// } else {
+	// 	setInputText(content);
+	// }
 
-	function openMenu() {
-		setCellMenu((prevState) => {
-			return {
-				...prevState,
-				isOpen: true,
-				left: -10,
-				top: -5,
-				tagColor: randomColor(),
-			};
-		});
-		if (type === CELL_TYPE.DATE) {
-			setInputText(parseDateForInput(content));
-		} else {
-			setInputText(content);
-		}
-	}
+	// 	left: -10,
+	// top: -5,
 
 	function handleAddTag(text: string) {
 		onAddTag(id, headerId, text, cellMenu.tagColor);
@@ -300,9 +284,11 @@ export default function EditableTd({
 				return (
 					<TextCellEdit
 						menuId={menuId}
-						isOpen={cellMenu.isOpen}
+						isOpen={isMenuOpen(menuId)}
 						top={cellMenu.top}
 						left={cellMenu.left}
+						width={cellMenu.width}
+						height={cellMenu.height}
 						inputText={inputText}
 						onInputChange={handleInputChange}
 					/>
@@ -311,9 +297,11 @@ export default function EditableTd({
 				return (
 					<NumberCellEdit
 						menuId={menuId}
-						isOpen={cellMenu.isOpen}
+						isOpen={isMenuOpen(menuId)}
 						top={cellMenu.top}
 						left={cellMenu.left}
+						width={cellMenu.width}
+						height={cellMenu.height}
 						inputText={inputText}
 						onInputChange={handleInputChange}
 					/>
@@ -324,10 +312,13 @@ export default function EditableTd({
 						cellId={id}
 						tags={tags}
 						menuId={menuId}
-						isOpen={cellMenu.isOpen}
+						isOpen={isMenuOpen(menuId)}
 						top={cellMenu.top}
 						left={cellMenu.left}
+						width={cellMenu.width}
+						height={cellMenu.height}
 						inputText={inputText}
+						color={cellMenu.tagColor}
 						onInputChange={handleInputChange}
 						onColorChange={onColorChange}
 						onAddTag={handleAddTag}
@@ -339,9 +330,11 @@ export default function EditableTd({
 				return (
 					<DateCellEdit
 						menuId={menuId}
-						isOpen={cellMenu.isOpen}
+						isOpen={isMenuOpen(menuId)}
 						top={cellMenu.top}
 						left={cellMenu.left}
+						width={cellMenu.width}
+						height={cellMenu.height}
 						inputText={inputText}
 						onInputChange={handleInputChange}
 					/>
@@ -351,12 +344,9 @@ export default function EditableTd({
 		}
 	}
 
-	let tdClassName = "NLT__td";
-	if (type === CELL_TYPE.NUMBER) tdClassName += " NLT__td--number";
-
 	return (
 		<td
-			className={tdClassName}
+			className="NLT__td"
 			ref={tdRef}
 			onClick={handleCellClick}
 			onContextMenu={handleCellContextClick}

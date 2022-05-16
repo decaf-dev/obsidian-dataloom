@@ -7,10 +7,20 @@ interface Props {
 	isOpen: boolean;
 	top: number;
 	left: number;
+	width?: string;
+	height?: string;
 	children: React.ReactNode;
 }
 
-export default function Menu({ id, isOpen, top, left, children }: Props) {
+export default function Menu({
+	id,
+	isOpen,
+	top,
+	left,
+	children,
+	width,
+	height,
+}: Props) {
 	//Add onMouseDown to prevent blur event being called in the FocusProvider
 	//See: https://github.com/react-toolbox/react-toolbox/issues/1323#issuecomment-656778859
 	return (
@@ -26,6 +36,8 @@ export default function Menu({ id, isOpen, top, left, children }: Props) {
 						style={{
 							top: `${top}px`,
 							left: `${left}px`,
+							width: width ? width : "fit-content",
+							height: height ? height : "fit-content",
 						}}
 					>
 						{children}

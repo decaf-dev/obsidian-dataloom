@@ -5,5 +5,9 @@ interface Props {
 }
 
 export default function DateCell({ number }: Props) {
-	return <p className="NLT__p">{number}</p>;
+	return (
+		<p className="NLT__p" style={{ textAlign: "right" }}>
+			{number}
+		</p>
+	);
 }
