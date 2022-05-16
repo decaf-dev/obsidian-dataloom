@@ -142,10 +142,6 @@ export default function App({
 		updateFocusedElement(element);
 	}
 
-	function handleFocus() {
-		plugin.focusTable(tableId, sourcePath);
-	}
-
 	async function handleKeyUp(e: React.KeyboardEvent) {
 		// if (DEBUG) console.log("[handler] handleKeyUp called.");
 		if (e.key === "Tab") {
@@ -578,12 +574,7 @@ export default function App({
 	}
 
 	return (
-		<div
-			className="NLT__app"
-			tabIndex={0}
-			onKeyUp={handleKeyUp}
-			onClick={handleFocus}
-		>
+		<div className="NLT__app" tabIndex={0} onKeyUp={handleKeyUp}>
 			<Table
 				headers={appData.headers.map((header, j) => {
 					const { id, content, width, type, sortName } = header;

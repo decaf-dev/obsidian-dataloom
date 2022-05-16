@@ -126,6 +126,10 @@ export default class NltPlugin extends Plugin {
 		};
 	};
 
+	blurTable = () => {
+		this.focused = null;
+	};
+
 	async loadSettings() {
 		this.settings = Object.assign(
 			{},

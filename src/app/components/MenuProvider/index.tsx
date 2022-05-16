@@ -1,4 +1,6 @@
-import React, { useContext, useState, useEffect, useCallback } from "react";
+import NltPlugin from "main";
+import React, { useContext, useState, useCallback, useEffect } from "react";
+import { useTableFocus } from "../FocusProvider";
 
 const MenuContext = React.createContext({});
 
@@ -12,6 +14,7 @@ interface Props {
 
 export default function MenuProvider({ children }: Props) {
 	const [openMenus, setOpenMenus] = useState([]);
+	const isFocused = useTableFocus();
 
 	function openMenu(id: string, level: number) {
 		const menu = { id, level };
@@ -22,59 +25,58 @@ export default function MenuProvider({ children }: Props) {
 		return openMenus.find((menu) => menu.id === id);
 	}
 
+	function closeAllMenus() {
+		setOpenMenus([]);
+	}
+
 	const closeMenu = useCallback((id: string) => {
 		setOpenMenus((prevState) => prevState.filter((menu) => menu.id !== id));
 	}, []);
 
-	useEffect(() => {
-		function findTopMenu() {
-			//Find highest level
-			let topMenu = openMenus[0];
-			openMenus.forEach((menu) => {
-				if (menu.level > topMenu.level) topMenu = menu;
-			});
-			return topMenu;
-		}
-
-		function handleClick(e: MouseEvent) {
+	function handleClick(e: React.MouseEvent) {
+		if (isFocused && openMenus.length !== 0) {
 			if (e.target instanceof HTMLElement) {
 				let el = e.target;
 				//Search until we get an id
 				while (el.id === "" && el.className !== "NLT__app") {
 					el = el.parentElement;
 				}
-
-				if (openMenus.length !== 0) {
-					//Close top level
-					const topMenu = findTopMenu();
-					if (el.id !== topMenu.id) closeMenu(topMenu.id);
-				}
+				//Close top level
+				const topMenu = findTopMenu();
+				if (el.id !== topMenu.id) closeMenu(topMenu.id);
 			}
 		}
+	}
 
-		function handleKeyUp(e: KeyboardEvent) {
+	function handleKeyUp(e: React.KeyboardEvent) {
+		if (isFocused && openMenus.length !== 0) {
 			//This will work with the last added menu
 			if (e.key === "Enter") {
-				if (openMenus.length !== 0) {
-					const topMenu = findTopMenu();
-					closeMenu(topMenu.id);
-				}
+				const topMenu = findTopMenu();
+				closeMenu(topMenu.id);
 			}
-			// if (e.key === "Tab") onTabPress();
 		}
+		// if (e.key === "Tab") onTabPress();
+	}
 
-		document.addEventListener("mousedown", handleClick);
-		document.addEventListener("keyup", handleKeyUp);
+	function findTopMenu() {
+		//Find highest level
+		let topMenu = openMenus[0];
+		openMenus.forEach((menu) => {
+			if (menu.level > topMenu.level) topMenu = menu;
+		});
+		return topMenu;
+	}
 
-		return () => {
-			document.removeEventListener("mousedown", handleClick);
-			document.removeEventListener("keyup", handleKeyUp);
-		};
-	}, [openMenus.length, closeMenu]);
+	useEffect(() => {
+		if (!isFocused) closeAllMenus();
+	}, [isFocused]);
 
 	return (
-		<MenuContext.Provider value={{ isMenuOpen, openMenu, closeMenu }}>
-			{children}
-		</MenuContext.Provider>
+		<div onKeyUp={handleKeyUp} onClick={handleClick}>
+			<MenuContext.Provider value={{ isMenuOpen, openMenu, closeMenu }}>
+				{children}
+			</MenuContext.Provider>
+		</div>
 	);
 }

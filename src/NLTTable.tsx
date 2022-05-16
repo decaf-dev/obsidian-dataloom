@@ -6,6 +6,7 @@ import { loadAppData } from "./app/services/appData/external/load";
 import { NltSettings } from "./app/services/settings";
 import NltPlugin from "main";
 import MenuProvider from "./app/components/MenuProvider";
+import FocusProvider from "./app/components/FocusProvider";
 
 //This is our main class that will render the React app to the Obsidian container element
 export class NLTTable extends MarkdownRenderChild {
@@ -43,15 +44,21 @@ export class NLTTable extends MarkdownRenderChild {
 		if (data) {
 			this.el = this.containerEl.createEl("div");
 			ReactDOM.render(
-				<MenuProvider>
-					<App
-						plugin={this.plugin}
-						settings={this.settings}
-						data={data}
-						sourcePath={this.sourcePath}
-						tableId={tableId}
-					/>
-				</MenuProvider>,
+				<FocusProvider
+					plugin={this.plugin}
+					sourcePath={this.sourcePath}
+					tableId={tableId}
+				>
+					<MenuProvider>
+						<App
+							plugin={this.plugin}
+							settings={this.settings}
+							data={data}
+							sourcePath={this.sourcePath}
+							tableId={tableId}
+						/>
+					</MenuProvider>
+				</FocusProvider>,
 				this.el
 			);
 			this.containerEl.children[0].replaceWith(this.el);
