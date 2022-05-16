@@ -17,14 +17,8 @@ export default function HeaderMenuItem({
 	let className = "NLT__header-menu-item NLT__selectable";
 	if (selected) className += " NLT__selected";
 
-	//Add onMouseDown to prevent blur event being called in the FocusProvider
-	//See: https://github.com/react-toolbox/react-toolbox/issues/1323#issuecomment-656778859
 	return (
-		<li
-			className={className}
-			onMouseDown={(e) => e.preventDefault()}
-			onClick={() => onClick()}
-		>
+		<li className={className} onClick={() => onClick()}>
 			<IconText iconText={iconText} icon={icon} />
 		</li>
 	);

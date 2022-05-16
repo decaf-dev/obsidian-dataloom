@@ -66,8 +66,6 @@ export default function EditableTh({
 			width = parseInt(width.toString());
 			if (width < 100) return;
 			onWidthChange(id, width);
-			console.log(e.pageX);
-			console.log(width);
 		}
 	}
 
@@ -77,7 +75,7 @@ export default function EditableTh({
 
 	function removeEventListeners() {
 		window.removeEventListener("mousemove", handleMouseMove);
-		window.removeEventListener("drag", removeEventListeners);
+		//window.removeEventListener("drag", removeEventListeners);
 		window.removeEventListener("mouseup", removeEventListeners);
 
 		setTimeout(() => {
@@ -140,10 +138,10 @@ export default function EditableTh({
 								"mouseup",
 								removeEventListeners
 							);
-							window.addEventListener(
-								"drag",
-								removeEventListeners
-							);
+							// window.addEventListener(
+							// 	"drag",
+							// 	removeEventListeners
+							// );
 						}}
 					/>
 				</div>

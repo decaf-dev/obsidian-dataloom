@@ -1,11 +1,14 @@
 .NLT__th {
     text-align: left;
+    /* Fix border not resizing with div */
+    /* https: //github.com/mui/material-ui/issues/3687 */
+    transform: translate3d(0px, 0px, 0px);
 }
 
-.NLT__th:focus-visible {
+/* .NLT__th:focus-visible {
     border: 1px solid blue;
     border-style: double;
-}
+} */
 
 .NLT__th:last-child {
     border: 0 !important;
@@ -21,7 +24,6 @@
 
 
 .NLT__header-content {
-    width: 100%;
     padding-right: 10px;
     margin-right: 5px;
     overflow: hidden;

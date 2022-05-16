@@ -1,7 +1,6 @@
 .NLT__header-menu {
 	padding: 4px 10px;
 	cursor: default;
-	min-width: 150px;
 }
 
 .NLT__header-menu-item:focus-visible {

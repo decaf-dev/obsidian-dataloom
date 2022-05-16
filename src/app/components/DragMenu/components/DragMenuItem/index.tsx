@@ -13,11 +13,7 @@ export default function DragMenuItem({ icon, iconText, onClick }: Props) {
 	//Add onMouseDown to prevent blur event being called in the FocusProvider
 	//See: https://github.com/react-toolbox/react-toolbox/issues/1323#issuecomment-656778859
 	return (
-		<div
-			onMouseDown={(e) => e.preventDefault()}
-			onClick={() => onClick()}
-			className="NLT__drag-menu-item"
-		>
+		<div onClick={() => onClick()} className="NLT__drag-menu-item">
 			<IconText icon={icon} iconText={iconText} />
 		</div>
 	);

@@ -282,6 +282,7 @@ export default function EditableTd({
 	return (
 		<td
 			className={tdClassName}
+			style={{ width }}
 			ref={tdRef}
 			onClick={handleCellClick}
 			onContextMenu={handleCellContextClick}
@@ -308,9 +309,7 @@ export default function EditableTd({
 				onRemoveTagClick={onRemoveTagClick}
 				onTagClick={handleTagClick}
 			/>
-			<div className="NLT__td-content-container" style={{ width }}>
-				{renderCell()}
-			</div>
+			<div className="NLT__td-content-container">{renderCell()}</div>
 		</td>
 	);
 }
