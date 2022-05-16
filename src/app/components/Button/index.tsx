@@ -4,7 +4,7 @@ import "./styles.css";
 
 interface Props {
 	id?: string;
-	noPadding: boolean;
+	noPadding?: boolean;
 	children: React.ReactNode;
 	onClick: (e: React.MouseEvent) => void;
 }
