@@ -2,7 +2,13 @@ import NltPlugin from "main";
 import React, { useContext, useState, useCallback, useEffect } from "react";
 import { useTableFocus } from "../FocusProvider";
 
-const MenuContext = React.createContext({});
+interface IMenuContext {
+	isMenuOpen?: (id: string) => boolean;
+	openMenu?: (id: string, level: number) => void;
+	closeMenu?: (id: string) => void;
+}
+
+const MenuContext = React.createContext<IMenuContext>({});
 
 export const useMenu = () => {
 	return useContext(MenuContext);
@@ -29,9 +35,9 @@ export default function MenuProvider({ children }: Props) {
 		setOpenMenus([]);
 	}
 
-	const closeMenu = useCallback((id: string) => {
+	const closeMenu = (id: string) => {
 		setOpenMenus((prevState) => prevState.filter((menu) => menu.id !== id));
-	}, []);
+	};
 
 	function handleClick(e: React.MouseEvent) {
 		console.log("HANDLE CLICK");

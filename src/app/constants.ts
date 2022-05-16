@@ -78,3 +78,9 @@ export const ICON = {
 	EDIT: "Edit",
 	MORE_HORIZ: "MoreHoriz",
 };
+
+export const MENU_LEVEL = {
+	ONE: 1,
+	TWO: 2,
+	THREE: 3,
+};

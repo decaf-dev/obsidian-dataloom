@@ -8,7 +8,7 @@ import DragMenuItem from "./components/DragMenuItem";
 
 import "./styles.css";
 import { DRAG_MENU_ITEM } from "./constants";
-import { ICON } from "src/app/constants";
+import { ICON, MENU_LEVEL } from "src/app/constants";
 import { useMenu } from "../MenuProvider";
 interface Props {
 	rowId: string;
@@ -37,7 +37,7 @@ export default function DragMenu({
 
 	function handleButtonClick(e: React.MouseEvent) {
 		if (isMenuOpen(menuId)) return;
-		openMenu(menuId);
+		openMenu(menuId, MENU_LEVEL.ONE);
 	}
 
 	function handleDeleteClick(id: string) {
@@ -95,7 +95,6 @@ export default function DragMenu({
 								icon={item.icon}
 								iconText={item.content}
 								onClick={() => {
-									console.log("HANDLE DRAG MENU CLICK");
 									switch (item.name) {
 										case DRAG_MENU_ITEM.MOVE_UP.name:
 											handleMoveRowClick(rowId, false);
