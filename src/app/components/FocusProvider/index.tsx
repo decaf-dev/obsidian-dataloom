@@ -23,20 +23,19 @@ export default function FocusProvider({
 	const [isFocused, setFocus] = useState(false);
 
 	function handleFocus() {
+		console.log("HANDLE FOCUS");
 		setFocus(true);
 		plugin.focusTable(tableId, sourcePath);
 	}
 
 	function handleBlur() {
+		console.log("HANDLE BLUR");
 		setFocus(false);
 		plugin.blurTable();
 	}
 
 	return (
-		<div
-			onFocusCapture={() => handleFocus()}
-			onBlurCapture={() => handleBlur()}
-		>
+		<div onFocus={() => handleFocus()} onBlur={() => handleBlur()}>
 			<FocusContext.Provider value={isFocused}>
 				{children}
 			</FocusContext.Provider>

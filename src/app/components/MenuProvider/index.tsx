@@ -34,6 +34,7 @@ export default function MenuProvider({ children }: Props) {
 	}, []);
 
 	function handleClick(e: React.MouseEvent) {
+		console.log("HANDLE CLICK");
 		if (isFocused && openMenus.length !== 0) {
 			if (e.target instanceof HTMLElement) {
 				let el = e.target;
@@ -49,6 +50,7 @@ export default function MenuProvider({ children }: Props) {
 	}
 
 	function handleKeyUp(e: React.KeyboardEvent) {
+		console.log("HANDLE KEY UP");
 		if (isFocused && openMenus.length !== 0) {
 			//This will work with the last added menu
 			if (e.key === "Enter") {
@@ -73,7 +75,7 @@ export default function MenuProvider({ children }: Props) {
 	}, [isFocused]);
 
 	return (
-		<div onKeyUp={handleKeyUp} onClick={handleClick}>
+		<div onKeyUp={handleKeyUp} onMouseDown={handleClick}>
 			<MenuContext.Provider value={{ isMenuOpen, openMenu, closeMenu }}>
 				{children}
 			</MenuContext.Provider>

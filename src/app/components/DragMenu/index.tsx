@@ -95,6 +95,7 @@ export default function DragMenu({
 								icon={item.icon}
 								iconText={item.content}
 								onClick={() => {
+									console.log("HANDLE DRAG MENU CLICK");
 									switch (item.name) {
 										case DRAG_MENU_ITEM.MOVE_UP.name:
 											handleMoveRowClick(rowId, false);
