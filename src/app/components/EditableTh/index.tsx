@@ -62,10 +62,12 @@ export default function EditableTh({
 		const target = e.target;
 		if (target instanceof HTMLElement) {
 			dragRef.current = true;
-			const width = e.pageX - headerPosition.left - 17;
-			console.log(width);
+			let width = e.pageX - headerPosition.left - 17;
+			width = parseInt(width.toString());
 			if (width < 100) return;
 			onWidthChange(id, width);
+			console.log(e.pageX);
+			console.log(width);
 		}
 	}
 
@@ -86,10 +88,13 @@ export default function EditableTh({
 	const thRef = useCallback((node) => {
 		if (node) {
 			if (node instanceof HTMLElement) {
-				setHeaderPosition({
-					top: -10,
-					left: -5,
-				});
+				setTimeout(() => {
+					const { top, left } = node.getBoundingClientRect();
+					setHeaderPosition({
+						top,
+						left,
+					});
+				}, 1);
 			}
 		}
 	}, []);
@@ -97,10 +102,11 @@ export default function EditableTh({
 	return (
 		<th
 			className="NLT__th NLT__selectable"
+			style={{ width }}
 			ref={thRef}
 			onClick={handleHeaderClick}
 		>
-			<HeaderMenu
+			{/* <HeaderMenu
 				isOpen={isMenuOpen(menuId)}
 				top={headerPosition.top}
 				left={headerPosition.left}
@@ -119,8 +125,8 @@ export default function EditableTh({
 				onTypeSelect={onTypeSelect}
 				onDeleteClick={onDeleteClick}
 				onClose={handleClose}
-			/>
-			<div className="NLT__header-content-container" style={{ width }}>
+			/> */}
+			<div className="NLT__header-content-container">
 				<div className="NLT__header-content">{content}</div>
 				<div className="NLT__header-resize-container">
 					<div

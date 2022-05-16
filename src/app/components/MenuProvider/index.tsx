@@ -36,8 +36,6 @@ export default function MenuProvider({ children }: Props) {
 	}
 
 	const closeMenu = (id: string) => {
-		console.log("CLOSING MENU", id);
-		console.log(openMenus);
 		setOpenMenus((prevState) => prevState.filter((menu) => menu.id !== id));
 	};
 
