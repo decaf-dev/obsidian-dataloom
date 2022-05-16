@@ -1,9 +1,13 @@
-import React, { useState, useRef, useEffect } from "react";
-import { useForceUpdate } from "src/app/services/hooks";
+import React, { useState, useRef, useCallback } from "react";
+
+import { v4 as uuidv4 } from "uuid";
+
+import { useMenu } from "../MenuProvider";
 
 import HeaderMenu from "../HeaderMenu";
 
 import "./styles.css";
+import { MENU_LEVEL } from "src/app/constants";
 
 interface Props {
 	id: string;
@@ -40,51 +44,32 @@ export default function EditableTh({
 	onDeleteClick,
 	onSaveClick,
 }: Props) {
-	const initialHeaderMenuState = {
-		isOpen: false,
+	const [headerPosition, setHeaderPosition] = useState({
 		top: 0,
 		left: 0,
-	};
-	const [headerMenu, setHeaderMenu] = useState(initialHeaderMenuState);
+	});
 	const dragRef = useRef(false);
-	const thRef = useRef(null);
-	const forceUpdate = useForceUpdate();
-
-	function handleKeyUp(e: React.KeyboardEvent) {
-		if (e.key === "Enter") openMenu();
-	}
+	const [menuId] = useState(uuidv4());
+	const { isMenuOpen, openMenu, closeMenu } = useMenu();
 
 	function handleHeaderClick(e: React.MouseEvent) {
 		e.stopPropagation();
 		if (dragRef.current) return;
-		openMenu();
-	}
-
-	function openMenu() {
-		setHeaderMenu({
-			left: -10,
-			top: -5,
-			isOpen: true,
-		});
+		openMenu(menuId, MENU_LEVEL.ONE);
 	}
 
 	function handleMouseMove(e: MouseEvent) {
 		const target = e.target;
 		if (target instanceof HTMLElement) {
 			dragRef.current = true;
-			const width =
-				e.pageX - thRef.current.getBoundingClientRect().left - 17;
+			const width = e.pageX - headerPosition.left - 17;
 			if (width < 100) return;
 			onWidthChange(id, width);
 		}
 	}
 
-	function closeMenu() {
-		setHeaderMenu(initialHeaderMenuState);
-	}
-
 	function handleClose() {
-		closeMenu();
+		closeMenu(menuId);
 	}
 
 	function removeEventListeners() {
@@ -97,24 +82,29 @@ export default function EditableTh({
 		}, 500);
 	}
 
-	useEffect(() => {
-		forceUpdate();
-	}, [forceUpdate]);
+	const thRef = useCallback((node) => {
+		if (node) {
+			if (node instanceof HTMLElement) {
+				setHeaderPosition({
+					top: -10,
+					left: -5,
+				});
+			}
+		}
+	}, []);
 
 	return (
 		<th
 			className="NLT__th NLT__selectable"
 			ref={thRef}
-			onKeyUp={handleKeyUp}
 			onClick={handleHeaderClick}
 		>
 			<HeaderMenu
-				isOpen={headerMenu.isOpen}
-				style={{
-					top: headerMenu.top,
-					left: headerMenu.left,
-				}}
+				isOpen={isMenuOpen(menuId)}
+				top={headerPosition.top}
+				left={headerPosition.left}
 				id={id}
+				menuId={menuId}
 				content={content}
 				index={index}
 				sortName={sortName}

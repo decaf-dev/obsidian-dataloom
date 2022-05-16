@@ -55,7 +55,7 @@ export default function DragMenu({
 		closeMenu(menuId);
 	}
 
-	const buttonRef = useCallback((node) => {
+	const divRef = useCallback((node) => {
 		if (node) {
 			if (node instanceof HTMLElement) {
 				const { width, height } = node.getBoundingClientRect();
@@ -68,11 +68,10 @@ export default function DragMenu({
 	}, []);
 
 	return (
-		<>
+		<div ref={divRef}>
 			<IconButton
 				id={buttonId}
 				icon={ICON.MORE_VERT}
-				ref={buttonRef}
 				onClick={handleButtonClick}
 			/>
 			<Menu
@@ -118,6 +117,6 @@ export default function DragMenu({
 					})}
 				</div>
 			</Menu>
-		</>
+		</div>
 	);
 }

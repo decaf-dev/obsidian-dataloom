@@ -8,11 +8,14 @@ import { ICON } from "../../constants";
 import "./styles.css";
 import HeaderMenuItem from "./components/HeaderMenuItem";
 import IconButton from "../IconButton";
+import Button from "../Button";
 
 interface Props {
 	isOpen: boolean;
-	style: object;
+	top: number;
+	left: number;
 	id: string;
+	menuId: string;
 	index: number;
 	sortName: string;
 	content: string;
@@ -30,8 +33,10 @@ interface Props {
 
 export default function HeaderMenu({
 	isOpen,
-	style,
+	top,
+	left,
 	id,
+	menuId,
 	content,
 	type,
 	sortName,
@@ -131,13 +136,7 @@ export default function HeaderMenu({
 						onChange={(e) => setInputText(e.target.value)}
 					/>
 				</div>
-				<button
-					tabIndex={-1}
-					className="NLT__button NLT__header-menu-delete-button"
-					onClick={() => handleDeleteClick(id)}
-				>
-					Delete
-				</button>
+				<Button onClick={() => handleDeleteClick(id)}>Delete</Button>
 			</>
 		);
 	}
@@ -221,11 +220,7 @@ export default function HeaderMenu({
 	}
 
 	return (
-		<Menu
-			isOpen={isOpen}
-			style={style}
-			onOutsideClick={() => handleOutsideClick(id, inputText)}
-		>
+		<Menu isOpen={isOpen} id={menuId} top={top} left={left}>
 			<div className="NLT__header-menu">
 				{submenu !== null ? <Submenu /> : renderMenu()}
 			</div>
