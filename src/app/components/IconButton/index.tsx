@@ -16,12 +16,13 @@ const IconButton = forwardRef<HTMLInputElement, Props>(
 		return (
 			<button
 				tabIndex={-1}
+				aria-hidden="true"
 				id={id !== "" ? id : ""}
 				className={className}
 				ref={ref}
 				onClick={(e) => onClick(e)}
 			>
-				{icon !== "" && findIcon(icon, "NLT__icon--md")}
+				{findIcon(icon, "NLT__icon--md")}
 			</button>
 		);
 	}

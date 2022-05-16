@@ -68,9 +68,9 @@
 	padding: 4px;
 }
 
-.NLT__button:focus-visible {
+/* .NLT__button:focus-visible {
 	outline: 1px solid blue;
-}
+} */
 
 .NLT__button--sm {
 	width: 50px;
