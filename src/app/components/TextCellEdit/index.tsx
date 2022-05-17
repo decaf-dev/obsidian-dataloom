@@ -13,6 +13,11 @@ interface Props {
 	onInputChange: (value: string) => void;
 }
 
+const LAST_MENU_STATE = {
+	OPEN: "open",
+	CLOSED: "closed",
+};
+
 export default function TextCellEdit({
 	menuId,
 	isOpen,
@@ -23,31 +28,26 @@ export default function TextCellEdit({
 	inputText,
 	onInputChange,
 }: Props) {
-	const didMount = useRef(false);
-
+	console.log(isOpen);
 	const textAreaRef = useCallback(
 		(node) => {
 			if (node) {
 				if (isOpen) {
-					if (!didMount.current) {
-						node.selectionStart = inputText.length;
-						node.selectionEnd = inputText.length;
-						if (node instanceof HTMLElement) {
-							setTimeout(() => {
-								node.focus();
-							}, 1);
-						}
-						didMount.current = true;
-					} else {
-						if (node instanceof HTMLElement) {
-							node.style.height = "auto";
-							node.style.height = node.scrollHeight + "px";
-						}
+					node.selectionStart = inputText.length;
+					node.selectionEnd = inputText.length;
+					if (node instanceof HTMLElement) {
+						setTimeout(() => {
+							node.focus();
+						}, 1);
+					}
+					if (node instanceof HTMLElement) {
+						node.style.height = "auto";
+						node.style.height = node.scrollHeight + "px";
 					}
 				}
 			}
 		},
-		[isOpen, didMount.current, inputText.length]
+		[isOpen, inputText.length]
 	);
 
 	return (
