@@ -44,6 +44,9 @@ export const ROW_ID_REGEX = new RegExp(/^row-id-[a-zA-Z0-9-]{1,}$/);
 
 export const COLUMN_ID_REGEX = new RegExp(/^column-id-[a-zA-Z0-9-]{1,}$/);
 
+export const LINE_BREAK_REGEX = (flags: string) =>
+	new RegExp(/&lt;br&gt;/, flags);
+
 /**
  * Matches a date with the format mm/dd/yyyy
  */
