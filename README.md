@@ -6,7 +6,19 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/preview.png)
 
+## Migrating from 2.3.6
+
+Starting in 3.0.0, Notion-Like tables supports a new table format that will facilitate better development in the plugin.
+
+Please upgrade your tables to this new format. This update also includes several bug fixes that could only be fixed by placing column and row ids into the table.
+
+**To migrate to the new format please see the section below: `Making a Table Manually`**
+
 ## What's New?
+
+### Version 3.3.0
+
+-   Line break elements are now supported for cells in a column with the type `text` selected. See `Line Breaks` below for usage information
 
 ### Version 3.2.0
 
@@ -19,20 +31,6 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 -   Due to some changes, I am currently disabling tabbing of cells, will add back in the near future.
 
 See: https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/3.2.0 for a detailed update
-
-### Version 3.1.0
-
-I am excited to announce that the NLT app has 2 new column types: `date` and `checkbox`. Please see `Dates` and `Checkboxes` below for usage details.
-
-### Version 3.0.0
-
-**WARNING: BREAKING CHANGES**
-
-Notion Like Tables now supports a new table format that will facilitate better development in the plugin.
-
-Please upgrade your tables to this new format. This update also includes several bug fixes that could only be fixed by placing column and row ids into the table.
-
-**To migrate to the new format please see the section below: `Making a Table Manually`**
 
 ## Usage
 
@@ -112,11 +110,35 @@ Click on a header name to view the header menu. In the header menu you can renam
 
 ### Editing Cells
 
-To edit a cell, just click on it. A textarea will appear which will allow you to edit the cell's content. Just click outside the box or press enter to save the text. Notion-Like tables will automatically handle updating your markdown ;)
+To edit a cell, just click on it. An input, textarea or menu will appear which will allow you to edit the cell's content. Make the necessary changes and then click outside the box or press enter to save the text. Notion-Like tables will automatically handle updating your markdown.
+
+### Text Cells
+
+Text can be rendered in cells that are in a column with the `text` type selected.
+
+#### Links
+
+Links can be rendered in cells that are in a column with the `text` column type is selected. To render a link, add double squares surrounding text `[[My Link]]`.
+
+![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/internal-link-edit.png)
+
+#### URLs
+
+If you want to display a url, type the url making sure it begins with `http://` or `https://`. NLT will automatically render it in the table.
+
+![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/url.png)
+
+#### Line Breaks
+
+Line breaks can be added using the break line HTML tag `<br/>`. For example, if you would like to create a line between two pieces of text, you could add:
+
+```html
+This is my text<br /><br />There is now a line between us
+```
 
 ### Tags
 
-Tags have a special notion-like menu that will appear. Tags are scoped to each column of a table. You can type text to filter existing tags and select one. Or you can create a new tag by typing text and clicking "Create New" or pressing enter.
+Tags can be rendered in cells that are in a column with the `tag` type selected. Tags have a special notion-like menu that will appear. Tags are scoped to each column of a table. You can type text to filter existing tags and select one. You can also create a new tag by typing text and clicking "Create New" or pressing enter.
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/tag-menu.png)
 
@@ -126,23 +148,11 @@ Once a tag has been added to a cell, you click on any cell that has that tag and
 
 ### Dates
 
-Dates can be rendered in cells that are in a column with the `date` type set. To render a date please follow the format `mm/dd/yyyy` in your markdown.
+Dates can be rendered in cells that are in a column with the `date` type selected. To render a date please follow the format `mm/dd/yyyy` in your markdown.
 
 ### Checkboxes
 
-Checkboxes can be rendered in cells that are in a column with the `checkbox` type set. To render a checkbox, add two square brackets with a space `[ ]` for unchecked or two square brackets surrounding an x `[x]` for checked.
-
-### Links
-
-Links can be rendered in cells that are in a column with the `text` column type is set. To render a link, add double squares surrounding text `[[My Link]]`.
-
-![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/internal-link-edit.png)
-
-### URLs
-
-If you want to display a url, type the url making sure it begins with `http://` or `https://`. NLT will automatically render it in the table.
-
-![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/url.png)
+Checkboxes can be rendered in cells that are in a column with the `checkbox` type selected. To render a checkbox, add two square brackets with a space `[ ]` for unchecked or two square brackets surrounding an x `[x]` for checked.
 
 ### Copy Cell Content
 
