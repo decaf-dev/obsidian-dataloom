@@ -47,11 +47,7 @@ export default function TagCellEdit({
 		(node) => {
 			if (node) {
 				if (node instanceof HTMLElement) {
-					if (isOpen) {
-						// setTimeout(() => {
-						// 	node.focus();
-						// }, 1);
-					}
+					if (isOpen) node.focus();
 				}
 			}
 		},
