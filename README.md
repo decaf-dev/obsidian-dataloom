@@ -130,19 +130,19 @@ If you want to display a url, type the url making sure it begins with `http://` 
 
 #### Line Breaks
 
-Line breaks can be added using the break line HTML tag `<br/>`. If you would like to create a space between two lines of text, for example, you would add
+Line breaks can be added using the break line HTML tag `<br/>`. For example, if you would like to create a line between two pieces of text, you could add:
 
 ```html
-This is my text<br /><br />There is now a space between us
+This is my text<br /><br />There is now a line between us
 ```
 
-#### Tags
+### Tags
 
 Tags can be rendered in cells that are in a column with the `tag` type selected. Tags have a special notion-like menu that will appear. Tags are scoped to each column of a table. You can type text to filter existing tags and select one. You can also create a new tag by typing text and clicking "Create New" or pressing enter.
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/tag-menu.png)
 
-##### Tag Colors
+#### Tag Colors
 
 Once a tag has been added to a cell, you click on any cell that has that tag and then click on the horizontal menu button to the side of the tag name. A menu will then pop up through which you can change the tag color.
 
