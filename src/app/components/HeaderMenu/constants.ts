@@ -26,14 +26,14 @@ export const SUBMENU = {
 		content: "Insert",
 		icon: ICON.KEYBOARD_DOUBLE_ARROW_RIGHT,
 	},
-	PROPERTY_TYPE: {
-		name: "prop-type",
+	TYPE: {
+		name: "type",
 		content: "Type",
 		icon: ICON.TEXT_SNIPPET,
 	},
 };
 
-export const PROPERTY_TYPE_ITEMS: MenuItem[] = [
+export const TYPE_ITEMS: MenuItem[] = [
 	{ name: "text", content: "Text", type: CELL_TYPE.TEXT },
 	{ name: "number", content: "Number", type: CELL_TYPE.NUMBER },
 	{ name: "tag", content: "Tag", type: CELL_TYPE.TAG },
