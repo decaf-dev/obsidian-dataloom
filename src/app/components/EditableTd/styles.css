@@ -1,19 +1,10 @@
 .NLT__td {
-	position: relative;
 	vertical-align: top;
 	height: 2rem;
 	cursor: default;
 }
 
-.NLT__td:focus-visible {
+/* .NLT__td:focus-visible {
 	border: 1px solid blue;
 	border-style: double;
-}
-
-.NLT__td--number {
-	text-align: right;
-}
-
-.NLT__td-content-container {
-	user-select: none;
-}
+} */

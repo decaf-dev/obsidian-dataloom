@@ -18,7 +18,7 @@ import {
 } from "./services/appData/internal/tabbable";
 import { TabbableElement } from "./services/appData/state/tabbableElement";
 
-import { CELL_TYPE, DEBUG, TABBABLE_ELEMENT_TYPE } from "./constants";
+import { CELL_TYPE, TABBABLE_ELEMENT_TYPE, DEBUG } from "./constants";
 
 import "./app.css";
 import NltPlugin from "main";
@@ -44,22 +44,28 @@ export default function App({
 }: Props) {
 	const [oldAppData] = useState<AppData>(data);
 	const [appData, setAppData] = useState<AppData>(data);
-	const [focusedElement, setFocusedElement] = useState<TabbableElement>(
-		INITIAL_FOCUSED_ELEMENT
-	);
+	// const [focusedElement, setFocusedElement] = useState<TabbableElement>(
+	// 	INITIAL_FOCUSED_ELEMENT
+	// );
 	const [debounceUpdate, setDebounceUpdate] = useState(0);
 	const saveLock = useRef(false);
 
 	useEffect(() => {
 		// if (DEBUG) console.log("[useEffect] Sorting rows.");
+		// const element = settings.focusedElement;
+		// setFocusedElement(element);
 
-		const element = settings.focusedElement;
-		setFocusedElement(element);
-		//Sort on first render
-		//Use case:
-		//If a user deletes or adds a new row (by copying and pasting, for example)
-		//then we want to make sure that value is sorted in
+		//When a user adds a new table, this entry will initially be null, we need to set this
+		//so a user can add rows/columns via hotkeys
+		const oldData = settings.appData[sourcePath][tableId];
+		if (!oldData) {
+			settings.appData[sourcePath][tableId] = oldAppData;
+		}
 
+		// Sort on first render
+		// Use case:
+		// If a user deletes or adds a new row (by copying and pasting, for example)
+		// then we want to make sure that value is sorted in
 		for (let i = 0; i < appData.headers.length; i++) {
 			const header = appData.headers[i];
 			if (header.sortName !== SORT.DEFAULT.name)
@@ -72,10 +78,6 @@ export default function App({
 			//If we're running in Obsidian
 			if (app) {
 				if (appData.updateTime === 0) return;
-
-				// if (!settings.appData[sourcePath]) return;
-				// console.log(settings.appData[sourcePath][tableId]);
-				// if (!settings.appData[sourcePath][tableId]) return;
 				//The save lock ensures that updates only happen after we have pushed our changes
 				//to the cache
 				if (saveLock.current) return;
@@ -121,42 +123,38 @@ export default function App({
 		};
 	}, [debounceUpdate]);
 
-	useEffect(() => {
-		if (saveLock) {
-			saveLock.current = false;
-		}
-	}, [focusedElement]);
+	// useEffect(() => {
+	// 	if (saveLock) {
+	// 		saveLock.current = false;
+	// 	}
+	// }, [focusedElement]);
 
-	function resetFocusedElement() {
-		updateFocusedElement(INITIAL_FOCUSED_ELEMENT);
-	}
+	// function resetFocusedElement() {
+	// 	updateFocusedElement(INITIAL_FOCUSED_ELEMENT);
+	// }
 
-	function updateFocusedElement(element: TabbableElement) {
-		setFocusedElement(element);
-		settings.focusedElement = element;
-		plugin.saveSettings();
-	}
+	// function updateFocusedElement(element: TabbableElement) {
+	// 	setFocusedElement(element);
+	// 	settings.focusedElement = element;
+	// 	plugin.saveSettings();
+	// }
 
-	function handleCellFocusClick(id: string) {
-		const element = findTabbableElement(appData, id);
-		updateFocusedElement(element);
-	}
+	// function handleCellFocusClick(id: string) {
+	// 	const element = findTabbableElement(appData, id);
+	// 	updateFocusedElement(element);
+	// }
 
-	function handleFocus() {
-		plugin.focusTable(tableId, sourcePath);
-	}
-
-	async function handleKeyUp(e: React.KeyboardEvent) {
-		// if (DEBUG) console.log("[handler] handleKeyUp called.");
-		if (e.key === "Tab") {
-			const prevElement = { ...focusedElement };
-			const nextElement = findNextTabbableElement(
-				appData,
-				prevElement.id
-			);
-			updateFocusedElement(nextElement);
-		}
-	}
+	// async function handleKeyUp(e: React.KeyboardEvent) {
+	// 	// if (DEBUG) console.log("[handler] handleKeyUp called.");
+	// 	if (e.key === "Tab") {
+	// 		const prevElement = { ...focusedElement };
+	// 		const nextElement = findNextTabbableElement(
+	// 			appData,
+	// 			prevElement.id
+	// 		);
+	// 		updateFocusedElement(nextElement);
+	// 	}
+	// }
 
 	function handleAddColumn() {
 		// if (DEBUG) console.log("[handler]: handleAddColumn called.");
@@ -216,16 +214,10 @@ export default function App({
 		sortRows(id, type, sortName);
 	}
 
-	function handleCellContentChange(
-		id: string,
-		shouldLock: boolean,
-		content: any
-	) {
-		// if (DEBUG) console.log("[handler]: handleCellContentChange called.");
+	function handleCellContentChange(id: string, content: any) {
+		if (DEBUG.APP.HANDLER)
+			console.log(`[App]: handleCellContentChange("${id}", ${content}).`);
 
-		if (shouldLock) {
-			saveLock.current = true;
-		}
 		setAppData((prevState) => {
 			return {
 				...prevState,
@@ -555,17 +547,30 @@ export default function App({
 		});
 	}
 
-	function handleCellOutsideClick() {
-		resetFocusedElement();
+	// function handleCellOutsideClick() {
+	// 	resetFocusedElement();
+	// }
+
+	function handleChangeColor(tagId: string, color: string) {
+		setAppData((prevState) => {
+			return {
+				...prevState,
+				tags: prevState.tags.map((tag) => {
+					if (tag.id === tagId) {
+						return {
+							...tag,
+							color,
+						};
+					}
+					return tag;
+				}),
+				updateTime: Date.now(),
+			};
+		});
 	}
 
 	return (
-		<div
-			className="NLT__app"
-			tabIndex={0}
-			onKeyUp={handleKeyUp}
-			onClick={handleFocus}
-		>
+		<div className="NLT__app" tabIndex={0}>
 			<Table
 				headers={appData.headers.map((header, j) => {
 					const { id, content, width, type, sortName } = header;
@@ -609,13 +614,13 @@ export default function App({
 											key={cell.id}
 											cell={cell}
 											width={header.width}
-											onFocusClick={handleCellFocusClick}
-											onOutsideClick={
-												handleCellOutsideClick
-											}
-											isFocused={
-												focusedElement.id === cell.id
-											}
+											// onFocusClick={handleCellFocusClick}
+											// onOutsideClick={
+											// 	handleCellOutsideClick
+											// }
+											// isFocused={
+											// 	focusedElement.id === cell.id
+											// }
 											tags={appData.tags.filter(
 												(tag) =>
 													tag.headerId === header.id
@@ -627,6 +632,7 @@ export default function App({
 											onContentChange={
 												handleCellContentChange
 											}
+											onColorChange={handleChangeColor}
 											onAddTag={handleAddTag}
 										/>
 									);

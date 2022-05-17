@@ -1,14 +1,20 @@
 export const DEBUG = {
 	LOAD_APP_DATA: {
-		LOG_MESSAGE: false,
+		LOG_MESSAGE: true,
 		IDS: false,
 		TYPES: false,
 	},
+	APP: {
+		HANDLER: true,
+	},
 	SAVE_APP_DATA: {
-		LOG_MESSAGE: false,
-		APP_DATA: false,
+		APP_DATA: true,
 		TABLE_REGEX: false,
 		UPDATED_CONTENT: false,
+	},
+	EDITABLE_TD: {
+		HANDLER: true,
+		USE_EFFECT: true,
 	},
 };
 
@@ -20,15 +26,6 @@ export interface CellType {
 	CHECKBOX: string;
 	MULTI_TAG: string;
 	ERROR: string;
-}
-
-interface CellColor {
-	YELLOW: string;
-	RED: string;
-	PINK: string;
-	ORANGE: string;
-	GRAY: string;
-	PURPLE: string;
 }
 
 export interface TabbableElementType {
@@ -55,13 +52,17 @@ export const CELL_TYPE: CellType = {
 	ERROR: "error",
 };
 
-export const CELL_COLOR: CellColor = {
-	YELLOW: "yellow",
-	RED: "red",
-	PINK: "pink",
-	ORANGE: "orange",
+export const COLOR: { [color: string]: string } = {
+	LIGHT_GRAY: "light gray",
 	GRAY: "gray",
+	BROWN: "brown",
+	ORANGE: "orange",
+	YELLOW: "yellow",
+	GREEN: "green",
+	BLUE: "blue",
 	PURPLE: "purple",
+	PINK: "pink",
+	RED: "red",
 };
 
 export const ICON = {
@@ -81,4 +82,11 @@ export const ICON = {
 	MOVE_DOWN: "MoveDown",
 	TEXT_SNIPPET: "TextSnippet",
 	EDIT: "Edit",
+	MORE_HORIZ: "MoreHoriz",
+};
+
+export const MENU_LEVEL = {
+	ONE: 1,
+	TWO: 2,
+	THREE: 3,
 };

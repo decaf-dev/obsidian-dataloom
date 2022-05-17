@@ -2,6 +2,7 @@ import React from "react";
 
 import { TableHeader } from "src/app/services/appData/state/header";
 import { TableRow } from "src/app/services/appData/state/row";
+import Button from "../Button";
 import "./styles.css";
 
 interface Props {
@@ -22,13 +23,7 @@ export default function Table({ headers, rows, onAddColumn, onAddRow }: Props) {
 						</React.Fragment>
 					))}
 					<th className="NLT__th">
-						<button
-							tabIndex={-1}
-							className="NLT__button NLT__button--sm"
-							onClick={() => onAddColumn()}
-						>
-							New
-						</button>
+						<Button onClick={() => onAddColumn()}>New</Button>
 					</th>
 				</tr>
 			</thead>
@@ -40,13 +35,7 @@ export default function Table({ headers, rows, onAddColumn, onAddRow }: Props) {
 			<tfoot>
 				<tr>
 					<td className="NLT__td">
-						<button
-							tabIndex={-1}
-							className="NLT__button NLT__button--sm"
-							onClick={() => onAddRow()}
-						>
-							New
-						</button>
+						<Button onClick={() => onAddRow()}>New</Button>
 					</td>
 					{headers.map((header) => (
 						<td key={header.id} className="NLT__td"></td>

@@ -1,18 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import Menu from "../Menu";
 
-import { SORT, PROPERTY_TYPE_ITEMS, SUBMENU } from "./constants";
+import { SORT, TYPE_ITEMS, SUBMENU } from "./constants";
 import { ICON } from "../../constants";
 
 import "./styles.css";
 import HeaderMenuItem from "./components/HeaderMenuItem";
 import IconButton from "../IconButton";
+import Button from "../Button";
 
 interface Props {
 	isOpen: boolean;
-	style: object;
+	top: number;
+	left: number;
 	id: string;
+	menuId: string;
 	index: number;
 	sortName: string;
 	content: string;
@@ -30,8 +33,10 @@ interface Props {
 
 export default function HeaderMenu({
 	isOpen,
-	style,
+	top,
+	left,
 	id,
+	menuId,
 	content,
 	type,
 	sortName,
@@ -47,13 +52,10 @@ export default function HeaderMenu({
 }: Props) {
 	const [inputText, setInputText] = useState("");
 	const [submenu, setSubmenu] = useState(null);
+	const lastLength = useRef(0);
 
-	useEffect(() => {
-		setInputText(content);
-	}, [content]);
-
-	function renderPropertyTypeItems() {
-		return PROPERTY_TYPE_ITEMS.map((item) => {
+	function renderTypeItems() {
+		return TYPE_ITEMS.map((item) => {
 			return (
 				<HeaderMenuItem
 					key={item.name}
@@ -123,21 +125,16 @@ export default function HeaderMenu({
 	function renderEditItems() {
 		return (
 			<>
-				<div>
+				<div style={{ marginBottom: "10px" }}>
 					<input
+						className="NLT__input NLT__header-menu-input"
 						autoFocus
 						type="text"
 						value={inputText}
 						onChange={(e) => setInputText(e.target.value)}
 					/>
 				</div>
-				<button
-					tabIndex={-1}
-					className="NLT__button NLT__header-menu-delete-button"
-					onClick={() => handleDeleteClick(id)}
-				>
-					Delete
-				</button>
+				<Button onClick={() => handleDeleteClick(id)}>Delete</Button>
 			</>
 		);
 	}
@@ -159,15 +156,6 @@ export default function HeaderMenu({
 
 	function handleTypeSelect(id: string, type: string) {
 		onTypeSelect(id, type);
-		onClose();
-	}
-
-	function handleOutsideClick(id: string, text: string) {
-		//If we're in Live Preview mode and we click on the header and then click on the outside of
-		//the component, the header will close, set the data (which didn't change), which cause an update
-		//which persists the data again. We can prevent this by only calling onOutsideClick
-		//if the data has actually changed
-		if (text !== content) onOutsideClick(id, text);
 		onClose();
 	}
 
@@ -198,8 +186,8 @@ export default function HeaderMenu({
 					return renderSortItems();
 				case SUBMENU.MOVE.name:
 					return renderMoveItems();
-				case SUBMENU.PROPERTY_TYPE.name:
-					return renderPropertyTypeItems();
+				case SUBMENU.TYPE.name:
+					return renderTypeItems();
 				default:
 					return <></>;
 			}
@@ -220,12 +208,28 @@ export default function HeaderMenu({
 		);
 	}
 
+	useEffect(() => {
+		if (!isOpen) {
+			//If we're in Live Preview mode and we click on the header and then click on the outside of
+			//the component, the header will close, set the data (which didn't change), which cause an update
+			//which persists the data again. We can prevent this by only calling onOutsideClick
+			//if the data has actually changed
+			if (inputText.length !== lastLength.current) {
+				lastLength.current = inputText.length;
+				if (inputText !== content) {
+					onOutsideClick(id, inputText);
+				}
+			}
+			setSubmenu(null);
+		}
+	}, [isOpen, inputText.length, lastLength.current]);
+
+	useEffect(() => {
+		setInputText(content);
+	}, [content]);
+
 	return (
-		<Menu
-			isOpen={isOpen}
-			style={style}
-			onOutsideClick={() => handleOutsideClick(id, inputText)}
-		>
+		<Menu isOpen={isOpen} id={menuId} top={top} left={left}>
 			<div className="NLT__header-menu">
 				{submenu !== null ? <Submenu /> : renderMenu()}
 			</div>
