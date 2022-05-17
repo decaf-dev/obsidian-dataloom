@@ -12,11 +12,6 @@ import { initialCell, Cell } from "./services/appData/state/cell";
 import { AppData } from "./services/appData/state/appData";
 import { NltSettings } from "./services/settings";
 import { saveAppData } from "./services/appData/external/save";
-import {
-	findNextTabbableElement,
-	findTabbableElement,
-} from "./services/appData/internal/tabbable";
-import { TabbableElement } from "./services/appData/state/tabbableElement";
 
 import { CELL_TYPE, TABBABLE_ELEMENT_TYPE, DEBUG } from "./constants";
 
@@ -34,7 +29,7 @@ interface Props {
 	tableId: string;
 }
 
-const INITIAL_FOCUSED_ELEMENT = { [-1]: TABBABLE_ELEMENT_TYPE.UNFOCUSED };
+// const INITIAL_FOCUSED_ELEMENT = { [-1]: TABBABLE_ELEMENT_TYPE.UNFOCUSED };
 export default function App({
 	plugin,
 	settings,
@@ -57,10 +52,14 @@ export default function App({
 
 		//When a user adds a new table, this entry will initially be null, we need to set this
 		//so a user can add rows/columns via hotkeys
-		const oldData = settings.appData[sourcePath][tableId];
-		if (!oldData) {
+		const tableData = settings.appData[sourcePath];
+		if (!tableData) {
+			settings.appData[sourcePath] = {};
+		}
+		if (!tableData[tableId]) {
 			settings.appData[sourcePath][tableId] = oldAppData;
 		}
+		plugin.saveSettings();
 
 		// Sort on first render
 		// Use case:

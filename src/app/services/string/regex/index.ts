@@ -38,11 +38,11 @@ export const TAGS_REGEX = new RegExp(/#[^ \t]+/g);
 
 export const FILE_LINK_REGEX = new RegExp(/\[\[[^\n\r\]]+]]/g);
 
-export const TABLE_ID_REGEX = new RegExp(/^table-id-[a-zA-Z0-9]{1,}$/);
+export const TABLE_ID_REGEX = new RegExp(/^table-id-[a-zA-Z0-9-]{1,}$/);
 
-export const ROW_ID_REGEX = new RegExp(/^row-id-[a-zA-Z0-9]{1,}$/);
+export const ROW_ID_REGEX = new RegExp(/^row-id-[a-zA-Z0-9-]{1,}$/);
 
-export const COLUMN_ID_REGEX = new RegExp(/^column-id-[a-zA-Z0-9]{1,}$/);
+export const COLUMN_ID_REGEX = new RegExp(/^column-id-[a-zA-Z0-9-]{1,}$/);
 
 /**
  * Matches a date with the format mm/dd/yyyy

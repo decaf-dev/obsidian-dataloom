@@ -100,11 +100,7 @@ export default class NltPlugin extends Plugin {
 				if (this.focused) {
 					const { tableId, sourcePath } = this.focused;
 					const oldData = this.settings.appData[sourcePath][tableId];
-					console.log(oldData);
-					console.log("Old data");
-					console.log(appDataToMarkdown(tableId, oldData));
 					const newData = addRow(oldData);
-					console.log("New data");
 					console.log(appDataToMarkdown(tableId, newData));
 					// const focusedElement = {
 					// 	id: newData.cells[
