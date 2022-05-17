@@ -45,7 +45,9 @@ export default function TagCell({
 	if (content === "") return <></>;
 
 	//If on render view, add the link to make it a clickable tag
-	if (showLink) content = toTagLink(content);
+	if (showLink) {
+		if (content.startsWith("#")) content = toTagLink(content);
+	}
 
 	return (
 		<div

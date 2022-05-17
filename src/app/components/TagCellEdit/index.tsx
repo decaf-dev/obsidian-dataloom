@@ -55,8 +55,6 @@ export default function TagCellEdit({
 	);
 
 	function handleTextChange(e: React.ChangeEvent<HTMLInputElement>) {
-		//Disallow pound
-		if (e.target.value.match("#")) return;
 		//Disallow whitespace
 		if (e.target.value.match(/\s/)) return;
 		onInputChange(e.target.value);

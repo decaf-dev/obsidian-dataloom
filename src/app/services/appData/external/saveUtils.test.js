@@ -78,13 +78,13 @@ describe("findAppData", () => {
 				"column-id-345678",
 				"table-id-123456",
 			],
-			["#tag1", "#tag2", "#tag3", "row-id-123456"],
+			["tag1", "#tag2", "#tag3", "row-id-123456"],
 		];
 		const data = findAppData(parsedTable);
 		expect(data.tags.length).toEqual(3);
 		expect(data.tags[0].content).toEqual("tag1");
-		expect(data.tags[1].content).toEqual("tag2");
-		expect(data.tags[2].content).toEqual("tag3");
+		expect(data.tags[1].content).toEqual("#tag2");
+		expect(data.tags[2].content).toEqual("#tag3");
 	});
 
 	it("finds errors", () => {

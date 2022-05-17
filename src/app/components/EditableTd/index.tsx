@@ -16,7 +16,6 @@ import TagCellEdit from "../TagCellEdit";
 
 import { useMenu } from "../MenuProvider";
 import { randomColor } from "src/app/services/random";
-import { addPound } from "src/app/services/string/adders";
 import { Tag } from "src/app/services/appData/state/tag";
 import { Cell } from "src/app/services/appData/state/cell";
 import {
@@ -119,12 +118,7 @@ export default function EditableTd({
 		if (DEBUG.EDITABLE_TD.HANDLER)
 			console.log("[EditableTd] handleCellContextClick()");
 		try {
-			let text = content;
-			if (type === CELL_TYPE.TAG) {
-				const tag = tags.find((tag) => tag.selected.includes(id));
-				text = addPound(tag.content);
-			}
-			await navigator.clipboard.writeText(text);
+			await navigator.clipboard.writeText(content);
 			new Notice("Cell text copied");
 		} catch (err) {
 			console.log(err);

@@ -1,7 +1,6 @@
 import {
 	stripLink,
 	stripLinks,
-	stripPound,
 	stripSquareBrackets,
 	sanitizeHTML,
 } from "./index";
@@ -50,13 +49,6 @@ describe("stripLink", () => {
 			'&lt;a href="#Productivity" class="tag" target="_blank" rel="noopener"&gt;#Productivity&lt;/a&gt;'
 		);
 		expect(output).toEqual("#Productivity");
-	});
-});
-
-describe("stripPound", () => {
-	it("strips pound", () => {
-		const output = stripPound("#test");
-		expect(output).toEqual("test");
 	});
 });
 

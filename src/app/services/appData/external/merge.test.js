@@ -78,8 +78,8 @@ describe("updateAppDataFromSavedState", () => {
 		const merged = updateAppDataFromSavedState(oldAppData, newAppData);
 		expect(merged.tags[0].color).toEqual(newAppData.tags[0].color);
 		expect(merged.tags[1].color).toEqual(oldAppData.tags[1].color);
-		expect(merged.tags[0].content).toEqual("tag1-updated");
-		expect(merged.tags[1].content).toEqual("tag2");
+		expect(merged.tags[0].content).toEqual("#tag1-updated");
+		expect(merged.tags[1].content).toEqual("#tag2");
 	});
 
 	it("merges header sort name", () => {
