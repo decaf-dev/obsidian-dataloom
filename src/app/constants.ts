@@ -100,5 +100,5 @@ export const MENU_LEVEL = {
 	THREE: 3,
 };
 
-export const BREAK_LINE_TAG = "<br/>";
+export const BREAK_LINE_TAG = "<br>";
 export const AMPERSAND = "&";
