@@ -130,11 +130,9 @@ If you want to display a url, type the url making sure it begins with `http://` 
 
 #### Line Breaks
 
-Line breaks can be added using the break line HTML tag `<br/>`. For example, if you would like to create a line between two pieces of text, you could add:
+Line breaks can be added using the break line HTML tag `<br>`. For example, if you would like to create a line between two pieces of text, you could add:
 
-```html
-This is my text<br /><br />There is now a line between us
-```
+`This is my text<br><br>There is now a line between us`
 
 ### Tags
 
