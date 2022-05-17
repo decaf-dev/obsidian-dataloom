@@ -5,8 +5,8 @@ export const DEBUG = {
 		TYPES: false,
 	},
 	SAVE_APP_DATA: {
-		LOG_MESSAGE: true,
-		APP_DATA: true,
+		LOG_MESSAGE: false,
+		APP_DATA: false,
 		TABLE_REGEX: false,
 		UPDATED_CONTENT: false,
 	},

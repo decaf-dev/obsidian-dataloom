@@ -166,7 +166,6 @@ export default function EditableTd({
 	}
 
 	function updateContent(shouldLock: boolean) {
-		console.log("update content");
 		if (content !== inputText) {
 			switch (type) {
 				case CELL_TYPE.TEXT:
@@ -253,7 +252,6 @@ export default function EditableTd({
 	}
 
 	function handleInputChange(value: string) {
-		console.log(value);
 		setInputText(value);
 	}
 
@@ -325,7 +323,6 @@ export default function EditableTd({
 	}
 
 	useEffect(() => {
-		console.log(isMenuOpen(menuId));
 		if (!isMenuOpen(menuId)) {
 			if (inputText.length !== 0) updateContent(false);
 		}
