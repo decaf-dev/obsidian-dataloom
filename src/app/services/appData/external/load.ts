@@ -34,27 +34,27 @@ export const loadAppData = (
 	const tableId = findTableId(parsedTable);
 	let isValidTable = true;
 	if (!tableId) {
-		console.log("Invalid table id");
+		console.log("NLT: Invalid table id");
 		isValidTable = false;
 	}
 
 	if (!hasValidHeaderRow(parsedTable)) {
-		console.log(`Invalid header row: ${tableId}`);
+		console.log(`NLT: Invalid header row in ${tableId}`);
 		isValidTable = false;
 	}
 
 	if (!hasValidTypeDefinitionRow(parsedTable)) {
-		console.log(`Invalid type definition row: ${tableId}`);
+		console.log(`NLT: Invalid type definition row in ${tableId}`);
 		isValidTable = false;
 	}
 
 	if (!hasValidColumnIds(parsedTable)) {
-		console.log(`Invalid column ids: ${tableId}`);
+		console.log(`NLT: Invalid column ids in ${tableId}`);
 		isValidTable = false;
 	}
 
 	if (!hasValidRowIds(parsedTable)) {
-		console.log(`Invalid row ids: ${tableId}`);
+		console.log(`NLT: Invalid row ids in ${tableId}`);
 		isValidTable = false;
 	}
 
