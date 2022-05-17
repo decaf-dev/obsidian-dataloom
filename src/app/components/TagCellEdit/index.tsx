@@ -1,11 +1,10 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 
 import Menu from "../Menu";
 
 import TagCell from "../TagCell";
 import { Tag } from "src/app/services/appData/state/tag";
 import SelectableTag from "../TagCellEdit/component/SelectableTag";
-import { randomColor } from "src/app/services/random";
 
 interface Props {
 	menuId: string;
@@ -49,7 +48,7 @@ export default function TagCellEdit({
 					if (isOpen) {
 						setTimeout(() => {
 							node.focus();
-						}, 1);
+						}, 0);
 					}
 				}
 			}
@@ -108,7 +107,7 @@ export default function TagCellEdit({
 		>
 			<div className="NLT__tag-menu-container">
 				<div className="NLT__tag-menu-top">
-					{tags
+					{/* {tags
 						.filter(
 							(tag: Tag) => tag.selected.includes(cellId) === true
 						)
@@ -123,7 +122,7 @@ export default function TagCellEdit({
 								showRemove={true}
 								onRemoveClick={onRemoveTagClick}
 							/>
-						))}
+						))} */}
 					<input
 						className="NLT__tag-menu-input"
 						ref={inputRef}
@@ -132,12 +131,12 @@ export default function TagCellEdit({
 						onChange={handleTextChange}
 					/>
 				</div>
-				<div className="NLT__tag-menu-bottom">
+				{/* <div className="NLT__tag-menu-bottom">
 					<p className="NLT__tag-menu-text">
 						Select an option or create one
 					</p>
 					<div>{renderSelectableTags()}</div>
-				</div>
+				</div> */}
 			</div>
 		</Menu>
 	);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 import { Notice } from "obsidian";
 import { v4 as uuidv4 } from "uuid";
@@ -197,9 +197,9 @@ export default function EditableTd({
 		}
 	}
 
-	function handleOutsideClick() {
-		onOutsideClick();
-	}
+	// function handleOutsideClick() {
+	// 	onOutsideClick();
+	// }
 
 	// //Synchronous handler
 	// //Runs after handle outside click

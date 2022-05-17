@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React from "react";
 
 import { findIcon } from "src/app/services/icon";
 import Button from "../Button";

@@ -47,17 +47,12 @@ export default function SelectableTag({
 				onClick={() => setTagColorMenu({ isOpen: true })}
 			/>
 			<TagColorMenu
+				menuId={"-1"}
 				isOpen={tagColorMenu.isOpen}
 				selectedColor={color}
-				style={{}}
-				// style={{
-				// 	top: "20px",
-				// 	left: "20px",
-				// }}
+				top={0}
+				left={0}
 				onColorClick={(color) => onColorChange(id, color)}
-				onOutsideClick={() =>
-					setTagColorMenu(INITIAL_TAG_OPEN_MENU_STATE)
-				}
 			/>
 		</div>
 	);

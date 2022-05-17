@@ -18,7 +18,7 @@ import {
 } from "./services/appData/internal/tabbable";
 import { TabbableElement } from "./services/appData/state/tabbableElement";
 
-import { CELL_TYPE, DEBUG, TABBABLE_ELEMENT_TYPE } from "./constants";
+import { CELL_TYPE, TABBABLE_ELEMENT_TYPE } from "./constants";
 
 import "./app.css";
 import NltPlugin from "main";

@@ -1,4 +1,3 @@
-import NltPlugin from "main";
 import React, { useContext, useState, useEffect } from "react";
 import { useTableFocus } from "../FocusProvider";
 
@@ -32,10 +31,12 @@ export default function MenuProvider({ children }: Props) {
 	}
 
 	function closeAllMenus() {
+		console.log("[MenuProvider] closeAllMenus()");
 		setOpenMenus([]);
 	}
 
 	const closeMenu = (id: string) => {
+		console.log(`[MenuProvider] closeMenu(${id})`);
 		setOpenMenus((prevState) => prevState.filter((menu) => menu.id !== id));
 	};
 

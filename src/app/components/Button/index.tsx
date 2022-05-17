@@ -13,7 +13,7 @@ export default function Button({ id, children, noPadding, onClick }: Props) {
 	let className = "NLT__button";
 	if (noPadding) className += " NLT__button--reset";
 
-	let buttonId = id !== "" ? id : "";
+	const buttonId = id !== "" ? id : "";
 	return (
 		<button
 			id={buttonId}
