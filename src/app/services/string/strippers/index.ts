@@ -1,12 +1,3 @@
-/**
- * Removes pound sign from input string
- * @param input The input string
- * @returns A string with no pound (#) symbol
- */
-export const stripPound = (input: string) => {
-	return input.replace("#", "");
-};
-
 export const stripLink = (input: string) => {
 	const replaceWithSquareBrackets =
 		(input.match(/class="internal-link"/) || []).length !== 0;

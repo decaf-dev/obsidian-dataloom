@@ -14,8 +14,6 @@ import {
 import { isCheckBoxChecked } from "../../string/validators";
 import { Tag, initialTag } from "../state/tag";
 import { findCellType } from "../../string/matchers";
-import { stripPound } from "../../string/strippers";
-import { addPound } from "../../string/adders";
 import { AMPERSAND, BREAK_LINE_TAG, CELL_TYPE } from "src/app/constants";
 import {
 	randomColor,
@@ -27,6 +25,12 @@ import {
 	LINE_BREAK_CHARACTER_REGEX,
 	TABLE_ID_REGEX,
 } from "../../string/regex";
+import {
+	parseBoldTags,
+	parseHighlightTags,
+	parseItalicTags,
+	parseUnderlineTags,
+} from "../../string/parsers";
 
 export const findAppData = (parsedTable: string[][]): AppData => {
 	const HEADER_ROW = 0;
@@ -87,6 +91,14 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 							AMPERSAND_CHARACTER_REGEX("g"),
 							AMPERSAND
 						);
+
+						content = parseBoldTags(content);
+						content = parseItalicTags(content);
+						content = parseHighlightTags(content);
+						content = parseUnderlineTags(content);
+
+						// if ()
+						// content = content.replace();
 						cells.push(
 							new TextCell(cellId, row.id, headers[j].id, content)
 						);
@@ -119,7 +131,7 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 						cells.push(new TagCell(cellId, row.id, headers[j].id));
 
 						if (td !== "") {
-							const content = stripPound(td);
+							const content = td;
 
 							//Check if tag already exists, otherwise create a new
 							const index = tags.findIndex(
@@ -212,8 +224,8 @@ export const appDataToMarkdown = (tableId: string, data: AppData): string => {
 
 				tags.forEach((tag, j) => {
 					if (tag.content === "") return;
-					if (j === 0) content += addPound(tag.content);
-					else content += " " + addPound(tag.content);
+					if (j === 0) content += tag.content;
+					else content += " " + tag.content;
 				});
 				buffer.writeColumn(content, columnCharLengths[i]);
 			} else {
@@ -374,8 +386,8 @@ export const calcColumnCharLengths = (
 				let content = "";
 				arr.forEach((tag, i) => {
 					if (tag.content !== "") {
-						if (i === 0) content += addPound(tag.content);
-						else content += " " + addPound(tag.content);
+						if (i === 0) content += tag.content;
+						else content += " " + tag.content;
 					}
 				});
 				if (columnCharLengths[index] < content.length)

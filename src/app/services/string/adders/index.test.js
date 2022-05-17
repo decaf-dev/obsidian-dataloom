@@ -1,8 +1,8 @@
-import { addPound } from "./";
+import { uppercaseFirst } from "./";
 
-describe("addPound", () => {
-	it("adds pounds", () => {
-		const output = addPound("test");
-		expect(output).toEqual("#test");
+describe("uppercaseFirst", () => {
+	it("uppercases first letter", () => {
+		const output = uppercaseFirst("test");
+		expect(output).toEqual("Test");
 	});
 });

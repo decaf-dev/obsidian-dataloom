@@ -20,15 +20,9 @@ describe("toFileLink", () => {
 
 describe("toTagLink", () => {
 	it("creates an internal tag link", () => {
-		const link = toTagLink("test");
+		const link = toTagLink("#test");
 		expect(link).toEqual(
 			'<a tabIndex={-1} href="#test" class="tag" target="_blank" rel="noopener">#test</a>'
 		);
-	});
-
-	it("throws error when tag name starts with pound", () => {
-		expect(() => {
-			toTagLink("#test");
-		}).toThrow("tagName cannot start with pound symbol");
 	});
 });

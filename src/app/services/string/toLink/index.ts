@@ -22,6 +22,5 @@ export const toFileLink = (fileName: string): string => {
  * @returns A hyperlink (<a>) for an Obsidian tag
  */
 export const toTagLink = (tagName: string): string => {
-	if (tagName.startsWith("#")) throw "tagName cannot start with pound symbol";
-	return `<a tabIndex={-1} href="#${tagName}" class="tag" target="_blank" rel="noopener">#${tagName}</a>`;
+	return `<a tabIndex={-1} href="${tagName}" class="tag" target="_blank" rel="noopener">${tagName}</a>`;
 };
