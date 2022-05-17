@@ -16,6 +16,8 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 
 -   The textarea will now resize as you type :)
 
+-   Due to some changes, I am currently disabling tabbing of cells, will add back in the near future.
+
 See: https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/3.2.0 for a detailed update
 
 ### Version 3.1.0
