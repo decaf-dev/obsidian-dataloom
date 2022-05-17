@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 
 import Menu from "../Menu";
 
-import { SORT, PROPERTY_TYPE_ITEMS, SUBMENU } from "./constants";
+import { SORT, TYPE_ITEMS, SUBMENU } from "./constants";
 import { ICON } from "../../constants";
 
 import "./styles.css";
@@ -54,8 +54,8 @@ export default function HeaderMenu({
 	const [submenu, setSubmenu] = useState(null);
 	const lastLength = useRef(0);
 
-	function renderPropertyTypeItems() {
-		return PROPERTY_TYPE_ITEMS.map((item) => {
+	function renderTypeItems() {
+		return TYPE_ITEMS.map((item) => {
 			return (
 				<HeaderMenuItem
 					key={item.name}
@@ -186,8 +186,8 @@ export default function HeaderMenu({
 					return renderSortItems();
 				case SUBMENU.MOVE.name:
 					return renderMoveItems();
-				case SUBMENU.PROPERTY_TYPE.name:
-					return renderPropertyTypeItems();
+				case SUBMENU.TYPE.name:
+					return renderTypeItems();
 				default:
 					return <></>;
 			}
