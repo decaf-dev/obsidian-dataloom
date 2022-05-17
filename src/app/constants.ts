@@ -1,8 +1,9 @@
 export const DEBUG = {
 	LOAD_APP_DATA: {
-		LOG_MESSAGE: false,
+		DATA: false,
 		IDS: false,
 		TYPES: false,
+		PARSED_TABLE: true,
 	},
 	APP: {
 		HANDLER: false,
@@ -100,3 +101,4 @@ export const MENU_LEVEL = {
 };
 
 export const BREAK_LINE_TAG = "<br/>";
+export const AMPERSAND = "&";
