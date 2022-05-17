@@ -26,10 +26,10 @@ export const loadAppData = (
 	sourcePath: string
 ): LoadedData | null => {
 	const parsedTable = parseTableFromEl(el);
-	// if (DEBUG) {
-	// 	console.log("PARSING TABLE FROM ELEMENT");
-	// 	console.log(parsedTable);
-	// }
+	if (DEBUG.LOAD_APP_DATA.PARSED_TABLE) {
+		console.log("[load][loadAppData]: parsedTableFromEl");
+		console.log(parsedTable);
+	}
 
 	const tableId = findTableId(parsedTable);
 	let isValidTable = true;
@@ -62,14 +62,15 @@ export const loadAppData = (
 		if (settings.appData[sourcePath][tableId]) {
 			//This is a compatibility fix for v2.3.6 and less
 			if (settings.appData[sourcePath][tableId].headers) {
-				if (DEBUG.LOAD_APP_DATA.LOG_MESSAGE)
-					console.log("LOADING CACHED APP DATA");
+				const oldData = settings.appData[sourcePath][tableId];
+				if (DEBUG.LOAD_APP_DATA.DATA) {
+					console.log("[load]: loadAppData");
+					console.log("Loading from cache.");
+					console.log(oldData);
+				}
 
 				const data = findAppData(parsedTable);
-				const updated = updateAppDataFromSavedState(
-					settings.appData[sourcePath][tableId],
-					data
-				);
+				const updated = updateAppDataFromSavedState(oldData, data);
 				plugin.saveSettings();
 				if (DEBUG.LOAD_APP_DATA.IDS)
 					console.log(appDataIdsToMarkdown(tableId, data));
@@ -81,7 +82,12 @@ export const loadAppData = (
 	}
 
 	const data = findAppData(parsedTable);
-	if (DEBUG.LOAD_APP_DATA.LOG_MESSAGE) console.log("LOADING NEW APP DATA");
+	if (DEBUG.LOAD_APP_DATA.DATA) {
+		console.log("[load]: loadAppData");
+		console.log("Loading new app data.");
+		console.log(data);
+	}
+
 	if (DEBUG.LOAD_APP_DATA.IDS)
 		console.log(appDataIdsToMarkdown(tableId, data));
 	if (DEBUG.LOAD_APP_DATA.TYPES)
