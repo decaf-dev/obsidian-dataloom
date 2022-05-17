@@ -72,7 +72,7 @@ The type definition row is a normal markdown row with each cell containing the t
 
 #### Column Id Row
 
-The column id row is a normal markdown row with each cell containing a unique column id. A column id starts with `column-id-` followed by alpha-numeric characters. This id must be unique to each table, but may be reused in other tables.
+The column id row is a normal markdown row with each cell containing a unique column id. A column id starts with `column-id-` followed by alpha-numeric characters or hyphens. This id must be unique to each table, but may be reused in other tables.
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/column-id-row.png)
 
@@ -82,13 +82,13 @@ The row id column is the last column of the table and contains both a table id a
 
 ##### Table Id
 
-A table id starts with `table-id-` followed by alpha-numeric characters. This id must be unique to each note, but may be reused in other notes.
+A table id starts with `table-id-` followed by alpha-numeric characters or hyphens. This id must be unique to each note, but may be reused in other notes.
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/table-id.png)
 
 ##### Row Ids
 
-A row id starts with `row-id-` followed by alpha-numeric characters. This id must be unique to each table, but may be reused in other tables.
+A row id starts with `row-id-` followed by alpha-numeric characters or hyphens. This id must be unique to each table, but may be reused in other tables.
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/row-ids.png)
 
