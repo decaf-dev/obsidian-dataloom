@@ -1,6 +1,6 @@
 export const DEBUG = {
 	LOAD_APP_DATA: {
-		DATA: true,
+		DATA: false,
 		IDS: false,
 		TYPES: false,
 		PARSED_TABLE: false,
