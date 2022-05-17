@@ -220,6 +220,7 @@ export default function HeaderMenu({
 					onOutsideClick(id, inputText);
 				}
 			}
+			setSubmenu(null);
 		}
 	}, [isOpen, inputText.length, lastLength.current]);
 
