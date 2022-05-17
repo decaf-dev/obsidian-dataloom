@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
+import { DEBUG } from "src/app/constants";
 import { useTableFocus } from "../FocusProvider";
 
 interface IMenuContext {
@@ -23,7 +24,9 @@ export default function MenuProvider({ children }: Props) {
 
 	function openMenu(id: string, level: number) {
 		const menu = { id, level };
-		console.log(`[MenuProvider]: openMenu("${id}", ${level})`);
+		if (DEBUG.MENU_PROVIDER.HANDLER) {
+			console.log(`[MenuProvider]: openMenu("${id}", ${level})`);
+		}
 		setOpenMenus((prevState) => [...prevState, menu]);
 	}
 
@@ -32,12 +35,16 @@ export default function MenuProvider({ children }: Props) {
 	}
 
 	function closeAllMenus() {
-		console.log("[MenuProvider]: closeAllMenus()");
+		if (DEBUG.MENU_PROVIDER.HANDLER) {
+			console.log("[MenuProvider]: closeAllMenus()");
+		}
 		setOpenMenus([]);
 	}
 
 	const closeMenu = (id: string) => {
-		console.log(`[MenuProvider]: closeMenu(${id})`);
+		if (DEBUG.MENU_PROVIDER.HANDLER) {
+			console.log(`[MenuProvider]: closeMenu(${id})`);
+		}
 		setOpenMenus((prevState) => prevState.filter((menu) => menu.id !== id));
 	};
 

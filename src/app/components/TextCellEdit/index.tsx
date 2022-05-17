@@ -28,7 +28,6 @@ export default function TextCellEdit({
 	inputText,
 	onInputChange,
 }: Props) {
-	console.log(isOpen);
 	const textAreaRef = useCallback(
 		(node) => {
 			if (node) {

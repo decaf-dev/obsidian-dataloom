@@ -1,20 +1,28 @@
 export const DEBUG = {
 	LOAD_APP_DATA: {
-		LOG_MESSAGE: true,
+		LOG_MESSAGE: false,
 		IDS: false,
 		TYPES: false,
 	},
 	APP: {
-		HANDLER: true,
+		HANDLER: false,
 	},
 	SAVE_APP_DATA: {
-		APP_DATA: true,
+		APP_DATA: false,
 		TABLE_REGEX: false,
 		UPDATED_CONTENT: false,
 	},
 	EDITABLE_TD: {
-		HANDLER: true,
-		USE_EFFECT: true,
+		HANDLER: false,
+		USE_EFFECT: false,
+	},
+	FOCUS_PROVIDER: {
+		HANDLER: false,
+		USE_EFFECT: false,
+	},
+	MENU_PROVIDER: {
+		HANDLER: false,
+		USE_EFFECT: false,
 	},
 };
 

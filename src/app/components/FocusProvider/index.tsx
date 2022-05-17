@@ -1,5 +1,6 @@
 import NltPlugin from "main";
 import React, { useState, useContext, useEffect, useCallback } from "react";
+import { DEBUG } from "src/app/constants";
 
 const FocusContext = React.createContext(false);
 
@@ -23,13 +24,17 @@ export default function FocusProvider({
 	const [isFocused, setFocus] = useState(false);
 
 	function handleFocus() {
-		console.log("[FocusProvider] handleFocus()");
+		if (DEBUG.FOCUS_PROVIDER.HANDLER) {
+			console.log("[FocusProvider]: handleFocus()");
+		}
 		setFocus(true);
 		plugin.focusTable(tableId, sourcePath);
 	}
 
 	function handleBlur() {
-		console.log("[FocusProvider] handleBlur()");
+		if (DEBUG.FOCUS_PROVIDER.HANDLER) {
+			console.log("[FocusProvider]: handleBlur()");
+		}
 		setFocus(false);
 		plugin.blurTable();
 	}
