@@ -112,7 +112,7 @@ export default function EditableTd({
 				}
 			}
 		},
-		[inputText, isMenuOpen(menuId)]
+		[inputText.length, isMenuOpen(menuId)]
 	);
 
 	async function handleCellContextClick(e: React.MouseEvent<HTMLElement>) {

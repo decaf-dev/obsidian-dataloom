@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 
 import Menu from "../Menu";
 
@@ -23,28 +23,33 @@ export default function TextCellEdit({
 	inputText,
 	onInputChange,
 }: Props) {
-	const [textareaHeight, setTextareaHeight] = useState("auto");
+	const didMount = useRef(false);
 
 	const textAreaRef = useCallback(
 		(node) => {
 			if (node) {
 				if (isOpen) {
-					//Sometimes the node won't focus. This seems to be a reoccuring issue
-					//with using this inputRef
-					node.selectionStart = inputText.length;
-					node.selectionEnd = inputText.length;
-
-					setTimeout(() => {
-						node.focus();
+					if (!didMount.current) {
+						node.selectionStart = inputText.length;
+						node.selectionEnd = inputText.length;
 						if (node instanceof HTMLElement) {
-							setTextareaHeight(`${node.scrollHeight}px`);
+							setTimeout(() => {
+								node.focus();
+							}, 1);
 						}
-					}, 1);
+						didMount.current = true;
+					} else {
+						if (node instanceof HTMLElement) {
+							node.style.height = "auto";
+							node.style.height = node.scrollHeight + "px";
+						}
+					}
 				}
 			}
 		},
-		[isOpen]
+		[isOpen, didMount.current, inputText.length]
 	);
+
 	return (
 		<Menu
 			id={menuId}
@@ -57,9 +62,6 @@ export default function TextCellEdit({
 			<textarea
 				className="NLT__input NLT__input--textarea NLT__input--no-border"
 				ref={textAreaRef}
-				style={{
-					height: textareaHeight,
-				}}
 				autoFocus
 				value={inputText}
 				onChange={(e) =>
