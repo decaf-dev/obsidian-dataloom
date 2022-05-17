@@ -6,6 +6,7 @@ import { addRow, addColumn } from "src/app/services/appData/internal/add";
 import { saveAppData } from "src/app/services/appData/external/save";
 import { createEmptyMarkdownTable } from "src/app/services/appData/mock";
 import { randomColumnId, randomTableId } from "src/app/services/random";
+import { appDataToMarkdown } from "src/app/services/appData/external/saveUtils";
 export default class NltPlugin extends Plugin {
 	settings: NltSettings;
 	focused: { tableId: string; sourcePath: string } | null = null;
@@ -99,7 +100,12 @@ export default class NltPlugin extends Plugin {
 				if (this.focused) {
 					const { tableId, sourcePath } = this.focused;
 					const oldData = this.settings.appData[sourcePath][tableId];
+					console.log(oldData);
+					console.log("Old data");
+					console.log(appDataToMarkdown(tableId, oldData));
 					const newData = addRow(oldData);
+					console.log("New data");
+					console.log(appDataToMarkdown(tableId, newData));
 					// const focusedElement = {
 					// 	id: newData.cells[
 					// 		newData.cells.length - newData.headers.length

@@ -1,6 +1,6 @@
 export const DEBUG = {
 	LOAD_APP_DATA: {
-		LOG_MESSAGE: false,
+		LOG_MESSAGE: true,
 		IDS: false,
 		TYPES: false,
 	},

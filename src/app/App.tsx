@@ -54,15 +54,22 @@ export default function App({
 		// if (DEBUG) console.log("[useEffect] Sorting rows.");
 		// const element = settings.focusedElement;
 		// setFocusedElement(element);
-		//Sort on first render
-		//Use case:
-		//If a user deletes or adds a new row (by copying and pasting, for example)
-		//then we want to make sure that value is sorted in
-		// for (let i = 0; i < appData.headers.length; i++) {
-		// 	const header = appData.headers[i];
-		// 	if (header.sortName !== SORT.DEFAULT.name)
-		// 		sortRows(header.id, header.type, header.sortName, false);
-		// }
+
+		//When a user adds a new table, this entry will initially be null, we need to set this
+		//so a user can add rows/columns via hotkeys
+		const oldData = settings.appData[sourcePath][tableId];
+		if (!oldData) {
+			settings.appData[sourcePath][tableId] = oldAppData;
+		}
+		// Sort on first render
+		// Use case:
+		// If a user deletes or adds a new row (by copying and pasting, for example)
+		// then we want to make sure that value is sorted in
+		for (let i = 0; i < appData.headers.length; i++) {
+			const header = appData.headers[i];
+			if (header.sortName !== SORT.DEFAULT.name)
+				sortRows(header.id, header.type, header.sortName, false);
+		}
 	}, []);
 
 	useEffect(() => {
