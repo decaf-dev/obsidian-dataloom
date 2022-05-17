@@ -18,7 +18,14 @@ export default function ColorItem({ color, isSelected, onColorClick }: Props) {
 	squareClass += " " + colorClass;
 
 	return (
-		<div className={containerClass} onClick={() => onColorClick(color)}>
+		<div
+			className={containerClass}
+			onClick={(e) => {
+				//Stop event propagation so we don't select this cell
+				e.stopPropagation();
+				onColorClick(color);
+			}}
+		>
 			<div className={squareClass}></div>
 			<div>{color}</div>
 		</div>
