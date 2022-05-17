@@ -66,8 +66,8 @@ export default function EditableTd({
 }: Props) {
 	const [inputText, setInputText] = useState("");
 	const [cellMenu, setCellMenu] = useState({
-		top: -3,
-		left: -10,
+		top: -4,
+		left: -11,
 		width: "0px",
 		height: "0px",
 		tagColor: randomColor(),

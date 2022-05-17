@@ -105,8 +105,8 @@ export default function EditableTh({
 		>
 			<HeaderMenu
 				isOpen={isMenuOpen(menuId)}
-				top={-3}
-				left={-10}
+				top={-4}
+				left={-11}
 				id={id}
 				menuId={menuId}
 				content={content}
