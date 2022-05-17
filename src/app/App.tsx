@@ -55,8 +55,7 @@ export default function App({
 		const tableData = settings.appData[sourcePath];
 		if (!tableData) {
 			settings.appData[sourcePath] = {};
-		}
-		if (!tableData[tableId]) {
+		} else if (!tableData[tableId]) {
 			settings.appData[sourcePath][tableId] = oldAppData;
 		}
 		plugin.saveSettings();
