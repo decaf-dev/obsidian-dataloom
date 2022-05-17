@@ -48,7 +48,9 @@ export const loadAppData = (
 	} else if (!hasValidRowIds(parsedTable)) {
 		console.log(`NLT: Invalid row ids in ${tableId}`);
 		isValidTable = false;
-	} else if (!isValidTable) {
+	}
+
+	if (!isValidTable) {
 		return { tableId: null, data: null };
 	}
 
