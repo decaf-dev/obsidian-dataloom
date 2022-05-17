@@ -8,6 +8,16 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 
 ## What's New?
 
+### Version 3.2.0
+
+-   Tag colors are now fully implemented. Choose from 10 different colors using the tag color menu. Please see `Tag Colors` below for usage details.
+
+-   Redesigned the menu system UI to be more consistent in its design
+
+-   The textarea will now resize as you type :)
+
+See: https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/3.2.0 for a detailed update
+
 ### Version 3.1.0
 
 I am excited to announce that the NLT app has 2 new column types: `date` and `checkbox`. Please see `Dates` and `Checkboxes` below for usage details.
@@ -107,6 +117,10 @@ To edit a cell, just click on it. A textarea will appear which will allow you to
 Tags have a special notion-like menu that will appear. Tags are scoped to each column of a table. You can type text to filter existing tags and select one. Or you can create a new tag by typing text and clicking "Create New" or pressing enter.
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/tag-menu.png)
+
+#### Tag Colors
+
+Once a tag has been added to a cell, you click on any cell that has that tag and then click on the horizontal menu button to the side of the tag name. A menu will then pop up through which you can change the tag color.
 
 ### Dates
 
