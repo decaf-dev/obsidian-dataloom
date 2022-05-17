@@ -76,18 +76,18 @@ describe("findCellType", () => {
 		expect(type).toEqual(CELL_TYPE.NUMBER);
 	});
 
-	it("returns TAG if there is a tag", () => {
+	it("returns TAG if there is a tag with a pound sign", () => {
 		const type = findCellType("#test", CELL_TYPE.TAG);
 		expect(type).toEqual(CELL_TYPE.TAG);
 	});
 
-	it("returns ERROR if doesn't include only a tag", () => {
-		const type = findCellType("#test test", CELL_TYPE.TAG);
-		expect(type).toEqual(CELL_TYPE.ERROR);
+	it("returns TAG if there is a tag without a pound sign", () => {
+		const type = findCellType("test", CELL_TYPE.TAG);
+		expect(type).toEqual(CELL_TYPE.TAG);
 	});
 
-	it("returns ERROR if expected doesn't match cell type", () => {
-		const type = findCellType("1234", CELL_TYPE.TAG);
+	it("returns ERROR if tag includes spaces", () => {
+		const type = findCellType("#test test", CELL_TYPE.TAG);
 		expect(type).toEqual(CELL_TYPE.ERROR);
 	});
 
@@ -97,13 +97,5 @@ describe("findCellType", () => {
 			CELL_TYPE.TEXT
 		);
 		expect(type).toEqual(CELL_TYPE.TEXT);
-	});
-
-	it("returns ERROR if url with tags", () => {
-		const type = findCellType(
-			"https://chakra-ui.com/blog/the-beginners-guide-to-building-an-accessible-web#build-a-web-thats-inclusive-of-everyone",
-			CELL_TYPE.TAG
-		);
-		expect(type).toEqual(CELL_TYPE.ERROR);
 	});
 });

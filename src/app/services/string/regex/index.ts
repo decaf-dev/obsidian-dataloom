@@ -17,7 +17,7 @@ export const MARKDOWN_CELLS_REGEX = new RegExp(
  */
 export const MARKDOWN_ROWS_REGEX = new RegExp(/(\|[ ]{0,}.*[ ]{0,}\|){1,}/g);
 
-export const TAG_REGEX = new RegExp(/^#.[^\s]+$/);
+export const TAG_REGEX = new RegExp(/^[#]{0,1}[^\s]+$/);
 
 /**
  * Matches an individual markdown hyphen cell

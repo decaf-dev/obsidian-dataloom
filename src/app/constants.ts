@@ -1,9 +1,9 @@
 export const DEBUG = {
 	LOAD_APP_DATA: {
-		DATA: false,
+		DATA: true,
 		IDS: false,
 		TYPES: false,
-		PARSED_TABLE: true,
+		PARSED_TABLE: false,
 	},
 	APP: {
 		HANDLER: false,
