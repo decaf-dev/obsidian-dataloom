@@ -156,7 +156,10 @@ NLTs does not currently have built in history. If you need to undo changes, go t
 
 #### NLT Tables Not Rendering
 
-If your table is missing a table id row or type definition row then it will not be rendered as a Notion-Like Table. Likewise, if you use an invalid column type other than the accepted types `text`, `number`, or `tag`. A Notion-Like Table will not be rendered.
+If your table is missing a table id row or type definition row then it will not be rendered as a Notion-Like Table. Likewise, if you use an invalid column type other than the accepted column types. A Notion-Like Table will not be rendered.
+
+Please check your console for more information regarding your errors:
+You can view the console using `cmd + alt + i` (Windows) or `cmd + option + i` (Mac)
 
 #### Cell Type Errors
 
