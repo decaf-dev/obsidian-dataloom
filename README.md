@@ -19,6 +19,7 @@ Please upgrade your tables to this new format. This update also includes several
 ### Version 3.4.0
 
 -   The pound sign `#` in tags are now optional. See `Tags` below for more details.
+-   NLT now supports bold, italics, highlight and underline. See `Markdown` below for more details.
 
 ### Version 3.3.0
 
@@ -119,6 +120,26 @@ To edit a cell, just click on it. An input, textarea or menu will appear which w
 ### Text Cells
 
 Text can be rendered in cells that are in a column with the `text` type selected.
+
+#### Markdown
+
+To bold text use either double astericks `**` or the bold tag `<b>
+
+-   `**This is bold**`
+-   `<b>This is bold</b>`
+
+To italicize text use either single astericks `*` or the italics tag `<i>
+
+-   `*This is italicized*`
+-   `<i>This is italicized</i>`
+
+To highlight text use the double equal sign syntax `==`
+
+-   `==This is highlighted==`
+
+To underline text use the underline tag `<u>`
+
+-   `<u>This is underlined</u>`
 
 #### Links
 
