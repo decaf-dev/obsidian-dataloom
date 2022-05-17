@@ -25,6 +25,12 @@ import {
 	LINE_BREAK_CHARACTER_REGEX,
 	TABLE_ID_REGEX,
 } from "../../string/regex";
+import {
+	parseBoldTags,
+	parseHighlightTags,
+	parseItalicTags,
+	parseUnderlineTags,
+} from "../../string/parsers";
 
 export const findAppData = (parsedTable: string[][]): AppData => {
 	const HEADER_ROW = 0;
@@ -85,6 +91,11 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 							AMPERSAND_CHARACTER_REGEX("g"),
 							AMPERSAND
 						);
+
+						content = parseBoldTags(content);
+						content = parseItalicTags(content);
+						content = parseHighlightTags(content);
+						content = parseUnderlineTags(content);
 
 						// if ()
 						// content = content.replace();

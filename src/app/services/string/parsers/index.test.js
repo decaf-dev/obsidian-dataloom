@@ -5,6 +5,9 @@ import {
 	parseItalicTags,
 	parseHighlightTags,
 	parseUnderlineTags,
+	parseBoldMarkdown,
+	parseItalicMarkdown,
+	parseHighlightMarkdown,
 } from "./";
 
 describe("parseURLs", () => {
@@ -51,9 +54,14 @@ describe("parseFileLinks", () => {
 });
 
 describe("parseBoldTags", () => {
-	it("parses tag", () => {
+	it("parses strong tag", () => {
 		const parsed = parseBoldTags("&lt;strong&gt;test&lt;/strong&gt;");
 		expect(parsed).toEqual("**test**");
+	});
+
+	it("parses b tag", () => {
+		const parsed = parseBoldTags("&lt;b&gt;test&lt;/b&gt;");
+		expect(parsed).toEqual("<b>test</b>");
 	});
 
 	it("parses multiple tags", () => {
@@ -62,7 +70,7 @@ describe("parseBoldTags", () => {
 		);
 		expect(parsed).toEqual("**test** **test**");
 	});
-	it("doesn't parse tag with no space", () => {
+	it("parses tag with no space", () => {
 		const parsed = parseBoldTags(
 			"&lt;strong&gt;test&lt;/strong&gt;&lt;strong&gt;test&lt;/strong&gt;"
 		);
@@ -76,9 +84,14 @@ describe("parseBoldTags", () => {
 });
 
 describe("parseItalicTags", () => {
-	it("parses tag", () => {
+	it("parses em tag", () => {
 		const parsed = parseItalicTags("&lt;em&gt;test&lt;/em&gt;");
 		expect(parsed).toEqual("*test*");
+	});
+
+	it("parses i tag", () => {
+		const parsed = parseItalicTags("&lt;i&gt;test&lt;/i&gt;");
+		expect(parsed).toEqual("<i>test</i>");
 	});
 
 	it("parses multiple tags", () => {
@@ -87,7 +100,7 @@ describe("parseItalicTags", () => {
 		);
 		expect(parsed).toEqual("*test* *test*");
 	});
-	it("doesn't parse tag with no space", () => {
+	it("parses tag with no space", () => {
 		const parsed = parseItalicTags(
 			"&lt;em&gt;test&lt;/em&gt;&lt;em&gt;test&lt;/em&gt;"
 		);
@@ -112,7 +125,7 @@ describe("parseHighlightTags", () => {
 		);
 		expect(parsed).toEqual("==test== ==test==");
 	});
-	it("doesn't parse tag with no space", () => {
+	it("parses tag with no space", () => {
 		const parsed = parseHighlightTags(
 			"&lt;mark&gt;test&lt;/mark&gt;&lt;mark&gt;test&lt;/mark&gt;"
 		);
@@ -137,7 +150,7 @@ describe("parseUnderlineTags", () => {
 		);
 		expect(parsed).toEqual("<u>test</u> <u>test</u>");
 	});
-	it("doesn't parse tag with no space", () => {
+	it("parses tag with no space", () => {
 		const parsed = parseUnderlineTags(
 			"&lt;u&gt;test&lt;/u&gt;&lt;u&gt;test&lt;/u&gt;"
 		);
@@ -147,5 +160,56 @@ describe("parseUnderlineTags", () => {
 	it("doesn't parse when the tag is broken", () => {
 		const parsed = parseUnderlineTags("&lt;u&gt;test");
 		expect(parsed).toEqual("&lt;u&gt;test");
+	});
+});
+
+describe("parseBoldMarkdown", () => {
+	it("parses markdown", () => {
+		const parsed = parseBoldMarkdown("**test**");
+		expect(parsed).toEqual("<b>test</b>");
+	});
+
+	it("parses multiple elements", () => {
+		const parsed = parseBoldMarkdown("**test** **test**");
+		expect(parsed).toEqual("<b>test</b> <b>test</b>");
+	});
+
+	it("parses markdown with no space", () => {
+		const parsed = parseBoldMarkdown("**test****test**");
+		expect(parsed).toEqual("<b>test</b><b>test</b>");
+	});
+});
+
+describe("parseItalicMarkdown", () => {
+	it("parses markdown", () => {
+		const parsed = parseItalicMarkdown("*test*");
+		expect(parsed).toEqual("<i>test</i>");
+	});
+
+	it("parses multiple elements", () => {
+		const parsed = parseItalicMarkdown("*test* *test*");
+		expect(parsed).toEqual("<i>test</i> <i>test</i>");
+	});
+
+	it("parses markdown with no space", () => {
+		const parsed = parseItalicMarkdown("*test**test*");
+		expect(parsed).toEqual("<i>test</i><i>test</i>");
+	});
+});
+
+describe("parseHighlightMarkdown", () => {
+	it("parses markdown", () => {
+		const parsed = parseHighlightMarkdown("==test==");
+		expect(parsed).toEqual("<mark>test</mark>");
+	});
+
+	it("parses multiple elements", () => {
+		const parsed = parseHighlightMarkdown("==test== ==test==");
+		expect(parsed).toEqual("<mark>test</mark> <mark>test</mark>");
+	});
+
+	it("parses markdown with no space", () => {
+		const parsed = parseHighlightMarkdown("==test====test==");
+		expect(parsed).toEqual("<mark>test</mark><mark>test</mark>");
 	});
 });
