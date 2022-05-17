@@ -36,29 +36,19 @@ export const loadAppData = (
 	if (!tableId) {
 		console.log("NLT: Invalid table id");
 		isValidTable = false;
-	}
-
-	if (!hasValidHeaderRow(parsedTable)) {
+	} else if (!hasValidHeaderRow(parsedTable)) {
 		console.log(`NLT: Invalid header row in ${tableId}`);
 		isValidTable = false;
-	}
-
-	if (!hasValidTypeDefinitionRow(parsedTable)) {
+	} else if (!hasValidTypeDefinitionRow(parsedTable)) {
 		console.log(`NLT: Invalid type definition row in ${tableId}`);
 		isValidTable = false;
-	}
-
-	if (!hasValidColumnIds(parsedTable)) {
+	} else if (!hasValidColumnIds(parsedTable)) {
 		console.log(`NLT: Invalid column ids in ${tableId}`);
 		isValidTable = false;
-	}
-
-	if (!hasValidRowIds(parsedTable)) {
+	} else if (!hasValidRowIds(parsedTable)) {
 		console.log(`NLT: Invalid row ids in ${tableId}`);
 		isValidTable = false;
-	}
-
-	if (!isValidTable) {
+	} else if (!isValidTable) {
 		return { tableId: null, data: null };
 	}
 
