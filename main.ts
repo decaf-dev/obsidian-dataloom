@@ -6,7 +6,6 @@ import { addRow, addColumn } from "src/app/services/appData/internal/add";
 import { saveAppData } from "src/app/services/appData/external/save";
 import { createEmptyMarkdownTable } from "src/app/services/appData/mock";
 import { randomColumnId, randomTableId } from "src/app/services/random";
-import { TABBABLE_ELEMENT_TYPE } from "src/app/constants";
 export default class NltPlugin extends Plugin {
 	settings: NltSettings;
 	focused: { tableId: string; sourcePath: string } | null = null;
@@ -101,14 +100,14 @@ export default class NltPlugin extends Plugin {
 					const { tableId, sourcePath } = this.focused;
 					const oldData = this.settings.appData[sourcePath][tableId];
 					const newData = addRow(oldData);
-					const focusedElement = {
-						id: newData.cells[
-							newData.cells.length - newData.headers.length
-						].id,
-						type: TABBABLE_ELEMENT_TYPE.CELL,
-					};
-					this.settings.focusedElement = focusedElement;
-					await this.saveSettings();
+					// const focusedElement = {
+					// 	id: newData.cells[
+					// 		newData.cells.length - newData.headers.length
+					// 	].id,
+					// 	type: TABBABLE_ELEMENT_TYPE.CELL,
+					// };
+					// this.settings.focusedElement = focusedElement;
+					// await this.saveSettings();
 					await saveAppData(
 						this,
 						this.settings,

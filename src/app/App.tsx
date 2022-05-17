@@ -44,27 +44,25 @@ export default function App({
 }: Props) {
 	const [oldAppData] = useState<AppData>(data);
 	const [appData, setAppData] = useState<AppData>(data);
-	const [focusedElement, setFocusedElement] = useState<TabbableElement>(
-		INITIAL_FOCUSED_ELEMENT
-	);
+	// const [focusedElement, setFocusedElement] = useState<TabbableElement>(
+	// 	INITIAL_FOCUSED_ELEMENT
+	// );
 	const [debounceUpdate, setDebounceUpdate] = useState(0);
 	const saveLock = useRef(false);
 
 	useEffect(() => {
 		// if (DEBUG) console.log("[useEffect] Sorting rows.");
-
-		const element = settings.focusedElement;
-		setFocusedElement(element);
+		// const element = settings.focusedElement;
+		// setFocusedElement(element);
 		//Sort on first render
 		//Use case:
 		//If a user deletes or adds a new row (by copying and pasting, for example)
 		//then we want to make sure that value is sorted in
-
-		for (let i = 0; i < appData.headers.length; i++) {
-			const header = appData.headers[i];
-			if (header.sortName !== SORT.DEFAULT.name)
-				sortRows(header.id, header.type, header.sortName, false);
-		}
+		// for (let i = 0; i < appData.headers.length; i++) {
+		// 	const header = appData.headers[i];
+		// 	if (header.sortName !== SORT.DEFAULT.name)
+		// 		sortRows(header.id, header.type, header.sortName, false);
+		// }
 	}, []);
 
 	useEffect(() => {
@@ -121,38 +119,38 @@ export default function App({
 		};
 	}, [debounceUpdate]);
 
-	useEffect(() => {
-		if (saveLock) {
-			saveLock.current = false;
-		}
-	}, [focusedElement]);
+	// useEffect(() => {
+	// 	if (saveLock) {
+	// 		saveLock.current = false;
+	// 	}
+	// }, [focusedElement]);
 
-	function resetFocusedElement() {
-		updateFocusedElement(INITIAL_FOCUSED_ELEMENT);
-	}
+	// function resetFocusedElement() {
+	// 	updateFocusedElement(INITIAL_FOCUSED_ELEMENT);
+	// }
 
-	function updateFocusedElement(element: TabbableElement) {
-		setFocusedElement(element);
-		settings.focusedElement = element;
-		plugin.saveSettings();
-	}
+	// function updateFocusedElement(element: TabbableElement) {
+	// 	setFocusedElement(element);
+	// 	settings.focusedElement = element;
+	// 	plugin.saveSettings();
+	// }
 
-	function handleCellFocusClick(id: string) {
-		const element = findTabbableElement(appData, id);
-		updateFocusedElement(element);
-	}
+	// function handleCellFocusClick(id: string) {
+	// 	const element = findTabbableElement(appData, id);
+	// 	updateFocusedElement(element);
+	// }
 
-	async function handleKeyUp(e: React.KeyboardEvent) {
-		// if (DEBUG) console.log("[handler] handleKeyUp called.");
-		if (e.key === "Tab") {
-			const prevElement = { ...focusedElement };
-			const nextElement = findNextTabbableElement(
-				appData,
-				prevElement.id
-			);
-			updateFocusedElement(nextElement);
-		}
-	}
+	// async function handleKeyUp(e: React.KeyboardEvent) {
+	// 	// if (DEBUG) console.log("[handler] handleKeyUp called.");
+	// 	if (e.key === "Tab") {
+	// 		const prevElement = { ...focusedElement };
+	// 		const nextElement = findNextTabbableElement(
+	// 			appData,
+	// 			prevElement.id
+	// 		);
+	// 		updateFocusedElement(nextElement);
+	// 	}
+	// }
 
 	function handleAddColumn() {
 		// if (DEBUG) console.log("[handler]: handleAddColumn called.");
@@ -212,16 +210,9 @@ export default function App({
 		sortRows(id, type, sortName);
 	}
 
-	function handleCellContentChange(
-		id: string,
-		shouldLock: boolean,
-		content: any
-	) {
+	function handleCellContentChange(id: string, content: any) {
 		// if (DEBUG) console.log("[handler]: handleCellContentChange called.");
 
-		if (shouldLock) {
-			saveLock.current = true;
-		}
 		setAppData((prevState) => {
 			return {
 				...prevState,
@@ -551,9 +542,9 @@ export default function App({
 		});
 	}
 
-	function handleCellOutsideClick() {
-		resetFocusedElement();
-	}
+	// function handleCellOutsideClick() {
+	// 	resetFocusedElement();
+	// }
 
 	function handleChangeColor(tagId: string, color: string) {
 		setAppData((prevState) => {
@@ -574,7 +565,7 @@ export default function App({
 	}
 
 	return (
-		<div className="NLT__app" tabIndex={0} onKeyUp={handleKeyUp}>
+		<div className="NLT__app" tabIndex={0}>
 			<Table
 				headers={appData.headers.map((header, j) => {
 					const { id, content, width, type, sortName } = header;
@@ -618,13 +609,13 @@ export default function App({
 											key={cell.id}
 											cell={cell}
 											width={header.width}
-											onFocusClick={handleCellFocusClick}
-											onOutsideClick={
-												handleCellOutsideClick
-											}
-											isFocused={
-												focusedElement.id === cell.id
-											}
+											// onFocusClick={handleCellFocusClick}
+											// onOutsideClick={
+											// 	handleCellOutsideClick
+											// }
+											// isFocused={
+											// 	focusedElement.id === cell.id
+											// }
 											tags={appData.tags.filter(
 												(tag) =>
 													tag.headerId === header.id

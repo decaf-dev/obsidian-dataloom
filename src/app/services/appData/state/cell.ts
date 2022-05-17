@@ -74,6 +74,7 @@ export class NumberCell extends Cell {
 	}
 
 	length() {
+		if (this.number === -1) return 0;
 		return this.number.toString().length;
 	}
 

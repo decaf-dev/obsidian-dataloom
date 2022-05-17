@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 
 import { Notice } from "obsidian";
 import { v4 as uuidv4 } from "uuid";
@@ -26,41 +26,33 @@ import {
 
 import "./styles.css";
 
-import { CELL_TYPE, MENU_LEVEL } from "../../constants";
+import { CELL_TYPE, DEBUG, MENU_LEVEL } from "../../constants";
 
 interface Props {
 	cell: Cell;
 	width: string;
-	isFocused: boolean;
+	// isFocused: boolean;
 	tags: Tag[];
 	onRemoveTagClick: (cellId: string, tagId: string) => void;
 	onTagClick: (cellId: string, tagId: string) => void;
-	onContentChange: (
-		cellId: string,
-		shouldLock: boolean,
-		...rest: any
-	) => void;
+	onContentChange: (cellId: string, ...rest: any) => void;
 	onAddTag: (
 		cellId: string,
 		headerId: string,
 		inputText: string,
 		color: string
 	) => void;
-	onFocusClick: (cellId: string) => void;
-	onOutsideClick: () => void;
+	// onFocusClick: (cellId: string) => void;
 	onColorChange: (tagId: string, color: string) => void;
 }
 
 export default function EditableTd({
 	cell,
 	width,
-	isFocused,
 	tags,
-	onOutsideClick,
 	onRemoveTagClick,
 	onColorChange,
 	onTagClick,
-	onFocusClick,
 	onContentChange,
 	onAddTag,
 }: Props) {
@@ -78,6 +70,7 @@ export default function EditableTd({
 
 	const content = cell.toString();
 	const { id, headerId, type, expectedType } = cell;
+	const didMount = useRef(false);
 
 	const tdRef = useCallback(
 		(node) => {
@@ -122,11 +115,9 @@ export default function EditableTd({
 		[inputText, isMenuOpen(menuId)]
 	);
 
-	// function handleTabPress() {
-	// 	updateContent(true);
-	// }
-
 	async function handleCellContextClick(e: React.MouseEvent<HTMLElement>) {
+		if (DEBUG.EDITABLE_TD.HANDLER)
+			console.log("[EditableTd] handleCellContextClick()");
 		try {
 			let text = content;
 			if (type === CELL_TYPE.TAG) {
@@ -141,6 +132,8 @@ export default function EditableTd({
 	}
 
 	function handleCellClick(e: React.MouseEvent<HTMLElement>) {
+		if (DEBUG.EDITABLE_TD.HANDLER)
+			console.log("[EditableTd] handleCellClick()");
 		const el = e.target as HTMLInputElement;
 
 		//If we clicked on the link for a file or tag, return
@@ -151,36 +144,36 @@ export default function EditableTd({
 		openMenu(menuId, MENU_LEVEL.ONE);
 	}
 
-	// 	left: -10,
-	// top: -5,
-
 	function handleAddTag(text: string) {
+		if (DEBUG.EDITABLE_TD.HANDLER)
+			console.log(`[EditableTd] handleAddTag("${text}")`);
 		onAddTag(id, headerId, text, cellMenu.tagColor);
 		setInputText("");
-		onOutsideClick();
 	}
 
 	function handleTagClick(tagId: string) {
+		if (DEBUG.EDITABLE_TD.HANDLER)
+			console.log(`[EditableTd] handleTagClick("${tagId}")`);
 		onTagClick(id, tagId);
-		onOutsideClick();
 	}
 
-	function updateContent(shouldLock: boolean) {
-		if (content !== inputText) {
+	function updateContent(updated: string) {
+		if (DEBUG.EDITABLE_TD.HANDLER)
+			console.log(`[EditableTd] updateContent("${updated}")`);
+		if (content !== updated) {
 			switch (type) {
 				case CELL_TYPE.TEXT:
-					onContentChange(id, shouldLock, inputText);
+					onContentChange(id, inputText);
 					setInputText("");
 					break;
 				case CELL_TYPE.NUMBER:
-					onContentChange(id, shouldLock, parseInt(inputText));
+					onContentChange(id, parseInt(inputText));
 					setInputText("");
 					break;
 				case CELL_TYPE.DATE:
-					onContentChange(id, shouldLock, parseInputDate(inputText));
+					onContentChange(id, parseInputDate(inputText));
 					setInputText("");
 					break;
-				//TODO add lock
 				case CELL_TYPE.TAG: {
 					const tag = tags.find((tag) => tag.content === inputText);
 					if (tag) {
@@ -197,23 +190,10 @@ export default function EditableTd({
 		}
 	}
 
-	// function handleOutsideClick() {
-	// 	onOutsideClick();
-	// }
-
-	// //Synchronous handler
-	// //Runs after handle outside click
-	// useEffect(() => {
-	// 	if (closingMenu.current && !isFocused) {
-	// 		//Set updated false
-	// 		//handle update
-	// 		closingMenu.current = false;
-	// 		updateContent(false);
-	// 	}
-	// }, [isFocused, closingMenu.current]);
-
 	function handleCheckboxChange(isChecked: boolean) {
-		onContentChange(id, false, isChecked);
+		if (DEBUG.EDITABLE_TD.HANDLER)
+			console.log(`[EditableTd] handleCheckboxChange("${isChecked}")`);
+		onContentChange(id, isChecked);
 	}
 
 	function renderCell(): React.ReactNode {
@@ -252,6 +232,8 @@ export default function EditableTd({
 	}
 
 	function handleInputChange(value: string) {
+		if (DEBUG.EDITABLE_TD.HANDLER)
+			console.log(`[EditableTd] handleInputChange("${value}")`);
 		setInputText(value);
 	}
 
@@ -322,17 +304,31 @@ export default function EditableTd({
 	}
 
 	useEffect(() => {
-		if (!isMenuOpen(menuId)) {
-			if (inputText.length !== 0) updateContent(false);
+		if (!didMount.current) {
+			didMount.current = true;
+		} else {
+			if (!isMenuOpen(menuId)) {
+				if (DEBUG.EDITABLE_TD.USE_EFFECT)
+					console.log(
+						`[EditableTd] useEffect(updateContent("${inputText}"))`
+					);
+				updateContent(inputText);
+			}
 		}
-	}, [isMenuOpen(menuId)]);
+	}, [didMount.current, isMenuOpen(menuId)]);
 
 	useEffect(() => {
+		if (DEBUG.EDITABLE_TD.USE_EFFECT)
+			console.log(`[EditableTd] useEffect(setInputText("${content}"))`);
 		if (type === CELL_TYPE.DATE) {
 			setInputText(parseDateForInput(content));
 		} else {
 			setInputText(content);
 		}
+	}, []);
+
+	useEffect(() => {
+		didMount.current = true;
 	}, []);
 
 	return (
