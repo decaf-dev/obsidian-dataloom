@@ -23,6 +23,7 @@ export default function MenuProvider({ children }: Props) {
 
 	function openMenu(id: string, level: number) {
 		const menu = { id, level };
+		console.log(`[MenuProvider]: openMenu("${id}", ${level})`);
 		setOpenMenus((prevState) => [...prevState, menu]);
 	}
 
@@ -31,12 +32,12 @@ export default function MenuProvider({ children }: Props) {
 	}
 
 	function closeAllMenus() {
-		console.log("[MenuProvider] closeAllMenus()");
+		console.log("[MenuProvider]: closeAllMenus()");
 		setOpenMenus([]);
 	}
 
 	const closeMenu = (id: string) => {
-		console.log(`[MenuProvider] closeMenu(${id})`);
+		console.log(`[MenuProvider]: closeMenu(${id})`);
 		setOpenMenus((prevState) => prevState.filter((menu) => menu.id !== id));
 	};
 

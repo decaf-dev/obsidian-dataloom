@@ -18,7 +18,7 @@ import {
 } from "./services/appData/internal/tabbable";
 import { TabbableElement } from "./services/appData/state/tabbableElement";
 
-import { CELL_TYPE, TABBABLE_ELEMENT_TYPE } from "./constants";
+import { CELL_TYPE, TABBABLE_ELEMENT_TYPE, DEBUG } from "./constants";
 
 import "./app.css";
 import NltPlugin from "main";
@@ -70,23 +70,19 @@ export default function App({
 			//If we're running in Obsidian
 			if (app) {
 				if (appData.updateTime === 0) return;
-
-				// if (!settings.appData[sourcePath]) return;
-				// console.log(settings.appData[sourcePath][tableId]);
-				// if (!settings.appData[sourcePath][tableId]) return;
 				//The save lock ensures that updates only happen after we have pushed our changes
 				//to the cache
 				if (saveLock.current) return;
 				try {
-					await saveAppData(
-						plugin,
-						settings,
-						app,
-						oldAppData,
-						appData,
-						sourcePath,
-						tableId
-					);
+					// await saveAppData(
+					// 	plugin,
+					// 	settings,
+					// 	app,
+					// 	oldAppData,
+					// 	appData,
+					// 	sourcePath,
+					// 	tableId
+					// );
 				} catch (err) {
 					console.log(err);
 				}
@@ -211,7 +207,8 @@ export default function App({
 	}
 
 	function handleCellContentChange(id: string, content: any) {
-		// if (DEBUG) console.log("[handler]: handleCellContentChange called.");
+		if (DEBUG.APP.HANDLER)
+			console.log(`[App]: handleCellContentChange("${id}", ${content}).`);
 
 		setAppData((prevState) => {
 			return {

@@ -4,6 +4,9 @@ export const DEBUG = {
 		IDS: false,
 		TYPES: false,
 	},
+	APP: {
+		HANDLER: true,
+	},
 	SAVE_APP_DATA: {
 		APP_DATA: true,
 		TABLE_REGEX: false,

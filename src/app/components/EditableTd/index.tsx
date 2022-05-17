@@ -158,21 +158,16 @@ export default function EditableTd({
 	}
 
 	function updateContent(updated: string) {
-		if (DEBUG.EDITABLE_TD.HANDLER)
-			console.log(`[EditableTd] updateContent("${updated}")`);
 		if (content !== updated) {
 			switch (type) {
 				case CELL_TYPE.TEXT:
 					onContentChange(id, inputText);
-					setInputText("");
 					break;
 				case CELL_TYPE.NUMBER:
 					onContentChange(id, parseInt(inputText));
-					setInputText("");
 					break;
 				case CELL_TYPE.DATE:
 					onContentChange(id, parseInputDate(inputText));
-					setInputText("");
 					break;
 				case CELL_TYPE.TAG: {
 					const tag = tags.find((tag) => tag.content === inputText);
