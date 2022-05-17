@@ -1,4 +1,12 @@
-.NLT__tag-color-menu-ul {
-    padding: 0;
-    margin: 0;
+.NLT__tag-color-menu {
+    padding: 4px 10px;
+}
+
+.NLT__tag-color-menu-title {
+    font-size: 0.9rem;
+}
+
+.NLT__tag-color-container {
+    display: grid;
+    grid-template-columns: 100px 100px;
 }

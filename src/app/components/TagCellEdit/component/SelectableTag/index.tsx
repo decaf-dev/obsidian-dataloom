@@ -2,12 +2,15 @@ import React, { useState } from "react";
 
 import parse from "html-react-parser";
 
+import { v4 as uuidv4 } from "uuid";
+
 import { findColorClass } from "src/app/services/color";
 
-import { ICON } from "src/app/constants";
+import { ICON, MENU_LEVEL } from "src/app/constants";
 import "./styles.css";
 import IconButton from "src/app/components/IconButton";
 import TagColorMenu from "src/app/components/TagColorMenu";
+import { useMenu } from "src/app/components/MenuProvider";
 interface Props {
 	id: string;
 	content: string;
@@ -16,10 +19,6 @@ interface Props {
 	onColorChange: (tagId: string, color: string) => void;
 }
 
-const INITIAL_TAG_OPEN_MENU_STATE = {
-	isOpen: false,
-};
-
 export default function SelectableTag({
 	id,
 	content,
@@ -27,12 +26,15 @@ export default function SelectableTag({
 	onClick,
 	onColorChange,
 }: Props) {
-	const [tagColorMenu, setTagColorMenu] = useState(
-		INITIAL_TAG_OPEN_MENU_STATE
-	);
+	const { openMenu, closeMenu, isMenuOpen } = useMenu();
+	const [menuId] = useState(uuidv4());
 	let tagClass = "NLT__tag";
 	tagClass += " " + findColorClass(color);
 
+	function handleColorChange(color: string) {
+		onColorChange(id, color);
+		closeMenu(menuId);
+	}
 	return (
 		<div
 			className="NLT__tag-cell NLT__selectable-tag NLT__selectable"
@@ -43,15 +45,18 @@ export default function SelectableTag({
 			</div>
 			<IconButton
 				icon={ICON.MORE_HORIZ}
-				onClick={() => setTagColorMenu({ isOpen: true })}
+				onClick={(e) => {
+					e.stopPropagation();
+					openMenu(menuId, MENU_LEVEL.TWO);
+				}}
 			/>
 			<TagColorMenu
-				menuId={"-1"}
-				isOpen={tagColorMenu.isOpen}
+				menuId={menuId}
+				isOpen={isMenuOpen(menuId)}
 				selectedColor={color}
-				top={0}
-				left={0}
-				onColorClick={(color) => onColorChange(id, color)}
+				top={-100}
+				left={-150}
+				onColorClick={(color) => handleColorChange(color)}
 			/>
 		</div>
 	);

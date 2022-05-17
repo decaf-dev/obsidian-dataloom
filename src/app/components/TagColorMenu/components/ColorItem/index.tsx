@@ -18,9 +18,9 @@ export default function ColorItem({ color, isSelected, onColorClick }: Props) {
 	squareClass += " " + colorClass;
 
 	return (
-		<li className={containerClass} onClick={() => onColorClick(color)}>
+		<div className={containerClass} onClick={() => onColorClick(color)}>
 			<div className={squareClass}></div>
 			<div>{color}</div>
-		</li>
+		</div>
 	);
 }

@@ -26,8 +26,8 @@ export default function TagColorMenu({
 	return (
 		<Menu id={menuId} isOpen={isOpen} top={top} left={left}>
 			<div className="NLT__tag-color-menu">
-				<div>Colors</div>
-				<ul className="NLT__tag-color-ul">
+				<div className="NLT__tag-color-menu-title">Colors</div>
+				<div className="NLT__tag-color-container">
 					{Object.values(COLOR).map((color) => (
 						<ColorItem
 							key={color}
@@ -36,7 +36,7 @@ export default function TagColorMenu({
 							isSelected={selectedColor === color}
 						/>
 					))}
-				</ul>
+				</div>
 			</div>
 		</Menu>
 	);
