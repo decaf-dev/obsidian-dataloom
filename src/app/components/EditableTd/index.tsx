@@ -316,7 +316,12 @@ export default function EditableTd({
 		if (DEBUG.EDITABLE_TD.USE_EFFECT)
 			console.log(`[EditableTd] useEffect(setInputText("${content}"))`);
 		if (type === CELL_TYPE.DATE) {
-			setInputText(parseDateForInput(content));
+			//Support data cells that have blank
+			if (content != "") {
+				setInputText(parseDateForInput(content));
+			} else {
+				setInputText("");
+			}
 		} else {
 			setInputText(content);
 		}

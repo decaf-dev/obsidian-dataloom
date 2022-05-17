@@ -134,6 +134,7 @@ export class DateCell extends Cell {
 	}
 
 	length() {
+		if (this.date === null) return 0;
 		return "MM/DD/YY".length;
 	}
 
