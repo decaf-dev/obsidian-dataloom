@@ -97,7 +97,7 @@ describe("findAppData", () => {
 				"column-id-345678",
 				"table-id-123456",
 			],
-			["tag1", "#tag2", "#tag3", "row-id-123456"],
+			["tag1 ok", "#tag2", "#tag3", "row-id-123456"],
 		];
 		const data = findAppData(parsedTable);
 		expect(data.cells[0].type).toEqual(CELL_TYPE.ERROR);

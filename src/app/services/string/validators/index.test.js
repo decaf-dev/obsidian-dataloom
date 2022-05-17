@@ -233,8 +233,13 @@ describe("isNumber", () => {
 });
 
 describe("isTag", () => {
-	it("matches a tag", () => {
+	it("matches a tag with a pound sign", () => {
 		const value = isTag("#tag");
+		expect(value).toEqual(true);
+	});
+
+	it("matches a tag without a pound sign", () => {
+		const value = isTag("tag");
 		expect(value).toEqual(true);
 	});
 
@@ -243,10 +248,8 @@ describe("isTag", () => {
 		expect(value).toEqual(false);
 	});
 
-	it("doesn't match tag in a link", () => {
-		const value = isTag(
-			"https://chakra-ui.com/blog/the-beginners-guide-to-building-an-accessible-web#build-a-web-thats-inclusive-of-everyone "
-		);
+	it("doesn't match tag with spaces", () => {
+		const value = isTag("#tag tag");
 		expect(value).toEqual(false);
 	});
 });
