@@ -1,6 +1,29 @@
-import { EXTERNAL_LINK_REGEX, FILE_LINK_REGEX } from "../regex";
+import {
+	EXTERNAL_LINK_REGEX,
+	FILE_LINK_REGEX,
+	UNDERLINE_CHARACTER_REGEX,
+	BOLD_CHARACTER_REGEX,
+	ITALIC_CHARACTER_REGEX,
+	HIGHLIGHT_CHARACTER_REGEX,
+} from "../regex";
 import { isNumber, isTag, isDate, isCheckBox } from "../validators";
 import { CELL_TYPE } from "src/app/constants";
+
+export const matchBoldTags = (input: string) => {
+	return input.match(BOLD_CHARACTER_REGEX("g")) || [];
+};
+
+export const matchItalicTags = (input: string) => {
+	return input.match(ITALIC_CHARACTER_REGEX("g")) || [];
+};
+
+export const matchHighlightTags = (input: string) => {
+	return input.match(HIGHLIGHT_CHARACTER_REGEX("g")) || [];
+};
+
+export const matchUnderlineTags = (input: string) => {
+	return input.match(UNDERLINE_CHARACTER_REGEX("g")) || [];
+};
 
 export const matchURLs = (input: string) => {
 	return input.match(EXTERNAL_LINK_REGEX) || [];

@@ -85,6 +85,9 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 							AMPERSAND_CHARACTER_REGEX("g"),
 							AMPERSAND
 						);
+
+						// if ()
+						// content = content.replace();
 						cells.push(
 							new TextCell(cellId, row.id, headers[j].id, content)
 						);

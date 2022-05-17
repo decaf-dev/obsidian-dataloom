@@ -1,6 +1,6 @@
 import { toFileLink } from "../toLink";
 import { stripSquareBrackets } from "../strippers";
-import { matchURLs, matchFileLinks } from "../matchers";
+import { matchURLs, matchFileLinks, matchBoldTags } from "../matchers";
 import { toExternalLink } from "../toLink";
 
 export const parseFileLinks = (input: string): string => {
@@ -20,6 +20,13 @@ export const parseURLs = (input: string): string => {
 	});
 	return input;
 };
+
+// export parseBoldTags = (input:string):string => {
+// 	const matches = matchBoldTags(input);
+// 	matches.forEach((match) => {
+// 		const replacement = match
+// 	});
+// }
 
 export const parseInputDate = (date: string): Date => {
 	//We need to replace hyphens with slashes to not by 1 day off

@@ -50,6 +50,18 @@ export const LINE_BREAK_CHARACTER_REGEX = (flags: string) =>
 export const AMPERSAND_CHARACTER_REGEX = (flags: string) =>
 	new RegExp(/&amp;amp;/, flags);
 
+export const BOLD_CHARACTER_REGEX = (flags: string) =>
+	new RegExp(/&lt;strong&gt;.{1,}?;\/strong&gt;/, flags);
+
+export const ITALIC_CHARACTER_REGEX = (flags: string) =>
+	new RegExp(/&lt;em&gt;.{1,}?&lt;\/em&gt;/, flags);
+
+export const HIGHLIGHT_CHARACTER_REGEX = (flags: string) =>
+	new RegExp(/&lt;mark&gt;.{1,}?&lt;\/mark&gt;/, flags);
+
+export const UNDERLINE_CHARACTER_REGEX = (flags: string) =>
+	new RegExp(/&lt;u&gt;.{1,}?&lt;\/u&gt;/, flags);
+
 /**
  * Matches a date with the format mm/dd/yyyy
  */
