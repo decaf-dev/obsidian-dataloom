@@ -125,7 +125,7 @@ export default function HeaderMenu({
 	function renderEditItems() {
 		return (
 			<>
-				<div>
+				<div style={{ marginBottom: "10px" }}>
 					<input
 						className="NLT__input NLT__header-menu-input"
 						autoFocus
