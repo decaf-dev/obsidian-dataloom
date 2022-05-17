@@ -123,12 +123,12 @@ Text can be rendered in cells that are in a column with the `text` type selected
 
 #### Markdown
 
-To bold text use either double astericks `**` or the bold tag `<b>
+To bold text use either double astericks `**` or the bold tag `<b>`
 
 -   `**This is bold**`
 -   `<b>This is bold</b>`
 
-To italicize text use either single astericks `*` or the italics tag `<i>
+To italicize text use either single astericks `*` or the italics tag `<i>`
 
 -   `*This is italicized*`
 -   `<i>This is italicized</i>`
