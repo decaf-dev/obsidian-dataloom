@@ -1,4 +1,4 @@
-import { Plugin, Editor, MarkdownView } from "obsidian";
+import { Plugin, Editor, MarkdownView, Notice } from "obsidian";
 
 import { NLTTable } from "src/NLTTable";
 import { NltSettings, DEFAULT_SETTINGS } from "src/app/services/settings";
@@ -84,6 +84,10 @@ export default class NltPlugin extends Plugin {
 						sourcePath,
 						tableId
 					);
+				} else {
+					new Notice(
+						"No table focused. Please click a table to preform this operation."
+					);
 				}
 			},
 		});
@@ -113,6 +117,10 @@ export default class NltPlugin extends Plugin {
 						newData,
 						sourcePath,
 						tableId
+					);
+				} else {
+					new Notice(
+						"No table focused. Please click a table to preform this operation."
 					);
 				}
 			},
