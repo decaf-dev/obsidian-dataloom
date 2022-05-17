@@ -47,9 +47,6 @@ export default function TagCellEdit({
 			if (node) {
 				if (node instanceof HTMLElement) {
 					if (isOpen) {
-						//Sometimes the node won't focus. This seems to be a reoccuring issue
-						//with using this inputRef
-						//console.log(node.getBoundingClientRect());
 						setTimeout(() => {
 							node.focus();
 						}, 1);

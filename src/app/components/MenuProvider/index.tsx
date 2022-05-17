@@ -28,7 +28,7 @@ export default function MenuProvider({ children }: Props) {
 	}
 
 	function isMenuOpen(id: string): boolean {
-		return openMenus.find((menu) => menu.id === id);
+		return openMenus.find((menu) => menu.id === id) || false;
 	}
 
 	function closeAllMenus() {

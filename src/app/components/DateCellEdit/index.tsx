@@ -48,7 +48,7 @@ export default function DateCellEdit({
 				className="NLT__input NLT__input--no-border"
 				type="date"
 				autoFocus
-				value={inputText}
+				value={parseDateForInput(inputText)}
 				onChange={(e) => onInputChange(e.target.value)}
 			/>
 		</Menu>

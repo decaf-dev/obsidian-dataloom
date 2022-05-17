@@ -65,7 +65,6 @@ export default function EditableTd({
 	onAddTag,
 }: Props) {
 	const [inputText, setInputText] = useState("");
-	const closingMenu = useRef(false);
 	const [cellMenu, setCellMenu] = useState({
 		top: -3,
 		left: -10,
@@ -73,23 +72,12 @@ export default function EditableTd({
 		height: "0px",
 		tagColor: randomColor(),
 	});
-	const { isMenuOpen, openMenu, closeMenu } = useMenu();
+	const { isMenuOpen, openMenu } = useMenu();
 
 	const [menuId] = useState(uuidv4());
 
 	const content = cell.toString();
 	const { id, headerId, type, expectedType } = cell;
-
-	useEffect(() => {
-		if (isFocused) {
-			if (isMenuOpen(menuId)) return;
-			if (type === CELL_TYPE.CHECKBOX) return;
-			openMenu(menuId, MENU_LEVEL.ONE);
-		} else {
-			if (!isMenuOpen(menuId)) return;
-			closeMenu(menuId);
-		}
-	}, [isFocused, isMenuOpen(menuId)]);
 
 	const tdRef = useCallback(
 		(node) => {
@@ -134,9 +122,9 @@ export default function EditableTd({
 		[inputText, isMenuOpen(menuId)]
 	);
 
-	function handleTabPress() {
-		updateContent(true);
-	}
+	// function handleTabPress() {
+	// 	updateContent(true);
+	// }
 
 	async function handleCellContextClick(e: React.MouseEvent<HTMLElement>) {
 		try {
@@ -159,14 +147,9 @@ export default function EditableTd({
 		if (el.nodeName === "A") return;
 		if (type === CELL_TYPE.ERROR) return;
 
-		onFocusClick(id);
+		// onFocusClick(id);
+		openMenu(menuId, MENU_LEVEL.ONE);
 	}
-
-	// if (type === CELL_TYPE.DATE) {
-	// 	setInputText(parseDateForInput(content));
-	// } else {
-	// 	setInputText(content);
-	// }
 
 	// 	left: -10,
 	// top: -5,
@@ -183,6 +166,7 @@ export default function EditableTd({
 	}
 
 	function updateContent(shouldLock: boolean) {
+		console.log("update content");
 		if (content !== inputText) {
 			switch (type) {
 				case CELL_TYPE.TEXT:
@@ -215,22 +199,19 @@ export default function EditableTd({
 	}
 
 	function handleOutsideClick() {
-		closingMenu.current = true;
 		onOutsideClick();
 	}
 
-	//TODO relook at this
-
-	//Synchronous handler
-	//Runs after handle outside click
-	useEffect(() => {
-		if (closingMenu.current && !isFocused) {
-			//Set updated false
-			//handle update
-			closingMenu.current = false;
-			updateContent(false);
-		}
-	}, [isFocused, closingMenu.current]);
+	// //Synchronous handler
+	// //Runs after handle outside click
+	// useEffect(() => {
+	// 	if (closingMenu.current && !isFocused) {
+	// 		//Set updated false
+	// 		//handle update
+	// 		closingMenu.current = false;
+	// 		updateContent(false);
+	// 	}
+	// }, [isFocused, closingMenu.current]);
 
 	function handleCheckboxChange(isChecked: boolean) {
 		onContentChange(id, false, isChecked);
@@ -272,13 +253,12 @@ export default function EditableTd({
 	}
 
 	function handleInputChange(value: string) {
+		console.log(value);
 		setInputText(value);
 	}
 
 	function renderCellMenu() {
 		// 		minWidth: type === CELL_TYPE.TAG ? "15rem" : "100px",
-		// height: cellMenu.height,
-		// width: cellMenu.width,
 		switch (type) {
 			case CELL_TYPE.TEXT:
 				return (
@@ -343,6 +323,21 @@ export default function EditableTd({
 				return <></>;
 		}
 	}
+
+	useEffect(() => {
+		console.log(isMenuOpen(menuId));
+		if (!isMenuOpen(menuId)) {
+			if (inputText.length !== 0) updateContent(false);
+		}
+	}, [isMenuOpen(menuId)]);
+
+	useEffect(() => {
+		if (type === CELL_TYPE.DATE) {
+			setInputText(parseDateForInput(content));
+		} else {
+			setInputText(content);
+		}
+	}, []);
 
 	return (
 		<td
