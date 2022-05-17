@@ -53,14 +53,30 @@ export const AMPERSAND_CHARACTER_REGEX = (flags: string) =>
 export const BOLD_CHARACTER_REGEX = (flags: string) =>
 	new RegExp(/&lt;strong&gt;.{1,}?;\/strong&gt;/, flags);
 
+export const BOLD_CHARACTER_PIECES_REGEX = new RegExp(
+	/(&lt;strong&gt;).{1,}?(&lt;\/strong&gt;)/
+);
+
 export const ITALIC_CHARACTER_REGEX = (flags: string) =>
 	new RegExp(/&lt;em&gt;.{1,}?&lt;\/em&gt;/, flags);
+
+export const ITALIC_CHARACTER_PIECES_REGEX = new RegExp(
+	/(&lt;em&gt;).{1,}?(&lt;\/em&gt;)/
+);
 
 export const HIGHLIGHT_CHARACTER_REGEX = (flags: string) =>
 	new RegExp(/&lt;mark&gt;.{1,}?&lt;\/mark&gt;/, flags);
 
+export const HIGHLIGHT_CHARACTER_PIECES_REGEX = new RegExp(
+	/(&lt;mark&gt;).{1,}?(&lt;\/mark&gt;)/
+);
+
 export const UNDERLINE_CHARACTER_REGEX = (flags: string) =>
 	new RegExp(/&lt;u&gt;.{1,}?&lt;\/u&gt;/, flags);
+
+export const UNDERLINE_CHARACTER_PIECES_REGEX = new RegExp(
+	/(&lt;u&gt;).{1,}?(&lt;\/u&gt;)/
+);
 
 /**
  * Matches a date with the format mm/dd/yyyy

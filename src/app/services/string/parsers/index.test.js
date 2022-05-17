@@ -1,4 +1,11 @@
-import { parseURLs, parseFileLinks } from "./";
+import {
+	parseURLs,
+	parseFileLinks,
+	parseBoldTags,
+	parseItalicTags,
+	parseHighlightTags,
+	parseUnderlineTags,
+} from "./";
 
 describe("parseURLs", () => {
 	it("parses a url", () => {
@@ -41,4 +48,104 @@ describe("parseFileLinks", () => {
 	});
 
 	//TODO parses same link
+});
+
+describe("parseBoldTags", () => {
+	it("parses tag", () => {
+		const parsed = parseBoldTags("&lt;strong&gt;test&lt;/strong&gt;");
+		expect(parsed).toEqual("**test**");
+	});
+
+	it("parses multiple tags", () => {
+		const parsed = parseBoldTags(
+			"&lt;strong&gt;test&lt;/strong&gt; &lt;strong&gt;test&lt;/strong&gt;"
+		);
+		expect(parsed).toEqual("**test** **test**");
+	});
+	it("doesn't parse tag with no space", () => {
+		const parsed = parseBoldTags(
+			"&lt;strong&gt;test&lt;/strong&gt;&lt;strong&gt;test&lt;/strong&gt;"
+		);
+		expect(parsed).toEqual("**test****test**");
+	});
+
+	it("doesn't parse when the tag is broken", () => {
+		const parsed = parseBoldTags("&lt;strong&gt;test");
+		expect(parsed).toEqual("&lt;strong&gt;test");
+	});
+});
+
+describe("parseItalicTags", () => {
+	it("parses tag", () => {
+		const parsed = parseItalicTags("&lt;em&gt;test&lt;/em&gt;");
+		expect(parsed).toEqual("*test*");
+	});
+
+	it("parses multiple tags", () => {
+		const parsed = parseItalicTags(
+			"&lt;em&gt;test&lt;/em&gt; &lt;em&gt;test&lt;/em&gt;"
+		);
+		expect(parsed).toEqual("*test* *test*");
+	});
+	it("doesn't parse tag with no space", () => {
+		const parsed = parseItalicTags(
+			"&lt;em&gt;test&lt;/em&gt;&lt;em&gt;test&lt;/em&gt;"
+		);
+		expect(parsed).toEqual("*test**test*");
+	});
+
+	it("doesn't parse when the tag is broken", () => {
+		const parsed = parseItalicTags("&lt;em&gt;test");
+		expect(parsed).toEqual("&lt;em&gt;test");
+	});
+});
+
+describe("parseHighlightTags", () => {
+	it("parses tag", () => {
+		const parsed = parseHighlightTags("&lt;mark&gt;test&lt;/mark&gt;");
+		expect(parsed).toEqual("==test==");
+	});
+
+	it("parses multiple tags", () => {
+		const parsed = parseHighlightTags(
+			"&lt;mark&gt;test&lt;/mark&gt; &lt;mark&gt;test&lt;/mark&gt;"
+		);
+		expect(parsed).toEqual("==test== ==test==");
+	});
+	it("doesn't parse tag with no space", () => {
+		const parsed = parseHighlightTags(
+			"&lt;mark&gt;test&lt;/mark&gt;&lt;mark&gt;test&lt;/mark&gt;"
+		);
+		expect(parsed).toEqual("==test====test==");
+	});
+
+	it("doesn't parse when the tag is broken", () => {
+		const parsed = parseHighlightTags("&lt;mark&gt;test");
+		expect(parsed).toEqual("&lt;mark&gt;test");
+	});
+});
+
+describe("parseUnderlineTags", () => {
+	it("parses tags", () => {
+		const parsed = parseUnderlineTags("&lt;u&gt;test&lt;/u&gt;");
+		expect(parsed).toEqual("<u>test</u>");
+	});
+
+	it("parses multiple tags", () => {
+		const parsed = parseUnderlineTags(
+			"&lt;u&gt;test&lt;/u&gt; &lt;u&gt;test&lt;/u&gt;"
+		);
+		expect(parsed).toEqual("<u>test</u> <u>test</u>");
+	});
+	it("doesn't parse tag with no space", () => {
+		const parsed = parseUnderlineTags(
+			"&lt;u&gt;test&lt;/u&gt;&lt;u&gt;test&lt;/u&gt;"
+		);
+		expect(parsed).toEqual("<u>test</u><u>test</u>");
+	});
+
+	it("doesn't parse when the tag is broken", () => {
+		const parsed = parseUnderlineTags("&lt;u&gt;test");
+		expect(parsed).toEqual("&lt;u&gt;test");
+	});
 });

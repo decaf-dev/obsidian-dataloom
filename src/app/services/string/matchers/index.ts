@@ -5,6 +5,10 @@ import {
 	BOLD_CHARACTER_REGEX,
 	ITALIC_CHARACTER_REGEX,
 	HIGHLIGHT_CHARACTER_REGEX,
+	BOLD_CHARACTER_PIECES_REGEX,
+	ITALIC_CHARACTER_PIECES_REGEX,
+	UNDERLINE_CHARACTER_PIECES_REGEX,
+	HIGHLIGHT_CHARACTER_PIECES_REGEX,
 } from "../regex";
 import { isNumber, isTag, isDate, isCheckBox } from "../validators";
 import { CELL_TYPE } from "src/app/constants";
@@ -13,16 +17,32 @@ export const matchBoldTags = (input: string) => {
 	return input.match(BOLD_CHARACTER_REGEX("g")) || [];
 };
 
+export const matchBoldTagPieces = (input: string): RegExpMatchArray => {
+	return input.match(BOLD_CHARACTER_PIECES_REGEX);
+};
+
 export const matchItalicTags = (input: string) => {
 	return input.match(ITALIC_CHARACTER_REGEX("g")) || [];
+};
+
+export const matchItalicTagPieces = (input: string) => {
+	return input.match(ITALIC_CHARACTER_PIECES_REGEX) || [];
 };
 
 export const matchHighlightTags = (input: string) => {
 	return input.match(HIGHLIGHT_CHARACTER_REGEX("g")) || [];
 };
 
+export const matchHighlightTagPieces = (input: string) => {
+	return input.match(HIGHLIGHT_CHARACTER_PIECES_REGEX) || [];
+};
+
 export const matchUnderlineTags = (input: string) => {
 	return input.match(UNDERLINE_CHARACTER_REGEX("g")) || [];
+};
+
+export const matchUnderlineTagPieces = (input: string) => {
+	return input.match(UNDERLINE_CHARACTER_PIECES_REGEX) || [];
 };
 
 export const matchURLs = (input: string) => {
