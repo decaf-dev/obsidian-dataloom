@@ -256,7 +256,6 @@ export default function EditableTd({
 	}
 
 	function renderCellMenu() {
-		// 		minWidth: type === CELL_TYPE.TAG ? "15rem" : "100px",
 		switch (type) {
 			case CELL_TYPE.TEXT:
 				return (

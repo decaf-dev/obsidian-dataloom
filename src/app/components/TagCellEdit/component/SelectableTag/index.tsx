@@ -32,13 +32,12 @@ export default function SelectableTag({
 	);
 	let tagClass = "NLT__tag";
 	tagClass += " " + findColorClass(color);
-	let cellClass = "NLT__tag-cell NLT__selectable-tag NLT__selectable";
-
-	//If we have an empty cell, then don't return anything
-	if (content === "") return <></>;
 
 	return (
-		<div className={cellClass} onClick={() => onClick(id)}>
+		<div
+			className="NLT__tag-cell NLT__selectable-tag NLT__selectable"
+			onClick={() => onClick(id)}
+		>
 			<div className={tagClass}>
 				<div className="NLT__tag-content">{parse(content)}</div>
 			</div>

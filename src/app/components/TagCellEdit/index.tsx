@@ -6,6 +6,8 @@ import TagCell from "../TagCell";
 import { Tag } from "src/app/services/appData/state/tag";
 import SelectableTag from "../TagCellEdit/component/SelectableTag";
 
+import "./styles.css";
+
 interface Props {
 	menuId: string;
 	isOpen: boolean;
@@ -46,9 +48,9 @@ export default function TagCellEdit({
 			if (node) {
 				if (node instanceof HTMLElement) {
 					if (isOpen) {
-						setTimeout(() => {
-							node.focus();
-						}, 0);
+						// setTimeout(() => {
+						// 	node.focus();
+						// }, 1);
 					}
 				}
 			}
@@ -105,38 +107,41 @@ export default function TagCellEdit({
 			width={width}
 			height={height}
 		>
-			<div className="NLT__tag-menu-container">
-				<div className="NLT__tag-menu-top">
-					{/* {tags
-						.filter(
-							(tag: Tag) => tag.selected.includes(cellId) === true
-						)
-						.map((tag: Tag) => (
-							<TagCell
-								key={tag.id}
-								cellId={cellId}
-								id={tag.id}
-								hideLink={true}
-								color={tag.color}
-								content={tag.content}
-								showRemove={true}
-								onRemoveClick={onRemoveTagClick}
-							/>
-						))} */}
-					<input
-						className="NLT__tag-menu-input"
-						ref={inputRef}
-						type="text"
-						value={inputText}
-						onChange={handleTextChange}
-					/>
+			<div className="NLT__tag-menu">
+				<div className="NLT__tag-menu-container">
+					<div className="NLT__tag-menu-top">
+						{tags
+							.filter(
+								(tag: Tag) =>
+									tag.selected.includes(cellId) === true
+							)
+							.map((tag: Tag) => (
+								<TagCell
+									key={tag.id}
+									cellId={cellId}
+									id={tag.id}
+									hideLink={true}
+									color={tag.color}
+									content={tag.content}
+									showRemove={true}
+									onRemoveClick={onRemoveTagClick}
+								/>
+							))}
+						<input
+							className="NLT__tag-menu-input"
+							ref={inputRef}
+							type="text"
+							value={inputText}
+							onChange={handleTextChange}
+						/>
+					</div>
+					<div className="NLT__tag-menu-bottom">
+						<p className="NLT__tag-menu-text">
+							Select an option or create one
+						</p>
+						<div>{renderSelectableTags()}</div>
+					</div>
 				</div>
-				{/* <div className="NLT__tag-menu-bottom">
-					<p className="NLT__tag-menu-text">
-						Select an option or create one
-					</p>
-					<div>{renderSelectableTags()}</div>
-				</div> */}
 			</div>
 		</Menu>
 	);
