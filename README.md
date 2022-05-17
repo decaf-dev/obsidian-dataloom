@@ -16,6 +16,10 @@ Please upgrade your tables to this new format. This update also includes several
 
 ## What's New?
 
+### Version 3.4.0
+
+-   The pound sign `#` in tags are now optional. See `Tags` below for more details.
+
 ### Version 3.3.0
 
 -   Line break elements are now supported for cells in a column with the type `text` selected. See `Line Breaks` below for usage information
@@ -136,7 +140,11 @@ Line breaks can be added using the break line HTML tag `<br>`. For example, if y
 
 ### Tags
 
-Tags can be rendered in cells that are in a column with the `tag` type selected. Tags have a special notion-like menu that will appear. Tags are scoped to each column of a table. You can type text to filter existing tags and select one. You can also create a new tag by typing text and clicking "Create New" or pressing enter.
+Tags can be rendered in cells that are in a column with the `tag` type selected.
+
+Tags have a special notion-like menu that will appear. Tags are scoped to each column of a table. You can type text to filter existing tags and select one. You can also create a new tag by typing text and clicking "Create New" or pressing enter.
+
+Tags can be rendered with or without a pound sign `#`. If you use a pound sign, then the tag will be rendered as a internal Obsidian tag link. Otherwise, it will be rendered as plain text.
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/tag-menu.png)
 
