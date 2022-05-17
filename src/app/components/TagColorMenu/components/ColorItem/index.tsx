@@ -1,6 +1,7 @@
 import React from "react";
 
 import { findColorClass } from "src/app/services/color";
+import { uppercaseFirst } from "src/app/services/string/adders";
 import "./styles.css";
 
 interface Props {
@@ -27,7 +28,7 @@ export default function ColorItem({ color, isSelected, onColorClick }: Props) {
 			}}
 		>
 			<div className={squareClass}></div>
-			<div>{color}</div>
+			<div>{uppercaseFirst(color)}</div>
 		</div>
 	);
 }
