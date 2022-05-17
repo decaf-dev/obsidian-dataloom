@@ -50,6 +50,61 @@ export const LINE_BREAK_CHARACTER_REGEX = (flags: string) =>
 export const AMPERSAND_CHARACTER_REGEX = (flags: string) =>
 	new RegExp(/&amp;amp;/, flags);
 
+export const BOLD_CHARACTER_STRONG_REGEX = (flags: string) =>
+	new RegExp(/&lt;strong&gt;.{1,}?;\/strong&gt;/, flags);
+
+export const BOLD_CHARACTER_B_REGEX = (flags: string) =>
+	new RegExp(/&lt;b&gt;.{1,}?;\/b&gt;/, flags);
+
+export const BOLD_CHARACTER_STRONG_PIECES_REGEX = new RegExp(
+	/(&lt;strong&gt;).{1,}?(&lt;\/strong&gt;)/
+);
+
+export const BOLD_CHARACTER_B_PIECES_REGEX = new RegExp(
+	/(&lt;b&gt;).{1,}?(&lt;\/b&gt;)/
+);
+
+export const ITALIC_CHARACTER_EM_REGEX = (flags: string) =>
+	new RegExp(/&lt;em&gt;.{1,}?&lt;\/em&gt;/, flags);
+
+export const ITALIC_CHARACTER_I_REGEX = (flags: string) =>
+	new RegExp(/&lt;i&gt;.{1,}?&lt;\/i&gt;/, flags);
+
+export const ITALIC_CHARACTER_EM_PIECES_REGEX = new RegExp(
+	/(&lt;em&gt;).{1,}?(&lt;\/em&gt;)/
+);
+
+export const ITALIC_CHARACTER_I_PIECES_REGEX = new RegExp(
+	/(&lt;i&gt;).{1,}?(&lt;\/i&gt;)/
+);
+
+export const HIGHLIGHT_CHARACTER_REGEX = (flags: string) =>
+	new RegExp(/&lt;mark&gt;.{1,}?&lt;\/mark&gt;/, flags);
+
+export const HIGHLIGHT_CHARACTER_PIECES_REGEX = new RegExp(
+	/(&lt;mark&gt;).{1,}?(&lt;\/mark&gt;)/
+);
+
+export const UNDERLINE_CHARACTER_REGEX = (flags: string) =>
+	new RegExp(/&lt;u&gt;.{1,}?&lt;\/u&gt;/, flags);
+
+export const UNDERLINE_CHARACTER_PIECES_REGEX = new RegExp(
+	/(&lt;u&gt;).{1,}?(&lt;\/u&gt;)/
+);
+
+export const BOLD_MARKDOWN_REGEX = (flags: string) =>
+	new RegExp(/\*\*.{1,}?\*\*/, flags);
+
+export const ITALIC_MARKDOWN_REGEX = (flags: string) =>
+	new RegExp(/\*.{1,}?\*/, flags);
+
+export const HIGHLIGHT_MARKDOWN_REGEX = (flags: string) =>
+	new RegExp(/==.{1,}?==/, flags);
+
+export const BOLD_MARKDOWN_PIECES_REGEX = new RegExp(/(\*\*).{1,}(\*\*)/);
+export const ITALIC_MARKDOWN_PIECES_REGEX = new RegExp(/(\*).{1,}(\*)/);
+export const HIGHLIGHT_MARKDOWN_PIECES_REGEX = new RegExp(/(==).{1,}(==)/);
+
 /**
  * Matches a date with the format mm/dd/yyyy
  */

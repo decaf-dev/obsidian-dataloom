@@ -102,3 +102,14 @@ export const MENU_LEVEL = {
 
 export const BREAK_LINE_TAG = "<br>";
 export const AMPERSAND = "&";
+export const BOLD_TAG_MARKDOWN = "**";
+export const ITALIC_TAG_MARKDOWN = "*";
+export const HIGHLIGHT_TAG_MARKDOWN = "==";
+export const UNDERLINE_TAG_START = "<u>";
+export const UNDERLINE_TAG_CLOSE = "</u>";
+export const ITALIC_TAG_START = "<i>";
+export const ITALIC_TAG_CLOSE = "</i>";
+export const BOLD_TAG_START = "<b>";
+export const BOLD_TAG_CLOSE = "</b>";
+export const HIGHLIGHT_TAG_START = "<mark>";
+export const HIGHLIGHT_TAG_CLOSE = "</mark>";
