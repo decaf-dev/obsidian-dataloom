@@ -61,6 +61,7 @@ export default function App({
 		if (!oldData) {
 			settings.appData[sourcePath][tableId] = oldAppData;
 		}
+
 		// Sort on first render
 		// Use case:
 		// If a user deletes or adds a new row (by copying and pasting, for example)
@@ -81,15 +82,15 @@ export default function App({
 				//to the cache
 				if (saveLock.current) return;
 				try {
-					// await saveAppData(
-					// 	plugin,
-					// 	settings,
-					// 	app,
-					// 	oldAppData,
-					// 	appData,
-					// 	sourcePath,
-					// 	tableId
-					// );
+					await saveAppData(
+						plugin,
+						settings,
+						app,
+						oldAppData,
+						appData,
+						sourcePath,
+						tableId
+					);
 				} catch (err) {
 					console.log(err);
 				}

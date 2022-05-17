@@ -1,5 +1,5 @@
 import NltPlugin from "main";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect, useCallback } from "react";
 
 const FocusContext = React.createContext(false);
 
@@ -34,8 +34,28 @@ export default function FocusProvider({
 		plugin.blurTable();
 	}
 
+	const divRef = useCallback((node) => {
+		if (node) {
+			if (plugin.focused) {
+				if (
+					plugin.focused.sourcePath === sourcePath &&
+					plugin.focused.tableId === tableId
+				) {
+					setTimeout(() => {
+						// node.focus();
+						handleFocus();
+					}, 1);
+				}
+			}
+		}
+	}, []);
+
 	return (
-		<div onFocus={() => handleFocus()} onBlur={() => handleBlur()}>
+		<div
+			ref={divRef}
+			onFocus={() => handleFocus()}
+			onBlur={() => handleBlur()}
+		>
 			<FocusContext.Provider value={isFocused}>
 				{children}
 			</FocusContext.Provider>
