@@ -16,13 +16,13 @@ import { Tag, initialTag } from "../state/tag";
 import { findCellType } from "../../string/matchers";
 import { stripPound } from "../../string/strippers";
 import { addPound } from "../../string/adders";
-import { CELL_TYPE } from "src/app/constants";
+import { BREAK_LINE_TAG, CELL_TYPE } from "src/app/constants";
 import {
 	randomColor,
 	getCurrentTimeWithOffset,
 	randomCellId,
 } from "../../random";
-import { TABLE_ID_REGEX } from "../../string/regex";
+import { LINE_BREAK_REGEX, TABLE_ID_REGEX } from "../../string/regex";
 
 export const findAppData = (parsedTable: string[][]): AppData => {
 	const HEADER_ROW = 0;
@@ -74,8 +74,13 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 					}
 
 					if (cellType === CELL_TYPE.TEXT) {
+						let content = td;
+						content = content.replace(
+							LINE_BREAK_REGEX("g"),
+							BREAK_LINE_TAG
+						);
 						cells.push(
-							new TextCell(cellId, row.id, headers[j].id, td)
+							new TextCell(cellId, row.id, headers[j].id, content)
 						);
 					} else if (cellType === CELL_TYPE.NUMBER) {
 						const number = td === "" ? -1 : parseInt(td);

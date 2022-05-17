@@ -98,3 +98,5 @@ export const MENU_LEVEL = {
 	TWO: 2,
 	THREE: 3,
 };
+
+export const BREAK_LINE_TAG = "<br/>";
