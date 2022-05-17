@@ -347,27 +347,30 @@ export const calcColumnCharLengths = (
 	columnCharLengths[data.headers.length] = tableId.length;
 
 	//Check cells
-	data.cells.forEach((cell) => {
-		const index = data.headers.findIndex(
-			(header) => header.id === cell.headerId
-		);
-		if (cell.type === CELL_TYPE.TAG) {
-			const arr = data.tags.filter((tag) =>
-				tag.selected.includes(cell.id)
+	data.cells.forEach((cell: Cell) => {
+		//We have to do this for the .length function to be available
+		if (cell instanceof Cell) {
+			const index = data.headers.findIndex(
+				(header) => header.id === cell.headerId
 			);
+			if (cell.type === CELL_TYPE.TAG) {
+				const arr = data.tags.filter((tag) =>
+					tag.selected.includes(cell.id)
+				);
 
-			let content = "";
-			arr.forEach((tag, i) => {
-				if (tag.content !== "") {
-					if (i === 0) content += addPound(tag.content);
-					else content += " " + addPound(tag.content);
-				}
-			});
-			if (columnCharLengths[index] < content.length)
-				columnCharLengths[index] = content.length;
-		} else {
-			if (columnCharLengths[index] < cell.length())
-				columnCharLengths[index] = cell.length();
+				let content = "";
+				arr.forEach((tag, i) => {
+					if (tag.content !== "") {
+						if (i === 0) content += addPound(tag.content);
+						else content += " " + addPound(tag.content);
+					}
+				});
+				if (columnCharLengths[index] < content.length)
+					columnCharLengths[index] = content.length;
+			} else {
+				if (columnCharLengths[index] < cell.length())
+					columnCharLengths[index] = cell.length();
+			}
 		}
 	});
 	return columnCharLengths;

@@ -1,54 +1,49 @@
-import React, { useRef, useEffect } from "react";
+import React from "react";
 
 import "./styles.css";
 
 interface Props {
+	id: string;
 	isOpen: boolean;
-	style?: object;
+	top: number;
+	left: number;
+	width?: string;
+	height?: string;
 	children: React.ReactNode;
-	onTabPress?: () => void;
-	onOutsideClick: (e: MouseEvent | null) => void;
 }
 
 export default function Menu({
+	id,
 	isOpen,
-	style,
+	top,
+	left,
 	children,
-	onTabPress,
-	onOutsideClick,
+	width,
+	height,
 }: Props) {
-	const menuRef = useRef(null);
-
-	useEffect(() => {
-		const handleClick = (e: MouseEvent) => {
-			if (menuRef.current && !menuRef.current.contains(e.target))
-				onOutsideClick(e);
-		};
-
-		function handleKeyUp(e: KeyboardEvent) {
-			if (e.key === "Enter") onOutsideClick(null);
-			if (e.key === "Tab") onTabPress();
-		}
-
-		if (isOpen) {
-			document.addEventListener("mousedown", handleClick);
-			document.addEventListener("keyup", handleKeyUp);
-		}
-		return () => {
-			document.removeEventListener("mousedown", handleClick);
-			document.removeEventListener("keyup", handleKeyUp);
-		};
-	}, [menuRef, onOutsideClick, isOpen]);
-
-	if (!isOpen) {
-		style = { ...style, display: "none" };
-	}
-
+	//Add onMouseDown to prevent blur event being called in the FocusProvider
+	//See: https://github.com/react-toolbox/react-toolbox/issues/1323#issuecomment-656778859
 	return (
-		<div className="NLT__menu" ref={menuRef}>
-			<div className="NLT__menu-container" style={style}>
-				{children}
-			</div>
-		</div>
+		<>
+			{isOpen && (
+				<div
+					className="NLT__menu"
+					id={id}
+					onMouseDown={(e) => e.preventDefault()}
+				>
+					<div
+						className="NLT__menu-container"
+						style={{
+							top: `${top}px`,
+							left: `${left}px`,
+							width: width ? width : "fit-content",
+							height: height ? height : "fit-content",
+						}}
+					>
+						{children}
+					</div>
+				</div>
+			)}
+		</>
 	);
 }

@@ -17,22 +17,8 @@ export default function HeaderMenuItem({
 	let className = "NLT__header-menu-item NLT__selectable";
 	if (selected) className += " NLT__selected";
 
-	function handleKeyUp(e: React.KeyboardEvent) {
-		if (e.key === "Enter") {
-			e.stopPropagation();
-			onClick();
-		}
-	}
-
 	return (
-		<li
-			className={className}
-			onClick={(e) => {
-				e.stopPropagation();
-				onClick();
-			}}
-			onKeyUp={handleKeyUp}
-		>
+		<li className={className} onClick={() => onClick()}>
 			<IconText iconText={iconText} icon={icon} />
 		</li>
 	);

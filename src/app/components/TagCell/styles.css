@@ -10,32 +10,9 @@
 	border-radius: 8px;
 	padding: 2px 8px;
 	width: fit-content;
+	color: black;
 }
 
 .NLT__tag-content {
 	width: 100%;
-}
-
-.NLT__tag--red {
-	background-color: #ff6961;
-}
-
-.NLT__tag--yellow {
-	background-color: #faffc7;
-}
-
-.NLT__tag--orange {
-	background-color: #ffdfd3;
-}
-
-.NLT__tag--pink {
-	background-color: #fec8d8;
-}
-
-.NLT__tag--gray {
-	background-color: #cfcfc4;
-}
-
-.NLT__tag--purple {
-	background-color: #e0bbe4;
 }

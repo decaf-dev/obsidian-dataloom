@@ -1,30 +1,17 @@
-import React, { forwardRef } from "react";
+import React from "react";
 
 import { findIcon } from "src/app/services/icon";
+import Button from "../Button";
 interface Props {
 	id?: string;
-	selected?: boolean;
 	icon: string;
 	onClick: (e: React.MouseEvent) => void;
 }
 
-const IconButton = forwardRef<HTMLInputElement, Props>(
-	({ id = "", selected, icon, onClick }, ref) => {
-		let className = "NLT__button NLT__button--reset";
-		if (selected) className += " NLT__selected";
-
-		return (
-			<button
-				tabIndex={-1}
-				id={id !== "" ? id : ""}
-				className={className}
-				ref={ref}
-				onClick={(e) => onClick(e)}
-			>
-				{icon !== "" && findIcon(icon, "NLT__icon--md")}
-			</button>
-		);
-	}
-);
-
-export default IconButton;
+export default function IconButton({ id, icon, onClick }: Props) {
+	return (
+		<Button id={id} onClick={onClick} noPadding={true}>
+			{findIcon(icon, "NLT__icon--md")}
+		</Button>
+	);
+}

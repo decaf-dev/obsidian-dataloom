@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import IconButton from "../IconButton";
@@ -8,8 +8,8 @@ import DragMenuItem from "./components/DragMenuItem";
 
 import "./styles.css";
 import { DRAG_MENU_ITEM } from "./constants";
-import { ICON } from "src/app/constants";
-
+import { ICON, MENU_LEVEL } from "src/app/constants";
+import { useMenu } from "../MenuProvider";
 interface Props {
 	rowId: string;
 	isFirstRow: boolean;
@@ -27,76 +27,58 @@ export default function DragMenu({
 	onDeleteClick,
 	onInsertRowClick,
 }: Props) {
-	const initialDragMenu = {
+	const [menuId] = useState(uuidv4());
+	const [buttonId] = useState(uuidv4());
+	const [menuPosition, setMenuPosition] = useState({
 		top: 0,
 		left: 0,
-		isOpen: false,
-	};
-	const [dragMenu, setDragMenu] = useState(initialDragMenu);
-	const [buttonId] = useState(uuidv4());
-
-	const buttonRef = useRef<HTMLInputElement>();
+	});
+	const { isMenuOpen, openMenu, closeMenu } = useMenu();
 
 	function handleButtonClick(e: React.MouseEvent) {
-		if (dragMenu.isOpen) return;
-		e.stopPropagation();
-		openMenu();
-	}
-
-	function handleOutsideClick(e: MouseEvent | null) {
-		if (e !== null) closeMenu();
-	}
-
-	function openMenu() {
-		if (dragMenu.isOpen) {
-			setDragMenu(initialDragMenu);
-			return;
-		}
-		if (buttonRef.current) {
-			const { width, height } = buttonRef.current.getBoundingClientRect();
-
-			setDragMenu({
-				left: -width - 62,
-				top: -height,
-				isOpen: true,
-			});
-		}
-	}
-
-	function closeMenu() {
-		setDragMenu(initialDragMenu);
+		if (isMenuOpen(menuId)) return;
+		openMenu(menuId, MENU_LEVEL.ONE);
 	}
 
 	function handleDeleteClick(id: string) {
 		onDeleteClick(id);
-		closeMenu();
+		closeMenu(menuId);
 	}
 
 	function handleInsertRowClick(id: string, insertBelow: boolean) {
 		onInsertRowClick(id, insertBelow);
-		closeMenu();
+		closeMenu(menuId);
 	}
 
 	function handleMoveRowClick(id: string, moveBelow: boolean) {
 		onMoveRowClick(id, moveBelow);
-		closeMenu();
+		closeMenu(menuId);
 	}
 
+	const divRef = useCallback((node) => {
+		if (node) {
+			if (node instanceof HTMLElement) {
+				const { width, height } = node.getBoundingClientRect();
+				setMenuPosition({
+					top: -height,
+					left: -width - 62,
+				});
+			}
+		}
+	}, []);
+
 	return (
-		<>
+		<div ref={divRef}>
 			<IconButton
 				id={buttonId}
 				icon={ICON.MORE_VERT}
-				ref={buttonRef}
 				onClick={handleButtonClick}
 			/>
 			<Menu
-				isOpen={dragMenu.isOpen}
-				style={{
-					top: `${dragMenu.top}px`,
-					left: `${dragMenu.left}px`,
-				}}
-				onOutsideClick={handleOutsideClick}
+				id={menuId}
+				isOpen={isMenuOpen(menuId)}
+				top={menuPosition.top}
+				left={menuPosition.left}
 			>
 				<div className="NLT__drag-menu">
 					{Object.values(DRAG_MENU_ITEM).map((item) => {
@@ -135,6 +117,6 @@ export default function DragMenu({
 					})}
 				</div>
 			</Menu>
-		</>
+		</div>
 	);
 }

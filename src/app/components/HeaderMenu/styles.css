@@ -1,7 +1,6 @@
 .NLT__header-menu {
 	padding: 4px 10px;
 	cursor: default;
-	min-width: 150px;
 }
 
 .NLT__header-menu-item:focus-visible {
@@ -21,7 +20,6 @@
 
 .NLT__header-menu-header {
 	font-weight: 700;
-	padding-left: 5px;
 }
 
 .NLT__header-menu-item {
@@ -32,6 +30,6 @@
 	margin: 0;
 }
 
-.NLT__header-menu-delete-button {
-	margin-top: 10px;
+.NLT__header-menu-input {
+	width: 150px !important;
 }

@@ -33,23 +33,20 @@ export const saveAppData = async (
 			markdown
 		);
 
-		if (DEBUG.SAVE_APP_DATA.LOG_MESSAGE) {
-			console.log("Saving data");
-			if (DEBUG.SAVE_APP_DATA.APP_DATA) {
-				console.log("New app data:");
-				console.log(markdown);
-			}
-			if (DEBUG.SAVE_APP_DATA.TABLE_REGEX) {
-				console.log("Table regex:");
-				console.log(
-					findTableRegex(tableId, oldAppData.headers, oldAppData.rows)
-				);
-			}
-			if (DEBUG.SAVE_APP_DATA.UPDATED_CONTENT) {
-				console.log("Updated content:");
-				console.log(content);
-			}
+		if (DEBUG.SAVE_APP_DATA.APP_DATA) {
+			console.log("saveAppData - New app data:");
+			console.log(markdown);
 		}
+		// if (DEBUG.SAVE_APP_DATA.TABLE_REGEX) {
+		// 	console.log("Table regex:");
+		// 	console.log(
+		// 		findTableRegex(tableId, oldAppData.headers, oldAppData.rows)
+		// 	);
+		// }
+		// if (DEBUG.SAVE_APP_DATA.UPDATED_CONTENT) {
+		// 	console.log("Updated content:");
+		// 	console.log(content);
+		// }
 
 		//Reset update time to 0 so we don't update on load
 		newAppData.updateTime = 0;

@@ -74,6 +74,7 @@ export class NumberCell extends Cell {
 	}
 
 	length() {
+		if (this.number === -1) return 0;
 		return this.number.toString().length;
 	}
 
@@ -133,6 +134,7 @@ export class DateCell extends Cell {
 	}
 
 	length() {
+		if (this.date === null) return 0;
 		return "MM/DD/YY".length;
 	}
 
