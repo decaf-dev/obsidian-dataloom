@@ -42,7 +42,8 @@ export class NLTTable extends MarkdownRenderChild {
 		//If data is not defined then that means that the table doesn't have a type
 		//defintion row. Therefore, it's not a valid NLT table
 		if (data) {
-			this.el = this.containerEl.createEl("div");
+			// this.el = this.containerEl.createEl("div");
+			// this.el.style.position = "relative";
 			ReactDOM.render(
 				<FocusProvider
 					plugin={this.plugin}
@@ -59,9 +60,9 @@ export class NLTTable extends MarkdownRenderChild {
 						/>
 					</MenuProvider>
 				</FocusProvider>,
-				this.el
+				this.containerEl
 			);
-			this.containerEl.children[0].replaceWith(this.el);
+			// this.containerEl.children[0].replaceWith(this.el);
 		}
 	}
 }

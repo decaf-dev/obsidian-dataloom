@@ -2,8 +2,12 @@
 * Button
 */
 .NLT__button {
-    padding: 4px;
-    width: fit-content;
+    display: flex;
+    padding: 4px 8px;
+}
+
+.NLT__button > span {
+    min-width: 30px;
 }
 
 .NLT__button--reset {

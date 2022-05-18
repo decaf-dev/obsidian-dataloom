@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 
 import EditableTd from "./components/EditableTd";
 import Table from "./components/Table";
@@ -42,7 +42,12 @@ export default function App({
 	// const [focusedElement, setFocusedElement] = useState<TabbableElement>(
 	// 	INITIAL_FOCUSED_ELEMENT
 	// );
+	const [previewStyle, setPreviewStyle] = useState({
+		viewWidth: 0,
+		sizerWidth: 0,
+	});
 	const [debounceUpdate, setDebounceUpdate] = useState(0);
+	const [resizeTime, setResizeTime] = useState(0);
 	const saveLock = useRef(false);
 
 	useEffect(() => {
@@ -567,9 +572,98 @@ export default function App({
 		});
 	}
 
+	// useEffect(() => {
+	// 	// setTimeout(() => {
+	// 	const viewEl = document.querySelector(".markdown-preview-view");
+	// 	const sizerEl = document.querySelector(".markdown-preview-sizer");
+	// 	if (viewEl instanceof HTMLElement && sizerEl instanceof HTMLElement) {
+	// 		const viewWidth =
+	// 			parseInt(
+	// 				window
+	// 					.getComputedStyle(viewEl)
+	// 					.getPropertyValue("width")
+	// 					.split("px")[0]
+	// 			) - 60;
+
+	// 		const sizerWidth = parseInt(
+	// 			window
+	// 				.getComputedStyle(sizerEl)
+	// 				.getPropertyValue("width")
+	// 				.split("px")[0]
+	// 		);
+
+	// 		setPreviewStyle({
+	// 			viewWidth,
+	// 			sizerWidth,
+	// 		});
+	// 	}
+	// 	// }, 1);
+	// }, [resizeTime]);
+
+	// const [tableWidth, setTableWidth] = useState(0);
+	// const didMount = useRef(false);
+	// const tableRef = useCallback(
+	// 	(node) => {
+	// 		function updateWidth() {
+	// 			if (node) {
+	// 				if (node instanceof HTMLElement) {
+	// 					console.log(node.offsetWidth);
+	// 					setTableWidth(node.offsetWidth);
+	// 				}
+	// 			}
+	// 			if (!didMount.current) didMount.current = true;
+	// 		}
+	// 		if (didMount.current) updateWidth();
+	// 		else setTimeout(() => updateWidth(), 1);
+	// 	},
+	// 	[appData.updateTime]
+	// );
+
+	// useEffect(() => {
+	// 	let el: HTMLElement | null = null;
+	// 	function handleResize() {
+	// 		setResizeTime(Date.now());
+	// 	}
+	// 	setTimeout(() => {
+	// 		handleResize();
+	// 		el = document.querySelector(".view-content");
+	// 		new ResizeObserver(handleResize).observe(el);
+	// 	}, 1);
+	// }, []);
+
+	let style = {};
+
+	// // console.log("tableWidth", tableWidth);
+	// const margin = previewStyle.viewWidth - previewStyle.sizerWidth;
+	// //The margin can be 0 when the window is small
+	// if (tableWidth <= previewStyle.sizerWidth || margin === 0) {
+	// 	// console.log("HERE1");
+	// 	//This will set the width to the size of the preview, being a max-width of 700px
+	// 	style = {
+	// 		left: "0px",
+	// 		width: "100%",
+	// 	};
+	// } else if (tableWidth <= previewStyle.viewWidth) {
+	// 	// console.log("HERE2");
+	// 	const calculatedMargin = previewStyle.viewWidth - tableWidth;
+	// 	const BUTTON_WIDTH = 30;
+	// 	style = {
+	// 		left: `-${calculatedMargin / 2 - BUTTON_WIDTH}px`,
+	// 		width: `${tableWidth}px`,
+	// 	};
+	// } else {
+	// 	console.log("HERE3");
+	// 	console.log(`-${margin / 2}px`);
+	// 	style = {
+	// 		left: `-${margin / 2}px`,
+	// 		width: `calc(100% + ${margin}px)`,
+	// 	};
+	// }
+
 	return (
-		<div className="NLT__app" tabIndex={0}>
+		<div className="NLT__app" tabIndex={0} style={style}>
 			<Table
+				// ref={tableRef}
 				headers={appData.headers.map((header, j) => {
 					const { id, content, width, type, sortName } = header;
 					return {

@@ -60,6 +60,10 @@ export default function FocusProvider({
 			ref={divRef}
 			onFocus={() => handleFocus()}
 			onBlur={() => handleBlur()}
+			onClick={(e) => {
+				e.preventDefault();
+				e.stopPropagation();
+			}}
 		>
 			<FocusContext.Provider value={isFocused}>
 				{children}

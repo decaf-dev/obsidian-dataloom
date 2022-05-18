@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback } from "react";
 
 import Menu from "../Menu";
 
@@ -12,11 +12,6 @@ interface Props {
 	inputText: string;
 	onInputChange: (value: string) => void;
 }
-
-const LAST_MENU_STATE = {
-	OPEN: "open",
-	CLOSED: "closed",
-};
 
 export default function TextCellEdit({
 	menuId,

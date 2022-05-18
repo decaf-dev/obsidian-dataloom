@@ -22,7 +22,7 @@ export default function Button({ id, children, noPadding, onClick }: Props) {
 			aria-hidden="true"
 			onClick={(e) => onClick(e)}
 		>
-			{children}
+			<span>{children}</span>
 		</button>
 	);
 }
