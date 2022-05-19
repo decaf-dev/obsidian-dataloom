@@ -1,6 +1,7 @@
 import NltPlugin from "main";
-import React, { useState, useContext, useEffect, useCallback } from "react";
+import React, { useState, useContext, useCallback } from "react";
 import { DEBUG } from "src/app/constants";
+import { findCurrentViewType } from "src/app/services/appData/external/loadUtils";
 
 const FocusContext = React.createContext(false);
 
@@ -9,6 +10,7 @@ interface Props {
 	plugin: NltPlugin;
 	tableId: string;
 	sourcePath: string;
+	el: HTMLElement;
 }
 
 export const useTableFocus = () => {
@@ -20,6 +22,7 @@ export default function FocusProvider({
 	plugin,
 	tableId,
 	sourcePath,
+	el,
 }: Props) {
 	const [isFocused, setFocus] = useState(false);
 
@@ -28,7 +31,7 @@ export default function FocusProvider({
 			console.log("[FocusProvider]: handleFocus()");
 		}
 		setFocus(true);
-		plugin.focusTable(tableId, sourcePath);
+		plugin.focusTable(tableId, sourcePath, findCurrentViewType(el));
 	}
 
 	function handleBlur() {
