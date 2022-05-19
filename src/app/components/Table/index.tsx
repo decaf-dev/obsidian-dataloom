@@ -15,7 +15,7 @@ interface Props {
 const Table = forwardRef(
 	({ headers, rows, onAddColumn, onAddRow }: Props, ref) => {
 		return (
-			<table ref={ref}>
+			<table>
 				<thead>
 					<tr>
 						{headers.map((header) => (
