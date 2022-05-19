@@ -1,6 +1,6 @@
 import { NltSettings } from "../../settings";
 import NltPlugin from "main";
-import { parseTableFromEl } from "./loadUtils";
+import { findCurrentViewType, parseTableFromEl } from "./loadUtils";
 import { updateAppDataFromSavedState } from "./merge";
 import {
 	hasValidHeaderRow,
@@ -54,18 +54,15 @@ export const loadAppData = (
 		return { tableId: null, data: null };
 	}
 
-	// if (DEBUG) {
-	// 	console.log("FOUND TABLE ID", tableId);
-	// }
-
+	const viewType = findCurrentViewType(el);
 	if (settings.appData[sourcePath]) {
 		if (settings.appData[sourcePath][tableId]) {
-			//This is a compatibility fix for v2.3.6 and less
-			if (settings.appData[sourcePath][tableId].headers) {
-				const oldData = settings.appData[sourcePath][tableId];
+			if (settings.appData[sourcePath][tableId].data) {
+				const oldData = settings.appData[sourcePath][tableId].data;
 				if (DEBUG.LOAD_APP_DATA.DATA) {
 					console.log("[load]: loadAppData");
 					console.log("Loading from cache.");
+					console.log(`Table: ${tableId}, View: ${viewType}`);
 					console.log(oldData);
 				}
 
@@ -84,7 +81,8 @@ export const loadAppData = (
 	const data = findAppData(parsedTable);
 	if (DEBUG.LOAD_APP_DATA.DATA) {
 		console.log("[load]: loadAppData");
-		console.log("Loading new app data.");
+		console.log("Loading new.");
+		console.log(`Table: ${tableId}, View: ${viewType}`);
 		console.log(data);
 	}
 

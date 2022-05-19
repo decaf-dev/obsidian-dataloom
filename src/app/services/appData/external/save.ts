@@ -5,6 +5,7 @@ import { NltSettings } from "../../settings";
 import { persistAppData } from "./persist";
 import NltPlugin from "../../../../../main";
 import { DEBUG } from "src/app/constants";
+import { ViewType } from "../state/saveData";
 
 /**
  * Saves app data
@@ -21,7 +22,8 @@ export const saveAppData = async (
 	oldAppData: AppData,
 	newAppData: AppData,
 	sourcePath: string,
-	tableId: string
+	tableId: string,
+	viewType: ViewType
 ) => {
 	const markdown = appDataToMarkdown(tableId, newAppData);
 	try {
@@ -37,20 +39,15 @@ export const saveAppData = async (
 			console.log("saveAppData - New app data:");
 			console.log(markdown);
 		}
-		// if (DEBUG.SAVE_APP_DATA.TABLE_REGEX) {
-		// 	console.log("Table regex:");
-		// 	console.log(
-		// 		findTableRegex(tableId, oldAppData.headers, oldAppData.rows)
-		// 	);
-		// }
-		// if (DEBUG.SAVE_APP_DATA.UPDATED_CONTENT) {
-		// 	console.log("Updated content:");
-		// 	console.log(content);
-		// }
 
-		//Reset update time to 0 so we don't update on load
-		newAppData.updateTime = 0;
-		persistAppData(plugin, settings, newAppData, sourcePath, tableId);
+		persistAppData(
+			plugin,
+			settings,
+			newAppData,
+			sourcePath,
+			tableId,
+			viewType
+		);
 
 		//Save the open file with the new table data
 		await app.vault.modify(file, content);

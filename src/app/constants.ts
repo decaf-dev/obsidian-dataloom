@@ -1,15 +1,15 @@
 export const DEBUG = {
 	LOAD_APP_DATA: {
-		DATA: false,
+		DATA: true,
 		IDS: false,
 		TYPES: false,
 		PARSED_TABLE: false,
 	},
 	APP: {
-		HANDLER: false,
+		HANDLER: true,
 	},
 	SAVE_APP_DATA: {
-		APP_DATA: false,
+		APP_DATA: true,
 		TABLE_REGEX: false,
 		UPDATED_CONTENT: false,
 	},

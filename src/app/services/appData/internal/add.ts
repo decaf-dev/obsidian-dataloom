@@ -15,7 +15,6 @@ export const addRow = (data: AppData): AppData => {
 	});
 	return {
 		...data,
-		updateTime: Date.now(),
 		rows: [...data.rows, initialRow(rowId, Date.now())],
 		cells: [...data.cells, ...cells],
 		tags: [...data.tags, ...tags],
@@ -32,7 +31,6 @@ export const addColumn = (data: AppData): AppData => {
 	});
 	return {
 		...data,
-		updateTime: Date.now(),
 		headers: [...data.headers, header],
 		cells,
 	};

@@ -1,7 +1,7 @@
 import { MARKDOWN_CELLS_REGEX, MARKDOWN_ROWS_REGEX } from "../../string/regex";
 import { isMarkdownTable } from "../../string/validators";
 import { stripLinks, sanitizeHTML } from "../../string/strippers";
-import { CELL_TYPE } from "src/app/constants";
+import { ViewType } from "../state/saveData";
 
 /**
  * Parses data for an individual table.
@@ -60,4 +60,11 @@ export const findMarkdownTablesFromFileData = (data: string): string[] => {
 	//From there we check if this is actually a table
 	//We will just look for the hyphen row with each cell having at least 3 hyphens
 	return matches.filter((match) => isMarkdownTable(match));
+};
+
+export const findCurrentViewType = (el: HTMLElement): ViewType => {
+	let currentViewType: ViewType = "reading";
+	if (el.className.includes("markdown-rendered"))
+		currentViewType = "live-preview";
+	return currentViewType;
 };

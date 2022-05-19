@@ -10,7 +10,7 @@ interface Props {
 
 export default function IconButton({ id, icon, onClick }: Props) {
 	return (
-		<Button id={id} onClick={onClick} noPadding={true}>
+		<Button id={id} hasIcon={true} onClick={onClick}>
 			{findIcon(icon, "NLT__icon--md")}
 		</Button>
 	);
