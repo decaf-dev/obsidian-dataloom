@@ -31,7 +31,6 @@ interface Props {
 	el: HTMLElement;
 }
 
-// const INITIAL_FOCUSED_ELEMENT = { [-1]: TABBABLE_ELEMENT_TYPE.UNFOCUSED };
 export default function App({
 	plugin,
 	settings,
@@ -46,24 +45,19 @@ export default function App({
 	const [updateTime, setUpdateTime] = useState(0);
 
 	function handleAddColumn() {
-		// if (DEBUG) console.log("[handler]: handleAddColumn called.");
-		setAppData((prevState) => {
-			return addColumn(prevState);
-		});
+		if (DEBUG.APP.HANDLER) console.log("[App]: handleAddColumn called.");
+		setAppData((prevState) => addColumn(prevState));
 		setUpdateTime(Date.now());
 	}
 
 	function handleAddRow() {
-		// if (DEBUG) console.log("[handler]: handleAddRow called.");
-		setAppData((prevState: AppData) => {
-			const newData = addRow(prevState);
-			return newData;
-		});
+		if (DEBUG.APP.HANDLER) console.log("[App]: handleAddRow called.");
+		setAppData((prevState: AppData) => addRow(prevState));
 		setUpdateTime(Date.now());
 	}
 
 	function handleHeaderSave(id: string, updatedContent: string) {
-		// if (DEBUG) console.log("[handler]: handleHeaderSave called.");
+		if (DEBUG.APP.HANDLER) console.log("[App]: handleHeaderSave called.");
 		setAppData((prevState) => {
 			return {
 				...prevState,
@@ -85,7 +79,7 @@ export default function App({
 		type: string,
 		sortName: string
 	) {
-		// if (DEBUG) console.log("[handler]: handleHeaderSort called.");
+		if (DEBUG.APP.HANDLER) console.log("[App]: handleHeaderSort called.");
 		setAppData((prevState) => {
 			return {
 				...prevState,
@@ -99,8 +93,10 @@ export default function App({
 	}
 
 	function handleCellContentChange(id: string, content: any) {
-		if (DEBUG.APP.HANDLER)
-			console.log(`[App]: handleCellContentChange("${id}", ${content}).`);
+		if (DEBUG.APP.HANDLER) {
+			console.log(`[App]: handleCellContentChange`);
+			console.log({ id, content });
+		}
 
 		setAppData((prevState) => {
 			return {
@@ -128,7 +124,7 @@ export default function App({
 		content: string,
 		color: string
 	) {
-		// if (DEBUG) console.log("[handler]: handleAddTag called.");
+		if (DEBUG.APP.HANDLER) console.log("[App]: handleAddTag called.");
 		setAppData((prevState) => {
 			return {
 				...prevState,
@@ -457,21 +453,6 @@ export default function App({
 	}
 
 	useEffect(() => {
-		//When a user adds a new table, this entry will initially be null, we need to set this
-		//so a user can add rows/columns via hotkeys
-		const tableData = settings.appData[sourcePath];
-		if (!tableData) {
-			settings.appData[sourcePath] = {};
-		} else if (!tableData[tableId] || !tableData[tableId].data) {
-			//!tableData[tableId].data to handle v3.4.0 and under
-			settings.appData[sourcePath][tableId] = {
-				data: oldAppData,
-				shouldUpdate: false,
-				viewType: findCurrentViewType(el),
-			};
-		}
-		plugin.saveSettings();
-
 		// Sort on first render
 		// If a user deletes or adds a new row (by copying and pasting, for example)
 		// then we want to make sure that value is sorted in
@@ -612,32 +593,34 @@ export default function App({
 
 	//If a table updates in editing mode or reading mode, update the other table
 	//TODO change with notifier in the main.js
+	//TODO why doesn't this always update?
 	useEffect(() => {
 		let intervalId: NodeJS.Timer = null;
 		function startTimer() {
 			intervalId = setInterval(async () => {
-				const { shouldUpdate, viewType } =
-					settings.appData[sourcePath][tableId];
+				if (settings.state[sourcePath]) {
+					if (settings.state[sourcePath][tableId]) {
+						const { shouldUpdate, viewType } =
+							settings.state[sourcePath][tableId];
 
-				const currentViewType = findCurrentViewType(el);
+						const currentViewType = findCurrentViewType(el);
 
-				if (shouldUpdate && viewType !== currentViewType) {
-					settings.appData[sourcePath][tableId].shouldUpdate = false;
-					await plugin.saveSettings();
-					const data = settings.appData[sourcePath][tableId].data;
-					setOldAppData(data);
-					setAppData(data);
+						if (shouldUpdate && viewType !== currentViewType) {
+							settings.state[sourcePath][tableId].shouldUpdate =
+								false;
+							await plugin.saveSettings();
+							const savedData =
+								settings.state[sourcePath][tableId].data;
+							setOldAppData(savedData);
+							setAppData(savedData);
+						}
+					}
 				}
-			}, 500);
+			}, 750);
 		}
-
 		startTimer();
-
 		return () => clearInterval(intervalId);
 	}, []);
-
-	console.log(findCurrentViewType(el));
-	console.log(appData);
 
 	return (
 		<div className="NLT__app" tabIndex={0}>

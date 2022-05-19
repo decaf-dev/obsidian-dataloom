@@ -1,7 +1,7 @@
 import { MARKDOWN_CELLS_REGEX, MARKDOWN_ROWS_REGEX } from "../../string/regex";
 import { isMarkdownTable } from "../../string/validators";
 import { stripLinks, sanitizeHTML } from "../../string/strippers";
-import { ViewType } from "../state/saveData";
+import { ViewType } from "../state/saveState";
 
 /**
  * Parses data for an individual table.

@@ -1,11 +1,17 @@
 import { TabbableElement } from "../appData/state/tabbableElement";
 import { TABBABLE_ELEMENT_TYPE } from "src/app/constants";
-import { saveData } from "../appData/state/saveData";
+import { saveState } from "../appData/state/saveState";
+import { AppData } from "../appData/state/appData";
 
 export interface NltSettings {
 	appData: {
 		[sourcePath: string]: {
-			[tableId: string]: saveData;
+			[tableId: string]: AppData;
+		};
+	};
+	state: {
+		[sourcePath: string]: {
+			[tableId: string]: saveState;
 		};
 	};
 	focusedElement: TabbableElement;
@@ -13,5 +19,6 @@ export interface NltSettings {
 
 export const DEFAULT_SETTINGS: NltSettings = {
 	appData: {},
+	state: {},
 	focusedElement: { id: "-1", type: TABBABLE_ELEMENT_TYPE.UNFOCUSED },
 };

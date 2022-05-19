@@ -6,15 +6,13 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/preview.png)
 
-## Migrating from 2.3.6
-
-Starting in 3.0.0, Notion-Like tables supports a new table format that will facilitate better development in the plugin.
-
-Please upgrade your tables to this new format. This update also includes several bug fixes that could only be fixed by placing column and row ids into the table.
-
-**To migrate to the new format please see the section below: `Making a Table Manually`**
-
 ## What's New?
+
+### Version 3.5.0
+
+I am proud to announce that NLT now supports live preview! Please check it out! :)
+
+The settings cache format was updated to accomdomate this functionality. You won't need to do anything for your tables to render, as the app will automatically update your data.json file.
 
 ### Version 3.4.0
 
@@ -25,17 +23,13 @@ Please upgrade your tables to this new format. This update also includes several
 
 -   Line break elements are now supported for cells in a column with the type `text` selected. See `Line Breaks` below for usage information
 
-### Version 3.2.0
+### Migrating from 2.3.6
 
--   Tag colors are now fully implemented. Choose from 10 different colors using the tag color menu. Please see `Tag Colors` below for usage details.
+Starting in 3.0.0, Notion-Like tables supports a new table format that will facilitate better development in the plugin.
 
--   Redesigned the menu system UI to be more consistent in its design
+Please upgrade your tables to this new format. This update also includes several bug fixes that could only be fixed by placing column and row ids into the table.
 
--   The textarea will now resize as you type :)
-
--   Due to some changes, I am currently disabling tabbing of cells, will add back in the near future.
-
-See: https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/3.2.0 for a detailed update
+**To migrate to the new format please see the section below: `Making a Table Manually`**
 
 ## Usage
 

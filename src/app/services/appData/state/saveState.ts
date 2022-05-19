@@ -6,8 +6,7 @@ export const VIEW_TYPE = {
 	LIVE_PREVIEW: "live-preview",
 	READING: "reading",
 };
-
-export interface saveData {
+export interface saveState {
 	data: AppData;
 	viewType: ViewType;
 	shouldUpdate: boolean;

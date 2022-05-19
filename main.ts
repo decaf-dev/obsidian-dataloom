@@ -6,7 +6,7 @@ import { addRow, addColumn } from "src/app/services/appData/internal/add";
 import { saveAppData } from "src/app/services/appData/external/save";
 import { createEmptyMarkdownTable } from "src/app/services/appData/mock";
 import { randomColumnId, randomTableId } from "src/app/services/random";
-import { ViewType } from "src/app/services/appData/state/saveData";
+import { ViewType } from "src/app/services/appData/state/saveState";
 
 interface FocusedTable {
 	tableId: string;
@@ -49,11 +49,11 @@ export default class NltPlugin extends Plugin {
 		//If the file path changes, we want to update our cache so that the data is still accessible.
 		this.registerEvent(
 			this.app.vault.on("rename", (file, oldPath) => {
-				if (this.settings.appData[oldPath]) {
+				if (this.settings.state[oldPath]) {
 					const newPath = file.path;
-					const data = { ...this.settings.appData[oldPath] };
-					delete this.settings.appData[oldPath];
-					this.settings.appData[newPath] = data;
+					const data = { ...this.settings.state[oldPath] };
+					delete this.settings.state[oldPath];
+					this.settings.state[newPath] = data;
 					this.saveSettings();
 				}
 			})
@@ -80,7 +80,7 @@ export default class NltPlugin extends Plugin {
 				if (this.focused) {
 					const { tableId, sourcePath, viewType } = this.focused;
 					const oldData =
-						this.settings.appData[sourcePath][tableId].data;
+						this.settings.state[sourcePath][tableId].data;
 					const newData = addColumn(oldData);
 					await saveAppData(
 						this,
@@ -108,7 +108,7 @@ export default class NltPlugin extends Plugin {
 				if (this.focused) {
 					const { tableId, sourcePath, viewType } = this.focused;
 					const oldData =
-						this.settings.appData[sourcePath][tableId].data;
+						this.settings.state[sourcePath][tableId].data;
 					const newData = addRow(oldData);
 					await saveAppData(
 						this,

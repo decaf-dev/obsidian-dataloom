@@ -19,12 +19,12 @@ import { appDataIdsToMarkdown, appDataTypesToMarkdown } from "../debug";
  * @param el The root table element
  * @returns AppData - The loaded data which the app will use to initialize its state
  */
-export const loadAppData = (
+export const loadAppData = async (
 	plugin: NltPlugin,
 	settings: NltSettings,
 	el: HTMLElement,
 	sourcePath: string
-): LoadedData | null => {
+): Promise<LoadedData> => {
 	const parsedTable = parseTableFromEl(el);
 	if (DEBUG.LOAD_APP_DATA.PARSED_TABLE) {
 		console.log("[load][loadAppData]: parsedTableFromEl");
@@ -54,11 +54,26 @@ export const loadAppData = (
 		return { tableId: null, data: null };
 	}
 
-	const viewType = findCurrentViewType(el);
+	//Migration from 3.4.0
 	if (settings.appData[sourcePath]) {
 		if (settings.appData[sourcePath][tableId]) {
-			if (settings.appData[sourcePath][tableId].data) {
-				const oldData = settings.appData[sourcePath][tableId].data;
+			const data = settings.appData[sourcePath][tableId];
+			settings.state[sourcePath] = {};
+			settings.state[sourcePath][tableId] = {
+				data,
+				viewType: "live-preview",
+				shouldUpdate: false,
+			};
+			delete settings.appData[sourcePath][tableId];
+			await plugin.saveSettings();
+		}
+	}
+
+	const viewType = findCurrentViewType(el);
+	if (settings.state[sourcePath]) {
+		if (settings.state[sourcePath][tableId]) {
+			if (settings.state[sourcePath][tableId].data) {
+				const oldData = settings.state[sourcePath][tableId].data;
 				if (DEBUG.LOAD_APP_DATA.DATA) {
 					console.log("[load]: loadAppData");
 					console.log("Loading from cache.");
@@ -68,7 +83,6 @@ export const loadAppData = (
 
 				const data = findAppData(parsedTable);
 				const updated = updateAppDataFromSavedState(oldData, data);
-				plugin.saveSettings();
 				if (DEBUG.LOAD_APP_DATA.IDS)
 					console.log(appDataIdsToMarkdown(tableId, data));
 				if (DEBUG.LOAD_APP_DATA.TYPES)
@@ -90,5 +104,15 @@ export const loadAppData = (
 		console.log(appDataIdsToMarkdown(tableId, data));
 	if (DEBUG.LOAD_APP_DATA.TYPES)
 		console.log(appDataTypesToMarkdown(tableId, data));
+
+	//When a user adds a new table, this entry will initially be null, we need to set this
+	//so a user can add rows/columns via hotkeys
+	settings.state[sourcePath] = {};
+	settings.state[sourcePath][tableId] = {
+		data,
+		shouldUpdate: false,
+		viewType: findCurrentViewType(el),
+	};
+	plugin.saveSettings(); //Don't await causes lag
 	return { tableId, data };
 };

@@ -5,7 +5,7 @@ import { NltSettings } from "../../settings";
 import { persistAppData } from "./persist";
 import NltPlugin from "../../../../../main";
 import { DEBUG } from "src/app/constants";
-import { ViewType } from "../state/saveData";
+import { ViewType } from "../state/saveState";
 
 /**
  * Saves app data

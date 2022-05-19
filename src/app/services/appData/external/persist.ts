@@ -1,7 +1,7 @@
 import { AppData } from "../state/appData";
 import { NltSettings } from "../../settings";
 import NltPlugin from "../../../../../main";
-import { ViewType } from "../state/saveData";
+import { ViewType } from "../state/saveState";
 
 export const persistAppData = (
 	plugin: NltPlugin,
@@ -11,8 +11,8 @@ export const persistAppData = (
 	tableId: string,
 	viewType: ViewType
 ) => {
-	if (!settings.appData[sourcePath]) settings.appData[sourcePath] = {};
-	settings.appData[sourcePath][tableId] = {
+	if (!settings.state[sourcePath]) settings.state[sourcePath] = {};
+	settings.state[sourcePath][tableId] = {
 		data: appData,
 		viewType,
 		shouldUpdate: true,
