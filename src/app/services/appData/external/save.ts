@@ -40,7 +40,7 @@ export const saveAppData = async (
 			console.log(markdown);
 		}
 
-		persistAppData(
+		await persistAppData(
 			plugin,
 			settings,
 			newAppData,

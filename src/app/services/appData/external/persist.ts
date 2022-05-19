@@ -3,7 +3,7 @@ import { NltSettings } from "../../settings";
 import NltPlugin from "../../../../../main";
 import { ViewType } from "../state/saveState";
 
-export const persistAppData = (
+export const persistAppData = async (
 	plugin: NltPlugin,
 	settings: NltSettings,
 	appData: AppData,
@@ -17,5 +17,5 @@ export const persistAppData = (
 		viewType,
 		shouldUpdate: true,
 	};
-	plugin.saveData(settings);
+	await plugin.saveData(settings);
 };

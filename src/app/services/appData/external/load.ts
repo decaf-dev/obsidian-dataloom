@@ -113,6 +113,6 @@ export const loadAppData = async (
 		shouldUpdate: false,
 		viewType: findCurrentViewType(el),
 	};
-	plugin.saveSettings(); //Don't await causes lag
+	await plugin.saveSettings();
 	return { tableId, data };
 };
