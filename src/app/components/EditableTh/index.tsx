@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -48,23 +48,26 @@ export default function EditableTh({
 		top: 0,
 		left: 0,
 	});
-	const dragRef = useRef(false);
 	const [menuId] = useState(uuidv4());
+	const [resizeTime, setResizeTime] = useState(0);
+	const dragRef = useRef(false);
 	const { isMenuOpen, openMenu, closeMenu } = useMenu();
 
 	function handleHeaderClick(e: React.MouseEvent) {
-		if (dragRef.current) return;
 		if (isMenuOpen(menuId)) return;
+		if (dragRef.current) return;
 		openMenu(menuId, MENU_LEVEL.ONE);
 	}
 
 	function handleMouseMove(e: MouseEvent) {
 		const target = e.target;
 		if (target instanceof HTMLElement) {
-			dragRef.current = true;
+			// console.log(e.pageX);
+			// console.log(headerPosition.left);
 			let width = e.pageX - headerPosition.left - 17;
 			width = parseInt(width.toString());
-			if (width < 100) return;
+			if (width < 30) return;
+			dragRef.current = true;
 			onWidthChange(id, width);
 		}
 	}
@@ -73,28 +76,50 @@ export default function EditableTh({
 		closeMenu(menuId);
 	}
 
+	function handleDrag(e: DragEvent) {
+		removeEventListeners();
+	}
+
+	function handleMouseUp(e: MouseEvent) {
+		removeEventListeners();
+	}
+
 	function removeEventListeners() {
 		window.removeEventListener("mousemove", handleMouseMove);
 		window.removeEventListener("drag", removeEventListeners);
 		window.removeEventListener("mouseup", removeEventListeners);
-
 		setTimeout(() => {
 			dragRef.current = false;
-		}, 500);
+		}, 50);
 	}
 
-	const thRef = useCallback((node) => {
-		if (node) {
-			if (node instanceof HTMLElement) {
-				setTimeout(() => {
-					const { top, left } = node.getBoundingClientRect();
-					setHeaderPosition({
-						top,
-						left,
-					});
-				}, 1);
+	const thRef = useCallback(
+		(node) => {
+			if (node) {
+				if (node instanceof HTMLElement) {
+					setTimeout(() => {
+						const { top, left } = node.getBoundingClientRect();
+						setHeaderPosition({
+							top,
+							left,
+						});
+					}, 1);
+				}
 			}
+		},
+		[resizeTime]
+	);
+
+	useEffect(() => {
+		let el: HTMLElement | null = null;
+		function handleResize() {
+			setResizeTime(Date.now());
 		}
+		setTimeout(() => {
+			handleResize();
+			el = document.querySelector(".NLT__app");
+			new ResizeObserver(handleResize).observe(el);
+		}, 1);
 	}, []);
 
 	return (
@@ -123,8 +148,10 @@ export default function EditableTh({
 				onDeleteClick={onDeleteClick}
 				onClose={handleClose}
 			/>
-			<div className="NLT__header-content-container" style={{ width }}>
-				<div className="NLT__header-content">{content}</div>
+			<div className="NLT__header-content-container">
+				<div className="NLT__header-content" style={{ width }}>
+					{content}
+				</div>
 				<div className="NLT__header-resize-container">
 					<div
 						className="NLT__header-resize"
@@ -133,14 +160,11 @@ export default function EditableTh({
 								"mousemove",
 								handleMouseMove
 							);
-							window.addEventListener(
-								"mouseup",
-								removeEventListeners
-							);
-							window.addEventListener(
-								"drag",
-								removeEventListeners
-							);
+							window.addEventListener("mouseup", handleMouseUp);
+							window.addEventListener("drag", handleDrag);
+						}}
+						onClick={(e) => {
+							e.stopPropagation();
 						}}
 					/>
 				</div>

@@ -163,7 +163,6 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 		rows,
 		cells,
 		tags,
-		updateTime: 0,
 	};
 };
 
