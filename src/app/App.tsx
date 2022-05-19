@@ -21,6 +21,7 @@ import { SORT } from "./components/HeaderMenu/constants";
 import { addRow, addColumn } from "./services/appData/internal/add";
 import { randomCellId, randomColumnId, randomRowId } from "./services/random";
 import { findCurrentViewType } from "./services/appData/external/loadUtils";
+import { start } from "repl";
 
 interface Props {
 	plugin: NltPlugin;
@@ -606,6 +607,7 @@ export default function App({
 						const currentViewType = findCurrentViewType(el);
 
 						if (shouldUpdate && viewType !== currentViewType) {
+							clearInterval(intervalId);
 							settings.state[sourcePath][tableId].shouldUpdate =
 								false;
 							await plugin.saveSettings();
@@ -613,10 +615,11 @@ export default function App({
 								settings.state[sourcePath][tableId].data;
 							setOldAppData(savedData);
 							setAppData(savedData);
+							startTimer();
 						}
 					}
 				}
-			}, 750);
+			}, 500);
 		}
 		startTimer();
 		return () => clearInterval(intervalId);
