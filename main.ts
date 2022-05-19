@@ -6,10 +6,16 @@ import { addRow, addColumn } from "src/app/services/appData/internal/add";
 import { saveAppData } from "src/app/services/appData/external/save";
 import { createEmptyMarkdownTable } from "src/app/services/appData/mock";
 import { randomColumnId, randomTableId } from "src/app/services/random";
-import { appDataToMarkdown } from "src/app/services/appData/external/saveUtils";
+import { ViewType } from "src/app/services/appData/state/saveState";
+
+interface FocusedTable {
+	tableId: string;
+	sourcePath: string;
+	viewType: ViewType;
+}
 export default class NltPlugin extends Plugin {
 	settings: NltSettings;
-	focused: { tableId: string; sourcePath: string } | null = null;
+	focused: FocusedTable | null = null;
 
 	/**
 	 * Called on plugin load.
@@ -43,11 +49,11 @@ export default class NltPlugin extends Plugin {
 		//If the file path changes, we want to update our cache so that the data is still accessible.
 		this.registerEvent(
 			this.app.vault.on("rename", (file, oldPath) => {
-				if (this.settings.appData[oldPath]) {
+				if (this.settings.state[oldPath]) {
 					const newPath = file.path;
-					const data = { ...this.settings.appData[oldPath] };
-					delete this.settings.appData[oldPath];
-					this.settings.appData[newPath] = data;
+					const data = { ...this.settings.state[oldPath] };
+					delete this.settings.state[oldPath];
+					this.settings.state[newPath] = data;
 					this.saveSettings();
 				}
 			})
@@ -72,8 +78,9 @@ export default class NltPlugin extends Plugin {
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "\\" }],
 			callback: async () => {
 				if (this.focused) {
-					const { tableId, sourcePath } = this.focused;
-					const oldData = this.settings.appData[sourcePath][tableId];
+					const { tableId, sourcePath, viewType } = this.focused;
+					const oldData =
+						this.settings.state[sourcePath][tableId].data;
 					const newData = addColumn(oldData);
 					await saveAppData(
 						this,
@@ -82,7 +89,8 @@ export default class NltPlugin extends Plugin {
 						oldData,
 						newData,
 						sourcePath,
-						tableId
+						tableId,
+						viewType
 					);
 				} else {
 					new Notice(
@@ -98,18 +106,10 @@ export default class NltPlugin extends Plugin {
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Enter" }],
 			callback: async () => {
 				if (this.focused) {
-					const { tableId, sourcePath } = this.focused;
-					const oldData = this.settings.appData[sourcePath][tableId];
+					const { tableId, sourcePath, viewType } = this.focused;
+					const oldData =
+						this.settings.state[sourcePath][tableId].data;
 					const newData = addRow(oldData);
-					console.log(appDataToMarkdown(tableId, newData));
-					// const focusedElement = {
-					// 	id: newData.cells[
-					// 		newData.cells.length - newData.headers.length
-					// 	].id,
-					// 	type: TABBABLE_ELEMENT_TYPE.CELL,
-					// };
-					// this.settings.focusedElement = focusedElement;
-					// await this.saveSettings();
 					await saveAppData(
 						this,
 						this.settings,
@@ -117,7 +117,8 @@ export default class NltPlugin extends Plugin {
 						oldData,
 						newData,
 						sourcePath,
-						tableId
+						tableId,
+						viewType
 					);
 				} else {
 					new Notice(
@@ -128,10 +129,11 @@ export default class NltPlugin extends Plugin {
 		});
 	}
 
-	focusTable = (tableId: string, sourcePath: string) => {
+	focusTable = (tableId: string, sourcePath: string, viewType: ViewType) => {
 		this.focused = {
 			tableId,
 			sourcePath,
+			viewType,
 		};
 	};
 

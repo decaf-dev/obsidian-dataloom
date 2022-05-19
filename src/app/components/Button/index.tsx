@@ -4,14 +4,14 @@ import "./styles.css";
 
 interface Props {
 	id?: string;
-	noPadding?: boolean;
+	hasIcon?: boolean;
 	children: React.ReactNode;
 	onClick: (e: React.MouseEvent) => void;
 }
 
-export default function Button({ id, children, noPadding, onClick }: Props) {
+export default function Button({ id, children, hasIcon, onClick }: Props) {
 	let className = "NLT__button";
-	if (noPadding) className += " NLT__button--reset";
+	if (hasIcon) className += " NLT__button--icon";
 
 	const buttonId = id !== "" ? id : "";
 	return (

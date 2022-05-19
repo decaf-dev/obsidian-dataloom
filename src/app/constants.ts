@@ -10,8 +10,6 @@ export const DEBUG = {
 	},
 	SAVE_APP_DATA: {
 		APP_DATA: false,
-		TABLE_REGEX: false,
-		UPDATED_CONTENT: false,
 	},
 	EDITABLE_TD: {
 		HANDLER: false,

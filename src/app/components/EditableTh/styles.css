@@ -17,6 +17,7 @@
 
 .NLT__header-content-container {
     display: flex;
+    justify-content: space-between;
 }
 
 .NLT__header-resize-container {

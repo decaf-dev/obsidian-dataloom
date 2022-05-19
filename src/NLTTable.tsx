@@ -32,15 +32,14 @@ export class NLTTable extends MarkdownRenderChild {
 	}
 
 	async onload() {
-		const { tableId, data } = loadAppData(
+		const { tableId, data } = await loadAppData(
 			this.plugin,
 			this.settings,
 			this.containerEl,
 			this.sourcePath
 		);
 
-		//If data is not defined then that means that the table doesn't have a type
-		//defintion row. Therefore, it's not a valid NLT table
+		//If data is not defined then it isn't a valid table
 		if (data) {
 			this.el = this.containerEl.createEl("div");
 			ReactDOM.render(
@@ -56,6 +55,7 @@ export class NLTTable extends MarkdownRenderChild {
 							data={data}
 							sourcePath={this.sourcePath}
 							tableId={tableId}
+							el={this.containerEl}
 						/>
 					</MenuProvider>
 				</FocusProvider>,

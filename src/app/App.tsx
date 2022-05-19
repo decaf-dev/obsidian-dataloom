@@ -13,13 +13,14 @@ import { AppData } from "./services/appData/state/appData";
 import { NltSettings } from "./services/settings";
 import { saveAppData } from "./services/appData/external/save";
 
-import { CELL_TYPE, TABBABLE_ELEMENT_TYPE, DEBUG } from "./constants";
+import { CELL_TYPE, DEBUG } from "./constants";
 
 import "./app.css";
 import NltPlugin from "main";
 import { SORT } from "./components/HeaderMenu/constants";
 import { addRow, addColumn } from "./services/appData/internal/add";
 import { randomCellId, randomColumnId, randomRowId } from "./services/random";
+import { findCurrentViewType } from "./services/appData/external/loadUtils";
 
 interface Props {
 	plugin: NltPlugin;
@@ -27,160 +28,39 @@ interface Props {
 	data: AppData;
 	sourcePath: string;
 	tableId: string;
+	el: HTMLElement;
 }
 
-// const INITIAL_FOCUSED_ELEMENT = { [-1]: TABBABLE_ELEMENT_TYPE.UNFOCUSED };
 export default function App({
 	plugin,
 	settings,
 	data,
 	sourcePath,
 	tableId,
+	el,
 }: Props) {
-	const [oldAppData] = useState<AppData>(data);
+	const [oldAppData, setOldAppData] = useState<AppData>(data);
 	const [appData, setAppData] = useState<AppData>(data);
-	// const [focusedElement, setFocusedElement] = useState<TabbableElement>(
-	// 	INITIAL_FOCUSED_ELEMENT
-	// );
 	const [debounceUpdate, setDebounceUpdate] = useState(0);
-	const saveLock = useRef(false);
-
-	useEffect(() => {
-		// if (DEBUG) console.log("[useEffect] Sorting rows.");
-		// const element = settings.focusedElement;
-		// setFocusedElement(element);
-
-		//When a user adds a new table, this entry will initially be null, we need to set this
-		//so a user can add rows/columns via hotkeys
-		const tableData = settings.appData[sourcePath];
-		if (!tableData) {
-			settings.appData[sourcePath] = {};
-		} else if (!tableData[tableId]) {
-			settings.appData[sourcePath][tableId] = oldAppData;
-		}
-		plugin.saveSettings();
-
-		// Sort on first render
-		// Use case:
-		// If a user deletes or adds a new row (by copying and pasting, for example)
-		// then we want to make sure that value is sorted in
-		for (let i = 0; i < appData.headers.length; i++) {
-			const header = appData.headers[i];
-			if (header.sortName !== SORT.DEFAULT.name)
-				sortRows(header.id, header.type, header.sortName, false);
-		}
-	}, []);
-
-	useEffect(() => {
-		async function handleUpdate() {
-			//If we're running in Obsidian
-			if (app) {
-				if (appData.updateTime === 0) return;
-				//The save lock ensures that updates only happen after we have pushed our changes
-				//to the cache
-				if (saveLock.current) return;
-				try {
-					await saveAppData(
-						plugin,
-						settings,
-						app,
-						oldAppData,
-						appData,
-						sourcePath,
-						tableId
-					);
-				} catch (err) {
-					console.log(err);
-				}
-			}
-		}
-
-		handleUpdate();
-	}, [appData.updateTime, saveLock.current]);
-
-	useEffect(() => {
-		let intervalId: NodeJS.Timer = null;
-		function startTimer() {
-			intervalId = setInterval(() => {
-				//When debounce update is called, we will only save after
-				//250ms have pass since the last update
-				if (Date.now() - debounceUpdate < 250) return;
-				clearInterval(intervalId);
-				setDebounceUpdate(0);
-				setAppData((prevState) => {
-					return {
-						...prevState,
-						updateTime: Date.now(),
-					};
-				});
-			}, 100);
-		}
-		if (debounceUpdate !== 0) startTimer();
-		return () => {
-			clearInterval(intervalId);
-		};
-	}, [debounceUpdate]);
-
-	// useEffect(() => {
-	// 	if (saveLock) {
-	// 		saveLock.current = false;
-	// 	}
-	// }, [focusedElement]);
-
-	// function resetFocusedElement() {
-	// 	updateFocusedElement(INITIAL_FOCUSED_ELEMENT);
-	// }
-
-	// function updateFocusedElement(element: TabbableElement) {
-	// 	setFocusedElement(element);
-	// 	settings.focusedElement = element;
-	// 	plugin.saveSettings();
-	// }
-
-	// function handleCellFocusClick(id: string) {
-	// 	const element = findTabbableElement(appData, id);
-	// 	updateFocusedElement(element);
-	// }
-
-	// async function handleKeyUp(e: React.KeyboardEvent) {
-	// 	// if (DEBUG) console.log("[handler] handleKeyUp called.");
-	// 	if (e.key === "Tab") {
-	// 		const prevElement = { ...focusedElement };
-	// 		const nextElement = findNextTabbableElement(
-	// 			appData,
-	// 			prevElement.id
-	// 		);
-	// 		updateFocusedElement(nextElement);
-	// 	}
-	// }
+	const [updateTime, setUpdateTime] = useState(0);
 
 	function handleAddColumn() {
-		// if (DEBUG) console.log("[handler]: handleAddColumn called.");
-		setAppData((prevState) => {
-			return addColumn(prevState);
-		});
+		if (DEBUG.APP.HANDLER) console.log("[App]: handleAddColumn called.");
+		setAppData((prevState) => addColumn(prevState));
+		setUpdateTime(Date.now());
 	}
 
 	function handleAddRow() {
-		// if (DEBUG) console.log("[handler]: handleAddRow called.");
-		setAppData((prevState: AppData) => {
-			const newData = addRow(prevState);
-			const focusedElement = {
-				id: newData.cells[newData.cells.length - newData.headers.length]
-					.id,
-				type: TABBABLE_ELEMENT_TYPE.CELL,
-			};
-			settings.focusedElement = focusedElement;
-			return newData;
-		});
+		if (DEBUG.APP.HANDLER) console.log("[App]: handleAddRow called.");
+		setAppData((prevState: AppData) => addRow(prevState));
+		setUpdateTime(Date.now());
 	}
 
 	function handleHeaderSave(id: string, updatedContent: string) {
-		// if (DEBUG) console.log("[handler]: handleHeaderSave called.");
+		if (DEBUG.APP.HANDLER) console.log("[App]: handleHeaderSave called.");
 		setAppData((prevState) => {
 			return {
 				...prevState,
-				updateTime: Date.now(),
 				headers: prevState.headers.map((header) => {
 					if (header.id === id)
 						return {
@@ -191,6 +71,7 @@ export default function App({
 				}),
 			};
 		});
+		setUpdateTime(Date.now());
 	}
 
 	function handleHeaderSortSelect(
@@ -198,11 +79,10 @@ export default function App({
 		type: string,
 		sortName: string
 	) {
-		// if (DEBUG) console.log("[handler]: handleHeaderSort called.");
+		if (DEBUG.APP.HANDLER) console.log("[App]: handleHeaderSort called.");
 		setAppData((prevState) => {
 			return {
 				...prevState,
-				updateTime: Date.now(),
 				headers: prevState.headers.map((header) => {
 					if (id === header.id) return { ...header, sortName };
 					return { ...header, sortName: SORT.DEFAULT.name };
@@ -213,13 +93,14 @@ export default function App({
 	}
 
 	function handleCellContentChange(id: string, content: any) {
-		if (DEBUG.APP.HANDLER)
-			console.log(`[App]: handleCellContentChange("${id}", ${content}).`);
+		if (DEBUG.APP.HANDLER) {
+			console.log(`[App]: handleCellContentChange`);
+			console.log({ id, content });
+		}
 
 		setAppData((prevState) => {
 			return {
 				...prevState,
-				updateTime: Date.now(),
 				cells: prevState.cells.map((cell: Cell) => {
 					if (cell.id === id) {
 						return initialCell(
@@ -234,6 +115,7 @@ export default function App({
 				}),
 			};
 		});
+		setUpdateTime(Date.now());
 	}
 
 	function handleAddTag(
@@ -242,17 +124,17 @@ export default function App({
 		content: string,
 		color: string
 	) {
-		// if (DEBUG) console.log("[handler]: handleAddTag called.");
+		if (DEBUG.APP.HANDLER) console.log("[App]: handleAddTag called.");
 		setAppData((prevState) => {
 			return {
 				...prevState,
-				updateTime: Date.now(),
 				tags: [
 					...removeTagReferences(prevState.tags, cellId),
 					initialTag(headerId, cellId, content, color),
 				],
 			};
 		});
+		setUpdateTime(Date.now());
 	}
 
 	/**
@@ -275,7 +157,7 @@ export default function App({
 	}
 
 	function handleTagClick(cellId: string, tagId: string) {
-		// if (DEBUG) console.log("[handler]: handleTagClick called.");
+		if (DEBUG.APP.HANDLER) console.log("[App]: handleTagClick called.");
 		//If our cell id has already selected the tag then return
 		const found = appData.tags.find((tag) => tag.id === tagId);
 		if (found.selected.includes(cellId)) return;
@@ -295,21 +177,22 @@ export default function App({
 		setAppData((prevState) => {
 			return {
 				...prevState,
-				updateTime: Date.now(),
 				tags: arr,
 			};
 		});
+		setUpdateTime(Date.now());
 	}
 
 	function handleRemoveTagClick(cellId: string, tagId: string) {
-		// if (DEBUG) console.log("[handler]: handleRemoveTagClick called.");
+		if (DEBUG.APP.HANDLER)
+			console.log("[App]: handleRemoveTagClick called.");
 		setAppData((prevState) => {
 			return {
 				...prevState,
-				updateTime: Date.now(),
 				tags: removeTagReferences(prevState.tags, cellId),
 			};
 		});
+		setUpdateTime(Date.now());
 	}
 
 	function sortRows(
@@ -361,37 +244,39 @@ export default function App({
 			return {
 				...prevState,
 				rows: arr,
-				updateTime: shouldUpdate ? Date.now() : 0,
 			};
 		});
+		if (shouldUpdate) setUpdateTime(Date.now());
 	}
 
 	function handleDeleteHeaderClick(id: string) {
-		// if (DEBUG) console.log("[handler]: handleDeleteHeaderClick called.");
+		if (DEBUG.APP.HANDLER)
+			console.log("[App]: handleDeleteHeaderClick called.");
 		setAppData((prevState) => {
 			return {
 				...prevState,
-				updateTime: Date.now(),
 				headers: prevState.headers.filter((header) => header.id !== id),
 				cells: prevState.cells.filter((cell) => cell.headerId !== id),
 			};
 		});
+		setUpdateTime(Date.now());
 	}
 
 	function handleDeleteRowClick(rowId: string) {
-		// if (DEBUG) console.log("[handler]: handleDeleteRowClick called.");
+		if (DEBUG.APP.HANDLER)
+			console.log("[App]: handleDeleteRowClick called.");
 		setAppData((prevState) => {
 			return {
 				...prevState,
-				updateTime: Date.now(),
 				rows: prevState.rows.filter((row) => row.id !== rowId),
 				cells: prevState.cells.filter((cell) => cell.rowId !== rowId),
 			};
 		});
+		setUpdateTime(Date.now());
 	}
 
 	function handleMoveRowClick(id: string, moveBelow: boolean) {
-		// if (DEBUG) console.log("[handler]: handleMoveRowClick called.");
+		if (DEBUG.APP.HANDLER) console.log("[App]: handleMoveRowClick called.");
 		setAppData((prevState: AppData) => {
 			const index = prevState.rows.findIndex((row) => row.id === id);
 			//We assume that there is checking to make sure you don't move the first row up or last row down
@@ -410,13 +295,13 @@ export default function App({
 			return {
 				...prevState,
 				rows,
-				updateTime: Date.now(),
 			};
 		});
+		setUpdateTime(Date.now());
 	}
 
 	function handleWidthChange(id: string, newWidth: number) {
-		// if (DEBUG) console.log("[handler]: handleWidthChange called.");
+		if (DEBUG.APP.HANDLER) console.log("[App]: handleWidthChange called.");
 		setAppData((prevState: AppData) => {
 			return {
 				...prevState,
@@ -435,7 +320,8 @@ export default function App({
 	}
 
 	function handleMoveColumnClick(id: string, moveRight: boolean) {
-		// if (DEBUG) console.log("[handler]: handleMoveColumnClick called.");
+		if (DEBUG.APP.HANDLER)
+			console.log("[App]: handleMoveColumnClick called.");
 		setAppData((prevState: AppData) => {
 			const index = prevState.headers.findIndex(
 				(header) => header.id === id
@@ -450,13 +336,14 @@ export default function App({
 			return {
 				...prevState,
 				headers,
-				updateTime: Date.now(),
 			};
 		});
+		setUpdateTime(Date.now());
 	}
 
 	function handleInsertColumnClick(id: string, insertRight: boolean) {
-		// if (DEBUG) console.log("[handler]: handleInsertColumnClick called.");
+		if (DEBUG.APP.HANDLER)
+			console.log("[App]: handleInsertColumnClick called.");
 		setAppData((prevState: AppData) => {
 			const header = prevState.headers.find((header) => header.id === id);
 			const index = prevState.headers.indexOf(header);
@@ -480,15 +367,16 @@ export default function App({
 
 			return {
 				...prevState,
-				updateTime: Date.now(),
 				headers,
 				cells: [...prevState.cells, ...cells],
 			};
 		});
+		setUpdateTime(Date.now());
 	}
 
 	function handleInsertRowClick(id: string, insertBelow = false) {
-		// if (DEBUG) console.log("[handler]: handleHeaderInsertRowClick called.");
+		if (DEBUG.APP.HANDLER)
+			console.log("[App]: handleHeaderInsertRowClick called.");
 		const rowId = randomRowId();
 		setAppData((prevState: AppData) => {
 			const tags: Tag[] = [];
@@ -505,16 +393,17 @@ export default function App({
 			rows.splice(insertIndex, 0, initialRow(rowId, Date.now()));
 			return {
 				...prevState,
-				updateTime: Date.now(),
 				rows,
 				cells: [...prevState.cells, ...cells],
 				tags: [...prevState.tags, ...tags],
 			};
 		});
+		setUpdateTime(Date.now());
 	}
 
 	function handleHeaderTypeSelect(id: string, cellType: string) {
-		// if (DEBUG) console.log("[handler]: handleHeaderTypeSelect called.");
+		if (DEBUG.APP.HANDLER)
+			console.log("[App]: handleHeaderTypeSelect called.");
 		//If same header type return
 		const header = appData.headers.find((header) => header.id === id);
 		if (header.type === cellType) return;
@@ -522,7 +411,6 @@ export default function App({
 		setAppData((prevState) => {
 			return {
 				...prevState,
-				updateTime: Date.now(),
 				//Update header to new cell type
 				headers: prevState.headers.map((header) => {
 					if (id === header.id) return { ...header, type: cellType };
@@ -543,11 +431,8 @@ export default function App({
 				}),
 			};
 		});
+		setUpdateTime(Date.now());
 	}
-
-	// function handleCellOutsideClick() {
-	// 	resetFocusedElement();
-	// }
 
 	function handleChangeColor(tagId: string, color: string) {
 		setAppData((prevState) => {
@@ -562,10 +447,180 @@ export default function App({
 					}
 					return tag;
 				}),
-				updateTime: Date.now(),
 			};
 		});
+		setUpdateTime(Date.now());
 	}
+
+	useEffect(() => {
+		// Sort on first render
+		// If a user deletes or adds a new row (by copying and pasting, for example)
+		// then we want to make sure that value is sorted in
+		for (let i = 0; i < appData.headers.length; i++) {
+			const header = appData.headers[i];
+			if (header.sortName !== SORT.DEFAULT.name)
+				sortRows(header.id, header.type, header.sortName, false);
+		}
+	}, []);
+
+	useEffect(() => {
+		async function handleUpdate() {
+			if (updateTime === 0) return;
+			try {
+				await saveAppData(
+					plugin,
+					settings,
+					app,
+					oldAppData,
+					appData,
+					sourcePath,
+					tableId,
+					findCurrentViewType(el)
+				);
+			} catch (err) {
+				console.log(err);
+			}
+		}
+
+		handleUpdate();
+	}, [updateTime]);
+
+	useEffect(() => {
+		let intervalId: NodeJS.Timer = null;
+		function startTimer() {
+			intervalId = setInterval(() => {
+				//When debounce update is called, we will only save after
+				//250ms have pass since the last update
+				if (Date.now() - debounceUpdate < 250) return;
+				clearInterval(intervalId);
+				setDebounceUpdate(0);
+				setUpdateTime(Date.now());
+			}, 100);
+		}
+		if (debounceUpdate !== 0) startTimer();
+		return () => clearInterval(intervalId);
+	}, [debounceUpdate]);
+
+	// const [previewStyle, setPreviewStyle] = useState({
+	// 	viewWidth: 0,
+	// 	sizerWidth: 0,
+	// });
+
+	// useEffect(() => {
+	// 	// setTimeout(() => {
+	// 	const viewEl = document.querySelector(".markdown-preview-view");
+	// 	const sizerEl = document.querySelector(".markdown-preview-sizer");
+	// 	if (viewEl instanceof HTMLElement && sizerEl instanceof HTMLElement) {
+	// 		const viewWidth =
+	// 			parseInt(
+	// 				window
+	// 					.getComputedStyle(viewEl)
+	// 					.getPropertyValue("width")
+	// 					.split("px")[0]
+	// 			) - 60;
+
+	// 		const sizerWidth = parseInt(
+	// 			window
+	// 				.getComputedStyle(sizerEl)
+	// 				.getPropertyValue("width")
+	// 				.split("px")[0]
+	// 		);
+
+	// 		setPreviewStyle({
+	// 			viewWidth,
+	// 			sizerWidth,
+	// 		});
+	// 	}
+	// 	// }, 1);
+	// }, [resizeTime]);
+
+	// const [tableWidth, setTableWidth] = useState(0);
+	// const didMount = useRef(false);
+	// const tableRef = useCallback(
+	// 	(node) => {
+	// 		function updateWidth() {
+	// 			if (node) {
+	// 				if (node instanceof HTMLElement) {
+	// 					console.log(node.offsetWidth);
+	// 					setTableWidth(node.offsetWidth);
+	// 				}
+	// 			}
+	// 			if (!didMount.current) didMount.current = true;
+	// 		}
+	// 		if (didMount.current) updateWidth();
+	// 		else setTimeout(() => updateWidth(), 1);
+	// 	},
+	// );
+
+	// useEffect(() => {
+	// 	let el: HTMLElement | null = null;
+	// 	function handleResize() {
+	// 		setResizeTime(Date.now());
+	// 	}
+	// 	setTimeout(() => {
+	// 		handleResize();
+	// 		el = document.querySelector(".view-content");
+	// 		new ResizeObserver(handleResize).observe(el);
+	// 	}, 1);
+	// }, []);
+
+	// // console.log("tableWidth", tableWidth);
+	// const margin = previewStyle.viewWidth - previewStyle.sizerWidth;
+	// //The margin can be 0 when the window is small
+	// if (tableWidth <= previewStyle.sizerWidth || margin === 0) {
+	// 	// console.log("HERE1");
+	// 	//This will set the width to the size of the preview, being a max-width of 700px
+	// 	style = {
+	// 		left: "0px",
+	// 		width: "100%",
+	// 	};
+	// } else if (tableWidth <= previewStyle.viewWidth) {
+	// 	// console.log("HERE2");
+	// 	const calculatedMargin = previewStyle.viewWidth - tableWidth;
+	// 	const BUTTON_WIDTH = 30;
+	// 	style = {
+	// 		left: `-${calculatedMargin / 2 - BUTTON_WIDTH}px`,
+	// 		width: `${tableWidth}px`,
+	// 	};
+	// } else {
+	// 	console.log("HERE3");
+	// 	console.log(`-${margin / 2}px`);
+	// 	style = {
+	// 		left: `-${margin / 2}px`,
+	// 		width: `calc(100% + ${margin}px)`,
+	// 	};
+	// }
+
+	//If a table updates in editing mode or reading mode, update the other table
+	//TODO change with notifier in the main.js
+	//TODO why doesn't this always update?
+	useEffect(() => {
+		let intervalId: NodeJS.Timer = null;
+		function startTimer() {
+			intervalId = setInterval(async () => {
+				if (settings.state[sourcePath]) {
+					if (settings.state[sourcePath][tableId]) {
+						const { shouldUpdate, viewType } =
+							settings.state[sourcePath][tableId];
+
+						const currentViewType = findCurrentViewType(el);
+
+						if (shouldUpdate && viewType !== currentViewType) {
+							settings.state[sourcePath][tableId].shouldUpdate =
+								false;
+							await plugin.saveSettings();
+							const savedData =
+								settings.state[sourcePath][tableId].data;
+							setOldAppData(savedData);
+							setAppData(savedData);
+						}
+					}
+				}
+			}, 750);
+		}
+		startTimer();
+		return () => clearInterval(intervalId);
+	}, []);
 
 	return (
 		<div className="NLT__app" tabIndex={0}>
@@ -612,13 +667,6 @@ export default function App({
 											key={cell.id}
 											cell={cell}
 											width={header.width}
-											// onFocusClick={handleCellFocusClick}
-											// onOutsideClick={
-											// 	handleCellOutsideClick
-											// }
-											// isFocused={
-											// 	focusedElement.id === cell.id
-											// }
 											tags={appData.tags.filter(
 												(tag) =>
 													tag.headerId === header.id

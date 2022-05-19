@@ -2,10 +2,10 @@
 * Button
 */
 .NLT__button {
-    padding: 4px;
-    width: fit-content;
+    padding: 4px 6px;
+    white-space: nowrap;
 }
 
-.NLT__button--reset {
-    padding: 0;
+.NLT__button--icon {
+    padding: 1px 3px;
 }
