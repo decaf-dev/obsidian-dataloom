@@ -4,6 +4,7 @@
 .NLT__button {
     padding: 4px 6px;
     white-space: nowrap;
+    color: var(--text-normal);
 }
 
 .NLT__button--icon {
