@@ -8,7 +8,6 @@ interface Props {
 	top: number;
 	left: number;
 	width: string;
-	height: string;
 	inputText: string;
 	onInputChange: (value: string) => void;
 }
@@ -19,7 +18,6 @@ export default function NumberCellEdit({
 	top,
 	left,
 	width,
-	height,
 	inputText,
 	onInputChange,
 }: Props) {
@@ -36,14 +34,7 @@ export default function NumberCellEdit({
 		[isOpen]
 	);
 	return (
-		<Menu
-			id={menuId}
-			isOpen={isOpen}
-			top={top}
-			left={left}
-			width={width}
-			height={height}
-		>
+		<Menu id={menuId} isOpen={isOpen} top={top} left={left} width={width}>
 			<input
 				ref={inputRef}
 				className="NLT__input NLT__input--number NLT__input--no-border"

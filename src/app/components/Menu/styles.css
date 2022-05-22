@@ -10,5 +10,4 @@
     border: 1px solid var(--background-modifier-border);
     box-shadow: 0 2px 8px var(--background-modifier-box-shadow);
     z-index: var(--layer-menu);
-    width: fit-content;
 }
