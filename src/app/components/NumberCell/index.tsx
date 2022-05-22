@@ -4,10 +4,6 @@ interface Props {
 	number: string;
 }
 
-export default function DateCell({ number }: Props) {
-	return (
-		<p className="NLT__p" style={{ textAlign: "right" }}>
-			{number}
-		</p>
-	);
+export default function NumberCell({ number }: Props) {
+	return <div className="NLT__number-cell">{number}</div>;
 }
