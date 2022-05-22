@@ -15,8 +15,8 @@ interface Props {
 const Table = forwardRef(
 	({ headers, rows, onAddColumn, onAddRow }: Props, ref) => {
 		return (
-			<table>
-				<thead>
+			<table className="NLT__table">
+				<thead className="NLT__thead">
 					<tr>
 						{headers.map((header) => (
 							<React.Fragment key={header.id}>
@@ -28,12 +28,12 @@ const Table = forwardRef(
 						</th>
 					</tr>
 				</thead>
-				<tbody>
+				<tbody className="NLT__tbody">
 					{rows.map((row) => (
 						<tr key={row.id}>{row.component}</tr>
 					))}
 				</tbody>
-				<tfoot>
+				<tfoot className="NLT__tfoot">
 					<tr>
 						<td className="NLT__td">
 							<Button onClick={() => onAddRow()}>New</Button>
