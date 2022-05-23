@@ -116,6 +116,7 @@ export default function EditableTh({
 			setResizeTime(Date.now());
 		}
 		setTimeout(() => {
+			//TODO fix this is buggy
 			handleResize();
 			el = document.querySelector(".NLT__app");
 			new ResizeObserver(handleResize).observe(el);

@@ -2,9 +2,9 @@ import React from "react";
 
 import "./styles.css";
 interface Props {
-	date: string;
+	text: string;
 }
 
-export default function DateCell({ date }: Props) {
-	return <div className="NLT__date">{date}</div>;
+export default function DateCell({ text }: Props) {
+	return <div className="NLT__date-cell">{text}</div>;
 }

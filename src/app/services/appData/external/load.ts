@@ -9,7 +9,7 @@ import {
 	hasValidColumnIds,
 } from "../../string/validators";
 import { DEBUG } from "src/app/constants";
-import { findAppData } from "./saveUtils";
+import { appDataToMarkdown, findAppData } from "./saveUtils";
 import { findTableId } from "./saveUtils";
 import { LoadedData } from "../state/loadedData";
 import { appDataIdsToMarkdown, appDataTypesToMarkdown } from "../debug";
@@ -87,6 +87,8 @@ export const loadAppData = async (
 					console.log(appDataIdsToMarkdown(tableId, data));
 				if (DEBUG.LOAD_APP_DATA.TYPES)
 					console.log(appDataTypesToMarkdown(tableId, data));
+				if (DEBUG.LOAD_APP_DATA.MARKDOWN)
+					console.log(appDataToMarkdown(tableId, data));
 				return { tableId, data: updated };
 			}
 		}
@@ -104,6 +106,8 @@ export const loadAppData = async (
 		console.log(appDataIdsToMarkdown(tableId, data));
 	if (DEBUG.LOAD_APP_DATA.TYPES)
 		console.log(appDataTypesToMarkdown(tableId, data));
+	if (DEBUG.LOAD_APP_DATA.MARKDOWN)
+		console.log(appDataToMarkdown(tableId, data));
 
 	//When a user adds a new table, this entry will initially be null, we need to set this
 	//so a user can add rows/columns via hotkeys

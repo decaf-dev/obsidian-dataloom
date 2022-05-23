@@ -9,19 +9,16 @@ import ErrorCell from "../ErrorCell";
 import CheckboxCell from "../CheckboxCell";
 import DateCell from "../DateCell";
 import NumberCell from "../NumberCell";
-import DateCellEdit from "../DateCellEdit";
 import NumberCellEdit from "../NumberCellEdit";
 import TextCellEdit from "../TextCellEdit";
 import TagCellEdit from "../TagCellEdit";
+import DateCellEdit from "../DateCellEdit";
 
 import { useMenu } from "../MenuProvider";
 import { randomColor } from "src/app/services/random";
 import { Tag } from "src/app/services/appData/state/tag";
 import { Cell } from "src/app/services/appData/state/cell";
-import {
-	parseDateForInput,
-	parseInputDate,
-} from "src/app/services/string/parsers";
+import { parseDateForInput } from "src/app/services/string/parsers";
 
 import "./styles.css";
 
@@ -30,7 +27,6 @@ import { CELL_TYPE, DEBUG, MENU_LEVEL } from "../../constants";
 interface Props {
 	cell: Cell;
 	width: string;
-	// isFocused: boolean;
 	tags: Tag[];
 	onRemoveTagClick: (cellId: string, tagId: string) => void;
 	onTagClick: (cellId: string, tagId: string) => void;
@@ -41,7 +37,6 @@ interface Props {
 		inputText: string,
 		color: string
 	) => void;
-	// onFocusClick: (cellId: string) => void;
 	onColorChange: (tagId: string, color: string) => void;
 }
 
@@ -57,8 +52,10 @@ export default function EditableTd({
 }: Props) {
 	const [inputText, setInputText] = useState("");
 	const [cellMenu, setCellMenu] = useState({
-		top: -4,
-		left: -11,
+		// top: -4,
+		// left: -11,
+		top: 0,
+		left: 0,
 		width: "0px",
 		height: "0px",
 		tagColor: randomColor(),
@@ -79,30 +76,16 @@ export default function EditableTd({
 					//See: https://github.com/facebook/react/issues/13108
 					setTimeout(() => {
 						setCellMenu((prevState) => {
-							const { width, height } =
+							const { top, left, width, height } =
 								node.getBoundingClientRect();
-							function findWidth() {
-								switch (type) {
-									case CELL_TYPE.DATE:
-									case CELL_TYPE.TAG:
-										return "fit-content";
-									default:
-										return `${width}px`;
-								}
-							}
-							function findHeight() {
-								switch (type) {
-									case CELL_TYPE.DATE:
-									case CELL_TYPE.TAG:
-										return "fit-content";
-									default:
-										return `${height}px`;
-								}
-							}
+							console.log(top);
+							console.log(left);
 							return {
 								...prevState,
-								width: findWidth(),
-								height: findHeight(),
+								top,
+								left,
+								width: `${width}px`,
+								height: `${height}px`,
 							};
 						});
 					}, 1);
@@ -132,7 +115,6 @@ export default function EditableTd({
 		if (el.nodeName === "A") return;
 		if (type === CELL_TYPE.ERROR) return;
 
-		// onFocusClick(id);
 		openMenu(menuId, MENU_LEVEL.ONE);
 	}
 
@@ -158,9 +140,6 @@ export default function EditableTd({
 				case CELL_TYPE.NUMBER:
 					onContentChange(id, parseInt(inputText));
 					break;
-				case CELL_TYPE.DATE:
-					onContentChange(id, parseInputDate(inputText));
-					break;
 				case CELL_TYPE.TAG: {
 					const tag = tags.find((tag) => tag.content === inputText);
 					if (tag) {
@@ -171,6 +150,12 @@ export default function EditableTd({
 					setInputText("");
 					break;
 				}
+				case CELL_TYPE.DATE:
+					onContentChange(
+						id,
+						inputText !== "" ? new Date(inputText) : null
+					);
+					break;
 				default:
 					break;
 			}
@@ -203,7 +188,7 @@ export default function EditableTd({
 				return <></>;
 			}
 			case CELL_TYPE.DATE:
-				return <DateCell date={content} />;
+				return <DateCell text={content} />;
 			case CELL_TYPE.CHECKBOX:
 				return (
 					<CheckboxCell
@@ -222,6 +207,17 @@ export default function EditableTd({
 		if (DEBUG.EDITABLE_TD.HANDLER)
 			console.log(`[EditableTd] handleInputChange("${value}")`);
 		setInputText(value);
+	}
+
+	function handleDateChange(date: Date) {
+		if (DEBUG.EDITABLE_TD.HANDLER) {
+			console.log(`[EditableTd] handledDateChange`);
+		}
+		if (date) {
+			setInputText(parseDateForInput(date));
+		} else {
+			setInputText("");
+		}
 	}
 
 	function renderCellMenu() {
@@ -259,8 +255,6 @@ export default function EditableTd({
 						isOpen={isMenuOpen(menuId)}
 						top={cellMenu.top}
 						left={cellMenu.left}
-						width={cellMenu.width}
-						height={cellMenu.height}
 						inputText={inputText}
 						color={cellMenu.tagColor}
 						onInputChange={handleInputChange}
@@ -279,8 +273,10 @@ export default function EditableTd({
 						left={cellMenu.left}
 						width={cellMenu.width}
 						height={cellMenu.height}
-						inputText={inputText}
-						onInputChange={handleInputChange}
+						selectedDate={
+							inputText !== "" ? new Date(inputText) : new Date()
+						}
+						onDateChange={handleDateChange}
 					/>
 				);
 			default:
@@ -305,16 +301,7 @@ export default function EditableTd({
 	useEffect(() => {
 		if (DEBUG.EDITABLE_TD.USE_EFFECT)
 			console.log(`[EditableTd] useEffect(setInputText("${content}"))`);
-		if (type === CELL_TYPE.DATE) {
-			//Support data cells that have blank
-			if (content != "") {
-				setInputText(parseDateForInput(content));
-			} else {
-				setInputText("");
-			}
-		} else {
-			setInputText(content);
-		}
+		setInputText(content);
 	}, []);
 
 	useEffect(() => {

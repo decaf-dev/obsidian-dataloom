@@ -569,14 +569,12 @@ export default function App({
 	// const margin = previewStyle.viewWidth - previewStyle.sizerWidth;
 	// //The margin can be 0 when the window is small
 	// if (tableWidth <= previewStyle.sizerWidth || margin === 0) {
-	// 	// console.log("HERE1");
 	// 	//This will set the width to the size of the preview, being a max-width of 700px
 	// 	style = {
 	// 		left: "0px",
 	// 		width: "100%",
 	// 	};
 	// } else if (tableWidth <= previewStyle.viewWidth) {
-	// 	// console.log("HERE2");
 	// 	const calculatedMargin = previewStyle.viewWidth - tableWidth;
 	// 	const BUTTON_WIDTH = 30;
 	// 	style = {
@@ -584,7 +582,6 @@ export default function App({
 	// 		width: `${tableWidth}px`,
 	// 	};
 	// } else {
-	// 	console.log("HERE3");
 	// 	console.log(`-${margin / 2}px`);
 	// 	style = {
 	// 		left: `-${margin / 2}px`,

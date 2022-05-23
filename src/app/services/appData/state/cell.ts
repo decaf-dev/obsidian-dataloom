@@ -121,29 +121,30 @@ export class CheckBoxCell extends Cell {
 }
 
 export class DateCell extends Cell {
-	date: Date;
+	date: Date | null;
 
-	constructor(
-		id: string,
-		rowId: string,
-		headerId: string,
-		date: Date = null
-	) {
+	constructor(id: string, rowId: string, headerId: string, date: Date) {
 		super(id, rowId, headerId, CELL_TYPE.DATE, null);
 		this.date = date;
 	}
 
 	length() {
-		if (this.date === null) return 0;
-		return "MM/DD/YY".length;
+		if (this.date instanceof Date) {
+			return "YYYY/MM/DD".length;
+		} else {
+			return 0;
+		}
 	}
 
 	toString() {
-		if (this.date === null) return "";
-		const day = ("0" + this.date.getDate()).slice(-2);
-		const month = ("0" + (this.date.getMonth() + 1)).slice(-2);
-		const year = this.date.getFullYear();
-		return `${month}/${day}/${year}`;
+		if (this.date instanceof Date) {
+			const day = ("0" + this.date.getDate()).slice(-2);
+			const month = ("0" + (this.date.getMonth() + 1)).slice(-2);
+			const year = this.date.getFullYear();
+			return `${year}/${month}/${day}`;
+		} else {
+			return "";
+		}
 	}
 }
 
