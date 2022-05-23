@@ -1,5 +1,10 @@
-import React, { useCallback } from "react";
+import React from "react";
 import Menu from "../Menu";
+
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
+import "./styles.css";
 
 interface Props {
 	menuId: string;
@@ -8,8 +13,8 @@ interface Props {
 	left: number;
 	width: string;
 	height: string;
-	inputText: string;
-	onInputChange: (value: string) => void;
+	selectedDate: Date;
+	onDateChange: (date: Date) => void;
 }
 
 export default function DateCellEdit({
@@ -19,21 +24,13 @@ export default function DateCellEdit({
 	left,
 	width,
 	height,
-	inputText,
-	onInputChange,
+	selectedDate,
+	onDateChange,
 }: Props) {
-	const inputRef = useCallback(
-		(node) => {
-			if (node) {
-				if (isOpen) {
-					setTimeout(() => {
-						node.focus();
-					}, 1);
-				}
-			}
-		},
-		[isOpen]
-	);
+	let minDate = new Date(selectedDate);
+	minDate.setMonth(minDate.getMonth() - 6);
+	let maxDate = new Date(selectedDate);
+	maxDate.setMonth(minDate.getMonth() + 6);
 	return (
 		<Menu
 			id={menuId}
@@ -43,13 +40,16 @@ export default function DateCellEdit({
 			width={width}
 			height={height}
 		>
-			<input
-				ref={inputRef}
-				className="NLT__input NLT__input--no-border"
-				type="date"
-				autoFocus
-				value={inputText}
-				onChange={(e) => onInputChange(e.target.value)}
+			<DatePicker
+				className="NLT__date-input"
+				autoFocus={true}
+				selected={selectedDate}
+				onChange={onDateChange}
+				dateFormatCalendar={"MMM yyyy"}
+				minDate={minDate}
+				maxDate={maxDate}
+				dateFormat="yyyy/MM/dd"
+				showMonthYearDropdown
 			/>
 		</Menu>
 	);

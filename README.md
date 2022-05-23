@@ -169,7 +169,7 @@ Once a tag has been added to a cell, you click on any cell that has that tag and
 
 ### Dates
 
-Dates can be rendered in cells that are in a column with the `date` type selected. To render a date please follow the format `mm/dd/yyyy` in your markdown.
+Dates can be rendered in cells that are in a column with the `date` type selected. To render a date please follow the format `yyyy/mm/dd` in your markdown.
 
 ### Checkboxes
 

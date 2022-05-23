@@ -5,6 +5,7 @@ import Menu from "../Menu";
 import TagCell from "../TagCell";
 import { Tag } from "src/app/services/appData/state/tag";
 import SelectableTag from "../TagCellEdit/component/SelectableTag";
+import CreateTag from "./component/CreateTag";
 
 import "./styles.css";
 
@@ -13,8 +14,6 @@ interface Props {
 	isOpen: boolean;
 	top: number;
 	left: number;
-	width: string;
-	height: string;
 	color: string;
 	inputText: string;
 	cellId: string;
@@ -31,8 +30,6 @@ export default function TagCellEdit({
 	isOpen,
 	top,
 	left,
-	width,
-	height,
 	color,
 	inputText,
 	cellId,
@@ -47,7 +44,11 @@ export default function TagCellEdit({
 		(node) => {
 			if (node) {
 				if (node instanceof HTMLElement) {
-					if (isOpen) node.focus();
+					if (isOpen) {
+						setTimeout(() => {
+							node.focus();
+						}, 1);
+					}
 				}
 			}
 		},
@@ -68,14 +69,11 @@ export default function TagCellEdit({
 		return (
 			<>
 				{!found && inputText !== "" && (
-					<TagCell
-						key="new-tag"
+					<CreateTag
+						key="create-tag"
 						content={inputText}
 						color={color}
-						hideLink={true}
-						isCreate={true}
-						selectable={true}
-						onClick={() => onAddTag(inputText)}
+						onAddTag={onAddTag}
 					/>
 				)}
 				{filteredTags.map((tag: Tag) => (
@@ -93,14 +91,7 @@ export default function TagCellEdit({
 	}
 
 	return (
-		<Menu
-			id={menuId}
-			isOpen={isOpen}
-			top={top}
-			left={left}
-			width={width}
-			height={height}
-		>
+		<Menu id={menuId} isOpen={isOpen} top={top} left={left}>
 			<div className="NLT__tag-menu">
 				<div className="NLT__tag-menu-container">
 					<div className="NLT__tag-menu-top">
@@ -122,7 +113,7 @@ export default function TagCellEdit({
 								/>
 							))}
 						<input
-							className="NLT__tag-menu-input"
+							className="NLT__tag-input"
 							ref={inputRef}
 							type="text"
 							value={inputText}

@@ -9,7 +9,7 @@ interface Props {
 	iconText: string;
 	onClick: () => void;
 }
-export default function DragMenuItem({ icon, iconText, onClick }: Props) {
+export default function RowMenuItem({ icon, iconText, onClick }: Props) {
 	//Add onMouseDown to prevent blur event being called in the FocusProvider
 	//See: https://github.com/react-toolbox/react-toolbox/issues/1323#issuecomment-656778859
 	return (

@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from "react-dom";
 
 import "./styles.css";
 
@@ -25,25 +26,28 @@ export default function Menu({
 	//See: https://github.com/react-toolbox/react-toolbox/issues/1323#issuecomment-656778859
 	return (
 		<>
-			{isOpen && (
-				<div
-					className="NLT__menu"
-					id={id}
-					onMouseDown={(e) => e.preventDefault()}
-				>
+			{isOpen &&
+				ReactDOM.createPortal(
 					<div
-						className="NLT__menu-container"
-						style={{
-							top: `${top}px`,
-							left: `${left}px`,
-							width: width ? width : "fit-content",
-							height: height ? height : "fit-content",
-						}}
+						className="NLT__menu"
+						id={id}
+						onMouseDown={(e) => e.preventDefault()}
 					>
-						{children}
-					</div>
-				</div>
-			)}
+						<div
+							className="NLT__menu-container"
+							style={{
+								top: `${top}px`,
+								left: `${left}px`,
+								width: width ? width : "fit-content",
+								height: height ? height : "fit-content",
+							}}
+						>
+							{children}
+						</div>
+					</div>,
+					document.body
+					//document.getElementsByClassName("view-content")[0]
+				)}
 		</>
 	);
 }

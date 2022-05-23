@@ -50,7 +50,6 @@ export default function FocusProvider({
 					plugin.focused.tableId === tableId
 				) {
 					setTimeout(() => {
-						// node.focus();
 						handleFocus();
 					}, 1);
 				}

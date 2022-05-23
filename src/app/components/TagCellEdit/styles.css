@@ -20,10 +20,10 @@
 	width: 100%;
 }
 
-.NLT__tag-menu-input {
+.NLT__tag-input {
 	background-color: transparent !important;
 	border: 0 !important;
 	width: 100%;
 	min-width: 100px;
-	padding-left: 0px !important;
+	margin-left: 5px;
 }

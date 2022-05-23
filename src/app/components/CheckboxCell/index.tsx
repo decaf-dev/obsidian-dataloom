@@ -1,5 +1,7 @@
 import React from "react";
 
+import "./styles.css";
+
 interface Props {
 	isChecked: boolean;
 	onCheckboxChange: (isChecked: boolean) => void;
@@ -8,7 +10,7 @@ interface Props {
 export default function CheckboxCell({ isChecked, onCheckboxChange }: Props) {
 	return (
 		<div
-			style={{ width: "100%" }}
+			className="NLT__checkbox-cell"
 			onClick={() => onCheckboxChange(!isChecked)}
 		>
 			<input
