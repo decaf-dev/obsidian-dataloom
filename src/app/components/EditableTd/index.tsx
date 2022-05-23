@@ -78,8 +78,6 @@ export default function EditableTd({
 						setCellMenu((prevState) => {
 							const { top, left, width, height } =
 								node.getBoundingClientRect();
-							console.log(top);
-							console.log(left);
 							return {
 								...prevState,
 								top,

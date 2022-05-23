@@ -44,7 +44,11 @@ export default function TagCellEdit({
 		(node) => {
 			if (node) {
 				if (node instanceof HTMLElement) {
-					if (isOpen) node.focus();
+					if (isOpen) {
+						setTimeout(() => {
+							node.focus();
+						}, 1);
+					}
 				}
 			}
 		},

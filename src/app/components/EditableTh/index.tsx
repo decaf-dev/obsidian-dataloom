@@ -62,8 +62,6 @@ export default function EditableTh({
 	function handleMouseMove(e: MouseEvent) {
 		const target = e.target;
 		if (target instanceof HTMLElement) {
-			// console.log(e.pageX);
-			// console.log(headerPosition.left);
 			let width = e.pageX - headerPosition.left - 17;
 			width = parseInt(width.toString());
 			if (width < 30) return;
@@ -107,21 +105,8 @@ export default function EditableTh({
 				}
 			}
 		},
-		[resizeTime]
+		[isMenuOpen(menuId)]
 	);
-
-	useEffect(() => {
-		let el: HTMLElement | null = null;
-		function handleResize() {
-			setResizeTime(Date.now());
-		}
-		setTimeout(() => {
-			//TODO fix this is buggy
-			handleResize();
-			el = document.querySelector(".NLT__app");
-			new ResizeObserver(handleResize).observe(el);
-		}, 1);
-	}, []);
 
 	return (
 		<th
