@@ -1,6 +1,5 @@
 .NLT__date-input {
-    max-width: 9rem;
-    height: 100%;
-    font-size: 0.85rem;
+    max-width: 10rem;
+    font-size: 1rem !important;
     border: 0;
 }

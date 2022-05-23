@@ -92,6 +92,7 @@ export default function EditableTd({
 							}
 							function findHeight() {
 								switch (type) {
+									case CELL_TYPE.DATE:
 									case CELL_TYPE.TAG:
 										return "fit-content";
 									default:
