@@ -37,7 +37,7 @@ export default function SelectableTag({
 	}
 	return (
 		<div
-			className="NLT__tag-cell NLT__selectable-tag NLT__selectable"
+			className="NLT__selectable-tag NLT__selectable"
 			onClick={() => onClick(id)}
 		>
 			<div className={tagClass}>

@@ -10,7 +10,7 @@
 	border-radius: 8px;
 	padding: 1px 8px;
 	width: fit-content;
-	color: black;
+	color: var(--text-normal);
 }
 
 .NLT__tag-content {

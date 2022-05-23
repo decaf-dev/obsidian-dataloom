@@ -2,9 +2,12 @@
 * Button
 */
 .NLT__button {
+    display: flex;
+    align-items: center;
     padding: 4px 6px;
     white-space: nowrap;
     color: var(--text-normal);
+    margin-right: 0;
 }
 
 .NLT__button--icon {

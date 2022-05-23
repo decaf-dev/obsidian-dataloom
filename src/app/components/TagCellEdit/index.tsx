@@ -5,6 +5,7 @@ import Menu from "../Menu";
 import TagCell from "../TagCell";
 import { Tag } from "src/app/services/appData/state/tag";
 import SelectableTag from "../TagCellEdit/component/SelectableTag";
+import CreateTag from "./component/CreateTag";
 
 import "./styles.css";
 
@@ -68,14 +69,11 @@ export default function TagCellEdit({
 		return (
 			<>
 				{!found && inputText !== "" && (
-					<TagCell
-						key="new-tag"
+					<CreateTag
+						key="create-tag"
 						content={inputText}
 						color={color}
-						hideLink={true}
-						isCreate={true}
-						selectable={true}
-						onClick={() => onAddTag(inputText)}
+						onAddTag={onAddTag}
 					/>
 				)}
 				{filteredTags.map((tag: Tag) => (
@@ -122,7 +120,7 @@ export default function TagCellEdit({
 								/>
 							))}
 						<input
-							className="NLT__tag-menu-input"
+							className="NLT__tag-input"
 							ref={inputRef}
 							type="text"
 							value={inputText}
