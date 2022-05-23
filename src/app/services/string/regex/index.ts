@@ -106,9 +106,9 @@ export const ITALIC_MARKDOWN_PIECES_REGEX = new RegExp(/(\*).{1,}(\*)/);
 export const HIGHLIGHT_MARKDOWN_PIECES_REGEX = new RegExp(/(==).{1,}(==)/);
 
 /**
- * Matches a date with the format mm/dd/yyyy
+ * Matches a date with the format yyyy/mm/dd
  */
-export const DATE_REGEX = new RegExp(/^\d{2}\/\d{2}\/\d{4}$/);
+export const DATE_REGEX = new RegExp(/^\d{4}\/\d{2}\/\d{2}$/);
 
 /**
  * Matches a markdown checkbox [ ] or [x]

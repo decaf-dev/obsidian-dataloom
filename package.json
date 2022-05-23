@@ -21,6 +21,7 @@
     "@types/lodash": "^4.14.180",
     "@types/node": "^16.11.26",
     "@types/react": "^17.0.40",
+    "@types/react-datepicker": "^4.4.1",
     "@types/react-dom": "^17.0.14",
     "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.2.0",
@@ -38,6 +39,7 @@
     "@mui/icons-material": "^5.5.0",
     "html-react-parser": "^1.4.9",
     "react": "^17.0.2",
+    "react-datepicker": "^4.8.0",
     "react-dom": "^17.0.2",
     "uuid": "^8.3.2"
   },

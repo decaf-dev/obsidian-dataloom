@@ -14,8 +14,6 @@ interface Props {
 	isOpen: boolean;
 	top: number;
 	left: number;
-	width: string;
-	height: string;
 	color: string;
 	inputText: string;
 	cellId: string;
@@ -32,8 +30,6 @@ export default function TagCellEdit({
 	isOpen,
 	top,
 	left,
-	width,
-	height,
 	color,
 	inputText,
 	cellId,
@@ -48,7 +44,11 @@ export default function TagCellEdit({
 		(node) => {
 			if (node) {
 				if (node instanceof HTMLElement) {
-					if (isOpen) node.focus();
+					if (isOpen) {
+						setTimeout(() => {
+							node.focus();
+						}, 1);
+					}
 				}
 			}
 		},
@@ -91,14 +91,7 @@ export default function TagCellEdit({
 	}
 
 	return (
-		<Menu
-			id={menuId}
-			isOpen={isOpen}
-			top={top}
-			left={left}
-			width={width}
-			height={height}
-		>
+		<Menu id={menuId} isOpen={isOpen} top={top} left={left}>
 			<div className="NLT__tag-menu">
 				<div className="NLT__tag-menu-container">
 					<div className="NLT__tag-menu-top">

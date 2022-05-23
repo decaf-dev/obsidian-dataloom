@@ -173,7 +173,6 @@ export const findAppData = (parsedTable: string[][]): AppData => {
  */
 export const appDataToMarkdown = (tableId: string, data: AppData): string => {
 	const columnCharLengths = calcColumnCharLengths(tableId, data);
-
 	const buffer = new AppDataStringBuffer();
 	buffer.createRow();
 
