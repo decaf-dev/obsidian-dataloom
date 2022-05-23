@@ -1,4 +1,7 @@
 .NLT__number-cell {
     width: 100%;
     text-align: right;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }

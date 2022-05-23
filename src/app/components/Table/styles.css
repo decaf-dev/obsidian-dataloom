@@ -16,5 +16,5 @@
 .NLT__tfoot::after {
 	content: ' ';
 	display: block;
-	height: 50px;
+	height: 10px;
 }

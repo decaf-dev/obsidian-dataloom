@@ -23,7 +23,7 @@ export default function TextCellEdit({
 	inputText,
 	onInputChange,
 }: Props) {
-	const [height, setHeight] = useState("0px");
+	const [height, setHeight] = useState(0);
 	const textAreaRef = useCallback(
 		(node) => {
 			if (node) {
@@ -37,8 +37,8 @@ export default function TextCellEdit({
 					}
 					if (node instanceof HTMLElement) {
 						node.style.height = "auto";
-						node.style.height = node.scrollHeight + "px";
-						setHeight(node.scrollHeight + "px");
+						node.style.height = `${node.scrollHeight}px`;
+						setHeight(node.scrollHeight);
 					}
 				}
 			}
@@ -53,7 +53,7 @@ export default function TextCellEdit({
 			top={top}
 			left={left}
 			width={width}
-			height={height}
+			height={`${height}px`}
 		>
 			<textarea
 				className="NLT__textarea"
