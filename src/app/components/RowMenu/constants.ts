@@ -1,17 +1,17 @@
 import { ICON } from "src/app/constants";
 
-interface DragMenuItem {
+interface RowMenuItem {
 	name: string;
 	content: string;
 	icon: string;
 	rule?: string;
 }
 
-interface DragMenuObject {
-	[name: string]: DragMenuItem;
+interface RowMenuObject {
+	[name: string]: RowMenuItem;
 }
 
-export const DRAG_MENU_ITEM: DragMenuObject = {
+export const DRAG_MENU_ITEM: RowMenuObject = {
 	MOVE_UP: {
 		name: "move-up",
 		content: "Move Up",

@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import IconButton from "../IconButton";
 import Menu from "../Menu";
 
-import DragMenuItem from "./components/DragMenuItem";
+import RowMenuItem from "./components/RowMenuItem";
 
 import "./styles.css";
 import { DRAG_MENU_ITEM } from "./constants";
@@ -19,7 +19,7 @@ interface Props {
 	onInsertRowClick: (id: string, insertBelow: boolean) => void;
 }
 
-export default function DragMenu({
+export default function RowMenu({
 	rowId,
 	isFirstRow,
 	isLastRow,
@@ -96,7 +96,7 @@ export default function DragMenu({
 							if (isLastRow) return;
 						}
 						return (
-							<DragMenuItem
+							<RowMenuItem
 								key={item.name}
 								icon={item.icon}
 								iconText={item.content}

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 
 import EditableTd from "./components/EditableTd";
 import Table from "./components/Table";
-import DragMenu from "./components/DragMenu";
+import RowMenu from "./components/RowMenu";
 import EditableTh from "./components/EditableTh";
 
 import { initialHeader } from "./services/appData/state/header";
@@ -684,7 +684,7 @@ export default function App({
 									);
 								})}
 								<td className="NLT__td">
-									<DragMenu
+									<RowMenu
 										rowId={row.id}
 										isFirstRow={i === 0}
 										isLastRow={
