@@ -1,6 +1,8 @@
 import React, { useCallback } from "react";
 import Menu from "../Menu";
 
+import "./styles.css";
+
 interface Props {
 	menuId: string;
 	isOpen: boolean;
@@ -45,7 +47,7 @@ export default function DateCellEdit({
 		>
 			<input
 				ref={inputRef}
-				className="NLT__input NLT__input--no-border"
+				className="NLT__date-input"
 				type="date"
 				autoFocus
 				value={inputText}

@@ -36,7 +36,12 @@ const Table = forwardRef(
 				<tfoot className="NLT__tfoot">
 					<tr>
 						<td className="NLT__td">
-							<Button onClick={() => onAddRow()}>New</Button>
+							<Button
+								style={{ marginTop: "5px" }}
+								onClick={() => onAddRow()}
+							>
+								New
+							</Button>
 						</td>
 						{headers.map((header) => (
 							<td key={header.id} className="NLT__td"></td>
