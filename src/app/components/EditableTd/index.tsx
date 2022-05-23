@@ -92,7 +92,6 @@ export default function EditableTd({
 							}
 							function findHeight() {
 								switch (type) {
-									case CELL_TYPE.TEXT:
 									case CELL_TYPE.TAG:
 										return "fit-content";
 									default:
@@ -234,7 +233,6 @@ export default function EditableTd({
 						top={cellMenu.top}
 						left={cellMenu.left}
 						width={cellMenu.width}
-						height={cellMenu.height}
 						inputText={inputText}
 						onInputChange={handleInputChange}
 					/>
