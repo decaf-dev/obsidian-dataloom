@@ -1,6 +1,8 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 
 import Menu from "../Menu";
+
+import "./styles.css";
 
 interface Props {
 	menuId: string;
@@ -8,7 +10,6 @@ interface Props {
 	top: number;
 	left: number;
 	width: string;
-	height: string;
 	inputText: string;
 	onInputChange: (value: string) => void;
 }
@@ -19,10 +20,10 @@ export default function TextCellEdit({
 	top,
 	left,
 	width,
-	height,
 	inputText,
 	onInputChange,
 }: Props) {
+	const [height, setHeight] = useState("0px");
 	const textAreaRef = useCallback(
 		(node) => {
 			if (node) {
@@ -37,6 +38,7 @@ export default function TextCellEdit({
 					if (node instanceof HTMLElement) {
 						node.style.height = "auto";
 						node.style.height = node.scrollHeight + "px";
+						setHeight(node.scrollHeight + "px");
 					}
 				}
 			}
@@ -54,7 +56,7 @@ export default function TextCellEdit({
 			height={height}
 		>
 			<textarea
-				className="NLT__input NLT__input--textarea NLT__input--no-border"
+				className="NLT__textarea"
 				ref={textAreaRef}
 				autoFocus
 				value={inputText}

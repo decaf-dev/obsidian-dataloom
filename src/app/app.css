@@ -56,7 +56,6 @@
 }
 
 .NLT__app {
-	margin-bottom: 20px;
 	overflow: auto;
 }
 
@@ -99,13 +98,6 @@
 }
 
 /*
-* Paragraph
-*/
-.NLT__p {
-	margin: 0;
-}
-
-/*
 * Input
 */
 .NLT__input {
@@ -120,8 +112,4 @@
 
 .NLT__input--number {
 	text-align: right;
-}
-
-.NLT__input--textarea {
-	overflow: hidden;
 }

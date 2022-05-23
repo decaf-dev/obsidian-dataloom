@@ -1,8 +1,20 @@
-tbody > tr > .NLT__td:last-child {
+.NLT__table {}
+
+.NLT__thead {}
+
+.NLT__tbody {}
+
+.NLT__tbody>tr>.NLT__td:last-child {
 	border: 0 !important;
 	vertical-align: middle;
 }
 
-tfoot > tr > .NLT__td {
+.NLT__tfoot>tr>.NLT__td {
 	border: 0 !important;
+}
+
+.NLT__tfoot::after {
+	content: ' ';
+	display: block;
+	height: 50px;
 }

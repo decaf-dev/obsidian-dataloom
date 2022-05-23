@@ -19,5 +19,5 @@ export default function TextCell({ text }: Props) {
 	text = parseItalicMarkdown(text);
 	text = parseHighlightMarkdown(text);
 
-	return <p className="NLT__p">{parse(text)}</p>;
+	return <div className="NLT__text-cell">{parse(text)}</div>;
 }

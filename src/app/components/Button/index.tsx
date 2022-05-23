@@ -4,12 +4,19 @@ import "./styles.css";
 
 interface Props {
 	id?: string;
+	style?: object;
 	hasIcon?: boolean;
 	children: React.ReactNode;
 	onClick: (e: React.MouseEvent) => void;
 }
 
-export default function Button({ id, children, hasIcon, onClick }: Props) {
+export default function Button({
+	id,
+	style,
+	children,
+	hasIcon,
+	onClick,
+}: Props) {
 	let className = "NLT__button";
 	if (hasIcon) className += " NLT__button--icon";
 
@@ -17,6 +24,7 @@ export default function Button({ id, children, hasIcon, onClick }: Props) {
 	return (
 		<button
 			id={buttonId}
+			style={style}
 			className={className}
 			tabIndex={-1}
 			aria-hidden="true"
