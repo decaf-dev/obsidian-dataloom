@@ -46,7 +46,6 @@ export default function Menu({
 						</div>
 					</div>,
 					document.body
-					//document.getElementsByClassName("view-content")[0]
 				)}
 		</>
 	);

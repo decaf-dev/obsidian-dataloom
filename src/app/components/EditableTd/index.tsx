@@ -52,21 +52,19 @@ export default function EditableTd({
 }: Props) {
 	const [inputText, setInputText] = useState("");
 	const [cellMenu, setCellMenu] = useState({
-		// top: -4,
-		// left: -11,
 		top: 0,
 		left: 0,
 		width: "0px",
 		height: "0px",
 		tagColor: randomColor(),
 	});
-	const { isMenuOpen, openMenu } = useMenu();
 
 	const [menuId] = useState(uuidv4());
 
 	const content = cell.toString();
 	const { id, headerId, type, expectedType } = cell;
 	const didMount = useRef(false);
+	const { isOpen, open } = useMenu(menuId, MENU_LEVEL.ONE);
 
 	const tdRef = useCallback(
 		(node) => {
@@ -90,7 +88,7 @@ export default function EditableTd({
 				}
 			}
 		},
-		[inputText.length, isMenuOpen(menuId)]
+		[inputText.length, isOpen]
 	);
 
 	async function handleCellContextClick(e: React.MouseEvent<HTMLElement>) {
@@ -113,7 +111,7 @@ export default function EditableTd({
 		if (el.nodeName === "A") return;
 		if (type === CELL_TYPE.ERROR) return;
 
-		openMenu(menuId, MENU_LEVEL.ONE);
+		open();
 	}
 
 	function handleAddTag(text: string) {
@@ -224,7 +222,7 @@ export default function EditableTd({
 				return (
 					<TextCellEdit
 						menuId={menuId}
-						isOpen={isMenuOpen(menuId)}
+						isOpen={isOpen}
 						top={cellMenu.top}
 						left={cellMenu.left}
 						width={cellMenu.width}
@@ -236,7 +234,7 @@ export default function EditableTd({
 				return (
 					<NumberCellEdit
 						menuId={menuId}
-						isOpen={isMenuOpen(menuId)}
+						isOpen={isOpen}
 						top={cellMenu.top}
 						left={cellMenu.left}
 						width={cellMenu.width}
@@ -250,7 +248,7 @@ export default function EditableTd({
 						cellId={id}
 						tags={tags}
 						menuId={menuId}
-						isOpen={isMenuOpen(menuId)}
+						isOpen={isOpen}
 						top={cellMenu.top}
 						left={cellMenu.left}
 						inputText={inputText}
@@ -266,7 +264,7 @@ export default function EditableTd({
 				return (
 					<DateCellEdit
 						menuId={menuId}
-						isOpen={isMenuOpen(menuId)}
+						isOpen={isOpen}
 						top={cellMenu.top}
 						left={cellMenu.left}
 						width={cellMenu.width}
@@ -286,7 +284,7 @@ export default function EditableTd({
 		if (!didMount.current) {
 			didMount.current = true;
 		} else {
-			if (!isMenuOpen(menuId)) {
+			if (!isOpen) {
 				if (DEBUG.EDITABLE_TD.USE_EFFECT)
 					console.log(
 						`[EditableTd] useEffect(updateContent("${inputText}"))`
@@ -294,7 +292,7 @@ export default function EditableTd({
 				updateContent(inputText);
 			}
 		}
-	}, [didMount.current, isMenuOpen(menuId)]);
+	}, [didMount.current, isOpen]);
 
 	useEffect(() => {
 		if (DEBUG.EDITABLE_TD.USE_EFFECT)
@@ -314,7 +312,7 @@ export default function EditableTd({
 			onContextMenu={handleCellContextClick}
 		>
 			{renderCellMenu()}
-			<div className="NLT__td-content-container" style={{ width }}>
+			<div className="NLT__td-container" style={{ width }}>
 				{renderCell()}
 			</div>
 		</td>

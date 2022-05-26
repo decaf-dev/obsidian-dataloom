@@ -51,12 +51,12 @@ export default function EditableTh({
 	const [menuId] = useState(uuidv4());
 	const [resizeTime, setResizeTime] = useState(0);
 	const dragRef = useRef(false);
-	const { isMenuOpen, openMenu, closeMenu } = useMenu();
+	const { isOpen, open, close } = useMenu(menuId, MENU_LEVEL.ONE);
 
 	function handleHeaderClick(e: React.MouseEvent) {
-		if (isMenuOpen(menuId)) return;
+		if (isOpen) return;
 		if (dragRef.current) return;
-		openMenu(menuId, MENU_LEVEL.ONE);
+		open();
 	}
 
 	function handleMouseMove(e: MouseEvent) {
@@ -71,7 +71,7 @@ export default function EditableTh({
 	}
 
 	function handleClose() {
-		closeMenu(menuId);
+		close();
 	}
 
 	function handleDrag(e: DragEvent) {
@@ -105,7 +105,7 @@ export default function EditableTh({
 				}
 			}
 		},
-		[isMenuOpen(menuId)]
+		[isOpen]
 	);
 
 	return (
@@ -115,7 +115,7 @@ export default function EditableTh({
 			onClick={handleHeaderClick}
 		>
 			<HeaderMenu
-				isOpen={isMenuOpen(menuId)}
+				isOpen={isOpen}
 				top={headerPosition.top}
 				left={headerPosition.left}
 				id={id}

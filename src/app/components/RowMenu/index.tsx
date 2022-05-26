@@ -34,26 +34,26 @@ export default function RowMenu({
 		top: 0,
 		left: 0,
 	});
-	const { isMenuOpen, openMenu, closeMenu } = useMenu();
+	const { isOpen, open, close } = useMenu(menuId, MENU_LEVEL.ONE);
 
 	function handleButtonClick(e: React.MouseEvent) {
-		if (isMenuOpen(menuId)) return;
-		openMenu(menuId, MENU_LEVEL.ONE);
+		if (isOpen) return;
+		open();
 	}
 
 	function handleDeleteClick(id: string) {
 		onDeleteClick(id);
-		closeMenu(menuId);
+		close();
 	}
 
 	function handleInsertRowClick(id: string, insertBelow: boolean) {
 		onInsertRowClick(id, insertBelow);
-		closeMenu(menuId);
+		close();
 	}
 
 	function handleMoveRowClick(id: string, moveBelow: boolean) {
 		onMoveRowClick(id, moveBelow);
-		closeMenu(menuId);
+		close();
 	}
 
 	const divRef = useCallback(
@@ -71,7 +71,7 @@ export default function RowMenu({
 				}
 			}
 		},
-		[isMenuOpen(menuId)]
+		[isOpen]
 	);
 
 	return (
@@ -83,7 +83,7 @@ export default function RowMenu({
 			/>
 			<Menu
 				id={menuId}
-				isOpen={isMenuOpen(menuId)}
+				isOpen={isOpen}
 				top={menuPosition.top}
 				left={menuPosition.left}
 			>

@@ -10,8 +10,21 @@ interface IMenuContext {
 
 const MenuContext = React.createContext<IMenuContext>({});
 
-export const useMenu = () => {
-	return useContext(MenuContext);
+export const useMenu = (id: string, level: number) => {
+	const { openMenu, closeMenu, isMenuOpen } = useContext(MenuContext);
+
+	function open(id: string, level: number) {
+		openMenu(id, level);
+	}
+
+	function close(id: string) {
+		closeMenu(id);
+	}
+	return {
+		isOpen: isMenuOpen(id),
+		open: () => open(id, level),
+		close: () => close(id),
+	};
 };
 
 interface Props {

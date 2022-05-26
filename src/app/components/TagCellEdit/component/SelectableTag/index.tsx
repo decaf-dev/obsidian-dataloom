@@ -26,14 +26,14 @@ export default function SelectableTag({
 	onClick,
 	onColorChange,
 }: Props) {
-	const { openMenu, closeMenu, isMenuOpen } = useMenu();
 	const [menuId] = useState(uuidv4());
+	const { isOpen, open, close } = useMenu(menuId, MENU_LEVEL.TWO);
 	let tagClass = "NLT__tag";
 	tagClass += " " + findColorClass(color);
 
 	function handleColorChange(color: string) {
 		onColorChange(id, color);
-		closeMenu(menuId);
+		close();
 	}
 	return (
 		<div
@@ -47,12 +47,12 @@ export default function SelectableTag({
 				icon={ICON.MORE_HORIZ}
 				onClick={(e) => {
 					e.stopPropagation();
-					openMenu(menuId, MENU_LEVEL.TWO);
+					open();
 				}}
 			/>
 			<TagColorMenu
 				menuId={menuId}
-				isOpen={isMenuOpen(menuId)}
+				isOpen={isOpen}
 				selectedColor={color}
 				top={-100}
 				left={-120}
