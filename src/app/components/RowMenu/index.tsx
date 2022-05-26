@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import IconButton from "../IconButton";
@@ -36,6 +36,37 @@ export default function RowMenu({
 	});
 	const { isOpen, open, close } = useMenu(menuId, MENU_LEVEL.ONE);
 
+	const divRef = useCallback(
+		(node) => {
+			if (node) {
+				if (node instanceof HTMLElement) {
+					const { top, left, width, height } =
+						node.getBoundingClientRect();
+					setMenuPosition({
+						top: top + height,
+						left: left - width - 60,
+					});
+				}
+			}
+		},
+		[isOpen, resizeTime]
+	);
+
+	useEffect(() => {
+		function handleResize() {
+			console.log("RESIZING");
+			setResizeTime(Date.now());
+		}
+
+		setTimeout(() => {
+			const el = document.getElementsByClassName("view-content")[0];
+			if (el) {
+				new ResizeObserver(handleResize).observe(el);
+				handleResize();
+			}
+		}, 1);
+	}, []);
+
 	function handleButtonClick(e: React.MouseEvent) {
 		if (isOpen) return;
 		open();
@@ -55,24 +86,6 @@ export default function RowMenu({
 		onMoveRowClick(id, moveBelow);
 		close();
 	}
-
-	const divRef = useCallback(
-		(node) => {
-			if (node) {
-				if (node instanceof HTMLElement) {
-					setTimeout(() => {
-						const { top, left, width, height } =
-							node.getBoundingClientRect();
-						setMenuPosition({
-							top: top + height,
-							left: left - width - 60,
-						});
-					}, 1);
-				}
-			}
-		},
-		[isOpen]
-	);
 
 	return (
 		<div ref={divRef}>

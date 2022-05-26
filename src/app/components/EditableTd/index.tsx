@@ -91,6 +91,30 @@ export default function EditableTd({
 		[inputText.length, isOpen]
 	);
 
+	useEffect(() => {
+		if (!didMount.current) {
+			didMount.current = true;
+		} else {
+			if (!isOpen) {
+				if (DEBUG.EDITABLE_TD.USE_EFFECT)
+					console.log(
+						`[EditableTd] useEffect(updateContent("${inputText}"))`
+					);
+				updateContent(inputText);
+			}
+		}
+	}, [didMount.current, isOpen]);
+
+	useEffect(() => {
+		if (DEBUG.EDITABLE_TD.USE_EFFECT)
+			console.log(`[EditableTd] useEffect(setInputText("${content}"))`);
+		setInputText(content);
+	}, []);
+
+	useEffect(() => {
+		didMount.current = true;
+	}, []);
+
 	async function handleCellContextClick(e: React.MouseEvent<HTMLElement>) {
 		if (DEBUG.EDITABLE_TD.HANDLER)
 			console.log("[EditableTd] handleCellContextClick()");
@@ -113,6 +137,8 @@ export default function EditableTd({
 
 		open();
 	}
+
+	function openMenu() {}
 
 	function handleAddTag(text: string) {
 		if (DEBUG.EDITABLE_TD.HANDLER)
@@ -279,30 +305,6 @@ export default function EditableTd({
 				return <></>;
 		}
 	}
-
-	useEffect(() => {
-		if (!didMount.current) {
-			didMount.current = true;
-		} else {
-			if (!isOpen) {
-				if (DEBUG.EDITABLE_TD.USE_EFFECT)
-					console.log(
-						`[EditableTd] useEffect(updateContent("${inputText}"))`
-					);
-				updateContent(inputText);
-			}
-		}
-	}, [didMount.current, isOpen]);
-
-	useEffect(() => {
-		if (DEBUG.EDITABLE_TD.USE_EFFECT)
-			console.log(`[EditableTd] useEffect(setInputText("${content}"))`);
-		setInputText(content);
-	}, []);
-
-	useEffect(() => {
-		didMount.current = true;
-	}, []);
 
 	return (
 		<td
