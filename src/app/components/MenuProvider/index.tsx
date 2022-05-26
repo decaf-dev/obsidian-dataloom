@@ -13,17 +13,10 @@ const MenuContext = React.createContext<IMenuContext>({});
 export const useMenu = (id: string, level: number) => {
 	const { openMenu, closeMenu, isMenuOpen } = useContext(MenuContext);
 
-	function open(id: string, level: number) {
-		openMenu(id, level);
-	}
-
-	function close(id: string) {
-		closeMenu(id);
-	}
 	return {
-		isOpen: isMenuOpen(id),
-		open: () => open(id, level),
-		close: () => close(id),
+		isMenuOpen: isMenuOpen(id),
+		openMenu: () => openMenu(id, level),
+		closeMenu: () => closeMenu(id),
 	};
 };
 
@@ -46,7 +39,8 @@ export default function MenuProvider({ children }: Props) {
 	}
 
 	function isMenuOpen(id: string): boolean {
-		return openMenus.find((menu) => menu.id === id) || false;
+		if (openMenus.find((menu) => menu.id === id)) return true;
+		return false;
 	}
 
 	function closeAllMenus() {

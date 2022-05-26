@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 
 import { Notice } from "obsidian";
-import { v4 as uuidv4 } from "uuid";
-
 import TextCell from "../TextCell";
 import TagCell from "../TagCell";
 import ErrorCell from "../ErrorCell";
@@ -14,7 +12,6 @@ import TextCellEdit from "../TextCellEdit";
 import TagCellEdit from "../TagCellEdit";
 import DateCellEdit from "../DateCellEdit";
 
-import { useMenu } from "../MenuProvider";
 import { randomColor } from "src/app/services/random";
 import { Tag } from "src/app/services/appData/state/tag";
 import { Cell } from "src/app/services/appData/state/cell";
@@ -23,7 +20,11 @@ import { parseDateForInput } from "src/app/services/string/parsers";
 import "./styles.css";
 
 import { CELL_TYPE, DEBUG, MENU_LEVEL } from "../../constants";
-import { useDisableScroll, useResizeTime } from "src/app/services/hooks";
+import {
+	useDisableScroll,
+	useMenuId,
+	useMenuRef,
+} from "src/app/services/hooks";
 
 interface Props {
 	cell: Cell;
@@ -52,51 +53,26 @@ export default function EditableTd({
 	onAddTag,
 }: Props) {
 	const [inputText, setInputText] = useState("");
-	const [cellMenu, setCellMenu] = useState({
-		top: 0,
-		left: 0,
-		width: "0px",
-		height: "0px",
-		tagColor: randomColor(),
-	});
-
-	const [menuId] = useState(uuidv4());
-
-	const content = cell.toString();
-	const { id, headerId, type, expectedType } = cell;
 	const didMount = useRef(false);
-	const { isOpen, open } = useMenu(menuId, MENU_LEVEL.ONE);
-	const resizeTime = useResizeTime();
-	useDisableScroll(isOpen);
 
-	const tdRef = useCallback(
-		(node) => {
-			if (node) {
-				if (node instanceof HTMLElement) {
-					//Set timeout to overcome bug where all values in the node are 0
-					//See: https://github.com/facebook/react/issues/13108
-					setCellMenu((prevState) => {
-						const { top, left, width, height } =
-							node.getBoundingClientRect();
-						return {
-							...prevState,
-							top,
-							left,
-							width: `${width}px`,
-							height: `${height}px`,
-						};
-					});
-				}
-			}
-		},
-		[inputText.length, isOpen, resizeTime]
+	const [tagColor] = useState(randomColor());
+
+	const menuId = useMenuId();
+	const { menuPosition, menuRef, isMenuOpen, openMenu } = useMenuRef(
+		menuId,
+		MENU_LEVEL.ONE
 	);
+
+	useDisableScroll(isMenuOpen);
+
+	const { id, headerId, type, expectedType } = cell;
+	const content = cell.toString();
 
 	useEffect(() => {
 		if (!didMount.current) {
 			didMount.current = true;
 		} else {
-			if (!isOpen) {
+			if (!isMenuOpen) {
 				if (DEBUG.EDITABLE_TD.USE_EFFECT)
 					console.log(
 						`[EditableTd] useEffect(updateContent("${inputText}"))`
@@ -104,7 +80,7 @@ export default function EditableTd({
 				updateContent(inputText);
 			}
 		}
-	}, [didMount.current, isOpen]);
+	}, [didMount.current, isMenuOpen]);
 
 	useEffect(() => {
 		if (DEBUG.EDITABLE_TD.USE_EFFECT)
@@ -136,13 +112,13 @@ export default function EditableTd({
 		if (el.nodeName === "A") return;
 		if (type === CELL_TYPE.ERROR) return;
 
-		open();
+		openMenu();
 	}
 
 	function handleAddTag(text: string) {
 		if (DEBUG.EDITABLE_TD.HANDLER)
 			console.log(`[EditableTd] handleAddTag("${text}")`);
-		onAddTag(id, headerId, text, cellMenu.tagColor);
+		onAddTag(id, headerId, text, tagColor);
 		setInputText("");
 	}
 
@@ -166,7 +142,7 @@ export default function EditableTd({
 					if (tag) {
 						onTagClick(id, tag.id);
 					} else {
-						onAddTag(id, headerId, inputText, cellMenu.tagColor);
+						onAddTag(id, headerId, inputText, tagColor);
 					}
 					setInputText("");
 					break;
@@ -247,10 +223,10 @@ export default function EditableTd({
 				return (
 					<TextCellEdit
 						menuId={menuId}
-						isOpen={isOpen}
-						top={cellMenu.top}
-						left={cellMenu.left}
-						width={cellMenu.width}
+						isOpen={isMenuOpen}
+						top={menuPosition.top}
+						left={menuPosition.left}
+						width={menuPosition.width}
 						inputText={inputText}
 						onInputChange={handleInputChange}
 					/>
@@ -259,10 +235,10 @@ export default function EditableTd({
 				return (
 					<NumberCellEdit
 						menuId={menuId}
-						isOpen={isOpen}
-						top={cellMenu.top}
-						left={cellMenu.left}
-						width={cellMenu.width}
+						isOpen={isMenuOpen}
+						top={menuPosition.top}
+						left={menuPosition.left}
+						width={menuPosition.width}
 						inputText={inputText}
 						onInputChange={handleInputChange}
 					/>
@@ -273,11 +249,11 @@ export default function EditableTd({
 						cellId={id}
 						tags={tags}
 						menuId={menuId}
-						isOpen={isOpen}
-						top={cellMenu.top}
-						left={cellMenu.left}
+						isOpen={isMenuOpen}
+						top={menuPosition.top}
+						left={menuPosition.left}
 						inputText={inputText}
-						color={cellMenu.tagColor}
+						color={tagColor}
 						onInputChange={handleInputChange}
 						onColorChange={onColorChange}
 						onAddTag={handleAddTag}
@@ -289,11 +265,11 @@ export default function EditableTd({
 				return (
 					<DateCellEdit
 						menuId={menuId}
-						isOpen={isOpen}
-						top={cellMenu.top}
-						left={cellMenu.left}
-						width={cellMenu.width}
-						height={cellMenu.height}
+						isOpen={isMenuOpen}
+						top={menuPosition.top}
+						left={menuPosition.left}
+						width={menuPosition.width}
+						height={menuPosition.height}
 						selectedDate={
 							inputText !== "" ? new Date(inputText) : new Date()
 						}
@@ -308,7 +284,7 @@ export default function EditableTd({
 	return (
 		<td
 			className="NLT__td"
-			ref={tdRef}
+			ref={menuRef}
 			onClick={handleCellClick}
 			onContextMenu={handleCellContextClick}
 		>

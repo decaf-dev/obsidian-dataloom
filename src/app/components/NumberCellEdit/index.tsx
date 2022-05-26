@@ -7,7 +7,7 @@ interface Props {
 	isOpen: boolean;
 	top: number;
 	left: number;
-	width: string;
+	width: number;
 	inputText: string;
 	onInputChange: (value: string) => void;
 }

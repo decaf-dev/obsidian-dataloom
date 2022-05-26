@@ -8,7 +8,12 @@ import HeaderMenu from "../HeaderMenu";
 
 import "./styles.css";
 import { MENU_LEVEL } from "src/app/constants";
-import { useDisableScroll, useResizeTime } from "src/app/services/hooks";
+import {
+	useDisableScroll,
+	useMenuId,
+	useMenuRef,
+	useResizeTime,
+} from "src/app/services/hooks";
 
 interface Props {
 	id: string;
@@ -45,41 +50,21 @@ export default function EditableTh({
 	onDeleteClick,
 	onSaveClick,
 }: Props) {
-	const [headerPosition, setHeaderPosition] = useState({
-		top: 0,
-		left: 0,
-	});
-	const [menuId] = useState(uuidv4());
 	const dragRef = useRef(false);
-	const resizeTime = useResizeTime();
-	const { isOpen, open, close } = useMenu(menuId, MENU_LEVEL.ONE);
-	useDisableScroll(isOpen);
-
-	const thRef = useCallback(
-		(node) => {
-			if (node) {
-				if (node instanceof HTMLElement) {
-					const { top, left } = node.getBoundingClientRect();
-					setHeaderPosition({
-						top,
-						left,
-					});
-				}
-			}
-		},
-		[resizeTime, isOpen]
-	);
+	const menuId = useMenuId();
+	const { menuPosition, menuRef, isMenuOpen, openMenu, closeMenu } =
+		useMenuRef(menuId, MENU_LEVEL.ONE);
+	useDisableScroll(isMenuOpen);
 
 	function handleHeaderClick(e: React.MouseEvent) {
-		if (isOpen) return;
 		if (dragRef.current) return;
-		open();
+		openMenu();
 	}
 
 	function handleMouseMove(e: MouseEvent) {
 		const target = e.target;
 		if (target instanceof HTMLElement) {
-			let width = e.pageX - headerPosition.left - 17;
+			let width = e.pageX - menuPosition.left - 17;
 			width = parseInt(width.toString());
 			if (width < 30) return;
 			dragRef.current = true;
@@ -88,7 +73,7 @@ export default function EditableTh({
 	}
 
 	function handleClose() {
-		close();
+		closeMenu();
 	}
 
 	function handleDrag(e: DragEvent) {
@@ -111,13 +96,13 @@ export default function EditableTh({
 	return (
 		<th
 			className="NLT__th NLT__selectable"
-			ref={thRef}
+			ref={menuRef}
 			onClick={handleHeaderClick}
 		>
 			<HeaderMenu
-				isOpen={isOpen}
-				top={headerPosition.top}
-				left={headerPosition.left}
+				isOpen={isMenuOpen}
+				top={menuPosition.top}
+				left={menuPosition.left}
 				id={id}
 				menuId={menuId}
 				content={content}

@@ -8,8 +8,8 @@ interface Props {
 	isOpen: boolean;
 	top: number;
 	left: number;
-	width?: string;
-	height?: string;
+	width?: number;
+	height?: number;
 	children: React.ReactNode;
 }
 
@@ -38,8 +38,8 @@ export default function Menu({
 							style={{
 								top: `${top}px`,
 								left: `${left}px`,
-								width: width ? width : "fit-content",
-								height: height ? height : "fit-content",
+								width: width ? `${width}px` : "fit-content",
+								height: height ? `${height}px` : "fit-content",
 							}}
 						>
 							{children}

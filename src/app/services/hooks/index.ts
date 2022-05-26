@@ -1,11 +1,69 @@
 import { useCallback, useState, useEffect, useRef } from "react";
+import { useMenu } from "src/app/components/MenuProvider";
+
+import { v4 as uuidv4 } from "uuid";
 
 export const useForceUpdate = () => {
 	const [, setValue] = useState(0);
 	return useCallback(() => setValue((value) => value + 1), []);
 };
 
-export const useDisableScroll = (isOpen: boolean) => {
+export const useMenuId = (): string => {
+	const [menuId] = useState(uuidv4());
+	return menuId;
+};
+
+export const useDidMountEffect = (func: (...rest: any) => any, deps: any[]) => {
+	const didMount = useRef(false);
+
+	useEffect(() => {
+		if (didMount.current) func();
+		else didMount.current = true;
+	}, deps);
+};
+
+export const useMenuRef = (menuId: string, menuLevel: number) => {
+	const [menuPosition, setMenuPosition] = useState({
+		top: 0,
+		left: 0,
+		width: 0,
+		height: 0,
+		time: 0,
+	});
+	const [shouldOpenMenu, setOpenMenu] = useState(false);
+	const resizeTime = useResizeTime();
+	const { isMenuOpen, openMenu, closeMenu } = useMenu(menuId, menuLevel);
+
+	//Only open the menu after the position has been updated
+	useEffect(() => {
+		if (menuPosition.time !== 0 && shouldOpenMenu) {
+			openMenu();
+			setOpenMenu(false);
+		}
+	}, [menuPosition.time, shouldOpenMenu]);
+
+	//Update menu position on resize or when the menu is requested to be opened
+	const menuRef = useCallback(
+		(node) => {
+			if (node instanceof HTMLElement) {
+				const { top, left, width, height } =
+					node.getBoundingClientRect();
+				setMenuPosition({ top, left, width, height, time: Date.now() });
+			}
+		},
+		[resizeTime, shouldOpenMenu]
+	);
+
+	return {
+		menuPosition,
+		openMenu: () => setOpenMenu(true),
+		closeMenu,
+		isMenuOpen,
+		menuRef,
+	};
+};
+
+export const useDisableScroll = (isOpen: boolean): void => {
 	const scroll = useRef({
 		top: 0,
 		left: 0,
@@ -38,33 +96,6 @@ export const useDisableScroll = (isOpen: boolean) => {
 			}
 		};
 	}, [isOpen]);
-};
-
-export const useScrollTime = () => {
-	const [scrollTime, setScrollTime] = useState(0);
-
-	useEffect(() => {
-		function handleScroll() {
-			setScrollTime(Date.now());
-		}
-
-		let el: any = null;
-
-		setTimeout(() => {
-			el = document.getElementsByClassName("NLT__app")[0];
-			if (el) {
-				el.addEventListener("scroll", handleScroll);
-			}
-		}, 1);
-
-		return () => {
-			if (el) {
-				el.removeEventListener("scroll", handleScroll);
-			}
-		};
-	}, []);
-	console.log(scrollTime);
-	return scrollTime;
 };
 
 export const useResizeTime = () => {
