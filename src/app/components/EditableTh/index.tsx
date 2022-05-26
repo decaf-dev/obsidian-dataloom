@@ -8,7 +8,7 @@ import HeaderMenu from "../HeaderMenu";
 
 import "./styles.css";
 import { MENU_LEVEL } from "src/app/constants";
-import { useResizeTime } from "src/app/services/hooks";
+import { useDisableScroll, useResizeTime } from "src/app/services/hooks";
 
 interface Props {
 	id: string;
@@ -53,6 +53,7 @@ export default function EditableTh({
 	const dragRef = useRef(false);
 	const resizeTime = useResizeTime();
 	const { isOpen, open, close } = useMenu(menuId, MENU_LEVEL.ONE);
+	useDisableScroll(isOpen);
 
 	const thRef = useCallback(
 		(node) => {

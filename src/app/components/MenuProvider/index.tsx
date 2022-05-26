@@ -36,11 +36,13 @@ export default function MenuProvider({ children }: Props) {
 	const isFocused = useTableFocus();
 
 	function openMenu(id: string, level: number) {
-		const menu = { id, level };
-		if (DEBUG.MENU_PROVIDER.HANDLER) {
-			console.log(`[MenuProvider]: openMenu("${id}", ${level})`);
+		if (!isMenuOpen(id)) {
+			const menu = { id, level };
+			if (DEBUG.MENU_PROVIDER.HANDLER) {
+				console.log(`[MenuProvider]: openMenu("${id}", ${level})`);
+			}
+			setOpenMenus((prevState) => [...prevState, menu]);
 		}
-		setOpenMenus((prevState) => [...prevState, menu]);
 	}
 
 	function isMenuOpen(id: string): boolean {
@@ -55,10 +57,14 @@ export default function MenuProvider({ children }: Props) {
 	}
 
 	const closeMenu = (id: string) => {
-		if (DEBUG.MENU_PROVIDER.HANDLER) {
-			console.log(`[MenuProvider]: closeMenu(${id})`);
+		if (isMenuOpen(id)) {
+			if (DEBUG.MENU_PROVIDER.HANDLER) {
+				console.log(`[MenuProvider]: closeMenu(${id})`);
+			}
+			setOpenMenus((prevState) =>
+				prevState.filter((menu) => menu.id !== id)
+			);
 		}
-		setOpenMenus((prevState) => prevState.filter((menu) => menu.id !== id));
 	};
 
 	function handleClick(e: React.MouseEvent) {

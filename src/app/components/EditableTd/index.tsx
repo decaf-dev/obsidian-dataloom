@@ -23,7 +23,7 @@ import { parseDateForInput } from "src/app/services/string/parsers";
 import "./styles.css";
 
 import { CELL_TYPE, DEBUG, MENU_LEVEL } from "../../constants";
-import { useResizeTime } from "src/app/services/hooks";
+import { useDisableScroll, useResizeTime } from "src/app/services/hooks";
 
 interface Props {
 	cell: Cell;
@@ -67,6 +67,7 @@ export default function EditableTd({
 	const didMount = useRef(false);
 	const { isOpen, open } = useMenu(menuId, MENU_LEVEL.ONE);
 	const resizeTime = useResizeTime();
+	useDisableScroll(isOpen);
 
 	const tdRef = useCallback(
 		(node) => {

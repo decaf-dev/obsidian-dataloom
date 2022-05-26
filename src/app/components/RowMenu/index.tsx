@@ -10,7 +10,7 @@ import "./styles.css";
 import { DRAG_MENU_ITEM } from "./constants";
 import { ICON, MENU_LEVEL } from "src/app/constants";
 import { useMenu } from "../MenuProvider";
-import { useResizeTime } from "src/app/services/hooks";
+import { useDisableScroll, useResizeTime } from "src/app/services/hooks";
 interface Props {
 	rowId: string;
 	isFirstRow: boolean;
@@ -36,6 +36,7 @@ export default function RowMenu({
 		left: 0,
 	});
 	const { isOpen, open, close } = useMenu(menuId, MENU_LEVEL.ONE);
+	useDisableScroll(isOpen);
 
 	const divRef = useCallback(
 		(node) => {
