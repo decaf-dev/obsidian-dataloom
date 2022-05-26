@@ -8,6 +8,7 @@ import HeaderMenu from "../HeaderMenu";
 
 import "./styles.css";
 import { MENU_LEVEL } from "src/app/constants";
+import { useResizeTime } from "src/app/services/hooks";
 
 interface Props {
 	id: string;
@@ -49,9 +50,24 @@ export default function EditableTh({
 		left: 0,
 	});
 	const [menuId] = useState(uuidv4());
-	const [resizeTime, setResizeTime] = useState(0);
 	const dragRef = useRef(false);
+	const resizeTime = useResizeTime();
 	const { isOpen, open, close } = useMenu(menuId, MENU_LEVEL.ONE);
+
+	const thRef = useCallback(
+		(node) => {
+			if (node) {
+				if (node instanceof HTMLElement) {
+					const { top, left } = node.getBoundingClientRect();
+					setHeaderPosition({
+						top,
+						left,
+					});
+				}
+			}
+		},
+		[resizeTime, isOpen]
+	);
 
 	function handleHeaderClick(e: React.MouseEvent) {
 		if (isOpen) return;
@@ -90,23 +106,6 @@ export default function EditableTh({
 			dragRef.current = false;
 		}, 50);
 	}
-
-	const thRef = useCallback(
-		(node) => {
-			if (node) {
-				if (node instanceof HTMLElement) {
-					setTimeout(() => {
-						const { top, left } = node.getBoundingClientRect();
-						setHeaderPosition({
-							top,
-							left,
-						});
-					}, 1);
-				}
-			}
-		},
-		[isOpen]
-	);
 
 	return (
 		<th

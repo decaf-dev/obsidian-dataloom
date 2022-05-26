@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 
 import EditableTd from "./components/EditableTd";
 import Table from "./components/Table";
@@ -21,8 +21,6 @@ import { SORT } from "./components/HeaderMenu/constants";
 import { addRow, addColumn } from "./services/appData/internal/add";
 import { randomCellId, randomColumnId, randomRowId } from "./services/random";
 import { findCurrentViewType } from "./services/appData/external/loadUtils";
-import { start } from "repl";
-
 interface Props {
 	plugin: NltPlugin;
 	settings: NltSettings;

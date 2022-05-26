@@ -23,6 +23,7 @@ import { parseDateForInput } from "src/app/services/string/parsers";
 import "./styles.css";
 
 import { CELL_TYPE, DEBUG, MENU_LEVEL } from "../../constants";
+import { useResizeTime } from "src/app/services/hooks";
 
 interface Props {
 	cell: Cell;
@@ -65,6 +66,7 @@ export default function EditableTd({
 	const { id, headerId, type, expectedType } = cell;
 	const didMount = useRef(false);
 	const { isOpen, open } = useMenu(menuId, MENU_LEVEL.ONE);
+	const resizeTime = useResizeTime();
 
 	const tdRef = useCallback(
 		(node) => {
@@ -72,23 +74,21 @@ export default function EditableTd({
 				if (node instanceof HTMLElement) {
 					//Set timeout to overcome bug where all values in the node are 0
 					//See: https://github.com/facebook/react/issues/13108
-					setTimeout(() => {
-						setCellMenu((prevState) => {
-							const { top, left, width, height } =
-								node.getBoundingClientRect();
-							return {
-								...prevState,
-								top,
-								left,
-								width: `${width}px`,
-								height: `${height}px`,
-							};
-						});
-					}, 1);
+					setCellMenu((prevState) => {
+						const { top, left, width, height } =
+							node.getBoundingClientRect();
+						return {
+							...prevState,
+							top,
+							left,
+							width: `${width}px`,
+							height: `${height}px`,
+						};
+					});
 				}
 			}
 		},
-		[inputText.length, isOpen]
+		[inputText.length, isOpen, resizeTime]
 	);
 
 	useEffect(() => {
@@ -137,8 +137,6 @@ export default function EditableTd({
 
 		open();
 	}
-
-	function openMenu() {}
 
 	function handleAddTag(text: string) {
 		if (DEBUG.EDITABLE_TD.HANDLER)

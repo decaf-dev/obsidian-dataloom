@@ -10,6 +10,7 @@ import "./styles.css";
 import { DRAG_MENU_ITEM } from "./constants";
 import { ICON, MENU_LEVEL } from "src/app/constants";
 import { useMenu } from "../MenuProvider";
+import { useResizeTime } from "src/app/services/hooks";
 interface Props {
 	rowId: string;
 	isFirstRow: boolean;
@@ -29,7 +30,7 @@ export default function RowMenu({
 }: Props) {
 	const [menuId] = useState(uuidv4());
 	const [buttonId] = useState(uuidv4());
-	const [resizeTime, setResizeTime] = useState(0);
+	const resizeTime = useResizeTime();
 	const [menuPosition, setMenuPosition] = useState({
 		top: 0,
 		left: 0,
@@ -44,28 +45,13 @@ export default function RowMenu({
 						node.getBoundingClientRect();
 					setMenuPosition({
 						top: top + height,
-						left: left - width - 60,
+						left: left - width - 65,
 					});
 				}
 			}
 		},
-		[isOpen, resizeTime]
+		[resizeTime, isOpen]
 	);
-
-	useEffect(() => {
-		function handleResize() {
-			console.log("RESIZING");
-			setResizeTime(Date.now());
-		}
-
-		setTimeout(() => {
-			const el = document.getElementsByClassName("view-content")[0];
-			if (el) {
-				new ResizeObserver(handleResize).observe(el);
-				handleResize();
-			}
-		}, 1);
-	}, []);
 
 	function handleButtonClick(e: React.MouseEvent) {
 		if (isOpen) return;
