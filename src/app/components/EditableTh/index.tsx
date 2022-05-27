@@ -143,6 +143,7 @@ export default function EditableTh({
 							window.addEventListener("drag", handleDrag);
 						}}
 						onClick={(e) => {
+							//Stop propagation so we don't open the header
 							e.stopPropagation();
 						}}
 					/>

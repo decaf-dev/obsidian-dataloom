@@ -34,7 +34,6 @@ export default function TagCell({
 	isCreate,
 	showLink = false,
 	onRemoveClick,
-	onClick,
 }: Props) {
 	let tagClass = "NLT__tag";
 	tagClass += " " + findColorClass(color);
@@ -50,26 +49,14 @@ export default function TagCell({
 	}
 
 	return (
-		<div
-			className={cellClass}
-			style={style}
-			onClick={(e) => {
-				//If we're showing a link, that means we're rendering a tag
-				//and we want event propagation since the cell has an on click handler.
-				//Otherwise turn off, as without this code the cell menu will not close upon
-				//tag click
-				if (!showLink) e.stopPropagation();
-				onClick && onClick(id);
-			}}
-		>
+		<div className={cellClass} style={style}>
 			{isCreate && <div>Create&nbsp;</div>}
 			<div className={tagClass}>
 				<div className="NLT__tag-content">{parse(content)}</div>
 				{showRemove && (
 					<CloseIcon
 						className="NLT__icon--md NLT__margin-left NLT__icon--selectable"
-						onClick={(e) => {
-							e.stopPropagation();
+						onClick={() => {
 							onRemoveClick(cellId, id);
 						}}
 					/>

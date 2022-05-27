@@ -48,7 +48,8 @@ export default function SelectableTag({
 			<IconButton
 				icon={ICON.MORE_HORIZ}
 				onClick={(e) => {
-					//Why does this close it??
+					//Stop propagation so we don't call the onClick handler
+					//on this div
 					e.stopPropagation();
 					openMenu();
 				}}
