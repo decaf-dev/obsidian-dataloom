@@ -114,19 +114,19 @@ export default function EditableTd({
 		openMenu();
 	}
 
-	function handleAddTag(text: string) {
+	//Are menus saving??
+	async function handleAddTag(text: string) {
 		if (DEBUG.EDITABLE_TD.HANDLER)
 			console.log(`[EditableTd] handleAddTag("${text}")`);
-		onAddTag(id, headerId, text, tagColor);
-		setInputText("");
 		closeMenu();
+		onAddTag(id, headerId, text, tagColor);
 	}
 
-	function handleTagClick(tagId: string) {
+	async function handleTagClick(tagId: string) {
 		if (DEBUG.EDITABLE_TD.HANDLER)
 			console.log(`[EditableTd] handleTagClick("${tagId}")`);
-		onTagClick(id, tagId);
 		closeMenu();
+		onTagClick(id, tagId);
 	}
 
 	function updateContent(updated: string) {
