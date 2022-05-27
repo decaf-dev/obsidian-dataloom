@@ -22,7 +22,8 @@ export default function ColorItem({ color, isSelected, onColorClick }: Props) {
 		<div
 			className={containerClass}
 			onClick={(e) => {
-				//Stop event propagation so we don't select this cell
+				//Stop event propagation so we don't select the tag menu
+				//and close it
 				e.stopPropagation();
 				onColorClick(color);
 			}}

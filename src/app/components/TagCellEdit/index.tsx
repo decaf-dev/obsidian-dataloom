@@ -40,21 +40,6 @@ export default function TagCellEdit({
 	onColorChange,
 	onRemoveTagClick,
 }: Props) {
-	const inputRef = useCallback(
-		(node) => {
-			if (node) {
-				if (node instanceof HTMLElement) {
-					if (isOpen) {
-						setTimeout(() => {
-							node.focus();
-						}, 1);
-					}
-				}
-			}
-		},
-		[isOpen]
-	);
-
 	function handleTextChange(e: React.ChangeEvent<HTMLInputElement>) {
 		//Disallow whitespace
 		if (e.target.value.match(/\s/)) return;
@@ -114,7 +99,7 @@ export default function TagCellEdit({
 							))}
 						<input
 							className="NLT__tag-input"
-							ref={inputRef}
+							autoFocus={true}
 							type="text"
 							value={inputText}
 							onChange={handleTextChange}

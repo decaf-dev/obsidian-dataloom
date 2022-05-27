@@ -9,7 +9,7 @@ interface Props {
 	isOpen: boolean;
 	top: number;
 	left: number;
-	width: string;
+	width: number;
 	inputText: string;
 	onInputChange: (value: string) => void;
 }
@@ -53,7 +53,7 @@ export default function TextCellEdit({
 			top={top}
 			left={left}
 			width={width}
-			height={`${height}px`}
+			height={height}
 		>
 			<textarea
 				className="NLT__textarea"
