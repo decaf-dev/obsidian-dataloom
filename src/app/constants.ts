@@ -17,12 +17,12 @@ export const DEBUG = {
 		USE_EFFECT: false,
 	},
 	FOCUS_PROVIDER: {
-		HANDLER: false,
-		USE_EFFECT: false,
+		HANDLER: true,
+		USE_EFFECT: true,
 	},
 	MENU_PROVIDER: {
-		HANDLER: false,
-		USE_EFFECT: false,
+		HANDLER: true,
+		USE_EFFECT: true,
 	},
 };
 

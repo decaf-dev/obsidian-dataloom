@@ -1,8 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 
 import parse from "html-react-parser";
-
-import { v4 as uuidv4 } from "uuid";
 
 import { findColorClass } from "src/app/services/color";
 
@@ -10,7 +8,8 @@ import { ICON, MENU_LEVEL } from "src/app/constants";
 import "./styles.css";
 import IconButton from "src/app/components/IconButton";
 import TagColorMenu from "src/app/components/TagColorMenu";
-import { useMenu } from "src/app/components/MenuProvider";
+import { useMenuId, useMenuRef } from "src/app/services/hooks";
+
 interface Props {
 	id: string;
 	content: string;
@@ -26,17 +25,20 @@ export default function SelectableTag({
 	onClick,
 	onColorChange,
 }: Props) {
-	const { openMenu, closeMenu, isMenuOpen } = useMenu();
-	const [menuId] = useState(uuidv4());
-	let tagClass = "NLT__tag";
-	tagClass += " " + findColorClass(color);
+	const menuId = useMenuId();
+	const { menuPosition, menuRef, isMenuOpen, openMenu, closeMenu } =
+		useMenuRef(menuId, MENU_LEVEL.TWO);
 
 	function handleColorChange(color: string) {
 		onColorChange(id, color);
-		closeMenu(menuId);
+		closeMenu();
 	}
+
+	let tagClass = "NLT__tag";
+	tagClass += " " + findColorClass(color);
 	return (
 		<div
+			ref={menuRef}
 			className="NLT__selectable-tag NLT__selectable"
 			onClick={() => onClick(id)}
 		>
@@ -46,16 +48,18 @@ export default function SelectableTag({
 			<IconButton
 				icon={ICON.MORE_HORIZ}
 				onClick={(e) => {
+					//Stop propagation so we don't call the onClick handler
+					//on this div
 					e.stopPropagation();
-					openMenu(menuId, MENU_LEVEL.TWO);
+					openMenu();
 				}}
 			/>
 			<TagColorMenu
 				menuId={menuId}
-				isOpen={isMenuOpen(menuId)}
+				isOpen={isMenuOpen}
 				selectedColor={color}
-				top={-100}
-				left={-120}
+				top={menuPosition.top - 77}
+				left={menuPosition.left + 110}
 				onColorClick={(color) => handleColorChange(color)}
 			/>
 		</div>

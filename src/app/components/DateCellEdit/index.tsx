@@ -11,8 +11,8 @@ interface Props {
 	isOpen: boolean;
 	top: number;
 	left: number;
-	width: string;
-	height: string;
+	width: number;
+	height: number;
 	selectedDate: Date;
 	onDateChange: (date: Date) => void;
 }

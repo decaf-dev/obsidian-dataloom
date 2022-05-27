@@ -8,6 +8,12 @@ import HeaderMenu from "../HeaderMenu";
 
 import "./styles.css";
 import { MENU_LEVEL } from "src/app/constants";
+import {
+	useDisableScroll,
+	useMenuId,
+	useMenuRef,
+	useResizeTime,
+} from "src/app/services/hooks";
 
 interface Props {
 	id: string;
@@ -44,25 +50,21 @@ export default function EditableTh({
 	onDeleteClick,
 	onSaveClick,
 }: Props) {
-	const [headerPosition, setHeaderPosition] = useState({
-		top: 0,
-		left: 0,
-	});
-	const [menuId] = useState(uuidv4());
-	const [resizeTime, setResizeTime] = useState(0);
 	const dragRef = useRef(false);
-	const { isMenuOpen, openMenu, closeMenu } = useMenu();
+	const menuId = useMenuId();
+	const { menuPosition, menuRef, isMenuOpen, openMenu, closeMenu } =
+		useMenuRef(menuId, MENU_LEVEL.ONE);
+	useDisableScroll(isMenuOpen);
 
 	function handleHeaderClick(e: React.MouseEvent) {
-		if (isMenuOpen(menuId)) return;
 		if (dragRef.current) return;
-		openMenu(menuId, MENU_LEVEL.ONE);
+		openMenu();
 	}
 
 	function handleMouseMove(e: MouseEvent) {
 		const target = e.target;
 		if (target instanceof HTMLElement) {
-			let width = e.pageX - headerPosition.left - 17;
+			let width = e.pageX - menuPosition.left - 17;
 			width = parseInt(width.toString());
 			if (width < 30) return;
 			dragRef.current = true;
@@ -71,7 +73,7 @@ export default function EditableTh({
 	}
 
 	function handleClose() {
-		closeMenu(menuId);
+		closeMenu();
 	}
 
 	function handleDrag(e: DragEvent) {
@@ -91,33 +93,16 @@ export default function EditableTh({
 		}, 50);
 	}
 
-	const thRef = useCallback(
-		(node) => {
-			if (node) {
-				if (node instanceof HTMLElement) {
-					setTimeout(() => {
-						const { top, left } = node.getBoundingClientRect();
-						setHeaderPosition({
-							top,
-							left,
-						});
-					}, 1);
-				}
-			}
-		},
-		[isMenuOpen(menuId)]
-	);
-
 	return (
 		<th
 			className="NLT__th NLT__selectable"
-			ref={thRef}
+			ref={menuRef}
 			onClick={handleHeaderClick}
 		>
 			<HeaderMenu
-				isOpen={isMenuOpen(menuId)}
-				top={headerPosition.top}
-				left={headerPosition.left}
+				isOpen={isMenuOpen}
+				top={menuPosition.top}
+				left={menuPosition.left}
 				id={id}
 				menuId={menuId}
 				content={content}
@@ -150,6 +135,7 @@ export default function EditableTh({
 							window.addEventListener("drag", handleDrag);
 						}}
 						onClick={(e) => {
+							//Stop propagation so we don't open the header
 							e.stopPropagation();
 						}}
 					/>

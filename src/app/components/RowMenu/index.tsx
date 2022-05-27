@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import IconButton from "../IconButton";
@@ -9,7 +9,8 @@ import RowMenuItem from "./components/RowMenuItem";
 import "./styles.css";
 import { DRAG_MENU_ITEM } from "./constants";
 import { ICON, MENU_LEVEL } from "src/app/constants";
-import { useMenu } from "../MenuProvider";
+import { useMenuRef } from "src/app/services/hooks";
+import { useDisableScroll, useMenuId } from "src/app/services/hooks";
 interface Props {
 	rowId: string;
 	isFirstRow: boolean;
@@ -27,55 +28,34 @@ export default function RowMenu({
 	onDeleteClick,
 	onInsertRowClick,
 }: Props) {
-	const [menuId] = useState(uuidv4());
 	const [buttonId] = useState(uuidv4());
-	const [resizeTime, setResizeTime] = useState(0);
-	const [menuPosition, setMenuPosition] = useState({
-		top: 0,
-		left: 0,
-	});
-	const { isMenuOpen, openMenu, closeMenu } = useMenu();
+	const menuId = useMenuId();
+	const { menuPosition, menuRef, isMenuOpen, openMenu, closeMenu } =
+		useMenuRef(menuId, MENU_LEVEL.ONE);
+
+	useDisableScroll(isMenuOpen);
 
 	function handleButtonClick(e: React.MouseEvent) {
-		if (isMenuOpen(menuId)) return;
-		openMenu(menuId, MENU_LEVEL.ONE);
+		openMenu();
 	}
 
 	function handleDeleteClick(id: string) {
 		onDeleteClick(id);
-		closeMenu(menuId);
+		closeMenu();
 	}
 
 	function handleInsertRowClick(id: string, insertBelow: boolean) {
 		onInsertRowClick(id, insertBelow);
-		closeMenu(menuId);
+		closeMenu();
 	}
 
 	function handleMoveRowClick(id: string, moveBelow: boolean) {
 		onMoveRowClick(id, moveBelow);
-		closeMenu(menuId);
+		closeMenu();
 	}
 
-	const divRef = useCallback(
-		(node) => {
-			if (node) {
-				if (node instanceof HTMLElement) {
-					setTimeout(() => {
-						const { top, left, width, height } =
-							node.getBoundingClientRect();
-						setMenuPosition({
-							top: top + height,
-							left: left - width - 60,
-						});
-					}, 1);
-				}
-			}
-		},
-		[isMenuOpen(menuId)]
-	);
-
 	return (
-		<div ref={divRef}>
+		<div ref={menuRef}>
 			<IconButton
 				id={buttonId}
 				icon={ICON.MORE_VERT}
@@ -83,9 +63,9 @@ export default function RowMenu({
 			/>
 			<Menu
 				id={menuId}
-				isOpen={isMenuOpen(menuId)}
-				top={menuPosition.top}
-				left={menuPosition.left}
+				isOpen={isMenuOpen}
+				top={menuPosition.top + menuPosition.height}
+				left={menuPosition.left - menuPosition.width - 65}
 			>
 				<div className="NLT__drag-menu">
 					{Object.values(DRAG_MENU_ITEM).map((item) => {
