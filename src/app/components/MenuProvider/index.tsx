@@ -52,12 +52,12 @@ export default function MenuProvider({ children }: Props) {
 		return false;
 	}
 
-	// function closeAllMenus() {
-	// 	if (DEBUG.MENU_PROVIDER.HANDLER) {
-	// 		console.log("[MenuProvider]: closeAllMenus()");
-	// 	}
-	// 	setOpenMenus([]);
-	// }
+	function closeAllMenus() {
+		if (DEBUG.MENU_PROVIDER.HANDLER) {
+			console.log("[MenuProvider]: closeAllMenus()");
+		}
+		setOpenMenus([]);
+	}
 
 	const closeMenu = (id: string) => {
 		if (isMenuOpen(id)) {
@@ -112,12 +112,16 @@ export default function MenuProvider({ children }: Props) {
 		return topMenu;
 	}
 
-	// useEffect(() => {
-	// 	if (!isFocused) closeAllMenus();
-	// }, [isFocused]);
+	useEffect(() => {
+		if (!isFocused) closeAllMenus();
+	}, [isFocused]);
 
 	return (
-		<div onClick={handleClick} onKeyUp={handleKeyUp}>
+		<div
+			onMouseDown={(e) => e.preventDefault()}
+			onClick={handleClick}
+			onKeyUp={handleKeyUp}
+		>
 			<MenuContext.Provider
 				value={{
 					isMenuOpen,
