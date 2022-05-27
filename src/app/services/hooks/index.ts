@@ -32,7 +32,10 @@ export const useMenuRef = (menuId: string, menuLevel: number) => {
 	});
 	const [shouldOpenMenu, setOpenMenu] = useState(false);
 	const resizeTime = useResizeTime();
-	const { isMenuOpen, openMenu, closeMenu } = useMenu(menuId, menuLevel);
+	const { isMenuOpen, openMenu, closeMenu, canOpenMenu } = useMenu(
+		menuId,
+		menuLevel
+	);
 
 	//Only open the menu after the position has been updated
 	useEffect(() => {
@@ -58,6 +61,7 @@ export const useMenuRef = (menuId: string, menuLevel: number) => {
 		menuPosition,
 		openMenu: () => setOpenMenu(true),
 		closeMenu,
+		canOpenMenu: () => canOpenMenu(menuLevel),
 		isMenuOpen,
 		menuRef,
 	};

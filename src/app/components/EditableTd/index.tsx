@@ -58,10 +58,8 @@ export default function EditableTd({
 	const [tagColor] = useState(randomColor());
 
 	const menuId = useMenuId();
-	const { menuPosition, menuRef, isMenuOpen, openMenu } = useMenuRef(
-		menuId,
-		MENU_LEVEL.ONE
-	);
+	const { menuPosition, menuRef, isMenuOpen, openMenu, canOpenMenu } =
+		useMenuRef(menuId, MENU_LEVEL.ONE);
 
 	useDisableScroll(isMenuOpen);
 
@@ -110,9 +108,12 @@ export default function EditableTd({
 
 		//If we clicked on the link for a file or tag, return
 		if (el.nodeName === "A") return;
+		//If the cell is an error return
 		if (type === CELL_TYPE.ERROR) return;
 
-		openMenu();
+		if (canOpenMenu()) {
+			openMenu();
+		}
 	}
 
 	function handleAddTag(text: string) {

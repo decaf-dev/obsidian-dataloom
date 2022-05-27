@@ -6,17 +6,20 @@ interface IMenuContext {
 	isMenuOpen?: (id: string) => boolean;
 	openMenu?: (id: string, level: number) => void;
 	closeMenu?: (id: string) => void;
+	canOpenMenu?: (level: number) => boolean;
 }
 
-const MenuContext = React.createContext<IMenuContext>({});
+const MenuContext = React.createContext<IMenuContext>(null);
 
 export const useMenu = (id: string, level: number) => {
-	const { openMenu, closeMenu, isMenuOpen } = useContext(MenuContext);
+	const { openMenu, closeMenu, isMenuOpen, canOpenMenu } =
+		useContext(MenuContext);
 
 	return {
 		isMenuOpen: isMenuOpen(id),
 		openMenu: () => openMenu(id, level),
 		closeMenu: () => closeMenu(id),
+		canOpenMenu,
 	};
 };
 
@@ -28,14 +31,21 @@ export default function MenuProvider({ children }: Props) {
 	const [openMenus, setOpenMenus] = useState([]);
 	const isFocused = useTableFocus();
 
+	function canOpenMenu(level: number): boolean {
+		if (openMenus.length === 0) return true;
+		//If there is already a menu of that level open, do not allow us
+		//to open another menu. We must close the current menu first.
+		//This will allow us to provide Notion-like menu functionality
+		if (openMenus.every((menu) => menu.level < level)) return true;
+		return false;
+	}
+
 	function openMenu(id: string, level: number) {
-		if (!isMenuOpen(id)) {
-			const menu = { id, level };
-			if (DEBUG.MENU_PROVIDER.HANDLER) {
-				console.log(`[MenuProvider]: openMenu("${id}", ${level})`);
-			}
-			setOpenMenus((prevState) => [...prevState, menu]);
+		const menu = { id, level };
+		if (DEBUG.MENU_PROVIDER.HANDLER) {
+			console.log(`[MenuProvider]: openMenu("${id}", ${level})`);
 		}
+		setOpenMenus((prevState) => [...prevState, menu]);
 	}
 
 	function isMenuOpen(id: string): boolean {
@@ -62,6 +72,7 @@ export default function MenuProvider({ children }: Props) {
 	};
 
 	function handleClick(e: React.MouseEvent) {
+		console.log("MENU PROVIDER CLICK");
 		if (isFocused && openMenus.length !== 0) {
 			if (e.target instanceof HTMLElement) {
 				let el = e.target;
@@ -84,7 +95,6 @@ export default function MenuProvider({ children }: Props) {
 				closeMenu(topMenu.id);
 			}
 		}
-		// if (e.key === "Tab") onTabPress();
 	}
 
 	function findTopMenu() {
@@ -96,13 +106,20 @@ export default function MenuProvider({ children }: Props) {
 		return topMenu;
 	}
 
-	useEffect(() => {
-		if (!isFocused) closeAllMenus();
-	}, [isFocused]);
+	// useEffect(() => {
+	// 	if (!isFocused) closeAllMenus();
+	// }, [isFocused]);
 
 	return (
-		<div onKeyUp={handleKeyUp} onMouseDown={handleClick}>
-			<MenuContext.Provider value={{ isMenuOpen, openMenu, closeMenu }}>
+		<div onClick={handleClick} onKeyUp={handleKeyUp}>
+			<MenuContext.Provider
+				value={{
+					isMenuOpen,
+					openMenu,
+					closeMenu,
+					canOpenMenu,
+				}}
+			>
 				{children}
 			</MenuContext.Provider>
 		</div>
