@@ -56,7 +56,8 @@ export default function TagCell({
 				{showRemove && (
 					<CloseIcon
 						className="NLT__icon--md NLT__margin-left NLT__icon--selectable"
-						onClick={() => {
+						onClick={(e) => {
+							e.stopPropagation();
 							onRemoveClick(cellId, id);
 						}}
 					/>

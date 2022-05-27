@@ -52,21 +52,13 @@ export default function EditableTh({
 }: Props) {
 	const dragRef = useRef(false);
 	const menuId = useMenuId();
-	const {
-		menuPosition,
-		menuRef,
-		isMenuOpen,
-		openMenu,
-		closeMenu,
-		canOpenMenu,
-	} = useMenuRef(menuId, MENU_LEVEL.ONE);
+	const { menuPosition, menuRef, isMenuOpen, openMenu, closeMenu } =
+		useMenuRef(menuId, MENU_LEVEL.ONE);
 	useDisableScroll(isMenuOpen);
 
 	function handleHeaderClick(e: React.MouseEvent) {
 		if (dragRef.current) return;
-		if (canOpenMenu()) {
-			openMenu();
-		}
+		openMenu();
 	}
 
 	function handleMouseMove(e: MouseEvent) {

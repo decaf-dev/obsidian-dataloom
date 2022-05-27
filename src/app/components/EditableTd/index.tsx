@@ -58,14 +58,8 @@ export default function EditableTd({
 	const [tagColor] = useState(randomColor());
 
 	const menuId = useMenuId();
-	const {
-		menuPosition,
-		menuRef,
-		isMenuOpen,
-		openMenu,
-		canOpenMenu,
-		closeMenu,
-	} = useMenuRef(menuId, MENU_LEVEL.ONE);
+	const { menuPosition, menuRef, isMenuOpen, openMenu, closeMenu } =
+		useMenuRef(menuId, MENU_LEVEL.ONE);
 
 	useDisableScroll(isMenuOpen);
 
@@ -117,9 +111,7 @@ export default function EditableTd({
 		//If the cell is an error return
 		if (type === CELL_TYPE.ERROR) return;
 
-		if (canOpenMenu()) {
-			openMenu();
-		}
+		openMenu();
 	}
 
 	function handleAddTag(text: string) {

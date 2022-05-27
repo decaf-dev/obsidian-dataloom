@@ -30,21 +30,13 @@ export default function RowMenu({
 }: Props) {
 	const [buttonId] = useState(uuidv4());
 	const menuId = useMenuId();
-	const {
-		menuPosition,
-		menuRef,
-		isMenuOpen,
-		openMenu,
-		closeMenu,
-		canOpenMenu,
-	} = useMenuRef(menuId, MENU_LEVEL.ONE);
+	const { menuPosition, menuRef, isMenuOpen, openMenu, closeMenu } =
+		useMenuRef(menuId, MENU_LEVEL.ONE);
 
 	useDisableScroll(isMenuOpen);
 
 	function handleButtonClick(e: React.MouseEvent) {
-		if (canOpenMenu()) {
-			openMenu();
-		}
+		openMenu();
 	}
 
 	function handleDeleteClick(id: string) {

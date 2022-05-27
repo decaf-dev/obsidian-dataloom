@@ -6,20 +6,17 @@ interface IMenuContext {
 	isMenuOpen?: (id: string) => boolean;
 	openMenu?: (id: string, level: number) => void;
 	closeMenu?: (id: string) => void;
-	canOpenMenu?: (level: number) => boolean;
 }
 
 const MenuContext = React.createContext<IMenuContext>(null);
 
 export const useMenu = (id: string, level: number) => {
-	const { openMenu, closeMenu, isMenuOpen, canOpenMenu } =
-		useContext(MenuContext);
+	const { openMenu, closeMenu, isMenuOpen } = useContext(MenuContext);
 
 	return {
 		isMenuOpen: isMenuOpen(id),
 		openMenu: () => openMenu(id, level),
 		closeMenu: () => closeMenu(id),
-		canOpenMenu,
 	};
 };
 
@@ -41,11 +38,13 @@ export default function MenuProvider({ children }: Props) {
 	}
 
 	function openMenu(id: string, level: number) {
-		const menu = { id, level };
-		if (DEBUG.MENU_PROVIDER.HANDLER) {
-			console.log(`[MenuProvider]: openMenu("${id}", ${level})`);
+		if (canOpenMenu(level)) {
+			const menu = { id, level };
+			if (DEBUG.MENU_PROVIDER.HANDLER) {
+				console.log(`[MenuProvider]: openMenu("${id}", ${level})`);
+			}
+			setOpenMenus((prevState) => [...prevState, menu]);
 		}
-		setOpenMenus((prevState) => [...prevState, menu]);
 	}
 
 	function isMenuOpen(id: string): boolean {
@@ -53,12 +52,12 @@ export default function MenuProvider({ children }: Props) {
 		return false;
 	}
 
-	function closeAllMenus() {
-		if (DEBUG.MENU_PROVIDER.HANDLER) {
-			console.log("[MenuProvider]: closeAllMenus()");
-		}
-		setOpenMenus([]);
-	}
+	// function closeAllMenus() {
+	// 	if (DEBUG.MENU_PROVIDER.HANDLER) {
+	// 		console.log("[MenuProvider]: closeAllMenus()");
+	// 	}
+	// 	setOpenMenus([]);
+	// }
 
 	const closeMenu = (id: string) => {
 		if (isMenuOpen(id)) {
@@ -72,19 +71,26 @@ export default function MenuProvider({ children }: Props) {
 	};
 
 	function handleClick(e: React.MouseEvent) {
-		if (isFocused && openMenus.length !== 0) {
-			if (e.target instanceof HTMLElement) {
-				let el = e.target;
-				//Search until we get an id
-				while (el.id === "" && el.className !== "NLT__app") {
-					el = el.parentElement;
-				}
-				//This will close top level on outside click, closing besides any other
-				//click is left up to specific menu
-				const topMenu = findTopMenu();
-				if (el.id !== topMenu.id) closeMenu(topMenu.id);
-			}
+		if (DEBUG.MENU_PROVIDER.HANDLER) {
+			console.log(`[MenuProvider]: handleClick`);
 		}
+		setTimeout(() => {
+			if (isFocused && openMenus.length !== 0) {
+				if (e.target instanceof HTMLElement) {
+					let el = e.target;
+					//Search until we get an id
+					while (el.id === "" && el.className !== "NLT__app") {
+						el = el.parentElement;
+					}
+					//This will close top level on outside click, closing besides any other
+					//click is left up to specific menu
+					const topMenu = findTopMenu();
+					if (el.id !== topMenu.id) {
+						closeMenu(topMenu.id);
+					}
+				}
+			}
+		}, 1);
 	}
 
 	function handleKeyUp(e: React.KeyboardEvent) {
@@ -117,7 +123,6 @@ export default function MenuProvider({ children }: Props) {
 					isMenuOpen,
 					openMenu,
 					closeMenu,
-					canOpenMenu,
 				}}
 			>
 				{children}
