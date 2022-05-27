@@ -72,7 +72,6 @@ export default function MenuProvider({ children }: Props) {
 	};
 
 	function handleClick(e: React.MouseEvent) {
-		console.log("MENU PROVIDER CLICK");
 		if (isFocused && openMenus.length !== 0) {
 			if (e.target instanceof HTMLElement) {
 				let el = e.target;
@@ -80,7 +79,8 @@ export default function MenuProvider({ children }: Props) {
 				while (el.id === "" && el.className !== "NLT__app") {
 					el = el.parentElement;
 				}
-				//Close top level
+				//This will close top level on outside click, closing besides any other
+				//click is left up to specific menu
 				const topMenu = findTopMenu();
 				if (el.id !== topMenu.id) closeMenu(topMenu.id);
 			}

@@ -58,8 +58,14 @@ export default function EditableTd({
 	const [tagColor] = useState(randomColor());
 
 	const menuId = useMenuId();
-	const { menuPosition, menuRef, isMenuOpen, openMenu, canOpenMenu } =
-		useMenuRef(menuId, MENU_LEVEL.ONE);
+	const {
+		menuPosition,
+		menuRef,
+		isMenuOpen,
+		openMenu,
+		canOpenMenu,
+		closeMenu,
+	} = useMenuRef(menuId, MENU_LEVEL.ONE);
 
 	useDisableScroll(isMenuOpen);
 
@@ -121,12 +127,14 @@ export default function EditableTd({
 			console.log(`[EditableTd] handleAddTag("${text}")`);
 		onAddTag(id, headerId, text, tagColor);
 		setInputText("");
+		closeMenu();
 	}
 
 	function handleTagClick(tagId: string) {
 		if (DEBUG.EDITABLE_TD.HANDLER)
 			console.log(`[EditableTd] handleTagClick("${tagId}")`);
 		onTagClick(id, tagId);
+		closeMenu();
 	}
 
 	function updateContent(updated: string) {
