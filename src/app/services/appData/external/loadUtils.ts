@@ -2,6 +2,7 @@ import { MARKDOWN_CELLS_REGEX, MARKDOWN_ROWS_REGEX } from "../../string/regex";
 import { isMarkdownTable } from "../../string/validators";
 import { stripLinks, sanitizeHTML } from "../../string/strippers";
 import { ViewType } from "../state/saveState";
+import CRC32 from "crc-32";
 
 /**
  * Parses data for an individual table.
@@ -69,6 +70,15 @@ export const findCurrentViewType = (el: HTMLElement): ViewType => {
 	return currentViewType;
 };
 
-export const findTableIndex = (headers): number => {};
+export const findTableIndex = (headers): number => {
+	//Get all tables in file
+	//Iterate over tables
+	//Hash headers
+	//If match, then return that index
+};
 
-export const hashHeaders = (headers) => {};
+export const hashHeaders = (headers: []): number => {
+	return CRC32.str(
+		headers.reduce((concat, header) => (concat += header), "")
+	);
+};

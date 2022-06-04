@@ -1,5 +1,23 @@
 import { mockTable } from "../mock";
-import { parseTableFromEl, parseTableFromMarkdown } from "./loadUtils";
+import { hashHeaders, parseTableFromEl } from "./loadUtils";
+
+describe("hashHeaders", () => {
+	it("produces same hash given same headers", () => {
+		const headers = ["test1", "test2"];
+		const hash = hashHeaders(headers);
+		const hash2 = hashHeaders(headers);
+		expect(hash).toEqual(hash2);
+	});
+
+	it("produces different hash given different headers", () => {
+		const headers1 = ["test1", "test2"];
+		const hash = hashHeaders(headers1);
+
+		const headers2 = ["test3", "test4"];
+		const hash2 = hashHeaders(headers2);
+		expect(hash).not.toEqual(hash2);
+	});
+});
 
 describe("parseTableFromEl", () => {
 	it("parses table", () => {
