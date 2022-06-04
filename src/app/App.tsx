@@ -26,7 +26,7 @@ interface Props {
 	settings: NltSettings;
 	data: AppData;
 	sourcePath: string;
-	tableId: string;
+	tableIndex: string;
 	el: HTMLElement;
 }
 
@@ -35,7 +35,7 @@ export default function App({
 	settings,
 	data,
 	sourcePath,
-	tableId,
+	tableIndex,
 	el,
 }: Props) {
 	const [oldAppData, setOldAppData] = useState<AppData>(data);
@@ -473,7 +473,7 @@ export default function App({
 					oldAppData,
 					appData,
 					sourcePath,
-					tableId,
+					tableIndex,
 					findCurrentViewType(el)
 				);
 			} catch (err) {
@@ -595,19 +595,20 @@ export default function App({
 		function startTimer() {
 			intervalId = setInterval(async () => {
 				if (settings.state[sourcePath]) {
-					if (settings.state[sourcePath][tableId]) {
+					if (settings.state[sourcePath][tableIndex]) {
 						const { shouldUpdate, viewType } =
-							settings.state[sourcePath][tableId];
+							settings.state[sourcePath][tableIndex];
 
 						const currentViewType = findCurrentViewType(el);
 
 						if (shouldUpdate && viewType !== currentViewType) {
 							clearInterval(intervalId);
-							settings.state[sourcePath][tableId].shouldUpdate =
-								false;
+							settings.state[sourcePath][
+								tableIndex
+							].shouldUpdate = false;
 							await plugin.saveSettings();
 							const savedData =
-								settings.state[sourcePath][tableId].data;
+								settings.state[sourcePath][tableIndex].data;
 							setOldAppData(savedData);
 							setAppData(savedData);
 							startTimer();

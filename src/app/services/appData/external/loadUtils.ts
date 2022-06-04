@@ -68,3 +68,7 @@ export const findCurrentViewType = (el: HTMLElement): ViewType => {
 		currentViewType = "live-preview";
 	return currentViewType;
 };
+
+export const findTableIndex = (headers): number => {};
+
+export const hashHeaders = (headers) => {};

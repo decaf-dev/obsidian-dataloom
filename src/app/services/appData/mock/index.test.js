@@ -26,11 +26,11 @@ describe("mockTable", () => {
 
 describe("createEmptyMarkdownTable", () => {
 	it("creates an empty 1 column table", () => {
-		const tableId = randomTableId();
+		const tableIndex = randomTableId();
 		const columnId = randomColumnId();
-		const table = createEmptyMarkdownTable(tableId, columnId);
+		const table = createEmptyMarkdownTable(tableIndex, columnId);
 		expect(table).toMatch(
-			`| New Column       |                  |\n| ---------------- | ---------------- |\n| text             |                  |\n| ${columnId} | ${tableId}  |`
+			`| New Column       |                  |\n| ---------------- | ---------------- |\n| text             |                  |\n| ${columnId} | ${tableIndex}  |`
 		);
 	});
 });

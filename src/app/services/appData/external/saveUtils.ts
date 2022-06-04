@@ -171,8 +171,11 @@ export const findAppData = (parsedTable: string[][]): AppData => {
  * @param data The app data
  * @returns An Obsidian markdown string
  */
-export const appDataToMarkdown = (tableId: string, data: AppData): string => {
-	const columnCharLengths = calcColumnCharLengths(tableId, data);
+export const appDataToMarkdown = (
+	tableIndex: string,
+	data: AppData
+): string => {
+	const columnCharLengths = calcColumnCharLengths(tableIndex, data);
 	const buffer = new AppDataStringBuffer();
 	buffer.createRow();
 
@@ -202,7 +205,7 @@ export const appDataToMarkdown = (tableId: string, data: AppData): string => {
 		buffer.writeColumn(header.id, columnCharLengths[i]);
 	});
 
-	buffer.writeColumn(tableId, columnCharLengths[data.headers.length]);
+	buffer.writeColumn(tableIndex, columnCharLengths[data.headers.length]);
 
 	data.rows.forEach((row) => {
 		buffer.createRow();
@@ -244,7 +247,7 @@ export const appDataToMarkdown = (tableId: string, data: AppData): string => {
  * @returns A regex that matches this table
  */
 export const findTableRegex = (
-	tableId: string,
+	tableIndex: string,
 	headers: Header[],
 	rows: Row[]
 ): RegExp => {
@@ -252,7 +255,7 @@ export const findTableRegex = (
 	regex[0] = findHeaderRow(headers);
 	regex[1] = findHyphenRow(headers.length);
 	regex[2] = findTypeDefinitionRow(headers);
-	regex[3] = findColumnRow(tableId, headers);
+	regex[3] = findColumnRow(tableIndex, headers);
 
 	//All the rows
 	for (let i = 0; i < rows.length; i++) {
@@ -288,11 +291,11 @@ const findTypeDefinitionRow = (headers: Header[]): string => {
 	return regex;
 };
 
-const findColumnRow = (tableId: string, headers: Header[]): string => {
+const findColumnRow = (tableIndex: string, headers: Header[]): string => {
 	let regex = "\\|";
 	for (let i = 0; i < headers.length; i++)
 		regex += `[ \\t]{0,}${headers[i].id}[ \\t]{0,}\\|`;
-	regex += `[ \\t]{0,}${tableId}[ \\t]{0,}\\|[ ]*`;
+	regex += `[ \\t]{0,}${tableIndex}[ \\t]{0,}\\|[ ]*`;
 	return regex;
 };
 
@@ -345,7 +348,7 @@ interface ColumnCharLengths {
  * @returns An object containing the calculated lengths
  */
 export const calcColumnCharLengths = (
-	tableId: string,
+	tableIndex: string,
 	data: AppData
 ): ColumnCharLengths => {
 	const columnCharLengths: { [columnPosition: number]: number } = [];
@@ -367,7 +370,7 @@ export const calcColumnCharLengths = (
 	});
 
 	//Get first row
-	columnCharLengths[data.headers.length] = tableId.length;
+	columnCharLengths[data.headers.length] = tableIndex.length;
 
 	//Check cells
 	data.cells.forEach((cell: Cell) => {
@@ -397,15 +400,4 @@ export const calcColumnCharLengths = (
 		}
 	});
 	return columnCharLengths;
-};
-
-export const findTableId = (parsedTable: string[][]): string | null => {
-	const row = parsedTable[2];
-	if (row) {
-		const cell = row[row.length - 1];
-		if (!cell.match(TABLE_ID_REGEX)) return null;
-		return cell;
-	} else {
-		return null;
-	}
 };

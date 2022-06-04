@@ -33,13 +33,13 @@ export const mockTable = (headers: string[] = [], rows: string[][] = []) => {
  * @returns An NLT markdown table
  */
 export const createEmptyMarkdownTable = (
-	tableId: string,
+	tableIndex: string,
 	columnId: string
 ): string => {
 	const rows = [];
 	rows[0] = "| New Column       |                  |";
 	rows[1] = "| ---------------- | ---------------- |";
 	rows[2] = "| text             |                  |";
-	rows[3] = `| ${columnId} | ${tableId}  |`;
+	rows[3] = `| ${columnId} | ${tableIndex}  |`;
 	return rows.join("\n");
 };

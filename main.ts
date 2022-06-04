@@ -9,7 +9,7 @@ import { randomColumnId, randomTableId } from "src/app/services/random";
 import { ViewType } from "src/app/services/appData/state/saveState";
 
 interface FocusedTable {
-	tableId: string;
+	tableIndex: string;
 	sourcePath: string;
 	viewType: ViewType;
 }
@@ -78,9 +78,9 @@ export default class NltPlugin extends Plugin {
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "\\" }],
 			callback: async () => {
 				if (this.focused) {
-					const { tableId, sourcePath, viewType } = this.focused;
+					const { tableIndex, sourcePath, viewType } = this.focused;
 					const oldData =
-						this.settings.state[sourcePath][tableId].data;
+						this.settings.state[sourcePath][tableIndex].data;
 					const newData = addColumn(oldData);
 					await saveAppData(
 						this,
@@ -89,7 +89,7 @@ export default class NltPlugin extends Plugin {
 						oldData,
 						newData,
 						sourcePath,
-						tableId,
+						tableIndex,
 						viewType
 					);
 				} else {
@@ -106,9 +106,9 @@ export default class NltPlugin extends Plugin {
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Enter" }],
 			callback: async () => {
 				if (this.focused) {
-					const { tableId, sourcePath, viewType } = this.focused;
+					const { tableIndex, sourcePath, viewType } = this.focused;
 					const oldData =
-						this.settings.state[sourcePath][tableId].data;
+						this.settings.state[sourcePath][tableIndex].data;
 					const newData = addRow(oldData);
 					await saveAppData(
 						this,
@@ -117,7 +117,7 @@ export default class NltPlugin extends Plugin {
 						oldData,
 						newData,
 						sourcePath,
-						tableId,
+						tableIndex,
 						viewType
 					);
 				} else {
@@ -129,9 +129,13 @@ export default class NltPlugin extends Plugin {
 		});
 	}
 
-	focusTable = (tableId: string, sourcePath: string, viewType: ViewType) => {
+	focusTable = (
+		tableIndex: string,
+		sourcePath: string,
+		viewType: ViewType
+	) => {
 		this.focused = {
-			tableId,
+			tableIndex,
 			sourcePath,
 			viewType,
 		};

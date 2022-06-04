@@ -143,47 +143,6 @@ describe("findTableRegex", () => {
 	});
 });
 
-describe("findTableId", () => {
-	it("returns the table id", () => {
-		const parsedTable = [
-			["Column 1", "Column 2", ""],
-			["text", "text", ""],
-			["row-id-123456", "row-id-123457", "table-id-123456"],
-		];
-		const id = findTableId(parsedTable);
-		expect(id).toEqual("table-id-123456");
-	});
-
-	it("returns null if row doesn't exist", () => {
-		const parsedTable = [
-			["Column 1", "Column 2", ""],
-			["text", "text", ""],
-		];
-		const id = findTableId(parsedTable);
-		expect(id).toEqual(null);
-	});
-
-	it("returns null if id is blank", () => {
-		const parsedTable = [
-			["Column 1", "Column 2", ""],
-			["text", "text", ""],
-			["row-id-123456", "row-id-123457", ""],
-		];
-		const id = findTableId(parsedTable);
-		expect(id).toEqual(null);
-	});
-
-	it("returns null if id doesn't contain table-id", () => {
-		const parsedTable = [
-			["Column 1", "Column 2", ""],
-			["text", "text", ""],
-			["row-id-123456", "row-id-123457", "123456"],
-		];
-		const id = findTableId(parsedTable);
-		expect(id).toEqual(null);
-	});
-});
-
 describe("calcColumnCharLengths", () => {
 	it("calculates largest string length", () => {
 		const parsedTable = [

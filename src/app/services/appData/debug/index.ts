@@ -4,10 +4,10 @@ import { calcColumnCharLengths } from "../external/saveUtils";
 import { CELL_TYPE } from "src/app/constants";
 
 export const appDataIdsToMarkdown = (
-	tableId: string,
+	tableIndex: string,
 	data: AppData
 ): string => {
-	const columnCharLengths = calcColumnCharLengths(tableId, data);
+	const columnCharLengths = calcColumnCharLengths(tableIndex, data);
 
 	const buffer = new AppDataStringBuffer();
 	buffer.createRow();
@@ -38,7 +38,7 @@ export const appDataIdsToMarkdown = (
 		buffer.writeColumn(header.id, columnCharLengths[i]);
 	});
 
-	buffer.writeColumn(tableId, columnCharLengths[data.headers.length]);
+	buffer.writeColumn(tableIndex, columnCharLengths[data.headers.length]);
 
 	data.rows.forEach((row) => {
 		buffer.createRow();
@@ -65,10 +65,10 @@ export const appDataIdsToMarkdown = (
 };
 
 export const appDataTypesToMarkdown = (
-	tableId: string,
+	tableIndex: string,
 	data: AppData
 ): string => {
-	const columnCharLengths = calcColumnCharLengths(tableId, data);
+	const columnCharLengths = calcColumnCharLengths(tableIndex, data);
 
 	const buffer = new AppDataStringBuffer();
 	buffer.createRow();
@@ -99,7 +99,7 @@ export const appDataTypesToMarkdown = (
 		buffer.writeColumn(header.id, columnCharLengths[i]);
 	});
 
-	buffer.writeColumn(tableId, columnCharLengths[data.headers.length]);
+	buffer.writeColumn(tableIndex, columnCharLengths[data.headers.length]);
 
 	data.rows.forEach((row) => {
 		buffer.createRow();

@@ -8,7 +8,7 @@ const FocusContext = React.createContext(false);
 interface Props {
 	children: React.ReactNode;
 	plugin: NltPlugin;
-	tableId: string;
+	tableIndex: string;
 	sourcePath: string;
 	el: HTMLElement;
 }
@@ -20,7 +20,7 @@ export const useTableFocus = () => {
 export default function FocusProvider({
 	children,
 	plugin,
-	tableId,
+	tableIndex,
 	sourcePath,
 	el,
 }: Props) {
@@ -31,7 +31,7 @@ export default function FocusProvider({
 			console.log("[FocusProvider]: handleFocus()");
 		}
 		setFocus(true);
-		plugin.focusTable(tableId, sourcePath, findCurrentViewType(el));
+		plugin.focusTable(tableIndex, sourcePath, findCurrentViewType(el));
 	}
 
 	function handleBlur() {
@@ -47,7 +47,7 @@ export default function FocusProvider({
 			if (plugin.focused) {
 				if (
 					plugin.focused.sourcePath === sourcePath &&
-					plugin.focused.tableId === tableId
+					plugin.focused.tableIndex === tableIndex
 				) {
 					setTimeout(() => {
 						handleFocus();
