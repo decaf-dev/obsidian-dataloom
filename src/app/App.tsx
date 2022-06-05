@@ -422,8 +422,9 @@ export default function App({
 						return initialCell(
 							cell.id,
 							cell.rowId,
-							cell.headerId,
-							cellType
+							header.id,
+							cellType,
+							cell.toString()
 						);
 					}
 					return cell;

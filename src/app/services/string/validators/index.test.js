@@ -40,11 +40,6 @@ describe("isTag", () => {
 		expect(value).toEqual(true);
 	});
 
-	it("matches a tag without a pound sign", () => {
-		const value = isTag("tag");
-		expect(value).toEqual(true);
-	});
-
 	it("doesn't match multiple tags", () => {
 		const value = isTag("#tag1 #tag2");
 		expect(value).toEqual(false);

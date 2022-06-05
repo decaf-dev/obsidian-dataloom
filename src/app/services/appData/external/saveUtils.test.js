@@ -42,10 +42,10 @@ describe("findAppData", () => {
 		];
 		const data = findAppData(parsedTable);
 		expect(data.tags.length).toEqual(4);
-		expect(data.tags[0].content).toEqual("#tag1");
-		expect(data.tags[1].content).toEqual("#tag2");
-		expect(data.tags[2].content).toEqual("#tag3");
-		expect(data.tags[3].content).toEqual("#tag4");
+		expect(data.tags[0].content).toEqual("tag1");
+		expect(data.tags[1].content).toEqual("tag2");
+		expect(data.tags[2].content).toEqual("tag3");
+		expect(data.tags[3].content).toEqual("tag4");
 	});
 
 	it("finds errors", () => {

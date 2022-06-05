@@ -81,9 +81,9 @@ describe("findCellType", () => {
 		expect(type).toEqual(CELL_TYPE.TAG);
 	});
 
-	it("returns TAG if there is a tag without a pound sign", () => {
+	it("returns ERROR if there is a tag without a pound sign", () => {
 		const type = findCellType("test", CELL_TYPE.TAG);
-		expect(type).toEqual(CELL_TYPE.TAG);
+		expect(type).toEqual(CELL_TYPE.ERROR);
 	});
 
 	it("returns ERROR if tag includes spaces", () => {

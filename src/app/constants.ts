@@ -3,7 +3,7 @@ export const DEBUG = {
 		PARSED_TABLE: false,
 		DATA: false,
 		IDS: false,
-		TYPES: false,
+		TYPES: true,
 		MARKDOWN: false,
 	},
 	APP: {

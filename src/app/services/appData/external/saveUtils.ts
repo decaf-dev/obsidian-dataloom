@@ -13,6 +13,8 @@ import {
 
 import { isCheckBoxChecked } from "../../string/validators";
 import { Tag, initialTag } from "../state/tag";
+import { stripPound } from "../../string/strippers";
+import { addPound } from "../../string/adders";
 import { findCellType, findInitialCellType } from "../../string/matchers";
 import { AMPERSAND, BREAK_LINE_TAG, CELL_TYPE } from "src/app/constants";
 import { randomColor, getCurrentTimeWithOffset } from "../../random";
@@ -116,7 +118,7 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 					cells.push(new TagCell(cellId, row.id, headers[j].id));
 
 					if (td !== "") {
-						const content = td;
+						const content = stripPound(td);
 
 						//Check if tag already exists, otherwise create a new
 						const index = tags.findIndex(
@@ -190,8 +192,8 @@ export const appDataToMarkdown = (data: AppData): string => {
 
 				tags.forEach((tag, j) => {
 					if (tag.content === "") return;
-					if (j === 0) content += tag.content;
-					else content += " " + tag.content;
+					if (j === 0) content += addPound(tag.content);
+					else content += " " + addPound(tag.content);
 				});
 				buffer.writeColumn(content, columnCharLengths[i]);
 			} else {

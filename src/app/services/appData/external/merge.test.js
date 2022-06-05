@@ -38,8 +38,8 @@ describe("updateAppDataFromSavedState", () => {
 		const newAppData = findAppData(parsedTable);
 
 		const merged = updateAppDataFromSavedState(oldAppData, newAppData);
-		expect(merged.headers[0].type).toEqual(CELL_TYPE.NUMBER);
-		expect(merged.headers[1].type).toEqual(CELL_TYPE.TAG);
+		expect(merged.headers[0].type).toEqual(CELL_TYPE.TEXT);
+		expect(merged.headers[1].type).toEqual(CELL_TYPE.TEXT);
 	});
 
 	it("merges tag colors", () => {
@@ -61,8 +61,8 @@ describe("updateAppDataFromSavedState", () => {
 		const newAppData = findAppData(parsedTable);
 
 		const merged = updateAppDataFromSavedState(oldAppData, newAppData);
-		expect(merged.tags[0].content).toEqual("#tag3");
-		expect(merged.tags[1].content).toEqual("#tag4");
+		expect(merged.tags[0].content).toEqual("tag3");
+		expect(merged.tags[1].content).toEqual("tag4");
 	});
 
 	it("merges header sort name", () => {

@@ -1,4 +1,3 @@
-import { Tag } from "@mui/icons-material";
 import { AppData } from "../state/appData";
 
 export const updateAppDataFromSavedState = (
@@ -10,9 +9,10 @@ export const updateAppDataFromSavedState = (
 	//Grab sort and width settings
 	newData.headers.forEach((_header, i) => {
 		if (i < oldData.headers.length) {
-			const { sortName, width } = oldData.headers[i];
+			const { sortName, width, type } = oldData.headers[i];
 			updated.headers[i].sortName = sortName;
 			updated.headers[i].width = width;
+			updated.headers[i].type = type;
 		}
 	});
 
