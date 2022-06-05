@@ -8,28 +8,9 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 
 ## What's New?
 
-### Version 3.5.0
+### Version 4.0.0
 
-I am proud to announce that NLT now supports live preview! Please check it out! :)
-
-The settings cache format was updated to accomdomate this functionality. You won't need to do anything for your tables to render, as the app will automatically update your data.json file.
-
-### Version 3.4.0
-
--   The pound sign `#` in tags are now optional. See `Tags` below for more details.
--   NLT now supports bold, italics, highlight and underline. See `Markdown` below for more details.
-
-### Version 3.3.0
-
--   Line break elements are now supported for cells in a column with the type `text` selected. See `Line Breaks` below for usage information
-
-### Migrating from 2.3.6
-
-Starting in 3.0.0, Notion-Like tables supports a new table format that will facilitate better development in the plugin.
-
-Please upgrade your tables to this new format. This update also includes several bug fixes that could only be fixed by placing column and row ids into the table.
-
-**To migrate to the new format please see the section below: `Making a Table Manually`**
+Starting in 4.0.0, table ids, row ids, and column ids are no longer required in your table. Thus, Notion-Like Tables will automatically render a NLT from your standard Obsidian markdown tables. If you would like to override this behavior, please seeing the Settings section below.
 
 ## Usage
 
@@ -55,51 +36,9 @@ Toggle to reading mode and the table will automatically render.
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/add-table-command.png)
 
-### Making a Table Manually
-
-A Notion-Like Table uses normal Obsidian table markdown syntax with 2 additional rows and 1 column for meta-data:
-
--   A type defintion row
--   A column id row
--   A row id column
-
-#### Type Definition Row
-
-The type definition row is a normal markdown row with each cell containing the type of data you want that column to accept. The plugin currently supports 5 column types: `text`, `number`, `tag`, `date` and `checkbox`. The last cell of the row must only contain whitespace for a Notion-Like Table to render.
-
-![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/type-def-row.png)
-
-#### Column Id Row
-
-The column id row is a normal markdown row with each cell containing a unique column id. A column id starts with `column-id-` followed by alpha-numeric characters or hyphens. This id must be unique to each table, but may be reused in other tables.
-
-![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/column-id-row.png)
-
-#### Row Id Column
-
-The row id column is the last column of the table and contains both a table id and the unique ids for each row. Note that the cell that resides in the header must only contain whitespace for a Notion-Like table to render.
-
-##### Table Id
-
-A table id starts with `table-id-` followed by alpha-numeric characters or hyphens. This id must be unique to each note, but may be reused in other notes.
-
-![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/table-id.png)
-
-##### Row Ids
-
-A row id starts with `row-id-` followed by alpha-numeric characters or hyphens. This id must be unique to each table, but may be reused in other tables.
-
-![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/row-ids.png)
-
-### Renaming IDs
-
-#### Renaming table ids
+### How Tables Are Rendered
 
 Renaming a table id will cause your table to become orphaned from its saved data in the cache and create new data from the markdown. This can cause you to lose the saved column width, sorting, or tag colors on your table. If you would like to rename your table-id to something meaningful, I recommend doing this at the creation of your table.
-
-#### Renaming column ids
-
-Renaming column ids is less severe than renaming a table id, as you will only lose orphan that column from its saved state. Once again, I recommend renaming this at the creation of your table before you have started to adjust the settings.
 
 ### Headers
 
@@ -196,10 +135,7 @@ You can view the console using `cmd + alt + i` (Windows) or `cmd + option + i` (
 
 #### Cell Type Errors
 
-A cell type error will occur if you enter data which doesn't match the column data type. Please correct this error in your markdown to continue.
-
-![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/cell-error-1.png)
-![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/cell-error-2.png)
+A cell type error will occur if you enter data which doesn't match the column data type. You can correct this error by clicking on the cell and entering in data valid for the set column type.
 
 ## Custom Themes
 
