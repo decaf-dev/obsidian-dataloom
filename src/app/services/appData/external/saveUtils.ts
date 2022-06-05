@@ -30,6 +30,12 @@ import {
 import { v4 as uuid } from "uuid";
 
 const HEADER_ROW_INDEX = 0;
+
+export const sortAppDataForSave = (data: AppData) => {
+	const obj = { ...data };
+	obj.rows.sort((a, b) => a.initialIndex - b.initialIndex);
+	return obj;
+};
 export const findAppData = (parsedTable: string[][]): AppData => {
 	const headers: Header[] = [];
 	const rows: Row[] = [];

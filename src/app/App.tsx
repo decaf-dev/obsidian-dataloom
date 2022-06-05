@@ -21,6 +21,7 @@ import { SORT } from "./components/HeaderMenu/constants";
 import { addRow, addColumn } from "./services/appData/internal/add";
 import { findCurrentViewType } from "./services/appData/external/loadUtils";
 import { v4 as uuid } from "uuid";
+import { sortAppDataForSave } from "./services/appData/external/saveUtils";
 interface Props {
 	plugin: NltPlugin;
 	settings: NltSettings;
@@ -41,18 +42,18 @@ export default function App({
 	const [oldAppData, setOldAppData] = useState<AppData>(data);
 	const [appData, setAppData] = useState<AppData>(data);
 	const [debounceUpdate, setDebounceUpdate] = useState(0);
-	const [updateTime, setUpdateTime] = useState(0);
+	const [saveTime, setSaveTime] = useState(0);
 
 	function handleAddColumn() {
 		if (DEBUG.APP.HANDLER) console.log("[App]: handleAddColumn called.");
 		setAppData((prevState) => addColumn(prevState));
-		setUpdateTime(Date.now());
+		setSaveTime(Date.now());
 	}
 
 	function handleAddRow() {
 		if (DEBUG.APP.HANDLER) console.log("[App]: handleAddRow called.");
 		setAppData((prevState: AppData) => addRow(prevState));
-		setUpdateTime(Date.now());
+		setSaveTime(Date.now());
 	}
 
 	function handleHeaderSave(id: string, updatedContent: string) {
@@ -70,7 +71,7 @@ export default function App({
 				}),
 			};
 		});
-		setUpdateTime(Date.now());
+		setSaveTime(Date.now());
 	}
 
 	function handleHeaderSortSelect(
@@ -114,7 +115,7 @@ export default function App({
 				}),
 			};
 		});
-		setUpdateTime(Date.now());
+		setSaveTime(Date.now());
 	}
 
 	function handleAddTag(
@@ -133,7 +134,7 @@ export default function App({
 				],
 			};
 		});
-		setUpdateTime(Date.now());
+		setSaveTime(Date.now());
 	}
 
 	/**
@@ -179,7 +180,7 @@ export default function App({
 				tags: arr,
 			};
 		});
-		setUpdateTime(Date.now());
+		setSaveTime(Date.now());
 	}
 
 	function handleRemoveTagClick(cellId: string, tagId: string) {
@@ -191,15 +192,10 @@ export default function App({
 				tags: removeTagReferences(prevState.tags, cellId),
 			};
 		});
-		setUpdateTime(Date.now());
+		setSaveTime(Date.now());
 	}
 
-	function sortRows(
-		headerId: string,
-		headerType: string,
-		sortName: string,
-		shouldUpdate = true
-	) {
+	function sortRows(headerId: string, headerType: string, sortName: string) {
 		setAppData((prevState) => {
 			//Create a new array because the sort function mutates
 			//the original array
@@ -245,7 +241,6 @@ export default function App({
 				rows: arr,
 			};
 		});
-		if (shouldUpdate) setUpdateTime(Date.now());
 	}
 
 	function handleDeleteHeaderClick(id: string) {
@@ -258,7 +253,7 @@ export default function App({
 				cells: prevState.cells.filter((cell) => cell.headerId !== id),
 			};
 		});
-		setUpdateTime(Date.now());
+		setSaveTime(Date.now());
 	}
 
 	function handleDeleteRowClick(rowId: string) {
@@ -271,7 +266,7 @@ export default function App({
 				cells: prevState.cells.filter((cell) => cell.rowId !== rowId),
 			};
 		});
-		setUpdateTime(Date.now());
+		setSaveTime(Date.now());
 	}
 
 	function handleMoveRowClick(id: string, moveBelow: boolean) {
@@ -296,7 +291,7 @@ export default function App({
 				rows,
 			};
 		});
-		setUpdateTime(Date.now());
+		setSaveTime(Date.now());
 	}
 
 	function handleWidthChange(id: string, newWidth: number) {
@@ -337,7 +332,7 @@ export default function App({
 				headers,
 			};
 		});
-		setUpdateTime(Date.now());
+		setSaveTime(Date.now());
 	}
 
 	function handleInsertColumnClick(id: string, insertRight: boolean) {
@@ -371,7 +366,7 @@ export default function App({
 				cells: [...prevState.cells, ...cells],
 			};
 		});
-		setUpdateTime(Date.now());
+		setSaveTime(Date.now());
 	}
 
 	function handleInsertRowClick(id: string, insertBelow = false) {
@@ -402,7 +397,7 @@ export default function App({
 				tags: [...prevState.tags, ...tags],
 			};
 		});
-		setUpdateTime(Date.now());
+		setSaveTime(Date.now());
 	}
 
 	function handleHeaderTypeSelect(id: string, cellType: string) {
@@ -435,7 +430,7 @@ export default function App({
 				}),
 			};
 		});
-		setUpdateTime(Date.now());
+		setSaveTime(Date.now());
 	}
 
 	function handleChangeColor(tagId: string, color: string) {
@@ -453,7 +448,7 @@ export default function App({
 				}),
 			};
 		});
-		setUpdateTime(Date.now());
+		setSaveTime(Date.now());
 	}
 
 	useEffect(() => {
@@ -463,20 +458,22 @@ export default function App({
 		for (let i = 0; i < appData.headers.length; i++) {
 			const header = appData.headers[i];
 			if (header.sortName !== SORT.DEFAULT.name)
-				sortRows(header.id, header.type, header.sortName, false);
+				sortRows(header.id, header.type, header.sortName);
 		}
 	}, []);
 
 	useEffect(() => {
 		async function handleUpdate() {
-			if (updateTime === 0) return;
+			if (saveTime === 0) return;
 			try {
+				const oldData = sortAppDataForSave(oldAppData);
+				const saveData = sortAppDataForSave(appData);
 				await saveAppData(
 					plugin,
 					settings,
 					app,
-					oldAppData,
-					appData,
+					oldData,
+					saveData,
 					sourcePath,
 					tableIndex,
 					findCurrentViewType(el)
@@ -487,7 +484,7 @@ export default function App({
 		}
 
 		handleUpdate();
-	}, [updateTime]);
+	}, [saveTime]);
 
 	useEffect(() => {
 		let intervalId: NodeJS.Timer = null;
@@ -498,7 +495,7 @@ export default function App({
 				if (Date.now() - debounceUpdate < 250) return;
 				clearInterval(intervalId);
 				setDebounceUpdate(0);
-				setUpdateTime(Date.now());
+				setSaveTime(Date.now());
 			}, 100);
 		}
 		if (debounceUpdate !== 0) startTimer();
