@@ -28,18 +28,49 @@ export const mockTable = (headers: string[] = [], rows: string[][] = []) => {
 	return table;
 };
 
+interface parsedTable {
+	numColumns?: number;
+	numRows?: number;
+	headers?: string[];
+	cells?: string[];
+}
+export const mockParsedTable = (obj: parsedTable) => {
+	const initialValue: parsedTable = {
+		numColumns: 2,
+		numRows: 2,
+		headers: [],
+		cells: [],
+	};
+	const { numColumns, numRows, headers, cells } = { ...initialValue, ...obj };
+	const table = [];
+	for (let i = 0; i < numColumns; i++) {
+		headers.push(`Column ${i + 1}`);
+	}
+	table.push(headers);
+
+	let cellCount = 0;
+	for (let i = 0; i < numRows; i++) {
+		const row = [];
+		for (let j = 0; j < numColumns; j++) {
+			cellCount = cellCount + 1;
+			if (cells.length !== 0) {
+				row.push(cells[i + j]);
+			} else {
+				row.push(`Cell ${cellCount}`);
+			}
+		}
+		table.push(row);
+	}
+	return table;
+};
+
 /**
  * Creates a 1 column NLT markdown table
  * @returns An NLT markdown table
  */
-export const createEmptyMarkdownTable = (
-	tableIndex: string,
-	columnId: string
-): string => {
+export const createEmptyMarkdownTable = (): string => {
 	const rows = [];
-	rows[0] = "| New Column       |                  |";
-	rows[1] = "| ---------------- | ---------------- |";
-	rows[2] = "| text             |                  |";
-	rows[3] = `| ${columnId} | ${tableIndex}  |`;
+	rows[0] = "| New Column |";
+	rows[1] = "| ---------- |";
 	return rows.join("\n");
 };

@@ -3,11 +3,8 @@ import { AppDataStringBuffer } from "../external/saveUtils";
 import { calcColumnCharLengths } from "../external/saveUtils";
 import { CELL_TYPE } from "src/app/constants";
 
-export const appDataIdsToMarkdown = (
-	tableIndex: string,
-	data: AppData
-): string => {
-	const columnCharLengths = calcColumnCharLengths(tableIndex, data);
+export const appDataIdsToMarkdown = (data: AppData): string => {
+	const columnCharLengths = calcColumnCharLengths(data);
 
 	const buffer = new AppDataStringBuffer();
 	buffer.createRow();
@@ -15,7 +12,6 @@ export const appDataIdsToMarkdown = (
 	data.headers.forEach((header, i) => {
 		buffer.writeColumn(header.content, columnCharLengths[i]);
 	});
-	buffer.writeColumn("", columnCharLengths[data.headers.length]);
 
 	buffer.createRow();
 
@@ -23,22 +19,6 @@ export const appDataIdsToMarkdown = (
 		const content = Array(columnCharLengths[i]).fill("-").join("");
 		buffer.writeColumn(content, columnCharLengths[i]);
 	}
-
-	buffer.createRow();
-
-	data.headers.forEach((header, i) => {
-		buffer.writeColumn(header.type, columnCharLengths[i]);
-	});
-
-	buffer.writeColumn("", columnCharLengths[data.headers.length]);
-
-	buffer.createRow();
-
-	data.headers.forEach((header, i) => {
-		buffer.writeColumn(header.id, columnCharLengths[i]);
-	});
-
-	buffer.writeColumn(tableIndex, columnCharLengths[data.headers.length]);
 
 	data.rows.forEach((row) => {
 		buffer.createRow();
@@ -58,17 +38,12 @@ export const appDataIdsToMarkdown = (
 				buffer.writeColumn(cell.id, columnCharLengths[i]);
 			}
 		}
-
-		buffer.writeColumn(row.id, columnCharLengths[data.headers.length]);
 	});
 	return buffer.toString();
 };
 
-export const appDataTypesToMarkdown = (
-	tableIndex: string,
-	data: AppData
-): string => {
-	const columnCharLengths = calcColumnCharLengths(tableIndex, data);
+export const appDataTypesToMarkdown = (data: AppData): string => {
+	const columnCharLengths = calcColumnCharLengths(data);
 
 	const buffer = new AppDataStringBuffer();
 	buffer.createRow();
@@ -85,22 +60,6 @@ export const appDataTypesToMarkdown = (
 		buffer.writeColumn(content, columnCharLengths[i]);
 	}
 
-	buffer.createRow();
-
-	data.headers.forEach((header, i) => {
-		buffer.writeColumn(header.type, columnCharLengths[i]);
-	});
-
-	buffer.writeColumn("", columnCharLengths[data.headers.length]);
-
-	buffer.createRow();
-
-	data.headers.forEach((header, i) => {
-		buffer.writeColumn(header.id, columnCharLengths[i]);
-	});
-
-	buffer.writeColumn(tableIndex, columnCharLengths[data.headers.length]);
-
 	data.rows.forEach((row) => {
 		buffer.createRow();
 
@@ -112,8 +71,6 @@ export const appDataTypesToMarkdown = (
 			);
 			buffer.writeColumn(cell.type, columnCharLengths[i]);
 		}
-
-		buffer.writeColumn(row.id, columnCharLengths[data.headers.length]);
 	});
 	return buffer.toString();
 };

@@ -110,6 +110,14 @@ export const countNumTags = (input: string): number => {
 	return (input.match(/#[^ \t]+/g) || []).length;
 };
 
+export const findInitialCellType = (textContent: string) => {
+	if (isNumber(textContent)) return CELL_TYPE.NUMBER;
+	if (isTag(textContent)) return CELL_TYPE.TAG;
+	if (isDate(textContent)) return CELL_TYPE.DATE;
+	if (isCheckBox(textContent)) return CELL_TYPE.CHECKBOX;
+	return CELL_TYPE.TEXT;
+};
+
 export const findCellType = (textContent: string, expectedType: string) => {
 	//If empty then just set it to the type it's supposed to be.
 	//We do this to allow blank cells

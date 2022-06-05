@@ -19,8 +19,8 @@ import "./app.css";
 import NltPlugin from "main";
 import { SORT } from "./components/HeaderMenu/constants";
 import { addRow, addColumn } from "./services/appData/internal/add";
-import { randomCellId, randomColumnId, randomRowId } from "./services/random";
 import { findCurrentViewType } from "./services/appData/external/loadUtils";
+import { v4 as uuid } from "uuid";
 interface Props {
 	plugin: NltPlugin;
 	settings: NltSettings;
@@ -347,14 +347,11 @@ export default function App({
 			const header = prevState.headers.find((header) => header.id === id);
 			const index = prevState.headers.indexOf(header);
 			const insertIndex = insertRight ? index + 1 : index;
-			const headerToInsert = initialHeader(
-				randomColumnId(),
-				"New Column"
-			);
+			const headerToInsert = initialHeader(uuid(), "New Column");
 
 			const cells = prevState.rows.map((row) =>
 				initialCell(
-					randomCellId(),
+					uuid(),
 					row.id,
 					headerToInsert.id,
 					headerToInsert.type
@@ -376,12 +373,12 @@ export default function App({
 	function handleInsertRowClick(id: string, insertBelow = false) {
 		if (DEBUG.APP.HANDLER)
 			console.log("[App]: handleHeaderInsertRowClick called.");
-		const rowId = randomRowId();
+		const rowId = uuid();
 		setAppData((prevState: AppData) => {
 			const tags: Tag[] = [];
 
 			const cells = prevState.headers.map((header) =>
-				initialCell(randomCellId(), rowId, header.id, header.type)
+				initialCell(uuid(), rowId, header.id, header.type)
 			);
 
 			const rows = [...prevState.rows];

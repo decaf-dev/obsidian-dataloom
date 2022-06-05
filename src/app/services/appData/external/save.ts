@@ -25,13 +25,13 @@ export const saveAppData = async (
 	tableIndex: string,
 	viewType: ViewType
 ) => {
-	const markdown = appDataToMarkdown(tableIndex, newAppData);
+	const markdown = appDataToMarkdown(newAppData);
 	try {
 		const file = app.workspace.getActiveFile();
 		let content = await app.vault.cachedRead(file);
 
 		content = content.replace(
-			findTableRegex(tableIndex, oldAppData.headers, oldAppData.rows),
+			findTableRegex(oldAppData.headers, oldAppData.rows),
 			markdown
 		);
 

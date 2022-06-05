@@ -4,14 +4,13 @@ import { initialRow } from "../state/row";
 import { Tag } from "../state/tag";
 import { CELL_TYPE } from "src/app/constants";
 import { initialCell } from "../state/cell";
-import { randomCellId, randomColumnId, randomRowId } from "../../random";
+import { v4 as uuid } from "uuid";
 
 export const addRow = (data: AppData): AppData => {
-	const rowId = randomRowId();
+	const rowId = uuid();
 	const tags: Tag[] = [];
 	const cells = data.headers.map((header, i) => {
-		const cellId = randomCellId();
-		return initialCell(cellId, rowId, header.id, header.type);
+		return initialCell(uuid(), rowId, header.id, header.type);
 	});
 	return {
 		...data,
@@ -22,12 +21,10 @@ export const addRow = (data: AppData): AppData => {
 };
 
 export const addColumn = (data: AppData): AppData => {
-	const header = initialHeader(randomColumnId(), "New Column");
+	const header = initialHeader(uuid(), "New Column");
 	const cells = [...data.cells];
 	data.rows.forEach((row) => {
-		cells.push(
-			initialCell(randomCellId(), row.id, header.id, CELL_TYPE.TEXT)
-		);
+		cells.push(initialCell(uuid(), row.id, header.id, CELL_TYPE.TEXT));
 	});
 	return {
 		...data,

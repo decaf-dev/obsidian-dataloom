@@ -70,14 +70,17 @@ export const findCurrentViewType = (el: HTMLElement): ViewType => {
 	return currentViewType;
 };
 
-export const findTableIndex = (headers): number => {
+export const findTableIndex = (headers: string[]): number => {
 	//Get all tables in file
 	//Iterate over tables
 	//Hash headers
 	//If match, then return that index
+	//Otherwise search a table with the rows that match the most to the table in the memory
+	//we will assume that it is that table
+	return 0;
 };
 
-export const hashHeaders = (headers: []): number => {
+export const hashHeaders = (headers: string[]): number => {
 	return CRC32.str(
 		headers.reduce((concat, header) => (concat += header), "")
 	);

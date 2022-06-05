@@ -57,11 +57,11 @@ export const loadAppData = async (
 				const data = findAppData(parsedTable);
 				const updated = updateAppDataFromSavedState(oldData, data);
 				if (DEBUG.LOAD_APP_DATA.IDS)
-					console.log(appDataIdsToMarkdown(tableIndex, data));
+					console.log(appDataIdsToMarkdown(data));
 				if (DEBUG.LOAD_APP_DATA.TYPES)
-					console.log(appDataTypesToMarkdown(tableIndex, data));
+					console.log(appDataTypesToMarkdown(data));
 				if (DEBUG.LOAD_APP_DATA.MARKDOWN)
-					console.log(appDataToMarkdown(tableIndex, data));
+					console.log(appDataToMarkdown(data));
 				return { tableIndex, data: updated };
 			}
 		}
@@ -75,12 +75,9 @@ export const loadAppData = async (
 		console.log(data);
 	}
 
-	if (DEBUG.LOAD_APP_DATA.IDS)
-		console.log(appDataIdsToMarkdown(tableIndex, data));
-	if (DEBUG.LOAD_APP_DATA.TYPES)
-		console.log(appDataTypesToMarkdown(tableIndex, data));
-	if (DEBUG.LOAD_APP_DATA.MARKDOWN)
-		console.log(appDataToMarkdown(tableIndex, data));
+	if (DEBUG.LOAD_APP_DATA.IDS) console.log(appDataIdsToMarkdown(data));
+	if (DEBUG.LOAD_APP_DATA.TYPES) console.log(appDataTypesToMarkdown(data));
+	if (DEBUG.LOAD_APP_DATA.MARKDOWN) console.log(appDataToMarkdown(data));
 
 	//When a user adds a new table, this entry will initially be null, we need to set this
 	//so a user can add rows/columns via hotkeys

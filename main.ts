@@ -5,7 +5,6 @@ import { NltSettings, DEFAULT_SETTINGS } from "src/app/services/settings";
 import { addRow, addColumn } from "src/app/services/appData/internal/add";
 import { saveAppData } from "src/app/services/appData/external/save";
 import { createEmptyMarkdownTable } from "src/app/services/appData/mock";
-import { randomColumnId, randomTableId } from "src/app/services/random";
 import { ViewType } from "src/app/services/appData/state/saveState";
 
 interface FocusedTable {
@@ -66,9 +65,7 @@ export default class NltPlugin extends Plugin {
 			name: "Add table",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "=" }],
 			editorCallback: (editor: Editor) => {
-				editor.replaceSelection(
-					createEmptyMarkdownTable(randomTableId(), randomColumnId())
-				);
+				editor.replaceSelection(createEmptyMarkdownTable());
 			},
 		});
 
