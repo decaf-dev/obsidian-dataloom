@@ -1,5 +1,3 @@
-import { randomTagId } from "../../random";
-
 export interface Tag {
 	id: string;
 	headerId: string;
@@ -9,13 +7,14 @@ export interface Tag {
 }
 
 export const initialTag = (
+	id: string,
 	headerId: string,
 	cellId: string,
 	content: string,
 	color: string
 ): Tag => {
 	return {
-		id: randomTagId(),
+		id,
 		headerId,
 		content,
 		color,

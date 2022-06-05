@@ -129,7 +129,7 @@ export default function App({
 				...prevState,
 				tags: [
 					...removeTagReferences(prevState.tags, cellId),
-					initialTag(headerId, cellId, content, color),
+					initialTag(uuid(), headerId, cellId, content, color),
 				],
 			};
 		});

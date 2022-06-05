@@ -2,13 +2,8 @@ import { mockTable, createEmptyMarkdownTable, mockParsedTable } from "./index";
 
 describe("mockTable", () => {
 	it("creates a mock table", () => {
-		const table = mockTable(
-			["Column 1", "Column 2"],
-			[
-				["Cell 1", "Cell 2"],
-				["Cell 3", "Cell 4"],
-			]
-		);
+		const parsedTable = mockParsedTable();
+		const table = mockTable(parsedTable);
 		const tr = table.querySelectorAll("tr");
 		expect(tr.length).toBe(3);
 

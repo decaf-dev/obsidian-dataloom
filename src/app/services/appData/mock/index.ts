@@ -1,27 +1,28 @@
-export const mockTable = (headers: string[] = [], rows: string[][] = []) => {
+export const mockTable = (parsedTable: [][]) => {
 	const table = document.createElement("table");
 	const thead = document.createElement("thead");
 	const tbody = document.createElement("tbody");
 
 	const row = document.createElement("tr");
-	for (let i = 0; i < headers.length; i++) {
+	parsedTable[0].forEach((th) => {
 		const td = document.createElement("th");
-		const text = document.createTextNode(headers[i]);
+		const text = document.createTextNode(th);
 		td.appendChild(text);
 		row.appendChild(td);
-	}
+	});
 	thead.appendChild(row);
 
-	for (let i = 0; i < rows.length; i++) {
+	parsedTable.forEach((tr, i) => {
+		if (i === 0) return;
 		const row = document.createElement("tr");
-		for (let j = 0; j < rows[i].length; j++) {
+		for (let j = 0; j < tr.length; j++) {
 			const td = document.createElement("td");
-			const text = document.createTextNode(rows[i][j]);
+			const text = document.createTextNode(tr[j]);
 			td.appendChild(text);
 			row.appendChild(td);
 		}
 		tbody.appendChild(row);
-	}
+	});
 
 	table.appendChild(thead);
 	table.appendChild(tbody);
@@ -53,7 +54,7 @@ export const mockParsedTable = (obj: parsedTable) => {
 		const row = [];
 		for (let j = 0; j < numColumns; j++) {
 			cellCount = cellCount + 1;
-			if (cells.length !== 0) {
+			if (cells.length >= i + j + 1) {
 				row.push(cells[i + j]);
 			} else {
 				row.push(`Cell ${cellCount}`);

@@ -1,4 +1,4 @@
-import { mockTable } from "../mock";
+import { mockParsedTable, mockTable } from "../mock";
 import { hashHeaders, parseTableFromEl } from "./loadUtils";
 
 describe("hashHeaders", () => {
@@ -21,18 +21,13 @@ describe("hashHeaders", () => {
 
 describe("parseTableFromEl", () => {
 	it("parses table", () => {
-		const table = mockTable(
-			["test 1", "test 2"],
-			[
-				["cell 1", "cell 2"],
-				["cell 3", "cell 4"],
-			]
-		);
-		const parsedTable = parseTableFromEl(table);
-		expect(parsedTable).toEqual([
-			["test 1", "test 2"],
-			["cell 1", "cell 2"],
-			["cell 3", "cell 4"],
+		const parsedTable = mockParsedTable();
+		const table = mockTable(parsedTable);
+		const parsed = parseTableFromEl(table);
+		expect(parsed).toEqual([
+			["Column 1", "Column 2"],
+			["Cell 1", "Cell 2"],
+			["Cell 3", "Cell 4"],
 		]);
 	});
 });

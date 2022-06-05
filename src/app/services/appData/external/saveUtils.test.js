@@ -42,7 +42,7 @@ describe("findAppData", () => {
 		];
 		const data = findAppData(parsedTable);
 		expect(data.tags.length).toEqual(4);
-		expect(data.tags[0].content).toEqual("tag1");
+		expect(data.tags[0].content).toEqual("#tag1");
 		expect(data.tags[1].content).toEqual("#tag2");
 		expect(data.tags[2].content).toEqual("#tag3");
 		expect(data.tags[3].content).toEqual("#tag4");
@@ -51,8 +51,8 @@ describe("findAppData", () => {
 	it("finds errors", () => {
 		const parsedTable = [
 			["Column 1", "Column 2"],
+			["#tag1", "#tag2"],
 			["Cell 1", "Cell 2"],
-			["#tag3", "Cell 3"],
 		];
 		const data = findAppData(parsedTable);
 		expect(data.cells[3].type).toEqual(CELL_TYPE.ERROR);

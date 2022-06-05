@@ -45,7 +45,7 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 			const row = initialRow(uuid(), getCurrentTimeWithOffset());
 
 			//Set column cell types from first row
-			if (i == 0) {
+			if (i == 1) {
 				parsedRow.forEach((td, j) => {
 					const cellType = findInitialCellType(td);
 					headers[j].type = cellType;
@@ -57,7 +57,7 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 				const cellId = uuid();
 
 				//Check if doesn't match header
-				if (cellType !== headers[j].type) {
+				if (cellType === CELL_TYPE.ERROR) {
 					cells.push(
 						new ErrorCell(
 							cellId,
@@ -67,10 +67,7 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 							td
 						)
 					);
-					return;
-				}
-
-				if (cellType === CELL_TYPE.TEXT) {
+				} else if (cellType === CELL_TYPE.TEXT) {
 					let content = td;
 					content = content.replace(
 						LINE_BREAK_CHARACTER_REGEX("g"),
@@ -124,6 +121,7 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 						} else {
 							tags.push(
 								initialTag(
+									uuid(),
 									headers[j].id,
 									cellId,
 									content,
