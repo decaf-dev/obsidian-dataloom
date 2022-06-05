@@ -347,7 +347,11 @@ export default function App({
 			const header = prevState.headers.find((header) => header.id === id);
 			const index = prevState.headers.indexOf(header);
 			const insertIndex = insertRight ? index + 1 : index;
-			const headerToInsert = initialHeader(uuid(), "New Column");
+			const headerToInsert = initialHeader(
+				uuid(),
+				prevState.headers.length,
+				"New Column"
+			);
 
 			const cells = prevState.rows.map((row) =>
 				initialCell(
@@ -386,7 +390,11 @@ export default function App({
 			const index = prevState.rows.findIndex((row) => row.id === id);
 			const insertIndex = insertBelow ? index + 1 : index;
 			//If you insert a new row, then we want to resort?
-			rows.splice(insertIndex, 0, initialRow(rowId, Date.now()));
+			rows.splice(
+				insertIndex,
+				0,
+				initialRow(rowId, prevState.rows.length, Date.now())
+			);
 			return {
 				...prevState,
 				rows,
