@@ -136,7 +136,7 @@ export default function EditableTd({
 					onContentChange(id, inputText);
 					break;
 				case CELL_TYPE.NUMBER:
-					onContentChange(id, parseInt(inputText));
+					onContentChange(id, inputText);
 					break;
 				case CELL_TYPE.TAG: {
 					const tag = tags.find((tag) => tag.content === inputText);

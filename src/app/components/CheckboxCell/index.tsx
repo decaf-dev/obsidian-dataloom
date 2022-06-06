@@ -17,6 +17,7 @@ export default function CheckboxCell({ isChecked, onCheckboxChange }: Props) {
 				className="task-list-item-checkbox"
 				type="checkbox"
 				checked={isChecked}
+				onChange={() => {}}
 			/>
 		</div>
 	);
