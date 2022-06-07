@@ -61,6 +61,7 @@ export default function EditableTd({
 	const [tagInputText, setTagInputText] = useState("");
 
 	const menuId = useMenuId();
+	const content = cell.toString();
 	const {
 		menuPosition,
 		menuRef,
@@ -68,7 +69,7 @@ export default function EditableTd({
 		openMenu,
 		closeMenu,
 		isMenuRequestingClose,
-	} = useMenuRef(menuId, MENU_LEVEL.ONE);
+	} = useMenuRef(menuId, MENU_LEVEL.ONE, content);
 
 	useDisableScroll(isMenuOpen);
 
@@ -76,7 +77,6 @@ export default function EditableTd({
 
 	const [wasContentUpdated, setContentUpdate] = useState(false);
 	const isInvalidContent = type !== headerType;
-	const content = cell.toString();
 
 	useEffect(() => {
 		if (isMenuRequestingClose) {
@@ -207,6 +207,7 @@ export default function EditableTd({
 						top={menuPosition.top}
 						left={menuPosition.left}
 						width={menuPosition.width}
+						height={menuPosition.height}
 						value={content}
 						onInputChange={handleTextInputChange}
 					/>
@@ -219,6 +220,7 @@ export default function EditableTd({
 						top={menuPosition.top}
 						left={menuPosition.left}
 						width={menuPosition.width}
+						height={menuPosition.height}
 						value={content}
 						onInputChange={handleNumberInputChange}
 					/>
@@ -266,10 +268,10 @@ export default function EditableTd({
 			onClick={handleCellClick}
 			onContextMenu={handleCellContextClick}
 		>
-			{renderCellMenu()}
 			<div className="NLT__td-container" style={{ width }}>
 				{renderCell()}
 			</div>
+			{renderCellMenu()}
 		</td>
 	);
 }

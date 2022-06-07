@@ -13,13 +13,25 @@ export const useMenuId = (): string => {
 	return menuId;
 };
 
-export const useTextareaRef = (isOpen: boolean, value: string) => {
-	const didMount = useRef(false);
+export const useCompare = (value: any) => {
+	const prevValue = usePrevious(value);
+	return prevValue !== value;
+};
 
+const usePrevious = (value: any) => {
+	const ref = useRef();
+	useEffect(() => {
+		ref.current = value;
+	});
+	return ref.current;
+};
+
+export const useTextareaRef = (isOpen: boolean, value: string) => {
+	const lengthHasChanged = useCompare(value.length);
 	return useCallback(
 		(node) => {
 			if (node) {
-				if (isOpen && !didMount.current) {
+				if (isOpen && !lengthHasChanged) {
 					node.selectionStart = value.length;
 					node.selectionEnd = value.length;
 					if (node instanceof HTMLElement) {
@@ -28,7 +40,6 @@ export const useTextareaRef = (isOpen: boolean, value: string) => {
 						}, 1);
 					}
 				}
-				if (!didMount.current) didMount.current = true;
 			}
 		},
 		[isOpen, value.length]
@@ -43,7 +54,7 @@ export const useDidMountEffect = (func: (...rest: any) => any, deps: any[]) => {
 	}, deps);
 };
 
-export const useMenuRef = (menuId: string, menuLevel: number) => {
+export const useMenuRef = (menuId: string, menuLevel: number, content = "") => {
 	const [menuPosition, setMenuPosition] = useState({
 		top: 0,
 		left: 0,
@@ -67,6 +78,7 @@ export const useMenuRef = (menuId: string, menuLevel: number) => {
 	}, [menuPosition.time, shouldOpenMenu]);
 
 	//Update menu position on resize or when the menu is requested to be opened
+	//or when the content length changes
 	const menuRef = useCallback(
 		(node) => {
 			if (node instanceof HTMLElement) {
@@ -75,7 +87,7 @@ export const useMenuRef = (menuId: string, menuLevel: number) => {
 				setMenuPosition({ top, left, width, height, time: Date.now() });
 			}
 		},
-		[resizeTime, shouldOpenMenu]
+		[resizeTime, shouldOpenMenu, content.length]
 	);
 
 	return {
