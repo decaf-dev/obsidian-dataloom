@@ -1,4 +1,11 @@
+import { v4 as uuid } from "uuid";
+
+import { initialTag } from "../state/tag";
 import { AppData } from "../state/appData";
+import { updateCell } from "./loadUtils";
+import { randomColor } from "../../random";
+
+import { CELL_TYPE } from "src/app/constants";
 
 export const updateAppDataFromSavedState = (
 	oldData: AppData,
@@ -16,7 +23,36 @@ export const updateAppDataFromSavedState = (
 		}
 	});
 
+	newData.cells.forEach((c, i) => {
+		const content = c.toString();
+		const { id, rowId, headerId } = c;
+		const header = newData.headers.find((header) => header.id === headerId);
+		const cell = updateCell(id, rowId, headerId, header.type, content);
+		updated.cells[i] = cell;
+
+		if (cell.type === CELL_TYPE.TAG) {
+			//Check if tag already exists, otherwise create a new
+			const index = updated.tags.findIndex(
+				(tag) => tag.content === content
+			);
+			if (index !== -1) {
+				updated.tags[index].selected.push(id);
+			} else {
+				updated.tags.push(
+					initialTag(uuid(), headerId, id, content, randomColor())
+				);
+			}
+		}
+	});
+
 	//Grab creation times
+	newData.rows.forEach((_row, i) => {
+		if (i < oldData.headers.length) {
+			const { creationTime } = oldData.rows[i];
+			updated.rows[i].creationTime = creationTime;
+		}
+	});
+
 	newData.rows.forEach((_row, i) => {
 		if (i < oldData.headers.length) {
 			const { creationTime } = oldData.rows[i];

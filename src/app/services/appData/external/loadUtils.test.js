@@ -1,5 +1,34 @@
 import { mockParsedTable, mockTable } from "../mock";
 import { hashHeaders, parseTableFromEl } from "./loadUtils";
+import { findAppData } from "./loadUtils";
+
+describe("findAppData", () => {
+	it("finds headers", () => {
+		const parsedTable = [
+			["Column 1", "Column 2"],
+			["Cell 1", "Cell 2"],
+			["Cell 3", "Cell 4"],
+		];
+		const data = findAppData(parsedTable);
+		expect(data.headers.length).toEqual(2);
+		expect(data.headers[0].content).toEqual("Column 1");
+		expect(data.headers[1].content).toEqual("Column 2");
+	});
+
+	it("finds cells", () => {
+		const parsedTable = [
+			["Column 1", "Column 2"],
+			["Cell 1", "Cell 2"],
+			["Cell 3", "Cell 4"],
+		];
+		const data = findAppData(parsedTable);
+		expect(data.cells.length).toEqual(4);
+		expect(data.cells[0].toString()).toEqual("Cell 1");
+		expect(data.cells[1].toString()).toEqual("Cell 2");
+		expect(data.cells[2].toString()).toEqual("Cell 3");
+		expect(data.cells[3].toString()).toEqual("Cell 4");
+	});
+});
 
 describe("hashHeaders", () => {
 	it("produces same hash given same headers", () => {

@@ -51,11 +51,10 @@ export const appDataTypesToMarkdown = (data: AppData): string => {
 	data.headers.forEach((header, i) => {
 		buffer.writeColumn(header.content, columnCharLengths[i]);
 	});
-	buffer.writeColumn("", columnCharLengths[data.headers.length]);
 
 	buffer.createRow();
 
-	for (let i = 0; i < data.headers.length + 1; i++) {
+	for (let i = 0; i < data.headers.length; i++) {
 		const content = Array(columnCharLengths[i]).fill("-").join("");
 		buffer.writeColumn(content, columnCharLengths[i]);
 	}

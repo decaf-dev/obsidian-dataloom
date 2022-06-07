@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect } from "react";
 
 import { Notice } from "obsidian";
 import TextCell from "../TextCell";
@@ -15,7 +15,8 @@ import DateCellEdit from "../DateCellEdit";
 import { randomColor } from "src/app/services/random";
 import { Tag } from "src/app/services/appData/state/tag";
 import { Cell } from "src/app/services/appData/state/cell";
-import { parseDateForInput } from "src/app/services/string/parsers";
+import { dateToString } from "src/app/services/string/parsers";
+import { isDate } from "src/app/services/string/validators";
 
 import "./styles.css";
 
@@ -27,12 +28,13 @@ import {
 } from "src/app/services/hooks";
 
 interface Props {
+	headerType: string;
 	cell: Cell;
 	width: string;
 	tags: Tag[];
 	onRemoveTagClick: (cellId: string, tagId: string) => void;
 	onTagClick: (cellId: string, tagId: string) => void;
-	onContentChange: (cellId: string, ...rest: any) => void;
+	onContentChange: (cellId: string, headerType: string, content: any) => void;
 	onAddTag: (
 		cellId: string,
 		headerId: string,
@@ -40,9 +42,11 @@ interface Props {
 		color: string
 	) => void;
 	onColorChange: (tagId: string, color: string) => void;
+	onSaveContent: () => void;
 }
 
 export default function EditableTd({
+	headerType,
 	cell,
 	width,
 	tags,
@@ -50,45 +54,60 @@ export default function EditableTd({
 	onColorChange,
 	onTagClick,
 	onContentChange,
+	onSaveContent,
 	onAddTag,
 }: Props) {
-	const [inputText, setInputText] = useState("");
-	const didMount = useRef(false);
-
 	const [tagColor] = useState(randomColor());
+	const [tagInputText, setTagInputText] = useState("");
 
 	const menuId = useMenuId();
-	const { menuPosition, menuRef, isMenuOpen, openMenu, closeMenu } =
-		useMenuRef(menuId, MENU_LEVEL.ONE);
+	const {
+		menuPosition,
+		menuRef,
+		isMenuOpen,
+		openMenu,
+		closeMenu,
+		isMenuRequestingClose,
+	} = useMenuRef(menuId, MENU_LEVEL.ONE);
 
 	useDisableScroll(isMenuOpen);
 
-	const { id, headerId, type, expectedType } = cell;
+	const { id, headerId, type } = cell;
+
+	const [wasContentUpdated, setContentUpdate] = useState(false);
+	const isInvalidContent = type !== headerType;
 	const content = cell.toString();
 
 	useEffect(() => {
-		if (!didMount.current) {
-			didMount.current = true;
-		} else {
-			if (!isMenuOpen) {
-				if (DEBUG.EDITABLE_TD.USE_EFFECT)
-					console.log(
-						`[EditableTd] useEffect(updateContent("${inputText}"))`
-					);
-				updateContent(inputText);
+		if (isMenuRequestingClose) {
+			// if (headerType === CELL_TYPE.TAG && !wasContentUpdated) {
+			// 	if (tagInputText !== "") {
+			// 		const tag = tags.find(
+			// 			(tag) => tag.content === addPound(tagInputText)
+			// 		);
+			// 		if (tag) {
+			// 			onTagClick(id, tag.id);
+			// 		} else {
+			// 			onAddTag(
+			// 				id,
+			// 				headerId,
+			// 				addPound(tagInputText),
+			// 				tagColor
+			// 			);
+			// 		}
+			// 		setTagInputText("");
+			// 		// setContentUpdate(true);
+			// 	}
+			// } else {
+			closeMenu();
+			//If we're just closing the menun from an outside click,
+			//then don't save unless the content actually updated
+			if (wasContentUpdated) {
+				onSaveContent();
 			}
+			// }
 		}
-	}, [didMount.current, isMenuOpen]);
-
-	useEffect(() => {
-		if (DEBUG.EDITABLE_TD.USE_EFFECT)
-			console.log(`[EditableTd] useEffect(setInputText("${content}"))`);
-		setInputText(content);
-	}, []);
-
-	useEffect(() => {
-		didMount.current = true;
-	}, []);
+	}, [isMenuRequestingClose]);
 
 	async function handleCellContextClick(e: React.MouseEvent<HTMLElement>) {
 		if (DEBUG.EDITABLE_TD.HANDLER)
@@ -108,65 +127,44 @@ export default function EditableTd({
 
 		//If we clicked on the link for a file or tag, return
 		if (el.nodeName === "A") return;
-		//If the cell is an error return
-		if (type === CELL_TYPE.ERROR) return;
-
 		openMenu();
 	}
 
-	//Are menus saving??
-	async function handleAddTag(text: string) {
-		if (DEBUG.EDITABLE_TD.HANDLER)
-			console.log(`[EditableTd] handleAddTag("${text}")`);
-		closeMenu();
-		onAddTag(id, headerId, text, tagColor);
+	function handleAddTag(value: string) {
+		onAddTag(id, headerId, value, tagColor);
+		setContentUpdate(true);
 	}
 
-	async function handleTagClick(tagId: string) {
-		if (DEBUG.EDITABLE_TD.HANDLER)
-			console.log(`[EditableTd] handleTagClick("${tagId}")`);
-		closeMenu();
+	function handleTagClick(tagId: string) {
 		onTagClick(id, tagId);
+		setContentUpdate(true);
 	}
 
-	function updateContent(updated: string) {
-		if (content !== updated) {
-			switch (type) {
-				case CELL_TYPE.TEXT:
-					onContentChange(id, inputText);
-					break;
-				case CELL_TYPE.NUMBER:
-					onContentChange(id, inputText);
-					break;
-				case CELL_TYPE.TAG: {
-					const tag = tags.find((tag) => tag.content === inputText);
-					if (tag) {
-						onTagClick(id, tag.id);
-					} else {
-						onAddTag(id, headerId, inputText, tagColor);
-					}
-					setInputText("");
-					break;
-				}
-				case CELL_TYPE.DATE:
-					onContentChange(
-						id,
-						inputText !== "" ? new Date(inputText) : null
-					);
-					break;
-				default:
-					break;
-			}
-		}
+	function handleTextInputChange(value: string) {
+		onContentChange(id, headerType, value);
+		setContentUpdate(true);
+	}
+
+	function handleNumberInputChange(value: string) {
+		onContentChange(id, headerType, value);
+		setContentUpdate(true);
+	}
+
+	function handleDateChange(date: Date) {
+		console.log("Handle date change!");
+		onContentChange(id, headerType, date);
+		setContentUpdate(true);
 	}
 
 	function handleCheckboxChange(isChecked: boolean) {
-		if (DEBUG.EDITABLE_TD.HANDLER)
-			console.log(`[EditableTd] handleCheckboxChange("${isChecked}")`);
-		onContentChange(id, isChecked);
+		onContentChange(id, headerType, isChecked);
+		setContentUpdate(true);
 	}
 
 	function renderCell(): React.ReactNode {
+		if (isInvalidContent) {
+			return <ErrorCell expectedType={headerType} type={type} />;
+		}
 		switch (type) {
 			case CELL_TYPE.TEXT:
 				return <TextCell text={content} />;
@@ -194,32 +192,13 @@ export default function EditableTd({
 						onCheckboxChange={handleCheckboxChange}
 					/>
 				);
-			case CELL_TYPE.ERROR:
-				return <ErrorCell type={expectedType} />;
 			default:
 				return <></>;
 		}
 	}
 
-	function handleInputChange(value: string) {
-		if (DEBUG.EDITABLE_TD.HANDLER)
-			console.log(`[EditableTd] handleInputChange("${value}")`);
-		setInputText(value);
-	}
-
-	function handleDateChange(date: Date) {
-		if (DEBUG.EDITABLE_TD.HANDLER) {
-			console.log(`[EditableTd] handledDateChange`);
-		}
-		if (date) {
-			setInputText(parseDateForInput(date));
-		} else {
-			setInputText("");
-		}
-	}
-
 	function renderCellMenu() {
-		switch (type) {
+		switch (headerType) {
 			case CELL_TYPE.TEXT:
 				return (
 					<TextCellEdit
@@ -228,8 +207,8 @@ export default function EditableTd({
 						top={menuPosition.top}
 						left={menuPosition.left}
 						width={menuPosition.width}
-						inputText={inputText}
-						onInputChange={handleInputChange}
+						value={content}
+						onInputChange={handleTextInputChange}
 					/>
 				);
 			case CELL_TYPE.NUMBER:
@@ -240,8 +219,8 @@ export default function EditableTd({
 						top={menuPosition.top}
 						left={menuPosition.left}
 						width={menuPosition.width}
-						inputText={inputText}
-						onInputChange={handleInputChange}
+						value={content}
+						onInputChange={handleNumberInputChange}
 					/>
 				);
 			case CELL_TYPE.TAG:
@@ -253,9 +232,7 @@ export default function EditableTd({
 						isOpen={isMenuOpen}
 						top={menuPosition.top}
 						left={menuPosition.left}
-						inputText={inputText}
 						color={tagColor}
-						onInputChange={handleInputChange}
 						onColorChange={onColorChange}
 						onAddTag={handleAddTag}
 						onRemoveTagClick={onRemoveTagClick}
@@ -272,7 +249,7 @@ export default function EditableTd({
 						width={menuPosition.width}
 						height={menuPosition.height}
 						selectedDate={
-							inputText !== "" ? new Date(inputText) : new Date()
+							isDate(content) ? new Date(content) : new Date()
 						}
 						onDateChange={handleDateChange}
 					/>

@@ -1,63 +1,11 @@
-import { CELL_TYPE } from "../../../constants";
 import {
 	findTableRegex,
 	calcColumnCharLengths,
 	appDataToMarkdown,
-	findAppData,
 	AppDataStringBuffer,
 } from "./saveUtils";
 
-describe("findAppData", () => {
-	it("finds headers", () => {
-		const parsedTable = [
-			["Column 1", "Column 2"],
-			["Cell 1", "Cell 2"],
-			["Cell 3", "Cell 4"],
-		];
-		const data = findAppData(parsedTable);
-		expect(data.headers.length).toEqual(2);
-		expect(data.headers[0].content).toEqual("Column 1");
-		expect(data.headers[1].content).toEqual("Column 2");
-	});
-
-	it("finds cells", () => {
-		const parsedTable = [
-			["Column 1", "Column 2"],
-			["Cell 1", "Cell 2"],
-			["Cell 3", "Cell 4"],
-		];
-		const data = findAppData(parsedTable);
-		expect(data.cells.length).toEqual(4);
-		expect(data.cells[0].toString()).toEqual("Cell 1");
-		expect(data.cells[1].toString()).toEqual("Cell 2");
-		expect(data.cells[2].toString()).toEqual("Cell 3");
-		expect(data.cells[3].toString()).toEqual("Cell 4");
-	});
-
-	it("finds tag data", () => {
-		const parsedTable = [
-			["Column 1", "Column 2"],
-			["#tag1", "#tag2"],
-			["#tag3", "#tag4"],
-		];
-		const data = findAppData(parsedTable);
-		expect(data.tags.length).toEqual(4);
-		expect(data.tags[0].content).toEqual("tag1");
-		expect(data.tags[1].content).toEqual("tag2");
-		expect(data.tags[2].content).toEqual("tag3");
-		expect(data.tags[3].content).toEqual("tag4");
-	});
-
-	it("finds errors", () => {
-		const parsedTable = [
-			["Column 1", "Column 2"],
-			["#tag1", "#tag2"],
-			["Cell 1", "Cell 2"],
-		];
-		const data = findAppData(parsedTable);
-		expect(data.cells[3].type).toEqual(CELL_TYPE.ERROR);
-	});
-});
+import { findAppData } from "./loadUtils";
 
 describe("appDataToMarkdown", () => {
 	it("converts appData to valid markdown", () => {

@@ -1,6 +1,7 @@
-import React, { useCallback, useState } from "react";
+import React from "react";
 
 import Menu from "../Menu";
+import { useTextareaRef } from "src/app/services/hooks";
 
 import "./styles.css";
 
@@ -10,7 +11,8 @@ interface Props {
 	top: number;
 	left: number;
 	width: number;
-	inputText: string;
+	height: number;
+	value: string;
 	onInputChange: (value: string) => void;
 }
 
@@ -20,31 +22,16 @@ export default function TextCellEdit({
 	top,
 	left,
 	width,
-	inputText,
+	height,
+	value,
 	onInputChange,
 }: Props) {
-	const [height, setHeight] = useState(0);
-	const textAreaRef = useCallback(
-		(node) => {
-			if (node) {
-				if (isOpen) {
-					node.selectionStart = inputText.length;
-					node.selectionEnd = inputText.length;
-					if (node instanceof HTMLElement) {
-						setTimeout(() => {
-							node.focus();
-						}, 1);
-					}
-					if (node instanceof HTMLElement) {
-						node.style.height = "auto";
-						node.style.height = `${node.scrollHeight}px`;
-						setHeight(node.scrollHeight);
-					}
-				}
-			}
-		},
-		[isOpen, inputText.length]
-	);
+	const inputRef = useTextareaRef(isOpen, value);
+
+	function handleTextareaChange(value: string) {
+		value = value.replace("\n", "");
+		onInputChange(value);
+	}
 
 	return (
 		<Menu
@@ -57,12 +44,10 @@ export default function TextCellEdit({
 		>
 			<textarea
 				className="NLT__textarea"
-				ref={textAreaRef}
+				ref={inputRef}
 				autoFocus
-				value={inputText}
-				onChange={(e) =>
-					onInputChange(e.target.value.replace("\n", ""))
-				}
+				value={value}
+				onChange={(e) => handleTextareaChange(e.target.value)}
 			/>
 		</Menu>
 	);

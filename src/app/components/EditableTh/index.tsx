@@ -1,8 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from "react";
-
-import { v4 as uuidv4 } from "uuid";
-
-import { useMenu } from "../MenuProvider";
+import React, { useRef } from "react";
 
 import HeaderMenu from "../HeaderMenu";
 
@@ -12,7 +8,6 @@ import {
 	useDisableScroll,
 	useMenuId,
 	useMenuRef,
-	useResizeTime,
 } from "src/app/services/hooks";
 
 interface Props {

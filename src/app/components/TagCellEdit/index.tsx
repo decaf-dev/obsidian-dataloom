@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useState } from "react";
 
 import Menu from "../Menu";
 
@@ -15,10 +15,8 @@ interface Props {
 	top: number;
 	left: number;
 	color: string;
-	inputText: string;
 	cellId: string;
 	tags: Tag[];
-	onInputChange: (value: string) => void;
 	onTagClick: (tagId: string) => void;
 	onAddTag: (inputText: string) => void;
 	onRemoveTagClick: (cellId: string, tagId: string) => void;
@@ -31,19 +29,18 @@ export default function TagCellEdit({
 	top,
 	left,
 	color,
-	inputText,
 	cellId,
 	tags,
-	onInputChange,
 	onTagClick,
 	onAddTag,
 	onColorChange,
 	onRemoveTagClick,
 }: Props) {
+	const [inputText, setInputText] = useState("");
 	function handleTextChange(e: React.ChangeEvent<HTMLInputElement>) {
 		//Disallow whitespace
 		if (e.target.value.match(/\s/)) return;
-		onInputChange(e.target.value);
+		setInputText(e.target.value);
 	}
 
 	function renderSelectableTags() {

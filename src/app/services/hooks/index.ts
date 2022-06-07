@@ -1,7 +1,7 @@
 import { useCallback, useState, useEffect, useRef } from "react";
 import { useMenu } from "src/app/components/MenuProvider";
 
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuid } from "uuid";
 
 export const useForceUpdate = () => {
 	const [, setValue] = useState(0);
@@ -9,10 +9,31 @@ export const useForceUpdate = () => {
 };
 
 export const useMenuId = (): string => {
-	const [menuId] = useState(uuidv4());
+	const [menuId] = useState(uuid());
 	return menuId;
 };
 
+export const useTextareaRef = (isOpen: boolean, value: string) => {
+	const didMount = useRef(false);
+
+	return useCallback(
+		(node) => {
+			if (node) {
+				if (isOpen && !didMount.current) {
+					node.selectionStart = value.length;
+					node.selectionEnd = value.length;
+					if (node instanceof HTMLElement) {
+						setTimeout(() => {
+							node.focus();
+						}, 1);
+					}
+				}
+				if (!didMount.current) didMount.current = true;
+			}
+		},
+		[isOpen, value.length]
+	);
+};
 export const useDidMountEffect = (func: (...rest: any) => any, deps: any[]) => {
 	const didMount = useRef(false);
 
@@ -32,7 +53,10 @@ export const useMenuRef = (menuId: string, menuLevel: number) => {
 	});
 	const [shouldOpenMenu, setOpenMenu] = useState(false);
 	const resizeTime = useResizeTime();
-	const { isMenuOpen, openMenu, closeMenu } = useMenu(menuId, menuLevel);
+	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } = useMenu(
+		menuId,
+		menuLevel
+	);
 
 	//Only open the menu after the position has been updated
 	useEffect(() => {
@@ -58,6 +82,7 @@ export const useMenuRef = (menuId: string, menuLevel: number) => {
 		menuPosition,
 		openMenu: () => setOpenMenu(true),
 		closeMenu,
+		isMenuRequestingClose,
 		isMenuOpen,
 		menuRef,
 	};

@@ -22,6 +22,7 @@ import { addRow, addColumn } from "./services/appData/internal/add";
 import { findCurrentViewType } from "./services/appData/external/loadUtils";
 import { v4 as uuid } from "uuid";
 import { sortAppDataForSave } from "./services/appData/external/saveUtils";
+import { findCellType } from "./services/string/matchers";
 interface Props {
 	plugin: NltPlugin;
 	settings: NltSettings;
@@ -43,6 +44,91 @@ export default function App({
 	const [appData, setAppData] = useState<AppData>(data);
 	const [debounceUpdate, setDebounceUpdate] = useState(0);
 	const [saveTime, setSaveTime] = useState(0);
+
+	useEffect(() => {
+		// Sort on first render
+		// If a user deletes or adds a new row (by copying and pasting, for example)
+		// then we want to make sure that value is sorted in
+		for (let i = 0; i < appData.headers.length; i++) {
+			const header = appData.headers[i];
+			if (header.sortName !== SORT.DEFAULT.name)
+				sortRows(header.id, header.type, header.sortName);
+		}
+	}, []);
+
+	useEffect(() => {
+		async function handleUpdate() {
+			if (saveTime === 0) return;
+			try {
+				const oldData = sortAppDataForSave(oldAppData);
+				const saveData = sortAppDataForSave(appData);
+				await saveAppData(
+					plugin,
+					settings,
+					app,
+					oldData,
+					saveData,
+					sourcePath,
+					tableIndex,
+					findCurrentViewType(el)
+				);
+			} catch (err) {
+				console.log(err);
+			}
+		}
+
+		handleUpdate();
+	}, [saveTime]);
+
+	useEffect(() => {
+		let intervalId: NodeJS.Timer = null;
+		function startTimer() {
+			intervalId = setInterval(() => {
+				//When debounce update is called, we will only save after
+				//250ms have pass since the last update
+				if (Date.now() - debounceUpdate < 250) return;
+				clearInterval(intervalId);
+				setDebounceUpdate(0);
+				setSaveTime(Date.now());
+			}, 100);
+		}
+		if (debounceUpdate !== 0) startTimer();
+		return () => clearInterval(intervalId);
+	}, [debounceUpdate]);
+
+	//If a table updates in editing mode or reading mode, update the other table
+	//TODO change with notifier in the main.js
+	//TODO why doesn't this always update?
+	useEffect(() => {
+		let intervalId: NodeJS.Timer = null;
+		function startTimer() {
+			intervalId = setInterval(async () => {
+				if (settings.state[sourcePath]) {
+					if (settings.state[sourcePath][tableIndex]) {
+						const { shouldUpdate, viewType } =
+							settings.state[sourcePath][tableIndex];
+
+						const currentViewType = findCurrentViewType(el);
+
+						if (shouldUpdate && viewType !== currentViewType) {
+							clearInterval(intervalId);
+							settings.state[sourcePath][
+								tableIndex
+							].shouldUpdate = false;
+							await plugin.saveSettings();
+							const savedData =
+								settings.state[sourcePath][tableIndex].data;
+							setOldAppData(savedData);
+							setAppData(savedData);
+							startTimer();
+						}
+					}
+				}
+			}, 500);
+		}
+		startTimer();
+		return () => clearInterval(intervalId);
+	}, []);
 
 	function handleAddColumn() {
 		if (DEBUG.APP.HANDLER) console.log("[App]: handleAddColumn called.");
@@ -74,6 +160,41 @@ export default function App({
 		setSaveTime(Date.now());
 	}
 
+	function handleHeaderTypeSelect(id: string, cellType: string) {
+		if (DEBUG.APP.HANDLER)
+			console.log("[App]: handleHeaderTypeSelect called.");
+		//If same header type return
+		const header = appData.headers.find((header) => header.id === id);
+		if (header.type === cellType) return;
+
+		console.log("Yup");
+		//Handle tags
+		setAppData((prevState) => {
+			return {
+				...prevState,
+				//Update header to new cell type
+				headers: prevState.headers.map((header) => {
+					if (id === header.id) return { ...header, type: cellType };
+					return header;
+				}),
+				cells: prevState.cells.map((cell: Cell) => {
+					if (cell.headerId === id) {
+						const type = findCellType(cell.toString(), cellType);
+						return initialCell(
+							cell.id,
+							cell.rowId,
+							cell.headerId,
+							type,
+							cell.toString()
+						);
+					}
+					return cell;
+				}),
+			};
+		});
+		setSaveTime(Date.now());
+	}
+
 	function handleHeaderSortSelect(
 		id: string,
 		type: string,
@@ -92,22 +213,32 @@ export default function App({
 		sortRows(id, type, sortName);
 	}
 
-	function handleCellContentChange(id: string, content: any) {
+	function handleCellContentSave() {
+		setSaveTime(Date.now());
+	}
+
+	function handleCellContentChange(
+		id: string,
+		headerType: string,
+		content: any
+	) {
 		if (DEBUG.APP.HANDLER) {
 			console.log(`[App]: handleCellContentChange`);
 			console.log({ id, content });
 		}
 
+		//Handle tags
 		setAppData((prevState) => {
 			return {
 				...prevState,
 				cells: prevState.cells.map((cell: Cell) => {
 					if (cell.id === id) {
+						const type = findCellType(cell.toString(), headerType);
 						return initialCell(
 							cell.id,
 							cell.rowId,
 							cell.headerId,
-							cell.type,
+							type,
 							content
 						);
 					}
@@ -115,7 +246,6 @@ export default function App({
 				}),
 			};
 		});
-		setSaveTime(Date.now());
 	}
 
 	function handleAddTag(
@@ -400,40 +530,6 @@ export default function App({
 		setSaveTime(Date.now());
 	}
 
-	function handleHeaderTypeSelect(id: string, cellType: string) {
-		if (DEBUG.APP.HANDLER)
-			console.log("[App]: handleHeaderTypeSelect called.");
-		//If same header type return
-		const header = appData.headers.find((header) => header.id === id);
-		if (header.type === cellType) return;
-
-		setAppData((prevState) => {
-			return {
-				...prevState,
-				//Update header to new cell type
-				headers: prevState.headers.map((header) => {
-					if (id === header.id) return { ...header, type: cellType };
-					return header;
-				}),
-
-				//Update cell that matches header id to the new cell type
-				cells: prevState.cells.map((cell) => {
-					if (cell.headerId === id) {
-						return initialCell(
-							cell.id,
-							cell.rowId,
-							header.id,
-							cellType,
-							cell.toString()
-						);
-					}
-					return cell;
-				}),
-			};
-		});
-		setSaveTime(Date.now());
-	}
-
 	function handleChangeColor(tagId: string, color: string) {
 		setAppData((prevState) => {
 			return {
@@ -451,57 +547,6 @@ export default function App({
 		});
 		setSaveTime(Date.now());
 	}
-
-	useEffect(() => {
-		// Sort on first render
-		// If a user deletes or adds a new row (by copying and pasting, for example)
-		// then we want to make sure that value is sorted in
-		for (let i = 0; i < appData.headers.length; i++) {
-			const header = appData.headers[i];
-			if (header.sortName !== SORT.DEFAULT.name)
-				sortRows(header.id, header.type, header.sortName);
-		}
-	}, []);
-
-	useEffect(() => {
-		async function handleUpdate() {
-			if (saveTime === 0) return;
-			try {
-				const oldData = sortAppDataForSave(oldAppData);
-				const saveData = sortAppDataForSave(appData);
-				await saveAppData(
-					plugin,
-					settings,
-					app,
-					oldData,
-					saveData,
-					sourcePath,
-					tableIndex,
-					findCurrentViewType(el)
-				);
-			} catch (err) {
-				console.log(err);
-			}
-		}
-
-		handleUpdate();
-	}, [saveTime]);
-
-	useEffect(() => {
-		let intervalId: NodeJS.Timer = null;
-		function startTimer() {
-			intervalId = setInterval(() => {
-				//When debounce update is called, we will only save after
-				//250ms have pass since the last update
-				if (Date.now() - debounceUpdate < 250) return;
-				clearInterval(intervalId);
-				setDebounceUpdate(0);
-				setSaveTime(Date.now());
-			}, 100);
-		}
-		if (debounceUpdate !== 0) startTimer();
-		return () => clearInterval(intervalId);
-	}, [debounceUpdate]);
 
 	// const [previewStyle, setPreviewStyle] = useState({
 	// 	viewWidth: 0,
@@ -590,40 +635,6 @@ export default function App({
 	// 	};
 	// }
 
-	//If a table updates in editing mode or reading mode, update the other table
-	//TODO change with notifier in the main.js
-	//TODO why doesn't this always update?
-	useEffect(() => {
-		let intervalId: NodeJS.Timer = null;
-		function startTimer() {
-			intervalId = setInterval(async () => {
-				if (settings.state[sourcePath]) {
-					if (settings.state[sourcePath][tableIndex]) {
-						const { shouldUpdate, viewType } =
-							settings.state[sourcePath][tableIndex];
-
-						const currentViewType = findCurrentViewType(el);
-
-						if (shouldUpdate && viewType !== currentViewType) {
-							clearInterval(intervalId);
-							settings.state[sourcePath][
-								tableIndex
-							].shouldUpdate = false;
-							await plugin.saveSettings();
-							const savedData =
-								settings.state[sourcePath][tableIndex].data;
-							setOldAppData(savedData);
-							setAppData(savedData);
-							startTimer();
-						}
-					}
-				}
-			}, 500);
-		}
-		startTimer();
-		return () => clearInterval(intervalId);
-	}, []);
-
 	return (
 		<div className="NLT__app" tabIndex={0}>
 			<Table
@@ -668,6 +679,7 @@ export default function App({
 										<EditableTd
 											key={cell.id}
 											cell={cell}
+											headerType={header.type}
 											width={header.width}
 											tags={appData.tags.filter(
 												(tag) =>
@@ -679,6 +691,9 @@ export default function App({
 											}
 											onContentChange={
 												handleCellContentChange
+											}
+											onSaveContent={
+												handleCellContentSave
 											}
 											onColorChange={handleChangeColor}
 											onAddTag={handleAddTag}

@@ -1,10 +1,14 @@
 import { NltSettings } from "../../settings";
 import NltPlugin from "main";
-import { findCurrentViewType, parseTableFromEl } from "./loadUtils";
 import { updateAppDataFromSavedState } from "./merge";
 import { DEBUG } from "src/app/constants";
-import { appDataToMarkdown, findAppData } from "./saveUtils";
-import { findTableIndex } from "./loadUtils";
+import { appDataToMarkdown } from "./saveUtils";
+import {
+	findTableIndex,
+	findAppData,
+	findCurrentViewType,
+	parseTableFromEl,
+} from "./loadUtils";
 import { LoadedData } from "../state/loadedData";
 import { appDataIdsToMarkdown, appDataTypesToMarkdown } from "../debug";
 

@@ -110,30 +110,12 @@ export const countNumTags = (input: string): number => {
 	return (input.match(/#[^ \t]+/g) || []).length;
 };
 
-export const findInitialCellType = (textContent: string) => {
-	if (isNumber(textContent)) return CELL_TYPE.NUMBER;
-	if (isTag(textContent)) return CELL_TYPE.TAG;
-	if (isDate(textContent)) return CELL_TYPE.DATE;
-	if (isCheckBox(textContent)) return CELL_TYPE.CHECKBOX;
+export const findCellType = (content: string, headerType: string) => {
+	if (content === "") return headerType;
+	if (headerType === CELL_TYPE.TEXT) return CELL_TYPE.TEXT;
+	if (isNumber(content)) return CELL_TYPE.NUMBER;
+	if (isTag(content)) return CELL_TYPE.TAG;
+	if (isDate(content)) return CELL_TYPE.DATE;
+	if (isCheckBox(content)) return CELL_TYPE.CHECKBOX;
 	return CELL_TYPE.TEXT;
-};
-
-export const findCellType = (textContent: string, expectedType: string) => {
-	//If empty then just set it to the type it's supposed to be.
-	//We do this to allow blank cells
-	if (textContent === "") return expectedType;
-
-	//Allow everything
-	if (expectedType === CELL_TYPE.TEXT) {
-		return CELL_TYPE.TEXT;
-	} else if (expectedType === CELL_TYPE.NUMBER) {
-		if (isNumber(textContent)) return CELL_TYPE.NUMBER;
-	} else if (expectedType === CELL_TYPE.TAG) {
-		if (isTag(textContent)) return CELL_TYPE.TAG;
-	} else if (expectedType === CELL_TYPE.DATE) {
-		if (isDate(textContent)) return CELL_TYPE.DATE;
-	} else if (expectedType === CELL_TYPE.CHECKBOX) {
-		if (isCheckBox(textContent)) return CELL_TYPE.CHECKBOX;
-	}
-	return CELL_TYPE.ERROR;
 };

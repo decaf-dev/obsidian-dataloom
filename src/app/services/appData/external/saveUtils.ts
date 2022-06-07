@@ -1,156 +1,14 @@
 import { AppData } from "../state/appData";
-import { Header, initialHeader } from "../state/header";
-import { Row, initialRow } from "../state/row";
-import {
-	Cell,
-	ErrorCell,
-	NumberCell,
-	TagCell,
-	TextCell,
-	DateCell,
-	CheckBoxCell,
-} from "../state/cell";
+import { Header } from "../state/header";
+import { Row } from "../state/row";
+import { Cell } from "../state/cell";
 
-import { isCheckBoxChecked } from "../../string/validators";
-import { Tag, initialTag } from "../state/tag";
-import { stripPound } from "../../string/strippers";
-import { addPound } from "../../string/adders";
-import { findCellType, findInitialCellType } from "../../string/matchers";
-import { AMPERSAND, BREAK_LINE_TAG, CELL_TYPE } from "src/app/constants";
-import { randomColor, getCurrentTimeWithOffset } from "../../random";
-import {
-	AMPERSAND_CHARACTER_REGEX,
-	LINE_BREAK_CHARACTER_REGEX,
-} from "../../string/regex";
-import {
-	parseBoldTags,
-	parseHighlightTags,
-	parseItalicTags,
-	parseUnderlineTags,
-} from "../../string/parsers";
-
-import { v4 as uuid } from "uuid";
-
-const HEADER_ROW_INDEX = 0;
+import { CELL_TYPE } from "src/app/constants";
 
 export const sortAppDataForSave = (data: AppData) => {
 	const obj = { ...data };
 	obj.rows.sort((a, b) => a.initialIndex - b.initialIndex);
 	return obj;
-};
-export const findAppData = (parsedTable: string[][]): AppData => {
-	const headers: Header[] = [];
-	const rows: Row[] = [];
-	const cells: Cell[] = [];
-	const tags: Tag[] = [];
-
-	parsedTable.forEach((parsedRow, i) => {
-		if (i === HEADER_ROW_INDEX) {
-			parsedRow.forEach((th, j) => {
-				headers.push(initialHeader(uuid(), j, th));
-			});
-		} else {
-			const row = initialRow(uuid(), i - 1, getCurrentTimeWithOffset());
-
-			//Set column cell types from first row
-			if (i == 1) {
-				parsedRow.forEach((td, j) => {
-					const cellType = findInitialCellType(td);
-					headers[j].type = cellType;
-				});
-			}
-
-			parsedRow.forEach((td, j) => {
-				const cellType = findCellType(td, headers[j].type);
-				const cellId = uuid();
-
-				//Check if doesn't match header
-				if (cellType === CELL_TYPE.ERROR) {
-					cells.push(
-						new ErrorCell(
-							cellId,
-							row.id,
-							headers[j].id,
-							headers[j].type,
-							td
-						)
-					);
-				} else if (cellType === CELL_TYPE.TEXT) {
-					let content = td;
-					content = content.replace(
-						LINE_BREAK_CHARACTER_REGEX("g"),
-						BREAK_LINE_TAG
-					);
-					content = content.replace(
-						AMPERSAND_CHARACTER_REGEX("g"),
-						AMPERSAND
-					);
-
-					content = parseBoldTags(content);
-					content = parseItalicTags(content);
-					content = parseHighlightTags(content);
-					content = parseUnderlineTags(content);
-
-					cells.push(
-						new TextCell(cellId, row.id, headers[j].id, content)
-					);
-				} else if (cellType === CELL_TYPE.NUMBER) {
-					const number = td === "" ? -1 : parseInt(td);
-					cells.push(
-						new NumberCell(cellId, row.id, headers[j].id, number)
-					);
-				} else if (cellType === CELL_TYPE.DATE) {
-					const date = td === "" ? null : new Date(td);
-					cells.push(
-						new DateCell(cellId, row.id, headers[j].id, date)
-					);
-				} else if (cellType === CELL_TYPE.CHECKBOX) {
-					const isChecked = isCheckBoxChecked(td);
-					cells.push(
-						new CheckBoxCell(
-							cellId,
-							row.id,
-							headers[j].id,
-							isChecked
-						)
-					);
-				} else if (cellType === CELL_TYPE.TAG) {
-					cells.push(new TagCell(cellId, row.id, headers[j].id));
-
-					if (td !== "") {
-						const content = stripPound(td);
-
-						//Check if tag already exists, otherwise create a new
-						const index = tags.findIndex(
-							(tag) => tag.content === content
-						);
-						if (index !== -1) {
-							tags[index].selected.push(cellId);
-						} else {
-							tags.push(
-								initialTag(
-									uuid(),
-									headers[j].id,
-									cellId,
-									content,
-									randomColor()
-								)
-							);
-						}
-					}
-				}
-			});
-
-			rows.push(row);
-		}
-	});
-
-	return {
-		headers,
-		rows,
-		cells,
-		tags,
-	};
 };
 
 /**
@@ -192,8 +50,8 @@ export const appDataToMarkdown = (data: AppData): string => {
 
 				tags.forEach((tag, j) => {
 					if (tag.content === "") return;
-					if (j === 0) content += addPound(tag.content);
-					else content += " " + addPound(tag.content);
+					if (j === 0) content += tag.content;
+					else content += " " + tag.content;
 				});
 				buffer.writeColumn(content, columnCharLengths[i]);
 			} else {

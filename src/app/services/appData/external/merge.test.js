@@ -1,4 +1,4 @@
-import { findAppData } from "./saveUtils";
+import { findAppData } from "./loadUtils";
 import { updateAppDataFromSavedState } from "./merge";
 import { CELL_TYPE } from "src/app/constants";
 import { SORT } from "src/app/components/HeaderMenu/constants";

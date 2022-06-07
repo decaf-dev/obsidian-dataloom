@@ -4,6 +4,7 @@ import { useTableFocus } from "../FocusProvider";
 
 interface IMenuContext {
 	isMenuOpen?: (id: string) => boolean;
+	isMenuRequestingClose?: (id: string) => boolean;
 	openMenu?: (id: string, level: number) => void;
 	closeMenu?: (id: string) => void;
 }
@@ -11,10 +12,11 @@ interface IMenuContext {
 const MenuContext = React.createContext<IMenuContext>(null);
 
 export const useMenu = (id: string, level: number) => {
-	const { openMenu, closeMenu, isMenuOpen } = useContext(MenuContext);
-
+	const { openMenu, closeMenu, isMenuOpen, isMenuRequestingClose } =
+		useContext(MenuContext);
 	return {
 		isMenuOpen: isMenuOpen(id),
+		isMenuRequestingClose: isMenuRequestingClose(id),
 		openMenu: () => openMenu(id, level),
 		closeMenu: () => closeMenu(id),
 	};
@@ -24,8 +26,14 @@ interface Props {
 	children: React.ReactNode;
 }
 
+interface Menu {
+	id: string;
+	level: number;
+	isRequestingClose: boolean;
+}
+
 export default function MenuProvider({ children }: Props) {
-	const [openMenus, setOpenMenus] = useState([]);
+	const [openMenus, setOpenMenus] = useState<Menu[]>([]);
 	const isFocused = useTableFocus();
 
 	function canOpenMenu(level: number): boolean {
@@ -39,12 +47,24 @@ export default function MenuProvider({ children }: Props) {
 
 	function openMenu(id: string, level: number) {
 		if (canOpenMenu(level)) {
-			const menu = { id, level };
 			if (DEBUG.MENU_PROVIDER.HANDLER) {
 				console.log(`[MenuProvider]: openMenu("${id}", ${level})`);
 			}
-			setOpenMenus((prevState) => [...prevState, menu]);
+			setOpenMenus((prevState) => [
+				...prevState,
+				{ id, level, isRequestingClose: false },
+			]);
 		}
+	}
+
+	function isMenuRequestingClose(id: string) {
+		const menu = openMenus.find((menu) => menu.id === id);
+		if (menu) {
+			if (menu.isRequestingClose) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	function isMenuOpen(id: string): boolean {
@@ -52,14 +72,31 @@ export default function MenuProvider({ children }: Props) {
 		return false;
 	}
 
-	function closeAllMenus() {
+	async function closeAllMenus() {
 		if (DEBUG.MENU_PROVIDER.HANDLER) {
 			console.log("[MenuProvider]: closeAllMenus()");
 		}
-		setOpenMenus([]);
+		for (let i = 0; i < openMenus.length; i++) {
+			const menu = openMenus[i];
+			requestMenuClose(menu.id);
+		}
 	}
 
-	const closeMenu = (id: string) => {
+	function requestMenuClose(id: string) {
+		setOpenMenus((prevState) => {
+			return prevState.map((menu) => {
+				if (menu.id === id) {
+					return {
+						...menu,
+						isRequestingClose: true,
+					};
+				}
+				return menu;
+			});
+		});
+	}
+
+	async function closeMenu(id: string) {
 		if (isMenuOpen(id)) {
 			if (DEBUG.MENU_PROVIDER.HANDLER) {
 				console.log(`[MenuProvider]: closeMenu(${id})`);
@@ -68,13 +105,13 @@ export default function MenuProvider({ children }: Props) {
 				prevState.filter((menu) => menu.id !== id)
 			);
 		}
-	};
+	}
 
 	function handleClick(e: React.MouseEvent) {
 		if (DEBUG.MENU_PROVIDER.HANDLER) {
 			console.log(`[MenuProvider]: handleClick`);
 		}
-		setTimeout(() => {
+		setTimeout(async () => {
 			if (isFocused && openMenus.length !== 0) {
 				if (e.target instanceof HTMLElement) {
 					let el = e.target;
@@ -84,21 +121,21 @@ export default function MenuProvider({ children }: Props) {
 					}
 					//This will close top level on outside click, closing besides any other
 					//click is left up to specific menu
-					const topMenu = findTopMenu();
-					if (el.id !== topMenu.id) {
-						closeMenu(topMenu.id);
+					const menu = findTopMenu();
+					if (el.id !== menu.id) {
+						await requestMenuClose(menu.id);
 					}
 				}
 			}
 		}, 1);
 	}
 
-	function handleKeyUp(e: React.KeyboardEvent) {
+	async function handleKeyUp(e: React.KeyboardEvent) {
 		if (isFocused && openMenus.length !== 0) {
 			//This will work with the last added menu
 			if (e.key === "Enter") {
-				const topMenu = findTopMenu();
-				closeMenu(topMenu.id);
+				const menu = findTopMenu();
+				await requestMenuClose(menu.id);
 			}
 		}
 	}
@@ -113,7 +150,10 @@ export default function MenuProvider({ children }: Props) {
 	}
 
 	useEffect(() => {
-		if (!isFocused) closeAllMenus();
+		async function handleBlur() {
+			await closeAllMenus();
+		}
+		if (!isFocused) handleBlur();
 	}, [isFocused]);
 
 	return (
@@ -126,6 +166,7 @@ export default function MenuProvider({ children }: Props) {
 				value={{
 					isMenuOpen,
 					openMenu,
+					isMenuRequestingClose,
 					closeMenu,
 				}}
 			>

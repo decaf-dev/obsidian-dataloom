@@ -1,8 +1,38 @@
-import { MARKDOWN_CELLS_REGEX, MARKDOWN_ROWS_REGEX } from "../../string/regex";
-import { isMarkdownTable } from "../../string/validators";
+import { v4 as uuid } from "uuid";
+import CRC32 from "crc-32";
+
+import {
+	Cell,
+	NumberCell,
+	TagCell,
+	TextCell,
+	DateCell,
+	CheckBoxCell,
+} from "../state/cell";
+import { Tag, initialTag } from "../state/tag";
+import { AppData } from "../state/appData";
+import { Header, initialHeader } from "../state/header";
+import { Row, initialRow } from "../state/row";
+
+import {
+	MARKDOWN_CELLS_REGEX,
+	MARKDOWN_ROWS_REGEX,
+	AMPERSAND_CHARACTER_REGEX,
+	LINE_BREAK_CHARACTER_REGEX,
+} from "../../string/regex";
+import { isMarkdownTable, isCheckBoxChecked } from "../../string/validators";
 import { stripLinks, sanitizeHTML } from "../../string/strippers";
 import { ViewType } from "../state/saveState";
-import CRC32 from "crc-32";
+import { findCellType } from "../../string/matchers";
+import { randomColor, getCurrentTimeWithOffset } from "../../random";
+import {
+	parseBoldTags,
+	parseHighlightTags,
+	parseItalicTags,
+	parseUnderlineTags,
+} from "../../string/parsers";
+
+import { AMPERSAND, BREAK_LINE_TAG, CELL_TYPE } from "src/app/constants";
 
 /**
  * Parses data for an individual table.
@@ -84,4 +114,116 @@ export const hashHeaders = (headers: string[]): number => {
 	return CRC32.str(
 		headers.reduce((concat, header) => (concat += header), "")
 	);
+};
+
+export const findAppData = (parsedTable: string[][]): AppData => {
+	const headers: Header[] = [];
+	const rows: Row[] = [];
+	const cells: Cell[] = [];
+	const tags: Tag[] = [];
+
+	parsedTable.forEach((parsedRow, i) => {
+		if (i === 0) {
+			parsedRow.forEach((th, j) => {
+				headers.push(initialHeader(uuid(), j, th));
+			});
+		} else {
+			const row = initialRow(uuid(), i - 1, getCurrentTimeWithOffset());
+			parsedRow.forEach((td, j) => {
+				//The first time we load the data, set the cell as a text cell
+				//Once we merge the new data with the old data, we can set the cell
+				//types again
+				const cell = findTextCell(uuid(), row.id, headers[j].id, td);
+				cells.push(cell);
+			});
+
+			rows.push(row);
+		}
+	});
+
+	return {
+		headers,
+		rows,
+		cells,
+		tags,
+	};
+};
+
+export const findTextCell = (
+	cellId: string,
+	rowId: string,
+	headerId: string,
+	content: string
+) => {
+	content = content.replace(LINE_BREAK_CHARACTER_REGEX("g"), BREAK_LINE_TAG);
+	content = content.replace(AMPERSAND_CHARACTER_REGEX("g"), AMPERSAND);
+
+	content = parseBoldTags(content);
+	content = parseItalicTags(content);
+	content = parseHighlightTags(content);
+	content = parseUnderlineTags(content);
+
+	return new TextCell(cellId, rowId, headerId, content);
+};
+
+export const findNumberCell = (
+	cellId: string,
+	rowId: string,
+	headerId: string,
+	content: string
+) => {
+	const number = content === "" ? -1 : parseInt(content);
+	return new NumberCell(cellId, rowId, headerId, number);
+};
+
+export const findTagCell = (
+	cellId: string,
+	rowId: string,
+	headerId: string
+) => {
+	return new TagCell(cellId, rowId, headerId);
+};
+
+export const findCheckboxCell = (
+	cellId: string,
+	rowId: string,
+	headerId: string,
+	content: string
+) => {
+	const isChecked = isCheckBoxChecked(content);
+	return new CheckBoxCell(cellId, rowId, headerId, isChecked);
+};
+
+export const findDateCell = (
+	cellId: string,
+	rowId: string,
+	headerId: string,
+	content: string
+) => {
+	const date = content === "" ? null : new Date(content);
+	return new DateCell(cellId, rowId, headerId, date);
+};
+
+export const updateCell = (
+	cellId: string,
+	rowId: string,
+	headerId: string,
+	headerType: string,
+	content: string
+) => {
+	const cellType = findCellType(content, headerType);
+	switch (cellType) {
+		case CELL_TYPE.TEXT:
+			return findTextCell(cellId, rowId, headerId, content);
+		case CELL_TYPE.NUMBER:
+			return findNumberCell(cellId, rowId, headerId, content);
+		case CELL_TYPE.TAG:
+			return findTagCell(cellId, rowId, headerId);
+		case CELL_TYPE.DATE:
+			return findDateCell(cellId, rowId, headerId, content);
+		case CELL_TYPE.CHECKBOX:
+			return findCheckboxCell(cellId, rowId, headerId, content);
+		default:
+			return new Cell(cellId, rowId, headerId);
+	}
 };

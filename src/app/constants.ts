@@ -1,7 +1,7 @@
 export const DEBUG = {
 	LOAD_APP_DATA: {
 		PARSED_TABLE: false,
-		DATA: false,
+		DATA: true,
 		IDS: false,
 		TYPES: true,
 		MARKDOWN: false,
@@ -10,7 +10,7 @@ export const DEBUG = {
 		HANDLER: false,
 	},
 	SAVE_APP_DATA: {
-		APP_DATA: false,
+		APP_DATA: true,
 	},
 	EDITABLE_TD: {
 		HANDLER: false,
@@ -33,7 +33,6 @@ export interface CellType {
 	DATE: string;
 	CHECKBOX: string;
 	MULTI_TAG: string;
-	ERROR: string;
 }
 
 export interface TabbableElementType {
@@ -57,7 +56,6 @@ export const CELL_TYPE: CellType = {
 	DATE: "date",
 	CHECKBOX: "checkbox",
 	MULTI_TAG: "multi-tag",
-	ERROR: "error",
 };
 
 export const COLOR: { [color: string]: string } = {
