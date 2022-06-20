@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
 import HeaderMenu from "../HeaderMenu";
 
@@ -47,9 +47,21 @@ export default function EditableTh({
 }: Props) {
 	const dragRef = useRef(false);
 	const menuId = useMenuId();
-	const { menuPosition, menuRef, isMenuOpen, openMenu, closeMenu } =
-		useMenuRef(menuId, MENU_LEVEL.ONE);
+	const {
+		menuPosition,
+		menuRef,
+		isMenuOpen,
+		openMenu,
+		closeMenu,
+		isMenuRequestingClose,
+	} = useMenuRef(menuId, MENU_LEVEL.ONE);
 	useDisableScroll(isMenuOpen);
+
+	useEffect(() => {
+		if (isMenuRequestingClose) {
+			closeMenu();
+		}
+	}, [isMenuRequestingClose]);
 
 	function handleHeaderClick(e: React.MouseEvent) {
 		if (dragRef.current) return;

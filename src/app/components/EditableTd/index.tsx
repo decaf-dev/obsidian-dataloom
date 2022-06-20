@@ -15,7 +15,6 @@ import DateCellEdit from "../DateCellEdit";
 import { randomColor } from "src/app/services/random";
 import { Tag } from "src/app/services/appData/state/tag";
 import { Cell } from "src/app/services/appData/state/cell";
-import { dateToString } from "src/app/services/string/parsers";
 import { isDate } from "src/app/services/string/validators";
 
 import "./styles.css";

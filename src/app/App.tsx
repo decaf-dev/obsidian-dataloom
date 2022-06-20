@@ -167,7 +167,6 @@ export default function App({
 		const header = appData.headers.find((header) => header.id === id);
 		if (header.type === cellType) return;
 
-		console.log("Yup");
 		//Handle tags
 		setAppData((prevState) => {
 			return {

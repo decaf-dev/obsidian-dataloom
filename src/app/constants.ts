@@ -1,27 +1,27 @@
 export const DEBUG = {
 	LOAD_APP_DATA: {
 		PARSED_TABLE: false,
-		DATA: true,
+		DATA: false,
 		IDS: false,
-		TYPES: true,
+		TYPES: false,
 		MARKDOWN: false,
 	},
 	APP: {
 		HANDLER: false,
 	},
 	SAVE_APP_DATA: {
-		APP_DATA: true,
+		APP_DATA: false,
 	},
 	EDITABLE_TD: {
 		HANDLER: false,
 		USE_EFFECT: false,
 	},
 	FOCUS_PROVIDER: {
-		HANDLER: true,
-		USE_EFFECT: true,
+		HANDLER: false,
+		USE_EFFECT: false,
 	},
 	MENU_PROVIDER: {
-		HANDLER: true,
+		HANDLER: false,
 		USE_EFFECT: true,
 	},
 };
