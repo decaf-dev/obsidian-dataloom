@@ -36,8 +36,8 @@ export const saveAppData = async (
 		);
 
 		if (fileContent.localeCompare(newContent) === 0) {
-			console.log(
-				"ERR! Regex replace failed. New markdown matches old markdown."
+			throw new Error(
+				"Regex replace failed. New markdown matches old markdown."
 			);
 		}
 
