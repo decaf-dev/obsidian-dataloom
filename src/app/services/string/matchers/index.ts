@@ -22,7 +22,6 @@ import {
 } from "../regex";
 import { isNumber, isTag, isDate, isCheckBox } from "../validators";
 import { CONTENT_TYPE } from "src/app/constants";
-import { Cell } from "../../appData/state/cell";
 
 export const matchBoldMarkdown = (input: string) => {
 	return input.match(BOLD_MARKDOWN_REGEX("g")) || [];
