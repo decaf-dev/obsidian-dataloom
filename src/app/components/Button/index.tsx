@@ -10,20 +10,12 @@ interface Props {
 	onClick: (e: React.MouseEvent) => void;
 }
 
-export default function Button({
-	id,
-	style,
-	children,
-	hasIcon,
-	onClick,
-}: Props) {
+export default function Button({ style, children, hasIcon, onClick }: Props) {
 	let className = "NLT__button";
 	if (hasIcon) className += " NLT__button--icon";
 
-	const buttonId = id !== "" ? id : "";
 	return (
 		<button
-			id={buttonId}
 			style={style}
 			className={className}
 			tabIndex={-1}

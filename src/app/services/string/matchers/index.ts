@@ -121,8 +121,8 @@ export const countNumTags = (input: string): number => {
 export const findContentType = (content: string, columnContentType: string) => {
 	if (content === "") return columnContentType;
 	if (columnContentType === CONTENT_TYPE.TEXT) return CONTENT_TYPE.TEXT;
+	if (columnContentType === CONTENT_TYPE.TAG) return CONTENT_TYPE.TAG;
 	if (isNumber(content)) return CONTENT_TYPE.NUMBER;
-	if (isTag(content)) return CONTENT_TYPE.TAG;
 	if (isDate(content)) return CONTENT_TYPE.DATE;
 	if (isCheckBox(content)) return CONTENT_TYPE.CHECKBOX;
 	return CONTENT_TYPE.TEXT;

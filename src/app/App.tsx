@@ -46,6 +46,7 @@ export default function App({
 	const [oldAppData, setOldAppData] = useState<AppData>(data);
 	const [appData, setAppData] = useState<AppData>(data);
 	const [debounceUpdate, setDebounceUpdate] = useState(0);
+	const [tagUpdater, setTagUpdater] = useState("");
 	const [saveTime, setSaveTime] = useState(0);
 
 	useEffect(() => {
@@ -261,6 +262,7 @@ export default function App({
 		color: string
 	) {
 		if (DEBUG.APP.HANDLER) console.log("[App]: handleAddTag called.");
+		console.log(content);
 		setAppData((prevState) => {
 			return {
 				...prevState,
@@ -270,7 +272,7 @@ export default function App({
 				],
 			};
 		});
-		setSaveTime(Date.now());
+		setTagUpdater(cellId);
 	}
 
 	/**
@@ -316,10 +318,10 @@ export default function App({
 				tags: arr,
 			};
 		});
-		setSaveTime(Date.now());
+		setTagUpdater(cellId);
 	}
 
-	function handleRemoveTagClick(cellId: string, tagId: string) {
+	function handleRemoveTagClick(cellId: string) {
 		if (DEBUG.APP.HANDLER)
 			console.log("[App]: handleRemoveTagClick called.");
 		setAppData((prevState) => {
@@ -328,7 +330,6 @@ export default function App({
 				tags: removeTagReferences(prevState.tags, cellId),
 			};
 		});
-		setSaveTime(Date.now());
 	}
 
 	function sortRows(headerId: string, headerType: string, sortName: string) {
@@ -687,6 +688,7 @@ export default function App({
 											cell={cell}
 											headerType={header.type}
 											width={header.width}
+											tagUpdater={tagUpdater}
 											tags={appData.tags.filter(
 												(tag) =>
 													tag.headerId === header.id

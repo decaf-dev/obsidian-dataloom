@@ -6,6 +6,7 @@ import { persistAppData } from "./persist";
 import NltPlugin from "../../../../../main";
 import { DEBUG } from "src/app/constants";
 import { ViewType } from "../state/saveState";
+import { appDataTypesToMarkdown } from "../debug";
 
 /**
  * Saves app data
@@ -26,6 +27,7 @@ export const saveAppData = async (
 	viewType: ViewType
 ) => {
 	const markdown = appDataToMarkdown(newAppData);
+	const types = appDataTypesToMarkdown(newAppData);
 	try {
 		const file = app.workspace.getActiveFile();
 		const fileContent = await app.vault.cachedRead(file);

@@ -21,6 +21,7 @@ import "./styles.css";
 
 import { CONTENT_TYPE, DEBUG, MENU_LEVEL } from "../../constants";
 import {
+	useDidMountEffect,
 	useDisableScroll,
 	useMenuId,
 	useMenuRef,
@@ -31,6 +32,7 @@ interface Props {
 	headerType: string;
 	cell: Cell;
 	width: string;
+	tagUpdater: string;
 	tags: Tag[];
 	onRemoveTagClick: (cellId: string, tagId: string) => void;
 	onTagClick: (cellId: string, tagId: string) => void;
@@ -50,6 +52,7 @@ export default function EditableTd({
 	cell,
 	width,
 	tags,
+	tagUpdater,
 	onRemoveTagClick,
 	onColorChange,
 	onTagClick,
@@ -58,8 +61,6 @@ export default function EditableTd({
 	onAddTag,
 }: Props) {
 	const [tagColor] = useState(randomColor());
-	const [tagInputText, setTagInputText] = useState("");
-
 	const menuId = useMenuId();
 	const content = cell.toString();
 	const {
@@ -76,7 +77,20 @@ export default function EditableTd({
 	const { id, headerId, type } = cell;
 
 	const [wasContentUpdated, setContentUpdate] = useState(false);
+
 	const isInvalidContent = type !== headerType;
+
+	//If we've already mounted, meaning the application has loaded
+	//and we updated a tag, then we will wait for it to update,
+	//then we will close the menu and save
+	//This prevents rerendering issues
+	useDidMountEffect(() => {
+		if (tagUpdater === id) {
+			console.log("CLOSING TAG MENU");
+			closeMenu();
+			onSaveContent();
+		}
+	}, [tagUpdater]);
 
 	useEffect(() => {
 		if (isMenuRequestingClose) {
@@ -99,11 +113,13 @@ export default function EditableTd({
 			// 		// setContentUpdate(true);
 			// 	}
 			// } else {
+			console.log("Requesting menu close");
 			closeMenu();
 			//If we're just closing the menun from an outside click,
 			//then don't save unless the content actually updated
 			if (wasContentUpdated) {
 				onSaveContent();
+				setContentUpdate(false);
 			}
 			// }
 		}
@@ -132,12 +148,10 @@ export default function EditableTd({
 
 	function handleAddTag(value: string) {
 		onAddTag(id, headerId, value, tagColor);
-		setContentUpdate(true);
 	}
 
 	function handleTagClick(tagId: string) {
 		onTagClick(id, tagId);
-		setContentUpdate(true);
 	}
 
 	function handleTextInputChange(value: string) {

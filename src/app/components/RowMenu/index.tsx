@@ -28,7 +28,6 @@ export default function RowMenu({
 	onDeleteClick,
 	onInsertRowClick,
 }: Props) {
-	const [buttonId] = useState(uuidv4());
 	const menuId = useMenuId();
 	const {
 		menuPosition,
@@ -68,11 +67,7 @@ export default function RowMenu({
 
 	return (
 		<div ref={menuRef}>
-			<IconButton
-				id={buttonId}
-				icon={ICON.MORE_VERT}
-				onClick={handleButtonClick}
-			/>
+			<IconButton icon={ICON.MORE_VERT} onClick={handleButtonClick} />
 			<Menu
 				id={menuId}
 				isOpen={isMenuOpen}
