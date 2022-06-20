@@ -1,5 +1,4 @@
-import { isNumber } from "lodash";
-import React, { useCallback } from "react";
+import React from "react";
 import { useTextareaRef } from "src/app/services/hooks";
 
 import Menu from "../Menu";
@@ -28,7 +27,7 @@ export default function NumberCellEdit({
 	const inputRef = useTextareaRef(isOpen, value);
 
 	function handleInputChange(value: string) {
-		if (value != "" && isNumber(value)) return;
+		value = value.replace("\n", "");
 		return onInputChange(value);
 	}
 
