@@ -1,7 +1,7 @@
 import { AppData } from "../state/appData";
 import { AppDataStringBuffer } from "../external/saveUtils";
 import { calcColumnCharLengths } from "../external/saveUtils";
-import { CELL_TYPE } from "src/app/constants";
+import { CONTENT_TYPE } from "src/app/constants";
 
 export const appDataIdsToMarkdown = (data: AppData): string => {
 	const columnCharLengths = calcColumnCharLengths(data);
@@ -29,7 +29,7 @@ export const appDataIdsToMarkdown = (data: AppData): string => {
 					cell.rowId === row.id &&
 					cell.headerId === data.headers[i].id
 			);
-			if (cell.type === CELL_TYPE.TAG) {
+			if (cell.type === CONTENT_TYPE.TAG) {
 				const tagIds = data.tags
 					.filter((tag) => tag.selected.includes(cell.id))
 					.map((tag) => tag.id);

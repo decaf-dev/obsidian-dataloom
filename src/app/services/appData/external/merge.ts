@@ -5,7 +5,7 @@ import { AppData } from "../state/appData";
 import { updateCell } from "./loadUtils";
 import { randomColor } from "../../random";
 
-import { CELL_TYPE } from "src/app/constants";
+import { CONTENT_TYPE } from "src/app/constants";
 
 export const updateAppDataFromSavedState = (
 	oldData: AppData,
@@ -30,7 +30,7 @@ export const updateAppDataFromSavedState = (
 		const cell = updateCell(id, rowId, headerId, header.type, content);
 		updated.cells[i] = cell;
 
-		if (cell.type === CELL_TYPE.TAG) {
+		if (cell.type === CONTENT_TYPE.TAG) {
 			//Check if tag already exists, otherwise create a new
 			const index = updated.tags.findIndex(
 				(tag) => tag.content === content

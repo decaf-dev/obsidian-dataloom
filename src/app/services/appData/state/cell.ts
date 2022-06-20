@@ -1,4 +1,4 @@
-import { CELL_TYPE } from "src/app/constants";
+import { CONTENT_TYPE } from "src/app/constants";
 
 export class Cell {
 	id: string;
@@ -25,7 +25,7 @@ export class TextCell extends Cell {
 	text: string;
 
 	constructor(id: string, rowId: string, headerId: string, text = "") {
-		super(id, rowId, headerId, CELL_TYPE.TEXT, null);
+		super(id, rowId, headerId, CONTENT_TYPE.TEXT, null);
 		this.text = text;
 	}
 
@@ -42,7 +42,7 @@ export class NumberCell extends Cell {
 	number: number;
 
 	constructor(id: string, rowId: string, headerId: string, number = -1) {
-		super(id, rowId, headerId, CELL_TYPE.NUMBER);
+		super(id, rowId, headerId, CONTENT_TYPE.NUMBER);
 		this.number = number;
 	}
 
@@ -59,7 +59,7 @@ export class NumberCell extends Cell {
 
 export class TagCell extends Cell {
 	constructor(id: string, rowId: string, headerId: string) {
-		super(id, rowId, headerId, CELL_TYPE.TAG);
+		super(id, rowId, headerId, CONTENT_TYPE.TAG);
 	}
 }
 
@@ -72,7 +72,7 @@ export class CheckBoxCell extends Cell {
 		headerId: string,
 		isChecked = false
 	) {
-		super(id, rowId, headerId, CELL_TYPE.CHECKBOX);
+		super(id, rowId, headerId, CONTENT_TYPE.CHECKBOX);
 		this.isChecked = isChecked;
 	}
 
@@ -97,7 +97,7 @@ export class DateCell extends Cell {
 	date: Date | null;
 
 	constructor(id: string, rowId: string, headerId: string, date: Date) {
-		super(id, rowId, headerId, CELL_TYPE.DATE);
+		super(id, rowId, headerId, CONTENT_TYPE.DATE);
 		this.date = date;
 	}
 
@@ -129,15 +129,15 @@ export const initialCell = (
 	content: any = undefined
 ) => {
 	switch (type) {
-		case CELL_TYPE.TEXT:
+		case CONTENT_TYPE.TEXT:
 			return new TextCell(id, rowId, headerId, content);
-		case CELL_TYPE.NUMBER:
+		case CONTENT_TYPE.NUMBER:
 			return new NumberCell(id, rowId, headerId, content);
-		case CELL_TYPE.TAG:
+		case CONTENT_TYPE.TAG:
 			return new TagCell(id, rowId, headerId);
-		case CELL_TYPE.CHECKBOX:
+		case CONTENT_TYPE.CHECKBOX:
 			return new CheckBoxCell(id, rowId, headerId, content);
-		case CELL_TYPE.DATE:
+		case CONTENT_TYPE.DATE:
 			return new DateCell(id, rowId, headerId, content);
 	}
 };

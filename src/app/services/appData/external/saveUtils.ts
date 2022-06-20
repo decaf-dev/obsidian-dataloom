@@ -3,7 +3,7 @@ import { Header } from "../state/header";
 import { Row } from "../state/row";
 import { Cell } from "../state/cell";
 
-import { CELL_TYPE } from "src/app/constants";
+import { CONTENT_TYPE } from "src/app/constants";
 
 export const sortAppDataForSave = (data: AppData) => {
 	const obj = { ...data };
@@ -41,7 +41,7 @@ export const appDataToMarkdown = (data: AppData): string => {
 					cell.rowId === row.id &&
 					cell.headerId === data.headers[i].id
 			);
-			if (cell.type === CELL_TYPE.TAG) {
+			if (cell.type === CONTENT_TYPE.TAG) {
 				const tags = data.tags.filter((tag) =>
 					tag.selected.includes(cell.id)
 				);
@@ -160,7 +160,7 @@ export const calcColumnCharLengths = (data: AppData): ColumnCharLengths => {
 			const index = data.headers.findIndex(
 				(header) => header.id === cell.headerId
 			);
-			if (cell.type === CELL_TYPE.TAG) {
+			if (cell.type === CONTENT_TYPE.TAG) {
 				const arr = data.tags.filter((tag) =>
 					tag.selected.includes(cell.id)
 				);

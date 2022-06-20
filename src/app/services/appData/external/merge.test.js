@@ -1,6 +1,6 @@
 import { findAppData } from "./loadUtils";
 import { updateAppDataFromSavedState } from "./merge";
-import { CELL_TYPE } from "src/app/constants";
+import { CONTENT_TYPE } from "src/app/constants";
 import { SORT } from "src/app/components/HeaderMenu/constants";
 import { mockParsedTable } from "src/app/services/appData/mock";
 
@@ -38,8 +38,8 @@ describe("updateAppDataFromSavedState", () => {
 		const newAppData = findAppData(parsedTable);
 
 		const merged = updateAppDataFromSavedState(oldAppData, newAppData);
-		expect(merged.headers[0].type).toEqual(CELL_TYPE.TEXT);
-		expect(merged.headers[1].type).toEqual(CELL_TYPE.TEXT);
+		expect(merged.headers[0].type).toEqual(CONTENT_TYPE.TEXT);
+		expect(merged.headers[1].type).toEqual(CONTENT_TYPE.TEXT);
 	});
 
 	it("merges tag colors", () => {

@@ -49,7 +49,7 @@ export const TABBABLE_ELEMENT_TYPE: TabbableElementType = {
 	CELL: "cell",
 };
 
-export const CELL_TYPE: CellType = {
+export const CONTENT_TYPE: CellType = {
 	TEXT: "text",
 	NUMBER: "number",
 	TAG: "tag",

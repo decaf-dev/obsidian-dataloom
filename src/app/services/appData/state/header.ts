@@ -1,5 +1,5 @@
 import { SORT } from "src/app/components/HeaderMenu/constants";
-import { CELL_TYPE } from "../../../constants";
+import { CONTENT_TYPE } from "../../../constants";
 
 export interface Header {
 	id: string;
@@ -24,6 +24,6 @@ export const initialHeader = (
 		content,
 		sortName: SORT.DEFAULT.name,
 		width: "100px",
-		type: CELL_TYPE.TEXT,
+		type: CONTENT_TYPE.TEXT,
 	};
 };

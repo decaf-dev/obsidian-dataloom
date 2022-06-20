@@ -2,7 +2,7 @@ import { AppData } from "../state/appData";
 import { initialHeader } from "../state/header";
 import { initialRow } from "../state/row";
 import { Tag } from "../state/tag";
-import { CELL_TYPE } from "src/app/constants";
+import { CONTENT_TYPE } from "src/app/constants";
 import { initialCell } from "../state/cell";
 import { v4 as uuid } from "uuid";
 
@@ -24,7 +24,7 @@ export const addColumn = (data: AppData): AppData => {
 	const header = initialHeader(uuid(), data.headers.length, "New Column");
 	const cells = [...data.cells];
 	data.rows.forEach((row) => {
-		cells.push(initialCell(uuid(), row.id, header.id, CELL_TYPE.TEXT));
+		cells.push(initialCell(uuid(), row.id, header.id, CONTENT_TYPE.TEXT));
 	});
 	return {
 		...data,

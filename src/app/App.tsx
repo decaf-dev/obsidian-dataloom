@@ -13,7 +13,7 @@ import { AppData } from "./services/appData/state/appData";
 import { NltSettings } from "./services/settings";
 import { saveAppData } from "./services/appData/external/save";
 
-import { CELL_TYPE, DEBUG } from "./constants";
+import { CONTENT_TYPE, DEBUG } from "./constants";
 
 import "./app.css";
 import NltPlugin from "main";
@@ -22,7 +22,7 @@ import { addRow, addColumn } from "./services/appData/internal/add";
 import { findCurrentViewType } from "./services/appData/external/loadUtils";
 import { v4 as uuid } from "uuid";
 import { sortAppDataForSave } from "./services/appData/external/saveUtils";
-import { findCellType } from "./services/string/matchers";
+import { findContentType } from "./services/string/matchers";
 interface Props {
 	plugin: NltPlugin;
 	settings: NltSettings;
@@ -178,7 +178,7 @@ export default function App({
 				}),
 				cells: prevState.cells.map((cell: Cell) => {
 					if (cell.headerId === id) {
-						const type = findCellType(cell.toString(), cellType);
+						const type = findContentType(cell.toString(), cellType);
 						return initialCell(
 							cell.id,
 							cell.rowId,
@@ -226,13 +226,20 @@ export default function App({
 			console.log({ id, content });
 		}
 
-		//Handle tags
 		setAppData((prevState) => {
 			return {
 				...prevState,
 				cells: prevState.cells.map((cell: Cell) => {
 					if (cell.id === id) {
-						const type = findCellType(cell.toString(), headerType);
+						//While a column's content type is chosen by the user
+						//in the header menu. The cell content type
+						//is based off of the actual cell content string.
+						//Each time we update the content value, we want to recalculate the
+						//content type.
+						const type = findContentType(
+							cell.toString(),
+							headerType
+						);
 						return initialCell(
 							cell.id,
 							cell.rowId,
@@ -337,7 +344,7 @@ export default function App({
 					(cell) => cell.headerId === headerId && cell.rowId === b.id
 				);
 				if (sortName === SORT.ASC.name) {
-					if (headerType === CELL_TYPE.TAG) {
+					if (headerType === CONTENT_TYPE.TAG) {
 						const tagA = appData.tags.find((tag) =>
 							tag.selected.includes(cellA.id)
 						);
@@ -349,7 +356,7 @@ export default function App({
 						return cellA.toString().localeCompare(cellB.toString());
 					}
 				} else if (sortName === SORT.DESC.name) {
-					if (headerType === CELL_TYPE.TAG) {
+					if (headerType === CONTENT_TYPE.TAG) {
 						const tagA = appData.tags.find((tag) =>
 							tag.selected.includes(cellA.id)
 						);

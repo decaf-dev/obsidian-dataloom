@@ -23,7 +23,7 @@ import {
 import { isMarkdownTable, isCheckBoxChecked } from "../../string/validators";
 import { stripLinks, sanitizeHTML } from "../../string/strippers";
 import { ViewType } from "../state/saveState";
-import { findCellType } from "../../string/matchers";
+import { findContentType } from "../../string/matchers";
 import { randomColor, getCurrentTimeWithOffset } from "../../random";
 import {
 	parseBoldTags,
@@ -32,7 +32,7 @@ import {
 	parseUnderlineTags,
 } from "../../string/parsers";
 
-import { AMPERSAND, BREAK_LINE_TAG, CELL_TYPE } from "src/app/constants";
+import { AMPERSAND, BREAK_LINE_TAG, CONTENT_TYPE } from "src/app/constants";
 
 /**
  * Parses data for an individual table.
@@ -211,17 +211,17 @@ export const updateCell = (
 	headerType: string,
 	content: string
 ) => {
-	const cellType = findCellType(content, headerType);
+	const cellType = findContentType(content, headerType);
 	switch (cellType) {
-		case CELL_TYPE.TEXT:
+		case CONTENT_TYPE.TEXT:
 			return findTextCell(cellId, rowId, headerId, content);
-		case CELL_TYPE.NUMBER:
+		case CONTENT_TYPE.NUMBER:
 			return findNumberCell(cellId, rowId, headerId, content);
-		case CELL_TYPE.TAG:
+		case CONTENT_TYPE.TAG:
 			return findTagCell(cellId, rowId, headerId);
-		case CELL_TYPE.DATE:
+		case CONTENT_TYPE.DATE:
 			return findDateCell(cellId, rowId, headerId, content);
-		case CELL_TYPE.CHECKBOX:
+		case CONTENT_TYPE.CHECKBOX:
 			return findCheckboxCell(cellId, rowId, headerId, content);
 		default:
 			return new Cell(cellId, rowId, headerId);

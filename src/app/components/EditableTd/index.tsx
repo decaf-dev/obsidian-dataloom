@@ -19,7 +19,7 @@ import { isDate } from "src/app/services/string/validators";
 
 import "./styles.css";
 
-import { CELL_TYPE, DEBUG, MENU_LEVEL } from "../../constants";
+import { CONTENT_TYPE, DEBUG, MENU_LEVEL } from "../../constants";
 import {
 	useDisableScroll,
 	useMenuId,
@@ -79,7 +79,7 @@ export default function EditableTd({
 
 	useEffect(() => {
 		if (isMenuRequestingClose) {
-			// if (headerType === CELL_TYPE.TAG && !wasContentUpdated) {
+			// if (headerType === CONTENT_TYPE.TAG && !wasContentUpdated) {
 			// 	if (tagInputText !== "") {
 			// 		const tag = tags.find(
 			// 			(tag) => tag.content === addPound(tagInputText)
@@ -165,11 +165,11 @@ export default function EditableTd({
 			return <ErrorCell expectedType={headerType} type={type} />;
 		}
 		switch (type) {
-			case CELL_TYPE.TEXT:
+			case CONTENT_TYPE.TEXT:
 				return <TextCell text={content} />;
-			case CELL_TYPE.NUMBER:
+			case CONTENT_TYPE.NUMBER:
 				return <NumberCell number={content} />;
-			case CELL_TYPE.TAG: {
+			case CONTENT_TYPE.TAG: {
 				const tag = tags.find((tag) => tag.selected.includes(id));
 				if (tag)
 					return (
@@ -182,9 +182,9 @@ export default function EditableTd({
 					);
 				return <></>;
 			}
-			case CELL_TYPE.DATE:
+			case CONTENT_TYPE.DATE:
 				return <DateCell text={content} />;
-			case CELL_TYPE.CHECKBOX:
+			case CONTENT_TYPE.CHECKBOX:
 				return (
 					<CheckboxCell
 						isChecked={content.includes("x")}
@@ -198,7 +198,7 @@ export default function EditableTd({
 
 	function renderCellMenu() {
 		switch (headerType) {
-			case CELL_TYPE.TEXT:
+			case CONTENT_TYPE.TEXT:
 				return (
 					<TextCellEdit
 						menuId={menuId}
@@ -211,7 +211,7 @@ export default function EditableTd({
 						onInputChange={handleTextInputChange}
 					/>
 				);
-			case CELL_TYPE.NUMBER:
+			case CONTENT_TYPE.NUMBER:
 				return (
 					<NumberCellEdit
 						menuId={menuId}
@@ -224,7 +224,7 @@ export default function EditableTd({
 						onInputChange={handleNumberInputChange}
 					/>
 				);
-			case CELL_TYPE.TAG:
+			case CONTENT_TYPE.TAG:
 				return (
 					<TagCellEdit
 						cellId={id}
@@ -240,7 +240,7 @@ export default function EditableTd({
 						onTagClick={handleTagClick}
 					/>
 				);
-			case CELL_TYPE.DATE:
+			case CONTENT_TYPE.DATE:
 				return (
 					<DateCellEdit
 						menuId={menuId}
