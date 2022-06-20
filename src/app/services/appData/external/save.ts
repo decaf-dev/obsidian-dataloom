@@ -26,32 +26,37 @@ export const saveAppData = async (
 	viewType: ViewType
 ) => {
 	const markdown = appDataToMarkdown(newAppData);
-	console.log(markdown);
 	try {
 		const file = app.workspace.getActiveFile();
-		let content = await app.vault.cachedRead(file);
+		const fileContent = await app.vault.cachedRead(file);
 
-		content = content.replace(
+		let newContent = fileContent.replace(
 			findTableRegex(oldAppData.headers, oldAppData.rows),
 			markdown
 		);
+
+		if (fileContent.localeCompare(newContent) === 0) {
+			console.log(
+				"ERR! Regex replace failed. New markdown matches old markdown."
+			);
+		}
 
 		if (DEBUG.SAVE_APP_DATA.APP_DATA) {
 			console.log("saveAppData - New app data:");
 			console.log(markdown);
 		}
 
-		// await persistAppData(
-		// 	plugin,
-		// 	settings,
-		// 	newAppData,
-		// 	sourcePath,
-		// 	tableIndex,
-		// 	viewType
-		// );
+		await persistAppData(
+			plugin,
+			settings,
+			newAppData,
+			sourcePath,
+			tableIndex,
+			viewType
+		);
 
-		// //Save the open file with the new table data
-		// await app.vault.modify(file, content);
+		//Save the open file with the new table data
+		await app.vault.modify(file, newContent);
 	} catch (err) {
 		console.log(err);
 	}
