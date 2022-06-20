@@ -3,14 +3,14 @@ import { initialHeader } from "../state/header";
 import { initialRow } from "../state/row";
 import { Tag } from "../state/tag";
 import { CONTENT_TYPE } from "src/app/constants";
-import { initialCell } from "../state/cell";
+import { findNewCell } from "../external/loadUtils";
 import { v4 as uuid } from "uuid";
 
 export const addRow = (data: AppData): AppData => {
 	const rowId = uuid();
 	const tags: Tag[] = [];
 	const cells = data.headers.map((header, i) => {
-		return initialCell(uuid(), rowId, header.id, header.type);
+		return findNewCell(uuid(), rowId, header.id, header.type);
 	});
 	return {
 		...data,
@@ -24,7 +24,7 @@ export const addColumn = (data: AppData): AppData => {
 	const header = initialHeader(uuid(), data.headers.length, "New Column");
 	const cells = [...data.cells];
 	data.rows.forEach((row) => {
-		cells.push(initialCell(uuid(), row.id, header.id, CONTENT_TYPE.TEXT));
+		cells.push(findNewCell(uuid(), row.id, header.id, CONTENT_TYPE.TEXT));
 	});
 	return {
 		...data,

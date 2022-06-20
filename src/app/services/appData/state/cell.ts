@@ -120,24 +120,3 @@ export class DateCell extends Cell {
 		}
 	}
 }
-
-export const initialCell = (
-	id: string,
-	rowId: string,
-	headerId: string,
-	type: string,
-	content: any = undefined
-) => {
-	switch (type) {
-		case CONTENT_TYPE.TEXT:
-			return new TextCell(id, rowId, headerId, content);
-		case CONTENT_TYPE.NUMBER:
-			return new NumberCell(id, rowId, headerId, content);
-		case CONTENT_TYPE.TAG:
-			return new TagCell(id, rowId, headerId);
-		case CONTENT_TYPE.CHECKBOX:
-			return new CheckBoxCell(id, rowId, headerId, content);
-		case CONTENT_TYPE.DATE:
-			return new DateCell(id, rowId, headerId, content);
-	}
-};

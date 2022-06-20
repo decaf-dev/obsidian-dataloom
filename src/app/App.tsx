@@ -1,14 +1,9 @@
 import React, { useEffect, useState } from "react";
 
-import EditableTd from "./components/EditableTd";
-import Table from "./components/Table";
-import RowMenu from "./components/RowMenu";
-import EditableTh from "./components/EditableTh";
-
 import { initialHeader } from "./services/appData/state/header";
 import { initialTag, Tag } from "./services/appData/state/tag";
 import { initialRow } from "./services/appData/state/row";
-import { initialCell, Cell } from "./services/appData/state/cell";
+import { Cell } from "./services/appData/state/cell";
 import { AppData } from "./services/appData/state/appData";
 import { NltSettings } from "./services/settings";
 import { saveAppData } from "./services/appData/external/save";
@@ -19,7 +14,10 @@ import "./app.css";
 import NltPlugin from "main";
 import { SORT } from "./components/HeaderMenu/constants";
 import { addRow, addColumn } from "./services/appData/internal/add";
-import { findCurrentViewType } from "./services/appData/external/loadUtils";
+import {
+	findCurrentViewType,
+	findNewCell,
+} from "./services/appData/external/loadUtils";
 import { v4 as uuid } from "uuid";
 import { sortAppDataForSave } from "./services/appData/external/saveUtils";
 import { findContentType } from "./services/string/matchers";
@@ -178,14 +176,19 @@ export default function App({
 				}),
 				cells: prevState.cells.map((cell: Cell) => {
 					if (cell.headerId === id) {
-						const type = findContentType(cell.toString(), cellType);
-						return initialCell(
+						let content = cell.toString();
+						if (cellType === CONTENT_TYPE.CHECKBOX) {
+							content = "[ ]";
+						}
+						const newCell = findNewCell(
 							cell.id,
 							cell.rowId,
 							cell.headerId,
-							type,
-							cell.toString()
+							cellType,
+							content
 						);
+						console.log(newCell.toString());
+						return newCell;
 					}
 					return cell;
 				}),
@@ -240,7 +243,7 @@ export default function App({
 							cell.toString(),
 							headerType
 						);
-						return initialCell(
+						return findNewCell(
 							cell.id,
 							cell.rowId,
 							cell.headerId,
@@ -485,7 +488,7 @@ export default function App({
 			);
 
 			const cells = prevState.rows.map((row) =>
-				initialCell(
+				findNewCell(
 					uuid(),
 					row.id,
 					headerToInsert.id,
@@ -513,7 +516,7 @@ export default function App({
 			const tags: Tag[] = [];
 
 			const cells = prevState.headers.map((header) =>
-				initialCell(uuid(), rowId, header.id, header.type)
+				findNewCell(uuid(), rowId, header.id, header.type)
 			);
 
 			const rows = [...prevState.rows];

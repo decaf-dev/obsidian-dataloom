@@ -204,12 +204,12 @@ export const findDateCell = (
 	return new DateCell(cellId, rowId, headerId, date);
 };
 
-export const updateCell = (
+export const findNewCell = (
 	cellId: string,
 	rowId: string,
 	headerId: string,
 	headerType: string,
-	content: string
+	content = ""
 ) => {
 	const cellType = findContentType(content, headerType);
 	switch (cellType) {

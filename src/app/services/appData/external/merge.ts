@@ -2,7 +2,7 @@ import { v4 as uuid } from "uuid";
 
 import { initialTag } from "../state/tag";
 import { AppData } from "../state/appData";
-import { updateCell } from "./loadUtils";
+import { findNewCell } from "./loadUtils";
 import { randomColor } from "../../random";
 
 import { CONTENT_TYPE } from "src/app/constants";
@@ -27,7 +27,7 @@ export const updateAppDataFromSavedState = (
 		const content = c.toString();
 		const { id, rowId, headerId } = c;
 		const header = newData.headers.find((header) => header.id === headerId);
-		const cell = updateCell(id, rowId, headerId, header.type, content);
+		const cell = findNewCell(id, rowId, headerId, header.type, content);
 		updated.cells[i] = cell;
 
 		if (cell.type === CONTENT_TYPE.TAG) {
