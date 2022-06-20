@@ -156,7 +156,9 @@ export default function EditableTd({
 	}
 
 	function handleCheckboxChange(isChecked: boolean) {
-		onContentChange(id, headerType, isChecked);
+		//TODO replace with constant
+		let content = isChecked ? "[x]" : "[ ]";
+		onContentChange(id, headerType, content);
 		setContentUpdate(true);
 	}
 

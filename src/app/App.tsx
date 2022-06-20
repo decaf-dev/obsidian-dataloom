@@ -182,18 +182,14 @@ export default function App({
 				cells: prevState.cells.map((cell: Cell) => {
 					if (cell.headerId === id) {
 						let content = cell.toString();
-						if (cellType === CONTENT_TYPE.CHECKBOX) {
-							content = "[ ]";
-						}
-						const newCell = findNewCell(
+						if (cellType === CONTENT_TYPE.CHECKBOX) content = "[ ]";
+						return findNewCell(
 							cell.id,
 							cell.rowId,
 							cell.headerId,
 							cellType,
 							content
 						);
-						console.log(newCell.toString());
-						return newCell;
 					}
 					return cell;
 				}),
@@ -244,15 +240,11 @@ export default function App({
 						//is based off of the actual cell content string.
 						//Each time we update the content value, we want to recalculate the
 						//content type.
-						const type = findContentType(
-							cell.toString(),
-							headerType
-						);
 						return findNewCell(
 							cell.id,
 							cell.rowId,
 							cell.headerId,
-							type,
+							headerType,
 							content
 						);
 					}
