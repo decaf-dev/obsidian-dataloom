@@ -25,6 +25,7 @@ import {
 	useMenuId,
 	useMenuRef,
 } from "src/app/services/hooks";
+import { dateToString } from "src/app/services/string/parsers";
 
 interface Props {
 	headerType: string;
@@ -150,8 +151,8 @@ export default function EditableTd({
 	}
 
 	function handleDateChange(date: Date) {
-		console.log("Handle date change!");
-		onContentChange(id, headerType, date);
+		const content = dateToString(date);
+		onContentChange(id, headerType, content);
 		setContentUpdate(true);
 	}
 
