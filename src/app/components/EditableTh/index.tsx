@@ -101,11 +101,38 @@ export default function EditableTh({
 	}
 
 	return (
-		<th
-			className="NLT__th NLT__selectable"
-			ref={menuRef}
-			onClick={handleHeaderClick}
-		>
+		<>
+			<th
+				className="NLT__th NLT__selectable"
+				ref={menuRef}
+				onClick={handleHeaderClick}
+			>
+				<div className="NLT__header-content-container">
+					<div className="NLT__header-content" style={{ width }}>
+						{content}
+					</div>
+					<div className="NLT__header-resize-container">
+						<div
+							className="NLT__header-resize"
+							onMouseDown={() => {
+								window.addEventListener(
+									"mousemove",
+									handleMouseMove
+								);
+								window.addEventListener(
+									"mouseup",
+									handleMouseUp
+								);
+								window.addEventListener("drag", handleDrag);
+							}}
+							onClick={(e) => {
+								//Stop propagation so we don't open the header
+								e.stopPropagation();
+							}}
+						/>
+					</div>
+				</div>
+			</th>
 			<HeaderMenu
 				isOpen={isMenuOpen}
 				top={menuPosition.top}
@@ -126,28 +153,6 @@ export default function EditableTh({
 				onDeleteClick={onDeleteClick}
 				onClose={handleClose}
 			/>
-			<div className="NLT__header-content-container">
-				<div className="NLT__header-content" style={{ width }}>
-					{content}
-				</div>
-				<div className="NLT__header-resize-container">
-					<div
-						className="NLT__header-resize"
-						onMouseDown={() => {
-							window.addEventListener(
-								"mousemove",
-								handleMouseMove
-							);
-							window.addEventListener("mouseup", handleMouseUp);
-							window.addEventListener("drag", handleDrag);
-						}}
-						onClick={(e) => {
-							//Stop propagation so we don't open the header
-							e.stopPropagation();
-						}}
-					/>
-				</div>
-			</div>
-		</th>
+		</>
 	);
 }
