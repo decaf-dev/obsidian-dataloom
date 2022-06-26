@@ -6,24 +6,13 @@ export const DEBUG = {
 		TYPES: false,
 		MARKDOWN: false,
 	},
-	APP: {
-		HANDLER: false,
-	},
+	APP: true,
 	SAVE_APP_DATA: {
 		APP_DATA: false,
 	},
-	EDITABLE_TD: {
-		HANDLER: false,
-		USE_EFFECT: false,
-	},
-	FOCUS_PROVIDER: {
-		HANDLER: true,
-		USE_EFFECT: true,
-	},
-	MENU_PROVIDER: {
-		HANDLER: true,
-		USE_EFFECT: true,
-	},
+	EDITABLE_TD: true,
+	FOCUS_PROVIDER: true,
+	MENU_PROVIDER: true,
 };
 
 export interface CellType {
@@ -33,7 +22,6 @@ export interface CellType {
 	DATE: string;
 	CHECKBOX: string;
 	MULTI_TAG: string;
-	ERROR: string;
 }
 
 export interface TabbableElementType {
@@ -50,14 +38,13 @@ export const TABBABLE_ELEMENT_TYPE: TabbableElementType = {
 	CELL: "cell",
 };
 
-export const CELL_TYPE: CellType = {
+export const CONTENT_TYPE: CellType = {
 	TEXT: "text",
 	NUMBER: "number",
 	TAG: "tag",
 	DATE: "date",
 	CHECKBOX: "checkbox",
 	MULTI_TAG: "multi-tag",
-	ERROR: "error",
 };
 
 export const COLOR: { [color: string]: string } = {

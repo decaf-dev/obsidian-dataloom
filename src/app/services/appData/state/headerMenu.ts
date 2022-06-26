@@ -1,4 +1,4 @@
-import { CELL_TYPE } from "src/app/constants";
+import { CONTENT_TYPE } from "src/app/constants";
 
 export const initialHeaderMenuState = {
 	left: 0,
@@ -6,5 +6,5 @@ export const initialHeaderMenuState = {
 	id: "",
 	index: 0,
 	content: "",
-	type: CELL_TYPE.TEXT,
+	type: CONTENT_TYPE.TEXT,
 };

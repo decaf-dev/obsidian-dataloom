@@ -37,6 +37,7 @@
   },
   "dependencies": {
     "@mui/icons-material": "^5.5.0",
+    "crc-32": "^1.2.2",
     "html-react-parser": "^1.4.9",
     "react": "^17.0.2",
     "react-datepicker": "^4.8.0",

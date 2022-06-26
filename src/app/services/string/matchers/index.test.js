@@ -1,5 +1,4 @@
-import { matchURLs, countNumTags, findCellType } from "./index";
-import { CELL_TYPE } from "src/app/constants";
+import { matchURLs, countNumTags } from "./index";
 
 describe("matchURLs", () => {
 	it("matches http", () => {
@@ -57,45 +56,5 @@ describe("countNumTags", () => {
 	it("counts tag in middle of test", () => {
 		const numTags = countNumTags("test #test test");
 		expect(numTags).toEqual(1);
-	});
-});
-
-describe("findCellType", () => {
-	it("returns expected type if empty", () => {
-		const type = findCellType("", CELL_TYPE.TEXT);
-		expect(type).toEqual(CELL_TYPE.TEXT);
-	});
-
-	it("returns TEXT if number and expected type is TEXT", () => {
-		const type = findCellType("123", CELL_TYPE.TEXT);
-		expect(type).toEqual(CELL_TYPE.TEXT);
-	});
-
-	it("returns NUMBER if number and expected type is NUMBER", () => {
-		const type = findCellType("123", CELL_TYPE.NUMBER);
-		expect(type).toEqual(CELL_TYPE.NUMBER);
-	});
-
-	it("returns TAG if there is a tag with a pound sign", () => {
-		const type = findCellType("#test", CELL_TYPE.TAG);
-		expect(type).toEqual(CELL_TYPE.TAG);
-	});
-
-	it("returns TAG if there is a tag without a pound sign", () => {
-		const type = findCellType("test", CELL_TYPE.TAG);
-		expect(type).toEqual(CELL_TYPE.TAG);
-	});
-
-	it("returns ERROR if tag includes spaces", () => {
-		const type = findCellType("#test test", CELL_TYPE.TAG);
-		expect(type).toEqual(CELL_TYPE.ERROR);
-	});
-
-	it("returns TEXT if url with tags", () => {
-		const type = findCellType(
-			"https://chakra-ui.com/blog/the-beginners-guide-to-building-an-accessible-web#build-a-web-thats-inclusive-of-everyone",
-			CELL_TYPE.TEXT
-		);
-		expect(type).toEqual(CELL_TYPE.TEXT);
 	});
 });

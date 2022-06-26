@@ -31,7 +31,6 @@ export default function Menu({
 					<div
 						className="NLT__menu"
 						id={id}
-						onClick={(e) => e.stopPropagation()} //Catch events from menu so we don't open
 						onMouseDown={(e) => e.preventDefault()}
 					>
 						<div

@@ -6,12 +6,12 @@ import { AppData } from "../appData/state/appData";
 export interface NltSettings {
 	appData: {
 		[sourcePath: string]: {
-			[tableId: string]: AppData;
+			[tableIndex: string]: AppData;
 		};
 	};
 	state: {
 		[sourcePath: string]: {
-			[tableId: string]: saveState;
+			[tableIndex: string]: saveState;
 		};
 	};
 	focusedElement: TabbableElement;

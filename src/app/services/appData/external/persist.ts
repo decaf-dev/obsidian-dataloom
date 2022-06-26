@@ -8,11 +8,11 @@ export const persistAppData = async (
 	settings: NltSettings,
 	appData: AppData,
 	sourcePath: string,
-	tableId: string,
+	tableIndex: string,
 	viewType: ViewType
 ) => {
 	if (!settings.state[sourcePath]) settings.state[sourcePath] = {};
-	settings.state[sourcePath][tableId] = {
+	settings.state[sourcePath][tableIndex] = {
 		data: appData,
 		viewType,
 		shouldUpdate: true,

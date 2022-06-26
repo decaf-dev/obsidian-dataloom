@@ -54,6 +54,26 @@ export default function HeaderMenu({
 	const [submenu, setSubmenu] = useState(null);
 	const lastLength = useRef(0);
 
+	useEffect(() => {
+		if (!isOpen) {
+			//If we're in Live Preview mode and we click on the header and then click on the outside of
+			//the component, the header will close, set the data (which didn't change), which cause an update
+			//which persists the data again. We can prevent this by only calling onOutsideClick
+			//if the data has actually changed
+			if (inputText.length !== lastLength.current) {
+				lastLength.current = inputText.length;
+				if (inputText !== content) {
+					onOutsideClick(id, inputText);
+				}
+			}
+			setSubmenu(null);
+		}
+	}, [isOpen, inputText.length, lastLength.current]);
+
+	useEffect(() => {
+		setInputText(content);
+	}, [content]);
+
 	function renderTypeItems() {
 		return TYPE_ITEMS.map((item) => {
 			return (
@@ -207,26 +227,6 @@ export default function HeaderMenu({
 			</div>
 		);
 	}
-
-	useEffect(() => {
-		if (!isOpen) {
-			//If we're in Live Preview mode and we click on the header and then click on the outside of
-			//the component, the header will close, set the data (which didn't change), which cause an update
-			//which persists the data again. We can prevent this by only calling onOutsideClick
-			//if the data has actually changed
-			if (inputText.length !== lastLength.current) {
-				lastLength.current = inputText.length;
-				if (inputText !== content) {
-					onOutsideClick(id, inputText);
-				}
-			}
-			setSubmenu(null);
-		}
-	}, [isOpen, inputText.length, lastLength.current]);
-
-	useEffect(() => {
-		setInputText(content);
-	}, [content]);
 
 	return (
 		<Menu isOpen={isOpen} id={menuId} top={top} left={left}>

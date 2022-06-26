@@ -6,6 +6,7 @@ import { persistAppData } from "./persist";
 import NltPlugin from "../../../../../main";
 import { DEBUG } from "src/app/constants";
 import { ViewType } from "../state/saveState";
+import { appDataTypesToMarkdown } from "../debug";
 
 /**
  * Saves app data
@@ -22,18 +23,24 @@ export const saveAppData = async (
 	oldAppData: AppData,
 	newAppData: AppData,
 	sourcePath: string,
-	tableId: string,
+	tableIndex: string,
 	viewType: ViewType
 ) => {
-	const markdown = appDataToMarkdown(tableId, newAppData);
+	const markdown = appDataToMarkdown(newAppData);
 	try {
 		const file = app.workspace.getActiveFile();
-		let content = await app.vault.cachedRead(file);
+		const fileContent = await app.vault.cachedRead(file);
 
-		content = content.replace(
-			findTableRegex(tableId, oldAppData.headers, oldAppData.rows),
+		let newContent = fileContent.replace(
+			findTableRegex(oldAppData.headers, oldAppData.rows),
 			markdown
 		);
+
+		// if (fileContent.localeCompare(newContent) === 0) {
+		// 	throw new Error(
+		// 		"Regex replace failed. New markdown matches old markdown."
+		// 	);
+		// }
 
 		if (DEBUG.SAVE_APP_DATA.APP_DATA) {
 			console.log("saveAppData - New app data:");
@@ -45,12 +52,12 @@ export const saveAppData = async (
 			settings,
 			newAppData,
 			sourcePath,
-			tableId,
+			tableIndex,
 			viewType
 		);
 
 		//Save the open file with the new table data
-		await app.vault.modify(file, content);
+		await app.vault.modify(file, newContent);
 	} catch (err) {
 		console.log(err);
 	}

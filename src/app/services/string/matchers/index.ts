@@ -21,7 +21,7 @@ import {
 	ITALIC_MARKDOWN_PIECES_REGEX,
 } from "../regex";
 import { isNumber, isTag, isDate, isCheckBox } from "../validators";
-import { CELL_TYPE } from "src/app/constants";
+import { CONTENT_TYPE } from "src/app/constants";
 
 export const matchBoldMarkdown = (input: string) => {
 	return input.match(BOLD_MARKDOWN_REGEX("g")) || [];
@@ -110,22 +110,20 @@ export const countNumTags = (input: string): number => {
 	return (input.match(/#[^ \t]+/g) || []).length;
 };
 
-export const findCellType = (textContent: string, expectedType: string) => {
-	//If empty then just set it to the type it's supposed to be.
-	//We do this to allow blank cells
-	if (textContent === "") return expectedType;
-
-	//Allow everything
-	if (expectedType === CELL_TYPE.TEXT) {
-		return CELL_TYPE.TEXT;
-	} else if (expectedType === CELL_TYPE.NUMBER) {
-		if (isNumber(textContent)) return CELL_TYPE.NUMBER;
-	} else if (expectedType === CELL_TYPE.TAG) {
-		if (isTag(textContent)) return CELL_TYPE.TAG;
-	} else if (expectedType === CELL_TYPE.DATE) {
-		if (isDate(textContent)) return CELL_TYPE.DATE;
-	} else if (expectedType === CELL_TYPE.CHECKBOX) {
-		if (isCheckBox(textContent)) return CELL_TYPE.CHECKBOX;
-	}
-	return CELL_TYPE.ERROR;
+/**
+ * Finds a content type.
+ * If the content is empty it will return the content type of the column
+ * where the content's cell resides.
+ * @param content The cell content.
+ * @param columnContentType The content type of each cell in the column.
+ * @returns The type of the content.
+ */
+export const findContentType = (content: string, columnContentType: string) => {
+	if (content === "") return columnContentType;
+	if (columnContentType === CONTENT_TYPE.TEXT) return CONTENT_TYPE.TEXT;
+	if (columnContentType === CONTENT_TYPE.TAG) return CONTENT_TYPE.TAG;
+	if (isNumber(content)) return CONTENT_TYPE.NUMBER;
+	if (isDate(content)) return CONTENT_TYPE.DATE;
+	if (isCheckBox(content)) return CONTENT_TYPE.CHECKBOX;
+	return CONTENT_TYPE.TEXT;
 };

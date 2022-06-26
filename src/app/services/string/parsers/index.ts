@@ -187,7 +187,7 @@ export const parseUnderlineTags = (input: string): string => {
 // 	return new Date(date.replace(/-/g, "/"));
 // };
 
-export const parseDateForInput = (date: Date): string => {
+export const dateToString = (date: Date): string => {
 	const year = date.getFullYear();
 	const month = ("0" + (date.getMonth() + 1)).slice(-2);
 	const day = ("0" + date.getDate()).slice(-2);

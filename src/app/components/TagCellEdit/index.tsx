@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useState } from "react";
 
 import Menu from "../Menu";
 
@@ -12,10 +12,10 @@ import "./styles.css";
 interface Props {
 	menuId: string;
 	isOpen: boolean;
+	inputText: string;
 	top: number;
 	left: number;
 	color: string;
-	inputText: string;
 	cellId: string;
 	tags: Tag[];
 	onInputChange: (value: string) => void;
@@ -28,10 +28,10 @@ interface Props {
 export default function TagCellEdit({
 	menuId,
 	isOpen,
+	inputText,
 	top,
 	left,
 	color,
-	inputText,
 	cellId,
 	tags,
 	onInputChange,
