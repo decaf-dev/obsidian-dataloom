@@ -30,7 +30,7 @@ For more release details see: [Release 4.0.0](https://github.com/trey-wallis/obs
 
 ### Markdown Tables
 
-Obsidian markdown tables will automatically be rendered as Notion-Like tables. If you wish to exclude tables from becoming Notion-like tables, you can do so in the settings menu. See [Excluded Tables](<#Excluded Tables>) below for more information.
+Obsidian markdown tables will automatically be rendered as Notion-Like tables. If you wish to exclude tables from becoming Notion-like tables, you can do so in the settings menu. See [Settings](#Settings)) below for more information.
 
 ### Hotkeys
 
