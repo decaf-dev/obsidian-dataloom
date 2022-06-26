@@ -6,9 +6,10 @@ import { addRow, addColumn } from "src/app/services/appData/internal/add";
 import { saveAppData } from "src/app/services/appData/external/save";
 import { createEmptyMarkdownTable } from "src/app/services/appData/mock";
 import { ViewType } from "src/app/services/appData/state/saveState";
+import NltSettingsTab from "./NltSettingsTab";
 
 interface FocusedTable {
-	tableIndex: string;
+	tableIndex: number;
 	sourcePath: string;
 	viewType: ViewType;
 }
@@ -38,6 +39,8 @@ export default class NltPlugin extends Plugin {
 				);
 			}
 		});
+
+		this.addSettingTab(new NltSettingsTab(this.app, this));
 		this.registerCommands();
 		this.registerEvents();
 	}
@@ -127,7 +130,7 @@ export default class NltPlugin extends Plugin {
 	}
 
 	focusTable = (
-		tableIndex: string,
+		tableIndex: number,
 		sourcePath: string,
 		viewType: ViewType
 	) => {
