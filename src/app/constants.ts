@@ -17,13 +17,10 @@ export const DEBUG = {
 		USE_EFFECT: false,
 	},
 	FOCUS_PROVIDER: {
-		HANDLER: false,
-		USE_EFFECT: false,
-	},
-	MENU_PROVIDER: {
-		HANDLER: false,
+		HANDLER: true,
 		USE_EFFECT: true,
 	},
+	MENU_PROVIDER: true,
 };
 
 export interface CellType {

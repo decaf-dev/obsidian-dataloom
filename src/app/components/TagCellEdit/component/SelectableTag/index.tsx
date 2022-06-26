@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import parse from "html-react-parser";
 
@@ -26,8 +26,20 @@ export default function SelectableTag({
 	onColorChange,
 }: Props) {
 	const menuId = useMenuId();
-	const { menuPosition, menuRef, isMenuOpen, openMenu, closeMenu } =
-		useMenuRef(menuId, MENU_LEVEL.TWO);
+	const {
+		menuPosition,
+		menuRef,
+		isMenuOpen,
+		openMenu,
+		closeMenu,
+		isMenuRequestingClose,
+	} = useMenuRef(menuId, MENU_LEVEL.TWO);
+
+	useEffect(() => {
+		if (isMenuRequestingClose) {
+			closeMenu();
+		}
+	}, [isMenuRequestingClose]);
 
 	function handleColorChange(color: string) {
 		onColorChange(id, color);

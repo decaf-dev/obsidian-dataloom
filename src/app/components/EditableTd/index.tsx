@@ -96,6 +96,7 @@ export default function EditableTd({
 	useEffect(() => {
 		if (isMenuRequestingClose) {
 			if (headerType === CONTENT_TYPE.TAG) {
+				console.log(tagInputText);
 				if (tagInputText !== "") {
 					const tag = tags.find(
 						(tag) => tag.content === tagInputText
@@ -106,6 +107,8 @@ export default function EditableTd({
 						onAddTag(id, headerId, tagInputText, tagColor);
 					}
 					setTagInputText("");
+				} else {
+					closeMenu();
 				}
 			} else {
 				closeMenu();

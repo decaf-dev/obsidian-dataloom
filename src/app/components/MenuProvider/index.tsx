@@ -47,7 +47,7 @@ export default function MenuProvider({ children }: Props) {
 
 	function openMenu(id: string, level: number) {
 		if (canOpenMenu(level)) {
-			if (DEBUG.MENU_PROVIDER.HANDLER) {
+			if (DEBUG.MENU_PROVIDER) {
 				console.log(`[MenuProvider]: openMenu("${id}", ${level})`);
 			}
 			setOpenMenus((prevState) => [
@@ -73,9 +73,7 @@ export default function MenuProvider({ children }: Props) {
 	}
 
 	async function closeAllMenus() {
-		if (DEBUG.MENU_PROVIDER.HANDLER) {
-			console.log("[MenuProvider]: closeAllMenus()");
-		}
+		if (DEBUG.MENU_PROVIDER) console.log("[MenuProvider]: closeAllMenus()");
 		for (let i = 0; i < openMenus.length; i++) {
 			const menu = openMenus[i];
 			requestMenuClose(menu.id);
@@ -83,6 +81,8 @@ export default function MenuProvider({ children }: Props) {
 	}
 
 	function requestMenuClose(id: string) {
+		if (DEBUG.MENU_PROVIDER)
+			console.log(`[MenuProvider]: requestMenuClose(${id})`);
 		setOpenMenus((prevState) => {
 			return prevState.map((menu) => {
 				if (menu.id === id) {
@@ -97,10 +97,11 @@ export default function MenuProvider({ children }: Props) {
 	}
 
 	async function closeMenu(id: string) {
+		if (DEBUG.MENU_PROVIDER)
+			console.log(`[MenuProvider]: closeMenu(${id})`);
 		if (isMenuOpen(id)) {
-			if (DEBUG.MENU_PROVIDER.HANDLER) {
-				console.log(`[MenuProvider]: closeMenu(${id})`);
-			}
+			if (DEBUG.MENU_PROVIDER)
+				console.log(`[MenuProvider]: closing menu ${id}`);
 			setOpenMenus((prevState) =>
 				prevState.filter((menu) => menu.id !== id)
 			);
@@ -108,9 +109,7 @@ export default function MenuProvider({ children }: Props) {
 	}
 
 	async function handleClick(e: React.MouseEvent) {
-		if (DEBUG.MENU_PROVIDER.HANDLER) {
-			console.log(`[MenuProvider]: handleClick`);
-		}
+		if (DEBUG.MENU_PROVIDER) console.log(`[MenuProvider]: handleClick`);
 		if (isFocused && openMenus.length !== 0) {
 			if (e.target instanceof HTMLElement) {
 				let el = e.target;
