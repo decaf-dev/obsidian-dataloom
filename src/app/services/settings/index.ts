@@ -15,10 +15,12 @@ export interface NltSettings {
 		};
 	};
 	focusedElement: TabbableElement;
+	excludedFiles: string[];
 }
 
 export const DEFAULT_SETTINGS: NltSettings = {
 	appData: {},
 	state: {},
 	focusedElement: { id: "-1", type: TABBABLE_ELEMENT_TYPE.UNFOCUSED },
+	excludedFiles: [],
 };

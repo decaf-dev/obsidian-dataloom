@@ -31,6 +31,11 @@ export const loadAppData = async (
 
 	const tableIndex = findTableIndex(parsedTable[0]);
 
+	if (settings.excludedFiles.includes(sourcePath)) {
+		console.log(`Excluding file path: ${sourcePath}`);
+		return { tableIndex, data: null };
+	}
+
 	//Migration from 3.4.0
 	if (settings.appData[sourcePath]) {
 		if (settings.appData[sourcePath][tableIndex]) {
