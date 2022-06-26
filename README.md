@@ -146,6 +146,18 @@ A cell error will occur if you enter data which doesn't match the column content
 
 ## Settings
 
+Settings can be found by clicking on the Obsidian Settings Icon (a gear) and then scrolling down to `Notion-Like Tables`
+
+### Excluded Tables
+
+If you would like to exclude a table from being rendered as a Notion-Like table, you can specify the file path for the note that contains that table.
+
+Please note that this file path must include any folders starting from the root folder. If have a note nested in 2 folders from the root then the file path would look like this `/folder1/folder2/note.md`.
+
+The `.md` extension is required for the file name of the path.
+
+Please separate different path names with a comma: `/note1.md,/folder/note2.md`
+
 ## Custom Themes
 
 NLT tables uses normal table semantic elements (`table`, `th`, `tr`, `td`, etc) to render. If you wish to edit the display of the table, just style those elements in your CSS.
