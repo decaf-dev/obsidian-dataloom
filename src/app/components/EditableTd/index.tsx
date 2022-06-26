@@ -35,7 +35,7 @@ interface Props {
 	width: string;
 	tagUpdate: {
 		cellId: string;
-		time: string;
+		time: number;
 	};
 	tags: Tag[];
 	onRemoveTagClick: (cellId: string, tagId: string) => void;

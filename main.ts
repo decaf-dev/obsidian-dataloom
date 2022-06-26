@@ -9,7 +9,7 @@ import { ViewType } from "src/app/services/appData/state/saveState";
 import NltSettingsTab from "./NltSettingsTab";
 
 interface FocusedTable {
-	tableIndex: number;
+	tableIndex: string;
 	sourcePath: string;
 	viewType: ViewType;
 }
@@ -130,7 +130,7 @@ export default class NltPlugin extends Plugin {
 	}
 
 	focusTable = (
-		tableIndex: number,
+		tableIndex: string,
 		sourcePath: string,
 		viewType: ViewType
 	) => {

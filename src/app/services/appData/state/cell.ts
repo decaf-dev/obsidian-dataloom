@@ -25,7 +25,7 @@ export class TextCell extends Cell {
 	text: string;
 
 	constructor(id: string, rowId: string, headerId: string, text = "") {
-		super(id, rowId, headerId, CONTENT_TYPE.TEXT, null);
+		super(id, rowId, headerId, CONTENT_TYPE.TEXT);
 		this.text = text;
 	}
 

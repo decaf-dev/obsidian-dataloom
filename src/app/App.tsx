@@ -31,7 +31,7 @@ interface Props {
 	settings: NltSettings;
 	data: AppData;
 	sourcePath: string;
-	tableIndex: number;
+	tableIndex: string;
 	el: HTMLElement;
 }
 

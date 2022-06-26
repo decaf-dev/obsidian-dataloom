@@ -1,5 +1,5 @@
 import { AppData } from "./appData";
 export interface LoadedData {
-	tableIndex: number;
+	tableIndex: string;
 	data: AppData;
 }

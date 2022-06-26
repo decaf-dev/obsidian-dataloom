@@ -9,7 +9,7 @@ const FocusContext = React.createContext(false);
 interface Props {
 	children: React.ReactNode;
 	plugin: NltPlugin;
-	tableIndex: number;
+	tableIndex: string;
 	sourcePath: string;
 	el: HTMLElement;
 }

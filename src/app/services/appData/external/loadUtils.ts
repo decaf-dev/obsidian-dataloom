@@ -100,14 +100,14 @@ export const findCurrentViewType = (el: HTMLElement): ViewType => {
 	return currentViewType;
 };
 
-export const findTableIndex = (headers: string[]): number => {
+export const findTableIndex = (headers: string[]): string => {
 	//Get all tables in file
 	//Iterate over tables
 	//Hash headers
 	//If match, then return that index
 	//Otherwise search a table with the rows that match the most to the table in the memory
 	//we will assume that it is that table
-	return 0;
+	return "0";
 };
 
 export const hashHeaders = (headers: string[]): number => {
