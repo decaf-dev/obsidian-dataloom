@@ -32,7 +32,7 @@ export class NLTTable extends MarkdownRenderChild {
 	}
 
 	async onload() {
-		const { tableId, data } = await loadAppData(
+		const { tableIndex, data } = await loadAppData(
 			this.plugin,
 			this.settings,
 			this.containerEl,
@@ -46,7 +46,7 @@ export class NLTTable extends MarkdownRenderChild {
 				<FocusProvider
 					plugin={this.plugin}
 					sourcePath={this.sourcePath}
-					tableId={tableId}
+					tableIndex={tableIndex}
 					el={this.el}
 				>
 					<MenuProvider>
@@ -55,7 +55,7 @@ export class NLTTable extends MarkdownRenderChild {
 							settings={this.settings}
 							data={data}
 							sourcePath={this.sourcePath}
-							tableId={tableId}
+							tableIndex={tableIndex}
 							el={this.containerEl}
 						/>
 					</MenuProvider>

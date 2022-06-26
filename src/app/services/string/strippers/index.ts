@@ -1,3 +1,7 @@
+export const stripPound = (tag: string) => {
+	return tag.replace("#", "");
+};
+
 export const stripLink = (input: string) => {
 	const replaceWithSquareBrackets =
 		(input.match(/class="internal-link"/) || []).length !== 0;

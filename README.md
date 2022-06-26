@@ -8,30 +8,29 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 
 ## What's New?
 
-### Version 3.5.0
+### Version 4.0.0
 
-I am proud to announce that NLT now supports live preview! Please check it out! :)
+Starting in v4.0.0, table, row and column id's are now internally managed. This means that these ids can be removed from your tables.
 
-The settings cache format was updated to accomdomate this functionality. You won't need to do anything for your tables to render, as the app will automatically update your data.json file.
+In addition, all Obsidian markdown tables will now be rendered as Notion-Like tables. If you would you to exclude specific tables from being rendered as an NLT, you can specify files to exclude in the plugin settings. For more information see: [Settings](#Settings)
 
-### Version 3.4.0
+Bugs related to opening and closing of menus have been fixed. In addition, flashing of menus has been resolved.
 
--   The pound sign `#` in tags are now optional. See `Tags` below for more details.
--   NLT now supports bold, italics, highlight and underline. See `Markdown` below for more details.
+Errors can now be managed through the UI instead of the markdown. For more information see: [Errors](#Errors)
 
-### Version 3.3.0
+Current limitations from this update include:
 
--   Line break elements are now supported for cells in a column with the type `text` selected. See `Line Breaks` below for usage information
+-   Only 1 table per file is currently supported (to be fixed in 4.1.0)
+-   Live preview is unstable (to be fixed in 4.2.0)
+-   Insert above, Insert blow, Move up, Move down is currently unstable (to be fixed in 4.1.0)
 
-### Migrating from 2.3.6
-
-Starting in 3.0.0, Notion-Like tables supports a new table format that will facilitate better development in the plugin.
-
-Please upgrade your tables to this new format. This update also includes several bug fixes that could only be fixed by placing column and row ids into the table.
-
-**To migrate to the new format please see the section below: `Making a Table Manually`**
+For more release details see: [Release 4.0.0](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/4.0.0)
 
 ## Usage
+
+### Markdown Tables
+
+Obsidian markdown tables will automatically be rendered as Notion-Like tables. If you wish to exclude tables from becoming Notion-like tables, you can do so in the settings menu. See [Settings](#Settings)) below for more information.
 
 ### Hotkeys
 
@@ -55,67 +54,41 @@ Toggle to reading mode and the table will automatically render.
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/add-table-command.png)
 
-### Making a Table Manually
-
-A Notion-Like Table uses normal Obsidian table markdown syntax with 2 additional rows and 1 column for meta-data:
-
--   A type defintion row
--   A column id row
--   A row id column
-
-#### Type Definition Row
-
-The type definition row is a normal markdown row with each cell containing the type of data you want that column to accept. The plugin currently supports 5 column types: `text`, `number`, `tag`, `date` and `checkbox`. The last cell of the row must only contain whitespace for a Notion-Like Table to render.
-
-![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/type-def-row.png)
-
-#### Column Id Row
-
-The column id row is a normal markdown row with each cell containing a unique column id. A column id starts with `column-id-` followed by alpha-numeric characters or hyphens. This id must be unique to each table, but may be reused in other tables.
-
-![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/column-id-row.png)
-
-#### Row Id Column
-
-The row id column is the last column of the table and contains both a table id and the unique ids for each row. Note that the cell that resides in the header must only contain whitespace for a Notion-Like table to render.
-
-##### Table Id
-
-A table id starts with `table-id-` followed by alpha-numeric characters or hyphens. This id must be unique to each note, but may be reused in other notes.
-
-![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/table-id.png)
-
-##### Row Ids
-
-A row id starts with `row-id-` followed by alpha-numeric characters or hyphens. This id must be unique to each table, but may be reused in other tables.
-
-![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/row-ids.png)
-
-### Renaming IDs
-
-#### Renaming table ids
-
-Renaming a table id will cause your table to become orphaned from its saved data in the cache and create new data from the markdown. This can cause you to lose the saved column width, sorting, or tag colors on your table. If you would like to rename your table-id to something meaningful, I recommend doing this at the creation of your table.
-
-#### Renaming column ids
-
-Renaming column ids is less severe than renaming a table id, as you will only lose orphan that column from its saved state. Once again, I recommend renaming this at the creation of your table before you have started to adjust the settings.
-
 ### Headers
 
-Click on a header name to view the header menu. In the header menu you can rename the header, sort your column values or change the header type.
+Click on a header name to view the header menu. In the header menu you can rename the header, sort your column values or change the column content type.
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/header.png)
 
-### Editing Cells
+### Cells
 
-To edit a cell, just click on it. An input, textarea or menu will appear which will allow you to edit the cell's content. Make the necessary changes and then click outside the box or press enter to save the text. Notion-Like tables will automatically handle updating your markdown.
+To edit a cell, just click on it. An textarea or menu will appear which will allow you to edit the cell's content. Make the necessary changes and then click outside the box or press enter to save the text. Notion-Like tables will automatically handle updating your markdown.
 
-### Text Cells
+#### Text Cells
 
-Text can be rendered in cells that are in a column with the `text` type selected.
+Text can be rendered in cells that are in a column with the `text` content type selected.
 
-#### Markdown
+#### Number Cells
+
+Numbers can be rendered in cells that are in a column with the `number` content type selected. A valid number only includes digits 0-9
+
+#### Tag Cells
+
+Tags can be rendered in cells that are in a column with the `tag` content type selected.
+
+Tags have a special notion-like menu that will appear. Tags are scoped to each column of a table. You can type text to filter existing tags and select one. You can also create a new tag by typing text and clicking "Create New" or pressing enter.
+
+![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/tag-menu.png)
+
+#### Date Cells
+
+Dates can be rendered in cells that are in a column with the `date` content type selected. To render a date please follow the format `yyyy/mm/dd` in your markdown.
+
+#### Checkbox Cells
+
+Checkboxes can be rendered in cells that are in a column with the `checkbox` content type selected. To render a checkbox, add two square brackets with a space `[ ]` for unchecked or two square brackets surrounding an x `[x]` for checked.
+
+### Emphasis
 
 To bold text use either double astericks `**` or the bold tag `<b>`
 
@@ -135,45 +108,27 @@ To underline text use the underline tag `<u>`
 
 -   `<u>This is underlined</u>`
 
-#### Links
+### Links
 
-Links can be rendered in cells that are in a column with the `text` column type is selected. To render a link, add double squares surrounding text `[[My Link]]`.
+Links can be rendered in cells that are in a column with the `text` column content type is selected. To render a link, add double squares surrounding text `[[My Link]]`.
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/internal-link-edit.png)
 
-#### URLs
+### URLs
 
 If you want to display a url, type the url making sure it begins with `http://` or `https://`. NLT will automatically render it in the table.
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/url.png)
 
-#### Line Breaks
+### Line Breaks
 
 Line breaks can be added using the break line HTML tag `<br>`. For example, if you would like to create a line between two pieces of text, you could add:
 
 `This is my text<br><br>There is now a line between us`
 
-### Tags
-
-Tags can be rendered in cells that are in a column with the `tag` type selected.
-
-Tags have a special notion-like menu that will appear. Tags are scoped to each column of a table. You can type text to filter existing tags and select one. You can also create a new tag by typing text and clicking "Create New" or pressing enter.
-
-Tags can be rendered with or without a pound sign `#`. If you use a pound sign, then the tag will be rendered as a internal Obsidian tag link. Otherwise, it will be rendered as plain text.
-
-![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/tag-menu.png)
-
-#### Tag Colors
+### Tag Colors
 
 Once a tag has been added to a cell, you click on any cell that has that tag and then click on the horizontal menu button to the side of the tag name. A menu will then pop up through which you can change the tag color.
-
-### Dates
-
-Dates can be rendered in cells that are in a column with the `date` type selected. To render a date please follow the format `yyyy/mm/dd` in your markdown.
-
-### Checkboxes
-
-Checkboxes can be rendered in cells that are in a column with the `checkbox` type selected. To render a checkbox, add two square brackets with a space `[ ]` for unchecked or two square brackets surrounding an x `[x]` for checked.
 
 ### Copy Cell Content
 
@@ -181,25 +136,25 @@ Right click a cell and its content will be added to your clipboard.
 
 NOTE: The table must be in focus for this to work. Click on the table to focus it.
 
-### Undoing a Type Change
+### Undoing Changes
 
 NLTs does not currently have built in history. If you need to undo changes, go to editing mode and undo markdown changes using `ctrl+z` (or `option-z`on mac). Then go back to reading mode.
 
 ### Errors
 
-#### NLT Tables Not Rendering
+A cell error will occur if you enter data which doesn't match the column content type. You can correct this error by clicking on the cell and entering in data that matches the column content type.
 
-If your table is missing a table id row or type definition row then it will not be rendered as a Notion-Like Table. Likewise, if you use an invalid column type other than the accepted column types. A Notion-Like Table will not be rendered.
+## Settings
 
-Please check your console for more information regarding your errors:
-You can view the console using `cmd + alt + i` (Windows) or `cmd + option + i` (Mac)
+Settings can be found by opening the Obsidian settings menu and then scrolling down to `Notion-Like Tables`
 
-#### Cell Type Errors
+### Excluded Tables
 
-A cell type error will occur if you enter data which doesn't match the column data type. Please correct this error in your markdown to continue.
+If you would like to exclude a table from being rendered as a Notion-Like table, you can specify the file path for the note that contains the table. Please note that this file path must include any folders starting from the root folder. e.g. `/folder1/folder2/note.md`
 
-![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/cell-error-1.png)
-![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/cell-error-2.png)
+Please note that the `.md` extension is required for the file name of the note in the path.
+
+Different path names must be separated with a comma: `/note1.md,/folder/note2.md`
 
 ## Custom Themes
 

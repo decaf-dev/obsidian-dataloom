@@ -1,4 +1,4 @@
-import { CELL_TYPE, ICON } from "../../constants";
+import { CONTENT_TYPE, ICON } from "../../constants";
 interface MenuItem {
 	name: string;
 	content: string;
@@ -34,11 +34,11 @@ export const SUBMENU = {
 };
 
 export const TYPE_ITEMS: MenuItem[] = [
-	{ name: "text", content: "Text", type: CELL_TYPE.TEXT },
-	{ name: "number", content: "Number", type: CELL_TYPE.NUMBER },
-	{ name: "tag", content: "Tag", type: CELL_TYPE.TAG },
-	{ name: "date", content: "Date", type: CELL_TYPE.DATE },
-	{ name: "checkbox", content: "Checkbox", type: CELL_TYPE.CHECKBOX },
+	{ name: "text", content: "Text", type: CONTENT_TYPE.TEXT },
+	{ name: "number", content: "Number", type: CONTENT_TYPE.NUMBER },
+	{ name: "tag", content: "Tag", type: CONTENT_TYPE.TAG },
+	{ name: "date", content: "Date", type: CONTENT_TYPE.DATE },
+	{ name: "checkbox", content: "Checkbox", type: CONTENT_TYPE.CHECKBOX },
 ];
 
 interface SortItem {

@@ -6,19 +6,21 @@ import { AppData } from "../appData/state/appData";
 export interface NltSettings {
 	appData: {
 		[sourcePath: string]: {
-			[tableId: string]: AppData;
+			[tableIndex: string]: AppData;
 		};
 	};
 	state: {
 		[sourcePath: string]: {
-			[tableId: string]: saveState;
+			[tableIndex: string]: saveState;
 		};
 	};
 	focusedElement: TabbableElement;
+	excludedFiles: string[];
 }
 
 export const DEFAULT_SETTINGS: NltSettings = {
 	appData: {},
 	state: {},
 	focusedElement: { id: "-1", type: TABBABLE_ELEMENT_TYPE.UNFOCUSED },
+	excludedFiles: [],
 };

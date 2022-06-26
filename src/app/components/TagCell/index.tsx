@@ -4,9 +4,9 @@ import parse from "html-react-parser";
 import CloseIcon from "@mui/icons-material/Close";
 
 import { findColorClass } from "src/app/services/color";
-import { toTagLink } from "src/app/services/string/toLink";
 
 import "./styles.css";
+import { stripPound } from "src/app/services/string/strippers";
 interface Props {
 	cellId?: string;
 	id?: string;
@@ -45,8 +45,10 @@ export default function TagCell({
 
 	//If on render view, add the link to make it a clickable tag
 	if (showLink) {
-		if (content.startsWith("#")) content = toTagLink(content);
+		//if (content.startsWith("#")) content = toTagLink(content);
 	}
+
+	content = stripPound(content);
 
 	return (
 		<div className={cellClass} style={style}>

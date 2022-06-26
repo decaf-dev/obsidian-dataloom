@@ -1,8 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from "react";
-
-import { v4 as uuidv4 } from "uuid";
-
-import { useMenu } from "../MenuProvider";
+import React, { useEffect, useRef } from "react";
 
 import HeaderMenu from "../HeaderMenu";
 
@@ -12,7 +8,6 @@ import {
 	useDisableScroll,
 	useMenuId,
 	useMenuRef,
-	useResizeTime,
 } from "src/app/services/hooks";
 
 interface Props {
@@ -52,9 +47,21 @@ export default function EditableTh({
 }: Props) {
 	const dragRef = useRef(false);
 	const menuId = useMenuId();
-	const { menuPosition, menuRef, isMenuOpen, openMenu, closeMenu } =
-		useMenuRef(menuId, MENU_LEVEL.ONE);
+	const {
+		menuPosition,
+		menuRef,
+		isMenuOpen,
+		openMenu,
+		closeMenu,
+		isMenuRequestingClose,
+	} = useMenuRef(menuId, MENU_LEVEL.ONE);
 	useDisableScroll(isMenuOpen);
+
+	useEffect(() => {
+		if (isMenuRequestingClose) {
+			closeMenu();
+		}
+	}, [isMenuRequestingClose]);
 
 	function handleHeaderClick(e: React.MouseEvent) {
 		if (dragRef.current) return;
@@ -94,11 +101,38 @@ export default function EditableTh({
 	}
 
 	return (
-		<th
-			className="NLT__th NLT__selectable"
-			ref={menuRef}
-			onClick={handleHeaderClick}
-		>
+		<>
+			<th
+				className="NLT__th NLT__selectable"
+				ref={menuRef}
+				onClick={handleHeaderClick}
+			>
+				<div className="NLT__header-content-container">
+					<div className="NLT__header-content" style={{ width }}>
+						{content}
+					</div>
+					<div className="NLT__header-resize-container">
+						<div
+							className="NLT__header-resize"
+							onMouseDown={() => {
+								window.addEventListener(
+									"mousemove",
+									handleMouseMove
+								);
+								window.addEventListener(
+									"mouseup",
+									handleMouseUp
+								);
+								window.addEventListener("drag", handleDrag);
+							}}
+							onClick={(e) => {
+								//Stop propagation so we don't open the header
+								e.stopPropagation();
+							}}
+						/>
+					</div>
+				</div>
+			</th>
 			<HeaderMenu
 				isOpen={isMenuOpen}
 				top={menuPosition.top}
@@ -119,28 +153,6 @@ export default function EditableTh({
 				onDeleteClick={onDeleteClick}
 				onClose={handleClose}
 			/>
-			<div className="NLT__header-content-container">
-				<div className="NLT__header-content" style={{ width }}>
-					{content}
-				</div>
-				<div className="NLT__header-resize-container">
-					<div
-						className="NLT__header-resize"
-						onMouseDown={() => {
-							window.addEventListener(
-								"mousemove",
-								handleMouseMove
-							);
-							window.addEventListener("mouseup", handleMouseUp);
-							window.addEventListener("drag", handleDrag);
-						}}
-						onClick={(e) => {
-							//Stop propagation so we don't open the header
-							e.stopPropagation();
-						}}
-					/>
-				</div>
-			</div>
-		</th>
+		</>
 	);
 }

@@ -1,7 +1,7 @@
 import { useCallback, useState, useEffect, useRef } from "react";
 import { useMenu } from "src/app/components/MenuProvider";
 
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuid } from "uuid";
 
 export const useForceUpdate = () => {
 	const [, setValue] = useState(0);
@@ -9,10 +9,42 @@ export const useForceUpdate = () => {
 };
 
 export const useMenuId = (): string => {
-	const [menuId] = useState(uuidv4());
+	const [menuId] = useState(uuid());
 	return menuId;
 };
 
+export const useCompare = (value: any) => {
+	const prevValue = usePrevious(value);
+	return prevValue !== value;
+};
+
+const usePrevious = (value: any) => {
+	const ref = useRef();
+	useEffect(() => {
+		ref.current = value;
+	});
+	return ref.current;
+};
+
+export const useTextareaRef = (isOpen: boolean, value: string) => {
+	const lengthHasChanged = useCompare(value.length);
+	return useCallback(
+		(node) => {
+			if (node) {
+				if (isOpen && !lengthHasChanged) {
+					node.selectionStart = value.length;
+					node.selectionEnd = value.length;
+					if (node instanceof HTMLElement) {
+						setTimeout(() => {
+							node.focus();
+						}, 1);
+					}
+				}
+			}
+		},
+		[isOpen, value.length]
+	);
+};
 export const useDidMountEffect = (func: (...rest: any) => any, deps: any[]) => {
 	const didMount = useRef(false);
 
@@ -22,7 +54,7 @@ export const useDidMountEffect = (func: (...rest: any) => any, deps: any[]) => {
 	}, deps);
 };
 
-export const useMenuRef = (menuId: string, menuLevel: number) => {
+export const useMenuRef = (menuId: string, menuLevel: number, content = "") => {
 	const [menuPosition, setMenuPosition] = useState({
 		top: 0,
 		left: 0,
@@ -32,7 +64,10 @@ export const useMenuRef = (menuId: string, menuLevel: number) => {
 	});
 	const [shouldOpenMenu, setOpenMenu] = useState(false);
 	const resizeTime = useResizeTime();
-	const { isMenuOpen, openMenu, closeMenu } = useMenu(menuId, menuLevel);
+	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } = useMenu(
+		menuId,
+		menuLevel
+	);
 
 	//Only open the menu after the position has been updated
 	useEffect(() => {
@@ -43,6 +78,7 @@ export const useMenuRef = (menuId: string, menuLevel: number) => {
 	}, [menuPosition.time, shouldOpenMenu]);
 
 	//Update menu position on resize or when the menu is requested to be opened
+	//or when the content length changes
 	const menuRef = useCallback(
 		(node) => {
 			if (node instanceof HTMLElement) {
@@ -51,13 +87,14 @@ export const useMenuRef = (menuId: string, menuLevel: number) => {
 				setMenuPosition({ top, left, width, height, time: Date.now() });
 			}
 		},
-		[resizeTime, shouldOpenMenu]
+		[resizeTime, shouldOpenMenu, content.length]
 	);
 
 	return {
 		menuPosition,
 		openMenu: () => setOpenMenu(true),
 		closeMenu,
+		isMenuRequestingClose,
 		isMenuOpen,
 		menuRef,
 	};

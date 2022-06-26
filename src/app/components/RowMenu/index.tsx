@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import IconButton from "../IconButton";
@@ -28,10 +28,21 @@ export default function RowMenu({
 	onDeleteClick,
 	onInsertRowClick,
 }: Props) {
-	const [buttonId] = useState(uuidv4());
 	const menuId = useMenuId();
-	const { menuPosition, menuRef, isMenuOpen, openMenu, closeMenu } =
-		useMenuRef(menuId, MENU_LEVEL.ONE);
+	const {
+		menuPosition,
+		menuRef,
+		isMenuOpen,
+		openMenu,
+		closeMenu,
+		isMenuRequestingClose,
+	} = useMenuRef(menuId, MENU_LEVEL.ONE);
+
+	useEffect(() => {
+		if (isMenuRequestingClose) {
+			closeMenu();
+		}
+	}, [isMenuRequestingClose]);
 
 	useDisableScroll(isMenuOpen);
 
@@ -56,11 +67,7 @@ export default function RowMenu({
 
 	return (
 		<div ref={menuRef}>
-			<IconButton
-				id={buttonId}
-				icon={ICON.MORE_VERT}
-				onClick={handleButtonClick}
-			/>
+			<IconButton icon={ICON.MORE_VERT} onClick={handleButtonClick} />
 			<Menu
 				id={menuId}
 				isOpen={isMenuOpen}
