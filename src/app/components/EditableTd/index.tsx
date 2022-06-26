@@ -60,6 +60,7 @@ export default function EditableTd({
 	onSaveContent,
 	onAddTag,
 }: Props) {
+	const [tagInputText, setTagInputText] = useState("");
 	const [tagColor] = useState(randomColor());
 	const menuId = useMenuId();
 	const content = cell.toString();
@@ -94,33 +95,27 @@ export default function EditableTd({
 
 	useEffect(() => {
 		if (isMenuRequestingClose) {
-			// if (headerType === CONTENT_TYPE.TAG && !wasContentUpdated) {
-			// 	if (tagInputText !== "") {
-			// 		const tag = tags.find(
-			// 			(tag) => tag.content === addPound(tagInputText)
-			// 		);
-			// 		if (tag) {
-			// 			onTagClick(id, tag.id);
-			// 		} else {
-			// 			onAddTag(
-			// 				id,
-			// 				headerId,
-			// 				addPound(tagInputText),
-			// 				tagColor
-			// 			);
-			// 		}
-			// 		setTagInputText("");
-			// 		// setContentUpdate(true);
-			// 	}
-			// } else {
-			closeMenu();
-			//If we're just closing the menun from an outside click,
-			//then don't save unless the content actually updated
-			if (wasContentUpdated) {
-				onSaveContent();
-				setContentUpdate(false);
+			if (headerType === CONTENT_TYPE.TAG) {
+				if (tagInputText !== "") {
+					const tag = tags.find(
+						(tag) => tag.content === tagInputText
+					);
+					if (tag) {
+						onTagClick(id, tag.id);
+					} else {
+						onAddTag(id, headerId, tagInputText, tagColor);
+					}
+					setTagInputText("");
+				}
+			} else {
+				closeMenu();
+				//If we're just closing the menun from an outside click,
+				//then don't save unless the content actually updated
+				if (wasContentUpdated) {
+					onSaveContent();
+					setContentUpdate(false);
+				}
 			}
-			// }
 		}
 	}, [isMenuRequestingClose]);
 
@@ -244,12 +239,14 @@ export default function EditableTd({
 				return (
 					<TagCellEdit
 						cellId={id}
+						inputText={tagInputText}
 						tags={tags}
 						menuId={menuId}
 						isOpen={isMenuOpen}
 						top={menuPosition.top}
 						left={menuPosition.left}
 						color={tagColor}
+						onInputChange={setTagInputText}
 						onColorChange={onColorChange}
 						onAddTag={handleAddTag}
 						onRemoveTagClick={onRemoveTagClick}

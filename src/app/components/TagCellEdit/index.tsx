@@ -12,11 +12,13 @@ import "./styles.css";
 interface Props {
 	menuId: string;
 	isOpen: boolean;
+	inputText: string;
 	top: number;
 	left: number;
 	color: string;
 	cellId: string;
 	tags: Tag[];
+	onInputChange: (value: string) => void;
 	onTagClick: (tagId: string) => void;
 	onAddTag: (inputText: string) => void;
 	onRemoveTagClick: (cellId: string, tagId: string) => void;
@@ -26,21 +28,22 @@ interface Props {
 export default function TagCellEdit({
 	menuId,
 	isOpen,
+	inputText,
 	top,
 	left,
 	color,
 	cellId,
 	tags,
+	onInputChange,
 	onTagClick,
 	onAddTag,
 	onColorChange,
 	onRemoveTagClick,
 }: Props) {
-	const [inputText, setInputText] = useState("");
 	function handleTextChange(e: React.ChangeEvent<HTMLInputElement>) {
 		//Disallow whitespace
 		if (e.target.value.match(/\s/)) return;
-		setInputText(e.target.value);
+		onInputChange(e.target.value);
 	}
 
 	function renderSelectableTags() {
