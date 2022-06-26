@@ -12,11 +12,11 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 
 Starting in v4.0.0, table, row and column id's are now internally managed. This means that these ids can be removed from your tables.
 
-In addition, all normal Obsidian markdown tables will now be rendered as Notion-Like tables. If you would you to exclude specific tables from being rendered as an NLT, you can specify files to exclude in the plugin settings. For more information see: [Settings](#Settings) below
+In addition, all normal Obsidian markdown tables will now be rendered as Notion-Like tables. If you would you to exclude specific tables from being rendered as an NLT, you can specify files to exclude in the plugin settings. For more information see: [Settings](#Settings)
 
 Bugs related to opening and closing of menus have been fixed. In addition, flashing of menus has been resolved.
 
-Errors can now be managed through the UI instead of the markdown. For more information see: [Errors](###Errors) below
+Errors can now be managed through the UI instead of the markdown. For more information see: [Errors](#Errors)
 
 Current limitations from this update include:
 
@@ -30,7 +30,7 @@ For more release details see: [Release 4.0.0](https://github.com/trey-wallis/obs
 
 ### Markdown Tables
 
-Normal Obsidian markdown tables will automatically be rendered as a Notion-Like table. If you wish to exclude specific files from become a Notion-like table, you can do so in the settings menu. See [Settings](#Settings) below for more information.
+Obsidian markdown tables will automatically be rendered as Notion-Like tables. If you wish to exclude tables from becoming Notion-like tables, you can do so in the settings menu. See [Excluded Files](#Excluded Files) below for more information.
 
 ### Hotkeys
 
@@ -56,7 +56,7 @@ Toggle to reading mode and the table will automatically render.
 
 ### Headers
 
-Click on a header name to view the header menu. In the header menu you can rename the header, sort your column values or change the header type.
+Click on a header name to view the header menu. In the header menu you can rename the header, sort your column values or change the column content type.
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/header.png)
 
@@ -66,15 +66,15 @@ To edit a cell, just click on it. An textarea or menu will appear which will all
 
 #### Text Cells
 
-Text can be rendered in cells that are in a column with the `text` type selected.
+Text can be rendered in cells that are in a column with the `text` content type selected.
 
 #### Number Cells
 
-Numbers can be rendered in cells that are in a column with the `number` type selected. A valid number only includes digits 0-9
+Numbers can be rendered in cells that are in a column with the `number` content type selected. A valid number only includes digits 0-9
 
 #### Tag Cells
 
-Tags can be rendered in cells that are in a column with the `tag` type selected.
+Tags can be rendered in cells that are in a column with the `tag` content type selected.
 
 Tags have a special notion-like menu that will appear. Tags are scoped to each column of a table. You can type text to filter existing tags and select one. You can also create a new tag by typing text and clicking "Create New" or pressing enter.
 
@@ -82,11 +82,11 @@ Tags have a special notion-like menu that will appear. Tags are scoped to each c
 
 #### Date Cells
 
-Dates can be rendered in cells that are in a column with the `date` type selected. To render a date please follow the format `yyyy/mm/dd` in your markdown.
+Dates can be rendered in cells that are in a column with the `date` content type selected. To render a date please follow the format `yyyy/mm/dd` in your markdown.
 
 #### Checkbox Cells
 
-Checkboxes can be rendered in cells that are in a column with the `checkbox` type selected. To render a checkbox, add two square brackets with a space `[ ]` for unchecked or two square brackets surrounding an x `[x]` for checked.
+Checkboxes can be rendered in cells that are in a column with the `checkbox` content type selected. To render a checkbox, add two square brackets with a space `[ ]` for unchecked or two square brackets surrounding an x `[x]` for checked.
 
 ### Emphasis
 
@@ -110,7 +110,7 @@ To underline text use the underline tag `<u>`
 
 ### Links
 
-Links can be rendered in cells that are in a column with the `text` column type is selected. To render a link, add double squares surrounding text `[[My Link]]`.
+Links can be rendered in cells that are in a column with the `text` column content type is selected. To render a link, add double squares surrounding text `[[My Link]]`.
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/internal-link-edit.png)
 
@@ -146,17 +146,15 @@ A cell error will occur if you enter data which doesn't match the column content
 
 ## Settings
 
-Settings can be found by clicking on the Obsidian Settings Icon (a gear) and then scrolling down to `Notion-Like Tables`
+Settings can be found by opening the Obsidian settings menu and then scrolling down to `Notion-Like Tables`
 
 ### Excluded Tables
 
-If you would like to exclude a table from being rendered as a Notion-Like table, you can specify the file path for the note that contains that table.
+If you would like to exclude a table from being rendered as a Notion-Like table, you can specify the file path for the note that contains the table. Please note that this file path must include any folders starting from the root folder. e.g. `/folder1/folder2/note.md`
 
-Please note that this file path must include any folders starting from the root folder. If have a note nested in 2 folders from the root then the file path would look like this `/folder1/folder2/note.md`.
+Please note that the `.md` extension is required for the file name of the note in the path.
 
-The `.md` extension is required for the file name of the path.
-
-Please separate different path names with a comma: `/note1.md,/folder/note2.md`
+Different path names must be separated with a comma: `/note1.md,/folder/note2.md`
 
 ## Custom Themes
 
