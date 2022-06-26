@@ -92,21 +92,22 @@ export default function EditableTd({
 	//then we will close the menu and save
 	//This prevents rerendering issues
 	useDidMountEffect(() => {
-		logFunc(COMPONENT_NAME, "useDidMountEffect", {
-			tagUpdate,
-		});
+		if (DEBUG.EDITABLE_TD)
+			logFunc(COMPONENT_NAME, "useDidMountEffect", {
+				tagUpdate,
+			});
 
 		if (tagUpdate.cellId === id) {
-			console.log("CLOSING TAG MENU");
 			closeMenu();
 			onSaveContent();
 		}
 	}, [tagUpdate.cellId, tagUpdate.time]);
 
 	useEffect(() => {
-		logFunc(COMPONENT_NAME, "useEffect", {
-			isMenuRequestingClose,
-		});
+		if (DEBUG.EDITABLE_TD)
+			logFunc(COMPONENT_NAME, "useEffect", {
+				isMenuRequestingClose,
+			});
 		if (isMenuRequestingClose) {
 			if (headerType === CONTENT_TYPE.TAG) {
 				if (tagInputText !== "") {
@@ -135,7 +136,7 @@ export default function EditableTd({
 	}, [isMenuRequestingClose]);
 
 	async function handleCellContextClick(e: React.MouseEvent<HTMLElement>) {
-		if (DEBUG.EDITABLE_TD.HANDLER)
+		if (DEBUG.EDITABLE_TD)
 			console.log("[EditableTd] handleCellContextClick()");
 		try {
 			await navigator.clipboard.writeText(content);
@@ -146,8 +147,7 @@ export default function EditableTd({
 	}
 
 	function handleCellClick(e: React.MouseEvent<HTMLElement>) {
-		if (DEBUG.EDITABLE_TD.HANDLER)
-			console.log("[EditableTd] handleCellClick()");
+		if (DEBUG.EDITABLE_TD) console.log("[EditableTd] handleCellClick()");
 		const el = e.target as HTMLInputElement;
 
 		//If we clicked on the link for a file or tag, return

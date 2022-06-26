@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { DEBUG } from "src/app/constants";
+import { logFunc } from "src/app/services/appData/debug";
 import { useTableFocus } from "../FocusProvider";
 
 interface IMenuContext {
@@ -10,6 +11,8 @@ interface IMenuContext {
 }
 
 const MenuContext = React.createContext<IMenuContext>(null);
+
+const COMPONENT_NAME = "MenuProvider";
 
 export const useMenu = (id: string, level: number) => {
 	const { openMenu, closeMenu, isMenuOpen, isMenuRequestingClose } =
@@ -46,10 +49,8 @@ export default function MenuProvider({ children }: Props) {
 	}
 
 	function openMenu(id: string, level: number) {
+		logFunc(COMPONENT_NAME, "openMenu", { id, level });
 		if (canOpenMenu(level)) {
-			if (DEBUG.MENU_PROVIDER) {
-				console.log(`[MenuProvider]: openMenu("${id}", ${level})`);
-			}
 			setOpenMenus((prevState) => [
 				...prevState,
 				{ id, level, isRequestingClose: false },
@@ -73,7 +74,7 @@ export default function MenuProvider({ children }: Props) {
 	}
 
 	async function closeAllMenus() {
-		if (DEBUG.MENU_PROVIDER) console.log("[MenuProvider]: closeAllMenus()");
+		if (DEBUG.MENU_PROVIDER) logFunc(COMPONENT_NAME, "closeAllMenus");
 		for (let i = 0; i < openMenus.length; i++) {
 			const menu = openMenus[i];
 			requestMenuClose(menu.id);
@@ -82,7 +83,7 @@ export default function MenuProvider({ children }: Props) {
 
 	function requestMenuClose(id: string) {
 		if (DEBUG.MENU_PROVIDER)
-			console.log(`[MenuProvider]: requestMenuClose(${id})`);
+			logFunc(COMPONENT_NAME, "requestMenuClose", { id });
 		setOpenMenus((prevState) => {
 			return prevState.map((menu) => {
 				if (menu.id === id) {
@@ -97,11 +98,8 @@ export default function MenuProvider({ children }: Props) {
 	}
 
 	async function closeMenu(id: string) {
-		if (DEBUG.MENU_PROVIDER)
-			console.log(`[MenuProvider]: closeMenu(${id})`);
+		if (DEBUG.MENU_PROVIDER) logFunc(COMPONENT_NAME, "closeMenu", { id });
 		if (isMenuOpen(id)) {
-			if (DEBUG.MENU_PROVIDER)
-				console.log(`[MenuProvider]: closing menu ${id}`);
 			setOpenMenus((prevState) =>
 				prevState.filter((menu) => menu.id !== id)
 			);
@@ -109,7 +107,6 @@ export default function MenuProvider({ children }: Props) {
 	}
 
 	async function handleClick(e: React.MouseEvent) {
-		if (DEBUG.MENU_PROVIDER) console.log(`[MenuProvider]: handleClick`);
 		if (isFocused && openMenus.length !== 0) {
 			if (e.target instanceof HTMLElement) {
 				let el = e.target;
@@ -147,6 +144,7 @@ export default function MenuProvider({ children }: Props) {
 	}
 
 	useEffect(() => {
+		logFunc(COMPONENT_NAME, "useEffect", { isFocused });
 		async function handleBlur() {
 			await closeAllMenus();
 		}

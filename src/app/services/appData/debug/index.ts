@@ -6,12 +6,12 @@ import { CONTENT_TYPE } from "src/app/constants";
 export const logFunc = (
 	componentName: string,
 	functionName: string,
-	args: object
+	args = {}
 ) => {
 	console.log(
 		`[${componentName}]: ${functionName}(${Object.keys(args).join(", ")})`
 	);
-	console.log(args);
+	if (Object.keys(args).length !== 0) console.log(args);
 };
 
 export const appDataIdsToMarkdown = (data: AppData): string => {

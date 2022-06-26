@@ -10,14 +10,8 @@ export const DEBUG = {
 	SAVE_APP_DATA: {
 		APP_DATA: false,
 	},
-	EDITABLE_TD: {
-		HANDLER: false,
-		USE_EFFECT: false,
-	},
-	FOCUS_PROVIDER: {
-		HANDLER: true,
-		USE_EFFECT: true,
-	},
+	EDITABLE_TD: true,
+	FOCUS_PROVIDER: true,
 	MENU_PROVIDER: true,
 };
 
