@@ -25,7 +25,7 @@ import {
 } from "./services/appData/external/loadUtils";
 import { v4 as uuid } from "uuid";
 import { sortAppDataForSave } from "./services/appData/external/saveUtils";
-import { findContentType } from "./services/string/matchers";
+import { logFunc } from "./services/appData/debug";
 interface Props {
 	plugin: NltPlugin;
 	settings: NltSettings;
@@ -34,6 +34,8 @@ interface Props {
 	tableIndex: string;
 	el: HTMLElement;
 }
+
+const COMPONENT_NAME = "App";
 
 export default function App({
 	plugin,
@@ -46,7 +48,10 @@ export default function App({
 	const [oldAppData, setOldAppData] = useState<AppData>(data);
 	const [appData, setAppData] = useState<AppData>(data);
 	const [debounceUpdate, setDebounceUpdate] = useState(0);
-	const [tagUpdater, setTagUpdater] = useState("");
+	const [tagUpdate, setTagUpdate] = useState({
+		time: 0,
+		cellId: "",
+	});
 	const [saveTime, setSaveTime] = useState(0);
 
 	useEffect(() => {
@@ -135,19 +140,19 @@ export default function App({
 	}, []);
 
 	function handleAddColumn() {
-		if (DEBUG.APP.HANDLER) console.log("[App]: handleAddColumn called.");
+		if (DEBUG.APP) console.log("[App]: handleAddColumn called.");
 		setAppData((prevState) => addColumn(prevState));
 		setSaveTime(Date.now());
 	}
 
 	function handleAddRow() {
-		if (DEBUG.APP.HANDLER) console.log("[App]: handleAddRow called.");
+		if (DEBUG.APP) console.log("[App]: handleAddRow called.");
 		setAppData((prevState: AppData) => addRow(prevState));
 		setSaveTime(Date.now());
 	}
 
 	function handleHeaderSave(id: string, updatedContent: string) {
-		if (DEBUG.APP.HANDLER) console.log("[App]: handleHeaderSave called.");
+		if (DEBUG.APP) console.log("[App]: handleHeaderSave called.");
 		setAppData((prevState) => {
 			return {
 				...prevState,
@@ -165,8 +170,7 @@ export default function App({
 	}
 
 	function handleHeaderTypeSelect(id: string, cellType: string) {
-		if (DEBUG.APP.HANDLER)
-			console.log("[App]: handleHeaderTypeSelect called.");
+		if (DEBUG.APP) console.log("[App]: handleHeaderTypeSelect called.");
 		//If same header type return
 		const header = appData.headers.find((header) => header.id === id);
 		if (header.type === cellType) return;
@@ -204,7 +208,7 @@ export default function App({
 		type: string,
 		sortName: string
 	) {
-		if (DEBUG.APP.HANDLER) console.log("[App]: handleHeaderSort called.");
+		if (DEBUG.APP) console.log("[App]: handleHeaderSort called.");
 		setAppData((prevState) => {
 			return {
 				...prevState,
@@ -226,9 +230,12 @@ export default function App({
 		headerType: string,
 		content: any
 	) {
-		if (DEBUG.APP.HANDLER) {
-			console.log(`[App]: handleCellContentChange`);
-			console.log({ id, content });
+		if (DEBUG.APP) {
+			logFunc(COMPONENT_NAME, "handleCellContentChange", {
+				id,
+				headerType,
+				content,
+			});
 		}
 
 		setAppData((prevState) => {
@@ -261,8 +268,14 @@ export default function App({
 		content: string,
 		color: string
 	) {
-		if (DEBUG.APP.HANDLER) console.log("[App]: handleAddTag called.");
-		console.log(content);
+		if (DEBUG.APP) {
+			logFunc(COMPONENT_NAME, "handleAddTag", {
+				cellId,
+				headerId,
+				content,
+				color,
+			});
+		}
 		setAppData((prevState) => {
 			return {
 				...prevState,
@@ -272,7 +285,7 @@ export default function App({
 				],
 			};
 		});
-		setTagUpdater(cellId);
+		setTagUpdate({ cellId, time: Date.now() });
 	}
 
 	/**
@@ -295,35 +308,39 @@ export default function App({
 	}
 
 	function handleTagClick(cellId: string, tagId: string) {
-		if (DEBUG.APP.HANDLER) console.log("[App]: handleTagClick called.");
+		if (DEBUG.APP) {
+			logFunc(COMPONENT_NAME, "handleTagClick", {
+				cellId,
+				tagId,
+			});
+		}
 		//If our cell id has already selected the tag then return
 		const found = appData.tags.find((tag) => tag.id === tagId);
-		if (found.selected.includes(cellId)) return;
+		if (!found.selected.includes(cellId)) {
+			let arr = removeTagReferences(appData.tags, cellId);
+			arr = arr.map((tag) => {
+				//Add cell id to selected list
+				if (tag.id === tagId) {
+					return {
+						...tag,
+						selected: [...tag.selected, cellId],
+					};
+				}
+				return tag;
+			});
 
-		let arr = removeTagReferences(appData.tags, cellId);
-		arr = arr.map((tag) => {
-			//Add cell id to selected list
-			if (tag.id === tagId) {
+			setAppData((prevState) => {
 				return {
-					...tag,
-					selected: [...tag.selected, cellId],
+					...prevState,
+					tags: arr,
 				};
-			}
-			return tag;
-		});
-
-		setAppData((prevState) => {
-			return {
-				...prevState,
-				tags: arr,
-			};
-		});
-		setTagUpdater(cellId);
+			});
+		}
+		setTagUpdate({ cellId, time: Date.now() });
 	}
 
 	function handleRemoveTagClick(cellId: string) {
-		if (DEBUG.APP.HANDLER)
-			console.log("[App]: handleRemoveTagClick called.");
+		if (DEBUG.APP) console.log("[App]: handleRemoveTagClick called.");
 		setAppData((prevState) => {
 			return {
 				...prevState,
@@ -381,8 +398,7 @@ export default function App({
 	}
 
 	function handleDeleteHeaderClick(id: string) {
-		if (DEBUG.APP.HANDLER)
-			console.log("[App]: handleDeleteHeaderClick called.");
+		if (DEBUG.APP) console.log("[App]: handleDeleteHeaderClick called.");
 		setAppData((prevState) => {
 			return {
 				...prevState,
@@ -394,8 +410,7 @@ export default function App({
 	}
 
 	function handleDeleteRowClick(rowId: string) {
-		if (DEBUG.APP.HANDLER)
-			console.log("[App]: handleDeleteRowClick called.");
+		if (DEBUG.APP) console.log("[App]: handleDeleteRowClick called.");
 		setAppData((prevState) => {
 			return {
 				...prevState,
@@ -407,7 +422,7 @@ export default function App({
 	}
 
 	function handleMoveRowClick(id: string, moveBelow: boolean) {
-		if (DEBUG.APP.HANDLER) console.log("[App]: handleMoveRowClick called.");
+		if (DEBUG.APP) console.log("[App]: handleMoveRowClick called.");
 		setAppData((prevState: AppData) => {
 			const index = prevState.rows.findIndex((row) => row.id === id);
 			//We assume that there is checking to make sure you don't move the first row up or last row down
@@ -432,7 +447,7 @@ export default function App({
 	}
 
 	function handleWidthChange(id: string, newWidth: number) {
-		if (DEBUG.APP.HANDLER) console.log("[App]: handleWidthChange called.");
+		if (DEBUG.APP) console.log("[App]: handleWidthChange called.");
 		setAppData((prevState: AppData) => {
 			return {
 				...prevState,
@@ -451,8 +466,7 @@ export default function App({
 	}
 
 	function handleMoveColumnClick(id: string, moveRight: boolean) {
-		if (DEBUG.APP.HANDLER)
-			console.log("[App]: handleMoveColumnClick called.");
+		if (DEBUG.APP) console.log("[App]: handleMoveColumnClick called.");
 		setAppData((prevState: AppData) => {
 			const index = prevState.headers.findIndex(
 				(header) => header.id === id
@@ -473,8 +487,7 @@ export default function App({
 	}
 
 	function handleInsertColumnClick(id: string, insertRight: boolean) {
-		if (DEBUG.APP.HANDLER)
-			console.log("[App]: handleInsertColumnClick called.");
+		if (DEBUG.APP) console.log("[App]: handleInsertColumnClick called.");
 		setAppData((prevState: AppData) => {
 			const header = prevState.headers.find((header) => header.id === id);
 			const index = prevState.headers.indexOf(header);
@@ -507,8 +520,7 @@ export default function App({
 	}
 
 	function handleInsertRowClick(id: string, insertBelow = false) {
-		if (DEBUG.APP.HANDLER)
-			console.log("[App]: handleHeaderInsertRowClick called.");
+		if (DEBUG.APP) console.log("[App]: handleHeaderInsertRowClick called.");
 		const rowId = uuid();
 		setAppData((prevState: AppData) => {
 			const tags: Tag[] = [];
@@ -688,7 +700,7 @@ export default function App({
 											cell={cell}
 											headerType={header.type}
 											width={header.width}
-											tagUpdater={tagUpdater}
+											tagUpdate={tagUpdate}
 											tags={appData.tags.filter(
 												(tag) =>
 													tag.headerId === header.id

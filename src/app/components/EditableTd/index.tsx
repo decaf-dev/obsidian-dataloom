@@ -27,12 +27,16 @@ import {
 	useMenuRef,
 } from "src/app/services/hooks";
 import { dateToString } from "src/app/services/string/parsers";
+import { logFunc } from "src/app/services/appData/debug";
 
 interface Props {
 	headerType: string;
 	cell: Cell;
 	width: string;
-	tagUpdater: string;
+	tagUpdate: {
+		cellId: string;
+		time: string;
+	};
 	tags: Tag[];
 	onRemoveTagClick: (cellId: string, tagId: string) => void;
 	onTagClick: (cellId: string, tagId: string) => void;
@@ -47,12 +51,14 @@ interface Props {
 	onSaveContent: () => void;
 }
 
+const COMPONENT_NAME = "EditableTd";
+
 export default function EditableTd({
 	headerType,
 	cell,
 	width,
 	tags,
-	tagUpdater,
+	tagUpdate,
 	onRemoveTagClick,
 	onColorChange,
 	onTagClick,
@@ -86,17 +92,23 @@ export default function EditableTd({
 	//then we will close the menu and save
 	//This prevents rerendering issues
 	useDidMountEffect(() => {
-		if (tagUpdater === id) {
+		logFunc(COMPONENT_NAME, "useDidMountEffect", {
+			tagUpdate,
+		});
+
+		if (tagUpdate.cellId === id) {
 			console.log("CLOSING TAG MENU");
 			closeMenu();
 			onSaveContent();
 		}
-	}, [tagUpdater]);
+	}, [tagUpdate.cellId, tagUpdate.time]);
 
 	useEffect(() => {
+		logFunc(COMPONENT_NAME, "useEffect", {
+			isMenuRequestingClose,
+		});
 		if (isMenuRequestingClose) {
 			if (headerType === CONTENT_TYPE.TAG) {
-				console.log(tagInputText);
 				if (tagInputText !== "") {
 					const tag = tags.find(
 						(tag) => tag.content === tagInputText

@@ -6,9 +6,7 @@ export const DEBUG = {
 		TYPES: false,
 		MARKDOWN: false,
 	},
-	APP: {
-		HANDLER: false,
-	},
+	APP: true,
 	SAVE_APP_DATA: {
 		APP_DATA: false,
 	},

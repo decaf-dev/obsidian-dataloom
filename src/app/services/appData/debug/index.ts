@@ -3,6 +3,17 @@ import { AppDataStringBuffer } from "../external/saveUtils";
 import { calcColumnCharLengths } from "../external/saveUtils";
 import { CONTENT_TYPE } from "src/app/constants";
 
+export const logFunc = (
+	componentName: string,
+	functionName: string,
+	args: object
+) => {
+	console.log(
+		`[${componentName}]: ${functionName}(${Object.keys(args).join(", ")})`
+	);
+	console.log(args);
+};
+
 export const appDataIdsToMarkdown = (data: AppData): string => {
 	const columnCharLengths = calcColumnCharLengths(data);
 
