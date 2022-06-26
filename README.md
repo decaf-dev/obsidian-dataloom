@@ -21,7 +21,8 @@ Errors can now be managed through the UI instead of the markdown. For more infor
 Current limitations from this update include:
 
 -   Only 1 table per file is currently supported (to be fixed in 4.1.0)
--   Live preview is unstable (to be fixed in 4.1.0)
+-   Live preview is unstable (to be fixed in 4.2.0)
+-   Insert above, Insert blow, Move up, Move down is currently unstable (to be fixed in 4.1.0)
 
 For more release details see: [Release 4.0.0](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/4.0.0)
 
