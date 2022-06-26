@@ -113,7 +113,6 @@ export default function EditableTd({
 			// 		// setContentUpdate(true);
 			// 	}
 			// } else {
-			console.log("Requesting menu close");
 			closeMenu();
 			//If we're just closing the menun from an outside click,
 			//then don't save unless the content actually updated

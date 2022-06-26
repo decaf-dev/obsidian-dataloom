@@ -107,27 +107,25 @@ export default function MenuProvider({ children }: Props) {
 		}
 	}
 
-	function handleClick(e: React.MouseEvent) {
+	async function handleClick(e: React.MouseEvent) {
 		if (DEBUG.MENU_PROVIDER.HANDLER) {
 			console.log(`[MenuProvider]: handleClick`);
 		}
-		setTimeout(async () => {
-			if (isFocused && openMenus.length !== 0) {
-				if (e.target instanceof HTMLElement) {
-					let el = e.target;
-					//Search until we get an id
-					while (el.id === "" && el.className !== "NLT__app") {
-						el = el.parentElement;
-					}
-					//This will close top level on outside click, closing besides any other
-					//click is left up to specific menu
-					const menu = findTopMenu();
-					if (el.id !== menu.id) {
-						await requestMenuClose(menu.id);
-					}
+		if (isFocused && openMenus.length !== 0) {
+			if (e.target instanceof HTMLElement) {
+				let el = e.target;
+				//Search until we get an id
+				while (el.id === "" && el.className !== "NLT__app") {
+					el = el.parentElement;
+				}
+				//This will close top level on outside click, closing besides any other
+				//click is left up to specific menu
+				const menu = findTopMenu();
+				if (el.id !== menu.id) {
+					await requestMenuClose(menu.id);
 				}
 			}
-		}, 1);
+		}
 	}
 
 	async function handleKeyUp(e: React.KeyboardEvent) {

@@ -27,7 +27,6 @@ export const saveAppData = async (
 	viewType: ViewType
 ) => {
 	const markdown = appDataToMarkdown(newAppData);
-	const types = appDataTypesToMarkdown(newAppData);
 	try {
 		const file = app.workspace.getActiveFile();
 		const fileContent = await app.vault.cachedRead(file);
@@ -37,11 +36,11 @@ export const saveAppData = async (
 			markdown
 		);
 
-		if (fileContent.localeCompare(newContent) === 0) {
-			throw new Error(
-				"Regex replace failed. New markdown matches old markdown."
-			);
-		}
+		// if (fileContent.localeCompare(newContent) === 0) {
+		// 	throw new Error(
+		// 		"Regex replace failed. New markdown matches old markdown."
+		// 	);
+		// }
 
 		if (DEBUG.SAVE_APP_DATA.APP_DATA) {
 			console.log("saveAppData - New app data:");

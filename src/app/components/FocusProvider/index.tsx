@@ -1,5 +1,5 @@
 import NltPlugin from "main";
-import React, { useState, useContext, useCallback } from "react";
+import React, { useState, useContext, useCallback, useEffect } from "react";
 import { DEBUG } from "src/app/constants";
 import { findCurrentViewType } from "src/app/services/appData/external/loadUtils";
 
@@ -57,12 +57,43 @@ export default function FocusProvider({
 		}
 	}, []);
 
+	useEffect(() => {
+		function handleMouseUp(e: MouseEvent) {
+			//TODO only check if the page is active
+			//Set an id for the table
+			if (e.target instanceof Element) {
+				let el = e.target;
+				let isFocused = false;
+
+				while (el) {
+					if (el.className === "view-content") break;
+					//We need to check the type because the an svg
+					//element has a className of SVGAnimatedString
+					//See: https://stackoverflow.com/a/37949156
+					if (typeof el.className === "string") {
+						if (el.className.includes("NLT")) {
+							isFocused = true;
+							break;
+						}
+					}
+					el = el.parentElement;
+				}
+				if (isFocused) {
+					handleFocus();
+				} else {
+					handleBlur();
+				}
+			}
+		}
+		window.addEventListener("mouseup", handleMouseUp);
+		return () => window.removeEventListener("mouseup", handleMouseUp);
+	}, []);
+
 	return (
 		<div
 			ref={divRef}
-			onFocus={() => handleFocus()}
-			onBlur={() => handleBlur()}
 			onClick={(e) => {
+				//Stop propagation to the Obsidian editing-mode handler
 				e.preventDefault();
 				e.stopPropagation();
 			}}
