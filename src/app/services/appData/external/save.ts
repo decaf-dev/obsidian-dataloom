@@ -42,7 +42,7 @@ export const saveAppData = async (
 		// 	);
 		// }
 
-		if (DEBUG.SAVE_APP_DATA.APP_DATA) {
+		if (DEBUG.SAVE_APP_DATA) {
 			console.log("saveAppData - New app data:");
 			console.log(markdown);
 		}

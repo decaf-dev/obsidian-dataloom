@@ -49,7 +49,8 @@ export default function MenuProvider({ children }: Props) {
 	}
 
 	function openMenu(id: string, level: number) {
-		logFunc(COMPONENT_NAME, "openMenu", { id, level });
+		if (DEBUG.MENU_PROVIDER)
+			logFunc(COMPONENT_NAME, "openMenu", { id, level });
 		if (canOpenMenu(level)) {
 			setOpenMenus((prevState) => [
 				...prevState,
@@ -144,7 +145,8 @@ export default function MenuProvider({ children }: Props) {
 	}
 
 	useEffect(() => {
-		logFunc(COMPONENT_NAME, "useEffect", { isFocused });
+		if (DEBUG.MENU_PROVIDER)
+			logFunc(COMPONENT_NAME, "useEffect", { isFocused });
 		async function handleBlur() {
 			await closeAllMenus();
 		}

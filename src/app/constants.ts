@@ -6,13 +6,11 @@ export const DEBUG = {
 		TYPES: false,
 		MARKDOWN: false,
 	},
-	APP: true,
-	SAVE_APP_DATA: {
-		APP_DATA: false,
-	},
-	EDITABLE_TD: true,
-	FOCUS_PROVIDER: true,
-	MENU_PROVIDER: true,
+	APP: false,
+	SAVE_APP_DATA: false,
+	EDITABLE_TD: false,
+	FOCUS_PROVIDER: false,
+	MENU_PROVIDER: false,
 };
 
 export interface CellType {
