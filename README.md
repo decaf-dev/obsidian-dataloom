@@ -12,7 +12,7 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 
 Starting in v4.0.0, table, row and column id's are now internally managed. This means that these ids can be removed from your tables.
 
-In addition, all normal Obsidian markdown tables will now be rendered as Notion-Like tables. If you would you to exclude specific tables from being rendered as an NLT, you can specify files to exclude in the plugin settings. For more information see: [Settings](#Settings)
+In addition, all Obsidian markdown tables will now be rendered as Notion-Like tables. If you would you to exclude specific tables from being rendered as an NLT, you can specify files to exclude in the plugin settings. For more information see: [Settings](#Settings)
 
 Bugs related to opening and closing of menus have been fixed. In addition, flashing of menus has been resolved.
 
