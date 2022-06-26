@@ -18,6 +18,10 @@ export default function CheckboxCell({ isChecked, onCheckboxChange }: Props) {
 				type="checkbox"
 				checked={isChecked}
 				onChange={() => {}}
+				onClick={(e) => {
+					e.stopPropagation();
+					onCheckboxChange(!isChecked);
+				}}
 			/>
 		</div>
 	);
