@@ -96,20 +96,3 @@
 .NLT__margin-left {
 	margin-left: 4px;
 }
-
-/*
-* Input
-*/
-.NLT__input {
-	height: 100%;
-	width: 100%;
-	padding: 4px 10px !important;
-}
-
-.NLT__input--no-border {
-	border: 0 !important;
-}
-
-.NLT__input--number {
-	text-align: right;
-}

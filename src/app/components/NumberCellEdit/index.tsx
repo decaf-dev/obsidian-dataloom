@@ -3,6 +3,8 @@ import { useTextareaRef } from "src/app/services/hooks";
 
 import Menu from "../Menu";
 
+import "./styles.css";
+
 interface Props {
 	menuId: string;
 	isOpen: boolean;
@@ -40,8 +42,8 @@ export default function NumberCellEdit({
 			width={width}
 			height={height}
 		>
-			<textarea
-				className="NLT__textarea NLT__number-cell-edit"
+			<input
+				className="NLT__number-cell-edit"
 				ref={inputRef}
 				autoFocus
 				value={value}
