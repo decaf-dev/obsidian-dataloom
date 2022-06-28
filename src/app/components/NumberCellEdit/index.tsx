@@ -1,5 +1,4 @@
-import React from "react";
-import { useTextareaRef } from "src/app/services/hooks";
+import React, { useCallback } from "react";
 
 import Menu from "../Menu";
 
@@ -26,7 +25,15 @@ export default function NumberCellEdit({
 	value,
 	onInputChange,
 }: Props) {
-	const inputRef = useTextareaRef(isOpen, value);
+	const inputRef = useCallback((node) => {
+		if (node) {
+			if (node instanceof HTMLElement) {
+				setTimeout(() => {
+					node.focus();
+				}, 1);
+			}
+		}
+	}, []);
 
 	function handleInputChange(value: string) {
 		value = value.replace("\n", "");
@@ -44,6 +51,7 @@ export default function NumberCellEdit({
 		>
 			<input
 				className="NLT__number-cell-edit"
+				type="number"
 				ref={inputRef}
 				autoFocus
 				value={value}

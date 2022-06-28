@@ -172,8 +172,7 @@ export const findNumberCell = (
 	headerId: string,
 	content: string
 ) => {
-	const number = content === "" ? -1 : parseInt(content);
-	return new NumberCell(cellId, rowId, headerId, number);
+	return new NumberCell(cellId, rowId, headerId, content);
 };
 
 export const findTagCell = (

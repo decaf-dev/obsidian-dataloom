@@ -39,21 +39,19 @@ export class TextCell extends Cell {
 }
 
 export class NumberCell extends Cell {
-	number: number;
+	number: string;
 
-	constructor(id: string, rowId: string, headerId: string, number = -1) {
+	constructor(id: string, rowId: string, headerId: string, number: string) {
 		super(id, rowId, headerId, CONTENT_TYPE.NUMBER);
 		this.number = number;
 	}
 
 	length() {
-		if (this.number === -1) return 0;
-		return this.number.toString().length;
+		return this.number.length;
 	}
 
 	toString() {
-		if (this.number === -1) return "";
-		return this.number.toString();
+		return this.number;
 	}
 }
 
