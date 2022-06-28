@@ -1,10 +1,29 @@
-import React from "react";
+import React, { forwardRef } from "react";
 
 import "./styles.css";
 interface Props {
 	text: string;
+	width: string;
+	onClick: (e: React.MouseEvent) => void;
+	onContextClick: (e: React.MouseEvent) => void;
 }
 
-export default function DateCell({ text }: Props) {
-	return <div className="NLT__date-cell">{text}</div>;
-}
+type Ref = HTMLTableCellElement;
+
+const DateCell = forwardRef<Ref, Props>(
+	({ text, width, onContextClick, onClick }: Props, ref) => {
+		return (
+			<td
+				className="NLT__date-cell"
+				ref={ref}
+				style={{ width }}
+				onContextMenu={onContextClick}
+				onClick={onClick}
+			>
+				{text}
+			</td>
+		);
+	}
+);
+
+export default DateCell;

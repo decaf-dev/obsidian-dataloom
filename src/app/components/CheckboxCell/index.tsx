@@ -1,28 +1,39 @@
-import React from "react";
+import React, { forwardRef } from "react";
 
 import "./styles.css";
 
 interface Props {
 	isChecked: boolean;
+	width: string;
 	onCheckboxChange: (isChecked: boolean) => void;
+	onContextClick: (e: React.MouseEvent) => void;
 }
 
-export default function CheckboxCell({ isChecked, onCheckboxChange }: Props) {
-	return (
-		<div
-			className="NLT__checkbox-cell"
-			onClick={() => onCheckboxChange(!isChecked)}
-		>
-			<input
-				className="task-list-item-checkbox"
-				type="checkbox"
-				checked={isChecked}
-				onChange={() => {}}
-				onClick={(e) => {
-					e.stopPropagation();
-					onCheckboxChange(!isChecked);
-				}}
-			/>
-		</div>
-	);
-}
+type Ref = HTMLTableCellElement;
+
+const CheckboxCell = forwardRef<Ref, Props>(
+	({ isChecked, width, onContextClick, onCheckboxChange }: Props, ref) => {
+		return (
+			<td
+				className="NLT__td NLT__checkbox-cell"
+				ref={ref}
+				style={{ width }}
+				onContextMenu={onContextClick}
+				onClick={() => onCheckboxChange(!isChecked)}
+			>
+				<input
+					className="task-list-item-checkbox"
+					type="checkbox"
+					checked={isChecked}
+					onChange={() => {}}
+					onClick={(e) => {
+						e.stopPropagation();
+						onCheckboxChange(!isChecked);
+					}}
+				/>
+			</td>
+		);
+	}
+);
+
+export default CheckboxCell;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef, Ref } from "react";
 
 import parse from "html-react-parser";
 import {
@@ -10,14 +10,33 @@ import {
 } from "src/app/services/string/parsers";
 interface Props {
 	text: string;
+	width: string;
+	onClick: (e: React.MouseEvent) => void;
+	onContextClick: (e: React.MouseEvent) => void;
 }
 
-export default function TextCell({ text }: Props) {
-	text = parseURLs(text);
-	text = parseFileLinks(text);
-	text = parseBoldMarkdown(text);
-	text = parseItalicMarkdown(text);
-	text = parseHighlightMarkdown(text);
+type Ref = HTMLTableCellElement;
 
-	return <div className="NLT__text-cell">{parse(text)}</div>;
-}
+const TextCell = forwardRef<Ref, Props>(
+	({ text, width, onClick, onContextClick }, ref) => {
+		text = parseURLs(text);
+		text = parseFileLinks(text);
+		text = parseBoldMarkdown(text);
+		text = parseItalicMarkdown(text);
+		text = parseHighlightMarkdown(text);
+
+		return (
+			<td
+				className="NLT__td NLT__text-cell"
+				ref={ref}
+				onClick={onClick}
+				onContextMenu={onContextClick}
+				style={{ width }}
+			>
+				{parse(text)}
+			</td>
+		);
+	}
+);
+
+export default TextCell;

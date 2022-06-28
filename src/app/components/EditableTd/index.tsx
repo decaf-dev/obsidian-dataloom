@@ -135,7 +135,7 @@ export default function EditableTd({
 		}
 	}, [isMenuRequestingClose]);
 
-	async function handleCellContextClick(e: React.MouseEvent<HTMLElement>) {
+	async function handleCellContextClick(_e: React.MouseEvent) {
 		if (DEBUG.EDITABLE_TD)
 			console.log("[EditableTd] handleCellContextClick()");
 		try {
@@ -146,7 +146,7 @@ export default function EditableTd({
 		}
 	}
 
-	function handleCellClick(e: React.MouseEvent<HTMLElement>) {
+	function handleCellClick(e: React.MouseEvent) {
 		if (DEBUG.EDITABLE_TD) console.log("[EditableTd] handleCellClick()");
 		const el = e.target as HTMLInputElement;
 
@@ -192,9 +192,25 @@ export default function EditableTd({
 		}
 		switch (type) {
 			case CONTENT_TYPE.TEXT:
-				return <TextCell text={content} />;
+				return (
+					<TextCell
+						text={content}
+						ref={menuRef}
+						width={width}
+						onClick={handleCellClick}
+						onContextClick={handleCellContextClick}
+					/>
+				);
 			case CONTENT_TYPE.NUMBER:
-				return <NumberCell number={content} />;
+				return (
+					<NumberCell
+						number={content}
+						ref={menuRef}
+						width={width}
+						onClick={handleCellClick}
+						onContextClick={handleCellContextClick}
+					/>
+				);
 			case CONTENT_TYPE.TAG: {
 				const tag = tags.find((tag) => tag.selected.includes(id));
 				if (tag)
@@ -204,17 +220,33 @@ export default function EditableTd({
 							content={tag.content}
 							color={tag.color}
 							showLink={true}
+							ref={menuRef}
+							width={width}
+							onClick={handleCellClick}
+							onContextClick={handleCellContextClick}
 						/>
 					);
 				return <></>;
 			}
 			case CONTENT_TYPE.DATE:
-				return <DateCell text={content} />;
+				return (
+					<DateCell
+						text={content}
+						ref={menuRef}
+						width={width}
+						onClick={handleCellClick}
+						onContextClick={handleCellContextClick}
+					/>
+				);
 			case CONTENT_TYPE.CHECKBOX:
 				return (
 					<CheckboxCell
 						isChecked={content.includes("x")}
 						onCheckboxChange={handleCheckboxChange}
+						ref={menuRef}
+						width={width}
+						onClick={handleCellClick}
+						onContextClick={handleCellContextClick}
 					/>
 				);
 			default:
@@ -289,16 +321,9 @@ export default function EditableTd({
 	}
 
 	return (
-		<td
-			className="NLT__td"
-			ref={menuRef}
-			onClick={handleCellClick}
-			onContextMenu={handleCellContextClick}
-		>
-			<div className="NLT__td-container" style={{ width }}>
-				{renderCell()}
-			</div>
+		<>
+			{renderCell()}
 			{renderCellMenu()}
-		</td>
+		</>
 	);
 }
