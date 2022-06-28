@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 
 import Menu from "../Menu";
-
-import TagCell from "../TagCell";
-import { Tag } from "src/app/services/appData/state/tag";
+import Tag from "../Tag";
 import SelectableTag from "../TagCellEdit/component/SelectableTag";
 import CreateTag from "./component/CreateTag";
+
+import { Tag as TagState } from "src/app/services/appData/state/tag";
 
 import "./styles.css";
 
@@ -17,7 +17,7 @@ interface Props {
 	left: number;
 	color: string;
 	cellId: string;
-	tags: Tag[];
+	tags: TagState[];
 	onInputChange: (value: string) => void;
 	onTagClick: (tagId: string) => void;
 	onAddTag: (inputText: string) => void;
@@ -47,10 +47,10 @@ export default function TagCellEdit({
 	}
 
 	function renderSelectableTags() {
-		const filteredTags = tags.filter((tag: Tag) =>
+		const filteredTags = tags.filter((tag: TagState) =>
 			tag.content.includes(inputText)
 		);
-		const found = tags.find((tag: Tag) => tag.content === inputText);
+		const found = tags.find((tag: TagState) => tag.content === inputText);
 		return (
 			<>
 				{!found && inputText !== "" && (
@@ -61,7 +61,7 @@ export default function TagCellEdit({
 						onAddTag={onAddTag}
 					/>
 				)}
-				{filteredTags.map((tag: Tag) => (
+				{filteredTags.map((tag: TagState) => (
 					<SelectableTag
 						key={tag.id}
 						id={tag.id}
@@ -82,19 +82,19 @@ export default function TagCellEdit({
 					<div className="NLT__tag-menu-top">
 						{tags
 							.filter(
-								(tag: Tag) =>
+								(tag: TagState) =>
 									tag.selected.includes(cellId) === true
 							)
-							.map((tag: Tag) => (
-								<TagCell
+							.map((tag: TagState) => (
+								<Tag
 									key={tag.id}
-									cellId={cellId}
 									id={tag.id}
-									hideLink={true}
 									color={tag.color}
 									content={tag.content}
 									showRemove={true}
-									onRemoveClick={onRemoveTagClick}
+									onRemoveClick={(tagId) =>
+										onRemoveTagClick(cellId, tagId)
+									}
 								/>
 							))}
 						<input

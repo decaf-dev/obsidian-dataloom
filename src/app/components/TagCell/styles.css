@@ -1,18 +1,2 @@
 .NLT__tag-cell {
-	display: flex;
-	align-items: center;
-	white-space: nowrap;
-}
-
-.NLT__tag {
-	display: flex;
-	align-items: center;
-	border-radius: 8px;
-	padding: 1px 8px;
-	width: fit-content;
-	color: var(--text-normal);
-}
-
-.NLT__tag-content {
-	width: 100%;
 }

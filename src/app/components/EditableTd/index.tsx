@@ -125,7 +125,7 @@ export default function EditableTd({
 				}
 			} else {
 				closeMenu();
-				//If we're just closing the menun from an outside click,
+				//If we're just closing the menu from an outside click,
 				//then don't save unless the content actually updated
 				if (wasContentUpdated) {
 					onSaveContent();
@@ -216,10 +216,8 @@ export default function EditableTd({
 				if (tag)
 					return (
 						<TagCell
-							style={{ overflow: "hidden" }}
 							content={tag.content}
 							color={tag.color}
-							showLink={true}
 							ref={menuRef}
 							width={width}
 							onClick={handleCellClick}

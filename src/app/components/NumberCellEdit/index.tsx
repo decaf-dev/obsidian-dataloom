@@ -41,7 +41,7 @@ export default function NumberCellEdit({
 			height={height}
 		>
 			<textarea
-				className="NLT__textarea"
+				className="NLT__textarea NLT__number-cell-edit"
 				ref={inputRef}
 				autoFocus
 				value={value}

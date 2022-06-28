@@ -1,70 +1,32 @@
-import React from "react";
+import React, { forwardRef } from "react";
 
-import parse from "html-react-parser";
-import CloseIcon from "@mui/icons-material/Close";
-
-import { findColorClass } from "src/app/services/color";
+import Tag from "../Tag";
 
 import "./styles.css";
-import { stripPound } from "src/app/services/string/strippers";
 interface Props {
-	cellId?: string;
-	id?: string;
 	content: string;
-	hide?: boolean;
-	hideLink?: boolean;
 	color: string;
-	showRemove?: boolean;
-	selectable?: boolean;
-	style?: object;
-	isCreate?: boolean;
-	showLink?: boolean;
-	onRemoveClick?: (cellId: string, tagId: string) => void;
-	onClick?: (tagId: string) => void;
+	width: string;
+	onClick: (e: React.MouseEvent) => void;
+	onContextClick: (e: React.MouseEvent) => void;
 }
 
-export default function TagCell({
-	cellId,
-	id,
-	content,
-	color,
-	showRemove,
-	selectable,
-	style,
-	isCreate,
-	showLink = false,
-	onRemoveClick,
-}: Props) {
-	let tagClass = "NLT__tag";
-	tagClass += " " + findColorClass(color);
-	let cellClass = "NLT__tag-cell";
-	if (selectable) cellClass += " NLT__selectable";
+type Ref = HTMLTableCellElement;
 
-	//If we have an empty cell, then don't return anything
-	if (content === "") return <></>;
-
-	//If on render view, add the link to make it a clickable tag
-	if (showLink) {
-		//if (content.startsWith("#")) content = toTagLink(content);
+const TagCell = forwardRef<Ref, Props>(
+	({ content, color, width, onClick, onContextClick }: Props, ref) => {
+		return (
+			<td
+				className="NLT__td NLT__tag-cell"
+				ref={ref}
+				width={width}
+				onClick={onClick}
+				onContextMenu={onContextClick}
+			>
+				<Tag content={content} color={color} />
+			</td>
+		);
 	}
+);
 
-	content = stripPound(content);
-
-	return (
-		<div className={cellClass} style={style}>
-			{isCreate && <div>Create&nbsp;</div>}
-			<div className={tagClass}>
-				<div className="NLT__tag-content">{parse(content)}</div>
-				{showRemove && (
-					<CloseIcon
-						className="NLT__icon--md NLT__margin-left NLT__icon--selectable"
-						onClick={(e) => {
-							e.stopPropagation();
-							onRemoveClick(cellId, id);
-						}}
-					/>
-				)}
-			</div>
-		</div>
-	);
-}
+export default TagCell;
