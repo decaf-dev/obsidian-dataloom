@@ -61,16 +61,18 @@ export default function TagCellEdit({
 						onAddTag={onAddTag}
 					/>
 				)}
-				{filteredTags.map((tag: TagState) => (
-					<SelectableTag
-						key={tag.id}
-						id={tag.id}
-						color={tag.color}
-						content={tag.content}
-						onColorChange={onColorChange}
-						onClick={onTagClick}
-					/>
-				))}
+				{filteredTags
+					.filter((tag) => tag.content !== "")
+					.map((tag: TagState) => (
+						<SelectableTag
+							key={tag.id}
+							id={tag.id}
+							color={tag.color}
+							content={tag.content}
+							onColorChange={onColorChange}
+							onClick={onTagClick}
+						/>
+					))}
 			</>
 		);
 	}
