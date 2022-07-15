@@ -20,8 +20,8 @@ interface Props {
 	sortName: string;
 	content: string;
 	type: string;
-	inFirstHeader: boolean;
-	inLastHeader: boolean;
+	isFirstChild: boolean;
+	isLastChild: boolean;
 	onInsertColumnClick: (id: string, insertRight: boolean) => void;
 	onMoveColumnClick: (id: string, moveRight: boolean) => void;
 	onTypeSelect: (id: string, type: string) => void;
@@ -40,8 +40,8 @@ export default function HeaderMenu({
 	content,
 	type,
 	sortName,
-	inFirstHeader,
-	inLastHeader,
+	isFirstChild,
+	isLastChild,
 	onTypeSelect,
 	onSortSelect,
 	onDeleteClick,
@@ -124,14 +124,14 @@ export default function HeaderMenu({
 	function renderMoveItems() {
 		return (
 			<ul className="NLT__header-menu-ul">
-				{!inFirstHeader && (
+				{!isFirstChild && (
 					<HeaderMenuItem
 						icon={ICON.KEYBOARD_DOUBLE_ARROW_LEFT}
 						iconText="Move Left"
 						onClick={() => handleMoveColumnClick(id, false)}
 					/>
 				)}
-				{!inLastHeader && (
+				{!isLastChild && (
 					<HeaderMenuItem
 						icon={ICON.KEYBOARD_DOUBLE_ARROW_RIGHT}
 						iconText="Move Right"

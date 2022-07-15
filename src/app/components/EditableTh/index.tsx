@@ -17,8 +17,8 @@ interface Props {
 	content: string;
 	sortName: string;
 	type: string;
-	inFirstHeader: boolean;
-	inLastHeader: boolean;
+	isFirstChild: boolean;
+	isLastChild: boolean;
 	onMoveColumnClick: (id: string, moveRight: boolean) => void;
 	onSortSelect: (id: string, type: string, sortName: string) => void;
 	onInsertColumnClick: (id: string, insertRight: boolean) => void;
@@ -35,8 +35,8 @@ export default function EditableTh({
 	content,
 	type,
 	sortName,
-	inFirstHeader,
-	inLastHeader,
+	isFirstChild,
+	isLastChild,
 	onWidthChange,
 	onInsertColumnClick,
 	onMoveColumnClick,
@@ -136,8 +136,8 @@ export default function EditableTh({
 				index={index}
 				sortName={sortName}
 				type={type}
-				inFirstHeader={inFirstHeader}
-				inLastHeader={inLastHeader}
+				isFirstChild={isFirstChild}
+				isLastChild={isLastChild}
 				onOutsideClick={onSaveClick}
 				onSortSelect={onSortSelect}
 				onMoveColumnClick={onMoveColumnClick}

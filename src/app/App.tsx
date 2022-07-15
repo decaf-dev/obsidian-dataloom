@@ -671,8 +671,8 @@ export default function App({
 								content={content}
 								type={type}
 								sortName={sortName}
-								inFirstHeader={j === 0}
-								inLastHeader={j === appData.headers.length - 1}
+								isFirstChild={j === 0}
+								isLastChild={j === appData.headers.length - 1}
 								onSortSelect={handleHeaderSortSelect}
 								onInsertColumnClick={handleInsertColumnClick}
 								onMoveColumnClick={handleMoveColumnClick}
