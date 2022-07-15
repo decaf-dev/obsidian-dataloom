@@ -15,22 +15,24 @@ const CheckboxCell = forwardRef<Ref, Props>(
 	({ isChecked, width, onContextClick, onCheckboxChange }: Props, ref) => {
 		return (
 			<td
-				className="NLT__td NLT__checkbox-cell"
-				ref={ref}
+				className="NLT__td"
 				style={{ width }}
+				ref={ref}
 				onContextMenu={onContextClick}
 				onClick={() => onCheckboxChange(!isChecked)}
 			>
-				<input
-					className="task-list-item-checkbox"
-					type="checkbox"
-					checked={isChecked}
-					onChange={() => {}}
-					onClick={(e) => {
-						e.stopPropagation();
-						onCheckboxChange(!isChecked);
-					}}
-				/>
+				<div className="NLT__checkbox-cell">
+					<input
+						className="task-list-item-checkbox"
+						type="checkbox"
+						checked={isChecked}
+						onChange={() => {}}
+						onClick={(e) => {
+							e.stopPropagation();
+							onCheckboxChange(!isChecked);
+						}}
+					/>
+				</div>
 			</td>
 		);
 	}

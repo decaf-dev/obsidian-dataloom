@@ -17,7 +17,7 @@ const Table = forwardRef(
 		return (
 			<table className="NLT__table">
 				<thead className="NLT__thead">
-					<tr>
+					<tr className="NLT__tr">
 						{headers.map((header) => (
 							<React.Fragment key={header.id}>
 								{header.component}
@@ -30,11 +30,13 @@ const Table = forwardRef(
 				</thead>
 				<tbody className="NLT__tbody">
 					{rows.map((row) => (
-						<tr key={row.id}>{row.component}</tr>
+						<tr className="NLT__tr" key={row.id}>
+							{row.component}
+						</tr>
 					))}
 				</tbody>
 				<tfoot className="NLT__tfoot">
-					<tr>
+					<tr className="NLT__tr">
 						<td className="NLT__td">
 							<Button
 								style={{ marginTop: "5px" }}

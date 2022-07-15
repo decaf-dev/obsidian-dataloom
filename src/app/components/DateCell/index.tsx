@@ -14,13 +14,13 @@ const DateCell = forwardRef<Ref, Props>(
 	({ text, width, onContextClick, onClick }: Props, ref) => {
 		return (
 			<td
-				className="NLT__date-cell"
+				className="NLT__td"
 				ref={ref}
 				style={{ width }}
 				onContextMenu={onContextClick}
 				onClick={onClick}
 			>
-				{text}
+				<div className="NLT__date-cell">{text}</div>
 			</td>
 		);
 	}

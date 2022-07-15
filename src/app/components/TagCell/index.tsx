@@ -17,13 +17,15 @@ const TagCell = forwardRef<Ref, Props>(
 	({ content, color, width, onClick, onContextClick }: Props, ref) => {
 		return (
 			<td
-				className="NLT__td NLT__tag-cell"
+				className="NLT__td"
 				ref={ref}
-				width={width}
+				style={{ width }}
 				onClick={onClick}
 				onContextMenu={onContextClick}
 			>
-				<Tag content={content} color={color} />
+				<div className="NLT__tag-cell">
+					<Tag content={content} color={color} />
+				</div>
 			</td>
 		);
 	}

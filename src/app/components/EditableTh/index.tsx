@@ -45,8 +45,8 @@ export default function EditableTh({
 	onDeleteClick,
 	onSaveClick,
 }: Props) {
-	const dragRef = useRef(false);
 	const menuId = useMenuId();
+	const mouseDownX = useRef(0);
 	const {
 		menuPosition,
 		menuRef,
@@ -64,40 +64,31 @@ export default function EditableTh({
 	}, [isMenuRequestingClose]);
 
 	function handleHeaderClick(e: React.MouseEvent) {
-		if (dragRef.current) return;
 		openMenu();
-	}
-
-	function handleMouseMove(e: MouseEvent) {
-		const target = e.target;
-		if (target instanceof HTMLElement) {
-			let width = e.pageX - menuPosition.left - 17;
-			width = parseInt(width.toString());
-			if (width < 30) return;
-			dragRef.current = true;
-			onWidthChange(id, width);
-		}
 	}
 
 	function handleClose() {
 		closeMenu();
 	}
 
-	function handleDrag(e: DragEvent) {
-		removeEventListeners();
+	function handleMouseDown(e: React.MouseEvent) {
+		mouseDownX.current = e.pageX;
+	}
+
+	function handleMouseMove(e: MouseEvent) {
+		if (typeof width === "number") {
+			const dist = e.pageX - mouseDownX.current;
+			const newWidth = width + dist;
+
+			//Keep a min-width of 50px
+			if (newWidth < 50) return;
+			onWidthChange(id, newWidth);
+		}
 	}
 
 	function handleMouseUp(e: MouseEvent) {
-		removeEventListeners();
-	}
-
-	function removeEventListeners() {
 		window.removeEventListener("mousemove", handleMouseMove);
-		window.removeEventListener("drag", removeEventListeners);
-		window.removeEventListener("mouseup", removeEventListeners);
-		setTimeout(() => {
-			dragRef.current = false;
-		}, 50);
+		window.removeEventListener("mouseup", handleMouseUp);
 	}
 
 	return (
@@ -105,16 +96,19 @@ export default function EditableTh({
 			<th
 				className="NLT__th NLT__selectable"
 				ref={menuRef}
+				style={{ width }}
 				onClick={handleHeaderClick}
 			>
-				<div className="NLT__header-content-container">
-					<div className="NLT__header-content" style={{ width }}>
-						{content}
-					</div>
-					<div className="NLT__header-resize-container">
+				<div className="NLT__th-container">
+					<div className="NLT__th-content">{content}</div>
+					<div className="NLT__th-resize-container">
 						<div
-							className="NLT__header-resize"
-							onMouseDown={() => {
+							className="NLT__th-resize"
+							onMouseDown={(e) => {
+								//Prevents drag and drop
+								//See: https://stackoverflow.com/questions/704564/disable-drag-and-drop-on-html-elements
+								e.preventDefault();
+								handleMouseDown(e);
 								window.addEventListener(
 									"mousemove",
 									handleMouseMove
@@ -123,7 +117,6 @@ export default function EditableTh({
 									"mouseup",
 									handleMouseUp
 								);
-								window.addEventListener("drag", handleDrag);
 							}}
 							onClick={(e) => {
 								//Stop propagation so we don't open the header

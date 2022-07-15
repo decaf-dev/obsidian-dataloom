@@ -47,6 +47,7 @@ export default function App({
 }: Props) {
 	const [oldAppData, setOldAppData] = useState<AppData>(data);
 	const [appData, setAppData] = useState<AppData>(data);
+	const [tableId] = useState(uuid());
 	const [debounceUpdate, setDebounceUpdate] = useState(0);
 	const [tagUpdate, setTagUpdate] = useState({
 		time: 0,
@@ -655,7 +656,7 @@ export default function App({
 	// }
 
 	return (
-		<div className="NLT__app" tabIndex={0}>
+		<div id={tableId} className="NLT__app" tabIndex={0}>
 			<Table
 				headers={appData.headers.map((header, j) => {
 					const { id, content, width, type, sortName } = header;

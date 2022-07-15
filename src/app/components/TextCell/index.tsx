@@ -27,13 +27,13 @@ const TextCell = forwardRef<Ref, Props>(
 
 		return (
 			<td
-				className="NLT__td NLT__text-cell"
+				className="NLT__td"
 				ref={ref}
+				style={{ width }}
 				onClick={onClick}
 				onContextMenu={onContextClick}
-				style={{ width }}
 			>
-				{parse(text)}
+				<div className="NLT__text-cell">{parse(text)}</div>
 			</td>
 		);
 	}

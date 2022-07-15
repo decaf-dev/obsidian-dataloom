@@ -1,16 +1,23 @@
-.NLT__table {}
-
-.NLT__thead {}
-
-.NLT__tbody {}
-
-.NLT__tbody>tr>.NLT__td:last-child {
-	border: 0 !important;
-	vertical-align: middle;
+.NLT__table {
+	width: max-content;
 }
 
-.NLT__tfoot>tr>.NLT__td {
+.NLT__table,
+.NLT__thead,
+.NLT__tbody,
+.NLT__tfoot,
+.NLT__tr {
+	display: block;
+	box-sizing: border-box;
 	border: 0 !important;
+}
+
+.NLT__tr > .NLT__td:last-child {
+	border-right: 1px solid var(--background-modifier-border) !important;
+}
+
+.NLT__tfoot .NLT__td {
+	border-bottom: 1px solid var(--background-modifier-border) !important;
 }
 
 .NLT__tfoot::after {

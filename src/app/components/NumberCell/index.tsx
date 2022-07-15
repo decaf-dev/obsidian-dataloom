@@ -15,13 +15,13 @@ const NumberCell = forwardRef<Ref, Props>(
 	({ number, width, onClick, onContextClick }: Props, ref) => {
 		return (
 			<td
-				className="NLT__td NLT__number-cell"
+				className="NLT__td"
+				style={{ width }}
 				ref={ref}
 				onClick={onClick}
 				onContextMenu={onContextClick}
-				style={{ width }}
 			>
-				{number}
+				<div className="NLT__number-cell">{number}</div>
 			</td>
 		);
 	}
