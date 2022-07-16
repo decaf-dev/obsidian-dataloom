@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { v4 as uuidv4 } from "uuid";
+import React, { useEffect } from "react";
 
 import IconButton from "../IconButton";
 import Menu from "../Menu";
@@ -8,8 +7,9 @@ import RowMenuItem from "./components/RowMenuItem";
 
 import "./styles.css";
 import { DRAG_MENU_ITEM } from "./constants";
-import { ICON, MENU_LEVEL } from "src/app/constants";
-import { useMenuRef } from "src/app/services/hooks";
+import { ICON } from "src/app/constants";
+import { usePositionRef } from "src/app/services/hooks";
+import { useMenu } from "../MenuProvider";
 import { useDisableScroll, useMenuId } from "src/app/services/hooks";
 interface Props {
 	rowId: string;
@@ -29,14 +29,10 @@ export default function RowMenu({
 	onInsertRowClick,
 }: Props) {
 	const menuId = useMenuId();
-	const {
-		menuPosition,
-		menuRef,
-		isMenuOpen,
-		openMenu,
-		closeMenu,
-		isMenuRequestingClose,
-	} = useMenuRef(menuId, MENU_LEVEL.ONE);
+	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
+		useMenu(menuId);
+
+	const { positionRef, position } = usePositionRef();
 
 	useEffect(() => {
 		if (isMenuRequestingClose) {
@@ -66,13 +62,13 @@ export default function RowMenu({
 	}
 
 	return (
-		<div ref={menuRef}>
+		<div ref={positionRef}>
 			<IconButton icon={ICON.MORE_VERT} onClick={handleButtonClick} />
 			<Menu
 				id={menuId}
 				isOpen={isMenuOpen}
-				top={menuPosition.top + menuPosition.height}
-				left={menuPosition.left - menuPosition.width - 65}
+				top={position.top + position.height}
+				left={position.left - position.width - 65}
 			>
 				<div className="NLT__drag-menu">
 					{Object.values(DRAG_MENU_ITEM).map((item) => {

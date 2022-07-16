@@ -3,17 +3,22 @@ import React, { useEffect, useRef } from "react";
 import HeaderMenu from "../HeaderMenu";
 
 import "./styles.css";
-import { MENU_LEVEL } from "src/app/constants";
 import {
 	useDisableScroll,
 	useMenuId,
-	useMenuRef,
+	usePositionRef,
 } from "src/app/services/hooks";
+import { useMenu } from "../MenuProvider";
+
+import { CSS_MEASUREMENT_PIXEL_REGEX } from "src/app/services/string/regex";
+import { numToPx, pxToNum } from "src/app/services/string/parsers";
+import { findCellStyle } from "src/app/services/cellSizing";
 
 interface Props {
 	id: string;
 	index: number;
 	width: string;
+	height: string;
 	content: string;
 	sortName: string;
 	type: string;
@@ -25,13 +30,20 @@ interface Props {
 	onTypeSelect: (id: string, type: string) => void;
 	onDeleteClick: (id: string) => void;
 	onSaveClick: (id: string, content: string) => void;
-	onWidthChange: (id: string, newWidth: number) => void;
+	onWidthChange: (id: string, width: string) => void;
+	onSizeChange: (
+		columnIndex: number,
+		rowIndex: number,
+		width: number,
+		height: number
+	) => void;
 }
 
 export default function EditableTh({
 	id,
 	index,
 	width,
+	height,
 	content,
 	type,
 	sortName,
@@ -44,17 +56,16 @@ export default function EditableTh({
 	onTypeSelect,
 	onDeleteClick,
 	onSaveClick,
+	onSizeChange,
 }: Props) {
 	const menuId = useMenuId();
+	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
+		useMenu(menuId);
+	const { positionRef, position } = usePositionRef([width]);
 	const mouseDownX = useRef(0);
-	const {
-		menuPosition,
-		menuRef,
-		isMenuOpen,
-		openMenu,
-		closeMenu,
-		isMenuRequestingClose,
-	} = useMenuRef(menuId, MENU_LEVEL.ONE);
+	const isResizing = useRef(false);
+	const cellStyle = findCellStyle(width, height);
+
 	useDisableScroll(isMenuOpen);
 
 	useEffect(() => {
@@ -63,7 +74,13 @@ export default function EditableTh({
 		}
 	}, [isMenuRequestingClose]);
 
+	useEffect(() => {
+		if (position.width !== 0 && position.height !== 0)
+			onSizeChange(index, 0, position.width, position.height);
+	}, [position.width, position.height, index]);
+
 	function handleHeaderClick(e: React.MouseEvent) {
+		if (isResizing.current) return;
 		openMenu();
 	}
 
@@ -73,30 +90,35 @@ export default function EditableTh({
 
 	function handleMouseDown(e: React.MouseEvent) {
 		mouseDownX.current = e.pageX;
+		isResizing.current = true;
 	}
 
 	function handleMouseMove(e: MouseEvent) {
-		if (typeof width === "number") {
+		if (width.match(CSS_MEASUREMENT_PIXEL_REGEX)) {
+			const oldWidth = pxToNum(width);
 			const dist = e.pageX - mouseDownX.current;
-			const newWidth = width + dist;
+			const newWidth = oldWidth + dist;
 
 			//Keep a min-width of 50px
 			if (newWidth < 50) return;
-			onWidthChange(id, newWidth);
+			onWidthChange(id, numToPx(newWidth));
 		}
 	}
 
-	function handleMouseUp(e: MouseEvent) {
+	function handleMouseUp() {
 		window.removeEventListener("mousemove", handleMouseMove);
 		window.removeEventListener("mouseup", handleMouseUp);
+		setTimeout(() => {
+			isResizing.current = false;
+		}, 100);
 	}
 
 	return (
 		<>
 			<th
 				className="NLT__th NLT__selectable"
-				ref={menuRef}
-				style={{ width }}
+				ref={positionRef}
+				style={cellStyle}
 				onClick={handleHeaderClick}
 			>
 				<div className="NLT__th-container">
@@ -128,8 +150,8 @@ export default function EditableTh({
 			</th>
 			<HeaderMenu
 				isOpen={isMenuOpen}
-				top={menuPosition.top}
-				left={menuPosition.left}
+				top={position.top}
+				left={position.left}
 				id={id}
 				menuId={menuId}
 				content={content}

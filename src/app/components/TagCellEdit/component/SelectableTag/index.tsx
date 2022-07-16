@@ -8,8 +8,8 @@ import { ICON, MENU_LEVEL } from "src/app/constants";
 import "./styles.css";
 import IconButton from "src/app/components/IconButton";
 import TagColorMenu from "src/app/components/TagColorMenu";
-import { useMenuId, useMenuRef } from "src/app/services/hooks";
-
+import { useMenuId, usePositionRef } from "src/app/services/hooks";
+import { useMenu } from "src/app/components/MenuProvider";
 interface Props {
 	id: string;
 	content: string;
@@ -26,14 +26,11 @@ export default function SelectableTag({
 	onColorChange,
 }: Props) {
 	const menuId = useMenuId();
-	const {
-		menuPosition,
-		menuRef,
-		isMenuOpen,
-		openMenu,
-		closeMenu,
-		isMenuRequestingClose,
-	} = useMenuRef(menuId, MENU_LEVEL.TWO);
+	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } = useMenu(
+		menuId,
+		MENU_LEVEL.TWO
+	);
+	const { positionRef, position } = usePositionRef();
 
 	useEffect(() => {
 		if (isMenuRequestingClose) {
@@ -50,7 +47,7 @@ export default function SelectableTag({
 	tagClass += " " + findColorClass(color);
 	return (
 		<div
-			ref={menuRef}
+			ref={positionRef}
 			className="NLT__selectable-tag NLT__selectable"
 			onClick={() => onClick(id)}
 		>
@@ -70,8 +67,8 @@ export default function SelectableTag({
 				menuId={menuId}
 				isOpen={isMenuOpen}
 				selectedColor={color}
-				top={menuPosition.top - 77}
-				left={menuPosition.left + 110}
+				top={position.top - 77}
+				left={position.left + 110}
 				onColorClick={(color) => handleColorChange(color)}
 			/>
 		</div>

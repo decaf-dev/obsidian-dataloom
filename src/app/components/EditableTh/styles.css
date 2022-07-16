@@ -6,6 +6,7 @@
     border-right: 0 !important;
     border-bottom: 0 !important;
     box-sizing: border-box !important;
+    padding: 0 !important;
 }
 
 .NLT__th:last-child {
@@ -25,6 +26,7 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     user-select: none;
+    padding: 4px 10px;
 }
 
 .NLT__th-resize-container {

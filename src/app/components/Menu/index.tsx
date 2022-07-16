@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { numToPx } from "src/app/services/string/parsers";
 
 import "./styles.css";
 
@@ -36,10 +37,12 @@ export default function Menu({
 						<div
 							className="NLT__menu-container"
 							style={{
-								top: `${top}px`,
-								left: `${left}px`,
-								width: width ? `${width}px` : "fit-content",
-								height: height ? `${height}px` : "fit-content",
+								top: numToPx(top),
+								left: numToPx(left),
+								width: width ? numToPx(width) : "fit-content",
+								height: height
+									? numToPx(height)
+									: "fit-content",
 							}}
 						>
 							{children}

@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { DEBUG } from "src/app/constants";
+import { DEBUG, MENU_LEVEL } from "src/app/constants";
 import { logFunc } from "src/app/services/appData/debug";
 import { useTableFocus } from "../FocusProvider";
 
@@ -14,7 +14,7 @@ const MenuContext = React.createContext<IMenuContext>(null);
 
 const COMPONENT_NAME = "MenuProvider";
 
-export const useMenu = (id: string, level: number) => {
+export const useMenu = (id: string, level: number = MENU_LEVEL.ONE) => {
 	const { openMenu, closeMenu, isMenuOpen, isMenuRequestingClose } =
 		useContext(MenuContext);
 	return {

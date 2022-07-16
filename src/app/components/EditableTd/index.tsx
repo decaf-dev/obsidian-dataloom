@@ -19,20 +19,26 @@ import { isDate } from "src/app/services/string/validators";
 
 import "./styles.css";
 
-import { CONTENT_TYPE, DEBUG, MENU_LEVEL } from "../../constants";
+import { CONTENT_TYPE, DEBUG } from "../../constants";
 import {
 	useDidMountEffect,
 	useDisableScroll,
 	useMenuId,
-	useMenuRef,
 } from "src/app/services/hooks";
 import { dateToString } from "src/app/services/string/parsers";
 import { logFunc } from "src/app/services/appData/debug";
+import { useMenu } from "src/app/components/MenuProvider";
+import { usePositionRef } from "src/app/services/hooks";
+import { findCellStyle } from "src/app/services/cellSizing";
 
 interface Props {
 	headerType: string;
 	cell: Cell;
 	width: string;
+	height: string;
+	rowIndex: number;
+	columnIndex: number;
+	shouldRecalculateHeight: boolean;
 	tagUpdate: {
 		cellId: string;
 		time: number;
@@ -49,35 +55,46 @@ interface Props {
 	) => void;
 	onColorChange: (tagId: string, color: string) => void;
 	onSaveContent: () => void;
+	onSizeChange: (
+		columnIndex: number,
+		rowIndex: number,
+		width: number,
+		height: number
+	) => void;
 }
 
 const COMPONENT_NAME = "EditableTd";
 
 export default function EditableTd({
 	headerType,
+	columnIndex,
+	rowIndex,
 	cell,
 	width,
+	height,
 	tags,
 	tagUpdate,
+	shouldRecalculateHeight,
 	onRemoveTagClick,
 	onColorChange,
 	onTagClick,
 	onContentChange,
 	onSaveContent,
 	onAddTag,
+	onSizeChange,
 }: Props) {
 	const [tagInputText, setTagInputText] = useState("");
 	const [tagColor] = useState(randomColor());
 	const menuId = useMenuId();
 	const content = cell.toString();
-	const {
-		menuPosition,
-		menuRef,
-		isMenuOpen,
-		openMenu,
-		closeMenu,
-		isMenuRequestingClose,
-	} = useMenuRef(menuId, MENU_LEVEL.ONE, content);
+
+	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
+		useMenu(menuId);
+	const { positionRef, position } = usePositionRef([
+		content,
+		shouldRecalculateHeight,
+	]);
+	const cellStyle = findCellStyle(width, height);
 
 	useDisableScroll(isMenuOpen);
 
@@ -86,6 +103,16 @@ export default function EditableTd({
 	const [wasContentUpdated, setContentUpdate] = useState(false);
 
 	const isInvalidContent = type !== headerType;
+
+	useEffect(() => {
+		if (position.width !== 0 && position.height !== 0)
+			onSizeChange(
+				columnIndex,
+				rowIndex,
+				position.width,
+				position.height
+			);
+	}, [position.width, position.height]);
 
 	//If we've already mounted, meaning the application has loaded
 	//and we updated a tag, then we will wait for it to update,
@@ -192,59 +219,22 @@ export default function EditableTd({
 		}
 		switch (type) {
 			case CONTENT_TYPE.TEXT:
-				return (
-					<TextCell
-						text={content}
-						ref={menuRef}
-						width={width}
-						onClick={handleCellClick}
-						onContextClick={handleCellContextClick}
-					/>
-				);
+				return <TextCell text={content} />;
 			case CONTENT_TYPE.NUMBER:
-				return (
-					<NumberCell
-						number={content}
-						ref={menuRef}
-						width={width}
-						onClick={handleCellClick}
-						onContextClick={handleCellContextClick}
-					/>
-				);
+				return <NumberCell number={content} />;
 			case CONTENT_TYPE.TAG: {
 				const tag = tags.find((tag) => tag.selected.includes(id));
 				if (tag)
-					return (
-						<TagCell
-							content={tag.content}
-							color={tag.color}
-							ref={menuRef}
-							width={width}
-							onClick={handleCellClick}
-							onContextClick={handleCellContextClick}
-						/>
-					);
+					return <TagCell content={tag.content} color={tag.color} />;
 				return <></>;
 			}
 			case CONTENT_TYPE.DATE:
-				return (
-					<DateCell
-						text={content}
-						ref={menuRef}
-						width={width}
-						onClick={handleCellClick}
-						onContextClick={handleCellContextClick}
-					/>
-				);
+				return <DateCell text={content} />;
 			case CONTENT_TYPE.CHECKBOX:
 				return (
 					<CheckboxCell
 						isChecked={content.includes("x")}
 						onCheckboxChange={handleCheckboxChange}
-						ref={menuRef}
-						width={width}
-						onClick={handleCellClick}
-						onContextClick={handleCellContextClick}
 					/>
 				);
 			default:
@@ -259,10 +249,10 @@ export default function EditableTd({
 					<TextCellEdit
 						menuId={menuId}
 						isOpen={isMenuOpen}
-						top={menuPosition.top}
-						left={menuPosition.left}
-						width={menuPosition.width}
-						height={menuPosition.height}
+						top={position.top}
+						left={position.left}
+						width={position.width}
+						height={position.height}
 						value={content}
 						onInputChange={handleTextInputChange}
 					/>
@@ -272,10 +262,10 @@ export default function EditableTd({
 					<NumberCellEdit
 						menuId={menuId}
 						isOpen={isMenuOpen}
-						top={menuPosition.top}
-						left={menuPosition.left}
-						width={menuPosition.width}
-						height={menuPosition.height}
+						top={position.top}
+						left={position.left}
+						width={position.width}
+						height={position.height}
 						value={content}
 						onInputChange={handleNumberInputChange}
 					/>
@@ -288,8 +278,8 @@ export default function EditableTd({
 						tags={tags}
 						menuId={menuId}
 						isOpen={isMenuOpen}
-						top={menuPosition.top}
-						left={menuPosition.left}
+						top={position.top}
+						left={position.left}
 						color={tagColor}
 						onInputChange={setTagInputText}
 						onColorChange={onColorChange}
@@ -303,10 +293,10 @@ export default function EditableTd({
 					<DateCellEdit
 						menuId={menuId}
 						isOpen={isMenuOpen}
-						top={menuPosition.top}
-						left={menuPosition.left}
-						width={menuPosition.width}
-						height={menuPosition.height}
+						top={position.top}
+						left={position.left}
+						width={position.width}
+						height={position.height}
 						selectedDate={
 							isDate(content) ? new Date(content) : new Date()
 						}
@@ -320,7 +310,15 @@ export default function EditableTd({
 
 	return (
 		<>
-			{renderCell()}
+			<td
+				className="NLT__td"
+				ref={positionRef}
+				style={cellStyle}
+				onClick={handleCellClick}
+				onContextMenu={handleCellContextClick}
+			>
+				<div className="NLT__td-container">{renderCell()}</div>
+			</td>
 			{renderCellMenu()}
 		</>
 	);

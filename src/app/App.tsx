@@ -26,6 +26,7 @@ import {
 import { v4 as uuid } from "uuid";
 import { sortAppDataForSave } from "./services/appData/external/saveUtils";
 import { logFunc } from "./services/appData/debug";
+import { useCellSizing } from "./services/cellSizing";
 interface Props {
 	plugin: NltPlugin;
 	settings: NltSettings;
@@ -54,6 +55,14 @@ export default function App({
 		cellId: "",
 	});
 	const [saveTime, setSaveTime] = useState(0);
+	const {
+		columnWidths,
+		rowHeights,
+		shouldRecalculateRowHeights,
+		recalculateRowHeights,
+		calculateCellHeight,
+		handleCellSizeChange,
+	} = useCellSizing();
 
 	useEffect(() => {
 		// Sort on first render
@@ -447,8 +456,13 @@ export default function App({
 		setSaveTime(Date.now());
 	}
 
-	function handleWidthChange(id: string, newWidth: number) {
-		if (DEBUG.APP) console.log("[App]: handleWidthChange called.");
+	function handleHeaderWidthChange(id: string, width: string) {
+		if (DEBUG.APP) {
+			logFunc(COMPONENT_NAME, "handleHeaderWidthChange", {
+				id,
+				width,
+			});
+		}
 		setAppData((prevState: AppData) => {
 			return {
 				...prevState,
@@ -456,13 +470,14 @@ export default function App({
 					if (header.id === id) {
 						return {
 							...header,
-							width: `${newWidth}px`,
+							width,
 						};
 					}
 					return header;
 				}),
 			};
 		});
+		recalculateRowHeights(true);
 		setDebounceUpdate(Date.now());
 	}
 
@@ -568,97 +583,12 @@ export default function App({
 		setSaveTime(Date.now());
 	}
 
-	// const [previewStyle, setPreviewStyle] = useState({
-	// 	viewWidth: 0,
-	// 	sizerWidth: 0,
-	// });
-
-	// useEffect(() => {
-	// 	// setTimeout(() => {
-	// 	const viewEl = document.querySelector(".markdown-preview-view");
-	// 	const sizerEl = document.querySelector(".markdown-preview-sizer");
-	// 	if (viewEl instanceof HTMLElement && sizerEl instanceof HTMLElement) {
-	// 		const viewWidth =
-	// 			parseInt(
-	// 				window
-	// 					.getComputedStyle(viewEl)
-	// 					.getPropertyValue("width")
-	// 					.split("px")[0]
-	// 			) - 60;
-
-	// 		const sizerWidth = parseInt(
-	// 			window
-	// 				.getComputedStyle(sizerEl)
-	// 				.getPropertyValue("width")
-	// 				.split("px")[0]
-	// 		);
-
-	// 		setPreviewStyle({
-	// 			viewWidth,
-	// 			sizerWidth,
-	// 		});
-	// 	}
-	// 	// }, 1);
-	// }, [resizeTime]);
-
-	// const [tableWidth, setTableWidth] = useState(0);
-	// const didMount = useRef(false);
-	// const tableRef = useCallback(
-	// 	(node) => {
-	// 		function updateWidth() {
-	// 			if (node) {
-	// 				if (node instanceof HTMLElement) {
-	// 					console.log(node.offsetWidth);
-	// 					setTableWidth(node.offsetWidth);
-	// 				}
-	// 			}
-	// 			if (!didMount.current) didMount.current = true;
-	// 		}
-	// 		if (didMount.current) updateWidth();
-	// 		else setTimeout(() => updateWidth(), 1);
-	// 	},
-	// );
-
-	// useEffect(() => {
-	// 	let el: HTMLElement | null = null;
-	// 	function handleResize() {
-	// 		setResizeTime(Date.now());
-	// 	}
-	// 	setTimeout(() => {
-	// 		handleResize();
-	// 		el = document.querySelector(".view-content");
-	// 		new ResizeObserver(handleResize).observe(el);
-	// 	}, 1);
-	// }, []);
-
-	// // console.log("tableWidth", tableWidth);
-	// const margin = previewStyle.viewWidth - previewStyle.sizerWidth;
-	// //The margin can be 0 when the window is small
-	// if (tableWidth <= previewStyle.sizerWidth || margin === 0) {
-	// 	//This will set the width to the size of the preview, being a max-width of 700px
-	// 	style = {
-	// 		left: "0px",
-	// 		width: "100%",
-	// 	};
-	// } else if (tableWidth <= previewStyle.viewWidth) {
-	// 	const calculatedMargin = previewStyle.viewWidth - tableWidth;
-	// 	const BUTTON_WIDTH = 30;
-	// 	style = {
-	// 		left: `-${calculatedMargin / 2 - BUTTON_WIDTH}px`,
-	// 		width: `${tableWidth}px`,
-	// 	};
-	// } else {
-	// 	console.log(`-${margin / 2}px`);
-	// 	style = {
-	// 		left: `-${margin / 2}px`,
-	// 		width: `calc(100% + ${margin}px)`,
-	// 	};
-	// }
+	console.log(rowHeights);
 
 	return (
 		<div id={tableId} className="NLT__app" tabIndex={0}>
 			<Table
-				headers={appData.headers.map((header, j) => {
+				headers={appData.headers.map((header, columnIndex) => {
 					const { id, content, width, type, sortName } = header;
 					return {
 						...header,
@@ -667,16 +597,20 @@ export default function App({
 								key={id}
 								id={id}
 								width={width}
-								index={j}
+								height={calculateCellHeight(0, rowHeights)}
+								index={columnIndex}
 								content={content}
 								type={type}
 								sortName={sortName}
-								isFirstChild={j === 0}
-								isLastChild={j === appData.headers.length - 1}
+								isFirstChild={columnIndex === 0}
+								isLastChild={
+									columnIndex === appData.headers.length - 1
+								}
+								onSizeChange={handleCellSizeChange}
 								onSortSelect={handleHeaderSortSelect}
 								onInsertColumnClick={handleInsertColumnClick}
 								onMoveColumnClick={handleMoveColumnClick}
-								onWidthChange={handleWidthChange}
+								onWidthChange={handleHeaderWidthChange}
 								onDeleteClick={handleDeleteHeaderClick}
 								onSaveClick={handleHeaderSave}
 								onTypeSelect={handleHeaderTypeSelect}
@@ -684,12 +618,12 @@ export default function App({
 						),
 					};
 				})}
-				rows={appData.rows.map((row, i) => {
+				rows={appData.rows.map((row, rowIndex) => {
 					return {
 						...row,
 						component: (
 							<>
-								{appData.headers.map((header, j) => {
+								{appData.headers.map((header, columnIndex) => {
 									const cell = appData.cells.find(
 										(cell) =>
 											cell.rowId === row.id &&
@@ -699,8 +633,17 @@ export default function App({
 										<EditableTd
 											key={cell.id}
 											cell={cell}
+											shouldRecalculateHeight={
+												shouldRecalculateRowHeights
+											}
+											rowIndex={rowIndex + 1}
+											columnIndex={columnIndex}
 											headerType={header.type}
 											width={header.width}
+											height={calculateCellHeight(
+												rowIndex + 1,
+												rowHeights
+											)}
 											tagUpdate={tagUpdate}
 											tags={appData.tags.filter(
 												(tag) =>
@@ -718,15 +661,16 @@ export default function App({
 											}
 											onColorChange={handleChangeColor}
 											onAddTag={handleAddTag}
+											onSizeChange={handleCellSizeChange}
 										/>
 									);
 								})}
 								<td className="NLT__td">
 									<RowMenu
 										rowId={row.id}
-										isFirstRow={i === 0}
+										isFirstRow={rowIndex === 0}
 										isLastRow={
-											i === appData.rows.length - 1
+											rowIndex === appData.rows.length - 1
 										}
 										onMoveRowClick={handleMoveRowClick}
 										onDeleteClick={handleDeleteRowClick}

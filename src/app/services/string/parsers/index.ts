@@ -193,3 +193,11 @@ export const dateToString = (date: Date): string => {
 	const day = ("0" + date.getDate()).slice(-2);
 	return `${year}/${month}/${day}`;
 };
+
+export const pxToNum = (pixels: string) => {
+	return parseInt(pixels.split("px")[0]);
+};
+
+export const numToPx = (num: number) => {
+	return `${num}px`;
+};

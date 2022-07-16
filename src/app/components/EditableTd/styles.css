@@ -7,4 +7,9 @@
 	box-sizing: border-box !important;
 	vertical-align: top;
 	min-height: 2rem;
+	padding: 0 !important;
+}
+
+.NLT__td-container {
+	padding: 4px 10px;
 }
