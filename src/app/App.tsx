@@ -827,6 +827,9 @@ export default function App({
 								>
 									<div className="NLT__td-container">
 										<RowMenu
+											headerWidthUpdateTime={
+												headerWidthUpdateTime
+											}
 											rowId={row.id}
 											isFirstRow={rowIndex === 0}
 											isLastRow={

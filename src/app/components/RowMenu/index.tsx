@@ -13,6 +13,7 @@ import { useMenu } from "../MenuProvider";
 import { useDisableScroll, useMenuId } from "src/app/services/hooks";
 interface Props {
 	rowId: string;
+	headerWidthUpdateTime: number;
 	isFirstRow: boolean;
 	isLastRow: boolean;
 	onMoveRowClick: (id: string, moveBelow: boolean) => void;
@@ -24,6 +25,7 @@ export default function RowMenu({
 	rowId,
 	isFirstRow,
 	isLastRow,
+	headerWidthUpdateTime,
 	onMoveRowClick,
 	onDeleteClick,
 	onInsertRowClick,
@@ -32,7 +34,7 @@ export default function RowMenu({
 	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
 		useMenu(menuId);
 
-	const { positionRef, position } = usePositionRef();
+	const { positionRef, position } = usePositionRef([headerWidthUpdateTime]);
 
 	useEffect(() => {
 		if (isMenuRequestingClose) {
