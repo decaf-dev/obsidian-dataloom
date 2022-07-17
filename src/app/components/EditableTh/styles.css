@@ -7,6 +7,7 @@
     border-bottom: 0 !important;
     box-sizing: border-box !important;
     padding: 0 !important;
+    height: 1.8rem; /* TODO put into different area? */
 }
 
 .NLT__th:last-child {

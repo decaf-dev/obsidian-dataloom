@@ -8,6 +8,7 @@
 	vertical-align: top;
 	min-height: 2rem;
 	padding: 0 !important;
+	overflow: hidden;
 }
 
 .NLT__tbody > .NLT__tr > .NLT__td:last-child {

@@ -14,7 +14,7 @@ import { NltSettings } from "./services/settings";
 import { saveAppData } from "./services/appData/external/save";
 import { numToPx, pxToNum } from "./services/string/parsers";
 
-import { CONTENT_TYPE, DEBUG } from "./constants";
+import { CONTENT_TYPE, DEBUG, MIN_COLUMN_WIDTH_PX } from "./constants";
 
 import "./app.css";
 import NltPlugin from "main";
@@ -703,7 +703,9 @@ export default function App({
 	const columnWidths = useMemo(() => {
 		const widths: { [id: string]: number } = {};
 		cellSizes.forEach((size) => {
-			const { headerId, width } = size;
+			const { headerId, width: cellWidth } = size;
+			let width = cellWidth;
+			if (width < MIN_COLUMN_WIDTH_PX) width = MIN_COLUMN_WIDTH_PX;
 			if (!widths[headerId] || widths[headerId] < width)
 				widths[headerId] = width;
 		});
@@ -740,7 +742,6 @@ export default function App({
 									columnWidths[id],
 									width
 								)}
-								height="1.8rem"
 								shouldWrapOverflow={shouldWrapOverflow}
 								useAutoWidth={useAutoWidth}
 								headerWidthUpdateTime={headerWidthUpdateTime}

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useLayoutEffect } from "react";
+import React, { useEffect, useRef } from "react";
 
 import HeaderMenu from "../HeaderMenu";
 
@@ -12,12 +12,11 @@ import { useMenu } from "../MenuProvider";
 
 import { CSS_MEASUREMENT_PIXEL_REGEX } from "src/app/services/string/regex";
 import { numToPx, pxToNum } from "src/app/services/string/parsers";
-
+import { MIN_COLUMN_WIDTH_PX } from "src/app/constants";
 interface Props {
 	id: string;
 	index: number;
 	width: string;
-	height: string;
 	headerWidthUpdateTime: number;
 	content: string;
 	shouldWrapOverflow: boolean;
@@ -41,7 +40,6 @@ export default function EditableTh({
 	id,
 	index,
 	width,
-	height,
 	headerWidthUpdateTime,
 	content,
 	useAutoWidth,
@@ -95,8 +93,7 @@ export default function EditableTh({
 			const dist = e.pageX - mouseDownX.current;
 			const newWidth = oldWidth + dist;
 
-			//Keep a min-width of 50px
-			if (newWidth < 50) return;
+			if (newWidth < MIN_COLUMN_WIDTH_PX) return;
 			onWidthChange(id, numToPx(newWidth));
 		}
 	}
@@ -116,7 +113,6 @@ export default function EditableTh({
 				ref={positionRef}
 				style={{
 					width,
-					height,
 				}}
 				onClick={handleHeaderClick}
 			>
