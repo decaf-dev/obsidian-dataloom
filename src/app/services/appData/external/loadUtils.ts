@@ -9,7 +9,7 @@ import {
 	DateCell,
 	CheckBoxCell,
 } from "../state/cell";
-import { Tag, initialTag } from "../state/tag";
+import { Tag } from "../state/tag";
 import { AppData } from "../state/appData";
 import { Header, initialHeader } from "../state/header";
 import { Row, initialRow } from "../state/row";
