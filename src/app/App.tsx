@@ -89,24 +89,24 @@ export default function App({
 			}
 		}
 
-		//handleUpdate();
+		handleUpdate();
 	}, [saveTime]);
 
-	// useEffect(() => {
-	// 	let intervalId: NodeJS.Timer = null;
-	// 	function startTimer() {
-	// 		intervalId = setInterval(() => {
-	// 			//When debounce update is called, we will only save after
-	// 			//250ms have pass since the last update
-	// 			if (Date.now() - debounceUpdate < 250) return;
-	// 			clearInterval(intervalId);
-	// 			setDebounceUpdate(0);
-	// 			setSaveTime(Date.now());
-	// 		}, 100);
-	// 	}
-	// 	if (debounceUpdate !== 0) startTimer();
-	// 	return () => clearInterval(intervalId);
-	// }, [debounceUpdate]);
+	useEffect(() => {
+		let intervalId: NodeJS.Timer = null;
+		function startTimer() {
+			intervalId = setInterval(() => {
+				//When debounce update is called, we will only save after
+				//250ms have pass since the last update
+				if (Date.now() - debounceUpdate < 250) return;
+				clearInterval(intervalId);
+				setDebounceUpdate(0);
+				setSaveTime(Date.now());
+			}, 100);
+		}
+		if (debounceUpdate !== 0) startTimer();
+		return () => clearInterval(intervalId);
+	}, [debounceUpdate]);
 
 	// //If a table updates in editing mode or reading mode, update the other table
 	// //TODO change with notifier in the main.js
@@ -576,11 +576,64 @@ export default function App({
 		setSaveTime(Date.now());
 	}
 
-	function calculateHeight(columnWidth: string, textContent: string): number {
+	function handleAutoWidthToggle(headerId: string, value: boolean) {
+		setAppData((prevState) => {
+			return {
+				...prevState,
+				headers: prevState.headers.map((header) => {
+					if (header.id === headerId) {
+						return {
+							...header,
+							useAutoWidth: value,
+						};
+					}
+					return header;
+				}),
+			};
+		});
+	}
+
+	function handleWrapContentToggle(headerId: string, value: boolean) {
+		setAppData((prevState) => {
+			return {
+				...prevState,
+				headers: prevState.headers.map((header) => {
+					if (header.id === headerId) {
+						return {
+							...header,
+							shouldWrapOverflow: value,
+						};
+					}
+					return header;
+				}),
+			};
+		});
+	}
+
+	function measureElement(
+		textContent: string,
+		useAutoWidth: boolean,
+		columnWidth: string,
+		shouldWrapOverflow: boolean
+	): { width: number; height: number } {
 		const ruler = document.createElement("div");
-		ruler.style.width = columnWidth;
-		ruler.style.height = "max-content";
-		ruler.style.overflowWrap = "break-word";
+
+		if (useAutoWidth) {
+			ruler.style.width = "max-content";
+			ruler.style.height = "auto";
+			ruler.style.overflowWrap = "normal";
+		} else {
+			ruler.style.width = columnWidth;
+			ruler.style.height = "max-content";
+			if (shouldWrapOverflow) {
+				ruler.style.overflowWrap = "break-word";
+			} else {
+				ruler.style.overflowWrap = "normal";
+				ruler.style.whiteSpace = "nowrap";
+				ruler.style.overflow = "hidden";
+				ruler.style.textOverflow = "ellipsis";
+			}
+		}
 		//This is the same as the padding set to every cell
 		ruler.style.paddingTop = "4px";
 		ruler.style.paddingBottom = "4px";
@@ -589,21 +642,30 @@ export default function App({
 		ruler.textContent = textContent;
 
 		document.body.appendChild(ruler);
+		const width = window.getComputedStyle(ruler).getPropertyValue("width");
 		const height = window
 			.getComputedStyle(ruler)
 			.getPropertyValue("height");
+
 		document.body.removeChild(ruler);
-		return pxToNum(height);
+		return { width: pxToNum(width), height: pxToNum(height) };
 	}
 
-	const cellHeights = useMemo(() => {
+	const cellSizes = useMemo(() => {
 		return appData.cells.map((cell) => {
 			const header = appData.headers.find(
 				(header) => header.id === cell.headerId
 			);
-			const height = calculateHeight(header.width, cell.toString());
+			const { width, height } = measureElement(
+				cell.toString(),
+				header.useAutoWidth,
+				header.width,
+				header.shouldWrapOverflow
+			);
 			return {
 				rowId: cell.rowId,
+				headerId: header.id,
+				width,
 				height,
 			};
 		});
@@ -611,27 +673,51 @@ export default function App({
 
 	const rowHeights = useMemo(() => {
 		const heights: { [id: string]: number } = {};
-		cellHeights.forEach((cellHeight) => {
-			const { rowId, height } = cellHeight;
+		cellSizes.forEach((size) => {
+			const { rowId, height } = size;
 			if (!heights[rowId] || heights[rowId] < height)
 				heights[rowId] = height;
 		});
 		return heights;
-	}, [cellHeights]);
+	}, [cellSizes]);
+
+	const columnWidths = useMemo(() => {
+		const widths: { [id: string]: number } = {};
+		cellSizes.forEach((size) => {
+			const { headerId, width } = size;
+			if (!widths[headerId] || widths[headerId] < width)
+				widths[headerId] = width;
+		});
+		return widths;
+	}, [cellSizes]);
 
 	return (
 		<div id={tableId} className="NLT__app" tabIndex={0}>
 			<Table
 				headers={appData.headers.map((header, columnIndex) => {
-					const { id, content, width, type, sortName } = header;
+					const {
+						id,
+						content,
+						width,
+						type,
+						sortName,
+						shouldWrapOverflow,
+						useAutoWidth,
+					} = header;
 					return {
 						id,
 						component: (
 							<EditableTh
 								key={id}
 								id={id}
-								width={width}
+								width={
+									useAutoWidth
+										? numToPx(columnWidths[id])
+										: width
+								}
 								height="1.8rem"
+								shouldWrapOverflow={shouldWrapOverflow}
+								useAutoWidth={useAutoWidth}
 								headerWidthUpdateTime={headerWidthUpdateTime}
 								index={columnIndex}
 								content={content}
@@ -648,6 +734,8 @@ export default function App({
 								onDeleteClick={handleDeleteHeaderClick}
 								onSaveClick={handleHeaderSave}
 								onTypeSelect={handleHeaderTypeSelect}
+								onAutoWidthToggle={handleAutoWidthToggle}
+								onWrapOverflowToggle={handleWrapContentToggle}
 							/>
 						),
 					};
@@ -671,7 +759,19 @@ export default function App({
 											headerWidthUpdateTime={
 												headerWidthUpdateTime
 											}
-											width={header.width}
+											shouldWrapOverflow={
+												header.shouldWrapOverflow
+											}
+											useAutoWidth={header.useAutoWidth}
+											width={
+												header.useAutoWidth
+													? numToPx(
+															columnWidths[
+																header.id
+															]
+													  )
+													: header.width
+											}
 											height={numToPx(rowHeights[row.id])}
 											tagUpdate={tagUpdate}
 											tags={appData.tags.filter(

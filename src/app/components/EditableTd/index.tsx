@@ -36,6 +36,8 @@ interface Props {
 	width: string;
 	height: string;
 	headerWidthUpdateTime: number;
+	shouldWrapOverflow: boolean;
+	useAutoWidth: boolean;
 	tagUpdate: {
 		cellId: string;
 		time: number;
@@ -62,6 +64,8 @@ export default function EditableTd({
 	width,
 	height,
 	headerWidthUpdateTime,
+	shouldWrapOverflow,
+	useAutoWidth,
 	tags,
 	tagUpdate,
 	onRemoveTagClick,
@@ -198,9 +202,21 @@ export default function EditableTd({
 		}
 		switch (type) {
 			case CONTENT_TYPE.TEXT:
-				return <TextCell text={content} />;
+				return (
+					<TextCell
+						text={content}
+						shouldWrapOverflow={shouldWrapOverflow}
+						useAutoWidth={useAutoWidth}
+					/>
+				);
 			case CONTENT_TYPE.NUMBER:
-				return <NumberCell number={content} />;
+				return (
+					<NumberCell
+						number={content}
+						shouldWrapOverflow={shouldWrapOverflow}
+						useAutoWidth={useAutoWidth}
+					/>
+				);
 			case CONTENT_TYPE.TAG: {
 				const tag = tags.find((tag) => tag.selected.includes(id));
 				if (tag)

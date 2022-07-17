@@ -10,14 +10,30 @@ import {
 } from "src/app/services/string/parsers";
 interface Props {
 	text: string;
+	shouldWrapOverflow: boolean;
+	useAutoWidth: boolean;
 }
 
-export default function TextCell({ text }: Props) {
+export default function TextCell({
+	text,
+	shouldWrapOverflow,
+	useAutoWidth,
+}: Props) {
 	text = parseURLs(text);
 	text = parseFileLinks(text);
 	text = parseBoldMarkdown(text);
 	text = parseItalicMarkdown(text);
 	text = parseHighlightMarkdown(text);
 
-	return <div className="NLT__text-cell">{parse(text)}</div>;
+	let className = "NLT__text-cell";
+	if (useAutoWidth) {
+		className += " NLT__auto-width";
+	} else {
+		if (shouldWrapOverflow) {
+			className += " NLT__wrap-overflow";
+		} else {
+			className += " NLT__hide-overflow";
+		}
+	}
+	return <div className={className}>{parse(text)}</div>;
 }

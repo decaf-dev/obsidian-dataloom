@@ -9,6 +9,7 @@ import "./styles.css";
 import HeaderMenuItem from "./components/HeaderMenuItem";
 import IconButton from "../IconButton";
 import Button from "../Button";
+import Switch from "../Switch";
 
 interface Props {
 	isOpen: boolean;
@@ -17,6 +18,8 @@ interface Props {
 	id: string;
 	menuId: string;
 	index: number;
+	shouldWrapOverflow: boolean;
+	useAutoWidth: boolean;
 	sortName: string;
 	content: string;
 	type: string;
@@ -28,6 +31,8 @@ interface Props {
 	onSortSelect: (id: string, type: string, sortName: string) => void;
 	onDeleteClick: (id: string) => void;
 	onOutsideClick: (id: string, inputText: string) => void;
+	onAutoWidthToggle: (id: string, value: boolean) => void;
+	onWrapOverflowToggle: (id: string, value: boolean) => void;
 	onClose: () => void;
 }
 
@@ -40,6 +45,8 @@ export default function HeaderMenu({
 	content,
 	type,
 	sortName,
+	useAutoWidth,
+	shouldWrapOverflow,
 	isFirstChild,
 	isLastChild,
 	onTypeSelect,
@@ -49,6 +56,8 @@ export default function HeaderMenu({
 	onInsertColumnClick,
 	onMoveColumnClick,
 	onClose,
+	onWrapOverflowToggle,
+	onAutoWidthToggle,
 }: Props) {
 	const [inputText, setInputText] = useState("");
 	const [submenu, setSubmenu] = useState(null);
@@ -146,6 +155,7 @@ export default function HeaderMenu({
 		return (
 			<>
 				<div style={{ marginBottom: "10px" }}>
+					<p className="NLT__label">Header Name</p>
 					<input
 						className="NLT__input NLT__header-menu-input"
 						autoFocus
@@ -154,7 +164,30 @@ export default function HeaderMenu({
 						onChange={(e) => setInputText(e.target.value)}
 					/>
 				</div>
-				<Button onClick={() => handleDeleteClick(id)}>Delete</Button>
+				<div>
+					<p className="NLT__label">Auto Width</p>
+					<Switch
+						isChecked={useAutoWidth}
+						onToggle={(value) => onAutoWidthToggle(id, value)}
+					/>
+					{!useAutoWidth && (
+						<>
+							<p className="NLT__label">Wrap Overflow</p>
+							<Switch
+								isChecked={shouldWrapOverflow}
+								onToggle={(value) =>
+									onWrapOverflowToggle(id, value)
+								}
+							/>
+						</>
+					)}
+				</div>
+				<Button
+					style={{ marginTop: "5px" }}
+					onClick={() => handleDeleteClick(id)}
+				>
+					Delete
+				</Button>
 			</>
 		);
 	}

@@ -9,6 +9,8 @@ export interface Header {
 	sortName: string;
 	width: string;
 	type: string;
+	useAutoWidth: boolean;
+	shouldWrapOverflow: boolean;
 }
 
 export const initialHeader = (
@@ -22,6 +24,8 @@ export const initialHeader = (
 		content,
 		sortName: SORT.DEFAULT.name,
 		width: "100px",
+		shouldWrapOverflow: true,
+		useAutoWidth: false,
 		type: CONTENT_TYPE.TEXT,
 	};
 };

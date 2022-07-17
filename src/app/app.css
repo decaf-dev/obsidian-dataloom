@@ -96,3 +96,8 @@
 .NLT__margin-left {
 	margin-left: 4px;
 }
+
+.NLT__label {
+	font-size: 0.9rem;
+	margin: 0;
+}

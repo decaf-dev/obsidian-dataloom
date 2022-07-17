@@ -29,3 +29,18 @@
 .NLT__td-container {
 	padding: 4px 10px;
 }
+
+.NLT__auto-width {
+	overflow-wrap: normal;
+}
+
+.NLT__wrap-overflow {
+	overflow-wrap: break-word;
+}
+
+.NLT__hide-overflow {
+	overflow: hidden;
+	overflow-wrap: normal;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
