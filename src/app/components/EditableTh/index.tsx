@@ -141,7 +141,7 @@ export default function EditableTh({
 			</th>
 			<HeaderMenu
 				isOpen={isMenuOpen}
-				top={position.top}
+				top={position.top + position.height}
 				left={position.left}
 				id={id}
 				menuId={menuId}
