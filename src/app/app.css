@@ -97,6 +97,24 @@
 	margin-left: 4px;
 }
 
+/**
+* Overflow
+*/
+.NLT__auto-width {
+	overflow-wrap: normal;
+}
+
+.NLT__wrap-overflow {
+	overflow-wrap: break-word;
+}
+
+.NLT__hide-overflow {
+	overflow: hidden;
+	overflow-wrap: normal;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
 .NLT__label {
 	font-size: 0.9rem;
 	margin: 0;

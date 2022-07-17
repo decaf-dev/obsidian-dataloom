@@ -248,6 +248,7 @@ export default function EditableTd({
 						left={position.left}
 						width={position.width}
 						height={position.height}
+						useAutoWidth={useAutoWidth}
 						value={content}
 						onInputChange={handleTextInputChange}
 					/>

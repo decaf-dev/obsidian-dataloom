@@ -8,6 +8,7 @@ import "./styles.css";
 interface Props {
 	menuId: string;
 	isOpen: boolean;
+	useAutoWidth: boolean;
 	top: number;
 	left: number;
 	width: number;
@@ -23,6 +24,7 @@ export default function TextCellEdit({
 	left,
 	width,
 	height,
+	useAutoWidth,
 	value,
 	onInputChange,
 }: Props) {
@@ -32,6 +34,9 @@ export default function TextCellEdit({
 		value = value.replace("\n", "");
 		onInputChange(value);
 	}
+
+	let className = "NLT__textarea";
+	if (useAutoWidth) className += " NLT__auto-width";
 
 	return (
 		<Menu
@@ -43,7 +48,7 @@ export default function TextCellEdit({
 			height={height}
 		>
 			<textarea
-				className="NLT__textarea"
+				className={className}
 				ref={inputRef}
 				autoFocus
 				value={value}
