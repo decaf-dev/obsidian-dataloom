@@ -270,6 +270,7 @@ export default function EditableTd({
 					<TagCellEdit
 						cellId={id}
 						inputText={tagInputText}
+						headerWidthUpdateTime={headerWidthUpdateTime}
 						tags={tags}
 						menuId={menuId}
 						isOpen={isMenuOpen}
