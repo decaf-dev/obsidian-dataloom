@@ -180,8 +180,10 @@ export default function HeaderMenu({
 	}
 
 	function handleDeleteClick(id: string) {
-		onDeleteClick(id);
-		onClose();
+		if (window.confirm("Are you sure you want to delete this column?")) {
+			onDeleteClick(id);
+			onClose();
+		}
 	}
 
 	function renderMenu() {
