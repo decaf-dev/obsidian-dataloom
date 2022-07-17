@@ -651,6 +651,20 @@ export default function App({
 		return { width: pxToNum(width), height: pxToNum(height) };
 	}
 
+	function findCellWidth(
+		cellType: string,
+		useAutoWidth: boolean,
+		calculatedWidth: string,
+		headerWidth: string
+	) {
+		//If the content type does not display text, just use the width that we set for the column
+		if (cellType !== CONTENT_TYPE.TEXT && cellType !== CONTENT_TYPE.NUMBER)
+			return headerWidth;
+		//If we're not using auto width, just use the width that we set for the column
+		if (useAutoWidth) return calculatedWidth;
+		return headerWidth;
+	}
+
 	const cellSizes = useMemo(() => {
 		return appData.cells.map((cell) => {
 			const header = appData.headers.find(
@@ -678,7 +692,12 @@ export default function App({
 			if (!heights[rowId] || heights[rowId] < height)
 				heights[rowId] = height;
 		});
-		return heights;
+		return Object.fromEntries(
+			Object.entries(heights).map((entry) => {
+				const [key, value] = entry;
+				return [key, numToPx(value)];
+			})
+		);
 	}, [cellSizes]);
 
 	const columnWidths = useMemo(() => {
@@ -688,7 +707,12 @@ export default function App({
 			if (!widths[headerId] || widths[headerId] < width)
 				widths[headerId] = width;
 		});
-		return widths;
+		return Object.fromEntries(
+			Object.entries(widths).map((entry) => {
+				const [key, value] = entry;
+				return [key, numToPx(value)];
+			})
+		);
 	}, [cellSizes]);
 
 	return (
@@ -710,11 +734,12 @@ export default function App({
 							<EditableTh
 								key={id}
 								id={id}
-								width={
-									useAutoWidth
-										? numToPx(columnWidths[id])
-										: width
-								}
+								width={findCellWidth(
+									type,
+									useAutoWidth,
+									columnWidths[id],
+									width
+								)}
 								height="1.8rem"
 								shouldWrapOverflow={shouldWrapOverflow}
 								useAutoWidth={useAutoWidth}
@@ -751,6 +776,12 @@ export default function App({
 											cell.rowId === row.id &&
 											cell.headerId === header.id
 									);
+									const {
+										id: headerId,
+										type,
+										useAutoWidth,
+										width,
+									} = header;
 									return (
 										<EditableTd
 											key={cell.id}
@@ -762,17 +793,14 @@ export default function App({
 											shouldWrapOverflow={
 												header.shouldWrapOverflow
 											}
-											useAutoWidth={header.useAutoWidth}
-											width={
-												header.useAutoWidth
-													? numToPx(
-															columnWidths[
-																header.id
-															]
-													  )
-													: header.width
-											}
-											height={numToPx(rowHeights[row.id])}
+											useAutoWidth={useAutoWidth}
+											width={findCellWidth(
+												type,
+												useAutoWidth,
+												columnWidths[headerId],
+												width
+											)}
+											height={rowHeights[row.id]}
 											tagUpdate={tagUpdate}
 											tags={appData.tags.filter(
 												(tag) =>

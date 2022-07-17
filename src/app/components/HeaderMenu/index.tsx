@@ -10,6 +10,7 @@ import HeaderMenuItem from "./components/HeaderMenuItem";
 import IconButton from "../IconButton";
 import Button from "../Button";
 import Switch from "../Switch";
+import { CONTENT_TYPE } from "src/app/constants";
 
 interface Props {
 	isOpen: boolean;
@@ -164,24 +165,27 @@ export default function HeaderMenu({
 						onChange={(e) => setInputText(e.target.value)}
 					/>
 				</div>
-				<div>
-					<p className="NLT__label">Auto Width</p>
-					<Switch
-						isChecked={useAutoWidth}
-						onToggle={(value) => onAutoWidthToggle(id, value)}
-					/>
-					{!useAutoWidth && (
-						<>
-							<p className="NLT__label">Wrap Overflow</p>
-							<Switch
-								isChecked={shouldWrapOverflow}
-								onToggle={(value) =>
-									onWrapOverflowToggle(id, value)
-								}
-							/>
-						</>
-					)}
-				</div>
+				{(type === CONTENT_TYPE.TEXT ||
+					type === CONTENT_TYPE.NUMBER) && (
+					<div>
+						<p className="NLT__label">Auto Width</p>
+						<Switch
+							isChecked={useAutoWidth}
+							onToggle={(value) => onAutoWidthToggle(id, value)}
+						/>
+						{!useAutoWidth && (
+							<>
+								<p className="NLT__label">Wrap Overflow</p>
+								<Switch
+									isChecked={shouldWrapOverflow}
+									onToggle={(value) =>
+										onWrapOverflowToggle(id, value)
+									}
+								/>
+							</>
+						)}
+					</div>
+				)}
 				<Button
 					style={{ marginTop: "5px" }}
 					onClick={() => handleDeleteClick(id)}
