@@ -1,3 +1,4 @@
+import React from "react";
 import { SORT } from "src/app/components/HeaderMenu/constants";
 import { CONTENT_TYPE } from "../../../constants";
 
@@ -8,9 +9,6 @@ export interface Header {
 	sortName: string;
 	width: string;
 	type: string;
-}
-export interface TableHeader extends Header {
-	component: React.ReactNode;
 }
 
 export const initialHeader = (

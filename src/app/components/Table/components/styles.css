@@ -12,14 +12,6 @@
 	border: 0 !important;
 }
 
-.NLT__tr > .NLT__td:last-child {
-	border-right: 1px solid var(--background-modifier-border) !important;
-}
-
-.NLT__tfoot .NLT__td {
-	border-bottom: 1px solid var(--background-modifier-border) !important;
-}
-
 .NLT__tfoot::after {
 	content: ' ';
 	display: block;

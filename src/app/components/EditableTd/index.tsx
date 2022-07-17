@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 
 import { Notice } from "obsidian";
 import TextCell from "../TextCell";
@@ -29,16 +29,13 @@ import { dateToString } from "src/app/services/string/parsers";
 import { logFunc } from "src/app/services/appData/debug";
 import { useMenu } from "src/app/components/MenuProvider";
 import { usePositionRef } from "src/app/services/hooks";
-import { findCellStyle } from "src/app/services/cellSizing";
 
 interface Props {
 	headerType: string;
 	cell: Cell;
 	width: string;
 	height: string;
-	rowIndex: number;
-	columnIndex: number;
-	shouldRecalculateHeight: boolean;
+	headerWidthUpdateTime: number;
 	tagUpdate: {
 		cellId: string;
 		time: number;
@@ -55,33 +52,24 @@ interface Props {
 	) => void;
 	onColorChange: (tagId: string, color: string) => void;
 	onSaveContent: () => void;
-	onSizeChange: (
-		columnIndex: number,
-		rowIndex: number,
-		width: number,
-		height: number
-	) => void;
 }
 
 const COMPONENT_NAME = "EditableTd";
 
 export default function EditableTd({
 	headerType,
-	columnIndex,
-	rowIndex,
 	cell,
 	width,
 	height,
+	headerWidthUpdateTime,
 	tags,
 	tagUpdate,
-	shouldRecalculateHeight,
 	onRemoveTagClick,
 	onColorChange,
 	onTagClick,
 	onContentChange,
 	onSaveContent,
 	onAddTag,
-	onSizeChange,
 }: Props) {
 	const [tagInputText, setTagInputText] = useState("");
 	const [tagColor] = useState(randomColor());
@@ -90,29 +78,20 @@ export default function EditableTd({
 
 	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
 		useMenu(menuId);
-	const { positionRef, position } = usePositionRef([
-		content,
-		shouldRecalculateHeight,
-	]);
-	const cellStyle = findCellStyle(width, height);
 
-	useDisableScroll(isMenuOpen);
+	const { positionRef, position } = usePositionRef([
+		isMenuOpen,
+		content.length,
+		headerWidthUpdateTime,
+	]);
 
 	const { id, headerId, type } = cell;
+
+	useDisableScroll(isMenuOpen);
 
 	const [wasContentUpdated, setContentUpdate] = useState(false);
 
 	const isInvalidContent = type !== headerType;
-
-	useEffect(() => {
-		if (position.width !== 0 && position.height !== 0)
-			onSizeChange(
-				columnIndex,
-				rowIndex,
-				position.width,
-				position.height
-			);
-	}, [position.width, position.height]);
 
 	//If we've already mounted, meaning the application has loaded
 	//and we updated a tag, then we will wait for it to update,
@@ -312,8 +291,11 @@ export default function EditableTd({
 		<>
 			<td
 				className="NLT__td"
+				style={{
+					width,
+					height,
+				}}
 				ref={positionRef}
-				style={cellStyle}
 				onClick={handleCellClick}
 				onContextMenu={handleCellContextClick}
 			>

@@ -9,8 +9,8 @@ export const DEBUG = {
 	APP: false,
 	SAVE_APP_DATA: false,
 	EDITABLE_TD: false,
-	FOCUS_PROVIDER: true,
-	MENU_PROVIDER: true,
+	FOCUS_PROVIDER: false,
+	MENU_PROVIDER: false,
 };
 
 export interface CellType {

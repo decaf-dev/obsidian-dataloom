@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 
 import EditableTd from "./components/EditableTd";
 import Table from "./components/Table";
@@ -12,6 +12,7 @@ import { Cell } from "./services/appData/state/cell";
 import { AppData } from "./services/appData/state/appData";
 import { NltSettings } from "./services/settings";
 import { saveAppData } from "./services/appData/external/save";
+import { numToPx, pxToNum } from "./services/string/parsers";
 
 import { CONTENT_TYPE, DEBUG } from "./constants";
 
@@ -26,7 +27,6 @@ import {
 import { v4 as uuid } from "uuid";
 import { sortAppDataForSave } from "./services/appData/external/saveUtils";
 import { logFunc } from "./services/appData/debug";
-import { useCellSizing } from "./services/cellSizing";
 interface Props {
 	plugin: NltPlugin;
 	settings: NltSettings;
@@ -55,25 +55,18 @@ export default function App({
 		cellId: "",
 	});
 	const [saveTime, setSaveTime] = useState(0);
-	const {
-		columnWidths,
-		rowHeights,
-		shouldRecalculateRowHeights,
-		recalculateRowHeights,
-		calculateCellHeight,
-		handleCellSizeChange,
-	} = useCellSizing();
+	const [headerWidthUpdateTime, setHeaderWidthUpdateTime] = useState(0);
 
-	useEffect(() => {
-		// Sort on first render
-		// If a user deletes or adds a new row (by copying and pasting, for example)
-		// then we want to make sure that value is sorted in
-		for (let i = 0; i < appData.headers.length; i++) {
-			const header = appData.headers[i];
-			if (header.sortName !== SORT.DEFAULT.name)
-				sortRows(header.id, header.type, header.sortName);
-		}
-	}, []);
+	// useEffect(() => {
+	// 	// Sort on first render
+	// 	// If a user deletes or adds a new row (by copying and pasting, for example)
+	// 	// then we want to make sure that value is sorted in
+	// 	for (let i = 0; i < appData.headers.length; i++) {
+	// 		const header = appData.headers[i];
+	// 		if (header.sortName !== SORT.DEFAULT.name)
+	// 			sortRows(header.id, header.type, header.sortName);
+	// 	}
+	// }, []);
 
 	useEffect(() => {
 		async function handleUpdate() {
@@ -96,58 +89,58 @@ export default function App({
 			}
 		}
 
-		handleUpdate();
+		//handleUpdate();
 	}, [saveTime]);
 
-	useEffect(() => {
-		let intervalId: NodeJS.Timer = null;
-		function startTimer() {
-			intervalId = setInterval(() => {
-				//When debounce update is called, we will only save after
-				//250ms have pass since the last update
-				if (Date.now() - debounceUpdate < 250) return;
-				clearInterval(intervalId);
-				setDebounceUpdate(0);
-				setSaveTime(Date.now());
-			}, 100);
-		}
-		if (debounceUpdate !== 0) startTimer();
-		return () => clearInterval(intervalId);
-	}, [debounceUpdate]);
+	// useEffect(() => {
+	// 	let intervalId: NodeJS.Timer = null;
+	// 	function startTimer() {
+	// 		intervalId = setInterval(() => {
+	// 			//When debounce update is called, we will only save after
+	// 			//250ms have pass since the last update
+	// 			if (Date.now() - debounceUpdate < 250) return;
+	// 			clearInterval(intervalId);
+	// 			setDebounceUpdate(0);
+	// 			setSaveTime(Date.now());
+	// 		}, 100);
+	// 	}
+	// 	if (debounceUpdate !== 0) startTimer();
+	// 	return () => clearInterval(intervalId);
+	// }, [debounceUpdate]);
 
-	//If a table updates in editing mode or reading mode, update the other table
-	//TODO change with notifier in the main.js
-	//TODO why doesn't this always update?
-	useEffect(() => {
-		let intervalId: NodeJS.Timer = null;
-		function startTimer() {
-			intervalId = setInterval(async () => {
-				if (settings.state[sourcePath]) {
-					if (settings.state[sourcePath][tableIndex]) {
-						const { shouldUpdate, viewType } =
-							settings.state[sourcePath][tableIndex];
+	// //If a table updates in editing mode or reading mode, update the other table
+	// //TODO change with notifier in the main.js
+	// //TODO why doesn't this always update?
+	// useEffect(() => {
+	// 	let intervalId: NodeJS.Timer = null;
+	// 	function startTimer() {
+	// 		intervalId = setInterval(async () => {
+	// 			if (settings.state[sourcePath]) {
+	// 				if (settings.state[sourcePath][tableIndex]) {
+	// 					const { shouldUpdate, viewType } =
+	// 						settings.state[sourcePath][tableIndex];
 
-						const currentViewType = findCurrentViewType(el);
+	// 					const currentViewType = findCurrentViewType(el);
 
-						if (shouldUpdate && viewType !== currentViewType) {
-							clearInterval(intervalId);
-							settings.state[sourcePath][
-								tableIndex
-							].shouldUpdate = false;
-							await plugin.saveSettings();
-							const savedData =
-								settings.state[sourcePath][tableIndex].data;
-							setOldAppData(savedData);
-							setAppData(savedData);
-							startTimer();
-						}
-					}
-				}
-			}, 500);
-		}
-		startTimer();
-		return () => clearInterval(intervalId);
-	}, []);
+	// 					if (shouldUpdate && viewType !== currentViewType) {
+	// 						clearInterval(intervalId);
+	// 						settings.state[sourcePath][
+	// 							tableIndex
+	// 						].shouldUpdate = false;
+	// 						await plugin.saveSettings();
+	// 						const savedData =
+	// 							settings.state[sourcePath][tableIndex].data;
+	// 						setOldAppData(savedData);
+	// 						setAppData(savedData);
+	// 						startTimer();
+	// 					}
+	// 				}
+	// 			}
+	// 		}, 500);
+	// 	}
+	// 	startTimer();
+	// 	return () => clearInterval(intervalId);
+	// }, []);
 
 	function handleAddColumn() {
 		if (DEBUG.APP) console.log("[App]: handleAddColumn called.");
@@ -477,7 +470,7 @@ export default function App({
 				}),
 			};
 		});
-		recalculateRowHeights(true);
+		setHeaderWidthUpdateTime(Date.now());
 		setDebounceUpdate(Date.now());
 	}
 
@@ -583,7 +576,48 @@ export default function App({
 		setSaveTime(Date.now());
 	}
 
-	console.log(rowHeights);
+	function calculateHeight(columnWidth: string, textContent: string): number {
+		const ruler = document.createElement("div");
+		ruler.style.width = columnWidth;
+		ruler.style.height = "max-content";
+		ruler.style.overflowWrap = "break-word";
+		//This is the same as the padding set to every cell
+		ruler.style.paddingTop = "4px";
+		ruler.style.paddingBottom = "4px";
+		ruler.style.paddingLeft = "10px";
+		ruler.style.paddingRight = "10px";
+		ruler.textContent = textContent;
+
+		document.body.appendChild(ruler);
+		const height = window
+			.getComputedStyle(ruler)
+			.getPropertyValue("height");
+		document.body.removeChild(ruler);
+		return pxToNum(height);
+	}
+
+	const cellHeights = useMemo(() => {
+		return appData.cells.map((cell) => {
+			const header = appData.headers.find(
+				(header) => header.id === cell.headerId
+			);
+			const height = calculateHeight(header.width, cell.toString());
+			return {
+				rowId: cell.rowId,
+				height,
+			};
+		});
+	}, [appData.cells, appData.headers]);
+
+	const rowHeights = useMemo(() => {
+		const heights: { [id: string]: number } = {};
+		cellHeights.forEach((cellHeight) => {
+			const { rowId, height } = cellHeight;
+			if (!heights[rowId] || heights[rowId] < height)
+				heights[rowId] = height;
+		});
+		return heights;
+	}, [cellHeights]);
 
 	return (
 		<div id={tableId} className="NLT__app" tabIndex={0}>
@@ -591,13 +625,14 @@ export default function App({
 				headers={appData.headers.map((header, columnIndex) => {
 					const { id, content, width, type, sortName } = header;
 					return {
-						...header,
+						id,
 						component: (
 							<EditableTh
 								key={id}
 								id={id}
 								width={width}
-								height={calculateCellHeight(0, rowHeights)}
+								height="1.8rem"
+								headerWidthUpdateTime={headerWidthUpdateTime}
 								index={columnIndex}
 								content={content}
 								type={type}
@@ -606,7 +641,6 @@ export default function App({
 								isLastChild={
 									columnIndex === appData.headers.length - 1
 								}
-								onSizeChange={handleCellSizeChange}
 								onSortSelect={handleHeaderSortSelect}
 								onInsertColumnClick={handleInsertColumnClick}
 								onMoveColumnClick={handleMoveColumnClick}
@@ -620,10 +654,10 @@ export default function App({
 				})}
 				rows={appData.rows.map((row, rowIndex) => {
 					return {
-						...row,
+						id: row.id,
 						component: (
 							<>
-								{appData.headers.map((header, columnIndex) => {
+								{appData.headers.map((header) => {
 									const cell = appData.cells.find(
 										(cell) =>
 											cell.rowId === row.id &&
@@ -633,17 +667,12 @@ export default function App({
 										<EditableTd
 											key={cell.id}
 											cell={cell}
-											shouldRecalculateHeight={
-												shouldRecalculateRowHeights
-											}
-											rowIndex={rowIndex + 1}
-											columnIndex={columnIndex}
 											headerType={header.type}
+											headerWidthUpdateTime={
+												headerWidthUpdateTime
+											}
 											width={header.width}
-											height={calculateCellHeight(
-												rowIndex + 1,
-												rowHeights
-											)}
+											height={numToPx(rowHeights[row.id])}
 											tagUpdate={tagUpdate}
 											tags={appData.tags.filter(
 												(tag) =>
@@ -661,21 +690,28 @@ export default function App({
 											}
 											onColorChange={handleChangeColor}
 											onAddTag={handleAddTag}
-											onSizeChange={handleCellSizeChange}
 										/>
 									);
 								})}
-								<td className="NLT__td">
-									<RowMenu
-										rowId={row.id}
-										isFirstRow={rowIndex === 0}
-										isLastRow={
-											rowIndex === appData.rows.length - 1
-										}
-										onMoveRowClick={handleMoveRowClick}
-										onDeleteClick={handleDeleteRowClick}
-										onInsertRowClick={handleInsertRowClick}
-									/>
+								<td
+									className="NLT__td"
+									style={{ height: rowHeights[row.id] }}
+								>
+									<div className="NLT__td-container">
+										<RowMenu
+											rowId={row.id}
+											isFirstRow={rowIndex === 0}
+											isLastRow={
+												rowIndex ===
+												appData.rows.length - 1
+											}
+											onMoveRowClick={handleMoveRowClick}
+											onDeleteClick={handleDeleteRowClick}
+											onInsertRowClick={
+												handleInsertRowClick
+											}
+										/>
+									</div>
 								</td>
 							</>
 						),

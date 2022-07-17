@@ -1,58 +1,85 @@
-import React, { forwardRef } from "react";
+import React from "react";
 
-import { TableHeader } from "src/app/services/appData/state/header";
-import { TableRow } from "src/app/services/appData/state/row";
-import Button from "../Button";
-import "./styles.css";
+import TableBase from "./components";
+import Button from "src/app/components/Button";
+
+import { TableComponent } from "src/app/services/table";
+import { useId } from "src/app/services/hooks";
 
 interface Props {
-	headers: TableHeader[];
-	rows: TableRow[];
+	headers: TableComponent[];
+	rows: TableComponent[];
+	footers?: TableComponent[];
 	onAddColumn: () => void;
 	onAddRow: () => void;
 }
 
-const Table = forwardRef(
-	({ headers, rows, onAddColumn, onAddRow }: Props, ref) => {
-		return (
-			<table className="NLT__table">
-				<thead className="NLT__thead">
-					<tr className="NLT__tr">
-						{headers.map((header) => (
-							<React.Fragment key={header.id}>
-								{header.component}
-							</React.Fragment>
-						))}
-						<th className="NLT__th">
-							<Button onClick={() => onAddColumn()}>New</Button>
-						</th>
-					</tr>
-				</thead>
-				<tbody className="NLT__tbody">
-					{rows.map((row) => (
-						<tr className="NLT__tr" key={row.id}>
-							{row.component}
-						</tr>
-					))}
-				</tbody>
-				<tfoot className="NLT__tfoot">
-					<tr className="NLT__tr">
-						<td className="NLT__td">
-							<Button
-								style={{ marginTop: "5px" }}
-								onClick={() => onAddRow()}
-							>
-								New
-							</Button>
-						</td>
-						{headers.map((header) => (
-							<td key={header.id} className="NLT__td"></td>
-						))}
-					</tr>
-				</tfoot>
-			</table>
-		);
-	}
-);
+const NewColumnButton = ({ onAddNew }: { onAddNew: () => void }) => {
+	return (
+		<th className="NLT__th" style={{ height: "1.8rem" }}>
+			<div className="NLT__th-container" style={{ paddingLeft: "10px" }}>
+				<Button onClick={() => onAddNew()}>New</Button>
+			</div>
+		</th>
+	);
+};
 
-export default Table;
+const NewRowButton = ({ onAddNew }: { onAddNew: () => void }) => {
+	return (
+		<td className="NLT__td">
+			<div className="NLT__td-container">
+				<Button onClick={() => onAddNew()}>New</Button>
+			</div>
+		</td>
+	);
+};
+
+const EmptyCell = () => {
+	return <td className="NLT__td" />;
+};
+
+export default function Table({
+	headers,
+	rows,
+	footers = [],
+	onAddColumn,
+	onAddRow,
+}: Props) {
+	const columnButtonId = useId();
+	const rowButtonId = useId();
+
+	function renderNewColumnButton(onAddColumn: () => void): TableComponent {
+		return {
+			id: columnButtonId,
+			component: <NewColumnButton onAddNew={onAddColumn} />,
+		};
+	}
+
+	function renderNewRowButton(onAddRow: () => void): TableComponent {
+		return {
+			id: rowButtonId,
+			component: <NewRowButton onAddNew={onAddRow} />,
+		};
+	}
+
+	function renderEmptyCells(headers: TableComponent[]): TableComponent[] {
+		return headers.map((header) => {
+			return {
+				id: header.id,
+				component: <EmptyCell />,
+			};
+		});
+	}
+
+	return (
+		<TableBase
+			headers={[...headers, renderNewColumnButton(onAddColumn)]}
+			rows={rows}
+			footers={[
+				...footers,
+				renderNewRowButton(onAddRow),
+				...renderEmptyCells(headers),
+			]}
+		/>
+	);
+}

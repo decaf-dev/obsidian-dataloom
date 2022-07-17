@@ -10,7 +10,7 @@
 }
 
 .NLT__th:last-child {
-    border-right: 1px solid var(--background-modifier-border) !important;
+    border-top: 0 !important;
 }
 
 .NLT__th-container {

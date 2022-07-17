@@ -7,6 +7,11 @@ export const useForceUpdate = () => {
 	return useCallback(() => setValue((value) => value + 1), []);
 };
 
+export const useId = (): string => {
+	const [id] = useState(uuid());
+	return id;
+};
+
 export const useMenuId = (): string => {
 	const [menuId] = useState(uuid());
 	return menuId;
@@ -83,13 +88,16 @@ export const usePositionRef = (deps: any[] = []) => {
 	const positionRef = useCallback(
 		(node) => {
 			if (node instanceof HTMLElement) {
-				const { top, left, width, height } =
-					node.getBoundingClientRect();
+				const { top, left } = node.getBoundingClientRect();
+				//We use offsetWidth, and offsetHeight instead of the width and height of the rectangle
+				//because we want whole values to match what we set as the column width.
+				//This will make sure that the rendered cell and the input cell are the same size
+				const { offsetWidth, offsetHeight } = node;
 				setPosition({
 					top,
 					left,
-					width,
-					height,
+					width: offsetWidth,
+					height: offsetHeight,
 				});
 			}
 		},

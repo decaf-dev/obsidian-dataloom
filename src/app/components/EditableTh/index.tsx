@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useLayoutEffect } from "react";
 
 import HeaderMenu from "../HeaderMenu";
 
@@ -12,13 +12,13 @@ import { useMenu } from "../MenuProvider";
 
 import { CSS_MEASUREMENT_PIXEL_REGEX } from "src/app/services/string/regex";
 import { numToPx, pxToNum } from "src/app/services/string/parsers";
-import { findCellStyle } from "src/app/services/cellSizing";
 
 interface Props {
 	id: string;
 	index: number;
 	width: string;
 	height: string;
+	headerWidthUpdateTime: number;
 	content: string;
 	sortName: string;
 	type: string;
@@ -31,12 +31,6 @@ interface Props {
 	onDeleteClick: (id: string) => void;
 	onSaveClick: (id: string, content: string) => void;
 	onWidthChange: (id: string, width: string) => void;
-	onSizeChange: (
-		columnIndex: number,
-		rowIndex: number,
-		width: number,
-		height: number
-	) => void;
 }
 
 export default function EditableTh({
@@ -44,6 +38,7 @@ export default function EditableTh({
 	index,
 	width,
 	height,
+	headerWidthUpdateTime,
 	content,
 	type,
 	sortName,
@@ -56,15 +51,13 @@ export default function EditableTh({
 	onTypeSelect,
 	onDeleteClick,
 	onSaveClick,
-	onSizeChange,
 }: Props) {
 	const menuId = useMenuId();
 	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
 		useMenu(menuId);
-	const { positionRef, position } = usePositionRef([width]);
+	const { positionRef, position } = usePositionRef([headerWidthUpdateTime]);
 	const mouseDownX = useRef(0);
 	const isResizing = useRef(false);
-	const cellStyle = findCellStyle(width, height);
 
 	useDisableScroll(isMenuOpen);
 
@@ -73,11 +66,6 @@ export default function EditableTh({
 			closeMenu();
 		}
 	}, [isMenuRequestingClose]);
-
-	useEffect(() => {
-		if (position.width !== 0 && position.height !== 0)
-			onSizeChange(index, 0, position.width, position.height);
-	}, [position.width, position.height, index]);
 
 	function handleHeaderClick(e: React.MouseEvent) {
 		if (isResizing.current) return;
@@ -118,7 +106,10 @@ export default function EditableTh({
 			<th
 				className="NLT__th NLT__selectable"
 				ref={positionRef}
-				style={cellStyle}
+				style={{
+					width,
+					height,
+				}}
 				onClick={handleHeaderClick}
 			>
 				<div className="NLT__th-container">

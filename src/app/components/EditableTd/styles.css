@@ -10,6 +10,22 @@
 	padding: 0 !important;
 }
 
+.NLT__tbody > .NLT__tr > .NLT__td:last-child {
+	border-top: 0 !important;
+}
+
+.NLT__tbody > .NLT__tr:last-child > .NLT__td {
+	border-bottom: 1px solid var(--background-modifier-border) !important;
+}
+
+.NLT__tbody >.NLT__tr:last-child>.NLT__td:last-child {
+	border-bottom: 0 !important;
+}
+
+.NLT__tfoot > .NLT__tr >.NLT__td {
+	border: 0 !important;
+}
+
 .NLT__td-container {
 	padding: 4px 10px;
 }
