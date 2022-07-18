@@ -1,21 +1,15 @@
 import React from "react";
 
-import TagCell from "../TagCell";
-
-import { Tag } from "src/app/services/appData/state/tag";
+import { Tag as TagState } from "src/app/services/appData/state/tag";
+import Tag from "../Tag";
 interface Props {
-	tags: Tag[];
+	tags: TagState[];
 }
 export default function MultiTagCell({ tags = [] }: Props) {
 	return (
 		<div className="NLT__multi-tag-cell">
 			{tags.map((tag) => (
-				<TagCell
-					key={tag.id}
-					id={tag.id}
-					content={tag.content}
-					color={tag.color}
-				/>
+				<Tag key={tag.id} color={tag.color} content={tag.content} />
 			))}
 		</div>
 	);

@@ -97,3 +97,7 @@ export const BOLD_TAG_START = "<b>";
 export const BOLD_TAG_CLOSE = "</b>";
 export const HIGHLIGHT_TAG_START = "<mark>";
 export const HIGHLIGHT_TAG_CLOSE = "</mark>";
+
+export const MIN_COLUMN_WIDTH_PX = 50;
+
+export const CURRENT_TABLE_CACHE_VERSION = 410;

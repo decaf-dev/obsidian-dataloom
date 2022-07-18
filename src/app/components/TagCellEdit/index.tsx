@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 
 import Menu from "../Menu";
-
-import TagCell from "../TagCell";
-import { Tag } from "src/app/services/appData/state/tag";
+import Tag from "../Tag";
 import SelectableTag from "../TagCellEdit/component/SelectableTag";
 import CreateTag from "./component/CreateTag";
+
+import { Tag as TagState } from "src/app/services/appData/state/tag";
 
 import "./styles.css";
 
@@ -13,11 +13,15 @@ interface Props {
 	menuId: string;
 	isOpen: boolean;
 	inputText: string;
-	top: number;
-	left: number;
+	style: {
+		top: string;
+		left: string;
+	};
 	color: string;
 	cellId: string;
-	tags: Tag[];
+	tags: TagState[];
+	tableScrollUpdateTime: number;
+	headerWidthUpdateTime: number;
 	onInputChange: (value: string) => void;
 	onTagClick: (tagId: string) => void;
 	onAddTag: (inputText: string) => void;
@@ -29,11 +33,12 @@ export default function TagCellEdit({
 	menuId,
 	isOpen,
 	inputText,
-	top,
-	left,
+	style,
 	color,
 	cellId,
 	tags,
+	headerWidthUpdateTime,
+	tableScrollUpdateTime,
 	onInputChange,
 	onTagClick,
 	onAddTag,
@@ -47,10 +52,10 @@ export default function TagCellEdit({
 	}
 
 	function renderSelectableTags() {
-		const filteredTags = tags.filter((tag: Tag) =>
+		const filteredTags = tags.filter((tag: TagState) =>
 			tag.content.includes(inputText)
 		);
-		const found = tags.find((tag: Tag) => tag.content === inputText);
+		const found = tags.find((tag: TagState) => tag.content === inputText);
 		return (
 			<>
 				{!found && inputText !== "" && (
@@ -61,40 +66,44 @@ export default function TagCellEdit({
 						onAddTag={onAddTag}
 					/>
 				)}
-				{filteredTags.map((tag: Tag) => (
-					<SelectableTag
-						key={tag.id}
-						id={tag.id}
-						color={tag.color}
-						content={tag.content}
-						onColorChange={onColorChange}
-						onClick={onTagClick}
-					/>
-				))}
+				{filteredTags
+					.filter((tag) => tag.content !== "")
+					.map((tag: TagState) => (
+						<SelectableTag
+							key={tag.id}
+							id={tag.id}
+							color={tag.color}
+							content={tag.content}
+							headerWidthUpdateTime={headerWidthUpdateTime}
+							tableScrollUpdateTime={tableScrollUpdateTime}
+							onColorChange={onColorChange}
+							onClick={onTagClick}
+						/>
+					))}
 			</>
 		);
 	}
 
 	return (
-		<Menu id={menuId} isOpen={isOpen} top={top} left={left}>
+		<Menu id={menuId} isOpen={isOpen} style={style}>
 			<div className="NLT__tag-menu">
 				<div className="NLT__tag-menu-container">
 					<div className="NLT__tag-menu-top">
 						{tags
 							.filter(
-								(tag: Tag) =>
+								(tag: TagState) =>
 									tag.selected.includes(cellId) === true
 							)
-							.map((tag: Tag) => (
-								<TagCell
+							.map((tag: TagState) => (
+								<Tag
 									key={tag.id}
-									cellId={cellId}
 									id={tag.id}
-									hideLink={true}
 									color={tag.color}
 									content={tag.content}
 									showRemove={true}
-									onRemoveClick={onRemoveTagClick}
+									onRemoveClick={(tagId) =>
+										onRemoveTagClick(cellId, tagId)
+									}
 								/>
 							))}
 						<input

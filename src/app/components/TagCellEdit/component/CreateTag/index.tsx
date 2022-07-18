@@ -1,5 +1,6 @@
 import React from "react";
-import TagCell from "src/app/components/TagCell";
+
+import Tag from "src/app/components/Tag";
 
 import "./styles.css";
 
@@ -18,7 +19,7 @@ export default function CreateTag({ content, color, onAddTag }: Props) {
 			}}
 		>
 			<div>Create&nbsp;</div>
-			<TagCell content={content} color={color} hideLink={true} />
+			<Tag content={content} color={color} />
 		</div>
 	);
 }

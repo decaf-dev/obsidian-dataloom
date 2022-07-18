@@ -6,8 +6,9 @@ export const VIEW_TYPE = {
 	LIVE_PREVIEW: "live-preview",
 	READING: "reading",
 };
-export interface saveState {
+export interface SaveState {
 	data: AppData;
 	viewType: ViewType;
 	shouldUpdate: boolean;
+	tableCacheVersion: number;
 }

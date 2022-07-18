@@ -1,0 +1,19 @@
+.NLT__table {
+	width: max-content;
+}
+
+.NLT__table,
+.NLT__thead,
+.NLT__tbody,
+.NLT__tfoot,
+.NLT__tr {
+	display: block;
+	box-sizing: border-box;
+	border: 0 !important;
+}
+
+.NLT__tfoot::after {
+	content: ' ';
+	display: block;
+	height: 10px;
+}

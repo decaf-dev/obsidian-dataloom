@@ -9,39 +9,48 @@ import "./styles.css";
 import HeaderMenuItem from "./components/HeaderMenuItem";
 import IconButton from "../IconButton";
 import Button from "../Button";
+import Switch from "../Switch";
+import { CONTENT_TYPE } from "src/app/constants";
 
 interface Props {
 	isOpen: boolean;
-	top: number;
-	left: number;
+	style: {
+		top: string;
+		left: string;
+	};
 	id: string;
 	menuId: string;
 	index: number;
+	shouldWrapOverflow: boolean;
+	useAutoWidth: boolean;
 	sortName: string;
 	content: string;
 	type: string;
-	inFirstHeader: boolean;
-	inLastHeader: boolean;
+	isFirstChild: boolean;
+	isLastChild: boolean;
 	onInsertColumnClick: (id: string, insertRight: boolean) => void;
 	onMoveColumnClick: (id: string, moveRight: boolean) => void;
 	onTypeSelect: (id: string, type: string) => void;
 	onSortSelect: (id: string, type: string, sortName: string) => void;
 	onDeleteClick: (id: string) => void;
 	onOutsideClick: (id: string, inputText: string) => void;
+	onAutoWidthToggle: (id: string, value: boolean) => void;
+	onWrapOverflowToggle: (id: string, value: boolean) => void;
 	onClose: () => void;
 }
 
 export default function HeaderMenu({
 	isOpen,
-	top,
-	left,
 	id,
 	menuId,
 	content,
+	style,
 	type,
 	sortName,
-	inFirstHeader,
-	inLastHeader,
+	useAutoWidth,
+	shouldWrapOverflow,
+	isFirstChild,
+	isLastChild,
 	onTypeSelect,
 	onSortSelect,
 	onDeleteClick,
@@ -49,6 +58,8 @@ export default function HeaderMenu({
 	onInsertColumnClick,
 	onMoveColumnClick,
 	onClose,
+	onWrapOverflowToggle,
+	onAutoWidthToggle,
 }: Props) {
 	const [inputText, setInputText] = useState("");
 	const [submenu, setSubmenu] = useState(null);
@@ -124,14 +135,14 @@ export default function HeaderMenu({
 	function renderMoveItems() {
 		return (
 			<ul className="NLT__header-menu-ul">
-				{!inFirstHeader && (
+				{!isFirstChild && (
 					<HeaderMenuItem
 						icon={ICON.KEYBOARD_DOUBLE_ARROW_LEFT}
 						iconText="Move Left"
 						onClick={() => handleMoveColumnClick(id, false)}
 					/>
 				)}
-				{!inLastHeader && (
+				{!isLastChild && (
 					<HeaderMenuItem
 						icon={ICON.KEYBOARD_DOUBLE_ARROW_RIGHT}
 						iconText="Move Right"
@@ -146,6 +157,7 @@ export default function HeaderMenu({
 		return (
 			<>
 				<div style={{ marginBottom: "10px" }}>
+					<p className="NLT__label">Header Name</p>
 					<input
 						className="NLT__input NLT__header-menu-input"
 						autoFocus
@@ -154,7 +166,33 @@ export default function HeaderMenu({
 						onChange={(e) => setInputText(e.target.value)}
 					/>
 				</div>
-				<Button onClick={() => handleDeleteClick(id)}>Delete</Button>
+				{(type === CONTENT_TYPE.TEXT ||
+					type === CONTENT_TYPE.NUMBER) && (
+					<div>
+						<p className="NLT__label">Auto Width</p>
+						<Switch
+							isChecked={useAutoWidth}
+							onToggle={(value) => onAutoWidthToggle(id, value)}
+						/>
+						{!useAutoWidth && (
+							<>
+								<p className="NLT__label">Wrap Overflow</p>
+								<Switch
+									isChecked={shouldWrapOverflow}
+									onToggle={(value) =>
+										onWrapOverflowToggle(id, value)
+									}
+								/>
+							</>
+						)}
+					</div>
+				)}
+				<Button
+					style={{ marginTop: "5px" }}
+					onClick={() => handleDeleteClick(id)}
+				>
+					Delete
+				</Button>
 			</>
 		);
 	}
@@ -180,8 +218,10 @@ export default function HeaderMenu({
 	}
 
 	function handleDeleteClick(id: string) {
-		onDeleteClick(id);
-		onClose();
+		if (window.confirm("Are you sure you want to delete this column?")) {
+			onDeleteClick(id);
+			onClose();
+		}
 	}
 
 	function renderMenu() {
@@ -229,7 +269,7 @@ export default function HeaderMenu({
 	}
 
 	return (
-		<Menu isOpen={isOpen} id={menuId} top={top} left={left}>
+		<Menu isOpen={isOpen} id={menuId} style={style}>
 			<div className="NLT__header-menu">
 				{submenu !== null ? <Submenu /> : renderMenu()}
 			</div>

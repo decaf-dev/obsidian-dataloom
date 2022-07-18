@@ -1,15 +1,20 @@
-import React from "react";
-import { useTextareaRef } from "src/app/services/hooks";
+import React, { useCallback } from "react";
 
 import Menu from "../Menu";
+
+import "./styles.css";
 
 interface Props {
 	menuId: string;
 	isOpen: boolean;
-	top: number;
-	left: number;
-	width: number;
-	height: number;
+	style: {
+		top: string;
+		left: string;
+		width: string;
+		height: string;
+		maxWidth?: string;
+		minWidth?: string;
+	};
 	value: string;
 	onInputChange: (value: string) => void;
 }
@@ -17,14 +22,19 @@ interface Props {
 export default function NumberCellEdit({
 	menuId,
 	isOpen,
-	top,
-	left,
-	width,
-	height,
+	style,
 	value,
 	onInputChange,
 }: Props) {
-	const inputRef = useTextareaRef(isOpen, value);
+	const inputRef = useCallback((node) => {
+		if (node) {
+			if (node instanceof HTMLElement) {
+				setTimeout(() => {
+					node.focus();
+				}, 1);
+			}
+		}
+	}, []);
 
 	function handleInputChange(value: string) {
 		value = value.replace("\n", "");
@@ -32,16 +42,10 @@ export default function NumberCellEdit({
 	}
 
 	return (
-		<Menu
-			id={menuId}
-			isOpen={isOpen}
-			top={top}
-			left={left}
-			width={width}
-			height={height}
-		>
-			<textarea
-				className="NLT__textarea"
+		<Menu id={menuId} isOpen={isOpen} style={style}>
+			<input
+				className="NLT__number-cell-edit"
+				type="number"
 				ref={inputRef}
 				autoFocus
 				value={value}
