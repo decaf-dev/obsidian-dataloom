@@ -16,6 +16,7 @@ import { numToPx, pxToNum } from "src/app/services/string/parsers";
 interface Props {
 	rowId: string;
 	headerWidthUpdateTime: number;
+	tableScrollUpdateTime: number;
 	isFirstRow: boolean;
 	isLastRow: boolean;
 	onMoveRowClick: (id: string, moveBelow: boolean) => void;
@@ -28,6 +29,7 @@ export default function RowMenu({
 	isFirstRow,
 	isLastRow,
 	headerWidthUpdateTime,
+	tableScrollUpdateTime,
 	onMoveRowClick,
 	onDeleteClick,
 	onInsertRowClick,
@@ -36,7 +38,10 @@ export default function RowMenu({
 	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
 		useMenu(menuId);
 
-	const { positionRef, position } = usePositionRef([headerWidthUpdateTime]);
+	const { positionRef, position } = usePositionRef([
+		headerWidthUpdateTime,
+		tableScrollUpdateTime,
+	]);
 
 	useEffect(() => {
 		if (isMenuRequestingClose) {

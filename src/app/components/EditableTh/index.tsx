@@ -18,6 +18,7 @@ interface Props {
 	index: number;
 	width: string;
 	headerWidthUpdateTime: number;
+	tableScrollUpdateTime: number;
 	content: string;
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
@@ -45,6 +46,7 @@ export default function EditableTh({
 	useAutoWidth,
 	shouldWrapOverflow,
 	type,
+	tableScrollUpdateTime,
 	sortName,
 	isFirstChild,
 	isLastChild,
@@ -61,7 +63,10 @@ export default function EditableTh({
 	const menuId = useMenuId();
 	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
 		useMenu(menuId);
-	const { positionRef, position } = usePositionRef([headerWidthUpdateTime]);
+	const { positionRef, position } = usePositionRef([
+		headerWidthUpdateTime,
+		tableScrollUpdateTime,
+	]);
 	const mouseDownX = useRef(0);
 	const isResizing = useRef(false);
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 import { Notice } from "obsidian";
 import TextCell from "../TextCell";
@@ -36,6 +36,7 @@ interface Props {
 	width: string;
 	height: string;
 	headerWidthUpdateTime: number;
+	tableScrollUpdateTime: number;
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
 	tagUpdate: {
@@ -64,6 +65,7 @@ export default function EditableTd({
 	width,
 	height,
 	headerWidthUpdateTime,
+	tableScrollUpdateTime,
 	shouldWrapOverflow,
 	useAutoWidth,
 	tags,
@@ -84,9 +86,9 @@ export default function EditableTd({
 		useMenu(menuId);
 
 	const { positionRef, position } = usePositionRef([
-		isMenuOpen,
 		content.length,
 		headerWidthUpdateTime,
+		tableScrollUpdateTime,
 	]);
 
 	const { id, headerId, type } = cell;
@@ -145,7 +147,7 @@ export default function EditableTd({
 		}
 	}, [isMenuRequestingClose]);
 
-	async function handleCellContextClick(_e: React.MouseEvent) {
+	async function handleCellContextClick() {
 		if (DEBUG.EDITABLE_TD)
 			console.log("[EditableTd] handleCellContextClick()");
 		try {
@@ -280,6 +282,7 @@ export default function EditableTd({
 						cellId={id}
 						inputText={tagInputText}
 						headerWidthUpdateTime={headerWidthUpdateTime}
+						tableScrollUpdateTime={tableScrollUpdateTime}
 						tags={tags}
 						menuId={menuId}
 						isOpen={isMenuOpen}

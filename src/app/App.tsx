@@ -27,6 +27,7 @@ import {
 import { v4 as uuid } from "uuid";
 import { sortAppDataForSave } from "./services/appData/external/saveUtils";
 import { logFunc } from "./services/appData/debug";
+import { useScrollUpdate } from "./services/hooks";
 interface Props {
 	plugin: NltPlugin;
 	settings: NltSettings;
@@ -717,8 +718,18 @@ export default function App({
 		);
 	}, [cellSizes]);
 
+	const {
+		scrollTime: tableScrollUpdateTime,
+		handleScroll: handleTableScroll,
+	} = useScrollUpdate(150);
+
 	return (
-		<div id={tableId} className="NLT__app" tabIndex={0}>
+		<div
+			id={tableId}
+			className="NLT__app"
+			tabIndex={0}
+			onScroll={handleTableScroll}
+		>
 			<Table
 				headers={appData.headers.map((header, columnIndex) => {
 					const {
@@ -745,6 +756,7 @@ export default function App({
 								shouldWrapOverflow={shouldWrapOverflow}
 								useAutoWidth={useAutoWidth}
 								headerWidthUpdateTime={headerWidthUpdateTime}
+								tableScrollUpdateTime={tableScrollUpdateTime}
 								index={columnIndex}
 								content={content}
 								type={type}
@@ -788,6 +800,9 @@ export default function App({
 											key={cell.id}
 											cell={cell}
 											headerType={header.type}
+											tableScrollUpdateTime={
+												tableScrollUpdateTime
+											}
 											headerWidthUpdateTime={
 												headerWidthUpdateTime
 											}
@@ -828,6 +843,9 @@ export default function App({
 								>
 									<div className="NLT__td-container">
 										<RowMenu
+											tableScrollUpdateTime={
+												tableScrollUpdateTime
+											}
 											headerWidthUpdateTime={
 												headerWidthUpdateTime
 											}

@@ -16,6 +16,7 @@ interface Props {
 	content: string;
 	color: string;
 	headerWidthUpdateTime: number;
+	tableScrollUpdateTime: number;
 	onClick: (tagId: string) => void;
 	onColorChange: (tagId: string, color: string) => void;
 }
@@ -25,6 +26,7 @@ export default function SelectableTag({
 	content,
 	color,
 	headerWidthUpdateTime,
+	tableScrollUpdateTime,
 	onClick,
 	onColorChange,
 }: Props) {
@@ -33,7 +35,10 @@ export default function SelectableTag({
 		menuId,
 		MENU_LEVEL.TWO
 	);
-	const { positionRef, position } = usePositionRef([headerWidthUpdateTime]);
+	const { positionRef, position } = usePositionRef([
+		headerWidthUpdateTime,
+		tableScrollUpdateTime,
+	]);
 
 	useEffect(() => {
 		if (isMenuRequestingClose) {

@@ -141,3 +141,47 @@ export const useDisableScroll = (isOpen: boolean): void => {
 		};
 	}, [isOpen]);
 };
+
+export const useDebounceInterval = (
+	lastEventTime: number,
+	waitTime: number
+) => {
+	const [finished, setFinished] = useState(false);
+
+	useEffect(() => {
+		let intervalId: NodeJS.Timer = null;
+		function startTimer() {
+			intervalId = setInterval(() => {
+				if (Date.now() - lastEventTime < waitTime) return;
+				clearInterval(intervalId);
+				setFinished(true);
+			}, 50);
+		}
+		if (lastEventTime !== 0) {
+			setFinished(false);
+			startTimer();
+		}
+		return () => clearInterval(intervalId);
+	}, [lastEventTime]);
+
+	return finished;
+};
+
+export const useScrollUpdate = (waitTime: number) => {
+	const [eventTime, setEventTime] = useState(0);
+	const [scrollTime, setScrollTime] = useState(0);
+	const finished = useDebounceInterval(eventTime, waitTime);
+
+	useEffect(() => {
+		if (finished) setScrollTime(Date.now());
+	}, [finished]);
+
+	function handleScroll() {
+		setEventTime(Date.now());
+	}
+
+	return {
+		handleScroll,
+		scrollTime,
+	};
+};
