@@ -12,6 +12,8 @@ interface Props {
 		left: string;
 		width: string;
 		height: string;
+		maxWidth?: string;
+		minWidth?: string;
 	};
 	value: string;
 	onInputChange: (value: string) => void;

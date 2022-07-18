@@ -263,7 +263,13 @@ export default function EditableTd({
 					<NumberCellEdit
 						menuId={menuId}
 						isOpen={isMenuOpen}
-						style={position}
+						style={{
+							...position,
+							...((useAutoWidth || !shouldWrapOverflow) && {
+								maxWidth: "300px",
+							}),
+							minWidth: "125px",
+						}}
 						value={content}
 						onInputChange={handleNumberInputChange}
 					/>
