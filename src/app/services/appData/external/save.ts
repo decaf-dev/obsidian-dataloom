@@ -6,7 +6,6 @@ import { persistAppData } from "./persist";
 import NltPlugin from "../../../../../main";
 import { DEBUG } from "src/app/constants";
 import { ViewType } from "../state/saveState";
-import { appDataTypesToMarkdown } from "../debug";
 
 /**
  * Saves app data
