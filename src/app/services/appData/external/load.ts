@@ -127,6 +127,7 @@ export const loadAppData = async (
 		data,
 		shouldUpdate: false,
 		viewType: findCurrentViewType(el),
+		tableCacheVersion: CURRENT_TABLE_CACHE_VERSION,
 	};
 	await plugin.saveSettings();
 	return { tableIndex, data };
