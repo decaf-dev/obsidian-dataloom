@@ -10,6 +10,7 @@ import IconButton from "src/app/components/IconButton";
 import TagColorMenu from "src/app/components/TagColorMenu";
 import { useMenuId, usePositionRef } from "src/app/services/hooks";
 import { useMenu } from "src/app/components/MenuProvider";
+import { numToPx, pxToNum } from "src/app/services/string/parsers";
 interface Props {
 	id: string;
 	content: string;
@@ -69,8 +70,10 @@ export default function SelectableTag({
 				menuId={menuId}
 				isOpen={isMenuOpen}
 				selectedColor={color}
-				top={position.top - 77}
-				left={position.left + 110}
+				style={{
+					top: numToPx(pxToNum(position.top) - 77),
+					left: numToPx(pxToNum(position.left) + 110),
+				}}
 				onColorClick={(color) => handleColorChange(color)}
 			/>
 		</div>

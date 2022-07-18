@@ -147,8 +147,12 @@ export default function EditableTh({
 			</th>
 			<HeaderMenu
 				isOpen={isMenuOpen}
-				top={position.top + position.height}
-				left={position.left}
+				style={{
+					top: numToPx(
+						pxToNum(position.top) + pxToNum(position.height)
+					),
+					left: position.left,
+				}}
 				id={id}
 				shouldWrapOverflow={shouldWrapOverflow}
 				useAutoWidth={useAutoWidth}

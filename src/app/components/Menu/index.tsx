@@ -7,22 +7,19 @@ import "./styles.css";
 interface Props {
 	id: string;
 	isOpen: boolean;
-	top: number;
-	left: number;
-	width?: number;
-	height?: number;
+	style: {
+		top: string;
+		left: string;
+		width?: string;
+		height?: string;
+		maxWidth?: string;
+		minWidth?: string;
+		minHeight?: string;
+	};
 	children: React.ReactNode;
 }
 
-export default function Menu({
-	id,
-	isOpen,
-	top,
-	left,
-	children,
-	width,
-	height,
-}: Props) {
+export default function Menu({ id, isOpen, style, children }: Props) {
 	//Add onMouseDown to prevent blur event being called in the FocusProvider
 	//See: https://github.com/react-toolbox/react-toolbox/issues/1323#issuecomment-656778859
 	return (
@@ -34,17 +31,7 @@ export default function Menu({
 						id={id}
 						onMouseDown={(e) => e.preventDefault()}
 					>
-						<div
-							className="NLT__menu-container"
-							style={{
-								top: numToPx(top),
-								left: numToPx(left),
-								width: width ? numToPx(width) : "fit-content",
-								height: height
-									? numToPx(height)
-									: "fit-content",
-							}}
-						>
+						<div className="NLT__menu-container" style={style}>
 							{children}
 						</div>
 					</div>,

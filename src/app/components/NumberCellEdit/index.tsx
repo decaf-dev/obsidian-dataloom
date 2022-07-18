@@ -7,10 +7,12 @@ import "./styles.css";
 interface Props {
 	menuId: string;
 	isOpen: boolean;
-	top: number;
-	left: number;
-	width: number;
-	height: number;
+	style: {
+		top: string;
+		left: string;
+		width: string;
+		height: string;
+	};
 	value: string;
 	onInputChange: (value: string) => void;
 }
@@ -18,10 +20,7 @@ interface Props {
 export default function NumberCellEdit({
 	menuId,
 	isOpen,
-	top,
-	left,
-	width,
-	height,
+	style,
 	value,
 	onInputChange,
 }: Props) {
@@ -41,14 +40,7 @@ export default function NumberCellEdit({
 	}
 
 	return (
-		<Menu
-			id={menuId}
-			isOpen={isOpen}
-			top={top}
-			left={left}
-			width={width}
-			height={height}
-		>
+		<Menu id={menuId} isOpen={isOpen} style={style}>
 			<input
 				className="NLT__number-cell-edit"
 				type="number"

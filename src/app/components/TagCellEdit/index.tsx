@@ -13,8 +13,10 @@ interface Props {
 	menuId: string;
 	isOpen: boolean;
 	inputText: string;
-	top: number;
-	left: number;
+	style: {
+		top: string;
+		left: string;
+	};
 	color: string;
 	cellId: string;
 	tags: TagState[];
@@ -30,8 +32,7 @@ export default function TagCellEdit({
 	menuId,
 	isOpen,
 	inputText,
-	top,
-	left,
+	style,
 	color,
 	cellId,
 	tags,
@@ -81,7 +82,7 @@ export default function TagCellEdit({
 	}
 
 	return (
-		<Menu id={menuId} isOpen={isOpen} top={top} left={left}>
+		<Menu id={menuId} isOpen={isOpen} style={style}>
 			<div className="NLT__tag-menu">
 				<div className="NLT__tag-menu-container">
 					<div className="NLT__tag-menu-top">

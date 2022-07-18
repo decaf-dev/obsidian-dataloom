@@ -9,10 +9,16 @@ interface Props {
 	menuId: string;
 	isOpen: boolean;
 	useAutoWidth: boolean;
-	top: number;
-	left: number;
-	width: number;
-	height: number;
+	shouldWrapOverflow: boolean;
+	style: {
+		top: string;
+		left: string;
+		width: string;
+		height: string;
+		maxWidth?: string;
+		minWidth?: string;
+		minHeight?: string;
+	};
 	value: string;
 	onInputChange: (value: string) => void;
 }
@@ -20,11 +26,9 @@ interface Props {
 export default function TextCellEdit({
 	menuId,
 	isOpen,
-	top,
-	left,
-	width,
-	height,
+	style,
 	useAutoWidth,
+	shouldWrapOverflow,
 	value,
 	onInputChange,
 }: Props) {
@@ -35,20 +39,10 @@ export default function TextCellEdit({
 		onInputChange(value);
 	}
 
-	let className = "NLT__textarea";
-	if (useAutoWidth) className += " NLT__auto-width";
-
 	return (
-		<Menu
-			id={menuId}
-			isOpen={isOpen}
-			top={top}
-			left={left}
-			width={width}
-			height={height}
-		>
+		<Menu id={menuId} isOpen={isOpen} style={style}>
 			<textarea
-				className={className}
+				className="NLT__textarea"
 				ref={inputRef}
 				autoFocus
 				value={value}

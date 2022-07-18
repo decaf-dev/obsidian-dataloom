@@ -1,6 +1,7 @@
 import { useCallback, useState, useEffect, useRef } from "react";
 
 import { v4 as uuid } from "uuid";
+import { numToPx } from "../string/parsers";
 
 export const useForceUpdate = () => {
 	const [, setValue] = useState(0);
@@ -79,10 +80,10 @@ export const useContentResizeTime = () => {
 
 export const usePositionRef = (deps: any[] = []) => {
 	const [position, setPosition] = useState({
-		top: 0,
-		left: 0,
-		width: 0,
-		height: 0,
+		top: "0px",
+		left: "0px",
+		width: "0px",
+		height: "0px",
 	});
 	const resizeTime = useContentResizeTime();
 	const positionRef = useCallback(
@@ -94,10 +95,10 @@ export const usePositionRef = (deps: any[] = []) => {
 				//This will make sure that the rendered cell and the input cell are the same size
 				const { offsetWidth, offsetHeight } = node;
 				setPosition({
-					top,
-					left,
-					width: offsetWidth,
-					height: offsetHeight,
+					top: numToPx(top),
+					left: numToPx(left),
+					width: numToPx(offsetWidth),
+					height: numToPx(offsetHeight),
 				});
 			}
 		},

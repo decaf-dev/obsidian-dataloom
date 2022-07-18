@@ -244,11 +244,16 @@ export default function EditableTd({
 					<TextCellEdit
 						menuId={menuId}
 						isOpen={isMenuOpen}
-						top={position.top}
-						left={position.left}
-						width={position.width}
-						height={position.height}
+						style={{
+							...position,
+							...((useAutoWidth || !shouldWrapOverflow) && {
+								maxWidth: "300px",
+							}),
+							minWidth: "125px",
+							minHeight: "75px",
+						}}
 						useAutoWidth={useAutoWidth}
+						shouldWrapOverflow={shouldWrapOverflow}
 						value={content}
 						onInputChange={handleTextInputChange}
 					/>
@@ -258,10 +263,7 @@ export default function EditableTd({
 					<NumberCellEdit
 						menuId={menuId}
 						isOpen={isMenuOpen}
-						top={position.top}
-						left={position.left}
-						width={position.width}
-						height={position.height}
+						style={position}
 						value={content}
 						onInputChange={handleNumberInputChange}
 					/>
@@ -275,8 +277,10 @@ export default function EditableTd({
 						tags={tags}
 						menuId={menuId}
 						isOpen={isMenuOpen}
-						top={position.top}
-						left={position.left}
+						style={{
+							top: position.top,
+							left: position.left,
+						}}
 						color={tagColor}
 						onInputChange={setTagInputText}
 						onColorChange={onColorChange}
@@ -290,10 +294,7 @@ export default function EditableTd({
 					<DateCellEdit
 						menuId={menuId}
 						isOpen={isMenuOpen}
-						top={position.top}
-						left={position.left}
-						width={position.width}
-						height={position.height}
+						style={position}
 						selectedDate={
 							isDate(content) ? new Date(content) : new Date()
 						}

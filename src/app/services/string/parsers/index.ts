@@ -195,7 +195,7 @@ export const dateToString = (date: Date): string => {
 };
 
 export const pxToNum = (pixels: string) => {
-	return parseInt(pixels.split("px")[0]);
+	return parseFloat(pixels.split("px")[0]);
 };
 
 export const numToPx = (num: number) => {

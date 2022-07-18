@@ -14,8 +14,10 @@ import { CONTENT_TYPE } from "src/app/constants";
 
 interface Props {
 	isOpen: boolean;
-	top: number;
-	left: number;
+	style: {
+		top: string;
+		left: string;
+	};
 	id: string;
 	menuId: string;
 	index: number;
@@ -39,11 +41,10 @@ interface Props {
 
 export default function HeaderMenu({
 	isOpen,
-	top,
-	left,
 	id,
 	menuId,
 	content,
+	style,
 	type,
 	sortName,
 	useAutoWidth,
@@ -268,7 +269,7 @@ export default function HeaderMenu({
 	}
 
 	return (
-		<Menu isOpen={isOpen} id={menuId} top={top} left={left}>
+		<Menu isOpen={isOpen} id={menuId} style={style}>
 			<div className="NLT__header-menu">
 				{submenu !== null ? <Submenu /> : renderMenu()}
 			</div>

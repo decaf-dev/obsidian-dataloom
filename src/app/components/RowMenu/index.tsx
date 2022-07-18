@@ -11,6 +11,8 @@ import { ICON } from "src/app/constants";
 import { usePositionRef } from "src/app/services/hooks";
 import { useMenu } from "../MenuProvider";
 import { useDisableScroll, useMenuId } from "src/app/services/hooks";
+import { numToPx, pxToNum } from "src/app/services/string/parsers";
+
 interface Props {
 	rowId: string;
 	headerWidthUpdateTime: number;
@@ -69,8 +71,14 @@ export default function RowMenu({
 			<Menu
 				id={menuId}
 				isOpen={isMenuOpen}
-				top={position.top + position.height}
-				left={position.left - position.width - 65}
+				style={{
+					top: numToPx(
+						pxToNum(position.top) + pxToNum(position.height)
+					),
+					left: numToPx(
+						pxToNum(position.left) - pxToNum(position.width) - 65
+					),
+				}}
 			>
 				<div className="NLT__drag-menu">
 					{Object.values(DRAG_MENU_ITEM).map((item) => {
