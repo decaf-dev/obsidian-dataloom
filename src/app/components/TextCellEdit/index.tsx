@@ -8,10 +8,17 @@ import "./styles.css";
 interface Props {
 	menuId: string;
 	isOpen: boolean;
-	top: number;
-	left: number;
-	width: number;
-	height: number;
+	useAutoWidth: boolean;
+	shouldWrapOverflow: boolean;
+	style: {
+		top: string;
+		left: string;
+		width: string;
+		height: string;
+		maxWidth?: string;
+		minWidth?: string;
+		minHeight?: string;
+	};
 	value: string;
 	onInputChange: (value: string) => void;
 }
@@ -19,10 +26,9 @@ interface Props {
 export default function TextCellEdit({
 	menuId,
 	isOpen,
-	top,
-	left,
-	width,
-	height,
+	style,
+	useAutoWidth,
+	shouldWrapOverflow,
 	value,
 	onInputChange,
 }: Props) {
@@ -34,14 +40,7 @@ export default function TextCellEdit({
 	}
 
 	return (
-		<Menu
-			id={menuId}
-			isOpen={isOpen}
-			top={top}
-			left={left}
-			width={width}
-			height={height}
-		>
+		<Menu id={menuId} isOpen={isOpen} style={style}>
 			<textarea
 				className="NLT__textarea"
 				ref={inputRef}

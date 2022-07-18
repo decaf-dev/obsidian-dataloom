@@ -1,7 +1,7 @@
 import { NltSettings } from "../../settings";
 import NltPlugin from "main";
 import { updateAppDataFromSavedState } from "./merge";
-import { DEBUG } from "src/app/constants";
+import { CURRENT_TABLE_CACHE_VERSION, DEBUG } from "src/app/constants";
 import { appDataToMarkdown } from "./saveUtils";
 import {
 	findTableIndex,
@@ -36,18 +36,52 @@ export const loadAppData = async (
 		return { tableIndex, data: null };
 	}
 
-	//Migration from 3.4.0
+	//Migration from before 3.4.0
 	if (settings.appData[sourcePath]) {
 		if (settings.appData[sourcePath][tableIndex]) {
-			const data = settings.appData[sourcePath][tableIndex];
+			console.log("Migrating from before 3.4.0");
+			const appData = settings.appData[sourcePath][tableIndex];
 			settings.state[sourcePath] = {};
 			settings.state[sourcePath][tableIndex] = {
-				data,
+				data: appData,
 				viewType: "live-preview",
 				shouldUpdate: false,
+				tableCacheVersion: 340,
 			};
 			delete settings.appData[sourcePath][tableIndex];
 			await plugin.saveSettings();
+		}
+	}
+
+	if (settings.state[sourcePath]) {
+		if (settings.state[sourcePath][tableIndex]) {
+			const data = settings.state[sourcePath][tableIndex];
+			let tableCacheVersion = data.tableCacheVersion;
+			//Handle migration from before 4.1.0
+			if (!tableCacheVersion) {
+				console.log("Migrating from before 4.1.0");
+				tableCacheVersion = 400;
+			}
+			if (tableCacheVersion < CURRENT_TABLE_CACHE_VERSION) {
+				let obj = { ...settings.state[sourcePath][tableIndex] };
+				if (tableCacheVersion < 410) {
+					obj = {
+						...obj,
+						data: {
+							...obj.data,
+							headers: obj.data.headers.map((header) => {
+								return {
+									...header,
+									useAutoWidth: false,
+									shouldWrapOverflow: true,
+								};
+							}),
+						},
+					};
+				}
+				settings.state[sourcePath][tableIndex] = obj;
+				await plugin.saveSettings();
+			}
 		}
 	}
 
@@ -95,6 +129,7 @@ export const loadAppData = async (
 		data,
 		shouldUpdate: false,
 		viewType: findCurrentViewType(el),
+		tableCacheVersion: CURRENT_TABLE_CACHE_VERSION,
 	};
 	await plugin.saveSettings();
 	return { tableIndex, data };

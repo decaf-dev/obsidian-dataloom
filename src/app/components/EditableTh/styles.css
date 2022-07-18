@@ -1,46 +1,43 @@
 .NLT__th {
+    display: inline-block;
     text-align: left;
-    background-clip: padding-box;
-    /* Fix border not resizing with div */
-    /* https: //github.com/mui/material-ui/issues/3687 */
-   /* transform: translate3d(0px, 0px, 0px); */
+    border-top: 1px solid var(--background-modifier-border) !important;
+    border-left: 1px solid var(--background-modifier-border) !important;
+    border-right: 0 !important;
+    border-bottom: 0 !important;
+    box-sizing: border-box !important;
+    padding: 0 !important;
+    height: 1.8rem; /* TODO put into different area? */
 }
-
-/* .NLT__th:focus-visible {
-    border: 1px solid blue;
-    border-style: double;
-} */
 
 .NLT__th:last-child {
-    border: 0 !important;
+    border-top: 0 !important;
 }
 
-.NLT__header-content-container {
+.NLT__th-container {
     display: flex;
     justify-content: space-between;
+    width: 100%;
 }
 
-.NLT__header-resize-container {
-    position: relative;
-}
-
-
-.NLT__header-content {
+.NLT__th-content {
     /* Use 100% so that the resize indicator appears at the end */
     width: 100%;
-    padding-right: 10px;
-    margin-right: 5px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     user-select: none;
+    padding: 4px 10px;
 }
 
-.NLT__header-resize {
+.NLT__th-resize-container {
+    position: relative;
+}
+
+.NLT__th-resize {
     position: absolute;
     cursor: col-resize;
+    left: -3px;
     width: 10px;
-    left: 7px;
-    min-height: 25px;
     height: 100%;
 }

@@ -1,7 +1,3 @@
-export interface TableRow extends Row {
-	component: React.ReactNode;
-}
-
 export interface Row {
 	id: string;
 	initialIndex: number;

@@ -97,19 +97,26 @@
 	margin-left: 4px;
 }
 
-/*
-* Input
+/**
+* Overflow
 */
-.NLT__input {
-	height: 100%;
-	width: 100%;
-	padding: 4px 10px !important;
+.NLT__auto-width {
+	overflow-wrap: normal; /* TODO is this prop redunant? */
+	white-space: nowrap;
 }
 
-.NLT__input--no-border {
-	border: 0 !important;
+.NLT__wrap-overflow {
+	overflow-wrap: break-word;
 }
 
-.NLT__input--number {
-	text-align: right;
+.NLT__hide-overflow {
+	overflow: hidden;
+	overflow-wrap: normal;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.NLT__label {
+	font-size: 0.9rem;
+	margin: 0;
 }

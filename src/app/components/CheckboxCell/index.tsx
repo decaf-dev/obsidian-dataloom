@@ -9,10 +9,7 @@ interface Props {
 
 export default function CheckboxCell({ isChecked, onCheckboxChange }: Props) {
 	return (
-		<div
-			className="NLT__checkbox-cell"
-			onClick={() => onCheckboxChange(!isChecked)}
-		>
+		<div className="NLT__checkbox-cell">
 			<input
 				className="task-list-item-checkbox"
 				type="checkbox"

@@ -9,7 +9,7 @@ import {
 	DateCell,
 	CheckBoxCell,
 } from "../state/cell";
-import { Tag, initialTag } from "../state/tag";
+import { Tag } from "../state/tag";
 import { AppData } from "../state/appData";
 import { Header, initialHeader } from "../state/header";
 import { Row, initialRow } from "../state/row";
@@ -172,8 +172,7 @@ export const findNumberCell = (
 	headerId: string,
 	content: string
 ) => {
-	const number = content === "" ? -1 : parseInt(content);
-	return new NumberCell(cellId, rowId, headerId, number);
+	return new NumberCell(cellId, rowId, headerId, content);
 };
 
 export const findTagCell = (

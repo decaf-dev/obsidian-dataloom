@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 
 import EditableTd from "./components/EditableTd";
 import Table from "./components/Table";
@@ -12,8 +12,9 @@ import { Cell } from "./services/appData/state/cell";
 import { AppData } from "./services/appData/state/appData";
 import { NltSettings } from "./services/settings";
 import { saveAppData } from "./services/appData/external/save";
+import { numToPx, pxToNum } from "./services/string/parsers";
 
-import { CONTENT_TYPE, DEBUG } from "./constants";
+import { CONTENT_TYPE, DEBUG, MIN_COLUMN_WIDTH_PX } from "./constants";
 
 import "./app.css";
 import NltPlugin from "main";
@@ -26,6 +27,7 @@ import {
 import { v4 as uuid } from "uuid";
 import { sortAppDataForSave } from "./services/appData/external/saveUtils";
 import { logFunc } from "./services/appData/debug";
+import { useScrollUpdate } from "./services/hooks";
 interface Props {
 	plugin: NltPlugin;
 	settings: NltSettings;
@@ -47,23 +49,25 @@ export default function App({
 }: Props) {
 	const [oldAppData, setOldAppData] = useState<AppData>(data);
 	const [appData, setAppData] = useState<AppData>(data);
+	const [tableId] = useState(uuid());
 	const [debounceUpdate, setDebounceUpdate] = useState(0);
 	const [tagUpdate, setTagUpdate] = useState({
 		time: 0,
 		cellId: "",
 	});
 	const [saveTime, setSaveTime] = useState(0);
+	const [headerWidthUpdateTime, setHeaderWidthUpdateTime] = useState(0);
 
-	useEffect(() => {
-		// Sort on first render
-		// If a user deletes or adds a new row (by copying and pasting, for example)
-		// then we want to make sure that value is sorted in
-		for (let i = 0; i < appData.headers.length; i++) {
-			const header = appData.headers[i];
-			if (header.sortName !== SORT.DEFAULT.name)
-				sortRows(header.id, header.type, header.sortName);
-		}
-	}, []);
+	// useEffect(() => {
+	// 	// Sort on first render
+	// 	// If a user deletes or adds a new row (by copying and pasting, for example)
+	// 	// then we want to make sure that value is sorted in
+	// 	for (let i = 0; i < appData.headers.length; i++) {
+	// 		const header = appData.headers[i];
+	// 		if (header.sortName !== SORT.DEFAULT.name)
+	// 			sortRows(header.id, header.type, header.sortName);
+	// 	}
+	// }, []);
 
 	useEffect(() => {
 		async function handleUpdate() {
@@ -105,39 +109,39 @@ export default function App({
 		return () => clearInterval(intervalId);
 	}, [debounceUpdate]);
 
-	//If a table updates in editing mode or reading mode, update the other table
-	//TODO change with notifier in the main.js
-	//TODO why doesn't this always update?
-	useEffect(() => {
-		let intervalId: NodeJS.Timer = null;
-		function startTimer() {
-			intervalId = setInterval(async () => {
-				if (settings.state[sourcePath]) {
-					if (settings.state[sourcePath][tableIndex]) {
-						const { shouldUpdate, viewType } =
-							settings.state[sourcePath][tableIndex];
+	// //If a table updates in editing mode or reading mode, update the other table
+	// //TODO change with notifier in the main.js
+	// //TODO why doesn't this always update?
+	// useEffect(() => {
+	// 	let intervalId: NodeJS.Timer = null;
+	// 	function startTimer() {
+	// 		intervalId = setInterval(async () => {
+	// 			if (settings.state[sourcePath]) {
+	// 				if (settings.state[sourcePath][tableIndex]) {
+	// 					const { shouldUpdate, viewType } =
+	// 						settings.state[sourcePath][tableIndex];
 
-						const currentViewType = findCurrentViewType(el);
+	// 					const currentViewType = findCurrentViewType(el);
 
-						if (shouldUpdate && viewType !== currentViewType) {
-							clearInterval(intervalId);
-							settings.state[sourcePath][
-								tableIndex
-							].shouldUpdate = false;
-							await plugin.saveSettings();
-							const savedData =
-								settings.state[sourcePath][tableIndex].data;
-							setOldAppData(savedData);
-							setAppData(savedData);
-							startTimer();
-						}
-					}
-				}
-			}, 500);
-		}
-		startTimer();
-		return () => clearInterval(intervalId);
-	}, []);
+	// 					if (shouldUpdate && viewType !== currentViewType) {
+	// 						clearInterval(intervalId);
+	// 						settings.state[sourcePath][
+	// 							tableIndex
+	// 						].shouldUpdate = false;
+	// 						await plugin.saveSettings();
+	// 						const savedData =
+	// 							settings.state[sourcePath][tableIndex].data;
+	// 						setOldAppData(savedData);
+	// 						setAppData(savedData);
+	// 						startTimer();
+	// 					}
+	// 				}
+	// 			}
+	// 		}, 500);
+	// 	}
+	// 	startTimer();
+	// 	return () => clearInterval(intervalId);
+	// }, []);
 
 	function handleAddColumn() {
 		if (DEBUG.APP) console.log("[App]: handleAddColumn called.");
@@ -446,8 +450,13 @@ export default function App({
 		setSaveTime(Date.now());
 	}
 
-	function handleWidthChange(id: string, newWidth: number) {
-		if (DEBUG.APP) console.log("[App]: handleWidthChange called.");
+	function handleHeaderWidthChange(id: string, width: string) {
+		if (DEBUG.APP) {
+			logFunc(COMPONENT_NAME, "handleHeaderWidthChange", {
+				id,
+				width,
+			});
+		}
 		setAppData((prevState: AppData) => {
 			return {
 				...prevState,
@@ -455,13 +464,14 @@ export default function App({
 					if (header.id === id) {
 						return {
 							...header,
-							width: `${newWidth}px`,
+							width,
 						};
 					}
 					return header;
 				}),
 			};
 		});
+		setHeaderWidthUpdateTime(Date.now());
 		setDebounceUpdate(Date.now());
 	}
 
@@ -567,139 +577,246 @@ export default function App({
 		setSaveTime(Date.now());
 	}
 
-	// const [previewStyle, setPreviewStyle] = useState({
-	// 	viewWidth: 0,
-	// 	sizerWidth: 0,
-	// });
+	function handleAutoWidthToggle(headerId: string, value: boolean) {
+		setAppData((prevState) => {
+			return {
+				...prevState,
+				headers: prevState.headers.map((header) => {
+					if (header.id === headerId) {
+						return {
+							...header,
+							useAutoWidth: value,
+						};
+					}
+					return header;
+				}),
+			};
+		});
+	}
 
-	// useEffect(() => {
-	// 	// setTimeout(() => {
-	// 	const viewEl = document.querySelector(".markdown-preview-view");
-	// 	const sizerEl = document.querySelector(".markdown-preview-sizer");
-	// 	if (viewEl instanceof HTMLElement && sizerEl instanceof HTMLElement) {
-	// 		const viewWidth =
-	// 			parseInt(
-	// 				window
-	// 					.getComputedStyle(viewEl)
-	// 					.getPropertyValue("width")
-	// 					.split("px")[0]
-	// 			) - 60;
+	function handleWrapContentToggle(headerId: string, value: boolean) {
+		setAppData((prevState) => {
+			return {
+				...prevState,
+				headers: prevState.headers.map((header) => {
+					if (header.id === headerId) {
+						return {
+							...header,
+							shouldWrapOverflow: value,
+						};
+					}
+					return header;
+				}),
+			};
+		});
+	}
 
-	// 		const sizerWidth = parseInt(
-	// 			window
-	// 				.getComputedStyle(sizerEl)
-	// 				.getPropertyValue("width")
-	// 				.split("px")[0]
-	// 		);
+	function measureElement(
+		textContent: string,
+		useAutoWidth: boolean,
+		columnWidth: string,
+		shouldWrapOverflow: boolean
+	): { width: number; height: number } {
+		const ruler = document.createElement("div");
 
-	// 		setPreviewStyle({
-	// 			viewWidth,
-	// 			sizerWidth,
-	// 		});
-	// 	}
-	// 	// }, 1);
-	// }, [resizeTime]);
+		if (useAutoWidth) {
+			ruler.style.width = "max-content";
+			ruler.style.height = "auto";
+			ruler.style.overflowWrap = "normal";
+		} else {
+			ruler.style.width = columnWidth;
+			ruler.style.height = "max-content";
+			if (shouldWrapOverflow) {
+				ruler.style.overflowWrap = "break-word";
+			} else {
+				ruler.style.overflowWrap = "normal";
+				ruler.style.whiteSpace = "nowrap";
+				ruler.style.overflow = "hidden";
+				ruler.style.textOverflow = "ellipsis";
+			}
+		}
+		//This is the same as the padding set to every cell
+		ruler.style.paddingTop = "4px";
+		ruler.style.paddingBottom = "4px";
+		ruler.style.paddingLeft = "10px";
+		ruler.style.paddingRight = "10px";
+		ruler.textContent = textContent;
 
-	// const [tableWidth, setTableWidth] = useState(0);
-	// const didMount = useRef(false);
-	// const tableRef = useCallback(
-	// 	(node) => {
-	// 		function updateWidth() {
-	// 			if (node) {
-	// 				if (node instanceof HTMLElement) {
-	// 					console.log(node.offsetWidth);
-	// 					setTableWidth(node.offsetWidth);
-	// 				}
-	// 			}
-	// 			if (!didMount.current) didMount.current = true;
-	// 		}
-	// 		if (didMount.current) updateWidth();
-	// 		else setTimeout(() => updateWidth(), 1);
-	// 	},
-	// );
+		document.body.appendChild(ruler);
+		const width = window.getComputedStyle(ruler).getPropertyValue("width");
+		const height = window
+			.getComputedStyle(ruler)
+			.getPropertyValue("height");
 
-	// useEffect(() => {
-	// 	let el: HTMLElement | null = null;
-	// 	function handleResize() {
-	// 		setResizeTime(Date.now());
-	// 	}
-	// 	setTimeout(() => {
-	// 		handleResize();
-	// 		el = document.querySelector(".view-content");
-	// 		new ResizeObserver(handleResize).observe(el);
-	// 	}, 1);
-	// }, []);
+		document.body.removeChild(ruler);
+		return { width: pxToNum(width), height: pxToNum(height) };
+	}
 
-	// // console.log("tableWidth", tableWidth);
-	// const margin = previewStyle.viewWidth - previewStyle.sizerWidth;
-	// //The margin can be 0 when the window is small
-	// if (tableWidth <= previewStyle.sizerWidth || margin === 0) {
-	// 	//This will set the width to the size of the preview, being a max-width of 700px
-	// 	style = {
-	// 		left: "0px",
-	// 		width: "100%",
-	// 	};
-	// } else if (tableWidth <= previewStyle.viewWidth) {
-	// 	const calculatedMargin = previewStyle.viewWidth - tableWidth;
-	// 	const BUTTON_WIDTH = 30;
-	// 	style = {
-	// 		left: `-${calculatedMargin / 2 - BUTTON_WIDTH}px`,
-	// 		width: `${tableWidth}px`,
-	// 	};
-	// } else {
-	// 	console.log(`-${margin / 2}px`);
-	// 	style = {
-	// 		left: `-${margin / 2}px`,
-	// 		width: `calc(100% + ${margin}px)`,
-	// 	};
-	// }
+	function findCellWidth(
+		cellType: string,
+		useAutoWidth: boolean,
+		calculatedWidth: string,
+		headerWidth: string
+	) {
+		//If the content type does not display text, just use the width that we set for the column
+		if (cellType !== CONTENT_TYPE.TEXT && cellType !== CONTENT_TYPE.NUMBER)
+			return headerWidth;
+		//If we're not using auto width, just use the width that we set for the column
+		if (useAutoWidth) return calculatedWidth;
+		return headerWidth;
+	}
+
+	const cellSizes = useMemo(() => {
+		return appData.cells.map((cell) => {
+			const header = appData.headers.find(
+				(header) => header.id === cell.headerId
+			);
+			const { width, height } = measureElement(
+				cell.toString(),
+				header.useAutoWidth,
+				header.width,
+				header.shouldWrapOverflow
+			);
+			return {
+				rowId: cell.rowId,
+				headerId: header.id,
+				width,
+				height,
+			};
+		});
+	}, [appData.cells, appData.headers]);
+
+	const rowHeights = useMemo(() => {
+		const heights: { [id: string]: number } = {};
+		cellSizes.forEach((size) => {
+			const { rowId, height } = size;
+			if (!heights[rowId] || heights[rowId] < height)
+				heights[rowId] = height;
+		});
+		return Object.fromEntries(
+			Object.entries(heights).map((entry) => {
+				const [key, value] = entry;
+				return [key, numToPx(value)];
+			})
+		);
+	}, [cellSizes]);
+
+	const columnWidths = useMemo(() => {
+		const widths: { [id: string]: number } = {};
+		cellSizes.forEach((size) => {
+			const { headerId, width: cellWidth } = size;
+			let width = cellWidth;
+			if (width < MIN_COLUMN_WIDTH_PX) width = MIN_COLUMN_WIDTH_PX;
+			if (!widths[headerId] || widths[headerId] < width)
+				widths[headerId] = width;
+		});
+		return Object.fromEntries(
+			Object.entries(widths).map((entry) => {
+				const [key, value] = entry;
+				return [key, numToPx(value)];
+			})
+		);
+	}, [cellSizes]);
+
+	const {
+		scrollTime: tableScrollUpdateTime,
+		handleScroll: handleTableScroll,
+	} = useScrollUpdate(150);
 
 	return (
-		<div className="NLT__app" tabIndex={0}>
+		<div
+			id={tableId}
+			className="NLT__app"
+			tabIndex={0}
+			onScroll={handleTableScroll}
+		>
 			<Table
-				headers={appData.headers.map((header, j) => {
-					const { id, content, width, type, sortName } = header;
+				headers={appData.headers.map((header, columnIndex) => {
+					const {
+						id,
+						content,
+						width,
+						type,
+						sortName,
+						shouldWrapOverflow,
+						useAutoWidth,
+					} = header;
 					return {
-						...header,
+						id,
 						component: (
 							<EditableTh
 								key={id}
 								id={id}
-								width={width}
-								index={j}
+								width={findCellWidth(
+									type,
+									useAutoWidth,
+									columnWidths[id],
+									width
+								)}
+								shouldWrapOverflow={shouldWrapOverflow}
+								useAutoWidth={useAutoWidth}
+								headerWidthUpdateTime={headerWidthUpdateTime}
+								tableScrollUpdateTime={tableScrollUpdateTime}
+								index={columnIndex}
 								content={content}
 								type={type}
 								sortName={sortName}
-								inFirstHeader={j === 0}
-								inLastHeader={j === appData.headers.length - 1}
+								isFirstChild={columnIndex === 0}
+								isLastChild={
+									columnIndex === appData.headers.length - 1
+								}
 								onSortSelect={handleHeaderSortSelect}
 								onInsertColumnClick={handleInsertColumnClick}
 								onMoveColumnClick={handleMoveColumnClick}
-								onWidthChange={handleWidthChange}
+								onWidthChange={handleHeaderWidthChange}
 								onDeleteClick={handleDeleteHeaderClick}
 								onSaveClick={handleHeaderSave}
 								onTypeSelect={handleHeaderTypeSelect}
+								onAutoWidthToggle={handleAutoWidthToggle}
+								onWrapOverflowToggle={handleWrapContentToggle}
 							/>
 						),
 					};
 				})}
-				rows={appData.rows.map((row, i) => {
+				rows={appData.rows.map((row, rowIndex) => {
 					return {
-						...row,
+						id: row.id,
 						component: (
 							<>
-								{appData.headers.map((header, j) => {
+								{appData.headers.map((header) => {
 									const cell = appData.cells.find(
 										(cell) =>
 											cell.rowId === row.id &&
 											cell.headerId === header.id
 									);
+									const {
+										id: headerId,
+										type,
+										useAutoWidth,
+										width,
+									} = header;
 									return (
 										<EditableTd
 											key={cell.id}
 											cell={cell}
 											headerType={header.type}
-											width={header.width}
+											tableScrollUpdateTime={
+												tableScrollUpdateTime
+											}
+											headerWidthUpdateTime={
+												headerWidthUpdateTime
+											}
+											shouldWrapOverflow={
+												header.shouldWrapOverflow
+											}
+											useAutoWidth={useAutoWidth}
+											width={findCellWidth(
+												type,
+												useAutoWidth,
+												columnWidths[headerId],
+												width
+											)}
+											height={rowHeights[row.id]}
 											tagUpdate={tagUpdate}
 											tags={appData.tags.filter(
 												(tag) =>
@@ -720,17 +837,31 @@ export default function App({
 										/>
 									);
 								})}
-								<td className="NLT__td">
-									<RowMenu
-										rowId={row.id}
-										isFirstRow={i === 0}
-										isLastRow={
-											i === appData.rows.length - 1
-										}
-										onMoveRowClick={handleMoveRowClick}
-										onDeleteClick={handleDeleteRowClick}
-										onInsertRowClick={handleInsertRowClick}
-									/>
+								<td
+									className="NLT__td"
+									style={{ height: rowHeights[row.id] }}
+								>
+									<div className="NLT__td-container">
+										<RowMenu
+											tableScrollUpdateTime={
+												tableScrollUpdateTime
+											}
+											headerWidthUpdateTime={
+												headerWidthUpdateTime
+											}
+											rowId={row.id}
+											isFirstRow={rowIndex === 0}
+											isLastRow={
+												rowIndex ===
+												appData.rows.length - 1
+											}
+											onMoveRowClick={handleMoveRowClick}
+											onDeleteClick={handleDeleteRowClick}
+											onInsertRowClick={
+												handleInsertRowClick
+											}
+										/>
+									</div>
 								</td>
 							</>
 						),

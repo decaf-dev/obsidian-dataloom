@@ -9,10 +9,12 @@ import "./styles.css";
 interface Props {
 	menuId: string;
 	isOpen: boolean;
-	top: number;
-	left: number;
-	width: number;
-	height: number;
+	style: {
+		top: string;
+		left: string;
+		width: string;
+		height: string;
+	};
 	selectedDate: Date;
 	onDateChange: (date: Date) => void;
 }
@@ -20,22 +22,12 @@ interface Props {
 export default function DateCellEdit({
 	menuId,
 	isOpen,
-	top,
-	left,
-	width,
-	height,
+	style,
 	selectedDate,
 	onDateChange,
 }: Props) {
 	return (
-		<Menu
-			id={menuId}
-			isOpen={isOpen}
-			top={top}
-			left={left}
-			width={width}
-			height={height}
-		>
+		<Menu id={menuId} isOpen={isOpen} style={style}>
 			<DatePicker
 				className="NLT__date-input"
 				autoFocus={true}

@@ -19,20 +19,26 @@ import { isDate } from "src/app/services/string/validators";
 
 import "./styles.css";
 
-import { CONTENT_TYPE, DEBUG, MENU_LEVEL } from "../../constants";
+import { CONTENT_TYPE, DEBUG } from "../../constants";
 import {
 	useDidMountEffect,
 	useDisableScroll,
 	useMenuId,
-	useMenuRef,
 } from "src/app/services/hooks";
 import { dateToString } from "src/app/services/string/parsers";
 import { logFunc } from "src/app/services/appData/debug";
+import { useMenu } from "src/app/components/MenuProvider";
+import { usePositionRef } from "src/app/services/hooks";
 
 interface Props {
 	headerType: string;
 	cell: Cell;
 	width: string;
+	height: string;
+	headerWidthUpdateTime: number;
+	tableScrollUpdateTime: number;
+	shouldWrapOverflow: boolean;
+	useAutoWidth: boolean;
 	tagUpdate: {
 		cellId: string;
 		time: number;
@@ -57,6 +63,11 @@ export default function EditableTd({
 	headerType,
 	cell,
 	width,
+	height,
+	headerWidthUpdateTime,
+	tableScrollUpdateTime,
+	shouldWrapOverflow,
+	useAutoWidth,
 	tags,
 	tagUpdate,
 	onRemoveTagClick,
@@ -70,18 +81,19 @@ export default function EditableTd({
 	const [tagColor] = useState(randomColor());
 	const menuId = useMenuId();
 	const content = cell.toString();
-	const {
-		menuPosition,
-		menuRef,
-		isMenuOpen,
-		openMenu,
-		closeMenu,
-		isMenuRequestingClose,
-	} = useMenuRef(menuId, MENU_LEVEL.ONE, content);
 
-	useDisableScroll(isMenuOpen);
+	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
+		useMenu(menuId);
+
+	const { positionRef, position } = usePositionRef([
+		content.length,
+		headerWidthUpdateTime,
+		tableScrollUpdateTime,
+	]);
 
 	const { id, headerId, type } = cell;
+
+	useDisableScroll(isMenuOpen);
 
 	const [wasContentUpdated, setContentUpdate] = useState(false);
 
@@ -125,7 +137,7 @@ export default function EditableTd({
 				}
 			} else {
 				closeMenu();
-				//If we're just closing the menun from an outside click,
+				//If we're just closing the menu from an outside click,
 				//then don't save unless the content actually updated
 				if (wasContentUpdated) {
 					onSaveContent();
@@ -135,7 +147,7 @@ export default function EditableTd({
 		}
 	}, [isMenuRequestingClose]);
 
-	async function handleCellContextClick(e: React.MouseEvent<HTMLElement>) {
+	async function handleCellContextClick() {
 		if (DEBUG.EDITABLE_TD)
 			console.log("[EditableTd] handleCellContextClick()");
 		try {
@@ -146,7 +158,7 @@ export default function EditableTd({
 		}
 	}
 
-	function handleCellClick(e: React.MouseEvent<HTMLElement>) {
+	function handleCellClick(e: React.MouseEvent) {
 		if (DEBUG.EDITABLE_TD) console.log("[EditableTd] handleCellClick()");
 		const el = e.target as HTMLInputElement;
 
@@ -192,20 +204,25 @@ export default function EditableTd({
 		}
 		switch (type) {
 			case CONTENT_TYPE.TEXT:
-				return <TextCell text={content} />;
+				return (
+					<TextCell
+						text={content}
+						shouldWrapOverflow={shouldWrapOverflow}
+						useAutoWidth={useAutoWidth}
+					/>
+				);
 			case CONTENT_TYPE.NUMBER:
-				return <NumberCell number={content} />;
+				return (
+					<NumberCell
+						number={content}
+						shouldWrapOverflow={shouldWrapOverflow}
+						useAutoWidth={useAutoWidth}
+					/>
+				);
 			case CONTENT_TYPE.TAG: {
 				const tag = tags.find((tag) => tag.selected.includes(id));
 				if (tag)
-					return (
-						<TagCell
-							style={{ overflow: "hidden" }}
-							content={tag.content}
-							color={tag.color}
-							showLink={true}
-						/>
-					);
+					return <TagCell content={tag.content} color={tag.color} />;
 				return <></>;
 			}
 			case CONTENT_TYPE.DATE:
@@ -229,10 +246,16 @@ export default function EditableTd({
 					<TextCellEdit
 						menuId={menuId}
 						isOpen={isMenuOpen}
-						top={menuPosition.top}
-						left={menuPosition.left}
-						width={menuPosition.width}
-						height={menuPosition.height}
+						style={{
+							...position,
+							...((useAutoWidth || !shouldWrapOverflow) && {
+								maxWidth: "300px",
+							}),
+							minWidth: "125px",
+							minHeight: "75px",
+						}}
+						useAutoWidth={useAutoWidth}
+						shouldWrapOverflow={shouldWrapOverflow}
 						value={content}
 						onInputChange={handleTextInputChange}
 					/>
@@ -242,10 +265,13 @@ export default function EditableTd({
 					<NumberCellEdit
 						menuId={menuId}
 						isOpen={isMenuOpen}
-						top={menuPosition.top}
-						left={menuPosition.left}
-						width={menuPosition.width}
-						height={menuPosition.height}
+						style={{
+							...position,
+							...((useAutoWidth || !shouldWrapOverflow) && {
+								maxWidth: "300px",
+							}),
+							minWidth: "125px",
+						}}
 						value={content}
 						onInputChange={handleNumberInputChange}
 					/>
@@ -255,11 +281,15 @@ export default function EditableTd({
 					<TagCellEdit
 						cellId={id}
 						inputText={tagInputText}
+						headerWidthUpdateTime={headerWidthUpdateTime}
+						tableScrollUpdateTime={tableScrollUpdateTime}
 						tags={tags}
 						menuId={menuId}
 						isOpen={isMenuOpen}
-						top={menuPosition.top}
-						left={menuPosition.left}
+						style={{
+							top: position.top,
+							left: position.left,
+						}}
 						color={tagColor}
 						onInputChange={setTagInputText}
 						onColorChange={onColorChange}
@@ -273,10 +303,7 @@ export default function EditableTd({
 					<DateCellEdit
 						menuId={menuId}
 						isOpen={isMenuOpen}
-						top={menuPosition.top}
-						left={menuPosition.left}
-						width={menuPosition.width}
-						height={menuPosition.height}
+						style={position}
 						selectedDate={
 							isDate(content) ? new Date(content) : new Date()
 						}
@@ -289,16 +316,20 @@ export default function EditableTd({
 	}
 
 	return (
-		<td
-			className="NLT__td"
-			ref={menuRef}
-			onClick={handleCellClick}
-			onContextMenu={handleCellContextClick}
-		>
-			<div className="NLT__td-container" style={{ width }}>
-				{renderCell()}
-			</div>
+		<>
+			<td
+				className="NLT__td"
+				style={{
+					width,
+					height,
+				}}
+				ref={positionRef}
+				onClick={handleCellClick}
+				onContextMenu={handleCellContextClick}
+			>
+				<div className="NLT__td-container">{renderCell()}</div>
+			</td>
 			{renderCellMenu()}
-		</td>
+		</>
 	);
 }
