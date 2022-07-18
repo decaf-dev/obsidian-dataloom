@@ -53,33 +53,35 @@ export const loadAppData = async (
 		}
 	}
 
-	if (settings.state[sourcePath][tableIndex]) {
-		const data = settings.state[sourcePath][tableIndex];
-		let tableCacheVersion = data.tableCacheVersion;
-		//Handle migration from before 4.1.0
-		if (!tableCacheVersion) {
-			console.log("Migrating from before 4.1.0");
-			tableCacheVersion = 400;
-		}
-		if (tableCacheVersion < CURRENT_TABLE_CACHE_VERSION) {
-			let obj = { ...settings.state[sourcePath][tableIndex] };
-			if (tableCacheVersion < 410) {
-				obj = {
-					...obj,
-					data: {
-						...obj.data,
-						headers: obj.data.headers.map((header) => {
-							return {
-								...header,
-								useAutoWidth: false,
-								shouldWrapOverflow: true,
-							};
-						}),
-					},
-				};
+	if (settings.state[sourcePath]) {
+		if (settings.state[sourcePath][tableIndex]) {
+			const data = settings.state[sourcePath][tableIndex];
+			let tableCacheVersion = data.tableCacheVersion;
+			//Handle migration from before 4.1.0
+			if (!tableCacheVersion) {
+				console.log("Migrating from before 4.1.0");
+				tableCacheVersion = 400;
 			}
-			settings.state[sourcePath][tableIndex] = obj;
-			await plugin.saveSettings();
+			if (tableCacheVersion < CURRENT_TABLE_CACHE_VERSION) {
+				let obj = { ...settings.state[sourcePath][tableIndex] };
+				if (tableCacheVersion < 410) {
+					obj = {
+						...obj,
+						data: {
+							...obj.data,
+							headers: obj.data.headers.map((header) => {
+								return {
+									...header,
+									useAutoWidth: false,
+									shouldWrapOverflow: true,
+								};
+							}),
+						},
+					};
+				}
+				settings.state[sourcePath][tableIndex] = obj;
+				await plugin.saveSettings();
+			}
 		}
 	}
 
