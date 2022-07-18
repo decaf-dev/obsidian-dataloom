@@ -8,23 +8,19 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 
 ## What's New?
 
-### Version 4.0.0
+### Version 4.1.0
 
-Starting in v4.0.0, table, row and column id's are now internally managed. This means that these ids can be removed from your tables.
+This is a big update which includes a complete rework of the cell sizing/column resizing system. In addition, two new options have been added for column resizing - `Auto Width` and `Wrap Overflow`.
 
-In addition, all Obsidian markdown tables will now be rendered as Notion-Like tables. If you would you to exclude specific tables from being rendered as an NLT, you can specify files to exclude in the plugin settings. For more information see: [Settings](#Settings)
+Please see: [Column Resizing](<#Column Resizing>)
 
-Bugs related to opening and closing of menus have been fixed. In addition, flashing of menus has been resolved.
+Current limitations in 4.1.0 include:
 
-Errors can now be managed through the UI instead of the markdown. For more information see: [Errors](#Errors)
+-   Insert above, insert below, move up, move down is currently unstable (to be fixed in 4.1.1)
+-   Only 1 table per file is currently supported (to be fixed in 4.1.2)
+-   Live preview is unstable (to be fixed in 4.1.3)
 
-Current limitations from this update include:
-
--   Only 1 table per file is currently supported (to be fixed in 4.1.0)
--   Live preview is unstable (to be fixed in 4.2.0)
--   Insert above, Insert blow, Move up, Move down is currently unstable (to be fixed in 4.1.0)
-
-For more release details see: [Release 4.0.0](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/4.0.0)
+For more release details see: [Release 4.1.0](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/4.1.0)
 
 ## Usage
 
@@ -135,6 +131,28 @@ Once a tag has been added to a cell, you click on any cell that has that tag and
 Right click a cell and its content will be added to your clipboard.
 
 NOTE: The table must be in focus for this to work. Click on the table to focus it.
+
+### Column Resizing
+
+#### Auto Width
+
+Text and number cells have an option for `Auto Width`. Auto width means that the column will automatically resize to the largest width of the cell.
+
+Please note that this will caluclate the maximum length of the text without wrapping.
+
+This feature can be enabled by clicking on a header, clicking "Edit" and then clicking the toggle for `Auto Width`.
+
+#### Manually Resizing
+
+When auto width is disabled, you have the option to manually size a column. You can do this by hovering your mouse over a header's right border. Your cursor will then show a resize indicator and you can click and drag until you set the desired length.
+
+#### Wrap Overflow
+
+With auto width disabled, you have the option to set the behavior of the text on overflow. This property is known as `Wrap Overflow`.
+
+When wrap overflow is enabled the text will wrap once it reaches the width of the column. This may be useful for long blocks of text.
+
+When wrap overflow is disabled the text will cut off at the column width and create an ellipsis (...)
 
 ### Undoing Changes
 
