@@ -12,7 +12,7 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 
 This is a big update which includes a complete rework of the cell sizing/column resizing system. In addition, two new options have been added for column resizing - `Auto Width` and `Wrap Overflow`.
 
-Please see: [Column Resizing](<#Column Resizing>)
+Please see: [Column Resizing](#<Column Resizing>)
 
 Current limitations in 4.1.0 include:
 
