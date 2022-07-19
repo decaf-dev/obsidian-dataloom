@@ -48,16 +48,8 @@ export const updateAppDataFromSavedState = (
 		}
 	});
 
-	//Grab creation times
 	newData.rows.forEach((_row, i) => {
-		if (i < oldData.headers.length) {
-			const { creationTime } = oldData.rows[i];
-			updated.rows[i].creationTime = creationTime;
-		}
-	});
-
-	newData.rows.forEach((_row, i) => {
-		if (i < oldData.headers.length) {
+		if (i < oldData.rows.length) {
 			const { creationTime } = oldData.rows[i];
 			updated.rows[i].creationTime = creationTime;
 		}
