@@ -100,4 +100,4 @@ export const HIGHLIGHT_TAG_CLOSE = "</mark>";
 
 export const MIN_COLUMN_WIDTH_PX = 50;
 
-export const CURRENT_TABLE_CACHE_VERSION = 410;
+export const CURRENT_TABLE_CACHE_VERSION = 411;
