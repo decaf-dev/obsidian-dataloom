@@ -16,9 +16,9 @@ Please see: [Column Resizing](#column-resizing)
 
 Current limitations in 4.1.0 include:
 
--   Insert above, insert below, move up, move down is currently unstable (to be fixed in 4.1.1)
--   Only 1 table per file is currently supported (to be fixed in 4.1.2)
--   Live preview is unstable (to be fixed in 4.1.3)
+-   Insert above, insert below, move up, move down is currently unstable (to be fixed in 4.1.2)
+-   Only 1 table per file is currently supported (to be fixed in 4.1.3)
+-   Live preview is unstable (to be fixed in 4.1.4)
 
 For more release details see: [Release 4.1.0](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/4.1.0)
 
