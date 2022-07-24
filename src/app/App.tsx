@@ -21,6 +21,7 @@ import "./app.css";
 import NltPlugin from "main";
 import { SortDir } from "./services/sort/types";
 import { addRow, addColumn } from "./services/appData/internal/add";
+import { useCompare } from "./services/hooks";
 import {
 	findCurrentViewType,
 	findNewCell,
@@ -56,21 +57,9 @@ export default function App({
 		time: 0,
 		cellId: "",
 	});
+	const [sortTime, setSortTime] = useState(0);
 	const [saveTime, setSaveTime] = useState(0);
 	const [headerWidthUpdateTime, setHeaderWidthUpdateTime] = useState(0);
-
-	// Sort on first render
-	// If a user deletes or adds a new row (by copying and pasting, for example)
-	// then we want to make sure that value is sorted in
-	useEffect(() => {
-		//Find the header that has sorting enabling, if not, sort on the first header
-		//to make sure empty cells go to the bottom
-		const header =
-			appData.headers.find(
-				(header) => header.sortDir !== SortDir.DEFAULT
-			) || appData.headers[0];
-		sortRows(header.id, header.type, header.sortDir);
-	}, []);
 
 	useEffect(() => {
 		async function handleUpdate() {
@@ -148,6 +137,10 @@ export default function App({
 
 	function saveData() {
 		setSaveTime(Date.now());
+	}
+
+	function sortRows() {
+		setSortTime(Date.now());
 	}
 
 	function handleAddColumn() {
@@ -229,7 +222,7 @@ export default function App({
 				}),
 			};
 		});
-		sortRows(id, type, sortDir);
+		sortRows();
 		saveData();
 	}
 
@@ -357,64 +350,6 @@ export default function App({
 			return {
 				...prevState,
 				tags: removeTagReferences(prevState.tags, cellId),
-			};
-		});
-	}
-
-	function sortRows(headerId: string, headerType: string, sortDir: SortDir) {
-		setAppData((prevState) => {
-			//Create a new array because the sort function mutates
-			//the original array
-			const arr = [...prevState.rows];
-			arr.sort((a, b) => {
-				const cellA = appData.cells.find(
-					(cell) => cell.headerId === headerId && cell.rowId === a.id
-				);
-				const cellB = appData.cells.find(
-					(cell) => cell.headerId === headerId && cell.rowId === b.id
-				);
-				const contentA = cellA.toString();
-				const contentB = cellB.toString();
-
-				//When you change the sort order the position breaks
-
-				//Force empty cells to the bottom
-				if (contentA === "" && contentB !== "") return 1;
-				if (contentA !== "" && contentB === "") return -1;
-				if (contentA === "" && contentB === "") return 0;
-
-				if (sortDir === SortDir.ASC) {
-					if (headerType === CONTENT_TYPE.TAG) {
-						const tagA = appData.tags.find((tag) =>
-							tag.selected.includes(cellA.id)
-						);
-						const tagB = appData.tags.find((tag) =>
-							tag.selected.includes(cellB.id)
-						);
-						return tagA.content.localeCompare(tagB.content);
-					} else {
-						return contentA.localeCompare(contentB);
-					}
-				} else if (sortDir === SortDir.DESC) {
-					if (headerType === CONTENT_TYPE.TAG) {
-						const tagA = appData.tags.find((tag) =>
-							tag.selected.includes(cellA.id)
-						);
-						const tagB = appData.tags.find((tag) =>
-							tag.selected.includes(cellB.id)
-						);
-						return tagB.content.localeCompare(tagA.content);
-					} else {
-						return contentB.localeCompare(contentA);
-					}
-				} else {
-					//Otherwise sort on when the row was added
-					return a.creationTime - b.creationTime;
-				}
-			});
-			return {
-				...prevState,
-				rows: arr,
 			};
 		});
 	}
@@ -741,6 +676,73 @@ export default function App({
 		handleScroll: handleTableScroll,
 	} = useScrollUpdate(150);
 
+	const sortTimeHasChanged = useCompare(sortTime);
+	const sortedRows = useMemo(() => {
+		//Create a new array because the sort function mutates
+		//the original array
+		const arr = [...appData.rows];
+		if (sortTimeHasChanged) {
+			const header = appData.headers.find(
+				(header) => header.sortDir !== SortDir.DEFAULT
+			);
+			if (header) {
+				const { id, sortDir, type } = header;
+				arr.sort((a, b) => {
+					const cellA = appData.cells.find(
+						(cell) => cell.headerId === id && cell.rowId === a.id
+					);
+					const cellB = appData.cells.find(
+						(cell) => cell.headerId === id && cell.rowId === b.id
+					);
+					const contentA = cellA.toString();
+					const contentB = cellB.toString();
+
+					//When you change the sort order the position breaks
+
+					if (sortDir !== SortDir.DEFAULT) {
+						//Force empty cells to the bottom
+						if (contentA === "" && contentB !== "") return 1;
+						if (contentA !== "" && contentB === "") return -1;
+						if (contentA === "" && contentB === "") return 0;
+					}
+
+					if (sortDir === SortDir.ASC) {
+						if (type === CONTENT_TYPE.TAG) {
+							const tagA = appData.tags.find((tag) =>
+								tag.selected.includes(cellA.id)
+							);
+							const tagB = appData.tags.find((tag) =>
+								tag.selected.includes(cellB.id)
+							);
+							return tagA.content.localeCompare(tagB.content);
+						} else {
+							return contentA.localeCompare(contentB);
+						}
+					} else if (sortDir === SortDir.DESC) {
+						if (type === CONTENT_TYPE.TAG) {
+							const tagA = appData.tags.find((tag) =>
+								tag.selected.includes(cellA.id)
+							);
+							const tagB = appData.tags.find((tag) =>
+								tag.selected.includes(cellB.id)
+							);
+							return tagB.content.localeCompare(tagA.content);
+						} else {
+							return contentB.localeCompare(contentA);
+						}
+					} else {
+						const creationA = a.creationTime;
+						const creationB = b.creationTime;
+						if (creationA > creationB) return 1;
+						if (creationA < creationB) return -1;
+						return 0;
+					}
+				});
+			}
+		}
+		return arr;
+	}, [appData, sortTimeHasChanged]);
+
 	return (
 		<div id={tableId} className="NLT__app" tabIndex={0}>
 			<OptionBar headers={appData.headers} />
@@ -802,7 +804,7 @@ export default function App({
 							),
 						};
 					})}
-					rows={appData.rows.map((row, rowIndex) => {
+					rows={sortedRows.map((row, rowIndex) => {
 						return {
 							id: row.id,
 							component: (
