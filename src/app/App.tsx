@@ -27,8 +27,8 @@ import {
 } from "./services/appData/external/loadUtils";
 import { v4 as uuid } from "uuid";
 import { logFunc } from "./services/appData/debug";
-import { useScrollUpdate } from "./services/hooks";
 import { sortAppDataForSave } from "./services/appData/external/saveUtils";
+import { useCloseMenusOnScroll } from "./services/hooks";
 
 interface Props {
 	plugin: NltPlugin;
@@ -57,9 +57,11 @@ export default function App({
 		time: 0,
 		cellId: "",
 	});
-	const [sortUpdateTime, setSortUpdateTime] = useState(0);
 	const [saveTime, setSaveTime] = useState(0);
-	const [headerWidthUpdateTime, setHeaderWidthUpdateTime] = useState(0);
+	const [positionUpdateTime, setPositionUpdateTime] = useState(0);
+
+	useCloseMenusOnScroll("markdown-preview-view");
+	useCloseMenusOnScroll("NLT__table-wrapper");
 
 	useEffect(() => {
 		sortUpdate();
@@ -145,7 +147,11 @@ export default function App({
 
 	function sortUpdate() {
 		sortRows();
-		setSortUpdateTime(Date.now());
+		forcePositionUpdate();
+	}
+
+	function forcePositionUpdate() {
+		setPositionUpdateTime(Date.now());
 	}
 
 	function handleAddColumn() {
@@ -440,7 +446,7 @@ export default function App({
 				}),
 			};
 		});
-		setHeaderWidthUpdateTime(Date.now());
+		forcePositionUpdate();
 		setDebounceUpdate(Date.now());
 	}
 
@@ -749,11 +755,6 @@ export default function App({
 		);
 	}, [cellSizes]);
 
-	const {
-		scrollTime: tableScrollUpdateTime,
-		handleScroll: handleTableScroll,
-	} = useScrollUpdate(150);
-
 	const isSorted = appData.headers.find(
 		(header) => header.sortDir !== SortDir.DEFAULT
 	)
@@ -763,7 +764,7 @@ export default function App({
 	return (
 		<div id={tableId} className="NLT__app" tabIndex={0}>
 			<OptionBar headers={appData.headers} />
-			<div onScroll={handleTableScroll}>
+			<div className="NLT__table-wrapper">
 				<Table
 					headers={appData.headers.map((header, columnIndex) => {
 						const {
@@ -789,13 +790,7 @@ export default function App({
 									)}
 									shouldWrapOverflow={shouldWrapOverflow}
 									useAutoWidth={useAutoWidth}
-									headerWidthUpdateTime={
-										headerWidthUpdateTime
-									}
-									tableScrollUpdateTime={
-										tableScrollUpdateTime
-									}
-									sortUpdateTime={sortUpdateTime}
+									positionUpdateTime={positionUpdateTime}
 									index={columnIndex}
 									content={content}
 									type={type}
@@ -844,13 +839,9 @@ export default function App({
 												key={cell.id}
 												cell={cell}
 												headerType={header.type}
-												tableScrollUpdateTime={
-													tableScrollUpdateTime
+												positionUpdateTime={
+													positionUpdateTime
 												}
-												headerWidthUpdateTime={
-													headerWidthUpdateTime
-												}
-												sortUpdateTime={sortUpdateTime}
 												shouldWrapOverflow={
 													header.shouldWrapOverflow
 												}
@@ -893,13 +884,9 @@ export default function App({
 											<RowMenu
 												hideInsertOptions={isSorted}
 												hideMoveOptions={isSorted}
-												tableScrollUpdateTime={
-													tableScrollUpdateTime
+												positionUpdateTime={
+													positionUpdateTime
 												}
-												headerWidthUpdateTime={
-													headerWidthUpdateTime
-												}
-												sortUpdateTime={sortUpdateTime}
 												rowId={row.id}
 												isFirstRow={rowIndex === 0}
 												isLastRow={

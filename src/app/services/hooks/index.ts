@@ -1,5 +1,6 @@
 import { useCallback, useState, useEffect, useRef } from "react";
 
+import { useMenu } from "src/app/components/MenuProvider";
 import { v4 as uuid } from "uuid";
 import { numToPx } from "../string/parsers";
 
@@ -54,13 +55,82 @@ export const useDidMountEffect = (func: (...rest: any) => any, deps: any[]) => {
 	}, deps);
 };
 
-export const useContentResizeTime = () => {
-	const [resizeTime, setResizeTime] = useState(0);
-	let observer: ResizeObserver | null = null;
+/**
+ * Throttles events.
+ * Guarantees an execution of events every x milliseconds
+ */
+export const useThrottle = (eventTime: number, waitTime: number) => {
+	const [shouldExecute, setExecution] = useState(false);
 
 	useEffect(() => {
+		let intervalId: NodeJS.Timer = null;
+		function startTimer() {
+			intervalId = setInterval(() => {
+				if (Date.now() - eventTime < waitTime) return;
+				clearInterval(intervalId);
+				setExecution(true);
+			}, 50);
+		}
+		if (eventTime !== 0) {
+			setExecution(false);
+			startTimer();
+		}
+		return () => clearInterval(intervalId);
+	}, [eventTime]);
+
+	return shouldExecute;
+};
+
+export const useScrollTime = (className: string) => {
+	const [eventTime, setEventTime] = useState(0);
+	const [scrollTime, setScrollTime] = useState(0);
+
+	let el: Node | null = null;
+
+	const shouldExecute = useThrottle(eventTime, 150);
+
+	useEffect(() => {
+		if (shouldExecute) setScrollTime(Date.now());
+	}, [shouldExecute]);
+
+	useEffect(() => {
+		function handleScroll() {
+			setEventTime(Date.now());
+		}
+
+		el = document.getElementsByClassName(className)[0];
+		if (el) el.addEventListener("scroll", handleScroll);
+
+		return () => {
+			if (el) el.removeEventListener("scroll", handleScroll);
+		};
+	}, []);
+	return scrollTime;
+};
+
+export const useTableScrollTime = () => {
+	return useScrollTime("NLT__table-wrapper");
+};
+
+export const useObsidianScrollTime = () => {
+	return useScrollTime("markdown-preview-view");
+};
+
+export const useObsidianResizeTime = () => {
+	const [eventTime, setEventTime] = useState(0);
+	const [resizeTime, setResizeTime] = useState(0);
+
+	const shouldExecute = useThrottle(eventTime, 150);
+
+	useEffect(() => {
+		if (shouldExecute) setResizeTime(Date.now());
+	}, [shouldExecute]);
+
+	useEffect(() => {
+		let observer: ResizeObserver | null = null;
+
 		function handleResize() {
-			setResizeTime(Date.now());
+			setEventTime(Date.now());
 		}
 
 		setTimeout(() => {
@@ -88,7 +158,10 @@ export const usePositionRef = (deps: any[] = []) => {
 		width: "0px",
 		height: "0px",
 	});
-	const resizeTime = useContentResizeTime();
+	const obsidianResizeTime = useObsidianResizeTime();
+	const obsidianScrollTime = useObsidianScrollTime();
+	const tableScrollTime = useTableScrollTime();
+
 	const positionRef = useCallback(
 		(node) => {
 			if (node instanceof HTMLElement) {
@@ -105,86 +178,63 @@ export const usePositionRef = (deps: any[] = []) => {
 				});
 			}
 		},
-		[resizeTime, ...deps]
+		[obsidianResizeTime, obsidianScrollTime, tableScrollTime, ...deps]
 	);
 	return { positionRef, position };
 };
 
-export const useDisableScroll = (isOpen: boolean): void => {
-	const scroll = useRef({
-		top: 0,
-		left: 0,
-	});
+export const useCloseMenusOnScroll = (className: string): void => {
+	const { isAnyMenuOpen, closeAllMenus } = useMenu();
 
-	const el = document.getElementsByClassName("NLT__app")[0];
+	let el: Node | null = null;
 
 	function handleScroll() {
-		if (el) {
-			const { top, left } = scroll.current;
-			el.scrollTo(left, top);
-		}
+		closeAllMenus();
 	}
+
 	useEffect(() => {
-		if (el instanceof HTMLElement) {
-			if (isOpen) {
-				scroll.current = {
-					top: el.scrollTop,
-					left: el.scrollLeft,
-				};
+		el = document.getElementsByClassName(className)[0];
+		if (el) {
+			if (isAnyMenuOpen()) {
 				el.addEventListener("scroll", handleScroll);
 			} else {
 				el.removeEventListener("scroll", handleScroll);
 			}
 		}
-
 		return () => {
-			if (el) {
-				el.removeEventListener("scroll", handleScroll);
-			}
+			if (el) el.removeEventListener("scroll", handleScroll);
 		};
-	}, [isOpen]);
+	}, [isAnyMenuOpen()]);
 };
 
-export const useDebounceInterval = (
-	lastEventTime: number,
-	waitTime: number
-) => {
-	const [finished, setFinished] = useState(false);
+// export const useDisableScroll = (className: string): void => {
+// 	const { isAnyMenuOpen } = useMenu();
 
-	useEffect(() => {
-		let intervalId: NodeJS.Timer = null;
-		function startTimer() {
-			intervalId = setInterval(() => {
-				if (Date.now() - lastEventTime < waitTime) return;
-				clearInterval(intervalId);
-				setFinished(true);
-			}, 50);
-		}
-		if (lastEventTime !== 0) {
-			setFinished(false);
-			startTimer();
-		}
-		return () => clearInterval(intervalId);
-	}, [lastEventTime]);
+// 	let el: Node | null = null;
 
-	return finished;
-};
+// 	function removeScrollX(el: HTMLElement) {
+// 		el.style.overflow = "hidden";
+// 		el.style.left = `${el.scrollLeft}px`;
+// 		el.style.marginBottom = `17px`;
+// 	}
 
-export const useScrollUpdate = (waitTime: number) => {
-	const [eventTime, setEventTime] = useState(0);
-	const [scrollTime, setScrollTime] = useState(0);
-	const finished = useDebounceInterval(eventTime, waitTime);
+// 	function addScroll(el: HTMLElement) {
+// 		el.style.overflow = "auto";
+// 		el.style.marginBottom = "0px";
+// 	}
 
-	useEffect(() => {
-		if (finished) setScrollTime(Date.now());
-	}, [finished]);
+// 	useEffect(() => {
+// 		el = document.getElementsByClassName(className)[0];
+// 		if (el instanceof HTMLElement) {
+// 			if (isAnyMenuOpen()) {
+// 				removeScrollX(el);
+// 			} else {
+// 				addScroll(el);
+// 			}
+// 		}
 
-	function handleScroll() {
-		setEventTime(Date.now());
-	}
-
-	return {
-		handleScroll,
-		scrollTime,
-	};
-};
+// 		return () => {
+// 			if (el instanceof HTMLElement) removeScrollX(el);
+// 		};
+// 	}, [isAnyMenuOpen()]);
+//};

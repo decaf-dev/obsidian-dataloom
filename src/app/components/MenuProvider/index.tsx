@@ -4,6 +4,7 @@ import { logFunc } from "src/app/services/appData/debug";
 import { useTableFocus } from "../FocusProvider";
 
 interface IMenuContext {
+	closeAllMenus?: () => void;
 	isAnyMenuOpen?: () => boolean;
 	isMenuOpen?: (id: string) => boolean;
 	isMenuRequestingClose?: (id: string) => boolean;
@@ -16,9 +17,10 @@ const MenuContext = React.createContext<IMenuContext>(null);
 const COMPONENT_NAME = "MenuProvider";
 
 export const useMenu = () => {
-	const { isAnyMenuOpen } = useContext(MenuContext);
+	const { isAnyMenuOpen, closeAllMenus } = useContext(MenuContext);
 	return {
 		isAnyMenuOpen,
+		closeAllMenus,
 	};
 };
 
@@ -178,6 +180,7 @@ export default function MenuProvider({ children }: Props) {
 					isMenuRequestingClose,
 					closeMenu,
 					isAnyMenuOpen,
+					closeAllMenus,
 				}}
 			>
 				{children}

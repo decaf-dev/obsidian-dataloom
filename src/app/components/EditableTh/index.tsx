@@ -3,11 +3,7 @@ import React, { useEffect, useRef } from "react";
 import HeaderMenu from "../HeaderMenu";
 
 import "./styles.css";
-import {
-	useDisableScroll,
-	useId,
-	usePositionRef,
-} from "src/app/services/hooks";
+import { useId, usePositionRef } from "src/app/services/hooks";
 import { useMenuId } from "../MenuProvider";
 
 import { CSS_MEASUREMENT_PIXEL_REGEX } from "src/app/services/string/regex";
@@ -18,9 +14,7 @@ interface Props {
 	id: string;
 	index: number;
 	width: string;
-	headerWidthUpdateTime: number;
-	tableScrollUpdateTime: number;
-	sortUpdateTime: number;
+	positionUpdateTime: number;
 	content: string;
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
@@ -43,9 +37,7 @@ export default function EditableTh({
 	id,
 	index,
 	width,
-	headerWidthUpdateTime,
-	tableScrollUpdateTime,
-	sortUpdateTime,
+	positionUpdateTime,
 	content,
 	useAutoWidth,
 	shouldWrapOverflow,
@@ -66,15 +58,9 @@ export default function EditableTh({
 	const menuId = useId();
 	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
 		useMenuId(menuId);
-	const { positionRef, position } = usePositionRef([
-		headerWidthUpdateTime,
-		tableScrollUpdateTime,
-		sortUpdateTime,
-	]);
+	const { positionRef, position } = usePositionRef([positionUpdateTime]);
 	const mouseDownX = useRef(0);
 	const isResizing = useRef(false);
-
-	useDisableScroll(isMenuOpen);
 
 	useEffect(() => {
 		if (isMenuRequestingClose) {
