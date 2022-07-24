@@ -1,14 +1,15 @@
 import React from "react";
 
-import { findIcon } from "src/app/services/icon";
+import { findIcon } from "src/app/services/icon/utils";
+import { Icon } from "src/app/services/icon/types";
+
 import Button from "../Button";
 interface Props {
-	id?: string;
-	icon: string;
+	icon: Icon;
 	onClick: (e: React.MouseEvent) => void;
 }
 
-export default function IconButton({ id, icon, onClick }: Props) {
+export default function IconButton({ icon, onClick }: Props) {
 	return (
 		<Button hasIcon={true} onClick={onClick}>
 			{findIcon(icon, "NLT__icon--md")}

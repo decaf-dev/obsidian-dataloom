@@ -1,9 +1,10 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 
 import EditableTd from "./components/EditableTd";
 import Table from "./components/Table";
 import RowMenu from "./components/RowMenu";
 import EditableTh from "./components/EditableTh";
+import OptionBar from "./components/OptionBar";
 
 import { initialHeader } from "./services/appData/state/header";
 import { initialTag, Tag } from "./services/appData/state/tag";
@@ -18,16 +19,17 @@ import { CONTENT_TYPE, DEBUG, MIN_COLUMN_WIDTH_PX } from "./constants";
 
 import "./app.css";
 import NltPlugin from "main";
-import { SORT } from "./components/HeaderMenu/constants";
+import { SortDir } from "./services/sort/types";
 import { addRow, addColumn } from "./services/appData/internal/add";
 import {
 	findCurrentViewType,
 	findNewCell,
 } from "./services/appData/external/loadUtils";
 import { v4 as uuid } from "uuid";
-import { sortAppDataForSave } from "./services/appData/external/saveUtils";
 import { logFunc } from "./services/appData/debug";
 import { useScrollUpdate } from "./services/hooks";
+import { sortAppDataForSave } from "./services/appData/external/saveUtils";
+
 interface Props {
 	plugin: NltPlugin;
 	settings: NltSettings;
@@ -55,32 +57,26 @@ export default function App({
 		time: 0,
 		cellId: "",
 	});
+	const [sortUpdateTime, setSortUpdateTime] = useState(0);
 	const [saveTime, setSaveTime] = useState(0);
 	const [headerWidthUpdateTime, setHeaderWidthUpdateTime] = useState(0);
 
-	// useEffect(() => {
-	// 	// Sort on first render
-	// 	// If a user deletes or adds a new row (by copying and pasting, for example)
-	// 	// then we want to make sure that value is sorted in
-	// 	for (let i = 0; i < appData.headers.length; i++) {
-	// 		const header = appData.headers[i];
-	// 		if (header.sortName !== SORT.DEFAULT.name)
-	// 			sortRows(header.id, header.type, header.sortName);
-	// 	}
-	// }, []);
+	useEffect(() => {
+		sortUpdate();
+	}, []);
 
 	useEffect(() => {
 		async function handleUpdate() {
 			if (saveTime === 0) return;
 			try {
 				const oldData = sortAppDataForSave(oldAppData);
-				const saveData = sortAppDataForSave(appData);
+				const newData = sortAppDataForSave(appData);
 				await saveAppData(
 					plugin,
 					settings,
 					app,
 					oldData,
-					saveData,
+					newData,
 					sourcePath,
 					tableIndex,
 					findCurrentViewType(el)
@@ -102,7 +98,7 @@ export default function App({
 				if (Date.now() - debounceUpdate < 250) return;
 				clearInterval(intervalId);
 				setDebounceUpdate(0);
-				setSaveTime(Date.now());
+				saveData();
 			}, 100);
 		}
 		if (debounceUpdate !== 0) startTimer();
@@ -143,16 +139,25 @@ export default function App({
 	// 	return () => clearInterval(intervalId);
 	// }, []);
 
+	function saveData() {
+		setSaveTime(Date.now());
+	}
+
+	function sortUpdate() {
+		sortRows();
+		setSortUpdateTime(Date.now());
+	}
+
 	function handleAddColumn() {
 		if (DEBUG.APP) console.log("[App]: handleAddColumn called.");
 		setAppData((prevState) => addColumn(prevState));
-		setSaveTime(Date.now());
+		saveData();
 	}
 
 	function handleAddRow() {
 		if (DEBUG.APP) console.log("[App]: handleAddRow called.");
 		setAppData((prevState: AppData) => addRow(prevState));
-		setSaveTime(Date.now());
+		saveData();
 	}
 
 	function handleHeaderSave(id: string, updatedContent: string) {
@@ -170,7 +175,7 @@ export default function App({
 				}),
 			};
 		});
-		setSaveTime(Date.now());
+		saveData();
 	}
 
 	function handleHeaderTypeSelect(id: string, cellType: string) {
@@ -204,35 +209,37 @@ export default function App({
 				}),
 			};
 		});
-		setSaveTime(Date.now());
+		saveData();
 	}
 
 	function handleHeaderSortSelect(
 		id: string,
 		type: string,
-		sortName: string
+		sortDir: SortDir
 	) {
 		if (DEBUG.APP) console.log("[App]: handleHeaderSort called.");
 		setAppData((prevState) => {
 			return {
 				...prevState,
 				headers: prevState.headers.map((header) => {
-					if (id === header.id) return { ...header, sortName };
-					return { ...header, sortName: SORT.DEFAULT.name };
+					if (id === header.id) return { ...header, sortDir };
+					return { ...header, sortDir: SortDir.DEFAULT };
 				}),
 			};
 		});
-		sortRows(id, type, sortName);
+		sortUpdate();
+		saveData();
 	}
 
 	function handleCellContentSave() {
-		setSaveTime(Date.now());
+		saveData();
 	}
 
 	function handleCellContentChange(
 		id: string,
 		headerType: string,
-		content: any
+		content: any,
+		isCheckbox = false
 	) {
 		if (DEBUG.APP) {
 			logFunc(COMPONENT_NAME, "handleCellContentChange", {
@@ -264,6 +271,11 @@ export default function App({
 				}),
 			};
 		});
+
+		//TODO refactor
+		if (isCheckbox) {
+			saveData();
+		}
 	}
 
 	function handleAddTag(
@@ -353,54 +365,6 @@ export default function App({
 		});
 	}
 
-	function sortRows(headerId: string, headerType: string, sortName: string) {
-		setAppData((prevState) => {
-			//Create a new array because the sort function mutates
-			//the original array
-			const arr = [...prevState.rows];
-			arr.sort((a, b) => {
-				const cellA = appData.cells.find(
-					(cell) => cell.headerId === headerId && cell.rowId === a.id
-				);
-				const cellB = appData.cells.find(
-					(cell) => cell.headerId === headerId && cell.rowId === b.id
-				);
-				if (sortName === SORT.ASC.name) {
-					if (headerType === CONTENT_TYPE.TAG) {
-						const tagA = appData.tags.find((tag) =>
-							tag.selected.includes(cellA.id)
-						);
-						const tagB = appData.tags.find((tag) =>
-							tag.selected.includes(cellB.id)
-						);
-						return tagA.content.localeCompare(tagB.content);
-					} else {
-						return cellA.toString().localeCompare(cellB.toString());
-					}
-				} else if (sortName === SORT.DESC.name) {
-					if (headerType === CONTENT_TYPE.TAG) {
-						const tagA = appData.tags.find((tag) =>
-							tag.selected.includes(cellA.id)
-						);
-						const tagB = appData.tags.find((tag) =>
-							tag.selected.includes(cellB.id)
-						);
-						return tagB.content.localeCompare(tagA.content);
-					} else {
-						return cellB.toString().localeCompare(cellA.toString());
-					}
-				} else {
-					//Otherwise sort on when the row was added
-					return a.creationTime - b.creationTime;
-				}
-			});
-			return {
-				...prevState,
-				rows: arr,
-			};
-		});
-	}
-
 	function handleDeleteHeaderClick(id: string) {
 		if (DEBUG.APP) console.log("[App]: handleDeleteHeaderClick called.");
 		setAppData((prevState) => {
@@ -410,7 +374,7 @@ export default function App({
 				cells: prevState.cells.filter((cell) => cell.headerId !== id),
 			};
 		});
-		setSaveTime(Date.now());
+		saveData();
 	}
 
 	function handleDeleteRowClick(rowId: string) {
@@ -422,7 +386,7 @@ export default function App({
 				cells: prevState.cells.filter((cell) => cell.rowId !== rowId),
 			};
 		});
-		setSaveTime(Date.now());
+		saveData();
 	}
 
 	function handleMoveRowClick(id: string, moveBelow: boolean) {
@@ -434,20 +398,25 @@ export default function App({
 			const rows = [...prevState.rows];
 
 			//Swap values
+			const oldIndex = rows[moveIndex].initialIndex;
 			const oldTime = rows[moveIndex].creationTime;
+			const newIndex = rows[index].initialIndex;
 			const newTime = rows[index].creationTime;
+
 			const old = rows[moveIndex];
 			rows[moveIndex] = rows[index];
 			rows[moveIndex].creationTime = oldTime;
+			rows[moveIndex].initialIndex = oldIndex;
 			rows[index] = old;
 			rows[index].creationTime = newTime;
+			rows[index].initialIndex = newIndex;
 
 			return {
 				...prevState,
 				rows,
 			};
 		});
-		setSaveTime(Date.now());
+		saveData();
 	}
 
 	function handleHeaderWidthChange(id: string, width: string) {
@@ -493,7 +462,7 @@ export default function App({
 				headers,
 			};
 		});
-		setSaveTime(Date.now());
+		saveData();
 	}
 
 	function handleInsertColumnClick(id: string, insertRight: boolean) {
@@ -502,11 +471,7 @@ export default function App({
 			const header = prevState.headers.find((header) => header.id === id);
 			const index = prevState.headers.indexOf(header);
 			const insertIndex = insertRight ? index + 1 : index;
-			const headerToInsert = initialHeader(
-				uuid(),
-				prevState.headers.length,
-				"New Column"
-			);
+			const headerToInsert = initialHeader(uuid(), "New Column");
 
 			const cells = prevState.rows.map((row) =>
 				findNewCell(
@@ -526,7 +491,7 @@ export default function App({
 				cells: [...prevState.cells, ...cells],
 			};
 		});
-		setSaveTime(Date.now());
+		saveData();
 	}
 
 	function handleInsertRowClick(id: string, insertBelow = false) {
@@ -547,7 +512,7 @@ export default function App({
 			rows.splice(
 				insertIndex,
 				0,
-				initialRow(rowId, prevState.rows.length, Date.now())
+				initialRow(rowId, insertIndex, Date.now())
 			);
 			return {
 				...prevState,
@@ -556,7 +521,7 @@ export default function App({
 				tags: [...prevState.tags, ...tags],
 			};
 		});
-		setSaveTime(Date.now());
+		saveData();
 	}
 
 	function handleChangeColor(tagId: string, color: string) {
@@ -574,7 +539,7 @@ export default function App({
 				}),
 			};
 		});
-		setSaveTime(Date.now());
+		saveData();
 	}
 
 	function handleAutoWidthToggle(headerId: string, value: boolean) {
@@ -666,6 +631,72 @@ export default function App({
 		return headerWidth;
 	}
 
+	function sortRows() {
+		setAppData((prevState) => {
+			const header = prevState.headers.find(
+				(header) => header.sortDir !== SortDir.DEFAULT
+			);
+			if (header) {
+				const { id, sortDir, type } = header;
+				const arr = [...prevState.rows];
+				arr.sort((a, b) => {
+					const cellA = appData.cells.find(
+						(cell) => cell.headerId === id && cell.rowId === a.id
+					);
+					const cellB = appData.cells.find(
+						(cell) => cell.headerId === id && cell.rowId === b.id
+					);
+					const contentA = cellA.toString();
+					const contentB = cellB.toString();
+
+					if (sortDir !== SortDir.DEFAULT) {
+						//Force empty cells to the bottom
+						if (contentA === "" && contentB !== "") return 1;
+						if (contentA !== "" && contentB === "") return -1;
+						if (contentA === "" && contentB === "") return 0;
+					}
+
+					if (sortDir === SortDir.ASC) {
+						if (type === CONTENT_TYPE.TAG) {
+							const tagA = appData.tags.find((tag) =>
+								tag.selected.includes(cellA.id)
+							);
+							const tagB = appData.tags.find((tag) =>
+								tag.selected.includes(cellB.id)
+							);
+							return tagA.content.localeCompare(tagB.content);
+						} else {
+							return contentA.localeCompare(contentB);
+						}
+					} else if (sortDir === SortDir.DESC) {
+						if (type === CONTENT_TYPE.TAG) {
+							const tagA = appData.tags.find((tag) =>
+								tag.selected.includes(cellA.id)
+							);
+							const tagB = appData.tags.find((tag) =>
+								tag.selected.includes(cellB.id)
+							);
+							return tagB.content.localeCompare(tagA.content);
+						} else {
+							return contentB.localeCompare(contentA);
+						}
+					} else {
+						const creationA = a.creationTime;
+						const creationB = b.creationTime;
+						if (creationA > creationB) return 1;
+						if (creationA < creationB) return -1;
+						return 0;
+					}
+				});
+				return {
+					...prevState,
+					rows: arr,
+				};
+			}
+			return prevState;
+		});
+	}
+
 	const cellSizes = useMemo(() => {
 		return appData.cells.map((cell) => {
 			const header = appData.headers.find(
@@ -723,153 +754,178 @@ export default function App({
 		handleScroll: handleTableScroll,
 	} = useScrollUpdate(150);
 
+	const isSorted = appData.headers.find(
+		(header) => header.sortDir !== SortDir.DEFAULT
+	)
+		? true
+		: false;
+
 	return (
-		<div
-			id={tableId}
-			className="NLT__app"
-			tabIndex={0}
-			onScroll={handleTableScroll}
-		>
-			<Table
-				headers={appData.headers.map((header, columnIndex) => {
-					const {
-						id,
-						content,
-						width,
-						type,
-						sortName,
-						shouldWrapOverflow,
-						useAutoWidth,
-					} = header;
-					return {
-						id,
-						component: (
-							<EditableTh
-								key={id}
-								id={id}
-								width={findCellWidth(
-									type,
-									useAutoWidth,
-									columnWidths[id],
-									width
-								)}
-								shouldWrapOverflow={shouldWrapOverflow}
-								useAutoWidth={useAutoWidth}
-								headerWidthUpdateTime={headerWidthUpdateTime}
-								tableScrollUpdateTime={tableScrollUpdateTime}
-								index={columnIndex}
-								content={content}
-								type={type}
-								sortName={sortName}
-								isFirstChild={columnIndex === 0}
-								isLastChild={
-									columnIndex === appData.headers.length - 1
-								}
-								onSortSelect={handleHeaderSortSelect}
-								onInsertColumnClick={handleInsertColumnClick}
-								onMoveColumnClick={handleMoveColumnClick}
-								onWidthChange={handleHeaderWidthChange}
-								onDeleteClick={handleDeleteHeaderClick}
-								onSaveClick={handleHeaderSave}
-								onTypeSelect={handleHeaderTypeSelect}
-								onAutoWidthToggle={handleAutoWidthToggle}
-								onWrapOverflowToggle={handleWrapContentToggle}
-							/>
-						),
-					};
-				})}
-				rows={appData.rows.map((row, rowIndex) => {
-					return {
-						id: row.id,
-						component: (
-							<>
-								{appData.headers.map((header) => {
-									const cell = appData.cells.find(
-										(cell) =>
-											cell.rowId === row.id &&
-											cell.headerId === header.id
-									);
-									const {
-										id: headerId,
+		<div id={tableId} className="NLT__app" tabIndex={0}>
+			<OptionBar headers={appData.headers} />
+			<div onScroll={handleTableScroll}>
+				<Table
+					headers={appData.headers.map((header, columnIndex) => {
+						const {
+							id,
+							content,
+							width,
+							type,
+							sortDir,
+							shouldWrapOverflow,
+							useAutoWidth,
+						} = header;
+						return {
+							id,
+							component: (
+								<EditableTh
+									key={id}
+									id={id}
+									width={findCellWidth(
 										type,
 										useAutoWidth,
-										width,
-									} = header;
-									return (
-										<EditableTd
-											key={cell.id}
-											cell={cell}
-											headerType={header.type}
-											tableScrollUpdateTime={
-												tableScrollUpdateTime
-											}
-											headerWidthUpdateTime={
-												headerWidthUpdateTime
-											}
-											shouldWrapOverflow={
-												header.shouldWrapOverflow
-											}
-											useAutoWidth={useAutoWidth}
-											width={findCellWidth(
-												type,
-												useAutoWidth,
-												columnWidths[headerId],
-												width
-											)}
-											height={rowHeights[row.id]}
-											tagUpdate={tagUpdate}
-											tags={appData.tags.filter(
-												(tag) =>
-													tag.headerId === header.id
-											)}
-											onTagClick={handleTagClick}
-											onRemoveTagClick={
-												handleRemoveTagClick
-											}
-											onContentChange={
-												handleCellContentChange
-											}
-											onSaveContent={
-												handleCellContentSave
-											}
-											onColorChange={handleChangeColor}
-											onAddTag={handleAddTag}
-										/>
-									);
-								})}
-								<td
-									className="NLT__td"
-									style={{ height: rowHeights[row.id] }}
-								>
-									<div className="NLT__td-container">
-										<RowMenu
-											tableScrollUpdateTime={
-												tableScrollUpdateTime
-											}
-											headerWidthUpdateTime={
-												headerWidthUpdateTime
-											}
-											rowId={row.id}
-											isFirstRow={rowIndex === 0}
-											isLastRow={
-												rowIndex ===
-												appData.rows.length - 1
-											}
-											onMoveRowClick={handleMoveRowClick}
-											onDeleteClick={handleDeleteRowClick}
-											onInsertRowClick={
-												handleInsertRowClick
-											}
-										/>
-									</div>
-								</td>
-							</>
-						),
-					};
-				})}
-				onAddColumn={handleAddColumn}
-				onAddRow={handleAddRow}
-			/>
+										columnWidths[id],
+										width
+									)}
+									shouldWrapOverflow={shouldWrapOverflow}
+									useAutoWidth={useAutoWidth}
+									headerWidthUpdateTime={
+										headerWidthUpdateTime
+									}
+									tableScrollUpdateTime={
+										tableScrollUpdateTime
+									}
+									sortUpdateTime={sortUpdateTime}
+									index={columnIndex}
+									content={content}
+									type={type}
+									sortDir={sortDir}
+									isFirstChild={columnIndex === 0}
+									isLastChild={
+										columnIndex ===
+										appData.headers.length - 1
+									}
+									onSortSelect={handleHeaderSortSelect}
+									onInsertColumnClick={
+										handleInsertColumnClick
+									}
+									onMoveColumnClick={handleMoveColumnClick}
+									onWidthChange={handleHeaderWidthChange}
+									onDeleteClick={handleDeleteHeaderClick}
+									onSaveClick={handleHeaderSave}
+									onTypeSelect={handleHeaderTypeSelect}
+									onAutoWidthToggle={handleAutoWidthToggle}
+									onWrapOverflowToggle={
+										handleWrapContentToggle
+									}
+								/>
+							),
+						};
+					})}
+					rows={appData.rows.map((row, rowIndex) => {
+						return {
+							id: row.id,
+							component: (
+								<>
+									{appData.headers.map((header) => {
+										const cell = appData.cells.find(
+											(cell) =>
+												cell.rowId === row.id &&
+												cell.headerId === header.id
+										);
+										const {
+											id: headerId,
+											type,
+											useAutoWidth,
+											width,
+										} = header;
+										return (
+											<EditableTd
+												key={cell.id}
+												cell={cell}
+												headerType={header.type}
+												tableScrollUpdateTime={
+													tableScrollUpdateTime
+												}
+												headerWidthUpdateTime={
+													headerWidthUpdateTime
+												}
+												sortUpdateTime={sortUpdateTime}
+												shouldWrapOverflow={
+													header.shouldWrapOverflow
+												}
+												useAutoWidth={useAutoWidth}
+												width={findCellWidth(
+													type,
+													useAutoWidth,
+													columnWidths[headerId],
+													width
+												)}
+												height={rowHeights[row.id]}
+												tagUpdate={tagUpdate}
+												tags={appData.tags.filter(
+													(tag) =>
+														tag.headerId ===
+														header.id
+												)}
+												onTagClick={handleTagClick}
+												onRemoveTagClick={
+													handleRemoveTagClick
+												}
+												onContentChange={
+													handleCellContentChange
+												}
+												onSaveContent={
+													handleCellContentSave
+												}
+												onColorChange={
+													handleChangeColor
+												}
+												onAddTag={handleAddTag}
+											/>
+										);
+									})}
+									<td
+										className="NLT__td"
+										style={{ height: rowHeights[row.id] }}
+									>
+										<div className="NLT__td-container">
+											<RowMenu
+												hideInsertOptions={isSorted}
+												hideMoveOptions={isSorted}
+												tableScrollUpdateTime={
+													tableScrollUpdateTime
+												}
+												headerWidthUpdateTime={
+													headerWidthUpdateTime
+												}
+												sortUpdateTime={sortUpdateTime}
+												rowId={row.id}
+												isFirstRow={rowIndex === 0}
+												isLastRow={
+													rowIndex ===
+													appData.rows.length - 1
+												}
+												onMoveRowClick={
+													handleMoveRowClick
+												}
+												onDeleteClick={
+													handleDeleteRowClick
+												}
+												onInsertRowClick={
+													handleInsertRowClick
+												}
+											/>
+										</div>
+									</td>
+								</>
+							),
+						};
+					})}
+					onAddColumn={handleAddColumn}
+					onAddRow={handleAddRow}
+				/>
+			</div>
 		</div>
 	);
 }

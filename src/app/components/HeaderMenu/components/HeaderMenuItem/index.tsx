@@ -2,15 +2,17 @@ import React from "react";
 
 import IconText from "../../../IconText";
 
+import { Icon } from "src/app/services/icon/types";
+
 interface Props {
-	icon?: string;
-	iconText: string;
+	icon?: Icon | null;
+	content: string;
 	onClick: any;
 	selected?: boolean;
 }
 export default function HeaderMenuItem({
-	icon = "",
-	iconText,
+	icon,
+	content,
 	onClick,
 	selected = false,
 }: Props) {
@@ -19,7 +21,8 @@ export default function HeaderMenuItem({
 
 	return (
 		<li className={className} onClick={() => onClick()}>
-			<IconText iconText={iconText} icon={icon} />
+			{icon !== null && <IconText iconText={content} icon={icon} />}
+			{icon === null && <p className="NLT__p">{content}</p>}
 		</li>
 	);
 }

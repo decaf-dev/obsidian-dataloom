@@ -2,10 +2,12 @@ import React from "react";
 
 import IconText from "../../../IconText";
 
+import { Icon } from "src/app/services/icon/types";
+
 import "./styles.css";
 
 interface Props {
-	icon: string;
+	icon: Icon;
 	iconText: string;
 	onClick: () => void;
 }

@@ -1,0 +1,15 @@
+.NLT__option-bar {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.NLT__sort-bubble {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    padding: 2px 6px;
+    border: 1px solid var(--background-modifier-border);
+    user-select: none;
+}

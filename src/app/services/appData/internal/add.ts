@@ -21,7 +21,7 @@ export const addRow = (data: AppData): AppData => {
 };
 
 export const addColumn = (data: AppData): AppData => {
-	const header = initialHeader(uuid(), data.headers.length, "New Column");
+	const header = initialHeader(uuid(), "New Column");
 	const cells = [...data.cells];
 	data.rows.forEach((row) => {
 		cells.push(findNewCell(uuid(), row.id, header.id, CONTENT_TYPE.TEXT));

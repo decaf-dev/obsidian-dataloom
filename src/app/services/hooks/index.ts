@@ -13,11 +13,6 @@ export const useId = (): string => {
 	return id;
 };
 
-export const useMenuId = (): string => {
-	const [menuId] = useState(uuid());
-	return menuId;
-};
-
 export const useCompare = (value: any) => {
 	const prevValue = usePrevious(value);
 	return prevValue !== value;
@@ -61,6 +56,7 @@ export const useDidMountEffect = (func: (...rest: any) => any, deps: any[]) => {
 
 export const useContentResizeTime = () => {
 	const [resizeTime, setResizeTime] = useState(0);
+	let observer: ResizeObserver | null = null;
 
 	useEffect(() => {
 		function handleResize() {
@@ -70,10 +66,17 @@ export const useContentResizeTime = () => {
 		setTimeout(() => {
 			const el = document.getElementsByClassName("view-content")[0];
 			if (el) {
-				new ResizeObserver(handleResize).observe(el);
+				observer = new ResizeObserver(handleResize);
+				observer.observe(el);
 				handleResize();
 			}
 		}, 1);
+
+		return () => {
+			if (observer) {
+				observer.disconnect();
+			}
+		};
 	}, []);
 	return resizeTime;
 };

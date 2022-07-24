@@ -1,16 +1,17 @@
 import React, { useEffect, useState, useRef } from "react";
 
 import Menu from "../Menu";
-
-import { SORT, TYPE_ITEMS, SUBMENU } from "./constants";
-import { ICON } from "../../constants";
-
-import "./styles.css";
 import HeaderMenuItem from "./components/HeaderMenuItem";
 import IconButton from "../IconButton";
 import Button from "../Button";
 import Switch from "../Switch";
+
+import { Icon } from "src/app/services/icon/types";
+import { SortDir } from "src/app/services/sort/types";
 import { CONTENT_TYPE } from "src/app/constants";
+import { TYPE_ITEMS, SUBMENU, SORT_MENU_ITEM } from "./constants";
+
+import "./styles.css";
 
 interface Props {
 	isOpen: boolean;
@@ -23,7 +24,7 @@ interface Props {
 	index: number;
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
-	sortName: string;
+	sortDir: SortDir;
 	content: string;
 	type: string;
 	isFirstChild: boolean;
@@ -31,7 +32,7 @@ interface Props {
 	onInsertColumnClick: (id: string, insertRight: boolean) => void;
 	onMoveColumnClick: (id: string, moveRight: boolean) => void;
 	onTypeSelect: (id: string, type: string) => void;
-	onSortSelect: (id: string, type: string, sortName: string) => void;
+	onSortSelect: (id: string, type: string, sortDir: SortDir) => void;
 	onDeleteClick: (id: string) => void;
 	onOutsideClick: (id: string, inputText: string) => void;
 	onAutoWidthToggle: (id: string, value: boolean) => void;
@@ -46,7 +47,7 @@ export default function HeaderMenu({
 	content,
 	style,
 	type,
-	sortName,
+	sortDir,
 	useAutoWidth,
 	shouldWrapOverflow,
 	isFirstChild,
@@ -90,8 +91,8 @@ export default function HeaderMenu({
 			return (
 				<HeaderMenuItem
 					key={item.name}
-					icon=""
-					iconText={item.content}
+					icon={null}
+					content={item.content}
 					onClick={() => handleTypeSelect(id, item.type)}
 					selected={item.type === type}
 				/>
@@ -102,13 +103,13 @@ export default function HeaderMenu({
 	function renderSortItems() {
 		return (
 			<ul className="NLT__header-menu-ul">
-				{Object.values(SORT).map((item) => (
+				{Object.values(SORT_MENU_ITEM).map((item) => (
 					<HeaderMenuItem
 						key={item.name}
 						icon={item.icon}
-						iconText={`Sort ${item.content}`}
+						content={`Sort ${item.content}`}
 						onClick={() => handleSortSelect(id, type, item.name)}
-						selected={sortName === item.name}
+						selected={sortDir === item.name}
 					/>
 				))}
 			</ul>
@@ -119,13 +120,13 @@ export default function HeaderMenu({
 		return (
 			<ul className="NLT__header-menu-ul">
 				<HeaderMenuItem
-					icon={ICON.KEYBOARD_DOUBLE_ARROW_LEFT}
-					iconText="Insert Left"
+					icon={Icon.KEYBOARD_DOUBLE_ARROW_LEFT}
+					content="Insert Left"
 					onClick={() => handleInsertColumnClick(id, false)}
 				/>
 				<HeaderMenuItem
-					icon={ICON.KEYBOARD_DOUBLE_ARROW_RIGHT}
-					iconText="Insert Right"
+					icon={Icon.KEYBOARD_DOUBLE_ARROW_RIGHT}
+					content="Insert Right"
 					onClick={() => handleInsertColumnClick(id, true)}
 				/>
 			</ul>
@@ -137,15 +138,15 @@ export default function HeaderMenu({
 			<ul className="NLT__header-menu-ul">
 				{!isFirstChild && (
 					<HeaderMenuItem
-						icon={ICON.KEYBOARD_DOUBLE_ARROW_LEFT}
-						iconText="Move Left"
+						icon={Icon.KEYBOARD_DOUBLE_ARROW_LEFT}
+						content="Move Left"
 						onClick={() => handleMoveColumnClick(id, false)}
 					/>
 				)}
 				{!isLastChild && (
 					<HeaderMenuItem
-						icon={ICON.KEYBOARD_DOUBLE_ARROW_RIGHT}
-						iconText="Move Right"
+						icon={Icon.KEYBOARD_DOUBLE_ARROW_RIGHT}
+						content="Move Right"
 						onClick={() => handleMoveColumnClick(id, true)}
 					/>
 				)}
@@ -202,8 +203,8 @@ export default function HeaderMenu({
 		onClose();
 	}
 
-	function handleSortSelect(id: string, type: string, sortName: string) {
-		onSortSelect(id, type, sortName);
+	function handleSortSelect(id: string, type: string, sortDir: SortDir) {
+		onSortSelect(id, type, sortDir);
 		onClose();
 	}
 
@@ -228,7 +229,7 @@ export default function HeaderMenu({
 		return Object.values(SUBMENU).map((item) => (
 			<HeaderMenuItem
 				key={item.name}
-				iconText={item.content}
+				content={item.content}
 				icon={item.icon}
 				onClick={() => setSubmenu(item)}
 			/>
@@ -256,7 +257,7 @@ export default function HeaderMenu({
 			<div>
 				<div className="NLT__header-menu-header-container">
 					<IconButton
-						icon={ICON.KEYBOARD_BACKSPACE}
+						icon={Icon.KEYBOARD_BACKSPACE}
 						onClick={() => setSubmenu(null)}
 					/>
 					<div className="NLT__header-menu-header">

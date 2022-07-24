@@ -4,6 +4,7 @@ import { logFunc } from "src/app/services/appData/debug";
 import { useTableFocus } from "../FocusProvider";
 
 interface IMenuContext {
+	isAnyMenuOpen?: () => boolean;
 	isMenuOpen?: (id: string) => boolean;
 	isMenuRequestingClose?: (id: string) => boolean;
 	openMenu?: (id: string, level: number) => void;
@@ -14,7 +15,14 @@ const MenuContext = React.createContext<IMenuContext>(null);
 
 const COMPONENT_NAME = "MenuProvider";
 
-export const useMenu = (id: string, level: number = MENU_LEVEL.ONE) => {
+export const useMenu = () => {
+	const { isAnyMenuOpen } = useContext(MenuContext);
+	return {
+		isAnyMenuOpen,
+	};
+};
+
+export const useMenuId = (id: string, level: number = MENU_LEVEL.ONE) => {
 	const { openMenu, closeMenu, isMenuOpen, isMenuRequestingClose } =
 		useContext(MenuContext);
 	return {
@@ -38,6 +46,10 @@ interface Menu {
 export default function MenuProvider({ children }: Props) {
 	const [openMenus, setOpenMenus] = useState<Menu[]>([]);
 	const isFocused = useTableFocus();
+
+	function isAnyMenuOpen(): boolean {
+		return openMenus.length !== 0;
+	}
 
 	function canOpenMenu(level: number): boolean {
 		if (openMenus.length === 0) return true;
@@ -165,6 +177,7 @@ export default function MenuProvider({ children }: Props) {
 					openMenu,
 					isMenuRequestingClose,
 					closeMenu,
+					isAnyMenuOpen,
 				}}
 			>
 				{children}
