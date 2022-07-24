@@ -80,7 +80,7 @@ export const loadAppData = async (
 						},
 					};
 				}
-				if (tableCacheVersion < 412) {
+				if (tableCacheVersion < 420) {
 					obj = {
 						...obj,
 						data: {
