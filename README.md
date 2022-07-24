@@ -20,8 +20,8 @@ Thank you everyone for your continued support and appreciation.
 
 Current limitations in 4.2.0 include:
 
--   Only 1 table per file is currently supported (to be fixed in 4.2.1)
--   Live preview support is currently disabled (to be fixed in 4.2.2)
+-   Only 1 table per file is currently supported (to be fixed in 4.3.0)
+-   Live preview support is currently disabled (to be fixed in 4.4.0)
 
 ## Usage
 
