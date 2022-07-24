@@ -14,11 +14,9 @@ import "./styles.css";
 
 interface Props {
 	rowId: string;
-	headerWidthUpdateTime: number;
-	tableScrollUpdateTime: number;
+	positionUpdateTime: number;
 	hideInsertOptions: boolean;
 	hideMoveOptions: boolean;
-	sortUpdateTime: number;
 	isFirstRow: boolean;
 	isLastRow: boolean;
 	onMoveRowClick: (id: string, moveBelow: boolean) => void;
@@ -30,11 +28,9 @@ export default function RowMenu({
 	rowId,
 	isFirstRow,
 	isLastRow,
-	headerWidthUpdateTime,
-	tableScrollUpdateTime,
+	positionUpdateTime,
 	hideInsertOptions,
 	hideMoveOptions,
-	sortUpdateTime,
 	onMoveRowClick,
 	onDeleteClick,
 	onInsertRowClick,
@@ -43,11 +39,7 @@ export default function RowMenu({
 	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
 		useMenuId(menuId);
 
-	const { positionRef, position } = usePositionRef([
-		headerWidthUpdateTime,
-		tableScrollUpdateTime,
-		sortUpdateTime,
-	]);
+	const { positionRef, position } = usePositionRef([positionUpdateTime]);
 
 	useEffect(() => {
 		if (isMenuRequestingClose) {

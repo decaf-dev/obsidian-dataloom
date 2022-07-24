@@ -80,7 +80,42 @@ export const useThrottle = (eventTime: number, waitTime: number) => {
 	return shouldExecute;
 };
 
-export const useContentResizeTime = () => {
+export const useScrollTime = (className: string) => {
+	const [eventTime, setEventTime] = useState(0);
+	const [scrollTime, setScrollTime] = useState(0);
+
+	let el: Node | null = null;
+
+	const shouldExecute = useThrottle(eventTime, 150);
+
+	useEffect(() => {
+		if (shouldExecute) setScrollTime(Date.now());
+	}, [shouldExecute]);
+
+	useEffect(() => {
+		function handleScroll() {
+			setEventTime(Date.now());
+		}
+
+		el = document.getElementsByClassName(className)[0];
+		if (el) el.addEventListener("scroll", handleScroll);
+
+		return () => {
+			if (el) el.removeEventListener("scroll", handleScroll);
+		};
+	}, []);
+	return scrollTime;
+};
+
+export const useTableScrollTime = () => {
+	return useScrollTime("NLT__table-wrapper");
+};
+
+export const useObsidianScrollTime = () => {
+	return useScrollTime("markdown-preview-view");
+};
+
+export const useObsidianResizeTime = () => {
 	const [eventTime, setEventTime] = useState(0);
 	const [resizeTime, setResizeTime] = useState(0);
 
@@ -115,33 +150,6 @@ export const useContentResizeTime = () => {
 	return resizeTime;
 };
 
-export const useContentScrollTime = () => {
-	const [eventTime, setEventTime] = useState(0);
-	const [scrollTime, setScrollTime] = useState(0);
-
-	let el: Node | null = null;
-
-	const shouldExecute = useThrottle(eventTime, 150);
-
-	useEffect(() => {
-		if (shouldExecute) setScrollTime(Date.now());
-	}, [shouldExecute]);
-
-	useEffect(() => {
-		function handleScroll() {
-			setEventTime(Date.now());
-		}
-
-		el = document.getElementsByClassName("markdown-preview-view")[0];
-		if (el) el.addEventListener("scroll", handleScroll);
-
-		return () => {
-			if (el) el.removeEventListener("scroll", handleScroll);
-		};
-	}, []);
-	return scrollTime;
-};
-
 export const usePositionRef = (deps: any[] = []) => {
 	const [position, setPosition] = useState({
 		top: "0px",
@@ -149,8 +157,10 @@ export const usePositionRef = (deps: any[] = []) => {
 		width: "0px",
 		height: "0px",
 	});
-	const resizeTime = useContentResizeTime();
-	const scrollTime = useContentScrollTime();
+	const obsidianResizeTime = useObsidianResizeTime();
+	const obsidianScrollTime = useObsidianScrollTime();
+	const tableScrollTime = useTableScrollTime();
+
 	const positionRef = useCallback(
 		(node) => {
 			if (node instanceof HTMLElement) {
@@ -167,7 +177,7 @@ export const usePositionRef = (deps: any[] = []) => {
 				});
 			}
 		},
-		[resizeTime, scrollTime, ...deps]
+		[obsidianResizeTime, obsidianScrollTime, tableScrollTime, ...deps]
 	);
 	return { positionRef, position };
 };
@@ -205,23 +215,4 @@ export const useDisableScroll = (isOpen: boolean): void => {
 			}
 		};
 	}, [isOpen]);
-};
-
-export const useScrollUpdate = (waitTime: number) => {
-	const [eventTime, setEventTime] = useState(0);
-	const [scrollTime, setScrollTime] = useState(0);
-	const shouldExecute = useThrottle(eventTime, waitTime);
-
-	useEffect(() => {
-		if (shouldExecute) setScrollTime(Date.now());
-	}, [shouldExecute]);
-
-	function handleScroll() {
-		setEventTime(Date.now());
-	}
-
-	return {
-		handleScroll,
-		scrollTime,
-	};
 };

@@ -35,9 +35,7 @@ interface Props {
 	cell: Cell;
 	width: string;
 	height: string;
-	headerWidthUpdateTime: number;
-	tableScrollUpdateTime: number;
-	sortUpdateTime: number;
+	positionUpdateTime: number;
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
 	tagUpdate: {
@@ -70,9 +68,7 @@ export default function EditableTd({
 	cell,
 	width,
 	height,
-	headerWidthUpdateTime,
-	tableScrollUpdateTime,
-	sortUpdateTime,
+	positionUpdateTime,
 	shouldWrapOverflow,
 	useAutoWidth,
 	tags,
@@ -94,9 +90,7 @@ export default function EditableTd({
 
 	const { positionRef, position } = usePositionRef([
 		content.length,
-		headerWidthUpdateTime,
-		tableScrollUpdateTime,
-		sortUpdateTime,
+		positionUpdateTime,
 	]);
 
 	const { id, headerId, type } = cell;
