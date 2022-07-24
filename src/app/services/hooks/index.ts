@@ -54,13 +54,47 @@ export const useDidMountEffect = (func: (...rest: any) => any, deps: any[]) => {
 	}, deps);
 };
 
-export const useContentResizeTime = () => {
-	const [resizeTime, setResizeTime] = useState(0);
-	let observer: ResizeObserver | null = null;
+/**
+ * Throttles events.
+ * Guarantees an execution of events every x milliseconds
+ */
+export const useThrottle = (eventTime: number, waitTime: number) => {
+	const [shouldExecute, setExecution] = useState(false);
 
 	useEffect(() => {
+		let intervalId: NodeJS.Timer = null;
+		function startTimer() {
+			intervalId = setInterval(() => {
+				if (Date.now() - eventTime < waitTime) return;
+				clearInterval(intervalId);
+				setExecution(true);
+			}, 50);
+		}
+		if (eventTime !== 0) {
+			setExecution(false);
+			startTimer();
+		}
+		return () => clearInterval(intervalId);
+	}, [eventTime]);
+
+	return shouldExecute;
+};
+
+export const useContentResizeTime = () => {
+	const [eventTime, setEventTime] = useState(0);
+	const [resizeTime, setResizeTime] = useState(0);
+
+	const shouldExecute = useThrottle(eventTime, 150);
+
+	useEffect(() => {
+		if (shouldExecute) setResizeTime(Date.now());
+	}, [shouldExecute]);
+
+	useEffect(() => {
+		let observer: ResizeObserver | null = null;
+
 		function handleResize() {
-			setResizeTime(Date.now());
+			setEventTime(Date.now());
 		}
 
 		setTimeout(() => {
@@ -81,6 +115,33 @@ export const useContentResizeTime = () => {
 	return resizeTime;
 };
 
+export const useContentScrollTime = () => {
+	const [eventTime, setEventTime] = useState(0);
+	const [scrollTime, setScrollTime] = useState(0);
+
+	let el: Node | null = null;
+
+	const shouldExecute = useThrottle(eventTime, 150);
+
+	useEffect(() => {
+		if (shouldExecute) setScrollTime(Date.now());
+	}, [shouldExecute]);
+
+	useEffect(() => {
+		function handleScroll() {
+			setEventTime(Date.now());
+		}
+
+		el = document.getElementsByClassName("markdown-preview-view")[0];
+		if (el) el.addEventListener("scroll", handleScroll);
+
+		return () => {
+			if (el) el.removeEventListener("scroll", handleScroll);
+		};
+	}, []);
+	return scrollTime;
+};
+
 export const usePositionRef = (deps: any[] = []) => {
 	const [position, setPosition] = useState({
 		top: "0px",
@@ -89,6 +150,7 @@ export const usePositionRef = (deps: any[] = []) => {
 		height: "0px",
 	});
 	const resizeTime = useContentResizeTime();
+	const scrollTime = useContentScrollTime();
 	const positionRef = useCallback(
 		(node) => {
 			if (node instanceof HTMLElement) {
@@ -105,7 +167,7 @@ export const usePositionRef = (deps: any[] = []) => {
 				});
 			}
 		},
-		[resizeTime, ...deps]
+		[resizeTime, scrollTime, ...deps]
 	);
 	return { positionRef, position };
 };
@@ -145,39 +207,14 @@ export const useDisableScroll = (isOpen: boolean): void => {
 	}, [isOpen]);
 };
 
-export const useDebounceInterval = (
-	lastEventTime: number,
-	waitTime: number
-) => {
-	const [finished, setFinished] = useState(false);
-
-	useEffect(() => {
-		let intervalId: NodeJS.Timer = null;
-		function startTimer() {
-			intervalId = setInterval(() => {
-				if (Date.now() - lastEventTime < waitTime) return;
-				clearInterval(intervalId);
-				setFinished(true);
-			}, 50);
-		}
-		if (lastEventTime !== 0) {
-			setFinished(false);
-			startTimer();
-		}
-		return () => clearInterval(intervalId);
-	}, [lastEventTime]);
-
-	return finished;
-};
-
 export const useScrollUpdate = (waitTime: number) => {
 	const [eventTime, setEventTime] = useState(0);
 	const [scrollTime, setScrollTime] = useState(0);
-	const finished = useDebounceInterval(eventTime, waitTime);
+	const shouldExecute = useThrottle(eventTime, waitTime);
 
 	useEffect(() => {
-		if (finished) setScrollTime(Date.now());
-	}, [finished]);
+		if (shouldExecute) setScrollTime(Date.now());
+	}, [shouldExecute]);
 
 	function handleScroll() {
 		setEventTime(Date.now());
