@@ -105,7 +105,7 @@ export default function App({
 				if (Date.now() - debounceUpdate < 250) return;
 				clearInterval(intervalId);
 				setDebounceUpdate(0);
-				setSaveTime(Date.now());
+				saveData();
 			}, 100);
 		}
 		if (debounceUpdate !== 0) startTimer();
@@ -146,16 +146,20 @@ export default function App({
 	// 	return () => clearInterval(intervalId);
 	// }, []);
 
+	function saveData() {
+		setSaveTime(Date.now());
+	}
+
 	function handleAddColumn() {
 		if (DEBUG.APP) console.log("[App]: handleAddColumn called.");
 		setAppData((prevState) => addColumn(prevState));
-		setSaveTime(Date.now());
+		saveData();
 	}
 
 	function handleAddRow() {
 		if (DEBUG.APP) console.log("[App]: handleAddRow called.");
 		setAppData((prevState: AppData) => addRow(prevState));
-		setSaveTime(Date.now());
+		saveData();
 	}
 
 	function handleHeaderSave(id: string, updatedContent: string) {
@@ -173,7 +177,7 @@ export default function App({
 				}),
 			};
 		});
-		setSaveTime(Date.now());
+		saveData();
 	}
 
 	function handleHeaderTypeSelect(id: string, cellType: string) {
@@ -207,7 +211,7 @@ export default function App({
 				}),
 			};
 		});
-		setSaveTime(Date.now());
+		saveData();
 	}
 
 	function handleHeaderSortSelect(
@@ -226,10 +230,11 @@ export default function App({
 			};
 		});
 		sortRows(id, type, sortDir);
+		saveData();
 	}
 
 	function handleCellContentSave() {
-		setSaveTime(Date.now());
+		saveData();
 	}
 
 	function handleCellContentChange(
@@ -423,7 +428,7 @@ export default function App({
 				cells: prevState.cells.filter((cell) => cell.headerId !== id),
 			};
 		});
-		setSaveTime(Date.now());
+		saveData();
 	}
 
 	function handleDeleteRowClick(rowId: string) {
@@ -435,7 +440,7 @@ export default function App({
 				cells: prevState.cells.filter((cell) => cell.rowId !== rowId),
 			};
 		});
-		setSaveTime(Date.now());
+		saveData();
 	}
 
 	function handleMoveRowClick(id: string, moveBelow: boolean) {
@@ -460,7 +465,7 @@ export default function App({
 				rows,
 			};
 		});
-		setSaveTime(Date.now());
+		saveData();
 	}
 
 	function handleHeaderWidthChange(id: string, width: string) {
@@ -506,7 +511,7 @@ export default function App({
 				headers,
 			};
 		});
-		setSaveTime(Date.now());
+		saveData();
 	}
 
 	function handleInsertColumnClick(id: string, insertRight: boolean) {
@@ -539,7 +544,7 @@ export default function App({
 				cells: [...prevState.cells, ...cells],
 			};
 		});
-		setSaveTime(Date.now());
+		saveData();
 	}
 
 	function handleInsertRowClick(id: string, insertBelow = false) {
@@ -569,7 +574,7 @@ export default function App({
 				tags: [...prevState.tags, ...tags],
 			};
 		});
-		setSaveTime(Date.now());
+		saveData();
 	}
 
 	function handleChangeColor(tagId: string, color: string) {
@@ -587,7 +592,7 @@ export default function App({
 				}),
 			};
 		});
-		setSaveTime(Date.now());
+		saveData();
 	}
 
 	function handleAutoWidthToggle(headerId: string, value: boolean) {
