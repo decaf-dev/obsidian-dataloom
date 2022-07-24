@@ -184,18 +184,18 @@ export default function EditableTd({
 	}
 
 	function handleTextInputChange(value: string) {
-		onContentChange(id, headerType, value);
+		onContentChange(id, headerType, value, false);
 		setContentUpdate(true);
 	}
 
 	function handleNumberInputChange(value: string) {
-		onContentChange(id, headerType, value);
+		onContentChange(id, headerType, value, false);
 		setContentUpdate(true);
 	}
 
 	function handleDateChange(date: Date) {
 		const content = dateToString(date);
-		onContentChange(id, headerType, content);
+		onContentChange(id, headerType, content, false);
 		setContentUpdate(true);
 	}
 

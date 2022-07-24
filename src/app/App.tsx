@@ -755,6 +755,12 @@ export default function App({
 		handleScroll: handleTableScroll,
 	} = useScrollUpdate(150);
 
+	const isSorted = appData.headers.find(
+		(header) => header.sortDir !== SortDir.DEFAULT
+	)
+		? true
+		: false;
+
 	return (
 		<div id={tableId} className="NLT__app" tabIndex={0}>
 			<OptionBar headers={appData.headers} />
@@ -886,6 +892,8 @@ export default function App({
 									>
 										<div className="NLT__td-container">
 											<RowMenu
+												hideInsertOptions={isSorted}
+												hideMoveOptions={isSorted}
 												tableScrollUpdateTime={
 													tableScrollUpdateTime
 												}
