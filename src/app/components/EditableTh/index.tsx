@@ -13,6 +13,7 @@ import { useMenu } from "../MenuProvider";
 import { CSS_MEASUREMENT_PIXEL_REGEX } from "src/app/services/string/regex";
 import { numToPx, pxToNum } from "src/app/services/string/parsers";
 import { MIN_COLUMN_WIDTH_PX } from "src/app/constants";
+import { SortDir } from "src/app/services/sort/types";
 interface Props {
 	id: string;
 	index: number;
@@ -22,12 +23,12 @@ interface Props {
 	content: string;
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
-	sortName: string;
+	sortDir: SortDir;
 	type: string;
 	isFirstChild: boolean;
 	isLastChild: boolean;
 	onMoveColumnClick: (id: string, moveRight: boolean) => void;
-	onSortSelect: (id: string, type: string, sortName: string) => void;
+	onSortSelect: (id: string, type: string, sortDir: SortDir) => void;
 	onInsertColumnClick: (id: string, insertRight: boolean) => void;
 	onTypeSelect: (id: string, type: string) => void;
 	onDeleteClick: (id: string) => void;
@@ -47,7 +48,7 @@ export default function EditableTh({
 	shouldWrapOverflow,
 	type,
 	tableScrollUpdateTime,
-	sortName,
+	sortDir,
 	isFirstChild,
 	isLastChild,
 	onWidthChange,
@@ -164,7 +165,7 @@ export default function EditableTh({
 				menuId={menuId}
 				content={content}
 				index={index}
-				sortName={sortName}
+				sortDir={sortDir}
 				type={type}
 				isFirstChild={isFirstChild}
 				isLastChild={isLastChild}

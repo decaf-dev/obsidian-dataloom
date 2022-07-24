@@ -1,4 +1,8 @@
-import { CONTENT_TYPE, ICON } from "../../constants";
+import { CONTENT_TYPE } from "../../constants";
+
+import { Icon } from "src/app/services/icon/types";
+import { SortDir } from "src/app/services/sort/types";
+
 interface MenuItem {
 	name: string;
 	content: string;
@@ -9,27 +13,27 @@ export const SUBMENU = {
 	EDIT: {
 		name: "edit",
 		content: "Edit",
-		icon: ICON.EDIT,
+		icon: Icon.EDIT,
 	},
 	SORT: {
 		name: "sort",
 		content: "Sort",
-		icon: ICON.SORT,
+		icon: Icon.SORT,
 	},
 	MOVE: {
 		name: "move",
 		content: "Move",
-		icon: ICON.MOVE_UP,
+		icon: Icon.MOVE_UP,
 	},
 	INSERT: {
 		name: "insert",
 		content: "Insert",
-		icon: ICON.KEYBOARD_DOUBLE_ARROW_RIGHT,
+		icon: Icon.KEYBOARD_DOUBLE_ARROW_RIGHT,
 	},
 	TYPE: {
 		name: "type",
 		content: "Type",
-		icon: ICON.TEXT_SNIPPET,
+		icon: Icon.TEXT_SNIPPET,
 	},
 };
 
@@ -40,27 +44,28 @@ export const TYPE_ITEMS: MenuItem[] = [
 	{ name: "date", content: "Date", type: CONTENT_TYPE.DATE },
 	{ name: "checkbox", content: "Checkbox", type: CONTENT_TYPE.CHECKBOX },
 ];
-
-interface SortItem {
-	name: string;
-	content: string;
-	icon: string;
+interface SortMenuItem {
+	[name: string]: {
+		name: SortDir;
+		content: string;
+		icon: Icon;
+	};
 }
 
-export const SORT: { [name: string]: SortItem } = {
-	DEFAULT: {
-		name: "default",
-		content: "Default",
-		icon: ICON.SORT,
-	},
+export const SORT_MENU_ITEM: SortMenuItem = {
 	ASC: {
-		name: "asc",
+		name: SortDir.ASC,
 		content: "Ascending",
-		icon: ICON.KEYBOARD_ARROW_UP,
+		icon: Icon.ARROW_UPWARD,
 	},
 	DESC: {
-		name: "desc",
+		name: SortDir.DESC,
 		content: "Descending",
-		icon: ICON.KEYBOARD_ARROW_DOWN,
+		icon: Icon.ARROW_DOWNWARD,
+	},
+	DEFAULT: {
+		name: SortDir.DEFAULT,
+		content: "Default",
+		icon: Icon.HORIZONTAL_RULE,
 	},
 };

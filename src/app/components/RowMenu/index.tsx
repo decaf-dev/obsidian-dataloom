@@ -7,7 +7,7 @@ import RowMenuItem from "./components/RowMenuItem";
 
 import "./styles.css";
 import { DRAG_MENU_ITEM } from "./constants";
-import { ICON } from "src/app/constants";
+import { Icon } from "src/app/services/icon/types";
 import { usePositionRef } from "src/app/services/hooks";
 import { useMenu } from "../MenuProvider";
 import { useDisableScroll, useMenuId } from "src/app/services/hooks";
@@ -72,7 +72,7 @@ export default function RowMenu({
 
 	return (
 		<div ref={positionRef}>
-			<IconButton icon={ICON.MORE_VERT} onClick={handleButtonClick} />
+			<IconButton icon={Icon.MORE_VERT} onClick={handleButtonClick} />
 			<Menu
 				id={menuId}
 				isOpen={isMenuOpen}

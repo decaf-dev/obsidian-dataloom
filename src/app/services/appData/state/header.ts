@@ -1,12 +1,12 @@
-import React from "react";
-import { SORT } from "src/app/components/HeaderMenu/constants";
 import { CONTENT_TYPE } from "../../../constants";
+import { SortDir } from "../../sort/types";
 
 export interface Header {
 	id: string;
 	initialIndex: number;
 	content: string;
-	sortName: string;
+	sortDir: SortDir;
+	sortName?: string; //Deprecated in 4.1.2
 	width: string;
 	type: string;
 	useAutoWidth: boolean;
@@ -22,7 +22,7 @@ export const initialHeader = (
 		id,
 		initialIndex,
 		content,
-		sortName: SORT.DEFAULT.name,
+		sortDir: SortDir.DEFAULT,
 		width: "100px",
 		shouldWrapOverflow: true,
 		useAutoWidth: false,

@@ -4,13 +4,15 @@ import parse from "html-react-parser";
 
 import { findColorClass } from "src/app/services/color";
 
-import { ICON, MENU_LEVEL } from "src/app/constants";
-import "./styles.css";
 import IconButton from "src/app/components/IconButton";
 import TagColorMenu from "src/app/components/TagColorMenu";
 import { useMenuId, usePositionRef } from "src/app/services/hooks";
 import { useMenu } from "src/app/components/MenuProvider";
 import { numToPx, pxToNum } from "src/app/services/string/parsers";
+
+import { Icon } from "src/app/services/icon/types";
+import { MENU_LEVEL } from "src/app/constants";
+import "./styles.css";
 interface Props {
 	id: string;
 	content: string;
@@ -63,7 +65,7 @@ export default function SelectableTag({
 				<div className="NLT__tag-content">{parse(content)}</div>
 			</div>
 			<IconButton
-				icon={ICON.MORE_HORIZ}
+				icon={Icon.MORE_HORIZ}
 				onClick={(e) => {
 					//Stop propagation so we don't call the onClick handler
 					//on this div

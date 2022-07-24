@@ -4,6 +4,7 @@ import EditableTd from "./components/EditableTd";
 import Table from "./components/Table";
 import RowMenu from "./components/RowMenu";
 import EditableTh from "./components/EditableTh";
+import OptionBar from "./components/OptionBar";
 
 import { initialHeader } from "./services/appData/state/header";
 import { initialTag, Tag } from "./services/appData/state/tag";
@@ -18,7 +19,7 @@ import { CONTENT_TYPE, DEBUG, MIN_COLUMN_WIDTH_PX } from "./constants";
 
 import "./app.css";
 import NltPlugin from "main";
-import { SORT } from "./components/HeaderMenu/constants";
+import { SortDir } from "./services/sort/types";
 import { addRow, addColumn } from "./services/appData/internal/add";
 import {
 	findCurrentViewType,
@@ -64,8 +65,8 @@ export default function App({
 	// 	// then we want to make sure that value is sorted in
 	// 	for (let i = 0; i < appData.headers.length; i++) {
 	// 		const header = appData.headers[i];
-	// 		if (header.sortName !== SORT.DEFAULT.name)
-	// 			sortRows(header.id, header.type, header.sortName);
+	// 		if (header.sortDir !== SortDir.DEFAULT)
+	// 			sortRows(header.id, header.type, header.sortDir);
 	// 	}
 	// }, []);
 
@@ -210,19 +211,19 @@ export default function App({
 	function handleHeaderSortSelect(
 		id: string,
 		type: string,
-		sortName: string
+		sortDir: SortDir
 	) {
 		if (DEBUG.APP) console.log("[App]: handleHeaderSort called.");
 		setAppData((prevState) => {
 			return {
 				...prevState,
 				headers: prevState.headers.map((header) => {
-					if (id === header.id) return { ...header, sortName };
-					return { ...header, sortName: SORT.DEFAULT.name };
+					if (id === header.id) return { ...header, sortDir };
+					return { ...header, sortDir: SortDir.DEFAULT };
 				}),
 			};
 		});
-		sortRows(id, type, sortName);
+		sortRows(id, type, sortDir);
 	}
 
 	function handleCellContentSave() {
@@ -353,7 +354,7 @@ export default function App({
 		});
 	}
 
-	function sortRows(headerId: string, headerType: string, sortName: string) {
+	function sortRows(headerId: string, headerType: string, sortDir: SortDir) {
 		setAppData((prevState) => {
 			//Create a new array because the sort function mutates
 			//the original array
@@ -365,7 +366,7 @@ export default function App({
 				const cellB = appData.cells.find(
 					(cell) => cell.headerId === headerId && cell.rowId === b.id
 				);
-				if (sortName === SORT.ASC.name) {
+				if (sortDir === SortDir.ASC) {
 					if (headerType === CONTENT_TYPE.TAG) {
 						const tagA = appData.tags.find((tag) =>
 							tag.selected.includes(cellA.id)
@@ -377,7 +378,7 @@ export default function App({
 					} else {
 						return cellA.toString().localeCompare(cellB.toString());
 					}
-				} else if (sortName === SORT.DESC.name) {
+				} else if (sortDir === SortDir.DESC) {
 					if (headerType === CONTENT_TYPE.TAG) {
 						const tagA = appData.tags.find((tag) =>
 							tag.selected.includes(cellA.id)
@@ -724,152 +725,166 @@ export default function App({
 	} = useScrollUpdate(150);
 
 	return (
-		<div
-			id={tableId}
-			className="NLT__app"
-			tabIndex={0}
-			onScroll={handleTableScroll}
-		>
-			<Table
-				headers={appData.headers.map((header, columnIndex) => {
-					const {
-						id,
-						content,
-						width,
-						type,
-						sortName,
-						shouldWrapOverflow,
-						useAutoWidth,
-					} = header;
-					return {
-						id,
-						component: (
-							<EditableTh
-								key={id}
-								id={id}
-								width={findCellWidth(
-									type,
-									useAutoWidth,
-									columnWidths[id],
-									width
-								)}
-								shouldWrapOverflow={shouldWrapOverflow}
-								useAutoWidth={useAutoWidth}
-								headerWidthUpdateTime={headerWidthUpdateTime}
-								tableScrollUpdateTime={tableScrollUpdateTime}
-								index={columnIndex}
-								content={content}
-								type={type}
-								sortName={sortName}
-								isFirstChild={columnIndex === 0}
-								isLastChild={
-									columnIndex === appData.headers.length - 1
-								}
-								onSortSelect={handleHeaderSortSelect}
-								onInsertColumnClick={handleInsertColumnClick}
-								onMoveColumnClick={handleMoveColumnClick}
-								onWidthChange={handleHeaderWidthChange}
-								onDeleteClick={handleDeleteHeaderClick}
-								onSaveClick={handleHeaderSave}
-								onTypeSelect={handleHeaderTypeSelect}
-								onAutoWidthToggle={handleAutoWidthToggle}
-								onWrapOverflowToggle={handleWrapContentToggle}
-							/>
-						),
-					};
-				})}
-				rows={appData.rows.map((row, rowIndex) => {
-					return {
-						id: row.id,
-						component: (
-							<>
-								{appData.headers.map((header) => {
-									const cell = appData.cells.find(
-										(cell) =>
-											cell.rowId === row.id &&
-											cell.headerId === header.id
-									);
-									const {
-										id: headerId,
+		<div id={tableId} className="NLT__app" tabIndex={0}>
+			<OptionBar headers={appData.headers} />
+			<div onScroll={handleTableScroll}>
+				<Table
+					headers={appData.headers.map((header, columnIndex) => {
+						const {
+							id,
+							content,
+							width,
+							type,
+							sortDir,
+							shouldWrapOverflow,
+							useAutoWidth,
+						} = header;
+						return {
+							id,
+							component: (
+								<EditableTh
+									key={id}
+									id={id}
+									width={findCellWidth(
 										type,
 										useAutoWidth,
-										width,
-									} = header;
-									return (
-										<EditableTd
-											key={cell.id}
-											cell={cell}
-											headerType={header.type}
-											tableScrollUpdateTime={
-												tableScrollUpdateTime
-											}
-											headerWidthUpdateTime={
-												headerWidthUpdateTime
-											}
-											shouldWrapOverflow={
-												header.shouldWrapOverflow
-											}
-											useAutoWidth={useAutoWidth}
-											width={findCellWidth(
-												type,
-												useAutoWidth,
-												columnWidths[headerId],
-												width
-											)}
-											height={rowHeights[row.id]}
-											tagUpdate={tagUpdate}
-											tags={appData.tags.filter(
-												(tag) =>
-													tag.headerId === header.id
-											)}
-											onTagClick={handleTagClick}
-											onRemoveTagClick={
-												handleRemoveTagClick
-											}
-											onContentChange={
-												handleCellContentChange
-											}
-											onSaveContent={
-												handleCellContentSave
-											}
-											onColorChange={handleChangeColor}
-											onAddTag={handleAddTag}
-										/>
-									);
-								})}
-								<td
-									className="NLT__td"
-									style={{ height: rowHeights[row.id] }}
-								>
-									<div className="NLT__td-container">
-										<RowMenu
-											tableScrollUpdateTime={
-												tableScrollUpdateTime
-											}
-											headerWidthUpdateTime={
-												headerWidthUpdateTime
-											}
-											rowId={row.id}
-											isFirstRow={rowIndex === 0}
-											isLastRow={
-												rowIndex ===
-												appData.rows.length - 1
-											}
-											onMoveRowClick={handleMoveRowClick}
-											onDeleteClick={handleDeleteRowClick}
-											onInsertRowClick={
-												handleInsertRowClick
-											}
-										/>
-									</div>
-								</td>
-							</>
-						),
-					};
-				})}
-				onAddColumn={handleAddColumn}
-				onAddRow={handleAddRow}
-			/>
+										columnWidths[id],
+										width
+									)}
+									shouldWrapOverflow={shouldWrapOverflow}
+									useAutoWidth={useAutoWidth}
+									headerWidthUpdateTime={
+										headerWidthUpdateTime
+									}
+									tableScrollUpdateTime={
+										tableScrollUpdateTime
+									}
+									index={columnIndex}
+									content={content}
+									type={type}
+									sortDir={sortDir}
+									isFirstChild={columnIndex === 0}
+									isLastChild={
+										columnIndex ===
+										appData.headers.length - 1
+									}
+									onSortSelect={handleHeaderSortSelect}
+									onInsertColumnClick={
+										handleInsertColumnClick
+									}
+									onMoveColumnClick={handleMoveColumnClick}
+									onWidthChange={handleHeaderWidthChange}
+									onDeleteClick={handleDeleteHeaderClick}
+									onSaveClick={handleHeaderSave}
+									onTypeSelect={handleHeaderTypeSelect}
+									onAutoWidthToggle={handleAutoWidthToggle}
+									onWrapOverflowToggle={
+										handleWrapContentToggle
+									}
+								/>
+							),
+						};
+					})}
+					rows={appData.rows.map((row, rowIndex) => {
+						return {
+							id: row.id,
+							component: (
+								<>
+									{appData.headers.map((header) => {
+										const cell = appData.cells.find(
+											(cell) =>
+												cell.rowId === row.id &&
+												cell.headerId === header.id
+										);
+										const {
+											id: headerId,
+											type,
+											useAutoWidth,
+											width,
+										} = header;
+										return (
+											<EditableTd
+												key={cell.id}
+												cell={cell}
+												headerType={header.type}
+												tableScrollUpdateTime={
+													tableScrollUpdateTime
+												}
+												headerWidthUpdateTime={
+													headerWidthUpdateTime
+												}
+												shouldWrapOverflow={
+													header.shouldWrapOverflow
+												}
+												useAutoWidth={useAutoWidth}
+												width={findCellWidth(
+													type,
+													useAutoWidth,
+													columnWidths[headerId],
+													width
+												)}
+												height={rowHeights[row.id]}
+												tagUpdate={tagUpdate}
+												tags={appData.tags.filter(
+													(tag) =>
+														tag.headerId ===
+														header.id
+												)}
+												onTagClick={handleTagClick}
+												onRemoveTagClick={
+													handleRemoveTagClick
+												}
+												onContentChange={
+													handleCellContentChange
+												}
+												onSaveContent={
+													handleCellContentSave
+												}
+												onColorChange={
+													handleChangeColor
+												}
+												onAddTag={handleAddTag}
+											/>
+										);
+									})}
+									<td
+										className="NLT__td"
+										style={{ height: rowHeights[row.id] }}
+									>
+										<div className="NLT__td-container">
+											<RowMenu
+												tableScrollUpdateTime={
+													tableScrollUpdateTime
+												}
+												headerWidthUpdateTime={
+													headerWidthUpdateTime
+												}
+												rowId={row.id}
+												isFirstRow={rowIndex === 0}
+												isLastRow={
+													rowIndex ===
+													appData.rows.length - 1
+												}
+												onMoveRowClick={
+													handleMoveRowClick
+												}
+												onDeleteClick={
+													handleDeleteRowClick
+												}
+												onInsertRowClick={
+													handleInsertRowClick
+												}
+											/>
+										</div>
+									</td>
+								</>
+							),
+						};
+					})}
+					onAddColumn={handleAddColumn}
+					onAddRow={handleAddRow}
+				/>
+			</div>
 		</div>
 	);
 }
