@@ -22,7 +22,7 @@ export default function HeaderMenuItem({
 	return (
 		<li className={className} onClick={() => onClick()}>
 			{icon !== null && <IconText iconText={content} icon={icon} />}
-			{icon === null && <p>{content}</p>}
+			{icon === null && <p className="NLT__p">{content}</p>}
 		</li>
 	);
 }

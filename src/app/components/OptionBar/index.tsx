@@ -1,7 +1,5 @@
 import React, { useMemo } from "react";
 
-import Button from "../Button";
-
 import { SortDir } from "src/app/services/sort/types";
 
 import "./styles.css";
@@ -26,11 +24,11 @@ interface OptionBarProps {
 }
 
 const SortBubble = ({ sortDir, content }: SortBubbleProps) => {
-	const icon = findSortIcon(sortDir, "");
+	const icon = findSortIcon(sortDir, "NLT__icon--md");
 	return (
 		<div className="NLT__sort-bubble">
-			<span>{content}</span>
 			{icon}
+			<span>{content}</span>
 		</div>
 	);
 };
@@ -49,10 +47,6 @@ const SortBubbleList = ({ bubbles }: SortButtonListProps) => {
 	);
 };
 
-const SortButton = ({ onButtonClick }: SortButtonProps) => {
-	return <Button onClick={onButtonClick}>Sort</Button>;
-};
-
 export default function OptionBar({ headers }: OptionBarProps) {
 	const bubbles = useMemo(() => {
 		return headers
@@ -65,11 +59,9 @@ export default function OptionBar({ headers }: OptionBarProps) {
 			});
 	}, [headers]);
 
-	console.log(bubbles);
 	return (
 		<div className="NLT__option-bar">
 			<SortBubbleList bubbles={bubbles} />
-			<SortButton onButtonClick={() => {}} />
 		</div>
 	);
 }
