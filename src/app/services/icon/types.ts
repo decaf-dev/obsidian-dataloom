@@ -1,7 +1,7 @@
 export const enum Icon {
 	ARROW_UPWARD,
 	ARROW_DOWNWARD,
-	HORIZONTAL_RULE = "HorizontalRule",
+	HEIGHT = "Height",
 	KEYBOARD_ARROW_UP = "KeyboardArrowUp",
 	KEYBOARD_ARROW_DOWN = "KeyboardArrowDown",
 	KEYBOARD_DOUBLE_ARROW_UP = "KeyboardDoubleArrowUp",

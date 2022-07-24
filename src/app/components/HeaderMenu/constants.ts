@@ -66,6 +66,6 @@ export const SORT_MENU_ITEM: SortMenuItem = {
 	DEFAULT: {
 		name: SortDir.DEFAULT,
 		content: "Default",
-		icon: Icon.HORIZONTAL_RULE,
+		icon: Icon.HEIGHT,
 	},
 };

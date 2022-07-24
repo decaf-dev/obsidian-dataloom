@@ -3,7 +3,7 @@ import React from "react";
 import {
 	ArrowUpward,
 	ArrowDownward,
-	HorizontalRule,
+	Height,
 	MoreVert,
 	MoreHoriz,
 	Delete,
@@ -36,7 +36,7 @@ export const findSortIcon = (
 		case "desc":
 			return findIcon(Icon.ARROW_DOWNWARD, className);
 		default:
-			return findIcon(Icon.HORIZONTAL_RULE, className);
+			return findIcon(Icon.HEIGHT, className);
 	}
 };
 
@@ -46,8 +46,8 @@ export const findIcon = (icon: Icon, className: string): React.ReactNode => {
 			return <ArrowUpward className={className} />;
 		case Icon.ARROW_DOWNWARD:
 			return <ArrowDownward className={className} />;
-		case Icon.HORIZONTAL_RULE:
-			return <HorizontalRule className={className} />;
+		case Icon.HEIGHT:
+			return <Height className={className} />;
 		case Icon.KEYBOARD_ARROW_UP:
 			return <KeyboardArrowUp className={className} />;
 		case Icon.KEYBOARD_ARROW_DOWN:
