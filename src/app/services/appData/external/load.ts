@@ -3,6 +3,7 @@ import NltPlugin from "main";
 import { updateAppDataFromSavedState } from "./merge";
 import { CURRENT_TABLE_CACHE_VERSION, DEBUG } from "src/app/constants";
 import { appDataToMarkdown } from "./saveUtils";
+import { SortDir } from "../../sort/types";
 import {
 	findTableIndex,
 	findAppData,
@@ -79,6 +80,24 @@ export const loadAppData = async (
 						},
 					};
 				}
+				if (tableCacheVersion < 420) {
+					obj = {
+						...obj,
+						data: {
+							...obj.data,
+							headers: obj.data.headers.map((header) => {
+								const obj = { ...header };
+								obj.sortDir = obj.sortName as SortDir;
+								delete obj.sortName;
+								return obj;
+							}),
+						},
+					};
+				}
+				obj = {
+					...obj,
+					tableCacheVersion: CURRENT_TABLE_CACHE_VERSION,
+				};
 				settings.state[sourcePath][tableIndex] = obj;
 				await plugin.saveSettings();
 			}

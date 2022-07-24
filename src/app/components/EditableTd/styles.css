@@ -1,9 +1,9 @@
 .NLT__td {
 	display: inline-block;
-	border-top: 1px solid var(--background-modifier-border) !important;
+	border-top: 0 !important;
+	border-bottom: 1px solid var(--background-modifier-border) !important;
 	border-left: 1px solid var(--background-modifier-border) !important;
 	border-right: 0 !important;
-	border-bottom: 0 !important;
 	box-sizing: border-box !important;
 	vertical-align: top;
 	min-height: 2rem;
@@ -13,10 +13,7 @@
 
 .NLT__tbody > .NLT__tr > .NLT__td:last-child {
 	border-top: 0 !important;
-}
-
-.NLT__tbody > .NLT__tr:last-child > .NLT__td {
-	border-bottom: 1px solid var(--background-modifier-border) !important;
+	border-bottom: 0 !important;
 }
 
 .NLT__tbody >.NLT__tr:last-child>.NLT__td:last-child {

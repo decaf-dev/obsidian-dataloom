@@ -2,8 +2,3 @@
 	display: flex;
 	align-items: center;
 }
-
-.NLT__icon-text > p {
-	white-space: nowrap;
-	margin: 0;
-}

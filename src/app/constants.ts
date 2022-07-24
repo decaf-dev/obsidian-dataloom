@@ -58,26 +58,6 @@ export const COLOR: { [color: string]: string } = {
 	RED: "red",
 };
 
-export const ICON = {
-	KEYBOARD_ARROW_UP: "KeyboardArrowUp",
-	KEYBOARD_ARROW_DOWN: "KeyboardArrowDown",
-	KEYBOARD_DOUBLE_ARROW_UP: "KeyboardDoubleArrowUp",
-	KEYBOARD_DOUBLE_ARROW_DOWN: "KeyboardDoubleArrowDown",
-	KEYBOARD_ARROW_LEFT: "KeyboardArrowLeft",
-	KEYBOARD_ARROW_RIGHT: "KeyboardArrowRight",
-	KEYBOARD_DOUBLE_ARROW_LEFT: "KeyboardDoubleArrowLeft",
-	KEYBOARD_DOUBLE_ARROW_RIGHT: "KeyboardDoubleArrowRight",
-	KEYBOARD_BACKSPACE: "KeyboardBackspace",
-	DELETE: "Delete",
-	MORE_VERT: "MoreVert",
-	SORT: "Sort",
-	MOVE_UP: "MoveUp",
-	MOVE_DOWN: "MoveDown",
-	TEXT_SNIPPET: "TextSnippet",
-	EDIT: "Edit",
-	MORE_HORIZ: "MoreHoriz",
-};
-
 export const MENU_LEVEL = {
 	ONE: 1,
 	TWO: 2,
@@ -100,4 +80,4 @@ export const HIGHLIGHT_TAG_CLOSE = "</mark>";
 
 export const MIN_COLUMN_WIDTH_PX = 50;
 
-export const CURRENT_TABLE_CACHE_VERSION = 411;
+export const CURRENT_TABLE_CACHE_VERSION = 420;

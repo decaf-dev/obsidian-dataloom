@@ -23,11 +23,11 @@ import { CONTENT_TYPE, DEBUG } from "../../constants";
 import {
 	useDidMountEffect,
 	useDisableScroll,
-	useMenuId,
+	useId,
 } from "src/app/services/hooks";
 import { dateToString } from "src/app/services/string/parsers";
 import { logFunc } from "src/app/services/appData/debug";
-import { useMenu } from "src/app/components/MenuProvider";
+import { useMenuId } from "src/app/components/MenuProvider";
 import { usePositionRef } from "src/app/services/hooks";
 
 interface Props {
@@ -37,6 +37,7 @@ interface Props {
 	height: string;
 	headerWidthUpdateTime: number;
 	tableScrollUpdateTime: number;
+	sortUpdateTime: number;
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
 	tagUpdate: {
@@ -46,7 +47,12 @@ interface Props {
 	tags: Tag[];
 	onRemoveTagClick: (cellId: string, tagId: string) => void;
 	onTagClick: (cellId: string, tagId: string) => void;
-	onContentChange: (cellId: string, headerType: string, content: any) => void;
+	onContentChange: (
+		cellId: string,
+		headerType: string,
+		content: any,
+		isCheckbox: boolean
+	) => void;
 	onAddTag: (
 		cellId: string,
 		headerId: string,
@@ -66,6 +72,7 @@ export default function EditableTd({
 	height,
 	headerWidthUpdateTime,
 	tableScrollUpdateTime,
+	sortUpdateTime,
 	shouldWrapOverflow,
 	useAutoWidth,
 	tags,
@@ -79,16 +86,17 @@ export default function EditableTd({
 }: Props) {
 	const [tagInputText, setTagInputText] = useState("");
 	const [tagColor] = useState(randomColor());
-	const menuId = useMenuId();
+	const menuId = useId();
 	const content = cell.toString();
 
 	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
-		useMenu(menuId);
+		useMenuId(menuId);
 
 	const { positionRef, position } = usePositionRef([
 		content.length,
 		headerWidthUpdateTime,
 		tableScrollUpdateTime,
+		sortUpdateTime,
 	]);
 
 	const { id, headerId, type } = cell;
@@ -176,26 +184,25 @@ export default function EditableTd({
 	}
 
 	function handleTextInputChange(value: string) {
-		onContentChange(id, headerType, value);
+		onContentChange(id, headerType, value, false);
 		setContentUpdate(true);
 	}
 
 	function handleNumberInputChange(value: string) {
-		onContentChange(id, headerType, value);
+		onContentChange(id, headerType, value, false);
 		setContentUpdate(true);
 	}
 
 	function handleDateChange(date: Date) {
 		const content = dateToString(date);
-		onContentChange(id, headerType, content);
+		onContentChange(id, headerType, content, false);
 		setContentUpdate(true);
 	}
 
 	function handleCheckboxChange(isChecked: boolean) {
 		//TODO replace with constant
 		let content = isChecked ? "[x]" : "[ ]";
-		onContentChange(id, headerType, content);
-		setContentUpdate(true);
+		onContentChange(id, headerType, content, true);
 	}
 
 	function renderCell(): React.ReactNode {

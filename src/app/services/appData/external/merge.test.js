@@ -1,7 +1,7 @@
 import { findAppData } from "./loadUtils";
 import { updateAppDataFromSavedState } from "./merge";
 import { CONTENT_TYPE } from "src/app/constants";
-import { SORT } from "src/app/components/HeaderMenu/constants";
+import { SortDir } from "src/app/services/sort/types";
 import { mockParsedTable } from "src/app/services/appData/mock";
 
 describe("updateAppDataFromSavedState", () => {
@@ -68,13 +68,13 @@ describe("updateAppDataFromSavedState", () => {
 	it("merges header sort name", () => {
 		const parsedTable = mockParsedTable();
 		const oldAppData = findAppData(parsedTable);
-		oldAppData.headers[0].sortName = SORT.ASC.name;
-		oldAppData.headers[1].sortName = SORT.DESC.name;
+		oldAppData.headers[0].sortDir = SortDir.ASC;
+		oldAppData.headers[1].sortDir = SortDir.DESC;
 		const newAppData = findAppData(parsedTable);
 
 		const merged = updateAppDataFromSavedState(oldAppData, newAppData);
-		expect(merged.headers[0].sortName).toEqual(SORT.ASC.name);
-		expect(merged.headers[1].sortName).toEqual(SORT.DESC.name);
+		expect(merged.headers[0].sortDir).toEqual(SortDir.ASC);
+		expect(merged.headers[1].sortDir).toEqual(SortDir.DESC);
 	});
 
 	it("merges header width", () => {

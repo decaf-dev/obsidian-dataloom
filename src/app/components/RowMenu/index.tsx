@@ -1,22 +1,24 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 
 import IconButton from "../IconButton";
 import Menu from "../Menu";
-
 import RowMenuItem from "./components/RowMenuItem";
+import { useMenuId } from "../MenuProvider";
+
+import { Icon } from "src/app/services/icon/types";
+import { usePositionRef } from "src/app/services/hooks";
+import { useDisableScroll, useId } from "src/app/services/hooks";
+import { numToPx, pxToNum } from "src/app/services/string/parsers";
 
 import "./styles.css";
-import { DRAG_MENU_ITEM } from "./constants";
-import { ICON } from "src/app/constants";
-import { usePositionRef } from "src/app/services/hooks";
-import { useMenu } from "../MenuProvider";
-import { useDisableScroll, useMenuId } from "src/app/services/hooks";
-import { numToPx, pxToNum } from "src/app/services/string/parsers";
 
 interface Props {
 	rowId: string;
 	headerWidthUpdateTime: number;
 	tableScrollUpdateTime: number;
+	hideInsertOptions: boolean;
+	hideMoveOptions: boolean;
+	sortUpdateTime: number;
 	isFirstRow: boolean;
 	isLastRow: boolean;
 	onMoveRowClick: (id: string, moveBelow: boolean) => void;
@@ -30,17 +32,21 @@ export default function RowMenu({
 	isLastRow,
 	headerWidthUpdateTime,
 	tableScrollUpdateTime,
+	hideInsertOptions,
+	hideMoveOptions,
+	sortUpdateTime,
 	onMoveRowClick,
 	onDeleteClick,
 	onInsertRowClick,
 }: Props) {
-	const menuId = useMenuId();
+	const menuId = useId();
 	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
-		useMenu(menuId);
+		useMenuId(menuId);
 
 	const { positionRef, position } = usePositionRef([
 		headerWidthUpdateTime,
 		tableScrollUpdateTime,
+		sortUpdateTime,
 	]);
 
 	useEffect(() => {
@@ -70,9 +76,48 @@ export default function RowMenu({
 		closeMenu();
 	}
 
+	const options = useMemo(() => {
+		return [
+			{
+				name: "move-up",
+				content: "Move Up",
+				icon: Icon.MOVE_UP,
+				hide: isFirstRow || hideMoveOptions,
+				onClick: () => handleMoveRowClick(rowId, false),
+			},
+			{
+				name: "move-down",
+				content: "Move Down",
+				icon: Icon.MOVE_DOWN,
+				hide: isLastRow || hideMoveOptions,
+				onClick: () => handleMoveRowClick(rowId, true),
+			},
+			{
+				name: "insert-above",
+				content: "Insert Above",
+				hide: hideInsertOptions,
+				icon: Icon.KEYBOARD_DOUBLE_ARROW_UP,
+				onClick: () => handleInsertRowClick(rowId, false),
+			},
+			{
+				name: "insert-below",
+				content: "Insert Below",
+				icon: Icon.KEYBOARD_DOUBLE_ARROW_DOWN,
+				hide: hideInsertOptions,
+				onClick: () => handleInsertRowClick(rowId, true),
+			},
+			{
+				name: "delete",
+				content: "Delete",
+				icon: Icon.DELETE,
+				onClick: () => handleDeleteClick(rowId),
+			},
+		];
+	}, [hideInsertOptions, hideMoveOptions, rowId, isFirstRow, isLastRow]);
+
 	return (
 		<div ref={positionRef}>
-			<IconButton icon={ICON.MORE_VERT} onClick={handleButtonClick} />
+			<IconButton icon={Icon.MORE_VERT} onClick={handleButtonClick} />
 			<Menu
 				id={menuId}
 				isOpen={isMenuOpen}
@@ -86,40 +131,18 @@ export default function RowMenu({
 				}}
 			>
 				<div className="NLT__drag-menu">
-					{Object.values(DRAG_MENU_ITEM).map((item) => {
-						if (item.name === DRAG_MENU_ITEM.MOVE_UP.name) {
-							if (isFirstRow) return;
-						}
-						if (item.name === DRAG_MENU_ITEM.MOVE_DOWN.name) {
-							if (isLastRow) return;
-						}
-						return (
-							<RowMenuItem
-								key={item.name}
-								icon={item.icon}
-								iconText={item.content}
-								onClick={() => {
-									switch (item.name) {
-										case DRAG_MENU_ITEM.MOVE_UP.name:
-											handleMoveRowClick(rowId, false);
-											break;
-										case DRAG_MENU_ITEM.MOVE_DOWN.name:
-											handleMoveRowClick(rowId, true);
-											break;
-										case DRAG_MENU_ITEM.INSERT_ABOVE.name:
-											handleInsertRowClick(rowId, false);
-											break;
-										case DRAG_MENU_ITEM.INSERT_BELOW.name:
-											handleInsertRowClick(rowId, true);
-											break;
-										case DRAG_MENU_ITEM.DELETE.name:
-											handleDeleteClick(rowId);
-											break;
-									}
-								}}
-							/>
-						);
-					})}
+					{options
+						.filter((option) => !option.hide)
+						.map((item) => {
+							return (
+								<RowMenuItem
+									key={item.name}
+									icon={item.icon}
+									iconText={item.content}
+									onClick={item.onClick}
+								/>
+							);
+						})}
 				</div>
 			</Menu>
 		</div>

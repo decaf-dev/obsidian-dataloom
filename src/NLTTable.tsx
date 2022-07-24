@@ -65,4 +65,8 @@ export class NLTTable extends MarkdownRenderChild {
 			this.containerEl.children[0].replaceWith(this.el);
 		}
 	}
+
+	async onunload() {
+		ReactDOM.unmountComponentAtNode(this.el);
+	}
 }

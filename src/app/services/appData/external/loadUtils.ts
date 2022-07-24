@@ -125,7 +125,7 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 	parsedTable.forEach((parsedRow, i) => {
 		if (i === 0) {
 			parsedRow.forEach((th, j) => {
-				headers.push(initialHeader(uuid(), j, th));
+				headers.push(initialHeader(uuid(), th));
 			});
 		} else {
 			const row = initialRow(uuid(), i - 1, getCurrentTimeWithOffset());

@@ -6,7 +6,7 @@ interface Props {
 	id?: string;
 	style?: object;
 	hasIcon?: boolean;
-	children: React.ReactNode;
+	children?: React.ReactNode;
 	onClick: (e: React.MouseEvent) => void;
 }
 
