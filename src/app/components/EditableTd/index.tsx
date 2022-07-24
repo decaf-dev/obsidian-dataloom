@@ -37,6 +37,7 @@ interface Props {
 	height: string;
 	headerWidthUpdateTime: number;
 	tableScrollUpdateTime: number;
+	sortUpdateTime: number;
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
 	tagUpdate: {
@@ -66,6 +67,7 @@ export default function EditableTd({
 	height,
 	headerWidthUpdateTime,
 	tableScrollUpdateTime,
+	sortUpdateTime,
 	shouldWrapOverflow,
 	useAutoWidth,
 	tags,
@@ -89,6 +91,7 @@ export default function EditableTd({
 		content.length,
 		headerWidthUpdateTime,
 		tableScrollUpdateTime,
+		sortUpdateTime,
 	]);
 
 	const { id, headerId, type } = cell;

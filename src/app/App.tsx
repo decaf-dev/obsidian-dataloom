@@ -57,7 +57,7 @@ export default function App({
 		time: 0,
 		cellId: "",
 	});
-	const [sortTime, setSortTime] = useState(0);
+	const [sortUpdateTime, setSortUpdateTime] = useState(0);
 	const [saveTime, setSaveTime] = useState(0);
 	const [headerWidthUpdateTime, setHeaderWidthUpdateTime] = useState(0);
 
@@ -140,7 +140,7 @@ export default function App({
 	}
 
 	function sortRows() {
-		setSortTime(Date.now());
+		setSortUpdateTime(Date.now());
 	}
 
 	function handleAddColumn() {
@@ -676,12 +676,12 @@ export default function App({
 		handleScroll: handleTableScroll,
 	} = useScrollUpdate(150);
 
-	const sortTimeHasChanged = useCompare(sortTime);
+	const sortUpdateTimeHasChanged = useCompare(sortUpdateTime);
 	const sortedRows = useMemo(() => {
 		//Create a new array because the sort function mutates
 		//the original array
 		const arr = [...appData.rows];
-		if (sortTimeHasChanged) {
+		if (sortUpdateTimeHasChanged) {
 			const header = appData.headers.find(
 				(header) => header.sortDir !== SortDir.DEFAULT
 			);
@@ -741,7 +741,7 @@ export default function App({
 			}
 		}
 		return arr;
-	}, [appData, sortTimeHasChanged]);
+	}, [appData, sortUpdateTimeHasChanged]);
 
 	return (
 		<div id={tableId} className="NLT__app" tabIndex={0}>
@@ -778,6 +778,7 @@ export default function App({
 									tableScrollUpdateTime={
 										tableScrollUpdateTime
 									}
+									sortUpdateTime={sortUpdateTime}
 									index={columnIndex}
 									content={content}
 									type={type}
@@ -832,6 +833,7 @@ export default function App({
 												headerWidthUpdateTime={
 													headerWidthUpdateTime
 												}
+												sortUpdateTime={sortUpdateTime}
 												shouldWrapOverflow={
 													header.shouldWrapOverflow
 												}
@@ -878,6 +880,7 @@ export default function App({
 												headerWidthUpdateTime={
 													headerWidthUpdateTime
 												}
+												sortUpdateTime={sortUpdateTime}
 												rowId={row.id}
 												isFirstRow={rowIndex === 0}
 												isLastRow={

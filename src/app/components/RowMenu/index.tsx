@@ -17,6 +17,7 @@ interface Props {
 	rowId: string;
 	headerWidthUpdateTime: number;
 	tableScrollUpdateTime: number;
+	sortUpdateTime: number;
 	isFirstRow: boolean;
 	isLastRow: boolean;
 	onMoveRowClick: (id: string, moveBelow: boolean) => void;
@@ -30,6 +31,7 @@ export default function RowMenu({
 	isLastRow,
 	headerWidthUpdateTime,
 	tableScrollUpdateTime,
+	sortUpdateTime,
 	onMoveRowClick,
 	onDeleteClick,
 	onInsertRowClick,
@@ -41,6 +43,7 @@ export default function RowMenu({
 	const { positionRef, position } = usePositionRef([
 		headerWidthUpdateTime,
 		tableScrollUpdateTime,
+		sortUpdateTime,
 	]);
 
 	useEffect(() => {
