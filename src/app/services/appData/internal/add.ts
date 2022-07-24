@@ -14,14 +14,14 @@ export const addRow = (data: AppData): AppData => {
 	});
 	return {
 		...data,
-		rows: [...data.rows, initialRow(rowId, data.rows.length, Date.now())],
+		rows: [...data.rows, initialRow(rowId, Date.now())],
 		cells: [...data.cells, ...cells],
 		tags: [...data.tags, ...tags],
 	};
 };
 
 export const addColumn = (data: AppData): AppData => {
-	const header = initialHeader(uuid(), data.headers.length, "New Column");
+	const header = initialHeader(uuid(), "New Column");
 	const cells = [...data.cells];
 	data.rows.forEach((row) => {
 		cells.push(findNewCell(uuid(), row.id, header.id, CONTENT_TYPE.TEXT));

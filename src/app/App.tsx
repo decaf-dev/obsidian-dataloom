@@ -27,7 +27,6 @@ import {
 	findNewCell,
 } from "./services/appData/external/loadUtils";
 import { v4 as uuid } from "uuid";
-import { sortAppDataForSave } from "./services/appData/external/saveUtils";
 import { logFunc } from "./services/appData/debug";
 import { useScrollUpdate } from "./services/hooks";
 interface Props {
@@ -65,14 +64,12 @@ export default function App({
 		async function handleUpdate() {
 			if (saveTime === 0) return;
 			try {
-				const oldData = sortAppDataForSave(oldAppData);
-				const saveData = sortAppDataForSave(appData);
 				await saveAppData(
 					plugin,
 					settings,
 					app,
-					oldData,
-					saveData,
+					oldAppData,
+					appData,
 					sourcePath,
 					tableIndex,
 					findCurrentViewType(el)
@@ -455,11 +452,7 @@ export default function App({
 			const header = prevState.headers.find((header) => header.id === id);
 			const index = prevState.headers.indexOf(header);
 			const insertIndex = insertRight ? index + 1 : index;
-			const headerToInsert = initialHeader(
-				uuid(),
-				prevState.headers.length,
-				"New Column"
-			);
+			const headerToInsert = initialHeader(uuid(), "New Column");
 
 			const cells = prevState.rows.map((row) =>
 				findNewCell(
@@ -497,11 +490,7 @@ export default function App({
 			const index = prevState.rows.findIndex((row) => row.id === id);
 			const insertIndex = insertBelow ? index + 1 : index;
 			//If you insert a new row, then we want to resort?
-			rows.splice(
-				insertIndex,
-				0,
-				initialRow(rowId, prevState.rows.length, Date.now())
-			);
+			rows.splice(insertIndex, 0, initialRow(rowId, Date.now()));
 			return {
 				...prevState,
 				rows,

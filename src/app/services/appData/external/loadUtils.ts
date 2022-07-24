@@ -125,10 +125,10 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 	parsedTable.forEach((parsedRow, i) => {
 		if (i === 0) {
 			parsedRow.forEach((th, j) => {
-				headers.push(initialHeader(uuid(), j, th));
+				headers.push(initialHeader(uuid(), th));
 			});
 		} else {
-			const row = initialRow(uuid(), i - 1, getCurrentTimeWithOffset());
+			const row = initialRow(uuid(), getCurrentTimeWithOffset());
 			parsedRow.forEach((td, j) => {
 				//The first time we load the data, set the cell as a text cell
 				//Once we merge the new data with the old data, we can set the cell

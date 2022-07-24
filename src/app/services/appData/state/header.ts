@@ -3,7 +3,6 @@ import { SortDir } from "../../sort/types";
 
 export interface Header {
 	id: string;
-	initialIndex: number;
 	content: string;
 	sortDir: SortDir;
 	sortName?: string; //Deprecated in 4.1.2
@@ -13,14 +12,9 @@ export interface Header {
 	shouldWrapOverflow: boolean;
 }
 
-export const initialHeader = (
-	id: string,
-	initialIndex: number,
-	content: string
-): Header => {
+export const initialHeader = (id: string, content: string): Header => {
 	return {
 		id,
-		initialIndex,
 		content,
 		sortDir: SortDir.DEFAULT,
 		width: "100px",

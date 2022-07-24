@@ -5,12 +5,6 @@ import { Cell } from "../state/cell";
 
 import { CONTENT_TYPE } from "src/app/constants";
 
-export const sortAppDataForSave = (data: AppData) => {
-	const obj = { ...data };
-	obj.rows.sort((a, b) => a.initialIndex - b.initialIndex);
-	return obj;
-};
-
 /**
  * Converts app data to a valid Obsidian markdown string
  * @param data The app data
