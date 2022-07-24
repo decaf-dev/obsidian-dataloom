@@ -8,19 +8,18 @@ Obsidian Notion-Like Tables allows you to create markdown tables using an interf
 
 ## What's New?
 
-### Version 4.1.0
+### Version 4.2.0
 
-This is a big update which includes a complete rework of the cell sizing/column resizing system. In addition, two new options have been added for column resizing - `Auto Width` and `Wrap Overflow`.
+This update includes major bug fixes for column sorting. Sorting is now completely stable. In order to facilitate this update, the options to "Move Up", "Move Down", "Insert Above", or "Insert Below" on a row are hidden if sorting is enabled on any column in the table. If you would like to use these options to manually sort your table, please set the sorted column to the "Default" sorting setting.
 
-Please see: [Column Resizing](#column-resizing)
+To make this more clear, an option bar has been added above the table. When you make a sort selection on a column, a sort bubble will appear in the option bar indicating which column is being sorted.
 
-Current limitations in 4.1.0 include:
+Thank you everyone for your continued support and appreciation.
 
--   Insert above, insert below, move up, move down is currently unstable (to be fixed in 4.1.2)
--   Only 1 table per file is currently supported (to be fixed in 4.1.3)
--   Live preview is unstable (to be fixed in 4.1.4)
+Current limitations in 4.2.0 include:
 
-For more release details see: [Release 4.1.0](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/4.1.0)
+-   Only 1 table per file is currently supported (to be fixed in 4.2.1)
+-   Live preview support is currently disabled (to be fixed in 4.2.2)
 
 ## Usage
 
