@@ -10,7 +10,7 @@ export const DEBUG = {
 	SAVE_APP_DATA: false,
 	EDITABLE_TD: false,
 	FOCUS_PROVIDER: false,
-	MENU_PROVIDER: true,
+	MENU_PROVIDER: false,
 };
 
 export interface CellType {

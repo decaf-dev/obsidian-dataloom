@@ -69,7 +69,6 @@ export default function App({
 		async function handleUpdate() {
 			if (saveTime === 0) return;
 			try {
-				console.log("SAVING!");
 				const oldData = sortAppDataForSave(oldAppData);
 				const newData = sortAppDataForSave(appData);
 				await saveAppData(
