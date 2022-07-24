@@ -28,6 +28,7 @@ import {
 import { v4 as uuid } from "uuid";
 import { logFunc } from "./services/appData/debug";
 import { sortAppDataForSave } from "./services/appData/external/saveUtils";
+import { useCloseMenusOnScroll } from "./services/hooks";
 
 interface Props {
 	plugin: NltPlugin;
@@ -58,6 +59,9 @@ export default function App({
 	});
 	const [saveTime, setSaveTime] = useState(0);
 	const [positionUpdateTime, setPositionUpdateTime] = useState(0);
+
+	useCloseMenusOnScroll("markdown-preview-view");
+	useCloseMenusOnScroll("NLT__table-wrapper");
 
 	useEffect(() => {
 		sortUpdate();

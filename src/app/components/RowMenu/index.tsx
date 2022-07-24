@@ -7,7 +7,7 @@ import { useMenuId } from "../MenuProvider";
 
 import { Icon } from "src/app/services/icon/types";
 import { usePositionRef } from "src/app/services/hooks";
-import { useDisableScroll, useId } from "src/app/services/hooks";
+import { useId } from "src/app/services/hooks";
 import { numToPx, pxToNum } from "src/app/services/string/parsers";
 
 import "./styles.css";
@@ -46,8 +46,6 @@ export default function RowMenu({
 			closeMenu();
 		}
 	}, [isMenuRequestingClose]);
-
-	useDisableScroll(isMenuOpen);
 
 	function handleButtonClick(e: React.MouseEvent) {
 		openMenu();

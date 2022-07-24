@@ -1,5 +1,6 @@
 import { useCallback, useState, useEffect, useRef } from "react";
 
+import { useMenu } from "src/app/components/MenuProvider";
 import { v4 as uuid } from "uuid";
 import { numToPx } from "../string/parsers";
 
@@ -182,37 +183,58 @@ export const usePositionRef = (deps: any[] = []) => {
 	return { positionRef, position };
 };
 
-export const useDisableScroll = (isOpen: boolean): void => {
-	const scroll = useRef({
-		top: 0,
-		left: 0,
-	});
+export const useCloseMenusOnScroll = (className: string): void => {
+	const { isAnyMenuOpen, closeAllMenus } = useMenu();
 
-	const el = document.getElementsByClassName("NLT__app")[0];
+	let el: Node | null = null;
 
 	function handleScroll() {
-		if (el) {
-			const { top, left } = scroll.current;
-			el.scrollTo(left, top);
-		}
+		closeAllMenus();
 	}
+
 	useEffect(() => {
-		if (el instanceof HTMLElement) {
-			if (isOpen) {
-				scroll.current = {
-					top: el.scrollTop,
-					left: el.scrollLeft,
-				};
+		el = document.getElementsByClassName(className)[0];
+		if (el) {
+			if (isAnyMenuOpen()) {
 				el.addEventListener("scroll", handleScroll);
 			} else {
 				el.removeEventListener("scroll", handleScroll);
 			}
 		}
-
 		return () => {
-			if (el) {
-				el.removeEventListener("scroll", handleScroll);
-			}
+			if (el) el.removeEventListener("scroll", handleScroll);
 		};
-	}, [isOpen]);
+	}, [isAnyMenuOpen()]);
 };
+
+// export const useDisableScroll = (className: string): void => {
+// 	const { isAnyMenuOpen } = useMenu();
+
+// 	let el: Node | null = null;
+
+// 	function removeScrollX(el: HTMLElement) {
+// 		el.style.overflow = "hidden";
+// 		el.style.left = `${el.scrollLeft}px`;
+// 		el.style.marginBottom = `17px`;
+// 	}
+
+// 	function addScroll(el: HTMLElement) {
+// 		el.style.overflow = "auto";
+// 		el.style.marginBottom = "0px";
+// 	}
+
+// 	useEffect(() => {
+// 		el = document.getElementsByClassName(className)[0];
+// 		if (el instanceof HTMLElement) {
+// 			if (isAnyMenuOpen()) {
+// 				removeScrollX(el);
+// 			} else {
+// 				addScroll(el);
+// 			}
+// 		}
+
+// 		return () => {
+// 			if (el instanceof HTMLElement) removeScrollX(el);
+// 		};
+// 	}, [isAnyMenuOpen()]);
+//};

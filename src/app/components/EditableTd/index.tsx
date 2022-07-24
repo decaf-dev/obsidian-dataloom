@@ -20,11 +20,7 @@ import { isDate } from "src/app/services/string/validators";
 import "./styles.css";
 
 import { CONTENT_TYPE, DEBUG } from "../../constants";
-import {
-	useDidMountEffect,
-	useDisableScroll,
-	useId,
-} from "src/app/services/hooks";
+import { useDidMountEffect, useId } from "src/app/services/hooks";
 import { dateToString } from "src/app/services/string/parsers";
 import { logFunc } from "src/app/services/appData/debug";
 import { useMenuId } from "src/app/components/MenuProvider";
@@ -94,8 +90,6 @@ export default function EditableTd({
 	]);
 
 	const { id, headerId, type } = cell;
-
-	useDisableScroll(isMenuOpen);
 
 	const [wasContentUpdated, setContentUpdate] = useState(false);
 
@@ -282,8 +276,7 @@ export default function EditableTd({
 					<TagCellEdit
 						cellId={id}
 						inputText={tagInputText}
-						headerWidthUpdateTime={headerWidthUpdateTime}
-						tableScrollUpdateTime={tableScrollUpdateTime}
+						positionUpdateTime={positionUpdateTime}
 						tags={tags}
 						menuId={menuId}
 						isOpen={isMenuOpen}

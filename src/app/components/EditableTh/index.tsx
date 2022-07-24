@@ -3,11 +3,7 @@ import React, { useEffect, useRef } from "react";
 import HeaderMenu from "../HeaderMenu";
 
 import "./styles.css";
-import {
-	useDisableScroll,
-	useId,
-	usePositionRef,
-} from "src/app/services/hooks";
+import { useId, usePositionRef } from "src/app/services/hooks";
 import { useMenuId } from "../MenuProvider";
 
 import { CSS_MEASUREMENT_PIXEL_REGEX } from "src/app/services/string/regex";
@@ -65,8 +61,6 @@ export default function EditableTh({
 	const { positionRef, position } = usePositionRef([positionUpdateTime]);
 	const mouseDownX = useRef(0);
 	const isResizing = useRef(false);
-
-	useDisableScroll(isMenuOpen);
 
 	useEffect(() => {
 		if (isMenuRequestingClose) {
