@@ -59,16 +59,18 @@ export default function App({
 	const [saveTime, setSaveTime] = useState(0);
 	const [headerWidthUpdateTime, setHeaderWidthUpdateTime] = useState(0);
 
-	// useEffect(() => {
-	// 	// Sort on first render
-	// 	// If a user deletes or adds a new row (by copying and pasting, for example)
-	// 	// then we want to make sure that value is sorted in
-	// 	for (let i = 0; i < appData.headers.length; i++) {
-	// 		const header = appData.headers[i];
-	// 		if (header.sortDir !== SortDir.DEFAULT)
-	// 			sortRows(header.id, header.type, header.sortDir);
-	// 	}
-	// }, []);
+	// Sort on first render
+	// If a user deletes or adds a new row (by copying and pasting, for example)
+	// then we want to make sure that value is sorted in
+	useEffect(() => {
+		//Find the header that has sorting enabling, if not, sort on the first header
+		//to make sure empty cells go to the bottom
+		const header =
+			appData.headers.find(
+				(header) => header.sortDir !== SortDir.DEFAULT
+			) || appData.headers[0];
+		sortRows(header.id, header.type, header.sortDir);
+	}, []);
 
 	useEffect(() => {
 		async function handleUpdate() {
@@ -366,6 +368,16 @@ export default function App({
 				const cellB = appData.cells.find(
 					(cell) => cell.headerId === headerId && cell.rowId === b.id
 				);
+				const contentA = cellA.toString();
+				const contentB = cellB.toString();
+
+				//When you change the sort order the position breaks
+
+				//Force empty cells to the bottom
+				if (contentA === "" && contentB !== "") return 1;
+				if (contentA !== "" && contentB === "") return -1;
+				if (contentA === "" && contentB === "") return 0;
+
 				if (sortDir === SortDir.ASC) {
 					if (headerType === CONTENT_TYPE.TAG) {
 						const tagA = appData.tags.find((tag) =>
@@ -376,7 +388,7 @@ export default function App({
 						);
 						return tagA.content.localeCompare(tagB.content);
 					} else {
-						return cellA.toString().localeCompare(cellB.toString());
+						return contentA.localeCompare(contentB);
 					}
 				} else if (sortDir === SortDir.DESC) {
 					if (headerType === CONTENT_TYPE.TAG) {
@@ -388,7 +400,7 @@ export default function App({
 						);
 						return tagB.content.localeCompare(tagA.content);
 					} else {
-						return cellB.toString().localeCompare(cellA.toString());
+						return contentB.localeCompare(contentA);
 					}
 				} else {
 					//Otherwise sort on when the row was added
