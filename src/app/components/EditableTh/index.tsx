@@ -5,10 +5,10 @@ import HeaderMenu from "../HeaderMenu";
 import "./styles.css";
 import {
 	useDisableScroll,
-	useMenuId,
+	useId,
 	usePositionRef,
 } from "src/app/services/hooks";
-import { useMenu } from "../MenuProvider";
+import { useMenuId } from "../MenuProvider";
 
 import { CSS_MEASUREMENT_PIXEL_REGEX } from "src/app/services/string/regex";
 import { numToPx, pxToNum } from "src/app/services/string/parsers";
@@ -63,9 +63,9 @@ export default function EditableTh({
 	onWrapOverflowToggle,
 	onAutoWidthToggle,
 }: Props) {
-	const menuId = useMenuId();
+	const menuId = useId();
 	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
-		useMenu(menuId);
+		useMenuId(menuId);
 	const { positionRef, position } = usePositionRef([
 		headerWidthUpdateTime,
 		tableScrollUpdateTime,

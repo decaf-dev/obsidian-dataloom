@@ -6,8 +6,8 @@ import { findColorClass } from "src/app/services/color";
 
 import IconButton from "src/app/components/IconButton";
 import TagColorMenu from "src/app/components/TagColorMenu";
-import { useMenuId, usePositionRef } from "src/app/services/hooks";
-import { useMenu } from "src/app/components/MenuProvider";
+import { useMenuId } from "src/app/components/MenuProvider";
+import { useId, usePositionRef } from "src/app/services/hooks";
 import { numToPx, pxToNum } from "src/app/services/string/parsers";
 
 import { Icon } from "src/app/services/icon/types";
@@ -32,11 +32,9 @@ export default function SelectableTag({
 	onClick,
 	onColorChange,
 }: Props) {
-	const menuId = useMenuId();
-	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } = useMenu(
-		menuId,
-		MENU_LEVEL.TWO
-	);
+	const menuId = useId();
+	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
+		useMenuId(menuId, MENU_LEVEL.TWO);
 	const { positionRef, position } = usePositionRef([
 		headerWidthUpdateTime,
 		tableScrollUpdateTime,

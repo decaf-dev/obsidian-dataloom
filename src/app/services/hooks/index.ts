@@ -13,11 +13,6 @@ export const useId = (): string => {
 	return id;
 };
 
-export const useMenuId = (): string => {
-	const [menuId] = useState(uuid());
-	return menuId;
-};
-
 export const useCompare = (value: any) => {
 	const prevValue = usePrevious(value);
 	return prevValue !== value;

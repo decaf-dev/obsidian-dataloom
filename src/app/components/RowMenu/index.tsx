@@ -9,8 +9,8 @@ import "./styles.css";
 import { DRAG_MENU_ITEM } from "./constants";
 import { Icon } from "src/app/services/icon/types";
 import { usePositionRef } from "src/app/services/hooks";
-import { useMenu } from "../MenuProvider";
-import { useDisableScroll, useMenuId } from "src/app/services/hooks";
+import { useMenuId } from "../MenuProvider";
+import { useDisableScroll, useId } from "src/app/services/hooks";
 import { numToPx, pxToNum } from "src/app/services/string/parsers";
 
 interface Props {
@@ -36,9 +36,9 @@ export default function RowMenu({
 	onDeleteClick,
 	onInsertRowClick,
 }: Props) {
-	const menuId = useMenuId();
+	const menuId = useId();
 	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
-		useMenu(menuId);
+		useMenuId(menuId);
 
 	const { positionRef, position } = usePositionRef([
 		headerWidthUpdateTime,

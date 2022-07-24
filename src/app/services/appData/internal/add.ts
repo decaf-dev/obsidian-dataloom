@@ -14,7 +14,7 @@ export const addRow = (data: AppData): AppData => {
 	});
 	return {
 		...data,
-		rows: [...data.rows, initialRow(rowId, Date.now())],
+		rows: [...data.rows, initialRow(rowId, data.rows.length, Date.now())],
 		cells: [...data.cells, ...cells],
 		tags: [...data.tags, ...tags],
 	};
