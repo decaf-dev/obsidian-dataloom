@@ -14,6 +14,8 @@ This update includes major bug fixes for column sorting. Sorting is now complete
 
 To make this more clear, an option bar has been added above the table. When you make a sort selection on a column, a sort bubble will appear in the option bar indicating which column is being sorted.
 
+The excluded files setting now uses a textarea instead of a input field. Thank you to @Mara-Li for your contribution.
+
 Thank you everyone for your continued support and appreciation.
 
 Current limitations in 4.2.0 include:
