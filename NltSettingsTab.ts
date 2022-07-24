@@ -19,7 +19,7 @@ export default class NltSettingsTab extends PluginSettingTab {
 			.setDesc(
 				"File paths whose tables will not be rendered as a Notion-Like table. Please separate different paths by commas e.g. folder/note1.md, folder/note2.md, note3.md"
 			)
-			.addText((text) =>
+			.addTextArea((text) =>
 				text
 					.setValue(this.plugin.settings.excludedFiles.join(","))
 					.onChange(async (value) => {
