@@ -1,0 +1,24 @@
+name: Feature Request
+description: Suggest a new feature for the plugin
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Most features come in response to a perceived problem or limitation. What is the problem that you are trying to solve?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solution
+      description: Describe the solution that you'd like to see.
+    validations:
+      required: true
+  - type: textarea
+    id: additional-details
+    attributes:
+      label: Additional Details
+      description: Any additional details regarding the solution or problem. Screenshots, implementations on other websites/apps, etc.
