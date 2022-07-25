@@ -1,6 +1,6 @@
 import React from "react";
 
-import TableBase from "./components";
+import BaseTable from "./components";
 import Button from "src/app/components/Button";
 
 import { TableComponent } from "src/app/services/table";
@@ -72,7 +72,7 @@ export default function Table({
 	}
 
 	return (
-		<TableBase
+		<BaseTable
 			headers={[...headers, renderNewColumnButton(onAddColumn)]}
 			rows={rows}
 			footers={[
