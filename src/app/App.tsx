@@ -28,7 +28,8 @@ import {
 import { v4 as uuid } from "uuid";
 import { logFunc } from "./services/appData/debug";
 import { sortAppDataForSave } from "./services/appData/external/saveUtils";
-import { useCloseMenusOnScroll } from "./services/hooks";
+import { useCloseMenusOnScroll, useThrottle } from "./services/hooks";
+import { useSortedRows } from "./services/sort/sort";
 
 interface Props {
 	plugin: NltPlugin;
@@ -59,13 +60,14 @@ export default function App({
 	});
 	const [saveTime, setSaveTime] = useState(0);
 	const [positionUpdateTime, setPositionUpdateTime] = useState(0);
+	const { sortedRows, sortDir, resortRows } = useSortedRows(appData);
 
 	useCloseMenusOnScroll("markdown-preview-view");
 	useCloseMenusOnScroll("NLT__table-wrapper");
 
 	useEffect(() => {
-		sortUpdate();
-	}, []);
+		forcePositionUpdate();
+	}, [sortedRows]);
 
 	useEffect(() => {
 		async function handleUpdate() {
@@ -145,11 +147,6 @@ export default function App({
 		setSaveTime(Date.now());
 	}
 
-	function sortUpdate() {
-		sortRows();
-		forcePositionUpdate();
-	}
-
 	function forcePositionUpdate() {
 		setPositionUpdateTime(Date.now());
 	}
@@ -218,11 +215,7 @@ export default function App({
 		saveData();
 	}
 
-	function handleHeaderSortSelect(
-		id: string,
-		type: string,
-		sortDir: SortDir
-	) {
+	function handleHeaderSortSelect(id: string, sortDir: SortDir) {
 		if (DEBUG.APP) console.log("[App]: handleHeaderSort called.");
 		setAppData((prevState) => {
 			return {
@@ -233,11 +226,12 @@ export default function App({
 				}),
 			};
 		});
-		sortUpdate();
+		resortRows();
 		saveData();
 	}
 
 	function handleCellContentSave() {
+		resortRows();
 		saveData();
 	}
 
@@ -280,6 +274,7 @@ export default function App({
 
 		//TODO refactor
 		if (isCheckbox) {
+			resortRows();
 			saveData();
 		}
 	}
@@ -446,7 +441,6 @@ export default function App({
 				}),
 			};
 		});
-		forcePositionUpdate();
 		setDebounceUpdate(Date.now());
 	}
 
@@ -514,7 +508,6 @@ export default function App({
 
 			const index = prevState.rows.findIndex((row) => row.id === id);
 			const insertIndex = insertBelow ? index + 1 : index;
-			//If you insert a new row, then we want to resort?
 			rows.splice(
 				insertIndex,
 				0,
@@ -637,72 +630,6 @@ export default function App({
 		return headerWidth;
 	}
 
-	function sortRows() {
-		setAppData((prevState) => {
-			const header = prevState.headers.find(
-				(header) => header.sortDir !== SortDir.DEFAULT
-			);
-			if (header) {
-				const { id, sortDir, type } = header;
-				const arr = [...prevState.rows];
-				arr.sort((a, b) => {
-					const cellA = appData.cells.find(
-						(cell) => cell.headerId === id && cell.rowId === a.id
-					);
-					const cellB = appData.cells.find(
-						(cell) => cell.headerId === id && cell.rowId === b.id
-					);
-					const contentA = cellA.toString();
-					const contentB = cellB.toString();
-
-					if (sortDir !== SortDir.DEFAULT) {
-						//Force empty cells to the bottom
-						if (contentA === "" && contentB !== "") return 1;
-						if (contentA !== "" && contentB === "") return -1;
-						if (contentA === "" && contentB === "") return 0;
-					}
-
-					if (sortDir === SortDir.ASC) {
-						if (type === CONTENT_TYPE.TAG) {
-							const tagA = appData.tags.find((tag) =>
-								tag.selected.includes(cellA.id)
-							);
-							const tagB = appData.tags.find((tag) =>
-								tag.selected.includes(cellB.id)
-							);
-							return tagA.content.localeCompare(tagB.content);
-						} else {
-							return contentA.localeCompare(contentB);
-						}
-					} else if (sortDir === SortDir.DESC) {
-						if (type === CONTENT_TYPE.TAG) {
-							const tagA = appData.tags.find((tag) =>
-								tag.selected.includes(cellA.id)
-							);
-							const tagB = appData.tags.find((tag) =>
-								tag.selected.includes(cellB.id)
-							);
-							return tagB.content.localeCompare(tagA.content);
-						} else {
-							return contentB.localeCompare(contentA);
-						}
-					} else {
-						const creationA = a.creationTime;
-						const creationB = b.creationTime;
-						if (creationA > creationB) return 1;
-						if (creationA < creationB) return -1;
-						return 0;
-					}
-				});
-				return {
-					...prevState,
-					rows: arr,
-				};
-			}
-			return prevState;
-		});
-	}
-
 	const cellSizes = useMemo(() => {
 		return appData.cells.map((cell) => {
 			const header = appData.headers.find(
@@ -754,12 +681,6 @@ export default function App({
 			})
 		);
 	}, [cellSizes]);
-
-	const isSorted = appData.headers.find(
-		(header) => header.sortDir !== SortDir.DEFAULT
-	)
-		? true
-		: false;
 
 	return (
 		<div id={tableId} className="NLT__app" tabIndex={0}>
@@ -817,7 +738,7 @@ export default function App({
 							),
 						};
 					})}
-					rows={appData.rows.map((row, rowIndex) => {
+					rows={sortedRows.map((row, rowIndex) => {
 						return {
 							id: row.id,
 							component: (
@@ -882,8 +803,12 @@ export default function App({
 									>
 										<div className="NLT__td-container">
 											<RowMenu
-												hideInsertOptions={isSorted}
-												hideMoveOptions={isSorted}
+												hideInsertOptions={
+													sortDir === SortDir.DEFAULT
+												}
+												hideMoveOptions={
+													sortDir === SortDir.DEFAULT
+												}
 												positionUpdateTime={
 													positionUpdateTime
 												}
