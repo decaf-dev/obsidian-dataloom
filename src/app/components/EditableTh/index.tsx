@@ -23,7 +23,7 @@ interface Props {
 	isFirstChild: boolean;
 	isLastChild: boolean;
 	onMoveColumnClick: (id: string, moveRight: boolean) => void;
-	onSortSelect: (id: string, type: string, sortDir: SortDir) => void;
+	onSortSelect: (id: string, sortDir: SortDir) => void;
 	onInsertColumnClick: (id: string, insertRight: boolean) => void;
 	onTypeSelect: (id: string, type: string) => void;
 	onDeleteClick: (id: string) => void;

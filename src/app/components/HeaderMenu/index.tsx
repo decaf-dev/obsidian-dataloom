@@ -32,7 +32,7 @@ interface Props {
 	onInsertColumnClick: (id: string, insertRight: boolean) => void;
 	onMoveColumnClick: (id: string, moveRight: boolean) => void;
 	onTypeSelect: (id: string, type: string) => void;
-	onSortSelect: (id: string, type: string, sortDir: SortDir) => void;
+	onSortSelect: (id: string, sortDir: SortDir) => void;
 	onDeleteClick: (id: string) => void;
 	onOutsideClick: (id: string, inputText: string) => void;
 	onAutoWidthToggle: (id: string, value: boolean) => void;
@@ -108,7 +108,7 @@ export default function HeaderMenu({
 						key={item.name}
 						icon={item.icon}
 						content={`Sort ${item.content}`}
-						onClick={() => handleSortSelect(id, type, item.name)}
+						onClick={() => handleSortSelect(id, item.name)}
 						selected={sortDir === item.name}
 					/>
 				))}
@@ -203,8 +203,8 @@ export default function HeaderMenu({
 		onClose();
 	}
 
-	function handleSortSelect(id: string, type: string, sortDir: SortDir) {
-		onSortSelect(id, type, sortDir);
+	function handleSortSelect(id: string, sortDir: SortDir) {
+		onSortSelect(id, sortDir);
 		onClose();
 	}
 

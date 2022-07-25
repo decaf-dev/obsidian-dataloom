@@ -10,7 +10,7 @@ interface Props {
 	footers: TableComponent[];
 }
 
-export default function TableBase({ headers, rows, footers }: Props) {
+export default function BaseTable({ headers, rows, footers }: Props) {
 	return (
 		<table className="NLT__table">
 			<thead className="NLT__thead">
