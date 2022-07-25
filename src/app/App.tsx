@@ -441,6 +441,7 @@ export default function App({
 				}),
 			};
 		});
+		forcePositionUpdate();
 		setDebounceUpdate(Date.now());
 	}
 
