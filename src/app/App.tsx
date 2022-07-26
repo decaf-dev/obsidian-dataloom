@@ -27,9 +27,13 @@ import {
 } from "./services/appData/external/loadUtils";
 import { v4 as uuid } from "uuid";
 import { logFunc } from "./services/appData/debug";
-import { sortAppDataForSave } from "./services/appData/external/saveUtils";
-import { useCloseMenusOnScroll, useId, useThrottle } from "./services/hooks";
-import { sortRows, useSortedRows } from "./services/sort/sort";
+import {
+	useCloseMenusOnScroll,
+	useDidMountEffect,
+	useId,
+	useSaveTime,
+} from "./services/hooks";
+import { useSortedRows } from "./services/sort/sort";
 
 interface Props {
 	plugin: NltPlugin;
@@ -52,15 +56,14 @@ export default function App({
 }: Props) {
 	const [appData, setAppData] = useState<AppData>(loadedData);
 	const tableId = useId();
-	const [debounceUpdate, setDebounceUpdate] = useState(0);
 	const [tagUpdate, setTagUpdate] = useState({
 		time: 0,
 		cellId: "",
 	});
-	const [saveTime, setSaveTime] = useState(0);
 	const [sortTime, setSortTime] = useState(0);
 	const [positionUpdateTime, setPositionUpdateTime] = useState(0);
 
+	const { saveTime, saveData } = useSaveTime();
 	const { sortedRows, sortDir } = useSortedRows(appData, sortTime);
 
 	useCloseMenusOnScroll("markdown-preview-view");
@@ -70,9 +73,8 @@ export default function App({
 		forcePositionUpdate();
 	}, [sortedRows]);
 
-	useEffect(() => {
+	useDidMountEffect(() => {
 		async function handleUpdate() {
-			if (saveTime === 0) return;
 			try {
 				await saveAppData(
 					plugin,
@@ -91,22 +93,6 @@ export default function App({
 
 		handleUpdate();
 	}, [saveTime]);
-
-	useEffect(() => {
-		let intervalId: NodeJS.Timer = null;
-		function startTimer() {
-			intervalId = setInterval(() => {
-				//When debounce update is called, we will only save after
-				//250ms have pass since the last update
-				if (Date.now() - debounceUpdate < 250) return;
-				clearInterval(intervalId);
-				setDebounceUpdate(0);
-				saveData();
-			}, 100);
-		}
-		if (debounceUpdate !== 0) startTimer();
-		return () => clearInterval(intervalId);
-	}, [debounceUpdate]);
 
 	// //If a table updates in editing mode or reading mode, update the other table
 	// //TODO change with notifier in the main.js
@@ -141,10 +127,6 @@ export default function App({
 	// 	startTimer();
 	// 	return () => clearInterval(intervalId);
 	// }, []);
-
-	function saveData() {
-		setSaveTime(Date.now());
-	}
 
 	function sortData() {
 		setSortTime(Date.now());
@@ -447,7 +429,7 @@ export default function App({
 			};
 		});
 		forcePositionUpdate();
-		setDebounceUpdate(Date.now());
+		saveData(true);
 	}
 
 	function handleMoveColumnClick(id: string, moveRight: boolean) {
