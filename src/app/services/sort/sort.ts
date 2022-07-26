@@ -28,16 +28,16 @@ export const useSortedRows = (
 		const header = appData.headers.find(
 			(header) => header.sortDir !== SortDir.DEFAULT
 		);
+		let sorted = {
+			sortedRows: appData.rows,
+			sortDir: SortDir.DEFAULT,
+		};
 		if (header) {
-			const sorted = sortRows(appData, header);
+			sorted = sortRows(appData, header);
 			lastSort.current = sorted;
-			return sorted;
-		} else {
-			return {
-				sortedRows: appData.rows,
-				sortDir: SortDir.DEFAULT,
-			};
 		}
+		lastSort.current = sorted;
+		return sorted;
 	} else {
 		return lastSort.current;
 	}
