@@ -15,7 +15,7 @@ ReactDOM.render(
 		<div className="theme-light">
 			<div className="markdown-reading-view">
 				<div className="markdown-preview-view">
-					<App data={data} />
+					<App loadedData={data} />
 				</div>
 			</div>
 		</div>

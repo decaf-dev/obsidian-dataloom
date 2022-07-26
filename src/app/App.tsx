@@ -28,13 +28,13 @@ import {
 import { v4 as uuid } from "uuid";
 import { logFunc } from "./services/appData/debug";
 import { sortAppDataForSave } from "./services/appData/external/saveUtils";
-import { useCloseMenusOnScroll, useThrottle } from "./services/hooks";
-import { useSortedRows } from "./services/sort/sort";
+import { useCloseMenusOnScroll, useId, useThrottle } from "./services/hooks";
+import { sortRows, useSortedRows } from "./services/sort/sort";
 
 interface Props {
 	plugin: NltPlugin;
 	settings: NltSettings;
-	data: AppData;
+	loadedData: AppData;
 	sourcePath: string;
 	tableIndex: string;
 	el: HTMLElement;
@@ -45,22 +45,23 @@ const COMPONENT_NAME = "App";
 export default function App({
 	plugin,
 	settings,
-	data,
+	loadedData,
 	sourcePath,
 	tableIndex,
 	el,
 }: Props) {
-	const [oldAppData, setOldAppData] = useState<AppData>(data);
-	const [appData, setAppData] = useState<AppData>(data);
-	const [tableId] = useState(uuid());
+	const [appData, setAppData] = useState<AppData>(loadedData);
+	const tableId = useId();
 	const [debounceUpdate, setDebounceUpdate] = useState(0);
 	const [tagUpdate, setTagUpdate] = useState({
 		time: 0,
 		cellId: "",
 	});
 	const [saveTime, setSaveTime] = useState(0);
+	const [sortTime, setSortTime] = useState(0);
 	const [positionUpdateTime, setPositionUpdateTime] = useState(0);
-	const { sortedRows, sortDir, resortRows } = useSortedRows(appData);
+
+	const { sortedRows, sortDir } = useSortedRows(appData, sortTime);
 
 	useCloseMenusOnScroll("markdown-preview-view");
 	useCloseMenusOnScroll("NLT__table-wrapper");
@@ -73,14 +74,12 @@ export default function App({
 		async function handleUpdate() {
 			if (saveTime === 0) return;
 			try {
-				const oldData = sortAppDataForSave(oldAppData);
-				const newData = sortAppDataForSave(appData);
 				await saveAppData(
 					plugin,
 					settings,
 					app,
-					oldData,
-					newData,
+					loadedData,
+					appData,
 					sourcePath,
 					tableIndex,
 					findCurrentViewType(el)
@@ -145,6 +144,10 @@ export default function App({
 
 	function saveData() {
 		setSaveTime(Date.now());
+	}
+
+	function sortData() {
+		setSortTime(Date.now());
 	}
 
 	function forcePositionUpdate() {
@@ -226,12 +229,12 @@ export default function App({
 				}),
 			};
 		});
-		resortRows();
+		sortData();
 		saveData();
 	}
 
 	function handleCellContentSave() {
-		resortRows();
+		sortData();
 		saveData();
 	}
 
@@ -274,7 +277,7 @@ export default function App({
 
 		//TODO refactor
 		if (isCheckbox) {
-			resortRows();
+			sortData();
 			saveData();
 		}
 	}
@@ -375,6 +378,7 @@ export default function App({
 				cells: prevState.cells.filter((cell) => cell.headerId !== id),
 			};
 		});
+		sortData();
 		saveData();
 	}
 
@@ -387,6 +391,7 @@ export default function App({
 				cells: prevState.cells.filter((cell) => cell.rowId !== rowId),
 			};
 		});
+		sortData();
 		saveData();
 	}
 
@@ -805,10 +810,10 @@ export default function App({
 										<div className="NLT__td-container">
 											<RowMenu
 												hideInsertOptions={
-													sortDir === SortDir.DEFAULT
+													sortDir !== SortDir.DEFAULT
 												}
 												hideMoveOptions={
-													sortDir === SortDir.DEFAULT
+													sortDir !== SortDir.DEFAULT
 												}
 												positionUpdateTime={
 													positionUpdateTime
