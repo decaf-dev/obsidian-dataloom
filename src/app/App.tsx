@@ -27,14 +27,18 @@ import {
 } from "./services/appData/external/loadUtils";
 import { v4 as uuid } from "uuid";
 import { logFunc } from "./services/appData/debug";
-import { sortAppDataForSave } from "./services/appData/external/saveUtils";
-import { useCloseMenusOnScroll, useThrottle } from "./services/hooks";
+import {
+	useCloseMenusOnScroll,
+	useDidMountEffect,
+	useId,
+	useSaveTime,
+} from "./services/hooks";
 import { useSortedRows } from "./services/sort/sort";
 
 interface Props {
 	plugin: NltPlugin;
 	settings: NltSettings;
-	data: AppData;
+	loadedData: AppData;
 	sourcePath: string;
 	tableIndex: string;
 	el: HTMLElement;
@@ -45,22 +49,22 @@ const COMPONENT_NAME = "App";
 export default function App({
 	plugin,
 	settings,
-	data,
+	loadedData,
 	sourcePath,
 	tableIndex,
 	el,
 }: Props) {
-	const [oldAppData, setOldAppData] = useState<AppData>(data);
-	const [appData, setAppData] = useState<AppData>(data);
-	const [tableId] = useState(uuid());
-	const [debounceUpdate, setDebounceUpdate] = useState(0);
+	const [appData, setAppData] = useState<AppData>(loadedData);
+	const tableId = useId();
 	const [tagUpdate, setTagUpdate] = useState({
 		time: 0,
 		cellId: "",
 	});
-	const [saveTime, setSaveTime] = useState(0);
+	const [sortTime, setSortTime] = useState(0);
 	const [positionUpdateTime, setPositionUpdateTime] = useState(0);
-	const { sortedRows, sortDir, resortRows } = useSortedRows(appData);
+
+	const { saveTime, saveData } = useSaveTime();
+	const { sortedRows, sortDir } = useSortedRows(appData, sortTime);
 
 	useCloseMenusOnScroll("markdown-preview-view");
 	useCloseMenusOnScroll("NLT__table-wrapper");
@@ -69,18 +73,15 @@ export default function App({
 		forcePositionUpdate();
 	}, [sortedRows]);
 
-	useEffect(() => {
+	useDidMountEffect(() => {
 		async function handleUpdate() {
-			if (saveTime === 0) return;
 			try {
-				const oldData = sortAppDataForSave(oldAppData);
-				const newData = sortAppDataForSave(appData);
 				await saveAppData(
 					plugin,
 					settings,
 					app,
-					oldData,
-					newData,
+					loadedData,
+					appData,
 					sourcePath,
 					tableIndex,
 					findCurrentViewType(el)
@@ -92,22 +93,6 @@ export default function App({
 
 		handleUpdate();
 	}, [saveTime]);
-
-	useEffect(() => {
-		let intervalId: NodeJS.Timer = null;
-		function startTimer() {
-			intervalId = setInterval(() => {
-				//When debounce update is called, we will only save after
-				//250ms have pass since the last update
-				if (Date.now() - debounceUpdate < 250) return;
-				clearInterval(intervalId);
-				setDebounceUpdate(0);
-				saveData();
-			}, 100);
-		}
-		if (debounceUpdate !== 0) startTimer();
-		return () => clearInterval(intervalId);
-	}, [debounceUpdate]);
 
 	// //If a table updates in editing mode or reading mode, update the other table
 	// //TODO change with notifier in the main.js
@@ -143,8 +128,8 @@ export default function App({
 	// 	return () => clearInterval(intervalId);
 	// }, []);
 
-	function saveData() {
-		setSaveTime(Date.now());
+	function sortData() {
+		setSortTime(Date.now());
 	}
 
 	function forcePositionUpdate() {
@@ -226,12 +211,12 @@ export default function App({
 				}),
 			};
 		});
-		resortRows();
+		sortData();
 		saveData();
 	}
 
 	function handleCellContentSave() {
-		resortRows();
+		sortData();
 		saveData();
 	}
 
@@ -274,7 +259,7 @@ export default function App({
 
 		//TODO refactor
 		if (isCheckbox) {
-			resortRows();
+			sortData();
 			saveData();
 		}
 	}
@@ -375,6 +360,7 @@ export default function App({
 				cells: prevState.cells.filter((cell) => cell.headerId !== id),
 			};
 		});
+		sortData();
 		saveData();
 	}
 
@@ -387,6 +373,7 @@ export default function App({
 				cells: prevState.cells.filter((cell) => cell.rowId !== rowId),
 			};
 		});
+		sortData();
 		saveData();
 	}
 
@@ -441,7 +428,8 @@ export default function App({
 				}),
 			};
 		});
-		setDebounceUpdate(Date.now());
+		forcePositionUpdate();
+		saveData(true);
 	}
 
 	function handleMoveColumnClick(id: string, moveRight: boolean) {
@@ -804,10 +792,10 @@ export default function App({
 										<div className="NLT__td-container">
 											<RowMenu
 												hideInsertOptions={
-													sortDir === SortDir.DEFAULT
+													sortDir !== SortDir.DEFAULT
 												}
 												hideMoveOptions={
-													sortDir === SortDir.DEFAULT
+													sortDir !== SortDir.DEFAULT
 												}
 												positionUpdateTime={
 													positionUpdateTime

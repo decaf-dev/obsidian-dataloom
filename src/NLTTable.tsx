@@ -53,7 +53,7 @@ export class NLTTable extends MarkdownRenderChild {
 						<App
 							plugin={this.plugin}
 							settings={this.settings}
-							data={data}
+							loadedData={data}
 							sourcePath={this.sourcePath}
 							tableIndex={tableIndex}
 							el={this.containerEl}
