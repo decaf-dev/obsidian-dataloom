@@ -142,6 +142,10 @@ export default function HeaderMenu({
 		}
 	}
 
+	function handleBackClick() {
+		setSubmenu(null);
+	}
+
 	return (
 		<Menu isOpen={isOpen} id={id} style={style}>
 			<div className="NLT__header-menu">
@@ -159,7 +163,7 @@ export default function HeaderMenu({
 						headerType={headerType}
 						useAutoWidth={useAutoWidth}
 						shouldWrapOverflow={shouldWrapOverflow}
-						onBackClick={() => setSubmenu(null)}
+						onBackClick={handleBackClick}
 						onAutoWidthToggle={onAutoWidthToggle}
 						onWrapOverflowToggle={onWrapOverflowToggle}
 						onHeaderDeleteClick={handleHeaderDeleteClick}
@@ -168,32 +172,40 @@ export default function HeaderMenu({
 				)}
 				{submenu && submenu.name === SUBMENU_ITEM.INSERT.name && (
 					<InsertSubmenu
+						title={submenu.content}
 						onInsertClick={(isRightInsert) =>
 							handleInsertColumnClick(headerId, isRightInsert)
 						}
+						onBackClick={handleBackClick}
 					/>
 				)}
 				{submenu && submenu.name === SUBMENU_ITEM.SORT.name && (
 					<SortSubmenu
+						title={submenu.content}
 						headerSortDir={headerSortDir}
 						onSortClick={(sortDir) =>
 							handleSortClick(headerId, sortDir)
 						}
+						onBackClick={handleBackClick}
 					/>
 				)}
 				{submenu && submenu.name === SUBMENU_ITEM.MOVE.name && (
 					<MoveSubmenu
+						title={submenu.content}
 						headerIndex={headerIndex}
 						numHeaders={numHeaders}
 						onMoveClick={(isRightMove) =>
 							handleMoveColumnClick(headerId, isRightMove)
 						}
+						onBackClick={handleBackClick}
 					/>
 				)}
 				{submenu && submenu.name === SUBMENU_ITEM.TYPE.name && (
 					<TypeSubmenu
+						title={submenu.content}
 						headerType={headerType}
 						onTypeClick={(type) => handleTypeClick(headerId, type)}
+						onBackClick={handleBackClick}
 					/>
 				)}
 			</div>
