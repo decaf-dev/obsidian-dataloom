@@ -2,14 +2,13 @@ import { CONTENT_TYPE } from "../../constants";
 
 import { Icon } from "src/app/services/icon/types";
 import { SortDir } from "src/app/services/sort/types";
-
-interface MenuItem {
+export interface SubmenuItem {
 	name: string;
 	content: string;
-	type: string;
+	icon: Icon;
 }
 
-export const SUBMENU = {
+export const SUBMENU_ITEM: { [name: string]: SubmenuItem } = {
 	EDIT: {
 		name: "edit",
 		content: "Edit",
@@ -36,6 +35,12 @@ export const SUBMENU = {
 		icon: Icon.TEXT_SNIPPET,
 	},
 };
+
+export interface MenuItem {
+	name: string;
+	content: string;
+	type: string;
+}
 
 export const TYPE_ITEMS: MenuItem[] = [
 	{ name: "text", content: "Text", type: CONTENT_TYPE.TEXT },

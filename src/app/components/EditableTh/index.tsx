@@ -14,14 +14,13 @@ interface Props {
 	id: string;
 	index: number;
 	width: string;
+	numHeaders: number;
 	positionUpdateTime: number;
 	content: string;
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
 	sortDir: SortDir;
 	type: string;
-	isFirstChild: boolean;
-	isLastChild: boolean;
 	onMoveColumnClick: (id: string, moveRight: boolean) => void;
 	onSortSelect: (id: string, sortDir: SortDir) => void;
 	onInsertColumnClick: (id: string, insertRight: boolean) => void;
@@ -43,8 +42,7 @@ export default function EditableTh({
 	shouldWrapOverflow,
 	type,
 	sortDir,
-	isFirstChild,
-	isLastChild,
+	numHeaders,
 	onWidthChange,
 	onInsertColumnClick,
 	onMoveColumnClick,
@@ -148,22 +146,22 @@ export default function EditableTh({
 					),
 					left: position.left,
 				}}
-				id={id}
+				headerId={id}
 				shouldWrapOverflow={shouldWrapOverflow}
 				useAutoWidth={useAutoWidth}
-				menuId={menuId}
-				content={content}
+				id={menuId}
+				headerName={content}
 				index={index}
-				sortDir={sortDir}
-				type={type}
-				isFirstChild={isFirstChild}
-				isLastChild={isLastChild}
+				headerSortDir={sortDir}
+				headerType={type}
+				headerIndex={index}
+				numHeaders={numHeaders}
 				onOutsideClick={onSaveClick}
 				onSortSelect={onSortSelect}
 				onMoveColumnClick={onMoveColumnClick}
 				onInsertColumnClick={onInsertColumnClick}
 				onTypeSelect={onTypeSelect}
-				onDeleteClick={onDeleteClick}
+				onHeaderDeleteClick={onDeleteClick}
 				onClose={handleClose}
 				onAutoWidthToggle={onAutoWidthToggle}
 				onWrapOverflowToggle={onWrapOverflowToggle}
