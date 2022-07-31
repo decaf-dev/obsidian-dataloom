@@ -55,9 +55,6 @@
 	color: red;
 }
 
-.NLT__app {
-}
-
 .NLT__table-wrapper {
 	overflow: auto;
 }
@@ -136,6 +133,6 @@
 }
 
 .NLT__hr {
-	margin: 0.5rem 0;
+	margin: 0.35rem 0;
 	width: 100%;
 }
