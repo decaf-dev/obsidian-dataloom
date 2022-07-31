@@ -1,15 +1,15 @@
 import React, { useEffect, useState, useRef } from "react";
 
 import Menu from "../Menu";
-import HeaderMenuItem from "./components/HeaderMenuItem";
-import IconButton from "../IconButton";
-import Button from "../Button";
-import Switch from "../Switch";
+import MenuItem from "./components/MenuItem";
+import EditSubmenu from "./components/EditSubmenu";
+import SortSubmenu from "./components/SortSubmenu";
+import InsertSubmenu from "./components/InsertSubmenu";
+import MoveSubmenu from "./components/MoveSubmenu";
+import TypeSubmenu from "./components/TypeSubmenu";
 
-import { Icon } from "src/app/services/icon/types";
 import { SortDir } from "src/app/services/sort/types";
-import { CONTENT_TYPE } from "src/app/constants";
-import { TYPE_ITEMS, SUBMENU, SORT_MENU_ITEM } from "./constants";
+import { SUBMENU_ITEM, SubmenuItem } from "./constants";
 
 import "./styles.css";
 
@@ -19,42 +19,71 @@ interface Props {
 		top: string;
 		left: string;
 	};
+	headerId: string;
 	id: string;
-	menuId: string;
 	index: number;
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
-	sortDir: SortDir;
-	content: string;
-	type: string;
-	isFirstChild: boolean;
-	isLastChild: boolean;
+	headerSortDir: SortDir;
+	headerName: string;
+	headerType: string;
+	headerIndex: number;
+	numHeaders: number;
 	onInsertColumnClick: (id: string, insertRight: boolean) => void;
 	onMoveColumnClick: (id: string, moveRight: boolean) => void;
 	onTypeSelect: (id: string, type: string) => void;
 	onSortSelect: (id: string, sortDir: SortDir) => void;
-	onDeleteClick: (id: string) => void;
+	onHeaderDeleteClick: (id: string) => void;
 	onOutsideClick: (id: string, inputText: string) => void;
 	onAutoWidthToggle: (id: string, value: boolean) => void;
 	onWrapOverflowToggle: (id: string, value: boolean) => void;
 	onClose: () => void;
 }
 
+interface SubMenuListProps {
+	numHeaders: number;
+	onOptionClick: (item: SubmenuItem) => void;
+}
+
+const SubmenuList = ({ numHeaders, onOptionClick }: SubMenuListProps) => {
+	return (
+		<>
+			{Object.values(SUBMENU_ITEM)
+				.filter((value) => {
+					if (
+						numHeaders === 1 &&
+						value.name === SUBMENU_ITEM.MOVE.name
+					)
+						return false;
+					return true;
+				})
+				.map((item) => (
+					<MenuItem
+						key={item.name}
+						content={item.content}
+						icon={item.icon}
+						onClick={() => onOptionClick(item)}
+					/>
+				))}
+		</>
+	);
+};
+
 export default function HeaderMenu({
 	isOpen,
 	id,
-	menuId,
-	content,
+	headerId,
+	headerName,
+	headerType,
+	headerSortDir,
+	headerIndex,
+	numHeaders,
 	style,
-	type,
-	sortDir,
 	useAutoWidth,
 	shouldWrapOverflow,
-	isFirstChild,
-	isLastChild,
 	onTypeSelect,
 	onSortSelect,
-	onDeleteClick,
+	onHeaderDeleteClick,
 	onOutsideClick,
 	onInsertColumnClick,
 	onMoveColumnClick,
@@ -62,7 +91,7 @@ export default function HeaderMenu({
 	onWrapOverflowToggle,
 	onAutoWidthToggle,
 }: Props) {
-	const [inputText, setInputText] = useState("");
+	const [headerNameInput, setHeaderNameInput] = useState("");
 	const [submenu, setSubmenu] = useState(null);
 	const lastLength = useRef(0);
 
@@ -72,138 +101,26 @@ export default function HeaderMenu({
 			//the component, the header will close, set the data (which didn't change), which cause an update
 			//which persists the data again. We can prevent this by only calling onOutsideClick
 			//if the data has actually changed
-			if (inputText.length !== lastLength.current) {
-				lastLength.current = inputText.length;
-				if (inputText !== content) {
-					onOutsideClick(id, inputText);
+			if (headerNameInput.length !== lastLength.current) {
+				lastLength.current = headerNameInput.length;
+				if (headerNameInput !== headerName) {
+					onOutsideClick(headerId, headerNameInput);
 				}
 			}
 			setSubmenu(null);
 		}
-	}, [isOpen, inputText.length, lastLength.current]);
+	}, [isOpen, headerNameInput.length, lastLength.current]);
 
 	useEffect(() => {
-		setInputText(content);
-	}, [content]);
-
-	function renderTypeItems() {
-		return TYPE_ITEMS.map((item) => {
-			return (
-				<HeaderMenuItem
-					key={item.name}
-					icon={null}
-					content={item.content}
-					onClick={() => handleTypeSelect(id, item.type)}
-					selected={item.type === type}
-				/>
-			);
-		});
-	}
-
-	function renderSortItems() {
-		return (
-			<ul className="NLT__header-menu-ul">
-				{Object.values(SORT_MENU_ITEM).map((item) => (
-					<HeaderMenuItem
-						key={item.name}
-						icon={item.icon}
-						content={`Sort ${item.content}`}
-						onClick={() => handleSortSelect(id, item.name)}
-						selected={sortDir === item.name}
-					/>
-				))}
-			</ul>
-		);
-	}
-
-	function renderInsertItems() {
-		return (
-			<ul className="NLT__header-menu-ul">
-				<HeaderMenuItem
-					icon={Icon.KEYBOARD_DOUBLE_ARROW_LEFT}
-					content="Insert Left"
-					onClick={() => handleInsertColumnClick(id, false)}
-				/>
-				<HeaderMenuItem
-					icon={Icon.KEYBOARD_DOUBLE_ARROW_RIGHT}
-					content="Insert Right"
-					onClick={() => handleInsertColumnClick(id, true)}
-				/>
-			</ul>
-		);
-	}
-
-	function renderMoveItems() {
-		return (
-			<ul className="NLT__header-menu-ul">
-				{!isFirstChild && (
-					<HeaderMenuItem
-						icon={Icon.KEYBOARD_DOUBLE_ARROW_LEFT}
-						content="Move Left"
-						onClick={() => handleMoveColumnClick(id, false)}
-					/>
-				)}
-				{!isLastChild && (
-					<HeaderMenuItem
-						icon={Icon.KEYBOARD_DOUBLE_ARROW_RIGHT}
-						content="Move Right"
-						onClick={() => handleMoveColumnClick(id, true)}
-					/>
-				)}
-			</ul>
-		);
-	}
-
-	function renderEditItems() {
-		return (
-			<>
-				<div style={{ marginBottom: "10px" }}>
-					<p className="NLT__label">Header Name</p>
-					<input
-						className="NLT__input NLT__header-menu-input"
-						autoFocus
-						type="text"
-						value={inputText}
-						onChange={(e) => setInputText(e.target.value)}
-					/>
-				</div>
-				{(type === CONTENT_TYPE.TEXT ||
-					type === CONTENT_TYPE.NUMBER) && (
-					<div>
-						<p className="NLT__label">Auto Width</p>
-						<Switch
-							isChecked={useAutoWidth}
-							onToggle={(value) => onAutoWidthToggle(id, value)}
-						/>
-						{!useAutoWidth && (
-							<>
-								<p className="NLT__label">Wrap Overflow</p>
-								<Switch
-									isChecked={shouldWrapOverflow}
-									onToggle={(value) =>
-										onWrapOverflowToggle(id, value)
-									}
-								/>
-							</>
-						)}
-					</div>
-				)}
-				<Button
-					style={{ marginTop: "5px" }}
-					onClick={() => handleDeleteClick(id)}
-				>
-					Delete
-				</Button>
-			</>
-		);
-	}
+		setHeaderNameInput(headerName);
+	}, [headerName]);
 
 	function handleMoveColumnClick(id: string, moveRight: boolean) {
 		onMoveColumnClick(id, moveRight);
 		onClose();
 	}
 
-	function handleSortSelect(id: string, sortDir: SortDir) {
+	function handleSortClick(id: string, sortDir: SortDir) {
 		onSortSelect(id, sortDir);
 		onClose();
 	}
@@ -213,66 +130,72 @@ export default function HeaderMenu({
 		onClose();
 	}
 
-	function handleTypeSelect(id: string, type: string) {
+	function handleTypeClick(id: string, type: string) {
 		onTypeSelect(id, type);
 		onClose();
 	}
 
-	function handleDeleteClick(id: string) {
+	function handleHeaderDeleteClick(id: string) {
 		if (window.confirm("Are you sure you want to delete this column?")) {
-			onDeleteClick(id);
+			onHeaderDeleteClick(id);
 			onClose();
 		}
 	}
 
-	function renderMenu() {
-		return Object.values(SUBMENU).map((item) => (
-			<HeaderMenuItem
-				key={item.name}
-				content={item.content}
-				icon={item.icon}
-				onClick={() => setSubmenu(item)}
-			/>
-		));
-	}
-
-	function Submenu() {
-		function renderSubmenuItems() {
-			switch (submenu.name) {
-				case SUBMENU.EDIT.name:
-					return renderEditItems();
-				case SUBMENU.INSERT.name:
-					return renderInsertItems();
-				case SUBMENU.SORT.name:
-					return renderSortItems();
-				case SUBMENU.MOVE.name:
-					return renderMoveItems();
-				case SUBMENU.TYPE.name:
-					return renderTypeItems();
-				default:
-					return <></>;
-			}
-		}
-		return (
-			<div>
-				<div className="NLT__header-menu-header-container">
-					<IconButton
-						icon={Icon.KEYBOARD_BACKSPACE}
-						onClick={() => setSubmenu(null)}
-					/>
-					<div className="NLT__header-menu-header">
-						{submenu.content}
-					</div>
-				</div>
-				{renderSubmenuItems()}
-			</div>
-		);
-	}
-
 	return (
-		<Menu isOpen={isOpen} id={menuId} style={style}>
+		<Menu isOpen={isOpen} id={id} style={style}>
 			<div className="NLT__header-menu">
-				{submenu !== null ? <Submenu /> : renderMenu()}
+				{submenu === null && (
+					<SubmenuList
+						numHeaders={numHeaders}
+						onOptionClick={setSubmenu}
+					/>
+				)}
+				{submenu && submenu.name === SUBMENU_ITEM.EDIT.name && (
+					<EditSubmenu
+						title={submenu.content}
+						headerId={headerId}
+						headerName={headerNameInput}
+						headerType={headerType}
+						useAutoWidth={useAutoWidth}
+						shouldWrapOverflow={shouldWrapOverflow}
+						onBackClick={() => setSubmenu(null)}
+						onAutoWidthToggle={onAutoWidthToggle}
+						onWrapOverflowToggle={onWrapOverflowToggle}
+						onHeaderDeleteClick={handleHeaderDeleteClick}
+						onHeaderNameChange={setHeaderNameInput}
+					/>
+				)}
+				{submenu && submenu.name === SUBMENU_ITEM.INSERT.name && (
+					<InsertSubmenu
+						onInsertClick={(isRightInsert) =>
+							handleInsertColumnClick(headerId, isRightInsert)
+						}
+					/>
+				)}
+				{submenu && submenu.name === SUBMENU_ITEM.SORT.name && (
+					<SortSubmenu
+						headerSortDir={headerSortDir}
+						onSortClick={(sortDir) =>
+							handleSortClick(headerId, sortDir)
+						}
+					/>
+				)}
+				{submenu && submenu.name === SUBMENU_ITEM.MOVE.name && (
+					<MoveSubmenu
+						headerIndex={headerIndex}
+						numHeaders={numHeaders}
+						onMoveClick={(isRightMove) =>
+							handleMoveColumnClick(headerId, isRightMove)
+						}
+					/>
+				)}
+				{submenu && submenu.name === SUBMENU_ITEM.TYPE.name && (
+					<TypeSubmenu
+						headerType={headerType}
+						onTypeClick={(type) => handleTypeClick(headerId, type)}
+					/>
+				)}
 			</div>
 		</Menu>
 	);
