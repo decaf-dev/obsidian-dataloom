@@ -10,7 +10,7 @@ interface Props {
 	onClick: any;
 	selected?: boolean;
 }
-export default function HeaderMenuItem({
+export default function MenuItem({
 	icon,
 	content,
 	onClick,

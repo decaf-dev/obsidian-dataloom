@@ -675,7 +675,7 @@ export default function App({
 			<OptionBar headers={appData.headers} />
 			<div className="NLT__table-wrapper">
 				<Table
-					headers={appData.headers.map((header, columnIndex) => {
+					headers={appData.headers.map((header, i) => {
 						const {
 							id,
 							content,
@@ -700,15 +700,11 @@ export default function App({
 									shouldWrapOverflow={shouldWrapOverflow}
 									useAutoWidth={useAutoWidth}
 									positionUpdateTime={positionUpdateTime}
-									index={columnIndex}
+									index={i}
 									content={content}
 									type={type}
 									sortDir={sortDir}
-									isFirstChild={columnIndex === 0}
-									isLastChild={
-										columnIndex ===
-										appData.headers.length - 1
-									}
+									numHeaders={appData.headers.length}
 									onSortSelect={handleHeaderSortSelect}
 									onInsertColumnClick={
 										handleInsertColumnClick
