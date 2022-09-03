@@ -1,10 +1,10 @@
 import { PluginSettingTab, App, Setting } from "obsidian";
-import NltPlugin from "main";
+import NLTPlugin from "main";
 
-export default class NltSettingsTab extends PluginSettingTab {
-	plugin: NltPlugin;
+export default class NLTSettingsTab extends PluginSettingTab {
+	plugin: NLTPlugin;
 
-	constructor(app: App, plugin: NltPlugin) {
+	constructor(app: App, plugin: NLTPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}
