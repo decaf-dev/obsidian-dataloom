@@ -1,6 +1,6 @@
 import { v4 as uuid } from "uuid";
 
-import { initialTag } from "../state/tag";
+import { initialTag } from "../state/initialState";
 import { TableModel } from "../state/types";
 import { findNewCell } from "./loadUtils";
 import { randomColor } from "../../random";

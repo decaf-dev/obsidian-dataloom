@@ -1,7 +1,7 @@
-import { TableModel } from "../state/types";
-import { Cell } from "../state/cell";
+import { TableModel, Cell } from "../state/types";
 
 import { CONTENT_TYPE } from "src/constants";
+import { BaseCell } from "../state/cell";
 
 export const sortAppDataForSave = (data: TableModel) => {
 	const obj = { ...data };
@@ -111,7 +111,7 @@ export const calcColumnCharLengths = (data: TableModel): ColumnCharLengths => {
 	//Check cells
 	data.cells.forEach((cell: Cell) => {
 		//We have to do this for the .length function to be available
-		if (cell instanceof Cell) {
+		if (cell instanceof BaseCell) {
 			const index = data.headers.findIndex(
 				(header) => header.id === cell.headerId
 			);

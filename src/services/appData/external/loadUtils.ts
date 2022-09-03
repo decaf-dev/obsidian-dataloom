@@ -2,17 +2,15 @@ import { v4 as uuid } from "uuid";
 import CRC32 from "crc-32";
 
 import {
-	Cell,
+	BaseCell,
 	NumberCell,
 	TagCell,
 	TextCell,
 	DateCell,
 	CheckBoxCell,
 } from "../state/cell";
-import { Tag } from "../state/tag";
-import { TableModel } from "../state/types";
-import { Header, initialHeader } from "../state/header";
-import { Row, initialRow } from "../state/row";
+import { initialHeader, initialRow } from "../state/initialState";
+import { Header, Row, TableModel, Cell, Tag } from "../state/types";
 
 import {
 	MARKDOWN_CELLS_REGEX,
@@ -223,6 +221,6 @@ export const findNewCell = (
 		case CONTENT_TYPE.CHECKBOX:
 			return findCheckboxCell(cellId, rowId, headerId, content);
 		default:
-			return new Cell(cellId, rowId, headerId);
+			return new BaseCell(cellId, rowId, headerId);
 	}
 };

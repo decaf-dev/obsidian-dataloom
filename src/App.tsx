@@ -6,11 +6,12 @@ import RowMenu from "./components/RowMenu";
 import EditableTh from "./components/EditableTh";
 import OptionBar from "./components/OptionBar";
 
-import { initialHeader } from "./services/appData/state/header";
-import { initialTag, Tag } from "./services/appData/state/tag";
-import { initialRow } from "./services/appData/state/row";
-import { Cell } from "./services/appData/state/cell";
-import { TableModel } from "./services/appData/state/types";
+import {
+	initialHeader,
+	initialRow,
+	initialTag,
+} from "./services/appData/state/initialState";
+import { Cell, TableModel, Tag } from "./services/appData/state/types";
 import { saveAppData } from "./services/appData/external/save";
 import { numToPx, pxToNum } from "./services/string/parsers";
 

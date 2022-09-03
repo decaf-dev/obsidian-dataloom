@@ -1,10 +1,8 @@
-import { useEffect, useState, useRef, useMemo } from "react";
+import { useRef } from "react";
 
-import { TableModel } from "../appData/state/types";
 import { SortDir } from "./types";
 import { CONTENT_TYPE } from "src/constants";
-import { Row } from "../appData/state/row";
-import { Header } from "../appData/state/header";
+import { Row, Header, TableModel } from "../appData/state/types";
 
 interface SortedRows {
 	sortDir: SortDir;

@@ -1,10 +1,13 @@
 import { CONTENT_TYPE } from "src/constants";
 
-export class Cell {
+import { Cell } from "./types";
+
+export class BaseCell implements Cell {
 	id: string;
 	rowId: string;
 	headerId: string;
 	type: string;
+
 	constructor(id: string, rowId: string, headerId: string, type?: string) {
 		this.id = id;
 		this.rowId = rowId;
@@ -21,7 +24,7 @@ export class Cell {
 	}
 }
 
-export class TextCell extends Cell {
+export class TextCell extends BaseCell {
 	text: string;
 
 	constructor(id: string, rowId: string, headerId: string, text = "") {
@@ -38,7 +41,7 @@ export class TextCell extends Cell {
 	}
 }
 
-export class NumberCell extends Cell {
+export class NumberCell extends BaseCell {
 	number: string;
 
 	constructor(id: string, rowId: string, headerId: string, number: string) {
@@ -55,13 +58,13 @@ export class NumberCell extends Cell {
 	}
 }
 
-export class TagCell extends Cell {
+export class TagCell extends BaseCell {
 	constructor(id: string, rowId: string, headerId: string) {
 		super(id, rowId, headerId, CONTENT_TYPE.TAG);
 	}
 }
 
-export class CheckBoxCell extends Cell {
+export class CheckBoxCell extends BaseCell {
 	isChecked: boolean;
 
 	constructor(
@@ -91,7 +94,7 @@ export class CheckBoxCell extends Cell {
 	}
 }
 
-export class DateCell extends Cell {
+export class DateCell extends BaseCell {
 	date: Date | null;
 
 	constructor(id: string, rowId: string, headerId: string, date: Date) {

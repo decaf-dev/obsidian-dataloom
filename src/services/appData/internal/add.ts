@@ -1,7 +1,5 @@
-import { TableModel } from "../state/types";
-import { initialHeader } from "../state/header";
-import { initialRow } from "../state/row";
-import { Tag } from "../state/tag";
+import { TableModel, Tag } from "../state/types";
+import { initialHeader, initialRow } from "../state/initialState";
 import { CONTENT_TYPE } from "src/constants";
 import { findNewCell } from "../external/loadUtils";
 import { v4 as uuid } from "uuid";

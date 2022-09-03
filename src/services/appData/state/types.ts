@@ -1,16 +1,47 @@
-import { Header } from "./header";
-import { Row } from "./row";
-import { Cell } from "./cell";
-import { Tag } from "./tag";
+import { SortDir } from "../../sort/types";
 
 /**
- * This represents a state that is serializable
+ * Represents the table markdown model. It can be converted to markdown.
  */
 export interface TableModel {
 	headers: Header[];
 	rows: Row[];
 	cells: Cell[];
 	tags: Tag[];
+}
+
+export interface Header {
+	id: string;
+	content: string;
+	sortDir: SortDir;
+	sortName?: string; //Deprecated in 4.1.2
+	width: string;
+	type: string;
+	useAutoWidth: boolean;
+	shouldWrapOverflow: boolean;
+}
+
+export interface Row {
+	id: string;
+	initialIndex: number;
+	creationTime: number;
+}
+
+export interface Cell {
+	id: string;
+	rowId: string;
+	headerId: string;
+	type: string;
+	toString: () => string;
+	length: () => number;
+}
+
+export interface Tag {
+	id: string;
+	headerId: string;
+	content: string;
+	color: string;
+	selected: string[];
 }
 
 /**

@@ -13,8 +13,7 @@ import TagCellEdit from "../TagCellEdit";
 import DateCellEdit from "../DateCellEdit";
 
 import { randomColor } from "src/services/random";
-import { Tag } from "src/services/appData/state/tag";
-import { Cell } from "src/services/appData/state/cell";
+import { Cell, Tag } from "src/services/appData/state/types";
 import { isDate } from "src/services/string/validators";
 
 import "./styles.css";
