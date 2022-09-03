@@ -6,13 +6,13 @@ import {
 	MarkdownSectionInformation,
 } from "obsidian";
 
-import { NLTTable } from "src/NLTTable";
-import { NLTSettings, DEFAULT_SETTINGS } from "src/services/settings";
+import { NLTTable } from "src/NltTable";
+import { NltSettings, DEFAULT_SETTINGS } from "src/services/settings";
 import { addRow, addColumn } from "src/services/appData/internal/add";
 import { saveAppData } from "src/services/appData/external/save";
 import { createEmptyMarkdownTable } from "src/services/appData/mock";
 import { ViewType } from "src/services/appData/state/saveState";
-import NLTSettingsTab from "./NLTSettingsTab";
+import NltSettingsTab from "./NltSettingsTab";
 
 interface FocusedTable {
 	tableIndex: string;
@@ -20,8 +20,8 @@ interface FocusedTable {
 	sourcePath: string;
 	viewType: ViewType;
 }
-export default class NLTPlugin extends Plugin {
-	settings: NLTSettings;
+export default class NltPlugin extends Plugin {
+	settings: NltSettings;
 	focused: FocusedTable | null = null;
 
 	/**
@@ -49,7 +49,7 @@ export default class NLTPlugin extends Plugin {
 			}
 		});
 
-		this.addSettingTab(new NLTSettingsTab(this.app, this));
+		this.addSettingTab(new NltSettingsTab(this.app, this));
 		this.registerCommands();
 		this.registerEvents();
 	}

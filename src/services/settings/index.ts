@@ -3,7 +3,7 @@ import { TABBABLE_ELEMENT_TYPE } from "src/constants";
 import { SaveState } from "../appData/state/saveState";
 import { TableModel } from "../appData/state/types";
 
-export interface NLTSettings {
+export interface NltSettings {
 	appData: {
 		[sourcePath: string]: {
 			[tableIndex: string]: TableModel;
@@ -22,7 +22,7 @@ export interface NLTSettings {
 	excludedFiles: string[];
 }
 
-export const DEFAULT_SETTINGS: NLTSettings = {
+export const DEFAULT_SETTINGS: NltSettings = {
 	appData: {},
 	state: {},
 	sectionInfo: {

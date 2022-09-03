@@ -1,4 +1,4 @@
-import NLTPlugin from "main";
+import NltPlugin from "main";
 import { updateAppDataFromSavedState } from "./merge";
 import { CURRENT_TABLE_CACHE_VERSION, DEBUG } from "src/constants";
 import { appDataToMarkdown } from "./saveUtils";
@@ -18,7 +18,7 @@ import { appDataIdsToMarkdown, appDataTypesToMarkdown } from "../debug";
  * @returns AppData - The loaded data which the app will use to initialize its state
  */
 export const loadAppData = async (
-	plugin: NLTPlugin,
+	plugin: NltPlugin,
 	el: HTMLElement,
 	sourcePath: string
 ): Promise<LoadedData> => {

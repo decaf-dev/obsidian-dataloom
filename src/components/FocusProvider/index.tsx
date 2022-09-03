@@ -1,4 +1,4 @@
-import NLTPlugin from "main";
+import NltPlugin from "main";
 import { MarkdownSectionInformation } from "obsidian";
 import React, { useState, useContext, useCallback, useEffect } from "react";
 import { DEBUG } from "src/constants";
@@ -15,7 +15,7 @@ const COMPONENT_NAME = "FocusProvider";
 
 interface Props {
 	children: React.ReactNode;
-	plugin: NLTPlugin;
+	plugin: NltPlugin;
 	tableIndex: string;
 	sectionInfo: MarkdownSectionInformation;
 	sourcePath: string;

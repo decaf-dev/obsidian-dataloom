@@ -1,6 +1,6 @@
 import { TableModel } from "../state/types";
 import { appDataToMarkdown } from "./saveUtils";
-import NLTPlugin from "../../../../main";
+import NltPlugin from "../../../../main";
 import { DEBUG } from "src/constants";
 import { ViewType } from "../state/saveState";
 import { CURRENT_TABLE_CACHE_VERSION } from "src/constants";
@@ -9,7 +9,7 @@ import { MarkdownSectionInformation, TFile } from "obsidian";
 // const SHOULD_DEBUG = DEBUG.SAVE_APP_DATA;
 
 export const saveAppData = async (
-	plugin: NLTPlugin,
+	plugin: NltPlugin,
 	data: TableModel,
 	tableIndex: string,
 	sectionInfo: MarkdownSectionInformation,
@@ -47,7 +47,7 @@ export const saveAppData = async (
 };
 
 const updateFile = async (
-	plugin: NLTPlugin,
+	plugin: NltPlugin,
 	file: TFile,
 	updatedContent: string
 ) => {
@@ -55,7 +55,7 @@ const updateFile = async (
 };
 
 const updateSettingsCache = async (
-	plugin: NLTPlugin,
+	plugin: NltPlugin,
 	data: TableModel,
 	sourcePath: string,
 	tableIndex: string,

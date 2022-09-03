@@ -3,20 +3,20 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
 import { loadAppData } from "./services/appData/external/load";
-import NLTPlugin from "main";
+import NltPlugin from "main";
 import MenuProvider from "./components/MenuProvider";
 import FocusProvider from "./components/FocusProvider";
 
 //This is our main class that will render the React app to the Obsidian container element
 export class NLTTable extends MarkdownRenderChild {
-	plugin: NLTPlugin;
+	plugin: NltPlugin;
 	sourcePath: string;
 	sectionInfo: MarkdownSectionInformation;
 	el: HTMLElement;
 
 	constructor(
 		containerEl: HTMLElement,
-		plugin: NLTPlugin,
+		plugin: NltPlugin,
 		sectionInfo: MarkdownSectionInformation,
 		sourcePath: string
 	) {
