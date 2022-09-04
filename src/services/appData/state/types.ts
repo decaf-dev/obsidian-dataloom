@@ -12,7 +12,7 @@ export interface Header {
 	sortDir: SortDir; //render only
 	sortName?: string; //Deprecated in 4.1.2 //render only
 	width: string; //render only
-	type: string;
+	type: CellType;
 	useAutoWidth: boolean;
 	shouldWrapOverflow: boolean;
 }
@@ -26,7 +26,7 @@ export interface Cell {
 	id: string;
 	rowId: string;
 	headerId: string;
-	type: string;
+	type: CellType;
 	content: string;
 	previousContent: string;
 }

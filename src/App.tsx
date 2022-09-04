@@ -169,7 +169,7 @@ export default function App({
 		saveData();
 	}
 
-	function handleHeaderTypeSelect(id: string, selectedCellType: string) {
+	function handleHeaderTypeSelect(id: string, selectedCellType: CellType) {
 		if (DEBUG.APP) console.log("[App]: handleHeaderTypeSelect called.");
 		//If same header type return
 		const header = appData.headers.find((header) => header.id === id);

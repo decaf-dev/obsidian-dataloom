@@ -26,7 +26,7 @@ export const initialCell = (
 	id: string,
 	headerId: string,
 	rowId: string,
-	type: string, //TODO add type
+	type: CellType,
 	content: string
 ): Cell => {
 	return {

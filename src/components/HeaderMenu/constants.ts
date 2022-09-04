@@ -39,7 +39,7 @@ export const SUBMENU_ITEM: { [name: string]: SubmenuItem } = {
 export interface MenuItem {
 	name: string;
 	content: string;
-	type: string;
+	type: CellType;
 }
 
 export const TYPE_ITEMS: MenuItem[] = [
