@@ -6,7 +6,7 @@ import {
 	MarkdownSectionInformation,
 } from "obsidian";
 
-import { NLTTable } from "src/NltTable";
+import { NltTable } from "src/NltTable";
 import { NltSettings, DEFAULT_SETTINGS } from "src/services/settings";
 import { addRow, addColumn } from "src/services/appData/internal/add";
 import { saveAppData } from "src/services/appData/external/save";
@@ -38,7 +38,7 @@ export default class NltPlugin extends Plugin {
 				const table = element.getElementsByTagName("table");
 				if (table.length === 1) {
 					context.addChild(
-						new NLTTable(
+						new NltTable(
 							element,
 							this,
 							sectionInfo,

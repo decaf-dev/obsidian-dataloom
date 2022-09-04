@@ -1,7 +1,7 @@
 import { CONTENT_TYPE } from "../../../constants";
 import { SortDir } from "../../sort/types";
 
-import { Header, Row } from "./types";
+import { Header, Row, Tag } from "./types";
 
 export const initialHeader = (id: string, content: string): Header => {
 	return {

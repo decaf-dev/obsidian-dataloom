@@ -8,7 +8,7 @@ import MenuProvider from "./components/MenuProvider";
 import FocusProvider from "./components/FocusProvider";
 
 //This is our main class that will render the React app to the Obsidian container element
-export class NLTTable extends MarkdownRenderChild {
+export class NltTable extends MarkdownRenderChild {
 	plugin: NltPlugin;
 	sourcePath: string;
 	sectionInfo: MarkdownSectionInformation;
