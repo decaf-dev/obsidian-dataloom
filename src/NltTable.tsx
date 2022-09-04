@@ -1,4 +1,8 @@
-import { MarkdownRenderChild, MarkdownSectionInformation } from "obsidian";
+import {
+	ItemView,
+	MarkdownRenderChild,
+	MarkdownSectionInformation,
+} from "obsidian";
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";

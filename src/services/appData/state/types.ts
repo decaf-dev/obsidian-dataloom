@@ -12,7 +12,7 @@ export interface Header {
 	sortDir: SortDir; //render only
 	sortName?: string; //Deprecated in 4.1.2 //render only
 	width: string; //render only
-	type: string;
+	type: CellType;
 	useAutoWidth: boolean;
 	shouldWrapOverflow: boolean;
 }
@@ -26,9 +26,8 @@ export interface Cell {
 	id: string;
 	rowId: string;
 	headerId: string;
-	type: string;
-	toString: () => string;
-	length: () => number;
+	type: CellType;
+	content: string;
 }
 
 export interface Tag {
@@ -37,4 +36,13 @@ export interface Tag {
 	content: string;
 	color: string;
 	selected: string[];
+}
+
+export enum CellType {
+	TEXT = "text",
+	NUMBER = "number",
+	TAG = "tag",
+	DATE = "date",
+	CHECKBOX = "checkbox",
+	MULTI_TAG = "multi-tag",
 }

@@ -20,8 +20,8 @@ import {
 	BOLD_MARKDOWN_PIECES_REGEX,
 	ITALIC_MARKDOWN_PIECES_REGEX,
 } from "../regex";
-import { isNumber, isTag, isDate, isCheckBox } from "../validators";
-import { CONTENT_TYPE } from "src/constants";
+import { isNumber, isDate, isCheckbox } from "../validators";
+import { CellType } from "src/services/appData/state/types";
 
 export const matchBoldMarkdown = (input: string) => {
 	return input.match(BOLD_MARKDOWN_REGEX("g")) || [];
@@ -120,10 +120,10 @@ export const countNumTags = (input: string): number => {
  */
 export const findContentType = (content: string, columnContentType: string) => {
 	if (content === "") return columnContentType;
-	if (columnContentType === CONTENT_TYPE.TEXT) return CONTENT_TYPE.TEXT;
-	if (columnContentType === CONTENT_TYPE.TAG) return CONTENT_TYPE.TAG;
-	if (isNumber(content)) return CONTENT_TYPE.NUMBER;
-	if (isDate(content)) return CONTENT_TYPE.DATE;
-	if (isCheckBox(content)) return CONTENT_TYPE.CHECKBOX;
-	return CONTENT_TYPE.TEXT;
+	if (columnContentType === CellType.TEXT) return CellType.TEXT;
+	if (columnContentType === CellType.TAG) return CellType.TAG;
+	if (isNumber(content)) return CellType.NUMBER;
+	if (isDate(content)) return CellType.DATE;
+	if (isCheckbox(content)) return CellType.CHECKBOX;
+	return CellType.TEXT;
 };

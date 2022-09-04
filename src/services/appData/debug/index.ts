@@ -1,7 +1,7 @@
 import { AppData } from "../state/types";
 import { AppDataStringBuffer } from "../external/saveUtils";
 import { calcColumnCharLengths } from "../external/saveUtils";
-import { CONTENT_TYPE } from "src/constants";
+import { CellType } from "src/services/appData/state/types";
 
 export const logFunc = (
 	componentName: string,
@@ -40,7 +40,7 @@ export const appDataIdsToMarkdown = (data: AppData): string => {
 					cell.rowId === row.id &&
 					cell.headerId === data.headers[i].id
 			);
-			if (cell.type === CONTENT_TYPE.TAG) {
+			if (cell.type === CellType.TAG) {
 				const tagIds = data.tags
 					.filter((tag) => tag.selected.includes(cell.id))
 					.map((tag) => tag.id);

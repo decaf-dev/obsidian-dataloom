@@ -1,36 +1,15 @@
 import { v4 as uuid } from "uuid";
 import CRC32 from "crc-32";
 
-import {
-	BaseCell,
-	NumberCell,
-	TagCell,
-	TextCell,
-	DateCell,
-	CheckBoxCell,
-} from "../state/cell";
 import { initialHeader, initialRow } from "../state/initialState";
 import { Header, Row, AppData, Cell, Tag } from "../state/types";
 
-import {
-	MARKDOWN_CELLS_REGEX,
-	MARKDOWN_ROWS_REGEX,
-	AMPERSAND_CHARACTER_REGEX,
-	LINE_BREAK_CHARACTER_REGEX,
-} from "../../string/regex";
-import { isMarkdownTable, isCheckBoxChecked } from "../../string/validators";
+import { MARKDOWN_CELLS_REGEX, MARKDOWN_ROWS_REGEX } from "../../string/regex";
+import { isMarkdownTable } from "../../string/validators";
 import { stripLinks, sanitizeHTML } from "../../string/strippers";
 import { ViewType } from "../state/saveState";
-import { findContentType } from "../../string/matchers";
+import { initialCell } from "../state/initialState";
 import { getCurrentTimeWithOffset } from "../../random";
-import {
-	parseBoldTags,
-	parseHighlightTags,
-	parseItalicTags,
-	parseUnderlineTags,
-} from "../../string/parsers";
-
-import { AMPERSAND, BREAK_LINE_TAG, CONTENT_TYPE } from "src/constants";
 
 /**
  * Parses data for an individual table.
@@ -121,7 +100,13 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 				//The first time we load the data, set the cell as a text cell
 				//Once we merge the new data with the old data, we can set the cell
 				//types again
-				const cell = findTextCell(uuid(), row.id, headers[j].id, td);
+				const cell = initialCell(
+					uuid(),
+					headers[j].id,
+					row.id,
+					headers[j].type,
+					td
+				);
 				cells.push(cell);
 			});
 
@@ -135,82 +120,4 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 		cells,
 		tags,
 	};
-};
-
-export const findTextCell = (
-	cellId: string,
-	rowId: string,
-	headerId: string,
-	content: string
-) => {
-	content = content.replace(LINE_BREAK_CHARACTER_REGEX("g"), BREAK_LINE_TAG);
-	content = content.replace(AMPERSAND_CHARACTER_REGEX("g"), AMPERSAND);
-
-	content = parseBoldTags(content);
-	content = parseItalicTags(content);
-	content = parseHighlightTags(content);
-	content = parseUnderlineTags(content);
-
-	return new TextCell(cellId, rowId, headerId, content);
-};
-
-export const findNumberCell = (
-	cellId: string,
-	rowId: string,
-	headerId: string,
-	content: string
-) => {
-	return new NumberCell(cellId, rowId, headerId, content);
-};
-
-export const findTagCell = (
-	cellId: string,
-	rowId: string,
-	headerId: string
-) => {
-	return new TagCell(cellId, rowId, headerId);
-};
-
-export const findCheckboxCell = (
-	cellId: string,
-	rowId: string,
-	headerId: string,
-	content: string
-) => {
-	const isChecked = isCheckBoxChecked(content);
-	return new CheckBoxCell(cellId, rowId, headerId, isChecked);
-};
-
-export const findDateCell = (
-	cellId: string,
-	rowId: string,
-	headerId: string,
-	content: string
-) => {
-	const date = content === "" ? null : new Date(content);
-	return new DateCell(cellId, rowId, headerId, date);
-};
-
-export const findNewCell = (
-	cellId: string,
-	rowId: string,
-	headerId: string,
-	headerType: string,
-	content = ""
-) => {
-	const cellType = findContentType(content, headerType);
-	switch (cellType) {
-		case CONTENT_TYPE.TEXT:
-			return findTextCell(cellId, rowId, headerId, content);
-		case CONTENT_TYPE.NUMBER:
-			return findNumberCell(cellId, rowId, headerId, content);
-		case CONTENT_TYPE.TAG:
-			return findTagCell(cellId, rowId, headerId);
-		case CONTENT_TYPE.DATE:
-			return findDateCell(cellId, rowId, headerId, content);
-		case CONTENT_TYPE.CHECKBOX:
-			return findCheckboxCell(cellId, rowId, headerId, content);
-		default:
-			return new BaseCell(cellId, rowId, headerId);
-	}
 };

@@ -13,6 +13,10 @@ Want to support development?
 <a href="
 https://www.buymeacoffee.com/treywallis"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=treywallis&button_colour=6a8695&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00"></a>
 
+## Version 4.3.1
+
+-   Type switching now works without any data loss. Fixes [#196](https://github.com/trey-wallis/obsidian-notion-like-tables/issues/196)
+
 ## Version 4.3.0
 
 -   Updated table replacement algorithm. This should fix any tables in which the markdown wasn't updating
@@ -194,10 +198,6 @@ When wrap overflow is disabled the text will cut off at the column width and cre
 ## Undoing Changes
 
 NLTs does not currently have built in history. If you need to undo changes, go to editing mode and undo markdown changes using `ctrl+z` (or `option-z` on mac). Then go back to reading mode.
-
-## Errors
-
-A cell error will occur if you enter data which doesn't match the column content type. You can correct this error by clicking on the cell and entering in data that matches the column content type.
 
 ## Custom Themes
 

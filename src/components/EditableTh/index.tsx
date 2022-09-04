@@ -10,6 +10,7 @@ import { CSS_MEASUREMENT_PIXEL_REGEX } from "src/services/string/regex";
 import { numToPx, pxToNum } from "src/services/string/parsers";
 import { MIN_COLUMN_WIDTH_PX } from "src/constants";
 import { SortDir } from "src/services/sort/types";
+import { CellType } from "src/services/appData/state/types";
 interface Props {
 	id: string;
 	index: number;
@@ -24,7 +25,7 @@ interface Props {
 	onMoveColumnClick: (id: string, moveRight: boolean) => void;
 	onSortSelect: (id: string, sortDir: SortDir) => void;
 	onInsertColumnClick: (id: string, insertRight: boolean) => void;
-	onTypeSelect: (id: string, type: string) => void;
+	onTypeSelect: (id: string, type: CellType) => void;
 	onDeleteClick: (id: string) => void;
 	onSaveClick: (id: string, content: string) => void;
 	onWidthChange: (id: string, width: string) => void;

@@ -1,8 +1,8 @@
 import { findAppData } from "./loadUtils";
 import { updateAppDataFromSavedState } from "./merge";
-import { CONTENT_TYPE } from "src//constants";
-import { SortDir } from "src//services/sort/types";
-import { mockParsedTable } from "src//services/appData/mock";
+import { CellType } from "src/services/appData/state/types";
+import { SortDir } from "src/services/sort/types";
+import { mockParsedTable } from "src/services/appData/mock";
 
 describe("updateAppDataFromSavedState", () => {
 	it("merges new header content", () => {
@@ -27,8 +27,8 @@ describe("updateAppDataFromSavedState", () => {
 
 		const merged = updateAppDataFromSavedState(oldAppData, newAppData);
 		//Check content
-		expect(merged.cells[0].toString()).toEqual("Updated 1");
-		expect(merged.cells[1].toString()).toEqual("Updated 2");
+		expect(merged.cells[0].content).toEqual("Updated 1");
+		expect(merged.cells[1].content).toEqual("Updated 2");
 	});
 
 	it("merges updated column type", () => {
@@ -38,8 +38,8 @@ describe("updateAppDataFromSavedState", () => {
 		const newAppData = findAppData(parsedTable);
 
 		const merged = updateAppDataFromSavedState(oldAppData, newAppData);
-		expect(merged.headers[0].type).toEqual(CONTENT_TYPE.TEXT);
-		expect(merged.headers[1].type).toEqual(CONTENT_TYPE.TEXT);
+		expect(merged.headers[0].type).toEqual(CellType.TEXT);
+		expect(merged.headers[1].type).toEqual(CellType.TEXT);
 	});
 
 	it("merges tag colors", () => {

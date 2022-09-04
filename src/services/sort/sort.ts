@@ -1,5 +1,5 @@
 import { SortDir } from "./types";
-import { CONTENT_TYPE } from "src/constants";
+import { CellType } from "src/services/appData/state/types";
 import { Row, AppData } from "../appData/state/types";
 
 export const sortRows = (appData: AppData): Row[] => {
@@ -16,8 +16,8 @@ export const sortRows = (appData: AppData): Row[] => {
 		const cellB = appData.cells.find(
 			(cell) => cell.headerId === id && cell.rowId === b.id
 		);
-		const contentA = cellA.toString();
-		const contentB = cellB.toString();
+		const contentA = cellA.content;
+		const contentB = cellB.content;
 
 		if (sortDir !== SortDir.NONE) {
 			//Force empty cells to the bottom
@@ -27,7 +27,7 @@ export const sortRows = (appData: AppData): Row[] => {
 		}
 
 		if (sortDir === SortDir.ASC) {
-			if (type === CONTENT_TYPE.TAG) {
+			if (type === CellType.TAG) {
 				const tagA = appData.tags.find((tag) =>
 					tag.selected.includes(cellA.id)
 				);
@@ -39,7 +39,7 @@ export const sortRows = (appData: AppData): Row[] => {
 				return contentA.localeCompare(contentB);
 			}
 		} else if (sortDir === SortDir.DESC) {
-			if (type === CONTENT_TYPE.TAG) {
+			if (type === CellType.TAG) {
 				const tagA = appData.tags.find((tag) =>
 					tag.selected.includes(cellA.id)
 				);

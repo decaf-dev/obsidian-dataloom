@@ -8,8 +8,6 @@ import "./styles.css";
 interface Props {
 	menuId: string;
 	isOpen: boolean;
-	useAutoWidth: boolean;
-	shouldWrapOverflow: boolean;
 	style: {
 		top: string;
 		left: string;
@@ -19,20 +17,18 @@ interface Props {
 		minWidth?: string;
 		minHeight?: string;
 	};
-	value: string;
-	onInputChange: (value: string) => void;
+	content: string;
+	onInputChange: (updatedContent: string) => void;
 }
 
 export default function TextCellEdit({
 	menuId,
 	isOpen,
 	style,
-	useAutoWidth,
-	shouldWrapOverflow,
-	value,
+	content,
 	onInputChange,
 }: Props) {
-	const inputRef = useTextareaRef(isOpen, value);
+	const inputRef = useTextareaRef(isOpen, content);
 
 	function handleTextareaChange(value: string) {
 		value = value.replace("\n", "");
@@ -45,7 +41,7 @@ export default function TextCellEdit({
 				className="NLT__textarea"
 				ref={inputRef}
 				autoFocus
-				value={value}
+				value={content}
 				onChange={(e) => handleTextareaChange(e.target.value)}
 			/>
 		</Menu>

@@ -2,10 +2,10 @@ import { v4 as uuid } from "uuid";
 
 import { initialTag } from "../state/initialState";
 import { AppData } from "../state/types";
-import { findNewCell } from "./loadUtils";
 import { randomColor } from "../../random";
+import { initialCell } from "../state/initialState";
 
-import { CONTENT_TYPE } from "src/constants";
+import { CellType } from "src/services/appData/state/types";
 
 export const updateAppDataFromSavedState = (
 	oldData: AppData,
@@ -27,13 +27,12 @@ export const updateAppDataFromSavedState = (
 	});
 
 	newData.cells.forEach((c, i) => {
-		const content = c.toString();
-		const { id, rowId, headerId } = c;
+		const { id, rowId, headerId, content } = c;
 		const header = newData.headers.find((header) => header.id === headerId);
-		const cell = findNewCell(id, rowId, headerId, header.type, content);
+		const cell = initialCell(id, headerId, rowId, header.type, content);
 		updated.cells[i] = cell;
 
-		if (cell.type === CONTENT_TYPE.TAG) {
+		if (cell.type === CellType.TAG) {
 			//Check if tag already exists, otherwise create a new
 			const index = updated.tags.findIndex(
 				(tag) => tag.content === content

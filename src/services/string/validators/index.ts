@@ -37,7 +37,7 @@ export const isDate = (input: string): boolean => {
 	return (input.match(DATE_REGEX) || []).length !== 0;
 };
 
-export const isCheckBox = (input: string): boolean => {
+export const isCheckbox = (input: string): boolean => {
 	return (input.match(CHECKBOX_REGEX) || []).length !== 0;
 };
 
@@ -45,7 +45,7 @@ export const isTag = (input: string): boolean => {
 	return (input.match(TAG_REGEX) || []).length !== 0;
 };
 
-export const isCheckBoxChecked = (input: string): boolean => {
+export const isCheckboxChecked = (input: string): boolean => {
 	return (input.match(CHECKBOX_CHECKED_REGEX) || []).length !== 0;
 };
 
