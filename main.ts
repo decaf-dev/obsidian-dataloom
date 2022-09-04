@@ -63,7 +63,7 @@ export default class NltPlugin extends Plugin {
 			}
 		});
 
-		this.addSettingTab(new NltSettingsTab(this.app, this));
+		// this.addSettingTab(new NltSettingsTab(this.app, this));
 		this.registerCommands();
 		this.registerEvents();
 	}

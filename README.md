@@ -2,44 +2,70 @@
 
 [![Active Development](https://img.shields.io/badge/Maintenance%20Level-Actively%20Developed-brightgreen.svg)](https://gist.github.com/cheerfulstoic/d107229326a01ff0f333a1d3476e068d)
 
-Obsidian Notion-Like Tables allows you to create markdown tables using an interface similar to that found in Notion.so.
+Obsidian Notion-Like Tables allows you to manage markdown tables using a WYSIWYG interface. The plugin supports editing of vanilla table markdown offering features such as editing cells, sorting, deleting, and adding new rows and columns.
+
+As plugin development continues, the goal is to add many of the features found in Notion.so.
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/preview.png)
 
-## What's New?
+Want to support development?
 
-### Version 4.2.0
+<a href="
+https://www.buymeacoffee.com/treywallis"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=treywallis&button_colour=6a8695&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00"></a>
 
-This update includes major bug fixes for column sorting. Sorting is now completely stable. In order to facilitate this update, the options to "Move Up", "Move Down", "Insert Above", or "Insert Below" on a row are hidden if sorting is enabled on any column in the table. If you would like to use these options to manually sort your table, please set the sorted column to the "Default" sorting setting.
+## Version 4.3.0
 
-To make this more clear, an option bar has been added above the table. When you make a sort selection on a column, a sort bubble will appear in the option bar indicating which column is being sorted.
+-   Updated table replacement algorithm. This should fix any tables in which the markdown wasn't updating
+-   Enabled multi-table support for files
+    -   To accomodate this feature, NLT tables are now an "opt-in" feature for markdown tables and require a block id to render.
+    -   See: [Settings](#Settings))
+-   Removed excluded files setting
+-   Removed default sorting of rows
+-   Sorting rows will now sort the source markdown
 
-The excluded files setting now uses a textarea instead of a input field. Thank you to [Mara-Li](https://github.com/Mara-Li) for your contribution.
+Current limitations in 4.3.0 include:
 
-Thank you everyone for your continued support and appreciation.
+-   No live preview support (to be fixed in 4.4.0)
 
-Current limitations in 4.2.0 include:
+## About
 
--   Only 1 table per file is currently supported (to be fixed in 4.3.0)
--   Live preview support is currently disabled (to be fixed in 4.4.0)
+-   [Installation](#installation)
+-   [Basic usage](#basic-usage)
+-   [Hotkeys](#hotkeys)
+-   [Header menu](#header-menu)
+-   [Cell types](#cell-types)
+-   [Markdown support](#markdown-support)
+-   [Column resizing](#column-resizing)
+-   [Copying cell content](#copying-cell-content)
+-   [Undoing changes](#undoing-changes)
+-   [Custom themes](#custom-themes)
+-   [Contributing](#contributing)
+-   [License](#license)
 
-## Usage
+## Installation
 
-### Markdown Tables
+-   Go to `Community plugins` and turn off `Safe mode`
+-   Under community plugins search for `Notion-Like Tables` and click `Install`, then `Enable`
 
-Obsidian markdown tables will automatically be rendered as Notion-Like tables. If you wish to exclude tables from becoming Notion-like tables, you can do so in the settings menu. See [Settings](#Settings)) below for more information.
+## Basic Usage
 
-### Hotkeys
+Notion Like Tables are an opt-in feature. To render a markdown table as a Notion-Like Table, you must add a block id to your existing table. This id must be placed 1 or 2 spaces below the last table line.
 
--   Add a new NLT markdown table
-    -   `ctrl + shift + +` (Windows) (Press + once)
-    -   `cmd + shift + +` (Mac)
--   Add a new column to a focused table
-    -   `ctrl + shift + \` (Windows)
-    -   `cmd + shift + \ ` (Mac)
--   Add a new row to a focused table
-    -   `ctrl + shift + enter` (Windows)
-    -   `cmd + shift + enter` (Mac)
+A block id is a string that starts with carrot `^` and can having any number of characters.
+
+```markdown
+| Column 1 |
+| -------- |
+
+^abc123
+```
+
+```markdown
+| Column 1 |
+| -------- |
+
+^abc123
+```
 
 ### Making a Table via Command
 
@@ -51,25 +77,37 @@ Toggle to reading mode and the table will automatically render.
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/add-table-command.png)
 
-### Headers
+## Hotkeys
+
+-   Add a new NLT markdown table
+    -   `ctrl + shift + +` (Windows) (Press + once)
+    -   `cmd + shift + +` (Mac)
+-   Add a new column to a focused table
+    -   `ctrl + shift + \` (Windows)
+    -   `cmd + shift + \ ` (Mac)
+-   Add a new row to a focused table
+    -   `ctrl + shift + enter` (Windows)
+    -   `cmd + shift + enter` (Mac)
+
+## Header Menu
 
 Click on a header name to view the header menu. In the header menu you can rename the header, sort your column values or change the column content type.
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/header.png)
 
-### Cells
+## Cell Types
 
 To edit a cell, just click on it. An textarea or menu will appear which will allow you to edit the cell's content. Make the necessary changes and then click outside the box or press enter to save the text. Notion-Like tables will automatically handle updating your markdown.
 
-#### Text Cells
+### Text Cell
 
 Text can be rendered in cells that are in a column with the `text` content type selected.
 
-#### Number Cells
+### Number Cell
 
 Numbers can be rendered in cells that are in a column with the `number` content type selected. A valid number only includes digits 0-9
 
-#### Tag Cells
+### Tag Cell
 
 Tags can be rendered in cells that are in a column with the `tag` content type selected.
 
@@ -77,13 +115,19 @@ Tags have a special notion-like menu that will appear. Tags are scoped to each c
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/tag-menu.png)
 
-#### Date Cells
+#### Tag Colors
+
+Once a tag has been added to a cell, you click on any cell that has that tag and then click on the horizontal menu button to the side of the tag name. A menu will then pop up through which you can change the tag color.
+
+### Date Cell
 
 Dates can be rendered in cells that are in a column with the `date` content type selected. To render a date please follow the format `yyyy/mm/dd` in your markdown.
 
-#### Checkbox Cells
+### Checkbox Cell
 
 Checkboxes can be rendered in cells that are in a column with the `checkbox` content type selected. To render a checkbox, add two square brackets with a space `[ ]` for unchecked or two square brackets surrounding an x `[x]` for checked.
+
+## Markdown Support
 
 ### Emphasis
 
@@ -123,19 +167,15 @@ Line breaks can be added using the break line HTML tag `<br>`. For example, if y
 
 `This is my text<br><br>There is now a line between us`
 
-### Tag Colors
-
-Once a tag has been added to a cell, you click on any cell that has that tag and then click on the horizontal menu button to the side of the tag name. A menu will then pop up through which you can change the tag color.
-
-### Copy Cell Content
+## Copying Cell Content
 
 Right click a cell and its content will be added to your clipboard.
 
 NOTE: The table must be in focus for this to work. Click on the table to focus it.
 
-### Column Resizing
+## Column Resizing
 
-#### Auto Width
+### Auto Width
 
 Text and number cells have an option for `Auto Width`. Auto width means that the column will automatically resize to the largest width of the cell.
 
@@ -143,11 +183,11 @@ Please note that this will calculate the maximum length of the text without wrap
 
 This feature can be enabled by clicking on a header, clicking "Edit" and then clicking the toggle for `Auto Width`.
 
-#### Manually Resizing
+### Manually Resizing
 
 When auto width is disabled, you have the option to manually size a column. You can do this by hovering your mouse over a header's right border. Your cursor will then show a resize indicator and you can click and drag until you set the desired length.
 
-#### Wrap Overflow
+### Wrap Overflow
 
 With auto width disabled, you have the option to set the behavior of the text on overflow. This property is known as `Wrap Overflow`.
 
@@ -155,42 +195,22 @@ When wrap overflow is enabled the text will wrap once it reaches the width of th
 
 When wrap overflow is disabled the text will cut off at the column width and create an ellipsis (...)
 
-### Undoing Changes
+## Undoing Changes
 
-NLTs does not currently have built in history. If you need to undo changes, go to editing mode and undo markdown changes using `ctrl+z` (or `option-z`on mac). Then go back to reading mode.
+NLTs does not currently have built in history. If you need to undo changes, go to editing mode and undo markdown changes using `ctrl+z` (or `option-z` on mac). Then go back to reading mode.
 
-### Errors
+## Errors
 
 A cell error will occur if you enter data which doesn't match the column content type. You can correct this error by clicking on the cell and entering in data that matches the column content type.
-
-## Settings
-
-Settings can be found by opening the Obsidian settings menu and then scrolling down to `Notion-Like Tables`
-
-### Excluded Tables
-
-If you would like to exclude a table from being rendered as a Notion-Like table, you can specify the file path for the note that contains the table. Please note that this file path must include any folders starting from the root folder. e.g. `/folder1/folder2/note.md`
-
-Please note that the `.md` extension is required for the file name of the note in the path.
-
-Different path names must be separated with a comma: `/note1.md,/folder/note2.md`
 
 ## Custom Themes
 
 NLT tables uses normal table semantic elements (`table`, `th`, `tr`, `td`, etc) to render. If you wish to edit the display of the table, just style those elements in your CSS.
 
-## Bugs and Feature Requests
+## Contributing
 
 If you find a bug or would like to suggest a feature, please open an issue [here](https://github.com/trey-wallis/obsidian-notion-like-tables/issues). I will try to respond as soon as possible.
-
-## Support Plugin Development
-
--   I have a lot of features that I am excited to add to this plugin. If you would like to help support plugin development, you can [buy me an herbal tea](https://www.buymeacoffee.com/treywallis) ;)
 
 ## License
 
 -   GNU GPLv3
-
-## Author
-
--   Trey Wallis
