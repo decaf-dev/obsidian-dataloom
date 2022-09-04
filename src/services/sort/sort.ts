@@ -16,8 +16,8 @@ export const sortRows = (appData: AppData): Row[] => {
 		const cellB = appData.cells.find(
 			(cell) => cell.headerId === id && cell.rowId === b.id
 		);
-		const contentA = cellA.toString();
-		const contentB = cellB.toString();
+		const contentA = cellA.content;
+		const contentB = cellB.content;
 
 		if (sortDir !== SortDir.NONE) {
 			//Force empty cells to the bottom

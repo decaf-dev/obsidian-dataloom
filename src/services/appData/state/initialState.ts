@@ -1,7 +1,7 @@
 import { CONTENT_TYPE } from "../../../constants";
 import { SortDir } from "../../sort/types";
 
-import { Header, Row, Tag } from "./types";
+import { Cell, Header, Row, Tag } from "./types";
 
 export const initialHeader = (id: string, content: string): Header => {
 	return {
@@ -19,6 +19,23 @@ export const initialRow = (id: string, creationTime: number): Row => {
 	return {
 		id,
 		creationTime,
+	};
+};
+
+export const initialCell = (
+	id: string,
+	headerId: string,
+	rowId: string,
+	type: string, //TODO add type
+	content: string
+): Cell => {
+	return {
+		id,
+		headerId,
+		rowId,
+		type,
+		content,
+		previousContent: "",
 	};
 };
 

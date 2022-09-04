@@ -8,8 +8,8 @@ import OptionBar from "./components/OptionBar";
 
 import {
 	initialHeader,
-	initialRow,
 	initialTag,
+	initialCell,
 } from "./services/appData/state/initialState";
 import { Cell, AppData, Tag } from "./services/appData/state/types";
 import { saveAppData } from "./services/appData/external/save";
@@ -21,10 +21,7 @@ import "./app.css";
 import NltPlugin from "main";
 import { SortDir } from "./services/sort/types";
 import { addRow, addColumn } from "./services/appData/internal/add";
-import {
-	findCurrentViewType,
-	findNewCell,
-} from "./services/appData/external/loadUtils";
+import { findCurrentViewType } from "./services/appData/external/loadUtils";
 import { v4 as uuid } from "uuid";
 import { logFunc } from "./services/appData/debug";
 import {
@@ -172,11 +169,11 @@ export default function App({
 		saveData();
 	}
 
-	function handleHeaderTypeSelect(id: string, cellType: string) {
+	function handleHeaderTypeSelect(id: string, selectedCellType: string) {
 		if (DEBUG.APP) console.log("[App]: handleHeaderTypeSelect called.");
 		//If same header type return
 		const header = appData.headers.find((header) => header.id === id);
-		if (header.type === cellType) return;
+		if (header.type === selectedCellType) return;
 
 		//Handle tags
 		setAppData((prevState) => {
@@ -184,19 +181,18 @@ export default function App({
 				...prevState,
 				//Update header to new cell type
 				headers: prevState.headers.map((header) => {
-					if (id === header.id) return { ...header, type: cellType };
+					if (id === header.id)
+						return { ...header, type: selectedCellType };
 					return header;
 				}),
 				cells: prevState.cells.map((cell: Cell) => {
 					if (cell.headerId === id) {
-						let content = cell.toString();
-						if (cellType === CONTENT_TYPE.CHECKBOX) content = "[ ]";
-						return findNewCell(
+						return initialCell(
 							cell.id,
-							cell.rowId,
 							cell.headerId,
-							cellType,
-							content
+							cell.rowId,
+							selectedCellType,
+							cell.content
 						);
 					}
 					return cell;
@@ -227,8 +223,7 @@ export default function App({
 	function handleCellContentChange(
 		id: string,
 		headerType: string,
-		content: any,
-		isCheckbox = false
+		content: string
 	) {
 		if (DEBUG.APP) {
 			logFunc(COMPONENT_NAME, "handleCellContentChange", {
@@ -248,10 +243,10 @@ export default function App({
 						//is based off of the actual cell content string.
 						//Each time we update the content value, we want to recalculate the
 						//content type.
-						return findNewCell(
+						return initialCell(
 							cell.id,
-							cell.rowId,
 							cell.headerId,
+							cell.rowId,
 							headerType,
 							content
 						);
@@ -260,11 +255,6 @@ export default function App({
 				}),
 			};
 		});
-
-		//TODO refactor
-		if (isCheckbox) {
-			sortData();
-		}
 	}
 
 	function handleAddTag(
@@ -433,11 +423,12 @@ export default function App({
 			const headerToInsert = initialHeader(uuid(), "New Column");
 
 			const cells = prevState.rows.map((row) =>
-				findNewCell(
+				initialCell(
 					uuid(),
-					row.id,
 					headerToInsert.id,
-					headerToInsert.type
+					row.id,
+					headerToInsert.type,
+					""
 				)
 			);
 
@@ -566,7 +557,7 @@ export default function App({
 				(header) => header.id === cell.headerId
 			);
 			const { width, height } = measureElement(
-				cell.toString(),
+				cell.content,
 				header.useAutoWidth,
 				header.width,
 				header.shouldWrapOverflow

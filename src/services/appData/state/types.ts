@@ -27,8 +27,8 @@ export interface Cell {
 	rowId: string;
 	headerId: string;
 	type: string;
-	toString: () => string;
-	length: () => number;
+	content: string;
+	previousContent: string;
 }
 
 export interface Tag {

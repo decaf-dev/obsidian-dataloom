@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { Notice } from "obsidian";
 import TextCell from "../TextCell";
 import TagCell from "../TagCell";
-import ErrorCell from "../ErrorCell";
 import CheckboxCell from "../CheckboxCell";
 import DateCell from "../DateCell";
 import NumberCell from "../NumberCell";
@@ -43,8 +42,7 @@ interface Props {
 	onContentChange: (
 		cellId: string,
 		headerType: string,
-		content: any,
-		isCheckbox: boolean
+		content: string
 	) => void;
 	onAddTag: (
 		cellId: string,
@@ -78,7 +76,7 @@ export default function EditableTd({
 	const [tagInputText, setTagInputText] = useState("");
 	const [tagColor] = useState(randomColor());
 	const menuId = useId();
-	const content = cell.toString();
+	const content = cell.content;
 
 	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
 		useMenuId(menuId);
@@ -171,31 +169,28 @@ export default function EditableTd({
 	}
 
 	function handleTextInputChange(value: string) {
-		onContentChange(id, headerType, value, false);
+		onContentChange(id, headerType, value);
 		setContentUpdate(true);
 	}
 
 	function handleNumberInputChange(value: string) {
-		onContentChange(id, headerType, value, false);
+		onContentChange(id, headerType, value);
 		setContentUpdate(true);
 	}
 
 	function handleDateChange(date: Date) {
 		const content = dateToString(date);
-		onContentChange(id, headerType, content, false);
+		onContentChange(id, headerType, content);
 		setContentUpdate(true);
 	}
 
 	function handleCheckboxChange(isChecked: boolean) {
 		//TODO replace with constant
 		let content = isChecked ? "[x]" : "[ ]";
-		onContentChange(id, headerType, content, true);
+		onContentChange(id, headerType, content);
 	}
 
 	function renderCell(): React.ReactNode {
-		if (isInvalidContent) {
-			return <ErrorCell expectedType={headerType} type={type} />;
-		}
 		switch (type) {
 			case CONTENT_TYPE.TEXT:
 				return (

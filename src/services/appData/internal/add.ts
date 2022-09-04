@@ -1,14 +1,12 @@
 import { AppData, Tag } from "../state/types";
-import { initialHeader, initialRow } from "../state/initialState";
-import { CONTENT_TYPE } from "src/constants";
-import { findNewCell } from "../external/loadUtils";
+import { initialCell, initialHeader, initialRow } from "../state/initialState";
 import { v4 as uuid } from "uuid";
 
 export const addRow = (data: AppData): AppData => {
 	const rowId = uuid();
 	const tags: Tag[] = [];
 	const cells = data.headers.map((header, i) => {
-		return findNewCell(uuid(), rowId, header.id, header.type);
+		return initialCell(uuid(), header.id, rowId, header.type, "");
 	});
 	return {
 		...data,
@@ -22,7 +20,7 @@ export const addColumn = (data: AppData): AppData => {
 	const header = initialHeader(uuid(), "New Column");
 	const cells = [...data.cells];
 	data.rows.forEach((row) => {
-		cells.push(findNewCell(uuid(), row.id, header.id, CONTENT_TYPE.TEXT));
+		cells.push(initialCell(uuid(), header.id, row.id, header.type, ""));
 	});
 	return {
 		...data,
