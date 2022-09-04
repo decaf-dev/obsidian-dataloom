@@ -66,6 +66,8 @@ A block id is a string that starts with carrot `^` and can having any number of 
 ^abc123
 ```
 
+Once you add a block item, you will have to restart Obsidian for it to appear.
+
 ### Making a Table via Command
 
 To quickly make a table you can use the add table command. Press `cmd + p` on your keyboard search "Add table".

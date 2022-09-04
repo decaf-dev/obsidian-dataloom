@@ -69,7 +69,8 @@ export default function App({
 	useCloseMenusOnScroll("markdown-preview-view");
 	useCloseMenusOnScroll("NLT__table-wrapper");
 
-	useEffect(() => {
+	useDidMountEffect(() => {
+		//TODO handle when a user clicks the same option
 		setAppData((prevState) => {
 			return {
 				...prevState,
@@ -77,6 +78,7 @@ export default function App({
 			};
 		});
 		forcePositionUpdate();
+		saveData();
 	}, [sortTime]);
 
 	useDidMountEffect(() => {
