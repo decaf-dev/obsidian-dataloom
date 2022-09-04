@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { Notice } from "obsidian";
 import TextCell from "../TextCell";
 import TagCell from "../TagCell";
-import ErrorCell from "../ErrorCell";
 import CheckboxCell from "../CheckboxCell";
 import DateCell from "../DateCell";
 import NumberCell from "../NumberCell";
@@ -13,14 +12,12 @@ import TagCellEdit from "../TagCellEdit";
 import DateCellEdit from "../DateCellEdit";
 
 import { randomColor } from "src/services/random";
-import { Cell, Tag } from "src/services/appData/state/types";
-import { isDate } from "src/services/string/validators";
+import { Cell, Tag, CellType } from "src/services/appData/state/types";
 
 import "./styles.css";
 
-import { CONTENT_TYPE, DEBUG } from "../../constants";
+import { DEBUG } from "../../constants";
 import { useDidMountEffect, useId } from "src/services/hooks";
-import { dateToString } from "src/services/string/parsers";
 import { logFunc } from "src/services/appData/debug";
 import { useMenuId } from "src/components/MenuProvider";
 import { usePositionRef } from "src/services/hooks";
@@ -43,8 +40,8 @@ interface Props {
 	onContentChange: (
 		cellId: string,
 		headerType: string,
-		content: any,
-		isCheckbox: boolean
+		updatedContent: string,
+		saveOnChange?: boolean
 	) => void;
 	onAddTag: (
 		cellId: string,
@@ -78,7 +75,7 @@ export default function EditableTd({
 	const [tagInputText, setTagInputText] = useState("");
 	const [tagColor] = useState(randomColor());
 	const menuId = useId();
-	const content = cell.toString();
+	const content = cell.content;
 
 	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
 		useMenuId(menuId);
@@ -91,8 +88,6 @@ export default function EditableTd({
 	const { id, headerId, type } = cell;
 
 	const [wasContentUpdated, setContentUpdate] = useState(false);
-
-	const isInvalidContent = type !== headerType;
 
 	//If we've already mounted, meaning the application has loaded
 	//and we updated a tag, then we will wait for it to update,
@@ -116,7 +111,7 @@ export default function EditableTd({
 				isMenuRequestingClose,
 			});
 		if (isMenuRequestingClose) {
-			if (headerType === CONTENT_TYPE.TAG) {
+			if (headerType === CellType.TAG) {
 				if (tagInputText !== "") {
 					const tag = tags.find(
 						(tag) => tag.content === tagInputText
@@ -170,61 +165,55 @@ export default function EditableTd({
 		onTagClick(id, tagId);
 	}
 
-	function handleTextInputChange(value: string) {
-		onContentChange(id, headerType, value, false);
+	function handleTextInputChange(updatedContent: string) {
+		onContentChange(id, headerType, updatedContent);
 		setContentUpdate(true);
 	}
 
-	function handleNumberInputChange(value: string) {
-		onContentChange(id, headerType, value, false);
+	function handleNumberInputChange(updatedContent: string) {
+		onContentChange(id, headerType, updatedContent);
 		setContentUpdate(true);
 	}
 
-	function handleDateChange(date: Date) {
-		const content = dateToString(date);
-		onContentChange(id, headerType, content, false);
+	function handleDateChange(updatedContent: string) {
+		onContentChange(id, headerType, updatedContent);
 		setContentUpdate(true);
 	}
 
-	function handleCheckboxChange(isChecked: boolean) {
-		//TODO replace with constant
-		let content = isChecked ? "[x]" : "[ ]";
-		onContentChange(id, headerType, content, true);
+	function handleCheckboxChange(updatedContent: string) {
+		onContentChange(id, headerType, updatedContent, true);
 	}
 
 	function renderCell(): React.ReactNode {
-		if (isInvalidContent) {
-			return <ErrorCell expectedType={headerType} type={type} />;
-		}
 		switch (type) {
-			case CONTENT_TYPE.TEXT:
+			case CellType.TEXT:
 				return (
 					<TextCell
-						text={content}
+						content={content}
 						shouldWrapOverflow={shouldWrapOverflow}
 						useAutoWidth={useAutoWidth}
 					/>
 				);
-			case CONTENT_TYPE.NUMBER:
+			case CellType.NUMBER:
 				return (
 					<NumberCell
-						number={content}
+						content={content}
 						shouldWrapOverflow={shouldWrapOverflow}
 						useAutoWidth={useAutoWidth}
 					/>
 				);
-			case CONTENT_TYPE.TAG: {
+			case CellType.TAG: {
 				const tag = tags.find((tag) => tag.selected.includes(id));
 				if (tag)
 					return <TagCell content={tag.content} color={tag.color} />;
 				return <></>;
 			}
-			case CONTENT_TYPE.DATE:
-				return <DateCell text={content} />;
-			case CONTENT_TYPE.CHECKBOX:
+			case CellType.DATE:
+				return <DateCell content={content} />;
+			case CellType.CHECKBOX:
 				return (
 					<CheckboxCell
-						isChecked={content.includes("x")}
+						content={content}
 						onCheckboxChange={handleCheckboxChange}
 					/>
 				);
@@ -235,7 +224,7 @@ export default function EditableTd({
 
 	function renderCellMenu() {
 		switch (headerType) {
-			case CONTENT_TYPE.TEXT:
+			case CellType.TEXT:
 				return (
 					<TextCellEdit
 						menuId={menuId}
@@ -248,13 +237,11 @@ export default function EditableTd({
 							minWidth: "125px",
 							minHeight: "75px",
 						}}
-						useAutoWidth={useAutoWidth}
-						shouldWrapOverflow={shouldWrapOverflow}
-						value={content}
+						content={content}
 						onInputChange={handleTextInputChange}
 					/>
 				);
-			case CONTENT_TYPE.NUMBER:
+			case CellType.NUMBER:
 				return (
 					<NumberCellEdit
 						menuId={menuId}
@@ -266,11 +253,11 @@ export default function EditableTd({
 							}),
 							minWidth: "125px",
 						}}
-						value={content}
+						content={content}
 						onInputChange={handleNumberInputChange}
 					/>
 				);
-			case CONTENT_TYPE.TAG:
+			case CellType.TAG:
 				return (
 					<TagCellEdit
 						cellId={id}
@@ -291,15 +278,13 @@ export default function EditableTd({
 						onTagClick={handleTagClick}
 					/>
 				);
-			case CONTENT_TYPE.DATE:
+			case CellType.DATE:
 				return (
 					<DateCellEdit
 						menuId={menuId}
 						isOpen={isMenuOpen}
 						style={position}
-						selectedDate={
-							isDate(content) ? new Date(content) : new Date()
-						}
+						content={content}
 						onDateChange={handleDateChange}
 					/>
 				);

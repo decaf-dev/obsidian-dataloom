@@ -1,4 +1,9 @@
 import React, { useCallback } from "react";
+import { CellType } from "src/services/appData/state/types";
+import {
+	filterNumberFromContent,
+	isValidCellContent,
+} from "src/services/appData/state/utils";
 
 import Menu from "../Menu";
 
@@ -15,15 +20,15 @@ interface Props {
 		maxWidth?: string;
 		minWidth?: string;
 	};
-	value: string;
-	onInputChange: (value: string) => void;
+	content: string;
+	onInputChange: (updatedContent: string) => void;
 }
 
 export default function NumberCellEdit({
 	menuId,
 	isOpen,
 	style,
-	value,
+	content,
 	onInputChange,
 }: Props) {
 	const inputRef = useCallback((node) => {
@@ -41,6 +46,9 @@ export default function NumberCellEdit({
 		return onInputChange(value);
 	}
 
+	if (!isValidCellContent(content, CellType.NUMBER))
+		content = filterNumberFromContent(content);
+
 	return (
 		<Menu id={menuId} isOpen={isOpen} style={style}>
 			<input
@@ -48,7 +56,7 @@ export default function NumberCellEdit({
 				type="number"
 				ref={inputRef}
 				autoFocus
-				value={value}
+				value={content}
 				onChange={(e) => handleInputChange(e.target.value)}
 			/>
 		</Menu>

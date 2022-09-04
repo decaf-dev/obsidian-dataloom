@@ -23,10 +23,10 @@ describe("findAppData", () => {
 		];
 		const data = findAppData(parsedTable);
 		expect(data.cells.length).toEqual(4);
-		expect(data.cells[0].toString()).toEqual("Cell 1");
-		expect(data.cells[1].toString()).toEqual("Cell 2");
-		expect(data.cells[2].toString()).toEqual("Cell 3");
-		expect(data.cells[3].toString()).toEqual("Cell 4");
+		expect(data.cells[0].content).toEqual("Cell 1");
+		expect(data.cells[1].content).toEqual("Cell 2");
+		expect(data.cells[2].content).toEqual("Cell 3");
+		expect(data.cells[3].content).toEqual("Cell 4");
 	});
 });
 

@@ -8,23 +8,20 @@ import OptionBar from "./components/OptionBar";
 
 import {
 	initialHeader,
-	initialRow,
 	initialTag,
+	initialCell,
 } from "./services/appData/state/initialState";
-import { Cell, AppData, Tag } from "./services/appData/state/types";
+import { Cell, AppData, Tag, CellType } from "./services/appData/state/types";
 import { saveAppData } from "./services/appData/external/save";
 import { numToPx, pxToNum } from "./services/string/parsers";
 
-import { CONTENT_TYPE, DEBUG, MIN_COLUMN_WIDTH_PX } from "./constants";
+import { DEBUG, MIN_COLUMN_WIDTH_PX } from "./constants";
 
 import "./app.css";
 import NltPlugin from "main";
 import { SortDir } from "./services/sort/types";
 import { addRow, addColumn } from "./services/appData/internal/add";
-import {
-	findCurrentViewType,
-	findNewCell,
-} from "./services/appData/external/loadUtils";
+import { findCurrentViewType } from "./services/appData/external/loadUtils";
 import { v4 as uuid } from "uuid";
 import { logFunc } from "./services/appData/debug";
 import {
@@ -35,6 +32,11 @@ import {
 } from "./services/hooks";
 import { sortRows } from "./services/sort/sort";
 import { MarkdownSectionInformation } from "obsidian";
+import {
+	checkboxToString,
+	stringToCheckbox,
+} from "./services/appData/state/utils";
+import { randomColor } from "./services/random";
 
 interface Props {
 	plugin: NltPlugin;
@@ -172,35 +174,67 @@ export default function App({
 		saveData();
 	}
 
-	function handleHeaderTypeSelect(id: string, cellType: string) {
+	function handleHeaderTypeSelect(id: string, selectedCellType: CellType) {
 		if (DEBUG.APP) console.log("[App]: handleHeaderTypeSelect called.");
-		//If same header type return
 		const header = appData.headers.find((header) => header.id === id);
-		if (header.type === cellType) return;
+		//If same header type return
+		if (header.type === selectedCellType) return;
 
-		//Handle tags
+		function findUpdatedCellContent(content: string) {
+			if (header.type === CellType.CHECKBOX) {
+				return checkboxToString(content);
+			} else if (selectedCellType === CellType.CHECKBOX) {
+				return stringToCheckbox(content);
+			} else {
+				return content;
+			}
+		}
+
 		setAppData((prevState) => {
+			let arr = [...prevState.tags];
+			prevState.cells.forEach((cell) => {
+				const updatedContent = findUpdatedCellContent(cell.content);
+				if (cell.headerId === header.id) {
+					if (selectedCellType === CellType.TAG) {
+						const tag =
+							arr.find((tag) => tag.content === updatedContent) ||
+							null;
+						if (tag) {
+							tag.selected.push(cell.id);
+						} else {
+							arr.push(
+								initialTag(
+									uuid(),
+									header.id,
+									cell.id,
+									updatedContent,
+									randomColor()
+								)
+							);
+						}
+					} else if (header.type === CellType.TAG) {
+						arr = removeTagReferences(arr, cell.id);
+					}
+				}
+			});
 			return {
 				...prevState,
-				//Update header to new cell type
 				headers: prevState.headers.map((header) => {
-					if (id === header.id) return { ...header, type: cellType };
+					if (id === header.id)
+						return { ...header, type: selectedCellType };
 					return header;
 				}),
 				cells: prevState.cells.map((cell: Cell) => {
 					if (cell.headerId === id) {
-						let content = cell.toString();
-						if (cellType === CONTENT_TYPE.CHECKBOX) content = "[ ]";
-						return findNewCell(
-							cell.id,
-							cell.rowId,
-							cell.headerId,
-							cellType,
-							content
-						);
+						return {
+							...cell,
+							content: findUpdatedCellContent(cell.content),
+							type: selectedCellType,
+						};
 					}
 					return cell;
 				}),
+				tags: arr,
 			};
 		});
 		saveData();
@@ -227,14 +261,14 @@ export default function App({
 	function handleCellContentChange(
 		id: string,
 		headerType: string,
-		content: any,
-		isCheckbox = false
+		updatedContent: string,
+		saveOnChange = false
 	) {
 		if (DEBUG.APP) {
 			logFunc(COMPONENT_NAME, "handleCellContentChange", {
 				id,
 				headerType,
-				content,
+				updatedContent,
 			});
 		}
 
@@ -243,28 +277,16 @@ export default function App({
 				...prevState,
 				cells: prevState.cells.map((cell: Cell) => {
 					if (cell.id === id) {
-						//While a column's content type is chosen by the user
-						//in the header menu. The cell content type
-						//is based off of the actual cell content string.
-						//Each time we update the content value, we want to recalculate the
-						//content type.
-						return findNewCell(
-							cell.id,
-							cell.rowId,
-							cell.headerId,
-							headerType,
-							content
-						);
+						return {
+							...cell,
+							content: updatedContent,
+						};
 					}
 					return cell;
 				}),
 			};
 		});
-
-		//TODO refactor
-		if (isCheckbox) {
-			sortData();
-		}
+		if (saveOnChange) saveData();
 	}
 
 	function handleAddTag(
@@ -433,11 +455,12 @@ export default function App({
 			const headerToInsert = initialHeader(uuid(), "New Column");
 
 			const cells = prevState.rows.map((row) =>
-				findNewCell(
+				initialCell(
 					uuid(),
-					row.id,
 					headerToInsert.id,
-					headerToInsert.type
+					row.id,
+					headerToInsert.type,
+					""
 				)
 			);
 
@@ -553,7 +576,7 @@ export default function App({
 		headerWidth: string
 	) {
 		//If the content type does not display text, just use the width that we set for the column
-		if (cellType !== CONTENT_TYPE.TEXT && cellType !== CONTENT_TYPE.NUMBER)
+		if (cellType !== CellType.TEXT && cellType !== CellType.NUMBER)
 			return headerWidth;
 		//If we're not using auto width, just use the width that we set for the column
 		if (useAutoWidth) return calculatedWidth;
@@ -566,7 +589,7 @@ export default function App({
 				(header) => header.id === cell.headerId
 			);
 			const { width, height } = measureElement(
-				cell.toString(),
+				cell.content,
 				header.useAutoWidth,
 				header.width,
 				header.shouldWrapOverflow

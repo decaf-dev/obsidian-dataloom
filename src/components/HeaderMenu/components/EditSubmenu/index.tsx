@@ -4,7 +4,7 @@ import Submenu from "../Submenu";
 import Button from "src/components/Button";
 import Switch from "src/components/Switch";
 
-import { CONTENT_TYPE } from "src/constants";
+import { CellType } from "src/services/appData/state/types";
 import Stack from "src/components/Stack";
 
 interface Props {
@@ -46,8 +46,8 @@ export default function EditMenu({
 						onChange={(e) => onHeaderNameChange(e.target.value)}
 					/>
 				</>
-				{(headerType === CONTENT_TYPE.TEXT ||
-					headerType === CONTENT_TYPE.NUMBER) && (
+				{(headerType === CellType.TEXT ||
+					headerType === CellType.NUMBER) && (
 					<>
 						<p className="NLT__label">Auto Width</p>
 						<Switch

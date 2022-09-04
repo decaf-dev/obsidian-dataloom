@@ -1,14 +1,13 @@
 import React from "react";
+import { CellType } from "src/services/appData/state/types";
 
 import { TYPE_ITEMS } from "../../constants";
 import MenuItem from "../MenuItem";
 import Submenu from "../Submenu";
-
-//TODO change content type to string
 interface Props {
 	title: string;
 	headerType: string;
-	onTypeClick: (type: string) => void;
+	onTypeClick: (type: CellType) => void;
 	onBackClick: () => void;
 }
 

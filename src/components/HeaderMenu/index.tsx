@@ -12,6 +12,7 @@ import { SortDir } from "src/services/sort/types";
 import { SUBMENU_ITEM, SubmenuItem } from "./constants";
 
 import "./styles.css";
+import { CellType } from "src/services/appData/state/types";
 
 interface Props {
 	isOpen: boolean;
@@ -31,7 +32,7 @@ interface Props {
 	numHeaders: number;
 	onInsertColumnClick: (id: string, insertRight: boolean) => void;
 	onMoveColumnClick: (id: string, moveRight: boolean) => void;
-	onTypeSelect: (id: string, type: string) => void;
+	onTypeSelect: (id: string, type: CellType) => void;
 	onSortSelect: (id: string, sortDir: SortDir) => void;
 	onHeaderDeleteClick: (id: string) => void;
 	onOutsideClick: (id: string, inputText: string) => void;
@@ -130,7 +131,7 @@ export default function HeaderMenu({
 		onClose();
 	}
 
-	function handleTypeClick(id: string, type: string) {
+	function handleTypeClick(id: string, type: CellType) {
 		onTypeSelect(id, type);
 		onClose();
 	}

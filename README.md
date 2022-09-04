@@ -195,10 +195,6 @@ When wrap overflow is disabled the text will cut off at the column width and cre
 
 NLTs does not currently have built in history. If you need to undo changes, go to editing mode and undo markdown changes using `ctrl+z` (or `option-z` on mac). Then go back to reading mode.
 
-## Errors
-
-A cell error will occur if you enter data which doesn't match the column content type. You can correct this error by clicking on the cell and entering in data that matches the column content type.
-
 ## Custom Themes
 
 NLT tables uses normal table semantic elements to render:
