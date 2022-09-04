@@ -28,18 +28,18 @@ Current limitations in 4.3.0 include:
 
 ## About
 
--   [Installation](#Installation)
--   [Basic usage](#Basic-Usage)
--   [Hotkeys](#Hotkeys)
--   [Header menu](#Header-Menu)
--   [Cell types](#Cell-Types)
--   [Markdown support](#Markdown-Support)
--   [Column resizing](#Column-Resizing)
--   [Copying cell content](#Copying-Cell-Content)
--   [Undoing changes](#Undoing-Changes)
--   [Custom themes](#Custom-Themes)
--   [Contributing](#Contributing)
--   [License](#License)
+-   [Installation](#installation)
+-   [Basic usage](#basic-usage)
+-   [Hotkeys](#hotkeys)
+-   [Header menu](#header-menu)
+-   [Cell types](#cell-types)
+-   [Markdown support](#markdown-support)
+-   [Column resizing](#column-resizing)
+-   [Copying cell content](#copying-cell-content)
+-   [Undoing changes](#undoing-changes)
+-   [Custom themes](#custom-themes)
+-   [Contributing](#contributing)
+-   [License](#license)
 
 ## Installation
 
@@ -208,7 +208,14 @@ A cell error will occur if you enter data which doesn't match the column content
 
 ## Custom Themes
 
-NLT tables uses normal table semantic elements (`table`, `th`, `tr`, `td`, etc) to render. If you wish to edit the display of the table, just style those elements in your CSS.
+NLT tables uses normal table semantic elements to render:
+
+-   `table`
+-   `th`
+-   `tr`
+-   `td`
+
+If you wish to edit the table style, you may stylize these elements in your CSS.
 
 ## Contributing
 
