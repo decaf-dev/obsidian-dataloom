@@ -4,26 +4,12 @@ import CRC32 from "crc-32";
 import { initialHeader, initialRow } from "../state/initialState";
 import { Header, Row, AppData, Cell, Tag } from "../state/types";
 
-import {
-	MARKDOWN_CELLS_REGEX,
-	MARKDOWN_ROWS_REGEX,
-	AMPERSAND_CHARACTER_REGEX,
-	LINE_BREAK_CHARACTER_REGEX,
-} from "../../string/regex";
-import { isMarkdownTable, isCheckboxChecked } from "../../string/validators";
+import { MARKDOWN_CELLS_REGEX, MARKDOWN_ROWS_REGEX } from "../../string/regex";
+import { isMarkdownTable } from "../../string/validators";
 import { stripLinks, sanitizeHTML } from "../../string/strippers";
 import { ViewType } from "../state/saveState";
-import { findContentType } from "../../string/matchers";
 import { initialCell } from "../state/initialState";
 import { getCurrentTimeWithOffset } from "../../random";
-import {
-	parseBoldTags,
-	parseHighlightTags,
-	parseItalicTags,
-	parseUnderlineTags,
-} from "../../string/parsers";
-
-import { AMPERSAND, BREAK_LINE_TAG } from "src/constants";
 
 /**
  * Parses data for an individual table.
@@ -135,28 +121,3 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 		tags,
 	};
 };
-
-// content = content.replace(LINE_BREAK_CHARACTER_REGEX("g"), BREAK_LINE_TAG);
-// content = content.replace(AMPERSAND_CHARACTER_REGEX("g"), AMPERSAND);
-
-// content = parseBoldTags(content);
-// content = parseItalicTags(content);
-// content = parseHighlightTags(content);
-// content = parseUnderlineTags(content);
-
-// 	if (this.isChecked) {
-// 		return "[x]";
-// 	} else {
-// 		return "[ ]";
-// 	}
-
-// 		toString() {
-// 	if (this.date !== null) {
-// 		const day = ("0" + this.date.getDate()).slice(-2);
-// 		const month = ("0" + (this.date.getMonth() + 1)).slice(-2);
-// 		const year = this.date.getFullYear();
-// 		return `${year}/${month}/${day}`;
-// 	} else {
-// 		return "";
-// 	}
-// }
