@@ -15,7 +15,7 @@ https://www.buymeacoffee.com/treywallis"><img src="https://img.buymeacoffee.com/
 
 ## Version 4.3.1
 
--   Type switching now works without any data loss. Fixes [https://github.com/trey-wallis/obsidian-notion-like-tables/issues/196](#196)
+-   Type switching now works without any data loss. Fixes [#196](https://github.com/trey-wallis/obsidian-notion-like-tables/issues/196)
 
 ## Version 4.3.0
 
