@@ -42,7 +42,7 @@ export default class NltPlugin extends Plugin {
 					const lines = text.split("\n");
 					const blockIdRegex = new RegExp(/^\^.+$/);
 					for (let i = 1; i < 3; i++) {
-						if (lines.length >= lineEnd + i) {
+						if (lines.length - 1 >= lineEnd + i) {
 							const line = lines[lineEnd + i];
 							if (line.match(blockIdRegex))
 								blockId = line.split("^")[1];

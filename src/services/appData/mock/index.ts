@@ -65,7 +65,7 @@ export const mockParsedTable = (obj: parsedTable) => {
 	return table;
 };
 
-export const randomTableId = () => {
+export const randomBlockId = () => {
 	const chars =
 		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz012345679";
 	let result = "^";
@@ -83,6 +83,6 @@ export const createEmptyMarkdownTable = (): string => {
 	const rows = [];
 	rows[0] = "| New Column |";
 	rows[1] = "| ---------- |";
-	rows[2] = randomTableId();
+	rows[2] = randomBlockId();
 	return rows.join("\n");
 };
