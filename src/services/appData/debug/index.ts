@@ -1,4 +1,4 @@
-import { TableModel } from "../state/types";
+import { AppData } from "../state/types";
 import { AppDataStringBuffer } from "../external/saveUtils";
 import { calcColumnCharLengths } from "../external/saveUtils";
 import { CONTENT_TYPE } from "src/constants";
@@ -14,7 +14,7 @@ export const logFunc = (
 	if (Object.keys(args).length !== 0) console.log(args);
 };
 
-export const appDataIdsToMarkdown = (data: TableModel): string => {
+export const appDataIdsToMarkdown = (data: AppData): string => {
 	const columnCharLengths = calcColumnCharLengths(data);
 
 	const buffer = new AppDataStringBuffer();
@@ -53,7 +53,7 @@ export const appDataIdsToMarkdown = (data: TableModel): string => {
 	return buffer.toString();
 };
 
-export const appDataTypesToMarkdown = (data: TableModel): string => {
+export const appDataTypesToMarkdown = (data: AppData): string => {
 	const columnCharLengths = calcColumnCharLengths(data);
 
 	const buffer = new AppDataStringBuffer();

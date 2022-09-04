@@ -11,7 +11,7 @@ import {
 	initialRow,
 	initialTag,
 } from "./services/appData/state/initialState";
-import { Cell, TableModel, Tag } from "./services/appData/state/types";
+import { Cell, AppData, Tag } from "./services/appData/state/types";
 import { saveAppData } from "./services/appData/external/save";
 import { numToPx, pxToNum } from "./services/string/parsers";
 
@@ -38,7 +38,7 @@ import { MarkdownSectionInformation } from "obsidian";
 
 interface Props {
 	plugin: NltPlugin;
-	loadedData: TableModel;
+	loadedData: AppData;
 	sourcePath: string;
 	tableIndex: string;
 	sectionInfo: MarkdownSectionInformation;
@@ -55,7 +55,7 @@ export default function App({
 	sectionInfo,
 	el,
 }: Props) {
-	const [appData, setAppData] = useState<TableModel>(loadedData);
+	const [appData, setAppData] = useState<AppData>(loadedData);
 	const tableId = useId();
 	const [tagUpdate, setTagUpdate] = useState({
 		time: 0,
@@ -143,7 +143,7 @@ export default function App({
 
 	function handleAddRow() {
 		if (DEBUG.APP) console.log("[App]: handleAddRow called.");
-		setAppData((prevState: TableModel) => addRow(prevState));
+		setAppData((prevState: AppData) => addRow(prevState));
 		saveData();
 	}
 
@@ -378,7 +378,7 @@ export default function App({
 
 	function handleMoveRowClick(id: string, moveBelow: boolean) {
 		if (DEBUG.APP) console.log("[App]: handleMoveRowClick called.");
-		setAppData((prevState: TableModel) => {
+		setAppData((prevState: AppData) => {
 			const index = prevState.rows.findIndex((row) => row.id === id);
 			//We assume that there is checking to make sure you don't move the first row up or last row down
 			const moveIndex = moveBelow ? index + 1 : index - 1;
@@ -413,7 +413,7 @@ export default function App({
 				width,
 			});
 		}
-		setAppData((prevState: TableModel) => {
+		setAppData((prevState: AppData) => {
 			return {
 				...prevState,
 				headers: prevState.headers.map((header) => {
@@ -433,7 +433,7 @@ export default function App({
 
 	function handleMoveColumnClick(id: string, moveRight: boolean) {
 		if (DEBUG.APP) console.log("[App]: handleMoveColumnClick called.");
-		setAppData((prevState: TableModel) => {
+		setAppData((prevState: AppData) => {
 			const index = prevState.headers.findIndex(
 				(header) => header.id === id
 			);
@@ -454,7 +454,7 @@ export default function App({
 
 	function handleInsertColumnClick(id: string, insertRight: boolean) {
 		if (DEBUG.APP) console.log("[App]: handleInsertColumnClick called.");
-		setAppData((prevState: TableModel) => {
+		setAppData((prevState: AppData) => {
 			const header = prevState.headers.find((header) => header.id === id);
 			const index = prevState.headers.indexOf(header);
 			const insertIndex = insertRight ? index + 1 : index;
@@ -484,7 +484,7 @@ export default function App({
 	function handleInsertRowClick(id: string, insertBelow = false) {
 		if (DEBUG.APP) console.log("[App]: handleHeaderInsertRowClick called.");
 		const rowId = uuid();
-		setAppData((prevState: TableModel) => {
+		setAppData((prevState: AppData) => {
 			const tags: Tag[] = [];
 
 			const cells = prevState.headers.map((header) =>

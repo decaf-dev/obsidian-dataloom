@@ -1,12 +1,12 @@
 import { TabbableElement } from "../appData/state/tabbableElement";
 import { TABBABLE_ELEMENT_TYPE } from "src/constants";
 import { SaveState } from "../appData/state/saveState";
-import { TableModel } from "../appData/state/types";
+import { AppData } from "../appData/state/types";
 
 export interface NltSettings {
 	appData: {
 		[sourcePath: string]: {
-			[tableIndex: string]: TableModel;
+			[tableIndex: string]: AppData;
 		};
 	};
 	state: {

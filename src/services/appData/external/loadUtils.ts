@@ -10,7 +10,7 @@ import {
 	CheckBoxCell,
 } from "../state/cell";
 import { initialHeader, initialRow } from "../state/initialState";
-import { Header, Row, TableModel, Cell, Tag } from "../state/types";
+import { Header, Row, AppData, Cell, Tag } from "../state/types";
 
 import {
 	MARKDOWN_CELLS_REGEX,
@@ -114,7 +114,7 @@ export const hashHeaders = (headers: string[]): number => {
 	);
 };
 
-export const findAppData = (parsedTable: string[][]): TableModel => {
+export const findAppData = (parsedTable: string[][]): AppData => {
 	const headers: Header[] = [];
 	const rows: Row[] = [];
 	const cells: Cell[] = [];

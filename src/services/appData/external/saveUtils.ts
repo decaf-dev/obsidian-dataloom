@@ -1,9 +1,9 @@
-import { TableModel, Cell } from "../state/types";
+import { AppData, Cell } from "../state/types";
 
 import { CONTENT_TYPE } from "src/constants";
 import { BaseCell } from "../state/cell";
 
-export const sortAppDataForSave = (data: TableModel) => {
+export const sortAppDataForSave = (data: AppData) => {
 	const obj = { ...data };
 	obj.rows.sort((a, b) => a.initialIndex - b.initialIndex);
 	return obj;
@@ -14,7 +14,7 @@ export const sortAppDataForSave = (data: TableModel) => {
  * @param data The app data
  * @returns An Obsidian markdown string
  */
-export const appDataToMarkdown = (data: TableModel): string => {
+export const appDataToMarkdown = (data: AppData): string => {
 	const columnCharLengths = calcColumnCharLengths(data);
 	const buffer = new AppDataStringBuffer();
 	buffer.createRow();
@@ -100,7 +100,7 @@ interface ColumnCharLengths {
  * @param tags An array of tags
  * @returns An object containing the calculated lengths
  */
-export const calcColumnCharLengths = (data: TableModel): ColumnCharLengths => {
+export const calcColumnCharLengths = (data: AppData): ColumnCharLengths => {
 	const columnCharLengths: { [columnPosition: number]: number } = [];
 
 	//Check headers

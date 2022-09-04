@@ -1,4 +1,4 @@
-import { TableModel } from "./types";
+import { AppData } from "./types";
 
 export type ViewType = "live-preview" | "reading";
 
@@ -7,7 +7,7 @@ export const VIEW_TYPE = {
 	READING: "reading",
 };
 export interface SaveState {
-	data: TableModel;
+	data: AppData;
 	viewType: ViewType;
 	shouldUpdate: boolean;
 	tableCacheVersion: number;

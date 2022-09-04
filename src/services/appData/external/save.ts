@@ -1,24 +1,34 @@
-import { TableModel } from "../state/types";
-import { appDataToMarkdown } from "./saveUtils";
-import NltPlugin from "../../../../main";
-import { DEBUG } from "src/constants";
-import { ViewType } from "../state/saveState";
-import { CURRENT_TABLE_CACHE_VERSION } from "src/constants";
 import { MarkdownSectionInformation, TFile } from "obsidian";
+
+import NltPlugin from "../../../../main";
+
+import { appDataToMarkdown } from "./saveUtils";
+
+import { ViewType } from "../state/saveState";
+import { AppData } from "../state/types";
+import { CURRENT_TABLE_CACHE_VERSION, DEBUG } from "src/constants";
 
 // const SHOULD_DEBUG = DEBUG.SAVE_APP_DATA;
 
+//TODO optimize in the future?
+//How much weight does this function have?
 export const saveAppData = async (
 	plugin: NltPlugin,
-	data: TableModel,
+	data: AppData,
 	tableIndex: string,
 	sectionInfo: MarkdownSectionInformation,
 	sourcePath: string,
 	viewType: ViewType
 ) => {
 	try {
-		//If changed
 		const markdown = appDataToMarkdown(data);
+
+		if (DEBUG.SAVE_APP_DATA) {
+			console.log("saveAppData");
+			console.log("new table markdown", {
+				markdown,
+			});
+		}
 		const file = plugin.app.workspace.getActiveFile();
 		const fileContent = await plugin.app.vault.cachedRead(file);
 
@@ -31,7 +41,12 @@ export const saveAppData = async (
 			markdown
 		);
 
-		//If changed
+		if (DEBUG.SAVE_APP_DATA) {
+			console.log("updatedContent", {
+				updatedContent,
+			});
+		}
+
 		await updateSettingsCache(
 			plugin,
 			data,
@@ -40,13 +55,13 @@ export const saveAppData = async (
 			viewType
 		);
 
-		await updateFile(plugin, file, updatedContent);
+		await updateFileContent(plugin, file, updatedContent);
 	} catch (err) {
 		console.log(err);
 	}
 };
 
-const updateFile = async (
+const updateFileContent = async (
 	plugin: NltPlugin,
 	file: TFile,
 	updatedContent: string
@@ -56,7 +71,7 @@ const updateFile = async (
 
 const updateSettingsCache = async (
 	plugin: NltPlugin,
-	data: TableModel,
+	data: AppData,
 	sourcePath: string,
 	tableIndex: string,
 	viewType: ViewType

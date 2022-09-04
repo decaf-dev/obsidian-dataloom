@@ -1,10 +1,10 @@
-import { TableModel, Tag } from "../state/types";
+import { AppData, Tag } from "../state/types";
 import { initialHeader, initialRow } from "../state/initialState";
 import { CONTENT_TYPE } from "src/constants";
 import { findNewCell } from "../external/loadUtils";
 import { v4 as uuid } from "uuid";
 
-export const addRow = (data: TableModel): TableModel => {
+export const addRow = (data: AppData): AppData => {
 	const rowId = uuid();
 	const tags: Tag[] = [];
 	const cells = data.headers.map((header, i) => {
@@ -18,7 +18,7 @@ export const addRow = (data: TableModel): TableModel => {
 	};
 };
 
-export const addColumn = (data: TableModel): TableModel => {
+export const addColumn = (data: AppData): AppData => {
 	const header = initialHeader(uuid(), "New Column");
 	const cells = [...data.cells];
 	data.rows.forEach((row) => {

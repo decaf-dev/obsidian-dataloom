@@ -1,9 +1,9 @@
-import { TableModel } from "../state/types";
+import { AppData } from "../state/types";
 import { TabbableElement } from "../state/tabbableElement";
 import { TABBABLE_ELEMENT_TYPE } from "src/constants";
 
 export const findTabbableElement = (
-	data: TableModel,
+	data: AppData,
 	id: string
 ): TabbableElement => {
 	const matrix = findTabbableElementMatrix(data);
@@ -12,7 +12,7 @@ export const findTabbableElement = (
 };
 
 export const findNextTabbableElement = (
-	data: TableModel,
+	data: AppData,
 	id: string
 ): TabbableElement => {
 	const matrix = findTabbableElementMatrix(data);
@@ -20,9 +20,7 @@ export const findNextTabbableElement = (
 	return matrix[(index + 1) % matrix.length];
 };
 
-export const findTabbableElementMatrix = (
-	data: TableModel
-): TabbableElement[] => {
+export const findTabbableElementMatrix = (data: AppData): TabbableElement[] => {
 	const tabbableElementMatrix: TabbableElement[] = [];
 	// data.headers.forEach((header) => {
 	// 	tabbableElementMatrix.push({

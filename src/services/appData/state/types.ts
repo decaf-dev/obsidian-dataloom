@@ -1,9 +1,5 @@
 import { SortDir } from "../../sort/types";
-
-/**
- * Represents the table markdown model. It can be converted to markdown.
- */
-export interface TableModel {
+export interface AppData {
 	headers: Header[];
 	rows: Row[];
 	cells: Cell[];
@@ -13,9 +9,9 @@ export interface TableModel {
 export interface Header {
 	id: string;
 	content: string;
-	sortDir: SortDir;
-	sortName?: string; //Deprecated in 4.1.2
-	width: string;
+	sortDir: SortDir; //render only
+	sortName?: string; //Deprecated in 4.1.2 //render only
+	width: string; //render only
 	type: string;
 	useAutoWidth: boolean;
 	shouldWrapOverflow: boolean;
@@ -43,15 +39,3 @@ export interface Tag {
 	color: string;
 	selected: string[];
 }
-
-/**
- * This represent a state that is able to saved in the settings cache
- */
-export interface TableSettings {
-	columns: ColumnSettings[];
-	tag: TagSettings[];
-}
-
-export interface ColumnSettings {}
-
-export interface TagSettings {}

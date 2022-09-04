@@ -2,7 +2,7 @@ import { useRef } from "react";
 
 import { SortDir } from "./types";
 import { CONTENT_TYPE } from "src/constants";
-import { Row, Header, TableModel } from "../appData/state/types";
+import { Row, Header, AppData } from "../appData/state/types";
 
 interface SortedRows {
 	sortDir: SortDir;
@@ -10,7 +10,7 @@ interface SortedRows {
 }
 
 export const useSortedRows = (
-	appData: TableModel,
+	appData: AppData,
 	sortTime: number
 ): SortedRows => {
 	//Sort on mount
@@ -42,7 +42,7 @@ export const useSortedRows = (
 };
 
 export const sortRows = (
-	appData: TableModel,
+	appData: AppData,
 	sortedHeader: Header
 ): SortedRows => {
 	const arr = [...appData.rows];
