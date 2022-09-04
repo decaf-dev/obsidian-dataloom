@@ -18,9 +18,8 @@ https://www.buymeacoffee.com/treywallis"><img src="https://img.buymeacoffee.com/
 -   Updated table replacement algorithm. This should fix any tables in which the markdown wasn't updating
 -   Enabled multi-table support for files
     -   To accomodate this feature, NLT tables are now an "opt-in" feature for markdown tables and require a block id to render.
-    -   See: [Settings](#Settings))
+    -   See: [Basic usage](#basic-usage)
 -   Removed excluded files setting
--   Removed default sorting of rows
 -   Sorting rows will now sort the source markdown
 
 Current limitations in 4.3.0 include:
