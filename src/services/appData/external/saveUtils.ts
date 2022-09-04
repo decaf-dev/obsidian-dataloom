@@ -1,6 +1,6 @@
 import { AppData, Cell } from "../state/types";
 
-import { CONTENT_TYPE } from "src/constants";
+import { CellType } from "src/services/appData/state/types";
 
 /**
  * Converts app data to a valid Obsidian markdown string
@@ -32,7 +32,7 @@ export const appDataToMarkdown = (data: AppData): string => {
 					cell.rowId === row.id &&
 					cell.headerId === data.headers[i].id
 			);
-			if (cell.type === CONTENT_TYPE.TAG) {
+			if (cell.type === CellType.TAG) {
 				const tags = data.tags.filter((tag) =>
 					tag.selected.includes(cell.id)
 				);
@@ -108,7 +108,7 @@ export const calcColumnCharLengths = (data: AppData): ColumnCharLengths => {
 		const index = data.headers.findIndex(
 			(header) => header.id === cell.headerId
 		);
-		if (cell.type === CONTENT_TYPE.TAG) {
+		if (cell.type === CellType.TAG) {
 			const arr = data.tags.filter((tag) =>
 				tag.selected.includes(cell.id)
 			);

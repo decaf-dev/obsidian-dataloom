@@ -1,4 +1,4 @@
-import { CONTENT_TYPE } from "../../constants";
+import { CellType } from "src/services/appData/state/types";
 
 import { Icon } from "src/services/icon/types";
 import { SortDir } from "src/services/sort/types";
@@ -43,11 +43,11 @@ export interface MenuItem {
 }
 
 export const TYPE_ITEMS: MenuItem[] = [
-	{ name: "text", content: "Text", type: CONTENT_TYPE.TEXT },
-	{ name: "number", content: "Number", type: CONTENT_TYPE.NUMBER },
-	{ name: "tag", content: "Tag", type: CONTENT_TYPE.TAG },
-	{ name: "date", content: "Date", type: CONTENT_TYPE.DATE },
-	{ name: "checkbox", content: "Checkbox", type: CONTENT_TYPE.CHECKBOX },
+	{ name: "text", content: "Text", type: CellType.TEXT },
+	{ name: "number", content: "Number", type: CellType.NUMBER },
+	{ name: "tag", content: "Tag", type: CellType.TAG },
+	{ name: "date", content: "Date", type: CellType.DATE },
+	{ name: "checkbox", content: "Checkbox", type: CellType.CHECKBOX },
 ];
 interface SortMenuItem {
 	[name: string]: {

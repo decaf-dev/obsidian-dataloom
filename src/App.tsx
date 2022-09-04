@@ -11,11 +11,11 @@ import {
 	initialTag,
 	initialCell,
 } from "./services/appData/state/initialState";
-import { Cell, AppData, Tag } from "./services/appData/state/types";
+import { Cell, AppData, Tag, CellType } from "./services/appData/state/types";
 import { saveAppData } from "./services/appData/external/save";
 import { numToPx, pxToNum } from "./services/string/parsers";
 
-import { CONTENT_TYPE, DEBUG, MIN_COLUMN_WIDTH_PX } from "./constants";
+import { DEBUG, MIN_COLUMN_WIDTH_PX } from "./constants";
 
 import "./app.css";
 import NltPlugin from "main";
@@ -544,7 +544,7 @@ export default function App({
 		headerWidth: string
 	) {
 		//If the content type does not display text, just use the width that we set for the column
-		if (cellType !== CONTENT_TYPE.TEXT && cellType !== CONTENT_TYPE.NUMBER)
+		if (cellType !== CellType.TEXT && cellType !== CellType.NUMBER)
 			return headerWidth;
 		//If we're not using auto width, just use the width that we set for the column
 		if (useAutoWidth) return calculatedWidth;

@@ -1,4 +1,4 @@
-import { CONTENT_TYPE } from "../../../constants";
+import { CellType } from "src/services/appData/state/types";
 import { SortDir } from "../../sort/types";
 
 import { Cell, Header, Row, Tag } from "./types";
@@ -11,7 +11,7 @@ export const initialHeader = (id: string, content: string): Header => {
 		width: "100px",
 		shouldWrapOverflow: true,
 		useAutoWidth: false,
-		type: CONTENT_TYPE.TEXT,
+		type: CellType.TEXT,
 	};
 };
 

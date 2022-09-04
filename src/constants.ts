@@ -7,15 +7,6 @@ export const DEBUG = {
 	MENU_PROVIDER: false,
 };
 
-export interface CellType {
-	TEXT: string;
-	NUMBER: string;
-	TAG: string;
-	DATE: string;
-	CHECKBOX: string;
-	MULTI_TAG: string;
-}
-
 export interface TabbableElementType {
 	UNFOCUSED: string;
 	BUTTON: string;
@@ -28,15 +19,6 @@ export const TABBABLE_ELEMENT_TYPE: TabbableElementType = {
 	BUTTON: "button",
 	HEADER: "header",
 	CELL: "cell",
-};
-
-export const CONTENT_TYPE: CellType = {
-	TEXT: "text",
-	NUMBER: "number",
-	TAG: "tag",
-	DATE: "date",
-	CHECKBOX: "checkbox",
-	MULTI_TAG: "multi-tag",
 };
 
 export const COLOR: { [color: string]: string } = {

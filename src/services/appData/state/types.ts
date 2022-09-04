@@ -38,3 +38,12 @@ export interface Tag {
 	color: string;
 	selected: string[];
 }
+
+export enum CellType {
+	TEXT = "text",
+	NUMBER = "number",
+	TAG = "number",
+	DATE = "date",
+	CHECKBOX = "checkbox",
+	MULTI_TAG = "multi-tag",
+}

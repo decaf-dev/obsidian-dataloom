@@ -23,7 +23,7 @@ import {
 	parseUnderlineTags,
 } from "../../string/parsers";
 
-import { AMPERSAND, BREAK_LINE_TAG, CONTENT_TYPE } from "src/constants";
+import { AMPERSAND, BREAK_LINE_TAG } from "src/constants";
 
 /**
  * Parses data for an individual table.

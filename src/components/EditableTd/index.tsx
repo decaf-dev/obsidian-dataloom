@@ -12,12 +12,12 @@ import TagCellEdit from "../TagCellEdit";
 import DateCellEdit from "../DateCellEdit";
 
 import { randomColor } from "src/services/random";
-import { Cell, Tag } from "src/services/appData/state/types";
+import { Cell, Tag, CellType } from "src/services/appData/state/types";
 import { isDate } from "src/services/string/validators";
 
 import "./styles.css";
 
-import { CONTENT_TYPE, DEBUG } from "../../constants";
+import { DEBUG } from "../../constants";
 import { useDidMountEffect, useId } from "src/services/hooks";
 import { dateToString } from "src/services/string/parsers";
 import { logFunc } from "src/services/appData/debug";
@@ -114,7 +114,7 @@ export default function EditableTd({
 				isMenuRequestingClose,
 			});
 		if (isMenuRequestingClose) {
-			if (headerType === CONTENT_TYPE.TAG) {
+			if (headerType === CellType.TAG) {
 				if (tagInputText !== "") {
 					const tag = tags.find(
 						(tag) => tag.content === tagInputText
@@ -192,7 +192,7 @@ export default function EditableTd({
 
 	function renderCell(): React.ReactNode {
 		switch (type) {
-			case CONTENT_TYPE.TEXT:
+			case CellType.TEXT:
 				return (
 					<TextCell
 						text={content}
@@ -200,7 +200,7 @@ export default function EditableTd({
 						useAutoWidth={useAutoWidth}
 					/>
 				);
-			case CONTENT_TYPE.NUMBER:
+			case CellType.NUMBER:
 				return (
 					<NumberCell
 						number={content}
@@ -208,15 +208,15 @@ export default function EditableTd({
 						useAutoWidth={useAutoWidth}
 					/>
 				);
-			case CONTENT_TYPE.TAG: {
+			case CellType.TAG: {
 				const tag = tags.find((tag) => tag.selected.includes(id));
 				if (tag)
 					return <TagCell content={tag.content} color={tag.color} />;
 				return <></>;
 			}
-			case CONTENT_TYPE.DATE:
+			case CellType.DATE:
 				return <DateCell text={content} />;
-			case CONTENT_TYPE.CHECKBOX:
+			case CellType.CHECKBOX:
 				return (
 					<CheckboxCell
 						isChecked={content.includes("x")}
@@ -230,7 +230,7 @@ export default function EditableTd({
 
 	function renderCellMenu() {
 		switch (headerType) {
-			case CONTENT_TYPE.TEXT:
+			case CellType.TEXT:
 				return (
 					<TextCellEdit
 						menuId={menuId}
@@ -249,7 +249,7 @@ export default function EditableTd({
 						onInputChange={handleTextInputChange}
 					/>
 				);
-			case CONTENT_TYPE.NUMBER:
+			case CellType.NUMBER:
 				return (
 					<NumberCellEdit
 						menuId={menuId}
@@ -265,7 +265,7 @@ export default function EditableTd({
 						onInputChange={handleNumberInputChange}
 					/>
 				);
-			case CONTENT_TYPE.TAG:
+			case CellType.TAG:
 				return (
 					<TagCellEdit
 						cellId={id}
@@ -286,7 +286,7 @@ export default function EditableTd({
 						onTagClick={handleTagClick}
 					/>
 				);
-			case CONTENT_TYPE.DATE:
+			case CellType.DATE:
 				return (
 					<DateCellEdit
 						menuId={menuId}
