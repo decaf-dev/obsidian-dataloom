@@ -1,52 +1,14 @@
-import { useRef } from "react";
-
 import { SortDir } from "./types";
 import { CONTENT_TYPE } from "src/constants";
-import { Row, Header, AppData } from "../appData/state/types";
+import { Row, AppData } from "../appData/state/types";
 
-interface SortedRows {
-	sortDir: SortDir;
-	sortedRows: Row[];
-}
-
-export const useSortedRows = (
-	appData: AppData,
-	sortTime: number
-): SortedRows => {
-	//Sort on mount
-	const lastTime = useRef(-1);
-	const lastSort = useRef({
-		sortDir: SortDir.DEFAULT,
-		sortedRows: appData.rows,
-	});
-
-	//Sort when sort time has changed
-	if (lastTime.current !== sortTime) {
-		lastTime.current = sortTime;
-		const header = appData.headers.find(
-			(header) => header.sortDir !== SortDir.DEFAULT
-		);
-		let sorted = {
-			sortedRows: appData.rows,
-			sortDir: SortDir.DEFAULT,
-		};
-		if (header) {
-			sorted = sortRows(appData, header);
-			lastSort.current = sorted;
-		}
-		lastSort.current = sorted;
-		return sorted;
-	} else {
-		return lastSort.current;
-	}
-};
-
-export const sortRows = (
-	appData: AppData,
-	sortedHeader: Header
-): SortedRows => {
+export const sortRows = (appData: AppData): Row[] => {
 	const arr = [...appData.rows];
-	const { id, sortDir, type } = sortedHeader;
+	const header = appData.headers.find(
+		(header) => header.sortDir !== SortDir.NONE
+	);
+	if (!header) return arr;
+	const { id, sortDir, type } = header;
 	arr.sort((a, b) => {
 		const cellA = appData.cells.find(
 			(cell) => cell.headerId === id && cell.rowId === a.id
@@ -57,7 +19,7 @@ export const sortRows = (
 		const contentA = cellA.toString();
 		const contentB = cellB.toString();
 
-		if (sortDir !== SortDir.DEFAULT) {
+		if (sortDir !== SortDir.NONE) {
 			//Force empty cells to the bottom
 			if (contentA === "" && contentB !== "") return 1;
 			if (contentA !== "" && contentB === "") return -1;
@@ -97,5 +59,5 @@ export const sortRows = (
 			return 0;
 		}
 	});
-	return { sortedRows: arr, sortDir };
+	return arr;
 };

@@ -15,25 +15,13 @@ import "./styles.css";
 interface Props {
 	rowId: string;
 	positionUpdateTime: number;
-	hideInsertOptions: boolean;
-	hideMoveOptions: boolean;
-	isFirstRow: boolean;
-	isLastRow: boolean;
-	onMoveRowClick: (id: string, moveBelow: boolean) => void;
 	onDeleteClick: (id: string) => void;
-	onInsertRowClick: (id: string, insertBelow: boolean) => void;
 }
 
 export default function RowMenu({
 	rowId,
-	isFirstRow,
-	isLastRow,
 	positionUpdateTime,
-	hideInsertOptions,
-	hideMoveOptions,
-	onMoveRowClick,
 	onDeleteClick,
-	onInsertRowClick,
 }: Props) {
 	const menuId = useId();
 	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
@@ -56,46 +44,8 @@ export default function RowMenu({
 		closeMenu();
 	}
 
-	function handleInsertRowClick(id: string, insertBelow: boolean) {
-		onInsertRowClick(id, insertBelow);
-		closeMenu();
-	}
-
-	function handleMoveRowClick(id: string, moveBelow: boolean) {
-		onMoveRowClick(id, moveBelow);
-		closeMenu();
-	}
-
 	const options = useMemo(() => {
 		return [
-			{
-				name: "move-up",
-				content: "Move Up",
-				icon: Icon.MOVE_UP,
-				hide: isFirstRow || hideMoveOptions,
-				onClick: () => handleMoveRowClick(rowId, false),
-			},
-			{
-				name: "move-down",
-				content: "Move Down",
-				icon: Icon.MOVE_DOWN,
-				hide: isLastRow || hideMoveOptions,
-				onClick: () => handleMoveRowClick(rowId, true),
-			},
-			{
-				name: "insert-above",
-				content: "Insert Above",
-				hide: hideInsertOptions,
-				icon: Icon.KEYBOARD_DOUBLE_ARROW_UP,
-				onClick: () => handleInsertRowClick(rowId, false),
-			},
-			{
-				name: "insert-below",
-				content: "Insert Below",
-				icon: Icon.KEYBOARD_DOUBLE_ARROW_DOWN,
-				hide: hideInsertOptions,
-				onClick: () => handleInsertRowClick(rowId, true),
-			},
 			{
 				name: "delete",
 				content: "Delete",
@@ -103,7 +53,7 @@ export default function RowMenu({
 				onClick: () => handleDeleteClick(rowId),
 			},
 		];
-	}, [hideInsertOptions, hideMoveOptions, rowId, isFirstRow, isLastRow]);
+	}, [rowId]);
 
 	return (
 		<div ref={positionRef}>
@@ -121,18 +71,16 @@ export default function RowMenu({
 				}}
 			>
 				<div className="NLT__drag-menu">
-					{options
-						.filter((option) => !option.hide)
-						.map((item) => {
-							return (
-								<RowMenuItem
-									key={item.name}
-									icon={item.icon}
-									iconText={item.content}
-									onClick={item.onClick}
-								/>
-							);
-						})}
+					{options.map((item) => {
+						return (
+							<RowMenuItem
+								key={item.name}
+								icon={item.icon}
+								iconText={item.content}
+								onClick={item.onClick}
+							/>
+						);
+					})}
 				</div>
 			</Menu>
 		</div>
