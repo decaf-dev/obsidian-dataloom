@@ -65,6 +65,16 @@ export const mockParsedTable = (obj: parsedTable) => {
 	return table;
 };
 
+export const randomTableId = () => {
+	const chars =
+		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz012345679";
+	let result = "^";
+	for (let i = 0; i < 6; i++) {
+		result += chars[Math.floor(Math.random() * chars.length)];
+	}
+	return result;
+};
+
 /**
  * Creates a 1 column NLT markdown table
  * @returns An NLT markdown table
@@ -73,5 +83,6 @@ export const createEmptyMarkdownTable = (): string => {
 	const rows = [];
 	rows[0] = "| New Column |";
 	rows[1] = "| ---------- |";
+	rows[2] = randomTableId();
 	return rows.join("\n");
 };
