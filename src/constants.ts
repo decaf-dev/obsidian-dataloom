@@ -7,7 +7,7 @@ export const DEBUG = {
 		MARKDOWN: false,
 	},
 	APP: false,
-	SAVE_APP_DATA: true,
+	SAVE_APP_DATA: false,
 	EDITABLE_TD: false,
 	FOCUS_PROVIDER: false,
 	MENU_PROVIDER: false,
