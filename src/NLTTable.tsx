@@ -1,40 +1,34 @@
-import { MarkdownRenderChild, App as ObsidianApp } from "obsidian";
+import { MarkdownRenderChild, MarkdownSectionInformation } from "obsidian";
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./app/App";
-import { loadAppData } from "./app/services/appData/external/load";
-import { NltSettings } from "./app/services/settings";
+import App from "./App";
+import { loadAppData } from "./services/appData/external/load";
 import NltPlugin from "main";
-import MenuProvider from "./app/components/MenuProvider";
-import FocusProvider from "./app/components/FocusProvider";
+import MenuProvider from "./components/MenuProvider";
+import FocusProvider from "./components/FocusProvider";
 
 //This is our main class that will render the React app to the Obsidian container element
 export class NLTTable extends MarkdownRenderChild {
-	app: ObsidianApp;
 	plugin: NltPlugin;
-	settings: NltSettings;
-	el: HTMLElement;
 	sourcePath: string;
-	parent: HTMLElement;
+	sectionInfo: MarkdownSectionInformation;
+	el: HTMLElement;
 
 	constructor(
 		containerEl: HTMLElement,
-		app: ObsidianApp,
 		plugin: NltPlugin,
-		settings: NltSettings,
+		sectionInfo: MarkdownSectionInformation,
 		sourcePath: string
 	) {
 		super(containerEl);
-		this.app = app;
 		this.plugin = plugin;
-		this.settings = settings;
+		this.sectionInfo = sectionInfo;
 		this.sourcePath = sourcePath;
 	}
 
 	async onload() {
 		const { tableIndex, data } = await loadAppData(
 			this.plugin,
-			this.settings,
 			this.containerEl,
 			this.sourcePath
 		);
@@ -46,13 +40,14 @@ export class NLTTable extends MarkdownRenderChild {
 				<FocusProvider
 					plugin={this.plugin}
 					sourcePath={this.sourcePath}
+					sectionInfo={this.sectionInfo}
 					tableIndex={tableIndex}
 					el={this.el}
 				>
 					<MenuProvider>
 						<App
 							plugin={this.plugin}
-							settings={this.settings}
+							sectionInfo={this.sectionInfo}
 							loadedData={data}
 							sourcePath={this.sourcePath}
 							tableIndex={tableIndex}

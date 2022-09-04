@@ -1,15 +1,22 @@
-import { Plugin, Editor, MarkdownView, Notice } from "obsidian";
+import {
+	Plugin,
+	Editor,
+	MarkdownView,
+	Notice,
+	MarkdownSectionInformation,
+} from "obsidian";
 
-import { NLTTable } from "src/NLTTable";
-import { NltSettings, DEFAULT_SETTINGS } from "src/app/services/settings";
-import { addRow, addColumn } from "src/app/services/appData/internal/add";
-import { saveAppData } from "src/app/services/appData/external/save";
-import { createEmptyMarkdownTable } from "src/app/services/appData/mock";
-import { ViewType } from "src/app/services/appData/state/saveState";
+import { NLTTable } from "src/NltTable";
+import { NltSettings, DEFAULT_SETTINGS } from "src/services/settings";
+import { addRow, addColumn } from "src/services/appData/internal/add";
+import { saveAppData } from "src/services/appData/external/save";
+import { createEmptyMarkdownTable } from "src/services/appData/mock";
+import { ViewType } from "src/services/appData/state/saveState";
 import NltSettingsTab from "./NltSettingsTab";
 
 interface FocusedTable {
 	tableIndex: string;
+	sectionInfo: MarkdownSectionInformation;
 	sourcePath: string;
 	viewType: ViewType;
 }
@@ -26,17 +33,19 @@ export default class NltPlugin extends Plugin {
 		await this.forcePostProcessorReload();
 
 		this.registerMarkdownPostProcessor((element, context) => {
-			const table = element.getElementsByTagName("table");
-			if (table.length === 1) {
-				context.addChild(
-					new NLTTable(
-						element,
-						this.app,
-						this,
-						this.settings,
-						context.sourcePath
-					)
-				);
+			const sectionInfo = context.getSectionInfo(element);
+			if (sectionInfo) {
+				const table = element.getElementsByTagName("table");
+				if (table.length === 1) {
+					context.addChild(
+						new NLTTable(
+							element,
+							this,
+							sectionInfo,
+							context.sourcePath
+						)
+					);
+				}
 			}
 		});
 
@@ -78,18 +87,17 @@ export default class NltPlugin extends Plugin {
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "\\" }],
 			callback: async () => {
 				if (this.focused) {
-					const { tableIndex, sourcePath, viewType } = this.focused;
+					const { tableIndex, sectionInfo, sourcePath, viewType } =
+						this.focused;
 					const oldData =
 						this.settings.state[sourcePath][tableIndex].data;
 					const newData = addColumn(oldData);
 					await saveAppData(
 						this,
-						this.settings,
-						app,
-						oldData,
 						newData,
-						sourcePath,
 						tableIndex,
+						sectionInfo,
+						sourcePath,
 						viewType
 					);
 				} else {
@@ -106,18 +114,17 @@ export default class NltPlugin extends Plugin {
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Enter" }],
 			callback: async () => {
 				if (this.focused) {
-					const { tableIndex, sourcePath, viewType } = this.focused;
+					const { tableIndex, sectionInfo, sourcePath, viewType } =
+						this.focused;
 					const oldData =
 						this.settings.state[sourcePath][tableIndex].data;
 					const newData = addRow(oldData);
 					await saveAppData(
 						this,
-						this.settings,
-						app,
-						oldData,
 						newData,
-						sourcePath,
 						tableIndex,
+						sectionInfo,
+						sourcePath,
 						viewType
 					);
 				} else {
@@ -129,13 +136,15 @@ export default class NltPlugin extends Plugin {
 		});
 	}
 
-	focusTable = (
-		tableIndex: string,
-		sourcePath: string,
-		viewType: ViewType
-	) => {
+	focusTable = ({
+		tableIndex,
+		sectionInfo,
+		sourcePath,
+		viewType,
+	}: FocusedTable) => {
 		this.focused = {
 			tableIndex,
+			sectionInfo,
 			sourcePath,
 			viewType,
 		};
