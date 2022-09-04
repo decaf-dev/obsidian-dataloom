@@ -42,7 +42,7 @@ export interface Tag {
 export enum CellType {
 	TEXT = "text",
 	NUMBER = "number",
-	TAG = "number",
+	TAG = "tag",
 	DATE = "date",
 	CHECKBOX = "checkbox",
 	MULTI_TAG = "multi-tag",

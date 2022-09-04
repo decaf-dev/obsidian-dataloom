@@ -223,13 +223,14 @@ export default function App({
 	function handleCellContentChange(
 		id: string,
 		headerType: string,
-		content: string
+		updatedContent: string,
+		saveOnChange = false
 	) {
 		if (DEBUG.APP) {
 			logFunc(COMPONENT_NAME, "handleCellContentChange", {
 				id,
 				headerType,
-				content,
+				updatedContent,
 			});
 		}
 
@@ -238,23 +239,16 @@ export default function App({
 				...prevState,
 				cells: prevState.cells.map((cell: Cell) => {
 					if (cell.id === id) {
-						//While a column's content type is chosen by the user
-						//in the header menu. The cell content type
-						//is based off of the actual cell content string.
-						//Each time we update the content value, we want to recalculate the
-						//content type.
-						return initialCell(
-							cell.id,
-							cell.headerId,
-							cell.rowId,
-							headerType,
-							content
-						);
+						return {
+							...cell,
+							content: updatedContent,
+						};
 					}
 					return cell;
 				}),
 			};
 		});
+		if (saveOnChange) saveData();
 	}
 
 	function handleAddTag(

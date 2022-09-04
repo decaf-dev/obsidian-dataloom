@@ -42,7 +42,8 @@ interface Props {
 	onContentChange: (
 		cellId: string,
 		headerType: string,
-		content: string
+		updatedContent: string,
+		saveOnChange?: boolean
 	) => void;
 	onAddTag: (
 		cellId: string,
@@ -185,9 +186,8 @@ export default function EditableTd({
 	}
 
 	function handleCheckboxChange(isChecked: boolean) {
-		//TODO replace with constant
-		let content = isChecked ? "[x]" : "[ ]";
-		onContentChange(id, headerType, content);
+		const content = isChecked ? "[x]" : "[ ]";
+		onContentChange(id, headerType, content, true);
 	}
 
 	function renderCell(): React.ReactNode {
