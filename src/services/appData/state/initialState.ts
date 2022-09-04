@@ -7,7 +7,7 @@ export const initialHeader = (id: string, content: string): Header => {
 	return {
 		id,
 		content,
-		sortDir: SortDir.DEFAULT,
+		sortDir: SortDir.NONE,
 		width: "100px",
 		shouldWrapOverflow: true,
 		useAutoWidth: false,
@@ -15,14 +15,9 @@ export const initialHeader = (id: string, content: string): Header => {
 	};
 };
 
-export const initialRow = (
-	id: string,
-	initialIndex: number,
-	creationTime: number
-): Row => {
+export const initialRow = (id: string, creationTime: number): Row => {
 	return {
 		id,
-		initialIndex,
 		creationTime,
 	};
 };

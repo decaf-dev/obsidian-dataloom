@@ -53,7 +53,7 @@ interface SortMenuItem {
 	[name: string]: {
 		name: SortDir;
 		content: string;
-		icon: Icon;
+		icon: Icon | null;
 	};
 }
 
@@ -68,9 +68,9 @@ export const SORT_MENU_ITEM: SortMenuItem = {
 		content: "Descending",
 		icon: Icon.ARROW_DOWNWARD,
 	},
-	DEFAULT: {
-		name: SortDir.DEFAULT,
+	NONE: {
+		name: SortDir.NONE,
 		content: "Default",
-		icon: Icon.HEIGHT,
+		icon: null,
 	},
 };

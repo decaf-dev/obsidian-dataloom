@@ -33,14 +33,14 @@ import {
 	useId,
 	useSaveTime,
 } from "./services/hooks";
-import { useSortedRows } from "./services/sort/sort";
+import { sortRows } from "./services/sort/sort";
 import { MarkdownSectionInformation } from "obsidian";
 
 interface Props {
 	plugin: NltPlugin;
 	loadedData: AppData;
 	sourcePath: string;
-	tableIndex: string;
+	blockId: string;
 	sectionInfo: MarkdownSectionInformation;
 	el: HTMLElement;
 }
@@ -51,7 +51,7 @@ export default function App({
 	plugin,
 	loadedData,
 	sourcePath,
-	tableIndex,
+	blockId,
 	sectionInfo,
 	el,
 }: Props) {
@@ -65,14 +65,21 @@ export default function App({
 	const [positionUpdateTime, setPositionUpdateTime] = useState(0);
 
 	const { saveTime, saveData } = useSaveTime();
-	const { sortedRows, sortDir } = useSortedRows(appData, sortTime);
 
 	useCloseMenusOnScroll("markdown-preview-view");
 	useCloseMenusOnScroll("NLT__table-wrapper");
 
-	useEffect(() => {
+	useDidMountEffect(() => {
+		//TODO handle when a user clicks the same option
+		setAppData((prevState) => {
+			return {
+				...prevState,
+				rows: sortRows(prevState),
+			};
+		});
 		forcePositionUpdate();
-	}, [sortedRows]);
+		saveData();
+	}, [sortTime]);
 
 	useDidMountEffect(() => {
 		async function handleUpdate() {
@@ -80,7 +87,7 @@ export default function App({
 				await saveAppData(
 					plugin,
 					appData,
-					tableIndex,
+					blockId,
 					sectionInfo,
 					sourcePath,
 					findCurrentViewType(el)
@@ -206,17 +213,15 @@ export default function App({
 				...prevState,
 				headers: prevState.headers.map((header) => {
 					if (id === header.id) return { ...header, sortDir };
-					return { ...header, sortDir: SortDir.DEFAULT };
+					return { ...header, sortDir: SortDir.NONE };
 				}),
 			};
 		});
 		sortData();
-		saveData();
 	}
 
 	function handleCellContentSave() {
 		sortData();
-		saveData();
 	}
 
 	function handleCellContentChange(
@@ -259,7 +264,6 @@ export default function App({
 		//TODO refactor
 		if (isCheckbox) {
 			sortData();
-			saveData();
 		}
 	}
 
@@ -360,7 +364,6 @@ export default function App({
 			};
 		});
 		sortData();
-		saveData();
 	}
 
 	function handleDeleteRowClick(rowId: string) {
@@ -373,37 +376,6 @@ export default function App({
 			};
 		});
 		sortData();
-		saveData();
-	}
-
-	function handleMoveRowClick(id: string, moveBelow: boolean) {
-		if (DEBUG.APP) console.log("[App]: handleMoveRowClick called.");
-		setAppData((prevState: AppData) => {
-			const index = prevState.rows.findIndex((row) => row.id === id);
-			//We assume that there is checking to make sure you don't move the first row up or last row down
-			const moveIndex = moveBelow ? index + 1 : index - 1;
-			const rows = [...prevState.rows];
-
-			//Swap values
-			const oldIndex = rows[moveIndex].initialIndex;
-			const oldTime = rows[moveIndex].creationTime;
-			const newIndex = rows[index].initialIndex;
-			const newTime = rows[index].creationTime;
-
-			const old = rows[moveIndex];
-			rows[moveIndex] = rows[index];
-			rows[moveIndex].creationTime = oldTime;
-			rows[moveIndex].initialIndex = oldIndex;
-			rows[index] = old;
-			rows[index].creationTime = newTime;
-			rows[index].initialIndex = newIndex;
-
-			return {
-				...prevState,
-				rows,
-			};
-		});
-		saveData();
 	}
 
 	function handleHeaderWidthChange(id: string, width: string) {
@@ -476,35 +448,6 @@ export default function App({
 				...prevState,
 				headers,
 				cells: [...prevState.cells, ...cells],
-			};
-		});
-		saveData();
-	}
-
-	function handleInsertRowClick(id: string, insertBelow = false) {
-		if (DEBUG.APP) console.log("[App]: handleHeaderInsertRowClick called.");
-		const rowId = uuid();
-		setAppData((prevState: AppData) => {
-			const tags: Tag[] = [];
-
-			const cells = prevState.headers.map((header) =>
-				findNewCell(uuid(), rowId, header.id, header.type)
-			);
-
-			const rows = [...prevState.rows];
-
-			const index = prevState.rows.findIndex((row) => row.id === id);
-			const insertIndex = insertBelow ? index + 1 : index;
-			rows.splice(
-				insertIndex,
-				0,
-				initialRow(rowId, insertIndex, Date.now())
-			);
-			return {
-				...prevState,
-				rows,
-				cells: [...prevState.cells, ...cells],
-				tags: [...prevState.tags, ...tags],
 			};
 		});
 		saveData();
@@ -721,7 +664,7 @@ export default function App({
 							),
 						};
 					})}
-					rows={sortedRows.map((row, rowIndex) => {
+					rows={appData.rows.map((row) => {
 						return {
 							id: row.id,
 							component: (
@@ -786,29 +729,12 @@ export default function App({
 									>
 										<div className="NLT__td-container">
 											<RowMenu
-												hideInsertOptions={
-													sortDir !== SortDir.DEFAULT
-												}
-												hideMoveOptions={
-													sortDir !== SortDir.DEFAULT
-												}
 												positionUpdateTime={
 													positionUpdateTime
 												}
 												rowId={row.id}
-												isFirstRow={rowIndex === 0}
-												isLastRow={
-													rowIndex ===
-													appData.rows.length - 1
-												}
-												onMoveRowClick={
-													handleMoveRowClick
-												}
 												onDeleteClick={
 													handleDeleteRowClick
-												}
-												onInsertRowClick={
-													handleInsertRowClick
 												}
 											/>
 										</div>

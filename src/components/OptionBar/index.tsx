@@ -15,10 +15,6 @@ interface SortButtonListProps {
 	bubbles: { sortDir: SortDir; content: string }[];
 }
 
-interface SortButtonProps {
-	onButtonClick: () => void;
-}
-
 interface OptionBarProps {
 	headers: Header[];
 }
@@ -50,7 +46,7 @@ const SortBubbleList = ({ bubbles }: SortButtonListProps) => {
 export default function OptionBar({ headers }: OptionBarProps) {
 	const bubbles = useMemo(() => {
 		return headers
-			.filter((header) => header.sortDir !== SortDir.DEFAULT)
+			.filter((header) => header.sortDir !== SortDir.NONE)
 			.map((header) => {
 				return {
 					content: header.content,

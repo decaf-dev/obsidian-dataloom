@@ -15,7 +15,7 @@ import { CURRENT_TABLE_CACHE_VERSION, DEBUG } from "src/constants";
 export const saveAppData = async (
 	plugin: NltPlugin,
 	data: AppData,
-	tableIndex: string,
+	blockId: string,
 	sectionInfo: MarkdownSectionInformation,
 	sourcePath: string,
 	viewType: ViewType
@@ -24,7 +24,8 @@ export const saveAppData = async (
 		const markdown = appDataToMarkdown(data);
 
 		if (DEBUG.SAVE_APP_DATA) {
-			console.log("saveAppData");
+			console.log("");
+			console.log("saveAppData()");
 			console.log("new table markdown", {
 				markdown,
 			});
@@ -42,19 +43,12 @@ export const saveAppData = async (
 		);
 
 		if (DEBUG.SAVE_APP_DATA) {
-			console.log("updatedContent", {
+			console.log("updated file content", {
 				updatedContent,
 			});
 		}
 
-		await updateSettingsCache(
-			plugin,
-			data,
-			sourcePath,
-			tableIndex,
-			viewType
-		);
-
+		await updateSettingsCache(plugin, data, sourcePath, blockId, viewType);
 		await updateFileContent(plugin, file, updatedContent);
 	} catch (err) {
 		console.log(err);
@@ -73,18 +67,24 @@ const updateSettingsCache = async (
 	plugin: NltPlugin,
 	data: AppData,
 	sourcePath: string,
-	tableIndex: string,
+	blockId: string,
 	viewType: ViewType
 ) => {
 	if (!plugin.settings.state[sourcePath])
 		plugin.settings.state[sourcePath] = {};
-	plugin.settings.state[sourcePath][tableIndex] = {
+	plugin.settings.state[sourcePath][blockId] = {
 		data,
 		viewType,
 		shouldUpdate: true,
 		tableCacheVersion: CURRENT_TABLE_CACHE_VERSION,
 	};
-	await plugin.saveData(plugin.settings);
+	if (DEBUG.SAVE_APP_DATA) {
+		console.log("Updating settings cache");
+		console.log("data", {
+			[blockId]: plugin.settings.state[sourcePath][blockId],
+		});
+	}
+	return await plugin.saveData(plugin.settings);
 };
 
 export const replaceTableInText = (

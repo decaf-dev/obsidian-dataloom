@@ -19,7 +19,6 @@ export interface Header {
 
 export interface Row {
 	id: string;
-	initialIndex: number;
 	creationTime: number;
 }
 
