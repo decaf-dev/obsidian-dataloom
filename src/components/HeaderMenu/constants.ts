@@ -70,7 +70,7 @@ export const SORT_MENU_ITEM: SortMenuItem = {
 	},
 	NONE: {
 		name: SortDir.NONE,
-		content: "None",
+		content: "Default",
 		icon: null,
 	},
 };
