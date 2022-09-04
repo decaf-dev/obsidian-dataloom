@@ -28,36 +28,31 @@ Current limitations in 4.3.0 include:
 
 ## About
 
--   [Installation](#installation)
--   [Basic usage](#basic-usage)
--   [Hotkeys](#hotkeys)
--   [Header menu](#header-menu)
--   [Cell types](#cell-types)
--   [Markdown support](#markdown-support)
--   [Column resizing](#column-resizing)
--   [Copying cell content](#copying-cell-content)
--   [Undoing changes](#undoing-changes)
--   [Custom themes](#custom-themes)
--   [Contributing](#contributing)
--   [License](#license)
+-   [Installation](#Installation)
+-   [Basic usage](#Basic-Usage)
+-   [Hotkeys](#Hotkeys)
+-   [Header menu](#Header-Menu)
+-   [Cell types](#Cell-Types)
+-   [Markdown support](#Markdown-Support)
+-   [Column resizing](#Column-Resizing)
+-   [Copying cell content](#Copying-Cell-Content)
+-   [Undoing changes](#Undoing-Changes)
+-   [Custom themes](#Custom-Themes)
+-   [Contributing](#Contributing)
+-   [License](#License)
 
 ## Installation
 
 -   Go to `Community plugins` and turn off `Safe mode`
--   Under community plugins search for `Notion-Like Tables` and click `Install`, then `Enable`
+-   Under community plugins click `Browse`. Search for `Notion-Like Tables` and click `Install` then click `Enable`
 
 ## Basic Usage
 
-Notion Like Tables are an opt-in feature. To render a markdown table as a Notion-Like Table, you must add a block id to your existing table. This id must be placed 1 or 2 spaces below the last table line.
+Notion Like Tables are an opt-in feature. To render a markdown table as a Notion-Like Table, you must add a block id to your existing table.
 
-A block id is a string that starts with carrot `^` and can having any number of characters.
+A block id is a string that starts with carrot `^` and followed directly by any number of characters e.g. `^abc123`
 
-```markdown
-| Column 1 |
-| -------- |
-
-^abc123
-```
+This id must be placed 1 or 2 spaces below the last table line.
 
 ```markdown
 | Column 1 |
@@ -66,7 +61,14 @@ A block id is a string that starts with carrot `^` and can having any number of 
 ^abc123
 ```
 
-Once you add a block item, you will have to restart Obsidian for it to appear.
+```markdown
+| Column 1 |
+| -------- |
+
+^abc123
+```
+
+Once you add a block id, you will have to restart Obsidian for the plugin to recognize the it.
 
 ### Making a Table via Command
 
