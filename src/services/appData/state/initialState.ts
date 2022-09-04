@@ -35,7 +35,6 @@ export const initialCell = (
 		rowId,
 		type,
 		content,
-		previousContent: "",
 	};
 };
 

@@ -13,13 +13,11 @@ import DateCellEdit from "../DateCellEdit";
 
 import { randomColor } from "src/services/random";
 import { Cell, Tag, CellType } from "src/services/appData/state/types";
-import { isDate } from "src/services/string/validators";
 
 import "./styles.css";
 
 import { DEBUG } from "../../constants";
 import { useDidMountEffect, useId } from "src/services/hooks";
-import { dateToString } from "src/services/string/parsers";
 import { logFunc } from "src/services/appData/debug";
 import { useMenuId } from "src/components/MenuProvider";
 import { usePositionRef } from "src/services/hooks";
@@ -90,8 +88,6 @@ export default function EditableTd({
 	const { id, headerId, type } = cell;
 
 	const [wasContentUpdated, setContentUpdate] = useState(false);
-
-	const isInvalidContent = type !== headerType;
 
 	//If we've already mounted, meaning the application has loaded
 	//and we updated a tag, then we will wait for it to update,
@@ -169,25 +165,23 @@ export default function EditableTd({
 		onTagClick(id, tagId);
 	}
 
-	function handleTextInputChange(value: string) {
-		onContentChange(id, headerType, value);
+	function handleTextInputChange(updatedContent: string) {
+		onContentChange(id, headerType, updatedContent);
 		setContentUpdate(true);
 	}
 
-	function handleNumberInputChange(value: string) {
-		onContentChange(id, headerType, value);
+	function handleNumberInputChange(updatedContent: string) {
+		onContentChange(id, headerType, updatedContent);
 		setContentUpdate(true);
 	}
 
-	function handleDateChange(date: Date) {
-		const content = dateToString(date);
-		onContentChange(id, headerType, content);
+	function handleDateChange(updatedContent: string) {
+		onContentChange(id, headerType, updatedContent);
 		setContentUpdate(true);
 	}
 
-	function handleCheckboxChange(isChecked: boolean) {
-		const content = isChecked ? "[x]" : "[ ]";
-		onContentChange(id, headerType, content, true);
+	function handleCheckboxChange(updatedContent: string) {
+		onContentChange(id, headerType, updatedContent, true);
 	}
 
 	function renderCell(): React.ReactNode {
@@ -195,7 +189,7 @@ export default function EditableTd({
 			case CellType.TEXT:
 				return (
 					<TextCell
-						text={content}
+						content={content}
 						shouldWrapOverflow={shouldWrapOverflow}
 						useAutoWidth={useAutoWidth}
 					/>
@@ -203,7 +197,7 @@ export default function EditableTd({
 			case CellType.NUMBER:
 				return (
 					<NumberCell
-						number={content}
+						content={content}
 						shouldWrapOverflow={shouldWrapOverflow}
 						useAutoWidth={useAutoWidth}
 					/>
@@ -215,11 +209,11 @@ export default function EditableTd({
 				return <></>;
 			}
 			case CellType.DATE:
-				return <DateCell text={content} />;
+				return <DateCell content={content} />;
 			case CellType.CHECKBOX:
 				return (
 					<CheckboxCell
-						isChecked={content.includes("x")}
+						content={content}
 						onCheckboxChange={handleCheckboxChange}
 					/>
 				);
@@ -243,9 +237,7 @@ export default function EditableTd({
 							minWidth: "125px",
 							minHeight: "75px",
 						}}
-						useAutoWidth={useAutoWidth}
-						shouldWrapOverflow={shouldWrapOverflow}
-						value={content}
+						content={content}
 						onInputChange={handleTextInputChange}
 					/>
 				);
@@ -261,7 +253,7 @@ export default function EditableTd({
 							}),
 							minWidth: "125px",
 						}}
-						value={content}
+						content={content}
 						onInputChange={handleNumberInputChange}
 					/>
 				);
@@ -292,9 +284,7 @@ export default function EditableTd({
 						menuId={menuId}
 						isOpen={isMenuOpen}
 						style={position}
-						selectedDate={
-							isDate(content) ? new Date(content) : new Date()
-						}
+						content={content}
 						onDateChange={handleDateChange}
 					/>
 				);

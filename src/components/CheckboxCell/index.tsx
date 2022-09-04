@@ -1,13 +1,26 @@
 import React from "react";
+import { isValidCellContent } from "src/services/appData/state/utils";
+import { CellType } from "src/services/appData/state/types";
 
 import "./styles.css";
 
 interface Props {
-	isChecked: boolean;
-	onCheckboxChange: (isChecked: boolean) => void;
+	content: string;
+	onCheckboxChange: (value: string) => void;
 }
 
-export default function CheckboxCell({ isChecked, onCheckboxChange }: Props) {
+export default function CheckboxCell({ content, onCheckboxChange }: Props) {
+	if (!isValidCellContent(content, CellType.CHECKBOX)) content = "[ ]";
+	let isChecked = content.includes("x");
+
+	function handleClick() {
+		if (isChecked) {
+			onCheckboxChange("[ ]");
+		} else {
+			onCheckboxChange("[x]");
+		}
+	}
+
 	return (
 		<div className="NLT__checkbox-cell">
 			<input
@@ -17,7 +30,7 @@ export default function CheckboxCell({ isChecked, onCheckboxChange }: Props) {
 				onChange={() => {}}
 				onClick={(e) => {
 					e.stopPropagation();
-					onCheckboxChange(!isChecked);
+					handleClick();
 				}}
 			/>
 		</div>

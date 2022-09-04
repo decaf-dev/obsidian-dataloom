@@ -9,21 +9,21 @@ import {
 	parseHighlightMarkdown,
 } from "src/services/string/parsers";
 interface Props {
-	text: string;
+	content: string;
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
 }
 
 export default function TextCell({
-	text,
+	content,
 	shouldWrapOverflow,
 	useAutoWidth,
 }: Props) {
-	text = parseURLs(text);
-	text = parseFileLinks(text);
-	text = parseBoldMarkdown(text);
-	text = parseItalicMarkdown(text);
-	text = parseHighlightMarkdown(text);
+	content = parseURLs(content);
+	content = parseFileLinks(content);
+	content = parseBoldMarkdown(content);
+	content = parseItalicMarkdown(content);
+	content = parseHighlightMarkdown(content);
 
 	let className = "NLT__text-cell";
 	if (useAutoWidth) {
@@ -35,5 +35,5 @@ export default function TextCell({
 			className += " NLT__hide-overflow";
 		}
 	}
-	return <div className={className}>{parse(text)}</div>;
+	return <div className={className}>{parse(content)}</div>;
 }

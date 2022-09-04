@@ -10,7 +10,7 @@ import {
 	AMPERSAND_CHARACTER_REGEX,
 	LINE_BREAK_CHARACTER_REGEX,
 } from "../../string/regex";
-import { isMarkdownTable, isCheckBoxChecked } from "../../string/validators";
+import { isMarkdownTable, isCheckboxChecked } from "../../string/validators";
 import { stripLinks, sanitizeHTML } from "../../string/strippers";
 import { ViewType } from "../state/saveState";
 import { findContentType } from "../../string/matchers";

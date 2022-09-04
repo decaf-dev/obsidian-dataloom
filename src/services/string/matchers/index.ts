@@ -20,7 +20,7 @@ import {
 	BOLD_MARKDOWN_PIECES_REGEX,
 	ITALIC_MARKDOWN_PIECES_REGEX,
 } from "../regex";
-import { isNumber, isDate, isCheckBox } from "../validators";
+import { isNumber, isDate, isCheckbox } from "../validators";
 import { CellType } from "src/services/appData/state/types";
 
 export const matchBoldMarkdown = (input: string) => {
@@ -124,6 +124,6 @@ export const findContentType = (content: string, columnContentType: string) => {
 	if (columnContentType === CellType.TAG) return CellType.TAG;
 	if (isNumber(content)) return CellType.NUMBER;
 	if (isDate(content)) return CellType.DATE;
-	if (isCheckBox(content)) return CellType.CHECKBOX;
+	if (isCheckbox(content)) return CellType.CHECKBOX;
 	return CellType.TEXT;
 };

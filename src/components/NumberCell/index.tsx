@@ -1,19 +1,27 @@
 import React from "react";
 
+import { CellType } from "src/services/appData/state/types";
+
+import {
+	filterNumberFromContent,
+	isValidCellContent,
+} from "src/services/appData/state/utils";
+
 import "./styles.css";
 
 interface Props {
-	number: string;
+	content: string;
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
 }
 
 export default function NumberCell({
-	number,
+	content,
 	shouldWrapOverflow,
 	useAutoWidth,
 }: Props) {
 	let className = "NLT__number-cell";
+
 	if (useAutoWidth) {
 		className += " NLT__auto-width";
 	} else {
@@ -23,5 +31,8 @@ export default function NumberCell({
 			className += " NLT__hide-overflow";
 		}
 	}
-	return <div className={className}>{number}</div>;
+
+	if (!isValidCellContent(content, CellType.NUMBER))
+		content = filterNumberFromContent(content);
+	return <div className={className}>{content}</div>;
 }

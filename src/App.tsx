@@ -32,6 +32,11 @@ import {
 } from "./services/hooks";
 import { sortRows } from "./services/sort/sort";
 import { MarkdownSectionInformation } from "obsidian";
+import {
+	checkboxToString,
+	stringToCheckbox,
+} from "./services/appData/state/utils";
+import { randomColor } from "./services/random";
 
 interface Props {
 	plugin: NltPlugin;
@@ -171,15 +176,49 @@ export default function App({
 
 	function handleHeaderTypeSelect(id: string, selectedCellType: CellType) {
 		if (DEBUG.APP) console.log("[App]: handleHeaderTypeSelect called.");
-		//If same header type return
 		const header = appData.headers.find((header) => header.id === id);
+		//If same header type return
 		if (header.type === selectedCellType) return;
 
-		//Handle tags
+		function findUpdatedCellContent(content: string) {
+			if (header.type === CellType.CHECKBOX) {
+				return checkboxToString(content);
+			} else if (selectedCellType === CellType.CHECKBOX) {
+				return stringToCheckbox(content);
+			} else {
+				return content;
+			}
+		}
+
 		setAppData((prevState) => {
+			let arr = [...prevState.tags];
+			prevState.cells.forEach((cell) => {
+				const updatedContent = findUpdatedCellContent(cell.content);
+				if (cell.headerId === header.id) {
+					if (selectedCellType === CellType.TAG) {
+						const tag =
+							arr.find((tag) => tag.content === updatedContent) ||
+							null;
+						if (tag) {
+							tag.selected.push(cell.id);
+						} else {
+							arr.push(
+								initialTag(
+									uuid(),
+									header.id,
+									cell.id,
+									updatedContent,
+									randomColor()
+								)
+							);
+						}
+					} else if (header.type === CellType.TAG) {
+						arr = removeTagReferences(arr, cell.id);
+					}
+				}
+			});
 			return {
 				...prevState,
-				//Update header to new cell type
 				headers: prevState.headers.map((header) => {
 					if (id === header.id)
 						return { ...header, type: selectedCellType };
@@ -187,16 +226,15 @@ export default function App({
 				}),
 				cells: prevState.cells.map((cell: Cell) => {
 					if (cell.headerId === id) {
-						return initialCell(
-							cell.id,
-							cell.headerId,
-							cell.rowId,
-							selectedCellType,
-							cell.content
-						);
+						return {
+							...cell,
+							content: findUpdatedCellContent(cell.content),
+							type: selectedCellType,
+						};
 					}
 					return cell;
 				}),
+				tags: arr,
 			};
 		});
 		saveData();

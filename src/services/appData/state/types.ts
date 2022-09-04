@@ -28,7 +28,6 @@ export interface Cell {
 	headerId: string;
 	type: CellType;
 	content: string;
-	previousContent: string;
 }
 
 export interface Tag {
