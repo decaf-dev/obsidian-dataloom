@@ -48,9 +48,11 @@ Current limitations in 4.3.0 include:
 
 ## Basic Usage
 
-Notion Like Tables are an opt-in feature. To render a markdown table as a Notion-Like Table, you must add a block id to your existing table. This id must be placed 1 or 2 spaces below the last table line.
+Notion Like Tables are an opt-in feature. To render a markdown table as a Notion-Like Table, you must add a block id to your existing table.
 
-A block id is a string that starts with carrot `^` and can having any number of characters.
+A block id is a string that starts with carrot `^` and followed directly by any number of characters e.g. `^abc123`
+
+This id must be placed 1 or 2 spaces below the last table line.
 
 ```markdown
 | Column 1 |
