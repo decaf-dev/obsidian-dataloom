@@ -15,7 +15,7 @@ import { ViewType } from "src/services/appData/state/saveState";
 import NltSettingsTab from "./NltSettingsTab";
 
 interface FocusedTable {
-	tableIndex: string;
+	blockId: string;
 	sectionInfo: MarkdownSectionInformation;
 	sourcePath: string;
 	viewType: ViewType;
@@ -35,21 +35,35 @@ export default class NltPlugin extends Plugin {
 		this.registerMarkdownPostProcessor((element, context) => {
 			const sectionInfo = context.getSectionInfo(element);
 			if (sectionInfo) {
+				const { lineEnd, text } = sectionInfo;
 				const table = element.getElementsByTagName("table");
 				if (table.length === 1) {
-					context.addChild(
-						new NltTable(
-							element,
-							this,
-							sectionInfo,
-							context.sourcePath
-						)
-					);
+					let blockId = null;
+					const lines = text.split("\n");
+					const blockIdRegex = new RegExp(/^\^.+$/);
+					for (let i = 1; i < 3; i++) {
+						if (lines.length - 1 >= lineEnd + i) {
+							const line = lines[lineEnd + i];
+							if (line.match(blockIdRegex))
+								blockId = line.split("^")[1];
+						}
+					}
+					if (blockId) {
+						context.addChild(
+							new NltTable(
+								this,
+								element,
+								blockId,
+								sectionInfo,
+								context.sourcePath
+							)
+						);
+					}
 				}
 			}
 		});
 
-		this.addSettingTab(new NltSettingsTab(this.app, this));
+		// this.addSettingTab(new NltSettingsTab(this.app, this));
 		this.registerCommands();
 		this.registerEvents();
 	}
@@ -87,15 +101,15 @@ export default class NltPlugin extends Plugin {
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "\\" }],
 			callback: async () => {
 				if (this.focused) {
-					const { tableIndex, sectionInfo, sourcePath, viewType } =
+					const { blockId, sectionInfo, sourcePath, viewType } =
 						this.focused;
 					const oldData =
-						this.settings.state[sourcePath][tableIndex].data;
+						this.settings.state[sourcePath][blockId].data;
 					const newData = addColumn(oldData);
 					await saveAppData(
 						this,
 						newData,
-						tableIndex,
+						blockId,
 						sectionInfo,
 						sourcePath,
 						viewType
@@ -114,15 +128,15 @@ export default class NltPlugin extends Plugin {
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Enter" }],
 			callback: async () => {
 				if (this.focused) {
-					const { tableIndex, sectionInfo, sourcePath, viewType } =
+					const { blockId, sectionInfo, sourcePath, viewType } =
 						this.focused;
 					const oldData =
-						this.settings.state[sourcePath][tableIndex].data;
+						this.settings.state[sourcePath][blockId].data;
 					const newData = addRow(oldData);
 					await saveAppData(
 						this,
 						newData,
-						tableIndex,
+						blockId,
 						sectionInfo,
 						sourcePath,
 						viewType
@@ -137,13 +151,13 @@ export default class NltPlugin extends Plugin {
 	}
 
 	focusTable = ({
-		tableIndex,
+		blockId,
 		sectionInfo,
 		sourcePath,
 		viewType,
 	}: FocusedTable) => {
 		this.focused = {
-			tableIndex,
+			blockId,
 			sectionInfo,
 			sourcePath,
 			viewType,

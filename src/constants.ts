@@ -1,13 +1,7 @@
 export const DEBUG = {
-	LOAD_APP_DATA: {
-		PARSED_TABLE: false,
-		DATA: false,
-		IDS: false,
-		TYPES: false,
-		MARKDOWN: false,
-	},
+	LOAD_APP_DATA: true,
 	APP: false,
-	SAVE_APP_DATA: false,
+	SAVE_APP_DATA: true,
 	EDITABLE_TD: false,
 	FOCUS_PROVIDER: false,
 	MENU_PROVIDER: false,
@@ -80,4 +74,4 @@ export const HIGHLIGHT_TAG_CLOSE = "</mark>";
 
 export const MIN_COLUMN_WIDTH_PX = 50;
 
-export const CURRENT_TABLE_CACHE_VERSION = 426;
+export const CURRENT_TABLE_CACHE_VERSION = 430;
