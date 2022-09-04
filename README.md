@@ -13,6 +13,10 @@ Want to support development?
 <a href="
 https://www.buymeacoffee.com/treywallis"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=treywallis&button_colour=6a8695&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00"></a>
 
+## Version 4.3.1
+
+-   Type switching now works without any data loss. Fixes [https://github.com/trey-wallis/obsidian-notion-like-tables/issues/196](#196)
+
 ## Version 4.3.0
 
 -   Updated table replacement algorithm. This should fix any tables in which the markdown wasn't updating
