@@ -12,45 +12,49 @@ export class NltTable extends MarkdownRenderChild {
 	plugin: NltPlugin;
 	sourcePath: string;
 	sectionInfo: MarkdownSectionInformation;
+	blockId: string;
 	el: HTMLElement;
 
 	constructor(
-		containerEl: HTMLElement,
 		plugin: NltPlugin,
+		containerEl: HTMLElement,
+		blockId: string,
 		sectionInfo: MarkdownSectionInformation,
 		sourcePath: string
 	) {
 		super(containerEl);
 		this.plugin = plugin;
+		this.blockId = blockId;
 		this.sectionInfo = sectionInfo;
 		this.sourcePath = sourcePath;
 	}
 
 	async onload() {
-		const { tableIndex, data } = await loadAppData(
+		const appData = await loadAppData(
 			this.plugin,
 			this.containerEl,
+			this.blockId,
 			this.sourcePath
 		);
 
 		//If data is not defined then it isn't a valid table
-		if (data) {
+		if (appData) {
 			this.el = this.containerEl.createEl("div");
 			ReactDOM.render(
 				<FocusProvider
 					plugin={this.plugin}
 					sourcePath={this.sourcePath}
 					sectionInfo={this.sectionInfo}
-					tableIndex={tableIndex}
+					blockId={this.blockId}
 					el={this.el}
 				>
 					<MenuProvider>
 						<App
 							plugin={this.plugin}
 							sectionInfo={this.sectionInfo}
-							loadedData={data}
+							loadedData={appData}
 							sourcePath={this.sourcePath}
-							tableIndex={tableIndex}
+							blockId={this.blockId}
 							el={this.containerEl}
 						/>
 					</MenuProvider>

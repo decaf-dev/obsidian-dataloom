@@ -40,7 +40,7 @@ interface Props {
 	plugin: NltPlugin;
 	loadedData: AppData;
 	sourcePath: string;
-	tableIndex: string;
+	blockId: string;
 	sectionInfo: MarkdownSectionInformation;
 	el: HTMLElement;
 }
@@ -51,7 +51,7 @@ export default function App({
 	plugin,
 	loadedData,
 	sourcePath,
-	tableIndex,
+	blockId,
 	sectionInfo,
 	el,
 }: Props) {
@@ -80,7 +80,7 @@ export default function App({
 				await saveAppData(
 					plugin,
 					appData,
-					tableIndex,
+					blockId,
 					sectionInfo,
 					sourcePath,
 					findCurrentViewType(el)

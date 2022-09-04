@@ -16,7 +16,7 @@ const COMPONENT_NAME = "FocusProvider";
 interface Props {
 	children: React.ReactNode;
 	plugin: NltPlugin;
-	tableIndex: string;
+	blockId: string;
 	sectionInfo: MarkdownSectionInformation;
 	sourcePath: string;
 	el: HTMLElement;
@@ -26,7 +26,7 @@ export default function FocusProvider({
 	children,
 	plugin,
 	sectionInfo,
-	tableIndex,
+	blockId,
 	sourcePath,
 	el,
 }: Props) {
@@ -36,7 +36,7 @@ export default function FocusProvider({
 		if (DEBUG.FOCUS_PROVIDER) logFunc(COMPONENT_NAME, "handleFocus");
 		setFocus(true);
 		plugin.focusTable({
-			tableIndex,
+			blockId,
 			sectionInfo,
 			sourcePath,
 			viewType: findCurrentViewType(el),
@@ -54,7 +54,7 @@ export default function FocusProvider({
 			if (plugin.focused) {
 				if (
 					plugin.focused.sourcePath === sourcePath &&
-					plugin.focused.tableIndex === tableIndex
+					plugin.focused.blockId === blockId
 				) {
 					setTimeout(() => {
 						handleFocus();
