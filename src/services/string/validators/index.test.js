@@ -1,4 +1,4 @@
-import { isNumber, isTag, hasSquareBrackets } from ".";
+import { isNumber, isTag } from ".";
 
 describe("isNumber", () => {
 	it("returns true if number", () => {
@@ -31,22 +31,5 @@ describe("isTag", () => {
 	it("doesn't match tag with spaces", () => {
 		const value = isTag("#tag tag");
 		expect(value).toEqual(false);
-	});
-});
-
-describe("hasSquareBrackets", () => {
-	it("returns true if has square brackets", () => {
-		const output = hasSquareBrackets("[[test file name]]");
-		expect(output).toEqual(true);
-	});
-
-	it("returns false if doesn't have square brackets", () => {
-		const output = hasSquareBrackets("test file name");
-		expect(output).toEqual(false);
-	});
-
-	it("returns false if square brackets are incomplete", () => {
-		const output = hasSquareBrackets("test file name]]");
-		expect(output).toEqual(false);
 	});
 });
