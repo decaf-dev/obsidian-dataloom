@@ -1,21 +1,4 @@
-import { matchURLs, countNumTags } from "./index";
-
-describe("matchURLs", () => {
-	it("matches http", () => {
-		const matched = matchURLs("https://google.com");
-		expect(matched).toEqual(["https://google.com"]);
-	});
-	it("matches https", () => {
-		const matched = matchURLs("https://google.com");
-		expect(matched).toEqual(["https://google.com"]);
-	});
-	it("matches multiple urls", () => {
-		const matched = matchURLs(
-			"test https://google.com test https://yahoo.com"
-		);
-		expect(matched).toEqual(["https://google.com", "https://yahoo.com"]);
-	});
-});
+import { countNumTags } from "./index";
 
 describe("countNumTags", () => {
 	it("counts single letter tag", () => {

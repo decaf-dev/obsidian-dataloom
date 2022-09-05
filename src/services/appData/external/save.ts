@@ -8,8 +8,6 @@ import { ViewType } from "../state/saveState";
 import { AppData } from "../state/types";
 import { CURRENT_TABLE_CACHE_VERSION, DEBUG } from "src/constants";
 
-// const SHOULD_DEBUG = DEBUG.SAVE_APP_DATA;
-
 //TODO optimize in the future?
 //How much weight does this function have?
 export const saveAppData = async (

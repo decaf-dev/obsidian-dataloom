@@ -12,7 +12,6 @@ import { addRow, addColumn } from "src/services/appData/internal/add";
 import { saveAppData } from "src/services/appData/external/save";
 import { createEmptyMarkdownTable } from "src/services/appData/mock";
 import { ViewType } from "src/services/appData/state/saveState";
-import NltSettingsTab from "./NltSettingsTab";
 
 interface FocusedTable {
 	blockId: string;

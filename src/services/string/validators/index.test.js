@@ -1,21 +1,4 @@
-import { isMarkdownTable, isNumber, isTag, hasSquareBrackets } from ".";
-
-describe("isMarkdownTable", () => {
-	it("return true if valid", () => {
-		const isValid = isMarkdownTable("| test |\n| ---- |");
-		expect(isValid).toEqual(true);
-	});
-
-	it("return false if invalid", () => {
-		const isValid = isMarkdownTable("");
-		expect(isValid).toEqual(false);
-	});
-
-	it("return false if hyphen cell count doesn't match header cell count", () => {
-		const isValid = isMarkdownTable("| test | test 2 |\n| --- |");
-		expect(isValid).toEqual(false);
-	});
-});
+import { isNumber, isTag, hasSquareBrackets } from ".";
 
 describe("isNumber", () => {
 	it("returns true if number", () => {
