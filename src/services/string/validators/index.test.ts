@@ -1,4 +1,4 @@
-import { isNumber, isTag } from ".";
+import { isNumber, isTag, countNumTags } from ".";
 
 describe("isNumber", () => {
 	it("returns true if number", () => {

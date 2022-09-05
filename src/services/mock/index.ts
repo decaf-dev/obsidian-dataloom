@@ -1,33 +1,33 @@
-export const mockTable = (parsedTable: [][]) => {
-	const table = document.createElement("table");
-	const thead = document.createElement("thead");
-	const tbody = document.createElement("tbody");
+// export const mockTable = (parsedTable: string[][]) => {
+// 	const table = document.createElement("table");
+// 	const thead = document.createElement("thead");
+// 	const tbody = document.createElement("tbody");
 
-	const row = document.createElement("tr");
-	parsedTable[0].forEach((th) => {
-		const td = document.createElement("th");
-		const text = document.createTextNode(th);
-		td.appendChild(text);
-		row.appendChild(td);
-	});
-	thead.appendChild(row);
+// 	const row = document.createElement("tr");
+// 	parsedTable[0].forEach((th) => {
+// 		const td = document.createElement("th");
+// 		const text = document.createTextNode(th);
+// 		td.appendChild(text);
+// 		row.appendChild(td);
+// 	});
+// 	thead.appendChild(row);
 
-	parsedTable.forEach((tr, i) => {
-		if (i === 0) return;
-		const row = document.createElement("tr");
-		for (let j = 0; j < tr.length; j++) {
-			const td = document.createElement("td");
-			const text = document.createTextNode(tr[j]);
-			td.appendChild(text);
-			row.appendChild(td);
-		}
-		tbody.appendChild(row);
-	});
+// 	parsedTable.forEach((tr, i) => {
+// 		if (i === 0) return;
+// 		const row = document.createElement("tr");
+// 		for (let j = 0; j < tr.length; j++) {
+// 			const td = document.createElement("td");
+// 			const text = document.createTextNode(tr[j]);
+// 			td.appendChild(text);
+// 			row.appendChild(td);
+// 		}
+// 		tbody.appendChild(row);
+// 	});
 
-	table.appendChild(thead);
-	table.appendChild(tbody);
-	return table;
-};
+// 	table.appendChild(thead);
+// 	table.appendChild(tbody);
+// 	return table;
+// };
 
 interface parsedTable {
 	numColumns?: number;

@@ -6,7 +6,7 @@ import { appDataToMarkdown } from "./saveUtils";
 
 import { ViewType } from "../settings/saveState";
 import { AppData } from "../table/types";
-import { CURRENT_TABLE_CACHE_VERSION, DEBUG } from "src/constants";
+import { CURRENT_TABLE_CACHE_VERSION, DEBUG } from "../../constants";
 
 //TODO optimize in the future?
 //How much weight does this function have?

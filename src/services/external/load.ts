@@ -1,6 +1,6 @@
-import NltPlugin from "../../main";
+import NltPlugin from "src/main";
 import { updateAppDataFromSavedState } from "./merge";
-import { CURRENT_TABLE_CACHE_VERSION, DEBUG } from "src/constants";
+import { CURRENT_TABLE_CACHE_VERSION, DEBUG } from "../../constants";
 import { AppData } from "../table/types";
 import {
 	findAppData,

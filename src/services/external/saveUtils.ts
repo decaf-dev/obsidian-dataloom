@@ -1,6 +1,4 @@
-import { AppData, Cell } from "../table/types";
-
-import { CellType } from "src/services/table/types";
+import { AppData, Cell, CellType } from "../table/types";
 
 /**
  * Converts app data to a valid Obsidian markdown string

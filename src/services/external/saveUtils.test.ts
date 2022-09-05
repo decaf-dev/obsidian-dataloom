@@ -12,7 +12,7 @@ describe("appDataToMarkdown", () => {
 			["Column 1", "Column 2"],
 			["Cell 1", "Cell 2"],
 		];
-		const data = findAppData(parsedTable);
+		const data = findAppData(parsedTable, parsedTable);
 		const markdown = appDataToMarkdown(data);
 		expect(markdown).toEqual(
 			"| Column 1 | Column 2 |\n| -------- | -------- |\n| Cell 1   | Cell 2   |"
@@ -26,7 +26,7 @@ describe("calcColumnCharLengths", () => {
 			["Column 1", "Column 2"],
 			["Test 1", "Test 2"],
 		];
-		const data = findAppData(parsedTable);
+		const data = findAppData(parsedTable, parsedTable);
 		const lengths = calcColumnCharLengths(data);
 		expect(lengths).toEqual([8, 8]);
 	});

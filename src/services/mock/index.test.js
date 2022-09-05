@@ -1,23 +1,5 @@
-import { mockTable, mockParsedTable } from "./index";
-import { createEmptyMarkdownTable } from "../../random";
-
-describe("mockTable", () => {
-	it("creates a mock table", () => {
-		const parsedTable = mockParsedTable();
-		const table = mockTable(parsedTable);
-		const tr = table.querySelectorAll("tr");
-		expect(tr.length).toBe(3);
-
-		const th = tr[0].querySelectorAll("th");
-		expect(th.length).toEqual(2);
-
-		let td = tr[1].querySelectorAll("td");
-		expect(td.length).toEqual(2);
-
-		td = tr[2].querySelectorAll("td");
-		expect(td.length).toEqual(2);
-	});
-});
+import { mockParsedTable } from "./index";
+import { createEmptyMarkdownTable } from "../random";
 
 describe("mockParsedTable", () => {
 	it("creates a valid table", () => {

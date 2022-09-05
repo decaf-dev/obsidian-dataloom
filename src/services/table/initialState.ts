@@ -1,7 +1,6 @@
-import { CellType } from "src/services/table/types";
 import { SortDir } from "../sort/types";
 
-import { Cell, Header, Row, Tag } from "./types";
+import { Cell, Header, Row, Tag, CellType } from "./types";
 
 export const initialHeader = (
 	id: string,

@@ -2,7 +2,7 @@ import {
 	MARKDOWN_CELLS_REGEX,
 	MARKDOWN_HYPHEN_CELL_REGEX,
 	MARKDOWN_ROWS_REGEX,
-} from "./";
+} from ".";
 
 describe("HYPHEN_CELL_REGEX", () => {
 	it("matches hyphen cell", () => {
