@@ -9,9 +9,9 @@ export interface AppData {
 export interface Header {
 	id: string;
 	content: string;
-	sortDir: SortDir; //render only
-	sortName?: string; //Deprecated in 4.1.2 //render only
-	width: string; //render only
+	textContent: string; //Added in 4.3.2
+	sortDir: SortDir;
+	width: string;
 	type: CellType;
 	useAutoWidth: boolean;
 	shouldWrapOverflow: boolean;
@@ -28,6 +28,7 @@ export interface Cell {
 	headerId: string;
 	type: CellType;
 	content: string;
+	textContent: string; //Added in 4.3.2
 }
 
 export interface Tag {

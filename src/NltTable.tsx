@@ -1,8 +1,4 @@
-import {
-	ItemView,
-	MarkdownRenderChild,
-	MarkdownSectionInformation,
-} from "obsidian";
+import { MarkdownRenderChild, MarkdownSectionInformation } from "obsidian";
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
@@ -11,7 +7,6 @@ import NltPlugin from "main";
 import MenuProvider from "./components/MenuProvider";
 import FocusProvider from "./components/FocusProvider";
 
-//This is our main class that will render the React app to the Obsidian container element
 export class NltTable extends MarkdownRenderChild {
 	plugin: NltPlugin;
 	sourcePath: string;
@@ -38,6 +33,7 @@ export class NltTable extends MarkdownRenderChild {
 			this.plugin,
 			this.containerEl,
 			this.blockId,
+			this.sectionInfo,
 			this.sourcePath
 		);
 

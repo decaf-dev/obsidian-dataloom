@@ -3,10 +3,15 @@ import { SortDir } from "../../sort/types";
 
 import { Cell, Header, Row, Tag } from "./types";
 
-export const initialHeader = (id: string, content: string): Header => {
+export const initialHeader = (
+	id: string,
+	content: string,
+	textContent: string
+): Header => {
 	return {
 		id,
 		content,
+		textContent,
 		sortDir: SortDir.NONE,
 		width: "100px",
 		shouldWrapOverflow: true,
@@ -27,7 +32,8 @@ export const initialCell = (
 	headerId: string,
 	rowId: string,
 	type: CellType,
-	content: string
+	content: string,
+	textContent: string
 ): Cell => {
 	return {
 		id,
@@ -35,6 +41,7 @@ export const initialCell = (
 		rowId,
 		type,
 		content,
+		textContent,
 	};
 };
 

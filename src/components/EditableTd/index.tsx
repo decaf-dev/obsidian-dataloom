@@ -75,7 +75,8 @@ export default function EditableTd({
 	const [tagInputText, setTagInputText] = useState("");
 	const [tagColor] = useState(randomColor());
 	const menuId = useId();
-	const content = cell.content;
+
+	const { id, headerId, type, content, textContent } = cell;
 
 	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
 		useMenuId(menuId);
@@ -84,8 +85,6 @@ export default function EditableTd({
 		content.length,
 		positionUpdateTime,
 	]);
-
-	const { id, headerId, type } = cell;
 
 	const [wasContentUpdated, setContentUpdate] = useState(false);
 
@@ -189,7 +188,7 @@ export default function EditableTd({
 			case CellType.TEXT:
 				return (
 					<TextCell
-						content={content}
+						content={textContent}
 						shouldWrapOverflow={shouldWrapOverflow}
 						useAutoWidth={useAutoWidth}
 					/>
@@ -197,7 +196,7 @@ export default function EditableTd({
 			case CellType.NUMBER:
 				return (
 					<NumberCell
-						content={content}
+						content={textContent}
 						shouldWrapOverflow={shouldWrapOverflow}
 						useAutoWidth={useAutoWidth}
 					/>

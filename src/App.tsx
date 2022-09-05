@@ -453,7 +453,8 @@ export default function App({
 			const header = prevState.headers.find((header) => header.id === id);
 			const index = prevState.headers.indexOf(header);
 			const insertIndex = insertRight ? index + 1 : index;
-			const headerToInsert = initialHeader(uuid(), "New Column");
+			const title = "New Column";
+			const headerToInsert = initialHeader(uuid(), title, title);
 
 			const cells = prevState.rows.map((row) =>
 				initialCell(
@@ -461,6 +462,7 @@ export default function App({
 					headerToInsert.id,
 					row.id,
 					headerToInsert.type,
+					"",
 					""
 				)
 			);

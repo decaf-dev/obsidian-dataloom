@@ -5,8 +5,6 @@ import { initialHeader, initialRow } from "../state/initialState";
 import { Header, Row, AppData, Cell, Tag } from "../state/types";
 
 import { MARKDOWN_CELLS_REGEX, MARKDOWN_ROWS_REGEX } from "../../string/regex";
-import { isMarkdownTable } from "../../string/validators";
-import { stripLinks, sanitizeHTML } from "../../string/strippers";
 import { ViewType } from "../state/saveState";
 import { initialCell } from "../state/initialState";
 import { getCurrentTimeWithOffset } from "../../random";
@@ -20,6 +18,7 @@ import { getCurrentTimeWithOffset } from "../../random";
  * @param data The data for one table. No more, no less.
  * @returns A parsed table representation
  */
+//TODO make sure this works 100%, 100% of the time
 export const parseTableFromMarkdown = (data: string): string[][] => {
 	//Start by breaking up everything into rows based off of a row syntax | ---- |
 	const rows = data.match(MARKDOWN_ROWS_REGEX);
@@ -58,16 +57,6 @@ export const parseTableFromEl = (el: HTMLElement): string[][] => {
 	return table;
 };
 
-export const findMarkdownTablesFromFileData = (data: string): string[] => {
-	//We match groups of lines that follow the markdown table syntax
-	// | line 1  |
-	// | line 2  |
-	const matches = data.match(/(\|.*\|(\r\n|\r|\n){0,1}){1,}/g) || [];
-	//From there we check if this is actually a table
-	//We will just look for the hyphen row with each cell having at least 3 hyphens
-	return matches.filter((match) => isMarkdownTable(match));
-};
-
 export const findCurrentViewType = (el: HTMLElement): ViewType => {
 	let currentViewType: ViewType = "reading";
 	if (el.className.includes("markdown-rendered"))
@@ -81,16 +70,19 @@ export const hashHeaders = (headers: string[]): number => {
 	);
 };
 
-export const findAppData = (parsedTable: string[][]): AppData => {
+export const findAppData = (
+	contentTable: string[][],
+	textContentTable: string[][]
+): AppData => {
 	const headers: Header[] = [];
 	const rows: Row[] = [];
 	const cells: Cell[] = [];
 	const tags: Tag[] = [];
 
-	parsedTable.forEach((parsedRow, i) => {
+	contentTable.forEach((parsedRow, i) => {
 		if (i === 0) {
 			parsedRow.forEach((th, j) => {
-				headers.push(initialHeader(uuid(), th));
+				headers.push(initialHeader(uuid(), th, textContentTable[0][j]));
 			});
 		} else {
 			const row = initialRow(uuid(), getCurrentTimeWithOffset());
@@ -103,7 +95,8 @@ export const findAppData = (parsedTable: string[][]): AppData => {
 					headers[j].id,
 					row.id,
 					headers[j].type,
-					td
+					td,
+					textContentTable[i][j]
 				);
 				cells.push(cell);
 			});

@@ -29,7 +29,7 @@ export const updateAppDataFromSavedState = (
 	newData.cells.forEach((c, i) => {
 		const { id, rowId, headerId, content } = c;
 		const header = newData.headers.find((header) => header.id === headerId);
-		const cell = initialCell(id, headerId, rowId, header.type, content);
+		const cell = initialCell(id, headerId, rowId, header.type, content, "");
 		updated.cells[i] = cell;
 
 		if (cell.type === CellType.TAG) {

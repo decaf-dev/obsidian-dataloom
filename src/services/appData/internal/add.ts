@@ -6,7 +6,7 @@ export const addRow = (data: AppData): AppData => {
 	const rowId = uuid();
 	const tags: Tag[] = [];
 	const cells = data.headers.map((header, i) => {
-		return initialCell(uuid(), header.id, rowId, header.type, "");
+		return initialCell(uuid(), header.id, rowId, header.type, "", "");
 	});
 	return {
 		...data,
@@ -17,10 +17,11 @@ export const addRow = (data: AppData): AppData => {
 };
 
 export const addColumn = (data: AppData): AppData => {
-	const header = initialHeader(uuid(), "New Column");
+	const title = "New Column";
+	const header = initialHeader(uuid(), title, title);
 	const cells = [...data.cells];
 	data.rows.forEach((row) => {
-		cells.push(initialCell(uuid(), header.id, row.id, header.type, ""));
+		cells.push(initialCell(uuid(), header.id, row.id, header.type, "", ""));
 	});
 	return {
 		...data,
