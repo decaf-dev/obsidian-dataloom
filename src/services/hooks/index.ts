@@ -27,25 +27,6 @@ const usePrevious = (value: any) => {
 	return ref.current;
 };
 
-export const useTextareaRef = (isOpen: boolean, value: string) => {
-	const lengthHasChanged = useCompare(value.length);
-	return useCallback(
-		(node) => {
-			if (node) {
-				if (isOpen && !lengthHasChanged) {
-					node.selectionStart = value.length;
-					node.selectionEnd = value.length;
-					if (node instanceof HTMLElement) {
-						setTimeout(() => {
-							node.focus();
-						}, 1);
-					}
-				}
-			}
-		},
-		[isOpen, value.length]
-	);
-};
 export const useDidMountEffect = (func: (...rest: any) => any, deps: any[]) => {
 	const didMount = useRef(false);
 
@@ -186,24 +167,23 @@ export const usePositionRef = (deps: any[] = []) => {
 	const obsidianScrollTime = useObsidianScrollTime();
 	const tableScrollTime = useTableScrollTime();
 
-	const positionRef = useCallback(
-		(node) => {
-			if (node instanceof HTMLElement) {
-				const { top, left } = node.getBoundingClientRect();
-				//We use offsetWidth, and offsetHeight instead of the width and height of the rectangle
-				//because we want whole values to match what we set as the column width.
-				//This will make sure that the rendered cell and the input cell are the same size
-				const { offsetWidth, offsetHeight } = node;
-				setPosition({
-					top: numToPx(top),
-					left: numToPx(left),
-					width: numToPx(offsetWidth),
-					height: numToPx(offsetHeight),
-				});
-			}
-		},
-		[obsidianResizeTime, obsidianScrollTime, tableScrollTime, ...deps]
-	);
+	const positionRef = useRef(null);
+
+	useEffect(() => {
+		const node = positionRef.current;
+		const { top, left } = node.getBoundingClientRect();
+		//We use offsetWidth, and offsetHeight instead of the width and height of the rectangle
+		//because we want whole values to match what we set as the column width.
+		//This will make sure that the rendered cell and the input cell are the same size
+		const { offsetWidth, offsetHeight } = node;
+		setPosition({
+			top: numToPx(top),
+			left: numToPx(left),
+			width: numToPx(offsetWidth),
+			height: numToPx(offsetHeight),
+		});
+	}, [obsidianResizeTime, obsidianScrollTime, tableScrollTime, ...deps]);
+
 	return { positionRef, position };
 };
 

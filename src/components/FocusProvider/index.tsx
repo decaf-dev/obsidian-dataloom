@@ -1,6 +1,6 @@
 import NltPlugin from "../../main";
 import { MarkdownSectionInformation } from "obsidian";
-import React, { useState, useContext, useCallback, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { DEBUG } from "src/constants";
 import { logFunc } from "src/services/debug";
 import { findCurrentViewType } from "src/services/external/loadUtils";
@@ -49,17 +49,15 @@ export default function FocusProvider({
 		plugin.blurTable();
 	}
 
-	const divRef = useCallback((node) => {
-		if (node) {
-			if (plugin.focused) {
-				if (
-					plugin.focused.sourcePath === sourcePath &&
-					plugin.focused.blockId === blockId
-				) {
-					setTimeout(() => {
-						handleFocus();
-					}, 1);
-				}
+	useEffect(() => {
+		if (plugin.focused) {
+			if (
+				plugin.focused.sourcePath === sourcePath &&
+				plugin.focused.blockId === blockId
+			) {
+				setTimeout(() => {
+					handleFocus();
+				}, 1);
 			}
 		}
 	}, []);
@@ -97,7 +95,7 @@ export default function FocusProvider({
 	}, []);
 
 	return (
-		<div ref={divRef}>
+		<div>
 			<FocusContext.Provider value={isFocused}>
 				{children}
 			</FocusContext.Provider>

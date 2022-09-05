@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 import Menu from "../Menu";
-import { useTextareaRef } from "src/services/hooks";
+
+import { useCompare } from "src/services/hooks";
 
 import "./styles.css";
 
@@ -28,7 +29,22 @@ export default function TextCellEdit({
 	content,
 	onInputChange,
 }: Props) {
-	const inputRef = useTextareaRef(isOpen, content);
+	const inputRef = useRef<HTMLTextAreaElement>(null);
+
+	const lengthHasChanged = useCompare(content.length);
+
+	function focusInput() {
+		this.inputRef.focus();
+	}
+
+	useEffect(() => {
+		if (isOpen && !lengthHasChanged) {
+			//TODO add back
+			// node.selectionStart = value.length;
+			// node.selectionEnd = value.length;
+			focusInput();
+		}
+	}, [isOpen, lengthHasChanged]);
 
 	function handleTextareaChange(value: string) {
 		value = value.replace("\n", "");
