@@ -26,7 +26,7 @@ export const filterNumberFromContent = (content: string) => {
 	return result;
 };
 
-export const checkboxToString = (content: string) => {
+export const checkboxToContent = (content: string) => {
 	if (isCheckbox(content)) {
 		if (content.includes("x")) {
 			return "Yes";
@@ -38,7 +38,7 @@ export const checkboxToString = (content: string) => {
 	}
 };
 
-export const stringToCheckbox = (content: string) => {
+export const contentToCheckbox = (content: string) => {
 	if (content === "Yes") {
 		return "[x]";
 	} else if (content == "No") {

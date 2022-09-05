@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 
 import EditableTd from "./components/EditableTd";
 import Table from "./components/Table";
@@ -34,8 +34,8 @@ import {
 import { sortRows } from "./services/sort/sort";
 import { MarkdownSectionInformation } from "obsidian";
 import {
-	checkboxToString,
-	stringToCheckbox,
+	checkboxToContent,
+	contentToCheckbox,
 } from "./services/appData/state/utils";
 import { randomColor } from "./services/random";
 
@@ -183,9 +183,9 @@ export default function App({
 
 		function findUpdatedCellContent(content: string) {
 			if (header.type === CellType.CHECKBOX) {
-				return checkboxToString(content);
+				return checkboxToContent(content);
 			} else if (selectedCellType === CellType.CHECKBOX) {
-				return stringToCheckbox(content);
+				return contentToCheckbox(content);
 			} else {
 				return content;
 			}
