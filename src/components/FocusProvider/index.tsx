@@ -97,14 +97,7 @@ export default function FocusProvider({
 	}, []);
 
 	return (
-		<div
-			ref={divRef}
-			onClick={(e) => {
-				//Stop propagation to the Obsidian editing-mode handler
-				e.preventDefault();
-				e.stopPropagation();
-			}}
-		>
+		<div ref={divRef}>
 			<FocusContext.Provider value={isFocused}>
 				{children}
 			</FocusContext.Provider>
