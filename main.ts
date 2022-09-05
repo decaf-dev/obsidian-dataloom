@@ -24,6 +24,19 @@ export default class NltPlugin extends Plugin {
 	settings: NltSettings;
 	focused: FocusedTable | null = null;
 
+	findTableBlockId = (text: string, lineEnd: number): string | null => {
+		let blockId = null;
+		const lines = text.split("\n");
+		const blockIdRegex = new RegExp(/^\^.+$/);
+		for (let i = 1; i < 3; i++) {
+			if (lines.length - 1 >= lineEnd + i) {
+				const line = lines[lineEnd + i];
+				if (line.match(blockIdRegex)) blockId = line.split("^")[1];
+			}
+		}
+		return blockId;
+	};
+
 	/**
 	 * Called on plugin load.
 	 * This can be when the plugin is enabled or Obsidian is first opened.
@@ -38,16 +51,7 @@ export default class NltPlugin extends Plugin {
 				const { lineEnd, text } = sectionInfo;
 				const table = element.getElementsByTagName("table");
 				if (table.length === 1) {
-					let blockId = null;
-					const lines = text.split("\n");
-					const blockIdRegex = new RegExp(/^\^.+$/);
-					for (let i = 1; i < 3; i++) {
-						if (lines.length - 1 >= lineEnd + i) {
-							const line = lines[lineEnd + i];
-							if (line.match(blockIdRegex))
-								blockId = line.split("^")[1];
-						}
-					}
+					const blockId = this.findTableBlockId(text, lineEnd);
 					if (blockId) {
 						context.addChild(
 							new NltTable(
