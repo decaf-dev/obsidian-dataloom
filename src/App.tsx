@@ -24,6 +24,7 @@ import { addRow, addColumn } from "./services/appData/internal/add";
 import { findCurrentViewType } from "./services/appData/external/loadUtils";
 import { v4 as uuid } from "uuid";
 import { logFunc } from "./services/appData/debug";
+
 import {
 	useCloseMenusOnScroll,
 	useDidMountEffect,
@@ -72,7 +73,7 @@ export default function App({
 	useCloseMenusOnScroll("NLT__table-wrapper");
 
 	useDidMountEffect(() => {
-		//TODO handle when a user clicks the same option
+		//TODO handle when a user clicks the same sort option
 		setAppData((prevState) => {
 			return {
 				...prevState,
@@ -557,7 +558,7 @@ export default function App({
 		ruler.style.paddingBottom = "4px";
 		ruler.style.paddingLeft = "10px";
 		ruler.style.paddingRight = "10px";
-		ruler.textContent = textContent;
+		ruler.innerHTML = textContent;
 
 		document.body.appendChild(ruler);
 		const width = window.getComputedStyle(ruler).getPropertyValue("width");
@@ -748,7 +749,9 @@ export default function App({
 									})}
 									<td
 										className="NLT__td"
-										style={{ height: rowHeights[row.id] }}
+										style={{
+											height: rowHeights[row.id],
+										}}
 									>
 										<div className="NLT__td-container">
 											<RowMenu
