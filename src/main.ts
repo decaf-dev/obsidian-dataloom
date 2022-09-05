@@ -6,12 +6,12 @@ import {
 	MarkdownSectionInformation,
 } from "obsidian";
 
-import { NltTable } from "src/NltTable";
-import { NltSettings, DEFAULT_SETTINGS } from "src/services/settings";
-import { addRow, addColumn } from "src/services/internal/add";
-import { saveAppData } from "src/services/external/save";
-import { createEmptyMarkdownTable } from "src/services/random";
-import { ViewType } from "src/services/settings/saveState";
+import { NltTable } from "./NltTable";
+import { NltSettings, DEFAULT_SETTINGS } from "./services/settings";
+import { addRow, addColumn } from "./services/internal/add";
+import { saveAppData } from "./services/external/save";
+import { createEmptyMarkdownTable } from "./services/random";
+import { ViewType } from "./services/settings/saveState";
 
 interface FocusedTable {
 	blockId: string;

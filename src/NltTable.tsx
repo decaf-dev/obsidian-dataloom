@@ -3,7 +3,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
 import { loadAppData } from "./services/external/load";
-import NltPlugin from "main";
+import NltPlugin from "./main";
 import MenuProvider from "./components/MenuProvider";
 import FocusProvider from "./components/FocusProvider";
 

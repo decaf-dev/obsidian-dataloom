@@ -1,4 +1,4 @@
-import NltPlugin from "main";
+import NltPlugin from "../../main";
 import { MarkdownSectionInformation } from "obsidian";
 import React, { useState, useContext, useCallback, useEffect } from "react";
 import { DEBUG } from "src/constants";

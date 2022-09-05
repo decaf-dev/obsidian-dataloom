@@ -1,5 +1,5 @@
-import { PluginSettingTab, App, Setting } from "obsidian";
-import NltPlugin from "main";
+import { PluginSettingTab, App } from "obsidian";
+import NltPlugin from "./main";
 
 export default class NltSettingsTab extends PluginSettingTab {
 	plugin: NltPlugin;

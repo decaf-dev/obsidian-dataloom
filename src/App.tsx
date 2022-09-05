@@ -18,7 +18,7 @@ import { numToPx, pxToNum } from "./services/string/conversion";
 import { DEBUG, MIN_COLUMN_WIDTH_PX } from "./constants";
 
 import "./app.css";
-import NltPlugin from "main";
+import NltPlugin from "./main";
 import { SortDir } from "./services/sort/types";
 import { addRow, addColumn } from "./services/internal/add";
 import { findCurrentViewType } from "./services/external/loadUtils";

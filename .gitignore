@@ -22,6 +22,4 @@ data.json
 .DS_Store
 
 # Ignore build files
-main.css
-main.js
-/styles.css
+dist
