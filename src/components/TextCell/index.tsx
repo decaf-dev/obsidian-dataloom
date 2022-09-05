@@ -19,12 +19,6 @@ export default function TextCell({
 	shouldWrapOverflow,
 	useAutoWidth,
 }: Props) {
-	content = parseURLs(content);
-	content = parseFileLinks(content);
-	content = parseBoldMarkdown(content);
-	content = parseItalicMarkdown(content);
-	content = parseHighlightMarkdown(content);
-
 	let className = "NLT__text-cell";
 	if (useAutoWidth) {
 		className += " NLT__auto-width";
