@@ -1,7 +1,7 @@
-import { TabbableElement } from "../appData/state/tabbableElement";
+import { TabbableElement } from "../state/tabbableElement";
 import { TABBABLE_ELEMENT_TYPE } from "src/constants";
-import { SaveState } from "../appData/state/saveState";
-import { AppData } from "../appData/state/types";
+import { SaveState } from "../state/saveState";
+import { AppData } from "../state/types";
 
 export interface NltSettings {
 	appData: {

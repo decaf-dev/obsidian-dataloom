@@ -4,10 +4,10 @@ import CRC32 from "crc-32";
 import { initialHeader, initialRow } from "../state/initialState";
 import { Header, Row, AppData, Cell, Tag } from "../state/types";
 
-import { MARKDOWN_CELLS_REGEX, MARKDOWN_ROWS_REGEX } from "../../string/regex";
+import { MARKDOWN_CELLS_REGEX, MARKDOWN_ROWS_REGEX } from "../string/regex";
 import { ViewType } from "../state/saveState";
 import { initialCell } from "../state/initialState";
-import { getCurrentTimeWithOffset } from "../../random";
+import { getCurrentTimeWithOffset } from "../random";
 
 /**
  * Parses data for an individual table.

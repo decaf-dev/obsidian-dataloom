@@ -2,7 +2,7 @@ import { MarkdownRenderChild, MarkdownSectionInformation } from "obsidian";
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
-import { loadAppData } from "./services/appData/external/load";
+import { loadAppData } from "./services/external/load";
 import NltPlugin from "main";
 import MenuProvider from "./components/MenuProvider";
 import FocusProvider from "./components/FocusProvider";

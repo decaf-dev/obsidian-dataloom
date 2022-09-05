@@ -1,4 +1,5 @@
-import { mockTable, createEmptyMarkdownTable, mockParsedTable } from "./index";
+import { mockTable, mockParsedTable } from "./index";
+import { createEmptyMarkdownTable } from "../../random";
 
 describe("mockTable", () => {
 	it("creates a mock table", () => {

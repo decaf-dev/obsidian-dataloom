@@ -8,10 +8,10 @@ import {
 
 import { NltTable } from "src/NltTable";
 import { NltSettings, DEFAULT_SETTINGS } from "src/services/settings";
-import { addRow, addColumn } from "src/services/appData/internal/add";
-import { saveAppData } from "src/services/appData/external/save";
-import { createEmptyMarkdownTable } from "src/services/appData/mock";
-import { ViewType } from "src/services/appData/state/saveState";
+import { addRow, addColumn } from "src/services/internal/add";
+import { saveAppData } from "src/services/external/save";
+import { createEmptyMarkdownTable } from "src/services/random";
+import { ViewType } from "src/services/state/saveState";
 
 interface FocusedTable {
 	blockId: string;

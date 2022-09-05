@@ -10,7 +10,7 @@ import { CSS_MEASUREMENT_PIXEL_REGEX } from "src/services/string/regex";
 import { numToPx, pxToNum } from "src/services/string/conversion";
 import { MIN_COLUMN_WIDTH_PX } from "src/constants";
 import { SortDir } from "src/services/sort/types";
-import { CellType } from "src/services/appData/state/types";
+import { CellType } from "src/services/state/types";
 interface Props {
 	id: string;
 	index: number;

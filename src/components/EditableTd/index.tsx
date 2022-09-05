@@ -12,13 +12,13 @@ import TagCellEdit from "../TagCellEdit";
 import DateCellEdit from "../DateCellEdit";
 
 import { randomColor } from "src/services/random";
-import { Cell, Tag, CellType } from "src/services/appData/state/types";
+import { Cell, Tag, CellType } from "src/services/state/types";
 
 import "./styles.css";
 
 import { DEBUG } from "../../constants";
 import { useDidMountEffect, useId } from "src/services/hooks";
-import { logFunc } from "src/services/appData/debug";
+import { logFunc } from "src/services/debug";
 import { useMenuId } from "src/components/MenuProvider";
 import { usePositionRef } from "src/services/hooks";
 

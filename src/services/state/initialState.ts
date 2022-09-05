@@ -1,5 +1,5 @@
-import { CellType } from "src/services/appData/state/types";
-import { SortDir } from "../../sort/types";
+import { CellType } from "src/services/state/types";
+import { SortDir } from "../sort/types";
 
 import { Cell, Header, Row, Tag } from "./types";
 

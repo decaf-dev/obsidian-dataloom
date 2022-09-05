@@ -1,8 +1,8 @@
 import { findAppData } from "./loadUtils";
 import { updateAppDataFromSavedState } from "./merge";
-import { CellType } from "src/services/appData/state/types";
+import { CellType } from "src/services/state/types";
 import { SortDir } from "src/services/sort/types";
-import { mockParsedTable } from "src/services/appData/mock";
+import { mockParsedTable } from "src/services/mock";
 
 describe("updateAppDataFromSavedState", () => {
 	it("merges new header content", () => {

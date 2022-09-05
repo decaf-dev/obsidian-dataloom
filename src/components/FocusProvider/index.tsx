@@ -2,8 +2,8 @@ import NltPlugin from "main";
 import { MarkdownSectionInformation } from "obsidian";
 import React, { useState, useContext, useCallback, useEffect } from "react";
 import { DEBUG } from "src/constants";
-import { logFunc } from "src/services/appData/debug";
-import { findCurrentViewType } from "src/services/appData/external/loadUtils";
+import { logFunc } from "src/services/debug";
+import { findCurrentViewType } from "src/services/external/loadUtils";
 
 const FocusContext = React.createContext(false);
 

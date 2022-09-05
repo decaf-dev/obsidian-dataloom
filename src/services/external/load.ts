@@ -1,7 +1,7 @@
 import NltPlugin from "main";
 import { updateAppDataFromSavedState } from "./merge";
 import { CURRENT_TABLE_CACHE_VERSION, DEBUG } from "src/constants";
-import { SortDir } from "../../sort/types";
+import { SortDir } from "../sort/types";
 import { AppData } from "../state/types";
 import {
 	findAppData,

@@ -5,7 +5,7 @@ import Tag from "../Tag";
 import SelectableTag from "./component/SelectableTag";
 import CreateTag from "./component/CreateTag";
 
-import { Tag as TagState } from "src/services/appData/state/types";
+import { Tag as TagState } from "src/services/state/types";
 
 import "./styles.css";
 

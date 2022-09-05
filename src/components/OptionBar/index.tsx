@@ -4,7 +4,7 @@ import { SortDir } from "src/services/sort/types";
 
 import "./styles.css";
 import { findSortIcon } from "src/services/icon/utils";
-import { Header } from "src/services/appData/state/types";
+import { Header } from "src/services/state/types";
 
 interface SortBubbleProps {
 	sortDir: SortDir;

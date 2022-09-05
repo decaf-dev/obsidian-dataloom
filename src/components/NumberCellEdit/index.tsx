@@ -1,9 +1,9 @@
 import React, { useCallback } from "react";
-import { CellType } from "src/services/appData/state/types";
+import { CellType } from "src/services/state/types";
 import {
 	filterNumberFromContent,
 	isValidCellContent,
-} from "src/services/appData/state/utils";
+} from "src/services/state/utils";
 
 import Menu from "../Menu";
 

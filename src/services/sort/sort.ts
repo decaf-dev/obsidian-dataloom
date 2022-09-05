@@ -1,6 +1,6 @@
 import { SortDir } from "./types";
-import { CellType } from "src/services/appData/state/types";
-import { Row, AppData } from "../appData/state/types";
+import { CellType } from "src/services/state/types";
+import { Row, AppData } from "../state/types";
 
 export const sortRows = (appData: AppData): Row[] => {
 	const arr = [...appData.rows];

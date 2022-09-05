@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { DEBUG, MENU_LEVEL } from "src/constants";
-import { logFunc } from "src/services/appData/debug";
+import { logFunc } from "src/services/debug";
 import { useTableFocus } from "../FocusProvider";
 
 interface IMenuContext {

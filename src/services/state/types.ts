@@ -1,4 +1,4 @@
-import { SortDir } from "../../sort/types";
+import { SortDir } from "../sort/types";
 export interface AppData {
 	headers: Header[];
 	rows: Row[];

@@ -1,6 +1,6 @@
 import { MarkdownSectionInformation, TFile } from "obsidian";
 
-import NltPlugin from "../../../../main";
+import NltPlugin from "../../../main";
 
 import { appDataToMarkdown } from "./saveUtils";
 
