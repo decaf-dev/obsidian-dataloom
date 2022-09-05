@@ -1,13 +1,6 @@
 import React from "react";
 
 import parse from "html-react-parser";
-import {
-	parseFileLinks,
-	parseURLs,
-	parseBoldMarkdown,
-	parseItalicMarkdown,
-	parseHighlightMarkdown,
-} from "src/services/string/parsers";
 interface Props {
 	content: string;
 	shouldWrapOverflow: boolean;
@@ -29,5 +22,5 @@ export default function TextCell({
 			className += " NLT__hide-overflow";
 		}
 	}
-	return <div className={className}>{parse(content)}</div>;
+	return <div className={className}> {parse(content)}</div>;
 }
