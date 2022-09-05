@@ -1,5 +1,5 @@
 import { AppData, Tag } from "../table/types";
-import { initialCell, initialHeader, initialRow } from "../state/initialState";
+import { initialCell, initialHeader, initialRow } from "../table/initialState";
 import { v4 as uuid } from "uuid";
 
 export const addRow = (data: AppData): AppData => {

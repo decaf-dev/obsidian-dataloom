@@ -10,7 +10,7 @@ import {
 	initialHeader,
 	initialTag,
 	initialCell,
-} from "./services/state/initialState";
+} from "./services/table/initialState";
 import { Cell, AppData, Tag, CellType } from "./services/table/types";
 import { saveAppData } from "./services/external/save";
 import { numToPx, pxToNum } from "./services/string/conversion";
@@ -33,7 +33,7 @@ import {
 } from "./services/hooks";
 import { sortRows } from "./services/sort/sort";
 import { MarkdownSectionInformation } from "obsidian";
-import { checkboxToContent, contentToCheckbox } from "./services/state/utils";
+import { checkboxToContent, contentToCheckbox } from "./services/table/utils";
 import { randomColor } from "./services/random";
 
 interface Props {

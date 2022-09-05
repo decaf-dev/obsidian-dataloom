@@ -7,7 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import "./styles.css";
 import { dateToString } from "src/services/string/conversion";
-import { isValidCellContent } from "src/services/state/utils";
+import { isValidCellContent } from "src/services/table/utils";
 
 interface Props {
 	menuId: string;

@@ -1,9 +1,9 @@
 import { v4 as uuid } from "uuid";
 
-import { initialTag } from "../state/initialState";
+import { initialTag } from "../table/initialState";
 import { AppData } from "../table/types";
 import { randomColor } from "../random";
-import { initialCell } from "../state/initialState";
+import { initialCell } from "../table/initialState";
 
 import { CellType } from "src/services/table/types";
 

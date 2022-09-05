@@ -5,7 +5,7 @@ import { CellType } from "src/services/table/types";
 import {
 	filterNumberFromContent,
 	isValidCellContent,
-} from "src/services/state/utils";
+} from "src/services/table/utils";
 
 import "./styles.css";
 

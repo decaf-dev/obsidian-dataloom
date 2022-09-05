@@ -1,4 +1,4 @@
-import { SaveState } from "../state/saveState";
+import { SaveState } from "./saveState";
 import { AppData } from "../table/types";
 
 export interface NltSettings {

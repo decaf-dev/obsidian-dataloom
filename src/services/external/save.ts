@@ -4,7 +4,7 @@ import NltPlugin from "../../../main";
 
 import { appDataToMarkdown } from "./saveUtils";
 
-import { ViewType } from "../state/saveState";
+import { ViewType } from "../settings/saveState";
 import { AppData } from "../table/types";
 import { CURRENT_TABLE_CACHE_VERSION, DEBUG } from "src/constants";
 
