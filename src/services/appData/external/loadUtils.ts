@@ -51,9 +51,7 @@ export const parseTableFromEl = (el: HTMLElement): string[][] => {
 		const td = tr[i].getElementsByTagName("td");
 		row = [];
 		for (let j = 0; j < td.length; j++) {
-			let sanitized = sanitizeHTML(td[j].innerHTML);
-			sanitized = stripLinks(sanitized);
-			row.push(sanitized);
+			row.push(td[j].innerHTML);
 		}
 		table.push(row);
 	}
