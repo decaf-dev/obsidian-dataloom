@@ -8,7 +8,7 @@ import { useMenuId } from "../MenuProvider";
 import { Icon } from "src/services/icon/types";
 import { usePositionRef } from "src/services/hooks";
 import { useId } from "src/services/hooks";
-import { numToPx, pxToNum } from "src/services/string/parsers";
+import { numToPx, pxToNum } from "src/services/string/conversion";
 
 import "./styles.css";
 

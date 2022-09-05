@@ -13,7 +13,7 @@ import {
 } from "./services/appData/state/initialState";
 import { Cell, AppData, Tag, CellType } from "./services/appData/state/types";
 import { saveAppData } from "./services/appData/external/save";
-import { numToPx, pxToNum } from "./services/string/parsers";
+import { numToPx, pxToNum } from "./services/string/conversion";
 
 import { DEBUG, MIN_COLUMN_WIDTH_PX } from "./constants";
 

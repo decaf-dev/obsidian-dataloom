@@ -8,7 +8,7 @@ import IconButton from "src/components/IconButton";
 import TagColorMenu from "src/components/TagColorMenu";
 import { useMenuId } from "src/components/MenuProvider";
 import { useId, usePositionRef } from "src/services/hooks";
-import { numToPx, pxToNum } from "src/services/string/parsers";
+import { numToPx, pxToNum } from "src/services/string/conversion";
 
 import { Icon } from "src/services/icon/types";
 import { MENU_LEVEL } from "src/constants";

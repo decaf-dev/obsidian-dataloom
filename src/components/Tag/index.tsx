@@ -5,7 +5,7 @@ import CloseIcon from "@mui/icons-material/Close";
 
 import { findColorClass } from "src/services/color";
 
-import { stripPound } from "src/services/string/strippers";
+import { stripPound } from "src/services/string/modify";
 
 import "./styles.css";
 

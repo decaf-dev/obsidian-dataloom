@@ -6,7 +6,7 @@ import { CellType } from "src/services/appData/state/types";
 import "react-datepicker/dist/react-datepicker.css";
 
 import "./styles.css";
-import { dateToString } from "src/services/string/parsers";
+import { dateToString } from "src/services/string/conversion";
 import { isValidCellContent } from "src/services/appData/state/utils";
 
 interface Props {

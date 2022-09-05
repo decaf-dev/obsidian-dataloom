@@ -2,7 +2,7 @@ import { useCallback, useState, useEffect, useRef } from "react";
 
 import { useMenu } from "src/components/MenuProvider";
 import { v4 as uuid } from "uuid";
-import { numToPx } from "../string/parsers";
+import { numToPx } from "../string/conversion";
 
 export const useForceUpdate = () => {
 	const [, setValue] = useState(0);

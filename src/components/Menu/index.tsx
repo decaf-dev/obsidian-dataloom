@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { numToPx } from "src/services/string/parsers";
+import { numToPx } from "src/services/string/conversion";
 
 import "./styles.css";
 
