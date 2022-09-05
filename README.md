@@ -129,43 +129,7 @@ Checkboxes can be rendered in cells that are in a column with the `checkbox` con
 
 ## Markdown Support
 
-### Emphasis
-
-To bold text use either double asterisks `**` or the bold tag `<b>`
-
--   `**This is bold**`
--   `<b>This is bold</b>`
-
-To italicize text use either single asterisks `*` or the italics tag `<i>`
-
--   `*This is italicized*`
--   `<i>This is italicized</i>`
-
-To highlight text use the double equal sign syntax `==`
-
--   `==This is highlighted==`
-
-To underline text use the underline tag `<u>`
-
--   `<u>This is underlined</u>`
-
-### Links
-
-Links can be rendered in cells that are in a column with the `text` column content type is selected. To render a link, add double squares surrounding text `[[My Link]]`.
-
-![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/internal-link-edit.png)
-
-### URLs
-
-If you want to display an url, type the url making sure it begins with `http://` or `https://`. NLT will automatically render it in the table.
-
-![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/url.png)
-
-### Line Breaks
-
-Line breaks can be added using the break line HTML tag `<br>`. For example, if you would like to create a line between two pieces of text, you could add:
-
-`This is my text<br><br>There is now a line between us`
+Notion-Like Tables supports all markdown that is found in Obsidian.md
 
 ## Copying Cell Content
 
