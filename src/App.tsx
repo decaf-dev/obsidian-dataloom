@@ -11,7 +11,7 @@ import {
 	initialTag,
 	initialCell,
 } from "./services/state/initialState";
-import { Cell, AppData, Tag, CellType } from "./services/state/types";
+import { Cell, AppData, Tag, CellType } from "./services/table/types";
 import { saveAppData } from "./services/external/save";
 import { numToPx, pxToNum } from "./services/string/conversion";
 

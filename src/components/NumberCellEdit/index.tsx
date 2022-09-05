@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { CellType } from "src/services/state/types";
+import { CellType } from "src/services/table/types";
 import {
 	filterNumberFromContent,
 	isValidCellContent,

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { CellType } from "src/services/state/types";
+import { CellType } from "src/services/table/types";
 
 import {
 	filterNumberFromContent,

@@ -47,3 +47,8 @@ export enum CellType {
 	CHECKBOX = "checkbox",
 	MULTI_TAG = "multi-tag",
 }
+
+export interface TableComponent {
+	id: string;
+	component: React.ReactNode;
+}

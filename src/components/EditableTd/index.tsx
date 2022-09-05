@@ -12,7 +12,7 @@ import TagCellEdit from "../TagCellEdit";
 import DateCellEdit from "../DateCellEdit";
 
 import { randomColor } from "src/services/random";
-import { Cell, Tag, CellType } from "src/services/state/types";
+import { Cell, Tag, CellType } from "src/services/table/types";
 
 import "./styles.css";
 

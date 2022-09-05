@@ -2,7 +2,7 @@ import { v4 as uuid } from "uuid";
 import CRC32 from "crc-32";
 
 import { initialHeader, initialRow } from "../state/initialState";
-import { Header, Row, AppData, Cell, Tag } from "../state/types";
+import { Header, Row, AppData, Cell, Tag } from "../table/types";
 
 import { MARKDOWN_CELLS_REGEX, MARKDOWN_ROWS_REGEX } from "../string/regex";
 import { ViewType } from "../state/saveState";

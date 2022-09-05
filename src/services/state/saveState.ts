@@ -1,4 +1,4 @@
-import { AppData } from "./types";
+import { AppData } from "../table/types";
 
 export type ViewType = "live-preview" | "reading";
 

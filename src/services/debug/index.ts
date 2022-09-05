@@ -1,7 +1,7 @@
-import { AppData } from "../state/types";
+import { AppData } from "../table/types";
 import { AppDataStringBuffer } from "../external/saveUtils";
 import { calcColumnCharLengths } from "../external/saveUtils";
-import { CellType } from "src/services/state/types";
+import { CellType } from "src/services/table/types";
 
 export const logFunc = (
 	componentName: string,

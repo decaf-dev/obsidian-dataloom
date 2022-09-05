@@ -2,7 +2,7 @@ import React from "react";
 import Menu from "../Menu";
 
 import DatePicker from "react-datepicker";
-import { CellType } from "src/services/state/types";
+import { CellType } from "src/services/table/types";
 import "react-datepicker/dist/react-datepicker.css";
 
 import "./styles.css";

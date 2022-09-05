@@ -12,7 +12,7 @@ import { SortDir } from "src/services/sort/types";
 import { SUBMENU_ITEM, SubmenuItem } from "./constants";
 
 import "./styles.css";
-import { CellType } from "src/services/state/types";
+import { CellType } from "src/services/table/types";
 
 interface Props {
 	isOpen: boolean;

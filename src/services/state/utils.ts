@@ -1,6 +1,6 @@
 import { NUMBER_REGEX } from "src/services/string/regex";
 import { isCheckbox, isNumber, isDate } from "src/services/string/validators";
-import { CellType } from "./types";
+import { CellType } from "../table/types";
 
 export const isValidCellContent = (
 	content: string,

@@ -1,5 +1,5 @@
 import React from "react";
-import { CellType } from "src/services/state/types";
+import { CellType } from "src/services/table/types";
 
 import { TYPE_ITEMS } from "../../constants";
 import MenuItem from "../MenuItem";

@@ -1,11 +1,11 @@
 import { v4 as uuid } from "uuid";
 
 import { initialTag } from "../state/initialState";
-import { AppData } from "../state/types";
+import { AppData } from "../table/types";
 import { randomColor } from "../random";
 import { initialCell } from "../state/initialState";
 
-import { CellType } from "src/services/state/types";
+import { CellType } from "src/services/table/types";
 
 export const updateAppDataFromSavedState = (
 	oldData: AppData,

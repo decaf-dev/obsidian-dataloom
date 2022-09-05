@@ -1,5 +1,5 @@
 import { isNumber, isDate, isCheckbox } from "../validators";
-import { CellType } from "src/services/state/types";
+import { CellType } from "src/services/table/types";
 
 /**
  * Finds a content type.

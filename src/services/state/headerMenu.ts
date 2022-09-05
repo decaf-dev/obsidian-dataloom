@@ -1,4 +1,4 @@
-import { CellType } from "src/services/state/types";
+import { CellType } from "src/services/table/types";
 
 export const initialHeaderMenuState = {
 	left: 0,

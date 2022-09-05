@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Tag as TagState } from "src/services/state/types";
+import { Tag as TagState } from "src/services/table/types";
 import Tag from "../Tag";
 interface Props {
 	tags: TagState[];

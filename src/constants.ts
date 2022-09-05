@@ -7,20 +7,6 @@ export const DEBUG = {
 	MENU_PROVIDER: false,
 };
 
-export interface TabbableElementType {
-	UNFOCUSED: string;
-	BUTTON: string;
-	HEADER: string;
-	CELL: string;
-}
-
-export const TABBABLE_ELEMENT_TYPE: TabbableElementType = {
-	UNFOCUSED: "unfocused",
-	BUTTON: "button",
-	HEADER: "header",
-	CELL: "cell",
-};
-
 export const COLOR: { [color: string]: string } = {
 	LIGHT_GRAY: "light gray",
 	GRAY: "gray",

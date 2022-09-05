@@ -1,7 +1,5 @@
-import { TabbableElement } from "../state/tabbableElement";
-import { TABBABLE_ELEMENT_TYPE } from "src/constants";
 import { SaveState } from "../state/saveState";
-import { AppData } from "../state/types";
+import { AppData } from "../table/types";
 
 export interface NltSettings {
 	appData: {
@@ -18,8 +16,6 @@ export interface NltSettings {
 		lineStart: number;
 		lineEnd: number;
 	};
-	focusedElement: TabbableElement;
-	excludedFiles: string[];
 }
 
 export const DEFAULT_SETTINGS: NltSettings = {
@@ -29,6 +25,4 @@ export const DEFAULT_SETTINGS: NltSettings = {
 		lineStart: -1,
 		lineEnd: -1,
 	},
-	focusedElement: { id: "-1", type: TABBABLE_ELEMENT_TYPE.UNFOCUSED },
-	excludedFiles: [],
 };

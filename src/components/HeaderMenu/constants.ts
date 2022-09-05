@@ -1,4 +1,4 @@
-import { CellType } from "src/services/state/types";
+import { CellType } from "src/services/table/types";
 
 import { Icon } from "src/services/icon/types";
 import { SortDir } from "src/services/sort/types";
