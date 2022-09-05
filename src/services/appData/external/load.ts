@@ -28,11 +28,6 @@ export const loadAppData = async (
 		console.log("parsed", parsedTable);
 	}
 
-	if (plugin.settings.excludedFiles.includes(sourcePath)) {
-		console.log(`Excluding file path: ${sourcePath}`);
-		return null;
-	}
-
 	//Migration from before 3.4.0
 	if (plugin.settings.appData[sourcePath]) {
 		if (plugin.settings.appData[sourcePath][0]) {
