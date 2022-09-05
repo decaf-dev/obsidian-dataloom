@@ -24,8 +24,6 @@ describe("parseURLs", () => {
 			'<a tabIndex={-1} href="https://test.com" target="_blank" rel="noopener">https://test.com</a> <a tabIndex={-1} href="https://test2.com" target="_blank" rel="noopener">https://test2.com</a>'
 		);
 	});
-
-	//TODO parses same link
 });
 
 describe("parseFileLinks", () => {
@@ -49,8 +47,6 @@ describe("parseFileLinks", () => {
 			'<a tabIndex={-1} data-href="this is my file" href="this is my file" class="internal-link" target="_blank" rel="noopener">this is my file</a>'
 		);
 	});
-
-	//TODO parses same link
 });
 
 describe("parseBoldTags", () => {
