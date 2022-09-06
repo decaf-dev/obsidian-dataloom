@@ -6,8 +6,7 @@ import RowMenu from "./components/RowMenu";
 import EditableTh from "./components/EditableTh";
 import OptionBar from "./components/OptionBar";
 
-import { initialHeader, initialCell } from "./services/table/initialState";
-import { Cell, TableModel, CellType } from "./services/table/types";
+import { Cell, CellType } from "./services/table/types";
 import { saveTableState } from "./services/external/save";
 import { numToPx, pxToNum } from "./services/string/conversion";
 
@@ -18,7 +17,6 @@ import NltPlugin from "./main";
 import { SortDir } from "./services/sort/types";
 import { addRow, addColumn } from "./services/internal/add";
 import { findCurrentViewType } from "./services/external/loadUtils";
-import { v4 as uuid } from "uuid";
 import { logFunc } from "./services/debug";
 
 import {
@@ -55,10 +53,6 @@ export default function App({
 }: Props) {
 	const [state, setTableState] = useState<TableState>(tableState);
 	const tableId = useId();
-	const [tagUpdate, setTagUpdate] = useState({
-		time: 0,
-		cellId: "",
-	});
 	const [sortTime, setSortTime] = useState(0);
 	const [positionUpdateTime, setPositionUpdateTime] = useState(0);
 
@@ -68,16 +62,16 @@ export default function App({
 	useCloseMenusOnScroll("NLT__table-wrapper");
 
 	useDidMountEffect(() => {
-		// setTableState((prevState) => {
-		// 	return {
-		// 		...prevState,
-		// 		tableModel: {
-		// 			...prevState.tableModel,
-		// 			rows: sortRows(state.tableModel, state.tableSettings),
-		// 		},
-		// 	};
-		// });
-		// forcePositionUpdate();
+		setTableState((prevState) => {
+			return {
+				...prevState,
+				tableModel: {
+					...prevState.tableModel,
+					rows: sortRows(state.tableModel, state.tableSettings),
+				},
+			};
+		});
+		forcePositionUpdate();
 		saveData();
 	}, [sortTime]);
 
@@ -329,7 +323,6 @@ export default function App({
 		// 		],
 		// 	};
 		// });
-		// setTagUpdate({ cellId, time: Date.now() });
 	}
 
 	function handleTagClick(cellId: string, tagId: string) {
@@ -340,7 +333,6 @@ export default function App({
 			});
 		}
 		//TODO fix
-		//setTagUpdate({ cellId, time: Date.now() });
 	}
 
 	function handleRemoveTagClick(cellId: string) {
@@ -355,17 +347,39 @@ export default function App({
 	}
 
 	function handleDeleteHeaderClick(id: string, index: number) {
-		if (DEBUG.APP) console.log("[App]: handleDeleteHeaderClick called.");
+		if (DEBUG.APP)
+			logFunc(COMPONENT_NAME, "handleDeleteHeaderClick", {
+				id,
+				index,
+			});
 
 		setTableState((prevState) => {
-			const columns = { ...prevState.tableSettings.columns };
-			delete columns[index];
-			return {
+			//TODO change?
+			//Remove the column at the selection index and shift the other columns over
+			const columns = Object.fromEntries(
+				Object.entries(prevState.tableSettings.columns)
+					.map((entry) => {
+						const [key, value] = entry;
+						const entryIndex = parseInt(key);
+						if (entryIndex < index) return entry;
+						else if (entryIndex === index) return ["delete", value];
+						else return [entryIndex - 1, value];
+					})
+					.filter((entry) => {
+						const [key] = entry;
+						return key !== "delete";
+					})
+			);
+			//Shift the columns over
+			const value = {
 				...prevState,
 				tableModel: {
 					...prevState.tableModel,
 					headers: prevState.tableModel.headers.filter(
 						(header) => header.id !== id
+					),
+					cells: prevState.tableModel.cells.filter(
+						(cell) => cell.headerId !== id
 					),
 				},
 				tableSettings: {
@@ -373,6 +387,8 @@ export default function App({
 					columns,
 				},
 			};
+			console.log(value);
+			return value;
 		});
 		sortData();
 	}
@@ -493,6 +509,11 @@ export default function App({
 	}
 
 	function handleAutoWidthToggle(index: number, value: boolean) {
+		if (DEBUG.APP)
+			logFunc(COMPONENT_NAME, "handleAutoWidthToggle", {
+				index,
+				value,
+			});
 		setTableState((prevState) => {
 			return {
 				...prevState,
@@ -508,9 +529,15 @@ export default function App({
 				},
 			};
 		});
+		saveData();
 	}
 
 	function handleWrapContentToggle(index: number, value: boolean) {
+		if (DEBUG.APP)
+			logFunc(COMPONENT_NAME, "handleWrapContentToggle", {
+				index,
+				value,
+			});
 		setTableState((prevState) => {
 			return {
 				...prevState,
@@ -526,6 +553,7 @@ export default function App({
 				},
 			};
 		});
+		saveData();
 	}
 
 	function measureElement(
@@ -570,13 +598,13 @@ export default function App({
 	}
 
 	function findCellWidth(
-		cellType: string,
+		headerType: string,
 		useAutoWidth: boolean,
 		calculatedWidth: string,
 		headerWidth: string
 	) {
 		//If the content type does not display text, just use the width that we set for the column
-		if (cellType !== CellType.TEXT && cellType !== CellType.NUMBER)
+		if (headerType !== CellType.TEXT && headerType !== CellType.NUMBER)
 			return headerWidth;
 		//If we're not using auto width, just use the width that we set for the column
 		if (useAutoWidth) return calculatedWidth;
@@ -590,8 +618,8 @@ export default function App({
 			let header = null;
 			let headerSettings = null;
 			for (let i = 0; i < tableModel.headers.length; i++) {
-				const obj = tableModel.headers[i];
-				if (obj.id === cell.headerId) {
+				const h = tableModel.headers[i];
+				if (h.id === cell.headerId) {
 					header = tableModel.headers[i];
 					headerSettings = tableSettings.columns[i];
 				}
@@ -659,6 +687,7 @@ export default function App({
 							shouldWrapOverflow,
 							useAutoWidth,
 						} = tableSettings.columns[index];
+
 						const { id, content } = header;
 						return {
 							id,
@@ -741,7 +770,6 @@ export default function App({
 													width
 												)}
 												height={rowHeights[row.id]}
-												tagUpdate={tagUpdate}
 												onTagClick={handleTagClick}
 												onRemoveTagClick={
 													handleRemoveTagClick
