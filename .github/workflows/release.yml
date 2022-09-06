@@ -52,7 +52,7 @@ jobs:
                   GITHUB_TOKEN: ${{ secrets.TOKEN }}
               with:
                   upload_url: ${{ steps.create_release.outputs.upload_url }}
-                  asset_path: manifest.json
+                  asset_path: dist/manifest.json
                   asset_name: manifest.json
                   asset_content_type: application/json
             # Upload the style.css
