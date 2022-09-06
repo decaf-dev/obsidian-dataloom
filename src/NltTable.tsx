@@ -7,12 +7,14 @@ import NltPlugin from "./main";
 import MenuProvider from "./components/MenuProvider";
 import FocusProvider from "./components/FocusProvider";
 
+import { createRoot, Root } from "react-dom/client";
+
 export class NltTable extends MarkdownRenderChild {
 	plugin: NltPlugin;
 	sourcePath: string;
 	sectionInfo: MarkdownSectionInformation;
 	blockId: string;
-	el: HTMLElement;
+	root: Root;
 
 	constructor(
 		plugin: NltPlugin,
@@ -37,14 +39,14 @@ export class NltTable extends MarkdownRenderChild {
 			this.sourcePath
 		);
 
-		this.el = this.containerEl.createEl("div");
-		ReactDOM.render(
+		this.root = createRoot(this.containerEl);
+		this.root.render(
 			<FocusProvider
 				plugin={this.plugin}
 				sourcePath={this.sourcePath}
 				sectionInfo={this.sectionInfo}
 				blockId={this.blockId}
-				el={this.el}
+				el={this.containerEl}
 			>
 				<MenuProvider>
 					<App
@@ -56,13 +58,11 @@ export class NltTable extends MarkdownRenderChild {
 						el={this.containerEl}
 					/>
 				</MenuProvider>
-			</FocusProvider>,
-			this.el
+			</FocusProvider>
 		);
-		this.containerEl.children[0].replaceWith(this.el);
 	}
 
 	async onunload() {
-		ReactDOM.unmountComponentAtNode(this.el);
+		this.root.unmount();
 	}
 }
