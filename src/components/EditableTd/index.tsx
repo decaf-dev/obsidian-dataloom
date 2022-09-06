@@ -33,10 +33,6 @@ interface Props {
 	positionUpdateTime: number;
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
-	tagUpdate: {
-		cellId: string;
-		time: number;
-	};
 	onRemoveTagClick: (cellId: string, tagId: string) => void;
 	onTagClick: (cellId: string, tagId: string) => void;
 	onContentChange: (
@@ -68,7 +64,6 @@ export default function EditableTd({
 	positionUpdateTime,
 	shouldWrapOverflow,
 	useAutoWidth,
-	tagUpdate,
 	onRemoveTagClick,
 	onColorChange,
 	onTagClick,
@@ -94,17 +89,17 @@ export default function EditableTd({
 	//and we updated a tag, then we will wait for it to update,
 	//then we will close the menu and save
 	//This prevents rerendering issues
-	useDidMountEffect(() => {
-		if (DEBUG.EDITABLE_TD)
-			logFunc(COMPONENT_NAME, "useDidMountEffect", {
-				tagUpdate,
-			});
+	// useDidMountEffect(() => {
+	// 	if (DEBUG.EDITABLE_TD)
+	// 		logFunc(COMPONENT_NAME, "useDidMountEffect", {
+	// 			tagUpdate,
+	// 		});
 
-		if (tagUpdate.cellId === cellId) {
-			closeMenu();
-			onSaveContent();
-		}
-	}, [tagUpdate.cellId, tagUpdate.time]);
+	// 	if (tagUpdate.cellId === cellId) {
+	// 		closeMenu();
+	// 		onSaveContent();
+	// 	}
+	// }, [tagUpdate.cellId, tagUpdate.time]);
 
 	useEffect(() => {
 		if (DEBUG.EDITABLE_TD)
