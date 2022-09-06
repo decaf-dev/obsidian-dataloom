@@ -68,16 +68,16 @@ export default function App({
 	useCloseMenusOnScroll("NLT__table-wrapper");
 
 	useDidMountEffect(() => {
-		setTableState((prevState) => {
-			return {
-				...prevState,
-				tableModel: {
-					...prevState.tableModel,
-					rows: sortRows(state.tableModel, state.tableSettings),
-				},
-			};
-		});
-		forcePositionUpdate();
+		// setTableState((prevState) => {
+		// 	return {
+		// 		...prevState,
+		// 		tableModel: {
+		// 			...prevState.tableModel,
+		// 			rows: sortRows(state.tableModel, state.tableSettings),
+		// 		},
+		// 	};
+		// });
+		// forcePositionUpdate();
 		saveData();
 	}, [sortTime]);
 
@@ -197,7 +197,12 @@ export default function App({
 		index: number,
 		selectedCellType: CellType
 	) {
-		if (DEBUG.APP) console.log("[App]: handleHeaderTypeSelect called.");
+		if (DEBUG.APP)
+			logFunc(COMPONENT_NAME, "handleHeaderTypeSelect", {
+				id,
+				index,
+				selectedCellType,
+			});
 		const { type } = state.tableSettings.columns[index];
 		//If same header type return
 		if (type === selectedCellType) return;
@@ -217,21 +222,25 @@ export default function App({
 				...prevState,
 				tableModel: {
 					...prevState.tableModel,
-					headers: prevState.tableModel.headers.map((header) => {
-						if (id === header.id)
-							return { ...header, type: selectedCellType };
-						return header;
-					}),
 					cells: prevState.tableModel.cells.map((cell: Cell) => {
 						if (cell.headerId === id) {
 							return {
 								...cell,
 								content: findUpdatedCellContent(cell.content),
-								type: selectedCellType,
 							};
 						}
 						return cell;
 					}),
+				},
+				tableSettings: {
+					...prevState.tableSettings,
+					columns: {
+						...prevState.tableSettings.columns,
+						[index]: {
+							...prevState.tableSettings.columns[index],
+							type: selectedCellType,
+						},
+					},
 				},
 			};
 		});
@@ -347,7 +356,10 @@ export default function App({
 
 	function handleDeleteHeaderClick(id: string, index: number) {
 		if (DEBUG.APP) console.log("[App]: handleDeleteHeaderClick called.");
+
 		setTableState((prevState) => {
+			const columns = { ...prevState.tableSettings.columns };
+			delete columns[index];
 			return {
 				...prevState,
 				tableModel: {
@@ -358,15 +370,7 @@ export default function App({
 				},
 				tableSettings: {
 					...prevState.tableSettings,
-					columns: Object.fromEntries(
-						Object.entries(prevState.tableSettings.columns).filter(
-							(entry) => {
-								const [key] = entry;
-								if (parseInt(key) !== index) return true;
-								return false;
-							}
-						)
-					),
+					columns,
 				},
 			};
 		});
@@ -374,11 +378,14 @@ export default function App({
 	}
 
 	function handleDeleteRowClick(rowId: string) {
-		if (DEBUG.APP) console.log("[App]: handleDeleteRowClick called.");
+		if (DEBUG.APP)
+			logFunc(COMPONENT_NAME, "handleDeleteRowClick", {
+				rowId,
+			});
 		setTableState((prevState) => {
 			return {
 				...prevState,
-				tabelModel: {
+				tableModel: {
 					...prevState.tableModel,
 					rows: prevState.tableModel.rows.filter(
 						(row) => row.id !== rowId

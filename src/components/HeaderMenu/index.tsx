@@ -207,7 +207,9 @@ export default function HeaderMenu({
 					<TypeSubmenu
 						title={submenu.content}
 						headerType={headerType}
-						onTypeClick={(type) => handleTypeClick(id, index, type)}
+						onTypeClick={(type) =>
+							handleTypeClick(headerId, index, type)
+						}
 						onBackClick={handleBackClick}
 					/>
 				)}
