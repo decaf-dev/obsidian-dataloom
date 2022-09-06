@@ -34,15 +34,18 @@ export default function TextCellEdit({
 	const lengthHasChanged = useCompare(content.length);
 
 	function focusInput() {
-		this.inputRef.focus();
+		inputRef.current.focus();
+	}
+
+	function setSelection(pos: number) {
+		inputRef.current.selectionStart = pos;
+		inputRef.current.selectionEnd = pos;
 	}
 
 	useEffect(() => {
 		if (isOpen && !lengthHasChanged) {
-			//TODO add back
-			// node.selectionStart = value.length;
-			// node.selectionEnd = value.length;
 			focusInput();
+			setSelection(content.length);
 		}
 	}, [isOpen, lengthHasChanged]);
 

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { CellType } from "src/services/table/types";
 import {
 	filterNumberFromContent,
@@ -34,7 +34,7 @@ export default function NumberCellEdit({
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	function focusInput() {
-		this.inputRef.focus();
+		inputRef.current.focus();
 	}
 
 	useEffect(() => {
