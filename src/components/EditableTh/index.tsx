@@ -11,6 +11,9 @@ import { numToPx, pxToNum } from "src/services/string/conversion";
 import { MIN_COLUMN_WIDTH_PX } from "src/constants";
 import { SortDir } from "src/services/sort/types";
 import { CellType } from "src/services/table/types";
+
+import parse from "html-react-parser";
+
 interface Props {
 	id: string;
 	index: number;
@@ -111,7 +114,7 @@ export default function EditableTh({
 				onClick={handleHeaderClick}
 			>
 				<div className="NLT__th-container">
-					<div className="NLT__th-content">{content}</div>
+					<div className="NLT__th-content">{parse(content)}</div>
 					<div className="NLT__th-resize-container">
 						{!useAutoWidth && (
 							<div
