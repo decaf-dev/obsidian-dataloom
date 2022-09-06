@@ -34,6 +34,7 @@ export default function TextCellEdit({
 	const lengthHasChanged = useCompare(content.length);
 
 	function focusInput() {
+		//Why does this one work?
 		inputRef.current.focus();
 	}
 

@@ -34,7 +34,9 @@ export default function NumberCellEdit({
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	function focusInput() {
-		inputRef.current.focus();
+		//This shouldn't need this
+		//TODO fix
+		if (inputRef.current) inputRef.current.focus();
 	}
 
 	useEffect(() => {
