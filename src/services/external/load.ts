@@ -67,6 +67,7 @@ export const loadTableState = async (
 			console.log("Loading table state from cache.");
 		}
 		tableState = { ...savedState };
+		tableState.tableModel = model;
 
 		if (tableCacheVersion < CURRENT_TABLE_CACHE_VERSION)
 			tableState.tableCacheVersion = CURRENT_TABLE_CACHE_VERSION;
