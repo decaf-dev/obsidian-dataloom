@@ -9,20 +9,22 @@ import Stack from "src/components/Stack";
 
 interface Props {
 	title: string;
+	index: number;
 	headerId: string;
 	headerType: string;
 	headerName: string;
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
 	onHeaderNameChange: (name: string) => void;
-	onAutoWidthToggle: (headerId: string, val: boolean) => void;
-	onWrapOverflowToggle: (headerId: string, val: boolean) => void;
-	onHeaderDeleteClick: (headerId: string) => void;
+	onAutoWidthToggle: (index: number, value: boolean) => void;
+	onWrapOverflowToggle: (index: number, value: boolean) => void;
+	onHeaderDeleteClick: (id: string, index: number) => void;
 	onBackClick: () => void;
 }
 
 export default function EditMenu({
 	title,
+	index,
 	headerId,
 	headerType,
 	headerName,
@@ -53,7 +55,7 @@ export default function EditMenu({
 						<Switch
 							isChecked={useAutoWidth}
 							onToggle={(value) =>
-								onAutoWidthToggle(headerId, value)
+								onAutoWidthToggle(index, value)
 							}
 						/>
 						{!useAutoWidth && (
@@ -62,14 +64,14 @@ export default function EditMenu({
 								<Switch
 									isChecked={shouldWrapOverflow}
 									onToggle={(value) =>
-										onWrapOverflowToggle(headerId, value)
+										onWrapOverflowToggle(index, value)
 									}
 								/>
 							</>
 						)}
 					</>
 				)}
-				<Button onClick={() => onHeaderDeleteClick(headerId)}>
+				<Button onClick={() => onHeaderDeleteClick(headerId, index)}>
 					Delete
 				</Button>
 			</Stack>

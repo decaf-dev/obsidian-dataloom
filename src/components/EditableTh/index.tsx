@@ -23,14 +23,14 @@ interface Props {
 	sortDir: SortDir;
 	type: string;
 	onMoveColumnClick: (id: string, moveRight: boolean) => void;
-	onSortSelect: (id: string, sortDir: SortDir) => void;
+	onSortSelect: (index: number, sortDir: SortDir) => void;
 	onInsertColumnClick: (id: string, insertRight: boolean) => void;
-	onTypeSelect: (id: string, type: CellType) => void;
-	onDeleteClick: (id: string) => void;
+	onTypeSelect: (id: string, index: number, type: CellType) => void;
+	onDeleteClick: (id: string, index: number) => void;
 	onSaveClick: (id: string, content: string) => void;
-	onWidthChange: (id: string, width: string) => void;
-	onAutoWidthToggle: (id: string, value: boolean) => void;
-	onWrapOverflowToggle: (id: string, value: boolean) => void;
+	onWidthChange: (index: number, width: string) => void;
+	onAutoWidthToggle: (index: number, value: boolean) => void;
+	onWrapOverflowToggle: (index: number, value: boolean) => void;
 }
 
 export default function EditableTh({
@@ -88,7 +88,7 @@ export default function EditableTh({
 			const newWidth = oldWidth + dist;
 
 			if (newWidth < MIN_COLUMN_WIDTH_PX) return;
-			onWidthChange(id, numToPx(newWidth));
+			onWidthChange(index, numToPx(newWidth));
 		}
 	}
 

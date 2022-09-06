@@ -1,13 +1,13 @@
-import { AppData, Cell, CellType } from "../table/types";
+import { TableModel, Cell } from "../table/types";
 
 /**
- * Converts app data to a valid Obsidian markdown string
+ * Converts table data to a valid Obsidian markdown string
  * @param data The app data
  * @returns An Obsidian markdown string
  */
-export const appDataToMarkdown = (data: AppData): string => {
+export const tableModelToMarkdown = (data: TableModel): string => {
 	const columnCharLengths = calcColumnCharLengths(data);
-	const buffer = new AppDataStringBuffer();
+	const buffer = new TableModelStringBuffer();
 	buffer.createRow();
 
 	data.headers.forEach((header, i) => {
@@ -30,27 +30,12 @@ export const appDataToMarkdown = (data: AppData): string => {
 					cell.rowId === row.id &&
 					cell.headerId === data.headers[i].id
 			);
-			if (cell.type === CellType.TAG) {
-				const tags = data.tags.filter((tag) =>
-					tag.selected.includes(cell.id)
-				);
-
-				let content = "";
-
-				tags.forEach((tag, j) => {
-					if (tag.content === "") return;
-					if (j === 0) content += tag.content;
-					else content += " " + tag.content;
-				});
-				buffer.writeColumn(content, columnCharLengths[i]);
-			} else {
-				buffer.writeColumn(cell.content, columnCharLengths[i]);
-			}
+			buffer.writeColumn(cell.content, columnCharLengths[i]);
 		}
 	});
 	return buffer.toString();
 };
-export class AppDataStringBuffer {
+export class TableModelStringBuffer {
 	string: string;
 
 	constructor() {
@@ -91,7 +76,7 @@ interface ColumnCharLengths {
  * @param tags An array of tags
  * @returns An object containing the calculated lengths
  */
-export const calcColumnCharLengths = (data: AppData): ColumnCharLengths => {
+export const calcColumnCharLengths = (data: TableModel): ColumnCharLengths => {
 	const columnCharLengths: { [columnPosition: number]: number } = [];
 
 	//Check headers
@@ -106,18 +91,6 @@ export const calcColumnCharLengths = (data: AppData): ColumnCharLengths => {
 		const index = data.headers.findIndex(
 			(header) => header.id === cell.headerId
 		);
-		if (cell.type === CellType.TAG) {
-			const arr = data.tags.filter((tag) =>
-				tag.selected.includes(cell.id)
-			);
-
-			arr.forEach((tag, i) => {
-				if (tag.content !== "") {
-					if (i === 0) content += tag.content;
-					else content += " " + tag.content;
-				}
-			});
-		}
 		if (columnCharLengths[index] < content.length)
 			columnCharLengths[index] = content.length;
 	});

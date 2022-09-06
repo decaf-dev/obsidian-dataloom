@@ -14,33 +14,6 @@ import { SUBMENU_ITEM, SubmenuItem } from "./constants";
 import "./styles.css";
 import { CellType } from "src/services/table/types";
 
-interface Props {
-	isOpen: boolean;
-	style: {
-		top: string;
-		left: string;
-	};
-	headerId: string;
-	id: string;
-	index: number;
-	shouldWrapOverflow: boolean;
-	useAutoWidth: boolean;
-	headerSortDir: SortDir;
-	headerName: string;
-	headerType: string;
-	headerIndex: number;
-	numHeaders: number;
-	onInsertColumnClick: (id: string, insertRight: boolean) => void;
-	onMoveColumnClick: (id: string, moveRight: boolean) => void;
-	onTypeSelect: (id: string, type: CellType) => void;
-	onSortSelect: (id: string, sortDir: SortDir) => void;
-	onHeaderDeleteClick: (id: string) => void;
-	onOutsideClick: (id: string, inputText: string) => void;
-	onAutoWidthToggle: (id: string, value: boolean) => void;
-	onWrapOverflowToggle: (id: string, value: boolean) => void;
-	onClose: () => void;
-}
-
 interface SubMenuListProps {
 	numHeaders: number;
 	onOptionClick: (item: SubmenuItem) => void;
@@ -70,9 +43,37 @@ const SubmenuList = ({ numHeaders, onOptionClick }: SubMenuListProps) => {
 	);
 };
 
+interface Props {
+	isOpen: boolean;
+	style: {
+		top: string;
+		left: string;
+	};
+	headerId: string;
+	id: string;
+	index: number;
+	shouldWrapOverflow: boolean;
+	useAutoWidth: boolean;
+	headerSortDir: SortDir;
+	headerName: string;
+	headerType: string;
+	headerIndex: number;
+	numHeaders: number;
+	onInsertColumnClick: (id: string, insertRight: boolean) => void;
+	onMoveColumnClick: (id: string, moveRight: boolean) => void;
+	onTypeSelect: (id: string, index: number, type: CellType) => void;
+	onSortSelect: (index: number, sortDir: SortDir) => void;
+	onHeaderDeleteClick: (id: string, index: number) => void;
+	onOutsideClick: (id: string, inputText: string) => void;
+	onAutoWidthToggle: (index: number, value: boolean) => void;
+	onWrapOverflowToggle: (index: number, value: boolean) => void;
+	onClose: () => void;
+}
+
 export default function HeaderMenu({
 	isOpen,
 	id,
+	index,
 	headerId,
 	headerName,
 	headerType,
@@ -121,8 +122,8 @@ export default function HeaderMenu({
 		onClose();
 	}
 
-	function handleSortClick(id: string, sortDir: SortDir) {
-		onSortSelect(id, sortDir);
+	function handleSortClick(index: number, sortDir: SortDir) {
+		onSortSelect(index, sortDir);
 		onClose();
 	}
 
@@ -131,14 +132,14 @@ export default function HeaderMenu({
 		onClose();
 	}
 
-	function handleTypeClick(id: string, type: CellType) {
-		onTypeSelect(id, type);
+	function handleTypeClick(id: string, index: number, type: CellType) {
+		onTypeSelect(id, index, type);
 		onClose();
 	}
 
-	function handleHeaderDeleteClick(id: string) {
+	function handleHeaderDeleteClick(id: string, index: number) {
 		if (window.confirm("Are you sure you want to delete this column?")) {
-			onHeaderDeleteClick(id);
+			onHeaderDeleteClick(id, index);
 			onClose();
 		}
 	}
@@ -159,6 +160,7 @@ export default function HeaderMenu({
 				{submenu && submenu.name === SUBMENU_ITEM.EDIT.name && (
 					<EditSubmenu
 						title={submenu.content}
+						index={index}
 						headerId={headerId}
 						headerName={headerNameInput}
 						headerType={headerType}
@@ -185,7 +187,7 @@ export default function HeaderMenu({
 						title={submenu.content}
 						headerSortDir={headerSortDir}
 						onSortClick={(sortDir) =>
-							handleSortClick(headerId, sortDir)
+							handleSortClick(index, sortDir)
 						}
 						onBackClick={handleBackClick}
 					/>
@@ -205,7 +207,7 @@ export default function HeaderMenu({
 					<TypeSubmenu
 						title={submenu.content}
 						headerType={headerType}
-						onTypeClick={(type) => handleTypeClick(headerId, type)}
+						onTypeClick={(type) => handleTypeClick(id, index, type)}
 						onBackClick={handleBackClick}
 					/>
 				)}

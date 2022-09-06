@@ -2,7 +2,7 @@ import { MarkdownRenderChild, MarkdownSectionInformation } from "obsidian";
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
-import { loadAppData } from "./services/external/load";
+import { loadTableState } from "./services/external/load";
 import NltPlugin from "./main";
 import MenuProvider from "./components/MenuProvider";
 import FocusProvider from "./components/FocusProvider";
@@ -29,7 +29,7 @@ export class NltTable extends MarkdownRenderChild {
 	}
 
 	async onload() {
-		const appData = await loadAppData(
+		const tableState = await loadTableState(
 			this.plugin,
 			this.containerEl,
 			this.blockId,
@@ -37,32 +37,29 @@ export class NltTable extends MarkdownRenderChild {
 			this.sourcePath
 		);
 
-		//If data is not defined then it isn't a valid table
-		if (appData) {
-			this.el = this.containerEl.createEl("div");
-			ReactDOM.render(
-				<FocusProvider
-					plugin={this.plugin}
-					sourcePath={this.sourcePath}
-					sectionInfo={this.sectionInfo}
-					blockId={this.blockId}
-					el={this.el}
-				>
-					<MenuProvider>
-						<App
-							plugin={this.plugin}
-							sectionInfo={this.sectionInfo}
-							loadedData={appData}
-							sourcePath={this.sourcePath}
-							blockId={this.blockId}
-							el={this.containerEl}
-						/>
-					</MenuProvider>
-				</FocusProvider>,
-				this.el
-			);
-			this.containerEl.children[0].replaceWith(this.el);
-		}
+		this.el = this.containerEl.createEl("div");
+		ReactDOM.render(
+			<FocusProvider
+				plugin={this.plugin}
+				sourcePath={this.sourcePath}
+				sectionInfo={this.sectionInfo}
+				blockId={this.blockId}
+				el={this.el}
+			>
+				<MenuProvider>
+					<App
+						plugin={this.plugin}
+						sectionInfo={this.sectionInfo}
+						tableState={tableState}
+						sourcePath={this.sourcePath}
+						blockId={this.blockId}
+						el={this.containerEl}
+					/>
+				</MenuProvider>
+			</FocusProvider>,
+			this.el
+		);
+		this.containerEl.children[0].replaceWith(this.el);
 	}
 
 	async onunload() {

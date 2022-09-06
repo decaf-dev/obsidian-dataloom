@@ -2,12 +2,10 @@ import { v4 as uuid } from "uuid";
 import CRC32 from "crc-32";
 
 import { initialHeader, initialRow } from "../table/initialState";
-import { Header, Row, AppData, Cell, Tag } from "../table/types";
+import { Header, Row, TableModel, Cell, ViewType } from "../table/types";
 
 import { MARKDOWN_CELLS_REGEX, MARKDOWN_ROWS_REGEX } from "../string/regex";
-import { ViewType } from "../settings/saveState";
 import { initialCell } from "../table/initialState";
-import { getCurrentTimeWithOffset } from "../random";
 
 /**
  * Parses data for an individual table.
@@ -70,14 +68,13 @@ export const hashHeaders = (headers: string[]): number => {
 	);
 };
 
-export const findAppData = (
+export const findTableModel = (
 	contentTable: string[][],
 	textContentTable: string[][]
-): AppData => {
+): TableModel => {
 	const headers: Header[] = [];
 	const rows: Row[] = [];
 	const cells: Cell[] = [];
-	const tags: Tag[] = [];
 
 	contentTable.forEach((parsedRow, i) => {
 		if (i === 0) {
@@ -85,7 +82,7 @@ export const findAppData = (
 				headers.push(initialHeader(uuid(), th, textContentTable[0][j]));
 			});
 		} else {
-			const row = initialRow(uuid(), getCurrentTimeWithOffset());
+			const row = initialRow(uuid());
 			parsedRow.forEach((td, j) => {
 				//The first time we load the data, set the cell as a text cell
 				//Once we merge the new data with the old data, we can set the cell
@@ -94,7 +91,6 @@ export const findAppData = (
 					uuid(),
 					headers[j].id,
 					row.id,
-					headers[j].type,
 					td,
 					textContentTable[i][j]
 				);
@@ -109,6 +105,5 @@ export const findAppData = (
 		headers,
 		rows,
 		cells,
-		tags,
 	};
 };

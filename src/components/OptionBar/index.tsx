@@ -4,19 +4,11 @@ import { SortDir } from "src/services/sort/types";
 
 import "./styles.css";
 import { findSortIcon } from "src/services/icon/utils";
-import { Header } from "src/services/table/types";
+import { TableSettings, Header } from "src/services/table/types";
 
 interface SortBubbleProps {
 	sortDir: SortDir;
 	content: string;
-}
-
-interface SortButtonListProps {
-	bubbles: { sortDir: SortDir; content: string }[];
-}
-
-interface OptionBarProps {
-	headers: Header[];
 }
 
 const SortBubble = ({ sortDir, content }: SortBubbleProps) => {
@@ -28,6 +20,10 @@ const SortBubble = ({ sortDir, content }: SortBubbleProps) => {
 		</div>
 	);
 };
+
+interface SortButtonListProps {
+	bubbles: { sortDir: SortDir; content: string }[];
+}
 
 const SortBubbleList = ({ bubbles }: SortButtonListProps) => {
 	return (
@@ -43,14 +39,22 @@ const SortBubbleList = ({ bubbles }: SortButtonListProps) => {
 	);
 };
 
-export default function OptionBar({ headers }: OptionBarProps) {
+interface Props {
+	headers: Header[];
+	tableSettings: TableSettings;
+}
+export default function OptionBar({ headers, tableSettings }: Props) {
 	const bubbles = useMemo(() => {
 		return headers
-			.filter((header) => header.sortDir !== SortDir.NONE)
-			.map((header) => {
+			.filter((_header, i) => {
+				const settings = tableSettings.columns[i];
+				return settings.sortDir !== SortDir.NONE;
+			})
+			.map((header, i) => {
+				const settings = tableSettings.columns[i];
 				return {
 					content: header.content,
-					sortDir: header.sortDir,
+					sortDir: settings.sortDir,
 				};
 			});
 	}, [headers]);

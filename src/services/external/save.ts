@@ -2,52 +2,70 @@ import { MarkdownSectionInformation, TFile } from "obsidian";
 
 import NltPlugin from "../../main";
 
-import { appDataToMarkdown } from "./saveUtils";
+import { tableModelToMarkdown } from "./saveUtils";
 
-import { ViewType } from "../settings/saveState";
-import { AppData } from "../table/types";
+import { TableModel, TableSettings, ViewType } from "../table/types";
 import { CURRENT_TABLE_CACHE_VERSION, DEBUG } from "../../constants";
+import { sectionInfoToMarkdown } from "./load";
 
 //TODO optimize in the future?
 //How much weight does this function have?
-export const saveAppData = async (
+export const saveTableState = async (
 	plugin: NltPlugin,
-	data: AppData,
+	tableData: TableModel,
+	tableSettings: TableSettings,
 	blockId: string,
 	sectionInfo: MarkdownSectionInformation,
 	sourcePath: string,
 	viewType: ViewType
 ) => {
 	try {
-		const markdown = appDataToMarkdown(data);
-
 		if (DEBUG.SAVE_APP_DATA) {
 			console.log("");
-			console.log("saveAppData()");
-			console.log("new table markdown", {
-				markdown,
-			});
+			console.log("saveTableState()");
 		}
-		const file = plugin.app.workspace.getActiveFile();
-		const fileContent = await plugin.app.vault.cachedRead(file);
 
-		const { lineStart, lineEnd } = sectionInfo;
-
-		const updatedContent = replaceTableInText(
-			fileContent,
-			lineStart,
-			lineEnd,
-			markdown
+		await updateSettingsCache(
+			plugin,
+			tableData,
+			tableSettings,
+			sourcePath,
+			blockId,
+			viewType
 		);
 
-		if (DEBUG.SAVE_APP_DATA) {
-			console.log("updated file content", {
-				updatedContent,
-			});
-		}
+		const markdown = tableModelToMarkdown(tableData);
+		const originalMarkdown = sectionInfoToMarkdown(sectionInfo);
 
-		await updateSettingsCache(plugin, data, sourcePath, blockId, viewType);
-		await updateFileContent(plugin, file, updatedContent);
+		let tableModelChanged = originalMarkdown.localeCompare(markdown) !== 0;
+
+		if (tableModelChanged) {
+			if (DEBUG.SAVE_APP_DATA) {
+				console.log("Table model changed");
+			}
+
+			const file = plugin.app.workspace.getActiveFile();
+			const fileContent = await plugin.app.vault.cachedRead(file);
+
+			const { lineStart, lineEnd } = sectionInfo;
+
+			const updatedContent = replaceTableInText(
+				fileContent,
+				lineStart,
+				lineEnd,
+				markdown
+			);
+
+			if (DEBUG.SAVE_APP_DATA) {
+				console.log("table model", {
+					updatedContent,
+				});
+				console.log("updated file content", {
+					updatedContent,
+				});
+			}
+			await updateFileContent(plugin, file, updatedContent);
+		}
 	} catch (err) {
 		console.log(err);
 	}
@@ -63,15 +81,15 @@ const updateFileContent = async (
 
 const updateSettingsCache = async (
 	plugin: NltPlugin,
-	data: AppData,
+	tableModel: TableModel,
+	tableSettings: TableSettings,
 	sourcePath: string,
 	blockId: string,
 	viewType: ViewType
 ) => {
-	if (!plugin.settings.state[sourcePath])
-		plugin.settings.state[sourcePath] = {};
-	plugin.settings.state[sourcePath][blockId] = {
-		data,
+	plugin.settings.data[sourcePath][blockId] = {
+		tableModel,
+		tableSettings,
 		viewType,
 		shouldUpdate: true,
 		tableCacheVersion: CURRENT_TABLE_CACHE_VERSION,
@@ -79,7 +97,7 @@ const updateSettingsCache = async (
 	if (DEBUG.SAVE_APP_DATA) {
 		console.log("Updating settings cache");
 		console.log("data", {
-			[blockId]: plugin.settings.state[sourcePath][blockId],
+			[blockId]: plugin.settings.data[sourcePath][blockId],
 		});
 	}
 	return await plugin.saveData(plugin.settings);

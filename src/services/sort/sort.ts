@@ -1,19 +1,25 @@
 import { SortDir } from "./types";
-import { CellType } from "src/services/table/types";
-import { Row, AppData } from "../table/types";
+import { Row, TableModel, TableSettings } from "../table/types";
 
-export const sortRows = (appData: AppData): Row[] => {
-	const arr = [...appData.rows];
-	const header = appData.headers.find(
-		(header) => header.sortDir !== SortDir.NONE
-	);
-	if (!header) return arr;
-	const { id, sortDir, type } = header;
+export const sortRows = (model: TableModel, settings: TableSettings): Row[] => {
+	let header = null;
+	let headerSettings = null;
+
+	for (let i = 0; i < model.headers.length; i++) {
+		if (settings.columns[i].sortDir !== SortDir.NONE) {
+			header = model.headers[i];
+			headerSettings = settings.columns[i];
+		}
+	}
+	if (!header) return model.rows;
+	const arr = [...model.rows];
+	const { id } = header;
+	const { sortDir } = headerSettings;
 	arr.sort((a, b) => {
-		const cellA = appData.cells.find(
+		const cellA = model.cells.find(
 			(cell) => cell.headerId === id && cell.rowId === a.id
 		);
-		const cellB = appData.cells.find(
+		const cellB = model.cells.find(
 			(cell) => cell.headerId === id && cell.rowId === b.id
 		);
 		const contentA = cellA.content;
@@ -27,35 +33,10 @@ export const sortRows = (appData: AppData): Row[] => {
 		}
 
 		if (sortDir === SortDir.ASC) {
-			if (type === CellType.TAG) {
-				const tagA = appData.tags.find((tag) =>
-					tag.selected.includes(cellA.id)
-				);
-				const tagB = appData.tags.find((tag) =>
-					tag.selected.includes(cellB.id)
-				);
-				return tagA.content.localeCompare(tagB.content);
-			} else {
-				return contentA.localeCompare(contentB);
-			}
+			return contentA.localeCompare(contentB);
 		} else if (sortDir === SortDir.DESC) {
-			if (type === CellType.TAG) {
-				const tagA = appData.tags.find((tag) =>
-					tag.selected.includes(cellA.id)
-				);
-				const tagB = appData.tags.find((tag) =>
-					tag.selected.includes(cellB.id)
-				);
-				return tagB.content.localeCompare(tagA.content);
-			} else {
-				return contentB.localeCompare(contentA);
-			}
+			return contentB.localeCompare(contentA);
 		} else {
-			//Sort by the default order in which the row was created
-			const creationA = a.creationTime;
-			const creationB = b.creationTime;
-			if (creationA > creationB) return 1;
-			if (creationA < creationB) return -1;
 			return 0;
 		}
 	});

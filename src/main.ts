@@ -7,12 +7,22 @@ import {
 } from "obsidian";
 
 import { NltTable } from "./NltTable";
-import { NltSettings, DEFAULT_SETTINGS } from "./services/settings";
 import { addRow, addColumn } from "./services/internal/add";
-import { saveAppData } from "./services/external/save";
+import { saveTableState } from "./services/external/save";
 import { createEmptyMarkdownTable } from "./services/random";
-import { ViewType } from "./services/settings/saveState";
+import { ViewType, TableState } from "./services/table/types";
 
+export interface NltSettings {
+	data: {
+		[sourcePath: string]: {
+			[tableIndex: string]: TableState;
+		};
+	};
+}
+
+export const DEFAULT_SETTINGS: NltSettings = {
+	data: {},
+};
 interface FocusedTable {
 	blockId: string;
 	sectionInfo: MarkdownSectionInformation;
@@ -73,15 +83,15 @@ export default class NltPlugin extends Plugin {
 
 	registerEvents() {
 		//Our persisted data uses a key of the file path and then stores an object mapping
-		//to a table id and an AppData object.
+		//to a table id and an TableModel object.
 		//If the file path changes, we want to update our cache so that the data is still accessible.
 		this.registerEvent(
 			this.app.vault.on("rename", (file, oldPath) => {
-				if (this.settings.state[oldPath]) {
+				if (this.settings.data[oldPath]) {
 					const newPath = file.path;
-					const data = { ...this.settings.state[oldPath] };
-					delete this.settings.state[oldPath];
-					this.settings.state[newPath] = data;
+					const data = { ...this.settings.data[oldPath] };
+					delete this.settings.data[oldPath];
+					this.settings.data[newPath] = data;
 					this.saveSettings();
 				}
 			})
@@ -106,12 +116,16 @@ export default class NltPlugin extends Plugin {
 				if (this.focused) {
 					const { blockId, sectionInfo, sourcePath, viewType } =
 						this.focused;
-					const oldData =
-						this.settings.state[sourcePath][blockId].data;
-					const newData = addColumn(oldData);
-					await saveAppData(
+					const { tableModel, tableSettings } =
+						this.settings.data[sourcePath][blockId];
+					const [updatedModel, updatedSettings] = addColumn(
+						tableModel,
+						tableSettings
+					);
+					await saveTableState(
 						this,
-						newData,
+						updatedModel,
+						updatedSettings,
 						blockId,
 						sectionInfo,
 						sourcePath,
@@ -133,12 +147,13 @@ export default class NltPlugin extends Plugin {
 				if (this.focused) {
 					const { blockId, sectionInfo, sourcePath, viewType } =
 						this.focused;
-					const oldData =
-						this.settings.state[sourcePath][blockId].data;
-					const newData = addRow(oldData);
-					await saveAppData(
+					const { tableModel, tableSettings } =
+						this.settings.data[sourcePath][blockId];
+					const newData = addRow(tableModel);
+					await saveTableState(
 						this,
 						newData,
+						tableSettings,
 						blockId,
 						sectionInfo,
 						sourcePath,

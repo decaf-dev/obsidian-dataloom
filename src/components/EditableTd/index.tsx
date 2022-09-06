@@ -12,7 +12,7 @@ import TagCellEdit from "../TagCellEdit";
 import DateCellEdit from "../DateCellEdit";
 
 import { randomColor } from "src/services/random";
-import { Cell, Tag, CellType } from "src/services/table/types";
+import { Cell, CellType } from "src/services/table/types";
 
 import "./styles.css";
 
@@ -24,7 +24,10 @@ import { usePositionRef } from "src/services/hooks";
 
 interface Props {
 	headerType: string;
-	cell: Cell;
+	cellId: string;
+	headerId: string;
+	content: string;
+	textContent: string;
 	width: string;
 	height: string;
 	positionUpdateTime: number;
@@ -34,7 +37,6 @@ interface Props {
 		cellId: string;
 		time: number;
 	};
-	tags: Tag[];
 	onRemoveTagClick: (cellId: string, tagId: string) => void;
 	onTagClick: (cellId: string, tagId: string) => void;
 	onContentChange: (
@@ -56,14 +58,16 @@ interface Props {
 const COMPONENT_NAME = "EditableTd";
 
 export default function EditableTd({
+	cellId,
+	content,
+	textContent,
+	headerId,
 	headerType,
-	cell,
 	width,
 	height,
 	positionUpdateTime,
 	shouldWrapOverflow,
 	useAutoWidth,
-	tags,
 	tagUpdate,
 	onRemoveTagClick,
 	onColorChange,
@@ -75,8 +79,6 @@ export default function EditableTd({
 	const [tagInputText, setTagInputText] = useState("");
 	const [tagColor] = useState(randomColor());
 	const menuId = useId();
-
-	const { id, headerId, type, content, textContent } = cell;
 
 	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
 		useMenuId(menuId);
@@ -98,7 +100,7 @@ export default function EditableTd({
 				tagUpdate,
 			});
 
-		if (tagUpdate.cellId === id) {
+		if (tagUpdate.cellId === cellId) {
 			closeMenu();
 			onSaveContent();
 		}
@@ -112,14 +114,14 @@ export default function EditableTd({
 		if (isMenuRequestingClose) {
 			if (headerType === CellType.TAG) {
 				if (tagInputText !== "") {
-					const tag = tags.find(
-						(tag) => tag.content === tagInputText
-					);
-					if (tag) {
-						onTagClick(id, tag.id);
-					} else {
-						onAddTag(id, headerId, tagInputText, tagColor);
-					}
+					// const tag = tags.find(
+					// 	(tag) => tag.content === tagInputText
+					// );
+					// if (tag) {
+					// 	onTagClick(id, tag.id);
+					// } else {
+					// 	onAddTag(id, headerId, tagInputText, tagColor);
+					// }
 					setTagInputText("");
 				} else {
 					closeMenu();
@@ -157,34 +159,34 @@ export default function EditableTd({
 	}
 
 	function handleAddTag(value: string) {
-		onAddTag(id, headerId, value, tagColor);
+		onAddTag(cellId, headerId, value, tagColor);
 	}
 
 	function handleTagClick(tagId: string) {
-		onTagClick(id, tagId);
+		onTagClick(cellId, tagId);
 	}
 
 	function handleTextInputChange(updatedContent: string) {
-		onContentChange(id, headerType, updatedContent);
+		onContentChange(cellId, headerType, updatedContent);
 		setContentUpdate(true);
 	}
 
 	function handleNumberInputChange(updatedContent: string) {
-		onContentChange(id, headerType, updatedContent);
+		onContentChange(cellId, headerType, updatedContent);
 		setContentUpdate(true);
 	}
 
 	function handleDateChange(updatedContent: string) {
-		onContentChange(id, headerType, updatedContent);
+		onContentChange(cellId, headerType, updatedContent);
 		setContentUpdate(true);
 	}
 
 	function handleCheckboxChange(updatedContent: string) {
-		onContentChange(id, headerType, updatedContent, true);
+		onContentChange(cellId, headerType, updatedContent, true);
 	}
 
 	function renderCell(): React.ReactNode {
-		switch (type) {
+		switch (headerType) {
 			case CellType.TEXT:
 				return (
 					<TextCell
@@ -202,9 +204,9 @@ export default function EditableTd({
 					/>
 				);
 			case CellType.TAG: {
-				const tag = tags.find((tag) => tag.selected.includes(id));
-				if (tag)
-					return <TagCell content={tag.content} color={tag.color} />;
+				// const tag = tags.find((tag) => tag.selected.includes(id));
+				// if (tag)
+				// 	return <TagCell content={tag.content} color={tag.color} />;
 				return <></>;
 			}
 			case CellType.DATE:
@@ -257,26 +259,27 @@ export default function EditableTd({
 					/>
 				);
 			case CellType.TAG:
-				return (
-					<TagCellEdit
-						cellId={id}
-						inputText={tagInputText}
-						positionUpdateTime={positionUpdateTime}
-						tags={tags}
-						menuId={menuId}
-						isOpen={isMenuOpen}
-						style={{
-							top: position.top,
-							left: position.left,
-						}}
-						color={tagColor}
-						onInputChange={setTagInputText}
-						onColorChange={onColorChange}
-						onAddTag={handleAddTag}
-						onRemoveTagClick={onRemoveTagClick}
-						onTagClick={handleTagClick}
-					/>
-				);
+				return <></>;
+			// return (
+			// 	<TagCellEdit
+			// 		cellId={id}
+			// 		inputText={tagInputText}
+			// 		positionUpdateTime={positionUpdateTime}
+			// 		tags={tags}
+			// 		menuId={menuId}
+			// 		isOpen={isMenuOpen}
+			// 		style={{
+			// 			top: position.top,
+			// 			left: position.left,
+			// 		}}
+			// 		color={tagColor}
+			// 		onInputChange={setTagInputText}
+			// 		onColorChange={onColorChange}
+			// 		onAddTag={handleAddTag}
+			// 		onRemoveTagClick={onRemoveTagClick}
+			// 		onTagClick={handleTagClick}
+			// 	/>
+			// );
 			case CellType.DATE:
 				return (
 					<DateCellEdit

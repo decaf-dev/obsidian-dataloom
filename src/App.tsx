@@ -6,13 +6,9 @@ import RowMenu from "./components/RowMenu";
 import EditableTh from "./components/EditableTh";
 import OptionBar from "./components/OptionBar";
 
-import {
-	initialHeader,
-	initialTag,
-	initialCell,
-} from "./services/table/initialState";
-import { Cell, AppData, Tag, CellType } from "./services/table/types";
-import { saveAppData } from "./services/external/save";
+import { initialHeader, initialCell } from "./services/table/initialState";
+import { Cell, TableModel, CellType } from "./services/table/types";
+import { saveTableState } from "./services/external/save";
 import { numToPx, pxToNum } from "./services/string/conversion";
 
 import { DEBUG, MIN_COLUMN_WIDTH_PX } from "./constants";
@@ -35,10 +31,12 @@ import { sortRows } from "./services/sort/sort";
 import { MarkdownSectionInformation } from "obsidian";
 import { checkboxToContent, contentToCheckbox } from "./services/table/utils";
 import { randomColor } from "./services/random";
+import { TableState } from "./services/table/types";
+import { textContent } from "domutils";
 
 interface Props {
 	plugin: NltPlugin;
-	loadedData: AppData;
+	tableState: TableState;
 	sourcePath: string;
 	blockId: string;
 	sectionInfo: MarkdownSectionInformation;
@@ -49,13 +47,13 @@ const COMPONENT_NAME = "App";
 
 export default function App({
 	plugin,
-	loadedData,
+	tableState,
 	sourcePath,
 	blockId,
 	sectionInfo,
 	el,
 }: Props) {
-	const [appData, setAppData] = useState<AppData>(loadedData);
+	const [state, setTableState] = useState<TableState>(tableState);
 	const tableId = useId();
 	const [tagUpdate, setTagUpdate] = useState({
 		time: 0,
@@ -70,11 +68,13 @@ export default function App({
 	useCloseMenusOnScroll("NLT__table-wrapper");
 
 	useDidMountEffect(() => {
-		//TODO handle when a user clicks the same sort option
-		setAppData((prevState) => {
+		setTableState((prevState) => {
 			return {
 				...prevState,
-				rows: sortRows(prevState),
+				tableModel: {
+					...prevState.tableModel,
+					rows: sortRows(state.tableModel, state.tableSettings),
+				},
 			};
 		});
 		forcePositionUpdate();
@@ -84,9 +84,10 @@ export default function App({
 	useDidMountEffect(() => {
 		async function handleUpdate() {
 			try {
-				await saveAppData(
+				await saveTableState(
 					plugin,
-					appData,
+					state.tableModel,
+					state.tableSettings,
 					blockId,
 					sectionInfo,
 					sourcePath,
@@ -122,8 +123,8 @@ export default function App({
 	// 						await plugin.saveSettings();
 	// 						const savedData =
 	// 							settings.state[sourcePath][tableIndex].data;
-	// 						setOldAppData(savedData);
-	// 						setAppData(savedData);
+	// 						setOldTableModel(savedData);
+	// 						setTableModel(savedData);
 	// 						startTimer();
 	// 					}
 	// 				}
@@ -144,42 +145,65 @@ export default function App({
 
 	function handleAddColumn() {
 		if (DEBUG.APP) console.log("[App]: handleAddColumn called.");
-		setAppData((prevState) => addColumn(prevState));
-		saveData();
-	}
-
-	function handleAddRow() {
-		if (DEBUG.APP) console.log("[App]: handleAddRow called.");
-		setAppData((prevState: AppData) => addRow(prevState));
-		saveData();
-	}
-
-	function handleHeaderSave(id: string, updatedContent: string) {
-		if (DEBUG.APP) console.log("[App]: handleHeaderSave called.");
-		setAppData((prevState) => {
+		setTableState((prevState) => {
+			const [model, settings] = addColumn(
+				prevState.tableModel,
+				prevState.tableSettings
+			);
 			return {
 				...prevState,
-				headers: prevState.headers.map((header) => {
-					if (header.id === id)
-						return {
-							...header,
-							content: updatedContent,
-						};
-					return header;
-				}),
+				tableModel: model,
+				tableSettings: settings,
 			};
 		});
 		saveData();
 	}
 
-	function handleHeaderTypeSelect(id: string, selectedCellType: CellType) {
+	function handleAddRow() {
+		if (DEBUG.APP) console.log("[App]: handleAddRow called.");
+		setTableState((prevState) => {
+			const model = addRow(prevState.tableModel);
+			return {
+				...prevState,
+				tableModel: model,
+			};
+		});
+		saveData();
+	}
+
+	function handleHeaderSave(id: string, updatedContent: string) {
+		if (DEBUG.APP) console.log("[App]: handleHeaderSave called.");
+		setTableState((prevState) => {
+			return {
+				...prevState,
+				tableModel: {
+					...prevState.tableModel,
+					headers: prevState.tableModel.headers.map((header) => {
+						if (header.id === id)
+							return {
+								...header,
+								content: updatedContent,
+							};
+						return header;
+					}),
+				},
+			};
+		});
+		saveData();
+	}
+
+	function handleHeaderTypeSelect(
+		id: string,
+		index: number,
+		selectedCellType: CellType
+	) {
 		if (DEBUG.APP) console.log("[App]: handleHeaderTypeSelect called.");
-		const header = appData.headers.find((header) => header.id === id);
+		const { type } = state.tableSettings.columns[index];
 		//If same header type return
-		if (header.type === selectedCellType) return;
+		if (type === selectedCellType) return;
 
 		function findUpdatedCellContent(content: string) {
-			if (header.type === CellType.CHECKBOX) {
+			if (type === CellType.CHECKBOX) {
 				return checkboxToContent(content);
 			} else if (selectedCellType === CellType.CHECKBOX) {
 				return contentToCheckbox(content);
@@ -188,65 +212,47 @@ export default function App({
 			}
 		}
 
-		setAppData((prevState) => {
-			let arr = [...prevState.tags];
-			prevState.cells.forEach((cell) => {
-				const updatedContent = findUpdatedCellContent(cell.content);
-				if (cell.headerId === header.id) {
-					if (selectedCellType === CellType.TAG) {
-						const tag =
-							arr.find((tag) => tag.content === updatedContent) ||
-							null;
-						if (tag) {
-							tag.selected.push(cell.id);
-						} else {
-							arr.push(
-								initialTag(
-									uuid(),
-									header.id,
-									cell.id,
-									updatedContent,
-									randomColor()
-								)
-							);
-						}
-					} else if (header.type === CellType.TAG) {
-						arr = removeTagReferences(arr, cell.id);
-					}
-				}
-			});
+		setTableState((prevState) => {
 			return {
 				...prevState,
-				headers: prevState.headers.map((header) => {
-					if (id === header.id)
-						return { ...header, type: selectedCellType };
-					return header;
-				}),
-				cells: prevState.cells.map((cell: Cell) => {
-					if (cell.headerId === id) {
-						return {
-							...cell,
-							content: findUpdatedCellContent(cell.content),
-							type: selectedCellType,
-						};
-					}
-					return cell;
-				}),
-				tags: arr,
+				tableModel: {
+					...prevState.tableModel,
+					headers: prevState.tableModel.headers.map((header) => {
+						if (id === header.id)
+							return { ...header, type: selectedCellType };
+						return header;
+					}),
+					cells: prevState.tableModel.cells.map((cell: Cell) => {
+						if (cell.headerId === id) {
+							return {
+								...cell,
+								content: findUpdatedCellContent(cell.content),
+								type: selectedCellType,
+							};
+						}
+						return cell;
+					}),
+				},
 			};
 		});
 		saveData();
 	}
 
-	function handleHeaderSortSelect(id: string, sortDir: SortDir) {
+	function handleHeaderSortSelect(index: number, sortDir: SortDir) {
 		if (DEBUG.APP) console.log("[App]: handleHeaderSort called.");
-		setAppData((prevState) => {
+		setTableState((prevState) => {
 			return {
 				...prevState,
-				headers: prevState.headers.map((header) => {
-					if (id === header.id) return { ...header, sortDir };
-					return { ...header, sortDir: SortDir.NONE };
-				}),
+				tableSettings: {
+					...prevState.tableSettings,
+					columns: {
+						...prevState.tableSettings.columns,
+						[index]: {
+							...prevState.tableSettings.columns[index],
+							sortDir,
+						},
+					},
+				},
 			};
 		});
 		sortData();
@@ -270,18 +276,21 @@ export default function App({
 			});
 		}
 
-		setAppData((prevState) => {
+		setTableState((prevState) => {
 			return {
 				...prevState,
-				cells: prevState.cells.map((cell: Cell) => {
-					if (cell.id === id) {
-						return {
-							...cell,
-							content: updatedContent,
-						};
-					}
-					return cell;
-				}),
+				tableModel: {
+					...prevState.tableModel,
+					cells: prevState.tableModel.cells.map((cell: Cell) => {
+						if (cell.id === id) {
+							return {
+								...cell,
+								content: updatedContent,
+							};
+						}
+						return cell;
+					}),
+				},
 			};
 		});
 		if (saveOnChange) saveData();
@@ -301,35 +310,17 @@ export default function App({
 				color,
 			});
 		}
-		setAppData((prevState) => {
-			return {
-				...prevState,
-				tags: [
-					...removeTagReferences(prevState.tags, cellId),
-					initialTag(uuid(), headerId, cellId, content, color),
-				],
-			};
-		});
-		setTagUpdate({ cellId, time: Date.now() });
-	}
-
-	/**
-	 * Removes tag references for a specified cell id
-	 * @param tags The tag array
-	 * @param cellId The cell id
-	 * @returns An array of tags with selected arrays that do not contain the specific cell id
-	 */
-	function removeTagReferences(tags: Tag[], cellId: string) {
-		return tags
-			.map((tag) => {
-				return {
-					...tag,
-					selected: tag.selected.filter(
-						(id: string) => id !== cellId
-					),
-				};
-			})
-			.filter((tag) => tag.selected.length !== 0);
+		//TODO fix
+		// setTableModel((prevState) => {
+		// 	return {
+		// 		...prevState,
+		// 		tags: [
+		// 			...removeTagReferences(prevState.tags, cellId),
+		// 			initialTag(uuid(), headerId, cellId, content, color),
+		// 		],
+		// 	};
+		// });
+		// setTagUpdate({ cellId, time: Date.now() });
 	}
 
 	function handleTagClick(cellId: string, tagId: string) {
@@ -339,48 +330,44 @@ export default function App({
 				tagId,
 			});
 		}
-		//If our cell id has already selected the tag then return
-		const found = appData.tags.find((tag) => tag.id === tagId);
-		if (!found.selected.includes(cellId)) {
-			let arr = removeTagReferences(appData.tags, cellId);
-			arr = arr.map((tag) => {
-				//Add cell id to selected list
-				if (tag.id === tagId) {
-					return {
-						...tag,
-						selected: [...tag.selected, cellId],
-					};
-				}
-				return tag;
-			});
-
-			setAppData((prevState) => {
-				return {
-					...prevState,
-					tags: arr,
-				};
-			});
-		}
-		setTagUpdate({ cellId, time: Date.now() });
+		//TODO fix
+		//setTagUpdate({ cellId, time: Date.now() });
 	}
 
 	function handleRemoveTagClick(cellId: string) {
 		if (DEBUG.APP) console.log("[App]: handleRemoveTagClick called.");
-		setAppData((prevState) => {
-			return {
-				...prevState,
-				tags: removeTagReferences(prevState.tags, cellId),
-			};
-		});
+		//TODO fix
+		// setTableModel((prevState) => {
+		// 	return {
+		// 		...prevState,
+		// 		tags: removeTagReferences(prevState.tags, cellId),
+		// 	};
+		// });
 	}
 
-	function handleDeleteHeaderClick(id: string) {
+	function handleDeleteHeaderClick(id: string, index: number) {
 		if (DEBUG.APP) console.log("[App]: handleDeleteHeaderClick called.");
-		setAppData((prevState) => {
+		setTableState((prevState) => {
 			return {
 				...prevState,
-				headers: prevState.headers.filter((header) => header.id !== id),
-				cells: prevState.cells.filter((cell) => cell.headerId !== id),
+				tableModel: {
+					...prevState.tableModel,
+					headers: prevState.tableModel.headers.filter(
+						(header) => header.id !== id
+					),
+				},
+				tableSettings: {
+					...prevState.tableSettings,
+					columns: Object.fromEntries(
+						Object.entries(prevState.tableSettings.columns).filter(
+							(entry) => {
+								const [key] = entry;
+								if (parseInt(key) !== index) return true;
+								return false;
+							}
+						)
+					),
+				},
 			};
 		});
 		sortData();
@@ -388,35 +375,43 @@ export default function App({
 
 	function handleDeleteRowClick(rowId: string) {
 		if (DEBUG.APP) console.log("[App]: handleDeleteRowClick called.");
-		setAppData((prevState) => {
+		setTableState((prevState) => {
 			return {
 				...prevState,
-				rows: prevState.rows.filter((row) => row.id !== rowId),
-				cells: prevState.cells.filter((cell) => cell.rowId !== rowId),
+				tabelModel: {
+					...prevState.tableModel,
+					rows: prevState.tableModel.rows.filter(
+						(row) => row.id !== rowId
+					),
+					cells: prevState.tableModel.cells.filter(
+						(cell) => cell.rowId !== rowId
+					),
+				},
 			};
 		});
 		sortData();
 	}
 
-	function handleHeaderWidthChange(id: string, width: string) {
+	function handleHeaderWidthChange(index: number, width: string) {
 		if (DEBUG.APP) {
 			logFunc(COMPONENT_NAME, "handleHeaderWidthChange", {
-				id,
+				index,
 				width,
 			});
 		}
-		setAppData((prevState: AppData) => {
+		setTableState((prevState) => {
 			return {
 				...prevState,
-				headers: prevState.headers.map((header) => {
-					if (header.id === id) {
-						return {
-							...header,
+				tableSettings: {
+					...prevState.tableSettings,
+					columns: {
+						...prevState.tableSettings.columns,
+						[index]: {
+							...prevState.tableSettings.columns[index],
 							width,
-						};
-					}
-					return header;
-				}),
+						},
+					},
+				},
 			};
 		});
 		forcePositionUpdate();
@@ -425,105 +420,103 @@ export default function App({
 
 	function handleMoveColumnClick(id: string, moveRight: boolean) {
 		if (DEBUG.APP) console.log("[App]: handleMoveColumnClick called.");
-		setAppData((prevState: AppData) => {
-			const index = prevState.headers.findIndex(
-				(header) => header.id === id
-			);
-			const moveIndex = moveRight ? index + 1 : index - 1;
-			const headers = [...prevState.headers];
+		//TODO edit
+		// setTableModel((prevState: TableModel) => {
+		// 	const index = prevState.headers.findIndex(
+		// 		(header) => header.id === id
+		// 	);
+		// 	const moveIndex = moveRight ? index + 1 : index - 1;
+		// 	const headers = [...prevState.headers];
 
-			//Swap values
-			const old = headers[moveIndex];
-			headers[moveIndex] = headers[index];
-			headers[index] = old;
-			return {
-				...prevState,
-				headers,
-			};
-		});
+		// 	//Swap values
+		// 	const old = headers[moveIndex];
+		// 	headers[moveIndex] = headers[index];
+		// 	headers[index] = old;
+		// 	return {
+		// 		...prevState,
+		// 		headers,
+		// 	};
+		// });
 		saveData();
 	}
 
 	function handleInsertColumnClick(id: string, insertRight: boolean) {
 		if (DEBUG.APP) console.log("[App]: handleInsertColumnClick called.");
-		setAppData((prevState: AppData) => {
-			const header = prevState.headers.find((header) => header.id === id);
-			const index = prevState.headers.indexOf(header);
-			const insertIndex = insertRight ? index + 1 : index;
-			const title = "New Column";
-			const headerToInsert = initialHeader(uuid(), title, title);
+		//TODO edit
+		// setTableModel((prevState: TableModel) => {
+		// 	const header = prevState.headers.find((header) => header.id === id);
+		// 	const index = prevState.headers.indexOf(header);
+		// 	const insertIndex = insertRight ? index + 1 : index;
+		// 	const title = "New Column";
+		// 	const headerToInsert = initialHeader(uuid(), title, title);
 
-			const cells = prevState.rows.map((row) =>
-				initialCell(
-					uuid(),
-					headerToInsert.id,
-					row.id,
-					headerToInsert.type,
-					"",
-					""
-				)
-			);
+		// 	const cells = prevState.rows.map((row) =>
+		// 		initialCell(uuid(), headerToInsert.id, row.id, "", "")
+		// 	);
 
-			const headers = [...prevState.headers];
-			headers.splice(insertIndex, 0, headerToInsert);
+		// 	const headers = [...prevState.headers];
+		// 	headers.splice(insertIndex, 0, headerToInsert);
 
-			return {
-				...prevState,
-				headers,
-				cells: [...prevState.cells, ...cells],
-			};
-		});
+		// 	return {
+		// 		...prevState,
+		// 		headers,
+		// 		cells: [...prevState.cells, ...cells],
+		// 	};
+		// });
 		saveData();
 	}
 
 	function handleChangeColor(tagId: string, color: string) {
-		setAppData((prevState) => {
-			return {
-				...prevState,
-				tags: prevState.tags.map((tag) => {
-					if (tag.id === tagId) {
-						return {
-							...tag,
-							color,
-						};
-					}
-					return tag;
-				}),
-			};
-		});
+		//TODO edit
+		// setTableModel((prevState) => {
+		// 	return {
+		// 		...prevState,
+		// 		tags: prevState.tags.map((tag) => {
+		// 			if (tag.id === tagId) {
+		// 				return {
+		// 					...tag,
+		// 					color,
+		// 				};
+		// 			}
+		// 			return tag;
+		// 		}),
+		// 	};
+		// });
 		saveData();
 	}
 
-	function handleAutoWidthToggle(headerId: string, value: boolean) {
-		setAppData((prevState) => {
+	function handleAutoWidthToggle(index: number, value: boolean) {
+		setTableState((prevState) => {
 			return {
 				...prevState,
-				headers: prevState.headers.map((header) => {
-					if (header.id === headerId) {
-						return {
-							...header,
+				tableSettings: {
+					...prevState.tableSettings,
+					columns: {
+						...prevState.tableSettings.columns,
+						[index]: {
+							...prevState.tableSettings.columns[index],
 							useAutoWidth: value,
-						};
-					}
-					return header;
-				}),
+						},
+					},
+				},
 			};
 		});
 	}
 
-	function handleWrapContentToggle(headerId: string, value: boolean) {
-		setAppData((prevState) => {
+	function handleWrapContentToggle(index: number, value: boolean) {
+		setTableState((prevState) => {
 			return {
 				...prevState,
-				headers: prevState.headers.map((header) => {
-					if (header.id === headerId) {
-						return {
-							...header,
+				tableSettings: {
+					...prevState.tableSettings,
+					columns: {
+						...prevState.tableSettings.columns,
+						[index]: {
+							...prevState.tableSettings.columns[index],
 							shouldWrapOverflow: value,
-						};
-					}
-					return header;
-				}),
+						},
+					},
+				},
 			};
 		});
 	}
@@ -583,16 +576,24 @@ export default function App({
 		return headerWidth;
 	}
 
+	const { tableModel, tableSettings } = state;
+
 	const cellSizes = useMemo(() => {
-		return appData.cells.map((cell) => {
-			const header = appData.headers.find(
-				(header) => header.id === cell.headerId
-			);
+		return tableModel.cells.map((cell) => {
+			let header = null;
+			let headerSettings = null;
+			for (let i = 0; i < tableModel.headers.length; i++) {
+				const obj = tableModel.headers[i];
+				if (obj.id === cell.headerId) {
+					header = tableModel.headers[i];
+					headerSettings = tableSettings.columns[i];
+				}
+			}
 			const { width, height } = measureElement(
 				cell.content,
-				header.useAutoWidth,
-				header.width,
-				header.shouldWrapOverflow
+				headerSettings.useAutoWidth,
+				headerSettings.width,
+				headerSettings.shouldWrapOverflow
 			);
 			return {
 				rowId: cell.rowId,
@@ -601,7 +602,7 @@ export default function App({
 				height,
 			};
 		});
-	}, [appData.cells, appData.headers]);
+	}, [tableModel.cells, tableModel.headers]);
 
 	const rowHeights = useMemo(() => {
 		const heights: { [id: string]: number } = {};
@@ -637,25 +638,28 @@ export default function App({
 
 	return (
 		<div id={tableId} className="NLT__app" tabIndex={0}>
-			<OptionBar headers={appData.headers} />
+			<OptionBar
+				headers={tableModel.headers}
+				tableSettings={tableSettings}
+			/>
 			<div className="NLT__table-wrapper">
 				<Table
-					headers={appData.headers.map((header, i) => {
+					headers={tableModel.headers.map((header, index) => {
 						const {
-							id,
-							content,
 							width,
 							type,
 							sortDir,
 							shouldWrapOverflow,
 							useAutoWidth,
-						} = header;
+						} = tableSettings.columns[index];
+						const { id, content } = header;
 						return {
 							id,
 							component: (
 								<EditableTh
 									key={id}
 									id={id}
+									index={index}
 									width={findCellWidth(
 										type,
 										useAutoWidth,
@@ -665,11 +669,10 @@ export default function App({
 									shouldWrapOverflow={shouldWrapOverflow}
 									useAutoWidth={useAutoWidth}
 									positionUpdateTime={positionUpdateTime}
-									index={i}
 									content={content}
 									type={type}
 									sortDir={sortDir}
-									numHeaders={appData.headers.length}
+									numHeaders={tableModel.headers.length}
 									onSortSelect={handleHeaderSortSelect}
 									onInsertColumnClick={
 										handleInsertColumnClick
@@ -687,33 +690,41 @@ export default function App({
 							),
 						};
 					})}
-					rows={appData.rows.map((row) => {
+					rows={tableModel.rows.map((row) => {
 						return {
 							id: row.id,
 							component: (
 								<>
-									{appData.headers.map((header) => {
-										const cell = appData.cells.find(
+									{tableModel.headers.map((header, index) => {
+										const {
+											width,
+											type,
+											useAutoWidth,
+											shouldWrapOverflow,
+										} = tableSettings.columns[index];
+										const {
+											id: cellId,
+											content,
+											textContent,
+										} = tableModel.cells.find(
 											(cell) =>
 												cell.rowId === row.id &&
 												cell.headerId === header.id
 										);
-										const {
-											id: headerId,
-											type,
-											useAutoWidth,
-											width,
-										} = header;
+										const { id: headerId } = header;
 										return (
 											<EditableTd
-												key={cell.id}
-												cell={cell}
-												headerType={header.type}
+												key={cellId}
+												cellId={cellId}
+												headerId={headerId}
+												content={content}
+												textContent={textContent}
+												headerType={type}
 												positionUpdateTime={
 													positionUpdateTime
 												}
 												shouldWrapOverflow={
-													header.shouldWrapOverflow
+													shouldWrapOverflow
 												}
 												useAutoWidth={useAutoWidth}
 												width={findCellWidth(
@@ -724,11 +735,6 @@ export default function App({
 												)}
 												height={rowHeights[row.id]}
 												tagUpdate={tagUpdate}
-												tags={appData.tags.filter(
-													(tag) =>
-														tag.headerId ===
-														header.id
-												)}
 												onTagClick={handleTagClick}
 												onRemoveTagClick={
 													handleRemoveTagClick

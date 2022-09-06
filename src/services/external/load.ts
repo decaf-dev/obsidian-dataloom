@@ -1,16 +1,17 @@
 import NltPlugin from "src/main";
-import { updateAppDataFromSavedState } from "./merge";
 import { CURRENT_TABLE_CACHE_VERSION, DEBUG } from "../../constants";
-import { AppData } from "../table/types";
+import { DEFAULT_COLUMN_SETTINGS, TableState } from "../table/types";
 import {
-	findAppData,
+	findTableModel,
 	findCurrentViewType,
 	parseTableFromEl,
 	parseTableFromMarkdown,
 } from "./loadUtils";
 import { MarkdownSectionInformation } from "obsidian";
 
-const findTableMarkdown = (sectionInfo: MarkdownSectionInformation) => {
+export const sectionInfoToMarkdown = (
+	sectionInfo: MarkdownSectionInformation
+) => {
 	const { text, lineStart, lineEnd } = sectionInfo;
 	const lines = text.split("\n");
 	return lines
@@ -21,24 +22,20 @@ const findTableMarkdown = (sectionInfo: MarkdownSectionInformation) => {
 const getTableDimensions = (table: string[][]) => {
 	return { height: table.length, width: table[0].length };
 };
-/**
- * Loads app data
- * @param el The root table element
- * @returns AppData - The loaded data which the app will use to initialize its state
- */
-export const loadAppData = async (
+
+export const loadTableState = async (
 	plugin: NltPlugin,
 	el: HTMLElement,
 	blockId: string,
 	sectionInfo: MarkdownSectionInformation,
 	sourcePath: string
-): Promise<AppData> => {
+): Promise<TableState> => {
 	if (DEBUG.LOAD_APP_DATA) {
 		console.log("");
-		console.log("loadAppData()");
+		console.log("loadTableState()");
 		console.log("Parsing table from element");
 	}
-	const markdown = findTableMarkdown(sectionInfo);
+	const markdown = sectionInfoToMarkdown(sectionInfo);
 	const contentTable = parseTableFromMarkdown(markdown); //Get dimensions
 	const textContentTable = parseTableFromEl(el); //Get dimensions
 
@@ -58,53 +55,41 @@ export const loadAppData = async (
 		console.log("textContent", textContentTable);
 	}
 
-	if (plugin.settings.state[sourcePath]) {
-		//Migration before 4.3.0
-		//We update from index to block id
-		if (plugin.settings.state[sourcePath][0]) {
-			console.log("Migrating from before 4.3.0");
-			plugin.settings.state[sourcePath][blockId] = {
-				...plugin.settings.state[sourcePath][0],
-			};
-			delete plugin.settings.state[sourcePath][0];
-		}
-	}
-
-	//We will delete settings for tables older than 4.3.0
-
-	const settings = plugin.settings.state[sourcePath]?.[blockId];
-	if (settings) {
-		const { data: oldData, tableCacheVersion } = settings;
-		//Force reload. This is to update the appData with `textContent` which is now necessary for rendering
-		if (tableCacheVersion >= 500) {
-			if (DEBUG.LOAD_APP_DATA) {
-				console.log("Loading data from cache.");
-				console.log("oldData", oldData);
-			}
-			const newData = findAppData(contentTable, textContentTable);
-			return updateAppDataFromSavedState(oldData, newData);
-		}
-	}
-
 	if (DEBUG.LOAD_APP_DATA) console.log("Loading new data.");
 
-	const data = findAppData(contentTable, textContentTable);
+	const model = findTableModel(contentTable, textContentTable);
 
-	//When a user adds a new table, this entry will initially be null, we need to set this
-	//so a user can add rows/columns via hotkeys
-	plugin.settings.state[sourcePath] = {};
+	let tableState: TableState | null = null;
+	const savedState = plugin.settings.data[sourcePath]?.[blockId];
+	if (savedState) {
+		const { tableCacheVersion } = savedState;
+		if (DEBUG.LOAD_APP_DATA) {
+			console.log("Loading table state from cache.");
+		}
+		tableState = { ...savedState };
 
-	const saveState = {
-		data,
-		shouldUpdate: false,
-		viewType: findCurrentViewType(el),
-		tableCacheVersion: CURRENT_TABLE_CACHE_VERSION,
-	};
-
-	plugin.settings.state[sourcePath][blockId] = saveState;
-
-	if (DEBUG.LOAD_APP_DATA) console.log("data", saveState);
-
+		if (tableCacheVersion < CURRENT_TABLE_CACHE_VERSION)
+			tableState.tableCacheVersion = CURRENT_TABLE_CACHE_VERSION;
+	} else {
+		const columnSettings = Object.fromEntries(
+			model.headers.map((_header, i) => {
+				return [i, DEFAULT_COLUMN_SETTINGS];
+			})
+		);
+		tableState = {
+			tableModel: model,
+			tableSettings: {
+				columns: columnSettings,
+			},
+			shouldUpdate: false,
+			viewType: findCurrentViewType(el),
+			tableCacheVersion: CURRENT_TABLE_CACHE_VERSION,
+		};
+		//When a user adds a new table, this entry will initially be null, we need to set this
+		//so a user can add rows/columns via hotkeys
+		plugin.settings.data[sourcePath] = {};
+	}
+	plugin.settings.data[sourcePath][blockId] = tableState;
 	await plugin.saveSettings();
-	return data;
+	return tableState;
 };
