@@ -1,29 +1,29 @@
 import { MarkdownRenderChild, MarkdownSectionInformation } from "obsidian";
 import React from "react";
-import ReactDOM from "react-dom";
+import ReactDOM, { unmountComponentAtNode } from "react-dom";
 import App from "./App";
 import { loadTableState } from "./services/external/load";
 import NltPlugin from "./main";
 import MenuProvider from "./components/MenuProvider";
 import FocusProvider from "./components/FocusProvider";
 
-import { createRoot, Root } from "react-dom/client";
-
 export class NltTable extends MarkdownRenderChild {
+	el: HTMLElement;
 	plugin: NltPlugin;
 	sourcePath: string;
 	sectionInfo: MarkdownSectionInformation;
 	blockId: string;
-	root: Root;
+	tableEl: HTMLElement;
 
 	constructor(
+		el: HTMLElement,
 		plugin: NltPlugin,
-		containerEl: HTMLElement,
 		blockId: string,
 		sectionInfo: MarkdownSectionInformation,
 		sourcePath: string
 	) {
-		super(containerEl);
+		super(el);
+		this.el = el;
 		this.plugin = plugin;
 		this.blockId = blockId;
 		this.sectionInfo = sectionInfo;
@@ -39,8 +39,8 @@ export class NltTable extends MarkdownRenderChild {
 			this.sourcePath
 		);
 
-		this.root = createRoot(this.containerEl);
-		this.root.render(
+		this.tableEl = this.el.createEl("div");
+		ReactDOM.render(
 			<FocusProvider
 				plugin={this.plugin}
 				sourcePath={this.sourcePath}
@@ -58,11 +58,12 @@ export class NltTable extends MarkdownRenderChild {
 						el={this.containerEl}
 					/>
 				</MenuProvider>
-			</FocusProvider>
+			</FocusProvider>,
+			this.tableEl
 		);
 	}
 
 	async onunload() {
-		this.root.unmount();
+		unmountComponentAtNode(this.tableEl);
 	}
 }
