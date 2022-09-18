@@ -5,7 +5,7 @@ import {
 	findTableModel,
 	findCurrentViewType,
 	parseCellsFromEl,
-	parseCellsFromMarkdown,
+	parseCellsFromMarkdownTable,
 } from "./loadUtils";
 
 import { MarkdownTable } from "./types";
@@ -24,8 +24,9 @@ export const loadTableState = async (
 	}
 
 	const numColumns = el.getElementsByTagName("th").length;
-	const contentCells = parseCellsFromMarkdown(markdownTable, numColumns);
-	const textContentCells = parseCellsFromEl(el, numColumns);
+	const contentCells = parseCellsFromMarkdownTable(markdownTable);
+	const textContentCells = parseCellsFromEl(el);
+
 	if (contentCells.length !== textContentCells.length) {
 		console.log("Content cells", contentCells);
 		console.log("Text content cells", textContentCells);

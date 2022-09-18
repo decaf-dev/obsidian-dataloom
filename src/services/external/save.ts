@@ -33,7 +33,7 @@ export const saveTableState = async (
 			viewType
 		);
 
-		const markdown = tableModelToMarkdown(tableData);
+		const markdown = tableModelToMarkdown(tableData, tableId);
 
 		const { lineStart, lineEnd, text } = markdownTable;
 

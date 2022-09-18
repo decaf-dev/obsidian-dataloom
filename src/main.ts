@@ -69,6 +69,8 @@ export default class NltPlugin extends Plugin {
 							context.sourcePath
 						)
 					);
+				} else {
+					console.log("Table id not found");
 				}
 			}
 		});

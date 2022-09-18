@@ -191,6 +191,7 @@ export default function App({
 								content: updatedContent,
 							};
 						}
+						return cell;
 					}),
 				},
 			};

@@ -1,6 +1,9 @@
 import { v4 as uuid } from "uuid";
 import { TableModel, Cell, ViewType } from "../table/types";
 import { MarkdownTable } from "./types";
+import MarkdownIt from "markdown-it";
+
+const md = new MarkdownIt();
 
 /**
  * Matches a table id
@@ -39,7 +42,7 @@ export const findMarkdownTablesFromFileData = (
 	data: string
 ): Map<string, MarkdownTable> => {
 	const tables = new Map<string, MarkdownTable>();
-	const lines = data.split("\n"); //TODO Does this work on windows? or do we need /r/n
+	const lines = data.split("\n");
 
 	let tableBuffer: string[] = [];
 	lines.forEach((line, i) => {
@@ -91,42 +94,29 @@ export const findMarkdownTablesFromFileData = (
 	return tables;
 };
 
-export const parseCellsFromEl = (
-	el: HTMLElement,
-	numColumns: number
-): string[] => {
+export const parseCellsFromEl = (el: HTMLElement): string[] => {
 	const cells = [];
 	const th = el.getElementsByTagName("th");
 	for (let i = 0; i < th.length; i++) cells.push(th[i].innerHTML);
 
 	const td = el.getElementsByTagName("td");
 	for (let i = 0; i < td.length; i++) cells.push(td[i].innerHTML);
-	return cells.filter((_cell, i) => i < cells.length - numColumns);
+	return cells;
 };
 
-export const parseCellsFromMarkdown = (
-	table: MarkdownTable,
-	numColumns: number
-): string[] => {
-	//Fix this algorithm. It's need to handle
-	//| 1 | 2 |
-	//| --- | --- |
-	//| cell-1 | cell-2 |
-	//| table-id-1 | |
-	//This code
-	const split = table.text.split("\n");
-	const combined = split.join(" ");
-	let cells = combined.split("|");
-
-	cells = cells.map((cell) => cell.trim());
-	cells = cells.filter((cell) => cell !== "");
-	cells = cells.filter((cell) => !cell.match(/^[-]{3,}$/));
-	return cells.filter((_cell, i) => i < cells.length - numColumns);
+export const parseCellsFromMarkdownTable = (table: MarkdownTable): string[] => {
+	const parsed = md.parse(table.text, {});
+	const cells: string[] = [];
+	parsed.forEach((token) => {
+		if (token.type === "inline") cells.push(token.content);
+	});
+	return cells;
 };
 
 export const tableIdFromEl = (el: HTMLElement): string | null => {
 	const rows = el.getElementsByTagName("tr");
-	const td = rows[rows.length - 1].getElementsByTagName("td");
+	const lastRow = rows[rows.length - 1];
+	const td = lastRow.getElementsByTagName("td");
 	const cell = td[0].textContent;
 	if (cell.match(TABLE_ID_REGEX)) return cell;
 	return null;
@@ -144,7 +134,7 @@ export const findTableModel = (
 	textContentTableCells: string[],
 	numColumns: number
 ): TableModel => {
-	const cells: Cell[] = [];
+	let cells: Cell[] = [];
 	for (let i = 0; i < contentTableCells.length; i++) {
 		cells.push({
 			id: uuid(),
@@ -152,6 +142,7 @@ export const findTableModel = (
 			textContent: textContentTableCells[i],
 		});
 	}
+	cells = cells.filter((_cell, i) => i < cells.length - numColumns);
 	return {
 		cells,
 		numColumns,

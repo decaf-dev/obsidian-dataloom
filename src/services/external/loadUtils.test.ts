@@ -1,7 +1,7 @@
 import { mockMarkdownTable } from "../mock";
 import {
 	findMarkdownTablesFromFileData,
-	parseCellsFromMarkdown,
+	parseCellsFromMarkdownTable,
 	MARKDOWN_TABLE_HYPHEN_ROW_REGEX,
 	MARKDOWN_TABLE_ROW_REGEX,
 	TABLE_ID_REGEX,
@@ -216,17 +216,44 @@ describe("findMarkdownTablesFromFileData", () => {
 	});
 });
 
-describe("parseTableFromMarkdown", () => {
+describe("parseTableFromMarkdownTable", () => {
 	it("parses each cell", () => {
-		const numColumns = 2;
-		const tableId = "table-id-1";
-		const markdown = mockMarkdownTable(numColumns, 3, tableId);
+		const markdown = mockMarkdownTable(2, 4, "table-id-0");
 		const table: MarkdownTable = {
 			lineStart: 0,
-			lineEnd: 2,
+			lineEnd: 3,
 			text: markdown,
 		};
-		const cells = parseCellsFromMarkdown(table, numColumns);
-		expect(cells).toEqual(["column-0", "column-1"]);
+		const cells = parseCellsFromMarkdownTable(table);
+		expect(cells.length).toEqual(6);
+		expect(cells).toEqual([
+			"column-0",
+			"column-1",
+			"cell-0",
+			"cell-1",
+			"table-id-0",
+			"cell-1",
+		]);
+	});
+});
+
+describe("parseCellsFromMarkdownTable", () => {
+	it("parses a table", () => {
+		const markdown = mockMarkdownTable(2, 4, "table-id-0");
+		const table = {
+			lineStart: 0,
+			lineEnd: 3,
+			text: markdown,
+		};
+		const cells = parseCellsFromMarkdownTable(table);
+		expect(cells.length).toEqual(6);
+		expect(cells).toEqual([
+			"column-0",
+			"column-1",
+			"cell-0",
+			"cell-1",
+			"table-id-0",
+			"cell-1",
+		]);
 	});
 });

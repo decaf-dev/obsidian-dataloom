@@ -37,7 +37,7 @@ export class NltTable extends MarkdownRenderChild {
 	async onload() {
 		const tableState = await loadTableState(
 			this.plugin,
-			this.containerEl,
+			this.el,
 			this.tableId,
 			this.markdownTable,
 			this.sourcePath
@@ -50,7 +50,7 @@ export class NltTable extends MarkdownRenderChild {
 				sourcePath={this.sourcePath}
 				tableId={this.tableId}
 				markdownTable={this.markdownTable}
-				el={this.containerEl}
+				el={this.el}
 			>
 				<MenuProvider>
 					<App
@@ -59,7 +59,7 @@ export class NltTable extends MarkdownRenderChild {
 						tableState={tableState}
 						sourcePath={this.sourcePath}
 						tableId={this.tableId}
-						el={this.containerEl}
+						el={this.el}
 					/>
 				</MenuProvider>
 			</FocusProvider>,
