@@ -1,58 +1,135 @@
 import { v4 as uuid } from "uuid";
-import CRC32 from "crc-32";
-
-import { initialHeader, initialRow } from "../table/initialState";
-import { Header, Row, TableModel, Cell, ViewType } from "../table/types";
-
-import { MARKDOWN_CELLS_REGEX, MARKDOWN_ROWS_REGEX } from "../string/regex";
-import { initialCell } from "../table/initialState";
+import { TableModel, Cell, ViewType } from "../table/types";
+import { MarkdownTable } from "./types";
 
 /**
- * Parses data for an individual table.
- * This is not used for all file data. It is intended to be used
- * on one table returned from findMarkdownTablesFromFileData
- *
- * We assume that this is a valid markdown table
- * @param data The data for one table. No more, no less.
- * @returns A parsed table representation
+ * Matches a table id
+ * e.g. "table-id-123456"
  */
-//TODO make sure this works 100%, 100% of the time
-export const parseTableFromMarkdown = (data: string): string[][] => {
-	//Start by breaking up everything into rows based off of a row syntax | ---- |
-	const rows = data.match(MARKDOWN_ROWS_REGEX);
+export const TABLE_ID_REGEX = new RegExp(
+	/^[ \t]{0,}table-id-[a-zA-Z0-9-]{1,}[ \t]{0,}$/
+);
 
-	const table = [];
-	//For each row, parse each cell
-	for (let i = 0; i < rows.length; i++) {
-		let cells = rows[i].match(MARKDOWN_CELLS_REGEX);
-		cells = cells.map((cell) => cell.replace(/\|/g, "").trim());
-		cells = cells.filter(
-			(cell) => (cell.match("-{3,}") || []).length === 0
-		);
+/**
+ * Matches a markdown table row
+ * e.g. "| cell 1 | cell 2 |"
+ */
+export const MARKDOWN_TABLE_ROW_REGEX = new RegExp(
+	/^[ \t]{0,}\|([ \t]{0,}.*[ \t]{0,}\|){2,}[ \t]{0,}$/
+);
 
-		if (cells.length !== 0) table.push(cells);
-	}
-	return table;
+/**
+ * Matches a markdown table hyphen row
+ * e.g. "| --- | --- |"
+ */
+export const MARKDOWN_TABLE_HYPHEN_ROW_REGEX = new RegExp(
+	/^[ \t]{0,}\|([ \t]{0,}[-]{3,}[ \t]{0,}\|){2,}[ \t]{0,}$/
+);
+
+const findTableIdFromBuffer = (tableBuffer: string[]): string | null => {
+	const lastRow = tableBuffer[tableBuffer.length - 1];
+	const tableId = lastRow.split("|")[1];
+	if (tableId.match(TABLE_ID_REGEX)) return tableId.trim();
+	return null;
 };
 
-export const parseTableFromEl = (el: HTMLElement): string[][] => {
-	const table = [];
-	const tr = el.getElementsByTagName("tr");
-	const th = tr[0].getElementsByTagName("th");
+const MIN_TABLE_ROW_COUNT = 3;
 
-	let row = [];
-	for (let i = 0; i < th.length; i++) row.push(th[i].textContent);
-	table.push(row);
+export const findMarkdownTablesFromFileData = (
+	data: string
+): Map<string, MarkdownTable> => {
+	const tables = new Map<string, MarkdownTable>();
+	const lines = data.split("\n"); //TODO Does this work on windows? or do we need /r/n
 
-	for (let i = 1; i < tr.length; i++) {
-		const td = tr[i].getElementsByTagName("td");
-		row = [];
-		for (let j = 0; j < td.length; j++) {
-			row.push(td[j].innerHTML);
+	let tableBuffer: string[] = [];
+	lines.forEach((line, i) => {
+		let added = false;
+		//If line is valid table row add to buffer
+		if (line.match(MARKDOWN_TABLE_ROW_REGEX)) {
+			tableBuffer.push(line);
+			added = true;
 		}
-		table.push(row);
+		//If 2 lines have been added, check to make sure that the 2nd row is a hyphen row
+		if (tableBuffer.length === 2) {
+			if (!tableBuffer[1].match(MARKDOWN_TABLE_HYPHEN_ROW_REGEX)) {
+				tableBuffer = [];
+				return;
+			}
+		}
+		//If we didn't add a line
+		if (!added) {
+			//And we have atleast 3 lines
+			if (tableBuffer.length >= MIN_TABLE_ROW_COUNT) {
+				//And there is a table id e.g. "table-id-1"
+				const tableId = findTableIdFromBuffer(tableBuffer);
+				//Add the table
+				if (tableId) {
+					const lineEnd = i - 1;
+					tables.set(tableId.trim(), {
+						lineStart: lineEnd - tableBuffer.length + 1,
+						lineEnd,
+						text: tableBuffer.join("\n"),
+					});
+				}
+			}
+			tableBuffer = [];
+		}
+	});
+	//If we finished parsing and we are left with a non-empty table buffer
+	//add that as a table
+	if (tableBuffer.length >= 3) {
+		const tableId = findTableIdFromBuffer(tableBuffer);
+		if (tableId) {
+			const lineEnd = lines.length - 1;
+			tables.set(tableId, {
+				lineStart: lineEnd - tableBuffer.length + 1,
+				lineEnd,
+				text: tableBuffer.join("\n"),
+			});
+		}
 	}
-	return table;
+	return tables;
+};
+
+export const parseCellsFromEl = (
+	el: HTMLElement,
+	numColumns: number
+): string[] => {
+	const cells = [];
+	const th = el.getElementsByTagName("th");
+	for (let i = 0; i < th.length; i++) cells.push(th[i].innerHTML);
+
+	const td = el.getElementsByTagName("td");
+	for (let i = 0; i < td.length; i++) cells.push(td[i].innerHTML);
+	return cells.filter((_cell, i) => i < cells.length - numColumns);
+};
+
+export const parseCellsFromMarkdown = (
+	table: MarkdownTable,
+	numColumns: number
+): string[] => {
+	//Fix this algorithm. It's need to handle
+	//| 1 | 2 |
+	//| --- | --- |
+	//| cell-1 | cell-2 |
+	//| table-id-1 | |
+	//This code
+	const split = table.text.split("\n");
+	const combined = split.join(" ");
+	let cells = combined.split("|");
+
+	cells = cells.map((cell) => cell.trim());
+	cells = cells.filter((cell) => cell !== "");
+	cells = cells.filter((cell) => !cell.match(/^[-]{3,}$/));
+	return cells.filter((_cell, i) => i < cells.length - numColumns);
+};
+
+export const tableIdFromEl = (el: HTMLElement): string | null => {
+	const rows = el.getElementsByTagName("tr");
+	const td = rows[rows.length - 1].getElementsByTagName("td");
+	const cell = td[0].textContent;
+	if (cell.match(TABLE_ID_REGEX)) return cell;
+	return null;
 };
 
 export const findCurrentViewType = (el: HTMLElement): ViewType => {
@@ -62,48 +139,21 @@ export const findCurrentViewType = (el: HTMLElement): ViewType => {
 	return currentViewType;
 };
 
-export const hashHeaders = (headers: string[]): number => {
-	return CRC32.str(
-		headers.reduce((concat, header) => (concat += header), "")
-	);
-};
-
 export const findTableModel = (
-	contentTable: string[][],
-	textContentTable: string[][]
+	contentTableCells: string[],
+	textContentTableCells: string[],
+	numColumns: number
 ): TableModel => {
-	const headers: Header[] = [];
-	const rows: Row[] = [];
 	const cells: Cell[] = [];
-
-	contentTable.forEach((parsedRow, i) => {
-		if (i === 0) {
-			parsedRow.forEach((th, j) => {
-				headers.push(initialHeader(uuid(), th, textContentTable[0][j]));
-			});
-		} else {
-			const row = initialRow(uuid());
-			parsedRow.forEach((td, j) => {
-				//The first time we load the data, set the cell as a text cell
-				//Once we merge the new data with the old data, we can set the cell
-				//types again
-				const cell = initialCell(
-					uuid(),
-					headers[j].id,
-					row.id,
-					td,
-					textContentTable[i][j]
-				);
-				cells.push(cell);
-			});
-
-			rows.push(row);
-		}
-	});
-
+	for (let i = 0; i < contentTableCells.length; i++) {
+		cells.push({
+			id: uuid(),
+			content: contentTableCells[i],
+			textContent: textContentTableCells[i],
+		});
+	}
 	return {
-		headers,
-		rows,
 		cells,
+		numColumns,
 	};
 };

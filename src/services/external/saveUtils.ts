@@ -1,38 +1,40 @@
 import { TableModel, Cell } from "../table/types";
+import { findRowCells, getColumnIndex } from "../table/utils";
 
 /**
- * Converts table data to a valid Obsidian markdown string
- * @param data The app data
- * @returns An Obsidian markdown string
+ * Converts table model to markdown
  */
-export const tableModelToMarkdown = (data: TableModel): string => {
-	const columnCharLengths = calcColumnCharLengths(data);
+export const tableModelToMarkdown = (model: TableModel): string => {
+	const { numColumns, cells } = model;
+	const columnCharLengths = calcColumnCharLengths(cells, numColumns);
 	const buffer = new TableModelStringBuffer();
 	buffer.createRow();
 
-	data.headers.forEach((header, i) => {
-		buffer.writeColumn(header.content, columnCharLengths[i]);
-	});
-
-	buffer.createRow();
-
-	for (let i = 0; i < data.headers.length; i++) {
-		const content = Array(columnCharLengths[i]).fill("-").join("");
-		buffer.writeColumn(content, columnCharLengths[i]);
+	let index = 0;
+	for (let i = 0; i < numColumns; i++) {
+		buffer.writeCell(cells[i].content, columnCharLengths[i]);
 	}
 
-	data.rows.forEach((row) => {
-		buffer.createRow();
+	buffer.createRow();
+	index += numColumns;
 
-		for (let i = 0; i < data.headers.length; i++) {
-			const cell = data.cells.find(
-				(cell) =>
-					cell.rowId === row.id &&
-					cell.headerId === data.headers[i].id
-			);
-			buffer.writeColumn(cell.content, columnCharLengths[i]);
+	for (let i = index; i < index + numColumns; i++) {
+		let content = "";
+		for (let j = 0; j < columnCharLengths[i]; j++) content += "-";
+		buffer.writeCell(content, columnCharLengths[i]);
+	}
+
+	index += numColumns;
+
+	const numRows = cells.length / numColumns - 1;
+	for (let i = 0; i < numRows; i++) {
+		const rowCells = findRowCells(i, cells, numColumns);
+		for (let j = 0; j < rowCells.length; j++) {
+			const columnIndex = getColumnIndex(i, numColumns);
+			const cell = rowCells[j];
+			buffer.writeCell(cell.content, columnCharLengths[columnIndex]);
 		}
-	});
+	}
 	return buffer.toString();
 };
 export class TableModelStringBuffer {
@@ -47,7 +49,7 @@ export class TableModelStringBuffer {
 		this.string += "|";
 	}
 
-	writeColumn(content: string, columnCharLength: number) {
+	writeCell(content: string, columnCharLength: number) {
 		this.string += " ";
 		this.string += content;
 
@@ -71,28 +73,22 @@ interface ColumnCharLengths {
 /**
  * Calculates the max char length for each column.
  * This is used to know how much padding to add to cell.
- * @param headers An array of headers
- * @param cells An array of cells
- * @param tags An array of tags
- * @returns An object containing the calculated lengths
  */
-export const calcColumnCharLengths = (data: TableModel): ColumnCharLengths => {
-	const columnCharLengths: { [columnPosition: number]: number } = [];
+export const calcColumnCharLengths = (
+	cells: Cell[],
+	numColumns: number
+): ColumnCharLengths => {
+	const columnCharLengths: { [columnPosition: number]: number } = {};
 
-	//Check headers
-	data.headers.forEach((header, i) => {
-		columnCharLengths[i] = header.content.length;
-	});
-
-	//Check cells
-	data.cells.forEach((cell: Cell) => {
-		let content = cell.content;
-		//We have to do this for the .length function to be available
-		const index = data.headers.findIndex(
-			(header) => header.id === cell.headerId
-		);
-		if (columnCharLengths[index] < content.length)
-			columnCharLengths[index] = content.length;
-	});
+	for (let i = 0; i < cells.length; i++) {
+		const content = cells[i].content;
+		const columnIndex = getColumnIndex(i, numColumns);
+		if (
+			!columnCharLengths[columnIndex] ||
+			columnCharLengths[columnIndex] < content.length
+		) {
+			columnCharLengths[columnIndex] = content.length;
+		}
+	}
 	return columnCharLengths;
 };

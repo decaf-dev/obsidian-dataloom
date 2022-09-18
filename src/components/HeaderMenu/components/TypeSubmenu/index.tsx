@@ -6,14 +6,14 @@ import MenuItem from "../MenuItem";
 import Submenu from "../Submenu";
 interface Props {
 	title: string;
-	headerType: string;
+	columnType: string;
 	onTypeClick: (type: CellType) => void;
 	onBackClick: () => void;
 }
 
 export default function TypeSubmenu({
 	title,
-	headerType,
+	columnType,
 	onTypeClick,
 	onBackClick,
 }: Props) {
@@ -25,7 +25,7 @@ export default function TypeSubmenu({
 					icon={null}
 					content={item.content}
 					onClick={() => onTypeClick(item.type)}
-					selected={item.type === headerType}
+					selected={item.type === columnType}
 				/>
 			))}
 		</Submenu>

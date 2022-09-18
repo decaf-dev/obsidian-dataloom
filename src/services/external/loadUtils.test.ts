@@ -1,59 +1,232 @@
-import { hashHeaders, findTableModel } from "./loadUtils";
+import { mockMarkdownTable } from "../mock";
+import {
+	findMarkdownTablesFromFileData,
+	parseCellsFromMarkdown,
+	MARKDOWN_TABLE_HYPHEN_ROW_REGEX,
+	MARKDOWN_TABLE_ROW_REGEX,
+	TABLE_ID_REGEX,
+} from "./loadUtils";
+import { MarkdownTable } from "./types";
 
-describe("findTableModel", () => {
-	it("finds headers", () => {
-		const parsedTable = [
-			["Column 1", "Column 2"],
-			["Cell 1", "Cell 2"],
-			["Cell 3", "Cell 4"],
-		];
-		const data = findTableModel(parsedTable, parsedTable);
-		expect(data.headers.length).toEqual(2);
-		expect(data.headers[0].content).toEqual("Column 1");
-		expect(data.headers[1].content).toEqual("Column 2");
+describe("TABLE_ID_REGEX", () => {
+	it("matches a table id containing valid characters", () => {
+		const id = "table-id-123ABCabc-";
+		expect(!!id.match(TABLE_ID_REGEX)).toEqual(true);
 	});
 
-	it("finds cells", () => {
-		const parsedTable = [
-			["Column 1", "Column 2"],
-			["Cell 1", "Cell 2"],
-			["Cell 3", "Cell 4"],
-		];
-		const data = findTableModel(parsedTable, parsedTable);
-		expect(data.cells.length).toEqual(4);
-		expect(data.cells[0].content).toEqual("Cell 1");
-		expect(data.cells[1].content).toEqual("Cell 2");
-		expect(data.cells[2].content).toEqual("Cell 3");
-		expect(data.cells[3].content).toEqual("Cell 4");
+	it("matches a table id containing spaces before and after the id", () => {
+		const id = "  table-id-123456  ";
+		expect(!!id.match(TABLE_ID_REGEX)).toEqual(true);
+	});
+
+	it("matches a table id containing tabs before and after the id", () => {
+		const id = "	table-id-123456	";
+		expect(!!id.match(TABLE_ID_REGEX)).toEqual(true);
+	});
+
+	it("doesn't match a table id containing invalid characters", () => {
+		const id = "table-id-$";
+		expect(!!id.match(TABLE_ID_REGEX)).toEqual(false);
+	});
+
+	it("doesn't match a table id containing spaces as part of the id", () => {
+		const id = "table-id-123 456";
+		expect(!!id.match(TABLE_ID_REGEX)).toEqual(false);
+	});
+
+	it("doesn't match a table id containing text before the id", () => {
+		const id = "text table-id-123456";
+		expect(!!id.match(TABLE_ID_REGEX)).toEqual(false);
+	});
+
+	it("doesn't match a table id containing text after the id", () => {
+		const id = "table-id-123456 text";
+		expect(!!id.match(TABLE_ID_REGEX)).toEqual(false);
 	});
 });
 
-describe("hashHeaders", () => {
-	it("produces same hash given same headers", () => {
-		const headers = ["test1", "test2"];
-		const hash = hashHeaders(headers);
-		const hash2 = hashHeaders(headers);
-		expect(hash).toEqual(hash2);
+describe("MARKDOWN_TABLE_ROW_REGEX", () => {
+	it("matches a row containing spaces between text and pipes", () => {
+		const row = "| column-1 | column-2 |";
+		expect(!!row.match(MARKDOWN_TABLE_ROW_REGEX)).toEqual(true);
 	});
-
-	it("produces different hash given different headers", () => {
-		const headers1 = ["test1", "test2"];
-		const hash = hashHeaders(headers1);
-
-		const headers2 = ["test3", "test4"];
-		const hash2 = hashHeaders(headers2);
-		expect(hash).not.toEqual(hash2);
+	it("matches a row containing no spaces between text and pipes", () => {
+		const row = "|column-1|column-2|";
+		expect(!!row.match(MARKDOWN_TABLE_ROW_REGEX)).toEqual(true);
+	});
+	it("matches a row containing spaces before and after the row", () => {
+		const row = "  | column-1 | column-2 |  ";
+		expect(!!row.match(MARKDOWN_TABLE_ROW_REGEX)).toEqual(true);
+	});
+	it("matches a row containing tabs before and after the row", () => {
+		const row = "	| column-1 | column-2 |	";
+		expect(!!row.match(MARKDOWN_TABLE_ROW_REGEX)).toEqual(true);
+	});
+	it("doesn't match a row that only has one column", () => {
+		const row = "| column-1 |";
+		expect(!!row.match(MARKDOWN_TABLE_ROW_REGEX)).toEqual(false);
+	});
+	it("doesn't match a row containing a missing end pipe", () => {
+		const row = "| column-1 | column-2";
+		expect(!!row.match(MARKDOWN_TABLE_ROW_REGEX)).toEqual(false);
+	});
+	it("doesn't match a row containing a missing start pipe", () => {
+		const row = "column-1 | column-2 |";
+		expect(!!row.match(MARKDOWN_TABLE_ROW_REGEX)).toEqual(false);
+	});
+	it("doesn't match a row containing text before the row", () => {
+		const row = "test | column-1 | column-2 |";
+		expect(!!row.match(MARKDOWN_TABLE_ROW_REGEX)).toEqual(false);
+	});
+	it("doesn't match a row containing text after the row", () => {
+		const row = "| column-1 | column-2 | test";
+		expect(!!row.match(MARKDOWN_TABLE_ROW_REGEX)).toEqual(false);
 	});
 });
 
-// describe("parseTableFromEl", () => {
-// 	it("parses table", () => {
-// 		const parsedTable = mockParsedTable();
-// 		const parsed = parseTableFromEl(table);
-// 		expect(parsed).toEqual([
-// 			["Column 1", "Column 2"],
-// 			["Cell 1", "Cell 2"],
-// 			["Cell 3", "Cell 4"],
-// 		]);
-// 	});
-// });
+describe("MARKDOWN_HYPHEN_ROW_REGEX", () => {
+	it("matches a row with spaces between text and pipes", () => {
+		const row = "| --- | --- |";
+		expect(!!row.match(MARKDOWN_TABLE_HYPHEN_ROW_REGEX)).toEqual(true);
+	});
+	it("matches a row with no spaces between text and pipes", () => {
+		const row = "|---|---|";
+		expect(!!row.match(MARKDOWN_TABLE_HYPHEN_ROW_REGEX)).toEqual(true);
+	});
+	it("matches a row containing spaces before and after the row", () => {
+		const row = "  | --- | --- |  ";
+		expect(!!row.match(MARKDOWN_TABLE_HYPHEN_ROW_REGEX)).toEqual(true);
+	});
+	it("matches a row containing tabs before and after the row", () => {
+		const row = "	| --- | --- |	";
+		expect(!!row.match(MARKDOWN_TABLE_HYPHEN_ROW_REGEX)).toEqual(true);
+	});
+	it("doesn't match a row with only one column", () => {
+		const row = "| --- |";
+		expect(!!row.match(MARKDOWN_TABLE_HYPHEN_ROW_REGEX)).toEqual(false);
+	});
+	it("doesn't match a row with a missing end pipe", () => {
+		const row = "| --- | ---";
+		expect(!!row.match(MARKDOWN_TABLE_HYPHEN_ROW_REGEX)).toEqual(false);
+	});
+	it("doesn't match a row with a missing start pipe", () => {
+		const row = "--- | --- |";
+		expect(!!row.match(MARKDOWN_TABLE_HYPHEN_ROW_REGEX)).toEqual(false);
+	});
+	it("doesn't match a row with only 2 hyphens in one column", () => {
+		const row = "| --- | -- |";
+		expect(!!row.match(MARKDOWN_TABLE_HYPHEN_ROW_REGEX)).toEqual(false);
+	});
+	it("doesn't match a row containing text before the row", () => {
+		const row = "test | --- | --- |";
+		expect(!!row.match(MARKDOWN_TABLE_HYPHEN_ROW_REGEX)).toEqual(false);
+	});
+	it("doesn't match a row containing text after the row", () => {
+		const row = "| --- | --- | test";
+		expect(!!row.match(MARKDOWN_TABLE_HYPHEN_ROW_REGEX)).toEqual(false);
+	});
+});
+
+describe("findMarkdownTablesFromFileData", () => {
+	it("finds one 2x3 table", () => {
+		const tableId = "table-id-1";
+		const tableMarkdown = mockMarkdownTable(2, 3, tableId);
+		const data = "Some text\n" + tableMarkdown + "\nSome more text";
+		const tables = findMarkdownTablesFromFileData(data);
+
+		expect(tables.size).toEqual(1);
+		tables.forEach((value, key) => {
+			expect(value).toEqual({
+				lineStart: 1,
+				lineEnd: 3,
+				text: tableMarkdown,
+			});
+			expect(key).toEqual(tableId);
+		});
+	});
+
+	it("finds two 2x3 tables", () => {
+		const tableId1 = "table-id-1";
+		const tableId2 = "table-id-2";
+		const tableMarkdown1 = mockMarkdownTable(2, 3, tableId1);
+		const tableMarkdown2 = mockMarkdownTable(2, 3, tableId2);
+		const data =
+			"Some text\n" +
+			tableMarkdown1 +
+			"\nSome more text\n" +
+			tableMarkdown2;
+		const tables = findMarkdownTablesFromFileData(data);
+		expect(tables.size).toEqual(2);
+
+		let index = 0;
+		tables.forEach((value, key) => {
+			if (index === 0) {
+				expect(value).toEqual({
+					lineStart: 1,
+					lineEnd: 3,
+					text: tableMarkdown1,
+				});
+				expect(key).toEqual(tableId1);
+			} else if (index === 1) {
+				expect(value).toEqual({
+					lineStart: 5,
+					lineEnd: 7,
+					text: tableMarkdown2,
+				});
+				expect(key).toEqual(tableId2);
+			}
+			index++;
+		});
+	});
+
+	it("ignores 1x3 table", () => {
+		const tableId1 = "table-id-1";
+		const tableId2 = "table-id-2";
+		const tableMarkdown1 = mockMarkdownTable(1, 3, tableId1);
+		const tableMarkdown2 = mockMarkdownTable(2, 3, tableId2);
+		const data =
+			"Some text\n" +
+			tableMarkdown1 +
+			"\nSome more text\n" +
+			tableMarkdown2;
+		const tables = findMarkdownTablesFromFileData(data);
+		expect(tables.size).toEqual(1);
+	});
+
+	it("ignores tables with invalid table id", () => {
+		const invalidTableId = "";
+		const validTableId = "table-id-1";
+		const invalidTableMarkdown = mockMarkdownTable(2, 3, invalidTableId);
+		const validTableMarkdown = mockMarkdownTable(2, 3, validTableId);
+		const data =
+			"Some text\n" +
+			invalidTableMarkdown +
+			"\nSome more text\n" +
+			validTableMarkdown;
+		const tables = findMarkdownTablesFromFileData(data);
+		expect(tables.size).toEqual(1);
+		tables.forEach((value, key) => {
+			expect(value).toEqual({
+				text: validTableMarkdown,
+				lineStart: 5,
+				lineEnd: 7,
+			});
+			expect(key).toEqual(validTableId);
+		});
+	});
+});
+
+describe("parseTableFromMarkdown", () => {
+	it("parses each cell", () => {
+		const numColumns = 2;
+		const tableId = "table-id-1";
+		const markdown = mockMarkdownTable(numColumns, 3, tableId);
+		const table: MarkdownTable = {
+			lineStart: 0,
+			lineEnd: 2,
+			text: markdown,
+		};
+		const cells = parseCellsFromMarkdown(table, numColumns);
+		expect(cells).toEqual(["column-0", "column-1"]);
+	});
+});

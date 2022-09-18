@@ -1,32 +1,36 @@
-import { MarkdownRenderChild, MarkdownSectionInformation } from "obsidian";
 import React from "react";
 import ReactDOM, { unmountComponentAtNode } from "react-dom";
+import { MarkdownRenderChild } from "obsidian";
+
 import App from "./App";
-import { loadTableState } from "./services/external/load";
-import NltPlugin from "./main";
 import MenuProvider from "./components/MenuProvider";
 import FocusProvider from "./components/FocusProvider";
+
+import { loadTableState } from "./services/external/load";
+import NltPlugin from "./main";
+
+import { MarkdownTable } from "./services/external/types";
 
 export class NltTable extends MarkdownRenderChild {
 	el: HTMLElement;
 	plugin: NltPlugin;
 	sourcePath: string;
-	sectionInfo: MarkdownSectionInformation;
-	blockId: string;
+	markdownTable: MarkdownTable;
+	tableId: string;
 	tableEl: HTMLElement;
 
 	constructor(
 		el: HTMLElement,
 		plugin: NltPlugin,
-		blockId: string,
-		sectionInfo: MarkdownSectionInformation,
+		tableId: string,
+		markdownTable: MarkdownTable,
 		sourcePath: string
 	) {
 		super(el);
 		this.el = el;
 		this.plugin = plugin;
-		this.blockId = blockId;
-		this.sectionInfo = sectionInfo;
+		this.tableId = tableId;
+		this.markdownTable = markdownTable;
 		this.sourcePath = sourcePath;
 	}
 
@@ -34,8 +38,8 @@ export class NltTable extends MarkdownRenderChild {
 		const tableState = await loadTableState(
 			this.plugin,
 			this.containerEl,
-			this.blockId,
-			this.sectionInfo,
+			this.tableId,
+			this.markdownTable,
 			this.sourcePath
 		);
 
@@ -44,23 +48,24 @@ export class NltTable extends MarkdownRenderChild {
 			<FocusProvider
 				plugin={this.plugin}
 				sourcePath={this.sourcePath}
-				sectionInfo={this.sectionInfo}
-				blockId={this.blockId}
+				tableId={this.tableId}
+				markdownTable={this.markdownTable}
 				el={this.containerEl}
 			>
 				<MenuProvider>
 					<App
 						plugin={this.plugin}
-						sectionInfo={this.sectionInfo}
+						markdownTable={this.markdownTable}
 						tableState={tableState}
 						sourcePath={this.sourcePath}
-						blockId={this.blockId}
+						tableId={this.tableId}
 						el={this.containerEl}
 					/>
 				</MenuProvider>
 			</FocusProvider>,
 			this.tableEl
 		);
+		this.el.children[0].replaceWith(this.tableEl);
 	}
 
 	async onunload() {

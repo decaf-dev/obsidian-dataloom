@@ -1,10 +1,10 @@
 import React, { useMemo } from "react";
 
 import { SortDir } from "src/services/sort/types";
+import { findSortIcon } from "src/services/icon/utils";
+import { TableSettings, Cell } from "src/services/table/types";
 
 import "./styles.css";
-import { findSortIcon } from "src/services/icon/utils";
-import { TableSettings, Header } from "src/services/table/types";
 
 interface SortBubbleProps {
 	sortDir: SortDir;
@@ -40,7 +40,7 @@ const SortBubbleList = ({ bubbles }: SortButtonListProps) => {
 };
 
 interface Props {
-	headers: Header[];
+	headers: Cell[];
 	tableSettings: TableSettings;
 }
 export default function OptionBar({ headers, tableSettings }: Props) {

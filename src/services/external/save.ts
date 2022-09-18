@@ -1,21 +1,20 @@
-import { MarkdownSectionInformation, TFile } from "obsidian";
+import { TFile } from "obsidian";
 
 import NltPlugin from "../../main";
 
 import { tableModelToMarkdown } from "./saveUtils";
 
+import { MarkdownTable } from "./types";
+
 import { TableModel, TableSettings, ViewType } from "../table/types";
 import { CURRENT_TABLE_CACHE_VERSION, DEBUG } from "../../constants";
-import { sectionInfoToMarkdown } from "./load";
 
-//TODO optimize in the future?
-//How much weight does this function have?
 export const saveTableState = async (
 	plugin: NltPlugin,
 	tableData: TableModel,
 	tableSettings: TableSettings,
-	blockId: string,
-	sectionInfo: MarkdownSectionInformation,
+	tableId: string,
+	markdownTable: MarkdownTable,
 	sourcePath: string,
 	viewType: ViewType
 ) => {
@@ -30,14 +29,15 @@ export const saveTableState = async (
 			tableData,
 			tableSettings,
 			sourcePath,
-			blockId,
+			tableId,
 			viewType
 		);
 
 		const markdown = tableModelToMarkdown(tableData);
-		const originalMarkdown = sectionInfoToMarkdown(sectionInfo);
 
-		let tableModelChanged = originalMarkdown.localeCompare(markdown) !== 0;
+		const { lineStart, lineEnd, text } = markdownTable;
+
+		let tableModelChanged = text.localeCompare(markdown) !== 0;
 
 		if (tableModelChanged) {
 			if (DEBUG.SAVE_APP_DATA) {
@@ -46,8 +46,6 @@ export const saveTableState = async (
 
 			const file = plugin.app.workspace.getActiveFile();
 			const fileContent = await plugin.app.vault.cachedRead(file);
-
-			const { lineStart, lineEnd } = sectionInfo;
 
 			const updatedContent = replaceTableInText(
 				fileContent,
@@ -84,10 +82,10 @@ const updateSettingsCache = async (
 	tableModel: TableModel,
 	tableSettings: TableSettings,
 	sourcePath: string,
-	blockId: string,
+	tableId: string,
 	viewType: ViewType
 ) => {
-	plugin.settings.data[sourcePath][blockId] = {
+	plugin.settings.data[sourcePath][tableId] = {
 		tableModel,
 		tableSettings,
 		viewType,
@@ -97,7 +95,7 @@ const updateSettingsCache = async (
 	if (DEBUG.SAVE_APP_DATA) {
 		console.log("Updating settings cache");
 		console.log("data", {
-			[blockId]: plugin.settings.data[sourcePath][blockId],
+			[tableId]: plugin.settings.data[sourcePath][tableId],
 		});
 	}
 	return await plugin.saveData(plugin.settings);

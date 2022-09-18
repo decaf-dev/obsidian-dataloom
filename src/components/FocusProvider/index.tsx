@@ -1,9 +1,9 @@
 import NltPlugin from "../../main";
-import { MarkdownSectionInformation } from "obsidian";
 import React, { useState, useContext, useEffect } from "react";
 import { DEBUG } from "src/constants";
 import { logFunc } from "src/services/debug";
 import { findCurrentViewType } from "src/services/external/loadUtils";
+import { MarkdownTable } from "src/services/external/types";
 
 const FocusContext = React.createContext(false);
 
@@ -16,8 +16,8 @@ const COMPONENT_NAME = "FocusProvider";
 interface Props {
 	children: React.ReactNode;
 	plugin: NltPlugin;
-	blockId: string;
-	sectionInfo: MarkdownSectionInformation;
+	tableId: string;
+	markdownTable: MarkdownTable;
 	sourcePath: string;
 	el: HTMLElement;
 }
@@ -25,8 +25,8 @@ interface Props {
 export default function FocusProvider({
 	children,
 	plugin,
-	sectionInfo,
-	blockId,
+	markdownTable,
+	tableId,
 	sourcePath,
 	el,
 }: Props) {
@@ -36,8 +36,8 @@ export default function FocusProvider({
 		if (DEBUG.FOCUS_PROVIDER) logFunc(COMPONENT_NAME, "handleFocus");
 		setFocus(true);
 		plugin.focusTable({
-			blockId,
-			sectionInfo,
+			tableId,
+			markdownTable,
 			sourcePath,
 			viewType: findCurrentViewType(el),
 		});
@@ -53,7 +53,7 @@ export default function FocusProvider({
 		if (plugin.focused) {
 			if (
 				plugin.focused.sourcePath === sourcePath &&
-				plugin.focused.blockId === blockId
+				plugin.focused.tableId === tableId
 			) {
 				setTimeout(() => {
 					handleFocus();

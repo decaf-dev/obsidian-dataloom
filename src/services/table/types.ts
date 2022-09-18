@@ -20,8 +20,7 @@ export interface TableState {
 }
 
 export interface TableModel {
-	headers: Header[];
-	rows: Row[];
+	numColumns: number;
 	cells: Cell[];
 }
 
@@ -50,20 +49,8 @@ export interface TableSettings {
 		[index: number]: ColumnSettings;
 	};
 }
-export interface Header {
-	id: string;
-	content: string;
-	textContent: string;
-}
-
-export interface Row {
-	id: string;
-}
-
 export interface Cell {
 	id: string;
-	rowId: string;
-	headerId: string;
 	content: string;
 	textContent: string;
 }

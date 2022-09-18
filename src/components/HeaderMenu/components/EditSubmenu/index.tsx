@@ -9,32 +9,30 @@ import Stack from "src/components/Stack";
 
 interface Props {
 	title: string;
-	index: number;
-	headerId: string;
-	headerType: string;
-	headerName: string;
+	columnIndex: number;
+	columnType: string;
+	columnName: string;
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
-	onHeaderNameChange: (name: string) => void;
-	onAutoWidthToggle: (index: number, value: boolean) => void;
-	onWrapOverflowToggle: (index: number, value: boolean) => void;
-	onHeaderDeleteClick: (id: string, index: number) => void;
+	onNameChange: (name: string) => void;
+	onAutoWidthToggle: (columnIndex: number, value: boolean) => void;
+	onWrapOverflowToggle: (columnIndex: number, value: boolean) => void;
+	onDeleteClick: (columnIndex: number) => void;
 	onBackClick: () => void;
 }
 
 export default function EditMenu({
 	title,
-	index,
-	headerId,
-	headerType,
-	headerName,
+	columnIndex,
+	columnType,
+	columnName,
 	shouldWrapOverflow,
 	useAutoWidth,
-	onHeaderNameChange,
+	onNameChange,
 	onAutoWidthToggle,
 	onWrapOverflowToggle,
 	onBackClick,
-	onHeaderDeleteClick,
+	onDeleteClick,
 }: Props) {
 	return (
 		<Submenu title={title} onBackClick={onBackClick}>
@@ -44,18 +42,18 @@ export default function EditMenu({
 					<input
 						className="NLT__header-menu-input"
 						autoFocus
-						value={headerName}
-						onChange={(e) => onHeaderNameChange(e.target.value)}
+						value={columnName}
+						onChange={(e) => onNameChange(e.target.value)}
 					/>
 				</>
-				{(headerType === CellType.TEXT ||
-					headerType === CellType.NUMBER) && (
+				{(columnType === CellType.TEXT ||
+					columnType === CellType.NUMBER) && (
 					<>
 						<p className="NLT__label">Auto Width</p>
 						<Switch
 							isChecked={useAutoWidth}
 							onToggle={(value) =>
-								onAutoWidthToggle(index, value)
+								onAutoWidthToggle(columnIndex, value)
 							}
 						/>
 						{!useAutoWidth && (
@@ -64,14 +62,14 @@ export default function EditMenu({
 								<Switch
 									isChecked={shouldWrapOverflow}
 									onToggle={(value) =>
-										onWrapOverflowToggle(index, value)
+										onWrapOverflowToggle(columnIndex, value)
 									}
 								/>
 							</>
 						)}
 					</>
 				)}
-				<Button onClick={() => onHeaderDeleteClick(headerId, index)}>
+				<Button onClick={() => onDeleteClick(columnIndex)}>
 					Delete
 				</Button>
 			</Stack>

@@ -23,9 +23,8 @@ import { useMenuId } from "src/components/MenuProvider";
 import { usePositionRef } from "src/services/hooks";
 
 interface Props {
-	headerType: string;
+	columnType: string;
 	cellId: string;
-	headerId: string;
 	content: string;
 	textContent: string;
 	width: string;
@@ -41,12 +40,7 @@ interface Props {
 		updatedContent: string,
 		saveOnChange?: boolean
 	) => void;
-	onAddTag: (
-		cellId: string,
-		headerId: string,
-		inputText: string,
-		color: string
-	) => void;
+	onAddTag: (cellId: string, inputText: string, color: string) => void;
 	onColorChange: (tagId: string, color: string) => void;
 	onSaveContent: () => void;
 }
@@ -57,8 +51,7 @@ export default function EditableTd({
 	cellId,
 	content,
 	textContent,
-	headerId,
-	headerType,
+	columnType,
 	width,
 	height,
 	positionUpdateTime,
@@ -107,7 +100,7 @@ export default function EditableTd({
 				isMenuRequestingClose,
 			});
 		if (isMenuRequestingClose) {
-			if (headerType === CellType.TAG) {
+			if (columnType === CellType.TAG) {
 				if (tagInputText !== "") {
 					// const tag = tags.find(
 					// 	(tag) => tag.content === tagInputText
@@ -154,7 +147,7 @@ export default function EditableTd({
 	}
 
 	function handleAddTag(value: string) {
-		onAddTag(cellId, headerId, value, tagColor);
+		onAddTag(cellId, value, tagColor);
 	}
 
 	function handleTagClick(tagId: string) {
@@ -162,26 +155,26 @@ export default function EditableTd({
 	}
 
 	function handleTextInputChange(updatedContent: string) {
-		onContentChange(cellId, headerType, updatedContent);
+		onContentChange(cellId, columnType, updatedContent);
 		setContentUpdate(true);
 	}
 
 	function handleNumberInputChange(updatedContent: string) {
-		onContentChange(cellId, headerType, updatedContent);
+		onContentChange(cellId, columnType, updatedContent);
 		setContentUpdate(true);
 	}
 
 	function handleDateChange(updatedContent: string) {
-		onContentChange(cellId, headerType, updatedContent);
+		onContentChange(cellId, columnType, updatedContent);
 		setContentUpdate(true);
 	}
 
 	function handleCheckboxChange(updatedContent: string) {
-		onContentChange(cellId, headerType, updatedContent, true);
+		onContentChange(cellId, columnType, updatedContent, true);
 	}
 
 	function renderCell(): React.ReactNode {
-		switch (headerType) {
+		switch (columnType) {
 			case CellType.TEXT:
 				return (
 					<TextCell
@@ -219,7 +212,7 @@ export default function EditableTd({
 	}
 
 	function renderCellMenu() {
-		switch (headerType) {
+		switch (columnType) {
 			case CellType.TEXT:
 				return (
 					<TextCellEdit
@@ -255,6 +248,7 @@ export default function EditableTd({
 				);
 			case CellType.TAG:
 				return <></>;
+			//TODO add back
 			// return (
 			// 	<TagCellEdit
 			// 		cellId={id}

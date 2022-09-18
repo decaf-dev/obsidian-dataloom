@@ -15,30 +15,30 @@ import { CellType } from "src/services/table/types";
 import parse from "html-react-parser";
 
 interface Props {
-	id: string;
-	index: number;
+	cellId: string;
+	columnIndex: number;
 	width: string;
-	numHeaders: number;
+	numColumns: number;
 	positionUpdateTime: number;
 	content: string;
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
 	sortDir: SortDir;
 	type: string;
-	onMoveColumnClick: (id: string, moveRight: boolean) => void;
-	onSortSelect: (index: number, sortDir: SortDir) => void;
-	onInsertColumnClick: (id: string, insertRight: boolean) => void;
-	onTypeSelect: (id: string, index: number, type: CellType) => void;
-	onDeleteClick: (id: string, index: number) => void;
-	onSaveClick: (id: string, content: string) => void;
-	onWidthChange: (index: number, width: string) => void;
-	onAutoWidthToggle: (index: number, value: boolean) => void;
-	onWrapOverflowToggle: (index: number, value: boolean) => void;
+	onMoveColumnClick: (columnIndex: number, moveRight: boolean) => void;
+	onSortSelect: (columnIndex: number, sortDir: SortDir) => void;
+	onInsertColumnClick: (columnIndex: number, insertRight: boolean) => void;
+	onTypeSelect: (cellId: string, columnIndex: number, type: CellType) => void;
+	onDeleteClick: (columnIndex: number) => void;
+	onSaveClick: (cellId: string, content: string) => void;
+	onWidthChange: (columnIndex: number, width: string) => void;
+	onAutoWidthToggle: (columnIndex: number, value: boolean) => void;
+	onWrapOverflowToggle: (columnIndex: number, value: boolean) => void;
 }
 
 export default function EditableTh({
-	id,
-	index,
+	cellId,
+	columnIndex,
 	width,
 	positionUpdateTime,
 	content,
@@ -46,7 +46,7 @@ export default function EditableTh({
 	shouldWrapOverflow,
 	type,
 	sortDir,
-	numHeaders,
+	numColumns,
 	onWidthChange,
 	onInsertColumnClick,
 	onMoveColumnClick,
@@ -91,7 +91,7 @@ export default function EditableTh({
 			const newWidth = oldWidth + dist;
 
 			if (newWidth < MIN_COLUMN_WIDTH_PX) return;
-			onWidthChange(index, numToPx(newWidth));
+			onWidthChange(columnIndex, numToPx(newWidth));
 		}
 	}
 
@@ -150,22 +150,21 @@ export default function EditableTh({
 					),
 					left: position.left,
 				}}
-				headerId={id}
+				cellId={cellId}
 				shouldWrapOverflow={shouldWrapOverflow}
 				useAutoWidth={useAutoWidth}
 				id={menuId}
-				headerName={content}
-				index={index}
-				headerSortDir={sortDir}
-				headerType={type}
-				headerIndex={index}
-				numHeaders={numHeaders}
+				columnName={content}
+				columnSortDir={sortDir}
+				columnType={type}
+				columnIndex={columnIndex}
+				numColumns={numColumns}
 				onOutsideClick={onSaveClick}
 				onSortSelect={onSortSelect}
 				onMoveColumnClick={onMoveColumnClick}
 				onInsertColumnClick={onInsertColumnClick}
 				onTypeSelect={onTypeSelect}
-				onHeaderDeleteClick={onDeleteClick}
+				onDeleteClick={onDeleteClick}
 				onClose={handleClose}
 				onAutoWidthToggle={onAutoWidthToggle}
 				onWrapOverflowToggle={onWrapOverflowToggle}

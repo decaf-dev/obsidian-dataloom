@@ -1,16 +1,15 @@
-import {
-	Plugin,
-	Editor,
-	MarkdownView,
-	Notice,
-	MarkdownSectionInformation,
-} from "obsidian";
+import { Plugin, Editor, MarkdownView, Notice, TFile } from "obsidian";
 
 import { NltTable } from "./NltTable";
 import { addRow, addColumn } from "./services/internal/add";
 import { saveTableState } from "./services/external/save";
 import { createEmptyMarkdownTable } from "./services/random";
 import { ViewType, TableState } from "./services/table/types";
+import { MarkdownTable } from "./services/external/types";
+import {
+	findMarkdownTablesFromFileData,
+	tableIdFromEl,
+} from "./services/external/loadUtils";
 
 export interface NltSettings {
 	data: {
@@ -24,8 +23,8 @@ export const DEFAULT_SETTINGS: NltSettings = {
 	data: {},
 };
 interface FocusedTable {
-	blockId: string;
-	sectionInfo: MarkdownSectionInformation;
+	tableId: string;
+	markdownTable: MarkdownTable;
 	sourcePath: string;
 	viewType: ViewType;
 }
@@ -33,45 +32,43 @@ export default class NltPlugin extends Plugin {
 	settings: NltSettings;
 	focused: FocusedTable | null = null;
 
-	findTableBlockId = (text: string, lineEnd: number): string | null => {
-		let blockId = null;
-		const lines = text.split("\n");
-		const blockIdRegex = new RegExp(/^\^.+$/);
-		for (let i = 1; i < 3; i++) {
-			if (lines.length - 1 >= lineEnd + i) {
-				const line = lines[lineEnd + i];
-				if (line.match(blockIdRegex)) blockId = line.split("^")[1];
-			}
+	async findMarkdownTables(
+		path: string
+	): Promise<Map<string, MarkdownTable>> {
+		const file = this.app.vault.getAbstractFileByPath(path);
+		if (file instanceof TFile) {
+			const data = await this.app.vault.read(file);
+			return findMarkdownTablesFromFileData(data);
 		}
-		return blockId;
-	};
+	}
 
 	/**
 	 * Called on plugin load.
 	 * This can be when the plugin is enabled or Obsidian is first opened.
 	 */
 	async onload() {
+		console.log("Plugin enabled.");
 		await this.loadSettings();
 		await this.forcePostProcessorReload();
 
-		this.registerMarkdownPostProcessor((element, context) => {
-			const sectionInfo = context.getSectionInfo(element);
-			if (sectionInfo) {
-				const { lineEnd, text } = sectionInfo;
-				const table = element.getElementsByTagName("table");
-				if (table.length === 1) {
-					const blockId = this.findTableBlockId(text, lineEnd);
-					if (blockId) {
-						context.addChild(
-							new NltTable(
-								this,
-								element,
-								blockId,
-								sectionInfo,
-								context.sourcePath
-							)
-						);
-					}
+		this.registerMarkdownPostProcessor(async (element, context) => {
+			const table = element.querySelector("table");
+			if (table) {
+				const markdownTables = await this.findMarkdownTables(
+					context.sourcePath
+				);
+				const tableId = tableIdFromEl(element);
+				const markdownTable = markdownTables.get(tableId);
+				if (markdownTable) {
+					context.addChild(
+						new NltTable(
+							element,
+							this,
+							tableId,
+							markdownTable,
+							context.sourcePath
+						)
+					);
 				}
 			}
 		});
@@ -114,10 +111,10 @@ export default class NltPlugin extends Plugin {
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "\\" }],
 			callback: async () => {
 				if (this.focused) {
-					const { blockId, sectionInfo, sourcePath, viewType } =
+					const { tableId, markdownTable, sourcePath, viewType } =
 						this.focused;
 					const { tableModel, tableSettings } =
-						this.settings.data[sourcePath][blockId];
+						this.settings.data[sourcePath][tableId];
 					const [updatedModel, updatedSettings] = addColumn(
 						tableModel,
 						tableSettings
@@ -126,8 +123,8 @@ export default class NltPlugin extends Plugin {
 						this,
 						updatedModel,
 						updatedSettings,
-						blockId,
-						sectionInfo,
+						tableId,
+						markdownTable,
 						sourcePath,
 						viewType
 					);
@@ -145,17 +142,17 @@ export default class NltPlugin extends Plugin {
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Enter" }],
 			callback: async () => {
 				if (this.focused) {
-					const { blockId, sectionInfo, sourcePath, viewType } =
+					const { tableId, markdownTable, sourcePath, viewType } =
 						this.focused;
 					const { tableModel, tableSettings } =
-						this.settings.data[sourcePath][blockId];
+						this.settings.data[sourcePath][tableId];
 					const newData = addRow(tableModel);
 					await saveTableState(
 						this,
 						newData,
 						tableSettings,
-						blockId,
-						sectionInfo,
+						tableId,
+						markdownTable,
 						sourcePath,
 						viewType
 					);
@@ -169,14 +166,14 @@ export default class NltPlugin extends Plugin {
 	}
 
 	focusTable = ({
-		blockId,
-		sectionInfo,
+		tableId,
+		markdownTable,
 		sourcePath,
 		viewType,
 	}: FocusedTable) => {
 		this.focused = {
-			blockId,
-			sectionInfo,
+			tableId,
+			markdownTable,
 			sourcePath,
 			viewType,
 		};

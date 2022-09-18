@@ -1,3 +1,65 @@
+const tableHeaderRow = (numColumns: number) => {
+	let row = "|";
+	row += " ";
+
+	for (let i = 0; i < numColumns; i++) {
+		row += " ";
+		row += `column-${i}`;
+		row += " ";
+		row += "|";
+	}
+	return row;
+};
+
+const tableHyphenRow = (numColumns: number) => {
+	let row = "|";
+	row += " ";
+
+	for (let i = 0; i < numColumns; i++) {
+		row += " ";
+		row += "---";
+		row += " ";
+		row += "|";
+	}
+	return row;
+};
+
+const tableRow = (numColumns: number, tableId: string) => {
+	let row = "|";
+	row += " ";
+
+	for (let i = 0; i < numColumns; i++) {
+		row += " ";
+		if (i === 0) row += tableId;
+		else row += `cell-${i}`;
+		row += " ";
+		row += "|";
+	}
+	return row;
+};
+
+export const mockMarkdownTable = (
+	numColumns: number,
+	numRows: number,
+	tableId: string
+): string => {
+	let table = "";
+	if (numRows >= 1) table += tableHeaderRow(numColumns) + "\n";
+	if (numRows >= 2) table += tableHyphenRow(numColumns);
+	if (numRows >= 3) {
+		let numDataRows = numRows - 2;
+		table += "\n";
+		for (let i = 0; i < numDataRows; i++) {
+			table += tableRow(
+				numColumns,
+				i == numDataRows - 1 ? tableId : `cell-0`
+			);
+			if (i < numDataRows - 1) table += "\n";
+		}
+	}
+	return table;
+};
+
 // export const mockTable = (parsedTable: string[][]) => {
 // 	const table = document.createElement("table");
 // 	const thead = document.createElement("thead");
@@ -28,39 +90,3 @@
 // 	table.appendChild(tbody);
 // 	return table;
 // };
-
-interface parsedTable {
-	numColumns?: number;
-	numRows?: number;
-	headers?: string[];
-	cells?: string[];
-}
-export const mockParsedTable = (obj: parsedTable) => {
-	const initialValue: parsedTable = {
-		numColumns: 2,
-		numRows: 2,
-		headers: [],
-		cells: [],
-	};
-	const { numColumns, numRows, headers, cells } = { ...initialValue, ...obj };
-	const table = [];
-	for (let i = 0; i < numColumns; i++) {
-		headers.push(`Column ${i + 1}`);
-	}
-	table.push(headers);
-
-	let cellCount = 0;
-	for (let i = 0; i < numRows; i++) {
-		const row = [];
-		for (let j = 0; j < numColumns; j++) {
-			cellCount = cellCount + 1;
-			if (cells.length >= i + j + 1) {
-				row.push(cells[i + j]);
-			} else {
-				row.push(`Cell ${cellCount}`);
-			}
-		}
-		table.push(row);
-	}
-	return table;
-};
