@@ -4,37 +4,50 @@ import { findRowCells, getColumnIndex } from "../table/utils";
 /**
  * Converts table model to markdown
  */
-export const tableModelToMarkdown = (model: TableModel): string => {
+export const tableModelToMarkdown = (
+	model: TableModel,
+	tableId: string
+): string => {
 	const { numColumns, cells } = model;
 	const columnCharLengths = calcColumnCharLengths(cells, numColumns);
 	const buffer = new TableModelStringBuffer();
 	buffer.createRow();
 
-	let index = 0;
 	for (let i = 0; i < numColumns; i++) {
 		buffer.writeCell(cells[i].content, columnCharLengths[i]);
 	}
 
 	buffer.createRow();
-	index += numColumns;
 
-	for (let i = index; i < index + numColumns; i++) {
-		let content = "";
-		for (let j = 0; j < columnCharLengths[i]; j++) content += "-";
-		buffer.writeCell(content, columnCharLengths[i]);
+	for (let i = 0; i < numColumns; i++) {
+		let numChars = columnCharLengths[i] > 3 ? columnCharLengths[i] : 3;
+		const content = Array(numChars).fill("-").join("");
+		buffer.writeCell(content, numChars);
 	}
 
-	index += numColumns;
+	buffer.createRow();
 
-	const numRows = cells.length / numColumns - 1;
-	for (let i = 0; i < numRows; i++) {
+	const numRows = cells.length / numColumns;
+	console.log(numRows);
+	//Ignore header row
+	for (let i = 1; i < numRows; i++) {
 		const rowCells = findRowCells(i, cells, numColumns);
 		for (let j = 0; j < rowCells.length; j++) {
 			const columnIndex = getColumnIndex(i, numColumns);
 			const cell = rowCells[j];
 			buffer.writeCell(cell.content, columnCharLengths[columnIndex]);
 		}
+		buffer.createRow();
 	}
+
+	for (let i = 0; i < numColumns; i++) {
+		if (i === 0) {
+			buffer.writeCell(tableId, columnCharLengths[i]);
+		} else {
+			buffer.writeCell("", columnCharLengths[i]);
+		}
+	}
+
 	return buffer.toString();
 };
 export class TableModelStringBuffer {
