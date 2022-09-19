@@ -1,3 +1,5 @@
+import { ColumnSettings, DEFAULT_COLUMN_SETTINGS } from "../table/types";
+
 const tableHeaderRow = (numColumns: number) => {
 	let row = "|";
 	row += " ";
@@ -24,14 +26,26 @@ const tableHyphenRow = (numColumns: number) => {
 	return row;
 };
 
-const tableRow = (numColumns: number, tableId: string) => {
+const tableRow = (numColumns: number) => {
+	let row = "|";
+	row += " ";
+
+	for (let i = 0; i < numColumns; i++) {
+		row += " ";
+		row += `cell-${i}`;
+		row += " ";
+		row += "|";
+	}
+	return row;
+};
+
+const tableIdRow = (numColumns: number, tableId: string) => {
 	let row = "|";
 	row += " ";
 
 	for (let i = 0; i < numColumns; i++) {
 		row += " ";
 		if (i === 0) row += tableId;
-		else row += `cell-${i}`;
 		row += " ";
 		row += "|";
 	}
@@ -40,24 +54,31 @@ const tableRow = (numColumns: number, tableId: string) => {
 
 export const mockMarkdownTable = (
 	numColumns: number,
-	numRows: number,
+	numDataRows: number,
 	tableId: string
 ): string => {
 	let table = "";
-	if (numRows >= 1) table += tableHeaderRow(numColumns) + "\n";
-	if (numRows >= 2) table += tableHyphenRow(numColumns);
-	if (numRows >= 3) {
-		let numDataRows = numRows - 2;
-		table += "\n";
+	table += tableHeaderRow(numColumns) + "\n";
+	table += tableHyphenRow(numColumns);
+	table += "\n";
+	if (numDataRows !== 0) {
 		for (let i = 0; i < numDataRows; i++) {
-			table += tableRow(
-				numColumns,
-				i == numDataRows - 1 ? tableId : `cell-0`
-			);
-			if (i < numDataRows - 1) table += "\n";
+			table += tableRow(numColumns);
+			table += "\n";
 		}
 	}
+	table += tableIdRow(numColumns, tableId);
 	return table;
+};
+
+export const mockSettings = (numColumns: number) => {
+	const columns: { [x: string]: ColumnSettings } = {};
+	for (let i = 0; i < numColumns; i++) {
+		columns[i] = DEFAULT_COLUMN_SETTINGS;
+	}
+	return {
+		columns,
+	};
 };
 
 // export const mockTable = (parsedTable: string[][]) => {

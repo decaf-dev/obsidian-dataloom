@@ -61,14 +61,14 @@ export const addColumn = (
 		arr.splice(insertIndex, 0, cell);
 	});
 
-	const settingsCopy = { ...settings };
-	settingsCopy.columns[numColumns] = DEFAULT_COLUMN_SETTINGS;
+	const obj = { ...settings };
+	obj.columns[numColumns] = DEFAULT_COLUMN_SETTINGS;
 	return [
 		{
 			...model,
 			numColumns: numColumns + 1,
 			cells: arr,
 		},
-		settingsCopy,
+		obj,
 	];
 };

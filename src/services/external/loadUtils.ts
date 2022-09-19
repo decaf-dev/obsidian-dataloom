@@ -1,5 +1,5 @@
 import { v4 as uuid } from "uuid";
-import { TableModel, Cell, ViewType } from "../table/types";
+import { TableModel, Cell } from "../table/types";
 import { MarkdownTable } from "./types";
 import MarkdownIt from "markdown-it";
 

@@ -4,7 +4,7 @@ import { NltTable } from "./NltTable";
 import { addRow, addColumn } from "./services/internal/add";
 import { saveTableState } from "./services/external/save";
 import { createEmptyMarkdownTable } from "./services/random";
-import { ViewType, TableState } from "./services/table/types";
+import { TableState } from "./services/table/types";
 import { MarkdownTable } from "./services/external/types";
 import {
 	findMarkdownTablesFromFileData,
@@ -46,7 +46,6 @@ export default class NltPlugin extends Plugin {
 	 * This can be when the plugin is enabled or Obsidian is first opened.
 	 */
 	async onload() {
-		console.log("Plugin enabled.");
 		await this.loadSettings();
 		await this.forcePostProcessorReload();
 
@@ -56,9 +55,9 @@ export default class NltPlugin extends Plugin {
 				const markdownTables = await this.findMarkdownTables(
 					context.sourcePath
 				);
-				const tableId = tableIdFromEl(element);
-				const markdownTable = markdownTables.get(tableId);
-				if (markdownTable) {
+				const tableId = tableIdFromEl(table);
+				if (tableId) {
+					const markdownTable = markdownTables.get(tableId);
 					context.addChild(
 						new NltTable(
 							element,
@@ -68,8 +67,6 @@ export default class NltPlugin extends Plugin {
 							context.sourcePath
 						)
 					);
-				} else {
-					console.log("Table id not found");
 				}
 			}
 		});
