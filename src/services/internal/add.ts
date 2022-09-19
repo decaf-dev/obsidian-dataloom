@@ -7,18 +7,19 @@ import { v4 as uuid } from "uuid";
 import { Cell } from "../table/types";
 
 export const addRow = (model: TableModel): TableModel => {
-	const cells: Cell[] = Array(model.numColumns).map((i) => {
-		return {
-			id: uuid(),
-			textContent: "",
-			content: "",
-		};
+	const { numColumns, cells } = model;
+	const arr: Cell[] = Array(numColumns).fill({
+		id: uuid(),
+		textContent: "",
+		content: "",
 	});
 	return {
 		...model,
-		cells: [...model.cells, ...cells],
+		cells: [...cells, ...arr],
 	};
 };
+
+//I want to be clear on all of my data tables
 
 export const addColumn = (
 	model: TableModel,
@@ -26,25 +27,35 @@ export const addColumn = (
 ): [TableModel, TableSettings] => {
 	const { cells, numColumns } = model;
 
-	const newCells = [];
-	for (let i = 0; i < cells.length; i++) {
-		newCells.push({ ...cells[i] });
-		if ((i + 1) % numColumns === 0) {
-			if ((i + 1) / numColumns === 1) {
-				cells.push({
-					id: uuid(),
-					textContent: "New Column",
-					content: "New Column",
-				});
-			} else {
-				cells.push({
-					id: uuid(),
-					textContent: "",
-					content: "",
-				});
-			}
-		}
+	const arr = [...cells];
+	interface InsertCell {
+		cell: Cell;
+		insertIndex: number;
 	}
+
+	const cellsToInsert: InsertCell[] = [];
+	const numRows = cells.length / numColumns;
+	for (let i = 0; i < numRows; i++) {
+		let content = "";
+		let textContent = "";
+		if (i === 0) {
+			content = "New Column";
+			textContent = "New Column";
+		}
+		cellsToInsert.push({
+			cell: {
+				id: uuid(),
+				textContent,
+				content,
+			},
+			insertIndex: numColumns * (i + 1) + cellsToInsert.length,
+		});
+	}
+
+	cellsToInsert.forEach((insertCell) => {
+		const { cell, insertIndex } = insertCell;
+		arr.splice(insertIndex, 0, cell);
+	});
 
 	const settingsCopy = { ...settings };
 	settingsCopy.columns[numColumns] = DEFAULT_COLUMN_SETTINGS;
@@ -52,7 +63,7 @@ export const addColumn = (
 		{
 			...model,
 			numColumns: numColumns + 1,
-			cells,
+			cells: arr,
 		},
 		settingsCopy,
 	];
