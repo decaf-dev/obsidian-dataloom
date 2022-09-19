@@ -55,13 +55,13 @@ describe("findRowCells", () => {
 				content: "",
 			});
 		}
-		const rowCells = findRowCells(1, cells, 5);
+		const rowCells = findRowCells(2, cells, 5);
 		expect(rowCells.map((cell) => cell.id)).toEqual([
-			"5",
-			"6",
-			"7",
-			"8",
-			"9",
+			"10",
+			"11",
+			"12",
+			"13",
+			"14",
 		]);
 	});
 });

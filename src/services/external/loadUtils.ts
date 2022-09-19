@@ -44,6 +44,7 @@ const getTableEntryFromBuffer = (
 	tableId: string;
 	value: MarkdownTable;
 } => {
+	//Header row, hyphen row, table id row
 	if (buffer.length < 3) return null;
 	if (!buffer[1].match(MARKDOWN_TABLE_HYPHEN_ROW_REGEX)) return null;
 	const tableId = findTableIdFromBuffer(buffer);
