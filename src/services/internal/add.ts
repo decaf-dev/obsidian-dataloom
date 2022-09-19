@@ -8,11 +8,15 @@ import { Cell } from "../table/types";
 
 export const addRow = (model: TableModel): TableModel => {
 	const { numColumns, cells } = model;
-	const arr: Cell[] = Array(numColumns).fill({
-		id: uuid(),
-		textContent: "",
-		content: "",
-	});
+
+	let arr = [];
+	for (let i = 0; i < numColumns; i++) {
+		arr.push({
+			id: uuid(),
+			textContent: "",
+			content: "",
+		});
+	}
 	return {
 		...model,
 		cells: [...cells, ...arr],
