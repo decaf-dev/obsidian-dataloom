@@ -11,7 +11,7 @@ interface Props {
 	title: string;
 	columnIndex: number;
 	columnType: string;
-	columnName: string;
+	columnContent: string;
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
 	onNameChange: (name: string) => void;
@@ -25,7 +25,7 @@ export default function EditMenu({
 	title,
 	columnIndex,
 	columnType,
-	columnName,
+	columnContent,
 	shouldWrapOverflow,
 	useAutoWidth,
 	onNameChange,
@@ -42,7 +42,7 @@ export default function EditMenu({
 					<input
 						className="NLT__header-menu-input"
 						autoFocus
-						value={columnName}
+						value={columnContent}
 						onChange={(e) => onNameChange(e.target.value)}
 					/>
 				</>

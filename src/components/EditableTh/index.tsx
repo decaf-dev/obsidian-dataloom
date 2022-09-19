@@ -21,6 +21,7 @@ interface Props {
 	numColumns: number;
 	positionUpdateTime: number;
 	content: string;
+	textContent: string;
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
 	sortDir: SortDir;
@@ -42,6 +43,7 @@ export default function EditableTh({
 	width,
 	positionUpdateTime,
 	content,
+	textContent,
 	useAutoWidth,
 	shouldWrapOverflow,
 	type,
@@ -114,7 +116,7 @@ export default function EditableTh({
 				onClick={handleHeaderClick}
 			>
 				<div className="NLT__th-container">
-					<div className="NLT__th-content">{parse(content)}</div>
+					<div className="NLT__th-content">{parse(textContent)}</div>
 					<div className="NLT__th-resize-container">
 						{!useAutoWidth && (
 							<div
@@ -154,7 +156,7 @@ export default function EditableTh({
 				shouldWrapOverflow={shouldWrapOverflow}
 				useAutoWidth={useAutoWidth}
 				id={menuId}
-				columnName={content}
+				columnContent={content}
 				columnSortDir={sortDir}
 				columnType={type}
 				columnIndex={columnIndex}

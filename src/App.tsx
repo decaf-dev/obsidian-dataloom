@@ -686,7 +686,7 @@ export default function App({
 							useAutoWidth,
 						} = tableSettings.columns[i];
 
-						const { id, content } = cell;
+						const { id, content, textContent } = cell;
 						return {
 							id,
 							component: (
@@ -703,6 +703,7 @@ export default function App({
 									useAutoWidth={useAutoWidth}
 									positionUpdateTime={positionUpdateTime}
 									content={content}
+									textContent={textContent}
 									type={type}
 									sortDir={sortDir}
 									numColumns={numColumns}

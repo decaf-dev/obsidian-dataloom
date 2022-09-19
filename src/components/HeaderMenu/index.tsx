@@ -54,7 +54,7 @@ interface Props {
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
 	columnSortDir: SortDir;
-	columnName: string;
+	columnContent: string;
 	columnType: string;
 	columnIndex: number;
 	numColumns: number;
@@ -73,7 +73,7 @@ export default function HeaderMenu({
 	isOpen,
 	id,
 	cellId,
-	columnName,
+	columnContent,
 	columnType,
 	columnSortDir,
 	columnIndex,
@@ -103,7 +103,7 @@ export default function HeaderMenu({
 			//if the data has actually changed
 			if (headerNameInput.length !== lastLength.current) {
 				lastLength.current = headerNameInput.length;
-				if (headerNameInput !== columnName) {
+				if (headerNameInput !== columnContent) {
 					onOutsideClick(cellId, headerNameInput);
 				}
 			}
@@ -112,8 +112,8 @@ export default function HeaderMenu({
 	}, [isOpen, headerNameInput.length, lastLength.current]);
 
 	useEffect(() => {
-		setHeaderNameInput(columnName);
-	}, [columnName]);
+		setHeaderNameInput(columnContent);
+	}, [columnContent]);
 
 	function handleMoveColumnClick(columnIndex: number, moveRight: boolean) {
 		onMoveColumnClick(columnIndex, moveRight);
@@ -165,7 +165,7 @@ export default function HeaderMenu({
 				{submenu && submenu.name === SUBMENU_ITEM.EDIT.name && (
 					<EditSubmenu
 						title={submenu.content}
-						columnName={headerNameInput}
+						columnContent={headerNameInput}
 						columnType={columnType}
 						columnIndex={columnIndex}
 						useAutoWidth={useAutoWidth}
