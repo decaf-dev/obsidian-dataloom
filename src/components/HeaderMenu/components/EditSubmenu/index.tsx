@@ -8,6 +8,7 @@ import { CellType } from "src/services/table/types";
 import Stack from "src/components/Stack";
 
 interface Props {
+	canDeleteColumn: boolean;
 	title: string;
 	columnIndex: number;
 	columnType: string;
@@ -22,6 +23,7 @@ interface Props {
 }
 
 export default function EditMenu({
+	canDeleteColumn,
 	title,
 	columnIndex,
 	columnType,
@@ -69,9 +71,11 @@ export default function EditMenu({
 						)}
 					</>
 				)}
-				<Button onClick={() => onDeleteClick(columnIndex)}>
-					Delete
-				</Button>
+				{canDeleteColumn && (
+					<Button onClick={() => onDeleteClick(columnIndex)}>
+						Delete
+					</Button>
+				)}
 			</Stack>
 		</Submenu>
 	);

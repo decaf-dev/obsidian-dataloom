@@ -49,6 +49,7 @@ interface Props {
 		top: string;
 		left: string;
 	};
+	canDeleteColumn: boolean;
 	id: string;
 	cellId: string;
 	shouldWrapOverflow: boolean;
@@ -73,6 +74,7 @@ export default function HeaderMenu({
 	isOpen,
 	id,
 	cellId,
+	canDeleteColumn,
 	columnContent,
 	columnType,
 	columnSortDir,
@@ -164,6 +166,7 @@ export default function HeaderMenu({
 				)}
 				{submenu && submenu.name === SUBMENU_ITEM.EDIT.name && (
 					<EditSubmenu
+						canDeleteColumn={canDeleteColumn}
 						title={submenu.content}
 						columnContent={headerNameInput}
 						columnType={columnType}

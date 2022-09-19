@@ -146,6 +146,7 @@ export default function EditableTh({
 			</th>
 			<HeaderMenu
 				isOpen={isMenuOpen}
+				canDeleteColumn={numColumns > 2}
 				style={{
 					top: numToPx(
 						pxToNum(position.top) + pxToNum(position.height)
