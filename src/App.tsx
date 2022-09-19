@@ -12,7 +12,6 @@ import { pxToNum } from "./services/string/conversion";
 import NltPlugin from "./main";
 import { SortDir } from "./services/sort/types";
 import { addRow, addColumn } from "./services/internal/add";
-import { findCurrentViewType } from "./services/external/loadUtils";
 import { logFunc } from "./services/debug";
 import {
 	useCloseMenusOnScroll,
@@ -95,8 +94,7 @@ export default function App({
 					state.tableSettings,
 					tableId,
 					markdownTable,
-					sourcePath,
-					findCurrentViewType(el)
+					sourcePath
 				);
 			} catch (err) {
 				console.log(err);
@@ -325,23 +323,23 @@ export default function App({
 			});
 
 		setTableState((prevState) => {
-			//TODO change?
-			//Remove the column at the selection index and shift the other columns over
-			const columns = Object.fromEntries(
-				Object.entries(prevState.tableSettings.columns)
-					.map((entry) => {
-						const [key, value] = entry;
-						const entryIndex = parseInt(key);
-						if (entryIndex < columnIndex) return entry;
-						else if (entryIndex === columnIndex)
-							return ["delete", value];
-						else return [entryIndex - 1, value];
-					})
-					.filter((entry) => {
-						const [key] = entry;
-						return key !== "delete";
-					})
-			);
+			// //TODO change?
+			// //Remove the column at the selection index and shift the other columns over
+			// const columns = Object.fromEntries(
+			// 	Object.entries(prevState.tableSettings.columns)
+			// 		.map((entry) => {
+			// 			const [key, value] = entry;
+			// 			const entryIndex = parseInt(key);
+			// 			if (entryIndex < columnIndex) return entry;
+			// 			else if (entryIndex === columnIndex)
+			// 				return ["delete", value];
+			// 			else return [entryIndex - 1, value];
+			// 		})
+			// 		.filter((entry) => {
+			// 			const [key] = entry;
+			// 			return key !== "delete";
+			// 		})
+			// );
 			//Shift the columns over
 			const value = {
 				...prevState,
@@ -352,10 +350,10 @@ export default function App({
 							columnIndex !== getColumnIndex(i, numColumns)
 					),
 				},
-				tableSettings: {
-					...prevState.tableSettings,
-					columns,
-				},
+				// tableSettings: {
+				// 	...prevState.tableSettings,
+				// 	columns,
+				// },
 			};
 			return value;
 		});

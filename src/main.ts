@@ -26,7 +26,6 @@ interface FocusedTable {
 	tableId: string;
 	markdownTable: MarkdownTable;
 	sourcePath: string;
-	viewType: ViewType;
 }
 export default class NltPlugin extends Plugin {
 	settings: NltSettings;
@@ -113,8 +112,7 @@ export default class NltPlugin extends Plugin {
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "\\" }],
 			callback: async () => {
 				if (this.focused) {
-					const { tableId, markdownTable, sourcePath, viewType } =
-						this.focused;
+					const { tableId, markdownTable, sourcePath } = this.focused;
 					const { tableModel, tableSettings } =
 						this.settings.data[sourcePath][tableId];
 					const [updatedModel, updatedSettings] = addColumn(
@@ -127,8 +125,7 @@ export default class NltPlugin extends Plugin {
 						updatedSettings,
 						tableId,
 						markdownTable,
-						sourcePath,
-						viewType
+						sourcePath
 					);
 				} else {
 					new Notice(
@@ -144,8 +141,7 @@ export default class NltPlugin extends Plugin {
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Enter" }],
 			callback: async () => {
 				if (this.focused) {
-					const { tableId, markdownTable, sourcePath, viewType } =
-						this.focused;
+					const { tableId, markdownTable, sourcePath } = this.focused;
 					const { tableModel, tableSettings } =
 						this.settings.data[sourcePath][tableId];
 					const newData = addRow(tableModel);
@@ -155,8 +151,7 @@ export default class NltPlugin extends Plugin {
 						tableSettings,
 						tableId,
 						markdownTable,
-						sourcePath,
-						viewType
+						sourcePath
 					);
 				} else {
 					new Notice(
@@ -167,17 +162,11 @@ export default class NltPlugin extends Plugin {
 		});
 	}
 
-	focusTable = ({
-		tableId,
-		markdownTable,
-		sourcePath,
-		viewType,
-	}: FocusedTable) => {
+	focusTable = ({ tableId, markdownTable, sourcePath }: FocusedTable) => {
 		this.focused = {
 			tableId,
 			markdownTable,
 			sourcePath,
-			viewType,
 		};
 	};
 

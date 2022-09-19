@@ -2,7 +2,6 @@ import NltPlugin from "../../main";
 import React, { useState, useContext, useEffect } from "react";
 import { DEBUG } from "src/constants";
 import { logFunc } from "src/services/debug";
-import { findCurrentViewType } from "src/services/external/loadUtils";
 import { MarkdownTable } from "src/services/external/types";
 
 const FocusContext = React.createContext(false);
@@ -39,7 +38,6 @@ export default function FocusProvider({
 			tableId,
 			markdownTable,
 			sourcePath,
-			viewType: findCurrentViewType(el),
 		});
 	}
 

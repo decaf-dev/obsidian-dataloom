@@ -3,7 +3,6 @@ import { CURRENT_TABLE_CACHE_VERSION, DEBUG } from "../../constants";
 import { DEFAULT_COLUMN_SETTINGS, TableState } from "../table/types";
 import {
 	findTableModel,
-	findCurrentViewType,
 	parseCellsFromEl,
 	parseCellsFromMarkdownTable,
 } from "./loadUtils";
@@ -66,8 +65,6 @@ export const loadTableState = async (
 			tableSettings: {
 				columns: columnSettings,
 			},
-			shouldUpdate: false,
-			viewType: findCurrentViewType(el),
 			tableCacheVersion: CURRENT_TABLE_CACHE_VERSION,
 		};
 		//When a user adds a new table, this entry will initially be null, we need to set this

@@ -14,8 +14,6 @@ export enum CellType {
 export interface TableState {
 	tableSettings: TableSettings;
 	tableModel: TableModel;
-	viewType: ViewType;
-	shouldUpdate: boolean;
 	tableCacheVersion: number;
 }
 

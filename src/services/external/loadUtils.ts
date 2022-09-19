@@ -147,13 +147,6 @@ export const tableIdFromEl = (el: HTMLElement): string | null => {
 	return null;
 };
 
-export const findCurrentViewType = (el: HTMLElement): ViewType => {
-	let currentViewType: ViewType = "reading";
-	if (el.className.includes("markdown-rendered"))
-		currentViewType = "live-preview";
-	return currentViewType;
-};
-
 export const findTableModel = (
 	contentTableCells: string[],
 	textContentTableCells: string[],

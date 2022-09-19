@@ -6,7 +6,7 @@ import { tableModelToMarkdown } from "./saveUtils";
 
 import { MarkdownTable } from "./types";
 
-import { TableModel, TableSettings, ViewType } from "../table/types";
+import { TableModel, TableSettings } from "../table/types";
 import { CURRENT_TABLE_CACHE_VERSION, DEBUG } from "../../constants";
 
 export const saveTableState = async (
@@ -15,8 +15,7 @@ export const saveTableState = async (
 	tableSettings: TableSettings,
 	tableId: string,
 	markdownTable: MarkdownTable,
-	sourcePath: string,
-	viewType: ViewType
+	sourcePath: string
 ) => {
 	try {
 		if (DEBUG.SAVE_APP_DATA) {
@@ -29,8 +28,7 @@ export const saveTableState = async (
 			tableData,
 			tableSettings,
 			sourcePath,
-			tableId,
-			viewType
+			tableId
 		);
 
 		const markdown = tableModelToMarkdown(tableData, tableId);
@@ -82,14 +80,11 @@ const updateSettingsCache = async (
 	tableModel: TableModel,
 	tableSettings: TableSettings,
 	sourcePath: string,
-	tableId: string,
-	viewType: ViewType
+	tableId: string
 ) => {
 	plugin.settings.data[sourcePath][tableId] = {
 		tableModel,
 		tableSettings,
-		viewType,
-		shouldUpdate: true,
 		tableCacheVersion: CURRENT_TABLE_CACHE_VERSION,
 	};
 	if (DEBUG.SAVE_APP_DATA) {
