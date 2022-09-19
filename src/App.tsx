@@ -323,23 +323,22 @@ export default function App({
 			});
 
 		setTableState((prevState) => {
-			// //TODO change?
-			// //Remove the column at the selection index and shift the other columns over
-			// const columns = Object.fromEntries(
-			// 	Object.entries(prevState.tableSettings.columns)
-			// 		.map((entry) => {
-			// 			const [key, value] = entry;
-			// 			const entryIndex = parseInt(key);
-			// 			if (entryIndex < columnIndex) return entry;
-			// 			else if (entryIndex === columnIndex)
-			// 				return ["delete", value];
-			// 			else return [entryIndex - 1, value];
-			// 		})
-			// 		.filter((entry) => {
-			// 			const [key] = entry;
-			// 			return key !== "delete";
-			// 		})
-			// );
+			//Remove the column at the selection index and shift the other columns over
+			const columns = Object.fromEntries(
+				Object.entries(prevState.tableSettings.columns)
+					.map((entry) => {
+						const [key, value] = entry;
+						const cIndex = parseInt(key);
+						if (cIndex < columnIndex) return entry;
+						else if (cIndex === columnIndex)
+							return ["delete", value];
+						else return [cIndex - 1, value];
+					})
+					.filter((entry) => {
+						const [key] = entry;
+						return key !== "delete";
+					})
+			);
 			//Shift the columns over
 			const value = {
 				...prevState,
@@ -349,11 +348,12 @@ export default function App({
 						(_cell, i) =>
 							columnIndex !== getColumnIndex(i, numColumns)
 					),
+					numColumns: prevState.tableModel.numColumns - 1,
 				},
-				// tableSettings: {
-				// 	...prevState.tableSettings,
-				// 	columns,
-				// },
+				tableSettings: {
+					...prevState.tableSettings,
+					columns,
+				},
 			};
 			return value;
 		});
