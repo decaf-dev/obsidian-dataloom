@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 
 import EditableTd from "./components/EditableTd";
 import Table from "./components/Table";
@@ -66,11 +66,10 @@ export default function App({
 	const { cells, numColumns } = tableModel;
 	const headers = cells.filter((_cell, i) => i < numColumns);
 
-	const rows: { [x: string]: Cell[] } = {};
-	for (let i = numColumns; i < cells.length; i++) {
-		const rowIndex = getRowIndex(i, numColumns);
-		if (!rows[rowIndex]) rows[rowIndex] = [];
-		rows[rowIndex].push(cells[i]);
+	let rows: Cell[][] = [];
+	for (let i = 1; i < cells.length / numColumns; i++) {
+		const rowCells = findRowCells(i, cells, numColumns);
+		rows.push(rowCells);
 	}
 
 	useDidMountEffect(() => {
@@ -106,40 +105,6 @@ export default function App({
 
 		handleUpdate();
 	}, [saveTime]);
-
-	// //If a table updates in editing mode or reading mode, update the other table
-	// //TODO change with notifier in the main.js
-	// //TODO why doesn't this always update?
-	// useEffect(() => {
-	// 	let intervalId: NodeJS.Timer = null;
-	// 	function startTimer() {
-	// 		intervalId = setInterval(async () => {
-	// 			if (settings.state[sourcePath]) {
-	// 				if (settings.state[sourcePath][tableIndex]) {
-	// 					const { shouldUpdate, viewType } =
-	// 						settings.state[sourcePath][tableIndex];
-
-	// 					const currentViewType = findCurrentViewType(el);
-
-	// 					if (shouldUpdate && viewType !== currentViewType) {
-	// 						clearInterval(intervalId);
-	// 						settings.state[sourcePath][
-	// 							tableIndex
-	// 						].shouldUpdate = false;
-	// 						await plugin.saveSettings();
-	// 						const savedData =
-	// 							settings.state[sourcePath][tableIndex].data;
-	// 						setOldTableModel(savedData);
-	// 						setTableModel(savedData);
-	// 						startTimer();
-	// 					}
-	// 				}
-	// 			}
-	// 		}, 500);
-	// 	}
-	// 	startTimer();
-	// 	return () => clearInterval(intervalId);
-	// }, []);
 
 	function sortData() {
 		setSortTime(Date.now());
@@ -724,12 +689,8 @@ export default function App({
 							),
 						};
 					})}
-					rows={Object.values(rows).map((row, rowIndex) => {
-						const rowCells = findRowCells(
-							rowIndex + 1,
-							cells,
-							numColumns
-						);
+					rows={rows.map((rowCells, i) => {
+						const rowIndex = i + 1;
 						return {
 							id: rowCells[0].id, //TODO optimize
 							component: (
