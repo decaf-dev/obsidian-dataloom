@@ -128,22 +128,22 @@ describe("MARKDOWN_HYPHEN_ROW_REGEX", () => {
 });
 
 describe("findMarkdownTablesFromFileData", () => {
-	it("finds one 2x3 table", () => {
-		const tableId = "table-id-1";
-		const tableMarkdown = mockMarkdownTable(2, 3, tableId);
-		const data = "Some text\n" + tableMarkdown + "\nSome more text";
-		const tables = findMarkdownTablesFromFileData(data);
+	// it("finds one 2x3 table", () => {
+	// 	const tableId = "table-id-1";
+	// 	const tableMarkdown = mockMarkdownTable(2, 3, tableId);
+	// 	const data = "Some text\n" + tableMarkdown + "\nSome more text";
+	// 	const tables = findMarkdownTablesFromFileData(data);
 
-		expect(tables.size).toEqual(1);
-		tables.forEach((value, key) => {
-			expect(value).toEqual({
-				lineStart: 1,
-				lineEnd: 3,
-				text: tableMarkdown,
-			});
-			expect(key).toEqual(tableId);
-		});
-	});
+	// 	expect(tables.size).toEqual(1);
+	// 	tables.forEach((value, key) => {
+	// 		expect(value).toEqual({
+	// 			lineStart: 1,
+	// 			lineEnd: 3,
+	// 			text: tableMarkdown,
+	// 		});
+	// 		expect(key).toEqual(tableId);
+	// 	});
+	// });
 
 	it("finds two 2x3 tables", () => {
 		const tableId1 = "table-id-1";

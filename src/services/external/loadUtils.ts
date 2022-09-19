@@ -36,61 +36,85 @@ const findTableIdFromBuffer = (tableBuffer: string[]): string | null => {
 	return null;
 };
 
-const MIN_TABLE_ROW_COUNT = 3;
+const getTableEntryFromBuffer = (
+	buffer: string[],
+	lineStart: number,
+	lineEnd: number
+): {
+	tableId: string;
+	value: MarkdownTable;
+} => {
+	if (buffer.length < 3) return null;
+	if (!buffer[1].match(MARKDOWN_TABLE_HYPHEN_ROW_REGEX)) return null;
+	const tableId = findTableIdFromBuffer(buffer);
+	if (!tableId) return null;
+	return {
+		tableId,
+		value: {
+			text: buffer.join("\n"),
+			lineStart,
+			lineEnd,
+		},
+	};
+};
 
 export const findMarkdownTablesFromFileData = (
 	data: string
 ): Map<string, MarkdownTable> => {
-	const tables = new Map<string, MarkdownTable>();
-	const lines = data.split("\n");
+	interface MarkdownTableRow {
+		text: string;
+		lineIndex: number;
+	}
 
-	let tableBuffer: string[] = [];
+	const tables = new Map<string, MarkdownTable>();
+	const tableRows: MarkdownTableRow[] = [];
+
+	//Get each markdown table row
+	const lines = data.split("\n");
 	lines.forEach((line, i) => {
-		let added = false;
-		//If line is valid table row add to buffer
 		if (line.match(MARKDOWN_TABLE_ROW_REGEX)) {
-			tableBuffer.push(line);
-			added = true;
-		}
-		//If 2 lines have been added, check to make sure that the 2nd row is a hyphen row
-		if (tableBuffer.length === 2) {
-			if (!tableBuffer[1].match(MARKDOWN_TABLE_HYPHEN_ROW_REGEX)) {
-				tableBuffer = [];
-				return;
-			}
-		}
-		//If we didn't add a line
-		if (!added) {
-			//And we have atleast 3 lines
-			if (tableBuffer.length >= MIN_TABLE_ROW_COUNT) {
-				//And there is a table id e.g. "table-id-1"
-				const tableId = findTableIdFromBuffer(tableBuffer);
-				//Add the table
-				if (tableId) {
-					const lineEnd = i - 1;
-					tables.set(tableId.trim(), {
-						lineStart: lineEnd - tableBuffer.length + 1,
-						lineEnd,
-						text: tableBuffer.join("\n"),
-					});
-				}
-			}
-			tableBuffer = [];
-		}
-	});
-	//If we finished parsing and we are left with a non-empty table buffer
-	//add that as a table
-	if (tableBuffer.length >= 3) {
-		const tableId = findTableIdFromBuffer(tableBuffer);
-		if (tableId) {
-			const lineEnd = lines.length - 1;
-			tables.set(tableId, {
-				lineStart: lineEnd - tableBuffer.length + 1,
-				lineEnd,
-				text: tableBuffer.join("\n"),
+			tableRows.push({
+				lineIndex: i,
+				text: line,
 			});
 		}
-	}
+	});
+
+	let tableBuffer: string[] = [];
+	let lineStart = 0;
+	let lastRow: MarkdownTableRow | null = null;
+
+	//Match markdown tables
+	tableRows.forEach((row, i) => {
+		const { text, lineIndex } = row;
+		//If the line index is sequential from the last index, indicating
+		//that it is part of the table
+		if (lineIndex === lineStart + tableBuffer.length) {
+			tableBuffer.push(text);
+			lastRow = row;
+			if (i === tableRows.length - 1) {
+				const entry = getTableEntryFromBuffer(
+					tableBuffer,
+					lineIndex - tableBuffer.length + 1,
+					lineIndex
+				);
+				if (entry) tables.set(entry.tableId, entry.value);
+			}
+		} else {
+			//Check if a valid table has been produced
+			if (lastRow) {
+				const entry = getTableEntryFromBuffer(
+					tableBuffer,
+					lastRow.lineIndex - tableBuffer.length + 1,
+					lastRow.lineIndex
+				);
+				if (entry) tables.set(entry.tableId, entry.value);
+			}
+			tableBuffer = [];
+			tableBuffer.push(text);
+			lineStart = lineIndex;
+		}
+	});
 	return tables;
 };
 
