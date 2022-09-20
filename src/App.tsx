@@ -582,16 +582,12 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		headers = cells.filter((cell) => cell.rowId === rows[0]);
 	}
 
-	console.log(state);
-
 	return (
 		<div className="NLT__app" tabIndex={0}>
 			<OptionBar headers={headers} settings={state.settings} />
 			<div className="NLT__table-wrapper">
 				<Table
 					headers={headers.map((cell, i) => {
-						console.log(state.settings.columns);
-						console.log(cell.columnId);
 						const {
 							width,
 							type,
@@ -639,85 +635,87 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 							),
 						};
 					})}
-					rows={rows.map((rowId) => {
-						const rowCells = cells.filter(
-							(cell) => cell.rowId === rowId
-						);
-						return {
-							id: rowId,
-							component: (
-								<>
-									{rowCells.map((cell, i) => {
-										const {
-											width,
-											type,
-											useAutoWidth,
-											shouldWrapOverflow,
-										} =
-											state.settings.columns[
-												cell.columnId
-											];
+					rows={rows
+						.filter((_row, i) => i !== 0)
+						.map((rowId, i) => {
+							const rowCells = cells.filter(
+								(cell) => cell.rowId === rowId
+							);
+							return {
+								id: rowId,
+								component: (
+									<>
+										{rowCells.map((cell, i) => {
+											const {
+												width,
+												type,
+												useAutoWidth,
+												shouldWrapOverflow,
+											} =
+												state.settings.columns[
+													cell.columnId
+												];
 
-										const { id, markdown, html } = cell;
-										return (
-											<EditableTd
-												key={id}
-												cellId={id}
-												content={markdown}
-												textContent={html}
-												columnType={type}
-												positionUpdateTime={
-													positionUpdateTime
-												}
-												shouldWrapOverflow={
-													shouldWrapOverflow
-												}
-												useAutoWidth={useAutoWidth}
-												width={findCellWidth(
-													type,
-													useAutoWidth,
-													width
-												)}
-												height="auto"
-												onTagClick={handleTagClick}
-												onRemoveTagClick={
-													handleRemoveTagClick
-												}
-												onContentChange={
-													handleCellContentChange
-												}
-												onSaveContent={
-													handleCellContentSave
-												}
-												onColorChange={
-													handleChangeColor
-												}
-												onAddTag={handleAddTag}
-											/>
-										);
-									})}
-									<td
-										className="NLT__td"
-										style={{
-											height: "auto",
-										}}
-									>
-										<div className="NLT__td-container">
-											<RowMenu
-												positionUpdateTime={
-													positionUpdateTime
-												}
-												rowId={rowId}
-												onDeleteClick={
-													handleRowDeleteClick
-												}
-											/>
-										</div>
-									</td>
-								</>
-							),
-						};
-					})}
+											const { id, markdown, html } = cell;
+											return (
+												<EditableTd
+													key={id}
+													cellId={id}
+													content={markdown}
+													textContent={html}
+													columnType={type}
+													positionUpdateTime={
+														positionUpdateTime
+													}
+													shouldWrapOverflow={
+														shouldWrapOverflow
+													}
+													useAutoWidth={useAutoWidth}
+													width={findCellWidth(
+														type,
+														useAutoWidth,
+														width
+													)}
+													height="auto"
+													onTagClick={handleTagClick}
+													onRemoveTagClick={
+														handleRemoveTagClick
+													}
+													onContentChange={
+														handleCellContentChange
+													}
+													onSaveContent={
+														handleCellContentSave
+													}
+													onColorChange={
+														handleChangeColor
+													}
+													onAddTag={handleAddTag}
+												/>
+											);
+										})}
+										<td
+											className="NLT__td"
+											style={{
+												height: "auto",
+											}}
+										>
+											<div className="NLT__td-container">
+												<RowMenu
+													positionUpdateTime={
+														positionUpdateTime
+													}
+													rowId={rowId}
+													onDeleteClick={
+														handleRowDeleteClick
+													}
+												/>
+											</div>
+										</td>
+									</>
+								),
+							};
+						})}
 					onAddColumn={handleAddColumn}
 					onAddRow={handleAddRow}
 				/>

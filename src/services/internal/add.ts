@@ -17,7 +17,7 @@ export const addRow = (model: TableModel): TableModel => {
 	}
 	return {
 		...model,
-		cells,
+		cells: arr,
 		rows: [...rows, rowId],
 	};
 };
