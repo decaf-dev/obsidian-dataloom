@@ -28,7 +28,7 @@ import { DEBUG } from "./constants";
 
 import "./app.css";
 import { MarkdownViewModeType } from "obsidian";
-import { loadTableState } from "./services/io/deserialize";
+import { loadTableState, markdownToHtml } from "./services/io/deserialize";
 import { randomColumnId, randomCellId } from "./services/random";
 
 interface Props {
@@ -39,9 +39,6 @@ interface Props {
 
 const COMPONENT_NAME = "App";
 
-//TODO only call this function if the model has changed
-//currentTime
-//update model
 export default function App({ plugin, viewMode, tableId }: Props) {
 	const [state, setTableState] = useState<TableState>(null);
 
@@ -232,7 +229,8 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 						if (cell.id === cellId) {
 							return {
 								...cell,
-								content: updatedContent,
+								markdown: updatedContent,
+								html: markdownToHtml(updatedContent),
 							};
 						}
 						return cell;
