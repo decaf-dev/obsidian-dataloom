@@ -22,7 +22,9 @@ export const serializeMarkdownTable = (model: TableModel): string => {
 	buffer.createRow();
 
 	for (let i = 0; i < columns.length; i++) {
-		let numChars = columnCharLengths[i] > 3 ? columnCharLengths[i] : 3;
+		const columnId = columns[i];
+		let numChars =
+			columnCharLengths[columnId] > 3 ? columnCharLengths[columnId] : 3;
 		const content = Array(numChars).fill("-").join("");
 		buffer.writeCell(content, numChars);
 	}
