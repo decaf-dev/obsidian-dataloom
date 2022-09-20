@@ -53,5 +53,5 @@ export const getUniqueTableId = (
 	tableId: string,
 	viewMode: MarkdownViewModeType
 ) => {
-	return tableId + "-" + viewMode;
+	return "NLT_" + tableId + "-" + viewMode;
 };
