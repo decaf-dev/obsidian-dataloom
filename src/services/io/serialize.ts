@@ -16,7 +16,11 @@ export const serializeMarkdownTable = (model: TableModel): string => {
 	buffer.createRow();
 
 	for (let i = 0; i < columns.length; i++) {
-		buffer.writeCell(cells[i].markdown, columnCharLengths[i]);
+		const columnId = columns[i];
+		const cell = cells.find(
+			(cell) => cell.columnId === columnId && cell.rowId === rows[0]
+		);
+		buffer.writeCell(cell.markdown, columnCharLengths[columnId]);
 	}
 
 	buffer.createRow();

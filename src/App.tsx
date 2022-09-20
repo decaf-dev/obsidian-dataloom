@@ -302,7 +302,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				},
 				settings: {
 					...prevState.settings,
-					colummns: obj,
+					columns: obj,
 				},
 			};
 		});

@@ -120,10 +120,18 @@ export const loadTableState = async (
 			//Handle old cache version
 		}
 	}
+	//Add ids
 	model.columns.forEach((columnId) => {
 		if (!tableState.settings.columns[columnId])
 			tableState.settings.columns[columnId] = DEFAULT_COLUMN_SETTINGS;
 	});
+
+	//Clean up old ids
+	Object.keys(tableState.settings.columns).forEach((key) => {
+		if (!model.columns.includes(key))
+			delete tableState.settings.columns[key];
+	});
+
 	plugin.settings.data[tableId] = tableState;
 	await plugin.saveSettings();
 	return tableState;
