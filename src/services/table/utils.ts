@@ -1,6 +1,7 @@
 import { NUMBER_REGEX } from "../string/regex";
 import { isCheckbox, isNumber, isDate } from "../string/validators";
 import { CellType } from "./types";
+import { MarkdownViewModeType } from "obsidian";
 
 export const isValidCellContent = (
 	content: string,
@@ -48,13 +49,9 @@ export const contentToCheckbox = (content: string) => {
 	}
 };
 
-export const getColumnIndex = (
-	cellIndex: number,
-	numColumns: number
-): number => {
-	return cellIndex - numColumns * Math.floor(cellIndex / numColumns);
-};
-
-export const getRowIndex = (cellIndex: number, numColumns: number): number => {
-	return Math.ceil((cellIndex + 1) / numColumns) - 1;
+export const getUniqueTableId = (
+	tableId: string,
+	viewMode: MarkdownViewModeType
+) => {
+	return tableId + "-" + viewMode;
 };

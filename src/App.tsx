@@ -15,6 +15,7 @@ import { addRow, addColumn } from "./services/internal/add";
 import { logFunc } from "./services/debug";
 import { DEFAULT_COLUMN_SETTINGS } from "./services/table/types";
 import { initialCell } from "./services/io/utils";
+import { getUniqueTableId } from "./services/table/utils";
 import {
 	useCloseMenusOnScroll,
 	useDidMountEffect,
@@ -83,7 +84,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		let timer: any = null;
 		timer = setInterval(() => {
 			async function checkDirty() {
-				console.log("CHECKING DIRTY: ", viewMode);
 				const dirty = plugin.settings.dirty;
 				if (dirty) {
 					const { viewMode: dirtyViewMode, tableId: dirtyTableId } =
@@ -94,7 +94,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 						setLoading(true);
 						plugin.settings.dirty = null;
 						await plugin.saveSettings();
-						//TODO optimize for changes?
 						const state = await deserializeTable(plugin, tableId);
 						setTableState(state);
 						setTimeout(() => {
@@ -672,10 +671,13 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	if (isLoading) return <div>Loading table...</div>;
 
 	const { rows, columns, cells } = state.model;
-	let headers: Cell[] = [];
 
 	return (
-		<div className="NLT__app" tabIndex={0}>
+		<div
+			id={getUniqueTableId(tableId, viewMode)}
+			className="NLT__app"
+			tabIndex={0}
+		>
 			<OptionBar model={state.model} settings={state.settings} />
 			<div className="NLT__table-wrapper">
 				<Table
