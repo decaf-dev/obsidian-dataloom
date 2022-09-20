@@ -1,5 +1,5 @@
 import { Cell } from "../table/types";
-import { TFile } from "obsidian";
+import { TFile, TFolder } from "obsidian";
 import NltPlugin from "../../main";
 
 import { createEmptyMarkdownTable } from "../random";
@@ -8,12 +8,17 @@ export const findTableFile = async (
 	plugin: NltPlugin,
 	tableId: string
 ): Promise<TFile | null> => {
+	const folder = plugin.app.vault.getAbstractFileByPath(
+		plugin.settings.tableFolder
+	);
+	if (!folder)
+		await plugin.app.vault.createFolder(plugin.settings.tableFolder);
+
 	const file = plugin.app.vault.getAbstractFileByPath(
 		`${plugin.settings.tableFolder}/${tableId}.md`
 	);
-	if (file && file instanceof TFile) {
-		return file;
-	}
+	if (file && file instanceof TFile) return file;
+
 	const createdFile = await plugin.app.vault.create(
 		`${plugin.settings.tableFolder}/${tableId}.md`,
 		createEmptyMarkdownTable()

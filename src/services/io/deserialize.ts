@@ -33,7 +33,7 @@ export const parseTableModelFromMarkdown = (data: string): TableModel => {
 			if (parseFrontMatter) {
 				parseFrontMatter = false;
 				frontmatter = token.content.split("\n");
-			} else {
+			} else if (parseTable) {
 				parsedCells.push(token.content);
 			}
 		}
@@ -75,32 +75,6 @@ export const parseTableModelFromMarkdown = (data: string): TableModel => {
 			);
 		}
 	}
-
-	// parsedCells.forEach((cellMarkdown, i) => {
-	// 	const { cells, rows, columns } = tableModel;
-	// 	const rowIndex = getRowIndex(i, numColumns);
-	// 	const columnIndex = getColumnIndex(i, numColumns);
-
-	// 	const html = markdownToHtml(cellMarkdown);
-	// 	if (rowIndex === 0) {
-	// 		const columnId = uuid();
-	// 		columns.push(columnId);
-	// 	}
-	// 	if (rows.length !== rowIndex + 1) {
-	// 		const rowId = uuid();
-	// 		rows.push(rowId);
-	// 	}
-	// 	const cellId = randomCellId();
-	// 	cells.push(
-	// 		initialCell(
-	// 			cellId,
-	// 			columns[columnIndex],
-	// 			rows[rowIndex],
-	// 			cellMarkdown,
-	// 			html
-	// 		)
-	// 	);
-	// });
 	return tableModel;
 };
 
@@ -124,36 +98,31 @@ export const loadTableState = async (
 	}
 
 	const model = await findTableModel(plugin, tableId);
-	console.log("MODEL", model);
+	if (DEBUG.LOAD_APP_DATA) console.log("Found table model:", model);
 
-	let tableState: TableState | null = null;
+	let tableState: TableState = {
+		model,
+		settings: {
+			columns: {},
+		},
+		cacheVersion: CURRENT_TABLE_CACHE_VERSION,
+	};
+
 	const savedState = plugin.settings.data[tableId];
 	if (savedState) {
-		const { cacheVersion } = savedState;
-		if (DEBUG.LOAD_APP_DATA)
-			console.log("Loading table settings from cache.");
-		tableState = { ...savedState };
-		tableState.model = model;
+		const { cacheVersion, settings } = savedState;
 
-		if (cacheVersion < CURRENT_TABLE_CACHE_VERSION)
-			tableState.cacheVersion = CURRENT_TABLE_CACHE_VERSION;
-	} else {
-		const entries: any = [];
-		model.columns.forEach((columnId) => {
-			entries.push([columnId, DEFAULT_COLUMN_SETTINGS]);
-		});
-		const columnSettings = Object.fromEntries(entries);
-		tableState = {
-			model: model,
-			settings: {
-				columns: columnSettings,
-			},
-			cacheVersion: CURRENT_TABLE_CACHE_VERSION,
-		};
-		//When a user adds a new table, this entry will initially be null, we need to set this
-		//so a user can add rows/columns via hotkeys
-		plugin.settings.data = {};
+		//Update with old settings
+		tableState.settings = settings;
+
+		if (cacheVersion < CURRENT_TABLE_CACHE_VERSION) {
+			//Handle old cache version
+		}
 	}
+	model.columns.forEach((columnId) => {
+		if (!tableState.settings.columns[columnId])
+			tableState.settings.columns[columnId] = DEFAULT_COLUMN_SETTINGS;
+	});
 	plugin.settings.data[tableId] = tableState;
 	await plugin.saveSettings();
 	return tableState;

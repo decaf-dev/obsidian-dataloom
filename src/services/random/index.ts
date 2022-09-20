@@ -36,13 +36,8 @@ export const randomId = (numChars: number) => {
  * @returns An NLT markdown table
  */
 export const createEmptyMarkdownTable = (): string => {
-	const columnIds = {
-		0: randomColumnId(),
-	};
-	const rowIds = {
-		0: randomRowId(),
-		1: randomRowId(),
-	};
+	const columnIds = [randomColumnId()];
+	const rowIds = [randomRowId(), randomRowId()];
 	const rows: string[] = [];
 	rows[0] = "---";
 	rows[1] = `columnIds: ${JSON.stringify(columnIds)}`;
