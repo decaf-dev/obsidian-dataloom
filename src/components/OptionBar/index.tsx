@@ -57,7 +57,7 @@ export default function OptionBar({ model, settings }: Props) {
 				return sortDir !== SortDir.NONE;
 			})
 			.map((cell, i) => {
-				const { sortDir } = settings.columns[i];
+				const { sortDir } = settings.columns[cell.columnId];
 				return {
 					content: cell.html,
 					sortDir,
