@@ -1,4 +1,6 @@
 import { COLOR } from "../../constants";
+import { serializeFrontMatter } from "../io/utils";
+import { TableModel } from "../table/types";
 
 export const randomColor = (): string => {
 	const index = Math.floor(Math.random() * Object.keys(COLOR).length);
@@ -31,21 +33,24 @@ export const randomId = (numChars: number) => {
 	return result;
 };
 
+const emptyMarkdownTable = (): string => {
+	const table: string[] = [];
+	table.push("| New Column |");
+	table.push("| -------- |");
+	table.push("|          ");
+	return table.join("\n");
+};
+
 /**
  * Creates a 1 column NLT markdown table
  * @returns An NLT markdown table
  */
 export const createEmptyMarkdownTable = (): string => {
-	const columnIds = [randomColumnId()];
-	const rowIds = [randomRowId(), randomRowId()];
-	const rows: string[] = [];
-	rows[0] = "---";
-	rows[1] = `columnIds: ${JSON.stringify(columnIds)}`;
-	rows[2] = `rowIds: ${JSON.stringify(rowIds)}`;
-	rows[3] = "---";
-	rows[4] = "";
-	rows[5] = "| New Column |";
-	rows[6] = "| ---------- |";
-	rows[7] = "|          |";
-	return rows.join("\n");
+	const model: TableModel = {
+		cells: [],
+		columns: [randomColumnId()],
+		rows: [randomRowId(), randomRowId()],
+	};
+	const frontmatter = serializeFrontMatter(model);
+	return frontmatter + "\n" + emptyMarkdownTable();
 };

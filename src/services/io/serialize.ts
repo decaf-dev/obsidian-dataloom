@@ -4,12 +4,12 @@ import { TFile } from "obsidian";
 
 import { TableModel, TableSettings, Cell } from "../table/types";
 import { CURRENT_TABLE_CACHE_VERSION, DEBUG } from "../../constants";
-import { findTableFile } from "./utils";
+import { findTableFile, serializeFrontMatter } from "./utils";
 
 /**
- * Converts table model to markdown
+ * Produces markdown from the table model
  */
-export const tableModelToMarkdown = (model: TableModel): string => {
+export const serializeMarkdownTable = (model: TableModel): string => {
 	const { columns, rows, cells } = model;
 	const columnCharLengths = calcColumnCharLengths(cells);
 	const buffer = new TableModelStringBuffer();
@@ -27,17 +27,16 @@ export const tableModelToMarkdown = (model: TableModel): string => {
 		buffer.writeCell(content, numChars);
 	}
 
-	buffer.createRow();
-
 	//Ignore header row
 	for (let i = 1; i < rows.length; i++) {
+		buffer.createRow();
+
 		const rowId = rows[i];
 		const rowCells = cells.filter((cell) => cell.rowId == rowId);
 		for (let j = 0; j < rowCells.length; j++) {
 			const { columnId, markdown } = rowCells[j];
 			buffer.writeCell(markdown, columnCharLengths[columnId]);
 		}
-		buffer.createRow();
 	}
 	return buffer.toString();
 };
@@ -123,7 +122,7 @@ const updateFileContent = async (
 };
 
 export const serializeTable = async (
-	didTableModelChange: boolean,
+	saveModel: boolean,
 	plugin: NltPlugin,
 	model: TableModel,
 	settings: TableSettings,
@@ -134,12 +133,20 @@ export const serializeTable = async (
 		console.log("serializeTable()");
 	}
 
-	if (didTableModelChange) {
-		if (DEBUG.SAVE_APP_DATA) console.log("Updating table model.");
+	if (saveModel) {
+		if (DEBUG.SAVE_APP_DATA) console.log("Updating table definition file.");
 		const file = await findTableFile(plugin, tableId);
-		const tableMarkdown = tableModelToMarkdown(model);
-		await updateFileContent(plugin, file, tableMarkdown);
+		const frontmatter = serializeFrontMatter(model);
+		const tableMarkdown = serializeMarkdownTable(model);
+		if (DEBUG.SAVE_APP_DATA) {
+			console.log("frontmatter\n", frontmatter);
+			console.log("table markdown\n", tableMarkdown);
+		}
+		await updateFileContent(
+			plugin,
+			file,
+			frontmatter + "\n" + tableMarkdown
+		);
 	}
-	if (DEBUG.SAVE_APP_DATA) console.log("Updating settings cache.");
 	await updateSettingsCache(plugin, model, settings, tableId);
 };

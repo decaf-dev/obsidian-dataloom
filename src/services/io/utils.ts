@@ -1,9 +1,29 @@
-import { Cell } from "../table/types";
+import { Cell, ColumnId, RowId, TableModel } from "../table/types";
 import { TFile, TFolder } from "obsidian";
 import NltPlugin from "../../main";
 
 import { createEmptyMarkdownTable } from "../random";
 import { SLASH_REGEX } from "../string/regex";
+
+/**
+ * Produces front matter from the table model
+ */
+export const serializeFrontMatter = (model: TableModel) => {
+	const frontmatter = [];
+	frontmatter.push("---");
+	frontmatter.push(serializeColumns(model.columns));
+	frontmatter.push(serializeRows(model.rows));
+	frontmatter.push("---");
+	return frontmatter.join("\n");
+};
+
+const serializeColumns = (columns: ColumnId[]) => {
+	return `columnIds: ${JSON.stringify(columns)}`;
+};
+
+const serializeRows = (rows: RowId[]) => {
+	return `rowIds: ${JSON.stringify(rows)}`;
+};
 
 export const findTableFile = async (
 	plugin: NltPlugin,
