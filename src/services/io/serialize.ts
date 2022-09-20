@@ -124,7 +124,7 @@ const updateFileContent = async (
 };
 
 export const serializeTable = async (
-	saveModel: boolean,
+	shouldSaveModel: boolean,
 	plugin: NltPlugin,
 	model: TableModel,
 	settings: TableSettings,
@@ -135,7 +135,7 @@ export const serializeTable = async (
 		console.log("serializeTable()");
 	}
 
-	if (saveModel) {
+	if (shouldSaveModel) {
 		if (DEBUG.SAVE_APP_DATA) console.log("Updating table definition file.");
 		const file = await findTableFile(plugin, tableId);
 		const frontmatter = serializeFrontMatter(model);

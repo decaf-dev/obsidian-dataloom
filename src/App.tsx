@@ -13,7 +13,11 @@ import NltPlugin from "./main";
 import { SortDir } from "./services/sort/types";
 import { addRow, addColumn } from "./services/internal/add";
 import { logFunc } from "./services/debug";
-import { useCloseMenusOnScroll, useSaveTime } from "./services/hooks";
+import {
+	useCloseMenusOnScroll,
+	useDidMountEffect,
+	useSaveTime,
+} from "./services/hooks";
 // import { sortRows } from "./services/sort/sort";
 import { checkboxToContent, contentToCheckbox } from "./services/table/utils";
 import { TableState } from "./services/table/types";
@@ -42,20 +46,23 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	const [positionUpdateTime, setPositionUpdateTime] = useState(0);
 	const [isLoading, setLoading] = useState(true);
 
-	const saveData = useSaveTime(save);
+	const { saveTime, shouldSaveModel, saveData } = useSaveTime();
 
 	useCloseMenusOnScroll("markdown-preview-view");
 	useCloseMenusOnScroll("NLT__table-wrapper");
 
-	async function save(saveModel: boolean) {
-		await serializeTable(
-			saveModel,
-			plugin,
-			state.model,
-			state.settings,
-			tableId
-		);
-	}
+	useDidMountEffect(() => {
+		async function save() {
+			await serializeTable(
+				shouldSaveModel,
+				plugin,
+				state.model,
+				state.settings,
+				tableId
+			);
+		}
+		save();
+	}, [saveTime, shouldSaveModel]);
 
 	//Load table
 	useEffect(() => {
@@ -201,10 +208,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		sortData();
 	}
 
-	function handleCellContentSave() {
-		sortData();
-	}
-
 	function handleCellContentChange(
 		cellId: string,
 		updatedContent: string,
@@ -292,6 +295,9 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				...prevState,
 				model: {
 					...prevState.model,
+					columns: prevState.model.columns.filter(
+						(column) => column !== columnId
+					),
 					cells: cells.filter((cell) => cell.columnId !== columnId),
 				},
 				settings: {
@@ -300,7 +306,10 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				},
 			};
 		});
-		sortData();
+
+		//TODO edit
+		saveData(true);
+		//sortData();
 	}
 
 	function handleRowDeleteClick(rowId: string) {
@@ -686,9 +695,10 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 													onContentChange={
 														handleCellContentChange
 													}
-													onSaveContent={
-														handleCellContentSave
-													}
+													onSaveContent={() => {
+														//TODO sort? save?
+														saveData(true);
+													}}
 													onColorChange={
 														handleChangeColor
 													}
