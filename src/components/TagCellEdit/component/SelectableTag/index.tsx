@@ -6,8 +6,8 @@ import { findColorClass } from "src/services/color";
 
 import IconButton from "src/components/IconButton";
 import TagColorMenu from "src/components/TagColorMenu";
-import { useMenuId } from "src/components/MenuProvider";
-import { useId, usePositionRef } from "src/services/hooks";
+import { useMenu } from "src/components/MenuProvider";
+import { useMenuId, usePositionRef } from "src/services/hooks";
 import { numToPx, pxToNum } from "src/services/string/conversion";
 
 import { Icon } from "src/services/icon/types";
@@ -30,9 +30,11 @@ export default function SelectableTag({
 	onClick,
 	onColorChange,
 }: Props) {
-	const menuId = useId();
-	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
-		useMenuId(menuId, MENU_LEVEL.TWO);
+	const menuId = useMenuId();
+	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } = useMenu(
+		menuId,
+		MENU_LEVEL.TWO
+	);
 	const { positionRef, position } = usePositionRef([positionUpdateTime]);
 
 	useEffect(() => {

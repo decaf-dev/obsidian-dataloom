@@ -1,12 +1,18 @@
 import { useCallback, useState, useEffect, useRef } from "react";
 
-import { useMenu } from "src/components/MenuProvider";
+import { useMenuState } from "src/components/MenuProvider";
 import { v4 as uuid } from "uuid";
+import { randomMenuId } from "../random";
 import { numToPx } from "../string/conversion";
 
 export const useForceUpdate = () => {
 	const [, setValue] = useState(0);
 	return useCallback(() => setValue((value) => value + 1), []);
+};
+
+export const useMenuId = (): string => {
+	const [id] = useState(randomMenuId());
+	return id;
 };
 
 export const useId = (): string => {
@@ -185,7 +191,7 @@ export const usePositionRef = (deps: any[] = []) => {
 };
 
 export const useCloseMenusOnScroll = (className: string): void => {
-	const { isAnyMenuOpen, closeAllMenus } = useMenu();
+	const { isAnyMenuOpen, closeAllMenus } = useMenuState();
 
 	let el: Node | null = null;
 
@@ -209,7 +215,7 @@ export const useCloseMenusOnScroll = (className: string): void => {
 };
 
 // export const useDisableScroll = (className: string): void => {
-// 	const { isAnyMenuOpen } = useMenu();
+// 	const { isAnyMenuOpen } = useMenuState();
 
 // 	let el: Node | null = null;
 

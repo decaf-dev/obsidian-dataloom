@@ -3,8 +3,8 @@ import React, { useEffect, useRef } from "react";
 import HeaderMenu from "../HeaderMenu";
 
 import "./styles.css";
-import { useId, usePositionRef } from "src/services/hooks";
-import { useMenuId } from "../MenuProvider";
+import { useMenuId, usePositionRef } from "src/services/hooks";
+import { useMenu } from "../MenuProvider";
 
 import { CSS_MEASUREMENT_PIXEL_REGEX } from "src/services/string/regex";
 import { numToPx, pxToNum } from "src/services/string/conversion";
@@ -61,9 +61,9 @@ export default function EditableTh({
 	onWrapOverflowToggle,
 	onAutoWidthToggle,
 }: Props) {
-	const menuId = useId();
+	const menuId = useMenuId();
 	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
-		useMenuId(menuId);
+		useMenu(menuId);
 	const { positionRef, position } = usePositionRef([positionUpdateTime]);
 	const mouseDownX = useRef(0);
 	const isResizing = useRef(false);

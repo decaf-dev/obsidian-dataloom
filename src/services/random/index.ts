@@ -19,6 +19,10 @@ export const randomColumnId = () => {
 	return `column-id-${randomId(8)}`;
 };
 
+export const randomMenuId = () => {
+	return `NLT__menu-id-${randomId(8)}`;
+};
+
 export const randomCellId = () => {
 	return `cell-id-${randomId(8)}`;
 };

@@ -12,14 +12,14 @@ import TagCellEdit from "../TagCellEdit";
 import DateCellEdit from "../DateCellEdit";
 
 import { randomColor } from "src/services/random";
-import { Cell, CellType } from "src/services/table/types";
+import { CellType } from "src/services/table/types";
 
 import "./styles.css";
 
 import { DEBUG } from "../../constants";
-import { useDidMountEffect, useId } from "src/services/hooks";
+import { useMenuId } from "src/services/hooks";
 import { logFunc } from "src/services/debug";
-import { useMenuId } from "src/components/MenuProvider";
+import { useMenu } from "src/components/MenuProvider";
 import { usePositionRef } from "src/services/hooks";
 
 interface Props {
@@ -65,10 +65,10 @@ export default function EditableTd({
 }: Props) {
 	const [tagInputText, setTagInputText] = useState("");
 	const [tagColor] = useState(randomColor());
-	const menuId = useId();
+	const menuId = useMenuId();
 
 	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
-		useMenuId(menuId);
+		useMenu(menuId);
 
 	const { positionRef, position } = usePositionRef([
 		content.length,

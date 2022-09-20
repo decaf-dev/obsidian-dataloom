@@ -17,7 +17,7 @@ const MenuContext = React.createContext<IMenuContext>(null);
 
 const COMPONENT_NAME = "MenuProvider";
 
-export const useMenu = () => {
+export const useMenuState = () => {
 	const { isAnyMenuOpen, closeAllMenus } = useContext(MenuContext);
 	return {
 		isAnyMenuOpen,
@@ -25,7 +25,7 @@ export const useMenu = () => {
 	};
 };
 
-export const useMenuId = (id: string, level: number = MENU_LEVEL.ONE) => {
+export const useMenu = (id: string, level: number = MENU_LEVEL.ONE) => {
 	const { openMenu, closeMenu, isMenuOpen, isMenuRequestingClose } =
 		useContext(MenuContext);
 	return {
@@ -134,9 +134,9 @@ export default function MenuProvider({ plugin, children }: Props) {
 			if (e.target instanceof HTMLElement) {
 				let el = e.target;
 				//Search until we get an id
-				while (el.id === "" && el.className !== "NLT__app") {
+				while (!el.id.includes("menu-id")) {
+					if (el.className === "NLT__app") break;
 					el = el.parentElement;
-					console.log("Element stack", el);
 				}
 				//This will close top level on outside click, closing besides any other
 				//click is left up to specific menu
