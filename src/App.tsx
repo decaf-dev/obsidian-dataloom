@@ -185,7 +185,9 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		}
 
 		setTableState((prevState) => {
-			const { type } = prevState.settings.columns[columnId];
+			const { settings } = prevState;
+			const { type } = settings.columns[columnId];
+
 			//If same header type return
 			if (type === selectedCellType) return prevState;
 			return {
@@ -196,7 +198,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 						if (cell.id === cellId) {
 							return {
 								...cell,
-								content: findUpdatedCellContent(
+								markdown: findUpdatedCellContent(
 									type,
 									cell.markdown
 								),
@@ -205,7 +207,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 						return cell;
 					}),
 				},
-				tableSettings: {
+				settings: {
 					...prevState.settings,
 					columns: {
 						...prevState.settings.columns,
