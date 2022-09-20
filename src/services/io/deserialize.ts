@@ -10,6 +10,7 @@ import {
 } from "../table/types";
 import { findTableFile, initialCell } from "./utils";
 import { randomCellId } from "../random";
+import { SLASH_REGEX } from "../string/regex";
 
 const md = new MarkdownIt();
 
@@ -87,14 +88,25 @@ export const findTableModel = async (
 	return parseTableModelFromMarkdown(data);
 };
 
-export const loadTableState = async (
+const validateSettings = (plugin: NltPlugin) => {
+	const { tableFolder, syncInterval } = plugin.settings;
+	if (tableFolder.match(SLASH_REGEX))
+		throw new Error(
+			"Table definition folder cannot include forward or back slashes. Please change it in the plugin settings."
+		);
+	if (syncInterval === 0) throw new Error("Sync interval cannot be empty.");
+};
+
+export const deserializeTable = async (
 	plugin: NltPlugin,
 	tableId: string
 ): Promise<TableState> => {
 	if (DEBUG.LOAD_APP_DATA) {
 		console.log("");
-		console.log("loadTableState()");
+		console.log("deserializeTable()");
 	}
+
+	validateSettings(plugin);
 
 	const model = await findTableModel(plugin, tableId);
 	if (DEBUG.LOAD_APP_DATA) console.log("Found table model:", model);

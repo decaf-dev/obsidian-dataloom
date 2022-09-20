@@ -30,11 +30,6 @@ export const findTableFile = async (
 	tableId: string
 ): Promise<TFile | null> => {
 	const tableFolder = plugin.settings.tableFolder;
-	if (tableFolder.match(SLASH_REGEX))
-		throw new Error(
-			"Table definition folder cannot include forward or back slashes. Please change it in the plugin settings."
-		);
-
 	const folder = plugin.app.vault.getAbstractFileByPath(tableFolder);
 	if (!folder) await plugin.app.vault.createFolder(tableFolder);
 
