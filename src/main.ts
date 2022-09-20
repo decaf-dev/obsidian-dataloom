@@ -6,6 +6,8 @@ import {
 	MarkdownViewModeType,
 } from "obsidian";
 
+import NltSettingsTab from "./NltSettingsTab";
+
 import { NltTable } from "./NltTable";
 import { addRow, addColumn } from "./services/internal/add";
 import { serializeTable } from "./services/io/serialize";
@@ -63,7 +65,7 @@ export default class NltPlugin extends Plugin {
 			}
 		);
 
-		// this.addSettingTab(new NltSettingsTab(this.app, this));
+		this.addSettingTab(new NltSettingsTab(this.app, this));
 		this.registerCommands();
 		this.registerEvents();
 	}

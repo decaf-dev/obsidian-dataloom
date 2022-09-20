@@ -112,6 +112,8 @@ export const loadTableState = async (
 	if (savedState) {
 		const { cacheVersion, settings } = savedState;
 
+		if (DEBUG.LOAD_APP_DATA)
+			console.log("Loading settings from cache", settings);
 		//Update with old settings
 		tableState.settings = settings;
 

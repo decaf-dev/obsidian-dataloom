@@ -3,24 +3,28 @@ import { TFile, TFolder } from "obsidian";
 import NltPlugin from "../../main";
 
 import { createEmptyMarkdownTable } from "../random";
+import { SLASH_REGEX } from "../string/regex";
 
 export const findTableFile = async (
 	plugin: NltPlugin,
 	tableId: string
 ): Promise<TFile | null> => {
-	const folder = plugin.app.vault.getAbstractFileByPath(
-		plugin.settings.tableFolder
-	);
-	if (!folder)
-		await plugin.app.vault.createFolder(plugin.settings.tableFolder);
+	const tableFolder = plugin.settings.tableFolder;
+	if (tableFolder.match(SLASH_REGEX))
+		throw new Error(
+			"Table definition folder cannot include forward or back slashes. Please change it in the plugin settings."
+		);
+
+	const folder = plugin.app.vault.getAbstractFileByPath(tableFolder);
+	if (!folder) await plugin.app.vault.createFolder(tableFolder);
 
 	const file = plugin.app.vault.getAbstractFileByPath(
-		`${plugin.settings.tableFolder}/${tableId}.md`
+		`${tableFolder}/${tableId}.md`
 	);
 	if (file && file instanceof TFile) return file;
 
 	const createdFile = await plugin.app.vault.create(
-		`${plugin.settings.tableFolder}/${tableId}.md`,
+		`${tableFolder}/${tableId}.md`,
 		createEmptyMarkdownTable()
 	);
 	return createdFile;

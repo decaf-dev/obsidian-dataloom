@@ -22,3 +22,8 @@ export const CHECKBOX_REGEX = new RegExp(/^\[[x ]{0,1}\]$/);
  * Matches a checked markdown checkbox [x]
  */
 export const CHECKBOX_CHECKED_REGEX = new RegExp(/^\[[x]\]$/);
+
+/**
+ * Matches a forward '/' or backslash '\'
+ */
+export const SLASH_REGEX = new RegExp(/\/|\\/);
