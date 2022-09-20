@@ -55,27 +55,21 @@ export default function MenuProvider({ plugin, children }: Props) {
 		return openMenus.length !== 0;
 	}
 
-	function canOpenMenu(level: number): boolean {
-		if (openMenus.length === 0) return true;
-		//If there is already a menu of that level open, do not allow us
-		//to open another menu. We must close the current menu first.
-		//This will allow us to provide Notion-like menu functionality
-		if (openMenus.every((menu) => menu.level < level)) return true;
-		return false;
-	}
+	// TODO change
+	// This was causing a lot of issues
+	// function canOpenMenu(level: number): boolean {
+	// 	if (openMenus.length === 0) return true;
+	// 	//If there is already a menu of that level open, do not allow us
+	// 	//to open another menu. We must close the current menu first.
+	// 	//This will allow us to provide Notion-like menu functionality
+	// 	if (openMenus.every((menu) => menu.level < level)) return true;
+	// 	return false;
+	// }
 
 	function openMenu(id: string, level: number) {
 		if (DEBUG.MENU_PROVIDER)
 			logFunc(COMPONENT_NAME, "openMenu", { id, level });
-		if (canOpenMenu(level)) {
-			setOpenMenus((prevState) => [
-				...prevState,
-				{ id, level, isRequestingClose: false },
-			]);
-		} else {
-			console.log("CANNOT OPEN MENU");
-			console.log("State: ", openMenus);
-		}
+		setOpenMenus(() => [{ id, level, isRequestingClose: false }]);
 	}
 
 	function isMenuRequestingClose(id: string) {
@@ -183,20 +177,6 @@ export default function MenuProvider({ plugin, children }: Props) {
 		}
 		if (!isFocused) handleBlur();
 	}, [isFocused]);
-
-	const [layoutTime, setLayoutTime] = useState(0);
-
-	// useEffect(() => {
-	// 	const timer = setInterval(() => {
-	// 		if (plugin.layoutChangeTime !== layoutTime) {
-	// 			setLayoutTime(plugin.layoutChangeTime);
-	// 			forceCloseAllMenus();
-	// 		}
-	// 	}, 500);
-	// 	return () => {
-	// 		clearInterval(timer);
-	// 	};
-	// }, [layoutTime]);
 
 	return (
 		<div
