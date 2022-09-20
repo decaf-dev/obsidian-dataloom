@@ -37,7 +37,7 @@ export class NltTable extends MarkdownRenderChild {
 				tableId={this.tableId}
 				viewMode={this.viewMode}
 			>
-				<MenuProvider plugin={this.plugin}>
+				<MenuProvider tableId={this.tableId} viewMode={this.viewMode}>
 					<App
 						plugin={this.plugin}
 						tableId={this.tableId}

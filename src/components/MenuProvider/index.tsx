@@ -1,6 +1,7 @@
+import { MarkdownViewModeType } from "obsidian";
 import React, { useContext, useState, useEffect } from "react";
 import { DEBUG, MENU_LEVEL } from "src/constants";
-import NltPlugin from "src/main";
+
 import { logFunc } from "src/services/debug";
 import { useTableFocus } from "../FocusProvider";
 
@@ -43,11 +44,12 @@ interface Menu {
 }
 
 interface Props {
-	plugin: NltPlugin;
+	tableId: string;
+	viewMode: MarkdownViewModeType;
 	children: React.ReactNode;
 }
 
-export default function MenuProvider({ plugin, children }: Props) {
+export default function MenuProvider({ tableId, viewMode, children }: Props) {
 	const [openMenus, setOpenMenus] = useState<Menu[]>([]);
 	const isFocused = useTableFocus();
 
