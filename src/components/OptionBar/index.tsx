@@ -41,20 +41,20 @@ const SortBubbleList = ({ bubbles }: SortButtonListProps) => {
 
 interface Props {
 	headers: Cell[];
-	tableSettings: TableSettings;
+	settings: TableSettings;
 }
-export default function OptionBar({ headers, tableSettings }: Props) {
+export default function OptionBar({ headers, settings }: Props) {
 	const bubbles = useMemo(() => {
 		return headers
-			.filter((_header, i) => {
-				const settings = tableSettings.columns[i];
-				return settings.sortDir !== SortDir.NONE;
+			.filter((header) => {
+				const { sortDir } = settings.columns[header.columnId];
+				return sortDir !== SortDir.NONE;
 			})
 			.map((header, i) => {
-				const settings = tableSettings.columns[i];
+				const { sortDir } = settings.columns[i];
 				return {
-					content: header.content,
-					sortDir: settings.sortDir,
+					content: header.html,
+					sortDir,
 				};
 			});
 	}, [headers]);

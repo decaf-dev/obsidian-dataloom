@@ -1,5 +1,4 @@
-import { getColumnIndex, getRowIndex, findRowCells } from "./utils";
-import { Cell } from "./types";
+import { getColumnIndex, getRowIndex } from "./utils";
 
 //0,1,2,3,4
 //5,6,7,8,9
@@ -38,30 +37,5 @@ describe("getColumnIndex", () => {
 	it("calculates correct index for last column", () => {
 		const index = getColumnIndex(19, numColumns);
 		expect(index).toBe(4);
-	});
-});
-
-//0,1,2,3,4
-//5,6,7,8,9
-//10,11,12,13,14
-//15,16,17,18,19
-describe("findRowCells", () => {
-	it("finds row cells", () => {
-		let cells: Cell[] = [];
-		for (let i = 0; i < 20; i++) {
-			cells.push({
-				id: i.toString(),
-				textContent: "",
-				content: "",
-			});
-		}
-		const rowCells = findRowCells(2, cells, 5);
-		expect(rowCells.map((cell) => cell.id)).toEqual([
-			"10",
-			"11",
-			"12",
-			"13",
-			"14",
-		]);
 	});
 });

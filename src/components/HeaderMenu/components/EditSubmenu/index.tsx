@@ -10,22 +10,22 @@ import Stack from "src/components/Stack";
 interface Props {
 	canDeleteColumn: boolean;
 	title: string;
-	columnIndex: number;
+	columnId: string;
 	columnType: string;
 	columnContent: string;
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
 	onNameChange: (name: string) => void;
-	onAutoWidthToggle: (columnIndex: number, value: boolean) => void;
-	onWrapOverflowToggle: (columnIndex: number, value: boolean) => void;
-	onDeleteClick: (columnIndex: number) => void;
+	onAutoWidthToggle: (columnId: string, value: boolean) => void;
+	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
+	onDeleteClick: (columnId: string) => void;
 	onBackClick: () => void;
 }
 
 export default function EditMenu({
 	canDeleteColumn,
 	title,
-	columnIndex,
+	columnId,
 	columnType,
 	columnContent,
 	shouldWrapOverflow,
@@ -55,7 +55,7 @@ export default function EditMenu({
 						<Switch
 							isChecked={useAutoWidth}
 							onToggle={(value) =>
-								onAutoWidthToggle(columnIndex, value)
+								onAutoWidthToggle(columnId, value)
 							}
 						/>
 						{!useAutoWidth && (
@@ -64,7 +64,7 @@ export default function EditMenu({
 								<Switch
 									isChecked={shouldWrapOverflow}
 									onToggle={(value) =>
-										onWrapOverflowToggle(columnIndex, value)
+										onWrapOverflowToggle(columnId, value)
 									}
 								/>
 							</>
@@ -72,7 +72,7 @@ export default function EditMenu({
 					</>
 				)}
 				{canDeleteColumn && (
-					<Button onClick={() => onDeleteClick(columnIndex)}>
+					<Button onClick={() => onDeleteClick(columnId)}>
 						Delete
 					</Button>
 				)}

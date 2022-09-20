@@ -1,6 +1,6 @@
 import { NUMBER_REGEX } from "../string/regex";
 import { isCheckbox, isNumber, isDate } from "../string/validators";
-import { CellType, Cell } from "./types";
+import { CellType } from "./types";
 
 export const isValidCellContent = (
 	content: string,
@@ -46,16 +46,6 @@ export const contentToCheckbox = (content: string) => {
 	} else {
 		return content;
 	}
-};
-
-export const findRowCells = (
-	rowIndex: number,
-	cells: Cell[],
-	numColumns: number
-) => {
-	const start = rowIndex * numColumns;
-	const end = start + numColumns;
-	return cells.slice(start, end);
 };
 
 export const getColumnIndex = (

@@ -5,21 +5,27 @@ export const randomColor = (): string => {
 	return Object.values(COLOR)[index];
 };
 
-/**
- * Gets current time with a random offset
- * Since some operations are preformed very quickly, it's possible for Date.now()
- * to return the same time. Adding a timeoffset makes sure that the time is different.
- * @returns Date.now() with a random offset
- */
-export const getCurrentTimeWithOffset = (): number => {
-	return Math.round(Date.now() - Math.random() * 1000);
+export const randomTableId = () => {
+	return `table-id-${randomId(6)}`;
 };
 
-export const randomBlockId = () => {
+export const randomRowId = () => {
+	return `row-id-${randomId(8)}`;
+};
+
+export const randomColumnId = () => {
+	return `column-id-${randomId(8)}`;
+};
+
+export const randomCellId = () => {
+	return `cell-id-${randomId(8)}`;
+};
+
+export const randomId = (numChars: number) => {
 	const chars =
 		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz012345679";
-	let result = "^";
-	for (let i = 0; i < 6; i++) {
+	let result = "";
+	for (let i = 0; i < numChars; i++) {
 		result += chars[Math.floor(Math.random() * chars.length)];
 	}
 	return result;
@@ -30,9 +36,21 @@ export const randomBlockId = () => {
  * @returns An NLT markdown table
  */
 export const createEmptyMarkdownTable = (): string => {
-	const rows = [];
-	rows[0] = "| New Column |";
-	rows[1] = "| ---------- |";
-	rows[2] = randomBlockId();
+	const columnIds = {
+		0: randomColumnId(),
+	};
+	const rowIds = {
+		0: randomRowId(),
+		1: randomRowId(),
+	};
+	const rows: string[] = [];
+	rows[0] = "---";
+	rows[1] = `columnIds: ${JSON.stringify(columnIds)}`;
+	rows[2] = `rowIds: ${JSON.stringify(rowIds)}`;
+	rows[3] = "---";
+	rows[4] = "";
+	rows[5] = "| New Column |";
+	rows[6] = "| ---------- |";
+	rows[7] = "|          |";
 	return rows.join("\n");
 };

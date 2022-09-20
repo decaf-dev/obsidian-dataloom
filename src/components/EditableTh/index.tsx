@@ -17,6 +17,7 @@ import parse from "html-react-parser";
 interface Props {
 	cellId: string;
 	columnIndex: number;
+	columnId: string;
 	width: string;
 	numColumns: number;
 	positionUpdateTime: number;
@@ -26,20 +27,21 @@ interface Props {
 	useAutoWidth: boolean;
 	sortDir: SortDir;
 	type: string;
-	onMoveColumnClick: (columnIndex: number, moveRight: boolean) => void;
-	onSortSelect: (columnIndex: number, sortDir: SortDir) => void;
-	onInsertColumnClick: (columnIndex: number, insertRight: boolean) => void;
-	onTypeSelect: (cellId: string, columnIndex: number, type: CellType) => void;
-	onDeleteClick: (columnIndex: number) => void;
+	onMoveColumnClick: (columnId: string, moveRight: boolean) => void;
+	onSortSelect: (columnId: string, sortDir: SortDir) => void;
+	onInsertColumnClick: (columnId: string, insertRight: boolean) => void;
+	onTypeSelect: (cellId: string, columnId: string, type: CellType) => void;
+	onDeleteClick: (columnId: string) => void;
 	onSaveClick: (cellId: string, content: string) => void;
-	onWidthChange: (columnIndex: number, width: string) => void;
-	onAutoWidthToggle: (columnIndex: number, value: boolean) => void;
-	onWrapOverflowToggle: (columnIndex: number, value: boolean) => void;
+	onWidthChange: (columnId: string, width: string) => void;
+	onAutoWidthToggle: (columnId: string, value: boolean) => void;
+	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
 }
 
 export default function EditableTh({
 	cellId,
 	columnIndex,
+	columnId,
 	width,
 	positionUpdateTime,
 	content,
@@ -93,7 +95,7 @@ export default function EditableTh({
 			const newWidth = oldWidth + dist;
 
 			if (newWidth < MIN_COLUMN_WIDTH_PX) return;
-			onWidthChange(columnIndex, numToPx(newWidth));
+			onWidthChange(columnId, numToPx(newWidth));
 		}
 	}
 
@@ -146,13 +148,14 @@ export default function EditableTh({
 			</th>
 			<HeaderMenu
 				isOpen={isMenuOpen}
-				canDeleteColumn={numColumns > 2}
+				canDeleteColumn={numColumns > 1}
 				style={{
 					top: numToPx(
 						pxToNum(position.top) + pxToNum(position.height)
 					),
 					left: position.left,
 				}}
+				columnId={columnId}
 				cellId={cellId}
 				shouldWrapOverflow={shouldWrapOverflow}
 				useAutoWidth={useAutoWidth}

@@ -2,7 +2,6 @@ import NltPlugin from "../../main";
 import React, { useState, useContext, useEffect } from "react";
 import { DEBUG } from "src/constants";
 import { logFunc } from "src/services/debug";
-import { MarkdownTable } from "src/services/external/types";
 
 const FocusContext = React.createContext(false);
 
@@ -16,19 +15,9 @@ interface Props {
 	children: React.ReactNode;
 	plugin: NltPlugin;
 	tableId: string;
-	markdownTable: MarkdownTable;
-	sourcePath: string;
-	el: HTMLElement;
 }
 
-export default function FocusProvider({
-	children,
-	plugin,
-	markdownTable,
-	tableId,
-	sourcePath,
-	el,
-}: Props) {
+export default function FocusProvider({ children, plugin, tableId }: Props) {
 	const [isFocused, setFocus] = useState(false);
 
 	function handleFocus() {
@@ -36,8 +25,6 @@ export default function FocusProvider({
 		setFocus(true);
 		plugin.focusTable({
 			tableId,
-			markdownTable,
-			sourcePath,
 		});
 	}
 
@@ -49,10 +36,7 @@ export default function FocusProvider({
 
 	useEffect(() => {
 		if (plugin.focused) {
-			if (
-				plugin.focused.sourcePath === sourcePath &&
-				plugin.focused.tableId === tableId
-			) {
+			if (plugin.focused.tableId === tableId) {
 				setTimeout(() => {
 					handleFocus();
 				}, 1);
@@ -60,37 +44,37 @@ export default function FocusProvider({
 		}
 	}, []);
 
-	useEffect(() => {
-		function handleMouseUp(e: MouseEvent) {
-			//TODO only check if the page is active
-			//Set an id for the table
-			if (e.target instanceof Element) {
-				let el = e.target;
-				let isFocused = false;
+	// useEffect(() => {
+	// 	function handleMouseUp(e: MouseEvent) {
+	// 		//TODO only check if the page is active
+	// 		//Set an id for the table
+	// 		if (e.target instanceof Element) {
+	// 			let el = e.target;
+	// 			let isFocused = false;
 
-				while (el) {
-					if (el.className === "view-content") break;
-					//We need to check the type because the an svg
-					//element has a className of SVGAnimatedString
-					//See: https://stackoverflow.com/a/37949156
-					if (typeof el.className === "string") {
-						if (el.className.includes("NLT")) {
-							isFocused = true;
-							break;
-						}
-					}
-					el = el.parentElement;
-				}
-				if (isFocused) {
-					handleFocus();
-				} else {
-					handleBlur();
-				}
-			}
-		}
-		window.addEventListener("mouseup", handleMouseUp);
-		return () => window.removeEventListener("mouseup", handleMouseUp);
-	}, []);
+	// 			while (el) {
+	// 				if (el.className === "view-content") break;
+	// 				//We need to check the type because the an svg
+	// 				//element has a className of SVGAnimatedString
+	// 				//See: https://stackoverflow.com/a/37949156
+	// 				if (typeof el.className === "string") {
+	// 					if (el.className.includes("NLT")) {
+	// 						isFocused = true;
+	// 						break;
+	// 					}
+	// 				}
+	// 				el = el.parentElement;
+	// 			}
+	// 			if (isFocused) {
+	// 				handleFocus();
+	// 			} else {
+	// 				handleBlur();
+	// 			}
+	// 		}
+	// 	}
+	// 	window.addEventListener("mouseup", handleMouseUp);
+	// 	return () => window.removeEventListener("mouseup", handleMouseUp);
+	// }, []);
 
 	return (
 		<div>

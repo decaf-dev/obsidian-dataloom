@@ -1,7 +1,5 @@
 import { SortDir } from "../sort/types";
 
-export type ViewType = "live-preview" | "reading";
-
 export enum CellType {
 	TEXT = "text",
 	NUMBER = "number",
@@ -11,14 +9,26 @@ export enum CellType {
 	MULTI_TAG = "multi-tag",
 }
 
-export interface TableState {
-	tableSettings: TableSettings;
-	tableModel: TableModel;
-	tableCacheVersion: number;
+export type ColumnId = string;
+export type RowId = string;
+export type CellId = string;
+
+export interface TableComponent {
+	id: string;
+	component: React.ReactNode;
+}
+
+export interface Cell {
+	id: CellId;
+	columnId: ColumnId;
+	rowId: RowId;
+	markdown: string;
+	html: string;
 }
 
 export interface TableModel {
-	numColumns: number;
+	columns: ColumnId[];
+	rows: RowId[];
 	cells: Cell[];
 }
 
@@ -44,15 +54,12 @@ export const DEFAULT_COLUMN_SETTINGS: ColumnSettings = {
 
 export interface TableSettings {
 	columns: {
-		[index: number]: ColumnSettings;
+		[columnId: string]: ColumnSettings;
 	};
 }
-export interface Cell {
-	id: string;
-	content: string;
-	textContent: string;
-}
-export interface TableComponent {
-	id: string;
-	component: React.ReactNode;
+
+export interface TableState {
+	settings: TableSettings;
+	model: TableModel;
+	cacheVersion: number;
 }

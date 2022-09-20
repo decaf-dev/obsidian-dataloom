@@ -36,7 +36,6 @@ interface Props {
 	onTagClick: (cellId: string, tagId: string) => void;
 	onContentChange: (
 		cellId: string,
-		headerType: string,
 		updatedContent: string,
 		saveOnChange?: boolean
 	) => void;
@@ -155,22 +154,22 @@ export default function EditableTd({
 	}
 
 	function handleTextInputChange(updatedContent: string) {
-		onContentChange(cellId, columnType, updatedContent);
+		onContentChange(cellId, updatedContent);
 		setContentUpdate(true);
 	}
 
 	function handleNumberInputChange(updatedContent: string) {
-		onContentChange(cellId, columnType, updatedContent);
+		onContentChange(cellId, updatedContent);
 		setContentUpdate(true);
 	}
 
 	function handleDateChange(updatedContent: string) {
-		onContentChange(cellId, columnType, updatedContent);
+		onContentChange(cellId, updatedContent);
 		setContentUpdate(true);
 	}
 
 	function handleCheckboxChange(updatedContent: string) {
-		onContentChange(cellId, columnType, updatedContent, true);
+		onContentChange(cellId, updatedContent, true);
 	}
 
 	function renderCell(): React.ReactNode {

@@ -1,45 +1,44 @@
-import { Plugin, Editor, MarkdownView, Notice, TFile } from "obsidian";
+import {
+	Plugin,
+	Editor,
+	MarkdownView,
+	Notice,
+	MarkdownViewModeType,
+} from "obsidian";
 
 import { NltTable } from "./NltTable";
 import { addRow, addColumn } from "./services/internal/add";
-import { saveTableState } from "./services/external/save";
+import { serializeTable } from "./services/io/serialize";
 import { createEmptyMarkdownTable } from "./services/random";
 import { TableState } from "./services/table/types";
-import { MarkdownTable } from "./services/external/types";
-import {
-	findMarkdownTablesFromFileData,
-	tableIdFromEl,
-} from "./services/external/loadUtils";
 
 export interface NltSettings {
 	data: {
-		[sourcePath: string]: {
-			[tableIndex: string]: TableState;
-		};
+		[tableIndex: string]: TableState;
 	};
+	tableFolder: string;
 }
 
 export const DEFAULT_SETTINGS: NltSettings = {
 	data: {},
+	tableFolder: "_notion-like-tables",
 };
 interface FocusedTable {
 	tableId: string;
-	markdownTable: MarkdownTable;
-	sourcePath: string;
 }
 export default class NltPlugin extends Plugin {
 	settings: NltSettings;
 	focused: FocusedTable | null = null;
 
-	async findMarkdownTables(
-		path: string
-	): Promise<Map<string, MarkdownTable>> {
-		const file = this.app.vault.getAbstractFileByPath(path);
-		if (file instanceof TFile) {
-			const data = await this.app.vault.read(file);
-			return findMarkdownTablesFromFileData(data);
+	private getViewMode = (el: HTMLElement): MarkdownViewModeType | null => {
+		const parent = el.parentElement;
+		if (parent) {
+			return parent.className.includes("cm-preview-code-block")
+				? "source"
+				: "preview";
 		}
-	}
+		return null;
+	};
 
 	/**
 	 * Called on plugin load.
@@ -49,27 +48,20 @@ export default class NltPlugin extends Plugin {
 		await this.loadSettings();
 		await this.forcePostProcessorReload();
 
-		this.registerMarkdownPostProcessor(async (element, context) => {
-			const table = element.querySelector("table");
-			if (table) {
-				const markdownTables = await this.findMarkdownTables(
-					context.sourcePath
-				);
-				const tableId = tableIdFromEl(table);
+		this.registerMarkdownCodeBlockProcessor(
+			"notion-like-tables",
+			(source, el, ctx) => {
+				const TABLE_ID_REGEX = new RegExp(/^table-id-[a-zA-Z0-9_-]+$/);
+				const text = source.trim();
+				const tableId = text.match(TABLE_ID_REGEX) ? text : null;
 				if (tableId) {
-					const markdownTable = markdownTables.get(tableId);
-					context.addChild(
-						new NltTable(
-							element,
-							this,
-							tableId,
-							markdownTable,
-							context.sourcePath
-						)
-					);
+					const viewMode = this.getViewMode(el);
+					if (viewMode) {
+						ctx.addChild(new NltTable(el, this, tableId, viewMode));
+					}
 				}
 			}
-		});
+		);
 
 		// this.addSettingTab(new NltSettingsTab(this.app, this));
 		this.registerCommands();
@@ -109,20 +101,18 @@ export default class NltPlugin extends Plugin {
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "\\" }],
 			callback: async () => {
 				if (this.focused) {
-					const { tableId, markdownTable, sourcePath } = this.focused;
-					const { tableModel, tableSettings } =
-						this.settings.data[sourcePath][tableId];
+					const { tableId } = this.focused;
+					const { model, settings } = this.settings.data[tableId];
 					const [updatedModel, updatedSettings] = addColumn(
-						tableModel,
-						tableSettings
+						model,
+						settings
 					);
-					await saveTableState(
+					await serializeTable(
+						true,
 						this,
 						updatedModel,
 						updatedSettings,
-						tableId,
-						markdownTable,
-						sourcePath
+						tableId
 					);
 				} else {
 					new Notice(
@@ -138,17 +128,15 @@ export default class NltPlugin extends Plugin {
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Enter" }],
 			callback: async () => {
 				if (this.focused) {
-					const { tableId, markdownTable, sourcePath } = this.focused;
-					const { tableModel, tableSettings } =
-						this.settings.data[sourcePath][tableId];
-					const newData = addRow(tableModel);
-					await saveTableState(
+					const { tableId } = this.focused;
+					const { model, settings } = this.settings.data[tableId];
+					const newData = addRow(model);
+					await serializeTable(
+						true,
 						this,
 						newData,
-						tableSettings,
-						tableId,
-						markdownTable,
-						sourcePath
+						settings,
+						tableId
 					);
 				} else {
 					new Notice(
@@ -159,11 +147,9 @@ export default class NltPlugin extends Plugin {
 		});
 	}
 
-	focusTable = ({ tableId, markdownTable, sourcePath }: FocusedTable) => {
+	focusTable = ({ tableId }: FocusedTable) => {
 		this.focused = {
 			tableId,
-			markdownTable,
-			sourcePath,
 		};
 	};
 

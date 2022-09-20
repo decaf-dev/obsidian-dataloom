@@ -13,13 +13,13 @@ import { numToPx, pxToNum } from "src/services/string/conversion";
 import "./styles.css";
 
 interface Props {
-	rowIndex: number;
+	rowId: string;
 	positionUpdateTime: number;
-	onDeleteClick: (rowIndex: number) => void;
+	onDeleteClick: (rowId: string) => void;
 }
 
 export default function RowMenu({
-	rowIndex,
+	rowId,
 	positionUpdateTime,
 	onDeleteClick,
 }: Props) {
@@ -39,8 +39,8 @@ export default function RowMenu({
 		openMenu();
 	}
 
-	function handleDeleteClick(rowIndex: number) {
-		onDeleteClick(rowIndex);
+	function handleDeleteClick(rowId: string) {
+		onDeleteClick(rowId);
 		closeMenu();
 	}
 
@@ -50,10 +50,10 @@ export default function RowMenu({
 				name: "delete",
 				content: "Delete",
 				icon: Icon.DELETE,
-				onClick: () => handleDeleteClick(rowIndex),
+				onClick: () => handleDeleteClick(rowId),
 			},
 		];
-	}, [rowIndex]);
+	}, [rowId]);
 
 	return (
 		<div ref={positionRef}>

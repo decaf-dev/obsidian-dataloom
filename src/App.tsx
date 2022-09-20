@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import EditableTd from "./components/EditableTd";
 import Table from "./components/Table";
@@ -6,8 +6,8 @@ import RowMenu from "./components/RowMenu";
 import EditableTh from "./components/EditableTh";
 import OptionBar from "./components/OptionBar";
 
-import { Cell, CellType } from "./services/table/types";
-import { saveTableState } from "./services/external/save";
+import { Cell, CellType, ColumnId, RowId } from "./services/table/types";
+import { serializeTable } from "./services/io/serialize";
 import { pxToNum } from "./services/string/conversion";
 import NltPlugin from "./main";
 import { SortDir } from "./services/sort/types";
@@ -22,87 +22,68 @@ import {
 import {
 	checkboxToContent,
 	contentToCheckbox,
-	findRowCells,
 	getColumnIndex,
 	getRowIndex,
 } from "./services/table/utils";
 import { TableState } from "./services/table/types";
-import { MarkdownTable } from "./services/external/types";
 
 import { DEBUG } from "./constants";
 
 import "./app.css";
+import { MarkdownViewModeType } from "obsidian";
+import { loadTableState, markdownToHtml } from "./services/io/deserialize";
 
 interface Props {
 	plugin: NltPlugin;
-	tableState: TableState;
-	sourcePath: string;
 	tableId: string;
-	markdownTable: MarkdownTable;
-	el: HTMLElement;
+	viewMode: MarkdownViewModeType;
 }
 
 const COMPONENT_NAME = "App";
 
-export default function App({
-	plugin,
-	tableState,
-	sourcePath,
-	tableId,
-	markdownTable,
-	el,
-}: Props) {
-	const [state, setTableState] = useState<TableState>(tableState);
+//TODO only call this function if the model has changed
+//currentTime
+//update model
+export default function App({ plugin, viewMode, tableId }: Props) {
+	const [state, setTableState] = useState<TableState>(null);
+
 	const [sortTime, setSortTime] = useState(0);
 	const [positionUpdateTime, setPositionUpdateTime] = useState(0);
+	const [isLoading, setLoading] = useState(true);
 
 	const { saveTime, saveData } = useSaveTime();
 
 	useCloseMenusOnScroll("markdown-preview-view");
 	useCloseMenusOnScroll("NLT__table-wrapper");
 
-	const { tableModel, tableSettings } = state;
-	const { cells, numColumns } = tableModel;
-	const headers = cells.filter((_cell, i) => i < numColumns);
-
-	let rows: Cell[][] = [];
-	for (let i = 1; i < cells.length / numColumns; i++) {
-		const rowCells = findRowCells(i, cells, numColumns);
-		rows.push(rowCells);
-	}
-
-	useDidMountEffect(() => {
-		setTableState((prevState) => {
-			return {
-				...prevState,
-				tableModel: {
-					...prevState.tableModel,
-					// rows: sortRows(state.tableModel, state.tableSettings),
-				},
-			};
-		});
-		forcePositionUpdate();
-		saveData();
-	}, [sortTime]);
-
-	useDidMountEffect(() => {
-		async function handleUpdate() {
-			try {
-				await saveTableState(
-					plugin,
-					state.tableModel,
-					state.tableSettings,
-					tableId,
-					markdownTable,
-					sourcePath
-				);
-			} catch (err) {
-				console.log(err);
-			}
+	//Load table
+	useEffect(() => {
+		async function load() {
+			const tableState = await loadTableState(plugin, tableId);
+			setTableState(tableState);
+			setTimeout(() => {
+				setLoading(false);
+			}, 300);
 		}
+		load();
+	}, []);
 
-		handleUpdate();
-	}, [saveTime]);
+	//TODO add
+	// useDidMountEffect(() => {
+	// 	setTableState((prevState) => {
+	// 		return {
+	// 			...prevState,
+	// 			model: {
+	// 				...prevState.model,
+	// 				// rows: sortRows(state.model, state.settings),
+	// 			},
+	// 		};
+	// 	});
+	// 	forcePositionUpdate();
+	// 	saveData();
+	// }, [sortTime]);
+
+	//TODO add save
 
 	function sortData() {
 		setSortTime(Date.now());
@@ -116,13 +97,13 @@ export default function App({
 		if (DEBUG.APP) console.log("[App]: handleAddColumn called.");
 		setTableState((prevState) => {
 			const [model, settings] = addColumn(
-				prevState.tableModel,
-				prevState.tableSettings
+				prevState.model,
+				prevState.settings
 			);
 			return {
 				...prevState,
-				tableModel: model,
-				tableSettings: settings,
+				model,
+				settings,
 			};
 		});
 		saveData();
@@ -131,32 +112,10 @@ export default function App({
 	function handleAddRow() {
 		if (DEBUG.APP) console.log("[App]: handleAddRow called.");
 		setTableState((prevState) => {
-			const model = addRow(prevState.tableModel);
+			const model = addRow(prevState.model);
 			return {
 				...prevState,
-				tableModel: model,
-			};
-		});
-		saveData();
-	}
-
-	function handleHeaderSave(cellId: string, updatedContent: string) {
-		if (DEBUG.APP) console.log("[App]: handleHeaderSave called.");
-		setTableState((prevState) => {
-			return {
-				...prevState,
-				tableModel: {
-					...prevState.tableModel,
-					cells: prevState.tableModel.cells.map((cell) => {
-						if (cell.id === cellId) {
-							return {
-								...cell,
-								content: updatedContent,
-							};
-						}
-						return cell;
-					}),
-				},
+				model: model,
 			};
 		});
 		saveData();
@@ -164,20 +123,17 @@ export default function App({
 
 	function handleHeaderTypeClick(
 		cellId: string,
-		columnIndex: number,
+		columnId: string,
 		selectedCellType: CellType
 	) {
 		if (DEBUG.APP)
 			logFunc(COMPONENT_NAME, "handleHeaderTypeClick", {
 				cellId,
-				columnIndex,
+				columnId,
 				selectedCellType,
 			});
-		const { type } = state.tableSettings.columns[columnIndex];
-		//If same header type return
-		if (type === selectedCellType) return;
 
-		function findUpdatedCellContent(content: string) {
+		function findUpdatedCellContent(type: CellType, content: string) {
 			if (type === CellType.CHECKBOX) {
 				return checkboxToContent(content);
 			} else if (selectedCellType === CellType.CHECKBOX) {
@@ -188,26 +144,32 @@ export default function App({
 		}
 
 		setTableState((prevState) => {
+			const { type } = prevState.settings.columns[columnId];
+			//If same header type return
+			if (type === selectedCellType) return prevState;
 			return {
 				...prevState,
-				tableModel: {
-					...prevState.tableModel,
-					cells: prevState.tableModel.cells.map((cell: Cell) => {
+				model: {
+					...prevState.model,
+					cells: prevState.model.cells.map((cell: Cell) => {
 						if (cell.id === cellId) {
 							return {
 								...cell,
-								content: findUpdatedCellContent(cell.content),
+								content: findUpdatedCellContent(
+									type,
+									cell.markdown
+								),
 							};
 						}
 						return cell;
 					}),
 				},
 				tableSettings: {
-					...prevState.tableSettings,
+					...prevState.settings,
 					columns: {
-						...prevState.tableSettings.columns,
-						[columnIndex]: {
-							...prevState.tableSettings.columns[columnIndex],
+						...prevState.settings.columns,
+						[columnId]: {
+							...prevState.settings.columns[columnId],
 							type: selectedCellType,
 						},
 					},
@@ -217,17 +179,17 @@ export default function App({
 		saveData();
 	}
 
-	function handleHeaderSortSelect(columnIndex: number, sortDir: SortDir) {
+	function handleHeaderSortSelect(columnId: string, sortDir: SortDir) {
 		if (DEBUG.APP) console.log("[App]: handleHeaderSort called.");
 		setTableState((prevState) => {
 			return {
 				...prevState,
 				tableSettings: {
-					...prevState.tableSettings,
+					...prevState.settings,
 					columns: {
-						...prevState.tableSettings.columns,
-						[columnIndex]: {
-							...prevState.tableSettings.columns[columnIndex],
+						...prevState.settings.columns,
+						[columnId]: {
+							...prevState.settings.columns[columnId],
 							sortDir,
 						},
 					},
@@ -242,15 +204,13 @@ export default function App({
 	}
 
 	function handleCellContentChange(
-		id: string,
-		headerType: string,
+		cellId: string,
 		updatedContent: string,
 		saveOnChange = false
 	) {
 		if (DEBUG.APP) {
 			logFunc(COMPONENT_NAME, "handleCellContentChange", {
-				id,
-				headerType,
+				cellId,
 				updatedContent,
 			});
 		}
@@ -258,10 +218,10 @@ export default function App({
 		setTableState((prevState) => {
 			return {
 				...prevState,
-				tableModel: {
-					...prevState.tableModel,
-					cells: prevState.tableModel.cells.map((cell: Cell) => {
-						if (cell.id === id) {
+				model: {
+					...prevState.model,
+					cells: prevState.model.cells.map((cell: Cell) => {
+						if (cell.id === cellId) {
 							return {
 								...cell,
 								content: updatedContent,
@@ -316,85 +276,67 @@ export default function App({
 		// });
 	}
 
-	function handleHeaderDeleteClick(columnIndex: number) {
+	function handleHeaderDeleteClick(columnId: string) {
 		if (DEBUG.APP)
 			logFunc(COMPONENT_NAME, "handleHeaderDeleteClick", {
-				columnIndex,
+				columnId,
 			});
 
 		setTableState((prevState) => {
-			//Remove the column at the selection index and shift the other columns over
-			const columns = Object.fromEntries(
-				Object.entries(prevState.tableSettings.columns)
-					.map((entry) => {
-						const [key, value] = entry;
-						const cIndex = parseInt(key);
-						if (cIndex < columnIndex) return entry;
-						else if (cIndex === columnIndex)
-							return ["delete", value];
-						else return [cIndex - 1, value];
-					})
-					.filter((entry) => {
-						const [key] = entry;
-						return key !== "delete";
-					})
-			);
-			//Shift the columns over
-			const value = {
+			const obj = { ...prevState.settings.columns };
+			delete obj[columnId];
+
+			return {
 				...prevState,
-				tableModel: {
-					...prevState.tableModel,
-					cells: prevState.tableModel.cells.filter(
-						(_cell, i) =>
-							columnIndex !== getColumnIndex(i, numColumns)
-					),
-					numColumns: prevState.tableModel.numColumns - 1,
+				model: {
+					...prevState.model,
+					cells: cells.filter((cell) => cell.columnId !== columnId),
 				},
-				tableSettings: {
-					...prevState.tableSettings,
-					columns,
+				settings: {
+					...prevState.settings,
+					colummns: obj,
 				},
 			};
-			return value;
 		});
 		sortData();
 	}
 
-	function handleRowDeleteClick(rowIndex: number) {
+	function handleRowDeleteClick(rowId: string) {
 		if (DEBUG.APP)
 			logFunc(COMPONENT_NAME, "handleRowDeleteClick", {
-				rowIndex,
+				rowId,
 			});
 		setTableState((prevState) => {
 			return {
 				...prevState,
-				tableModel: {
-					...prevState.tableModel,
-					cells: prevState.tableModel.cells.filter(
-						(_cell, i) => rowIndex !== getRowIndex(i, numColumns)
+				model: {
+					...prevState.model,
+					cells: prevState.model.cells.filter(
+						(cell) => cell.rowId !== rowId
 					),
+					rows: prevState.model.rows.filter((id) => id !== rowId),
 				},
 			};
 		});
 		sortData();
 	}
 
-	function handleHeaderWidthChange(columnIndex: number, width: string) {
+	function handleHeaderWidthChange(columnId: string, width: string) {
 		if (DEBUG.APP) {
 			logFunc(COMPONENT_NAME, "handleHeaderWidthChange", {
-				columnIndex,
+				columnId,
 				width,
 			});
 		}
 		setTableState((prevState) => {
 			return {
 				...prevState,
-				tableSettings: {
-					...prevState.tableSettings,
+				settings: {
+					...prevState.settings,
 					columns: {
-						...prevState.tableSettings.columns,
-						[columnIndex]: {
-							...prevState.tableSettings.columns[columnIndex],
+						...prevState.settings.columns,
+						[columnId]: {
+							...prevState.settings.columns[columnId],
 							width,
 						},
 					},
@@ -405,7 +347,7 @@ export default function App({
 		saveData(true);
 	}
 
-	function handleMoveColumnClick(columnIndex: number, moveRight: boolean) {
+	function handleMoveColumnClick(columnId: string, moveRight: boolean) {
 		if (DEBUG.APP) console.log("[App]: handleMoveColumnClick called.");
 		//TODO edit
 		// setTableModel((prevState: TableModel) => {
@@ -427,10 +369,7 @@ export default function App({
 		saveData();
 	}
 
-	function handleInsertColumnClick(
-		columnIndex: number,
-		insertRight: boolean
-	) {
+	function handleInsertColumnClick(columnId: string, insertRight: boolean) {
 		if (DEBUG.APP) console.log("[App]: handleInsertColumnClick called.");
 		//TODO edit
 		// setTableModel((prevState: TableModel) => {
@@ -475,21 +414,21 @@ export default function App({
 		saveData();
 	}
 
-	function handleAutoWidthToggle(columnIndex: number, value: boolean) {
+	function handleAutoWidthToggle(columnId: string, value: boolean) {
 		if (DEBUG.APP)
 			logFunc(COMPONENT_NAME, "handleAutoWidthToggle", {
-				columnIndex,
+				columnId,
 				value,
 			});
 		setTableState((prevState) => {
 			return {
 				...prevState,
 				tableSettings: {
-					...prevState.tableSettings,
+					...prevState.settings,
 					columns: {
-						...prevState.tableSettings.columns,
-						[columnIndex]: {
-							...prevState.tableSettings.columns[columnIndex],
+						...prevState.settings.columns,
+						[columnId]: {
+							...prevState.settings.columns[columnId],
 							useAutoWidth: value,
 						},
 					},
@@ -499,21 +438,21 @@ export default function App({
 		saveData();
 	}
 
-	function handleWrapContentToggle(columnIndex: number, value: boolean) {
+	function handleWrapContentToggle(columnId: string, value: boolean) {
 		if (DEBUG.APP)
 			logFunc(COMPONENT_NAME, "handleWrapContentToggle", {
-				columnIndex,
+				columnId,
 				value,
 			});
 		setTableState((prevState) => {
 			return {
 				...prevState,
 				tableSettings: {
-					...prevState.tableSettings,
+					...prevState.settings,
 					columns: {
-						...prevState.tableSettings.columns,
-						[columnIndex]: {
-							...prevState.tableSettings.columns[columnIndex],
+						...prevState.settings.columns,
+						[columnId]: {
+							...prevState.settings.columns[columnId],
 							shouldWrapOverflow: value,
 						},
 					},
@@ -635,21 +574,33 @@ export default function App({
 	// 	);
 	// }, [cellSizes]);
 
+	if (isLoading) return <div>Loading table...</div>;
+
+	const { rows, columns, cells } = state.model;
+	let headers: Cell[] = [];
+	if (rows.length !== 0) {
+		headers = cells.filter((cell) => cell.rowId === rows[0]);
+	}
+
+	console.log(state);
+
 	return (
 		<div className="NLT__app" tabIndex={0}>
-			<OptionBar headers={headers} tableSettings={tableSettings} />
+			<OptionBar headers={headers} settings={state.settings} />
 			<div className="NLT__table-wrapper">
 				<Table
 					headers={headers.map((cell, i) => {
+						console.log(state.settings.columns);
+						console.log(cell.columnId);
 						const {
 							width,
 							type,
 							sortDir,
 							shouldWrapOverflow,
 							useAutoWidth,
-						} = tableSettings.columns[i];
+						} = state.settings.columns[cell.columnId];
 
-						const { id, content, textContent } = cell;
+						const { id, markdown, html } = cell;
 						return {
 							id,
 							component: (
@@ -657,6 +608,8 @@ export default function App({
 									key={id}
 									cellId={id}
 									columnIndex={i}
+									numColumns={columns.length}
+									columnId={cell.columnId}
 									width={findCellWidth(
 										type,
 										useAutoWidth,
@@ -665,11 +618,10 @@ export default function App({
 									shouldWrapOverflow={shouldWrapOverflow}
 									useAutoWidth={useAutoWidth}
 									positionUpdateTime={positionUpdateTime}
-									content={content}
-									textContent={textContent}
+									content={markdown}
+									textContent={html}
 									type={type}
 									sortDir={sortDir}
-									numColumns={numColumns}
 									onSortSelect={handleHeaderSortSelect}
 									onInsertColumnClick={
 										handleInsertColumnClick
@@ -677,7 +629,7 @@ export default function App({
 									onMoveColumnClick={handleMoveColumnClick}
 									onWidthChange={handleHeaderWidthChange}
 									onDeleteClick={handleHeaderDeleteClick}
-									onSaveClick={handleHeaderSave}
+									onSaveClick={handleCellContentChange}
 									onTypeSelect={handleHeaderTypeClick}
 									onAutoWidthToggle={handleAutoWidthToggle}
 									onWrapOverflowToggle={
@@ -687,32 +639,32 @@ export default function App({
 							),
 						};
 					})}
-					rows={rows.map((rowCells, i) => {
-						const rowIndex = i + 1;
+					rows={rows.map((rowId) => {
+						const rowCells = cells.filter(
+							(cell) => cell.rowId === rowId
+						);
 						return {
-							id: rowCells[0].id, //TODO optimize
+							id: rowId,
 							component: (
 								<>
-									{rowCells.map((cell, cellIndex) => {
-										const columnIndex = getColumnIndex(
-											cellIndex,
-											numColumns
-										);
+									{rowCells.map((cell, i) => {
 										const {
 											width,
 											type,
 											useAutoWidth,
 											shouldWrapOverflow,
-										} = tableSettings.columns[columnIndex];
+										} =
+											state.settings.columns[
+												cell.columnId
+											];
 
-										const { id, content, textContent } =
-											cell;
+										const { id, markdown, html } = cell;
 										return (
 											<EditableTd
 												key={id}
 												cellId={id}
-												content={content}
-												textContent={textContent}
+												content={markdown}
+												textContent={html}
 												columnType={type}
 												positionUpdateTime={
 													positionUpdateTime
@@ -755,7 +707,7 @@ export default function App({
 												positionUpdateTime={
 													positionUpdateTime
 												}
-												rowIndex={rowIndex}
+												rowId={rowId}
 												onDeleteClick={
 													handleRowDeleteClick
 												}

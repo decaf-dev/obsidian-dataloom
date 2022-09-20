@@ -57,16 +57,17 @@ interface Props {
 	columnSortDir: SortDir;
 	columnContent: string;
 	columnType: string;
+	columnId: string;
 	columnIndex: number;
 	numColumns: number;
-	onInsertColumnClick: (columnIndex: number, insertRight: boolean) => void;
-	onMoveColumnClick: (columnIndex: number, moveRight: boolean) => void;
-	onTypeSelect: (cellId: string, columnIndex: number, type: CellType) => void;
-	onSortSelect: (columnIndex: number, sortDir: SortDir) => void;
-	onDeleteClick: (columnIndex: number) => void;
+	onInsertColumnClick: (columnId: string, insertRight: boolean) => void;
+	onMoveColumnClick: (columnId: string, moveRight: boolean) => void;
+	onTypeSelect: (cellId: string, columnId: string, type: CellType) => void;
+	onSortSelect: (columnId: string, sortDir: SortDir) => void;
+	onDeleteClick: (columnId: string) => void;
 	onOutsideClick: (cellId: string, inputText: string) => void;
-	onAutoWidthToggle: (columnIndex: number, value: boolean) => void;
-	onWrapOverflowToggle: (columnIndex: number, value: boolean) => void;
+	onAutoWidthToggle: (columnId: string, value: boolean) => void;
+	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
 	onClose: () => void;
 }
 
@@ -78,6 +79,7 @@ export default function HeaderMenu({
 	columnContent,
 	columnType,
 	columnSortDir,
+	columnId,
 	columnIndex,
 	numColumns,
 	style,
@@ -117,36 +119,29 @@ export default function HeaderMenu({
 		setHeaderNameInput(columnContent);
 	}, [columnContent]);
 
-	function handleMoveColumnClick(columnIndex: number, moveRight: boolean) {
-		onMoveColumnClick(columnIndex, moveRight);
+	function handleMoveColumnClick(columnId: string, moveRight: boolean) {
+		onMoveColumnClick(columnId, moveRight);
 		onClose();
 	}
 
-	function handleSortClick(columnIndex: number, sortDir: SortDir) {
-		onSortSelect(columnIndex, sortDir);
+	function handleSortClick(columnId: string, sortDir: SortDir) {
+		onSortSelect(columnId, sortDir);
 		onClose();
 	}
 
-	function handleInsertColumnClick(
-		columnIndex: number,
-		insertRight: boolean
-	) {
-		onInsertColumnClick(columnIndex, insertRight);
+	function handleInsertColumnClick(columnId: string, insertRight: boolean) {
+		onInsertColumnClick(columnId, insertRight);
 		onClose();
 	}
 
-	function handleTypeClick(
-		cellId: string,
-		columnIndex: number,
-		type: CellType
-	) {
-		onTypeSelect(cellId, columnIndex, type);
+	function handleTypeClick(cellId: string, columnId: string, type: CellType) {
+		onTypeSelect(cellId, columnId, type);
 		onClose();
 	}
 
-	function handleDeleteClick(columnIndex: number) {
+	function handleDeleteClick(columnId: string) {
 		if (window.confirm("Are you sure you want to delete this column?")) {
-			onDeleteClick(columnIndex);
+			onDeleteClick(columnId);
 			onClose();
 		}
 	}
@@ -170,7 +165,7 @@ export default function HeaderMenu({
 						title={submenu.content}
 						columnContent={headerNameInput}
 						columnType={columnType}
-						columnIndex={columnIndex}
+						columnId={columnId}
 						useAutoWidth={useAutoWidth}
 						shouldWrapOverflow={shouldWrapOverflow}
 						onBackClick={handleBackClick}
@@ -184,7 +179,7 @@ export default function HeaderMenu({
 					<InsertSubmenu
 						title={submenu.content}
 						onInsertClick={(isRightInsert) =>
-							handleInsertColumnClick(columnIndex, isRightInsert)
+							handleInsertColumnClick(columnId, isRightInsert)
 						}
 						onBackClick={handleBackClick}
 					/>
@@ -194,7 +189,7 @@ export default function HeaderMenu({
 						title={submenu.content}
 						columnSortDir={columnSortDir}
 						onSortClick={(sortDir) =>
-							handleSortClick(columnIndex, sortDir)
+							handleSortClick(columnId, sortDir)
 						}
 						onBackClick={handleBackClick}
 					/>
@@ -205,7 +200,7 @@ export default function HeaderMenu({
 						columnIndex={columnIndex}
 						numColumns={numColumns}
 						onMoveClick={(isRightMove) =>
-							handleMoveColumnClick(columnIndex, isRightMove)
+							handleMoveColumnClick(columnId, isRightMove)
 						}
 						onBackClick={handleBackClick}
 					/>
@@ -215,7 +210,7 @@ export default function HeaderMenu({
 						title={submenu.content}
 						columnType={columnType}
 						onTypeClick={(type) =>
-							handleTypeClick(cellId, columnIndex, type)
+							handleTypeClick(cellId, columnId, type)
 						}
 						onBackClick={handleBackClick}
 					/>

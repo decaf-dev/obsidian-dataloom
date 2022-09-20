@@ -4,22 +4,21 @@ import {
 	TableSettings,
 } from "../table/types";
 import { v4 as uuid } from "uuid";
-import { Cell } from "../table/types";
+
+import { initialCell } from "../io/utils";
 
 export const addRow = (model: TableModel): TableModel => {
-	const { numColumns, cells } = model;
+	const { rows, columns, cells } = model;
 
-	let arr = [];
-	for (let i = 0; i < numColumns; i++) {
-		arr.push({
-			id: uuid(),
-			textContent: "",
-			content: "",
-		});
+	const rowId = uuid();
+	const arr = [...cells];
+	for (let i = 0; i < columns.length; i++) {
+		arr.push(initialCell(uuid(), columns[i], rowId, "", ""));
 	}
 	return {
 		...model,
-		cells: [...cells, ...arr],
+		cells,
+		rows: [...rows, rowId],
 	};
 };
 
@@ -29,46 +28,33 @@ export const addColumn = (
 	model: TableModel,
 	settings: TableSettings
 ): [TableModel, TableSettings] => {
-	const { cells, numColumns } = model;
+	const { cells, columns, rows } = model;
 
-	const arr = [...cells];
-	interface InsertCell {
-		cell: Cell;
-		insertIndex: number;
-	}
+	const columnId = uuid();
+	const columnArr = [...columns];
+	columnArr.push(columnId);
 
-	const cellsToInsert: InsertCell[] = [];
-	const numRows = cells.length / numColumns;
-	for (let i = 0; i < numRows; i++) {
-		let content = "";
-		let textContent = "";
+	const cellArr = [...cells];
+
+	for (let i = 0; i < rows.length; i++) {
+		let markdown = "";
+		let html = "";
 		if (i === 0) {
-			content = "New Column";
-			textContent = "New Column";
+			markdown = "New Column";
+			html = "New Column";
 		}
-		cellsToInsert.push({
-			cell: {
-				id: uuid(),
-				textContent,
-				content,
-			},
-			insertIndex: numColumns * (i + 1) + cellsToInsert.length,
-		});
+
+		cellArr.push(initialCell(uuid(), columnId, rows[i], markdown, html));
 	}
 
-	cellsToInsert.forEach((insertCell) => {
-		const { cell, insertIndex } = insertCell;
-		arr.splice(insertIndex, 0, cell);
-	});
-
-	const obj = { ...settings };
-	obj.columns[numColumns] = DEFAULT_COLUMN_SETTINGS;
+	const settingsObj = { ...settings };
+	settingsObj.columns[columnId] = DEFAULT_COLUMN_SETTINGS;
 	return [
 		{
 			...model,
-			numColumns: numColumns + 1,
-			cells: arr,
+			columns: columnArr,
+			cells: cellArr,
 		},
-		obj,
+		settingsObj,
 	];
 };
