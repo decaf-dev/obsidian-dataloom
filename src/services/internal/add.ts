@@ -3,17 +3,17 @@ import {
 	TableModel,
 	TableSettings,
 } from "../table/types";
-import { v4 as uuid } from "uuid";
 
 import { initialCell } from "../io/utils";
+import { randomCellId, randomColumnId, randomRowId } from "../random";
 
 export const addRow = (model: TableModel): TableModel => {
 	const { rows, columns, cells } = model;
 
-	const rowId = uuid();
+	const rowId = randomRowId();
 	const arr = [...cells];
 	for (let i = 0; i < columns.length; i++) {
-		arr.push(initialCell(uuid(), columns[i], rowId, "", ""));
+		arr.push(initialCell(randomCellId(), columns[i], rowId, "", ""));
 	}
 	return {
 		...model,
@@ -30,7 +30,7 @@ export const addColumn = (
 ): [TableModel, TableSettings] => {
 	const { cells, columns, rows } = model;
 
-	const columnId = uuid();
+	const columnId = randomColumnId();
 	const columnArr = [...columns];
 	columnArr.push(columnId);
 
@@ -44,7 +44,9 @@ export const addColumn = (
 			html = "New Column";
 		}
 
-		cellArr.push(initialCell(uuid(), columnId, rows[i], markdown, html));
+		cellArr.push(
+			initialCell(randomCellId(), columnId, rows[i], markdown, html)
+		);
 	}
 
 	const settingsObj = { ...settings };

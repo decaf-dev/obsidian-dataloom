@@ -6,25 +6,16 @@ import RowMenu from "./components/RowMenu";
 import EditableTh from "./components/EditableTh";
 import OptionBar from "./components/OptionBar";
 
-import { Cell, CellType, ColumnId, RowId } from "./services/table/types";
+import { Cell, CellType } from "./services/table/types";
 import { serializeTable } from "./services/io/serialize";
 import { pxToNum } from "./services/string/conversion";
 import NltPlugin from "./main";
 import { SortDir } from "./services/sort/types";
 import { addRow, addColumn } from "./services/internal/add";
 import { logFunc } from "./services/debug";
-import {
-	useCloseMenusOnScroll,
-	useDidMountEffect,
-	useSaveTime,
-} from "./services/hooks";
+import { useCloseMenusOnScroll, useSaveTime } from "./services/hooks";
 // import { sortRows } from "./services/sort/sort";
-import {
-	checkboxToContent,
-	contentToCheckbox,
-	getColumnIndex,
-	getRowIndex,
-} from "./services/table/utils";
+import { checkboxToContent, contentToCheckbox } from "./services/table/utils";
 import { TableState } from "./services/table/types";
 
 import { DEBUG } from "./constants";

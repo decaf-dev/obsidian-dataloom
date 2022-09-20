@@ -1,5 +1,4 @@
 import MarkdownIt from "markdown-it";
-import { v4 as uuid } from "uuid";
 
 import NltPlugin from "../../main";
 
