@@ -13,6 +13,8 @@ import NltPlugin from "./main";
 import { SortDir } from "./services/sort/types";
 import { addRow, addColumn } from "./services/internal/add";
 import { logFunc } from "./services/debug";
+import { DEFAULT_COLUMN_SETTINGS } from "./services/table/types";
+import { initialCell } from "./services/io/utils";
 import {
 	useCloseMenusOnScroll,
 	useDidMountEffect,
@@ -26,7 +28,8 @@ import { DEBUG } from "./constants";
 
 import "./app.css";
 import { MarkdownViewModeType } from "obsidian";
-import { loadTableState, markdownToHtml } from "./services/io/deserialize";
+import { loadTableState } from "./services/io/deserialize";
+import { randomColumnId, randomCellId } from "./services/random";
 
 interface Props {
 	plugin: NltPlugin;
@@ -382,27 +385,59 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 
 	function handleInsertColumnClick(columnId: string, insertRight: boolean) {
 		if (DEBUG.APP) console.log("[App]: handleInsertColumnClick called.");
-		//TODO edit
-		// setTableModel((prevState: TableModel) => {
-		// 	const header = prevState.headers.find((header) => header.id === id);
-		// 	const index = prevState.headers.indexOf(header);
-		// 	const insertIndex = insertRight ? index + 1 : index;
-		// 	const title = "New Column";
-		// 	const headerToInsert = initialHeader(uuid(), title, title);
+		setTableState((prevState: TableState) => {
+			const { model, settings } = prevState;
+			const index = prevState.model.columns.indexOf(columnId);
+			const insertIndex = insertRight ? index + 1 : index;
 
-		// 	const cells = prevState.rows.map((row) =>
-		// 		initialCell(uuid(), headerToInsert.id, row.id, "", "")
-		// 	);
+			const newColId = randomColumnId();
 
-		// 	const headers = [...prevState.headers];
-		// 	headers.splice(insertIndex, 0, headerToInsert);
+			const cellArr = [...model.cells];
 
-		// 	return {
-		// 		...prevState,
-		// 		headers,
-		// 		cells: [...prevState.cells, ...cells],
-		// 	};
-		// });
+			for (let i = 0; i < model.rows.length; i++) {
+				let markdown = "";
+				let html = "";
+				if (i === 0) {
+					markdown = "New Column";
+					html = "New Column";
+				}
+
+				cellArr.push(
+					initialCell(
+						randomCellId(),
+						newColId,
+						model.rows[i],
+						markdown,
+						html
+					)
+				);
+			}
+
+			const columnArr = [...model.columns];
+			columnArr.splice(insertIndex, 0, newColId);
+
+			const settingsObj = { ...settings };
+			settingsObj.columns[newColId] = DEFAULT_COLUMN_SETTINGS;
+
+			console.log({
+				...prevState,
+				model: {
+					...model,
+					columns: columnArr,
+					cells: cellArr,
+				},
+				settings: settingsObj,
+			});
+			return {
+				...prevState,
+				model: {
+					...model,
+					columns: columnArr,
+					cells: cellArr,
+				},
+				settings: settingsObj,
+			};
+		});
 		saveData(true);
 	}
 
