@@ -358,7 +358,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			};
 		});
 		forcePositionUpdate();
-		saveData(true);
+		saveData(true, true);
 	}
 
 	function handleMoveColumnClick(columnId: string, moveRight: boolean) {
