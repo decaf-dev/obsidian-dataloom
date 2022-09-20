@@ -37,44 +37,43 @@ export default function FocusProvider({ children, plugin, tableId }: Props) {
 	useEffect(() => {
 		if (plugin.focused) {
 			if (plugin.focused.tableId === tableId) {
-				setTimeout(() => {
-					handleFocus();
-				}, 1);
+				// setTimeout(() => {
+				setFocus(true);
+				// }, 1);
 			}
 		}
 	}, []);
 
-	// useEffect(() => {
-	// 	function handleMouseUp(e: MouseEvent) {
-	// 		//TODO only check if the page is active
-	// 		//Set an id for the table
-	// 		if (e.target instanceof Element) {
-	// 			let el = e.target;
-	// 			let isFocused = false;
+	useEffect(() => {
+		//TODO possibly refactor?
+		function handleMouseUp(e: MouseEvent) {
+			if (e.target instanceof Element) {
+				let el = e.target;
+				let isFocused = false;
 
-	// 			while (el) {
-	// 				if (el.className === "view-content") break;
-	// 				//We need to check the type because the an svg
-	// 				//element has a className of SVGAnimatedString
-	// 				//See: https://stackoverflow.com/a/37949156
-	// 				if (typeof el.className === "string") {
-	// 					if (el.className.includes("NLT")) {
-	// 						isFocused = true;
-	// 						break;
-	// 					}
-	// 				}
-	// 				el = el.parentElement;
-	// 			}
-	// 			if (isFocused) {
-	// 				handleFocus();
-	// 			} else {
-	// 				handleBlur();
-	// 			}
-	// 		}
-	// 	}
-	// 	window.addEventListener("mouseup", handleMouseUp);
-	// 	return () => window.removeEventListener("mouseup", handleMouseUp);
-	// }, []);
+				while (el) {
+					if (el.className === "view-content") break;
+					//We need to check the type because the an svg
+					//element has a className of SVGAnimatedString
+					//See: https://stackoverflow.com/a/37949156
+					if (typeof el.className === "string") {
+						if (el.className.includes("NLT")) {
+							isFocused = true;
+							break;
+						}
+					}
+					el = el.parentElement;
+				}
+				if (isFocused) {
+					handleFocus();
+				} else {
+					handleBlur();
+				}
+			}
+		}
+		window.addEventListener("mouseup", handleMouseUp);
+		return () => window.removeEventListener("mouseup", handleMouseUp);
+	}, []);
 
 	return (
 		<div>
