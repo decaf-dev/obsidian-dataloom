@@ -51,10 +51,20 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	const [positionUpdateTime, setPositionUpdateTime] = useState(0);
 	const [isLoading, setLoading] = useState(true);
 
-	const { saveTime, saveData } = useSaveTime();
+	const saveData = useSaveTime(save);
 
 	useCloseMenusOnScroll("markdown-preview-view");
 	useCloseMenusOnScroll("NLT__table-wrapper");
+
+	async function save(saveModel: boolean) {
+		await serializeTable(
+			saveModel,
+			plugin,
+			state.model,
+			state.settings,
+			tableId
+		);
+	}
 
 	//Load table
 	useEffect(() => {
@@ -106,7 +116,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				settings,
 			};
 		});
-		saveData();
+		saveData(true);
 	}
 
 	function handleAddRow() {
@@ -118,7 +128,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				model: model,
 			};
 		});
-		saveData();
+		saveData(true);
 	}
 
 	function handleHeaderTypeClick(
@@ -176,7 +186,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				},
 			};
 		});
-		saveData();
+		saveData(true);
 	}
 
 	function handleHeaderSortSelect(columnId: string, sortDir: SortDir) {
@@ -196,6 +206,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				},
 			};
 		});
+		//TODO add save
 		sortData();
 	}
 
@@ -232,7 +243,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				},
 			};
 		});
-		if (saveOnChange) saveData();
+		if (saveOnChange) saveData(true);
 	}
 
 	function handleAddTag(cellId: string, content: string, color: string) {
@@ -366,7 +377,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		// 		headers,
 		// 	};
 		// });
-		saveData();
+		saveData(true);
 	}
 
 	function handleInsertColumnClick(columnId: string, insertRight: boolean) {
@@ -392,7 +403,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		// 		cells: [...prevState.cells, ...cells],
 		// 	};
 		// });
-		saveData();
+		saveData(true);
 	}
 
 	function handleChangeColor(tagId: string, color: string) {
@@ -411,7 +422,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		// 		}),
 		// 	};
 		// });
-		saveData();
+		saveData(true);
 	}
 
 	function handleAutoWidthToggle(columnId: string, value: boolean) {
@@ -435,7 +446,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				},
 			};
 		});
-		saveData();
+		saveData(false);
 	}
 
 	function handleWrapContentToggle(columnId: string, value: boolean) {
@@ -459,7 +470,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				},
 			};
 		});
-		saveData();
+		saveData(false);
 	}
 
 	function measureElement(

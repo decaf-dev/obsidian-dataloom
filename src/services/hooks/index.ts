@@ -62,28 +62,24 @@ export const useThrottle = (eventTime: number, waitTime: number) => {
 	return shouldExecute;
 };
 
-export const useSaveTime = () => {
+export const useSaveTime = (func: any) => {
 	const [eventTime, setEventTime] = useState(0);
-	const [saveTime, setSaveTime] = useState(0);
-
 	const shouldExecute = useThrottle(eventTime, 150);
+	const [saveModel, setSaveModel] = useState(false);
 
 	useEffect(() => {
-		if (shouldExecute) setSaveTime(Date.now());
-	}, [shouldExecute]);
+		if (shouldExecute) func(saveModel);
+	}, [shouldExecute, saveModel]);
 
-	function saveData(throttle = false) {
+	function saveData(didModelChange: boolean, throttle = false) {
 		if (throttle) {
 			setEventTime(Date.now());
+			setSaveModel(didModelChange);
 		} else {
-			setSaveTime(Date.now());
+			func(didModelChange);
 		}
 	}
-
-	return {
-		saveData,
-		saveTime,
-	};
+	return saveData;
 };
 
 export const useScrollTime = (className: string) => {
