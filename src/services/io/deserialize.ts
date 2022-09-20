@@ -15,7 +15,7 @@ import { randomCellId } from "../random";
 const md = new MarkdownIt();
 
 export const markdownToHtml = (markdown: string) => {
-	return md.render(markdown, {});
+	return md.renderInline(markdown, {});
 };
 
 export const parseTableModelFromMarkdown = (data: string): TableModel => {
