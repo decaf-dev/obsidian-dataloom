@@ -36,7 +36,11 @@ export default function RowMenu({
 	}, [isMenuRequestingClose]);
 
 	function handleButtonClick(e: React.MouseEvent) {
-		openMenu();
+		if (isMenuOpen) {
+			closeMenu();
+		} else {
+			openMenu();
+		}
 	}
 
 	function handleDeleteClick(rowId: string) {
