@@ -362,29 +362,46 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	}
 
 	function handleMoveColumnClick(columnId: string, moveRight: boolean) {
-		if (DEBUG.APP) console.log("[App]: handleMoveColumnClick called.");
-		//TODO edit
-		// setTableModel((prevState: TableModel) => {
-		// 	const index = prevState.headers.findIndex(
-		// 		(header) => header.id === id
-		// 	);
-		// 	const moveIndex = moveRight ? index + 1 : index - 1;
-		// 	const headers = [...prevState.headers];
+		if (DEBUG.APP)
+			logFunc(COMPONENT_NAME, "handleMoveColumnClick", {
+				columnId,
+				moveRight,
+			});
+		setTableState((prevState: TableState) => {
+			const { model } = prevState;
+			const columnArr = [...model.columns];
+			const index = columnArr.indexOf(columnId);
+			const moveIndex = moveRight ? index + 1 : index - 1;
 
-		// 	//Swap values
-		// 	const old = headers[moveIndex];
-		// 	headers[moveIndex] = headers[index];
-		// 	headers[index] = old;
-		// 	return {
-		// 		...prevState,
-		// 		headers,
-		// 	};
-		// });
+			//Swap values
+			const old = columnArr[moveIndex];
+			columnArr[moveIndex] = columnArr[index];
+			columnArr[index] = old;
+
+			console.log({
+				...prevState,
+				model: {
+					...model,
+					columns: columnArr,
+				},
+			});
+			return {
+				...prevState,
+				model: {
+					...model,
+					columns: columnArr,
+				},
+			};
+		});
 		saveData(true);
 	}
 
 	function handleInsertColumnClick(columnId: string, insertRight: boolean) {
-		if (DEBUG.APP) console.log("[App]: handleInsertColumnClick called.");
+		if (DEBUG.APP)
+			logFunc(COMPONENT_NAME, "handleInsertColumnClick", {
+				columnId,
+				insertRight,
+			});
 		setTableState((prevState: TableState) => {
 			const { model, settings } = prevState;
 			const index = prevState.model.columns.indexOf(columnId);
@@ -624,24 +641,25 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 
 	const { rows, columns, cells } = state.model;
 	let headers: Cell[] = [];
-	if (rows.length !== 0) {
-		headers = cells.filter((cell) => cell.rowId === rows[0]);
-	}
 
 	return (
 		<div className="NLT__app" tabIndex={0}>
-			<OptionBar headers={headers} settings={state.settings} />
+			<OptionBar model={state.model} settings={state.settings} />
 			<div className="NLT__table-wrapper">
 				<Table
-					headers={headers.map((cell, i) => {
+					headers={columns.map((columnId, i) => {
 						const {
 							width,
 							type,
 							sortDir,
 							shouldWrapOverflow,
 							useAutoWidth,
-						} = state.settings.columns[cell.columnId];
+						} = state.settings.columns[columnId];
 
+						const cell = cells.find(
+							(c) =>
+								c.rowId === rows[0] && c.columnId === columnId
+						);
 						const { id, markdown, html } = cell;
 						return {
 							id,

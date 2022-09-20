@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 
 import { SortDir } from "src/services/sort/types";
 import { findSortIcon } from "src/services/icon/utils";
-import { TableSettings, Cell } from "src/services/table/types";
+import { TableSettings, Cell, TableModel } from "src/services/table/types";
 
 import "./styles.css";
 
@@ -40,24 +40,30 @@ const SortBubbleList = ({ bubbles }: SortButtonListProps) => {
 };
 
 interface Props {
-	headers: Cell[];
+	model: TableModel;
 	settings: TableSettings;
 }
-export default function OptionBar({ headers, settings }: Props) {
+export default function OptionBar({ model, settings }: Props) {
 	const bubbles = useMemo(() => {
-		return headers
-			.filter((header) => {
-				const { sortDir } = settings.columns[header.columnId];
+		return model.columns
+			.map((columnId) => {
+				const cell = model.cells.find(
+					(c) => c.columnId === columnId && c.rowId == model.rows[0]
+				);
+				return cell;
+			})
+			.filter((cell) => {
+				const { sortDir } = settings.columns[cell.columnId];
 				return sortDir !== SortDir.NONE;
 			})
-			.map((header, i) => {
+			.map((cell, i) => {
 				const { sortDir } = settings.columns[i];
 				return {
-					content: header.html,
+					content: cell.html,
 					sortDir,
 				};
 			});
-	}, [headers]);
+	}, [model]);
 
 	return (
 		<div className="NLT__option-bar">

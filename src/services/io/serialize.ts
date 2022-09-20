@@ -112,7 +112,7 @@ const updateSettingsCache = async (
 	};
 	if (DEBUG.SAVE_APP_DATA) {
 		console.log("Updating settings cache");
-		console.log("data", {
+		console.log("data:\n", {
 			[tableId]: plugin.settings.data[tableId],
 		});
 	}
@@ -145,8 +145,8 @@ export const serializeTable = async (
 		const frontmatter = serializeFrontMatter(model);
 		const tableMarkdown = serializeMarkdownTable(model);
 		if (DEBUG.SAVE_APP_DATA) {
-			console.log("frontmatter\n", frontmatter);
-			console.log("table markdown\n", tableMarkdown);
+			console.log("frontmatter:\n\n", frontmatter);
+			console.log("table markdown:\n\n", tableMarkdown);
 		}
 		await updateFileContent(
 			plugin,
