@@ -19,12 +19,20 @@ export interface NltSettings {
 		[tableIndex: string]: TableState;
 	};
 	tableFolder: string;
+	dirty: {
+		viewMode: MarkdownViewModeType;
+		tableId: string;
+	} | null;
+	syncInterval: number;
 }
 
 export const DEFAULT_SETTINGS: NltSettings = {
 	data: {},
 	tableFolder: "_notion-like-tables",
+	dirty: null,
+	syncInterval: 2000,
 };
+
 interface FocusedTable {
 	tableId: string;
 }

@@ -28,7 +28,7 @@ import { DEBUG } from "./constants";
 
 import "./app.css";
 import { MarkdownViewModeType } from "obsidian";
-import { loadTableState, markdownToHtml } from "./services/io/deserialize";
+import { deserializeTable, markdownToHtml } from "./services/io/deserialize";
 import { randomColumnId, randomCellId } from "./services/random";
 
 interface Props {
@@ -51,23 +51,10 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	useCloseMenusOnScroll("markdown-preview-view");
 	useCloseMenusOnScroll("NLT__table-wrapper");
 
-	useDidMountEffect(() => {
-		async function save() {
-			await serializeTable(
-				shouldSaveModel,
-				plugin,
-				state.model,
-				state.settings,
-				tableId
-			);
-		}
-		save();
-	}, [saveTime, shouldSaveModel]);
-
-	//Load table
+	//Load table on mount
 	useEffect(() => {
 		async function load() {
-			const tableState = await loadTableState(plugin, tableId);
+			const tableState = await deserializeTable(plugin, tableId);
 			setTableState(tableState);
 			setTimeout(() => {
 				setLoading(false);
@@ -75,6 +62,53 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		}
 		load();
 	}, []);
+
+	//Handles saving
+	useDidMountEffect(() => {
+		async function save() {
+			await serializeTable(
+				shouldSaveModel,
+				plugin,
+				state,
+				tableId,
+				viewMode
+			);
+		}
+		save();
+	}, [saveTime, shouldSaveModel]);
+
+	//Handles live preview
+	//TODO disable if live preview is not enabled
+	useEffect(() => {
+		let timer: any = null;
+		timer = setInterval(() => {
+			async function checkDirty() {
+				console.log("CHECKING DIRTY: ", viewMode);
+				const dirty = plugin.settings.dirty;
+				if (dirty) {
+					const { viewMode: dirtyViewMode, tableId: dirtyTableId } =
+						dirty;
+					const shouldUpdate =
+						dirtyTableId === tableId && dirtyViewMode !== viewMode;
+					if (shouldUpdate) {
+						setLoading(true);
+						plugin.settings.dirty = null;
+						await plugin.saveSettings();
+						//TODO optimize for changes?
+						const state = await deserializeTable(plugin, tableId);
+						setTableState(state);
+						setTimeout(() => {
+							setLoading(false);
+						}, 300);
+					}
+				}
+			}
+			checkDirty();
+		}, plugin.settings.syncInterval);
+		return () => {
+			clearInterval(timer);
+		};
+	}, [plugin.settings.dirty]);
 
 	//TODO add
 	// useDidMountEffect(() => {

@@ -1,9 +1,9 @@
-import NltPlugin from "../../main";
+import NltPlugin, { NltSettings } from "../../main";
 
-import { TFile } from "obsidian";
+import { MarkdownViewModeType, TFile } from "obsidian";
 
-import { TableModel, TableSettings, Cell } from "../table/types";
-import { CURRENT_TABLE_CACHE_VERSION, DEBUG } from "../../constants";
+import { TableModel, Cell, TableState } from "../table/types";
+import { DEBUG } from "../../constants";
 import { findTableFile, serializeFrontMatter } from "./utils";
 
 /**
@@ -101,21 +101,28 @@ export const calcColumnCharLengths = (cells: Cell[]): ColumnCharLengths => {
 
 const updateSettingsCache = async (
 	plugin: NltPlugin,
-	model: TableModel,
-	settings: TableSettings,
-	tableId: string
+	state: TableState,
+	tableId: string,
+	viewMode: MarkdownViewModeType
 ) => {
-	plugin.settings.data[tableId] = {
-		model,
-		settings,
-		cacheVersion: CURRENT_TABLE_CACHE_VERSION,
+	const obj: NltSettings = {
+		...plugin.settings,
+		data: {
+			...plugin.settings.data,
+			[tableId]: state,
+		},
+		dirty: {
+			viewMode,
+			tableId,
+		},
 	};
 	if (DEBUG.SAVE_APP_DATA) {
 		console.log("Updating settings cache");
-		console.log("data:\n", {
-			[tableId]: plugin.settings.data[tableId],
+		console.log("settings:\n", {
+			[tableId]: obj,
 		});
 	}
+	plugin.settings = obj;
 	return await plugin.saveData(plugin.settings);
 };
 
@@ -130,14 +137,16 @@ const updateFileContent = async (
 export const serializeTable = async (
 	shouldSaveModel: boolean,
 	plugin: NltPlugin,
-	model: TableModel,
-	settings: TableSettings,
-	tableId: string
+	state: TableState,
+	tableId: string,
+	viewMode: MarkdownViewModeType
 ) => {
 	if (DEBUG.SAVE_APP_DATA) {
 		console.log("");
 		console.log("serializeTable()");
 	}
+
+	const { model } = state;
 
 	if (shouldSaveModel) {
 		if (DEBUG.SAVE_APP_DATA) console.log("Updating table definition file.");
@@ -154,5 +163,5 @@ export const serializeTable = async (
 			frontmatter + "\n" + tableMarkdown
 		);
 	}
-	await updateSettingsCache(plugin, model, settings, tableId);
+	await updateSettingsCache(plugin, state, tableId, viewMode);
 };
