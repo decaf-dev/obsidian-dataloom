@@ -32,8 +32,12 @@ export class NltTable extends MarkdownRenderChild {
 		const rootEl = this.el.createEl("div");
 		this.root = createRoot(rootEl);
 		this.root.render(
-			<FocusProvider plugin={this.plugin} tableId={this.tableId}>
-				<MenuProvider>
+			<FocusProvider
+				plugin={this.plugin}
+				tableId={this.tableId}
+				viewMode={this.viewMode}
+			>
+				<MenuProvider plugin={this.plugin}>
 					<App
 						plugin={this.plugin}
 						tableId={this.tableId}

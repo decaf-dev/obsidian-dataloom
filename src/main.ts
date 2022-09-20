@@ -20,7 +20,7 @@ export interface NltSettings {
 	};
 	tableFolder: string;
 	dirty: {
-		viewMode: MarkdownViewModeType;
+		viewMode: MarkdownViewModeType | null;
 		tableId: string;
 	} | null;
 	syncInterval: number;
@@ -35,10 +35,12 @@ export const DEFAULT_SETTINGS: NltSettings = {
 
 interface FocusedTable {
 	tableId: string;
+	viewMode: MarkdownViewModeType;
 }
 export default class NltPlugin extends Plugin {
 	settings: NltSettings;
 	focused: FocusedTable | null = null;
+	layoutChangeTime: number;
 
 	private getViewMode = (el: HTMLElement): MarkdownViewModeType | null => {
 		const parent = el.parentElement;
@@ -117,13 +119,12 @@ export default class NltPlugin extends Plugin {
 						model,
 						settings
 					);
-					await serializeTable(
-						true,
-						this,
-						updatedModel,
-						updatedSettings,
-						tableId
-					);
+					const newState = {
+						...this.settings.data[tableId],
+						model: updatedModel,
+						settings: updatedSettings,
+					};
+					await serializeTable(true, this, newState, tableId, null);
 				} else {
 					new Notice(
 						"No table focused. Please click a table to preform this operation."
@@ -139,15 +140,13 @@ export default class NltPlugin extends Plugin {
 			callback: async () => {
 				if (this.focused) {
 					const { tableId } = this.focused;
-					const { model, settings } = this.settings.data[tableId];
-					const newData = addRow(model);
-					await serializeTable(
-						true,
-						this,
-						newData,
-						settings,
-						tableId
-					);
+					const { model } = this.settings.data[tableId];
+					const updatedModel = addRow(model);
+					const newState = {
+						...this.settings.data[tableId],
+						model: updatedModel,
+					};
+					await serializeTable(true, this, newState, tableId, null);
 				} else {
 					new Notice(
 						"No table focused. Please click a table to preform this operation."
@@ -157,9 +156,10 @@ export default class NltPlugin extends Plugin {
 		});
 	}
 
-	focusTable = ({ tableId }: FocusedTable) => {
+	focusTable = ({ tableId, viewMode }: FocusedTable) => {
 		this.focused = {
 			tableId,
+			viewMode,
 		};
 	};
 

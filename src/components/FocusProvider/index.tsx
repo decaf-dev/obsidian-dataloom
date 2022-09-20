@@ -2,6 +2,8 @@ import NltPlugin from "../../main";
 import React, { useState, useContext, useEffect } from "react";
 import { DEBUG } from "src/constants";
 import { logFunc } from "src/services/debug";
+import { MarkdownViewModeType } from "obsidian";
+import { getUniqueTableId } from "src/services/table/utils";
 
 const FocusContext = React.createContext(false);
 
@@ -15,9 +17,15 @@ interface Props {
 	children: React.ReactNode;
 	plugin: NltPlugin;
 	tableId: string;
+	viewMode: MarkdownViewModeType;
 }
 
-export default function FocusProvider({ children, plugin, tableId }: Props) {
+export default function FocusProvider({
+	children,
+	plugin,
+	tableId,
+	viewMode,
+}: Props) {
 	const [isFocused, setFocus] = useState(false);
 
 	function handleFocus() {
@@ -25,6 +33,7 @@ export default function FocusProvider({ children, plugin, tableId }: Props) {
 		setFocus(true);
 		plugin.focusTable({
 			tableId,
+			viewMode,
 		});
 	}
 
@@ -34,41 +43,28 @@ export default function FocusProvider({ children, plugin, tableId }: Props) {
 		plugin.blurTable();
 	}
 
-	useEffect(() => {
-		if (plugin.focused) {
-			if (plugin.focused.tableId === tableId) {
-				// setTimeout(() => {
-				setFocus(true);
-				// }, 1);
+	function checkForFocus(e: MouseEvent): boolean {
+		if (e.target instanceof HTMLElement) {
+			let el = e.target;
+			while (el) {
+				if (el.className === "NLT__app") {
+					if (el.id === getUniqueTableId(tableId, viewMode)) {
+						return true;
+					}
+					break;
+				}
+				el = el.parentElement;
 			}
 		}
-	}, []);
+		return false;
+	}
 
 	useEffect(() => {
-		//TODO possibly refactor?
 		function handleMouseUp(e: MouseEvent) {
-			if (e.target instanceof Element) {
-				let el = e.target;
-				let isFocused = false;
-
-				while (el) {
-					if (el.className === "view-content") break;
-					//We need to check the type because the an svg
-					//element has a className of SVGAnimatedString
-					//See: https://stackoverflow.com/a/37949156
-					if (typeof el.className === "string") {
-						if (el.className.includes("NLT")) {
-							isFocused = true;
-							break;
-						}
-					}
-					el = el.parentElement;
-				}
-				if (isFocused) {
-					handleFocus();
-				} else {
-					handleBlur();
-				}
+			if (plugin.focused?.tableId === tableId) {
+				if (!checkForFocus(e)) handleBlur();
+			} else {
+				if (checkForFocus(e)) handleFocus();
 			}
 		}
 		window.addEventListener("mouseup", handleMouseUp);

@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { DEBUG, MENU_LEVEL } from "src/constants";
+import NltPlugin from "src/main";
 import { logFunc } from "src/services/debug";
 import { useTableFocus } from "../FocusProvider";
 
@@ -35,17 +36,18 @@ export const useMenuId = (id: string, level: number = MENU_LEVEL.ONE) => {
 	};
 };
 
-interface Props {
-	children: React.ReactNode;
-}
-
 interface Menu {
 	id: string;
 	level: number;
 	isRequestingClose: boolean;
 }
 
-export default function MenuProvider({ children }: Props) {
+interface Props {
+	plugin: NltPlugin;
+	children: React.ReactNode;
+}
+
+export default function MenuProvider({ plugin, children }: Props) {
 	const [openMenus, setOpenMenus] = useState<Menu[]>([]);
 	const isFocused = useTableFocus();
 
@@ -70,6 +72,9 @@ export default function MenuProvider({ children }: Props) {
 				...prevState,
 				{ id, level, isRequestingClose: false },
 			]);
+		} else {
+			console.log("CANNOT OPEN MENU");
+			console.log("State: ", openMenus);
 		}
 	}
 
@@ -86,6 +91,14 @@ export default function MenuProvider({ children }: Props) {
 	function isMenuOpen(id: string): boolean {
 		if (openMenus.find((menu) => menu.id === id)) return true;
 		return false;
+	}
+
+	async function forceCloseAllMenus() {
+		if (DEBUG.MENU_PROVIDER) logFunc(COMPONENT_NAME, "forceCloseAllMenus");
+		for (let i = 0; i < openMenus.length; i++) {
+			const menu = openMenus[i];
+			closeMenu(menu.id);
+		}
 	}
 
 	async function closeAllMenus() {
@@ -112,7 +125,7 @@ export default function MenuProvider({ children }: Props) {
 		});
 	}
 
-	async function closeMenu(id: string) {
+	function closeMenu(id: string) {
 		if (DEBUG.MENU_PROVIDER) logFunc(COMPONENT_NAME, "closeMenu", { id });
 		if (isMenuOpen(id)) {
 			setOpenMenus((prevState) =>
@@ -122,17 +135,21 @@ export default function MenuProvider({ children }: Props) {
 	}
 
 	async function handleClick(e: React.MouseEvent) {
+		if (DEBUG.MENU_PROVIDER) logFunc(COMPONENT_NAME, "handleClick");
 		if (isFocused && openMenus.length !== 0) {
 			if (e.target instanceof HTMLElement) {
 				let el = e.target;
 				//Search until we get an id
 				while (el.id === "" && el.className !== "NLT__app") {
 					el = el.parentElement;
+					console.log("Element stack", el);
 				}
 				//This will close top level on outside click, closing besides any other
 				//click is left up to specific menu
 				const menu = findTopMenu();
 				if (el.id !== menu.id) {
+					console.log("Element", el);
+					console.log("Menu id", menu.id);
 					await requestMenuClose(menu.id);
 				}
 			}
@@ -166,6 +183,20 @@ export default function MenuProvider({ children }: Props) {
 		}
 		if (!isFocused) handleBlur();
 	}, [isFocused]);
+
+	const [layoutTime, setLayoutTime] = useState(0);
+
+	// useEffect(() => {
+	// 	const timer = setInterval(() => {
+	// 		if (plugin.layoutChangeTime !== layoutTime) {
+	// 			setLayoutTime(plugin.layoutChangeTime);
+	// 			forceCloseAllMenus();
+	// 		}
+	// 	}, 500);
+	// 	return () => {
+	// 		clearInterval(timer);
+	// 	};
+	// }, [layoutTime]);
 
 	return (
 		<div

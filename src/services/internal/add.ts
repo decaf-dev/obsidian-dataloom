@@ -22,8 +22,6 @@ export const addRow = (model: TableModel): TableModel => {
 	};
 };
 
-//I want to be clear on all of my data tables
-
 export const addColumn = (
 	model: TableModel,
 	settings: TableSettings

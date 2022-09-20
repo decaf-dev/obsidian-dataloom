@@ -103,7 +103,7 @@ const updateSettingsCache = async (
 	plugin: NltPlugin,
 	state: TableState,
 	tableId: string,
-	viewMode: MarkdownViewModeType
+	viewMode: MarkdownViewModeType | null
 ) => {
 	const obj: NltSettings = {
 		...plugin.settings,
@@ -139,7 +139,7 @@ export const serializeTable = async (
 	plugin: NltPlugin,
 	state: TableState,
 	tableId: string,
-	viewMode: MarkdownViewModeType
+	viewMode: MarkdownViewModeType | null
 ) => {
 	if (DEBUG.SAVE_APP_DATA) {
 		console.log("");
