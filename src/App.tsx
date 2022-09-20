@@ -223,11 +223,16 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	}
 
 	function handleHeaderSortSelect(columnId: string, sortDir: SortDir) {
-		if (DEBUG.APP) console.log("[App]: handleHeaderSort called.");
+		if (DEBUG.APP) {
+			logFunc(COMPONENT_NAME, "handleHeaderSortSelect", {
+				columnId,
+				sortDir,
+			});
+		}
 		setTableState((prevState) => {
 			return {
 				...prevState,
-				tableSettings: {
+				settings: {
 					...prevState.settings,
 					columns: {
 						...prevState.settings.columns,
@@ -519,7 +524,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		setTableState((prevState) => {
 			return {
 				...prevState,
-				tableSettings: {
+				settings: {
 					...prevState.settings,
 					columns: {
 						...prevState.settings.columns,
@@ -543,7 +548,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		setTableState((prevState) => {
 			return {
 				...prevState,
-				tableSettings: {
+				settings: {
 					...prevState.settings,
 					columns: {
 						...prevState.settings.columns,
@@ -620,7 +625,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	// 			const h = tableModel.headers[i];
 	// 			if (h.id === cell.headerId) {
 	// 				header = tableModel.headers[i];
-	// 				headerSettings = tableSettings.columns[i];
+	// 				headerSettings = settings.columns[i];
 	// 			}
 	// 		}
 	// 		const { width, height } = measureElement(
