@@ -99,21 +99,6 @@ export default class NltPlugin extends Plugin {
 				}
 			})
 		);
-		this.registerEvent(
-			this.app.workspace.on("codemirror", () => {
-				console.log("CODE MIRROR!");
-			})
-		);
-		this.registerEvent(
-			this.app.workspace.on("quick-preview", () => {
-				console.log("QUICK PREVIEW!");
-			})
-		);
-		this.registerEvent(
-			this.app.workspace.on("editor-change", () => {
-				console.log("EDITOR CHANGE!");
-			})
-		);
 	}
 
 	registerCommands() {
