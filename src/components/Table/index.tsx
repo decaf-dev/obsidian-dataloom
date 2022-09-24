@@ -3,7 +3,7 @@ import React from "react";
 import BaseTable from "./components";
 import Button from "src/components/Button";
 
-import { TableComponent } from "src/services/table";
+import { TableComponent } from "src/services/table/types";
 import { useId } from "src/services/hooks";
 
 interface Props {

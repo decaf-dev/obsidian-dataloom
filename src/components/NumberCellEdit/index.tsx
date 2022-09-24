@@ -1,9 +1,9 @@
-import React, { useCallback } from "react";
-import { CellType } from "src/services/appData/state/types";
+import React, { useEffect, useRef } from "react";
+import { CellType } from "src/services/table/types";
 import {
 	filterNumberFromContent,
 	isValidCellContent,
-} from "src/services/appData/state/utils";
+} from "src/services/table/utils";
 
 import Menu from "../Menu";
 
@@ -31,14 +31,16 @@ export default function NumberCellEdit({
 	content,
 	onInputChange,
 }: Props) {
-	const inputRef = useCallback((node) => {
-		if (node) {
-			if (node instanceof HTMLElement) {
-				setTimeout(() => {
-					node.focus();
-				}, 1);
-			}
-		}
+	const inputRef = useRef<HTMLInputElement>(null);
+
+	function focusInput() {
+		//This shouldn't need this
+		//TODO fix
+		if (inputRef.current) inputRef.current.focus();
+	}
+
+	useEffect(() => {
+		focusInput();
 	}, []);
 
 	function handleInputChange(value: string) {

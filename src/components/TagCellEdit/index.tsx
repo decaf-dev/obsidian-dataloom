@@ -5,8 +5,6 @@ import Tag from "../Tag";
 import SelectableTag from "./component/SelectableTag";
 import CreateTag from "./component/CreateTag";
 
-import { Tag as TagState } from "src/services/appData/state/types";
-
 import "./styles.css";
 
 interface Props {
@@ -19,7 +17,6 @@ interface Props {
 	};
 	color: string;
 	cellId: string;
-	tags: TagState[];
 	positionUpdateTime: number;
 	onInputChange: (value: string) => void;
 	onTagClick: (tagId: string) => void;
@@ -35,7 +32,6 @@ export default function TagCellEdit({
 	style,
 	color,
 	cellId,
-	tags,
 	positionUpdateTime,
 	onInputChange,
 	onTagClick,
@@ -50,13 +46,13 @@ export default function TagCellEdit({
 	}
 
 	function renderSelectableTags() {
-		const filteredTags = tags.filter((tag: TagState) =>
-			tag.content.includes(inputText)
-		);
-		const found = tags.find((tag: TagState) => tag.content === inputText);
+		// const filteredTags = tags.filter((tag: TagState) =>
+		// 	tag.content.includes(inputText)
+		// );
+		// const found = tags.find((tag: TagState) => tag.content === inputText);
 		return (
 			<>
-				{!found && inputText !== "" && (
+				{/* {!found && inputText !== "" && (
 					<CreateTag
 						key="create-tag"
 						content={inputText}
@@ -76,14 +72,14 @@ export default function TagCellEdit({
 							onColorChange={onColorChange}
 							onClick={onTagClick}
 						/>
-					))}
+					))}*/}
 			</>
 		);
 	}
 
 	return (
 		<Menu id={menuId} isOpen={isOpen} style={style}>
-			<div className="NLT__tag-menu">
+			{/* <div className="NLT__tag-menu">
 				<div className="NLT__tag-menu-container">
 					<div className="NLT__tag-menu-top">
 						{tags
@@ -118,7 +114,7 @@ export default function TagCellEdit({
 						<div>{renderSelectableTags()}</div>
 					</div>
 				</div>
-			</div>
+			</div> */}
 		</Menu>
 	);
 }

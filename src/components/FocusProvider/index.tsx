@@ -1,9 +1,9 @@
-import NltPlugin from "main";
-import { MarkdownSectionInformation } from "obsidian";
-import React, { useState, useContext, useCallback, useEffect } from "react";
+import NltPlugin from "../../main";
+import React, { useState, useContext, useEffect } from "react";
 import { DEBUG } from "src/constants";
-import { logFunc } from "src/services/appData/debug";
-import { findCurrentViewType } from "src/services/appData/external/loadUtils";
+import { logFunc } from "src/services/debug";
+import { MarkdownViewModeType } from "obsidian";
+import { getUniqueTableId } from "src/services/table/utils";
 
 const FocusContext = React.createContext(false);
 
@@ -16,19 +16,15 @@ const COMPONENT_NAME = "FocusProvider";
 interface Props {
 	children: React.ReactNode;
 	plugin: NltPlugin;
-	blockId: string;
-	sectionInfo: MarkdownSectionInformation;
-	sourcePath: string;
-	el: HTMLElement;
+	tableId: string;
+	viewMode: MarkdownViewModeType;
 }
 
 export default function FocusProvider({
 	children,
 	plugin,
-	sectionInfo,
-	blockId,
-	sourcePath,
-	el,
+	tableId,
+	viewMode,
 }: Props) {
 	const [isFocused, setFocus] = useState(false);
 
@@ -36,10 +32,8 @@ export default function FocusProvider({
 		if (DEBUG.FOCUS_PROVIDER) logFunc(COMPONENT_NAME, "handleFocus");
 		setFocus(true);
 		plugin.focusTable({
-			blockId,
-			sectionInfo,
-			sourcePath,
-			viewType: findCurrentViewType(el),
+			tableId,
+			viewMode,
 		});
 	}
 
@@ -49,47 +43,28 @@ export default function FocusProvider({
 		plugin.blurTable();
 	}
 
-	const divRef = useCallback((node) => {
-		if (node) {
-			if (plugin.focused) {
-				if (
-					plugin.focused.sourcePath === sourcePath &&
-					plugin.focused.blockId === blockId
-				) {
-					setTimeout(() => {
-						handleFocus();
-					}, 1);
+	function checkForFocus(e: MouseEvent): boolean {
+		if (e.target instanceof HTMLElement) {
+			let el = e.target;
+			while (el) {
+				if (el.className === "NLT__app") {
+					if (el.id === getUniqueTableId(tableId, viewMode)) {
+						return true;
+					}
+					break;
 				}
+				el = el.parentElement;
 			}
 		}
-	}, []);
+		return false;
+	}
 
 	useEffect(() => {
 		function handleMouseUp(e: MouseEvent) {
-			//TODO only check if the page is active
-			//Set an id for the table
-			if (e.target instanceof Element) {
-				let el = e.target;
-				let isFocused = false;
-
-				while (el) {
-					if (el.className === "view-content") break;
-					//We need to check the type because the an svg
-					//element has a className of SVGAnimatedString
-					//See: https://stackoverflow.com/a/37949156
-					if (typeof el.className === "string") {
-						if (el.className.includes("NLT")) {
-							isFocused = true;
-							break;
-						}
-					}
-					el = el.parentElement;
-				}
-				if (isFocused) {
-					handleFocus();
-				} else {
-					handleBlur();
-				}
+			if (plugin.focused?.tableId === tableId) {
+				if (!checkForFocus(e)) handleBlur();
+			} else {
+				if (checkForFocus(e)) handleFocus();
 			}
 		}
 		window.addEventListener("mouseup", handleMouseUp);
@@ -97,14 +72,7 @@ export default function FocusProvider({
 	}, []);
 
 	return (
-		<div
-			ref={divRef}
-			onClick={(e) => {
-				//Stop propagation to the Obsidian editing-mode handler
-				e.preventDefault();
-				e.stopPropagation();
-			}}
-		>
+		<div>
 			<FocusContext.Provider value={isFocused}>
 				{children}
 			</FocusContext.Provider>

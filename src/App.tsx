@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 
 import EditableTd from "./components/EditableTd";
 import Table from "./components/Table";
@@ -6,135 +6,125 @@ import RowMenu from "./components/RowMenu";
 import EditableTh from "./components/EditableTh";
 import OptionBar from "./components/OptionBar";
 
-import {
-	initialHeader,
-	initialTag,
-	initialCell,
-} from "./services/appData/state/initialState";
-import { Cell, AppData, Tag, CellType } from "./services/appData/state/types";
-import { saveAppData } from "./services/appData/external/save";
-import { numToPx, pxToNum } from "./services/string/parsers";
-
-import { DEBUG, MIN_COLUMN_WIDTH_PX } from "./constants";
-
-import "./app.css";
-import NltPlugin from "main";
+import { Cell, CellType } from "./services/table/types";
+import { serializeTable } from "./services/io/serialize";
+import { pxToNum } from "./services/string/conversion";
+import NltPlugin from "./main";
 import { SortDir } from "./services/sort/types";
-import { addRow, addColumn } from "./services/appData/internal/add";
-import { findCurrentViewType } from "./services/appData/external/loadUtils";
-import { v4 as uuid } from "uuid";
-import { logFunc } from "./services/appData/debug";
+import { addRow, addColumn } from "./services/internal/add";
+import { logFunc } from "./services/debug";
+import { DEFAULT_COLUMN_SETTINGS } from "./services/table/types";
+import { initialCell } from "./services/io/utils";
+import { getUniqueTableId } from "./services/table/utils";
 import {
 	useCloseMenusOnScroll,
 	useDidMountEffect,
-	useId,
 	useSaveTime,
 } from "./services/hooks";
-import { sortRows } from "./services/sort/sort";
-import { MarkdownSectionInformation } from "obsidian";
-import {
-	checkboxToString,
-	stringToCheckbox,
-} from "./services/appData/state/utils";
-import { randomColor } from "./services/random";
+// import { sortRows } from "./services/sort/sort";
+import { checkboxToContent, contentToCheckbox } from "./services/table/utils";
+import { TableState } from "./services/table/types";
+
+import { DEBUG } from "./constants";
+
+import "./app.css";
+import { MarkdownViewModeType } from "obsidian";
+import { deserializeTable, markdownToHtml } from "./services/io/deserialize";
+import { randomColumnId, randomCellId } from "./services/random";
 
 interface Props {
 	plugin: NltPlugin;
-	loadedData: AppData;
-	sourcePath: string;
-	blockId: string;
-	sectionInfo: MarkdownSectionInformation;
-	el: HTMLElement;
+	tableId: string;
+	viewMode: MarkdownViewModeType;
 }
 
 const COMPONENT_NAME = "App";
 
-export default function App({
-	plugin,
-	loadedData,
-	sourcePath,
-	blockId,
-	sectionInfo,
-	el,
-}: Props) {
-	const [appData, setAppData] = useState<AppData>(loadedData);
-	const tableId = useId();
-	const [tagUpdate, setTagUpdate] = useState({
-		time: 0,
-		cellId: "",
-	});
+export default function App({ plugin, viewMode, tableId }: Props) {
+	const [state, setTableState] = useState<TableState>(null);
+
 	const [sortTime, setSortTime] = useState(0);
 	const [positionUpdateTime, setPositionUpdateTime] = useState(0);
+	const [isLoading, setLoading] = useState(true);
 
-	const { saveTime, saveData } = useSaveTime();
+	const { saveTime, shouldSaveModel, saveData } = useSaveTime();
 
 	useCloseMenusOnScroll("markdown-preview-view");
 	useCloseMenusOnScroll("NLT__table-wrapper");
 
-	useDidMountEffect(() => {
-		//TODO handle when a user clicks the same option
-		setAppData((prevState) => {
-			return {
-				...prevState,
-				rows: sortRows(prevState),
-			};
-		});
-		forcePositionUpdate();
-		saveData();
-	}, [sortTime]);
-
-	useDidMountEffect(() => {
-		async function handleUpdate() {
-			try {
-				await saveAppData(
-					plugin,
-					appData,
-					blockId,
-					sectionInfo,
-					sourcePath,
-					findCurrentViewType(el)
-				);
-			} catch (err) {
-				console.log(err);
-			}
+	//Load table on mount
+	useEffect(() => {
+		async function load() {
+			const tableState = await deserializeTable(plugin, tableId);
+			setTableState(tableState);
+			setTimeout(() => {
+				setLoading(false);
+			}, 300);
 		}
+		load();
+	}, []);
 
-		handleUpdate();
-	}, [saveTime]);
+	//Handles saving
+	useDidMountEffect(() => {
+		async function save() {
+			await serializeTable(
+				shouldSaveModel,
+				plugin,
+				state,
+				tableId,
+				viewMode
+			);
+		}
+		save();
+	}, [saveTime, shouldSaveModel]);
 
-	// //If a table updates in editing mode or reading mode, update the other table
-	// //TODO change with notifier in the main.js
-	// //TODO why doesn't this always update?
-	// useEffect(() => {
-	// 	let intervalId: NodeJS.Timer = null;
-	// 	function startTimer() {
-	// 		intervalId = setInterval(async () => {
-	// 			if (settings.state[sourcePath]) {
-	// 				if (settings.state[sourcePath][tableIndex]) {
-	// 					const { shouldUpdate, viewType } =
-	// 						settings.state[sourcePath][tableIndex];
+	//Handles live preview
+	//TODO disable if live preview is not enabled
+	useEffect(() => {
+		let timer: any = null;
+		timer = setInterval(() => {
+			async function checkDirty() {
+				const dirty = plugin.settings.dirty;
+				if (dirty) {
+					const { viewMode: dirtyViewMode, tableId: dirtyTableId } =
+						dirty;
+					const shouldUpdate =
+						dirtyTableId === tableId && dirtyViewMode !== viewMode;
+					if (shouldUpdate) {
+						setLoading(true);
+						plugin.settings.dirty = null;
+						await plugin.saveSettings();
+						const state = await deserializeTable(plugin, tableId);
+						setTableState(state);
+						setTimeout(() => {
+							setLoading(false);
+						}, 300);
+					}
+				}
+			}
+			checkDirty();
+		}, plugin.settings.syncInterval);
+		return () => {
+			clearInterval(timer);
+		};
+	}, [plugin.settings.dirty]);
 
-	// 					const currentViewType = findCurrentViewType(el);
+	//TODO add
+	// useDidMountEffect(() => {
+	// 	setTableState((prevState) => {
+	// 		return {
+	// 			...prevState,
+	// 			model: {
+	// 				...prevState.model,
+	// 				// rows: sortRows(state.model, state.settings),
+	// 			},
+	// 		};
+	// 	});
+	// 	forcePositionUpdate();
+	// 	saveData();
+	// }, [sortTime]);
 
-	// 					if (shouldUpdate && viewType !== currentViewType) {
-	// 						clearInterval(intervalId);
-	// 						settings.state[sourcePath][
-	// 							tableIndex
-	// 						].shouldUpdate = false;
-	// 						await plugin.saveSettings();
-	// 						const savedData =
-	// 							settings.state[sourcePath][tableIndex].data;
-	// 						setOldAppData(savedData);
-	// 						setAppData(savedData);
-	// 						startTimer();
-	// 					}
-	// 				}
-	// 			}
-	// 		}, 500);
-	// 	}
-	// 	startTimer();
-	// 	return () => clearInterval(intervalId);
-	// }, []);
+	//TODO add save
 
 	function sortData() {
 		setSortTime(Date.now());
@@ -146,192 +136,169 @@ export default function App({
 
 	function handleAddColumn() {
 		if (DEBUG.APP) console.log("[App]: handleAddColumn called.");
-		setAppData((prevState) => addColumn(prevState));
-		saveData();
+		setTableState((prevState) => {
+			const [model, settings] = addColumn(
+				prevState.model,
+				prevState.settings
+			);
+			return {
+				...prevState,
+				model,
+				settings,
+			};
+		});
+		saveData(true);
 	}
 
 	function handleAddRow() {
 		if (DEBUG.APP) console.log("[App]: handleAddRow called.");
-		setAppData((prevState: AppData) => addRow(prevState));
-		saveData();
-	}
-
-	function handleHeaderSave(id: string, updatedContent: string) {
-		if (DEBUG.APP) console.log("[App]: handleHeaderSave called.");
-		setAppData((prevState) => {
+		setTableState((prevState) => {
+			const model = addRow(prevState.model);
 			return {
 				...prevState,
-				headers: prevState.headers.map((header) => {
-					if (header.id === id)
-						return {
-							...header,
-							content: updatedContent,
-						};
-					return header;
-				}),
+				model: model,
 			};
 		});
-		saveData();
+		saveData(true);
 	}
 
-	function handleHeaderTypeSelect(id: string, selectedCellType: CellType) {
-		if (DEBUG.APP) console.log("[App]: handleHeaderTypeSelect called.");
-		const header = appData.headers.find((header) => header.id === id);
-		//If same header type return
-		if (header.type === selectedCellType) return;
+	function handleHeaderTypeClick(
+		cellId: string,
+		columnId: string,
+		selectedCellType: CellType
+	) {
+		if (DEBUG.APP)
+			logFunc(COMPONENT_NAME, "handleHeaderTypeClick", {
+				cellId,
+				columnId,
+				selectedCellType,
+			});
 
-		function findUpdatedCellContent(content: string) {
-			if (header.type === CellType.CHECKBOX) {
-				return checkboxToString(content);
+		function findUpdatedCellContent(type: CellType, content: string) {
+			if (type === CellType.CHECKBOX) {
+				return checkboxToContent(content);
 			} else if (selectedCellType === CellType.CHECKBOX) {
-				return stringToCheckbox(content);
+				return contentToCheckbox(content);
 			} else {
 				return content;
 			}
 		}
 
-		setAppData((prevState) => {
-			let arr = [...prevState.tags];
-			prevState.cells.forEach((cell) => {
-				const updatedContent = findUpdatedCellContent(cell.content);
-				if (cell.headerId === header.id) {
-					if (selectedCellType === CellType.TAG) {
-						const tag =
-							arr.find((tag) => tag.content === updatedContent) ||
-							null;
-						if (tag) {
-							tag.selected.push(cell.id);
-						} else {
-							arr.push(
-								initialTag(
-									uuid(),
-									header.id,
-									cell.id,
-									updatedContent,
-									randomColor()
-								)
-							);
+		setTableState((prevState) => {
+			const { settings } = prevState;
+			const { type } = settings.columns[columnId];
+
+			//If same header type return
+			if (type === selectedCellType) return prevState;
+			return {
+				...prevState,
+				model: {
+					...prevState.model,
+					cells: prevState.model.cells.map((cell: Cell) => {
+						if (cell.id === cellId) {
+							return {
+								...cell,
+								markdown: findUpdatedCellContent(
+									type,
+									cell.markdown
+								),
+							};
 						}
-					} else if (header.type === CellType.TAG) {
-						arr = removeTagReferences(arr, cell.id);
-					}
-				}
-			});
-			return {
-				...prevState,
-				headers: prevState.headers.map((header) => {
-					if (id === header.id)
-						return { ...header, type: selectedCellType };
-					return header;
-				}),
-				cells: prevState.cells.map((cell: Cell) => {
-					if (cell.headerId === id) {
-						return {
-							...cell,
-							content: findUpdatedCellContent(cell.content),
+						return cell;
+					}),
+				},
+				settings: {
+					...prevState.settings,
+					columns: {
+						...prevState.settings.columns,
+						[columnId]: {
+							...prevState.settings.columns[columnId],
 							type: selectedCellType,
-						};
-					}
-					return cell;
-				}),
-				tags: arr,
+						},
+					},
+				},
 			};
 		});
-		saveData();
+		saveData(true);
 	}
 
-	function handleHeaderSortSelect(id: string, sortDir: SortDir) {
-		if (DEBUG.APP) console.log("[App]: handleHeaderSort called.");
-		setAppData((prevState) => {
+	function handleHeaderSortSelect(columnId: string, sortDir: SortDir) {
+		if (DEBUG.APP) {
+			logFunc(COMPONENT_NAME, "handleHeaderSortSelect", {
+				columnId,
+				sortDir,
+			});
+		}
+		setTableState((prevState) => {
 			return {
 				...prevState,
-				headers: prevState.headers.map((header) => {
-					if (id === header.id) return { ...header, sortDir };
-					return { ...header, sortDir: SortDir.NONE };
-				}),
+				settings: {
+					...prevState.settings,
+					columns: {
+						...prevState.settings.columns,
+						[columnId]: {
+							...prevState.settings.columns[columnId],
+							sortDir,
+						},
+					},
+				},
 			};
 		});
-		sortData();
-	}
-
-	function handleCellContentSave() {
+		//TODO add save
 		sortData();
 	}
 
 	function handleCellContentChange(
-		id: string,
-		headerType: string,
+		cellId: string,
 		updatedContent: string,
 		saveOnChange = false
 	) {
 		if (DEBUG.APP) {
 			logFunc(COMPONENT_NAME, "handleCellContentChange", {
-				id,
-				headerType,
+				cellId,
 				updatedContent,
 			});
 		}
 
-		setAppData((prevState) => {
+		setTableState((prevState) => {
 			return {
 				...prevState,
-				cells: prevState.cells.map((cell: Cell) => {
-					if (cell.id === id) {
-						return {
-							...cell,
-							content: updatedContent,
-						};
-					}
-					return cell;
-				}),
+				model: {
+					...prevState.model,
+					cells: prevState.model.cells.map((cell: Cell) => {
+						if (cell.id === cellId) {
+							return {
+								...cell,
+								markdown: updatedContent,
+								html: markdownToHtml(updatedContent),
+							};
+						}
+						return cell;
+					}),
+				},
 			};
 		});
-		if (saveOnChange) saveData();
+		if (saveOnChange) saveData(true);
 	}
 
-	function handleAddTag(
-		cellId: string,
-		headerId: string,
-		content: string,
-		color: string
-	) {
+	function handleAddTag(cellId: string, content: string, color: string) {
 		if (DEBUG.APP) {
 			logFunc(COMPONENT_NAME, "handleAddTag", {
 				cellId,
-				headerId,
 				content,
 				color,
 			});
 		}
-		setAppData((prevState) => {
-			return {
-				...prevState,
-				tags: [
-					...removeTagReferences(prevState.tags, cellId),
-					initialTag(uuid(), headerId, cellId, content, color),
-				],
-			};
-		});
-		setTagUpdate({ cellId, time: Date.now() });
-	}
-
-	/**
-	 * Removes tag references for a specified cell id
-	 * @param tags The tag array
-	 * @param cellId The cell id
-	 * @returns An array of tags with selected arrays that do not contain the specific cell id
-	 */
-	function removeTagReferences(tags: Tag[], cellId: string) {
-		return tags
-			.map((tag) => {
-				return {
-					...tag,
-					selected: tag.selected.filter(
-						(id: string) => id !== cellId
-					),
-				};
-			})
-			.filter((tag) => tag.selected.length !== 0);
+		//TODO fix
+		// setTableModel((prevState) => {
+		// 	return {
+		// 		...prevState,
+		// 		tags: [
+		// 			...removeTagReferences(prevState.tags, cellId),
+		// 			initialTag(uuid(), headerId, cellId, content, color),
+		// 		],
+		// 	};
+		// });
 	}
 
 	function handleTagClick(cellId: string, tagId: string) {
@@ -341,191 +308,259 @@ export default function App({
 				tagId,
 			});
 		}
-		//If our cell id has already selected the tag then return
-		const found = appData.tags.find((tag) => tag.id === tagId);
-		if (!found.selected.includes(cellId)) {
-			let arr = removeTagReferences(appData.tags, cellId);
-			arr = arr.map((tag) => {
-				//Add cell id to selected list
-				if (tag.id === tagId) {
-					return {
-						...tag,
-						selected: [...tag.selected, cellId],
-					};
-				}
-				return tag;
-			});
-
-			setAppData((prevState) => {
-				return {
-					...prevState,
-					tags: arr,
-				};
-			});
-		}
-		setTagUpdate({ cellId, time: Date.now() });
+		//TODO fix
 	}
 
 	function handleRemoveTagClick(cellId: string) {
 		if (DEBUG.APP) console.log("[App]: handleRemoveTagClick called.");
-		setAppData((prevState) => {
-			return {
-				...prevState,
-				tags: removeTagReferences(prevState.tags, cellId),
-			};
-		});
+		//TODO fix
+		// setTableModel((prevState) => {
+		// 	return {
+		// 		...prevState,
+		// 		tags: removeTagReferences(prevState.tags, cellId),
+		// 	};
+		// });
 	}
 
-	function handleDeleteHeaderClick(id: string) {
-		if (DEBUG.APP) console.log("[App]: handleDeleteHeaderClick called.");
-		setAppData((prevState) => {
+	function handleHeaderDeleteClick(columnId: string) {
+		if (DEBUG.APP)
+			logFunc(COMPONENT_NAME, "handleHeaderDeleteClick", {
+				columnId,
+			});
+
+		setTableState((prevState) => {
+			const obj = { ...prevState.settings.columns };
+			delete obj[columnId];
+
 			return {
 				...prevState,
-				headers: prevState.headers.filter((header) => header.id !== id),
-				cells: prevState.cells.filter((cell) => cell.headerId !== id),
+				model: {
+					...prevState.model,
+					columns: prevState.model.columns.filter(
+						(column) => column !== columnId
+					),
+					cells: cells.filter((cell) => cell.columnId !== columnId),
+				},
+				settings: {
+					...prevState.settings,
+					columns: obj,
+				},
+			};
+		});
+
+		//TODO edit
+		saveData(true);
+		//sortData();
+	}
+
+	function handleRowDeleteClick(rowId: string) {
+		if (DEBUG.APP)
+			logFunc(COMPONENT_NAME, "handleRowDeleteClick", {
+				rowId,
+			});
+		setTableState((prevState) => {
+			return {
+				...prevState,
+				model: {
+					...prevState.model,
+					cells: prevState.model.cells.filter(
+						(cell) => cell.rowId !== rowId
+					),
+					rows: prevState.model.rows.filter((id) => id !== rowId),
+				},
 			};
 		});
 		sortData();
 	}
 
-	function handleDeleteRowClick(rowId: string) {
-		if (DEBUG.APP) console.log("[App]: handleDeleteRowClick called.");
-		setAppData((prevState) => {
-			return {
-				...prevState,
-				rows: prevState.rows.filter((row) => row.id !== rowId),
-				cells: prevState.cells.filter((cell) => cell.rowId !== rowId),
-			};
-		});
-		sortData();
-	}
-
-	function handleHeaderWidthChange(id: string, width: string) {
+	function handleHeaderWidthChange(columnId: string, width: string) {
 		if (DEBUG.APP) {
 			logFunc(COMPONENT_NAME, "handleHeaderWidthChange", {
-				id,
+				columnId,
 				width,
 			});
 		}
-		setAppData((prevState: AppData) => {
+		setTableState((prevState) => {
 			return {
 				...prevState,
-				headers: prevState.headers.map((header) => {
-					if (header.id === id) {
-						return {
-							...header,
+				settings: {
+					...prevState.settings,
+					columns: {
+						...prevState.settings.columns,
+						[columnId]: {
+							...prevState.settings.columns[columnId],
 							width,
-						};
-					}
-					return header;
-				}),
+						},
+					},
+				},
 			};
 		});
 		forcePositionUpdate();
+		saveData(true, true);
+	}
+
+	function handleMoveColumnClick(columnId: string, moveRight: boolean) {
+		if (DEBUG.APP)
+			logFunc(COMPONENT_NAME, "handleMoveColumnClick", {
+				columnId,
+				moveRight,
+			});
+		setTableState((prevState: TableState) => {
+			const { model } = prevState;
+			const columnArr = [...model.columns];
+			const index = columnArr.indexOf(columnId);
+			const moveIndex = moveRight ? index + 1 : index - 1;
+
+			//Swap values
+			const old = columnArr[moveIndex];
+			columnArr[moveIndex] = columnArr[index];
+			columnArr[index] = old;
+
+			console.log({
+				...prevState,
+				model: {
+					...model,
+					columns: columnArr,
+				},
+			});
+			return {
+				...prevState,
+				model: {
+					...model,
+					columns: columnArr,
+				},
+			};
+		});
 		saveData(true);
 	}
 
-	function handleMoveColumnClick(id: string, moveRight: boolean) {
-		if (DEBUG.APP) console.log("[App]: handleMoveColumnClick called.");
-		setAppData((prevState: AppData) => {
-			const index = prevState.headers.findIndex(
-				(header) => header.id === id
-			);
-			const moveIndex = moveRight ? index + 1 : index - 1;
-			const headers = [...prevState.headers];
-
-			//Swap values
-			const old = headers[moveIndex];
-			headers[moveIndex] = headers[index];
-			headers[index] = old;
-			return {
-				...prevState,
-				headers,
-			};
-		});
-		saveData();
-	}
-
-	function handleInsertColumnClick(id: string, insertRight: boolean) {
-		if (DEBUG.APP) console.log("[App]: handleInsertColumnClick called.");
-		setAppData((prevState: AppData) => {
-			const header = prevState.headers.find((header) => header.id === id);
-			const index = prevState.headers.indexOf(header);
+	function handleInsertColumnClick(columnId: string, insertRight: boolean) {
+		if (DEBUG.APP)
+			logFunc(COMPONENT_NAME, "handleInsertColumnClick", {
+				columnId,
+				insertRight,
+			});
+		setTableState((prevState: TableState) => {
+			const { model, settings } = prevState;
+			const index = prevState.model.columns.indexOf(columnId);
 			const insertIndex = insertRight ? index + 1 : index;
-			const headerToInsert = initialHeader(uuid(), "New Column");
 
-			const cells = prevState.rows.map((row) =>
-				initialCell(
-					uuid(),
-					headerToInsert.id,
-					row.id,
-					headerToInsert.type,
-					""
-				)
-			);
+			const newColId = randomColumnId();
 
-			const headers = [...prevState.headers];
-			headers.splice(insertIndex, 0, headerToInsert);
+			const cellArr = [...model.cells];
 
+			for (let i = 0; i < model.rows.length; i++) {
+				let markdown = "";
+				let html = "";
+				if (i === 0) {
+					markdown = "New Column";
+					html = "New Column";
+				}
+
+				cellArr.push(
+					initialCell(
+						randomCellId(),
+						newColId,
+						model.rows[i],
+						markdown,
+						html
+					)
+				);
+			}
+
+			const columnArr = [...model.columns];
+			columnArr.splice(insertIndex, 0, newColId);
+
+			const settingsObj = { ...settings };
+			settingsObj.columns[newColId] = DEFAULT_COLUMN_SETTINGS;
+
+			console.log({
+				...prevState,
+				model: {
+					...model,
+					columns: columnArr,
+					cells: cellArr,
+				},
+				settings: settingsObj,
+			});
 			return {
 				...prevState,
-				headers,
-				cells: [...prevState.cells, ...cells],
+				model: {
+					...model,
+					columns: columnArr,
+					cells: cellArr,
+				},
+				settings: settingsObj,
 			};
 		});
-		saveData();
+		saveData(true);
 	}
 
 	function handleChangeColor(tagId: string, color: string) {
-		setAppData((prevState) => {
-			return {
-				...prevState,
-				tags: prevState.tags.map((tag) => {
-					if (tag.id === tagId) {
-						return {
-							...tag,
-							color,
-						};
-					}
-					return tag;
-				}),
-			};
-		});
-		saveData();
+		//TODO edit
+		// setTableModel((prevState) => {
+		// 	return {
+		// 		...prevState,
+		// 		tags: prevState.tags.map((tag) => {
+		// 			if (tag.id === tagId) {
+		// 				return {
+		// 					...tag,
+		// 					color,
+		// 				};
+		// 			}
+		// 			return tag;
+		// 		}),
+		// 	};
+		// });
+		saveData(true);
 	}
 
-	function handleAutoWidthToggle(headerId: string, value: boolean) {
-		setAppData((prevState) => {
+	function handleAutoWidthToggle(columnId: string, value: boolean) {
+		if (DEBUG.APP)
+			logFunc(COMPONENT_NAME, "handleAutoWidthToggle", {
+				columnId,
+				value,
+			});
+		setTableState((prevState) => {
 			return {
 				...prevState,
-				headers: prevState.headers.map((header) => {
-					if (header.id === headerId) {
-						return {
-							...header,
+				settings: {
+					...prevState.settings,
+					columns: {
+						...prevState.settings.columns,
+						[columnId]: {
+							...prevState.settings.columns[columnId],
 							useAutoWidth: value,
-						};
-					}
-					return header;
-				}),
+						},
+					},
+				},
 			};
 		});
+		saveData(false);
 	}
 
-	function handleWrapContentToggle(headerId: string, value: boolean) {
-		setAppData((prevState) => {
+	function handleWrapContentToggle(columnId: string, value: boolean) {
+		if (DEBUG.APP)
+			logFunc(COMPONENT_NAME, "handleWrapContentToggle", {
+				columnId,
+				value,
+			});
+		setTableState((prevState) => {
 			return {
 				...prevState,
-				headers: prevState.headers.map((header) => {
-					if (header.id === headerId) {
-						return {
-							...header,
+				settings: {
+					...prevState.settings,
+					columns: {
+						...prevState.settings.columns,
+						[columnId]: {
+							...prevState.settings.columns[columnId],
 							shouldWrapOverflow: value,
-						};
-					}
-					return header;
-				}),
+						},
+					},
+				},
 			};
 		});
+		saveData(false);
 	}
 
 	function measureElement(
@@ -557,7 +592,7 @@ export default function App({
 		ruler.style.paddingBottom = "4px";
 		ruler.style.paddingLeft = "10px";
 		ruler.style.paddingRight = "10px";
-		ruler.textContent = textContent;
+		ruler.innerHTML = textContent;
 
 		document.body.appendChild(ruler);
 		const width = window.getComputedStyle(ruler).getPropertyValue("width");
@@ -570,115 +605,133 @@ export default function App({
 	}
 
 	function findCellWidth(
-		cellType: string,
+		headerType: string,
 		useAutoWidth: boolean,
-		calculatedWidth: string,
 		headerWidth: string
 	) {
 		//If the content type does not display text, just use the width that we set for the column
-		if (cellType !== CellType.TEXT && cellType !== CellType.NUMBER)
+		if (headerType !== CellType.TEXT && headerType !== CellType.NUMBER)
 			return headerWidth;
 		//If we're not using auto width, just use the width that we set for the column
-		if (useAutoWidth) return calculatedWidth;
+		if (useAutoWidth) return "auto";
 		return headerWidth;
 	}
 
-	const cellSizes = useMemo(() => {
-		return appData.cells.map((cell) => {
-			const header = appData.headers.find(
-				(header) => header.id === cell.headerId
-			);
-			const { width, height } = measureElement(
-				cell.content,
-				header.useAutoWidth,
-				header.width,
-				header.shouldWrapOverflow
-			);
-			return {
-				rowId: cell.rowId,
-				headerId: header.id,
-				width,
-				height,
-			};
-		});
-	}, [appData.cells, appData.headers]);
+	// const cellSizes = useMemo(() => {
+	// 	return tableModel.cells.map((cell) => {
+	// 		let header = null;
+	// 		let headerSettings = null;
+	// 		for (let i = 0; i < tableModel.headers.length; i++) {
+	// 			const h = tableModel.headers[i];
+	// 			if (h.id === cell.headerId) {
+	// 				header = tableModel.headers[i];
+	// 				headerSettings = settings.columns[i];
+	// 			}
+	// 		}
+	// 		const { width, height } = measureElement(
+	// 			cell.content,
+	// 			headerSettings.useAutoWidth,
+	// 			headerSettings.width,
+	// 			headerSettings.shouldWrapOverflow
+	// 		);
+	// 		return {
+	// 			rowId: cell.rowId,
+	// 			headerId: header.id,
+	// 			width,
+	// 			height,
+	// 		};
+	// 	});
+	// }, [tableModel.cells]);
 
-	const rowHeights = useMemo(() => {
-		const heights: { [id: string]: number } = {};
-		cellSizes.forEach((size) => {
-			const { rowId, height } = size;
-			if (!heights[rowId] || heights[rowId] < height)
-				heights[rowId] = height;
-		});
-		return Object.fromEntries(
-			Object.entries(heights).map((entry) => {
-				const [key, value] = entry;
-				return [key, numToPx(value)];
-			})
-		);
-	}, [cellSizes]);
+	// const rowHeights = useMemo(() => {
+	// 	const heights: { [id: string]: number } = {};
+	// 	cellSizes.forEach((size) => {
+	// 		const { rowId, height } = size;
+	// 		if (!heights[rowId] || heights[rowId] < height)
+	// 			heights[rowId] = height;
+	// 	});
+	// 	return Object.fromEntries(
+	// 		Object.entries(heights).map((entry) => {
+	// 			const [key, value] = entry;
+	// 			return [key, numToPx(value)];
+	// 		})
+	// 	);
+	// }, [cellSizes]);
 
-	const columnWidths = useMemo(() => {
-		const widths: { [id: string]: number } = {};
-		cellSizes.forEach((size) => {
-			const { headerId, width: cellWidth } = size;
-			let width = cellWidth;
-			if (width < MIN_COLUMN_WIDTH_PX) width = MIN_COLUMN_WIDTH_PX;
-			if (!widths[headerId] || widths[headerId] < width)
-				widths[headerId] = width;
-		});
-		return Object.fromEntries(
-			Object.entries(widths).map((entry) => {
-				const [key, value] = entry;
-				return [key, numToPx(value)];
-			})
-		);
-	}, [cellSizes]);
+	// const columnWidths = useMemo(() => {
+	// 	const widths: { [id: string]: number } = {};
+	// 	cellSizes.forEach((size) => {
+	// 		const { headerId, width: cellWidth } = size;
+	// 		let width = cellWidth;
+	// 		if (width < MIN_COLUMN_WIDTH_PX) width = MIN_COLUMN_WIDTH_PX;
+	// 		if (!widths[headerId] || widths[headerId] < width)
+	// 			widths[headerId] = width;
+	// 	});
+	// 	return Object.fromEntries(
+	// 		Object.entries(widths).map((entry) => {
+	// 			const [key, value] = entry;
+	// 			return [key, numToPx(value)];
+	// 		})
+	// 	);
+	// }, [cellSizes]);
+
+	if (isLoading) return <div>Loading table...</div>;
+
+	const { rows, columns, cells } = state.model;
 
 	return (
-		<div id={tableId} className="NLT__app" tabIndex={0}>
-			<OptionBar headers={appData.headers} />
+		<div
+			id={getUniqueTableId(tableId, viewMode)}
+			className="NLT__app"
+			tabIndex={0}
+		>
+			<OptionBar model={state.model} settings={state.settings} />
 			<div className="NLT__table-wrapper">
 				<Table
-					headers={appData.headers.map((header, i) => {
+					headers={columns.map((columnId, i) => {
 						const {
-							id,
-							content,
 							width,
 							type,
 							sortDir,
 							shouldWrapOverflow,
 							useAutoWidth,
-						} = header;
+						} = state.settings.columns[columnId];
+
+						const cell = cells.find(
+							(c) =>
+								c.rowId === rows[0] && c.columnId === columnId
+						);
+						const { id, markdown, html } = cell;
 						return {
 							id,
 							component: (
 								<EditableTh
 									key={id}
-									id={id}
+									cellId={id}
+									columnIndex={i}
+									numColumns={columns.length}
+									columnId={cell.columnId}
 									width={findCellWidth(
 										type,
 										useAutoWidth,
-										columnWidths[id],
 										width
 									)}
 									shouldWrapOverflow={shouldWrapOverflow}
 									useAutoWidth={useAutoWidth}
 									positionUpdateTime={positionUpdateTime}
-									index={i}
-									content={content}
+									content={markdown}
+									textContent={html}
 									type={type}
 									sortDir={sortDir}
-									numHeaders={appData.headers.length}
 									onSortSelect={handleHeaderSortSelect}
 									onInsertColumnClick={
 										handleInsertColumnClick
 									}
 									onMoveColumnClick={handleMoveColumnClick}
 									onWidthChange={handleHeaderWidthChange}
-									onDeleteClick={handleDeleteHeaderClick}
-									onSaveClick={handleHeaderSave}
-									onTypeSelect={handleHeaderTypeSelect}
+									onDeleteClick={handleHeaderDeleteClick}
+									onSaveClick={handleCellContentChange}
+									onTypeSelect={handleHeaderTypeClick}
 									onAutoWidthToggle={handleAutoWidthToggle}
 									onWrapOverflowToggle={
 										handleWrapContentToggle
@@ -687,85 +740,88 @@ export default function App({
 							),
 						};
 					})}
-					rows={appData.rows.map((row) => {
-						return {
-							id: row.id,
-							component: (
-								<>
-									{appData.headers.map((header) => {
-										const cell = appData.cells.find(
-											(cell) =>
-												cell.rowId === row.id &&
-												cell.headerId === header.id
-										);
-										const {
-											id: headerId,
-											type,
-											useAutoWidth,
-											width,
-										} = header;
-										return (
-											<EditableTd
-												key={cell.id}
-												cell={cell}
-												headerType={header.type}
-												positionUpdateTime={
-													positionUpdateTime
-												}
-												shouldWrapOverflow={
-													header.shouldWrapOverflow
-												}
-												useAutoWidth={useAutoWidth}
-												width={findCellWidth(
-													type,
-													useAutoWidth,
-													columnWidths[headerId],
-													width
-												)}
-												height={rowHeights[row.id]}
-												tagUpdate={tagUpdate}
-												tags={appData.tags.filter(
-													(tag) =>
-														tag.headerId ===
-														header.id
-												)}
-												onTagClick={handleTagClick}
-												onRemoveTagClick={
-													handleRemoveTagClick
-												}
-												onContentChange={
-													handleCellContentChange
-												}
-												onSaveContent={
-													handleCellContentSave
-												}
-												onColorChange={
-													handleChangeColor
-												}
-												onAddTag={handleAddTag}
-											/>
-										);
-									})}
-									<td
-										className="NLT__td"
-										style={{ height: rowHeights[row.id] }}
-									>
-										<div className="NLT__td-container">
-											<RowMenu
-												positionUpdateTime={
-													positionUpdateTime
-												}
-												rowId={row.id}
-												onDeleteClick={
-													handleDeleteRowClick
-												}
-											/>
-										</div>
-									</td>
-								</>
-							),
-						};
-					})}
+					rows={rows
+						.filter((_row, i) => i !== 0)
+						.map((rowId, i) => {
+							const rowCells = cells.filter(
+								(cell) => cell.rowId === rowId
+							);
+							return {
+								id: rowId,
+								component: (
+									<>
+										{rowCells.map((cell, i) => {
+											const {
+												width,
+												type,
+												useAutoWidth,
+												shouldWrapOverflow,
+											} =
+												state.settings.columns[
+													cell.columnId
+												];
+
+											const { id, markdown, html } = cell;
+											return (
+												<EditableTd
+													key={id}
+													cellId={id}
+													content={markdown}
+													textContent={html}
+													columnType={type}
+													positionUpdateTime={
+														positionUpdateTime
+													}
+													shouldWrapOverflow={
+														shouldWrapOverflow
+													}
+													useAutoWidth={useAutoWidth}
+													width={findCellWidth(
+														type,
+														useAutoWidth,
+														width
+													)}
+													height="auto"
+													onTagClick={handleTagClick}
+													onRemoveTagClick={
+														handleRemoveTagClick
+													}
+													onContentChange={
+														handleCellContentChange
+													}
+													onSaveContent={() => {
+														//TODO sort? save?
+														saveData(true);
+													}}
+													onColorChange={
+														handleChangeColor
+													}
+													onAddTag={handleAddTag}
+												/>
+											);
+										})}
+										<td
+											className="NLT__td"
+											style={{
+												height: "auto",
+											}}
+										>
+											<div className="NLT__td-container">
+												<RowMenu
+													positionUpdateTime={
+														positionUpdateTime
+													}
+													rowId={rowId}
+													onDeleteClick={
+														handleRowDeleteClick
+													}
+												/>
+											</div>
+										</td>
+									</>
+								),
+							};
+						})}
 					onAddColumn={handleAddColumn}
 					onAddRow={handleAddRow}
 				/>

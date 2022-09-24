@@ -5,7 +5,7 @@ import CloseIcon from "@mui/icons-material/Close";
 
 import { findColorClass } from "src/services/color";
 
-import { stripPound } from "src/services/string/strippers";
+import { stripPound } from "src/services/string/modify";
 
 import "./styles.css";
 
@@ -39,7 +39,7 @@ export default function Tag({
 			{showRemove && (
 				<CloseIcon
 					className="NLT__icon--md NLT__margin-left NLT__icon--selectable"
-					onClick={(e) => {
+					onClick={(e: React.MouseEvent) => {
 						e.stopPropagation();
 						onRemoveClick(id);
 					}}

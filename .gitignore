@@ -15,13 +15,14 @@ main.js
 # Exclude sourcemaps
 *.map
 
-# obsidian
-data.json
-
 # Exclude macOS Finder (System Explorer) View States
 .DS_Store
 
 # Ignore build files
-main.css
-main.js
-/styles.css
+dist/main.css
+dist/main.css.map
+dist/main.js
+dist/main.js.map
+dist/styles.css
+# obsidian
+dist/data.json

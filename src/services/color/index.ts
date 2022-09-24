@@ -1,4 +1,4 @@
-import { COLOR } from "src/constants";
+import { COLOR } from "../../constants";
 
 export const findColorClass = (color: string): string => {
 	switch (color) {

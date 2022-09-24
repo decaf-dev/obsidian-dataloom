@@ -1,24 +1,10 @@
 export const DEBUG = {
 	LOAD_APP_DATA: true,
-	APP: false,
+	APP: true,
 	SAVE_APP_DATA: true,
 	EDITABLE_TD: false,
 	FOCUS_PROVIDER: false,
 	MENU_PROVIDER: false,
-};
-
-export interface TabbableElementType {
-	UNFOCUSED: string;
-	BUTTON: string;
-	HEADER: string;
-	CELL: string;
-}
-
-export const TABBABLE_ELEMENT_TYPE: TabbableElementType = {
-	UNFOCUSED: "unfocused",
-	BUTTON: "button",
-	HEADER: "header",
-	CELL: "cell",
 };
 
 export const COLOR: { [color: string]: string } = {
@@ -56,4 +42,4 @@ export const HIGHLIGHT_TAG_CLOSE = "</mark>";
 
 export const MIN_COLUMN_WIDTH_PX = 50;
 
-export const CURRENT_TABLE_CACHE_VERSION = 431;
+export const CURRENT_TABLE_CACHE_VERSION = 500;

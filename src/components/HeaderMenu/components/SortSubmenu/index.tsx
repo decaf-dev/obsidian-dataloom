@@ -8,14 +8,14 @@ import Submenu from "../Submenu";
 
 interface Props {
 	title: string;
-	headerSortDir: SortDir;
+	columnSortDir: SortDir;
 	onSortClick: (sortDir: SortDir) => void;
 	onBackClick: () => void;
 }
 
 export default function SortSubmenu({
 	title,
-	headerSortDir,
+	columnSortDir,
 	onSortClick,
 	onBackClick,
 }: Props) {
@@ -28,7 +28,7 @@ export default function SortSubmenu({
 						icon={item.icon && item.icon}
 						content={`${item.content}`}
 						onClick={() => onSortClick(item.name)}
-						selected={headerSortDir === item.name}
+						selected={columnSortDir === item.name}
 					/>
 				))}
 			</ul>

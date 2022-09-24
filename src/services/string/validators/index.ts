@@ -1,60 +1,45 @@
 import {
-	MARKDOWN_CELLS_REGEX,
-	MARKDOWN_HYPHEN_CELL_REGEX,
-	MARKDOWN_ROWS_REGEX,
 	NUMBER_REGEX,
 	TAG_REGEX,
 	DATE_REGEX,
 	CHECKBOX_REGEX,
 	CHECKBOX_CHECKED_REGEX,
-} from "src/services/string/regex";
+	TAGS_REGEX,
+} from "../regex";
 
-export const isMarkdownTable = (data: string): boolean => {
-	const rows = data.match(MARKDOWN_ROWS_REGEX);
+const isMatch = (input: string, regex: RegExp): boolean => {
+	return (input.match(regex) || []).length !== 0;
+};
 
-	if (rows && rows.length >= 2) {
-		const headerRow = rows[0];
-		const headerCells = headerRow.match(MARKDOWN_CELLS_REGEX);
-		const hyphenRow = rows[1];
-		const hyphenCells = hyphenRow.match(MARKDOWN_CELLS_REGEX);
-
-		if (hyphenCells.length < headerCells.length) return false;
-
-		for (let j = 0; j < hyphenCells.length; j++) {
-			const cell = hyphenCells[j];
-			if (!cell.match(MARKDOWN_HYPHEN_CELL_REGEX)) return false;
-		}
-		return true;
-	}
-	return false;
+const countNumMatch = (input: string, regex: RegExp): number => {
+	return (input.match(regex) || []).length;
 };
 
 export const isNumber = (input: string): boolean => {
-	return (input.match(NUMBER_REGEX) || []).length !== 0;
+	return isMatch(input, NUMBER_REGEX);
 };
 
 export const isDate = (input: string): boolean => {
-	return (input.match(DATE_REGEX) || []).length !== 0;
+	return isMatch(input, DATE_REGEX);
 };
 
 export const isCheckbox = (input: string): boolean => {
-	return (input.match(CHECKBOX_REGEX) || []).length !== 0;
+	return isMatch(input, CHECKBOX_REGEX);
 };
 
 export const isTag = (input: string): boolean => {
-	return (input.match(TAG_REGEX) || []).length !== 0;
+	return isMatch(input, TAG_REGEX);
 };
 
 export const isCheckboxChecked = (input: string): boolean => {
-	return (input.match(CHECKBOX_CHECKED_REGEX) || []).length !== 0;
+	return isMatch(input, CHECKBOX_CHECKED_REGEX);
 };
 
 /**
- * Checks to see if input string starts and ends with double square brackets
+ * Counts the number of tags in a string.
  * @param input The input string
- * @returns Has square brackets or not
+ * @returns The number of tags in the input string
  */
-export const hasSquareBrackets = (input: string): boolean => {
-	if (input.match(/(^\[\[)(.*)(]]$)/)) return true;
-	return false;
+export const countNumTags = (input: string): number => {
+	return countNumMatch(input, TAGS_REGEX);
 };

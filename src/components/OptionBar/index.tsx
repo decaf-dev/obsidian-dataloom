@@ -1,22 +1,14 @@
 import React, { useMemo } from "react";
 
 import { SortDir } from "src/services/sort/types";
+import { findSortIcon } from "src/services/icon/utils";
+import { TableSettings, Cell, TableModel } from "src/services/table/types";
 
 import "./styles.css";
-import { findSortIcon } from "src/services/icon/utils";
-import { Header } from "src/services/appData/state/types";
 
 interface SortBubbleProps {
 	sortDir: SortDir;
 	content: string;
-}
-
-interface SortButtonListProps {
-	bubbles: { sortDir: SortDir; content: string }[];
-}
-
-interface OptionBarProps {
-	headers: Header[];
 }
 
 const SortBubble = ({ sortDir, content }: SortBubbleProps) => {
@@ -28,6 +20,10 @@ const SortBubble = ({ sortDir, content }: SortBubbleProps) => {
 		</div>
 	);
 };
+
+interface SortButtonListProps {
+	bubbles: { sortDir: SortDir; content: string }[];
+}
 
 const SortBubbleList = ({ bubbles }: SortButtonListProps) => {
 	return (
@@ -43,17 +39,31 @@ const SortBubbleList = ({ bubbles }: SortButtonListProps) => {
 	);
 };
 
-export default function OptionBar({ headers }: OptionBarProps) {
+interface Props {
+	model: TableModel;
+	settings: TableSettings;
+}
+export default function OptionBar({ model, settings }: Props) {
 	const bubbles = useMemo(() => {
-		return headers
-			.filter((header) => header.sortDir !== SortDir.NONE)
-			.map((header) => {
+		return model.columns
+			.map((columnId) => {
+				const cell = model.cells.find(
+					(c) => c.columnId === columnId && c.rowId == model.rows[0]
+				);
+				return cell;
+			})
+			.filter((cell) => {
+				const { sortDir } = settings.columns[cell.columnId];
+				return sortDir !== SortDir.NONE;
+			})
+			.map((cell, i) => {
+				const { sortDir } = settings.columns[cell.columnId];
 				return {
-					content: header.content,
-					sortDir: header.sortDir,
+					content: cell.html,
+					sortDir,
 				};
 			});
-	}, [headers]);
+	}, [model]);
 
 	return (
 		<div className="NLT__option-bar">

@@ -1,13 +1,6 @@
 import React from "react";
 
 import parse from "html-react-parser";
-import {
-	parseFileLinks,
-	parseURLs,
-	parseBoldMarkdown,
-	parseItalicMarkdown,
-	parseHighlightMarkdown,
-} from "src/services/string/parsers";
 interface Props {
 	content: string;
 	shouldWrapOverflow: boolean;
@@ -19,12 +12,6 @@ export default function TextCell({
 	shouldWrapOverflow,
 	useAutoWidth,
 }: Props) {
-	content = parseURLs(content);
-	content = parseFileLinks(content);
-	content = parseBoldMarkdown(content);
-	content = parseItalicMarkdown(content);
-	content = parseHighlightMarkdown(content);
-
 	let className = "NLT__text-cell";
 	if (useAutoWidth) {
 		className += " NLT__auto-width";
@@ -35,5 +22,5 @@ export default function TextCell({
 			className += " NLT__hide-overflow";
 		}
 	}
-	return <div className={className}>{parse(content)}</div>;
+	return <div className={className}> {parse(content)}</div>;
 }

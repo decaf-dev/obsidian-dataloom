@@ -1,6 +1,6 @@
 import React from "react";
-import { isValidCellContent } from "src/services/appData/state/utils";
-import { CellType } from "src/services/appData/state/types";
+import { isValidCellContent } from "src/services/table/utils";
+import { CellType } from "src/services/table/types";
 
 import "./styles.css";
 

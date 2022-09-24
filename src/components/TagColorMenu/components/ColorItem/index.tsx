@@ -1,7 +1,7 @@
 import React from "react";
 
 import { findColorClass } from "src/services/color";
-import { uppercaseFirst } from "src/services/string/adders";
+import { uppercaseFirst } from "src/services/string/modify";
 import "./styles.css";
 
 interface Props {

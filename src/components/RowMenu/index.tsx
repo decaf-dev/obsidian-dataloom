@@ -3,19 +3,19 @@ import React, { useEffect, useMemo } from "react";
 import IconButton from "../IconButton";
 import Menu from "../Menu";
 import RowMenuItem from "./components/RowMenuItem";
-import { useMenuId } from "../MenuProvider";
+import { useMenu } from "../MenuProvider";
 
 import { Icon } from "src/services/icon/types";
 import { usePositionRef } from "src/services/hooks";
-import { useId } from "src/services/hooks";
-import { numToPx, pxToNum } from "src/services/string/parsers";
+import { useMenuId } from "src/services/hooks";
+import { numToPx, pxToNum } from "src/services/string/conversion";
 
 import "./styles.css";
 
 interface Props {
 	rowId: string;
 	positionUpdateTime: number;
-	onDeleteClick: (id: string) => void;
+	onDeleteClick: (rowId: string) => void;
 }
 
 export default function RowMenu({
@@ -23,9 +23,9 @@ export default function RowMenu({
 	positionUpdateTime,
 	onDeleteClick,
 }: Props) {
-	const menuId = useId();
+	const menuId = useMenuId();
 	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
-		useMenuId(menuId);
+		useMenu(menuId);
 
 	const { positionRef, position } = usePositionRef([positionUpdateTime]);
 
@@ -36,11 +36,15 @@ export default function RowMenu({
 	}, [isMenuRequestingClose]);
 
 	function handleButtonClick(e: React.MouseEvent) {
-		openMenu();
+		if (isMenuOpen) {
+			closeMenu();
+		} else {
+			openMenu();
+		}
 	}
 
-	function handleDeleteClick(id: string) {
-		onDeleteClick(id);
+	function handleDeleteClick(rowId: string) {
+		onDeleteClick(rowId);
 		closeMenu();
 	}
 

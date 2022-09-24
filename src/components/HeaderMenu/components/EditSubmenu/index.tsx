@@ -4,35 +4,37 @@ import Submenu from "../Submenu";
 import Button from "src/components/Button";
 import Switch from "src/components/Switch";
 
-import { CellType } from "src/services/appData/state/types";
+import { CellType } from "src/services/table/types";
 import Stack from "src/components/Stack";
 
 interface Props {
+	canDeleteColumn: boolean;
 	title: string;
-	headerId: string;
-	headerType: string;
-	headerName: string;
+	columnId: string;
+	columnType: string;
+	columnContent: string;
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
-	onHeaderNameChange: (name: string) => void;
-	onAutoWidthToggle: (headerId: string, val: boolean) => void;
-	onWrapOverflowToggle: (headerId: string, val: boolean) => void;
-	onHeaderDeleteClick: (headerId: string) => void;
+	onNameChange: (name: string) => void;
+	onAutoWidthToggle: (columnId: string, value: boolean) => void;
+	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
+	onDeleteClick: (columnId: string) => void;
 	onBackClick: () => void;
 }
 
 export default function EditMenu({
+	canDeleteColumn,
 	title,
-	headerId,
-	headerType,
-	headerName,
+	columnId,
+	columnType,
+	columnContent,
 	shouldWrapOverflow,
 	useAutoWidth,
-	onHeaderNameChange,
+	onNameChange,
 	onAutoWidthToggle,
 	onWrapOverflowToggle,
 	onBackClick,
-	onHeaderDeleteClick,
+	onDeleteClick,
 }: Props) {
 	return (
 		<Submenu title={title} onBackClick={onBackClick}>
@@ -42,18 +44,18 @@ export default function EditMenu({
 					<input
 						className="NLT__header-menu-input"
 						autoFocus
-						value={headerName}
-						onChange={(e) => onHeaderNameChange(e.target.value)}
+						value={columnContent}
+						onChange={(e) => onNameChange(e.target.value)}
 					/>
 				</>
-				{(headerType === CellType.TEXT ||
-					headerType === CellType.NUMBER) && (
+				{(columnType === CellType.TEXT ||
+					columnType === CellType.NUMBER) && (
 					<>
 						<p className="NLT__label">Auto Width</p>
 						<Switch
 							isChecked={useAutoWidth}
 							onToggle={(value) =>
-								onAutoWidthToggle(headerId, value)
+								onAutoWidthToggle(columnId, value)
 							}
 						/>
 						{!useAutoWidth && (
@@ -62,16 +64,18 @@ export default function EditMenu({
 								<Switch
 									isChecked={shouldWrapOverflow}
 									onToggle={(value) =>
-										onWrapOverflowToggle(headerId, value)
+										onWrapOverflowToggle(columnId, value)
 									}
 								/>
 							</>
 						)}
 					</>
 				)}
-				<Button onClick={() => onHeaderDeleteClick(headerId)}>
-					Delete
-				</Button>
+				{canDeleteColumn && (
+					<Button onClick={() => onDeleteClick(columnId)}>
+						Delete
+					</Button>
+				)}
 			</Stack>
 		</Submenu>
 	);

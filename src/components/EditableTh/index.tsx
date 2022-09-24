@@ -3,47 +3,54 @@ import React, { useEffect, useRef } from "react";
 import HeaderMenu from "../HeaderMenu";
 
 import "./styles.css";
-import { useId, usePositionRef } from "src/services/hooks";
-import { useMenuId } from "../MenuProvider";
+import { useMenuId, usePositionRef } from "src/services/hooks";
+import { useMenu } from "../MenuProvider";
 
 import { CSS_MEASUREMENT_PIXEL_REGEX } from "src/services/string/regex";
-import { numToPx, pxToNum } from "src/services/string/parsers";
+import { numToPx, pxToNum } from "src/services/string/conversion";
 import { MIN_COLUMN_WIDTH_PX } from "src/constants";
 import { SortDir } from "src/services/sort/types";
-import { CellType } from "src/services/appData/state/types";
+import { CellType } from "src/services/table/types";
+
+import parse from "html-react-parser";
+
 interface Props {
-	id: string;
-	index: number;
+	cellId: string;
+	columnIndex: number;
+	columnId: string;
 	width: string;
-	numHeaders: number;
+	numColumns: number;
 	positionUpdateTime: number;
 	content: string;
+	textContent: string;
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
 	sortDir: SortDir;
 	type: string;
-	onMoveColumnClick: (id: string, moveRight: boolean) => void;
-	onSortSelect: (id: string, sortDir: SortDir) => void;
-	onInsertColumnClick: (id: string, insertRight: boolean) => void;
-	onTypeSelect: (id: string, type: CellType) => void;
-	onDeleteClick: (id: string) => void;
-	onSaveClick: (id: string, content: string) => void;
-	onWidthChange: (id: string, width: string) => void;
-	onAutoWidthToggle: (id: string, value: boolean) => void;
-	onWrapOverflowToggle: (id: string, value: boolean) => void;
+	onMoveColumnClick: (columnId: string, moveRight: boolean) => void;
+	onSortSelect: (columnId: string, sortDir: SortDir) => void;
+	onInsertColumnClick: (columnId: string, insertRight: boolean) => void;
+	onTypeSelect: (cellId: string, columnId: string, type: CellType) => void;
+	onDeleteClick: (columnId: string) => void;
+	onSaveClick: (cellId: string, content: string) => void;
+	onWidthChange: (columnId: string, width: string) => void;
+	onAutoWidthToggle: (columnId: string, value: boolean) => void;
+	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
 }
 
 export default function EditableTh({
-	id,
-	index,
+	cellId,
+	columnIndex,
+	columnId,
 	width,
 	positionUpdateTime,
 	content,
+	textContent,
 	useAutoWidth,
 	shouldWrapOverflow,
 	type,
 	sortDir,
-	numHeaders,
+	numColumns,
 	onWidthChange,
 	onInsertColumnClick,
 	onMoveColumnClick,
@@ -54,9 +61,9 @@ export default function EditableTh({
 	onWrapOverflowToggle,
 	onAutoWidthToggle,
 }: Props) {
-	const menuId = useId();
+	const menuId = useMenuId();
 	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
-		useMenuId(menuId);
+		useMenu(menuId);
 	const { positionRef, position } = usePositionRef([positionUpdateTime]);
 	const mouseDownX = useRef(0);
 	const isResizing = useRef(false);
@@ -88,7 +95,7 @@ export default function EditableTh({
 			const newWidth = oldWidth + dist;
 
 			if (newWidth < MIN_COLUMN_WIDTH_PX) return;
-			onWidthChange(id, numToPx(newWidth));
+			onWidthChange(columnId, numToPx(newWidth));
 		}
 	}
 
@@ -111,7 +118,7 @@ export default function EditableTh({
 				onClick={handleHeaderClick}
 			>
 				<div className="NLT__th-container">
-					<div className="NLT__th-content">{content}</div>
+					<div className="NLT__th-content">{parse(textContent)}</div>
 					<div className="NLT__th-resize-container">
 						{!useAutoWidth && (
 							<div
@@ -141,28 +148,29 @@ export default function EditableTh({
 			</th>
 			<HeaderMenu
 				isOpen={isMenuOpen}
+				canDeleteColumn={numColumns > 1}
 				style={{
 					top: numToPx(
 						pxToNum(position.top) + pxToNum(position.height)
 					),
 					left: position.left,
 				}}
-				headerId={id}
+				columnId={columnId}
+				cellId={cellId}
 				shouldWrapOverflow={shouldWrapOverflow}
 				useAutoWidth={useAutoWidth}
 				id={menuId}
-				headerName={content}
-				index={index}
-				headerSortDir={sortDir}
-				headerType={type}
-				headerIndex={index}
-				numHeaders={numHeaders}
+				columnContent={content}
+				columnSortDir={sortDir}
+				columnType={type}
+				columnIndex={columnIndex}
+				numColumns={numColumns}
 				onOutsideClick={onSaveClick}
 				onSortSelect={onSortSelect}
 				onMoveColumnClick={onMoveColumnClick}
 				onInsertColumnClick={onInsertColumnClick}
 				onTypeSelect={onTypeSelect}
-				onHeaderDeleteClick={onDeleteClick}
+				onDeleteClick={onDeleteClick}
 				onClose={handleClose}
 				onAutoWidthToggle={onAutoWidthToggle}
 				onWrapOverflowToggle={onWrapOverflowToggle}
