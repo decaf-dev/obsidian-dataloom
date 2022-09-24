@@ -52,6 +52,10 @@ export default class NltPlugin extends Plugin {
 		return null;
 	};
 
+	isLivePreviewEnabled() {
+		return (this.app.vault as any).config?.livePreview;
+	}
+
 	/**
 	 * Called on plugin load.
 	 * This can be when the plugin is enabled or Obsidian is first opened.
@@ -93,6 +97,21 @@ export default class NltPlugin extends Plugin {
 					this.settings.data[newPath] = data;
 					this.saveSettings();
 				}
+			})
+		);
+		this.registerEvent(
+			this.app.workspace.on("codemirror", () => {
+				console.log("CODE MIRROR!");
+			})
+		);
+		this.registerEvent(
+			this.app.workspace.on("quick-preview", () => {
+				console.log("QUICK PREVIEW!");
+			})
+		);
+		this.registerEvent(
+			this.app.workspace.on("editor-change", () => {
+				console.log("EDITOR CHANGE!");
 			})
 		);
 	}
