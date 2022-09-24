@@ -82,28 +82,34 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	//TODO disable if live preview is not enabled
 	useEffect(() => {
 		let timer: any = null;
-		timer = setInterval(() => {
-			async function checkDirty() {
-				const dirty = plugin.settings.dirty;
-				if (dirty) {
-					const { viewMode: dirtyViewMode, tableId: dirtyTableId } =
-						dirty;
-					const shouldUpdate =
-						dirtyTableId === tableId && dirtyViewMode !== viewMode;
-					if (shouldUpdate) {
-						setLoading(true);
-						plugin.settings.dirty = null;
-						await plugin.saveSettings();
-						const state = await deserializeTable(plugin, tableId);
-						setTableState(state);
-						setTimeout(() => {
-							setLoading(false);
-						}, 300);
-					}
+
+		async function checkDirty() {
+			const dirty = plugin.settings.dirty;
+			if (dirty) {
+				const { viewMode: dirtyViewMode, tableId: dirtyTableId } =
+					dirty;
+				const shouldUpdate =
+					dirtyTableId === tableId && dirtyViewMode !== viewMode;
+				if (shouldUpdate) {
+					setLoading(true);
+					plugin.settings.dirty = null;
+					await plugin.saveSettings();
+					const state = await deserializeTable(plugin, tableId);
+					setTableState(state);
+					setTimeout(() => {
+						setLoading(false);
+					}, 300);
 				}
 			}
-			checkDirty();
-		}, plugin.settings.syncInterval);
+		}
+
+		function livePreviewSync() {
+			timer = setInterval(() => {
+				checkDirty();
+			}, plugin.settings.syncInterval);
+		}
+
+		if (plugin.isLivePreviewEnabled()) livePreviewSync();
 		return () => {
 			clearInterval(timer);
 		};

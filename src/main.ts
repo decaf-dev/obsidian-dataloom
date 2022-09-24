@@ -52,6 +52,10 @@ export default class NltPlugin extends Plugin {
 		return null;
 	};
 
+	isLivePreviewEnabled() {
+		return (this.app.vault as any).config?.livePreview;
+	}
+
 	/**
 	 * Called on plugin load.
 	 * This can be when the plugin is enabled or Obsidian is first opened.
