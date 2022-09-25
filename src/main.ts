@@ -92,21 +92,6 @@ export default class NltPlugin extends Plugin {
 	}
 
 	registerEvents() {
-		//Our persisted data uses a key of the file path and then stores an object mapping
-		//to a table id and an TableModel object.
-		//If the file path changes, we want to update our cache so that the data is still accessible.
-		this.registerEvent(
-			this.app.vault.on("rename", (file, oldPath) => {
-				if (this.settings.data[oldPath]) {
-					const newPath = file.path;
-					const data = { ...this.settings.data[oldPath] };
-					delete this.settings.data[oldPath];
-					this.settings.data[newPath] = data;
-					this.saveSettings();
-				}
-			})
-		);
-
 		this.registerEvent(
 			this.app.workspace.on("resize", () => {
 				store.dispatch(closeAllMenus());
