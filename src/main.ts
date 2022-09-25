@@ -17,7 +17,7 @@ import {
 	getTopLevelMenu,
 	closeTopLevelMenu,
 	timeSinceMenuOpen,
-} from "./services/redux/globalSlice";
+} from "./services/redux/menuSlice";
 import { store } from "./services/redux/store";
 import { TableState } from "./services/table/types";
 
@@ -44,6 +44,8 @@ interface FocusedTable {
 	tableId: string;
 	viewMode: MarkdownViewModeType;
 }
+
+const COMPONENT_NAME = "NltPlugin";
 export default class NltPlugin extends Plugin {
 	settings: NltSettings;
 	focused: FocusedTable | null = null;
@@ -94,14 +96,16 @@ export default class NltPlugin extends Plugin {
 	registerEvents() {
 		this.registerEvent(
 			this.app.workspace.on("resize", () => {
-				store.dispatch(closeAllMenus());
+				const topLevelMenu = getTopLevelMenu(store.getState());
+				if (topLevelMenu !== null) store.dispatch(closeAllMenus());
 			})
 		);
 
 		this.registerEvent(
 			this.app.workspace.on("layout-change", () => {
 				this.app.workspace.on("resize", () => {
-					store.dispatch(closeAllMenus());
+					const topLevelMenu = getTopLevelMenu(store.getState());
+					if (topLevelMenu !== null) store.dispatch(closeAllMenus());
 				});
 			})
 		);
@@ -109,12 +113,10 @@ export default class NltPlugin extends Plugin {
 		this.registerDomEvent(activeDocument, "keydown", async (e) => {
 			if (e.key === "Enter") {
 				const topLevelMenu = getTopLevelMenu(store.getState());
-				if (topLevelMenu !== null) {
-					console.log("ENTER KEY PRESSED!");
-					store.dispatch(closeTopLevelMenu());
-				}
+				if (topLevelMenu !== null) store.dispatch(closeTopLevelMenu());
 			}
 		});
+
 		this.registerDomEvent(activeDocument, "click", (el: any) => {
 			const topLevelMenu = getTopLevelMenu(store.getState());
 			const time = timeSinceMenuOpen(store.getState());
@@ -123,14 +125,13 @@ export default class NltPlugin extends Plugin {
 					const element = el.path[i];
 					if (element instanceof HTMLElement) {
 						if (element.id === topLevelMenu.id) break;
+						//If we've clicked in the app but not in the menu
 						if (element.className.includes("NLT__app")) {
-							console.log("CLOSING TOP");
 							store.dispatch(closeTopLevelMenu());
 							break;
 						}
 						//If we're clicking outside of the app
 						if (element.className.includes("view-content")) {
-							console.log("CLOSING ALL");
 							store.dispatch(closeAllMenus());
 							break;
 						}

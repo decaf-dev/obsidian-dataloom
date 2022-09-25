@@ -22,7 +22,7 @@ import { MenuLevel } from "src/services/menu/types";
 import { logFunc } from "src/services/debug";
 import { usePositionRef } from "src/services/hooks";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
-import { openMenu, isMenuOpen } from "src/services/redux/globalSlice";
+import { openMenu, isMenuOpen } from "src/services/redux/menuSlice";
 
 interface Props {
 	columnType: string;

@@ -19,7 +19,7 @@ import {
 	openMenu,
 	closeTopLevelMenu,
 	isMenuOpen,
-} from "src/services/redux/globalSlice";
+} from "src/services/redux/menuSlice";
 
 interface Props {
 	cellId: string;

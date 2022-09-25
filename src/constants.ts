@@ -3,8 +3,7 @@ export const DEBUG = {
 	APP: true,
 	SAVE_APP_DATA: true,
 	EDITABLE_TD: false,
-	FOCUS_PROVIDER: false,
-	MENU_PROVIDER: false,
+	MENU: false,
 };
 
 export const COLOR: { [color: string]: string } = {

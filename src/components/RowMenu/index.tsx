@@ -11,7 +11,7 @@ import {
 	openMenu,
 	closeTopLevelMenu,
 	isMenuOpen,
-} from "src/services/redux/globalSlice";
+} from "src/services/redux/menuSlice";
 import { numToPx, pxToNum } from "src/services/string/conversion";
 
 import "./styles.css";

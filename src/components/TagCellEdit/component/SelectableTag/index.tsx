@@ -17,7 +17,7 @@ import {
 	openMenu,
 	isMenuOpen,
 	closeTopLevelMenu,
-} from "src/services/redux/globalSlice";
+} from "src/services/redux/menuSlice";
 
 import "./styles.css";
 

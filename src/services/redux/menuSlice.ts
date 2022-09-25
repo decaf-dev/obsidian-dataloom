@@ -2,27 +2,27 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { Menu } from "src/services/menu/types";
 import type { RootState } from "./store";
+import { DEBUG } from "src/constants";
+import { logFunc } from "../debug";
 
-interface GlobalState {
+interface MenuState {
 	openMenus: Menu[];
 	menuOpenTime: number;
 }
 
-const initialState: GlobalState = {
+const initialState: MenuState = {
 	openMenus: [],
 	menuOpenTime: 0,
 };
 
-export const globalSlice = createSlice({
-	name: "global",
+export const menuSlice = createSlice({
+	name: "menu",
 	initialState,
 	reducers: {
 		openMenu: (state, action: PayloadAction<Menu>) => {
-			console.log("ATTEMPTING OPEN MENU");
 			const canOpen =
 				state.openMenus.find((m) => m.level < action.payload.level) ||
 				state.openMenus.length === 0;
-			console.log("canOpen", canOpen);
 			if (!canOpen) return;
 			state.openMenus.push(action.payload);
 			state.menuOpenTime = Date.now();
@@ -36,20 +36,19 @@ export const globalSlice = createSlice({
 	},
 });
 
-export const { openMenu, closeTopLevelMenu, closeAllMenus } =
-	globalSlice.actions;
+export const { openMenu, closeTopLevelMenu, closeAllMenus } = menuSlice.actions;
 
 export const isMenuOpen = (state: RootState, menu: Menu) =>
-	state.global.openMenus.find((m) => m.id === menu.id) ? true : false;
+	state.menu.openMenus.find((m) => m.id === menu.id) ? true : false;
 
 export const getTopLevelMenu = (state: RootState): Menu | null => {
-	if (state.global.openMenus.length !== 0)
-		return state.global.openMenus[state.global.openMenus.length - 1];
+	if (state.menu.openMenus.length !== 0)
+		return state.menu.openMenus[state.menu.openMenus.length - 1];
 	return null;
 };
 
 export const timeSinceMenuOpen = (state: RootState): number => {
-	return Date.now() - state.global.menuOpenTime;
+	return Date.now() - state.menu.menuOpenTime;
 };
 
-export default globalSlice.reducer;
+export default menuSlice.reducer;
