@@ -6,13 +6,21 @@ import { findColorClass } from "src/services/color";
 
 import IconButton from "src/components/IconButton";
 import TagColorMenu from "src/components/TagColorMenu";
-import { useMenu } from "src/components/MenuProvider";
-import { useMenuId, usePositionRef } from "src/services/hooks";
+import { usePositionRef } from "src/services/hooks";
 import { numToPx, pxToNum } from "src/services/string/conversion";
 
 import { Icon } from "src/services/icon/types";
-import { MENU_LEVEL } from "src/constants";
+import { MenuLevel } from "src/services/menu/types";
+import { useMenu } from "src/services/menu/hooks";
+import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
+import {
+	openMenu,
+	isMenuOpen,
+	closeTopLevelMenu,
+} from "src/services/redux/globalSlice";
+
 import "./styles.css";
+
 interface Props {
 	id: string;
 	content: string;
@@ -30,22 +38,14 @@ export default function SelectableTag({
 	onClick,
 	onColorChange,
 }: Props) {
-	const menuId = useMenuId();
-	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } = useMenu(
-		menuId,
-		MENU_LEVEL.TWO
-	);
+	const menu = useMenu(MenuLevel.TWO);
+	const dispatch = useAppDispatch();
 	const { positionRef, position } = usePositionRef([positionUpdateTime]);
-
-	useEffect(() => {
-		if (isMenuRequestingClose) {
-			closeMenu();
-		}
-	}, [isMenuRequestingClose]);
+	const isOpen = useAppSelector((state) => isMenuOpen(state, menu));
 
 	function handleColorChange(color: string) {
 		onColorChange(id, color);
-		closeMenu();
+		dispatch(closeTopLevelMenu());
 	}
 
 	let tagClass = "NLT__tag";
@@ -65,12 +65,12 @@ export default function SelectableTag({
 					//Stop propagation so we don't call the onClick handler
 					//on this div
 					e.stopPropagation();
-					openMenu();
+					dispatch(openMenu(menu));
 				}}
 			/>
 			<TagColorMenu
-				menuId={menuId}
-				isOpen={isMenuOpen}
+				menuId={menu.id}
+				isOpen={isOpen}
 				selectedColor={color}
 				style={{
 					top: numToPx(pxToNum(position.top) - 77),

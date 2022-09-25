@@ -12,11 +12,18 @@ import { NltTable } from "./NltTable";
 import { addRow, addColumn } from "./services/internal/add";
 import { serializeTable } from "./services/io/serialize";
 import { createEmptyMarkdownTable } from "./services/random";
+import {
+	closeAllMenus,
+	getTopLevelMenu,
+	closeTopLevelMenu,
+	timeSinceMenuOpen,
+} from "./services/redux/globalSlice";
+import { store } from "./services/redux/store";
 import { TableState } from "./services/table/types";
 
 export interface NltSettings {
 	data: {
-		[tableIndex: string]: TableState;
+		[tableId: string]: TableState;
 	};
 	tableFolder: string;
 	dirty: {
@@ -99,6 +106,53 @@ export default class NltPlugin extends Plugin {
 				}
 			})
 		);
+
+		this.registerEvent(
+			this.app.workspace.on("resize", () => {
+				store.dispatch(closeAllMenus());
+			})
+		);
+
+		this.registerEvent(
+			this.app.workspace.on("layout-change", () => {
+				this.app.workspace.on("resize", () => {
+					store.dispatch(closeAllMenus());
+				});
+			})
+		);
+
+		this.registerDomEvent(activeDocument, "keydown", async (e) => {
+			if (e.key === "Enter") {
+				const topLevelMenu = getTopLevelMenu(store.getState());
+				if (topLevelMenu !== null) {
+					console.log("ENTER KEY PRESSED!");
+					store.dispatch(closeTopLevelMenu());
+				}
+			}
+		});
+		this.registerDomEvent(activeDocument, "click", (el: any) => {
+			const topLevelMenu = getTopLevelMenu(store.getState());
+			const time = timeSinceMenuOpen(store.getState());
+			if (topLevelMenu !== null && time > 100) {
+				for (let i = 0; i < el.path.length; i++) {
+					const element = el.path[i];
+					if (element instanceof HTMLElement) {
+						if (element.id === topLevelMenu.id) break;
+						if (element.className.includes("NLT__app")) {
+							console.log("CLOSING TOP");
+							store.dispatch(closeTopLevelMenu());
+							break;
+						}
+						//If we're clicking outside of the app
+						if (element.className.includes("view-content")) {
+							console.log("CLOSING ALL");
+							store.dispatch(closeAllMenus());
+							break;
+						}
+					}
+				}
+			}
+		});
 	}
 
 	registerCommands() {

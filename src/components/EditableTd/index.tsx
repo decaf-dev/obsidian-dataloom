@@ -17,10 +17,12 @@ import { CellType } from "src/services/table/types";
 import "./styles.css";
 
 import { DEBUG } from "../../constants";
-import { useMenuId } from "src/services/hooks";
+import { useMenu } from "src/services/menu/hooks";
+import { MenuLevel } from "src/services/menu/types";
 import { logFunc } from "src/services/debug";
-import { useMenu } from "src/components/MenuProvider";
 import { usePositionRef } from "src/services/hooks";
+import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
+import { openMenu, isMenuOpen } from "src/services/redux/globalSlice";
 
 interface Props {
 	columnType: string;
@@ -34,11 +36,7 @@ interface Props {
 	useAutoWidth: boolean;
 	onRemoveTagClick: (cellId: string, tagId: string) => void;
 	onTagClick: (cellId: string, tagId: string) => void;
-	onContentChange: (
-		cellId: string,
-		updatedContent: string,
-		saveOnChange?: boolean
-	) => void;
+	onContentChange: (cellId: string, updatedMarkdown: string) => void;
 	onAddTag: (cellId: string, inputText: string, color: string) => void;
 	onColorChange: (tagId: string, color: string) => void;
 	onSaveContent: () => void;
@@ -65,17 +63,14 @@ export default function EditableTd({
 }: Props) {
 	const [tagInputText, setTagInputText] = useState("");
 	const [tagColor] = useState(randomColor());
-	const menuId = useMenuId();
-
-	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
-		useMenu(menuId);
+	const menu = useMenu(MenuLevel.ONE);
+	const isOpen = useAppSelector((state) => isMenuOpen(state, menu));
+	const dispatch = useAppDispatch();
 
 	const { positionRef, position } = usePositionRef([
 		content.length,
 		positionUpdateTime,
 	]);
-
-	const [wasContentUpdated, setContentUpdate] = useState(false);
 
 	//If we've already mounted, meaning the application has loaded
 	//and we updated a tag, then we will wait for it to update,
@@ -93,37 +88,37 @@ export default function EditableTd({
 	// 	}
 	// }, [tagUpdate.cellId, tagUpdate.time]);
 
-	useEffect(() => {
-		if (DEBUG.EDITABLE_TD)
-			logFunc(COMPONENT_NAME, "useEffect", {
-				isMenuRequestingClose,
-			});
-		if (isMenuRequestingClose) {
-			if (columnType === CellType.TAG) {
-				if (tagInputText !== "") {
-					// const tag = tags.find(
-					// 	(tag) => tag.content === tagInputText
-					// );
-					// if (tag) {
-					// 	onTagClick(id, tag.id);
-					// } else {
-					// 	onAddTag(id, headerId, tagInputText, tagColor);
-					// }
-					setTagInputText("");
-				} else {
-					closeMenu();
-				}
-			} else {
-				closeMenu();
-				//If we're just closing the menu from an outside click,
-				//then don't save unless the content actually updated
-				if (wasContentUpdated) {
-					onSaveContent();
-					setContentUpdate(false);
-				}
-			}
-		}
-	}, [isMenuRequestingClose]);
+	// useEffect(() => {
+	// 	if (DEBUG.EDITABLE_TD)
+	// 		logFunc(COMPONENT_NAME, "useEffect", {
+	// 			isMenuRequestingClose,
+	// 		});
+	// 	if (isMenuRequestingClose) {
+	// 		if (columnType === CellType.TAG) {
+	// 			if (tagInputText !== "") {
+	// 				// const tag = tags.find(
+	// 				// 	(tag) => tag.content === tagInputText
+	// 				// );
+	// 				// if (tag) {
+	// 				// 	onTagClick(id, tag.id);
+	// 				// } else {
+	// 				// 	onAddTag(id, headerId, tagInputText, tagColor);
+	// 				// }
+	// 				setTagInputText("");
+	// 			} else {
+	// 				closeMenu(menu);
+	// 			}
+	// 		} else {
+	// 			closeMenu(menu);
+	// 			//If we're just closing the menu from an outside click,
+	// 			//then don't save unless the content actually updated
+	// 			if (wasContentUpdated) {
+	// 				onSaveContent();
+	// 				setContentUpdate(false);
+	// 			}
+	// 		}
+	// 	}
+	// }, [isMenuRequestingClose]);
 
 	async function handleCellContextClick() {
 		if (DEBUG.EDITABLE_TD)
@@ -142,7 +137,7 @@ export default function EditableTd({
 
 		//If we clicked on the link for a file or tag, return
 		if (el.nodeName === "A") return;
-		openMenu();
+		dispatch(openMenu(menu));
 	}
 
 	function handleAddTag(value: string) {
@@ -155,21 +150,18 @@ export default function EditableTd({
 
 	function handleTextInputChange(updatedContent: string) {
 		onContentChange(cellId, updatedContent);
-		setContentUpdate(true);
 	}
 
 	function handleNumberInputChange(updatedContent: string) {
 		onContentChange(cellId, updatedContent);
-		setContentUpdate(true);
 	}
 
 	function handleDateChange(updatedContent: string) {
 		onContentChange(cellId, updatedContent);
-		setContentUpdate(true);
 	}
 
 	function handleCheckboxChange(updatedContent: string) {
-		onContentChange(cellId, updatedContent, true);
+		onContentChange(cellId, updatedContent);
 	}
 
 	function renderCell(): React.ReactNode {
@@ -215,8 +207,8 @@ export default function EditableTd({
 			case CellType.TEXT:
 				return (
 					<TextCellEdit
-						menuId={menuId}
-						isOpen={isMenuOpen}
+						menuId={menu.id}
+						isOpen={isOpen}
 						style={{
 							...position,
 							...((useAutoWidth || !shouldWrapOverflow) && {
@@ -232,8 +224,8 @@ export default function EditableTd({
 			case CellType.NUMBER:
 				return (
 					<NumberCellEdit
-						menuId={menuId}
-						isOpen={isMenuOpen}
+						menuId={menu.id}
+						isOpen={isOpen}
 						style={{
 							...position,
 							...((useAutoWidth || !shouldWrapOverflow) && {
@@ -255,7 +247,7 @@ export default function EditableTd({
 			// 		positionUpdateTime={positionUpdateTime}
 			// 		tags={tags}
 			// 		menuId={menuId}
-			// 		isOpen={isMenuOpen}
+			// 		isOpen={isOpen}
 			// 		style={{
 			// 			top: position.top,
 			// 			left: position.left,
@@ -271,8 +263,8 @@ export default function EditableTd({
 			case CellType.DATE:
 				return (
 					<DateCellEdit
-						menuId={menuId}
-						isOpen={isMenuOpen}
+						menuId={menu.id}
+						isOpen={isOpen}
 						style={position}
 						content={content}
 						onDateChange={handleDateChange}

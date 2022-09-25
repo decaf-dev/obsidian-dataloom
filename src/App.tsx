@@ -16,11 +16,7 @@ import { logFunc } from "./services/debug";
 import { DEFAULT_COLUMN_SETTINGS } from "./services/table/types";
 import { initialCell } from "./services/io/utils";
 import { getUniqueTableId } from "./services/table/utils";
-import {
-	useCloseMenusOnScroll,
-	useDidMountEffect,
-	useSaveTime,
-} from "./services/hooks";
+import { useDidMountEffect, useSaveTime } from "./services/hooks";
 // import { sortRows } from "./services/sort/sort";
 import { checkboxToContent, contentToCheckbox } from "./services/table/utils";
 import { TableState } from "./services/table/types";
@@ -48,9 +44,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	const [isLoading, setLoading] = useState(true);
 
 	const { saveTime, shouldSaveModel, saveData } = useSaveTime();
-
-	useCloseMenusOnScroll("markdown-preview-view");
-	useCloseMenusOnScroll("NLT__table-wrapper");
 
 	//Load table on mount
 	useEffect(() => {
@@ -254,15 +247,11 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		sortData();
 	}
 
-	function handleCellContentChange(
-		cellId: string,
-		updatedContent: string,
-		saveOnChange = false
-	) {
+	function handleCellContentChange(cellId: string, updatedMarkdown: string) {
 		if (DEBUG.APP) {
 			logFunc(COMPONENT_NAME, "handleCellContentChange", {
 				cellId,
-				updatedContent,
+				updatedMarkdown,
 			});
 		}
 
@@ -275,8 +264,8 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 						if (cell.id === cellId) {
 							return {
 								...cell,
-								markdown: updatedContent,
-								html: markdownToHtml(updatedContent),
+								markdown: updatedMarkdown,
+								html: markdownToHtml(updatedMarkdown),
 							};
 						}
 						return cell;
@@ -284,7 +273,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				},
 			};
 		});
-		if (saveOnChange) saveData(true);
+		saveData(true, true);
 	}
 
 	function handleAddTag(cellId: string, content: string, color: string) {
