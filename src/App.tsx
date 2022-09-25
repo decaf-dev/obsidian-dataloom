@@ -27,6 +27,12 @@ import "./app.css";
 import { MarkdownViewModeType } from "obsidian";
 import { deserializeTable, markdownToHtml } from "./services/io/deserialize";
 import { randomColumnId, randomCellId } from "./services/random";
+import { useAppDispatch, useAppSelector } from "./services/redux/hooks";
+import {
+	closeAllMenus,
+	getTopLevelMenu,
+	updateMenuPosition,
+} from "./services/menu/menuSlice";
 
 interface Props {
 	plugin: NltPlugin;
@@ -43,6 +49,15 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	const [isLoading, setLoading] = useState(true);
 
 	const { saveTime, shouldSaveModel, saveData } = useSaveTime();
+
+	const tableIdWithMode = getUniqueTableId(tableId, viewMode);
+	const dispatch = useAppDispatch();
+	const topLevelMenu = useAppSelector((state) => getTopLevelMenu(state));
+
+	const handleTableScroll = () => {
+		if (topLevelMenu) dispatch(closeAllMenus());
+		dispatch(updateMenuPosition());
+	};
 
 	//Load table on mount
 	useEffect(() => {
@@ -668,13 +683,9 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	const { rows, columns, cells } = state.model;
 
 	return (
-		<div
-			id={getUniqueTableId(tableId, viewMode)}
-			className="NLT__app"
-			tabIndex={0}
-		>
+		<div id={tableIdWithMode} className="NLT__app" tabIndex={0}>
 			<OptionBar model={state.model} settings={state.settings} />
-			<div className="NLT__table-wrapper">
+			<div className="NLT__table-wrapper" onScroll={handleTableScroll}>
 				<Table
 					headers={columns.map((columnId, i) => {
 						const {

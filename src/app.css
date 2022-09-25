@@ -56,7 +56,7 @@
 }
 
 .NLT__table-wrapper {
-	overflow: auto;
+	overflow-x: auto;
 }
 
 /*

@@ -61,37 +61,6 @@ export const useThrottle = (eventTime: number, waitTime: number) => {
 	return shouldExecute;
 };
 
-export const useScrollTime = (className: string) => {
-	const [eventTime, setEventTime] = useState(0);
-	const [scrollTime, setScrollTime] = useState(0);
-
-	let el: Node | null = null;
-
-	const shouldExecute = useThrottle(eventTime, 150);
-
-	useEffect(() => {
-		if (shouldExecute) setScrollTime(Date.now());
-	}, [shouldExecute]);
-
-	useEffect(() => {
-		function handleScroll() {
-			setEventTime(Date.now());
-		}
-
-		el = document.getElementsByClassName(className)[0];
-		if (el) el.addEventListener("scroll", handleScroll);
-
-		return () => {
-			if (el) el.removeEventListener("scroll", handleScroll);
-		};
-	}, []);
-	return scrollTime;
-};
-
-export const useTableScrollTime = () => {
-	return useScrollTime("NLT__table-wrapper");
-};
-
 export const useSaveTime = () => {
 	const [eventTime, setEventTime] = useState(0);
 	const shouldExecute = useThrottle(eventTime, 150);
