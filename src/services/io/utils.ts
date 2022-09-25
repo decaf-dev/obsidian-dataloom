@@ -1,9 +1,8 @@
 import { Cell, ColumnId, RowId, TableModel } from "../table/types";
-import { TFile, TFolder } from "obsidian";
+import { TFile } from "obsidian";
 import NltPlugin from "../../main";
 
 import { createEmptyMarkdownTable } from "../random";
-import { SLASH_REGEX } from "../string/regex";
 
 /**
  * Produces front matter from the table model
@@ -59,15 +58,4 @@ export const initialCell = (
 		markdown,
 		html,
 	};
-};
-
-export const getColumnIndex = (
-	cellIndex: number,
-	numColumns: number
-): number => {
-	return cellIndex - numColumns * Math.floor(cellIndex / numColumns);
-};
-
-export const getRowIndex = (cellIndex: number, numColumns: number): number => {
-	return Math.ceil((cellIndex + 1) / numColumns) - 1;
 };

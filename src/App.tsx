@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import EditableTd from "./components/EditableTd";
 import Table from "./components/Table";
@@ -48,6 +48,10 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 
 	const [sortTime, setSortTime] = useState(0);
 	const [isLoading, setLoading] = useState(true);
+	const [saveTime, setSaveTime] = useState({
+		time: 0,
+		shouldSaveModel: false,
+	});
 
 	const dispatch = useAppDispatch();
 	const topLevelMenu = useAppSelector((state) => getTopLevelMenu(state));
@@ -57,9 +61,13 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		dispatch(updateMenuPosition());
 	}, 150);
 
-	const handleTableScroll = () => {
-		throttleTableScroll();
-	};
+	const throttlePositionUpdate = _.throttle(() => {
+		dispatch(updateMenuPosition());
+	}, 150);
+
+	const handleTableScroll = () => throttleTableScroll();
+
+	const handlePositionUpdate = () => throttlePositionUpdate();
 
 	//Load table on mount
 	useEffect(() => {
@@ -73,49 +81,61 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		load();
 	}, []);
 
+	//We run the throttle save in a useEffect because we want the table model to update
+	//with new changes before we save
+	useEffect(() => {
+		//If not mount
+		if (saveTime.time !== 0) {
+			throttleSave(saveTime.shouldSaveModel);
+		}
+	}, [saveTime]);
+
 	const throttleSave = _.throttle(async (shouldSaveModel: boolean) => {
-		await serializeTable(shouldSaveModel, plugin, state, tableId, viewMode);
+		const viewModesToUpdate: MarkdownViewModeType[] = [
+			viewMode === "source" ? "preview" : "source",
+		];
+		await serializeTable(
+			shouldSaveModel,
+			plugin,
+			state,
+			tableId,
+			viewModesToUpdate
+		);
 	}, 150);
 
 	const handleSaveData = (shouldSaveModel: boolean) =>
-		throttleSave(shouldSaveModel);
+		setSaveTime({ shouldSaveModel, time: Date.now() });
 
-	//Handles live preview
-	//TODO disable if live preview is not enabled
+	//Handles sync between live preview and reading mode
 	useEffect(() => {
 		let timer: any = null;
 
-		async function checkDirty() {
-			const dirty = plugin.settings.dirty;
-			if (dirty) {
-				const { viewMode: dirtyViewMode, tableId: dirtyTableId } =
-					dirty;
-				const shouldUpdate =
-					dirtyTableId === tableId && dirtyViewMode !== viewMode;
-				if (shouldUpdate) {
-					setLoading(true);
-					plugin.settings.dirty = null;
+		async function checkForUpdates() {
+			const { tableId: tId, viewModes } = plugin.settings.viewModeSync;
+			if (tId) {
+				const mode = viewModes.find((v) => v === viewMode);
+				if (mode && tableId === tId) {
+					const modeIndex = viewModes.indexOf(mode);
+					plugin.settings.viewModeSync.viewModes.splice(modeIndex, 1);
+					if (plugin.settings.viewModeSync.viewModes.length === 0)
+						plugin.settings.viewModeSync.tableId = null;
+					setTableState(plugin.settings.data[tableId]);
 					await plugin.saveSettings();
-					const state = await deserializeTable(plugin, tableId);
-					setTableState(state);
-					setTimeout(() => {
-						setLoading(false);
-					}, 300);
 				}
 			}
 		}
 
-		function livePreviewSync() {
+		function viewModeSync() {
 			timer = setInterval(() => {
-				checkDirty();
-			}, plugin.settings.syncInterval);
+				checkForUpdates();
+			}, 100);
 		}
 
-		if (plugin.isLivePreviewEnabled()) livePreviewSync();
+		viewModeSync();
 		return () => {
 			clearInterval(timer);
 		};
-	}, [plugin.settings.dirty]);
+	}, []);
 
 	//TODO add
 	// useDidMountEffect(() => {
@@ -221,7 +241,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				},
 			};
 		});
-		handleSaveData(true);
+		handleSaveData(false);
 	}
 
 	function handleHeaderSortSelect(columnId: string, sortDir: SortDir) {
@@ -346,6 +366,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			};
 		});
 		handleSaveData(true);
+		handlePositionUpdate();
 		//sortData();
 	}
 
@@ -366,7 +387,9 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				},
 			};
 		});
-		sortData();
+		handleSaveData(true);
+		handlePositionUpdate();
+		//sortData();
 	}
 
 	function handleHeaderWidthChange(columnId: string, width: string) {
@@ -391,7 +414,9 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				},
 			};
 		});
-		handleSaveData(true);
+		handleSaveData(false);
+		handlePositionUpdate();
+		dispatch(closeAllMenus());
 	}
 
 	function handleMoveColumnClick(columnId: string, moveRight: boolean) {
@@ -507,7 +532,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		// 		}),
 		// 	};
 		// });
-		handleSaveData(true);
+		handleSaveData(false);
 	}
 
 	function handleAutoWidthToggle(columnId: string, value: boolean) {
@@ -676,7 +701,12 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	const tableIdWithMode = getUniqueTableId(tableId, viewMode);
 
 	return (
-		<div id={tableIdWithMode} className="NLT__app" tabIndex={0}>
+		<div
+			id={tableIdWithMode}
+			data-id={tableId}
+			className="NLT__app"
+			tabIndex={0}
+		>
 			<OptionBar model={state.model} settings={state.settings} />
 			<div className="NLT__table-wrapper" onScroll={handleTableScroll}>
 				<Table
