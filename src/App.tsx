@@ -91,9 +91,12 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	}, [saveTime]);
 
 	const throttleSave = _.throttle(async (shouldSaveModel: boolean) => {
-		const viewModesToUpdate: MarkdownViewModeType[] = [
-			viewMode === "source" ? "preview" : "source",
-		];
+		const viewModesToUpdate: MarkdownViewModeType[] = [];
+		if (plugin.isLivePreviewEnabled()) {
+			viewModesToUpdate.push(
+				viewMode === "source" ? "preview" : "source"
+			);
+		}
 		await serializeTable(
 			shouldSaveModel,
 			plugin,
