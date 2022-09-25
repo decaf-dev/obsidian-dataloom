@@ -115,17 +115,12 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			if (tId) {
 				const mode = viewModes.find((v) => v === viewMode);
 				if (mode && tableId === tId) {
-					setLoading(true);
 					const modeIndex = viewModes.indexOf(mode);
 					plugin.settings.viewModeSync.viewModes.splice(modeIndex, 1);
 					if (plugin.settings.viewModeSync.viewModes.length === 0)
 						plugin.settings.viewModeSync.tableId = null;
+					setTableState(plugin.settings.data[tableId]);
 					await plugin.saveSettings();
-					const state = await deserializeTable(plugin, tableId);
-					setTableState(state);
-					setTimeout(() => {
-						setLoading(false);
-					}, 300);
 				}
 			}
 		}
@@ -133,7 +128,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		function viewModeSync() {
 			timer = setInterval(() => {
 				checkForUpdates();
-			}, 250);
+			}, 100);
 		}
 
 		viewModeSync();
