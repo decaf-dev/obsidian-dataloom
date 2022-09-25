@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 
 import HeaderMenu from "../HeaderMenu";
 
@@ -7,11 +7,11 @@ import { usePositionRef } from "src/services/hooks";
 
 import { CSS_MEASUREMENT_PIXEL_REGEX } from "src/services/string/regex";
 import { numToPx, pxToNum } from "src/services/string/conversion";
-import { MIN_COLUMN_WIDTH_PX } from "src/constants";
 import { SortDir } from "src/services/sort/types";
 import { CellType } from "src/services/table/types";
 import { useMenu } from "src/services/menu/hooks";
 import { MenuLevel } from "src/services/menu/types";
+import { MIN_COLUMN_WIDTH } from "src/services/table/constants";
 
 import parse from "html-react-parser";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
@@ -101,7 +101,7 @@ export default function EditableTh({
 			const dist = e.pageX - mouseDownX.current;
 			const newWidth = oldWidth + dist;
 
-			if (newWidth < MIN_COLUMN_WIDTH_PX) return;
+			if (newWidth < MIN_COLUMN_WIDTH) return;
 			onWidthChange(columnId, numToPx(newWidth));
 		}
 	}

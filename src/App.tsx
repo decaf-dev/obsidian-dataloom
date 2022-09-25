@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import EditableTd from "./components/EditableTd";
 import Table from "./components/Table";
@@ -8,7 +8,6 @@ import OptionBar from "./components/OptionBar";
 
 import { Cell, CellType } from "./services/table/types";
 import { serializeTable } from "./services/io/serialize";
-import { pxToNum } from "./services/string/conversion";
 import NltPlugin from "./main";
 import { SortDir } from "./services/sort/types";
 import { addRow, addColumn } from "./services/internal/add";
@@ -34,6 +33,7 @@ import {
 } from "./services/menu/menuSlice";
 
 import _ from "lodash";
+import { getTableSizing } from "./services/table/hooks";
 
 interface Props {
 	plugin: NltPlugin;
@@ -44,7 +44,17 @@ interface Props {
 const COMPONENT_NAME = "App";
 
 export default function App({ plugin, viewMode, tableId }: Props) {
-	const [state, setTableState] = useState<TableState>(null);
+	const [state, setTableState] = useState<TableState>({
+		cacheVersion: -1,
+		model: {
+			rows: [],
+			columns: [],
+			cells: [],
+		},
+		settings: {
+			columns: {},
+		},
+	});
 
 	const [sortTime, setSortTime] = useState(0);
 	const [isLoading, setLoading] = useState(true);
@@ -586,117 +596,21 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		handleSaveData(false);
 	}
 
-	function measureElement(
-		textContent: string,
+	const findCellWidth = (
+		columnType: string,
 		useAutoWidth: boolean,
-		columnWidth: string,
-		shouldWrapOverflow: boolean
-	): { width: number; height: number } {
-		const ruler = document.createElement("div");
+		calculatedWidth: string,
+		width: string
+	) => {
+		if (columnType !== CellType.TEXT && columnType !== CellType.NUMBER)
+			return width;
+		if (useAutoWidth) return calculatedWidth;
+		return width;
+	};
 
-		if (useAutoWidth) {
-			ruler.style.width = "max-content";
-			ruler.style.height = "auto";
-			ruler.style.overflowWrap = "normal";
-		} else {
-			ruler.style.width = columnWidth;
-			ruler.style.height = "max-content";
-			if (shouldWrapOverflow) {
-				ruler.style.overflowWrap = "break-word";
-			} else {
-				ruler.style.overflowWrap = "normal";
-				ruler.style.whiteSpace = "nowrap";
-				ruler.style.overflow = "hidden";
-				ruler.style.textOverflow = "ellipsis";
-			}
-		}
-		//This is the same as the padding set to every cell
-		ruler.style.paddingTop = "4px";
-		ruler.style.paddingBottom = "4px";
-		ruler.style.paddingLeft = "10px";
-		ruler.style.paddingRight = "10px";
-		ruler.innerHTML = textContent;
-
-		document.body.appendChild(ruler);
-		const width = window.getComputedStyle(ruler).getPropertyValue("width");
-		const height = window
-			.getComputedStyle(ruler)
-			.getPropertyValue("height");
-
-		document.body.removeChild(ruler);
-		return { width: pxToNum(width), height: pxToNum(height) };
-	}
-
-	function findCellWidth(
-		headerType: string,
-		useAutoWidth: boolean,
-		headerWidth: string
-	) {
-		//If the content type does not display text, just use the width that we set for the column
-		if (headerType !== CellType.TEXT && headerType !== CellType.NUMBER)
-			return headerWidth;
-		//If we're not using auto width, just use the width that we set for the column
-		if (useAutoWidth) return "auto";
-		return headerWidth;
-	}
-
-	// const cellSizes = useMemo(() => {
-	// 	return tableModel.cells.map((cell) => {
-	// 		let header = null;
-	// 		let headerSettings = null;
-	// 		for (let i = 0; i < tableModel.headers.length; i++) {
-	// 			const h = tableModel.headers[i];
-	// 			if (h.id === cell.headerId) {
-	// 				header = tableModel.headers[i];
-	// 				headerSettings = settings.columns[i];
-	// 			}
-	// 		}
-	// 		const { width, height } = measureElement(
-	// 			cell.content,
-	// 			headerSettings.useAutoWidth,
-	// 			headerSettings.width,
-	// 			headerSettings.shouldWrapOverflow
-	// 		);
-	// 		return {
-	// 			rowId: cell.rowId,
-	// 			headerId: header.id,
-	// 			width,
-	// 			height,
-	// 		};
-	// 	});
-	// }, [tableModel.cells]);
-
-	// const rowHeights = useMemo(() => {
-	// 	const heights: { [id: string]: number } = {};
-	// 	cellSizes.forEach((size) => {
-	// 		const { rowId, height } = size;
-	// 		if (!heights[rowId] || heights[rowId] < height)
-	// 			heights[rowId] = height;
-	// 	});
-	// 	return Object.fromEntries(
-	// 		Object.entries(heights).map((entry) => {
-	// 			const [key, value] = entry;
-	// 			return [key, numToPx(value)];
-	// 		})
-	// 	);
-	// }, [cellSizes]);
-
-	// const columnWidths = useMemo(() => {
-	// 	const widths: { [id: string]: number } = {};
-	// 	cellSizes.forEach((size) => {
-	// 		const { headerId, width: cellWidth } = size;
-	// 		let width = cellWidth;
-	// 		if (width < MIN_COLUMN_WIDTH_PX) width = MIN_COLUMN_WIDTH_PX;
-	// 		if (!widths[headerId] || widths[headerId] < width)
-	// 			widths[headerId] = width;
-	// 	});
-	// 	return Object.fromEntries(
-	// 		Object.entries(widths).map((entry) => {
-	// 			const [key, value] = entry;
-	// 			return [key, numToPx(value)];
-	// 		})
-	// 	);
-	// }, [cellSizes]);
+	const { columnWidths, rowHeights } = useMemo(() => {
+		return getTableSizing(state);
+	}, [state.model.cells, state.settings.columns]);
 
 	if (isLoading) return <div>Loading table...</div>;
 
@@ -739,6 +653,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 									width={findCellWidth(
 										type,
 										useAutoWidth,
+										columnWidths[cell.columnId],
 										width
 									)}
 									shouldWrapOverflow={shouldWrapOverflow}
@@ -766,7 +681,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 					})}
 					rows={rows
 						.filter((_row, i) => i !== 0)
-						.map((rowId, i) => {
+						.map((rowId) => {
 							const rowCells = cells.filter(
 								(cell) => cell.rowId === rowId
 							);
@@ -800,9 +715,12 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 													width={findCellWidth(
 														type,
 														useAutoWidth,
+														columnWidths[
+															cell.columnId
+														],
 														width
 													)}
-													height="auto"
+													height={rowHeights[rowId]}
 													onTagClick={handleTagClick}
 													onRemoveTagClick={
 														handleRemoveTagClick
@@ -820,7 +738,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 										<td
 											className="NLT__td"
 											style={{
-												height: "auto",
+												height: rowHeights[rowId],
 											}}
 										>
 											<div className="NLT__td-container">

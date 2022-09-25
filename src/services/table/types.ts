@@ -1,4 +1,5 @@
 import { SortDir } from "../sort/types";
+import { MIN_COLUMN_WIDTH } from "./constants";
 
 export enum CellType {
 	TEXT = "text",
@@ -45,7 +46,7 @@ export interface ColumnSettings {
 
 export const DEFAULT_COLUMN_SETTINGS: ColumnSettings = {
 	sortDir: SortDir.NONE,
-	width: "100px",
+	width: `${MIN_COLUMN_WIDTH}px`,
 	type: CellType.TEXT,
 	useAutoWidth: false,
 	shouldWrapOverflow: false,
