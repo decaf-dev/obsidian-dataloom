@@ -80,18 +80,18 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	const handleSaveData = (shouldSaveModel: boolean) =>
 		throttleSave(shouldSaveModel);
 
-	//Handles live preview
-	//TODO disable if live preview is not enabled
+	//Handles sync between live preview and reading mode
 	useEffect(() => {
 		let timer: any = null;
 
 		async function checkDirty() {
 			const dirty = plugin.settings.dirty;
 			if (dirty) {
-				const { viewMode: dirtyViewMode, tableId: dirtyTableId } =
-					dirty;
+				const { viewModesToUpdate, tableId: dirtyTableId } = dirty;
 				const shouldUpdate =
-					dirtyTableId === tableId && dirtyViewMode !== viewMode;
+					dirtyTableId === tableId &&
+					viewModesToUpdate.includes(viewMode);
+				console.log("SHOULD UPDATE", shouldUpdate);
 				if (shouldUpdate) {
 					setLoading(true);
 					plugin.settings.dirty = null;
@@ -366,7 +366,8 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				},
 			};
 		});
-		sortData();
+		handleSaveData(true);
+		//sortData();
 	}
 
 	function handleHeaderWidthChange(columnId: string, width: string) {
