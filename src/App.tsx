@@ -310,6 +310,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			};
 		});
 		handleSaveData(true);
+		handlePositionUpdate();
 	}
 
 	function handleAddTag(cellId: string, content: string, color: string) {
