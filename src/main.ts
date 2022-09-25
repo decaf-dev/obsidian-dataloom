@@ -172,12 +172,10 @@ export default class NltPlugin extends Plugin {
 						if (element.className.includes("NLT__app")) {
 							const id = element.getAttribute("data-id");
 							this.focusTable(id);
-							console.log("FOCUSING TABLE", id);
 							break;
 						}
 						//If we're clicking outside of the app
 						if (element.className.includes("view-content")) {
-							console.log("BLURING TABLE");
 							this.blurTable();
 							break;
 						}
