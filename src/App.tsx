@@ -570,6 +570,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			};
 		});
 		handleSaveData(false);
+		handlePositionUpdate();
 	}
 
 	function handleWrapContentToggle(columnId: string, value: boolean) {
@@ -594,6 +595,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			};
 		});
 		handleSaveData(false);
+		handlePositionUpdate();
 	}
 
 	const findCellWidth = (
