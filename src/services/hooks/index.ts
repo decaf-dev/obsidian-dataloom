@@ -35,53 +35,6 @@ export const useDidMountEffect = (func: (...rest: any) => any, deps: any[]) => {
 	}, deps);
 };
 
-/**
- * Throttles events.
- * Guarantees an execution of events every x milliseconds
- */
-export const useThrottle = (eventTime: number, waitTime: number) => {
-	const [shouldExecute, setExecution] = useState(false);
-
-	useEffect(() => {
-		let intervalId: NodeJS.Timer = null;
-		function startTimer() {
-			intervalId = setInterval(() => {
-				if (Date.now() - eventTime < waitTime) return;
-				clearInterval(intervalId);
-				setExecution(true);
-			}, 50);
-		}
-		if (eventTime !== 0) {
-			setExecution(false);
-			startTimer();
-		}
-		return () => clearInterval(intervalId);
-	}, [eventTime]);
-
-	return shouldExecute;
-};
-
-export const useSaveTime = () => {
-	const [eventTime, setEventTime] = useState(0);
-	const shouldExecute = useThrottle(eventTime, 150);
-	const [saveTime, setSaveTime] = useState(0);
-	const [shouldSaveModel, setShouldSaveModel] = useState(false);
-
-	useEffect(() => {
-		if (shouldExecute) setSaveTime(Date.now());
-	}, [shouldExecute]);
-
-	function saveData(didModelChange: boolean, throttle = false) {
-		setShouldSaveModel(didModelChange);
-		if (throttle) {
-			setEventTime(Date.now());
-		} else {
-			setSaveTime(Date.now());
-		}
-	}
-	return { saveTime, shouldSaveModel, saveData };
-};
-
 export const usePositionRef = (deps: any[] = []) => {
 	const [position, setPosition] = useState({
 		top: "0px",

@@ -16,7 +16,6 @@ import { logFunc } from "./services/debug";
 import { DEFAULT_COLUMN_SETTINGS } from "./services/table/types";
 import { initialCell } from "./services/io/utils";
 import { getUniqueTableId } from "./services/table/utils";
-import { useDidMountEffect, useSaveTime } from "./services/hooks";
 // import { sortRows } from "./services/sort/sort";
 import { checkboxToContent, contentToCheckbox } from "./services/table/utils";
 import { TableState } from "./services/table/types";
@@ -50,9 +49,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	const [sortTime, setSortTime] = useState(0);
 	const [isLoading, setLoading] = useState(true);
 
-	const { saveTime, shouldSaveModel, saveData } = useSaveTime();
-
-	const tableIdWithMode = getUniqueTableId(tableId, viewMode);
 	const dispatch = useAppDispatch();
 	const topLevelMenu = useAppSelector((state) => getTopLevelMenu(state));
 
@@ -77,19 +73,12 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		load();
 	}, []);
 
-	//Handles saving
-	useDidMountEffect(() => {
-		async function save() {
-			await serializeTable(
-				shouldSaveModel,
-				plugin,
-				state,
-				tableId,
-				viewMode
-			);
-		}
-		save();
-	}, [saveTime, shouldSaveModel]);
+	const throttleSave = _.throttle(async (shouldSaveModel: boolean) => {
+		await serializeTable(shouldSaveModel, plugin, state, tableId, viewMode);
+	}, 150);
+
+	const handleSaveData = (shouldSaveModel: boolean) =>
+		throttleSave(shouldSaveModel);
 
 	//Handles live preview
 	//TODO disable if live preview is not enabled
@@ -139,7 +128,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	// 			},
 	// 		};
 	// 	});
-	// 	saveData();
 	// }, [sortTime]);
 
 	//TODO add save
@@ -161,7 +149,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				settings,
 			};
 		});
-		saveData(true);
+		handleSaveData(true);
 	}
 
 	function handleAddRow() {
@@ -173,7 +161,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				model: model,
 			};
 		});
-		saveData(true);
+		handleSaveData(true);
 	}
 
 	function handleHeaderTypeClick(
@@ -233,7 +221,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				},
 			};
 		});
-		saveData(true);
+		handleSaveData(true);
 	}
 
 	function handleHeaderSortSelect(columnId: string, sortDir: SortDir) {
@@ -288,7 +276,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				},
 			};
 		});
-		saveData(true, true);
+		handleSaveData(true);
 	}
 
 	function handleAddTag(cellId: string, content: string, color: string) {
@@ -357,9 +345,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				},
 			};
 		});
-
-		//TODO edit
-		saveData(true);
+		handleSaveData(true);
 		//sortData();
 	}
 
@@ -405,7 +391,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				},
 			};
 		});
-		saveData(true, true);
+		handleSaveData(true);
 	}
 
 	function handleMoveColumnClick(columnId: string, moveRight: boolean) {
@@ -440,7 +426,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				},
 			};
 		});
-		saveData(true);
+		handleSaveData(true);
 	}
 
 	function handleInsertColumnClick(columnId: string, insertRight: boolean) {
@@ -502,7 +488,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				settings: settingsObj,
 			};
 		});
-		saveData(true);
+		handleSaveData(true);
 	}
 
 	function handleChangeColor(tagId: string, color: string) {
@@ -521,7 +507,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		// 		}),
 		// 	};
 		// });
-		saveData(true);
+		handleSaveData(true);
 	}
 
 	function handleAutoWidthToggle(columnId: string, value: boolean) {
@@ -545,7 +531,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				},
 			};
 		});
-		saveData(false);
+		handleSaveData(false);
 	}
 
 	function handleWrapContentToggle(columnId: string, value: boolean) {
@@ -569,7 +555,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				},
 			};
 		});
-		saveData(false);
+		handleSaveData(false);
 	}
 
 	function measureElement(
@@ -687,6 +673,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	if (isLoading) return <div>Loading table...</div>;
 
 	const { rows, columns, cells } = state.model;
+	const tableIdWithMode = getUniqueTableId(tableId, viewMode);
 
 	return (
 		<div id={tableIdWithMode} className="NLT__app" tabIndex={0}>
@@ -790,10 +777,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 													onContentChange={
 														handleCellContentChange
 													}
-													onSaveContent={() => {
-														//TODO sort? save?
-														saveData(true);
-													}}
 													onColorChange={
 														handleChangeColor
 													}

@@ -37,7 +37,6 @@ interface Props {
 	onContentChange: (cellId: string, updatedMarkdown: string) => void;
 	onAddTag: (cellId: string, inputText: string, color: string) => void;
 	onColorChange: (tagId: string, color: string) => void;
-	onSaveContent: () => void;
 }
 
 const COMPONENT_NAME = "EditableTd";
@@ -55,7 +54,6 @@ export default function EditableTd({
 	onColorChange,
 	onTagClick,
 	onContentChange,
-	onSaveContent,
 	onAddTag,
 }: Props) {
 	const [tagInputText, setTagInputText] = useState("");
@@ -84,7 +82,6 @@ export default function EditableTd({
 
 	// 	if (tagUpdate.cellId === cellId) {
 	// 		closeMenu();
-	// 		onSaveContent();
 	// 	}
 	// }, [tagUpdate.cellId, tagUpdate.time]);
 
@@ -113,7 +110,6 @@ export default function EditableTd({
 	// 			//If we're just closing the menu from an outside click,
 	// 			//then don't save unless the content actually updated
 	// 			if (wasContentUpdated) {
-	// 				onSaveContent();
 	// 				setContentUpdate(false);
 	// 			}
 	// 		}
