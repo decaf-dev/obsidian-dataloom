@@ -420,6 +420,8 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			};
 		});
 		handleSaveData(false);
+		handlePositionUpdate();
+		dispatch(closeAllMenus());
 	}
 
 	function handleMoveColumnClick(columnId: string, moveRight: boolean) {
