@@ -44,8 +44,6 @@ interface FocusedTable {
 	tableId: string;
 	viewMode: MarkdownViewModeType;
 }
-
-const COMPONENT_NAME = "NltPlugin";
 export default class NltPlugin extends Plugin {
 	settings: NltSettings;
 	focused: FocusedTable | null = null;
@@ -94,6 +92,30 @@ export default class NltPlugin extends Plugin {
 	}
 
 	registerEvents() {
+		this.registerEvent(
+			this.app.workspace.on("file-open", () => {
+				let livePreviewScroller =
+					document.querySelector(".cm-scroller");
+				let readingModeScroller = document.querySelector(
+					".markdown-preview-view"
+				);
+				if (livePreviewScroller) {
+					livePreviewScroller.addEventListener("scroll", () => {
+						const topLevelMenu = getTopLevelMenu(store.getState());
+						if (topLevelMenu !== null)
+							store.dispatch(closeAllMenus());
+					});
+				}
+				if (readingModeScroller) {
+					readingModeScroller.addEventListener("scroll", () => {
+						const topLevelMenu = getTopLevelMenu(store.getState());
+						if (topLevelMenu !== null)
+							store.dispatch(closeAllMenus());
+					});
+				}
+			})
+		);
+
 		this.registerEvent(
 			this.app.workspace.on("resize", () => {
 				const topLevelMenu = getTopLevelMenu(store.getState());
