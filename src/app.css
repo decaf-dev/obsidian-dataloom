@@ -48,15 +48,8 @@
 	/* background-color: #ff6961; */
 }
 
-/*
-* Error
-*/
-.NLT__error {
-	color: red;
-}
-
 .NLT__table-wrapper {
-	overflow: auto;
+	overflow-x: auto;
 }
 
 /*

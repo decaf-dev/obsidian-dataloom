@@ -17,9 +17,11 @@ import {
 	getTopLevelMenu,
 	closeTopLevelMenu,
 	timeSinceMenuOpen,
+	updateMenuPosition,
 } from "./services/menu/menuSlice";
 import { store } from "./services/redux/store";
 import { TableState } from "./services/table/types";
+import _ from "lodash";
 
 export interface NltSettings {
 	data: {
@@ -44,8 +46,6 @@ interface FocusedTable {
 	tableId: string;
 	viewMode: MarkdownViewModeType;
 }
-
-const COMPONENT_NAME = "NltPlugin";
 export default class NltPlugin extends Plugin {
 	settings: NltSettings;
 	focused: FocusedTable | null = null;
@@ -93,7 +93,33 @@ export default class NltPlugin extends Plugin {
 		this.registerEvents();
 	}
 
+	private throttleFileScroll = _.throttle(() => {
+		const topLevelMenu = getTopLevelMenu(store.getState());
+		if (topLevelMenu !== null) store.dispatch(closeAllMenus());
+		store.dispatch(updateMenuPosition());
+	}, 150);
+
 	registerEvents() {
+		this.registerEvent(
+			this.app.workspace.on("file-open", () => {
+				let livePreviewScroller =
+					document.querySelector(".cm-scroller");
+				let readingModeScroller = document.querySelector(
+					".markdown-preview-view"
+				);
+				if (livePreviewScroller) {
+					livePreviewScroller.addEventListener("scroll", () => {
+						this.throttleFileScroll();
+					});
+				}
+				if (readingModeScroller) {
+					readingModeScroller.addEventListener("scroll", () => {
+						this.throttleFileScroll();
+					});
+				}
+			})
+		);
+
 		this.registerEvent(
 			this.app.workspace.on("resize", () => {
 				const topLevelMenu = getTopLevelMenu(store.getState());

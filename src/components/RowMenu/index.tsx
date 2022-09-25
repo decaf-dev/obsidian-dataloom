@@ -20,19 +20,17 @@ import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 
 interface Props {
 	rowId: string;
-	positionUpdateTime: number;
 	onDeleteClick: (rowId: string) => void;
 }
 
-export default function RowMenu({
-	rowId,
-	positionUpdateTime,
-	onDeleteClick,
-}: Props) {
+export default function RowMenu({ rowId, onDeleteClick }: Props) {
 	const menu = useMenu(MenuLevel.ONE);
 	const dispatch = useAppDispatch();
-	const { positionRef, position } = usePositionRef([positionUpdateTime]);
 	const isOpen = useAppSelector((state) => isMenuOpen(state, menu));
+	const positionUpdateTime = useAppSelector(
+		(state) => state.menu.positionUpdateTime
+	);
+	const { positionRef, position } = usePositionRef([positionUpdateTime]);
 	function handleButtonClick(e: React.MouseEvent) {
 		if (isOpen) {
 			dispatch(closeTopLevelMenu());

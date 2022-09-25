@@ -30,7 +30,6 @@ interface Props {
 	textContent: string;
 	width: string;
 	height: string;
-	positionUpdateTime: number;
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
 	onRemoveTagClick: (cellId: string, tagId: string) => void;
@@ -38,7 +37,6 @@ interface Props {
 	onContentChange: (cellId: string, updatedMarkdown: string) => void;
 	onAddTag: (cellId: string, inputText: string, color: string) => void;
 	onColorChange: (tagId: string, color: string) => void;
-	onSaveContent: () => void;
 }
 
 const COMPONENT_NAME = "EditableTd";
@@ -50,14 +48,12 @@ export default function EditableTd({
 	columnType,
 	width,
 	height,
-	positionUpdateTime,
 	shouldWrapOverflow,
 	useAutoWidth,
 	onRemoveTagClick,
 	onColorChange,
 	onTagClick,
 	onContentChange,
-	onSaveContent,
 	onAddTag,
 }: Props) {
 	const [tagInputText, setTagInputText] = useState("");
@@ -66,9 +62,12 @@ export default function EditableTd({
 	const isOpen = useAppSelector((state) => isMenuOpen(state, menu));
 	const dispatch = useAppDispatch();
 
+	const positionUpdateTime = useAppSelector(
+		(state) => state.menu.positionUpdateTime
+	);
 	const { positionRef, position } = usePositionRef([
-		content.length,
 		positionUpdateTime,
+		content.length,
 	]);
 
 	//If we've already mounted, meaning the application has loaded
@@ -83,7 +82,6 @@ export default function EditableTd({
 
 	// 	if (tagUpdate.cellId === cellId) {
 	// 		closeMenu();
-	// 		onSaveContent();
 	// 	}
 	// }, [tagUpdate.cellId, tagUpdate.time]);
 
@@ -112,7 +110,6 @@ export default function EditableTd({
 	// 			//If we're just closing the menu from an outside click,
 	// 			//then don't save unless the content actually updated
 	// 			if (wasContentUpdated) {
-	// 				onSaveContent();
 	// 				setContentUpdate(false);
 	// 			}
 	// 		}
@@ -243,7 +240,6 @@ export default function EditableTd({
 			// 	<TagCellEdit
 			// 		cellId={id}
 			// 		inputText={tagInputText}
-			// 		positionUpdateTime={positionUpdateTime}
 			// 		tags={tags}
 			// 		menuId={menuId}
 			// 		isOpen={isOpen}

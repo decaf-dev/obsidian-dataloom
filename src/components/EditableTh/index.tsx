@@ -27,7 +27,6 @@ interface Props {
 	columnId: string;
 	width: string;
 	numColumns: number;
-	positionUpdateTime: number;
 	content: string;
 	textContent: string;
 	shouldWrapOverflow: boolean;
@@ -50,7 +49,6 @@ export default function EditableTh({
 	columnIndex,
 	columnId,
 	width,
-	positionUpdateTime,
 	content,
 	textContent,
 	useAutoWidth,
@@ -68,13 +66,16 @@ export default function EditableTh({
 	onWrapOverflowToggle,
 	onAutoWidthToggle,
 }: Props) {
-	const { positionRef, position } = usePositionRef([positionUpdateTime]);
 	const mouseDownX = useRef(0);
 	const isResizing = useRef(false);
 
 	const menu = useMenu(MenuLevel.ONE);
 	const dispatch = useAppDispatch();
 	const isOpen = useAppSelector((state) => isMenuOpen(state, menu));
+	const positionUpdateTime = useAppSelector(
+		(state) => state.menu.positionUpdateTime
+	);
+	const { positionRef, position } = usePositionRef([positionUpdateTime]);
 
 	function handleHeaderClick(e: React.MouseEvent) {
 		if (isResizing.current) return;

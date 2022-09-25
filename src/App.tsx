@@ -16,7 +16,6 @@ import { logFunc } from "./services/debug";
 import { DEFAULT_COLUMN_SETTINGS } from "./services/table/types";
 import { initialCell } from "./services/io/utils";
 import { getUniqueTableId } from "./services/table/utils";
-import { useDidMountEffect, useSaveTime } from "./services/hooks";
 // import { sortRows } from "./services/sort/sort";
 import { checkboxToContent, contentToCheckbox } from "./services/table/utils";
 import { TableState } from "./services/table/types";
@@ -27,6 +26,14 @@ import "./app.css";
 import { MarkdownViewModeType } from "obsidian";
 import { deserializeTable, markdownToHtml } from "./services/io/deserialize";
 import { randomColumnId, randomCellId } from "./services/random";
+import { useAppDispatch, useAppSelector } from "./services/redux/hooks";
+import {
+	closeAllMenus,
+	getTopLevelMenu,
+	updateMenuPosition,
+} from "./services/menu/menuSlice";
+
+import _ from "lodash";
 
 interface Props {
 	plugin: NltPlugin;
@@ -40,10 +47,19 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	const [state, setTableState] = useState<TableState>(null);
 
 	const [sortTime, setSortTime] = useState(0);
-	const [positionUpdateTime, setPositionUpdateTime] = useState(0);
 	const [isLoading, setLoading] = useState(true);
 
-	const { saveTime, shouldSaveModel, saveData } = useSaveTime();
+	const dispatch = useAppDispatch();
+	const topLevelMenu = useAppSelector((state) => getTopLevelMenu(state));
+
+	const throttleTableScroll = _.throttle(() => {
+		if (topLevelMenu) dispatch(closeAllMenus());
+		dispatch(updateMenuPosition());
+	}, 150);
+
+	const handleTableScroll = () => {
+		throttleTableScroll();
+	};
 
 	//Load table on mount
 	useEffect(() => {
@@ -57,19 +73,12 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		load();
 	}, []);
 
-	//Handles saving
-	useDidMountEffect(() => {
-		async function save() {
-			await serializeTable(
-				shouldSaveModel,
-				plugin,
-				state,
-				tableId,
-				viewMode
-			);
-		}
-		save();
-	}, [saveTime, shouldSaveModel]);
+	const throttleSave = _.throttle(async (shouldSaveModel: boolean) => {
+		await serializeTable(shouldSaveModel, plugin, state, tableId, viewMode);
+	}, 150);
+
+	const handleSaveData = (shouldSaveModel: boolean) =>
+		throttleSave(shouldSaveModel);
 
 	//Handles live preview
 	//TODO disable if live preview is not enabled
@@ -119,18 +128,12 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	// 			},
 	// 		};
 	// 	});
-	// 	forcePositionUpdate();
-	// 	saveData();
 	// }, [sortTime]);
 
 	//TODO add save
 
 	function sortData() {
 		setSortTime(Date.now());
-	}
-
-	function forcePositionUpdate() {
-		setPositionUpdateTime(Date.now());
 	}
 
 	function handleAddColumn() {
@@ -146,7 +149,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				settings,
 			};
 		});
-		saveData(true);
+		handleSaveData(true);
 	}
 
 	function handleAddRow() {
@@ -158,7 +161,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				model: model,
 			};
 		});
-		saveData(true);
+		handleSaveData(true);
 	}
 
 	function handleHeaderTypeClick(
@@ -218,7 +221,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				},
 			};
 		});
-		saveData(true);
+		handleSaveData(true);
 	}
 
 	function handleHeaderSortSelect(columnId: string, sortDir: SortDir) {
@@ -273,7 +276,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				},
 			};
 		});
-		saveData(true, true);
+		handleSaveData(true);
 	}
 
 	function handleAddTag(cellId: string, content: string, color: string) {
@@ -342,9 +345,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				},
 			};
 		});
-
-		//TODO edit
-		saveData(true);
+		handleSaveData(true);
 		//sortData();
 	}
 
@@ -390,8 +391,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				},
 			};
 		});
-		forcePositionUpdate();
-		saveData(true, true);
+		handleSaveData(true);
 	}
 
 	function handleMoveColumnClick(columnId: string, moveRight: boolean) {
@@ -426,7 +426,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				},
 			};
 		});
-		saveData(true);
+		handleSaveData(true);
 	}
 
 	function handleInsertColumnClick(columnId: string, insertRight: boolean) {
@@ -488,7 +488,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				settings: settingsObj,
 			};
 		});
-		saveData(true);
+		handleSaveData(true);
 	}
 
 	function handleChangeColor(tagId: string, color: string) {
@@ -507,7 +507,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		// 		}),
 		// 	};
 		// });
-		saveData(true);
+		handleSaveData(true);
 	}
 
 	function handleAutoWidthToggle(columnId: string, value: boolean) {
@@ -531,7 +531,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				},
 			};
 		});
-		saveData(false);
+		handleSaveData(false);
 	}
 
 	function handleWrapContentToggle(columnId: string, value: boolean) {
@@ -555,7 +555,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				},
 			};
 		});
-		saveData(false);
+		handleSaveData(false);
 	}
 
 	function measureElement(
@@ -673,15 +673,12 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	if (isLoading) return <div>Loading table...</div>;
 
 	const { rows, columns, cells } = state.model;
+	const tableIdWithMode = getUniqueTableId(tableId, viewMode);
 
 	return (
-		<div
-			id={getUniqueTableId(tableId, viewMode)}
-			className="NLT__app"
-			tabIndex={0}
-		>
+		<div id={tableIdWithMode} className="NLT__app" tabIndex={0}>
 			<OptionBar model={state.model} settings={state.settings} />
-			<div className="NLT__table-wrapper">
+			<div className="NLT__table-wrapper" onScroll={handleTableScroll}>
 				<Table
 					headers={columns.map((columnId, i) => {
 						const {
@@ -713,7 +710,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 									)}
 									shouldWrapOverflow={shouldWrapOverflow}
 									useAutoWidth={useAutoWidth}
-									positionUpdateTime={positionUpdateTime}
 									content={markdown}
 									textContent={html}
 									type={type}
@@ -764,9 +760,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 													content={markdown}
 													textContent={html}
 													columnType={type}
-													positionUpdateTime={
-														positionUpdateTime
-													}
 													shouldWrapOverflow={
 														shouldWrapOverflow
 													}
@@ -784,10 +777,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 													onContentChange={
 														handleCellContentChange
 													}
-													onSaveContent={() => {
-														//TODO sort? save?
-														saveData(true);
-													}}
 													onColorChange={
 														handleChangeColor
 													}
@@ -803,9 +792,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 										>
 											<div className="NLT__td-container">
 												<RowMenu
-													positionUpdateTime={
-														positionUpdateTime
-													}
 													rowId={rowId}
 													onDeleteClick={
 														handleRowDeleteClick

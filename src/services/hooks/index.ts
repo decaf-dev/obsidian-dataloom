@@ -35,123 +35,6 @@ export const useDidMountEffect = (func: (...rest: any) => any, deps: any[]) => {
 	}, deps);
 };
 
-/**
- * Throttles events.
- * Guarantees an execution of events every x milliseconds
- */
-export const useThrottle = (eventTime: number, waitTime: number) => {
-	const [shouldExecute, setExecution] = useState(false);
-
-	useEffect(() => {
-		let intervalId: NodeJS.Timer = null;
-		function startTimer() {
-			intervalId = setInterval(() => {
-				if (Date.now() - eventTime < waitTime) return;
-				clearInterval(intervalId);
-				setExecution(true);
-			}, 50);
-		}
-		if (eventTime !== 0) {
-			setExecution(false);
-			startTimer();
-		}
-		return () => clearInterval(intervalId);
-	}, [eventTime]);
-
-	return shouldExecute;
-};
-
-export const useSaveTime = () => {
-	const [eventTime, setEventTime] = useState(0);
-	const shouldExecute = useThrottle(eventTime, 150);
-	const [saveTime, setSaveTime] = useState(0);
-	const [shouldSaveModel, setShouldSaveModel] = useState(false);
-
-	useEffect(() => {
-		if (shouldExecute) setSaveTime(Date.now());
-	}, [shouldExecute]);
-
-	function saveData(didModelChange: boolean, throttle = false) {
-		setShouldSaveModel(didModelChange);
-		if (throttle) {
-			setEventTime(Date.now());
-		} else {
-			setSaveTime(Date.now());
-		}
-	}
-	return { saveTime, shouldSaveModel, saveData };
-};
-
-export const useScrollTime = (className: string) => {
-	const [eventTime, setEventTime] = useState(0);
-	const [scrollTime, setScrollTime] = useState(0);
-
-	let el: Node | null = null;
-
-	const shouldExecute = useThrottle(eventTime, 150);
-
-	useEffect(() => {
-		if (shouldExecute) setScrollTime(Date.now());
-	}, [shouldExecute]);
-
-	useEffect(() => {
-		function handleScroll() {
-			setEventTime(Date.now());
-		}
-
-		el = document.getElementsByClassName(className)[0];
-		if (el) el.addEventListener("scroll", handleScroll);
-
-		return () => {
-			if (el) el.removeEventListener("scroll", handleScroll);
-		};
-	}, []);
-	return scrollTime;
-};
-
-export const useTableScrollTime = () => {
-	return useScrollTime("NLT__table-wrapper");
-};
-
-export const useObsidianScrollTime = () => {
-	return useScrollTime("markdown-preview-view");
-};
-
-export const useObsidianResizeTime = () => {
-	const [eventTime, setEventTime] = useState(0);
-	const [resizeTime, setResizeTime] = useState(0);
-
-	const shouldExecute = useThrottle(eventTime, 150);
-
-	useEffect(() => {
-		if (shouldExecute) setResizeTime(Date.now());
-	}, [shouldExecute]);
-
-	useEffect(() => {
-		let observer: ResizeObserver | null = null;
-
-		function handleResize() {
-			setEventTime(Date.now());
-		}
-
-		setTimeout(() => {
-			const el = document.getElementsByClassName("view-content")[0];
-			if (el) {
-				observer = new ResizeObserver(handleResize);
-				observer.observe(el);
-				handleResize();
-			}
-		}, 1);
-
-		return () => {
-			if (observer) {
-				observer.disconnect();
-			}
-		};
-	}, []);
-	return resizeTime;
-};
-
 export const usePositionRef = (deps: any[] = []) => {
 	const [position, setPosition] = useState({
 		top: "0px",
@@ -159,9 +42,6 @@ export const usePositionRef = (deps: any[] = []) => {
 		width: "0px",
 		height: "0px",
 	});
-	const obsidianResizeTime = useObsidianResizeTime();
-	const obsidianScrollTime = useObsidianScrollTime();
-	const tableScrollTime = useTableScrollTime();
 
 	const positionRef = useRef(null);
 
@@ -178,39 +58,7 @@ export const usePositionRef = (deps: any[] = []) => {
 			width: numToPx(offsetWidth),
 			height: numToPx(offsetHeight),
 		});
-	}, [obsidianResizeTime, obsidianScrollTime, tableScrollTime, ...deps]);
+	}, [...deps]);
 
 	return { positionRef, position };
 };
-
-// export const useDisableScroll = (className: string): void => {
-// 	const { isAnyMenuOpen } = useMenuState();
-
-// 	let el: Node | null = null;
-
-// 	function removeScrollX(el: HTMLElement) {
-// 		el.style.overflow = "hidden";
-// 		el.style.left = `${el.scrollLeft}px`;
-// 		el.style.marginBottom = `17px`;
-// 	}
-
-// 	function addScroll(el: HTMLElement) {
-// 		el.style.overflow = "auto";
-// 		el.style.marginBottom = "0px";
-// 	}
-
-// 	useEffect(() => {
-// 		el = document.getElementsByClassName(className)[0];
-// 		if (el instanceof HTMLElement) {
-// 			if (isAnyMenuOpen()) {
-// 				removeScrollX(el);
-// 			} else {
-// 				addScroll(el);
-// 			}
-// 		}
-
-// 		return () => {
-// 			if (el instanceof HTMLElement) removeScrollX(el);
-// 		};
-// 	}, [isAnyMenuOpen()]);
-//};
