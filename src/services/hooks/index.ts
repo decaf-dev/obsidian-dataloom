@@ -61,27 +61,6 @@ export const useThrottle = (eventTime: number, waitTime: number) => {
 	return shouldExecute;
 };
 
-export const useSaveTime = () => {
-	const [eventTime, setEventTime] = useState(0);
-	const shouldExecute = useThrottle(eventTime, 150);
-	const [saveTime, setSaveTime] = useState(0);
-	const [shouldSaveModel, setShouldSaveModel] = useState(false);
-
-	useEffect(() => {
-		if (shouldExecute) setSaveTime(Date.now());
-	}, [shouldExecute]);
-
-	function saveData(didModelChange: boolean, throttle = false) {
-		setShouldSaveModel(didModelChange);
-		if (throttle) {
-			setEventTime(Date.now());
-		} else {
-			setSaveTime(Date.now());
-		}
-	}
-	return { saveTime, shouldSaveModel, saveData };
-};
-
 export const useScrollTime = (className: string) => {
 	const [eventTime, setEventTime] = useState(0);
 	const [scrollTime, setScrollTime] = useState(0);
@@ -113,43 +92,25 @@ export const useTableScrollTime = () => {
 	return useScrollTime("NLT__table-wrapper");
 };
 
-export const useObsidianScrollTime = () => {
-	return useScrollTime("markdown-preview-view");
-};
-
-export const useObsidianResizeTime = () => {
+export const useSaveTime = () => {
 	const [eventTime, setEventTime] = useState(0);
-	const [resizeTime, setResizeTime] = useState(0);
-
 	const shouldExecute = useThrottle(eventTime, 150);
+	const [saveTime, setSaveTime] = useState(0);
+	const [shouldSaveModel, setShouldSaveModel] = useState(false);
 
 	useEffect(() => {
-		if (shouldExecute) setResizeTime(Date.now());
+		if (shouldExecute) setSaveTime(Date.now());
 	}, [shouldExecute]);
 
-	useEffect(() => {
-		let observer: ResizeObserver | null = null;
-
-		function handleResize() {
+	function saveData(didModelChange: boolean, throttle = false) {
+		setShouldSaveModel(didModelChange);
+		if (throttle) {
 			setEventTime(Date.now());
+		} else {
+			setSaveTime(Date.now());
 		}
-
-		setTimeout(() => {
-			const el = document.getElementsByClassName("view-content")[0];
-			if (el) {
-				observer = new ResizeObserver(handleResize);
-				observer.observe(el);
-				handleResize();
-			}
-		}, 1);
-
-		return () => {
-			if (observer) {
-				observer.disconnect();
-			}
-		};
-	}, []);
-	return resizeTime;
+	}
+	return { saveTime, shouldSaveModel, saveData };
 };
 
 export const usePositionRef = (deps: any[] = []) => {
@@ -159,9 +120,6 @@ export const usePositionRef = (deps: any[] = []) => {
 		width: "0px",
 		height: "0px",
 	});
-	const obsidianResizeTime = useObsidianResizeTime();
-	const obsidianScrollTime = useObsidianScrollTime();
-	const tableScrollTime = useTableScrollTime();
 
 	const positionRef = useRef(null);
 
@@ -178,39 +136,7 @@ export const usePositionRef = (deps: any[] = []) => {
 			width: numToPx(offsetWidth),
 			height: numToPx(offsetHeight),
 		});
-	}, [obsidianResizeTime, obsidianScrollTime, tableScrollTime, ...deps]);
+	}, [...deps]);
 
 	return { positionRef, position };
 };
-
-// export const useDisableScroll = (className: string): void => {
-// 	const { isAnyMenuOpen } = useMenuState();
-
-// 	let el: Node | null = null;
-
-// 	function removeScrollX(el: HTMLElement) {
-// 		el.style.overflow = "hidden";
-// 		el.style.left = `${el.scrollLeft}px`;
-// 		el.style.marginBottom = `17px`;
-// 	}
-
-// 	function addScroll(el: HTMLElement) {
-// 		el.style.overflow = "auto";
-// 		el.style.marginBottom = "0px";
-// 	}
-
-// 	useEffect(() => {
-// 		el = document.getElementsByClassName(className)[0];
-// 		if (el instanceof HTMLElement) {
-// 			if (isAnyMenuOpen()) {
-// 				removeScrollX(el);
-// 			} else {
-// 				addScroll(el);
-// 			}
-// 		}
-
-// 		return () => {
-// 			if (el instanceof HTMLElement) removeScrollX(el);
-// 		};
-// 	}, [isAnyMenuOpen()]);
-//};

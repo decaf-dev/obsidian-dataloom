@@ -2,17 +2,17 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { Menu } from "src/services/menu/types";
 import type { RootState } from "../redux/store";
-import { DEBUG } from "src/constants";
-import { logFunc } from "../debug";
 
 interface MenuState {
 	openMenus: Menu[];
 	menuOpenTime: number;
+	positionUpdateTime: number;
 }
 
 const initialState: MenuState = {
 	openMenus: [],
 	menuOpenTime: 0,
+	positionUpdateTime: 0,
 };
 
 export const menuSlice = createSlice({
@@ -33,10 +33,18 @@ export const menuSlice = createSlice({
 		closeAllMenus: (state) => {
 			state.openMenus = [];
 		},
+		updateMenuPosition: (state) => {
+			state.positionUpdateTime = Date.now();
+		},
 	},
 });
 
-export const { openMenu, closeTopLevelMenu, closeAllMenus } = menuSlice.actions;
+export const {
+	openMenu,
+	closeTopLevelMenu,
+	closeAllMenus,
+	updateMenuPosition,
+} = menuSlice.actions;
 
 export const isMenuOpen = (state: RootState, menu: Menu) =>
 	state.menu.openMenus.find((m) => m.id === menu.id) ? true : false;

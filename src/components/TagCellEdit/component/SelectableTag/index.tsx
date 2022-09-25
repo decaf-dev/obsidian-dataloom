@@ -25,7 +25,6 @@ interface Props {
 	id: string;
 	content: string;
 	color: string;
-	positionUpdateTime: number;
 	onClick: (tagId: string) => void;
 	onColorChange: (tagId: string, color: string) => void;
 }
@@ -34,14 +33,16 @@ export default function SelectableTag({
 	id,
 	content,
 	color,
-	positionUpdateTime,
 	onClick,
 	onColorChange,
 }: Props) {
 	const menu = useMenu(MenuLevel.TWO);
 	const dispatch = useAppDispatch();
-	const { positionRef, position } = usePositionRef([positionUpdateTime]);
 	const isOpen = useAppSelector((state) => isMenuOpen(state, menu));
+	const positionUpdateTime = useAppSelector(
+		(state) => state.menu.positionUpdateTime
+	);
+	const { positionRef, position } = usePositionRef([positionUpdateTime]);
 
 	function handleColorChange(color: string) {
 		onColorChange(id, color);

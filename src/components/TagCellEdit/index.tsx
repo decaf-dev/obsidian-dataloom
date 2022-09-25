@@ -17,7 +17,6 @@ interface Props {
 	};
 	color: string;
 	cellId: string;
-	positionUpdateTime: number;
 	onInputChange: (value: string) => void;
 	onTagClick: (tagId: string) => void;
 	onAddTag: (inputText: string) => void;
@@ -32,7 +31,6 @@ export default function TagCellEdit({
 	style,
 	color,
 	cellId,
-	positionUpdateTime,
 	onInputChange,
 	onTagClick,
 	onAddTag,
@@ -68,7 +66,6 @@ export default function TagCellEdit({
 							id={tag.id}
 							color={tag.color}
 							content={tag.content}
-							positionUpdateTime={positionUpdateTime}
 							onColorChange={onColorChange}
 							onClick={onTagClick}
 						/>

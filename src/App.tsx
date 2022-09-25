@@ -40,7 +40,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	const [state, setTableState] = useState<TableState>(null);
 
 	const [sortTime, setSortTime] = useState(0);
-	const [positionUpdateTime, setPositionUpdateTime] = useState(0);
 	const [isLoading, setLoading] = useState(true);
 
 	const { saveTime, shouldSaveModel, saveData } = useSaveTime();
@@ -119,7 +118,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	// 			},
 	// 		};
 	// 	});
-	// 	forcePositionUpdate();
 	// 	saveData();
 	// }, [sortTime]);
 
@@ -127,10 +125,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 
 	function sortData() {
 		setSortTime(Date.now());
-	}
-
-	function forcePositionUpdate() {
-		setPositionUpdateTime(Date.now());
 	}
 
 	function handleAddColumn() {
@@ -390,7 +384,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				},
 			};
 		});
-		forcePositionUpdate();
 		saveData(true, true);
 	}
 
@@ -713,7 +706,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 									)}
 									shouldWrapOverflow={shouldWrapOverflow}
 									useAutoWidth={useAutoWidth}
-									positionUpdateTime={positionUpdateTime}
 									content={markdown}
 									textContent={html}
 									type={type}
@@ -764,9 +756,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 													content={markdown}
 													textContent={html}
 													columnType={type}
-													positionUpdateTime={
-														positionUpdateTime
-													}
 													shouldWrapOverflow={
 														shouldWrapOverflow
 													}
@@ -803,9 +792,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 										>
 											<div className="NLT__td-container">
 												<RowMenu
-													positionUpdateTime={
-														positionUpdateTime
-													}
 													rowId={rowId}
 													onDeleteClick={
 														handleRowDeleteClick

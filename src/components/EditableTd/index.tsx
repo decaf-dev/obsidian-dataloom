@@ -30,7 +30,6 @@ interface Props {
 	textContent: string;
 	width: string;
 	height: string;
-	positionUpdateTime: number;
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
 	onRemoveTagClick: (cellId: string, tagId: string) => void;
@@ -50,7 +49,6 @@ export default function EditableTd({
 	columnType,
 	width,
 	height,
-	positionUpdateTime,
 	shouldWrapOverflow,
 	useAutoWidth,
 	onRemoveTagClick,
@@ -66,9 +64,12 @@ export default function EditableTd({
 	const isOpen = useAppSelector((state) => isMenuOpen(state, menu));
 	const dispatch = useAppDispatch();
 
+	const positionUpdateTime = useAppSelector(
+		(state) => state.menu.positionUpdateTime
+	);
 	const { positionRef, position } = usePositionRef([
-		content.length,
 		positionUpdateTime,
+		content.length,
 	]);
 
 	//If we've already mounted, meaning the application has loaded
@@ -243,7 +244,6 @@ export default function EditableTd({
 			// 	<TagCellEdit
 			// 		cellId={id}
 			// 		inputText={tagInputText}
-			// 		positionUpdateTime={positionUpdateTime}
 			// 		tags={tags}
 			// 		menuId={menuId}
 			// 		isOpen={isOpen}

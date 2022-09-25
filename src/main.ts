@@ -17,6 +17,7 @@ import {
 	getTopLevelMenu,
 	closeTopLevelMenu,
 	timeSinceMenuOpen,
+	updateMenuPosition,
 } from "./services/menu/menuSlice";
 import { store } from "./services/redux/store";
 import { TableState } from "./services/table/types";
@@ -101,6 +102,8 @@ export default class NltPlugin extends Plugin {
 				);
 				if (livePreviewScroller) {
 					livePreviewScroller.addEventListener("scroll", () => {
+						//TODO debounce
+						store.dispatch(updateMenuPosition());
 						const topLevelMenu = getTopLevelMenu(store.getState());
 						if (topLevelMenu !== null)
 							store.dispatch(closeAllMenus());
@@ -108,6 +111,8 @@ export default class NltPlugin extends Plugin {
 				}
 				if (readingModeScroller) {
 					readingModeScroller.addEventListener("scroll", () => {
+						//TODO debounce
+						store.dispatch(updateMenuPosition());
 						const topLevelMenu = getTopLevelMenu(store.getState());
 						if (topLevelMenu !== null)
 							store.dispatch(closeAllMenus());
