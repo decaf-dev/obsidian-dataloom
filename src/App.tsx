@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import EditableTd from "./components/EditableTd";
 import Table from "./components/Table";
@@ -48,6 +48,10 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 
 	const [sortTime, setSortTime] = useState(0);
 	const [isLoading, setLoading] = useState(true);
+	const [saveTime, setSaveTime] = useState({
+		time: 0,
+		shouldSaveModel: false,
+	});
 
 	const dispatch = useAppDispatch();
 	const topLevelMenu = useAppSelector((state) => getTopLevelMenu(state));
@@ -77,12 +81,21 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		load();
 	}, []);
 
+	//We run the throttle save in a useEffect because we want the table model to update
+	//with new changes before we save
+	useEffect(() => {
+		//If not mount
+		if (saveTime.time !== 0) {
+			throttleSave(saveTime.shouldSaveModel);
+		}
+	}, [saveTime]);
+
 	const throttleSave = _.throttle(async (shouldSaveModel: boolean) => {
 		await serializeTable(shouldSaveModel, plugin, state, tableId, viewMode);
 	}, 150);
 
 	const handleSaveData = (shouldSaveModel: boolean) =>
-		throttleSave(shouldSaveModel);
+		setSaveTime({ shouldSaveModel, time: Date.now() });
 
 	//Handles sync between live preview and reading mode
 	useEffect(() => {
@@ -225,7 +238,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				},
 			};
 		});
-		handleSaveData(true);
+		handleSaveData(false);
 	}
 
 	function handleHeaderSortSelect(columnId: string, sortDir: SortDir) {
@@ -397,7 +410,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				},
 			};
 		});
-		handleSaveData(true);
+		handleSaveData(false);
 	}
 
 	function handleMoveColumnClick(columnId: string, moveRight: boolean) {
@@ -513,7 +526,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		// 		}),
 		// 	};
 		// });
-		handleSaveData(true);
+		handleSaveData(false);
 	}
 
 	function handleAutoWidthToggle(columnId: string, value: boolean) {

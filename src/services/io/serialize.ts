@@ -105,6 +105,7 @@ const updateSettingsCache = async (
 	tableId: string,
 	viewMode: MarkdownViewModeType | null
 ) => {
+	const updateView = viewMode === "source" ? "preview" : "source";
 	const obj: NltSettings = {
 		...plugin.settings,
 		data: {
@@ -112,7 +113,7 @@ const updateSettingsCache = async (
 			[tableId]: state,
 		},
 		dirty: {
-			viewMode,
+			viewModesToUpdate: [updateView],
 			tableId,
 		},
 	};

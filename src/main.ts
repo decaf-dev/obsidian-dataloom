@@ -29,7 +29,7 @@ export interface NltSettings {
 	};
 	tableFolder: string;
 	dirty: {
-		viewMode: MarkdownViewModeType | null;
+		viewModesToUpdate: MarkdownViewModeType[];
 		tableId: string;
 	} | null;
 	syncInterval: number;
