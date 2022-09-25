@@ -57,9 +57,13 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		dispatch(updateMenuPosition());
 	}, 150);
 
-	const handleTableScroll = () => {
-		throttleTableScroll();
-	};
+	const throttlePositionUpdate = _.throttle(() => {
+		dispatch(updateMenuPosition());
+	}, 150);
+
+	const handleTableScroll = () => throttleTableScroll();
+
+	const handlePositionUpdate = () => throttlePositionUpdate();
 
 	//Load table on mount
 	useEffect(() => {
@@ -346,6 +350,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			};
 		});
 		handleSaveData(true);
+		handlePositionUpdate();
 		//sortData();
 	}
 
