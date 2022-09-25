@@ -213,9 +213,10 @@ export default class NltPlugin extends Plugin {
 						settings: updatedSettings,
 					};
 					const viewModesToUpdate: MarkdownViewModeType[] = [
-						"source",
 						"preview",
 					];
+					if (this.isLivePreviewEnabled())
+						viewModesToUpdate.push("source");
 					await serializeTable(
 						true,
 						this,
@@ -245,9 +246,10 @@ export default class NltPlugin extends Plugin {
 						model: updatedModel,
 					};
 					const viewModesToUpdate: MarkdownViewModeType[] = [
-						"source",
 						"preview",
 					];
+					if (this.isLivePreviewEnabled())
+						viewModesToUpdate.push("source");
 					await serializeTable(
 						true,
 						this,
