@@ -91,7 +91,16 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	}, [saveTime]);
 
 	const throttleSave = _.throttle(async (shouldSaveModel: boolean) => {
-		await serializeTable(shouldSaveModel, plugin, state, tableId, viewMode);
+		const viewModesToUpdate: MarkdownViewModeType[] = [
+			viewMode === "source" ? "preview" : "source",
+		];
+		await serializeTable(
+			shouldSaveModel,
+			plugin,
+			state,
+			tableId,
+			viewModesToUpdate
+		);
 	}, 150);
 
 	const handleSaveData = (shouldSaveModel: boolean) =>
@@ -101,17 +110,16 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	useEffect(() => {
 		let timer: any = null;
 
-		async function checkDirty() {
-			const dirty = plugin.settings.dirty;
-			if (dirty) {
-				const { viewModesToUpdate, tableId: dirtyTableId } = dirty;
-				const shouldUpdate =
-					dirtyTableId === tableId &&
-					viewModesToUpdate.includes(viewMode);
-				console.log("SHOULD UPDATE", shouldUpdate);
-				if (shouldUpdate) {
+		async function checkForUpdates() {
+			const { tableId: tId, viewModes } = plugin.settings.viewModeSync;
+			if (tId) {
+				const mode = viewModes.find((v) => v === viewMode);
+				if (mode && tableId === tId) {
 					setLoading(true);
-					plugin.settings.dirty = null;
+					const modeIndex = viewModes.indexOf(mode);
+					plugin.settings.viewModeSync.viewModes.splice(modeIndex, 1);
+					if (plugin.settings.viewModeSync.viewModes.length === 0)
+						plugin.settings.viewModeSync.tableId = null;
 					await plugin.saveSettings();
 					const state = await deserializeTable(plugin, tableId);
 					setTableState(state);
@@ -122,17 +130,17 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			}
 		}
 
-		function livePreviewSync() {
+		function viewModeSync() {
 			timer = setInterval(() => {
-				checkDirty();
-			}, plugin.settings.syncInterval);
+				checkForUpdates();
+			}, 250);
 		}
 
-		if (plugin.isLivePreviewEnabled()) livePreviewSync();
+		viewModeSync();
 		return () => {
 			clearInterval(timer);
 		};
-	}, [plugin.settings.dirty]);
+	}, []);
 
 	//TODO add
 	// useDidMountEffect(() => {
@@ -695,7 +703,12 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	const tableIdWithMode = getUniqueTableId(tableId, viewMode);
 
 	return (
-		<div id={tableIdWithMode} className="NLT__app" tabIndex={0}>
+		<div
+			id={tableIdWithMode}
+			data-id={tableId}
+			className="NLT__app"
+			tabIndex={0}
+		>
 			<OptionBar model={state.model} settings={state.settings} />
 			<div className="NLT__table-wrapper" onScroll={handleTableScroll}>
 				<Table

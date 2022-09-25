@@ -103,18 +103,17 @@ const updateSettingsCache = async (
 	plugin: NltPlugin,
 	state: TableState,
 	tableId: string,
-	viewMode: MarkdownViewModeType | null
+	viewModesToUpdate: MarkdownViewModeType[]
 ) => {
-	const updateView = viewMode === "source" ? "preview" : "source";
 	const obj: NltSettings = {
 		...plugin.settings,
 		data: {
 			...plugin.settings.data,
 			[tableId]: state,
 		},
-		dirty: {
-			viewModesToUpdate: [updateView],
+		viewModeSync: {
 			tableId,
+			viewModes: viewModesToUpdate,
 		},
 	};
 	if (DEBUG.SAVE_APP_DATA) {
@@ -140,7 +139,7 @@ export const serializeTable = async (
 	plugin: NltPlugin,
 	state: TableState,
 	tableId: string,
-	viewMode: MarkdownViewModeType | null
+	viewModesToUpdate: MarkdownViewModeType[]
 ) => {
 	if (DEBUG.SAVE_APP_DATA) {
 		console.log("");
@@ -164,5 +163,5 @@ export const serializeTable = async (
 			frontmatter + "\n" + tableMarkdown
 		);
 	}
-	await updateSettingsCache(plugin, state, tableId, viewMode);
+	await updateSettingsCache(plugin, state, tableId, viewModesToUpdate);
 };

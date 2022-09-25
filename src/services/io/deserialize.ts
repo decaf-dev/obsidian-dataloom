@@ -89,12 +89,13 @@ export const findTableModel = async (
 };
 
 const validateSettings = (plugin: NltPlugin) => {
-	const { tableFolder, syncInterval } = plugin.settings;
+	const { tableFolder, viewModeSyncInterval } = plugin.settings;
 	if (tableFolder.match(SLASH_REGEX))
 		throw new Error(
 			"Table definition folder cannot include forward or back slashes. Please change it in the plugin settings."
 		);
-	if (syncInterval === 0) throw new Error("Sync interval cannot be empty.");
+	if (viewModeSyncInterval === 0)
+		throw new Error("Sync interval cannot be empty.");
 };
 
 export const deserializeTable = async (

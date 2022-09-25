@@ -38,9 +38,11 @@ export default class NltSettingsTab extends PluginSettingTab {
 				dropdown.addOption("2000", "Normal - 2000");
 				dropdown.addOption("1500", "Fast - 1500");
 				dropdown.addOption("1000", "Faster - 1000");
-				dropdown.setValue(String(this.plugin.settings.syncInterval));
+				dropdown.setValue(
+					String(this.plugin.settings.viewModeSyncInterval)
+				);
 				dropdown.onChange(async (value) => {
-					this.plugin.settings.syncInterval =
+					this.plugin.settings.viewModeSyncInterval =
 						value !== "" ? Number(value) : 0;
 					await this.plugin.saveSettings();
 				});

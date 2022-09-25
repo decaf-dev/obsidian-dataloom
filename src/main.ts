@@ -22,33 +22,30 @@ import {
 import { store } from "./services/redux/store";
 import { TableState } from "./services/table/types";
 import _ from "lodash";
-
 export interface NltSettings {
 	data: {
 		[tableId: string]: TableState;
 	};
 	tableFolder: string;
-	dirty: {
-		viewModesToUpdate: MarkdownViewModeType[];
-		tableId: string;
-	} | null;
-	syncInterval: number;
+	viewModeSync: {
+		tableId: string | null;
+		viewModes: MarkdownViewModeType[];
+	};
+	viewModeSyncInterval: number;
 }
 
 export const DEFAULT_SETTINGS: NltSettings = {
 	data: {},
 	tableFolder: "_notion-like-tables",
-	dirty: null,
-	syncInterval: 2000,
+	viewModeSync: {
+		tableId: null,
+		viewModes: [],
+	},
+	viewModeSyncInterval: 2000,
 };
-
-interface FocusedTable {
-	tableId: string;
-	viewMode: MarkdownViewModeType;
-}
 export default class NltPlugin extends Plugin {
 	settings: NltSettings;
-	focused: FocusedTable | null = null;
+	focusedTable: string | null = null;
 	layoutChangeTime: number;
 
 	private getViewMode = (el: HTMLElement): MarkdownViewModeType | null => {
@@ -102,6 +99,9 @@ export default class NltPlugin extends Plugin {
 	registerEvents() {
 		this.registerEvent(
 			this.app.workspace.on("file-open", () => {
+				//Clear the focused table
+				this.blurTable();
+
 				let livePreviewScroller =
 					document.querySelector(".cm-scroller");
 				let readingModeScroller = document.querySelector(
@@ -145,6 +145,7 @@ export default class NltPlugin extends Plugin {
 
 		this.registerDomEvent(activeDocument, "click", (el: any) => {
 			const topLevelMenu = getTopLevelMenu(store.getState());
+			//Without this, the menu will immediately close on our open click
 			const time = timeSinceMenuOpen(store.getState());
 			if (topLevelMenu !== null && time > 100) {
 				for (let i = 0; i < el.path.length; i++) {
@@ -159,6 +160,25 @@ export default class NltPlugin extends Plugin {
 						//If we're clicking outside of the app
 						if (element.className.includes("view-content")) {
 							store.dispatch(closeAllMenus());
+							break;
+						}
+					}
+				}
+			} else {
+				for (let i = 0; i < el.path.length; i++) {
+					const element = el.path[i];
+					if (element instanceof HTMLElement) {
+						//If we've clicked in an app
+						if (element.className.includes("NLT__app")) {
+							const id = element.getAttribute("data-id");
+							this.focusTable(id);
+							console.log("FOCUSING TABLE", id);
+							break;
+						}
+						//If we're clicking outside of the app
+						if (element.className.includes("view-content")) {
+							console.log("BLURING TABLE");
+							this.blurTable();
 							break;
 						}
 					}
@@ -182,8 +202,8 @@ export default class NltPlugin extends Plugin {
 			name: "Add column to focused table",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "\\" }],
 			callback: async () => {
-				if (this.focused) {
-					const { tableId } = this.focused;
+				if (this.focusedTable) {
+					const tableId = this.focusedTable;
 					const { model, settings } = this.settings.data[tableId];
 					const [updatedModel, updatedSettings] = addColumn(
 						model,
@@ -194,10 +214,20 @@ export default class NltPlugin extends Plugin {
 						model: updatedModel,
 						settings: updatedSettings,
 					};
-					await serializeTable(true, this, newState, tableId, null);
+					const viewModesToUpdate: MarkdownViewModeType[] = [
+						"source",
+						"preview",
+					];
+					await serializeTable(
+						true,
+						this,
+						newState,
+						tableId,
+						viewModesToUpdate
+					);
 				} else {
 					new Notice(
-						"No table focused. Please click a table to preform this operation."
+						"No focused table. Please click a table to focus it and retry this operation again."
 					);
 				}
 			},
@@ -208,33 +238,40 @@ export default class NltPlugin extends Plugin {
 			name: "Add row to focused table",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Enter" }],
 			callback: async () => {
-				if (this.focused) {
-					const { tableId } = this.focused;
+				if (this.focusedTable) {
+					const tableId = this.focusedTable;
 					const { model } = this.settings.data[tableId];
 					const updatedModel = addRow(model);
 					const newState = {
 						...this.settings.data[tableId],
 						model: updatedModel,
 					};
-					await serializeTable(true, this, newState, tableId, null);
+					const viewModesToUpdate: MarkdownViewModeType[] = [
+						"source",
+						"preview",
+					];
+					await serializeTable(
+						true,
+						this,
+						newState,
+						tableId,
+						viewModesToUpdate
+					);
 				} else {
 					new Notice(
-						"No table focused. Please click a table to preform this operation."
+						"No focused table. Please click a table to focus it and retry this operation."
 					);
 				}
 			},
 		});
 	}
 
-	focusTable = ({ tableId, viewMode }: FocusedTable) => {
-		this.focused = {
-			tableId,
-			viewMode,
-		};
+	focusTable = (tableId: string) => {
+		this.focusedTable = tableId;
 	};
 
 	blurTable = () => {
-		this.focused = null;
+		this.focusedTable = null;
 	};
 
 	async loadSettings() {
