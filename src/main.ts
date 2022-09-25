@@ -21,6 +21,7 @@ import {
 } from "./services/menu/menuSlice";
 import { store } from "./services/redux/store";
 import { TableState } from "./services/table/types";
+import _ from "lodash";
 
 export interface NltSettings {
 	data: {
@@ -92,6 +93,12 @@ export default class NltPlugin extends Plugin {
 		this.registerEvents();
 	}
 
+	private throttleFileScroll = _.throttle(() => {
+		const topLevelMenu = getTopLevelMenu(store.getState());
+		if (topLevelMenu !== null) store.dispatch(closeAllMenus());
+		store.dispatch(updateMenuPosition());
+	}, 150);
+
 	registerEvents() {
 		this.registerEvent(
 			this.app.workspace.on("file-open", () => {
@@ -102,20 +109,12 @@ export default class NltPlugin extends Plugin {
 				);
 				if (livePreviewScroller) {
 					livePreviewScroller.addEventListener("scroll", () => {
-						//TODO debounce
-						store.dispatch(updateMenuPosition());
-						const topLevelMenu = getTopLevelMenu(store.getState());
-						if (topLevelMenu !== null)
-							store.dispatch(closeAllMenus());
+						this.throttleFileScroll();
 					});
 				}
 				if (readingModeScroller) {
 					readingModeScroller.addEventListener("scroll", () => {
-						//TODO debounce
-						store.dispatch(updateMenuPosition());
-						const topLevelMenu = getTopLevelMenu(store.getState());
-						if (topLevelMenu !== null)
-							store.dispatch(closeAllMenus());
+						this.throttleFileScroll();
 					});
 				}
 			})

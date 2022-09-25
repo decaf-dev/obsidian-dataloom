@@ -34,6 +34,8 @@ import {
 	updateMenuPosition,
 } from "./services/menu/menuSlice";
 
+import _ from "lodash";
+
 interface Props {
 	plugin: NltPlugin;
 	tableId: string;
@@ -54,9 +56,13 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	const dispatch = useAppDispatch();
 	const topLevelMenu = useAppSelector((state) => getTopLevelMenu(state));
 
-	const handleTableScroll = () => {
+	const throttleTableScroll = _.throttle(() => {
 		if (topLevelMenu) dispatch(closeAllMenus());
 		dispatch(updateMenuPosition());
+	}, 150);
+
+	const handleTableScroll = () => {
+		throttleTableScroll();
 	};
 
 	//Load table on mount
