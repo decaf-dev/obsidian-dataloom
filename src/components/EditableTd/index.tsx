@@ -19,10 +19,9 @@ import "./styles.css";
 import { DEBUG } from "../../constants";
 import { useMenu } from "src/services/menu/hooks";
 import { MenuLevel } from "src/services/menu/types";
-import { logFunc } from "src/services/debug";
 import { usePositionRef } from "src/services/hooks";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
-import { openMenu, isMenuOpen } from "src/services/redux/menuSlice";
+import { openMenu, isMenuOpen } from "src/services/menu/menuSlice";
 
 interface Props {
 	columnType: string;

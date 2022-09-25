@@ -17,7 +17,7 @@ import {
 	getTopLevelMenu,
 	closeTopLevelMenu,
 	timeSinceMenuOpen,
-} from "./services/redux/menuSlice";
+} from "./services/menu/menuSlice";
 import { store } from "./services/redux/store";
 import { TableState } from "./services/table/types";
 

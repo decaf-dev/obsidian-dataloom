@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { Menu } from "src/services/menu/types";
-import type { RootState } from "./store";
+import type { RootState } from "../redux/store";
 import { DEBUG } from "src/constants";
 import { logFunc } from "../debug";
 
