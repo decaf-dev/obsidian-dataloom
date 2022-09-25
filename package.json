@@ -45,11 +45,13 @@
 		"@emotion/styled": "^11.10.4",
 		"@mui/icons-material": "^5.10.3",
 		"@mui/material": "^5.10.3",
+		"@reduxjs/toolkit": "^1.8.5",
 		"html-react-parser": "^1.4.9",
 		"markdown-it": "^13.0.1",
 		"react": "^18.2.0",
 		"react-datepicker": "^4.8.0",
 		"react-dom": "^18.2.0",
+		"react-redux": "^8.0.4",
 		"uuid": "^8.3.2"
 	}
 }

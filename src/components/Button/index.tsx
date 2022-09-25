@@ -15,13 +15,7 @@ export default function Button({ style, children, hasIcon, onClick }: Props) {
 	if (hasIcon) className += " NLT__button--icon";
 
 	return (
-		<button
-			style={style}
-			className={className}
-			tabIndex={-1}
-			aria-hidden="true"
-			onClick={(e) => onClick(e)}
-		>
+		<button style={style} className={className} onClick={(e) => onClick(e)}>
 			{children}
 		</button>
 	);

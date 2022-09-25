@@ -1,18 +1,11 @@
 import { useCallback, useState, useEffect, useRef } from "react";
 
-import { useMenuState } from "src/components/MenuProvider";
 import { v4 as uuid } from "uuid";
-import { randomMenuId } from "../random";
 import { numToPx } from "../string/conversion";
 
 export const useForceUpdate = () => {
 	const [, setValue] = useState(0);
 	return useCallback(() => setValue((value) => value + 1), []);
-};
-
-export const useMenuId = (): string => {
-	const [id] = useState(randomMenuId());
-	return id;
 };
 
 export const useId = (): string => {
@@ -188,30 +181,6 @@ export const usePositionRef = (deps: any[] = []) => {
 	}, [obsidianResizeTime, obsidianScrollTime, tableScrollTime, ...deps]);
 
 	return { positionRef, position };
-};
-
-export const useCloseMenusOnScroll = (className: string): void => {
-	const { isAnyMenuOpen, closeAllMenus } = useMenuState();
-
-	let el: Node | null = null;
-
-	function handleScroll() {
-		closeAllMenus();
-	}
-
-	useEffect(() => {
-		el = document.getElementsByClassName(className)[0];
-		if (el) {
-			if (isAnyMenuOpen()) {
-				el.addEventListener("scroll", handleScroll);
-			} else {
-				el.removeEventListener("scroll", handleScroll);
-			}
-		}
-		return () => {
-			if (el) el.removeEventListener("scroll", handleScroll);
-		};
-	}, [isAnyMenuOpen()]);
 };
 
 // export const useDisableScroll = (className: string): void => {

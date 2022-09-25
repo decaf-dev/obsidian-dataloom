@@ -3,16 +3,23 @@ import React, { useEffect, useRef } from "react";
 import HeaderMenu from "../HeaderMenu";
 
 import "./styles.css";
-import { useMenuId, usePositionRef } from "src/services/hooks";
-import { useMenu } from "../MenuProvider";
+import { usePositionRef } from "src/services/hooks";
 
 import { CSS_MEASUREMENT_PIXEL_REGEX } from "src/services/string/regex";
 import { numToPx, pxToNum } from "src/services/string/conversion";
 import { MIN_COLUMN_WIDTH_PX } from "src/constants";
 import { SortDir } from "src/services/sort/types";
 import { CellType } from "src/services/table/types";
+import { useMenu } from "src/services/menu/hooks";
+import { MenuLevel } from "src/services/menu/types";
 
 import parse from "html-react-parser";
+import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
+import {
+	openMenu,
+	closeTopLevelMenu,
+	isMenuOpen,
+} from "src/services/menu/menuSlice";
 
 interface Props {
 	cellId: string;
@@ -61,26 +68,25 @@ export default function EditableTh({
 	onWrapOverflowToggle,
 	onAutoWidthToggle,
 }: Props) {
-	const menuId = useMenuId();
-	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
-		useMenu(menuId);
 	const { positionRef, position } = usePositionRef([positionUpdateTime]);
 	const mouseDownX = useRef(0);
 	const isResizing = useRef(false);
 
-	useEffect(() => {
-		if (isMenuRequestingClose) {
-			closeMenu();
-		}
-	}, [isMenuRequestingClose]);
+	const menu = useMenu(MenuLevel.ONE);
+	const dispatch = useAppDispatch();
+	const isOpen = useAppSelector((state) => isMenuOpen(state, menu));
 
 	function handleHeaderClick(e: React.MouseEvent) {
 		if (isResizing.current) return;
-		openMenu();
+		if (isOpen) {
+			dispatch(closeTopLevelMenu());
+		} else {
+			dispatch(openMenu(menu));
+		}
 	}
 
 	function handleClose() {
-		closeMenu();
+		dispatch(closeTopLevelMenu());
 	}
 
 	function handleMouseDown(e: React.MouseEvent) {
@@ -147,7 +153,7 @@ export default function EditableTh({
 				</div>
 			</th>
 			<HeaderMenu
-				isOpen={isMenuOpen}
+				isOpen={isOpen}
 				canDeleteColumn={numColumns > 1}
 				style={{
 					top: numToPx(
@@ -159,7 +165,7 @@ export default function EditableTh({
 				cellId={cellId}
 				shouldWrapOverflow={shouldWrapOverflow}
 				useAutoWidth={useAutoWidth}
-				id={menuId}
+				id={menu.id}
 				columnContent={content}
 				columnSortDir={sortDir}
 				columnType={type}

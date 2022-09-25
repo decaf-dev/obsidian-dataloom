@@ -1,16 +1,22 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 
 import IconButton from "../IconButton";
 import Menu from "../Menu";
 import RowMenuItem from "./components/RowMenuItem";
-import { useMenu } from "../MenuProvider";
 
 import { Icon } from "src/services/icon/types";
 import { usePositionRef } from "src/services/hooks";
-import { useMenuId } from "src/services/hooks";
+import { useMenu } from "src/services/menu/hooks";
+import {
+	openMenu,
+	closeTopLevelMenu,
+	isMenuOpen,
+} from "src/services/menu/menuSlice";
 import { numToPx, pxToNum } from "src/services/string/conversion";
 
 import "./styles.css";
+import { MenuLevel } from "src/services/menu/types";
+import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 
 interface Props {
 	rowId: string;
@@ -23,29 +29,21 @@ export default function RowMenu({
 	positionUpdateTime,
 	onDeleteClick,
 }: Props) {
-	const menuId = useMenuId();
-	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
-		useMenu(menuId);
-
+	const menu = useMenu(MenuLevel.ONE);
+	const dispatch = useAppDispatch();
 	const { positionRef, position } = usePositionRef([positionUpdateTime]);
-
-	useEffect(() => {
-		if (isMenuRequestingClose) {
-			closeMenu();
-		}
-	}, [isMenuRequestingClose]);
-
+	const isOpen = useAppSelector((state) => isMenuOpen(state, menu));
 	function handleButtonClick(e: React.MouseEvent) {
-		if (isMenuOpen) {
-			closeMenu();
+		if (isOpen) {
+			dispatch(closeTopLevelMenu());
 		} else {
-			openMenu();
+			dispatch(openMenu(menu));
 		}
 	}
 
 	function handleDeleteClick(rowId: string) {
 		onDeleteClick(rowId);
-		closeMenu();
+		dispatch(closeTopLevelMenu());
 	}
 
 	const options = useMemo(() => {
@@ -63,12 +61,10 @@ export default function RowMenu({
 		<div ref={positionRef}>
 			<IconButton icon={Icon.MORE_VERT} onClick={handleButtonClick} />
 			<Menu
-				id={menuId}
-				isOpen={isMenuOpen}
+				id={menu.id}
+				isOpen={isOpen}
 				style={{
-					top: numToPx(
-						pxToNum(position.top) + pxToNum(position.height)
-					),
+					top: position.top,
 					left: numToPx(
 						pxToNum(position.left) - pxToNum(position.width) - 65
 					),

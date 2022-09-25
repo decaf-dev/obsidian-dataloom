@@ -12,11 +12,18 @@ import { NltTable } from "./NltTable";
 import { addRow, addColumn } from "./services/internal/add";
 import { serializeTable } from "./services/io/serialize";
 import { createEmptyMarkdownTable } from "./services/random";
+import {
+	closeAllMenus,
+	getTopLevelMenu,
+	closeTopLevelMenu,
+	timeSinceMenuOpen,
+} from "./services/menu/menuSlice";
+import { store } from "./services/redux/store";
 import { TableState } from "./services/table/types";
 
 export interface NltSettings {
 	data: {
-		[tableIndex: string]: TableState;
+		[tableId: string]: TableState;
 	};
 	tableFolder: string;
 	dirty: {
@@ -37,6 +44,8 @@ interface FocusedTable {
 	tableId: string;
 	viewMode: MarkdownViewModeType;
 }
+
+const COMPONENT_NAME = "NltPlugin";
 export default class NltPlugin extends Plugin {
 	settings: NltSettings;
 	focused: FocusedTable | null = null;
@@ -85,20 +94,51 @@ export default class NltPlugin extends Plugin {
 	}
 
 	registerEvents() {
-		//Our persisted data uses a key of the file path and then stores an object mapping
-		//to a table id and an TableModel object.
-		//If the file path changes, we want to update our cache so that the data is still accessible.
 		this.registerEvent(
-			this.app.vault.on("rename", (file, oldPath) => {
-				if (this.settings.data[oldPath]) {
-					const newPath = file.path;
-					const data = { ...this.settings.data[oldPath] };
-					delete this.settings.data[oldPath];
-					this.settings.data[newPath] = data;
-					this.saveSettings();
-				}
+			this.app.workspace.on("resize", () => {
+				const topLevelMenu = getTopLevelMenu(store.getState());
+				if (topLevelMenu !== null) store.dispatch(closeAllMenus());
 			})
 		);
+
+		this.registerEvent(
+			this.app.workspace.on("layout-change", () => {
+				this.app.workspace.on("resize", () => {
+					const topLevelMenu = getTopLevelMenu(store.getState());
+					if (topLevelMenu !== null) store.dispatch(closeAllMenus());
+				});
+			})
+		);
+
+		this.registerDomEvent(activeDocument, "keydown", async (e) => {
+			if (e.key === "Enter") {
+				const topLevelMenu = getTopLevelMenu(store.getState());
+				if (topLevelMenu !== null) store.dispatch(closeTopLevelMenu());
+			}
+		});
+
+		this.registerDomEvent(activeDocument, "click", (el: any) => {
+			const topLevelMenu = getTopLevelMenu(store.getState());
+			const time = timeSinceMenuOpen(store.getState());
+			if (topLevelMenu !== null && time > 100) {
+				for (let i = 0; i < el.path.length; i++) {
+					const element = el.path[i];
+					if (element instanceof HTMLElement) {
+						if (element.id === topLevelMenu.id) break;
+						//If we've clicked in the app but not in the menu
+						if (element.className.includes("NLT__app")) {
+							store.dispatch(closeTopLevelMenu());
+							break;
+						}
+						//If we're clicking outside of the app
+						if (element.className.includes("view-content")) {
+							store.dispatch(closeAllMenus());
+							break;
+						}
+					}
+				}
+			}
+		});
 	}
 
 	registerCommands() {

@@ -3,8 +3,8 @@ import { createRoot, Root } from "react-dom/client";
 import { MarkdownRenderChild, MarkdownViewModeType } from "obsidian";
 
 import App from "./App";
-import MenuProvider from "./components/MenuProvider";
-import FocusProvider from "./components/FocusProvider";
+import { store } from "./services/redux/store";
+import { Provider } from "react-redux";
 
 import NltPlugin from "./main";
 
@@ -32,19 +32,13 @@ export class NltTable extends MarkdownRenderChild {
 		const rootEl = this.el.createEl("div");
 		this.root = createRoot(rootEl);
 		this.root.render(
-			<FocusProvider
-				plugin={this.plugin}
-				tableId={this.tableId}
-				viewMode={this.viewMode}
-			>
-				<MenuProvider tableId={this.tableId} viewMode={this.viewMode}>
-					<App
-						plugin={this.plugin}
-						tableId={this.tableId}
-						viewMode={this.viewMode}
-					/>
-				</MenuProvider>
-			</FocusProvider>
+			<Provider store={store}>
+				<App
+					plugin={this.plugin}
+					tableId={this.tableId}
+					viewMode={this.viewMode}
+				/>
+			</Provider>
 		);
 		this.el.children[0].replaceWith(rootEl);
 	}
