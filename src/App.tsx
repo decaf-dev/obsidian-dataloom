@@ -393,6 +393,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			};
 		});
 		handleSaveData(true);
+		handlePositionUpdate();
 		//sortData();
 	}
 
