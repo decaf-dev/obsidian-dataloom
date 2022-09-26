@@ -12,8 +12,9 @@ import "./styles.css";
 import { markdownToHtml } from "src/services/io/deserialize";
 import { useAppDispatch } from "src/services/redux/hooks";
 import { closeTopLevelMenu } from "src/services/menu/menuSlice";
+import Stack from "../Stack";
 
-interface TopMenuProps {
+interface MenuHeaderProps {
 	rowId: string;
 	columnId: string;
 	tags: TagType[];
@@ -22,32 +23,34 @@ interface TopMenuProps {
 	onRemoveTag: (tagId: string) => void;
 }
 
-const TopMenu = ({
+const MenuHeader = ({
 	rowId,
 	columnId,
 	tags,
 	inputText,
 	onInputTextChange,
 	onRemoveTag,
-}: TopMenuProps) => {
+}: MenuHeaderProps) => {
 	return (
-		<div className="NLT__tag-menu-top">
-			{tags
-				.filter((tag: TagType) =>
-					tag.cells.find(
-						(c) => c.rowId === rowId && c.columnId === columnId
+		<div className="NLT__tag-menu-header">
+			<Stack spacing="5px">
+				{tags
+					.filter((tag: TagType) =>
+						tag.cells.find(
+							(c) => c.rowId === rowId && c.columnId === columnId
+						)
 					)
-				)
-				.map((tag: TagType) => (
-					<Tag
-						key={tag.id}
-						id={tag.id}
-						color={tag.color}
-						html={tag.html}
-						showRemove={true}
-						onRemoveClick={(tagId) => onRemoveTag(tagId)}
-					/>
-				))}
+					.map((tag: TagType) => (
+						<Tag
+							key={tag.id}
+							id={tag.id}
+							color={tag.color}
+							html={tag.html}
+							showRemove={true}
+							onRemoveClick={(tagId) => onRemoveTag(tagId)}
+						/>
+					))}
+			</Stack>
 			<input
 				className="NLT__tag-input"
 				autoFocus={true}
@@ -59,7 +62,7 @@ const TopMenu = ({
 	);
 };
 
-interface BottomMenuProps {
+interface MenuBodyProps {
 	tags: TagType[];
 	inputText: string;
 	generatedColor: string;
@@ -68,20 +71,20 @@ interface BottomMenuProps {
 	onColorChange: (tagId: string, color: string) => void;
 }
 
-const BottomMenu = ({
+const MenuBody = ({
 	tags,
 	inputText,
 	generatedColor,
 	onAddTag,
 	onTagClick,
 	onColorChange,
-}: BottomMenuProps) => {
+}: MenuBodyProps) => {
 	const found = tags.find((tag: TagType) => tag.markdown === inputText);
 	const filteredTags = tags.filter((tag: TagType) =>
 		tag.markdown.includes(inputText)
 	);
 	return (
-		<div className="NLT__tag-menu-bottom">
+		<div className="NLT__tag-menu-body">
 			<p className="NLT__tag-menu-text">Select an option or create one</p>
 			<div>
 				{!found && inputText !== "" && (
@@ -156,7 +159,7 @@ export default function TagCellEdit({
 		<Menu id={menuId} isOpen={isOpen} style={style}>
 			<div className="NLT__tag-menu">
 				<div className="NLT__tag-menu-container">
-					<TopMenu
+					<MenuHeader
 						rowId={rowId}
 						columnId={columnId}
 						inputText={inputText}
@@ -164,7 +167,7 @@ export default function TagCellEdit({
 						onInputTextChange={handleInputTextChange}
 						onRemoveTag={onRemoveTag}
 					/>
-					<BottomMenu
+					<MenuBody
 						inputText={inputText}
 						tags={tags}
 						generatedColor={generatedColor}
