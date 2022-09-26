@@ -10,17 +10,24 @@ import { createEmptyMarkdownTable } from "../random";
 export const serializeFrontMatter = (model: TableModel) => {
 	const frontmatter = [];
 	frontmatter.push("---");
-	frontmatter.push(serializeColumns(model.columns));
-	frontmatter.push(serializeRows(model.rows));
+	frontmatter.push(serializeColumnIds(model.columns));
+	frontmatter.push(serializeRowIds(model.rows));
+	frontmatter.push(serializeCellIds(model.cells));
 	frontmatter.push("---");
 	return frontmatter.join("\n");
 };
 
-const serializeColumns = (columns: ColumnId[]) => {
+const serializeCellIds = (cells: Cell[]) => {
+	const ids = cells.map((cell) => cell.id);
+	//TODO convert to base64
+	return `cellIds: ${JSON.stringify(ids)}`;
+};
+
+const serializeColumnIds = (columns: ColumnId[]) => {
 	return `columnIds: ${JSON.stringify(columns)}`;
 };
 
-const serializeRows = (rows: RowId[]) => {
+const serializeRowIds = (rows: RowId[]) => {
 	return `rowIds: ${JSON.stringify(rows)}`;
 };
 

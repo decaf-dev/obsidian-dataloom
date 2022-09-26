@@ -45,16 +45,21 @@ export const parseTableModelFromMarkdown = (data: string): TableModel => {
 		throw new Error("Invalid frontmatter. Missing columnIds or rowIds.");
 	const columnIds = JSON.parse(frontmatter[0].split("columnIds: ")[1]);
 	const rowIds = JSON.parse(frontmatter[1].split("rowIds: ")[1]);
+	const cellIds = JSON.parse(frontmatter[2].split("cellIds: ")[1]);
 
 	const numColumns = Object.values(columnIds).length;
 	const numRows = Object.values(rowIds).length;
 	const idSize = numColumns * numRows;
 	if (parsedCells.length !== idSize) {
 		throw new Error(
-			`Parsed size: ${parsedCells.length} doesn't match id size: ${idSize}`
+			"'rowIds' or 'columnIds' value doesn't match parsed table"
 		);
 	}
 
+	const numCells = Object.values(cellIds).length;
+	if (parsedCells.length !== numCells) {
+		throw new Error("'cellIds' value doesn't match parsed table");
+	}
 	const tableModel: TableModel = {
 		columns: [],
 		rows: [],
@@ -67,7 +72,7 @@ export const parseTableModelFromMarkdown = (data: string): TableModel => {
 		for (let x = 0; x < numColumns; x++) {
 			if (y === 0) columns.push(columnIds[x]);
 			if (x === 0) rows.push(rowIds[y]);
-			const cellId = randomCellId();
+			const cellId = cellIds[x + y * numColumns];
 			const markdown = parsedCells[x + y * numColumns];
 			const html = markdownToHtml(markdown);
 			cells.push(
