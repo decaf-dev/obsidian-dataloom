@@ -37,7 +37,10 @@ export interface Tag {
 	markdown: string;
 	html: string;
 	color: string;
-	cellIds: string[];
+	cells: {
+		rowId: string;
+		columnId: string;
+	};
 }
 export interface ColumnSettings {
 	sortDir: SortDir;
