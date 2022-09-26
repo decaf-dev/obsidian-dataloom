@@ -14,7 +14,8 @@ import { useAppDispatch } from "src/services/redux/hooks";
 import { closeTopLevelMenu } from "src/services/menu/menuSlice";
 
 interface TopMenuProps {
-	cellId: string;
+	rowId: string;
+	columnId: string;
 	tags: TagType[];
 	inputText: string;
 	onInputTextChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -22,7 +23,8 @@ interface TopMenuProps {
 }
 
 const TopMenu = ({
-	cellId,
+	rowId,
+	columnId,
 	tags,
 	inputText,
 	onInputTextChange,
@@ -31,7 +33,11 @@ const TopMenu = ({
 	return (
 		<div className="NLT__tag-menu-top">
 			{tags
-				.filter((tag: TagType) => tag.cellIds.includes(cellId) === true)
+				.filter((tag: TagType) =>
+					tag.cells.find(
+						(c) => c.rowId === rowId && c.columnId === columnId
+					)
+				)
 				.map((tag: TagType) => (
 					<Tag
 						key={tag.id}
@@ -110,7 +116,8 @@ interface Props {
 		top: string;
 		left: string;
 	};
-	cellId: string;
+	columnId: string;
+	rowId: string;
 	onTagClick: (tagId: string) => void;
 	onAddTag: (markdown: string, html: string, color: string) => void;
 	onRemoveTag: (tagId: string) => void;
@@ -122,7 +129,8 @@ export default function TagCellEdit({
 	isOpen,
 	style,
 	tags,
-	cellId,
+	rowId,
+	columnId,
 	onTagClick,
 	onAddTag,
 	onColorChange,
@@ -149,7 +157,8 @@ export default function TagCellEdit({
 			<div className="NLT__tag-menu">
 				<div className="NLT__tag-menu-container">
 					<TopMenu
-						cellId={cellId}
+						rowId={rowId}
+						columnId={columnId}
 						inputText={inputText}
 						tags={tags}
 						onInputTextChange={handleInputTextChange}

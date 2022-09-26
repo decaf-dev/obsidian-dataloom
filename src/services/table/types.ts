@@ -40,7 +40,7 @@ export interface Tag {
 	cells: {
 		rowId: string;
 		columnId: string;
-	};
+	}[];
 }
 export interface ColumnSettings {
 	sortDir: SortDir;

@@ -316,6 +316,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	function handleAddTag(
 		cellId: string,
 		columnId: string,
+		rowId: string,
 		markdown: string,
 		html: string,
 		color: string,
@@ -324,6 +325,8 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		if (DEBUG.APP) {
 			logFunc(COMPONENT_NAME, "handleAddTag", {
 				cellId,
+				columnId,
+				rowId,
 				markdown,
 				html,
 				color,
@@ -331,16 +334,20 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			});
 		}
 		setTableState((prevState) => {
-			let tags = [...prevState.settings.columns[columnId].tags];
+			const tags = [...prevState.settings.columns[columnId].tags];
 
 			if (!canAddMultiple) {
-				const tag = tags.find((t) => t.cellIds.includes(cellId));
+				const tag = tags.find((t) =>
+					t.cells.find(
+						(c) => c.columnId === columnId && c.rowId === rowId
+					)
+				);
 				if (tag) {
-					const tagIndex = tags.indexOf(tag);
-					const cellIndex = tag.cellIds.indexOf(cellId);
-					tags[tagIndex].cellIds.splice(cellIndex, 1);
-					if (tags[tagIndex].cellIds.length === 0)
-						tags.splice(tagIndex, 1);
+					const arr = tag.cells.filter(
+						(c) => c.columnId !== columnId && c.rowId !== rowId
+					);
+					tag.cells = arr;
+					if (arr.length === 0) tags.splice(tags.indexOf(tag), 1);
 				}
 			}
 
@@ -349,7 +356,12 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				markdown,
 				html,
 				color,
-				cellIds: [cellId],
+				cells: [
+					{
+						rowId,
+						columnId,
+					},
+				],
 			});
 
 			return {
@@ -777,6 +789,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 													key={id}
 													cellId={id}
 													tags={tags}
+													rowId={cell.rowId}
 													columnId={cell.columnId}
 													markdown={markdown}
 													html={html}

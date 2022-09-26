@@ -26,6 +26,7 @@ import MultiTagCell from "../MultiTagCell";
 interface Props {
 	columnType: string;
 	cellId: string;
+	rowId: string;
 	columnId: string;
 	markdown: string;
 	html: string;
@@ -40,6 +41,7 @@ interface Props {
 	onAddTag: (
 		cellId: string,
 		columnId: string,
+		rowId: string,
 		markdown: string,
 		html: string,
 		color: string,
@@ -51,6 +53,7 @@ interface Props {
 export default function EditableTd({
 	cellId,
 	columnId,
+	rowId,
 	markdown,
 	html,
 	columnType,
@@ -101,6 +104,7 @@ export default function EditableTd({
 		onAddTag(
 			cellId,
 			columnId,
+			rowId,
 			markdown,
 			html,
 			color,
@@ -151,7 +155,11 @@ export default function EditableTd({
 					/>
 				);
 			case CellType.TAG: {
-				const currentTag = tags.find((t) => t.cellIds.includes(cellId));
+				const currentTag = tags.find((t) =>
+					t.cells.find(
+						(c) => c.rowId === rowId && c.columnId === columnId
+					)
+				);
 				if (currentTag) {
 					return (
 						<TagCell
@@ -165,7 +173,9 @@ export default function EditableTd({
 			}
 			case CellType.MULTI_TAG: {
 				const filteredTags = tags.filter((t) =>
-					t.cellIds.includes(cellId)
+					t.cells.find(
+						(c) => c.rowId === rowId && c.columnId === columnId
+					)
 				);
 				return <MultiTagCell tags={filteredTags} />;
 			}
@@ -223,7 +233,8 @@ export default function EditableTd({
 				return (
 					<TagCellEdit
 						tags={tags}
-						cellId={cellId}
+						rowId={rowId}
+						columnId={columnId}
 						menuId={menu.id}
 						isOpen={isOpen}
 						style={{

@@ -118,9 +118,7 @@ const updateSettingsCache = async (
 	};
 	if (DEBUG.SAVE_APP_DATA) {
 		console.log("Updating settings cache");
-		console.log("settings:\n", {
-			[tableId]: obj,
-		});
+		console.log("settings:\n", obj);
 	}
 	plugin.settings = obj;
 	return await plugin.saveData(plugin.settings);
