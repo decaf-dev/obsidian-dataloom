@@ -31,7 +31,6 @@ export interface NltSettings {
 		tableId: string | null;
 		viewModes: MarkdownViewModeType[];
 	};
-	viewModeSyncInterval: number;
 }
 
 export const DEFAULT_SETTINGS: NltSettings = {
@@ -41,7 +40,6 @@ export const DEFAULT_SETTINGS: NltSettings = {
 		tableId: null,
 		viewModes: [],
 	},
-	viewModeSyncInterval: 2000,
 };
 export default class NltPlugin extends Plugin {
 	settings: NltSettings;
