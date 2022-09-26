@@ -22,5 +22,5 @@ export default function TextCell({
 			className += " NLT__hide-overflow";
 		}
 	}
-	return <div className={className}> {parse(content)}</div>;
+	return <div className={className}>{parse(content)}</div>;
 }

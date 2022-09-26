@@ -19,6 +19,4 @@ export const COLOR: { [color: string]: string } = {
 	RED: "red",
 };
 
-export const MIN_COLUMN_WIDTH_PX = 50;
-
 export const CURRENT_TABLE_CACHE_VERSION = 500;

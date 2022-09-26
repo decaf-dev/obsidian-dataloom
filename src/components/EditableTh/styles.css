@@ -8,6 +8,7 @@
     box-sizing: border-box !important;
     padding: 0 !important;
     height: 1.8rem; /* TODO put into different area? */
+    font-weight: 400 !important;
 }
 
 .NLT__th:last-child {
