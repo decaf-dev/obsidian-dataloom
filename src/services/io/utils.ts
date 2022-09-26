@@ -12,15 +12,8 @@ export const serializeFrontMatter = (model: TableModel) => {
 	frontmatter.push("---");
 	frontmatter.push(serializeColumnIds(model.columns));
 	frontmatter.push(serializeRowIds(model.rows));
-	frontmatter.push(serializeCellIds(model.cells));
 	frontmatter.push("---");
 	return frontmatter.join("\n");
-};
-
-const serializeCellIds = (cells: Cell[]) => {
-	const ids = cells.map((cell) => cell.id);
-	//TODO convert to base64
-	return `cellIds: ${JSON.stringify(ids)}`;
 };
 
 const serializeColumnIds = (columns: ColumnId[]) => {

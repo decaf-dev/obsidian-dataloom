@@ -10,6 +10,7 @@ import {
 } from "../table/types";
 import { findTableFile, initialCell } from "./utils";
 import { SLASH_REGEX } from "../string/regex";
+import { randomCellId } from "../random";
 
 const md = new MarkdownIt();
 
@@ -78,14 +79,13 @@ const validateParsedTable = (
 ): {
 	columnIds: string[];
 	rowIds: string[];
-	cellIds: string[];
 } => {
 	const { parsedFrontmatter, parsedCells, numColumns, numRows } = parsedTable;
 	//Validate frontmatter
-	if (parsedFrontmatter.length < 3)
+	if (parsedFrontmatter.length < 2)
 		throwTableError(
 			tableId,
-			"missing frontmatter key 'columnIds', 'rowIds', or 'cellIds'"
+			"missing frontmatter key 'columnIds' or 'rowIds'"
 		);
 
 	if (parsedCells.length === 0)
@@ -93,19 +93,15 @@ const validateParsedTable = (
 
 	const columnIds = JSON.parse(parsedFrontmatter[0].split("columnIds: ")[1]);
 	const rowIds = JSON.parse(parsedFrontmatter[1].split("rowIds: ")[1]);
-	const cellIds = JSON.parse(parsedFrontmatter[2].split("cellIds: ")[1]);
 
 	if (columnIds.length !== numColumns)
 		throwTableError(tableId, "missing column ids");
 
 	if (rowIds.length !== numRows) throwTableError(tableId, "missing rows ids");
 
-	if (cellIds.length !== numColumns * numRows)
-		throwTableError(tableId, "missing cells ids");
 	return {
 		columnIds,
 		rowIds,
-		cellIds,
 	};
 };
 
@@ -115,10 +111,7 @@ export const parseTableModelFromMarkdown = (
 ): TableModel => {
 	const parsedTable: ParsedTable = parseTableFromMarkdown(data);
 	const { numRows, numColumns, parsedCells } = parsedTable;
-	const { columnIds, rowIds, cellIds } = validateParsedTable(
-		parsedTable,
-		tableId
-	);
+	const { columnIds, rowIds } = validateParsedTable(parsedTable, tableId);
 
 	const tableModel: TableModel = {
 		columns: [],
@@ -132,11 +125,16 @@ export const parseTableModelFromMarkdown = (
 		for (let x = 0; x < numColumns; x++) {
 			if (y === 0) columns.push(columnIds[x]);
 			if (x === 0) rows.push(rowIds[y]);
-			const cellId = cellIds[x + y * numColumns];
 			const markdown = parsedCells[x + y * numColumns];
 			const html = markdownToHtml(markdown);
 			cells.push(
-				initialCell(cellId, columnIds[x], rowIds[y], markdown, html)
+				initialCell(
+					randomCellId(),
+					columnIds[x],
+					rowIds[y],
+					markdown,
+					html
+				)
 			);
 		}
 	}
