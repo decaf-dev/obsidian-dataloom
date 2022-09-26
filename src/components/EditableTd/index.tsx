@@ -21,6 +21,7 @@ import { openMenu, isMenuOpen } from "src/services/menu/menuSlice";
 import { DEBUG } from "../../constants";
 
 import "./styles.css";
+import MultiTagCell from "../MultiTagCell";
 
 interface Props {
 	columnType: string;
@@ -150,7 +151,6 @@ export default function EditableTd({
 					/>
 				);
 			case CellType.TAG: {
-				console.log(tags);
 				const currentTag = tags.find((t) => t.cellIds.includes(cellId));
 				if (currentTag) {
 					return (
@@ -162,6 +162,12 @@ export default function EditableTd({
 				} else {
 					return <></>;
 				}
+			}
+			case CellType.MULTI_TAG: {
+				const filteredTags = tags.filter((t) =>
+					t.cellIds.includes(cellId)
+				);
+				return <MultiTagCell tags={filteredTags} />;
 			}
 			case CellType.DATE:
 				return <DateCell content={html} />;
@@ -213,6 +219,7 @@ export default function EditableTd({
 					/>
 				);
 			case CellType.TAG:
+			case CellType.MULTI_TAG:
 				return (
 					<TagCellEdit
 						tags={tags}
