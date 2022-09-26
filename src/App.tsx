@@ -333,6 +333,17 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		setTableState((prevState) => {
 			let tags = [...prevState.settings.columns[columnId].tags];
 
+			if (!canAddMultiple) {
+				const tag = tags.find((t) => t.cellIds.includes(cellId));
+				if (tag) {
+					const tagIndex = tags.indexOf(tag);
+					const cellIndex = tag.cellIds.indexOf(cellId);
+					tags[tagIndex].cellIds.splice(cellIndex, 1);
+					if (tags[tagIndex].cellIds.length === 0)
+						tags.splice(tagIndex, 1);
+				}
+			}
+
 			tags.push({
 				id: randomTagId(),
 				markdown,
@@ -340,6 +351,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				color,
 				cellIds: [cellId],
 			});
+
 			return {
 				...prevState,
 				model: {

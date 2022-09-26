@@ -10,6 +10,8 @@ import { randomColor } from "src/services/random";
 
 import "./styles.css";
 import { markdownToHtml } from "src/services/io/deserialize";
+import { useAppDispatch } from "src/services/redux/hooks";
+import { closeTopLevelMenu } from "src/services/menu/menuSlice";
 
 interface TopMenuProps {
 	cellId: string;
@@ -128,11 +130,18 @@ export default function TagCellEdit({
 }: Props) {
 	const [inputText, setInputText] = useState("");
 	const [generatedColor] = useState(randomColor());
+	const dispatch = useAppDispatch();
 
 	function handleInputTextChange(e: React.ChangeEvent<HTMLInputElement>) {
 		//Disallow whitespace
 		if (e.target.value.match(/\s/)) return;
 		setInputText(e.target.value);
+	}
+
+	function handleAddTag(markdown: string, html: string, color: string) {
+		onAddTag(markdown, html, color);
+		setInputText("");
+		dispatch(closeTopLevelMenu());
 	}
 
 	return (
@@ -150,7 +159,7 @@ export default function TagCellEdit({
 						inputText={inputText}
 						tags={tags}
 						generatedColor={generatedColor}
-						onAddTag={onAddTag}
+						onAddTag={handleAddTag}
 						onTagClick={onTagClick}
 						onColorChange={onColorChange}
 					/>
