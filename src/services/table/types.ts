@@ -33,24 +33,29 @@ export interface TableModel {
 	cells: Cell[];
 }
 
+export interface Tag {
+	id: string;
+	markdown: string;
+	html: string;
+	color: string;
+	cellIds: string[];
+}
 export interface ColumnSettings {
 	sortDir: SortDir;
 	width: string;
 	type: CellType;
 	useAutoWidth: boolean;
 	shouldWrapOverflow: boolean;
-	tagColors: {
-		[hash: string]: string;
-	};
+	tags: Tag[];
 }
 
 export const DEFAULT_COLUMN_SETTINGS: ColumnSettings = {
 	sortDir: SortDir.NONE,
-	width: `${MIN_COLUMN_WIDTH}px`,
+	width: "120px",
 	type: CellType.TEXT,
 	useAutoWidth: false,
 	shouldWrapOverflow: false,
-	tagColors: {},
+	tags: [],
 };
 
 export interface TableSettings {

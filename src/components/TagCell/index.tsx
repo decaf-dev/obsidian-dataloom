@@ -4,14 +4,14 @@ import Tag from "../Tag";
 
 import "./styles.css";
 interface Props {
-	content: string;
+	html: string;
 	color: string;
 }
 
-export default function TagCell({ content, color }: Props) {
+export default function TagCell({ html, color }: Props) {
 	return (
 		<div className="NLT__tag-cell">
-			<Tag content={content} color={color} />
+			<Tag html={html} color={color} />
 		</div>
 	);
 }

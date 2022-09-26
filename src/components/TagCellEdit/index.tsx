@@ -1,117 +1,161 @@
-import React from "react";
+import React, { useState } from "react";
 
 import Menu from "../Menu";
 import Tag from "../Tag";
 import SelectableTag from "./component/SelectableTag";
 import CreateTag from "./component/CreateTag";
+import { Tag as TagType } from "../../services/table/types";
+
+import { randomColor } from "src/services/random";
 
 import "./styles.css";
+import { markdownToHtml } from "src/services/io/deserialize";
+
+interface TopMenuProps {
+	cellId: string;
+	tags: TagType[];
+	inputText: string;
+	onInputTextChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+	onRemoveTag: (tagId: string) => void;
+}
+
+const TopMenu = ({
+	cellId,
+	tags,
+	inputText,
+	onInputTextChange,
+	onRemoveTag,
+}: TopMenuProps) => {
+	return (
+		<div className="NLT__tag-menu-top">
+			{tags
+				.filter((tag: TagType) => tag.cellIds.includes(cellId) === true)
+				.map((tag: TagType) => (
+					<Tag
+						key={tag.id}
+						id={tag.id}
+						color={tag.color}
+						html={tag.html}
+						showRemove={true}
+						onRemoveClick={(tagId) => onRemoveTag(tagId)}
+					/>
+				))}
+			<input
+				className="NLT__tag-input"
+				autoFocus={true}
+				type="text"
+				value={inputText}
+				onChange={onInputTextChange}
+			/>
+		</div>
+	);
+};
+
+interface BottomMenuProps {
+	tags: TagType[];
+	inputText: string;
+	generatedColor: string;
+	onAddTag: (markdown: string, html: string, color: string) => void;
+	onTagClick: (tagId: string) => void;
+	onColorChange: (tagId: string, color: string) => void;
+}
+
+const BottomMenu = ({
+	tags,
+	inputText,
+	generatedColor,
+	onAddTag,
+	onTagClick,
+	onColorChange,
+}: BottomMenuProps) => {
+	const found = tags.find((tag: TagType) => tag.markdown === inputText);
+	const filteredTags = tags.filter((tag: TagType) =>
+		tag.markdown.includes(inputText)
+	);
+	return (
+		<div className="NLT__tag-menu-bottom">
+			<p className="NLT__tag-menu-text">Select an option or create one</p>
+			<div>
+				{!found && inputText !== "" && (
+					<CreateTag
+						key="create-tag"
+						markdown={inputText}
+						html={markdownToHtml(inputText)}
+						color={generatedColor}
+						onAddTag={onAddTag}
+					/>
+				)}
+				{filteredTags.map((tag: TagType) => (
+					<SelectableTag
+						key={tag.id}
+						id={tag.id}
+						color={tag.color}
+						html={tag.html}
+						onColorChange={onColorChange}
+						onClick={onTagClick}
+					/>
+				))}
+			</div>
+		</div>
+	);
+};
 
 interface Props {
 	menuId: string;
 	isOpen: boolean;
-	inputText: string;
+	tags: TagType[];
 	style: {
 		top: string;
 		left: string;
 	};
-	color: string;
 	cellId: string;
-	onInputChange: (value: string) => void;
 	onTagClick: (tagId: string) => void;
-	onAddTag: (inputText: string) => void;
-	onRemoveTagClick: (cellId: string, tagId: string) => void;
+	onAddTag: (markdown: string, html: string, color: string) => void;
+	onRemoveTag: (tagId: string) => void;
 	onColorChange: (tagId: string, color: string) => void;
 }
 
 export default function TagCellEdit({
 	menuId,
 	isOpen,
-	inputText,
 	style,
-	color,
+	tags,
 	cellId,
-	onInputChange,
 	onTagClick,
 	onAddTag,
 	onColorChange,
-	onRemoveTagClick,
+	onRemoveTag,
 }: Props) {
-	function handleTextChange(e: React.ChangeEvent<HTMLInputElement>) {
+	const [inputText, setInputText] = useState("");
+	const [generatedColor] = useState(randomColor());
+
+	function handleInputTextChange(e: React.ChangeEvent<HTMLInputElement>) {
 		//Disallow whitespace
 		if (e.target.value.match(/\s/)) return;
-		onInputChange(e.target.value);
-	}
-
-	function renderSelectableTags() {
-		// const filteredTags = tags.filter((tag: TagState) =>
-		// 	tag.content.includes(inputText)
-		// );
-		// const found = tags.find((tag: TagState) => tag.content === inputText);
-		return (
-			<>
-				{/* {!found && inputText !== "" && (
-					<CreateTag
-						key="create-tag"
-						content={inputText}
-						color={color}
-						onAddTag={onAddTag}
-					/>
-				)}
-				{filteredTags
-					.filter((tag) => tag.content !== "")
-					.map((tag: TagState) => (
-						<SelectableTag
-							key={tag.id}
-							id={tag.id}
-							color={tag.color}
-							content={tag.content}
-							onColorChange={onColorChange}
-							onClick={onTagClick}
-						/>
-					))}*/}
-			</>
-		);
+		setInputText(e.target.value);
 	}
 
 	return (
 		<Menu id={menuId} isOpen={isOpen} style={style}>
-			{/* <div className="NLT__tag-menu">
+			<div className="NLT__tag-menu">
 				<div className="NLT__tag-menu-container">
-					<div className="NLT__tag-menu-top">
-						{tags
-							.filter(
-								(tag: TagState) =>
-									tag.selected.includes(cellId) === true
-							)
-							.map((tag: TagState) => (
-								<Tag
-									key={tag.id}
-									id={tag.id}
-									color={tag.color}
-									content={tag.content}
-									showRemove={true}
-									onRemoveClick={(tagId) =>
-										onRemoveTagClick(cellId, tagId)
-									}
-								/>
-							))}
-						<input
-							className="NLT__tag-input"
-							autoFocus={true}
-							type="text"
-							value={inputText}
-							onChange={handleTextChange}
-						/>
-					</div>
-					<div className="NLT__tag-menu-bottom">
-						<p className="NLT__tag-menu-text">
-							Select an option or create one
-						</p>
-						<div>{renderSelectableTags()}</div>
-					</div>
+					<TopMenu
+						cellId={cellId}
+						inputText={inputText}
+						tags={tags}
+						onInputTextChange={handleInputTextChange}
+						onRemoveTag={onRemoveTag}
+					/>
+					<BottomMenu
+						inputText={inputText}
+						tags={tags}
+						generatedColor={generatedColor}
+						onAddTag={onAddTag}
+						onTagClick={onTagClick}
+						onColorChange={onColorChange}
+					/>
 				</div>
-			</div> */}
+			</div>
 		</Menu>
 	);
 }

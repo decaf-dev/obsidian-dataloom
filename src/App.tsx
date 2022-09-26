@@ -24,7 +24,7 @@ import { DEBUG } from "./constants";
 import "./app.css";
 import { MarkdownViewModeType } from "obsidian";
 import { deserializeTable, markdownToHtml } from "./services/io/deserialize";
-import { randomColumnId, randomCellId } from "./services/random";
+import { randomColumnId, randomCellId, randomTagId } from "./services/random";
 import { useAppDispatch, useAppSelector } from "./services/redux/hooks";
 import {
 	closeAllMenus,
@@ -313,24 +313,76 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		handlePositionUpdate();
 	}
 
-	function handleAddTag(cellId: string, content: string, color: string) {
+	function handleAddTag(
+		cellId: string,
+		columnId: string,
+		markdown: string,
+		html: string,
+		color: string,
+		canAddMultiple: boolean
+	) {
 		if (DEBUG.APP) {
 			logFunc(COMPONENT_NAME, "handleAddTag", {
 				cellId,
-				content,
+				markdown,
+				html,
 				color,
+				canAddMultiple,
 			});
 		}
-		//TODO fix
-		// setTableModel((prevState) => {
-		// 	return {
-		// 		...prevState,
-		// 		tags: [
-		// 			...removeTagReferences(prevState.tags, cellId),
-		// 			initialTag(uuid(), headerId, cellId, content, color),
-		// 		],
-		// 	};
-		// });
+		setTableState((prevState) => {
+			let tags = [...prevState.settings.columns[columnId].tags];
+
+			tags.push({
+				id: randomTagId(),
+				markdown,
+				html,
+				color,
+				cellIds: [cellId],
+			});
+			return {
+				...prevState,
+				model: {
+					...prevState.model,
+					cells: prevState.model.cells.map((cell) => {
+						if (cell.id === cellId) {
+							let newMarkdown = cell.markdown;
+							if (canAddMultiple && newMarkdown !== "") {
+								newMarkdown = newMarkdown + "," + markdown;
+							} else {
+								newMarkdown = markdown;
+							}
+
+							let newHtml = cell.html;
+							if (canAddMultiple && newHtml !== "") {
+								newHtml = newHtml + "," + html;
+							} else {
+								newHtml = html;
+							}
+
+							return {
+								...cell,
+								markdown: newMarkdown,
+								html: newHtml,
+							};
+						}
+						return cell;
+					}),
+				},
+				settings: {
+					...prevState.settings,
+					columns: {
+						...prevState.settings.columns,
+						[columnId]: {
+							...prevState.settings.columns[columnId],
+							tags,
+						},
+					},
+				},
+			};
+		});
+		handleSaveData(true);
+		handlePositionUpdate();
 	}
 
 	function handleTagClick(cellId: string, tagId: string) {
@@ -661,8 +713,8 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 									)}
 									shouldWrapOverflow={shouldWrapOverflow}
 									useAutoWidth={useAutoWidth}
-									content={markdown}
-									textContent={html}
+									markdown={markdown}
+									html={html}
 									type={type}
 									sortDir={sortDir}
 									onSortSelect={handleHeaderSortSelect}
@@ -698,18 +750,22 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 												type,
 												useAutoWidth,
 												shouldWrapOverflow,
+												tags,
 											} =
 												state.settings.columns[
 													cell.columnId
 												];
 
 											const { id, markdown, html } = cell;
+
 											return (
 												<EditableTd
 													key={id}
 													cellId={id}
-													content={markdown}
-													textContent={html}
+													tags={tags}
+													columnId={cell.columnId}
+													markdown={markdown}
+													html={html}
 													columnType={type}
 													shouldWrapOverflow={
 														shouldWrapOverflow
