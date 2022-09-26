@@ -2,6 +2,7 @@ import {
 	DEFAULT_COLUMN_SETTINGS,
 	TableModel,
 	TableSettings,
+	Cell,
 } from "../table/types";
 
 import { initialCell } from "../io/utils";
@@ -32,20 +33,30 @@ export const addColumn = (
 	const columnArr = [...columns];
 	columnArr.push(columnId);
 
-	const cellArr = [...cells];
-
-	for (let i = 0; i < rows.length; i++) {
-		let markdown = "";
-		let html = "";
-		if (i === 0) {
-			markdown = "New Column";
-			html = "New Column";
+	const cellArr: Cell[] = [];
+	let rowIndex = 0;
+	cells.forEach((cell, i) => {
+		cellArr.push(cell);
+		//Every columns length, add a new cell
+		if ((i + 1) % columns.length === 0) {
+			let markdown = "";
+			let html = "";
+			if (rowIndex === 0) {
+				markdown = "New Column";
+				html = "New Column";
+			}
+			cellArr.push(
+				initialCell(
+					randomCellId(),
+					columnId,
+					rows[rowIndex],
+					markdown,
+					html
+				)
+			);
+			rowIndex++;
 		}
-
-		cellArr.push(
-			initialCell(randomCellId(), columnId, rows[i], markdown, html)
-		);
-	}
+	});
 
 	const settingsObj = { ...settings };
 	settingsObj.columns[columnId] = DEFAULT_COLUMN_SETTINGS;

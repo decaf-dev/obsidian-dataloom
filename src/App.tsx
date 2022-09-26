@@ -748,15 +748,18 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 					})}
 					rows={rows
 						.filter((_row, i) => i !== 0)
-						.map((rowId) => {
+						.map((rowId, i) => {
 							const rowCells = cells.filter(
 								(cell) => cell.rowId === rowId
 							);
+							console.log("ROW ID", i);
 							return {
 								id: rowId,
 								component: (
 									<>
 										{rowCells.map((cell, i) => {
+											console.log("ROW CELL", i);
+											console.log(cell.id);
 											const {
 												width,
 												type,
@@ -767,7 +770,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 												state.settings.columns[
 													cell.columnId
 												];
-
 											const { id, markdown, html } = cell;
 
 											return (

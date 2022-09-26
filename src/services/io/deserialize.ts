@@ -9,7 +9,6 @@ import {
 	TableState,
 } from "../table/types";
 import { findTableFile, initialCell } from "./utils";
-import { randomCellId } from "../random";
 import { SLASH_REGEX } from "../string/regex";
 
 const md = new MarkdownIt();
@@ -18,48 +17,109 @@ export const markdownToHtml = (markdown: string) => {
 	return md.renderInline(markdown, {});
 };
 
-export const parseTableModelFromMarkdown = (data: string): TableModel => {
-	const parsedTokens = md.parse(data, {});
+interface ParsedTable {
+	parsedCells: string[];
+	parsedFrontmatter: string[];
+	numRows: number;
+	numColumns: number;
+}
+
+const parseTableFromMarkdown = (data: string): ParsedTable => {
+	const tokens = md.parse(data, {});
+
+	let parsedFrontmatter: string[];
+	let shouldParseFrontMatter = false;
+
+	for (let i = 0; i < tokens.length; i++) {
+		const { type, content } = tokens[i];
+		if (type === "hr") shouldParseFrontMatter = true;
+		else if (type === "inline" && shouldParseFrontMatter) {
+			shouldParseFrontMatter = false;
+			parsedFrontmatter = content.split("\n");
+			break;
+		}
+	}
 
 	const parsedCells: string[] = [];
-	let frontmatter: string[] = [];
+	let shouldParseTable = false;
+	let shouldParseRow = false;
+	let numColumns = 0;
+	let numRows = 0;
 
-	let parseTable = false;
-	let parseFrontMatter = false;
-	parsedTokens.forEach((token, i) => {
-		if (token.type === "hr") parseFrontMatter = true;
-		if (token.type === "table_open") parseTable = true;
-		if (token.type === "inline") {
-			if (parseFrontMatter) {
-				parseFrontMatter = false;
-				frontmatter = token.content.split("\n");
-			} else if (parseTable) {
-				parsedCells.push(token.content);
-			}
+	for (let i = 0; i < tokens.length; i++) {
+		const { type, content } = tokens[i];
+		if (type === "table_open") shouldParseTable = true;
+		else if (type === "table_close") shouldParseTable = false;
+		else if (type === "tr_open") shouldParseRow = true;
+		else if (type === "tr_close") {
+			shouldParseRow = false;
+			numRows++;
+		} else if (type === "inline" && shouldParseTable && shouldParseRow) {
+			parsedCells.push(content);
+			if (numRows === 0) numColumns++;
 		}
-	});
+	}
 
-	if (parsedCells.length === 0) throw new Error("Missing markdown table.");
+	return {
+		parsedCells,
+		parsedFrontmatter,
+		numRows,
+		numColumns,
+	};
+};
 
-	if (frontmatter.length < 2)
-		throw new Error("Invalid frontmatter. Missing columnIds or rowIds.");
-	const columnIds = JSON.parse(frontmatter[0].split("columnIds: ")[1]);
-	const rowIds = JSON.parse(frontmatter[1].split("rowIds: ")[1]);
-	const cellIds = JSON.parse(frontmatter[2].split("cellIds: ")[1]);
+const throwTableError = (tableId: string, message: string) => {
+	throw new Error(`Table definition file for ${tableId}: ${message}`);
+};
 
-	const numColumns = Object.values(columnIds).length;
-	const numRows = Object.values(rowIds).length;
-	const idSize = numColumns * numRows;
-	if (parsedCells.length !== idSize) {
-		throw new Error(
-			"'rowIds' or 'columnIds' value doesn't match parsed table"
+const validateParsedTable = (
+	parsedTable: ParsedTable,
+	tableId: string
+): {
+	columnIds: string[];
+	rowIds: string[];
+	cellIds: string[];
+} => {
+	const { parsedFrontmatter, parsedCells, numColumns, numRows } = parsedTable;
+	//Validate frontmatter
+	if (parsedFrontmatter.length < 3)
+		throwTableError(
+			tableId,
+			"missing frontmatter key 'columnIds', 'rowIds', or 'cellIds'"
 		);
-	}
 
-	const numCells = Object.values(cellIds).length;
-	if (parsedCells.length !== numCells) {
-		throw new Error("'cellIds' value doesn't match parsed table");
-	}
+	if (parsedCells.length === 0)
+		throwTableError(tableId, "file exists but no markdown was found");
+
+	const columnIds = JSON.parse(parsedFrontmatter[0].split("columnIds: ")[1]);
+	const rowIds = JSON.parse(parsedFrontmatter[1].split("rowIds: ")[1]);
+	const cellIds = JSON.parse(parsedFrontmatter[2].split("cellIds: ")[1]);
+
+	if (columnIds.length !== numColumns)
+		throwTableError(tableId, "missing column ids");
+
+	if (rowIds.length !== numRows) throwTableError(tableId, "missing rows ids");
+
+	if (cellIds.length !== numColumns * numRows)
+		throwTableError(tableId, "missing cells ids");
+	return {
+		columnIds,
+		rowIds,
+		cellIds,
+	};
+};
+
+export const parseTableModelFromMarkdown = (
+	data: string,
+	tableId: string
+): TableModel => {
+	const parsedTable: ParsedTable = parseTableFromMarkdown(data);
+	const { numRows, numColumns, parsedCells } = parsedTable;
+	const { columnIds, rowIds, cellIds } = validateParsedTable(
+		parsedTable,
+		tableId
+	);
+
 	const tableModel: TableModel = {
 		columns: [],
 		rows: [],
@@ -90,17 +150,15 @@ export const findTableModel = async (
 	//If it exists create it, otherwise don't
 	const file = await findTableFile(plugin, tableId);
 	const data = await app.vault.read(file);
-	return parseTableModelFromMarkdown(data);
+	return parseTableModelFromMarkdown(data, tableId);
 };
 
 const validateSettings = (plugin: NltPlugin) => {
-	const { tableFolder, viewModeSyncInterval } = plugin.settings;
+	const { tableFolder } = plugin.settings;
 	if (tableFolder.match(SLASH_REGEX))
 		throw new Error(
 			"Table definition folder cannot include forward or back slashes. Please change it in the plugin settings."
 		);
-	if (viewModeSyncInterval === 0)
-		throw new Error("Sync interval cannot be empty.");
 };
 
 export const deserializeTable = async (
