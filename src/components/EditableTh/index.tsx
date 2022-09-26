@@ -119,12 +119,14 @@ export default function EditableTh({
 			<th
 				className="NLT__th NLT__selectable"
 				ref={positionRef}
-				style={{
-					width,
-				}}
 				onClick={handleHeaderClick}
 			>
-				<div className="NLT__th-container">
+				<div
+					className="NLT__th-container"
+					style={{
+						width,
+					}}
+				>
 					<div className="NLT__th-content">{parse(textContent)}</div>
 					<div className="NLT__th-resize-container">
 						{!useAutoWidth && (

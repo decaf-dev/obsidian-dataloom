@@ -48,7 +48,10 @@ const measureCell = (
 	const height = window.getComputedStyle(ruler).getPropertyValue("height");
 	document.body.removeChild(ruler);
 
-	return { width: pxToNum(width), height: pxToNum(height) };
+	return {
+		width: pxToNum(width),
+		height: pxToNum(height),
+	};
 };
 
 const measureCells = (state: TableState): CellMeasurement[] => {

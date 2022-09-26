@@ -274,15 +274,19 @@ export default function EditableTd({
 		<>
 			<td
 				className="NLT__td"
-				style={{
-					width,
-					height,
-				}}
 				ref={positionRef}
 				onClick={handleCellClick}
 				onContextMenu={handleCellContextClick}
 			>
-				<div className="NLT__td-container">{renderCell()}</div>
+				<div
+					className="NLT__td-container"
+					style={{
+						width,
+						height,
+					}}
+				>
+					{renderCell()}
+				</div>
 			</td>
 			{renderCellMenu()}
 		</>
