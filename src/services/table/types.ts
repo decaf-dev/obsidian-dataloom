@@ -1,5 +1,4 @@
 import { SortDir } from "../sort/types";
-import { MIN_COLUMN_WIDTH } from "./constants";
 
 export enum CellType {
 	TEXT = "text",
