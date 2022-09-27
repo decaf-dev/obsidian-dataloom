@@ -420,18 +420,54 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				tagId,
 			});
 		}
-		//TODO fix
 	}
 
-	function handleRemoveTagClick(cellId: string) {
+	function handleRemoveTagClick(
+		cellId: string,
+		columnId: string,
+		rowId: string,
+		tagId: string
+	) {
 		if (DEBUG.APP) console.log("[App]: handleRemoveTagClick called.");
-		//TODO fix
-		// setTableModel((prevState) => {
-		// 	return {
-		// 		...prevState,
-		// 		tags: removeTagReferences(prevState.tags, cellId),
-		// 	};
-		// });
+		setTableState((prevState) => {
+			const tags = [...prevState.settings.columns[columnId].tags];
+			const tag = tags.find((t) => t.id === tagId);
+			const arr = tag.cells.filter(
+				(c) => c.columnId !== columnId && c.rowId !== rowId
+			);
+			tag.cells = arr;
+			if (arr.length === 0) tags.splice(tags.indexOf(tag), 1);
+
+			const newMarkdown = tags.map((tag) => tag.markdown).join(",");
+			const newHtml = tags.map((tag) => tag.html).join(",");
+			return {
+				...prevState,
+				model: {
+					...prevState.model,
+					cells: prevState.model.cells.map((cell) => {
+						if (cell.id === cellId) {
+							return {
+								...cell,
+								markdown: newMarkdown,
+								html: newHtml,
+							};
+						}
+						return cell;
+					}),
+				},
+				settings: {
+					...prevState.settings,
+					columns: {
+						...prevState.settings.columns,
+						[columnId]: {
+							...prevState.settings.columns[columnId],
+							tags,
+						},
+					},
+				},
+			};
+		});
+		handleSaveData(true);
 	}
 
 	function handleHeaderDeleteClick(columnId: string) {

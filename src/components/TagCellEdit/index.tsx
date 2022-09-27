@@ -7,12 +7,11 @@ import CreateTag from "./component/CreateTag";
 import { Tag as TagType } from "../../services/table/types";
 
 import { randomColor } from "src/services/random";
-
-import "./styles.css";
 import { markdownToHtml } from "src/services/io/deserialize";
 import { useAppDispatch } from "src/services/redux/hooks";
 import { closeTopLevelMenu } from "src/services/menu/menuSlice";
-import Stack from "../Stack";
+
+import "./styles.css";
 
 interface MenuHeaderProps {
 	rowId: string;

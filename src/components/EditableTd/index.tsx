@@ -35,7 +35,12 @@ interface Props {
 	tags: Tag[];
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
-	onRemoveTagClick: (cellId: string, tagId: string) => void;
+	onRemoveTagClick: (
+		cellId: string,
+		columnId: string,
+		rowId: string,
+		tagId: string
+	) => void;
 	onTagClick: (cellId: string, tagId: string) => void;
 	onContentChange: (cellId: string, updatedMarkdown: string) => void;
 	onAddTag: (
@@ -113,7 +118,7 @@ export default function EditableTd({
 	}
 
 	function handleRemoveTagClick(tagId: string) {
-		onRemoveTagClick(cellId, tagId);
+		onRemoveTagClick(cellId, columnId, rowId, tagId);
 	}
 
 	function handleTagClick(tagId: string) {
