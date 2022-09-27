@@ -52,7 +52,7 @@ interface Props {
 		color: string,
 		canAddMultiple: boolean
 	) => void;
-	onColorChange: (tagId: string, color: string) => void;
+	onColorChange: (columnId: string, tagId: string, color: string) => void;
 }
 
 export default function EditableTd({
@@ -119,6 +119,10 @@ export default function EditableTd({
 
 	function handleRemoveTagClick(tagId: string) {
 		onRemoveTagClick(cellId, columnId, rowId, tagId);
+	}
+
+	function handleColorChange(tagId: string, colorId: string) {
+		onColorChange(columnId, tagId, colorId);
 	}
 
 	function handleTagClick(tagId: string) {
@@ -246,7 +250,7 @@ export default function EditableTd({
 							top: position.top,
 							left: position.left,
 						}}
-						onColorChange={onColorChange}
+						onColorChange={handleColorChange}
 						onAddTag={handleAddTag}
 						onRemoveTag={handleRemoveTagClick}
 						onTagClick={handleTagClick}

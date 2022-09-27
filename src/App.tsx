@@ -624,15 +624,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			const settingsObj = { ...settings };
 			settingsObj.columns[newColId] = DEFAULT_COLUMN_SETTINGS;
 
-			console.log({
-				...prevState,
-				model: {
-					...model,
-					columns: columnArr,
-					cells: cellArr,
-				},
-				settings: settingsObj,
-			});
 			return {
 				...prevState,
 				model: {
@@ -646,22 +637,25 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		handleSaveData(true);
 	}
 
-	function handleChangeColor(tagId: string, color: string) {
-		//TODO edit
-		// setTableModel((prevState) => {
-		// 	return {
-		// 		...prevState,
-		// 		tags: prevState.tags.map((tag) => {
-		// 			if (tag.id === tagId) {
-		// 				return {
-		// 					...tag,
-		// 					color,
-		// 				};
-		// 			}
-		// 			return tag;
-		// 		}),
-		// 	};
-		// });
+	function handleChangeColor(columnId: string, tagId: string, color: string) {
+		setTableState((prevState) => {
+			const tags = [...prevState.settings.columns[columnId].tags];
+			const index = tags.findIndex((t) => t.id === tagId);
+			tags[index].color = color;
+			return {
+				...prevState,
+				settings: {
+					...prevState.settings,
+					columns: {
+						...prevState.settings.columns,
+						[columnId]: {
+							...prevState.settings.columns[columnId],
+							tags,
+						},
+					},
+				},
+			};
+		});
 		handleSaveData(false);
 	}
 
