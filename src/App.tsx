@@ -413,13 +413,90 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		handlePositionUpdate();
 	}
 
-	function handleTagClick(cellId: string, tagId: string) {
+	function handleTagClick(
+		cellId: string,
+		columnId: string,
+		rowId: string,
+		tagId: string,
+		canAddMultiple: boolean
+	) {
 		if (DEBUG.APP) {
 			logFunc(COMPONENT_NAME, "handleTagClick", {
 				cellId,
+				columnId,
+				rowId,
 				tagId,
+				canAddMultiple,
 			});
 		}
+		setTableState((prevState) => {
+			const tags = [...prevState.settings.columns[columnId].tags];
+
+			if (!canAddMultiple) {
+				const tag = tags.find((t) =>
+					t.cells.find(
+						(c) => c.columnId === columnId && c.rowId === rowId
+					)
+				);
+				if (tag) {
+					const arr = tag.cells.filter(
+						(c) => c.columnId !== columnId && c.rowId !== rowId
+					);
+					tag.cells = arr;
+					if (arr.length === 0) tags.splice(tags.indexOf(tag), 1);
+				}
+			}
+
+			const tag = tags.find((t) => t.id === tagId);
+			const index = tags.indexOf(tag);
+			tags[index].cells.push({
+				rowId,
+				columnId,
+			});
+
+			return {
+				...prevState,
+				model: {
+					...prevState.model,
+					cells: prevState.model.cells.map((cell) => {
+						if (cell.id === cellId) {
+							let newMarkdown = cell.markdown;
+							if (canAddMultiple && newMarkdown !== "") {
+								newMarkdown = newMarkdown + "," + tag.markdown;
+							} else {
+								newMarkdown = tag.markdown;
+							}
+
+							let newHtml = cell.html;
+							if (canAddMultiple && newHtml !== "") {
+								newHtml = newHtml + "," + tag.html;
+							} else {
+								newHtml = tag.html;
+							}
+
+							return {
+								...cell,
+								markdown: newMarkdown,
+								html: newHtml,
+							};
+						}
+						return cell;
+					}),
+				},
+				settings: {
+					...prevState.settings,
+					columns: {
+						...prevState.settings.columns,
+						[columnId]: {
+							...prevState.settings.columns[columnId],
+							tags,
+						},
+					},
+				},
+			};
+		});
+		handleSaveData(true);
+		handlePositionUpdate();
 	}
 
 	function handleRemoveTagClick(

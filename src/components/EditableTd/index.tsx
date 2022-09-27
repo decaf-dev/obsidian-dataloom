@@ -41,7 +41,13 @@ interface Props {
 		rowId: string,
 		tagId: string
 	) => void;
-	onTagClick: (cellId: string, tagId: string) => void;
+	onTagClick: (
+		cellId: string,
+		columnId: string,
+		rowId: string,
+		tagId: string,
+		canAddMultiple: boolean
+	) => void;
 	onContentChange: (cellId: string, updatedMarkdown: string) => void;
 	onAddTag: (
 		cellId: string,
@@ -126,7 +132,13 @@ export default function EditableTd({
 	}
 
 	function handleTagClick(tagId: string) {
-		onTagClick(cellId, tagId);
+		onTagClick(
+			cellId,
+			columnId,
+			rowId,
+			tagId,
+			columnType === CellType.MULTI_TAG
+		);
 	}
 
 	function handleTextInputChange(updatedMarkdown: string) {
