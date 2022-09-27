@@ -33,24 +33,22 @@ const MenuHeader = ({
 }: MenuHeaderProps) => {
 	return (
 		<div className="NLT__tag-menu-header">
-			<Stack spacing="5px">
-				{tags
-					.filter((tag: TagType) =>
-						tag.cells.find(
-							(c) => c.rowId === rowId && c.columnId === columnId
-						)
+			{tags
+				.filter((tag: TagType) =>
+					tag.cells.find(
+						(c) => c.rowId === rowId && c.columnId === columnId
 					)
-					.map((tag: TagType) => (
-						<Tag
-							key={tag.id}
-							id={tag.id}
-							color={tag.color}
-							html={tag.html}
-							showRemove={true}
-							onRemoveClick={(tagId) => onRemoveTag(tagId)}
-						/>
-					))}
-			</Stack>
+				)
+				.map((tag: TagType) => (
+					<Tag
+						key={tag.id}
+						id={tag.id}
+						color={tag.color}
+						html={tag.html}
+						showRemove={true}
+						onRemoveClick={(tagId) => onRemoveTag(tagId)}
+					/>
+				))}
 			<input
 				className="NLT__tag-input"
 				autoFocus={true}
