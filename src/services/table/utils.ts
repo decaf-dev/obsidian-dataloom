@@ -1,7 +1,7 @@
 import { NUMBER_REGEX } from "../string/regex";
 import { isCheckbox, isNumber, isDate } from "../string/validators";
 import { CellType } from "./types";
-import { MarkdownViewModeType } from "obsidian";
+import type { MarkdownViewModeType } from "obsidian";
 
 export const isValidCellContent = (
 	content: string,

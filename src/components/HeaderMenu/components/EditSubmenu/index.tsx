@@ -5,7 +5,6 @@ import Button from "src/components/Button";
 import Switch from "src/components/Switch";
 
 import { CellType } from "src/services/table/types";
-import Stack from "src/components/Stack";
 
 interface Props {
 	canDeleteColumn: boolean;

@@ -9,7 +9,7 @@ import {
 import NltSettingsTab from "./NltSettingsTab";
 
 import { NltTable } from "./NltTable";
-import { addRow, addColumn } from "./services/internal/add";
+import { addRow, addColumn } from "./services/appHandlers/add";
 import { serializeTable } from "./services/io/serialize";
 import { createEmptyMarkdownTable } from "./services/random";
 import {

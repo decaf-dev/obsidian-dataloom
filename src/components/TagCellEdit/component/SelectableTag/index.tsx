@@ -62,7 +62,8 @@ export default function SelectableTag({
 			</div>
 			<IconButton
 				icon={Icon.MORE_HORIZ}
-				onClick={() => {
+				onClick={(e) => {
+					e.stopPropagation();
 					dispatch(openMenu(menu));
 				}}
 			/>

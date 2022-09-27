@@ -1,39 +1,35 @@
+import { randomCellId, randomColumnId, randomRowId } from "../random";
 import { calcColumnCharLengths, TableModelStringBuffer } from "./serialize";
 
 describe("calcColumnCharLengths", () => {
 	it("calculates lengths", () => {
+		const columnId1 = randomColumnId();
+		const columnId2 = randomColumnId();
 		const cells = [
 			{
-				id: "",
+				id: randomCellId(),
 				markdown: "short",
 				html: "short",
-				columnId: "",
-				rowId: "",
+				columnId: columnId1,
+				rowId: randomRowId(),
 			},
 			{
-				id: "",
+				id: randomCellId(),
 				markdown: "shorter",
 				html: "shorter",
-				columnId: "",
-				rowId: "",
+				columnId: columnId1,
+				rowId: randomRowId(),
 			},
 			{
-				id: "",
-				markdown: "longer",
-				html: "longer",
-				columnId: "",
-				rowId: "",
-			},
-			{
-				id: "",
-				markdown: "long",
-				html: "long",
-				columnId: "",
-				rowId: "",
+				id: randomCellId(),
+				markdown: "",
+				html: "",
+				columnId: columnId2,
+				rowId: randomRowId(),
 			},
 		];
 		const lengths = calcColumnCharLengths(cells);
-		expect(lengths).toEqual({ "0": 6, "1": 7 });
+		expect(lengths).toEqual({ [columnId1]: 7, [columnId2]: 0 });
 	});
 });
 

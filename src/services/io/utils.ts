@@ -1,5 +1,5 @@
 import { Cell, ColumnId, RowId, TableModel } from "../table/types";
-import { TFile } from "obsidian";
+import type { TFile } from "obsidian";
 import NltPlugin from "../../main";
 
 import { createEmptyMarkdownTable } from "../random";
@@ -35,7 +35,8 @@ export const findTableFile = async (
 	const file = plugin.app.vault.getAbstractFileByPath(
 		`${tableFolder}/${tableId}.md`
 	);
-	if (file && file instanceof TFile) return file;
+	//TODO do I need to fix this?
+	if (file) return <TFile>file;
 
 	const createdFile = await plugin.app.vault.create(
 		`${tableFolder}/${tableId}.md`,

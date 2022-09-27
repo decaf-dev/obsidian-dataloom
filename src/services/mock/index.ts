@@ -1,4 +1,9 @@
-import { ColumnSettings, DEFAULT_COLUMN_SETTINGS } from "../table/types";
+import { randomCellId, randomColumnId, randomRowId } from "../random";
+import {
+	DEFAULT_COLUMN_SETTINGS,
+	TableState,
+	ColumnSettings,
+} from "../table/types";
 
 const tableHeaderRow = (numColumns: number) => {
 	let row = "|";
@@ -81,33 +86,42 @@ export const mockSettings = (numColumns: number) => {
 	};
 };
 
-// export const mockTable = (parsedTable: string[][]) => {
-// 	const table = document.createElement("table");
-// 	const thead = document.createElement("thead");
-// 	const tbody = document.createElement("tbody");
+export const mockTableState = (
+	numColumns: number,
+	numRows: number
+): TableState => {
+	const rows = [];
+	for (let i = 0; i < numRows; i++) rows.push(randomRowId());
 
-// 	const row = document.createElement("tr");
-// 	parsedTable[0].forEach((th) => {
-// 		const td = document.createElement("th");
-// 		const text = document.createTextNode(th);
-// 		td.appendChild(text);
-// 		row.appendChild(td);
-// 	});
-// 	thead.appendChild(row);
+	const columns = [];
+	for (let i = 0; i < numColumns; i++) columns.push(randomColumnId());
 
-// 	parsedTable.forEach((tr, i) => {
-// 		if (i === 0) return;
-// 		const row = document.createElement("tr");
-// 		for (let j = 0; j < tr.length; j++) {
-// 			const td = document.createElement("td");
-// 			const text = document.createTextNode(tr[j]);
-// 			td.appendChild(text);
-// 			row.appendChild(td);
-// 		}
-// 		tbody.appendChild(row);
-// 	});
-
-// 	table.appendChild(thead);
-// 	table.appendChild(tbody);
-// 	return table;
-// };
+	const cells = [];
+	for (let y = 0; y < numRows; y++) {
+		for (let x = 0; x < numColumns; x++) {
+			cells.push({
+				id: randomCellId(),
+				markdown: "",
+				html: "",
+				rowId: rows[y],
+				columnId: columns[x],
+			});
+		}
+	}
+	const columnSettings = Object.fromEntries(
+		columns.map((id) => {
+			return [id, DEFAULT_COLUMN_SETTINGS];
+		})
+	);
+	return {
+		model: {
+			rows,
+			columns,
+			cells,
+		},
+		cacheVersion: 1,
+		settings: {
+			columns: columnSettings,
+		},
+	};
+};

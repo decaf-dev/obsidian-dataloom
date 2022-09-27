@@ -1,6 +1,6 @@
 import NltPlugin, { NltSettings } from "../../main";
 
-import { MarkdownViewModeType, TFile } from "obsidian";
+import type { MarkdownViewModeType, TFile } from "obsidian";
 
 import { TableModel, Cell, TableState } from "../table/types";
 import { DEBUG } from "../../constants";

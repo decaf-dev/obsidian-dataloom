@@ -10,7 +10,7 @@ import { Cell, CellType } from "./services/table/types";
 import { serializeTable } from "./services/io/serialize";
 import NltPlugin from "./main";
 import { SortDir } from "./services/sort/types";
-import { addRow, addColumn } from "./services/internal/add";
+import { addRow, addColumn } from "./services/appHandlers/add";
 import { logFunc } from "./services/debug";
 import { DEFAULT_COLUMN_SETTINGS } from "./services/table/types";
 import { initialCell } from "./services/io/utils";
@@ -34,6 +34,11 @@ import {
 
 import _ from "lodash";
 import { getTableSizing } from "./services/table/hooks";
+import {
+	addExistingTag,
+	addNewTag,
+	removeTag,
+} from "./services/appHandlers/tag";
 
 interface Props {
 	plugin: NltPlugin;
@@ -337,78 +342,18 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				canAddMultiple,
 			});
 		}
-		setTableState((prevState) => {
-			const tags = [...prevState.settings.columns[columnId].tags];
-
-			if (!canAddMultiple) {
-				const tag = tags.find((t) =>
-					t.cells.find(
-						(c) => c.columnId === columnId && c.rowId === rowId
-					)
-				);
-				if (tag) {
-					const arr = tag.cells.filter(
-						(c) => c.columnId !== columnId && c.rowId !== rowId
-					);
-					tag.cells = arr;
-					if (arr.length === 0) tags.splice(tags.indexOf(tag), 1);
-				}
-			}
-
-			tags.push({
-				id: randomTagId(),
+		setTableState((prevState) =>
+			addNewTag(
+				prevState,
+				cellId,
+				columnId,
+				rowId,
 				markdown,
 				html,
 				color,
-				cells: [
-					{
-						rowId,
-						columnId,
-					},
-				],
-			});
-
-			return {
-				...prevState,
-				model: {
-					...prevState.model,
-					cells: prevState.model.cells.map((cell) => {
-						if (cell.id === cellId) {
-							let newMarkdown = cell.markdown;
-							if (canAddMultiple && newMarkdown !== "") {
-								newMarkdown = newMarkdown + "," + markdown;
-							} else {
-								newMarkdown = markdown;
-							}
-
-							let newHtml = cell.html;
-							if (canAddMultiple && newHtml !== "") {
-								newHtml = newHtml + "," + html;
-							} else {
-								newHtml = html;
-							}
-
-							return {
-								...cell,
-								markdown: newMarkdown,
-								html: newHtml,
-							};
-						}
-						return cell;
-					}),
-				},
-				settings: {
-					...prevState.settings,
-					columns: {
-						...prevState.settings.columns,
-						[columnId]: {
-							...prevState.settings.columns[columnId],
-							tags,
-						},
-					},
-				},
-			};
-		});
+				canAddMultiple
+			)
+		);
 		handleSaveData(true);
 		handlePositionUpdate();
 	}
@@ -429,72 +374,16 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				canAddMultiple,
 			});
 		}
-		setTableState((prevState) => {
-			const tags = [...prevState.settings.columns[columnId].tags];
-
-			if (!canAddMultiple) {
-				const tag = tags.find((t) =>
-					t.cells.find(
-						(c) => c.columnId === columnId && c.rowId === rowId
-					)
-				);
-				if (tag) {
-					const arr = tag.cells.filter(
-						(c) => c.columnId !== columnId && c.rowId !== rowId
-					);
-					tag.cells = arr;
-					if (arr.length === 0) tags.splice(tags.indexOf(tag), 1);
-				}
-			}
-
-			const tag = tags.find((t) => t.id === tagId);
-			const index = tags.indexOf(tag);
-			tags[index].cells.push({
-				rowId,
+		setTableState((prevState) =>
+			addExistingTag(
+				prevState,
+				cellId,
 				columnId,
-			});
-
-			return {
-				...prevState,
-				model: {
-					...prevState.model,
-					cells: prevState.model.cells.map((cell) => {
-						if (cell.id === cellId) {
-							let newMarkdown = cell.markdown;
-							if (canAddMultiple && newMarkdown !== "") {
-								newMarkdown = newMarkdown + "," + tag.markdown;
-							} else {
-								newMarkdown = tag.markdown;
-							}
-
-							let newHtml = cell.html;
-							if (canAddMultiple && newHtml !== "") {
-								newHtml = newHtml + "," + tag.html;
-							} else {
-								newHtml = tag.html;
-							}
-
-							return {
-								...cell,
-								markdown: newMarkdown,
-								html: newHtml,
-							};
-						}
-						return cell;
-					}),
-				},
-				settings: {
-					...prevState.settings,
-					columns: {
-						...prevState.settings.columns,
-						[columnId]: {
-							...prevState.settings.columns[columnId],
-							tags,
-						},
-					},
-				},
-			};
-		});
+				rowId,
+				tagId,
+				canAddMultiple
+			)
+		);
 		handleSaveData(true);
 		handlePositionUpdate();
 	}
@@ -506,44 +395,9 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		tagId: string
 	) {
 		if (DEBUG.APP) console.log("[App]: handleRemoveTagClick called.");
-		setTableState((prevState) => {
-			const tags = [...prevState.settings.columns[columnId].tags];
-			const tag = tags.find((t) => t.id === tagId);
-			const arr = tag.cells.filter(
-				(c) => c.columnId !== columnId && c.rowId !== rowId
-			);
-			tag.cells = arr;
-			if (arr.length === 0) tags.splice(tags.indexOf(tag), 1);
-
-			const newMarkdown = tags.map((tag) => tag.markdown).join(",");
-			const newHtml = tags.map((tag) => tag.html).join(",");
-			return {
-				...prevState,
-				model: {
-					...prevState.model,
-					cells: prevState.model.cells.map((cell) => {
-						if (cell.id === cellId) {
-							return {
-								...cell,
-								markdown: newMarkdown,
-								html: newHtml,
-							};
-						}
-						return cell;
-					}),
-				},
-				settings: {
-					...prevState.settings,
-					columns: {
-						...prevState.settings.columns,
-						[columnId]: {
-							...prevState.settings.columns[columnId],
-							tags,
-						},
-					},
-				},
-			};
-		});
+		setTableState((prevState) =>
+			removeTag(prevState, cellId, columnId, rowId, tagId)
+		);
 		handleSaveData(true);
 	}
 
