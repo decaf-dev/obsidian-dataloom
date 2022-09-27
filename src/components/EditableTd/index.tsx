@@ -200,7 +200,9 @@ export default function EditableTd({
 						(c) => c.rowId === rowId && c.columnId === columnId
 					)
 				);
-				return <MultiTagCell tags={filteredTags} />;
+				return (
+					<MultiTagCell isDarkMode={isDarkMode} tags={filteredTags} />
+				);
 			}
 			case CellType.DATE:
 				return <DateCell content={html} />;
