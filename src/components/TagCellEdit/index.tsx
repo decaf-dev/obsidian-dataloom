@@ -8,12 +8,13 @@ import { Tag as TagType } from "../../services/table/types";
 
 import { randomColor } from "src/services/random";
 import { markdownToHtml } from "src/services/io/deserialize";
-import { useAppDispatch } from "src/services/redux/hooks";
+import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 import { closeTopLevelMenu } from "src/services/menu/menuSlice";
 
 import "./styles.css";
 
 interface MenuHeaderProps {
+	isDarkMode: boolean;
 	rowId: string;
 	columnId: string;
 	tags: TagType[];
@@ -23,6 +24,7 @@ interface MenuHeaderProps {
 }
 
 const MenuHeader = ({
+	isDarkMode,
 	rowId,
 	columnId,
 	tags,
@@ -40,6 +42,7 @@ const MenuHeader = ({
 				)
 				.map((tag: TagType) => (
 					<Tag
+						isDarkMode={isDarkMode}
 						key={tag.id}
 						id={tag.id}
 						color={tag.color}
@@ -60,6 +63,7 @@ const MenuHeader = ({
 };
 
 interface MenuBodyProps {
+	isDarkMode: boolean;
 	tags: TagType[];
 	inputText: string;
 	generatedColor: string;
@@ -69,6 +73,7 @@ interface MenuBodyProps {
 }
 
 const MenuBody = ({
+	isDarkMode,
 	tags,
 	inputText,
 	generatedColor,
@@ -87,6 +92,7 @@ const MenuBody = ({
 				{!found && inputText !== "" && (
 					<CreateTag
 						key="create-tag"
+						isDarkMode={isDarkMode}
 						markdown={inputText}
 						html={markdownToHtml(inputText)}
 						color={generatedColor}
@@ -95,6 +101,7 @@ const MenuBody = ({
 				)}
 				{filteredTags.map((tag: TagType) => (
 					<SelectableTag
+						isDarkMode={isDarkMode}
 						key={tag.id}
 						id={tag.id}
 						color={tag.color}
@@ -139,6 +146,7 @@ export default function TagCellEdit({
 	const [inputText, setInputText] = useState("");
 	const [generatedColor] = useState(randomColor());
 	const dispatch = useAppDispatch();
+	const { isDarkMode } = useAppSelector((state) => state.global);
 
 	function handleInputTextChange(e: React.ChangeEvent<HTMLInputElement>) {
 		//Disallow whitespace
@@ -157,6 +165,7 @@ export default function TagCellEdit({
 			<div className="NLT__tag-menu">
 				<div className="NLT__tag-menu-container">
 					<MenuHeader
+						isDarkMode={isDarkMode}
 						rowId={rowId}
 						columnId={columnId}
 						inputText={inputText}
@@ -165,6 +174,7 @@ export default function TagCellEdit({
 						onRemoveTag={onRemoveTag}
 					/>
 					<MenuBody
+						isDarkMode={isDarkMode}
 						inputText={inputText}
 						tags={tags}
 						generatedColor={generatedColor}

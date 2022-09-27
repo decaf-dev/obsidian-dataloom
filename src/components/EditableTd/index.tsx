@@ -82,6 +82,7 @@ export default function EditableTd({
 	const menu = useMenu(MenuLevel.ONE);
 	const isOpen = useAppSelector((state) => isMenuOpen(state, menu));
 	const dispatch = useAppDispatch();
+	const { isDarkMode } = useAppSelector((state) => state.global);
 
 	const positionUpdateTime = useAppSelector(
 		(state) => state.menu.positionUpdateTime
@@ -184,6 +185,7 @@ export default function EditableTd({
 				if (currentTag) {
 					return (
 						<TagCell
+							isDarkMode={isDarkMode}
 							html={currentTag.html}
 							color={currentTag.color}
 						/>

@@ -8,6 +8,7 @@ import { findColorClass } from "src/services/color";
 import "./styles.css";
 
 interface Props {
+	isDarkMode: boolean;
 	id?: string;
 	html: string;
 	color: string;
@@ -17,6 +18,7 @@ interface Props {
 }
 
 export default function Tag({
+	isDarkMode,
 	id,
 	color,
 	html,
@@ -24,7 +26,7 @@ export default function Tag({
 	onRemoveClick,
 }: Props) {
 	let tagClass = "NLT__tag";
-	tagClass += " " + findColorClass(color);
+	tagClass += " " + findColorClass(isDarkMode, color);
 
 	return (
 		<div className={tagClass}>

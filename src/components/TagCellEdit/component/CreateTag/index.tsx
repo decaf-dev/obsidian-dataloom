@@ -5,13 +5,20 @@ import Tag from "src/components/Tag";
 import "./styles.css";
 
 interface Props {
+	isDarkMode: boolean;
 	html: string;
 	markdown: string;
 	color: string;
 	onAddTag: (markdown: string, html: string, color: string) => void;
 }
 
-export default function CreateTag({ markdown, html, color, onAddTag }: Props) {
+export default function CreateTag({
+	isDarkMode,
+	markdown,
+	html,
+	color,
+	onAddTag,
+}: Props) {
 	return (
 		<div
 			className="NLT__create-tag NLT__selectable"
@@ -20,7 +27,7 @@ export default function CreateTag({ markdown, html, color, onAddTag }: Props) {
 			}}
 		>
 			<div>Create&nbsp;</div>
-			<Tag html={html} color={color} />
+			<Tag isDarkMode={isDarkMode} html={html} color={color} />
 		</div>
 	);
 }

@@ -23,6 +23,7 @@ import { store } from "./services/redux/store";
 import { TableState } from "./services/table/types";
 import _ from "lodash";
 import { isMenuId } from "./services/menu/utils";
+import { setDarkMode } from "./services/redux/globalSlice";
 export interface NltSettings {
 	data: {
 		[tableId: string]: TableState;
@@ -87,6 +88,10 @@ export default class NltPlugin extends Plugin {
 		this.addSettingTab(new NltSettingsTab(this.app, this));
 		this.registerCommands();
 		this.registerEvents();
+
+		this.app.workspace.onLayoutReady(() => {
+			this.checkForDarkMode();
+		});
 	}
 
 	private throttleCloseAllMenus = _.throttle(() => {
@@ -97,6 +102,15 @@ export default class NltPlugin extends Plugin {
 	private throttlePositionUpdate = _.throttle(() => {
 		store.dispatch(updateMenuPosition());
 	}, 150);
+
+	private checkForDarkMode() {
+		store.dispatch(setDarkMode(this.hasDarkTheme()));
+	}
+
+	private hasDarkTheme = () => {
+		const el = document.querySelector("body");
+		return el.className.includes("theme-dark");
+	};
 
 	registerEvents() {
 		this.registerEvent(
@@ -126,19 +140,9 @@ export default class NltPlugin extends Plugin {
 
 		this.registerEvent(
 			this.app.workspace.on("css-change", () => {
-				console.log("CSS CHANGE!");
-				//TODO update darkmode
+				this.checkForDarkMode();
 			})
 		);
-
-		// this.registerEvent(
-		// 	this.app.workspace.on("layout-change", () => {
-		// 		console.log("LAYOUT CHANGE!");
-		// 		//TODO update position
-		// 		const topLevelMenu = getTopLevelMenu(store.getState());
-		// 		if (topLevelMenu !== null) store.dispatch(closeAllMenus());
-		// 	})
-		// );
 
 		this.registerEvent(
 			this.app.workspace.on("resize", () => {

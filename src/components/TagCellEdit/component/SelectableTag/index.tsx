@@ -22,6 +22,7 @@ import {
 import "./styles.css";
 
 interface Props {
+	isDarkMode: boolean;
 	id: string;
 	html: string;
 	color: string;
@@ -30,6 +31,7 @@ interface Props {
 }
 
 export default function SelectableTag({
+	isDarkMode,
 	id,
 	html,
 	color,
@@ -50,7 +52,7 @@ export default function SelectableTag({
 	}
 
 	let tagClass = "NLT__tag";
-	tagClass += " " + findColorClass(color);
+	tagClass += " " + findColorClass(isDarkMode, color);
 	return (
 		<div
 			ref={positionRef}

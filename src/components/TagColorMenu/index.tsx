@@ -6,7 +6,7 @@ import { COLOR } from "src/constants";
 import ColorItem from "./components/ColorItem";
 import { Close } from "@mui/icons-material";
 import "./styles.css";
-import { useAppDispatch } from "src/services/redux/hooks";
+import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 import { closeTopLevelMenu } from "src/services/menu/menuSlice";
 
 interface Props {
@@ -28,6 +28,7 @@ export default function TagColorMenu({
 	onColorClick,
 }: Props) {
 	const dispatch = useAppDispatch();
+	const { isDarkMode } = useAppSelector((state) => state.global);
 	function handleMenuCloseClick(e: React.MouseEvent) {
 		//TODO this is more of a hack than a fix
 		e.stopPropagation();
@@ -47,6 +48,7 @@ export default function TagColorMenu({
 				<div className="NLT__tag-color-container">
 					{Object.values(COLOR).map((color) => (
 						<ColorItem
+							isDarkMode={isDarkMode}
 							key={color}
 							color={color}
 							onColorClick={onColorClick}
