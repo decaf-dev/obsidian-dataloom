@@ -2,33 +2,21 @@
 
 [![Active Development](https://img.shields.io/badge/Maintenance%20Level-Actively%20Developed-brightgreen.svg)](https://gist.github.com/cheerfulstoic/d107229326a01ff0f333a1d3476e068d)
 
-Obsidian Notion-Like Tables allows you to manage markdown tables using a WYSIWYG interface. The plugin supports editing of vanilla table markdown offering features such as editing cells, sorting, deleting, and adding new rows and columns.
-
-As plugin development continues, the goal is to add many of the features found in Notion.so.
+Notion-Like Tables is your premiere tool for creating and managing tabular data in Obsidian.md.
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/preview.png)
 
 Want to support development?
 
-<a href="
-https://www.buymeacoffee.com/treywallis"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=treywallis&button_colour=6a8695&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00"></a>
+<a href="https://www.buymeacoffee.com/treywallis"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=treywallis&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff" /></a>
 
-## Version 4.3.1
+## Version 5.0.0
 
--   Type switching now works without any data loss. Fixes [#196](https://github.com/trey-wallis/obsidian-notion-like-tables/issues/196)
+Version 5 includes support for all HTML entities in your markdown tables - including Obsidian direct links, links with aliases, custom emojis, and all supported Obsidian markdown syntax.
 
-## Version 4.3.0
+Live preview is now fully functional. In order to accomodate this functionality, the basic usage of the table has changed. Please see: [Basic usage](#basic-usage) for more details.
 
--   Updated table replacement algorithm. This should fix any tables in which the markdown wasn't updating
--   Enabled multi-table support for files
-    -   To accomodate this feature, NLT tables are now an "opt-in" feature for markdown tables and require a block id to render.
-    -   See: [Basic usage](#basic-usage)
--   Removed excluded files setting
--   Sorting rows will now sort the source markdown
-
-Current limitations in 4.3.0 include:
-
--   No live preview support (to be fixed in 4.4.0)
+Various other bug fixes and optimizations have been added. See: [Release 5.0.0]() for specific details.
 
 ## About
 
