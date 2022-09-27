@@ -1,5 +1,6 @@
 .NLT__tag-content {
-    width: 100%;
+    width: max-content;
+    overflow: hidden;
 }
 
 .NLT__tag {
