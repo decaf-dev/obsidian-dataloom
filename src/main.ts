@@ -89,9 +89,12 @@ export default class NltPlugin extends Plugin {
 		this.registerEvents();
 	}
 
-	private throttleFileScroll = _.throttle(() => {
+	private throttleCloseAllMenus = _.throttle(() => {
 		const topLevelMenu = getTopLevelMenu(store.getState());
 		if (topLevelMenu !== null) store.dispatch(closeAllMenus());
+	}, 150);
+
+	private throttlePositionUpdate = _.throttle(() => {
 		store.dispatch(updateMenuPosition());
 	}, 150);
 
@@ -101,37 +104,46 @@ export default class NltPlugin extends Plugin {
 				//Clear the focused table
 				this.blurTable();
 
-				let livePreviewScroller =
+				const livePreviewScroller =
 					document.querySelector(".cm-scroller");
-				let readingModeScroller = document.querySelector(
+				const readingModeScroller = document.querySelector(
 					".markdown-preview-view"
 				);
 				if (livePreviewScroller) {
 					livePreviewScroller.addEventListener("scroll", () => {
-						this.throttleFileScroll();
+						this.throttleCloseAllMenus();
+						this.throttlePositionUpdate();
 					});
 				}
 				if (readingModeScroller) {
 					readingModeScroller.addEventListener("scroll", () => {
-						this.throttleFileScroll();
+						this.throttleCloseAllMenus();
+						this.throttlePositionUpdate();
 					});
 				}
 			})
 		);
 
 		this.registerEvent(
-			this.app.workspace.on("resize", () => {
-				const topLevelMenu = getTopLevelMenu(store.getState());
-				if (topLevelMenu !== null) store.dispatch(closeAllMenus());
+			this.app.workspace.on("css-change", () => {
+				console.log("CSS CHANGE!");
+				//TODO update darkmode
 			})
 		);
 
+		// this.registerEvent(
+		// 	this.app.workspace.on("layout-change", () => {
+		// 		console.log("LAYOUT CHANGE!");
+		// 		//TODO update position
+		// 		const topLevelMenu = getTopLevelMenu(store.getState());
+		// 		if (topLevelMenu !== null) store.dispatch(closeAllMenus());
+		// 	})
+		// );
+
 		this.registerEvent(
-			this.app.workspace.on("layout-change", () => {
-				this.app.workspace.on("resize", () => {
-					const topLevelMenu = getTopLevelMenu(store.getState());
-					if (topLevelMenu !== null) store.dispatch(closeAllMenus());
-				});
+			this.app.workspace.on("resize", () => {
+				this.throttleCloseAllMenus();
+				this.throttlePositionUpdate();
 			})
 		);
 

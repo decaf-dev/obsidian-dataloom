@@ -84,10 +84,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 
 	const handlePositionUpdate = () => throttlePositionUpdate();
 
-	useEffect(() => {
-		if (!isLoading) handlePositionUpdate();
-	}, [isLoading]);
-
 	//Load table on mount
 	useEffect(() => {
 		async function load() {
