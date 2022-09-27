@@ -22,6 +22,7 @@ import {
 import { store } from "./services/redux/store";
 import { TableState } from "./services/table/types";
 import _ from "lodash";
+import { isMenuId } from "./services/menu/utils";
 export interface NltSettings {
 	data: {
 		[tableId: string]: TableState;
@@ -149,9 +150,13 @@ export default class NltPlugin extends Plugin {
 				for (let i = 0; i < el.path.length; i++) {
 					const element = el.path[i];
 					if (element instanceof HTMLElement) {
-						if (element.id === topLevelMenu.id) break;
-						//If we've clicked in the app but not in the menu
-						if (element.className.includes("NLT__app")) {
+						const { id } = element;
+						if (id === topLevelMenu.id) break;
+						if (
+							isMenuId(id) ||
+							element.className.includes("NLT__app")
+						) {
+							//If we've clicked in the app but not in the menu
 							store.dispatch(closeTopLevelMenu());
 							break;
 						}

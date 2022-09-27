@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Menu } from "./types";
 import { randomId } from "../random";
+import { MENU_PREFIX } from "./constants";
 
 export const NUM_CHARS_MENU_ID = 8;
 
 const randomMenuId = () => {
-	return `NLT__menu-id-${randomId(NUM_CHARS_MENU_ID)}`;
+	return `${MENU_PREFIX}-${randomId(NUM_CHARS_MENU_ID)}`;
 };
 
 export const useMenu = (level: number): Menu => {
