@@ -1,27 +1,35 @@
 import { COLOR } from "../../constants";
 
+export const hasDarkTheme = () => {
+	const el = document.querySelector("body");
+	return el.className.includes("theme-dark");
+};
+
 export const findColorClass = (color: string): string => {
+	const inDarkMode = hasDarkTheme();
 	switch (color) {
 		case COLOR.LIGHT_GRAY:
-			return "NLT__color--light-gray";
+			return inDarkMode
+				? "NLT__light-gray--dark"
+				: "NLT__light-gray--light";
 		case COLOR.GRAY:
-			return "NLT__color--gray";
+			return inDarkMode ? "NLT__gray--dark" : "NLT__gray--light";
 		case COLOR.BROWN:
-			return "NLT__color--brown";
+			return inDarkMode ? "NLT__brown--dark" : "NLT__brown--light";
 		case COLOR.ORANGE:
-			return "NLT__color--orange";
+			return inDarkMode ? "NLT__orange--dark" : "NLT__orange--light";
 		case COLOR.YELLOW:
-			return "NLT__color--yellow";
+			return inDarkMode ? "NLT__yellow--dark" : "NLT__yellow--light";
 		case COLOR.GREEN:
-			return "NLT__color--green";
+			return inDarkMode ? "NLT__green--dark" : "NLT__green--light";
 		case COLOR.BLUE:
-			return "NLT__color--blue";
+			return inDarkMode ? "NLT__blue--dark" : "NLT__blue--light";
 		case COLOR.PURPLE:
-			return "NLT__color--purple";
+			return inDarkMode ? "NLT__purple--dark" : "NLT__purple--light";
 		case COLOR.PINK:
-			return "NLT__color--pink";
+			return inDarkMode ? "NLT__pink--dark" : "NLT__pink--light";
 		case COLOR.RED:
-			return "NLT__color--red";
+			return inDarkMode ? "NLT__red--dark" : "NLT__red--light";
 		default:
 			return "";
 	}
