@@ -219,11 +219,17 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			if (previousType === type) return prevState;
 			let tags = [...settings.columns[columnId].tags];
 			if (
-				previousType === CellType.TAG ||
-				previousType === CellType.MULTI_TAG
+				(previousType === CellType.TAG &&
+					type !== CellType.MULTI_TAG) ||
+				(previousType === CellType.MULTI_TAG && type !== CellType.TAG)
 			) {
 				tags = [];
 			} else if (type === CellType.TAG || CellType.MULTI_TAG) {
+				if (
+					previousType === CellType.MULTI_TAG ||
+					previousType === CellType.TAG
+				)
+					tags = [];
 				prevState.model.cells
 					.filter(
 						(cell) =>
@@ -232,6 +238,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 							!cell.isHeader
 					)
 					.forEach((cell) => {
+						//TODO check for old cells
 						const newTags = cell.markdown.split(",").map((tag) => {
 							return {
 								id: randomTagId(),
