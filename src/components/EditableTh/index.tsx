@@ -80,9 +80,9 @@ export default function EditableTh({
 	function handleHeaderClick() {
 		if (isResizing.current) return;
 		if (isOpen) {
-			openHeaderMenu();
-		} else {
 			closeHeaderMenu();
+		} else {
+			openHeaderMenu();
 		}
 	}
 
