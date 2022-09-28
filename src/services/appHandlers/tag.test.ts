@@ -316,7 +316,7 @@ describe("addExistingTag", () => {
 		]);
 	});
 
-	it("adds an existing tag and removes the old one", () => {
+	it("adds an existing tag and removes the other cell reference", () => {
 		const state = mockTableState(1, 2);
 
 		const tagCell1 = state.model.cells[0];
@@ -371,7 +371,7 @@ describe("addExistingTag", () => {
 		expect(newState.model.cells[1].html).toEqual("tag1");
 
 		const newTags = newState.settings.columns[tagCell1.columnId].tags;
-		expect(newTags.length).toEqual(1);
+		expect(newTags.length).toEqual(2);
 		expect(newTags[0].markdown).toEqual("tag1");
 		expect(newTags[0].html).toEqual("tag1");
 		expect(newTags[0].color).toEqual("blue");
@@ -386,6 +386,11 @@ describe("addExistingTag", () => {
 				columnId: tagCell2.columnId,
 			},
 		]);
+
+		expect(newTags[1].markdown).toEqual("tag2");
+		expect(newTags[1].html).toEqual("tag2");
+		expect(newTags[1].color).toEqual("red");
+		expect(newTags[1].cells.length).toEqual(0);
 	});
 
 	it("adds an existing tag and keeps the old one", () => {
