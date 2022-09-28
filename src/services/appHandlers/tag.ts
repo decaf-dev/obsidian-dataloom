@@ -96,10 +96,12 @@ export const removeTag = (
 		(c) => c.columnId !== columnId || c.rowId !== rowId
 	);
 	tag.cells = arr;
-	if (arr.length === 0) tags.splice(tags.indexOf(tag), 1);
 
-	const newMarkdown = tags.map((tag) => tag.markdown).join(",");
-	const newHtml = tags.map((tag) => tag.html).join(",");
+	const assignedTags = tags.filter((tag) =>
+		tag.cells.find((c) => c.columnId === columnId && c.rowId === rowId)
+	);
+	const newMarkdown = assignedTags.map((t) => t.markdown).join(",");
+	const newHtml = assignedTags.map((t) => t.html).join(",");
 	return {
 		...prevState,
 		model: {

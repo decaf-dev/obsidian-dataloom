@@ -211,7 +211,7 @@ describe("addNewTag", () => {
 });
 
 describe("removeTag", () => {
-	it("removes a tag from a cell with 1 tag", () => {
+	it("removes cell reference from a tag", () => {
 		const state = mockTableState(1, 2);
 
 		const tagCell = state.model.cells[1];
@@ -245,68 +245,13 @@ describe("removeTag", () => {
 		expect(newState.model.cells[1].markdown).toEqual("");
 		expect(newState.model.cells[1].html).toEqual("");
 
+		//TODO fix switching between two types
+		//Don't delete the tags, just disassociate them from cells
 		const newTags = newState.settings.columns[tagCell.columnId].tags;
-		expect(newTags.length).toEqual(0);
-	});
-
-	it("removes a tag from a cell with 2 tags and keeps one", () => {
-		const state = mockTableState(1, 2);
-
-		const tagCell = state.model.cells[1];
-		tagCell.markdown = "tag1,tag2";
-		tagCell.html = "tag1,tag2";
-
-		const tagId1 = randomTagId();
-		const tagId2 = randomTagId();
-		state.settings.columns[tagCell.columnId].tags = [
-			{
-				id: tagId1,
-				markdown: "tag1",
-				html: "tag1",
-				color: "blue",
-				cells: [
-					{
-						rowId: tagCell.rowId,
-						columnId: tagCell.columnId,
-					},
-				],
-			},
-			{
-				id: tagId2,
-				markdown: "tag2",
-				html: "tag2",
-				color: "blue",
-				cells: [
-					{
-						rowId: tagCell.rowId,
-						columnId: tagCell.columnId,
-					},
-				],
-			},
-		];
-
-		const newState = removeTag(
-			state,
-			tagCell.id,
-			tagCell.columnId,
-			tagCell.rowId,
-			tagId1
-		);
-
-		expect(newState.model.cells[1].markdown).toEqual("tag2");
-		expect(newState.model.cells[1].html).toEqual("tag2");
-
-		const newTags = newState.settings.columns[tagCell.columnId].tags;
-		expect(newTags.length).toEqual(1);
-		expect(newTags[0].markdown).toEqual("tag2");
-		expect(newTags[0].html).toEqual("tag2");
+		expect(newTags[0].markdown).toEqual("tag1");
+		expect(newTags[0].html).toEqual("tag1");
 		expect(newTags[0].color).toEqual("blue");
-		expect(newTags[0].cells).toEqual([
-			{
-				rowId: tagCell.rowId,
-				columnId: tagCell.columnId,
-			},
-		]);
+		expect(newTags[0].cells.length).toEqual(0);
 	});
 });
 
