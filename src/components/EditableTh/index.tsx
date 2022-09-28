@@ -27,8 +27,8 @@ interface Props {
 	columnId: string;
 	width: string;
 	numColumns: number;
-	content: string;
-	textContent: string;
+	markdown: string;
+	html: string;
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
 	sortDir: SortDir;
@@ -36,7 +36,7 @@ interface Props {
 	onMoveColumnClick: (columnId: string, moveRight: boolean) => void;
 	onSortSelect: (columnId: string, sortDir: SortDir) => void;
 	onInsertColumnClick: (columnId: string, insertRight: boolean) => void;
-	onTypeSelect: (cellId: string, columnId: string, type: CellType) => void;
+	onTypeSelect: (columnId: string, type: CellType) => void;
 	onDeleteClick: (columnId: string) => void;
 	onSaveClick: (cellId: string, content: string) => void;
 	onWidthChange: (columnId: string, width: string) => void;
@@ -49,8 +49,8 @@ export default function EditableTh({
 	columnIndex,
 	columnId,
 	width,
-	content,
-	textContent,
+	markdown,
+	html,
 	useAutoWidth,
 	shouldWrapOverflow,
 	type,
@@ -77,16 +77,20 @@ export default function EditableTh({
 	);
 	const { positionRef, position } = usePositionRef([positionUpdateTime]);
 
-	function handleHeaderClick(e: React.MouseEvent) {
+	function handleHeaderClick() {
 		if (isResizing.current) return;
 		if (isOpen) {
-			dispatch(closeTopLevelMenu());
+			closeHeaderMenu();
 		} else {
-			dispatch(openMenu(menu));
+			openHeaderMenu();
 		}
 	}
 
-	function handleClose() {
+	function openHeaderMenu() {
+		dispatch(openMenu(menu));
+	}
+
+	function closeHeaderMenu() {
 		dispatch(closeTopLevelMenu());
 	}
 
@@ -127,12 +131,13 @@ export default function EditableTh({
 						width,
 					}}
 				>
-					<div className="NLT__th-content">{parse(textContent)}</div>
+					<div className="NLT__th-content">{parse(html)}</div>
 					<div className="NLT__th-resize-container">
 						{!useAutoWidth && (
 							<div
 								className="NLT__th-resize"
 								onMouseDown={(e) => {
+									closeHeaderMenu();
 									//Prevents drag and drop
 									//See: https://stackoverflow.com/questions/704564/disable-drag-and-drop-on-html-elements
 									e.preventDefault();
@@ -169,7 +174,7 @@ export default function EditableTh({
 				shouldWrapOverflow={shouldWrapOverflow}
 				useAutoWidth={useAutoWidth}
 				id={menu.id}
-				columnContent={content}
+				columnContent={markdown}
 				columnSortDir={sortDir}
 				columnType={type}
 				columnIndex={columnIndex}
@@ -180,7 +185,7 @@ export default function EditableTh({
 				onInsertColumnClick={onInsertColumnClick}
 				onTypeSelect={onTypeSelect}
 				onDeleteClick={onDeleteClick}
-				onClose={handleClose}
+				onClose={closeHeaderMenu}
 				onAutoWidthToggle={onAutoWidthToggle}
 				onWrapOverflowToggle={onWrapOverflowToggle}
 			/>

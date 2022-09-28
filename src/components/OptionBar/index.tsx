@@ -48,7 +48,7 @@ export default function OptionBar({ model, settings }: Props) {
 		return model.columns
 			.map((columnId) => {
 				const cell = model.cells.find(
-					(c) => c.columnId === columnId && c.rowId == model.rows[0]
+					(c) => c.columnId === columnId && c.isHeader
 				);
 				return cell;
 			})

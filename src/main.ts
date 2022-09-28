@@ -9,7 +9,7 @@ import {
 import NltSettingsTab from "./NltSettingsTab";
 
 import { NltTable } from "./NltTable";
-import { addRow, addColumn } from "./services/internal/add";
+import { addRow, addColumn } from "./services/appHandlers/add";
 import { serializeTable } from "./services/io/serialize";
 import { createEmptyMarkdownTable } from "./services/random";
 import {
@@ -22,6 +22,8 @@ import {
 import { store } from "./services/redux/store";
 import { TableState } from "./services/table/types";
 import _ from "lodash";
+import { isMenuId } from "./services/menu/utils";
+import { setDarkMode } from "./services/redux/globalSlice";
 export interface NltSettings {
 	data: {
 		[tableId: string]: TableState;
@@ -31,7 +33,6 @@ export interface NltSettings {
 		tableId: string | null;
 		viewModes: MarkdownViewModeType[];
 	};
-	viewModeSyncInterval: number;
 }
 
 export const DEFAULT_SETTINGS: NltSettings = {
@@ -41,7 +42,6 @@ export const DEFAULT_SETTINGS: NltSettings = {
 		tableId: null,
 		viewModes: [],
 	},
-	viewModeSyncInterval: 2000,
 };
 export default class NltPlugin extends Plugin {
 	settings: NltSettings;
@@ -88,13 +88,28 @@ export default class NltPlugin extends Plugin {
 		this.addSettingTab(new NltSettingsTab(this.app, this));
 		this.registerCommands();
 		this.registerEvents();
+
+		this.app.workspace.onLayoutReady(() => {
+			this.checkForDarkMode();
+		});
 	}
 
-	private throttleFileScroll = _.throttle(() => {
-		const topLevelMenu = getTopLevelMenu(store.getState());
-		if (topLevelMenu !== null) store.dispatch(closeAllMenus());
+	private throttleCloseAllMenus = _.throttle(() => {
+		store.dispatch(closeAllMenus());
+	}, 150);
+
+	private throttlePositionUpdate = _.throttle(() => {
 		store.dispatch(updateMenuPosition());
 	}, 150);
+
+	private checkForDarkMode() {
+		store.dispatch(setDarkMode(this.hasDarkTheme()));
+	}
+
+	private hasDarkTheme = () => {
+		const el = document.querySelector("body");
+		return el.className.includes("theme-dark");
+	};
 
 	registerEvents() {
 		this.registerEvent(
@@ -102,44 +117,42 @@ export default class NltPlugin extends Plugin {
 				//Clear the focused table
 				this.blurTable();
 
-				let livePreviewScroller =
+				const livePreviewScroller =
 					document.querySelector(".cm-scroller");
-				let readingModeScroller = document.querySelector(
+				const readingModeScroller = document.querySelector(
 					".markdown-preview-view"
 				);
 				if (livePreviewScroller) {
 					livePreviewScroller.addEventListener("scroll", () => {
-						this.throttleFileScroll();
+						this.throttleCloseAllMenus();
+						this.throttlePositionUpdate();
 					});
 				}
 				if (readingModeScroller) {
 					readingModeScroller.addEventListener("scroll", () => {
-						this.throttleFileScroll();
+						this.throttleCloseAllMenus();
+						this.throttlePositionUpdate();
 					});
 				}
+			})
+		);
+
+		this.registerEvent(
+			this.app.workspace.on("css-change", () => {
+				this.checkForDarkMode();
 			})
 		);
 
 		this.registerEvent(
 			this.app.workspace.on("resize", () => {
-				const topLevelMenu = getTopLevelMenu(store.getState());
-				if (topLevelMenu !== null) store.dispatch(closeAllMenus());
-			})
-		);
-
-		this.registerEvent(
-			this.app.workspace.on("layout-change", () => {
-				this.app.workspace.on("resize", () => {
-					const topLevelMenu = getTopLevelMenu(store.getState());
-					if (topLevelMenu !== null) store.dispatch(closeAllMenus());
-				});
+				this.throttleCloseAllMenus();
+				this.throttlePositionUpdate();
 			})
 		);
 
 		this.registerDomEvent(activeDocument, "keydown", async (e) => {
 			if (e.key === "Enter") {
-				const topLevelMenu = getTopLevelMenu(store.getState());
-				if (topLevelMenu !== null) store.dispatch(closeTopLevelMenu());
+				store.dispatch(closeTopLevelMenu());
 			}
 		});
 
@@ -151,9 +164,13 @@ export default class NltPlugin extends Plugin {
 				for (let i = 0; i < el.path.length; i++) {
 					const element = el.path[i];
 					if (element instanceof HTMLElement) {
-						if (element.id === topLevelMenu.id) break;
-						//If we've clicked in the app but not in the menu
-						if (element.className.includes("NLT__app")) {
+						const { id } = element;
+						if (id === topLevelMenu.id) break;
+						if (
+							isMenuId(id) ||
+							element.className.includes("NLT__app")
+						) {
+							//If we've clicked in the app but not in the menu
 							store.dispatch(closeTopLevelMenu());
 							break;
 						}

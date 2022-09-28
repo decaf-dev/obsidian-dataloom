@@ -1,5 +1,4 @@
 import { SortDir } from "../sort/types";
-import { MIN_COLUMN_WIDTH } from "./constants";
 
 export enum CellType {
 	TEXT = "text",
@@ -25,6 +24,7 @@ export interface Cell {
 	rowId: RowId;
 	markdown: string;
 	html: string;
+	isHeader: boolean;
 }
 
 export interface TableModel {
@@ -33,24 +33,34 @@ export interface TableModel {
 	cells: Cell[];
 }
 
+export interface TagCellReference {
+	rowId: string;
+	columnId: string;
+}
+
+export interface Tag {
+	id: string;
+	markdown: string;
+	html: string;
+	color: string;
+	cells: TagCellReference[];
+}
 export interface ColumnSettings {
 	sortDir: SortDir;
 	width: string;
 	type: CellType;
 	useAutoWidth: boolean;
 	shouldWrapOverflow: boolean;
-	tagColors: {
-		[hash: string]: string;
-	};
+	tags: Tag[];
 }
 
 export const DEFAULT_COLUMN_SETTINGS: ColumnSettings = {
 	sortDir: SortDir.NONE,
-	width: `${MIN_COLUMN_WIDTH}px`,
+	width: "120px",
 	type: CellType.TEXT,
 	useAutoWidth: false,
 	shouldWrapOverflow: false,
-	tagColors: {},
+	tags: [],
 };
 
 export interface TableSettings {

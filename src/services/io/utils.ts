@@ -1,5 +1,5 @@
 import { Cell, ColumnId, RowId, TableModel } from "../table/types";
-import { TFile } from "obsidian";
+import type { TFile } from "obsidian";
 import NltPlugin from "../../main";
 
 import { createEmptyMarkdownTable } from "../random";
@@ -10,17 +10,17 @@ import { createEmptyMarkdownTable } from "../random";
 export const serializeFrontMatter = (model: TableModel) => {
 	const frontmatter = [];
 	frontmatter.push("---");
-	frontmatter.push(serializeColumns(model.columns));
-	frontmatter.push(serializeRows(model.rows));
+	frontmatter.push(serializeColumnIds(model.columns));
+	frontmatter.push(serializeRowIds(model.rows));
 	frontmatter.push("---");
 	return frontmatter.join("\n");
 };
 
-const serializeColumns = (columns: ColumnId[]) => {
+const serializeColumnIds = (columns: ColumnId[]) => {
 	return `columnIds: ${JSON.stringify(columns)}`;
 };
 
-const serializeRows = (rows: RowId[]) => {
+const serializeRowIds = (rows: RowId[]) => {
 	return `rowIds: ${JSON.stringify(rows)}`;
 };
 
@@ -35,27 +35,12 @@ export const findTableFile = async (
 	const file = plugin.app.vault.getAbstractFileByPath(
 		`${tableFolder}/${tableId}.md`
 	);
-	if (file && file instanceof TFile) return file;
+	//TODO do I need to fix this?
+	if (file) return <TFile>file;
 
 	const createdFile = await plugin.app.vault.create(
 		`${tableFolder}/${tableId}.md`,
 		createEmptyMarkdownTable()
 	);
 	return createdFile;
-};
-
-export const initialCell = (
-	id: string,
-	columnId: string,
-	rowId: string,
-	markdown: string,
-	html: string
-): Cell => {
-	return {
-		id,
-		columnId,
-		rowId,
-		markdown,
-		html,
-	};
 };

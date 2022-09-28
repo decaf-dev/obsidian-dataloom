@@ -1,0 +1,6 @@
+.NLT__multi-tag-cell {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+
+}

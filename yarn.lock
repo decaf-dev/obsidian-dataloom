@@ -3677,10 +3677,10 @@ object.assign@^4.1.0:
     has-symbols "^1.0.3"
     object-keys "^1.1.1"
 
-obsidian@^0.16.0:
-  version "0.16.0"
-  resolved "https://registry.yarnpkg.com/obsidian/-/obsidian-0.16.0.tgz#4d1614719197233dab962e490d9c8ac8834260e2"
-  integrity sha512-KnQu1CntLz/EqA50W0zwlCqMgLbvMMfW2nmNQV4aMPW/aSYyjmnRMEwO0rAThQGhJPabDm2okVUSeXLctC/aMA==
+obsidian@^0.16.3:
+  version "0.16.3"
+  resolved "https://registry.yarnpkg.com/obsidian/-/obsidian-0.16.3.tgz#137b7e91f949517a1bc817b1d7ef9b8aefb219bc"
+  integrity sha512-hal9qk1A0GMhHSeLr2/+o3OpLmImiP+Y+sx2ewP13ds76KXsziG96n+IPFT0mSkup1zSwhEu+DeRhmbcyCCXWw==
   dependencies:
     "@types/codemirror" "0.0.108"
     moment "2.29.4"

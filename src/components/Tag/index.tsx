@@ -5,13 +5,12 @@ import CloseIcon from "@mui/icons-material/Close";
 
 import { findColorClass } from "src/services/color";
 
-import { stripPound } from "src/services/string/modify";
-
 import "./styles.css";
 
 interface Props {
+	isDarkMode: boolean;
 	id?: string;
-	content: string;
+	html: string;
 	color: string;
 	showRemove?: boolean;
 	onRemoveClick?: (tagId: string) => void;
@@ -19,23 +18,19 @@ interface Props {
 }
 
 export default function Tag({
+	isDarkMode,
 	id,
 	color,
-	content,
+	html,
 	showRemove,
 	onRemoveClick,
 }: Props) {
 	let tagClass = "NLT__tag";
-	tagClass += " " + findColorClass(color);
-
-	//If we have an empty cell, then don't return anything
-	if (content === "") return <></>;
-
-	content = stripPound(content);
+	tagClass += " " + findColorClass(isDarkMode, color);
 
 	return (
 		<div className={tagClass}>
-			<div className="NLT__tag-content">{parse(content)}</div>
+			<div className="NLT__tag-content">{parse(html)}</div>
 			{showRemove && (
 				<CloseIcon
 					className="NLT__icon--md NLT__margin-left NLT__icon--selectable"

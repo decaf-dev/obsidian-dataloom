@@ -1,0 +1,11 @@
+.NLT__submenu-header {
+    display: flex;
+    flex-direction: row;
+    column-gap: 10px;
+}
+
+.NLT__submenu-body {
+    display: flex;
+    flex-direction: column;
+    row-gap: 5px;
+}

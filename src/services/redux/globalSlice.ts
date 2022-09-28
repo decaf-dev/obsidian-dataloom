@@ -1,10 +1,22 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-interface GlobalState {}
+interface GlobalState {
+	isDarkMode: boolean;
+}
 
-const initialState: GlobalState = {};
+const initialState: GlobalState = {
+	isDarkMode: false,
+};
 
-const globalSlice = createSlice({ name: "global", initialState, reducers: {} });
+const globalSlice = createSlice({
+	name: "global",
+	initialState,
+	reducers: {
+		setDarkMode(state, action) {
+			state.isDarkMode = action.payload;
+		},
+	},
+});
 
-const {} = globalSlice.actions;
+export const { setDarkMode } = globalSlice.actions;
 export default globalSlice.reducer;

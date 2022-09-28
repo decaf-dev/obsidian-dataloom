@@ -22,16 +22,18 @@ import {
 import "./styles.css";
 
 interface Props {
+	isDarkMode: boolean;
 	id: string;
-	content: string;
+	html: string;
 	color: string;
 	onClick: (tagId: string) => void;
 	onColorChange: (tagId: string, color: string) => void;
 }
 
 export default function SelectableTag({
+	isDarkMode,
 	id,
-	content,
+	html,
 	color,
 	onClick,
 	onColorChange,
@@ -50,7 +52,7 @@ export default function SelectableTag({
 	}
 
 	let tagClass = "NLT__tag";
-	tagClass += " " + findColorClass(color);
+	tagClass += " " + findColorClass(isDarkMode, color);
 	return (
 		<div
 			ref={positionRef}
@@ -58,13 +60,11 @@ export default function SelectableTag({
 			onClick={() => onClick(id)}
 		>
 			<div className={tagClass}>
-				<div className="NLT__tag-content">{parse(content)}</div>
+				<div className="NLT__tag-content">{parse(html)}</div>
 			</div>
 			<IconButton
 				icon={Icon.MORE_HORIZ}
 				onClick={(e) => {
-					//Stop propagation so we don't call the onClick handler
-					//on this div
 					e.stopPropagation();
 					dispatch(openMenu(menu));
 				}}

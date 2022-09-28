@@ -1,39 +1,38 @@
+import { randomCellId, randomColumnId, randomRowId } from "../random";
 import { calcColumnCharLengths, TableModelStringBuffer } from "./serialize";
 
 describe("calcColumnCharLengths", () => {
 	it("calculates lengths", () => {
+		const columnId1 = randomColumnId();
+		const columnId2 = randomColumnId();
 		const cells = [
 			{
-				id: "",
+				id: randomCellId(),
+				columnId: columnId1,
+				rowId: randomRowId(),
 				markdown: "short",
 				html: "short",
-				columnId: "",
-				rowId: "",
+				isHeader: true,
 			},
 			{
-				id: "",
+				id: randomCellId(),
+				columnId: columnId1,
+				rowId: randomRowId(),
 				markdown: "shorter",
 				html: "shorter",
-				columnId: "",
-				rowId: "",
+				isHeader: false,
 			},
 			{
-				id: "",
-				markdown: "longer",
-				html: "longer",
-				columnId: "",
-				rowId: "",
-			},
-			{
-				id: "",
-				markdown: "long",
-				html: "long",
-				columnId: "",
-				rowId: "",
+				id: randomCellId(),
+				columnId: columnId2,
+				rowId: randomRowId(),
+				markdown: "",
+				html: "",
+				isHeader: false,
 			},
 		];
 		const lengths = calcColumnCharLengths(cells);
-		expect(lengths).toEqual({ "0": 6, "1": 7 });
+		expect(lengths).toEqual({ [columnId1]: 7, [columnId2]: 0 });
 	});
 });
 

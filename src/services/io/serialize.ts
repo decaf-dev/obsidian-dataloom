@@ -1,6 +1,6 @@
 import NltPlugin, { NltSettings } from "../../main";
 
-import { MarkdownViewModeType, TFile } from "obsidian";
+import type { MarkdownViewModeType, TFile } from "obsidian";
 
 import { TableModel, Cell, TableState } from "../table/types";
 import { DEBUG } from "../../constants";
@@ -17,9 +17,7 @@ export const serializeMarkdownTable = (model: TableModel): string => {
 
 	for (let i = 0; i < columns.length; i++) {
 		const columnId = columns[i];
-		const cell = cells.find(
-			(c) => c.columnId === columnId && c.rowId === rows[0]
-		);
+		const cell = cells.find((c) => c.columnId === columnId && c.isHeader);
 		buffer.writeCell(cell.markdown, columnCharLengths[columnId]);
 	}
 
@@ -118,9 +116,7 @@ const updateSettingsCache = async (
 	};
 	if (DEBUG.SAVE_APP_DATA) {
 		console.log("Updating settings cache");
-		console.log("settings:\n", {
-			[tableId]: obj,
-		});
+		console.log("settings:\n", obj);
 	}
 	plugin.settings = obj;
 	return await plugin.saveData(plugin.settings);

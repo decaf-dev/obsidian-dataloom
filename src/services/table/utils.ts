@@ -1,7 +1,7 @@
 import { NUMBER_REGEX } from "../string/regex";
 import { isCheckbox, isNumber, isDate } from "../string/validators";
 import { CellType } from "./types";
-import { MarkdownViewModeType } from "obsidian";
+import type { MarkdownViewModeType } from "obsidian";
 
 export const isValidCellContent = (
 	content: string,
@@ -25,28 +25,6 @@ export const filterNumberFromContent = (content: string) => {
 		if (content[i].match(NUMBER_REGEX)) result += content[i];
 	}
 	return result;
-};
-
-export const checkboxToContent = (content: string) => {
-	if (isCheckbox(content)) {
-		if (content.includes("x")) {
-			return "Yes";
-		} else {
-			return "No";
-		}
-	} else {
-		return content;
-	}
-};
-
-export const contentToCheckbox = (content: string) => {
-	if (content === "Yes") {
-		return "[x]";
-	} else if (content == "No") {
-		return "[ ]";
-	} else {
-		return content;
-	}
 };
 
 export const getUniqueTableId = (

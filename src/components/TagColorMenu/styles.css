@@ -2,6 +2,11 @@
     padding: 4px 10px;
 }
 
+.NLT__tag-color-menu-header {
+    display: flex;
+    justify-content: space-between;
+}
+
 .NLT__tag-color-menu-title {
     font-size: 0.85rem;
 }
