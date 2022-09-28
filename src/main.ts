@@ -95,8 +95,7 @@ export default class NltPlugin extends Plugin {
 	}
 
 	private throttleCloseAllMenus = _.throttle(() => {
-		const topLevelMenu = getTopLevelMenu(store.getState());
-		if (topLevelMenu !== null) store.dispatch(closeAllMenus());
+		store.dispatch(closeAllMenus());
 	}, 150);
 
 	private throttlePositionUpdate = _.throttle(() => {
@@ -153,8 +152,7 @@ export default class NltPlugin extends Plugin {
 
 		this.registerDomEvent(activeDocument, "keydown", async (e) => {
 			if (e.key === "Enter") {
-				const topLevelMenu = getTopLevelMenu(store.getState());
-				if (topLevelMenu !== null) store.dispatch(closeTopLevelMenu());
+				store.dispatch(closeTopLevelMenu());
 			}
 		});
 

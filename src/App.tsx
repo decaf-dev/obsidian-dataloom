@@ -69,10 +69,9 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	});
 
 	const dispatch = useAppDispatch();
-	const topLevelMenu = useAppSelector((state) => getTopLevelMenu(state));
 
 	const throttleTableScroll = _.throttle(() => {
-		if (topLevelMenu) dispatch(closeAllMenus());
+		dispatch(closeAllMenus());
 		dispatch(updateMenuPosition());
 	}, 150);
 
