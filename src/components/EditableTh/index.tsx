@@ -77,16 +77,20 @@ export default function EditableTh({
 	);
 	const { positionRef, position } = usePositionRef([positionUpdateTime]);
 
-	function handleHeaderClick(e: React.MouseEvent) {
+	function handleHeaderClick() {
 		if (isResizing.current) return;
 		if (isOpen) {
-			dispatch(closeTopLevelMenu());
+			openHeaderMenu();
 		} else {
-			dispatch(openMenu(menu));
+			closeHeaderMenu();
 		}
 	}
 
-	function handleClose() {
+	function openHeaderMenu() {
+		dispatch(openMenu(menu));
+	}
+
+	function closeHeaderMenu() {
 		dispatch(closeTopLevelMenu());
 	}
 
@@ -133,6 +137,7 @@ export default function EditableTh({
 							<div
 								className="NLT__th-resize"
 								onMouseDown={(e) => {
+									closeHeaderMenu();
 									//Prevents drag and drop
 									//See: https://stackoverflow.com/questions/704564/disable-drag-and-drop-on-html-elements
 									e.preventDefault();
@@ -180,7 +185,7 @@ export default function EditableTh({
 				onInsertColumnClick={onInsertColumnClick}
 				onTypeSelect={onTypeSelect}
 				onDeleteClick={onDeleteClick}
-				onClose={handleClose}
+				onClose={closeHeaderMenu}
 				onAutoWidthToggle={onAutoWidthToggle}
 				onWrapOverflowToggle={onWrapOverflowToggle}
 			/>
