@@ -13,10 +13,8 @@ import { SortDir } from "./services/sort/types";
 import { addRow, addColumn } from "./services/appHandlers/add";
 import { logFunc } from "./services/debug";
 import { DEFAULT_COLUMN_SETTINGS } from "./services/table/types";
-import { initialCell } from "./services/io/utils";
 import { getUniqueTableId } from "./services/table/utils";
 // import { sortRows } from "./services/sort/sort";
-import { checkboxToContent, contentToCheckbox } from "./services/table/utils";
 import { TableState } from "./services/table/types";
 
 import { DEBUG } from "./constants";
@@ -24,7 +22,12 @@ import { DEBUG } from "./constants";
 import "./app.css";
 import { MarkdownViewModeType } from "obsidian";
 import { deserializeTable, markdownToHtml } from "./services/io/deserialize";
-import { randomColumnId, randomCellId, randomTagId } from "./services/random";
+import {
+	randomColumnId,
+	randomCellId,
+	randomTagId,
+	randomColor,
+} from "./services/random";
 import { useAppDispatch, useAppSelector } from "./services/redux/hooks";
 import {
 	closeAllMenus,
@@ -201,58 +204,61 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		handleSaveData(true);
 	}
 
-	function handleHeaderTypeClick(
-		cellId: string,
-		columnId: string,
-		selectedCellType: CellType
-	) {
+	function handleHeaderTypeClick(columnId: string, type: CellType) {
 		if (DEBUG.APP)
 			logFunc(COMPONENT_NAME, "handleHeaderTypeClick", {
-				cellId,
 				columnId,
-				selectedCellType,
+				type,
 			});
-
-		function findUpdatedCellContent(type: CellType, content: string) {
-			if (type === CellType.CHECKBOX) {
-				return checkboxToContent(content);
-			} else if (selectedCellType === CellType.CHECKBOX) {
-				return contentToCheckbox(content);
-			} else {
-				return content;
-			}
-		}
 
 		setTableState((prevState) => {
 			const { settings } = prevState;
-			const { type } = settings.columns[columnId];
+			const { type: previousType } = settings.columns[columnId];
 
 			//If same header type return
-			if (type === selectedCellType) return prevState;
+			if (previousType === type) return prevState;
+			let tags = [...settings.columns[columnId].tags];
+			if (
+				previousType === CellType.TAG ||
+				previousType === CellType.MULTI_TAG
+			) {
+				tags = [];
+			} else if (type === CellType.TAG || CellType.MULTI_TAG) {
+				prevState.model.cells
+					.filter(
+						(cell) =>
+							cell.columnId === columnId &&
+							cell.markdown !== "" &&
+							!cell.isHeader
+					)
+					.forEach((cell) => {
+						const newTags = cell.markdown.split(",").map((tag) => {
+							return {
+								id: randomTagId(),
+								markdown: tag,
+								html: markdownToHtml(tag),
+								color: randomColor(),
+								cells: [
+									{
+										columnId: cell.columnId,
+										rowId: cell.rowId,
+									},
+								],
+							};
+						});
+						tags = tags.concat(newTags);
+					});
+			}
 			return {
 				...prevState,
-				model: {
-					...prevState.model,
-					cells: prevState.model.cells.map((cell: Cell) => {
-						if (cell.id === cellId) {
-							return {
-								...cell,
-								markdown: findUpdatedCellContent(
-									type,
-									cell.markdown
-								),
-							};
-						}
-						return cell;
-					}),
-				},
 				settings: {
 					...prevState.settings,
 					columns: {
 						...prevState.settings.columns,
 						[columnId]: {
 							...prevState.settings.columns[columnId],
-							type: selectedCellType,
+							type,
+							tags,
 						},
 					},
 				},
@@ -533,15 +539,14 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 					html = "New Column";
 				}
 
-				cellArr.push(
-					initialCell(
-						randomCellId(),
-						newColId,
-						model.rows[i],
-						markdown,
-						html
-					)
-				);
+				cellArr.push({
+					id: randomCellId(),
+					columnId: newColId,
+					rowId: model.rows[i],
+					markdown,
+					html,
+					isHeader: i === 0,
+				});
 			}
 
 			const columnArr = [...model.columns];
@@ -676,8 +681,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 						} = state.settings.columns[columnId];
 
 						const cell = cells.find(
-							(c) =>
-								c.rowId === rows[0] && c.columnId === columnId
+							(c) => c.columnId === columnId && c.isHeader
 						);
 						const { id, markdown, html } = cell;
 						return {

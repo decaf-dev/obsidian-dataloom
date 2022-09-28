@@ -8,7 +8,7 @@ import {
 	TableModel,
 	TableState,
 } from "../table/types";
-import { findTableFile, initialCell } from "./utils";
+import { findTableFile } from "./utils";
 import { SLASH_REGEX } from "../string/regex";
 import { randomCellId } from "../random";
 
@@ -127,15 +127,14 @@ export const parseTableModelFromMarkdown = (
 			if (x === 0) rows.push(rowIds[y]);
 			const markdown = parsedCells[x + y * numColumns];
 			const html = markdownToHtml(markdown);
-			cells.push(
-				initialCell(
-					randomCellId(),
-					columnIds[x],
-					rowIds[y],
-					markdown,
-					html
-				)
-			);
+			cells.push({
+				id: randomCellId(),
+				columnId: columnIds[x],
+				rowId: rowIds[y],
+				markdown,
+				html,
+				isHeader: y === 0,
+			});
 		}
 	}
 	return tableModel;

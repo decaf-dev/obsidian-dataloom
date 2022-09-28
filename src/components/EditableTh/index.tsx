@@ -36,7 +36,7 @@ interface Props {
 	onMoveColumnClick: (columnId: string, moveRight: boolean) => void;
 	onSortSelect: (columnId: string, sortDir: SortDir) => void;
 	onInsertColumnClick: (columnId: string, insertRight: boolean) => void;
-	onTypeSelect: (cellId: string, columnId: string, type: CellType) => void;
+	onTypeSelect: (columnId: string, type: CellType) => void;
 	onDeleteClick: (columnId: string) => void;
 	onSaveClick: (cellId: string, content: string) => void;
 	onWidthChange: (columnId: string, width: string) => void;

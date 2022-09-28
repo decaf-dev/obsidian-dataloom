@@ -62,7 +62,7 @@ interface Props {
 	numColumns: number;
 	onInsertColumnClick: (columnId: string, insertRight: boolean) => void;
 	onMoveColumnClick: (columnId: string, moveRight: boolean) => void;
-	onTypeSelect: (cellId: string, columnId: string, type: CellType) => void;
+	onTypeSelect: (columnId: string, type: CellType) => void;
 	onSortSelect: (columnId: string, sortDir: SortDir) => void;
 	onDeleteClick: (columnId: string) => void;
 	onOutsideClick: (cellId: string, inputText: string) => void;
@@ -134,8 +134,8 @@ export default function HeaderMenu({
 		onClose();
 	}
 
-	function handleTypeClick(cellId: string, columnId: string, type: CellType) {
-		onTypeSelect(cellId, columnId, type);
+	function handleTypeClick(columnId: string, type: CellType) {
+		onTypeSelect(columnId, type);
 		onClose();
 	}
 
@@ -209,9 +209,7 @@ export default function HeaderMenu({
 					<TypeSubmenu
 						title={submenu.content}
 						columnType={columnType}
-						onTypeClick={(type) =>
-							handleTypeClick(cellId, columnId, type)
-						}
+						onTypeClick={(type) => handleTypeClick(columnId, type)}
 						onBackClick={handleBackClick}
 					/>
 				)}

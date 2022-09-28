@@ -27,28 +27,6 @@ export const filterNumberFromContent = (content: string) => {
 	return result;
 };
 
-export const checkboxToContent = (content: string) => {
-	if (isCheckbox(content)) {
-		if (content.includes("x")) {
-			return "Yes";
-		} else {
-			return "No";
-		}
-	} else {
-		return content;
-	}
-};
-
-export const contentToCheckbox = (content: string) => {
-	if (content === "Yes") {
-		return "[x]";
-	} else if (content == "No") {
-		return "[ ]";
-	} else {
-		return content;
-	}
-};
-
 export const getUniqueTableId = (
 	tableId: string,
 	viewMode: MarkdownViewModeType

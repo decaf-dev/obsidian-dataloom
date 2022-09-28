@@ -8,24 +8,27 @@ describe("calcColumnCharLengths", () => {
 		const cells = [
 			{
 				id: randomCellId(),
+				columnId: columnId1,
+				rowId: randomRowId(),
 				markdown: "short",
 				html: "short",
-				columnId: columnId1,
-				rowId: randomRowId(),
+				isHeader: true,
 			},
 			{
 				id: randomCellId(),
+				columnId: columnId1,
+				rowId: randomRowId(),
 				markdown: "shorter",
 				html: "shorter",
-				columnId: columnId1,
-				rowId: randomRowId(),
+				isHeader: false,
 			},
 			{
 				id: randomCellId(),
-				markdown: "",
-				html: "",
 				columnId: columnId2,
 				rowId: randomRowId(),
+				markdown: "",
+				html: "",
+				isHeader: false,
 			},
 		];
 		const lengths = calcColumnCharLengths(cells);

@@ -17,9 +17,7 @@ export const serializeMarkdownTable = (model: TableModel): string => {
 
 	for (let i = 0; i < columns.length; i++) {
 		const columnId = columns[i];
-		const cell = cells.find(
-			(c) => c.columnId === columnId && c.rowId === rows[0]
-		);
+		const cell = cells.find((c) => c.columnId === columnId && c.isHeader);
 		buffer.writeCell(cell.markdown, columnCharLengths[columnId]);
 	}
 

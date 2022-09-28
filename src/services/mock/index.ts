@@ -101,10 +101,11 @@ export const mockTableState = (
 		for (let x = 0; x < numColumns; x++) {
 			cells.push({
 				id: randomCellId(),
+				columnId: columns[x],
+				rowId: rows[y],
 				markdown: "",
 				html: "",
-				rowId: rows[y],
-				columnId: columns[x],
+				isHeader: y === 0,
 			});
 		}
 	}

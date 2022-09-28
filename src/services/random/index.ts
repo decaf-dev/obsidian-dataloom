@@ -37,13 +37,18 @@ export const randomId = (numChars: number) => {
 	return result;
 };
 
-export const randomCell = (rowId: string, columnId: string): Cell => {
+export const randomCell = (
+	columnId: string,
+	rowId: string,
+	isHeader: boolean
+): Cell => {
 	return {
 		id: randomCellId(),
+		columnId,
+		rowId,
 		markdown: "",
 		html: "",
-		rowId,
-		columnId,
+		isHeader,
 	};
 };
 
@@ -65,7 +70,10 @@ export const createEmptyMarkdownTable = (): string => {
 	const rowId2 = randomRowId();
 
 	const model: TableModel = {
-		cells: [randomCell(rowId1, columnId), randomCell(rowId2, columnId)],
+		cells: [
+			randomCell(columnId, rowId1, true),
+			randomCell(columnId, rowId2, false),
+		],
 		columns: [columnId],
 		rows: [rowId1, rowId2],
 	};

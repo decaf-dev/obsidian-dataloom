@@ -44,19 +44,3 @@ export const findTableFile = async (
 	);
 	return createdFile;
 };
-
-export const initialCell = (
-	id: string,
-	columnId: string,
-	rowId: string,
-	markdown: string,
-	html: string
-): Cell => {
-	return {
-		id,
-		columnId,
-		rowId,
-		markdown,
-		html,
-	};
-};

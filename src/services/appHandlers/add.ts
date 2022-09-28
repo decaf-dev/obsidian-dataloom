@@ -5,7 +5,6 @@ import {
 	Cell,
 } from "../table/types";
 
-import { initialCell } from "../io/utils";
 import { randomCellId, randomColumnId, randomRowId } from "../random";
 
 export const addRow = (model: TableModel): TableModel => {
@@ -14,7 +13,14 @@ export const addRow = (model: TableModel): TableModel => {
 	const rowId = randomRowId();
 	const arr = [...cells];
 	for (let i = 0; i < columns.length; i++) {
-		arr.push(initialCell(randomCellId(), columns[i], rowId, "", ""));
+		arr.push({
+			id: randomCellId(),
+			columnId: columns[i],
+			rowId,
+			markdown: "",
+			html: "",
+			isHeader: false,
+		});
 	}
 	return {
 		...model,
@@ -45,15 +51,14 @@ export const addColumn = (
 				markdown = "New Column";
 				html = "New Column";
 			}
-			cellArr.push(
-				initialCell(
-					randomCellId(),
-					columnId,
-					rows[rowIndex],
-					markdown,
-					html
-				)
-			);
+			cellArr.push({
+				id: randomCellId(),
+				columnId,
+				rowId: rows[rowIndex],
+				markdown,
+				html,
+				isHeader: rowIndex === 0,
+			});
 			rowIndex++;
 		}
 	});

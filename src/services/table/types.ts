@@ -24,6 +24,7 @@ export interface Cell {
 	rowId: RowId;
 	markdown: string;
 	html: string;
+	isHeader: boolean;
 }
 
 export interface TableModel {
@@ -32,15 +33,17 @@ export interface TableModel {
 	cells: Cell[];
 }
 
+export interface TagCellReference {
+	rowId: string;
+	columnId: string;
+}
+
 export interface Tag {
 	id: string;
 	markdown: string;
 	html: string;
 	color: string;
-	cells: {
-		rowId: string;
-		columnId: string;
-	}[];
+	cells: TagCellReference[];
 }
 export interface ColumnSettings {
 	sortDir: SortDir;
