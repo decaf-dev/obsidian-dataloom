@@ -213,19 +213,22 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 
 			//If same header type return
 			if (previousType === type) return prevState;
+
 			let tags = [...settings.columns[columnId].tags];
+
 			if (
-				(previousType === CellType.TAG &&
-					type !== CellType.MULTI_TAG) ||
-				(previousType === CellType.MULTI_TAG && type !== CellType.TAG)
+				(previousType === CellType.MULTI_TAG &&
+					type !== CellType.TAG) ||
+				(previousType === CellType.TAG && type !== CellType.MULTI_TAG)
 			) {
-				tags = [];
+				//Remove tag references to cells but don't delete the tags
+				tags = tags.map((t) => {
+					return {
+						...t,
+						cells: [],
+					};
+				});
 			} else if (type === CellType.TAG || CellType.MULTI_TAG) {
-				if (
-					previousType === CellType.MULTI_TAG ||
-					previousType === CellType.TAG
-				)
-					tags = [];
 				prevState.model.cells
 					.filter(
 						(cell) =>
@@ -234,12 +237,25 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 							!cell.isHeader
 					)
 					.forEach((cell) => {
-						//TODO check for old cells
-						const newTags = cell.markdown.split(",").map((tag) => {
-							return {
+						cell.markdown.split(",").map((markdownTag) => {
+							const found = tags.find(
+								(t) => t.markdown === markdownTag
+							);
+							//If the tag that we want to add already exists,
+							//just add a reference to it
+							if (found) {
+								const index = tags.indexOf(found);
+								tags[index].cells.push({
+									columnId: cell.columnId,
+									rowId: cell.rowId,
+								});
+								return;
+							}
+							//Return a new tag
+							tags.push({
 								id: randomTagId(),
-								markdown: tag,
-								html: markdownToHtml(tag),
+								markdown: markdownTag,
+								html: markdownToHtml(markdownTag),
 								color: randomColor(),
 								cells: [
 									{
@@ -247,9 +263,8 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 										rowId: cell.rowId,
 									},
 								],
-							};
+							});
 						});
-						tags = tags.concat(newTags);
 					});
 			}
 			return {
