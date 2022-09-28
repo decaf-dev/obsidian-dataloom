@@ -24,7 +24,6 @@ export const addNewTag = (
 				(c) => c.columnId !== columnId || c.rowId !== rowId
 			);
 			tag.cells = arr;
-			if (arr.length === 0) tags.splice(tags.indexOf(tag), 1);
 		}
 	}
 

@@ -28,12 +28,8 @@ import {
 	randomTagId,
 	randomColor,
 } from "./services/random";
-import { useAppDispatch, useAppSelector } from "./services/redux/hooks";
-import {
-	closeAllMenus,
-	getTopLevelMenu,
-	updateMenuPosition,
-} from "./services/menu/menuSlice";
+import { useAppDispatch } from "./services/redux/hooks";
+import { closeAllMenus, updateMenuPosition } from "./services/menu/menuSlice";
 
 import _ from "lodash";
 import { getTableSizing } from "./services/table/hooks";

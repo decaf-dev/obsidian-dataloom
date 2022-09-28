@@ -96,7 +96,7 @@ describe("addNewTag", () => {
 		]);
 	});
 
-	it("adds a tag to a column whose cell already has a tag and removes previous tag", () => {
+	it("adds a tag to a column whose cell already has a tag", () => {
 		const state = mockTableState(1, 2);
 
 		const tagCell = state.model.cells[1];
@@ -135,11 +135,16 @@ describe("addNewTag", () => {
 		});
 
 		const newTags = newState.settings.columns[tagCell.columnId].tags;
-		expect(newTags.length).toEqual(1);
-		expect(newTags[0].markdown).toEqual("tag2");
-		expect(newTags[0].html).toEqual("tag2");
-		expect(newTags[0].color).toEqual("blue");
-		expect(newTags[0].cells).toEqual([
+		expect(newTags.length).toEqual(2);
+		expect(newTags[0].markdown).toEqual("tag1");
+		expect(newTags[0].html).toEqual("tag1");
+		expect(newTags[0].color).toEqual("green");
+		expect(newTags[0].cells.length).toEqual(0);
+
+		expect(newTags[1].markdown).toEqual("tag2");
+		expect(newTags[1].html).toEqual("tag2");
+		expect(newTags[1].color).toEqual("blue");
+		expect(newTags[1].cells).toEqual([
 			{
 				columnId: tagCell.columnId,
 				rowId: tagCell.rowId,
