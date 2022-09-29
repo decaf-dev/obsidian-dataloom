@@ -236,8 +236,8 @@ const EditableTd = forwardRef<Ref, Props>(
 							menuId={menu.id}
 							isOpen={isOpen}
 							style={{
-								top: numToPx(position.left),
-								left: numToPx(position.top),
+								top: numToPx(position.top),
+								left: numToPx(position.left),
 								width: numToPx(position.width),
 								height: numToPx(position.height),
 								...((useAutoWidth || !shouldWrapOverflow) && {
@@ -256,8 +256,8 @@ const EditableTd = forwardRef<Ref, Props>(
 							menuId={menu.id}
 							isOpen={isOpen}
 							style={{
-								top: numToPx(position.left),
-								left: numToPx(position.top),
+								top: numToPx(position.top),
+								left: numToPx(position.left),
 								width: numToPx(position.width),
 								height: numToPx(position.height),
 								...((useAutoWidth || !shouldWrapOverflow) && {
@@ -279,8 +279,8 @@ const EditableTd = forwardRef<Ref, Props>(
 							menuId={menu.id}
 							isOpen={isOpen}
 							style={{
-								top: numToPx(position.left),
-								left: numToPx(position.top),
+								top: numToPx(position.top),
+								left: numToPx(position.left),
 							}}
 							onColorChange={handleColorChange}
 							onAddTag={handleAddTag}
@@ -294,8 +294,8 @@ const EditableTd = forwardRef<Ref, Props>(
 							menuId={menu.id}
 							isOpen={isOpen}
 							style={{
-								top: numToPx(position.left),
-								left: numToPx(position.top),
+								top: numToPx(position.top),
+								left: numToPx(position.left),
 								width: numToPx(position.width),
 								height: numToPx(position.height),
 							}}

@@ -715,7 +715,9 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 										<td
 											className="NLT__td"
 											style={{
-												height: rowHeights[rowId],
+												height: numToPx(
+													rowHeights[rowId]
+												),
 											}}
 										>
 											<div className="NLT__td-container">
