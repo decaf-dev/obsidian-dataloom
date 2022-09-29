@@ -30,7 +30,6 @@ import _ from "lodash";
 import { findCellWidth } from "./services/table/sizing";
 import { addExistingTag, addNewTag, removeTag } from "./services/table/tag";
 import { changeColumnType } from "./services/table/column";
-import { numToPx } from "./services/string/conversion";
 
 import "./app.css";
 interface Props {
