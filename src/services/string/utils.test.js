@@ -1,4 +1,4 @@
-import { uppercaseFirst } from ".";
+import { uppercaseFirst } from "./regex";
 
 describe("uppercaseFirst", () => {
 	it("uppercases first letter", () => {

@@ -1,4 +1,4 @@
-import { isNumber, isDate, isCheckbox } from "../validators";
+import { isNumber, isDate, isCheckbox } from "./validators";
 import { CellType } from "src/services/table/types";
 
 /**
@@ -17,4 +17,8 @@ export const findContentType = (content: string, columnContentType: string) => {
 	if (isDate(content)) return CellType.DATE;
 	if (isCheckbox(content)) return CellType.CHECKBOX;
 	return CellType.TEXT;
+};
+
+export const uppercaseFirst = (input: string) => {
+	return input.charAt(0).toUpperCase() + input.slice(1);
 };
