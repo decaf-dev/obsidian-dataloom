@@ -113,21 +113,19 @@ export const parseTableModelFromMarkdown = (
 	const { numRows, numColumns, parsedCells } = parsedTable;
 	const { columnIds, rowIds } = validateParsedTable(parsedTable, tableId);
 
-	const tableModel: TableModel = {
-		columns: [],
-		rows: [],
+	const model: TableModel = {
+		columnIds: [],
+		rowIds: [],
 		cells: [],
 	};
 
-	const { cells, rows, columns } = tableModel;
-
 	for (let y = 0; y < numRows; y++) {
 		for (let x = 0; x < numColumns; x++) {
-			if (y === 0) columns.push(columnIds[x]);
-			if (x === 0) rows.push(rowIds[y]);
+			if (y === 0) model.columnIds.push(columnIds[x]);
+			if (x === 0) model.rowIds.push(rowIds[y]);
 			const markdown = parsedCells[x + y * numColumns];
 			const html = markdownToHtml(markdown);
-			cells.push({
+			model.cells.push({
 				id: randomCellId(),
 				columnId: columnIds[x],
 				rowId: rowIds[y],
@@ -137,7 +135,7 @@ export const parseTableModelFromMarkdown = (
 			});
 		}
 	}
-	return tableModel;
+	return model;
 };
 
 export const findTableModel = async (
@@ -194,14 +192,14 @@ export const deserializeTable = async (
 		}
 	}
 	//Add ids
-	model.columns.forEach((columnId) => {
+	model.columnIds.forEach((columnId) => {
 		if (!tableState.settings.columns[columnId])
 			tableState.settings.columns[columnId] = DEFAULT_COLUMN_SETTINGS;
 	});
 
 	//Clean up old ids
 	Object.keys(tableState.settings.columns).forEach((key) => {
-		if (!model.columns.includes(key))
+		if (!model.columnIds.includes(key))
 			delete tableState.settings.columns[key];
 	});
 

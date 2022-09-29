@@ -9,27 +9,23 @@ export enum CellType {
 	MULTI_TAG = "multi-tag",
 }
 
-export type ColumnId = string;
-export type RowId = string;
-export type CellId = string;
-
 export interface TableComponent {
 	id: string;
 	component: React.ReactNode;
 }
 
 export interface Cell {
-	id: CellId;
-	columnId: ColumnId;
-	rowId: RowId;
+	id: string;
+	columnId: string;
+	rowId: string;
 	markdown: string;
 	html: string;
 	isHeader: boolean;
 }
 
 export interface TableModel {
-	columns: ColumnId[];
-	rows: RowId[];
+	columnIds: string[];
+	rowIds: string[];
 	cells: Cell[];
 }
 

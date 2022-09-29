@@ -9,7 +9,8 @@ import {
 import NltSettingsTab from "./NltSettingsTab";
 
 import { NltTable } from "./NltTable";
-import { addRow, addColumn } from "./services/appHandlers/add";
+import { addRow } from "./services/table/row";
+import { addColumn } from "./services/table/column";
 import { serializeTable } from "./services/io/serialize";
 import { createEmptyMarkdownTable } from "./services/random";
 import {
@@ -219,11 +220,9 @@ export default class NltPlugin extends Plugin {
 			callback: async () => {
 				if (this.focusedTable) {
 					const tableId = this.focusedTable;
-					const { model, settings } = this.settings.data[tableId];
-					const [updatedModel, updatedSettings] = addColumn(
-						model,
-						settings
-					);
+					const prevState = this.settings.data[tableId];
+					const [updatedModel, updatedSettings] =
+						addColumn(prevState);
 					const newState = {
 						...this.settings.data[tableId],
 						model: updatedModel,

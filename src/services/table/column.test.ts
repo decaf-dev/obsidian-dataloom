@@ -1,6 +1,6 @@
 import { changeColumnType } from "./column";
 import { mockTableState } from "../mock";
-import { CellType } from "../table/types";
+import { CellType } from "./types";
 import { randomTagId } from "../random";
 
 describe("changeColumnType", () => {

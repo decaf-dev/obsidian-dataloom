@@ -1,7 +1,35 @@
 import { NUMBER_REGEX } from "../string/regex";
 import { isCheckbox, isNumber, isDate } from "../string/validators";
-import { CellType } from "./types";
+import { Cell, CellType } from "./types";
 import type { MarkdownViewModeType } from "obsidian";
+
+export const sortCells = (
+	rowIds: string[],
+	columnIds: string[],
+	cells: Cell[]
+): Cell[] => {
+	return (
+		//Get the cell rows in order
+		rowIds
+			.map((id) => {
+				return cells.filter((c) => c.rowId === id);
+			})
+			//Sort each row based on the order of the column ids
+			.map((row) => {
+				return row.sort((a, b) => {
+					const indexA = columnIds.findIndex(
+						(id) => id === a.columnId
+					);
+					const indexB = columnIds.findIndex(
+						(id) => id === b.columnId
+					);
+					return indexA - indexB;
+				});
+			})
+			//Return a flatten version of the array
+			.flat(1)
+	);
+};
 
 export const isValidCellContent = (
 	content: string,
