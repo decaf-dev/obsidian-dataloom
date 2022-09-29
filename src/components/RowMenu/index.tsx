@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useRef } from "react";
 
 import IconButton from "../IconButton";
 import Menu from "../Menu";
@@ -12,7 +12,7 @@ import {
 	closeTopLevelMenu,
 	isMenuOpen,
 } from "src/services/menu/menuSlice";
-import { numToPx, pxToNum } from "src/services/string/conversion";
+import { numToPx } from "src/services/string/conversion";
 
 import "./styles.css";
 import { MenuLevel } from "src/services/menu/types";
@@ -30,7 +30,7 @@ export default function RowMenu({ rowId, onDeleteClick }: Props) {
 	const positionUpdateTime = useAppSelector(
 		(state) => state.menu.positionUpdateTime
 	);
-	const { positionRef, position } = usePositionRef([positionUpdateTime]);
+	const { ref, position } = usePositionRef([positionUpdateTime]);
 	function handleButtonClick(e: React.MouseEvent) {
 		if (isOpen) {
 			dispatch(closeTopLevelMenu());
@@ -56,16 +56,14 @@ export default function RowMenu({ rowId, onDeleteClick }: Props) {
 	}, [rowId]);
 
 	return (
-		<div ref={positionRef}>
+		<div ref={ref}>
 			<IconButton icon={Icon.MORE_VERT} onClick={handleButtonClick} />
 			<Menu
 				id={menu.id}
 				isOpen={isOpen}
 				style={{
-					top: position.top,
-					left: numToPx(
-						pxToNum(position.left) - pxToNum(position.width) - 65
-					),
+					top: numToPx(position.top),
+					left: numToPx(position.left - position.width - 65),
 				}}
 			>
 				<div className="NLT__drag-menu">

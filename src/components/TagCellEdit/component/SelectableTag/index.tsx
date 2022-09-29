@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useRef } from "react";
 
 import parse from "html-react-parser";
 
@@ -44,7 +44,7 @@ export default function SelectableTag({
 	const positionUpdateTime = useAppSelector(
 		(state) => state.menu.positionUpdateTime
 	);
-	const { positionRef, position } = usePositionRef([positionUpdateTime]);
+	const { ref, position } = usePositionRef([positionUpdateTime]);
 
 	function handleColorChange(color: string) {
 		onColorChange(id, color);
@@ -55,7 +55,7 @@ export default function SelectableTag({
 	tagClass += " " + findColorClass(isDarkMode, color);
 	return (
 		<div
-			ref={positionRef}
+			ref={ref}
 			className="NLT__selectable-tag NLT__selectable"
 			onClick={() => onClick(id)}
 		>
@@ -74,8 +74,8 @@ export default function SelectableTag({
 				isOpen={isOpen}
 				selectedColor={color}
 				style={{
-					top: numToPx(pxToNum(position.top) - 77),
-					left: numToPx(pxToNum(position.left) + 110),
+					top: numToPx(position.top - 77),
+					left: numToPx(position.left + 110),
 				}}
 				onColorClick={(color) => handleColorChange(color)}
 			/>

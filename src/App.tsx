@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import EditableTd from "./components/EditableTd";
 import Table from "./components/Table";
@@ -20,7 +20,6 @@ import { TableState } from "./services/table/types";
 
 import { DEBUG } from "./constants";
 
-import "./app.css";
 import { MarkdownViewModeType } from "obsidian";
 import { deserializeTable, markdownToHtml } from "./services/io/deserialize";
 import { randomColumnId, randomCellId } from "./services/random";
@@ -28,10 +27,12 @@ import { useAppDispatch } from "./services/redux/hooks";
 import { closeAllMenus, updateMenuPosition } from "./services/menu/menuSlice";
 
 import _ from "lodash";
-import { getTableSizing } from "./services/table/hooks";
+import { useTableSizing, findCellWidth } from "./services/table/sizing";
 import { addExistingTag, addNewTag, removeTag } from "./services/table/tag";
 import { changeColumnType } from "./services/table/column";
+import { numToPx } from "./services/string/conversion";
 
+import "./app.css";
 interface Props {
 	plugin: NltPlugin;
 	tableId: string;
@@ -59,6 +60,8 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		time: 0,
 		shouldSaveModel: false,
 	});
+
+	const { columnWidths, rowHeights, cellRefs } = useTableSizing(state.model);
 
 	const dispatch = useAppDispatch();
 
@@ -575,22 +578,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		handlePositionUpdate();
 	}
 
-	const findCellWidth = (
-		columnType: string,
-		useAutoWidth: boolean,
-		calculatedWidth: string,
-		width: string
-	) => {
-		if (columnType !== CellType.TEXT && columnType !== CellType.NUMBER)
-			return width;
-		if (useAutoWidth) return calculatedWidth;
-		return width;
-	};
-
-	const { columnWidths, rowHeights } = useMemo(() => {
-		return getTableSizing(state);
-	}, [state.model.cells, state.settings.columns]);
-
 	if (isLoading) return <div>Loading table...</div>;
 
 	const { rowIds, columnIds, cells } = state.model;
@@ -624,6 +611,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 							component: (
 								<EditableTh
 									key={id}
+									ref={(el) => (cellRefs.current[i] = el)}
 									cellId={id}
 									columnIndex={i}
 									numColumns={columnIds.length}
@@ -683,6 +671,11 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 											return (
 												<EditableTd
 													key={id}
+													ref={(el) =>
+														(cellRefs.current[
+															i + columnIds.length
+														] = el)
+													}
 													cellId={id}
 													tags={tags}
 													rowId={cell.rowId}
@@ -702,7 +695,9 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 														],
 														width
 													)}
-													height={rowHeights[rowId]}
+													height={numToPx(
+														rowHeights[rowId]
+													)}
 													onTagClick={handleTagClick}
 													onRemoveTagClick={
 														handleRemoveTagClick
