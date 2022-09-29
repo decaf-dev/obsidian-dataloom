@@ -1,5 +1,5 @@
 .NLT__table {
-	width: max-content;
+	table-layout: fixed;
 }
 
 .NLT__table,
@@ -7,8 +7,6 @@
 .NLT__tbody,
 .NLT__tfoot,
 .NLT__tr {
-	display: block;
-	box-sizing: border-box;
 	border: 0 !important;
 }
 

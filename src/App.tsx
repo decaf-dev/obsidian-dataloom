@@ -27,7 +27,7 @@ import { useAppDispatch } from "./services/redux/hooks";
 import { closeAllMenus, updateMenuPosition } from "./services/menu/menuSlice";
 
 import _ from "lodash";
-import { useTableSizing, findCellWidth } from "./services/table/sizing";
+import { findCellWidth } from "./services/table/sizing";
 import { addExistingTag, addNewTag, removeTag } from "./services/table/tag";
 import { changeColumnType } from "./services/table/column";
 import { numToPx } from "./services/string/conversion";
@@ -61,7 +61,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		shouldSaveModel: false,
 	});
 
-	const { columnWidths, rowHeights, cellRefs } = useTableSizing(state.model);
+	//const { columnWidths, rowHeights, cellRefs } = useTableSizing(state.model);
 
 	const dispatch = useAppDispatch();
 
@@ -611,7 +611,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 							component: (
 								<EditableTh
 									key={id}
-									ref={(el) => (cellRefs.current[i] = el)}
 									cellId={id}
 									columnIndex={i}
 									numColumns={columnIds.length}
@@ -619,7 +618,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 									width={findCellWidth(
 										type,
 										useAutoWidth,
-										columnWidths[cell.columnId],
 										width
 									)}
 									shouldWrapOverflow={shouldWrapOverflow}
@@ -671,11 +669,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 											return (
 												<EditableTd
 													key={id}
-													ref={(el) =>
-														(cellRefs.current[
-															i + columnIds.length
-														] = el)
-													}
 													cellId={id}
 													tags={tags}
 													rowId={cell.rowId}
@@ -690,13 +683,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 													width={findCellWidth(
 														type,
 														useAutoWidth,
-														columnWidths[
-															cell.columnId
-														],
 														width
-													)}
-													height={numToPx(
-														rowHeights[rowId]
 													)}
 													onTagClick={handleTagClick}
 													onRemoveTagClick={
@@ -712,14 +699,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 												/>
 											);
 										})}
-										<td
-											className="NLT__td"
-											style={{
-												height: numToPx(
-													rowHeights[rowId]
-												),
-											}}
-										>
+										<td className="NLT__td">
 											<div className="NLT__td-container">
 												<RowMenu
 													rowId={rowId}
