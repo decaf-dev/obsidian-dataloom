@@ -9,9 +9,3 @@
 .NLT__tr {
 	border: 0 !important;
 }
-
-.NLT__tfoot::after {
-	content: ' ';
-	display: block;
-	height: 10px;
-}
