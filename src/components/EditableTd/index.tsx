@@ -104,11 +104,21 @@ export default function EditableTd({
 
 	function handleCellClick(e: React.MouseEvent) {
 		if (DEBUG.EDITABLE_TD) console.log("[EditableTd] handleCellClick()");
-		const el = e.target as HTMLInputElement;
+		if (columnType === CellType.CHECKBOX) {
+			let isChecked = markdown.includes("x");
 
-		//If we clicked on the link for a file or tag, return
-		if (el.nodeName === "A") return;
-		dispatch(openMenu(menu));
+			if (isChecked) {
+				handleCheckboxChange("[ ]");
+			} else {
+				handleCheckboxChange("[x]");
+			}
+		} else {
+			const el = e.target as HTMLInputElement;
+
+			//If we clicked on the link for a file or tag, return
+			if (el.nodeName === "A") return;
+			dispatch(openMenu(menu));
+		}
 	}
 
 	function handleAddTag(markdown: string, html: string, color: string) {

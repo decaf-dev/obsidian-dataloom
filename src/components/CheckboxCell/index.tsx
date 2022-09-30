@@ -28,10 +28,7 @@ export default function CheckboxCell({ content, onCheckboxChange }: Props) {
 				type="checkbox"
 				checked={isChecked}
 				onChange={() => {}}
-				onClick={(e) => {
-					e.stopPropagation();
-					handleClick();
-				}}
+				onClick={handleClick}
 			/>
 		</div>
 	);
