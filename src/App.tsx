@@ -22,14 +22,15 @@ import { DEBUG } from "./constants";
 
 import { MarkdownViewModeType } from "obsidian";
 import { deserializeTable, markdownToHtml } from "./services/io/deserialize";
-import { randomColumnId, randomCellId } from "./services/random";
+import { randomColumnId, randomCellId, randomRowId } from "./services/random";
 import { useAppDispatch } from "./services/redux/hooks";
 import { closeAllMenus, updateMenuPosition } from "./services/menu/menuSlice";
 
 import _ from "lodash";
-import { findCellWidth } from "./services/table/sizing";
 import { addExistingTag, addNewTag, removeTag } from "./services/table/tag";
 import { changeColumnType } from "./services/table/column";
+import Button from "./components/Button";
+import { findCellWidth } from "./services/table/sizing";
 
 import "./app.css";
 interface Props {
@@ -383,7 +384,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 					cells: prevState.model.cells.filter(
 						(cell) => cell.rowId !== rowId
 					),
-					rows: prevState.model.rowIds.filter((id) => id !== rowId),
+					rowIds: prevState.model.rowIds.filter((id) => id !== rowId),
 				},
 			};
 		});
@@ -592,56 +593,82 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			<OptionBar model={state.model} settings={state.settings} />
 			<div className="NLT__table-wrapper" onScroll={handleTableScroll}>
 				<Table
-					headers={columnIds.map((columnId, i) => {
-						const {
-							width,
-							type,
-							sortDir,
-							shouldWrapOverflow,
-							useAutoWidth,
-						} = state.settings.columns[columnId];
+					headers={[
+						...columnIds.map((columnId, i) => {
+							const {
+								width,
+								type,
+								sortDir,
+								shouldWrapOverflow,
+								useAutoWidth,
+							} = state.settings.columns[columnId];
 
-						const cell = cells.find(
-							(c) => c.columnId === columnId && c.isHeader
-						);
-						const { id, markdown, html } = cell;
-						return {
-							id,
+							const cell = cells.find(
+								(c) => c.columnId === columnId && c.isHeader
+							);
+							const { id, markdown, html } = cell;
+							return {
+								id,
+								component: (
+									<EditableTh
+										key={id}
+										cellId={id}
+										columnIndex={i}
+										numColumns={columnIds.length}
+										columnId={cell.columnId}
+										width={findCellWidth(
+											type,
+											useAutoWidth,
+											width
+										)}
+										shouldWrapOverflow={shouldWrapOverflow}
+										useAutoWidth={useAutoWidth}
+										markdown={markdown}
+										html={html}
+										type={type}
+										sortDir={sortDir}
+										onSortSelect={handleHeaderSortSelect}
+										onInsertColumnClick={
+											handleInsertColumnClick
+										}
+										onMoveColumnClick={
+											handleMoveColumnClick
+										}
+										onWidthChange={handleHeaderWidthChange}
+										onDeleteClick={handleHeaderDeleteClick}
+										onSaveClick={handleCellContentChange}
+										onTypeSelect={handleHeaderTypeClick}
+										onAutoWidthToggle={
+											handleAutoWidthToggle
+										}
+										onWrapOverflowToggle={
+											handleWrapContentToggle
+										}
+									/>
+								),
+							};
+						}),
+						{
+							id: randomColumnId(),
 							component: (
-								<EditableTh
-									key={id}
-									cellId={id}
-									columnIndex={i}
-									numColumns={columnIds.length}
-									columnId={cell.columnId}
-									width={findCellWidth(
-										type,
-										useAutoWidth,
-										width
-									)}
-									shouldWrapOverflow={shouldWrapOverflow}
-									useAutoWidth={useAutoWidth}
-									markdown={markdown}
-									html={html}
-									type={type}
-									sortDir={sortDir}
-									onSortSelect={handleHeaderSortSelect}
-									onInsertColumnClick={
-										handleInsertColumnClick
-									}
-									onMoveColumnClick={handleMoveColumnClick}
-									onWidthChange={handleHeaderWidthChange}
-									onDeleteClick={handleHeaderDeleteClick}
-									onSaveClick={handleCellContentChange}
-									onTypeSelect={handleHeaderTypeClick}
-									onAutoWidthToggle={handleAutoWidthToggle}
-									onWrapOverflowToggle={
-										handleWrapContentToggle
-									}
-								/>
+								<th
+									className="NLT__th"
+									style={{ height: "1.8rem" }}
+								>
+									<div
+										className="NLT__th-container"
+										style={{ paddingLeft: "10px" }}
+									>
+										<Button
+											onClick={() => handleAddColumn()}
+										>
+											New
+										</Button>
+									</div>
+								</th>
 							),
-						};
-					})}
+						},
+					]}
 					rows={rowIds
 						.filter((_row, i) => i !== 0)
 						.map((rowId) => {
@@ -712,8 +739,38 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 								),
 							};
 						})}
-					onAddColumn={handleAddColumn}
-					onAddRow={handleAddRow}
+					footers={[0].map((_id) => {
+						const { width, type, useAutoWidth } =
+							state.settings.columns[columnIds[0]];
+						return {
+							id: randomRowId(),
+							component: (
+								<>
+									<td className="NLT__td">
+										<div
+											className="NLT__td-container"
+											style={{
+												width: findCellWidth(
+													type,
+													useAutoWidth,
+													width
+												),
+											}}
+										>
+											<Button
+												onClick={() => handleAddRow()}
+											>
+												New
+											</Button>
+										</div>
+									</td>
+									{columnIds.map((_id) => {
+										<td className="NLT__td" />;
+									})}
+								</>
+							),
+						};
+					})}
 				/>
 			</div>
 		</div>
