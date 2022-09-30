@@ -7,4 +7,5 @@ export enum MenuLevel {
 export interface Menu {
 	id: string;
 	level: MenuLevel;
+	sortRowsOnClose: boolean;
 }

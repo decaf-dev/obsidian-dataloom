@@ -131,7 +131,6 @@ const updateFileContent = async (
 	return await plugin.app.vault.modify(file, content);
 };
 
-//TODO refactor
 export const updateSortTime = async (plugin: NltPlugin, tableId: string) => {
 	const obj: NltSettings = {
 		...plugin.settings,

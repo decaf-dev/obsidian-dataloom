@@ -157,9 +157,10 @@ export default class NltPlugin extends Plugin {
 			if (e.key === "Enter") {
 				if (this.focusedTableId) {
 					const topLevelMenu = getTopLevelMenu(store.getState());
-					if (topLevelMenu) {
+					if (topLevelMenu && topLevelMenu.sortRowsOnClose) {
 						updateSortTime(this, this.focusedTableId);
 						//TODO should this be in redux?
+						//Redux is state between multiple tables on the same page
 						store.dispatch(closeTopLevelMenu());
 					}
 				}
@@ -182,14 +183,20 @@ export default class NltPlugin extends Plugin {
 						) {
 							//If we've clicked in the app but not in the menu
 							store.dispatch(closeTopLevelMenu());
-							if (this.focusedTableId)
+							if (
+								this.focusedTableId &&
+								topLevelMenu.sortRowsOnClose
+							)
 								updateSortTime(this, this.focusedTableId);
 							break;
 						}
 						//If we're clicking outside of the app
 						if (element.className.includes("view-content")) {
 							store.dispatch(closeAllMenus());
-							if (this.focusedTableId)
+							if (
+								this.focusedTableId &&
+								topLevelMenu.sortRowsOnClose
+							)
 								updateSortTime(this, this.focusedTableId);
 							break;
 						}

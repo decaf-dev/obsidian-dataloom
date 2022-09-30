@@ -110,7 +110,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	}, 150);
 
 	const handleSaveData = (shouldSaveModel: boolean) => {
-		console.log("SETTING SAVE TIME!!");
 		setSaveTime({ shouldSaveModel, time: Date.now() });
 	};
 

@@ -9,10 +9,11 @@ const randomMenuId = () => {
 	return `${MENU_PREFIX}-${randomId(NUM_CHARS_MENU_ID)}`;
 };
 
-export const useMenu = (level: number): Menu => {
+export const useMenu = (level: number, sortRowsOnClose?: boolean): Menu => {
 	const [id] = useState(randomMenuId());
 	return {
 		id,
 		level,
+		sortRowsOnClose,
 	};
 };

@@ -78,7 +78,7 @@ export default function EditableTd({
 	onContentChange,
 	onAddTag,
 }: Props) {
-	const menu = useMenu(MenuLevel.ONE);
+	const menu = useMenu(MenuLevel.ONE, true);
 	const isOpen = useAppSelector((state) => isMenuOpen(state, menu));
 	const dispatch = useAppDispatch();
 	const { isDarkMode } = useAppSelector((state) => state.global);
