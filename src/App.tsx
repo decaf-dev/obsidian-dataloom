@@ -53,14 +53,13 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		},
 	});
 
-	const [sortTime, setSortTime] = useState(0);
 	const [isLoading, setLoading] = useState(true);
 	const [saveTime, setSaveTime] = useState({
 		time: 0,
 		shouldSaveModel: false,
 	});
 
-	//const { columnWidths, rowHeights, cellRefs } = useTableSizing(state.model);
+	const [sortTime, setSortTime] = useState(0);
 
 	const dispatch = useAppDispatch();
 
@@ -110,15 +109,21 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		dispatch(updateMenuPosition());
 	}, 150);
 
-	const handleSaveData = (shouldSaveModel: boolean) =>
+	const handleSaveData = (shouldSaveModel: boolean) => {
+		console.log("SETTING SAVE TIME!!");
 		setSaveTime({ shouldSaveModel, time: Date.now() });
+	};
 
 	//Handles sync between live preview and reading mode
 	useEffect(() => {
 		let timer: any = null;
 
 		async function checkForUpdates() {
-			const { tableId: tId, viewModes } = plugin.settings.viewModeSync;
+			const {
+				tableId: tId,
+				viewModes,
+				eventType,
+			} = plugin.settings.viewModeSync;
 			if (tId) {
 				const mode = viewModes.find((v) => v === viewMode);
 				if (mode && tableId === tId) {
@@ -126,7 +131,17 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 					plugin.settings.viewModeSync.viewModes.splice(modeIndex, 1);
 					if (plugin.settings.viewModeSync.viewModes.length === 0)
 						plugin.settings.viewModeSync.tableId = null;
-					setTableState(plugin.settings.data[tableId]);
+					if (DEBUG.APP)
+						logFunc(COMPONENT_NAME, "checkForUpdates", {
+							tableId,
+							viewModes,
+							eventType,
+						});
+					if (eventType === "update-state") {
+						setTableState(plugin.settings.data[tableId]);
+					} else if (eventType === "sort-rows") {
+						handleSortRows();
+					}
 					await plugin.saveSettings();
 				}
 			}
@@ -135,7 +150,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		function viewModeSync() {
 			timer = setInterval(() => {
 				checkForUpdates();
-			}, 100);
+			}, 50);
 		}
 
 		viewModeSync();
@@ -145,15 +160,18 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	}, []);
 
 	useEffect(() => {
-		setTableState((prevState) => {
-			return {
-				...prevState,
-				model: sortRows(prevState),
-			};
-		});
+		if (sortTime !== 0) {
+			setTableState((prevState) => {
+				return {
+					...prevState,
+					model: sortRows(prevState),
+				};
+			});
+			handleSaveData(true);
+		}
 	}, [sortTime]);
 
-	function handleSortData() {
+	function handleSortRows() {
 		setSortTime(Date.now());
 	}
 
@@ -217,8 +235,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				},
 			};
 		});
-		handleSaveData(false);
-		handleSortData();
+		handleSortRows();
 	}
 
 	function handleCellContentChange(cellId: string, updatedMarkdown: string) {
@@ -654,7 +671,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 								id: rowId,
 								component: (
 									<>
-										{rowCells.map((cell, i) => {
+										{rowCells.map((cell) => {
 											const {
 												width,
 												type,
@@ -715,7 +732,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 							};
 						})}
 					footers={[0].map((_id) => {
-						const { width, type, useAutoWidth } =
+						const { width, useAutoWidth } =
 							state.settings.columns[columnIds[0]];
 						return {
 							id: randomRowId(),
