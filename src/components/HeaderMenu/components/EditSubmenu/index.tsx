@@ -48,27 +48,24 @@ export default function EditMenu({
 					onChange={(e) => onNameChange(cellId, e.target.value)}
 				/>
 			</>
-			{(columnType === CellType.TEXT ||
-				columnType === CellType.NUMBER) && (
-				<>
-					<p className="NLT__label">Auto Width</p>
-					<Switch
-						isChecked={useAutoWidth}
-						onToggle={(value) => onAutoWidthToggle(columnId, value)}
-					/>
-					{!useAutoWidth && (
-						<>
-							<p className="NLT__label">Wrap Overflow</p>
-							<Switch
-								isChecked={shouldWrapOverflow}
-								onToggle={(value) =>
-									onWrapOverflowToggle(columnId, value)
-								}
-							/>
-						</>
-					)}
-				</>
-			)}
+			<p className="NLT__label">Auto Width</p>
+			<Switch
+				isChecked={useAutoWidth}
+				onToggle={(value) => onAutoWidthToggle(columnId, value)}
+			/>
+			{!useAutoWidth &&
+				(columnType === CellType.TEXT ||
+					columnType === CellType.NUMBER) && (
+					<>
+						<p className="NLT__label">Wrap Overflow</p>
+						<Switch
+							isChecked={shouldWrapOverflow}
+							onToggle={(value) =>
+								onWrapOverflowToggle(columnId, value)
+							}
+						/>
+					</>
+				)}
 			{canDeleteColumn && (
 				<Button onClick={() => onDeleteClick(columnId)}>Delete</Button>
 			)}

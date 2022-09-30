@@ -29,7 +29,6 @@ import _ from "lodash";
 import { addExistingTag, addNewTag, removeTag } from "./services/table/tag";
 import { changeColumnType } from "./services/table/column";
 import Button from "./components/Button";
-import { findCellWidth } from "./services/table/sizing";
 
 import "./app.css";
 import { sortRows } from "./services/sort/sort";
@@ -594,11 +593,9 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 										columnIndex={i}
 										numColumns={columnIds.length}
 										columnId={cell.columnId}
-										width={findCellWidth(
-											type,
-											useAutoWidth,
-											width
-										)}
+										width={
+											useAutoWidth ? "max-content" : width
+										}
 										shouldWrapOverflow={shouldWrapOverflow}
 										useAutoWidth={useAutoWidth}
 										markdown={markdown}
@@ -684,11 +681,11 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 														shouldWrapOverflow
 													}
 													useAutoWidth={useAutoWidth}
-													width={findCellWidth(
-														type,
-														useAutoWidth,
-														width
-													)}
+													width={
+														useAutoWidth
+															? "max-content"
+															: width
+													}
 													onTagClick={handleTagClick}
 													onRemoveTagClick={
 														handleRemoveTagClick
@@ -728,11 +725,9 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 										<div
 											className="NLT__td-container"
 											style={{
-												width: findCellWidth(
-													type,
-													useAutoWidth,
-													width
-												),
+												width: useAutoWidth
+													? "max-content"
+													: width,
 											}}
 										>
 											<Button
