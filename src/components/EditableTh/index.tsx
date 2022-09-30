@@ -37,10 +37,10 @@ interface Props {
 	onInsertColumnClick: (columnId: string, insertRight: boolean) => void;
 	onTypeSelect: (columnId: string, type: CellType) => void;
 	onDeleteClick: (columnId: string) => void;
-	onSaveClick: (cellId: string, content: string) => void;
 	onWidthChange: (columnId: string, width: string) => void;
 	onAutoWidthToggle: (columnId: string, value: boolean) => void;
 	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
+	onNameChange: (columnId: string, value: string) => void;
 }
 
 export default function EditableTh({
@@ -61,9 +61,9 @@ export default function EditableTh({
 	onSortSelect,
 	onTypeSelect,
 	onDeleteClick,
-	onSaveClick,
 	onWrapOverflowToggle,
 	onAutoWidthToggle,
+	onNameChange,
 }: Props) {
 	const mouseDownX = useRef(0);
 	const isResizing = useRef(false);
@@ -171,12 +171,11 @@ export default function EditableTh({
 				shouldWrapOverflow={shouldWrapOverflow}
 				useAutoWidth={useAutoWidth}
 				id={menu.id}
-				columnContent={markdown}
+				markdown={markdown}
 				columnSortDir={sortDir}
 				columnType={type}
 				columnIndex={columnIndex}
 				numColumns={numColumns}
-				onOutsideClick={onSaveClick}
 				onSortSelect={onSortSelect}
 				onMoveColumnClick={onMoveColumnClick}
 				onInsertColumnClick={onInsertColumnClick}
@@ -185,6 +184,7 @@ export default function EditableTh({
 				onClose={closeHeaderMenu}
 				onAutoWidthToggle={onAutoWidthToggle}
 				onWrapOverflowToggle={onWrapOverflowToggle}
+				onNameChange={onNameChange}
 			/>
 		</>
 	);

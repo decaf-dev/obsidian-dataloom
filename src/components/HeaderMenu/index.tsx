@@ -52,10 +52,10 @@ interface Props {
 	canDeleteColumn: boolean;
 	id: string;
 	cellId: string;
+	markdown: string;
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
 	columnSortDir: SortDir;
-	columnContent: string;
 	columnType: string;
 	columnId: string;
 	columnIndex: number;
@@ -65,18 +65,18 @@ interface Props {
 	onTypeSelect: (columnId: string, type: CellType) => void;
 	onSortSelect: (columnId: string, sortDir: SortDir) => void;
 	onDeleteClick: (columnId: string) => void;
-	onOutsideClick: (cellId: string, inputText: string) => void;
 	onAutoWidthToggle: (columnId: string, value: boolean) => void;
 	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
+	onNameChange: (columnId: string, value: string) => void;
 	onClose: () => void;
 }
 
 export default function HeaderMenu({
 	isOpen,
-	id,
 	cellId,
+	id,
+	markdown,
 	canDeleteColumn,
-	columnContent,
 	columnType,
 	columnSortDir,
 	columnId,
@@ -88,36 +88,14 @@ export default function HeaderMenu({
 	onTypeSelect,
 	onSortSelect,
 	onDeleteClick,
-	onOutsideClick,
 	onInsertColumnClick,
 	onMoveColumnClick,
 	onClose,
 	onWrapOverflowToggle,
 	onAutoWidthToggle,
+	onNameChange,
 }: Props) {
-	const [headerNameInput, setHeaderNameInput] = useState("");
 	const [submenu, setSubmenu] = useState(null);
-	const lastLength = useRef(0);
-
-	useEffect(() => {
-		if (!isOpen) {
-			//If we're in Live Preview mode and we click on the header and then click on the outside of
-			//the component, the header will close, set the data (which didn't change), which cause an update
-			//which persists the data again. We can prevent this by only calling onOutsideClick
-			//if the data has actually changed
-			if (headerNameInput.length !== lastLength.current) {
-				lastLength.current = headerNameInput.length;
-				if (headerNameInput !== columnContent) {
-					onOutsideClick(cellId, headerNameInput);
-				}
-			}
-			setSubmenu(null);
-		}
-	}, [isOpen, headerNameInput.length, lastLength.current]);
-
-	useEffect(() => {
-		setHeaderNameInput(columnContent);
-	}, [columnContent]);
 
 	function handleMoveColumnClick(columnId: string, moveRight: boolean) {
 		onMoveColumnClick(columnId, moveRight);
@@ -162,8 +140,9 @@ export default function HeaderMenu({
 				{submenu && submenu.name === SUBMENU_ITEM.EDIT.name && (
 					<EditSubmenu
 						canDeleteColumn={canDeleteColumn}
+						cellId={cellId}
 						title={submenu.content}
-						columnContent={headerNameInput}
+						markdown={markdown}
 						columnType={columnType}
 						columnId={columnId}
 						useAutoWidth={useAutoWidth}
@@ -172,7 +151,7 @@ export default function HeaderMenu({
 						onAutoWidthToggle={onAutoWidthToggle}
 						onWrapOverflowToggle={onWrapOverflowToggle}
 						onDeleteClick={handleDeleteClick}
-						onNameChange={setHeaderNameInput}
+						onNameChange={onNameChange}
 					/>
 				)}
 				{submenu && submenu.name === SUBMENU_ITEM.INSERT.name && (

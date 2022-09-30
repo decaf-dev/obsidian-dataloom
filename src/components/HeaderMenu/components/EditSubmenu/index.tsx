@@ -11,10 +11,11 @@ interface Props {
 	title: string;
 	columnId: string;
 	columnType: string;
-	columnContent: string;
+	cellId: string;
+	markdown: string;
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
-	onNameChange: (name: string) => void;
+	onNameChange: (columnId: string, value: string) => void;
 	onAutoWidthToggle: (columnId: string, value: boolean) => void;
 	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
 	onDeleteClick: (columnId: string) => void;
@@ -24,9 +25,10 @@ interface Props {
 export default function EditMenu({
 	canDeleteColumn,
 	title,
+	cellId,
 	columnId,
 	columnType,
-	columnContent,
+	markdown,
 	shouldWrapOverflow,
 	useAutoWidth,
 	onNameChange,
@@ -42,8 +44,8 @@ export default function EditMenu({
 				<input
 					className="NLT__header-menu-input"
 					autoFocus
-					value={columnContent}
-					onChange={(e) => onNameChange(e.target.value)}
+					value={markdown}
+					onChange={(e) => onNameChange(cellId, e.target.value)}
 				/>
 			</>
 			{(columnType === CellType.TEXT ||

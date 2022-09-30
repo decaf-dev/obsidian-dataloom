@@ -614,7 +614,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 										}
 										onWidthChange={handleHeaderWidthChange}
 										onDeleteClick={handleHeaderDeleteClick}
-										onSaveClick={handleCellContentChange}
 										onTypeSelect={handleHeaderTypeClick}
 										onAutoWidthToggle={
 											handleAutoWidthToggle
@@ -622,6 +621,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 										onWrapOverflowToggle={
 											handleWrapContentToggle
 										}
+										onNameChange={handleCellContentChange}
 									/>
 								),
 							};
