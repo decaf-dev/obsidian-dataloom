@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import EditableTd from "./components/EditableTd";
 import Table from "./components/Table";
@@ -15,7 +15,6 @@ import { addColumn } from "./services/table/column";
 import { logFunc } from "./services/debug";
 import { DEFAULT_COLUMN_SETTINGS } from "./services/table/types";
 import { getUniqueTableId, sortCells } from "./services/table/utils";
-// import { sortRows } from "./services/sort/sort";
 import { TableState } from "./services/table/types";
 
 import { DEBUG } from "./constants";
@@ -33,6 +32,7 @@ import Button from "./components/Button";
 import { findCellWidth } from "./services/table/sizing";
 
 import "./app.css";
+import { sortRows } from "./services/sort/sort";
 interface Props {
 	plugin: NltPlugin;
 	tableId: string;
@@ -70,13 +70,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		dispatch(updateMenuPosition());
 	}, 150);
 
-	const throttlePositionUpdate = _.throttle(() => {
-		dispatch(updateMenuPosition());
-	}, 150);
-
 	const handleTableScroll = () => throttleTableScroll();
-
-	const handlePositionUpdate = () => throttlePositionUpdate();
 
 	//Load table on mount
 	useEffect(() => {
@@ -113,6 +107,8 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			tableId,
 			viewModesToUpdate
 		);
+		//Make sure to update the menu positions, so that the menu will render properly
+		dispatch(updateMenuPosition());
 	}, 150);
 
 	const handleSaveData = (shouldSaveModel: boolean) =>
@@ -149,22 +145,16 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		};
 	}, []);
 
-	//TODO add
-	// useDidMountEffect(() => {
-	// 	setTableState((prevState) => {
-	// 		return {
-	// 			...prevState,
-	// 			model: {
-	// 				...prevState.model,
-	// 				// rows: sortRows(state.model, state.settings),
-	// 			},
-	// 		};
-	// 	});
-	// }, [sortTime]);
+	useEffect(() => {
+		setTableState((prevState) => {
+			return {
+				...prevState,
+				model: sortRows(prevState),
+			};
+		});
+	}, [sortTime]);
 
-	//TODO add save
-
-	function sortData() {
+	function handleSortData() {
 		setSortTime(Date.now());
 	}
 
@@ -228,8 +218,8 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				},
 			};
 		});
-		//TODO add save
-		sortData();
+		handleSaveData(false);
+		handleSortData();
 	}
 
 	function handleCellContentChange(cellId: string, updatedMarkdown: string) {
@@ -259,7 +249,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			};
 		});
 		handleSaveData(true);
-		handlePositionUpdate();
 	}
 
 	function handleAddTag(
@@ -295,7 +284,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			)
 		);
 		handleSaveData(true);
-		handlePositionUpdate();
 	}
 
 	function handleTagClick(
@@ -325,7 +313,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			)
 		);
 		handleSaveData(true);
-		handlePositionUpdate();
 	}
 
 	function handleRemoveTagClick(
@@ -367,8 +354,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			};
 		});
 		handleSaveData(true);
-		handlePositionUpdate();
-		//sortData();
 	}
 
 	function handleRowDeleteClick(rowId: string) {
@@ -389,8 +374,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			};
 		});
 		handleSaveData(true);
-		handlePositionUpdate();
-		//sortData();
 	}
 
 	function handleHeaderWidthChange(columnId: string, width: string) {
@@ -416,8 +399,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			};
 		});
 		handleSaveData(false);
-		handlePositionUpdate();
-		dispatch(closeAllMenus());
 	}
 
 	function handleMoveColumnClick(columnId: string, moveRight: boolean) {
@@ -453,7 +434,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			};
 		});
 		handleSaveData(true);
-		handlePositionUpdate();
 	}
 
 	function handleInsertColumnClick(columnId: string, insertRight: boolean) {
@@ -550,7 +530,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			};
 		});
 		handleSaveData(false);
-		handlePositionUpdate();
 	}
 
 	function handleWrapContentToggle(columnId: string, value: boolean) {
@@ -575,7 +554,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			};
 		});
 		handleSaveData(false);
-		handlePositionUpdate();
 	}
 
 	if (isLoading) return <div>Loading table...</div>;

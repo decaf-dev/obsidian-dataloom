@@ -30,7 +30,6 @@ export default function TagColorMenu({
 	const dispatch = useAppDispatch();
 	const { isDarkMode } = useAppSelector((state) => state.global);
 	function handleMenuCloseClick(e: React.MouseEvent) {
-		//TODO this is more of a hack than a fix
 		e.stopPropagation();
 		dispatch(closeTopLevelMenu());
 	}

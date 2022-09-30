@@ -250,8 +250,6 @@ describe("removeTag", () => {
 		expect(newState.model.cells[1].markdown).toEqual("");
 		expect(newState.model.cells[1].html).toEqual("");
 
-		//TODO fix switching between two types
-		//Don't delete the tags, just disassociate them from cells
 		const newTags = newState.settings.columns[tagCell.columnId].tags;
 		expect(newTags[0].markdown).toEqual("tag1");
 		expect(newTags[0].html).toEqual("tag1");
