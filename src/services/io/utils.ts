@@ -1,4 +1,4 @@
-import { Cell, ColumnId, RowId, TableModel } from "../table/types";
+import { TableModel } from "../table/types";
 import type { TFile } from "obsidian";
 import NltPlugin from "../../main";
 
@@ -10,18 +10,18 @@ import { createEmptyMarkdownTable } from "../random";
 export const serializeFrontMatter = (model: TableModel) => {
 	const frontmatter = [];
 	frontmatter.push("---");
-	frontmatter.push(serializeColumnIds(model.columns));
-	frontmatter.push(serializeRowIds(model.rows));
+	frontmatter.push(serializeColumnIds(model.columnIds));
+	frontmatter.push(serializeRowIds(model.rowIds));
 	frontmatter.push("---");
 	return frontmatter.join("\n");
 };
 
-const serializeColumnIds = (columns: ColumnId[]) => {
-	return `columnIds: ${JSON.stringify(columns)}`;
+const serializeColumnIds = (columnIds: string[]) => {
+	return `columnIds: ${JSON.stringify(columnIds)}`;
 };
 
-const serializeRowIds = (rows: RowId[]) => {
-	return `rowIds: ${JSON.stringify(rows)}`;
+const serializeRowIds = (rowIds: string[]) => {
+	return `rowIds: ${JSON.stringify(rowIds)}`;
 };
 
 export const findTableFile = async (
@@ -35,7 +35,6 @@ export const findTableFile = async (
 	const file = plugin.app.vault.getAbstractFileByPath(
 		`${tableFolder}/${tableId}.md`
 	);
-	//TODO do I need to fix this?
 	if (file) return <TFile>file;
 
 	const createdFile = await plugin.app.vault.create(

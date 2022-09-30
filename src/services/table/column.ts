@@ -1,19 +1,71 @@
-import { CellType, TableState } from "../table/types";
-import { randomTagId, randomColor } from "../random";
 import { markdownToHtml } from "../io/deserialize";
+import {
+	DEFAULT_COLUMN_SETTINGS,
+	TableModel,
+	TableSettings,
+	Cell,
+	TableState,
+	CellType,
+} from "./types";
+import {
+	randomCellId,
+	randomColumnId,
+	randomColor,
+	randomTagId,
+} from "../random";
+import { sortCells } from "./utils";
+
+export const addColumn = (
+	prevState: TableState
+): [TableModel, TableSettings] => {
+	const columnId = randomColumnId();
+	const updatedColumnIds = [...prevState.model.columnIds, columnId];
+	let updatedCells: Cell[] = [...prevState.model.cells];
+
+	for (let i = 0; i < prevState.model.rowIds.length; i++) {
+		updatedCells.push({
+			id: randomCellId(),
+			columnId,
+			rowId: prevState.model.rowIds[i],
+			markdown: i === 0 ? "New Column" : "",
+			html: i === 0 ? "New Column" : "",
+			isHeader: i === 0,
+		});
+	}
+
+	updatedCells = sortCells(
+		prevState.model.rowIds,
+		updatedColumnIds,
+		updatedCells
+	);
+
+	return [
+		{
+			...prevState.model,
+			columnIds: updatedColumnIds,
+			cells: updatedCells,
+		},
+		{
+			...prevState.settings,
+			columns: {
+				...prevState.settings.columns,
+				[columnId]: DEFAULT_COLUMN_SETTINGS,
+			},
+		},
+	];
+};
 
 export const changeColumnType = (
 	prevState: TableState,
 	columnId: string,
 	type: CellType
 ) => {
-	const { settings } = prevState;
-	const { type: previousType } = settings.columns[columnId];
+	const { type: previousType } = prevState.settings.columns[columnId];
 
 	//If same type return
 	if (previousType === type) return prevState;
 
-	let tags = [...settings.columns[columnId].tags];
+	let tags = [...prevState.settings.columns[columnId].tags];
 
 	if (
 		(previousType === CellType.MULTI_TAG && type !== CellType.TAG) ||

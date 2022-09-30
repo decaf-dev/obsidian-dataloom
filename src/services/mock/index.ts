@@ -90,19 +90,19 @@ export const mockTableState = (
 	numColumns: number,
 	numRows: number
 ): TableState => {
-	const rows = [];
-	for (let i = 0; i < numRows; i++) rows.push(randomRowId());
+	const rowIds = [];
+	for (let i = 0; i < numRows; i++) rowIds.push(randomRowId());
 
-	const columns = [];
-	for (let i = 0; i < numColumns; i++) columns.push(randomColumnId());
+	const columnIds = [];
+	for (let i = 0; i < numColumns; i++) columnIds.push(randomColumnId());
 
 	const cells = [];
 	for (let y = 0; y < numRows; y++) {
 		for (let x = 0; x < numColumns; x++) {
 			cells.push({
 				id: randomCellId(),
-				columnId: columns[x],
-				rowId: rows[y],
+				columnId: columnIds[x],
+				rowId: rowIds[y],
 				markdown: "",
 				html: "",
 				isHeader: y === 0,
@@ -110,14 +110,14 @@ export const mockTableState = (
 		}
 	}
 	const columnSettings = Object.fromEntries(
-		columns.map((id) => {
+		columnIds.map((id) => {
 			return [id, DEFAULT_COLUMN_SETTINGS];
 		})
 	);
 	return {
 		model: {
-			rows,
-			columns,
+			rowIds,
+			columnIds,
 			cells,
 		},
 		cacheVersion: 1,

@@ -1,4 +1,4 @@
-import { isNumber, isTag, countNumTags } from ".";
+import { isNumber, isTag, countNumTags } from "./validators";
 
 describe("isNumber", () => {
 	it("returns true if number", () => {

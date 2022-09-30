@@ -1,10 +1,8 @@
 .NLT__td {
-	display: inline-block;
 	border-top: 0 !important;
 	border-bottom: 1px solid var(--background-modifier-border) !important;
 	border-left: 1px solid var(--background-modifier-border) !important;
 	border-right: 0 !important;
-	box-sizing: border-box !important;
 	vertical-align: top;
 	min-height: 2rem;
 	padding: 0 !important;

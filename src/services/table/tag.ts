@@ -1,4 +1,4 @@
-import { TableState } from "../table/types";
+import { TableState } from "./types";
 
 import { randomTagId } from "../random";
 

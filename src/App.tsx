@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import EditableTd from "./components/EditableTd";
 import Table from "./components/Table";
@@ -10,36 +10,28 @@ import { Cell, CellType } from "./services/table/types";
 import { serializeTable } from "./services/io/serialize";
 import NltPlugin from "./main";
 import { SortDir } from "./services/sort/types";
-import { addRow, addColumn } from "./services/appHandlers/add";
+import { addRow } from "./services/table/row";
+import { addColumn } from "./services/table/column";
 import { logFunc } from "./services/debug";
 import { DEFAULT_COLUMN_SETTINGS } from "./services/table/types";
-import { getUniqueTableId } from "./services/table/utils";
+import { getUniqueTableId, sortCells } from "./services/table/utils";
 // import { sortRows } from "./services/sort/sort";
 import { TableState } from "./services/table/types";
 
 import { DEBUG } from "./constants";
 
-import "./app.css";
 import { MarkdownViewModeType } from "obsidian";
 import { deserializeTable, markdownToHtml } from "./services/io/deserialize";
-import {
-	randomColumnId,
-	randomCellId,
-	randomTagId,
-	randomColor,
-} from "./services/random";
+import { randomColumnId, randomCellId } from "./services/random";
 import { useAppDispatch } from "./services/redux/hooks";
 import { closeAllMenus, updateMenuPosition } from "./services/menu/menuSlice";
 
 import _ from "lodash";
-import { getTableSizing } from "./services/table/hooks";
-import {
-	addExistingTag,
-	addNewTag,
-	removeTag,
-} from "./services/appHandlers/tag";
-import { changeColumnType } from "./services/appHandlers/column";
+import { findCellWidth } from "./services/table/sizing";
+import { addExistingTag, addNewTag, removeTag } from "./services/table/tag";
+import { changeColumnType } from "./services/table/column";
 
+import "./app.css";
 interface Props {
 	plugin: NltPlugin;
 	tableId: string;
@@ -52,8 +44,8 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	const [state, setTableState] = useState<TableState>({
 		cacheVersion: -1,
 		model: {
-			rows: [],
-			columns: [],
+			rowIds: [],
+			columnIds: [],
 			cells: [],
 		},
 		settings: {
@@ -67,6 +59,8 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		time: 0,
 		shouldSaveModel: false,
 	});
+
+	//const { columnWidths, rowHeights, cellRefs } = useTableSizing(state.model);
 
 	const dispatch = useAppDispatch();
 
@@ -176,10 +170,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	function handleAddColumn() {
 		if (DEBUG.APP) console.log("[App]: handleAddColumn called.");
 		setTableState((prevState) => {
-			const [model, settings] = addColumn(
-				prevState.model,
-				prevState.settings
-			);
+			const [model, settings] = addColumn(prevState);
 			return {
 				...prevState,
 				model,
@@ -363,7 +354,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				...prevState,
 				model: {
 					...prevState.model,
-					columns: prevState.model.columns.filter(
+					columnIds: prevState.model.columnIds.filter(
 						(column) => column !== columnId
 					),
 					cells: cells.filter((cell) => cell.columnId !== columnId),
@@ -392,7 +383,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 					cells: prevState.model.cells.filter(
 						(cell) => cell.rowId !== rowId
 					),
-					rows: prevState.model.rows.filter((id) => id !== rowId),
+					rows: prevState.model.rowIds.filter((id) => id !== rowId),
 				},
 			};
 		});
@@ -436,31 +427,32 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			});
 		setTableState((prevState: TableState) => {
 			const { model } = prevState;
-			const columnArr = [...model.columns];
-			const index = columnArr.indexOf(columnId);
+			const updatedColumnIds = [...model.columnIds];
+			const index = model.columnIds.indexOf(columnId);
 			const moveIndex = moveRight ? index + 1 : index - 1;
 
 			//Swap values
-			const old = columnArr[moveIndex];
-			columnArr[moveIndex] = columnArr[index];
-			columnArr[index] = old;
+			const old = updatedColumnIds[moveIndex];
+			updatedColumnIds[moveIndex] = updatedColumnIds[index];
+			updatedColumnIds[index] = old;
 
-			console.log({
-				...prevState,
-				model: {
-					...model,
-					columns: columnArr,
-				},
-			});
+			const updatedCells = sortCells(
+				model.rowIds,
+				updatedColumnIds,
+				model.cells
+			);
+
 			return {
 				...prevState,
 				model: {
 					...model,
-					columns: columnArr,
+					columnIds: updatedColumnIds,
+					cells: updatedCells,
 				},
 			};
 		});
 		handleSaveData(true);
+		handlePositionUpdate();
 	}
 
 	function handleInsertColumnClick(columnId: string, insertRight: boolean) {
@@ -471,33 +463,31 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			});
 		setTableState((prevState: TableState) => {
 			const { model, settings } = prevState;
-			const index = prevState.model.columns.indexOf(columnId);
+			const index = model.columnIds.indexOf(columnId);
 			const insertIndex = insertRight ? index + 1 : index;
 
 			const newColId = randomColumnId();
+			const updatedColumnIds = [...model.columnIds];
+			updatedColumnIds.splice(insertIndex, 0, newColId);
 
-			const cellArr = [...model.cells];
+			let updatedCells = [...model.cells];
 
-			for (let i = 0; i < model.rows.length; i++) {
-				let markdown = "";
-				let html = "";
-				if (i === 0) {
-					markdown = "New Column";
-					html = "New Column";
-				}
-
-				cellArr.push({
+			for (let i = 0; i < model.rowIds.length; i++) {
+				updatedCells.push({
 					id: randomCellId(),
 					columnId: newColId,
-					rowId: model.rows[i],
-					markdown,
-					html,
+					rowId: model.rowIds[i],
+					markdown: i === 0 ? "New Column" : "",
+					html: i === 0 ? "New Column" : "",
 					isHeader: i === 0,
 				});
 			}
 
-			const columnArr = [...model.columns];
-			columnArr.splice(insertIndex, 0, newColId);
+			updatedCells = sortCells(
+				model.rowIds,
+				updatedColumnIds,
+				updatedCells
+			);
 
 			const settingsObj = { ...settings };
 			settingsObj.columns[newColId] = DEFAULT_COLUMN_SETTINGS;
@@ -506,8 +496,8 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				...prevState,
 				model: {
 					...model,
-					columns: columnArr,
-					cells: cellArr,
+					columnIds: updatedColumnIds,
+					cells: updatedCells,
 				},
 				settings: settingsObj,
 			};
@@ -587,25 +577,9 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		handlePositionUpdate();
 	}
 
-	const findCellWidth = (
-		columnType: string,
-		useAutoWidth: boolean,
-		calculatedWidth: string,
-		width: string
-	) => {
-		if (columnType !== CellType.TEXT && columnType !== CellType.NUMBER)
-			return width;
-		if (useAutoWidth) return calculatedWidth;
-		return width;
-	};
-
-	const { columnWidths, rowHeights } = useMemo(() => {
-		return getTableSizing(state);
-	}, [state.model.cells, state.settings.columns]);
-
 	if (isLoading) return <div>Loading table...</div>;
 
-	const { rows, columns, cells } = state.model;
+	const { rowIds, columnIds, cells } = state.model;
 	const tableIdWithMode = getUniqueTableId(tableId, viewMode);
 
 	return (
@@ -618,7 +592,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			<OptionBar model={state.model} settings={state.settings} />
 			<div className="NLT__table-wrapper" onScroll={handleTableScroll}>
 				<Table
-					headers={columns.map((columnId, i) => {
+					headers={columnIds.map((columnId, i) => {
 						const {
 							width,
 							type,
@@ -638,12 +612,11 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 									key={id}
 									cellId={id}
 									columnIndex={i}
-									numColumns={columns.length}
+									numColumns={columnIds.length}
 									columnId={cell.columnId}
 									width={findCellWidth(
 										type,
 										useAutoWidth,
-										columnWidths[cell.columnId],
 										width
 									)}
 									shouldWrapOverflow={shouldWrapOverflow}
@@ -669,7 +642,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 							),
 						};
 					})}
-					rows={rows
+					rows={rowIds
 						.filter((_row, i) => i !== 0)
 						.map((rowId) => {
 							const rowCells = cells.filter(
@@ -709,12 +682,8 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 													width={findCellWidth(
 														type,
 														useAutoWidth,
-														columnWidths[
-															cell.columnId
-														],
 														width
 													)}
-													height={rowHeights[rowId]}
 													onTagClick={handleTagClick}
 													onRemoveTagClick={
 														handleRemoveTagClick
@@ -729,12 +698,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 												/>
 											);
 										})}
-										<td
-											className="NLT__td"
-											style={{
-												height: rowHeights[rowId],
-											}}
-										>
+										<td className="NLT__td">
 											<div className="NLT__td-container">
 												<RowMenu
 													rowId={rowId}

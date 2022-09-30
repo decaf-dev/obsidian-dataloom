@@ -1,4 +1,4 @@
-import { uppercaseFirst } from ".";
+import { uppercaseFirst } from "./utils";
 
 describe("uppercaseFirst", () => {
 	it("uppercases first letter", () => {

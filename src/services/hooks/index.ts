@@ -1,12 +1,6 @@
-import { useCallback, useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import { v4 as uuid } from "uuid";
-import { numToPx } from "../string/conversion";
-
-export const useForceUpdate = () => {
-	const [, setValue] = useState(0);
-	return useCallback(() => setValue((value) => value + 1), []);
-};
 
 export const useId = (): string => {
 	const [id] = useState(uuid());
@@ -36,29 +30,30 @@ export const useDidMountEffect = (func: (...rest: any) => any, deps: any[]) => {
 };
 
 export const usePositionRef = (deps: any[] = []) => {
+	const ref = useRef(null);
 	const [position, setPosition] = useState({
-		top: "0px",
-		left: "0px",
-		width: "0px",
-		height: "0px",
+		top: 0,
+		left: 0,
+		width: 0,
+		height: 0,
 	});
 
-	const positionRef = useRef(null);
-
 	useEffect(() => {
-		const node = positionRef.current;
-		const { top, left } = node.getBoundingClientRect();
-		//We use offsetWidth, and offsetHeight instead of the width and height of the rectangle
-		//because we want whole values to match what we set as the column width.
-		//This will make sure that the rendered cell and the input cell are the same size
-		const { offsetWidth, offsetHeight } = node;
-		setPosition({
-			top: numToPx(top),
-			left: numToPx(left),
-			width: numToPx(offsetWidth),
-			height: numToPx(offsetHeight),
-		});
+		const node = ref.current;
+		if (node) {
+			const { top, left } = node.getBoundingClientRect();
+			//We use offsetWidth, and offsetHeight instead of the width and height of the rectangle
+			//because we want whole values to match what we set as the column width.
+			//This will make sure that the rendered cell and the input cell are the same size
+			const { offsetWidth, offsetHeight } = node;
+			setPosition({
+				top,
+				left,
+				width: offsetWidth,
+				height: offsetHeight,
+			});
+		}
 	}, [...deps]);
 
-	return { positionRef, position };
+	return { ref, position };
 };

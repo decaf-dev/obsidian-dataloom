@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import { Notice } from "obsidian";
 
 import TextCell from "../TextCell";
@@ -22,6 +22,7 @@ import { DEBUG } from "../../constants";
 
 import "./styles.css";
 import MultiTagCell from "../MultiTagCell";
+import { numToPx } from "src/services/string/conversion";
 
 interface Props {
 	columnType: string;
@@ -31,7 +32,6 @@ interface Props {
 	markdown: string;
 	html: string;
 	width: string;
-	height: string;
 	tags: Tag[];
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
@@ -70,7 +70,6 @@ export default function EditableTd({
 	columnType,
 	tags,
 	width,
-	height,
 	shouldWrapOverflow,
 	useAutoWidth,
 	onRemoveTagClick,
@@ -87,7 +86,7 @@ export default function EditableTd({
 	const positionUpdateTime = useAppSelector(
 		(state) => state.menu.positionUpdateTime
 	);
-	const { positionRef, position } = usePositionRef([
+	const { position, ref: positionRef } = usePositionRef([
 		positionUpdateTime,
 		markdown.length,
 	]);
@@ -226,7 +225,10 @@ export default function EditableTd({
 						menuId={menu.id}
 						isOpen={isOpen}
 						style={{
-							...position,
+							top: numToPx(position.top),
+							left: numToPx(position.left),
+							width: numToPx(position.width),
+							height: numToPx(position.height),
 							...((useAutoWidth || !shouldWrapOverflow) && {
 								maxWidth: "300px",
 							}),
@@ -243,7 +245,10 @@ export default function EditableTd({
 						menuId={menu.id}
 						isOpen={isOpen}
 						style={{
-							...position,
+							top: numToPx(position.top),
+							left: numToPx(position.left),
+							width: numToPx(position.width),
+							height: numToPx(position.height),
 							...((useAutoWidth || !shouldWrapOverflow) && {
 								maxWidth: "300px",
 							}),
@@ -263,8 +268,8 @@ export default function EditableTd({
 						menuId={menu.id}
 						isOpen={isOpen}
 						style={{
-							top: position.top,
-							left: position.left,
+							top: numToPx(position.top),
+							left: numToPx(position.left),
 						}}
 						onColorChange={handleColorChange}
 						onAddTag={handleAddTag}
@@ -277,7 +282,12 @@ export default function EditableTd({
 					<DateCellEdit
 						menuId={menu.id}
 						isOpen={isOpen}
-						style={position}
+						style={{
+							top: numToPx(position.top),
+							left: numToPx(position.left),
+							width: numToPx(position.width),
+							height: numToPx(position.height),
+						}}
 						content={markdown}
 						onDateChange={handleDateChange}
 					/>
@@ -299,7 +309,6 @@ export default function EditableTd({
 					className="NLT__td-container"
 					style={{
 						width,
-						height,
 					}}
 				>
 					{renderCell()}

@@ -74,8 +74,8 @@ export const createEmptyMarkdownTable = (): string => {
 			randomCell(columnId, rowId1, true),
 			randomCell(columnId, rowId2, false),
 		],
-		columns: [columnId],
-		rows: [rowId1, rowId2],
+		columnIds: [columnId],
+		rowIds: [rowId1, rowId2],
 	};
 	const frontmatter = serializeFrontMatter(model);
 	return frontmatter + "\n" + emptyMarkdownTable();

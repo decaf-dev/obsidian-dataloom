@@ -5,7 +5,7 @@ import {
 	CHECKBOX_REGEX,
 	CHECKBOX_CHECKED_REGEX,
 	TAGS_REGEX,
-} from "../regex";
+} from "./regex";
 
 const isMatch = (input: string, regex: RegExp): boolean => {
 	return (input.match(regex) || []).length !== 0;

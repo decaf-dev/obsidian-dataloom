@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 
 import { SortDir } from "src/services/sort/types";
 import { findSortIcon } from "src/services/icon/utils";
-import { TableSettings, Cell, TableModel } from "src/services/table/types";
+import { TableSettings, TableModel } from "src/services/table/types";
 
 import "./styles.css";
 
@@ -45,7 +45,7 @@ interface Props {
 }
 export default function OptionBar({ model, settings }: Props) {
 	const bubbles = useMemo(() => {
-		return model.columns
+		return model.columnIds
 			.map((columnId) => {
 				const cell = model.cells.find(
 					(c) => c.columnId === columnId && c.isHeader

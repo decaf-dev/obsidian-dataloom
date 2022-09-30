@@ -1,10 +1,8 @@
-import React, { useRef } from "react";
+import React, { forwardRef, useRef } from "react";
+
+import parse from "html-react-parser";
 
 import HeaderMenu from "../HeaderMenu";
-
-import "./styles.css";
-import { usePositionRef } from "src/services/hooks";
-
 import { CSS_MEASUREMENT_PIXEL_REGEX } from "src/services/string/regex";
 import { numToPx, pxToNum } from "src/services/string/conversion";
 import { SortDir } from "src/services/sort/types";
@@ -12,14 +10,15 @@ import { CellType } from "src/services/table/types";
 import { useMenu } from "src/services/menu/hooks";
 import { MenuLevel } from "src/services/menu/types";
 import { MIN_COLUMN_WIDTH } from "src/services/table/constants";
-
-import parse from "html-react-parser";
+import { usePositionRef } from "src/services/hooks";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 import {
 	openMenu,
 	closeTopLevelMenu,
 	isMenuOpen,
 } from "src/services/menu/menuSlice";
+
+import "./styles.css";
 
 interface Props {
 	cellId: string;
@@ -75,7 +74,7 @@ export default function EditableTh({
 	const positionUpdateTime = useAppSelector(
 		(state) => state.menu.positionUpdateTime
 	);
-	const { positionRef, position } = usePositionRef([positionUpdateTime]);
+	const { ref: positionRef, position } = usePositionRef([positionUpdateTime]);
 
 	function handleHeaderClick() {
 		if (isResizing.current) return;
@@ -164,10 +163,8 @@ export default function EditableTh({
 				isOpen={isOpen}
 				canDeleteColumn={numColumns > 1}
 				style={{
-					top: numToPx(
-						pxToNum(position.top) + pxToNum(position.height)
-					),
-					left: position.left,
+					top: numToPx(position.top + position.height),
+					left: numToPx(position.left),
 				}}
 				columnId={columnId}
 				cellId={cellId}
