@@ -19,7 +19,7 @@ import { TableState } from "./services/table/types";
 
 import { DEBUG } from "./constants";
 
-import { MarkdownViewModeType } from "obsidian";
+import { livePreviewState, MarkdownViewModeType } from "obsidian";
 import { deserializeTable, markdownToHtml } from "./services/io/deserialize";
 import { randomColumnId, randomCellId, randomRowId } from "./services/random";
 import { useAppDispatch } from "./services/redux/hooks";
@@ -220,17 +220,18 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			});
 		}
 		setTableState((prevState) => {
+			const columnsCopy = { ...prevState.settings.columns };
+			Object.entries(columnsCopy).forEach((entry) => {
+				const [key, value] = entry;
+				if (value.sortDir !== SortDir.NONE)
+					columnsCopy[key].sortDir = SortDir.NONE;
+				if (key === columnId) columnsCopy[key].sortDir = sortDir;
+			});
 			return {
 				...prevState,
 				settings: {
 					...prevState.settings,
-					columns: {
-						...prevState.settings.columns,
-						[columnId]: {
-							...prevState.settings.columns[columnId],
-							sortDir,
-						},
-					},
+					columns: columnsCopy,
 				},
 			};
 		});
