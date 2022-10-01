@@ -391,6 +391,30 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		handleSaveData(true);
 	}
 
+	function handleSortRemoveClick(columnId: string) {
+		if (DEBUG.APP) {
+			logFunc(COMPONENT_NAME, "handleSortRemoveClick", {
+				columnId,
+			});
+		}
+		setTableState((prevState) => {
+			return {
+				...prevState,
+				settings: {
+					...prevState.settings,
+					columns: {
+						...prevState.settings.columns,
+						[columnId]: {
+							...prevState.settings.columns[columnId],
+							sortDir: SortDir.NONE,
+						},
+					},
+				},
+			};
+		});
+		handleSortRows();
+	}
+
 	function handleHeaderWidthChange(columnId: string, width: string) {
 		if (DEBUG.APP) {
 			logFunc(COMPONENT_NAME, "handleHeaderWidthChange", {
@@ -583,7 +607,11 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			className="NLT__app"
 			tabIndex={0}
 		>
-			<OptionBar model={state.model} settings={state.settings} />
+			<OptionBar
+				model={state.model}
+				settings={state.settings}
+				onSortRemoveClick={handleSortRemoveClick}
+			/>
 			<div className="NLT__table-wrapper" onScroll={handleTableScroll}>
 				<Table
 					headers={[
