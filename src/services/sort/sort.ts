@@ -1,31 +1,25 @@
 import { SortDir } from "./types";
-import { ColumnSettings, TableModel, TableState } from "../table/types";
+import {
+	ColumnSettings,
+	TableModel,
+	TableSettings,
+	TableState,
+	Cell,
+} from "../table/types";
 import { sortCells } from "../table/utils";
 
-export const sortRows = (prevState: TableState): TableModel => {
-	let headerSettings: ColumnSettings | null = null;
-	let columnId = "";
-
-	const { settings, model } = prevState;
-
-	for (let i = 0; i < model.columnIds.length; i++) {
-		const cId = model.columnIds[i];
-		if (settings.columns[cId].sortDir !== SortDir.NONE) {
-			headerSettings = settings.columns[cId];
-			columnId = cId;
-		}
-	}
-
-	if (!headerSettings) return model;
-
-	const updatedRows = [...model.rowIds];
-	const { sortDir } = headerSettings;
-
-	updatedRows.sort((a, b) => {
-		const cellA = model.cells.find(
+const sortByDir = (
+	columnId: string,
+	sortDir: SortDir,
+	rowIds: string[],
+	cells: Cell[]
+) => {
+	const rowsCopy = [...rowIds];
+	rowsCopy.sort((a, b) => {
+		const cellA = cells.find(
 			(c) => c.columnId === columnId && c.rowId === a
 		);
-		const cellB = model.cells.find(
+		const cellB = cells.find(
 			(c) => c.columnId === columnId && c.rowId === b
 		);
 
@@ -45,10 +39,45 @@ export const sortRows = (prevState: TableState): TableModel => {
 			return markdownB.localeCompare(markdownA);
 		}
 	});
+	return rowsCopy;
+};
+
+const sortByCreationDate = (settings: TableSettings, rowIds: string[]) => {
+	const rowsCopy = [...rowIds];
+	rowsCopy.sort((a, b) => {
+		const rowSettingsA = settings.rows[a];
+		const rowSettingsB = settings.rows[b];
+		return rowSettingsA.creationDate - rowSettingsB.creationDate;
+	});
+	return rowsCopy;
+};
+
+export const sortRows = (prevState: TableState): TableModel => {
+	let headerSettings: ColumnSettings | null = null;
+	let columnId = "";
+
+	const { settings, model } = prevState;
+
+	for (let i = 0; i < model.columnIds.length; i++) {
+		const cId = model.columnIds[i];
+		if (settings.columns[cId].sortDir !== SortDir.NONE) {
+			headerSettings = settings.columns[cId];
+			columnId = cId;
+		}
+	}
+
+	if (!headerSettings)
+		return {
+			...model,
+			rowIds: sortByCreationDate(settings, model.rowIds),
+		};
+
+	const rowsCopy = [...model.rowIds];
+	const { sortDir } = headerSettings;
 
 	return {
-		rowIds: updatedRows,
+		rowIds: sortByDir(columnId, sortDir, model.rowIds, model.cells),
 		columnIds: model.columnIds,
-		cells: sortCells(updatedRows, model.columnIds, model.cells),
+		cells: sortCells(rowsCopy, model.columnIds, model.cells),
 	};
 };
