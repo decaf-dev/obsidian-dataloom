@@ -1,4 +1,3 @@
-import React from "react";
 import { SortDir } from "src/services/sort/types";
 
 import { SORT_MENU_ITEM } from "../../constants";

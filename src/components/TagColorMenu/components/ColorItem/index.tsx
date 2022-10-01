@@ -1,5 +1,3 @@
-import React from "react";
-
 import { findColorClass } from "src/services/color";
 import { uppercaseFirst } from "src/services/string/utils";
 import "./styles.css";

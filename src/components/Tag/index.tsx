@@ -1,5 +1,3 @@
-import React from "react";
-
 import parse from "html-react-parser";
 import { IconType } from "src/services/icon/types";
 

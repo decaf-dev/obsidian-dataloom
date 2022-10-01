@@ -1,4 +1,3 @@
-import React from "react";
 import { isValidCellContent } from "src/services/table/utils";
 import { CellType } from "src/services/table/types";
 

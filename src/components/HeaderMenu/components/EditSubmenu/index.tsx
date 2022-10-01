@@ -1,5 +1,3 @@
-import React from "react";
-
 import Submenu from "../Submenu";
 import Button from "src/components/Button";
 import Switch from "src/components/Switch";
