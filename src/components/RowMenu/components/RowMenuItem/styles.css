@@ -1,8 +1,3 @@
-.NLT__drag-menu-item {
-    display: flex;
-    align-items: center;
-}
-
 .NLT__drag-menu-item:focus-visible {
     outline: 1px solid blue;
 }

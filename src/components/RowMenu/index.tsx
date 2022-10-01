@@ -45,17 +45,6 @@ export default function RowMenu({ rowId, onDeleteClick }: Props) {
 		dispatch(closeTopLevelMenu());
 	}
 
-	const options = useMemo(() => {
-		return [
-			{
-				name: "delete",
-				content: "Delete",
-				icon: IconType.DELETE,
-				onClick: () => handleDeleteClick(rowId),
-			},
-		];
-	}, [rowId]);
-
 	return (
 		<div ref={ref}>
 			<Button hasIcon onClick={(e) => handleButtonClick(e)}>
@@ -70,16 +59,11 @@ export default function RowMenu({ rowId, onDeleteClick }: Props) {
 				}}
 			>
 				<div className="NLT__drag-menu">
-					{options.map((item) => {
-						return (
-							<RowMenuItem
-								key={item.name}
-								icon={item.icon}
-								content={item.content}
-								onClick={item.onClick}
-							/>
-						);
-					})}
+					<RowMenuItem
+						icon={IconType.DELETE}
+						content="Delete"
+						onClick={() => handleDeleteClick(rowId)}
+					/>
 				</div>
 			</Menu>
 		</div>
