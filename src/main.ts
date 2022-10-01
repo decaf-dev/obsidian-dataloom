@@ -159,10 +159,10 @@ export default class NltPlugin extends Plugin {
 					const topLevelMenu = getTopLevelMenu(store.getState());
 					if (topLevelMenu && topLevelMenu.sortRowsOnClose) {
 						updateSortTime(this, this.focusedTableId);
-						//TODO should this be in redux?
-						//Redux is state between multiple tables on the same page
-						store.dispatch(closeTopLevelMenu());
 					}
+					//TODO should this be in redux?
+					//Redux is state between multiple tables on the same page
+					store.dispatch(closeTopLevelMenu());
 				}
 			}
 		});
