@@ -50,6 +50,10 @@ export interface ColumnSettings {
 	tags: Tag[];
 }
 
+export interface RowSettings {
+	creationDate: number;
+}
+
 export const DEFAULT_COLUMN_SETTINGS: ColumnSettings = {
 	sortDir: SortDir.NONE,
 	width: "120px",
@@ -59,14 +63,21 @@ export const DEFAULT_COLUMN_SETTINGS: ColumnSettings = {
 	tags: [],
 };
 
+export const DEFAULT_ROW_SETTINGS: RowSettings = {
+	creationDate: 0,
+};
+
 export interface TableSettings {
 	columns: {
 		[columnId: string]: ColumnSettings;
+	};
+	rows: {
+		[rowId: string]: RowSettings;
 	};
 }
 
 export interface TableState {
 	settings: TableSettings;
 	model: TableModel;
-	cacheVersion: number;
+	pluginVersion: number;
 }

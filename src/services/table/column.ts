@@ -49,7 +49,7 @@ export const addColumn = (
 			...prevState.settings,
 			columns: {
 				...prevState.settings.columns,
-				[columnId]: DEFAULT_COLUMN_SETTINGS,
+				[columnId]: { ...DEFAULT_COLUMN_SETTINGS },
 			},
 		},
 	];

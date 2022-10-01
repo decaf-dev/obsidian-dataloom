@@ -31,8 +31,6 @@ export const sortRows = (prevState: TableState): TableModel => {
 
 		const markdownA = cellA.markdown;
 		const markdownB = cellB.markdown;
-		console.log("A", markdownA);
-		console.log("B", markdownB);
 
 		//Force empty cells to the bottom
 		if (cellA.isHeader) return -1;
@@ -47,8 +45,6 @@ export const sortRows = (prevState: TableState): TableModel => {
 			return markdownB.localeCompare(markdownA);
 		}
 	});
-
-	console.log(updatedRows);
 
 	return {
 		rowIds: updatedRows,

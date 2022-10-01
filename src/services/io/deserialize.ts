@@ -2,9 +2,10 @@ import MarkdownIt from "markdown-it";
 
 import NltPlugin from "../../main";
 
-import { CURRENT_TABLE_CACHE_VERSION, DEBUG } from "../../constants";
+import { CURRENT_PLUGIN_VERSION, DEBUG } from "../../constants";
 import {
 	DEFAULT_COLUMN_SETTINGS,
+	DEFAULT_ROW_SETTINGS,
 	TableModel,
 	TableState,
 } from "../table/types";
@@ -174,33 +175,48 @@ export const deserializeTable = async (
 		model,
 		settings: {
 			columns: {},
+			rows: {},
 		},
-		cacheVersion: CURRENT_TABLE_CACHE_VERSION,
+		pluginVersion: CURRENT_PLUGIN_VERSION,
 	};
 
 	const savedState = plugin.settings.data[tableId];
 	if (savedState) {
-		const { cacheVersion, settings } = savedState;
+		const { pluginVersion, settings } = savedState;
 
 		if (DEBUG.LOAD_APP_DATA)
 			console.log("Loading settings from cache", settings);
 		//Update with old settings
 		tableState.settings = settings;
 
-		if (cacheVersion < CURRENT_TABLE_CACHE_VERSION) {
-			//Handle old cache version
+		if (pluginVersion < CURRENT_PLUGIN_VERSION) {
+			//Handle table produced by older plugin version
 		}
 	}
 	//Add ids
-	model.columnIds.forEach((columnId) => {
-		if (!tableState.settings.columns[columnId])
-			tableState.settings.columns[columnId] = DEFAULT_COLUMN_SETTINGS;
+	model.columnIds.forEach((id) => {
+		if (!tableState.settings.columns[id])
+			tableState.settings.columns[id] = { ...DEFAULT_COLUMN_SETTINGS };
+	});
+
+	model.rowIds.forEach((id, i) => {
+		if (!tableState.settings.rows[id]) {
+			tableState.settings.rows[id] = { ...DEFAULT_ROW_SETTINGS };
+			//Offset the time so that we can sort by this date
+			tableState.settings.rows[id].creationDate = Date.now() + i;
+			console.log(tableState.settings.rows);
+		}
 	});
 
 	//Clean up old ids
 	Object.keys(tableState.settings.columns).forEach((key) => {
 		if (!model.columnIds.includes(key))
 			delete tableState.settings.columns[key];
+	});
+
+	//Clean up old ids
+	Object.keys(tableState.settings.rows).forEach((key) => {
+		if (!model.rowIds.includes(key)) delete tableState.settings.rows[key];
 	});
 
 	plugin.settings.data[tableId] = tableState;

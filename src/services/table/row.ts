@@ -1,17 +1,15 @@
-import { TableModel } from "./types";
+import { DEFAULT_ROW_SETTINGS, TableState } from "./types";
 
 import { randomCellId, randomRowId } from "../random";
 
-export const addRow = (model: TableModel): TableModel => {
-	const { rowIds, columnIds, cells } = model;
-
+export const addRow = (prevState: TableState): TableState => {
 	const rowId = randomRowId();
-	const updatedCells = [...cells];
+	const cellsCopy = [...prevState.model.cells];
 
-	for (let i = 0; i < columnIds.length; i++) {
-		updatedCells.push({
+	for (let i = 0; i < prevState.model.columnIds.length; i++) {
+		cellsCopy.push({
 			id: randomCellId(),
-			columnId: columnIds[i],
+			columnId: prevState.model.columnIds[i],
 			rowId,
 			markdown: "",
 			html: "",
@@ -19,9 +17,20 @@ export const addRow = (model: TableModel): TableModel => {
 		});
 	}
 
+	const settingsCopy = { ...prevState.settings.rows };
+	settingsCopy[rowId] = { ...DEFAULT_ROW_SETTINGS };
+	settingsCopy[rowId].creationDate = Date.now();
+
 	return {
-		...model,
-		cells: updatedCells,
-		rowIds: [...rowIds, rowId],
+		...prevState,
+		model: {
+			...prevState.model,
+			cells: cellsCopy,
+			rowIds: [...prevState.model.rowIds, rowId],
+		},
+		settings: {
+			...prevState.settings,
+			rows: settingsCopy,
+		},
 	};
 };
