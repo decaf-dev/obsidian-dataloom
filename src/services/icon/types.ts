@@ -18,4 +18,5 @@ export const enum IconType {
 	TEXT_SNIPPET = "TextSnippet",
 	EDIT = "Edit",
 	MORE_HORIZ = "MoreHoriz",
+	CLOSE = "Close",
 }

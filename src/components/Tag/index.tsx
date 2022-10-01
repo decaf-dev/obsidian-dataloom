@@ -1,11 +1,13 @@
 import React from "react";
 
 import parse from "html-react-parser";
-import CloseIcon from "@mui/icons-material/Close";
+import { IconType } from "src/services/icon/types";
 
 import { findColorClass } from "src/services/color";
 
 import "./styles.css";
+import Icon from "../Icon";
+import Button from "../Button";
 
 interface Props {
 	isDarkMode: boolean;
@@ -32,9 +34,9 @@ export default function Tag({
 		<div className={tagClass}>
 			<div className="NLT__tag-content">{parse(html)}</div>
 			{showRemove && (
-				<CloseIcon
-					className="NLT__icon--md NLT__margin-left NLT__icon--selectable"
-					onClick={(e: React.MouseEvent) => {
+				<Button
+					icon={<Icon icon={IconType.CLOSE} />}
+					onClick={(e) => {
 						e.stopPropagation();
 						onRemoveClick(id);
 					}}

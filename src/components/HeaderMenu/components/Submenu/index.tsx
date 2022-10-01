@@ -15,9 +15,10 @@ export default function Submenu({ title, children, onBackClick }: Props) {
 	return (
 		<>
 			<div className="NLT__submenu-header">
-				<Button hasIcon onClick={() => onBackClick()}>
-					<Icon icon={IconType.KEYBOARD_BACKSPACE} />
-				</Button>
+				<Button
+					icon={<Icon icon={IconType.KEYBOARD_BACKSPACE} />}
+					onClick={() => onBackClick()}
+				/>
 				<div className="NLT__header-menu-title">{title}</div>
 			</div>
 			<hr className="NLT__hr" />

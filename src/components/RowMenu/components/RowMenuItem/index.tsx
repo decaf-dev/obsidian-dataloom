@@ -15,7 +15,7 @@ export default function RowMenuItem({ icon, content, onClick }: Props) {
 			onClick={() => onClick()}
 			className="NLT__drag-menu-item NLT__selectable"
 		>
-			<Stack spacing="sm">
+			<Stack>
 				<Icon icon={icon} />
 				<p className="NLT__p">{content}</p>
 			</Stack>

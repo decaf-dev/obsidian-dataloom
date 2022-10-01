@@ -62,14 +62,12 @@ export default function SelectableTag({
 				<div className="NLT__tag-content">{parse(html)}</div>
 			</div>
 			<Button
-				hasIcon
+				icon={<Icon icon={IconType.MORE_HORIZ} />}
 				onClick={(e) => {
 					e.stopPropagation();
 					dispatch(openMenu(menu));
 				}}
-			>
-				<Icon icon={IconType.MORE_HORIZ} />
-			</Button>
+			/>
 			<TagColorMenu
 				menuId={menu.id}
 				isOpen={isOpen}

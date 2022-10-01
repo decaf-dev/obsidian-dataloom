@@ -47,9 +47,10 @@ export default function RowMenu({ rowId, onDeleteClick }: Props) {
 
 	return (
 		<div ref={ref}>
-			<Button hasIcon onClick={(e) => handleButtonClick(e)}>
-				<Icon icon={IconType.MORE_HORIZ} />
-			</Button>
+			<Button
+				icon={<Icon icon={IconType.MORE_HORIZ} />}
+				onClick={(e) => handleButtonClick(e)}
+			/>
 			<Menu
 				id={menu.id}
 				isOpen={isOpen}

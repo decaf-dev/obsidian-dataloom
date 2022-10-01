@@ -1,4 +1,5 @@
 import Icon from "src/components/Icon";
+import Stack from "src/components/Stack";
 import { IconType } from "src/services/icon/types";
 
 interface Props {
@@ -18,8 +19,10 @@ export default function MenuItem({
 
 	return (
 		<li className={className} onClick={() => onClick()}>
-			{icon !== null && <Icon icon={icon} />}
-			{icon === null && <p className="NLT__p">{content}</p>}
+			<Stack>
+				{icon !== null && <Icon icon={icon} />}
+				<p className="NLT__p">{content}</p>
+			</Stack>
 		</li>
 	);
 }

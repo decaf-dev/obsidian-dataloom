@@ -1,3 +1,4 @@
+import React from "react";
 import { IconType } from "src/services/icon/types";
 import { findIcon } from "./services/utils";
 
@@ -6,18 +7,22 @@ import "./styles.css";
 interface Props {
 	icon: IconType;
 	variant?: "sm" | "md" | "lg";
-	className?: string;
+	onClick?: (e: React.MouseEvent) => void;
 }
 
-export default function Icon({ icon, variant = "md", className }: Props) {
-	let name = className;
+export default function Icon({ icon, variant = "md", onClick }: Props) {
+	let className = "";
 	if (variant === "sm") {
-		name += " NLT__icon--sm";
+		className = "NLT__icon--sm";
 	} else if (variant === "md") {
-		name += " NLT__icon--md";
+		className = "NLT__icon--md";
 	} else if (variant === "lg") {
-		name += " NLT__icon--lg";
+		className = "NLT__icon--lg";
 	}
 
-	return <>{findIcon(icon, name)} </>;
+	return (
+		<div className="NLT__icon" onClick={onClick && onClick}>
+			{findIcon(icon, className)}
+		</div>
+	);
 }

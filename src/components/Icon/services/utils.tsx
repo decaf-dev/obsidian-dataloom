@@ -1,7 +1,6 @@
 import {
 	ArrowUpward,
 	ArrowDownward,
-	Height,
 	MoreVert,
 	MoreHoriz,
 	Delete,
@@ -19,6 +18,7 @@ import {
 	MoveDown,
 	TextSnippet,
 	Edit,
+	Close,
 } from "@mui/icons-material";
 
 import { IconType } from "src/services/icon/types";
@@ -66,6 +66,8 @@ export const findIcon = (
 			return <Edit className={className} />;
 		case IconType.MORE_HORIZ:
 			return <MoreHoriz className={className} />;
+		case IconType.CLOSE:
+			return <Close className={className} />;
 		default:
 			return "";
 	}
