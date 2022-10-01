@@ -100,27 +100,32 @@ export default function HeaderMenu({
 	function handleMoveColumnClick(columnId: string, moveRight: boolean) {
 		onMoveColumnClick(columnId, moveRight);
 		onClose();
+		setSubmenu(null);
 	}
 
 	function handleSortClick(columnId: string, sortDir: SortDir) {
 		onSortSelect(columnId, sortDir);
 		onClose();
+		setSubmenu(null);
 	}
 
 	function handleInsertColumnClick(columnId: string, insertRight: boolean) {
 		onInsertColumnClick(columnId, insertRight);
 		onClose();
+		setSubmenu(null);
 	}
 
 	function handleTypeClick(columnId: string, type: CellType) {
 		onTypeSelect(columnId, type);
 		onClose();
+		setSubmenu(null);
 	}
 
 	function handleDeleteClick(columnId: string) {
 		if (window.confirm("Are you sure you want to delete this column?")) {
 			onDeleteClick(columnId);
 			onClose();
+			setSubmenu(null);
 		}
 	}
 
