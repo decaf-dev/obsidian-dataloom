@@ -10,6 +10,7 @@ import { randomColor } from "src/services/random";
 import { markdownToHtml } from "src/services/io/deserialize";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 import { closeTopLevelMenu } from "src/services/menu/menuSlice";
+import Wrap from "src/components/Wrap";
 
 import "./styles.css";
 
@@ -34,30 +35,32 @@ const MenuHeader = ({
 }: MenuHeaderProps) => {
 	return (
 		<div className="NLT__tag-menu-header">
-			{tags
-				.filter((tag: TagType) =>
-					tag.cells.find(
-						(c) => c.rowId === rowId && c.columnId === columnId
+			<Wrap spacingX="sm">
+				{tags
+					.filter((tag: TagType) =>
+						tag.cells.find(
+							(c) => c.rowId === rowId && c.columnId === columnId
+						)
 					)
-				)
-				.map((tag: TagType) => (
-					<Tag
-						isDarkMode={isDarkMode}
-						key={tag.id}
-						id={tag.id}
-						color={tag.color}
-						html={tag.html}
-						showRemove={true}
-						onRemoveClick={(tagId) => onRemoveTag(tagId)}
-					/>
-				))}
-			<input
-				className="NLT__tag-input"
-				autoFocus={true}
-				type="text"
-				value={inputText}
-				onChange={onInputTextChange}
-			/>
+					.map((tag: TagType) => (
+						<Tag
+							isDarkMode={isDarkMode}
+							key={tag.id}
+							id={tag.id}
+							color={tag.color}
+							html={tag.html}
+							showRemove={true}
+							onRemoveClick={(tagId) => onRemoveTag(tagId)}
+						/>
+					))}
+				<input
+					className="NLT__tag-input"
+					autoFocus={true}
+					type="text"
+					value={inputText}
+					onChange={onInputTextChange}
+				/>
+			</Wrap>
 		</div>
 	);
 };

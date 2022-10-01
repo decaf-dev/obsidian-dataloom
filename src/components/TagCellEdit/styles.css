@@ -3,11 +3,6 @@
 }
 
 .NLT__tag-menu-header {
-	display: flex;
-	flex-wrap: wrap;
-	column-gap: 10px;
-	row-gap: 5px;
-	align-items: center;
 	background-color: rgba(0, 0, 0, 0.25);
 	padding: 4px 10px;
 }

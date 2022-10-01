@@ -38,7 +38,7 @@ export default function EditMenu({
 }: Props) {
 	return (
 		<Submenu title={title} onBackClick={onBackClick}>
-			<Stack isVertical>
+			<Stack spacing="sm" isVertical>
 				<div>
 					<p className="NLT__label">Header Name</p>
 					<input
