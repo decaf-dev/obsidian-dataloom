@@ -17,16 +17,43 @@ export const CSS_MEASUREMENT_PIXEL_REGEX = new RegExp(/^([1-9])([0-9]*)px$/);
 export const DATE_REGEX = new RegExp(/^\d{4}\/\d{2}\/\d{2}$/);
 
 /**
- * Matches a markdown checkbox [ ] or [x]
+ * Matches a markdown checkbox
+ * [ ] or [x]
  */
 export const CHECKBOX_REGEX = new RegExp(/^\[[x ]{0,1}\]$/);
 
 /**
- * Matches a checked markdown checkbox [x]
+ * Matches a checked markdown checkbox
+ * [x]
  */
 export const CHECKBOX_CHECKED_REGEX = new RegExp(/^\[[x]\]$/);
 
 /**
- * Matches a forward '/' or backslash '\'
+ * Matches a forward or backslash
+ * / or \
  */
 export const SLASH_REGEX = new RegExp(/\/|\\/);
+
+/**
+ * Matches an Obsidian link
+ * [[File Name]]
+ */
+export const OBSIDIAN_LINK_REGEX = new RegExp(/\[\[[^\\\[\]]+\]\]/, "g");
+
+/**
+ * Matches a left square bracket
+ * [
+ */
+export const LEFT_SQUARE_BRACKET_REGEX = new RegExp(/\[/, "g");
+
+/**
+ * Matches a right square bracket
+ * ]
+ */
+export const RIGHT_SQUARE_BRACKET_REGEX = new RegExp(/\]/, "g");
+
+/**
+ * Matches an external link
+ * e.g. https://www.google.com
+ */
+export const EXTERNAL_LINK_REGEX = new RegExp(/http[s]{0,1}:\/\/[^\s]+/, "g");

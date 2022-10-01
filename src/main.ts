@@ -3,6 +3,7 @@ import {
 	Editor,
 	MarkdownView,
 	Notice,
+	TFile,
 	MarkdownViewModeType,
 } from "obsidian";
 
@@ -73,6 +74,9 @@ export default class NltPlugin extends Plugin {
 		await this.loadSettings();
 		await this.forcePostProcessorReload();
 
+		this.registerMarkdownPostProcessor((el, context) => {
+			console.log(el);
+		});
 		this.registerMarkdownCodeBlockProcessor(
 			"notion-like-tables",
 			(source, el, ctx) => {
@@ -339,5 +343,9 @@ export default class NltPlugin extends Plugin {
 					view.previewMode.rerender(true);
 			}
 		});
+	}
+
+	static getFiles(): TFile[] {
+		return app.vault.getFiles();
 	}
 }
