@@ -1,10 +1,11 @@
-import React, { useMemo, useRef } from "react";
+import React, { useMemo } from "react";
 
-import IconButton from "../IconButton";
 import Menu from "../Menu";
 import RowMenuItem from "./components/RowMenuItem";
+import Icon from "../Icon";
 
-import { Icon } from "src/services/icon/types";
+import Button from "../Button";
+import { IconType } from "src/services/icon/types";
 import { usePositionRef } from "src/services/hooks";
 import { useMenu } from "src/services/menu/hooks";
 import {
@@ -49,7 +50,7 @@ export default function RowMenu({ rowId, onDeleteClick }: Props) {
 			{
 				name: "delete",
 				content: "Delete",
-				icon: Icon.DELETE,
+				icon: IconType.DELETE,
 				onClick: () => handleDeleteClick(rowId),
 			},
 		];
@@ -57,7 +58,9 @@ export default function RowMenu({ rowId, onDeleteClick }: Props) {
 
 	return (
 		<div ref={ref}>
-			<IconButton icon={Icon.MORE_VERT} onClick={handleButtonClick} />
+			<Button hasIcon onClick={(e) => handleButtonClick(e)}>
+				<Icon icon={IconType.MORE_HORIZ} />
+			</Button>
 			<Menu
 				id={menu.id}
 				isOpen={isOpen}
@@ -72,7 +75,7 @@ export default function RowMenu({ rowId, onDeleteClick }: Props) {
 							<RowMenuItem
 								key={item.name}
 								icon={item.icon}
-								iconText={item.content}
+								content={item.content}
 								onClick={item.onClick}
 							/>
 						);

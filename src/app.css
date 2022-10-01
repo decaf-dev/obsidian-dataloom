@@ -105,6 +105,11 @@
 	height: 1rem !important;
 }
 
+.NLT__icon--lg {
+	width: 1.1rem !important;
+	height: 1.1rem !important;
+}
+
 /*
 * Selectable and selected
 */

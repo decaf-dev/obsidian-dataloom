@@ -1,8 +1,9 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 
 import { SortDir } from "src/services/sort/types";
-import { findSortIcon } from "src/services/icon/utils";
 import { TableSettings, TableModel } from "src/services/table/types";
+import Icon from "../Icon";
+import { IconType } from "src/services/icon/types";
 
 import "./styles.css";
 
@@ -12,10 +13,13 @@ interface SortBubbleProps {
 }
 
 const SortBubble = ({ sortDir, content }: SortBubbleProps) => {
-	const icon = findSortIcon(sortDir, "NLT__icon--md");
 	return (
 		<div className="NLT__sort-bubble">
-			{icon}
+			{sortDir === SortDir.ASC ? (
+				<Icon icon={IconType.ARROW_UPWARD} />
+			) : (
+				<Icon icon={IconType.ARROW_DOWNWARD} />
+			)}
 			<span>{content}</span>
 		</div>
 	);
@@ -46,24 +50,24 @@ interface Props {
 export default function OptionBar({ model, settings }: Props) {
 	const bubbles = useMemo(() => {
 		return model.columnIds
-			.map((columnId) => {
+			.map((id) => {
 				const cell = model.cells.find(
-					(c) => c.columnId === columnId && c.isHeader
+					(c) => c.columnId === id && c.isHeader
 				);
 				return cell;
 			})
-			.filter((cell) => {
-				const { sortDir } = settings.columns[cell.columnId];
+			.filter((c) => {
+				const { sortDir } = settings.columns[c.columnId];
 				return sortDir !== SortDir.NONE;
 			})
-			.map((cell, i) => {
-				const { sortDir } = settings.columns[cell.columnId];
+			.map((c) => {
+				const { sortDir } = settings.columns[c.columnId];
 				return {
-					content: cell.html,
+					content: c.html,
 					sortDir,
 				};
 			});
-	}, [model]);
+	}, [model.cells, settings.columns]);
 
 	return (
 		<div className="NLT__option-bar">

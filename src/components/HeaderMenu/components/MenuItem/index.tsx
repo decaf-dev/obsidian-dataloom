@@ -1,11 +1,8 @@
-import React from "react";
-
-import IconText from "../../../IconText";
-
-import { Icon } from "src/services/icon/types";
+import Icon from "src/components/Icon";
+import { IconType } from "src/services/icon/types";
 
 interface Props {
-	icon?: Icon | null;
+	icon?: IconType | null;
 	content: string;
 	onClick: any;
 	selected?: boolean;
@@ -21,7 +18,7 @@ export default function MenuItem({
 
 	return (
 		<li className={className} onClick={() => onClick()}>
-			{icon !== null && <IconText iconText={content} icon={icon} />}
+			{icon !== null && <Icon icon={icon} />}
 			{icon === null && <p className="NLT__p">{content}</p>}
 		</li>
 	);
