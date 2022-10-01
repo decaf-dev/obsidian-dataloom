@@ -3,6 +3,8 @@ import {
 	DEFAULT_COLUMN_SETTINGS,
 	TableState,
 	ColumnSettings,
+	RowSettings,
+	DEFAULT_ROW_SETTINGS,
 } from "../table/types";
 
 const tableHeaderRow = (numColumns: number) => {
@@ -76,13 +78,18 @@ export const mockMarkdownTable = (
 	return table;
 };
 
-export const mockSettings = (numColumns: number) => {
+export const mockSettings = (numColumns: number, numRows: number) => {
 	const columns: { [x: string]: ColumnSettings } = {};
+	const rows: { [x: string]: RowSettings } = {};
 	for (let i = 0; i < numColumns; i++) {
-		columns[i] = DEFAULT_COLUMN_SETTINGS;
+		columns[i] = { ...DEFAULT_COLUMN_SETTINGS };
+	}
+	for (let i = 0; i < numRows; i++) {
+		rows[i] = { ...DEFAULT_ROW_SETTINGS };
 	}
 	return {
 		columns,
+		rows,
 	};
 };
 
@@ -111,7 +118,12 @@ export const mockTableState = (
 	}
 	const columnSettings = Object.fromEntries(
 		columnIds.map((id) => {
-			return [id, DEFAULT_COLUMN_SETTINGS];
+			return [id, { ...DEFAULT_COLUMN_SETTINGS }];
+		})
+	);
+	const rowSettings = Object.fromEntries(
+		rowIds.map((id) => {
+			return [id, DEFAULT_ROW_SETTINGS];
 		})
 	);
 	return {
@@ -120,9 +132,10 @@ export const mockTableState = (
 			columnIds,
 			cells,
 		},
-		cacheVersion: 1,
+		pluginVersion: 1,
 		settings: {
 			columns: columnSettings,
+			rows: rowSettings,
 		},
 	};
 };

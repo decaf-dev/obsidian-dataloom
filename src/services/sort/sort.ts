@@ -1,6 +1,56 @@
 import { SortDir } from "./types";
-import { ColumnSettings, TableModel, TableState } from "../table/types";
+import {
+	ColumnSettings,
+	TableModel,
+	TableSettings,
+	TableState,
+	Cell,
+} from "../table/types";
 import { sortCells } from "../table/utils";
+
+const sortByDir = (
+	columnId: string,
+	sortDir: SortDir,
+	rowIds: string[],
+	cells: Cell[]
+) => {
+	const rowsCopy = [...rowIds];
+	rowsCopy.sort((a, b) => {
+		const cellA = cells.find(
+			(c) => c.columnId === columnId && c.rowId === a
+		);
+		const cellB = cells.find(
+			(c) => c.columnId === columnId && c.rowId === b
+		);
+
+		const markdownA = cellA.markdown;
+		const markdownB = cellB.markdown;
+
+		//Force empty cells to the bottom
+		if (cellA.isHeader) return -1;
+		if (cellB.isHeader) return 1;
+		if (markdownA === "" && markdownB !== "") return 1;
+		if (markdownA !== "" && markdownB === "") return -1;
+		if (markdownA === "" && markdownB === "") return 0;
+
+		if (sortDir === SortDir.ASC) {
+			return markdownA.localeCompare(markdownB);
+		} else if (sortDir === SortDir.DESC) {
+			return markdownB.localeCompare(markdownA);
+		}
+	});
+	return rowsCopy;
+};
+
+const sortByCreationDate = (settings: TableSettings, rowIds: string[]) => {
+	const rowsCopy = [...rowIds];
+	rowsCopy.sort((a, b) => {
+		const rowSettingsA = settings.rows[a];
+		const rowSettingsB = settings.rows[b];
+		return rowSettingsA.creationDate - rowSettingsB.creationDate;
+	});
+	return rowsCopy;
+};
 
 export const sortRows = (prevState: TableState): TableModel => {
 	let headerSettings: ColumnSettings | null = null;
@@ -16,43 +66,18 @@ export const sortRows = (prevState: TableState): TableModel => {
 		}
 	}
 
-	if (!headerSettings) return model;
+	if (!headerSettings)
+		return {
+			...model,
+			rowIds: sortByCreationDate(settings, model.rowIds),
+		};
 
-	const updatedRows = [...model.rowIds];
+	const rowsCopy = [...model.rowIds];
 	const { sortDir } = headerSettings;
 
-	updatedRows.sort((a, b) => {
-		const cellA = model.cells.find(
-			(c) => c.columnId === columnId && c.rowId === a
-		);
-		const cellB = model.cells.find(
-			(c) => c.columnId === columnId && c.rowId === b
-		);
-
-		const markdownA = cellA.markdown;
-		const markdownB = cellB.markdown;
-		console.log("A", markdownA);
-		console.log("B", markdownB);
-
-		//Force empty cells to the bottom
-		if (cellA.isHeader) return -1;
-		if (cellB.isHeader) return 1;
-		if (markdownA === "" && markdownB !== "") return 1;
-		if (markdownA !== "" && markdownB === "") return -1;
-		if (markdownA === "" && markdownB === "") return 0;
-
-		if (sortDir === SortDir.ASC) {
-			return markdownA.localeCompare(markdownB);
-		} else if (sortDir === SortDir.DESC) {
-			return markdownB.localeCompare(markdownA);
-		}
-	});
-
-	console.log(updatedRows);
-
 	return {
-		rowIds: updatedRows,
+		rowIds: sortByDir(columnId, sortDir, model.rowIds, model.cells),
 		columnIds: model.columnIds,
-		cells: sortCells(updatedRows, model.columnIds, model.cells),
+		cells: sortCells(rowsCopy, model.columnIds, model.cells),
 	};
 };

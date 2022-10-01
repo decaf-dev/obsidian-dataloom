@@ -114,17 +114,6 @@
 	background-color: var(--interactive-normal);
 }
 
-/*
-* Margin
-*/
-.NLT__margin-right {
-	margin-right: 4px;
-}
-
-.NLT__margin-left {
-	margin-left: 4px;
-}
-
 /**
 * Overflow
 */

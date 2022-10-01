@@ -42,7 +42,7 @@ const COMPONENT_NAME = "App";
 
 export default function App({ plugin, viewMode, tableId }: Props) {
 	const [state, setTableState] = useState<TableState>({
-		cacheVersion: -1,
+		pluginVersion: -1,
 		model: {
 			rowIds: [],
 			columnIds: [],
@@ -50,6 +50,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		},
 		settings: {
 			columns: {},
+			rows: {},
 		},
 	});
 
@@ -126,16 +127,16 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			if (tId) {
 				const mode = viewModes.find((v) => v === viewMode);
 				if (mode && tableId === tId) {
-					const modeIndex = viewModes.indexOf(mode);
-					plugin.settings.viewModeSync.viewModes.splice(modeIndex, 1);
-					if (plugin.settings.viewModeSync.viewModes.length === 0)
-						plugin.settings.viewModeSync.tableId = null;
 					if (DEBUG.APP)
 						logFunc(COMPONENT_NAME, "checkForUpdates", {
 							tableId,
 							viewModes,
 							eventType,
 						});
+					const modeIndex = viewModes.indexOf(mode);
+					plugin.settings.viewModeSync.viewModes.splice(modeIndex, 1);
+					if (plugin.settings.viewModeSync.viewModes.length === 0)
+						plugin.settings.viewModeSync.tableId = null;
 					if (eventType === "update-state") {
 						setTableState(plugin.settings.data[tableId]);
 					} else if (eventType === "sort-rows") {
@@ -190,11 +191,8 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	function handleAddRow() {
 		if (DEBUG.APP) console.log("[App]: handleAddRow called.");
 		setTableState((prevState) => {
-			const model = addRow(prevState.model);
-			return {
-				...prevState,
-				model: model,
-			};
+			const newState = addRow(prevState);
+			return newState;
 		});
 		handleSaveData(true);
 	}
@@ -351,8 +349,8 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			});
 
 		setTableState((prevState) => {
-			const obj = { ...prevState.settings.columns };
-			delete obj[columnId];
+			const columnsCopy = { ...prevState.settings.columns };
+			delete columnsCopy[columnId];
 
 			return {
 				...prevState,
@@ -365,7 +363,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				},
 				settings: {
 					...prevState.settings,
-					columns: obj,
+					columns: columnsCopy,
 				},
 			};
 		});
@@ -378,6 +376,8 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				rowId,
 			});
 		setTableState((prevState) => {
+			const rowsCopy = { ...prevState.settings.rows };
+			delete rowsCopy[rowId];
 			return {
 				...prevState,
 				model: {
@@ -386,6 +386,10 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 						(cell) => cell.rowId !== rowId
 					),
 					rowIds: prevState.model.rowIds.filter((id) => id !== rowId),
+				},
+				settings: {
+					...prevState.settings,
+					rows: rowsCopy,
 				},
 			};
 		});
@@ -511,7 +515,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			);
 
 			const settingsObj = { ...settings };
-			settingsObj.columns[newColId] = DEFAULT_COLUMN_SETTINGS;
+			settingsObj.columns[newColId] = { ...DEFAULT_COLUMN_SETTINGS };
 
 			return {
 				...prevState,

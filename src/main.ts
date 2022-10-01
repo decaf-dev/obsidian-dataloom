@@ -275,12 +275,8 @@ export default class NltPlugin extends Plugin {
 			callback: async () => {
 				if (this.focusedTableId) {
 					const tableId = this.focusedTableId;
-					const { model } = this.settings.data[tableId];
-					const updatedModel = addRow(model);
-					const newState = {
-						...this.settings.data[tableId],
-						model: updatedModel,
-					};
+					const prevState = this.settings.data[tableId];
+					const newState = addRow(prevState);
 					const viewModesToUpdate: MarkdownViewModeType[] = [
 						"preview",
 					];
