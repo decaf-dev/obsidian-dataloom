@@ -63,6 +63,7 @@ export default function SelectableTag({
 			</div>
 			<Button
 				icon={<Icon icon={IconType.MORE_HORIZ} />}
+				isDarker
 				onClick={(e) => {
 					e.stopPropagation();
 					dispatch(openMenu(menu));

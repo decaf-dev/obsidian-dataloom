@@ -8,6 +8,7 @@ import { findColorClass } from "src/services/color";
 import "./styles.css";
 import Icon from "../Icon";
 import Button from "../Button";
+import Stack from "../Stack";
 
 interface Props {
 	isDarkMode: boolean;
@@ -32,16 +33,19 @@ export default function Tag({
 
 	return (
 		<div className={tagClass}>
-			<div className="NLT__tag-content">{parse(html)}</div>
-			{showRemove && (
-				<Button
-					icon={<Icon icon={IconType.CLOSE} />}
-					onClick={(e) => {
-						e.stopPropagation();
-						onRemoveClick(id);
-					}}
-				/>
-			)}
+			<Stack spacing="sm">
+				<div className="NLT__tag-content">{parse(html)}</div>
+				{showRemove && (
+					<Button
+						icon={<Icon variant="sm" icon={IconType.CLOSE} />}
+						isDarker
+						onClick={(e) => {
+							e.stopPropagation();
+							onRemoveClick(id);
+						}}
+					/>
+				)}
+			</Stack>
 		</div>
 	);
 }
