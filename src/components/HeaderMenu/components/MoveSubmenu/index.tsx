@@ -1,7 +1,5 @@
-import React from "react";
-
 import MenuItem from "../MenuItem";
-import { Icon } from "src/services/icon/types";
+import { IconType } from "src/services/icon/types";
 import Submenu from "../Submenu";
 
 interface Props {
@@ -23,14 +21,14 @@ export default function MoveSubmenu({
 			<ul className="NLT__header-menu-ul">
 				{columnIndex !== 0 && (
 					<MenuItem
-						icon={Icon.KEYBOARD_DOUBLE_ARROW_LEFT}
+						icon={IconType.KEYBOARD_DOUBLE_ARROW_LEFT}
 						content="Move Left"
 						onClick={() => onMoveClick(false)}
 					/>
 				)}
 				{columnIndex !== numColumns - 1 && (
 					<MenuItem
-						icon={Icon.KEYBOARD_DOUBLE_ARROW_RIGHT}
+						icon={IconType.KEYBOARD_DOUBLE_ARROW_RIGHT}
 						content="Move Right"
 						onClick={() => onMoveClick(true)}
 					/>

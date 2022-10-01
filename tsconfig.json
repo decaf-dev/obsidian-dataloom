@@ -11,7 +11,7 @@
     "importHelpers": true,
     "isolatedModules": true,
     "allowSyntheticDefaultImports": true,
-    "jsx": "react",
+    "jsx": "react-jsx",
     "lib": [
       "DOM",
       "ES5",

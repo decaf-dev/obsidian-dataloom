@@ -1,7 +1,7 @@
 export const DEBUG = {
-	LOAD_APP_DATA: false,
+	LOAD_APP_DATA: true,
 	APP: true,
-	SAVE_APP_DATA: false,
+	SAVE_APP_DATA: true,
 	EDITABLE_TD: false,
 	MENU: false,
 };

@@ -1,4 +1,3 @@
-import React from "react";
 import Menu from "../Menu";
 
 import DatePicker from "react-datepicker";

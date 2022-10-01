@@ -1,85 +1,43 @@
 import React from "react";
 
-import BaseTable from "./components";
-import Button from "src/components/Button";
-
 import { TableComponent } from "src/services/table/types";
-import { useId } from "src/services/hooks";
+
+import "./styles.css";
 
 interface Props {
 	headers: TableComponent[];
 	rows: TableComponent[];
-	footers?: TableComponent[];
-	onAddColumn: () => void;
-	onAddRow: () => void;
+	footers: TableComponent[];
 }
 
-const NewColumnButton = ({ onAddNew }: { onAddNew: () => void }) => {
+export default function Table({ headers, rows, footers }: Props) {
 	return (
-		<th className="NLT__th" style={{ height: "1.8rem" }}>
-			<div className="NLT__th-container" style={{ paddingLeft: "10px" }}>
-				<Button onClick={() => onAddNew()}>New</Button>
-			</div>
-		</th>
-	);
-};
-
-const NewRowButton = ({ onAddNew }: { onAddNew: () => void }) => {
-	return (
-		<td className="NLT__td">
-			<div className="NLT__td-container">
-				<Button onClick={() => onAddNew()}>New</Button>
-			</div>
-		</td>
-	);
-};
-
-const EmptyCell = () => {
-	return <td className="NLT__td" />;
-};
-
-export default function Table({
-	headers,
-	rows,
-	footers = [],
-	onAddColumn,
-	onAddRow,
-}: Props) {
-	const columnButtonId = useId();
-	const rowButtonId = useId();
-
-	function renderNewColumnButton(onAddColumn: () => void): TableComponent {
-		return {
-			id: columnButtonId,
-			component: <NewColumnButton onAddNew={onAddColumn} />,
-		};
-	}
-
-	function renderNewRowButton(onAddRow: () => void): TableComponent {
-		return {
-			id: rowButtonId,
-			component: <NewRowButton onAddNew={onAddRow} />,
-		};
-	}
-
-	function renderEmptyCells(headers: TableComponent[]): TableComponent[] {
-		return headers.map((header) => {
-			return {
-				id: header.id,
-				component: <EmptyCell />,
-			};
-		});
-	}
-
-	return (
-		<BaseTable
-			headers={[...headers, renderNewColumnButton(onAddColumn)]}
-			rows={rows}
-			footers={[
-				...footers,
-				renderNewRowButton(onAddRow),
-				...renderEmptyCells(headers),
-			]}
-		/>
+		<table className="NLT__table">
+			<thead className="NLT__thead">
+				<tr className="NLT__tr">
+					{headers.map((header) => (
+						<React.Fragment key={header.id}>
+							{header.component}
+						</React.Fragment>
+					))}
+				</tr>
+			</thead>
+			<tbody className="NLT__tbody">
+				{rows.map((row) => (
+					<tr key={row.id} className="NLT__tr">
+						{row.component}
+					</tr>
+				))}
+			</tbody>
+			<tfoot className="NLT__tfoot">
+				<tr className="NLT__tr">
+					{footers.map((footer) => (
+						<React.Fragment key={footer.id}>
+							{footer.component}
+						</React.Fragment>
+					))}
+				</tr>
+			</tfoot>
+		</table>
 	);
 }

@@ -1,4 +1,3 @@
-import React from "react";
 import { isValidCellContent } from "src/services/table/utils";
 import { CellType } from "src/services/table/types";
 
@@ -28,10 +27,7 @@ export default function CheckboxCell({ content, onCheckboxChange }: Props) {
 				type="checkbox"
 				checked={isChecked}
 				onChange={() => {}}
-				onClick={(e) => {
-					e.stopPropagation();
-					handleClick();
-				}}
+				onClick={handleClick}
 			/>
 		</div>
 	);

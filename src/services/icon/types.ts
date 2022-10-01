@@ -1,7 +1,6 @@
-export const enum Icon {
+export const enum IconType {
 	ARROW_UPWARD,
 	ARROW_DOWNWARD,
-	HEIGHT = "Height",
 	KEYBOARD_ARROW_UP = "KeyboardArrowUp",
 	KEYBOARD_ARROW_DOWN = "KeyboardArrowDown",
 	KEYBOARD_DOUBLE_ARROW_UP = "KeyboardDoubleArrowUp",
@@ -19,4 +18,5 @@ export const enum Icon {
 	TEXT_SNIPPET = "TextSnippet",
 	EDIT = "Edit",
 	MORE_HORIZ = "MoreHoriz",
+	CLOSE = "Close",
 }

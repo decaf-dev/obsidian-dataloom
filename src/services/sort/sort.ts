@@ -1,58 +1,58 @@
 import { SortDir } from "./types";
-import {
-	TableModel,
-	TableSettings,
-	Cell,
-	ColumnSettings,
-} from "../table/types";
+import { ColumnSettings, TableModel, TableState } from "../table/types";
+import { sortCells } from "../table/utils";
 
-// //TODO when you move columns, you need to change the settings
-// export const sortRows = (
-// 	model: TableModel,
-// 	settings: TableSettings
-// ): Cell[] => {
-// 	let headerSettings: ColumnSettings | null = null;
+export const sortRows = (prevState: TableState): TableModel => {
+	let headerSettings: ColumnSettings | null = null;
+	let columnId = "";
 
-// 	const { cells, numColumns } = model;
+	const { settings, model } = prevState;
 
-// 	for (let i = 0; i < numColumns; i++) {
-// 		if (settings.columns[i].sortDir !== SortDir.NONE)
-// 			headerSettings = settings.columns[i];
-// 	}
+	for (let i = 0; i < model.columnIds.length; i++) {
+		const cId = model.columnIds[i];
+		if (settings.columns[cId].sortDir !== SortDir.NONE) {
+			headerSettings = settings.columns[cId];
+			columnId = cId;
+		}
+	}
 
-// 	if (!headerSettings) return cells;
+	if (!headerSettings) return model;
 
-// 	const
-// 	for (let i = 0; i < cells.length; i++){
+	const updatedRows = [...model.rowIds];
+	const { sortDir } = headerSettings;
 
-// 	}
-// 	const arr = model.cells;
-// 	const { sortDir } = headerSettings;
+	updatedRows.sort((a, b) => {
+		const cellA = model.cells.find(
+			(c) => c.columnId === columnId && c.rowId === a
+		);
+		const cellB = model.cells.find(
+			(c) => c.columnId === columnId && c.rowId === b
+		);
 
-// 	arr.sort((a, b) => {
-// 		const cellA = model.cells.find(
-// 			(cell) => cell.headerId === id && cell.rowId === a.id
-// 		);
-// 		const cellB = model.cells.find(
-// 			(cell) => cell.headerId === id && cell.rowId === b.id
-// 		);
-// 		const contentA = cellA.content;
-// 		const contentB = cellB.content;
+		const markdownA = cellA.markdown;
+		const markdownB = cellB.markdown;
+		console.log("A", markdownA);
+		console.log("B", markdownB);
 
-// 		if (sortDir !== SortDir.NONE) {
-// 			//Force empty cells to the bottom
-// 			if (contentA === "" && contentB !== "") return 1;
-// 			if (contentA !== "" && contentB === "") return -1;
-// 			if (contentA === "" && contentB === "") return 0;
-// 		}
+		//Force empty cells to the bottom
+		if (cellA.isHeader) return -1;
+		if (cellB.isHeader) return 1;
+		if (markdownA === "" && markdownB !== "") return 1;
+		if (markdownA !== "" && markdownB === "") return -1;
+		if (markdownA === "" && markdownB === "") return 0;
 
-// 		if (sortDir === SortDir.ASC) {
-// 			return contentA.localeCompare(contentB);
-// 		} else if (sortDir === SortDir.DESC) {
-// 			return contentB.localeCompare(contentA);
-// 		} else {
-// 			return 0;
-// 		}
-// 	});
-// 	return arr;
-// };
+		if (sortDir === SortDir.ASC) {
+			return markdownA.localeCompare(markdownB);
+		} else if (sortDir === SortDir.DESC) {
+			return markdownB.localeCompare(markdownA);
+		}
+	});
+
+	console.log(updatedRows);
+
+	return {
+		rowIds: updatedRows,
+		columnIds: model.columnIds,
+		cells: sortCells(updatedRows, model.columnIds, model.cells),
+	};
+};

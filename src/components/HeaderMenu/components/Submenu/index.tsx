@@ -1,9 +1,8 @@
-import React from "react";
+import Button from "src/components/Button";
+import Icon from "src/components/Icon";
+import Stack from "src/components/Stack";
 
-import IconButton from "src/components/IconButton";
-import { Icon } from "src/services/icon/types";
-
-import "./styles.css";
+import { IconType } from "src/services/icon/types";
 
 interface Props {
 	title: string;
@@ -14,15 +13,15 @@ interface Props {
 export default function Submenu({ title, children, onBackClick }: Props) {
 	return (
 		<>
-			<div className="NLT__submenu-header">
-				<IconButton
-					icon={Icon.KEYBOARD_BACKSPACE}
+			<Stack>
+				<Button
+					icon={<Icon icon={IconType.KEYBOARD_BACKSPACE} />}
 					onClick={() => onBackClick()}
 				/>
 				<div className="NLT__header-menu-title">{title}</div>
-			</div>
+			</Stack>
 			<hr className="NLT__hr" />
-			<div className="NLT__submenu-body">{children}</div>
+			<div>{children}</div>
 		</>
 	);
 }

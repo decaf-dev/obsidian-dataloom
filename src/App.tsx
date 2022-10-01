@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import EditableTd from "./components/EditableTd";
 import Table from "./components/Table";
@@ -15,23 +15,23 @@ import { addColumn } from "./services/table/column";
 import { logFunc } from "./services/debug";
 import { DEFAULT_COLUMN_SETTINGS } from "./services/table/types";
 import { getUniqueTableId, sortCells } from "./services/table/utils";
-// import { sortRows } from "./services/sort/sort";
 import { TableState } from "./services/table/types";
 
 import { DEBUG } from "./constants";
 
-import { MarkdownViewModeType } from "obsidian";
+import { livePreviewState, MarkdownViewModeType } from "obsidian";
 import { deserializeTable, markdownToHtml } from "./services/io/deserialize";
-import { randomColumnId, randomCellId } from "./services/random";
+import { randomColumnId, randomCellId, randomRowId } from "./services/random";
 import { useAppDispatch } from "./services/redux/hooks";
 import { closeAllMenus, updateMenuPosition } from "./services/menu/menuSlice";
 
 import _ from "lodash";
-import { findCellWidth } from "./services/table/sizing";
 import { addExistingTag, addNewTag, removeTag } from "./services/table/tag";
 import { changeColumnType } from "./services/table/column";
+import Button from "./components/Button";
 
 import "./app.css";
+import { sortRows } from "./services/sort/sort";
 interface Props {
 	plugin: NltPlugin;
 	tableId: string;
@@ -53,14 +53,13 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		},
 	});
 
-	const [sortTime, setSortTime] = useState(0);
 	const [isLoading, setLoading] = useState(true);
 	const [saveTime, setSaveTime] = useState({
 		time: 0,
 		shouldSaveModel: false,
 	});
 
-	//const { columnWidths, rowHeights, cellRefs } = useTableSizing(state.model);
+	const [sortTime, setSortTime] = useState(0);
 
 	const dispatch = useAppDispatch();
 
@@ -69,13 +68,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		dispatch(updateMenuPosition());
 	}, 150);
 
-	const throttlePositionUpdate = _.throttle(() => {
-		dispatch(updateMenuPosition());
-	}, 150);
-
 	const handleTableScroll = () => throttleTableScroll();
-
-	const handlePositionUpdate = () => throttlePositionUpdate();
 
 	//Load table on mount
 	useEffect(() => {
@@ -112,17 +105,24 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			tableId,
 			viewModesToUpdate
 		);
+		//Make sure to update the menu positions, so that the menu will render properly
+		dispatch(updateMenuPosition());
 	}, 150);
 
-	const handleSaveData = (shouldSaveModel: boolean) =>
+	const handleSaveData = (shouldSaveModel: boolean) => {
 		setSaveTime({ shouldSaveModel, time: Date.now() });
+	};
 
 	//Handles sync between live preview and reading mode
 	useEffect(() => {
 		let timer: any = null;
 
 		async function checkForUpdates() {
-			const { tableId: tId, viewModes } = plugin.settings.viewModeSync;
+			const {
+				tableId: tId,
+				viewModes,
+				eventType,
+			} = plugin.settings.viewModeSync;
 			if (tId) {
 				const mode = viewModes.find((v) => v === viewMode);
 				if (mode && tableId === tId) {
@@ -130,7 +130,17 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 					plugin.settings.viewModeSync.viewModes.splice(modeIndex, 1);
 					if (plugin.settings.viewModeSync.viewModes.length === 0)
 						plugin.settings.viewModeSync.tableId = null;
-					setTableState(plugin.settings.data[tableId]);
+					if (DEBUG.APP)
+						logFunc(COMPONENT_NAME, "checkForUpdates", {
+							tableId,
+							viewModes,
+							eventType,
+						});
+					if (eventType === "update-state") {
+						setTableState(plugin.settings.data[tableId]);
+					} else if (eventType === "sort-rows") {
+						handleSortRows();
+					}
 					await plugin.saveSettings();
 				}
 			}
@@ -139,7 +149,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		function viewModeSync() {
 			timer = setInterval(() => {
 				checkForUpdates();
-			}, 100);
+			}, 50);
 		}
 
 		viewModeSync();
@@ -148,22 +158,19 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		};
 	}, []);
 
-	//TODO add
-	// useDidMountEffect(() => {
-	// 	setTableState((prevState) => {
-	// 		return {
-	// 			...prevState,
-	// 			model: {
-	// 				...prevState.model,
-	// 				// rows: sortRows(state.model, state.settings),
-	// 			},
-	// 		};
-	// 	});
-	// }, [sortTime]);
+	useEffect(() => {
+		if (sortTime !== 0) {
+			setTableState((prevState) => {
+				return {
+					...prevState,
+					model: sortRows(prevState),
+				};
+			});
+			handleSaveData(true);
+		}
+	}, [sortTime]);
 
-	//TODO add save
-
-	function sortData() {
+	function handleSortRows() {
 		setSortTime(Date.now());
 	}
 
@@ -213,22 +220,22 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			});
 		}
 		setTableState((prevState) => {
+			const columnsCopy = { ...prevState.settings.columns };
+			Object.entries(columnsCopy).forEach((entry) => {
+				const [key, value] = entry;
+				if (value.sortDir !== SortDir.NONE)
+					columnsCopy[key].sortDir = SortDir.NONE;
+				if (key === columnId) columnsCopy[key].sortDir = sortDir;
+			});
 			return {
 				...prevState,
 				settings: {
 					...prevState.settings,
-					columns: {
-						...prevState.settings.columns,
-						[columnId]: {
-							...prevState.settings.columns[columnId],
-							sortDir,
-						},
-					},
+					columns: columnsCopy,
 				},
 			};
 		});
-		//TODO add save
-		sortData();
+		handleSortRows();
 	}
 
 	function handleCellContentChange(cellId: string, updatedMarkdown: string) {
@@ -258,7 +265,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			};
 		});
 		handleSaveData(true);
-		handlePositionUpdate();
 	}
 
 	function handleAddTag(
@@ -294,7 +300,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			)
 		);
 		handleSaveData(true);
-		handlePositionUpdate();
 	}
 
 	function handleTagClick(
@@ -324,7 +329,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			)
 		);
 		handleSaveData(true);
-		handlePositionUpdate();
 	}
 
 	function handleRemoveTagClick(
@@ -366,8 +370,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			};
 		});
 		handleSaveData(true);
-		handlePositionUpdate();
-		//sortData();
 	}
 
 	function handleRowDeleteClick(rowId: string) {
@@ -383,13 +385,35 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 					cells: prevState.model.cells.filter(
 						(cell) => cell.rowId !== rowId
 					),
-					rows: prevState.model.rowIds.filter((id) => id !== rowId),
+					rowIds: prevState.model.rowIds.filter((id) => id !== rowId),
 				},
 			};
 		});
 		handleSaveData(true);
-		handlePositionUpdate();
-		//sortData();
+	}
+
+	function handleSortRemoveClick(columnId: string) {
+		if (DEBUG.APP) {
+			logFunc(COMPONENT_NAME, "handleSortRemoveClick", {
+				columnId,
+			});
+		}
+		setTableState((prevState) => {
+			return {
+				...prevState,
+				settings: {
+					...prevState.settings,
+					columns: {
+						...prevState.settings.columns,
+						[columnId]: {
+							...prevState.settings.columns[columnId],
+							sortDir: SortDir.NONE,
+						},
+					},
+				},
+			};
+		});
+		handleSortRows();
 	}
 
 	function handleHeaderWidthChange(columnId: string, width: string) {
@@ -415,8 +439,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			};
 		});
 		handleSaveData(false);
-		handlePositionUpdate();
-		dispatch(closeAllMenus());
 	}
 
 	function handleMoveColumnClick(columnId: string, moveRight: boolean) {
@@ -452,7 +474,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			};
 		});
 		handleSaveData(true);
-		handlePositionUpdate();
 	}
 
 	function handleInsertColumnClick(columnId: string, insertRight: boolean) {
@@ -549,7 +570,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			};
 		});
 		handleSaveData(false);
-		handlePositionUpdate();
 	}
 
 	function handleWrapContentToggle(columnId: string, value: boolean) {
@@ -574,7 +594,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			};
 		});
 		handleSaveData(false);
-		handlePositionUpdate();
 	}
 
 	if (isLoading) return <div>Loading table...</div>;
@@ -589,59 +608,87 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			className="NLT__app"
 			tabIndex={0}
 		>
-			<OptionBar model={state.model} settings={state.settings} />
+			<OptionBar
+				model={state.model}
+				settings={state.settings}
+				onSortRemoveClick={handleSortRemoveClick}
+			/>
 			<div className="NLT__table-wrapper" onScroll={handleTableScroll}>
 				<Table
-					headers={columnIds.map((columnId, i) => {
-						const {
-							width,
-							type,
-							sortDir,
-							shouldWrapOverflow,
-							useAutoWidth,
-						} = state.settings.columns[columnId];
+					headers={[
+						...columnIds.map((columnId, i) => {
+							const {
+								width,
+								type,
+								sortDir,
+								shouldWrapOverflow,
+								useAutoWidth,
+							} = state.settings.columns[columnId];
 
-						const cell = cells.find(
-							(c) => c.columnId === columnId && c.isHeader
-						);
-						const { id, markdown, html } = cell;
-						return {
-							id,
+							const cell = cells.find(
+								(c) => c.columnId === columnId && c.isHeader
+							);
+							const { id, markdown, html } = cell;
+							return {
+								id,
+								component: (
+									<EditableTh
+										key={id}
+										cellId={id}
+										columnIndex={i}
+										numColumns={columnIds.length}
+										columnId={cell.columnId}
+										width={
+											useAutoWidth ? "max-content" : width
+										}
+										shouldWrapOverflow={shouldWrapOverflow}
+										useAutoWidth={useAutoWidth}
+										markdown={markdown}
+										html={html}
+										type={type}
+										sortDir={sortDir}
+										onSortSelect={handleHeaderSortSelect}
+										onInsertColumnClick={
+											handleInsertColumnClick
+										}
+										onMoveColumnClick={
+											handleMoveColumnClick
+										}
+										onWidthChange={handleHeaderWidthChange}
+										onDeleteClick={handleHeaderDeleteClick}
+										onTypeSelect={handleHeaderTypeClick}
+										onAutoWidthToggle={
+											handleAutoWidthToggle
+										}
+										onWrapOverflowToggle={
+											handleWrapContentToggle
+										}
+										onNameChange={handleCellContentChange}
+									/>
+								),
+							};
+						}),
+						{
+							id: randomColumnId(),
 							component: (
-								<EditableTh
-									key={id}
-									cellId={id}
-									columnIndex={i}
-									numColumns={columnIds.length}
-									columnId={cell.columnId}
-									width={findCellWidth(
-										type,
-										useAutoWidth,
-										width
-									)}
-									shouldWrapOverflow={shouldWrapOverflow}
-									useAutoWidth={useAutoWidth}
-									markdown={markdown}
-									html={html}
-									type={type}
-									sortDir={sortDir}
-									onSortSelect={handleHeaderSortSelect}
-									onInsertColumnClick={
-										handleInsertColumnClick
-									}
-									onMoveColumnClick={handleMoveColumnClick}
-									onWidthChange={handleHeaderWidthChange}
-									onDeleteClick={handleHeaderDeleteClick}
-									onSaveClick={handleCellContentChange}
-									onTypeSelect={handleHeaderTypeClick}
-									onAutoWidthToggle={handleAutoWidthToggle}
-									onWrapOverflowToggle={
-										handleWrapContentToggle
-									}
-								/>
+								<th
+									className="NLT__th"
+									style={{ height: "1.8rem" }}
+								>
+									<div
+										className="NLT__th-container"
+										style={{ paddingLeft: "10px" }}
+									>
+										<Button
+											onClick={() => handleAddColumn()}
+										>
+											New
+										</Button>
+									</div>
+								</th>
 							),
-						};
-					})}
+						},
+					]}
 					rows={rowIds
 						.filter((_row, i) => i !== 0)
 						.map((rowId) => {
@@ -652,7 +699,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 								id: rowId,
 								component: (
 									<>
-										{rowCells.map((cell, i) => {
+										{rowCells.map((cell) => {
 											const {
 												width,
 												type,
@@ -679,11 +726,11 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 														shouldWrapOverflow
 													}
 													useAutoWidth={useAutoWidth}
-													width={findCellWidth(
-														type,
-														useAutoWidth,
-														width
-													)}
+													width={
+														useAutoWidth
+															? "max-content"
+															: width
+													}
 													onTagClick={handleTagClick}
 													onRemoveTagClick={
 														handleRemoveTagClick
@@ -712,8 +759,36 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 								),
 							};
 						})}
-					onAddColumn={handleAddColumn}
-					onAddRow={handleAddRow}
+					footers={[0].map((_id) => {
+						const { width, useAutoWidth } =
+							state.settings.columns[columnIds[0]];
+						return {
+							id: randomRowId(),
+							component: (
+								<>
+									<td className="NLT__td">
+										<div
+											className="NLT__td-container"
+											style={{
+												width: useAutoWidth
+													? "max-content"
+													: width,
+											}}
+										>
+											<Button
+												onClick={() => handleAddRow()}
+											>
+												New
+											</Button>
+										</div>
+									</td>
+									{columnIds.map((_id) => {
+										<td className="NLT__td" />;
+									})}
+								</>
+							),
+						};
+					})}
 				/>
 			</div>
 		</div>

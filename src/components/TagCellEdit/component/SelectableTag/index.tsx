@@ -1,15 +1,12 @@
-import React, { useRef } from "react";
-
 import parse from "html-react-parser";
 
 import { findColorClass } from "src/services/color";
 
-import IconButton from "src/components/IconButton";
 import TagColorMenu from "src/components/TagColorMenu";
 import { usePositionRef } from "src/services/hooks";
-import { numToPx, pxToNum } from "src/services/string/conversion";
+import { numToPx } from "src/services/string/conversion";
 
-import { Icon } from "src/services/icon/types";
+import { IconType } from "src/services/icon/types";
 import { MenuLevel } from "src/services/menu/types";
 import { useMenu } from "src/services/menu/hooks";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
@@ -20,6 +17,8 @@ import {
 } from "src/services/menu/menuSlice";
 
 import "./styles.css";
+import Button from "src/components/Button";
+import Icon from "src/components/Icon";
 
 interface Props {
 	isDarkMode: boolean;
@@ -62,8 +61,9 @@ export default function SelectableTag({
 			<div className={tagClass}>
 				<div className="NLT__tag-content">{parse(html)}</div>
 			</div>
-			<IconButton
-				icon={Icon.MORE_HORIZ}
+			<Button
+				icon={<Icon icon={IconType.MORE_HORIZ} />}
+				isDarker
 				onClick={(e) => {
 					e.stopPropagation();
 					dispatch(openMenu(menu));

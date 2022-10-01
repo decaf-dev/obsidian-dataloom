@@ -1,10 +1,11 @@
-import React, { useMemo, useRef } from "react";
+import React, { useMemo } from "react";
 
-import IconButton from "../IconButton";
 import Menu from "../Menu";
 import RowMenuItem from "./components/RowMenuItem";
+import Icon from "../Icon";
 
-import { Icon } from "src/services/icon/types";
+import Button from "../Button";
+import { IconType } from "src/services/icon/types";
 import { usePositionRef } from "src/services/hooks";
 import { useMenu } from "src/services/menu/hooks";
 import {
@@ -44,20 +45,12 @@ export default function RowMenu({ rowId, onDeleteClick }: Props) {
 		dispatch(closeTopLevelMenu());
 	}
 
-	const options = useMemo(() => {
-		return [
-			{
-				name: "delete",
-				content: "Delete",
-				icon: Icon.DELETE,
-				onClick: () => handleDeleteClick(rowId),
-			},
-		];
-	}, [rowId]);
-
 	return (
 		<div ref={ref}>
-			<IconButton icon={Icon.MORE_VERT} onClick={handleButtonClick} />
+			<Button
+				icon={<Icon icon={IconType.MORE_HORIZ} />}
+				onClick={(e) => handleButtonClick(e)}
+			/>
 			<Menu
 				id={menu.id}
 				isOpen={isOpen}
@@ -67,16 +60,11 @@ export default function RowMenu({ rowId, onDeleteClick }: Props) {
 				}}
 			>
 				<div className="NLT__drag-menu">
-					{options.map((item) => {
-						return (
-							<RowMenuItem
-								key={item.name}
-								icon={item.icon}
-								iconText={item.content}
-								onClick={item.onClick}
-							/>
-						);
-					})}
+					<RowMenuItem
+						icon={IconType.DELETE}
+						content="Delete"
+						onClick={() => handleDeleteClick(rowId)}
+					/>
 				</div>
 			</Menu>
 		</div>

@@ -112,6 +112,7 @@ const updateSettingsCache = async (
 		viewModeSync: {
 			tableId,
 			viewModes: viewModesToUpdate,
+			eventType: "update-state",
 		},
 	};
 	if (DEBUG.SAVE_APP_DATA) {
@@ -128,6 +129,23 @@ const updateFileContent = async (
 	content: string
 ) => {
 	return await plugin.app.vault.modify(file, content);
+};
+
+export const updateSortTime = async (plugin: NltPlugin, tableId: string) => {
+	const obj: NltSettings = {
+		...plugin.settings,
+		viewModeSync: {
+			tableId,
+			viewModes: ["source", "preview"],
+			eventType: "sort-rows",
+		},
+	};
+	if (DEBUG.SAVE_APP_DATA) {
+		console.log("Updating sort time");
+		console.log("settings:\n", obj);
+	}
+	plugin.settings = obj;
+	return await plugin.saveData(plugin.settings);
 };
 
 export const serializeTable = async (

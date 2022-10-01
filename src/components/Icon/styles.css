@@ -1,0 +1,18 @@
+.NLT__icon {
+    display: flex;
+}
+
+.NLT__icon--sm {
+    width: 0.9rem !important;
+    height: 0.9rem !important;
+}
+
+.NLT__icon--md {
+    width: 1rem !important;
+    height: 1rem !important;
+}
+
+.NLT__icon--lg {
+    width: 1.1rem !important;
+    height: 1.1rem !important;
+}

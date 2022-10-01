@@ -1,4 +1,3 @@
-import React from "react";
 import { CellType } from "src/services/table/types";
 
 import { TYPE_ITEMS } from "../../constants";

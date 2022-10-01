@@ -1,5 +1,3 @@
-import React from "react";
-
 import Tag from "src/components/Tag";
 
 import "./styles.css";

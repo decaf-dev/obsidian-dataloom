@@ -11,7 +11,7 @@ import NltSettingsTab from "./NltSettingsTab";
 import { NltTable } from "./NltTable";
 import { addRow } from "./services/table/row";
 import { addColumn } from "./services/table/column";
-import { serializeTable } from "./services/io/serialize";
+import { serializeTable, updateSortTime } from "./services/io/serialize";
 import { createEmptyMarkdownTable } from "./services/random";
 import {
 	closeAllMenus,
@@ -31,6 +31,7 @@ export interface NltSettings {
 	};
 	tableFolder: string;
 	viewModeSync: {
+		eventType: "update-state" | "sort-rows";
 		tableId: string | null;
 		viewModes: MarkdownViewModeType[];
 	};
@@ -40,13 +41,14 @@ export const DEFAULT_SETTINGS: NltSettings = {
 	data: {},
 	tableFolder: "_notion-like-tables",
 	viewModeSync: {
+		eventType: "update-state",
 		tableId: null,
 		viewModes: [],
 	},
 };
 export default class NltPlugin extends Plugin {
 	settings: NltSettings;
-	focusedTable: string | null = null;
+	focusedTableId: string | null = null;
 	layoutChangeTime: number;
 
 	private getViewMode = (el: HTMLElement): MarkdownViewModeType | null => {
@@ -153,7 +155,15 @@ export default class NltPlugin extends Plugin {
 
 		this.registerDomEvent(activeDocument, "keydown", async (e) => {
 			if (e.key === "Enter") {
-				store.dispatch(closeTopLevelMenu());
+				if (this.focusedTableId) {
+					const topLevelMenu = getTopLevelMenu(store.getState());
+					if (topLevelMenu && topLevelMenu.sortRowsOnClose) {
+						updateSortTime(this, this.focusedTableId);
+					}
+					//TODO should this be in redux?
+					//Redux is state between multiple tables on the same page
+					store.dispatch(closeTopLevelMenu());
+				}
 			}
 		});
 
@@ -173,11 +183,21 @@ export default class NltPlugin extends Plugin {
 						) {
 							//If we've clicked in the app but not in the menu
 							store.dispatch(closeTopLevelMenu());
+							if (
+								this.focusedTableId &&
+								topLevelMenu.sortRowsOnClose
+							)
+								updateSortTime(this, this.focusedTableId);
 							break;
 						}
 						//If we're clicking outside of the app
 						if (element.className.includes("view-content")) {
 							store.dispatch(closeAllMenus());
+							if (
+								this.focusedTableId &&
+								topLevelMenu.sortRowsOnClose
+							)
+								updateSortTime(this, this.focusedTableId);
 							break;
 						}
 					}
@@ -218,8 +238,8 @@ export default class NltPlugin extends Plugin {
 			name: "Add column to focused table",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "\\" }],
 			callback: async () => {
-				if (this.focusedTable) {
-					const tableId = this.focusedTable;
+				if (this.focusedTableId) {
+					const tableId = this.focusedTableId;
 					const prevState = this.settings.data[tableId];
 					const [updatedModel, updatedSettings] =
 						addColumn(prevState);
@@ -253,8 +273,8 @@ export default class NltPlugin extends Plugin {
 			name: "Add row to focused table",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Enter" }],
 			callback: async () => {
-				if (this.focusedTable) {
-					const tableId = this.focusedTable;
+				if (this.focusedTableId) {
+					const tableId = this.focusedTableId;
 					const { model } = this.settings.data[tableId];
 					const updatedModel = addRow(model);
 					const newState = {
@@ -283,11 +303,11 @@ export default class NltPlugin extends Plugin {
 	}
 
 	focusTable = (tableId: string) => {
-		this.focusedTable = tableId;
+		this.focusedTableId = tableId;
 	};
 
 	blurTable = () => {
-		this.focusedTable = null;
+		this.focusedTableId = null;
 	};
 
 	async loadSettings() {
