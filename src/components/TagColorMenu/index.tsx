@@ -1,13 +1,17 @@
 import React from "react";
 
 import Menu from "src/components/Menu";
-
-import { COLOR } from "src/constants";
 import ColorItem from "./components/ColorItem";
-import { Close } from "@mui/icons-material";
-import "./styles.css";
+import Button from "../Button";
+import Icon from "../Icon";
+
+import { IconType } from "src/services/icon/types";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 import { closeTopLevelMenu } from "src/services/menu/menuSlice";
+
+import { COLOR } from "src/constants";
+
+import "./styles.css";
 
 interface Props {
 	menuId: string;
@@ -39,8 +43,8 @@ export default function TagColorMenu({
 			<div className="NLT__tag-color-menu">
 				<div className="NLT__tag-color-menu-header">
 					<div className="NLT__tag-color-menu-title">Colors</div>
-					<Close
-						className="NLT__icon--md NLT__icon--selectable"
+					<Button
+						icon={<Icon icon={IconType.CLOSE} />}
 						onClick={handleMenuCloseClick}
 					/>
 				</div>
