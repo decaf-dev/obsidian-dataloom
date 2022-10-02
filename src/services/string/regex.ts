@@ -63,3 +63,9 @@ export const RIGHT_SQUARE_BRACKET_REGEX = new RegExp(/\]/, "g");
  * e.g. https://www.google.com
  */
 export const EXTERNAL_LINK_REGEX = new RegExp(/http[s]{0,1}:\/\/[^\s]+/, "g");
+
+/**
+ * Matches all unescaped pipes
+ * k|
+ */
+export const UNESCAPED_PIPE_REGEX = new RegExp(/[^\\]\|/, "g");

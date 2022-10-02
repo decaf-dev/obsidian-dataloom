@@ -9,7 +9,7 @@ import {
 	TableModel,
 	TableState,
 } from "../table/types";
-import { findTableFile } from "./utils";
+import { findTableFile, replaceUnescapedPipes } from "./utils";
 import {
 	EXTERNAL_LINK_REGEX,
 	LEFT_SQUARE_BRACKET_REGEX,
@@ -23,17 +23,14 @@ import { randomCellId } from "../random";
 const md = new MarkdownIt();
 
 const replaceObsidianLinks = (markdown: string): string => {
-	//TODO add aliases
-	const obsidianLinks = Array.from(markdown.matchAll(INTERNAL_LINK_REGEX));
-	obsidianLinks.forEach((match) => {
+	const matches = Array.from(markdown.matchAll(INTERNAL_LINK_REGEX));
+	matches.forEach((match) => {
 		const link = match[0];
 		let fileName = link
 			.replace(LEFT_SQUARE_BRACKET_REGEX, "")
 			.replace(RIGHT_SQUARE_BRACKET_REGEX, "");
 		const alias = fileName.match(INTERNAL_LINK_ALIAS_REGEX);
 		if (alias) fileName = fileName.replace(INTERNAL_LINK_ALIAS_REGEX, "");
-
-		console.log(alias);
 
 		const file = NltPlugin.getFiles().find(
 			(file) => file.basename === fileName
@@ -61,8 +58,8 @@ const replaceObsidianLinks = (markdown: string): string => {
 };
 
 const replaceExternalLinks = (markdown: string): string => {
-	const links = Array.from(markdown.matchAll(EXTERNAL_LINK_REGEX));
-	links.forEach((match) => {
+	const matches = Array.from(markdown.matchAll(EXTERNAL_LINK_REGEX));
+	matches.forEach((match) => {
 		const link = match[0];
 		markdown = markdown.replace(
 			link,
@@ -117,7 +114,10 @@ const parseTableFromMarkdown = (data: string): ParsedTable => {
 			shouldParseRow = false;
 			numRows++;
 		} else if (type === "inline" && shouldParseTable && shouldParseRow) {
-			parsedCells.push(content);
+			let markdown = content;
+			//We need to replace unescaped pipes because markdown.it will parse `\|` as `|`
+			markdown = replaceUnescapedPipes(markdown);
+			parsedCells.push(markdown);
 			if (numRows === 0) numColumns++;
 		}
 	}

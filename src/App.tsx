@@ -118,7 +118,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	useEffect(() => {
 		let timer: any = null;
 
-		async function checkForUpdates() {
+		async function checkForSyncEvents() {
 			const {
 				tableId: tId,
 				viewModes,
@@ -128,7 +128,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				const mode = viewModes.find((v) => v === viewMode);
 				if (mode && tableId === tId) {
 					if (DEBUG.APP)
-						logFunc(COMPONENT_NAME, "checkForUpdates", {
+						logFunc(COMPONENT_NAME, "checkForSyncEvents", {
 							tableId,
 							viewModes,
 							eventType,
@@ -149,7 +149,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 
 		function viewModeSync() {
 			timer = setInterval(() => {
-				checkForUpdates();
+				checkForSyncEvents();
 			}, 50);
 		}
 
