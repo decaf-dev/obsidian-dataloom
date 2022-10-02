@@ -12,19 +12,19 @@ Want to support development?
 
 ## Version 5.0.0
 
-Make some noise, because version 5 of Notion-Like-Tables has arrived!
+**Make some noise, because version 5 of Notion-Like-Tables has arrived!**
 
-Notion Like Tables now supports usage of all HTML entities. This means that previosuly broken entites, such as emoji-icons are now fully supported. This will also allow usage of any language characters with Notion-Like Tables. Fixes have made for Obsidian direct links and direct link aliases.
+-   Notion Like Tables now supports usage of all HTML entities. This means that previosuly broken entites, such as emoji-icons are now fully supported. Obsidian direct links and direct link aliases are now functional.
 
-Live preview is now fully functional. You may use Notion Like Tables in editing mode and have them sync with the table rendered in reading mode. If you edit a table in reading mode, it will be synced to your live preview table.
+-   Live preview is now fully functional. You may use Notion Like Tables in editing mode and have them sync with the table rendered in reading mode. If you edit a table in reading mode, it will be synced to your live preview table.
 
-Multiple tables can now be used in your markdown files. You may also display the same display across multiple files through the new system of NLT codeblocks.
+-   Multiple tables can now be used in your markdown files. You may also display the same display across multiple files through the new system of `NLT codeblocks`.
 
-Multi-tag support has been added, as well as support for dark colors for our dark theme users.
+-   Multi-tag support has been added, as well as support for dark colors for our dark theme users.
 
-Various other bug fixes and optimizations have been added. See: [Release 5.0.0]() for more details.
+-   Various other bug fixes and optimizations have been added. See: [Release 5.0.0](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/5.0.0) for more details.
 
-For migrating to NLT `5.0.0` from NLT `4.3.1` or less, please following the [migration guide](#previous-version-migration)
+**For migrating to NLT `5.0.0` from NLT `4.3.1` or less, please following the [migration guide](#previous-version-migration)**
 
 ## About
 
