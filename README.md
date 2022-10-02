@@ -112,7 +112,8 @@ Table ids, row ids, and column ids may only contain valid id characters:
 -   `a-Z` - Any lowercase letters
 -   `A-Z` - Any uppercase letters
 -   `0-9` - Any numbers
--   `-` - Hyphens - `_` - Underscores
+-   `-` - Hyphens
+-   `_` - Underscores
 
 ## Previous Migration Guide
 
