@@ -73,15 +73,7 @@ table-id-123456
 
 -   The codeblock begins with `notion-like-tables` directive.
 
--   The inside of the codeblock includes a table id. The table id is of the format: `table-id-<my-specifier>`.
-
-    -   The specifier may include the following characters
-
-        -   `a-Z` - Any lowercase letters
-        -   `A-Z` - Any uppercase letters
-        -   `0-9` - Any numbers
-        -   `-` - Hyphens
-        -   `_` - Underscores
+-   The inside of the codeblock includes a table id. The table id is of the format: `table-id-<my-specifier>`. A specifier can only contain [valid id characters](#valid-id-characters).
 
 Once you add the block, a `table defintion file` will automatically be created, and your table will render.
 
@@ -107,10 +99,20 @@ The `columnIds` and `rowIds` keys are included in a frontmatter declaration afte
 -   The number of ids in the `columnIds` array must match the number of columns in the markdown table
 -   The number of ids in the `rowIds` array must match the number of rows in the markdown table
     -   Please note that the hyphen row doesn't count as a row. In the example above, the table only has 2 row ids
+-   Each row or column id must only contain (valid id characters)[#valid-id-characters]
 
 Notion Like Tables use the `MarkdownCodeBlockProcessor` to replace a NLT codeblock in your markdown file with a React app generated from your table definition file.
 
 All table definition files are stored in a folder called [`_notion-like-tables`](#table-definition-folder).
+
+### Valid ID Characters
+
+Table ids, row ids, and column ids may only contain valid id characters:
+
+-   `a-Z` - Any lowercase letters
+-   `A-Z` - Any uppercase letters
+-   `0-9` - Any numbers
+-   `-` - Hyphens - `_` - Underscores
 
 ## Previous Migration Guide
 
@@ -238,7 +240,3 @@ If you find a bug or would like to suggest a feature, please open an issue [here
 ## License
 
 -   GNU GPLv3
-
-```
-
-```
