@@ -80,3 +80,11 @@ export const createEmptyMarkdownTable = (): string => {
 	const frontmatter = serializeFrontMatter(model);
 	return frontmatter + "\n" + emptyMarkdownTable();
 };
+
+export const createNLTCodeBlock = (): string => {
+	const codeblock: string[] = [];
+	codeblock.push("```notion-like-tables");
+	codeblock.push(randomTableId());
+	codeblock.push("```");
+	return codeblock.join("\n");
+};

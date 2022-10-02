@@ -13,7 +13,7 @@ import { NltTable } from "./NltTable";
 import { addRow } from "./services/table/row";
 import { addColumn } from "./services/table/column";
 import { serializeTable, updateSortTime } from "./services/io/serialize";
-import { createEmptyMarkdownTable } from "./services/random";
+import { createNLTCodeBlock } from "./services/random";
 import {
 	closeAllMenus,
 	getTopLevelMenu,
@@ -233,7 +233,7 @@ export default class NltPlugin extends Plugin {
 			name: "Add table",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "=" }],
 			editorCallback: (editor: Editor) => {
-				editor.replaceSelection(createEmptyMarkdownTable());
+				editor.replaceSelection(createNLTCodeBlock());
 			},
 		});
 
