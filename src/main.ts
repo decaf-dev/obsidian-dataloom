@@ -26,6 +26,7 @@ import { TableState } from "./services/table/types";
 import _ from "lodash";
 import { isMenuId } from "./services/menu/utils";
 import { setDarkMode } from "./services/redux/globalSlice";
+import { TABLE_ID_REGEX } from "./services/string/regex";
 export interface NltSettings {
 	data: {
 		[tableId: string]: TableState;
@@ -74,13 +75,9 @@ export default class NltPlugin extends Plugin {
 		await this.loadSettings();
 		await this.forcePostProcessorReload();
 
-		this.registerMarkdownPostProcessor((el, context) => {
-			console.log(el);
-		});
 		this.registerMarkdownCodeBlockProcessor(
 			"notion-like-tables",
 			(source, el, ctx) => {
-				const TABLE_ID_REGEX = new RegExp(/^table-id-[a-zA-Z0-9_-]+$/);
 				const text = source.trim();
 				const tableId = text.match(TABLE_ID_REGEX) ? text : null;
 				if (tableId) {
