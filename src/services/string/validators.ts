@@ -4,15 +4,10 @@ import {
 	DATE_REGEX,
 	CHECKBOX_REGEX,
 	CHECKBOX_CHECKED_REGEX,
-	TAGS_REGEX,
 } from "./regex";
 
 const isMatch = (input: string, regex: RegExp): boolean => {
 	return (input.match(regex) || []).length !== 0;
-};
-
-const countNumMatch = (input: string, regex: RegExp): number => {
-	return (input.match(regex) || []).length;
 };
 
 export const isNumber = (input: string): boolean => {
@@ -33,13 +28,4 @@ export const isTag = (input: string): boolean => {
 
 export const isCheckboxChecked = (input: string): boolean => {
 	return isMatch(input, CHECKBOX_CHECKED_REGEX);
-};
-
-/**
- * Counts the number of tags in a string.
- * @param input The input string
- * @returns The number of tags in the input string
- */
-export const countNumTags = (input: string): number => {
-	return countNumMatch(input, TAGS_REGEX);
 };

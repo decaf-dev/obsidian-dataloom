@@ -1,10 +1,11 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import Menu from "../Menu";
 
 import { useCompare } from "src/services/hooks";
 
 import "./styles.css";
+import { replaceUnescapedPipes } from "src/services/io/utils";
 
 interface Props {
 	menuId: string;
@@ -52,6 +53,7 @@ export default function TextCellEdit({
 
 	function handleTextareaChange(value: string) {
 		value = value.replace("\n", "");
+		value = replaceUnescapedPipes(value);
 		onInputChange(value);
 	}
 
