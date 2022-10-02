@@ -24,12 +24,13 @@ Want to support development?
 
 -   Various other bug fixes and optimizations have been added. See: [Release 5.0.0](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/5.0.0) for more details.
 
-**For migrating to NLT `5.0.0` from NLT `4.3.1` or less, please following the [migration guide](#previous-version-migration)**
+**For migrating to NLT `5.0.0` from NLT `4.3.1` or less, please use the [migration tool](#migration-tool)**
 
 ## About
 
 -   [Installation](#installation)
 -   [Basic usage](#basic-usage)
+-   [Migration Tool](#migration-tool)
 -   [Hotkeys](#hotkeys)
 -   [Header menu](#header-menu)
 -   [Cell types](#cell-types)
@@ -53,7 +54,7 @@ Want to support development?
 
 ### Making a Table via Command
 
-To quickly make a table you can use the add table command. Press `cmd + p` on your keyboard search "Add table". A NLT codeblock will be inserted into your markdown file. Once you click outside of the codeblock, a table will immediately render.
+To quickly make a table you can use the add table command. Press `ctrl` + `p` (Windows) or `cmd + p` (Mac) on your keyboard and search `Add table`. A NLT codeblock will be inserted into your markdown file. Once you click outside of the codeblock, a table will immediately render.
 
 Note: you must be in editing mode for this command to appear.
 
@@ -115,12 +116,13 @@ Table ids, row ids, and column ids may only contain valid id characters:
 -   `-` - Hyphens
 -   `_` - Underscores
 
-## Previous Migration Guide
+## Migration Tool
 
-In order to migrate from Notion Like Tables 4.3.1 or earlier, please follow the following steps
+Please make sure that you have read [NLT Codeblocks](#nlt-codeblocks) and [Table Defintion Files](#table-definition-files) before continuing.
 
--   Delete your `data.json` file found in `<your-vault>/.obsidian/plugins/notion-like-tables`
--   For every table you want to migrate, please make a table definition file and place them into the table definition folder
+To make codeblocks for your previous tables, please open our migration tool by pressing on your keyboard `ctrl + p` (Windows) or `cmd + p` (Mac) on your keyboard and search for `migration tool`
+
+Paste your previous markdown text into the input and click `migrate table`. Now copy and paste the generated codeblock into your markdown file.
 
 ## Hotkeys
 
