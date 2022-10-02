@@ -63,23 +63,25 @@ Note: you must be in editing mode for this command to appear.
 
 To render a table, you need to place a NLT codeblock into your markdown file.
 
-A normal codeblock contain the following format:
+A NLT codeblock should obey the following format:
 
+````markdown
 ```notion-like-tables
 table-id-123456
 ```
+````
 
-The codeblock begins with `notion-like-tables` directive.
+-   The codeblock begins with `notion-like-tables` directive.
 
-The inside of the codeblock includes a table id. The table id is of the format: `table-id-<my-specifier>`.
+-   The inside of the codeblock includes a table id. The table id is of the format: `table-id-<my-specifier>`.
 
-The specifier may include the following characters
+    -   The specifier may include the following characters
 
--   `a-Z` - Any lowercase letters
--   `A-Z` - Any uppercase letters
--   `0-9` - Any numbers
--   `-` - Hyphens
--   `_` - Underscores
+        -   `a-Z` - Any lowercase letters
+        -   `A-Z` - Any uppercase letters
+        -   `0-9` - Any numbers
+        -   `-` - Hyphens
+        -   `_` - Underscores
 
 Once you add the block, a `table defintion file` will automatically be created, and your table will render.
 
@@ -99,6 +101,8 @@ rowIds: ["row-id-BtUYxXIV", "row-id-A6PfNOAV"]
 | ---------- |
 |            |
 ```
+
+````
 
 The `columnIds` and `rowIds` are included in a frontmatter declaration after which the table markdown is declared. Both key are connected to an array of ids.
 
@@ -207,7 +211,7 @@ When wrap overflow is disabled the text will cut off at the column width and cre
 
 ### Table Definition Folder
 
-The table definition folder is the folder that contains the table definition files for all tables in your vault. The default value is `_notion-like-tables`. You may change this value to any folder name. If the folder has not yet been created, the folder will be created on table load.
+The table definition folder is the folder that contains the table definition files for all tables in your vault. The default value is `_notion-like-tables`. You may change this value to any valid folder name. If the folder has not yet been created, the folder will be created on first table load.
 
 ## Undoing Changes
 
@@ -217,15 +221,15 @@ NLTs does not currently have built in history. If you need to undo changes, go t
 
 Please override the following classes for custom theme development.
 
-| Class                  | Element  | Usage       |
-| ---------------------- | -------- | ----------- |
-| `.NLT\_\_button`       | `button` |             |
-| `.NLT\_\_table`        | `table`  |             |
-| `.NLT\_\_tr`           | `tr`     |             |
-| `.NLT\_\_th`           | `th`     | Text styles |
-| `.NLT\_\_th-content`   | `div`    | Padding     |
-| `.NLT\_\_td`           | `td`     | Text styles |
-| `.NLT\_\_td-container` | `div`    | Padding     |
+| Class                | Element  | Usage       |
+| -------------------- | -------- | ----------- |
+| `.NLT__button`       | `button` |             |
+| `.NLT__table`        | `table`  |             |
+| `.NLT__tr`           | `tr`     |             |
+| `.NLT__th`           | `th`     | Text styles |
+| `.NLT__th-content`   | `div`    | Padding     |
+| `.NLT__td`           | `td`     | Text styles |
+| `.NLT__td-container` | `div`    | Padding     |
 
 ## Contributing
 
@@ -234,3 +238,4 @@ If you find a bug or would like to suggest a feature, please open an issue [here
 ## License
 
 -   GNU GPLv3
+````
