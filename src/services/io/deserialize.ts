@@ -13,29 +13,49 @@ import { findTableFile } from "./utils";
 import {
 	EXTERNAL_LINK_REGEX,
 	LEFT_SQUARE_BRACKET_REGEX,
-	OBSIDIAN_LINK_REGEX,
+	INTERNAL_LINK_REGEX,
 	RIGHT_SQUARE_BRACKET_REGEX,
 	SLASH_REGEX,
+	INTERNAL_LINK_ALIAS_REGEX,
 } from "../string/regex";
 import { randomCellId } from "../random";
 
 const md = new MarkdownIt();
 
 const replaceObsidianLinks = (markdown: string): string => {
-	const obsidianLinks = Array.from(markdown.matchAll(OBSIDIAN_LINK_REGEX));
+	//TODO add aliases
+	const obsidianLinks = Array.from(markdown.matchAll(INTERNAL_LINK_REGEX));
 	obsidianLinks.forEach((match) => {
 		const link = match[0];
-		const fileName = link
+		let fileName = link
 			.replace(LEFT_SQUARE_BRACKET_REGEX, "")
 			.replace(RIGHT_SQUARE_BRACKET_REGEX, "");
+		const alias = fileName.match(INTERNAL_LINK_ALIAS_REGEX);
+		if (alias) fileName = fileName.replace(INTERNAL_LINK_ALIAS_REGEX, "");
+
+		console.log(alias);
 
 		const file = NltPlugin.getFiles().find(
 			(file) => file.basename === fileName
 		);
-		let generatedLink = `<a data-href="${fileName}" href="${fileName}" class="internal-link is-unresolved" target="_blank" rel="noopener">${fileName}</a>`;
-		if (file)
-			generatedLink = `<a data-href="${fileName}" href="${fileName}" class="internal-link" target="_blank" rel="noopener">${fileName}</a>`;
-		markdown = markdown.replace(link, generatedLink);
+
+		const el = document.body.createEl("a");
+		el.addClass("internal-link");
+		if (!file) el.addClass("is-unresolved");
+		el.setAttr("data-href", fileName);
+		el.setAttr("href", fileName);
+		el.setAttr("target", "_blank");
+		el.setAttr("rel", "noopener");
+		if (alias) {
+			el.setText(alias[0].substring(1));
+			el.setAttr("aria-label-position", "top");
+			el.setAttr("aria-label", fileName);
+		} else {
+			el.setText(fileName);
+		}
+		el.remove();
+
+		markdown = markdown.replace(link, el.outerHTML);
 	});
 	return markdown;
 };
@@ -147,7 +167,6 @@ const validateParsedTable = (
 };
 
 export const parseTableModelFromMarkdown = (
-	plugin: NltPlugin,
 	data: string,
 	tableId: string
 ): TableModel => {
@@ -187,7 +206,7 @@ export const findTableModel = async (
 	//If it exists create it, otherwise don't
 	const file = await findTableFile(plugin, tableId);
 	const data = await app.vault.read(file);
-	return parseTableModelFromMarkdown(plugin, data, tableId);
+	return parseTableModelFromMarkdown(data, tableId);
 };
 
 const validateSettings = (plugin: NltPlugin) => {

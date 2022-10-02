@@ -4,7 +4,6 @@ import {
 	DATE_REGEX,
 	CHECKBOX_REGEX,
 	CHECKBOX_CHECKED_REGEX,
-	TAGS_REGEX,
 } from "./regex";
 
 const isMatch = (input: string, regex: RegExp): boolean => {

@@ -35,25 +35,31 @@ export const CHECKBOX_CHECKED_REGEX = new RegExp(/^\[[x]\]$/);
 export const SLASH_REGEX = new RegExp(/\/|\\/);
 
 /**
- * Matches an Obsidian link
+ * Matches all internal links
  * [[File Name]]
  */
-export const OBSIDIAN_LINK_REGEX = new RegExp(/\[\[[^\\\[\]]+\]\]/, "g");
+export const INTERNAL_LINK_REGEX = new RegExp(/\[\[[^\\\[\]]+\]\]/, "g");
 
 /**
- * Matches a left square bracket
+ * Matches an internal link alias
+ * |alias
+ */
+export const INTERNAL_LINK_ALIAS_REGEX = new RegExp(/\|[^\n\r\]]+/);
+
+/**
+ * Matches all left square brackets
  * [
  */
 export const LEFT_SQUARE_BRACKET_REGEX = new RegExp(/\[/, "g");
 
 /**
- * Matches a right square bracket
+ * Matches all right square brackets
  * ]
  */
 export const RIGHT_SQUARE_BRACKET_REGEX = new RegExp(/\]/, "g");
 
 /**
- * Matches an external link
+ * Matches all external links
  * e.g. https://www.google.com
  */
 export const EXTERNAL_LINK_REGEX = new RegExp(/http[s]{0,1}:\/\/[^\s]+/, "g");
