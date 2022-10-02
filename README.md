@@ -61,9 +61,9 @@ Note: you must be in editing mode for this command to appear.
 
 ### NLT Codeblocks
 
-To render a table, you need to place a NLT codeblock into your markdown file.
+To render a table, you need to place a NLT Codeblock into your markdown file.
 
-A NLT codeblock should obey the following format:
+**Example NLT Codeblock**
 
 ````markdown
 ```notion-like-tables
@@ -87,7 +87,7 @@ Once you add the block, a `table defintion file` will automatically be created, 
 
 ### Table Definition Files
 
-Table definition files contain the markdown for your table. They also contain `columnIds` and `rowIds` that are connected to each column and row of the table.
+A table definition file contains the table markdown for a Notion-Like Table. It also contains specific ids that are needed to maintain the integrity of the table in the React application.
 
 **Example table definition file**
 
@@ -102,11 +102,11 @@ rowIds: ["row-id-BtUYxXIV", "row-id-A6PfNOAV"]
 |            |
 ```
 
-````
+The `columnIds` and `rowIds` keys are included in a frontmatter declaration after which the table markdown is declared. Both key are connected to an array of ids.
 
-The `columnIds` and `rowIds` are included in a frontmatter declaration after which the table markdown is declared. Both key are connected to an array of ids.
-
-If your table has 3 columns, it must have 3 column ids. Likewise, if your table has 3 rows, it must have 3 row ids. Please note that the hyphen row doesn't count as a row. In the example above, the table only has 2 row ids.
+-   The number of ids in the `columnIds` array must match the number of columns in the markdown table
+-   The number of ids in the `rowIds` array must match the number of rows in the markdown table
+    -   Please note that the hyphen row doesn't count as a row. In the example above, the table only has 2 row ids
 
 Notion Like Tables use the `MarkdownCodeBlockProcessor` to replace a NLT codeblock in your markdown file with a React app generated from your table definition file.
 
@@ -238,4 +238,7 @@ If you find a bug or would like to suggest a feature, please open an issue [here
 ## License
 
 -   GNU GPLv3
-````
+
+```
+
+```
