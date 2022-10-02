@@ -118,7 +118,7 @@ Table ids, row ids, and column ids may only contain valid id characters:
 
 ## Migration Tool
 
-Please make sure that you have read [NLT Codeblocks](#nlt-codeblocks) and [Table Defintion Files](#table-definition-files) before continuing.
+Please make sure that you have read [NLT Codeblocks](#nlt-codeblocks) and [Table Definition Files](#table-definition-files) before continuing.
 
 To make codeblocks for your previous tables, please open our migration tool by pressing on your keyboard `ctrl + p` (Windows) or `cmd + p` (Mac) on your keyboard and search for `migration tool`
 
@@ -220,7 +220,7 @@ The table definition folder is the folder that contains the table definition fil
 
 ## Undoing Changes
 
-NLTs does not currently have built in history. If you need to undo changes, go to editing mode and undo markdown changes using `ctrl+z` (or `option-z` on mac). Then go back to reading mode.
+There is currently no support for undoing changes. This is part of the roadmap for future releases.
 
 ## Custom Themes
 
