@@ -20,7 +20,8 @@ import {
 	COLUMN_ID_REGEX,
 	ROW_ID_REGEX,
 } from "../string/regex";
-import { randomCellId } from "../random";
+import { randomCellId, randomColumnId, randomRowId } from "../random";
+import { generateEmptyMarkdownTable } from "../random";
 
 const md = new MarkdownIt();
 
@@ -85,7 +86,8 @@ interface ParsedTable {
 	numColumns: number;
 }
 
-const parseTableFromMarkdown = (data: string): ParsedTable => {
+export const parseTableFromMarkdown = (data: string): ParsedTable => {
+	console.log("data", data);
 	const tokens = md.parse(data, {});
 
 	let parsedFrontmatter: string[];
@@ -182,19 +184,31 @@ const validateParsedTable = (
 	};
 };
 
-export const parseTableModelFromMarkdown = (
-	data: string,
-	tableId: string
+export const parseTableModelFromParsedTable = (
+	table: ParsedTable
 ): TableModel => {
-	const parsedTable: ParsedTable = parseTableFromMarkdown(data);
-	const { numRows, numColumns, parsedCells } = parsedTable;
-	const { columnIds, rowIds } = validateParsedTable(parsedTable, tableId);
+	const { numRows, numColumns } = table;
+	const columnIds = Array(numColumns)
+		.fill(0)
+		.map((_i) => randomColumnId());
+	const rowIds = Array(numRows)
+		.fill(0)
+		.map((_i) => randomRowId());
+	return parseTableModel(table, columnIds, rowIds);
+};
 
+const parseTableModel = (
+	table: ParsedTable,
+	columnIds: string[],
+	rowIds: string[]
+): TableModel => {
 	const model: TableModel = {
 		columnIds: [],
 		rowIds: [],
 		cells: [],
 	};
+
+	const { numRows, numColumns, parsedCells } = table;
 
 	for (let y = 0; y < numRows; y++) {
 		for (let x = 0; x < numColumns; x++) {
@@ -215,14 +229,25 @@ export const parseTableModelFromMarkdown = (
 	return model;
 };
 
+export const parseTableModelFromFileData = (
+	data: string,
+	tableId: string
+): TableModel => {
+	const parsedTable: ParsedTable = parseTableFromMarkdown(data);
+	const { columnIds, rowIds } = validateParsedTable(parsedTable, tableId);
+	return parseTableModel(parsedTable, columnIds, rowIds);
+};
+
 export const findTableModel = async (
 	plugin: NltPlugin,
 	tableId: string
 ): Promise<TableModel> => {
 	//If it exists create it, otherwise don't
-	const file = await findTableFile(plugin, tableId);
+	const { file, isNewFile } = await findTableFile(plugin, tableId);
+	if (isNewFile)
+		await plugin.app.vault.modify(file, generateEmptyMarkdownTable());
 	const data = await app.vault.read(file);
-	return parseTableModelFromMarkdown(data, tableId);
+	return parseTableModelFromFileData(data, tableId);
 };
 
 const validateSettings = (plugin: NltPlugin) => {
