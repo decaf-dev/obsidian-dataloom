@@ -37,6 +37,7 @@ export interface NltSettings {
 		tableId: string | null;
 		viewModes: MarkdownViewModeType[];
 	};
+	shouldClear: boolean;
 }
 
 export const DEFAULT_SETTINGS: NltSettings = {
@@ -47,6 +48,7 @@ export const DEFAULT_SETTINGS: NltSettings = {
 		tableId: null,
 		viewModes: [],
 	},
+	shouldClear: true,
 };
 export default class NltPlugin extends Plugin {
 	settings: NltSettings;

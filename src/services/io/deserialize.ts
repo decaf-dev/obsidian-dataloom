@@ -1,6 +1,6 @@
 import MarkdownIt from "markdown-it";
 
-import NltPlugin from "../../main";
+import NltPlugin, { DEFAULT_SETTINGS } from "../../main";
 
 import { CURRENT_PLUGIN_VERSION, DEBUG } from "../../constants";
 import {
@@ -242,6 +242,14 @@ export const deserializeTable = async (
 		console.log("deserializeTable()");
 	}
 
+	//Migration for 4.3.1 or earlier
+	if (plugin.settings.shouldClear) {
+		console.log("Clearing previous NLT plugin settings");
+		plugin.settings = { ...DEFAULT_SETTINGS };
+		plugin.settings.shouldClear = false;
+		await plugin.saveSettings();
+	}
+
 	validateSettings(plugin);
 
 	const model = await findTableModel(plugin, tableId);
@@ -280,7 +288,6 @@ export const deserializeTable = async (
 			tableState.settings.rows[id] = { ...DEFAULT_ROW_SETTINGS };
 			//Offset the time so that we can sort by this date
 			tableState.settings.rows[id].creationDate = Date.now() + i;
-			console.log(tableState.settings.rows);
 		}
 	});
 
