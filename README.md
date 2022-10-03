@@ -12,25 +12,26 @@ Want to support development?
 
 ## Version 5.0.0
 
-**Make some noise, because version 5 of Notion-Like-Tables has arrived!**
+**Make some noise, because version 5 of Notion-Like-Tables has arrived!!**
 
--   Notion Like Tables now supports usage of all HTML entities. This means that previosuly broken entites, such as emoji-icons are now fully supported. Obsidian direct links and direct link aliases are now functional.
+-   Notion-Like Tables now supports usage of all HTML entities. This means that previously broken entites, such as emoji icons are now fully supported. Obsidian direct links and direct link aliases are now functional.
 
--   Live preview is now fully functional. You may use Notion Like Tables in editing mode and have them sync with the table rendered in reading mode. If you edit a table in reading mode, it will be synced to your live preview table.
+-   Live preview is now fully functional. You may use Notion-Like Tables in editing mode and have them sync with the table rendered in reading mode. If you edit a table in reading mode, it will be synced to your live preview table.
 
--   Multiple tables can now be used in your markdown files. You may also display the same display across multiple files through the new system of `NLT codeblocks`.
+-   Multiple tables can now be used in your markdown files. You may also display the same table across multiple files through the new system of `NLT Codeblocks`.
 
 -   Multi-tag support has been added, as well as support for dark colors for our dark theme users.
 
 -   Various other bug fixes and optimizations have been added. See: [Release 5.0.0](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/5.0.0) for more details.
 
+**All previous tables MUST BE MIGRATED TO 5.0.0**
 **For migrating to NLT `5.0.0` from NLT `4.3.1` or less, please use the [migration tool](#migration-tool)**
 
 ## About
 
 -   [Installation](#installation)
 -   [Basic usage](#basic-usage)
--   [Migration Tool](#migration-tool)
+-   [Migration tool](#migration-tool)
 -   [Hotkeys](#hotkeys)
 -   [Header menu](#header-menu)
 -   [Cell types](#cell-types)
@@ -46,17 +47,20 @@ Want to support development?
 ## Installation
 
 -   Click the settings gear in the bottom left corner of your Obsidian application
--   Click `Community plugins` and next to `Restricted mode` click `Turn off` to allow community plugins
--   Now click `Browse` and search for `Notion-Like Tables`
--   Click `Install` then click `Enable`
+-   Click `Community plugins`
+-   Go to `Restricted mode` and click `Turn off` to allow community plugins
+-   Click `Browse` and search for `Notion-Like Tables`
+-   Click `Install` then `Enable`
 
 ## Basic Usage
 
 ### Making a Table via Command
 
-To quickly make a table you can use the add table command. Press `ctrl` + `p` (Windows) or `cmd + p` (Mac) on your keyboard and search `Add table`. A NLT codeblock will be inserted into your markdown file. Once you click outside of the codeblock, a table will immediately render.
+To quickly make a table you can use the add table command.
 
-Note: you must be in editing mode for this command to appear.
+1. Open up a markdown file and change your view to editing mode.
+2. Press `ctrl + p` (Windows) or `cmd + p` (Mac) on your keyboard and search `Add table`. A NLT codeblock will be inserted into your markdown file.
+3. Click outside of the codeblock, a table will immediately render.
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/add-table-command.png)
 
