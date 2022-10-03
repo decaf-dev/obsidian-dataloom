@@ -133,15 +133,15 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 							viewModes,
 							eventType,
 						});
-					const modeIndex = viewModes.indexOf(mode);
-					plugin.settings.viewModeSync.viewModes.splice(modeIndex, 1);
-					if (plugin.settings.viewModeSync.viewModes.length === 0)
-						plugin.settings.viewModeSync.tableId = null;
 					if (eventType === "update-state") {
 						setTableState(plugin.settings.data[tableId]);
 					} else if (eventType === "sort-rows") {
 						handleSortRows();
 					}
+					const modeIndex = viewModes.indexOf(mode);
+					plugin.settings.viewModeSync.viewModes.splice(modeIndex, 1);
+					if (plugin.settings.viewModeSync.viewModes.length === 0)
+						plugin.settings.viewModeSync.tableId = null;
 					await plugin.saveSettings();
 				}
 			}
