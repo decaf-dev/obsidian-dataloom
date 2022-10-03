@@ -26,7 +26,7 @@ Want to support development?
 
 **🔥 WARNING: ALL PREVIOUSLY CREATED TABLES MUST BE MIGRATED TO 5.0.0 🔥**
 
-** You will also lose your previous `data.json` settings for this plugin. This is necessary as the plugin now uses a different structure for its settings data. You will NOT lose any markdown data or notes**
+You will also lose your previous `data.json` settings for this plugin. This is necessary as the plugin now uses a different structure for its settings data. You will NOT lose any markdown data or notes
 
 **For migrating to NLT `5.0.0` from NLT `4.3.1` or less, please use the [migration tool](#migration-tool)**
 
