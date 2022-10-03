@@ -1,14 +1,18 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+
+import _ from "lodash";
+import { MarkdownViewModeType } from "obsidian";
+import NltPlugin from "./main";
 
 import EditableTd from "./components/EditableTd";
 import Table from "./components/Table";
 import RowMenu from "./components/RowMenu";
 import EditableTh from "./components/EditableTh";
 import OptionBar from "./components/OptionBar";
+import Button from "./components/Button";
 
 import { Cell, CellType } from "./services/table/types";
 import { serializeTable } from "./services/io/serialize";
-import NltPlugin from "./main";
 import { SortDir } from "./services/sort/types";
 import { addRow } from "./services/table/row";
 import { addColumn } from "./services/table/column";
@@ -16,29 +20,22 @@ import { logFunc } from "./services/debug";
 import { DEFAULT_COLUMN_SETTINGS } from "./services/table/types";
 import { getUniqueTableId, sortCells } from "./services/table/utils";
 import { TableState } from "./services/table/types";
-
-import { DEBUG } from "./constants";
-
-import { livePreviewState, MarkdownViewModeType } from "obsidian";
 import { deserializeTable, markdownToHtml } from "./services/io/deserialize";
 import { randomColumnId, randomCellId, randomRowId } from "./services/random";
-import { useAppDispatch } from "./services/redux/hooks";
+import { useAppDispatch, useAppSelector } from "./services/redux/hooks";
 import { closeAllMenus, updateMenuPosition } from "./services/menu/menuSlice";
-
-import _ from "lodash";
 import { addExistingTag, addNewTag, removeTag } from "./services/table/tag";
 import { changeColumnType } from "./services/table/column";
-import Button from "./components/Button";
+import { sortRows } from "./services/sort/sort";
 
 import "./app.css";
-import { sortRows } from "./services/sort/sort";
 interface Props {
 	plugin: NltPlugin;
 	tableId: string;
 	viewMode: MarkdownViewModeType;
 }
 
-const COMPONENT_NAME = "App";
+const FILE_NAME = "App";
 
 export default function App({ plugin, viewMode, tableId }: Props) {
 	const [state, setTableState] = useState<TableState>({
@@ -61,6 +58,8 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	});
 
 	const [sortTime, setSortTime] = useState(0);
+
+	const { shouldDebug } = useAppSelector((state) => state.global);
 
 	const dispatch = useAppDispatch();
 
@@ -127,12 +126,11 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 			if (tId) {
 				const mode = viewModes.find((v) => v === viewMode);
 				if (mode && tableId === tId) {
-					if (DEBUG.APP)
-						logFunc(COMPONENT_NAME, "checkForSyncEvents", {
-							tableId,
-							viewModes,
-							eventType,
-						});
+					logFunc(shouldDebug, FILE_NAME, "checkForSyncEvents", {
+						tableId,
+						viewModes,
+						eventType,
+					});
 					if (eventType === "update-state") {
 						setTableState(plugin.settings.data[tableId]);
 					} else if (eventType === "sort-rows") {
@@ -176,7 +174,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	}
 
 	function handleAddColumn() {
-		if (DEBUG.APP) console.log("[App]: handleAddColumn called.");
+		if (shouldDebug) console.log("[App]: handleAddColumn called.");
 		setTableState((prevState) => {
 			const [model, settings] = addColumn(prevState);
 			return {
@@ -189,7 +187,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	}
 
 	function handleAddRow() {
-		if (DEBUG.APP) console.log("[App]: handleAddRow called.");
+		logFunc(shouldDebug, FILE_NAME, "handleAddRow");
 		setTableState((prevState) => {
 			const newState = addRow(prevState);
 			return newState;
@@ -198,12 +196,10 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	}
 
 	function handleHeaderTypeClick(columnId: string, type: CellType) {
-		if (DEBUG.APP)
-			logFunc(COMPONENT_NAME, "handleHeaderTypeClick", {
-				columnId,
-				type,
-			});
-
+		logFunc(shouldDebug, FILE_NAME, "handleHeaderTypeClick", {
+			columnId,
+			type,
+		});
 		setTableState((prevState) =>
 			changeColumnType(prevState, columnId, type)
 		);
@@ -211,12 +207,10 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	}
 
 	function handleHeaderSortSelect(columnId: string, sortDir: SortDir) {
-		if (DEBUG.APP) {
-			logFunc(COMPONENT_NAME, "handleHeaderSortSelect", {
-				columnId,
-				sortDir,
-			});
-		}
+		logFunc(shouldDebug, FILE_NAME, "handleHeaderSortSelect", {
+			columnId,
+			sortDir,
+		});
 		setTableState((prevState) => {
 			const columnsCopy = { ...prevState.settings.columns };
 			Object.entries(columnsCopy).forEach((entry) => {
@@ -237,12 +231,10 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	}
 
 	function handleCellContentChange(cellId: string, updatedMarkdown: string) {
-		if (DEBUG.APP) {
-			logFunc(COMPONENT_NAME, "handleCellContentChange", {
-				cellId,
-				updatedMarkdown,
-			});
-		}
+		logFunc(shouldDebug, FILE_NAME, "handleCellContentChange", {
+			cellId,
+			updatedMarkdown,
+		});
 
 		setTableState((prevState) => {
 			return {
@@ -274,17 +266,15 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		color: string,
 		canAddMultiple: boolean
 	) {
-		if (DEBUG.APP) {
-			logFunc(COMPONENT_NAME, "handleAddTag", {
-				cellId,
-				columnId,
-				rowId,
-				markdown,
-				html,
-				color,
-				canAddMultiple,
-			});
-		}
+		logFunc(shouldDebug, FILE_NAME, "handleAddTag", {
+			cellId,
+			columnId,
+			rowId,
+			markdown,
+			html,
+			color,
+			canAddMultiple,
+		});
 		setTableState((prevState) =>
 			addNewTag(
 				prevState,
@@ -307,15 +297,13 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		tagId: string,
 		canAddMultiple: boolean
 	) {
-		if (DEBUG.APP) {
-			logFunc(COMPONENT_NAME, "handleTagClick", {
-				cellId,
-				columnId,
-				rowId,
-				tagId,
-				canAddMultiple,
-			});
-		}
+		logFunc(shouldDebug, FILE_NAME, "handleTagClick", {
+			cellId,
+			columnId,
+			rowId,
+			tagId,
+			canAddMultiple,
+		});
 		setTableState((prevState) =>
 			addExistingTag(
 				prevState,
@@ -335,7 +323,12 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		rowId: string,
 		tagId: string
 	) {
-		if (DEBUG.APP) console.log("[App]: handleRemoveTagClick called.");
+		logFunc(shouldDebug, FILE_NAME, "handleRemoveTagClick", {
+			cellId,
+			columnId,
+			rowId,
+			tagId,
+		});
 		setTableState((prevState) =>
 			removeTag(prevState, cellId, columnId, rowId, tagId)
 		);
@@ -343,10 +336,9 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	}
 
 	function handleHeaderDeleteClick(columnId: string) {
-		if (DEBUG.APP)
-			logFunc(COMPONENT_NAME, "handleHeaderDeleteClick", {
-				columnId,
-			});
+		logFunc(shouldDebug, FILE_NAME, "handleHeaderDeleteClick", {
+			columnId,
+		});
 
 		setTableState((prevState) => {
 			const columnsCopy = { ...prevState.settings.columns };
@@ -371,10 +363,9 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	}
 
 	function handleRowDeleteClick(rowId: string) {
-		if (DEBUG.APP)
-			logFunc(COMPONENT_NAME, "handleRowDeleteClick", {
-				rowId,
-			});
+		logFunc(shouldDebug, FILE_NAME, "handleRowDeleteClick", {
+			rowId,
+		});
 		setTableState((prevState) => {
 			const rowsCopy = { ...prevState.settings.rows };
 			delete rowsCopy[rowId];
@@ -397,11 +388,9 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	}
 
 	function handleSortRemoveClick(columnId: string) {
-		if (DEBUG.APP) {
-			logFunc(COMPONENT_NAME, "handleSortRemoveClick", {
-				columnId,
-			});
-		}
+		logFunc(shouldDebug, FILE_NAME, "handleSortRemoveClick", {
+			columnId,
+		});
 		setTableState((prevState) => {
 			return {
 				...prevState,
@@ -421,12 +410,10 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	}
 
 	function handleHeaderWidthChange(columnId: string, width: string) {
-		if (DEBUG.APP) {
-			logFunc(COMPONENT_NAME, "handleHeaderWidthChange", {
-				columnId,
-				width,
-			});
-		}
+		logFunc(shouldDebug, FILE_NAME, "handleHeaderWidthChange", {
+			columnId,
+			width,
+		});
 		setTableState((prevState) => {
 			return {
 				...prevState,
@@ -446,11 +433,10 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	}
 
 	function handleMoveColumnClick(columnId: string, moveRight: boolean) {
-		if (DEBUG.APP)
-			logFunc(COMPONENT_NAME, "handleMoveColumnClick", {
-				columnId,
-				moveRight,
-			});
+		logFunc(shouldDebug, FILE_NAME, "handleMoveColumnClick", {
+			columnId,
+			moveRight,
+		});
 		setTableState((prevState: TableState) => {
 			const { model } = prevState;
 			const updatedColumnIds = [...model.columnIds];
@@ -481,11 +467,10 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	}
 
 	function handleInsertColumnClick(columnId: string, insertRight: boolean) {
-		if (DEBUG.APP)
-			logFunc(COMPONENT_NAME, "handleInsertColumnClick", {
-				columnId,
-				insertRight,
-			});
+		logFunc(shouldDebug, FILE_NAME, "handleInsertColumnClick", {
+			columnId,
+			insertRight,
+		});
 		setTableState((prevState: TableState) => {
 			const { model, settings } = prevState;
 			const index = model.columnIds.indexOf(columnId);
@@ -553,11 +538,10 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	}
 
 	function handleAutoWidthToggle(columnId: string, value: boolean) {
-		if (DEBUG.APP)
-			logFunc(COMPONENT_NAME, "handleAutoWidthToggle", {
-				columnId,
-				value,
-			});
+		logFunc(shouldDebug, FILE_NAME, "handleAutoWidthToggle", {
+			columnId,
+			value,
+		});
 		setTableState((prevState) => {
 			return {
 				...prevState,
@@ -577,11 +561,10 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 	}
 
 	function handleWrapContentToggle(columnId: string, value: boolean) {
-		if (DEBUG.APP)
-			logFunc(COMPONENT_NAME, "handleWrapContentToggle", {
-				columnId,
-				value,
-			});
+		logFunc(shouldDebug, FILE_NAME, "handleWrapContentToggle", {
+			columnId,
+			value,
+		});
 		setTableState((prevState) => {
 			return {
 				...prevState,

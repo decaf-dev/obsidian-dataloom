@@ -20,8 +20,8 @@ export default class NltSettingsTab extends PluginSettingTab {
 			.setDesc(
 				"The folder that contains the NLT table definition files. Do not include any slashes. e.g. '_notion-like-tables'"
 			)
-			.addText((text) => {
-				text.setValue(this.plugin.settings.tableFolder).onChange(
+			.addText((cb) => {
+				cb.setValue(this.plugin.settings.tableFolder).onChange(
 					async (value) => {
 						this.plugin.settings.tableFolder = value;
 						await this.plugin.saveSettings();
@@ -29,23 +29,16 @@ export default class NltSettingsTab extends PluginSettingTab {
 				);
 			});
 
-		// new Setting(containerEl)
-		// 	.setName("Sync interval")
-		// 	.setDesc(
-		// 		"How often to check in milliseconds for changes between live preview and reading modes. If you switch tabs a lot, you may want to pick a quicker interval. Please restart Obsidian for this to take effect."
-		// 	)
-		// 	.addDropdown((dropdown) => {
-		// 		dropdown.addOption("2000", "Normal - 2000");
-		// 		dropdown.addOption("1500", "Fast - 1500");
-		// 		dropdown.addOption("1000", "Faster - 1000");
-		// 		dropdown.setValue(
-		// 			String(this.plugin.settings.viewModeSyncInterval)
-		// 		);
-		// 		dropdown.onChange(async (value) => {
-		// 			this.plugin.settings.viewModeSyncInterval =
-		// 				value !== "" ? Number(value) : 0;
-		// 			await this.plugin.saveSettings();
-		// 		});
-		// 	});
+		new Setting(containerEl)
+			.setName("Debug mode")
+			.setDesc("Turns on console.log for various table events")
+			.addToggle((cb) => {
+				cb.setValue(this.plugin.settings.shouldDebug).onChange(
+					async (value) => {
+						this.plugin.settings.shouldDebug = value;
+						await this.plugin.saveSettings();
+					}
+				);
+			});
 	}
 }

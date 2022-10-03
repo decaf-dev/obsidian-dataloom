@@ -2,7 +2,7 @@ import MarkdownIt from "markdown-it";
 
 import NltPlugin, { DEFAULT_SETTINGS } from "../../main";
 
-import { CURRENT_PLUGIN_VERSION, DEBUG } from "../../constants";
+import { CURRENT_PLUGIN_VERSION } from "../../constants";
 import {
 	DEFAULT_COLUMN_SETTINGS,
 	DEFAULT_ROW_SETTINGS,
@@ -22,6 +22,9 @@ import {
 } from "../string/regex";
 import { randomCellId, randomColumnId, randomRowId } from "../random";
 import { generateEmptyMarkdownTable } from "../random";
+import { logVar } from "../debug";
+
+const FILE_NAME = "deserialize";
 
 const md = new MarkdownIt();
 
@@ -261,10 +264,7 @@ export const deserializeTable = async (
 	plugin: NltPlugin,
 	tableId: string
 ): Promise<TableState> => {
-	if (DEBUG.LOAD_APP_DATA) {
-		console.log("");
-		console.log("deserializeTable()");
-	}
+	const shouldDebug = plugin.settings.shouldDebug;
 
 	//Migration for 4.3.1 or earlier
 	if (plugin.settings.shouldClear) {
@@ -277,7 +277,13 @@ export const deserializeTable = async (
 	validateSettings(plugin);
 
 	const model = await findTableModel(plugin, tableId);
-	if (DEBUG.LOAD_APP_DATA) console.log("Found table model:", model);
+	logVar(
+		shouldDebug,
+		FILE_NAME,
+		"deserializeTable",
+		"Loaded table model from definition file",
+		model
+	);
 
 	let tableState: TableState = {
 		model,
@@ -292,8 +298,14 @@ export const deserializeTable = async (
 	if (savedState) {
 		const { pluginVersion, settings } = savedState;
 
-		if (DEBUG.LOAD_APP_DATA)
-			console.log("Loading settings from cache", settings);
+		logVar(
+			shouldDebug,
+			FILE_NAME,
+			"deserializeTable",
+			"Found cached table settings",
+			settings
+		);
+
 		//Update with old settings
 		tableState.settings = settings;
 

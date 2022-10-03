@@ -2,10 +2,12 @@ import { createSlice } from "@reduxjs/toolkit";
 
 interface GlobalState {
 	isDarkMode: boolean;
+	shouldDebug: boolean;
 }
 
 const initialState: GlobalState = {
 	isDarkMode: false,
+	shouldDebug: false,
 };
 
 const globalSlice = createSlice({
@@ -15,8 +17,11 @@ const globalSlice = createSlice({
 		setDarkMode(state, action) {
 			state.isDarkMode = action.payload;
 		},
+		setDebugMode(state, action) {
+			state.shouldDebug = action.payload;
+		},
 	},
 });
 
-export const { setDarkMode } = globalSlice.actions;
+export const { setDarkMode, setDebugMode } = globalSlice.actions;
 export default globalSlice.reducer;

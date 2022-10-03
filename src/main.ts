@@ -25,7 +25,7 @@ import { store } from "./services/redux/store";
 import { TableState } from "./services/table/types";
 import _ from "lodash";
 import { isMenuId } from "./services/menu/utils";
-import { setDarkMode } from "./services/redux/globalSlice";
+import { setDarkMode, setDebugMode } from "./services/redux/globalSlice";
 import { TABLE_ID_REGEX } from "./services/string/regex";
 import MigrationModal from "./MigrationModal";
 export interface NltSettings {
@@ -38,6 +38,7 @@ export interface NltSettings {
 		tableId: string | null;
 		viewModes: MarkdownViewModeType[];
 	};
+	shouldDebug: boolean;
 	shouldClear: boolean;
 }
 
@@ -50,6 +51,7 @@ export const DEFAULT_SETTINGS: NltSettings = {
 		viewModes: [],
 	},
 	shouldClear: true,
+	shouldDebug: false,
 };
 export default class NltPlugin extends Plugin {
 	settings: NltSettings;
@@ -98,6 +100,7 @@ export default class NltPlugin extends Plugin {
 
 		this.app.workspace.onLayoutReady(() => {
 			this.checkForDarkMode();
+			this.checkForDebug();
 		});
 	}
 
@@ -108,6 +111,10 @@ export default class NltPlugin extends Plugin {
 	private throttlePositionUpdate = _.throttle(() => {
 		store.dispatch(updateMenuPosition());
 	}, 150);
+
+	private checkForDebug() {
+		store.dispatch(setDebugMode(this.settings.shouldDebug));
+	}
 
 	private checkForDarkMode() {
 		store.dispatch(setDarkMode(this.hasDarkTheme()));

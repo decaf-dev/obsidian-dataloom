@@ -78,7 +78,7 @@ export const generateEmptyMarkdownTable = (): string => {
 		rowIds: [rowId1, rowId2],
 	};
 	const frontmatter = serializeFrontMatter(model);
-	return frontmatter + "\n" + emptyMarkdownTable();
+	return frontmatter + "\n\n" + emptyMarkdownTable();
 };
 
 export const generateNLTCodeBlock = (tableId = ""): string => {
