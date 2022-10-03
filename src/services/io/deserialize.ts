@@ -87,7 +87,6 @@ interface ParsedTable {
 }
 
 export const parseTableFromMarkdown = (data: string): ParsedTable => {
-	console.log("data", data);
 	const tokens = md.parse(data, {});
 
 	let parsedFrontmatter: string[];
