@@ -123,7 +123,7 @@ const updateSettingsCache = async (
 	return await plugin.saveData(plugin.settings);
 };
 
-const updateFileContent = async (
+export const updateFileContent = async (
 	plugin: NltPlugin,
 	file: TFile,
 	content: string
@@ -148,6 +148,20 @@ export const updateSortTime = async (plugin: NltPlugin, tableId: string) => {
 	return await plugin.saveData(plugin.settings);
 };
 
+export const serializeTableModel = async (
+	plugin: NltPlugin,
+	file: TFile,
+	model: TableModel
+) => {
+	const frontmatter = serializeFrontMatter(model);
+	const tableMarkdown = serializeMarkdownTable(model);
+	if (DEBUG.SAVE_APP_DATA) {
+		console.log("frontmatter:\n\n", frontmatter);
+		console.log("table markdown:\n\n", tableMarkdown);
+	}
+	await updateFileContent(plugin, file, frontmatter + "\n" + tableMarkdown);
+};
+
 export const serializeTable = async (
 	shouldSaveModel: boolean,
 	plugin: NltPlugin,
@@ -164,18 +178,8 @@ export const serializeTable = async (
 
 	if (shouldSaveModel) {
 		if (DEBUG.SAVE_APP_DATA) console.log("Updating table definition file.");
-		const file = await findTableFile(plugin, tableId);
-		const frontmatter = serializeFrontMatter(model);
-		const tableMarkdown = serializeMarkdownTable(model);
-		if (DEBUG.SAVE_APP_DATA) {
-			console.log("frontmatter:\n\n", frontmatter);
-			console.log("table markdown:\n\n", tableMarkdown);
-		}
-		await updateFileContent(
-			plugin,
-			file,
-			frontmatter + "\n" + tableMarkdown
-		);
+		const { file } = await findTableFile(plugin, tableId);
+		await serializeTableModel(plugin, file, model);
 	}
 	await updateSettingsCache(plugin, state, tableId, viewModesToUpdate);
 };

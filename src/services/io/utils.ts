@@ -4,7 +4,7 @@ import NltPlugin from "../../main";
 
 import { UNESCAPED_PIPE_REGEX } from "../string/regex";
 
-import { createEmptyMarkdownTable } from "../random";
+import { generateEmptyMarkdownTable } from "../random";
 
 export const replaceUnescapedPipes = (markdown: string): string => {
 	const matches = Array.from(markdown.matchAll(UNESCAPED_PIPE_REGEX));
@@ -38,7 +38,7 @@ const serializeRowIds = (rowIds: string[]) => {
 export const findTableFile = async (
 	plugin: NltPlugin,
 	tableId: string
-): Promise<TFile | null> => {
+): Promise<{ file: TFile; isNewFile: boolean }> => {
 	const tableFolder = plugin.settings.tableFolder;
 	const folder = plugin.app.vault.getAbstractFileByPath(tableFolder);
 	if (!folder) await plugin.app.vault.createFolder(tableFolder);
@@ -46,11 +46,11 @@ export const findTableFile = async (
 	const file = plugin.app.vault.getAbstractFileByPath(
 		`${tableFolder}/${tableId}.md`
 	);
-	if (file) return <TFile>file;
+	if (file) return { file: <TFile>file, isNewFile: false };
 
 	const createdFile = await plugin.app.vault.create(
 		`${tableFolder}/${tableId}.md`,
-		createEmptyMarkdownTable()
+		""
 	);
-	return createdFile;
+	return { file: createdFile, isNewFile: true };
 };

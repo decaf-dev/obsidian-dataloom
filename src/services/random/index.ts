@@ -64,7 +64,7 @@ const emptyMarkdownTable = (): string => {
  * Creates a 1 column NLT markdown table
  * @returns An NLT markdown table
  */
-export const createEmptyMarkdownTable = (): string => {
+export const generateEmptyMarkdownTable = (): string => {
 	const columnId = randomColumnId();
 	const rowId1 = randomRowId();
 	const rowId2 = randomRowId();
@@ -81,10 +81,11 @@ export const createEmptyMarkdownTable = (): string => {
 	return frontmatter + "\n" + emptyMarkdownTable();
 };
 
-export const createNLTCodeBlock = (): string => {
+export const generateNLTCodeBlock = (tableId = ""): string => {
+	if (tableId === "") tableId = randomTableId();
 	const codeblock: string[] = [];
 	codeblock.push("```notion-like-tables");
-	codeblock.push(randomTableId());
+	codeblock.push(tableId);
 	codeblock.push("```");
 	return codeblock.join("\n");
 };

@@ -96,7 +96,7 @@ export default function EditableTd({
 			console.log("[EditableTd] handleCellContextClick()");
 		try {
 			await navigator.clipboard.writeText(markdown);
-			new Notice("Cell text copied");
+			new Notice("Copied text to clipboard");
 		} catch (err) {
 			console.log(err);
 		}

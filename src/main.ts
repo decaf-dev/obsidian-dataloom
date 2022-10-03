@@ -13,7 +13,7 @@ import { NltTable } from "./NltTable";
 import { addRow } from "./services/table/row";
 import { addColumn } from "./services/table/column";
 import { serializeTable, updateSortTime } from "./services/io/serialize";
-import { createNLTCodeBlock } from "./services/random";
+import { generateNLTCodeBlock } from "./services/random";
 import {
 	closeAllMenus,
 	getTopLevelMenu,
@@ -27,6 +27,7 @@ import _ from "lodash";
 import { isMenuId } from "./services/menu/utils";
 import { setDarkMode } from "./services/redux/globalSlice";
 import { TABLE_ID_REGEX } from "./services/string/regex";
+import MigrationModal from "./MigrationModal";
 export interface NltSettings {
 	data: {
 		[tableId: string]: TableState;
@@ -228,11 +229,20 @@ export default class NltPlugin extends Plugin {
 
 	registerCommands() {
 		this.addCommand({
+			id: "nlt-migration-tool",
+			name: "Migration tool",
+			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "m" }],
+			callback: async () => {
+				new MigrationModal(this).open();
+			},
+		});
+
+		this.addCommand({
 			id: "nlt-add-table",
 			name: "Add table",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "=" }],
 			editorCallback: (editor: Editor) => {
-				editor.replaceSelection(createNLTCodeBlock());
+				editor.replaceSelection(generateNLTCodeBlock());
 			},
 		});
 
