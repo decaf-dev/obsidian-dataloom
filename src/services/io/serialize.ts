@@ -1,10 +1,12 @@
-import NltPlugin, { NltSettings } from "../../main";
+import NltPlugin from "../../main";
 
 import type { MarkdownViewModeType, TFile } from "obsidian";
 
 import { TableModel, Cell, TableState } from "../table/types";
-import { DEBUG } from "../../constants";
 import { findTableFile, serializeFrontMatter } from "./utils";
+import { logVar } from "../debug";
+
+export const FILE_NAME = "serialize";
 
 /**
  * Produces markdown from the table model
@@ -103,23 +105,25 @@ const updateSettingsCache = async (
 	tableId: string,
 	viewModesToUpdate: MarkdownViewModeType[]
 ) => {
-	const obj: NltSettings = {
-		...plugin.settings,
-		data: {
-			...plugin.settings.data,
-			[tableId]: state,
-		},
-		viewModeSync: {
-			tableId,
-			viewModes: viewModesToUpdate,
-			eventType: "update-state",
-		},
+	const shouldDebug = plugin.settings.shouldDebug;
+	const settingsCopy = { ...plugin.settings };
+	settingsCopy.data = {
+		...plugin.settings.data,
+		[tableId]: state,
 	};
-	if (DEBUG.SAVE_APP_DATA) {
-		console.log("Updating settings cache");
-		console.log("settings:\n", obj);
-	}
-	plugin.settings = obj;
+	settingsCopy.viewModeSync = {
+		tableId,
+		viewModes: viewModesToUpdate,
+		eventType: "update-state",
+	};
+	logVar(
+		shouldDebug,
+		FILE_NAME,
+		"updateSettingsCache",
+		"Updating settings with new table state",
+		settingsCopy
+	);
+	plugin.settings = settingsCopy;
 	return await plugin.saveData(plugin.settings);
 };
 
@@ -132,19 +136,21 @@ export const updateFileContent = async (
 };
 
 export const updateSortTime = async (plugin: NltPlugin, tableId: string) => {
-	const obj: NltSettings = {
-		...plugin.settings,
-		viewModeSync: {
-			tableId,
-			viewModes: ["source", "preview"],
-			eventType: "sort-rows",
-		},
+	const shouldDebug = plugin.settings.shouldDebug;
+	const settingsCopy = { ...plugin.settings };
+	settingsCopy.viewModeSync = {
+		tableId,
+		viewModes: ["source", "preview"],
+		eventType: "sort-rows",
 	};
-	if (DEBUG.SAVE_APP_DATA) {
-		console.log("Updating sort time");
-		console.log("settings:\n", obj);
-	}
-	plugin.settings = obj;
+	logVar(
+		shouldDebug,
+		FILE_NAME,
+		"updateSortTime",
+		"Updating settings file with new sync info",
+		settingsCopy
+	);
+	plugin.settings = settingsCopy;
 	return await plugin.saveData(plugin.settings);
 };
 
@@ -153,13 +159,19 @@ export const serializeTableModel = async (
 	file: TFile,
 	model: TableModel
 ) => {
+	const shouldDebug = plugin.settings.shouldDebug;
 	const frontmatter = serializeFrontMatter(model);
 	const tableMarkdown = serializeMarkdownTable(model);
-	if (DEBUG.SAVE_APP_DATA) {
-		console.log("frontmatter:\n\n", frontmatter);
-		console.log("table markdown:\n\n", tableMarkdown);
-	}
-	await updateFileContent(plugin, file, frontmatter + "\n" + tableMarkdown);
+
+	const content = frontmatter + "\n\n" + tableMarkdown;
+	logVar(
+		shouldDebug,
+		FILE_NAME,
+		"serializeTableModel",
+		"Updating table definition file",
+		content
+	);
+	await updateFileContent(plugin, file, content);
 };
 
 export const serializeTable = async (
@@ -169,15 +181,9 @@ export const serializeTable = async (
 	tableId: string,
 	viewModesToUpdate: MarkdownViewModeType[]
 ) => {
-	if (DEBUG.SAVE_APP_DATA) {
-		console.log("");
-		console.log("serializeTable()");
-	}
-
 	const { model } = state;
 
 	if (shouldSaveModel) {
-		if (DEBUG.SAVE_APP_DATA) console.log("Updating table definition file.");
 		const { file } = await findTableFile(plugin, tableId);
 		await serializeTableModel(plugin, file, model);
 	}

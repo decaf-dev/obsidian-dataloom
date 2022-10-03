@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React from "react";
 import { Notice } from "obsidian";
 
 import TextCell from "../TextCell";
@@ -17,8 +17,6 @@ import { MenuLevel } from "src/services/menu/types";
 import { usePositionRef } from "src/services/hooks";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 import { openMenu, isMenuOpen } from "src/services/menu/menuSlice";
-
-import { DEBUG } from "../../constants";
 
 import "./styles.css";
 import MultiTagCell from "../MultiTagCell";
@@ -92,8 +90,6 @@ export default function EditableTd({
 	]);
 
 	async function handleCellContextClick() {
-		if (DEBUG.EDITABLE_TD)
-			console.log("[EditableTd] handleCellContextClick()");
 		try {
 			await navigator.clipboard.writeText(markdown);
 			new Notice("Copied text to clipboard");
@@ -103,7 +99,6 @@ export default function EditableTd({
 	}
 
 	function handleCellClick(e: React.MouseEvent) {
-		if (DEBUG.EDITABLE_TD) console.log("[EditableTd] handleCellClick()");
 		if (columnType === CellType.CHECKBOX) {
 			let isChecked = markdown.includes("x");
 
