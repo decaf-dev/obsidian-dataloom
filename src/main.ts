@@ -13,7 +13,7 @@ import { NltTable } from "./NltTable";
 import { addRow } from "./services/table/row";
 import { addColumn } from "./services/table/column";
 import { serializeTable, updateSortTime } from "./services/io/serialize";
-import { createEmptyMarkdownTable } from "./services/random";
+import { createNLTCodeBlock } from "./services/random";
 import {
 	closeAllMenus,
 	getTopLevelMenu,
@@ -26,6 +26,7 @@ import { TableState } from "./services/table/types";
 import _ from "lodash";
 import { isMenuId } from "./services/menu/utils";
 import { setDarkMode } from "./services/redux/globalSlice";
+import { TABLE_ID_REGEX } from "./services/string/regex";
 export interface NltSettings {
 	data: {
 		[tableId: string]: TableState;
@@ -36,6 +37,7 @@ export interface NltSettings {
 		tableId: string | null;
 		viewModes: MarkdownViewModeType[];
 	};
+	shouldClear: boolean;
 }
 
 export const DEFAULT_SETTINGS: NltSettings = {
@@ -46,6 +48,7 @@ export const DEFAULT_SETTINGS: NltSettings = {
 		tableId: null,
 		viewModes: [],
 	},
+	shouldClear: true,
 };
 export default class NltPlugin extends Plugin {
 	settings: NltSettings;
@@ -74,13 +77,9 @@ export default class NltPlugin extends Plugin {
 		await this.loadSettings();
 		await this.forcePostProcessorReload();
 
-		this.registerMarkdownPostProcessor((el, context) => {
-			console.log(el);
-		});
 		this.registerMarkdownCodeBlockProcessor(
 			"notion-like-tables",
 			(source, el, ctx) => {
-				const TABLE_ID_REGEX = new RegExp(/^table-id-[a-zA-Z0-9_-]+$/);
 				const text = source.trim();
 				const tableId = text.match(TABLE_ID_REGEX) ? text : null;
 				if (tableId) {
@@ -233,7 +232,7 @@ export default class NltPlugin extends Plugin {
 			name: "Add table",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "=" }],
 			editorCallback: (editor: Editor) => {
-				editor.replaceSelection(createEmptyMarkdownTable());
+				editor.replaceSelection(createNLTCodeBlock());
 			},
 		});
 

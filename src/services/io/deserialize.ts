@@ -1,6 +1,6 @@
 import MarkdownIt from "markdown-it";
 
-import NltPlugin from "../../main";
+import NltPlugin, { DEFAULT_SETTINGS } from "../../main";
 
 import { CURRENT_PLUGIN_VERSION, DEBUG } from "../../constants";
 import {
@@ -17,6 +17,8 @@ import {
 	RIGHT_SQUARE_BRACKET_REGEX,
 	SLASH_REGEX,
 	INTERNAL_LINK_ALIAS_REGEX,
+	COLUMN_ID_REGEX,
+	ROW_ID_REGEX,
 } from "../string/regex";
 import { randomCellId } from "../random";
 
@@ -131,7 +133,7 @@ const parseTableFromMarkdown = (data: string): ParsedTable => {
 };
 
 const throwTableError = (tableId: string, message: string) => {
-	throw new Error(`Table definition file for ${tableId}: ${message}`);
+	throw new Error(`${tableId}: ${message}`);
 };
 
 const validateParsedTable = (
@@ -152,13 +154,27 @@ const validateParsedTable = (
 	if (parsedCells.length === 0)
 		throwTableError(tableId, "file exists but no markdown was found");
 
-	const columnIds = JSON.parse(parsedFrontmatter[0].split("columnIds: ")[1]);
-	const rowIds = JSON.parse(parsedFrontmatter[1].split("rowIds: ")[1]);
+	const columnIds: string[] = JSON.parse(
+		parsedFrontmatter[0].split("columnIds: ")[1]
+	);
+	const rowIds: string[] = JSON.parse(
+		parsedFrontmatter[1].split("rowIds: ")[1]
+	);
 
 	if (columnIds.length !== numColumns)
 		throwTableError(tableId, "missing column ids");
 
 	if (rowIds.length !== numRows) throwTableError(tableId, "missing rows ids");
+
+	columnIds.forEach((id) => {
+		if (!id.match(COLUMN_ID_REGEX))
+			throwTableError(tableId, `invalid column id "${id}"`);
+	});
+
+	rowIds.forEach((id) => {
+		if (!id.match(ROW_ID_REGEX))
+			throwTableError(tableId, `invalid row id "${id}"`);
+	});
 
 	return {
 		columnIds,
@@ -226,6 +242,14 @@ export const deserializeTable = async (
 		console.log("deserializeTable()");
 	}
 
+	//Migration for 4.3.1 or earlier
+	if (plugin.settings.shouldClear) {
+		console.log("Clearing previous NLT plugin settings");
+		plugin.settings = { ...DEFAULT_SETTINGS };
+		plugin.settings.shouldClear = false;
+		await plugin.saveSettings();
+	}
+
 	validateSettings(plugin);
 
 	const model = await findTableModel(plugin, tableId);
@@ -264,7 +288,6 @@ export const deserializeTable = async (
 			tableState.settings.rows[id] = { ...DEFAULT_ROW_SETTINGS };
 			//Offset the time so that we can sort by this date
 			tableState.settings.rows[id].creationDate = Date.now() + i;
-			console.log(tableState.settings.rows);
 		}
 	});
 
