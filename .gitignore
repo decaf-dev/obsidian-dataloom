@@ -19,10 +19,10 @@ main.js
 .DS_Store
 
 # Ignore build files
-dist/main.css
-dist/main.css.map
-dist/main.js
-dist/main.js.map
-dist/styles.css
+main.css
+main.css.map
+main.js
+main.js.map
+styles.css
 # obsidian
-dist/data.json
+data.json
