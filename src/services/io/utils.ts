@@ -4,7 +4,7 @@ import NltPlugin from "../../main";
 
 import { UNESCAPED_PIPE_REGEX } from "../string/regex";
 
-import { createEmptyMarkdownTable } from "../random";
+import { generateEmptyMarkdownTable } from "../random";
 
 export const replaceUnescapedPipes = (markdown: string): string => {
 	const matches = Array.from(markdown.matchAll(UNESCAPED_PIPE_REGEX));
@@ -50,7 +50,7 @@ export const findTableFile = async (
 
 	const createdFile = await plugin.app.vault.create(
 		`${tableFolder}/${tableId}.md`,
-		createEmptyMarkdownTable()
+		generateEmptyMarkdownTable()
 	);
 	return createdFile;
 };
