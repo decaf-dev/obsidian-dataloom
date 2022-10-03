@@ -24,7 +24,8 @@ Want to support development?
 
 -   Various other bug fixes and optimizations have been added. See: [Release 5.0.0](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/5.0.0) for more details.
 
-**All previous tables MUST BE MIGRATED TO 5.0.0**
+**ALL PREVIOUSLY CREATED TABLES MUST BE MIGRATED TO 5.0.0**
+
 **For migrating to NLT `5.0.0` from NLT `4.3.1` or less, please use the [migration tool](#migration-tool)**
 
 ## About
