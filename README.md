@@ -14,7 +14,7 @@ Want to support development?
 
 **Make some noise, because version 5 of Notion-Like-Tables has arrived!!**
 
--   Notion-Like Tables now supports usage of all HTML entities. This means that previously broken entites, such as emoji icons are now fully supported. Obsidian direct links and direct link aliases are now functional.
+-   Notion-Like Tables now support usage of all HTML entities. This means that previously broken entities, such as emoji icons are now fully supported. Obsidian direct links and direct link aliases are now functional.
 
 -   Live preview is now fully functional. You may use Notion-Like Tables in editing mode and have them sync with the table rendered in reading mode. If you edit a table in reading mode, it will be synced to your live preview table.
 
@@ -62,16 +62,16 @@ You will also lose your previous `data.json` settings for this plugin. This is n
 To quickly make a table you can use the add table command.
 
 1. Open up a markdown file and change your view to editing mode.
-2. Press `ctrl + p` (Windows) or `cmd + p` (Mac) on your keyboard and search `Add table`. A NLT codeblock will be inserted into your markdown file.
-3. Click outside of the codeblock, a table will immediately render.
+2. Press `ctrl + p` (Windows) or `cmd + p` (Mac) on your keyboard and search `Add table`. An NLT code block will be inserted into your markdown file.
+3. Click outside of the code block, and a table will immediately render.
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/add-table-command.png)
 
-### NLT Codeblocks
+### NLT Code Blocks
 
-To render a table, you need to place a NLT Codeblock into your markdown file.
+To render a table, you need to place an NLT Code Block into your markdown file.
 
-**Example NLT Codeblock**
+**Example NLT Code Block**
 
 ````markdown
 ```notion-like-tables
@@ -79,11 +79,11 @@ table-id-123456
 ```
 ````
 
--   The codeblock begins with `notion-like-tables` directive.
+-   The code block begins with `notion-like-tables` directive.
 
--   The inside of the codeblock includes a table id. The table id is of the format: `table-id-<my-specifier>`. A specifier can only contain [valid id characters](#valid-id-characters).
+-   The inside of the code block includes a table id. The table id is of the format: `table-id-<my-specifier>`. A specifier can only contain [valid id characters](#valid-id-characters).
 
-Once you add the block, a `table defintion file` will automatically be created, and your table will render.
+Once you add the block, a `table definition file` will automatically be created, and your table will render.
 
 ### Table Definition Files
 
@@ -102,14 +102,14 @@ rowIds: ["row-id-BtUYxXIV", "row-id-A6PfNOAV"]
 |            |
 ```
 
-The `columnIds` and `rowIds` keys are included in a frontmatter declaration after which the table markdown is declared. Both key are connected to an array of ids.
+The `columnIds` and `rowIds` keys are included in a frontmatter declaration after which the table markdown is declared. Both keys are connected to an array of ids.
 
 -   The number of ids in the `columnIds` array must match the number of columns in the markdown table
 -   The number of ids in the `rowIds` array must match the number of rows in the markdown table
     -   Please note that the hyphen row doesn't count as a row. In the example above, the table only has 2 row ids
 -   Each row or column id must only contain (valid id characters)[#valid-id-characters]
 
-Notion Like Tables use the `MarkdownCodeBlockProcessor` to replace a NLT codeblock in your markdown file with a React app generated from your table definition file.
+Notion Like Tables uses the `MarkdownCodeBlockProcessor` to replace an NLT code block in your markdown file with a React app generated from your table definition file.
 
 All table definition files are stored in a folder called [`_notion-like-tables`](#table-definition-folder).
 
@@ -125,15 +125,15 @@ Table ids, row ids, and column ids may only contain valid id characters:
 
 ## Migration Tool
 
-Please make sure that you have read [NLT Codeblocks](#nlt-codeblocks) and [Table Definition Files](#table-definition-files) before continuing.
+Please make sure that you have read [NLT Code Blocks](#nlt-code-blocks) and [Table Definition Files](#table-definition-files) before continuing.
 
-To make codeblocks for your previous tables:
+To make code blocks for your previous tables:
 
 1. Press on your keyboard `ctrl + p` (Windows) or `cmd + p` (Mac) on your keyboard and search for `Migration tool` (alternatively you can also use the shortcut `cmd + shift + m`)
 2. Paste your previous markdown text into the textarea
 3. Click `Generate codeblock`. A table definition file will be created for your migrated table.
 4. Click the `Copy` button
-5. Paste the codeblock into your markdown file
+5. Paste the code block into your markdown file
 
 ## Hotkeys
 
@@ -149,7 +149,7 @@ To make codeblocks for your previous tables:
 
 ## Header Menu
 
-Click on a header name to view the header menu. In the header menu you can rename the header, sort your column values or change the column content type.
+Click on a header name to view the header menu. In the header menu, you can rename the header, sort your column values or change the column content type.
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/header.png)
 
@@ -199,9 +199,9 @@ Notion-Like Tables supports all markdown that is found in Obsidian.md
 
 ## Copying Cell Content
 
-Right click a cell and its content will be added to your clipboard.
+Right-click a cell and its content will be added to your clipboard.
 
-NOTE: The table must be in focus for this to work. Click on the table to focus it.
+NOTE: The table must be in focus for this to work. Click on the table to focus on it.
 
 ## Column Resizing
 
@@ -227,7 +227,7 @@ When wrap overflow is disabled the text will cut off at the column width and cre
 
 ### Table Definition Folder
 
-The table definition folder is the folder that contains the table definition files for all tables in your vault. The default value is `_notion-like-tables`. You may change this value to any valid folder name. If the folder has not yet been created, the folder will be created on first table load.
+The table definition folder is the folder that contains the table definition files for all tables in your vault. The default value is `_notion-like-tables`. You may change this value to any valid folder name. If the folder has not yet been created, the folder will be created on the first table load.
 
 ## Undoing Changes
 
