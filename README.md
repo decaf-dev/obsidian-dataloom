@@ -18,7 +18,7 @@ Want to support development?
 
 -   Live preview is now fully functional. You may use Notion-Like Tables in editing mode and have them sync with the table rendered in reading mode. If you edit a table in reading mode, it will be synced to your live preview table.
 
--   Multiple tables can now be used in your markdown files. You may also display the same table across multiple files through the new system of `NLT Codeblocks`.
+-   Multiple tables can now be used in your markdown files. You may also display the same table across multiple files through the new system of `NLT Code Blocks`.
 
 -   Multi-tag support has been added, as well as support for dark colors for our dark theme users.
 
@@ -107,7 +107,7 @@ The `columnIds` and `rowIds` keys are included in a frontmatter declaration afte
 -   The number of ids in the `columnIds` array must match the number of columns in the markdown table
 -   The number of ids in the `rowIds` array must match the number of rows in the markdown table
     -   Please note that the hyphen row doesn't count as a row. In the example above, the table only has 2 row ids
--   Each row or column id must only contain (valid id characters)[#valid-id-characters]
+-   Each row or column id must only contain [valid id characters](#valid-id-characters)
 
 Notion Like Tables uses the `MarkdownCodeBlockProcessor` to replace an NLT code block in your markdown file with a React app generated from your table definition file.
 
@@ -125,13 +125,13 @@ Table ids, row ids, and column ids may only contain valid id characters:
 
 ## Migration Tool
 
-Please make sure that you have read [NLT Code Blocks](#nlt-code-blocks) and [Table Definition Files](#table-definition-files) before continuing.
+Please make sure that you have read [NLT Code Blocks](#nlt-code-blocks) and [Table Definition Files] sections(#table-definition-files) before continuing.
 
 To make code blocks for your previous tables:
 
 1. Press on your keyboard `ctrl + p` (Windows) or `cmd + p` (Mac) on your keyboard and search for `Migration tool` (alternatively you can also use the shortcut `cmd + shift + m`)
 2. Paste your previous markdown text into the textarea
-3. Click `Generate codeblock`. A table definition file will be created for your migrated table.
+3. Click `Generate code block`. A table definition file will be created for your migrated table.
 4. Click the `Copy` button
 5. Paste the code block into your markdown file
 

@@ -57,7 +57,7 @@ export default class MigrationModal extends Modal {
 		this.errorEl.style.color = "var(--background-modifier-error)";
 
 		const generateEl = contentEl.createEl("button", {
-			text: "Generate codeblock",
+			text: "Generate code block",
 		});
 		generateEl.className = "mod-cta";
 		generateEl.addEventListener("click", async () => {
