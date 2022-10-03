@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-notion-like-tables",
-	"version": "5.0.1",
+	"version": "5.0.2",
 	"description": "Notion-like tables for Obsidian.md",
 	"main": "main.js",
 	"scripts": {
