@@ -25,7 +25,8 @@ Want to support development?
 -   Various other bug fixes and optimizations have been added. See: [Release 5.0.0](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/5.0.0) for more details.
 
 **🔥 WARNING: ALL PREVIOUSLY CREATED TABLES MUST BE MIGRATED TO 5.0.0 🔥**
-** You will also lose your previous plugin settings data. This is necessary as the plugin settings data now uses a different structure. You will NOT lose any markdown data or notes**
+
+** You will also lose your previous `data.json` settings for this plugin. This is necessary as the plugin now uses a different structure for its settings data. You will NOT lose any markdown data or notes**
 
 **For migrating to NLT `5.0.0` from NLT `4.3.1` or less, please use the [migration tool](#migration-tool)**
 
