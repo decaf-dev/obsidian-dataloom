@@ -51,24 +51,20 @@ esbuild
 					onRebuild(error) {
 						if (error) console.error("watch build failed:", error);
 						else
-							fs.rename(
-								"dist/main.css",
-								"dist/styles.css",
-								(err) => {
-									if (err) console.log(err);
-								}
-							);
+							fs.rename("main.css", "styles.css", (err) => {
+								if (err) console.log(err);
+							});
 					},
 			  },
 		target: "es2016",
 		logLevel: "info",
 		sourcemap: !prod,
 		treeShaking: true,
-		outfile: "dist/main.js",
+		outfile: "main.js",
 	})
 	.then(() => {
 		if (prod) {
-			fs.rename("dist/main.css", "dist/styles.css", (err) => {
+			fs.rename("main.css", "styles.css", (err) => {
 				if (err) console.log(err);
 			});
 		}
