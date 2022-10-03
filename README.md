@@ -124,9 +124,13 @@ Table ids, row ids, and column ids may only contain valid id characters:
 
 Please make sure that you have read [NLT Codeblocks](#nlt-codeblocks) and [Table Definition Files](#table-definition-files) before continuing.
 
-To make codeblocks for your previous tables, please open our migration tool by pressing on your keyboard `ctrl + p` (Windows) or `cmd + p` (Mac) on your keyboard and search for `migration tool` or use the shortcut `cmd + shift + m`
+To make codeblocks for your previous tables:
 
-Paste your previous markdown text into the markdown textarea and click the `Generate codeblock` button. Now beneath the generated codeblock click the `Copy` button. Paste the codeblock into your markdown file.
+1. Press on your keyboard `ctrl + p` (Windows) or `cmd + p` (Mac) on your keyboard and search for `Migration tool` (alternatively you can also use the shortcut `cmd + shift + m`)
+2. Paste your previous markdown text into the textarea
+3. Click `Generate codeblock`. A table definition file will be created for your migrated table.
+4. Click the `Copy` button
+5. Paste the codeblock into your markdown file
 
 ## Hotkeys
 
