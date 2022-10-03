@@ -1,75 +1,48 @@
-import {
-	ItemView,
-	MarkdownRenderChild,
-	MarkdownSectionInformation,
-} from "obsidian";
-import React from "react";
-import ReactDOM from "react-dom";
-import App from "./App";
-import { loadAppData } from "./services/appData/external/load";
-import NltPlugin from "main";
-import MenuProvider from "./components/MenuProvider";
-import FocusProvider from "./components/FocusProvider";
+import { createRoot, Root } from "react-dom/client";
+import { MarkdownRenderChild, MarkdownViewModeType } from "obsidian";
 
-//This is our main class that will render the React app to the Obsidian container element
+import App from "./App";
+import { store } from "./services/redux/store";
+import { Provider } from "react-redux";
+
+import NltPlugin from "./main";
+
 export class NltTable extends MarkdownRenderChild {
-	plugin: NltPlugin;
-	sourcePath: string;
-	sectionInfo: MarkdownSectionInformation;
-	blockId: string;
 	el: HTMLElement;
+	plugin: NltPlugin;
+	tableId: string;
+	viewMode: MarkdownViewModeType;
+	root: Root;
 
 	constructor(
+		el: HTMLElement,
 		plugin: NltPlugin,
-		containerEl: HTMLElement,
-		blockId: string,
-		sectionInfo: MarkdownSectionInformation,
-		sourcePath: string
+		tableId: string,
+		viewMode: MarkdownViewModeType
 	) {
-		super(containerEl);
+		super(el);
+		this.el = el;
 		this.plugin = plugin;
-		this.blockId = blockId;
-		this.sectionInfo = sectionInfo;
-		this.sourcePath = sourcePath;
+		this.tableId = tableId;
+		this.viewMode = viewMode;
 	}
 
 	async onload() {
-		const appData = await loadAppData(
-			this.plugin,
-			this.containerEl,
-			this.blockId,
-			this.sourcePath
-		);
-
-		//If data is not defined then it isn't a valid table
-		if (appData) {
-			this.el = this.containerEl.createEl("div");
-			ReactDOM.render(
-				<FocusProvider
+		const rootEl = this.el.createEl("div");
+		this.root = createRoot(rootEl);
+		this.root.render(
+			<Provider store={store}>
+				<App
 					plugin={this.plugin}
-					sourcePath={this.sourcePath}
-					sectionInfo={this.sectionInfo}
-					blockId={this.blockId}
-					el={this.el}
-				>
-					<MenuProvider>
-						<App
-							plugin={this.plugin}
-							sectionInfo={this.sectionInfo}
-							loadedData={appData}
-							sourcePath={this.sourcePath}
-							blockId={this.blockId}
-							el={this.containerEl}
-						/>
-					</MenuProvider>
-				</FocusProvider>,
-				this.el
-			);
-			this.containerEl.children[0].replaceWith(this.el);
-		}
+					tableId={this.tableId}
+					viewMode={this.viewMode}
+				/>
+			</Provider>
+		);
+		this.el.children[0].replaceWith(rootEl);
 	}
 
 	async onunload() {
-		ReactDOM.unmountComponentAtNode(this.el);
+		this.root.unmount();
 	}
 }

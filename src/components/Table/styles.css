@@ -1,0 +1,11 @@
+.NLT__table {
+	table-layout: fixed;
+}
+
+.NLT__table,
+.NLT__thead,
+.NLT__tbody,
+.NLT__tfoot,
+.NLT__tr {
+	border: 0 !important;
+}

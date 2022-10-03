@@ -1,5 +1,7 @@
 .NLT__tag-content {
-    width: 100%;
+    width: max-content;
+    overflow: hidden;
+    user-select: none;
 }
 
 .NLT__tag {
@@ -7,6 +9,7 @@
     align-items: center;
     border-radius: 8px;
     padding: 1px 8px;
-    width: fit-content;
+    width: max-content;
+    overflow: hidden;
     color: var(--text-normal);
 }

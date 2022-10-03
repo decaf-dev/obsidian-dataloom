@@ -1,78 +1,81 @@
-import React, { useEffect } from "react";
-
 import parse from "html-react-parser";
 
 import { findColorClass } from "src/services/color";
 
-import IconButton from "src/components/IconButton";
 import TagColorMenu from "src/components/TagColorMenu";
-import { useMenuId } from "src/components/MenuProvider";
-import { useId, usePositionRef } from "src/services/hooks";
-import { numToPx, pxToNum } from "src/services/string/parsers";
+import { usePositionRef } from "src/services/hooks";
+import { numToPx } from "src/services/string/conversion";
 
-import { Icon } from "src/services/icon/types";
-import { MENU_LEVEL } from "src/constants";
+import { IconType } from "src/services/icon/types";
+import { MenuLevel } from "src/services/menu/types";
+import { useMenu } from "src/services/menu/hooks";
+import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
+import {
+	openMenu,
+	isMenuOpen,
+	closeTopLevelMenu,
+} from "src/services/menu/menuSlice";
+
 import "./styles.css";
+import Button from "src/components/Button";
+import Icon from "src/components/Icon";
+
 interface Props {
+	isDarkMode: boolean;
 	id: string;
-	content: string;
+	html: string;
 	color: string;
-	positionUpdateTime: number;
 	onClick: (tagId: string) => void;
 	onColorChange: (tagId: string, color: string) => void;
 }
 
 export default function SelectableTag({
+	isDarkMode,
 	id,
-	content,
+	html,
 	color,
-	positionUpdateTime,
 	onClick,
 	onColorChange,
 }: Props) {
-	const menuId = useId();
-	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
-		useMenuId(menuId, MENU_LEVEL.TWO);
-	const { positionRef, position } = usePositionRef([positionUpdateTime]);
-
-	useEffect(() => {
-		if (isMenuRequestingClose) {
-			closeMenu();
-		}
-	}, [isMenuRequestingClose]);
+	const menu = useMenu(MenuLevel.TWO);
+	const dispatch = useAppDispatch();
+	const isOpen = useAppSelector((state) => isMenuOpen(state, menu));
+	const positionUpdateTime = useAppSelector(
+		(state) => state.menu.positionUpdateTime
+	);
+	const { ref, position } = usePositionRef([positionUpdateTime]);
 
 	function handleColorChange(color: string) {
 		onColorChange(id, color);
-		closeMenu();
+		dispatch(closeTopLevelMenu());
 	}
 
 	let tagClass = "NLT__tag";
-	tagClass += " " + findColorClass(color);
+	tagClass += " " + findColorClass(isDarkMode, color);
 	return (
 		<div
-			ref={positionRef}
+			ref={ref}
 			className="NLT__selectable-tag NLT__selectable"
 			onClick={() => onClick(id)}
 		>
 			<div className={tagClass}>
-				<div className="NLT__tag-content">{parse(content)}</div>
+				<div className="NLT__tag-content">{parse(html)}</div>
 			</div>
-			<IconButton
-				icon={Icon.MORE_HORIZ}
+			<Button
+				icon={<Icon icon={IconType.MORE_HORIZ} />}
+				isDarker
 				onClick={(e) => {
-					//Stop propagation so we don't call the onClick handler
-					//on this div
 					e.stopPropagation();
-					openMenu();
+					dispatch(openMenu(menu));
 				}}
 			/>
 			<TagColorMenu
-				menuId={menuId}
-				isOpen={isMenuOpen}
+				menuId={menu.id}
+				isOpen={isOpen}
 				selectedColor={color}
 				style={{
-					top: numToPx(pxToNum(position.top) - 77),
-					left: numToPx(pxToNum(position.left) + 110),
+					top: numToPx(position.top - 77),
+					left: numToPx(position.left + 110),
 				}}
 				onColorClick={(color) => handleColorChange(color)}
 			/>

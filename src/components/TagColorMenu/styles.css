@@ -2,11 +2,11 @@
     padding: 4px 10px;
 }
 
-.NLT__tag-color-menu-title {
-    font-size: 0.85rem;
+.NLT__tag-color-menu-header {
+    display: flex;
+    justify-content: space-between;
 }
 
-.NLT__tag-color-container {
-    display: grid;
-    grid-template-columns: 100px 100px;
+.NLT__tag-color-menu-title {
+    font-size: 0.85rem;
 }

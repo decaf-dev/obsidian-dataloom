@@ -1,5 +1,3 @@
-import React from "react";
-
 import "./styles.css";
 
 interface Props {
@@ -9,7 +7,7 @@ interface Props {
 
 export default function Switch({ isChecked, onToggle }: Props) {
 	return (
-		<label className="NLT__switch" onClick={() => onToggle(!isChecked)}>
+		<label className="NLT__switch">
 			<input
 				type="checkbox"
 				checked={isChecked}

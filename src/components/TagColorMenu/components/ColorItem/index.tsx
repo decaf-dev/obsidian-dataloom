@@ -1,20 +1,24 @@
-import React from "react";
-
 import { findColorClass } from "src/services/color";
-import { uppercaseFirst } from "src/services/string/adders";
+import { uppercaseFirst } from "src/services/string/utils";
 import "./styles.css";
 
 interface Props {
+	isDarkMode: boolean;
 	color: string;
 	isSelected: boolean;
 	onColorClick: (color: string) => void;
 }
 
-export default function ColorItem({ color, isSelected, onColorClick }: Props) {
+export default function ColorItem({
+	isDarkMode,
+	color,
+	isSelected,
+	onColorClick,
+}: Props) {
 	let containerClass = "NLT__color-item NLT__selectable";
 	if (isSelected) containerClass += " NLT__selected";
 
-	const colorClass = findColorClass(color);
+	const colorClass = findColorClass(isDarkMode, color);
 	let squareClass = "NLT__color-item-square";
 	squareClass += " " + colorClass;
 

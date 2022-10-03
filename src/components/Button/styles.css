@@ -11,5 +11,10 @@
 }
 
 .NLT__button--icon {
+    background-color: transparent;
     padding: 1px 3px;
+}
+
+.NLT__button--icon-darker:hover {
+    filter: brightness(95%);
 }

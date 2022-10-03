@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-
+import React, { forwardRef } from "react";
 import { Notice } from "obsidian";
+
 import TextCell from "../TextCell";
 import TagCell from "../TagCell";
 import CheckboxCell from "../CheckboxCell";
@@ -11,138 +11,92 @@ import TextCellEdit from "../TextCellEdit";
 import TagCellEdit from "../TagCellEdit";
 import DateCellEdit from "../DateCellEdit";
 
-import { randomColor } from "src/services/random";
-import { Cell, Tag, CellType } from "src/services/appData/state/types";
-
-import "./styles.css";
+import { CellType, Tag } from "src/services/table/types";
+import { useMenu } from "src/services/menu/hooks";
+import { MenuLevel } from "src/services/menu/types";
+import { usePositionRef } from "src/services/hooks";
+import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
+import { openMenu, isMenuOpen } from "src/services/menu/menuSlice";
 
 import { DEBUG } from "../../constants";
-import { useDidMountEffect, useId } from "src/services/hooks";
-import { logFunc } from "src/services/appData/debug";
-import { useMenuId } from "src/components/MenuProvider";
-import { usePositionRef } from "src/services/hooks";
+
+import "./styles.css";
+import MultiTagCell from "../MultiTagCell";
+import { numToPx } from "src/services/string/conversion";
 
 interface Props {
-	headerType: string;
-	cell: Cell;
+	columnType: string;
+	cellId: string;
+	rowId: string;
+	columnId: string;
+	markdown: string;
+	html: string;
 	width: string;
-	height: string;
-	positionUpdateTime: number;
+	tags: Tag[];
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
-	tagUpdate: {
-		cellId: string;
-		time: number;
-	};
-	tags: Tag[];
-	onRemoveTagClick: (cellId: string, tagId: string) => void;
-	onTagClick: (cellId: string, tagId: string) => void;
-	onContentChange: (
+	onRemoveTagClick: (
 		cellId: string,
-		headerType: string,
-		updatedContent: string,
-		saveOnChange?: boolean
+		columnId: string,
+		rowId: string,
+		tagId: string
 	) => void;
+	onTagClick: (
+		cellId: string,
+		columnId: string,
+		rowId: string,
+		tagId: string,
+		canAddMultiple: boolean
+	) => void;
+	onContentChange: (cellId: string, updatedMarkdown: string) => void;
 	onAddTag: (
 		cellId: string,
-		headerId: string,
-		inputText: string,
-		color: string
+		columnId: string,
+		rowId: string,
+		markdown: string,
+		html: string,
+		color: string,
+		canAddMultiple: boolean
 	) => void;
-	onColorChange: (tagId: string, color: string) => void;
-	onSaveContent: () => void;
+	onColorChange: (columnId: string, tagId: string, color: string) => void;
 }
 
-const COMPONENT_NAME = "EditableTd";
-
 export default function EditableTd({
-	headerType,
-	cell,
+	cellId,
+	columnId,
+	rowId,
+	markdown,
+	html,
+	columnType,
+	tags,
 	width,
-	height,
-	positionUpdateTime,
 	shouldWrapOverflow,
 	useAutoWidth,
-	tags,
-	tagUpdate,
 	onRemoveTagClick,
 	onColorChange,
 	onTagClick,
 	onContentChange,
-	onSaveContent,
 	onAddTag,
 }: Props) {
-	const [tagInputText, setTagInputText] = useState("");
-	const [tagColor] = useState(randomColor());
-	const menuId = useId();
-	const content = cell.content;
+	const menu = useMenu(MenuLevel.ONE, true);
+	const isOpen = useAppSelector((state) => isMenuOpen(state, menu));
+	const dispatch = useAppDispatch();
+	const { isDarkMode } = useAppSelector((state) => state.global);
 
-	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
-		useMenuId(menuId);
-
-	const { positionRef, position } = usePositionRef([
-		content.length,
+	const positionUpdateTime = useAppSelector(
+		(state) => state.menu.positionUpdateTime
+	);
+	const { position, ref: positionRef } = usePositionRef([
 		positionUpdateTime,
+		markdown.length,
 	]);
-
-	const { id, headerId, type } = cell;
-
-	const [wasContentUpdated, setContentUpdate] = useState(false);
-
-	//If we've already mounted, meaning the application has loaded
-	//and we updated a tag, then we will wait for it to update,
-	//then we will close the menu and save
-	//This prevents rerendering issues
-	useDidMountEffect(() => {
-		if (DEBUG.EDITABLE_TD)
-			logFunc(COMPONENT_NAME, "useDidMountEffect", {
-				tagUpdate,
-			});
-
-		if (tagUpdate.cellId === id) {
-			closeMenu();
-			onSaveContent();
-		}
-	}, [tagUpdate.cellId, tagUpdate.time]);
-
-	useEffect(() => {
-		if (DEBUG.EDITABLE_TD)
-			logFunc(COMPONENT_NAME, "useEffect", {
-				isMenuRequestingClose,
-			});
-		if (isMenuRequestingClose) {
-			if (headerType === CellType.TAG) {
-				if (tagInputText !== "") {
-					const tag = tags.find(
-						(tag) => tag.content === tagInputText
-					);
-					if (tag) {
-						onTagClick(id, tag.id);
-					} else {
-						onAddTag(id, headerId, tagInputText, tagColor);
-					}
-					setTagInputText("");
-				} else {
-					closeMenu();
-				}
-			} else {
-				closeMenu();
-				//If we're just closing the menu from an outside click,
-				//then don't save unless the content actually updated
-				if (wasContentUpdated) {
-					onSaveContent();
-					setContentUpdate(false);
-				}
-			}
-		}
-	}, [isMenuRequestingClose]);
 
 	async function handleCellContextClick() {
 		if (DEBUG.EDITABLE_TD)
 			console.log("[EditableTd] handleCellContextClick()");
 		try {
-			await navigator.clipboard.writeText(content);
-			new Notice("Cell text copied");
+			await navigator.clipboard.writeText(markdown);
+			new Notice("Copied text to clipboard");
 		} catch (err) {
 			console.log(err);
 		}
@@ -150,46 +104,75 @@ export default function EditableTd({
 
 	function handleCellClick(e: React.MouseEvent) {
 		if (DEBUG.EDITABLE_TD) console.log("[EditableTd] handleCellClick()");
-		const el = e.target as HTMLInputElement;
+		if (columnType === CellType.CHECKBOX) {
+			let isChecked = markdown.includes("x");
 
-		//If we clicked on the link for a file or tag, return
-		if (el.nodeName === "A") return;
-		openMenu();
+			if (isChecked) {
+				handleCheckboxChange("[ ]");
+			} else {
+				handleCheckboxChange("[x]");
+			}
+		} else {
+			const el = e.target as HTMLInputElement;
+
+			//If we clicked on the link for a file or tag, return
+			if (el.nodeName === "A") return;
+			dispatch(openMenu(menu));
+		}
 	}
 
-	function handleAddTag(value: string) {
-		onAddTag(id, headerId, value, tagColor);
+	function handleAddTag(markdown: string, html: string, color: string) {
+		onAddTag(
+			cellId,
+			columnId,
+			rowId,
+			markdown,
+			html,
+			color,
+			columnType === CellType.MULTI_TAG
+		);
+	}
+
+	function handleRemoveTagClick(tagId: string) {
+		onRemoveTagClick(cellId, columnId, rowId, tagId);
+	}
+
+	function handleColorChange(tagId: string, colorId: string) {
+		onColorChange(columnId, tagId, colorId);
 	}
 
 	function handleTagClick(tagId: string) {
-		onTagClick(id, tagId);
+		onTagClick(
+			cellId,
+			columnId,
+			rowId,
+			tagId,
+			columnType === CellType.MULTI_TAG
+		);
 	}
 
-	function handleTextInputChange(updatedContent: string) {
-		onContentChange(id, headerType, updatedContent);
-		setContentUpdate(true);
+	function handleTextInputChange(updatedMarkdown: string) {
+		onContentChange(cellId, updatedMarkdown);
 	}
 
-	function handleNumberInputChange(updatedContent: string) {
-		onContentChange(id, headerType, updatedContent);
-		setContentUpdate(true);
+	function handleNumberInputChange(updatedMarkdown: string) {
+		onContentChange(cellId, updatedMarkdown);
 	}
 
-	function handleDateChange(updatedContent: string) {
-		onContentChange(id, headerType, updatedContent);
-		setContentUpdate(true);
+	function handleDateChange(updatedMarkdown: string) {
+		onContentChange(cellId, updatedMarkdown);
 	}
 
-	function handleCheckboxChange(updatedContent: string) {
-		onContentChange(id, headerType, updatedContent, true);
+	function handleCheckboxChange(updatedMarkdown: string) {
+		onContentChange(cellId, updatedMarkdown);
 	}
 
 	function renderCell(): React.ReactNode {
-		switch (type) {
+		switch (columnType) {
 			case CellType.TEXT:
 				return (
 					<TextCell
-						content={content}
+						content={html}
 						shouldWrapOverflow={shouldWrapOverflow}
 						useAutoWidth={useAutoWidth}
 					/>
@@ -197,23 +180,45 @@ export default function EditableTd({
 			case CellType.NUMBER:
 				return (
 					<NumberCell
-						content={content}
+						content={html}
 						shouldWrapOverflow={shouldWrapOverflow}
 						useAutoWidth={useAutoWidth}
 					/>
 				);
 			case CellType.TAG: {
-				const tag = tags.find((tag) => tag.selected.includes(id));
-				if (tag)
-					return <TagCell content={tag.content} color={tag.color} />;
-				return <></>;
+				const currentTag = tags.find((t) =>
+					t.cells.find(
+						(c) => c.rowId === rowId && c.columnId === columnId
+					)
+				);
+				if (currentTag) {
+					return (
+						<TagCell
+							isDarkMode={isDarkMode}
+							html={currentTag.html}
+							color={currentTag.color}
+						/>
+					);
+				} else {
+					return <></>;
+				}
+			}
+			case CellType.MULTI_TAG: {
+				const filteredTags = tags.filter((t) =>
+					t.cells.find(
+						(c) => c.rowId === rowId && c.columnId === columnId
+					)
+				);
+				return (
+					<MultiTagCell isDarkMode={isDarkMode} tags={filteredTags} />
+				);
 			}
 			case CellType.DATE:
-				return <DateCell content={content} />;
+				return <DateCell content={html} />;
 			case CellType.CHECKBOX:
 				return (
 					<CheckboxCell
-						content={content}
+						content={html}
 						onCheckboxChange={handleCheckboxChange}
 					/>
 				);
@@ -223,68 +228,77 @@ export default function EditableTd({
 	}
 
 	function renderCellMenu() {
-		switch (headerType) {
+		switch (columnType) {
 			case CellType.TEXT:
 				return (
 					<TextCellEdit
-						menuId={menuId}
-						isOpen={isMenuOpen}
+						menuId={menu.id}
+						isOpen={isOpen}
 						style={{
-							...position,
+							top: numToPx(position.top),
+							left: numToPx(position.left),
+							width: numToPx(position.width),
+							height: numToPx(position.height),
 							...((useAutoWidth || !shouldWrapOverflow) && {
 								maxWidth: "300px",
 							}),
 							minWidth: "125px",
 							minHeight: "75px",
 						}}
-						content={content}
+						content={markdown}
 						onInputChange={handleTextInputChange}
 					/>
 				);
 			case CellType.NUMBER:
 				return (
 					<NumberCellEdit
-						menuId={menuId}
-						isOpen={isMenuOpen}
+						menuId={menu.id}
+						isOpen={isOpen}
 						style={{
-							...position,
+							top: numToPx(position.top),
+							left: numToPx(position.left),
+							width: numToPx(position.width),
+							height: numToPx(position.height),
 							...((useAutoWidth || !shouldWrapOverflow) && {
 								maxWidth: "300px",
 							}),
 							minWidth: "125px",
 						}}
-						content={content}
+						content={markdown}
 						onInputChange={handleNumberInputChange}
 					/>
 				);
 			case CellType.TAG:
+			case CellType.MULTI_TAG:
 				return (
 					<TagCellEdit
-						cellId={id}
-						inputText={tagInputText}
-						positionUpdateTime={positionUpdateTime}
 						tags={tags}
-						menuId={menuId}
-						isOpen={isMenuOpen}
+						rowId={rowId}
+						columnId={columnId}
+						menuId={menu.id}
+						isOpen={isOpen}
 						style={{
-							top: position.top,
-							left: position.left,
+							top: numToPx(position.top),
+							left: numToPx(position.left),
 						}}
-						color={tagColor}
-						onInputChange={setTagInputText}
-						onColorChange={onColorChange}
+						onColorChange={handleColorChange}
 						onAddTag={handleAddTag}
-						onRemoveTagClick={onRemoveTagClick}
+						onRemoveTag={handleRemoveTagClick}
 						onTagClick={handleTagClick}
 					/>
 				);
 			case CellType.DATE:
 				return (
 					<DateCellEdit
-						menuId={menuId}
-						isOpen={isMenuOpen}
-						style={position}
-						content={content}
+						menuId={menu.id}
+						isOpen={isOpen}
+						style={{
+							top: numToPx(position.top),
+							left: numToPx(position.left),
+							width: numToPx(position.width),
+							height: numToPx(position.height),
+						}}
+						content={markdown}
 						onDateChange={handleDateChange}
 					/>
 				);
@@ -297,15 +311,18 @@ export default function EditableTd({
 		<>
 			<td
 				className="NLT__td"
-				style={{
-					width,
-					height,
-				}}
 				ref={positionRef}
 				onClick={handleCellClick}
 				onContextMenu={handleCellContextClick}
 			>
-				<div className="NLT__td-container">{renderCell()}</div>
+				<div
+					className="NLT__td-container"
+					style={{
+						width,
+					}}
+				>
+					{renderCell()}
+				</div>
 			</td>
 			{renderCellMenu()}
 		</>

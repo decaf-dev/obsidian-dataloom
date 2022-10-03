@@ -1,13 +1,12 @@
 .NLT__th {
-    display: inline-block;
     text-align: left;
     border-top: 1px solid var(--background-modifier-border) !important;
     border-bottom: 1px solid var(--background-modifier-border) !important;
     border-left: 1px solid var(--background-modifier-border) !important;
     border-right: 0 !important;
-    box-sizing: border-box !important;
     padding: 0 !important;
-    height: 1.8rem; /* TODO put into different area? */
+    font-weight: 400 !important;
+    overflow: hidden;
 }
 
 .NLT__th:last-child {
@@ -37,8 +36,8 @@
 
 .NLT__th-resize {
     position: absolute;
+    left: -10px;
     cursor: col-resize;
-    left: -3px;
     width: 10px;
     height: 100%;
 }

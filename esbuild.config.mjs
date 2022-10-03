@@ -16,7 +16,7 @@ esbuild
 		banner: {
 			js: banner,
 		},
-		entryPoints: ["main.ts"],
+		entryPoints: ["src/main.ts"],
 		bundle: true,
 		external: [
 			"obsidian",
@@ -51,20 +51,24 @@ esbuild
 					onRebuild(error) {
 						if (error) console.error("watch build failed:", error);
 						else
-							fs.rename("./main.css", "./styles.css", (err) => {
-								if (err) console.log(err);
-							});
+							fs.rename(
+								"dist/main.css",
+								"dist/styles.css",
+								(err) => {
+									if (err) console.log(err);
+								}
+							);
 					},
 			  },
 		target: "es2016",
 		logLevel: "info",
 		sourcemap: !prod,
 		treeShaking: true,
-		outfile: "main.js",
+		outfile: "dist/main.js",
 	})
 	.then(() => {
 		if (prod) {
-			fs.rename("./main.css", "./styles.css", (err) => {
+			fs.rename("dist/main.css", "dist/styles.css", (err) => {
 				if (err) console.log(err);
 			});
 		}

@@ -1,86 +1,70 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 
-import IconButton from "../IconButton";
 import Menu from "../Menu";
 import RowMenuItem from "./components/RowMenuItem";
-import { useMenuId } from "../MenuProvider";
+import Icon from "../Icon";
 
-import { Icon } from "src/services/icon/types";
+import Button from "../Button";
+import { IconType } from "src/services/icon/types";
 import { usePositionRef } from "src/services/hooks";
-import { useId } from "src/services/hooks";
-import { numToPx, pxToNum } from "src/services/string/parsers";
+import { useMenu } from "src/services/menu/hooks";
+import {
+	openMenu,
+	closeTopLevelMenu,
+	isMenuOpen,
+} from "src/services/menu/menuSlice";
+import { numToPx } from "src/services/string/conversion";
 
 import "./styles.css";
+import { MenuLevel } from "src/services/menu/types";
+import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 
 interface Props {
 	rowId: string;
-	positionUpdateTime: number;
-	onDeleteClick: (id: string) => void;
+	onDeleteClick: (rowId: string) => void;
 }
 
-export default function RowMenu({
-	rowId,
-	positionUpdateTime,
-	onDeleteClick,
-}: Props) {
-	const menuId = useId();
-	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
-		useMenuId(menuId);
-
-	const { positionRef, position } = usePositionRef([positionUpdateTime]);
-
-	useEffect(() => {
-		if (isMenuRequestingClose) {
-			closeMenu();
-		}
-	}, [isMenuRequestingClose]);
-
+export default function RowMenu({ rowId, onDeleteClick }: Props) {
+	const menu = useMenu(MenuLevel.ONE);
+	const dispatch = useAppDispatch();
+	const isOpen = useAppSelector((state) => isMenuOpen(state, menu));
+	const positionUpdateTime = useAppSelector(
+		(state) => state.menu.positionUpdateTime
+	);
+	const { ref, position } = usePositionRef([positionUpdateTime]);
 	function handleButtonClick(e: React.MouseEvent) {
-		openMenu();
+		if (isOpen) {
+			dispatch(closeTopLevelMenu());
+		} else {
+			dispatch(openMenu(menu));
+		}
 	}
 
-	function handleDeleteClick(id: string) {
-		onDeleteClick(id);
-		closeMenu();
+	function handleDeleteClick(rowId: string) {
+		onDeleteClick(rowId);
+		dispatch(closeTopLevelMenu());
 	}
-
-	const options = useMemo(() => {
-		return [
-			{
-				name: "delete",
-				content: "Delete",
-				icon: Icon.DELETE,
-				onClick: () => handleDeleteClick(rowId),
-			},
-		];
-	}, [rowId]);
 
 	return (
-		<div ref={positionRef}>
-			<IconButton icon={Icon.MORE_VERT} onClick={handleButtonClick} />
+		<div ref={ref}>
+			<Button
+				icon={<Icon icon={IconType.MORE_HORIZ} />}
+				onClick={(e) => handleButtonClick(e)}
+			/>
 			<Menu
-				id={menuId}
-				isOpen={isMenuOpen}
+				id={menu.id}
+				isOpen={isOpen}
 				style={{
-					top: numToPx(
-						pxToNum(position.top) + pxToNum(position.height)
-					),
-					left: numToPx(
-						pxToNum(position.left) - pxToNum(position.width) - 65
-					),
+					top: numToPx(position.top),
+					left: numToPx(position.left - position.width - 65),
 				}}
 			>
 				<div className="NLT__drag-menu">
-					{options.map((item) => {
-						return (
-							<RowMenuItem
-								key={item.name}
-								icon={item.icon}
-								iconText={item.content}
-								onClick={item.onClick}
-							/>
-						);
-					})}
+					<RowMenuItem
+						icon={IconType.DELETE}
+						content="Delete"
+						onClick={() => handleDeleteClick(rowId)}
+					/>
 				</div>
 			</Menu>
 		</div>

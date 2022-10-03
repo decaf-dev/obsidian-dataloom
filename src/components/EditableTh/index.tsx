@@ -1,79 +1,96 @@
-import React, { useEffect, useRef } from "react";
+import React, { forwardRef, useRef } from "react";
+
+import parse from "html-react-parser";
 
 import HeaderMenu from "../HeaderMenu";
+import { CSS_MEASUREMENT_PIXEL_REGEX } from "src/services/string/regex";
+import { numToPx, pxToNum } from "src/services/string/conversion";
+import { SortDir } from "src/services/sort/types";
+import { CellType } from "src/services/table/types";
+import { useMenu } from "src/services/menu/hooks";
+import { MenuLevel } from "src/services/menu/types";
+import { MIN_COLUMN_WIDTH } from "src/services/table/constants";
+import { usePositionRef } from "src/services/hooks";
+import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
+import {
+	openMenu,
+	closeTopLevelMenu,
+	isMenuOpen,
+} from "src/services/menu/menuSlice";
 
 import "./styles.css";
-import { useId, usePositionRef } from "src/services/hooks";
-import { useMenuId } from "../MenuProvider";
 
-import { CSS_MEASUREMENT_PIXEL_REGEX } from "src/services/string/regex";
-import { numToPx, pxToNum } from "src/services/string/parsers";
-import { MIN_COLUMN_WIDTH_PX } from "src/constants";
-import { SortDir } from "src/services/sort/types";
-import { CellType } from "src/services/appData/state/types";
 interface Props {
-	id: string;
-	index: number;
+	cellId: string;
+	columnIndex: number;
+	columnId: string;
 	width: string;
-	numHeaders: number;
-	positionUpdateTime: number;
-	content: string;
+	numColumns: number;
+	markdown: string;
+	html: string;
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
 	sortDir: SortDir;
 	type: string;
-	onMoveColumnClick: (id: string, moveRight: boolean) => void;
-	onSortSelect: (id: string, sortDir: SortDir) => void;
-	onInsertColumnClick: (id: string, insertRight: boolean) => void;
-	onTypeSelect: (id: string, type: CellType) => void;
-	onDeleteClick: (id: string) => void;
-	onSaveClick: (id: string, content: string) => void;
-	onWidthChange: (id: string, width: string) => void;
-	onAutoWidthToggle: (id: string, value: boolean) => void;
-	onWrapOverflowToggle: (id: string, value: boolean) => void;
+	onMoveColumnClick: (columnId: string, moveRight: boolean) => void;
+	onSortSelect: (columnId: string, sortDir: SortDir) => void;
+	onInsertColumnClick: (columnId: string, insertRight: boolean) => void;
+	onTypeSelect: (columnId: string, type: CellType) => void;
+	onDeleteClick: (columnId: string) => void;
+	onWidthChange: (columnId: string, width: string) => void;
+	onAutoWidthToggle: (columnId: string, value: boolean) => void;
+	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
+	onNameChange: (columnId: string, value: string) => void;
 }
 
 export default function EditableTh({
-	id,
-	index,
+	cellId,
+	columnIndex,
+	columnId,
 	width,
-	positionUpdateTime,
-	content,
+	markdown,
+	html,
 	useAutoWidth,
 	shouldWrapOverflow,
 	type,
 	sortDir,
-	numHeaders,
+	numColumns,
 	onWidthChange,
 	onInsertColumnClick,
 	onMoveColumnClick,
 	onSortSelect,
 	onTypeSelect,
 	onDeleteClick,
-	onSaveClick,
 	onWrapOverflowToggle,
 	onAutoWidthToggle,
+	onNameChange,
 }: Props) {
-	const menuId = useId();
-	const { isMenuOpen, openMenu, closeMenu, isMenuRequestingClose } =
-		useMenuId(menuId);
-	const { positionRef, position } = usePositionRef([positionUpdateTime]);
 	const mouseDownX = useRef(0);
 	const isResizing = useRef(false);
 
-	useEffect(() => {
-		if (isMenuRequestingClose) {
-			closeMenu();
-		}
-	}, [isMenuRequestingClose]);
+	const menu = useMenu(MenuLevel.ONE);
+	const dispatch = useAppDispatch();
+	const isOpen = useAppSelector((state) => isMenuOpen(state, menu));
+	const positionUpdateTime = useAppSelector(
+		(state) => state.menu.positionUpdateTime
+	);
+	const { ref: positionRef, position } = usePositionRef([positionUpdateTime]);
 
-	function handleHeaderClick(e: React.MouseEvent) {
+	function handleHeaderClick() {
 		if (isResizing.current) return;
-		openMenu();
+		if (isOpen) {
+			closeHeaderMenu();
+		} else {
+			openHeaderMenu();
+		}
 	}
 
-	function handleClose() {
-		closeMenu();
+	function openHeaderMenu() {
+		dispatch(openMenu(menu));
+	}
+
+	function closeHeaderMenu() {
+		dispatch(closeTopLevelMenu());
 	}
 
 	function handleMouseDown(e: React.MouseEvent) {
@@ -87,8 +104,8 @@ export default function EditableTh({
 			const dist = e.pageX - mouseDownX.current;
 			const newWidth = oldWidth + dist;
 
-			if (newWidth < MIN_COLUMN_WIDTH_PX) return;
-			onWidthChange(id, numToPx(newWidth));
+			if (newWidth < MIN_COLUMN_WIDTH) return;
+			onWidthChange(columnId, numToPx(newWidth));
 		}
 	}
 
@@ -105,18 +122,21 @@ export default function EditableTh({
 			<th
 				className="NLT__th NLT__selectable"
 				ref={positionRef}
-				style={{
-					width,
-				}}
 				onClick={handleHeaderClick}
 			>
-				<div className="NLT__th-container">
-					<div className="NLT__th-content">{content}</div>
+				<div
+					className="NLT__th-container"
+					style={{
+						width,
+					}}
+				>
+					<div className="NLT__th-content">{parse(html)}</div>
 					<div className="NLT__th-resize-container">
 						{!useAutoWidth && (
 							<div
 								className="NLT__th-resize"
 								onMouseDown={(e) => {
+									closeHeaderMenu();
 									//Prevents drag and drop
 									//See: https://stackoverflow.com/questions/704564/disable-drag-and-drop-on-html-elements
 									e.preventDefault();
@@ -140,32 +160,31 @@ export default function EditableTh({
 				</div>
 			</th>
 			<HeaderMenu
-				isOpen={isMenuOpen}
+				isOpen={isOpen}
+				canDeleteColumn={numColumns > 1}
 				style={{
-					top: numToPx(
-						pxToNum(position.top) + pxToNum(position.height)
-					),
-					left: position.left,
+					top: numToPx(position.top + position.height),
+					left: numToPx(position.left),
 				}}
-				headerId={id}
+				columnId={columnId}
+				cellId={cellId}
 				shouldWrapOverflow={shouldWrapOverflow}
 				useAutoWidth={useAutoWidth}
-				id={menuId}
-				headerName={content}
-				index={index}
-				headerSortDir={sortDir}
-				headerType={type}
-				headerIndex={index}
-				numHeaders={numHeaders}
-				onOutsideClick={onSaveClick}
+				id={menu.id}
+				markdown={markdown}
+				columnSortDir={sortDir}
+				columnType={type}
+				columnIndex={columnIndex}
+				numColumns={numColumns}
 				onSortSelect={onSortSelect}
 				onMoveColumnClick={onMoveColumnClick}
 				onInsertColumnClick={onInsertColumnClick}
 				onTypeSelect={onTypeSelect}
-				onHeaderDeleteClick={onDeleteClick}
-				onClose={handleClose}
+				onDeleteClick={onDeleteClick}
+				onClose={closeHeaderMenu}
 				onAutoWidthToggle={onAutoWidthToggle}
 				onWrapOverflowToggle={onWrapOverflowToggle}
+				onNameChange={onNameChange}
 			/>
 		</>
 	);

@@ -1,13 +1,12 @@
-import React from "react";
 import Menu from "../Menu";
 
 import DatePicker from "react-datepicker";
-import { CellType } from "src/services/appData/state/types";
+import { CellType } from "src/services/table/types";
 import "react-datepicker/dist/react-datepicker.css";
 
 import "./styles.css";
-import { dateToString } from "src/services/string/parsers";
-import { isValidCellContent } from "src/services/appData/state/utils";
+import { dateToString } from "src/services/string/conversion";
+import { isValidCellContent } from "src/services/table/utils";
 
 interface Props {
 	menuId: string;

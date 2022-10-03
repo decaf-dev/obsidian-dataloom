@@ -1,9 +1,11 @@
-import React from "react";
+import { useEffect, useRef } from "react";
 
 import Menu from "../Menu";
-import { useTextareaRef } from "src/services/hooks";
+
+import { useCompare } from "src/services/hooks";
 
 import "./styles.css";
+import { replaceUnescapedPipes } from "src/services/io/utils";
 
 interface Props {
 	menuId: string;
@@ -28,10 +30,30 @@ export default function TextCellEdit({
 	content,
 	onInputChange,
 }: Props) {
-	const inputRef = useTextareaRef(isOpen, content);
+	const inputRef = useRef<HTMLTextAreaElement>(null);
+
+	const lengthHasChanged = useCompare(content.length);
+
+	function focusInput() {
+		//Why does this one work?
+		inputRef.current.focus();
+	}
+
+	function setSelection(pos: number) {
+		inputRef.current.selectionStart = pos;
+		inputRef.current.selectionEnd = pos;
+	}
+
+	useEffect(() => {
+		if (isOpen && !lengthHasChanged) {
+			focusInput();
+			setSelection(content.length);
+		}
+	}, [isOpen, lengthHasChanged]);
 
 	function handleTextareaChange(value: string) {
 		value = value.replace("\n", "");
+		value = replaceUnescapedPipes(value);
 		onInputChange(value);
 	}
 

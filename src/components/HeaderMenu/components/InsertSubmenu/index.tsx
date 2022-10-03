@@ -1,8 +1,6 @@
-import React from "react";
-
 import Submenu from "../Submenu";
 import MenuItem from "../MenuItem";
-import { Icon } from "src/services/icon/types";
+import { IconType } from "src/services/icon/types";
 
 interface Props {
 	title: string;
@@ -19,12 +17,12 @@ export default function InsertSubmenu({
 		<Submenu title={title} onBackClick={onBackClick}>
 			<ul className="NLT__header-menu-ul">
 				<MenuItem
-					icon={Icon.KEYBOARD_DOUBLE_ARROW_LEFT}
+					icon={IconType.KEYBOARD_DOUBLE_ARROW_LEFT}
 					content="Insert Left"
 					onClick={() => onInsertClick(false)}
 				/>
 				<MenuItem
-					icon={Icon.KEYBOARD_DOUBLE_ARROW_RIGHT}
+					icon={IconType.KEYBOARD_DOUBLE_ARROW_RIGHT}
 					content="Insert Right"
 					onClick={() => onInsertClick(true)}
 				/>

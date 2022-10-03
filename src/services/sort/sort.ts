@@ -1,63 +1,83 @@
 import { SortDir } from "./types";
-import { CellType } from "src/services/appData/state/types";
-import { Row, AppData } from "../appData/state/types";
+import {
+	ColumnSettings,
+	TableModel,
+	TableSettings,
+	TableState,
+	Cell,
+} from "../table/types";
+import { sortCells } from "../table/utils";
 
-export const sortRows = (appData: AppData): Row[] => {
-	const arr = [...appData.rows];
-	const header = appData.headers.find(
-		(header) => header.sortDir !== SortDir.NONE
-	);
-	if (!header) return arr;
-	const { id, sortDir, type } = header;
-	arr.sort((a, b) => {
-		const cellA = appData.cells.find(
-			(cell) => cell.headerId === id && cell.rowId === a.id
+const sortByDir = (
+	columnId: string,
+	sortDir: SortDir,
+	rowIds: string[],
+	cells: Cell[]
+) => {
+	const rowsCopy = [...rowIds];
+	rowsCopy.sort((a, b) => {
+		const cellA = cells.find(
+			(c) => c.columnId === columnId && c.rowId === a
 		);
-		const cellB = appData.cells.find(
-			(cell) => cell.headerId === id && cell.rowId === b.id
+		const cellB = cells.find(
+			(c) => c.columnId === columnId && c.rowId === b
 		);
-		const contentA = cellA.content;
-		const contentB = cellB.content;
 
-		if (sortDir !== SortDir.NONE) {
-			//Force empty cells to the bottom
-			if (contentA === "" && contentB !== "") return 1;
-			if (contentA !== "" && contentB === "") return -1;
-			if (contentA === "" && contentB === "") return 0;
-		}
+		const markdownA = cellA.markdown;
+		const markdownB = cellB.markdown;
+
+		//Force empty cells to the bottom
+		if (cellA.isHeader) return -1;
+		if (cellB.isHeader) return 1;
+		if (markdownA === "" && markdownB !== "") return 1;
+		if (markdownA !== "" && markdownB === "") return -1;
+		if (markdownA === "" && markdownB === "") return 0;
 
 		if (sortDir === SortDir.ASC) {
-			if (type === CellType.TAG) {
-				const tagA = appData.tags.find((tag) =>
-					tag.selected.includes(cellA.id)
-				);
-				const tagB = appData.tags.find((tag) =>
-					tag.selected.includes(cellB.id)
-				);
-				return tagA.content.localeCompare(tagB.content);
-			} else {
-				return contentA.localeCompare(contentB);
-			}
+			return markdownA.localeCompare(markdownB);
 		} else if (sortDir === SortDir.DESC) {
-			if (type === CellType.TAG) {
-				const tagA = appData.tags.find((tag) =>
-					tag.selected.includes(cellA.id)
-				);
-				const tagB = appData.tags.find((tag) =>
-					tag.selected.includes(cellB.id)
-				);
-				return tagB.content.localeCompare(tagA.content);
-			} else {
-				return contentB.localeCompare(contentA);
-			}
-		} else {
-			//Sort by the default order in which the row was created
-			const creationA = a.creationTime;
-			const creationB = b.creationTime;
-			if (creationA > creationB) return 1;
-			if (creationA < creationB) return -1;
-			return 0;
+			return markdownB.localeCompare(markdownA);
 		}
 	});
-	return arr;
+	return rowsCopy;
+};
+
+const sortByCreationDate = (settings: TableSettings, rowIds: string[]) => {
+	const rowsCopy = [...rowIds];
+	rowsCopy.sort((a, b) => {
+		const rowSettingsA = settings.rows[a];
+		const rowSettingsB = settings.rows[b];
+		return rowSettingsA.creationDate - rowSettingsB.creationDate;
+	});
+	return rowsCopy;
+};
+
+export const sortRows = (prevState: TableState): TableModel => {
+	let headerSettings: ColumnSettings | null = null;
+	let columnId = "";
+
+	const { settings, model } = prevState;
+
+	for (let i = 0; i < model.columnIds.length; i++) {
+		const cId = model.columnIds[i];
+		if (settings.columns[cId].sortDir !== SortDir.NONE) {
+			headerSettings = settings.columns[cId];
+			columnId = cId;
+		}
+	}
+
+	if (!headerSettings)
+		return {
+			...model,
+			rowIds: sortByCreationDate(settings, model.rowIds),
+		};
+
+	const rowsCopy = [...model.rowIds];
+	const { sortDir } = headerSettings;
+
+	return {
+		rowIds: sortByDir(columnId, sortDir, model.rowIds, model.cells),
+		columnIds: model.columnIds,
+		cells: sortCells(rowsCopy, model.columnIds, model.cells),
+	};
 };
