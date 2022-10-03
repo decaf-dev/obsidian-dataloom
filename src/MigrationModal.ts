@@ -54,10 +54,10 @@ export default class MigrationModal extends Modal {
 
 		this.errorEl = contentEl.createDiv({ text: "" });
 		this.errorEl.style.fontSize = "12px";
-		this.errorEl.style.color = "var(--background-modifier-error)";
+		this.errorEl.style.color = "var(--text-error)";
 
 		const generateEl = contentEl.createEl("button", {
-			text: "Generate codeblock",
+			text: "Generate code block",
 		});
 		generateEl.className = "mod-cta";
 		generateEl.addEventListener("click", async () => {
@@ -83,7 +83,7 @@ export default class MigrationModal extends Modal {
 		const copyEl = contentEl.createEl("button", { text: "Copy" });
 		copyEl.addEventListener("click", async () => {
 			await navigator.clipboard.writeText(this.codeblockEl.getText());
-			new Notice("Copied codeblock to clipboard");
+			new Notice("Copied code block to clipboard");
 		});
 	}
 
