@@ -25,11 +25,7 @@ export default function Menu({ id, isOpen, style, children }: Props) {
 		<>
 			{isOpen &&
 				ReactDOM.createPortal(
-					<div
-						className="NLT__menu"
-						id={id}
-						onMouseDown={(e) => e.preventDefault()}
-					>
+					<div className="NLT__menu" id={id}>
 						<div className="NLT__menu-container" style={style}>
 							{children}
 						</div>
