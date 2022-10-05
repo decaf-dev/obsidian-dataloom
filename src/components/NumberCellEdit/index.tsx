@@ -33,15 +33,6 @@ export default function NumberCellEdit({
 }: Props) {
 	const inputRef = useRef<HTMLInputElement>(null);
 
-	function focusInput() {
-		//TODO fix
-		if (inputRef.current) inputRef.current.focus();
-	}
-
-	useEffect(() => {
-		focusInput();
-	}, []);
-
 	function handleInputChange(value: string) {
 		value = value.replace("\n", "");
 		return onInputChange(value);
