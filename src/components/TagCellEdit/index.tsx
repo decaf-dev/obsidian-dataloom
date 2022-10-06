@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 
-import Menu from "../Menu";
 import Tag from "../Tag";
 import SelectableTag from "./component/SelectableTag";
 import CreateTag from "./component/CreateTag";
@@ -35,7 +34,7 @@ const MenuHeader = ({
 }: MenuHeaderProps) => {
 	return (
 		<div className="NLT__tag-menu-header">
-			<Wrap spacingX="sm">
+			<Wrap spacingX="sm" style={{ overflow: "hidden" }}>
 				{tags
 					.filter((tag: TagType) =>
 						tag.cells.find(
@@ -91,7 +90,12 @@ const MenuBody = ({
 	return (
 		<div className="NLT__tag-menu-body">
 			<p className="NLT__tag-menu-text">Select an option or create one</p>
-			<div>
+			<div
+				style={{
+					overflowY: "scroll",
+					height: "140px",
+				}}
+			>
 				{!found && inputText !== "" && (
 					<CreateTag
 						key="create-tag"
@@ -119,13 +123,7 @@ const MenuBody = ({
 };
 
 interface Props {
-	menuId: string;
-	isOpen: boolean;
 	tags: TagType[];
-	style: {
-		top: string;
-		left: string;
-	};
 	columnId: string;
 	rowId: string;
 	onTagClick: (tagId: string) => void;
@@ -135,9 +133,6 @@ interface Props {
 }
 
 export default function TagCellEdit({
-	menuId,
-	isOpen,
-	style,
 	tags,
 	rowId,
 	columnId,
@@ -164,29 +159,27 @@ export default function TagCellEdit({
 	}
 
 	return (
-		<Menu id={menuId} isOpen={isOpen} style={style}>
-			<div className="NLT__tag-menu">
-				<div className="NLT__tag-menu-container">
-					<MenuHeader
-						isDarkMode={isDarkMode}
-						rowId={rowId}
-						columnId={columnId}
-						inputText={inputText}
-						tags={tags}
-						onInputTextChange={handleInputTextChange}
-						onRemoveTag={onRemoveTag}
-					/>
-					<MenuBody
-						isDarkMode={isDarkMode}
-						inputText={inputText}
-						tags={tags}
-						generatedColor={generatedColor}
-						onAddTag={handleAddTag}
-						onTagClick={onTagClick}
-						onColorChange={onColorChange}
-					/>
-				</div>
+		<div className="NLT__tag-menu">
+			<div className="NLT__tag-menu-container">
+				<MenuHeader
+					isDarkMode={isDarkMode}
+					rowId={rowId}
+					columnId={columnId}
+					inputText={inputText}
+					tags={tags}
+					onInputTextChange={handleInputTextChange}
+					onRemoveTag={onRemoveTag}
+				/>
+				<MenuBody
+					isDarkMode={isDarkMode}
+					inputText={inputText}
+					tags={tags}
+					generatedColor={generatedColor}
+					onAddTag={handleAddTag}
+					onTagClick={onTagClick}
+					onColorChange={onColorChange}
+				/>
 			</div>
-		</Menu>
+		</div>
 	);
 }

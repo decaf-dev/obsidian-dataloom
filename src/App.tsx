@@ -63,13 +63,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 
 	const dispatch = useAppDispatch();
 
-	const throttleTableScroll = _.throttle(() => {
-		dispatch(closeAllMenus());
-		dispatch(updateMenuPosition());
-	}, 150);
-
-	const handleTableScroll = () => throttleTableScroll();
-
 	//Load table on mount
 	useEffect(() => {
 		async function load() {
@@ -600,7 +593,10 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				settings={state.settings}
 				onSortRemoveClick={handleSortRemoveClick}
 			/>
-			<div className="NLT__table-wrapper" onScroll={handleTableScroll}>
+			<div
+				className="NLT__table-wrapper"
+				onScroll={() => dispatch(updateMenuPosition())}
+			>
 				<Table
 					headers={[
 						...columnIds.map((columnId, i) => {
@@ -734,12 +730,14 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 										})}
 										<td className="NLT__td">
 											<div className="NLT__td-container">
-												<RowMenu
-													rowId={rowId}
-													onDeleteClick={
-														handleRowDeleteClick
-													}
-												/>
+												<div className="NLT__td-cell-padding">
+													<RowMenu
+														rowId={rowId}
+														onDeleteClick={
+															handleRowDeleteClick
+														}
+													/>
+												</div>
 											</div>
 										</td>
 									</>
@@ -762,11 +760,15 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 													: width,
 											}}
 										>
-											<Button
-												onClick={() => handleAddRow()}
-											>
-												New
-											</Button>
+											<div className="NLT__td-cell-container NLT__td-cell-padding">
+												<Button
+													onClick={() =>
+														handleAddRow()
+													}
+												>
+													New
+												</Button>
+											</div>
 										</div>
 									</td>
 									{columnIds.map((_id) => {

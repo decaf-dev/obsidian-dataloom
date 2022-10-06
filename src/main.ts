@@ -104,14 +104,6 @@ export default class NltPlugin extends Plugin {
 		});
 	}
 
-	private throttleCloseAllMenus = _.throttle(() => {
-		store.dispatch(closeAllMenus());
-	}, 150);
-
-	private throttlePositionUpdate = _.throttle(() => {
-		store.dispatch(updateMenuPosition());
-	}, 150);
-
 	private checkForDebug() {
 		store.dispatch(setDebugMode(this.settings.shouldDebug));
 	}
@@ -138,16 +130,20 @@ export default class NltPlugin extends Plugin {
 				);
 				if (livePreviewScroller) {
 					livePreviewScroller.addEventListener("scroll", () => {
-						this.throttleCloseAllMenus();
-						this.throttlePositionUpdate();
+						store.dispatch(updateMenuPosition());
 					});
 				}
 				if (readingModeScroller) {
 					readingModeScroller.addEventListener("scroll", () => {
-						this.throttleCloseAllMenus();
-						this.throttlePositionUpdate();
+						store.dispatch(updateMenuPosition());
 					});
 				}
+			})
+		);
+
+		this.registerEvent(
+			this.app.workspace.on("resize", () => {
+				store.dispatch(updateMenuPosition());
 			})
 		);
 
@@ -157,15 +153,8 @@ export default class NltPlugin extends Plugin {
 			})
 		);
 
-		this.registerEvent(
-			this.app.workspace.on("resize", () => {
-				this.throttleCloseAllMenus();
-				this.throttlePositionUpdate();
-			})
-		);
-
 		this.registerDomEvent(activeDocument, "keydown", async (e) => {
-			if (e.key === "Enter") {
+			if (e.key === "Enter" || e.key === "Escape") {
 				if (this.focusedTableId) {
 					const topLevelMenu = getTopLevelMenu(store.getState());
 					if (topLevelMenu && topLevelMenu.sortRowsOnClose) {

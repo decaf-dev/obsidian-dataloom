@@ -45,11 +45,9 @@ const SubmenuList = ({ numColumns, onOptionClick }: SubMenuListProps) => {
 
 interface Props {
 	isOpen: boolean;
-	style: {
-		top: string;
-		left: string;
-	};
 	canDeleteColumn: boolean;
+	top: number;
+	left: number;
 	id: string;
 	cellId: string;
 	markdown: string;
@@ -75,6 +73,8 @@ export default function HeaderMenu({
 	isOpen,
 	cellId,
 	id,
+	top,
+	left,
 	markdown,
 	canDeleteColumn,
 	columnType,
@@ -82,7 +82,6 @@ export default function HeaderMenu({
 	columnId,
 	columnIndex,
 	numColumns,
-	style,
 	useAutoWidth,
 	shouldWrapOverflow,
 	onTypeSelect,
@@ -134,7 +133,7 @@ export default function HeaderMenu({
 	}
 
 	return (
-		<Menu isOpen={isOpen} id={id} style={style}>
+		<Menu isOpen={isOpen} id={id} top={top} left={left}>
 			<div className="NLT__header-menu">
 				{submenu === null && (
 					<SubmenuList

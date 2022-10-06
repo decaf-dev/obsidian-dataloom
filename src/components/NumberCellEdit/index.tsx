@@ -1,36 +1,18 @@
-import React, { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { CellType } from "src/services/table/types";
 import {
 	filterNumberFromContent,
 	isValidCellContent,
 } from "src/services/table/utils";
 
-import Menu from "../Menu";
-
 import "./styles.css";
 
 interface Props {
-	menuId: string;
-	isOpen: boolean;
-	style: {
-		top: string;
-		left: string;
-		width: string;
-		height: string;
-		maxWidth?: string;
-		minWidth?: string;
-	};
 	content: string;
 	onInputChange: (updatedContent: string) => void;
 }
 
-export default function NumberCellEdit({
-	menuId,
-	isOpen,
-	style,
-	content,
-	onInputChange,
-}: Props) {
+export default function NumberCellEdit({ content, onInputChange }: Props) {
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	function handleInputChange(value: string) {
@@ -42,15 +24,13 @@ export default function NumberCellEdit({
 		content = filterNumberFromContent(content);
 
 	return (
-		<Menu id={menuId} isOpen={isOpen} style={style}>
-			<input
-				className="NLT__number-cell-edit"
-				type="number"
-				ref={inputRef}
-				autoFocus
-				value={content}
-				onChange={(e) => handleInputChange(e.target.value)}
-			/>
-		</Menu>
+		<input
+			className="NLT__number-cell-edit"
+			type="number"
+			ref={inputRef}
+			autoFocus
+			value={content}
+			onChange={(e) => handleInputChange(e.target.value)}
+		/>
 	);
 }

@@ -1,4 +1,6 @@
 import parse from "html-react-parser";
+
+import "./styles.css";
 interface Props {
 	content: string;
 	shouldWrapOverflow: boolean;
