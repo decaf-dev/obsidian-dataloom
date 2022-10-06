@@ -23,7 +23,7 @@
 
 .NLT__td-container {
 	display: flex;
-	min-height: calc(var(--nlt-cell-spacing-y) * 2);
+	min-height: 1.9rem;
 }
 
 .NLT__td-cell-container {
