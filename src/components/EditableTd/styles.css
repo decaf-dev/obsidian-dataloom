@@ -23,8 +23,10 @@
 
 .NLT__td-container {
 	display: flex;
+	min-height: calc(var(--nlt-cell-spacing-y) * 2);
 }
 
 .NLT__td-cell-container {
 	overflow: hidden;
+	padding: var(--nlt-cell-spacing-x) var(--nlt-cell-spacing-y);
 }

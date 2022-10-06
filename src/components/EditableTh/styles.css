@@ -27,7 +27,7 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     user-select: none;
-    padding: var(--nlt-cell-spacing);
+    padding: var(--nlt-cell-spacing-x) var(--nlt-cell-spacing-y);
 }
 
 .NLT__th-resize-container {
