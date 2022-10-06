@@ -236,6 +236,13 @@ export default function EditableTd({
 		return measuredWidth + 20;
 	}
 
+	function findHeight() {
+		if (useAutoWidth || !shouldWrapOverflow) {
+			return 100;
+		}
+		return measuredHeight + 2;
+	}
+
 	const el = document.querySelector(".markdown-preview-sizer") as HTMLElement;
 	el.style.overflow = "hidden";
 	el.style.position = "relative";
@@ -272,7 +279,7 @@ export default function EditableTd({
 							top={top2 - rect.top}
 							left={left2 - rect.left}
 							width={findWidth()}
-							height={measuredHeight + 2}
+							height={findHeight()}
 						>
 							{columnType === CellType.TEXT && (
 								<TextCellEdit
