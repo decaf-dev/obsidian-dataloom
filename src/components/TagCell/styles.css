@@ -1,3 +1,4 @@
 .NLT__tag-cell {
     width: 100%;
+    padding: var(--nlt-cell-spacing);
 }

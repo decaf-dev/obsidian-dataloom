@@ -8,6 +8,8 @@
 --nlt-spacing--lg: 12px;
 --nlt-spacing--xl: 16px;
 --nlt-spacing--2xl: 24px;
+
+--nlt-cell-spacing: var(--nlt-spacing--sm) var(--nlt-spacing--lg);
 }
 
 /*
@@ -112,6 +114,10 @@
 
 .NLT__selected {
 	background-color: var(--interactive-normal);
+}
+
+.NLT__cell-padding {
+	padding: 4px 10px;
 }
 
 /**

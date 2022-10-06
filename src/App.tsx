@@ -63,13 +63,6 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 
 	const dispatch = useAppDispatch();
 
-	const throttleTableScroll = _.throttle(() => {
-		dispatch(closeAllMenus());
-		dispatch(updateMenuPosition());
-	}, 150);
-
-	const handleTableScroll = () => throttleTableScroll();
-
 	//Load table on mount
 	useEffect(() => {
 		async function load() {
@@ -600,7 +593,7 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				settings={state.settings}
 				onSortRemoveClick={handleSortRemoveClick}
 			/>
-			<div className="NLT__table-wrapper" onScroll={handleTableScroll}>
+			<div className="NLT__table-wrapper">
 				<Table
 					headers={[
 						...columnIds.map((columnId, i) => {

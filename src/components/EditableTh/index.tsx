@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import parse from "html-react-parser";
 
@@ -71,10 +71,12 @@ export default function EditableTh({
 	const menu = useMenu(MenuLevel.ONE);
 	const dispatch = useAppDispatch();
 	const isOpen = useAppSelector((state) => isMenuOpen(state, menu));
-	const positionUpdateTime = useAppSelector(
-		(state) => state.menu.positionUpdateTime
-	);
-	const { ref: positionRef, position } = usePositionRef([positionUpdateTime]);
+	const [headerHeight, setHeaderHeight] = useState(0);
+	const headerRef = useRef(null);
+
+	useEffect(() => {
+		setHeaderHeight(headerRef.current.offsetHeight);
+	}, [markdown, html]);
 
 	function handleHeaderClick() {
 		if (isResizing.current) return;
@@ -118,74 +120,69 @@ export default function EditableTh({
 	}
 
 	return (
-		<>
-			<th
-				className="NLT__th NLT__selectable"
-				ref={positionRef}
-				onClick={handleHeaderClick}
-			>
-				<div
-					className="NLT__th-container"
-					style={{
-						width,
-					}}
-				>
-					<div className="NLT__th-content">{parse(html)}</div>
-					<div className="NLT__th-resize-container">
-						{!useAutoWidth && (
-							<div
-								className="NLT__th-resize"
-								onMouseDown={(e) => {
-									closeHeaderMenu();
-									//Prevents drag and drop
-									//See: https://stackoverflow.com/questions/704564/disable-drag-and-drop-on-html-elements
-									e.preventDefault();
-									handleMouseDown(e);
-									window.addEventListener(
-										"mousemove",
-										handleMouseMove
-									);
-									window.addEventListener(
-										"mouseup",
-										handleMouseUp
-									);
-								}}
-								onClick={(e) => {
-									//Stop propagation so we don't open the header
-									e.stopPropagation();
-								}}
-							/>
-						)}
-					</div>
-				</div>
-			</th>
-			<HeaderMenu
-				isOpen={isOpen}
-				canDeleteColumn={numColumns > 1}
+		<th
+			className="NLT__th NLT__selectable"
+			ref={headerRef}
+			onClick={handleHeaderClick}
+		>
+			<div
+				className="NLT__th-container"
 				style={{
-					top: numToPx(position.top + position.height),
-					left: numToPx(position.left),
+					width,
 				}}
-				columnId={columnId}
-				cellId={cellId}
-				shouldWrapOverflow={shouldWrapOverflow}
-				useAutoWidth={useAutoWidth}
-				id={menu.id}
-				markdown={markdown}
-				columnSortDir={sortDir}
-				columnType={type}
-				columnIndex={columnIndex}
-				numColumns={numColumns}
-				onSortSelect={onSortSelect}
-				onMoveColumnClick={onMoveColumnClick}
-				onInsertColumnClick={onInsertColumnClick}
-				onTypeSelect={onTypeSelect}
-				onDeleteClick={onDeleteClick}
-				onClose={closeHeaderMenu}
-				onAutoWidthToggle={onAutoWidthToggle}
-				onWrapOverflowToggle={onWrapOverflowToggle}
-				onNameChange={onNameChange}
-			/>
-		</>
+			>
+				<HeaderMenu
+					isOpen={isOpen}
+					top={headerHeight}
+					canDeleteColumn={numColumns > 1}
+					columnId={columnId}
+					cellId={cellId}
+					shouldWrapOverflow={shouldWrapOverflow}
+					useAutoWidth={useAutoWidth}
+					id={menu.id}
+					markdown={markdown}
+					columnSortDir={sortDir}
+					columnType={type}
+					columnIndex={columnIndex}
+					numColumns={numColumns}
+					onSortSelect={onSortSelect}
+					onMoveColumnClick={onMoveColumnClick}
+					onInsertColumnClick={onInsertColumnClick}
+					onTypeSelect={onTypeSelect}
+					onDeleteClick={onDeleteClick}
+					onClose={closeHeaderMenu}
+					onAutoWidthToggle={onAutoWidthToggle}
+					onWrapOverflowToggle={onWrapOverflowToggle}
+					onNameChange={onNameChange}
+				/>
+				<div className="NLT__th-content">{parse(html)}</div>
+				<div className="NLT__th-resize-container">
+					{!useAutoWidth && (
+						<div
+							className="NLT__th-resize"
+							onMouseDown={(e) => {
+								closeHeaderMenu();
+								//Prevents drag and drop
+								//See: https://stackoverflow.com/questions/704564/disable-drag-and-drop-on-html-elements
+								e.preventDefault();
+								handleMouseDown(e);
+								window.addEventListener(
+									"mousemove",
+									handleMouseMove
+								);
+								window.addEventListener(
+									"mouseup",
+									handleMouseUp
+								);
+							}}
+							onClick={(e) => {
+								//Stop propagation so we don't open the header
+								e.stopPropagation();
+							}}
+						/>
+					)}
+				</div>
+			</div>
+		</th>
 	);
 }

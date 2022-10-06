@@ -19,7 +19,6 @@ import {
 	getTopLevelMenu,
 	closeTopLevelMenu,
 	timeSinceMenuOpen,
-	updateMenuPosition,
 } from "./services/menu/menuSlice";
 import { store } from "./services/redux/store";
 import { TableState } from "./services/table/types";
@@ -104,14 +103,6 @@ export default class NltPlugin extends Plugin {
 		});
 	}
 
-	private throttleCloseAllMenus = _.throttle(() => {
-		store.dispatch(closeAllMenus());
-	}, 150);
-
-	private throttlePositionUpdate = _.throttle(() => {
-		store.dispatch(updateMenuPosition());
-	}, 150);
-
 	private checkForDebug() {
 		store.dispatch(setDebugMode(this.settings.shouldDebug));
 	}
@@ -130,24 +121,6 @@ export default class NltPlugin extends Plugin {
 			this.app.workspace.on("file-open", () => {
 				//Clear the focused table
 				this.blurTable();
-
-				const livePreviewScroller =
-					document.querySelector(".cm-scroller");
-				const readingModeScroller = document.querySelector(
-					".markdown-preview-view"
-				);
-				if (livePreviewScroller) {
-					livePreviewScroller.addEventListener("scroll", () => {
-						this.throttleCloseAllMenus();
-						this.throttlePositionUpdate();
-					});
-				}
-				if (readingModeScroller) {
-					readingModeScroller.addEventListener("scroll", () => {
-						this.throttleCloseAllMenus();
-						this.throttlePositionUpdate();
-					});
-				}
 			})
 		);
 
@@ -157,15 +130,8 @@ export default class NltPlugin extends Plugin {
 			})
 		);
 
-		this.registerEvent(
-			this.app.workspace.on("resize", () => {
-				this.throttleCloseAllMenus();
-				this.throttlePositionUpdate();
-			})
-		);
-
 		this.registerDomEvent(activeDocument, "keydown", async (e) => {
-			if (e.key === "Enter") {
+			if (e.key === "Enter" || e.key === "Escape") {
 				if (this.focusedTableId) {
 					const topLevelMenu = getTopLevelMenu(store.getState());
 					if (topLevelMenu && topLevelMenu.sortRowsOnClose) {

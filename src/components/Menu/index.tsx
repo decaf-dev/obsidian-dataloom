@@ -1,37 +1,48 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { numToPx } from "src/services/string/conversion";
 
 import "./styles.css";
 
 interface Props {
 	id: string;
 	isOpen: boolean;
-	style: {
-		top: string;
-		left: string;
-		width?: string;
-		height?: string;
-		maxWidth?: string;
-		minWidth?: string;
-		minHeight?: string;
-	};
+	top?: number;
+	left?: number;
+	minWidth?: number;
+	width?: number;
+	height?: number;
 	children: React.ReactNode;
 }
 
-export default function Menu({ id, isOpen, style, children }: Props) {
-	//Add onMouseDown to prevent blur event being called in the FocusProvider
-	//See: https://github.com/react-toolbox/react-toolbox/issues/1323#issuecomment-656778859
+export default function Menu({
+	id,
+	isOpen,
+	top = 0,
+	left = 0,
+	minWidth = 0,
+	width = 0,
+	height = 0,
+	children,
+}: Props) {
 	return (
 		<>
-			{isOpen &&
-				ReactDOM.createPortal(
-					<div className="NLT__menu" id={id}>
-						<div className="NLT__menu-container" style={style}>
-							{children}
-						</div>
-					</div>,
-					document.body
-				)}
+			{isOpen && (
+				<div className="NLT__menu" id={id}>
+					<div
+						className="NLT__menu-container"
+						style={{
+							top: numToPx(top),
+							left: numToPx(left),
+							minWidth: numToPx(minWidth),
+							width: width === 0 ? "max-content" : numToPx(width),
+							height:
+								height === 0 ? "max-content" : numToPx(height),
+						}}
+					>
+						{children}
+					</div>
+				</div>
+			)}
 		</>
 	);
 }

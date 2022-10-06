@@ -1,4 +1,5 @@
 .NLT__multi-tag-cell {
     display: flex;
     flex-direction: column;
+    padding: var(--nlt-cell-spacing);
 }

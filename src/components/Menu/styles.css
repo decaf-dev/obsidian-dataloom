@@ -1,9 +1,15 @@
+.NLT__menu {
+    position: relative;
+    width: 0;
+    height: 0;
+}
+
 .NLT__menu-container {
-    position: absolute;
-    border-radius: 4px;
-    font-weight: 400;
     background-color: var(--background-primary);
     border: 1px solid var(--background-modifier-border);
     box-shadow: 0 2px 8px var(--background-modifier-box-shadow);
     z-index: var(--layer-menu);
+    position: absolute;
+    border-radius: 4px;
+    font-weight: 400;
 }

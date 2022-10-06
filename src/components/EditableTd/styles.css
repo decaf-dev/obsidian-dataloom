@@ -4,9 +4,8 @@
 	border-left: 1px solid var(--background-modifier-border) !important;
 	border-right: 0 !important;
 	vertical-align: top;
-	min-height: 2rem;
 	padding: 0 !important;
-	overflow: hidden;
+	overflow: visible;
 }
 
 .NLT__tbody > .NLT__tr > .NLT__td:last-child {
@@ -23,5 +22,9 @@
 }
 
 .NLT__td-container {
-	padding: 4px 10px;
+	display: flex;
+}
+
+.NLT__td-cell-container {
+	overflow: hidden;
 }

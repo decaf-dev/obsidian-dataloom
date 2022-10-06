@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Notice } from "obsidian";
 
 import TextCell from "../TextCell";
@@ -10,17 +10,16 @@ import NumberCellEdit from "../NumberCellEdit";
 import TextCellEdit from "../TextCellEdit";
 import TagCellEdit from "../TagCellEdit";
 import DateCellEdit from "../DateCellEdit";
+import MultiTagCell from "../MultiTagCell";
+import Menu from "../Menu";
 
 import { CellType, Tag } from "src/services/table/types";
 import { useMenu } from "src/services/menu/hooks";
 import { MenuLevel } from "src/services/menu/types";
-import { usePositionRef } from "src/services/hooks";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 import { openMenu, isMenuOpen } from "src/services/menu/menuSlice";
 
 import "./styles.css";
-import MultiTagCell from "../MultiTagCell";
-import { numToPx } from "src/services/string/conversion";
 
 interface Props {
 	columnType: string;
@@ -81,13 +80,17 @@ export default function EditableTd({
 	const dispatch = useAppDispatch();
 	const { isDarkMode } = useAppSelector((state) => state.global);
 
-	const positionUpdateTime = useAppSelector(
-		(state) => state.menu.positionUpdateTime
-	);
-	const { position, ref: positionRef } = usePositionRef([
-		positionUpdateTime,
-		markdown.length,
-	]);
+	const tdRef = useRef(null);
+	const [dimensions, setDimensions] = useState({
+		width: 0,
+		height: 0,
+	});
+	useEffect(() => {
+		setDimensions({
+			width: tdRef.current.offsetWidth,
+			height: tdRef.current.offsetHeight,
+		});
+	}, [markdown.length, shouldWrapOverflow, useAutoWidth, width]);
 
 	async function handleCellContextClick() {
 		try {
@@ -222,91 +225,12 @@ export default function EditableTd({
 		}
 	}
 
-	function renderCellMenu() {
-		switch (columnType) {
-			case CellType.TEXT:
-				return (
-					<TextCellEdit
-						menuId={menu.id}
-						isOpen={isOpen}
-						style={{
-							top: numToPx(position.top),
-							left: numToPx(position.left),
-							width: numToPx(position.width),
-							height: numToPx(position.height),
-							...((useAutoWidth || !shouldWrapOverflow) && {
-								maxWidth: "300px",
-							}),
-							minWidth: "125px",
-							minHeight: "75px",
-						}}
-						content={markdown}
-						onInputChange={handleTextInputChange}
-					/>
-				);
-			case CellType.NUMBER:
-				return (
-					<NumberCellEdit
-						menuId={menu.id}
-						isOpen={isOpen}
-						style={{
-							top: numToPx(position.top),
-							left: numToPx(position.left),
-							width: numToPx(position.width),
-							height: numToPx(position.height),
-							...((useAutoWidth || !shouldWrapOverflow) && {
-								maxWidth: "300px",
-							}),
-							minWidth: "125px",
-						}}
-						content={markdown}
-						onInputChange={handleNumberInputChange}
-					/>
-				);
-			case CellType.TAG:
-			case CellType.MULTI_TAG:
-				return (
-					<TagCellEdit
-						tags={tags}
-						rowId={rowId}
-						columnId={columnId}
-						menuId={menu.id}
-						isOpen={isOpen}
-						style={{
-							top: numToPx(position.top),
-							left: numToPx(position.left),
-						}}
-						onColorChange={handleColorChange}
-						onAddTag={handleAddTag}
-						onRemoveTag={handleRemoveTagClick}
-						onTagClick={handleTagClick}
-					/>
-				);
-			case CellType.DATE:
-				return (
-					<DateCellEdit
-						menuId={menu.id}
-						isOpen={isOpen}
-						style={{
-							top: numToPx(position.top),
-							left: numToPx(position.left),
-							width: numToPx(position.width),
-							height: numToPx(position.height),
-						}}
-						content={markdown}
-						onDateChange={handleDateChange}
-					/>
-				);
-			default:
-				return <></>;
-		}
-	}
-
+	const { width: measuredWidth, height: measuredHeight } = dimensions;
 	return (
 		<>
 			<td
 				className="NLT__td"
-				ref={positionRef}
+				ref={tdRef}
 				onClick={handleCellClick}
 				onContextMenu={handleCellContextClick}
 			>
@@ -316,10 +240,48 @@ export default function EditableTd({
 						width,
 					}}
 				>
-					{renderCell()}
+					{isOpen && (
+						<Menu
+							id={menu.id}
+							isOpen={isOpen}
+							width={measuredWidth}
+							height={measuredHeight}
+						>
+							{columnType === CellType.TEXT && (
+								<TextCellEdit
+									content={markdown}
+									onInputChange={handleTextInputChange}
+								/>
+							)}
+							{columnType === CellType.NUMBER && (
+								<NumberCellEdit
+									content={markdown}
+									onInputChange={handleNumberInputChange}
+								/>
+							)}
+							{(columnType === CellType.TAG ||
+								columnType === CellType.MULTI_TAG) && (
+								<TagCellEdit
+									tags={tags}
+									rowId={rowId}
+									columnId={columnId}
+									onColorChange={handleColorChange}
+									onAddTag={handleAddTag}
+									onRemoveTag={handleRemoveTagClick}
+									onTagClick={handleTagClick}
+								/>
+							)}
+							{columnType === CellType.DATE && (
+								<DateCellEdit
+									content={markdown}
+									onDateChange={handleDateChange}
+								/>
+							)}
+						</Menu>
+					)}
+					<div className="NLT__td-cell-container">{renderCell()}</div>
 				</div>
 			</td>
-			{renderCellMenu()}
 		</>
 	);
 }
