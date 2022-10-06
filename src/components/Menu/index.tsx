@@ -9,6 +9,7 @@ interface Props {
 	isOpen: boolean;
 	top?: number;
 	left?: number;
+	maxWidth?: number;
 	minWidth?: number;
 	width?: number;
 	height?: number;
@@ -21,6 +22,7 @@ export default function Menu({
 	top = 0,
 	left = 0,
 	minWidth = 0,
+	maxWidth = 0,
 	width = 0,
 	height = 0,
 	children,
@@ -36,6 +38,10 @@ export default function Menu({
 								top: numToPx(top),
 								left: numToPx(left),
 								minWidth: numToPx(minWidth),
+								maxWidth:
+									maxWidth === 0
+										? "max-content"
+										: numToPx(maxWidth),
 								width:
 									width === 0
 										? "max-content"
