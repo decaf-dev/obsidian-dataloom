@@ -3,11 +3,15 @@
 /*
 * Spacing System
 */
+--nlt-spacing--xs: 2px;
 --nlt-spacing--sm: 4px;
 --nlt-spacing--md: 8px;
 --nlt-spacing--lg: 12px;
 --nlt-spacing--xl: 16px;
 --nlt-spacing--2xl: 24px;
+
+--nlt-cell-spacing-x: var(--nlt-spacing--sm);
+--nlt-cell-spacing-y: var(--nlt-spacing--lg);
 }
 
 /*

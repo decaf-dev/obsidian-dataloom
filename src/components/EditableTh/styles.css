@@ -6,7 +6,7 @@
     border-right: 0 !important;
     padding: 0 !important;
     font-weight: 400 !important;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .NLT__th:last-child {
@@ -27,7 +27,7 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     user-select: none;
-    padding: 4px 10px;
+    padding: var(--nlt-cell-spacing-x) var(--nlt-cell-spacing-y);
 }
 
 .NLT__th-resize-container {

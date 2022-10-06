@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 
 import Menu from "../Menu";
 import RowMenuItem from "./components/RowMenuItem";
@@ -13,7 +13,6 @@ import {
 	closeTopLevelMenu,
 	isMenuOpen,
 } from "src/services/menu/menuSlice";
-import { numToPx } from "src/services/string/conversion";
 
 import "./styles.css";
 import { MenuLevel } from "src/services/menu/types";
@@ -54,10 +53,8 @@ export default function RowMenu({ rowId, onDeleteClick }: Props) {
 			<Menu
 				id={menu.id}
 				isOpen={isOpen}
-				style={{
-					top: numToPx(position.top),
-					left: numToPx(position.left - position.width - 65),
-				}}
+				top={position.top + position.height}
+				left={position.left}
 			>
 				<div className="NLT__drag-menu">
 					<RowMenuItem

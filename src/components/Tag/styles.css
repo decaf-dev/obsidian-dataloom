@@ -1,6 +1,5 @@
 .NLT__tag-content {
     width: max-content;
-    overflow: hidden;
     user-select: none;
 }
 
@@ -8,8 +7,7 @@
     display: flex;
     align-items: center;
     border-radius: 8px;
-    padding: 1px 8px;
+    padding: var(--nlt-spacing--xs) var(--nlt-spacing--md);
     width: max-content;
-    overflow: hidden;
     color: var(--text-normal);
 }

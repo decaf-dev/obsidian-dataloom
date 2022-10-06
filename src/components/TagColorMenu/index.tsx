@@ -16,10 +16,8 @@ import "./styles.css";
 interface Props {
 	menuId: string;
 	isOpen: boolean;
-	style: {
-		top: string;
-		left: string;
-	};
+	top: number;
+	left: number;
 	selectedColor: string;
 	onColorClick: (color: string) => void;
 }
@@ -27,7 +25,8 @@ interface Props {
 export default function TagColorMenu({
 	menuId,
 	isOpen,
-	style,
+	top,
+	left,
 	selectedColor,
 	onColorClick,
 }: Props) {
@@ -39,7 +38,7 @@ export default function TagColorMenu({
 	}
 
 	return (
-		<Menu id={menuId} isOpen={isOpen} style={style}>
+		<Menu id={menuId} isOpen={isOpen} top={top} left={left}>
 			<div className="NLT__tag-color-menu">
 				<div className="NLT__tag-color-menu-header">
 					<div className="NLT__tag-color-menu-title">Colors</div>
