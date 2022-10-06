@@ -45,20 +45,14 @@ export default function RowMenu({ rowId, onDeleteClick }: Props) {
 		dispatch(closeTopLevelMenu());
 	}
 
+	const { top, left } = position;
 	return (
 		<div ref={ref}>
 			<Button
 				icon={<Icon icon={IconType.MORE_HORIZ} />}
 				onClick={(e) => handleButtonClick(e)}
 			/>
-			<Menu
-				id={menu.id}
-				isOpen={isOpen}
-				style={{
-					top: numToPx(position.top),
-					left: numToPx(position.left - position.width - 65),
-				}}
-			>
+			<Menu id={menu.id} isOpen={isOpen} top={top} left={left}>
 				<div className="NLT__drag-menu">
 					<RowMenuItem
 						icon={IconType.DELETE}

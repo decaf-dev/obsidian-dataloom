@@ -593,7 +593,10 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 				settings={state.settings}
 				onSortRemoveClick={handleSortRemoveClick}
 			/>
-			<div className="NLT__table-wrapper">
+			<div
+				className="NLT__table-wrapper"
+				onScroll={() => dispatch(updateMenuPosition())}
+			>
 				<Table
 					headers={[
 						...columnIds.map((columnId, i) => {

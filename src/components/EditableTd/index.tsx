@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useId, useRef, useState } from "react";
 import { Notice } from "obsidian";
 
 import TextCell from "../TextCell";
@@ -20,6 +20,8 @@ import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 import { openMenu, isMenuOpen } from "src/services/menu/menuSlice";
 
 import "./styles.css";
+import { usePositionRef } from "src/services/hooks";
+import { randomId } from "src/services/random";
 
 interface Props {
 	columnType: string;
@@ -77,20 +79,17 @@ export default function EditableTd({
 }: Props) {
 	const menu = useMenu(MenuLevel.ONE, true);
 	const isOpen = useAppSelector((state) => isMenuOpen(state, menu));
+	const { positionUpdateTime } = useAppSelector((state) => state.menu);
 	const dispatch = useAppDispatch();
 	const { isDarkMode } = useAppSelector((state) => state.global);
 
-	const tdRef = useRef(null);
-	const [dimensions, setDimensions] = useState({
-		width: 0,
-		height: 0,
-	});
-	useEffect(() => {
-		setDimensions({
-			width: tdRef.current.offsetWidth,
-			height: tdRef.current.offsetHeight,
-		});
-	}, [markdown.length, shouldWrapOverflow, useAutoWidth, width]);
+	const { ref: positionRef, position } = usePositionRef([
+		positionUpdateTime,
+		markdown.length,
+		shouldWrapOverflow,
+		useAutoWidth,
+		width,
+	]);
 
 	async function handleCellContextClick() {
 		try {
@@ -225,18 +224,38 @@ export default function EditableTd({
 		}
 	}
 
-	const { width: measuredWidth, height: measuredHeight } = dimensions;
+	const {
+		width: measuredWidth,
+		height: measuredHeight,
+		top,
+		left,
+	} = position;
 	function findWidth() {
 		if (columnType === CellType.TAG || columnType === CellType.MULTI_TAG)
 			return 0;
 		return measuredWidth + 20;
 	}
 
+	const el = document.querySelector(".markdown-preview-sizer") as HTMLElement;
+	el.style.overflow = "hidden";
+	el.style.position = "relative";
+	const rect = el.getBoundingClientRect();
+	const [id] = useState(randomId(6));
+	const el2 = document.getElementById(id) as HTMLElement;
+	let left2 = 0;
+	let top2 = 0;
+	if (el2) {
+		const rect2 = el2.getBoundingClientRect();
+		left2 = rect2.left;
+		top2 = rect2.top;
+	}
+
 	return (
 		<>
 			<td
+				id={id}
 				className="NLT__td"
-				ref={tdRef}
+				ref={positionRef}
 				onClick={handleCellClick}
 				onContextMenu={handleCellContextClick}
 			>
@@ -250,7 +269,8 @@ export default function EditableTd({
 						<Menu
 							id={menu.id}
 							isOpen={isOpen}
-							top={-2}
+							top={top2 - rect.top}
+							left={left2 - rect.left}
 							width={findWidth()}
 							height={measuredHeight + 2}
 						>
