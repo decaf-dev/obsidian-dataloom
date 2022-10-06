@@ -244,8 +244,9 @@ export default function EditableTd({
 						<Menu
 							id={menu.id}
 							isOpen={isOpen}
-							width={measuredWidth}
-							height={measuredHeight}
+							top={-2}
+							width={measuredWidth + 2}
+							height={measuredHeight + 2}
 						>
 							{columnType === CellType.TEXT && (
 								<TextCellEdit
