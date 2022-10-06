@@ -60,8 +60,8 @@ export default function SelectableTag({
 		>
 			<TagColorMenu
 				menuId={menu.id}
-				top={position.top - 150}
-				left={position.left + 175}
+				top={position.top - 125}
+				left={position.left + position.width - 50}
 				isOpen={isOpen}
 				selectedColor={color}
 				onColorClick={(color) => handleColorChange(color)}
