@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useId, useRef, useState } from "react";
 import { Notice } from "obsidian";
 
 import TextCell from "../TextCell";
@@ -78,16 +78,16 @@ export default function EditableTd({
 }: Props) {
 	const menu = useMenu(MenuLevel.ONE, true);
 	const isOpen = useAppSelector((state) => isMenuOpen(state, menu));
+	const { positionUpdateTime } = useAppSelector((state) => state.menu);
 	const dispatch = useAppDispatch();
 	const { isDarkMode } = useAppSelector((state) => state.global);
-	const { positionUpdateTime } = useAppSelector((state) => state.menu);
 
 	const { position, ref: positionRef } = usePositionRef([
+		positionUpdateTime,
 		markdown.length,
 		shouldWrapOverflow,
 		useAutoWidth,
 		width,
-		positionUpdateTime,
 	]);
 
 	async function handleCellContextClick() {
