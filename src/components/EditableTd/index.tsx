@@ -232,6 +232,11 @@ export default function EditableTd({
 		return measuredWidth + 20;
 	}
 
+	function findHeight() {
+		if (useAutoWidth || !shouldWrapOverflow) return 100;
+		return measuredHeight + 2;
+	}
+
 	return (
 		<>
 			<td
@@ -252,7 +257,7 @@ export default function EditableTd({
 							isOpen={isOpen}
 							top={-2}
 							width={findWidth()}
-							height={measuredHeight + 2}
+							height={findHeight()}
 						>
 							{columnType === CellType.TEXT && (
 								<TextCellEdit
