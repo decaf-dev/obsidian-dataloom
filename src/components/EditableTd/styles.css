@@ -28,5 +28,9 @@
 
 .NLT__td-cell-container {
 	overflow: hidden;
+	user-select: none;
+}
+
+.NLT__td-cell-padding {
 	padding: var(--nlt-cell-spacing-x) var(--nlt-cell-spacing-y);
 }
