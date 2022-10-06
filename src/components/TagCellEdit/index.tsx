@@ -90,7 +90,12 @@ const MenuBody = ({
 	return (
 		<div className="NLT__tag-menu-body">
 			<p className="NLT__tag-menu-text">Select an option or create one</p>
-			<div>
+			<div
+				style={{
+					overflowY: "scroll",
+					height: "140px",
+				}}
+			>
 				{!found && inputText !== "" && (
 					<CreateTag
 						key="create-tag"
