@@ -18,6 +18,7 @@ import {
 } from "src/services/menu/menuSlice";
 
 import "./styles.css";
+import { usePositionRef } from "src/services/hooks";
 
 interface Props {
 	cellId: string;
@@ -70,12 +71,15 @@ export default function EditableTh({
 	const menu = useMenu(MenuLevel.ONE);
 	const dispatch = useAppDispatch();
 	const isOpen = useAppSelector((state) => isMenuOpen(state, menu));
-	const [headerHeight, setHeaderHeight] = useState(0);
-	const headerRef = useRef(null);
-
-	useEffect(() => {
-		setHeaderHeight(headerRef.current.offsetHeight);
-	}, [markdown, html]);
+	const { positionUpdateTime } = useAppSelector((state) => state.menu);
+	const { position, ref: positionRef } = usePositionRef([
+		markdown,
+		html,
+		width,
+		useAutoWidth,
+		shouldWrapOverflow,
+		positionUpdateTime,
+	]);
 
 	function handleHeaderClick(e: React.MouseEvent) {
 		if (e.target instanceof HTMLElement) {
@@ -125,10 +129,11 @@ export default function EditableTh({
 		}, 100);
 	}
 
+	const { top, left, height } = position;
 	return (
 		<th
 			className="NLT__th NLT__selectable"
-			ref={headerRef}
+			ref={positionRef}
 			onClick={handleHeaderClick}
 		>
 			<div
@@ -139,7 +144,8 @@ export default function EditableTh({
 			>
 				<HeaderMenu
 					isOpen={isOpen}
-					top={headerHeight}
+					top={top}
+					left={left}
 					canDeleteColumn={numColumns > 1}
 					columnId={columnId}
 					cellId={cellId}

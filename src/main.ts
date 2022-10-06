@@ -19,6 +19,7 @@ import {
 	getTopLevelMenu,
 	closeTopLevelMenu,
 	timeSinceMenuOpen,
+	updateMenuPosition,
 } from "./services/menu/menuSlice";
 import { store } from "./services/redux/store";
 import { TableState } from "./services/table/types";
@@ -121,6 +122,28 @@ export default class NltPlugin extends Plugin {
 			this.app.workspace.on("file-open", () => {
 				//Clear the focused table
 				this.blurTable();
+
+				const livePreviewScroller =
+					document.querySelector(".cm-scroller");
+				const readingModeScroller = document.querySelector(
+					".markdown-preview-view"
+				);
+				if (livePreviewScroller) {
+					livePreviewScroller.addEventListener("scroll", () => {
+						store.dispatch(updateMenuPosition());
+					});
+				}
+				if (readingModeScroller) {
+					readingModeScroller.addEventListener("scroll", () => {
+						store.dispatch(updateMenuPosition());
+					});
+				}
+			})
+		);
+
+		this.registerEvent(
+			this.app.workspace.on("resize", () => {
+				store.dispatch(updateMenuPosition());
 			})
 		);
 

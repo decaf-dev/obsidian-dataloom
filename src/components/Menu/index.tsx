@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import { numToPx } from "src/services/string/conversion";
 
 import "./styles.css";
@@ -26,23 +27,30 @@ export default function Menu({
 }: Props) {
 	return (
 		<>
-			{isOpen && (
-				<div className="NLT__menu" id={id}>
-					<div
-						className="NLT__menu-container"
-						style={{
-							top: numToPx(top),
-							left: numToPx(left),
-							minWidth: numToPx(minWidth),
-							width: width === 0 ? "max-content" : numToPx(width),
-							height:
-								height === 0 ? "max-content" : numToPx(height),
-						}}
-					>
-						{children}
-					</div>
-				</div>
-			)}
+			{isOpen &&
+				ReactDOM.createPortal(
+					<div className="NLT__menu" id={id}>
+						<div
+							className="NLT__menu-container"
+							style={{
+								top: numToPx(top),
+								left: numToPx(left),
+								minWidth: numToPx(minWidth),
+								width:
+									width === 0
+										? "max-content"
+										: numToPx(width),
+								height:
+									height === 0
+										? "max-content"
+										: numToPx(height),
+							}}
+						>
+							{children}
+						</div>
+					</div>,
+					document.body
+				)}
 		</>
 	);
 }

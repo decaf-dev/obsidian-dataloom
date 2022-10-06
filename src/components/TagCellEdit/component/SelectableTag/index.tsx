@@ -58,6 +58,14 @@ export default function SelectableTag({
 			className="NLT__selectable-tag NLT__selectable"
 			onClick={() => onClick(id)}
 		>
+			<TagColorMenu
+				menuId={menu.id}
+				top={position.top - 150}
+				left={position.left + 175}
+				isOpen={isOpen}
+				selectedColor={color}
+				onColorClick={(color) => handleColorChange(color)}
+			/>
 			<div className={tagClass}>
 				<div className="NLT__tag-content">{parse(html)}</div>
 			</div>
@@ -68,16 +76,6 @@ export default function SelectableTag({
 					e.stopPropagation();
 					dispatch(openMenu(menu));
 				}}
-			/>
-			<TagColorMenu
-				menuId={menu.id}
-				isOpen={isOpen}
-				selectedColor={color}
-				style={{
-					top: numToPx(position.top - 77),
-					left: numToPx(position.left + 110),
-				}}
-				onColorClick={(color) => handleColorChange(color)}
 			/>
 		</div>
 	);

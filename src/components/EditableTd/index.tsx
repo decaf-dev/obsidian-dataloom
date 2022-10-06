@@ -20,6 +20,7 @@ import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 import { openMenu, isMenuOpen } from "src/services/menu/menuSlice";
 
 import "./styles.css";
+import { usePositionRef } from "src/services/hooks";
 
 interface Props {
 	columnType: string;
@@ -79,18 +80,15 @@ export default function EditableTd({
 	const isOpen = useAppSelector((state) => isMenuOpen(state, menu));
 	const dispatch = useAppDispatch();
 	const { isDarkMode } = useAppSelector((state) => state.global);
+	const { positionUpdateTime } = useAppSelector((state) => state.menu);
 
-	const tdRef = useRef(null);
-	const [dimensions, setDimensions] = useState({
-		width: 0,
-		height: 0,
-	});
-	useEffect(() => {
-		setDimensions({
-			width: tdRef.current.offsetWidth,
-			height: tdRef.current.offsetHeight,
-		});
-	}, [markdown.length, shouldWrapOverflow, useAutoWidth, width]);
+	const { position, ref: positionRef } = usePositionRef([
+		markdown.length,
+		shouldWrapOverflow,
+		useAutoWidth,
+		width,
+		positionUpdateTime,
+	]);
 
 	async function handleCellContextClick() {
 		try {
@@ -225,12 +223,12 @@ export default function EditableTd({
 		}
 	}
 
-	const { width: measuredWidth, height: measuredHeight } = dimensions;
-	function findWidth() {
-		if (columnType === CellType.TAG || columnType === CellType.MULTI_TAG)
-			return 0;
-		return measuredWidth + 20;
-	}
+	const {
+		width: measuredWidth,
+		height: measuredHeight,
+		top,
+		left,
+	} = position;
 
 	function findHeight() {
 		if (useAutoWidth || !shouldWrapOverflow) return 100;
@@ -241,7 +239,7 @@ export default function EditableTd({
 		<>
 			<td
 				className="NLT__td"
-				ref={tdRef}
+				ref={positionRef}
 				onClick={handleCellClick}
 				onContextMenu={handleCellContextClick}
 			>
@@ -255,8 +253,15 @@ export default function EditableTd({
 						<Menu
 							id={menu.id}
 							isOpen={isOpen}
-							top={-2}
-							width={findWidth()}
+							top={top - 2}
+							left={left}
+							minWidth={
+								columnType === CellType.MULTI_TAG ||
+								columnType === CellType.TAG
+									? 250
+									: 150
+							}
+							width={measuredWidth}
 							height={findHeight()}
 						>
 							{columnType === CellType.TEXT && (

@@ -47,6 +47,7 @@ interface Props {
 	isOpen: boolean;
 	canDeleteColumn: boolean;
 	top: number;
+	left: number;
 	id: string;
 	cellId: string;
 	markdown: string;
@@ -73,6 +74,7 @@ export default function HeaderMenu({
 	cellId,
 	id,
 	top,
+	left,
 	markdown,
 	canDeleteColumn,
 	columnType,
@@ -131,7 +133,7 @@ export default function HeaderMenu({
 	}
 
 	return (
-		<Menu isOpen={isOpen} id={id} top={top - 1}>
+		<Menu isOpen={isOpen} id={id} top={top} left={left}>
 			<div className="NLT__header-menu">
 				{submenu === null && (
 					<SubmenuList
