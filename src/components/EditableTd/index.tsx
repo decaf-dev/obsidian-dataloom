@@ -229,7 +229,7 @@ export default function EditableTd({
 	function findWidth() {
 		if (columnType === CellType.TAG || columnType === CellType.MULTI_TAG)
 			return 0;
-		return measuredWidth + 2;
+		return measuredWidth + 20;
 	}
 
 	return (
@@ -286,7 +286,9 @@ export default function EditableTd({
 							)}
 						</Menu>
 					)}
-					<div className="NLT__td-cell-container">{renderCell()}</div>
+					<div className="NLT__td-cell-container NLT__td-cell-padding">
+						{renderCell()}
+					</div>
 				</div>
 			</td>
 		</>
