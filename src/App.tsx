@@ -727,12 +727,14 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 										})}
 										<td className="NLT__td">
 											<div className="NLT__td-container">
-												<RowMenu
-													rowId={rowId}
-													onDeleteClick={
-														handleRowDeleteClick
-													}
-												/>
+												<div className="NLT__td-cell-padding">
+													<RowMenu
+														rowId={rowId}
+														onDeleteClick={
+															handleRowDeleteClick
+														}
+													/>
+												</div>
 											</div>
 										</td>
 									</>
@@ -755,11 +757,15 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 													: width,
 											}}
 										>
-											<Button
-												onClick={() => handleAddRow()}
-											>
-												New
-											</Button>
+											<div className="NLT__td-cell-container NLT__td-cell-padding">
+												<Button
+													onClick={() =>
+														handleAddRow()
+													}
+												>
+													New
+												</Button>
+											</div>
 										</div>
 									</td>
 									{columnIds.map((_id) => {
