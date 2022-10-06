@@ -3,6 +3,7 @@
 /*
 * Spacing System
 */
+--nlt-spacing--xs: 2px;
 --nlt-spacing--sm: 4px;
 --nlt-spacing--md: 8px;
 --nlt-spacing--lg: 12px;

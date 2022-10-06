@@ -1,12 +1,14 @@
 interface Props {
 	spacingX?: "sm" | "md" | "lg" | "xl" | "2xl";
 	spacingY?: "sm" | "md" | "lg" | "xl" | "2xl";
+	style?: { [key: string]: string | number };
 	children: React.ReactNode;
 }
 
 export default function Stack({
 	spacingX = "md",
 	spacingY = "md",
+	style,
 	children,
 }: Props) {
 	function findSpacing(spacing: string) {
@@ -31,6 +33,7 @@ export default function Stack({
 	return (
 		<div
 			style={{
+				...style,
 				display: "flex",
 				flexWrap: "wrap",
 				rowGap,

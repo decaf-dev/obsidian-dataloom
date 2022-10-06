@@ -34,7 +34,7 @@ const MenuHeader = ({
 }: MenuHeaderProps) => {
 	return (
 		<div className="NLT__tag-menu-header">
-			<Wrap spacingX="sm">
+			<Wrap spacingX="sm" style={{ overflow: "hidden" }}>
 				{tags
 					.filter((tag: TagType) =>
 						tag.cells.find(

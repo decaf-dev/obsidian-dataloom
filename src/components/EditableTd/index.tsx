@@ -226,6 +226,12 @@ export default function EditableTd({
 	}
 
 	const { width: measuredWidth, height: measuredHeight } = dimensions;
+	function findWidth() {
+		if (columnType === CellType.TAG || columnType === CellType.MULTI_TAG)
+			return 0;
+		return measuredWidth + 2;
+	}
+
 	return (
 		<>
 			<td
@@ -245,7 +251,7 @@ export default function EditableTd({
 							id={menu.id}
 							isOpen={isOpen}
 							top={-2}
-							width={measuredWidth + 2}
+							width={findWidth()}
 							height={measuredHeight + 2}
 						>
 							{columnType === CellType.TEXT && (
