@@ -10,7 +10,6 @@ import { CellType } from "src/services/table/types";
 import { useMenu } from "src/services/menu/hooks";
 import { MenuLevel } from "src/services/menu/types";
 import { MIN_COLUMN_WIDTH } from "src/services/table/constants";
-import { usePositionRef } from "src/services/hooks";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 import {
 	openMenu,
@@ -78,7 +77,14 @@ export default function EditableTh({
 		setHeaderHeight(headerRef.current.offsetHeight);
 	}, [markdown, html]);
 
-	function handleHeaderClick() {
+	function handleHeaderClick(e: React.MouseEvent) {
+		if (e.target instanceof HTMLElement) {
+			const el = e.target;
+			if (!el.className.includes("NLT__th")) return;
+		} else {
+			return;
+		}
+
 		if (isResizing.current) return;
 		if (isOpen) {
 			closeHeaderMenu();
