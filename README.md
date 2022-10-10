@@ -125,7 +125,7 @@ Table ids, row ids, and column ids may only contain valid id characters:
 
 ## Migration Tool
 
-Please make sure that you have read [NLT Code Blocks](#nlt-code-blocks) and [Table Definition Files] sections(#table-definition-files) before continuing.
+Please make sure that you have read [NLT Code Blocks](#nlt-code-blocks) and [Table Definition Files](#table-definition-files) sections before continuing.
 
 To make code blocks for your previous tables:
 
