@@ -1,18 +1,14 @@
 # Obsidian Notion-Like Tables
 
-[![Active Development](https://img.shields.io/badge/Maintenance%20Level-Actively%20Developed-brightgreen.svg)](https://gist.github.com/cheerfulstoic/d107229326a01ff0f333a1d3476e068d)
+[![Not Maintained](https://img.shields.io/badge/Maintenance%20Level-Abandoned-orange.svg)](https://gist.github.com/cheerfulstoic/d107229326a01ff0f333a1d3476e068d)
+
+**NOTE: This plugin is no longer maintained. If you would like to continue development, please fork the project and make your own version.**
 
 Notion-Like Tables is your premiere tool for creating and managing tabular data in Obsidian.md.
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/preview.png)
 
-Want to support development?
-
-<a href="https://www.buymeacoffee.com/treywallis"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=treywallis&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff" /></a>
-
 ## Version 5.0.0
-
-**Make some noise, because version 5 of Notion-Like-Tables has arrived!!**
 
 -   Notion-Like Tables now support usage of all HTML entities. This means that previously broken entities, such as emoji icons are now fully supported. Obsidian direct links and direct link aliases are now functional.
 
