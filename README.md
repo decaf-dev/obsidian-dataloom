@@ -1,8 +1,6 @@
 # Obsidian Notion-Like Tables
 
-[![Not Maintained](https://img.shields.io/badge/Maintenance%20Level-Abandoned-orange.svg)](https://gist.github.com/cheerfulstoic/d107229326a01ff0f333a1d3476e068d)
-
-**NOTE: This plugin is no longer maintained. If you would like to continue development, please fork the project and make your own version.**
+[![Actively Maintained](https://img.shields.io/badge/Maintenance%20Level-Actively%20Maintained-green.svg)](https://gist.github.com/cheerfulstoic/d107229326a01ff0f333a1d3476e068d)
 
 Notion-Like Tables is your premiere tool for creating and managing tabular data in Obsidian.md.
 
