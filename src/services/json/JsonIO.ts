@@ -6,7 +6,7 @@ export default class JsonIO {
 
 	static async createNotionLikeTableFile() {
 		try {
-			FileOperations.createFile("Untitled" + this.TABLE_EXTENSION, "");
+			FileOperations.createFile("Untitled" + this.TABLE_EXTENSION, "{}");
 		} catch (err) {
 			new Notice("Could not create Notion-Like-Table file");
 			throw err;
