@@ -28,6 +28,7 @@ import { isMenuId } from "./services/menu/utils";
 import { setDarkMode, setDebugMode } from "./services/redux/globalSlice";
 import { TABLE_ID_REGEX } from "./services/string/regex";
 import MigrationModal from "./MigrationModal";
+import JsonIO from "./services/json/JsonIO";
 export interface NltSettings {
 	data: {
 		[tableId: string]: TableState;
@@ -97,6 +98,10 @@ export default class NltPlugin extends Plugin {
 		this.addSettingTab(new NltSettingsTab(this.app, this));
 		this.registerCommands();
 		this.registerEvents();
+
+		this.addRibbonIcon("table", "Create a Notion-Like table", async () => {
+			await JsonIO.createNotionLikeTableFile();
+		});
 
 		this.app.workspace.onLayoutReady(() => {
 			this.checkForDarkMode();

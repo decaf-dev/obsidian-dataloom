@@ -4,8 +4,6 @@ import NltPlugin from "../../main";
 
 import { UNESCAPED_PIPE_REGEX } from "../string/regex";
 
-import { generateEmptyMarkdownTable } from "../random";
-
 export const replaceUnescapedPipes = (markdown: string): string => {
 	const matches = Array.from(markdown.matchAll(UNESCAPED_PIPE_REGEX));
 	matches.forEach((match) => {
