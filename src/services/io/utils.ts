@@ -1,4 +1,4 @@
-import { TableModel } from "../table/types";
+import { TableModel } from "../tableState/types";
 import type { TFile } from "obsidian";
 import NltPlugin from "../../main";
 

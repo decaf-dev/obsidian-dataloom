@@ -1,5 +1,5 @@
-import { isValidCellContent } from "src/services/table/utils";
-import { CellType } from "src/services/table/types";
+import { isValidCellContent } from "src/services/tableState/utils";
+import { CellType } from "src/services/tableState/types";
 
 import "./styles.css";
 

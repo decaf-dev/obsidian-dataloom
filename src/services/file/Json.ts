@@ -1,5 +1,6 @@
 import { CURRENT_PLUGIN_VERSION } from "src/constants";
-import { TableState } from "../table/types";
+import StateFactory from "../tableState/StateFactory";
+import { TableState } from "../tableState/types";
 
 export default class Json {
 	static serializeTableState() {}
@@ -11,16 +12,15 @@ export default class Json {
 			//Handle table produced by older plugin version
 		}
 
+		const row = StateFactory.createRow();
+		const column = StateFactory.createColumn();
+		const cell = StateFactory.createCell(column.id, row.id, true);
 		return {
 			pluginVersion: 600,
 			model: {
-				rowIds: [],
-				columnIds: [],
-				cells: [],
-			},
-			settings: {
-				columns: {},
-				rows: {},
+				columns: [column],
+				rows: [row],
+				cells: [cell],
 			},
 		};
 	}

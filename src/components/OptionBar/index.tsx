@@ -1,15 +1,16 @@
 import { useMemo } from "react";
 
 import { SortDir } from "src/services/sort/types";
-import { TableSettings, TableModel } from "src/services/table/types";
+import { TableModel } from "src/services/tableState/types";
 import Icon from "../Icon";
 import { IconType } from "src/services/icon/types";
 
-import "./styles.css";
 import { findColorClass } from "src/services/color";
 import { useAppSelector } from "src/services/redux/hooks";
 import Stack from "../Stack";
 import Button from "src/components/Button";
+
+import "./styles.css";
 
 interface SortBubbleProps {
 	sortDir: SortDir;
@@ -68,35 +69,27 @@ const SortBubbleList = ({ bubbles, onRemoveClick }: SortButtonListProps) => {
 
 interface Props {
 	model: TableModel;
-	settings: TableSettings;
 	onSortRemoveClick: (columnId: string) => void;
 }
-export default function OptionBar({
-	model,
-	settings,
-	onSortRemoveClick,
-}: Props) {
+export default function OptionBar({ model, onSortRemoveClick }: Props) {
 	const bubbles = useMemo(() => {
-		return model.columnIds
-			.map((id) => {
-				const cell = model.cells.find(
-					(c) => c.columnId === id && c.isHeader
-				);
-				return cell;
-			})
+		return model.cells
+			.filter((c) => c.isHeader)
 			.filter((c) => {
-				const { sortDir } = settings.columns[c.columnId];
-				return sortDir !== SortDir.NONE;
+				const columnId = c.columnId;
+				const column = model.columns.find((c) => c.id == columnId);
+				return column.sortDir !== SortDir.NONE;
 			})
 			.map((c) => {
-				const { sortDir } = settings.columns[c.columnId];
+				const columnId = c.columnId;
+				const column = model.columns.find((c) => c.id == columnId);
 				return {
 					columnId: c.columnId,
 					content: c.html,
-					sortDir,
+					sortDir: column.sortDir,
 				};
 			});
-	}, [model.cells, settings.columns]);
+	}, [model]);
 
 	return (
 		<div className="NLT__option-bar">

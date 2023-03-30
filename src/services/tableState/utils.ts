@@ -1,27 +1,27 @@
 import { NUMBER_REGEX } from "../string/regex";
 import { isCheckbox, isNumber, isDate } from "../string/validators";
-import { Cell, CellType } from "./types";
+import { Cell, CellType, Column, Row } from "./types";
 import type { MarkdownViewModeType } from "obsidian";
 
 export const sortCells = (
-	rowIds: string[],
-	columnIds: string[],
+	columns: Column[],
+	rows: Row[],
 	cells: Cell[]
 ): Cell[] => {
 	return (
 		//Get the cell rows in order
-		rowIds
-			.map((id) => {
-				return cells.filter((c) => c.rowId === id);
+		rows
+			.map((row) => {
+				return cells.filter((c) => c.rowId === row.id);
 			})
 			//Sort each row based on the order of the column ids
 			.map((row) => {
 				return row.sort((a, b) => {
-					const indexA = columnIds.findIndex(
-						(id) => id === a.columnId
+					const indexA = columns.findIndex(
+						(column) => column.id === a.columnId
 					);
-					const indexB = columnIds.findIndex(
-						(id) => id === b.columnId
+					const indexB = columns.findIndex(
+						(column) => column.id === b.columnId
 					);
 					return indexA - indexB;
 				});

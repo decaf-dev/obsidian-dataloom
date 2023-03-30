@@ -23,12 +23,6 @@ export interface Cell {
 	isHeader: boolean;
 }
 
-export interface TableModel {
-	columnIds: string[];
-	rowIds: string[];
-	cells: Cell[];
-}
-
 export interface TagCellReference {
 	rowId: string;
 	columnId: string;
@@ -39,9 +33,10 @@ export interface Tag {
 	markdown: string;
 	html: string;
 	color: string;
-	cells: TagCellReference[];
+	cells: string[];
 }
-export interface ColumnSettings {
+export interface Column {
+	id: string;
 	sortDir: SortDir;
 	width: string;
 	type: CellType;
@@ -50,34 +45,18 @@ export interface ColumnSettings {
 	tags: Tag[];
 }
 
-export interface RowSettings {
+export interface Row {
+	id: string;
 	creationDate: number;
 }
 
-export const DEFAULT_COLUMN_SETTINGS: ColumnSettings = {
-	sortDir: SortDir.NONE,
-	width: "120px",
-	type: CellType.TEXT,
-	useAutoWidth: false,
-	shouldWrapOverflow: false,
-	tags: [],
-};
-
-export const DEFAULT_ROW_SETTINGS: RowSettings = {
-	creationDate: 0,
-};
-
-export interface TableSettings {
-	columns: {
-		[columnId: string]: ColumnSettings;
-	};
-	rows: {
-		[rowId: string]: RowSettings;
-	};
+export interface TableModel {
+	columns: Column[];
+	rows: Row[];
+	cells: Cell[];
 }
 
 export interface TableState {
-	settings: TableSettings;
 	model: TableModel;
 	pluginVersion: number;
 }

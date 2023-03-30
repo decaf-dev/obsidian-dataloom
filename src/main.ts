@@ -1,11 +1,8 @@
-import { Plugin, Editor, Notice, TFile, MarkdownViewModeType } from "obsidian";
+import { Plugin, TFile, MarkdownViewModeType } from "obsidian";
 
 import NLTSettingsTab from "./NLTSettingsTab";
 
-import { addRow } from "./services/table/row";
-import { addColumn } from "./services/table/column";
 import { updateSortTime } from "./services/io/serialize";
-import { generateNLTCodeBlock } from "./services/random";
 import {
 	closeAllMenus,
 	getTopLevelMenu,
@@ -13,35 +10,27 @@ import {
 	timeSinceMenuOpen,
 } from "./services/menu/menuSlice";
 import { store } from "./services/redux/store";
-import { TableState } from "./services/table/types";
 import _ from "lodash";
 import { isMenuId } from "./services/menu/utils";
 import { setDarkMode, setDebugMode } from "./services/redux/globalSlice";
-import MigrationModal from "./MigrationModal";
 import { NLTView, NOTION_LIKE_TABLES_VIEW } from "./NLTView";
 import TableFile, { TABLE_EXTENSION } from "./services/file/TableFile";
 
 export interface NLTSettings {
-	data: {
-		[tableId: string]: TableState;
-	};
 	viewModeSync: {
 		eventType: "update-state" | "sort-rows";
 		tableId: string | null;
 		viewModes: MarkdownViewModeType[];
 	};
 	shouldDebug: boolean;
-	shouldClear: boolean;
 }
 
 export const DEFAULT_SETTINGS: NLTSettings = {
-	data: {},
 	viewModeSync: {
 		eventType: "update-state",
 		tableId: null,
 		viewModes: [],
 	},
-	shouldClear: true,
 	shouldDebug: false,
 };
 export default class NLTPlugin extends Plugin {
@@ -213,87 +202,29 @@ export default class NLTPlugin extends Plugin {
 	}
 
 	registerCommands() {
-		this.addCommand({
-			id: "nlt-migration-tool",
-			name: "Migration tool",
-			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "m" }],
-			callback: async () => {
-				new MigrationModal(this).open();
-			},
-		});
-
-		this.addCommand({
-			id: "nlt-add-table",
-			name: "Add table",
-			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "=" }],
-			editorCallback: (editor: Editor) => {
-				editor.replaceSelection(generateNLTCodeBlock());
-			},
-		});
-
-		this.addCommand({
-			id: "nlt-add-column",
-			name: "Add column to focused table",
-			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "\\" }],
-			callback: async () => {
-				if (this.focusedTableId) {
-					const tableId = this.focusedTableId;
-					const prevState = this.settings.data[tableId];
-					const [updatedModel, updatedSettings] =
-						addColumn(prevState);
-					const newState = {
-						...this.settings.data[tableId],
-						model: updatedModel,
-						settings: updatedSettings,
-					};
-					const viewModesToUpdate: MarkdownViewModeType[] = [
-						"preview",
-					];
-					// if (this.isLivePreviewEnabled())
-					// 	viewModesToUpdate.push("source");
-					// await serializeTable(
-					// 	true,
-					// 	this,
-					// 	newState,
-					// 	tableId,
-					// 	viewModesToUpdate
-					// );
-				} else {
-					new Notice(
-						"No focused table. Please click a table to focus it and retry this operation again."
-					);
-				}
-			},
-		});
-
-		this.addCommand({
-			id: "nlt-add-row",
-			name: "Add row to focused table",
-			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Enter" }],
-			callback: async () => {
-				if (this.focusedTableId) {
-					const tableId = this.focusedTableId;
-					const prevState = this.settings.data[tableId];
-					const newState = addRow(prevState);
-					const viewModesToUpdate: MarkdownViewModeType[] = [
-						"preview",
-					];
-					// if (this.isLivePreviewEnabled())
-					// 	viewModesToUpdate.push("source");
-					// await serializeTable(
-					// 	true,
-					// 	this,
-					// 	newState,
-					// 	tableId,
-					// 	viewModesToUpdate
-					// );
-				} else {
-					new Notice(
-						"No focused table. Please click a table to focus it and retry this operation."
-					);
-				}
-			},
-		});
+		// this.addCommand({
+		// 	id: "nlt-create-table",
+		// 	name: "Create new Notion-Like Table",
+		// 	hotkeys: [{ modifiers: ["Mod", "Shift"], key: "=" }],
+		// 	callback: async () => {
+		// 	},
+		// });
+		//TODO implement
+		// this.addCommand({
+		// 	id: "nlt-add-column",
+		// 	name: "Add column to focused table",
+		// 	hotkeys: [{ modifiers: ["Mod", "Shift"], key: "\\" }],
+		// 	callback: async () => {
+		// 	},
+		// });
+		//TODO implement
+		// this.addCommand({
+		// 	id: "nlt-add-row",
+		// 	name: "Add row to focused table",
+		// 	hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Enter" }],
+		// 	callback: async () => {
+		// 	},
+		// });
 	}
 
 	focusTable = (tableId: string) => {

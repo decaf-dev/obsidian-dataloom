@@ -5,8 +5,8 @@ import {
 	TableSettings,
 	TableState,
 	Cell,
-} from "../table/types";
-import { sortCells } from "../table/utils";
+} from "../tableState/types";
+import { sortCells } from "../tableState/utils";
 
 const sortByDir = (
 	columnId: string,

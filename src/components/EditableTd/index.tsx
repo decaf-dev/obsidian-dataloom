@@ -13,7 +13,7 @@ import DateCellEdit from "../DateCellEdit";
 import MultiTagCell from "../MultiTagCell";
 import Menu from "../Menu";
 
-import { CellType, Tag } from "src/services/table/types";
+import { CellType, Tag } from "src/services/tableState/types";
 import { useMenu } from "src/services/menu/hooks";
 import { MenuLevel } from "src/services/menu/types";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";

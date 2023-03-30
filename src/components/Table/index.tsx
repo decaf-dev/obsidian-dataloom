@@ -1,6 +1,6 @@
 import React from "react";
 
-import { TableComponent } from "src/services/table/types";
+import { TableComponent } from "src/services/tableState/types";
 
 import "./styles.css";
 

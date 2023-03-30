@@ -2,7 +2,7 @@ import Submenu from "../Submenu";
 import Button from "src/components/Button";
 import Switch from "src/components/Switch";
 
-import { CellType } from "src/services/table/types";
+import { CellType } from "src/services/tableState/types";
 import Stack from "src/components/Stack";
 
 interface Props {

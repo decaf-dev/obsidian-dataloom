@@ -1,6 +1,6 @@
 import Tag from "../Tag";
 
-import { Tag as TagType } from "../../services/table/types";
+import { Tag as TagType } from "../../services/tableState/types";
 import Wrap from "src/components/Wrap";
 
 import "./styles.css";

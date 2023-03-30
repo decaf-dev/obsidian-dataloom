@@ -1,7 +1,5 @@
 import { TableState } from "./types";
 
-import { randomTagId } from "../random";
-
 export const addNewTag = (
 	prevState: TableState,
 	cellId: string,
@@ -136,13 +134,13 @@ export const addExistingTag = (
 	rowId: string,
 	tagId: string,
 	canAddMultiple: boolean
-) => {
-	const tags = [...prevState.settings.columns[columnId].tags];
+): TableState => {
+	const { columns, cells } = prevState.model;
+	const column = columns.find((column) => column.id === columnId);
+	const { tags } = column;
 
 	if (!canAddMultiple) {
-		const tag = tags.find((t) =>
-			t.cells.find((c) => c.columnId === columnId && c.rowId === rowId)
-		);
+		const tag = tags.find((t) => t.cells.find((c) => c == cellId));
 		if (tag) {
 			//If we click on the same cell, then return
 			if (tag.id === tagId) return prevState;
@@ -155,16 +153,13 @@ export const addExistingTag = (
 
 	const tag = tags.find((t) => t.id === tagId);
 	const index = tags.indexOf(tag);
-	tags[index].cells.push({
-		rowId,
-		columnId,
-	});
+	tags[index].cells.push(cellId);
 
 	return {
 		...prevState,
 		model: {
 			...prevState.model,
-			cells: prevState.model.cells.map((cell) => {
+			cells: cells.map((cell) => {
 				if (cell.id === cellId) {
 					let newMarkdown = "";
 					if (canAddMultiple && cell.markdown !== "") {
@@ -188,16 +183,6 @@ export const addExistingTag = (
 				}
 				return cell;
 			}),
-		},
-		settings: {
-			...prevState.settings,
-			columns: {
-				...prevState.settings.columns,
-				[columnId]: {
-					...prevState.settings.columns[columnId],
-					tags,
-				},
-			},
 		},
 	};
 };

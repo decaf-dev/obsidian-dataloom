@@ -6,10 +6,10 @@ import HeaderMenu from "../HeaderMenu";
 import { CSS_MEASUREMENT_PIXEL_REGEX } from "src/services/string/regex";
 import { numToPx, pxToNum } from "src/services/string/conversion";
 import { SortDir } from "src/services/sort/types";
-import { CellType } from "src/services/table/types";
+import { CellType } from "src/services/tableState/types";
 import { useMenu } from "src/services/menu/hooks";
 import { MenuLevel } from "src/services/menu/types";
-import { MIN_COLUMN_WIDTH } from "src/services/table/constants";
+import { MIN_COLUMN_WIDTH } from "src/services/tableState/constants";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 import {
 	openMenu,

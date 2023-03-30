@@ -1,4 +1,4 @@
-import { CellType } from "src/services/table/types";
+import { CellType } from "src/services/tableState/types";
 
 import { TYPE_ITEMS } from "../../constants";
 import MenuItem from "../MenuItem";

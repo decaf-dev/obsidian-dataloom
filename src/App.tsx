@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react";
 
-import _ from "lodash";
-import { MarkdownViewModeType } from "obsidian";
-import NltPlugin from "./main";
-
 import EditableTd from "./components/EditableTd";
 import Table from "./components/Table";
 import RowMenu from "./components/RowMenu";
@@ -11,23 +7,31 @@ import EditableTh from "./components/EditableTh";
 import OptionBar from "./components/OptionBar";
 import Button from "./components/Button";
 
-import { Cell, CellType } from "./services/table/types";
+import { CellType } from "./services/tableState/types";
 import { SortDir } from "./services/sort/types";
-import { addRow } from "./services/table/row";
-import { addColumn } from "./services/table/column";
 import { logFunc } from "./services/debug";
-import { DEFAULT_COLUMN_SETTINGS } from "./services/table/types";
-import { sortCells } from "./services/table/utils";
-import { TableState } from "./services/table/types";
-import { markdownToHtml } from "./services/io/deserialize";
-import { randomColumnId, randomCellId, randomRowId } from "./services/random";
+import { TableState } from "./services/tableState/types";
 import { useAppDispatch, useAppSelector } from "./services/redux/hooks";
 import { updateMenuPosition } from "./services/menu/menuSlice";
-import { addExistingTag, addNewTag, removeTag } from "./services/table/tag";
-import { changeColumnType } from "./services/table/column";
+import {
+	addExistingTag,
+	addNewTag,
+	removeTag,
+} from "./services/tableState/tag";
+import {
+	addColumn,
+	changeColumnType,
+	deleteColumn,
+	moveColumn,
+	sortOnColumn,
+	updateColumn,
+} from "./services/tableState/column";
 import { sortRows } from "./services/sort/sort";
 
 import "./app.css";
+import { randomUUID } from "crypto";
+import { updateCell } from "./services/tableState/cell";
+import { addRow, deleteRow } from "./services/tableState/row";
 
 const FILE_NAME = "App";
 
@@ -142,23 +146,13 @@ export default function App({ initialState }: Props) {
 
 	function handleAddColumn() {
 		if (shouldDebug) console.log("[App]: handleAddColumn called.");
-		setTableState((prevState) => {
-			const [model, settings] = addColumn(prevState);
-			return {
-				...prevState,
-				model,
-				settings,
-			};
-		});
+		setTableState((prevState) => addColumn(prevState));
 		handleSaveData(true);
 	}
 
 	function handleAddRow() {
 		logFunc(shouldDebug, FILE_NAME, "handleAddRow");
-		setTableState((prevState) => {
-			const newState = addRow(prevState);
-			return newState;
-		});
+		setTableState((prevState) => addRow(prevState));
 		handleSaveData(true);
 	}
 
@@ -178,22 +172,9 @@ export default function App({ initialState }: Props) {
 			columnId,
 			sortDir,
 		});
-		setTableState((prevState) => {
-			const columnsCopy = { ...prevState.settings.columns };
-			Object.entries(columnsCopy).forEach((entry) => {
-				const [key, value] = entry;
-				if (value.sortDir !== SortDir.NONE)
-					columnsCopy[key].sortDir = SortDir.NONE;
-				if (key === columnId) columnsCopy[key].sortDir = sortDir;
-			});
-			return {
-				...prevState,
-				settings: {
-					...prevState.settings,
-					columns: columnsCopy,
-				},
-			};
-		});
+		setTableState((prevState) =>
+			sortOnColumn(prevState, columnId, sortDir)
+		);
 		handleSortRows();
 	}
 
@@ -203,24 +184,9 @@ export default function App({ initialState }: Props) {
 			updatedMarkdown,
 		});
 
-		setTableState((prevState) => {
-			return {
-				...prevState,
-				model: {
-					...prevState.model,
-					cells: prevState.model.cells.map((cell: Cell) => {
-						if (cell.id === cellId) {
-							return {
-								...cell,
-								markdown: updatedMarkdown,
-								html: markdownToHtml(updatedMarkdown),
-							};
-						}
-						return cell;
-					}),
-				},
-			};
-		});
+		setTableState((prevState) =>
+			updateCell(prevState, cellId, updatedMarkdown)
+		);
 		handleSaveData(true);
 	}
 
@@ -307,25 +273,7 @@ export default function App({ initialState }: Props) {
 			columnId,
 		});
 
-		setTableState((prevState) => {
-			const columnsCopy = { ...prevState.settings.columns };
-			delete columnsCopy[columnId];
-
-			return {
-				...prevState,
-				model: {
-					...prevState.model,
-					columnIds: prevState.model.columnIds.filter(
-						(column) => column !== columnId
-					),
-					cells: cells.filter((cell) => cell.columnId !== columnId),
-				},
-				settings: {
-					...prevState.settings,
-					columns: columnsCopy,
-				},
-			};
-		});
+		setTableState((prevState) => deleteColumn(prevState, columnId));
 		handleSaveData(true);
 	}
 
@@ -333,24 +281,7 @@ export default function App({ initialState }: Props) {
 		logFunc(shouldDebug, FILE_NAME, "handleRowDeleteClick", {
 			rowId,
 		});
-		setTableState((prevState) => {
-			const rowsCopy = { ...prevState.settings.rows };
-			delete rowsCopy[rowId];
-			return {
-				...prevState,
-				model: {
-					...prevState.model,
-					cells: prevState.model.cells.filter(
-						(cell) => cell.rowId !== rowId
-					),
-					rowIds: prevState.model.rowIds.filter((id) => id !== rowId),
-				},
-				settings: {
-					...prevState.settings,
-					rows: rowsCopy,
-				},
-			};
-		});
+		setTableState((prevState) => deleteRow(prevState, rowId));
 		handleSaveData(true);
 	}
 
@@ -358,21 +289,9 @@ export default function App({ initialState }: Props) {
 		logFunc(shouldDebug, FILE_NAME, "handleSortRemoveClick", {
 			columnId,
 		});
-		setTableState((prevState) => {
-			return {
-				...prevState,
-				settings: {
-					...prevState.settings,
-					columns: {
-						...prevState.settings.columns,
-						[columnId]: {
-							...prevState.settings.columns[columnId],
-							sortDir: SortDir.NONE,
-						},
-					},
-				},
-			};
-		});
+		setTableState((prevState) =>
+			sortOnColumn(prevState, columnId, SortDir.NONE)
+		);
 		handleSortRows();
 	}
 
@@ -381,21 +300,9 @@ export default function App({ initialState }: Props) {
 			columnId,
 			width,
 		});
-		setTableState((prevState) => {
-			return {
-				...prevState,
-				settings: {
-					...prevState.settings,
-					columns: {
-						...prevState.settings.columns,
-						[columnId]: {
-							...prevState.settings.columns[columnId],
-							width,
-						},
-					},
-				},
-			};
-		});
+		setTableState((prevState) =>
+			updateColumn(prevState, columnId, "width", width)
+		);
 		handleSaveData(false);
 	}
 
@@ -404,32 +311,9 @@ export default function App({ initialState }: Props) {
 			columnId,
 			moveRight,
 		});
-		setTableState((prevState: TableState) => {
-			const { model } = prevState;
-			const updatedColumnIds = [...model.columnIds];
-			const index = model.columnIds.indexOf(columnId);
-			const moveIndex = moveRight ? index + 1 : index - 1;
-
-			//Swap values
-			const old = updatedColumnIds[moveIndex];
-			updatedColumnIds[moveIndex] = updatedColumnIds[index];
-			updatedColumnIds[index] = old;
-
-			const updatedCells = sortCells(
-				model.rowIds,
-				updatedColumnIds,
-				model.cells
-			);
-
-			return {
-				...prevState,
-				model: {
-					...model,
-					columnIds: updatedColumnIds,
-					cells: updatedCells,
-				},
-			};
-		});
+		setTableState((prevState: TableState) =>
+			moveColumn(prevState, columnId, moveRight)
+		);
 		handleSaveData(true);
 	}
 
@@ -438,69 +322,71 @@ export default function App({ initialState }: Props) {
 			columnId,
 			insertRight,
 		});
-		setTableState((prevState: TableState) => {
-			const { model, settings } = prevState;
-			const index = model.columnIds.indexOf(columnId);
-			const insertIndex = insertRight ? index + 1 : index;
+		//TODO implement
+		// setTableState((prevState: TableState) => {
+		// 	const { model, settings } = prevState;
+		// 	const index = model.columnIds.indexOf(columnId);
+		// 	const insertIndex = insertRight ? index + 1 : index;
 
-			const newColId = randomColumnId();
-			const updatedColumnIds = [...model.columnIds];
-			updatedColumnIds.splice(insertIndex, 0, newColId);
+		// 	const newColId = randomColumnId();
+		// 	const updatedColumnIds = [...model.columnIds];
+		// 	updatedColumnIds.splice(insertIndex, 0, newColId);
 
-			let updatedCells = [...model.cells];
+		// 	let updatedCells = [...model.cells];
 
-			for (let i = 0; i < model.rowIds.length; i++) {
-				updatedCells.push({
-					id: randomCellId(),
-					columnId: newColId,
-					rowId: model.rowIds[i],
-					markdown: i === 0 ? "New Column" : "",
-					html: i === 0 ? "New Column" : "",
-					isHeader: i === 0,
-				});
-			}
+		// 	for (let i = 0; i < model.rowIds.length; i++) {
+		// 		updatedCells.push({
+		// 			id: randomCellId(),
+		// 			columnId: newColId,
+		// 			rowId: model.rowIds[i],
+		// 			markdown: i === 0 ? "New Column" : "",
+		// 			html: i === 0 ? "New Column" : "",
+		// 			isHeader: i === 0,
+		// 		});
+		// 	}
 
-			updatedCells = sortCells(
-				model.rowIds,
-				updatedColumnIds,
-				updatedCells
-			);
+		// 	updatedCells = sortCells(
+		// 		model.rowIds,
+		// 		updatedColumnIds,
+		// 		updatedCells
+		// 	);
 
-			const settingsObj = { ...settings };
-			settingsObj.columns[newColId] = { ...DEFAULT_COLUMN_SETTINGS };
+		// 	const settingsObj = { ...settings };
+		// 	settingsObj.columns[newColId] = { ...DEFAULT_COLUMN_SETTINGS };
 
-			return {
-				...prevState,
-				model: {
-					...model,
-					columnIds: updatedColumnIds,
-					cells: updatedCells,
-				},
-				settings: settingsObj,
-			};
-		});
+		// 	return {
+		// 		...prevState,
+		// 		model: {
+		// 			...model,
+		// 			columnIds: updatedColumnIds,
+		// 			cells: updatedCells,
+		// 		},
+		// 		settings: settingsObj,
+		// 	};
+		// });
 		handleSaveData(true);
 	}
 
 	function handleChangeColor(columnId: string, tagId: string, color: string) {
-		setTableState((prevState) => {
-			const tags = [...prevState.settings.columns[columnId].tags];
-			const index = tags.findIndex((t) => t.id === tagId);
-			tags[index].color = color;
-			return {
-				...prevState,
-				settings: {
-					...prevState.settings,
-					columns: {
-						...prevState.settings.columns,
-						[columnId]: {
-							...prevState.settings.columns[columnId],
-							tags,
-						},
-					},
-				},
-			};
-		});
+		//TODO implement
+		// setTableState((prevState) => {
+		// 	const tags = [...prevState.settings.columns[columnId].tags];
+		// 	const index = tags.findIndex((t) => t.id === tagId);
+		// 	tags[index].color = color;
+		// 	return {
+		// 		...prevState,
+		// 		settings: {
+		// 			...prevState.settings,
+		// 			columns: {
+		// 				...prevState.settings.columns,
+		// 				[columnId]: {
+		// 					...prevState.settings.columns[columnId],
+		// 					tags,
+		// 				},
+		// 			},
+		// 		},
+		// 	};
+		// });
 		handleSaveData(false);
 	}
 
@@ -509,21 +395,10 @@ export default function App({ initialState }: Props) {
 			columnId,
 			value,
 		});
-		setTableState((prevState) => {
-			return {
-				...prevState,
-				settings: {
-					...prevState.settings,
-					columns: {
-						...prevState.settings.columns,
-						[columnId]: {
-							...prevState.settings.columns[columnId],
-							useAutoWidth: value,
-						},
-					},
-				},
-			};
-		});
+		setTableState((prevState) =>
+			updateColumn(prevState, columnId, "useAutoWidth", value)
+		);
+
 		handleSaveData(false);
 	}
 
@@ -532,25 +407,13 @@ export default function App({ initialState }: Props) {
 			columnId,
 			value,
 		});
-		setTableState((prevState) => {
-			return {
-				...prevState,
-				settings: {
-					...prevState.settings,
-					columns: {
-						...prevState.settings.columns,
-						[columnId]: {
-							...prevState.settings.columns[columnId],
-							shouldWrapOverflow: value,
-						},
-					},
-				},
-			};
-		});
+		setTableState((prevState) =>
+			updateColumn(prevState, columnId, "shouldWrapOverflow", value)
+		);
 		handleSaveData(false);
 	}
 
-	const { rowIds, columnIds, cells } = state.model;
+	const { rows, columns, cells } = state.model;
 	//const tableIdWithMode = getUniqueTableId(tableId, viewMode);
 
 	return (
@@ -562,7 +425,6 @@ export default function App({ initialState }: Props) {
 		>
 			<OptionBar
 				model={state.model}
-				settings={state.settings}
 				onSortRemoveClick={handleSortRemoveClick}
 			/>
 			<div
@@ -571,27 +433,29 @@ export default function App({ initialState }: Props) {
 			>
 				<Table
 					headers={[
-						...columnIds.map((columnId, i) => {
+						...columns.map((column, i) => {
 							const {
+								id: columnId,
 								width,
 								type,
 								sortDir,
 								shouldWrapOverflow,
 								useAutoWidth,
-							} = state.settings.columns[columnId];
+							} = column;
 
 							const cell = cells.find(
-								(c) => c.columnId === columnId && c.isHeader
+								(cell) =>
+									cell.columnId === columnId && cell.isHeader
 							);
-							const { id, markdown, html } = cell;
+							const { id: cellId, markdown, html } = cell;
 							return {
-								id,
+								id: columnId,
 								component: (
 									<EditableTh
-										key={id}
-										cellId={id}
+										key={columnId}
+										cellId={cellId}
 										columnIndex={i}
-										numColumns={columnIds.length}
+										numColumns={columns.length}
 										columnId={cell.columnId}
 										width={
 											useAutoWidth ? "max-content" : width
@@ -624,7 +488,7 @@ export default function App({ initialState }: Props) {
 							};
 						}),
 						{
-							id: randomColumnId(),
+							id: randomUUID(),
 							component: (
 								<th
 									className="NLT__th"
@@ -644,33 +508,39 @@ export default function App({ initialState }: Props) {
 							),
 						},
 					]}
-					rows={rowIds
+					rows={rows
 						.filter((_row, i) => i !== 0)
-						.map((rowId) => {
+						.map((row) => {
 							const rowCells = cells.filter(
-								(cell) => cell.rowId === rowId
+								(cell) => cell.rowId === row.id
 							);
+							const { id: rowId } = row;
 							return {
 								id: rowId,
 								component: (
 									<>
 										{rowCells.map((cell) => {
+											const column = columns.find(
+												(column) =>
+													column.id == cell.columnId
+											);
 											const {
 												width,
 												type,
 												useAutoWidth,
 												shouldWrapOverflow,
 												tags,
-											} =
-												state.settings.columns[
-													cell.columnId
-												];
-											const { id, markdown, html } = cell;
+											} = column;
+											const {
+												id: cellId,
+												markdown,
+												html,
+											} = cell;
 
 											return (
 												<EditableTd
-													key={id}
-													cellId={id}
+													key={cellId}
+													cellId={cellId}
 													tags={tags}
 													rowId={cell.rowId}
 													columnId={cell.columnId}
@@ -717,10 +587,9 @@ export default function App({ initialState }: Props) {
 							};
 						})}
 					footers={[0].map((_id) => {
-						const { width, useAutoWidth } =
-							state.settings.columns[columnIds[0]];
+						const { width, useAutoWidth } = columns[0];
 						return {
-							id: randomRowId(),
+							id: randomUUID(), //TODO change this is not efficient
 							component: (
 								<>
 									<td className="NLT__td">
@@ -743,7 +612,7 @@ export default function App({ initialState }: Props) {
 											</div>
 										</div>
 									</td>
-									{columnIds.map((_id) => {
+									{columns.map((_column) => {
 										<td className="NLT__td" />;
 									})}
 								</>

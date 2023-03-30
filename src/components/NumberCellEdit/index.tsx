@@ -1,9 +1,9 @@
 import { useRef } from "react";
-import { CellType } from "src/services/table/types";
+import { CellType } from "src/services/tableState/types";
 import {
 	filterNumberFromContent,
 	isValidCellContent,
-} from "src/services/table/utils";
+} from "src/services/tableState/utils";
 
 import "./styles.css";
 

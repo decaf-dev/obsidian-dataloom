@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Tag from "../Tag";
 import SelectableTag from "./component/SelectableTag";
 import CreateTag from "./component/CreateTag";
-import { Tag as TagType } from "../../services/table/types";
+import { Tag as TagType } from "../../services/tableState/types";
 
 import { randomColor } from "src/services/random";
 import { markdownToHtml } from "src/services/io/deserialize";
