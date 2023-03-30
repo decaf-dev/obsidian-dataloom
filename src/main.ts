@@ -93,7 +93,10 @@ export default class NLTPlugin extends Plugin {
 
 	private hasDarkTheme = () => {
 		const el = document.querySelector("body");
-		return el.className.includes("theme-dark");
+		if (el) {
+			return el.className.includes("theme-dark");
+		}
+		return false;
 	};
 
 	registerEvents() {
@@ -187,7 +190,7 @@ export default class NLTPlugin extends Plugin {
 						//If we've clicked in an app
 						if (element.className.includes("NLT__app")) {
 							const id = element.getAttribute("data-id");
-							this.focusTable(id);
+							if (id) this.focusTable(id);
 							break;
 						}
 						//If we're clicking outside of the app

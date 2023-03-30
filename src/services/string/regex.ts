@@ -69,21 +69,3 @@ export const EXTERNAL_LINK_REGEX = new RegExp(/http[s]{0,1}:\/\/[^\s]+/, "g");
  * k|
  */
 export const UNESCAPED_PIPE_REGEX = new RegExp(/[^\\]\|/, "g");
-
-/**
- * Matches a table id
- * table-id-123456
- */
-export const TABLE_ID_REGEX = new RegExp(/^table-id-[a-zA-Z0-9_-]+$/);
-
-/**
- * Matches a row id
- * row-id-123456
- */
-export const ROW_ID_REGEX = new RegExp(/^row-id-[a-zA-Z0-9_-]+$/);
-
-/**
- * Matches a column id
- * column-id-123456
- */
-export const COLUMN_ID_REGEX = new RegExp(/^column-id-[a-zA-Z0-9_-]+$/);

@@ -1,7 +1,3 @@
-import { TableModel } from "../tableState/types";
-import type { TFile } from "obsidian";
-import NltPlugin from "../../main";
-
 import { UNESCAPED_PIPE_REGEX } from "../string/regex";
 
 export const replaceUnescapedPipes = (markdown: string): string => {
@@ -11,44 +7,4 @@ export const replaceUnescapedPipes = (markdown: string): string => {
 		markdown = markdown.replace(pipe, pipe[0] + "\\|");
 	});
 	return markdown;
-};
-
-/**
- * Produces front matter from the table model
- */
-export const serializeFrontMatter = (model: TableModel) => {
-	const frontmatter = [];
-	frontmatter.push("---");
-	frontmatter.push(serializeColumnIds(model.columnIds));
-	frontmatter.push(serializeRowIds(model.rowIds));
-	frontmatter.push("---");
-	return frontmatter.join("\n");
-};
-
-const serializeColumnIds = (columnIds: string[]) => {
-	return `columnIds: ${JSON.stringify(columnIds)}`;
-};
-
-const serializeRowIds = (rowIds: string[]) => {
-	return `rowIds: ${JSON.stringify(rowIds)}`;
-};
-
-export const findTableFile = async (
-	plugin: NltPlugin,
-	tableId: string
-): Promise<{ file: TFile; isNewFile: boolean }> => {
-	const tableFolder = plugin.settings.tableFolder;
-	const folder = plugin.app.vault.getAbstractFileByPath(tableFolder);
-	if (!folder) await plugin.app.vault.createFolder(tableFolder);
-
-	const file = plugin.app.vault.getAbstractFileByPath(
-		`${tableFolder}/${tableId}.md`
-	);
-	if (file) return { file: <TFile>file, isNewFile: false };
-
-	const createdFile = await plugin.app.vault.create(
-		`${tableFolder}/${tableId}.md`,
-		""
-	);
-	return { file: createdFile, isNewFile: true };
 };
