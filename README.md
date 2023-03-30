@@ -6,29 +6,18 @@ Notion-Like Tables is your premiere tool for creating and managing tabular data 
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/preview.png)
 
-## Version 5.0.0
+## Version 6.0.0
 
--   Notion-Like Tables now support usage of all HTML entities. This means that previously broken entities, such as emoji icons are now fully supported. Obsidian direct links and direct link aliases are now functional.
+After consideration, I have decided to continue development on this project.
 
--   Live preview is now fully functional. You may use Notion-Like Tables in editing mode and have them sync with the table rendered in reading mode. If you edit a table in reading mode, it will be synced to your live preview table.
+One of the main limitations of version 5 was that I was using the `MarkdownCodeBlockProcessor` to embed tables into markdown notes. This caused various preformance issues and was very difficult to maintain. I have opted to create my own dedicated window for this plugin, as well as a corresponding file extension. The `.table` extension will now be used, similar to how canvas uses `.canvas`. Data will now be loaded and saved directly into json instead of using the settings cache.
 
--   Multiple tables can now be used in your markdown files. You may also display the same table across multiple files through the new system of `NLT Code Blocks`.
-
--   Multi-tag support has been added, as well as support for dark colors for our dark theme users.
-
--   Various other bug fixes and optimizations have been added. See: [Release 5.0.0](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/5.0.0) for more details.
-
-**🔥 WARNING: ALL PREVIOUSLY CREATED TABLES MUST BE MIGRATED TO 5.0.0 🔥**
-
-You will also lose your previous `data.json` settings for this plugin. This is necessary as the plugin now uses a different structure for its settings data. You will NOT lose any markdown data or notes
-
-**For migrating to NLT `5.0.0` from NLT `4.3.1` or less, please use the [migration tool](#migration-tool)**
+-   See: [Release 6.0.0](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/6.0.0) for more details.
 
 ## About
 
 -   [Installation](#installation)
 -   [Basic usage](#basic-usage)
--   [Migration tool](#migration-tool)
 -   [Hotkeys](#hotkeys)
 -   [Header menu](#header-menu)
 -   [Cell types](#cell-types)
@@ -55,79 +44,7 @@ You will also lose your previous `data.json` settings for this plugin. This is n
 
 To quickly make a table you can use the add table command.
 
-1. Open up a markdown file and change your view to editing mode.
-2. Press `ctrl + p` (Windows) or `cmd + p` (Mac) on your keyboard and search `Add table`. An NLT code block will be inserted into your markdown file.
-3. Click outside of the code block, and a table will immediately render.
-
-![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/add-table-command.png)
-
-### NLT Code Blocks
-
-To render a table, you need to place an NLT Code Block into your markdown file.
-
-**Example NLT Code Block**
-
-````markdown
-```notion-like-tables
-table-id-123456
-```
-````
-
--   The code block begins with `notion-like-tables` directive.
-
--   The inside of the code block includes a table id. The table id is of the format: `table-id-<my-specifier>`. A specifier can only contain [valid id characters](#valid-id-characters).
-
-Once you add the block, a `table definition file` will automatically be created, and your table will render.
-
-### Table Definition Files
-
-A table definition file contains the table markdown for a Notion-Like Table. It also contains specific ids that are needed to maintain the integrity of the table in the React application.
-
-**Example table definition file**
-
-```markdown
----
-columnIds: ["column-id-Zet1HHJm"]
-rowIds: ["row-id-BtUYxXIV", "row-id-A6PfNOAV"]
----
-
-| New Column |
-| ---------- |
-|            |
-```
-
-The `columnIds` and `rowIds` keys are included in a frontmatter declaration after which the table markdown is declared. Both keys are connected to an array of ids.
-
--   The number of ids in the `columnIds` array must match the number of columns in the markdown table
--   The number of ids in the `rowIds` array must match the number of rows in the markdown table
-    -   Please note that the hyphen row doesn't count as a row. In the example above, the table only has 2 row ids
--   Each row or column id must only contain [valid id characters](#valid-id-characters)
-
-Notion Like Tables uses the `MarkdownCodeBlockProcessor` to replace an NLT code block in your markdown file with a React app generated from your table definition file.
-
-All table definition files are stored in a folder called [`_notion-like-tables`](#table-definition-folder).
-
-### Valid ID Characters
-
-Table ids, row ids, and column ids may only contain valid id characters:
-
--   `a-Z` - Any lowercase letters
--   `A-Z` - Any uppercase letters
--   `0-9` - Any numbers
--   `-` - Hyphens
--   `_` - Underscores
-
-## Migration Tool
-
-Please make sure that you have read [NLT Code Blocks](#nlt-code-blocks) and [Table Definition Files] sections(#table-definition-files) before continuing.
-
-To make code blocks for your previous tables:
-
-1. Press on your keyboard `ctrl + p` (Windows) or `cmd + p` (Mac) on your keyboard and search for `Migration tool` (alternatively you can also use the shortcut `cmd + shift + m`)
-2. Paste your previous markdown text into the textarea
-3. Click `Generate code block`. A table definition file will be created for your migrated table.
-4. Click the `Copy` button
-5. Paste the code block into your markdown file
+1. Press `ctrl + p` (Windows) or `cmd + p` (Mac) on your keyboard and search `Create new Notion-Like Table`
 
 ## Hotkeys
 
@@ -169,11 +86,7 @@ Tags have a special notion-like menu that will appear. Tags are scoped to each c
 
 ### Multi-Tag Cell
 
-Multi-tag cells offer the same as regular tag cells but allow multiple tags. If you would like to manually add multiple tags to the markdown file, please make sure that you separate each tag with a comma and no space.
-
-```markdown
-tag1,tag2,tag3
-```
+Multi-tag cells offer the same as regular tag cells but allow multiple tags.
 
 #### Tag Colors
 
@@ -185,7 +98,7 @@ Dates can be rendered in cells that are in a column with the `date` content type
 
 ### Checkbox Cell
 
-Checkboxes can be rendered in cells that are in a column with the `checkbox` content type selected. To render a checkbox, add two square brackets with a space `[ ]` for unchecked or two square brackets surrounding an x `[x]` for checked.
+Checkboxes can be rendered in cells that are in a column with the `checkbox` content type selected.
 
 ## Markdown Support
 
@@ -218,10 +131,6 @@ When wrap overflow is enabled the text will wrap once it reaches the width of th
 When wrap overflow is disabled the text will cut off at the column width and create an ellipsis (...)
 
 ## Plugin Settings
-
-### Table Definition Folder
-
-The table definition folder is the folder that contains the table definition files for all tables in your vault. The default value is `_notion-like-tables`. You may change this value to any valid folder name. If the folder has not yet been created, the folder will be created on the first table load.
 
 ## Undoing Changes
 
