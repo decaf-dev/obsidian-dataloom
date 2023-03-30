@@ -1,15 +1,7 @@
-import {
-	Plugin,
-	Editor,
-	MarkdownView,
-	Notice,
-	TFile,
-	MarkdownViewModeType,
-} from "obsidian";
+import { Plugin, Editor, Notice, TFile, MarkdownViewModeType } from "obsidian";
 
 import NltSettingsTab from "./NltSettingsTab";
 
-import { NltTable } from "./NltTable";
 import { addRow } from "./services/table/row";
 import { addColumn } from "./services/table/column";
 import { serializeTable, updateSortTime } from "./services/io/serialize";
@@ -26,9 +18,10 @@ import { TableState } from "./services/table/types";
 import _ from "lodash";
 import { isMenuId } from "./services/menu/utils";
 import { setDarkMode, setDebugMode } from "./services/redux/globalSlice";
-import { TABLE_ID_REGEX } from "./services/string/regex";
 import MigrationModal from "./MigrationModal";
-import JsonIO from "./services/json/JsonIO";
+import JsonIO, { TABLE_EXTENSION } from "./services/json/JsonIO";
+import { NLTView, NOTION_LIKE_TABLES_VIEW } from "./NLTView";
+
 export interface NltSettings {
 	data: {
 		[tableId: string]: TableState;
@@ -59,49 +52,31 @@ export default class NltPlugin extends Plugin {
 	focusedTableId: string | null = null;
 	layoutChangeTime: number;
 
-	private getViewMode = (el: HTMLElement): MarkdownViewModeType | null => {
-		const parent = el.parentElement;
-		if (parent) {
-			return parent.className.includes("cm-preview-code-block")
-				? "source"
-				: "preview";
-		}
-		return null;
-	};
-
-	isLivePreviewEnabled() {
-		return (this.app.vault as any).config?.livePreview;
-	}
-
 	/**
 	 * Called on plugin load.
 	 * This can be when the plugin is enabled or Obsidian is first opened.
 	 */
 	async onload() {
 		await this.loadSettings();
-		await this.forcePostProcessorReload();
 
-		this.registerMarkdownCodeBlockProcessor(
-			"notion-like-tables",
-			(source, el, ctx) => {
-				const text = source.trim();
-				const tableId = text.match(TABLE_ID_REGEX) ? text : null;
-				if (tableId) {
-					const viewMode = this.getViewMode(el);
-					if (viewMode) {
-						ctx.addChild(new NltTable(el, this, tableId, viewMode));
-					}
-				}
-			}
-		);
+		this.registerView(NOTION_LIKE_TABLES_VIEW, (leaf) => new NLTView(leaf));
+		this.registerExtensions([TABLE_EXTENSION], NOTION_LIKE_TABLES_VIEW);
+
+		this.addRibbonIcon("table", "Create a Notion-Like table", async () => {
+			await JsonIO.createNotionLikeTableFile();
+			await this.app.workspace.getLeaf(false).setViewState({
+				type: NOTION_LIKE_TABLES_VIEW,
+				active: true,
+			});
+
+			this.app.workspace.revealLeaf(
+				this.app.workspace.getLeavesOfType(NOTION_LIKE_TABLES_VIEW)[0]
+			);
+		});
 
 		this.addSettingTab(new NltSettingsTab(this.app, this));
 		this.registerCommands();
 		this.registerEvents();
-
-		this.addRibbonIcon("table", "Create a Notion-Like table", async () => {
-			await JsonIO.createNotionLikeTableFile();
-		});
 
 		this.app.workspace.onLayoutReady(() => {
 			this.checkForDarkMode();
@@ -124,31 +99,30 @@ export default class NltPlugin extends Plugin {
 
 	registerEvents() {
 		this.registerEvent(
-			this.app.workspace.on("file-open", () => {
+			this.app.workspace.on("file-open", (file) => {
 				//Clear the focused table
-				this.blurTable();
-
-				const livePreviewScroller =
-					document.querySelector(".cm-scroller");
-				const readingModeScroller = document.querySelector(
-					".markdown-preview-view"
-				);
-				if (livePreviewScroller) {
-					livePreviewScroller.addEventListener("scroll", () => {
-						store.dispatch(updateMenuPosition());
-					});
-				}
-				if (readingModeScroller) {
-					readingModeScroller.addEventListener("scroll", () => {
-						store.dispatch(updateMenuPosition());
-					});
-				}
+				// this.blurTable();
+				// const livePreviewScroller =
+				// 	document.querySelector(".cm-scroller");
+				// const readingModeScroller = document.querySelector(
+				// 	".markdown-preview-view"
+				// );
+				// if (livePreviewScroller) {
+				// 	livePreviewScroller.addEventListener("scroll", () => {
+				// 		store.dispatch(updateMenuPosition());
+				// 	});
+				// }
+				// if (readingModeScroller) {
+				// 	readingModeScroller.addEventListener("scroll", () => {
+				// 		store.dispatch(updateMenuPosition());
+				// 	});
+				// }
 			})
 		);
 
 		this.registerEvent(
 			this.app.workspace.on("resize", () => {
-				store.dispatch(updateMenuPosition());
+				//store.dispatch(updateMenuPosition());
 			})
 		);
 
@@ -265,15 +239,15 @@ export default class NltPlugin extends Plugin {
 					const viewModesToUpdate: MarkdownViewModeType[] = [
 						"preview",
 					];
-					if (this.isLivePreviewEnabled())
-						viewModesToUpdate.push("source");
-					await serializeTable(
-						true,
-						this,
-						newState,
-						tableId,
-						viewModesToUpdate
-					);
+					// if (this.isLivePreviewEnabled())
+					// 	viewModesToUpdate.push("source");
+					// await serializeTable(
+					// 	true,
+					// 	this,
+					// 	newState,
+					// 	tableId,
+					// 	viewModesToUpdate
+					// );
 				} else {
 					new Notice(
 						"No focused table. Please click a table to focus it and retry this operation again."
@@ -294,15 +268,15 @@ export default class NltPlugin extends Plugin {
 					const viewModesToUpdate: MarkdownViewModeType[] = [
 						"preview",
 					];
-					if (this.isLivePreviewEnabled())
-						viewModesToUpdate.push("source");
-					await serializeTable(
-						true,
-						this,
-						newState,
-						tableId,
-						viewModesToUpdate
-					);
+					// if (this.isLivePreviewEnabled())
+					// 	viewModesToUpdate.push("source");
+					// await serializeTable(
+					// 	true,
+					// 	this,
+					// 	newState,
+					// 	tableId,
+					// 	viewModesToUpdate
+					// );
 				} else {
 					new Notice(
 						"No focused table. Please click a table to focus it and retry this operation."
@@ -337,22 +311,7 @@ export default class NltPlugin extends Plugin {
 	 * This can be when the plugin is disabled or Obsidian is closed.
 	 */
 	async onunload() {
-		await this.forcePostProcessorReload();
-	}
-
-	/*
-	 * Forces the post processor to be called again.
-	 * This is necessary for clean up purposes on unload and causing NLT tables
-	 * to be rendered onload.
-	 */
-	async forcePostProcessorReload() {
-		this.app.workspace.iterateAllLeaves((leaf) => {
-			const view = leaf.view;
-			if (view.getViewType() === "markdown") {
-				if (view instanceof MarkdownView)
-					view.previewMode.rerender(true);
-			}
-		});
+		this.app.workspace.detachLeavesOfType(NOTION_LIKE_TABLES_VIEW);
 	}
 
 	static getFiles(): TFile[] {
