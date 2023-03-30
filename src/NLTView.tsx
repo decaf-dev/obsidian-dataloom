@@ -1,9 +1,7 @@
 import { TextFileView, WorkspaceLeaf } from "obsidian";
 import { createRoot, Root } from "react-dom/client";
 import { Provider } from "react-redux";
-import { EXTENSION_REGEX } from "./services/file/utils";
 import { store } from "./services/redux/store";
-import Test from "./Test";
 
 export const NOTION_LIKE_TABLES_VIEW = "notion-like-tables";
 
@@ -51,5 +49,7 @@ export class NLTView extends TextFileView {
 		this.root = createRoot(container);
 	}
 
-	async onClose() {}
+	async onClose() {
+		this.root.unmount();
+	}
 }
