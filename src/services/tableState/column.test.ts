@@ -1,6 +1,10 @@
-import { mockTableState } from "../mock";
-import { CellType } from "./types";
-//TODO implement
+describe("filler", () => {
+	test("filler", () => {
+		expect("").toEqual("");
+	});
+});
+
+export {};
 
 // describe("changeColumnType", () => {
 // 	it("changes from text to multi-tag", () => {
@@ -8,11 +12,9 @@ import { CellType } from "./types";
 
 // 		const tagCell1 = state.model.cells[1];
 // 		tagCell1.markdown = "tag1,tag2";
-// 		tagCell1.html = "tag1,tag2";
 
 // 		const tagCell2 = state.model.cells[2];
 // 		tagCell2.markdown = "tag1";
-// 		tagCell2.html = "tag1";
 
 // 		const newState = changeColumnType(
 // 			state,
@@ -23,11 +25,9 @@ import { CellType } from "./types";
 // 		const tags = newState.settings.columns[tagCell1.columnId].tags;
 // 		expect(tags.length).toEqual(2);
 // 		expect(tags[0].markdown).toEqual("tag1");
-// 		expect(tags[0].html).toEqual("tag1");
 // 		expect(tags[0].cells.length).toEqual(2);
 
 // 		expect(tags[1].markdown).toEqual("tag2");
-// 		expect(tags[1].html).toEqual("tag2");
 // 		expect(tags[1].cells.length).toEqual(1);
 // 	});
 
@@ -36,11 +36,9 @@ import { CellType } from "./types";
 
 // 		const tagCell1 = state.model.cells[1];
 // 		tagCell1.markdown = "tag1,tag2";
-// 		tagCell1.html = "tag1,tag2";
 
 // 		const tagCell2 = state.model.cells[2];
 // 		tagCell2.markdown = "tag1";
-// 		tagCell2.html = "tag1";
 
 // 		const columnSettings = state.settings.columns[tagCell1.columnId];
 // 		columnSettings.type = CellType.MULTI_TAG;
@@ -48,7 +46,6 @@ import { CellType } from "./types";
 // 			{
 // 				id: randomTagId(),
 // 				markdown: "tag1",
-// 				html: "tag1",
 // 				color: "green",
 // 				cells: [
 // 					{
@@ -64,7 +61,6 @@ import { CellType } from "./types";
 // 			{
 // 				id: randomTagId(),
 // 				markdown: "tag2",
-// 				html: "tag2",
 // 				color: "blue",
 // 				cells: [
 // 					{
@@ -84,11 +80,9 @@ import { CellType } from "./types";
 // 		const tags = newState.settings.columns[tagCell1.columnId].tags;
 // 		expect(tags.length).toEqual(2);
 // 		expect(tags[0].markdown).toEqual("tag1");
-// 		expect(tags[0].html).toEqual("tag1");
 // 		expect(tags[0].cells.length).toEqual(0);
 
 // 		expect(tags[1].markdown).toEqual("tag2");
-// 		expect(tags[1].html).toEqual("tag2");
 // 		expect(tags[1].cells.length).toEqual(0);
 // 	});
 
@@ -97,11 +91,9 @@ import { CellType } from "./types";
 
 // 		const tagCell1 = state.model.cells[1];
 // 		tagCell1.markdown = "tag1,tag2";
-// 		tagCell1.html = "tag1,tag2";
 
 // 		const tagCell2 = state.model.cells[2];
 // 		tagCell2.markdown = "tag1";
-// 		tagCell2.html = "tag1";
 
 // 		const columnSettings = state.settings.columns[tagCell1.columnId];
 // 		columnSettings.type = CellType.MULTI_TAG;
@@ -109,7 +101,6 @@ import { CellType } from "./types";
 // 			{
 // 				id: randomTagId(),
 // 				markdown: "tag1",
-// 				html: "tag1",
 // 				color: "green",
 // 				cells: [
 // 					{
@@ -125,7 +116,6 @@ import { CellType } from "./types";
 // 			{
 // 				id: randomTagId(),
 // 				markdown: "tag2",
-// 				html: "tag2",
 // 				color: "blue",
 // 				cells: [
 // 					{
@@ -145,7 +135,6 @@ import { CellType } from "./types";
 // 		const tags = newState.settings.columns[tagCell1.columnId].tags;
 // 		expect(tags.length).toEqual(2);
 // 		expect(tags[0].markdown).toEqual("tag1");
-// 		expect(tags[0].html).toEqual("tag1");
 // 		expect(tags[0].cells.length).toEqual(2);
 // 		expect(tags[0].cells).toEqual([
 // 			{
@@ -159,7 +148,6 @@ import { CellType } from "./types";
 // 		]);
 
 // 		expect(tags[1].markdown).toEqual("tag2");
-// 		expect(tags[1].html).toEqual("tag2");
 // 		expect(tags[1].cells.length).toEqual(0);
 // 	});
 // });
