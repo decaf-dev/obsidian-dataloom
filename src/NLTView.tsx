@@ -4,33 +4,44 @@ import { Provider } from "react-redux";
 import App from "./App";
 import Json from "./services/file/Json";
 import { store } from "./services/redux/store";
+import { TableState } from "./services/tableState/types";
 
 export const NOTION_LIKE_TABLES_VIEW = "notion-like-tables";
 
 export class NLTView extends TextFileView {
 	root: Root;
-	rawData: string;
+	data: string;
 
 	constructor(leaf: WorkspaceLeaf) {
 		super(leaf);
 	}
 
 	getViewData(): string {
-		return this.rawData;
+		return this.data;
 	}
-	setViewData(data: string, clear: boolean): void {
-		this.rawData = data;
+
+	handleSaveTableState = async (tableState: TableState) => {
+		const serialized = Json.serializeTableState(tableState);
+		this.data = serialized;
+		await this.requestSave();
+	};
+
+	setViewData(data: string, _clear: boolean): void {
+		this.data = data;
 
 		const tableState = Json.deserializeTableState(data);
 		this.root.render(
 			<Provider store={store}>
-				<App initialState={tableState} />
+				<App
+					initialState={tableState}
+					onSaveTableState={this.handleSaveTableState}
+				/>
 			</Provider>
 		);
 	}
 
 	clear(): void {
-		this.data = "";
+		this.data = "{}";
 	}
 
 	getViewType() {

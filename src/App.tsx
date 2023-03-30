@@ -32,26 +32,29 @@ import "./app.css";
 import { randomUUID } from "crypto";
 import { updateCell } from "./services/tableState/cell";
 import { addRow, deleteRow } from "./services/tableState/row";
+import { useDidMountEffect } from "./services/hooks";
 
 const FILE_NAME = "App";
 
 interface Props {
 	initialState: TableState;
+	onSaveTableState: (tableState: TableState) => void;
 }
 
-export default function App({ initialState }: Props) {
-	const [state, setTableState] = useState(initialState);
-
-	const [saveTime, setSaveTime] = useState({
-		time: 0,
-		shouldSaveModel: false,
-	});
+export default function App({ initialState, onSaveTableState }: Props) {
+	const [tableState, setTableState] = useState(initialState);
 
 	const [sortTime, setSortTime] = useState(0);
 
 	const { shouldDebug } = useAppSelector((state) => state.global);
 
 	const dispatch = useAppDispatch();
+
+	//Once we have mounted, whenever the table state is updated
+	//save it to disk
+	useDidMountEffect(() => {
+		onSaveTableState(tableState);
+	}, [tableState]);
 
 	//We run the throttle save in a useEffect because we want the table model to update
 	//with new changes before we save
@@ -79,10 +82,6 @@ export default function App({ initialState }: Props) {
 	// 	//Make sure to update the menu positions, so that the menu will render properly
 	// 	dispatch(updateMenuPosition());
 	// }, 150);
-
-	const handleSaveData = (shouldSaveModel: boolean) => {
-		setSaveTime({ shouldSaveModel, time: Date.now() });
-	};
 
 	//Handles sync between live preview and reading mode
 	// useEffect(() => {
@@ -130,13 +129,7 @@ export default function App({ initialState }: Props) {
 
 	useEffect(() => {
 		if (sortTime !== 0) {
-			setTableState((prevState) => {
-				return {
-					...prevState,
-					model: sortRows(prevState),
-				};
-			});
-			handleSaveData(true);
+			setTableState((prevState) => sortRows(prevState));
 		}
 	}, [sortTime]);
 
@@ -147,13 +140,11 @@ export default function App({ initialState }: Props) {
 	function handleAddColumn() {
 		if (shouldDebug) console.log("[App]: handleAddColumn called.");
 		setTableState((prevState) => addColumn(prevState));
-		handleSaveData(true);
 	}
 
 	function handleAddRow() {
 		logFunc(shouldDebug, FILE_NAME, "handleAddRow");
 		setTableState((prevState) => addRow(prevState));
-		handleSaveData(true);
 	}
 
 	function handleHeaderTypeClick(columnId: string, type: CellType) {
@@ -164,7 +155,6 @@ export default function App({ initialState }: Props) {
 		setTableState((prevState) =>
 			changeColumnType(prevState, columnId, type)
 		);
-		handleSaveData(false);
 	}
 
 	function handleHeaderSortSelect(columnId: string, sortDir: SortDir) {
@@ -187,7 +177,6 @@ export default function App({ initialState }: Props) {
 		setTableState((prevState) =>
 			updateCell(prevState, cellId, updatedMarkdown)
 		);
-		handleSaveData(true);
 	}
 
 	function handleAddTag(
@@ -220,7 +209,6 @@ export default function App({ initialState }: Props) {
 				canAddMultiple
 			)
 		);
-		handleSaveData(true);
 	}
 
 	function handleTagClick(
@@ -247,7 +235,6 @@ export default function App({ initialState }: Props) {
 				canAddMultiple
 			)
 		);
-		handleSaveData(true);
 	}
 
 	function handleRemoveTagClick(
@@ -265,7 +252,6 @@ export default function App({ initialState }: Props) {
 		setTableState((prevState) =>
 			removeTag(prevState, cellId, columnId, rowId, tagId)
 		);
-		handleSaveData(true);
 	}
 
 	function handleHeaderDeleteClick(columnId: string) {
@@ -274,7 +260,6 @@ export default function App({ initialState }: Props) {
 		});
 
 		setTableState((prevState) => deleteColumn(prevState, columnId));
-		handleSaveData(true);
 	}
 
 	function handleRowDeleteClick(rowId: string) {
@@ -282,7 +267,6 @@ export default function App({ initialState }: Props) {
 			rowId,
 		});
 		setTableState((prevState) => deleteRow(prevState, rowId));
-		handleSaveData(true);
 	}
 
 	function handleSortRemoveClick(columnId: string) {
@@ -303,7 +287,6 @@ export default function App({ initialState }: Props) {
 		setTableState((prevState) =>
 			updateColumn(prevState, columnId, "width", width)
 		);
-		handleSaveData(false);
 	}
 
 	function handleMoveColumnClick(columnId: string, moveRight: boolean) {
@@ -314,7 +297,6 @@ export default function App({ initialState }: Props) {
 		setTableState((prevState: TableState) =>
 			moveColumn(prevState, columnId, moveRight)
 		);
-		handleSaveData(true);
 	}
 
 	function handleInsertColumnClick(columnId: string, insertRight: boolean) {
@@ -364,7 +346,6 @@ export default function App({ initialState }: Props) {
 		// 		settings: settingsObj,
 		// 	};
 		// });
-		handleSaveData(true);
 	}
 
 	function handleChangeColor(columnId: string, tagId: string, color: string) {
@@ -387,7 +368,6 @@ export default function App({ initialState }: Props) {
 		// 		},
 		// 	};
 		// });
-		handleSaveData(false);
 	}
 
 	function handleAutoWidthToggle(columnId: string, value: boolean) {
@@ -398,8 +378,6 @@ export default function App({ initialState }: Props) {
 		setTableState((prevState) =>
 			updateColumn(prevState, columnId, "useAutoWidth", value)
 		);
-
-		handleSaveData(false);
 	}
 
 	function handleWrapContentToggle(columnId: string, value: boolean) {
@@ -410,10 +388,9 @@ export default function App({ initialState }: Props) {
 		setTableState((prevState) =>
 			updateColumn(prevState, columnId, "shouldWrapOverflow", value)
 		);
-		handleSaveData(false);
 	}
 
-	const { rows, columns, cells } = state.model;
+	const { rows, columns, cells } = tableState.model;
 	//const tableIdWithMode = getUniqueTableId(tableId, viewMode);
 
 	return (
@@ -424,7 +401,7 @@ export default function App({ initialState }: Props) {
 			tabIndex={0}
 		>
 			<OptionBar
-				model={state.model}
+				model={tableState.model}
 				onSortRemoveClick={handleSortRemoveClick}
 			/>
 			<div
@@ -447,6 +424,7 @@ export default function App({ initialState }: Props) {
 								(cell) =>
 									cell.columnId === columnId && cell.isHeader
 							);
+							if (!cell) throw Error("Cell not found");
 							const { id: cellId, markdown, html } = cell;
 							return {
 								id: columnId,
@@ -524,6 +502,10 @@ export default function App({ initialState }: Props) {
 												(column) =>
 													column.id == cell.columnId
 											);
+											if (!column)
+												throw new Error(
+													"Column not found"
+												);
 											const {
 												width,
 												type,
