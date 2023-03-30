@@ -1,30 +1,17 @@
 import MarkdownIt from "markdown-it";
 
-import NltPlugin, { DEFAULT_SETTINGS } from "../../main";
+import NltPlugin from "../../main";
 
-import { CURRENT_PLUGIN_VERSION } from "../../constants";
-import {
-	DEFAULT_COLUMN_SETTINGS,
-	DEFAULT_ROW_SETTINGS,
-	TableModel,
-	TableState,
-} from "../table/types";
-import { findTableFile, replaceUnescapedPipes } from "./utils";
+import { replaceUnescapedPipes } from "./utils";
 import {
 	EXTERNAL_LINK_REGEX,
 	LEFT_SQUARE_BRACKET_REGEX,
 	INTERNAL_LINK_REGEX,
 	RIGHT_SQUARE_BRACKET_REGEX,
-	SLASH_REGEX,
 	INTERNAL_LINK_ALIAS_REGEX,
 	COLUMN_ID_REGEX,
 	ROW_ID_REGEX,
 } from "../string/regex";
-import { randomCellId, randomColumnId, randomRowId } from "../random";
-import { generateEmptyMarkdownTable } from "../random";
-import { logVar } from "../debug";
-
-const FILE_NAME = "deserialize";
 
 const md = new MarkdownIt();
 
@@ -184,161 +171,4 @@ const validateParsedTable = (
 		columnIds,
 		rowIds,
 	};
-};
-
-export const parseTableModelFromParsedTable = (
-	table: ParsedTable
-): TableModel => {
-	const { numRows, numColumns } = table;
-	const columnIds = Array(numColumns)
-		.fill(0)
-		.map((_i) => randomColumnId());
-	const rowIds = Array(numRows)
-		.fill(0)
-		.map((_i) => randomRowId());
-	return parseTableModel(table, columnIds, rowIds);
-};
-
-const parseTableModel = (
-	table: ParsedTable,
-	columnIds: string[],
-	rowIds: string[]
-): TableModel => {
-	const model: TableModel = {
-		columnIds: [],
-		rowIds: [],
-		cells: [],
-	};
-
-	const { numRows, numColumns, parsedCells } = table;
-
-	for (let y = 0; y < numRows; y++) {
-		for (let x = 0; x < numColumns; x++) {
-			if (y === 0) model.columnIds.push(columnIds[x]);
-			if (x === 0) model.rowIds.push(rowIds[y]);
-			const markdown = parsedCells[x + y * numColumns];
-			const html = markdownToHtml(markdown);
-			model.cells.push({
-				id: randomCellId(),
-				columnId: columnIds[x],
-				rowId: rowIds[y],
-				markdown,
-				html,
-				isHeader: y === 0,
-			});
-		}
-	}
-	return model;
-};
-
-export const parseTableModelFromFileData = (
-	data: string,
-	tableId: string
-): TableModel => {
-	const parsedTable: ParsedTable = parseTableFromMarkdown(data);
-	const { columnIds, rowIds } = validateParsedTable(parsedTable, tableId);
-	return parseTableModel(parsedTable, columnIds, rowIds);
-};
-
-export const findTableModel = async (
-	plugin: NltPlugin,
-	tableId: string
-): Promise<TableModel> => {
-	//If it exists create it, otherwise don't
-	const { file, isNewFile } = await findTableFile(plugin, tableId);
-	if (isNewFile)
-		await plugin.app.vault.modify(file, generateEmptyMarkdownTable());
-	const data = await app.vault.read(file);
-	return parseTableModelFromFileData(data, tableId);
-};
-
-const validateSettings = (plugin: NltPlugin) => {
-	// const { tableFolder } = plugin.settings;
-	// if (tableFolder.match(SLASH_REGEX))
-	// 	throw new Error(
-	// 		"Table definition folder cannot include forward or back slashes. Please change it in the plugin settings."
-	// 	);
-};
-
-export const deserializeTable = async (
-	plugin: NltPlugin,
-	tableId: string
-): Promise<TableState> => {
-	const shouldDebug = plugin.settings.shouldDebug;
-
-	//Migration for 4.3.1 or earlier
-	if (plugin.settings.shouldClear) {
-		console.log("Clearing previous NLT plugin settings");
-		plugin.settings = { ...DEFAULT_SETTINGS };
-		plugin.settings.shouldClear = false;
-		await plugin.saveSettings();
-	}
-
-	validateSettings(plugin);
-
-	const model = await findTableModel(plugin, tableId);
-	logVar(
-		shouldDebug,
-		FILE_NAME,
-		"deserializeTable",
-		"Loaded table model from definition file",
-		model
-	);
-
-	let tableState: TableState = {
-		model,
-		settings: {
-			columns: {},
-			rows: {},
-		},
-		pluginVersion: CURRENT_PLUGIN_VERSION,
-	};
-
-	const savedState = plugin.settings.data[tableId];
-	if (savedState) {
-		const { pluginVersion, settings } = savedState;
-
-		logVar(
-			shouldDebug,
-			FILE_NAME,
-			"deserializeTable",
-			"Found cached table settings",
-			settings
-		);
-
-		//Update with old settings
-		tableState.settings = settings;
-
-		if (pluginVersion < CURRENT_PLUGIN_VERSION) {
-			//Handle table produced by older plugin version
-		}
-	}
-	//Add ids
-	model.columnIds.forEach((id) => {
-		if (!tableState.settings.columns[id])
-			tableState.settings.columns[id] = { ...DEFAULT_COLUMN_SETTINGS };
-	});
-
-	model.rowIds.forEach((id, i) => {
-		if (!tableState.settings.rows[id]) {
-			tableState.settings.rows[id] = { ...DEFAULT_ROW_SETTINGS };
-			//Offset the time so that we can sort by this date
-			tableState.settings.rows[id].creationDate = Date.now() + i;
-		}
-	});
-
-	//Clean up old ids
-	Object.keys(tableState.settings.columns).forEach((key) => {
-		if (!model.columnIds.includes(key))
-			delete tableState.settings.columns[key];
-	});
-
-	//Clean up old ids
-	Object.keys(tableState.settings.rows).forEach((key) => {
-		if (!model.rowIds.includes(key)) delete tableState.settings.rows[key];
-	});
-
-	plugin.settings.data[tableId] = tableState;
-	await plugin.saveSettings();
-	return tableState;
 };

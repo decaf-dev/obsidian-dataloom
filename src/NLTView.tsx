@@ -1,26 +1,30 @@
 import { TextFileView, WorkspaceLeaf } from "obsidian";
 import { createRoot, Root } from "react-dom/client";
 import { Provider } from "react-redux";
+import App from "./App";
+import Json from "./services/file/Json";
 import { store } from "./services/redux/store";
 
 export const NOTION_LIKE_TABLES_VIEW = "notion-like-tables";
 
 export class NLTView extends TextFileView {
 	root: Root;
-	data: string;
+	rawData: string;
 
 	constructor(leaf: WorkspaceLeaf) {
 		super(leaf);
 	}
 
 	getViewData(): string {
-		return this.data;
+		return this.rawData;
 	}
 	setViewData(data: string, clear: boolean): void {
-		this.data = data;
+		this.rawData = data;
+
+		const tableState = Json.deserializeTableState(data);
 		this.root.render(
 			<Provider store={store}>
-				<Test data={data} />
+				<App initialState={tableState} />
 			</Provider>
 		);
 	}

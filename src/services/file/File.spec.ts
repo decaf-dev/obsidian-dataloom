@@ -1,8 +1,8 @@
-import FileOperations from "./FileOperations";
+import File from "./File";
 
 describe("createFile", () => {
 	test("creates a markdown file", async () => {
-		const mock = jest.spyOn(FileOperations, "createObsidianFile");
+		const mock = jest.spyOn(File, "createObsidianFile");
 		mock.mockImplementation(() => Promise.resolve(true));
 
 		const testData = {
@@ -10,7 +10,7 @@ describe("createFile", () => {
 			fileData: '{"key": "value"}',
 		};
 
-		const filePath = await FileOperations.createFile(
+		const filePath = await File.createFile(
 			testData.filePath,
 			testData.fileData
 		);
@@ -21,7 +21,7 @@ describe("createFile", () => {
 	});
 
 	test("appends a number to the file name if file already exists", async () => {
-		const mock = jest.spyOn(FileOperations, "createObsidianFile");
+		const mock = jest.spyOn(File, "createObsidianFile");
 		mock.mockImplementationOnce(() =>
 			Promise.reject(new Error("File already exists"))
 		);
@@ -33,7 +33,7 @@ describe("createFile", () => {
 			fileData: '{"key": "value"}',
 		};
 
-		const filePath = await FileOperations.createFile(
+		const filePath = await File.createFile(
 			testData.filePath,
 			testData.fileData
 		);

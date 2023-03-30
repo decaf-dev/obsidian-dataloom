@@ -1,8 +1,8 @@
 import { Notice } from "obsidian";
-import FileOperations from "../file/FileOperations";
+import FileOperations from "./File";
 
 export const TABLE_EXTENSION = "table";
-export default class JsonIO {
+export default class TableFile {
 	static async createNotionLikeTableFile() {
 		try {
 			const filePath = "Untitled" + "." + TABLE_EXTENSION;

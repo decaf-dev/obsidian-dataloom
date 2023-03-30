@@ -18,8 +18,8 @@ import _ from "lodash";
 import { isMenuId } from "./services/menu/utils";
 import { setDarkMode, setDebugMode } from "./services/redux/globalSlice";
 import MigrationModal from "./MigrationModal";
-import JsonIO, { TABLE_EXTENSION } from "./services/json/JsonIO";
 import { NLTView, NOTION_LIKE_TABLES_VIEW } from "./NLTView";
+import TableFile, { TABLE_EXTENSION } from "./services/file/TableFile";
 
 export interface NLTSettings {
 	data: {
@@ -55,6 +55,8 @@ export default class NLTPlugin extends Plugin {
 	 */
 	async onload() {
 		await this.loadSettings();
+		//Make sure settings are valid
+		this.validateSettings();
 
 		this.registerView(NOTION_LIKE_TABLES_VIEW, (leaf) => new NLTView(leaf));
 		this.registerExtensions([TABLE_EXTENSION], NOTION_LIKE_TABLES_VIEW);
@@ -63,7 +65,7 @@ export default class NLTPlugin extends Plugin {
 			"table",
 			"Create new Notion-Like table",
 			async () => {
-				const filePath = await JsonIO.createNotionLikeTableFile();
+				const filePath = await TableFile.createNotionLikeTableFile();
 				//Open file in a new tab and set it to active
 				await app.workspace.getLeaf(true).setViewState({
 					type: NOTION_LIKE_TABLES_VIEW,
@@ -81,6 +83,15 @@ export default class NLTPlugin extends Plugin {
 			this.checkForDarkMode();
 			this.checkForDebug();
 		});
+	}
+
+	//TODO validate settings
+	validateSettings() {
+		// const { tableFolder } = plugin.settings;
+		// if (tableFolder.match(SLASH_REGEX))
+		// 	throw new Error(
+		// 		"Table definition folder cannot include forward or back slashes. Please change it in the plugin settings."
+		// 	);
 	}
 
 	private checkForDebug() {

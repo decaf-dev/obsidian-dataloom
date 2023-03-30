@@ -12,46 +12,32 @@ import OptionBar from "./components/OptionBar";
 import Button from "./components/Button";
 
 import { Cell, CellType } from "./services/table/types";
-import { serializeTable } from "./services/io/serialize";
 import { SortDir } from "./services/sort/types";
 import { addRow } from "./services/table/row";
 import { addColumn } from "./services/table/column";
 import { logFunc } from "./services/debug";
 import { DEFAULT_COLUMN_SETTINGS } from "./services/table/types";
-import { getUniqueTableId, sortCells } from "./services/table/utils";
+import { sortCells } from "./services/table/utils";
 import { TableState } from "./services/table/types";
-import { deserializeTable, markdownToHtml } from "./services/io/deserialize";
+import { markdownToHtml } from "./services/io/deserialize";
 import { randomColumnId, randomCellId, randomRowId } from "./services/random";
 import { useAppDispatch, useAppSelector } from "./services/redux/hooks";
-import { closeAllMenus, updateMenuPosition } from "./services/menu/menuSlice";
+import { updateMenuPosition } from "./services/menu/menuSlice";
 import { addExistingTag, addNewTag, removeTag } from "./services/table/tag";
 import { changeColumnType } from "./services/table/column";
 import { sortRows } from "./services/sort/sort";
 
 import "./app.css";
-interface Props {
-	plugin: NltPlugin;
-	tableId: string;
-	viewMode: MarkdownViewModeType;
-}
 
 const FILE_NAME = "App";
 
-export default function App({ plugin, viewMode, tableId }: Props) {
-	const [state, setTableState] = useState<TableState>({
-		pluginVersion: -1,
-		model: {
-			rowIds: [],
-			columnIds: [],
-			cells: [],
-		},
-		settings: {
-			columns: {},
-			rows: {},
-		},
-	});
+interface Props {
+	initialState: TableState;
+}
 
-	const [isLoading, setLoading] = useState(true);
+export default function App({ initialState }: Props) {
+	const [state, setTableState] = useState(initialState);
+
 	const [saveTime, setSaveTime] = useState({
 		time: 0,
 		shouldSaveModel: false,
@@ -63,92 +49,80 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 
 	const dispatch = useAppDispatch();
 
-	//Load table on mount
-	useEffect(() => {
-		async function load() {
-			const tableState = await deserializeTable(plugin, tableId);
-			setTableState(tableState);
-			setTimeout(() => {
-				setLoading(false);
-			}, 300);
-		}
-		load();
-	}, []);
-
 	//We run the throttle save in a useEffect because we want the table model to update
 	//with new changes before we save
-	useEffect(() => {
-		//If not mount
-		if (saveTime.time !== 0) {
-			throttleSave(saveTime.shouldSaveModel);
-		}
-	}, [saveTime]);
+	// useEffect(() => {
+	// 	//If not mount
+	// 	if (saveTime.time !== 0) {
+	// 		throttleSave(saveTime.shouldSaveModel);
+	// 	}
+	// }, [saveTime]);
 
-	const throttleSave = _.throttle(async (shouldSaveModel: boolean) => {
-		const viewModesToUpdate: MarkdownViewModeType[] = [];
-		if (plugin.isLivePreviewEnabled()) {
-			viewModesToUpdate.push(
-				viewMode === "source" ? "preview" : "source"
-			);
-		}
-		await serializeTable(
-			shouldSaveModel,
-			plugin,
-			state,
-			tableId,
-			viewModesToUpdate
-		);
-		//Make sure to update the menu positions, so that the menu will render properly
-		dispatch(updateMenuPosition());
-	}, 150);
+	// const throttleSave = _.throttle(async (shouldSaveModel: boolean) => {
+	// 	const viewModesToUpdate: MarkdownViewModeType[] = [];
+	// 	// if (plugin.isLivePreviewEnabled()) {
+	// 	// 	viewModesToUpdate.push(
+	// 	// 		viewMode === "source" ? "preview" : "source"
+	// 	// 	);
+	// 	// }
+	// 	await serializeTable(
+	// 		shouldSaveModel,
+	// 		plugin,
+	// 		state,
+	// 		tableId,
+	// 		viewModesToUpdate
+	// 	);
+	// 	//Make sure to update the menu positions, so that the menu will render properly
+	// 	dispatch(updateMenuPosition());
+	// }, 150);
 
 	const handleSaveData = (shouldSaveModel: boolean) => {
 		setSaveTime({ shouldSaveModel, time: Date.now() });
 	};
 
 	//Handles sync between live preview and reading mode
-	useEffect(() => {
-		let timer: any = null;
+	// useEffect(() => {
+	// 	let timer: any = null;
 
-		async function checkForSyncEvents() {
-			const {
-				tableId: tId,
-				viewModes,
-				eventType,
-			} = plugin.settings.viewModeSync;
-			if (tId) {
-				const mode = viewModes.find((v) => v === viewMode);
-				if (mode && tableId === tId) {
-					logFunc(shouldDebug, FILE_NAME, "checkForSyncEvents", {
-						tableId,
-						viewModes,
-						eventType,
-					});
-					if (eventType === "update-state") {
-						setTableState(plugin.settings.data[tableId]);
-					} else if (eventType === "sort-rows") {
-						handleSortRows();
-					}
-					const modeIndex = viewModes.indexOf(mode);
-					plugin.settings.viewModeSync.viewModes.splice(modeIndex, 1);
-					if (plugin.settings.viewModeSync.viewModes.length === 0)
-						plugin.settings.viewModeSync.tableId = null;
-					await plugin.saveSettings();
-				}
-			}
-		}
+	// 	async function checkForSyncEvents() {
+	// 		const {
+	// 			tableId: tId,
+	// 			viewModes,
+	// 			eventType,
+	// 		} = plugin.settings.viewModeSync;
+	// 		if (tId) {
+	// 			const mode = viewModes.find((v) => v === viewMode);
+	// 			if (mode && tableId === tId) {
+	// 				logFunc(shouldDebug, FILE_NAME, "checkForSyncEvents", {
+	// 					tableId,
+	// 					viewModes,
+	// 					eventType,
+	// 				});
+	// 				if (eventType === "update-state") {
+	// 					setTableState(plugin.settings.data[tableId]);
+	// 				} else if (eventType === "sort-rows") {
+	// 					handleSortRows();
+	// 				}
+	// 				const modeIndex = viewModes.indexOf(mode);
+	// 				plugin.settings.viewModeSync.viewModes.splice(modeIndex, 1);
+	// 				if (plugin.settings.viewModeSync.viewModes.length === 0)
+	// 					plugin.settings.viewModeSync.tableId = null;
+	// 				await plugin.saveSettings();
+	// 			}
+	// 		}
+	// 	}
 
-		function viewModeSync() {
-			timer = setInterval(() => {
-				checkForSyncEvents();
-			}, 50);
-		}
+	// 	function viewModeSync() {
+	// 		timer = setInterval(() => {
+	// 			checkForSyncEvents();
+	// 		}, 50);
+	// 	}
 
-		viewModeSync();
-		return () => {
-			clearInterval(timer);
-		};
-	}, []);
+	// 	viewModeSync();
+	// 	return () => {
+	// 		clearInterval(timer);
+	// 	};
+	// }, []);
 
 	useEffect(() => {
 		if (sortTime !== 0) {
@@ -576,15 +550,13 @@ export default function App({ plugin, viewMode, tableId }: Props) {
 		handleSaveData(false);
 	}
 
-	if (isLoading) return <div>Loading table...</div>;
-
 	const { rowIds, columnIds, cells } = state.model;
-	const tableIdWithMode = getUniqueTableId(tableId, viewMode);
+	//const tableIdWithMode = getUniqueTableId(tableId, viewMode);
 
 	return (
 		<div
-			id={tableIdWithMode}
-			data-id={tableId}
+			// id={tableIdWithMode}
+			// data-id={tableId}
 			className="NLT__app"
 			tabIndex={0}
 		>

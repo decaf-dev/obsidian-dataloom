@@ -2,50 +2,10 @@ import NltPlugin from "../../main";
 
 import type { MarkdownViewModeType, TFile } from "obsidian";
 
-import { TableModel, Cell, TableState } from "../table/types";
-import { findTableFile, serializeFrontMatter } from "./utils";
+import { Cell, TableState } from "../table/types";
 import { logVar } from "../debug";
 
 export const FILE_NAME = "serialize";
-
-/**
- * Produces markdown from the table model
- */
-export const serializeMarkdownTable = (model: TableModel): string => {
-	const { columnIds, rowIds, cells } = model;
-	const columnCharLengths = calcColumnCharLengths(cells);
-	const buffer = new TableModelStringBuffer();
-	buffer.createRow();
-
-	for (let i = 0; i < columnIds.length; i++) {
-		const columnId = columnIds[i];
-		const cell = cells.find((c) => c.columnId === columnId && c.isHeader);
-		buffer.writeCell(cell.markdown, columnCharLengths[columnId]);
-	}
-
-	buffer.createRow();
-
-	for (let i = 0; i < columnIds.length; i++) {
-		const columnId = columnIds[i];
-		let numChars =
-			columnCharLengths[columnId] > 3 ? columnCharLengths[columnId] : 3;
-		const content = Array(numChars).fill("-").join("");
-		buffer.writeCell(content, numChars);
-	}
-
-	//Ignore header row
-	for (let i = 1; i < rowIds.length; i++) {
-		buffer.createRow();
-
-		const rowId = rowIds[i];
-		const rowCells = cells.filter((cell) => cell.rowId == rowId);
-		for (let j = 0; j < rowCells.length; j++) {
-			const { columnId, markdown } = rowCells[j];
-			buffer.writeCell(markdown, columnCharLengths[columnId]);
-		}
-	}
-	return buffer.toString();
-};
 
 export class TableModelStringBuffer {
 	string: string;
@@ -152,40 +112,4 @@ export const updateSortTime = async (plugin: NltPlugin, tableId: string) => {
 	);
 	plugin.settings = settingsCopy;
 	return await plugin.saveData(plugin.settings);
-};
-
-export const serializeTableModel = async (
-	plugin: NltPlugin,
-	file: TFile,
-	model: TableModel
-) => {
-	const shouldDebug = plugin.settings.shouldDebug;
-	const frontmatter = serializeFrontMatter(model);
-	const tableMarkdown = serializeMarkdownTable(model);
-
-	const content = frontmatter + "\n\n" + tableMarkdown;
-	logVar(
-		shouldDebug,
-		FILE_NAME,
-		"serializeTableModel",
-		"Updating table definition file",
-		content
-	);
-	await updateFileContent(plugin, file, content);
-};
-
-export const serializeTable = async (
-	shouldSaveModel: boolean,
-	plugin: NltPlugin,
-	state: TableState,
-	tableId: string,
-	viewModesToUpdate: MarkdownViewModeType[]
-) => {
-	const { model } = state;
-
-	if (shouldSaveModel) {
-		const { file } = await findTableFile(plugin, tableId);
-		await serializeTableModel(plugin, file, model);
-	}
-	await updateSettingsCache(plugin, state, tableId, viewModesToUpdate);
 };

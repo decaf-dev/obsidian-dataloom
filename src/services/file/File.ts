@@ -1,6 +1,6 @@
 import { getFilePathExtension } from "./utils";
 
-export default class FileOperations {
+export default class File {
 	static async createObsidianFile(
 		filePath: string,
 		data: string
