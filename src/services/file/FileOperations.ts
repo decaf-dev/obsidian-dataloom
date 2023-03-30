@@ -4,15 +4,19 @@ export default class FileOperations {
 	static async createObsidianFile(
 		filePath: string,
 		data: string
-	): Promise<boolean | Error> {
+	): Promise<boolean> {
 		try {
 			await app.vault.create(filePath, data);
-			return true;
 		} catch (err) {
 			throw err;
 		}
+		return true;
 	}
-	static async createFile(filePath: string, data: string, numExisting = 0) {
+	static async createFile(
+		filePath: string,
+		data: string,
+		numExisting = 0
+	): Promise<string> {
 		try {
 			const filePathExtension = getFilePathExtension(filePath);
 			if (filePathExtension == null)
@@ -20,14 +24,17 @@ export default class FileOperations {
 
 			const { pathWithoutExtension, extension } = filePathExtension;
 
-			const number = numExisting > 0 ? " " + (numExisting - 1) : "";
-			const updatedFilePath = pathWithoutExtension + number + extension;
+			const fileIteration =
+				numExisting > 0 ? " " + (numExisting - 1) : "";
+			const updatedFilePath =
+				pathWithoutExtension + fileIteration + extension;
 			await this.createObsidianFile(updatedFilePath, data);
+			return updatedFilePath;
 		} catch (err: unknown) {
 			const error = err as Error;
 
 			if (error.message.includes("File already exists")) {
-				this.createFile(filePath, data, numExisting + 1);
+				return this.createFile(filePath, data, numExisting + 1);
 			} else {
 				throw err;
 			}

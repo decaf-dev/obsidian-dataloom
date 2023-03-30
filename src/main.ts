@@ -63,15 +63,13 @@ export default class NltPlugin extends Plugin {
 		this.registerExtensions([TABLE_EXTENSION], NOTION_LIKE_TABLES_VIEW);
 
 		this.addRibbonIcon("table", "Create a Notion-Like table", async () => {
-			await JsonIO.createNotionLikeTableFile();
-			await this.app.workspace.getLeaf(false).setViewState({
+			const filePath = await JsonIO.createNotionLikeTableFile();
+			//Open file in a new tab and set it to active
+			await app.workspace.getLeaf(true).setViewState({
 				type: NOTION_LIKE_TABLES_VIEW,
 				active: true,
+				state: { file: filePath },
 			});
-
-			this.app.workspace.revealLeaf(
-				this.app.workspace.getLeavesOfType(NOTION_LIKE_TABLES_VIEW)[0]
-			);
 		});
 
 		this.addSettingTab(new NltSettingsTab(this.app, this));

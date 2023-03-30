@@ -10,9 +10,13 @@ describe("createFile", () => {
 			fileData: '{"key": "value"}',
 		};
 
-		await FileOperations.createFile(testData.filePath, testData.fileData);
+		const filePath = await FileOperations.createFile(
+			testData.filePath,
+			testData.fileData
+		);
 		expect(mock).toBeCalledTimes(1);
 		expect(mock).toHaveBeenCalledWith(testData.filePath, testData.fileData);
+		expect(filePath).toEqual(testData.filePath);
 		mock.mockRestore();
 	});
 
@@ -29,12 +33,16 @@ describe("createFile", () => {
 			fileData: '{"key": "value"}',
 		};
 
-		await FileOperations.createFile(testData.filePath, testData.fileData);
+		const filePath = await FileOperations.createFile(
+			testData.filePath,
+			testData.fileData
+		);
 		expect(mock).toBeCalledTimes(2);
 		expect(mock).toHaveBeenLastCalledWith(
 			testData.filePath2,
 			testData.fileData
 		);
+		expect(filePath).toEqual(testData.filePath2);
 		mock.mockRestore();
 	});
 });
