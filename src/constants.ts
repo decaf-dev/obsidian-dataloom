@@ -11,4 +11,4 @@ export const COLOR: { [color: string]: string } = {
 	RED: "red",
 };
 
-export const CURRENT_PLUGIN_VERSION = 505;
+export const CURRENT_PLUGIN_VERSION = 600;

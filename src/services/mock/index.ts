@@ -1,3 +1,4 @@
+import { CURRENT_PLUGIN_VERSION } from "src/constants";
 import StateFactory from "../tableState/StateFactory";
 import { TableState } from "../tableState/types";
 
@@ -26,6 +27,6 @@ export const mockTableState = (
 			columns,
 			cells,
 		},
-		pluginVersion: 1,
+		pluginVersion: CURRENT_PLUGIN_VERSION,
 	};
 };
