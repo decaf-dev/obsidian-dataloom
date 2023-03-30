@@ -25,10 +25,8 @@ import { usePositionRef } from "src/services/hooks";
 interface Props {
 	columnType: string;
 	cellId: string;
-	rowId: string;
 	columnId: string;
 	markdown: string;
-	html: string;
 	width: string;
 	tags: Tag[];
 	shouldWrapOverflow: boolean;
@@ -54,9 +52,7 @@ interface Props {
 export default function EditableTd({
 	cellId,
 	columnId,
-	rowId,
 	markdown,
-	html,
 	columnType,
 	tags,
 	width,
@@ -152,7 +148,7 @@ export default function EditableTd({
 			case CellType.TEXT:
 				return (
 					<TextCell
-						content={html}
+						markdown={markdown}
 						shouldWrapOverflow={shouldWrapOverflow}
 						useAutoWidth={useAutoWidth}
 					/>
@@ -160,7 +156,7 @@ export default function EditableTd({
 			case CellType.NUMBER:
 				return (
 					<NumberCell
-						content={html}
+						content={markdown}
 						shouldWrapOverflow={shouldWrapOverflow}
 						useAutoWidth={useAutoWidth}
 					/>
@@ -173,7 +169,7 @@ export default function EditableTd({
 					return (
 						<TagCell
 							isDarkMode={isDarkMode}
-							html={currentTag.html}
+							markdown={currentTag.markdown}
 							color={currentTag.color}
 						/>
 					);
@@ -186,15 +182,19 @@ export default function EditableTd({
 					t.cells.find((c) => c == cellId)
 				);
 				return (
-					<MultiTagCell isDarkMode={isDarkMode} tags={filteredTags} />
+					<MultiTagCell
+						isDarkMode={isDarkMode}
+						markdown={markdown}
+						tags={filteredTags}
+					/>
 				);
 			}
 			case CellType.DATE:
-				return <DateCell content={html} />;
+				return <DateCell content={markdown} />;
 			case CellType.CHECKBOX:
 				return (
 					<CheckboxCell
-						content={html}
+						content={markdown}
 						onCheckboxChange={handleCheckboxChange}
 					/>
 				);

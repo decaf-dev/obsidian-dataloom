@@ -14,15 +14,6 @@ export default class MigrationModal extends Modal {
 	}
 
 	private async generateCodeblock(): Promise<string | null> {
-		// const tableId = randomTableId();
-		// const codeblock = generateNLTCodeBlock(tableId);
-		// const table = parseTableFromMarkdown(this.markdown);
-		// if (table.numColumns < 1 || table.numRows < 1) {
-		// 	return null;
-		// }
-		// const { file } = await findTableFile(this.plugin, tableId);
-		// const model = parseTableModelFromParsedTable(table);
-		// await serializeTableModel(this.plugin, file, model);
 		return "";
 	}
 

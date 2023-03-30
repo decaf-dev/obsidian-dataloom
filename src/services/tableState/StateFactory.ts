@@ -1,5 +1,4 @@
 import { randomUUID } from "crypto";
-import { markdownToHtml } from "../io/deserialize";
 import { randomColor } from "../random";
 import { SortDir } from "../sort/types";
 import { Cell, CellType, Column, Row, Tag } from "./types";
@@ -34,7 +33,6 @@ export default class StateFactory {
 			columnId,
 			rowId,
 			markdown: "",
-			html: "",
 			isHeader,
 		};
 	}
@@ -47,7 +45,6 @@ export default class StateFactory {
 		return {
 			id: randomUUID(),
 			markdown: markdown,
-			html: markdownToHtml(markdown),
 			color,
 			cells: [cellId],
 		};

@@ -306,7 +306,6 @@ export default function App({ initialState, onSaveTableState }: Props) {
 		// 			columnId: newColId,
 		// 			rowId: model.rowIds[i],
 		// 			markdown: i === 0 ? "New Column" : "",
-		// 			html: i === 0 ? "New Column" : "",
 		// 			isHeader: i === 0,
 		// 		});
 		// 	}
@@ -409,7 +408,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 									cell.columnId === columnId && cell.isHeader
 							);
 							if (!cell) throw Error("Cell not found");
-							const { id: cellId, markdown, html } = cell;
+							const { id: cellId, markdown } = cell;
 							return {
 								id: columnId,
 								component: (
@@ -425,7 +424,6 @@ export default function App({ initialState, onSaveTableState }: Props) {
 										shouldWrapOverflow={shouldWrapOverflow}
 										useAutoWidth={useAutoWidth}
 										markdown={markdown}
-										html={html}
 										type={type}
 										sortDir={sortDir}
 										onSortSelect={handleHeaderSortSelect}
@@ -497,21 +495,16 @@ export default function App({ initialState, onSaveTableState }: Props) {
 												shouldWrapOverflow,
 												tags,
 											} = column;
-											const {
-												id: cellId,
-												markdown,
-												html,
-											} = cell;
+											const { id: cellId, markdown } =
+												cell;
 
 											return (
 												<EditableTd
 													key={cellId}
 													cellId={cellId}
 													tags={tags}
-													rowId={cell.rowId}
 													columnId={cell.columnId}
 													markdown={markdown}
-													html={html}
 													columnType={type}
 													shouldWrapOverflow={
 														shouldWrapOverflow

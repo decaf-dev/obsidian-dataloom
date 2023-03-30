@@ -1,5 +1,4 @@
 import { useEffect, useRef } from "react";
-import { replaceUnescapedPipes } from "src/services/io/utils";
 
 import "./styles.css";
 
@@ -29,7 +28,6 @@ export default function TextCellEdit({ content, onInputChange }: Props) {
 
 	function handleTextareaChange(value: string) {
 		value = value.replace("\n", "");
-		value = replaceUnescapedPipes(value);
 		onInputChange(value);
 	}
 

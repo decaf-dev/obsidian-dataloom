@@ -1,4 +1,3 @@
-import { markdownToHtml } from "../io/deserialize";
 import { TableState } from "./types";
 
 export const updateCell = (
@@ -15,7 +14,6 @@ export const updateCell = (
 					return {
 						...cell,
 						markdown,
-						html: markdownToHtml(markdown),
 					};
 				}
 				return cell;

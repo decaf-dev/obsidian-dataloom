@@ -1,4 +1,3 @@
-import parse from "html-react-parser";
 import { IconType } from "src/services/icon/types";
 
 import { findColorClass } from "src/services/color";
@@ -11,7 +10,7 @@ import Stack from "../Stack";
 interface Props {
 	isDarkMode: boolean;
 	id?: string;
-	html: string;
+	markdown: string;
 	color: string;
 	showRemove?: boolean;
 	onRemoveClick?: (tagId: string) => void;
@@ -22,7 +21,7 @@ export default function Tag({
 	isDarkMode,
 	id,
 	color,
-	html,
+	markdown,
 	showRemove,
 	onRemoveClick,
 }: Props) {
@@ -35,10 +34,12 @@ export default function Tag({
 		);
 	}
 
+	//TODO add
+	markdown;
 	return (
 		<div className={tagClass}>
 			<Stack spacing="sm">
-				<div className="NLT__tag-content">{parse(html)}</div>
+				<div className="NLT__tag-content"></div>
 				{showRemove && (
 					<Button
 						icon={<Icon variant="sm" icon={IconType.CLOSE} />}

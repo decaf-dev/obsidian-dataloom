@@ -15,7 +15,7 @@ import { ColumnIdError } from "src/services/tableState/error";
 
 interface SortBubbleProps {
 	sortDir: SortDir;
-	content: string;
+	markdown: string;
 	isDarkMode: boolean;
 	onRemoveClick: () => void;
 }
@@ -23,9 +23,10 @@ interface SortBubbleProps {
 const SortBubble = ({
 	isDarkMode,
 	sortDir,
-	content,
+	markdown,
 	onRemoveClick,
 }: SortBubbleProps) => {
+	//TODO markdown should be html?
 	const color = findColorClass(isDarkMode, "blue");
 	let className = "NLT__sort-bubble " + color;
 	return (
@@ -36,7 +37,7 @@ const SortBubble = ({
 				) : (
 					<Icon icon={IconType.ARROW_DOWNWARD} />
 				)}
-				<span>{content}</span>
+				<span>{markdown}</span>
 				<Button
 					icon={<Icon icon={IconType.CLOSE} />}
 					onClick={onRemoveClick}
@@ -47,7 +48,7 @@ const SortBubble = ({
 };
 
 interface SortButtonListProps {
-	bubbles: { sortDir: SortDir; content: string; columnId: string }[];
+	bubbles: { sortDir: SortDir; markdown: string; columnId: string }[];
 	onRemoveClick: (columnId: string) => void;
 }
 
@@ -60,7 +61,7 @@ const SortBubbleList = ({ bubbles, onRemoveClick }: SortButtonListProps) => {
 					isDarkMode={isDarkMode}
 					key={i}
 					sortDir={bubble.sortDir}
-					content={bubble.content}
+					markdown={bubble.markdown}
 					onRemoveClick={() => onRemoveClick(bubble.columnId)}
 				/>
 			))}
@@ -88,7 +89,7 @@ export default function OptionBar({ model, onSortRemoveClick }: Props) {
 				if (!column) throw new ColumnIdError(columnId);
 				return {
 					columnId: c.columnId,
-					content: c.html,
+					markdown: c.markdown,
 					sortDir: column.sortDir,
 				};
 			});

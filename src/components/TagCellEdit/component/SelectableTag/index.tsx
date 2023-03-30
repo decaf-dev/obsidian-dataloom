@@ -1,10 +1,7 @@
-import parse from "html-react-parser";
-
 import { findColorClass } from "src/services/color";
 
 import TagColorMenu from "src/components/TagColorMenu";
 import { usePositionRef } from "src/services/hooks";
-import { numToPx } from "src/services/string/conversion";
 
 import { IconType } from "src/services/icon/types";
 import { MenuLevel } from "src/services/menu/types";
@@ -23,7 +20,7 @@ import Icon from "src/components/Icon";
 interface Props {
 	isDarkMode: boolean;
 	id: string;
-	html: string;
+	markdown: string;
 	color: string;
 	onClick: (tagId: string) => void;
 	onColorChange: (tagId: string, color: string) => void;
@@ -32,7 +29,7 @@ interface Props {
 export default function SelectableTag({
 	isDarkMode,
 	id,
-	html,
+	markdown,
 	color,
 	onClick,
 	onColorChange,
@@ -67,7 +64,7 @@ export default function SelectableTag({
 				onColorClick={(color) => handleColorChange(color)}
 			/>
 			<div className={tagClass}>
-				<div className="NLT__tag-content">{parse(html)}</div>
+				<div className="NLT__tag-content">{markdown}</div>
 			</div>
 			<Button
 				icon={<Icon icon={IconType.MORE_HORIZ} />}

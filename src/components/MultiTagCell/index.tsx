@@ -8,8 +8,9 @@ import "./styles.css";
 interface Props {
 	isDarkMode: boolean;
 	tags: TagType[];
+	markdown: string;
 }
-export default function MultiTagCell({ isDarkMode, tags }: Props) {
+export default function MultiTagCell({ isDarkMode, markdown, tags }: Props) {
 	return (
 		<div className="NLT__multi-tag-cell">
 			<Wrap>
@@ -17,7 +18,7 @@ export default function MultiTagCell({ isDarkMode, tags }: Props) {
 					<Tag
 						key={tag.id}
 						isDarkMode={isDarkMode}
-						html={tag.html}
+						markdown={markdown}
 						color={tag.color}
 					/>
 				))}

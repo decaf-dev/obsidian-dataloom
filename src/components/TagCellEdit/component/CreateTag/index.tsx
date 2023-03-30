@@ -4,16 +4,14 @@ import "./styles.css";
 
 interface Props {
 	isDarkMode: boolean;
-	html: string;
 	markdown: string;
 	color: string;
-	onAddTag: (markdown: string, html: string, color: string) => void;
+	onAddTag: (markdown: string, color: string) => void;
 }
 
 export default function CreateTag({
 	isDarkMode,
 	markdown,
-	html,
 	color,
 	onAddTag,
 }: Props) {
@@ -21,11 +19,11 @@ export default function CreateTag({
 		<div
 			className="NLT__create-tag NLT__selectable"
 			onClick={() => {
-				onAddTag(markdown, html, color);
+				onAddTag(markdown, color);
 			}}
 		>
 			<div>Create&nbsp;</div>
-			<Tag isDarkMode={isDarkMode} html={html} color={color} />
+			<Tag isDarkMode={isDarkMode} markdown={markdown} color={color} />
 		</div>
 	);
 }

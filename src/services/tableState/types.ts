@@ -19,7 +19,6 @@ export interface Cell {
 	columnId: string;
 	rowId: string;
 	markdown: string;
-	html: string;
 	isHeader: boolean;
 }
 
@@ -31,7 +30,6 @@ export interface TagCellReference {
 export interface Tag {
 	id: string;
 	markdown: string;
-	html: string;
 	color: string;
 	cells: string[];
 }

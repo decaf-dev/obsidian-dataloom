@@ -6,7 +6,6 @@ import CreateTag from "./component/CreateTag";
 import { Tag as TagType } from "../../services/tableState/types";
 
 import { randomColor } from "src/services/random";
-import { markdownToHtml } from "src/services/io/deserialize";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 import { closeTopLevelMenu } from "src/services/menu/menuSlice";
 import Wrap from "src/components/Wrap";
@@ -43,7 +42,7 @@ const MenuHeader = ({
 							key={tag.id}
 							id={tag.id}
 							color={tag.color}
-							html={tag.html}
+							markdown={tag.markdown}
 							showRemove={true}
 							onRemoveClick={(tagId) => onRemoveTag(tagId)}
 						/>
@@ -65,7 +64,7 @@ interface MenuBodyProps {
 	tags: TagType[];
 	inputText: string;
 	generatedColor: string;
-	onAddTag: (markdown: string, html: string, color: string) => void;
+	onAddTag: (markdown: string, color: string) => void;
 	onTagClick: (tagId: string) => void;
 	onColorChange: (tagId: string, color: string) => void;
 }
@@ -97,7 +96,6 @@ const MenuBody = ({
 						key="create-tag"
 						isDarkMode={isDarkMode}
 						markdown={inputText}
-						html={markdownToHtml(inputText)}
 						color={generatedColor}
 						onAddTag={onAddTag}
 					/>
@@ -108,7 +106,7 @@ const MenuBody = ({
 						key={tag.id}
 						id={tag.id}
 						color={tag.color}
-						html={tag.html}
+						markdown={tag.markdown}
 						onColorChange={onColorChange}
 						onClick={onTagClick}
 					/>

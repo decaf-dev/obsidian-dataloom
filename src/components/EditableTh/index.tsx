@@ -1,6 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
-
-import parse from "html-react-parser";
+import React, { useRef } from "react";
 
 import HeaderMenu from "../HeaderMenu";
 import { CSS_MEASUREMENT_PIXEL_REGEX } from "src/services/string/regex";
@@ -27,7 +25,6 @@ interface Props {
 	width: string;
 	numColumns: number;
 	markdown: string;
-	html: string;
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
 	sortDir: SortDir;
@@ -49,7 +46,6 @@ export default function EditableTh({
 	columnId,
 	width,
 	markdown,
-	html,
 	useAutoWidth,
 	shouldWrapOverflow,
 	type,
@@ -74,7 +70,6 @@ export default function EditableTh({
 	const { positionUpdateTime } = useAppSelector((state) => state.menu);
 	const { position, ref: positionRef } = usePositionRef([
 		markdown,
-		html,
 		width,
 		useAutoWidth,
 		shouldWrapOverflow,
@@ -167,7 +162,7 @@ export default function EditableTh({
 					onWrapOverflowToggle={onWrapOverflowToggle}
 					onNameChange={onNameChange}
 				/>
-				<div className="NLT__th-content">{parse(html)}</div>
+				<div className="NLT__th-content">{markdown}</div>
 				<div className="NLT__th-resize-container">
 					{!useAutoWidth && (
 						<div
