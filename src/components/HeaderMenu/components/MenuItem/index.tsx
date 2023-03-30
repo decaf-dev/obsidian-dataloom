@@ -3,7 +3,7 @@ import Stack from "src/components/Stack";
 import { IconType } from "src/services/icon/types";
 
 interface Props {
-	icon?: IconType | null;
+	icon?: IconType;
 	content: string;
 	onClick: any;
 	selected?: boolean;
@@ -20,7 +20,7 @@ export default function MenuItem({
 	return (
 		<li className={className} onClick={() => onClick()}>
 			<Stack>
-				{icon !== null && <Icon icon={icon} />}
+				{icon && <Icon icon={icon} />}
 				<p className="NLT__p">{content}</p>
 			</Stack>
 		</li>

@@ -1,81 +1,44 @@
+import { ColumnIdError, TagIdError } from "./error";
+import StateFactory from "./StateFactory";
 import { TableState } from "./types";
 
 export const addNewTag = (
 	prevState: TableState,
 	cellId: string,
 	columnId: string,
-	rowId: string,
 	markdown: string,
-	html: string,
 	color: string,
 	canAddMultiple: boolean
 ) => {
-	const tags = [...prevState.settings.columns[columnId].tags];
+	const { columns } = prevState.model;
+	const column = columns.find((column) => column.id === columnId);
+	if (!column) throw new ColumnIdError(columnId);
+
+	const tagsCopy = [...column.tags];
 
 	if (!canAddMultiple) {
-		const tag = tags.find((t) =>
-			t.cells.find((c) => c.columnId === columnId && c.rowId === rowId)
-		);
+		const tag = tagsCopy.find((t) => t.cells.find((c) => c === cellId));
 		//If there was already a tag selected for this cell
 		if (tag) {
-			const arr = tag.cells.filter(
-				(c) => c.columnId !== columnId || c.rowId !== rowId
-			);
+			const arr = tag.cells.filter((c) => c !== cellId);
 			tag.cells = arr;
 		}
 	}
 
-	tags.push({
-		id: randomTagId(),
-		markdown,
-		html,
-		color,
-		cells: [
-			{
-				rowId,
-				columnId,
-			},
-		],
-	});
-
+	tagsCopy.push(StateFactory.createTag(cellId, markdown, color));
 	return {
 		...prevState,
 		model: {
 			...prevState.model,
-			cells: prevState.model.cells.map((cell) => {
-				if (cell.id === cellId) {
-					let newMarkdown = "";
-					if (canAddMultiple && cell.markdown !== "") {
-						newMarkdown = cell.markdown + "," + markdown;
-					} else {
-						newMarkdown = markdown;
-					}
-
-					let newHtml = "";
-					if (canAddMultiple && cell.html !== "") {
-						newHtml = cell.html + "," + html;
-					} else {
-						newHtml = html;
-					}
-
+			columns: columns.map((column) => {
+				if (column.id === columnId) {
 					return {
-						...cell,
-						markdown: newMarkdown,
-						html: newHtml,
+						...column,
+						tags: tagsCopy,
 					};
 				}
-				return cell;
+				return column;
 			}),
-		},
-		settings: {
-			...prevState.settings,
-			columns: {
-				...prevState.settings.columns,
-				[columnId]: {
-					...prevState.settings.columns[columnId],
-					tags,
-				},
-			},
 		},
 	};
 };
@@ -84,45 +47,33 @@ export const removeTag = (
 	prevState: TableState,
 	cellId: string,
 	columnId: string,
-	rowId: string,
 	tagId: string
 ) => {
-	const tags = [...prevState.settings.columns[columnId].tags];
-	const tag = tags.find((t) => t.id === tagId);
-	const arr = tag.cells.filter(
-		(c) => c.columnId !== columnId || c.rowId !== rowId
-	);
+	const { columns } = prevState.model;
+	const column = columns.find((column) => column.id === columnId);
+	if (!column) throw new ColumnIdError(columnId);
+
+	const tagsCopy = [...column.tags];
+	const tag = tagsCopy.find((t) => t.id === tagId);
+
+	if (!tag) throw new TagIdError(tagId);
+
+	const arr = tag.cells.filter((c) => c !== cellId);
 	tag.cells = arr;
 
-	const assignedTags = tags.filter((tag) =>
-		tag.cells.find((c) => c.columnId === columnId && c.rowId === rowId)
-	);
-	const newMarkdown = assignedTags.map((t) => t.markdown).join(",");
-	const newHtml = assignedTags.map((t) => t.html).join(",");
 	return {
 		...prevState,
 		model: {
 			...prevState.model,
-			cells: prevState.model.cells.map((cell) => {
-				if (cell.id === cellId) {
+			columns: columns.map((column) => {
+				if (column.id === columnId) {
 					return {
-						...cell,
-						markdown: newMarkdown,
-						html: newHtml,
+						...column,
+						tags: tagsCopy,
 					};
 				}
-				return cell;
+				return column;
 			}),
-		},
-		settings: {
-			...prevState.settings,
-			columns: {
-				...prevState.settings.columns,
-				[columnId]: {
-					...prevState.settings.columns[columnId],
-					tags,
-				},
-			},
 		},
 	};
 };
@@ -131,57 +82,43 @@ export const addExistingTag = (
 	prevState: TableState,
 	cellId: string,
 	columnId: string,
-	rowId: string,
 	tagId: string,
 	canAddMultiple: boolean
 ): TableState => {
 	const { columns, cells } = prevState.model;
 	const column = columns.find((column) => column.id === columnId);
-	const { tags } = column;
+
+	if (!column) throw new ColumnIdError(columnId);
+
+	const tagsCopy = [...column.tags];
 
 	if (!canAddMultiple) {
-		const tag = tags.find((t) => t.cells.find((c) => c == cellId));
+		const tag = tagsCopy.find((t) => t.cells.find((c) => c == cellId));
 		if (tag) {
 			//If we click on the same cell, then return
 			if (tag.id === tagId) return prevState;
-			const arr = tag.cells.filter(
-				(c) => c.columnId !== columnId || c.rowId !== rowId
-			);
+			const arr = tag.cells.filter((c) => c !== cellId);
 			tag.cells = arr;
 		}
 	}
 
-	const tag = tags.find((t) => t.id === tagId);
-	const index = tags.indexOf(tag);
-	tags[index].cells.push(cellId);
+	const tag = tagsCopy.find((t) => t.id === tagId);
+	if (!tag) throw new TagIdError(tagId);
+	const index = tagsCopy.indexOf(tag);
+	tagsCopy[index].cells.push(cellId);
 
 	return {
 		...prevState,
 		model: {
 			...prevState.model,
-			cells: cells.map((cell) => {
-				if (cell.id === cellId) {
-					let newMarkdown = "";
-					if (canAddMultiple && cell.markdown !== "") {
-						newMarkdown = cell.markdown + "," + tag.markdown;
-					} else {
-						newMarkdown = tag.markdown;
-					}
-
-					let newHtml = "";
-					if (canAddMultiple && cell.html !== "") {
-						newHtml = cell.html + "," + tag.html;
-					} else {
-						newHtml = tag.html;
-					}
-
+			columns: columns.map((column) => {
+				if (column.id === columnId) {
 					return {
-						...cell,
-						markdown: newMarkdown,
-						html: newHtml,
+						...column,
+						tags: tagsCopy,
 					};
 				}
-				return cell;
+				return column;
 			}),
 		},
 	};

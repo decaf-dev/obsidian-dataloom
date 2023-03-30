@@ -54,7 +54,7 @@ interface SortMenuItem {
 	[name: string]: {
 		name: SortDir;
 		content: string;
-		icon: IconType | null;
+		icon: IconType;
 	};
 }
 

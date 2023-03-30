@@ -76,11 +76,7 @@ export default class NLTPlugin extends Plugin {
 
 	//TODO validate settings
 	validateSettings() {
-		// const { tableFolder } = plugin.settings;
-		// if (tableFolder.match(SLASH_REGEX))
-		// 	throw new Error(
-		// 		"Table definition folder cannot include forward or back slashes. Please change it in the plugin settings."
-		// 	);
+		const {} = this.settings;
 	}
 
 	private checkForDebug() {

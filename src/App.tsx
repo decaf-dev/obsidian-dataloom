@@ -33,6 +33,7 @@ import { randomUUID } from "crypto";
 import { updateCell } from "./services/tableState/cell";
 import { addRow, deleteRow } from "./services/tableState/row";
 import { useDidMountEffect } from "./services/hooks";
+import { ColumnIdError } from "./services/tableState/error";
 
 const FILE_NAME = "App";
 
@@ -182,18 +183,14 @@ export default function App({ initialState, onSaveTableState }: Props) {
 	function handleAddTag(
 		cellId: string,
 		columnId: string,
-		rowId: string,
 		markdown: string,
-		html: string,
 		color: string,
 		canAddMultiple: boolean
 	) {
 		logFunc(shouldDebug, FILE_NAME, "handleAddTag", {
 			cellId,
 			columnId,
-			rowId,
 			markdown,
-			html,
 			color,
 			canAddMultiple,
 		});
@@ -202,9 +199,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 				prevState,
 				cellId,
 				columnId,
-				rowId,
 				markdown,
-				html,
 				color,
 				canAddMultiple
 			)
@@ -214,43 +209,32 @@ export default function App({ initialState, onSaveTableState }: Props) {
 	function handleTagClick(
 		cellId: string,
 		columnId: string,
-		rowId: string,
 		tagId: string,
 		canAddMultiple: boolean
 	) {
 		logFunc(shouldDebug, FILE_NAME, "handleTagClick", {
 			cellId,
 			columnId,
-			rowId,
 			tagId,
 			canAddMultiple,
 		});
 		setTableState((prevState) =>
-			addExistingTag(
-				prevState,
-				cellId,
-				columnId,
-				rowId,
-				tagId,
-				canAddMultiple
-			)
+			addExistingTag(prevState, cellId, columnId, tagId, canAddMultiple)
 		);
 	}
 
 	function handleRemoveTagClick(
 		cellId: string,
 		columnId: string,
-		rowId: string,
 		tagId: string
 	) {
 		logFunc(shouldDebug, FILE_NAME, "handleRemoveTagClick", {
 			cellId,
 			columnId,
-			rowId,
 			tagId,
 		});
 		setTableState((prevState) =>
-			removeTag(prevState, cellId, columnId, rowId, tagId)
+			removeTag(prevState, cellId, columnId, tagId)
 		);
 	}
 
@@ -503,8 +487,8 @@ export default function App({ initialState, onSaveTableState }: Props) {
 													column.id == cell.columnId
 											);
 											if (!column)
-												throw new Error(
-													"Column not found"
+												throw new ColumnIdError(
+													cell.columnId
 												);
 											const {
 												width,

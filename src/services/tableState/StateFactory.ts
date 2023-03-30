@@ -39,13 +39,17 @@ export default class StateFactory {
 		};
 	}
 
-	static createTag(cell: Cell, markdown: string): Tag {
+	static createTag(
+		cellId: string,
+		markdown: string,
+		color = randomColor()
+	): Tag {
 		return {
 			id: randomUUID(),
 			markdown: markdown,
 			html: markdownToHtml(markdown),
-			color: randomColor(),
-			cells: [cell.id],
+			color,
+			cells: [cellId],
 		};
 	}
 }

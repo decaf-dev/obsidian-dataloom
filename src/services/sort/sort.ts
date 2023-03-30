@@ -1,34 +1,28 @@
 import { SortDir } from "./types";
-import {
-	ColumnSettings,
-	TableModel,
-	TableSettings,
-	TableState,
-	Cell,
-} from "../tableState/types";
+import { TableState, Cell, Row } from "../tableState/types";
 import { sortCells } from "../tableState/utils";
 
 const sortByDir = (
 	columnId: string,
 	sortDir: SortDir,
-	rowIds: string[],
+	rows: Row[],
 	cells: Cell[]
 ) => {
-	const rowsCopy = [...rowIds];
+	const rowsCopy = [...rows];
 	rowsCopy.sort((a, b) => {
 		const cellA = cells.find(
-			(c) => c.columnId === columnId && c.rowId === a
+			(c) => c.columnId === columnId && c.rowId === a.id
 		);
 		const cellB = cells.find(
-			(c) => c.columnId === columnId && c.rowId === b
+			(c) => c.columnId === columnId && c.rowId === b.id
 		);
 
-		const markdownA = cellA.markdown;
-		const markdownB = cellB.markdown;
+		const markdownA = cellA?.markdown || "";
+		const markdownB = cellB?.markdown || "";
 
 		//Force empty cells to the bottom
-		if (cellA.isHeader) return -1;
-		if (cellB.isHeader) return 1;
+		if (cellA?.isHeader) return -1;
+		if (cellB?.isHeader) return 1;
 		if (markdownA === "" && markdownB !== "") return 1;
 		if (markdownA !== "" && markdownB === "") return -1;
 		if (markdownA === "" && markdownB === "") return 0;
@@ -37,47 +31,46 @@ const sortByDir = (
 			return markdownA.localeCompare(markdownB);
 		} else if (sortDir === SortDir.DESC) {
 			return markdownB.localeCompare(markdownA);
+		} else {
+			return 0;
 		}
 	});
 	return rowsCopy;
 };
 
-const sortByCreationDate = (settings: TableSettings, rowIds: string[]) => {
-	const rowsCopy = [...rowIds];
+const sortByCreationDate = (rows: Row[]) => {
+	const rowsCopy = [...rows];
 	rowsCopy.sort((a, b) => {
-		const rowSettingsA = settings.rows[a];
-		const rowSettingsB = settings.rows[b];
-		return rowSettingsA.creationDate - rowSettingsB.creationDate;
+		return a.creationDate - b.creationDate;
 	});
 	return rowsCopy;
 };
 
-export const sortRows = (prevState: TableState): TableModel => {
-	let headerSettings: ColumnSettings | null = null;
-	let columnId = "";
-
-	const { settings, model } = prevState;
-
-	for (let i = 0; i < model.columnIds.length; i++) {
-		const cId = model.columnIds[i];
-		if (settings.columns[cId].sortDir !== SortDir.NONE) {
-			headerSettings = settings.columns[cId];
-			columnId = cId;
-		}
-	}
-
-	if (!headerSettings)
+export const sortRows = (prevState: TableState): TableState => {
+	const { columns, rows, cells } = prevState.model;
+	const sortedColumn = columns.find(
+		(columns) => columns.sortDir !== SortDir.NONE
+	);
+	if (sortedColumn) {
 		return {
-			...model,
-			rowIds: sortByCreationDate(settings, model.rowIds),
+			...prevState,
+			model: {
+				...prevState.model,
+				rows: sortByDir(
+					sortedColumn.id,
+					sortedColumn.sortDir,
+					rows,
+					cells
+				),
+				cells: sortCells(columns, rows, cells),
+			},
 		};
-
-	const rowsCopy = [...model.rowIds];
-	const { sortDir } = headerSettings;
-
+	}
 	return {
-		rowIds: sortByDir(columnId, sortDir, model.rowIds, model.cells),
-		columnIds: model.columnIds,
-		cells: sortCells(rowsCopy, model.columnIds, model.cells),
+		...prevState,
+		model: {
+			...prevState.model,
+			rows: sortByCreationDate(rows),
+		},
 	};
 };

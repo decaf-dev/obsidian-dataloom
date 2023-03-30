@@ -29,6 +29,12 @@ export default function Tag({
 	let tagClass = "NLT__tag";
 	tagClass += " " + findColorClass(isDarkMode, color);
 
+	if (onRemoveClick && id == undefined) {
+		throw new Error(
+			"An id must defined when the onRemoveClick handler is present."
+		);
+	}
+
 	return (
 		<div className={tagClass}>
 			<Stack spacing="sm">
@@ -39,7 +45,7 @@ export default function Tag({
 						isDarker
 						onClick={(e) => {
 							e.stopPropagation();
-							onRemoveClick(id);
+							onRemoveClick && onRemoveClick(id!);
 						}}
 					/>
 				)}

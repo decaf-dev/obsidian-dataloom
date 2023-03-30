@@ -1,4 +1,5 @@
 import { SortDir } from "../sort/types";
+import { ColumnIdError } from "./error";
 import StateFactory from "./StateFactory";
 import { CellType, Column, TableState } from "./types";
 import { sortCells } from "./utils";
@@ -128,6 +129,8 @@ export const changeColumnType = (
 ) => {
 	const { columns } = prevState.model;
 	const column = columns.find((column) => column.id === columnId);
+	if (!column) throw new ColumnIdError(columnId);
+
 	const { type: previousType } = column;
 
 	//If same type return
@@ -162,7 +165,7 @@ export const changeColumnType = (
 				if (found) {
 					const index = tagsCopy.indexOf(found);
 					//If we already have a reference to that tag
-					if (found.cells.find((id) => cell.id)) {
+					if (found.cells.find((id) => id === cell.id)) {
 						//And we allow only 1 selected tag, then remove the reference
 						if (i > 0 && newType === CellType.TAG) {
 							tagsCopy[index].cells = tagsCopy[
@@ -176,7 +179,7 @@ export const changeColumnType = (
 					return;
 				}
 
-				tagsCopy.push(StateFactory.createTag(cell, markdown));
+				tagsCopy.push(StateFactory.createTag(cell.id, markdown));
 			});
 		});
 	}

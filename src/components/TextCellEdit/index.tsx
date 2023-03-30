@@ -1,5 +1,4 @@
 import { useEffect, useRef } from "react";
-
 import { replaceUnescapedPipes } from "src/services/io/utils";
 
 import "./styles.css";
@@ -10,15 +9,17 @@ interface Props {
 }
 
 export default function TextCellEdit({ content, onInputChange }: Props) {
-	const inputRef = useRef<HTMLTextAreaElement>(null);
+	const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
 	function focusInput() {
-		inputRef.current.focus();
+		inputRef.current?.focus();
 	}
 
 	function setSelection(pos: number) {
-		inputRef.current.selectionStart = pos;
-		inputRef.current.selectionEnd = pos;
+		if (inputRef.current) {
+			inputRef.current.selectionStart = pos;
+			inputRef.current.selectionEnd = pos;
+		}
 	}
 
 	useEffect(() => {

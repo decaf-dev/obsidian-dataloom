@@ -30,7 +30,7 @@ export const useDidMountEffect = (func: (...rest: any) => any, deps: any[]) => {
 };
 
 export const usePositionRef = (deps: any[] = []) => {
-	const ref = useRef(null);
+	const ref = useRef<any | null>(null);
 	const [position, setPosition] = useState({
 		top: 0,
 		left: 0,
@@ -39,7 +39,7 @@ export const usePositionRef = (deps: any[] = []) => {
 	});
 
 	useEffect(() => {
-		const node = ref.current;
+		const node = ref.current as HTMLElement;
 		if (node) {
 			const { top, left } = node.getBoundingClientRect();
 			//We use offsetWidth, and offsetHeight instead of the width and height of the rectangle

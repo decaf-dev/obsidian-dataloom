@@ -1,4 +1,4 @@
-import React, { useEffect, useId, useRef, useState } from "react";
+import React from "react";
 import { Notice } from "obsidian";
 
 import TextCell from "../TextCell";
@@ -33,16 +33,10 @@ interface Props {
 	tags: Tag[];
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
-	onRemoveTagClick: (
-		cellId: string,
-		columnId: string,
-		rowId: string,
-		tagId: string
-	) => void;
+	onRemoveTagClick: (cellId: string, columnId: string, tagId: string) => void;
 	onTagClick: (
 		cellId: string,
 		columnId: string,
-		rowId: string,
 		tagId: string,
 		canAddMultiple: boolean
 	) => void;
@@ -50,9 +44,7 @@ interface Props {
 	onAddTag: (
 		cellId: string,
 		columnId: string,
-		rowId: string,
 		markdown: string,
-		html: string,
 		color: string,
 		canAddMultiple: boolean
 	) => void;
@@ -117,20 +109,18 @@ export default function EditableTd({
 		}
 	}
 
-	function handleAddTag(markdown: string, html: string, color: string) {
+	function handleAddTag(markdown: string, color: string) {
 		onAddTag(
 			cellId,
 			columnId,
-			rowId,
 			markdown,
-			html,
 			color,
 			columnType === CellType.MULTI_TAG
 		);
 	}
 
 	function handleRemoveTagClick(tagId: string) {
-		onRemoveTagClick(cellId, columnId, rowId, tagId);
+		onRemoveTagClick(cellId, columnId, tagId);
 	}
 
 	function handleColorChange(tagId: string, colorId: string) {
@@ -138,13 +128,7 @@ export default function EditableTd({
 	}
 
 	function handleTagClick(tagId: string) {
-		onTagClick(
-			cellId,
-			columnId,
-			rowId,
-			tagId,
-			columnType === CellType.MULTI_TAG
-		);
+		onTagClick(cellId, columnId, tagId, columnType === CellType.MULTI_TAG);
 	}
 
 	function handleTextInputChange(updatedMarkdown: string) {
@@ -183,9 +167,7 @@ export default function EditableTd({
 				);
 			case CellType.TAG: {
 				const currentTag = tags.find((t) =>
-					t.cells.find(
-						(c) => c.rowId === rowId && c.columnId === columnId
-					)
+					t.cells.find((c) => c === cellId)
 				);
 				if (currentTag) {
 					return (
@@ -201,9 +183,7 @@ export default function EditableTd({
 			}
 			case CellType.MULTI_TAG: {
 				const filteredTags = tags.filter((t) =>
-					t.cells.find(
-						(c) => c.rowId === rowId && c.columnId === columnId
-					)
+					t.cells.find((c) => c == cellId)
 				);
 				return (
 					<MultiTagCell isDarkMode={isDarkMode} tags={filteredTags} />
@@ -280,8 +260,7 @@ export default function EditableTd({
 								columnType === CellType.MULTI_TAG) && (
 								<TagCellEdit
 									tags={tags}
-									rowId={rowId}
-									columnId={columnId}
+									cellId={cellId}
 									onColorChange={handleColorChange}
 									onAddTag={handleAddTag}
 									onRemoveTag={handleRemoveTagClick}

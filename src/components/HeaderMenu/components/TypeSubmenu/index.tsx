@@ -21,7 +21,6 @@ export default function TypeSubmenu({
 			{TYPE_ITEMS.map((item) => (
 				<MenuItem
 					key={item.name}
-					icon={null}
 					content={item.content}
 					onClick={() => onTypeClick(item.type)}
 					selected={item.type === columnType}

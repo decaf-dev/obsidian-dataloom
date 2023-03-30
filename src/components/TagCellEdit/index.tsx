@@ -15,8 +15,7 @@ import "./styles.css";
 
 interface MenuHeaderProps {
 	isDarkMode: boolean;
-	rowId: string;
-	columnId: string;
+	cellId: string;
 	tags: TagType[];
 	inputText: string;
 	onInputTextChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -25,8 +24,7 @@ interface MenuHeaderProps {
 
 const MenuHeader = ({
 	isDarkMode,
-	rowId,
-	columnId,
+	cellId,
 	tags,
 	inputText,
 	onInputTextChange,
@@ -37,9 +35,7 @@ const MenuHeader = ({
 			<Wrap spacingX="sm" style={{ overflow: "hidden" }}>
 				{tags
 					.filter((tag: TagType) =>
-						tag.cells.find(
-							(c) => c.rowId === rowId && c.columnId === columnId
-						)
+						tag.cells.find((c) => c === cellId)
 					)
 					.map((tag: TagType) => (
 						<Tag
@@ -124,18 +120,16 @@ const MenuBody = ({
 
 interface Props {
 	tags: TagType[];
-	columnId: string;
-	rowId: string;
+	cellId: string;
 	onTagClick: (tagId: string) => void;
-	onAddTag: (markdown: string, html: string, color: string) => void;
+	onAddTag: (markdown: string, color: string) => void;
 	onRemoveTag: (tagId: string) => void;
 	onColorChange: (tagId: string, color: string) => void;
 }
 
 export default function TagCellEdit({
 	tags,
-	rowId,
-	columnId,
+	cellId,
 	onTagClick,
 	onAddTag,
 	onColorChange,
@@ -152,8 +146,8 @@ export default function TagCellEdit({
 		setInputText(e.target.value);
 	}
 
-	function handleAddTag(markdown: string, html: string, color: string) {
-		onAddTag(markdown, html, color);
+	function handleAddTag(markdown: string, color: string) {
+		onAddTag(markdown, color);
 		setInputText("");
 		dispatch(closeTopLevelMenu());
 	}
@@ -163,8 +157,7 @@ export default function TagCellEdit({
 			<div className="NLT__tag-menu-container">
 				<MenuHeader
 					isDarkMode={isDarkMode}
-					rowId={rowId}
-					columnId={columnId}
+					cellId={cellId}
 					inputText={inputText}
 					tags={tags}
 					onInputTextChange={handleInputTextChange}

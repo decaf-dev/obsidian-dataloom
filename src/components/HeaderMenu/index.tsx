@@ -94,7 +94,7 @@ export default function HeaderMenu({
 	onAutoWidthToggle,
 	onNameChange,
 }: Props) {
-	const [submenu, setSubmenu] = useState(null);
+	const [submenu, setSubmenu] = useState<SubmenuItem | null>(null);
 
 	function handleMoveColumnClick(columnId: string, moveRight: boolean) {
 		onMoveColumnClick(columnId, moveRight);

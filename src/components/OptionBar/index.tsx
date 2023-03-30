@@ -11,6 +11,7 @@ import Stack from "../Stack";
 import Button from "src/components/Button";
 
 import "./styles.css";
+import { ColumnIdError } from "src/services/tableState/error";
 
 interface SortBubbleProps {
 	sortDir: SortDir;
@@ -78,11 +79,13 @@ export default function OptionBar({ model, onSortRemoveClick }: Props) {
 			.filter((c) => {
 				const columnId = c.columnId;
 				const column = model.columns.find((c) => c.id == columnId);
+				if (!column) throw new ColumnIdError(columnId);
 				return column.sortDir !== SortDir.NONE;
 			})
 			.map((c) => {
 				const columnId = c.columnId;
 				const column = model.columns.find((c) => c.id == columnId);
+				if (!column) throw new ColumnIdError(columnId);
 				return {
 					columnId: c.columnId,
 					content: c.html,
