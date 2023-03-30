@@ -1,17 +1,16 @@
 import { Plugin, Editor, Notice, TFile, MarkdownViewModeType } from "obsidian";
 
-import NltSettingsTab from "./NltSettingsTab";
+import NLTSettingsTab from "./NLTSettingsTab";
 
 import { addRow } from "./services/table/row";
 import { addColumn } from "./services/table/column";
-import { serializeTable, updateSortTime } from "./services/io/serialize";
+import { updateSortTime } from "./services/io/serialize";
 import { generateNLTCodeBlock } from "./services/random";
 import {
 	closeAllMenus,
 	getTopLevelMenu,
 	closeTopLevelMenu,
 	timeSinceMenuOpen,
-	updateMenuPosition,
 } from "./services/menu/menuSlice";
 import { store } from "./services/redux/store";
 import { TableState } from "./services/table/types";
@@ -22,11 +21,10 @@ import MigrationModal from "./MigrationModal";
 import JsonIO, { TABLE_EXTENSION } from "./services/json/JsonIO";
 import { NLTView, NOTION_LIKE_TABLES_VIEW } from "./NLTView";
 
-export interface NltSettings {
+export interface NLTSettings {
 	data: {
 		[tableId: string]: TableState;
 	};
-	tableFolder: string;
 	viewModeSync: {
 		eventType: "update-state" | "sort-rows";
 		tableId: string | null;
@@ -36,9 +34,8 @@ export interface NltSettings {
 	shouldClear: boolean;
 }
 
-export const DEFAULT_SETTINGS: NltSettings = {
+export const DEFAULT_SETTINGS: NLTSettings = {
 	data: {},
-	tableFolder: "_notion-like-tables",
 	viewModeSync: {
 		eventType: "update-state",
 		tableId: null,
@@ -47,8 +44,8 @@ export const DEFAULT_SETTINGS: NltSettings = {
 	shouldClear: true,
 	shouldDebug: false,
 };
-export default class NltPlugin extends Plugin {
-	settings: NltSettings;
+export default class NLTPlugin extends Plugin {
+	settings: NLTSettings;
 	focusedTableId: string | null = null;
 	layoutChangeTime: number;
 
@@ -76,7 +73,7 @@ export default class NltPlugin extends Plugin {
 			}
 		);
 
-		this.addSettingTab(new NltSettingsTab(this.app, this));
+		this.addSettingTab(new NLTSettingsTab(this.app, this));
 		this.registerCommands();
 		this.registerEvents();
 

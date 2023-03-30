@@ -15,19 +15,19 @@ export default class NltSettingsTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		new Setting(containerEl)
-			.setName("Table definition folder")
-			.setDesc(
-				"The folder that contains the NLT table definition files. Do not include any slashes. e.g. '_notion-like-tables'"
-			)
-			.addText((cb) => {
-				cb.setValue(this.plugin.settings.tableFolder).onChange(
-					async (value) => {
-						this.plugin.settings.tableFolder = value;
-						await this.plugin.saveSettings();
-					}
-				);
-			});
+		// new Setting(containerEl)
+		// 	.setName("Table definition folder")
+		// 	.setDesc(
+		// 		"The folder that contains the NLT table definition files. Do not include any slashes. e.g. '_notion-like-tables'"
+		// 	)
+		// 	.addText((cb) => {
+		// 		cb.setValue(this.plugin.settings.tableFolder).onChange(
+		// 			async (value) => {
+		// 				this.plugin.settings.tableFolder = value;
+		// 				await this.plugin.saveSettings();
+		// 			}
+		// 		);
+		// 	});
 
 		new Setting(containerEl)
 			.setName("Debug mode")

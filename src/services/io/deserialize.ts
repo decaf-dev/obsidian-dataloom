@@ -253,11 +253,11 @@ export const findTableModel = async (
 };
 
 const validateSettings = (plugin: NltPlugin) => {
-	const { tableFolder } = plugin.settings;
-	if (tableFolder.match(SLASH_REGEX))
-		throw new Error(
-			"Table definition folder cannot include forward or back slashes. Please change it in the plugin settings."
-		);
+	// const { tableFolder } = plugin.settings;
+	// if (tableFolder.match(SLASH_REGEX))
+	// 	throw new Error(
+	// 		"Table definition folder cannot include forward or back slashes. Please change it in the plugin settings."
+	// 	);
 };
 
 export const deserializeTable = async (
