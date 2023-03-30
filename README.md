@@ -8,9 +8,17 @@ Notion-Like Tables is your premiere tool for creating and managing tabular data 
 
 ## Version 6.0.0
 
-After consideration, I have decided to continue development on this project.
+After careful consideration, I have decided to continue development on this project. I hope this plugin will continue to be of benefit to the Obsidian community.
 
-One of the main limitations of version 5 was that I was using the `MarkdownCodeBlockProcessor` to embed tables into markdown notes. This caused various preformance issues and was very difficult to maintain. I have opted to create my own dedicated window for this plugin, as well as a corresponding file extension. The `.table` extension will now be used, similar to how canvas uses `.canvas`. Data will now be loaded and saved directly into json instead of using the settings cache.
+One of the main limitations of version 5 was that I was using the `MarkdownCodeBlockProcessor` to embed tables directly into markdown notes. This caused various preformance issues with React and was very difficult to maintain.
+
+I have opted instead to create my own dedicated pane for this plugin. This goes against my original intention for the plugin, as I wanted to have the convenience of having a table directly inline with my notes. However, I think that the ease of programming will allow me to make more progress on this project.
+
+The plugin now uses its own file with the `.table` extension. This is similar to how canvas uses `.canvas` extension. Data will now be loaded and saved directly into JSON instead of using the settings cache.
+
+Going along with these architecture changes, most of the code has been overhauled - fixing various bugs that existed before.
+
+I am looking for people to help me to maintain the code. If you are interested please DM me on discord or add to the discussions in the repository.
 
 -   See: [Release 6.0.0](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/6.0.0) for more details.
 
