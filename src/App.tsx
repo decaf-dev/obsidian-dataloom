@@ -22,6 +22,7 @@ import {
 	addColumn,
 	changeColumnType,
 	deleteColumn,
+	insertColumn,
 	moveColumn,
 	sortOnColumn,
 	updateColumn,
@@ -263,47 +264,9 @@ export default function App({ initialState, onSaveTableState }: Props) {
 			columnId,
 			insertRight,
 		});
-		//TODO implement
-		// setTableState((prevState: TableState) => {
-		// 	const { model, settings } = prevState;
-		// 	const index = model.columnIds.indexOf(columnId);
-		// 	const insertIndex = insertRight ? index + 1 : index;
-
-		// 	const newColId = randomColumnId();
-		// 	const updatedColumnIds = [...model.columnIds];
-		// 	updatedColumnIds.splice(insertIndex, 0, newColId);
-
-		// 	let updatedCells = [...model.cells];
-
-		// 	for (let i = 0; i < model.rowIds.length; i++) {
-		// 		updatedCells.push({
-		// 			id: randomCellId(),
-		// 			columnId: newColId,
-		// 			rowId: model.rowIds[i],
-		// 			markdown: i === 0 ? "New Column" : "",
-		// 			isHeader: i === 0,
-		// 		});
-		// 	}
-
-		// 	updatedCells = sortCells(
-		// 		model.rowIds,
-		// 		updatedColumnIds,
-		// 		updatedCells
-		// 	);
-
-		// 	const settingsObj = { ...settings };
-		// 	settingsObj.columns[newColId] = { ...DEFAULT_COLUMN_SETTINGS };
-
-		// 	return {
-		// 		...prevState,
-		// 		model: {
-		// 			...model,
-		// 			columnIds: updatedColumnIds,
-		// 			cells: updatedCells,
-		// 		},
-		// 		settings: settingsObj,
-		// 	};
-		// });
+		setTableState((prevState) =>
+			insertColumn(prevState, columnId, insertRight)
+		);
 	}
 
 	function handleChangeColor(columnId: string, tagId: string, color: string) {
