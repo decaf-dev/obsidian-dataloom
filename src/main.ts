@@ -31,19 +31,9 @@ export default class NLTPlugin extends Plugin {
 		this.registerView(NOTION_LIKE_TABLES_VIEW, (leaf) => new NLTView(leaf));
 		this.registerExtensions([TABLE_EXTENSION], NOTION_LIKE_TABLES_VIEW);
 
-		this.addRibbonIcon(
-			"table",
-			"Create new Notion-Like table",
-			async () => {
-				const filePath = await TableFile.createNotionLikeTableFile();
-				//Open file in a new tab and set it to active
-				await app.workspace.getLeaf(true).setViewState({
-					type: NOTION_LIKE_TABLES_VIEW,
-					active: true,
-					state: { file: filePath },
-				});
-			}
-		);
+		this.addRibbonIcon("table", "Create Notion-Like table", async () => {
+			await this.createTableFile();
+		});
 
 		this.addSettingTab(new NLTSettingsTab(this.app, this));
 		this.registerCommands();
@@ -58,6 +48,16 @@ export default class NLTPlugin extends Plugin {
 	//TODO validate settings
 	validateSettings() {
 		const {} = this.settings;
+	}
+
+	private async createTableFile() {
+		const filePath = await TableFile.createNotionLikeTableFile();
+		//Open file in a new tab and set it to active
+		await app.workspace.getLeaf(true).setViewState({
+			type: NOTION_LIKE_TABLES_VIEW,
+			active: true,
+			state: { file: filePath },
+		});
 	}
 
 	private checkForDebug() {
@@ -85,13 +85,14 @@ export default class NLTPlugin extends Plugin {
 	}
 
 	registerCommands() {
-		// this.addCommand({
-		// 	id: "nlt-create-table",
-		// 	name: "Create new Notion-Like Table",
-		// 	hotkeys: [{ modifiers: ["Mod", "Shift"], key: "=" }],
-		// 	callback: async () => {
-		// 	},
-		// });
+		this.addCommand({
+			id: "nlt-create-table",
+			name: "Create Notion-Like Table",
+			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "=" }],
+			callback: async () => {
+				this.createTableFile();
+			},
+		});
 		//TODO implement
 		// this.addCommand({
 		// 	id: "nlt-add-column",
