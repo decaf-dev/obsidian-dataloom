@@ -6,7 +6,7 @@ import Icon from "../Icon";
 
 import Button from "../Button";
 import { IconType } from "src/services/icon/types";
-import { usePositionRef } from "src/services/hooks";
+import { usePosition } from "src/services/hooks";
 import { useMenu } from "src/services/menu/hooks";
 import {
 	openMenu,
@@ -27,10 +27,7 @@ export default function RowMenu({ rowId, onDeleteClick }: Props) {
 	const menu = useMenu(MenuLevel.ONE);
 	const dispatch = useAppDispatch();
 	const isOpen = useAppSelector((state) => isMenuOpen(state, menu));
-	const positionUpdateTime = useAppSelector(
-		(state) => state.menu.positionUpdateTime
-	);
-	const { ref, position } = usePositionRef([positionUpdateTime]);
+	const { containerRef, position } = usePosition();
 	function handleButtonClick(e: React.MouseEvent) {
 		if (isOpen) {
 			dispatch(closeTopLevelMenu());
@@ -45,7 +42,7 @@ export default function RowMenu({ rowId, onDeleteClick }: Props) {
 	}
 
 	return (
-		<div ref={ref}>
+		<div ref={containerRef}>
 			<Button
 				icon={<Icon icon={IconType.MORE_HORIZ} />}
 				onClick={(e) => handleButtonClick(e)}

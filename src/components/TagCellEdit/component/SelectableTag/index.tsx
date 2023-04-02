@@ -1,7 +1,7 @@
 import { findColorClass } from "src/services/color";
 
 import TagColorMenu from "src/components/TagColorMenu";
-import { usePositionRef } from "src/services/hooks";
+import { usePosition } from "src/services/hooks";
 
 import { IconType } from "src/services/icon/types";
 import { MenuLevel } from "src/services/menu/types";
@@ -37,10 +37,7 @@ export default function SelectableTag({
 	const menu = useMenu(MenuLevel.TWO);
 	const dispatch = useAppDispatch();
 	const isOpen = useAppSelector((state) => isMenuOpen(state, menu));
-	const positionUpdateTime = useAppSelector(
-		(state) => state.menu.positionUpdateTime
-	);
-	const { ref, position } = usePositionRef([positionUpdateTime]);
+	const { containerRef, position } = usePosition();
 
 	function handleColorChange(color: string) {
 		onColorChange(id, color);
@@ -51,7 +48,7 @@ export default function SelectableTag({
 	tagClass += " " + findColorClass(isDarkMode, color);
 	return (
 		<div
-			ref={ref}
+			ref={containerRef}
 			className="NLT__selectable-tag NLT__selectable"
 			onClick={() => onClick(id)}
 		>

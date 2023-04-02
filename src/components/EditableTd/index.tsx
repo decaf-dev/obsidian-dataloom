@@ -20,7 +20,7 @@ import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 import { openMenu, isMenuOpen } from "src/services/menu/menuSlice";
 
 import "./styles.css";
-import { usePositionRef } from "src/services/hooks";
+import { usePosition } from "src/services/hooks";
 
 interface Props {
 	columnType: string;
@@ -66,17 +66,10 @@ export default function EditableTd({
 }: Props) {
 	const menu = useMenu(MenuLevel.ONE, true);
 	const isOpen = useAppSelector((state) => isMenuOpen(state, menu));
-	const { positionUpdateTime } = useAppSelector((state) => state.menu);
 	const dispatch = useAppDispatch();
 	const { isDarkMode } = useAppSelector((state) => state.global);
 
-	const { position, ref: positionRef } = usePositionRef([
-		positionUpdateTime,
-		markdown.length,
-		shouldWrapOverflow,
-		useAutoWidth,
-		width,
-	]);
+	const { containerRef, position } = usePosition();
 
 	async function handleCellContextClick() {
 		try {
@@ -211,13 +204,14 @@ export default function EditableTd({
 	} = position;
 
 	function findHeight() {
+		if (columnType == CellType.TEXT) return measuredHeight;
 		if (useAutoWidth || !shouldWrapOverflow) return 100;
 		return measuredHeight + 2;
 	}
 
 	return (
 		<div
-			ref={positionRef}
+			ref={containerRef}
 			onClick={handleCellClick}
 			onContextMenu={handleCellContextClick}
 			className="NLT__td-container"
@@ -229,7 +223,7 @@ export default function EditableTd({
 				<Menu
 					id={menu.id}
 					isOpen={isOpen}
-					top={top - 2}
+					top={top}
 					left={left}
 					minWidth={
 						columnType === CellType.MULTI_TAG ||
