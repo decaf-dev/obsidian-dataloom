@@ -126,70 +126,63 @@ export default function EditableTh({
 
 	const { top, left, height } = position;
 	return (
-		<th
-			className="NLT__th NLT__selectable"
+		<div
+			className="NLT__th-container NLT__selectable"
 			ref={positionRef}
 			onClick={handleHeaderClick}
+			style={{
+				width,
+			}}
 		>
-			<div
-				className="NLT__th-container"
-				style={{
-					width,
-				}}
-			>
-				<HeaderMenu
-					isOpen={isOpen}
-					top={top}
-					left={left}
-					canDeleteColumn={numColumns > 1}
-					columnId={columnId}
-					cellId={cellId}
-					shouldWrapOverflow={shouldWrapOverflow}
-					useAutoWidth={useAutoWidth}
-					id={menu.id}
-					markdown={markdown}
-					columnSortDir={sortDir}
-					columnType={type}
-					columnIndex={columnIndex}
-					numColumns={numColumns}
-					onSortSelect={onSortSelect}
-					onMoveColumnClick={onMoveColumnClick}
-					onInsertColumnClick={onInsertColumnClick}
-					onTypeSelect={onTypeSelect}
-					onDeleteClick={onDeleteClick}
-					onClose={closeHeaderMenu}
-					onAutoWidthToggle={onAutoWidthToggle}
-					onWrapOverflowToggle={onWrapOverflowToggle}
-					onNameChange={onNameChange}
-				/>
-				<div className="NLT__th-content">{markdown}</div>
-				<div className="NLT__th-resize-container">
-					{!useAutoWidth && (
-						<div
-							className="NLT__th-resize"
-							onMouseDown={(e) => {
-								closeHeaderMenu();
-								//Prevents drag and drop
-								//See: https://stackoverflow.com/questions/704564/disable-drag-and-drop-on-html-elements
-								e.preventDefault();
-								handleMouseDown(e);
-								window.addEventListener(
-									"mousemove",
-									handleMouseMove
-								);
-								window.addEventListener(
-									"mouseup",
-									handleMouseUp
-								);
-							}}
-							onClick={(e) => {
-								//Stop propagation so we don't open the header
-								e.stopPropagation();
-							}}
-						/>
-					)}
-				</div>
+			<HeaderMenu
+				isOpen={isOpen}
+				top={top}
+				left={left}
+				canDeleteColumn={numColumns > 1}
+				columnId={columnId}
+				cellId={cellId}
+				shouldWrapOverflow={shouldWrapOverflow}
+				useAutoWidth={useAutoWidth}
+				id={menu.id}
+				markdown={markdown}
+				columnSortDir={sortDir}
+				columnType={type}
+				columnIndex={columnIndex}
+				numColumns={numColumns}
+				onSortSelect={onSortSelect}
+				onMoveColumnClick={onMoveColumnClick}
+				onInsertColumnClick={onInsertColumnClick}
+				onTypeSelect={onTypeSelect}
+				onDeleteClick={onDeleteClick}
+				onClose={closeHeaderMenu}
+				onAutoWidthToggle={onAutoWidthToggle}
+				onWrapOverflowToggle={onWrapOverflowToggle}
+				onNameChange={onNameChange}
+			/>
+			<div className="NLT__th-content">{markdown}</div>
+			<div className="NLT__th-resize-container">
+				{!useAutoWidth && (
+					<div
+						className="NLT__th-resize"
+						onMouseDown={(e) => {
+							closeHeaderMenu();
+							//Prevents drag and drop
+							//See: https://stackoverflow.com/questions/704564/disable-drag-and-drop-on-html-elements
+							e.preventDefault();
+							handleMouseDown(e);
+							window.addEventListener(
+								"mousemove",
+								handleMouseMove
+							);
+							window.addEventListener("mouseup", handleMouseUp);
+						}}
+						onClick={(e) => {
+							//Stop propagation so we don't open the header
+							e.stopPropagation();
+						}}
+					/>
+				)}
 			</div>
-		</th>
+		</div>
 	);
 }

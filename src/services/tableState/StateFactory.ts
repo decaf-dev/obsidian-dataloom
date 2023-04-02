@@ -13,12 +13,14 @@ export default class StateFactory {
 			useAutoWidth: false,
 			shouldWrapOverflow: false,
 			tags: [],
+			footerCellId: randomUUID(),
 		};
 	}
 
 	static createRow(): Row {
 		return {
 			id: randomUUID(),
+			menuId: randomUUID(),
 			creationDate: Date.now(),
 		};
 	}

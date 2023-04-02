@@ -1,5 +1,6 @@
 .NLT__table {
 	table-layout: fixed;
+	border-collapse: collapse;
 }
 
 .NLT__table,
@@ -7,5 +8,42 @@
 .NLT__tbody,
 .NLT__tfoot,
 .NLT__tr {
+	border: 0 !important;
+}
+
+.NLT__th {
+	border-top: 1px solid var(--background-modifier-border) !important;
+	border-bottom: 1px solid var(--background-modifier-border) !important;
+	border-left: 1px solid var(--background-modifier-border) !important;
+	border-right: 0 !important;
+	padding: 0 !important;
+	font-weight: 400 !important;
+	overflow: visible;
+}
+
+.NLT__th:last-child {
+	border-top: 0 !important;
+	border-bottom: 0 !important;
+}
+
+.NLT__td {
+	border-top: 0 !important;
+	border-bottom: 1px solid var(--background-modifier-border) !important;
+	border-left: 1px solid var(--background-modifier-border) !important;
+	border-right: 0 !important;
+	padding: 0 !important;
+	overflow: visible;
+}
+
+.NLT__tbody>.NLT__tr>.NLT__td:last-child {
+	border-top: 0 !important;
+	border-bottom: 0 !important;
+}
+
+.NLT__tbody>.NLT__tr:last-child>.NLT__td:last-child {
+	border-bottom: 0 !important;
+}
+
+.NLT__tfoot>.NLT__tr>.NLT__td {
 	border: 0 !important;
 }

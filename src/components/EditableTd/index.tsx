@@ -216,70 +216,62 @@ export default function EditableTd({
 	}
 
 	return (
-		<>
-			<td
-				className="NLT__td"
-				ref={positionRef}
-				onClick={handleCellClick}
-				onContextMenu={handleCellContextClick}
-			>
-				<div
-					className="NLT__td-container"
-					style={{
-						width,
-					}}
+		<div
+			ref={positionRef}
+			onClick={handleCellClick}
+			onContextMenu={handleCellContextClick}
+			className="NLT__td-container"
+			style={{
+				width,
+			}}
+		>
+			{isOpen && (
+				<Menu
+					id={menu.id}
+					isOpen={isOpen}
+					top={top - 2}
+					left={left}
+					minWidth={
+						columnType === CellType.MULTI_TAG ||
+						columnType === CellType.TAG
+							? 250
+							: 150
+					}
+					width={measuredWidth}
+					height={findHeight()}
 				>
-					{isOpen && (
-						<Menu
-							id={menu.id}
-							isOpen={isOpen}
-							top={top - 2}
-							left={left}
-							minWidth={
-								columnType === CellType.MULTI_TAG ||
-								columnType === CellType.TAG
-									? 250
-									: 150
-							}
-							width={measuredWidth}
-							height={findHeight()}
-						>
-							{columnType === CellType.TEXT && (
-								<TextCellEdit
-									content={markdown}
-									onInputChange={handleTextInputChange}
-								/>
-							)}
-							{columnType === CellType.NUMBER && (
-								<NumberCellEdit
-									content={markdown}
-									onInputChange={handleNumberInputChange}
-								/>
-							)}
-							{(columnType === CellType.TAG ||
-								columnType === CellType.MULTI_TAG) && (
-								<TagCellEdit
-									tags={tags}
-									cellId={cellId}
-									onColorChange={handleColorChange}
-									onAddTag={handleAddTag}
-									onRemoveTag={handleRemoveTagClick}
-									onTagClick={handleTagClick}
-								/>
-							)}
-							{columnType === CellType.DATE && (
-								<DateCellEdit
-									content={markdown}
-									onDateChange={handleDateChange}
-								/>
-							)}
-						</Menu>
+					{columnType === CellType.TEXT && (
+						<TextCellEdit
+							content={markdown}
+							onInputChange={handleTextInputChange}
+						/>
 					)}
-					<div className="NLT__td-cell-container NLT__td-cell-padding">
-						{renderCell()}
-					</div>
-				</div>
-			</td>
-		</>
+					{columnType === CellType.NUMBER && (
+						<NumberCellEdit
+							content={markdown}
+							onInputChange={handleNumberInputChange}
+						/>
+					)}
+					{(columnType === CellType.TAG ||
+						columnType === CellType.MULTI_TAG) && (
+						<TagCellEdit
+							tags={tags}
+							cellId={cellId}
+							onColorChange={handleColorChange}
+							onAddTag={handleAddTag}
+							onRemoveTag={handleRemoveTagClick}
+							onTagClick={handleTagClick}
+						/>
+					)}
+					{columnType === CellType.DATE && (
+						<DateCellEdit
+							content={markdown}
+							onDateChange={handleDateChange}
+						/>
+					)}
+				</Menu>
+			)}
+			<div className="NLT__td-cell-container">{renderCell()}</div>
+		</div>
 	);
 }

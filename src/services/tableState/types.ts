@@ -8,12 +8,6 @@ export enum CellType {
 	CHECKBOX = "checkbox",
 	MULTI_TAG = "multi-tag",
 }
-
-export interface TableComponent {
-	id: string;
-	component: React.ReactNode;
-}
-
 export interface Cell {
 	id: string;
 	columnId: string;
@@ -41,10 +35,12 @@ export interface Column {
 	useAutoWidth: boolean;
 	shouldWrapOverflow: boolean;
 	tags: Tag[];
+	footerCellId: string;
 }
 
 export interface Row {
 	id: string;
+	menuId: string;
 	creationDate: number;
 }
 

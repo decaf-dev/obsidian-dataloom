@@ -121,11 +121,9 @@ export default function HeaderMenu({
 	}
 
 	function handleDeleteClick(columnId: string) {
-		if (window.confirm("Are you sure you want to delete this column?")) {
-			onDeleteClick(columnId);
-			onClose();
-			setSubmenu(null);
-		}
+		onDeleteClick(columnId);
+		onClose();
+		setSubmenu(null);
 	}
 
 	function handleBackClick() {

@@ -7,12 +7,12 @@ import EditableTh from "./components/EditableTh";
 import OptionBar from "./components/OptionBar";
 import Button from "./components/Button";
 
-import { CellType } from "./services/tableState/types";
+import { Cell, CellType } from "./services/tableState/types";
 import { SortDir } from "./services/sort/types";
 import { logFunc } from "./services/debug";
 import { TableState } from "./services/tableState/types";
 import { useAppDispatch, useAppSelector } from "./services/redux/hooks";
-import { updateMenuPosition } from "./services/menu/menuSlice";
+
 import {
 	addExistingTag,
 	addNewTag,
@@ -29,10 +29,9 @@ import {
 import { sortRows } from "./services/sort/sort";
 
 import "./app.css";
-import { randomUUID } from "crypto";
 import { updateCell } from "./services/tableState/cell";
 import { addRow, deleteRow } from "./services/tableState/row";
-import { useDidMountEffect } from "./services/hooks";
+import { useDidMountEffect, useId } from "./services/hooks";
 import { ColumnIdError } from "./services/tableState/error";
 
 const FILE_NAME = "App";
@@ -48,41 +47,17 @@ export default function App({ initialState, onSaveTableState }: Props) {
 	const [sortTime, setSortTime] = useState(0);
 
 	const { shouldDebug } = useAppSelector((state) => state.global);
-
 	const dispatch = useAppDispatch();
+
+	const headerRowId = useId();
+	const lastColumnId = useId();
+	const footerRowId = useId();
 
 	//Once we have mounted, whenever the table state is updated
 	//save it to disk
 	useDidMountEffect(() => {
 		onSaveTableState(tableState);
 	}, [tableState]);
-
-	//We run the throttle save in a useEffect because we want the table model to update
-	//with new changes before we save
-	// useEffect(() => {
-	// 	//If not mount
-	// 	if (saveTime.time !== 0) {
-	// 		throttleSave(saveTime.shouldSaveModel);
-	// 	}
-	// }, [saveTime]);
-
-	// const throttleSave = _.throttle(async (shouldSaveModel: boolean) => {
-	// 	const viewModesToUpdate: MarkdownViewModeType[] = [];
-	// 	// if (plugin.isLivePreviewEnabled()) {
-	// 	// 	viewModesToUpdate.push(
-	// 	// 		viewMode === "source" ? "preview" : "source"
-	// 	// 	);
-	// 	// }
-	// 	await serializeTable(
-	// 		shouldSaveModel,
-	// 		plugin,
-	// 		state,
-	// 		tableId,
-	// 		viewModesToUpdate
-	// 	);
-	// 	//Make sure to update the menu positions, so that the menu will render properly
-	// 	dispatch(updateMenuPosition());
-	// }, 150);
 
 	//Handles sync between live preview and reading mode
 	// useEffect(() => {
@@ -374,131 +349,136 @@ export default function App({ initialState, onSaveTableState }: Props) {
 	}
 
 	const { rows, columns, cells } = tableState.model;
-	//const tableIdWithMode = getUniqueTableId(tableId, viewMode);
 
 	return (
-		<div
-			// id={tableIdWithMode}
-			// data-id={tableId}
-			className="NLT__app"
-			tabIndex={0}
-		>
+		<div className="NLT__app">
 			<OptionBar
 				model={tableState.model}
 				onSortRemoveClick={handleSortRemoveClick}
 			/>
-			<div
-				className="NLT__table-wrapper"
-				onScroll={() => dispatch(updateMenuPosition())}
-			>
+			<div className="NLT__table-wrapper">
 				<Table
 					headers={[
-						...columns.map((column, i) => {
-							const {
-								id: columnId,
-								width,
-								type,
-								sortDir,
-								shouldWrapOverflow,
-								useAutoWidth,
-							} = column;
-
-							const cell = cells.find(
-								(cell) =>
-									cell.columnId === columnId && cell.isHeader
-							);
-							if (!cell) throw Error("Cell not found");
-							const { id: cellId, markdown } = cell;
-							return {
-								id: columnId,
-								component: (
-									<EditableTh
-										key={columnId}
-										cellId={cellId}
-										columnIndex={i}
-										numColumns={columns.length}
-										columnId={cell.columnId}
-										width={
-											useAutoWidth ? "max-content" : width
-										}
-										shouldWrapOverflow={shouldWrapOverflow}
-										useAutoWidth={useAutoWidth}
-										markdown={markdown}
-										type={type}
-										sortDir={sortDir}
-										onSortSelect={handleHeaderSortSelect}
-										onInsertColumnClick={
-											handleInsertColumnClick
-										}
-										onMoveColumnClick={
-											handleMoveColumnClick
-										}
-										onWidthChange={handleHeaderWidthChange}
-										onDeleteClick={handleHeaderDeleteClick}
-										onTypeSelect={handleHeaderTypeClick}
-										onAutoWidthToggle={
-											handleAutoWidthToggle
-										}
-										onWrapOverflowToggle={
-											handleWrapContentToggle
-										}
-										onNameChange={handleCellContentChange}
-									/>
-								),
-							};
-						}),
 						{
-							id: randomUUID(),
-							component: (
-								<th
-									className="NLT__th"
-									style={{ height: "1.8rem" }}
-								>
-									<div
-										className="NLT__th-container"
-										style={{ paddingLeft: "10px" }}
-									>
-										<Button
-											onClick={() => handleAddColumn()}
-										>
-											New
-										</Button>
-									</div>
-								</th>
-							),
+							id: headerRowId,
+							cells: [
+								...columns.map((column, i) => {
+									const {
+										id: columnId,
+										width,
+										type,
+										sortDir,
+										shouldWrapOverflow,
+										useAutoWidth,
+									} = column;
+
+									const cell = cells.find(
+										(cell) =>
+											cell.columnId === columnId &&
+											cell.isHeader
+									);
+									if (!cell) throw Error("Cell not found");
+									const { id: cellId, markdown } = cell;
+									return {
+										id: cellId,
+										content: (
+											<EditableTh
+												key={columnId}
+												cellId={cellId}
+												columnIndex={i}
+												numColumns={columns.length}
+												columnId={cell.columnId}
+												width={
+													useAutoWidth
+														? "max-content"
+														: width
+												}
+												shouldWrapOverflow={
+													shouldWrapOverflow
+												}
+												useAutoWidth={useAutoWidth}
+												markdown={markdown}
+												type={type}
+												sortDir={sortDir}
+												onSortSelect={
+													handleHeaderSortSelect
+												}
+												onInsertColumnClick={
+													handleInsertColumnClick
+												}
+												onMoveColumnClick={
+													handleMoveColumnClick
+												}
+												onWidthChange={
+													handleHeaderWidthChange
+												}
+												onDeleteClick={
+													handleHeaderDeleteClick
+												}
+												onTypeSelect={
+													handleHeaderTypeClick
+												}
+												onAutoWidthToggle={
+													handleAutoWidthToggle
+												}
+												onWrapOverflowToggle={
+													handleWrapContentToggle
+												}
+												onNameChange={
+													handleCellContentChange
+												}
+											/>
+										),
+									};
+								}),
+								{
+									id: lastColumnId,
+									content: (
+										<div style={{ paddingLeft: "10px" }}>
+											<Button
+												onClick={() =>
+													handleAddColumn()
+												}
+											>
+												New
+											</Button>
+										</div>
+									),
+								},
+							],
 						},
 					]}
 					rows={rows
 						.filter((_row, i) => i !== 0)
 						.map((row) => {
-							const rowCells = cells.filter(
-								(cell) => cell.rowId === row.id
+							const rowCells: Cell[] = cells.filter(
+								(cell: Cell) => cell.rowId === row.id
 							);
-							const { id: rowId } = row;
+							const { id: rowId, menuId } = row;
 							return {
 								id: rowId,
-								component: (
-									<>
-										{rowCells.map((cell) => {
-											const column = columns.find(
-												(column) =>
-													column.id == cell.columnId
+								cells: [
+									...rowCells.map((cell: Cell) => {
+										const column = columns.find(
+											(column) =>
+												column.id == cell.columnId
+										);
+										if (!column)
+											throw new ColumnIdError(
+												cell.columnId
 											);
-											if (!column)
-												throw new ColumnIdError(
-													cell.columnId
-												);
-											const {
-												width,
-												type,
-												useAutoWidth,
-												shouldWrapOverflow,
-												tags,
-											} = column;
-											const { id: cellId, markdown } =
-												cell;
+										const {
+											width,
+											type,
+											useAutoWidth,
+											shouldWrapOverflow,
+											tags,
+										} = column;
+										const { id: cellId, markdown } = cell;
 
-											return (
+										return {
+											id: cellId,
+											content: (
 												<EditableTd
 													key={cellId}
 													cellId={cellId}
@@ -527,57 +507,72 @@ export default function App({ initialState, onSaveTableState }: Props) {
 													}
 													onAddTag={handleAddTag}
 												/>
-											);
-										})}
-										<td className="NLT__td">
-											<div className="NLT__td-container">
-												<div className="NLT__td-cell-padding">
-													<RowMenu
-														rowId={rowId}
-														onDeleteClick={
-															handleRowDeleteClick
-														}
-													/>
-												</div>
+											),
+										};
+									}),
+									{
+										id: row.menuId,
+										content: (
+											<div
+												style={{ paddingLeft: "10px" }}
+											>
+												<RowMenu
+													rowId={rowId}
+													onDeleteClick={
+														handleRowDeleteClick
+													}
+												/>
 											</div>
-										</td>
-									</>
-								),
+										),
+									},
+								],
 							};
 						})}
-					footers={[0].map((_id) => {
-						const { width, useAutoWidth } = columns[0];
-						return {
-							id: randomUUID(), //TODO change this is not efficient
-							component: (
-								<>
-									<td className="NLT__td">
-										<div
-											className="NLT__td-container"
-											style={{
-												width: useAutoWidth
-													? "max-content"
-													: width,
-											}}
-										>
-											<div className="NLT__td-cell-container NLT__td-cell-padding">
-												<Button
-													onClick={() =>
-														handleAddRow()
-													}
+					footers={[
+						{
+							id: footerRowId,
+							cells: [
+								...columns.map((_column, i) => {
+									const {
+										width,
+										useAutoWidth,
+										footerCellId,
+									} = columns[i];
+									if (i === 0) {
+										return {
+											id: footerCellId,
+											content: (
+												<div
+													style={{
+														paddingTop: "10px",
+														width: useAutoWidth
+															? "max-content"
+															: width,
+													}}
 												>
-													New
-												</Button>
-											</div>
-										</div>
-									</td>
-									{columns.map((_column) => {
-										<td className="NLT__td" />;
-									})}
-								</>
-							),
-						};
-					})}
+													<Button
+														onClick={() =>
+															handleAddRow()
+														}
+													>
+														New row
+													</Button>
+												</div>
+											),
+										};
+									}
+									return {
+										id: footerCellId,
+										content: <></>,
+									};
+								}),
+								{
+									id: lastColumnId,
+									content: <></>,
+								},
+							],
+						},
+					]}
 				/>
 			</div>
 		</div>

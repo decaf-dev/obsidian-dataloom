@@ -1,9 +1,10 @@
+import { randomUUID } from "crypto";
+import { MarkdownRenderer } from "obsidian";
 import { useState, useEffect, useRef } from "react";
-
-import { v4 as uuid } from "uuid";
+import { NLTView } from "src/NLTView";
 
 export const useId = (): string => {
-	const [id] = useState(uuid());
+	const [id] = useState(randomUUID());
 	return id;
 };
 
@@ -56,4 +57,59 @@ export const usePositionRef = (deps: any[] = []) => {
 	}, [...deps]);
 
 	return { ref, position };
+};
+
+export const useRenderMarkdown = (markdown: string) => {
+	const wrapperRef = useRef<HTMLDivElement | null>(null);
+	const contentRef = useRef<HTMLDivElement | null>(null);
+
+	function appendOrReplaceFirstChild(
+		wrapper: HTMLDivElement | null,
+		child: HTMLDivElement | null
+	) {
+		if (!child || !wrapper) return;
+
+		if (wrapper && !wrapper.firstChild) {
+			wrapper.appendChild(child);
+		} else if (wrapper.firstChild && wrapper.firstChild !== child) {
+			wrapper.replaceChild(child, wrapper.firstChild);
+		}
+	}
+
+	useEffect(() => {
+		async function renderMarkdown() {
+			const view = app.workspace.getActiveViewOfType(NLTView);
+			if (view) {
+				const dom = document.body.createDiv();
+				dom.detach();
+
+				try {
+					await MarkdownRenderer.renderMarkdown(
+						markdown,
+						dom,
+						view.file.path,
+						view
+					);
+				} catch (e) {
+					console.error(e);
+				}
+				return dom;
+			}
+			return null;
+		}
+		renderMarkdown().then((el) => {
+			if (el) {
+				contentRef.current = el;
+
+				if (wrapperRef.current)
+					appendOrReplaceFirstChild(wrapperRef.current, el);
+			}
+		});
+	}, [markdown]);
+
+	return {
+		wrapperRef,
+		contentRef,
+		appendOrReplaceFirstChild,
+	};
 };
