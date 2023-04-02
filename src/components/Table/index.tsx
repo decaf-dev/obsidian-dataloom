@@ -41,7 +41,6 @@ export const TableCell = ({ content, isHeader }: TableCellProps) => {
 };
 
 export default function Table({ headers, rows, footers }: Props) {
-	console.log(footers);
 	return (
 		<table className="NLT__table">
 			<thead className="NLT__thead">

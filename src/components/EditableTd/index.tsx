@@ -229,7 +229,7 @@ export default function EditableTd({
 						columnType === CellType.MULTI_TAG ||
 						columnType === CellType.TAG
 							? 250
-							: 150
+							: 0
 					}
 					width={measuredWidth}
 					height={findHeight()}

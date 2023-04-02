@@ -115,7 +115,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 	}
 
 	function handleAddColumn() {
-		if (shouldDebug) console.log("[App]: handleAddColumn called.");
+		logFunc(shouldDebug, FILE_NAME, "handleAddColumn");
 		setTableState((prevState) => addColumn(prevState));
 	}
 
