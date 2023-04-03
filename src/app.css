@@ -165,3 +165,7 @@
 	margin: 0.35rem 0;
 	width: 100%;
 }
+
+.NLT__default-cursor {
+	cursor: default !important;
+}

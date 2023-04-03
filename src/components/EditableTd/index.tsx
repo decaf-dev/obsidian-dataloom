@@ -234,12 +234,19 @@ export default function EditableTd({
 		return measuredHeight + 2;
 	}
 
+	let className = "NLT__td-container";
+	if (
+		columnType === CellType.LAST_EDITED_TIME ||
+		columnType === CellType.CREATION_TIME
+	) {
+		className += " NLT__default-cursor";
+	}
 	return (
 		<div
 			ref={containerRef}
 			onClick={handleCellClick}
 			onContextMenu={handleCellContextClick}
-			className="NLT__td-container"
+			className={className}
 			style={{
 				width,
 			}}
