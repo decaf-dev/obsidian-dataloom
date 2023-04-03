@@ -2,6 +2,10 @@ import { isValidCellContent } from "src/services/tableState/utils";
 import { CellType } from "src/services/tableState/types";
 
 import "./styles.css";
+import {
+	CHECKBOX_MARKDOWN_CHECKED,
+	CHECKBOX_MARKDOWN_UNCHECKED,
+} from "src/services/tableState/constants";
 
 interface Props {
 	content: string;
@@ -14,9 +18,9 @@ export default function CheckboxCell({ content, onCheckboxChange }: Props) {
 
 	function handleClick() {
 		if (isChecked) {
-			onCheckboxChange("[ ]");
+			onCheckboxChange(CHECKBOX_MARKDOWN_UNCHECKED);
 		} else {
-			onCheckboxChange("[x]");
+			onCheckboxChange(CHECKBOX_MARKDOWN_CHECKED);
 		}
 	}
 

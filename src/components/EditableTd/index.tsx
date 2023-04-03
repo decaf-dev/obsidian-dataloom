@@ -23,6 +23,11 @@ import "./styles.css";
 import { usePosition } from "src/services/hooks";
 import LastEditedTimeCell from "../LastEditedTimeCell";
 import CreationTimeCell from "../CreationTimeCell";
+import {
+	CHECKBOX_MARKDOWN_CHECKED,
+	CHECKBOX_MARKDOWN_UNCHECKED,
+} from "src/services/tableState/constants";
+import { isCheckboxChecked } from "src/services/string/validators";
 
 interface Props {
 	columnType: string;
@@ -88,12 +93,12 @@ export default function EditableTd({
 
 	function handleCellClick(e: React.MouseEvent) {
 		if (columnType === CellType.CHECKBOX) {
-			let isChecked = markdown.includes("x");
+			const isChecked = isCheckboxChecked(markdown);
 
 			if (isChecked) {
-				handleCheckboxChange("[ ]");
+				handleCheckboxChange(CHECKBOX_MARKDOWN_UNCHECKED);
 			} else {
-				handleCheckboxChange("[x]");
+				handleCheckboxChange(CHECKBOX_MARKDOWN_CHECKED);
 			}
 		} else if (
 			columnType !== CellType.CREATION_TIME &&

@@ -1,3 +1,4 @@
+import { isCheckboxChecked } from "../string/validators";
 import { TableState, Cell, Row, CellType, SortDir } from "./types";
 import { sortCells } from "./utils";
 
@@ -14,6 +15,8 @@ const sortByDir = (
 		return sortByLastEditedTime(rows, sortDir);
 	} else if (columnType == CellType.CREATION_TIME) {
 		return sortByCreationTime(rows, sortDir);
+	} else if (columnType == CellType.CHECKBOX) {
+		return sortByCheckbox(columnId, rows, cells, sortDir);
 	} else {
 		return sortByMarkdown(columnId, rows, cells, sortDir);
 	}
@@ -98,6 +101,48 @@ const sortByNumber = (
 			return parseFloat(markdownA) - parseFloat(markdownB);
 		} else if (sortDir === SortDir.DESC) {
 			return parseFloat(markdownB) - parseFloat(markdownA);
+		} else {
+			return 0;
+		}
+	});
+	return rowsCopy;
+};
+
+const sortByCheckbox = (
+	columnId: string,
+	rows: Row[],
+	cells: Cell[],
+	sortDir: SortDir
+): Row[] => {
+	const rowsCopy = [...rows];
+	rowsCopy.sort((a, b) => {
+		const cellA = cells.find(
+			(c) => c.columnId === columnId && c.rowId === a.id
+		);
+
+		if (!cellA) throw new Error("Cell not found");
+
+		const cellB = cells.find(
+			(c) => c.columnId === columnId && c.rowId === b.id
+		);
+
+		if (!cellB) throw new Error("Cell not found");
+
+		//Force headers to the top
+		if (cellA.isHeader) return -1;
+		if (cellB.isHeader) return 1;
+
+		const isCheckedA = isCheckboxChecked(cellA.markdown);
+		const isCheckedB = isCheckboxChecked(cellB.markdown);
+
+		if (sortDir === SortDir.ASC) {
+			if (isCheckedA && !isCheckedB) return 1;
+			if (!isCheckedA && isCheckedB) return -1;
+			return 0;
+		} else if (sortDir === SortDir.DESC) {
+			if (!isCheckedA && isCheckedB) return 1;
+			if (isCheckedA && !isCheckedB) return -1;
+			return 0;
 		} else {
 			return 0;
 		}

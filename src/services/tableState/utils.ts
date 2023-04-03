@@ -1,8 +1,8 @@
 import { NUMBER_REGEX } from "../string/regex";
 import { isCheckbox, isNumber, isDate } from "../string/validators";
 import { Cell, CellType, Column, Row } from "./types";
-import type { MarkdownViewModeType } from "obsidian";
 
+//TODO change
 export const sortCells = (
 	columns: Column[],
 	rows: Row[],
@@ -53,11 +53,4 @@ export const filterNumberFromContent = (content: string) => {
 		if (content[i].match(NUMBER_REGEX)) result += content[i];
 	}
 	return result;
-};
-
-export const getUniqueTableId = (
-	tableId: string,
-	viewMode: MarkdownViewModeType
-) => {
-	return "NLT_" + tableId + "-" + viewMode;
 };
