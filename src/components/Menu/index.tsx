@@ -24,7 +24,7 @@ export default function Menu({
 	top = 0,
 	left = 0,
 	minWidth = 0,
-	maxWidth = 0,
+	maxWidth,
 	width = 0,
 	height = 0,
 	children,
@@ -54,6 +54,15 @@ export default function Menu({
 		}
 	}, [isOpen]);
 
+	let maxW = "unset";
+	if (maxWidth) {
+		if (maxWidth === 0) {
+			maxW = "maxWidth";
+		} else {
+			maxW = numToPx(maxWidth);
+		}
+	}
+
 	return (
 		<>
 			{isOpen &&
@@ -65,10 +74,7 @@ export default function Menu({
 								top: numToPx(top),
 								left: numToPx(left),
 								minWidth: numToPx(minWidth),
-								maxWidth:
-									maxWidth === 0
-										? "max-content"
-										: numToPx(maxWidth),
+								maxWidth: maxW,
 								width:
 									width === 0
 										? "max-content"

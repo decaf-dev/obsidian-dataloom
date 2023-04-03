@@ -12,7 +12,7 @@ export default function TextCell({
 	useAutoWidth,
 }: Props) {
 	const { wrapperRef, contentRef, appendOrReplaceFirstChild } =
-		useRenderMarkdown(markdown);
+		useRenderMarkdown(markdown, useAutoWidth, shouldWrapOverflow);
 
 	let className = "NLT__text-cell";
 	if (useAutoWidth) {

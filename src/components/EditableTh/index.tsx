@@ -117,7 +117,7 @@ export default function EditableTh({
 		}, 100);
 	}
 
-	const { top, left, height } = position;
+	const { top, left } = position;
 	return (
 		<div
 			className="NLT__th-container NLT__selectable"

@@ -12,6 +12,7 @@
 
 --nlt-cell-spacing-x: var(--nlt-spacing--sm);
 --nlt-cell-spacing-y: var(--nlt-spacing--lg);
+--nlt-cell-min-height: 1.9rem;
 }
 
 /*

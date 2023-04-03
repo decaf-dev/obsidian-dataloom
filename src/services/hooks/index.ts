@@ -58,7 +58,11 @@ export const usePosition = () => {
 	return { containerRef, position };
 };
 
-export const useRenderMarkdown = (markdown: string) => {
+export const useRenderMarkdown = (
+	markdown: string,
+	useAutoWidth: boolean,
+	shouldWrapOverflow: boolean
+) => {
 	const wrapperRef = useRef<HTMLDivElement | null>(null);
 	const contentRef = useRef<HTMLDivElement | null>(null);
 
@@ -98,13 +102,19 @@ export const useRenderMarkdown = (markdown: string) => {
 		}
 		renderMarkdown().then((el) => {
 			if (el) {
+				// const pTag = el.querySelector("p");
+				// if (pTag) {
+				// 	if (!useAutoWidth && !shouldWrapOverflow) {
+				// 		pTag.className = "NLT__hide-overflow";
+				// 	}
+				// }
 				contentRef.current = el;
 
 				if (wrapperRef.current)
 					appendOrReplaceFirstChild(wrapperRef.current, el);
 			}
 		});
-	}, [markdown]);
+	}, [markdown, useAutoWidth, shouldWrapOverflow]);
 
 	return {
 		wrapperRef,

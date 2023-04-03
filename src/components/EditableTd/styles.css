@@ -1,11 +1,7 @@
 .NLT__td-container {
 	display: flex;
-	min-height: 1.9rem;
-	height: 100%;
-}
-
-.NLT__td-cell-container {
-	overflow: hidden;
-	user-select: none;
 	width: 100%;
+	min-height: var(--nlt-cell-min-height);
+	height: 100%;
+	padding: var(--nlt-cell-spacing-x) var(--nlt-cell-spacing-y);
 }

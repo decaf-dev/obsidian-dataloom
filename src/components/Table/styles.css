@@ -19,6 +19,7 @@
 	padding: 0 !important;
 	font-weight: 400 !important;
 	overflow: visible;
+	text-align: start;
 }
 
 .NLT__th:last-child {
@@ -33,17 +34,18 @@
 	border-right: 0 !important;
 	padding: 0 !important;
 	overflow: visible;
+	vertical-align: top;
 }
 
-.NLT__tbody>.NLT__tr>.NLT__td:last-child {
+.NLT__tbody > .NLT__tr > .NLT__td:last-child {
 	border-top: 0 !important;
 	border-bottom: 0 !important;
 }
 
-.NLT__tbody>.NLT__tr:last-child>.NLT__td:last-child {
+.NLT__tbody > .NLT__tr:last-child > .NLT__td:last-child {
 	border-bottom: 0 !important;
 }
 
-.NLT__tfoot>.NLT__tr>.NLT__td {
+.NLT__tfoot > .NLT__tr > .NLT__td {
 	border: 0 !important;
 }

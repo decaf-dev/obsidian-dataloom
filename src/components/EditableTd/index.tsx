@@ -265,7 +265,7 @@ export default function EditableTd({
 					)}
 				</Menu>
 			)}
-			<div className="NLT__td-cell-container">{renderCell()}</div>
+			{renderCell()}
 		</div>
 	);
 }

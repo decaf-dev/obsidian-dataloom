@@ -40,7 +40,7 @@ export default function EditMenu({
 		<Submenu title={title} onBackClick={onBackClick}>
 			<Stack spacing="sm" isVertical>
 				<div>
-					<p className="NLT__label">Header Name</p>
+					<p className="NLT__label">Title</p>
 					<input
 						className="NLT__header-menu-input"
 						autoFocus
