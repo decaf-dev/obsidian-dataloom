@@ -23,7 +23,7 @@ export default function TypeSubmenu({
 					key={item.name}
 					content={item.content}
 					onClick={() => onTypeClick(item.type)}
-					selected={item.type === columnType}
+					isSelected={item.type === columnType}
 				/>
 			))}
 		</Submenu>

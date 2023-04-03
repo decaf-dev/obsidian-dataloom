@@ -27,7 +27,7 @@ export default function SortSubmenu({
 						icon={item.icon && item.icon}
 						content={`${item.content}`}
 						onClick={() => onSortClick(item.name)}
-						selected={columnSortDir === item.name}
+						isSelected={columnSortDir === item.name}
 					/>
 				))}
 			</ul>

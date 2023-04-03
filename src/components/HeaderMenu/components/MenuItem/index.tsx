@@ -6,16 +6,16 @@ interface Props {
 	icon?: IconType;
 	content: string;
 	onClick: any;
-	selected?: boolean;
+	isSelected?: boolean;
 }
 export default function MenuItem({
 	icon,
 	content,
 	onClick,
-	selected = false,
+	isSelected = false,
 }: Props) {
 	let className = "NLT__header-menu-item NLT__selectable";
-	if (selected) className += " NLT__selected";
+	if (isSelected) className += " NLT__selected";
 
 	return (
 		<li className={className} onClick={() => onClick()}>

@@ -112,11 +112,11 @@
 }
 
 .NLT__selectable:hover {
-	background-color: var(--interactive-hover)
+	background-color: var(--color-base-30)
 }
 
 .NLT__selected {
-	background-color: var(--interactive-normal);
+	background-color: var(--color-base-20);
 }
 
 /**
