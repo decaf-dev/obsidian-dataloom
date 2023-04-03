@@ -9,7 +9,7 @@ import { TableState } from "./services/tableState/types";
 export const NOTION_LIKE_TABLES_VIEW = "notion-like-tables";
 
 export class NLTView extends TextFileView {
-	root: Root;
+	root: Root | null = null;
 	data: string;
 
 	constructor(leaf: WorkspaceLeaf) {
@@ -26,18 +26,29 @@ export class NLTView extends TextFileView {
 		await this.requestSave();
 	};
 
-	setViewData(data: string, _clear: boolean): void {
+	setViewData(data: string, clear: boolean): void {
 		this.data = data;
 
 		const tableState = Json.deserializeTableState(data);
-		this.root.render(
-			<Provider store={store}>
-				<App
-					initialState={tableState}
-					onSaveTableState={this.handleSaveTableState}
-				/>
-			</Provider>
-		);
+
+		//If a table pane is already open, we need to unmount the old instance
+		if (clear) {
+			if (this.root) {
+				this.root.unmount();
+				this.root = createRoot(this.containerEl.children[1]);
+			}
+		}
+
+		if (this.root) {
+			this.root.render(
+				<Provider store={store}>
+					<App
+						initialState={tableState}
+						onSaveTableState={this.handleSaveTableState}
+					/>
+				</Provider>
+			);
+		}
 	}
 
 	clear(): void {
@@ -58,13 +69,15 @@ export class NLTView extends TextFileView {
 	}
 
 	async onOpen() {
+		//This is the view content container
 		const container = this.containerEl.children[1];
-		container.empty();
-
 		this.root = createRoot(container);
 	}
 
 	async onClose() {
-		this.root.unmount();
+		if (this.root) {
+			this.root.unmount();
+			this.root = null;
+		}
 	}
 }

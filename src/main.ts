@@ -87,7 +87,7 @@ export default class NLTPlugin extends Plugin {
 	registerCommands() {
 		this.addCommand({
 			id: "nlt-create-table",
-			name: "Create Notion-Like Table",
+			name: "Create table",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "=" }],
 			callback: async () => {
 				this.createTableFile();
