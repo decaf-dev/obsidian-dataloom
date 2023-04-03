@@ -35,6 +35,14 @@
 	padding: 0 !important;
 	overflow: visible;
 	vertical-align: top;
+
+	/** 
+	* This is a hack to make the children have something to calculate their height percentage from.
+	* i.e. if you have a child with height: 100%, it will be 100% of the height of the td, only
+	* if the td has a set height value.
+	* This doesn't represent the actual height of the td, as that is set by HTML
+	*/
+	height: 1px;
 }
 
 .NLT__tbody > .NLT__tr > .NLT__td:last-child {
