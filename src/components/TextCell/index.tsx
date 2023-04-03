@@ -21,7 +21,7 @@ export default function TextCell({
 		if (shouldWrapOverflow) {
 			className += " NLT__wrap-overflow";
 		} else {
-			className += " NLT__hide-overflow";
+			className += " NLT__hidden-overflow";
 		}
 	}
 

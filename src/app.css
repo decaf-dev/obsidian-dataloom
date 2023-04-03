@@ -131,7 +131,13 @@
 	overflow-wrap: break-word;
 }
 
-.NLT__hide-overflow {
+.NLT__hidden-overflow {
+	overflow: hidden;
+	overflow-wrap: normal;
+	white-space: nowrap;
+}
+
+.NLT__hidden-overflow-ellipsis {
 	overflow: hidden;
 	overflow-wrap: normal;
 	white-space: nowrap;

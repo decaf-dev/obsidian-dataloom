@@ -26,7 +26,7 @@ export default function NumberCell({
 		if (shouldWrapOverflow) {
 			className += " NLT__wrap-overflow";
 		} else {
-			className += " NLT__hide-overflow";
+			className += " NLT__hidden-overflow";
 		}
 	}
 

@@ -204,8 +204,8 @@ export default function EditableTd({
 	} = position;
 
 	function findHeight() {
-		if (columnType == CellType.TEXT) return measuredHeight;
-		if (useAutoWidth || !shouldWrapOverflow) return 100;
+		if (columnType == CellType.TEXT || columnType == CellType.NUMBER)
+			return measuredHeight;
 		return measuredHeight + 2;
 	}
 
