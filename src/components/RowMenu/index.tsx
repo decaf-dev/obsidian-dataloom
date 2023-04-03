@@ -5,8 +5,7 @@ import Icon from "../Icon";
 
 import Button from "../Button";
 import { IconType } from "src/services/icon/types";
-import { usePosition } from "src/services/hooks";
-import { useMenu } from "src/services/menu/hooks";
+import { useMenu, usePosition } from "src/services/menu/hooks";
 import {
 	openMenu,
 	closeTopLevelMenu,

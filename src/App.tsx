@@ -32,9 +32,8 @@ import "./app.css";
 import { updateCell } from "./services/tableState/cell";
 import { addRow, deleteRow } from "./services/tableState/row";
 import { useDidMountEffect, useId } from "./services/hooks";
-import { ColumnIdError, RowIdError } from "./services/tableState/error";
-import { dateToString } from "./services/string/conversion";
-import { dateTimeToString } from "./services/string/utils";
+import { ColumnIdError } from "./services/tableState/error";
+import { dateTimeToString } from "./services/string/conversion";
 
 const FILE_NAME = "App";
 

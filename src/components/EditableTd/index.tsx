@@ -14,13 +14,11 @@ import MultiTagCell from "../MultiTagCell";
 import Menu from "../Menu";
 
 import { CellType, Tag } from "src/services/tableState/types";
-import { useMenu } from "src/services/menu/hooks";
+import { useMenu, usePosition } from "src/services/menu/hooks";
 import { MenuLevel } from "src/services/menu/types";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 import { openMenu, isMenuOpen } from "src/services/menu/menuSlice";
 
-import "./styles.css";
-import { usePosition } from "src/services/hooks";
 import LastEditedTimeCell from "../LastEditedTimeCell";
 import CreationTimeCell from "../CreationTimeCell";
 import {
@@ -28,6 +26,8 @@ import {
 	CHECKBOX_MARKDOWN_UNCHECKED,
 } from "src/services/tableState/constants";
 import { isCheckboxChecked } from "src/services/string/validators";
+
+import "./styles.css";
 
 interface Props {
 	columnType: string;

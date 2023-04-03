@@ -1,11 +1,10 @@
 import { findColorClass } from "src/services/color";
 
 import TagColorMenu from "src/components/TagColorMenu";
-import { usePosition } from "src/services/hooks";
 
 import { IconType } from "src/services/icon/types";
 import { MenuLevel } from "src/services/menu/types";
-import { useMenu } from "src/services/menu/hooks";
+import { useMenu, usePosition } from "src/services/menu/hooks";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 import {
 	openMenu,

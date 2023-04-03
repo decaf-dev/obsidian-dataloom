@@ -1,4 +1,4 @@
-import { useRenderMarkdown } from "src/services/hooks";
+import { useRenderMarkdown } from "src/services/markdown/hooks";
 import "./styles.css";
 interface Props {
 	markdown: string;

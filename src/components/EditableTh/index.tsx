@@ -4,7 +4,7 @@ import HeaderMenu from "../HeaderMenu";
 import { CSS_MEASUREMENT_PIXEL_REGEX } from "src/services/string/regex";
 import { numToPx, pxToNum } from "src/services/string/conversion";
 import { CellType, SortDir } from "src/services/tableState/types";
-import { useMenu } from "src/services/menu/hooks";
+import { useMenu, usePosition } from "src/services/menu/hooks";
 import { MenuLevel } from "src/services/menu/types";
 import { MIN_COLUMN_WIDTH } from "src/services/tableState/constants";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
@@ -15,7 +15,6 @@ import {
 } from "src/services/menu/menuSlice";
 
 import "./styles.css";
-import { usePosition } from "src/services/hooks";
 import Icon from "../Icon";
 import { IconType } from "src/services/icon/types";
 import Stack from "../Stack";

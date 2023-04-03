@@ -1,4 +1,4 @@
-import { dateTimeToString } from "src/services/string/utils";
+import { dateTimeToString } from "src/services/string/conversion";
 
 interface Props {
 	time: number;
