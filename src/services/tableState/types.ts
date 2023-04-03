@@ -40,7 +40,7 @@ export interface Column {
 
 export interface Row {
 	id: string;
-	menuId: string;
+	menuCellId: string;
 	creationDate: number;
 }
 

@@ -20,7 +20,7 @@ export default class StateFactory {
 	static createRow(): Row {
 		return {
 			id: randomUUID(),
-			menuId: randomUUID(),
+			menuCellId: randomUUID(),
 			creationDate: Date.now(),
 		};
 	}

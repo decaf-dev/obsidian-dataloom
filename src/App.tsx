@@ -417,7 +417,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 							const rowCells: Cell[] = cells.filter(
 								(cell: Cell) => cell.rowId === row.id
 							);
-							const { id: rowId, menuId } = row;
+							const { id: rowId, menuCellId } = row;
 							return {
 								id: rowId,
 								cells: [
@@ -474,7 +474,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 										};
 									}),
 									{
-										id: row.menuId,
+										id: menuCellId,
 										content: (
 											<div
 												style={{ paddingLeft: "10px" }}
