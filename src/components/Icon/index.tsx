@@ -6,17 +6,17 @@ import "./styles.css";
 
 interface Props {
 	icon: IconType;
-	variant?: "sm" | "md" | "lg";
+	size?: "sm" | "md" | "lg";
 	onClick?: (e: React.MouseEvent) => void;
 }
 
-export default function Icon({ icon, variant = "md", onClick }: Props) {
+export default function Icon({ icon, size = "md", onClick }: Props) {
 	let className = "";
-	if (variant === "sm") {
+	if (size === "sm") {
 		className = "NLT__icon--sm";
-	} else if (variant === "md") {
+	} else if (size === "md") {
 		className = "NLT__icon--md";
-	} else if (variant === "lg") {
+	} else if (size === "lg") {
 		className = "NLT__icon--lg";
 	}
 

@@ -118,6 +118,19 @@ export default function EditableTh({
 	}
 
 	const { top, left } = position;
+
+	let icon = IconType.LABEL;
+
+	if (type === CellType.TEXT) {
+		icon = IconType.DESCRIPTION;
+	} else if (type === CellType.NUMBER) {
+		icon = IconType.NUMBERS;
+	} else if (type === CellType.CHECKBOX) {
+		icon = IconType.CHECK;
+	} else if (type === CellType.DATE) {
+		icon = IconType.CALENDAR_TODAY;
+	}
+
 	return (
 		<div
 			className="NLT__th-container NLT__selectable"
@@ -153,8 +166,8 @@ export default function EditableTh({
 				onNameChange={onNameChange}
 			/>
 			<div className="NLT__th-content">
-				<Stack spacing="sm">
-					<Icon icon={IconType.ARROW_UPWARD} variant="md" />
+				<Stack spacing="md">
+					<Icon icon={icon} size="md" />
 					{markdown}
 				</Stack>
 			</div>

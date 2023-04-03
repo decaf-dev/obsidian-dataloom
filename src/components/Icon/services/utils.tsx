@@ -19,6 +19,20 @@ import {
 	TextSnippet,
 	Edit,
 	Close,
+	Description,
+	Numbers,
+	Check,
+	Label,
+	CalendarToday,
+	DescriptionOutlined,
+	CalendarTodayOutlined,
+	LabelOutlined,
+	CheckBox,
+	CheckBoxOutlined,
+	EditOutlined,
+	TextSnippetOutlined,
+	MoveUpOutlined,
+	MoveDownOutlined,
 } from "@mui/icons-material";
 
 import { IconType } from "src/services/icon/types";
@@ -57,17 +71,27 @@ export const findIcon = (
 		case IconType.KEYBOARD_BACKSPACE:
 			return <KeyboardBackspace className={className} />;
 		case IconType.MOVE_UP:
-			return <MoveUp className={className} />;
+			return <MoveUpOutlined className={className} />;
 		case IconType.MOVE_DOWN:
-			return <MoveDown className={className} />;
+			return <MoveDownOutlined className={className} />;
 		case IconType.TEXT_SNIPPET:
-			return <TextSnippet className={className} />;
+			return <TextSnippetOutlined className={className} />;
 		case IconType.EDIT:
-			return <Edit className={className} />;
+			return <EditOutlined className={className} />;
 		case IconType.MORE_HORIZ:
 			return <MoreHoriz className={className} />;
 		case IconType.CLOSE:
 			return <Close className={className} />;
+		case IconType.DESCRIPTION:
+			return <DescriptionOutlined className={className} />;
+		case IconType.NUMBERS:
+			return <Numbers className={className} />;
+		case IconType.CHECK:
+			return <CheckBoxOutlined className={className} />;
+		case IconType.LABEL:
+			return <LabelOutlined className={className} />;
+		case IconType.CALENDAR_TODAY:
+			return <CalendarTodayOutlined className={className} />;
 		default:
 			return "";
 	}

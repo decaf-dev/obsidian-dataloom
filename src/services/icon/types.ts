@@ -19,4 +19,9 @@ export const enum IconType {
 	EDIT = "Edit",
 	MORE_HORIZ = "MoreHoriz",
 	CLOSE = "Close",
+	DESCRIPTION = "Description",
+	CHECK = "Check",
+	LABEL = "Label",
+	NUMBERS = "Numbers",
+	CALENDAR_TODAY = "CalendarToday",
 }
