@@ -1,4 +1,5 @@
 import { useRenderMarkdown } from "src/services/markdown/hooks";
+import { useOverflowClassname } from "src/services/spacing/hooks";
 import "./styles.css";
 interface Props {
 	markdown: string;
@@ -14,17 +15,11 @@ export default function TextCell({
 	const { wrapperRef, contentRef, appendOrReplaceFirstChild } =
 		useRenderMarkdown(markdown, useAutoWidth, shouldWrapOverflow);
 
-	let className = "NLT__text-cell";
-	if (useAutoWidth) {
-		className += " NLT__auto-width";
-	} else {
-		if (shouldWrapOverflow) {
-			className += " NLT__wrap-overflow";
-		} else {
-			className += " NLT__hidden-overflow";
-		}
-	}
-
+	const overflowClassName = useOverflowClassname(
+		useAutoWidth,
+		shouldWrapOverflow
+	);
+	const className = "NLT__text-cell" + " " + overflowClass;
 	return (
 		<div className={className}>
 			<div

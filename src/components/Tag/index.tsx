@@ -33,13 +33,10 @@ export default function Tag({
 			"An id must defined when the onRemoveClick handler is present."
 		);
 	}
-
-	//TODO add
-	markdown;
 	return (
 		<div className={tagClass}>
 			<Stack spacing="sm">
-				<div className="NLT__tag-content"></div>
+				<div className="NLT__tag-content">{markdown}</div>
 				{showRemove && (
 					<Button
 						icon={<Icon size="sm" type={IconType.CLOSE} />}

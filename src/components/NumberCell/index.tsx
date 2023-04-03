@@ -1,3 +1,4 @@
+import { useOverflowClassname } from "src/services/spacing/hooks";
 import { CellType } from "src/services/tableState/types";
 
 import {
@@ -18,17 +19,11 @@ export default function NumberCell({
 	shouldWrapOverflow,
 	useAutoWidth,
 }: Props) {
-	let className = "NLT__number-cell";
-
-	if (useAutoWidth) {
-		className += " NLT__auto-width";
-	} else {
-		if (shouldWrapOverflow) {
-			className += " NLT__wrap-overflow";
-		} else {
-			className += " NLT__hidden-overflow";
-		}
-	}
+	const overflowClassName = useOverflowClassname(
+		useAutoWidth,
+		shouldWrapOverflow
+	);
+	const className = "NLT__number-cell" + " " + overflowClass;
 
 	if (!isValidCellContent(content, CellType.NUMBER))
 		content = filterNumberFromContent(content);
