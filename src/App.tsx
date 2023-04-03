@@ -518,7 +518,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 															handleAddRow()
 														}
 													>
-														New row
+														New
 													</Button>
 												</div>
 											),
