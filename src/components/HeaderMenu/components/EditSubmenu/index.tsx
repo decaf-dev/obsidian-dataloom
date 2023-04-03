@@ -38,40 +38,50 @@ export default function EditMenu({
 }: Props) {
 	return (
 		<Submenu title={title} onBackClick={onBackClick}>
-			<Stack spacing="sm" isVertical>
-				<div>
-					<p className="NLT__label">Title</p>
-					<input
-						className="NLT__header-menu-input"
-						autoFocus
-						value={markdown}
-						onChange={(e) => onNameChange(cellId, e.target.value)}
-					/>
-				</div>
-				<div>
-					<p className="NLT__label">Auto Width</p>
-					<Switch
-						isChecked={useAutoWidth}
-						onToggle={(value) => onAutoWidthToggle(columnId, value)}
-					/>
-				</div>
-				{!useAutoWidth && columnType === CellType.TEXT && (
+			<div
+				style={{
+					padding: "var(--nlt-spacing--md) var(--nlt--spacing-sm)",
+				}}
+			>
+				<Stack spacing="md" isVertical>
 					<div>
-						<p className="NLT__label">Wrap Overflow</p>
-						<Switch
-							isChecked={shouldWrapOverflow}
-							onToggle={(value) =>
-								onWrapOverflowToggle(columnId, value)
+						<p className="NLT__label">Title</p>
+						<input
+							className="NLT__header-menu-input"
+							autoFocus
+							value={markdown}
+							onChange={(e) =>
+								onNameChange(cellId, e.target.value)
 							}
 						/>
 					</div>
-				)}
-				{canDeleteColumn && (
-					<Button onClick={() => onDeleteClick(columnId)}>
-						Delete
-					</Button>
-				)}
-			</Stack>
+					<div>
+						<p className="NLT__label">Auto Width</p>
+						<Switch
+							isChecked={useAutoWidth}
+							onToggle={(value) =>
+								onAutoWidthToggle(columnId, value)
+							}
+						/>
+					</div>
+					{!useAutoWidth && columnType === CellType.TEXT && (
+						<div>
+							<p className="NLT__label">Wrap Overflow</p>
+							<Switch
+								isChecked={shouldWrapOverflow}
+								onToggle={(value) =>
+									onWrapOverflowToggle(columnId, value)
+								}
+							/>
+						</div>
+					)}
+					{canDeleteColumn && (
+						<Button onClick={() => onDeleteClick(columnId)}>
+							Delete
+						</Button>
+					)}
+				</Stack>
+			</div>
 		</Submenu>
 	);
 }

@@ -131,7 +131,7 @@ export default function HeaderMenu({
 	}
 
 	return (
-		<Menu isOpen={isOpen} id={id} top={top} left={left} maxWidth={175}>
+		<Menu isOpen={isOpen} id={id} top={top} left={left} width="10rem">
 			<div className="NLT__header-menu">
 				{submenu === null && (
 					<SubmenuList

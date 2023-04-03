@@ -20,17 +20,15 @@ export default function SortSubmenu({
 }: Props) {
 	return (
 		<Submenu title={title} onBackClick={onBackClick}>
-			<ul className="NLT__header-menu-ul">
-				{Object.values(SORT_MENU_ITEM).map((item) => (
-					<MenuItem
-						key={item.name}
-						icon={item.icon}
-						content={`${item.content}`}
-						onClick={() => onSortClick(item.name)}
-						isSelected={columnSortDir === item.name}
-					/>
-				))}
-			</ul>
+			{Object.values(SORT_MENU_ITEM).map((item) => (
+				<MenuItem
+					key={item.name}
+					icon={item.icon}
+					content={`${item.content}`}
+					onClick={() => onSortClick(item.name)}
+					isSelected={columnSortDir === item.name}
+				/>
+			))}
 		</Submenu>
 	);
 }

@@ -18,22 +18,20 @@ export default function MoveSubmenu({
 }: Props) {
 	return (
 		<Submenu title={title} onBackClick={onBackClick}>
-			<ul className="NLT__header-menu-ul">
-				{columnIndex !== 0 && (
-					<MenuItem
-						icon={IconType.KEYBOARD_DOUBLE_ARROW_LEFT}
-						content="Move Left"
-						onClick={() => onMoveClick(false)}
-					/>
-				)}
-				{columnIndex !== numColumns - 1 && (
-					<MenuItem
-						icon={IconType.KEYBOARD_DOUBLE_ARROW_RIGHT}
-						content="Move Right"
-						onClick={() => onMoveClick(true)}
-					/>
-				)}
-			</ul>
+			{columnIndex !== 0 && (
+				<MenuItem
+					icon={IconType.KEYBOARD_DOUBLE_ARROW_LEFT}
+					content="Move Left"
+					onClick={() => onMoveClick(false)}
+				/>
+			)}
+			{columnIndex !== numColumns - 1 && (
+				<MenuItem
+					icon={IconType.KEYBOARD_DOUBLE_ARROW_RIGHT}
+					content="Move Right"
+					onClick={() => onMoveClick(true)}
+				/>
+			)}
 		</Submenu>
 	);
 }

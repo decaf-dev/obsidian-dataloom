@@ -2,6 +2,8 @@ import Icon from "src/components/Icon";
 import Stack from "src/components/Stack";
 import { IconType } from "src/services/icon/types";
 
+import "./styles.css";
+
 interface Props {
 	icon?: IconType;
 	content: string;
@@ -18,11 +20,11 @@ export default function MenuItem({
 	if (isSelected) className += " NLT__selected";
 
 	return (
-		<li className={className} onClick={() => onClick()}>
+		<div className={className} onClick={() => onClick()}>
 			<Stack>
 				{icon !== undefined && <Icon icon={icon} />}
 				<p className="NLT__p">{content}</p>
 			</Stack>
-		</li>
+		</div>
 	);
 }

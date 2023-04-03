@@ -1,22 +1,13 @@
+import { getSpacing } from "src/services/spacing";
+import { SpacingSize } from "src/services/spacing/types";
+
 interface Props {
-	spacing?: "sm" | "md" | "lg" | "xl" | "2xl";
+	spacing?: SpacingSize;
 	children: React.ReactNode;
 	isVertical?: boolean;
 }
 
 export default function Stack({ spacing = "md", children, isVertical }: Props) {
-	let gap = "";
-	if (spacing === "sm") {
-		gap = "var(--nlt-spacing--sm)";
-	} else if (spacing === "md") {
-		gap = "var(--nlt-spacing--md)";
-	} else if (spacing === "lg") {
-		gap = "var(--nlt-spacing--lg)";
-	} else if (spacing === "xl") {
-		gap = "var(--nlt-spacing--xl)";
-	} else if (spacing === "2xl") {
-		gap = "var(--nlt-spacing--2xl)";
-	}
 	return (
 		<div
 			style={{
@@ -24,7 +15,7 @@ export default function Stack({ spacing = "md", children, isVertical }: Props) {
 				flexDirection: isVertical ? "column" : "row",
 				alignItems: isVertical ? "flex-start" : "center",
 				justifyContent: isVertical ? "center" : "flex-start",
-				[isVertical ? "rowGap" : "columnGap"]: gap,
+				[isVertical ? "rowGap" : "columnGap"]: getSpacing(spacing),
 			}}
 		>
 			{children}

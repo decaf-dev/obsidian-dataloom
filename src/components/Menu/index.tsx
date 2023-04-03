@@ -13,7 +13,7 @@ interface Props {
 	left?: number;
 	maxWidth?: number;
 	minWidth?: number;
-	width?: number;
+	width?: number | string;
 	height?: number;
 	children: React.ReactNode;
 }

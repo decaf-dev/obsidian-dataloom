@@ -15,18 +15,16 @@ export default function InsertSubmenu({
 }: Props) {
 	return (
 		<Submenu title={title} onBackClick={onBackClick}>
-			<ul className="NLT__header-menu-ul">
-				<MenuItem
-					icon={IconType.KEYBOARD_DOUBLE_ARROW_LEFT}
-					content="Insert Left"
-					onClick={() => onInsertClick(false)}
-				/>
-				<MenuItem
-					icon={IconType.KEYBOARD_DOUBLE_ARROW_RIGHT}
-					content="Insert Right"
-					onClick={() => onInsertClick(true)}
-				/>
-			</ul>
+			<MenuItem
+				icon={IconType.KEYBOARD_DOUBLE_ARROW_LEFT}
+				content="Insert Left"
+				onClick={() => onInsertClick(false)}
+			/>
+			<MenuItem
+				icon={IconType.KEYBOARD_DOUBLE_ARROW_RIGHT}
+				content="Insert Right"
+				onClick={() => onInsertClick(true)}
+			/>
 		</Submenu>
 	);
 }

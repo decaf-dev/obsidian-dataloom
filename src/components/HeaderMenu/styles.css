@@ -1,6 +1,4 @@
 .NLT__header-menu {
-	padding: 4px 10px;
-	cursor: default;
 	color: var(--text-normal);
 }
 
@@ -11,23 +9,6 @@
 
 .NLT__header-menu-title {
 	font-weight: 700;
-}
-
-.NLT__header-menu-item:focus-visible {
-	outline: 1px solid blue;
-}
-
-.NLT__header-menu-ul {
-	padding: 0;
-	margin: 0;
-}
-
-.NLT__header-menu-item {
-	font-size: 0.9rem;
-	display: flex;
-	align-items: center;
-	padding: 0;
-	margin: 0;
 }
 
 .NLT__header-menu-input {
