@@ -27,10 +27,8 @@ const SortBubble = ({
 	markdown,
 	onRemoveClick,
 }: SortBubbleProps) => {
-	const color = findColorClass(isDarkMode, "blue");
-	let className = "NLT__sort-bubble " + color;
 	return (
-		<div className={className}>
+		<div className="NLT__sort-bubble">
 			<Stack spacing="sm">
 				{sortDir === SortDir.ASC ? (
 					<Icon icon={IconType.ARROW_UPWARD} />
