@@ -23,7 +23,12 @@ export default function CreateTag({
 			}}
 		>
 			<div>Create&nbsp;</div>
-			<Tag isDarkMode={isDarkMode} markdown={markdown} color={color} />
+			<Tag
+				isDarkMode={isDarkMode}
+				markdown={markdown}
+				color={color}
+				width="120px"
+			/>
 		</div>
 	);
 }

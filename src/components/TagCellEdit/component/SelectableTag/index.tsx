@@ -15,6 +15,7 @@ import {
 import "./styles.css";
 import Button from "src/components/Button";
 import Icon from "src/components/Icon";
+import Tag from "src/components/Tag";
 
 interface Props {
 	isDarkMode: boolean;
@@ -33,24 +34,40 @@ export default function SelectableTag({
 	onClick,
 	onColorChange,
 }: Props) {
+	//TODO refactor into useMenu hook
 	const menu = useMenu(MenuLevel.TWO);
-	const dispatch = useAppDispatch();
 	const isOpen = useAppSelector((state) => isMenuOpen(state, menu));
 	const { containerRef, position } = usePosition();
+
+	const dispatch = useAppDispatch();
 
 	function handleColorChange(color: string) {
 		onColorChange(id, color);
 		dispatch(closeTopLevelMenu());
 	}
 
-	let tagClass = "NLT__tag";
-	tagClass += " " + findColorClass(isDarkMode, color);
 	return (
-		<div
-			ref={containerRef}
-			className="NLT__selectable-tag NLT__selectable"
-			onClick={() => onClick(id)}
-		>
+		<>
+			<div
+				ref={containerRef}
+				className="NLT__selectable-tag NLT__selectable"
+				onClick={() => onClick(id)}
+			>
+				<Tag
+					isDarkMode={isDarkMode}
+					markdown={markdown}
+					color={color}
+					width="150px"
+				/>
+				<Button
+					icon={<Icon type={IconType.MORE_HORIZ} />}
+					isDarker
+					onClick={(e) => {
+						e.stopPropagation();
+						dispatch(openMenu(menu));
+					}}
+				/>
+			</div>
 			<TagColorMenu
 				menuId={menu.id}
 				top={position.top - 125}
@@ -59,17 +76,6 @@ export default function SelectableTag({
 				selectedColor={color}
 				onColorClick={(color) => handleColorChange(color)}
 			/>
-			<div className={tagClass}>
-				<div className="NLT__tag-content">{markdown}</div>
-			</div>
-			<Button
-				icon={<Icon type={IconType.MORE_HORIZ} />}
-				isDarker
-				onClick={(e) => {
-					e.stopPropagation();
-					dispatch(openMenu(menu));
-				}}
-			/>
-		</div>
+		</>
 	);
 }

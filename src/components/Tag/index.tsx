@@ -10,6 +10,7 @@ import Stack from "../Stack";
 interface Props {
 	isDarkMode: boolean;
 	id?: string;
+	width?: string;
 	markdown: string;
 	color: string;
 	showRemove?: boolean;
@@ -21,6 +22,7 @@ export default function Tag({
 	isDarkMode,
 	id,
 	color,
+	width,
 	markdown,
 	showRemove,
 	onRemoveClick,
@@ -33,10 +35,20 @@ export default function Tag({
 			"An id must defined when the onRemoveClick handler is present."
 		);
 	}
+
+	let contentClassName = "NLT__tag-content";
+	if (width !== undefined) {
+		contentClassName += " " + "NLT__hide-overflow-ellipsis";
+	}
 	return (
 		<div className={tagClass}>
 			<Stack spacing="sm">
-				<div className="NLT__tag-content">{markdown}</div>
+				<div
+					className={contentClassName}
+					{...(width !== undefined && { style: { width } })}
+				>
+					{markdown}
+				</div>
 				{showRemove && (
 					<Button
 						icon={<Icon size="sm" type={IconType.CLOSE} />}

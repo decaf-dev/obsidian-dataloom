@@ -39,14 +39,4 @@ export const { openMenu, closeTopLevelMenu, closeAllMenus } = menuSlice.actions;
 export const isMenuOpen = (state: RootState, menu: Menu) =>
 	state.menu.openMenus.find((m) => m.id === menu.id) ? true : false;
 
-export const getTopLevelMenu = (state: RootState): Menu | null => {
-	if (state.menu.openMenus.length !== 0)
-		return state.menu.openMenus[state.menu.openMenus.length - 1];
-	return null;
-};
-
-export const timeSinceMenuOpen = (state: RootState): number => {
-	return Date.now() - state.menu.menuOpenTime;
-};
-
 export default menuSlice.reducer;
