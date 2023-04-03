@@ -7,6 +7,8 @@ export enum CellType {
 	DATE = "date",
 	CHECKBOX = "checkbox",
 	MULTI_TAG = "multi-tag",
+	CREATION_TIME = "creation-time",
+	LAST_EDITED_TIME = "last-edited-time",
 }
 export interface Cell {
 	id: string;
@@ -41,7 +43,8 @@ export interface Column {
 export interface Row {
 	id: string;
 	menuCellId: string;
-	creationDate: number;
+	creationTime: number;
+	lastEditedTime: number;
 }
 
 export interface TableModel {

@@ -1,7 +1,6 @@
-import { CellType } from "src/services/tableState/types";
+import { CellType, SortDir } from "src/services/tableState/types";
 
 import { IconType } from "src/services/icon/types";
-import { SortDir } from "src/services/sort/types";
 export interface SubmenuItem {
 	name: string;
 	content: string;
@@ -49,6 +48,16 @@ export const TYPE_ITEMS: MenuItem[] = [
 	{ name: "multi-tag", content: "Multi-Tag", type: CellType.MULTI_TAG },
 	{ name: "date", content: "Date", type: CellType.DATE },
 	{ name: "checkbox", content: "Checkbox", type: CellType.CHECKBOX },
+	{
+		name: "creation-time",
+		content: "Creation Time",
+		type: CellType.CREATION_TIME,
+	},
+	{
+		name: "last-edited-time",
+		content: "Last Edited Time",
+		type: CellType.LAST_EDITED_TIME,
+	},
 ];
 interface SortMenuItem {
 	[name: string]: {

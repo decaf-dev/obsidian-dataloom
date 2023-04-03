@@ -14,25 +14,17 @@ import {
 	KeyboardDoubleArrowLeft,
 	KeyboardDoubleArrowRight,
 	KeyboardBackspace,
-	MoveUp,
-	MoveDown,
-	TextSnippet,
-	Edit,
 	Close,
-	Description,
 	Numbers,
-	Check,
-	Label,
-	CalendarToday,
 	DescriptionOutlined,
 	CalendarTodayOutlined,
 	LabelOutlined,
-	CheckBox,
 	CheckBoxOutlined,
 	EditOutlined,
 	TextSnippetOutlined,
 	MoveUpOutlined,
 	MoveDownOutlined,
+	ScheduleOutlined,
 } from "@mui/icons-material";
 
 import { IconType } from "src/services/icon/types";
@@ -92,6 +84,8 @@ export const findIcon = (
 			return <LabelOutlined className={className} />;
 		case IconType.CALENDAR_TODAY:
 			return <CalendarTodayOutlined className={className} />;
+		case IconType.SCHEDULE:
+			return <ScheduleOutlined className={className} />;
 		default:
 			return "";
 	}
