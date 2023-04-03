@@ -1,7 +1,7 @@
 import { CellType } from "src/services/tableState/types";
 
 import { TYPE_ITEMS } from "../../constants";
-import MenuItem from "../MenuItem";
+import MenuItem from "../../../MenuItem";
 import Submenu from "../Submenu";
 interface Props {
 	title: string;

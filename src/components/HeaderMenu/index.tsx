@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import Menu from "../Menu";
-import MenuItem from "./components/MenuItem";
+import MenuItem from "../MenuItem";
 import EditSubmenu from "./components/EditSubmenu";
 import SortSubmenu from "./components/SortSubmenu";
 import InsertSubmenu from "./components/InsertSubmenu";
@@ -131,7 +131,7 @@ export default function HeaderMenu({
 	}
 
 	return (
-		<Menu isOpen={isOpen} id={id} top={top} left={left} width="10rem">
+		<Menu isOpen={isOpen} id={id} top={top} left={left} maxWidth={200}>
 			<div className="NLT__header-menu">
 				{submenu === null && (
 					<SubmenuList

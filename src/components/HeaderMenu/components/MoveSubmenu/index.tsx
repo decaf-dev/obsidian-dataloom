@@ -1,4 +1,4 @@
-import MenuItem from "../MenuItem";
+import MenuItem from "../../../MenuItem";
 import { IconType } from "src/services/icon/types";
 import Submenu from "../Submenu";
 

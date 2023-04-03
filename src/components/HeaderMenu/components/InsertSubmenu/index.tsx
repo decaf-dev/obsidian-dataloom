@@ -1,5 +1,5 @@
 import Submenu from "../Submenu";
-import MenuItem from "../MenuItem";
+import MenuItem from "../../../MenuItem";
 import { IconType } from "src/services/icon/types";
 
 interface Props {

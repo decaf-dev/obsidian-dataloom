@@ -16,7 +16,7 @@ export default function MenuItem({
 	onClick,
 	isSelected = false,
 }: Props) {
-	let className = "NLT__header-menu-item NLT__selectable";
+	let className = "NLT__menu-item NLT__selectable";
 	if (isSelected) className += " NLT__selected";
 
 	return (

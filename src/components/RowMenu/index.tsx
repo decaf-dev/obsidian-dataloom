@@ -1,7 +1,6 @@
 import React from "react";
 
 import Menu from "../Menu";
-import RowMenuItem from "./components/RowMenuItem";
 import Icon from "../Icon";
 
 import Button from "../Button";
@@ -17,6 +16,7 @@ import {
 import "./styles.css";
 import { MenuLevel } from "src/services/menu/types";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
+import MenuItem from "../MenuItem";
 
 interface Props {
 	rowId: string;
@@ -53,8 +53,8 @@ export default function RowMenu({ rowId, onDeleteClick }: Props) {
 				top={position.top + position.height}
 				left={position.left}
 			>
-				<div className="NLT__drag-menu">
-					<RowMenuItem
+				<div className="NLT__row-menu">
+					<MenuItem
 						icon={IconType.DELETE}
 						content="Delete"
 						onClick={() => handleDeleteClick(rowId)}
