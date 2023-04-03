@@ -1,4 +1,8 @@
-import { SortDir } from "../sort/types";
+export enum SortDir {
+	ASC = "asc",
+	DESC = "desc",
+	NONE = "default",
+}
 
 export enum CellType {
 	TEXT = "text",

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useState } from "react";
 
 import Menu from "../Menu";
 import MenuItem from "./components/MenuItem";
@@ -8,11 +8,11 @@ import InsertSubmenu from "./components/InsertSubmenu";
 import MoveSubmenu from "./components/MoveSubmenu";
 import TypeSubmenu from "./components/TypeSubmenu";
 
-import { SortDir } from "src/services/sort/types";
 import { SUBMENU_ITEM, SubmenuItem } from "./constants";
 
+import { CellType, SortDir } from "src/services/tableState/types";
+
 import "./styles.css";
-import { CellType } from "src/services/tableState/types";
 
 interface SubMenuListProps {
 	numColumns: number;

@@ -1,7 +1,6 @@
 import { randomUUID } from "crypto";
 import { randomColor } from "../random";
-import { SortDir } from "../sort/types";
-import { Cell, CellType, Column, Row, Tag } from "./types";
+import { Cell, CellType, Column, Row, Tag, SortDir } from "./types";
 
 export default class StateFactory {
 	static createColumn(): Column {
@@ -18,10 +17,12 @@ export default class StateFactory {
 	}
 
 	static createRow(): Row {
+		const currentTime = Date.now();
 		return {
 			id: randomUUID(),
 			menuCellId: randomUUID(),
-			creationDate: Date.now(),
+			creationTime: currentTime,
+			lastEditedTime: currentTime,
 		};
 	}
 

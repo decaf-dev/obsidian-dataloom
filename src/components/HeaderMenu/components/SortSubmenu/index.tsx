@@ -1,6 +1,6 @@
-import { SortDir } from "src/services/sort/types";
-
 import { SORT_MENU_ITEM } from "../../constants";
+
+import { SortDir } from "src/services/tableState/types";
 
 import MenuItem from "../MenuItem";
 import Submenu from "../Submenu";

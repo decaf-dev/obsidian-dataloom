@@ -7,8 +7,7 @@ import EditableTh from "./components/EditableTh";
 import OptionBar from "./components/OptionBar";
 import Button from "./components/Button";
 
-import { Cell, CellType } from "./services/tableState/types";
-import { SortDir } from "./services/sort/types";
+import { Cell, CellType, SortDir } from "./services/tableState/types";
 import { logFunc } from "./services/debug";
 import { TableState } from "./services/tableState/types";
 import { useAppDispatch, useAppSelector } from "./services/redux/hooks";
@@ -27,7 +26,7 @@ import {
 	sortOnColumn,
 	updateColumn,
 } from "./services/tableState/column";
-import { sortRows } from "./services/sort/sort";
+import { sortRows } from "./services/tableState/sort";
 
 import "./app.css";
 import { updateCell } from "./services/tableState/cell";
@@ -100,8 +99,6 @@ export default function App({ initialState, onSaveTableState }: Props) {
 		);
 		handleSortRows();
 	}
-
-	console.log(tableState.model);
 
 	function handleCellContentChange(cellId: string, updatedMarkdown: string) {
 		logFunc(shouldDebug, FILE_NAME, "handleCellContentChange", {

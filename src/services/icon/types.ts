@@ -24,4 +24,5 @@ export const enum IconType {
 	LABEL = "Label",
 	NUMBERS = "Numbers",
 	CALENDAR_TODAY = "CalendarToday",
+	SCHEDULE = "Schedule",
 }

@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 
-import { SortDir } from "src/services/sort/types";
-import { TableModel } from "src/services/tableState/types";
+import { TableModel, SortDir } from "src/services/tableState/types";
 import Icon from "../Icon";
 import { IconType } from "src/services/icon/types";
 

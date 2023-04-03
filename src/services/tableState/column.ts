@@ -1,7 +1,6 @@
-import { SortDir } from "../sort/types";
 import { ColumnIdError } from "./error";
 import StateFactory from "./StateFactory";
-import { CellType, Column, TableState } from "./types";
+import { CellType, Column, TableState, SortDir } from "./types";
 import { sortCells } from "./utils";
 
 export const addColumn = (prevState: TableState): TableState => {
