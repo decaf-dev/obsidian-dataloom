@@ -1,9 +1,9 @@
 export const TAG_REGEX = new RegExp(/^[#][^\s]+$/);
 
 /**
- * Matches a number of at least 1 character e.g. '0'
+ * Matches both whole numbers and decimals
  */
-export const NUMBER_REGEX = new RegExp(/^\d+$/);
+export const NUMBER_REGEX = new RegExp(/^\d*\.?\d*$/);
 
 export const TAGS_REGEX = new RegExp(/#[^ \t]+/g);
 
