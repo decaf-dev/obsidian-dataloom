@@ -31,7 +31,8 @@ import { sortRows } from "./services/tableState/sort";
 import "./app.css";
 import { updateCell } from "./services/tableState/cell";
 import { addRow, deleteRow } from "./services/tableState/row";
-import { useDidMountEffect, useId } from "./services/hooks";
+import { useDidMountEffect } from "./services/hooks";
+import { useId } from "./services/random/hooks";
 import { ColumnIdError } from "./services/tableState/error";
 import { dateTimeToString } from "./services/string/conversion";
 

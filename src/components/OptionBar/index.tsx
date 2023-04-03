@@ -4,7 +4,6 @@ import { TableModel, SortDir } from "src/services/tableState/types";
 import Icon from "../Icon";
 import { IconType } from "src/services/icon/types";
 
-import { findColorClass } from "src/services/color";
 import { useAppSelector } from "src/services/redux/hooks";
 import Stack from "../Stack";
 import Button from "src/components/Button";
@@ -95,11 +94,11 @@ export default function OptionBar({ model, onSortRemoveClick }: Props) {
 
 	return (
 		<div className="NLT__option-bar">
+			<SearchBar />
 			<SortBubbleList
 				bubbles={bubbles}
 				onRemoveClick={onSortRemoveClick}
 			/>
-			<SearchBar />
 		</div>
 	);
 }
