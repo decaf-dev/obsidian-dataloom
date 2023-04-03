@@ -23,6 +23,7 @@ import {
 	EditOutlined,
 	TextSnippetOutlined,
 	MoveUpOutlined,
+	Search,
 	MoveDownOutlined,
 	ScheduleOutlined,
 } from "@mui/icons-material";
@@ -86,6 +87,8 @@ export const findIcon = (
 			return <CalendarTodayOutlined className={className} />;
 		case IconType.SCHEDULE:
 			return <ScheduleOutlined className={className} />;
+		case IconType.SEARCH:
+			return <Search className={className} />;
 		default:
 			return "";
 	}

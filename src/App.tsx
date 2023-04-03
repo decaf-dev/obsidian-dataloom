@@ -33,6 +33,8 @@ import { updateCell } from "./services/tableState/cell";
 import { addRow, deleteRow } from "./services/tableState/row";
 import { useDidMountEffect, useId } from "./services/hooks";
 import { ColumnIdError, RowIdError } from "./services/tableState/error";
+import { dateToString } from "./services/string/conversion";
+import { dateTimeToString } from "./services/string/utils";
 
 const FILE_NAME = "App";
 
@@ -42,6 +44,7 @@ interface Props {
 }
 
 export default function App({ initialState, onSaveTableState }: Props) {
+	const { searchText } = useAppSelector((state) => state.global);
 	const [tableState, setTableState] = useState(initialState);
 
 	const [sortTime, setSortTime] = useState(0);
@@ -267,6 +270,30 @@ export default function App({ initialState, onSaveTableState }: Props) {
 	}
 
 	const { rows, columns, cells } = tableState.model;
+	const filteredRows = rows.filter((row) => {
+		const filteredCells = cells.filter((cell) => cell.rowId === row.id);
+		const matchedCell = filteredCells.find(
+			(cell) =>
+				cell.markdown
+					.toLowerCase()
+					.includes(searchText.toLowerCase()) || cell.isHeader
+		);
+		if (matchedCell !== undefined) return true;
+
+		const creationTimeString = dateTimeToString(row.creationTime);
+		if (creationTimeString.toLowerCase().includes(searchText.toLowerCase()))
+			return true;
+
+		const lastEditedTimeString = dateTimeToString(row.lastEditedTime);
+		if (
+			lastEditedTimeString
+				.toLowerCase()
+				.includes(searchText.toLowerCase())
+		)
+			return true;
+
+		return false;
+	});
 
 	return (
 		<div className="NLT__app">
@@ -367,7 +394,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 							],
 						},
 					]}
-					rows={rows
+					rows={filteredRows
 						.filter((_row, i) => i !== 0)
 						.map((row) => {
 							const rowCells: Cell[] = cells.filter(

@@ -25,4 +25,5 @@ export const enum IconType {
 	NUMBERS,
 	CALENDAR_TODAY,
 	SCHEDULE,
+	SEARCH,
 }

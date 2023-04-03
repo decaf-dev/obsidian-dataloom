@@ -9,8 +9,10 @@ import { useAppSelector } from "src/services/redux/hooks";
 import Stack from "../Stack";
 import Button from "src/components/Button";
 
-import "./styles.css";
 import { ColumnIdError } from "src/services/tableState/error";
+import SearchBar from "./components/SearchBar";
+
+import "./styles.css";
 
 interface SortBubbleProps {
 	sortDir: SortDir;
@@ -25,7 +27,6 @@ const SortBubble = ({
 	markdown,
 	onRemoveClick,
 }: SortBubbleProps) => {
-	//TODO markdown should be html?
 	const color = findColorClass(isDarkMode, "blue");
 	let className = "NLT__sort-bubble " + color;
 	return (
@@ -100,6 +101,7 @@ export default function OptionBar({ model, onSortRemoveClick }: Props) {
 				bubbles={bubbles}
 				onRemoveClick={onSortRemoveClick}
 			/>
+			<SearchBar />
 		</div>
 	);
 }
