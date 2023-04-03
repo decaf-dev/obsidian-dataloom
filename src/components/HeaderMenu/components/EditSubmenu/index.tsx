@@ -4,6 +4,7 @@ import Switch from "src/components/Switch";
 
 import { CellType } from "src/services/tableState/types";
 import Stack from "src/components/Stack";
+import Padding from "src/components/Padding";
 
 interface Props {
 	canDeleteColumn: boolean;
@@ -38,11 +39,7 @@ export default function EditMenu({
 }: Props) {
 	return (
 		<Submenu title={title} onBackClick={onBackClick}>
-			<div
-				style={{
-					padding: "var(--nlt-spacing--md) var(--nlt--spacing-sm)",
-				}}
-			>
+			<Padding padding="md">
 				<Stack spacing="md" isVertical>
 					<div>
 						<p className="NLT__label">Title</p>
@@ -81,7 +78,7 @@ export default function EditMenu({
 						</Button>
 					)}
 				</Stack>
-			</div>
+			</Padding>
 		</Submenu>
 	);
 }
