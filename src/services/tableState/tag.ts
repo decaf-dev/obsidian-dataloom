@@ -89,3 +89,21 @@ export const addCellToTag = (
 		},
 	};
 };
+
+export const updateTagColor = (
+	prevState: TableState,
+	tagId: string,
+	newColor: string
+): TableState => {
+	const { tags } = prevState.model;
+	const tagsCopy = [...tags];
+	const index = tagsCopy.findIndex((t) => t.id === tagId);
+	tagsCopy[index].color = newColor;
+	return {
+		...prevState,
+		model: {
+			...prevState.model,
+			tags: tagsCopy,
+		},
+	};
+};

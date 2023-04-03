@@ -16,6 +16,7 @@ import {
 	addCellToTag,
 	addNewTag,
 	removeCellFromTag,
+	updateTagColor,
 } from "./services/tableState/tag";
 import {
 	addColumn,
@@ -220,26 +221,12 @@ export default function App({ initialState, onSaveTableState }: Props) {
 		);
 	}
 
-	function handleChangeColor(columnId: string, tagId: string, color: string) {
-		//TODO implement
-		// setTableState((prevState) => {
-		// 	const tags = [...prevState.settings.columns[columnId].tags];
-		// 	const index = tags.findIndex((t) => t.id === tagId);
-		// 	tags[index].color = color;
-		// 	return {
-		// 		...prevState,
-		// 		settings: {
-		// 			...prevState.settings,
-		// 			columns: {
-		// 				...prevState.settings.columns,
-		// 				[columnId]: {
-		// 					...prevState.settings.columns[columnId],
-		// 					tags,
-		// 				},
-		// 			},
-		// 		},
-		// 	};
-		// });
+	function handleChangeColor(tagId: string, color: string) {
+		logFunc(shouldDebug, FILE_NAME, "handleChangeColor", {
+			tagId,
+			color,
+		});
+		setTableState((prevState) => updateTagColor(prevState, tagId, color));
 	}
 
 	function handleAutoWidthToggle(columnId: string, value: boolean) {

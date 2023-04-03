@@ -54,7 +54,7 @@ interface Props {
 		color: string,
 		canAddMultiple: boolean
 	) => void;
-	onColorChange: (columnId: string, tagId: string, color: string) => void;
+	onColorChange: (tagId: string, color: string) => void;
 }
 
 export default function EditableTd({
@@ -123,10 +123,6 @@ export default function EditableTd({
 
 	function handleRemoveTagClick(tagId: string) {
 		onRemoveTagClick(cellId, tagId);
-	}
-
-	function handleColorChange(tagId: string, colorId: string) {
-		onColorChange(columnId, tagId, colorId);
 	}
 
 	function handleTagClick(tagId: string) {
@@ -215,7 +211,7 @@ export default function EditableTd({
 						<TagCellEdit
 							tags={tags}
 							cellId={cellId}
-							onColorChange={handleColorChange}
+							onColorChange={onColorChange}
 							onAddTag={handleAddTag}
 							onRemoveTag={handleRemoveTagClick}
 							onTagClick={handleTagClick}
