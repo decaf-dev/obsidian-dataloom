@@ -32,7 +32,7 @@ import "./app.css";
 import { updateCell } from "./services/tableState/cell";
 import { addRow, deleteRow } from "./services/tableState/row";
 import { useDidMountEffect, useId } from "./services/hooks";
-import { ColumnIdError } from "./services/tableState/error";
+import { ColumnIdError, RowIdError } from "./services/tableState/error";
 
 const FILE_NAME = "App";
 
@@ -296,6 +296,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 											cell.isHeader
 									);
 									if (!cell) throw Error("Cell not found");
+
 									const { id: cellId, markdown } = cell;
 									return {
 										id: cellId,
@@ -372,7 +373,12 @@ export default function App({ initialState, onSaveTableState }: Props) {
 							const rowCells: Cell[] = cells.filter(
 								(cell: Cell) => cell.rowId === row.id
 							);
-							const { id: rowId, menuCellId } = row;
+							const {
+								id: rowId,
+								menuCellId,
+								lastEditedTime,
+								creationTime,
+							} = row;
 							return {
 								id: rowId,
 								cells: [
@@ -402,6 +408,12 @@ export default function App({ initialState, onSaveTableState }: Props) {
 													cellId={cellId}
 													tags={tags}
 													columnId={cell.columnId}
+													rowCreationTime={
+														creationTime
+													}
+													rowLastEditedTime={
+														lastEditedTime
+													}
 													markdown={markdown}
 													columnType={type}
 													shouldWrapOverflow={

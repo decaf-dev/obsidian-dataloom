@@ -18,6 +18,7 @@ export default function SortSubmenu({
 	onSortClick,
 	onBackClick,
 }: Props) {
+	console.log(SORT_MENU_ITEM);
 	return (
 		<Submenu title={title} onBackClick={onBackClick}>
 			<ul className="NLT__header-menu-ul">

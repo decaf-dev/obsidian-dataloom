@@ -21,12 +21,16 @@ import { openMenu, isMenuOpen } from "src/services/menu/menuSlice";
 
 import "./styles.css";
 import { usePosition } from "src/services/hooks";
+import LastEditedTimeCell from "../LastEditedTimeCell";
+import CreationTimeCell from "../CreationTimeCell";
 
 interface Props {
 	columnType: string;
 	cellId: string;
 	columnId: string;
 	markdown: string;
+	rowCreationTime: number;
+	rowLastEditedTime: number;
 	width: string;
 	tags: Tag[];
 	shouldWrapOverflow: boolean;
@@ -54,6 +58,8 @@ export default function EditableTd({
 	columnId,
 	markdown,
 	columnType,
+	rowCreationTime,
+	rowLastEditedTime,
 	tags,
 	width,
 	shouldWrapOverflow,
@@ -89,7 +95,10 @@ export default function EditableTd({
 			} else {
 				handleCheckboxChange("[x]");
 			}
-		} else {
+		} else if (
+			columnType !== CellType.CREATION_TIME &&
+			columnType !== CellType.LAST_EDITED_TIME
+		) {
 			const el = e.target as HTMLInputElement;
 
 			//If we clicked on the link for a file or tag, return
@@ -150,6 +159,22 @@ export default function EditableTd({
 				return (
 					<NumberCell
 						content={markdown}
+						shouldWrapOverflow={shouldWrapOverflow}
+						useAutoWidth={useAutoWidth}
+					/>
+				);
+			case CellType.LAST_EDITED_TIME:
+				return (
+					<LastEditedTimeCell
+						time={rowLastEditedTime}
+						shouldWrapOverflow={shouldWrapOverflow}
+						useAutoWidth={useAutoWidth}
+					/>
+				);
+			case CellType.CREATION_TIME:
+				return (
+					<CreationTimeCell
+						time={rowCreationTime}
 						shouldWrapOverflow={shouldWrapOverflow}
 						useAutoWidth={useAutoWidth}
 					/>
