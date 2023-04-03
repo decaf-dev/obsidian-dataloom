@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
+import { closeTopLevelMenu } from "src/services/menu/menuSlice";
+import { useAppDispatch } from "src/services/redux/hooks";
 import { numToPx } from "src/services/string/conversion";
 
 import "./styles.css";
@@ -27,6 +29,31 @@ export default function Menu({
 	height = 0,
 	children,
 }: Props) {
+	const dispatch = useAppDispatch();
+
+	function handleKeyUp(e: KeyboardEvent) {
+		if (e.code === "Escape" || e.code === "Enter") {
+			dispatch(closeTopLevelMenu());
+		}
+	}
+
+	function handleMouseDown(e: MouseEvent) {
+		const target = e.target as HTMLElement;
+		if (!target.closest(`.NLT__menu`)) {
+			dispatch(closeTopLevelMenu());
+		}
+	}
+
+	useEffect(() => {
+		if (isOpen) {
+			window.addEventListener("keyup", handleKeyUp);
+			window.addEventListener("mousedown", handleMouseDown);
+		} else {
+			window.removeEventListener("keyup", handleKeyUp);
+			window.removeEventListener("mousedown", handleMouseDown);
+		}
+	}, [isOpen]);
+
 	return (
 		<>
 			{isOpen &&
