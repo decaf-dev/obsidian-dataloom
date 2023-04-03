@@ -21,7 +21,7 @@ export default function TagCell({
 		useAutoWidth,
 		shouldWrapOverflow
 	);
-	const className = "NLT__tag-cell" + " " + overflowClass;
+	const className = "NLT__tag-cell" + " " + overflowClassName;
 	return (
 		<div className={className}>
 			<Tag isDarkMode={isDarkMode} markdown={markdown} color={color} />

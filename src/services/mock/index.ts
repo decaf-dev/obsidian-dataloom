@@ -1,19 +1,19 @@
 import { CURRENT_PLUGIN_VERSION } from "src/constants";
 import StateFactory from "../tableState/StateFactory";
-import { TableState } from "../tableState/types";
+import { Cell, Column, Row, TableState, Tag } from "../tableState/types";
 
 export const mockTableState = (
 	numColumns: number,
 	numRows: number
 ): TableState => {
-	const columns = [];
+	const columns: Column[] = [];
 	for (let i = 0; i < numColumns; i++)
 		columns.push(StateFactory.createColumn());
 
-	const rows = [];
+	const rows: Row[] = [];
 	for (let i = 0; i < numRows; i++) rows.push(StateFactory.createRow());
 
-	const cells = [];
+	const cells: Cell[] = [];
 	for (let y = 0; y < numRows; y++) {
 		for (let x = 0; x < numColumns; x++) {
 			cells.push(
@@ -21,11 +21,15 @@ export const mockTableState = (
 			);
 		}
 	}
+
+	const tags: Tag[] = [];
+	//TODO add tags
 	return {
 		model: {
 			rows,
 			columns,
 			cells,
+			tags,
 		},
 		pluginVersion: CURRENT_PLUGIN_VERSION,
 	};

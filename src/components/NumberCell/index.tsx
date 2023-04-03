@@ -23,7 +23,7 @@ export default function NumberCell({
 		useAutoWidth,
 		shouldWrapOverflow
 	);
-	const className = "NLT__number-cell" + " " + overflowClass;
+	const className = "NLT__number-cell" + " " + overflowClassName;
 
 	if (!isValidCellContent(content, CellType.NUMBER))
 		content = filterNumberFromContent(content);

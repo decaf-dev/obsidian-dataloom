@@ -19,7 +19,7 @@ export default function TextCell({
 		useAutoWidth,
 		shouldWrapOverflow
 	);
-	const className = "NLT__text-cell" + " " + overflowClass;
+	const className = "NLT__text-cell" + " " + overflowClassName;
 	return (
 		<div className={className}>
 			<div

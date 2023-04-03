@@ -40,10 +40,9 @@ interface Props {
 	tags: Tag[];
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
-	onRemoveTagClick: (cellId: string, columnId: string, tagId: string) => void;
+	onRemoveTagClick: (cellId: string, tagId: string) => void;
 	onTagClick: (
 		cellId: string,
-		columnId: string,
 		tagId: string,
 		canAddMultiple: boolean
 	) => void;
@@ -123,7 +122,7 @@ export default function EditableTd({
 	}
 
 	function handleRemoveTagClick(tagId: string) {
-		onRemoveTagClick(cellId, columnId, tagId);
+		onRemoveTagClick(cellId, tagId);
 	}
 
 	function handleColorChange(tagId: string, colorId: string) {
@@ -131,7 +130,7 @@ export default function EditableTd({
 	}
 
 	function handleTagClick(tagId: string) {
-		onTagClick(cellId, columnId, tagId, columnType === CellType.MULTI_TAG);
+		onTagClick(cellId, tagId, columnType === CellType.MULTI_TAG);
 	}
 
 	function handleTextInputChange(updatedMarkdown: string) {
@@ -148,82 +147,6 @@ export default function EditableTd({
 
 	function handleCheckboxChange(updatedMarkdown: string) {
 		onContentChange(cellId, updatedMarkdown);
-	}
-
-	function renderCell(): React.ReactNode {
-		switch (columnType) {
-			case CellType.TEXT:
-				return (
-					<TextCell
-						markdown={markdown}
-						shouldWrapOverflow={shouldWrapOverflow}
-						useAutoWidth={useAutoWidth}
-					/>
-				);
-			case CellType.NUMBER:
-				return (
-					<NumberCell
-						content={markdown}
-						shouldWrapOverflow={shouldWrapOverflow}
-						useAutoWidth={useAutoWidth}
-					/>
-				);
-			case CellType.LAST_EDITED_TIME:
-				return (
-					<LastEditedTimeCell
-						time={rowLastEditedTime}
-						shouldWrapOverflow={shouldWrapOverflow}
-						useAutoWidth={useAutoWidth}
-					/>
-				);
-			case CellType.CREATION_TIME:
-				return (
-					<CreationTimeCell
-						time={rowCreationTime}
-						shouldWrapOverflow={shouldWrapOverflow}
-						useAutoWidth={useAutoWidth}
-					/>
-				);
-			case CellType.TAG: {
-				const currentTag = tags.find((t) =>
-					t.cells.find((c) => c === cellId)
-				);
-				if (currentTag) {
-					return (
-						<TagCell
-							isDarkMode={isDarkMode}
-							markdown={currentTag.markdown}
-							color={currentTag.color}
-						/>
-					);
-				} else {
-					return <></>;
-				}
-			}
-			case CellType.MULTI_TAG: {
-				const filteredTags = tags.filter((t) =>
-					t.cells.find((c) => c == cellId)
-				);
-				return (
-					<MultiTagCell
-						isDarkMode={isDarkMode}
-						markdown={markdown}
-						tags={filteredTags}
-					/>
-				);
-			}
-			case CellType.DATE:
-				return <DateCell content={markdown} />;
-			case CellType.CHECKBOX:
-				return (
-					<CheckboxCell
-						content={markdown}
-						onCheckboxChange={handleCheckboxChange}
-					/>
-				);
-			default:
-				return <></>;
-		}
 	}
 
 	const {
@@ -246,6 +169,10 @@ export default function EditableTd({
 	) {
 		className += " NLT__default-cursor";
 	}
+
+	const currentTag = tags.find((t) => t.cellIds.find((c) => c === cellId));
+	const filteredTags = tags.filter((t) => t.cellIds.find((c) => c == cellId));
+
 	return (
 		<div
 			ref={containerRef}
@@ -302,7 +229,58 @@ export default function EditableTd({
 					)}
 				</Menu>
 			)}
-			{renderCell()}
+			{columnType === CellType.TEXT && (
+				<TextCell
+					markdown={markdown}
+					shouldWrapOverflow={shouldWrapOverflow}
+					useAutoWidth={useAutoWidth}
+				/>
+			)}
+			{columnType === CellType.NUMBER && (
+				<NumberCell
+					content={markdown}
+					shouldWrapOverflow={shouldWrapOverflow}
+					useAutoWidth={useAutoWidth}
+				/>
+			)}
+			{columnType === CellType.CHECKBOX && (
+				<CheckboxCell
+					content={markdown}
+					onCheckboxChange={handleCheckboxChange}
+				/>
+			)}
+			{columnType === CellType.DATE && <DateCell content={markdown} />}
+			{columnType === CellType.CREATION_TIME && (
+				<CreationTimeCell
+					time={rowCreationTime}
+					shouldWrapOverflow={shouldWrapOverflow}
+					useAutoWidth={useAutoWidth}
+				/>
+			)}
+			{columnType === CellType.LAST_EDITED_TIME && (
+				<LastEditedTimeCell
+					time={rowLastEditedTime}
+					shouldWrapOverflow={shouldWrapOverflow}
+					useAutoWidth={useAutoWidth}
+				/>
+			)}
+			{columnType === CellType.TAG && currentTag && (
+				<TagCell
+					isDarkMode={isDarkMode}
+					markdown={currentTag.markdown}
+					color={currentTag.color}
+					useAutoWidth={useAutoWidth}
+					shouldWrapOverflow={shouldWrapOverflow}
+				/>
+			)}
+			{columnType === CellType.MULTI_TAG && filteredTags.length !== 0 && (
+				<MultiTagCell
+					isDarkMode={isDarkMode}
+					tags={filteredTags}
+					useAutoWidth={useAutoWidth}
+					shouldWrapOverflow={shouldWrapOverflow}
+				/>
+			)}
 		</div>
 	);
 }

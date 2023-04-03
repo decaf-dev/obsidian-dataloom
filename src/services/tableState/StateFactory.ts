@@ -11,7 +11,6 @@ export default class StateFactory {
 			type: CellType.TEXT,
 			useAutoWidth: false,
 			shouldWrapOverflow: false,
-			tags: [],
 			footerCellId: randomUUID(),
 		};
 	}
@@ -41,15 +40,17 @@ export default class StateFactory {
 	}
 
 	static createTag(
+		columnId: string,
 		cellId: string,
 		markdown: string,
 		color = randomColor()
 	): Tag {
 		return {
 			id: randomUUID(),
+			columnId,
 			markdown: markdown,
 			color,
-			cells: [cellId],
+			cellIds: [cellId],
 		};
 	}
 }

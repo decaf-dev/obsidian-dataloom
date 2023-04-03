@@ -16,7 +16,7 @@ export default function LastEditedTimeCell({
 		useAutoWidth,
 		shouldWrapOverflow
 	);
-	const className = "NLT__last-edited-time-cell" + " " + overflowClass;
+	const className = "NLT__last-edited-time-cell" + " " + overflowClassName;
 
 	return <div className={className}>{dateTimeToString(time)}</div>;
 }

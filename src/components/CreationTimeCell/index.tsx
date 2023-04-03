@@ -16,7 +16,7 @@ export default function CreationTimeCell({
 		useAutoWidth,
 		shouldWrapOverflow
 	);
-	const className = "NLT__creation-time-cell" + " " + overflowClass;
+	const className = "NLT__creation-time-cell" + " " + overflowClassName;
 
 	return <div className={className}>{dateTimeToString(time)}</div>;
 }

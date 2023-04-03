@@ -1,4 +1,4 @@
-import { ColumnIdError, TagIdError } from "./error";
+import { TagIdError } from "./error";
 import StateFactory from "./StateFactory";
 import { TableState } from "./types";
 
@@ -10,116 +10,82 @@ export const addNewTag = (
 	color: string,
 	canAddMultiple: boolean
 ) => {
-	const { columns } = prevState.model;
-	const column = columns.find((column) => column.id === columnId);
-	if (!column) throw new ColumnIdError(columnId);
+	const { tags } = prevState.model;
 
-	const tagsCopy = [...column.tags];
+	const tagsCopy = [...tags];
 
 	if (!canAddMultiple) {
-		const tag = tagsCopy.find((t) => t.cells.find((c) => c === cellId));
+		const tag = tagsCopy.find((t) => t.cellIds.find((c) => c === cellId));
 		//If there was already a tag selected for this cell
 		if (tag) {
-			const arr = tag.cells.filter((c) => c !== cellId);
-			tag.cells = arr;
+			const arr = tag.cellIds.filter((c) => c !== cellId);
+			tag.cellIds = arr;
 		}
 	}
 
-	tagsCopy.push(StateFactory.createTag(cellId, markdown, color));
+	tagsCopy.push(StateFactory.createTag(columnId, cellId, markdown, color));
 	return {
 		...prevState,
 		model: {
 			...prevState.model,
-			columns: columns.map((column) => {
-				if (column.id === columnId) {
-					return {
-						...column,
-						tags: tagsCopy,
-					};
-				}
-				return column;
-			}),
+			tags: tagsCopy,
 		},
 	};
 };
 
-export const removeTag = (
+export const removeCellFromTag = (
 	prevState: TableState,
 	cellId: string,
-	columnId: string,
 	tagId: string
 ) => {
-	const { columns } = prevState.model;
-	const column = columns.find((column) => column.id === columnId);
-	if (!column) throw new ColumnIdError(columnId);
+	const { tags } = prevState.model;
 
-	const tagsCopy = [...column.tags];
+	const tagsCopy = [...tags];
 	const tag = tagsCopy.find((t) => t.id === tagId);
 
 	if (!tag) throw new TagIdError(tagId);
 
-	const arr = tag.cells.filter((c) => c !== cellId);
-	tag.cells = arr;
+	const arr = tag.cellIds.filter((c) => c !== cellId);
+	tag.cellIds = arr;
 
 	return {
 		...prevState,
 		model: {
 			...prevState.model,
-			columns: columns.map((column) => {
-				if (column.id === columnId) {
-					return {
-						...column,
-						tags: tagsCopy,
-					};
-				}
-				return column;
-			}),
+			tags: tagsCopy,
 		},
 	};
 };
 
-export const addExistingTag = (
+export const addCellToTag = (
 	prevState: TableState,
 	cellId: string,
-	columnId: string,
 	tagId: string,
 	canAddMultiple: boolean
 ): TableState => {
-	const { columns, cells } = prevState.model;
-	const column = columns.find((column) => column.id === columnId);
-
-	if (!column) throw new ColumnIdError(columnId);
-
-	const tagsCopy = [...column.tags];
+	const { tags } = prevState.model;
+	const tagsCopy = [...tags];
 
 	if (!canAddMultiple) {
-		const tag = tagsCopy.find((t) => t.cells.find((c) => c == cellId));
+		const tag = tagsCopy.find((t) => t.cellIds.find((c) => c == cellId));
 		if (tag) {
 			//If we click on the same cell, then return
 			if (tag.id === tagId) return prevState;
-			const arr = tag.cells.filter((c) => c !== cellId);
-			tag.cells = arr;
+			const arr = tag.cellIds.filter((c) => c !== cellId);
+			tag.cellIds = arr;
 		}
 	}
 
 	const tag = tagsCopy.find((t) => t.id === tagId);
 	if (!tag) throw new TagIdError(tagId);
 	const index = tagsCopy.indexOf(tag);
-	tagsCopy[index].cells.push(cellId);
+	tagsCopy[index].cellIds.push(cellId);
 
 	return {
 		...prevState,
 		model: {
 			...prevState.model,
-			columns: columns.map((column) => {
-				if (column.id === columnId) {
-					return {
-						...column,
-						tags: tagsCopy,
-					};
-				}
-				return column;
-			}),
+			tags: tagsCopy,
 		},
 	};
 };

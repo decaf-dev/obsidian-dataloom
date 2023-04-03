@@ -22,16 +22,12 @@ export interface Cell {
 	isHeader: boolean;
 }
 
-export interface TagCellReference {
-	rowId: string;
-	columnId: string;
-}
-
 export interface Tag {
 	id: string;
 	markdown: string;
 	color: string;
-	cells: string[];
+	columnId: string;
+	cellIds: string[];
 }
 export interface Column {
 	id: string;
@@ -40,7 +36,6 @@ export interface Column {
 	type: CellType;
 	useAutoWidth: boolean;
 	shouldWrapOverflow: boolean;
-	tags: Tag[];
 	footerCellId: string;
 }
 
@@ -55,6 +50,7 @@ export interface TableModel {
 	columns: Column[];
 	rows: Row[];
 	cells: Cell[];
+	tags: Tag[];
 }
 
 export interface TableState {

@@ -157,7 +157,7 @@ export const changeColumnType = (
 	columnId: string,
 	newType: CellType
 ) => {
-	const { columns } = prevState.model;
+	const { columns, tags } = prevState.model;
 	const column = columns.find((column) => column.id === columnId);
 	if (!column) throw new ColumnIdError(columnId);
 
@@ -166,7 +166,7 @@ export const changeColumnType = (
 	//If same type return
 	if (previousType === newType) return prevState;
 
-	let tagsCopy = [...column.tags];
+	let tagsCopy = [...tags];
 
 	if (
 		(previousType === CellType.MULTI_TAG && newType !== CellType.TAG) ||
@@ -195,21 +195,23 @@ export const changeColumnType = (
 				if (found) {
 					const index = tagsCopy.indexOf(found);
 					//If we already have a reference to that tag
-					if (found.cells.find((id) => id === cell.id)) {
+					if (found.cellIds.find((id) => id === cell.id)) {
 						//And we allow only 1 selected tag, then remove the reference
 						if (i > 0 && newType === CellType.TAG) {
-							tagsCopy[index].cells = tagsCopy[
+							tagsCopy[index].cellIds = tagsCopy[
 								index
-							].cells.filter((c) => c === cell.id);
+							].cellIds.filter((c) => c === cell.id);
 						}
 						//Else add a reference
 					} else {
-						tagsCopy[index].cells.push(cell.id);
+						tagsCopy[index].cellIds.push(cell.id);
 					}
 					return;
 				}
 
-				tagsCopy.push(StateFactory.createTag(cell.id, markdown));
+				tagsCopy.push(
+					StateFactory.createTag(columnId, cell.id, markdown)
+				);
 			});
 		});
 	}
@@ -221,12 +223,12 @@ export const changeColumnType = (
 				if (column.id === columnId) {
 					return {
 						...column,
-						tags: tagsCopy,
 						type: newType,
 					};
 				}
 				return column;
 			}),
+			tags: tagsCopy,
 		},
 	};
 };

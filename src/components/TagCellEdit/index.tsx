@@ -34,7 +34,7 @@ const MenuHeader = ({
 			<Wrap spacingX="sm" style={{ overflow: "hidden" }}>
 				{tags
 					.filter((tag: TagType) =>
-						tag.cells.find((c) => c === cellId)
+						tag.cellIds.find((c) => c === cellId)
 					)
 					.map((tag: TagType) => (
 						<Tag

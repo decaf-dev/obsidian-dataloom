@@ -13,9 +13,9 @@ import { TableState } from "./services/tableState/types";
 import { useAppDispatch, useAppSelector } from "./services/redux/hooks";
 
 import {
-	addExistingTag,
+	addCellToTag,
 	addNewTag,
-	removeTag,
+	removeCellFromTag,
 } from "./services/tableState/tag";
 import {
 	addColumn,
@@ -140,35 +140,28 @@ export default function App({ initialState, onSaveTableState }: Props) {
 		);
 	}
 
-	function handleTagClick(
+	function handleAddCellToTag(
 		cellId: string,
-		columnId: string,
 		tagId: string,
 		canAddMultiple: boolean
 	) {
-		logFunc(shouldDebug, FILE_NAME, "handleTagClick", {
+		logFunc(shouldDebug, FILE_NAME, "handleAddCellToTag", {
 			cellId,
-			columnId,
 			tagId,
 			canAddMultiple,
 		});
 		setTableState((prevState) =>
-			addExistingTag(prevState, cellId, columnId, tagId, canAddMultiple)
+			addCellToTag(prevState, cellId, tagId, canAddMultiple)
 		);
 	}
 
-	function handleRemoveTagClick(
-		cellId: string,
-		columnId: string,
-		tagId: string
-	) {
-		logFunc(shouldDebug, FILE_NAME, "handleRemoveTagClick", {
+	function handleRemoveCellFromTag(cellId: string, tagId: string) {
+		logFunc(shouldDebug, FILE_NAME, "handleRemoveCellFromTag", {
 			cellId,
-			columnId,
 			tagId,
 		});
 		setTableState((prevState) =>
-			removeTag(prevState, cellId, columnId, tagId)
+			removeCellFromTag(prevState, cellId, tagId)
 		);
 	}
 
@@ -269,7 +262,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 		);
 	}
 
-	const { rows, columns, cells } = tableState.model;
+	const { rows, columns, cells, tags } = tableState.model;
 	const filteredRows = rows.filter((row) => {
 		const filteredCells = cells.filter((cell) => cell.rowId === row.id);
 		const matchedCell = filteredCells.find(
@@ -453,9 +446,12 @@ export default function App({ initialState, onSaveTableState }: Props) {
 											type,
 											useAutoWidth,
 											shouldWrapOverflow,
-											tags,
 										} = column;
 										const { id: cellId, markdown } = cell;
+
+										const filteredTags = tags.filter(
+											(tag) => tag.columnId === column.id
+										);
 
 										return {
 											id: cellId,
@@ -463,7 +459,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 												<EditableTd
 													key={cellId}
 													cellId={cellId}
-													tags={tags}
+													tags={filteredTags}
 													columnId={cell.columnId}
 													rowCreationTime={
 														creationTime
@@ -482,9 +478,11 @@ export default function App({ initialState, onSaveTableState }: Props) {
 															? "max-content"
 															: width
 													}
-													onTagClick={handleTagClick}
+													onTagClick={
+														handleAddCellToTag
+													}
 													onRemoveTagClick={
-														handleRemoveTagClick
+														handleRemoveCellFromTag
 													}
 													onContentChange={
 														handleCellContentChange

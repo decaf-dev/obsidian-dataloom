@@ -9,13 +9,11 @@ import { useOverflowClassname } from "src/services/spacing/hooks";
 interface Props {
 	isDarkMode: boolean;
 	tags: TagType[];
-	markdown: string;
 	useAutoWidth: boolean;
 	shouldWrapOverflow: boolean;
 }
 export default function MultiTagCell({
 	isDarkMode,
-	markdown,
 	tags,
 	useAutoWidth,
 	shouldWrapOverflow,
@@ -24,7 +22,7 @@ export default function MultiTagCell({
 		useAutoWidth,
 		shouldWrapOverflow
 	);
-	const className = "NLT__multi-tag-cell" + " " + overflowClass;
+	const className = "NLT__multi-tag-cell" + " " + overflowClassName;
 	return (
 		<div className={className}>
 			<Wrap>
@@ -32,7 +30,7 @@ export default function MultiTagCell({
 					<Tag
 						key={tag.id}
 						isDarkMode={isDarkMode}
-						markdown={markdown}
+						markdown={tag.markdown}
 						color={tag.color}
 					/>
 				))}
