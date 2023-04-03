@@ -20,7 +20,7 @@ export default function MenuItem({
 	return (
 		<li className={className} onClick={() => onClick()}>
 			<Stack>
-				{icon && <Icon icon={icon} />}
+				{icon !== undefined && <Icon icon={icon} />}
 				<p className="NLT__p">{content}</p>
 			</Stack>
 		</li>

@@ -18,14 +18,13 @@ export default function SortSubmenu({
 	onSortClick,
 	onBackClick,
 }: Props) {
-	console.log(SORT_MENU_ITEM);
 	return (
 		<Submenu title={title} onBackClick={onBackClick}>
 			<ul className="NLT__header-menu-ul">
 				{Object.values(SORT_MENU_ITEM).map((item) => (
 					<MenuItem
 						key={item.name}
-						icon={item.icon && item.icon}
+						icon={item.icon}
 						content={`${item.content}`}
 						onClick={() => onSortClick(item.name)}
 						isSelected={columnSortDir === item.name}
