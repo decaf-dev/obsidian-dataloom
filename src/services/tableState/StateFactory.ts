@@ -8,7 +8,7 @@ export default class StateFactory {
 		return {
 			id: randomUUID(),
 			sortDir: SortDir.NONE,
-			width: "120px",
+			width: "140px",
 			type: CellType.TEXT,
 			useAutoWidth: false,
 			shouldWrapOverflow: false,

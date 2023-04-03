@@ -17,6 +17,9 @@ import {
 
 import "./styles.css";
 import { usePosition } from "src/services/hooks";
+import Icon from "../Icon";
+import { IconType } from "src/services/icon/types";
+import Stack from "../Stack";
 
 interface Props {
 	cellId: string;
@@ -70,12 +73,9 @@ export default function EditableTh({
 	const { position, containerRef } = usePosition();
 
 	function handleHeaderClick(e: React.MouseEvent) {
-		if (e.target instanceof HTMLElement) {
-			const el = e.target;
-			if (!el.className.includes("NLT__th")) return;
-		} else {
-			return;
-		}
+		//If we're clicking in the submenu, then don't close the menu
+		const el = e.target as HTMLElement;
+		if (el.closest(`#${menu.id}`)) return;
 
 		if (isResizing.current) return;
 		if (isOpen) {
@@ -152,7 +152,12 @@ export default function EditableTh({
 				onWrapOverflowToggle={onWrapOverflowToggle}
 				onNameChange={onNameChange}
 			/>
-			<div className="NLT__th-content">{markdown}</div>
+			<div className="NLT__th-content">
+				<Stack spacing="sm">
+					<Icon icon={IconType.ARROW_UPWARD} variant="md" />
+					{markdown}
+				</Stack>
+			</div>
 			<div className="NLT__th-resize-container">
 				{!useAutoWidth && (
 					<div
