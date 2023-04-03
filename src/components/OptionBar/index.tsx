@@ -1,48 +1,15 @@
 import { useMemo } from "react";
 
 import { TableModel, SortDir } from "src/services/tableState/types";
-import Icon from "../Icon";
-import { IconType } from "src/services/icon/types";
 
 import { useAppSelector } from "src/services/redux/hooks";
 import Stack from "../Stack";
-import Button from "src/components/Button";
 
 import { ColumnIdError } from "src/services/tableState/error";
 import SearchBar from "./components/SearchBar";
 
 import "./styles.css";
-
-interface SortBubbleProps {
-	sortDir: SortDir;
-	markdown: string;
-	isDarkMode: boolean;
-	onRemoveClick: () => void;
-}
-
-const SortBubble = ({
-	isDarkMode,
-	sortDir,
-	markdown,
-	onRemoveClick,
-}: SortBubbleProps) => {
-	return (
-		<div className="NLT__sort-bubble">
-			<Stack spacing="sm">
-				{sortDir === SortDir.ASC ? (
-					<Icon icon={IconType.ARROW_UPWARD} />
-				) : (
-					<Icon icon={IconType.ARROW_DOWNWARD} />
-				)}
-				<span>{markdown}</span>
-				<Button
-					icon={<Icon icon={IconType.CLOSE} />}
-					onClick={onRemoveClick}
-				/>
-			</Stack>
-		</div>
-	);
-};
+import SortBubble from "./components/SortBubble";
 
 interface SortButtonListProps {
 	bubbles: { sortDir: SortDir; markdown: string; columnId: string }[];
@@ -55,8 +22,8 @@ const SortBubbleList = ({ bubbles, onRemoveClick }: SortButtonListProps) => {
 		<Stack spacing="sm">
 			{bubbles.map((bubble, i) => (
 				<SortBubble
-					isDarkMode={isDarkMode}
 					key={i}
+					isDarkMode={isDarkMode}
 					sortDir={bubble.sortDir}
 					markdown={bubble.markdown}
 					onRemoveClick={() => onRemoveClick(bubble.columnId)}
