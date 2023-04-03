@@ -17,7 +17,7 @@ export default function SearchBar() {
 		<div className="NLT__search">
 			<Stack spacing="lg">
 				<Button
-					icon={<Icon icon={IconType.SEARCH} />}
+					icon={<Icon type={IconType.SEARCH} />}
 					onClick={() => dispatch(toggleSearchBar())}
 				/>
 				{isSearchBarVisible && (

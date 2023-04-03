@@ -5,12 +5,12 @@ import { findIcon } from "./services/utils";
 import "./styles.css";
 
 interface Props {
-	icon: IconType;
+	type: IconType;
 	size?: "sm" | "md" | "lg";
 	onClick?: (e: React.MouseEvent) => void;
 }
 
-export default function Icon({ icon, size = "md", onClick }: Props) {
+export default function Icon({ type, size = "md", onClick }: Props) {
 	let className = "";
 	if (size === "sm") {
 		className = "NLT__icon--sm";
@@ -22,7 +22,7 @@ export default function Icon({ icon, size = "md", onClick }: Props) {
 
 	return (
 		<div className="NLT__icon" onClick={onClick && onClick}>
-			{findIcon(icon, className)}
+			{findIcon(type, className)}
 		</div>
 	);
 }

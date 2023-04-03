@@ -43,7 +43,7 @@ export default function TagColorMenu({
 				<div className="NLT__tag-color-menu-header">
 					<div className="NLT__tag-color-menu-title">Colors</div>
 					<Button
-						icon={<Icon icon={IconType.CLOSE} />}
+						icon={<Icon type={IconType.CLOSE} />}
 						onClick={handleMenuCloseClick}
 					/>
 				</div>

@@ -2,6 +2,7 @@ import { getSpacing } from "src/services/spacing";
 import { SpacingSize } from "src/services/spacing/types";
 
 interface Props {
+	className?: string;
 	paddingX?: SpacingSize;
 	paddingY?: SpacingSize;
 	padding?: SpacingSize;
@@ -9,15 +10,18 @@ interface Props {
 }
 
 export default function Padding({
+	className = "",
 	paddingX,
 	paddingY,
 	padding,
 	children,
 }: Props) {
-	let style = {};
+	let style: Record<string, any> = {
+		width: "100%",
+	};
 
 	if (padding) {
-		style = { padding: getSpacing(padding) };
+		style = { ...style, padding: getSpacing(padding) };
 	} else {
 		if (paddingX) {
 			const spacingX = getSpacing(paddingX);
@@ -33,5 +37,9 @@ export default function Padding({
 		}
 	}
 
-	return <div style={style}>{children}</div>;
+	return (
+		<div style={style} className={className}>
+			{children}
+		</div>
+	);
 }

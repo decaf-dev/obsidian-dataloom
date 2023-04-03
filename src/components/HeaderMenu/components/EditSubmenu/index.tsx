@@ -11,27 +11,20 @@ interface Props {
 	title: string;
 	columnId: string;
 	columnType: string;
-	cellId: string;
-	markdown: string;
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
-	onNameChange: (columnId: string, value: string) => void;
-	onAutoWidthToggle: (columnId: string, value: boolean) => void;
-	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
-	onDeleteClick: (columnId: string) => void;
+	onAutoWidthToggle: (value: boolean) => void;
+	onWrapOverflowToggle: (value: boolean) => void;
+	onDeleteClick: () => void;
 	onBackClick: () => void;
 }
 
 export default function EditMenu({
 	canDeleteColumn,
 	title,
-	cellId,
-	columnId,
 	columnType,
-	markdown,
 	shouldWrapOverflow,
 	useAutoWidth,
-	onNameChange,
 	onAutoWidthToggle,
 	onWrapOverflowToggle,
 	onBackClick,
@@ -42,23 +35,10 @@ export default function EditMenu({
 			<Padding padding="md">
 				<Stack spacing="md" isVertical>
 					<div>
-						<p className="NLT__label">Title</p>
-						<input
-							className="NLT__header-menu-input"
-							autoFocus
-							value={markdown}
-							onChange={(e) =>
-								onNameChange(cellId, e.target.value)
-							}
-						/>
-					</div>
-					<div>
 						<p className="NLT__label">Auto Width</p>
 						<Switch
 							isChecked={useAutoWidth}
-							onToggle={(value) =>
-								onAutoWidthToggle(columnId, value)
-							}
+							onToggle={(value) => onAutoWidthToggle(value)}
 						/>
 					</div>
 					{!useAutoWidth && columnType === CellType.TEXT && (
@@ -67,15 +47,13 @@ export default function EditMenu({
 							<Switch
 								isChecked={shouldWrapOverflow}
 								onToggle={(value) =>
-									onWrapOverflowToggle(columnId, value)
+									onWrapOverflowToggle(value)
 								}
 							/>
 						</div>
 					)}
 					{canDeleteColumn && (
-						<Button onClick={() => onDeleteClick(columnId)}>
-							Delete
-						</Button>
+						<Button onClick={() => onDeleteClick()}>Delete</Button>
 					)}
 				</Stack>
 			</Padding>

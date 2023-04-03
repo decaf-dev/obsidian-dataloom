@@ -346,32 +346,62 @@ export default function App({ initialState, onSaveTableState }: Props) {
 												markdown={markdown}
 												type={type}
 												sortDir={sortDir}
-												onSortSelect={
-													handleHeaderSortSelect
+												onSortClick={(sortDir) =>
+													handleHeaderSortSelect(
+														columnId,
+														sortDir
+													)
 												}
-												onInsertColumnClick={
-													handleInsertColumnClick
+												onInsertColumnClick={(
+													insertRight
+												) =>
+													handleInsertColumnClick(
+														columnId,
+														insertRight
+													)
 												}
-												onMoveColumnClick={
-													handleMoveColumnClick
+												onMoveColumnClick={(
+													moveRight
+												) =>
+													handleMoveColumnClick(
+														columnId,
+														moveRight
+													)
 												}
-												onWidthChange={
-													handleHeaderWidthChange
+												onWidthChange={(width) =>
+													handleHeaderWidthChange(
+														columnId,
+														width
+													)
 												}
-												onDeleteClick={
-													handleHeaderDeleteClick
+												onDeleteClick={() =>
+													handleHeaderDeleteClick(
+														columnId
+													)
 												}
-												onTypeSelect={
-													handleHeaderTypeClick
+												onTypeSelect={(type) =>
+													handleHeaderTypeClick(
+														columnId,
+														type
+													)
 												}
-												onAutoWidthToggle={
-													handleAutoWidthToggle
+												onAutoWidthToggle={(value) =>
+													handleAutoWidthToggle(
+														columnId,
+														value
+													)
 												}
-												onWrapOverflowToggle={
-													handleWrapContentToggle
+												onWrapOverflowToggle={(value) =>
+													handleWrapContentToggle(
+														columnId,
+														value
+													)
 												}
-												onNameChange={
-													handleCellContentChange
+												onNameChange={(value) =>
+													handleCellContentChange(
+														cellId,
+														value
+													)
 												}
 											/>
 										),

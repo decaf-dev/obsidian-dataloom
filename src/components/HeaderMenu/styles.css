@@ -10,11 +10,3 @@
 .NLT__header-menu-title {
 	font-weight: 700;
 }
-
-.NLT__header-menu-input {
-	background-color: var(--background-primary);
-	border: 1px solid var(--background-modifier-border);
-	padding: 4px 10px;
-	font-size: 0.95rem;
-	width: 100%;
-}

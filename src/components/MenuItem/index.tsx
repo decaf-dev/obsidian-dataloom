@@ -1,18 +1,22 @@
 import Icon from "src/components/Icon";
 import Stack from "src/components/Stack";
 import { IconType } from "src/services/icon/types";
+import Flex from "../Flex";
+import Text from "../Text";
 
 import "./styles.css";
 
 interface Props {
-	icon?: IconType;
-	content: string;
-	onClick: any;
+	iconType?: IconType;
+	name: string;
+	value?: string;
 	isSelected?: boolean;
+	onClick: any;
 }
 export default function MenuItem({
-	icon,
-	content,
+	iconType,
+	name,
+	value,
 	onClick,
 	isSelected = false,
 }: Props) {
@@ -21,10 +25,13 @@ export default function MenuItem({
 
 	return (
 		<div className={className} onClick={() => onClick()}>
-			<Stack>
-				{icon !== undefined && <Icon icon={icon} />}
-				<p className="NLT__p">{content}</p>
-			</Stack>
+			<Flex justify="space-between">
+				<Stack>
+					{iconType !== undefined && <Icon type={iconType} />}
+					<Text content={name} />
+				</Stack>
+				{value !== undefined && <Text content={value} />}
+			</Flex>
 		</div>
 	);
 }

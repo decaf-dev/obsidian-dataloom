@@ -1,8 +1,7 @@
-import { CellType } from "src/services/tableState/types";
-
 import { TYPE_ITEMS } from "../../constants";
 import MenuItem from "../../../MenuItem";
 import Submenu from "../Submenu";
+import { CellType } from "src/services/tableState/types";
 interface Props {
 	title: string;
 	columnType: string;
@@ -21,7 +20,7 @@ export default function TypeSubmenu({
 			{TYPE_ITEMS.map((item) => (
 				<MenuItem
 					key={item.name}
-					content={item.content}
+					name={item.content}
 					onClick={() => onTypeClick(item.type)}
 					isSelected={item.type === columnType}
 				/>

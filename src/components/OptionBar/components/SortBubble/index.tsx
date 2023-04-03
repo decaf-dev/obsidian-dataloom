@@ -22,14 +22,14 @@ export default function SortBubble({
 			<Stack spacing="lg">
 				<Stack spacing="sm">
 					{sortDir === SortDir.ASC ? (
-						<Icon icon={IconType.ARROW_UPWARD} />
+						<Icon type={IconType.ARROW_UPWARD} />
 					) : (
-						<Icon icon={IconType.ARROW_DOWNWARD} />
+						<Icon type={IconType.ARROW_DOWNWARD} />
 					)}
 					<span>{markdown}</span>
 				</Stack>
 				<Button
-					icon={<Icon icon={IconType.CLOSE} />}
+					icon={<Icon type={IconType.CLOSE} />}
 					onClick={onRemoveClick}
 				/>
 			</Stack>

@@ -63,7 +63,7 @@ export default function SelectableTag({
 				<div className="NLT__tag-content">{markdown}</div>
 			</div>
 			<Button
-				icon={<Icon icon={IconType.MORE_HORIZ} />}
+				icon={<Icon type={IconType.MORE_HORIZ} />}
 				isDarker
 				onClick={(e) => {
 					e.stopPropagation();

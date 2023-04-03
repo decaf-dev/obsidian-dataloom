@@ -43,7 +43,7 @@ export default function RowMenu({ rowId, onDeleteClick }: Props) {
 	return (
 		<div ref={containerRef}>
 			<Button
-				icon={<Icon icon={IconType.MORE_HORIZ} />}
+				icon={<Icon type={IconType.MORE_HORIZ} />}
 				onClick={(e) => handleButtonClick(e)}
 			/>
 			<Menu
@@ -54,8 +54,8 @@ export default function RowMenu({ rowId, onDeleteClick }: Props) {
 			>
 				<div className="NLT__row-menu">
 					<MenuItem
-						icon={IconType.DELETE}
-						content="Delete"
+						iconType={IconType.DELETE}
+						name="Delete"
 						onClick={() => handleDeleteClick(rowId)}
 					/>
 				</div>

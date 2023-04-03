@@ -42,7 +42,7 @@ export default function Tag({
 				<div className="NLT__tag-content"></div>
 				{showRemove && (
 					<Button
-						icon={<Icon size="sm" icon={IconType.CLOSE} />}
+						icon={<Icon size="sm" type={IconType.CLOSE} />}
 						isDarker
 						onClick={(e) => {
 							e.stopPropagation();

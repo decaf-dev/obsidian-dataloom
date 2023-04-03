@@ -156,16 +156,6 @@
 	margin: 0;
 }
 
-.NLT__p {
-	white-space: nowrap;
-	margin: 0;
-}
-
-.NLT__hr {
-	margin: 0;
-	width: 100%;
-}
-
 .NLT__default-cursor {
 	cursor: default !important;
 }

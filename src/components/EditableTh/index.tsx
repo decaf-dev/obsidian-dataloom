@@ -29,16 +29,16 @@ interface Props {
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
 	sortDir: SortDir;
-	type: string;
-	onMoveColumnClick: (columnId: string, moveRight: boolean) => void;
-	onSortSelect: (columnId: string, sortDir: SortDir) => void;
-	onInsertColumnClick: (columnId: string, insertRight: boolean) => void;
-	onTypeSelect: (columnId: string, type: CellType) => void;
-	onDeleteClick: (columnId: string) => void;
-	onWidthChange: (columnId: string, width: string) => void;
-	onAutoWidthToggle: (columnId: string, value: boolean) => void;
-	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
-	onNameChange: (columnId: string, value: string) => void;
+	type: CellType;
+	onMoveColumnClick: (moveRight: boolean) => void;
+	onSortClick: (sortDir: SortDir) => void;
+	onInsertColumnClick: (insertRight: boolean) => void;
+	onTypeSelect: (type: CellType) => void;
+	onDeleteClick: () => void;
+	onWidthChange: (width: string) => void;
+	onAutoWidthToggle: (value: boolean) => void;
+	onWrapOverflowToggle: (value: boolean) => void;
+	onNameChange: (value: string) => void;
 }
 
 export default function EditableTh({
@@ -55,7 +55,7 @@ export default function EditableTh({
 	onWidthChange,
 	onInsertColumnClick,
 	onMoveColumnClick,
-	onSortSelect,
+	onSortClick,
 	onTypeSelect,
 	onDeleteClick,
 	onWrapOverflowToggle,
@@ -103,7 +103,7 @@ export default function EditableTh({
 			const newWidth = oldWidth + dist;
 
 			if (newWidth < MIN_COLUMN_WIDTH) return;
-			onWidthChange(columnId, numToPx(newWidth));
+			onWidthChange(numToPx(newWidth));
 		}
 	}
 
@@ -158,7 +158,7 @@ export default function EditableTh({
 				columnType={type}
 				columnIndex={columnIndex}
 				numColumns={numColumns}
-				onSortSelect={onSortSelect}
+				onSortClick={onSortClick}
 				onMoveColumnClick={onMoveColumnClick}
 				onInsertColumnClick={onInsertColumnClick}
 				onTypeSelect={onTypeSelect}
@@ -170,7 +170,7 @@ export default function EditableTh({
 			/>
 			<div className="NLT__th-content">
 				<Stack spacing="md">
-					<Icon icon={icon} size="md" />
+					<Icon type={icon} size="md" />
 					{markdown}
 				</Stack>
 			</div>

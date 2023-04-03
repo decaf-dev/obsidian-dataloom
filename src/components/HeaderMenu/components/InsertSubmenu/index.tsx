@@ -16,13 +16,13 @@ export default function InsertSubmenu({
 	return (
 		<Submenu title={title} onBackClick={onBackClick}>
 			<MenuItem
-				icon={IconType.KEYBOARD_DOUBLE_ARROW_LEFT}
-				content="Insert Left"
+				iconType={IconType.KEYBOARD_DOUBLE_ARROW_LEFT}
+				name="Insert Left"
 				onClick={() => onInsertClick(false)}
 			/>
 			<MenuItem
-				icon={IconType.KEYBOARD_DOUBLE_ARROW_RIGHT}
-				content="Insert Right"
+				iconType={IconType.KEYBOARD_DOUBLE_ARROW_RIGHT}
+				name="Insert Right"
 				onClick={() => onInsertClick(true)}
 			/>
 		</Submenu>

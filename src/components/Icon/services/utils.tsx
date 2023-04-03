@@ -31,10 +31,10 @@ import {
 import { IconType } from "src/services/icon/types";
 
 export const findIcon = (
-	icon: IconType,
+	type: IconType,
 	className: string
 ): React.ReactNode => {
-	switch (icon) {
+	switch (type) {
 		case IconType.ARROW_UPWARD:
 			return <ArrowUpward className={className} />;
 		case IconType.ARROW_DOWNWARD:

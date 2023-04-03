@@ -13,11 +13,6 @@ export const SUBMENU_ITEM: { [name: string]: SubmenuItem } = {
 		content: "Edit",
 		icon: IconType.EDIT,
 	},
-	SORT: {
-		name: "sort",
-		content: "Sort",
-		icon: IconType.SORT,
-	},
 	MOVE: {
 		name: "move",
 		content: "Move",

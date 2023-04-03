@@ -1,48 +1,17 @@
 import { useState } from "react";
 
 import Menu from "../Menu";
-import MenuItem from "../MenuItem";
 import EditSubmenu from "./components/EditSubmenu";
-import SortSubmenu from "./components/SortSubmenu";
 import InsertSubmenu from "./components/InsertSubmenu";
 import MoveSubmenu from "./components/MoveSubmenu";
 import TypeSubmenu from "./components/TypeSubmenu";
+import BaseMenu from "./components/BaseMenu";
 
 import { SUBMENU_ITEM, SubmenuItem } from "./constants";
 
 import { CellType, SortDir } from "src/services/tableState/types";
 
 import "./styles.css";
-
-interface SubMenuListProps {
-	numColumns: number;
-	onOptionClick: (item: SubmenuItem) => void;
-}
-
-const SubmenuList = ({ numColumns, onOptionClick }: SubMenuListProps) => {
-	return (
-		<>
-			{Object.values(SUBMENU_ITEM)
-				.filter((value) => {
-					if (
-						numColumns === 1 &&
-						value.name === SUBMENU_ITEM.MOVE.name
-					)
-						return false;
-					return true;
-				})
-				.map((item) => (
-					<MenuItem
-						key={item.name}
-						content={item.content}
-						icon={item.icon}
-						onClick={() => onOptionClick(item)}
-					/>
-				))}
-		</>
-	);
-};
-
 interface Props {
 	isOpen: boolean;
 	canDeleteColumn: boolean;
@@ -54,24 +23,23 @@ interface Props {
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
 	columnSortDir: SortDir;
-	columnType: string;
+	columnType: CellType;
 	columnId: string;
 	columnIndex: number;
 	numColumns: number;
-	onInsertColumnClick: (columnId: string, insertRight: boolean) => void;
-	onMoveColumnClick: (columnId: string, moveRight: boolean) => void;
-	onTypeSelect: (columnId: string, type: CellType) => void;
-	onSortSelect: (columnId: string, sortDir: SortDir) => void;
-	onDeleteClick: (columnId: string) => void;
-	onAutoWidthToggle: (columnId: string, value: boolean) => void;
-	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
-	onNameChange: (columnId: string, value: string) => void;
+	onInsertColumnClick: (insertRight: boolean) => void;
+	onMoveColumnClick: (moveRight: boolean) => void;
+	onTypeSelect: (type: CellType) => void;
+	onSortClick: (sortDir: SortDir) => void;
+	onDeleteClick: () => void;
+	onAutoWidthToggle: (value: boolean) => void;
+	onWrapOverflowToggle: (value: boolean) => void;
+	onNameChange: (value: string) => void;
 	onClose: () => void;
 }
 
 export default function HeaderMenu({
 	isOpen,
-	cellId,
 	id,
 	top,
 	left,
@@ -85,7 +53,7 @@ export default function HeaderMenu({
 	useAutoWidth,
 	shouldWrapOverflow,
 	onTypeSelect,
-	onSortSelect,
+	onSortClick,
 	onDeleteClick,
 	onInsertColumnClick,
 	onMoveColumnClick,
@@ -96,32 +64,31 @@ export default function HeaderMenu({
 }: Props) {
 	const [submenu, setSubmenu] = useState<SubmenuItem | null>(null);
 
-	function handleMoveColumnClick(columnId: string, moveRight: boolean) {
-		onMoveColumnClick(columnId, moveRight);
+	function handleMoveColumnClick(moveRight: boolean) {
+		onMoveColumnClick(moveRight);
 		onClose();
 		setSubmenu(null);
 	}
 
-	function handleSortClick(columnId: string, sortDir: SortDir) {
-		onSortSelect(columnId, sortDir);
+	function handleSortClick(sortDir: SortDir) {
+		onSortClick(sortDir);
+		onClose();
+	}
+
+	function handleInsertColumnClick(insertRight: boolean) {
+		onInsertColumnClick(insertRight);
 		onClose();
 		setSubmenu(null);
 	}
 
-	function handleInsertColumnClick(columnId: string, insertRight: boolean) {
-		onInsertColumnClick(columnId, insertRight);
+	function handleTypeClick(type: CellType) {
+		onTypeSelect(type);
 		onClose();
 		setSubmenu(null);
 	}
 
-	function handleTypeClick(columnId: string, type: CellType) {
-		onTypeSelect(columnId, type);
-		onClose();
-		setSubmenu(null);
-	}
-
-	function handleDeleteClick(columnId: string) {
-		onDeleteClick(columnId);
+	function handleDeleteClick() {
+		onDeleteClick();
 		onClose();
 		setSubmenu(null);
 	}
@@ -131,20 +98,23 @@ export default function HeaderMenu({
 	}
 
 	return (
-		<Menu isOpen={isOpen} id={id} top={top} left={left} maxWidth={200}>
+		<Menu isOpen={isOpen} id={id} top={top} left={left} width={175}>
 			<div className="NLT__header-menu">
 				{submenu === null && (
-					<SubmenuList
+					<BaseMenu
+						columnName={markdown}
+						columnType={columnType}
 						numColumns={numColumns}
-						onOptionClick={setSubmenu}
+						columnSortDir={columnSortDir}
+						onColumnNameChange={onNameChange}
+						onSortClick={handleSortClick}
+						onSubmenuChange={setSubmenu}
 					/>
 				)}
 				{submenu && submenu.name === SUBMENU_ITEM.EDIT.name && (
 					<EditSubmenu
 						canDeleteColumn={canDeleteColumn}
-						cellId={cellId}
 						title={submenu.content}
-						markdown={markdown}
 						columnType={columnType}
 						columnId={columnId}
 						useAutoWidth={useAutoWidth}
@@ -153,25 +123,12 @@ export default function HeaderMenu({
 						onAutoWidthToggle={onAutoWidthToggle}
 						onWrapOverflowToggle={onWrapOverflowToggle}
 						onDeleteClick={handleDeleteClick}
-						onNameChange={onNameChange}
 					/>
 				)}
 				{submenu && submenu.name === SUBMENU_ITEM.INSERT.name && (
 					<InsertSubmenu
 						title={submenu.content}
-						onInsertClick={(isRightInsert) =>
-							handleInsertColumnClick(columnId, isRightInsert)
-						}
-						onBackClick={handleBackClick}
-					/>
-				)}
-				{submenu && submenu.name === SUBMENU_ITEM.SORT.name && (
-					<SortSubmenu
-						title={submenu.content}
-						columnSortDir={columnSortDir}
-						onSortClick={(sortDir) =>
-							handleSortClick(columnId, sortDir)
-						}
+						onInsertClick={handleInsertColumnClick}
 						onBackClick={handleBackClick}
 					/>
 				)}
@@ -180,9 +137,7 @@ export default function HeaderMenu({
 						title={submenu.content}
 						columnIndex={columnIndex}
 						numColumns={numColumns}
-						onMoveClick={(isRightMove) =>
-							handleMoveColumnClick(columnId, isRightMove)
-						}
+						onMoveClick={handleMoveColumnClick}
 						onBackClick={handleBackClick}
 					/>
 				)}
@@ -190,7 +145,7 @@ export default function HeaderMenu({
 					<TypeSubmenu
 						title={submenu.content}
 						columnType={columnType}
-						onTypeClick={(type) => handleTypeClick(columnId, type)}
+						onTypeClick={handleTypeClick}
 						onBackClick={handleBackClick}
 					/>
 				)}

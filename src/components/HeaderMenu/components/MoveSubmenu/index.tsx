@@ -20,15 +20,15 @@ export default function MoveSubmenu({
 		<Submenu title={title} onBackClick={onBackClick}>
 			{columnIndex !== 0 && (
 				<MenuItem
-					icon={IconType.KEYBOARD_DOUBLE_ARROW_LEFT}
-					content="Move Left"
+					iconType={IconType.KEYBOARD_DOUBLE_ARROW_LEFT}
+					name="Move Left"
 					onClick={() => onMoveClick(false)}
 				/>
 			)}
 			{columnIndex !== numColumns - 1 && (
 				<MenuItem
-					icon={IconType.KEYBOARD_DOUBLE_ARROW_RIGHT}
-					content="Move Right"
+					iconType={IconType.KEYBOARD_DOUBLE_ARROW_RIGHT}
+					name="Move Right"
 					onClick={() => onMoveClick(true)}
 				/>
 			)}
