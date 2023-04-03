@@ -15,6 +15,7 @@ import { useAppDispatch, useAppSelector } from "./services/redux/hooks";
 import {
 	addCellToTag,
 	addNewTag,
+	deleteTag,
 	removeCellFromTag,
 	updateTagColor,
 } from "./services/tableState/tag";
@@ -166,6 +167,13 @@ export default function App({ initialState, onSaveTableState }: Props) {
 		);
 	}
 
+	function handleTagDeleteClick(tagId: string) {
+		logFunc(shouldDebug, FILE_NAME, "handleTagDeleteClick", {
+			tagId,
+		});
+		setTableState((prevState) => deleteTag(prevState, tagId));
+	}
+
 	function handleHeaderDeleteClick(columnId: string) {
 		logFunc(shouldDebug, FILE_NAME, "handleHeaderDeleteClick", {
 			columnId,
@@ -221,8 +229,8 @@ export default function App({ initialState, onSaveTableState }: Props) {
 		);
 	}
 
-	function handleChangeColor(tagId: string, color: string) {
-		logFunc(shouldDebug, FILE_NAME, "handleChangeColor", {
+	function handleTagChangeColor(tagId: string, color: string) {
+		logFunc(shouldDebug, FILE_NAME, "handleTagChangeColor", {
 			tagId,
 			color,
 		});
@@ -474,8 +482,11 @@ export default function App({ initialState, onSaveTableState }: Props) {
 													onContentChange={
 														handleCellContentChange
 													}
-													onColorChange={
-														handleChangeColor
+													onTagColorChange={
+														handleTagChangeColor
+													}
+													onTagDeleteClick={
+														handleTagDeleteClick
 													}
 													onAddTag={handleAddTag}
 												/>

@@ -107,3 +107,14 @@ export const updateTagColor = (
 		},
 	};
 };
+
+export const deleteTag = (prevState: TableState, tagId: string): TableState => {
+	const { tags } = prevState.model;
+	return {
+		...prevState,
+		model: {
+			...prevState.model,
+			tags: tags.filter((tag) => tag.id !== tagId),
+		},
+	};
+};

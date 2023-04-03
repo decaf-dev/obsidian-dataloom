@@ -10,6 +10,7 @@ import {
 	openMenu,
 	isMenuOpen,
 	closeTopLevelMenu,
+	closeAllMenus,
 } from "src/services/menu/menuSlice";
 
 import "./styles.css";
@@ -24,6 +25,7 @@ interface Props {
 	color: string;
 	onClick: (tagId: string) => void;
 	onColorChange: (tagId: string, color: string) => void;
+	onDeleteClick: (tagId: string) => void;
 }
 
 export default function SelectableTag({
@@ -33,6 +35,7 @@ export default function SelectableTag({
 	color,
 	onClick,
 	onColorChange,
+	onDeleteClick,
 }: Props) {
 	//TODO refactor into useMenu hook
 	const menu = useMenu(MenuLevel.TWO);
@@ -44,6 +47,11 @@ export default function SelectableTag({
 	function handleColorChange(color: string) {
 		onColorChange(id, color);
 		dispatch(closeTopLevelMenu());
+	}
+
+	function handleDeleteClick() {
+		onDeleteClick(id);
+		dispatch(closeAllMenus());
 	}
 
 	return (
@@ -75,6 +83,7 @@ export default function SelectableTag({
 				isOpen={isOpen}
 				selectedColor={color}
 				onColorClick={(color) => handleColorChange(color)}
+				onDeleteClick={() => handleDeleteClick()}
 			/>
 		</>
 	);

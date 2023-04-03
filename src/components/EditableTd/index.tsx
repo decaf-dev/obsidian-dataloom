@@ -54,7 +54,8 @@ interface Props {
 		color: string,
 		canAddMultiple: boolean
 	) => void;
-	onColorChange: (tagId: string, color: string) => void;
+	onTagDeleteClick: (tagId: string) => void;
+	onTagColorChange: (tagId: string, color: string) => void;
 }
 
 export default function EditableTd({
@@ -69,7 +70,8 @@ export default function EditableTd({
 	shouldWrapOverflow,
 	useAutoWidth,
 	onRemoveTagClick,
-	onColorChange,
+	onTagColorChange,
+	onTagDeleteClick,
 	onTagClick,
 	onContentChange,
 	onAddTag,
@@ -211,10 +213,11 @@ export default function EditableTd({
 						<TagCellEdit
 							tags={tags}
 							cellId={cellId}
-							onColorChange={onColorChange}
+							onTagColorChange={onTagColorChange}
 							onAddTag={handleAddTag}
 							onRemoveTag={handleRemoveTagClick}
 							onTagClick={handleTagClick}
+							onTagDeleteClick={onTagDeleteClick}
 						/>
 					)}
 					{columnType === CellType.DATE && (

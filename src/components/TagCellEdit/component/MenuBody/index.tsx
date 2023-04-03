@@ -11,7 +11,8 @@ interface MenuBodyProps {
 	generatedColor: string;
 	onAddTag: (markdown: string, color: string) => void;
 	onTagClick: (tagId: string) => void;
-	onColorChange: (tagId: string, color: string) => void;
+	onTagColorChange: (tagId: string, color: string) => void;
+	onTagDeleteClick: (tagId: string) => void;
 }
 
 export default function MenuBody({
@@ -21,7 +22,8 @@ export default function MenuBody({
 	generatedColor,
 	onAddTag,
 	onTagClick,
-	onColorChange,
+	onTagColorChange,
+	onTagDeleteClick,
 }: MenuBodyProps) {
 	const found = tags.find((tag) => tag.markdown === inputText);
 	const filteredTags = tags.filter((tag) => tag.markdown.includes(inputText));
@@ -49,8 +51,9 @@ export default function MenuBody({
 						id={tag.id}
 						color={tag.color}
 						markdown={tag.markdown}
-						onColorChange={onColorChange}
+						onColorChange={onTagColorChange}
 						onClick={onTagClick}
+						onDeleteClick={onTagDeleteClick}
 					/>
 				))}
 			</div>

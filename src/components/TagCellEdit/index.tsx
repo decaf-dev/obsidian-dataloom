@@ -16,7 +16,8 @@ interface Props {
 	onTagClick: (tagId: string) => void;
 	onAddTag: (markdown: string, color: string) => void;
 	onRemoveTag: (tagId: string) => void;
-	onColorChange: (tagId: string, color: string) => void;
+	onTagColorChange: (tagId: string, color: string) => void;
+	onTagDeleteClick: (tagId: string) => void;
 }
 
 export default function TagCellEdit({
@@ -24,7 +25,8 @@ export default function TagCellEdit({
 	cellId,
 	onTagClick,
 	onAddTag,
-	onColorChange,
+	onTagColorChange,
+	onTagDeleteClick,
 	onRemoveTag,
 }: Props) {
 	const [inputText, setInputText] = useState("");
@@ -62,7 +64,8 @@ export default function TagCellEdit({
 					generatedColor={generatedColor}
 					onAddTag={handleAddTag}
 					onTagClick={onTagClick}
-					onColorChange={onColorChange}
+					onTagDeleteClick={onTagDeleteClick}
+					onTagColorChange={onTagColorChange}
 				/>
 			</div>
 		</div>
