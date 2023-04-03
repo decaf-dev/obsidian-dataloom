@@ -60,50 +60,6 @@ export default function App({ initialState, onSaveTableState }: Props) {
 		onSaveTableState(tableState);
 	}, [tableState]);
 
-	//Handles sync between live preview and reading mode
-	// useEffect(() => {
-	// 	let timer: any = null;
-
-	// 	async function checkForSyncEvents() {
-	// 		const {
-	// 			tableId: tId,
-	// 			viewModes,
-	// 			eventType,
-	// 		} = plugin.settings.viewModeSync;
-	// 		if (tId) {
-	// 			const mode = viewModes.find((v) => v === viewMode);
-	// 			if (mode && tableId === tId) {
-	// 				logFunc(shouldDebug, FILE_NAME, "checkForSyncEvents", {
-	// 					tableId,
-	// 					viewModes,
-	// 					eventType,
-	// 				});
-	// 				if (eventType === "update-state") {
-	// 					setTableState(plugin.settings.data[tableId]);
-	// 				} else if (eventType === "sort-rows") {
-	// 					handleSortRows();
-	// 				}
-	// 				const modeIndex = viewModes.indexOf(mode);
-	// 				plugin.settings.viewModeSync.viewModes.splice(modeIndex, 1);
-	// 				if (plugin.settings.viewModeSync.viewModes.length === 0)
-	// 					plugin.settings.viewModeSync.tableId = null;
-	// 				await plugin.saveSettings();
-	// 			}
-	// 		}
-	// 	}
-
-	// 	function viewModeSync() {
-	// 		timer = setInterval(() => {
-	// 			checkForSyncEvents();
-	// 		}, 50);
-	// 	}
-
-	// 	viewModeSync();
-	// 	return () => {
-	// 		clearInterval(timer);
-	// 	};
-	// }, []);
-
 	useEffect(() => {
 		if (sortTime !== 0) {
 			setTableState((prevState) => sortRows(prevState));
@@ -144,6 +100,8 @@ export default function App({ initialState, onSaveTableState }: Props) {
 		);
 		handleSortRows();
 	}
+
+	console.log(tableState.model);
 
 	function handleCellContentChange(cellId: string, updatedMarkdown: string) {
 		logFunc(shouldDebug, FILE_NAME, "handleCellContentChange", {

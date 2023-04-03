@@ -34,20 +34,21 @@ export const sortOnColumn = (
 	sortDir: SortDir
 ): TableState => {
 	const { columns } = prevState.model;
-	const columnsCopy = [...columns];
-	columnsCopy.map((column) => {
+
+	let columnsCopy = [...columns];
+	columnsCopy = columnsCopy.map((column) => {
 		if (column.id === columnId) {
 			return {
 				...column,
 				sortDir,
 			};
-		} else {
-			return {
-				...column,
-				sortDir: SortDir.NONE,
-			};
 		}
+		return {
+			...column,
+			sortDir: SortDir.NONE,
+		};
 	});
+
 	return {
 		...prevState,
 		model: {
