@@ -1,7 +1,7 @@
 .NLT__color-item {
     display: flex;
     align-items: center;
-    padding: 0px 5px;
+    padding: var(--nlt-spacing--xs) var(--nlt-spacing--lg);
     width: 100%;
 }
 

@@ -69,7 +69,6 @@ export default function SelectableTag({
 					icon={<Icon type={IconType.MORE_HORIZ} />}
 					isDarker
 					onClick={(e) => {
-						console.log("YUP!!");
 						// Prevents a tag from being added when the button is clicked
 						// we just want to open the menu
 						e.stopPropagation();
