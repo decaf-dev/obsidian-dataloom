@@ -1,4 +1,4 @@
-import { findColorClass } from "src/services/color";
+import { findColorClassName } from "src/services/color";
 import { uppercaseFirst } from "src/services/string/utils";
 import "./styles.css";
 
@@ -18,7 +18,7 @@ export default function ColorItem({
 	let containerClass = "NLT__color-item NLT__selectable";
 	if (isSelected) containerClass += " NLT__selected";
 
-	const colorClass = findColorClass(isDarkMode, color);
+	const colorClass = findColorClassName(isDarkMode, color);
 	let squareClass = "NLT__color-item-square";
 	squareClass += " " + colorClass;
 

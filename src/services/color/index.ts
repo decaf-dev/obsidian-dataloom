@@ -1,6 +1,9 @@
 import { COLOR } from "../../constants";
 
-export const findColorClass = (isDarkMode: boolean, color: string): string => {
+export const findColorClassName = (
+	isDarkMode: boolean,
+	color: string
+): string => {
 	switch (color) {
 		case COLOR.LIGHT_GRAY:
 			return isDarkMode

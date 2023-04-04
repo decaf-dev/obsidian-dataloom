@@ -1,6 +1,6 @@
 import { IconType } from "src/services/icon/types";
 
-import { findColorClass } from "src/services/color";
+import { findColorClassName } from "src/services/color";
 
 import "./styles.css";
 import Icon from "../Icon";
@@ -28,7 +28,7 @@ export default function Tag({
 	onRemoveClick,
 }: Props) {
 	let tagClass = "NLT__tag";
-	tagClass += " " + findColorClass(isDarkMode, color);
+	tagClass += " " + findColorClassName(isDarkMode, color);
 
 	if (onRemoveClick && id == undefined) {
 		throw new Error(
