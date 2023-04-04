@@ -67,7 +67,7 @@ export default function SelectableTag({
 				/>
 				<Button
 					icon={<Icon type={IconType.MORE_HORIZ} />}
-					isDarker
+					isFlat
 					onClick={(e) => {
 						// Prevents a tag from being added when the button is clicked
 						// we just want to open the menu
