@@ -4,7 +4,7 @@
 
 Notion-Like Tables is your premiere tool for creating and managing tabular data in Obsidian.md.
 
-![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/preview.png)
+![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/nlt-preview.png)
 
 ## Version 6.0.0
 
@@ -64,7 +64,7 @@ Press `ctrl + p` (Windows) or `cmd + p` (Mac) on your keyboard and search `Creat
 
 Click on a header name to view the header menu. In the header menu, you can rename the header, sort your column values or change the column content type.
 
-![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/header-menu.png)
+![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/nlt-header-menu.png)
 
 ## Cell Types
 
@@ -84,7 +84,7 @@ Tags can be rendered in cells that are in a column with the `tag` content type s
 
 Tags have a special notion-like menu that will appear. Tags are scoped to each column of a table. You can type text to filter existing tags and select one. You can also create a new tag by typing text and clicking "Create New" or pressing enter.
 
-![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/tag-menu.png)
+![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/nlt-tag-menu.png)
 
 ### Multi-Tag Cell
 
