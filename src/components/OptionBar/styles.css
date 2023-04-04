@@ -12,4 +12,5 @@
     padding: 2px 6px;
     border: 1px solid var(--background-modifier-border);
     user-select: none;
+    background-color: var(--background-modifier-border);
 }

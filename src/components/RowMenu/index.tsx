@@ -1,12 +1,10 @@
 import React from "react";
 
 import Menu from "../Menu";
-import RowMenuItem from "./components/RowMenuItem";
 import Icon from "../Icon";
 
 import Button from "../Button";
 import { IconType } from "src/services/icon/types";
-import { usePositionRef } from "src/services/hooks";
 import { useMenu } from "src/services/menu/hooks";
 import {
 	openMenu,
@@ -17,6 +15,7 @@ import {
 import "./styles.css";
 import { MenuLevel } from "src/services/menu/types";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
+import MenuItem from "../MenuItem";
 
 interface Props {
 	rowId: string;
@@ -26,16 +25,18 @@ interface Props {
 export default function RowMenu({ rowId, onDeleteClick }: Props) {
 	const menu = useMenu(MenuLevel.ONE);
 	const dispatch = useAppDispatch();
-	const isOpen = useAppSelector((state) => isMenuOpen(state, menu));
-	const positionUpdateTime = useAppSelector(
-		(state) => state.menu.positionUpdateTime
-	);
-	const { ref, position } = usePositionRef([positionUpdateTime]);
+	const isOpen = useAppSelector((state) => isMenuOpen(state, menu.id));
+
 	function handleButtonClick(e: React.MouseEvent) {
 		if (isOpen) {
 			dispatch(closeTopLevelMenu());
 		} else {
-			dispatch(openMenu(menu));
+			dispatch(
+				openMenu({
+					id: menu.id,
+					level: menu.level,
+				})
+			);
 		}
 	}
 
@@ -44,26 +45,25 @@ export default function RowMenu({ rowId, onDeleteClick }: Props) {
 		dispatch(closeTopLevelMenu());
 	}
 
+	const { top, left, height } = menu.position;
+
 	return (
-		<div ref={ref}>
-			<Button
-				icon={<Icon icon={IconType.MORE_HORIZ} />}
-				onClick={(e) => handleButtonClick(e)}
-			/>
-			<Menu
-				id={menu.id}
-				isOpen={isOpen}
-				top={position.top + position.height}
-				left={position.left}
-			>
-				<div className="NLT__drag-menu">
-					<RowMenuItem
-						icon={IconType.DELETE}
-						content="Delete"
+		<>
+			<div ref={menu.containerRef}>
+				<Button
+					icon={<Icon type={IconType.MORE_HORIZ} />}
+					onClick={(e) => handleButtonClick(e)}
+				/>
+			</div>
+			<Menu id={menu.id} isOpen={isOpen} top={top + height} left={left}>
+				<div className="NLT__row-menu">
+					<MenuItem
+						iconType={IconType.DELETE}
+						name="Delete"
 						onClick={() => handleDeleteClick(rowId)}
 					/>
 				</div>
 			</Menu>
-		</div>
+		</>
 	);
 }

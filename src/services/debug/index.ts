@@ -5,23 +5,7 @@ export const logFunc = (
 	args = {}
 ) => {
 	if (shouldDebug) {
-		console.log("");
-		console.log(`[${fileName}]: ${functionName}`);
-		if (args) console.log(args);
-	}
-};
-
-export const logVar = (
-	shouldDebug: boolean,
-	fileName: string,
-	functionName: string,
-	description: string,
-	variable: any
-) => {
-	if (shouldDebug) {
-		console.log("");
-		console.log(`[${fileName}]: ${functionName}`);
-		console.log(`${description}:`);
-		console.log(variable);
+		console.log(`[${fileName}] ${functionName}`);
+		if (Object.keys(args).length !== 0) console.log(args);
 	}
 };

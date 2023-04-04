@@ -1,9 +1,9 @@
 export const TAG_REGEX = new RegExp(/^[#][^\s]+$/);
 
 /**
- * Matches a number of at least 1 character e.g. '0'
+ * Matches both whole numbers and decimals
  */
-export const NUMBER_REGEX = new RegExp(/^\d+$/);
+export const NUMBER_REGEX = new RegExp(/^\d*\.?\d*$/);
 
 export const TAGS_REGEX = new RegExp(/#[^ \t]+/g);
 
@@ -63,27 +63,3 @@ export const RIGHT_SQUARE_BRACKET_REGEX = new RegExp(/\]/, "g");
  * e.g. https://www.google.com
  */
 export const EXTERNAL_LINK_REGEX = new RegExp(/http[s]{0,1}:\/\/[^\s]+/, "g");
-
-/**
- * Matches all unescaped pipes
- * k|
- */
-export const UNESCAPED_PIPE_REGEX = new RegExp(/[^\\]\|/, "g");
-
-/**
- * Matches a table id
- * table-id-123456
- */
-export const TABLE_ID_REGEX = new RegExp(/^table-id-[a-zA-Z0-9_-]+$/);
-
-/**
- * Matches a row id
- * row-id-123456
- */
-export const ROW_ID_REGEX = new RegExp(/^row-id-[a-zA-Z0-9_-]+$/);
-
-/**
- * Matches a column id
- * column-id-123456
- */
-export const COLUMN_ID_REGEX = new RegExp(/^column-id-[a-zA-Z0-9_-]+$/);

@@ -19,12 +19,12 @@ export default function Button({
 	onClick,
 }: Props) {
 	let className = "NLT__button";
-	if (icon) className += " NLT__button--icon";
+	if (icon !== undefined) className += " NLT__button--icon";
 	if (isDarker) className += " NLT__button--icon-darker";
 
 	return (
 		<button style={style} className={className} onClick={(e) => onClick(e)}>
-			{icon ? icon : children}
+			{icon !== undefined ? icon : children}
 		</button>
 	);
 }

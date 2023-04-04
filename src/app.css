@@ -12,6 +12,7 @@
 
 --nlt-cell-spacing-x: var(--nlt-spacing--sm);
 --nlt-cell-spacing-y: var(--nlt-spacing--lg);
+--nlt-cell-min-height: 1.9rem;
 }
 
 /*
@@ -111,11 +112,11 @@
 }
 
 .NLT__selectable:hover {
-	background-color: var(--interactive-hover)
+	background-color: var(--color-base-30)
 }
 
 .NLT__selected {
-	background-color: var(--interactive-normal);
+	background-color: var(--color-base-20);
 }
 
 /**
@@ -134,7 +135,20 @@
 	overflow: hidden;
 	overflow-wrap: normal;
 	white-space: nowrap;
+}
+
+.NLT__hide-overflow-ellipsis {
+	overflow: hidden;
+	overflow-wrap: normal;
+	white-space: nowrap;
 	text-overflow: ellipsis;
+}
+
+/**
+* Components
+*/
+.NLT__app {
+	width: fit-content;
 }
 
 .NLT__label {
@@ -142,12 +156,6 @@
 	margin: 0;
 }
 
-.NLT__p {
-	white-space: nowrap;
-	margin: 0;
-}
-
-.NLT__hr {
-	margin: 0.35rem 0;
-	width: 100%;
+.NLT__default-cursor {
+	cursor: default !important;
 }

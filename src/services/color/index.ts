@@ -1,28 +1,31 @@
-import { COLOR } from "../../constants";
+import { Color } from "./types";
 
-export const findColorClass = (isDarkMode: boolean, color: string): string => {
+export const findColorClassName = (
+	isDarkMode: boolean,
+	color: Color
+): string => {
 	switch (color) {
-		case COLOR.LIGHT_GRAY:
+		case Color.LIGHT_GRAY:
 			return isDarkMode
 				? "NLT__light-gray--dark"
 				: "NLT__light-gray--light";
-		case COLOR.GRAY:
+		case Color.GRAY:
 			return isDarkMode ? "NLT__gray--dark" : "NLT__gray--light";
-		case COLOR.BROWN:
+		case Color.BROWN:
 			return isDarkMode ? "NLT__brown--dark" : "NLT__brown--light";
-		case COLOR.ORANGE:
+		case Color.ORANGE:
 			return isDarkMode ? "NLT__orange--dark" : "NLT__orange--light";
-		case COLOR.YELLOW:
+		case Color.YELLOW:
 			return isDarkMode ? "NLT__yellow--dark" : "NLT__yellow--light";
-		case COLOR.GREEN:
+		case Color.GREEN:
 			return isDarkMode ? "NLT__green--dark" : "NLT__green--light";
-		case COLOR.BLUE:
+		case Color.BLUE:
 			return isDarkMode ? "NLT__blue--dark" : "NLT__blue--light";
-		case COLOR.PURPLE:
+		case Color.PURPLE:
 			return isDarkMode ? "NLT__purple--dark" : "NLT__purple--light";
-		case COLOR.PINK:
+		case Color.PINK:
 			return isDarkMode ? "NLT__pink--dark" : "NLT__pink--light";
-		case COLOR.RED:
+		case Color.RED:
 			return isDarkMode ? "NLT__red--dark" : "NLT__red--light";
 		default:
 			return "";

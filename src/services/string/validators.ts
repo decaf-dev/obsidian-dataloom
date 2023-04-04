@@ -6,26 +6,22 @@ import {
 	CHECKBOX_CHECKED_REGEX,
 } from "./regex";
 
-const isMatch = (input: string, regex: RegExp): boolean => {
-	return (input.match(regex) || []).length !== 0;
-};
-
 export const isNumber = (input: string): boolean => {
-	return isMatch(input, NUMBER_REGEX);
+	return input.match(NUMBER_REGEX) !== null;
 };
 
 export const isDate = (input: string): boolean => {
-	return isMatch(input, DATE_REGEX);
+	return input.match(DATE_REGEX) !== null;
 };
 
 export const isCheckbox = (input: string): boolean => {
-	return isMatch(input, CHECKBOX_REGEX);
-};
-
-export const isTag = (input: string): boolean => {
-	return isMatch(input, TAG_REGEX);
+	return input.match(CHECKBOX_REGEX) !== null;
 };
 
 export const isCheckboxChecked = (input: string): boolean => {
-	return isMatch(input, CHECKBOX_CHECKED_REGEX);
+	return input.match(CHECKBOX_CHECKED_REGEX) !== null;
+};
+
+export const isTag = (input: string): boolean => {
+	return input.match(TAG_REGEX) !== null;
 };

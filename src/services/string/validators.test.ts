@@ -11,7 +11,7 @@ describe("isNumber", () => {
 		expect(value).toEqual(false);
 	});
 
-	it("returns false if text", () => {
+	it("returns false if contains test", () => {
 		const value = isNumber("ABC123");
 		expect(value).toEqual(false);
 	});

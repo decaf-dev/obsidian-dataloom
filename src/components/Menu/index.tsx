@@ -1,5 +1,8 @@
-import React from "react";
+import _ from "lodash";
+import React, { useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
+import { closeTopLevelMenu, isTopLevelMenu } from "src/services/menu/menuSlice";
+import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 import { numToPx } from "src/services/string/conversion";
 
 import "./styles.css";
@@ -22,11 +25,49 @@ export default function Menu({
 	top = 0,
 	left = 0,
 	minWidth = 0,
-	maxWidth = 0,
+	maxWidth,
 	width = 0,
 	height = 0,
 	children,
 }: Props) {
+	const isTopLevel = useAppSelector((state) => isTopLevelMenu(state, id));
+	const dispatch = useAppDispatch();
+
+	function handleKeyUp(e: KeyboardEvent) {
+		if (e.code === "Escape" || e.code === "Enter") {
+			dispatch(closeTopLevelMenu());
+		}
+	}
+
+	function handleMouseDown(e: MouseEvent) {
+		const target = e.target as HTMLElement;
+		if (isTopLevel) {
+			if (!target.closest(`#${id}`)) {
+				dispatch(closeTopLevelMenu());
+			}
+		}
+	}
+
+	useEffect(() => {
+		if (isOpen) {
+			window.addEventListener("keyup", handleKeyUp);
+			window.addEventListener("mousedown", handleMouseDown);
+		}
+		return () => {
+			window.removeEventListener("keyup", handleKeyUp);
+			window.removeEventListener("mousedown", handleMouseDown);
+		};
+	}, [isOpen, isTopLevel]);
+
+	let maxW = "unset";
+	if (maxWidth) {
+		if (maxWidth === 0) {
+			maxW = "maxWidth";
+		} else {
+			maxW = numToPx(maxWidth);
+		}
+	}
+
 	return (
 		<>
 			{isOpen &&
@@ -38,10 +79,7 @@ export default function Menu({
 								top: numToPx(top),
 								left: numToPx(left),
 								minWidth: numToPx(minWidth),
-								maxWidth:
-									maxWidth === 0
-										? "max-content"
-										: numToPx(maxWidth),
+								maxWidth: maxW,
 								width:
 									width === 0
 										? "max-content"
