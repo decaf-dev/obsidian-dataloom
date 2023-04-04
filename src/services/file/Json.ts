@@ -12,6 +12,7 @@ export default class Json {
 		if (pluginVersion < CURRENT_PLUGIN_VERSION) {
 			//Handle table produced by older plugin version
 		}
+		tableState.pluginVersion = CURRENT_PLUGIN_VERSION;
 		return tableState;
 	}
 }
