@@ -361,7 +361,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 												onWidthChange={
 													handleHeaderWidthChange
 												}
-												onDeleteClick={() =>
+												onDeleteClick={
 													handleHeaderDeleteClick
 												}
 												onTypeSelect={

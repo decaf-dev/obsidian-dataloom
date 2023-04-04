@@ -15,7 +15,7 @@ interface Props {
 	hasAutoWidth: boolean;
 	onAutoWidthToggle: (columnId: string, value: boolean) => void;
 	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
-	onDeleteClick: (columnId: string) => void;
+	onDeleteClick: () => void;
 	onBackClick: () => void;
 }
 
@@ -56,9 +56,7 @@ export default function EditMenu({
 						</div>
 					)}
 					{canDeleteColumn && (
-						<Button onClick={() => onDeleteClick(columnId)}>
-							Delete
-						</Button>
+						<Button onClick={() => onDeleteClick()}>Delete</Button>
 					)}
 				</Stack>
 			</Padding>
