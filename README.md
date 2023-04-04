@@ -56,15 +56,9 @@ Press `ctrl + p` (Windows) or `cmd + p` (Mac) on your keyboard and search `Creat
 
 ## Hotkeys
 
--   Add a new NLT markdown table
+-   Create table
     -   `ctrl + shift + +` (Windows) (Press + once)
     -   `cmd + shift + +` (Mac)
--   Add a new column to a focused table
-    -   `ctrl + shift + \` (Windows)
-    -   `cmd + shift + \ ` (Mac)
--   Add a new row to a focused table
-    -   `ctrl + shift + enter` (Windows)
-    -   `cmd + shift + enter` (Mac)
 
 ## Header Menu
 
@@ -118,8 +112,8 @@ When a cell in the row has last been edited
 
 ## Markdown Support
 
-Notion-Like Tables uses the `MarkdownRenderer.renderMarkdown` function to render HTML entities from markdown.
-There are some known issues with this function where embedded items, such as links or html do not work properly. Future development will be made to fix these issues.
+Notion-Like Tables uses the Obsidian function `MarkdownRenderer.renderMarkdown` to render HTML element from markdown.
+There are some known issues with this function where embedded elements, such as links do not work properly. Code is needed to implement these embeddings. Future development will be required to fix some of these issues.
 
 ## Copying Cell Content
 
