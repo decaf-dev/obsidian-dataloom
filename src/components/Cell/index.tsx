@@ -177,6 +177,11 @@ export default function Cell({
 		left,
 	} = menu.position;
 
+	let height = measuredHeight;
+	if (columnType === CellType.TAG || columnType === CellType.MULTI_TAG) {
+		height = 0;
+	}
+
 	let className = "NLT__td-container";
 	if (
 		columnType === CellType.LAST_EDITED_TIME ||
@@ -211,7 +216,7 @@ export default function Cell({
 							: 0
 					}
 					width={measuredWidth}
-					height={measuredHeight}
+					height={height}
 				>
 					{columnType === CellType.TEXT && (
 						<TextCellEdit
