@@ -4,19 +4,19 @@ import "./styles.css";
 interface Props {
 	markdown: string;
 	shouldWrapOverflow: boolean;
-	useAutoWidth: boolean;
+	hasAutoWidth: boolean;
 }
 
 export default function TextCell({
 	markdown,
 	shouldWrapOverflow,
-	useAutoWidth,
+	hasAutoWidth,
 }: Props) {
 	const { wrapperRef, contentRef, appendOrReplaceFirstChild } =
-		useRenderMarkdown(markdown, useAutoWidth, shouldWrapOverflow);
+		useRenderMarkdown(markdown, hasAutoWidth, shouldWrapOverflow);
 
 	const overflowClassName = useOverflowClassname(
-		useAutoWidth,
+		hasAutoWidth,
 		shouldWrapOverflow
 	);
 	const className = "NLT__text-cell" + " " + overflowClassName;

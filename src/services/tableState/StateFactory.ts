@@ -9,7 +9,7 @@ export default class StateFactory {
 			sortDir: SortDir.NONE,
 			width: "140px",
 			type: CellType.TEXT,
-			useAutoWidth: false,
+			hasAutoWidth: false,
 			shouldWrapOverflow: false,
 			footerCellId: randomUUID(),
 		};

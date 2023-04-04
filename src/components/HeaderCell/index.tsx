@@ -28,7 +28,7 @@ interface Props {
 	numColumns: number;
 	markdown: string;
 	shouldWrapOverflow: boolean;
-	useAutoWidth: boolean;
+	hasAutoWidth: boolean;
 	sortDir: SortDir;
 	type: CellType;
 	onMoveColumnClick: (columnId: string, moveRight: boolean) => void;
@@ -49,7 +49,7 @@ export default function HeaderCell({
 	columnId,
 	width,
 	markdown,
-	useAutoWidth,
+	hasAutoWidth,
 	shouldWrapOverflow,
 	type,
 	sortDir,
@@ -159,7 +159,7 @@ export default function HeaderCell({
 				columnId={columnId}
 				cellId={cellId}
 				shouldWrapOverflow={shouldWrapOverflow}
-				useAutoWidth={useAutoWidth}
+				hasAutoWidth={hasAutoWidth}
 				markdown={markdown}
 				columnSortDir={sortDir}
 				columnType={type}
@@ -182,7 +182,7 @@ export default function HeaderCell({
 				</Stack>
 			</div>
 			<div className="NLT__th-resize-container">
-				{!useAutoWidth && (
+				{!hasAutoWidth && (
 					<div
 						className="NLT__th-resize"
 						onMouseDown={(e) => {

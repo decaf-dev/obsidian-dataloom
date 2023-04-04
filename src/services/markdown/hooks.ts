@@ -5,7 +5,7 @@ import { handleLinkClick } from "./embed";
 
 export const useRenderMarkdown = (
 	markdown: string,
-	useAutoWidth: boolean,
+	hasAutoWidth: boolean,
 	shouldWrapOverflow: boolean
 ) => {
 	const wrapperRef = useRef<HTMLDivElement | null>(null);
@@ -71,7 +71,7 @@ export const useRenderMarkdown = (
 					appendOrReplaceFirstChild(wrapperRef.current, el);
 			}
 		});
-	}, [markdown, useAutoWidth, shouldWrapOverflow]);
+	}, [markdown, hasAutoWidth, shouldWrapOverflow]);
 
 	return {
 		wrapperRef,

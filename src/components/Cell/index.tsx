@@ -42,7 +42,7 @@ interface Props {
 	width: string;
 	tags: Tag[];
 	shouldWrapOverflow: boolean;
-	useAutoWidth: boolean;
+	hasAutoWidth: boolean;
 	onRemoveTagClick: (cellId: string, rowId: string, tagId: string) => void;
 	onTagClick: (
 		cellId: string,
@@ -78,7 +78,7 @@ export default function Cell({
 	tags,
 	width,
 	shouldWrapOverflow,
-	useAutoWidth,
+	hasAutoWidth,
 	onRemoveTagClick,
 	onTagColorChange,
 	onTagDeleteClick,
@@ -254,14 +254,14 @@ export default function Cell({
 				<TextCell
 					markdown={markdown}
 					shouldWrapOverflow={shouldWrapOverflow}
-					useAutoWidth={useAutoWidth}
+					hasAutoWidth={hasAutoWidth}
 				/>
 			)}
 			{columnType === CellType.NUMBER && (
 				<NumberCell
 					value={markdown}
 					shouldWrapOverflow={shouldWrapOverflow}
-					useAutoWidth={useAutoWidth}
+					hasAutoWidth={hasAutoWidth}
 				/>
 			)}
 			{columnType === CellType.CHECKBOX && (
@@ -275,14 +275,14 @@ export default function Cell({
 				<CreationTimeCell
 					value={rowCreationTime}
 					shouldWrapOverflow={shouldWrapOverflow}
-					useAutoWidth={useAutoWidth}
+					hasAutoWidth={hasAutoWidth}
 				/>
 			)}
 			{columnType === CellType.LAST_EDITED_TIME && (
 				<LastEditedTimeCell
 					value={rowLastEditedTime}
 					shouldWrapOverflow={shouldWrapOverflow}
-					useAutoWidth={useAutoWidth}
+					hasAutoWidth={hasAutoWidth}
 				/>
 			)}
 			{columnType === CellType.TAG && currentTag && (
@@ -290,7 +290,7 @@ export default function Cell({
 					isDarkMode={isDarkMode}
 					markdown={currentTag.markdown}
 					color={currentTag.color}
-					useAutoWidth={useAutoWidth}
+					hasAutoWidth={hasAutoWidth}
 					shouldWrapOverflow={shouldWrapOverflow}
 				/>
 			)}
@@ -298,7 +298,7 @@ export default function Cell({
 				<MultiTagCell
 					isDarkMode={isDarkMode}
 					tags={filteredTags}
-					useAutoWidth={useAutoWidth}
+					hasAutoWidth={hasAutoWidth}
 					shouldWrapOverflow={shouldWrapOverflow}
 				/>
 			)}

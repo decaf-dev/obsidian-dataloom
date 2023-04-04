@@ -253,7 +253,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 			value,
 		});
 		setTableState((prevState) =>
-			updateColumn(prevState, columnId, "useAutoWidth", value)
+			updateColumn(prevState, columnId, "hasAutoWidth", value)
 		);
 	}
 
@@ -312,7 +312,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 										type,
 										sortDir,
 										shouldWrapOverflow,
-										useAutoWidth,
+										hasAutoWidth,
 									} = column;
 
 									const cell = cells.find(
@@ -338,14 +338,14 @@ export default function App({ initialState, onSaveTableState }: Props) {
 												numColumns={columns.length}
 												columnId={cell.columnId}
 												width={
-													useAutoWidth
+													hasAutoWidth
 														? "max-content"
 														: width
 												}
 												shouldWrapOverflow={
 													shouldWrapOverflow
 												}
-												useAutoWidth={useAutoWidth}
+												hasAutoWidth={hasAutoWidth}
 												markdown={markdown}
 												type={type}
 												sortDir={sortDir}
@@ -424,7 +424,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 										const {
 											width,
 											type,
-											useAutoWidth,
+											hasAutoWidth,
 											shouldWrapOverflow,
 										} = column;
 										const {
@@ -457,9 +457,9 @@ export default function App({ initialState, onSaveTableState }: Props) {
 													shouldWrapOverflow={
 														shouldWrapOverflow
 													}
-													useAutoWidth={useAutoWidth}
+													hasAutoWidth={hasAutoWidth}
 													width={
-														useAutoWidth
+														hasAutoWidth
 															? "max-content"
 															: width
 													}
@@ -508,7 +508,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 								...columns.map((_column, i) => {
 									const {
 										width,
-										useAutoWidth,
+										hasAutoWidth,
 										footerCellId,
 									} = columns[i];
 									if (i === 0) {
@@ -518,7 +518,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 												<div
 													style={{
 														paddingTop: "10px",
-														width: useAutoWidth
+														width: hasAutoWidth
 															? "max-content"
 															: width,
 													}}

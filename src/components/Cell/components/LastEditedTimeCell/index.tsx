@@ -3,17 +3,17 @@ import { dateTimeToString } from "src/services/string/conversion";
 
 interface Props {
 	value: number;
-	useAutoWidth: boolean;
+	hasAutoWidth: boolean;
 	shouldWrapOverflow: boolean;
 }
 
 export default function LastEditedTimeCell({
 	value,
-	useAutoWidth,
+	hasAutoWidth,
 	shouldWrapOverflow,
 }: Props) {
 	const overflowClassName = useOverflowClassname(
-		useAutoWidth,
+		hasAutoWidth,
 		shouldWrapOverflow
 	);
 	const className = "NLT__last-edited-time-cell" + " " + overflowClassName;

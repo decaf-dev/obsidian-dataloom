@@ -5,16 +5,16 @@ import "./styles.css";
 interface Props {
 	value: string;
 	shouldWrapOverflow: boolean;
-	useAutoWidth: boolean;
+	hasAutoWidth: boolean;
 }
 
 export default function NumberCell({
 	value,
 	shouldWrapOverflow,
-	useAutoWidth,
+	hasAutoWidth,
 }: Props) {
 	const overflowClassName = useOverflowClassname(
-		useAutoWidth,
+		hasAutoWidth,
 		shouldWrapOverflow
 	);
 	const className = "NLT__number-cell" + " " + overflowClassName;

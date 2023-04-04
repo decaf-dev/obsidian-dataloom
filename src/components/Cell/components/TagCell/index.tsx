@@ -6,7 +6,7 @@ interface Props {
 	isDarkMode: boolean;
 	markdown: string;
 	color: string;
-	useAutoWidth: boolean;
+	hasAutoWidth: boolean;
 	shouldWrapOverflow: boolean;
 }
 
@@ -14,11 +14,11 @@ export default function TagCell({
 	isDarkMode,
 	markdown,
 	color,
-	useAutoWidth,
+	hasAutoWidth,
 	shouldWrapOverflow,
 }: Props) {
 	const overflowClassName = useOverflowClassname(
-		useAutoWidth,
+		hasAutoWidth,
 		shouldWrapOverflow
 	);
 	const className = "NLT__tag-cell" + " " + overflowClassName;

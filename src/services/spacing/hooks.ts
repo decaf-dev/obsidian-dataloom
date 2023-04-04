@@ -1,8 +1,8 @@
 export const useOverflowClassname = (
-	useAutoWidth: boolean,
+	hasAutoWidth: boolean,
 	shouldWrapOverflow: boolean
 ) => {
-	if (useAutoWidth) {
+	if (hasAutoWidth) {
 		return "NLT__auto-width";
 	} else {
 		if (shouldWrapOverflow) {

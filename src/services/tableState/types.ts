@@ -34,7 +34,7 @@ export interface Column {
 	sortDir: SortDir;
 	width: string;
 	type: CellType;
-	useAutoWidth: boolean;
+	hasAutoWidth: boolean;
 	shouldWrapOverflow: boolean;
 	footerCellId: string;
 }

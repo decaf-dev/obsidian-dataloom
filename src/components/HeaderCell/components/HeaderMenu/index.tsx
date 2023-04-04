@@ -22,7 +22,7 @@ interface Props {
 	cellId: string;
 	markdown: string;
 	shouldWrapOverflow: boolean;
-	useAutoWidth: boolean;
+	hasAutoWidth: boolean;
 	columnSortDir: SortDir;
 	columnType: CellType;
 	columnId: string;
@@ -53,7 +53,7 @@ export default function HeaderMenu({
 	columnId,
 	columnIndex,
 	numColumns,
-	useAutoWidth,
+	hasAutoWidth,
 	shouldWrapOverflow,
 	onTypeSelect,
 	onSortClick,
@@ -122,7 +122,7 @@ export default function HeaderMenu({
 						title={submenu.content}
 						columnType={columnType}
 						columnId={columnId}
-						useAutoWidth={useAutoWidth}
+						hasAutoWidth={hasAutoWidth}
 						shouldWrapOverflow={shouldWrapOverflow}
 						onBackClick={handleBackClick}
 						onAutoWidthToggle={onAutoWidthToggle}

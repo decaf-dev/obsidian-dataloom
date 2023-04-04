@@ -12,7 +12,7 @@ interface Props {
 	columnId: string;
 	columnType: string;
 	shouldWrapOverflow: boolean;
-	useAutoWidth: boolean;
+	hasAutoWidth: boolean;
 	onAutoWidthToggle: (columnId: string, value: boolean) => void;
 	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
 	onDeleteClick: (columnId: string) => void;
@@ -25,7 +25,7 @@ export default function EditMenu({
 	title,
 	columnType,
 	shouldWrapOverflow,
-	useAutoWidth,
+	hasAutoWidth,
 	onAutoWidthToggle,
 	onWrapOverflowToggle,
 	onBackClick,
@@ -38,13 +38,13 @@ export default function EditMenu({
 					<div>
 						<p className="NLT__label">Auto Width</p>
 						<Switch
-							isChecked={useAutoWidth}
+							isChecked={hasAutoWidth}
 							onToggle={(value) =>
 								onAutoWidthToggle(columnId, value)
 							}
 						/>
 					</div>
-					{!useAutoWidth && columnType === CellType.TEXT && (
+					{!hasAutoWidth && columnType === CellType.TEXT && (
 						<div>
 							<p className="NLT__label">Wrap Overflow</p>
 							<Switch
