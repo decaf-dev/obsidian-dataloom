@@ -39,4 +39,7 @@ export const { openMenu, closeTopLevelMenu, closeAllMenus } = menuSlice.actions;
 export const isMenuOpen = (state: RootState, menu: Menu) =>
 	state.menu.openMenus.find((m) => m.id === menu.id) ? true : false;
 
+export const isTopLevelMenu = (state: RootState, menuId: string) =>
+	state.menu.openMenus.last()?.id === menuId;
+
 export default menuSlice.reducer;

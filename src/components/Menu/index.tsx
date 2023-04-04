@@ -1,7 +1,8 @@
+import _ from "lodash";
 import React, { useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
-import { closeTopLevelMenu } from "src/services/menu/menuSlice";
-import { useAppDispatch } from "src/services/redux/hooks";
+import { closeTopLevelMenu, isTopLevelMenu } from "src/services/menu/menuSlice";
+import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 import { numToPx } from "src/services/string/conversion";
 
 import "./styles.css";
@@ -29,6 +30,7 @@ export default function Menu({
 	height = 0,
 	children,
 }: Props) {
+	const isTopLevel = useAppSelector((state) => isTopLevelMenu(state, id));
 	const dispatch = useAppDispatch();
 
 	function handleKeyUp(e: KeyboardEvent) {
@@ -38,9 +40,12 @@ export default function Menu({
 	}
 
 	function handleMouseDown(e: MouseEvent) {
+		e.stopPropagation();
 		const target = e.target as HTMLElement;
-		if (!target.closest(`.NLT__menu`)) {
-			dispatch(closeTopLevelMenu());
+		if (isTopLevel) {
+			if (!target.closest(`#${id}`)) {
+				dispatch(closeTopLevelMenu());
+			}
 		}
 	}
 
@@ -48,11 +53,12 @@ export default function Menu({
 		if (isOpen) {
 			window.addEventListener("keyup", handleKeyUp);
 			window.addEventListener("mousedown", handleMouseDown);
-		} else {
+		}
+		return () => {
 			window.removeEventListener("keyup", handleKeyUp);
 			window.removeEventListener("mousedown", handleMouseDown);
-		}
-	}, [isOpen]);
+		};
+	}, [isOpen, isTopLevel]);
 
 	let maxW = "unset";
 	if (maxWidth) {
