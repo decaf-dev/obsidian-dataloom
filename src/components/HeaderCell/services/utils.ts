@@ -4,7 +4,7 @@ import { CellType } from "src/services/tableState/types";
 export const getIconTypeFromCellType = (type: CellType) => {
 	switch (type) {
 		case CellType.TEXT:
-			return IconType.DESCRIPTION;
+			return IconType.NOTES;
 		case CellType.NUMBER:
 			return IconType.NUMBERS;
 		case CellType.CHECKBOX:
@@ -19,6 +19,6 @@ export const getIconTypeFromCellType = (type: CellType) => {
 		case CellType.DATE:
 			return IconType.SCHEDULE;
 		default:
-			return IconType.DESCRIPTION;
+			return IconType.NOTES;
 	}
 };

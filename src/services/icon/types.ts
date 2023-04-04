@@ -19,7 +19,7 @@ export const enum IconType {
 	EDIT,
 	MORE_HORIZ,
 	CLOSE,
-	DESCRIPTION,
+	NOTES,
 	CHECK,
 	LABEL,
 	LIST,

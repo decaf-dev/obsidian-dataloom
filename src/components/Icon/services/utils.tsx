@@ -27,6 +27,7 @@ import {
 	Search,
 	MoveDownOutlined,
 	ScheduleOutlined,
+	Notes,
 } from "@mui/icons-material";
 
 import { IconType } from "src/services/icon/types";
@@ -76,8 +77,8 @@ export const findIcon = (
 			return <MoreHoriz className={className} />;
 		case IconType.CLOSE:
 			return <Close className={className} />;
-		case IconType.DESCRIPTION:
-			return <DescriptionOutlined className={className} />;
+		case IconType.NOTES:
+			return <Notes className={className} />;
 		case IconType.NUMBERS:
 			return <Numbers className={className} />;
 		case IconType.CHECK:
