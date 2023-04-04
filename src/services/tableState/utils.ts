@@ -1,4 +1,3 @@
-import { isCheckbox, isNumber, isDate } from "../string/validators";
 import { Cell, CellType, Column, Row } from "./types";
 
 //TODO change
@@ -28,22 +27,6 @@ export const sortCells = (
 			//Return a flatten version of the array
 			.flat(1)
 	);
-};
-
-export const isValidCellContent = (
-	content: string,
-	cellType: CellType
-): boolean => {
-	switch (cellType) {
-		case CellType.NUMBER:
-			return isNumber(content);
-		case CellType.DATE:
-			return isDate(content);
-		case CellType.CHECKBOX:
-			return isCheckbox(content);
-		default:
-			return false;
-	}
 };
 
 export const getDisplayNameForCellType = (type: CellType): string => {
