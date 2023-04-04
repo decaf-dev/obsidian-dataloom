@@ -28,12 +28,13 @@ import {
 import { isCheckboxChecked } from "src/services/string/validators";
 
 import "./styles.css";
-import { useCompare, useDidMountEffect } from "src/services/hooks";
+import { useDidMountEffect } from "src/services/hooks";
 import { updateSortTime } from "src/services/redux/globalSlice";
 
 interface Props {
 	columnType: string;
 	cellId: string;
+	rowId: string;
 	columnId: string;
 	markdown: string;
 	rowCreationTime: number;
@@ -42,16 +43,22 @@ interface Props {
 	tags: Tag[];
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
-	onRemoveTagClick: (cellId: string, tagId: string) => void;
+	onRemoveTagClick: (cellId: string, rowId: string, tagId: string) => void;
 	onTagClick: (
 		cellId: string,
+		rowId: string,
 		tagId: string,
 		canAddMultiple: boolean
 	) => void;
-	onContentChange: (cellId: string, updatedMarkdown: string) => void;
+	onContentChange: (
+		cellId: string,
+		rowId: string,
+		updatedMarkdown: string
+	) => void;
 	onAddTag: (
 		cellId: string,
 		columnId: string,
+		rowId: string,
 		markdown: string,
 		color: string,
 		canAddMultiple: boolean
@@ -63,6 +70,7 @@ interface Props {
 export default function EditableTd({
 	cellId,
 	columnId,
+	rowId,
 	markdown,
 	columnType,
 	rowCreationTime,
@@ -84,7 +92,7 @@ export default function EditableTd({
 	const { isDarkMode } = useAppSelector((state) => state.global);
 
 	//If we open a menu and then close it, we want to sort all rows
-	//TODO optimize
+	//TODO optimize?
 	useDidMountEffect(() => {
 		if (!isOpen) {
 			dispatch(updateSortTime());
@@ -130,6 +138,7 @@ export default function EditableTd({
 		onAddTag(
 			cellId,
 			columnId,
+			rowId,
 			markdown,
 			color,
 			columnType === CellType.MULTI_TAG
@@ -137,27 +146,27 @@ export default function EditableTd({
 	}
 
 	function handleRemoveTagClick(tagId: string) {
-		onRemoveTagClick(cellId, tagId);
+		onRemoveTagClick(cellId, rowId, tagId);
 	}
 
 	function handleTagClick(tagId: string) {
-		onTagClick(cellId, tagId, columnType === CellType.MULTI_TAG);
+		onTagClick(cellId, tagId, rowId, columnType === CellType.MULTI_TAG);
 	}
 
 	function handleTextInputChange(updatedMarkdown: string) {
-		onContentChange(cellId, updatedMarkdown);
+		onContentChange(cellId, rowId, updatedMarkdown);
 	}
 
 	function handleNumberInputChange(updatedMarkdown: string) {
-		onContentChange(cellId, updatedMarkdown);
+		onContentChange(cellId, rowId, updatedMarkdown);
 	}
 
 	function handleDateChange(updatedMarkdown: string) {
-		onContentChange(cellId, updatedMarkdown);
+		onContentChange(cellId, rowId, updatedMarkdown);
 	}
 
 	function handleCheckboxChange(updatedMarkdown: string) {
-		onContentChange(cellId, updatedMarkdown);
+		onContentChange(cellId, rowId, updatedMarkdown);
 	}
 
 	const {

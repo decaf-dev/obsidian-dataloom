@@ -100,20 +100,25 @@ export default function App({ initialState, onSaveTableState }: Props) {
 		dispatch(updateSortTime());
 	}
 
-	function handleCellContentChange(cellId: string, updatedMarkdown: string) {
+	function handleCellContentChange(
+		cellId: string,
+		rowId: string,
+		updatedMarkdown: string
+	) {
 		logFunc(shouldDebug, FILE_NAME, "handleCellContentChange", {
 			cellId,
 			updatedMarkdown,
 		});
 
 		setTableState((prevState) =>
-			updateCell(prevState, cellId, updatedMarkdown)
+			updateCell(prevState, cellId, rowId, updatedMarkdown)
 		);
 	}
 
 	function handleAddTag(
 		cellId: string,
 		columnId: string,
+		rowId: string,
 		markdown: string,
 		color: string,
 		canAddMultiple: boolean
@@ -121,6 +126,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 		logFunc(shouldDebug, FILE_NAME, "handleAddTag", {
 			cellId,
 			columnId,
+			rowId,
 			markdown,
 			color,
 			canAddMultiple,
@@ -130,6 +136,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 				prevState,
 				cellId,
 				columnId,
+				rowId,
 				markdown,
 				color,
 				canAddMultiple
@@ -139,26 +146,33 @@ export default function App({ initialState, onSaveTableState }: Props) {
 
 	function handleAddCellToTag(
 		cellId: string,
+		rowId: string,
 		tagId: string,
 		canAddMultiple: boolean
 	) {
 		logFunc(shouldDebug, FILE_NAME, "handleAddCellToTag", {
 			cellId,
+			rowId,
 			tagId,
 			canAddMultiple,
 		});
 		setTableState((prevState) =>
-			addCellToTag(prevState, cellId, tagId, canAddMultiple)
+			addCellToTag(prevState, cellId, rowId, tagId, canAddMultiple)
 		);
 	}
 
-	function handleRemoveCellFromTag(cellId: string, tagId: string) {
+	function handleRemoveCellFromTag(
+		cellId: string,
+		rowId: string,
+		tagId: string
+	) {
 		logFunc(shouldDebug, FILE_NAME, "handleRemoveCellFromTag", {
 			cellId,
+			rowId,
 			tagId,
 		});
 		setTableState((prevState) =>
-			removeCellFromTag(prevState, cellId, tagId)
+			removeCellFromTag(prevState, cellId, rowId, tagId)
 		);
 	}
 
@@ -307,7 +321,11 @@ export default function App({ initialState, onSaveTableState }: Props) {
 									);
 									if (!cell) throw Error("Cell not found");
 
-									const { id: cellId, markdown } = cell;
+									const {
+										id: cellId,
+										markdown,
+										rowId,
+									} = cell;
 									return {
 										id: cellId,
 										content: (
@@ -383,6 +401,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 												onNameChange={(value) =>
 													handleCellContentChange(
 														cellId,
+														rowId,
 														value
 													)
 												}
@@ -449,6 +468,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 												<EditableTd
 													key={cellId}
 													cellId={cellId}
+													rowId={rowId}
 													tags={filteredTags}
 													columnId={cell.columnId}
 													rowCreationTime={

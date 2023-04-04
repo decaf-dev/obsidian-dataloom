@@ -1,4 +1,5 @@
 import { TagIdError } from "./error";
+import { updateLastEditedTime } from "./row";
 import StateFactory from "./StateFactory";
 import { TableState } from "./types";
 
@@ -6,11 +7,12 @@ export const addNewTag = (
 	prevState: TableState,
 	cellId: string,
 	columnId: string,
+	rowId: string,
 	markdown: string,
 	color: string,
 	canAddMultiple: boolean
 ) => {
-	const { tags } = prevState.model;
+	const { tags, rows } = prevState.model;
 
 	const tagsCopy = [...tags];
 
@@ -29,6 +31,7 @@ export const addNewTag = (
 		model: {
 			...prevState.model,
 			tags: tagsCopy,
+			rows: updateLastEditedTime(rows, rowId),
 		},
 	};
 };
@@ -36,9 +39,10 @@ export const addNewTag = (
 export const removeCellFromTag = (
 	prevState: TableState,
 	cellId: string,
+	rowId: string,
 	tagId: string
 ) => {
-	const { tags } = prevState.model;
+	const { tags, rows } = prevState.model;
 
 	const tagsCopy = [...tags];
 	const tag = tagsCopy.find((t) => t.id === tagId);
@@ -54,16 +58,18 @@ export const removeCellFromTag = (
 			...prevState.model,
 			tags: tagsCopy,
 		},
+		rows: updateLastEditedTime(rows, rowId),
 	};
 };
 
 export const addCellToTag = (
 	prevState: TableState,
 	cellId: string,
+	rowId: string,
 	tagId: string,
 	canAddMultiple: boolean
 ): TableState => {
-	const { tags } = prevState.model;
+	const { tags, rows } = prevState.model;
 	const tagsCopy = [...tags];
 
 	if (!canAddMultiple) {
@@ -86,6 +92,7 @@ export const addCellToTag = (
 		model: {
 			...prevState.model,
 			tags: tagsCopy,
+			rows: updateLastEditedTime(rows, rowId),
 		},
 	};
 };
