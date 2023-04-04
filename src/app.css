@@ -1,8 +1,6 @@
 
 :root {
-/*
-* Spacing System
-*/
+/** Spacing system **/
 --nlt-spacing--xs: 2px;
 --nlt-spacing--sm: 4px;
 --nlt-spacing--md: 8px;
@@ -13,6 +11,13 @@
 --nlt-cell-spacing-x: var(--nlt-spacing--sm);
 --nlt-cell-spacing-y: var(--nlt-spacing--lg);
 --nlt-cell-min-height: 1.9rem;
+
+/** Font system **/
+--nlt-font-size--xs: 0.8rem;
+--nlt-font-size--sm: 0.9rem;
+--nlt-font-size--md: 1rem;
+--nlt-font-size--lg: 1.1rem;
+
 }
 
 /*
@@ -149,11 +154,6 @@
 */
 .NLT__app {
 	width: fit-content;
-}
-
-.NLT__label {
-	font-size: 0.9rem;
-	margin: 0;
 }
 
 .NLT__default-cursor {

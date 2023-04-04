@@ -36,7 +36,6 @@ export default function BaseMenu({
 			<Stack spacing="sm" isVertical>
 				<Padding paddingX="md" paddingY="sm">
 					<input
-						className="NLT__header-menu-input"
 						autoFocus
 						value={columnName}
 						onChange={(e) =>

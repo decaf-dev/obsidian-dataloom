@@ -15,9 +15,9 @@ import {
 
 import "./styles.css";
 import Icon from "../Icon";
-import { IconType } from "src/services/icon/types";
 import Stack from "../Stack";
 import HeaderMenu from "./components/HeaderMenu";
+import { getIconTypeFromCellType } from "src/services/icon/utils";
 
 interface Props {
 	cellId: string;
@@ -122,23 +122,7 @@ export default function HeaderCell({
 	}
 
 	const { top, left } = menu.position;
-
-	let icon = IconType.LABEL;
-
-	if (type === CellType.TEXT) {
-		icon = IconType.DESCRIPTION;
-	} else if (type === CellType.NUMBER) {
-		icon = IconType.NUMBERS;
-	} else if (type === CellType.CHECKBOX) {
-		icon = IconType.CHECK;
-	} else if (type === CellType.DATE) {
-		icon = IconType.CALENDAR_TODAY;
-	} else if (
-		type === CellType.CREATION_TIME ||
-		type === CellType.LAST_EDITED_TIME
-	) {
-		icon = IconType.SCHEDULE;
-	}
+	const iconType = getIconTypeFromCellType(type);
 
 	return (
 		<div
@@ -177,7 +161,7 @@ export default function HeaderCell({
 			/>
 			<div className="NLT__th-content">
 				<Stack spacing="md">
-					<Icon type={icon} size="md" />
+					<Icon type={iconType} size="md" />
 					{markdown}
 				</Stack>
 			</div>

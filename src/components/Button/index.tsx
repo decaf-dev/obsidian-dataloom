@@ -4,26 +4,19 @@ import "./styles.css";
 
 interface Props {
 	id?: string;
-	style?: object;
+	isFlat?: boolean;
 	icon?: React.ReactNode;
 	children?: React.ReactNode;
-	isDarker?: boolean;
 	onClick: (e: React.MouseEvent) => void;
 }
 
-export default function Button({
-	style,
-	children,
-	icon,
-	isDarker,
-	onClick,
-}: Props) {
+export default function Button({ children, icon, isFlat, onClick }: Props) {
 	let className = "NLT__button";
 	if (icon !== undefined) className += " NLT__button--icon";
-	if (isDarker) className += " NLT__button--icon-darker";
+	if (isFlat) className += " NLT__button--flat";
 
 	return (
-		<button style={style} className={className} onClick={(e) => onClick(e)}>
+		<button className={className} onClick={(e) => onClick(e)}>
 			{icon !== undefined ? icon : children}
 		</button>
 	);

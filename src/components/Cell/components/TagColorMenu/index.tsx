@@ -11,6 +11,7 @@ import MenuItem from "../../../MenuItem";
 
 import "./styles.css";
 import { Color } from "src/services/color/types";
+import Padding from "src/components/Padding";
 
 interface Props {
 	menuId: string;
@@ -37,8 +38,10 @@ export default function TagColorMenu({
 		<Menu id={menuId} isOpen={isOpen} top={top} left={left}>
 			<div className="NLT__tag-color-menu">
 				<Stack spacing="md" isVertical>
-					<Text value="Color" />
-					<Stack spacing="sm" isVertical>
+					<Padding paddingX="md" paddingY="sm">
+						<Text value="Color" />
+					</Padding>
+					<div>
 						{Object.values(Color).map((color) => (
 							<ColorItem
 								isDarkMode={isDarkMode}
@@ -48,7 +51,7 @@ export default function TagColorMenu({
 								isSelected={selectedColor === color}
 							/>
 						))}
-					</Stack>
+					</div>
 					<Divider />
 					<MenuItem
 						iconType={IconType.DELETE}

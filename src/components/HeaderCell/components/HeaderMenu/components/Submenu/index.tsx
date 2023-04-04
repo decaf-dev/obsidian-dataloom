@@ -22,7 +22,7 @@ export default function Submenu({ title, children, onBackClick }: Props) {
 							icon={<Icon type={IconType.KEYBOARD_BACKSPACE} />}
 							onClick={() => onBackClick()}
 						/>
-						<div className="NLT__header-menu-title">{title}</div>
+						{title}
 					</Stack>
 					<Divider />
 				</Stack>

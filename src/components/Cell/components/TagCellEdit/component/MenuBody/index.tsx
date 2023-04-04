@@ -1,3 +1,6 @@
+import Padding from "src/components/Padding";
+import Stack from "src/components/Stack";
+import Text from "src/components/Text";
 import { Color } from "src/services/color/types";
 import { Tag } from "src/services/tableState/types";
 import CreateTag from "../CreateTag";
@@ -30,13 +33,10 @@ export default function MenuBody({
 	const filteredTags = tags.filter((tag) => tag.markdown.includes(inputText));
 	return (
 		<div className="NLT__tag-menu-body">
-			<p className="NLT__tag-menu-text">Select an option or create one</p>
-			<div
-				style={{
-					overflowY: "scroll",
-					height: "140px",
-				}}
-			>
+			<Padding paddingX="lg" paddingY="md">
+				<Text value="Select an option or create one" />
+			</Padding>
+			<div style={{ width: "100%" }}>
 				{!found && inputText !== "" && (
 					<CreateTag
 						isDarkMode={isDarkMode}

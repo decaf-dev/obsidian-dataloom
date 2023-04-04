@@ -9,7 +9,7 @@ interface MenuHeaderProps {
 	cellId: string;
 	tags: TagType[];
 	inputText: string;
-	onInputTextChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+	onInputTextChange: (value: string) => void;
 	onRemoveTag: (tagId: string) => void;
 }
 
@@ -34,16 +34,15 @@ export default function MenuHeader({
 							color={tag.color}
 							markdown={tag.markdown}
 							width="150px"
-							showRemove={true}
-							onRemoveClick={(tagId) => onRemoveTag(tagId)}
+							showRemove
+							onRemoveClick={onRemoveTag}
 						/>
 					))}
 				<input
-					className="NLT__tag-input"
-					autoFocus={true}
+					autoFocus
 					type="text"
 					value={inputText}
-					onChange={onInputTextChange}
+					onChange={(e) => onInputTextChange(e.target.value)}
 				/>
 			</Wrap>
 		</div>

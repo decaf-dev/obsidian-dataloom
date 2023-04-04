@@ -1,6 +1,3 @@
-/*
-* Button
-*/
 .NLT__button {
     display: flex;
     align-items: center;
@@ -8,13 +5,23 @@
     white-space: nowrap;
     color: var(--text-normal);
     margin-right: 0;
+    cursor: pointer;
 }
 
-.NLT__button--icon {
-    background-color: transparent;
-    padding: 1px 3px;
+.NLT__button--icon { 
+    background-color: transparent !important;
+    box-shadow: none !important;
 }
 
-.NLT__button--icon-darker:hover {
-    filter: brightness(95%);
+.NLT__button--icon:hover {
+    box-shadow: var(--input-shadow) !important;
+}
+
+.NLT__button--flat {
+    padding: 0;
+    height: 1px;
+}
+
+.NLT__button--flat:hover {
+    filter: brightness(80%);
 }
