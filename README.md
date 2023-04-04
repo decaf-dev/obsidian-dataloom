@@ -52,7 +52,7 @@ I am looking for people to help me to maintain the code. If you are interested p
 
 To quickly make a table you can use the add table command.
 
-1. Press `ctrl + p` (Windows) or `cmd + p` (Mac) on your keyboard and search `Create new Notion-Like Table`
+Press `ctrl + p` (Windows) or `cmd + p` (Mac) on your keyboard and search `Create table`
 
 ## Hotkeys
 
@@ -74,7 +74,7 @@ Click on a header name to view the header menu. In the header menu, you can rena
 
 ## Cell Types
 
-To edit a cell, just click on it. An textarea or menu will appear which will allow you to edit the cell's content. Make the necessary changes and then click outside the box or press enter to save the text. Notion-Like tables will automatically handle updating your markdown.
+To edit a cell, just click on it. An textarea or menu will appear which will allow you to edit the cell's content. Make the necessary changes and then click outside the box or press enter to save the text.
 
 ### Text Cell
 
@@ -82,7 +82,7 @@ Text can be rendered in cells that are in a column with the `text` content type 
 
 ### Number Cell
 
-Numbers can be rendered in cells that are in a column with the `number` content type selected. A valid number only includes digits 0-9
+Numbers can be rendered in cells that are in a column with the `number` content type selected. A valid number only includes digits 0-9 or decimals.
 
 ### Tag Cell
 
@@ -94,7 +94,7 @@ Tags have a special notion-like menu that will appear. Tags are scoped to each c
 
 ### Multi-Tag Cell
 
-Multi-tag cells offer the same as regular tag cells but allow multiple tags.
+Multi-tag cells offer the same as regular tag cells but accept multiple tags.
 
 #### Tag Colors
 
@@ -110,13 +110,12 @@ Checkboxes can be rendered in cells that are in a column with the `checkbox` con
 
 ## Markdown Support
 
-Notion-Like Tables supports all markdown that is found in Obsidian.md
+Notion-Like Tables uses the `MarkdownRenderer.renderMarkdown` function to render HTML entities from markdown.
+There are some known issues with this function where embedded items, such as links or html do not work properly. Future development will be made to fix these issues.
 
 ## Copying Cell Content
 
 Right-click a cell and its content will be added to your clipboard.
-
-NOTE: The table must be in focus for this to work. Click on the table to focus on it.
 
 ## Column Resizing
 
@@ -148,15 +147,15 @@ There is currently no support for undoing changes. This is part of the roadmap f
 
 Please override the following classes for custom theme development.
 
-| Class                | Element  | Usage       |
-| -------------------- | -------- | ----------- |
-| `.NLT__button`       | `button` |             |
-| `.NLT__table`        | `table`  |             |
-| `.NLT__tr`           | `tr`     |             |
-| `.NLT__th`           | `th`     | Text styles |
-| `.NLT__th-content`   | `div`    | Padding     |
-| `.NLT__td`           | `td`     | Text styles |
-| `.NLT__td-container` | `div`    | Padding     |
+| Class                | Element  | Usage                  |
+| -------------------- | -------- | ---------------------- |
+| `.NLT__button`       | `button` |                        |
+| `.NLT__table`        | `table`  |                        |
+| `.NLT__tr`           | `tr`     |                        |
+| `.NLT__th`           | `th`     | Border and text styles |
+| `.NLT__th-content`   | `div`    | Padding                |
+| `.NLT__td`           | `td`     | Border and text styles |
+| `.NLT__td-container` | `div`    | Padding                |
 
 ## Contributing
 
