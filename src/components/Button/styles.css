@@ -17,6 +17,11 @@
     box-shadow: var(--input-shadow) !important;
 }
 
-.NLT__button--icon-darker:hover {
-    filter: brightness(95%);
+.NLT__button--flat {
+    padding: 0;
+    height: 1px;
+}
+
+.NLT__button--flat:hover {
+    filter: brightness(80%);
 }

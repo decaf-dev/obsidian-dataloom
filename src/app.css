@@ -1,8 +1,6 @@
 
 :root {
-/*
-* Spacing System
-*/
+/** Spacing system **/
 --nlt-spacing--xs: 2px;
 --nlt-spacing--sm: 4px;
 --nlt-spacing--md: 8px;
@@ -14,6 +12,7 @@
 --nlt-cell-spacing-y: var(--nlt-spacing--lg);
 --nlt-cell-min-height: 1.9rem;
 
+/** Font system **/
 --nlt-font-size--xs: 0.8rem;
 --nlt-font-size--sm: 0.9rem;
 --nlt-font-size--md: 1rem;
