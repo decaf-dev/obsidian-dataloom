@@ -29,8 +29,8 @@ export default function BaseMenu({
 	onSubmenuChange,
 }: Props) {
 	return (
-		<Stack spacing="md" isVertical>
-			<Stack spacing="md" isVertical>
+		<Stack spacing="sm" isVertical>
+			<Stack spacing="sm" isVertical>
 				<Padding paddingX="md" paddingY="sm">
 					<input
 						className="NLT__header-menu-input"
