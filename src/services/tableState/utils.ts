@@ -1,4 +1,3 @@
-import { NUMBER_REGEX } from "../string/regex";
 import { isCheckbox, isNumber, isDate } from "../string/validators";
 import { Cell, CellType, Column, Row } from "./types";
 
@@ -45,12 +44,4 @@ export const isValidCellContent = (
 		default:
 			return false;
 	}
-};
-
-export const filterNumberFromContent = (content: string) => {
-	let result = "";
-	for (let i = 0; i < content.length; i++) {
-		if (content[i].match(NUMBER_REGEX)) result += content[i];
-	}
-	return result;
 };

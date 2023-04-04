@@ -1,9 +1,4 @@
 import { useRef } from "react";
-import { CellType } from "src/services/tableState/types";
-import {
-	filterNumberFromContent,
-	isValidCellContent,
-} from "src/services/tableState/utils";
 
 import "./styles.css";
 
@@ -19,9 +14,6 @@ export default function NumberCellEdit({ content, onInputChange }: Props) {
 		value = value.replace("\n", "");
 		return onInputChange(value);
 	}
-
-	if (!isValidCellContent(content, CellType.NUMBER))
-		content = filterNumberFromContent(content);
 
 	return (
 		<input

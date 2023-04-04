@@ -1,10 +1,4 @@
 import { useOverflowClassname } from "src/services/spacing/hooks";
-import { CellType } from "src/services/tableState/types";
-
-import {
-	filterNumberFromContent,
-	isValidCellContent,
-} from "src/services/tableState/utils";
 
 import "./styles.css";
 
@@ -25,7 +19,5 @@ export default function NumberCell({
 	);
 	const className = "NLT__number-cell" + " " + overflowClassName;
 
-	if (!isValidCellContent(content, CellType.NUMBER))
-		content = filterNumberFromContent(content);
 	return <div className={className}>{content}</div>;
 }
