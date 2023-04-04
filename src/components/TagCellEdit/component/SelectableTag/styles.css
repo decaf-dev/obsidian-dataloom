@@ -1,6 +1,0 @@
-.NLT__selectable-tag {
-    display: flex;
-    justify-content: space-between;
-    padding: var(--nlt-spacing--sm) var(--nlt-spacing--md);
-    overflow: hidden;
-}

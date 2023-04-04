@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 
-import EditableTd from "./components/EditableTd";
 import Table from "./components/Table";
 import RowMenu from "./components/RowMenu";
-import EditableTh from "./components/EditableTh";
 import OptionBar from "./components/OptionBar";
 import Button from "./components/Button";
 
-import { Cell, CellType, SortDir } from "./services/tableState/types";
+import { CellType, SortDir } from "./services/tableState/types";
 import { logFunc } from "./services/debug";
 import { TableState } from "./services/tableState/types";
 import { useAppDispatch, useAppSelector } from "./services/redux/hooks";
@@ -38,6 +36,8 @@ import { useId } from "./services/random/hooks";
 import { ColumnIdError } from "./services/tableState/error";
 import { dateTimeToString } from "./services/string/conversion";
 import { updateSortTime } from "./services/redux/globalSlice";
+import HeaderCell from "./components/HeaderCell";
+import Cell from "./components/Cell";
 
 const FILE_NAME = "App";
 
@@ -329,7 +329,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 									return {
 										id: cellId,
 										content: (
-											<EditableTh
+											<HeaderCell
 												key={columnId}
 												cellId={cellId}
 												columnIndex={i}
@@ -429,8 +429,8 @@ export default function App({ initialState, onSaveTableState }: Props) {
 					rows={filteredRows
 						.filter((_row, i) => i !== 0)
 						.map((row) => {
-							const rowCells: Cell[] = cells.filter(
-								(cell: Cell) => cell.rowId === row.id
+							const rowCells = cells.filter(
+								(cell) => cell.rowId === row.id
 							);
 							const {
 								id: rowId,
@@ -441,7 +441,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 							return {
 								id: rowId,
 								cells: [
-									...rowCells.map((cell: Cell) => {
+									...rowCells.map((cell) => {
 										const column = columns.find(
 											(column) =>
 												column.id == cell.columnId
@@ -456,7 +456,11 @@ export default function App({ initialState, onSaveTableState }: Props) {
 											useAutoWidth,
 											shouldWrapOverflow,
 										} = column;
-										const { id: cellId, markdown } = cell;
+										const {
+											id: cellId,
+											markdown,
+											columnId,
+										} = cell;
 
 										const filteredTags = tags.filter(
 											(tag) => tag.columnId === column.id
@@ -465,12 +469,12 @@ export default function App({ initialState, onSaveTableState }: Props) {
 										return {
 											id: cellId,
 											content: (
-												<EditableTd
+												<Cell
 													key={cellId}
 													cellId={cellId}
 													rowId={rowId}
 													tags={filteredTags}
-													columnId={cell.columnId}
+													columnId={columnId}
 													rowCreationTime={
 														creationTime
 													}

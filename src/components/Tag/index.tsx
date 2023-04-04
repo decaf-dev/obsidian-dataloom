@@ -53,8 +53,8 @@ export default function Tag({
 					<Button
 						icon={<Icon size="sm" type={IconType.CLOSE} />}
 						isDarker
-						onClick={(e) => {
-							onRemoveClick && onRemoveClick(id!);
+						onClick={() => {
+							onRemoveClick !== undefined && onRemoveClick(id!);
 						}}
 					/>
 				)}
