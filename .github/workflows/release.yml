@@ -17,16 +17,12 @@ jobs:
               run: |
                   npm install
                   npm run build
-            - name: Set tag variable
-              id: set-tag-var
-              run: |
-                  echo "::set-output name=tag::$(git describe --abbrev=0) --tags"
             # Create the release on github
             - name: Release
               uses: softprops/action-gh-release@v1
               if: startsWith(github.ref, 'refs/tags/')
               with:
-                  name: ${{ github.ref }}
+                  name: ${{  github.ref_name }}
                   tag_name: ${{ github.ref }}
                   files: |
                       main.js
