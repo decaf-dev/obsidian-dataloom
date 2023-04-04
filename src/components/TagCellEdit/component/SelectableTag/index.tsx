@@ -72,7 +72,6 @@ export default function SelectableTag({
 							openMenu({
 								id: menu.id,
 								level: menu.level,
-								sortRowsOnClose: menu.sortRowsOnClose,
 							})
 						);
 					}}

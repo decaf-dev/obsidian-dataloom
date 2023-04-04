@@ -87,7 +87,6 @@ export default function EditableTh({
 			openMenu({
 				id: menu.id,
 				level: menu.level,
-				sortRowsOnClose: menu.sortRowsOnClose,
 			})
 		);
 	}

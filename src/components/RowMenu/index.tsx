@@ -35,7 +35,6 @@ export default function RowMenu({ rowId, onDeleteClick }: Props) {
 				openMenu({
 					id: menu.id,
 					level: menu.level,
-					sortRowsOnClose: menu.sortRowsOnClose,
 				})
 			);
 		}

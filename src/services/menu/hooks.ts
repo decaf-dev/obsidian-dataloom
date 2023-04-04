@@ -30,16 +30,12 @@ const useMenuPosition = () => {
 	return { containerRef, position };
 };
 
-export const useMenu = (
-	level: number,
-	sortRowsOnClose = false
-): RenderableMenu => {
+export const useMenu = (level: number): RenderableMenu => {
 	const { position, containerRef } = useMenuPosition();
 	const [id] = useState("m" + randomUUID());
 	return {
 		id,
 		level,
-		sortRowsOnClose,
 		position,
 		containerRef,
 	};

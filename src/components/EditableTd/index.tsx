@@ -28,7 +28,7 @@ import {
 import { isCheckboxChecked } from "src/services/string/validators";
 
 import "./styles.css";
-import { useDidMountEffect } from "src/services/hooks";
+import { useCompare, useDidMountEffect } from "src/services/hooks";
 import { updateSortTime } from "src/services/redux/globalSlice";
 
 interface Props {
@@ -78,10 +78,18 @@ export default function EditableTd({
 	onContentChange,
 	onAddTag,
 }: Props) {
-	const menu = useMenu(MenuLevel.ONE, true);
+	const menu = useMenu(MenuLevel.ONE);
 	const isOpen = useAppSelector((state) => isMenuOpen(state, menu.id));
 	const dispatch = useAppDispatch();
 	const { isDarkMode } = useAppSelector((state) => state.global);
+
+	//If we open a menu and then close it, we want to sort all rows
+	//TODO optimize
+	useDidMountEffect(() => {
+		if (!isOpen) {
+			dispatch(updateSortTime());
+		}
+	}, [isOpen]);
 
 	async function handleCellContextClick() {
 		try {
@@ -113,7 +121,6 @@ export default function EditableTd({
 				openMenu({
 					id: menu.id,
 					level: menu.level,
-					sortRowsOnClose: menu.sortRowsOnClose,
 				})
 			);
 		}

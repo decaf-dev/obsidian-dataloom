@@ -2,6 +2,8 @@ import { useEffect, useRef } from "react";
 
 export const useCompare = (value: any) => {
 	const prevValue = usePrevious(value);
+	//On mount the value will be undefined, so we don't want to return true
+	if (prevValue === undefined) return false;
 	return prevValue !== value;
 };
 
