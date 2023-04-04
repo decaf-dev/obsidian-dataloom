@@ -27,6 +27,7 @@ import {
 	MoveDownOutlined,
 	ScheduleOutlined,
 } from "@mui/icons-material";
+import { List } from "@mui/material";
 
 import { IconType } from "src/services/icon/types";
 
@@ -89,6 +90,8 @@ export const findIcon = (
 			return <ScheduleOutlined className={className} />;
 		case IconType.SEARCH:
 			return <Search className={className} />;
+		case IconType.LIST:
+			return <List className={className} />;
 		default:
 			return "";
 	}

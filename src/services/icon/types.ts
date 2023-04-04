@@ -22,6 +22,7 @@ export const enum IconType {
 	DESCRIPTION,
 	CHECK,
 	LABEL,
+	LIST,
 	NUMBERS,
 	CALENDAR_TODAY,
 	SCHEDULE,
