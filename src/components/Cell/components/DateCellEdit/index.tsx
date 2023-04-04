@@ -18,14 +18,15 @@ export default function DateCellEdit({ value, onDateChange }: Props) {
 	if (isValidCellContent(value, CellType.DATE))
 		selectedDate = new Date(value);
 
-	function handleChange(date: Date) {
-		const updatedContent = dateToString(date);
-		onDateChange(updatedContent);
+	function handleChange(date: Date | null) {
+		let value = "";
+		if (date) value = dateToString(date);
+		onDateChange(value);
 	}
 	return (
 		<DatePicker
 			className="NLT__date-input"
-			autoFocus={true}
+			autoFocus
 			selected={selectedDate}
 			onChange={handleChange}
 			dateFormat="yyyy/MM/dd"
