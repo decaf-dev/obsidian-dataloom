@@ -31,7 +31,13 @@ export default function RowMenu({ rowId, onDeleteClick }: Props) {
 		if (isOpen) {
 			dispatch(closeTopLevelMenu());
 		} else {
-			dispatch(openMenu({ id: menu.id, level: menu.level }));
+			dispatch(
+				openMenu({
+					id: menu.id,
+					level: menu.level,
+					sortRowsOnClose: menu.sortRowsOnClose,
+				})
+			);
 		}
 	}
 

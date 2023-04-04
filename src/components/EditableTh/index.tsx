@@ -83,7 +83,13 @@ export default function EditableTh({
 	}
 
 	function openHeaderMenu() {
-		dispatch(openMenu({ id: menu.id, level: menu.level }));
+		dispatch(
+			openMenu({
+				id: menu.id,
+				level: menu.level,
+				sortRowsOnClose: menu.sortRowsOnClose,
+			})
+		);
 	}
 
 	function closeHeaderMenu() {

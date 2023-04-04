@@ -28,6 +28,8 @@ import {
 import { isCheckboxChecked } from "src/services/string/validators";
 
 import "./styles.css";
+import { useDidMountEffect } from "src/services/hooks";
+import { updateSortTime } from "src/services/redux/globalSlice";
 
 interface Props {
 	columnType: string;
@@ -107,7 +109,13 @@ export default function EditableTd({
 
 			//If we clicked on the link for a file or tag, return
 			if (el.nodeName === "A") return;
-			dispatch(openMenu({ id: menu.id, level: menu.level }));
+			dispatch(
+				openMenu({
+					id: menu.id,
+					level: menu.level,
+					sortRowsOnClose: menu.sortRowsOnClose,
+				})
+			);
 		}
 	}
 

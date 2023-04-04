@@ -5,6 +5,7 @@ interface GlobalState {
 	shouldDebug: boolean;
 	searchText: string;
 	isSearchBarVisible: boolean;
+	sortTime: number;
 }
 
 const initialState: GlobalState = {
@@ -12,6 +13,7 @@ const initialState: GlobalState = {
 	shouldDebug: false,
 	searchText: "",
 	isSearchBarVisible: false,
+	sortTime: 0,
 };
 
 const globalSlice = createSlice({
@@ -30,9 +32,17 @@ const globalSlice = createSlice({
 		toggleSearchBar(state) {
 			state.isSearchBarVisible = !state.isSearchBarVisible;
 		},
+		updateSortTime(state) {
+			state.sortTime = Date.now();
+		},
 	},
 });
 
-export const { setDarkMode, setDebugMode, setSearchText, toggleSearchBar } =
-	globalSlice.actions;
+export const {
+	setDarkMode,
+	setDebugMode,
+	setSearchText,
+	toggleSearchBar,
+	updateSortTime,
+} = globalSlice.actions;
 export default globalSlice.reducer;

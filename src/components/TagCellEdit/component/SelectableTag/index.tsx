@@ -68,8 +68,13 @@ export default function SelectableTag({
 					icon={<Icon type={IconType.MORE_HORIZ} />}
 					isDarker
 					onClick={(e) => {
-						e.stopPropagation();
-						dispatch(openMenu({ id: menu.id, level: menu.level }));
+						dispatch(
+							openMenu({
+								id: menu.id,
+								level: menu.level,
+								sortRowsOnClose: menu.sortRowsOnClose,
+							})
+						);
 					}}
 				/>
 			</div>

@@ -14,10 +14,10 @@ export interface MenuPosition {
 export interface Menu {
 	id: string;
 	level: MenuLevel;
+	sortRowsOnClose: boolean;
 }
 
 export interface RenderableMenu extends Menu {
-	sortRowsOnClose: boolean;
 	position: MenuPosition;
 	containerRef: React.MutableRefObject<any | null>;
 }

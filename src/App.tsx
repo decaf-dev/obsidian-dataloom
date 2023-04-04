@@ -37,6 +37,7 @@ import { useDidMountEffect } from "./services/hooks";
 import { useId } from "./services/random/hooks";
 import { ColumnIdError } from "./services/tableState/error";
 import { dateTimeToString } from "./services/string/conversion";
+import { updateSortTime } from "./services/redux/globalSlice";
 
 const FILE_NAME = "App";
 
@@ -46,10 +47,8 @@ interface Props {
 }
 
 export default function App({ initialState, onSaveTableState }: Props) {
-	const { searchText } = useAppSelector((state) => state.global);
+	const { searchText, sortTime } = useAppSelector((state) => state.global);
 	const [tableState, setTableState] = useState(initialState);
-
-	const [sortTime, setSortTime] = useState(0);
 
 	const { shouldDebug } = useAppSelector((state) => state.global);
 	const dispatch = useAppDispatch();
@@ -69,10 +68,6 @@ export default function App({ initialState, onSaveTableState }: Props) {
 			setTableState((prevState) => sortRows(prevState));
 		}
 	}, [sortTime]);
-
-	function handleSortRows() {
-		setSortTime(Date.now());
-	}
 
 	function handleAddColumn() {
 		logFunc(shouldDebug, FILE_NAME, "handleAddColumn");
@@ -102,7 +97,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 		setTableState((prevState) =>
 			sortOnColumn(prevState, columnId, sortDir)
 		);
-		handleSortRows();
+		dispatch(updateSortTime());
 	}
 
 	function handleCellContentChange(cellId: string, updatedMarkdown: string) {
@@ -196,7 +191,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 		setTableState((prevState) =>
 			sortOnColumn(prevState, columnId, SortDir.NONE)
 		);
-		handleSortRows();
+		dispatch(updateSortTime());
 	}
 
 	function handleHeaderWidthChange(columnId: string, width: string) {
