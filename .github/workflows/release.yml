@@ -23,11 +23,11 @@ jobs:
                   echo "::set-output name=tag::$(git describe --abbrev=0) --tags"
             # Create the release on github
             - name: Release
-                uses: softprops/action-gh-release@v1
-                if: startsWith(github.ref, 'refs/tags/')
+              uses: softprops/action-gh-release@v1
+              if: startsWith(github.ref, 'refs/tags/')
                 with:
-                    tag_name: ${{ github.ref }}
-                    files: |
-                        main.js
-                        manifest.json
-                        styles.css
+                  tag_name: ${{ github.ref }}
+                  files: |
+                    main.js
+                    manifest.json
+                    styles.css
