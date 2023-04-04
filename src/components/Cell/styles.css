@@ -1,0 +1,8 @@
+.NLT__td-container {
+	display: flex;
+	width: 100%;
+	min-height: var(--nlt-cell-min-height);
+	height: 100%;
+	padding: var(--nlt-cell-spacing-x) var(--nlt-cell-spacing-y);
+	cursor: pointer;
+}

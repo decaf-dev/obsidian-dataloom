@@ -1,0 +1,12 @@
+.NLT__p {
+    white-space: nowrap;
+    margin: 0;
+}
+
+.NLT__text-muted {
+    color: var(--text-muted);
+}
+
+.NLT__text-faint {
+    color: var(--text-faint);
+}
