@@ -9,7 +9,7 @@ export default class TableFile {
 		try {
 			const filePath = "Untitled" + "." + TABLE_EXTENSION;
 
-			const tableState = mockTableState(1, 1);
+			const tableState = mockTableState(1, 2);
 			const serialized = Json.serializeTableState(tableState);
 			const updatedFilePath = await FileOperations.createFile(
 				filePath,
@@ -17,7 +17,7 @@ export default class TableFile {
 			);
 			return updatedFilePath;
 		} catch (err) {
-			new Notice("Could not create Notion-Like-Table file");
+			new Notice("Could not create Notion-Like table");
 			throw err;
 		}
 	}
