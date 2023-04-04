@@ -14,7 +14,7 @@ import MultiTagCell from "../MultiTagCell";
 import Menu from "../Menu";
 
 import { CellType, Tag } from "src/services/tableState/types";
-import { useMenu, usePosition } from "src/services/menu/hooks";
+import { useMenu } from "src/services/menu/hooks";
 import { MenuLevel } from "src/services/menu/types";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 import { openMenu, isMenuOpen } from "src/services/menu/menuSlice";
@@ -77,11 +77,9 @@ export default function EditableTd({
 	onAddTag,
 }: Props) {
 	const menu = useMenu(MenuLevel.ONE, true);
-	const isOpen = useAppSelector((state) => isMenuOpen(state, menu));
+	const isOpen = useAppSelector((state) => isMenuOpen(state, menu.id));
 	const dispatch = useAppDispatch();
 	const { isDarkMode } = useAppSelector((state) => state.global);
-
-	const { containerRef, position } = usePosition();
 
 	async function handleCellContextClick() {
 		try {
@@ -109,7 +107,7 @@ export default function EditableTd({
 
 			//If we clicked on the link for a file or tag, return
 			if (el.nodeName === "A") return;
-			dispatch(openMenu(menu));
+			dispatch(openMenu({ id: menu.id, level: menu.level }));
 		}
 	}
 
@@ -152,7 +150,7 @@ export default function EditableTd({
 		height: measuredHeight,
 		top,
 		left,
-	} = position;
+	} = menu.position;
 
 	function findHeight() {
 		if (columnType == CellType.TEXT || columnType == CellType.NUMBER)
@@ -173,7 +171,7 @@ export default function EditableTd({
 
 	return (
 		<div
-			ref={containerRef}
+			ref={menu.containerRef}
 			onClick={handleCellClick}
 			onContextMenu={handleCellContextClick}
 			className={className}

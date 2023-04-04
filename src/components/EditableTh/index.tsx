@@ -4,7 +4,7 @@ import HeaderMenu from "../HeaderMenu";
 import { CSS_MEASUREMENT_PIXEL_REGEX } from "src/services/string/regex";
 import { numToPx, pxToNum } from "src/services/string/conversion";
 import { CellType, SortDir } from "src/services/tableState/types";
-import { useMenu, usePosition } from "src/services/menu/hooks";
+import { useMenu } from "src/services/menu/hooks";
 import { MenuLevel } from "src/services/menu/types";
 import { MIN_COLUMN_WIDTH } from "src/services/tableState/constants";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
@@ -67,8 +67,7 @@ export default function EditableTh({
 
 	const menu = useMenu(MenuLevel.ONE);
 	const dispatch = useAppDispatch();
-	const isOpen = useAppSelector((state) => isMenuOpen(state, menu));
-	const { position, containerRef } = usePosition();
+	const isOpen = useAppSelector((state) => isMenuOpen(state, menu.id));
 
 	function handleHeaderClick(e: React.MouseEvent) {
 		//If we're clicking in the submenu, then don't close the menu
@@ -84,7 +83,7 @@ export default function EditableTh({
 	}
 
 	function openHeaderMenu() {
-		dispatch(openMenu(menu));
+		dispatch(openMenu({ id: menu.id, level: menu.level }));
 	}
 
 	function closeHeaderMenu() {
@@ -115,7 +114,7 @@ export default function EditableTh({
 		}, 100);
 	}
 
-	const { top, left } = position;
+	const { top, left } = menu.position;
 
 	let icon = IconType.LABEL;
 
@@ -137,7 +136,7 @@ export default function EditableTh({
 	return (
 		<div
 			className="NLT__th-container NLT__selectable"
-			ref={containerRef}
+			ref={menu.containerRef}
 			onClick={handleHeaderClick}
 			style={{
 				width,

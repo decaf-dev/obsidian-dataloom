@@ -5,7 +5,7 @@ import Icon from "../Icon";
 
 import Button from "../Button";
 import { IconType } from "src/services/icon/types";
-import { useMenu, usePosition } from "src/services/menu/hooks";
+import { useMenu } from "src/services/menu/hooks";
 import {
 	openMenu,
 	closeTopLevelMenu,
@@ -25,13 +25,13 @@ interface Props {
 export default function RowMenu({ rowId, onDeleteClick }: Props) {
 	const menu = useMenu(MenuLevel.ONE);
 	const dispatch = useAppDispatch();
-	const isOpen = useAppSelector((state) => isMenuOpen(state, menu));
-	const { containerRef, position } = usePosition();
+	const isOpen = useAppSelector((state) => isMenuOpen(state, menu.id));
+
 	function handleButtonClick(e: React.MouseEvent) {
 		if (isOpen) {
 			dispatch(closeTopLevelMenu());
 		} else {
-			dispatch(openMenu(menu));
+			dispatch(openMenu({ id: menu.id, level: menu.level }));
 		}
 	}
 
@@ -40,18 +40,15 @@ export default function RowMenu({ rowId, onDeleteClick }: Props) {
 		dispatch(closeTopLevelMenu());
 	}
 
+	const { top, left, height } = menu.position;
+
 	return (
-		<div ref={containerRef}>
+		<div ref={menu.containerRef}>
 			<Button
 				icon={<Icon type={IconType.MORE_HORIZ} />}
 				onClick={(e) => handleButtonClick(e)}
 			/>
-			<Menu
-				id={menu.id}
-				isOpen={isOpen}
-				top={position.top + position.height}
-				left={position.left}
-			>
+			<Menu id={menu.id} isOpen={isOpen} top={top + height} left={left}>
 				<div className="NLT__row-menu">
 					<MenuItem
 						iconType={IconType.DELETE}

@@ -1,10 +1,8 @@
-import { findColorClass } from "src/services/color";
-
 import TagColorMenu from "src/components/TagColorMenu";
 
 import { IconType } from "src/services/icon/types";
 import { MenuLevel } from "src/services/menu/types";
-import { useMenu, usePosition } from "src/services/menu/hooks";
+import { useMenu } from "src/services/menu/hooks";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 import {
 	openMenu,
@@ -37,10 +35,8 @@ export default function SelectableTag({
 	onColorChange,
 	onDeleteClick,
 }: Props) {
-	//TODO refactor into useMenu hook
 	const menu = useMenu(MenuLevel.TWO);
-	const isOpen = useAppSelector((state) => isMenuOpen(state, menu));
-	const { containerRef, position } = usePosition();
+	const isOpen = useAppSelector((state) => isMenuOpen(state, menu.id));
 
 	const dispatch = useAppDispatch();
 
@@ -54,10 +50,11 @@ export default function SelectableTag({
 		dispatch(closeAllMenus());
 	}
 
+	const { top, left, width } = menu.position;
 	return (
 		<>
 			<div
-				ref={containerRef}
+				ref={menu.containerRef}
 				className="NLT__selectable-tag NLT__selectable"
 				onClick={() => onClick(id)}
 			>
@@ -72,14 +69,14 @@ export default function SelectableTag({
 					isDarker
 					onClick={(e) => {
 						e.stopPropagation();
-						dispatch(openMenu(menu));
+						dispatch(openMenu({ id: menu.id, level: menu.level }));
 					}}
 				/>
 			</div>
 			<TagColorMenu
 				menuId={menu.id}
-				top={position.top - 125}
-				left={position.left + position.width - 50}
+				top={top - 125}
+				left={left + width - 50}
 				isOpen={isOpen}
 				selectedColor={color}
 				onColorClick={(color) => handleColorChange(color)}
