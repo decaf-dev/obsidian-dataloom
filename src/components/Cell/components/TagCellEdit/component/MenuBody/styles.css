@@ -1,4 +1,5 @@
 .NLT__tag-menu-body {
-    min-height: 100px;
+    max-height: 140px;
+    overflow-y: scroll;
     padding: 4px 10px;
 }

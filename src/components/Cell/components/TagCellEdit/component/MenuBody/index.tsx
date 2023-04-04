@@ -32,12 +32,7 @@ export default function MenuBody({
 	return (
 		<div className="NLT__tag-menu-body">
 			<Text value="Select an option or create one" />
-			<div
-				style={{
-					overflowY: "scroll",
-					height: "140px",
-				}}
-			>
+			<div>
 				{!found && inputText !== "" && (
 					<CreateTag
 						isDarkMode={isDarkMode}
