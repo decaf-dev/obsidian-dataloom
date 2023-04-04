@@ -13,7 +13,6 @@ export default function Switch({ isChecked, onToggle }: Props) {
 				checked={isChecked}
 				onChange={() => {}}
 				onClick={(e) => {
-					e.stopPropagation();
 					onToggle(!isChecked);
 				}}
 			/>

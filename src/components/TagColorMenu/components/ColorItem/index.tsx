@@ -26,9 +26,6 @@ export default function ColorItem({
 		<div
 			className={containerClass}
 			onClick={(e) => {
-				//Stop event propagation so we don't select the tag menu
-				//and close it
-				e.stopPropagation();
 				onColorClick(color);
 			}}
 		>

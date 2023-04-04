@@ -40,7 +40,6 @@ export default function Menu({
 	}
 
 	function handleMouseDown(e: MouseEvent) {
-		e.stopPropagation();
 		const target = e.target as HTMLElement;
 		if (isTopLevel) {
 			if (!target.closest(`#${id}`)) {

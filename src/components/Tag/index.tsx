@@ -54,7 +54,6 @@ export default function Tag({
 						icon={<Icon size="sm" type={IconType.CLOSE} />}
 						isDarker
 						onClick={(e) => {
-							e.stopPropagation();
 							onRemoveClick && onRemoveClick(id!);
 						}}
 					/>
