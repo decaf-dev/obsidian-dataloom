@@ -30,6 +30,7 @@ export default function SortBubble({
 				</Stack>
 				<Button
 					icon={<Icon type={IconType.CLOSE} />}
+					isFlat
 					onClick={onRemoveClick}
 				/>
 			</Stack>
