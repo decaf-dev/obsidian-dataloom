@@ -15,6 +15,7 @@ import {
 	KeyboardDoubleArrowRight,
 	KeyboardBackspace,
 	Close,
+	List,
 	Numbers,
 	DescriptionOutlined,
 	CalendarTodayOutlined,
@@ -27,7 +28,6 @@ import {
 	MoveDownOutlined,
 	ScheduleOutlined,
 } from "@mui/icons-material";
-import { List } from "@mui/material";
 
 import { IconType } from "src/services/icon/types";
 
