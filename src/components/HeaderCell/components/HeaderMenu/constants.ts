@@ -40,17 +40,17 @@ export const TYPE_ITEMS: MenuItem[] = [
 	{ name: "text", content: "Text", type: CellType.TEXT },
 	{ name: "number", content: "Number", type: CellType.NUMBER },
 	{ name: "tag", content: "Tag", type: CellType.TAG },
-	{ name: "multi-tag", content: "Multi-Tag", type: CellType.MULTI_TAG },
+	{ name: "multi-tag", content: "Multi-tag", type: CellType.MULTI_TAG },
 	{ name: "date", content: "Date", type: CellType.DATE },
 	{ name: "checkbox", content: "Checkbox", type: CellType.CHECKBOX },
 	{
 		name: "creation-time",
-		content: "Creation Time",
+		content: "Creation time",
 		type: CellType.CREATION_TIME,
 	},
 	{
 		name: "last-edited-time",
-		content: "Last Edited Time",
+		content: "Last edited time",
 		type: CellType.LAST_EDITED_TIME,
 	},
 ];

@@ -45,3 +45,26 @@ export const isValidCellContent = (
 			return false;
 	}
 };
+
+export const getDisplayNameForCellType = (type: CellType): string => {
+	switch (type) {
+		case CellType.TEXT:
+			return "Text";
+		case CellType.NUMBER:
+			return "Number";
+		case CellType.CHECKBOX:
+			return "Checkbox";
+		case CellType.DATE:
+			return "Date";
+		case CellType.LAST_EDITED_TIME:
+			return "Last edited";
+		case CellType.CREATION_TIME:
+			return "Creation";
+		case CellType.TAG:
+			return "Tag";
+		case CellType.MULTI_TAG:
+			return "Multi-tag";
+		default:
+			return "";
+	}
+};

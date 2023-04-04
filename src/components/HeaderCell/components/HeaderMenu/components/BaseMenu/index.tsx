@@ -4,6 +4,7 @@ import Padding from "src/components/Padding";
 import Stack from "src/components/Stack";
 import { IconType } from "src/services/icon/types";
 import { CellType, SortDir } from "src/services/tableState/types";
+import { getDisplayNameForCellType } from "src/services/tableState/utils";
 import { SubmenuItem, SUBMENU_ITEM } from "../../constants";
 import "./styles.css";
 
@@ -46,7 +47,7 @@ export default function BaseMenu({
 				<MenuItem
 					iconType={SUBMENU_ITEM.TYPE.icon}
 					name={SUBMENU_ITEM.TYPE.content}
-					value={columnType}
+					value={getDisplayNameForCellType(columnType)}
 					onClick={() => onSubmenuChange(SUBMENU_ITEM.TYPE)}
 				/>
 			</Stack>

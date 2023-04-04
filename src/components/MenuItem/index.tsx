@@ -30,7 +30,7 @@ export default function MenuItem({
 					{iconType !== undefined && <Icon type={iconType} />}
 					<Text value={name} />
 				</Stack>
-				{value !== undefined && <Text value={value} />}
+				{value !== undefined && <Text variant="faint" value={value} />}
 			</Flex>
 		</div>
 	);
