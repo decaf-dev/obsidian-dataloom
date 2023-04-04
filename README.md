@@ -64,7 +64,7 @@ Press `ctrl + p` (Windows) or `cmd + p` (Mac) on your keyboard and search `Creat
 
 Click on a header name to view the header menu. In the header menu, you can rename the header, sort your column values or change the column content type.
 
-![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/header.png)
+![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/header-menu.png)
 
 ## Cell Types
 
