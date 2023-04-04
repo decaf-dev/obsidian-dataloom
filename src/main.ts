@@ -1,6 +1,6 @@
 import { Plugin } from "obsidian";
 
-import NLTSettingsTab from "./NLTSettingsTab";
+import NLTSettingsTab from "./NLTSettingsTab2";
 
 import { store } from "./services/redux/store";
 import { setDarkMode, setDebugMode } from "./services/redux/globalSlice";
