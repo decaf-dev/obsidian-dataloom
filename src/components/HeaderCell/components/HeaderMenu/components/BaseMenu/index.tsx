@@ -1,6 +1,4 @@
 import Divider from "src/components/Divider";
-import Flex from "src/components/Flex";
-import Icon from "src/components/Icon";
 import MenuItem from "src/components/MenuItem";
 import Padding from "src/components/Padding";
 import Stack from "src/components/Stack";
@@ -11,15 +9,19 @@ import "./styles.css";
 
 interface Props {
 	columnName: string;
+	cellId: string;
+	rowId: string;
 	columnType: CellType;
 	columnSortDir: SortDir;
 	numColumns: number;
-	onColumnNameChange: (value: string) => void;
+	onColumnNameChange: (cellId: string, rowId: string, value: string) => void;
 	onSortClick: (value: SortDir) => void;
 	onSubmenuChange: (value: SubmenuItem) => void;
 }
 
 export default function BaseMenu({
+	rowId,
+	cellId,
 	columnName,
 	columnType,
 	columnSortDir,
@@ -36,7 +38,9 @@ export default function BaseMenu({
 						className="NLT__header-menu-input"
 						autoFocus
 						value={columnName}
-						onChange={(e) => onColumnNameChange(e.target.value)}
+						onChange={(e) =>
+							onColumnNameChange(cellId, rowId, e.target.value)
+						}
 					/>
 				</Padding>
 				<MenuItem

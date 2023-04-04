@@ -22,6 +22,7 @@ import HeaderMenu from "./components/HeaderMenu";
 interface Props {
 	cellId: string;
 	columnIndex: number;
+	rowId: string;
 	columnId: string;
 	width: string;
 	numColumns: number;
@@ -30,19 +31,20 @@ interface Props {
 	useAutoWidth: boolean;
 	sortDir: SortDir;
 	type: CellType;
-	onMoveColumnClick: (moveRight: boolean) => void;
-	onSortClick: (sortDir: SortDir) => void;
-	onInsertColumnClick: (insertRight: boolean) => void;
-	onTypeSelect: (type: CellType) => void;
-	onDeleteClick: () => void;
-	onWidthChange: (width: string) => void;
-	onAutoWidthToggle: (value: boolean) => void;
-	onWrapOverflowToggle: (value: boolean) => void;
-	onNameChange: (value: string) => void;
+	onMoveColumnClick: (columnId: string, moveRight: boolean) => void;
+	onSortClick: (columnId: string, sortDir: SortDir) => void;
+	onInsertColumnClick: (columnId: string, insertRight: boolean) => void;
+	onTypeSelect: (columnId: string, type: CellType) => void;
+	onDeleteClick: (columnId: string) => void;
+	onWidthChange: (columnId: string, width: string) => void;
+	onAutoWidthToggle: (columnId: string, value: boolean) => void;
+	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
+	onNameChange: (cellId: string, rowId: string, value: string) => void;
 }
 
 export default function HeaderCell({
 	cellId,
+	rowId,
 	columnIndex,
 	columnId,
 	width,
@@ -107,7 +109,7 @@ export default function HeaderCell({
 			const newWidth = oldWidth + dist;
 
 			if (newWidth < MIN_COLUMN_WIDTH) return;
-			onWidthChange(numToPx(newWidth));
+			onWidthChange(columnId, numToPx(newWidth));
 		}
 	}
 
@@ -151,12 +153,13 @@ export default function HeaderCell({
 				isOpen={isOpen}
 				top={top}
 				left={left}
+				id={menu.id}
+				rowId={rowId}
 				canDeleteColumn={numColumns > 1}
 				columnId={columnId}
 				cellId={cellId}
 				shouldWrapOverflow={shouldWrapOverflow}
 				useAutoWidth={useAutoWidth}
-				id={menu.id}
 				markdown={markdown}
 				columnSortDir={sortDir}
 				columnType={type}

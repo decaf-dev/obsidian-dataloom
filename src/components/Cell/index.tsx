@@ -150,7 +150,7 @@ export default function Cell({
 	}
 
 	function handleTagClick(tagId: string) {
-		onTagClick(cellId, tagId, rowId, columnType === CellType.MULTI_TAG);
+		onTagClick(cellId, rowId, tagId, columnType === CellType.MULTI_TAG);
 	}
 
 	function handleTextInputChange(updatedMarkdown: string) {

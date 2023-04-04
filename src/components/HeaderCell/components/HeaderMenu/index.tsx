@@ -18,6 +18,7 @@ interface Props {
 	top: number;
 	left: number;
 	id: string;
+	rowId: string;
 	cellId: string;
 	markdown: string;
 	shouldWrapOverflow: boolean;
@@ -27,22 +28,24 @@ interface Props {
 	columnId: string;
 	columnIndex: number;
 	numColumns: number;
-	onInsertColumnClick: (insertRight: boolean) => void;
-	onMoveColumnClick: (moveRight: boolean) => void;
-	onTypeSelect: (type: CellType) => void;
-	onSortClick: (sortDir: SortDir) => void;
-	onDeleteClick: () => void;
-	onAutoWidthToggle: (value: boolean) => void;
-	onWrapOverflowToggle: (value: boolean) => void;
-	onNameChange: (value: string) => void;
+	onInsertColumnClick: (columnId: string, insertRight: boolean) => void;
+	onMoveColumnClick: (columnId: string, moveRight: boolean) => void;
+	onTypeSelect: (columnId: string, type: CellType) => void;
+	onSortClick: (columnId: string, sortDir: SortDir) => void;
+	onDeleteClick: (columnId: string) => void;
+	onAutoWidthToggle: (columnId: string, value: boolean) => void;
+	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
+	onNameChange: (cellId: string, rowId: string, value: string) => void;
 	onClose: () => void;
 }
 
 export default function HeaderMenu({
 	isOpen,
 	id,
+	rowId,
 	top,
 	left,
+	cellId,
 	markdown,
 	canDeleteColumn,
 	columnType,
@@ -65,30 +68,30 @@ export default function HeaderMenu({
 	const [submenu, setSubmenu] = useState<SubmenuItem | null>(null);
 
 	function handleMoveColumnClick(moveRight: boolean) {
-		onMoveColumnClick(moveRight);
+		onMoveColumnClick(columnId, moveRight);
 		onClose();
 		setSubmenu(null);
 	}
 
 	function handleSortClick(sortDir: SortDir) {
-		onSortClick(sortDir);
+		onSortClick(columnId, sortDir);
 		onClose();
 	}
 
 	function handleInsertColumnClick(insertRight: boolean) {
-		onInsertColumnClick(insertRight);
+		onInsertColumnClick(columnId, insertRight);
 		onClose();
 		setSubmenu(null);
 	}
 
 	function handleTypeClick(type: CellType) {
-		onTypeSelect(type);
+		onTypeSelect(columnId, type);
 		onClose();
 		setSubmenu(null);
 	}
 
 	function handleDeleteClick() {
-		onDeleteClick();
+		onDeleteClick(columnId);
 		onClose();
 		setSubmenu(null);
 	}
@@ -102,6 +105,8 @@ export default function HeaderMenu({
 			<div className="NLT__header-menu">
 				{submenu === null && (
 					<BaseMenu
+						rowId={rowId}
+						cellId={cellId}
 						columnName={markdown}
 						columnType={columnType}
 						numColumns={numColumns}

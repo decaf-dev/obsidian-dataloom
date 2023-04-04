@@ -13,13 +13,14 @@ interface Props {
 	columnType: string;
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
-	onAutoWidthToggle: (value: boolean) => void;
-	onWrapOverflowToggle: (value: boolean) => void;
-	onDeleteClick: () => void;
+	onAutoWidthToggle: (columnId: string, value: boolean) => void;
+	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
+	onDeleteClick: (columnId: string) => void;
 	onBackClick: () => void;
 }
 
 export default function EditMenu({
+	columnId,
 	canDeleteColumn,
 	title,
 	columnType,
@@ -38,7 +39,9 @@ export default function EditMenu({
 						<p className="NLT__label">Auto Width</p>
 						<Switch
 							isChecked={useAutoWidth}
-							onToggle={(value) => onAutoWidthToggle(value)}
+							onToggle={(value) =>
+								onAutoWidthToggle(columnId, value)
+							}
 						/>
 					</div>
 					{!useAutoWidth && columnType === CellType.TEXT && (
@@ -47,13 +50,15 @@ export default function EditMenu({
 							<Switch
 								isChecked={shouldWrapOverflow}
 								onToggle={(value) =>
-									onWrapOverflowToggle(value)
+									onWrapOverflowToggle(columnId, value)
 								}
 							/>
 						</div>
 					)}
 					{canDeleteColumn && (
-						<Button onClick={() => onDeleteClick()}>Delete</Button>
+						<Button onClick={() => onDeleteClick(columnId)}>
+							Delete
+						</Button>
 					)}
 				</Stack>
 			</Padding>

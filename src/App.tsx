@@ -107,6 +107,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 	) {
 		logFunc(shouldDebug, FILE_NAME, "handleCellContentChange", {
 			cellId,
+			rowId,
 			updatedMarkdown,
 		});
 
@@ -332,6 +333,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 											<HeaderCell
 												key={columnId}
 												cellId={cellId}
+												rowId={rowId}
 												columnIndex={i}
 												numColumns={columns.length}
 												columnId={cell.columnId}
@@ -347,63 +349,32 @@ export default function App({ initialState, onSaveTableState }: Props) {
 												markdown={markdown}
 												type={type}
 												sortDir={sortDir}
-												onSortClick={(sortDir) =>
-													handleHeaderSortSelect(
-														columnId,
-														sortDir
-													)
+												onSortClick={
+													handleHeaderSortSelect
 												}
-												onInsertColumnClick={(
-													insertRight
-												) =>
-													handleInsertColumnClick(
-														columnId,
-														insertRight
-													)
+												onInsertColumnClick={
+													handleInsertColumnClick
 												}
-												onMoveColumnClick={(
-													moveRight
-												) =>
-													handleMoveColumnClick(
-														columnId,
-														moveRight
-													)
+												onMoveColumnClick={
+													handleMoveColumnClick
 												}
-												onWidthChange={(width) =>
-													handleHeaderWidthChange(
-														columnId,
-														width
-													)
+												onWidthChange={
+													handleHeaderWidthChange
 												}
 												onDeleteClick={() =>
-													handleHeaderDeleteClick(
-														columnId
-													)
+													handleHeaderDeleteClick
 												}
-												onTypeSelect={(type) =>
-													handleHeaderTypeClick(
-														columnId,
-														type
-													)
+												onTypeSelect={
+													handleHeaderTypeClick
 												}
-												onAutoWidthToggle={(value) =>
-													handleAutoWidthToggle(
-														columnId,
-														value
-													)
+												onAutoWidthToggle={
+													handleAutoWidthToggle
 												}
-												onWrapOverflowToggle={(value) =>
-													handleWrapContentToggle(
-														columnId,
-														value
-													)
+												onWrapOverflowToggle={
+													handleWrapContentToggle
 												}
-												onNameChange={(value) =>
-													handleCellContentChange(
-														cellId,
-														rowId,
-														value
-													)
+												onNameChange={
+													handleCellContentChange
 												}
 											/>
 										),
