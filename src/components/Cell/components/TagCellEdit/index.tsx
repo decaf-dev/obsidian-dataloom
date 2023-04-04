@@ -35,10 +35,10 @@ export default function TagCellEdit({
 	const dispatch = useAppDispatch();
 	const { isDarkMode } = useAppSelector((state) => state.global);
 
-	function handleInputTextChange(e: React.ChangeEvent<HTMLInputElement>) {
+	function handleInputTextChange(value: string) {
 		//Disallow whitespace
-		if (e.target.value.match(/\s/)) return;
-		setInputText(e.target.value);
+		if (value.match(/\s/)) return;
+		setInputText(value);
 	}
 
 	function handleAddTag(markdown: string, color: Color) {

@@ -177,12 +177,6 @@ export default function Cell({
 		left,
 	} = menu.position;
 
-	function findHeight() {
-		if (columnType == CellType.TEXT || columnType == CellType.NUMBER)
-			return measuredHeight;
-		return measuredHeight + 2;
-	}
-
 	let className = "NLT__td-container";
 	if (
 		columnType === CellType.LAST_EDITED_TIME ||
@@ -217,7 +211,7 @@ export default function Cell({
 							: 0
 					}
 					width={measuredWidth}
-					height={findHeight()}
+					height={measuredHeight}
 				>
 					{columnType === CellType.TEXT && (
 						<TextCellEdit

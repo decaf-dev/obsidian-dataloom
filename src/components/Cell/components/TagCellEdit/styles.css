@@ -2,9 +2,10 @@
 	background-color: var(--background-primary);
 }
 
-.NLT__tag-input {
+.NLT__tag-menu input {
 	background-color: transparent !important;
-	border: 0 !important;
+	border: 0;
+	box-shadow: none !important;
 	width: 100%;
 	padding-left: 5px !important;
 	padding-right: 5px !important;
