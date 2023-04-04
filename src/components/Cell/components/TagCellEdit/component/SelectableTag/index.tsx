@@ -69,6 +69,10 @@ export default function SelectableTag({
 					icon={<Icon type={IconType.MORE_HORIZ} />}
 					isDarker
 					onClick={(e) => {
+						console.log("YUP!!");
+						// Prevents a tag from being added when the button is clicked
+						// we just want to open the menu
+						e.stopPropagation();
 						dispatch(
 							openMenu({
 								id: menu.id,
@@ -85,7 +89,7 @@ export default function SelectableTag({
 				isOpen={isOpen}
 				selectedColor={color}
 				onColorClick={(color) => handleColorChange(color)}
-				onDeleteClick={() => handleDeleteClick()}
+				onDeleteClick={handleDeleteClick}
 			/>
 		</>
 	);

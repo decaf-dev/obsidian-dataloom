@@ -34,8 +34,8 @@ export default function MenuHeader({
 							color={tag.color}
 							markdown={tag.markdown}
 							width="150px"
-							showRemove={true}
-							onRemoveClick={(tagId) => onRemoveTag(tagId)}
+							showRemove
+							onRemoveClick={onRemoveTag}
 						/>
 					))}
 				<input
