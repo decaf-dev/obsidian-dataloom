@@ -1,5 +1,5 @@
-/** TODO standarize css naming **/
-.NLT__header-menu-input {
+
+.NLT__header-menu input {
     background-color: var(--background-primary);
     border: 1px solid var(--background-modifier-border);
     padding: 4px 10px;

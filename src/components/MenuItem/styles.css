@@ -1,5 +1,4 @@
 .NLT__menu-item {
-    font-size: 0.9rem;
     display: flex;
     align-items: center;
     padding: var(--nlt-spacing--sm) var(--nlt-spacing--lg);

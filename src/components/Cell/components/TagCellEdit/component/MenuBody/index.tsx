@@ -1,3 +1,4 @@
+import Text from "src/components/Text";
 import { Color } from "src/services/color/types";
 import { Tag } from "src/services/tableState/types";
 import CreateTag from "../CreateTag";
@@ -30,7 +31,7 @@ export default function MenuBody({
 	const filteredTags = tags.filter((tag) => tag.markdown.includes(inputText));
 	return (
 		<div className="NLT__tag-menu-body">
-			<p className="NLT__tag-menu-text">Select an option or create one</p>
+			<Text value="Select an option or create one" />
 			<div
 				style={{
 					overflowY: "scroll",

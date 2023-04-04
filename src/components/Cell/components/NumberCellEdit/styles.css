@@ -5,5 +5,5 @@
     vertical-align: top;
     border: 0;
     font-family: var(--font-text);
-    font-size: 1rem;
+    font-size: var(--nlt-font-size--xl);
 }

@@ -2,12 +2,6 @@
 	background-color: var(--background-primary);
 }
 
-.NLT__tag-menu-text {
-	font-size: 0.85rem;
-	margin: 5px 0px;
-	width: 100%;
-}
-
 .NLT__tag-input {
 	background-color: transparent !important;
 	border: 0 !important;

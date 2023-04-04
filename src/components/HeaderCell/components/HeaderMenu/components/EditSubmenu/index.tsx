@@ -5,6 +5,7 @@ import Switch from "src/components/Switch";
 import { CellType } from "src/services/tableState/types";
 import Stack from "src/components/Stack";
 import Padding from "src/components/Padding";
+import Text from "src/components/Text";
 
 interface Props {
 	canDeleteColumn: boolean;
@@ -36,7 +37,7 @@ export default function EditMenu({
 			<Padding padding="md">
 				<Stack spacing="md" isVertical>
 					<div>
-						<p className="NLT__label">Auto Width</p>
+						<Text value="Auto Width" />
 						<Switch
 							isChecked={hasAutoWidth}
 							onToggle={(value) =>
@@ -46,7 +47,7 @@ export default function EditMenu({
 					</div>
 					{!hasAutoWidth && columnType === CellType.TEXT && (
 						<div>
-							<p className="NLT__label">Wrap Overflow</p>
+							<Text value="Wrap Overflow" />
 							<Switch
 								isChecked={shouldWrapOverflow}
 								onToggle={(value) =>
