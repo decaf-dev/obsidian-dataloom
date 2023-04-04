@@ -1,4 +1,4 @@
-export const useOverflowClassname = (
+export const useOverflowClassName = (
 	hasAutoWidth: boolean,
 	shouldWrapOverflow: boolean
 ) => {

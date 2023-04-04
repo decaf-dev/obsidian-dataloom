@@ -1,4 +1,4 @@
-import { useOverflowClassname } from "src/services/spacing/hooks";
+import { useOverflowClassName } from "src/services/spacing/hooks";
 import { dateTimeToString } from "src/services/string/conversion";
 
 interface Props {
@@ -12,7 +12,7 @@ export default function LastEditedTimeCell({
 	hasAutoWidth,
 	shouldWrapOverflow,
 }: Props) {
-	const overflowClassName = useOverflowClassname(
+	const overflowClassName = useOverflowClassName(
 		hasAutoWidth,
 		shouldWrapOverflow
 	);

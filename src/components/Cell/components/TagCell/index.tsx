@@ -1,4 +1,4 @@
-import { useOverflowClassname } from "src/services/spacing/hooks";
+import { useOverflowClassName } from "src/services/spacing/hooks";
 import Tag from "../../../Tag";
 
 import "./styles.css";
@@ -17,7 +17,7 @@ export default function TagCell({
 	hasAutoWidth,
 	shouldWrapOverflow,
 }: Props) {
-	const overflowClassName = useOverflowClassname(
+	const overflowClassName = useOverflowClassName(
 		hasAutoWidth,
 		shouldWrapOverflow
 	);

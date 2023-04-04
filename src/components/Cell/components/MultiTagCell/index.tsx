@@ -4,7 +4,7 @@ import { Tag as TagType } from "../../../../services/tableState/types";
 import Wrap from "src/components/Wrap";
 
 import "./styles.css";
-import { useOverflowClassname } from "src/services/spacing/hooks";
+import { useOverflowClassName } from "src/services/spacing/hooks";
 
 interface Props {
 	isDarkMode: boolean;
@@ -18,7 +18,7 @@ export default function MultiTagCell({
 	hasAutoWidth,
 	shouldWrapOverflow,
 }: Props) {
-	const overflowClassName = useOverflowClassname(
+	const overflowClassName = useOverflowClassName(
 		hasAutoWidth,
 		shouldWrapOverflow
 	);

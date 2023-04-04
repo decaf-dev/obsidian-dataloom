@@ -1,12 +1,9 @@
-import { isValidCellContent } from "src/services/tableState/utils";
-import { CellType } from "src/services/tableState/types";
-
-import "./styles.css";
 import {
 	CHECKBOX_MARKDOWN_CHECKED,
 	CHECKBOX_MARKDOWN_UNCHECKED,
 } from "src/services/tableState/constants";
 import { isCheckboxChecked } from "src/services/string/validators";
+import "./styles.css";
 
 interface Props {
 	value: string;

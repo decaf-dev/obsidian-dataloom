@@ -7,9 +7,9 @@ import Stack from "../Stack";
 
 import { ColumnIdError } from "src/services/tableState/error";
 import SearchBar from "./components/SearchBar";
+import SortBubble from "./components/SortBubble";
 
 import "./styles.css";
-import SortBubble from "./components/SortBubble";
 
 interface SortButtonListProps {
 	bubbles: { sortDir: SortDir; markdown: string; columnId: string }[];

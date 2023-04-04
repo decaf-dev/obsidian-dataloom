@@ -1,4 +1,4 @@
-import { useOverflowClassname } from "src/services/spacing/hooks";
+import { useOverflowClassName } from "src/services/spacing/hooks";
 
 import "./styles.css";
 
@@ -13,7 +13,7 @@ export default function NumberCell({
 	shouldWrapOverflow,
 	hasAutoWidth,
 }: Props) {
-	const overflowClassName = useOverflowClassname(
+	const overflowClassName = useOverflowClassName(
 		hasAutoWidth,
 		shouldWrapOverflow
 	);

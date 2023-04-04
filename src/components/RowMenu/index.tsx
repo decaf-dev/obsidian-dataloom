@@ -48,11 +48,13 @@ export default function RowMenu({ rowId, onDeleteClick }: Props) {
 	const { top, left, height } = menu.position;
 
 	return (
-		<div ref={menu.containerRef}>
-			<Button
-				icon={<Icon type={IconType.MORE_HORIZ} />}
-				onClick={(e) => handleButtonClick(e)}
-			/>
+		<>
+			<div ref={menu.containerRef}>
+				<Button
+					icon={<Icon type={IconType.MORE_HORIZ} />}
+					onClick={(e) => handleButtonClick(e)}
+				/>
+			</div>
 			<Menu id={menu.id} isOpen={isOpen} top={top + height} left={left}>
 				<div className="NLT__row-menu">
 					<MenuItem
@@ -62,6 +64,6 @@ export default function RowMenu({ rowId, onDeleteClick }: Props) {
 					/>
 				</div>
 			</Menu>
-		</div>
+		</>
 	);
 }

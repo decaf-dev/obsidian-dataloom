@@ -28,9 +28,9 @@ export default function MenuItem({
 			<Flex justify="space-between">
 				<Stack>
 					{iconType !== undefined && <Icon type={iconType} />}
-					<Text content={name} />
+					<Text value={name} />
 				</Stack>
-				{value !== undefined && <Text content={value} />}
+				{value !== undefined && <Text value={value} />}
 			</Flex>
 		</div>
 	);

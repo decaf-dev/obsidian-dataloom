@@ -1,9 +1,9 @@
 import "./styles.css";
 
 interface Props {
-	content: string;
+	value: string;
 }
 
-export default function Text({ content }: Props) {
-	return <p className="NLT__p">{content}</p>;
+export default function Text({ value }: Props) {
+	return <p className="NLT__p">{value}</p>;
 }
