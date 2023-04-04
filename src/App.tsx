@@ -33,7 +33,7 @@ import { updateCell } from "./services/tableState/cell";
 import { addRow, deleteRow } from "./services/tableState/row";
 import { useDidMountEffect } from "./services/hooks";
 import { useId } from "./services/random/hooks";
-import { ColumnIdError } from "./services/tableState/error";
+import { CellNotFoundError, ColumnIdError } from "./services/tableState/error";
 import { dateTimeToString } from "./services/string/conversion";
 import { updateSortTime } from "./services/redux/globalSlice";
 import HeaderCell from "./components/HeaderCell";
@@ -320,7 +320,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 											cell.columnId === columnId &&
 											cell.isHeader
 									);
-									if (!cell) throw Error("Cell not found");
+									if (!cell) throw new CellNotFoundError();
 
 									const {
 										id: cellId,

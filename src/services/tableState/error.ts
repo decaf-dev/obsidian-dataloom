@@ -17,3 +17,10 @@ export class RowIdError extends Error {
 		this.name = "RowIdError";
 	}
 }
+
+export class CellNotFoundError extends Error {
+	constructor() {
+		super("Cell not found");
+		this.name = "CellNotFoundError";
+	}
+}

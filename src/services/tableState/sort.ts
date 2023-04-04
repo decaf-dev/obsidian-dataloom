@@ -1,4 +1,5 @@
 import { isCheckboxChecked } from "../string/validators";
+import { CellNotFoundError } from "./error";
 import { TableState, Cell, Row, CellType, SortDir } from "./types";
 import { sortCells } from "./utils";
 
@@ -34,13 +35,13 @@ const sortByMarkdown = (
 			(c) => c.columnId === columnId && c.rowId === a.id
 		);
 
-		if (!cellA) throw new Error("Cell not found");
+		if (!cellA) throw new CellNotFoundError();
 
 		const cellB = cells.find(
 			(c) => c.columnId === columnId && c.rowId === b.id
 		);
 
-		if (!cellB) throw new Error("Cell not found");
+		if (!cellB) throw new CellNotFoundError();
 
 		const markdownA = cellA.markdown;
 		const markdownB = cellB.markdown;
@@ -77,13 +78,13 @@ const sortByNumber = (
 			(c) => c.columnId === columnId && c.rowId === a.id
 		);
 
-		if (!cellA) throw new Error("Cell not found");
+		if (!cellA) throw new CellNotFoundError();
 
 		const cellB = cells.find(
 			(c) => c.columnId === columnId && c.rowId === b.id
 		);
 
-		if (!cellB) throw new Error("Cell not found");
+		if (!cellB) throw new CellNotFoundError();
 
 		const markdownA = cellA.markdown;
 		const markdownB = cellB.markdown;
@@ -120,13 +121,13 @@ const sortByCheckbox = (
 			(c) => c.columnId === columnId && c.rowId === a.id
 		);
 
-		if (!cellA) throw new Error("Cell not found");
+		if (!cellA) throw new CellNotFoundError();
 
 		const cellB = cells.find(
 			(c) => c.columnId === columnId && c.rowId === b.id
 		);
 
-		if (!cellB) throw new Error("Cell not found");
+		if (!cellB) throw new CellNotFoundError();
 
 		//Force headers to the top
 		if (cellA.isHeader) return -1;
