@@ -1,0 +1,7 @@
+.NLT__date-cell {
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding: var(--nlt-cell-spacing);
+}

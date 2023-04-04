@@ -23,6 +23,9 @@ main.css
 main.css.map
 main.js
 main.js.map
-styles.css
+
+# Ignore only the build styles.css
+/styles.css
+
 # obsidian
 data.json
