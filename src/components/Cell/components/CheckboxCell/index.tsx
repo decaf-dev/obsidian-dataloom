@@ -6,15 +6,15 @@ import {
 	CHECKBOX_MARKDOWN_CHECKED,
 	CHECKBOX_MARKDOWN_UNCHECKED,
 } from "src/services/tableState/constants";
+import { isCheckboxChecked } from "src/services/string/validators";
 
 interface Props {
-	content: string;
+	value: string;
 	onCheckboxChange: (value: string) => void;
 }
 
-export default function CheckboxCell({ content, onCheckboxChange }: Props) {
-	if (!isValidCellContent(content, CellType.CHECKBOX)) content = "[ ]";
-	let isChecked = content.includes("x");
+export default function CheckboxCell({ value, onCheckboxChange }: Props) {
+	const isChecked = isCheckboxChecked(value);
 
 	function handleClick() {
 		if (isChecked) {

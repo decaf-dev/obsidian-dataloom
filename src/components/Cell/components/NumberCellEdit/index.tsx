@@ -1,28 +1,19 @@
-import { useRef } from "react";
-
 import "./styles.css";
 
 interface Props {
-	content: string;
-	onInputChange: (updatedContent: string) => void;
+	value: string;
+	onInputChange: (value: string) => void;
 }
 
-export default function NumberCellEdit({ content, onInputChange }: Props) {
-	const inputRef = useRef<HTMLInputElement>(null);
-
-	function handleInputChange(value: string) {
-		value = value.replace("\n", "");
-		return onInputChange(value);
-	}
-
+export default function NumberCellEdit({ value, onInputChange }: Props) {
 	return (
-		<input
-			className="NLT__number-cell-edit"
-			type="number"
-			ref={inputRef}
-			autoFocus
-			value={content}
-			onChange={(e) => handleInputChange(e.target.value)}
-		/>
+		<div className="NLT__number-cell-edit">
+			<input
+				type="number"
+				autoFocus
+				value={value}
+				onChange={(e) => onInputChange(e.target.value)}
+			/>
+		</div>
 	);
 }

@@ -3,11 +3,11 @@ import { useEffect, useRef } from "react";
 import "./styles.css";
 
 interface Props {
-	content: string;
-	onInputChange: (updatedContent: string) => void;
+	value: string;
+	onInputChange: (value: string) => void;
 }
 
-export default function TextCellEdit({ content, onInputChange }: Props) {
+export default function TextCellEdit({ value, onInputChange }: Props) {
 	const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
 	function focusInput() {
@@ -23,7 +23,7 @@ export default function TextCellEdit({ content, onInputChange }: Props) {
 
 	useEffect(() => {
 		focusInput();
-		setSelection(content.length);
+		setSelection(value.length);
 	}, []);
 
 	function handleTextareaChange(value: string) {
@@ -36,7 +36,7 @@ export default function TextCellEdit({ content, onInputChange }: Props) {
 			className="NLT__textarea"
 			ref={inputRef}
 			autoFocus
-			value={content}
+			value={value}
 			onChange={(e) => handleTextareaChange(e.target.value)}
 		/>
 	);

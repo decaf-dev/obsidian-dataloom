@@ -2,13 +2,13 @@ import { useOverflowClassname } from "src/services/spacing/hooks";
 import { dateTimeToString } from "src/services/string/conversion";
 
 interface Props {
-	time: number;
+	value: number;
 	useAutoWidth: boolean;
 	shouldWrapOverflow: boolean;
 }
 
 export default function LastEditedTimeCell({
-	time,
+	value,
 	useAutoWidth,
 	shouldWrapOverflow,
 }: Props) {
@@ -18,5 +18,5 @@ export default function LastEditedTimeCell({
 	);
 	const className = "NLT__last-edited-time-cell" + " " + overflowClassName;
 
-	return <div className={className}>{dateTimeToString(time)}</div>;
+	return <div className={className}>{dateTimeToString(value)}</div>;
 }

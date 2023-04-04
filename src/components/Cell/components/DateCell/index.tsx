@@ -3,10 +3,10 @@ import { isValidCellContent } from "src/services/tableState/utils";
 
 import "./styles.css";
 interface Props {
-	content: string;
+	value: string;
 }
 
-export default function DateCell({ content }: Props) {
-	if (!isValidCellContent(content, CellType.DATE)) content = "";
-	return <div className="NLT__date-cell">{content}</div>;
+export default function DateCell({ value }: Props) {
+	if (!isValidCellContent(value, CellType.DATE)) value = "";
+	return <div className="NLT__date-cell">{value}</div>;
 }

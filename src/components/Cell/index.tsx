@@ -220,13 +220,13 @@ export default function Cell({
 				>
 					{columnType === CellType.TEXT && (
 						<TextCellEdit
-							content={markdown}
+							value={markdown}
 							onInputChange={handleTextInputChange}
 						/>
 					)}
 					{columnType === CellType.NUMBER && (
 						<NumberCellEdit
-							content={markdown}
+							value={markdown}
 							onInputChange={handleNumberInputChange}
 						/>
 					)}
@@ -244,7 +244,7 @@ export default function Cell({
 					)}
 					{columnType === CellType.DATE && (
 						<DateCellEdit
-							content={markdown}
+							value={markdown}
 							onDateChange={handleDateChange}
 						/>
 					)}
@@ -259,28 +259,28 @@ export default function Cell({
 			)}
 			{columnType === CellType.NUMBER && (
 				<NumberCell
-					content={markdown}
+					value={markdown}
 					shouldWrapOverflow={shouldWrapOverflow}
 					useAutoWidth={useAutoWidth}
 				/>
 			)}
 			{columnType === CellType.CHECKBOX && (
 				<CheckboxCell
-					content={markdown}
+					value={markdown}
 					onCheckboxChange={handleCheckboxChange}
 				/>
 			)}
-			{columnType === CellType.DATE && <DateCell content={markdown} />}
+			{columnType === CellType.DATE && <DateCell value={markdown} />}
 			{columnType === CellType.CREATION_TIME && (
 				<CreationTimeCell
-					time={rowCreationTime}
+					value={rowCreationTime}
 					shouldWrapOverflow={shouldWrapOverflow}
 					useAutoWidth={useAutoWidth}
 				/>
 			)}
 			{columnType === CellType.LAST_EDITED_TIME && (
 				<LastEditedTimeCell
-					time={rowLastEditedTime}
+					value={rowLastEditedTime}
 					shouldWrapOverflow={shouldWrapOverflow}
 					useAutoWidth={useAutoWidth}
 				/>

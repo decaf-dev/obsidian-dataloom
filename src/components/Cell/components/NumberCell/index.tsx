@@ -3,13 +3,13 @@ import { useOverflowClassname } from "src/services/spacing/hooks";
 import "./styles.css";
 
 interface Props {
-	content: string;
+	value: string;
 	shouldWrapOverflow: boolean;
 	useAutoWidth: boolean;
 }
 
 export default function NumberCell({
-	content,
+	value,
 	shouldWrapOverflow,
 	useAutoWidth,
 }: Props) {
@@ -19,5 +19,5 @@ export default function NumberCell({
 	);
 	const className = "NLT__number-cell" + " " + overflowClassName;
 
-	return <div className={className}>{content}</div>;
+	return <div className={className}>{value}</div>;
 }

@@ -9,14 +9,14 @@ import { dateToString } from "src/services/string/conversion";
 import { isValidCellContent } from "src/services/tableState/utils";
 
 interface Props {
-	content: string;
-	onDateChange: (updatedContent: string) => void;
+	value: string;
+	onDateChange: (value: string) => void;
 }
 
-export default function DateCellEdit({ content, onDateChange }: Props) {
+export default function DateCellEdit({ value, onDateChange }: Props) {
 	let selectedDate = new Date();
-	if (isValidCellContent(content, CellType.DATE))
-		selectedDate = new Date(content);
+	if (isValidCellContent(value, CellType.DATE))
+		selectedDate = new Date(value);
 
 	function handleChange(date: Date) {
 		const updatedContent = dateToString(date);
