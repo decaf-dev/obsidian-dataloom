@@ -26,6 +26,7 @@ jobs:
               uses: softprops/action-gh-release@v1
               if: startsWith(github.ref, 'refs/tags/')
               with:
+                  name: ${{ github.ref }}
                   tag_name: ${{ github.ref }}
                   files: |
                       main.js
