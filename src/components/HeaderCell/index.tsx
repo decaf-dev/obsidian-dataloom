@@ -17,7 +17,7 @@ import "./styles.css";
 import Icon from "../Icon";
 import Stack from "../Stack";
 import HeaderMenu from "./components/HeaderMenu";
-import { getIconTypeFromCellType } from "./services/utils";
+import { getIconTypeFromCellType } from "src/services/icon/utils";
 
 interface Props {
 	cellId: string;

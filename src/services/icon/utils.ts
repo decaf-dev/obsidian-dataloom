@@ -1,5 +1,5 @@
-import { IconType } from "src/services/icon/types";
-import { CellType } from "src/services/tableState/types";
+import { CellType } from "../tableState/types";
+import { IconType } from "./types";
 
 export const getIconTypeFromCellType = (type: CellType) => {
 	switch (type) {

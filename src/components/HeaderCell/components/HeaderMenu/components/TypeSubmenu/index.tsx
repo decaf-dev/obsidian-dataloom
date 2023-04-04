@@ -1,11 +1,12 @@
-import { TYPE_ITEMS } from "../../constants";
 import MenuItem from "src/components/MenuItem";
 import Submenu from "../Submenu";
 import { CellType } from "src/services/tableState/types";
+import { getDisplayNameForCellType } from "src/services/tableState/utils";
+import { getIconTypeFromCellType } from "src/services/icon/utils";
 interface Props {
 	title: string;
 	columnType: string;
-	onTypeClick: (type: CellType) => void;
+	onTypeClick: (value: CellType) => void;
 	onBackClick: () => void;
 }
 
@@ -17,12 +18,13 @@ export default function TypeSubmenu({
 }: Props) {
 	return (
 		<Submenu title={title} onBackClick={onBackClick}>
-			{TYPE_ITEMS.map((item) => (
+			{Object.values(CellType).map((type: CellType) => (
 				<MenuItem
-					key={item.name}
-					name={item.content}
-					onClick={() => onTypeClick(item.type)}
-					isSelected={item.type === columnType}
+					key={type}
+					name={getDisplayNameForCellType(type)}
+					iconType={getIconTypeFromCellType(type)}
+					onClick={() => onTypeClick(type)}
+					isSelected={type === columnType}
 				/>
 			))}
 		</Submenu>
