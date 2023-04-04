@@ -31,6 +31,8 @@ import "./styles.css";
 import { useDidMountEffect } from "src/services/hooks";
 import { updateSortTime } from "src/services/redux/globalSlice";
 import { Color } from "src/services/color/types";
+import CurrencyCell from "./components/CurrencyCell";
+import CurrencyCellEdit from "./components/CurrencyCellEdit";
 
 interface Props {
 	columnType: string;
@@ -170,6 +172,10 @@ export default function Cell({
 		onContentChange(cellId, rowId, updatedMarkdown);
 	}
 
+	function handleCurrencyChange(updatedMarkdown: string) {
+		onContentChange(cellId, rowId, updatedMarkdown);
+	}
+
 	const {
 		width: measuredWidth,
 		height: measuredHeight,
@@ -248,6 +254,12 @@ export default function Cell({
 							onDateChange={handleDateChange}
 						/>
 					)}
+					{columnType === CellType.CURRENCY && (
+						<CurrencyCellEdit
+							value={markdown}
+							onInputChange={handleCurrencyChange}
+						/>
+					)}
 				</Menu>
 			)}
 			{columnType === CellType.TEXT && (
@@ -271,6 +283,13 @@ export default function Cell({
 				/>
 			)}
 			{columnType === CellType.DATE && <DateCell value={markdown} />}
+			{columnType === CellType.CURRENCY && (
+				<CurrencyCell
+					value={markdown}
+					hasAutoWidth={hasAutoWidth}
+					shouldWrapOverflow={shouldWrapOverflow}
+				/>
+			)}
 			{columnType === CellType.CREATION_TIME && (
 				<CreationTimeCell
 					value={rowCreationTime}

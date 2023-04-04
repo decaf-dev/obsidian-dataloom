@@ -9,10 +9,11 @@ export enum SortDir {
 export enum CellType {
 	TEXT = "text",
 	NUMBER = "number",
+	CURRENCY = "currency",
 	TAG = "tag",
+	MULTI_TAG = "multi-tag",
 	DATE = "date",
 	CHECKBOX = "checkbox",
-	MULTI_TAG = "multi-tag",
 	CREATION_TIME = "creation-time",
 	LAST_EDITED_TIME = "last-edited-time",
 }

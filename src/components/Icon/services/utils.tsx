@@ -17,7 +17,6 @@ import {
 	Close,
 	List,
 	Numbers,
-	DescriptionOutlined,
 	CalendarTodayOutlined,
 	LabelOutlined,
 	CheckBoxOutlined,
@@ -28,6 +27,7 @@ import {
 	MoveDownOutlined,
 	ScheduleOutlined,
 	Notes,
+	PaymentsOutlined,
 } from "@mui/icons-material";
 
 import { IconType } from "src/services/icon/types";
@@ -93,6 +93,8 @@ export const findIcon = (
 			return <Search className={className} />;
 		case IconType.LIST:
 			return <List className={className} />;
+		case IconType.PAYMENTS:
+			return <PaymentsOutlined className={className} />;
 		default:
 			return "";
 	}

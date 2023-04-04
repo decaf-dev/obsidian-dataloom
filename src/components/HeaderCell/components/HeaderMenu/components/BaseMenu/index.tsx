@@ -6,7 +6,6 @@ import { IconType } from "src/services/icon/types";
 import { CellType, SortDir } from "src/services/tableState/types";
 import { getDisplayNameForCellType } from "src/services/tableState/utils";
 import { SubmenuItem, SUBMENU_ITEM } from "../../constants";
-import "./styles.css";
 
 interface Props {
 	columnName: string;
