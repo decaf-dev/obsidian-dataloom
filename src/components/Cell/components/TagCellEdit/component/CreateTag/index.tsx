@@ -1,12 +1,13 @@
 import Tag from "src/components/Tag";
+import { Color } from "src/services/color/types";
 
 import "./styles.css";
 
 interface Props {
 	isDarkMode: boolean;
 	markdown: string;
-	color: string;
-	onAddTag: (markdown: string, color: string) => void;
+	color: Color;
+	onAddTag: (markdown: string, color: Color) => void;
 }
 
 export default function CreateTag({

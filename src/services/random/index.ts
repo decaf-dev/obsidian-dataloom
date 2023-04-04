@@ -1,6 +1,6 @@
-import { COLOR } from "../../constants";
+import { Color } from "../color/types";
 
-export const randomColor = (): string => {
-	const index = Math.floor(Math.random() * Object.keys(COLOR).length);
-	return Object.values(COLOR)[index];
+export const randomColor = () => {
+	const index = Math.floor(Math.random() * Object.keys(Color).length);
+	return Object.values(Color)[index];
 };

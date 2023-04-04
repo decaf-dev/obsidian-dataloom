@@ -1,3 +1,4 @@
+import { Color } from "src/services/color/types";
 import { Tag } from "src/services/tableState/types";
 import CreateTag from "../CreateTag";
 import SelectableTag from "../SelectableTag";
@@ -8,10 +9,10 @@ interface MenuBodyProps {
 	isDarkMode: boolean;
 	tags: Tag[];
 	inputText: string;
-	generatedColor: string;
-	onAddTag: (markdown: string, color: string) => void;
+	newTagColor: Color;
+	onAddTag: (markdown: string, color: Color) => void;
 	onTagClick: (tagId: string) => void;
-	onTagColorChange: (tagId: string, color: string) => void;
+	onTagColorChange: (tagId: string, color: Color) => void;
 	onTagDeleteClick: (tagId: string) => void;
 }
 
@@ -19,7 +20,7 @@ export default function MenuBody({
 	isDarkMode,
 	tags,
 	inputText,
-	generatedColor,
+	newTagColor,
 	onAddTag,
 	onTagClick,
 	onTagColorChange,
@@ -40,7 +41,7 @@ export default function MenuBody({
 					<CreateTag
 						isDarkMode={isDarkMode}
 						markdown={inputText}
-						color={generatedColor}
+						color={newTagColor}
 						onAddTag={onAddTag}
 					/>
 				)}

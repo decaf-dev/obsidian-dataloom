@@ -1,12 +1,13 @@
 import { findColorClassName } from "src/services/color";
+import { Color } from "src/services/color/types";
 import { uppercaseFirst } from "src/services/string/utils";
 import "./styles.css";
 
 interface Props {
 	isDarkMode: boolean;
-	color: string;
+	color: Color;
 	isSelected: boolean;
-	onColorClick: (color: string) => void;
+	onColorClick: (color: Color) => void;
 }
 
 export default function ColorItem({

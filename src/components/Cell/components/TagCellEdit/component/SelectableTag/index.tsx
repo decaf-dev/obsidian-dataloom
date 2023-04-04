@@ -15,14 +15,15 @@ import "./styles.css";
 import Button from "src/components/Button";
 import Icon from "src/components/Icon";
 import Tag from "src/components/Tag";
+import { Color } from "src/services/color/types";
 
 interface Props {
 	isDarkMode: boolean;
 	id: string;
 	markdown: string;
-	color: string;
+	color: Color;
 	onClick: (tagId: string) => void;
-	onColorChange: (tagId: string, color: string) => void;
+	onColorChange: (tagId: string, color: Color) => void;
 	onDeleteClick: (tagId: string) => void;
 }
 
@@ -40,7 +41,7 @@ export default function SelectableTag({
 
 	const dispatch = useAppDispatch();
 
-	function handleColorChange(color: string) {
+	function handleColorChange(color: Color) {
 		onColorChange(id, color);
 		dispatch(closeTopLevelMenu());
 	}

@@ -30,6 +30,7 @@ import { isCheckboxChecked } from "src/services/string/validators";
 import "./styles.css";
 import { useDidMountEffect } from "src/services/hooks";
 import { updateSortTime } from "src/services/redux/globalSlice";
+import { Color } from "src/services/color/types";
 
 interface Props {
 	columnType: string;
@@ -60,11 +61,11 @@ interface Props {
 		columnId: string,
 		rowId: string,
 		markdown: string,
-		color: string,
+		color: Color,
 		canAddMultiple: boolean
 	) => void;
 	onTagDeleteClick: (tagId: string) => void;
-	onTagColorChange: (tagId: string, color: string) => void;
+	onTagColorChange: (tagId: string, color: Color) => void;
 }
 
 export default function Cell({
@@ -134,7 +135,7 @@ export default function Cell({
 		}
 	}
 
-	function handleAddTag(markdown: string, color: string) {
+	function handleAddTag(markdown: string, color: Color) {
 		onAddTag(
 			cellId,
 			columnId,

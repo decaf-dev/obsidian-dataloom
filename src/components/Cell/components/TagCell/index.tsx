@@ -1,3 +1,4 @@
+import { Color } from "src/services/color/types";
 import { useOverflowClassName } from "src/services/spacing/hooks";
 import Tag from "../../../Tag";
 
@@ -5,7 +6,7 @@ import "./styles.css";
 interface Props {
 	isDarkMode: boolean;
 	markdown: string;
-	color: string;
+	color: Color;
 	hasAutoWidth: boolean;
 	shouldWrapOverflow: boolean;
 }

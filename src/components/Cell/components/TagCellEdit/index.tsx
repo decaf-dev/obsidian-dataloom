@@ -9,14 +9,15 @@ import { closeTopLevelMenu } from "src/services/menu/menuSlice";
 import "./styles.css";
 import MenuHeader from "./component/MenuHeader";
 import MenuBody from "./component/MenuBody";
+import { Color } from "src/services/color/types";
 
 interface Props {
 	tags: TagType[];
 	cellId: string;
 	onTagClick: (tagId: string) => void;
-	onAddTag: (markdown: string, color: string) => void;
+	onAddTag: (markdown: string, color: Color) => void;
 	onRemoveTag: (tagId: string) => void;
-	onTagColorChange: (tagId: string, color: string) => void;
+	onTagColorChange: (tagId: string, color: Color) => void;
 	onTagDeleteClick: (tagId: string) => void;
 }
 
@@ -30,7 +31,7 @@ export default function TagCellEdit({
 	onRemoveTag,
 }: Props) {
 	const [inputText, setInputText] = useState("");
-	const [generatedColor] = useState(randomColor());
+	const [newTagColor] = useState(randomColor());
 	const dispatch = useAppDispatch();
 	const { isDarkMode } = useAppSelector((state) => state.global);
 
@@ -40,7 +41,7 @@ export default function TagCellEdit({
 		setInputText(e.target.value);
 	}
 
-	function handleAddTag(markdown: string, color: string) {
+	function handleAddTag(markdown: string, color: Color) {
 		onAddTag(markdown, color);
 		setInputText("");
 		dispatch(closeTopLevelMenu());
@@ -61,7 +62,7 @@ export default function TagCellEdit({
 					isDarkMode={isDarkMode}
 					inputText={inputText}
 					tags={tags}
-					generatedColor={generatedColor}
+					newTagColor={newTagColor}
 					onAddTag={handleAddTag}
 					onTagClick={onTagClick}
 					onTagDeleteClick={onTagDeleteClick}

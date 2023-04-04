@@ -6,13 +6,14 @@ import "./styles.css";
 import Icon from "../Icon";
 import Button from "../Button";
 import Stack from "../Stack";
+import { Color } from "src/services/color/types";
 
 interface Props {
 	isDarkMode: boolean;
 	id?: string;
 	width?: string;
 	markdown: string;
-	color: string;
+	color: Color;
 	showRemove?: boolean;
 	onRemoveClick?: (tagId: string) => void;
 	onClick?: (tagId: string) => void;

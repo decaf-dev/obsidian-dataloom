@@ -1,3 +1,4 @@
+import { Color } from "../color/types";
 import { TagIdError } from "./error";
 import { updateLastEditedTime } from "./row";
 import StateFactory from "./StateFactory";
@@ -9,7 +10,7 @@ export const addNewTag = (
 	columnId: string,
 	rowId: string,
 	markdown: string,
-	color: string,
+	color: Color,
 	canAddMultiple: boolean
 ) => {
 	const { tags, rows } = prevState.model;
@@ -100,7 +101,7 @@ export const addCellToTag = (
 export const updateTagColor = (
 	prevState: TableState,
 	tagId: string,
-	newColor: string
+	newColor: Color
 ): TableState => {
 	const { tags } = prevState.model;
 	const tagsCopy = [...tags];

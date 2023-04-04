@@ -9,9 +9,8 @@ import Divider from "../../../Divider";
 import Stack from "../../../Stack";
 import MenuItem from "../../../MenuItem";
 
-import { COLOR } from "src/constants";
-
 import "./styles.css";
+import { Color } from "src/services/color/types";
 
 interface Props {
 	menuId: string;
@@ -19,7 +18,7 @@ interface Props {
 	top: number;
 	left: number;
 	selectedColor: string;
-	onColorClick: (color: string) => void;
+	onColorClick: (color: Color) => void;
 	onDeleteClick: () => void;
 }
 
@@ -40,7 +39,7 @@ export default function TagColorMenu({
 				<Stack spacing="md" isVertical>
 					<Text value="Color" />
 					<Stack spacing="sm" isVertical>
-						{Object.values(COLOR).map((color) => (
+						{Object.values(Color).map((color) => (
 							<ColorItem
 								isDarkMode={isDarkMode}
 								key={color}

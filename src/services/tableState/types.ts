@@ -1,3 +1,5 @@
+import { Color } from "../color/types";
+
 export enum SortDir {
 	ASC = "asc",
 	DESC = "desc",
@@ -25,7 +27,7 @@ export interface Cell {
 export interface Tag {
 	id: string;
 	markdown: string;
-	color: string;
+	color: Color;
 	columnId: string;
 	cellIds: string[];
 }

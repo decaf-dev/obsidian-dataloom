@@ -38,6 +38,7 @@ import { dateTimeToString } from "./services/string/conversion";
 import { updateSortTime } from "./services/redux/globalSlice";
 import HeaderCell from "./components/HeaderCell";
 import Cell from "./components/Cell";
+import { Color } from "./services/color/types";
 
 const FILE_NAME = "App";
 
@@ -121,7 +122,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 		columnId: string,
 		rowId: string,
 		markdown: string,
-		color: string,
+		color: Color,
 		canAddMultiple: boolean
 	) {
 		logFunc(shouldDebug, FILE_NAME, "handleAddTag", {
@@ -239,7 +240,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 		);
 	}
 
-	function handleTagChangeColor(tagId: string, color: string) {
+	function handleTagChangeColor(tagId: string, color: Color) {
 		logFunc(shouldDebug, FILE_NAME, "handleTagChangeColor", {
 			tagId,
 			color,
