@@ -108,6 +108,14 @@ Dates can be rendered in cells that are in a column with the `date` content type
 
 Checkboxes can be rendered in cells that are in a column with the `checkbox` content type selected.
 
+### Creation Time Cell
+
+When the row was added to the time
+
+### Last Edited Time Cell
+
+When a cell in the row has last been edited
+
 ## Markdown Support
 
 Notion-Like Tables uses the `MarkdownRenderer.renderMarkdown` function to render HTML entities from markdown.
