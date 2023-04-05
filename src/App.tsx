@@ -383,7 +383,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 												columnId={cell.columnId}
 												width={
 													hasAutoWidth
-														? "max-content"
+														? "unset"
 														: width
 												}
 												shouldWrapOverflow={
@@ -511,7 +511,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 													hasAutoWidth={hasAutoWidth}
 													width={
 														hasAutoWidth
-															? "max-content"
+															? "unset"
 															: width
 													}
 													onTagClick={
