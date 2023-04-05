@@ -28,7 +28,7 @@ export default function CreateTag({
 				isDarkMode={isDarkMode}
 				markdown={markdown}
 				color={color}
-				width="120px"
+				maxWidth="120px"
 			/>
 		</div>
 	);
