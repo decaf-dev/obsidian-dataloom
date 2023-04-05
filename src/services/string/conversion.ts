@@ -1,3 +1,5 @@
+import { CurrencyType } from "../tableState/types";
+
 export const dateToString = (date: Date): string => {
 	const year = date.getFullYear();
 	const month = ("0" + (date.getMonth() + 1)).slice(-2);
@@ -11,6 +13,13 @@ export const pxToNum = (pixels: string) => {
 
 export const numToPx = (num: number) => {
 	return `${num}px`;
+};
+
+export const stringToCurrencyString = (value: string, type: CurrencyType) => {
+	return new Intl.NumberFormat("en-US", {
+		style: "currency",
+		currency: type,
+	}).format(parseFloat(value));
 };
 
 export const dateTimeToString = (dateTime: number) => {

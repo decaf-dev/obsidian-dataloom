@@ -2,6 +2,7 @@ import { useOverflowClassName } from "src/services/spacing/hooks";
 
 import "./styles.css";
 import { CurrencyType } from "src/services/tableState/types";
+import { stringToCurrencyString } from "src/services/string/conversion";
 
 interface Props {
 	value: string;
@@ -21,10 +22,7 @@ export default function CurrencyCell({
 		shouldWrapOverflow
 	);
 
-	const valueFormatted = new Intl.NumberFormat("en-US", {
-		style: "currency",
-		currency: currencyType,
-	}).format(parseFloat(value));
+	const valueFormatted = stringToCurrencyString(value, currencyType);
 
 	const className = "NLT__currency-cell" + " " + overflowClassName;
 

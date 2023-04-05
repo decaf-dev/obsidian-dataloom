@@ -35,7 +35,10 @@ import { addRow, deleteRow } from "./services/tableState/row";
 import { useDidMountEffect } from "./services/hooks";
 import { useId } from "./services/random/hooks";
 import { CellNotFoundError, ColumnIdError } from "./services/tableState/error";
-import { dateTimeToString } from "./services/string/conversion";
+import {
+	dateTimeToString,
+	stringToCurrencyString,
+} from "./services/string/conversion";
 import { updateSortTime } from "./services/redux/globalSlice";
 import HeaderCell from "./components/HeaderCell";
 import Cell from "./components/Cell";
@@ -284,14 +287,37 @@ export default function App({ initialState, onSaveTableState }: Props) {
 	}
 
 	const { rows, columns, cells, tags } = tableState.model;
+	const columnCells = cells.map((cell) => {
+		const column = columns.find((column) => column.id === cell.columnId);
+		if (!column) throw new ColumnIdError(cell.columnId);
+		return {
+			...cell,
+			column,
+		};
+	});
+
 	const filteredRows = rows.filter((row) => {
-		const filteredCells = cells.filter((cell) => cell.rowId === row.id);
-		const matchedCell = filteredCells.find(
-			(cell) =>
-				cell.markdown
-					.toLowerCase()
-					.includes(searchText.toLowerCase()) || cell.isHeader
+		const filteredCells = columnCells.filter(
+			(cell) => cell.rowId === row.id
 		);
+		const matchedCell = filteredCells.find((cell) => {
+			if (cell.markdown.toLowerCase().includes(searchText.toLowerCase()))
+				return true;
+			if (cell.isHeader) return true;
+			if (cell.column.type === CellType.CURRENCY) {
+				const currencyString = stringToCurrencyString(
+					cell.markdown,
+					cell.column.currencyType
+				);
+				if (
+					currencyString
+						.toLowerCase()
+						.includes(searchText.toLowerCase())
+				)
+					return true;
+			}
+			return false;
+		});
 		if (matchedCell !== undefined) return true;
 
 		const creationTimeString = dateTimeToString(row.creationTime);
