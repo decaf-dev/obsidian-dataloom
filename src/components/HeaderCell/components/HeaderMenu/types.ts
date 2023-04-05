@@ -1,6 +1,6 @@
 export enum Submenu {
 	TYPE,
-	EDIT,
+	OPTIONS,
 	MOVE,
 	INSERT,
 }

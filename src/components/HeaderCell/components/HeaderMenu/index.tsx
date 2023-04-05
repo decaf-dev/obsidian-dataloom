@@ -7,11 +7,10 @@ import MoveSubmenu from "./components/MoveSubmenu";
 import TypeSubmenu from "./components/TypeSubmenu";
 import BaseMenu from "./components/BaseMenu";
 
-import { SUBMENU_ITEM, SubmenuItem } from "./constants";
-
 import { CellType, CurrencyType, SortDir } from "src/services/tableState/types";
 
 import "./styles.css";
+import { Submenu } from "./types";
 interface Props {
 	isOpen: boolean;
 	canDeleteColumn: boolean;
@@ -69,7 +68,7 @@ export default function HeaderMenu({
 	onNameChange,
 	onCurrencyChange,
 }: Props) {
-	const [submenu, setSubmenu] = useState<SubmenuItem | null>(null);
+	const [submenu, setSubmenu] = useState<Submenu | null>(null);
 
 	function handleMoveColumnClick(moveRight: boolean) {
 		onMoveColumnClick(columnId, moveRight);
@@ -126,10 +125,10 @@ export default function HeaderMenu({
 						onSubmenuChange={setSubmenu}
 					/>
 				)}
-				{submenu && submenu.name === SUBMENU_ITEM.EDIT.name && (
+				{submenu === Submenu.OPTIONS && (
 					<OptionSubmenu
 						canDeleteColumn={canDeleteColumn}
-						title={submenu.content}
+						title="Options"
 						columnType={columnType}
 						columnId={columnId}
 						columnCurrencyType={currencyType}
@@ -142,25 +141,25 @@ export default function HeaderMenu({
 						onDeleteClick={handleDeleteClick}
 					/>
 				)}
-				{submenu && submenu.name === SUBMENU_ITEM.INSERT.name && (
+				{submenu == Submenu.INSERT && (
 					<InsertSubmenu
-						title={submenu.content}
+						title="Insert"
 						onInsertClick={handleInsertColumnClick}
 						onBackClick={handleBackClick}
 					/>
 				)}
-				{submenu && submenu.name === SUBMENU_ITEM.MOVE.name && (
+				{submenu === Submenu.MOVE && (
 					<MoveSubmenu
-						title={submenu.content}
+						title="Move"
 						columnIndex={columnIndex}
 						numColumns={numColumns}
 						onMoveClick={handleMoveColumnClick}
 						onBackClick={handleBackClick}
 					/>
 				)}
-				{submenu && submenu.name === SUBMENU_ITEM.TYPE.name && (
+				{submenu === Submenu.TYPE && (
 					<TypeSubmenu
-						title={submenu.content}
+						title="Type"
 						columnType={columnType}
 						onTypeClick={handleTypeClick}
 						onBackClick={handleBackClick}
