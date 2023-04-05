@@ -53,7 +53,7 @@ export default function Tag({
 				{showRemove && (
 					<Button
 						icon={<Icon size="sm" type={IconType.CLOSE} />}
-						isFlat
+						isSimple
 						onClick={() => {
 							onRemoveClick !== undefined && onRemoveClick(id!);
 						}}
