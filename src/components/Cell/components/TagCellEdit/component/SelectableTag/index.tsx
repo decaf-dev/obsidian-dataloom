@@ -63,7 +63,7 @@ export default function SelectableTag({
 					isDarkMode={isDarkMode}
 					markdown={markdown}
 					color={color}
-					width="150px"
+					maxWidth="150px"
 				/>
 				<Button
 					icon={<Icon type={IconType.MORE_HORIZ} />}
