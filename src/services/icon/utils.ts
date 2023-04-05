@@ -18,6 +18,8 @@ export const getIconTypeFromCellType = (type: CellType) => {
 			return IconType.LIST;
 		case CellType.DATE:
 			return IconType.SCHEDULE;
+		case CellType.CURRENCY:
+			return IconType.PAYMENTS;
 		default:
 			return IconType.NOTES;
 	}

@@ -11,7 +11,7 @@ import { Color } from "src/services/color/types";
 interface Props {
 	isDarkMode: boolean;
 	id?: string;
-	width?: string;
+	maxWidth?: string;
 	markdown: string;
 	color: Color;
 	showRemove?: boolean;
@@ -23,7 +23,7 @@ export default function Tag({
 	isDarkMode,
 	id,
 	color,
-	width,
+	maxWidth,
 	markdown,
 	showRemove,
 	onRemoveClick,
@@ -38,7 +38,7 @@ export default function Tag({
 	}
 
 	let contentClassName = "NLT__tag-content";
-	if (width !== undefined) {
+	if (maxWidth !== undefined) {
 		contentClassName += " " + "NLT__hide-overflow-ellipsis";
 	}
 	return (
@@ -46,14 +46,14 @@ export default function Tag({
 			<Stack spacing="sm">
 				<div
 					className={contentClassName}
-					{...(width !== undefined && { style: { width } })}
+					{...(maxWidth !== undefined && { style: { maxWidth } })}
 				>
 					{markdown}
 				</div>
 				{showRemove && (
 					<Button
 						icon={<Icon size="sm" type={IconType.CLOSE} />}
-						isFlat
+						isSimple
 						onClick={() => {
 							onRemoveClick !== undefined && onRemoveClick(id!);
 						}}

@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 
 import { CSS_MEASUREMENT_PIXEL_REGEX } from "src/services/string/regex";
 import { numToPx, pxToNum } from "src/services/string/conversion";
-import { CellType, SortDir } from "src/services/tableState/types";
+import { CellType, CurrencyType, SortDir } from "src/services/tableState/types";
 import { useMenu } from "src/services/menu/hooks";
 import { MenuLevel } from "src/services/menu/types";
 import { MIN_COLUMN_WIDTH } from "src/services/tableState/constants";
@@ -22,6 +22,7 @@ import { getIconTypeFromCellType } from "src/services/icon/utils";
 interface Props {
 	cellId: string;
 	columnIndex: number;
+	currencyType: CurrencyType;
 	rowId: string;
 	columnId: string;
 	width: string;
@@ -40,6 +41,7 @@ interface Props {
 	onAutoWidthToggle: (columnId: string, value: boolean) => void;
 	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
 	onNameChange: (cellId: string, rowId: string, value: string) => void;
+	onCurrencyChange: (columnId: string, value: CurrencyType) => void;
 }
 
 export default function HeaderCell({
@@ -47,6 +49,7 @@ export default function HeaderCell({
 	rowId,
 	columnIndex,
 	columnId,
+	currencyType,
 	width,
 	markdown,
 	hasAutoWidth,
@@ -63,6 +66,7 @@ export default function HeaderCell({
 	onWrapOverflowToggle,
 	onAutoWidthToggle,
 	onNameChange,
+	onCurrencyChange,
 }: Props) {
 	const mouseDownX = useRef(0);
 	const isResizing = useRef(false);
@@ -139,6 +143,7 @@ export default function HeaderCell({
 				left={left}
 				id={menu.id}
 				rowId={rowId}
+				currencyType={currencyType}
 				canDeleteColumn={numColumns > 1}
 				columnId={columnId}
 				cellId={cellId}
@@ -158,6 +163,7 @@ export default function HeaderCell({
 				onAutoWidthToggle={onAutoWidthToggle}
 				onWrapOverflowToggle={onWrapOverflowToggle}
 				onNameChange={onNameChange}
+				onCurrencyChange={onCurrencyChange}
 			/>
 			<div className="NLT__th-content">
 				<Stack spacing="md">

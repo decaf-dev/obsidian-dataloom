@@ -13,7 +13,7 @@ import DateCellEdit from "./components/DateCellEdit";
 import MultiTagCell from "./components/MultiTagCell";
 import Menu from "../Menu";
 
-import { CellType, Tag } from "src/services/tableState/types";
+import { CellType, CurrencyType, Tag } from "src/services/tableState/types";
 import { useMenu } from "src/services/menu/hooks";
 import { MenuLevel } from "src/services/menu/types";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
@@ -31,11 +31,14 @@ import "./styles.css";
 import { useDidMountEffect } from "src/services/hooks";
 import { updateSortTime } from "src/services/redux/globalSlice";
 import { Color } from "src/services/color/types";
+import CurrencyCell from "./components/CurrencyCell";
+import CurrencyCellEdit from "./components/CurrencyCellEdit";
 
 interface Props {
 	columnType: string;
 	cellId: string;
 	rowId: string;
+	columnCurrencyType: CurrencyType;
 	columnId: string;
 	markdown: string;
 	rowCreationTime: number;
@@ -73,6 +76,7 @@ export default function Cell({
 	columnId,
 	rowId,
 	markdown,
+	columnCurrencyType,
 	columnType,
 	rowCreationTime,
 	rowLastEditedTime,
@@ -170,6 +174,10 @@ export default function Cell({
 		onContentChange(cellId, rowId, updatedMarkdown);
 	}
 
+	function handleCurrencyChange(updatedMarkdown: string) {
+		onContentChange(cellId, rowId, updatedMarkdown);
+	}
+
 	const {
 		width: measuredWidth,
 		height: measuredHeight,
@@ -248,6 +256,12 @@ export default function Cell({
 							onDateChange={handleDateChange}
 						/>
 					)}
+					{columnType === CellType.CURRENCY && (
+						<CurrencyCellEdit
+							value={markdown}
+							onInputChange={handleCurrencyChange}
+						/>
+					)}
 				</Menu>
 			)}
 			{columnType === CellType.TEXT && (
@@ -264,25 +278,12 @@ export default function Cell({
 					hasAutoWidth={hasAutoWidth}
 				/>
 			)}
-			{columnType === CellType.CHECKBOX && (
-				<CheckboxCell
+			{columnType === CellType.CURRENCY && (
+				<CurrencyCell
 					value={markdown}
-					onCheckboxChange={handleCheckboxChange}
-				/>
-			)}
-			{columnType === CellType.DATE && <DateCell value={markdown} />}
-			{columnType === CellType.CREATION_TIME && (
-				<CreationTimeCell
-					value={rowCreationTime}
-					shouldWrapOverflow={shouldWrapOverflow}
+					currencyType={columnCurrencyType}
 					hasAutoWidth={hasAutoWidth}
-				/>
-			)}
-			{columnType === CellType.LAST_EDITED_TIME && (
-				<LastEditedTimeCell
-					value={rowLastEditedTime}
 					shouldWrapOverflow={shouldWrapOverflow}
-					hasAutoWidth={hasAutoWidth}
 				/>
 			)}
 			{columnType === CellType.TAG && currentTag && (
@@ -300,6 +301,27 @@ export default function Cell({
 					tags={filteredTags}
 					hasAutoWidth={hasAutoWidth}
 					shouldWrapOverflow={shouldWrapOverflow}
+				/>
+			)}
+			{columnType === CellType.DATE && <DateCell value={markdown} />}
+			{columnType === CellType.CHECKBOX && (
+				<CheckboxCell
+					value={markdown}
+					onCheckboxChange={handleCheckboxChange}
+				/>
+			)}
+			{columnType === CellType.CREATION_TIME && (
+				<CreationTimeCell
+					value={rowCreationTime}
+					shouldWrapOverflow={shouldWrapOverflow}
+					hasAutoWidth={hasAutoWidth}
+				/>
+			)}
+			{columnType === CellType.LAST_EDITED_TIME && (
+				<LastEditedTimeCell
+					value={rowLastEditedTime}
+					shouldWrapOverflow={shouldWrapOverflow}
+					hasAutoWidth={hasAutoWidth}
 				/>
 			)}
 		</div>

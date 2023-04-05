@@ -1,6 +1,6 @@
 import { ColumnIdError } from "./error";
 import StateFactory from "./StateFactory";
-import { CellType, Column, TableState, SortDir } from "./types";
+import { CellType, Column, TableState, SortDir, CurrencyType } from "./types";
 import { sortCells } from "./utils";
 
 export const addColumn = (prevState: TableState): TableState => {
@@ -114,13 +114,14 @@ export const deleteColumn = (
 	prevState: TableState,
 	columnId: string
 ): TableState => {
-	const { cells, columns } = prevState.model;
+	const { cells, columns, tags } = prevState.model;
 	return {
 		...prevState,
 		model: {
 			...prevState.model,
 			columns: columns.filter((column) => column.id !== columnId),
 			cells: cells.filter((cell) => cell.columnId !== columnId),
+			tags: tags.filter((tag) => tag.columnId !== columnId),
 		},
 	};
 };
@@ -152,11 +153,35 @@ export const moveColumn = (
 	};
 };
 
+export const changeColumnCurrencyType = (
+	prevState: TableState,
+	columnId: string,
+	type: CurrencyType
+): TableState => {
+	const { columns } = prevState.model;
+
+	return {
+		...prevState,
+		model: {
+			...prevState.model,
+			columns: columns.map((column) => {
+				if (column.id === columnId) {
+					return {
+						...column,
+						currencyType: type,
+					};
+				}
+				return column;
+			}),
+		},
+	};
+};
+
 export const changeColumnType = (
 	prevState: TableState,
 	columnId: string,
 	newType: CellType
-) => {
+): TableState => {
 	const { columns, tags } = prevState.model;
 	const column = columns.find((column) => column.id === columnId);
 	if (!column) throw new ColumnIdError(columnId);

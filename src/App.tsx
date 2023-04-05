@@ -5,7 +5,7 @@ import RowMenu from "./components/RowMenu";
 import OptionBar from "./components/OptionBar";
 import Button from "./components/Button";
 
-import { CellType, SortDir } from "./services/tableState/types";
+import { CellType, CurrencyType, SortDir } from "./services/tableState/types";
 import { logFunc } from "./services/debug";
 import { TableState } from "./services/tableState/types";
 import { useAppDispatch, useAppSelector } from "./services/redux/hooks";
@@ -19,6 +19,7 @@ import {
 } from "./services/tableState/tag";
 import {
 	addColumn,
+	changeColumnCurrencyType,
 	changeColumnType,
 	deleteColumn,
 	insertColumn,
@@ -34,7 +35,10 @@ import { addRow, deleteRow } from "./services/tableState/row";
 import { useDidMountEffect } from "./services/hooks";
 import { useId } from "./services/random/hooks";
 import { CellNotFoundError, ColumnIdError } from "./services/tableState/error";
-import { dateTimeToString } from "./services/string/conversion";
+import {
+	dateTimeToString,
+	stringToCurrencyString,
+} from "./services/string/conversion";
 import { updateSortTime } from "./services/redux/globalSlice";
 import HeaderCell from "./components/HeaderCell";
 import Cell from "./components/Cell";
@@ -200,6 +204,20 @@ export default function App({ initialState, onSaveTableState }: Props) {
 		setTableState((prevState) => deleteRow(prevState, rowId));
 	}
 
+	function handleCurrencyChange(
+		columnId: string,
+		currencyType: CurrencyType
+	) {
+		logFunc(shouldDebug, FILE_NAME, "handleCurrencyChange", {
+			columnId,
+			currencyType,
+		});
+		setTableState((prevState) =>
+			changeColumnCurrencyType(prevState, columnId, currencyType)
+		);
+		dispatch(updateSortTime());
+	}
+
 	function handleSortRemoveClick(columnId: string) {
 		logFunc(shouldDebug, FILE_NAME, "handleSortRemoveClick", {
 			columnId,
@@ -269,14 +287,37 @@ export default function App({ initialState, onSaveTableState }: Props) {
 	}
 
 	const { rows, columns, cells, tags } = tableState.model;
+	const columnCells = cells.map((cell) => {
+		const column = columns.find((column) => column.id === cell.columnId);
+		if (!column) throw new ColumnIdError(cell.columnId);
+		return {
+			...cell,
+			column,
+		};
+	});
+
 	const filteredRows = rows.filter((row) => {
-		const filteredCells = cells.filter((cell) => cell.rowId === row.id);
-		const matchedCell = filteredCells.find(
-			(cell) =>
-				cell.markdown
-					.toLowerCase()
-					.includes(searchText.toLowerCase()) || cell.isHeader
+		const filteredCells = columnCells.filter(
+			(cell) => cell.rowId === row.id
 		);
+		const matchedCell = filteredCells.find((cell) => {
+			if (cell.markdown.toLowerCase().includes(searchText.toLowerCase()))
+				return true;
+			if (cell.isHeader) return true;
+			if (cell.column.type === CellType.CURRENCY) {
+				const currencyString = stringToCurrencyString(
+					cell.markdown,
+					cell.column.currencyType
+				);
+				if (
+					currencyString
+						.toLowerCase()
+						.includes(searchText.toLowerCase())
+				)
+					return true;
+			}
+			return false;
+		});
 		if (matchedCell !== undefined) return true;
 
 		const creationTimeString = dateTimeToString(row.creationTime);
@@ -314,6 +355,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 										sortDir,
 										shouldWrapOverflow,
 										hasAutoWidth,
+										currencyType,
 									} = column;
 
 									const cell = cells.find(
@@ -336,11 +378,12 @@ export default function App({ initialState, onSaveTableState }: Props) {
 												cellId={cellId}
 												rowId={rowId}
 												columnIndex={i}
+												currencyType={currencyType}
 												numColumns={columns.length}
 												columnId={cell.columnId}
 												width={
 													hasAutoWidth
-														? "max-content"
+														? "unset"
 														: width
 												}
 												shouldWrapOverflow={
@@ -376,6 +419,9 @@ export default function App({ initialState, onSaveTableState }: Props) {
 												}
 												onNameChange={
 													handleCellContentChange
+												}
+												onCurrencyChange={
+													handleCurrencyChange
 												}
 											/>
 										),
@@ -427,6 +473,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 											type,
 											hasAutoWidth,
 											shouldWrapOverflow,
+											currencyType,
 										} = column;
 										const {
 											id: cellId,
@@ -450,6 +497,9 @@ export default function App({ initialState, onSaveTableState }: Props) {
 													rowCreationTime={
 														creationTime
 													}
+													columnCurrencyType={
+														currencyType
+													}
 													rowLastEditedTime={
 														lastEditedTime
 													}
@@ -461,7 +511,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 													hasAutoWidth={hasAutoWidth}
 													width={
 														hasAutoWidth
-															? "max-content"
+															? "unset"
 															: width
 													}
 													onTagClick={

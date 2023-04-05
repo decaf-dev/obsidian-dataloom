@@ -63,11 +63,11 @@ export default function SelectableTag({
 					isDarkMode={isDarkMode}
 					markdown={markdown}
 					color={color}
-					width="150px"
+					maxWidth="150px"
 				/>
 				<Button
 					icon={<Icon type={IconType.MORE_HORIZ} />}
-					isFlat
+					isSimple
 					onClick={(e) => {
 						// Prevents a tag from being added when the button is clicked
 						// we just want to open the menu

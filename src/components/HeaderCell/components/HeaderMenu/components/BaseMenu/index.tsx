@@ -5,8 +5,7 @@ import Stack from "src/components/Stack";
 import { IconType } from "src/services/icon/types";
 import { CellType, SortDir } from "src/services/tableState/types";
 import { getDisplayNameForCellType } from "src/services/tableState/utils";
-import { SubmenuItem, SUBMENU_ITEM } from "../../constants";
-import "./styles.css";
+import { Submenu } from "../../types";
 
 interface Props {
 	columnName: string;
@@ -17,7 +16,7 @@ interface Props {
 	numColumns: number;
 	onColumnNameChange: (cellId: string, rowId: string, value: string) => void;
 	onSortClick: (value: SortDir) => void;
-	onSubmenuChange: (value: SubmenuItem) => void;
+	onSubmenuChange: (value: Submenu) => void;
 }
 
 export default function BaseMenu({
@@ -44,10 +43,15 @@ export default function BaseMenu({
 					/>
 				</Padding>
 				<MenuItem
-					iconType={SUBMENU_ITEM.TYPE.icon}
-					name={SUBMENU_ITEM.TYPE.content}
+					iconType={IconType.NOTES}
+					name="Type"
 					value={getDisplayNameForCellType(columnType)}
-					onClick={() => onSubmenuChange(SUBMENU_ITEM.TYPE)}
+					onClick={() => onSubmenuChange(Submenu.TYPE)}
+				/>
+				<MenuItem
+					iconType={IconType.TUNE}
+					name="Options"
+					onClick={() => onSubmenuChange(Submenu.OPTIONS)}
 				/>
 			</Stack>
 			<Divider />
@@ -64,23 +68,18 @@ export default function BaseMenu({
 				isSelected={columnSortDir === SortDir.DESC}
 			/>
 			<Divider />
-			{[SUBMENU_ITEM.EDIT, SUBMENU_ITEM.MOVE, SUBMENU_ITEM.INSERT]
-				.filter((value) => {
-					if (
-						numColumns === 1 &&
-						value.name === SUBMENU_ITEM.MOVE.name
-					)
-						return false;
-					return true;
-				})
-				.map((item) => (
-					<MenuItem
-						key={item.name}
-						name={item.content}
-						iconType={item.icon}
-						onClick={() => onSubmenuChange(item)}
-					/>
-				))}
+			<MenuItem
+				iconType={IconType.MOVE_UP}
+				name="Move"
+				onClick={() => onSubmenuChange(Submenu.MOVE)}
+			/>
+			{numColumns > 1 && (
+				<MenuItem
+					iconType={IconType.KEYBOARD_DOUBLE_ARROW_RIGHT}
+					name="Insert"
+					onClick={() => onSubmenuChange(Submenu.INSERT)}
+				/>
+			)}
 		</Stack>
 	);
 }

@@ -1,23 +1,23 @@
 import { useState } from "react";
 
 import Menu from "src/components/Menu";
-import EditSubmenu from "./components/EditSubmenu";
+import OptionSubmenu from "./components/OptionSubmenu";
 import InsertSubmenu from "./components/InsertSubmenu";
 import MoveSubmenu from "./components/MoveSubmenu";
 import TypeSubmenu from "./components/TypeSubmenu";
 import BaseMenu from "./components/BaseMenu";
 
-import { SUBMENU_ITEM, SubmenuItem } from "./constants";
-
-import { CellType, SortDir } from "src/services/tableState/types";
+import { CellType, CurrencyType, SortDir } from "src/services/tableState/types";
 
 import "./styles.css";
+import { Submenu } from "./types";
 interface Props {
 	isOpen: boolean;
 	canDeleteColumn: boolean;
 	top: number;
 	left: number;
 	id: string;
+	currencyType: CurrencyType;
 	rowId: string;
 	cellId: string;
 	markdown: string;
@@ -36,6 +36,7 @@ interface Props {
 	onAutoWidthToggle: (columnId: string, value: boolean) => void;
 	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
 	onNameChange: (cellId: string, rowId: string, value: string) => void;
+	onCurrencyChange: (columnId: string, value: CurrencyType) => void;
 	onClose: () => void;
 }
 
@@ -47,6 +48,7 @@ export default function HeaderMenu({
 	left,
 	cellId,
 	markdown,
+	currencyType,
 	canDeleteColumn,
 	columnType,
 	columnSortDir,
@@ -64,8 +66,9 @@ export default function HeaderMenu({
 	onWrapOverflowToggle,
 	onAutoWidthToggle,
 	onNameChange,
+	onCurrencyChange,
 }: Props) {
-	const [submenu, setSubmenu] = useState<SubmenuItem | null>(null);
+	const [submenu, setSubmenu] = useState<Submenu | null>(null);
 
 	function handleMoveColumnClick(moveRight: boolean) {
 		onMoveColumnClick(columnId, moveRight);
@@ -91,6 +94,8 @@ export default function HeaderMenu({
 	}
 
 	function handleDeleteClick() {
+		if (!window.confirm("Are you sure you want to delete this column?"))
+			return;
 		onDeleteClick(columnId);
 		onClose();
 		setSubmenu(null);
@@ -98,6 +103,10 @@ export default function HeaderMenu({
 
 	function handleBackClick() {
 		setSubmenu(null);
+	}
+
+	function handleCurrencyChange(value: CurrencyType) {
+		onCurrencyChange(columnId, value);
 	}
 
 	return (
@@ -116,39 +125,41 @@ export default function HeaderMenu({
 						onSubmenuChange={setSubmenu}
 					/>
 				)}
-				{submenu && submenu.name === SUBMENU_ITEM.EDIT.name && (
-					<EditSubmenu
+				{submenu === Submenu.OPTIONS && (
+					<OptionSubmenu
 						canDeleteColumn={canDeleteColumn}
-						title={submenu.content}
+						title="Options"
 						columnType={columnType}
 						columnId={columnId}
+						columnCurrencyType={currencyType}
 						hasAutoWidth={hasAutoWidth}
 						shouldWrapOverflow={shouldWrapOverflow}
 						onBackClick={handleBackClick}
 						onAutoWidthToggle={onAutoWidthToggle}
 						onWrapOverflowToggle={onWrapOverflowToggle}
+						onCurrencyChange={handleCurrencyChange}
 						onDeleteClick={handleDeleteClick}
 					/>
 				)}
-				{submenu && submenu.name === SUBMENU_ITEM.INSERT.name && (
+				{submenu == Submenu.INSERT && (
 					<InsertSubmenu
-						title={submenu.content}
+						title="Insert"
 						onInsertClick={handleInsertColumnClick}
 						onBackClick={handleBackClick}
 					/>
 				)}
-				{submenu && submenu.name === SUBMENU_ITEM.MOVE.name && (
+				{submenu === Submenu.MOVE && (
 					<MoveSubmenu
-						title={submenu.content}
+						title="Move"
 						columnIndex={columnIndex}
 						numColumns={numColumns}
 						onMoveClick={handleMoveColumnClick}
 						onBackClick={handleBackClick}
 					/>
 				)}
-				{submenu && submenu.name === SUBMENU_ITEM.TYPE.name && (
+				{submenu === Submenu.TYPE && (
 					<TypeSubmenu
-						title={submenu.content}
+						title="Type"
 						columnType={columnType}
 						onTypeClick={handleTypeClick}
 						onBackClick={handleBackClick}
