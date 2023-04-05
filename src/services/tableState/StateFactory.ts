@@ -1,6 +1,14 @@
 import { randomUUID } from "crypto";
 import { randomColor } from "../random";
-import { Cell, CellType, Column, Row, Tag, SortDir } from "./types";
+import {
+	Cell,
+	CellType,
+	Column,
+	Row,
+	Tag,
+	SortDir,
+	CurrencyType,
+} from "./types";
 
 export default class StateFactory {
 	static createColumn(): Column {
@@ -9,6 +17,7 @@ export default class StateFactory {
 			sortDir: SortDir.NONE,
 			width: "140px",
 			type: CellType.TEXT,
+			currencyType: CurrencyType.UNITED_STATES,
 			hasAutoWidth: false,
 			shouldWrapOverflow: false,
 			footerCellId: randomUUID(),
