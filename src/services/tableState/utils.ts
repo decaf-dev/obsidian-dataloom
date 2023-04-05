@@ -1,4 +1,4 @@
-import { Cell, CellType, Column, Row } from "./types";
+import { Cell, CellType, Column, CurrencyType, Row } from "./types";
 
 //TODO change
 export const sortCells = (
@@ -27,6 +27,41 @@ export const sortCells = (
 			//Return a flatten version of the array
 			.flat(1)
 	);
+};
+
+export const getDisplayNameForCurrencyType = (type: CurrencyType) => {
+	switch (type) {
+		case CurrencyType.UNITED_STATES:
+			return "United States Dollar";
+		case CurrencyType.CANADA:
+			return "Canadian Dollar";
+		case CurrencyType.AUSTRALIA:
+			return "Australian Dollar";
+		case CurrencyType.SINGAPORE:
+			return "Singapore Dollar";
+		case CurrencyType.CHINA:
+			return "Yuan";
+		case CurrencyType.JAPAN:
+			return "Yen";
+		case CurrencyType.COLOMBIA:
+			return "Colombian Peso";
+		case CurrencyType.EUROPE:
+			return "Euro";
+		case CurrencyType.BRAZIL:
+			return "Real";
+		case CurrencyType.POUND:
+			return "Pound";
+		case CurrencyType.INDIA:
+			return "Rupee";
+		case CurrencyType.ARGENTINA:
+			return "Argentine Peso";
+		case CurrencyType.MEXICO:
+			return "Mexican Peso";
+		case CurrencyType.RUSSIA:
+			return "Ruble";
+		default:
+			return "";
+	}
 };
 
 export const getDisplayNameForCellType = (type: CellType): string => {

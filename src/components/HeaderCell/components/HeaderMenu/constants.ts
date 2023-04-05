@@ -9,9 +9,9 @@ export interface SubmenuItem {
 
 export const SUBMENU_ITEM: { [name: string]: SubmenuItem } = {
 	EDIT: {
-		name: "edit",
-		content: "Edit",
-		icon: IconType.EDIT,
+		name: "options",
+		content: "Options",
+		icon: IconType.TUNE,
 	},
 	MOVE: {
 		name: "move",

@@ -1,5 +1,5 @@
 import { CURRENT_PLUGIN_VERSION } from "src/constants";
-import { TableState } from "../tableState/types";
+import { CurrencyType, TableState } from "../tableState/types";
 
 export default class Json {
 	static serializeTableState(tableState: TableState): string {
@@ -10,7 +10,12 @@ export default class Json {
 		const tableState = JSON.parse(data) as TableState;
 		const { pluginVersion } = tableState;
 		if (pluginVersion < CURRENT_PLUGIN_VERSION) {
-			//Handle table produced by older plugin version
+			//Handle currency type update
+			if (pluginVersion < 610) {
+				tableState.model.columns.forEach((column) => {
+					column.currencyType = CurrencyType.UNITED_STATES;
+				});
+			}
 		}
 		tableState.pluginVersion = CURRENT_PLUGIN_VERSION;
 		return tableState;

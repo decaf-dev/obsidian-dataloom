@@ -17,6 +17,24 @@ export enum CellType {
 	CREATION_TIME = "creation-time",
 	LAST_EDITED_TIME = "last-edited-time",
 }
+
+export enum CurrencyType {
+	UNITED_STATES = "USD",
+	CANADA = "CAD",
+	SINGAPORE = "SGB",
+	EUROPE = "EUR",
+	POUND = "GBP",
+	RUSSIA = "RUB",
+	AUSTRALIA = "AUD",
+	JAPAN = "JPY",
+	INDIA = "INR",
+	CHINA = "CNY",
+	BRAZIL = "BRL",
+	COLOMBIA = "COP",
+	MEXICO = "MXN",
+	ARGENTINA = "ARS",
+}
+
 export interface Cell {
 	id: string;
 	columnId: string;
@@ -37,6 +55,7 @@ export interface Column {
 	sortDir: SortDir;
 	width: string;
 	type: CellType;
+	currencyType: CurrencyType;
 	hasAutoWidth: boolean;
 	shouldWrapOverflow: boolean;
 	footerCellId: string;

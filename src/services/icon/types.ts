@@ -28,4 +28,5 @@ export const enum IconType {
 	SCHEDULE,
 	SEARCH,
 	PAYMENTS,
+	TUNE,
 }

@@ -5,7 +5,7 @@ import RowMenu from "./components/RowMenu";
 import OptionBar from "./components/OptionBar";
 import Button from "./components/Button";
 
-import { CellType, SortDir } from "./services/tableState/types";
+import { CellType, CurrencyType, SortDir } from "./services/tableState/types";
 import { logFunc } from "./services/debug";
 import { TableState } from "./services/tableState/types";
 import { useAppDispatch, useAppSelector } from "./services/redux/hooks";
@@ -19,6 +19,7 @@ import {
 } from "./services/tableState/tag";
 import {
 	addColumn,
+	changeColumnCurrencyType,
 	changeColumnType,
 	deleteColumn,
 	insertColumn,
@@ -200,6 +201,20 @@ export default function App({ initialState, onSaveTableState }: Props) {
 		setTableState((prevState) => deleteRow(prevState, rowId));
 	}
 
+	function handleCurrencyChange(
+		columnId: string,
+		currencyType: CurrencyType
+	) {
+		logFunc(shouldDebug, FILE_NAME, "handleCurrencyChange", {
+			columnId,
+			currencyType,
+		});
+		setTableState((prevState) =>
+			changeColumnCurrencyType(prevState, columnId, currencyType)
+		);
+		dispatch(updateSortTime());
+	}
+
 	function handleSortRemoveClick(columnId: string) {
 		logFunc(shouldDebug, FILE_NAME, "handleSortRemoveClick", {
 			columnId,
@@ -314,6 +329,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 										sortDir,
 										shouldWrapOverflow,
 										hasAutoWidth,
+										currencyType,
 									} = column;
 
 									const cell = cells.find(
@@ -336,6 +352,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 												cellId={cellId}
 												rowId={rowId}
 												columnIndex={i}
+												currencyType={currencyType}
 												numColumns={columns.length}
 												columnId={cell.columnId}
 												width={
@@ -376,6 +393,9 @@ export default function App({ initialState, onSaveTableState }: Props) {
 												}
 												onNameChange={
 													handleCellContentChange
+												}
+												onCurrencyChange={
+													handleCurrencyChange
 												}
 											/>
 										),
@@ -427,6 +447,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 											type,
 											hasAutoWidth,
 											shouldWrapOverflow,
+											currencyType,
 										} = column;
 										const {
 											id: cellId,
@@ -449,6 +470,9 @@ export default function App({ initialState, onSaveTableState }: Props) {
 													columnId={columnId}
 													rowCreationTime={
 														creationTime
+													}
+													columnCurrencyType={
+														currencyType
 													}
 													rowLastEditedTime={
 														lastEditedTime

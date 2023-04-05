@@ -28,6 +28,7 @@ import {
 	ScheduleOutlined,
 	Notes,
 	PaymentsOutlined,
+	Tune,
 } from "@mui/icons-material";
 
 import { IconType } from "src/services/icon/types";
@@ -95,6 +96,8 @@ export const findIcon = (
 			return <List className={className} />;
 		case IconType.PAYMENTS:
 			return <PaymentsOutlined className={className} />;
+		case IconType.TUNE:
+			return <Tune className={className} />;
 		default:
 			return "";
 	}

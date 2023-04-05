@@ -1,15 +1,18 @@
 import { useOverflowClassName } from "src/services/spacing/hooks";
 
 import "./styles.css";
+import { CurrencyType } from "src/services/tableState/types";
 
 interface Props {
 	value: string;
+	currencyType: CurrencyType;
 	shouldWrapOverflow: boolean;
 	hasAutoWidth: boolean;
 }
 
 export default function CurrencyCell({
 	value,
+	currencyType,
 	shouldWrapOverflow,
 	hasAutoWidth,
 }: Props) {
@@ -17,11 +20,13 @@ export default function CurrencyCell({
 		hasAutoWidth,
 		shouldWrapOverflow
 	);
-	const className = "NLT__currency-cell" + " " + overflowClassName;
+
 	const valueFormatted = new Intl.NumberFormat("en-US", {
 		style: "currency",
-		currency: "USD",
+		currency: currencyType,
 	}).format(parseFloat(value));
+
+	const className = "NLT__currency-cell" + " " + overflowClassName;
 
 	return <div className={className}>{valueFormatted}</div>;
 }

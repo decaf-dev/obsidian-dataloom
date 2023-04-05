@@ -13,7 +13,7 @@ import DateCellEdit from "./components/DateCellEdit";
 import MultiTagCell from "./components/MultiTagCell";
 import Menu from "../Menu";
 
-import { CellType, Tag } from "src/services/tableState/types";
+import { CellType, CurrencyType, Tag } from "src/services/tableState/types";
 import { useMenu } from "src/services/menu/hooks";
 import { MenuLevel } from "src/services/menu/types";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
@@ -38,6 +38,7 @@ interface Props {
 	columnType: string;
 	cellId: string;
 	rowId: string;
+	columnCurrencyType: CurrencyType;
 	columnId: string;
 	markdown: string;
 	rowCreationTime: number;
@@ -75,6 +76,7 @@ export default function Cell({
 	columnId,
 	rowId,
 	markdown,
+	columnCurrencyType,
 	columnType,
 	rowCreationTime,
 	rowLastEditedTime,
@@ -276,32 +278,12 @@ export default function Cell({
 					hasAutoWidth={hasAutoWidth}
 				/>
 			)}
-			{columnType === CellType.CHECKBOX && (
-				<CheckboxCell
-					value={markdown}
-					onCheckboxChange={handleCheckboxChange}
-				/>
-			)}
-			{columnType === CellType.DATE && <DateCell value={markdown} />}
 			{columnType === CellType.CURRENCY && (
 				<CurrencyCell
 					value={markdown}
+					currencyType={columnCurrencyType}
 					hasAutoWidth={hasAutoWidth}
 					shouldWrapOverflow={shouldWrapOverflow}
-				/>
-			)}
-			{columnType === CellType.CREATION_TIME && (
-				<CreationTimeCell
-					value={rowCreationTime}
-					shouldWrapOverflow={shouldWrapOverflow}
-					hasAutoWidth={hasAutoWidth}
-				/>
-			)}
-			{columnType === CellType.LAST_EDITED_TIME && (
-				<LastEditedTimeCell
-					value={rowLastEditedTime}
-					shouldWrapOverflow={shouldWrapOverflow}
-					hasAutoWidth={hasAutoWidth}
 				/>
 			)}
 			{columnType === CellType.TAG && currentTag && (
@@ -319,6 +301,27 @@ export default function Cell({
 					tags={filteredTags}
 					hasAutoWidth={hasAutoWidth}
 					shouldWrapOverflow={shouldWrapOverflow}
+				/>
+			)}
+			{columnType === CellType.DATE && <DateCell value={markdown} />}
+			{columnType === CellType.CHECKBOX && (
+				<CheckboxCell
+					value={markdown}
+					onCheckboxChange={handleCheckboxChange}
+				/>
+			)}
+			{columnType === CellType.CREATION_TIME && (
+				<CreationTimeCell
+					value={rowCreationTime}
+					shouldWrapOverflow={shouldWrapOverflow}
+					hasAutoWidth={hasAutoWidth}
+				/>
+			)}
+			{columnType === CellType.LAST_EDITED_TIME && (
+				<LastEditedTimeCell
+					value={rowLastEditedTime}
+					shouldWrapOverflow={shouldWrapOverflow}
+					hasAutoWidth={hasAutoWidth}
 				/>
 			)}
 		</div>
