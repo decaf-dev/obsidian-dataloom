@@ -95,6 +95,8 @@ export default function HeaderMenu({
 	}
 
 	function handleDeleteClick() {
+		if (!window.confirm("Are you sure you want to delete this column?"))
+			return;
 		onDeleteClick(columnId);
 		onClose();
 		setSubmenu(null);
