@@ -29,6 +29,7 @@ import {
 	Notes,
 	PaymentsOutlined,
 	Tune,
+	DeleteOutline,
 } from "@mui/icons-material";
 
 import { IconType } from "src/services/icon/types";
@@ -59,7 +60,7 @@ export const findIcon = (
 		case IconType.KEYBOARD_DOUBLE_ARROW_RIGHT:
 			return <KeyboardDoubleArrowRight className={className} />;
 		case IconType.DELETE:
-			return <Delete className={className} />;
+			return <DeleteOutline className={className} />;
 		case IconType.MORE_VERT:
 			return <MoreVert className={className} />;
 		case IconType.SORT:
