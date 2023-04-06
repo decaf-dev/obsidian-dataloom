@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import "./styles.css";
 
@@ -8,7 +8,22 @@ interface Props {
 }
 
 export default function TextCellEdit({ value, onInputChange }: Props) {
+	const [isShiftDown, setShiftDown] = useState(false);
 	const inputRef = useRef<HTMLTextAreaElement | null>(null);
+
+	useEffect(() => {
+		focusInput();
+		setSelection(value.length);
+	}, []);
+
+	useEffect(() => {
+		window.addEventListener("keydown", handleKeyDown);
+		window.addEventListener("keyup", handleKeyUp);
+		return () => {
+			window.removeEventListener("keydown", handleKeyDown);
+			window.removeEventListener("keyup", handleKeyUp);
+		};
+	}, []);
 
 	function focusInput() {
 		inputRef.current?.focus();
@@ -21,13 +36,17 @@ export default function TextCellEdit({ value, onInputChange }: Props) {
 		}
 	}
 
-	useEffect(() => {
-		focusInput();
-		setSelection(value.length);
-	}, []);
+	function handleKeyDown(e: KeyboardEvent) {
+		if (e.shiftKey) setShiftDown(true);
+	}
+
+	function handleKeyUp(e: KeyboardEvent) {
+		if (!e.shiftKey) setShiftDown(false);
+	}
 
 	function handleTextareaChange(value: string) {
-		value = value.replace("\n", "");
+		//If shift is not being pressed, the user is not trying to insert a new line
+		if (!isShiftDown) value = value.replace("\n", "");
 		onInputChange(value);
 	}
 

@@ -2,6 +2,7 @@ import { MarkdownRenderer } from "obsidian";
 import { useEffect, useRef } from "react";
 import { NLTView, NOTION_LIKE_TABLES_VIEW } from "src/NLTView";
 import { handleLinkClick } from "./embed";
+import { replaceNewLinesWithBreakTag } from "./utils";
 
 export const useRenderMarkdown = (
 	markdown: string,
@@ -32,8 +33,10 @@ export const useRenderMarkdown = (
 				dom.detach();
 
 				try {
+					const markdownToRender =
+						replaceNewLinesWithBreakTag(markdown);
 					await MarkdownRenderer.renderMarkdown(
-						markdown,
+						markdownToRender,
 						dom,
 						view.file.path,
 						view
