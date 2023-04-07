@@ -19,7 +19,7 @@ export default class StateFactory {
 			type: CellType.TEXT,
 			currencyType: CurrencyType.UNITED_STATES,
 			hasAutoWidth: false,
-			shouldWrapOverflow: false,
+			shouldWrapOverflow: true,
 			footerCellId: randomUUID(),
 		};
 	}
