@@ -44,10 +44,19 @@ export default function TextCellEdit({ value, onInputChange }: Props) {
 		if (!e.shiftKey) setShiftDown(false);
 	}
 
-	function handleTextareaChange(value: string) {
-		//If shift is not being pressed, the user is not trying to insert a new line
-		if (!isShiftDown) value = value.replace("\n", "");
-		onInputChange(value);
+	function handleTextareaChange(newValue: string) {
+		//When the user presses enter, a new line character is added.
+		//If the user is holding the shift key, the edit menu will not close and a new line will be added.
+		//Otherwise the edit menu will close and we want to delete the new line character added.
+		if (!isShiftDown) {
+			//We only want to change the value if the user is adding text. Otherwise, they will see a jump
+			//when removing text when the last character is a new line character and it is removed.
+			if (newValue.length > value.length) {
+				if (newValue.endsWith("\n"))
+					newValue = newValue.replace(/\n$/, "");
+			}
+		}
+		onInputChange(newValue);
 	}
 
 	return (
