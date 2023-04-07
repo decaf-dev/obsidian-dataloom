@@ -5,3 +5,8 @@
 .NLT__text-cell p {
     margin: 0;
 }
+
+.NLT__text-cell ul {
+    padding: 0 var(--nlt-spacing--lg);
+    margin: 0;
+}

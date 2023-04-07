@@ -33,10 +33,8 @@ export const useRenderMarkdown = (
 				dom.detach();
 
 				try {
-					const markdownToRender =
-						replaceNewLinesWithBreakTag(markdown);
 					await MarkdownRenderer.renderMarkdown(
-						markdownToRender,
+						markdown,
 						dom,
 						view.file.path,
 						view
