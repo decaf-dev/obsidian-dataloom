@@ -2,8 +2,6 @@ import { useState } from "react";
 
 import Menu from "src/components/Menu";
 import OptionSubmenu from "./components/OptionSubmenu";
-import InsertSubmenu from "./components/InsertSubmenu";
-import MoveSubmenu from "./components/MoveSubmenu";
 import TypeSubmenu from "./components/TypeSubmenu";
 import BaseMenu from "./components/BaseMenu";
 
@@ -26,10 +24,7 @@ interface Props {
 	columnSortDir: SortDir;
 	columnType: CellType;
 	columnId: string;
-	columnIndex: number;
 	numColumns: number;
-	onInsertColumnClick: (columnId: string, insertRight: boolean) => void;
-	onMoveColumnClick: (columnId: string, moveRight: boolean) => void;
 	onTypeSelect: (columnId: string, type: CellType) => void;
 	onSortClick: (columnId: string, sortDir: SortDir) => void;
 	onDeleteClick: (columnId: string) => void;
@@ -53,15 +48,12 @@ export default function HeaderMenu({
 	columnType,
 	columnSortDir,
 	columnId,
-	columnIndex,
 	numColumns,
 	hasAutoWidth,
 	shouldWrapOverflow,
 	onTypeSelect,
 	onSortClick,
 	onDeleteClick,
-	onInsertColumnClick,
-	onMoveColumnClick,
 	onClose,
 	onWrapOverflowToggle,
 	onAutoWidthToggle,
@@ -70,21 +62,9 @@ export default function HeaderMenu({
 }: Props) {
 	const [submenu, setSubmenu] = useState<Submenu | null>(null);
 
-	function handleMoveColumnClick(moveRight: boolean) {
-		onMoveColumnClick(columnId, moveRight);
-		onClose();
-		setSubmenu(null);
-	}
-
 	function handleSortClick(sortDir: SortDir) {
 		onSortClick(columnId, sortDir);
 		onClose();
-	}
-
-	function handleInsertColumnClick(insertRight: boolean) {
-		onInsertColumnClick(columnId, insertRight);
-		onClose();
-		setSubmenu(null);
 	}
 
 	function handleTypeClick(type: CellType) {
@@ -139,22 +119,6 @@ export default function HeaderMenu({
 						onWrapOverflowToggle={onWrapOverflowToggle}
 						onCurrencyChange={handleCurrencyChange}
 						onDeleteClick={handleDeleteClick}
-					/>
-				)}
-				{submenu == Submenu.INSERT && (
-					<InsertSubmenu
-						title="Insert"
-						onInsertClick={handleInsertColumnClick}
-						onBackClick={handleBackClick}
-					/>
-				)}
-				{submenu === Submenu.MOVE && (
-					<MoveSubmenu
-						title="Move"
-						columnIndex={columnIndex}
-						numColumns={numColumns}
-						onMoveClick={handleMoveColumnClick}
-						onBackClick={handleBackClick}
 					/>
 				)}
 				{submenu === Submenu.TYPE && (

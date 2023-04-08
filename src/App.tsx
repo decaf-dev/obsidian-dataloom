@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import Table from "./components/Table";
 import RowMenu from "./components/RowMenu";
@@ -22,8 +22,6 @@ import {
 	changeColumnCurrencyType,
 	changeColumnType,
 	deleteColumn,
-	insertColumn,
-	moveColumn,
 	sortOnColumn,
 	updateColumn,
 } from "./services/tableState/column";
@@ -238,26 +236,6 @@ export default function App({ onSaveTableState }: Props) {
 		);
 	}
 
-	function handleMoveColumnClick(columnId: string, moveRight: boolean) {
-		logFunc(shouldDebug, FILE_NAME, "handleMoveColumnClick", {
-			columnId,
-			moveRight,
-		});
-		setTableState((prevState: TableState) =>
-			moveColumn(prevState, columnId, moveRight)
-		);
-	}
-
-	function handleInsertColumnClick(columnId: string, insertRight: boolean) {
-		logFunc(shouldDebug, FILE_NAME, "handleInsertColumnClick", {
-			columnId,
-			insertRight,
-		});
-		setTableState((prevState) =>
-			insertColumn(prevState, columnId, insertRight)
-		);
-	}
-
 	function handleTagChangeColor(tagId: string, color: Color) {
 		logFunc(shouldDebug, FILE_NAME, "handleTagChangeColor", {
 			tagId,
@@ -378,7 +356,6 @@ export default function App({ onSaveTableState }: Props) {
 												key={columnId}
 												cellId={cellId}
 												rowId={rowId}
-												columnIndex={i}
 												currencyType={currencyType}
 												numColumns={columns.length}
 												columnId={cell.columnId}
@@ -396,12 +373,6 @@ export default function App({ onSaveTableState }: Props) {
 												sortDir={sortDir}
 												onSortClick={
 													handleHeaderSortSelect
-												}
-												onInsertColumnClick={
-													handleInsertColumnClick
-												}
-												onMoveColumnClick={
-													handleMoveColumnClick
 												}
 												onWidthChange={
 													handleHeaderWidthChange
