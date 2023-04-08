@@ -171,7 +171,7 @@ const sortByLastEditedTime = (rows: Row[], sortDir: SortDir): Row[] => {
 		if (sortDir === SortDir.ASC) {
 			return a.lastEditedTime - b.lastEditedTime;
 		} else if (sortDir === SortDir.DESC) {
-			return a.lastEditedTime - b.lastEditedTime;
+			return b.lastEditedTime - a.lastEditedTime;
 		} else {
 			return 0;
 		}
