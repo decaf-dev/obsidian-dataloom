@@ -1,6 +1,13 @@
 import { ColumnIdError } from "./error";
 import StateFactory from "./StateFactory";
-import { CellType, Column, TableState, SortDir, CurrencyType } from "./types";
+import {
+	CellType,
+	Column,
+	TableState,
+	SortDir,
+	CurrencyType,
+	DateFormat,
+} from "./types";
 import { sortCells } from "./utils";
 
 export const addColumn = (prevState: TableState): TableState => {
@@ -112,6 +119,30 @@ export const changeColumnCurrencyType = (
 					return {
 						...column,
 						currencyType: type,
+					};
+				}
+				return column;
+			}),
+		},
+	};
+};
+
+export const changeColumnDateFormat = (
+	prevState: TableState,
+	columnId: string,
+	format: DateFormat
+): TableState => {
+	const { columns } = prevState.model;
+
+	return {
+		...prevState,
+		model: {
+			...prevState.model,
+			columns: columns.map((column) => {
+				if (column.id === columnId) {
+					return {
+						...column,
+						dateFormat: format,
 					};
 				}
 				return column;

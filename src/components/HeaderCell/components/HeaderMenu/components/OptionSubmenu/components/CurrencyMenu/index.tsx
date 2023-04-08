@@ -9,7 +9,7 @@ interface Props {
 	left: number;
 	isOpen: boolean;
 	value: CurrencyType;
-	onCurrencyChange: (value: CurrencyType) => void;
+	onChange: (value: CurrencyType) => void;
 }
 
 export default function CurrencyMenu({
@@ -18,7 +18,7 @@ export default function CurrencyMenu({
 	left,
 	isOpen,
 	value,
-	onCurrencyChange,
+	onChange,
 }: Props) {
 	return (
 		<Menu isOpen={isOpen} id={id} top={top} left={left} width={175}>
@@ -28,7 +28,7 @@ export default function CurrencyMenu({
 						key={type}
 						name={getDisplayNameForCurrencyType(type)}
 						isSelected={value === type}
-						onClick={() => onCurrencyChange(type)}
+						onClick={() => onChange(type)}
 					/>
 				))}
 			</div>

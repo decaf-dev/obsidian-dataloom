@@ -5,7 +5,12 @@ import OptionSubmenu from "./components/OptionSubmenu";
 import TypeSubmenu from "./components/TypeSubmenu";
 import BaseMenu from "./components/BaseMenu";
 
-import { CellType, CurrencyType, SortDir } from "src/services/tableState/types";
+import {
+	CellType,
+	CurrencyType,
+	DateFormat,
+	SortDir,
+} from "src/services/tableState/types";
 
 import "./styles.css";
 import { Submenu } from "./types";
@@ -15,6 +20,7 @@ interface Props {
 	top: number;
 	left: number;
 	id: string;
+	dateFormat: DateFormat;
 	currencyType: CurrencyType;
 	rowId: string;
 	cellId: string;
@@ -32,6 +38,7 @@ interface Props {
 	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
 	onNameChange: (cellId: string, rowId: string, value: string) => void;
 	onCurrencyChange: (columnId: string, value: CurrencyType) => void;
+	onDateFormatChange: (columnId: string, value: DateFormat) => void;
 	onClose: () => void;
 }
 
@@ -43,6 +50,7 @@ export default function HeaderMenu({
 	left,
 	cellId,
 	markdown,
+	dateFormat,
 	currencyType,
 	canDeleteColumn,
 	columnType,
@@ -59,6 +67,7 @@ export default function HeaderMenu({
 	onAutoWidthToggle,
 	onNameChange,
 	onCurrencyChange,
+	onDateFormatChange,
 }: Props) {
 	const [submenu, setSubmenu] = useState<Submenu | null>(null);
 
@@ -89,6 +98,10 @@ export default function HeaderMenu({
 		onCurrencyChange(columnId, value);
 	}
 
+	function handleDateFormatChange(value: DateFormat) {
+		onDateFormatChange(columnId, value);
+	}
+
 	return (
 		<Menu isOpen={isOpen} id={id} top={top} left={left} width={175}>
 			<div className="NLT__header-menu">
@@ -109,15 +122,17 @@ export default function HeaderMenu({
 					<OptionSubmenu
 						canDeleteColumn={canDeleteColumn}
 						title="Options"
-						columnType={columnType}
+						type={columnType}
 						columnId={columnId}
-						columnCurrencyType={currencyType}
+						dateFormat={dateFormat}
+						currencyType={currencyType}
 						hasAutoWidth={hasAutoWidth}
 						shouldWrapOverflow={shouldWrapOverflow}
 						onBackClick={handleBackClick}
 						onAutoWidthToggle={onAutoWidthToggle}
 						onWrapOverflowToggle={onWrapOverflowToggle}
 						onCurrencyChange={handleCurrencyChange}
+						onDateFormatChange={handleDateFormatChange}
 						onDeleteClick={handleDeleteClick}
 					/>
 				)}

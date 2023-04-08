@@ -5,7 +5,12 @@ import RowMenu from "./components/RowMenu";
 import OptionBar from "./components/OptionBar";
 import Button from "./components/Button";
 
-import { CellType, CurrencyType, SortDir } from "./services/tableState/types";
+import {
+	CellType,
+	CurrencyType,
+	DateFormat,
+	SortDir,
+} from "./services/tableState/types";
 import { logFunc } from "./services/debug";
 import { TableState } from "./services/tableState/types";
 import { useAppDispatch, useAppSelector } from "./services/redux/hooks";
@@ -20,6 +25,7 @@ import {
 import {
 	addColumn,
 	changeColumnCurrencyType,
+	changeColumnDateFormat,
 	changeColumnType,
 	deleteColumn,
 	sortOnColumn,
@@ -33,15 +39,13 @@ import { addRow, deleteRow } from "./services/tableState/row";
 import { useDidMountEffect } from "./services/hooks";
 import { useId } from "./services/random/hooks";
 import { CellNotFoundError, ColumnIdError } from "./services/tableState/error";
-import {
-	dateTimeToString,
-	stringToCurrencyString,
-} from "./services/string/conversion";
+import { stringToCurrencyString } from "./services/string/conversion";
 import { updateSortTime } from "./services/redux/globalSlice";
 import HeaderCell from "./components/HeaderCell";
 import Cell from "./components/Cell";
 import { Color } from "./services/color/types";
 import { useTableState } from "./services/tableState/useTableState";
+import { unixTimeToString } from "./services/date";
 
 const FILE_NAME = "App";
 
@@ -216,6 +220,17 @@ export default function App({ onSaveTableState }: Props) {
 		dispatch(updateSortTime());
 	}
 
+	function handleDateFormatChange(columnId: string, dateFormat: DateFormat) {
+		logFunc(shouldDebug, FILE_NAME, "handleDateFormatChange", {
+			columnId,
+			dateFormat,
+		});
+		setTableState((prevState) =>
+			changeColumnDateFormat(prevState, columnId, dateFormat)
+		);
+		dispatch(updateSortTime());
+	}
+
 	function handleSortRemoveClick(columnId: string) {
 		logFunc(shouldDebug, FILE_NAME, "handleSortRemoveClick", {
 			columnId,
@@ -293,22 +308,20 @@ export default function App({ onSaveTableState }: Props) {
 						.includes(searchText.toLowerCase())
 				)
 					return true;
+			} else if (
+				cell.column.type === CellType.LAST_EDITED_TIME ||
+				cell.column.type === CellType.CREATION_TIME
+			) {
+				const dateString = unixTimeToString(
+					parseInt(cell.markdown),
+					cell.column.dateFormat
+				);
+				if (dateString.toLowerCase().includes(searchText.toLowerCase()))
+					return true;
 			}
 			return false;
 		});
 		if (matchedCell !== undefined) return true;
-
-		const creationTimeString = dateTimeToString(row.creationTime);
-		if (creationTimeString.toLowerCase().includes(searchText.toLowerCase()))
-			return true;
-
-		const lastEditedTimeString = dateTimeToString(row.lastEditedTime);
-		if (
-			lastEditedTimeString
-				.toLowerCase()
-				.includes(searchText.toLowerCase())
-		)
-			return true;
 
 		return false;
 	});
@@ -334,6 +347,7 @@ export default function App({ onSaveTableState }: Props) {
 										shouldWrapOverflow,
 										hasAutoWidth,
 										currencyType,
+										dateFormat,
 									} = column;
 
 									const cell = cells.find(
@@ -356,6 +370,7 @@ export default function App({ onSaveTableState }: Props) {
 												key={columnId}
 												cellId={cellId}
 												rowId={rowId}
+												dateFormat={dateFormat}
 												currencyType={currencyType}
 												numColumns={columns.length}
 												columnId={cell.columnId}
@@ -385,6 +400,9 @@ export default function App({ onSaveTableState }: Props) {
 												}
 												onAutoWidthToggle={
 													handleAutoWidthToggle
+												}
+												onDateFormatChange={
+													handleDateFormatChange
 												}
 												onWrapOverflowToggle={
 													handleWrapContentToggle
@@ -447,6 +465,7 @@ export default function App({ onSaveTableState }: Props) {
 											hasAutoWidth,
 											shouldWrapOverflow,
 											currencyType,
+											dateFormat,
 										} = column;
 										const {
 											id: cellId,
@@ -470,6 +489,7 @@ export default function App({ onSaveTableState }: Props) {
 													rowCreationTime={
 														creationTime
 													}
+													dateFormat={dateFormat}
 													columnCurrencyType={
 														currencyType
 													}
