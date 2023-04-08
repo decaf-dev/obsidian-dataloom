@@ -4,11 +4,13 @@ import { sortCells } from "src/services/tableState/utils";
 interface TableHeaderCellProps {
 	columnId: string;
 	content: React.ReactNode;
+	isDraggable: boolean;
 }
 
 export default function TableHeaderCell({
 	columnId,
 	content,
+	isDraggable,
 }: TableHeaderCellProps) {
 	const [, setTableState] = useTableState();
 
@@ -67,10 +69,12 @@ export default function TableHeaderCell({
 		<th
 			className="NLT__th"
 			data-column-id={columnId}
-			draggable
-			onDrop={handleDrop}
-			onDragStart={handleDragStart}
-			onDragOver={handleDragOver}
+			{...(isDraggable && {
+				draggable: true,
+				onDrop: handleDrop,
+				onDragStart: handleDragStart,
+				onDragOver: handleDragOver,
+			})}
 		>
 			{content}
 		</th>

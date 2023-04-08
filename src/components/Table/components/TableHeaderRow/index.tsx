@@ -8,11 +8,12 @@ interface TableHeaderRowProps {
 export const TableHeaderRow = ({ row }: TableHeaderRowProps) => {
 	return (
 		<tr id={row.id} className="NLT__tr">
-			{row.cells.map((cell) => (
+			{row.cells.map((cell, i) => (
 				<TableHeaderCell
 					key={cell.id}
 					columnId={cell.columnId}
 					content={cell.content}
+					isDraggable={i < row.cells.length - 1}
 				/>
 			))}
 		</tr>
