@@ -1,5 +1,5 @@
 import { CURRENT_PLUGIN_VERSION } from "src/constants";
-import { CurrencyType, TableState } from "../tableState/types";
+import { CurrencyType, DateFormat, TableState } from "../tableState/types";
 
 export default class Json {
 	static serializeTableState(tableState: TableState): string {
@@ -10,10 +10,15 @@ export default class Json {
 		const tableState = JSON.parse(data) as TableState;
 		const { pluginVersion } = tableState;
 		if (pluginVersion < CURRENT_PLUGIN_VERSION) {
-			//Handle currency type update
+			//Currency type feature
 			if (pluginVersion < 610) {
 				tableState.model.columns.forEach((column) => {
 					column.currencyType = CurrencyType.UNITED_STATES;
+				});
+				//Date format feature
+			} else if (pluginVersion < 620) {
+				tableState.model.columns.forEach((column) => {
+					column.dateFormat = DateFormat.YYYY_MM_DD;
 				});
 			}
 		}

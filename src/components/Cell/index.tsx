@@ -13,7 +13,12 @@ import DateCellEdit from "./components/DateCellEdit";
 import MultiTagCell from "./components/MultiTagCell";
 import Menu from "../Menu";
 
-import { CellType, CurrencyType, Tag } from "src/services/tableState/types";
+import {
+	CellType,
+	CurrencyType,
+	DateFormat,
+	Tag,
+} from "src/services/tableState/types";
 import { useMenu } from "src/services/menu/hooks";
 import { MenuLevel } from "src/services/menu/types";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
@@ -38,6 +43,7 @@ interface Props {
 	columnType: string;
 	cellId: string;
 	rowId: string;
+	dateFormat: DateFormat;
 	columnCurrencyType: CurrencyType;
 	columnId: string;
 	markdown: string;
@@ -76,6 +82,7 @@ export default function Cell({
 	columnId,
 	rowId,
 	markdown,
+	dateFormat,
 	columnCurrencyType,
 	columnType,
 	rowCreationTime,
@@ -313,6 +320,7 @@ export default function Cell({
 			{columnType === CellType.CREATION_TIME && (
 				<CreationTimeCell
 					value={rowCreationTime}
+					format={dateFormat}
 					shouldWrapOverflow={shouldWrapOverflow}
 					hasAutoWidth={hasAutoWidth}
 				/>
@@ -320,6 +328,7 @@ export default function Cell({
 			{columnType === CellType.LAST_EDITED_TIME && (
 				<LastEditedTimeCell
 					value={rowLastEditedTime}
+					format={dateFormat}
 					shouldWrapOverflow={shouldWrapOverflow}
 					hasAutoWidth={hasAutoWidth}
 				/>

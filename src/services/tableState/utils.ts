@@ -1,4 +1,4 @@
-import { Cell, CellType, Column, CurrencyType, Row } from "./types";
+import { Cell, CellType, Column, CurrencyType, DateFormat, Row } from "./types";
 
 //TODO change
 export const sortCells = (
@@ -27,6 +27,23 @@ export const sortCells = (
 			//Return a flatten version of the array
 			.flat(1)
 	);
+};
+
+export const getDisplayNameForDateFormat = (format: DateFormat) => {
+	switch (format) {
+		case DateFormat.DD_MM_YYYY:
+			return "Day/Month/Year";
+		case DateFormat.MM_DD_YYYY:
+			return "Month/Day/Year";
+		case DateFormat.YYYY_MM_DD:
+			return "Year/Month/Day";
+		case DateFormat.FULL:
+			return "Full";
+		case DateFormat.RELATIVE:
+			return "Relative";
+		default:
+			return "";
+	}
 };
 
 export const getDisplayNameForCurrencyType = (type: CurrencyType) => {
