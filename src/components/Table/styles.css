@@ -26,6 +26,7 @@
 .NLT__th:last-child {
 	border-top: 0 !important;
 	border-bottom: 0 !important;
+	background-color: unset !important;
 }
 
 .NLT__td {
