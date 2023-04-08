@@ -43,17 +43,17 @@ import { updateSortTime } from "./services/redux/globalSlice";
 import HeaderCell from "./components/HeaderCell";
 import Cell from "./components/Cell";
 import { Color } from "./services/color/types";
+import { useTableState } from "./services/tableState/useTableState";
 
 const FILE_NAME = "App";
 
 interface Props {
-	initialState: TableState;
 	onSaveTableState: (tableState: TableState) => void;
 }
 
-export default function App({ initialState, onSaveTableState }: Props) {
+export default function App({ onSaveTableState }: Props) {
 	const { searchText, sortTime } = useAppSelector((state) => state.global);
-	const [tableState, setTableState] = useState(initialState);
+	const [tableState, setTableState] = useTableState();
 
 	const { shouldDebug } = useAppSelector((state) => state.global);
 	const dispatch = useAppDispatch();
