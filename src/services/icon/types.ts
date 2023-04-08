@@ -29,4 +29,5 @@ export const enum IconType {
 	SEARCH,
 	PAYMENTS,
 	TUNE,
+	ADD,
 }

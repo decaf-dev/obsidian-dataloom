@@ -30,6 +30,8 @@ import {
 	PaymentsOutlined,
 	Tune,
 	DeleteOutline,
+	PlusOne,
+	Add,
 } from "@mui/icons-material";
 
 import { IconType } from "src/services/icon/types";
@@ -99,6 +101,8 @@ export const findIcon = (
 			return <PaymentsOutlined className={className} />;
 		case IconType.TUNE:
 			return <Tune className={className} />;
+		case IconType.ADD:
+			return <Add className={className} />;
 		default:
 			return "";
 	}

@@ -46,6 +46,8 @@ import Cell from "./components/Cell";
 import { Color } from "./services/color/types";
 import { useTableState } from "./services/tableState/useTableState";
 import { unixTimeToString } from "./services/date";
+import Icon from "./components/Icon";
+import { IconType } from "./services/icon/types";
 
 const FILE_NAME = "App";
 
@@ -423,12 +425,13 @@ export default function App({ onSaveTableState }: Props) {
 									content: (
 										<div style={{ paddingLeft: "10px" }}>
 											<Button
+												icon={
+													<Icon type={IconType.ADD} />
+												}
 												onClick={() =>
 													handleAddColumn()
 												}
-											>
-												New
-											</Button>
+											/>
 										</div>
 									),
 								},
@@ -572,7 +575,7 @@ export default function App({ onSaveTableState }: Props) {
 															handleAddRow()
 														}
 													>
-														New
+														New row
 													</Button>
 												</div>
 											),
