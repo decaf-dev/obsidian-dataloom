@@ -20,6 +20,7 @@
 	font-weight: 400 !important;
 	overflow: visible;
 	text-align: start;
+	background-color: var(--background-secondary) !important;
 }
 
 .NLT__th:last-child {
