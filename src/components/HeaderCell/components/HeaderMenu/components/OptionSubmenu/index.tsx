@@ -2,7 +2,11 @@ import Submenu from "../Submenu";
 import Button from "src/components/Button";
 import Switch from "src/components/Switch";
 
-import { CellType, CurrencyType } from "src/services/tableState/types";
+import {
+	CellType,
+	CurrencyType,
+	DateFormat,
+} from "src/services/tableState/types";
 import Stack from "src/components/Stack";
 import Padding from "src/components/Padding";
 import Text from "src/components/Text";
@@ -12,13 +16,15 @@ import { MenuLevel } from "src/services/menu/types";
 import CurrencyMenu from "./components/CurrencyMenu";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 import { isMenuOpen, openMenu } from "src/services/menu/menuSlice";
+import DateFormatMenu from "./components/DateFormatMenu";
 
 interface Props {
 	canDeleteColumn: boolean;
 	title: string;
 	columnId: string;
-	columnCurrencyType: CurrencyType;
-	columnType: string;
+	currencyType: CurrencyType;
+	type: CellType;
+	dateFormat: DateFormat;
 	shouldWrapOverflow: boolean;
 	hasAutoWidth: boolean;
 	onAutoWidthToggle: (columnId: string, value: boolean) => void;
@@ -26,14 +32,16 @@ interface Props {
 	onDeleteClick: () => void;
 	onBackClick: () => void;
 	onCurrencyChange: (value: CurrencyType) => void;
+	onDateFormatChange: (value: DateFormat) => void;
 }
 
 export default function OptionSubmenu({
 	columnId,
 	canDeleteColumn,
-	columnCurrencyType,
+	type,
+	currencyType,
 	title,
-	columnType,
+	dateFormat,
 	shouldWrapOverflow,
 	hasAutoWidth,
 	onAutoWidthToggle,
@@ -41,13 +49,14 @@ export default function OptionSubmenu({
 	onBackClick,
 	onDeleteClick,
 	onCurrencyChange,
+	onDateFormatChange,
 }: Props) {
-	const currencyMenu = useMenu(MenuLevel.TWO);
-	const isCurrencyMenuOpen = useAppSelector((state) =>
-		isMenuOpen(state, currencyMenu.id)
+	const menu = useMenu(MenuLevel.TWO);
+	const shouldOpenMenu = useAppSelector((state) =>
+		isMenuOpen(state, menu.id)
 	);
 	const dispatch = useAppDispatch();
-	const { top, left, width } = currencyMenu.position;
+	const { top, left, width } = menu.position;
 
 	return (
 		<>
@@ -65,26 +74,26 @@ export default function OptionSubmenu({
 								/>
 							</Stack>
 						</Padding>
-						{columnType === CellType.CURRENCY && (
+						{type === CellType.CURRENCY && (
 							<div
-								ref={currencyMenu.containerRef}
+								ref={menu.containerRef}
 								style={{ width: "100%" }}
 							>
 								<MenuItem
 									name="Currency"
-									value={columnCurrencyType}
+									value={currencyType}
 									onClick={() =>
 										dispatch(
 											openMenu({
-												id: currencyMenu.id,
-												level: currencyMenu.level,
+												id: menu.id,
+												level: menu.level,
 											})
 										)
 									}
 								/>
 							</div>
 						)}
-						{!hasAutoWidth && columnType === CellType.TEXT && (
+						{!hasAutoWidth && type === CellType.TEXT && (
 							<Padding paddingX="lg">
 								<Stack spacing="sm">
 									<Text value="Wrap Overflow" />
@@ -100,6 +109,26 @@ export default function OptionSubmenu({
 								</Stack>
 							</Padding>
 						)}
+						{(type === CellType.CREATION_TIME ||
+							type === CellType.LAST_EDITED_TIME) && (
+							<div
+								ref={menu.containerRef}
+								style={{ width: "100%" }}
+							>
+								<MenuItem
+									name="Date format"
+									value={dateFormat}
+									onClick={() =>
+										dispatch(
+											openMenu({
+												id: menu.id,
+												level: menu.level,
+											})
+										)
+									}
+								/>
+							</div>
+						)}
 						{canDeleteColumn && (
 							<Padding paddingX="lg">
 								<Button onClick={() => onDeleteClick()}>
@@ -110,14 +139,27 @@ export default function OptionSubmenu({
 					</Stack>
 				</Padding>
 			</Submenu>
-			<CurrencyMenu
-				id={currencyMenu.id}
-				isOpen={isCurrencyMenuOpen}
-				top={top - 125}
-				left={left + width - 50}
-				value={columnCurrencyType}
-				onCurrencyChange={onCurrencyChange}
-			/>
+			{type === CellType.CURRENCY && (
+				<CurrencyMenu
+					id={menu.id}
+					isOpen={shouldOpenMenu}
+					top={top - 125}
+					left={left + width - 50}
+					value={currencyType}
+					onChange={onCurrencyChange}
+				/>
+			)}
+			{(type === CellType.CREATION_TIME ||
+				type === CellType.LAST_EDITED_TIME) && (
+				<DateFormatMenu
+					id={menu.id}
+					isOpen={shouldOpenMenu}
+					top={top - 50}
+					left={left + width - 50}
+					value={dateFormat}
+					onChange={onDateFormatChange}
+				/>
+			)}
 		</>
 	);
 }

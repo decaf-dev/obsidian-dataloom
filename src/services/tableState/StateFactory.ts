@@ -8,6 +8,7 @@ import {
 	Tag,
 	SortDir,
 	CurrencyType,
+	DateFormat,
 } from "./types";
 
 export default class StateFactory {
@@ -18,8 +19,9 @@ export default class StateFactory {
 			width: "140px",
 			type: CellType.TEXT,
 			currencyType: CurrencyType.UNITED_STATES,
+			dateFormat: DateFormat.MM_DD_YYYY,
 			hasAutoWidth: false,
-			shouldWrapOverflow: false,
+			shouldWrapOverflow: true,
 			footerCellId: randomUUID(),
 		};
 	}

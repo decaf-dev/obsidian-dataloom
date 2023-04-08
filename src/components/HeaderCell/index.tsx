@@ -2,7 +2,12 @@ import React, { useRef } from "react";
 
 import { CSS_MEASUREMENT_PIXEL_REGEX } from "src/services/string/regex";
 import { numToPx, pxToNum } from "src/services/string/conversion";
-import { CellType, CurrencyType, SortDir } from "src/services/tableState/types";
+import {
+	CellType,
+	CurrencyType,
+	DateFormat,
+	SortDir,
+} from "src/services/tableState/types";
 import { useMenu } from "src/services/menu/hooks";
 import { MenuLevel } from "src/services/menu/types";
 import { MIN_COLUMN_WIDTH } from "src/services/tableState/constants";
@@ -21,20 +26,18 @@ import { getIconTypeFromCellType } from "src/services/icon/utils";
 
 interface Props {
 	cellId: string;
-	columnIndex: number;
 	currencyType: CurrencyType;
 	rowId: string;
 	columnId: string;
 	width: string;
 	numColumns: number;
+	dateFormat: DateFormat;
 	markdown: string;
 	shouldWrapOverflow: boolean;
 	hasAutoWidth: boolean;
 	sortDir: SortDir;
 	type: CellType;
-	onMoveColumnClick: (columnId: string, moveRight: boolean) => void;
 	onSortClick: (columnId: string, sortDir: SortDir) => void;
-	onInsertColumnClick: (columnId: string, insertRight: boolean) => void;
 	onTypeSelect: (columnId: string, type: CellType) => void;
 	onDeleteClick: (columnId: string) => void;
 	onWidthChange: (columnId: string, width: string) => void;
@@ -42,15 +45,16 @@ interface Props {
 	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
 	onNameChange: (cellId: string, rowId: string, value: string) => void;
 	onCurrencyChange: (columnId: string, value: CurrencyType) => void;
+	onDateFormatChange: (columnId: string, value: DateFormat) => void;
 }
 
 export default function HeaderCell({
 	cellId,
 	rowId,
-	columnIndex,
 	columnId,
 	currencyType,
 	width,
+	dateFormat,
 	markdown,
 	hasAutoWidth,
 	shouldWrapOverflow,
@@ -58,8 +62,6 @@ export default function HeaderCell({
 	sortDir,
 	numColumns,
 	onWidthChange,
-	onInsertColumnClick,
-	onMoveColumnClick,
 	onSortClick,
 	onTypeSelect,
 	onDeleteClick,
@@ -67,6 +69,7 @@ export default function HeaderCell({
 	onAutoWidthToggle,
 	onNameChange,
 	onCurrencyChange,
+	onDateFormatChange,
 }: Props) {
 	const mouseDownX = useRef(0);
 	const isResizing = useRef(false);
@@ -144,6 +147,7 @@ export default function HeaderCell({
 				id={menu.id}
 				rowId={rowId}
 				currencyType={currencyType}
+				dateFormat={dateFormat}
 				canDeleteColumn={numColumns > 1}
 				columnId={columnId}
 				cellId={cellId}
@@ -152,11 +156,8 @@ export default function HeaderCell({
 				markdown={markdown}
 				columnSortDir={sortDir}
 				columnType={type}
-				columnIndex={columnIndex}
 				numColumns={numColumns}
 				onSortClick={onSortClick}
-				onMoveColumnClick={onMoveColumnClick}
-				onInsertColumnClick={onInsertColumnClick}
 				onTypeSelect={onTypeSelect}
 				onDeleteClick={onDeleteClick}
 				onClose={closeHeaderMenu}
@@ -164,6 +165,7 @@ export default function HeaderCell({
 				onWrapOverflowToggle={onWrapOverflowToggle}
 				onNameChange={onNameChange}
 				onCurrencyChange={onCurrencyChange}
+				onDateFormatChange={onDateFormatChange}
 			/>
 			<div className="NLT__th-content">
 				<Stack spacing="md">

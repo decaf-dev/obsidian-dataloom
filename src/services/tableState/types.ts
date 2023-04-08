@@ -18,6 +18,14 @@ export enum CellType {
 	LAST_EDITED_TIME = "last-edited-time",
 }
 
+export enum DateFormat {
+	MM_DD_YYYY = "mm/dd/yyyy",
+	DD_MM_YYYY = "dd/mm/yyyy",
+	YYYY_MM_DD = "yyyy/mm/dd",
+	FULL = "full",
+	RELATIVE = "relative",
+}
+
 export enum CurrencyType {
 	UNITED_STATES = "USD",
 	CANADA = "CAD",
@@ -55,6 +63,7 @@ export interface Column {
 	sortDir: SortDir;
 	width: string;
 	type: CellType;
+	dateFormat: DateFormat;
 	currencyType: CurrencyType;
 	hasAutoWidth: boolean;
 	shouldWrapOverflow: boolean;

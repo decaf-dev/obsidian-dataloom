@@ -5,6 +5,7 @@ import App from "./App";
 import Json from "./services/file/Json";
 import { store } from "./services/redux/store";
 import { TableState } from "./services/tableState/types";
+import TableStateProvider from "./services/tableState/useTableState";
 
 export const NOTION_LIKE_TABLES_VIEW = "notion-like-tables";
 
@@ -42,10 +43,9 @@ export class NLTView extends TextFileView {
 		if (this.root) {
 			this.root.render(
 				<Provider store={store}>
-					<App
-						initialState={tableState}
-						onSaveTableState={this.handleSaveTableState}
-					/>
+					<TableStateProvider initialState={tableState}>
+						<App onSaveTableState={this.handleSaveTableState} />
+					</TableStateProvider>
 				</Provider>
 			);
 		}

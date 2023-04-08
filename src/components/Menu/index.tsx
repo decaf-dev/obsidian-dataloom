@@ -1,5 +1,5 @@
 import _ from "lodash";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import { closeTopLevelMenu, isTopLevelMenu } from "src/services/menu/menuSlice";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
@@ -35,7 +35,12 @@ export default function Menu({
 
 	function handleKeyUp(e: KeyboardEvent) {
 		if (e.code === "Escape" || e.code === "Enter") {
-			dispatch(closeTopLevelMenu());
+			// If the user is holding down the shift key, they are probably
+			// trying to insert a new line into the text cell. In this case, we don't
+			// want to close the menu.
+			if (!e.shiftKey) {
+				dispatch(closeTopLevelMenu());
+			}
 		}
 	}
 

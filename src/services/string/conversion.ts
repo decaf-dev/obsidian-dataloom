@@ -21,20 +21,3 @@ export const stringToCurrencyString = (value: string, type: CurrencyType) => {
 		currency: type,
 	}).format(parseFloat(value));
 };
-
-export const dateTimeToString = (dateTime: number) => {
-	const date = new Date(dateTime);
-	const dateString = date.toLocaleString("en-US", {
-		month: "short",
-		day: "numeric",
-		year: "numeric",
-		hour: "numeric",
-		minute: "numeric",
-		hour12: true,
-	});
-	const commaIndex = dateString.lastIndexOf(",");
-	return (
-		dateString.substring(0, commaIndex) +
-		dateString.substring(commaIndex + 1)
-	);
-};

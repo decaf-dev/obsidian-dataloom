@@ -67,19 +67,6 @@ export default function BaseMenu({
 				onClick={() => onSortClick(SortDir.DESC)}
 				isSelected={columnSortDir === SortDir.DESC}
 			/>
-			<Divider />
-			<MenuItem
-				iconType={IconType.MOVE_UP}
-				name="Move"
-				onClick={() => onSubmenuChange(Submenu.MOVE)}
-			/>
-			{numColumns > 1 && (
-				<MenuItem
-					iconType={IconType.KEYBOARD_DOUBLE_ARROW_RIGHT}
-					name="Insert"
-					onClick={() => onSubmenuChange(Submenu.INSERT)}
-				/>
-			)}
 		</Stack>
 	);
 }
