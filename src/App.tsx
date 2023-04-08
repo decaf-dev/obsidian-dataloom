@@ -343,7 +343,7 @@ export default function App({ onSaveTableState }: Props) {
 			/>
 			<div className="NLT__table-wrapper">
 				<Table
-					headers={[
+					headerRows={[
 						{
 							id: headerRowId,
 							cells: [
@@ -372,6 +372,7 @@ export default function App({ onSaveTableState }: Props) {
 									} = cell;
 									return {
 										id: cellId,
+										columnId,
 										content: (
 											<HeaderCell
 												key={columnId}
@@ -429,6 +430,7 @@ export default function App({ onSaveTableState }: Props) {
 								}),
 								{
 									id: lastColumnId,
+									columnId: lastColumnId,
 									content: (
 										<div style={{ paddingLeft: "10px" }}>
 											<Button
@@ -444,7 +446,7 @@ export default function App({ onSaveTableState }: Props) {
 							],
 						},
 					]}
-					rows={filteredRows
+					bodyRows={filteredRows
 						.filter((_row, i) => i !== 0)
 						.map((row) => {
 							const rowCells = cells.filter(
@@ -552,7 +554,7 @@ export default function App({ onSaveTableState }: Props) {
 								],
 							};
 						})}
-					footers={[
+					footerRows={[
 						{
 							id: footerRowId,
 							cells: [

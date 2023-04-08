@@ -1,9 +1,27 @@
-export interface TableRenderRow {
+export interface RenderTableRow {
 	id: string;
-	cells: TableRenderCell[];
 }
 
-export interface TableRenderCell {
+export interface RenderTableHeaderRow extends RenderTableRow {
+	id: string;
+	cells: RenderTableHeaderCell[];
+}
+
+export interface RenderTableBodyRow extends RenderTableRow {
+	id: string;
+	cells: RenderTableCell[];
+}
+
+export interface RenderTableFooterRow extends RenderTableRow {
+	id: string;
+	cells: RenderTableCell[];
+}
+
+export interface RenderTableCell {
 	id: string;
 	content: React.ReactNode;
+}
+
+export interface RenderTableHeaderCell extends RenderTableCell {
+	columnId: string;
 }
