@@ -21,7 +21,6 @@ import { getIconTypeFromCellType } from "src/services/icon/utils";
 
 interface Props {
 	cellId: string;
-	columnIndex: number;
 	currencyType: CurrencyType;
 	rowId: string;
 	columnId: string;
@@ -32,9 +31,7 @@ interface Props {
 	hasAutoWidth: boolean;
 	sortDir: SortDir;
 	type: CellType;
-	onMoveColumnClick: (columnId: string, moveRight: boolean) => void;
 	onSortClick: (columnId: string, sortDir: SortDir) => void;
-	onInsertColumnClick: (columnId: string, insertRight: boolean) => void;
 	onTypeSelect: (columnId: string, type: CellType) => void;
 	onDeleteClick: (columnId: string) => void;
 	onWidthChange: (columnId: string, width: string) => void;
@@ -47,7 +44,6 @@ interface Props {
 export default function HeaderCell({
 	cellId,
 	rowId,
-	columnIndex,
 	columnId,
 	currencyType,
 	width,
@@ -58,8 +54,6 @@ export default function HeaderCell({
 	sortDir,
 	numColumns,
 	onWidthChange,
-	onInsertColumnClick,
-	onMoveColumnClick,
 	onSortClick,
 	onTypeSelect,
 	onDeleteClick,
@@ -152,11 +146,8 @@ export default function HeaderCell({
 				markdown={markdown}
 				columnSortDir={sortDir}
 				columnType={type}
-				columnIndex={columnIndex}
 				numColumns={numColumns}
 				onSortClick={onSortClick}
-				onMoveColumnClick={onMoveColumnClick}
-				onInsertColumnClick={onInsertColumnClick}
 				onTypeSelect={onTypeSelect}
 				onDeleteClick={onDeleteClick}
 				onClose={closeHeaderMenu}

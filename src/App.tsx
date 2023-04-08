@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import Table from "./components/Table";
 import RowMenu from "./components/RowMenu";
@@ -22,8 +22,6 @@ import {
 	changeColumnCurrencyType,
 	changeColumnType,
 	deleteColumn,
-	insertColumn,
-	moveColumn,
 	sortOnColumn,
 	updateColumn,
 } from "./services/tableState/column";
@@ -43,17 +41,17 @@ import { updateSortTime } from "./services/redux/globalSlice";
 import HeaderCell from "./components/HeaderCell";
 import Cell from "./components/Cell";
 import { Color } from "./services/color/types";
+import { useTableState } from "./services/tableState/useTableState";
 
 const FILE_NAME = "App";
 
 interface Props {
-	initialState: TableState;
 	onSaveTableState: (tableState: TableState) => void;
 }
 
-export default function App({ initialState, onSaveTableState }: Props) {
+export default function App({ onSaveTableState }: Props) {
 	const { searchText, sortTime } = useAppSelector((state) => state.global);
-	const [tableState, setTableState] = useState(initialState);
+	const [tableState, setTableState] = useTableState();
 
 	const { shouldDebug } = useAppSelector((state) => state.global);
 	const dispatch = useAppDispatch();
@@ -238,26 +236,6 @@ export default function App({ initialState, onSaveTableState }: Props) {
 		);
 	}
 
-	function handleMoveColumnClick(columnId: string, moveRight: boolean) {
-		logFunc(shouldDebug, FILE_NAME, "handleMoveColumnClick", {
-			columnId,
-			moveRight,
-		});
-		setTableState((prevState: TableState) =>
-			moveColumn(prevState, columnId, moveRight)
-		);
-	}
-
-	function handleInsertColumnClick(columnId: string, insertRight: boolean) {
-		logFunc(shouldDebug, FILE_NAME, "handleInsertColumnClick", {
-			columnId,
-			insertRight,
-		});
-		setTableState((prevState) =>
-			insertColumn(prevState, columnId, insertRight)
-		);
-	}
-
 	function handleTagChangeColor(tagId: string, color: Color) {
 		logFunc(shouldDebug, FILE_NAME, "handleTagChangeColor", {
 			tagId,
@@ -343,7 +321,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 			/>
 			<div className="NLT__table-wrapper">
 				<Table
-					headers={[
+					headerRows={[
 						{
 							id: headerRowId,
 							cells: [
@@ -372,12 +350,12 @@ export default function App({ initialState, onSaveTableState }: Props) {
 									} = cell;
 									return {
 										id: cellId,
+										columnId,
 										content: (
 											<HeaderCell
 												key={columnId}
 												cellId={cellId}
 												rowId={rowId}
-												columnIndex={i}
 												currencyType={currencyType}
 												numColumns={columns.length}
 												columnId={cell.columnId}
@@ -395,12 +373,6 @@ export default function App({ initialState, onSaveTableState }: Props) {
 												sortDir={sortDir}
 												onSortClick={
 													handleHeaderSortSelect
-												}
-												onInsertColumnClick={
-													handleInsertColumnClick
-												}
-												onMoveColumnClick={
-													handleMoveColumnClick
 												}
 												onWidthChange={
 													handleHeaderWidthChange
@@ -429,6 +401,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 								}),
 								{
 									id: lastColumnId,
+									columnId: lastColumnId,
 									content: (
 										<div style={{ paddingLeft: "10px" }}>
 											<Button
@@ -444,7 +417,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 							],
 						},
 					]}
-					rows={filteredRows
+					bodyRows={filteredRows
 						.filter((_row, i) => i !== 0)
 						.map((row) => {
 							const rowCells = cells.filter(
@@ -552,7 +525,7 @@ export default function App({ initialState, onSaveTableState }: Props) {
 								],
 							};
 						})}
-					footers={[
+					footerRows={[
 						{
 							id: footerRowId,
 							cells: [

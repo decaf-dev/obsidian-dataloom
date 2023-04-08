@@ -80,36 +80,6 @@ export const updateColumn = (
 	};
 };
 
-export const insertColumn = (
-	prevState: TableState,
-	columnId: string,
-	insertRight: boolean
-): TableState => {
-	const { columns, cells, rows } = prevState.model;
-	const columnsCopy = [...columns];
-
-	const index = columnsCopy.findIndex((column) => column.id === columnId);
-	const insertIndex = insertRight ? index + 1 : index;
-
-	const newColumn = StateFactory.createColumn();
-	columnsCopy.splice(insertIndex, 0, newColumn);
-
-	let cellsCopy = [...cells];
-	rows.forEach((row, i) => {
-		cellsCopy.push(StateFactory.createCell(newColumn.id, row.id, i === 0));
-	});
-
-	cellsCopy = sortCells(columnsCopy, rows, cellsCopy);
-	return {
-		...prevState,
-		model: {
-			...prevState.model,
-			columns: columnsCopy,
-			cells: cellsCopy,
-		},
-	};
-};
-
 export const deleteColumn = (
 	prevState: TableState,
 	columnId: string
@@ -122,33 +92,6 @@ export const deleteColumn = (
 			columns: columns.filter((column) => column.id !== columnId),
 			cells: cells.filter((cell) => cell.columnId !== columnId),
 			tags: tags.filter((tag) => tag.columnId !== columnId),
-		},
-	};
-};
-
-export const moveColumn = (
-	prevState: TableState,
-	columnId: string,
-	moveRight: boolean
-): TableState => {
-	const { rows, cells, columns } = prevState.model;
-	const columnsCopy = [...columns];
-	const index = columnsCopy.findIndex((column) => column.id === columnId);
-	const moveIndex = moveRight ? index + 1 : index - 1;
-
-	//Swap values
-	const old = columnsCopy[moveIndex];
-	columnsCopy[moveIndex] = columnsCopy[index];
-	columnsCopy[index] = old;
-
-	const updatedCells = sortCells(columnsCopy, rows, cells);
-
-	return {
-		...prevState,
-		model: {
-			...prevState.model,
-			columns: columnsCopy,
-			cells: updatedCells,
 		},
 	};
 };
