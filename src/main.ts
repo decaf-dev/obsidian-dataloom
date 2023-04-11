@@ -5,7 +5,7 @@ import NLTSettingsTab from "./NLTSettingsTab";
 import { store } from "./services/redux/store";
 import { setDarkMode, setDebugMode } from "./services/redux/globalSlice";
 import { NLTView, NOTION_LIKE_TABLES_VIEW } from "./NLTView";
-import TableFile, { TABLE_EXTENSION, getAvailableTablePath } from "./services/file/TableFile";
+import TableFile, { TABLE_EXTENSION } from "./services/file/TableFile";
 
 export interface NLTSettings {
 	shouldDebug: boolean;
@@ -69,7 +69,7 @@ export default class NLTPlugin extends Plugin {
 
 	private async createTableFile() {
 		const tableFile = await TableFile.createNotionLikeTableFile(
-			await getAvailableTablePath(this.settings)
+			this.settings
 		);
 		//Open file in a new tab and set it to active
 		await app.workspace.getLeaf(true).setViewState({

@@ -18,8 +18,8 @@ type VaultExt = Vault & {
 	 * 
 	 * @param {string} base base name of the attachment file
 	 * @param {string} extension extension of the attachment file
-	 * @param {TFile} currentFile active file used to determine current working
-	 * 													  directory; if null, root vault directory is used
+	 * @param {TFile} currentFile active file used to determine current working 
+	 * directory; if null, root vault directory is used
 	 * @returns {string}
 	 */
 	getAvailablePathForAttachments: (base: string, extension: string, currentFile: TFile | null) => Promise<string>;
@@ -61,7 +61,7 @@ const DEFAULT_TABLE_FILENAME = "Untitled";
 /**
  * @returns {Promise<string>} available path for table creation
  */
-export async function getAvailableTablePath({
+async function getAvailableTablePath({
 	createAtObsidianAttachmentFolder,
 	customFolderForNewTables,
 	nameWithActiveFileNameAndTimestamp
@@ -97,11 +97,16 @@ export default class TableFile {
 	/**
 	 * Create notion like table file at the given location.
 	 * 
-	 * @param {string} availPath the file path guaranteed to have no collision
+	 * @param {{
+	 * 	createAtObsidianAttachmentFolder: boolean,
+	 * 	customFolderForNewTables: string,
+	 * 	nameWithActiveFileNameAndTimestamp: boolean
+	 * }} paramObj the subset of settings needed to get available path
 	 * @returns {TFile} table file created
 	 */
-	static async createNotionLikeTableFile(availPath: string) {
+	static async createNotionLikeTableFile(paramObj: GetAvailableTablePathParams) {
 		try {
+			const availPath = await getAvailableTablePath(paramObj);
 			const tableState = mockTableState(1, 2);
 			const serialized = Json.serializeTableState(tableState);
 		 	return await FileOperations.createFile(
