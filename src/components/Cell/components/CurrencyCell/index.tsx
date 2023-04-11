@@ -17,7 +17,10 @@ export default function CurrencyCell({
 }: Props) {
 	const overflowClassName = useOverflowClassName(shouldWrapOverflow);
 
-	const valueFormatted = stringToCurrencyString(value, currencyType);
+	let valueFormatted = "";
+	if (value !== "") {
+		valueFormatted = stringToCurrencyString(value, currencyType);
+	}
 
 	const className = "NLT__currency-cell" + " " + overflowClassName;
 
