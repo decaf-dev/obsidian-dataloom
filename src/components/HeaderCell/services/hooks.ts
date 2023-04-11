@@ -1,8 +1,11 @@
 import { useRef } from "react";
-import { setResizingColumn } from "src/services/redux/globalSlice";
+import { setResizingColumnId } from "src/services/redux/globalSlice";
 import { useAppDispatch } from "src/services/redux/hooks";
 
-export const useResizeColumn = (onWidthChange: (dist: number) => void) => {
+export const useResizeColumn = (
+	columnId: string,
+	onWidthChange: (dist: number) => void
+) => {
 	const mouseDownX = useRef(0);
 	const dispatch = useAppDispatch();
 
@@ -16,7 +19,7 @@ export const useResizeColumn = (onWidthChange: (dist: number) => void) => {
 		window.removeEventListener("mouseup", handleMouseUp);
 
 		setTimeout(() => {
-			dispatch(setResizingColumn(false));
+			dispatch(setResizingColumnId(null));
 		}, 100);
 	}
 
@@ -32,8 +35,8 @@ export const useResizeColumn = (onWidthChange: (dist: number) => void) => {
 		window.addEventListener("mouseup", handleMouseUp);
 
 		mouseDownX.current = e.pageX;
-		dispatch(setResizingColumn(true));
+		dispatch(setResizingColumnId(columnId));
 	}
 
-	return { handleMouseDown, isResizing };
+	return { handleMouseDown };
 };

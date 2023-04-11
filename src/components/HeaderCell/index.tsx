@@ -75,8 +75,8 @@ export default function HeaderCell({
 	const dispatch = useAppDispatch();
 	const isOpen = useAppSelector((state) => isMenuOpen(state, menu.id));
 
-	const { isResizingColumn } = useAppSelector((state) => state.global);
-	const { handleMouseDown } = useResizeColumn((dist) => {
+	const { resizingColumnId } = useAppSelector((state) => state.global);
+	const { handleMouseDown } = useResizeColumn(columnId, (dist) => {
 		const oldWidth = pxToNum(width);
 		const newWidth = oldWidth + dist;
 
@@ -89,7 +89,7 @@ export default function HeaderCell({
 		const el = e.target as HTMLElement;
 		if (el.closest(`#${menu.id}`)) return;
 
-		if (isResizingColumn) return;
+		if (resizingColumnId !== null) return;
 		if (isOpen) {
 			closeHeaderMenu();
 		} else {
@@ -114,7 +114,11 @@ export default function HeaderCell({
 	const iconType = getIconTypeFromCellType(type);
 
 	let contentClassName = "NLT__th-content";
-	if (!isResizingColumn) contentClassName += " NLT__selectable";
+	if (resizingColumnId == null) contentClassName += " NLT__selectable";
+
+	let resizeClassName = "NLT__th-resize";
+	if (resizingColumnId == columnId)
+		resizeClassName += " NLT__th-resize--active";
 
 	return (
 		<div
@@ -161,7 +165,7 @@ export default function HeaderCell({
 			<div className="NLT__th-resize-container">
 				{!hasAutoWidth && (
 					<div
-						className="NLT__th-resize"
+						className={resizeClassName}
 						onMouseDown={(e) => {
 							closeHeaderMenu();
 							handleMouseDown(e);
