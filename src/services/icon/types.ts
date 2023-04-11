@@ -31,4 +31,5 @@ export const enum IconType {
 	TUNE,
 	ADD,
 	DRAG_INDICATOR,
+	VIEW_COLUMN,
 }

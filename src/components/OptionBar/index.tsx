@@ -1,18 +1,20 @@
 import { useMemo } from "react";
 
-import { TableModel, SortDir } from "src/services/tableState/types";
+import { SortDir, Cell, Column } from "src/services/tableState/types";
 
 import { useAppSelector } from "src/services/redux/hooks";
 import Stack from "../Stack";
 
-import { ColumnIdError } from "src/services/tableState/error";
+import {
+	CellNotFoundError,
+	ColumnIdError,
+} from "src/services/tableState/error";
 import SearchBar from "./components/SearchBar";
 import SortBubble from "./components/SortBubble";
 
 import "./styles.css";
-import HideColumns from "./components/HideColumns";
 import Flex from "../Flex";
-import Text from "../Text";
+import ToggleColumn from "./components/ToggleColumn";
 
 interface SortButtonListProps {
 	bubbles: { sortDir: SortDir; markdown: string; columnId: string }[];
@@ -22,43 +24,44 @@ interface SortButtonListProps {
 const SortBubbleList = ({ bubbles, onRemoveClick }: SortButtonListProps) => {
 	const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
 	return (
-		<>
-			{bubbles.length !== 0 ? (
-				<Stack spacing="sm">
-					{bubbles.map((bubble, i) => (
-						<SortBubble
-							key={i}
-							isDarkMode={isDarkMode}
-							sortDir={bubble.sortDir}
-							markdown={bubble.markdown}
-							onRemoveClick={() => onRemoveClick(bubble.columnId)}
-						/>
-					))}
-				</Stack>
-			) : (
-				<Text value="No sort filters" />
-			)}
-		</>
+		<Stack spacing="sm">
+			{bubbles.map((bubble, i) => (
+				<SortBubble
+					key={i}
+					isDarkMode={isDarkMode}
+					sortDir={bubble.sortDir}
+					markdown={bubble.markdown}
+					onRemoveClick={() => onRemoveClick(bubble.columnId)}
+				/>
+			))}
+		</Stack>
 	);
 };
 
 interface Props {
-	model: TableModel;
+	cells: Cell[];
+	columns: Column[];
 	onSortRemoveClick: (columnId: string) => void;
+	onColumnToggle: (columnId: string) => void;
 }
-export default function OptionBar({ model, onSortRemoveClick }: Props) {
+export default function OptionBar({
+	cells,
+	columns,
+	onSortRemoveClick,
+	onColumnToggle,
+}: Props) {
 	const bubbles = useMemo(() => {
-		return model.cells
+		return cells
 			.filter((c) => c.isHeader)
 			.filter((c) => {
 				const columnId = c.columnId;
-				const column = model.columns.find((c) => c.id == columnId);
+				const column = columns.find((c) => c.id == columnId);
 				if (!column) throw new ColumnIdError(columnId);
 				return column.sortDir !== SortDir.NONE;
 			})
 			.map((c) => {
 				const columnId = c.columnId;
-				const column = model.columns.find((c) => c.id == columnId);
+				const column = columns.find((c) => c.id == columnId);
 				if (!column) throw new ColumnIdError(columnId);
 				return {
 					columnId: c.columnId,
@@ -66,20 +69,37 @@ export default function OptionBar({ model, onSortRemoveClick }: Props) {
 					sortDir: column.sortDir,
 				};
 			});
-	}, [model]);
+	}, [cells, columns]);
+
+	const toggleColumns = useMemo(() => {
+		return columns.map((column) => {
+			const headerCell = cells.find(
+				(cell) => cell.isHeader && cell.columnId == column.id
+			);
+			if (!headerCell) throw new CellNotFoundError();
+			return {
+				id: column.id,
+				name: headerCell.markdown,
+				isVisible: column.isVisible,
+			};
+		});
+	}, [cells, columns]);
 
 	return (
 		<div className="NLT__option-bar">
 			<Stack spacing="lg" isVertical>
-				<Flex justify="flex-end">
-					<SearchBar />
-				</Flex>
 				<Flex justify="space-between" align="flex-end">
 					<SortBubbleList
 						bubbles={bubbles}
 						onRemoveClick={onSortRemoveClick}
 					/>
-					<HideColumns />
+					<Stack spacing="sm" justify="flex-end">
+						<SearchBar />
+						<ToggleColumn
+							columns={toggleColumns}
+							onToggle={onColumnToggle}
+						/>
+					</Stack>
 				</Flex>
 			</Stack>
 		</div>

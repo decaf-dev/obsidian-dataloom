@@ -29,6 +29,7 @@ import {
 	changeColumnType,
 	deleteColumn,
 	sortOnColumn,
+	toggleColumn,
 	updateColumn,
 } from "./services/tableState/column";
 import { sortRows } from "./services/tableState/sort";
@@ -48,7 +49,6 @@ import { useTableState } from "./services/tableState/useTableState";
 import { unixTimeToString } from "./services/date";
 import Icon from "./components/Icon";
 import { IconType } from "./services/icon/types";
-import Stack from "./components/Stack";
 
 const FILE_NAME = "App";
 
@@ -187,6 +187,13 @@ export default function App({ onSaveTableState }: Props) {
 		);
 	}
 
+	function handleColumnToggle(columnId: string) {
+		logFunc(shouldDebug, FILE_NAME, "handleColumnToggle", {
+			columnId,
+		});
+		setTableState((prevState) => toggleColumn(prevState, columnId));
+	}
+
 	function handleTagDeleteClick(tagId: string) {
 		logFunc(shouldDebug, FILE_NAME, "handleTagDeleteClick", {
 			tagId,
@@ -319,10 +326,17 @@ export default function App({ onSaveTableState }: Props) {
 		return false;
 	});
 
+	const visibleColumns = columns.filter((column) => column.isVisible);
+	const visibleCells = cells.filter((cell) =>
+		visibleColumns.find((column) => column.id === cell.columnId)
+	);
+
 	return (
 		<div className="NLT__app">
 			<OptionBar
-				model={tableState.model}
+				cells={cells}
+				columns={columns}
+				onColumnToggle={handleColumnToggle}
 				onSortRemoveClick={handleSortRemoveClick}
 			/>
 			<div className="NLT__table-outer">
@@ -332,7 +346,7 @@ export default function App({ onSaveTableState }: Props) {
 							{
 								id: headerRowId,
 								cells: [
-									...columns.map((column, i) => {
+									...visibleColumns.map((column, i) => {
 										const {
 											id: columnId,
 											width,
@@ -431,7 +445,7 @@ export default function App({ onSaveTableState }: Props) {
 						bodyRows={filteredRows
 							.filter((_row, i) => i !== 0)
 							.map((row) => {
-								const rowCells = cells.filter(
+								const rowCells = visibleCells.filter(
 									(cell) => cell.rowId === row.id
 								);
 								const {
