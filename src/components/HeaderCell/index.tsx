@@ -72,8 +72,6 @@ export default function HeaderCell({
 	const dispatch = useAppDispatch();
 	const isOpen = useAppSelector((state) => isMenuOpen(state, menu.id));
 
-	console.log(menu.position);
-
 	const forceUpdate = useForceUpdate();
 
 	useEffect(() => {
