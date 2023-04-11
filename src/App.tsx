@@ -432,6 +432,7 @@ export default function App({ onSaveTableState }: Props) {
 															type={IconType.ADD}
 														/>
 													}
+													ariaLabel="Add column"
 													onClick={() =>
 														handleAddColumn()
 													}

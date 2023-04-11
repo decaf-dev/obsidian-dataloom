@@ -24,6 +24,7 @@ export default function ToggleColumn({ columns, onToggle }: Props) {
 			<div className="NLT__toggle-column" ref={menu.containerRef}>
 				<Button
 					icon={<Icon type={IconType.VIEW_COLUMN} />}
+					ariaLabel="Toggle column"
 					onClick={() => {
 						dispatch(
 							openMenu({

@@ -27,7 +27,7 @@ export default function RowMenu({ rowId, onDeleteClick }: Props) {
 	const dispatch = useAppDispatch();
 	const isOpen = useAppSelector((state) => isMenuOpen(state, menu.id));
 
-	function handleButtonClick(e: React.MouseEvent) {
+	function handleButtonClick() {
 		if (isOpen) {
 			dispatch(closeTopLevelMenu());
 		} else {
@@ -52,7 +52,8 @@ export default function RowMenu({ rowId, onDeleteClick }: Props) {
 			<div ref={menu.containerRef} className="NLT__row-menu-button">
 				<Button
 					icon={<Icon type={IconType.DRAG_INDICATOR} />}
-					onClick={(e) => handleButtonClick(e)}
+					ariaLabel="Drag to move or click to open"
+					onClick={() => handleButtonClick()}
 				/>
 			</div>
 			<Menu id={menu.id} isOpen={isOpen} top={top + height} left={left}>

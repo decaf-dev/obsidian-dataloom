@@ -29,6 +29,7 @@ export default function SearchBar() {
 				)}
 				<Button
 					icon={<Icon type={IconType.SEARCH} />}
+					ariaLabel="Search"
 					onClick={() => dispatch(toggleSearchBar())}
 				/>
 			</Stack>
