@@ -35,14 +35,12 @@ interface Props {
 	dateFormat: DateFormat;
 	markdown: string;
 	shouldWrapOverflow: boolean;
-	hasAutoWidth: boolean;
 	sortDir: SortDir;
 	type: CellType;
 	onSortClick: (columnId: string, sortDir: SortDir) => void;
 	onTypeSelect: (columnId: string, type: CellType) => void;
 	onDeleteClick: (columnId: string) => void;
 	onWidthChange: (columnId: string, width: string) => void;
-	onAutoWidthToggle: (columnId: string, value: boolean) => void;
 	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
 	onNameChange: (cellId: string, rowId: string, value: string) => void;
 	onCurrencyChange: (columnId: string, value: CurrencyType) => void;
@@ -57,7 +55,6 @@ export default function HeaderCell({
 	width,
 	dateFormat,
 	markdown,
-	hasAutoWidth,
 	shouldWrapOverflow,
 	type,
 	sortDir,
@@ -67,7 +64,6 @@ export default function HeaderCell({
 	onTypeSelect,
 	onDeleteClick,
 	onWrapOverflowToggle,
-	onAutoWidthToggle,
 	onNameChange,
 	onCurrencyChange,
 	onDateFormatChange,
@@ -152,7 +148,6 @@ export default function HeaderCell({
 				columnId={columnId}
 				cellId={cellId}
 				shouldWrapOverflow={shouldWrapOverflow}
-				hasAutoWidth={hasAutoWidth}
 				markdown={markdown}
 				columnSortDir={sortDir}
 				columnType={type}
@@ -161,7 +156,6 @@ export default function HeaderCell({
 				onTypeSelect={onTypeSelect}
 				onDeleteClick={onDeleteClick}
 				onClose={closeHeaderMenu}
-				onAutoWidthToggle={onAutoWidthToggle}
 				onWrapOverflowToggle={onWrapOverflowToggle}
 				onNameChange={onNameChange}
 				onCurrencyChange={onCurrencyChange}
@@ -174,22 +168,20 @@ export default function HeaderCell({
 				</Stack>
 			</div>
 			<div className="NLT__th-resize-container">
-				{!hasAutoWidth && (
-					<div
-						className={resizeClassName}
-						onMouseDown={(e) => {
-							closeHeaderMenu();
-							handleMouseDown(e);
-						}}
-						onClick={(e) => {
-							//Stop propagation so we don't open the header
-							e.stopPropagation();
-							if (e.detail === 2) {
-								onWidthChange(columnId, "unset");
-							}
-						}}
-					/>
-				)}
+				<div
+					className={resizeClassName}
+					onMouseDown={(e) => {
+						closeHeaderMenu();
+						handleMouseDown(e);
+					}}
+					onClick={(e) => {
+						//Stop propagation so we don't open the header
+						e.stopPropagation();
+						if (e.detail === 2) {
+							onWidthChange(columnId, "unset");
+						}
+					}}
+				/>
 			</div>
 		</div>
 	);

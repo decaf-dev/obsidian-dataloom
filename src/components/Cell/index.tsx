@@ -52,7 +52,6 @@ interface Props {
 	width: string;
 	tags: Tag[];
 	shouldWrapOverflow: boolean;
-	hasAutoWidth: boolean;
 	onRemoveTagClick: (cellId: string, rowId: string, tagId: string) => void;
 	onTagClick: (
 		cellId: string,
@@ -90,7 +89,6 @@ export default function Cell({
 	tags,
 	width,
 	shouldWrapOverflow,
-	hasAutoWidth,
 	onRemoveTagClick,
 	onTagColorChange,
 	onTagDeleteClick,
@@ -275,21 +273,18 @@ export default function Cell({
 				<TextCell
 					markdown={markdown}
 					shouldWrapOverflow={shouldWrapOverflow}
-					hasAutoWidth={hasAutoWidth}
 				/>
 			)}
 			{columnType === CellType.NUMBER && (
 				<NumberCell
 					value={markdown}
 					shouldWrapOverflow={shouldWrapOverflow}
-					hasAutoWidth={hasAutoWidth}
 				/>
 			)}
 			{columnType === CellType.CURRENCY && (
 				<CurrencyCell
 					value={markdown}
 					currencyType={columnCurrencyType}
-					hasAutoWidth={hasAutoWidth}
 					shouldWrapOverflow={shouldWrapOverflow}
 				/>
 			)}
@@ -298,7 +293,6 @@ export default function Cell({
 					isDarkMode={isDarkMode}
 					markdown={currentTag.markdown}
 					color={currentTag.color}
-					hasAutoWidth={hasAutoWidth}
 					shouldWrapOverflow={shouldWrapOverflow}
 				/>
 			)}
@@ -306,7 +300,6 @@ export default function Cell({
 				<MultiTagCell
 					isDarkMode={isDarkMode}
 					tags={filteredTags}
-					hasAutoWidth={hasAutoWidth}
 					shouldWrapOverflow={shouldWrapOverflow}
 				/>
 			)}
@@ -322,7 +315,6 @@ export default function Cell({
 					value={rowCreationTime}
 					format={dateFormat}
 					shouldWrapOverflow={shouldWrapOverflow}
-					hasAutoWidth={hasAutoWidth}
 				/>
 			)}
 			{columnType === CellType.LAST_EDITED_TIME && (
@@ -330,7 +322,6 @@ export default function Cell({
 					value={rowLastEditedTime}
 					format={dateFormat}
 					shouldWrapOverflow={shouldWrapOverflow}
-					hasAutoWidth={hasAutoWidth}
 				/>
 			)}
 		</div>

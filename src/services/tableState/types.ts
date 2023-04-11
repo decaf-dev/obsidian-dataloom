@@ -65,7 +65,6 @@ export interface Column {
 	type: CellType;
 	dateFormat: DateFormat;
 	currencyType: CurrencyType;
-	hasAutoWidth: boolean;
 	shouldWrapOverflow: boolean;
 	footerCellId: string;
 }

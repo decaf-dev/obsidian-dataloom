@@ -5,20 +5,15 @@ import { DateFormat } from "src/services/tableState/types";
 interface Props {
 	value: number;
 	format: DateFormat;
-	hasAutoWidth: boolean;
 	shouldWrapOverflow: boolean;
 }
 
 export default function CreationTimeCell({
 	value,
 	format,
-	hasAutoWidth,
 	shouldWrapOverflow,
 }: Props) {
-	const overflowClassName = useOverflowClassName(
-		hasAutoWidth,
-		shouldWrapOverflow
-	);
+	const overflowClassName = useOverflowClassName(shouldWrapOverflow);
 	const className = "NLT__creation-time-cell" + " " + overflowClassName;
 
 	return <div className={className}>{unixTimeToString(value, format)}</div>;

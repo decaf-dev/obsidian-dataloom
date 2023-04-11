@@ -26,7 +26,6 @@ interface Props {
 	cellId: string;
 	markdown: string;
 	shouldWrapOverflow: boolean;
-	hasAutoWidth: boolean;
 	columnSortDir: SortDir;
 	columnType: CellType;
 	columnId: string;
@@ -34,7 +33,6 @@ interface Props {
 	onTypeSelect: (columnId: string, type: CellType) => void;
 	onSortClick: (columnId: string, sortDir: SortDir) => void;
 	onDeleteClick: (columnId: string) => void;
-	onAutoWidthToggle: (columnId: string, value: boolean) => void;
 	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
 	onNameChange: (cellId: string, rowId: string, value: string) => void;
 	onCurrencyChange: (columnId: string, value: CurrencyType) => void;
@@ -57,14 +55,12 @@ export default function HeaderMenu({
 	columnSortDir,
 	columnId,
 	numColumns,
-	hasAutoWidth,
 	shouldWrapOverflow,
 	onTypeSelect,
 	onSortClick,
 	onDeleteClick,
 	onClose,
 	onWrapOverflowToggle,
-	onAutoWidthToggle,
 	onNameChange,
 	onCurrencyChange,
 	onDateFormatChange,
@@ -126,10 +122,8 @@ export default function HeaderMenu({
 						columnId={columnId}
 						dateFormat={dateFormat}
 						currencyType={currencyType}
-						hasAutoWidth={hasAutoWidth}
 						shouldWrapOverflow={shouldWrapOverflow}
 						onBackClick={handleBackClick}
-						onAutoWidthToggle={onAutoWidthToggle}
 						onWrapOverflowToggle={onWrapOverflowToggle}
 						onCurrencyChange={handleCurrencyChange}
 						onDateFormatChange={handleDateFormatChange}
