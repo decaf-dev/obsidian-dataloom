@@ -1,6 +1,7 @@
 import { useTableState } from "src/services/tableState/useTableState";
 import { RenderTableBodyRow } from "../../types";
 import TableCell from "../TableCell";
+import { sortByRowIndex } from "src/services/tableState/sort";
 
 interface TableRowProps {
 	row: RenderTableBodyRow;
@@ -34,15 +35,15 @@ export const TableBodyRow = ({ row }: TableRowProps) => {
 			);
 			const targetElIndex = rows.findIndex((row) => row.id == targetId);
 
-			let temp = rowsCopy[targetElIndex];
-			rowsCopy[targetElIndex] = rowsCopy[draggedElIndex];
-			rowsCopy[draggedElIndex] = temp;
+			let temp = rowsCopy[targetElIndex].index;
+			rowsCopy[targetElIndex].index = rowsCopy[draggedElIndex].index;
+			rowsCopy[draggedElIndex].index = temp;
 
 			return {
 				...prevState,
 				model: {
 					...prevState.model,
-					rows: rowsCopy,
+					rows: sortByRowIndex(rowsCopy),
 				},
 			};
 		});

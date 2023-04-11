@@ -71,6 +71,7 @@ export interface Column {
 
 export interface Row {
 	id: string;
+	index: number;
 	menuCellId: string;
 	creationTime: number;
 	lastEditedTime: number;
