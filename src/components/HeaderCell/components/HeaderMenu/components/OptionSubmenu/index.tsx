@@ -26,8 +26,6 @@ interface Props {
 	type: CellType;
 	dateFormat: DateFormat;
 	shouldWrapOverflow: boolean;
-	hasAutoWidth: boolean;
-	onAutoWidthToggle: (columnId: string, value: boolean) => void;
 	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
 	onDeleteClick: () => void;
 	onBackClick: () => void;
@@ -43,8 +41,6 @@ export default function OptionSubmenu({
 	title,
 	dateFormat,
 	shouldWrapOverflow,
-	hasAutoWidth,
-	onAutoWidthToggle,
 	onWrapOverflowToggle,
 	onBackClick,
 	onDeleteClick,
@@ -63,17 +59,6 @@ export default function OptionSubmenu({
 			<Submenu title={title} onBackClick={onBackClick}>
 				<Padding paddingY="md">
 					<Stack spacing="md" isVertical>
-						<Padding paddingX="lg">
-							<Stack spacing="md">
-								<Text value="Auto Width" />
-								<Switch
-									isChecked={hasAutoWidth}
-									onToggle={(value) =>
-										onAutoWidthToggle(columnId, value)
-									}
-								/>
-							</Stack>
-						</Padding>
 						{type === CellType.CURRENCY && (
 							<div
 								ref={menu.containerRef}
@@ -93,7 +78,7 @@ export default function OptionSubmenu({
 								/>
 							</div>
 						)}
-						{!hasAutoWidth && type === CellType.TEXT && (
+						{type === CellType.TEXT && (
 							<Padding paddingX="lg">
 								<Stack spacing="sm">
 									<Text value="Wrap Overflow" />

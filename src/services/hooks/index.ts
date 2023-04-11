@@ -1,4 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+
+export const useForceUpdate = () => {
+	const [, setTime] = useState(0);
+	return useCallback(() => setTime(Date.now()), []);
+};
 
 export const useCompare = (value: any) => {
 	const prevValue = usePrevious(value);

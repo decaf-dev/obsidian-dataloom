@@ -10,6 +10,7 @@
     width: 0;
     height: 0;
 }
+
 .NLT__slider {
     position: absolute;
     cursor: pointer;
@@ -17,7 +18,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #ccc;
+    background-color: var(--background-modifier-border-hover);
     -webkit-transition: .4s;
     transition: .4s;
     border-radius: 15px;
@@ -37,7 +38,7 @@
 }
 
 input:checked+.NLT__slider {
-    background-color: #2196F3;
+    background-color: var(--interactive-accent);
 }
 
 input:focus+.NLT__slider {

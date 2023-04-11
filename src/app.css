@@ -127,11 +127,6 @@
 /**
 * Overflow
 */
-.NLT__auto-width {
-	overflow-wrap: normal; /* TODO is this prop redunant? */
-	white-space: nowrap;
-}
-
 .NLT__wrap-overflow {
 	overflow-wrap: break-word;
 }

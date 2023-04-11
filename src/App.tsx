@@ -261,16 +261,6 @@ export default function App({ onSaveTableState }: Props) {
 		setTableState((prevState) => updateTagColor(prevState, tagId, color));
 	}
 
-	function handleAutoWidthToggle(columnId: string, value: boolean) {
-		logFunc(shouldDebug, FILE_NAME, "handleAutoWidthToggle", {
-			columnId,
-			value,
-		});
-		setTableState((prevState) =>
-			updateColumn(prevState, columnId, "hasAutoWidth", value)
-		);
-	}
-
 	function handleWrapContentToggle(columnId: string, value: boolean) {
 		logFunc(shouldDebug, FILE_NAME, "handleWrapContentToggle", {
 			columnId,
@@ -347,7 +337,6 @@ export default function App({ onSaveTableState }: Props) {
 										type,
 										sortDir,
 										shouldWrapOverflow,
-										hasAutoWidth,
 										currencyType,
 										dateFormat,
 									} = column;
@@ -376,15 +365,10 @@ export default function App({ onSaveTableState }: Props) {
 												currencyType={currencyType}
 												numColumns={columns.length}
 												columnId={cell.columnId}
-												width={
-													hasAutoWidth
-														? "unset"
-														: width
-												}
+												width={width}
 												shouldWrapOverflow={
 													shouldWrapOverflow
 												}
-												hasAutoWidth={hasAutoWidth}
 												markdown={markdown}
 												type={type}
 												sortDir={sortDir}
@@ -399,9 +383,6 @@ export default function App({ onSaveTableState }: Props) {
 												}
 												onTypeSelect={
 													handleHeaderTypeClick
-												}
-												onAutoWidthToggle={
-													handleAutoWidthToggle
 												}
 												onDateFormatChange={
 													handleDateFormatChange
@@ -465,7 +446,6 @@ export default function App({ onSaveTableState }: Props) {
 										const {
 											width,
 											type,
-											hasAutoWidth,
 											shouldWrapOverflow,
 											currencyType,
 											dateFormat,
@@ -504,12 +484,7 @@ export default function App({ onSaveTableState }: Props) {
 													shouldWrapOverflow={
 														shouldWrapOverflow
 													}
-													hasAutoWidth={hasAutoWidth}
-													width={
-														hasAutoWidth
-															? "unset"
-															: width
-													}
+													width={width}
 													onTagClick={
 														handleAddCellToTag
 													}
@@ -553,11 +528,7 @@ export default function App({ onSaveTableState }: Props) {
 							id: footerRowId,
 							cells: [
 								...columns.map((_column, i) => {
-									const {
-										width,
-										hasAutoWidth,
-										footerCellId,
-									} = columns[i];
+									const { width, footerCellId } = columns[i];
 									if (i === 0) {
 										return {
 											id: footerCellId,
@@ -565,9 +536,7 @@ export default function App({ onSaveTableState }: Props) {
 												<div
 													style={{
 														paddingTop: "10px",
-														width: hasAutoWidth
-															? "max-content"
-															: width,
+														width,
 													}}
 												>
 													<Button
