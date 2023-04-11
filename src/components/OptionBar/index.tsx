@@ -63,13 +63,15 @@ export default function OptionBar({ model, onSortRemoveClick }: Props) {
 
 	return (
 		<div className="NLT__option-bar">
-			<Stack spacing="sm" isVertical>
+			<Stack spacing="lg" isVertical>
+				<Flex justify="flex-end">
+					<SearchBar />
+				</Flex>
 				<Flex justify="space-between">
-					{/* <SortBubbleList
+					<SortBubbleList
 						bubbles={bubbles}
 						onRemoveClick={onSortRemoveClick}
-					/> */}
-					<SearchBar />
+					/>
 					<HideColumns />
 				</Flex>
 			</Stack>

@@ -321,280 +321,265 @@ export default function App({ onSaveTableState }: Props) {
 
 	return (
 		<div className="NLT__app">
-			<Stack spacing="lg" isVertical>
-				<OptionBar
-					model={tableState.model}
-					onSortRemoveClick={handleSortRemoveClick}
-				/>
-				<div className="NLT__table-outer">
-					<div className="NLT__table-inner">
-						<Table
-							headerRows={[
-								{
-									id: headerRowId,
+			<OptionBar
+				model={tableState.model}
+				onSortRemoveClick={handleSortRemoveClick}
+			/>
+			<div className="NLT__table-outer">
+				<div className="NLT__table-inner">
+					<Table
+						headerRows={[
+							{
+								id: headerRowId,
+								cells: [
+									...columns.map((column, i) => {
+										const {
+											id: columnId,
+											width,
+											type,
+											sortDir,
+											shouldWrapOverflow,
+											currencyType,
+											dateFormat,
+										} = column;
+
+										const cell = cells.find(
+											(cell) =>
+												cell.columnId === columnId &&
+												cell.isHeader
+										);
+										if (!cell)
+											throw new CellNotFoundError();
+
+										const {
+											id: cellId,
+											markdown,
+											rowId,
+										} = cell;
+										return {
+											id: cellId,
+											columnId,
+											content: (
+												<HeaderCell
+													key={columnId}
+													cellId={cellId}
+													rowId={rowId}
+													dateFormat={dateFormat}
+													currencyType={currencyType}
+													numColumns={columns.length}
+													columnId={cell.columnId}
+													width={width}
+													shouldWrapOverflow={
+														shouldWrapOverflow
+													}
+													markdown={markdown}
+													type={type}
+													sortDir={sortDir}
+													onSortClick={
+														handleHeaderSortSelect
+													}
+													onWidthChange={
+														handleHeaderWidthChange
+													}
+													onDeleteClick={
+														handleHeaderDeleteClick
+													}
+													onTypeSelect={
+														handleHeaderTypeClick
+													}
+													onDateFormatChange={
+														handleDateFormatChange
+													}
+													onWrapOverflowToggle={
+														handleWrapContentToggle
+													}
+													onNameChange={
+														handleCellContentChange
+													}
+													onCurrencyChange={
+														handleCurrencyChange
+													}
+												/>
+											),
+										};
+									}),
+									{
+										id: lastColumnId,
+										columnId: lastColumnId,
+										content: (
+											<div
+												style={{
+													paddingLeft: "10px",
+												}}
+											>
+												<Button
+													icon={
+														<Icon
+															type={IconType.ADD}
+														/>
+													}
+													onClick={() =>
+														handleAddColumn()
+													}
+												/>
+											</div>
+										),
+									},
+								],
+							},
+						]}
+						bodyRows={filteredRows
+							.filter((_row, i) => i !== 0)
+							.map((row) => {
+								const rowCells = cells.filter(
+									(cell) => cell.rowId === row.id
+								);
+								const {
+									id: rowId,
+									menuCellId,
+									lastEditedTime,
+									creationTime,
+								} = row;
+								return {
+									id: rowId,
 									cells: [
-										...columns.map((column, i) => {
+										...rowCells.map((cell) => {
+											const column = columns.find(
+												(column) =>
+													column.id == cell.columnId
+											);
+											if (!column)
+												throw new ColumnIdError(
+													cell.columnId
+												);
 											const {
-												id: columnId,
 												width,
 												type,
-												sortDir,
 												shouldWrapOverflow,
 												currencyType,
 												dateFormat,
 											} = column;
-
-											const cell = cells.find(
-												(cell) =>
-													cell.columnId ===
-														columnId &&
-													cell.isHeader
-											);
-											if (!cell)
-												throw new CellNotFoundError();
-
 											const {
 												id: cellId,
 												markdown,
-												rowId,
+												columnId,
 											} = cell;
+
+											const filteredTags = tags.filter(
+												(tag) =>
+													tag.columnId === column.id
+											);
+
 											return {
 												id: cellId,
-												columnId,
 												content: (
-													<HeaderCell
-														key={columnId}
+													<Cell
+														key={cellId}
 														cellId={cellId}
 														rowId={rowId}
+														tags={filteredTags}
+														columnId={columnId}
+														rowCreationTime={
+															creationTime
+														}
 														dateFormat={dateFormat}
-														currencyType={
+														columnCurrencyType={
 															currencyType
 														}
-														numColumns={
-															columns.length
+														rowLastEditedTime={
+															lastEditedTime
 														}
-														columnId={cell.columnId}
-														width={width}
+														markdown={markdown}
+														columnType={type}
 														shouldWrapOverflow={
 															shouldWrapOverflow
 														}
-														markdown={markdown}
-														type={type}
-														sortDir={sortDir}
-														onSortClick={
-															handleHeaderSortSelect
+														width={width}
+														onTagClick={
+															handleAddCellToTag
 														}
-														onWidthChange={
-															handleHeaderWidthChange
+														onRemoveTagClick={
+															handleRemoveCellFromTag
 														}
-														onDeleteClick={
-															handleHeaderDeleteClick
-														}
-														onTypeSelect={
-															handleHeaderTypeClick
-														}
-														onDateFormatChange={
-															handleDateFormatChange
-														}
-														onWrapOverflowToggle={
-															handleWrapContentToggle
-														}
-														onNameChange={
+														onContentChange={
 															handleCellContentChange
 														}
-														onCurrencyChange={
-															handleCurrencyChange
+														onTagColorChange={
+															handleTagChangeColor
 														}
+														onTagDeleteClick={
+															handleTagDeleteClick
+														}
+														onAddTag={handleAddTag}
 													/>
 												),
 											};
 										}),
 										{
-											id: lastColumnId,
-											columnId: lastColumnId,
+											id: menuCellId,
 											content: (
 												<div
 													style={{
 														paddingLeft: "10px",
 													}}
 												>
-													<Button
-														icon={
-															<Icon
-																type={
-																	IconType.ADD
-																}
-															/>
-														}
-														onClick={() =>
-															handleAddColumn()
+													<RowMenu
+														rowId={rowId}
+														onDeleteClick={
+															handleRowDeleteClick
 														}
 													/>
 												</div>
 											),
 										},
 									],
-								},
-							]}
-							bodyRows={filteredRows
-								.filter((_row, i) => i !== 0)
-								.map((row) => {
-									const rowCells = cells.filter(
-										(cell) => cell.rowId === row.id
-									);
-									const {
-										id: rowId,
-										menuCellId,
-										lastEditedTime,
-										creationTime,
-									} = row;
-									return {
-										id: rowId,
-										cells: [
-											...rowCells.map((cell) => {
-												const column = columns.find(
-													(column) =>
-														column.id ==
-														cell.columnId
-												);
-												if (!column)
-													throw new ColumnIdError(
-														cell.columnId
-													);
-												const {
-													width,
-													type,
-													shouldWrapOverflow,
-													currencyType,
-													dateFormat,
-												} = column;
-												const {
-													id: cellId,
-													markdown,
-													columnId,
-												} = cell;
-
-												const filteredTags =
-													tags.filter(
-														(tag) =>
-															tag.columnId ===
-															column.id
-													);
-
-												return {
-													id: cellId,
-													content: (
-														<Cell
-															key={cellId}
-															cellId={cellId}
-															rowId={rowId}
-															tags={filteredTags}
-															columnId={columnId}
-															rowCreationTime={
-																creationTime
-															}
-															dateFormat={
-																dateFormat
-															}
-															columnCurrencyType={
-																currencyType
-															}
-															rowLastEditedTime={
-																lastEditedTime
-															}
-															markdown={markdown}
-															columnType={type}
-															shouldWrapOverflow={
-																shouldWrapOverflow
-															}
-															width={width}
-															onTagClick={
-																handleAddCellToTag
-															}
-															onRemoveTagClick={
-																handleRemoveCellFromTag
-															}
-															onContentChange={
-																handleCellContentChange
-															}
-															onTagColorChange={
-																handleTagChangeColor
-															}
-															onTagDeleteClick={
-																handleTagDeleteClick
-															}
-															onAddTag={
-																handleAddTag
-															}
-														/>
-													),
-												};
-											}),
-											{
-												id: menuCellId,
+								};
+							})}
+						footerRows={[
+							{
+								id: footerRowId,
+								cells: [
+									...columns.map((_column, i) => {
+										const { width, footerCellId } =
+											columns[i];
+										if (i === 0) {
+											return {
+												id: footerCellId,
 												content: (
 													<div
 														style={{
-															paddingLeft: "10px",
+															paddingTop: "10px",
+															paddingLeft:
+																"var(--size-4-4)",
+															width,
 														}}
 													>
-														<RowMenu
-															rowId={rowId}
-															onDeleteClick={
-																handleRowDeleteClick
+														<Button
+															onClick={() =>
+																handleAddRow()
 															}
-														/>
+														>
+															New row
+														</Button>
 													</div>
 												),
-											},
-										],
-									};
-								})}
-							footerRows={[
-								{
-									id: footerRowId,
-									cells: [
-										...columns.map((_column, i) => {
-											const { width, footerCellId } =
-												columns[i];
-											if (i === 0) {
-												return {
-													id: footerCellId,
-													content: (
-														<div
-															style={{
-																paddingTop:
-																	"10px",
-																width,
-															}}
-														>
-															<Button
-																onClick={() =>
-																	handleAddRow()
-																}
-															>
-																New row
-															</Button>
-														</div>
-													),
-												};
-											}
-											return {
-												id: footerCellId,
-												content: <></>,
 											};
-										}),
-										{
-											id: lastColumnId,
+										}
+										return {
+											id: footerCellId,
 											content: <></>,
-										},
-									],
-								},
-							]}
-						/>
-					</div>
+										};
+									}),
+									{
+										id: lastColumnId,
+										content: <></>,
+									},
+								],
+							},
+						]}
+					/>
 				</div>
-			</Stack>
+			</div>
 		</div>
 	);
 }
