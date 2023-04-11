@@ -2,10 +2,11 @@ import StateFactory from "./StateFactory";
 import { Row, TableState } from "./types";
 
 export const addRow = (prevState: TableState): TableState => {
-	const newRow = StateFactory.createRow();
-	const cellsCopy = [...prevState.model.cells];
+	const { rows, cells, columns } = prevState.model;
+	const newRow = StateFactory.createRow(rows.length);
+	const cellsCopy = [...cells];
 
-	prevState.model.columns.forEach((column) => {
+	columns.forEach((column) => {
 		const newCell = StateFactory.createCell(column.id, newRow.id, false);
 		cellsCopy.push(newCell);
 	});
@@ -15,7 +16,7 @@ export const addRow = (prevState: TableState): TableState => {
 		model: {
 			...prevState.model,
 			cells: cellsCopy,
-			rows: [...prevState.model.rows, newRow],
+			rows: [...rows, newRow],
 		},
 	};
 };

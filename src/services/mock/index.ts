@@ -11,7 +11,7 @@ export const mockTableState = (
 		columns.push(StateFactory.createColumn());
 
 	const rows: Row[] = [];
-	for (let i = 0; i < numRows; i++) rows.push(StateFactory.createRow());
+	for (let i = 0; i < numRows; i++) rows.push(StateFactory.createRow(i));
 
 	const cells: Cell[] = [];
 	for (let y = 0; y < numRows; y++) {

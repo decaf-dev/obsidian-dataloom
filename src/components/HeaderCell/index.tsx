@@ -175,9 +175,9 @@ export default function HeaderCell({
 					onClick={(e) => {
 						//Stop propagation so we don't open the header
 						e.stopPropagation();
-						if (e.detail === 2) {
-							onWidthChange(columnId, "unset");
-						}
+
+						//If the user is double clicking then set width to max
+						if (e.detail === 2) onWidthChange(columnId, "unset");
 					}}
 				/>
 			</div>

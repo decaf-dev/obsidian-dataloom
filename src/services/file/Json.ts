@@ -1,10 +1,12 @@
 import { CURRENT_PLUGIN_VERSION } from "src/constants";
 import {
-	Column,
 	CurrencyType,
 	DateFormat,
+	SortDir,
 	TableState,
 } from "../tableState/types";
+import { sortByCreationTime } from "../tableState/sort";
+import { RowIdError } from "../tableState/error";
 
 export default class Json {
 	static serializeTableState(tableState: TableState): string {
@@ -14,28 +16,41 @@ export default class Json {
 	static deserializeTableState(data: string): TableState {
 		const tableState = JSON.parse(data) as TableState;
 		const { pluginVersion } = tableState;
+		const { columns, rows } = tableState.model;
+
 		if (pluginVersion < CURRENT_PLUGIN_VERSION) {
-			//Currency type feature
+			//Feat: Currency type
 			if (pluginVersion < 610) {
-				tableState.model.columns.forEach((column) => {
+				columns.forEach((column) => {
 					column.currencyType = CurrencyType.UNITED_STATES;
 				});
 			}
 
-			//Date format feature
+			//Feat: Date formats
 			if (pluginVersion < 620) {
-				tableState.model.columns.forEach((column) => {
+				columns.forEach((column) => {
 					column.dateFormat = DateFormat.YYYY_MM_DD;
 				});
 			}
 
-			//Removal of auto width
 			if (pluginVersion < 630) {
-				tableState.model.columns.forEach((column: unknown) => {
+				//Feat: Double click to resize
+				//Delete hasAutoWidth property from columns
+				columns.forEach((column: unknown) => {
 					const typedColumn = column as Record<string, unknown>;
 					if (typedColumn.hasOwnProperty("hasAutoWidth")) {
 						delete typedColumn.hasAutoWidth;
 					}
+				});
+
+				//Feat: Drag and drag rows
+				//Set the initial row index based on the creation time
+				const sortedRows = sortByCreationTime(rows, SortDir.ASC);
+				sortedRows.forEach((row, i) => {
+					const loadedRow = rows.find((r) => r.id === row.id);
+					if (!loadedRow) throw new RowIdError(row.id);
+					//Set the index based on the index of the sorted row
+					loadedRow.index = i;
 				});
 			}
 		}

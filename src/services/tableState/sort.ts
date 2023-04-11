@@ -151,7 +151,7 @@ const sortByCheckbox = (
 	return rowsCopy;
 };
 
-const sortByCreationTime = (rows: Row[], sortDir: SortDir): Row[] => {
+export const sortByCreationTime = (rows: Row[], sortDir: SortDir): Row[] => {
 	const rowsCopy = [...rows];
 	rowsCopy.sort((a, b) => {
 		if (sortDir === SortDir.ASC) {
@@ -175,6 +175,14 @@ const sortByLastEditedTime = (rows: Row[], sortDir: SortDir): Row[] => {
 		} else {
 			return 0;
 		}
+	});
+	return rowsCopy;
+};
+
+export const sortByRowIndex = (rows: Row[]): Row[] => {
+	const rowsCopy = [...rows];
+	rowsCopy.sort((a, b) => {
+		return a.index - b.index;
 	});
 	return rowsCopy;
 };
@@ -204,7 +212,7 @@ export const sortRows = (prevState: TableState): TableState => {
 		...prevState,
 		model: {
 			...prevState.model,
-			rows: sortByCreationTime(rows, SortDir.ASC),
+			rows: sortByRowIndex(rows),
 		},
 	};
 };

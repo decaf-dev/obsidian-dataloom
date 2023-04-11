@@ -25,10 +25,11 @@ export default class StateFactory {
 		};
 	}
 
-	static createRow(): Row {
+	static createRow(totalRowCount: number): Row {
 		const currentTime = Date.now();
 		return {
 			id: randomUUID(),
+			index: totalRowCount,
 			menuCellId: randomUUID(),
 			creationTime: currentTime,
 			lastEditedTime: currentTime,
