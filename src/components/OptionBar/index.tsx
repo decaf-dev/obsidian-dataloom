@@ -12,6 +12,7 @@ import SortBubble from "./components/SortBubble";
 import "./styles.css";
 import HideColumns from "./components/HideColumns";
 import Flex from "../Flex";
+import Text from "../Text";
 
 interface SortButtonListProps {
 	bubbles: { sortDir: SortDir; markdown: string; columnId: string }[];
@@ -21,17 +22,23 @@ interface SortButtonListProps {
 const SortBubbleList = ({ bubbles, onRemoveClick }: SortButtonListProps) => {
 	const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
 	return (
-		<Stack spacing="sm">
-			{bubbles.map((bubble, i) => (
-				<SortBubble
-					key={i}
-					isDarkMode={isDarkMode}
-					sortDir={bubble.sortDir}
-					markdown={bubble.markdown}
-					onRemoveClick={() => onRemoveClick(bubble.columnId)}
-				/>
-			))}
-		</Stack>
+		<>
+			{bubbles.length !== 0 ? (
+				<Stack spacing="sm">
+					{bubbles.map((bubble, i) => (
+						<SortBubble
+							key={i}
+							isDarkMode={isDarkMode}
+							sortDir={bubble.sortDir}
+							markdown={bubble.markdown}
+							onRemoveClick={() => onRemoveClick(bubble.columnId)}
+						/>
+					))}
+				</Stack>
+			) : (
+				<Text value="No sort filters" />
+			)}
+		</>
 	);
 };
 
@@ -67,7 +74,7 @@ export default function OptionBar({ model, onSortRemoveClick }: Props) {
 				<Flex justify="flex-end">
 					<SearchBar />
 				</Flex>
-				<Flex justify="space-between">
+				<Flex justify="space-between" align="flex-end">
 					<SortBubbleList
 						bubbles={bubbles}
 						onRemoveClick={onSortRemoveClick}
