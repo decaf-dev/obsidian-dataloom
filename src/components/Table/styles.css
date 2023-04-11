@@ -31,12 +31,15 @@
 	overflow: visible;
 	text-align: start;
 	background-color: var(--background-secondary) !important;
+	position: sticky !important;
+	top: 0;
+	z-index: 1;
 }
 
 .NLT__th:last-child {
 	border-top: 0 !important;
 	border-bottom: 0 !important;
-	background-color: unset !important;
+	background-color: var(--background-primary) !important;
 }
 
 .NLT__td {
