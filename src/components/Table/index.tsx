@@ -1,11 +1,12 @@
 import { TableHeaderRow } from "./components/TableHeaderRow";
-import { TableRow } from "./components/TableRow";
+import { TableBodyRow } from "./components/TableBodyRow";
 import "./styles.css";
 import {
 	RenderTableBodyRow,
 	RenderTableFooterRow,
 	RenderTableHeaderRow,
 } from "./types";
+import { TableFooterRow } from "./components/TableFooterRow";
 
 interface Props {
 	headerRows: RenderTableHeaderRow[];
@@ -23,12 +24,12 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 			</thead>
 			<tbody className="NLT__tbody">
 				{bodyRows.map((row) => (
-					<TableRow key={row.id} row={row} />
+					<TableBodyRow key={row.id} row={row} />
 				))}
 			</tbody>
 			<tfoot className="NLT__tfoot">
 				{footerRows.map((row) => (
-					<TableRow key={row.id} row={row} />
+					<TableFooterRow key={row.id} row={row} />
 				))}
 			</tfoot>
 		</table>
