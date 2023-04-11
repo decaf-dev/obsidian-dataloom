@@ -1,7 +1,6 @@
 import { useTableState } from "src/services/tableState/useTableState";
 import { RenderTableBodyRow } from "../../types";
 import TableCell from "../TableCell";
-import { sortByRowIndex } from "src/services/tableState/sort";
 import { SortDir } from "src/services/tableState/types";
 
 interface TableRowProps {
@@ -9,7 +8,7 @@ interface TableRowProps {
 }
 
 export const TableBodyRow = ({ row }: TableRowProps) => {
-	const [, setTableState] = useTableState();
+	const [tableState, setTableState] = useTableState();
 
 	function handleDragStart(e: React.DragEvent) {
 		const el = e.target as HTMLElement;
@@ -20,6 +19,21 @@ export const TableBodyRow = ({ row }: TableRowProps) => {
 
 	function handleDrop(e: React.DragEvent) {
 		e.preventDefault();
+
+		const { columns } = tableState.model;
+		const isSorted = columns.find(
+			(column) => column.sortDir !== SortDir.NONE
+		);
+		if (isSorted) {
+			if (
+				!window.confirm(
+					"This will update your default sorting to the current sort filter. Do you wish to continue?" +
+						"\n\n" +
+						"If not, please remove your sort filter before dragging a row."
+				)
+			)
+				return;
+		}
 
 		const draggedId = e.dataTransfer.getData("text");
 		const targetId = (e.currentTarget as HTMLElement).getAttr(
@@ -35,9 +49,6 @@ export const TableBodyRow = ({ row }: TableRowProps) => {
 				(row) => row.id === draggedId
 			);
 			const targetElIndex = rows.findIndex((row) => row.id == targetId);
-
-			//1,2,3,4
-			//4,2,1,3
 
 			//Move the actual element
 			let temp = rowsCopy[targetElIndex];
