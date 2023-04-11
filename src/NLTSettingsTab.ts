@@ -26,5 +26,36 @@ export default class NLTSettingsTab extends PluginSettingTab {
 					}
 				);
 			});
+
+		new Setting(containerEl)
+			.setName("Create new tables at attachments folder")
+			.setDesc(
+        "If true, new tables will be created in the attachments folder " +
+        "define in Obsidian settings. Otherwise, the custom location " +
+        "below will be used."
+      )
+			.addToggle((cb) => {
+				cb.setValue(this.plugin.settings.createAtObsidianAttachmentFolder).onChange(
+					async (value) => {
+						this.plugin.settings.createAtObsidianAttachmentFolder = value;
+						await this.plugin.saveSettings();
+					}
+				);
+			});
+
+		new Setting(containerEl)
+			.setName("Custom location for new tables")
+			.setDesc(
+        "Custom location for newly created tables. Default location is  the " +
+        "vault root folder, if not specified."
+      )
+			.addText((cb) => {
+				cb.setValue(this.plugin.settings.customFolderForNewTables).onChange(
+					async (value) => {
+						this.plugin.settings.customFolderForNewTables = value;
+						await this.plugin.saveSettings();
+					}
+				);
+			});
 	}
 }
