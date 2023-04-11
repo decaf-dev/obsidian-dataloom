@@ -2,6 +2,7 @@ import { useTableState } from "src/services/tableState/useTableState";
 import { RenderTableBodyRow } from "../../types";
 import TableCell from "../TableCell";
 import { sortByRowIndex } from "src/services/tableState/sort";
+import { SortDir } from "src/services/tableState/types";
 
 interface TableRowProps {
 	row: RenderTableBodyRow;
@@ -27,7 +28,7 @@ export const TableBodyRow = ({ row }: TableRowProps) => {
 		if (!targetId) throw new Error("data-row-id is required for a row");
 
 		setTableState((prevState) => {
-			const { rows } = prevState.model;
+			const { rows, columns } = prevState.model;
 			const rowsCopy = [...rows];
 
 			const draggedElIndex = rows.findIndex(
@@ -35,15 +36,32 @@ export const TableBodyRow = ({ row }: TableRowProps) => {
 			);
 			const targetElIndex = rows.findIndex((row) => row.id == targetId);
 
-			let temp = rowsCopy[targetElIndex].index;
-			rowsCopy[targetElIndex].index = rowsCopy[draggedElIndex].index;
-			rowsCopy[draggedElIndex].index = temp;
+			//1,2,3,4
+			//4,2,1,3
+
+			//Move the actual element
+			let temp = rowsCopy[targetElIndex];
+			rowsCopy[targetElIndex] = rowsCopy[draggedElIndex];
+			rowsCopy[draggedElIndex] = temp;
+
+			//Set the current index of all the values to their current positions
+			//This will allow us to retain the order of sorted rows once we drag an item
+			rowsCopy.forEach((row, index) => {
+				row.index = index;
+			});
 
 			return {
 				...prevState,
 				model: {
 					...prevState.model,
-					rows: sortByRowIndex(rowsCopy),
+					rows: rowsCopy,
+					columns: columns.map((column) => {
+						//If we're sorting, reset the sort
+						return {
+							...column,
+							sortDir: SortDir.NONE,
+						};
+					}),
 				},
 			};
 		});
