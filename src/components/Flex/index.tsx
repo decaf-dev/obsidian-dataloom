@@ -21,7 +21,6 @@ export default function Flex({
 				flexDirection: flexDir,
 				justifyContent: justify,
 				alignItems: align,
-				flexWrap: "wrap",
 			}}
 			className={className}
 		>

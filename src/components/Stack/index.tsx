@@ -16,6 +16,7 @@ export default function Stack({ spacing = "md", children, isVertical }: Props) {
 				alignItems: isVertical ? "flex-start" : "center",
 				justifyContent: isVertical ? "center" : "flex-start",
 				[isVertical ? "rowGap" : "columnGap"]: getSpacing(spacing),
+				...(isVertical ? { height: "100%" } : { width: "100%" }),
 			}}
 		>
 			{children}

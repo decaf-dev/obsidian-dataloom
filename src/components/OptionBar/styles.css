@@ -1,6 +1,6 @@
 .NLT__option-bar {
-    display: flex;
-    margin-bottom: 10px;
+    width: 100%;
+    padding: var(--size-4-4) var(--size-4-4) 0 var(--size-4-4);
 }
 
 .NLT__sort-bubble {

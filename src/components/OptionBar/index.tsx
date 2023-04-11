@@ -10,6 +10,8 @@ import SearchBar from "./components/SearchBar";
 import SortBubble from "./components/SortBubble";
 
 import "./styles.css";
+import HideColumns from "./components/HideColumns";
+import Flex from "../Flex";
 
 interface SortButtonListProps {
 	bubbles: { sortDir: SortDir; markdown: string; columnId: string }[];
@@ -61,11 +63,16 @@ export default function OptionBar({ model, onSortRemoveClick }: Props) {
 
 	return (
 		<div className="NLT__option-bar">
-			<SearchBar />
-			<SortBubbleList
-				bubbles={bubbles}
-				onRemoveClick={onSortRemoveClick}
-			/>
+			<Stack spacing="sm" isVertical>
+				<Flex justify="space-between">
+					{/* <SortBubbleList
+						bubbles={bubbles}
+						onRemoveClick={onSortRemoveClick}
+					/> */}
+					<SearchBar />
+					<HideColumns />
+				</Flex>
+			</Stack>
 		</div>
 	);
 }

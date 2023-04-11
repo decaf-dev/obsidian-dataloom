@@ -1,3 +1,13 @@
+.NLT__table-outer {
+	overflow: auto;
+	flex: 1;
+	width: 100%;
+}
+
+.NLT__table-inner {
+    padding: 0 var(--size-4-4) var(--size-4-4) var(--size-4-4);
+}
+
 .NLT__table {
 	table-layout: fixed;
 	border-collapse: collapse;
