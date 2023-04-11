@@ -46,7 +46,7 @@ export default class NLTSettingsTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName("Custom location for new tables")
 			.setDesc(
-        "Custom location for newly created tables. Default location is  the " +
+        "Custom location for newly created tables. Default location is the " +
         "vault root folder, if not specified."
       )
 			.addText((cb) => {
