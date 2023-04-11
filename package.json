@@ -34,7 +34,7 @@
 		"builtin-modules": "^3.2.0",
 		"esbuild": "^0.15.7",
 		"jest": "^29.5.0",
-		"obsidian": "^0.16.3",
+		"obsidian": "latest",
 		"react-test-renderer": "^18.2.0",
 		"renamer": "^4.0.0",
 		"ts-jest": "^29.0.5",
