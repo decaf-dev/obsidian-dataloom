@@ -18,12 +18,18 @@ export interface NLTSettings {
 	// Custom location for newly created tables. If the value is an empty string,
 	// the root vault folder will be used.
 	customFolderForNewTables: string;
+
+	// If true, new tables will be named as ${activeFileName}-${timestamp}. However,
+	// if no file has been opened, creating a new table will still use the default
+	// table name.
+	nameWithActiveFileNameAndTimestamp: boolean;
 }
 
 export const DEFAULT_SETTINGS: NLTSettings = {
 	shouldDebug: false,
 	createAtObsidianAttachmentFolder: true,
 	customFolderForNewTables: '',
+	nameWithActiveFileNameAndTimestamp: false,
 };
 export default class NLTPlugin extends Plugin {
 	settings: NLTSettings;

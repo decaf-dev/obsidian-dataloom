@@ -1,9 +1,10 @@
 import type { Vault, TFile } from "obsidian";
 
-import { Notice, normalizePath } from "obsidian";
+import { Notice, normalizePath, MarkdownView } from "obsidian";
 import { mockTableState } from "../mock";
 import FileOperations from "./File";
 import Json from "./Json";
+import { moment } from "obsidian";
 
 /**
  * Cover the undocumented Obsidian APIs used in this file.
@@ -51,6 +52,7 @@ type VaultExt = Vault & {
 type GetAvailableTablePathParams = {
 	createAtObsidianAttachmentFolder: boolean;
 	customFolderForNewTables: string;
+	nameWithActiveFileNameAndTimestamp: boolean;
 }
 
 export const TABLE_EXTENSION = "table";
@@ -61,13 +63,20 @@ const DEFAULT_TABLE_FILENAME = "Untitled";
  */
 export async function getAvailableTablePath({
 	createAtObsidianAttachmentFolder,
-	customFolderForNewTables
+	customFolderForNewTables,
+	nameWithActiveFileNameAndTimestamp
 }: GetAvailableTablePathParams) {
+	// We only regard active markdown files as active files.
+	const activeNote = app.workspace.getActiveViewOfType(MarkdownView)?.file;
+	const tableFileName = activeNote !== undefined && nameWithActiveFileNameAndTimestamp
+													? `${activeNote.basename}-${moment().format().replaceAll(":", ".")}`
+													: DEFAULT_TABLE_FILENAME;
+
 	if (createAtObsidianAttachmentFolder) {
 		return await (app.vault as VaultExt).getAvailablePathForAttachments(
-			DEFAULT_TABLE_FILENAME,
+			tableFileName,
 			TABLE_EXTENSION,
-			app.workspace.getActiveFile()
+			activeNote ?? null
 		);
 	}
 
@@ -79,7 +88,7 @@ export async function getAvailableTablePath({
 	}
 
 	return normalizePath((app.vault as VaultExt).getAvailablePath(
-		`${customFolderForNewTables}/${DEFAULT_TABLE_FILENAME}`,
+		`${customFolderForNewTables}/${tableFileName}`,
 		TABLE_EXTENSION
 	));
 }

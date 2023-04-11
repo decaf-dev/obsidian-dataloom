@@ -57,5 +57,21 @@ export default class NLTSettingsTab extends PluginSettingTab {
 					}
 				);
 			});
+
+		new Setting(containerEl)
+			.setName("Name new table with active file name and timestamp")
+			.setDesc(
+        "If true, new tables will be named as ${activeFileName}-${timestamp}. " +
+        "However, if no file has been opened yet, the default table file name " +
+				"will be used."
+      )
+			.addToggle((cb) => {
+				cb.setValue(this.plugin.settings.nameWithActiveFileNameAndTimestamp).onChange(
+					async (value) => {
+						this.plugin.settings.nameWithActiveFileNameAndTimestamp = value;
+						await this.plugin.saveSettings();
+					}
+				);
+			});
 	}
 }
