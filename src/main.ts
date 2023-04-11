@@ -9,10 +9,21 @@ import TableFile, { TABLE_EXTENSION } from "./services/file/TableFile";
 
 export interface NLTSettings {
 	shouldDebug: boolean;
+
+	// If true, new tables will be created in the attachments folder define in 
+	// Obsidian settings. Otherwise, the `customFolderForNewTables` value will
+	// be used.
+	createAtObsidianAttachmentFolder: boolean;
+
+	// Custom location for newly created tables. If the value is an empty string,
+	// the root vault folder will be used.
+	customFolderForNewTables: string;
 }
 
 export const DEFAULT_SETTINGS: NLTSettings = {
 	shouldDebug: false,
+	createAtObsidianAttachmentFolder: true,
+	customFolderForNewTables: '',
 };
 export default class NLTPlugin extends Plugin {
 	settings: NLTSettings;
