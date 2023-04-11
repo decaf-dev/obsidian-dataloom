@@ -17,6 +17,7 @@ import CurrencyMenu from "./components/CurrencyMenu";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 import { isMenuOpen, openMenu } from "src/services/menu/menuSlice";
 import DateFormatMenu from "./components/DateFormatMenu";
+import Flex from "src/components/Flex";
 
 interface Props {
 	canDeleteColumn: boolean;
@@ -80,7 +81,7 @@ export default function OptionSubmenu({
 						)}
 						{type === CellType.TEXT && (
 							<Padding paddingX="lg">
-								<Stack spacing="sm">
+								<Flex justify="space-between">
 									<Text value="Wrap Overflow" />
 									<Switch
 										isChecked={shouldWrapOverflow}
@@ -91,7 +92,7 @@ export default function OptionSubmenu({
 											)
 										}
 									/>
-								</Stack>
+								</Flex>
 							</Padding>
 						)}
 						{(type === CellType.CREATION_TIME ||
