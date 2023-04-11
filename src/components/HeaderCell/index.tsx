@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import { numToPx } from "src/services/string/conversion";
+import { numToPx, pxToNum } from "src/services/string/conversion";
 import {
 	CellType,
 	CurrencyType,
@@ -23,7 +23,7 @@ import Stack from "../Stack";
 import HeaderMenu from "./components/HeaderMenu";
 import { getIconTypeFromCellType } from "src/services/icon/utils";
 import { useResizeColumn } from "./services/hooks";
-import { useForceUpdate } from "src/services/hooks";
+import { useCompare, useForceUpdate } from "src/services/hooks";
 
 interface Props {
 	cellId: string;
@@ -71,18 +71,29 @@ export default function HeaderCell({
 	const menu = useMenu(MenuLevel.ONE);
 	const dispatch = useAppDispatch();
 	const isOpen = useAppSelector((state) => isMenuOpen(state, menu.id));
+	const [updateTime, forceUpdate] = useForceUpdate();
 
-	const forceUpdate = useForceUpdate();
-
+	//A width of "unset" means that we have double clicked to resize the column
+	//We need to force an update so that the menu ref will have the correct width
 	useEffect(() => {
 		if (width === "unset") {
 			forceUpdate();
 		}
 	}, [width, forceUpdate]);
 
+	//We will then need to update the width of the column so that the header cell will
+	//have a value set in pixels
+	const shouldUpdateWidth = useCompare(updateTime);
+	useEffect(() => {
+		if (shouldUpdateWidth) {
+			const newWidth = numToPx(menu.position.width);
+			onWidthChange(columnId, newWidth);
+		}
+	}, [shouldUpdateWidth, menu.position]);
+
 	const { resizingColumnId } = useAppSelector((state) => state.global);
 	const { handleMouseDown } = useResizeColumn(columnId, (dist) => {
-		const oldWidth = menu.position.width;
+		const oldWidth = pxToNum(width);
 		const newWidth = oldWidth + dist;
 
 		if (newWidth < MIN_COLUMN_WIDTH) return;

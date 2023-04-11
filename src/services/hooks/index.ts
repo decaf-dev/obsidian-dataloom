@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-export const useForceUpdate = () => {
-	const [, setTime] = useState(0);
-	return useCallback(() => setTime(Date.now()), []);
+export const useForceUpdate = (): [number, () => void] => {
+	const [time, setTime] = useState(0);
+	return [time, useCallback(() => setTime(Date.now()), [])];
 };
 
 export const useCompare = (value: any) => {
