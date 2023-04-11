@@ -10,6 +10,28 @@ import {
 } from "./types";
 import { sortCells } from "./utils";
 
+export const toggleColumn = (
+	prevState: TableState,
+	columnId: string
+): TableState => {
+	const { columns } = prevState.model;
+	return {
+		...prevState,
+		model: {
+			...prevState.model,
+			columns: columns.map((column) => {
+				if (column.id === columnId) {
+					return {
+						...column,
+						isVisible: !column.isVisible,
+					};
+				}
+				return column;
+			}),
+		},
+	};
+};
+
 export const addColumn = (prevState: TableState): TableState => {
 	const { cells, columns, rows } = prevState.model;
 	const columnsCopy = [...columns];

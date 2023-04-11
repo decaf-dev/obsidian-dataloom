@@ -16,6 +16,7 @@ export default class StateFactory {
 		return {
 			id: randomUUID(),
 			sortDir: SortDir.NONE,
+			isVisible: true,
 			width: "140px",
 			type: CellType.TEXT,
 			currencyType: CurrencyType.UNITED_STATES,

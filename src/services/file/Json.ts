@@ -52,6 +52,12 @@ export default class Json {
 					//Set the index based on the index of the sorted row
 					loadedRow.index = i;
 				});
+
+				//Feat: Column toggle
+				columns.forEach((column: unknown) => {
+					const typedColumn = column as Record<string, unknown>;
+					typedColumn.isVisible = true;
+				});
 			}
 		}
 		tableState.pluginVersion = CURRENT_PLUGIN_VERSION;

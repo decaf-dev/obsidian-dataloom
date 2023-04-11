@@ -63,6 +63,7 @@ export interface Column {
 	sortDir: SortDir;
 	width: string;
 	type: CellType;
+	isVisible: boolean;
 	dateFormat: DateFormat;
 	currencyType: CurrencyType;
 	shouldWrapOverflow: boolean;
