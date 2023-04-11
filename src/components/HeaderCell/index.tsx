@@ -1,6 +1,5 @@
-import React, { useRef } from "react";
+import React from "react";
 
-import { CSS_MEASUREMENT_PIXEL_REGEX } from "src/services/string/regex";
 import { numToPx, pxToNum } from "src/services/string/conversion";
 import {
 	CellType,
@@ -23,6 +22,7 @@ import Icon from "../Icon";
 import Stack from "../Stack";
 import HeaderMenu from "./components/HeaderMenu";
 import { getIconTypeFromCellType } from "src/services/icon/utils";
+import { useResizeColumn } from "./services/hooks";
 
 interface Props {
 	cellId: string;
@@ -71,19 +71,25 @@ export default function HeaderCell({
 	onCurrencyChange,
 	onDateFormatChange,
 }: Props) {
-	const mouseDownX = useRef(0);
-	const isResizing = useRef(false);
-
 	const menu = useMenu(MenuLevel.ONE);
 	const dispatch = useAppDispatch();
 	const isOpen = useAppSelector((state) => isMenuOpen(state, menu.id));
+
+	const { isResizingColumn } = useAppSelector((state) => state.global);
+	const { handleMouseDown } = useResizeColumn((dist) => {
+		const oldWidth = pxToNum(width);
+		const newWidth = oldWidth + dist;
+
+		if (newWidth < MIN_COLUMN_WIDTH) return;
+		onWidthChange(columnId, numToPx(newWidth));
+	});
 
 	function handleHeaderClick(e: React.MouseEvent) {
 		//If we're clicking in the submenu, then don't close the menu
 		const el = e.target as HTMLElement;
 		if (el.closest(`#${menu.id}`)) return;
 
-		if (isResizing.current) return;
+		if (isResizingColumn) return;
 		if (isOpen) {
 			closeHeaderMenu();
 		} else {
@@ -104,36 +110,15 @@ export default function HeaderCell({
 		dispatch(closeTopLevelMenu());
 	}
 
-	function handleMouseDown(e: React.MouseEvent) {
-		mouseDownX.current = e.pageX;
-		isResizing.current = true;
-	}
-
-	function handleMouseMove(e: MouseEvent) {
-		if (width.match(CSS_MEASUREMENT_PIXEL_REGEX)) {
-			const oldWidth = pxToNum(width);
-			const dist = e.pageX - mouseDownX.current;
-			const newWidth = oldWidth + dist;
-
-			if (newWidth < MIN_COLUMN_WIDTH) return;
-			onWidthChange(columnId, numToPx(newWidth));
-		}
-	}
-
-	function handleMouseUp() {
-		window.removeEventListener("mousemove", handleMouseMove);
-		window.removeEventListener("mouseup", handleMouseUp);
-		setTimeout(() => {
-			isResizing.current = false;
-		}, 100);
-	}
-
 	const { top, left } = menu.position;
 	const iconType = getIconTypeFromCellType(type);
 
+	let contentClassName = "NLT__th-content";
+	if (!isResizingColumn) contentClassName += " NLT__selectable";
+
 	return (
 		<div
-			className="NLT__th-container NLT__selectable"
+			className="NLT__th-container"
 			ref={menu.containerRef}
 			onClick={handleHeaderClick}
 			style={{
@@ -167,7 +152,7 @@ export default function HeaderCell({
 				onCurrencyChange={onCurrencyChange}
 				onDateFormatChange={onDateFormatChange}
 			/>
-			<div className="NLT__th-content">
+			<div className={contentClassName}>
 				<Stack spacing="md">
 					<Icon type={iconType} size="md" />
 					{markdown}
@@ -179,19 +164,14 @@ export default function HeaderCell({
 						className="NLT__th-resize"
 						onMouseDown={(e) => {
 							closeHeaderMenu();
-							//Prevents drag and drop
-							//See: https://stackoverflow.com/questions/704564/disable-drag-and-drop-on-html-elements
-							e.preventDefault();
 							handleMouseDown(e);
-							window.addEventListener(
-								"mousemove",
-								handleMouseMove
-							);
-							window.addEventListener("mouseup", handleMouseUp);
 						}}
 						onClick={(e) => {
 							//Stop propagation so we don't open the header
 							e.stopPropagation();
+							if (e.detail === 2) {
+								console.log("DOUBLE CLICK");
+							}
 						}}
 					/>
 				)}

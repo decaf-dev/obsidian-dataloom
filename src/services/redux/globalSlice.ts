@@ -6,6 +6,7 @@ interface GlobalState {
 	searchText: string;
 	isSearchBarVisible: boolean;
 	sortTime: number;
+	isResizingColumn: boolean;
 }
 
 const initialState: GlobalState = {
@@ -14,6 +15,7 @@ const initialState: GlobalState = {
 	searchText: "",
 	isSearchBarVisible: false,
 	sortTime: 0,
+	isResizingColumn: false,
 };
 
 const globalSlice = createSlice({
@@ -35,6 +37,9 @@ const globalSlice = createSlice({
 		updateSortTime(state) {
 			state.sortTime = Date.now();
 		},
+		setResizingColumn(state, action: PayloadAction<boolean>) {
+			state.isResizingColumn = action.payload;
+		},
 	},
 });
 
@@ -44,5 +49,6 @@ export const {
 	setSearchText,
 	toggleSearchBar,
 	updateSortTime,
+	setResizingColumn,
 } = globalSlice.actions;
 export default globalSlice.reducer;

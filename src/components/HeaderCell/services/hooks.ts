@@ -1,0 +1,39 @@
+import { useRef } from "react";
+import { setResizingColumn } from "src/services/redux/globalSlice";
+import { useAppDispatch } from "src/services/redux/hooks";
+
+export const useResizeColumn = (onWidthChange: (dist: number) => void) => {
+	const mouseDownX = useRef(0);
+	const dispatch = useAppDispatch();
+
+	function handleMouseMove(e: MouseEvent) {
+		const dist = e.pageX - mouseDownX.current;
+		onWidthChange(dist);
+	}
+
+	function handleMouseUp() {
+		window.removeEventListener("mousemove", handleMouseMove);
+		window.removeEventListener("mouseup", handleMouseUp);
+
+		setTimeout(() => {
+			dispatch(setResizingColumn(false));
+		}, 100);
+	}
+
+	function handleMouseDown(e: React.MouseEvent) {
+		//If we double click, then don't resize
+		if (e.detail >= 2) return;
+
+		//Prevent drag and drop
+		e.preventDefault();
+
+		//Add event listeners
+		window.addEventListener("mousemove", handleMouseMove);
+		window.addEventListener("mouseup", handleMouseUp);
+
+		mouseDownX.current = e.pageX;
+		dispatch(setResizingColumn(true));
+	}
+
+	return { handleMouseDown, isResizing };
+};
