@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Menu, MenuPosition, RenderableMenu } from "./types";
+import { MenuPosition, RenderableMenu } from "./types";
 import { randomUUID } from "crypto";
 
 const useMenuPosition = () => {

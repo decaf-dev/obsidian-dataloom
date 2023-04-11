@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 
-import { numToPx, pxToNum } from "src/services/string/conversion";
+import { numToPx } from "src/services/string/conversion";
 import {
 	CellType,
 	CurrencyType,
@@ -23,6 +23,7 @@ import Stack from "../Stack";
 import HeaderMenu from "./components/HeaderMenu";
 import { getIconTypeFromCellType } from "src/services/icon/utils";
 import { useResizeColumn } from "./services/hooks";
+import { useForceUpdate } from "src/services/hooks";
 
 interface Props {
 	cellId: string;
@@ -75,9 +76,19 @@ export default function HeaderCell({
 	const dispatch = useAppDispatch();
 	const isOpen = useAppSelector((state) => isMenuOpen(state, menu.id));
 
+	console.log(menu.position);
+
+	const forceUpdate = useForceUpdate();
+
+	useEffect(() => {
+		if (width === "unset") {
+			forceUpdate();
+		}
+	}, [width, forceUpdate]);
+
 	const { resizingColumnId } = useAppSelector((state) => state.global);
 	const { handleMouseDown } = useResizeColumn(columnId, (dist) => {
-		const oldWidth = pxToNum(width);
+		const oldWidth = menu.position.width;
 		const newWidth = oldWidth + dist;
 
 		if (newWidth < MIN_COLUMN_WIDTH) return;
@@ -174,7 +185,7 @@ export default function HeaderCell({
 							//Stop propagation so we don't open the header
 							e.stopPropagation();
 							if (e.detail === 2) {
-								console.log("DOUBLE CLICK");
+								onWidthChange(columnId, "unset");
 							}
 						}}
 					/>
