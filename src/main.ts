@@ -6,6 +6,7 @@ import { store } from "./services/redux/store";
 import { setDarkMode, setDebugMode } from "./services/redux/globalSlice";
 import { NLTView, NOTION_LIKE_TABLES_VIEW } from "./NLTView";
 import TableFile, { TABLE_EXTENSION } from "./services/file/TableFile";
+import { Notice } from "obsidian";
 
 export interface NLTSettings {
 	shouldDebug: boolean;
@@ -79,6 +80,36 @@ export default class NLTPlugin extends Plugin {
 		});
 	}
 
+	private async createAndEmbedTableFile() {
+		const editor = this.app.workspace.activeEditor?.editor;
+		if (!editor) {
+			new Notice("Cannot get active editor. Please open a note!");
+			return;
+		}
+
+		const tableFile = await TableFile.createNotionLikeTableFile(
+			this.settings
+		);
+
+		// Get link text from active note to the new table file.
+		// Based on user's Obsidian setting on the link text style.
+		const linkText = this.app.metadataCache.fileToLinktext(
+			tableFile,
+			app.workspace.getActiveFile()?.path ?? ""
+		);
+
+		// Insert link text.
+		const cursor = editor.getCursor();
+		editor.replaceRange(`![[${linkText}]]`, cursor);
+
+		//Open file in a new tab and set it to active
+		await app.workspace.getLeaf(true).setViewState({
+			type: NOTION_LIKE_TABLES_VIEW,
+			active: true,
+			state: { file: tableFile.path },
+		});
+	}
+
 	private checkForDebug() {
 		store.dispatch(setDebugMode(this.settings.shouldDebug));
 	}
@@ -111,6 +142,14 @@ export default class NLTPlugin extends Plugin {
 			callback: async () => {
 				this.createTableFile();
 			},
+		});
+
+		this.addCommand({
+			id: "nlt-embed-table",
+			name: "Create and embed table",
+			callback: async () => {
+				this.createAndEmbedTableFile();
+			}
 		});
 		//TODO implement
 		// this.addCommand({
