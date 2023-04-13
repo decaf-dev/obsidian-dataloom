@@ -1,5 +1,3 @@
-import React from "react";
-
 import Menu from "../Menu";
 import Icon from "../Icon";
 
@@ -15,28 +13,25 @@ import {
 import "./styles.css";
 import { MenuLevel } from "src/services/menu/types";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
-import MenuItem from "../MenuItem";
+import RowMenu from "./components/RowMenu";
 
 interface Props {
 	rowId: string;
 	onDeleteClick: (rowId: string) => void;
 }
 
-export default function RowMenu({ rowId, onDeleteClick }: Props) {
-	const menu = useMenu(MenuLevel.ONE);
+export default function RowOptions({ rowId, onDeleteClick }: Props) {
+	const [menu, menuPosition] = useMenu(MenuLevel.ONE);
 	const dispatch = useAppDispatch();
-	const isOpen = useAppSelector((state) => isMenuOpen(state, menu.id));
+	const shouldOpenMenu = useAppSelector((state) =>
+		isMenuOpen(state, menu.id)
+	);
 
 	function handleButtonClick() {
-		if (isOpen) {
+		if (shouldOpenMenu) {
 			dispatch(closeTopLevelMenu());
 		} else {
-			dispatch(
-				openMenu({
-					id: menu.id,
-					level: menu.level,
-				})
-			);
+			dispatch(openMenu(menu));
 		}
 	}
 
@@ -45,11 +40,14 @@ export default function RowMenu({ rowId, onDeleteClick }: Props) {
 		dispatch(closeTopLevelMenu());
 	}
 
-	const { top, left, height } = menu.position;
+	const { top, left, height } = menuPosition.position;
 
 	return (
 		<>
-			<div ref={menu.containerRef} className="NLT__row-menu-button">
+			<div
+				ref={menuPosition.containerRef}
+				className="NLT__row-menu-button"
+			>
 				<Button
 					icon={<Icon type={IconType.DRAG_INDICATOR} />}
 					ariaLabel="Drag to move or click to open"
@@ -68,15 +66,14 @@ export default function RowMenu({ rowId, onDeleteClick }: Props) {
 					}}
 				/>
 			</div>
-			<Menu id={menu.id} isOpen={isOpen} top={top + height} left={left}>
-				<div className="NLT__row-menu">
-					<MenuItem
-						iconType={IconType.DELETE}
-						name="Delete"
-						onClick={() => handleDeleteClick(rowId)}
-					/>
-				</div>
-			</Menu>
+			<RowMenu
+				id={menu.id}
+				rowId={rowId}
+				isOpen={shouldOpenMenu}
+				top={top + height}
+				left={left}
+				onDeleteClick={handleDeleteClick}
+			/>
 		</>
 	);
 }
