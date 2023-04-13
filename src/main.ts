@@ -9,10 +9,27 @@ import TableFile, { TABLE_EXTENSION } from "./services/file/TableFile";
 
 export interface NLTSettings {
 	shouldDebug: boolean;
+
+	// If true, new tables will be created in the attachments folder define in 
+	// Obsidian settings. Otherwise, the `customFolderForNewTables` value will
+	// be used.
+	createAtObsidianAttachmentFolder: boolean;
+
+	// Custom location for newly created tables. If the value is an empty string,
+	// the root vault folder will be used.
+	customFolderForNewTables: string;
+
+	// If true, new tables will be named as ${activeFileName}-${timestamp}. However,
+	// if no file has been opened, creating a new table will still use the default
+	// table name.
+	nameWithActiveFileNameAndTimestamp: boolean;
 }
 
 export const DEFAULT_SETTINGS: NLTSettings = {
 	shouldDebug: false,
+	createAtObsidianAttachmentFolder: true,
+	customFolderForNewTables: '',
+	nameWithActiveFileNameAndTimestamp: false,
 };
 export default class NLTPlugin extends Plugin {
 	settings: NLTSettings;
@@ -51,12 +68,14 @@ export default class NLTPlugin extends Plugin {
 	}
 
 	private async createTableFile() {
-		const filePath = await TableFile.createNotionLikeTableFile();
+		const tableFile = await TableFile.createNotionLikeTableFile(
+			this.settings
+		);
 		//Open file in a new tab and set it to active
 		await app.workspace.getLeaf(true).setViewState({
 			type: NOTION_LIKE_TABLES_VIEW,
 			active: true,
-			state: { file: filePath },
+			state: { file: tableFile.path },
 		});
 	}
 
