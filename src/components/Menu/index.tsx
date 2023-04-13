@@ -13,7 +13,6 @@ interface Props {
 	top?: number;
 	left?: number;
 	maxWidth?: number;
-	minWidth?: number;
 	width?: number;
 	height?: number;
 	children: React.ReactNode;
@@ -24,7 +23,6 @@ export default function Menu({
 	isOpen,
 	top = 0,
 	left = 0,
-	minWidth = 0,
 	maxWidth,
 	width = 0,
 	height = 0,
@@ -83,7 +81,6 @@ export default function Menu({
 							style={{
 								top: numToPx(top),
 								left: numToPx(left),
-								minWidth: numToPx(minWidth),
 								maxWidth: maxW,
 								width:
 									width === 0
