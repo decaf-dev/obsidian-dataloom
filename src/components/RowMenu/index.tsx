@@ -54,6 +54,18 @@ export default function RowMenu({ rowId, onDeleteClick }: Props) {
 					icon={<Icon type={IconType.DRAG_INDICATOR} />}
 					ariaLabel="Drag to move or click to open"
 					onClick={() => handleButtonClick()}
+					onMouseDown={(e) => {
+						const el = e.target as HTMLElement;
+						const row = el.closest(".NLT__tr");
+						if (row) {
+							row.setAttr("draggable", true);
+							const dragStartEvent = new DragEvent("dragstart");
+							Object.defineProperty(dragStartEvent, "target", {
+								value: row,
+							});
+							row.dispatchEvent(dragStartEvent);
+						}
+					}}
 				/>
 			</div>
 			<Menu id={menu.id} isOpen={isOpen} top={top + height} left={left}>

@@ -12,9 +12,15 @@ export const TableBodyRow = ({ row }: TableRowProps) => {
 
 	function handleDragStart(e: React.DragEvent) {
 		const el = e.target as HTMLElement;
+
 		const rowId = el.getAttr("data-row-id");
 		if (!rowId) throw new Error("data-row-id is required for a row");
 		e.dataTransfer.setData("text", rowId);
+	}
+
+	function handleDragEnd(e: React.DragEvent) {
+		const el = e.target as HTMLElement;
+		el.draggable = false;
 	}
 
 	function handleDrop(e: React.DragEvent) {
@@ -88,15 +94,10 @@ export const TableBodyRow = ({ row }: TableRowProps) => {
 			id={row.id}
 			data-row-id={row.id}
 			className="NLT__tr"
-			draggable
 			onDrop={handleDrop}
 			onDragStart={handleDragStart}
+			onDragEnd={handleDragEnd}
 			onDragOver={handleDragOver}
-			onMouseDown={(e) => {
-				const el = e.target as HTMLElement;
-				//If we're not dragging on the row menu button, prevent drag and drop
-				if (!el.closest(`.NLT__row-menu-button`)) e.preventDefault();
-			}}
 		>
 			{row.cells.map((cell) => (
 				<TableCell key={cell.id} content={cell.content} />
