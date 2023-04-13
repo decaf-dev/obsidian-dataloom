@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { Menu, RenderableMenu } from "src/services/menu/types";
+import { Menu } from "src/services/menu/types";
 import type { RootState } from "../redux/store";
 
 interface MenuState {

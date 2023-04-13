@@ -96,18 +96,20 @@ export default function Cell({
 	onContentChange,
 	onAddTag,
 }: Props) {
-	const menu = useMenu(MenuLevel.ONE);
-	const isOpen = useAppSelector((state) => isMenuOpen(state, menu.id));
+	const [menu, menuPosition] = useMenu(MenuLevel.ONE);
+	const shouldOpenMenu = useAppSelector((state) =>
+		isMenuOpen(state, menu.id)
+	);
 	const dispatch = useAppDispatch();
 	const { isDarkMode } = useAppSelector((state) => state.global);
 
 	//If we open a menu and then close it, we want to sort all rows
 	//TODO optimize?
 	useDidMountEffect(() => {
-		if (!isOpen) {
+		if (!shouldOpenMenu) {
 			dispatch(updateSortTime());
 		}
-	}, [isOpen]);
+	}, [shouldOpenMenu]);
 
 	async function handleCellContextClick() {
 		try {
@@ -135,12 +137,7 @@ export default function Cell({
 
 			//If we clicked on the link for a file or tag, return
 			if (el.nodeName === "A") return;
-			dispatch(
-				openMenu({
-					id: menu.id,
-					level: menu.level,
-				})
-			);
+			dispatch(openMenu(menu));
 		}
 	}
 
@@ -188,7 +185,7 @@ export default function Cell({
 		height: measuredHeight,
 		top,
 		left,
-	} = menu.position;
+	} = menuPosition.position;
 
 	let menuHeight = measuredHeight;
 	if (
@@ -219,7 +216,7 @@ export default function Cell({
 
 	return (
 		<div
-			ref={menu.containerRef}
+			ref={menuPosition.containerRef}
 			onClick={handleCellClick}
 			onContextMenu={handleCellContextClick}
 			className={className}
@@ -227,10 +224,10 @@ export default function Cell({
 				width,
 			}}
 		>
-			{isOpen && (
+			{shouldOpenMenu && (
 				<Menu
 					id={menu.id}
-					isOpen={isOpen}
+					isOpen={shouldOpenMenu}
 					top={top}
 					left={left}
 					width={menuWidth}
@@ -263,6 +260,7 @@ export default function Cell({
 					{columnType === CellType.DATE && (
 						<DateCellEdit
 							value={markdown}
+							dateFormat={dateFormat}
 							onDateChange={handleDateChange}
 						/>
 					)}

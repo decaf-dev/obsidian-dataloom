@@ -1,11 +1,11 @@
-import { useRef, useState } from "react";
-import { MenuPosition, RenderableMenu } from "./types";
+import { useMemo, useRef, useState } from "react";
+import { MenuPosition, Menu, Position } from "./types";
 import { randomUUID } from "crypto";
 
-const useMenuPosition = () => {
+const useMenuPosition = (): MenuPosition => {
 	const containerRef = useRef<any | null>(null);
 
-	let position: MenuPosition = {
+	let position: Position = {
 		top: 0,
 		left: 0,
 		width: 0,
@@ -30,13 +30,13 @@ const useMenuPosition = () => {
 	return { containerRef, position };
 };
 
-export const useMenu = (level: number): RenderableMenu => {
-	const { position, containerRef } = useMenuPosition();
+export const useMenu = (level: number): [Menu, MenuPosition] => {
+	const menuPosition = useMenuPosition();
 	const [id] = useState("m" + randomUUID());
-	return {
-		id,
-		level,
-		position,
-		containerRef,
-	};
+
+	const menu: Menu = useMemo(() => {
+		return { id, level };
+	}, [id, level]);
+
+	return [menu, menuPosition];
 };

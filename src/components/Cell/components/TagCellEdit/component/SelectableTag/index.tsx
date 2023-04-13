@@ -36,8 +36,10 @@ export default function SelectableTag({
 	onColorChange,
 	onDeleteClick,
 }: Props) {
-	const menu = useMenu(MenuLevel.TWO);
-	const isOpen = useAppSelector((state) => isMenuOpen(state, menu.id));
+	const [menu, menuPosition] = useMenu(MenuLevel.TWO);
+	const shouldOpenMenu = useAppSelector((state) =>
+		isMenuOpen(state, menu.id)
+	);
 
 	const dispatch = useAppDispatch();
 
@@ -51,11 +53,12 @@ export default function SelectableTag({
 		dispatch(closeAllMenus());
 	}
 
-	const { top, left, width } = menu.position;
+	const { position, containerRef } = menuPosition;
+	const { top, left, width } = position;
 	return (
 		<>
 			<div
-				ref={menu.containerRef}
+				ref={containerRef}
 				className="NLT__selectable-tag NLT__selectable"
 				onClick={() => onClick(id)}
 			>
@@ -72,12 +75,7 @@ export default function SelectableTag({
 						// Prevents a tag from being added when the button is clicked
 						// we just want to open the menu
 						e.stopPropagation();
-						dispatch(
-							openMenu({
-								id: menu.id,
-								level: menu.level,
-							})
-						);
+						dispatch(openMenu(menu));
 					}}
 				/>
 			</div>
@@ -85,7 +83,7 @@ export default function SelectableTag({
 				menuId={menu.id}
 				top={top - 125}
 				left={left + width - 50}
-				isOpen={isOpen}
+				isOpen={shouldOpenMenu}
 				selectedColor={color}
 				onColorClick={(color) => handleColorChange(color)}
 				onDeleteClick={handleDeleteClick}

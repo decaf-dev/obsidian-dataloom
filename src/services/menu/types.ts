@@ -4,7 +4,7 @@ export enum MenuLevel {
 	THREE,
 }
 
-export interface MenuPosition {
+export interface Position {
 	top: number;
 	left: number;
 	width: number;
@@ -16,7 +16,7 @@ export interface Menu {
 	level: MenuLevel;
 }
 
-export interface RenderableMenu extends Menu {
-	position: MenuPosition;
+export interface MenuPosition {
+	position: Position;
 	containerRef: React.MutableRefObject<any | null>;
 }

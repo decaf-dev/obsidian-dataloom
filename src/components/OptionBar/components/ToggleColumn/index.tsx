@@ -14,24 +14,21 @@ interface Props {
 }
 
 export default function ToggleColumn({ columns, onToggle }: Props) {
-	const menu = useMenu(MenuLevel.ONE);
-	const isOpen = useAppSelector((state) => isMenuOpen(state, menu.id));
+	const [menu, menuPosition] = useMenu(MenuLevel.ONE);
+	const shouldOpenMenu = useAppSelector((state) =>
+		isMenuOpen(state, menu.id)
+	);
 	const dispatch = useAppDispatch();
 
-	const { top, left, width } = menu.position;
+	const { top, left, width } = menuPosition.position;
 	return (
 		<>
-			<div className="NLT__toggle-column" ref={menu.containerRef}>
+			<div className="NLT__toggle-column" ref={menuPosition.containerRef}>
 				<Button
 					icon={<Icon type={IconType.VIEW_COLUMN} />}
 					ariaLabel="Toggle column"
 					onClick={() => {
-						dispatch(
-							openMenu({
-								id: menu.id,
-								level: menu.level,
-							})
-						);
+						dispatch(openMenu(menu));
 					}}
 				/>
 			</div>
@@ -39,7 +36,7 @@ export default function ToggleColumn({ columns, onToggle }: Props) {
 				id={menu.id}
 				top={top}
 				left={left - width - 100}
-				isOpen={isOpen}
+				isOpen={shouldOpenMenu}
 				columns={columns}
 				onToggle={onToggle}
 			/>

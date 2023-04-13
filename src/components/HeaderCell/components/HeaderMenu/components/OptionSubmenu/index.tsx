@@ -48,12 +48,12 @@ export default function OptionSubmenu({
 	onCurrencyChange,
 	onDateFormatChange,
 }: Props) {
-	const menu = useMenu(MenuLevel.TWO);
+	const [menu, menuPosition] = useMenu(MenuLevel.TWO);
 	const shouldOpenMenu = useAppSelector((state) =>
 		isMenuOpen(state, menu.id)
 	);
 	const dispatch = useAppDispatch();
-	const { top, left, width } = menu.position;
+	const { top, left, width } = menuPosition.position;
 
 	return (
 		<>
@@ -62,20 +62,13 @@ export default function OptionSubmenu({
 					<Stack spacing="md" isVertical>
 						{type === CellType.CURRENCY && (
 							<div
-								ref={menu.containerRef}
+								ref={menuPosition.containerRef}
 								style={{ width: "100%" }}
 							>
 								<MenuItem
 									name="Currency"
 									value={currencyType}
-									onClick={() =>
-										dispatch(
-											openMenu({
-												id: menu.id,
-												level: menu.level,
-											})
-										)
-									}
+									onClick={() => dispatch(openMenu(menu))}
 								/>
 							</div>
 						)}
@@ -98,20 +91,13 @@ export default function OptionSubmenu({
 						{(type === CellType.CREATION_TIME ||
 							type === CellType.LAST_EDITED_TIME) && (
 							<div
-								ref={menu.containerRef}
+								ref={menuPosition.containerRef}
 								style={{ width: "100%" }}
 							>
 								<MenuItem
 									name="Date format"
 									value={dateFormat}
-									onClick={() =>
-										dispatch(
-											openMenu({
-												id: menu.id,
-												level: menu.level,
-											})
-										)
-									}
+									onClick={() => dispatch(openMenu(menu))}
 								/>
 							</div>
 						)}

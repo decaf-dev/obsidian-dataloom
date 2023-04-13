@@ -68,9 +68,11 @@ export default function HeaderCell({
 	onCurrencyChange,
 	onDateFormatChange,
 }: Props) {
-	const menu = useMenu(MenuLevel.ONE);
+	const [menu, menuPosition] = useMenu(MenuLevel.ONE);
 	const dispatch = useAppDispatch();
-	const isOpen = useAppSelector((state) => isMenuOpen(state, menu.id));
+	const shouldOpenMenu = useAppSelector((state) =>
+		isMenuOpen(state, menu.id)
+	);
 	const [updateTime, forceUpdate] = useForceUpdate();
 
 	//A width of "unset" means that we have double clicked to resize the column
@@ -86,10 +88,10 @@ export default function HeaderCell({
 	const shouldUpdateWidth = useCompare(updateTime);
 	useEffect(() => {
 		if (shouldUpdateWidth) {
-			const newWidth = numToPx(menu.position.width);
+			const newWidth = numToPx(menuPosition.position.width);
 			onWidthChange(columnId, newWidth);
 		}
-	}, [shouldUpdateWidth, menu.position]);
+	}, [shouldUpdateWidth, menuPosition]);
 
 	const { resizingColumnId } = useAppSelector((state) => state.global);
 	const { handleMouseDown } = useResizeColumn(columnId, (dist) => {
@@ -106,7 +108,7 @@ export default function HeaderCell({
 		if (el.closest(`#${menu.id}`)) return;
 
 		if (resizingColumnId !== null) return;
-		if (isOpen) {
+		if (shouldOpenMenu) {
 			closeHeaderMenu();
 		} else {
 			openHeaderMenu();
@@ -114,19 +116,14 @@ export default function HeaderCell({
 	}
 
 	function openHeaderMenu() {
-		dispatch(
-			openMenu({
-				id: menu.id,
-				level: menu.level,
-			})
-		);
+		dispatch(openMenu(menu));
 	}
 
 	function closeHeaderMenu() {
 		dispatch(closeTopLevelMenu());
 	}
 
-	const { top, left } = menu.position;
+	const { top, left } = menuPosition.position;
 	const iconType = getIconTypeFromCellType(type);
 
 	let contentClassName = "NLT__th-content";
@@ -139,14 +136,14 @@ export default function HeaderCell({
 	return (
 		<div
 			className="NLT__th-container"
-			ref={menu.containerRef}
+			ref={menuPosition.containerRef}
 			onClick={handleHeaderClick}
 			style={{
 				width,
 			}}
 		>
 			<HeaderMenu
-				isOpen={isOpen}
+				isOpen={shouldOpenMenu}
 				top={top}
 				left={left}
 				id={menu.id}
