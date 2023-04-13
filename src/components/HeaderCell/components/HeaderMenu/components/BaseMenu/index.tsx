@@ -33,7 +33,7 @@ export default function BaseMenu({
 	return (
 		<Stack spacing="sm" isVertical>
 			<Stack spacing="sm" isVertical>
-				<Padding paddingX="md" paddingY="sm">
+				<Padding px="md" py="sm">
 					<input
 						autoFocus
 						value={columnName}

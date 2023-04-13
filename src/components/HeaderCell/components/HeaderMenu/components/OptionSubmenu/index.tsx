@@ -58,7 +58,7 @@ export default function OptionSubmenu({
 	return (
 		<>
 			<Submenu title={title} onBackClick={onBackClick}>
-				<Padding paddingY="md">
+				<Padding px="md">
 					<Stack spacing="md" isVertical>
 						{type === CellType.CURRENCY && (
 							<div
@@ -80,7 +80,7 @@ export default function OptionSubmenu({
 							</div>
 						)}
 						{type === CellType.TEXT && (
-							<Padding paddingX="lg">
+							<Padding px="lg">
 								<Flex justify="space-between">
 									<Text value="Wrap Overflow" />
 									<Switch
@@ -116,7 +116,7 @@ export default function OptionSubmenu({
 							</div>
 						)}
 						{canDeleteColumn && (
-							<Padding paddingX="lg">
+							<Padding px="lg">
 								<Button onClick={() => onDeleteClick()}>
 									Delete
 								</Button>

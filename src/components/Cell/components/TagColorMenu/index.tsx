@@ -38,7 +38,7 @@ export default function TagColorMenu({
 		<Menu id={menuId} isOpen={isOpen} top={top} left={left}>
 			<div className="NLT__tag-color-menu">
 				<Stack spacing="sm" isVertical>
-					<Padding paddingX="lg" paddingY="sm">
+					<Padding px="lg" py="sm">
 						<Text value="Color" />
 					</Padding>
 					<div>
