@@ -190,9 +190,20 @@ export default function Cell({
 		left,
 	} = menu.position;
 
-	let height = measuredHeight;
+	let menuHeight = measuredHeight;
+	if (
+		columnType === CellType.TAG ||
+		columnType === CellType.MULTI_TAG ||
+		columnType === CellType.DATE
+	) {
+		menuHeight = 0;
+	}
+
+	let menuWidth = measuredWidth;
 	if (columnType === CellType.TAG || columnType === CellType.MULTI_TAG) {
-		height = 0;
+		menuWidth = 250;
+	} else if (columnType == CellType.DATE) {
+		menuWidth = 175;
 	}
 
 	let className = "NLT__td-container";
@@ -222,14 +233,8 @@ export default function Cell({
 					isOpen={isOpen}
 					top={top}
 					left={left}
-					minWidth={
-						columnType === CellType.MULTI_TAG ||
-						columnType === CellType.TAG
-							? 250
-							: 0
-					}
-					width={measuredWidth}
-					height={height}
+					width={menuWidth}
+					height={menuHeight}
 				>
 					{columnType === CellType.TEXT && (
 						<TextCellEdit
