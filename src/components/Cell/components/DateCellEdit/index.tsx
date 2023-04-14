@@ -1,6 +1,3 @@
-import "react-datepicker/dist/react-datepicker.css";
-
-import "./styles.css";
 import MenuItem from "src/components/MenuItem";
 import { useEffect, useState } from "react";
 import Stack from "src/components/Stack";
@@ -8,6 +5,14 @@ import Padding from "src/components/Padding";
 import { isValidDateFormat } from "src/services/date/utils";
 import { DateFormat } from "src/services/tableState/types";
 import { useCompare } from "src/services/hooks";
+import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
+
+import "./styles.css";
+import DateFormatMenu from "src/components/DateFormatMenu";
+import { useMenu } from "src/services/menu/hooks";
+import { MenuLevel } from "src/services/menu/types";
+import { isMenuOpen } from "src/services/menu/utils";
+import { openMenu } from "src/services/menu/menuSlice";
 
 interface Props {
 	value: string;
@@ -27,6 +32,12 @@ export default function DateCellEdit({
 	const [localValue, setLocalValue] = useState(value);
 	const [isInputInvalid, setInputInvalid] = useState(false);
 	const [closeTime, setCloseTime] = useState(0);
+
+	const [menu, menuPosition] = useMenu(MenuLevel.TWO);
+	const shouldOpenMenu = useAppSelector((state) =>
+		isMenuOpen(state, menu.id)
+	);
+	const dispatch = useAppDispatch();
 
 	const didCloseMenuRequestTimeChange = useCompare(closeMenuRequestTime);
 	useEffect(() => {
@@ -58,19 +69,41 @@ export default function DateCellEdit({
 		}
 	}, [closeTime]);
 
+	const { top, left, width } = menuPosition.position;
+
 	return (
-		<div className="NLT__date-cell-edit">
-			<Stack spacing="md" isVertical>
-				<Padding px="md" py="md">
-					<input
-						aria-invalid={isInputInvalid}
-						autoFocus
-						value={localValue}
-						onChange={(e) => setLocalValue(e.target.value)}
-					/>
-				</Padding>
-				<MenuItem name="Clear" onClick={() => setLocalValue("")} />
-			</Stack>
-		</div>
+		<>
+			<div className="NLT__date-cell-edit">
+				<Stack spacing="md" isVertical>
+					<Padding px="md" py="md">
+						<input
+							aria-invalid={isInputInvalid}
+							autoFocus
+							value={localValue}
+							onChange={(e) => setLocalValue(e.target.value)}
+						/>
+					</Padding>
+					<div
+						ref={menuPosition.containerRef}
+						style={{ width: "100%" }}
+					>
+						<MenuItem
+							name="Date format"
+							value={dateFormat}
+							onClick={() => dispatch(openMenu(menu))}
+						/>
+					</div>
+					<MenuItem name="Clear" onClick={() => setLocalValue("")} />
+				</Stack>
+			</div>
+			<DateFormatMenu
+				id={menu.id}
+				isOpen={shouldOpenMenu}
+				top={top - 50}
+				left={left + width - 50}
+				value={dateFormat}
+				onChange={() => {}}
+			/>
+		</>
 	);
 }

@@ -5,15 +5,15 @@ import { getDisplayNameForCellType } from "src/services/tableState/utils";
 import { getIconTypeFromCellType } from "src/services/icon/utils";
 interface Props {
 	title: string;
-	columnType: string;
-	onTypeClick: (value: CellType) => void;
+	value: CellType;
+	onValueClick: (value: CellType) => void;
 	onBackClick: () => void;
 }
 
 export default function TypeSubmenu({
 	title,
-	columnType,
-	onTypeClick,
+	value,
+	onValueClick,
 	onBackClick,
 }: Props) {
 	return (
@@ -23,8 +23,8 @@ export default function TypeSubmenu({
 					key={type}
 					name={getDisplayNameForCellType(type)}
 					iconType={getIconTypeFromCellType(type)}
-					onClick={() => onTypeClick(type)}
-					isSelected={type === columnType}
+					onClick={() => onValueClick(type)}
+					isSelected={type === value}
 				/>
 			))}
 		</Submenu>
