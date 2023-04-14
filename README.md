@@ -2,9 +2,11 @@
 
 [![Active Development](https://img.shields.io/badge/Maintenance%20Level-Actively%20Developed-brightgreen.svg)](https://gist.github.com/cheerfulstoic/d107229326a01ff0f333a1d3476e068d)
 
+![Obsidian Downloads](https://img.shields.io/badge/dynamic/json?logo=obsidian&color=%23483699&label=downloads&query=%24%5B%22notion-like-tables%22%5D.downloads&url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json)
+
 Notion-Like Tables is your premiere tool for creating and managing tabular data in Obsidian.md.
 
-![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/cover.png)
+![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/preview.png)
 
 Lastest release notes:
 [6.3.0](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/6.3.0)
@@ -31,7 +33,6 @@ Lastest release notes:
 ## Create a Table
 
 -   Click the table icon on the action bar
-
 -   Or press `ctrl + p` (Windows) or `cmd + p` (Mac) on your keyboard and search `Create table`
 
 ## Plugin Features
