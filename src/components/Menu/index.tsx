@@ -1,11 +1,15 @@
 import _ from "lodash";
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
-import { closeTopLevelMenu, isTopLevelMenu } from "src/services/menu/menuSlice";
+import {
+	closeTopLevelMenu,
+	requestCloseTopMenu,
+} from "src/services/menu/menuSlice";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 import { numToPx } from "src/services/string/conversion";
 
 import "./styles.css";
+import { isTopLevelMenu } from "src/services/menu/utils";
 
 interface Props {
 	id: string;
@@ -37,7 +41,7 @@ export default function Menu({
 			// trying to insert a new line into the text cell. In this case, we don't
 			// want to close the menu.
 			if (!e.shiftKey) {
-				dispatch(closeTopLevelMenu());
+				dispatch(requestCloseTopMenu(e.code === "Enter"));
 			}
 		}
 	}

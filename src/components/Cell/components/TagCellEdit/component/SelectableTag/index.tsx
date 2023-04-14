@@ -6,7 +6,6 @@ import { useMenu } from "src/services/menu/hooks";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 import {
 	openMenu,
-	isMenuOpen,
 	closeTopLevelMenu,
 	closeAllMenus,
 } from "src/services/menu/menuSlice";
@@ -16,6 +15,7 @@ import Button from "src/components/Button";
 import Icon from "src/components/Icon";
 import Tag from "src/components/Tag";
 import { Color } from "src/services/color/types";
+import { isMenuOpen } from "src/services/menu/utils";
 
 interface Props {
 	isDarkMode: boolean;

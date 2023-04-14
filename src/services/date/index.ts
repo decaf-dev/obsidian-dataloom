@@ -50,7 +50,7 @@ const getDateStringForFormat = (date: Date, format: DateFormat) => {
 				minute: "numeric",
 				hour12: true,
 			});
-			//1 day
+
 			if (diff < MILLIS_IN_DAY) {
 				return "Today" + " " + time;
 			} else if (diff < MILLIS_IN_DAY * 2) {

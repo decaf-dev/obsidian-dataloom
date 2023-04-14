@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react";
-import { MenuPosition, Menu, Position } from "./types";
+import { MenuPosition, Menu, Position, MenuLevel } from "./types";
 import { randomUUID } from "crypto";
 
 const useMenuPosition = (): MenuPosition => {
@@ -30,13 +30,16 @@ const useMenuPosition = (): MenuPosition => {
 	return { containerRef, position };
 };
 
-export const useMenu = (level: number): [Menu, MenuPosition] => {
+export const useMenu = (
+	level: MenuLevel,
+	shouldRequestClose = false
+): [Menu, MenuPosition] => {
 	const menuPosition = useMenuPosition();
 	const [id] = useState("m" + randomUUID());
 
 	const menu: Menu = useMemo(() => {
-		return { id, level };
-	}, [id, level]);
+		return { id, level, shouldRequestClose };
+	}, [id, level, shouldRequestClose]);
 
 	return [menu, menuPosition];
 };

@@ -11,11 +11,7 @@ import { useMenu } from "src/services/menu/hooks";
 import { MenuLevel } from "src/services/menu/types";
 import { MIN_COLUMN_WIDTH } from "src/services/tableState/constants";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
-import {
-	openMenu,
-	closeTopLevelMenu,
-	isMenuOpen,
-} from "src/services/menu/menuSlice";
+import { openMenu, closeTopLevelMenu } from "src/services/menu/menuSlice";
 
 import "./styles.css";
 import Icon from "../Icon";
@@ -24,6 +20,7 @@ import HeaderMenu from "./components/HeaderMenu";
 import { getIconTypeFromCellType } from "src/services/icon/utils";
 import { useResizeColumn } from "./services/hooks";
 import { useCompare, useForceUpdate } from "src/services/hooks";
+import { isMenuOpen } from "src/services/menu/utils";
 
 interface Props {
 	cellId: string;

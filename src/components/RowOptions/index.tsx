@@ -4,16 +4,13 @@ import Icon from "../Icon";
 import Button from "../Button";
 import { IconType } from "src/services/icon/types";
 import { useMenu } from "src/services/menu/hooks";
-import {
-	openMenu,
-	closeTopLevelMenu,
-	isMenuOpen,
-} from "src/services/menu/menuSlice";
+import { openMenu, closeTopLevelMenu } from "src/services/menu/menuSlice";
 
 import "./styles.css";
 import { MenuLevel } from "src/services/menu/types";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 import RowMenu from "./components/RowMenu";
+import { isMenuOpen } from "src/services/menu/utils";
 
 interface Props {
 	rowId: string;

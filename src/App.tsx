@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
 import Table from "./components/Table";
-import RowMenu from "./components/RowMenu";
+import RowOptions from "./components/RowOptions";
 import OptionBar from "./components/OptionBar";
 import Button from "./components/Button";
 
@@ -538,7 +538,7 @@ export default function App({ onSaveTableState }: Props) {
 														paddingLeft: "10px",
 													}}
 												>
-													<RowMenu
+													<RowOptions
 														rowId={rowId}
 														onDeleteClick={
 															handleRowDeleteClick

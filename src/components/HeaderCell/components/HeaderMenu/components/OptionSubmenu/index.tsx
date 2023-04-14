@@ -15,9 +15,10 @@ import { useMenu } from "src/services/menu/hooks";
 import { MenuLevel } from "src/services/menu/types";
 import CurrencyMenu from "./components/CurrencyMenu";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
-import { isMenuOpen, openMenu } from "src/services/menu/menuSlice";
+import { openMenu } from "src/services/menu/menuSlice";
 import DateFormatMenu from "./components/DateFormatMenu";
 import Flex from "src/components/Flex";
+import { isMenuOpen } from "src/services/menu/utils";
 
 interface Props {
 	canDeleteColumn: boolean;

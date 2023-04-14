@@ -1,12 +1,13 @@
 import Button from "src/components/Button";
 import ToggleColumnMenu from "./components/ToggleColumnMenu";
-import { isMenuOpen, openMenu } from "src/services/menu/menuSlice";
+import { openMenu } from "src/services/menu/menuSlice";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 import { useMenu } from "src/services/menu/hooks";
 import { MenuLevel } from "src/services/menu/types";
 import Icon from "src/components/Icon";
 import { IconType } from "src/services/icon/types";
 import { ToggleColumn } from "./types";
+import { isMenuOpen } from "src/services/menu/utils";
 
 interface Props {
 	onToggle: (id: string) => void;

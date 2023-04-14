@@ -22,7 +22,7 @@ import {
 import { useMenu } from "src/services/menu/hooks";
 import { MenuLevel } from "src/services/menu/types";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
-import { openMenu, isMenuOpen } from "src/services/menu/menuSlice";
+import { closeTopLevelMenu, openMenu } from "src/services/menu/menuSlice";
 
 import LastEditedTimeCell from "./components/LastEditedTimeCell";
 import CreationTimeCell from "./components/CreationTimeCell";
@@ -38,6 +38,7 @@ import { updateSortTime } from "src/services/redux/globalSlice";
 import { Color } from "src/services/color/types";
 import CurrencyCell from "./components/CurrencyCell";
 import CurrencyCellEdit from "./components/CurrencyCellEdit";
+import { getCloseMenuRequestTime, isMenuOpen } from "src/services/menu/utils";
 
 interface Props {
 	columnType: string;
@@ -96,10 +97,17 @@ export default function Cell({
 	onContentChange,
 	onAddTag,
 }: Props) {
-	const [menu, menuPosition] = useMenu(MenuLevel.ONE);
+	const [menu, menuPosition] = useMenu(
+		MenuLevel.ONE,
+		columnType === CellType.DATE
+	);
 	const shouldOpenMenu = useAppSelector((state) =>
 		isMenuOpen(state, menu.id)
 	);
+	const closeMenuRequestTime = useAppSelector((state) =>
+		getCloseMenuRequestTime(state, menu.id)
+	);
+
 	const dispatch = useAppDispatch();
 	const { isDarkMode } = useAppSelector((state) => state.global);
 
@@ -178,6 +186,10 @@ export default function Cell({
 
 	function handleCurrencyChange(updatedMarkdown: string) {
 		onContentChange(cellId, rowId, updatedMarkdown);
+	}
+
+	function handleMenuClose() {
+		dispatch(closeTopLevelMenu());
 	}
 
 	const {
@@ -260,8 +272,10 @@ export default function Cell({
 					{columnType === CellType.DATE && (
 						<DateCellEdit
 							value={markdown}
+							closeMenuRequestTime={closeMenuRequestTime}
 							dateFormat={dateFormat}
 							onDateChange={handleDateChange}
+							onMenuClose={handleMenuClose}
 						/>
 					)}
 					{columnType === CellType.CURRENCY && (
