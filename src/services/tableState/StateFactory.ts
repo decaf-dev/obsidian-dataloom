@@ -21,7 +21,7 @@ export default class StateFactory {
 			type: CellType.TEXT,
 			currencyType: CurrencyType.UNITED_STATES,
 			dateFormat: DateFormat.MM_DD_YYYY,
-			shouldWrapOverflow: true,
+			shouldWrapOverflow: false,
 			footerCellId: randomUUID(),
 		};
 	}
