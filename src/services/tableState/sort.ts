@@ -12,6 +12,8 @@ const sortByDir = (
 ) => {
 	if (columnType == CellType.NUMBER) {
 		return sortByNumber(columnId, rows, cells, sortDir);
+	} else if (columnType === CellType.DATE) {
+		return sortByDate(columnId, rows, cells, sortDir);
 	} else if (columnType == CellType.LAST_EDITED_TIME) {
 		return sortByLastEditedTime(rows, sortDir);
 	} else if (columnType == CellType.CREATION_TIME) {
@@ -144,6 +146,44 @@ const sortByCheckbox = (
 			if (!isCheckedA && isCheckedB) return 1;
 			if (isCheckedA && !isCheckedB) return -1;
 			return 0;
+		} else {
+			return 0;
+		}
+	});
+	return rowsCopy;
+};
+
+export const sortByDate = (
+	columnId: string,
+	rows: Row[],
+	cells: Cell[],
+	sortDir: SortDir
+): Row[] => {
+	const rowsCopy = [...rows];
+	rowsCopy.sort((a, b) => {
+		const cellA = cells.find(
+			(c) => c.columnId === columnId && c.rowId === a.id
+		);
+
+		if (!cellA) throw new CellNotFoundError();
+
+		const cellB = cells.find(
+			(c) => c.columnId === columnId && c.rowId === b.id
+		);
+
+		if (!cellB) throw new CellNotFoundError();
+
+		//Force headers to the top
+		if (cellA.isHeader) return -1;
+		if (cellB.isHeader) return 1;
+
+		const dateTimeA = cellA.dateTime || 0;
+		const dateTimeB = cellB.dateTime || 0;
+
+		if (sortDir === SortDir.ASC) {
+			return dateTimeA - dateTimeB;
+		} else if (sortDir === SortDir.DESC) {
+			return dateTimeB - dateTimeA;
 		} else {
 			return 0;
 		}

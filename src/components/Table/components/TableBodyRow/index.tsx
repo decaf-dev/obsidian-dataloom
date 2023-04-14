@@ -33,7 +33,7 @@ export const TableBodyRow = ({ row }: TableRowProps) => {
 		if (isSorted) {
 			if (
 				!window.confirm(
-					"This will update your default sorting to the current sort filter. Do you wish to continue?" +
+					"This will set your default sorting to the current sort filter. Do you wish to continue?" +
 						"\n\n" +
 						"If not, please remove your sort filter before dragging a row."
 				)
