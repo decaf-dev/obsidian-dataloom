@@ -42,22 +42,6 @@ export enum CurrencyType {
 	MEXICO = "MXN",
 	ARGENTINA = "ARS",
 }
-
-export interface Cell {
-	id: string;
-	columnId: string;
-	rowId: string;
-	markdown: string;
-	isHeader: boolean;
-}
-
-export interface Tag {
-	id: string;
-	markdown: string;
-	color: Color;
-	columnId: string;
-	cellIds: string[];
-}
 export interface Column {
 	id: string;
 	sortDir: SortDir;
@@ -76,6 +60,23 @@ export interface Row {
 	menuCellId: string;
 	creationTime: number;
 	lastEditedTime: number;
+}
+
+export interface Cell {
+	id: string;
+	columnId: string;
+	dateTime: number | null;
+	rowId: string;
+	markdown: string;
+	isHeader: boolean;
+}
+
+export interface Tag {
+	id: string;
+	markdown: string;
+	color: Color;
+	columnId: string;
+	cellIds: string[];
 }
 
 export interface TableModel {

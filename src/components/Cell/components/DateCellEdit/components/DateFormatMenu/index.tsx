@@ -20,6 +20,7 @@ export default function DateFormatMenu({
 	value,
 	onChange,
 }: Props) {
+	//TODO add all formats
 	return (
 		<Menu isOpen={isOpen} id={id} top={top} left={left} width={175}>
 			<div className="NLT__currency-menu">

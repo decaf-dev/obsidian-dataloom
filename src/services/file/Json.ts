@@ -16,7 +16,7 @@ export default class Json {
 	static deserializeTableState(data: string): TableState {
 		const tableState = JSON.parse(data) as TableState;
 		const { pluginVersion } = tableState;
-		const { columns, rows } = tableState.model;
+		const { columns, rows, cells } = tableState.model;
 
 		if (pluginVersion < CURRENT_PLUGIN_VERSION) {
 			//Feat: Currency type
@@ -58,8 +58,14 @@ export default class Json {
 					const typedColumn = column as Record<string, unknown>;
 					typedColumn.isVisible = true;
 				});
+
+				//Feat: Date formats for Date type
+				cells.forEach((cell) => {
+					cell.dateTime = null;
+				});
 			}
 		}
+
 		tableState.pluginVersion = CURRENT_PLUGIN_VERSION;
 		return tableState;
 	}

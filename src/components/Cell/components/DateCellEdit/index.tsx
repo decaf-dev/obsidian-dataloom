@@ -2,12 +2,11 @@ import MenuItem from "src/components/MenuItem";
 import { useEffect, useState } from "react";
 import Stack from "src/components/Stack";
 import Padding from "src/components/Padding";
-import { isValidDateFormat } from "src/services/date/utils";
+import DateConversion from "src/services/date/DateConversion";
 import { DateFormat } from "src/services/tableState/types";
 import { useCompare } from "src/services/hooks";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 
-import "./styles.css";
 import DateFormatMenu from "./components/DateFormatMenu";
 import { useMenu } from "src/services/menu/hooks";
 import { MenuLevel } from "src/services/menu/types";
@@ -15,11 +14,13 @@ import { isMenuOpen } from "src/services/menu/utils";
 import { closeTopLevelMenu, openMenu } from "src/services/menu/menuSlice";
 import { getDisplayNameForDateFormat } from "src/services/tableState/utils";
 
+import "./styles.css";
+
 interface Props {
-	value: string;
+	value: number | null;
 	closeMenuRequestTime: number | null;
 	dateFormat: DateFormat;
-	onDateChange: (value: string) => void;
+	onDateTimeChange: (value: number | null) => void;
 	onDateFormatChange: (value: DateFormat) => void;
 	onMenuClose: () => void;
 }
@@ -28,11 +29,16 @@ export default function DateCellEdit({
 	value,
 	closeMenuRequestTime,
 	dateFormat,
-	onDateChange,
+	onDateTimeChange,
 	onMenuClose,
 	onDateFormatChange,
 }: Props) {
-	const [localValue, setLocalValue] = useState(value);
+	const [localValue, setLocalValue] = useState(
+		value === null
+			? ""
+			: DateConversion.unixTimeToDateString(value, dateFormat)
+	);
+
 	const [isInputInvalid, setInputInvalid] = useState(false);
 	const [closeTime, setCloseTime] = useState(0);
 
@@ -42,30 +48,33 @@ export default function DateCellEdit({
 	);
 	const dispatch = useAppDispatch();
 
-	function handleDateFormatChange(value: DateFormat) {
-		onDateFormatChange(value);
-		dispatch(closeTopLevelMenu());
-	}
-
-	function handleClearClick(e: React.MouseEvent) {
-		e.stopPropagation();
-		onDateChange("");
-		onMenuClose();
-	}
+	useEffect(() => {
+		setLocalValue(
+			value === null
+				? ""
+				: DateConversion.unixTimeToDateString(value, dateFormat)
+		);
+	}, [value, dateFormat]);
 
 	const didCloseMenuRequestTimeChange = useCompare(closeMenuRequestTime);
 	useEffect(() => {
 		function validateInput() {
+			let value: number | null = null;
 			//If the user has not entered a value, we don't need to validate the date format
 			if (localValue !== "") {
-				if (!isValidDateFormat(localValue, dateFormat)) {
+				if (!DateConversion.isValidDateFormat(localValue, dateFormat)) {
 					setInputInvalid(true);
 					return;
 				}
+				//Convert local value to unix time
+				value = DateConversion.dateStringToUnixTime(
+					localValue,
+					dateFormat
+				);
 			}
 
 			setInputInvalid(false);
-			onDateChange(localValue);
+			onDateTimeChange(value);
 			setCloseTime(Date.now());
 		}
 
@@ -82,6 +91,19 @@ export default function DateCellEdit({
 			onMenuClose();
 		}
 	}, [closeTime]);
+
+	function handleDateFormatChange(value: DateFormat) {
+		onDateFormatChange(value);
+		dispatch(closeTopLevelMenu());
+	}
+
+	function handleClearClick(e: React.MouseEvent) {
+		//Prevent the menu from reopening when it clsoes
+		e.stopPropagation();
+
+		onDateTimeChange(null);
+		onMenuClose();
+	}
 
 	const { top, left, width } = menuPosition.position;
 

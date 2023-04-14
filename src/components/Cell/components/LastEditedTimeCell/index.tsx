@@ -1,4 +1,4 @@
-import { unixTimeToString } from "src/services/date";
+import DateConversion from "src/services/date/DateConversion";
 import { useOverflowClassName } from "src/services/spacing/hooks";
 import { DateFormat } from "src/services/tableState/types";
 
@@ -16,5 +16,9 @@ export default function LastEditedTimeCell({
 	const overflowClassName = useOverflowClassName(shouldWrapOverflow);
 	const className = "NLT__last-edited-time-cell" + " " + overflowClassName;
 
-	return <div className={className}>{unixTimeToString(value, format)}</div>;
+	return (
+		<div className={className}>
+			{DateConversion.unixTimeToDateTimeString(value, format)}
+		</div>
+	);
 }

@@ -44,6 +44,7 @@ interface Props {
 	columnType: string;
 	cellId: string;
 	rowId: string;
+	dateTime: number | null;
 	dateFormat: DateFormat;
 	columnCurrencyType: CurrencyType;
 	columnId: string;
@@ -60,11 +61,7 @@ interface Props {
 		tagId: string,
 		canAddMultiple: boolean
 	) => void;
-	onContentChange: (
-		cellId: string,
-		rowId: string,
-		updatedMarkdown: string
-	) => void;
+	onContentChange: (cellId: string, rowId: string, value: string) => void;
 	onAddTag: (
 		cellId: string,
 		columnId: string,
@@ -76,6 +73,11 @@ interface Props {
 	onTagDeleteClick: (tagId: string) => void;
 	onTagColorChange: (tagId: string, color: Color) => void;
 	onDateFormatChange: (columnId: string, value: DateFormat) => void;
+	onDateTimeChange: (
+		cellId: string,
+		rowId: string,
+		value: number | null
+	) => void;
 }
 
 export default function Cell({
@@ -84,6 +86,7 @@ export default function Cell({
 	rowId,
 	markdown,
 	dateFormat,
+	dateTime,
 	columnCurrencyType,
 	columnType,
 	rowCreationTime,
@@ -97,6 +100,7 @@ export default function Cell({
 	onTagClick,
 	onContentChange,
 	onDateFormatChange,
+	onDateTimeChange,
 	onAddTag,
 }: Props) {
 	const [menu, menuPosition] = useMenu(
@@ -170,28 +174,32 @@ export default function Cell({
 		onTagClick(cellId, rowId, tagId, columnType === CellType.MULTI_TAG);
 	}
 
-	function handleTextInputChange(updatedMarkdown: string) {
-		onContentChange(cellId, rowId, updatedMarkdown);
+	function handleTextInputChange(value: string) {
+		onContentChange(cellId, rowId, value);
 	}
 
-	function handleNumberInputChange(updatedMarkdown: string) {
-		onContentChange(cellId, rowId, updatedMarkdown);
+	function handleNumberInputChange(value: string) {
+		onContentChange(cellId, rowId, value);
 	}
 
-	function handleDateChange(updatedMarkdown: string) {
-		onContentChange(cellId, rowId, updatedMarkdown);
+	function handleDateChange(value: string) {
+		onContentChange(cellId, rowId, value);
 	}
 
-	function handleCheckboxChange(updatedMarkdown: string) {
-		onContentChange(cellId, rowId, updatedMarkdown);
+	function handleCheckboxChange(value: string) {
+		onContentChange(cellId, rowId, value);
 	}
 
-	function handleCurrencyChange(updatedMarkdown: string) {
-		onContentChange(cellId, rowId, updatedMarkdown);
+	function handleCurrencyChange(value: string) {
+		onContentChange(cellId, rowId, value);
 	}
 
 	function handleDateFormatChange(value: DateFormat) {
 		onDateFormatChange(columnId, value);
+	}
+
+	function handleDateTimeChange(value: number | null) {
+		onDateTimeChange(cellId, rowId, value);
 	}
 
 	function handleMenuClose() {
@@ -277,10 +285,10 @@ export default function Cell({
 					)}
 					{columnType === CellType.DATE && (
 						<DateCellEdit
-							value={markdown}
+							value={dateTime}
 							closeMenuRequestTime={closeMenuRequestTime}
 							dateFormat={dateFormat}
-							onDateChange={handleDateChange}
+							onDateTimeChange={handleDateTimeChange}
 							onDateFormatChange={handleDateFormatChange}
 							onMenuClose={handleMenuClose}
 						/>
@@ -327,7 +335,9 @@ export default function Cell({
 					shouldWrapOverflow={shouldWrapOverflow}
 				/>
 			)}
-			{columnType === CellType.DATE && <DateCell value={markdown} />}
+			{columnType === CellType.DATE && (
+				<DateCell value={dateTime} format={dateFormat} />
+			)}
 			{columnType === CellType.CHECKBOX && (
 				<CheckboxCell
 					value={markdown}

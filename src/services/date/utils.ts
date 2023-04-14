@@ -1,15 +1,24 @@
-import { DateFormat } from "../tableState/types";
-import { DD_MM_YYYY_REGEX, MM_DD_YYYY_REGEX, YYYY_MM_DD_REGEX } from "./regex";
+export const getDateParts = (date: Date) => {
+	const year = date.getFullYear().toString();
+	const month = ("0" + (date.getMonth() + 1)).slice(-2);
+	const day = ("0" + date.getDate()).slice(-2);
+	const time = date.toLocaleString("en-US", {
+		hour: "numeric",
+		minute: "numeric",
+		hour12: true,
+	});
+	return { year, month, day, time };
+};
 
-export const isValidDateFormat = (value: string, dateFormat: DateFormat) => {
-	switch (dateFormat) {
-		case DateFormat.MM_DD_YYYY:
-			return value.match(MM_DD_YYYY_REGEX) !== null;
-		case DateFormat.DD_MM_YYYY:
-			return value.match(DD_MM_YYYY_REGEX) !== null;
-		case DateFormat.YYYY_MM_DD:
-			return value.match(YYYY_MM_DD_REGEX) !== null;
-		default:
-			return false;
-	}
+export const getUTCTimeFromDateParts = (
+	year: string,
+	month: string,
+	day: string
+) => {
+	return new Date(`${year}-${month}-${day}T00:00:00`).getTime();
+};
+
+export const removeLastComma = (value: string) => {
+	const commaIndex = value.lastIndexOf(",");
+	return value.substring(0, commaIndex) + value.substring(commaIndex + 1);
 };

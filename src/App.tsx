@@ -43,7 +43,7 @@ import HeaderCell from "./components/HeaderCell";
 import Cell from "./components/Cell";
 import { Color } from "./services/color/types";
 import { useTableState } from "./services/tableState/useTableState";
-import { unixTimeToString } from "./services/date";
+import DateConversion from "./services/date/DateConversion";
 import Icon from "./components/Icon";
 import { IconType } from "./services/icon/types";
 
@@ -110,16 +110,32 @@ export default function App({ onSaveTableState }: Props) {
 	function handleCellContentChange(
 		cellId: string,
 		rowId: string,
-		updatedMarkdown: string
+		value: string
 	) {
 		logFunc(shouldDebug, FILE_NAME, "handleCellContentChange", {
 			cellId,
 			rowId,
-			updatedMarkdown,
+			markdown: value,
 		});
 
 		setTableState((prevState) =>
-			updateCell(prevState, cellId, rowId, updatedMarkdown)
+			updateCell(prevState, cellId, rowId, "markdown", value)
+		);
+	}
+
+	function handleCellDateTimeChange(
+		cellId: string,
+		rowId: string,
+		value: number | null
+	) {
+		logFunc(shouldDebug, FILE_NAME, "handleCellContentChange", {
+			cellId,
+			rowId,
+			dateTime: value,
+		});
+
+		setTableState((prevState) =>
+			updateCell(prevState, cellId, rowId, "dateTime", value)
 		);
 	}
 
@@ -311,12 +327,26 @@ export default function App({ onSaveTableState }: Props) {
 				cell.column.type === CellType.LAST_EDITED_TIME ||
 				cell.column.type === CellType.CREATION_TIME
 			) {
-				const dateString = unixTimeToString(
+				//TODO fix
+				const dateString = DateConversion.unixTimeToDateTimeString(
 					parseInt(cell.markdown),
 					cell.column.dateFormat
 				);
 				if (dateString.toLowerCase().includes(searchText.toLowerCase()))
 					return true;
+			} else if (cell.column.type === CellType.DATE) {
+				if (cell.dateTime) {
+					const dateString = DateConversion.unixTimeToDateString(
+						cell.dateTime,
+						cell.column.dateFormat
+					);
+					if (
+						dateString
+							.toLowerCase()
+							.includes(searchText.toLowerCase())
+					)
+						return true;
+				}
 			}
 			return false;
 		});
@@ -477,6 +507,7 @@ export default function App({ onSaveTableState }: Props) {
 												id: cellId,
 												markdown,
 												columnId,
+												dateTime,
 											} = cell;
 
 											const filteredTags = tags.filter(
@@ -503,6 +534,7 @@ export default function App({ onSaveTableState }: Props) {
 														rowLastEditedTime={
 															lastEditedTime
 														}
+														dateTime={dateTime}
 														markdown={markdown}
 														columnType={type}
 														shouldWrapOverflow={
@@ -523,6 +555,9 @@ export default function App({ onSaveTableState }: Props) {
 														}
 														onTagDeleteClick={
 															handleTagDeleteClick
+														}
+														onDateTimeChange={
+															handleCellDateTimeChange
 														}
 														onDateFormatChange={
 															handleDateFormatChange
