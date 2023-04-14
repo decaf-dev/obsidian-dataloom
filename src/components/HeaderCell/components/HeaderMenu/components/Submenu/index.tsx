@@ -15,7 +15,7 @@ interface Props {
 export default function Submenu({ title, children, onBackClick }: Props) {
 	return (
 		<>
-			<Padding padding="md">
+			<Padding p="md">
 				<Stack spacing="md" isVertical>
 					<Stack>
 						<Button

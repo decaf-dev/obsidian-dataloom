@@ -3,36 +3,36 @@ import { SpacingSize } from "src/services/spacing/types";
 
 interface Props {
 	className?: string;
-	paddingX?: SpacingSize;
-	paddingY?: SpacingSize;
-	padding?: SpacingSize;
+	px?: SpacingSize;
+	py?: SpacingSize;
+	p?: SpacingSize;
 	children: React.ReactNode;
 }
 
 export default function Padding({
 	className = "",
-	paddingX,
-	paddingY,
-	padding,
+	px,
+	py,
+	p,
 	children,
 }: Props) {
 	let style: Record<string, any> = {
 		width: "100%",
 	};
 
-	if (padding) {
-		style = { ...style, padding: getSpacing(padding) };
+	if (p) {
+		style = { ...style, padding: getSpacing(p) };
 	} else {
-		if (paddingX) {
-			const spacingX = getSpacing(paddingX);
-			style = { ...style, paddingLeft: spacingX, paddingRight: spacingX };
+		if (px) {
+			const spacing = getSpacing(px);
+			style = { ...style, paddingLeft: spacing, paddingRight: spacing };
 		}
-		if (paddingY) {
-			const spacingY = getSpacing(paddingY);
+		if (py) {
+			const spacing = getSpacing(py);
 			style = {
 				...style,
-				paddingTop: spacingY,
-				paddingBottom: spacingY,
+				paddingTop: spacing,
+				paddingBottom: spacing,
 			};
 		}
 	}

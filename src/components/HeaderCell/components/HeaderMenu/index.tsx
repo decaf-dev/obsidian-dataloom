@@ -4,6 +4,8 @@ import Menu from "src/components/Menu";
 import OptionSubmenu from "./components/OptionSubmenu";
 import TypeSubmenu from "./components/TypeSubmenu";
 import BaseMenu from "./components/BaseMenu";
+import CurrencySubmenu from "./components/CurrencySubmenu";
+import DateFormatSubmenu from "./components/DateFormatSubmenu";
 
 import {
 	CellType,
@@ -11,9 +13,9 @@ import {
 	DateFormat,
 	SortDir,
 } from "src/services/tableState/types";
+import { SubmenuType } from "./types";
 
 import "./styles.css";
-import { Submenu } from "./types";
 interface Props {
 	isOpen: boolean;
 	canDeleteColumn: boolean;
@@ -54,7 +56,6 @@ export default function HeaderMenu({
 	columnType,
 	columnSortDir,
 	columnId,
-	numColumns,
 	shouldWrapOverflow,
 	onTypeSelect,
 	onSortClick,
@@ -65,7 +66,7 @@ export default function HeaderMenu({
 	onCurrencyChange,
 	onDateFormatChange,
 }: Props) {
-	const [submenu, setSubmenu] = useState<Submenu | null>(null);
+	const [submenu, setSubmenu] = useState<SubmenuType | null>(null);
 
 	function handleSortClick(sortDir: SortDir) {
 		onSortClick(columnId, sortDir);
@@ -86,20 +87,18 @@ export default function HeaderMenu({
 		setSubmenu(null);
 	}
 
-	function handleBackClick() {
-		setSubmenu(null);
-	}
-
-	function handleCurrencyChange(value: CurrencyType) {
+	function handleCurrencyClick(value: CurrencyType) {
 		onCurrencyChange(columnId, value);
+		setSubmenu(SubmenuType.OPTIONS);
 	}
 
-	function handleDateFormatChange(value: DateFormat) {
+	function handleDateFormatClick(value: DateFormat) {
 		onDateFormatChange(columnId, value);
+		setSubmenu(SubmenuType.OPTIONS);
 	}
 
 	return (
-		<Menu isOpen={isOpen} id={id} top={top} left={left} width={200}>
+		<Menu isOpen={isOpen} id={id} top={top} left={left} width={175}>
 			<div className="NLT__header-menu">
 				{submenu === null && (
 					<BaseMenu
@@ -107,14 +106,13 @@ export default function HeaderMenu({
 						cellId={cellId}
 						columnName={markdown}
 						columnType={columnType}
-						numColumns={numColumns}
 						columnSortDir={columnSortDir}
 						onColumnNameChange={onNameChange}
 						onSortClick={handleSortClick}
 						onSubmenuChange={setSubmenu}
 					/>
 				)}
-				{submenu === Submenu.OPTIONS && (
+				{submenu === SubmenuType.OPTIONS && (
 					<OptionSubmenu
 						canDeleteColumn={canDeleteColumn}
 						title="Options"
@@ -123,19 +121,34 @@ export default function HeaderMenu({
 						dateFormat={dateFormat}
 						currencyType={currencyType}
 						shouldWrapOverflow={shouldWrapOverflow}
-						onBackClick={handleBackClick}
+						onBackClick={() => setSubmenu(null)}
 						onWrapOverflowToggle={onWrapOverflowToggle}
-						onCurrencyChange={handleCurrencyChange}
-						onDateFormatChange={handleDateFormatChange}
+						onSubmenuChange={setSubmenu}
 						onDeleteClick={handleDeleteClick}
 					/>
 				)}
-				{submenu === Submenu.TYPE && (
+				{submenu === SubmenuType.TYPE && (
 					<TypeSubmenu
 						title="Type"
-						columnType={columnType}
-						onTypeClick={handleTypeClick}
-						onBackClick={handleBackClick}
+						value={columnType}
+						onValueClick={handleTypeClick}
+						onBackClick={() => setSubmenu(null)}
+					/>
+				)}
+				{submenu === SubmenuType.DATE_FORMAT && (
+					<DateFormatSubmenu
+						title="Date Format"
+						value={dateFormat}
+						onValueClick={handleDateFormatClick}
+						onBackClick={() => setSubmenu(SubmenuType.OPTIONS)}
+					/>
+				)}
+				{submenu === SubmenuType.CURRENCY && (
+					<CurrencySubmenu
+						title="Currency"
+						value={currencyType}
+						onValueClick={handleCurrencyClick}
+						onBackClick={() => setSubmenu(SubmenuType.OPTIONS)}
 					/>
 				)}
 			</div>

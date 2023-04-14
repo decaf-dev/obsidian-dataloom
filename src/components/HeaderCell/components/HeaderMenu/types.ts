@@ -1,6 +1,6 @@
-export enum Submenu {
+export enum SubmenuType {
 	TYPE,
 	OPTIONS,
-	MOVE,
-	INSERT,
+	CURRENCY,
+	DATE_FORMAT,
 }

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
 import Table from "./components/Table";
-import RowMenu from "./components/RowMenu";
+import RowOptions from "./components/RowOptions";
 import OptionBar from "./components/OptionBar";
 import Button from "./components/Button";
 
@@ -24,12 +24,9 @@ import {
 } from "./services/tableState/tag";
 import {
 	addColumn,
-	changeColumnCurrencyType,
-	changeColumnDateFormat,
 	changeColumnType,
 	deleteColumn,
 	sortOnColumn,
-	toggleColumn,
 	updateColumn,
 } from "./services/tableState/column";
 import { sortRows } from "./services/tableState/sort";
@@ -46,7 +43,7 @@ import HeaderCell from "./components/HeaderCell";
 import Cell from "./components/Cell";
 import { Color } from "./services/color/types";
 import { useTableState } from "./services/tableState/useTableState";
-import { unixTimeToString } from "./services/date";
+import DateConversion from "./services/date/DateConversion";
 import Icon from "./components/Icon";
 import { IconType } from "./services/icon/types";
 
@@ -113,16 +110,32 @@ export default function App({ onSaveTableState }: Props) {
 	function handleCellContentChange(
 		cellId: string,
 		rowId: string,
-		updatedMarkdown: string
+		value: string
 	) {
 		logFunc(shouldDebug, FILE_NAME, "handleCellContentChange", {
 			cellId,
 			rowId,
-			updatedMarkdown,
+			markdown: value,
 		});
 
 		setTableState((prevState) =>
-			updateCell(prevState, cellId, rowId, updatedMarkdown)
+			updateCell(prevState, cellId, rowId, "markdown", value)
+		);
+	}
+
+	function handleCellDateTimeChange(
+		cellId: string,
+		rowId: string,
+		value: number | null
+	) {
+		logFunc(shouldDebug, FILE_NAME, "handleCellContentChange", {
+			cellId,
+			rowId,
+			dateTime: value,
+		});
+
+		setTableState((prevState) =>
+			updateCell(prevState, cellId, rowId, "dateTime", value)
 		);
 	}
 
@@ -191,7 +204,9 @@ export default function App({ onSaveTableState }: Props) {
 		logFunc(shouldDebug, FILE_NAME, "handleColumnToggle", {
 			columnId,
 		});
-		setTableState((prevState) => toggleColumn(prevState, columnId));
+		setTableState((prevState) =>
+			updateColumn(prevState, columnId, "isVisible")
+		);
 	}
 
 	function handleTagDeleteClick(tagId: string) {
@@ -225,7 +240,7 @@ export default function App({ onSaveTableState }: Props) {
 			currencyType,
 		});
 		setTableState((prevState) =>
-			changeColumnCurrencyType(prevState, columnId, currencyType)
+			updateColumn(prevState, columnId, "currencyType", currencyType)
 		);
 		dispatch(updateSortTime());
 	}
@@ -236,7 +251,7 @@ export default function App({ onSaveTableState }: Props) {
 			dateFormat,
 		});
 		setTableState((prevState) =>
-			changeColumnDateFormat(prevState, columnId, dateFormat)
+			updateColumn(prevState, columnId, "dateFormat", dateFormat)
 		);
 		dispatch(updateSortTime());
 	}
@@ -312,12 +327,26 @@ export default function App({ onSaveTableState }: Props) {
 				cell.column.type === CellType.LAST_EDITED_TIME ||
 				cell.column.type === CellType.CREATION_TIME
 			) {
-				const dateString = unixTimeToString(
+				//TODO fix
+				const dateString = DateConversion.unixTimeToDateTimeString(
 					parseInt(cell.markdown),
 					cell.column.dateFormat
 				);
 				if (dateString.toLowerCase().includes(searchText.toLowerCase()))
 					return true;
+			} else if (cell.column.type === CellType.DATE) {
+				if (cell.dateTime) {
+					const dateString = DateConversion.unixTimeToDateString(
+						cell.dateTime,
+						cell.column.dateFormat
+					);
+					if (
+						dateString
+							.toLowerCase()
+							.includes(searchText.toLowerCase())
+					)
+						return true;
+				}
 			}
 			return false;
 		});
@@ -478,6 +507,7 @@ export default function App({ onSaveTableState }: Props) {
 												id: cellId,
 												markdown,
 												columnId,
+												dateTime,
 											} = cell;
 
 											const filteredTags = tags.filter(
@@ -504,6 +534,7 @@ export default function App({ onSaveTableState }: Props) {
 														rowLastEditedTime={
 															lastEditedTime
 														}
+														dateTime={dateTime}
 														markdown={markdown}
 														columnType={type}
 														shouldWrapOverflow={
@@ -525,6 +556,12 @@ export default function App({ onSaveTableState }: Props) {
 														onTagDeleteClick={
 															handleTagDeleteClick
 														}
+														onDateTimeChange={
+															handleCellDateTimeChange
+														}
+														onDateFormatChange={
+															handleDateFormatChange
+														}
 														onAddTag={handleAddTag}
 													/>
 												),
@@ -538,7 +575,7 @@ export default function App({ onSaveTableState }: Props) {
 														paddingLeft: "10px",
 													}}
 												>
-													<RowMenu
+													<RowOptions
 														rowId={rowId}
 														onDeleteClick={
 															handleRowDeleteClick

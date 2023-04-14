@@ -11,8 +11,9 @@ interface Props {
 	name: string;
 	value?: string;
 	isSelected?: boolean;
-	onClick: any;
+	onClick: (e: React.MouseEvent) => void;
 }
+
 export default function MenuItem({
 	iconType,
 	name,
@@ -24,7 +25,7 @@ export default function MenuItem({
 	if (isSelected) className += " NLT__selected";
 
 	return (
-		<div className={className} onClick={() => onClick()}>
+		<div className={className} onClick={onClick}>
 			<Flex justify="space-between">
 				<Stack>
 					{iconType !== undefined && <Icon type={iconType} />}

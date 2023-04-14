@@ -26,7 +26,7 @@ export default function ToggleColumnMenu({
 	return (
 		<Menu isOpen={isOpen} id={id} top={top} left={left} width={125}>
 			<div className="NLT__toggle-column-menu">
-				<Padding padding="md">
+				<Padding p="md">
 					<Stack spacing="md" isVertical>
 						{columns.map((column) => {
 							return (

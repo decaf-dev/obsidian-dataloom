@@ -8,6 +8,7 @@ interface Props {
 	icon?: React.ReactNode;
 	children?: React.ReactNode;
 	onClick: (e: React.MouseEvent) => void;
+	onMouseDown?: (e: React.MouseEvent) => void;
 }
 
 export default function Button({
@@ -16,6 +17,7 @@ export default function Button({
 	icon,
 	isSimple,
 	onClick,
+	onMouseDown,
 }: Props) {
 	let className = "NLT__button";
 	if (icon !== undefined) className += " NLT__button--icon";
@@ -25,7 +27,8 @@ export default function Button({
 		<button
 			className={className}
 			aria-label={ariaLabel}
-			onClick={(e) => onClick(e)}
+			onClick={onClick}
+			onMouseDown={onMouseDown}
 		>
 			{icon !== undefined ? icon : children}
 		</button>

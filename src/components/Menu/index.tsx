@@ -1,11 +1,15 @@
 import _ from "lodash";
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
-import { closeTopLevelMenu, isTopLevelMenu } from "src/services/menu/menuSlice";
+import {
+	closeTopLevelMenu,
+	requestCloseTopLevelMenu,
+} from "src/services/menu/menuSlice";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 import { numToPx } from "src/services/string/conversion";
 
 import "./styles.css";
+import { isTopLevelMenu } from "src/services/menu/utils";
 
 interface Props {
 	id: string;
@@ -13,7 +17,6 @@ interface Props {
 	top?: number;
 	left?: number;
 	maxWidth?: number;
-	minWidth?: number;
 	width?: number;
 	height?: number;
 	children: React.ReactNode;
@@ -24,7 +27,6 @@ export default function Menu({
 	isOpen,
 	top = 0,
 	left = 0,
-	minWidth = 0,
 	maxWidth,
 	width = 0,
 	height = 0,
@@ -38,18 +40,15 @@ export default function Menu({
 			// If the user is holding down the shift key, they are probably
 			// trying to insert a new line into the text cell. In this case, we don't
 			// want to close the menu.
-			if (!e.shiftKey) {
-				dispatch(closeTopLevelMenu());
-			}
+			if (!e.shiftKey)
+				dispatch(requestCloseTopLevelMenu(e.code === "Enter"));
 		}
 	}
 
 	function handleMouseDown(e: MouseEvent) {
 		const target = e.target as HTMLElement;
 		if (isTopLevel) {
-			if (!target.closest(`#${id}`)) {
-				dispatch(closeTopLevelMenu());
-			}
+			if (!target.closest(`#${id}`)) dispatch(closeTopLevelMenu());
 		}
 	}
 
@@ -58,6 +57,7 @@ export default function Menu({
 			window.addEventListener("keyup", handleKeyUp);
 			window.addEventListener("mousedown", handleMouseDown);
 		}
+
 		return () => {
 			window.removeEventListener("keyup", handleKeyUp);
 			window.removeEventListener("mousedown", handleMouseDown);
@@ -83,7 +83,6 @@ export default function Menu({
 							style={{
 								top: numToPx(top),
 								left: numToPx(left),
-								minWidth: numToPx(minWidth),
 								maxWidth: maxW,
 								width:
 									width === 0

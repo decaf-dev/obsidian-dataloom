@@ -46,6 +46,7 @@ export default class StateFactory {
 			id: randomUUID(),
 			columnId,
 			rowId,
+			dateTime: null,
 			markdown: isHeader ? "New Column" : "",
 			isHeader,
 		};
