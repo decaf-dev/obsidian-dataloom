@@ -2,6 +2,7 @@ import _ from "lodash";
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import {
+	closeAllMenus,
 	closeTopLevelMenu,
 	requestCloseTopLevelMenu,
 } from "src/services/menu/menuSlice";
@@ -48,6 +49,7 @@ export default function Menu({
 	function handleMouseDown(e: MouseEvent) {
 		const target = e.target as HTMLElement;
 		if (isTopLevel) {
+			if (!target.closest(".NLT__menu")) dispatch(closeAllMenus());
 			if (!target.closest(`#${id}`)) dispatch(closeTopLevelMenu());
 		}
 	}
