@@ -72,6 +72,14 @@ export class NLTView extends TextFileView {
 		//This is the view content container
 		const container = this.containerEl.children[1];
 		this.root = createRoot(container);
+
+		//Add settings button to action bar
+		this.addAction("settings", "Settings", () => {
+			//Open settings tab
+			(this.app as any).setting.open();
+			//Navigate to Notion-Like-Tables settings
+			(this.app as any).setting.openTabById("notion-like-tables");
+		});
 	}
 
 	async onClose() {
