@@ -8,17 +8,19 @@ import { useCompare } from "src/services/hooks";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 
 import "./styles.css";
-import DateFormatMenu from "src/components/DateFormatMenu";
+import DateFormatMenu from "./components/DateFormatMenu";
 import { useMenu } from "src/services/menu/hooks";
 import { MenuLevel } from "src/services/menu/types";
 import { isMenuOpen } from "src/services/menu/utils";
-import { openMenu } from "src/services/menu/menuSlice";
+import { closeTopLevelMenu, openMenu } from "src/services/menu/menuSlice";
+import { getDisplayNameForDateFormat } from "src/services/tableState/utils";
 
 interface Props {
 	value: string;
 	closeMenuRequestTime: number | null;
 	dateFormat: DateFormat;
 	onDateChange: (value: string) => void;
+	onDateFormatChange: (value: DateFormat) => void;
 	onMenuClose: () => void;
 }
 
@@ -28,6 +30,7 @@ export default function DateCellEdit({
 	dateFormat,
 	onDateChange,
 	onMenuClose,
+	onDateFormatChange,
 }: Props) {
 	const [localValue, setLocalValue] = useState(value);
 	const [isInputInvalid, setInputInvalid] = useState(false);
@@ -38,6 +41,17 @@ export default function DateCellEdit({
 		isMenuOpen(state, menu.id)
 	);
 	const dispatch = useAppDispatch();
+
+	function handleDateFormatChange(value: DateFormat) {
+		onDateFormatChange(value);
+		dispatch(closeTopLevelMenu());
+	}
+
+	function handleClearClick(e: React.MouseEvent) {
+		e.stopPropagation();
+		onDateChange("");
+		onMenuClose();
+	}
 
 	const didCloseMenuRequestTimeChange = useCompare(closeMenuRequestTime);
 	useEffect(() => {
@@ -89,20 +103,20 @@ export default function DateCellEdit({
 					>
 						<MenuItem
 							name="Date format"
-							value={dateFormat}
+							value={getDisplayNameForDateFormat(dateFormat)}
 							onClick={() => dispatch(openMenu(menu))}
 						/>
 					</div>
-					<MenuItem name="Clear" onClick={() => setLocalValue("")} />
+					<MenuItem name="Clear" onClick={handleClearClick} />
 				</Stack>
 			</div>
 			<DateFormatMenu
 				id={menu.id}
 				isOpen={shouldOpenMenu}
-				top={top - 50}
-				left={left + width - 50}
+				top={top - 25}
+				left={left + width - 25}
 				value={dateFormat}
-				onChange={() => {}}
+				onChange={handleDateFormatChange}
 			/>
 		</>
 	);

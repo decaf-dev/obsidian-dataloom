@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import {
 	closeTopLevelMenu,
-	requestCloseTopMenu,
+	requestCloseTopLevelMenu,
 } from "src/services/menu/menuSlice";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 import { numToPx } from "src/services/string/conversion";
@@ -40,18 +40,15 @@ export default function Menu({
 			// If the user is holding down the shift key, they are probably
 			// trying to insert a new line into the text cell. In this case, we don't
 			// want to close the menu.
-			if (!e.shiftKey) {
-				dispatch(requestCloseTopMenu(e.code === "Enter"));
-			}
+			if (!e.shiftKey)
+				dispatch(requestCloseTopLevelMenu(e.code === "Enter"));
 		}
 	}
 
 	function handleMouseDown(e: MouseEvent) {
 		const target = e.target as HTMLElement;
 		if (isTopLevel) {
-			if (!target.closest(`#${id}`)) {
-				dispatch(closeTopLevelMenu());
-			}
+			if (!target.closest(`#${id}`)) dispatch(closeTopLevelMenu());
 		}
 	}
 
@@ -60,6 +57,7 @@ export default function Menu({
 			window.addEventListener("keyup", handleKeyUp);
 			window.addEventListener("mousedown", handleMouseDown);
 		}
+
 		return () => {
 			window.removeEventListener("keyup", handleKeyUp);
 			window.removeEventListener("mousedown", handleMouseDown);

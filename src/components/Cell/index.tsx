@@ -75,6 +75,7 @@ interface Props {
 	) => void;
 	onTagDeleteClick: (tagId: string) => void;
 	onTagColorChange: (tagId: string, color: Color) => void;
+	onDateFormatChange: (columnId: string, value: DateFormat) => void;
 }
 
 export default function Cell({
@@ -95,6 +96,7 @@ export default function Cell({
 	onTagDeleteClick,
 	onTagClick,
 	onContentChange,
+	onDateFormatChange,
 	onAddTag,
 }: Props) {
 	const [menu, menuPosition] = useMenu(
@@ -188,6 +190,10 @@ export default function Cell({
 		onContentChange(cellId, rowId, updatedMarkdown);
 	}
 
+	function handleDateFormatChange(value: DateFormat) {
+		onDateFormatChange(columnId, value);
+	}
+
 	function handleMenuClose() {
 		dispatch(closeTopLevelMenu());
 	}
@@ -275,6 +281,7 @@ export default function Cell({
 							closeMenuRequestTime={closeMenuRequestTime}
 							dateFormat={dateFormat}
 							onDateChange={handleDateChange}
+							onDateFormatChange={handleDateFormatChange}
 							onMenuClose={handleMenuClose}
 						/>
 					)}

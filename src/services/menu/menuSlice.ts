@@ -27,14 +27,14 @@ export const menuSlice = createSlice({
 			state.openMenus.push(action.payload);
 			state.menuOpenTime = Date.now();
 		},
-		requestCloseTopMenu: (state, action: PayloadAction<boolean>) => {
+		requestCloseTopLevelMenu: (state, action: PayloadAction<boolean>) => {
 			const topMenu = state.openMenus.last();
 			if (!topMenu) return;
 
 			const isEnterPressed = action.payload;
 
 			//Only request close if the menu is initialized to do so
-			if (topMenu.shouldRequestClose) {
+			if (topMenu.shouldRequestOnClose) {
 				//Make sure that we're pressing enter on the menu
 				//Otherwise we will just close it
 				if (isEnterPressed) {
@@ -49,17 +49,17 @@ export const menuSlice = createSlice({
 		},
 		closeTopLevelMenu: (state) => {
 			const topMenu = state.openMenus.last();
-			if (topMenu) {
-				if (state.menuRequestingClose) {
-					if (state.menuRequestingClose.id !== topMenu.id) {
-						throw new Error(
-							"Menu requesting close is not the top menu."
-						);
-					}
-					state.menuRequestingClose = null;
+			if (!topMenu) return;
+
+			if (state.menuRequestingClose) {
+				if (state.menuRequestingClose.id !== topMenu.id) {
+					throw new Error(
+						"Menu requesting close is not the top menu."
+					);
 				}
-				state.openMenus.pop();
+				state.menuRequestingClose = null;
 			}
+			state.openMenus.pop();
 		},
 		closeAllMenus: (state) => {
 			state.openMenus = [];
@@ -71,7 +71,7 @@ export const {
 	openMenu,
 	closeTopLevelMenu,
 	closeAllMenus,
-	requestCloseTopMenu,
+	requestCloseTopLevelMenu,
 } = menuSlice.actions;
 
 export default menuSlice.reducer;

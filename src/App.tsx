@@ -24,12 +24,9 @@ import {
 } from "./services/tableState/tag";
 import {
 	addColumn,
-	changeColumnCurrencyType,
-	changeColumnDateFormat,
 	changeColumnType,
 	deleteColumn,
 	sortOnColumn,
-	toggleColumn,
 	updateColumn,
 } from "./services/tableState/column";
 import { sortRows } from "./services/tableState/sort";
@@ -191,7 +188,9 @@ export default function App({ onSaveTableState }: Props) {
 		logFunc(shouldDebug, FILE_NAME, "handleColumnToggle", {
 			columnId,
 		});
-		setTableState((prevState) => toggleColumn(prevState, columnId));
+		setTableState((prevState) =>
+			updateColumn(prevState, columnId, "isVisible")
+		);
 	}
 
 	function handleTagDeleteClick(tagId: string) {
@@ -225,7 +224,7 @@ export default function App({ onSaveTableState }: Props) {
 			currencyType,
 		});
 		setTableState((prevState) =>
-			changeColumnCurrencyType(prevState, columnId, currencyType)
+			updateColumn(prevState, columnId, "currencyType", currencyType)
 		);
 		dispatch(updateSortTime());
 	}
@@ -236,7 +235,7 @@ export default function App({ onSaveTableState }: Props) {
 			dateFormat,
 		});
 		setTableState((prevState) =>
-			changeColumnDateFormat(prevState, columnId, dateFormat)
+			updateColumn(prevState, columnId, "dateFormat", dateFormat)
 		);
 		dispatch(updateSortTime());
 	}
@@ -524,6 +523,9 @@ export default function App({ onSaveTableState }: Props) {
 														}
 														onTagDeleteClick={
 															handleTagDeleteClick
+														}
+														onDateFormatChange={
+															handleDateFormatChange
 														}
 														onAddTag={handleAddTag}
 													/>

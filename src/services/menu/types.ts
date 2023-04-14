@@ -14,7 +14,7 @@ export interface Position {
 export interface Menu {
 	id: string;
 	level: MenuLevel;
-	shouldRequestClose: boolean;
+	shouldRequestOnClose: boolean;
 }
 
 export interface CloseMenuRequest {

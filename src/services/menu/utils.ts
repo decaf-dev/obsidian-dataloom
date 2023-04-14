@@ -1,7 +1,7 @@
 import { RootState } from "../redux/store";
 
 export const isMenuOpen = (state: RootState, menuId: string) =>
-	state.menu.openMenus.find((m) => m.id === menuId) != null;
+	state.menu.openMenus.find((menu) => menu.id === menuId) != null;
 
 export const getCloseMenuRequestTime = (state: RootState, menuId: string) => {
 	if (state.menu.menuRequestingClose?.id === menuId) {

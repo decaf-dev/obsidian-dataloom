@@ -32,14 +32,14 @@ const useMenuPosition = (): MenuPosition => {
 
 export const useMenu = (
 	level: MenuLevel,
-	shouldRequestClose = false
+	shouldRequestOnClose = false
 ): [Menu, MenuPosition] => {
 	const menuPosition = useMenuPosition();
 	const [id] = useState("m" + randomUUID());
 
 	const menu: Menu = useMemo(() => {
-		return { id, level, shouldRequestClose };
-	}, [id, level, shouldRequestClose]);
+		return { id, level, shouldRequestOnClose };
+	}, [id, level, shouldRequestOnClose]);
 
 	return [menu, menuPosition];
 };

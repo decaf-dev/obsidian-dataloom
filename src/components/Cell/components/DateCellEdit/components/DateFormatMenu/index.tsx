@@ -23,7 +23,11 @@ export default function DateFormatMenu({
 	return (
 		<Menu isOpen={isOpen} id={id} top={top} left={left} width={175}>
 			<div className="NLT__currency-menu">
-				{Object.values(DateFormat).map((format) => (
+				{Object.values([
+					DateFormat.DD_MM_YYYY,
+					DateFormat.MM_DD_YYYY,
+					DateFormat.YYYY_MM_DD,
+				]).map((format) => (
 					<MenuItem
 						key={format}
 						name={getDisplayNameForDateFormat(format)}

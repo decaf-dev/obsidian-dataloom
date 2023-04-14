@@ -3,7 +3,6 @@ import Stack from "src/components/Stack";
 import { IconType } from "src/services/icon/types";
 import Flex from "../Flex";
 import Text from "../Text";
-import Wrap from "src/components/Wrap";
 
 import "./styles.css";
 
@@ -12,7 +11,7 @@ interface Props {
 	name: string;
 	value?: string;
 	isSelected?: boolean;
-	onClick: any;
+	onClick: (e: React.MouseEvent) => void;
 }
 
 export default function MenuItem({
@@ -26,7 +25,7 @@ export default function MenuItem({
 	if (isSelected) className += " NLT__selected";
 
 	return (
-		<div className={className} onClick={() => onClick()}>
+		<div className={className} onClick={onClick}>
 			<Flex justify="space-between">
 				<Stack>
 					{iconType !== undefined && <Icon type={iconType} />}
