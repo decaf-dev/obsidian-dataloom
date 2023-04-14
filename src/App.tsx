@@ -309,13 +309,20 @@ export default function App({ onSaveTableState }: Props) {
 			(cell) => cell.rowId === row.id
 		);
 		const matchedCell = filteredCells.find((cell) => {
-			if (cell.markdown.toLowerCase().includes(searchText.toLowerCase()))
+			const { dateTime, isHeader, markdown } = cell;
+			const { currencyType, type, dateFormat } = cell.column;
+			const { lastEditedTime, creationTime } = row;
+
+			//We always want to show the header cells
+			if (isHeader) return true;
+
+			if (markdown.toLowerCase().includes(searchText.toLowerCase()))
 				return true;
-			if (cell.isHeader) return true;
-			if (cell.column.type === CellType.CURRENCY) {
+
+			if (type === CellType.CURRENCY) {
 				const currencyString = stringToCurrencyString(
 					cell.markdown,
-					cell.column.currencyType
+					currencyType
 				);
 				if (
 					currencyString
@@ -323,22 +330,25 @@ export default function App({ onSaveTableState }: Props) {
 						.includes(searchText.toLowerCase())
 				)
 					return true;
-			} else if (
-				cell.column.type === CellType.LAST_EDITED_TIME ||
-				cell.column.type === CellType.CREATION_TIME
-			) {
-				//TODO fix
+			} else if (type === CellType.LAST_EDITED_TIME) {
 				const dateString = DateConversion.unixTimeToDateTimeString(
-					parseInt(cell.markdown),
-					cell.column.dateFormat
+					lastEditedTime,
+					dateFormat
+				);
+				if (dateString.toLowerCase().includes(searchText.toLowerCase()))
+					return true;
+			} else if (type === CellType.CREATION_TIME) {
+				const dateString = DateConversion.unixTimeToDateTimeString(
+					creationTime,
+					dateFormat
 				);
 				if (dateString.toLowerCase().includes(searchText.toLowerCase()))
 					return true;
 			} else if (cell.column.type === CellType.DATE) {
-				if (cell.dateTime) {
+				if (dateTime) {
 					const dateString = DateConversion.unixTimeToDateString(
-						cell.dateTime,
-						cell.column.dateFormat
+						dateTime,
+						dateFormat
 					);
 					if (
 						dateString
