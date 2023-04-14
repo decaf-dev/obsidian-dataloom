@@ -8,21 +8,19 @@ interface Props {
 	value: string;
 	currencyType: CurrencyType;
 	shouldWrapOverflow: boolean;
-	hasAutoWidth: boolean;
 }
 
 export default function CurrencyCell({
 	value,
 	currencyType,
 	shouldWrapOverflow,
-	hasAutoWidth,
 }: Props) {
-	const overflowClassName = useOverflowClassName(
-		hasAutoWidth,
-		shouldWrapOverflow
-	);
+	const overflowClassName = useOverflowClassName(shouldWrapOverflow);
 
-	const valueFormatted = stringToCurrencyString(value, currencyType);
+	let valueFormatted = "";
+	if (value !== "") {
+		valueFormatted = stringToCurrencyString(value, currencyType);
+	}
 
 	const className = "NLT__currency-cell" + " " + overflowClassName;
 

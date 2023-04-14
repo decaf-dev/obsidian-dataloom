@@ -1,7 +1,7 @@
 import { isCheckboxChecked } from "../string/validators";
 import { CellNotFoundError } from "./error";
 import { TableState, Cell, Row, CellType, SortDir } from "./types";
-import { sortCells } from "./utils";
+import { sortCellsForRender } from "./utils";
 
 const sortByDir = (
 	columnId: string,
@@ -12,6 +12,8 @@ const sortByDir = (
 ) => {
 	if (columnType == CellType.NUMBER) {
 		return sortByNumber(columnId, rows, cells, sortDir);
+	} else if (columnType === CellType.DATE) {
+		return sortByDate(columnId, rows, cells, sortDir);
 	} else if (columnType == CellType.LAST_EDITED_TIME) {
 		return sortByLastEditedTime(rows, sortDir);
 	} else if (columnType == CellType.CREATION_TIME) {
@@ -151,7 +153,45 @@ const sortByCheckbox = (
 	return rowsCopy;
 };
 
-const sortByCreationTime = (rows: Row[], sortDir: SortDir): Row[] => {
+export const sortByDate = (
+	columnId: string,
+	rows: Row[],
+	cells: Cell[],
+	sortDir: SortDir
+): Row[] => {
+	const rowsCopy = [...rows];
+	rowsCopy.sort((a, b) => {
+		const cellA = cells.find(
+			(c) => c.columnId === columnId && c.rowId === a.id
+		);
+
+		if (!cellA) throw new CellNotFoundError();
+
+		const cellB = cells.find(
+			(c) => c.columnId === columnId && c.rowId === b.id
+		);
+
+		if (!cellB) throw new CellNotFoundError();
+
+		//Force headers to the top
+		if (cellA.isHeader) return -1;
+		if (cellB.isHeader) return 1;
+
+		const dateTimeA = cellA.dateTime || 0;
+		const dateTimeB = cellB.dateTime || 0;
+
+		if (sortDir === SortDir.ASC) {
+			return dateTimeA - dateTimeB;
+		} else if (sortDir === SortDir.DESC) {
+			return dateTimeB - dateTimeA;
+		} else {
+			return 0;
+		}
+	});
+	return rowsCopy;
+};
+
+export const sortByCreationTime = (rows: Row[], sortDir: SortDir): Row[] => {
 	const rowsCopy = [...rows];
 	rowsCopy.sort((a, b) => {
 		if (sortDir === SortDir.ASC) {
@@ -179,6 +219,14 @@ const sortByLastEditedTime = (rows: Row[], sortDir: SortDir): Row[] => {
 	return rowsCopy;
 };
 
+export const sortByRowIndex = (rows: Row[]): Row[] => {
+	const rowsCopy = [...rows];
+	rowsCopy.sort((a, b) => {
+		return a.index - b.index;
+	});
+	return rowsCopy;
+};
+
 export const sortRows = (prevState: TableState): TableState => {
 	const { columns, rows, cells } = prevState.model;
 	const sortedColumn = columns.find(
@@ -196,7 +244,7 @@ export const sortRows = (prevState: TableState): TableState => {
 					rows,
 					cells
 				),
-				cells: sortCells(columns, rows, cells),
+				cells: sortCellsForRender(columns, rows, cells),
 			},
 		};
 	}
@@ -204,7 +252,7 @@ export const sortRows = (prevState: TableState): TableState => {
 		...prevState,
 		model: {
 			...prevState.model,
-			rows: sortByCreationTime(rows, SortDir.ASC),
+			rows: sortByRowIndex(rows),
 		},
 	};
 };

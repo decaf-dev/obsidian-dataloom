@@ -42,10 +42,30 @@ export enum CurrencyType {
 	MEXICO = "MXN",
 	ARGENTINA = "ARS",
 }
+export interface Column {
+	id: string;
+	sortDir: SortDir;
+	width: string;
+	type: CellType;
+	isVisible: boolean;
+	dateFormat: DateFormat;
+	currencyType: CurrencyType;
+	shouldWrapOverflow: boolean;
+	footerCellId: string;
+}
+
+export interface Row {
+	id: string;
+	index: number;
+	menuCellId: string;
+	creationTime: number;
+	lastEditedTime: number;
+}
 
 export interface Cell {
 	id: string;
 	columnId: string;
+	dateTime: number | null;
 	rowId: string;
 	markdown: string;
 	isHeader: boolean;
@@ -57,24 +77,6 @@ export interface Tag {
 	color: Color;
 	columnId: string;
 	cellIds: string[];
-}
-export interface Column {
-	id: string;
-	sortDir: SortDir;
-	width: string;
-	type: CellType;
-	dateFormat: DateFormat;
-	currencyType: CurrencyType;
-	hasAutoWidth: boolean;
-	shouldWrapOverflow: boolean;
-	footerCellId: string;
-}
-
-export interface Row {
-	id: string;
-	menuCellId: string;
-	creationTime: number;
-	lastEditedTime: number;
 }
 
 export interface TableModel {

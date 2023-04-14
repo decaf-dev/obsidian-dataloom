@@ -30,4 +30,6 @@ export const enum IconType {
 	PAYMENTS,
 	TUNE,
 	ADD,
+	DRAG_INDICATOR,
+	VIEW_COLUMN,
 }

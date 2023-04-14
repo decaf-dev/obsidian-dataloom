@@ -16,20 +16,21 @@ export default class StateFactory {
 		return {
 			id: randomUUID(),
 			sortDir: SortDir.NONE,
+			isVisible: true,
 			width: "140px",
 			type: CellType.TEXT,
 			currencyType: CurrencyType.UNITED_STATES,
 			dateFormat: DateFormat.MM_DD_YYYY,
-			hasAutoWidth: false,
 			shouldWrapOverflow: true,
 			footerCellId: randomUUID(),
 		};
 	}
 
-	static createRow(): Row {
+	static createRow(totalRowCount: number): Row {
 		const currentTime = Date.now();
 		return {
 			id: randomUUID(),
+			index: totalRowCount,
 			menuCellId: randomUUID(),
 			creationTime: currentTime,
 			lastEditedTime: currentTime,
@@ -45,6 +46,7 @@ export default class StateFactory {
 			id: randomUUID(),
 			columnId,
 			rowId,
+			dateTime: null,
 			markdown: isHeader ? "New Column" : "",
 			isHeader,
 		};

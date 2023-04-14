@@ -1,11 +1,12 @@
 import { updateLastEditedTime } from "./row";
-import { TableState } from "./types";
+import { Cell, TableState } from "./types";
 
 export const updateCell = (
 	prevState: TableState,
 	cellId: string,
 	rowId: string,
-	markdown: string
+	key: keyof Cell,
+	value: unknown
 ) => {
 	const { cells, rows } = prevState.model;
 	return {
@@ -16,7 +17,7 @@ export const updateCell = (
 				if (cell.id === cellId) {
 					return {
 						...cell,
-						markdown,
+						[key as keyof Cell]: value,
 					};
 				}
 				return cell;

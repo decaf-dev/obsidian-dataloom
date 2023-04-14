@@ -16,10 +16,6 @@ export default function SearchBar() {
 	return (
 		<div className="NLT__search">
 			<Stack spacing="lg">
-				<Button
-					icon={<Icon type={IconType.SEARCH} />}
-					onClick={() => dispatch(toggleSearchBar())}
-				/>
 				{isSearchBarVisible && (
 					<input
 						autoFocus
@@ -31,6 +27,11 @@ export default function SearchBar() {
 						}
 					/>
 				)}
+				<Button
+					icon={<Icon type={IconType.SEARCH} />}
+					ariaLabel="Search"
+					onClick={() => dispatch(toggleSearchBar())}
+				/>
 			</Stack>
 		</div>
 	);

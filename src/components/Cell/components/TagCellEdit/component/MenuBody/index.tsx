@@ -33,7 +33,7 @@ export default function MenuBody({
 	const filteredTags = tags.filter((tag) => tag.markdown.includes(inputText));
 	return (
 		<div className="NLT__tag-menu-body">
-			<Padding paddingX="lg" paddingY="md">
+			<Padding px="lg" py="md">
 				<Text value="Select an option or create one" />
 			</Padding>
 			<div style={{ width: "100%" }}>

@@ -22,7 +22,7 @@ import {
 import { useMenu } from "src/services/menu/hooks";
 import { MenuLevel } from "src/services/menu/types";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
-import { openMenu, isMenuOpen } from "src/services/menu/menuSlice";
+import { closeTopLevelMenu, openMenu } from "src/services/menu/menuSlice";
 
 import LastEditedTimeCell from "./components/LastEditedTimeCell";
 import CreationTimeCell from "./components/CreationTimeCell";
@@ -38,11 +38,13 @@ import { updateSortTime } from "src/services/redux/globalSlice";
 import { Color } from "src/services/color/types";
 import CurrencyCell from "./components/CurrencyCell";
 import CurrencyCellEdit from "./components/CurrencyCellEdit";
+import { getCloseMenuRequestTime, isMenuOpen } from "src/services/menu/utils";
 
 interface Props {
 	columnType: string;
 	cellId: string;
 	rowId: string;
+	dateTime: number | null;
 	dateFormat: DateFormat;
 	columnCurrencyType: CurrencyType;
 	columnId: string;
@@ -52,7 +54,6 @@ interface Props {
 	width: string;
 	tags: Tag[];
 	shouldWrapOverflow: boolean;
-	hasAutoWidth: boolean;
 	onRemoveTagClick: (cellId: string, rowId: string, tagId: string) => void;
 	onTagClick: (
 		cellId: string,
@@ -60,11 +61,7 @@ interface Props {
 		tagId: string,
 		canAddMultiple: boolean
 	) => void;
-	onContentChange: (
-		cellId: string,
-		rowId: string,
-		updatedMarkdown: string
-	) => void;
+	onContentChange: (cellId: string, rowId: string, value: string) => void;
 	onAddTag: (
 		cellId: string,
 		columnId: string,
@@ -75,6 +72,12 @@ interface Props {
 	) => void;
 	onTagDeleteClick: (tagId: string) => void;
 	onTagColorChange: (tagId: string, color: Color) => void;
+	onDateFormatChange: (columnId: string, value: DateFormat) => void;
+	onDateTimeChange: (
+		cellId: string,
+		rowId: string,
+		value: number | null
+	) => void;
 }
 
 export default function Cell({
@@ -83,6 +86,7 @@ export default function Cell({
 	rowId,
 	markdown,
 	dateFormat,
+	dateTime,
 	columnCurrencyType,
 	columnType,
 	rowCreationTime,
@@ -90,26 +94,36 @@ export default function Cell({
 	tags,
 	width,
 	shouldWrapOverflow,
-	hasAutoWidth,
 	onRemoveTagClick,
 	onTagColorChange,
 	onTagDeleteClick,
 	onTagClick,
 	onContentChange,
+	onDateFormatChange,
+	onDateTimeChange,
 	onAddTag,
 }: Props) {
-	const menu = useMenu(MenuLevel.ONE);
-	const isOpen = useAppSelector((state) => isMenuOpen(state, menu.id));
+	const [menu, menuPosition] = useMenu(
+		MenuLevel.ONE,
+		columnType === CellType.DATE
+	);
+	const shouldOpenMenu = useAppSelector((state) =>
+		isMenuOpen(state, menu.id)
+	);
+	const closeMenuRequestTime = useAppSelector((state) =>
+		getCloseMenuRequestTime(state, menu.id)
+	);
+
 	const dispatch = useAppDispatch();
 	const { isDarkMode } = useAppSelector((state) => state.global);
 
 	//If we open a menu and then close it, we want to sort all rows
 	//TODO optimize?
 	useDidMountEffect(() => {
-		if (!isOpen) {
+		if (!shouldOpenMenu) {
 			dispatch(updateSortTime());
 		}
-	}, [isOpen]);
+	}, [shouldOpenMenu]);
 
 	async function handleCellContextClick() {
 		try {
@@ -137,12 +151,7 @@ export default function Cell({
 
 			//If we clicked on the link for a file or tag, return
 			if (el.nodeName === "A") return;
-			dispatch(
-				openMenu({
-					id: menu.id,
-					level: menu.level,
-				})
-			);
+			dispatch(openMenu(menu));
 		}
 	}
 
@@ -165,24 +174,36 @@ export default function Cell({
 		onTagClick(cellId, rowId, tagId, columnType === CellType.MULTI_TAG);
 	}
 
-	function handleTextInputChange(updatedMarkdown: string) {
-		onContentChange(cellId, rowId, updatedMarkdown);
+	function handleTextInputChange(value: string) {
+		onContentChange(cellId, rowId, value);
 	}
 
-	function handleNumberInputChange(updatedMarkdown: string) {
-		onContentChange(cellId, rowId, updatedMarkdown);
+	function handleNumberInputChange(value: string) {
+		onContentChange(cellId, rowId, value);
 	}
 
-	function handleDateChange(updatedMarkdown: string) {
-		onContentChange(cellId, rowId, updatedMarkdown);
+	function handleDateChange(value: string) {
+		onContentChange(cellId, rowId, value);
 	}
 
-	function handleCheckboxChange(updatedMarkdown: string) {
-		onContentChange(cellId, rowId, updatedMarkdown);
+	function handleCheckboxChange(value: string) {
+		onContentChange(cellId, rowId, value);
 	}
 
-	function handleCurrencyChange(updatedMarkdown: string) {
-		onContentChange(cellId, rowId, updatedMarkdown);
+	function handleCurrencyChange(value: string) {
+		onContentChange(cellId, rowId, value);
+	}
+
+	function handleDateFormatChange(value: DateFormat) {
+		onDateFormatChange(columnId, value);
+	}
+
+	function handleDateTimeChange(value: number | null) {
+		onDateTimeChange(cellId, rowId, value);
+	}
+
+	function handleMenuClose() {
+		dispatch(closeTopLevelMenu());
 	}
 
 	const {
@@ -190,11 +211,22 @@ export default function Cell({
 		height: measuredHeight,
 		top,
 		left,
-	} = menu.position;
+	} = menuPosition.position;
 
-	let height = measuredHeight;
+	let menuHeight = measuredHeight;
+	if (
+		columnType === CellType.TAG ||
+		columnType === CellType.MULTI_TAG ||
+		columnType === CellType.DATE
+	) {
+		menuHeight = 0;
+	}
+
+	let menuWidth = measuredWidth;
 	if (columnType === CellType.TAG || columnType === CellType.MULTI_TAG) {
-		height = 0;
+		menuWidth = 250;
+	} else if (columnType == CellType.DATE) {
+		menuWidth = 175;
 	}
 
 	let className = "NLT__td-container";
@@ -210,7 +242,7 @@ export default function Cell({
 
 	return (
 		<div
-			ref={menu.containerRef}
+			ref={menuPosition.containerRef}
 			onClick={handleCellClick}
 			onContextMenu={handleCellContextClick}
 			className={className}
@@ -218,20 +250,14 @@ export default function Cell({
 				width,
 			}}
 		>
-			{isOpen && (
+			{shouldOpenMenu && (
 				<Menu
 					id={menu.id}
-					isOpen={isOpen}
+					isOpen={shouldOpenMenu}
 					top={top}
 					left={left}
-					minWidth={
-						columnType === CellType.MULTI_TAG ||
-						columnType === CellType.TAG
-							? 250
-							: 0
-					}
-					width={measuredWidth}
-					height={height}
+					width={menuWidth}
+					height={menuHeight}
 				>
 					{columnType === CellType.TEXT && (
 						<TextCellEdit
@@ -259,8 +285,12 @@ export default function Cell({
 					)}
 					{columnType === CellType.DATE && (
 						<DateCellEdit
-							value={markdown}
-							onDateChange={handleDateChange}
+							value={dateTime}
+							closeMenuRequestTime={closeMenuRequestTime}
+							dateFormat={dateFormat}
+							onDateTimeChange={handleDateTimeChange}
+							onDateFormatChange={handleDateFormatChange}
+							onMenuClose={handleMenuClose}
 						/>
 					)}
 					{columnType === CellType.CURRENCY && (
@@ -275,21 +305,18 @@ export default function Cell({
 				<TextCell
 					markdown={markdown}
 					shouldWrapOverflow={shouldWrapOverflow}
-					hasAutoWidth={hasAutoWidth}
 				/>
 			)}
 			{columnType === CellType.NUMBER && (
 				<NumberCell
 					value={markdown}
 					shouldWrapOverflow={shouldWrapOverflow}
-					hasAutoWidth={hasAutoWidth}
 				/>
 			)}
 			{columnType === CellType.CURRENCY && (
 				<CurrencyCell
 					value={markdown}
 					currencyType={columnCurrencyType}
-					hasAutoWidth={hasAutoWidth}
 					shouldWrapOverflow={shouldWrapOverflow}
 				/>
 			)}
@@ -298,7 +325,6 @@ export default function Cell({
 					isDarkMode={isDarkMode}
 					markdown={currentTag.markdown}
 					color={currentTag.color}
-					hasAutoWidth={hasAutoWidth}
 					shouldWrapOverflow={shouldWrapOverflow}
 				/>
 			)}
@@ -306,11 +332,12 @@ export default function Cell({
 				<MultiTagCell
 					isDarkMode={isDarkMode}
 					tags={filteredTags}
-					hasAutoWidth={hasAutoWidth}
 					shouldWrapOverflow={shouldWrapOverflow}
 				/>
 			)}
-			{columnType === CellType.DATE && <DateCell value={markdown} />}
+			{columnType === CellType.DATE && (
+				<DateCell value={dateTime} format={dateFormat} />
+			)}
 			{columnType === CellType.CHECKBOX && (
 				<CheckboxCell
 					value={markdown}
@@ -322,7 +349,6 @@ export default function Cell({
 					value={rowCreationTime}
 					format={dateFormat}
 					shouldWrapOverflow={shouldWrapOverflow}
-					hasAutoWidth={hasAutoWidth}
 				/>
 			)}
 			{columnType === CellType.LAST_EDITED_TIME && (
@@ -330,7 +356,6 @@ export default function Cell({
 					value={rowLastEditedTime}
 					format={dateFormat}
 					shouldWrapOverflow={shouldWrapOverflow}
-					hasAutoWidth={hasAutoWidth}
 				/>
 			)}
 		</div>

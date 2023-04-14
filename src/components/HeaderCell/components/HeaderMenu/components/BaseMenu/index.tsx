@@ -5,7 +5,7 @@ import Stack from "src/components/Stack";
 import { IconType } from "src/services/icon/types";
 import { CellType, SortDir } from "src/services/tableState/types";
 import { getDisplayNameForCellType } from "src/services/tableState/utils";
-import { Submenu } from "../../types";
+import { SubmenuType } from "../../types";
 
 interface Props {
 	columnName: string;
@@ -13,10 +13,9 @@ interface Props {
 	rowId: string;
 	columnType: CellType;
 	columnSortDir: SortDir;
-	numColumns: number;
 	onColumnNameChange: (cellId: string, rowId: string, value: string) => void;
 	onSortClick: (value: SortDir) => void;
-	onSubmenuChange: (value: Submenu) => void;
+	onSubmenuChange: (value: SubmenuType) => void;
 }
 
 export default function BaseMenu({
@@ -25,7 +24,6 @@ export default function BaseMenu({
 	columnName,
 	columnType,
 	columnSortDir,
-	numColumns,
 	onColumnNameChange,
 	onSortClick,
 	onSubmenuChange,
@@ -33,7 +31,7 @@ export default function BaseMenu({
 	return (
 		<Stack spacing="sm" isVertical>
 			<Stack spacing="sm" isVertical>
-				<Padding paddingX="md" paddingY="sm">
+				<Padding px="md" py="sm">
 					<input
 						autoFocus
 						value={columnName}
@@ -46,12 +44,12 @@ export default function BaseMenu({
 					iconType={IconType.NOTES}
 					name="Type"
 					value={getDisplayNameForCellType(columnType)}
-					onClick={() => onSubmenuChange(Submenu.TYPE)}
+					onClick={() => onSubmenuChange(SubmenuType.TYPE)}
 				/>
 				<MenuItem
 					iconType={IconType.TUNE}
 					name="Options"
-					onClick={() => onSubmenuChange(Submenu.OPTIONS)}
+					onClick={() => onSubmenuChange(SubmenuType.OPTIONS)}
 				/>
 			</Stack>
 			<Divider />

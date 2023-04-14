@@ -1,14 +1,7 @@
 import { ColumnIdError } from "./error";
 import StateFactory from "./StateFactory";
-import {
-	CellType,
-	Column,
-	TableState,
-	SortDir,
-	CurrencyType,
-	DateFormat,
-} from "./types";
-import { sortCells } from "./utils";
+import { CellType, Column, TableState, SortDir } from "./types";
+import { sortCellsForRender } from "./utils";
 
 export const addColumn = (prevState: TableState): TableState => {
 	const { cells, columns, rows } = prevState.model;
@@ -22,7 +15,7 @@ export const addColumn = (prevState: TableState): TableState => {
 		cellsCopy.push(StateFactory.createCell(newColumn.id, row.id, i === 0));
 	});
 
-	cellsCopy = sortCells(columnsCopy, rows, cellsCopy);
+	cellsCopy = sortCellsForRender(columnsCopy, rows, cellsCopy);
 
 	return {
 		...prevState,
@@ -68,17 +61,24 @@ export const updateColumn = (
 	prevState: TableState,
 	columnId: string,
 	key: keyof Column,
-	value: unknown
+	value?: unknown
 ): TableState => {
 	return {
 		...prevState,
 		model: {
 			...prevState.model,
 			columns: prevState.model.columns.map((column) => {
+				const isBoolean = typeof column[key] === "boolean";
+
+				//If we don't provide a value, we assume that the value is a boolean
+				//and we will toggle it
+				if (!isBoolean && value === undefined)
+					throw new Error("updateColumn value is undefined");
+
 				if (column.id == columnId) {
 					return {
 						...column,
-						[key as keyof Column]: value,
+						[key as keyof Column]: isBoolean ? !column[key] : value,
 					};
 				}
 				return column;
@@ -99,54 +99,6 @@ export const deleteColumn = (
 			columns: columns.filter((column) => column.id !== columnId),
 			cells: cells.filter((cell) => cell.columnId !== columnId),
 			tags: tags.filter((tag) => tag.columnId !== columnId),
-		},
-	};
-};
-
-export const changeColumnCurrencyType = (
-	prevState: TableState,
-	columnId: string,
-	type: CurrencyType
-): TableState => {
-	const { columns } = prevState.model;
-
-	return {
-		...prevState,
-		model: {
-			...prevState.model,
-			columns: columns.map((column) => {
-				if (column.id === columnId) {
-					return {
-						...column,
-						currencyType: type,
-					};
-				}
-				return column;
-			}),
-		},
-	};
-};
-
-export const changeColumnDateFormat = (
-	prevState: TableState,
-	columnId: string,
-	format: DateFormat
-): TableState => {
-	const { columns } = prevState.model;
-
-	return {
-		...prevState,
-		model: {
-			...prevState.model,
-			columns: columns.map((column) => {
-				if (column.id === columnId) {
-					return {
-						...column,
-						dateFormat: format,
-					};
-				}
-				return column;
-			}),
 		},
 	};
 };

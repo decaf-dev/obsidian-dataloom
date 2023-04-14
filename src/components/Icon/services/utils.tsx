@@ -3,7 +3,6 @@ import {
 	ArrowDownward,
 	MoreVert,
 	MoreHoriz,
-	Delete,
 	Sort,
 	KeyboardArrowDown,
 	KeyboardArrowUp,
@@ -30,8 +29,10 @@ import {
 	PaymentsOutlined,
 	Tune,
 	DeleteOutline,
-	PlusOne,
 	Add,
+	DragIndicator,
+	ViewColumn,
+	ViewColumnOutlined,
 } from "@mui/icons-material";
 
 import { IconType } from "src/services/icon/types";
@@ -103,6 +104,10 @@ export const findIcon = (
 			return <Tune className={className} />;
 		case IconType.ADD:
 			return <Add className={className} />;
+		case IconType.DRAG_INDICATOR:
+			return <DragIndicator className={className} />;
+		case IconType.VIEW_COLUMN:
+			return <ViewColumnOutlined className={className} />;
 		default:
 			return "";
 	}

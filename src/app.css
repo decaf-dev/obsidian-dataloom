@@ -105,10 +105,6 @@
 	background-color: hsl(8, 35%, 30%);
 }
 
-.NLT__table-wrapper {
-	overflow-x: auto;
-}
-
 /*
 * Selectable and selected
 */
@@ -127,11 +123,6 @@
 /**
 * Overflow
 */
-.NLT__auto-width {
-	overflow-wrap: normal; /* TODO is this prop redunant? */
-	white-space: nowrap;
-}
-
 .NLT__wrap-overflow {
 	overflow-wrap: break-word;
 }
@@ -152,8 +143,15 @@
 /**
 * Components
 */
+.workspace-leaf-content[data-type="notion-like-tables"] .view-content {
+	padding: 0;
+}
+
 .NLT__app {
-	width: fit-content;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	height: 100%;
 }
 
 .NLT__default-cursor {

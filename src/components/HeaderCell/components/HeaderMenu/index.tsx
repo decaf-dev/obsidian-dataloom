@@ -4,6 +4,8 @@ import Menu from "src/components/Menu";
 import OptionSubmenu from "./components/OptionSubmenu";
 import TypeSubmenu from "./components/TypeSubmenu";
 import BaseMenu from "./components/BaseMenu";
+import CurrencySubmenu from "./components/CurrencySubmenu";
+import DateFormatSubmenu from "./components/DateFormatSubmenu";
 
 import {
 	CellType,
@@ -11,9 +13,9 @@ import {
 	DateFormat,
 	SortDir,
 } from "src/services/tableState/types";
+import { SubmenuType } from "./types";
 
 import "./styles.css";
-import { Submenu } from "./types";
 interface Props {
 	isOpen: boolean;
 	canDeleteColumn: boolean;
@@ -26,7 +28,6 @@ interface Props {
 	cellId: string;
 	markdown: string;
 	shouldWrapOverflow: boolean;
-	hasAutoWidth: boolean;
 	columnSortDir: SortDir;
 	columnType: CellType;
 	columnId: string;
@@ -34,7 +35,6 @@ interface Props {
 	onTypeSelect: (columnId: string, type: CellType) => void;
 	onSortClick: (columnId: string, sortDir: SortDir) => void;
 	onDeleteClick: (columnId: string) => void;
-	onAutoWidthToggle: (columnId: string, value: boolean) => void;
 	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
 	onNameChange: (cellId: string, rowId: string, value: string) => void;
 	onCurrencyChange: (columnId: string, value: CurrencyType) => void;
@@ -56,20 +56,17 @@ export default function HeaderMenu({
 	columnType,
 	columnSortDir,
 	columnId,
-	numColumns,
-	hasAutoWidth,
 	shouldWrapOverflow,
 	onTypeSelect,
 	onSortClick,
 	onDeleteClick,
 	onClose,
 	onWrapOverflowToggle,
-	onAutoWidthToggle,
 	onNameChange,
 	onCurrencyChange,
 	onDateFormatChange,
 }: Props) {
-	const [submenu, setSubmenu] = useState<Submenu | null>(null);
+	const [submenu, setSubmenu] = useState<SubmenuType | null>(null);
 
 	function handleSortClick(sortDir: SortDir) {
 		onSortClick(columnId, sortDir);
@@ -90,16 +87,14 @@ export default function HeaderMenu({
 		setSubmenu(null);
 	}
 
-	function handleBackClick() {
-		setSubmenu(null);
-	}
-
-	function handleCurrencyChange(value: CurrencyType) {
+	function handleCurrencyClick(value: CurrencyType) {
 		onCurrencyChange(columnId, value);
+		setSubmenu(SubmenuType.OPTIONS);
 	}
 
-	function handleDateFormatChange(value: DateFormat) {
+	function handleDateFormatClick(value: DateFormat) {
 		onDateFormatChange(columnId, value);
+		setSubmenu(SubmenuType.OPTIONS);
 	}
 
 	return (
@@ -111,14 +106,13 @@ export default function HeaderMenu({
 						cellId={cellId}
 						columnName={markdown}
 						columnType={columnType}
-						numColumns={numColumns}
 						columnSortDir={columnSortDir}
 						onColumnNameChange={onNameChange}
 						onSortClick={handleSortClick}
 						onSubmenuChange={setSubmenu}
 					/>
 				)}
-				{submenu === Submenu.OPTIONS && (
+				{submenu === SubmenuType.OPTIONS && (
 					<OptionSubmenu
 						canDeleteColumn={canDeleteColumn}
 						title="Options"
@@ -126,22 +120,35 @@ export default function HeaderMenu({
 						columnId={columnId}
 						dateFormat={dateFormat}
 						currencyType={currencyType}
-						hasAutoWidth={hasAutoWidth}
 						shouldWrapOverflow={shouldWrapOverflow}
-						onBackClick={handleBackClick}
-						onAutoWidthToggle={onAutoWidthToggle}
+						onBackClick={() => setSubmenu(null)}
 						onWrapOverflowToggle={onWrapOverflowToggle}
-						onCurrencyChange={handleCurrencyChange}
-						onDateFormatChange={handleDateFormatChange}
+						onSubmenuChange={setSubmenu}
 						onDeleteClick={handleDeleteClick}
 					/>
 				)}
-				{submenu === Submenu.TYPE && (
+				{submenu === SubmenuType.TYPE && (
 					<TypeSubmenu
 						title="Type"
-						columnType={columnType}
-						onTypeClick={handleTypeClick}
-						onBackClick={handleBackClick}
+						value={columnType}
+						onValueClick={handleTypeClick}
+						onBackClick={() => setSubmenu(null)}
+					/>
+				)}
+				{submenu === SubmenuType.DATE_FORMAT && (
+					<DateFormatSubmenu
+						title="Date Format"
+						value={dateFormat}
+						onValueClick={handleDateFormatClick}
+						onBackClick={() => setSubmenu(SubmenuType.OPTIONS)}
+					/>
+				)}
+				{submenu === SubmenuType.CURRENCY && (
+					<CurrencySubmenu
+						title="Currency"
+						value={currencyType}
+						onValueClick={handleCurrencyClick}
+						onBackClick={() => setSubmenu(SubmenuType.OPTIONS)}
 					/>
 				)}
 			</div>

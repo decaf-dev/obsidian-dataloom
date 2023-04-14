@@ -23,8 +23,16 @@
 
 .NLT__th-resize {
     position: absolute;
-    left: -10px;
+    left: -5px;
     cursor: col-resize;
-    width: 10px;
+    width: 5px;
     height: 100%;
+}
+
+.NLT__th-resize:hover {
+    background-color: var(--interactive-accent);
+}
+
+.NLT__th-resize--active {
+    background-color: var(--interactive-accent);
 }

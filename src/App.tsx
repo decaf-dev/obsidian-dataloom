@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
 import Table from "./components/Table";
-import RowMenu from "./components/RowMenu";
+import RowOptions from "./components/RowOptions";
 import OptionBar from "./components/OptionBar";
 import Button from "./components/Button";
 
@@ -24,8 +24,6 @@ import {
 } from "./services/tableState/tag";
 import {
 	addColumn,
-	changeColumnCurrencyType,
-	changeColumnDateFormat,
 	changeColumnType,
 	deleteColumn,
 	sortOnColumn,
@@ -45,7 +43,7 @@ import HeaderCell from "./components/HeaderCell";
 import Cell from "./components/Cell";
 import { Color } from "./services/color/types";
 import { useTableState } from "./services/tableState/useTableState";
-import { unixTimeToString } from "./services/date";
+import DateConversion from "./services/date/DateConversion";
 import Icon from "./components/Icon";
 import { IconType } from "./services/icon/types";
 
@@ -112,16 +110,32 @@ export default function App({ onSaveTableState }: Props) {
 	function handleCellContentChange(
 		cellId: string,
 		rowId: string,
-		updatedMarkdown: string
+		value: string
 	) {
 		logFunc(shouldDebug, FILE_NAME, "handleCellContentChange", {
 			cellId,
 			rowId,
-			updatedMarkdown,
+			markdown: value,
 		});
 
 		setTableState((prevState) =>
-			updateCell(prevState, cellId, rowId, updatedMarkdown)
+			updateCell(prevState, cellId, rowId, "markdown", value)
+		);
+	}
+
+	function handleCellDateTimeChange(
+		cellId: string,
+		rowId: string,
+		value: number | null
+	) {
+		logFunc(shouldDebug, FILE_NAME, "handleCellContentChange", {
+			cellId,
+			rowId,
+			dateTime: value,
+		});
+
+		setTableState((prevState) =>
+			updateCell(prevState, cellId, rowId, "dateTime", value)
 		);
 	}
 
@@ -186,6 +200,15 @@ export default function App({ onSaveTableState }: Props) {
 		);
 	}
 
+	function handleColumnToggle(columnId: string) {
+		logFunc(shouldDebug, FILE_NAME, "handleColumnToggle", {
+			columnId,
+		});
+		setTableState((prevState) =>
+			updateColumn(prevState, columnId, "isVisible")
+		);
+	}
+
 	function handleTagDeleteClick(tagId: string) {
 		logFunc(shouldDebug, FILE_NAME, "handleTagDeleteClick", {
 			tagId,
@@ -217,7 +240,7 @@ export default function App({ onSaveTableState }: Props) {
 			currencyType,
 		});
 		setTableState((prevState) =>
-			changeColumnCurrencyType(prevState, columnId, currencyType)
+			updateColumn(prevState, columnId, "currencyType", currencyType)
 		);
 		dispatch(updateSortTime());
 	}
@@ -228,7 +251,7 @@ export default function App({ onSaveTableState }: Props) {
 			dateFormat,
 		});
 		setTableState((prevState) =>
-			changeColumnDateFormat(prevState, columnId, dateFormat)
+			updateColumn(prevState, columnId, "dateFormat", dateFormat)
 		);
 		dispatch(updateSortTime());
 	}
@@ -261,16 +284,6 @@ export default function App({ onSaveTableState }: Props) {
 		setTableState((prevState) => updateTagColor(prevState, tagId, color));
 	}
 
-	function handleAutoWidthToggle(columnId: string, value: boolean) {
-		logFunc(shouldDebug, FILE_NAME, "handleAutoWidthToggle", {
-			columnId,
-			value,
-		});
-		setTableState((prevState) =>
-			updateColumn(prevState, columnId, "hasAutoWidth", value)
-		);
-	}
-
 	function handleWrapContentToggle(columnId: string, value: boolean) {
 		logFunc(shouldDebug, FILE_NAME, "handleWrapContentToggle", {
 			columnId,
@@ -296,13 +309,20 @@ export default function App({ onSaveTableState }: Props) {
 			(cell) => cell.rowId === row.id
 		);
 		const matchedCell = filteredCells.find((cell) => {
-			if (cell.markdown.toLowerCase().includes(searchText.toLowerCase()))
+			const { dateTime, isHeader, markdown } = cell;
+			const { currencyType, type, dateFormat } = cell.column;
+			const { lastEditedTime, creationTime } = row;
+
+			//We always want to show the header cells
+			if (isHeader) return true;
+
+			if (markdown.toLowerCase().includes(searchText.toLowerCase()))
 				return true;
-			if (cell.isHeader) return true;
-			if (cell.column.type === CellType.CURRENCY) {
+
+			if (type === CellType.CURRENCY) {
 				const currencyString = stringToCurrencyString(
 					cell.markdown,
-					cell.column.currencyType
+					currencyType
 				);
 				if (
 					currencyString
@@ -310,16 +330,33 @@ export default function App({ onSaveTableState }: Props) {
 						.includes(searchText.toLowerCase())
 				)
 					return true;
-			} else if (
-				cell.column.type === CellType.LAST_EDITED_TIME ||
-				cell.column.type === CellType.CREATION_TIME
-			) {
-				const dateString = unixTimeToString(
-					parseInt(cell.markdown),
-					cell.column.dateFormat
+			} else if (type === CellType.LAST_EDITED_TIME) {
+				const dateString = DateConversion.unixTimeToDateTimeString(
+					lastEditedTime,
+					dateFormat
 				);
 				if (dateString.toLowerCase().includes(searchText.toLowerCase()))
 					return true;
+			} else if (type === CellType.CREATION_TIME) {
+				const dateString = DateConversion.unixTimeToDateTimeString(
+					creationTime,
+					dateFormat
+				);
+				if (dateString.toLowerCase().includes(searchText.toLowerCase()))
+					return true;
+			} else if (cell.column.type === CellType.DATE) {
+				if (dateTime) {
+					const dateString = DateConversion.unixTimeToDateString(
+						dateTime,
+						dateFormat
+					);
+					if (
+						dateString
+							.toLowerCase()
+							.includes(searchText.toLowerCase())
+					)
+						return true;
+				}
 			}
 			return false;
 		});
@@ -328,272 +365,282 @@ export default function App({ onSaveTableState }: Props) {
 		return false;
 	});
 
+	const visibleColumns = columns.filter((column) => column.isVisible);
+	const visibleCells = cells.filter((cell) =>
+		visibleColumns.find((column) => column.id === cell.columnId)
+	);
+
 	return (
 		<div className="NLT__app">
 			<OptionBar
-				model={tableState.model}
+				cells={cells}
+				columns={columns}
+				onColumnToggle={handleColumnToggle}
 				onSortRemoveClick={handleSortRemoveClick}
 			/>
-			<div className="NLT__table-wrapper">
-				<Table
-					headerRows={[
-						{
-							id: headerRowId,
-							cells: [
-								...columns.map((column, i) => {
-									const {
-										id: columnId,
-										width,
-										type,
-										sortDir,
-										shouldWrapOverflow,
-										hasAutoWidth,
-										currencyType,
-										dateFormat,
-									} = column;
-
-									const cell = cells.find(
-										(cell) =>
-											cell.columnId === columnId &&
-											cell.isHeader
-									);
-									if (!cell) throw new CellNotFoundError();
-
-									const {
-										id: cellId,
-										markdown,
-										rowId,
-									} = cell;
-									return {
-										id: cellId,
-										columnId,
-										content: (
-											<HeaderCell
-												key={columnId}
-												cellId={cellId}
-												rowId={rowId}
-												dateFormat={dateFormat}
-												currencyType={currencyType}
-												numColumns={columns.length}
-												columnId={cell.columnId}
-												width={
-													hasAutoWidth
-														? "unset"
-														: width
-												}
-												shouldWrapOverflow={
-													shouldWrapOverflow
-												}
-												hasAutoWidth={hasAutoWidth}
-												markdown={markdown}
-												type={type}
-												sortDir={sortDir}
-												onSortClick={
-													handleHeaderSortSelect
-												}
-												onWidthChange={
-													handleHeaderWidthChange
-												}
-												onDeleteClick={
-													handleHeaderDeleteClick
-												}
-												onTypeSelect={
-													handleHeaderTypeClick
-												}
-												onAutoWidthToggle={
-													handleAutoWidthToggle
-												}
-												onDateFormatChange={
-													handleDateFormatChange
-												}
-												onWrapOverflowToggle={
-													handleWrapContentToggle
-												}
-												onNameChange={
-													handleCellContentChange
-												}
-												onCurrencyChange={
-													handleCurrencyChange
-												}
-											/>
-										),
-									};
-								}),
-								{
-									id: lastColumnId,
-									columnId: lastColumnId,
-									content: (
-										<div style={{ paddingLeft: "10px" }}>
-											<Button
-												icon={
-													<Icon type={IconType.ADD} />
-												}
-												onClick={() =>
-													handleAddColumn()
-												}
-											/>
-										</div>
-									),
-								},
-							],
-						},
-					]}
-					bodyRows={filteredRows
-						.filter((_row, i) => i !== 0)
-						.map((row) => {
-							const rowCells = cells.filter(
-								(cell) => cell.rowId === row.id
-							);
-							const {
-								id: rowId,
-								menuCellId,
-								lastEditedTime,
-								creationTime,
-							} = row;
-							return {
-								id: rowId,
+			<div className="NLT__table-outer">
+				<div className="NLT__table-inner">
+					<Table
+						headerRows={[
+							{
+								id: headerRowId,
 								cells: [
-									...rowCells.map((cell) => {
-										const column = columns.find(
-											(column) =>
-												column.id == cell.columnId
-										);
-										if (!column)
-											throw new ColumnIdError(
-												cell.columnId
-											);
+									...visibleColumns.map((column, i) => {
 										const {
+											id: columnId,
 											width,
 											type,
-											hasAutoWidth,
+											sortDir,
 											shouldWrapOverflow,
 											currencyType,
 											dateFormat,
 										} = column;
+
+										const cell = cells.find(
+											(cell) =>
+												cell.columnId === columnId &&
+												cell.isHeader
+										);
+										if (!cell)
+											throw new CellNotFoundError();
+
 										const {
 											id: cellId,
 											markdown,
-											columnId,
+											rowId,
 										} = cell;
-
-										const filteredTags = tags.filter(
-											(tag) => tag.columnId === column.id
-										);
-
 										return {
 											id: cellId,
+											columnId,
 											content: (
-												<Cell
-													key={cellId}
+												<HeaderCell
+													key={columnId}
 													cellId={cellId}
 													rowId={rowId}
-													tags={filteredTags}
-													columnId={columnId}
-													rowCreationTime={
-														creationTime
-													}
 													dateFormat={dateFormat}
-													columnCurrencyType={
-														currencyType
-													}
-													rowLastEditedTime={
-														lastEditedTime
-													}
-													markdown={markdown}
-													columnType={type}
+													currencyType={currencyType}
+													numColumns={columns.length}
+													columnId={cell.columnId}
+													width={width}
 													shouldWrapOverflow={
 														shouldWrapOverflow
 													}
-													hasAutoWidth={hasAutoWidth}
-													width={
-														hasAutoWidth
-															? "unset"
-															: width
+													markdown={markdown}
+													type={type}
+													sortDir={sortDir}
+													onSortClick={
+														handleHeaderSortSelect
 													}
-													onTagClick={
-														handleAddCellToTag
+													onWidthChange={
+														handleHeaderWidthChange
 													}
-													onRemoveTagClick={
-														handleRemoveCellFromTag
+													onDeleteClick={
+														handleHeaderDeleteClick
 													}
-													onContentChange={
+													onTypeSelect={
+														handleHeaderTypeClick
+													}
+													onDateFormatChange={
+														handleDateFormatChange
+													}
+													onWrapOverflowToggle={
+														handleWrapContentToggle
+													}
+													onNameChange={
 														handleCellContentChange
 													}
-													onTagColorChange={
-														handleTagChangeColor
+													onCurrencyChange={
+														handleCurrencyChange
 													}
-													onTagDeleteClick={
-														handleTagDeleteClick
-													}
-													onAddTag={handleAddTag}
 												/>
 											),
 										};
 									}),
 									{
-										id: menuCellId,
+										id: lastColumnId,
+										columnId: lastColumnId,
 										content: (
 											<div
-												style={{ paddingLeft: "10px" }}
+												style={{
+													paddingLeft: "10px",
+												}}
 											>
-												<RowMenu
-													rowId={rowId}
-													onDeleteClick={
-														handleRowDeleteClick
+												<Button
+													icon={
+														<Icon
+															type={IconType.ADD}
+														/>
+													}
+													ariaLabel="Add column"
+													onClick={() =>
+														handleAddColumn()
 													}
 												/>
 											</div>
 										),
 									},
 								],
-							};
-						})}
-					footerRows={[
-						{
-							id: footerRowId,
-							cells: [
-								...columns.map((_column, i) => {
-									const {
-										width,
-										hasAutoWidth,
-										footerCellId,
-									} = columns[i];
-									if (i === 0) {
-										return {
-											id: footerCellId,
+							},
+						]}
+						bodyRows={filteredRows
+							.filter((_row, i) => i !== 0)
+							.map((row) => {
+								const rowCells = visibleCells.filter(
+									(cell) => cell.rowId === row.id
+								);
+								const {
+									id: rowId,
+									menuCellId,
+									lastEditedTime,
+									creationTime,
+								} = row;
+								return {
+									id: rowId,
+									cells: [
+										...rowCells.map((cell) => {
+											const column = columns.find(
+												(column) =>
+													column.id == cell.columnId
+											);
+											if (!column)
+												throw new ColumnIdError(
+													cell.columnId
+												);
+											const {
+												width,
+												type,
+												shouldWrapOverflow,
+												currencyType,
+												dateFormat,
+											} = column;
+											const {
+												id: cellId,
+												markdown,
+												columnId,
+												dateTime,
+											} = cell;
+
+											const filteredTags = tags.filter(
+												(tag) =>
+													tag.columnId === column.id
+											);
+
+											return {
+												id: cellId,
+												content: (
+													<Cell
+														key={cellId}
+														cellId={cellId}
+														rowId={rowId}
+														tags={filteredTags}
+														columnId={columnId}
+														rowCreationTime={
+															creationTime
+														}
+														dateFormat={dateFormat}
+														columnCurrencyType={
+															currencyType
+														}
+														rowLastEditedTime={
+															lastEditedTime
+														}
+														dateTime={dateTime}
+														markdown={markdown}
+														columnType={type}
+														shouldWrapOverflow={
+															shouldWrapOverflow
+														}
+														width={width}
+														onTagClick={
+															handleAddCellToTag
+														}
+														onRemoveTagClick={
+															handleRemoveCellFromTag
+														}
+														onContentChange={
+															handleCellContentChange
+														}
+														onTagColorChange={
+															handleTagChangeColor
+														}
+														onTagDeleteClick={
+															handleTagDeleteClick
+														}
+														onDateTimeChange={
+															handleCellDateTimeChange
+														}
+														onDateFormatChange={
+															handleDateFormatChange
+														}
+														onAddTag={handleAddTag}
+													/>
+												),
+											};
+										}),
+										{
+											id: menuCellId,
 											content: (
 												<div
 													style={{
-														paddingTop: "10px",
-														width: hasAutoWidth
-															? "max-content"
-															: width,
+														paddingLeft: "10px",
 													}}
 												>
-													<Button
-														onClick={() =>
-															handleAddRow()
+													<RowOptions
+														rowId={rowId}
+														onDeleteClick={
+															handleRowDeleteClick
 														}
-													>
-														New row
-													</Button>
+													/>
 												</div>
 											),
+										},
+									],
+								};
+							})}
+						footerRows={[
+							{
+								id: footerRowId,
+								cells: [
+									...columns.map((_column, i) => {
+										const { width, footerCellId } =
+											columns[i];
+										if (i === 0) {
+											return {
+												id: footerCellId,
+												content: (
+													<div
+														style={{
+															paddingTop: "10px",
+															paddingLeft:
+																"var(--size-4-4)",
+															width,
+														}}
+													>
+														<Button
+															onClick={() =>
+																handleAddRow()
+															}
+														>
+															New row
+														</Button>
+													</div>
+												),
+											};
+										}
+										return {
+											id: footerCellId,
+											content: <></>,
 										};
-									}
-									return {
-										id: footerCellId,
+									}),
+									{
+										id: lastColumnId,
 										content: <></>,
-									};
-								}),
-								{
-									id: lastColumnId,
-									content: <></>,
-								},
-							],
-						},
-					]}
-				/>
+									},
+								],
+							},
+						]}
+					/>
+				</div>
 			</div>
 		</div>
 	);

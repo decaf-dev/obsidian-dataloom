@@ -1,5 +1,11 @@
-.NLT__date-input {
+.NLT__date-cell-edit input {
     width: 100%;
-    padding: 0px 10px !important;
-    border: 0 !important;
+    height: 100%;
+    border: 1px solid var(--background-modifier-border);
+    padding: 5px;
+    background-color: var(--background-secondary);
+}
+
+.NLT__date-cell-edit input[aria-invalid="true"] {
+    border: 1px solid var(--background-modifier-error);
 }

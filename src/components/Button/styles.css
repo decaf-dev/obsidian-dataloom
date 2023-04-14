@@ -23,5 +23,5 @@
 }
 
 .NLT__button--simple:hover {
-    filter: brightness(80%);
+   box-shadow: none !important;
 }
