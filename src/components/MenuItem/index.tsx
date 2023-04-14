@@ -3,6 +3,7 @@ import Stack from "src/components/Stack";
 import { IconType } from "src/services/icon/types";
 import Flex from "../Flex";
 import Text from "../Text";
+import Wrap from "src/components/Wrap";
 
 import "./styles.css";
 
@@ -13,6 +14,7 @@ interface Props {
 	isSelected?: boolean;
 	onClick: any;
 }
+
 export default function MenuItem({
 	iconType,
 	name,

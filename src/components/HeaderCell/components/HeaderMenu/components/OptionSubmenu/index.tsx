@@ -16,9 +16,10 @@ import { MenuLevel } from "src/services/menu/types";
 import CurrencyMenu from "./components/CurrencyMenu";
 import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 import { openMenu } from "src/services/menu/menuSlice";
-import DateFormatMenu from "./components/DateFormatMenu";
+import DateFormatMenu from "src/components/DateFormatMenu";
 import Flex from "src/components/Flex";
 import { isMenuOpen } from "src/services/menu/utils";
+import { getDisplayNameForDateFormat } from "src/services/tableState/utils";
 
 interface Props {
 	canDeleteColumn: boolean;
@@ -59,58 +60,53 @@ export default function OptionSubmenu({
 	return (
 		<>
 			<Submenu title={title} onBackClick={onBackClick}>
-				<Padding px="md">
-					<Stack spacing="md" isVertical>
-						{type === CellType.CURRENCY && (
-							<div
-								ref={menuPosition.containerRef}
-								style={{ width: "100%" }}
-							>
-								<MenuItem
-									name="Currency"
-									value={currencyType}
-									onClick={() => dispatch(openMenu(menu))}
+				<Stack spacing="sm" isVertical>
+					{type === CellType.CURRENCY && (
+						<div
+							ref={menuPosition.containerRef}
+							style={{ width: "100%" }}
+						>
+							<MenuItem
+								name="Currency"
+								value={currencyType}
+								onClick={() => dispatch(openMenu(menu))}
+							/>
+						</div>
+					)}
+					{type === CellType.TEXT && (
+						<Padding px="lg">
+							<Flex justify="space-between">
+								<Text value="Wrap overflow" />
+								<Switch
+									isChecked={shouldWrapOverflow}
+									onToggle={(value) =>
+										onWrapOverflowToggle(columnId, value)
+									}
 								/>
-							</div>
-						)}
-						{type === CellType.TEXT && (
-							<Padding px="lg">
-								<Flex justify="space-between">
-									<Text value="Wrap Overflow" />
-									<Switch
-										isChecked={shouldWrapOverflow}
-										onToggle={(value) =>
-											onWrapOverflowToggle(
-												columnId,
-												value
-											)
-										}
-									/>
-								</Flex>
-							</Padding>
-						)}
-						{(type === CellType.CREATION_TIME ||
-							type === CellType.LAST_EDITED_TIME) && (
-							<div
-								ref={menuPosition.containerRef}
-								style={{ width: "100%" }}
-							>
-								<MenuItem
-									name="Date format"
-									value={dateFormat}
-									onClick={() => dispatch(openMenu(menu))}
-								/>
-							</div>
-						)}
-						{canDeleteColumn && (
-							<Padding px="lg">
-								<Button onClick={() => onDeleteClick()}>
-									Delete
-								</Button>
-							</Padding>
-						)}
-					</Stack>
-				</Padding>
+							</Flex>
+						</Padding>
+					)}
+					{(type === CellType.CREATION_TIME ||
+						type === CellType.LAST_EDITED_TIME) && (
+						<div
+							ref={menuPosition.containerRef}
+							style={{ width: "100%" }}
+						>
+							<MenuItem
+								name="Date format"
+								value={getDisplayNameForDateFormat(dateFormat)}
+								onClick={() => dispatch(openMenu(menu))}
+							/>
+						</div>
+					)}
+					{canDeleteColumn && (
+						<Padding px="lg" py="md">
+							<Button onClick={() => onDeleteClick()}>
+								Delete
+							</Button>
+						</Padding>
+					)}
+				</Stack>
 			</Submenu>
 			{type === CellType.CURRENCY && (
 				<CurrencyMenu

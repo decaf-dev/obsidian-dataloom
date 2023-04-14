@@ -51,10 +51,11 @@ export const menuSlice = createSlice({
 			const topMenu = state.openMenus.last();
 			if (topMenu) {
 				if (state.menuRequestingClose) {
-					if (state.menuRequestingClose.id !== topMenu.id)
+					if (state.menuRequestingClose.id !== topMenu.id) {
 						throw new Error(
 							"Menu requesting close is not the top menu."
 						);
+					}
 					state.menuRequestingClose = null;
 				}
 				state.openMenus.pop();
