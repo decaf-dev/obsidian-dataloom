@@ -52,6 +52,9 @@ Lastest release notes:
 -   Search filter - filter by a specific search value
 -   Sort by column - sort rows by ascending or descending values in a column
 -   Toggle column filter - toggle visibility of table columns
+-   Drag and drop columns - drag a column above another column to have them swap positions
+-   Drag and drop rows - drag a row to above another row to have them swap positions
+-   Sticky headers - headers will remain visible as you scroll
 
 ## Settings
 
