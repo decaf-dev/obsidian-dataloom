@@ -1,7 +1,6 @@
 import { Cell, CellType, Column, CurrencyType, DateFormat, Row } from "./types";
 
-//TODO change
-export const sortCells = (
+export const sortCellsForRender = (
 	columns: Column[],
 	rows: Row[],
 	cells: Cell[]

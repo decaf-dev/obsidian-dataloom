@@ -1,7 +1,7 @@
 import { ColumnIdError } from "./error";
 import StateFactory from "./StateFactory";
 import { CellType, Column, TableState, SortDir } from "./types";
-import { sortCells } from "./utils";
+import { sortCellsForRender } from "./utils";
 
 export const addColumn = (prevState: TableState): TableState => {
 	const { cells, columns, rows } = prevState.model;
@@ -15,7 +15,7 @@ export const addColumn = (prevState: TableState): TableState => {
 		cellsCopy.push(StateFactory.createCell(newColumn.id, row.id, i === 0));
 	});
 
-	cellsCopy = sortCells(columnsCopy, rows, cellsCopy);
+	cellsCopy = sortCellsForRender(columnsCopy, rows, cellsCopy);
 
 	return {
 		...prevState,
