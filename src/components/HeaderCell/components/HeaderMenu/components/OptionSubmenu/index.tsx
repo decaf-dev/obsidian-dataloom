@@ -55,19 +55,17 @@ export default function OptionSubmenu({
 						onClick={() => onSubmenuChange(SubmenuType.CURRENCY)}
 					/>
 				)}
-				{type === CellType.TEXT && (
-					<Padding px="lg">
-						<Flex justify="space-between">
-							<Text value="Wrap overflow" />
-							<Switch
-								isChecked={shouldWrapOverflow}
-								onToggle={(value) =>
-									onWrapOverflowToggle(columnId, value)
-								}
-							/>
-						</Flex>
-					</Padding>
-				)}
+				<Padding px="lg">
+					<Flex justify="space-between">
+						<Text value="Wrap overflow" />
+						<Switch
+							isChecked={shouldWrapOverflow}
+							onToggle={(value) =>
+								onWrapOverflowToggle(columnId, value)
+							}
+						/>
+					</Flex>
+				</Padding>
 				{(type === CellType.CREATION_TIME ||
 					type === CellType.LAST_EDITED_TIME ||
 					type === CellType.DATE) && (
