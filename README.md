@@ -19,7 +19,7 @@ Lastest release notes:
 -   [Settings](#settings)
 -   [Known Issues](#known-issues)
 -   [CSS Styling](#css-styling)
--   [Bugs and Feature Requests](#bugs-and-feature-requests)
+-   [Issues](#issues)
 -   [License](#license)
 
 ## Installation
@@ -35,7 +35,7 @@ Lastest release notes:
 -   Click the table icon on the action bar
 -   Or press `ctrl + p` (Windows) or `cmd + p` (Mac) on your keyboard and search `Create table`
 
-## Plugin Features
+## Features
 
 -   Header menu - change the various settings for each column
 -   Text cell - accepts any markdown. press shift + enter to create a new line
@@ -88,7 +88,7 @@ Please override the following classes for custom theme development.
 | `.NLT__td`           | `td`     | Border and text styles |
 | `.NLT__td-container` | `div`    | Padding                |
 
-## Bugs and Feature Requests
+## Issues
 
 If you find a bug or would like to suggest a feature, please open an issue [here](https://github.com/trey-wallis/obsidian-notion-like-tables/issues).
 
