@@ -1,3 +1,4 @@
+import { TableDataTransferItem } from "src/components/Table/types";
 import { useTableState } from "src/services/tableState/useTableState";
 import { sortCellsForRender } from "src/services/tableState/utils";
 
@@ -19,13 +20,23 @@ export default function TableHeaderCell({
 		const columnId = el.getAttr("data-column-id");
 		if (!columnId)
 			throw new Error("data-column-id is required for a header cell");
-		e.dataTransfer.setData("text", columnId);
+
+		const item: TableDataTransferItem = {
+			type: "column",
+			id: columnId,
+		};
+		e.dataTransfer.setData("application/json", JSON.stringify(item));
 	}
 
 	function handleDrop(e: React.DragEvent) {
 		e.preventDefault();
 
-		const draggedId = e.dataTransfer.getData("text");
+		const data = e.dataTransfer.getData("application/json");
+		const item = JSON.parse(data) as TableDataTransferItem;
+		//If we're dragging a column type, then return
+		if (item.type !== "column") return;
+
+		const draggedId = item.id;
 		const targetId = (e.currentTarget as HTMLElement).getAttr(
 			"data-column-id"
 		);

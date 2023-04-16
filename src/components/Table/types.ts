@@ -25,3 +25,8 @@ export interface RenderTableCell {
 export interface RenderTableHeaderCell extends RenderTableCell {
 	columnId: string;
 }
+
+export interface TableDataTransferItem {
+	type: "row" | "column";
+	id: string;
+}
