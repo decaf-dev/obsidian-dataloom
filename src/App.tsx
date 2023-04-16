@@ -385,7 +385,7 @@ export default function App({ onSaveTableState }: Props) {
 							{
 								id: headerRowId,
 								cells: [
-									...visibleColumns.map((column, i) => {
+									...visibleColumns.map((column) => {
 										const {
 											id: columnId,
 											width,
