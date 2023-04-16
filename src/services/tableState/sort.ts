@@ -45,12 +45,13 @@ const sortByMarkdown = (
 
 		if (!cellB) throw new CellNotFoundError();
 
+		//Force headers to the top
+		if (cellA.isHeader && !cellB.isHeader) return -1;
+		if (!cellA.isHeader && cellB.isHeader) return 1;
+		if (cellA.isHeader && cellB.isHeader) return 0;
+
 		const markdownA = cellA.markdown;
 		const markdownB = cellB.markdown;
-
-		//Force headers to the top
-		if (cellA.isHeader) return -1;
-		if (cellB.isHeader) return 1;
 
 		//Force empty cells to the bottom
 		if (markdownA === "" && markdownB !== "") return 1;
@@ -88,12 +89,13 @@ const sortByNumber = (
 
 		if (!cellB) throw new CellNotFoundError();
 
+		//Force headers to the top
+		if (cellA.isHeader && !cellB.isHeader) return -1;
+		if (!cellA.isHeader && cellB.isHeader) return 1;
+		if (cellA.isHeader && cellB.isHeader) return 0;
+
 		const markdownA = cellA.markdown;
 		const markdownB = cellB.markdown;
-
-		//Force headers to the top
-		if (cellA.isHeader) return -1;
-		if (cellB.isHeader) return 1;
 
 		//Force empty cells to the bottom
 		if (markdownA === "" && markdownB !== "") return 1;
@@ -132,8 +134,9 @@ const sortByCheckbox = (
 		if (!cellB) throw new CellNotFoundError();
 
 		//Force headers to the top
-		if (cellA.isHeader) return -1;
-		if (cellB.isHeader) return 1;
+		if (cellA.isHeader && !cellB.isHeader) return -1;
+		if (!cellA.isHeader && cellB.isHeader) return 1;
+		if (cellA.isHeader && cellB.isHeader) return 0;
 
 		const isCheckedA = isCheckboxChecked(cellA.markdown);
 		const isCheckedB = isCheckboxChecked(cellB.markdown);
@@ -174,8 +177,9 @@ export const sortByDate = (
 		if (!cellB) throw new CellNotFoundError();
 
 		//Force headers to the top
-		if (cellA.isHeader) return -1;
-		if (cellB.isHeader) return 1;
+		if (cellA.isHeader && !cellB.isHeader) return -1;
+		if (!cellA.isHeader && cellB.isHeader) return 1;
+		if (cellA.isHeader && cellB.isHeader) return 0;
 
 		const dateTimeA = cellA.dateTime || 0;
 		const dateTimeB = cellB.dateTime || 0;
@@ -194,6 +198,10 @@ export const sortByDate = (
 export const sortByCreationTime = (rows: Row[], sortDir: SortDir): Row[] => {
 	const rowsCopy = [...rows];
 	rowsCopy.sort((a, b) => {
+		//Keep header row at the top
+		if (a.index === 0) return -1;
+		if (b.index === 0) return 1;
+
 		if (sortDir === SortDir.ASC) {
 			return a.creationTime - b.creationTime;
 		} else if (sortDir === SortDir.DESC) {
@@ -208,6 +216,10 @@ export const sortByCreationTime = (rows: Row[], sortDir: SortDir): Row[] => {
 const sortByLastEditedTime = (rows: Row[], sortDir: SortDir): Row[] => {
 	const rowsCopy = [...rows];
 	rowsCopy.sort((a, b) => {
+		//Keep header row at the top
+		if (a.index === 0) return -1;
+		if (b.index === 0) return 1;
+
 		if (sortDir === SortDir.ASC) {
 			return a.lastEditedTime - b.lastEditedTime;
 		} else if (sortDir === SortDir.DESC) {
