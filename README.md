@@ -9,7 +9,7 @@ Notion-Like Tables is your premiere tool for creating and managing tabular data 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/preview.png)
 
 Lastest release notes:
-[6.3.0](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/6.3.0)
+[6.3.1](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/6.3.1)
 
 ## About
 
@@ -68,11 +68,11 @@ Lastest release notes:
 ### Markdown Support
 
 Notion-Like Tables uses the Obsidian function `MarkdownRenderer.renderMarkdown` to render HTML element from markdown.
-There are some known issues with this function where embedded elements, such as links not working properly. This part of the roadmap for future releases.
+There are some known issues with this function where embedded elements, such as rendering links, is not working properly. This part of the road map for future releases.
 
 ### Undoing Changes
 
-There is currently no support for undoing changes. This is part of the roadmap for future releases.
+There is currently no support for undoing changes. This is part of the road map for future releases.
 
 ## CSS Styling
 
