@@ -1,5 +1,5 @@
 import { useTableState } from "src/services/tableState/useTableState";
-import { RenderTableBodyRow } from "../../types";
+import { RenderTableBodyRow, TableDataTransferItem } from "../../types";
 import TableCell from "../TableCell";
 import { SortDir } from "src/services/tableState/types";
 
@@ -15,7 +15,12 @@ export const TableBodyRow = ({ row }: TableRowProps) => {
 
 		const rowId = el.getAttr("data-row-id");
 		if (!rowId) throw new Error("data-row-id is required for a row");
-		e.dataTransfer.setData("text", rowId);
+
+		const item: TableDataTransferItem = {
+			type: "row",
+			id: rowId,
+		};
+		e.dataTransfer.setData("application/json", JSON.stringify(item));
 	}
 
 	function handleDragEnd(e: React.DragEvent) {
@@ -25,6 +30,17 @@ export const TableBodyRow = ({ row }: TableRowProps) => {
 
 	function handleDrop(e: React.DragEvent) {
 		e.preventDefault();
+
+		const data = e.dataTransfer.getData("application/json");
+		const item = JSON.parse(data) as TableDataTransferItem;
+		//If we're dragging a column type, then return
+		if (item.type !== "row") return;
+
+		const draggedId = item.id;
+		const targetId = (e.currentTarget as HTMLElement).getAttr(
+			"data-row-id"
+		);
+		if (!targetId) throw new Error("data-row-id is required for a row");
 
 		const { columns } = tableState.model;
 		const isSorted = columns.find(
@@ -40,12 +56,6 @@ export const TableBodyRow = ({ row }: TableRowProps) => {
 			)
 				return;
 		}
-
-		const draggedId = e.dataTransfer.getData("text");
-		const targetId = (e.currentTarget as HTMLElement).getAttr(
-			"data-row-id"
-		);
-		if (!targetId) throw new Error("data-row-id is required for a row");
 
 		setTableState((prevState) => {
 			const { rows, columns } = prevState.model;
