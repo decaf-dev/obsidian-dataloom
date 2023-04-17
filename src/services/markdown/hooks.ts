@@ -49,7 +49,7 @@ export const useRenderMarkdown = (
 								source: NOTION_LIKE_TABLES_VIEW,
 								hoverParent: view.containerEl,
 								targetEl: el,
-								linktext: el.innerText,
+								linktext: el.getAttr("data-href"),
 								sourcePath: el.href,
 							});
 						};
