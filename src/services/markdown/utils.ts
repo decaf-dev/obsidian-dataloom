@@ -1,3 +1,4 @@
+//TODO fix lists
 export const replaceNewLinesWithBreakTag = (markdown: string) => {
 	let endsWithNewLine = false;
 	if (markdown.endsWith("\n")) endsWithNewLine = true;
