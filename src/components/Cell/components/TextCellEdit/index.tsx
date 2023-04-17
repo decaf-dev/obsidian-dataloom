@@ -9,6 +9,7 @@ interface Props {
 
 export default function TextCellEdit({ value, onInputChange }: Props) {
 	const [isShiftDown, setShiftDown] = useState(false);
+	const [isEnterPressed, setEnterPressed] = useState(false);
 	const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
 	useEffect(() => {
@@ -38,25 +39,26 @@ export default function TextCellEdit({ value, onInputChange }: Props) {
 
 	function handleKeyDown(e: KeyboardEvent) {
 		if (e.shiftKey) setShiftDown(true);
+		if (e.code === "Enter") setEnterPressed(true);
 	}
 
 	function handleKeyUp(e: KeyboardEvent) {
 		if (!e.shiftKey) setShiftDown(false);
+		if (e.code != "Enter") setEnterPressed(false);
 	}
 
 	function handleTextareaChange(newValue: string) {
-		//When the user presses enter, a new line character is added.
-		//If the user is holding the shift key, the edit menu will not close and a new line will be added.
-		//Otherwise the edit menu will close and we want to delete the new line character added.
-		if (!isShiftDown) {
-			//We only want to change the value if the user is adding text. Otherwise, they will see a jump
-			//when removing text when the last character is a new line character and it is removed.
-			if (newValue.length > value.length) {
-				if (newValue.endsWith("\n"))
-					newValue = newValue.replace(/\n$/, "");
+		if (inputRef.current) {
+			//If the user presses enter, a new line character will be added.
+			//We want to remove this character if the menu closes. This happens when shift is not being pressed.
+			if (!isShiftDown && isEnterPressed) {
+				//Remove new line character
+				newValue =
+					newValue.substring(0, inputRef.current.selectionStart - 1) +
+					newValue.substring(inputRef.current.selectionStart);
 			}
+			onInputChange(newValue);
 		}
-		onInputChange(newValue);
 	}
 
 	return (
