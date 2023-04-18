@@ -36,6 +36,10 @@
 	z-index: 1;
 }
 
+.NLT__th:first-child {
+	border-left: 0 !important;
+}
+
 .NLT__th:last-child {
 	border-top: 0 !important;
 	border-bottom: 0 !important;
@@ -58,6 +62,10 @@
 	* This doesn't represent the actual height of the td, as that is set by HTML
 	*/
 	height: 1px;
+}
+
+.NLT__td:first-child {
+	border-left: 0 !important;
 }
 
 .NLT__tbody > .NLT__tr > .NLT__td:last-child {
