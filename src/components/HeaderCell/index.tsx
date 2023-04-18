@@ -100,16 +100,10 @@ export default function HeaderCell({
 	});
 
 	function handleHeaderClick(e: React.MouseEvent) {
-		//If we're clicking in the submenu, then don't close the menu
-		const el = e.target as HTMLElement;
-		if (el.closest(`#${menu.id}`)) return;
-
+		//If we're resizing a column, then don't open the menu
 		if (resizingColumnId !== null) return;
-		if (shouldOpenMenu) {
-			closeHeaderMenu();
-		} else {
-			openHeaderMenu();
-		}
+
+		openHeaderMenu();
 	}
 
 	function openHeaderMenu() {

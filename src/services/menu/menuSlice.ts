@@ -5,13 +5,13 @@ import { CloseMenuRequest, Menu } from "src/services/menu/types";
 interface MenuState {
 	openMenus: Menu[];
 	menuRequestingClose: CloseMenuRequest | null;
-	menuOpenTime: number;
+	lastMenuCloseTime: number;
 }
 
 const initialState: MenuState = {
 	openMenus: [],
 	menuRequestingClose: null,
-	menuOpenTime: 0,
+	lastMenuCloseTime: 0,
 };
 
 export const menuSlice = createSlice({
@@ -24,8 +24,11 @@ export const menuSlice = createSlice({
 				state.openMenus.length === 0;
 			if (!canOpen) return;
 
+			//If we've closed the menu in the last 200ms, then don't open it
+			//This prevents the menu from reopening when clicking the button that had opened it
+			if (Date.now() - state.lastMenuCloseTime < 200) return;
+
 			state.openMenus.push(action.payload);
-			state.menuOpenTime = Date.now();
 		},
 		requestCloseTopLevelMenu: (state, action: PayloadAction<boolean>) => {
 			const topMenu = state.openMenus.last();
@@ -45,6 +48,7 @@ export const menuSlice = createSlice({
 					return;
 				}
 			}
+			state.lastMenuCloseTime = Date.now();
 			state.openMenus.pop();
 		},
 		closeTopLevelMenu: (state) => {
@@ -59,10 +63,12 @@ export const menuSlice = createSlice({
 				}
 				state.menuRequestingClose = null;
 			}
+			state.lastMenuCloseTime = Date.now();
 			state.openMenus.pop();
 		},
 		closeAllMenus: (state) => {
 			state.openMenus = [];
+			state.lastMenuCloseTime = Date.now();
 		},
 	},
 });
