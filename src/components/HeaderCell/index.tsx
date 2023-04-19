@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { numToPx, pxToNum } from "src/services/string/conversion";
 import {
@@ -100,19 +100,9 @@ export default function HeaderCell({
 	});
 
 	function handleHeaderClick(e: React.MouseEvent) {
-		//If we're clicking in the submenu, then don't close the menu
-		const el = e.target as HTMLElement;
-		if (el.closest(`#${menu.id}`)) return;
-
+		//If we're resizing a column, then don't open the menu
 		if (resizingColumnId !== null) return;
-		if (shouldOpenMenu) {
-			closeHeaderMenu();
-		} else {
-			openHeaderMenu();
-		}
-	}
 
-	function openHeaderMenu() {
 		dispatch(openMenu(menu));
 	}
 

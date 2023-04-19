@@ -5,6 +5,8 @@ interface Props {
 	className?: string;
 	px?: SpacingSize;
 	py?: SpacingSize;
+	pt?: SpacingSize;
+	pb?: SpacingSize;
 	p?: SpacingSize;
 	children: React.ReactNode;
 }
@@ -13,6 +15,8 @@ export default function Padding({
 	className = "",
 	px,
 	py,
+	pt,
+	pb,
 	p,
 	children,
 }: Props) {
@@ -34,6 +38,21 @@ export default function Padding({
 				paddingTop: spacing,
 				paddingBottom: spacing,
 			};
+		} else {
+			if (pb) {
+				const spacing = getSpacing(pb);
+				style = {
+					...style,
+					paddingBottom: spacing,
+				};
+			}
+			if (pt) {
+				const spacing = getSpacing(pt);
+				style = {
+					...style,
+					paddingTop: spacing,
+				};
+			}
 		}
 	}
 

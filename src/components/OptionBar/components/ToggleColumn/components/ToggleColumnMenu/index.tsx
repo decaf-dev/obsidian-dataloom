@@ -24,7 +24,7 @@ export default function ToggleColumnMenu({
 	onToggle,
 }: Props) {
 	return (
-		<Menu isOpen={isOpen} id={id} top={top} left={left} width={125}>
+		<Menu isOpen={isOpen} id={id} top={top} left={left - 50} width={175}>
 			<div className="NLT__toggle-column-menu">
 				<Padding p="md">
 					<Stack spacing="md" isVertical>

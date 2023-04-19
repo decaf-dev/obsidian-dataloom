@@ -47,40 +47,48 @@ export default function OptionSubmenu({
 }: Props) {
 	return (
 		<Submenu title={title} onBackClick={onBackClick}>
-			<Stack spacing="sm" isVertical>
-				{type === CellType.CURRENCY && (
-					<MenuItem
-						name="Currency"
-						value={getDisplayNameForCurrencyType(currencyType)}
-						onClick={() => onSubmenuChange(SubmenuType.CURRENCY)}
-					/>
-				)}
-				<Padding px="lg">
-					<Flex justify="space-between">
-						<Text value="Wrap overflow" />
-						<Switch
-							isChecked={shouldWrapOverflow}
-							onToggle={(value) =>
-								onWrapOverflowToggle(columnId, value)
+			<Padding pt="sm" pb="lg">
+				<Stack spacing="lg" isVertical>
+					{type === CellType.CURRENCY && (
+						<MenuItem
+							name="Currency"
+							value={getDisplayNameForCurrencyType(currencyType)}
+							onClick={() =>
+								onSubmenuChange(SubmenuType.CURRENCY)
 							}
 						/>
-					</Flex>
-				</Padding>
-				{(type === CellType.CREATION_TIME ||
-					type === CellType.LAST_EDITED_TIME ||
-					type === CellType.DATE) && (
-					<MenuItem
-						name="Date format"
-						value={getDisplayNameForDateFormat(dateFormat)}
-						onClick={() => onSubmenuChange(SubmenuType.DATE_FORMAT)}
-					/>
-				)}
-				{canDeleteColumn && (
-					<Padding px="lg" py="md">
-						<Button onClick={() => onDeleteClick()}>Delete</Button>
+					)}
+					<Padding px="lg">
+						<Flex justify="space-between">
+							<Text value="Wrap overflow" />
+							<Switch
+								isChecked={shouldWrapOverflow}
+								onToggle={(value) =>
+									onWrapOverflowToggle(columnId, value)
+								}
+							/>
+						</Flex>
 					</Padding>
-				)}
-			</Stack>
+					{(type === CellType.CREATION_TIME ||
+						type === CellType.LAST_EDITED_TIME ||
+						type === CellType.DATE) && (
+						<MenuItem
+							name="Date format"
+							value={getDisplayNameForDateFormat(dateFormat)}
+							onClick={() =>
+								onSubmenuChange(SubmenuType.DATE_FORMAT)
+							}
+						/>
+					)}
+					{canDeleteColumn && (
+						<Padding px="lg">
+							<Button onClick={() => onDeleteClick()}>
+								Delete
+							</Button>
+						</Padding>
+					)}
+				</Stack>
+			</Padding>
 		</Submenu>
 	);
 }

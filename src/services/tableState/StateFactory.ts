@@ -1,4 +1,4 @@
-import { randomUUID } from "crypto";
+import { v4 as uuidv4 } from "uuid";
 import { randomColor } from "../random";
 import {
 	Cell,
@@ -14,7 +14,7 @@ import {
 export default class StateFactory {
 	static createColumn(): Column {
 		return {
-			id: randomUUID(),
+			id: uuidv4(),
 			sortDir: SortDir.NONE,
 			isVisible: true,
 			width: "140px",
@@ -22,16 +22,16 @@ export default class StateFactory {
 			currencyType: CurrencyType.UNITED_STATES,
 			dateFormat: DateFormat.MM_DD_YYYY,
 			shouldWrapOverflow: false,
-			footerCellId: randomUUID(),
+			footerCellId: uuidv4(),
 		};
 	}
 
 	static createRow(totalRowCount: number): Row {
 		const currentTime = Date.now();
 		return {
-			id: randomUUID(),
+			id: uuidv4(),
 			index: totalRowCount,
-			menuCellId: randomUUID(),
+			menuCellId: uuidv4(),
 			creationTime: currentTime,
 			lastEditedTime: currentTime,
 		};
@@ -43,7 +43,7 @@ export default class StateFactory {
 		isHeader: boolean
 	): Cell {
 		return {
-			id: randomUUID(),
+			id: uuidv4(),
 			columnId,
 			rowId,
 			dateTime: null,
@@ -59,7 +59,7 @@ export default class StateFactory {
 		color = randomColor()
 	): Tag {
 		return {
-			id: randomUUID(),
+			id: uuidv4(),
 			columnId,
 			markdown: markdown,
 			color,
