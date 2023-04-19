@@ -4,12 +4,13 @@
 
 ![Obsidian Downloads](https://img.shields.io/badge/dynamic/json?logo=obsidian&color=%23483699&label=downloads&query=%24%5B%22notion-like-tables%22%5D.downloads&url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json)
 
+![Release Version](https://img.shields.io/github/v/release/trey-wallis/obsidian-notion-like-tables)
+
 Notion-Like Tables is your premiere tool for creating and managing tabular data in Obsidian.md.
 
 ![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/preview.png)
 
-Lastest release notes:
-[6.3.3](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/6.3.3)
+[Lastest release notes](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/6.3.3)
 
 ## About
 
