@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { numToPx, pxToNum } from "src/services/string/conversion";
 import {
@@ -103,10 +103,6 @@ export default function HeaderCell({
 		//If we're resizing a column, then don't open the menu
 		if (resizingColumnId !== null) return;
 
-		openHeaderMenu();
-	}
-
-	function openHeaderMenu() {
 		dispatch(openMenu(menu));
 	}
 
