@@ -4,13 +4,20 @@ import { CellType, Column, TableState, SortDir } from "./types";
 import { sortCellsForRender } from "./utils";
 
 export const addColumn = (prevState: TableState): TableState => {
-	const { headerCells, bodyCells, columns, headerRows, bodyRows } =
-		prevState.model;
+	const {
+		headerCells,
+		bodyCells,
+		footerCells,
+		columns,
+		headerRows,
+		bodyRows,
+		footerRows,
+	} = prevState.model;
 	const columnsCopy = [...columns];
 	const newColumn = StateFactory.createColumn();
 	columnsCopy.push(newColumn);
 
-	let headerCellsCopy = [...headerCells];
+	const headerCellsCopy = [...headerCells];
 
 	headerRows.forEach((row, i) => {
 		headerCellsCopy.push(
@@ -26,13 +33,22 @@ export const addColumn = (prevState: TableState): TableState => {
 
 	bodyCellsCopy = sortCellsForRender(columnsCopy, bodyRows, bodyCellsCopy);
 
+	const footerCellsCopy = [...footerCells];
+
+	footerRows.forEach((row, i) => {
+		footerCellsCopy.push(
+			StateFactory.createFooterCell(newColumn.id, row.id)
+		);
+	});
+
 	return {
 		...prevState,
 		model: {
 			...prevState.model,
 			columns: columnsCopy,
-			bodyCells: bodyCellsCopy,
 			headerCells: headerCellsCopy,
+			bodyCells: bodyCellsCopy,
+			footerCells: footerCellsCopy,
 		},
 	};
 };
