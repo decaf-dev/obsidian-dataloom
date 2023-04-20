@@ -1,4 +1,4 @@
-import TagColorMenu from "src/components/Cell/components/TagColorMenu";
+import TagColorMenu from "src/components/BodyCell/components/TagColorMenu";
 
 import { IconType } from "src/services/icon/types";
 import { MenuLevel } from "src/services/menu/types";

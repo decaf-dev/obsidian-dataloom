@@ -2,7 +2,7 @@ import React from "react";
 import { Notice } from "obsidian";
 
 import TextCell from "./components/TextCell";
-import TagCell from "./components//TagCell";
+import TagCell from "./components/TagCell";
 import CheckboxCell from "./components/CheckboxCell";
 import DateCell from "./components/DateCell";
 import NumberCell from "./components/NumberCell";
@@ -80,7 +80,7 @@ interface Props {
 	) => void;
 }
 
-export default function Cell({
+export default function BodyCell({
 	cellId,
 	columnId,
 	rowId,

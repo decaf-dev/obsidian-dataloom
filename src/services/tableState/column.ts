@@ -13,10 +13,13 @@ export const addColumn = (prevState: TableState): TableState => {
 		bodyRows,
 		footerRows,
 	} = prevState.model;
+
+	//Add column
 	const columnsCopy = [...columns];
 	const newColumn = StateFactory.createColumn();
 	columnsCopy.push(newColumn);
 
+	//Add header cells
 	const headerCellsCopy = [...headerCells];
 
 	headerRows.forEach((row, i) => {
@@ -25,6 +28,7 @@ export const addColumn = (prevState: TableState): TableState => {
 		);
 	});
 
+	//Add bdoy cells
 	let bodyCellsCopy = [...bodyCells];
 
 	bodyRows.forEach((row, i) => {
@@ -33,6 +37,7 @@ export const addColumn = (prevState: TableState): TableState => {
 
 	bodyCellsCopy = sortCellsForRender(columnsCopy, bodyRows, bodyCellsCopy);
 
+	//Add footer cells
 	const footerCellsCopy = [...footerCells];
 
 	footerRows.forEach((row, i) => {

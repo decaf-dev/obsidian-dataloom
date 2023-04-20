@@ -40,12 +40,13 @@ import { CellNotFoundError, ColumnIdError } from "./services/tableState/error";
 import { stringToCurrencyString } from "./services/string/conversion";
 import { updateSortTime } from "./services/redux/globalSlice";
 import HeaderCell from "./components/HeaderCell";
-import Cell from "./components/Cell";
 import { Color } from "./services/color/types";
 import { useTableState } from "./services/tableState/useTableState";
 import DateConversion from "./services/date/DateConversion";
 import Icon from "./components/Icon";
 import { IconType } from "./services/icon/types";
+import FunctionCell from "./components/FunctionCell";
+import BodyCell from "./components/BodyCell";
 
 const FILE_NAME = "App";
 
@@ -60,9 +61,7 @@ export default function App({ onSaveTableState }: Props) {
 	const { shouldDebug } = useAppSelector((state) => state.global);
 	const dispatch = useAppDispatch();
 
-	const headerRowId = useId();
 	const lastColumnId = useId();
-	const footerRowId = useId();
 
 	//Once we have mounted, whenever the table state is updated
 	//save it to disk
@@ -532,7 +531,7 @@ export default function App({ onSaveTableState }: Props) {
 											return {
 												id: cellId,
 												content: (
-													<Cell
+													<BodyCell
 														key={cellId}
 														cellId={cellId}
 														rowId={rowId}
@@ -616,7 +615,7 @@ export default function App({ onSaveTableState }: Props) {
 												throw new CellNotFoundError();
 											return {
 												id: cell.id,
-												content: <></>,
+												content: <FunctionCell />,
 											};
 										}),
 										{
