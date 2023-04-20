@@ -42,7 +42,28 @@ export enum CurrencyType {
 	MEXICO = "MXN",
 	ARGENTINA = "ARS",
 }
-export interface Column {
+
+export enum GeneralFunction {
+	NONE = "none",
+	COUNT_ALL = "count_all",
+	COUNT_VALUES = "count_values",
+	COUNT_UNIQUE = "count_unique",
+	COUNT_EMPTY = "count_empty",
+	COUNT_NOT_EMPTY = "count_not_empty",
+	PERCENT_EMPTY = "percent_empty",
+	PERCENT_NOT_EMPTY = "percent_not_empty",
+}
+
+export enum NumberCellFunction {
+	SUM = "sum",
+	AVG = "avg",
+	MIN = "min",
+	MAX = "max",
+	MEDIAM = "median",
+	RANGE = "range",
+}
+
+export interface PrevColumn {
 	id: string;
 	sortDir: SortDir;
 	width: string;
@@ -54,7 +75,18 @@ export interface Column {
 	footerCellId: string;
 }
 
-export interface Row {
+export interface Column {
+	id: string;
+	sortDir: SortDir;
+	width: string;
+	type: CellType;
+	isVisible: boolean;
+	dateFormat: DateFormat;
+	currencyType: CurrencyType;
+	shouldWrapOverflow: boolean;
+}
+
+export interface PrevRow {
 	id: string;
 	index: number;
 	menuCellId: string;
@@ -62,7 +94,40 @@ export interface Row {
 	lastEditedTime: number;
 }
 
-export interface Cell {
+interface Row {
+	id: string;
+}
+
+export interface BodyRow extends Row {
+	index: number;
+	menuCellId: string;
+	creationTime: number;
+	lastEditedTime: number;
+}
+
+export type HeaderRow = Row;
+export type FooterRow = Row;
+
+interface Cell {
+	id: string;
+	columnId: string;
+	rowId: string;
+}
+
+export interface HeaderCell extends Cell {
+	markdown: string;
+}
+
+export interface BodyCell extends Cell {
+	dateTime: number | null;
+	markdown: string;
+}
+
+export interface FooterCell extends Cell {
+	functionType: GeneralFunction | NumberCellFunction;
+}
+
+export interface PrevCell {
 	id: string;
 	columnId: string;
 	dateTime: number | null;
@@ -79,14 +144,30 @@ export interface Tag {
 	cellIds: string[];
 }
 
-export interface TableModel {
-	columns: Column[];
-	rows: Row[];
-	cells: Cell[];
+export interface PrevTableModel {
+	columns: PrevColumn[];
+	rows: PrevRow[];
+	cells: PrevCell[];
 	tags: Tag[];
 }
 
-export interface TableState {
-	model: TableModel;
+export interface TableModel {
+	columns: Column[];
+	headerRows: HeaderRow[];
+	bodyRows: BodyRow[];
+	footerRows: FooterRow[];
+	headerCells: HeaderCell[];
+	bodyCells: BodyCell[];
+	footerCells: FooterCell[];
+	tags: Tag[];
+}
+export interface BaseTableState {
 	pluginVersion: number;
+}
+export interface TableState extends BaseTableState {
+	model: TableModel;
+}
+
+export interface PrevTableState extends BaseTableState {
+	model: PrevTableModel;
 }

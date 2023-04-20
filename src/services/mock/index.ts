@@ -1,23 +1,63 @@
 import { CURRENT_PLUGIN_VERSION } from "src/constants";
 import StateFactory from "../tableState/StateFactory";
-import { Cell, Column, Row, TableState, Tag } from "../tableState/types";
+import {
+	BodyCell,
+	Column,
+	BodyRow,
+	TableState,
+	Tag,
+	HeaderRow,
+	FooterRow,
+} from "../tableState/types";
+import { HeaderCell } from "../tableState/types";
+import { FooterCell } from "../tableState/types";
 
 export const mockTableState = (
 	numColumns: number,
 	numRows: number
 ): TableState => {
+	//Create columns
 	const columns: Column[] = [];
 	for (let i = 0; i < numColumns; i++)
 		columns.push(StateFactory.createColumn());
 
-	const rows: Row[] = [];
-	for (let i = 0; i < numRows; i++) rows.push(StateFactory.createRow(i));
+	//Create headers
+	const headerRows: HeaderRow[] = [];
+	headerRows.push(StateFactory.createHeaderRow());
 
-	const cells: Cell[] = [];
+	const headerCells: HeaderCell[] = [];
+
+	for (let x = 0; x < numColumns; x++) {
+		headerCells.push(
+			StateFactory.createHeaderCell(columns[x].id, headerRows[0].id)
+		);
+	}
+
+	//Create body
+	const bodyRows: BodyRow[] = [];
+	for (let i = 0; i < numRows; i++)
+		bodyRows.push(StateFactory.createBodyRow(i));
+
+	const bodyCells: BodyCell[] = [];
 	for (let y = 0; y < numRows; y++) {
 		for (let x = 0; x < numColumns; x++) {
-			cells.push(
-				StateFactory.createCell(columns[x].id, rows[y].id, y === 0)
+			bodyCells.push(
+				StateFactory.createBodyCell(columns[x].id, bodyRows[y].id)
+			);
+		}
+	}
+
+	//Create footers
+	const footerRows: FooterRow[] = [];
+	footerRows.push(StateFactory.createFooterRow());
+	footerRows.push(StateFactory.createFooterRow());
+
+	const footerCells: FooterCell[] = [];
+
+	for (let y = 0; y < 2; y++) {
+		for (let x = 0; x < numColumns; x++) {
+			footerCells.push(
+				StateFactory.createFooterCell(columns[x].id, footerRows[y].id)
 			);
 		}
 	}
@@ -26,9 +66,13 @@ export const mockTableState = (
 	//TODO add tags
 	return {
 		model: {
-			rows,
 			columns,
-			cells,
+			headerRows,
+			bodyRows,
+			footerRows,
+			headerCells,
+			bodyCells,
+			footerCells,
 			tags,
 		},
 		pluginVersion: CURRENT_PLUGIN_VERSION,

@@ -1,10 +1,17 @@
-import { Cell, CellType, Column, CurrencyType, DateFormat, Row } from "./types";
+import {
+	BodyCell,
+	BodyRow,
+	CellType,
+	Column,
+	CurrencyType,
+	DateFormat,
+} from "./types";
 
 export const sortCellsForRender = (
 	columns: Column[],
-	rows: Row[],
-	cells: Cell[]
-): Cell[] => {
+	rows: BodyRow[],
+	cells: BodyCell[]
+): BodyCell[] => {
 	return (
 		//Get the cell rows in order
 		rows
@@ -12,8 +19,8 @@ export const sortCellsForRender = (
 				return cells.filter((c) => c.rowId === row.id);
 			})
 			//Sort each row based on the order of the column ids
-			.map((row) => {
-				return row.sort((a, b) => {
+			.map((cell) => {
+				return cell.sort((a, b) => {
 					const indexA = columns.findIndex(
 						(column) => column.id === a.columnId
 					);

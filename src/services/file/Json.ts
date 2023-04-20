@@ -1,5 +1,6 @@
 import { CURRENT_PLUGIN_VERSION } from "src/constants";
 import {
+	BaseTableState,
 	CurrencyType,
 	DateFormat,
 	SortDir,
@@ -7,6 +8,7 @@ import {
 } from "../tableState/types";
 import { sortByCreationTime } from "../tableState/sort";
 import { RowIdError } from "../tableState/error";
+import { PrevTableState } from "../tableState/types";
 
 export default class Json {
 	static serializeTableState(tableState: TableState): string {
@@ -14,11 +16,12 @@ export default class Json {
 	}
 
 	static deserializeTableState(data: string): TableState {
-		const tableState = JSON.parse(data) as TableState;
-		const { pluginVersion } = tableState;
-		const { columns, rows, cells } = tableState.model;
+		const parsedState = JSON.parse(data);
+		const { pluginVersion } = parsedState as BaseTableState;
+		if (pluginVersion < 630) {
+			const tableState = parsedState as PrevTableState;
+			const { columns, rows, cells } = tableState.model;
 
-		if (pluginVersion < CURRENT_PLUGIN_VERSION) {
 			//Feat: Currency type
 			if (pluginVersion < 610) {
 				columns.forEach((column) => {
@@ -66,7 +69,19 @@ export default class Json {
 			}
 		}
 
-		tableState.pluginVersion = CURRENT_PLUGIN_VERSION;
-		return tableState;
+		//Upgrade to new table state
+		if (pluginVersion < 640) {
+			const tableState = parsedState as PrevTableState;
+			//Create header rows
+			//Create footer rows
+			//Create body rows
+			//Update columns
+			//Create footer cells
+			//Create body cells
+			//Create header cells
+		}
+
+		parsedState.pluginVersion = CURRENT_PLUGIN_VERSION;
+		return parsedState as TableState;
 	}
 }

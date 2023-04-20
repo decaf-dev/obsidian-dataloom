@@ -44,7 +44,7 @@ export default function TableHeaderCell({
 			throw new Error("data-column-id is required for a header cell");
 
 		setTableState((prevState) => {
-			const { columns, rows, cells } = prevState.model;
+			const { columns, bodyRows, bodyCells } = prevState.model;
 			const columnsCopy = [...columns];
 
 			const draggedElIndex = columns.findIndex(
@@ -58,7 +58,11 @@ export default function TableHeaderCell({
 			columnsCopy[targetElIndex] = columnsCopy[draggedElIndex];
 			columnsCopy[draggedElIndex] = temp;
 
-			const updatedCells = sortCellsForRender(columnsCopy, rows, cells);
+			const updatedCells = sortCellsForRender(
+				columnsCopy,
+				bodyRows,
+				bodyCells
+			);
 
 			return {
 				...prevState,

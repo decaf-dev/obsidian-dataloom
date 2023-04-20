@@ -1,28 +1,28 @@
 import { updateLastEditedTime } from "./row";
-import { Cell, TableState } from "./types";
+import { BodyCell, TableState } from "./types";
 
 export const updateCell = (
 	prevState: TableState,
 	cellId: string,
 	rowId: string,
-	key: keyof Cell,
+	key: keyof BodyCell,
 	value: unknown
 ) => {
-	const { cells, rows } = prevState.model;
+	const { bodyCells, bodyRows } = prevState.model;
 	return {
 		...prevState,
 		model: {
 			...prevState.model,
-			cells: cells.map((cell) => {
+			bodyCells: bodyCells.map((cell) => {
 				if (cell.id === cellId) {
 					return {
 						...cell,
-						[key as keyof Cell]: value,
+						[key as keyof BodyCell]: value,
 					};
 				}
 				return cell;
 			}),
-			rows: updateLastEditedTime(rows, rowId),
+			bodyRows: updateLastEditedTime(bodyRows, rowId),
 		},
 	};
 };

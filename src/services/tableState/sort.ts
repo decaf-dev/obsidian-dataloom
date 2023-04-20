@@ -1,14 +1,14 @@
 import { isCheckboxChecked } from "../string/validators";
 import { CellNotFoundError } from "./error";
-import { TableState, Cell, Row, CellType, SortDir } from "./types";
+import { TableState, BodyCell, BodyRow, CellType, SortDir } from "./types";
 import { sortCellsForRender } from "./utils";
 
 const sortByDir = (
 	columnId: string,
 	columnType: string,
 	sortDir: SortDir,
-	rows: Row[],
-	cells: Cell[]
+	rows: BodyRow[],
+	cells: BodyCell[]
 ) => {
 	if (columnType == CellType.NUMBER) {
 		return sortByNumber(columnId, rows, cells, sortDir);
@@ -27,10 +27,10 @@ const sortByDir = (
 
 const sortByMarkdown = (
 	columnId: string,
-	rows: Row[],
-	cells: Cell[],
+	rows: BodyRow[],
+	cells: BodyCell[],
 	sortDir: SortDir
-): Row[] => {
+): BodyRow[] => {
 	const rowsCopy = [...rows];
 	rowsCopy.sort((a, b) => {
 		const cellA = cells.find(
@@ -44,11 +44,6 @@ const sortByMarkdown = (
 		);
 
 		if (!cellB) throw new CellNotFoundError();
-
-		//Force headers to the top
-		if (cellA.isHeader && !cellB.isHeader) return -1;
-		if (!cellA.isHeader && cellB.isHeader) return 1;
-		if (cellA.isHeader && cellB.isHeader) return 0;
 
 		const markdownA = cellA.markdown;
 		const markdownB = cellB.markdown;
@@ -71,10 +66,10 @@ const sortByMarkdown = (
 
 const sortByNumber = (
 	columnId: string,
-	rows: Row[],
-	cells: Cell[],
+	rows: BodyRow[],
+	cells: BodyCell[],
 	sortDir: SortDir
-): Row[] => {
+): BodyRow[] => {
 	const rowsCopy = [...rows];
 	rowsCopy.sort((a, b) => {
 		const cellA = cells.find(
@@ -88,11 +83,6 @@ const sortByNumber = (
 		);
 
 		if (!cellB) throw new CellNotFoundError();
-
-		//Force headers to the top
-		if (cellA.isHeader && !cellB.isHeader) return -1;
-		if (!cellA.isHeader && cellB.isHeader) return 1;
-		if (cellA.isHeader && cellB.isHeader) return 0;
 
 		const markdownA = cellA.markdown;
 		const markdownB = cellB.markdown;
@@ -115,10 +105,10 @@ const sortByNumber = (
 
 const sortByCheckbox = (
 	columnId: string,
-	rows: Row[],
-	cells: Cell[],
+	rows: BodyRow[],
+	cells: BodyCell[],
 	sortDir: SortDir
-): Row[] => {
+): BodyRow[] => {
 	const rowsCopy = [...rows];
 	rowsCopy.sort((a, b) => {
 		const cellA = cells.find(
@@ -132,11 +122,6 @@ const sortByCheckbox = (
 		);
 
 		if (!cellB) throw new CellNotFoundError();
-
-		//Force headers to the top
-		if (cellA.isHeader && !cellB.isHeader) return -1;
-		if (!cellA.isHeader && cellB.isHeader) return 1;
-		if (cellA.isHeader && cellB.isHeader) return 0;
 
 		const isCheckedA = isCheckboxChecked(cellA.markdown);
 		const isCheckedB = isCheckboxChecked(cellB.markdown);
@@ -158,10 +143,10 @@ const sortByCheckbox = (
 
 export const sortByDate = (
 	columnId: string,
-	rows: Row[],
-	cells: Cell[],
+	rows: BodyRow[],
+	cells: BodyCell[],
 	sortDir: SortDir
-): Row[] => {
+): BodyRow[] => {
 	const rowsCopy = [...rows];
 	rowsCopy.sort((a, b) => {
 		const cellA = cells.find(
@@ -175,11 +160,6 @@ export const sortByDate = (
 		);
 
 		if (!cellB) throw new CellNotFoundError();
-
-		//Force headers to the top
-		if (cellA.isHeader && !cellB.isHeader) return -1;
-		if (!cellA.isHeader && cellB.isHeader) return 1;
-		if (cellA.isHeader && cellB.isHeader) return 0;
 
 		const dateTimeA = cellA.dateTime || 0;
 		const dateTimeB = cellB.dateTime || 0;
@@ -195,13 +175,12 @@ export const sortByDate = (
 	return rowsCopy;
 };
 
-export const sortByCreationTime = (rows: Row[], sortDir: SortDir): Row[] => {
+export const sortByCreationTime = (
+	rows: BodyRow[],
+	sortDir: SortDir
+): BodyRow[] => {
 	const rowsCopy = [...rows];
 	rowsCopy.sort((a, b) => {
-		//Keep header row at the top
-		if (a.index === 0) return -1;
-		if (b.index === 0) return 1;
-
 		if (sortDir === SortDir.ASC) {
 			return a.creationTime - b.creationTime;
 		} else if (sortDir === SortDir.DESC) {
@@ -213,13 +192,9 @@ export const sortByCreationTime = (rows: Row[], sortDir: SortDir): Row[] => {
 	return rowsCopy;
 };
 
-const sortByLastEditedTime = (rows: Row[], sortDir: SortDir): Row[] => {
+const sortByLastEditedTime = (rows: BodyRow[], sortDir: SortDir): BodyRow[] => {
 	const rowsCopy = [...rows];
 	rowsCopy.sort((a, b) => {
-		//Keep header row at the top
-		if (a.index === 0) return -1;
-		if (b.index === 0) return 1;
-
 		if (sortDir === SortDir.ASC) {
 			return a.lastEditedTime - b.lastEditedTime;
 		} else if (sortDir === SortDir.DESC) {
@@ -231,7 +206,7 @@ const sortByLastEditedTime = (rows: Row[], sortDir: SortDir): Row[] => {
 	return rowsCopy;
 };
 
-export const sortByRowIndex = (rows: Row[]): Row[] => {
+export const sortByRowIndex = (rows: BodyRow[]): BodyRow[] => {
 	const rowsCopy = [...rows];
 	rowsCopy.sort((a, b) => {
 		return a.index - b.index;
@@ -240,7 +215,7 @@ export const sortByRowIndex = (rows: Row[]): Row[] => {
 };
 
 export const sortRows = (prevState: TableState): TableState => {
-	const { columns, rows, cells } = prevState.model;
+	const { columns, bodyRows, bodyCells } = prevState.model;
 	const sortedColumn = columns.find(
 		(columns) => columns.sortDir !== SortDir.NONE
 	);
@@ -249,14 +224,14 @@ export const sortRows = (prevState: TableState): TableState => {
 			...prevState,
 			model: {
 				...prevState.model,
-				rows: sortByDir(
+				bodyRows: sortByDir(
 					sortedColumn.id,
 					sortedColumn.type,
 					sortedColumn.sortDir,
-					rows,
-					cells
+					bodyRows,
+					bodyCells
 				),
-				cells: sortCellsForRender(columns, rows, cells),
+				bodyCells: sortCellsForRender(columns, bodyRows, bodyCells),
 			},
 		};
 	}
@@ -264,7 +239,7 @@ export const sortRows = (prevState: TableState): TableState => {
 		...prevState,
 		model: {
 			...prevState.model,
-			rows: sortByRowIndex(rows),
+			bodyRows: sortByRowIndex(bodyRows),
 		},
 	};
 };

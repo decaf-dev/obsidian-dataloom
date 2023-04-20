@@ -294,8 +294,17 @@ export default function App({ onSaveTableState }: Props) {
 		);
 	}
 
-	const { rows, columns, cells, tags } = tableState.model;
-	const columnCells = cells.map((cell) => {
+	const {
+		headerRows,
+		bodyRows,
+		footerRows,
+		columns,
+		headerCells,
+		bodyCells,
+		footerCells,
+		tags,
+	} = tableState.model;
+	const columnBodyCells = bodyCells.map((cell) => {
 		const column = columns.find((column) => column.id === cell.columnId);
 		if (!column) throw new ColumnIdError(cell.columnId);
 		return {
@@ -304,17 +313,14 @@ export default function App({ onSaveTableState }: Props) {
 		};
 	});
 
-	const filteredRows = rows.filter((row) => {
-		const filteredCells = columnCells.filter(
+	const filteredBodyRows = bodyRows.filter((row) => {
+		const filteredCells = columnBodyCells.filter(
 			(cell) => cell.rowId === row.id
 		);
 		const matchedCell = filteredCells.find((cell) => {
-			const { dateTime, isHeader, markdown } = cell;
+			const { dateTime, markdown } = cell;
 			const { currencyType, type, dateFormat } = cell.column;
 			const { lastEditedTime, creationTime } = row;
-
-			//We always want to show the header cells
-			if (isHeader) return true;
 
 			if (markdown.toLowerCase().includes(searchText.toLowerCase()))
 				return true;
@@ -366,14 +372,14 @@ export default function App({ onSaveTableState }: Props) {
 	});
 
 	const visibleColumns = columns.filter((column) => column.isVisible);
-	const visibleCells = cells.filter((cell) =>
+	const visibleBodyCells = bodyCells.filter((cell) =>
 		visibleColumns.find((column) => column.id === cell.columnId)
 	);
 
 	return (
 		<div className="NLT__app">
 			<OptionBar
-				cells={cells}
+				headerCells={headerCells}
 				columns={columns}
 				onColumnToggle={handleColumnToggle}
 				onSortRemoveClick={handleSortRemoveClick}
@@ -381,9 +387,9 @@ export default function App({ onSaveTableState }: Props) {
 			<div className="NLT__table-outer">
 				<div className="NLT__table-inner">
 					<Table
-						headerRows={[
-							{
-								id: headerRowId,
+						headerRows={headerRows.map((row) => {
+							return {
+								id: row.id,
 								cells: [
 									...visibleColumns.map((column) => {
 										const {
@@ -396,10 +402,8 @@ export default function App({ onSaveTableState }: Props) {
 											dateFormat,
 										} = column;
 
-										const cell = cells.find(
-											(cell) =>
-												cell.columnId === columnId &&
-												cell.isHeader
+										const cell = headerCells.find(
+											(cell) => cell.columnId === columnId
 										);
 										if (!cell)
 											throw new CellNotFoundError();
@@ -480,12 +484,12 @@ export default function App({ onSaveTableState }: Props) {
 										),
 									},
 								],
-							},
-						]}
-						bodyRows={filteredRows
+							};
+						})}
+						bodyRows={filteredBodyRows
 							.filter((_row, i) => i !== 0)
 							.map((row) => {
-								const rowCells = visibleCells.filter(
+								const rowCells = visibleBodyCells.filter(
 									(cell) => cell.rowId === row.id
 								);
 								const {
@@ -597,22 +601,51 @@ export default function App({ onSaveTableState }: Props) {
 									],
 								};
 							})}
-						footerRows={[
-							{
-								id: footerRowId,
+						footerRows={footerRows.map((row, i) => {
+							if (i === 0) {
+								return {
+									id: row.id,
+									cells: [
+										...visibleColumns.map((column) => {
+											const cell = footerCells.find(
+												(cell) =>
+													cell.rowId == row.id &&
+													cell.columnId == column.id
+											);
+											if (!cell)
+												throw new CellNotFoundError();
+											return {
+												id: cell.id,
+												content: <></>,
+											};
+										}),
+										{
+											id: lastColumnId,
+											content: <></>,
+										},
+									],
+								};
+							}
+							return {
+								id: row.id,
 								cells: [
-									...columns.map((_column, i) => {
-										const { width, footerCellId } =
-											columns[i];
+									...visibleColumns.map((column, i) => {
+										const cell = footerCells.find(
+											(cell) =>
+												cell.rowId == row.id &&
+												cell.columnId == column.id
+										);
+										if (!cell)
+											throw new CellNotFoundError();
+										const { width } = column;
 										if (i === 0) {
 											return {
-												id: footerCellId,
+												id: cell.id,
 												content: (
 													<div
 														style={{
 															paddingTop: "10px",
-															paddingLeft:
-																"var(--size-4-4)",
+															paddingLeft: "10px",
 															width,
 														}}
 													>
@@ -628,7 +661,7 @@ export default function App({ onSaveTableState }: Props) {
 											};
 										}
 										return {
-											id: footerCellId,
+											id: cell.id,
 											content: <></>,
 										};
 									}),
@@ -637,8 +670,8 @@ export default function App({ onSaveTableState }: Props) {
 										content: <></>,
 									},
 								],
-							},
-						]}
+							};
+						})}
 					/>
 				</div>
 			</div>
