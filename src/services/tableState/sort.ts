@@ -1,7 +1,6 @@
 import { isCheckboxChecked } from "../string/validators";
 import { CellNotFoundError } from "./error";
 import { TableState, BodyCell, BodyRow, CellType, SortDir } from "./types";
-import { sortCellsForRender } from "./utils";
 
 const sortByDir = (
 	columnId: string,
@@ -231,7 +230,6 @@ export const sortRows = (prevState: TableState): TableState => {
 					bodyRows,
 					bodyCells
 				),
-				bodyCells: sortCellsForRender(columns, bodyRows, bodyCells),
 			},
 		};
 	}

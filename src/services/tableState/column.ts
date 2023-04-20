@@ -1,7 +1,6 @@
 import { ColumnIdError } from "./error";
 import StateFactory from "./StateFactory";
 import { CellType, Column, TableState, SortDir } from "./types";
-import { sortCellsForRender } from "./utils";
 
 export const addColumn = (prevState: TableState): TableState => {
 	const {
@@ -29,13 +28,11 @@ export const addColumn = (prevState: TableState): TableState => {
 	});
 
 	//Add bdoy cells
-	let bodyCellsCopy = [...bodyCells];
+	const bodyCellsCopy = [...bodyCells];
 
 	bodyRows.forEach((row, i) => {
 		bodyCellsCopy.push(StateFactory.createBodyCell(newColumn.id, row.id));
 	});
-
-	bodyCellsCopy = sortCellsForRender(columnsCopy, bodyRows, bodyCellsCopy);
 
 	//Add footer cells
 	const footerCellsCopy = [...footerCells];

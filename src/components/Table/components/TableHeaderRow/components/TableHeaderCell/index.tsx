@@ -1,6 +1,5 @@
 import { TableDataTransferItem } from "src/components/Table/types";
 import { useTableState } from "src/services/tableState/useTableState";
-import { sortCellsForRender } from "src/services/tableState/utils";
 
 interface TableHeaderCellProps {
 	columnId: string;
@@ -58,18 +57,11 @@ export default function TableHeaderCell({
 			columnsCopy[targetElIndex] = columnsCopy[draggedElIndex];
 			columnsCopy[draggedElIndex] = temp;
 
-			const updatedCells = sortCellsForRender(
-				columnsCopy,
-				bodyRows,
-				bodyCells
-			);
-
 			return {
 				...prevState,
 				model: {
 					...prevState.model,
 					columns: columnsCopy,
-					cells: updatedCells,
 				},
 			};
 		});

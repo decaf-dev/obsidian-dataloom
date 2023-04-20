@@ -473,9 +473,6 @@ export default function App({ onSaveTableState }: Props) {
 							};
 						})}
 						bodyRows={filteredBodyRows.map((row) => {
-							const rowCells = visibleBodyCells.filter(
-								(cell) => cell.rowId === row.id
-							);
 							const {
 								id: rowId,
 								menuCellId,
@@ -485,26 +482,26 @@ export default function App({ onSaveTableState }: Props) {
 							return {
 								id: rowId,
 								cells: [
-									...rowCells.map((cell) => {
-										const column = columns.find(
-											(column) =>
-												column.id == cell.columnId
-										);
-										if (!column)
-											throw new ColumnIdError(
-												cell.columnId
-											);
+									...visibleColumns.map((column) => {
 										const {
+											id: columnId,
 											width,
 											type,
 											shouldWrapOverflow,
 											currencyType,
 											dateFormat,
 										} = column;
+
+										const cell = bodyCells.find(
+											(cell) =>
+												cell.columnId === columnId &&
+												cell.rowId === row.id
+										);
+										if (!cell)
+											throw new CellNotFoundError();
 										const {
 											id: cellId,
 											markdown,
-											columnId,
 											dateTime,
 										} = cell;
 
@@ -614,7 +611,7 @@ export default function App({ onSaveTableState }: Props) {
 										);
 										if (!cell)
 											throw new CellNotFoundError();
-										const { width } = column;
+
 										if (i === 0) {
 											return {
 												id: cell.id,

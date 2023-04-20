@@ -1,39 +1,4 @@
-import {
-	BodyCell,
-	BodyRow,
-	CellType,
-	Column,
-	CurrencyType,
-	DateFormat,
-} from "./types";
-
-export const sortCellsForRender = (
-	columns: Column[],
-	rows: BodyRow[],
-	cells: BodyCell[]
-): BodyCell[] => {
-	return (
-		//Get the cell rows in order
-		rows
-			.map((row) => {
-				return cells.filter((c) => c.rowId === row.id);
-			})
-			//Sort each row based on the order of the column ids
-			.map((cell) => {
-				return cell.sort((a, b) => {
-					const indexA = columns.findIndex(
-						(column) => column.id === a.columnId
-					);
-					const indexB = columns.findIndex(
-						(column) => column.id === b.columnId
-					);
-					return indexA - indexB;
-				});
-			})
-			//Return a flatten version of the array
-			.flat(1)
-	);
-};
+import { CellType, CurrencyType, DateFormat } from "./types";
 
 export const getDisplayNameForDateFormat = (format: DateFormat) => {
 	switch (format) {
