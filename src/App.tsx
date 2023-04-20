@@ -485,121 +485,118 @@ export default function App({ onSaveTableState }: Props) {
 								],
 							};
 						})}
-						bodyRows={filteredBodyRows
-							.filter((_row, i) => i !== 0)
-							.map((row) => {
-								const rowCells = visibleBodyCells.filter(
-									(cell) => cell.rowId === row.id
-								);
-								const {
-									id: rowId,
-									menuCellId,
-									lastEditedTime,
-									creationTime,
-								} = row;
-								return {
-									id: rowId,
-									cells: [
-										...rowCells.map((cell) => {
-											const column = columns.find(
-												(column) =>
-													column.id == cell.columnId
+						bodyRows={filteredBodyRows.map((row) => {
+							const rowCells = visibleBodyCells.filter(
+								(cell) => cell.rowId === row.id
+							);
+							const {
+								id: rowId,
+								menuCellId,
+								lastEditedTime,
+								creationTime,
+							} = row;
+							return {
+								id: rowId,
+								cells: [
+									...rowCells.map((cell) => {
+										const column = columns.find(
+											(column) =>
+												column.id == cell.columnId
+										);
+										if (!column)
+											throw new ColumnIdError(
+												cell.columnId
 											);
-											if (!column)
-												throw new ColumnIdError(
-													cell.columnId
-												);
-											const {
-												width,
-												type,
-												shouldWrapOverflow,
-												currencyType,
-												dateFormat,
-											} = column;
-											const {
-												id: cellId,
-												markdown,
-												columnId,
-												dateTime,
-											} = cell;
+										const {
+											width,
+											type,
+											shouldWrapOverflow,
+											currencyType,
+											dateFormat,
+										} = column;
+										const {
+											id: cellId,
+											markdown,
+											columnId,
+											dateTime,
+										} = cell;
 
-											const filteredTags = tags.filter(
-												(tag) =>
-													tag.columnId === column.id
-											);
+										const filteredTags = tags.filter(
+											(tag) => tag.columnId === column.id
+										);
 
-											return {
-												id: cellId,
-												content: (
-													<BodyCell
-														key={cellId}
-														cellId={cellId}
-														rowId={rowId}
-														tags={filteredTags}
-														columnId={columnId}
-														rowCreationTime={
-															creationTime
-														}
-														dateFormat={dateFormat}
-														columnCurrencyType={
-															currencyType
-														}
-														rowLastEditedTime={
-															lastEditedTime
-														}
-														dateTime={dateTime}
-														markdown={markdown}
-														columnType={type}
-														shouldWrapOverflow={
-															shouldWrapOverflow
-														}
-														width={width}
-														onTagClick={
-															handleAddCellToTag
-														}
-														onRemoveTagClick={
-															handleRemoveCellFromTag
-														}
-														onContentChange={
-															handleCellContentChange
-														}
-														onTagColorChange={
-															handleTagChangeColor
-														}
-														onTagDeleteClick={
-															handleTagDeleteClick
-														}
-														onDateTimeChange={
-															handleCellDateTimeChange
-														}
-														onDateFormatChange={
-															handleDateFormatChange
-														}
-														onAddTag={handleAddTag}
-													/>
-												),
-											};
-										}),
-										{
-											id: menuCellId,
+										return {
+											id: cellId,
 											content: (
-												<div
-													style={{
-														paddingLeft: "10px",
-													}}
-												>
-													<RowOptions
-														rowId={rowId}
-														onDeleteClick={
-															handleRowDeleteClick
-														}
-													/>
-												</div>
+												<BodyCell
+													key={cellId}
+													cellId={cellId}
+													rowId={rowId}
+													tags={filteredTags}
+													columnId={columnId}
+													rowCreationTime={
+														creationTime
+													}
+													dateFormat={dateFormat}
+													columnCurrencyType={
+														currencyType
+													}
+													rowLastEditedTime={
+														lastEditedTime
+													}
+													dateTime={dateTime}
+													markdown={markdown}
+													columnType={type}
+													shouldWrapOverflow={
+														shouldWrapOverflow
+													}
+													width={width}
+													onTagClick={
+														handleAddCellToTag
+													}
+													onRemoveTagClick={
+														handleRemoveCellFromTag
+													}
+													onContentChange={
+														handleCellContentChange
+													}
+													onTagColorChange={
+														handleTagChangeColor
+													}
+													onTagDeleteClick={
+														handleTagDeleteClick
+													}
+													onDateTimeChange={
+														handleCellDateTimeChange
+													}
+													onDateFormatChange={
+														handleDateFormatChange
+													}
+													onAddTag={handleAddTag}
+												/>
 											),
-										},
-									],
-								};
-							})}
+										};
+									}),
+									{
+										id: menuCellId,
+										content: (
+											<div
+												style={{
+													paddingLeft: "10px",
+												}}
+											>
+												<RowOptions
+													rowId={rowId}
+													onDeleteClick={
+														handleRowDeleteClick
+													}
+												/>
+											</div>
+										),
+									},
+								],
+							};
+						})}
 						footerRows={footerRows.map((row, i) => {
 							if (i === 0) {
 								return {
