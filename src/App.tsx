@@ -43,10 +43,9 @@ import HeaderCell from "./components/HeaderCell";
 import { Color } from "./services/color/types";
 import { useTableState } from "./services/tableState/useTableState";
 import DateConversion from "./services/date/DateConversion";
-import Icon from "./components/Icon";
-import { IconType } from "./services/icon/types";
 import FunctionCell from "./components/FunctionCell";
 import BodyCell from "./components/BodyCell";
+import AddColumnButton from "./components/AddColumnButton";
 
 const FILE_NAME = "App";
 
@@ -463,23 +462,9 @@ export default function App({ onSaveTableState }: Props) {
 										id: lastColumnId,
 										columnId: lastColumnId,
 										content: (
-											<div
-												style={{
-													paddingLeft: "10px",
-												}}
-											>
-												<Button
-													icon={
-														<Icon
-															type={IconType.ADD}
-														/>
-													}
-													ariaLabel="Add column"
-													onClick={() =>
-														handleAddColumn()
-													}
-												/>
-											</div>
+											<AddColumnButton
+												onAddColumn={handleAddColumn}
+											/>
 										),
 									},
 								],
