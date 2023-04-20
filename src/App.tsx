@@ -372,9 +372,6 @@ export default function App({ onSaveTableState }: Props) {
 	});
 
 	const visibleColumns = columns.filter((column) => column.isVisible);
-	const visibleBodyCells = bodyCells.filter((cell) =>
-		visibleColumns.find((column) => column.id === cell.columnId)
-	);
 
 	return (
 		<div className="NLT__app">

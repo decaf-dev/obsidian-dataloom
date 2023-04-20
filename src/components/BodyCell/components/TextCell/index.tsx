@@ -7,7 +7,7 @@ interface Props {
 }
 
 export default function TextCell({ markdown, shouldWrapOverflow }: Props) {
-	const { wrapperRef, contentRef, appendOrReplaceFirstChild } =
+	const { containerRef, contentRef, appendOrReplaceFirstChild } =
 		useRenderMarkdown(markdown, shouldWrapOverflow);
 
 	const overflowClassName = useOverflowClassName(shouldWrapOverflow);
@@ -16,10 +16,10 @@ export default function TextCell({ markdown, shouldWrapOverflow }: Props) {
 		<div className={className}>
 			<div
 				ref={(node) => {
-					wrapperRef.current = node;
+					containerRef.current = node;
 					appendOrReplaceFirstChild(node, contentRef.current);
 				}}
-			></div>
+			/>
 		</div>
 	);
 }
