@@ -63,7 +63,7 @@ export enum NumberCellFunction {
 	RANGE = "range",
 }
 
-export interface PrevColumn {
+export interface Column633 {
 	id: string;
 	sortDir: SortDir;
 	width: string;
@@ -86,7 +86,7 @@ export interface Column {
 	shouldWrapOverflow: boolean;
 }
 
-export interface PrevRow {
+export interface Row633 {
 	id: string;
 	index: number;
 	menuCellId: string;
@@ -127,7 +127,7 @@ export interface FooterCell extends Cell {
 	functionType: GeneralFunction | NumberCellFunction;
 }
 
-export interface PrevCell {
+export interface Cell633 {
 	id: string;
 	columnId: string;
 	dateTime: number | null;
@@ -144,10 +144,10 @@ export interface Tag {
 	cellIds: string[];
 }
 
-export interface PrevTableModel {
-	columns: PrevColumn[];
-	rows: PrevRow[];
-	cells: PrevCell[];
+export interface TableModel633 {
+	columns: Column633[];
+	rows: Row633[];
+	cells: Cell633[];
 	tags: Tag[];
 }
 
@@ -168,6 +168,6 @@ export interface TableState extends BaseTableState {
 	model: TableModel;
 }
 
-export interface PrevTableState extends BaseTableState {
-	model: PrevTableModel;
+export interface TableState633 extends BaseTableState {
+	model: TableModel633;
 }
