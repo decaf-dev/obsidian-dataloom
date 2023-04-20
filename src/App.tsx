@@ -45,7 +45,9 @@ import { useTableState } from "./services/tableState/useTableState";
 import DateConversion from "./services/date/DateConversion";
 import FunctionCell from "./components/FunctionCell";
 import BodyCell from "./components/BodyCell";
-import AddColumnButton from "./components/AddColumnButton";
+import AddColumnButton from "./components/NewColumnButton";
+import NewRowButton from "./components/NewRowButton";
+import NewColumnButton from "./components/NewColumnButton";
 
 const FILE_NAME = "App";
 
@@ -74,13 +76,13 @@ export default function App({ onSaveTableState }: Props) {
 		}
 	}, [sortTime]);
 
-	function handleAddColumn() {
-		logFunc(shouldDebug, FILE_NAME, "handleAddColumn");
+	function handleNewColumnClick() {
+		logFunc(shouldDebug, FILE_NAME, "handleNewColumnClick");
 		setTableState((prevState) => addColumn(prevState));
 	}
 
-	function handleAddRow() {
-		logFunc(shouldDebug, FILE_NAME, "handleAddRow");
+	function handleNewRowClick() {
+		logFunc(shouldDebug, FILE_NAME, "handleNewRowClick");
 		setTableState((prevState) => addRow(prevState));
 	}
 
@@ -462,8 +464,8 @@ export default function App({ onSaveTableState }: Props) {
 										id: lastColumnId,
 										columnId: lastColumnId,
 										content: (
-											<AddColumnButton
-												onAddColumn={handleAddColumn}
+											<NewColumnButton
+												onClick={handleNewColumnClick}
 											/>
 										),
 									},
@@ -617,21 +619,11 @@ export default function App({ onSaveTableState }: Props) {
 											return {
 												id: cell.id,
 												content: (
-													<div
-														style={{
-															paddingTop: "10px",
-															paddingLeft: "10px",
-															width,
-														}}
-													>
-														<Button
-															onClick={() =>
-																handleAddRow()
-															}
-														>
-															New row
-														</Button>
-													</div>
+													<NewRowButton
+														onClick={
+															handleNewRowClick
+														}
+													/>
 												),
 											};
 										}

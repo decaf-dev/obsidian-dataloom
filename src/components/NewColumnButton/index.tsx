@@ -5,16 +5,16 @@ import Icon from "../Icon";
 import "./styles.css";
 
 interface Props {
-	onAddColumn: () => void;
+	onClick: () => void;
 }
 
-export default function AddColumnButton({ onAddColumn }: Props) {
+export default function NewColumnButton({ onClick }: Props) {
 	return (
-		<div className="NLT__add-column">
+		<div className="NLT__new-column">
 			<Button
 				icon={<Icon type={IconType.ADD} />}
-				ariaLabel="Add column"
-				onClick={() => onAddColumn()}
+				ariaLabel="New column"
+				onClick={() => onClick()}
 			/>
 		</div>
 	);
