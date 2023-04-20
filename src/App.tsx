@@ -32,7 +32,7 @@ import {
 import { sortRows } from "./services/tableState/sort";
 
 import "./app.css";
-import { updateCell } from "./services/tableState/cell";
+import { updateHeaderCell, updateBodyCell } from "./services/tableState/cell";
 import { addRow, deleteRow } from "./services/tableState/row";
 import { useDidMountEffect } from "./services/hooks";
 import { useId } from "./services/random/hooks";
@@ -107,7 +107,18 @@ export default function App({ onSaveTableState }: Props) {
 		dispatch(updateSortTime());
 	}
 
-	function handleCellContentChange(
+	function handleHeaderCellContentChange(cellId: string, value: string) {
+		logFunc(shouldDebug, FILE_NAME, "handleCellContentChange", {
+			cellId,
+			markdown: value,
+		});
+
+		setTableState((prevState) =>
+			updateHeaderCell(prevState, cellId, "markdown", value)
+		);
+	}
+
+	function handleBodyCellContentChange(
 		cellId: string,
 		rowId: string,
 		value: string
@@ -119,7 +130,7 @@ export default function App({ onSaveTableState }: Props) {
 		});
 
 		setTableState((prevState) =>
-			updateCell(prevState, cellId, rowId, "markdown", value)
+			updateBodyCell(prevState, cellId, rowId, "markdown", value)
 		);
 	}
 
@@ -135,7 +146,7 @@ export default function App({ onSaveTableState }: Props) {
 		});
 
 		setTableState((prevState) =>
-			updateCell(prevState, cellId, rowId, "dateTime", value)
+			updateBodyCell(prevState, cellId, rowId, "dateTime", value)
 		);
 	}
 
@@ -448,7 +459,7 @@ export default function App({ onSaveTableState }: Props) {
 														handleWrapContentToggle
 													}
 													onNameChange={
-														handleCellContentChange
+														handleHeaderCellContentChange
 													}
 													onCurrencyChange={
 														handleCurrencyChange
@@ -539,7 +550,7 @@ export default function App({ onSaveTableState }: Props) {
 														handleRemoveCellFromTag
 													}
 													onContentChange={
-														handleCellContentChange
+														handleBodyCellContentChange
 													}
 													onTagColorChange={
 														handleTagChangeColor

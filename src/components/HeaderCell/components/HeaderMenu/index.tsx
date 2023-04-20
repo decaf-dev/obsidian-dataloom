@@ -36,7 +36,7 @@ interface Props {
 	onSortClick: (columnId: string, sortDir: SortDir) => void;
 	onDeleteClick: (columnId: string) => void;
 	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
-	onNameChange: (cellId: string, rowId: string, value: string) => void;
+	onNameChange: (cellId: string, value: string) => void;
 	onCurrencyChange: (columnId: string, value: CurrencyType) => void;
 	onDateFormatChange: (columnId: string, value: DateFormat) => void;
 	onClose: () => void;
