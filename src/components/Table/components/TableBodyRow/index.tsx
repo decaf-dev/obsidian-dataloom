@@ -83,7 +83,7 @@ export const TableBodyRow = ({ row }: TableRowProps) => {
 				...prevState,
 				model: {
 					...prevState.model,
-					rows: rowsCopy,
+					bodyRows: rowsCopy,
 					columns: columns.map((column) => {
 						//If we're sorting, reset the sort
 						return {
