@@ -1,2 +1,3 @@
-.NLT__row-menu {
+.NLT__row-options {
+    padding-left: var(--nlt-spacing--md);
 }

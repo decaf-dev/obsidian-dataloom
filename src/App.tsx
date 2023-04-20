@@ -565,18 +565,12 @@ export default function App({ onSaveTableState }: Props) {
 									{
 										id: menuCellId,
 										content: (
-											<div
-												style={{
-													paddingLeft: "10px",
-												}}
-											>
-												<RowOptions
-													rowId={rowId}
-													onDeleteClick={
-														handleRowDeleteClick
-													}
-												/>
-											</div>
+											<RowOptions
+												rowId={rowId}
+												onDeleteClick={
+													handleRowDeleteClick
+												}
+											/>
 										),
 									},
 								],
