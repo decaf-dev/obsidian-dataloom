@@ -6,7 +6,7 @@ interface Props {}
 
 export default function FunctionCell({}: Props) {
 	return (
-		<div className="NLT__function-cell">
+		<div className="NLT__function-cell NLT__selectable">
 			<Text value="Calculate" variant="faint" />
 		</div>
 	);

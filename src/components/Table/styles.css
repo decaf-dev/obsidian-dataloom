@@ -82,12 +82,10 @@
 }
 
 .NLT__tfoot > .NLT__tr:first-child > .NLT__td {
-	background-color: var(--background-secondary);
-		border-bottom: 1px solid var(--background-modifier-border) !important;
+	border-bottom: 1px solid var(--background-modifier-border) !important;
 }
 
 .NLT__tfoot > .NLT__tr:first-child > .NLT__td:last-child {
-	background-color: var(--background-primary) !important;
 	border-bottom: 0 !important;
-		border-left: 1px solid var(--background-modifier-border) !important;
+	border-left: 1px solid var(--background-modifier-border) !important;
 }
