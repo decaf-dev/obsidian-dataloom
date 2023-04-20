@@ -119,7 +119,8 @@ export const deleteColumn = (
 	prevState: TableState,
 	columnId: string
 ): TableState => {
-	const { bodyCells, headerCells, columns, tags } = prevState.model;
+	const { bodyCells, headerCells, footerCells, columns, tags } =
+		prevState.model;
 	return {
 		...prevState,
 		model: {
@@ -129,6 +130,9 @@ export const deleteColumn = (
 				(cell) => cell.columnId !== columnId
 			),
 			bodyCells: bodyCells.filter((cell) => cell.columnId !== columnId),
+			footerCells: footerCells.filter(
+				(cell) => cell.columnId !== columnId
+			),
 			tags: tags.filter((tag) => tag.columnId !== columnId),
 		},
 	};
