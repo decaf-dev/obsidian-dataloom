@@ -19,7 +19,6 @@ import Stack from "../Stack";
 import {
 	getShortDisplayNameForFunctionType,
 	isGeneralFunction,
-	isNumberFunction,
 } from "src/services/tableState/utils";
 import { getNumberFunctionContent } from "./services/numberFunction";
 import { getGeneralFunctionContent } from "./services/generalFunction";
@@ -76,7 +75,9 @@ export default function FunctionCell({
 			value
 		);
 	} else {
-		const cellValues = columnCells.map((cell) => parseFloat(cell.markdown));
+		const cellValues = columnCells
+			.filter((cell) => cell.markdown !== "")
+			.map((cell) => parseFloat(cell.markdown));
 		content = getNumberFunctionContent(
 			cellValues,
 			cellType,
