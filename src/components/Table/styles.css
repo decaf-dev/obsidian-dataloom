@@ -80,3 +80,12 @@
 .NLT__tfoot > .NLT__tr > .NLT__td {
 	border: 0 !important;
 }
+
+.NLT__tfoot > .NLT__tr:first-child > .NLT__td {
+	border-bottom: 1px solid var(--background-modifier-border) !important;
+}
+
+.NLT__tfoot > .NLT__tr:first-child > .NLT__td:last-child {
+	border-bottom: 0 !important;
+	border-left: 1px solid var(--background-modifier-border) !important;
+}

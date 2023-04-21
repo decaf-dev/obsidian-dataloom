@@ -1,28 +1,56 @@
 import { ColumnIdError } from "./error";
 import StateFactory from "./StateFactory";
 import { CellType, Column, TableState, SortDir } from "./types";
-import { sortCellsForRender } from "./utils";
 
 export const addColumn = (prevState: TableState): TableState => {
-	const { cells, columns, rows } = prevState.model;
+	const {
+		headerCells,
+		bodyCells,
+		footerCells,
+		columns,
+		headerRows,
+		bodyRows,
+		footerRows,
+	} = prevState.model;
+
+	//Add column
 	const columnsCopy = [...columns];
 	const newColumn = StateFactory.createColumn();
 	columnsCopy.push(newColumn);
 
-	let cellsCopy = [...cells];
+	//Add header cells
+	const headerCellsCopy = [...headerCells];
 
-	rows.forEach((row, i) => {
-		cellsCopy.push(StateFactory.createCell(newColumn.id, row.id, i === 0));
+	headerRows.forEach((row, i) => {
+		headerCellsCopy.push(
+			StateFactory.createHeaderCell(newColumn.id, row.id)
+		);
 	});
 
-	cellsCopy = sortCellsForRender(columnsCopy, rows, cellsCopy);
+	//Add bdoy cells
+	const bodyCellsCopy = [...bodyCells];
+
+	bodyRows.forEach((row, i) => {
+		bodyCellsCopy.push(StateFactory.createBodyCell(newColumn.id, row.id));
+	});
+
+	//Add footer cells
+	const footerCellsCopy = [...footerCells];
+
+	footerRows.forEach((row, i) => {
+		footerCellsCopy.push(
+			StateFactory.createFooterCell(newColumn.id, row.id)
+		);
+	});
 
 	return {
 		...prevState,
 		model: {
 			...prevState.model,
 			columns: columnsCopy,
-			cells: cellsCopy,
+			headerCells: headerCellsCopy,
+			bodyCells: bodyCellsCopy,
+			footerCells: footerCellsCopy,
 		},
 	};
 };
@@ -91,13 +119,20 @@ export const deleteColumn = (
 	prevState: TableState,
 	columnId: string
 ): TableState => {
-	const { cells, columns, tags } = prevState.model;
+	const { bodyCells, headerCells, footerCells, columns, tags } =
+		prevState.model;
 	return {
 		...prevState,
 		model: {
 			...prevState.model,
 			columns: columns.filter((column) => column.id !== columnId),
-			cells: cells.filter((cell) => cell.columnId !== columnId),
+			headerCells: headerCells.filter(
+				(cell) => cell.columnId !== columnId
+			),
+			bodyCells: bodyCells.filter((cell) => cell.columnId !== columnId),
+			footerCells: footerCells.filter(
+				(cell) => cell.columnId !== columnId
+			),
 			tags: tags.filter((tag) => tag.columnId !== columnId),
 		},
 	};
@@ -108,7 +143,7 @@ export const changeColumnType = (
 	columnId: string,
 	newType: CellType
 ): TableState => {
-	const { columns, tags } = prevState.model;
+	const { columns, tags, bodyCells } = prevState.model;
 	const column = columns.find((column) => column.id === columnId);
 	if (!column) throw new ColumnIdError(columnId);
 
@@ -131,11 +166,8 @@ export const changeColumnType = (
 			};
 		});
 	} else if (newType === CellType.TAG || CellType.MULTI_TAG) {
-		const cells = prevState.model.cells.filter(
-			(cell) =>
-				cell.columnId === columnId &&
-				cell.markdown !== "" &&
-				!cell.isHeader
+		const cells = bodyCells.filter(
+			(cell) => cell.columnId === columnId && cell.markdown !== ""
 		);
 		cells.forEach((cell) => {
 			cell.markdown.split(",").map((markdown, i) => {

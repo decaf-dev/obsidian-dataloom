@@ -13,7 +13,7 @@ interface Props {
 	rowId: string;
 	columnType: CellType;
 	columnSortDir: SortDir;
-	onColumnNameChange: (cellId: string, rowId: string, value: string) => void;
+	onColumnNameChange: (cellId: string, value: string) => void;
 	onSortClick: (value: SortDir) => void;
 	onSubmenuChange: (value: SubmenuType) => void;
 }
@@ -36,7 +36,7 @@ export default function BaseMenu({
 						autoFocus
 						value={columnName}
 						onChange={(e) =>
-							onColumnNameChange(cellId, rowId, e.target.value)
+							onColumnNameChange(cellId, e.target.value)
 						}
 					/>
 				</Padding>

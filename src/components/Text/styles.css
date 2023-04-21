@@ -10,3 +10,7 @@
 .NLT__text-faint {
     color: var(--text-faint);
 }
+
+.NLT__text-semibold {
+    font-weight: var(--font-semibold);
+}

@@ -2,7 +2,7 @@ import { TextFileView, WorkspaceLeaf } from "obsidian";
 import { createRoot, Root } from "react-dom/client";
 import { Provider } from "react-redux";
 import App from "./App";
-import Json from "./services/file/Json";
+import Json from "./services/io/Json";
 import { store } from "./services/redux/store";
 import { TableState } from "./services/tableState/types";
 import TableStateProvider from "./services/tableState/useTableState";

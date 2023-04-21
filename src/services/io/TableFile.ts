@@ -53,7 +53,7 @@ export default class TableFile {
 	) {
 		try {
 			const filePath = await getAvailableTablePath(params);
-			const tableState = mockTableState(1, 2);
+			const tableState = mockTableState(1, 1);
 			const serialized = Json.serializeTableState(tableState);
 			return await FileOperations.createFile(filePath, serialized);
 		} catch (err) {

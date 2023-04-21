@@ -1,7 +1,7 @@
 import "./styles.css";
 
 interface Props {
-	variant?: "faint" | "muted" | "normal";
+	variant?: "semibold" | "faint" | "muted" | "normal";
 	size?: "xs" | "sm" | "md" | "lg" | "xl";
 	value: string;
 }
@@ -11,6 +11,7 @@ export default function Text({ value, variant, size = "sm" }: Props) {
 
 	if (variant == "faint") className += " NLT__text-faint";
 	if (variant == "muted") className += " NLT__text-muted";
+	if (variant == "semibold") className += " NLT__text-semibold";
 
 	let fontSize = "";
 	if (size === "xs") {

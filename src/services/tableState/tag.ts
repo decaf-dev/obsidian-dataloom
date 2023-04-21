@@ -13,7 +13,7 @@ export const addNewTag = (
 	color: Color,
 	canAddMultiple: boolean
 ) => {
-	const { tags, rows } = prevState.model;
+	const { tags, bodyRows } = prevState.model;
 
 	const tagsCopy = [...tags];
 
@@ -32,7 +32,7 @@ export const addNewTag = (
 		model: {
 			...prevState.model,
 			tags: tagsCopy,
-			rows: updateLastEditedTime(rows, rowId),
+			bodyRows: updateLastEditedTime(bodyRows, rowId),
 		},
 	};
 };
@@ -43,7 +43,7 @@ export const removeCellFromTag = (
 	rowId: string,
 	tagId: string
 ) => {
-	const { tags, rows } = prevState.model;
+	const { tags, bodyRows } = prevState.model;
 
 	const tagsCopy = [...tags];
 	const tag = tagsCopy.find((t) => t.id === tagId);
@@ -59,7 +59,7 @@ export const removeCellFromTag = (
 			...prevState.model,
 			tags: tagsCopy,
 		},
-		rows: updateLastEditedTime(rows, rowId),
+		bodyRows: updateLastEditedTime(bodyRows, rowId),
 	};
 };
 
@@ -70,7 +70,7 @@ export const addCellToTag = (
 	tagId: string,
 	canAddMultiple: boolean
 ): TableState => {
-	const { tags, rows } = prevState.model;
+	const { tags, bodyRows } = prevState.model;
 	const tagsCopy = [...tags];
 
 	if (!canAddMultiple) {
@@ -93,7 +93,7 @@ export const addCellToTag = (
 		model: {
 			...prevState.model,
 			tags: tagsCopy,
-			rows: updateLastEditedTime(rows, rowId),
+			bodyRows: updateLastEditedTime(bodyRows, rowId),
 		},
 	};
 };

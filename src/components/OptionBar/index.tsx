@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { SortDir, Cell, Column } from "src/services/tableState/types";
+import { SortDir, Column, HeaderCell } from "src/services/tableState/types";
 
 import { useAppSelector } from "src/services/redux/hooks";
 import Stack from "../Stack";
@@ -39,51 +39,48 @@ const SortBubbleList = ({ bubbles, onRemoveClick }: SortButtonListProps) => {
 };
 
 interface Props {
-	cells: Cell[];
+	headerCells: HeaderCell[];
 	columns: Column[];
 	onSortRemoveClick: (columnId: string) => void;
 	onColumnToggle: (columnId: string) => void;
 }
 export default function OptionBar({
-	cells,
+	headerCells,
 	columns,
 	onSortRemoveClick,
 	onColumnToggle,
 }: Props) {
 	const bubbles = useMemo(() => {
-		return cells
-			.filter((c) => c.isHeader)
-			.filter((c) => {
-				const columnId = c.columnId;
+		return headerCells
+			.filter((cell) => {
+				const columnId = cell.columnId;
 				const column = columns.find((c) => c.id == columnId);
 				if (!column) throw new ColumnIdError(columnId);
 				return column.sortDir !== SortDir.NONE;
 			})
-			.map((c) => {
-				const columnId = c.columnId;
+			.map((cell) => {
+				const columnId = cell.columnId;
 				const column = columns.find((c) => c.id == columnId);
 				if (!column) throw new ColumnIdError(columnId);
 				return {
-					columnId: c.columnId,
-					markdown: c.markdown,
+					columnId: cell.columnId,
+					markdown: cell.markdown,
 					sortDir: column.sortDir,
 				};
 			});
-	}, [cells, columns]);
+	}, [headerCells, columns]);
 
 	const toggleColumns = useMemo(() => {
 		return columns.map((column) => {
-			const headerCell = cells.find(
-				(cell) => cell.isHeader && cell.columnId == column.id
-			);
-			if (!headerCell) throw new CellNotFoundError();
+			const cell = headerCells.find((cell) => cell.columnId == column.id);
+			if (!cell) throw new CellNotFoundError();
 			return {
 				id: column.id,
-				name: headerCell.markdown,
+				name: cell.markdown,
 				isVisible: column.isVisible,
 			};
 		});
-	}, [cells, columns]);
+	}, [headerCells, columns]);
 
 	return (
 		<div className="NLT__option-bar">
