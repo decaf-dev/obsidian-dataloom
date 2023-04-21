@@ -6,7 +6,7 @@ export const hashString = (value: string) => {
 	return uuidv5(value, NAMESPACE);
 };
 
-export const normalizeDecimal = (value: number) => {
+export const round2Digits = (value: number) => {
 	if (value.toString().includes(".")) return parseFloat(value.toFixed(2));
 	return value;
 };

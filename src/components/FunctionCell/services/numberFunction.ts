@@ -12,7 +12,7 @@ import {
 	CurrencyType,
 	NumberFunction,
 } from "src/services/tableState/types";
-import { normalizeDecimal } from "./utils";
+import { round2Digits } from "./utils";
 
 export const getNumberFunctionContent = (
 	values: number[],
@@ -28,17 +28,17 @@ export const getNumberFunctionContent = (
 
 const getNumberFunctionValue = (values: number[], type: NumberFunction) => {
 	if (type === NumberFunction.AVG) {
-		return normalizeDecimal(getAverage(values));
+		return round2Digits(getAverage(values));
 	} else if (type === NumberFunction.MAX) {
 		return getMaximum(values);
 	} else if (type === NumberFunction.MIN) {
 		return getMinimum(values);
 	} else if (type === NumberFunction.RANGE) {
-		return normalizeDecimal(getRange(values));
+		return round2Digits(getRange(values));
 	} else if (type === NumberFunction.SUM) {
-		return normalizeDecimal(getSum(values));
+		return round2Digits(getSum(values));
 	} else if (type === NumberFunction.MEDIAN) {
-		return normalizeDecimal(getMedian(values));
+		return round2Digits(getMedian(values));
 	} else {
 		throw new Error("Unhandled number function");
 	}

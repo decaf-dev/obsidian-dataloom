@@ -11,8 +11,10 @@ import {
 	BodyRow,
 	CellType,
 	CurrencyType,
+	DateFormat,
 	FunctionType,
 	GeneralFunction,
+	Tag,
 } from "src/services/tableState/types";
 import { closeTopLevelMenu, openMenu } from "src/services/menu/menuSlice";
 import Stack from "../Stack";
@@ -26,23 +28,27 @@ import { getGeneralFunctionContent } from "./services/generalFunction";
 interface Props {
 	columnId: string;
 	cellId: string;
-	value: FunctionType;
+	functionType: FunctionType;
+	tags: Tag[];
 	bodyRows: BodyRow[];
 	bodyCells: BodyCell[];
 	currencyType: CurrencyType;
 	cellType: CellType;
-	onClick: (cellId: string, value: FunctionType) => void;
+	dateFormat: DateFormat;
+	onFunctionTypeChange: (cellId: string, value: FunctionType) => void;
 }
 
 export default function FunctionCell({
 	columnId,
 	cellId,
+	tags,
 	bodyCells,
+	dateFormat,
 	bodyRows,
-	value,
+	functionType,
 	currencyType,
 	cellType,
-	onClick,
+	onFunctionTypeChange,
 }: Props) {
 	const [menu, menuPosition] = useMenu(MenuLevel.ONE);
 	const shouldOpenMenu = useAppSelector((state) =>
@@ -50,8 +56,8 @@ export default function FunctionCell({
 	);
 	const dispatch = useAppDispatch();
 
-	function handleClick(value: FunctionType) {
-		onClick(cellId, value);
+	function handleFunctionTypeClick(value: FunctionType) {
+		onFunctionTypeChange(cellId, value);
 		dispatch(closeTopLevelMenu());
 	}
 
@@ -67,12 +73,15 @@ export default function FunctionCell({
 
 	let content = "";
 
-	if (isGeneralFunction(value)) {
+	if (isGeneralFunction(functionType)) {
+		const columnTags = tags.filter((tag) => tag.columnId === columnId);
 		content = getGeneralFunctionContent(
 			bodyRows,
 			columnCells,
+			columnTags,
 			cellType,
-			value
+			functionType,
+			dateFormat
 		);
 	} else {
 		const cellValues = columnCells
@@ -82,7 +91,7 @@ export default function FunctionCell({
 			cellValues,
 			cellType,
 			currencyType,
-			value
+			functionType
 		);
 	}
 
@@ -93,13 +102,15 @@ export default function FunctionCell({
 				ref={containerRef}
 				onClick={() => dispatch(openMenu(menu))}
 			>
-				{value === GeneralFunction.NONE && (
+				{functionType === GeneralFunction.NONE && (
 					<Text value="Calculate" variant="faint" />
 				)}
-				{value !== GeneralFunction.NONE && (
+				{functionType !== GeneralFunction.NONE && (
 					<Stack spacing="sm">
 						<Text
-							value={getShortDisplayNameForFunctionType(value)}
+							value={getShortDisplayNameForFunctionType(
+								functionType
+							)}
 							variant="muted"
 						/>
 						<Text value={content} variant="semibold" />
@@ -112,8 +123,8 @@ export default function FunctionCell({
 				cellType={cellType}
 				left={left + 25}
 				isOpen={shouldOpenMenu}
-				value={value}
-				onClick={handleClick}
+				value={functionType}
+				onClick={handleFunctionTypeClick}
 			/>
 		</>
 	);
