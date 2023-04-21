@@ -28,6 +28,7 @@ import { getGeneralFunctionContent } from "./services/generalFunction";
 interface Props {
 	columnId: string;
 	cellId: string;
+	width: string;
 	functionType: FunctionType;
 	tags: Tag[];
 	bodyRows: BodyRow[];
@@ -41,6 +42,7 @@ interface Props {
 export default function FunctionCell({
 	columnId,
 	cellId,
+	width,
 	tags,
 	bodyCells,
 	dateFormat,
@@ -99,6 +101,9 @@ export default function FunctionCell({
 		<>
 			<div
 				className="NLT__function-cell NLT__selectable"
+				style={{
+					width,
+				}}
 				ref={containerRef}
 				onClick={() => dispatch(openMenu(menu))}
 			>

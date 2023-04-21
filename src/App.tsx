@@ -615,6 +615,7 @@ export default function App({ onSaveTableState }: Props) {
 												type,
 												currencyType,
 												dateFormat,
+												width,
 											} = column;
 											const cell = footerCells.find(
 												(cell) =>
@@ -641,6 +642,7 @@ export default function App({ onSaveTableState }: Props) {
 												content: (
 													<FunctionCell
 														columnId={columnId}
+														width={width}
 														tags={tags}
 														cellId={cellId}
 														currencyType={
