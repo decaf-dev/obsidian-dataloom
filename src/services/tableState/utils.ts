@@ -7,30 +7,44 @@ import {
 	NumberFunction,
 } from "./types";
 
-export const getDisplayNameForFunctionType = (value: FunctionType) => {
-	if (Object.values(GeneralFunction).includes(value as GeneralFunction)) {
-		switch (value) {
-			case GeneralFunction.COUNT_ALL:
-				return "Count";
-			case GeneralFunction.COUNT_NOT_EMPTY:
-				return "Not empty";
-			case GeneralFunction.COUNT_VALUES:
-				return "Values";
-			case GeneralFunction.COUNT_EMPTY:
-				return "Empty";
-			case GeneralFunction.COUNT_UNIQUE:
-				return "Unique";
-			case GeneralFunction.NONE:
-				return "None";
-			case GeneralFunction.PERCENT_EMPTY:
-				return "Empty";
-			case GeneralFunction.PERCENT_NOT_EMPTY:
-				return "Not empty";
-			default:
-				return "";
-		}
-	} else {
-		return getDisplayNameForNumberFunction(value as NumberFunction);
+export const isGeneralFunction = (
+	value: GeneralFunction | NumberFunction
+): value is GeneralFunction => {
+	return Object.values(GeneralFunction).includes(value as GeneralFunction);
+};
+
+export const isNumberFunction = (
+	value: GeneralFunction | NumberFunction
+): value is NumberFunction => {
+	return Object.values(NumberFunction).includes(value as NumberFunction);
+};
+
+export const getShortDisplayNameForFunctionType = (value: FunctionType) => {
+	if (isGeneralFunction(value))
+		return getShortDisplayNameForGeneralFunction(value);
+	return getDisplayNameForNumberFunction(value);
+};
+
+const getShortDisplayNameForGeneralFunction = (value: GeneralFunction) => {
+	switch (value) {
+		case GeneralFunction.COUNT_ALL:
+			return "Count";
+		case GeneralFunction.COUNT_NOT_EMPTY:
+			return "Not empty";
+		case GeneralFunction.COUNT_VALUES:
+			return "Values";
+		case GeneralFunction.COUNT_EMPTY:
+			return "Empty";
+		case GeneralFunction.COUNT_UNIQUE:
+			return "Unique";
+		case GeneralFunction.NONE:
+			return "None";
+		case GeneralFunction.PERCENT_EMPTY:
+			return "Empty";
+		case GeneralFunction.PERCENT_NOT_EMPTY:
+			return "Not empty";
+		default:
+			return "";
 	}
 };
 

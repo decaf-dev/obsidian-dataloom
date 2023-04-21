@@ -609,7 +609,11 @@ export default function App({ onSaveTableState }: Props) {
 									id: row.id,
 									cells: [
 										...visibleColumns.map((column) => {
-											const { type } = column;
+											const {
+												id: columnId,
+												type,
+												currencyType,
+											} = column;
 											const cell = footerCells.find(
 												(cell) =>
 													cell.rowId == row.id &&
@@ -623,7 +627,13 @@ export default function App({ onSaveTableState }: Props) {
 												id: cell.id,
 												content: (
 													<FunctionCell
+														columnId={columnId}
 														cellId={cellId}
+														currencyType={
+															currencyType
+														}
+														bodyCells={bodyCells}
+														bodyRows={bodyRows}
 														value={functionType}
 														cellType={type}
 														onClick={

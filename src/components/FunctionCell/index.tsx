@@ -7,25 +7,41 @@ import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
 import { isMenuOpen } from "src/services/menu/utils";
 import FunctionMenu from "./components/FunctionMenu";
 import {
+	BodyCell,
+	BodyRow,
 	CellType,
+	CurrencyType,
 	FunctionType,
 	GeneralFunction,
-	NumberFunction,
 } from "src/services/tableState/types";
 import { closeTopLevelMenu, openMenu } from "src/services/menu/menuSlice";
 import Stack from "../Stack";
-import { getDisplayNameForFunctionType } from "src/services/tableState/utils";
+import {
+	getShortDisplayNameForFunctionType,
+	isGeneralFunction,
+	isNumberFunction,
+} from "src/services/tableState/utils";
+import { getNumberFunctionContent } from "./services/numberFunction";
+import { getGeneralFunctionContent } from "./services/generalFunction";
 
 interface Props {
+	columnId: string;
 	cellId: string;
 	value: FunctionType;
+	bodyRows: BodyRow[];
+	bodyCells: BodyCell[];
+	currencyType: CurrencyType;
 	cellType: CellType;
 	onClick: (cellId: string, value: FunctionType) => void;
 }
 
 export default function FunctionCell({
+	columnId,
 	cellId,
+	bodyCells,
+	bodyRows,
 	value,
+	currencyType,
 	cellType,
 	onClick,
 }: Props) {
@@ -48,21 +64,27 @@ export default function FunctionCell({
 		menuTop = top - 200;
 	}
 
-	let content = "25";
-	if (value === GeneralFunction.COUNT_ALL) {
-	} else if (value === GeneralFunction.COUNT_EMPTY) {
-	} else if (value === GeneralFunction.COUNT_NOT_EMPTY) {
-	} else if (value === GeneralFunction.COUNT_UNIQUE) {
-	} else if (value === GeneralFunction.COUNT_VALUES) {
-	} else if (value === GeneralFunction.PERCENT_EMPTY) {
-	} else if (value === GeneralFunction.PERCENT_NOT_EMPTY) {
-	} else if (value === NumberFunction.AVG) {
-	} else if (value === NumberFunction.MAX) {
-	} else if (value === NumberFunction.MIN) {
-	} else if (value === NumberFunction.RANGE) {
-	} else if (value === NumberFunction.SUM) {
-	} else if (value === NumberFunction.MEDIAN) {
+	const columnCells = bodyCells.filter((cell) => cell.columnId === columnId);
+
+	let content = "";
+
+	if (isGeneralFunction(value)) {
+		content = getGeneralFunctionContent(
+			bodyRows,
+			columnCells,
+			cellType,
+			value
+		);
+	} else {
+		const cellValues = columnCells.map((cell) => parseFloat(cell.markdown));
+		content = getNumberFunctionContent(
+			cellValues,
+			cellType,
+			currencyType,
+			value
+		);
 	}
+
 	return (
 		<>
 			<div
@@ -76,7 +98,7 @@ export default function FunctionCell({
 				{value !== GeneralFunction.NONE && (
 					<Stack spacing="sm">
 						<Text
-							value={getDisplayNameForFunctionType(value)}
+							value={getShortDisplayNameForFunctionType(value)}
 							variant="muted"
 						/>
 						<Text value={content} variant="semibold" />
