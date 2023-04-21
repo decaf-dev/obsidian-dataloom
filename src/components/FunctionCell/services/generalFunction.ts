@@ -5,6 +5,7 @@ import {
 	CellType,
 	GeneralFunction,
 } from "src/services/tableState/types";
+import { normalizeDecimal } from "./utils";
 
 export const getGeneralFunctionContent = (
 	bodyRows: BodyRow[],
@@ -85,17 +86,19 @@ const countValues = (columnCells: BodyCell[], cellType: CellType) => {
 const percentEmpty = (columnCells: BodyCell[], cellType: CellType) => {
 	const percent =
 		(countEmpty(columnCells, cellType) / columnCells.length) * 100;
-	return percent + "%";
+	const normalized = normalizeDecimal(percent);
+	return normalized + "%";
 };
 
 const percentNotEmpty = (columnCells: BodyCell[], cellType: CellType) => {
 	const percent =
 		(countNotEmpty(columnCells, cellType) / columnCells.length) * 100;
-	return percent + "%";
+	const normalized = normalizeDecimal(percent);
+	return normalized + "%";
 };
 
 const countUniqueCellValues = (cell: BodyCell, cellType: CellType) => {
-	//TODO unqiue
+	//TODO unique
 	return 1;
 };
 
