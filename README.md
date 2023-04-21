@@ -57,6 +57,7 @@ Notion-Like Tables is your premiere tool for creating and managing tabular data 
 -   Drag and drop columns - drag a column above another column to have them swap positions
 -   Drag and drop rows - drag a row to above another row to have them swap positions
 -   Sticky headers - headers will remain visible as you scroll
+-   Function cell - allows you to make calculations based on column data. If the cell type is a number cell or currency cell, you have arithmetic operations such as min, max, range, median, sum, average
 
 ## Settings
 
