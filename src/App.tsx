@@ -90,6 +90,7 @@ export default function App({ onSaveTableState }: Props) {
 	function handleNewRowClick() {
 		logFunc(shouldDebug, FILE_NAME, "handleNewRowClick");
 		setTableState((prevState) => addRow(prevState));
+		dispatch(updateSortTime());
 	}
 
 	function handleHeaderTypeClick(columnId: string, type: CellType) {
