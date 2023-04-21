@@ -8,6 +8,7 @@ import "./styles.css";
 
 interface Props {
 	iconType?: IconType;
+	ariaLabel?: string;
 	name: string;
 	value?: string;
 	isSelected?: boolean;
@@ -16,6 +17,7 @@ interface Props {
 
 export default function MenuItem({
 	iconType,
+	ariaLabel,
 	name,
 	value,
 	onClick,
@@ -25,7 +27,7 @@ export default function MenuItem({
 	if (isSelected) className += " NLT__selected";
 
 	return (
-		<div className={className} onClick={onClick}>
+		<div className={className} aria-label={ariaLabel} onClick={onClick}>
 			<Flex justify="space-between">
 				<Stack>
 					{iconType !== undefined && <Icon type={iconType} />}

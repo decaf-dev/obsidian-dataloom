@@ -3,12 +3,12 @@ import { useEffect } from "react";
 import Table from "./components/Table";
 import RowOptions from "./components/RowOptions";
 import OptionBar from "./components/OptionBar";
-import Button from "./components/Button";
 
 import {
 	CellType,
 	CurrencyType,
 	DateFormat,
+	FunctionType,
 	SortDir,
 } from "./services/tableState/types";
 import { logFunc } from "./services/debug";
@@ -32,7 +32,11 @@ import {
 import { sortRows } from "./services/tableState/sort";
 
 import "./app.css";
-import { updateHeaderCell, updateBodyCell } from "./services/tableState/cell";
+import {
+	updateHeaderCell,
+	updateBodyCell,
+	updateFooterCell,
+} from "./services/tableState/cell";
 import { addRow, deleteRow } from "./services/tableState/row";
 import { useDidMountEffect } from "./services/hooks";
 import { useId } from "./services/random/hooks";
@@ -48,6 +52,8 @@ import BodyCell from "./components/BodyCell";
 import AddColumnButton from "./components/NewColumnButton";
 import NewRowButton from "./components/NewRowButton";
 import NewColumnButton from "./components/NewColumnButton";
+import { GeneralFunction } from "./services/tableState/types";
+import { NumberFunction } from "./services/tableState/types";
 
 const FILE_NAME = "App";
 
@@ -147,6 +153,20 @@ export default function App({ onSaveTableState }: Props) {
 
 		setTableState((prevState) =>
 			updateBodyCell(prevState, cellId, rowId, "dateTime", value)
+		);
+	}
+
+	function handleFunctionTypeChange(
+		cellId: string,
+		functionType: FunctionType
+	) {
+		logFunc(shouldDebug, FILE_NAME, "handleFunctionTypeChange", {
+			cellId,
+			functionType,
+		});
+
+		setTableState((prevState) =>
+			updateFooterCell(prevState, cellId, "functionType", functionType)
 		);
 	}
 
@@ -589,6 +609,7 @@ export default function App({ onSaveTableState }: Props) {
 									id: row.id,
 									cells: [
 										...visibleColumns.map((column) => {
+											const { type } = column;
 											const cell = footerCells.find(
 												(cell) =>
 													cell.rowId == row.id &&
@@ -596,9 +617,20 @@ export default function App({ onSaveTableState }: Props) {
 											);
 											if (!cell)
 												throw new CellNotFoundError();
+											const { id: cellId, functionType } =
+												cell;
 											return {
 												id: cell.id,
-												content: <FunctionCell />,
+												content: (
+													<FunctionCell
+														cellId={cellId}
+														value={functionType}
+														cellType={type}
+														onClick={
+															handleFunctionTypeChange
+														}
+													/>
+												),
 											};
 										}),
 										{

@@ -54,14 +54,16 @@ export enum GeneralFunction {
 	PERCENT_NOT_EMPTY = "percent_not_empty",
 }
 
-export enum NumberCellFunction {
+export enum NumberFunction {
 	SUM = "sum",
 	AVG = "avg",
 	MIN = "min",
 	MAX = "max",
-	MEDIAM = "median",
+	MEDIAN = "median",
 	RANGE = "range",
 }
+
+export type FunctionType = GeneralFunction | NumberFunction;
 
 export interface Column633 {
 	id: string;
@@ -124,7 +126,7 @@ export interface BodyCell extends Cell {
 }
 
 export interface FooterCell extends Cell {
-	functionType: GeneralFunction | NumberCellFunction;
+	functionType: FunctionType;
 }
 
 export interface Cell633 {

@@ -1,5 +1,5 @@
 import { updateLastEditedTime } from "./row";
-import { BodyCell, HeaderCell, TableState } from "./types";
+import { BodyCell, FooterCell, HeaderCell, TableState } from "./types";
 
 export const updateHeaderCell = (
 	prevState: TableState,
@@ -47,6 +47,30 @@ export const updateBodyCell = (
 				return cell;
 			}),
 			bodyRows: updateLastEditedTime(bodyRows, rowId),
+		},
+	};
+};
+
+export const updateFooterCell = (
+	prevState: TableState,
+	cellId: string,
+	key: keyof FooterCell,
+	value: unknown
+) => {
+	const { footerCells } = prevState.model;
+	return {
+		...prevState,
+		model: {
+			...prevState.model,
+			footerCells: footerCells.map((cell) => {
+				if (cell.id === cellId) {
+					return {
+						...cell,
+						[key as keyof FooterCell]: value,
+					};
+				}
+				return cell;
+			}),
 		},
 	};
 };
