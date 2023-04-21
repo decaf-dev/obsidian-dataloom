@@ -63,7 +63,7 @@ export default function FunctionCell({
 		dispatch(closeTopLevelMenu());
 	}
 
-	const { position, containerRef } = menuPosition;
+	const { position, positionRef } = menuPosition;
 	const { top, left } = position;
 
 	let menuTop = top - 100;
@@ -104,7 +104,7 @@ export default function FunctionCell({
 				style={{
 					width,
 				}}
-				ref={containerRef}
+				ref={positionRef}
 				onClick={() => dispatch(openMenu(menu))}
 			>
 				{functionType === GeneralFunction.NONE && (

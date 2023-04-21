@@ -242,7 +242,7 @@ export default function BodyCell({
 
 	return (
 		<div
-			ref={menuPosition.containerRef}
+			ref={menuPosition.positionRef}
 			onClick={handleCellClick}
 			onContextMenu={handleCellContextClick}
 			className={className}

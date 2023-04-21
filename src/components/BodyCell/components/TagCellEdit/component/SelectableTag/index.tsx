@@ -53,12 +53,12 @@ export default function SelectableTag({
 		dispatch(closeAllMenus());
 	}
 
-	const { position, containerRef } = menuPosition;
+	const { position, positionRef } = menuPosition;
 	const { top, left, width } = position;
 	return (
 		<>
 			<div
-				ref={containerRef}
+				ref={positionRef}
 				className="NLT__selectable-tag NLT__selectable"
 				onClick={() => onClick(id)}
 			>

@@ -83,6 +83,7 @@ export default function Menu({
 						<div
 							className="NLT__menu-container"
 							style={{
+								visibility: "hidden",
 								top: numToPx(top),
 								left: numToPx(left),
 								maxWidth: maxW,

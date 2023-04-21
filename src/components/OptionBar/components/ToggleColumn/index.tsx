@@ -24,7 +24,7 @@ export default function ToggleColumn({ columns, onToggle }: Props) {
 	const { top, left, width } = menuPosition.position;
 	return (
 		<>
-			<div className="NLT__toggle-column" ref={menuPosition.containerRef}>
+			<div className="NLT__toggle-column" ref={menuPosition.positionRef}>
 				<Button
 					icon={<Icon type={IconType.VIEW_COLUMN} />}
 					ariaLabel="Toggle column"

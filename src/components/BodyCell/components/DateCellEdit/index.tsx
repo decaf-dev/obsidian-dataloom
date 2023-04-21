@@ -120,7 +120,7 @@ export default function DateCellEdit({
 						/>
 					</Padding>
 					<div
-						ref={menuPosition.containerRef}
+						ref={menuPosition.positionRef}
 						style={{ width: "100%" }}
 					>
 						<MenuItem

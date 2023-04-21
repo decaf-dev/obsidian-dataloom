@@ -123,7 +123,7 @@ export default function HeaderCell({
 	return (
 		<div
 			className="NLT__th-container"
-			ref={menuPosition.containerRef}
+			ref={menuPosition.positionRef}
 			onClick={handleHeaderClick}
 			style={{
 				width,
