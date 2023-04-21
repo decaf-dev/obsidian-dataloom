@@ -236,7 +236,9 @@ const isCellContentEmpty = (
 	} else if (cellType === CellType.DATE) {
 		return cell.dateTime == null;
 	} else if (cellType === CellType.TAG || cellType === CellType.MULTI_TAG) {
-		return columnTags.find((tag) => tag.cellIds.includes(cell.id)) == null;
+		return (
+			columnTags.find((tag) => tag.cellIds.includes(cell.id)) == undefined
+		);
 	} else if (cellType === CellType.CHECKBOX) {
 		return !isCheckboxChecked(cell.markdown);
 	} else if (

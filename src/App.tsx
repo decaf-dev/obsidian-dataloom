@@ -624,6 +624,17 @@ export default function App({ onSaveTableState }: Props) {
 												throw new CellNotFoundError();
 											const { id: cellId, functionType } =
 												cell;
+
+											const filteredBodyCells =
+												bodyCells.filter(
+													(cell) =>
+														filteredBodyRows.find(
+															(row) =>
+																row.id ===
+																cell.rowId
+														) !== undefined
+												);
+
 											return {
 												id: cell.id,
 												content: (
@@ -635,8 +646,12 @@ export default function App({ onSaveTableState }: Props) {
 															currencyType
 														}
 														dateFormat={dateFormat}
-														bodyCells={bodyCells}
-														bodyRows={bodyRows}
+														bodyCells={
+															filteredBodyCells
+														}
+														bodyRows={
+															filteredBodyRows
+														}
 														functionType={
 															functionType
 														}
