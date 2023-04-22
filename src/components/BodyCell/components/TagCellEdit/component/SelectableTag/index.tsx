@@ -1,7 +1,7 @@
 import TagColorMenu from "src/components/BodyCell/components/TagColorMenu";
 
 import { IconType } from "src/services/icon/types";
-import { MenuLevel } from "src/services/menu/types";
+import { MenuLevel, MenuPosition } from "src/services/menu/types";
 import { useMenu } from "src/services/menu/hooks";
 import { useAppDispatch } from "src/services/redux/hooks";
 import {
@@ -20,6 +20,7 @@ import { shiftMenuIntoViewContent } from "src/services/menu/utils";
 interface Props {
 	isDarkMode: boolean;
 	id: string;
+	menuPosition: MenuPosition;
 	markdown: string;
 	color: Color;
 	onClick: (tagId: string) => void;
@@ -29,6 +30,7 @@ interface Props {
 
 export default function SelectableTag({
 	isDarkMode,
+	menuPosition,
 	id,
 	markdown,
 	color,
@@ -36,7 +38,7 @@ export default function SelectableTag({
 	onColorChange,
 	onDeleteClick,
 }: Props) {
-	const { menu, menuPosition, isMenuOpen } = useMenu(MenuLevel.TWO);
+	const { menu, isMenuOpen } = useMenu(MenuLevel.TWO);
 	const dispatch = useAppDispatch();
 
 	function handleColorChange(color: Color) {
@@ -53,13 +55,12 @@ export default function SelectableTag({
 		menu.id,
 		menuPosition.positionRef.current,
 		menuPosition.position,
-		-125,
-		menuPosition.position.width - 50
+		-25,
+		235
 	);
 	return (
 		<>
 			<div
-				ref={menuPosition.positionRef}
 				className="NLT__selectable-tag NLT__selectable"
 				onClick={() => onClick(id)}
 			>

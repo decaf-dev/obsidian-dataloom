@@ -279,6 +279,7 @@ export default function BodyCell({
 					columnType === CellType.MULTI_TAG) && (
 					<TagCellEdit
 						isMenuVisible={isMenuVisible}
+						menuPosition={menuPosition}
 						tags={tags}
 						cellId={cellId}
 						onTagColorChange={onTagColorChange}

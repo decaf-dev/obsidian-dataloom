@@ -10,10 +10,12 @@ import "./styles.css";
 import MenuHeader from "./component/MenuHeader";
 import MenuBody from "./component/MenuBody";
 import { Color } from "src/services/color/types";
+import { MenuPosition } from "src/services/menu/types";
 
 interface Props {
 	tags: TagType[];
 	cellId: string;
+	menuPosition: MenuPosition;
 	isMenuVisible: boolean;
 	onTagClick: (tagId: string) => void;
 	onAddTag: (markdown: string, color: Color) => void;
@@ -25,6 +27,7 @@ interface Props {
 export default function TagCellEdit({
 	tags,
 	cellId,
+	menuPosition,
 	isMenuVisible,
 	onTagClick,
 	onAddTag,
@@ -62,6 +65,7 @@ export default function TagCellEdit({
 					onRemoveTag={onRemoveTag}
 				/>
 				<MenuBody
+					menuPosition={menuPosition}
 					isDarkMode={isDarkMode}
 					inputText={inputText}
 					tags={tags}
