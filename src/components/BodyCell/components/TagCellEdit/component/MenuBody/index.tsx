@@ -7,10 +7,12 @@ import CreateTag from "../CreateTag";
 import SelectableTag from "../SelectableTag";
 
 import "./styles.css";
+import { MenuPosition } from "src/services/menu/types";
 
 interface MenuBodyProps {
 	isDarkMode: boolean;
 	tags: Tag[];
+	menuPosition: MenuPosition;
 	inputText: string;
 	newTagColor: Color;
 	onAddTag: (markdown: string, color: Color) => void;
@@ -23,6 +25,7 @@ export default function MenuBody({
 	isDarkMode,
 	tags,
 	inputText,
+	menuPosition,
 	newTagColor,
 	onAddTag,
 	onTagClick,
@@ -48,6 +51,7 @@ export default function MenuBody({
 				{filteredTags.map((tag) => (
 					<SelectableTag
 						isDarkMode={isDarkMode}
+						menuPosition={menuPosition}
 						key={tag.id}
 						id={tag.id}
 						color={tag.color}

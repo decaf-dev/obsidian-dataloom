@@ -182,10 +182,6 @@ export default function BodyCell({
 		onContentChange(cellId, rowId, value);
 	}
 
-	function handleDateChange(value: string) {
-		onContentChange(cellId, rowId, value);
-	}
-
 	function handleCheckboxChange(value: string) {
 		onContentChange(cellId, rowId, value);
 	}
@@ -221,7 +217,9 @@ export default function BodyCell({
 	if (
 		columnType === CellType.TAG ||
 		columnType === CellType.MULTI_TAG ||
-		columnType === CellType.DATE
+		columnType === CellType.DATE ||
+		columnType === CellType.NUMBER ||
+		columnType === CellType.CURRENCY
 	) {
 		menuHeight = 0;
 	}
@@ -264,6 +262,7 @@ export default function BodyCell({
 			>
 				{columnType === CellType.TEXT && (
 					<TextCellEdit
+						shouldWrapOverflow={shouldWrapOverflow}
 						value={markdown}
 						isMenuVisible={isMenuVisible}
 						onChange={handleTextInputChange}
@@ -280,6 +279,7 @@ export default function BodyCell({
 					columnType === CellType.MULTI_TAG) && (
 					<TagCellEdit
 						isMenuVisible={isMenuVisible}
+						menuPosition={menuPosition}
 						tags={tags}
 						cellId={cellId}
 						onTagColorChange={onTagColorChange}
@@ -292,6 +292,7 @@ export default function BodyCell({
 				{columnType === CellType.DATE && (
 					<DateCellEdit
 						isMenuVisible={isMenuVisible}
+						menuPosition={menuPosition}
 						value={dateTime}
 						closeMenuRequestTime={closeMenuRequestTime}
 						dateFormat={dateFormat}

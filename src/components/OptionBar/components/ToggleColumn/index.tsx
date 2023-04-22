@@ -23,7 +23,7 @@ export default function ToggleColumn({ columns, onToggle }: Props) {
 		menuPosition.positionRef.current,
 		menuPosition.position,
 		0,
-		-menuPosition.position.width - 150
+		-175
 	);
 	return (
 		<>

@@ -49,11 +49,8 @@ import { useTableState } from "./services/tableState/useTableState";
 import DateConversion from "./services/date/DateConversion";
 import FunctionCell from "./components/FunctionCell";
 import BodyCell from "./components/BodyCell";
-import AddColumnButton from "./components/NewColumnButton";
 import NewRowButton from "./components/NewRowButton";
 import NewColumnButton from "./components/NewColumnButton";
-import { GeneralFunction } from "./services/tableState/types";
-import { NumberFunction } from "./services/tableState/types";
 import { Platform } from "obsidian";
 
 const FILE_NAME = "App";

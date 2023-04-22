@@ -9,7 +9,7 @@ import { useAppDispatch } from "src/services/redux/hooks";
 
 import DateFormatMenu from "./components/DateFormatMenu";
 import { useMenu } from "src/services/menu/hooks";
-import { MenuLevel } from "src/services/menu/types";
+import { MenuLevel, MenuPosition } from "src/services/menu/types";
 import { closeTopLevelMenu, openMenu } from "src/services/menu/menuSlice";
 import { getDisplayNameForDateFormat } from "src/services/tableState/utils";
 
@@ -19,6 +19,7 @@ import { shiftMenuIntoViewContent } from "src/services/menu/utils";
 interface Props {
 	isMenuVisible: boolean;
 	value: number | null;
+	menuPosition: MenuPosition;
 	closeMenuRequestTime: number | null;
 	dateFormat: DateFormat;
 	onDateTimeChange: (value: number | null) => void;
@@ -30,6 +31,7 @@ export default function DateCellEdit({
 	isMenuVisible,
 	value,
 	closeMenuRequestTime,
+	menuPosition,
 	dateFormat,
 	onDateTimeChange,
 	onMenuClose,
@@ -44,7 +46,7 @@ export default function DateCellEdit({
 	const [isInputInvalid, setInputInvalid] = useState(false);
 	const [closeTime, setCloseTime] = useState(0);
 
-	const { menu, menuPosition, isMenuOpen } = useMenu(MenuLevel.ONE);
+	const { menu, isMenuOpen } = useMenu(MenuLevel.TWO);
 	const dispatch = useAppDispatch();
 
 	const inputRef = useFocusInput(isMenuVisible);
@@ -110,8 +112,8 @@ export default function DateCellEdit({
 		menu.id,
 		menuPosition.positionRef.current,
 		menuPosition.position,
-		-25,
-		menuPosition.position.width - 25
+		50,
+		135
 	);
 
 	return (
@@ -127,16 +129,11 @@ export default function DateCellEdit({
 							onChange={(e) => setLocalValue(e.target.value)}
 						/>
 					</Padding>
-					<div
-						ref={menuPosition.positionRef}
-						style={{ width: "100%" }}
-					>
-						<MenuItem
-							name="Date format"
-							value={getDisplayNameForDateFormat(dateFormat)}
-							onClick={() => dispatch(openMenu(menu))}
-						/>
-					</div>
+					<MenuItem
+						name="Date format"
+						value={getDisplayNameForDateFormat(dateFormat)}
+						onClick={() => dispatch(openMenu(menu))}
+					/>
 					<MenuItem name="Clear" onClick={handleClearClick} />
 				</Stack>
 			</div>

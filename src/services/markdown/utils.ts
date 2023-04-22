@@ -7,7 +7,7 @@ export const replaceNewLinesWithBreakTag = (markdown: string) => {
 		//to do that we need to add a <br> tag
 		//We still need the \n character however to make sure that lists are rendered properly
 		if (line === "") {
-			updated += "<br>" + "\n";
+			updated += "<br>";
 		} else {
 			updated += line + "\n";
 		}

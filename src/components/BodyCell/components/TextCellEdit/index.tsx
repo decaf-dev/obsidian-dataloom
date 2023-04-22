@@ -2,15 +2,18 @@ import { useEffect, useRef, useState } from "react";
 
 import "./styles.css";
 import { useFocusInput } from "src/services/hooks";
+import { useOverflowClassName } from "src/services/spacing/hooks";
 
 interface Props {
 	value: string;
+	shouldWrapOverflow: boolean;
 	isMenuVisible: boolean;
 	onChange: (value: string) => void;
 }
 
 export default function TextCellEdit({
 	isMenuVisible,
+	shouldWrapOverflow,
 	value,
 	onChange,
 }: Props) {
@@ -62,13 +65,16 @@ export default function TextCellEdit({
 		}
 	}
 
+	const className = useOverflowClassName(shouldWrapOverflow);
 	return (
-		<textarea
-			className="NLT__textarea"
-			ref={inputRef}
-			autoFocus
-			value={value}
-			onChange={(e) => handleTextareaChange(e.target.value)}
-		/>
+		<div className="NLT__text-cell-edit">
+			<textarea
+				className={className}
+				ref={inputRef}
+				autoFocus
+				value={value}
+				onChange={(e) => handleTextareaChange(e.target.value)}
+			/>
+		</div>
 	);
 }
