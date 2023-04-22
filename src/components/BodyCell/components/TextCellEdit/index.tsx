@@ -1,19 +1,24 @@
 import { useEffect, useRef, useState } from "react";
 
 import "./styles.css";
+import { useFocusInput } from "src/services/hooks";
 
 interface Props {
 	value: string;
-	onInputChange: (value: string) => void;
+	isMenuVisible: boolean;
+	onChange: (value: string) => void;
 }
 
-export default function TextCellEdit({ value, onInputChange }: Props) {
+export default function TextCellEdit({
+	isMenuVisible,
+	value,
+	onChange,
+}: Props) {
 	const [isShiftDown, setShiftDown] = useState(false);
 	const [isEnterPressed, setEnterPressed] = useState(false);
-	const inputRef = useRef<HTMLTextAreaElement | null>(null);
+	const inputRef = useFocusInput(isMenuVisible);
 
 	useEffect(() => {
-		focusInput();
 		setSelection(value.length);
 	}, []);
 
@@ -25,10 +30,6 @@ export default function TextCellEdit({ value, onInputChange }: Props) {
 			window.removeEventListener("keyup", handleKeyUp);
 		};
 	}, []);
-
-	function focusInput() {
-		inputRef.current?.focus();
-	}
 
 	function setSelection(pos: number) {
 		if (inputRef.current) {
@@ -57,7 +58,7 @@ export default function TextCellEdit({ value, onInputChange }: Props) {
 					newValue.substring(0, inputRef.current.selectionStart - 1) +
 					newValue.substring(inputRef.current.selectionStart);
 			}
-			onInputChange(newValue);
+			onChange(newValue);
 		}
 	}
 

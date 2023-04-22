@@ -6,11 +6,12 @@ import { IconType } from "src/services/icon/types";
 import { CellType, SortDir } from "src/services/tableState/types";
 import { getDisplayNameForCellType } from "src/services/tableState/utils";
 import { SubmenuType } from "../../types";
+import { useFocusInput } from "src/services/hooks";
 
 interface Props {
+	isMenuVisible: boolean;
 	columnName: string;
 	cellId: string;
-	rowId: string;
 	columnType: CellType;
 	columnSortDir: SortDir;
 	onColumnNameChange: (cellId: string, value: string) => void;
@@ -19,7 +20,7 @@ interface Props {
 }
 
 export default function BaseMenu({
-	rowId,
+	isMenuVisible,
 	cellId,
 	columnName,
 	columnType,
@@ -28,11 +29,14 @@ export default function BaseMenu({
 	onSortClick,
 	onSubmenuChange,
 }: Props) {
+	const inputRef = useFocusInput(isMenuVisible);
+
 	return (
 		<Stack spacing="sm" isVertical>
 			<Stack spacing="sm" isVertical>
 				<Padding px="md" py="sm">
 					<input
+						ref={inputRef}
 						autoFocus
 						value={columnName}
 						onChange={(e) =>

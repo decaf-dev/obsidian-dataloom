@@ -163,7 +163,7 @@ export default class Json {
 			}
 
 			updatedState.model.tags = tags;
-			updatedState.pluginVersion = 640;
+			updatedState.pluginVersion = CURRENT_PLUGIN_VERSION;
 			return updatedState;
 		}
 

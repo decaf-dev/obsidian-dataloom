@@ -3,10 +3,12 @@ import Tag from "src/components/Tag";
 import Wrap from "src/components/Wrap";
 
 import "./styles.css";
+import { useFocusInput } from "src/services/hooks";
 
 interface MenuHeaderProps {
 	isDarkMode: boolean;
 	cellId: string;
+	isMenuVisible: boolean;
 	tags: TagType[];
 	inputText: string;
 	onInputTextChange: (value: string) => void;
@@ -15,12 +17,14 @@ interface MenuHeaderProps {
 
 export default function MenuHeader({
 	isDarkMode,
+	isMenuVisible,
 	cellId,
 	tags,
 	inputText,
 	onInputTextChange,
 	onRemoveTag,
 }: MenuHeaderProps) {
+	const inputRef = useFocusInput(isMenuVisible);
 	return (
 		<div className="NLT__tag-menu-header">
 			<Wrap spacingX="sm">
@@ -40,6 +44,7 @@ export default function MenuHeader({
 					))}
 				<input
 					autoFocus
+					ref={inputRef}
 					type="text"
 					value={inputText}
 					onChange={(e) => onInputTextChange(e.target.value)}

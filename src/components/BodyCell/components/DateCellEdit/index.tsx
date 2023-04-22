@@ -4,7 +4,7 @@ import Stack from "src/components/Stack";
 import Padding from "src/components/Padding";
 import DateConversion from "src/services/date/DateConversion";
 import { DateFormat } from "src/services/tableState/types";
-import { useCompare } from "src/services/hooks";
+import { useCompare, useFocusInput } from "src/services/hooks";
 import { useAppDispatch } from "src/services/redux/hooks";
 
 import DateFormatMenu from "./components/DateFormatMenu";
@@ -17,6 +17,7 @@ import "./styles.css";
 import { shiftMenuIntoViewContent } from "src/services/menu/utils";
 
 interface Props {
+	isMenuVisible: boolean;
 	value: number | null;
 	closeMenuRequestTime: number | null;
 	dateFormat: DateFormat;
@@ -26,6 +27,7 @@ interface Props {
 }
 
 export default function DateCellEdit({
+	isMenuVisible,
 	value,
 	closeMenuRequestTime,
 	dateFormat,
@@ -42,8 +44,10 @@ export default function DateCellEdit({
 	const [isInputInvalid, setInputInvalid] = useState(false);
 	const [closeTime, setCloseTime] = useState(0);
 
-	const { menu, menuPosition, isMenuOpen } = useMenu(MenuLevel.TWO);
+	const { menu, menuPosition, isMenuOpen } = useMenu(MenuLevel.ONE);
 	const dispatch = useAppDispatch();
+
+	const inputRef = useFocusInput(isMenuVisible);
 
 	useEffect(() => {
 		setLocalValue(
@@ -116,6 +120,7 @@ export default function DateCellEdit({
 				<Stack spacing="md" isVertical>
 					<Padding px="md" py="md">
 						<input
+							ref={inputRef}
 							aria-invalid={isInputInvalid}
 							autoFocus
 							value={localValue}

@@ -28,3 +28,19 @@ export const useDidMountEffect = (func: (...rest: any) => any, deps: any[]) => {
 		else didMount.current = true;
 	}, deps);
 };
+
+export const useFocusInput = (isMenuVisible: boolean) => {
+	const inputRef = useRef<any | null>(null);
+
+	//The menu will render 2 times, once for the initial position and then again to shift the menu into view.
+	//We only want to focus the input on the second render.
+	useEffect(() => {
+		if (isMenuVisible) focusInput();
+	}, [isMenuVisible]);
+
+	function focusInput() {
+		if (inputRef.current) inputRef.current.focus();
+	}
+
+	return inputRef;
+};
