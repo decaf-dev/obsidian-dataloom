@@ -55,7 +55,7 @@ export default function SelectableTag({
 		menu.id,
 		menuPosition.positionRef.current,
 		menuPosition.position,
-		-25,
+		0,
 		235
 	);
 	return (
