@@ -20,7 +20,7 @@ import HeaderMenu from "./components/HeaderMenu";
 import { getIconTypeFromCellType } from "src/services/icon/utils";
 import { useResizeColumn } from "./services/hooks";
 import { useCompare, useForceUpdate } from "src/services/hooks";
-import { isMenuOpen } from "src/services/menu/utils";
+import { shiftMenuIntoViewContent } from "src/services/menu/utils";
 
 interface Props {
 	cellId: string;
@@ -65,11 +65,8 @@ export default function HeaderCell({
 	onCurrencyChange,
 	onDateFormatChange,
 }: Props) {
-	const [menu, menuPosition] = useMenu(MenuLevel.ONE);
+	const { menu, menuPosition, isMenuOpen } = useMenu(MenuLevel.ONE);
 	const dispatch = useAppDispatch();
-	const shouldOpenMenu = useAppSelector((state) =>
-		isMenuOpen(state, menu.id)
-	);
 	const [updateTime, forceUpdate] = useForceUpdate();
 
 	//A width of "unset" means that we have double clicked to resize the column
@@ -110,7 +107,13 @@ export default function HeaderCell({
 		dispatch(closeTopLevelMenu());
 	}
 
-	const { top, left } = menuPosition.position;
+	const { top, left } = shiftMenuIntoViewContent(
+		menu.id,
+		menuPosition.positionRef.current,
+		menuPosition.position,
+		0,
+		0
+	);
 	const iconType = getIconTypeFromCellType(type);
 
 	let contentClassName = "NLT__th-content";
@@ -130,7 +133,7 @@ export default function HeaderCell({
 			}}
 		>
 			<HeaderMenu
-				isOpen={shouldOpenMenu}
+				isOpen={isMenuOpen}
 				top={top}
 				left={left}
 				id={menu.id}

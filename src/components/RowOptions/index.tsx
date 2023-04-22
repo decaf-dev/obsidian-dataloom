@@ -1,4 +1,3 @@
-import Menu from "../Menu";
 import Icon from "../Icon";
 
 import Button from "../Button";
@@ -8,11 +7,9 @@ import { openMenu, closeTopLevelMenu } from "src/services/menu/menuSlice";
 
 import "./styles.css";
 import { MenuLevel } from "src/services/menu/types";
-import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
+import { useAppDispatch } from "src/services/redux/hooks";
 import RowMenu from "./components/RowMenu";
-import { isMenuOpen, shiftMenuIntoViewContent } from "src/services/menu/utils";
-import { useForceUpdate } from "src/services/hooks";
-import { useEffect } from "react";
+import { shiftMenuIntoViewContent } from "src/services/menu/utils";
 
 interface Props {
 	rowId: string;
@@ -20,14 +17,11 @@ interface Props {
 }
 
 export default function RowOptions({ rowId, onDeleteClick }: Props) {
-	const [menu, menuPosition] = useMenu(MenuLevel.ONE);
+	const { menu, menuPosition, isMenuOpen } = useMenu(MenuLevel.ONE);
 	const dispatch = useAppDispatch();
-	const shouldOpenMenu = useAppSelector((state) =>
-		isMenuOpen(state, menu.id)
-	);
 
 	function handleButtonClick() {
-		if (shouldOpenMenu) {
+		if (isMenuOpen) {
 			dispatch(closeTopLevelMenu());
 		} else {
 			dispatch(openMenu(menu));
@@ -38,15 +32,6 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 		onDeleteClick(rowId);
 		dispatch(closeTopLevelMenu());
 	}
-
-	const [, forceUpdate] = useForceUpdate();
-
-	//Once the menu opens, we need to force an update so that logic for shiftMenuIntoViewContent will work
-	useEffect(() => {
-		if (shouldOpenMenu) {
-			forceUpdate();
-		}
-	}, [shouldOpenMenu]);
 
 	const { top, left } = shiftMenuIntoViewContent(
 		menu.id,
@@ -88,7 +73,7 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 			<RowMenu
 				id={menu.id}
 				rowId={rowId}
-				isOpen={shouldOpenMenu}
+				isOpen={isMenuOpen}
 				top={top}
 				left={left}
 				onDeleteClick={handleDeleteClick}

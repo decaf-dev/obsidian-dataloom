@@ -1,13 +1,13 @@
 import Button from "src/components/Button";
 import ToggleColumnMenu from "./components/ToggleColumnMenu";
 import { openMenu } from "src/services/menu/menuSlice";
-import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
+import { useAppDispatch } from "src/services/redux/hooks";
 import { useMenu } from "src/services/menu/hooks";
 import { MenuLevel } from "src/services/menu/types";
 import Icon from "src/components/Icon";
 import { IconType } from "src/services/icon/types";
 import { ToggleColumn } from "./types";
-import { isMenuOpen } from "src/services/menu/utils";
+import { shiftMenuIntoViewContent } from "src/services/menu/utils";
 
 interface Props {
 	onToggle: (id: string) => void;
@@ -15,13 +15,16 @@ interface Props {
 }
 
 export default function ToggleColumn({ columns, onToggle }: Props) {
-	const [menu, menuPosition] = useMenu(MenuLevel.ONE);
-	const shouldOpenMenu = useAppSelector((state) =>
-		isMenuOpen(state, menu.id)
-	);
+	const { menu, menuPosition, isMenuOpen } = useMenu(MenuLevel.ONE);
 	const dispatch = useAppDispatch();
 
-	const { top, left, width } = menuPosition.position;
+	const { top, left } = shiftMenuIntoViewContent(
+		menu.id,
+		menuPosition.positionRef.current,
+		menuPosition.position,
+		0,
+		-menuPosition.position.width - 150
+	);
 	return (
 		<>
 			<div className="NLT__toggle-column" ref={menuPosition.positionRef}>
@@ -36,8 +39,8 @@ export default function ToggleColumn({ columns, onToggle }: Props) {
 			<ToggleColumnMenu
 				id={menu.id}
 				top={top}
-				left={left - width - 100}
-				isOpen={shouldOpenMenu}
+				left={left}
+				isOpen={isMenuOpen}
 				columns={columns}
 				onToggle={onToggle}
 			/>
