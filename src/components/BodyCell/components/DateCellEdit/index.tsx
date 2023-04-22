@@ -44,7 +44,7 @@ export default function DateCellEdit({
 	const [isInputInvalid, setInputInvalid] = useState(false);
 	const [closeTime, setCloseTime] = useState(0);
 
-	const { menu, menuPosition, isMenuOpen } = useMenu(MenuLevel.ONE);
+	const { menu, menuPosition, isMenuOpen } = useMenu(MenuLevel.TWO);
 	const dispatch = useAppDispatch();
 
 	const inputRef = useFocusInput(isMenuVisible);
