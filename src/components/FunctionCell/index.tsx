@@ -1,11 +1,10 @@
-import { useMenu } from "src/services/menu/hooks";
 import Text from "../Text";
-
-import "./styles.css";
-import { MenuLevel } from "src/services/menu/types";
-import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
-import { isMenuOpen } from "src/services/menu/utils";
 import FunctionMenu from "./components/FunctionMenu";
+
+import { useMenu } from "src/services/menu/hooks";
+import { MenuLevel } from "src/services/menu/types";
+import { useAppDispatch } from "src/services/redux/hooks";
+import { shiftMenuIntoViewContent } from "src/services/menu/utils";
 import {
 	BodyCell,
 	BodyRow,
@@ -24,6 +23,8 @@ import {
 } from "src/services/tableState/utils";
 import { getNumberFunctionContent } from "./services/numberFunction";
 import { getGeneralFunctionContent } from "./services/generalFunction";
+
+import "./styles.css";
 
 interface Props {
 	columnId: string;
@@ -52,10 +53,7 @@ export default function FunctionCell({
 	cellType,
 	onFunctionTypeChange,
 }: Props) {
-	const [menu, menuPosition] = useMenu(MenuLevel.ONE);
-	const shouldOpenMenu = useAppSelector((state) =>
-		isMenuOpen(state, menu.id)
-	);
+	const { menu, menuPosition, isMenuOpen } = useMenu(MenuLevel.ONE);
 	const dispatch = useAppDispatch();
 
 	function handleFunctionTypeClick(value: FunctionType) {
@@ -63,13 +61,15 @@ export default function FunctionCell({
 		dispatch(closeTopLevelMenu());
 	}
 
-	const { position, containerRef } = menuPosition;
-	const { top, left } = position;
-
-	let menuTop = top - 100;
-	if (cellType === CellType.NUMBER || cellType === CellType.CURRENCY) {
-		menuTop = top - 200;
-	}
+	const { top, left } = shiftMenuIntoViewContent(
+		menu.id,
+		menuPosition.positionRef.current,
+		menuPosition.position,
+		cellType === CellType.NUMBER || cellType === CellType.CURRENCY
+			? -165
+			: 0,
+		0
+	);
 
 	const columnCells = bodyCells.filter((cell) => cell.columnId === columnId);
 
@@ -89,12 +89,13 @@ export default function FunctionCell({
 		const cellValues = columnCells
 			.filter((cell) => cell.markdown !== "")
 			.map((cell) => parseFloat(cell.markdown));
-		content = getNumberFunctionContent(
-			cellValues,
-			cellType,
-			currencyType,
-			functionType
-		);
+		if (cellValues.length !== 0)
+			content = getNumberFunctionContent(
+				cellValues,
+				cellType,
+				currencyType,
+				functionType
+			);
 	}
 
 	return (
@@ -104,7 +105,7 @@ export default function FunctionCell({
 				style={{
 					width,
 				}}
-				ref={containerRef}
+				ref={menuPosition.positionRef}
 				onClick={() => dispatch(openMenu(menu))}
 			>
 				{functionType === GeneralFunction.NONE && (
@@ -124,10 +125,10 @@ export default function FunctionCell({
 			</div>
 			<FunctionMenu
 				id={menu.id}
-				top={menuTop}
+				top={top}
 				cellType={cellType}
-				left={left + 25}
-				isOpen={shouldOpenMenu}
+				left={left}
+				isOpen={isMenuOpen}
 				value={functionType}
 				onClick={handleFunctionTypeClick}
 			/>

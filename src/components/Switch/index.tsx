@@ -6,17 +6,11 @@ interface Props {
 }
 
 export default function Switch({ isChecked, onToggle }: Props) {
+	let className = "checkbox-container NLT__switch";
+	if (isChecked) className += " is-enabled";
 	return (
-		<label className="NLT__switch">
-			<input
-				type="checkbox"
-				checked={isChecked}
-				onChange={() => {}}
-				onClick={() => {
-					onToggle(!isChecked);
-				}}
-			/>
-			<span className="NLT__slider"></span>
-		</label>
+		<div className={className} onClick={() => onToggle(!isChecked)}>
+			<input type="checkbox" />
+		</div>
 	);
 }

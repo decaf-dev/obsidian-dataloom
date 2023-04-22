@@ -15,7 +15,7 @@ import Button from "src/components/Button";
 import Icon from "src/components/Icon";
 import Tag from "src/components/Tag";
 import { Color } from "src/services/color/types";
-import { isMenuOpen } from "src/services/menu/utils";
+import { shiftMenuIntoViewContent } from "src/services/menu/utils";
 
 interface Props {
 	isDarkMode: boolean;
@@ -36,11 +36,7 @@ export default function SelectableTag({
 	onColorChange,
 	onDeleteClick,
 }: Props) {
-	const [menu, menuPosition] = useMenu(MenuLevel.TWO);
-	const shouldOpenMenu = useAppSelector((state) =>
-		isMenuOpen(state, menu.id)
-	);
-
+	const { menu, menuPosition, isMenuOpen } = useMenu(MenuLevel.TWO);
 	const dispatch = useAppDispatch();
 
 	function handleColorChange(color: Color) {
@@ -53,12 +49,17 @@ export default function SelectableTag({
 		dispatch(closeAllMenus());
 	}
 
-	const { position, containerRef } = menuPosition;
-	const { top, left, width } = position;
+	const { top, left } = shiftMenuIntoViewContent(
+		menu.id,
+		menuPosition.positionRef.current,
+		menuPosition.position,
+		-125,
+		menuPosition.position.width - 50
+	);
 	return (
 		<>
 			<div
-				ref={containerRef}
+				ref={menuPosition.positionRef}
 				className="NLT__selectable-tag NLT__selectable"
 				onClick={() => onClick(id)}
 			>
@@ -81,9 +82,9 @@ export default function SelectableTag({
 			</div>
 			<TagColorMenu
 				menuId={menu.id}
-				top={top - 125}
-				left={left + width - 50}
-				isOpen={shouldOpenMenu}
+				top={top}
+				left={left}
+				isOpen={isMenuOpen}
 				selectedColor={color}
 				onColorClick={(color) => handleColorChange(color)}
 				onDeleteClick={handleDeleteClick}

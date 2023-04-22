@@ -17,7 +17,6 @@ interface Props {
 	isOpen: boolean;
 	top?: number;
 	left?: number;
-	maxWidth?: number;
 	width?: number;
 	height?: number;
 	children: React.ReactNode;
@@ -28,7 +27,6 @@ export default function Menu({
 	isOpen,
 	top = 0,
 	left = 0,
-	maxWidth,
 	width = 0,
 	height = 0,
 	children,
@@ -66,15 +64,6 @@ export default function Menu({
 		};
 	}, [isOpen, isTopLevel]);
 
-	let maxW = "unset";
-	if (maxWidth) {
-		if (maxWidth === 0) {
-			maxW = "maxWidth";
-		} else {
-			maxW = numToPx(maxWidth);
-		}
-	}
-
 	return (
 		<>
 			{isOpen &&
@@ -83,9 +72,9 @@ export default function Menu({
 						<div
 							className="NLT__menu-container"
 							style={{
+								visibility: "hidden",
 								top: numToPx(top),
 								left: numToPx(left),
-								maxWidth: maxW,
 								width:
 									width === 0
 										? "max-content"
