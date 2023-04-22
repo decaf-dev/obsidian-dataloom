@@ -1,13 +1,13 @@
 import StateFactory from "./StateFactory";
-import { Row, TableState } from "./types";
+import { BodyRow, TableState } from "./types";
 
 export const addRow = (prevState: TableState): TableState => {
-	const { rows, cells, columns } = prevState.model;
-	const newRow = StateFactory.createRow(rows.length);
-	const cellsCopy = [...cells];
+	const { bodyRows, bodyCells, columns } = prevState.model;
+	const newRow = StateFactory.createBodyRow(bodyRows.length);
+	const cellsCopy = [...bodyCells];
 
 	columns.forEach((column) => {
-		const newCell = StateFactory.createCell(column.id, newRow.id, false);
+		const newCell = StateFactory.createBodyCell(column.id, newRow.id);
 		cellsCopy.push(newCell);
 	});
 
@@ -15,25 +15,28 @@ export const addRow = (prevState: TableState): TableState => {
 		...prevState,
 		model: {
 			...prevState.model,
-			cells: cellsCopy,
-			rows: [...rows, newRow],
+			bodyCells: cellsCopy,
+			bodyRows: [...bodyRows, newRow],
 		},
 	};
 };
 
 export const deleteRow = (prevState: TableState, rowId: string): TableState => {
-	const { cells, rows } = prevState.model;
+	const { bodyCells, bodyRows } = prevState.model;
 	return {
 		...prevState,
 		model: {
 			...prevState.model,
-			rows: rows.filter((row) => row.id !== rowId),
-			cells: cells.filter((cell) => cell.rowId !== rowId),
+			bodyRows: bodyRows.filter((row) => row.id !== rowId),
+			bodyCells: bodyCells.filter((cell) => cell.rowId !== rowId),
 		},
 	};
 };
 
-export const updateLastEditedTime = (rows: Row[], rowId: string): Row[] => {
+export const updateLastEditedTime = (
+	rows: BodyRow[],
+	rowId: string
+): BodyRow[] => {
 	return rows.map((row) => {
 		if (row.id === rowId) {
 			return {

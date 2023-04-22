@@ -2,7 +2,7 @@ import React from "react";
 import { Notice } from "obsidian";
 
 import TextCell from "./components/TextCell";
-import TagCell from "./components//TagCell";
+import TagCell from "./components/TagCell";
 import CheckboxCell from "./components/CheckboxCell";
 import DateCell from "./components/DateCell";
 import NumberCell from "./components/NumberCell";
@@ -38,7 +38,11 @@ import { updateSortTime } from "src/services/redux/globalSlice";
 import { Color } from "src/services/color/types";
 import CurrencyCell from "./components/CurrencyCell";
 import CurrencyCellEdit from "./components/CurrencyCellEdit";
-import { getCloseMenuRequestTime, isMenuOpen } from "src/services/menu/utils";
+import {
+	getCloseMenuRequestTime,
+	isMenuOpen,
+	shiftMenuIntoViewContent,
+} from "src/services/menu/utils";
 
 interface Props {
 	columnType: string;
@@ -80,7 +84,7 @@ interface Props {
 	) => void;
 }
 
-export default function Cell({
+export default function BodyCell({
 	cellId,
 	columnId,
 	rowId,
@@ -103,12 +107,9 @@ export default function Cell({
 	onDateTimeChange,
 	onAddTag,
 }: Props) {
-	const [menu, menuPosition] = useMenu(
+	const { menu, menuPosition, isMenuOpen } = useMenu(
 		MenuLevel.ONE,
 		columnType === CellType.DATE
-	);
-	const shouldOpenMenu = useAppSelector((state) =>
-		isMenuOpen(state, menu.id)
 	);
 	const closeMenuRequestTime = useAppSelector((state) =>
 		getCloseMenuRequestTime(state, menu.id)
@@ -120,10 +121,10 @@ export default function Cell({
 	//If we open a menu and then close it, we want to sort all rows
 	//TODO optimize?
 	useDidMountEffect(() => {
-		if (!shouldOpenMenu) {
+		if (!isMenuOpen) {
 			dispatch(updateSortTime());
 		}
-	}, [shouldOpenMenu]);
+	}, [isMenuOpen]);
 
 	async function handleCellContextClick() {
 		try {
@@ -206,12 +207,16 @@ export default function Cell({
 		dispatch(closeTopLevelMenu());
 	}
 
-	const {
-		width: measuredWidth,
-		height: measuredHeight,
-		top,
-		left,
-	} = menuPosition.position;
+	const { top, left } = shiftMenuIntoViewContent(
+		menu.id,
+		menuPosition.positionRef.current,
+		menuPosition.position,
+		0,
+		0
+	);
+
+	const { width: measuredWidth, height: measuredHeight } =
+		menuPosition.position;
 
 	let menuHeight = measuredHeight;
 	if (
@@ -242,7 +247,7 @@ export default function Cell({
 
 	return (
 		<div
-			ref={menuPosition.containerRef}
+			ref={menuPosition.positionRef}
 			onClick={handleCellClick}
 			onContextMenu={handleCellContextClick}
 			className={className}
@@ -250,57 +255,55 @@ export default function Cell({
 				width,
 			}}
 		>
-			{shouldOpenMenu && (
-				<Menu
-					id={menu.id}
-					isOpen={shouldOpenMenu}
-					top={top}
-					left={left}
-					width={menuWidth}
-					height={menuHeight}
-				>
-					{columnType === CellType.TEXT && (
-						<TextCellEdit
-							value={markdown}
-							onInputChange={handleTextInputChange}
-						/>
-					)}
-					{columnType === CellType.NUMBER && (
-						<NumberCellEdit
-							value={markdown}
-							onInputChange={handleNumberInputChange}
-						/>
-					)}
-					{(columnType === CellType.TAG ||
-						columnType === CellType.MULTI_TAG) && (
-						<TagCellEdit
-							tags={tags}
-							cellId={cellId}
-							onTagColorChange={onTagColorChange}
-							onAddTag={handleAddTag}
-							onRemoveTag={handleRemoveTagClick}
-							onTagClick={handleTagClick}
-							onTagDeleteClick={onTagDeleteClick}
-						/>
-					)}
-					{columnType === CellType.DATE && (
-						<DateCellEdit
-							value={dateTime}
-							closeMenuRequestTime={closeMenuRequestTime}
-							dateFormat={dateFormat}
-							onDateTimeChange={handleDateTimeChange}
-							onDateFormatChange={handleDateFormatChange}
-							onMenuClose={handleMenuClose}
-						/>
-					)}
-					{columnType === CellType.CURRENCY && (
-						<CurrencyCellEdit
-							value={markdown}
-							onInputChange={handleCurrencyChange}
-						/>
-					)}
-				</Menu>
-			)}
+			<Menu
+				id={menu.id}
+				isOpen={isMenuOpen}
+				top={top}
+				left={left}
+				width={menuWidth}
+				height={menuHeight}
+			>
+				{columnType === CellType.TEXT && (
+					<TextCellEdit
+						value={markdown}
+						onInputChange={handleTextInputChange}
+					/>
+				)}
+				{columnType === CellType.NUMBER && (
+					<NumberCellEdit
+						value={markdown}
+						onInputChange={handleNumberInputChange}
+					/>
+				)}
+				{(columnType === CellType.TAG ||
+					columnType === CellType.MULTI_TAG) && (
+					<TagCellEdit
+						tags={tags}
+						cellId={cellId}
+						onTagColorChange={onTagColorChange}
+						onAddTag={handleAddTag}
+						onRemoveTag={handleRemoveTagClick}
+						onTagClick={handleTagClick}
+						onTagDeleteClick={onTagDeleteClick}
+					/>
+				)}
+				{columnType === CellType.DATE && (
+					<DateCellEdit
+						value={dateTime}
+						closeMenuRequestTime={closeMenuRequestTime}
+						dateFormat={dateFormat}
+						onDateTimeChange={handleDateTimeChange}
+						onDateFormatChange={handleDateFormatChange}
+						onMenuClose={handleMenuClose}
+					/>
+				)}
+				{columnType === CellType.CURRENCY && (
+					<CurrencyCellEdit
+						value={markdown}
+						onInputChange={handleCurrencyChange}
+					/>
+				)}
+			</Menu>
 			{columnType === CellType.TEXT && (
 				<TextCell
 					markdown={markdown}

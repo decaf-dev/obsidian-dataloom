@@ -5,16 +5,16 @@ import Padding from "src/components/Padding";
 import DateConversion from "src/services/date/DateConversion";
 import { DateFormat } from "src/services/tableState/types";
 import { useCompare } from "src/services/hooks";
-import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
+import { useAppDispatch } from "src/services/redux/hooks";
 
 import DateFormatMenu from "./components/DateFormatMenu";
 import { useMenu } from "src/services/menu/hooks";
 import { MenuLevel } from "src/services/menu/types";
-import { isMenuOpen } from "src/services/menu/utils";
 import { closeTopLevelMenu, openMenu } from "src/services/menu/menuSlice";
 import { getDisplayNameForDateFormat } from "src/services/tableState/utils";
 
 import "./styles.css";
+import { shiftMenuIntoViewContent } from "src/services/menu/utils";
 
 interface Props {
 	value: number | null;
@@ -42,10 +42,7 @@ export default function DateCellEdit({
 	const [isInputInvalid, setInputInvalid] = useState(false);
 	const [closeTime, setCloseTime] = useState(0);
 
-	const [menu, menuPosition] = useMenu(MenuLevel.TWO);
-	const shouldOpenMenu = useAppSelector((state) =>
-		isMenuOpen(state, menu.id)
-	);
+	const { menu, menuPosition, isMenuOpen } = useMenu(MenuLevel.TWO);
 	const dispatch = useAppDispatch();
 
 	useEffect(() => {
@@ -105,7 +102,13 @@ export default function DateCellEdit({
 		onMenuClose();
 	}
 
-	const { top, left, width } = menuPosition.position;
+	const { top, left } = shiftMenuIntoViewContent(
+		menu.id,
+		menuPosition.positionRef.current,
+		menuPosition.position,
+		-25,
+		menuPosition.position.width - 25
+	);
 
 	return (
 		<>
@@ -120,7 +123,7 @@ export default function DateCellEdit({
 						/>
 					</Padding>
 					<div
-						ref={menuPosition.containerRef}
+						ref={menuPosition.positionRef}
 						style={{ width: "100%" }}
 					>
 						<MenuItem
@@ -134,9 +137,9 @@ export default function DateCellEdit({
 			</div>
 			<DateFormatMenu
 				id={menu.id}
-				isOpen={shouldOpenMenu}
-				top={top - 25}
-				left={left + width - 25}
+				isOpen={isMenuOpen}
+				top={top}
+				left={left}
 				value={dateFormat}
 				onChange={handleDateFormatChange}
 			/>

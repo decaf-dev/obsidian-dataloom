@@ -1,15 +1,16 @@
 # Obsidian Notion-Like Tables
 
-[![Active Development](https://img.shields.io/badge/Maintenance%20Level-Actively%20Developed-brightgreen.svg)](https://gist.github.com/cheerfulstoic/d107229326a01ff0f333a1d3476e068d)
-
-![Obsidian Downloads](https://img.shields.io/badge/dynamic/json?logo=obsidian&color=%23483699&label=downloads&query=%24%5B%22notion-like-tables%22%5D.downloads&url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json)
+<img width="1091" alt="cover" src="https://user-images.githubusercontent.com/40307803/233756888-5747bd5f-824b-42e1-be0e-e92518972cf0.png">
 
 Notion-Like Tables is your premiere tool for creating and managing tabular data in Obsidian.md.
 
-![Screenshot](https://raw.githubusercontent.com/trey-wallis/obsidian-notion-like-tables/master/.readme/preview.png)
+[![Active Development](https://img.shields.io/badge/Maintenance%20Level-Actively%20Developed-brightgreen.svg)](https://gist.github.com/cheerfulstoic/d107229326a01ff0f333a1d3476e068d)
 
-Lastest release notes:
-[6.3.3](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/6.3.3)
+![Obsidian Downloads](https://img.shields.io/badge/dynamic/json?logo=obsidian&color=%23483699&label=downloads&query=%24%5B%22notion-like-tables%22%5D.downloads&url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json) ![Release Version](https://img.shields.io/github/v/release/trey-wallis/obsidian-notion-like-tables)
+
+https://user-images.githubusercontent.com/40307803/233739359-1de10f4f-a850-4c75-996c-9cc4257d5d36.mov
+
+[Lastest release notes](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/6.4.0)
 
 ## About
 
@@ -37,31 +38,35 @@ Lastest release notes:
 
 ## Features
 
--   Header menu - change the various settings for each column
--   Text cell - accepts any markdown. press shift + enter to create a new line
+-   Header menu - change various settings for each column
+-   Wrap overflow - wraps text overflow instead of cutting it off when its too big for the cell
+-   Text cell - accepts any markdown. press `shift` + `enter` to create a new line
 -   Number cell - accepts any number, including decimals
 -   Currency cell - accepts a number and renders a currency value. Change the currency format in the header options menu
--   Date cell - accepts a date according to the date format specified. Change the date format in the header options menu
+-   Date cell - accepts a date according to the column date format set. Change the date format in the header options menu
 -   Tag cell - accepts text with no spaces and renders a single tag
 -   Multi-tag cell - accepts text with no spaces and renders multiple tags
 -   Checkbox cell - renders a checkbox
 -   Creation time cell - renders the creation time of the row. Change the date format in the header options menu
 -   Last edited time cell - renders the last edited time of the row. Change the date format in the header options menu
 -   Tag color menu - allows you to select a color for each tag
--   Right click to copy - right click a cell to have the contents copied to your clipboard
--   Double click to resize column - resizes the column to the max size of the content
--   Search filter - filter by a specific search value
--   Sort by column - sort rows by ascending or descending values in a column
--   Toggle column filter - toggle visibility of table columns
--   Drag and drop columns - drag a column above another column to have them swap positions
--   Drag and drop rows - drag a row to above another row to have them swap positions
+-   Right click to copy - right click a cell to have its contents copied to your clipboard
+-   Double click to resize column - hover your mouse near the right border of the header cell. Double click to resize the column to the max size of the content
+-   Search filter - filter rows by a search value
+-   Sort by column - sort rows by ascending or descending order
+-   Toggle column filter - toggle visibility of columns
+-   Drag and drop columns - drag a column above another column to have them change positions
+-   Drag and drop rows - drag a row to above another row to have them change positions
 -   Sticky headers - headers will remain visible as you scroll
+-   Function cells - allows you to make calculations based on column data. If the column cell type is set to number or currency, you have arithmetic operations available such as: min, max, range, median, sum, and average
 
 ## Settings
 
--   Create new tables in attachment folder
--   Custom location for new tables
--   Create table name based on active file name and timestamp
+| Name                                                      | Value     |
+| --------------------------------------------------------- | --------- |
+| Create new tables in attachment folder                    | `Boolean` |
+| Custom location for new tables                            | `String`  |
+| Create table name based on active file name and timestamp | `Boolean` |
 
 ## Known Issues
 

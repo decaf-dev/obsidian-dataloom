@@ -1,14 +1,19 @@
 import { v4 as uuidv4 } from "uuid";
 import { randomColor } from "../random";
 import {
-	Cell,
+	HeaderCell,
+	BodyCell,
+	FooterCell,
 	CellType,
 	Column,
-	Row,
+	BodyRow,
 	Tag,
 	SortDir,
 	CurrencyType,
 	DateFormat,
+	GeneralFunction,
+	HeaderRow,
+	FooterRow,
 } from "./types";
 
 export default class StateFactory {
@@ -22,33 +27,57 @@ export default class StateFactory {
 			currencyType: CurrencyType.UNITED_STATES,
 			dateFormat: DateFormat.MM_DD_YYYY,
 			shouldWrapOverflow: false,
-			footerCellId: uuidv4(),
 		};
 	}
 
-	static createRow(totalRowCount: number): Row {
+	static createHeaderRow(): HeaderRow {
+		return {
+			id: uuidv4(),
+		};
+	}
+
+	static createFooterRow(): FooterRow {
+		return {
+			id: uuidv4(),
+		};
+	}
+
+	static createBodyRow(currentBodyRowCount: number): BodyRow {
 		const currentTime = Date.now();
 		return {
 			id: uuidv4(),
-			index: totalRowCount,
+			index: currentBodyRowCount,
 			menuCellId: uuidv4(),
 			creationTime: currentTime,
 			lastEditedTime: currentTime,
 		};
 	}
 
-	static createCell(
-		columnId: string,
-		rowId: string,
-		isHeader: boolean
-	): Cell {
+	static createHeaderCell(columnId: string, rowId: string): HeaderCell {
+		return {
+			id: uuidv4(),
+			columnId,
+			rowId,
+			markdown: "New Column",
+		};
+	}
+
+	static createBodyCell(columnId: string, rowId: string): BodyCell {
 		return {
 			id: uuidv4(),
 			columnId,
 			rowId,
 			dateTime: null,
-			markdown: isHeader ? "New Column" : "",
-			isHeader,
+			markdown: "",
+		};
+	}
+
+	static createFooterCell(columnId: string, rowId: string): FooterCell {
+		return {
+			id: uuidv4(),
+			columnId,
+			rowId,
+			functionType: GeneralFunction.NONE,
 		};
 	}
 

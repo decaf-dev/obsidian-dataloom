@@ -1,28 +1,76 @@
 import { updateLastEditedTime } from "./row";
-import { Cell, TableState } from "./types";
+import { BodyCell, FooterCell, HeaderCell, TableState } from "./types";
 
-export const updateCell = (
+export const updateHeaderCell = (
 	prevState: TableState,
 	cellId: string,
-	rowId: string,
-	key: keyof Cell,
+	key: keyof HeaderCell,
 	value: unknown
 ) => {
-	const { cells, rows } = prevState.model;
+	const { headerCells } = prevState.model;
 	return {
 		...prevState,
 		model: {
 			...prevState.model,
-			cells: cells.map((cell) => {
+			headerCells: headerCells.map((cell) => {
 				if (cell.id === cellId) {
 					return {
 						...cell,
-						[key as keyof Cell]: value,
+						[key as keyof BodyCell]: value,
 					};
 				}
 				return cell;
 			}),
-			rows: updateLastEditedTime(rows, rowId),
+		},
+	};
+};
+
+export const updateBodyCell = (
+	prevState: TableState,
+	cellId: string,
+	rowId: string,
+	key: keyof BodyCell,
+	value: unknown
+) => {
+	const { bodyCells, bodyRows } = prevState.model;
+	return {
+		...prevState,
+		model: {
+			...prevState.model,
+			bodyCells: bodyCells.map((cell) => {
+				if (cell.id === cellId) {
+					return {
+						...cell,
+						[key as keyof BodyCell]: value,
+					};
+				}
+				return cell;
+			}),
+			bodyRows: updateLastEditedTime(bodyRows, rowId),
+		},
+	};
+};
+
+export const updateFooterCell = (
+	prevState: TableState,
+	cellId: string,
+	key: keyof FooterCell,
+	value: unknown
+) => {
+	const { footerCells } = prevState.model;
+	return {
+		...prevState,
+		model: {
+			...prevState.model,
+			footerCells: footerCells.map((cell) => {
+				if (cell.id === cellId) {
+					return {
+						...cell,
+						[key as keyof FooterCell]: value,
+					};
+				}
+				return cell;
+			}),
 		},
 	};
 };

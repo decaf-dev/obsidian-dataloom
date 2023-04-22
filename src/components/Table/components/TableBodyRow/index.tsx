@@ -58,13 +58,15 @@ export const TableBodyRow = ({ row }: TableRowProps) => {
 		}
 
 		setTableState((prevState) => {
-			const { rows, columns } = prevState.model;
-			const rowsCopy = [...rows];
+			const { bodyRows, columns } = prevState.model;
+			const rowsCopy = [...bodyRows];
 
-			const draggedElIndex = rows.findIndex(
+			const draggedElIndex = bodyRows.findIndex(
 				(row) => row.id === draggedId
 			);
-			const targetElIndex = rows.findIndex((row) => row.id == targetId);
+			const targetElIndex = bodyRows.findIndex(
+				(row) => row.id == targetId
+			);
 
 			//Move the actual element
 			let temp = rowsCopy[targetElIndex];
@@ -81,7 +83,7 @@ export const TableBodyRow = ({ row }: TableRowProps) => {
 				...prevState,
 				model: {
 					...prevState.model,
-					rows: rowsCopy,
+					bodyRows: rowsCopy,
 					columns: columns.map((column) => {
 						//If we're sorting, reset the sort
 						return {

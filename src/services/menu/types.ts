@@ -24,5 +24,5 @@ export interface CloseMenuRequest {
 
 export interface MenuPosition {
 	position: Position;
-	containerRef: React.MutableRefObject<any | null>;
+	positionRef: React.MutableRefObject<any | null>;
 }

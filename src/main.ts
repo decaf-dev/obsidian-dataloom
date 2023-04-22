@@ -5,8 +5,8 @@ import NLTSettingsTab from "./NLTSettingsTab";
 import { store } from "./services/redux/store";
 import { setDarkMode, setDebugMode } from "./services/redux/globalSlice";
 import { NLTView, NOTION_LIKE_TABLES_VIEW } from "./NLTView";
-import TableFile from "./services/file/TableFile";
-import { TABLE_EXTENSION } from "./services/file/constants";
+import TableFile from "./services/io/TableFile";
+import { TABLE_EXTENSION } from "./services/io/constants";
 
 export interface NLTSettings {
 	shouldDebug: boolean;
