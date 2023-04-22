@@ -260,6 +260,7 @@ export default function BodyCell({
 			>
 				{columnType === CellType.TEXT && (
 					<TextCellEdit
+						shouldWrapOverflow={shouldWrapOverflow}
 						value={markdown}
 						isMenuVisible={isMenuVisible}
 						onChange={handleTextInputChange}

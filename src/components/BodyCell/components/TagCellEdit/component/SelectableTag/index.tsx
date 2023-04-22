@@ -3,7 +3,7 @@ import TagColorMenu from "src/components/BodyCell/components/TagColorMenu";
 import { IconType } from "src/services/icon/types";
 import { MenuLevel } from "src/services/menu/types";
 import { useMenu } from "src/services/menu/hooks";
-import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
+import { useAppDispatch } from "src/services/redux/hooks";
 import {
 	openMenu,
 	closeTopLevelMenu,
