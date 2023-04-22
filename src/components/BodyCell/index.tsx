@@ -182,10 +182,6 @@ export default function BodyCell({
 		onContentChange(cellId, rowId, value);
 	}
 
-	function handleDateChange(value: string) {
-		onContentChange(cellId, rowId, value);
-	}
-
 	function handleCheckboxChange(value: string) {
 		onContentChange(cellId, rowId, value);
 	}
