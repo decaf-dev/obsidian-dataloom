@@ -89,12 +89,13 @@ export default function FunctionCell({
 		const cellValues = columnCells
 			.filter((cell) => cell.markdown !== "")
 			.map((cell) => parseFloat(cell.markdown));
-		content = getNumberFunctionContent(
-			cellValues,
-			cellType,
-			currencyType,
-			functionType
-		);
+		if (cellValues.length !== 0)
+			content = getNumberFunctionContent(
+				cellValues,
+				cellType,
+				currencyType,
+				functionType
+			);
 	}
 
 	return (
