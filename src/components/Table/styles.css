@@ -8,6 +8,10 @@
     padding-bottom: var(--size-4-4);
 }
 
+.NLT__table-inner--mobile {
+	padding-bottom: var(--size-4-12);
+}
+
 .NLT__table {
 	table-layout: fixed;
 	border-collapse: collapse;

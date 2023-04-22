@@ -54,6 +54,7 @@ import NewRowButton from "./components/NewRowButton";
 import NewColumnButton from "./components/NewColumnButton";
 import { GeneralFunction } from "./services/tableState/types";
 import { NumberFunction } from "./services/tableState/types";
+import { Platform } from "obsidian";
 
 const FILE_NAME = "App";
 
@@ -405,6 +406,12 @@ export default function App({ onSaveTableState }: Props) {
 
 	const visibleColumns = columns.filter((column) => column.isVisible);
 
+	const isMobile = Platform.isMobile || Platform.isMobileApp;
+	let innerClassName = "NLT__table-inner";
+	if (isMobile) {
+		innerClassName += " NLT__table-inner--mobile";
+	}
+
 	return (
 		<div className="NLT__app">
 			<OptionBar
@@ -414,7 +421,7 @@ export default function App({ onSaveTableState }: Props) {
 				onSortRemoveClick={handleSortRemoveClick}
 			/>
 			<div className="NLT__table-outer">
-				<div className="NLT__table-inner">
+				<div className={innerClassName}>
 					<Table
 						headerRows={headerRows.map((row) => {
 							return {
