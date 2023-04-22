@@ -292,6 +292,7 @@ export default function BodyCell({
 				{columnType === CellType.DATE && (
 					<DateCellEdit
 						isMenuVisible={isMenuVisible}
+						menuPosition={menuPosition}
 						value={dateTime}
 						closeMenuRequestTime={closeMenuRequestTime}
 						dateFormat={dateFormat}
