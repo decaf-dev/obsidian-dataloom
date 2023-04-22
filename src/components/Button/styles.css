@@ -6,6 +6,7 @@
     color: var(--text-normal);
     margin-right: 0;
     cursor: pointer;
+    width: unset;
 }
 
 .NLT__button--icon { 
