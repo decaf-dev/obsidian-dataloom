@@ -16,18 +16,13 @@ export const isTopLevelMenu = (state: RootState, menuId: string) =>
 
 export const getElementPosition = (el: HTMLElement | null): Position => {
 	if (el) {
-		const { top, left } = el.getBoundingClientRect();
-		//We use offsetWidth, and offsetHeight instead of the width and height of the rectangle
-		//because we want whole values to match what we set as the column width.
-		//This will make sure that the rendered cell and the input cell are the same size
-		const { offsetWidth, offsetHeight } = el;
+		const { top, left, width, height } = el.getBoundingClientRect();
 
-		//Set position to the current position of the cell
 		return {
-			width: offsetWidth,
-			height: offsetHeight,
-			top,
-			left,
+			width: Math.round(width),
+			height: Math.round(height),
+			top: Math.round(top),
+			left: Math.round(left),
 		};
 	}
 	return {
@@ -67,9 +62,9 @@ export const shiftMenuIntoViewContent = (
 
 		if (menu) {
 			const menuContainerEl = menu.firstChild as HTMLElement;
-			const { offsetWidth, offsetHeight } = menuContainerEl;
-			menuElWidth = offsetWidth;
-			menuElHeight = offsetHeight;
+			const { width, height } = menuContainerEl.getBoundingClientRect();
+			menuElWidth = Math.round(width);
+			menuElHeight = Math.round(height);
 
 			//It takes 2 renders to calculate the correct position for the menu.
 			//When you first open the menu, the menu container is set to the width and height of the menuPositionRef.
