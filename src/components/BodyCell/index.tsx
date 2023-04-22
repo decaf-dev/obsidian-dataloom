@@ -217,7 +217,9 @@ export default function BodyCell({
 	if (
 		columnType === CellType.TAG ||
 		columnType === CellType.MULTI_TAG ||
-		columnType === CellType.DATE
+		columnType === CellType.DATE ||
+		columnType === CellType.NUMBER ||
+		columnType === CellType.CURRENCY
 	) {
 		menuHeight = 0;
 	}
