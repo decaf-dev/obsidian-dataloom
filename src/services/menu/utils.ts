@@ -1,5 +1,5 @@
 import { RootState } from "../redux/store";
-import { MenuPosition, Position } from "./types";
+import { Position } from "./types";
 
 export const isMenuOpen = (state: RootState, menuId: string) =>
 	state.menu.openMenus.find((menu) => menu.id === menuId) != null;
@@ -71,11 +71,12 @@ export const shiftMenuIntoViewContent = (
 			menuElWidth = offsetWidth;
 			menuElHeight = offsetHeight;
 
-			//It 2 renders to calculate the correct position for the menu
+			//It takes 2 renders to calculate the correct position for the menu.
 			//When you first open the menu, the menu container is set to the width and height of the menuPositionRef.
 			//The menu, however, can have a width or height greater than this if `maxContent` is set.
-			//Therefore we render the menu with visibility set to hidden. Then we useForceUpdate to force a re-render.
-			//The menu is now available in the DOM and we can progamatically get the width and height of the menu.
+			//Therefore we render the menu with visibility set to hidden. Then we use the useForceUpdate hook to force a re-render.
+			//The menu is now available in the DOM and we can progamatically get the width and height of the menu to
+			//shift it into the view container.
 			menuContainerEl.toggleVisibility(true);
 		}
 
@@ -93,8 +94,6 @@ const moveElementIntoContainer = (
 	containerPosition: Position,
 	elementPosition: Position
 ): Position => {
-	console.log("Container", containerPosition);
-	console.log("Element", elementPosition);
 	// Check if elementPosition is already inside containerPosition
 	if (
 		elementPosition.top >= containerPosition.top &&
@@ -104,47 +103,39 @@ const moveElementIntoContainer = (
 		elementPosition.left + elementPosition.width <=
 			containerPosition.left + containerPosition.width
 	) {
-		console.log("RETURNING!");
 		return elementPosition;
 	}
 
-	// Shift elementPosition to the top of containerPosition if it's below
+	// Shift up if the element is below
 	if (
 		elementPosition.top + elementPosition.height >
 		containerPosition.top + containerPosition.height
 	) {
-		console.log("BELOW");
 		elementPosition.top =
 			containerPosition.top +
 			containerPosition.height -
 			elementPosition.height;
 	}
 
-	// Shift elementPosition to the left of containerPosition if it's to the right
+	// Shift left if the element is to the right
 	if (
 		elementPosition.left + elementPosition.width >
 		containerPosition.left + containerPosition.width
 	) {
-		console.log("RIGHT");
 		elementPosition.left =
 			containerPosition.left +
 			containerPosition.width -
 			elementPosition.width;
 	}
 
-	// Shift elementPosition to the bottom of containerPosition if it's above
+	//Shift down if the element is above
 	if (elementPosition.top < containerPosition.top) {
-		console.log("ABOVE");
 		elementPosition.top = containerPosition.top;
 	}
 
-	// Shift elementPosition to the right of containerPosition if it's to the left
+	//Shift right if the element is to the left
 	if (elementPosition.left < containerPosition.left) {
-		console.log("LEFT");
 		elementPosition.left = containerPosition.left;
 	}
-
-	console.log("RESULT", elementPosition);
-
 	return elementPosition;
 };
