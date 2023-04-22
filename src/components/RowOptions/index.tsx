@@ -37,8 +37,8 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 		menu.id,
 		menuPosition.positionRef.current,
 		menuPosition.position,
-		menuPosition.position.height,
-		0
+		0,
+		-95
 	);
 
 	return (
