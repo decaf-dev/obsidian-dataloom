@@ -25,6 +25,7 @@ interface Props {
 	dateFormat: DateFormat;
 	currencyType: CurrencyType;
 	rowId: string;
+	isMenuVisible: boolean;
 	cellId: string;
 	markdown: string;
 	shouldWrapOverflow: boolean;
@@ -45,7 +46,7 @@ interface Props {
 export default function HeaderMenu({
 	isOpen,
 	id,
-	rowId,
+	isMenuVisible,
 	top,
 	left,
 	cellId,
@@ -102,7 +103,7 @@ export default function HeaderMenu({
 			<div className="NLT__header-menu">
 				{submenu === null && (
 					<BaseMenu
-						rowId={rowId}
+						isMenuVisible={isMenuVisible}
 						cellId={cellId}
 						columnName={markdown}
 						columnType={columnType}

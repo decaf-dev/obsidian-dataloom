@@ -1,18 +1,27 @@
+import { useFocusInput } from "src/services/hooks";
 import "./styles.css";
 
 interface Props {
+	isMenuVisible: boolean;
 	value: string;
-	onInputChange: (value: string) => void;
+	onChange: (value: string) => void;
 }
 
-export default function NumberCellEdit({ value, onInputChange }: Props) {
+export default function NumberCellEdit({
+	isMenuVisible,
+	value,
+	onChange,
+}: Props) {
+	const inputRef = useFocusInput(isMenuVisible);
+
 	return (
 		<div className="NLT__number-cell-edit">
 			<input
+				ref={inputRef}
 				type="number"
 				autoFocus
 				value={value}
-				onChange={(e) => onInputChange(e.target.value)}
+				onChange={(e) => onChange(e.target.value)}
 			/>
 		</div>
 	);

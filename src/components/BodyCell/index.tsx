@@ -40,7 +40,6 @@ import CurrencyCell from "./components/CurrencyCell";
 import CurrencyCellEdit from "./components/CurrencyCellEdit";
 import {
 	getCloseMenuRequestTime,
-	isMenuOpen,
 	shiftMenuIntoViewContent,
 } from "src/services/menu/utils";
 
@@ -107,7 +106,7 @@ export default function BodyCell({
 	onDateTimeChange,
 	onAddTag,
 }: Props) {
-	const { menu, menuPosition, isMenuOpen } = useMenu(
+	const { menu, menuPosition, isMenuOpen, isMenuVisible } = useMenu(
 		MenuLevel.ONE,
 		columnType === CellType.DATE
 	);
@@ -266,18 +265,21 @@ export default function BodyCell({
 				{columnType === CellType.TEXT && (
 					<TextCellEdit
 						value={markdown}
-						onInputChange={handleTextInputChange}
+						isMenuVisible={isMenuVisible}
+						onChange={handleTextInputChange}
 					/>
 				)}
 				{columnType === CellType.NUMBER && (
 					<NumberCellEdit
 						value={markdown}
-						onInputChange={handleNumberInputChange}
+						isMenuVisible={isMenuVisible}
+						onChange={handleNumberInputChange}
 					/>
 				)}
 				{(columnType === CellType.TAG ||
 					columnType === CellType.MULTI_TAG) && (
 					<TagCellEdit
+						isMenuVisible={isMenuVisible}
 						tags={tags}
 						cellId={cellId}
 						onTagColorChange={onTagColorChange}
@@ -289,6 +291,7 @@ export default function BodyCell({
 				)}
 				{columnType === CellType.DATE && (
 					<DateCellEdit
+						isMenuVisible={isMenuVisible}
 						value={dateTime}
 						closeMenuRequestTime={closeMenuRequestTime}
 						dateFormat={dateFormat}
@@ -299,8 +302,9 @@ export default function BodyCell({
 				)}
 				{columnType === CellType.CURRENCY && (
 					<CurrencyCellEdit
+						isMenuVisible={isMenuVisible}
 						value={markdown}
-						onInputChange={handleCurrencyChange}
+						onChange={handleCurrencyChange}
 					/>
 				)}
 			</Menu>

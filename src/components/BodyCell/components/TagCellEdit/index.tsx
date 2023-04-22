@@ -14,6 +14,7 @@ import { Color } from "src/services/color/types";
 interface Props {
 	tags: TagType[];
 	cellId: string;
+	isMenuVisible: boolean;
 	onTagClick: (tagId: string) => void;
 	onAddTag: (markdown: string, color: Color) => void;
 	onRemoveTag: (tagId: string) => void;
@@ -24,6 +25,7 @@ interface Props {
 export default function TagCellEdit({
 	tags,
 	cellId,
+	isMenuVisible,
 	onTagClick,
 	onAddTag,
 	onTagColorChange,
@@ -51,6 +53,7 @@ export default function TagCellEdit({
 		<div className="NLT__tag-menu">
 			<div className="NLT__tag-menu-container">
 				<MenuHeader
+					isMenuVisible={isMenuVisible}
 					isDarkMode={isDarkMode}
 					cellId={cellId}
 					inputText={inputText}

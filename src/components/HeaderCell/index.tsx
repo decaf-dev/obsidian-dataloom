@@ -65,7 +65,9 @@ export default function HeaderCell({
 	onCurrencyChange,
 	onDateFormatChange,
 }: Props) {
-	const { menu, menuPosition, isMenuOpen } = useMenu(MenuLevel.ONE);
+	const { menu, menuPosition, isMenuOpen, isMenuVisible } = useMenu(
+		MenuLevel.ONE
+	);
 	const dispatch = useAppDispatch();
 	const [updateTime, forceUpdate] = useForceUpdate();
 
@@ -134,6 +136,7 @@ export default function HeaderCell({
 		>
 			<HeaderMenu
 				isOpen={isMenuOpen}
+				isMenuVisible={isMenuVisible}
 				top={top}
 				left={left}
 				id={menu.id}
