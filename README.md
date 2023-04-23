@@ -38,6 +38,8 @@ To get started all you need to do is to create a table.
 
 You can do this by clicking on the table icon on the sidebar
 
+<img width="378" alt="Obsidian Sidebar" src="https://user-images.githubusercontent.com/40307803/233815916-c2c43dc6-5a99-4810-901a-d1e3cce97be0.png">
+
 ## Hot Keys
 
 | Name             | Windows                    | Mac                       |
