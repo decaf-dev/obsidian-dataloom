@@ -81,7 +81,8 @@ export class NLTView extends TextFileView {
 			//Navigate to Notion-Like-Tables settings
 			(this.app as any).setting.openTabById("notion-like-tables");
 		});
-		this.addAction("download", "Export", () => {});
+
+		//this.addAction("download", "Export", () => {});
 
 		this.addAction("import", "Import", () => {
 			new NLTImportModal(this.app).open();
