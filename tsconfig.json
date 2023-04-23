@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
+    "baseUrl": "./",
     "inlineSourceMap": true,
     "inlineSources": true,
     "module": "ESNext",
@@ -19,7 +19,7 @@
       "ES6",
       "ES7",
       "ES2021.String"
-    ]
+    ],
   },
   "include": [
     "**/*.ts",

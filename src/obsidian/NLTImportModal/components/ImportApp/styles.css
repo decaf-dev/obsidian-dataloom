@@ -1,0 +1,18 @@
+.NLT__import-app {
+    margin-top: 20px;
+}
+
+.NLT__import-app .error-text {
+    font-size: 12px;
+    color: var(--text-error);
+    visibility: hidden;
+}
+
+.NLT__import-app .error-text--visible {
+    visibility: visible;
+}
+
+.NLT__import-app label {
+    font-size: 0.8rem;
+    font-weight: 600;
+}

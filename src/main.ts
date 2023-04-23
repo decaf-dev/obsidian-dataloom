@@ -7,6 +7,9 @@ import { setDarkMode, setDebugMode } from "./services/redux/globalSlice";
 import { NLTView, NOTION_LIKE_TABLES_VIEW } from "./NLTView";
 import TableFile from "./services/io/TableFile";
 import { TABLE_EXTENSION } from "./services/io/constants";
+import Json from "./services/io/Json";
+import { addColumn } from "./services/tableState/column";
+import { addRow } from "./services/tableState/row";
 
 export interface NLTSettings {
 	shouldDebug: boolean;
@@ -103,24 +106,57 @@ export default class NLTPlugin extends Plugin {
 			name: "Create table",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "=" }],
 			callback: async () => {
-				this.createTableFile();
+				await this.createTableFile();
 			},
 		});
-		//TODO implement
+
+		this.addCommand({
+			id: "nlt-add-column",
+			name: "Add column",
+			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "\\" }],
+			checkCallback: (checking: boolean) => {
+				const view = this.app.workspace.getActiveViewOfType(NLTView);
+				if (view) {
+					if (!checking) {
+						const data = view.getViewData();
+						const tableState = Json.deserializeTableState(data);
+						const updatedState = addColumn(tableState);
+						const serialized =
+							Json.serializeTableState(updatedState);
+						view.setViewData(serialized, true);
+					}
+					return true;
+				}
+				return false;
+			},
+		});
+
+		this.addCommand({
+			id: "nlt-add-row",
+			name: "Add row",
+			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Enter" }],
+			checkCallback: (checking: boolean) => {
+				const view = this.app.workspace.getActiveViewOfType(NLTView);
+				if (view) {
+					if (!checking) {
+						const data = view.getViewData();
+						const tableState = Json.deserializeTableState(data);
+						const updatedState = addRow(tableState);
+						const serialized =
+							Json.serializeTableState(updatedState);
+						view.setViewData(serialized, true);
+					}
+					return true;
+				}
+				return false;
+			},
+		});
+
 		// this.addCommand({
-		// 	id: "nlt-add-column",
-		// 	name: "Add column to focused table",
-		// 	hotkeys: [{ modifiers: ["Mod", "Shift"], key: "\\" }],
-		// 	callback: async () => {
-		// 	},
-		// });
-		//TODO implement
-		// this.addCommand({
-		// 	id: "nlt-add-row",
-		// 	name: "Add row to focused table",
+		// 	id: "nlt-delete-last-row",
+		// 	name: "Delete last row",
 		// 	hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Enter" }],
-		// 	callback: async () => {
-		// 	},
+		// 	callback: async () => {},
 		// });
 	}
 
