@@ -6,6 +6,7 @@ import Json from "./services/io/Json";
 import { store } from "./services/redux/store";
 import { TableState } from "./services/tableState/types";
 import TableStateProvider from "./services/tableState/useTableState";
+import NLTImportModal from "./obsidian/NLTImportModal";
 
 export const NOTION_LIKE_TABLES_VIEW = "notion-like-tables";
 
@@ -79,6 +80,11 @@ export class NLTView extends TextFileView {
 			(this.app as any).setting.open();
 			//Navigate to Notion-Like-Tables settings
 			(this.app as any).setting.openTabById("notion-like-tables");
+		});
+		this.addAction("download", "Export", () => {});
+
+		this.addAction("import", "Import", () => {
+			new NLTImportModal(this.app).open();
 		});
 	}
 
