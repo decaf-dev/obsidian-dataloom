@@ -8,14 +8,17 @@ Notion-Like Tables is your premiere tool for creating and managing tabular data 
 
 ![Obsidian Downloads](https://img.shields.io/badge/dynamic/json?logo=obsidian&color=%23483699&label=downloads&query=%24%5B%22notion-like-tables%22%5D.downloads&url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json) ![Release Version](https://img.shields.io/github/v/release/trey-wallis/obsidian-notion-like-tables)
 
-https://user-images.githubusercontent.com/40307803/233739359-1de10f4f-a850-4c75-996c-9cc4257d5d36.mov
+<video controls>
+    <source src="https://user-images.githubusercontent.com/40307803/233739359-1de10f4f-a850-4c75-996c-9cc4257d5d36.mov">
+</video>
 
 [Lastest release notes](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/6.4.2)
 
 ## About
 
 -   [Installation](#installation)
--   [Create a table](#create-a-table)
+-   [Getting Started](#getting-started)
+-   [Hot Keys](#hot-keys)
 -   [Features](#features)
 -   [Settings](#settings)
 -   [Known Issues](#known-issues)
@@ -31,10 +34,19 @@ https://user-images.githubusercontent.com/40307803/233739359-1de10f4f-a850-4c75-
 -   Click `Browse` and search for `Notion-Like Tables`
 -   Click `Install` then `Enable`
 
-## Create a Table
+## Getting Started
 
--   Click the table icon on the action bar
--   Or press `ctrl + p` (Windows) or `cmd + p` (Mac) on your keyboard and search `Create table`
+To get started all you need to do is to create a table.
+
+You can do this by clicking on the table icon on the sidebar
+
+## Hot Keys
+
+| Name             | Windows                    | Mac                       |
+| ---------------- | -------------------------- | ------------------------- |
+| Create new table | `ctrl` + `shift` + `=`     | `cmd` + `shift` + `=`     |
+| Add new column   | `ctrl` + `shift` + `\`     | `cmd` + `shift` + `\`     |
+| Add new row      | `ctrl` + `shift` + `enter` | `cmd` + `shift` + `enter` |
 
 ## Features
 
@@ -59,14 +71,15 @@ https://user-images.githubusercontent.com/40307803/233739359-1de10f4f-a850-4c75-
 -   Drag and drop rows - drag a row to above another row to have them change positions
 -   Sticky headers - headers will remain visible as you scroll
 -   Function cells - allows you to make calculations based on column data. If the column cell type is set to number or currency, you have arithmetic operations available such as: min, max, range, median, sum, and average
+-   Import modal - allows you to create cells from markdown data
 
 ## Settings
 
-| Name                                                      | Value     |
-| --------------------------------------------------------- | --------- |
-| Create new tables in attachment folder                    | `Boolean` |
-| Custom location for new tables                            | `String`  |
-| Create table name based on active file name and timestamp | `Boolean` |
+| Name                                                      | Value         |
+| --------------------------------------------------------- | ------------- |
+| Create new tables in attachment folder                    | `true/false`  |
+| Custom location for new tables                            | `folder path` |
+| Create table name based on active file name and timestamp | `true/false`  |
 
 ## Known Issues
 
