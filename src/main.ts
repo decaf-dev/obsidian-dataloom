@@ -1,4 +1,4 @@
-import { Plugin } from "obsidian";
+import { Plugin, TFolder } from "obsidian";
 
 import NLTSettingsTab from "./NLTSettingsTab";
 
@@ -96,6 +96,20 @@ export default class NLTPlugin extends Plugin {
 		this.registerEvent(
 			this.app.workspace.on("css-change", () => {
 				this.checkForDarkMode();
+			})
+		);
+
+		this.registerEvent(
+			this.app.workspace.on("file-menu", (menu, file) => {
+				if (file instanceof TFolder) {
+					menu.addItem((item) => {
+						item.setTitle("New Notion-Like table")
+							.setIcon("document")
+							.onClick(async () => {
+								await TableFile.createFileInFolder(file.path);
+							});
+					});
+				}
 			})
 		);
 	}

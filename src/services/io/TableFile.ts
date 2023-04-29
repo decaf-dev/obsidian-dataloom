@@ -48,6 +48,15 @@ async function getAvailableTablePath({
 }
 
 export default class TableFile {
+	static async createFileInFolder(folderPath: string) {
+		const tableState = mockTableState(1, 1);
+		const serialized = Json.serializeTableState(tableState);
+		const filePath = (app.vault as VaultExt).getAvailablePath(
+			`${folderPath}/${DEFAULT_TABLE_FILENAME}`,
+			TABLE_EXTENSION
+		);
+		return await FileOperations.createFile(filePath, serialized);
+	}
 	static async createNotionLikeTableFile(
 		params: GetAvailableTablePathParams
 	) {
