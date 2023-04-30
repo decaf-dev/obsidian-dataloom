@@ -4,7 +4,7 @@ import { BodyRow, TableState } from "./types";
 export const addRow = (prevState: TableState): TableState => {
 	const { bodyRows, bodyCells, columns } = prevState.model;
 	const newRow = StateFactory.createBodyRow(bodyRows.length);
-	const cellsCopy = [...bodyCells];
+	const cellsCopy = structuredClone(bodyCells);
 
 	columns.forEach((column) => {
 		const newCell = StateFactory.createBodyCell(column.id, newRow.id);

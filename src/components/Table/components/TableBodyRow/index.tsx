@@ -59,7 +59,7 @@ export const TableBodyRow = ({ row }: TableRowProps) => {
 
 		setTableState((prevState) => {
 			const { bodyRows, columns } = prevState.model;
-			const rowsCopy = [...bodyRows];
+			const rowsCopy = structuredClone(bodyRows);
 
 			const draggedElIndex = bodyRows.findIndex(
 				(row) => row.id === draggedId

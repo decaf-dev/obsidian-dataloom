@@ -30,7 +30,7 @@ const sortByMarkdown = (
 	cells: BodyCell[],
 	sortDir: SortDir
 ): BodyRow[] => {
-	const rowsCopy = [...rows];
+	const rowsCopy = structuredClone(rows);
 	rowsCopy.sort((a, b) => {
 		const cellA = cells.find(
 			(c) => c.columnId === columnId && c.rowId === a.id
@@ -69,7 +69,7 @@ const sortByNumber = (
 	cells: BodyCell[],
 	sortDir: SortDir
 ): BodyRow[] => {
-	const rowsCopy = [...rows];
+	const rowsCopy = structuredClone(rows);
 	rowsCopy.sort((a, b) => {
 		const cellA = cells.find(
 			(c) => c.columnId === columnId && c.rowId === a.id
@@ -108,7 +108,7 @@ const sortByCheckbox = (
 	cells: BodyCell[],
 	sortDir: SortDir
 ): BodyRow[] => {
-	const rowsCopy = [...rows];
+	const rowsCopy = structuredClone(rows);
 	rowsCopy.sort((a, b) => {
 		const cellA = cells.find(
 			(c) => c.columnId === columnId && c.rowId === a.id
@@ -146,7 +146,7 @@ export const sortByDate = (
 	cells: BodyCell[],
 	sortDir: SortDir
 ): BodyRow[] => {
-	const rowsCopy = [...rows];
+	const rowsCopy = structuredClone(rows);
 	rowsCopy.sort((a, b) => {
 		const cellA = cells.find(
 			(c) => c.columnId === columnId && c.rowId === a.id
@@ -178,7 +178,7 @@ export const sortByCreationTime = (
 	rows: BodyRow[],
 	sortDir: SortDir
 ): BodyRow[] => {
-	const rowsCopy = [...rows];
+	const rowsCopy = structuredClone(rows);
 	rowsCopy.sort((a, b) => {
 		if (sortDir === SortDir.ASC) {
 			return a.creationTime - b.creationTime;
@@ -192,7 +192,7 @@ export const sortByCreationTime = (
 };
 
 const sortByLastEditedTime = (rows: BodyRow[], sortDir: SortDir): BodyRow[] => {
-	const rowsCopy = [...rows];
+	const rowsCopy = structuredClone(rows);
 	rowsCopy.sort((a, b) => {
 		if (sortDir === SortDir.ASC) {
 			return a.lastEditedTime - b.lastEditedTime;
@@ -206,7 +206,7 @@ const sortByLastEditedTime = (rows: BodyRow[], sortDir: SortDir): BodyRow[] => {
 };
 
 export const sortByRowIndex = (rows: BodyRow[]): BodyRow[] => {
-	const rowsCopy = [...rows];
+	const rowsCopy = structuredClone(rows);
 	rowsCopy.sort((a, b) => {
 		return a.index - b.index;
 	});

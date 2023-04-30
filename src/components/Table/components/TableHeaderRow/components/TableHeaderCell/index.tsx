@@ -43,8 +43,8 @@ export default function TableHeaderCell({
 			throw new Error("data-column-id is required for a header cell");
 
 		setTableState((prevState) => {
-			const { columns, bodyRows, bodyCells } = prevState.model;
-			const columnsCopy = [...columns];
+			const { columns } = prevState.model;
+			const columnsCopy = structuredClone(columns);
 
 			const draggedElIndex = columns.findIndex(
 				(column) => column.id === draggedId

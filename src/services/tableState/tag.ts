@@ -15,7 +15,7 @@ export const addNewTag = (
 ) => {
 	const { tags, bodyRows } = prevState.model;
 
-	const tagsCopy = [...tags];
+	const tagsCopy = structuredClone(tags);
 
 	if (!canAddMultiple) {
 		const tag = tagsCopy.find((t) => t.cellIds.find((c) => c === cellId));
@@ -45,7 +45,7 @@ export const removeCellFromTag = (
 ) => {
 	const { tags, bodyRows } = prevState.model;
 
-	const tagsCopy = [...tags];
+	const tagsCopy = structuredClone(tags);
 	const tag = tagsCopy.find((t) => t.id === tagId);
 
 	if (!tag) throw new TagIdError(tagId);
@@ -71,7 +71,7 @@ export const addCellToTag = (
 	canAddMultiple: boolean
 ): TableState => {
 	const { tags, bodyRows } = prevState.model;
-	const tagsCopy = [...tags];
+	const tagsCopy = structuredClone(tags);
 
 	if (!canAddMultiple) {
 		const tag = tagsCopy.find((t) => t.cellIds.find((c) => c == cellId));
@@ -104,7 +104,7 @@ export const updateTagColor = (
 	newColor: Color
 ): TableState => {
 	const { tags } = prevState.model;
-	const tagsCopy = [...tags];
+	const tagsCopy = structuredClone(tags);
 	const index = tagsCopy.findIndex((t) => t.id === tagId);
 	tagsCopy[index].color = newColor;
 	return {
