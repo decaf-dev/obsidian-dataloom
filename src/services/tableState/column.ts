@@ -14,12 +14,12 @@ export const addColumn = (prevState: TableState): TableState => {
 	} = prevState.model;
 
 	//Add column
-	const columnsCopy = [...columns];
+	const columnsCopy = structuredClone(columns);
 	const newColumn = StateFactory.createColumn();
 	columnsCopy.push(newColumn);
 
 	//Add header cells
-	const headerCellsCopy = [...headerCells];
+	const headerCellsCopy = structuredClone(headerCells);
 
 	headerRows.forEach((row, i) => {
 		headerCellsCopy.push(
@@ -28,14 +28,14 @@ export const addColumn = (prevState: TableState): TableState => {
 	});
 
 	//Add bdoy cells
-	const bodyCellsCopy = [...bodyCells];
+	const bodyCellsCopy = structuredClone(bodyCells);
 
 	bodyRows.forEach((row, i) => {
 		bodyCellsCopy.push(StateFactory.createBodyCell(newColumn.id, row.id));
 	});
 
 	//Add footer cells
-	const footerCellsCopy = [...footerCells];
+	const footerCellsCopy = structuredClone(footerCells);
 
 	footerRows.forEach((row, i) => {
 		footerCellsCopy.push(
@@ -62,7 +62,7 @@ export const sortOnColumn = (
 ): TableState => {
 	const { columns } = prevState.model;
 
-	let columnsCopy = [...columns];
+	let columnsCopy = structuredClone(columns);
 	columnsCopy = columnsCopy.map((column) => {
 		if (column.id === columnId) {
 			return {
@@ -152,7 +152,7 @@ export const changeColumnType = (
 	//If same type return
 	if (previousType === newType) return prevState;
 
-	let tagsCopy = [...tags];
+	let tagsCopy = structuredClone(tags);
 
 	if (
 		(previousType === CellType.MULTI_TAG && newType !== CellType.TAG) ||
