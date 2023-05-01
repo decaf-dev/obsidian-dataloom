@@ -13,7 +13,7 @@ import {
 	createFooterCell,
 	createFooterRow,
 	createHeaderRow,
-} from "./tableState";
+} from "./modifyTableState";
 
 export const serializeTableState = (tableState: TableState): string => {
 	return JSON.stringify(tableState, null, 2);

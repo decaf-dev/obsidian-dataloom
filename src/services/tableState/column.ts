@@ -6,7 +6,7 @@ import {
 	createFooterCell,
 	createHeaderCell,
 	createTag,
-} from "src/data/tableState";
+} from "src/data/modifyTableState";
 
 export const addColumn = (prevState: TableState): TableState => {
 	const {

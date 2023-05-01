@@ -6,7 +6,7 @@ import ImportApp from "../react/ImportApp";
 import {
 	deserializeTableState,
 	serializeTableState,
-} from "src/data/tableStateIO";
+} from "src/data/serializeTableState";
 
 export default class NLTImportModal extends Modal {
 	root: Root;

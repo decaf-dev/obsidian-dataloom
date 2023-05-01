@@ -1,4 +1,4 @@
-import { createTableState } from "src/data/tableState";
+import { createTableState } from "src/data/modifyTableState";
 import {
 	getMarkdownListItems,
 	importMarkdownListItems,

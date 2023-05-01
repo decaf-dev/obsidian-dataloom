@@ -2,7 +2,7 @@ import { Color } from "../../shared/types";
 import { TagIdError } from "./error";
 import { updateLastEditedTime } from "./row";
 import { TableState } from "../../data/types";
-import { createTag } from "src/data/tableState";
+import { createTag } from "src/data/modifyTableState";
 
 export const addNewTag = (
 	prevState: TableState,

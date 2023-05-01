@@ -11,8 +11,8 @@ import { addRow } from "./services/tableState/row";
 import {
 	deserializeTableState,
 	serializeTableState,
-} from "./data/tableStateIO";
-import { createNewTableFile } from "./data/TableFile";
+} from "./data/serializeTableState";
+import { createTableFile } from "src/data/tableFile";
 
 export interface NLTSettings {
 	shouldDebug: boolean;
@@ -79,7 +79,7 @@ export default class NLTPlugin extends Plugin {
 			folderPath = this.settings.customFolderForNewTables;
 		}
 
-		const filePath = await createNewTableFile({
+		const filePath = await createTableFile({
 			folderPath,
 			useActiveFileNameAndTimestamp:
 				this.settings.nameWithActiveFileNameAndTimestamp,

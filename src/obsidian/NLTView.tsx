@@ -9,7 +9,7 @@ import NLTImportModal from "./NLTImportModal";
 import {
 	deserializeTableState,
 	serializeTableState,
-} from "src/data/tableStateIO";
+} from "src/data/serializeTableState";
 
 export const NOTION_LIKE_TABLES_VIEW = "notion-like-tables";
 

@@ -1,8 +1,8 @@
 import { Notice, MarkdownView } from "obsidian";
 import { moment } from "obsidian";
 import { createFile, createFolder } from "./fileOperations";
-import { createTableState } from "./tableState";
-import { serializeTableState } from "./tableStateIO";
+import { createTableState } from "./modifyTableState";
+import { serializeTableState } from "./serializeTableState";
 import { DEFAULT_TABLE_NAME, TABLE_EXTENSION } from "./constants";
 
 const getFilePath = (folderPath: string): string => {
@@ -29,7 +29,7 @@ const getFileName = (useActiveFileNameAndTimestamp: boolean): string => {
 	return `${fileName}.${TABLE_EXTENSION}`;
 };
 
-export const createNewTableFile = async (options: {
+export const createTableFile = async (options: {
 	folderPath: string;
 	useActiveFileNameAndTimestamp: boolean;
 }) => {

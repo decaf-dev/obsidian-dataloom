@@ -1,4 +1,4 @@
-import { createBodyCell, createBodyRow } from "src/data/tableState";
+import { createBodyCell, createBodyRow } from "src/data/modifyTableState";
 import { BodyRow, TableState } from "../../data/types";
 
 export const addRow = (prevState: TableState): TableState => {
