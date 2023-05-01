@@ -5,7 +5,7 @@ import { setSearchText, toggleSearchBar } from "src/redux/global/global-slice";
 import { useAppDispatch, useAppSelector } from "src/redux/global/hooks";
 
 import "./styles.css";
-import { IconType } from "src/shared/types";
+import { IconType } from "src/react/shared/icon/types";
 
 export default function SearchBar() {
 	const { searchText, isSearchBarVisible } = useAppSelector(

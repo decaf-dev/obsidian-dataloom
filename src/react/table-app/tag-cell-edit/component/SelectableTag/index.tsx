@@ -13,7 +13,8 @@ import "./styles.css";
 import Button from "src/react/shared/button";
 import Icon from "src/react/shared/icon";
 import Tag from "src/react/shared/tag";
-import { Color, IconType } from "src/shared/types";
+import { IconType } from "src/react/shared/icon/types";
+import { Color } from "src/shared/types";
 import { shiftMenuIntoViewContent } from "src/redux/menu/utils";
 
 interface Props {

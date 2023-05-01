@@ -2,7 +2,7 @@ import React from "react";
 import { findIcon } from "./utils";
 
 import "./styles.css";
-import { IconType } from "src/shared/types";
+import { IconType } from "./types";
 
 interface Props {
 	type: IconType;

@@ -27,7 +27,6 @@ export const createFile = async (
 		return filePathWithIteration;
 	} catch (err: unknown) {
 		const error = err as Error;
-		console.log(error.message);
 
 		if (error.message.includes("File already exists")) {
 			return createFile(filePath, data, numExisting + 1);

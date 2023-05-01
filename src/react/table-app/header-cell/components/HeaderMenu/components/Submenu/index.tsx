@@ -3,7 +3,7 @@ import Divider from "src/react/shared/divider";
 import Icon from "src/react/shared/icon";
 import Padding from "src/react/shared/padding";
 import Stack from "src/react/shared/stack";
-import { IconType } from "src/shared/types";
+import { IconType } from "src/react/shared/icon/types";
 
 interface Props {
 	title: string;

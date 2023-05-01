@@ -1,4 +1,4 @@
-import { IconType } from "src/shared/types";
+import { IconType } from "src/react/shared/icon/types";
 import Button from "../../shared/button";
 import Icon from "../../shared/icon";
 

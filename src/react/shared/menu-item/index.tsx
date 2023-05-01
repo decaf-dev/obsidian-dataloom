@@ -4,7 +4,7 @@ import Flex from "../flex";
 import Text from "../text";
 
 import "./styles.css";
-import { IconType } from "src/shared/types";
+import { IconType } from "src/react/shared/icon/types";
 
 interface Props {
 	iconType?: IconType;

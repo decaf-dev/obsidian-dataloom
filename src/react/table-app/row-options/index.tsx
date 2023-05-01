@@ -9,7 +9,7 @@ import { MenuLevel } from "src/redux/menu/types";
 import { useAppDispatch } from "src/redux/global/hooks";
 import RowMenu from "./components/RowMenu";
 import { shiftMenuIntoViewContent } from "src/redux/menu/utils";
-import { IconType } from "src/shared/types";
+import { IconType } from "src/react/shared/icon/types";
 
 interface Props {
 	rowId: string;

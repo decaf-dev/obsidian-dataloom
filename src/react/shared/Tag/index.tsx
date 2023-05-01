@@ -1,7 +1,8 @@
 import Icon from "../icon";
 import Button from "../button";
 import Stack from "../stack";
-import { Color, IconType } from "src/shared/types";
+import { Color } from "src/shared/types";
+import { IconType } from "src/react/shared/icon/types";
 import { findColorClassName } from "src/shared/colors";
 
 import "./styles.css";

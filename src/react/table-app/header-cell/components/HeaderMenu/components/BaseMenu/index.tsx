@@ -6,7 +6,7 @@ import { CellType, SortDir } from "src/data/types";
 import { getDisplayNameForCellType } from "src/shared/table-state/utils";
 import { SubmenuType } from "../../types";
 import { useFocusInput } from "src/shared/hooks";
-import { IconType } from "src/shared/types";
+import { IconType } from "src/react/shared/icon/types";
 
 interface Props {
 	isMenuVisible: boolean;

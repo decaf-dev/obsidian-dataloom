@@ -9,7 +9,8 @@ import Stack from "../../shared/stack";
 import MenuItem from "../../shared/menu-item";
 
 import "./styles.css";
-import { Color, IconType } from "src/shared/types";
+import { IconType } from "src/react/shared/icon/types";
+import { Color } from "src/shared/types";
 import Padding from "src/react/shared/padding";
 
 interface Props {

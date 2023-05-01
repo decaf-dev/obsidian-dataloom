@@ -1,6 +1,6 @@
 import { findColorClassName } from "src/shared/colors";
 import { Color } from "src/shared/types";
-import { uppercaseFirst } from "src/shared/utils";
+import { uppercaseFirst } from "src/shared/stringUtils";
 import "./styles.css";
 
 interface Props {

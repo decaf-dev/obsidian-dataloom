@@ -7,7 +7,7 @@ import { MenuLevel } from "src/redux/menu/types";
 import Icon from "src/react/shared/icon";
 import { ToggleColumn } from "./types";
 import { shiftMenuIntoViewContent } from "src/redux/menu/utils";
-import { IconType } from "src/shared/types";
+import { IconType } from "src/react/shared/icon/types";
 
 interface Props {
 	onToggle: (id: string) => void;

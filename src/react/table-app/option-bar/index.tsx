@@ -19,7 +19,6 @@ interface SortButtonListProps {
 }
 
 const SortBubbleList = ({ bubbles, onRemoveClick }: SortButtonListProps) => {
-	const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
 	return (
 		<Stack spacing="sm">
 			{bubbles.map((bubble, i) => (

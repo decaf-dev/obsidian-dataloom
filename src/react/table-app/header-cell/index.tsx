@@ -15,7 +15,7 @@ import HeaderMenu from "./components/HeaderMenu";
 import { useResizeColumn } from "./services/hooks";
 import { useCompare, useForceUpdate } from "src/shared/hooks";
 import { shiftMenuIntoViewContent } from "src/redux/menu/utils";
-import { getIconTypeFromCellType } from "src/shared/icon";
+import { getIconTypeFromCellType } from "src/react/shared/icon/utils";
 
 interface Props {
 	cellId: string;

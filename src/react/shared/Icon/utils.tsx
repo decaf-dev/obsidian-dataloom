@@ -33,7 +33,8 @@ import {
 	DragIndicator,
 	ViewColumnOutlined,
 } from "@mui/icons-material";
-import { IconType } from "src/shared/types";
+import { IconType } from "./types";
+import { CellType } from "src/data/types";
 
 export const findIcon = (
 	type: IconType,
@@ -108,5 +109,29 @@ export const findIcon = (
 			return <ViewColumnOutlined className={className} />;
 		default:
 			return "";
+	}
+};
+
+export const getIconTypeFromCellType = (type: CellType) => {
+	switch (type) {
+		case CellType.TEXT:
+			return IconType.NOTES;
+		case CellType.NUMBER:
+			return IconType.NUMBERS;
+		case CellType.CHECKBOX:
+			return IconType.CHECK;
+		case CellType.CREATION_TIME:
+		case CellType.LAST_EDITED_TIME:
+			return IconType.SCHEDULE;
+		case CellType.TAG:
+			return IconType.LABEL;
+		case CellType.MULTI_TAG:
+			return IconType.LIST;
+		case CellType.DATE:
+			return IconType.SCHEDULE;
+		case CellType.CURRENCY:
+			return IconType.PAYMENTS;
+		default:
+			return IconType.NOTES;
 	}
 };
