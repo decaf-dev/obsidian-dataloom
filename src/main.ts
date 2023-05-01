@@ -1,18 +1,18 @@
 import { Plugin, TFolder } from "obsidian";
 
-import NLTSettingsTab from "./obsidian/NLTSettingsTab";
+import NLTSettingsTab from "./obsidian/nlt-settings-tab";
 
-import { store } from "./services/redux/store";
-import { setDarkMode, setDebugMode } from "./services/redux/globalSlice";
-import { NLTView, NOTION_LIKE_TABLES_VIEW } from "./obsidian/NLTView";
+import { store } from "./redux/global/store";
+import { setDarkMode, setDebugMode } from "./redux/global/global-slice";
+import { NLTView, NOTION_LIKE_TABLES_VIEW } from "./obsidian/nlt-view";
 import { TABLE_EXTENSION } from "./data/constants";
-import { addColumn } from "./services/tableState/column";
-import { addRow } from "./services/tableState/row";
+import { addColumn } from "./shared/table-state/column";
+import { addRow } from "./shared/table-state/row";
 import {
 	deserializeTableState,
 	serializeTableState,
-} from "./data/serializeTableState";
-import { createTableFile } from "src/data/tableFile";
+} from "./data/serialize-table-state";
+import { createTableFile } from "src/data/table-file";
 
 export interface NLTSettings {
 	shouldDebug: boolean;

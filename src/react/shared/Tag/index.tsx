@@ -1,12 +1,10 @@
-import { IconType } from "src/services/icon/types";
-
-import "./styles.css";
-import Icon from "../Icon";
-import Button from "../Button";
-import Stack from "../Stack";
-import { Color } from "src/shared/types";
+import Icon from "../icon";
+import Button from "../button";
+import Stack from "../stack";
+import { Color, IconType } from "src/shared/types";
 import { findColorClassName } from "src/shared/colors";
 
+import "./styles.css";
 interface Props {
 	isDarkMode: boolean;
 	id?: string;

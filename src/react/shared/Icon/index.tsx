@@ -1,8 +1,8 @@
 import React from "react";
-import { IconType } from "src/services/icon/types";
-import { findIcon } from "./services/utils";
+import { findIcon } from "./utils";
 
 import "./styles.css";
+import { IconType } from "src/shared/types";
 
 interface Props {
 	type: IconType;

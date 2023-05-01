@@ -5,12 +5,12 @@ import {
 	closeAllMenus,
 	closeTopLevelMenu,
 	requestCloseTopLevelMenu,
-} from "src/services/menu/menuSlice";
-import { useAppDispatch, useAppSelector } from "src/services/redux/hooks";
-import { numToPx } from "src/services/string/conversion";
+} from "src/redux/menu/menu-slice";
+import { useAppDispatch, useAppSelector } from "src/redux/global/hooks";
+import { numToPx } from "src/shared/conversion";
 
 import "./styles.css";
-import { isTopLevelMenu } from "src/services/menu/utils";
+import { isTopLevelMenu } from "src/redux/menu/utils";
 
 interface Props {
 	id: string;
