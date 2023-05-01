@@ -97,16 +97,11 @@ export default class NLTPlugin extends Plugin {
 	}
 
 	private checkForDarkMode() {
-		store.dispatch(setDarkMode(this.hasDarkTheme()));
-	}
-
-	private hasDarkTheme = () => {
+		let hasDarkTheme = false;
 		const el = document.querySelector("body");
-		if (el) {
-			return el.className.includes("theme-dark");
-		}
-		return false;
-	};
+		if (el) hasDarkTheme = el.className.includes("theme-dark");
+		store.dispatch(setDarkMode(hasDarkTheme));
+	}
 
 	registerEvents() {
 		this.registerEvent(
