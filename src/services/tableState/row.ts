@@ -1,13 +1,13 @@
-import StateFactory from "./StateFactory";
-import { BodyRow, TableState } from "./types";
+import { createBodyCell, createBodyRow } from "src/data/tableState";
+import { BodyRow, TableState } from "../../data/types";
 
 export const addRow = (prevState: TableState): TableState => {
 	const { bodyRows, bodyCells, columns } = prevState.model;
-	const newRow = StateFactory.createBodyRow(bodyRows.length);
+	const newRow = createBodyRow(bodyRows.length);
 	const cellsCopy = structuredClone(bodyCells);
 
 	columns.forEach((column) => {
-		const newCell = StateFactory.createBodyCell(column.id, newRow.id);
+		const newCell = createBodyCell(column.id, newRow.id);
 		cellsCopy.push(newCell);
 	});
 

@@ -1,6 +1,12 @@
 import { ColumnIdError } from "./error";
-import StateFactory from "./StateFactory";
-import { CellType, Column, TableState, SortDir } from "./types";
+import { CellType, Column, TableState, SortDir } from "../../data/types";
+import {
+	createBodyCell,
+	createColumn,
+	createFooterCell,
+	createHeaderCell,
+	createTag,
+} from "src/data/tableState";
 
 export const addColumn = (prevState: TableState): TableState => {
 	const {
@@ -15,32 +21,28 @@ export const addColumn = (prevState: TableState): TableState => {
 
 	//Add column
 	const columnsCopy = structuredClone(columns);
-	const newColumn = StateFactory.createColumn();
+	const newColumn = createColumn();
 	columnsCopy.push(newColumn);
 
 	//Add header cells
 	const headerCellsCopy = structuredClone(headerCells);
 
 	headerRows.forEach((row, i) => {
-		headerCellsCopy.push(
-			StateFactory.createHeaderCell(newColumn.id, row.id)
-		);
+		headerCellsCopy.push(createHeaderCell(newColumn.id, row.id));
 	});
 
 	//Add bdoy cells
 	const bodyCellsCopy = structuredClone(bodyCells);
 
 	bodyRows.forEach((row, i) => {
-		bodyCellsCopy.push(StateFactory.createBodyCell(newColumn.id, row.id));
+		bodyCellsCopy.push(createBodyCell(newColumn.id, row.id));
 	});
 
 	//Add footer cells
 	const footerCellsCopy = structuredClone(footerCells);
 
 	footerRows.forEach((row, i) => {
-		footerCellsCopy.push(
-			StateFactory.createFooterCell(newColumn.id, row.id)
-		);
+		footerCellsCopy.push(createFooterCell(newColumn.id, row.id));
 	});
 
 	return {
@@ -192,9 +194,7 @@ export const changeColumnType = (
 					return;
 				}
 
-				tagsCopy.push(
-					StateFactory.createTag(columnId, cell.id, markdown)
-				);
+				tagsCopy.push(createTag(columnId, cell.id, markdown));
 			});
 		});
 	}

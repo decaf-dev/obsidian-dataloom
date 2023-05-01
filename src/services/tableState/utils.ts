@@ -5,7 +5,7 @@ import {
 	FunctionType,
 	GeneralFunction,
 	NumberFunction,
-} from "./types";
+} from "../../data/types";
 
 export const isGeneralFunction = (
 	value: GeneralFunction | NumberFunction

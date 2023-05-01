@@ -1,6 +1,6 @@
 import { MarkdownRenderer } from "obsidian";
 import { useEffect, useRef } from "react";
-import { NLTView, NOTION_LIKE_TABLES_VIEW } from "src/NLTView";
+import { NLTView, NOTION_LIKE_TABLES_VIEW } from "src/obsidian/NLTView";
 import { handleLinkClick } from "./embed";
 import { replaceNewLinesWithBreakTag } from "./utils";
 

@@ -1,8 +1,8 @@
-import { Color } from "../color/types";
+import { Color } from "../../shared/types";
 import { TagIdError } from "./error";
 import { updateLastEditedTime } from "./row";
-import StateFactory from "./StateFactory";
-import { TableState } from "./types";
+import { TableState } from "../../data/types";
+import { createTag } from "src/data/tableState";
 
 export const addNewTag = (
 	prevState: TableState,
@@ -26,7 +26,7 @@ export const addNewTag = (
 		}
 	}
 
-	tagsCopy.push(StateFactory.createTag(columnId, cellId, markdown, color));
+	tagsCopy.push(createTag(columnId, cellId, markdown, color));
 	return {
 		...prevState,
 		model: {

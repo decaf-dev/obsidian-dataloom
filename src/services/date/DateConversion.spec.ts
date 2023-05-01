@@ -1,4 +1,4 @@
-import { DateFormat } from "../tableState/types";
+import { DateFormat } from "../../data/types";
 import DateConversion from "./DateConversion";
 
 describe("isValidDateFormat", () => {

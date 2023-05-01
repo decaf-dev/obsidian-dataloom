@@ -1,5 +1,5 @@
 import { Dispatch, createContext, useContext, useState } from "react";
-import { TableState } from "./types";
+import { TableState } from "../../data/types";
 
 interface Props {
 	initialState: TableState;

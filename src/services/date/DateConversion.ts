@@ -1,4 +1,4 @@
-import { DateFormat } from "../tableState/types";
+import { DateFormat } from "../../data/types";
 import { MILLIS_IN_DAY } from "./constants";
 import { DD_MM_YYYY_REGEX, MM_DD_YYYY_REGEX, YYYY_MM_DD_REGEX } from "./regex";
 import {

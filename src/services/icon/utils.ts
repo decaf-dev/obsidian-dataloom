@@ -1,4 +1,4 @@
-import { CellType } from "../tableState/types";
+import { CellType } from "../../data/types";
 import { IconType } from "./types";
 
 export const getIconTypeFromCellType = (type: CellType) => {
