@@ -1,11 +1,11 @@
 import { splitFileExtension } from "./utils";
 
-export const createFolder = async (folderPath: string): Promise<boolean> => {
+export const createFolder = async (folderPath: string): Promise<void> => {
 	try {
-		await app.vault.createFolder(folderPath);
-		return true;
+		if (app.vault.getAbstractFileByPath(folderPath) == null)
+			await app.vault.createFolder(folderPath);
 	} catch (err) {
-		return false;
+		throw err;
 	}
 };
 
@@ -19,13 +19,15 @@ export const createFile = async (
 		if (filePathExtension == null)
 			throw new SyntaxError("File must include an extension");
 
-		const numIterations = numExisting > 0 ? " " + (numExisting - 1) : "";
+		const numIterations = numExisting > 0 ? " " + numExisting : "";
 		const filePathWithIteration =
 			filePathExtension[0] + numIterations + filePathExtension[1];
-		await app.vault.create(filePath, data);
+
+		await app.vault.create(filePathWithIteration, data);
 		return filePathWithIteration;
 	} catch (err: unknown) {
 		const error = err as Error;
+		console.log(error.message);
 
 		if (error.message.includes("File already exists")) {
 			return createFile(filePath, data, numExisting + 1);

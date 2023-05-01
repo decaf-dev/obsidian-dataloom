@@ -5,14 +5,6 @@ import { createTableState } from "./modifyTableState";
 import { serializeTableState } from "./serializeTableState";
 import { DEFAULT_TABLE_NAME, TABLE_EXTENSION } from "./constants";
 
-const getFilePath = (folderPath: string): string => {
-	//TODO implement
-	//Custom folder
-	//Attachments folder
-	//Or current folder
-	return "";
-};
-
 const getFileName = (useActiveFileNameAndTimestamp: boolean): string => {
 	let fileName = DEFAULT_TABLE_NAME;
 
@@ -34,14 +26,16 @@ export const createTableFile = async (options: {
 	useActiveFileNameAndTimestamp: boolean;
 }) => {
 	try {
-		const filePath = getFilePath(options.folderPath);
 		//Create folder if it doesn't exist
-		await createFolder(options.folderPath);
+		if (options.folderPath !== "") await createFolder(options.folderPath);
 
 		const fileName = getFileName(options.useActiveFileNameAndTimestamp);
 		const tableState = createTableState(1, 1);
 		const serialized = serializeTableState(tableState);
-		return await createFile(filePath + "/" + fileName, serialized);
+		return await createFile(
+			options.folderPath + "/" + fileName,
+			serialized
+		);
 	} catch (err) {
 		new Notice("Could not create Notion-Like table");
 		throw err;
