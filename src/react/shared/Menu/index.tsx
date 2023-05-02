@@ -54,8 +54,12 @@ export default function Menu({
 
 	useEffect(() => {
 		if (isOpen) {
-			window.addEventListener("keyup", handleKeyUp);
-			window.addEventListener("mousedown", handleMouseDown);
+			//Wait for 200ms before add the event handlers
+			//This is to prevent the menu closing when we open it using the enter key
+			setTimeout(() => {
+				window.addEventListener("keyup", handleKeyUp);
+				window.addEventListener("mousedown", handleMouseDown);
+			}, 200);
 		}
 
 		return () => {
