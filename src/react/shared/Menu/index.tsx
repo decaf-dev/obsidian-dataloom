@@ -27,8 +27,8 @@ export default function Menu({
 	isOpen,
 	top = 0,
 	left = 0,
-	width = 0,
-	height = 0,
+	width = "max-content",
+	height = "max-content",
 	children,
 }: Props) {
 	const isTopLevel = useAppSelector((state) => isTopLevelMenu(state, id));
