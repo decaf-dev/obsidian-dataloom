@@ -1,15 +1,18 @@
 import { Plugin, TFolder } from "obsidian";
 
-import NLTSettingsTab from "./NLTSettingsTab";
+import NLTSettingsTab from "./obsidian/nlt-settings-tab";
 
-import { store } from "./services/redux/store";
-import { setDarkMode, setDebugMode } from "./services/redux/globalSlice";
-import { NLTView, NOTION_LIKE_TABLES_VIEW } from "./NLTView";
-import TableFile from "./services/io/TableFile";
-import { TABLE_EXTENSION } from "./services/io/constants";
-import Json from "./services/io/Json";
-import { addColumn } from "./services/tableState/column";
-import { addRow } from "./services/tableState/row";
+import { store } from "./redux/global/store";
+import { setDarkMode, setDebugMode } from "./redux/global/global-slice";
+import { NLTView, NOTION_LIKE_TABLES_VIEW } from "./obsidian/nlt-view";
+import { TABLE_EXTENSION } from "./data/constants";
+import { addColumn } from "./shared/table-state/column";
+import { addRow } from "./shared/table-state/row";
+import {
+	deserializeTableState,
+	serializeTableState,
+} from "./data/serialize-table-state";
+import { createTableFile } from "src/data/table-file";
 
 export interface NLTSettings {
 	shouldDebug: boolean;
@@ -51,7 +54,7 @@ export default class NLTPlugin extends Plugin {
 		this.registerExtensions([TABLE_EXTENSION], NOTION_LIKE_TABLES_VIEW);
 
 		this.addRibbonIcon("table", "Create Notion-Like table", async () => {
-			await this.createTableFile();
+			await this.newTableFile(null);
 		});
 
 		this.addSettingTab(new NLTSettingsTab(this.app, this));
@@ -64,15 +67,28 @@ export default class NLTPlugin extends Plugin {
 		});
 	}
 
-	private async createTableFile() {
-		const tableFile = await TableFile.createNotionLikeTableFile(
-			this.settings
-		);
+	private async newTableFile(contextMenuFolderPath: string | null) {
+		let folderPath = "";
+		if (contextMenuFolderPath) {
+			folderPath = contextMenuFolderPath;
+		} else if (this.settings.createAtObsidianAttachmentFolder) {
+			folderPath = (this.app.vault as any).getConfig(
+				"attachmentFolderPath"
+			);
+		} else {
+			folderPath = this.settings.customFolderForNewTables;
+		}
+
+		const filePath = await createTableFile({
+			folderPath,
+			useActiveFileNameAndTimestamp:
+				this.settings.nameWithActiveFileNameAndTimestamp,
+		});
 		//Open file in a new tab and set it to active
 		await app.workspace.getLeaf(true).setViewState({
 			type: NOTION_LIKE_TABLES_VIEW,
 			active: true,
-			state: { file: tableFile.path },
+			state: { file: filePath },
 		});
 	}
 
@@ -81,16 +97,11 @@ export default class NLTPlugin extends Plugin {
 	}
 
 	private checkForDarkMode() {
-		store.dispatch(setDarkMode(this.hasDarkTheme()));
-	}
-
-	private hasDarkTheme = () => {
+		let hasDarkTheme = false;
 		const el = document.querySelector("body");
-		if (el) {
-			return el.className.includes("theme-dark");
-		}
-		return false;
-	};
+		if (el) hasDarkTheme = el.className.includes("theme-dark");
+		store.dispatch(setDarkMode(hasDarkTheme));
+	}
 
 	registerEvents() {
 		this.registerEvent(
@@ -106,7 +117,7 @@ export default class NLTPlugin extends Plugin {
 						item.setTitle("New Notion-Like table")
 							.setIcon("document")
 							.onClick(async () => {
-								await TableFile.createFileInFolder(file.path);
+								await this.newTableFile(file.path);
 							});
 					});
 				}
@@ -120,7 +131,7 @@ export default class NLTPlugin extends Plugin {
 			name: "Create table",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "=" }],
 			callback: async () => {
-				await this.createTableFile();
+				await this.newTableFile(null);
 			},
 		});
 
@@ -133,10 +144,9 @@ export default class NLTPlugin extends Plugin {
 				if (view) {
 					if (!checking) {
 						const data = view.getViewData();
-						const tableState = Json.deserializeTableState(data);
+						const tableState = deserializeTableState(data);
 						const updatedState = addColumn(tableState);
-						const serialized =
-							Json.serializeTableState(updatedState);
+						const serialized = serializeTableState(updatedState);
 						view.setViewData(serialized, true);
 					}
 					return true;
@@ -154,10 +164,9 @@ export default class NLTPlugin extends Plugin {
 				if (view) {
 					if (!checking) {
 						const data = view.getViewData();
-						const tableState = Json.deserializeTableState(data);
+						const tableState = deserializeTableState(data);
 						const updatedState = addRow(tableState);
-						const serialized =
-							Json.serializeTableState(updatedState);
+						const serialized = serializeTableState(updatedState);
 						view.setViewData(serialized, true);
 					}
 					return true;

@@ -1,1 +1,0 @@
-export const CURRENT_PLUGIN_VERSION = 650;
