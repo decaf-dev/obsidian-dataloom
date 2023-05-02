@@ -69,6 +69,9 @@ interface Props {
 export default function TableApp({ onSaveTableState }: Props) {
 	const { searchText, sortTime } = useAppSelector((state) => state.global);
 	const [tableState, setTableState] = useTableState();
+	const hasMenuOpen = useAppSelector(
+		(state) => state.menu.openMenus.length !== 0
+	);
 
 	const { shouldDebug } = useAppSelector((state) => state.global);
 	const dispatch = useAppDispatch();
@@ -80,6 +83,55 @@ export default function TableApp({ onSaveTableState }: Props) {
 	useDidMountEffect(() => {
 		onSaveTableState(tableState);
 	}, [tableState]);
+
+	useEffect(() => {
+		function handleKeyDown(e: KeyboardEvent) {
+			//Don't allow tabbing functionality by arrows if a menu is open
+			if (hasMenuOpen) {
+				if (e.key === "Tab") e.preventDefault();
+				return;
+			}
+			if (
+				e.key === "ArrowLeft" ||
+				e.key === "ArrowRight" ||
+				e.key === "ArrowUp" ||
+				e.key === "ArrowDown"
+			) {
+				e.preventDefault();
+
+				let focusedEl = document.activeElement;
+				if (focusedEl) {
+					const tabbableEls =
+						document.querySelectorAll(".NLT__focusable");
+					const index = Array.from(tabbableEls).indexOf(focusedEl);
+					switch (e.key) {
+						// case "ArrowUp":
+						// 	if (index - 3 >= 0)
+						// 		focusedEl = tabbableEls[index - 3];
+						// 	break;
+						case "ArrowLeft":
+							if (index - 1 >= 0)
+								focusedEl = tabbableEls[index - 1];
+							break;
+						case "ArrowRight":
+							if (index + 1 < tabbableEls.length)
+								focusedEl = tabbableEls[index + 1];
+							break;
+						// case "ArrowDown":
+						// 	if (index + 3 < tabbableEls.length)
+						// 		focusedEl = tabbableEls[index + 3];
+						// 	break;
+					}
+					(focusedEl as HTMLElement).focus();
+				}
+			}
+		}
+
+		window.addEventListener("keydown", handleKeyDown);
+		return () => {
+			window.removeEventListener("keydown", handleKeyDown);
+		};
+	}, [hasMenuOpen]);
 
 	useEffect(() => {
 		if (sortTime !== 0) {

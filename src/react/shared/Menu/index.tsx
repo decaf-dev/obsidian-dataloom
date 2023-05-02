@@ -17,8 +17,8 @@ interface Props {
 	isOpen: boolean;
 	top?: number;
 	left?: number;
-	width?: number;
-	height?: number;
+	width?: string | number;
+	height?: string | number;
 	children: React.ReactNode;
 }
 
@@ -68,6 +68,20 @@ export default function Menu({
 		};
 	}, [isOpen, isTopLevel]);
 
+	let menuWidth = "";
+	if (typeof width === "number") {
+		menuWidth = numToPx(width);
+	} else if (typeof width === "string") {
+		menuWidth = width;
+	}
+
+	let menuHeight = "";
+	if (typeof height === "number") {
+		menuHeight = numToPx(height);
+	} else if (typeof height === "string") {
+		menuHeight = height;
+	}
+
 	return (
 		<>
 			{isOpen &&
@@ -79,14 +93,8 @@ export default function Menu({
 								visibility: "hidden",
 								top: numToPx(top),
 								left: numToPx(left),
-								width:
-									width === 0
-										? "max-content"
-										: numToPx(width),
-								height:
-									height === 0
-										? "max-content"
-										: numToPx(height),
+								width: menuWidth,
+								height: menuHeight,
 							}}
 						>
 							{children}
