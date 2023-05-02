@@ -19,7 +19,7 @@ export default function Button({
 	onClick,
 	onMouseDown,
 }: Props) {
-	let className = "NLT__button";
+	let className = "NLT__button NLT__focusable";
 	if (icon !== undefined) className += " NLT__button--icon";
 	if (isSimple) className += " NLT__button--simple";
 

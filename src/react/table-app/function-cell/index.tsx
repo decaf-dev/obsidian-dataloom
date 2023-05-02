@@ -101,7 +101,8 @@ export default function FunctionCell({
 	return (
 		<>
 			<div
-				className="NLT__function-cell NLT__selectable"
+				tabIndex={0}
+				className="NLT__function-cell NLT__selectable NLT__focusable"
 				style={{
 					width,
 				}}

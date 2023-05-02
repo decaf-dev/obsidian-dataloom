@@ -129,6 +129,25 @@ export default function BodyCell({
 		}
 	}
 
+	function handleKeyDown(e: React.KeyboardEvent) {
+		if (e.code === "Enter") {
+			if (columnType === CellType.CHECKBOX) {
+				const isChecked = isCheckboxChecked(markdown);
+
+				if (isChecked) {
+					handleCheckboxChange(CHECKBOX_MARKDOWN_UNCHECKED);
+				} else {
+					handleCheckboxChange(CHECKBOX_MARKDOWN_CHECKED);
+				}
+			} else if (
+				columnType !== CellType.CREATION_TIME &&
+				columnType !== CellType.LAST_EDITED_TIME
+			) {
+				dispatch(openMenu(menu));
+			}
+		}
+	}
+
 	function handleCellClick(e: React.MouseEvent) {
 		if (columnType === CellType.CHECKBOX) {
 			const isChecked = isCheckboxChecked(markdown);
@@ -226,7 +245,7 @@ export default function BodyCell({
 		menuWidth = 175;
 	}
 
-	let className = "NLT__td-container";
+	let className = "NLT__td-container NLT__focusable";
 	if (
 		columnType === CellType.LAST_EDITED_TIME ||
 		columnType === CellType.CREATION_TIME
@@ -239,9 +258,11 @@ export default function BodyCell({
 
 	return (
 		<div
+			tabIndex={0}
 			ref={menuPosition.positionRef}
 			onClick={handleCellClick}
 			onContextMenu={handleCellContextClick}
+			onKeyDown={handleKeyDown}
 			className={className}
 			style={{
 				width,

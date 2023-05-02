@@ -122,7 +122,8 @@ export default function HeaderCell({
 
 	return (
 		<div
-			className="NLT__th-container"
+			tabIndex={0}
+			className="NLT__th-container NLT__focusable"
 			ref={menuPosition.positionRef}
 			onClick={handleHeaderClick}
 			style={{

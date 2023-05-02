@@ -157,3 +157,7 @@
 .NLT__default-cursor {
 	cursor: default !important;
 }
+
+.NLT__focusable:focus-visible {
+	outline: 2px solid var(--color-accent);
+}
