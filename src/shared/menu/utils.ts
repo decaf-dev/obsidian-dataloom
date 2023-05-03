@@ -1,18 +1,4 @@
-import { RootState } from "../global/store";
 import { Position } from "./types";
-
-export const isMenuOpen = (state: RootState, menuId: string) =>
-	state.menu.openMenus.find((menu) => menu.id === menuId) != null;
-
-export const getCloseMenuRequestTime = (state: RootState, menuId: string) => {
-	if (state.menu.menuRequestingClose?.id === menuId) {
-		return state.menu.menuRequestingClose.requestTime;
-	}
-	return null;
-};
-
-export const isTopLevelMenu = (state: RootState, menuId: string) =>
-	state.menu.openMenus.last()?.id === menuId;
 
 export const getElementPosition = (el: HTMLElement | null): Position => {
 	if (el) {
@@ -33,13 +19,19 @@ export const getElementPosition = (el: HTMLElement | null): Position => {
 	};
 };
 
-export const shiftMenuIntoViewContent = (
-	menuId: string,
-	menuPositionEl: HTMLElement | null,
-	menuPosition: Position,
-	topOffset: number,
-	leftOffset: number
-) => {
+export const shiftMenuIntoViewContent = ({
+	menuId,
+	menuPositionEl,
+	menuPosition,
+	topOffset = 0,
+	leftOffset = 0,
+}: {
+	menuId: string;
+	menuPositionEl: HTMLElement | null;
+	menuPosition: Position;
+	topOffset?: number;
+	leftOffset?: number;
+}) => {
 	//The menuPositionEl will be null on first render since the element is not in the DOM yet
 	if (menuPositionEl !== null) {
 		//Now we want to make sure that this is within bounds
@@ -57,7 +49,7 @@ export const shiftMenuIntoViewContent = (
 		//but the width and height may be different, depending on if the menu is set to `max-content`
 		//Therefore we need to get those values from the menu itself
 		const menu = document.body.querySelector(
-			`#${menuId}`
+			`.NLT__menu[data-menu-id="${menuId}"]`
 		) as HTMLElement | null;
 
 		if (menu) {

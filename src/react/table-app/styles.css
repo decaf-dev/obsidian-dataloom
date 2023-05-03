@@ -163,6 +163,12 @@
 	outline-offset: -2px;
 }
 
-.NLT__button:focus-visible {
+.NLT__focus-visible {
+	outline: 2px solid var(--color-accent);
+	outline-offset: -2px;
+}
+
+/* Disable offset for buttons that don't have icons */
+.NLT__button:not(.NLT__button--icon):focus-visible {
 	outline-offset: 0;
 }

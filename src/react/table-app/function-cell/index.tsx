@@ -1,10 +1,9 @@
 import Text from "../../shared/text";
 import FunctionMenu from "./function-menu";
 
-import { useMenu } from "src/redux/menu/hooks";
-import { MenuLevel } from "src/redux/menu/types";
-import { useAppDispatch } from "src/redux/global/hooks";
-import { shiftMenuIntoViewContent } from "src/redux/menu/utils";
+import { useMenu } from "src/shared/menu/hooks";
+import { MenuLevel } from "src/shared/menu/types";
+import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
 import {
 	BodyCell,
 	BodyRow,
@@ -15,7 +14,6 @@ import {
 	GeneralFunction,
 	Tag,
 } from "src/data/types";
-import { closeTopLevelMenu, openMenu } from "src/redux/menu/menu-slice";
 import Stack from "../../shared/stack";
 import {
 	getShortDisplayNameForFunctionType,
@@ -25,6 +23,8 @@ import { getNumberFunctionContent } from "./numberFunction";
 import { getGeneralFunctionContent } from "./generalFunction";
 
 import "./styles.css";
+import Focusable from "src/react/shared/menu-focus";
+import MenuFocus from "src/react/shared/menu-focus";
 
 interface Props {
 	columnId: string;
@@ -53,23 +53,23 @@ export default function FunctionCell({
 	cellType,
 	onFunctionTypeChange,
 }: Props) {
-	const { menu, menuPosition, isMenuOpen } = useMenu(MenuLevel.ONE);
-	const dispatch = useAppDispatch();
+	const { menu, menuPosition, isMenuOpen, openMenu, closeTopLevelMenu } =
+		useMenu(MenuLevel.ONE);
 
 	function handleFunctionTypeClick(value: FunctionType) {
 		onFunctionTypeChange(cellId, value);
-		dispatch(closeTopLevelMenu());
+		closeTopLevelMenu();
 	}
 
-	const { top, left } = shiftMenuIntoViewContent(
-		menu.id,
-		menuPosition.positionRef.current,
-		menuPosition.position,
-		cellType === CellType.NUMBER || cellType === CellType.CURRENCY
-			? -165
-			: 0,
-		0
-	);
+	const { top, left } = shiftMenuIntoViewContent({
+		menuId: menu.id,
+		menuPositionEl: menuPosition.positionRef.current,
+		menuPosition: menuPosition.position,
+		topOffset:
+			cellType === CellType.NUMBER || cellType === CellType.CURRENCY
+				? -165
+				: 0,
+	});
 
 	const columnCells = bodyCells.filter((cell) => cell.columnId === columnId);
 
@@ -100,30 +100,30 @@ export default function FunctionCell({
 
 	return (
 		<>
-			<div
-				tabIndex={0}
-				className="NLT__function-cell NLT__selectable NLT__focusable"
-				style={{
-					width,
-				}}
-				ref={menuPosition.positionRef}
-				onClick={() => dispatch(openMenu(menu))}
-			>
-				{functionType === GeneralFunction.NONE && (
-					<Text value="Calculate" variant="faint" />
-				)}
-				{functionType !== GeneralFunction.NONE && (
-					<Stack spacing="sm">
-						<Text
-							value={getShortDisplayNameForFunctionType(
-								functionType
-							)}
-							variant="muted"
-						/>
-						<Text value={content} variant="semibold" />
-					</Stack>
-				)}
-			</div>
+			<MenuFocus menuId={menu.id} onMouseUp={() => openMenu(menu)}>
+				<div
+					className="NLT__function-cell NLT__selectable"
+					style={{
+						width,
+					}}
+					ref={menuPosition.positionRef}
+				>
+					{functionType === GeneralFunction.NONE && (
+						<Text value="Calculate" variant="faint" />
+					)}
+					{functionType !== GeneralFunction.NONE && (
+						<Stack spacing="sm">
+							<Text
+								value={getShortDisplayNameForFunctionType(
+									functionType
+								)}
+								variant="muted"
+							/>
+							<Text value={content} variant="semibold" />
+						</Stack>
+					)}
+				</div>
+			</MenuFocus>
 			<FunctionMenu
 				id={menu.id}
 				top={top}

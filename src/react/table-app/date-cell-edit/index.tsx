@@ -1,7 +1,9 @@
-import MenuItem from "src/react/shared/menu-item";
 import { useEffect, useState } from "react";
+
+import MenuItem from "src/react/shared/menu-item";
 import Stack from "src/react/shared/stack";
 import Padding from "src/react/shared/padding";
+
 import {
 	dateStringToUnixTime,
 	isValidDateFormat,
@@ -10,15 +12,13 @@ import {
 import { DateFormat } from "src/data/types";
 import { useCompare, useFocusInput } from "src/shared/hooks";
 import { useAppDispatch } from "src/redux/global/hooks";
-
 import DateFormatMenu from "./components/DateFormatMenu";
-import { useMenu } from "src/redux/menu/hooks";
-import { MenuLevel, MenuPosition } from "src/redux/menu/types";
-import { closeTopLevelMenu, openMenu } from "src/redux/menu/menu-slice";
+import { useMenu } from "src/shared/menu/hooks";
+import { MenuLevel, MenuPosition } from "src/shared/menu/types";
 import { getDisplayNameForDateFormat } from "src/shared/table-state/utils";
+import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
 
 import "./styles.css";
-import { shiftMenuIntoViewContent } from "src/redux/menu/utils";
 
 interface Props {
 	isMenuVisible: boolean;
@@ -48,7 +48,9 @@ export default function DateCellEdit({
 	const [isInputInvalid, setInputInvalid] = useState(false);
 	const [closeTime, setCloseTime] = useState(0);
 
-	const { menu, isMenuOpen } = useMenu(MenuLevel.TWO);
+	const { menu, isMenuOpen, openMenu, closeTopLevelMenu } = useMenu(
+		MenuLevel.TWO
+	);
 	const dispatch = useAppDispatch();
 
 	const inputRef = useFocusInput(isMenuVisible);
@@ -94,7 +96,7 @@ export default function DateCellEdit({
 
 	function handleDateFormatChange(value: DateFormat) {
 		onDateFormatChange(value);
-		dispatch(closeTopLevelMenu());
+		closeTopLevelMenu();
 	}
 
 	function handleClearClick(e: React.MouseEvent) {
@@ -105,13 +107,13 @@ export default function DateCellEdit({
 		onMenuClose();
 	}
 
-	const { top, left } = shiftMenuIntoViewContent(
-		menu.id,
-		menuPosition.positionRef.current,
-		menuPosition.position,
-		50,
-		135
-	);
+	const { top, left } = shiftMenuIntoViewContent({
+		menuId: menu.id,
+		menuPositionEl: menuPosition.positionRef.current,
+		menuPosition: menuPosition.position,
+		topOffset: 50,
+		leftOffset: 135,
+	});
 
 	return (
 		<>
@@ -129,7 +131,7 @@ export default function DateCellEdit({
 					<MenuItem
 						name="Date format"
 						value={getDisplayNameForDateFormat(dateFormat)}
-						onClick={() => dispatch(openMenu(menu))}
+						onClick={() => openMenu(menu)} //TODO add focusable element?
 					/>
 					<MenuItem name="Clear" onClick={handleClearClick} />
 				</Stack>

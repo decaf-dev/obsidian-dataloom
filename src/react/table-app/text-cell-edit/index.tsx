@@ -25,15 +25,6 @@ export default function TextCellEdit({
 		setSelection(value.length);
 	}, []);
 
-	useEffect(() => {
-		window.addEventListener("keydown", handleKeyDown);
-		window.addEventListener("keyup", handleKeyUp);
-		return () => {
-			window.removeEventListener("keydown", handleKeyDown);
-			window.removeEventListener("keyup", handleKeyUp);
-		};
-	}, []);
-
 	function setSelection(pos: number) {
 		if (inputRef.current) {
 			inputRef.current.selectionStart = pos;
@@ -41,12 +32,12 @@ export default function TextCellEdit({
 		}
 	}
 
-	function handleKeyDown(e: KeyboardEvent) {
+	function handleKeyDown(e: React.KeyboardEvent) {
 		if (e.shiftKey) setShiftDown(true);
 		if (e.code === "Enter") setEnterPressed(true);
 	}
 
-	function handleKeyUp(e: KeyboardEvent) {
+	function handleKeyUp(e: React.KeyboardEvent) {
 		if (!e.shiftKey) setShiftDown(false);
 		if (e.code != "Enter") setEnterPressed(false);
 	}
@@ -71,6 +62,8 @@ export default function TextCellEdit({
 			<textarea
 				className={className}
 				ref={inputRef}
+				onKeyDown={handleKeyDown}
+				onKeyUp={handleKeyUp}
 				autoFocus
 				value={value}
 				onChange={(e) => handleTextareaChange(e.target.value)}
