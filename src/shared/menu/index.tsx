@@ -6,6 +6,7 @@ import {
 } from "./focus-visible";
 import { Menu, MenuLevel } from "./types";
 import { menuFocusSelector } from "./utils";
+import { useTableState } from "../table-state/useTableState";
 
 interface ContextProps {
 	openMenus: Menu[];
@@ -32,6 +33,7 @@ interface Props {
 
 export default function MenuProvider({ children }: Props) {
 	const [openMenus, setOpenMenus] = React.useState<Menu[]>([]);
+	const [tableState] = useTableState();
 
 	const isMenuOpen = React.useCallback(() => {
 		return openMenus.length !== 0;
@@ -159,10 +161,24 @@ export default function MenuProvider({ children }: Props) {
 
 					const index = Array.from(tabbableEls).indexOf(focusedEl);
 					switch (e.key) {
-						case "ArrowUp":
-							if (index - 4 >= 0)
-								focusedEl = tabbableEls[index - 4];
+						case "ArrowUp": {
+							//Normal number of columns in a row
+							//Num columns + drag menu cell
+							const numColumns =
+								tableState.model.columns.length + 1;
+							//The function row doesn't have a drag menu cell
+							const numColumnsFunctionRow = numColumns - 1;
+
+							//Handle very last row
+							if (index === tabbableEls.length - 1) {
+								focusedEl =
+									tabbableEls[index - numColumnsFunctionRow];
+							} else if (index - numColumns >= 0) {
+								focusedEl = tabbableEls[index - numColumns];
+								//Handle the last row
+							}
 							break;
+						}
 						case "ArrowLeft":
 							if (index - 1 >= 0)
 								focusedEl = tabbableEls[index - 1];
@@ -172,8 +188,28 @@ export default function MenuProvider({ children }: Props) {
 								focusedEl = tabbableEls[index + 1];
 							break;
 						case "ArrowDown":
-							if (index + 4 < tabbableEls.length)
-								focusedEl = tabbableEls[index + 4];
+							{
+								//This is the "New Row" button
+								const rowIndexEnd = tabbableEls.length - 1;
+
+								//Normal number of columns in a row
+								//Num columns + drag menu cell
+								const numColumns =
+									tableState.model.columns.length + 1;
+								//The last row doesn't have a drag menu cell
+								const numColumnsFunctionRow = numColumns - 1;
+								//Handle until the last 2 rows
+								if (index + numColumns <= rowIndexEnd - 1) {
+									focusedEl = tabbableEls[index + numColumns];
+									//Handle the function row
+								} else if (
+									index >=
+										rowIndexEnd - numColumnsFunctionRow &&
+									index <= rowIndexEnd
+								) {
+									focusedEl = tabbableEls[rowIndexEnd];
+								}
+							}
 							break;
 					}
 					(focusedEl as HTMLElement).focus();
@@ -208,7 +244,7 @@ export default function MenuProvider({ children }: Props) {
 			window.removeEventListener("click", handleClick);
 			window.removeEventListener("keydown", handleKeyDown);
 		};
-	}, [isMenuOpen, openMenu]);
+	}, [isMenuOpen, openMenu, tableState.model.columns.length]);
 
 	return (
 		<MenuContext.Provider
