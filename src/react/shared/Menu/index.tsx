@@ -9,8 +9,8 @@ interface Props {
 	isOpen: boolean;
 	top?: number;
 	left?: number;
-	width?: string | number;
-	height?: string | number;
+	width?: number;
+	height?: number;
 	children: React.ReactNode;
 }
 
@@ -19,8 +19,8 @@ export default function Menu({
 	isOpen,
 	top = 0,
 	left = 0,
-	width = "max-content",
-	height = "max-content",
+	width = 0,
+	height = 0,
 	children,
 }: Props) {
 	return (
@@ -35,13 +35,13 @@ export default function Menu({
 								top: numToPx(top),
 								left: numToPx(left),
 								width:
-									typeof width === "number"
+									width !== 0
 										? numToPx(width)
-										: width,
+										: "max-content",
 								height:
-									typeof height === "number"
+									height !== 0
 										? numToPx(height)
-										: height,
+										: "max-content",
 							}}
 						>
 							{children}

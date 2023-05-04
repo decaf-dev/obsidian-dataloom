@@ -48,18 +48,14 @@ export default function BaseMenu({
 					iconType={IconType.NOTES}
 					name="Type"
 					value={getDisplayNameForCellType(columnType)}
-					onClick={(e) => {
-						//Stop propagation to the MenuContext window listener so that the menu doesn't close
-						e.stopPropagation();
+					onClick={() => {
 						onSubmenuChange(SubmenuType.TYPE);
 					}}
 				/>
 				<MenuItem
 					iconType={IconType.TUNE}
 					name="Options"
-					onClick={(e) => {
-						//Stop propagation to the MenuContext window listener so that the menu doesn't close
-						e.stopPropagation();
+					onClick={() => {
 						onSubmenuChange(SubmenuType.OPTIONS);
 					}}
 				/>

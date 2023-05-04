@@ -51,7 +51,6 @@ export default function DateCellEdit({
 	const { menu, isMenuOpen, openMenu, closeTopLevelMenu } = useMenu(
 		MenuLevel.TWO
 	);
-	const dispatch = useAppDispatch();
 
 	const inputRef = useFocusInput(isMenuVisible);
 
@@ -100,9 +99,6 @@ export default function DateCellEdit({
 	}
 
 	function handleClearClick(e: React.MouseEvent) {
-		//Prevent the menu from reopening when it clsoes
-		e.stopPropagation();
-
 		onDateTimeChange(null);
 		onMenuClose();
 	}

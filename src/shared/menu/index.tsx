@@ -66,25 +66,6 @@ export default function MenuProvider({ children }: Props) {
 		setOpenMenus((prev) => prev.slice(0, prev.length - 1));
 	}
 
-	function printAncestryTree(element: HTMLElement) {
-		let el = element;
-		let ancestryTree = "";
-
-		while (el !== document.body) {
-			ancestryTree = " -> " + '"' + el.className + '"' + ancestryTree;
-			const parent = el.parentElement;
-			if (parent) {
-				el = parent;
-			} else {
-				break;
-			}
-		}
-
-		ancestryTree = "HTML" + ancestryTree;
-
-		console.log(ancestryTree);
-	}
-
 	React.useEffect(() => {
 		function handleClick(e: MouseEvent) {
 			const target = e.target as HTMLElement;
@@ -95,10 +76,10 @@ export default function MenuProvider({ children }: Props) {
 
 				const { id, level } = menu;
 
-				printAncestryTree(target);
-
-				//When you click on a submenu button, the menu will change, however we will still
-				//get the click event
+				//If the menu is not mounted, we don't need to do anything
+				//This can happen when a menu changes
+				const isElementMounted = document.contains(target);
+				if (!isElementMounted) return;
 
 				if (target.closest(`.NLT__menu[data-menu-id="${id}"]`) !== null)
 					return;
