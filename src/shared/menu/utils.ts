@@ -1,4 +1,9 @@
 import { Position } from "./types";
+import { FOCUSABLE_CLASS_NAME, MENU_ID_ATTRIBUTE_NAME } from "./constants";
+
+export const menuFocusSelector = (menuId: string) => {
+	return `.${FOCUSABLE_CLASS_NAME}[${MENU_ID_ATTRIBUTE_NAME}="${menuId}" ]`;
+};
 
 export const getElementPosition = (el: HTMLElement | null): Position => {
 	if (el) {
@@ -48,7 +53,7 @@ export const shiftMenuIntoViewContent = ({
 		//This means that the top and left values of the menu will match the menu container,
 		//but the width and height may be different, depending on if the menu is set to `max-content`
 		//Therefore we need to get those values from the menu itself
-		const menu = document.body.querySelector(
+		const menu = document.querySelector(
 			`.NLT__menu[data-menu-id="${menuId}"]`
 		) as HTMLElement | null;
 

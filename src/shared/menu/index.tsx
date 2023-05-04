@@ -1,6 +1,8 @@
 import React from "react";
 import { addFocusVisibleClass, removeFocusVisibleClass } from "./focus-visible";
 import { Menu, MenuLevel } from "./types";
+import { menuFocusSelector } from "./utils";
+import { FOCUSABLE_CLASS_NAME, MENU_ID_ATTRIBUTE_NAME } from "./constants";
 
 interface ContextProps {
 	openMenus: Menu[];
@@ -38,17 +40,19 @@ export default function MenuProvider({ children }: Props) {
 
 	const openMenu = React.useCallback(
 		(menu: Menu) => {
-			//Only open a new menu is no current menu is open
-			//or if the new menu is a higher level than the previous
+			//A user can open a menu when no other menu is open or if the menu is a higher level
+			//than the current one
 			const canOpen =
 				openMenus.find((m) => m.level < menu.level) ||
 				openMenus.length === 0;
+
 			if (!canOpen) return;
 
 			setOpenMenus((prev) => [...prev, menu]);
-			//Remove any focus. This is necessary when we close a menu,
-			//and the menu has focus and then we click on another menu
-			//and then close it. Without this, we will have 2 items with the class
+
+			//When we close a menu, we add the focus class to the parent element.
+			//If we then click on another menu, we will remove the focus class. Without this,
+			//we will have 2 parent elements that are focused
 			removeFocusVisibleClass();
 		},
 		[openMenus]
@@ -66,10 +70,13 @@ export default function MenuProvider({ children }: Props) {
 				if (!menu) throw new Error("Menu is open but no menu exists");
 
 				const { id, level } = menu;
+
 				//If we didn't click on the current menu then close the menu
 				//and focus the parent
-				if (!target.closest(`.NLT__focusable[data-menu-id="${id}"]`)) {
-					if (level === MenuLevel.ONE) addFocusVisibleClass(id);
+				if (!target.closest(menuFocusSelector(id))) {
+					if (level === MenuLevel.ONE) {
+						addFocusVisibleClass(id);
+					}
 					closeTopLevelMenu();
 				}
 			} else {
@@ -80,12 +87,14 @@ export default function MenuProvider({ children }: Props) {
 		function openMenuFromFocusedEl() {
 			const focusedEl = document.activeElement as HTMLElement;
 			if (focusedEl) {
-				if (focusedEl.className.includes("focusable")) {
-					const id = focusedEl.getAttribute("data-menu-id");
-					if (id)
+				if (focusedEl.className.includes(FOCUSABLE_CLASS_NAME)) {
+					const menuId = focusedEl.getAttribute(
+						MENU_ID_ATTRIBUTE_NAME
+					);
+					if (menuId)
 						setOpenMenus([
 							{
-								id,
+								id: menuId,
 								level: MenuLevel.ONE,
 								shouldRequestOnClose: false,
 							},
@@ -129,8 +138,9 @@ export default function MenuProvider({ children }: Props) {
 				if (focusedEl) {
 					removeFocusVisibleClass();
 
-					const tabbableEls =
-						document.querySelectorAll(".NLT__focusable");
+					const tabbableEls = document.querySelectorAll(
+						`.${FOCUSABLE_CLASS_NAME}`
+					);
 
 					const index = Array.from(tabbableEls).indexOf(focusedEl);
 					switch (e.key) {
