@@ -5,7 +5,6 @@ import {
 	removeFocusVisibleClass,
 } from "./focus-visible";
 import { Menu, MenuLevel } from "./types";
-import { menuFocusSelector } from "./utils";
 import { useTableState } from "../table-state/useTableState";
 
 interface ContextProps {
@@ -67,11 +66,28 @@ export default function MenuProvider({ children }: Props) {
 		setOpenMenus((prev) => prev.slice(0, prev.length - 1));
 	}
 
+	function printAncestryTree(element: HTMLElement) {
+		let el = element;
+		let ancestryTree = "";
+
+		while (el !== document.body) {
+			ancestryTree = " -> " + '"' + el.className + '"' + ancestryTree;
+			const parent = el.parentElement;
+			if (parent) {
+				el = parent;
+			} else {
+				break;
+			}
+		}
+
+		ancestryTree = "HTML" + ancestryTree;
+
+		console.log(ancestryTree);
+	}
+
 	React.useEffect(() => {
 		function handleClick(e: MouseEvent) {
 			const target = e.target as HTMLElement;
-
-			console.log("handleClick");
 
 			if (isMenuOpen()) {
 				const menu = topLevelMenu();
@@ -79,15 +95,26 @@ export default function MenuProvider({ children }: Props) {
 
 				const { id, level } = menu;
 
+				printAncestryTree(target);
+
+				//When you click on a submenu button, the menu will change, however we will still
+				//get the click event
+
+				if (target.closest(`.NLT__menu[data-menu-id="${id}"]`) !== null)
+					return;
+				if (
+					target.closest(`.NLT__focusable[data-menu-id="${id}"]`) !==
+					null
+				)
+					return;
+
 				//If we didn't click on the current menu then close the menu
 				//and focus the parent
-				if (!target.closest(menuFocusSelector(id))) {
-					if (level === MenuLevel.ONE) {
-						focusMenuElement(id);
-						addFocusVisibleClass(id);
-					}
-					closeTopLevelMenu();
+				if (level === MenuLevel.ONE) {
+					focusMenuElement(id);
+					addFocusVisibleClass(id);
 				}
+				closeTopLevelMenu();
 			} else {
 				removeFocusVisibleClass();
 			}
@@ -111,17 +138,15 @@ export default function MenuProvider({ children }: Props) {
 		}
 
 		function handleEnterDown(e: KeyboardEvent) {
-			console.log("handleEnterDown");
 			const target = e.target as HTMLElement;
-			console.log(target.getAttribute("menu-data-id"));
+
+			//Prevents the event key from triggering the click event
 			if (target.getAttribute("data-menu-id") !== null) {
-				//Prevents the event key from triggering the click event
 				e.preventDefault();
 			}
 
 			//If a menu is open, then close the menu
 			if (isMenuOpen()) {
-				console.log("Menu is open");
 				const menu = topLevelMenu();
 				if (!menu) throw new Error("Menu is open but no menu exists");
 
@@ -129,7 +154,6 @@ export default function MenuProvider({ children }: Props) {
 				addFocusVisibleClass(menu.id);
 				closeTopLevelMenu();
 			} else {
-				console.log("Menu is not open");
 				//Otherwise if we're focused on a focusable cell,
 				//open the menu if the data-id exists
 				openMenuFromFocusedEl();

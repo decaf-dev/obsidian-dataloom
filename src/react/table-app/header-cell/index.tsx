@@ -69,7 +69,7 @@ export default function HeaderCell({
 		closeTopLevelMenu,
 		openMenu,
 	} = useMenu(MenuLevel.ONE);
-	const dispatch = useAppDispatch();
+
 	const [updateTime, forceUpdate] = useForceUpdate();
 
 	//A width of "unset" means that we have double clicked to resize the column
@@ -99,7 +99,7 @@ export default function HeaderCell({
 		onWidthChange(columnId, numToPx(newWidth));
 	});
 
-	function handleMouseUp() {
+	function handleMenuFocusClick() {
 		//If we're resizing a column, then don't open the menu
 		if (resizingColumnId !== null) return;
 
@@ -126,7 +126,7 @@ export default function HeaderCell({
 
 	return (
 		<>
-			<MenuFocus menuId={menu.id} onClick={handleMouseUp}>
+			<MenuFocus menuId={menu.id} onClick={handleMenuFocusClick}>
 				<div
 					className="NLT__th-container"
 					ref={menuPosition.positionRef}

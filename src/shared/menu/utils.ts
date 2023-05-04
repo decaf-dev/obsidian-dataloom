@@ -1,9 +1,5 @@
 import { Position } from "./types";
 
-export const menuFocusSelector = (menuId: string) => {
-	return `.NLT__focusable[data-menu-id="${menuId}" ]`;
-};
-
 export const getElementPosition = (el: HTMLElement | null): Position => {
 	if (el) {
 		const { top, left, width, height } = el.getBoundingClientRect();

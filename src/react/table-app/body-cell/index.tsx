@@ -129,7 +129,7 @@ export default function BodyCell({
 		}
 	}
 
-	function handleMouseUp(e: React.MouseEvent) {
+	function handleMenuFocusClick(e: React.MouseEvent) {
 		if (columnType === CellType.CHECKBOX) {
 			const isChecked = isCheckboxChecked(markdown);
 
@@ -237,7 +237,7 @@ export default function BodyCell({
 
 	return (
 		<>
-			<MenuFocus menuId={menu.id} onClick={handleMouseUp}>
+			<MenuFocus menuId={menu.id} onClick={handleMenuFocusClick}>
 				<div
 					ref={menuPosition.positionRef}
 					onContextMenu={handleCellContextClick}

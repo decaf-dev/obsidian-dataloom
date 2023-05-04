@@ -19,7 +19,11 @@ export default function Submenu({ title, children, onBackClick }: Props) {
 					<Stack>
 						<Button
 							icon={<Icon type={IconType.KEYBOARD_BACKSPACE} />}
-							onClick={() => onBackClick()}
+							onClick={(e) => {
+								//Stop propagation to the MenuContext window listener so that the menu doesn't close
+								e.stopPropagation();
+								onBackClick();
+							}}
 						/>
 						{title}
 					</Stack>
