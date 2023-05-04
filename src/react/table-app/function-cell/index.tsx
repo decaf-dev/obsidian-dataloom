@@ -100,7 +100,7 @@ export default function FunctionCell({
 
 	return (
 		<>
-			<MenuFocus menuId={menu.id} onMouseUp={() => openMenu(menu)}>
+			<MenuFocus menuId={menu.id} onClick={() => openMenu(menu)}>
 				<div
 					className="NLT__function-cell NLT__selectable"
 					style={{

@@ -237,7 +237,7 @@ export default function BodyCell({
 
 	return (
 		<>
-			<MenuFocus menuId={menu.id} onMouseUp={handleMouseUp}>
+			<MenuFocus menuId={menu.id} onClick={handleMouseUp}>
 				<div
 					ref={menuPosition.positionRef}
 					onContextMenu={handleCellContextClick}

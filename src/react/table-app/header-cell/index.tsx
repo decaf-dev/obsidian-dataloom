@@ -126,7 +126,7 @@ export default function HeaderCell({
 
 	return (
 		<>
-			<MenuFocus menuId={menu.id} onMouseUp={handleMouseUp}>
+			<MenuFocus menuId={menu.id} onClick={handleMouseUp}>
 				<div
 					className="NLT__th-container"
 					ref={menuPosition.positionRef}

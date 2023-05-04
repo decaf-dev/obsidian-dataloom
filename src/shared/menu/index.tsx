@@ -1,8 +1,11 @@
 import React from "react";
-import { addFocusVisibleClass, removeFocusVisibleClass } from "./focus-visible";
+import {
+	addFocusVisibleClass,
+	focusMenuElement,
+	removeFocusVisibleClass,
+} from "./focus-visible";
 import { Menu, MenuLevel } from "./types";
 import { menuFocusSelector } from "./utils";
-import { FOCUSABLE_CLASS_NAME, MENU_ID_ATTRIBUTE_NAME } from "./constants";
 
 interface ContextProps {
 	openMenus: Menu[];
@@ -63,8 +66,11 @@ export default function MenuProvider({ children }: Props) {
 	}
 
 	React.useEffect(() => {
-		function handleMouseUp(e: MouseEvent) {
+		function handleClick(e: MouseEvent) {
 			const target = e.target as HTMLElement;
+
+			console.log("handleClick");
+
 			if (isMenuOpen()) {
 				const menu = topLevelMenu();
 				if (!menu) throw new Error("Menu is open but no menu exists");
@@ -75,6 +81,7 @@ export default function MenuProvider({ children }: Props) {
 				//and focus the parent
 				if (!target.closest(menuFocusSelector(id))) {
 					if (level === MenuLevel.ONE) {
+						focusMenuElement(id);
 						addFocusVisibleClass(id);
 					}
 					closeTopLevelMenu();
@@ -87,10 +94,8 @@ export default function MenuProvider({ children }: Props) {
 		function openMenuFromFocusedEl() {
 			const focusedEl = document.activeElement as HTMLElement;
 			if (focusedEl) {
-				if (focusedEl.className.includes(FOCUSABLE_CLASS_NAME)) {
-					const menuId = focusedEl.getAttribute(
-						MENU_ID_ATTRIBUTE_NAME
-					);
+				if (focusedEl.className.includes("NLT__focusable")) {
+					const menuId = focusedEl.getAttribute("data-menu-id");
 					if (menuId)
 						setOpenMenus([
 							{
@@ -103,15 +108,26 @@ export default function MenuProvider({ children }: Props) {
 			}
 		}
 
-		function handleEnterDown() {
+		function handleEnterDown(e: KeyboardEvent) {
+			console.log("handleEnterDown");
+			const target = e.target as HTMLElement;
+			console.log(target.getAttribute("menu-data-id"));
+			if (target.getAttribute("data-menu-id") !== null) {
+				//Prevents the event key from triggering the click event
+				e.preventDefault();
+			}
+
 			//If a menu is open, then close the menu
 			if (isMenuOpen()) {
+				console.log("Menu is open");
 				const menu = topLevelMenu();
 				if (!menu) throw new Error("Menu is open but no menu exists");
 
+				focusMenuElement(menu.id);
 				addFocusVisibleClass(menu.id);
 				closeTopLevelMenu();
 			} else {
+				console.log("Menu is not open");
 				//Otherwise if we're focused on a focusable cell,
 				//open the menu if the data-id exists
 				openMenuFromFocusedEl();
@@ -121,7 +137,7 @@ export default function MenuProvider({ children }: Props) {
 
 		function handleTabDown(e: KeyboardEvent) {
 			if (isMenuOpen()) {
-				// Disallow the default event which will change focus
+				// Disallow the default event which will change focus to the next element
 				e.preventDefault();
 			} else {
 				removeFocusVisibleClass();
@@ -138,9 +154,8 @@ export default function MenuProvider({ children }: Props) {
 				if (focusedEl) {
 					removeFocusVisibleClass();
 
-					const tabbableEls = document.querySelectorAll(
-						`.${FOCUSABLE_CLASS_NAME}`
-					);
+					const tabbableEls =
+						document.querySelectorAll(`.NLT__focusable`);
 
 					const index = Array.from(tabbableEls).indexOf(focusedEl);
 					switch (e.key) {
@@ -169,7 +184,7 @@ export default function MenuProvider({ children }: Props) {
 		function handleKeyDown(e: KeyboardEvent) {
 			switch (e.code) {
 				case "Enter":
-					handleEnterDown();
+					handleEnterDown(e);
 					break;
 				case "Tab":
 					handleTabDown(e);
@@ -187,10 +202,10 @@ export default function MenuProvider({ children }: Props) {
 					break;
 			}
 		}
-		window.addEventListener("mouseup", handleMouseUp);
+		window.addEventListener("click", handleClick);
 		window.addEventListener("keydown", handleKeyDown);
 		return () => {
-			window.removeEventListener("mouseup", handleMouseUp);
+			window.removeEventListener("click", handleClick);
 			window.removeEventListener("keydown", handleKeyDown);
 		};
 	}, [isMenuOpen, openMenu]);

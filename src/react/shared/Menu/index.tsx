@@ -23,8 +23,6 @@ export default function Menu({
 	height = "max-content",
 	children,
 }: Props) {
-	console.log(isOpen);
-	console.log(id);
 	return (
 		<>
 			{isOpen &&

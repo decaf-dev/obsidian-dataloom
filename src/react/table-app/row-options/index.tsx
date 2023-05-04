@@ -43,6 +43,7 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 			<div className="NLT__row-options">
 				<div ref={menuPosition.positionRef}>
 					<Button
+						menuId={menu.id}
 						icon={<Icon type={IconType.DRAG_INDICATOR} />}
 						ariaLabel="Drag to move or click to open"
 						onClick={() => handleButtonClick()}

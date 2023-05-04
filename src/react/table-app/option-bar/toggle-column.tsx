@@ -7,6 +7,7 @@ import Icon from "src/react/shared/icon";
 import { ToggleColumn } from "./types";
 import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
 import { IconType } from "src/react/shared/icon/types";
+import MenuFocus from "src/react/shared/menu-focus";
 
 interface Props {
 	onToggle: (id: string) => void;
@@ -26,6 +27,7 @@ export default function ToggleColumn({ columns, onToggle }: Props) {
 		<>
 			<div className="NLT__toggle-column" ref={menuPosition.positionRef}>
 				<Button
+					menuId={menu.id}
 					icon={<Icon type={IconType.VIEW_COLUMN} />}
 					ariaLabel="Toggle column"
 					onClick={() => {

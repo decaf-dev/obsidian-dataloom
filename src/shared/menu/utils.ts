@@ -1,8 +1,7 @@
 import { Position } from "./types";
-import { FOCUSABLE_CLASS_NAME, MENU_ID_ATTRIBUTE_NAME } from "./constants";
 
 export const menuFocusSelector = (menuId: string) => {
-	return `.${FOCUSABLE_CLASS_NAME}[${MENU_ID_ATTRIBUTE_NAME}="${menuId}" ]`;
+	return `.NLT__focusable[data-menu-id="${menuId}" ]`;
 };
 
 export const getElementPosition = (el: HTMLElement | null): Position => {

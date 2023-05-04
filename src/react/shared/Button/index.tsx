@@ -3,6 +3,7 @@ import React from "react";
 import "./styles.css";
 
 interface Props {
+	menuId?: string;
 	isSimple?: boolean;
 	ariaLabel?: string;
 	icon?: React.ReactNode;
@@ -15,6 +16,7 @@ export default function Button({
 	children,
 	ariaLabel = "",
 	icon,
+	menuId,
 	isSimple,
 	onClick,
 	onMouseDown,
@@ -27,6 +29,7 @@ export default function Button({
 		<button
 			className={className}
 			aria-label={ariaLabel}
+			data-menu-id={menuId}
 			onClick={onClick}
 			onMouseDown={onMouseDown}
 		>
