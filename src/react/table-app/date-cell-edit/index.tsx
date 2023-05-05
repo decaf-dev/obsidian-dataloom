@@ -10,8 +10,7 @@ import {
 	unixTimeToDateString,
 } from "src/shared/date/date-conversion";
 import { DateFormat } from "src/data/types";
-import { useCompare, useFocusInput } from "src/shared/hooks";
-import { useAppDispatch } from "src/redux/global/hooks";
+import { useCompare, useFocusMenuInput } from "src/shared/hooks";
 import DateFormatMenu from "./components/DateFormatMenu";
 import { useMenu } from "src/shared/menu/hooks";
 import { MenuLevel, MenuPosition } from "src/shared/menu/types";
@@ -52,7 +51,7 @@ export default function DateCellEdit({
 		MenuLevel.TWO
 	);
 
-	const inputRef = useFocusInput(isMenuVisible);
+	const inputRef = useFocusMenuInput(isMenuVisible, setLocalValue);
 
 	useEffect(() => {
 		setLocalValue(

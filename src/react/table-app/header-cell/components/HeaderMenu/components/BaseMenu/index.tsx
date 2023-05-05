@@ -5,8 +5,8 @@ import Stack from "src/react/shared/stack";
 import { CellType, SortDir } from "src/data/types";
 import { getDisplayNameForCellType } from "src/shared/table-state/utils";
 import { SubmenuType } from "../../types";
-import { useFocusInput } from "src/shared/hooks";
 import { IconType } from "src/react/shared/icon/types";
+import { useFocusMenuInput } from "src/shared/hooks";
 
 interface Props {
 	isMenuVisible: boolean;
@@ -29,7 +29,9 @@ export default function BaseMenu({
 	onSortClick,
 	onSubmenuChange,
 }: Props) {
-	const inputRef = useFocusInput(isMenuVisible);
+	const inputRef = useFocusMenuInput(isMenuVisible, (value: string) =>
+		onColumnNameChange(cellId, value)
+	);
 
 	return (
 		<Stack spacing="sm" isVertical>

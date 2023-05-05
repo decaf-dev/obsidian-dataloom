@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { useMenuContext } from "./menu";
 
 export const useForceUpdate = (): [number, () => void] => {
 	const [time, setTime] = useState(0);
@@ -30,8 +31,22 @@ export const useDidMountEffect = (func: (...rest: any) => any, deps: any[]) => {
 	}, deps);
 };
 
-export const useFocusInput = (isMenuVisible: boolean) => {
-	const inputRef = useRef<any | null>(null);
+export const useFocusMenuTextArea = (
+	isMenuVisible: boolean,
+	onChange: (value: string) => void
+) => useFocusMenuContent<HTMLTextAreaElement>(isMenuVisible, onChange);
+
+export const useFocusMenuInput = (
+	isMenuVisible: boolean,
+	onChange: (value: string) => void
+) => useFocusMenuContent<HTMLInputElement>(isMenuVisible, onChange);
+
+const useFocusMenuContent = <T>(
+	isMenuVisible: boolean,
+	onChange: (value: string) => void
+) => {
+	const { menuKey } = useMenuContext();
+	const inputRef = useRef<T | null>(null);
 
 	//The menu will render 2 times, once for the initial position and then again to shift the menu into view.
 	//We only want to focus the input on the second render.
@@ -40,7 +55,13 @@ export const useFocusInput = (isMenuVisible: boolean) => {
 	}, [isMenuVisible]);
 
 	function focusInput() {
-		if (inputRef.current) inputRef.current.focus();
+		if (inputRef.current) {
+			if (inputRef.current instanceof HTMLElement) {
+				inputRef.current.focus();
+				if (menuKey !== null)
+					onChange(inputRef.current.getText() + menuKey);
+			}
+		}
 	}
 
 	return inputRef;

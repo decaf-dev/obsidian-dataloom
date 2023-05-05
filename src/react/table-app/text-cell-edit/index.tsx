@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+
+import { useFocusMenuTextArea } from "src/shared/hooks";
+import { useOverflowClassName } from "src/shared/spacing/hooks";
 
 import "./styles.css";
-import { useFocusInput } from "src/shared/hooks";
-import { useOverflowClassName } from "src/shared/spacing/hooks";
 
 interface Props {
 	value: string;
@@ -19,11 +20,11 @@ export default function TextCellEdit({
 }: Props) {
 	const [isShiftDown, setShiftDown] = useState(false);
 	const [isEnterPressed, setEnterPressed] = useState(false);
-	const inputRef = useFocusInput(isMenuVisible);
+	const inputRef = useFocusMenuTextArea(isMenuVisible, onChange);
 
 	useEffect(() => {
-		setSelection(value.length);
-	}, []);
+		if (isMenuVisible) setSelection(value.length);
+	}, [isMenuVisible]);
 
 	function setSelection(pos: number) {
 		if (inputRef.current) {

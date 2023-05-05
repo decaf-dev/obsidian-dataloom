@@ -11,6 +11,7 @@ interface ContextProps {
 	openMenus: Menu[];
 	openMenu: (menu: Menu) => void;
 	closeTopLevelMenu: () => void;
+	menuKey: string | null;
 }
 
 const MenuContext = React.createContext<ContextProps | null>(null);
@@ -32,6 +33,11 @@ interface Props {
 
 export default function MenuProvider({ children }: Props) {
 	const [openMenus, setOpenMenus] = React.useState<Menu[]>([]);
+
+	/**
+	 * The key that was used to open the menu
+	 */
+	const [menuKey, setMenuKey] = React.useState<string | null>(null);
 	const [tableState] = useTableState();
 
 	const isMenuOpen = React.useCallback(() => {
@@ -39,6 +45,7 @@ export default function MenuProvider({ children }: Props) {
 	}, [openMenus]);
 
 	const topLevelMenu = React.useCallback(() => {
+		setMenuKey(null);
 		return openMenus.last();
 	}, [openMenus]);
 
@@ -240,6 +247,9 @@ export default function MenuProvider({ children }: Props) {
 					if (e.shiftKey || e.altKey || e.ctrlKey || e.metaKey)
 						return;
 					openMenuFromFocusedEl();
+					//Our menu will render twice, so the key won't enter the input
+					//We will save the key value so we can apply it in our menu
+					setMenuKey(e.key);
 					break;
 			}
 		}
@@ -253,7 +263,7 @@ export default function MenuProvider({ children }: Props) {
 
 	return (
 		<MenuContext.Provider
-			value={{ openMenus, openMenu, closeTopLevelMenu }}
+			value={{ openMenus, openMenu, menuKey, closeTopLevelMenu }}
 		>
 			{children}
 		</MenuContext.Provider>
