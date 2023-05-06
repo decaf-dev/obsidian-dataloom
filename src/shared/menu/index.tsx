@@ -114,13 +114,11 @@ export default function MenuProvider({ children }: Props) {
 				if (focusedEl.className.includes("NLT__focusable")) {
 					const menuId = focusedEl.getAttribute("data-menu-id");
 					if (menuId)
-						setOpenMenus([
-							{
-								id: menuId,
-								level: MenuLevel.ONE,
-								shouldRequestOnClose: false,
-							},
-						]);
+						openMenu({
+							id: menuId,
+							level: MenuLevel.ONE,
+							shouldRequestOnClose: false,
+						});
 				}
 			}
 		}
@@ -244,8 +242,7 @@ export default function MenuProvider({ children }: Props) {
 					handleArrowDown(e);
 					break;
 				default:
-					if (e.shiftKey || e.altKey || e.ctrlKey || e.metaKey)
-						return;
+					if (e.key.length !== 1) return;
 					openMenuFromFocusedEl();
 					//Our menu will render twice, so the key won't enter the input
 					//We will save the key value so we can apply it in our menu
