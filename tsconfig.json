@@ -13,6 +13,7 @@
     "allowSyntheticDefaultImports": true,
     "strictNullChecks": true,
     "jsx": "react-jsx",
+    "jsxImportSource": "@emotion/react",
     "lib": [
       "DOM",
       "ES5",

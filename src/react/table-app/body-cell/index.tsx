@@ -57,7 +57,7 @@ interface Props {
 		canAddMultiple: boolean
 	) => void;
 	onContentChange: (cellId: string, rowId: string, value: string) => void;
-	onAddTag: (
+	onTagAdd: (
 		cellId: string,
 		columnId: string,
 		rowId: string,
@@ -65,7 +65,7 @@ interface Props {
 		color: Color,
 		canAddMultiple: boolean
 	) => void;
-	onTagDeleteClick: (tagId: string) => void;
+	onTagDelete: (tagId: string) => void;
 	onTagColorChange: (tagId: string, color: Color) => void;
 	onDateFormatChange: (columnId: string, value: DateFormat) => void;
 	onDateTimeChange: (
@@ -91,12 +91,12 @@ export default function BodyCell({
 	shouldWrapOverflow,
 	onRemoveTagClick,
 	onTagColorChange,
-	onTagDeleteClick,
+	onTagDelete,
 	onTagClick,
 	onContentChange,
 	onDateFormatChange,
 	onDateTimeChange,
-	onAddTag,
+	onTagAdd,
 }: Props) {
 	const {
 		menu,
@@ -106,10 +106,14 @@ export default function BodyCell({
 		isMenuVisible,
 		openMenu,
 		closeTopMenuAndFocusTrigger,
-	} = useMenu(MenuLevel.ONE, columnType === CellType.DATE);
+	} = useMenu(
+		MenuLevel.ONE,
+		columnType === CellType.DATE ||
+			columnType === CellType.TAG ||
+			columnType === CellType.MULTI_TAG
+	);
 
 	const dispatch = useAppDispatch();
-	const { isDarkMode } = useAppSelector((state) => state.global);
 
 	//If we open a menu and then close it, we want to sort all rows
 	//TODO optimize?
@@ -158,7 +162,7 @@ export default function BodyCell({
 	}
 
 	function handleAddTag(markdown: string, color: Color) {
-		onAddTag(
+		onTagAdd(
 			cellId,
 			columnId,
 			rowId,
@@ -284,7 +288,6 @@ export default function BodyCell({
 					)}
 					{columnType === CellType.TAG && currentTag && (
 						<TagCell
-							isDarkMode={isDarkMode}
 							markdown={currentTag.markdown}
 							color={currentTag.color}
 							shouldWrapOverflow={shouldWrapOverflow}
@@ -293,7 +296,6 @@ export default function BodyCell({
 					{columnType === CellType.MULTI_TAG &&
 						filteredTags.length !== 0 && (
 							<MultiTagCell
-								isDarkMode={isDarkMode}
 								tags={filteredTags}
 								shouldWrapOverflow={shouldWrapOverflow}
 							/>
@@ -350,14 +352,16 @@ export default function BodyCell({
 					columnType === CellType.MULTI_TAG) && (
 					<TagCellEdit
 						isMenuVisible={isMenuVisible}
+						menuCloseRequestTime={menuCloseRequestTime}
 						menuPosition={menuPosition}
 						tags={tags}
 						cellId={cellId}
 						onTagColorChange={onTagColorChange}
-						onAddTag={handleAddTag}
+						onTagAdd={handleAddTag}
 						onRemoveTag={handleRemoveTagClick}
 						onTagClick={handleTagClick}
-						onTagDeleteClick={onTagDeleteClick}
+						onTagDelete={onTagDelete}
+						onMenuClose={handleMenuClose}
 					/>
 				)}
 				{columnType === CellType.DATE && (

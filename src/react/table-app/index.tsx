@@ -587,7 +587,7 @@ export default function TableApp({ onSaveTableState }: Props) {
 													onTagColorChange={
 														handleTagChangeColor
 													}
-													onTagDeleteClick={
+													onTagDelete={
 														handleTagDeleteClick
 													}
 													onDateTimeChange={
@@ -596,7 +596,7 @@ export default function TableApp({ onSaveTableState }: Props) {
 													onDateFormatChange={
 														handleDateFormatChange
 													}
-													onAddTag={handleAddTag}
+													onTagAdd={handleAddTag}
 												/>
 											),
 										};

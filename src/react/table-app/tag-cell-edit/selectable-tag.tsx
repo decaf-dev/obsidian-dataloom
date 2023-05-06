@@ -3,16 +3,15 @@ import TagColorMenu from "src/react/table-app/tag-color-menu";
 import { MenuLevel, MenuPosition } from "src/shared/menu/types";
 import { useMenu } from "src/shared/menu/hooks";
 
-import "./styles.css";
 import { Button } from "src/react/shared/button";
 import Icon from "src/react/shared/icon";
 import Tag from "src/react/shared/tag";
 import { IconType } from "src/react/shared/icon/types";
 import { Color } from "src/shared/types";
 import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
+import { css } from "@emotion/react";
 
 interface Props {
-	isDarkMode: boolean;
 	id: string;
 	menuPosition: MenuPosition;
 	markdown: string;
@@ -23,7 +22,6 @@ interface Props {
 }
 
 export default function SelectableTag({
-	isDarkMode,
 	menuPosition,
 	id,
 	markdown,
@@ -55,15 +53,17 @@ export default function SelectableTag({
 	return (
 		<>
 			<div
-				className="NLT__selectable-tag NLT__selectable"
+				css={css`
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					padding: var(--nlt-spacing--sm) var(--nlt-spacing--md);
+					overflow: hidden;
+				`}
+				className="NLT__selectable"
 				onClick={() => onClick(id)}
 			>
-				<Tag
-					isDarkMode={isDarkMode}
-					markdown={markdown}
-					color={color}
-					maxWidth="150px"
-				/>
+				<Tag markdown={markdown} color={color} maxWidth="150px" />
 				<Button
 					icon={<Icon type={IconType.MORE_HORIZ} />}
 					isSimple

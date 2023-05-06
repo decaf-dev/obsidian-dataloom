@@ -143,7 +143,8 @@ export default function HeaderCell({
 						<div
 							className={resizeClassName}
 							onMouseDown={(e) => {
-								closeHeaderMenu();
+								//TODO fix
+								//closeHeaderMenu();
 								handleMouseDown(e);
 							}}
 							onClick={(e) => {

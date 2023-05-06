@@ -7,15 +7,10 @@ import "./styles.css";
 import { useOverflowClassName } from "src/shared/spacing/hooks";
 
 interface Props {
-	isDarkMode: boolean;
 	tags: TagType[];
 	shouldWrapOverflow: boolean;
 }
-export default function MultiTagCell({
-	isDarkMode,
-	tags,
-	shouldWrapOverflow,
-}: Props) {
+export default function MultiTagCell({ tags, shouldWrapOverflow }: Props) {
 	const overflowClassName = useOverflowClassName(shouldWrapOverflow);
 	const className = "NLT__multi-tag-cell" + " " + overflowClassName;
 	return (
@@ -24,7 +19,6 @@ export default function MultiTagCell({
 				{tags.map((tag: TagType) => (
 					<Tag
 						key={tag.id}
-						isDarkMode={isDarkMode}
 						markdown={tag.markdown}
 						color={tag.color}
 					/>

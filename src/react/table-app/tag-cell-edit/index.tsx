@@ -1,78 +1,86 @@
-import { useState } from "react";
+import React from "react";
+
+import MenuHeader from "./menu-header";
+import MenuBody from "./menu-body";
 
 import { Tag as TagType } from "src/data/types";
-
-import { useAppSelector } from "src/redux/global/hooks";
-
-import "./styles.css";
-import MenuHeader from "./component/MenuHeader";
-import MenuBody from "./component/MenuBody";
 import { Color } from "src/shared/types";
 import { MenuPosition } from "src/shared/menu/types";
 import { randomColor } from "src/shared/colors";
 
+import { css } from "@emotion/react";
+import { useCompare } from "src/shared/hooks";
+
 interface Props {
 	tags: TagType[];
 	cellId: string;
+	menuCloseRequestTime: number | null;
 	menuPosition: MenuPosition;
 	isMenuVisible: boolean;
 	onTagClick: (tagId: string) => void;
-	onAddTag: (markdown: string, color: Color) => void;
+	onTagAdd: (markdown: string, color: Color) => void;
 	onRemoveTag: (tagId: string) => void;
 	onTagColorChange: (tagId: string, color: Color) => void;
-	onTagDeleteClick: (tagId: string) => void;
+	onTagDelete: (tagId: string) => void;
+	onMenuClose: () => void;
 }
 
 export default function TagCellEdit({
 	tags,
 	cellId,
+	menuCloseRequestTime,
 	menuPosition,
 	isMenuVisible,
 	onTagClick,
-	onAddTag,
+	onTagAdd,
 	onTagColorChange,
-	onTagDeleteClick,
+	onTagDelete,
 	onRemoveTag,
+	onMenuClose,
 }: Props) {
-	const [inputText, setInputText] = useState("");
-	const [newTagColor] = useState(randomColor());
-	const { isDarkMode } = useAppSelector((state) => state.global);
+	const [inputValue, setInputValue] = React.useState("");
+	const [newTagColor] = React.useState(randomColor());
 
-	function handleInputTextChange(value: string) {
-		//Disallow whitespace
-		if (value.match(/\s/)) return;
-		setInputText(value);
+	function handleTagAdd(markdown: string, color: Color) {
+		onTagAdd(markdown, color);
+		setInputValue("");
 	}
 
-	function handleAddTag(markdown: string, color: Color) {
-		onAddTag(markdown, color);
-		setInputText("");
-	}
+	const hasCloseRequestTimeChange = useCompare(menuCloseRequestTime);
+
+	React.useEffect(() => {
+		if (hasCloseRequestTimeChange && menuCloseRequestTime !== null) {
+			const shouldAddTag =
+				tags.find((tag) => tag.markdown === inputValue) === undefined;
+			if (shouldAddTag) handleTagAdd(inputValue, newTagColor);
+			onMenuClose();
+		}
+	}, [tags, inputValue, newTagColor, hasCloseRequestTimeChange]);
 
 	return (
-		<div className="NLT__tag-menu">
-			<div className="NLT__tag-menu-container">
-				<MenuHeader
-					isMenuVisible={isMenuVisible}
-					isDarkMode={isDarkMode}
-					cellId={cellId}
-					inputText={inputText}
-					tags={tags}
-					onInputTextChange={handleInputTextChange}
-					onRemoveTag={onRemoveTag}
-				/>
-				<MenuBody
-					menuPosition={menuPosition}
-					isDarkMode={isDarkMode}
-					inputText={inputText}
-					tags={tags}
-					newTagColor={newTagColor}
-					onAddTag={handleAddTag}
-					onTagClick={onTagClick}
-					onTagDeleteClick={onTagDeleteClick}
-					onTagColorChange={onTagColorChange}
-				/>
-			</div>
+		<div
+			css={css`
+				background-color: var(--background-primary);
+			`}
+		>
+			<MenuHeader
+				isMenuVisible={isMenuVisible}
+				cellId={cellId}
+				inputValue={inputValue}
+				tags={tags}
+				onInputValueChange={setInputValue}
+				onRemoveTag={onRemoveTag}
+			/>
+			<MenuBody
+				menuPosition={menuPosition}
+				inputValue={inputValue}
+				tags={tags}
+				newTagColor={newTagColor}
+				onTagAdd={handleTagAdd}
+				onTagClick={onTagClick}
+				onTagDelete={onTagDelete}
+				onTagColorChange={onTagColorChange}
+			/>
 		</div>
 	);
 }

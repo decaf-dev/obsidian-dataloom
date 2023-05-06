@@ -18,6 +18,7 @@ import { getDisplayNameForDateFormat } from "src/shared/table-state/utils";
 import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
 
 import "./styles.css";
+import MenuTrigger from "src/react/shared/menu-trigger";
 
 interface Props {
 	isMenuVisible: boolean;
@@ -127,11 +128,15 @@ export default function DateCellEdit({
 							onChange={(e) => setLocalValue(e.target.value)}
 						/>
 					</Padding>
-					<MenuItem
-						name="Date format"
-						value={getDisplayNameForDateFormat(dateFormat)}
+					<MenuTrigger
+						menuId={menu.id}
 						onClick={() => openMenu(menu)}
-					/>
+					>
+						<MenuItem
+							name="Date format"
+							value={getDisplayNameForDateFormat(dateFormat)}
+						/>
+					</MenuTrigger>
 					<MenuItem name="Clear" onClick={handleClearClick} />
 				</Stack>
 			</div>
