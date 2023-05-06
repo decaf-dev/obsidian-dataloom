@@ -23,7 +23,7 @@ interface Props {
 	isMenuVisible: boolean;
 	value: number | null;
 	menuPosition: MenuPosition;
-	closeMenuRequestTime: number | null;
+	menuCloseRequestTime: number | null;
 	dateFormat: DateFormat;
 	onDateTimeChange: (value: number | null) => void;
 	onDateFormatChange: (value: DateFormat) => void;
@@ -33,7 +33,7 @@ interface Props {
 export default function DateCellEdit({
 	isMenuVisible,
 	value,
-	closeMenuRequestTime,
+	menuCloseRequestTime,
 	menuPosition,
 	dateFormat,
 	onDateTimeChange,
@@ -63,7 +63,7 @@ export default function DateCellEdit({
 		);
 	}, [value, dateFormat]);
 
-	const didCloseMenuRequestTimeChange = useCompare(closeMenuRequestTime);
+	const hasCloseRequestTimeChange = useCompare(menuCloseRequestTime);
 	useEffect(() => {
 		function validateInput() {
 			let value: number | null = null;
@@ -82,9 +82,9 @@ export default function DateCellEdit({
 			setCloseTime(Date.now());
 		}
 
-		if (didCloseMenuRequestTimeChange && closeMenuRequestTime !== null)
+		if (hasCloseRequestTimeChange && menuCloseRequestTime !== null)
 			validateInput();
-	}, [didCloseMenuRequestTimeChange, localValue, closeMenuRequestTime]);
+	}, [hasCloseRequestTimeChange, localValue, menuCloseRequestTime]);
 
 	//If we call onMenuClose directly in the validateInput function, we can see the cell markdown
 	//change to the new value as the menu closes
@@ -130,7 +130,7 @@ export default function DateCellEdit({
 					<MenuItem
 						name="Date format"
 						value={getDisplayNameForDateFormat(dateFormat)}
-						onClick={() => openMenu(menu)} //TODO add focusable element?
+						onClick={() => openMenu(menu)}
 					/>
 					<MenuItem name="Clear" onClick={handleClearClick} />
 				</Stack>

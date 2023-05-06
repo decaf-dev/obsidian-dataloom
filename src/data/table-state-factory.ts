@@ -147,7 +147,7 @@ export const createTableState = (
 	}
 
 	const tags: Tag[] = [];
-	//TODO add tags
+
 	return {
 		model: {
 			columns,

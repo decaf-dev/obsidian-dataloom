@@ -107,7 +107,7 @@ export default function BodyCell({
 		closeTopLevelMenu,
 	} = useMenu(MenuLevel.ONE, columnType === CellType.DATE);
 	//TODO fix
-	const closeMenuRequestTime = 0;
+	const menuCloseRequestTime = 0;
 
 	const dispatch = useAppDispatch();
 	const { isDarkMode } = useAppSelector((state) => state.global);
@@ -369,7 +369,7 @@ export default function BodyCell({
 						isMenuVisible={isMenuVisible}
 						menuPosition={menuPosition}
 						value={dateTime}
-						closeMenuRequestTime={closeMenuRequestTime}
+						menuCloseRequestTime={menuCloseRequestTime}
 						dateFormat={dateFormat}
 						onDateTimeChange={handleDateTimeChange}
 						onDateFormatChange={handleDateFormatChange}
