@@ -11,26 +11,29 @@ import { css } from "@emotion/react";
 interface MenuBodyProps {
 	tags: Tag[];
 	menuPosition: MenuPosition;
-	inputText: string;
+	inputValue: string;
 	newTagColor: Color;
-	onAddTag: (markdown: string, color: Color) => void;
+	onTagAdd: (markdown: string, color: Color) => void;
 	onTagClick: (tagId: string) => void;
 	onTagColorChange: (tagId: string, color: Color) => void;
-	onTagDeleteClick: (tagId: string) => void;
+	onTagDelete: (tagId: string) => void;
 }
 
 export default function MenuBody({
 	tags,
-	inputText,
+	inputValue,
 	menuPosition,
 	newTagColor,
-	onAddTag,
+	onTagAdd,
 	onTagClick,
 	onTagColorChange,
-	onTagDeleteClick,
+	onTagDelete,
 }: MenuBodyProps) {
-	const found = tags.find((tag) => tag.markdown === inputText);
-	const filteredTags = tags.filter((tag) => tag.markdown.includes(inputText));
+	const found = tags.find((tag) => tag.markdown === inputValue);
+	const filteredTags = tags.filter((tag) =>
+		tag.markdown.includes(inputValue)
+	);
+
 	return (
 		<div
 			css={css`
@@ -41,12 +44,16 @@ export default function MenuBody({
 			<Padding px="lg" py="md">
 				<Text value="Select an option or create one" />
 			</Padding>
-			<div style={{ width: "100%" }}>
-				{!found && inputText !== "" && (
+			<div
+				css={css`
+					width: 100%;
+				`}
+			>
+				{!found && inputValue !== "" && (
 					<CreateTag
-						markdown={inputText}
+						markdown={inputValue}
 						color={newTagColor}
-						onAddTag={onAddTag}
+						onTagAdd={onTagAdd}
 					/>
 				)}
 				{filteredTags.map((tag) => (
@@ -58,7 +65,7 @@ export default function MenuBody({
 						markdown={tag.markdown}
 						onColorChange={onTagColorChange}
 						onClick={onTagClick}
-						onDeleteClick={onTagDeleteClick}
+						onDeleteClick={onTagDelete}
 					/>
 				))}
 			</div>

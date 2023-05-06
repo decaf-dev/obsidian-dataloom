@@ -52,7 +52,7 @@ export default function MenuHeader({
 				<input
 					css={css`
 						background-color: transparent !important;
-						border: 0;
+						border: 0 !important;
 						box-shadow: none !important;
 						width: 100%;
 						padding-left: 5px !important;
