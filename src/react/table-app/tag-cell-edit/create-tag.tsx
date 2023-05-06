@@ -1,7 +1,8 @@
 import Tag from "src/react/shared/tag";
+
 import { Color } from "src/shared/types";
 
-import "./styles.css";
+import { css } from "@emotion/react";
 
 interface Props {
 	markdown: string;
@@ -12,7 +13,14 @@ interface Props {
 export default function CreateTag({ markdown, color, onAddTag }: Props) {
 	return (
 		<div
-			className="NLT__create-tag NLT__selectable"
+			css={css`
+				display: flex;
+				align-items: center;
+				padding: 4px 6px;
+				width: 100%;
+				overflow: hidden;
+			`}
+			className="NLT__selectable"
 			onClick={() => {
 				onAddTag(markdown, color);
 			}}

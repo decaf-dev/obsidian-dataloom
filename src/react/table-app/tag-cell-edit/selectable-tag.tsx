@@ -9,6 +9,7 @@ import Tag from "src/react/shared/tag";
 import { IconType } from "src/react/shared/icon/types";
 import { Color } from "src/shared/types";
 import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
+import { css } from "@emotion/react";
 
 interface Props {
 	id: string;
@@ -52,7 +53,14 @@ export default function SelectableTag({
 	return (
 		<>
 			<div
-				className="NLT__selectable-tag NLT__selectable"
+				css={css`
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					padding: var(--nlt-spacing--sm) var(--nlt-spacing--md);
+					overflow: hidden;
+				`}
+				className="NLT__selectable"
 				onClick={() => onClick(id)}
 			>
 				<Tag markdown={markdown} color={color} maxWidth="150px" />

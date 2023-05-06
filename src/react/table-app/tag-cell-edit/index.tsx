@@ -8,7 +8,7 @@ import { Color } from "src/shared/types";
 import { MenuPosition } from "src/shared/menu/types";
 import { randomColor } from "src/shared/colors";
 
-import "./styles.css";
+import { css } from "@emotion/react";
 
 interface Props {
 	tags: TagType[];
@@ -42,7 +42,11 @@ export default function TagCellEdit({
 	}
 
 	return (
-		<div className="NLT__tag-menu">
+		<div
+			css={css`
+				background-color: var(--background-primary);
+			`}
+		>
 			<MenuHeader
 				isMenuVisible={isMenuVisible}
 				cellId={cellId}

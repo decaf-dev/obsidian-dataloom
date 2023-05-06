@@ -1,3 +1,4 @@
+import { css } from "@emotion/react";
 import { Tag as TagType } from "src/data/types";
 import Tag from "src/react/shared/tag";
 import Wrap from "src/react/shared/wrap";
@@ -28,7 +29,12 @@ export default function MenuHeader({
 	);
 
 	return (
-		<div className="NLT__tag-menu-header">
+		<div
+			css={css`
+				background-color: rgba(0, 0, 0, 0.25);
+				padding: 4px 10px;
+			`}
+		>
 			<Wrap spacingX="sm">
 				{tags
 					.filter((tag) => tag.cellIds.find((c) => c === cellId))
@@ -44,6 +50,14 @@ export default function MenuHeader({
 						/>
 					))}
 				<input
+					css={css`
+						background-color: transparent !important;
+						border: 0;
+						box-shadow: none !important;
+						width: 100%;
+						padding-left: 5px !important;
+						padding-right: 5px !important;
+					`}
 					autoFocus
 					ref={inputRef}
 					type="text"

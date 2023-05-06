@@ -6,6 +6,7 @@ import CreateTag from "./create-tag";
 import SelectableTag from "./selectable-tag";
 
 import { MenuPosition } from "src/shared/menu/types";
+import { css } from "@emotion/react";
 
 interface MenuBodyProps {
 	tags: Tag[];
@@ -31,7 +32,12 @@ export default function MenuBody({
 	const found = tags.find((tag) => tag.markdown === inputText);
 	const filteredTags = tags.filter((tag) => tag.markdown.includes(inputText));
 	return (
-		<div className="NLT__tag-menu-body">
+		<div
+			css={css`
+				max-height: 140px;
+				overflow-y: scroll;
+			`}
+		>
 			<Padding px="lg" py="md">
 				<Text value="Select an option or create one" />
 			</Padding>
