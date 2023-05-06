@@ -42,6 +42,8 @@ You can do this by clicking on the table icon on the sidebar
 
 You can also right click on a folder and click `New Notion-Like table`
 
+<img width="500" alt="Screenshot 2023-05-06 at 3 36 12 AM" src="https://user-images.githubusercontent.com/40307803/236616281-51fdab3e-fb43-4d5b-a33d-86141ab192b7.png">
+
 ## Hot Keys
 
 | Name             | Windows                    | Mac                       |
