@@ -40,6 +40,8 @@ You can do this by clicking on the table icon on the sidebar
 
 <img width="378" alt="Obsidian Sidebar" src="https://user-images.githubusercontent.com/40307803/233815916-c2c43dc6-5a99-4810-901a-d1e3cce97be0.png">
 
+You can also right click on a folder and click `New Notion-Like table`
+
 ## Hot Keys
 
 | Name             | Windows                    | Mac                       |
@@ -72,7 +74,7 @@ You can do this by clicking on the table icon on the sidebar
 -   Sticky headers - headers will remain visible as you scroll
 -   Function cells - allows you to make calculations based on column data. If the column cell type is set to number or currency, you have arithmetic operations available such as: min, max, range, median, sum, and average
 -   Import modal - allows you to create cells from markdown data
--   Tabbing system - navigate focusable elements using the tab button, arrow keys, and enter button on your keyboard
+-   Keyboard focus navigation system - navigate focusable elements using the tab button, arrow keys, and enter button on your keyboard. If a cell is focused, press any key to have that character appended to the cell input
 
 ## Settings
 
