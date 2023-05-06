@@ -1,11 +1,11 @@
-import Divider from "src/react/shared/shared-divider";
+import Divider from "src/react/shared/divider";
 import MenuItem from "src/react/shared/menu-item";
-import Padding from "src/react/shared/shared-padding";
-import Stack from "src/react/shared/shared-stack";
+import Padding from "src/react/shared/padding";
+import Stack from "src/react/shared/stack";
 import { CellType, SortDir } from "src/data/types";
 import { getDisplayNameForCellType } from "src/shared/table-state/utils";
 import { SubmenuType } from "../../types";
-import { IconType } from "src/react/shared/shared-icon/types";
+import { IconType } from "src/react/shared/icon/types";
 import { useFocusMenuInput } from "src/shared/hooks";
 
 interface Props {

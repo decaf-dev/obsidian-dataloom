@@ -1,7 +1,7 @@
-import Tag from "../../shared/shared-tag";
+import Tag from "../../shared/tag";
 
 import { Tag as TagType } from "../../../data/types";
-import Wrap from "src/react/shared/shared-wrap";
+import Wrap from "src/react/shared/wrap";
 
 import "./styles.css";
 import { useOverflowClassName } from "src/shared/spacing/hooks";

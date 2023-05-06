@@ -1,9 +1,9 @@
-import Icon from "../shared-icon";
-import Stack from "../shared-stack";
+import Icon from "../icon";
+import Stack from "../stack";
 import { Color } from "src/shared/types";
-import { IconType } from "src/react/shared/shared-icon/types";
+import { IconType } from "src/react/shared/icon/types";
 import { findColorClassName } from "src/shared/colors";
-import { Button } from "../shared-button";
+import { Button } from "../button";
 
 import "./styles.css";
 interface Props {

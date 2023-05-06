@@ -1,6 +1,6 @@
 import { Color } from "src/shared/types";
 import { useOverflowClassName } from "src/shared/spacing/hooks";
-import Tag from "../../shared/shared-tag";
+import Tag from "../../shared/tag";
 
 import "./styles.css";
 interface Props {

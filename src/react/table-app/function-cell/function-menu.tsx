@@ -1,4 +1,4 @@
-import Menu from "src/react/shared/shared-menu";
+import Menu from "src/react/shared/menu";
 import MenuItem from "src/react/shared/menu-item";
 import {
 	CellType,

@@ -1,17 +1,17 @@
-import Menu from "src/react/shared/shared-menu";
+import Menu from "src/react/shared/menu";
 import ColorItem from "./components/color-item";
-import Text from "src/react/shared/shared-text";
+import Text from "src/react/shared/text";
 
 import { useAppSelector } from "src/redux/global/hooks";
 
-import Divider from "../../shared/shared-divider";
-import Stack from "../../shared/shared-stack";
+import Divider from "../../shared/divider";
+import Stack from "../../shared/stack";
 import MenuItem from "../../shared/menu-item";
 
 import "./styles.css";
-import { IconType } from "src/react/shared/shared-icon/types";
+import { IconType } from "src/react/shared/icon/types";
 import { Color } from "src/shared/types";
-import Padding from "src/react/shared/shared-padding";
+import Padding from "src/react/shared/padding";
 
 interface Props {
 	menuId: string;

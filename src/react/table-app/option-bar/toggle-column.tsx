@@ -1,11 +1,11 @@
-import { MenuButton } from "src/react/shared/shared-button";
+import { MenuButton } from "src/react/shared/button";
 import ToggleColumnMenu from "./toggle-column-menu";
 import { useMenu } from "src/shared/menu/hooks";
 import { MenuLevel } from "src/shared/menu/types";
-import Icon from "src/react/shared/shared-icon";
+import Icon from "src/react/shared/icon";
 import { ToggleColumn } from "./types";
 import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
-import { IconType } from "src/react/shared/shared-icon/types";
+import { IconType } from "src/react/shared/icon/types";
 
 interface Props {
 	onToggle: (id: string) => void;

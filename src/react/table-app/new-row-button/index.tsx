@@ -1,4 +1,4 @@
-import { Button } from "../../shared/shared-button";
+import { Button } from "../../shared/button";
 
 import "./styles.css";
 

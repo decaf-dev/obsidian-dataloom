@@ -1,10 +1,10 @@
-import Flex from "src/react/shared/shared-flex";
-import Menu from "src/react/shared/shared-menu";
-import Switch from "src/react/shared/shared-switch";
-import Text from "src/react/shared/shared-text";
+import Flex from "src/react/shared/flex";
+import Menu from "src/react/shared/menu";
+import Switch from "src/react/shared/switch";
+import Text from "src/react/shared/text";
 import { ToggleColumn } from "./types";
-import Padding from "src/react/shared/shared-padding";
-import Stack from "src/react/shared/shared-stack";
+import Padding from "src/react/shared/padding";
+import Stack from "src/react/shared/stack";
 
 interface Props {
 	id: string;

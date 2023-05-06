@@ -1,13 +1,13 @@
-import Icon from "../../shared/shared-icon";
+import Icon from "../../shared/icon";
 
-import { MenuButton } from "../../shared/shared-button";
+import { MenuButton } from "../../shared/button";
 import { useMenu } from "src/shared/menu/hooks";
 
 import "./styles.css";
 import { MenuLevel } from "src/shared/menu/types";
 import RowMenu from "./components/RowMenu";
 import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
-import { IconType } from "src/react/shared/shared-icon/types";
+import { IconType } from "src/react/shared/icon/types";
 
 interface Props {
 	rowId: string;

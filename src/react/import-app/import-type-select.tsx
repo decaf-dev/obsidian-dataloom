@@ -1,6 +1,6 @@
 import { ImportType } from "src/react/import-app/types";
 import { getDisplayNameForImportType } from "src/react/import-app/utils";
-import Stack from "src/react/shared/shared-stack";
+import Stack from "src/react/shared/stack";
 
 interface Props {
 	value: ImportType;

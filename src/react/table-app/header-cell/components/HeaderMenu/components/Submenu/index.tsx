@@ -1,9 +1,9 @@
-import { Button } from "src/react/shared/shared-button";
-import Divider from "src/react/shared/shared-divider";
-import Icon from "src/react/shared/shared-icon";
-import Padding from "src/react/shared/shared-padding";
-import Stack from "src/react/shared/shared-stack";
-import { IconType } from "src/react/shared/shared-icon/types";
+import { Button } from "src/react/shared/button";
+import Divider from "src/react/shared/divider";
+import Icon from "src/react/shared/icon";
+import Padding from "src/react/shared/padding";
+import Stack from "src/react/shared/stack";
+import { IconType } from "src/react/shared/icon/types";
 
 interface Props {
 	title: string;

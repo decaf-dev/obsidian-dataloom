@@ -1,6 +1,6 @@
 import { CellType, Column, HeaderCell } from "src/data/types";
 import { CellNotFoundError } from "src/shared/table-state/error";
-import Stack from "../shared/shared-stack";
+import Stack from "../shared/stack";
 
 interface Props {
 	columns: Column[];

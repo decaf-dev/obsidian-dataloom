@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
 import MenuItem from "src/react/shared/menu-item";
-import Stack from "src/react/shared/shared-stack";
-import Padding from "src/react/shared/shared-padding";
+import Stack from "src/react/shared/stack";
+import Padding from "src/react/shared/padding";
 
 import {
 	dateStringToUnixTime,

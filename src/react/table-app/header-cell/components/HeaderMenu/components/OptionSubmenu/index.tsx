@@ -1,13 +1,13 @@
 import Submenu from "../Submenu";
-import { Button } from "src/react/shared/shared-button";
-import Switch from "src/react/shared/shared-switch";
+import { Button } from "src/react/shared/button";
+import Switch from "src/react/shared/switch";
 
 import { CellType, CurrencyType, DateFormat } from "src/data/types";
-import Stack from "src/react/shared/shared-stack";
-import Padding from "src/react/shared/shared-padding";
-import Text from "src/react/shared/shared-text";
+import Stack from "src/react/shared/stack";
+import Padding from "src/react/shared/padding";
+import Text from "src/react/shared/text";
 import MenuItem from "src/react/shared/menu-item";
-import Flex from "src/react/shared/shared-flex";
+import Flex from "src/react/shared/flex";
 import {
 	getDisplayNameForCurrencyType,
 	getDisplayNameForDateFormat,
