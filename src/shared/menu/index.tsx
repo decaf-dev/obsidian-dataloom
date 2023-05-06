@@ -32,23 +32,46 @@ interface Props {
 }
 
 export default function MenuProvider({ children }: Props) {
+	/**
+	 * The menus that are currently open
+	 */
 	const [openMenus, setOpenMenus] = React.useState<Menu[]>([]);
 
 	/**
 	 * The key that was used to open the menu
 	 */
 	const [menuKey, setMenuKey] = React.useState<string | null>(null);
+
+	/**
+	 * A reference to the current table state
+	 */
 	const [tableState] = useTableState();
 
+	/**
+	 * Returns whether or not a menu is open
+	 */
 	const isMenuOpen = React.useCallback(() => {
 		return openMenus.length !== 0;
 	}, [openMenus]);
 
+	/**
+	 * Returns the top level menu
+	 *
+	 * @example
+	 * const menu = topLevelMenu();
+	 * console.log(menu);
+	 * { id: "d57b26a2-0e0d-4c9a-ad54-7a8d4e0b517c", level: 3}
+	 */
 	const topLevelMenu = React.useCallback(() => {
 		setMenuKey(null);
 		return openMenus.last();
 	}, [openMenus]);
 
+	/**
+	 * Opens a menu.
+	 * There must be 0 open menus or the menu must be a higher level than the current one for the menu to be opened
+	 * @param menu The menu to open
+	 */
 	const openMenu = React.useCallback(
 		(menu: Menu) => {
 			//A user can open a menu when no other menu is open or if the menu is a higher level
@@ -69,6 +92,9 @@ export default function MenuProvider({ children }: Props) {
 		[openMenus]
 	);
 
+	/**
+	 * Closes the top level menu
+	 */
 	function closeTopLevelMenu() {
 		setOpenMenus((prev) => prev.slice(0, prev.length - 1));
 	}
