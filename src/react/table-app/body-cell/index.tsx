@@ -105,7 +105,7 @@ export default function BodyCell({
 		menuCloseRequestTime,
 		isMenuVisible,
 		openMenu,
-		closeTopLevelMenu,
+		closeTopMenuAndFocusTrigger,
 	} = useMenu(MenuLevel.ONE, columnType === CellType.DATE);
 
 	const dispatch = useAppDispatch();
@@ -205,7 +205,7 @@ export default function BodyCell({
 	}
 
 	function handleMenuClose() {
-		closeTopLevelMenu();
+		closeTopMenuAndFocusTrigger();
 	}
 
 	const { top, left } = shiftMenuIntoViewContent({
@@ -251,6 +251,7 @@ export default function BodyCell({
 			<MenuFocus
 				menuId={menu.id}
 				onClick={handleMenuFocusClick}
+				shouldMenuRequestOnClose={menu.shouldRequestOnClose}
 				onEnterDown={handleEnterDown}
 				canMenuOpen={
 					columnType !== CellType.CHECKBOX &&

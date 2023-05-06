@@ -66,7 +66,7 @@ export default function HeaderCell({
 		menuPosition,
 		isMenuOpen,
 		isMenuVisible,
-		closeTopLevelMenu,
+		closeTopMenuAndFocusTrigger,
 		openMenu,
 	} = useMenu(MenuLevel.ONE);
 
@@ -107,7 +107,7 @@ export default function HeaderCell({
 	}
 
 	function closeHeaderMenu() {
-		closeTopLevelMenu();
+		closeTopMenuAndFocusTrigger();
 	}
 
 	const { top, left } = shiftMenuIntoViewContent({

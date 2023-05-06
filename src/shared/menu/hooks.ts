@@ -16,8 +16,12 @@ export const useMenu = (level: MenuLevel, shouldRequestOnClose = false) => {
 	const [id] = useState("m" + uuidv4());
 
 	const menuPosition = useMenuPosition();
-	const { openMenus, openMenu, closeTopLevelMenu, menuCloseRequestTime } =
-		useMenuContext();
+	const {
+		openMenus,
+		openMenu,
+		closeTopMenuAndFocusTrigger,
+		menuCloseRequestTime,
+	} = useMenuContext();
 	const isOpen = openMenus.find((menu) => menu.id == id) ? true : false;
 
 	const [isVisible, setVisible] = useState(false);
@@ -46,6 +50,6 @@ export const useMenu = (level: MenuLevel, shouldRequestOnClose = false) => {
 		menuCloseRequestTime,
 		isMenuVisible: isVisible,
 		openMenu,
-		closeTopLevelMenu,
+		closeTopMenuAndFocusTrigger,
 	};
 };

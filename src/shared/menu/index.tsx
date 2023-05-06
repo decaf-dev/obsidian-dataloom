@@ -12,7 +12,7 @@ interface ContextProps {
 	menuKey: string | null;
 	menuCloseRequestTime: number | null;
 	openMenu: (menu: Menu) => void;
-	closeTopLevelMenu: () => void;
+	closeTopMenuAndFocusTrigger: () => void;
 }
 
 const MenuContext = React.createContext<ContextProps | null>(null);
@@ -100,8 +100,26 @@ export default function MenuProvider({ children }: Props) {
 	/**
 	 * Closes the top level menu
 	 */
-	function closeTopLevelMenu() {
+	function closeTopMenu() {
 		setOpenMenus((prev) => prev.slice(0, prev.length - 1));
+	}
+
+	/**
+	 * Closes the top level menu and focuses the MenuTrigger element
+	 */
+	function closeTopMenuAndFocusTrigger() {
+		const menu = topLevelMenu();
+		if (!menu) throw new Error("Menu is open but no menu exists");
+
+		const { id, level } = menu;
+
+		//If the menu level is one, we want to focus the menu element
+		if (level === MenuLevel.ONE) {
+			focusMenuElement(id);
+			addFocusVisibleClass(id);
+		}
+		closeTopMenu();
+		setMenuCloseRequestTime(null);
 	}
 
 	React.useEffect(() => {
@@ -133,26 +151,28 @@ export default function MenuProvider({ children }: Props) {
 					focusMenuElement(id);
 					addFocusVisibleClass(id);
 				}
-				closeTopLevelMenu();
+				closeTopMenuAndFocusTrigger();
 			} else {
 				removeFocusVisibleClass();
 			}
 		}
 
-		function openMenuFromFocusedEl() {
+		function openMenuFromFocusedTrigger() {
 			const focusedEl = document.activeElement as HTMLElement;
 			if (focusedEl) {
 				if (focusedEl.className.includes("NLT__focusable")) {
 					const menuId = focusedEl.getAttribute("data-menu-id");
-					const shouldRequestOnClose =
-						focusedEl.getAttribute(
-							"data-menu-should-request-on-close"
-						) === "true";
+					const shouldRequestOnClose = focusedEl.getAttribute(
+						"data-menu-should-request-on-close"
+					);
+
+					//If this is a MenuTrigger element, then open the menu
 					if (menuId && shouldRequestOnClose)
 						openMenu({
 							id: menuId,
 							level: MenuLevel.ONE,
-							shouldRequestOnClose,
+							shouldRequestOnClose:
+								shouldRequestOnClose === "true",
 						});
 				}
 			}
@@ -171,13 +191,14 @@ export default function MenuProvider({ children }: Props) {
 				const menu = topLevelMenu();
 				if (!menu) throw new Error("Menu is open but no menu exists");
 
-				focusMenuElement(menu.id);
-				addFocusVisibleClass(menu.id);
-				closeTopLevelMenu();
+				if (menu.shouldRequestOnClose) {
+					setMenuCloseRequestTime(Date.now());
+				} else {
+					closeTopMenuAndFocusTrigger();
+				}
 			} else {
-				//Otherwise if we're focused on a focusable cell,
-				//open the menu if the data-id exists
-				openMenuFromFocusedEl();
+				//Otherwise if we're focused on a MenuTrigger, open the menu
+				openMenuFromFocusedTrigger();
 				removeFocusVisibleClass();
 			}
 		}
@@ -278,7 +299,7 @@ export default function MenuProvider({ children }: Props) {
 					break;
 				default:
 					if (e.key.length !== 1) return;
-					openMenuFromFocusedEl();
+					openMenuFromFocusedTrigger();
 					//Our menu will render twice, so the key won't enter the input
 					//We will save the key value so we can apply it in our menu
 					setMenuKey(e.key);
@@ -300,7 +321,7 @@ export default function MenuProvider({ children }: Props) {
 				openMenu,
 				menuKey,
 				menuCloseRequestTime,
-				closeTopLevelMenu,
+				closeTopMenuAndFocusTrigger,
 			}}
 		>
 			{children}

@@ -47,7 +47,7 @@ export default function DateCellEdit({
 	const [isInputInvalid, setInputInvalid] = useState(false);
 	const [closeTime, setCloseTime] = useState(0);
 
-	const { menu, isMenuOpen, openMenu, closeTopLevelMenu } = useMenu(
+	const { menu, isMenuOpen, openMenu, closeTopMenuAndFocusTrigger } = useMenu(
 		MenuLevel.TWO
 	);
 
@@ -98,7 +98,7 @@ export default function DateCellEdit({
 
 	function handleDateFormatChange(value: DateFormat) {
 		onDateFormatChange(value);
-		closeTopLevelMenu();
+		closeTopMenuAndFocusTrigger();
 	}
 
 	function handleClearClick(e: React.MouseEvent) {

@@ -52,12 +52,17 @@ export default function FunctionCell({
 	cellType,
 	onFunctionTypeChange,
 }: Props) {
-	const { menu, menuPosition, isMenuOpen, openMenu, closeTopLevelMenu } =
-		useMenu(MenuLevel.ONE);
+	const {
+		menu,
+		menuPosition,
+		isMenuOpen,
+		openMenu,
+		closeTopMenuAndFocusTrigger,
+	} = useMenu(MenuLevel.ONE);
 
 	function handleFunctionTypeClick(value: FunctionType) {
 		onFunctionTypeChange(cellId, value);
-		closeTopLevelMenu();
+		closeTopMenuAndFocusTrigger();
 	}
 
 	const { top, left } = shiftMenuIntoViewContent({

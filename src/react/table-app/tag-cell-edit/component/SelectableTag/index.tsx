@@ -32,18 +32,18 @@ export default function SelectableTag({
 	onColorChange,
 	onDeleteClick,
 }: Props) {
-	const { menu, isMenuOpen, closeTopLevelMenu, openMenu } = useMenu(
+	const { menu, isMenuOpen, closeTopMenuAndFocusTrigger, openMenu } = useMenu(
 		MenuLevel.TWO
 	);
 
 	function handleColorChange(color: Color) {
 		onColorChange(id, color);
-		closeTopLevelMenu();
+		closeTopMenuAndFocusTrigger();
 	}
 
 	function handleDeleteClick() {
 		onDeleteClick(id);
-		closeTopLevelMenu();
+		closeTopMenuAndFocusTrigger();
 	}
 
 	const { top, left } = shiftMenuIntoViewContent({

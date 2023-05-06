@@ -2,6 +2,7 @@ import React from "react";
 
 interface Props {
 	canMenuOpen?: boolean;
+	shouldMenuRequestOnClose?: boolean;
 	menuId: string;
 	children: React.ReactNode;
 	onClick: (e: React.MouseEvent) => void;
@@ -10,6 +11,7 @@ interface Props {
 
 const MenuFocus = ({
 	canMenuOpen = true,
+	shouldMenuRequestOnClose = false,
 	children,
 	menuId,
 	onClick,
@@ -19,6 +21,7 @@ const MenuFocus = ({
 		<div
 			tabIndex={0}
 			data-menu-id={canMenuOpen ? menuId : undefined}
+			data-menu-should-request-on-close={shouldMenuRequestOnClose}
 			className="NLT__focusable"
 			style={{ width: "100%", height: "100%" }}
 			onClick={onClick}
