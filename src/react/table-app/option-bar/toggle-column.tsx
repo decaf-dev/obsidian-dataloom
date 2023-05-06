@@ -1,12 +1,10 @@
-import Button from "src/react/shared/button";
+import { MenuButton } from "src/react/shared/button";
 import ToggleColumnMenu from "./toggle-column-menu";
-import { openMenu } from "src/redux/menu/menu-slice";
-import { useAppDispatch } from "src/redux/global/hooks";
-import { useMenu } from "src/redux/menu/hooks";
-import { MenuLevel } from "src/redux/menu/types";
+import { useMenu } from "src/shared/menu/hooks";
+import { MenuLevel } from "src/shared/menu/types";
 import Icon from "src/react/shared/icon";
 import { ToggleColumn } from "./types";
-import { shiftMenuIntoViewContent } from "src/redux/menu/utils";
+import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
 import { IconType } from "src/react/shared/icon/types";
 
 interface Props {
@@ -15,24 +13,23 @@ interface Props {
 }
 
 export default function ToggleColumn({ columns, onToggle }: Props) {
-	const { menu, menuPosition, isMenuOpen } = useMenu(MenuLevel.ONE);
-	const dispatch = useAppDispatch();
+	const { menu, menuPosition, isMenuOpen, openMenu } = useMenu(MenuLevel.ONE);
 
-	const { top, left } = shiftMenuIntoViewContent(
-		menu.id,
-		menuPosition.positionRef.current,
-		menuPosition.position,
-		0,
-		-175
-	);
+	const { top, left } = shiftMenuIntoViewContent({
+		menuId: menu.id,
+		menuPositionEl: menuPosition.positionRef.current,
+		menuPosition: menuPosition.position,
+		leftOffset: -175,
+	});
 	return (
 		<>
 			<div className="NLT__toggle-column" ref={menuPosition.positionRef}>
-				<Button
+				<MenuButton
+					menuId={menu.id}
 					icon={<Icon type={IconType.VIEW_COLUMN} />}
 					ariaLabel="Toggle column"
 					onClick={() => {
-						dispatch(openMenu(menu));
+						openMenu(menu);
 					}}
 				/>
 			</div>

@@ -1,21 +1,21 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 import { numToPx, pxToNum } from "src/shared/conversion";
 import { CellType, CurrencyType, DateFormat, SortDir } from "src/data/types";
-import { useMenu } from "src/redux/menu/hooks";
-import { MenuLevel } from "src/redux/menu/types";
+import { useMenu } from "src/shared/menu/hooks";
+import { MenuLevel } from "src/shared/menu/types";
 import { MIN_COLUMN_WIDTH } from "src/shared/table-state/constants";
-import { useAppDispatch, useAppSelector } from "src/redux/global/hooks";
-import { openMenu, closeTopLevelMenu } from "src/redux/menu/menu-slice";
+import { useAppSelector } from "src/redux/global/hooks";
 
-import "./styles.css";
 import Icon from "../../shared/icon";
 import Stack from "../../shared/stack";
 import HeaderMenu from "./components/HeaderMenu";
 import { useResizeColumn } from "./services/hooks";
 import { useCompare, useForceUpdate } from "src/shared/hooks";
-import { shiftMenuIntoViewContent } from "src/redux/menu/utils";
+import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
 import { getIconTypeFromCellType } from "src/react/shared/icon/utils";
+import "./styles.css";
+import MenuTrigger from "src/react/shared/menu-trigger";
 
 interface Props {
 	cellId: string;
@@ -60,10 +60,15 @@ export default function HeaderCell({
 	onCurrencyChange,
 	onDateFormatChange,
 }: Props) {
-	const { menu, menuPosition, isMenuOpen, isMenuVisible } = useMenu(
-		MenuLevel.ONE
-	);
-	const dispatch = useAppDispatch();
+	const {
+		menu,
+		menuPosition,
+		isMenuOpen,
+		isMenuVisible,
+		closeTopMenuAndFocusTrigger,
+		openMenu,
+	} = useMenu(MenuLevel.ONE);
+
 	const [updateTime, forceUpdate] = useForceUpdate();
 
 	//A width of "unset" means that we have double clicked to resize the column
@@ -93,24 +98,22 @@ export default function HeaderCell({
 		onWidthChange(columnId, numToPx(newWidth));
 	});
 
-	function handleHeaderClick(e: React.MouseEvent) {
+	function handleMenuTriggerClick() {
 		//If we're resizing a column, then don't open the menu
 		if (resizingColumnId !== null) return;
 
-		dispatch(openMenu(menu));
+		openMenu(menu);
 	}
 
 	function closeHeaderMenu() {
-		dispatch(closeTopLevelMenu());
+		closeTopMenuAndFocusTrigger();
 	}
 
-	const { top, left } = shiftMenuIntoViewContent(
-		menu.id,
-		menuPosition.positionRef.current,
-		menuPosition.position,
-		0,
-		0
-	);
+	const { top, left } = shiftMenuIntoViewContent({
+		menuId: menu.id,
+		menuPositionEl: menuPosition.positionRef.current,
+		menuPosition: menuPosition.position,
+	});
 	const iconType = getIconTypeFromCellType(type);
 
 	let contentClassName = "NLT__th-content";
@@ -121,14 +124,40 @@ export default function HeaderCell({
 		resizeClassName += " NLT__th-resize--active";
 
 	return (
-		<div
-			className="NLT__th-container"
-			ref={menuPosition.positionRef}
-			onClick={handleHeaderClick}
-			style={{
-				width,
-			}}
-		>
+		<>
+			<MenuTrigger menuId={menu.id} onClick={handleMenuTriggerClick}>
+				<div
+					className="NLT__th-container"
+					ref={menuPosition.positionRef}
+					style={{
+						width,
+					}}
+				>
+					<div className={contentClassName}>
+						<Stack spacing="md">
+							<Icon type={iconType} size="md" />
+							{markdown}
+						</Stack>
+					</div>
+					<div className="NLT__th-resize-container">
+						<div
+							className={resizeClassName}
+							onMouseDown={(e) => {
+								closeHeaderMenu();
+								handleMouseDown(e);
+							}}
+							onClick={(e) => {
+								//Stop propagation so we don't open the header
+								e.stopPropagation();
+
+								//If the user is double clicking then set width to max
+								if (e.detail === 2)
+									onWidthChange(columnId, "unset");
+							}}
+						/>
+					</div>
+				</div>
+			</MenuTrigger>
 			<HeaderMenu
 				isOpen={isMenuOpen}
 				isMenuVisible={isMenuVisible}
@@ -155,28 +184,6 @@ export default function HeaderCell({
 				onCurrencyChange={onCurrencyChange}
 				onDateFormatChange={onDateFormatChange}
 			/>
-			<div className={contentClassName}>
-				<Stack spacing="md">
-					<Icon type={iconType} size="md" />
-					{markdown}
-				</Stack>
-			</div>
-			<div className="NLT__th-resize-container">
-				<div
-					className={resizeClassName}
-					onMouseDown={(e) => {
-						closeHeaderMenu();
-						handleMouseDown(e);
-					}}
-					onClick={(e) => {
-						//Stop propagation so we don't open the header
-						e.stopPropagation();
-
-						//If the user is double clicking then set width to max
-						if (e.detail === 2) onWidthChange(columnId, "unset");
-					}}
-				/>
-			</div>
-		</div>
+		</>
 	);
 }

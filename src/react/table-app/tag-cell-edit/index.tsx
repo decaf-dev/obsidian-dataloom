@@ -2,14 +2,13 @@ import { useState } from "react";
 
 import { Tag as TagType } from "src/data/types";
 
-import { useAppDispatch, useAppSelector } from "src/redux/global/hooks";
-import { closeTopLevelMenu } from "src/redux/menu/menu-slice";
+import { useAppSelector } from "src/redux/global/hooks";
 
 import "./styles.css";
 import MenuHeader from "./component/MenuHeader";
 import MenuBody from "./component/MenuBody";
 import { Color } from "src/shared/types";
-import { MenuPosition } from "src/redux/menu/types";
+import { MenuPosition } from "src/shared/menu/types";
 import { randomColor } from "src/shared/colors";
 
 interface Props {
@@ -37,7 +36,6 @@ export default function TagCellEdit({
 }: Props) {
 	const [inputText, setInputText] = useState("");
 	const [newTagColor] = useState(randomColor());
-	const dispatch = useAppDispatch();
 	const { isDarkMode } = useAppSelector((state) => state.global);
 
 	function handleInputTextChange(value: string) {
@@ -49,7 +47,6 @@ export default function TagCellEdit({
 	function handleAddTag(markdown: string, color: Color) {
 		onAddTag(markdown, color);
 		setInputText("");
-		dispatch(closeTopLevelMenu());
 	}
 
 	return (

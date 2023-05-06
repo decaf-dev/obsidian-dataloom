@@ -1,30 +1,29 @@
-import MenuItem from "src/react/shared/menu-item";
 import { useEffect, useState } from "react";
+
+import MenuItem from "src/react/shared/menu-item";
 import Stack from "src/react/shared/stack";
 import Padding from "src/react/shared/padding";
+
 import {
 	dateStringToUnixTime,
 	isValidDateFormat,
 	unixTimeToDateString,
 } from "src/shared/date/date-conversion";
 import { DateFormat } from "src/data/types";
-import { useCompare, useFocusInput } from "src/shared/hooks";
-import { useAppDispatch } from "src/redux/global/hooks";
-
+import { useCompare, useFocusMenuInput } from "src/shared/hooks";
 import DateFormatMenu from "./components/DateFormatMenu";
-import { useMenu } from "src/redux/menu/hooks";
-import { MenuLevel, MenuPosition } from "src/redux/menu/types";
-import { closeTopLevelMenu, openMenu } from "src/redux/menu/menu-slice";
+import { useMenu } from "src/shared/menu/hooks";
+import { MenuLevel, MenuPosition } from "src/shared/menu/types";
 import { getDisplayNameForDateFormat } from "src/shared/table-state/utils";
+import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
 
 import "./styles.css";
-import { shiftMenuIntoViewContent } from "src/redux/menu/utils";
 
 interface Props {
 	isMenuVisible: boolean;
 	value: number | null;
 	menuPosition: MenuPosition;
-	closeMenuRequestTime: number | null;
+	menuCloseRequestTime: number | null;
 	dateFormat: DateFormat;
 	onDateTimeChange: (value: number | null) => void;
 	onDateFormatChange: (value: DateFormat) => void;
@@ -34,7 +33,7 @@ interface Props {
 export default function DateCellEdit({
 	isMenuVisible,
 	value,
-	closeMenuRequestTime,
+	menuCloseRequestTime,
 	menuPosition,
 	dateFormat,
 	onDateTimeChange,
@@ -48,10 +47,15 @@ export default function DateCellEdit({
 	const [isInputInvalid, setInputInvalid] = useState(false);
 	const [closeTime, setCloseTime] = useState(0);
 
-	const { menu, isMenuOpen } = useMenu(MenuLevel.TWO);
-	const dispatch = useAppDispatch();
+	const { menu, isMenuOpen, openMenu, closeTopMenuAndFocusTrigger } = useMenu(
+		MenuLevel.TWO
+	);
 
-	const inputRef = useFocusInput(isMenuVisible);
+	const inputRef = useFocusMenuInput(
+		isMenuVisible,
+		value?.toString() || "",
+		setLocalValue
+	);
 
 	useEffect(() => {
 		setLocalValue(
@@ -59,7 +63,7 @@ export default function DateCellEdit({
 		);
 	}, [value, dateFormat]);
 
-	const didCloseMenuRequestTimeChange = useCompare(closeMenuRequestTime);
+	const hasCloseRequestTimeChange = useCompare(menuCloseRequestTime);
 	useEffect(() => {
 		function validateInput() {
 			let value: number | null = null;
@@ -78,9 +82,9 @@ export default function DateCellEdit({
 			setCloseTime(Date.now());
 		}
 
-		if (didCloseMenuRequestTimeChange && closeMenuRequestTime !== null)
+		if (hasCloseRequestTimeChange && menuCloseRequestTime !== null)
 			validateInput();
-	}, [didCloseMenuRequestTimeChange, localValue, closeMenuRequestTime]);
+	}, [hasCloseRequestTimeChange, localValue, menuCloseRequestTime]);
 
 	//If we call onMenuClose directly in the validateInput function, we can see the cell markdown
 	//change to the new value as the menu closes
@@ -94,24 +98,21 @@ export default function DateCellEdit({
 
 	function handleDateFormatChange(value: DateFormat) {
 		onDateFormatChange(value);
-		dispatch(closeTopLevelMenu());
+		closeTopMenuAndFocusTrigger();
 	}
 
 	function handleClearClick(e: React.MouseEvent) {
-		//Prevent the menu from reopening when it clsoes
-		e.stopPropagation();
-
 		onDateTimeChange(null);
 		onMenuClose();
 	}
 
-	const { top, left } = shiftMenuIntoViewContent(
-		menu.id,
-		menuPosition.positionRef.current,
-		menuPosition.position,
-		50,
-		135
-	);
+	const { top, left } = shiftMenuIntoViewContent({
+		menuId: menu.id,
+		menuPositionEl: menuPosition.positionRef.current,
+		menuPosition: menuPosition.position,
+		topOffset: 50,
+		leftOffset: 135,
+	});
 
 	return (
 		<>
@@ -129,7 +130,7 @@ export default function DateCellEdit({
 					<MenuItem
 						name="Date format"
 						value={getDisplayNameForDateFormat(dateFormat)}
-						onClick={() => dispatch(openMenu(menu))}
+						onClick={() => openMenu(menu)}
 					/>
 					<MenuItem name="Clear" onClick={handleClearClick} />
 				</Stack>

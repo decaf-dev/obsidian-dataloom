@@ -2,8 +2,9 @@ import { Tag as TagType } from "src/data/types";
 import Tag from "src/react/shared/tag";
 import Wrap from "src/react/shared/wrap";
 
+import { useFocusMenuInput } from "src/shared/hooks";
+
 import "./styles.css";
-import { useFocusInput } from "src/shared/hooks";
 
 interface MenuHeaderProps {
 	isDarkMode: boolean;
@@ -24,7 +25,11 @@ export default function MenuHeader({
 	onInputTextChange,
 	onRemoveTag,
 }: MenuHeaderProps) {
-	const inputRef = useFocusInput(isMenuVisible);
+	const inputRef = useFocusMenuInput(
+		isMenuVisible,
+		inputText,
+		onInputTextChange
+	);
 	return (
 		<div className="NLT__tag-menu-header">
 			<Wrap spacingX="sm">

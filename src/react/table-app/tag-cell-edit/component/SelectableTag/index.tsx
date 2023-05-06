@@ -1,21 +1,15 @@
 import TagColorMenu from "src/react/table-app/tag-color-menu";
 
-import { MenuLevel, MenuPosition } from "src/redux/menu/types";
-import { useMenu } from "src/redux/menu/hooks";
-import { useAppDispatch } from "src/redux/global/hooks";
-import {
-	openMenu,
-	closeTopLevelMenu,
-	closeAllMenus,
-} from "src/redux/menu/menu-slice";
+import { MenuLevel, MenuPosition } from "src/shared/menu/types";
+import { useMenu } from "src/shared/menu/hooks";
 
 import "./styles.css";
-import Button from "src/react/shared/button";
+import { Button } from "src/react/shared/button";
 import Icon from "src/react/shared/icon";
 import Tag from "src/react/shared/tag";
 import { IconType } from "src/react/shared/icon/types";
 import { Color } from "src/shared/types";
-import { shiftMenuIntoViewContent } from "src/redux/menu/utils";
+import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
 
 interface Props {
 	isDarkMode: boolean;
@@ -38,26 +32,26 @@ export default function SelectableTag({
 	onColorChange,
 	onDeleteClick,
 }: Props) {
-	const { menu, isMenuOpen } = useMenu(MenuLevel.TWO);
-	const dispatch = useAppDispatch();
+	const { menu, isMenuOpen, closeTopMenuAndFocusTrigger, openMenu } = useMenu(
+		MenuLevel.TWO
+	);
 
 	function handleColorChange(color: Color) {
 		onColorChange(id, color);
-		dispatch(closeTopLevelMenu());
+		closeTopMenuAndFocusTrigger();
 	}
 
 	function handleDeleteClick() {
 		onDeleteClick(id);
-		dispatch(closeAllMenus());
+		closeTopMenuAndFocusTrigger();
 	}
 
-	const { top, left } = shiftMenuIntoViewContent(
-		menu.id,
-		menuPosition.positionRef.current,
-		menuPosition.position,
-		0,
-		235
-	);
+	const { top, left } = shiftMenuIntoViewContent({
+		menuId: menu.id,
+		menuPositionEl: menuPosition.positionRef.current,
+		menuPosition: menuPosition.position,
+		leftOffset: 235,
+	});
 	return (
 		<>
 			<div
@@ -77,7 +71,7 @@ export default function SelectableTag({
 						// Prevents a tag from being added when the button is clicked
 						// we just want to open the menu
 						e.stopPropagation();
-						dispatch(openMenu(menu));
+						openMenu(menu);
 					}}
 				/>
 			</div>

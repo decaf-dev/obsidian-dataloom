@@ -1,5 +1,6 @@
-import { useFocusInput } from "src/shared/hooks";
+import { useFocusMenuInput, useInputSelection } from "src/shared/hooks";
 import "./styles.css";
+import { isNumber } from "src/shared/validators";
 
 interface Props {
 	isMenuVisible: boolean;
@@ -12,16 +13,25 @@ export default function NumberCellEdit({
 	value,
 	onChange,
 }: Props) {
-	const inputRef = useFocusInput(isMenuVisible);
+	const inputRef = useFocusMenuInput(isMenuVisible, value, onChange, {
+		isNumeric: true,
+	});
+	useInputSelection(isMenuVisible, inputRef, value.length);
+
+	function handleChange(value: string) {
+		if (!isNumber(value)) return;
+		onChange(value);
+	}
 
 	return (
 		<div className="NLT__number-cell-edit">
 			<input
+				type="text"
 				ref={inputRef}
-				type="number"
+				inputMode="numeric"
 				autoFocus
 				value={value}
-				onChange={(e) => onChange(e.target.value)}
+				onChange={(e) => handleChange(e.target.value)}
 			/>
 		</div>
 	);

@@ -1,14 +1,12 @@
 import Icon from "../../shared/icon";
 
-import Button from "../../shared/button";
-import { useMenu } from "src/redux/menu/hooks";
-import { openMenu, closeTopLevelMenu } from "src/redux/menu/menu-slice";
+import { MenuButton } from "../../shared/button";
+import { useMenu } from "src/shared/menu/hooks";
 
 import "./styles.css";
-import { MenuLevel } from "src/redux/menu/types";
-import { useAppDispatch } from "src/redux/global/hooks";
+import { MenuLevel } from "src/shared/menu/types";
 import RowMenu from "./components/RowMenu";
-import { shiftMenuIntoViewContent } from "src/redux/menu/utils";
+import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
 import { IconType } from "src/react/shared/icon/types";
 
 interface Props {
@@ -17,35 +15,40 @@ interface Props {
 }
 
 export default function RowOptions({ rowId, onDeleteClick }: Props) {
-	const { menu, menuPosition, isMenuOpen } = useMenu(MenuLevel.ONE);
-	const dispatch = useAppDispatch();
+	const {
+		menu,
+		menuPosition,
+		isMenuOpen,
+		openMenu,
+		closeTopMenuAndFocusTrigger,
+	} = useMenu(MenuLevel.ONE);
 
 	function handleButtonClick() {
 		if (isMenuOpen) {
-			dispatch(closeTopLevelMenu());
+			closeTopMenuAndFocusTrigger();
 		} else {
-			dispatch(openMenu(menu));
+			openMenu(menu);
 		}
 	}
 
 	function handleDeleteClick(rowId: string) {
 		onDeleteClick(rowId);
-		dispatch(closeTopLevelMenu());
+		closeTopMenuAndFocusTrigger();
 	}
 
-	const { top, left } = shiftMenuIntoViewContent(
-		menu.id,
-		menuPosition.positionRef.current,
-		menuPosition.position,
-		0,
-		-95
-	);
+	const { top, left } = shiftMenuIntoViewContent({
+		menuId: menu.id,
+		menuPositionEl: menuPosition.positionRef.current,
+		menuPosition: menuPosition.position,
+		leftOffset: -95,
+	});
 
 	return (
 		<>
 			<div className="NLT__row-options">
 				<div ref={menuPosition.positionRef}>
-					<Button
+					<MenuButton
+						menuId={menu.id}
 						icon={<Icon type={IconType.DRAG_INDICATOR} />}
 						ariaLabel="Drag to move or click to open"
 						onClick={() => handleButtonClick()}

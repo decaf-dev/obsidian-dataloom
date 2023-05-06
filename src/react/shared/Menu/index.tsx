@@ -1,16 +1,8 @@
-import _ from "lodash";
-import React, { useEffect } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
-import {
-	closeAllMenus,
-	closeTopLevelMenu,
-	requestCloseTopLevelMenu,
-} from "src/redux/menu/menu-slice";
-import { useAppDispatch, useAppSelector } from "src/redux/global/hooks";
 import { numToPx } from "src/shared/conversion";
 
 import "./styles.css";
-import { isTopLevelMenu } from "src/redux/menu/utils";
 
 interface Props {
 	id: string;
@@ -31,44 +23,11 @@ export default function Menu({
 	height = 0,
 	children,
 }: Props) {
-	const isTopLevel = useAppSelector((state) => isTopLevelMenu(state, id));
-	const dispatch = useAppDispatch();
-
-	function handleKeyUp(e: KeyboardEvent) {
-		if (e.code === "Escape" || e.code === "Enter") {
-			// If the user is holding down the shift key, they are probably
-			// trying to insert a new line into the text cell. In this case, we don't
-			// want to close the menu.
-			if (!e.shiftKey)
-				dispatch(requestCloseTopLevelMenu(e.code === "Enter"));
-		}
-	}
-
-	function handleMouseDown(e: MouseEvent) {
-		const target = e.target as HTMLElement;
-		if (isTopLevel) {
-			if (!target.closest(".NLT__menu")) dispatch(closeAllMenus());
-			if (!target.closest(`#${id}`)) dispatch(closeTopLevelMenu());
-		}
-	}
-
-	useEffect(() => {
-		if (isOpen) {
-			window.addEventListener("keyup", handleKeyUp);
-			window.addEventListener("mousedown", handleMouseDown);
-		}
-
-		return () => {
-			window.removeEventListener("keyup", handleKeyUp);
-			window.removeEventListener("mousedown", handleMouseDown);
-		};
-	}, [isOpen, isTopLevel]);
-
 	return (
 		<>
 			{isOpen &&
 				ReactDOM.createPortal(
-					<div className="NLT__menu" id={id}>
+					<div className="NLT__menu" data-menu-id={id}>
 						<div
 							className="NLT__menu-container"
 							style={{
@@ -76,13 +35,13 @@ export default function Menu({
 								top: numToPx(top),
 								left: numToPx(left),
 								width:
-									width === 0
-										? "max-content"
-										: numToPx(width),
+									width !== 0
+										? numToPx(width)
+										: "max-content",
 								height:
-									height === 0
-										? "max-content"
-										: numToPx(height),
+									height !== 0
+										? numToPx(height)
+										: "max-content",
 							}}
 						>
 							{children}

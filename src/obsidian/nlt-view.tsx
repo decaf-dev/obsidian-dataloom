@@ -10,6 +10,7 @@ import {
 	deserializeTableState,
 	serializeTableState,
 } from "src/data/serialize-table-state";
+import MenuProvider from "src/shared/menu";
 
 export const NOTION_LIKE_TABLES_VIEW = "notion-like-tables";
 
@@ -48,7 +49,9 @@ export class NLTView extends TextFileView {
 			this.root.render(
 				<Provider store={store}>
 					<TableStateProvider initialState={tableState}>
-						<App onSaveTableState={this.handleSaveTableState} />
+						<MenuProvider>
+							<App onSaveTableState={this.handleSaveTableState} />
+						</MenuProvider>
 					</TableStateProvider>
 				</Provider>
 			);

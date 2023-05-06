@@ -26,7 +26,7 @@ export default function Padding({
 
 	if (p) {
 		style = { ...style, padding: getSpacing(p) };
-	} else {
+	} else if (px || py) {
 		if (px) {
 			const spacing = getSpacing(px);
 			style = { ...style, paddingLeft: spacing, paddingRight: spacing };
@@ -38,21 +38,21 @@ export default function Padding({
 				paddingTop: spacing,
 				paddingBottom: spacing,
 			};
-		} else {
-			if (pb) {
-				const spacing = getSpacing(pb);
-				style = {
-					...style,
-					paddingBottom: spacing,
-				};
-			}
-			if (pt) {
-				const spacing = getSpacing(pt);
-				style = {
-					...style,
-					paddingTop: spacing,
-				};
-			}
+		}
+	} else if (pb || pt) {
+		if (pb) {
+			const spacing = getSpacing(pb);
+			style = {
+				...style,
+				paddingBottom: spacing,
+			};
+		}
+		if (pt) {
+			const spacing = getSpacing(pt);
+			style = {
+				...style,
+				paddingTop: spacing,
+			};
 		}
 	}
 

@@ -7,7 +7,7 @@ import CreateTag from "../CreateTag";
 import SelectableTag from "../SelectableTag";
 
 import "./styles.css";
-import { MenuPosition } from "src/redux/menu/types";
+import { MenuPosition } from "src/shared/menu/types";
 
 interface MenuBodyProps {
 	isDarkMode: boolean;

@@ -14,10 +14,9 @@ import MultiTagCell from "../multi-tag-cell";
 import Menu from "../../shared/menu";
 
 import { CellType, CurrencyType, DateFormat, Tag } from "src/data/types";
-import { useMenu } from "src/redux/menu/hooks";
-import { MenuLevel } from "src/redux/menu/types";
+import { useMenu } from "src/shared/menu/hooks";
+import { MenuLevel } from "src/shared/menu/types";
 import { useAppDispatch, useAppSelector } from "src/redux/global/hooks";
-import { closeTopLevelMenu, openMenu } from "src/redux/menu/menu-slice";
 
 import LastEditedTimeCell from "../last-edited-time-cell";
 import CreationTimeCell from "../creation-time-cell";
@@ -33,10 +32,8 @@ import { updateSortTime } from "src/redux/global/global-slice";
 import { Color } from "src/shared/types";
 import CurrencyCell from "../currency-cell";
 import CurrencyCellEdit from "../currency-cell-edit";
-import {
-	getCloseMenuRequestTime,
-	shiftMenuIntoViewContent,
-} from "src/redux/menu/utils";
+import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
+import MenuTrigger from "src/react/shared/menu-trigger";
 
 interface Props {
 	columnType: string;
@@ -101,13 +98,15 @@ export default function BodyCell({
 	onDateTimeChange,
 	onAddTag,
 }: Props) {
-	const { menu, menuPosition, isMenuOpen, isMenuVisible } = useMenu(
-		MenuLevel.ONE,
-		columnType === CellType.DATE
-	);
-	const closeMenuRequestTime = useAppSelector((state) =>
-		getCloseMenuRequestTime(state, menu.id)
-	);
+	const {
+		menu,
+		menuPosition,
+		isMenuOpen,
+		menuCloseRequestTime,
+		isMenuVisible,
+		openMenu,
+		closeTopMenuAndFocusTrigger,
+	} = useMenu(MenuLevel.ONE, columnType === CellType.DATE);
 
 	const dispatch = useAppDispatch();
 	const { isDarkMode } = useAppSelector((state) => state.global);
@@ -129,15 +128,23 @@ export default function BodyCell({
 		}
 	}
 
-	function handleCellClick(e: React.MouseEvent) {
-		if (columnType === CellType.CHECKBOX) {
-			const isChecked = isCheckboxChecked(markdown);
+	function toggleCheckbox() {
+		const isChecked = isCheckboxChecked(markdown);
 
-			if (isChecked) {
-				handleCheckboxChange(CHECKBOX_MARKDOWN_UNCHECKED);
-			} else {
-				handleCheckboxChange(CHECKBOX_MARKDOWN_CHECKED);
-			}
+		if (isChecked) {
+			handleCheckboxChange(CHECKBOX_MARKDOWN_UNCHECKED);
+		} else {
+			handleCheckboxChange(CHECKBOX_MARKDOWN_CHECKED);
+		}
+	}
+
+	function handleEnterDown() {
+		if (columnType === CellType.CHECKBOX) toggleCheckbox();
+	}
+
+	function handleMenuTriggerClick(e: React.MouseEvent) {
+		if (columnType === CellType.CHECKBOX) {
+			toggleCheckbox();
 		} else if (
 			columnType !== CellType.CREATION_TIME &&
 			columnType !== CellType.LAST_EDITED_TIME
@@ -146,7 +153,7 @@ export default function BodyCell({
 
 			//If we clicked on the link for a file or tag, return
 			if (el.nodeName === "A") return;
-			dispatch(openMenu(menu));
+			openMenu(menu);
 		}
 	}
 
@@ -194,16 +201,14 @@ export default function BodyCell({
 	}
 
 	function handleMenuClose() {
-		dispatch(closeTopLevelMenu());
+		closeTopMenuAndFocusTrigger();
 	}
 
-	const { top, left } = shiftMenuIntoViewContent(
-		menu.id,
-		menuPosition.positionRef.current,
-		menuPosition.position,
-		0,
-		0
-	);
+	const { top, left } = shiftMenuIntoViewContent({
+		menuId: menu.id,
+		menuPositionEl: menuPosition.positionRef.current,
+		menuPosition: menuPosition.position,
+	});
 
 	const { width: measuredWidth, height: measuredHeight } =
 		menuPosition.position;
@@ -238,15 +243,86 @@ export default function BodyCell({
 	const filteredTags = tags.filter((t) => t.cellIds.find((c) => c == cellId));
 
 	return (
-		<div
-			ref={menuPosition.positionRef}
-			onClick={handleCellClick}
-			onContextMenu={handleCellContextClick}
-			className={className}
-			style={{
-				width,
-			}}
-		>
+		<>
+			<MenuTrigger
+				menuId={menu.id}
+				onClick={handleMenuTriggerClick}
+				shouldMenuRequestOnClose={menu.shouldRequestOnClose}
+				onEnterDown={handleEnterDown}
+				canMenuOpen={
+					columnType !== CellType.CHECKBOX &&
+					columnType !== CellType.CREATION_TIME &&
+					columnType !== CellType.LAST_EDITED_TIME
+				}
+			>
+				<div
+					ref={menuPosition.positionRef}
+					onContextMenu={handleCellContextClick}
+					className={className}
+					style={{
+						width,
+					}}
+				>
+					{columnType === CellType.TEXT && (
+						<TextCell
+							markdown={markdown}
+							shouldWrapOverflow={shouldWrapOverflow}
+						/>
+					)}
+					{columnType === CellType.NUMBER && (
+						<NumberCell
+							value={markdown}
+							shouldWrapOverflow={shouldWrapOverflow}
+						/>
+					)}
+					{columnType === CellType.CURRENCY && (
+						<CurrencyCell
+							value={markdown}
+							currencyType={columnCurrencyType}
+							shouldWrapOverflow={shouldWrapOverflow}
+						/>
+					)}
+					{columnType === CellType.TAG && currentTag && (
+						<TagCell
+							isDarkMode={isDarkMode}
+							markdown={currentTag.markdown}
+							color={currentTag.color}
+							shouldWrapOverflow={shouldWrapOverflow}
+						/>
+					)}
+					{columnType === CellType.MULTI_TAG &&
+						filteredTags.length !== 0 && (
+							<MultiTagCell
+								isDarkMode={isDarkMode}
+								tags={filteredTags}
+								shouldWrapOverflow={shouldWrapOverflow}
+							/>
+						)}
+					{columnType === CellType.DATE && (
+						<DateCell value={dateTime} format={dateFormat} />
+					)}
+					{columnType === CellType.CHECKBOX && (
+						<CheckboxCell
+							value={markdown}
+							onCheckboxChange={handleCheckboxChange}
+						/>
+					)}
+					{columnType === CellType.CREATION_TIME && (
+						<CreationTimeCell
+							value={rowCreationTime}
+							format={dateFormat}
+							shouldWrapOverflow={shouldWrapOverflow}
+						/>
+					)}
+					{columnType === CellType.LAST_EDITED_TIME && (
+						<LastEditedTimeCell
+							value={rowLastEditedTime}
+							format={dateFormat}
+							shouldWrapOverflow={shouldWrapOverflow}
+						/>
+					)}
+				</div>
+			</MenuTrigger>
 			<Menu
 				id={menu.id}
 				isOpen={isMenuOpen}
@@ -289,7 +365,7 @@ export default function BodyCell({
 						isMenuVisible={isMenuVisible}
 						menuPosition={menuPosition}
 						value={dateTime}
-						closeMenuRequestTime={closeMenuRequestTime}
+						menuCloseRequestTime={menuCloseRequestTime}
 						dateFormat={dateFormat}
 						onDateTimeChange={handleDateTimeChange}
 						onDateFormatChange={handleDateFormatChange}
@@ -304,63 +380,6 @@ export default function BodyCell({
 					/>
 				)}
 			</Menu>
-			{columnType === CellType.TEXT && (
-				<TextCell
-					markdown={markdown}
-					shouldWrapOverflow={shouldWrapOverflow}
-				/>
-			)}
-			{columnType === CellType.NUMBER && (
-				<NumberCell
-					value={markdown}
-					shouldWrapOverflow={shouldWrapOverflow}
-				/>
-			)}
-			{columnType === CellType.CURRENCY && (
-				<CurrencyCell
-					value={markdown}
-					currencyType={columnCurrencyType}
-					shouldWrapOverflow={shouldWrapOverflow}
-				/>
-			)}
-			{columnType === CellType.TAG && currentTag && (
-				<TagCell
-					isDarkMode={isDarkMode}
-					markdown={currentTag.markdown}
-					color={currentTag.color}
-					shouldWrapOverflow={shouldWrapOverflow}
-				/>
-			)}
-			{columnType === CellType.MULTI_TAG && filteredTags.length !== 0 && (
-				<MultiTagCell
-					isDarkMode={isDarkMode}
-					tags={filteredTags}
-					shouldWrapOverflow={shouldWrapOverflow}
-				/>
-			)}
-			{columnType === CellType.DATE && (
-				<DateCell value={dateTime} format={dateFormat} />
-			)}
-			{columnType === CellType.CHECKBOX && (
-				<CheckboxCell
-					value={markdown}
-					onCheckboxChange={handleCheckboxChange}
-				/>
-			)}
-			{columnType === CellType.CREATION_TIME && (
-				<CreationTimeCell
-					value={rowCreationTime}
-					format={dateFormat}
-					shouldWrapOverflow={shouldWrapOverflow}
-				/>
-			)}
-			{columnType === CellType.LAST_EDITED_TIME && (
-				<LastEditedTimeCell
-					value={rowLastEditedTime}
-					format={dateFormat}
-					shouldWrapOverflow={shouldWrapOverflow}
-				/>
-			)}
-		</div>
+		</>
 	);
 }

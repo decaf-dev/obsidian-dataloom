@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { MenuPosition, Menu, MenuLevel } from "./types";
 import { v4 as uuidv4 } from "uuid";
-import { getElementPosition, isMenuOpen } from "./utils";
-import { useCompare } from "../../shared/hooks";
-import { useAppSelector } from "../global/hooks";
+import { getElementPosition } from "./utils";
+import { useCompare } from "../hooks";
+import { useMenuContext } from ".";
 
 const useMenuPosition = (): MenuPosition => {
 	const positionRef = useRef<any | null>(null);
@@ -16,7 +16,13 @@ export const useMenu = (level: MenuLevel, shouldRequestOnClose = false) => {
 	const [id] = useState("m" + uuidv4());
 
 	const menuPosition = useMenuPosition();
-	const isOpen = useAppSelector((state) => isMenuOpen(state, id));
+	const {
+		openMenus,
+		openMenu,
+		closeTopMenuAndFocusTrigger,
+		menuCloseRequestTime,
+	} = useMenuContext();
+	const isOpen = openMenus.find((menu) => menu.id == id) ? true : false;
 
 	const [isVisible, setVisible] = useState(false);
 
@@ -37,5 +43,13 @@ export const useMenu = (level: MenuLevel, shouldRequestOnClose = false) => {
 		return { id, level, shouldRequestOnClose };
 	}, [id, level, shouldRequestOnClose]);
 
-	return { menu, menuPosition, isMenuOpen: isOpen, isMenuVisible: isVisible };
+	return {
+		menu,
+		menuPosition,
+		isMenuOpen: isOpen,
+		menuCloseRequestTime,
+		isMenuVisible: isVisible,
+		openMenu,
+		closeTopMenuAndFocusTrigger,
+	};
 };

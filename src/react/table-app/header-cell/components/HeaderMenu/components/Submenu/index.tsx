@@ -1,4 +1,4 @@
-import Button from "src/react/shared/button";
+import { Button } from "src/react/shared/button";
 import Divider from "src/react/shared/divider";
 import Icon from "src/react/shared/icon";
 import Padding from "src/react/shared/padding";
@@ -19,7 +19,9 @@ export default function Submenu({ title, children, onBackClick }: Props) {
 					<Stack>
 						<Button
 							icon={<Icon type={IconType.KEYBOARD_BACKSPACE} />}
-							onClick={() => onBackClick()}
+							onClick={() => {
+								onBackClick();
+							}}
 						/>
 						{title}
 					</Stack>

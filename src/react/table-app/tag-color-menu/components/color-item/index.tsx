@@ -26,7 +26,7 @@ export default function ColorItem({
 	return (
 		<div
 			className={containerClass}
-			onClick={(e) => {
+			onClick={() => {
 				onColorClick(color);
 			}}
 		>

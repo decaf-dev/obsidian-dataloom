@@ -1,4 +1,4 @@
-import Button from "src/react/shared/button";
+import { Button } from "src/react/shared/button";
 import { SortDir } from "src/data/types";
 import Stack from "src/react/shared/stack";
 import Icon from "src/react/shared/icon";

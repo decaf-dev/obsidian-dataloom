@@ -3,8 +3,8 @@ import Stack from "src/react/shared/stack";
 import Flex from "../flex";
 import Text from "../text";
 
-import "./styles.css";
 import { IconType } from "src/react/shared/icon/types";
+import "./styles.css";
 
 interface Props {
 	iconType?: IconType;

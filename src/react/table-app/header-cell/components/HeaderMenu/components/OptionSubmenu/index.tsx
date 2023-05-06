@@ -1,5 +1,5 @@
 import Submenu from "../Submenu";
-import Button from "src/react/shared/button";
+import { Button } from "src/react/shared/button";
 import Switch from "src/react/shared/switch";
 
 import { CellType, CurrencyType, DateFormat } from "src/data/types";

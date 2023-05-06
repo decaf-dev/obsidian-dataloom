@@ -1,4 +1,4 @@
-import { useFocusInput } from "src/shared/hooks";
+import { useFocusMenuInput } from "src/shared/hooks";
 import "./styles.css";
 
 interface Props {
@@ -12,7 +12,7 @@ export default function CurrencyCellEdit({
 	value,
 	onChange,
 }: Props) {
-	const inputRef = useFocusInput(isMenuVisible);
+	const inputRef = useFocusMenuInput(isMenuVisible, value, onChange);
 
 	return (
 		<div className="NLT__currency-cell-edit">
