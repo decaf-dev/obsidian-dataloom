@@ -23,7 +23,6 @@ import { getNumberFunctionContent } from "./numberFunction";
 import { getGeneralFunctionContent } from "./generalFunction";
 
 import "./styles.css";
-import Focusable from "src/react/shared/menu-focus";
 import MenuFocus from "src/react/shared/menu-focus";
 
 interface Props {

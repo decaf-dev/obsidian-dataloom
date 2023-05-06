@@ -129,6 +129,18 @@ export default function BodyCell({
 		}
 	}
 
+	function handleEnterDown() {
+		if (columnType === CellType.CHECKBOX) {
+			const isChecked = isCheckboxChecked(markdown);
+
+			if (isChecked) {
+				handleCheckboxChange(CHECKBOX_MARKDOWN_UNCHECKED);
+			} else {
+				handleCheckboxChange(CHECKBOX_MARKDOWN_CHECKED);
+			}
+		}
+	}
+
 	function handleMenuFocusClick(e: React.MouseEvent) {
 		if (columnType === CellType.CHECKBOX) {
 			const isChecked = isCheckboxChecked(markdown);
@@ -237,7 +249,16 @@ export default function BodyCell({
 
 	return (
 		<>
-			<MenuFocus menuId={menu.id} onClick={handleMenuFocusClick}>
+			<MenuFocus
+				menuId={menu.id}
+				onClick={handleMenuFocusClick}
+				onEnterDown={handleEnterDown}
+				canMenuOpen={
+					columnType !== CellType.CHECKBOX &&
+					columnType !== CellType.CREATION_TIME &&
+					columnType !== CellType.LAST_EDITED_TIME
+				}
+			>
 				<div
 					ref={menuPosition.positionRef}
 					onContextMenu={handleCellContextClick}
