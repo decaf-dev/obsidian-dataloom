@@ -12,7 +12,7 @@ interface Props {
 	name: string;
 	value?: string;
 	isSelected?: boolean;
-	onClick: (e: React.MouseEvent) => void;
+	onClick?: (e: React.MouseEvent) => void;
 }
 
 export default function MenuItem({
@@ -27,7 +27,11 @@ export default function MenuItem({
 	if (isSelected) className += " NLT__selected";
 
 	return (
-		<div className={className} aria-label={ariaLabel} onClick={onClick}>
+		<div
+			className={className}
+			aria-label={ariaLabel}
+			onClick={(e) => onClick && onClick(e)}
+		>
 			<Flex justify="space-between">
 				<Stack>
 					{iconType !== undefined && <Icon type={iconType} />}
