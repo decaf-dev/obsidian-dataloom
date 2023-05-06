@@ -5,8 +5,8 @@ import { Tag as TagType } from "src/data/types";
 import { useAppSelector } from "src/redux/global/hooks";
 
 import "./styles.css";
-import MenuHeader from "./component/MenuHeader";
-import MenuBody from "./component/MenuBody";
+import MenuHeader from "./menu-header";
+import MenuBody from "./menu-body";
 import { Color } from "src/shared/types";
 import { MenuPosition } from "src/shared/menu/types";
 import { randomColor } from "src/shared/colors";

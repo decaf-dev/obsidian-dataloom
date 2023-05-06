@@ -4,8 +4,6 @@ import Wrap from "src/react/shared/wrap";
 
 import { useFocusMenuInput } from "src/shared/hooks";
 
-import "./styles.css";
-
 interface MenuHeaderProps {
 	isDarkMode: boolean;
 	cellId: string;

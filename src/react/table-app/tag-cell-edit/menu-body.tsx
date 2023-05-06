@@ -1,12 +1,10 @@
 import Padding from "src/react/shared/padding";
-import Stack from "src/react/shared/stack";
 import Text from "src/react/shared/text";
 import { Color } from "src/shared/types";
 import { Tag } from "src/data/types";
-import CreateTag from "../CreateTag";
-import SelectableTag from "../SelectableTag";
+import CreateTag from "./create-tag";
+import SelectableTag from "./selectable-tag";
 
-import "./styles.css";
 import { MenuPosition } from "src/shared/menu/types";
 
 interface MenuBodyProps {

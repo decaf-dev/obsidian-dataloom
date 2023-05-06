@@ -10,3 +10,29 @@
 	padding-left: 5px !important;
 	padding-right: 5px !important;
 }
+
+.NLT__create-tag {
+	display: flex;
+	align-items: center;
+	padding: 4px 6px;
+	width: 100%;
+	overflow: hidden;
+}
+
+.NLT__tag-menu-body {
+	max-height: 140px;
+	overflow-y: scroll;
+}
+
+.NLT__tag-menu-header {
+	background-color: rgba(0, 0, 0, 0.25);
+	padding: 4px 10px;
+}
+
+.NLT__selectable-tag {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: var(--nlt-spacing--sm) var(--nlt-spacing--md);
+	overflow: hidden;
+}
