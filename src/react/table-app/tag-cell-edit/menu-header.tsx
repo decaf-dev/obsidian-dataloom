@@ -28,6 +28,12 @@ export default function MenuHeader({
 		onInputValueChange
 	);
 
+	function handleInputChange(value: string) {
+		// If the value starts with whitespace don't add the tag
+		if (value.match(/^\s+$/)) return;
+		onInputValueChange(value);
+	}
+
 	return (
 		<div
 			css={css`
@@ -62,7 +68,7 @@ export default function MenuHeader({
 					ref={inputRef}
 					type="text"
 					value={inputValue}
-					onChange={(e) => onInputValueChange(e.target.value)}
+					onChange={(e) => handleInputChange(e.target.value)}
 				/>
 			</Wrap>
 		</div>

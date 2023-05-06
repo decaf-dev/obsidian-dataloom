@@ -52,11 +52,8 @@ export default function TagCellEdit({
 		if (hasCloseRequestTimeChange && menuCloseRequestTime !== null) {
 			const shouldAddTag =
 				tags.find((tag) => tag.markdown === inputValue) === undefined;
-			if (shouldAddTag) {
-				handleTagAdd(inputValue, newTagColor);
-				onMenuClose();
-				//Close menu
-			}
+			if (shouldAddTag) handleTagAdd(inputValue, newTagColor);
+			onMenuClose();
 		}
 	}, [tags, inputValue, newTagColor, hasCloseRequestTimeChange]);
 
