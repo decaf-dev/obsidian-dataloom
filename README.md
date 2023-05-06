@@ -72,6 +72,7 @@ You can do this by clicking on the table icon on the sidebar
 -   Sticky headers - headers will remain visible as you scroll
 -   Function cells - allows you to make calculations based on column data. If the column cell type is set to number or currency, you have arithmetic operations available such as: min, max, range, median, sum, and average
 -   Import modal - allows you to create cells from markdown data
+-   Tabbing system - navigate focusable elements using the tab button, arrow keys, and enter button on your keyboard
 
 ## Settings
 
