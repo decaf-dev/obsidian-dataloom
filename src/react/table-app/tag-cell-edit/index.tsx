@@ -39,8 +39,6 @@ export default function TagCellEdit({
 	const { isDarkMode } = useAppSelector((state) => state.global);
 
 	function handleInputTextChange(value: string) {
-		//Disallow whitespace
-		if (value.match(/\s/)) return;
 		setInputText(value);
 	}
 
