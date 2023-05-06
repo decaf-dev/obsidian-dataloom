@@ -1,0 +1,182 @@
+
+:root {
+/** Spacing system **/
+--nlt-spacing--xs: 2px;
+--nlt-spacing--sm: 4px;
+--nlt-spacing--md: 8px;
+--nlt-spacing--lg: 12px;
+--nlt-spacing--xl: 16px;
+--nlt-spacing--2xl: 24px;
+
+--nlt-cell-spacing-x: var(--nlt-spacing--sm);
+--nlt-cell-spacing-y: var(--nlt-spacing--lg);
+--nlt-cell-min-height: 1.9rem;
+
+/** Font system **/
+--nlt-font-size--xs: 0.8rem;
+--nlt-font-size--sm: 0.9rem;
+--nlt-font-size--md: 1rem;
+--nlt-font-size--lg: 1.1rem;
+
+}
+
+/*
+ * Colors
+ */
+.NLT__light-gray--light {
+	/* background-color: #cfcfc4; */
+	background-color: hsl(0, 3%, 94%);
+}
+
+.NLT__light-gray--dark {
+	background-color: hsl(0, 0%, 22%);
+}
+
+.NLT__gray--light {
+	/* background-color: #cfcfc4; */
+	background-color: hsl(40, 5%, 88%);
+}
+
+.NLT__gray--dark {
+	background-color: hsl(0, 0%, 35%);
+}
+
+.NLT__brown--light {
+	background-color: hsl(18, 31%, 89%);
+}
+
+.NLT__brown--dark {
+	background-color: hsl(19, 32%, 27%);
+}
+
+.NLT__orange--light {
+	background-color: hsl(28, 67%, 88%);
+}
+
+.NLT__orange--dark {
+	background-color: hsl(28, 52%, 32%);
+}
+
+.NLT__yellow--light {
+	background-color: hsl(43, 82%, 89%);
+}
+
+.NLT__yellow--dark {
+	background-color: hsl(37, 43%, 36%);
+}
+
+.NLT__green--light {
+	background-color: hsl(113, 30%, 89%);
+}
+
+.NLT__green--dark {
+	background-color: hsl(138, 23%, 28%);
+}
+
+.NLT__blue--light {
+	background-color: hsl(205, 41%, 89%);
+}
+
+.NLT__blue--dark {
+	background-color: hsl(218, 38%, 30%);
+}
+
+.NLT__purple--light {
+	background-color: hsl(272, 29%, 90%);
+}
+
+.NLT__purple--dark {
+	background-color: hsl(266, 34%, 28%);
+}
+
+.NLT__pink--light {
+	background-color: hsl(330, 36%, 91%);
+}
+
+.NLT__pink--dark {
+	background-color: hsl(330, 31%, 30%);
+}
+
+.NLT__red--light {
+	background-color: hsl(11, 64%, 91%);
+}
+
+.NLT__red--dark {
+	background-color: hsl(8, 35%, 30%);
+}
+
+/*
+ * Selectable and selected
+ */
+.NLT__selectable {
+	cursor: pointer;
+}
+
+.NLT__selectable:hover {
+	background-color: var(--color-base-30)
+}
+
+.NLT__selected {
+	background-color: var(--color-base-20);
+}
+
+/**
+ * Overflow
+ */
+.NLT__wrap-overflow {
+	overflow-wrap: break-word;
+}
+
+.NLT__hide-overflow {
+	overflow: hidden;
+	overflow-wrap: normal;
+	white-space: nowrap;
+}
+
+.NLT__hide-overflow-ellipsis {
+	overflow: hidden;
+	overflow-wrap: normal;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+/**
+ * Components
+ */
+.workspace-leaf-content[data-type="notion-like-tables"] .view-content {
+	padding: 0;
+}
+
+.NLT__app {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	height: 100%;
+}
+
+.NLT__default-cursor {
+	cursor: default !important;
+}
+
+/**
+ * A style for when the focus is gained from using the keyboard e.g. pressing the tab key
+ */
+.NLT__focusable:focus-visible {
+	outline: 2px solid var(--color-accent);
+	outline-offset: -2px;
+}
+
+/**
+ * A style to programatically add a visual focus. el.focus() will not call the style above
+ */
+.NLT__focus-visible {
+	outline: 2px solid var(--color-accent);
+	outline-offset: -2px;
+}
+
+/**
+ * Disables the outline offset for buttons that don't have icons
+ */
+.NLT__button:not(.NLT__button--icon):focus-visible {
+	outline-offset: 0;
+}

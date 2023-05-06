@@ -8,9 +8,9 @@ Notion-Like Tables is your premiere tool for creating and managing tabular data 
 
 ![Obsidian Downloads](https://img.shields.io/badge/dynamic/json?logo=obsidian&color=%23483699&label=downloads&query=%24%5B%22notion-like-tables%22%5D.downloads&url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json) ![Release Version](https://img.shields.io/github/v/release/trey-wallis/obsidian-notion-like-tables)
 
-<video src="https://user-images.githubusercontent.com/40307803/233816154-066dae3a-c12d-4f2b-8668-641ada1a72ee.mov" controls></video>
+<video src="https://user-images.githubusercontent.com/40307803/236613880-ddbf2fbe-bf01-49a4-b21c-e2a00ed92072.mov" controls></video>
 
-[Lastest release notes](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/6.5.0)
+[Lastest release notes](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/6.6.0)
 
 ## About
 
@@ -72,6 +72,7 @@ You can do this by clicking on the table icon on the sidebar
 -   Sticky headers - headers will remain visible as you scroll
 -   Function cells - allows you to make calculations based on column data. If the column cell type is set to number or currency, you have arithmetic operations available such as: min, max, range, median, sum, and average
 -   Import modal - allows you to create cells from markdown data
+-   Tabbing system - navigate focusable elements using the tab button, arrow keys, and enter button on your keyboard
 
 ## Settings
 
