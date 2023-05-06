@@ -102,12 +102,11 @@ export default function BodyCell({
 		menu,
 		menuPosition,
 		isMenuOpen,
+		menuCloseRequestTime,
 		isMenuVisible,
 		openMenu,
 		closeTopLevelMenu,
 	} = useMenu(MenuLevel.ONE, columnType === CellType.DATE);
-	//TODO fix
-	const menuCloseRequestTime = 0;
 
 	const dispatch = useAppDispatch();
 	const { isDarkMode } = useAppSelector((state) => state.global);

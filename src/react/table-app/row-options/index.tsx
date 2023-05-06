@@ -1,6 +1,6 @@
 import Icon from "../../shared/icon";
 
-import Button from "../../shared/button";
+import { MenuButton } from "../../shared/button";
 import { useMenu } from "src/shared/menu/hooks";
 
 import "./styles.css";
@@ -42,7 +42,7 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 		<>
 			<div className="NLT__row-options">
 				<div ref={menuPosition.positionRef}>
-					<Button
+					<MenuButton
 						menuId={menu.id}
 						icon={<Icon type={IconType.DRAG_INDICATOR} />}
 						ariaLabel="Drag to move or click to open"

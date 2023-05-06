@@ -4,7 +4,7 @@ import { MenuLevel, MenuPosition } from "src/shared/menu/types";
 import { useMenu } from "src/shared/menu/hooks";
 
 import "./styles.css";
-import Button from "src/react/shared/button";
+import { Button } from "src/react/shared/button";
 import Icon from "src/react/shared/icon";
 import Tag from "src/react/shared/tag";
 import { IconType } from "src/react/shared/icon/types";

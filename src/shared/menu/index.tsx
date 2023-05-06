@@ -9,9 +9,10 @@ import { useTableState } from "../table-state/useTableState";
 
 interface ContextProps {
 	openMenus: Menu[];
+	menuKey: string | null;
+	menuCloseRequestTime: number | null;
 	openMenu: (menu: Menu) => void;
 	closeTopLevelMenu: () => void;
-	menuKey: string | null;
 }
 
 const MenuContext = React.createContext<ContextProps | null>(null);
@@ -46,6 +47,10 @@ export default function MenuProvider({ children }: Props) {
 	 * A reference to the current table state
 	 */
 	const [tableState] = useTableState();
+
+	const [menuCloseRequestTime, setMenuCloseRequestTime] = React.useState<
+		number | null
+	>(null);
 
 	/**
 	 * Returns whether or not a menu is open
@@ -139,11 +144,15 @@ export default function MenuProvider({ children }: Props) {
 			if (focusedEl) {
 				if (focusedEl.className.includes("NLT__focusable")) {
 					const menuId = focusedEl.getAttribute("data-menu-id");
-					if (menuId)
+					const shouldRequestOnClose =
+						focusedEl.getAttribute(
+							"data-menu-should-request-on-close"
+						) === "true";
+					if (menuId && shouldRequestOnClose)
 						openMenu({
 							id: menuId,
 							level: MenuLevel.ONE,
-							shouldRequestOnClose: false,
+							shouldRequestOnClose,
 						});
 				}
 			}
@@ -286,7 +295,13 @@ export default function MenuProvider({ children }: Props) {
 
 	return (
 		<MenuContext.Provider
-			value={{ openMenus, openMenu, menuKey, closeTopLevelMenu }}
+			value={{
+				openMenus,
+				openMenu,
+				menuKey,
+				menuCloseRequestTime,
+				closeTopLevelMenu,
+			}}
 		>
 			{children}
 		</MenuContext.Provider>

@@ -1,13 +1,11 @@
-import Button from "src/react/shared/button";
+import { MenuButton } from "src/react/shared/button";
 import ToggleColumnMenu from "./toggle-column-menu";
-import { useAppDispatch } from "src/redux/global/hooks";
 import { useMenu } from "src/shared/menu/hooks";
 import { MenuLevel } from "src/shared/menu/types";
 import Icon from "src/react/shared/icon";
 import { ToggleColumn } from "./types";
 import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
 import { IconType } from "src/react/shared/icon/types";
-import MenuFocus from "src/react/shared/menu-focus";
 
 interface Props {
 	onToggle: (id: string) => void;
@@ -26,7 +24,7 @@ export default function ToggleColumn({ columns, onToggle }: Props) {
 	return (
 		<>
 			<div className="NLT__toggle-column" ref={menuPosition.positionRef}>
-				<Button
+				<MenuButton
 					menuId={menu.id}
 					icon={<Icon type={IconType.VIEW_COLUMN} />}
 					ariaLabel="Toggle column"

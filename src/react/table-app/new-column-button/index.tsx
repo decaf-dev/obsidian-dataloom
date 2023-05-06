@@ -1,5 +1,5 @@
 import { IconType } from "src/react/shared/icon/types";
-import Button from "../../shared/button";
+import { Button } from "../../shared/button";
 import Icon from "../../shared/icon";
 
 import "./styles.css";
