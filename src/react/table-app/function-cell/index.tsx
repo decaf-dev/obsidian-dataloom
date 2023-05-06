@@ -23,7 +23,7 @@ import { getNumberFunctionContent } from "./numberFunction";
 import { getGeneralFunctionContent } from "./generalFunction";
 
 import "./styles.css";
-import MenuFocus from "src/react/shared/menu-focus";
+import MenuTrigger from "src/react/shared/menu-trigger";
 
 interface Props {
 	columnId: string;
@@ -104,7 +104,7 @@ export default function FunctionCell({
 
 	return (
 		<>
-			<MenuFocus menuId={menu.id} onClick={() => openMenu(menu)}>
+			<MenuTrigger menuId={menu.id} onClick={() => openMenu(menu)}>
 				<div
 					className="NLT__function-cell NLT__selectable"
 					style={{
@@ -127,7 +127,7 @@ export default function FunctionCell({
 						</Stack>
 					)}
 				</div>
-			</MenuFocus>
+			</MenuTrigger>
 			<FunctionMenu
 				id={menu.id}
 				top={top}

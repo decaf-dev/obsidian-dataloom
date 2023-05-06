@@ -33,7 +33,7 @@ import { Color } from "src/shared/types";
 import CurrencyCell from "../currency-cell";
 import CurrencyCellEdit from "../currency-cell-edit";
 import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
-import MenuFocus from "src/react/shared/menu-focus";
+import MenuTrigger from "src/react/shared/menu-trigger";
 
 interface Props {
 	columnType: string;
@@ -140,7 +140,7 @@ export default function BodyCell({
 		}
 	}
 
-	function handleMenuFocusClick(e: React.MouseEvent) {
+	function handleMenuTriggerClick(e: React.MouseEvent) {
 		if (columnType === CellType.CHECKBOX) {
 			const isChecked = isCheckboxChecked(markdown);
 
@@ -248,9 +248,9 @@ export default function BodyCell({
 
 	return (
 		<>
-			<MenuFocus
+			<MenuTrigger
 				menuId={menu.id}
-				onClick={handleMenuFocusClick}
+				onClick={handleMenuTriggerClick}
 				shouldMenuRequestOnClose={menu.shouldRequestOnClose}
 				onEnterDown={handleEnterDown}
 				canMenuOpen={
@@ -326,7 +326,7 @@ export default function BodyCell({
 						/>
 					)}
 				</div>
-			</MenuFocus>
+			</MenuTrigger>
 			<Menu
 				id={menu.id}
 				isOpen={isMenuOpen}

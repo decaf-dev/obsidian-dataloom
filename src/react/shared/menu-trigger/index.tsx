@@ -9,7 +9,7 @@ interface Props {
 	onEnterDown?: () => void;
 }
 
-const MenuFocus = ({
+const MenuTrigger = ({
 	canMenuOpen = true,
 	shouldMenuRequestOnClose = false,
 	children,
@@ -31,4 +31,4 @@ const MenuFocus = ({
 		</div>
 	);
 };
-export default MenuFocus;
+export default MenuTrigger;

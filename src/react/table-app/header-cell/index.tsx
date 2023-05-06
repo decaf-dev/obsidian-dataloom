@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 import { numToPx, pxToNum } from "src/shared/conversion";
 import { CellType, CurrencyType, DateFormat, SortDir } from "src/data/types";
 import { useMenu } from "src/shared/menu/hooks";
 import { MenuLevel } from "src/shared/menu/types";
 import { MIN_COLUMN_WIDTH } from "src/shared/table-state/constants";
-import { useAppDispatch, useAppSelector } from "src/redux/global/hooks";
+import { useAppSelector } from "src/redux/global/hooks";
 
 import Icon from "../../shared/icon";
 import Stack from "../../shared/stack";
@@ -15,8 +15,7 @@ import { useCompare, useForceUpdate } from "src/shared/hooks";
 import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
 import { getIconTypeFromCellType } from "src/react/shared/icon/utils";
 import "./styles.css";
-import Focusable from "src/react/shared/menu-focus";
-import MenuFocus from "src/react/shared/menu-focus";
+import MenuTrigger from "src/react/shared/menu-trigger";
 
 interface Props {
 	cellId: string;
@@ -99,7 +98,7 @@ export default function HeaderCell({
 		onWidthChange(columnId, numToPx(newWidth));
 	});
 
-	function handleMenuFocusClick() {
+	function handleMenuTriggerClick() {
 		//If we're resizing a column, then don't open the menu
 		if (resizingColumnId !== null) return;
 
@@ -126,7 +125,7 @@ export default function HeaderCell({
 
 	return (
 		<>
-			<MenuFocus menuId={menu.id} onClick={handleMenuFocusClick}>
+			<MenuTrigger menuId={menu.id} onClick={handleMenuTriggerClick}>
 				<div
 					className="NLT__th-container"
 					ref={menuPosition.positionRef}
@@ -158,7 +157,7 @@ export default function HeaderCell({
 						/>
 					</div>
 				</div>
-			</MenuFocus>
+			</MenuTrigger>
 			<HeaderMenu
 				isOpen={isMenuOpen}
 				isMenuVisible={isMenuVisible}
