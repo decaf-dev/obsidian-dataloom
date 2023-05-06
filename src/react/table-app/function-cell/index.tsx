@@ -1,4 +1,4 @@
-import Text from "../../shared/text";
+import Text from "../../shared/shared-text";
 import FunctionMenu from "./function-menu";
 
 import { useMenu } from "src/shared/menu/hooks";
@@ -14,7 +14,7 @@ import {
 	GeneralFunction,
 	Tag,
 } from "src/data/types";
-import Stack from "../../shared/stack";
+import Stack from "../../shared/shared-stack";
 import {
 	getShortDisplayNameForFunctionType,
 	isGeneralFunction,

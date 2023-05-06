@@ -1,6 +1,6 @@
 import { Tag as TagType } from "src/data/types";
-import Tag from "src/react/shared/tag";
-import Wrap from "src/react/shared/wrap";
+import Tag from "src/react/shared/shared-tag";
+import Wrap from "src/react/shared/shared-wrap";
 
 import { useFocusMenuInput } from "src/shared/hooks";
 

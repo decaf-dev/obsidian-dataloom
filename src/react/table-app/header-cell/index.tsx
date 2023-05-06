@@ -7,13 +7,13 @@ import { MenuLevel } from "src/shared/menu/types";
 import { MIN_COLUMN_WIDTH } from "src/shared/table-state/constants";
 import { useAppSelector } from "src/redux/global/hooks";
 
-import Icon from "../../shared/icon";
-import Stack from "../../shared/stack";
+import Icon from "../../shared/shared-icon";
+import Stack from "../../shared/shared-stack";
 import HeaderMenu from "./components/HeaderMenu";
 import { useResizeColumn } from "./services/hooks";
 import { useCompare, useForceUpdate } from "src/shared/hooks";
 import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
-import { getIconTypeFromCellType } from "src/react/shared/icon/utils";
+import { getIconTypeFromCellType } from "src/react/shared/shared-icon/utils";
 import "./styles.css";
 import MenuTrigger from "src/react/shared/menu-trigger";
 

@@ -1,6 +1,6 @@
-import { IconType } from "src/react/shared/icon/types";
-import { Button } from "../../shared/button";
-import Icon from "../../shared/icon";
+import { IconType } from "src/react/shared/shared-icon/types";
+import { Button } from "../../shared/shared-button";
+import Icon from "../../shared/shared-icon";
 
 import "./styles.css";
 

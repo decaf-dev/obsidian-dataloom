@@ -1,4 +1,4 @@
-import Menu from "src/react/shared/menu";
+import Menu from "src/react/shared/shared-menu";
 import MenuItem from "src/react/shared/menu-item";
 import { DateFormat } from "src/data/types";
 import { getDisplayNameForDateFormat } from "src/shared/table-state/utils";

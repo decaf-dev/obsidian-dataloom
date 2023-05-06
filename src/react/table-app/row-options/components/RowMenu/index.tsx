@@ -1,6 +1,6 @@
-import Menu from "src/react/shared/menu";
+import Menu from "src/react/shared/shared-menu";
 import MenuItem from "src/react/shared/menu-item";
-import { IconType } from "src/react/shared/icon/types";
+import { IconType } from "src/react/shared/shared-icon/types";
 
 interface Props {
 	id: string;

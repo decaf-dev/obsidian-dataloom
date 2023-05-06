@@ -1,4 +1,4 @@
-import Menu from "src/react/shared/menu";
+import Menu from "src/react/shared/shared-menu";
 import MenuItem from "src/react/shared/menu-item";
 import { CurrencyType } from "src/data/types";
 import { getDisplayNameForCurrencyType } from "src/shared/table-state/utils";

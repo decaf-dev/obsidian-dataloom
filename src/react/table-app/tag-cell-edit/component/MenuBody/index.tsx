@@ -1,6 +1,6 @@
-import Padding from "src/react/shared/padding";
-import Stack from "src/react/shared/stack";
-import Text from "src/react/shared/text";
+import Padding from "src/react/shared/shared-padding";
+import Stack from "src/react/shared/shared-stack";
+import Text from "src/react/shared/shared-text";
 import { Color } from "src/shared/types";
 import { Tag } from "src/data/types";
 import CreateTag from "../CreateTag";

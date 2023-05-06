@@ -11,7 +11,7 @@ import ImportTypeSelect from "./import-type-select";
 import ColumnSelect from "./column-select";
 import { ERROR_TEXT_DEFAULT } from "./constants";
 import MarkdownInput from "./markdown-input";
-import Stack from "../shared/stack";
+import Stack from "../shared/shared-stack";
 
 import "./styles.css";
 

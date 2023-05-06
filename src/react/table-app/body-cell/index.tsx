@@ -11,7 +11,7 @@ import TextCellEdit from "../text-cell-edit";
 import TagCellEdit from "../tag-cell-edit";
 import DateCellEdit from "../date-cell-edit";
 import MultiTagCell from "../multi-tag-cell";
-import Menu from "../../shared/menu";
+import Menu from "../../shared/shared-menu";
 
 import { CellType, CurrencyType, DateFormat, Tag } from "src/data/types";
 import { useMenu } from "src/shared/menu/hooks";

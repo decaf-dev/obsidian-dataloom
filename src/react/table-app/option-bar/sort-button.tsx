@@ -1,8 +1,8 @@
-import { Button } from "src/react/shared/button";
+import { Button } from "src/react/shared/shared-button";
 import { SortDir } from "src/data/types";
-import Stack from "src/react/shared/stack";
-import Icon from "src/react/shared/icon";
-import { IconType } from "src/react/shared/icon/types";
+import Stack from "src/react/shared/shared-stack";
+import Icon from "src/react/shared/shared-icon";
+import { IconType } from "src/react/shared/shared-icon/types";
 
 interface SortBubbleProps {
 	sortDir: SortDir;

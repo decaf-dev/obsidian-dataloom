@@ -3,14 +3,14 @@ import { useMemo } from "react";
 import { SortDir, Column, HeaderCell } from "src/data/types";
 
 import { useAppSelector } from "src/redux/global/hooks";
-import Stack from "../../shared/stack";
+import Stack from "../../shared/shared-stack";
 
 import { CellNotFoundError, ColumnIdError } from "src/shared/table-state/error";
 import SearchBar from "./search-bar";
 import SortBubble from "./sort-button";
 
 import "./styles.css";
-import Flex from "../../shared/flex";
+import Flex from "../../shared/shared-flex";
 import ToggleColumn from "./toggle-column";
 
 interface SortButtonListProps {

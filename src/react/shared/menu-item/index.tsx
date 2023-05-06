@@ -1,9 +1,9 @@
-import Icon from "src/react/shared/icon";
-import Stack from "src/react/shared/stack";
-import Flex from "../flex";
-import Text from "../text";
+import Icon from "src/react/shared/shared-icon";
+import Stack from "src/react/shared/shared-stack";
+import Flex from "../shared-flex";
+import Text from "../shared-text";
 
-import { IconType } from "src/react/shared/icon/types";
+import { IconType } from "src/react/shared/shared-icon/types";
 import "./styles.css";
 
 interface Props {

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import Menu from "src/react/shared/menu";
+import Menu from "src/react/shared/shared-menu";
 import OptionSubmenu from "./components/OptionSubmenu";
 import TypeSubmenu from "./components/TypeSubmenu";
 import BaseMenu from "./components/BaseMenu";

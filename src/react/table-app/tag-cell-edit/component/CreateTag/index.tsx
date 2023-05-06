@@ -1,4 +1,4 @@
-import Tag from "src/react/shared/tag";
+import Tag from "src/react/shared/shared-tag";
 import { Color } from "src/shared/types";
 
 import "./styles.css";
