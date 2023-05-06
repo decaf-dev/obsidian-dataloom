@@ -128,27 +128,23 @@ export default function BodyCell({
 		}
 	}
 
-	function handleEnterDown() {
-		if (columnType === CellType.CHECKBOX) {
-			const isChecked = isCheckboxChecked(markdown);
+	function toggleCheckbox() {
+		const isChecked = isCheckboxChecked(markdown);
 
-			if (isChecked) {
-				handleCheckboxChange(CHECKBOX_MARKDOWN_UNCHECKED);
-			} else {
-				handleCheckboxChange(CHECKBOX_MARKDOWN_CHECKED);
-			}
+		if (isChecked) {
+			handleCheckboxChange(CHECKBOX_MARKDOWN_UNCHECKED);
+		} else {
+			handleCheckboxChange(CHECKBOX_MARKDOWN_CHECKED);
 		}
+	}
+
+	function handleEnterDown() {
+		if (columnType === CellType.CHECKBOX) toggleCheckbox();
 	}
 
 	function handleMenuTriggerClick(e: React.MouseEvent) {
 		if (columnType === CellType.CHECKBOX) {
-			const isChecked = isCheckboxChecked(markdown);
-
-			if (isChecked) {
-				handleCheckboxChange(CHECKBOX_MARKDOWN_UNCHECKED);
-			} else {
-				handleCheckboxChange(CHECKBOX_MARKDOWN_CHECKED);
-			}
+			toggleCheckbox();
 		} else if (
 			columnType !== CellType.CREATION_TIME &&
 			columnType !== CellType.LAST_EDITED_TIME
