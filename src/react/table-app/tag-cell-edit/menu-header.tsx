@@ -5,29 +5,28 @@ import Wrap from "src/react/shared/wrap";
 import { useFocusMenuInput } from "src/shared/hooks";
 
 interface MenuHeaderProps {
-	isDarkMode: boolean;
 	cellId: string;
 	isMenuVisible: boolean;
 	tags: TagType[];
-	inputText: string;
-	onInputTextChange: (value: string) => void;
+	inputValue: string;
+	onInputValueChange: (value: string) => void;
 	onRemoveTag: (tagId: string) => void;
 }
 
 export default function MenuHeader({
-	isDarkMode,
 	isMenuVisible,
 	cellId,
 	tags,
-	inputText,
-	onInputTextChange,
+	inputValue,
+	onInputValueChange,
 	onRemoveTag,
 }: MenuHeaderProps) {
 	const inputRef = useFocusMenuInput(
 		isMenuVisible,
-		inputText,
-		onInputTextChange
+		inputValue,
+		onInputValueChange
 	);
+
 	return (
 		<div className="NLT__tag-menu-header">
 			<Wrap spacingX="sm">
@@ -35,7 +34,6 @@ export default function MenuHeader({
 					.filter((tag) => tag.cellIds.find((c) => c === cellId))
 					.map((tag) => (
 						<Tag
-							isDarkMode={isDarkMode}
 							key={tag.id}
 							id={tag.id}
 							color={tag.color}
@@ -49,8 +47,8 @@ export default function MenuHeader({
 					autoFocus
 					ref={inputRef}
 					type="text"
-					value={inputText}
-					onChange={(e) => onInputTextChange(e.target.value)}
+					value={inputValue}
+					onChange={(e) => onInputValueChange(e.target.value)}
 				/>
 			</Wrap>
 		</div>

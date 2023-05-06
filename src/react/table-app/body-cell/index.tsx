@@ -284,7 +284,6 @@ export default function BodyCell({
 					)}
 					{columnType === CellType.TAG && currentTag && (
 						<TagCell
-							isDarkMode={isDarkMode}
 							markdown={currentTag.markdown}
 							color={currentTag.color}
 							shouldWrapOverflow={shouldWrapOverflow}
@@ -293,7 +292,6 @@ export default function BodyCell({
 					{columnType === CellType.MULTI_TAG &&
 						filteredTags.length !== 0 && (
 							<MultiTagCell
-								isDarkMode={isDarkMode}
 								tags={filteredTags}
 								shouldWrapOverflow={shouldWrapOverflow}
 							/>

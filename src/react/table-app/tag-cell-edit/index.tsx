@@ -1,15 +1,14 @@
-import { useState } from "react";
+import React from "react";
 
-import { Tag as TagType } from "src/data/types";
-
-import { useAppSelector } from "src/redux/global/hooks";
-
-import "./styles.css";
 import MenuHeader from "./menu-header";
 import MenuBody from "./menu-body";
+
+import { Tag as TagType } from "src/data/types";
 import { Color } from "src/shared/types";
 import { MenuPosition } from "src/shared/menu/types";
 import { randomColor } from "src/shared/colors";
+
+import "./styles.css";
 
 interface Props {
 	tags: TagType[];
@@ -34,43 +33,34 @@ export default function TagCellEdit({
 	onTagDeleteClick,
 	onRemoveTag,
 }: Props) {
-	const [inputText, setInputText] = useState("");
-	const [newTagColor] = useState(randomColor());
-	const { isDarkMode } = useAppSelector((state) => state.global);
-
-	function handleInputTextChange(value: string) {
-		setInputText(value);
-	}
+	const [inputValue, setInputValue] = React.useState("");
+	const [newTagColor] = React.useState(randomColor());
 
 	function handleAddTag(markdown: string, color: Color) {
 		onAddTag(markdown, color);
-		setInputText("");
+		setInputValue("");
 	}
 
 	return (
 		<div className="NLT__tag-menu">
-			<div className="NLT__tag-menu-container">
-				<MenuHeader
-					isMenuVisible={isMenuVisible}
-					isDarkMode={isDarkMode}
-					cellId={cellId}
-					inputText={inputText}
-					tags={tags}
-					onInputTextChange={handleInputTextChange}
-					onRemoveTag={onRemoveTag}
-				/>
-				<MenuBody
-					menuPosition={menuPosition}
-					isDarkMode={isDarkMode}
-					inputText={inputText}
-					tags={tags}
-					newTagColor={newTagColor}
-					onAddTag={handleAddTag}
-					onTagClick={onTagClick}
-					onTagDeleteClick={onTagDeleteClick}
-					onTagColorChange={onTagColorChange}
-				/>
-			</div>
+			<MenuHeader
+				isMenuVisible={isMenuVisible}
+				cellId={cellId}
+				inputValue={inputValue}
+				tags={tags}
+				onInputValueChange={setInputValue}
+				onRemoveTag={onRemoveTag}
+			/>
+			<MenuBody
+				menuPosition={menuPosition}
+				inputText={inputValue}
+				tags={tags}
+				newTagColor={newTagColor}
+				onAddTag={handleAddTag}
+				onTagClick={onTagClick}
+				onTagDeleteClick={onTagDeleteClick}
+				onTagColorChange={onTagColorChange}
+			/>
 		</div>
 	);
 }

@@ -11,7 +11,6 @@ import { Color } from "src/shared/types";
 import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
 
 interface Props {
-	isDarkMode: boolean;
 	id: string;
 	menuPosition: MenuPosition;
 	markdown: string;
@@ -22,7 +21,6 @@ interface Props {
 }
 
 export default function SelectableTag({
-	isDarkMode,
 	menuPosition,
 	id,
 	markdown,
@@ -57,12 +55,7 @@ export default function SelectableTag({
 				className="NLT__selectable-tag NLT__selectable"
 				onClick={() => onClick(id)}
 			>
-				<Tag
-					isDarkMode={isDarkMode}
-					markdown={markdown}
-					color={color}
-					maxWidth="150px"
-				/>
+				<Tag markdown={markdown} color={color} maxWidth="150px" />
 				<Button
 					icon={<Icon type={IconType.MORE_HORIZ} />}
 					isSimple

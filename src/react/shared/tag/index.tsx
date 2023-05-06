@@ -6,8 +6,8 @@ import { findColorClassName } from "src/shared/colors";
 import { Button } from "../button";
 
 import "./styles.css";
+import { useAppSelector } from "src/redux/global/hooks";
 interface Props {
-	isDarkMode: boolean;
 	id?: string;
 	maxWidth?: string;
 	markdown: string;
@@ -18,7 +18,6 @@ interface Props {
 }
 
 export default function Tag({
-	isDarkMode,
 	id,
 	color,
 	maxWidth,
@@ -26,6 +25,8 @@ export default function Tag({
 	showRemove,
 	onRemoveClick,
 }: Props) {
+	const { isDarkMode } = useAppSelector((state) => state.global);
+
 	let tagClass = "NLT__tag";
 	tagClass += " " + findColorClassName(isDarkMode, color);
 

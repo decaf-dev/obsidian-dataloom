@@ -4,14 +4,12 @@ import Tag from "../../shared/tag";
 
 import "./styles.css";
 interface Props {
-	isDarkMode: boolean;
 	markdown: string;
 	color: Color;
 	shouldWrapOverflow: boolean;
 }
 
 export default function TagCell({
-	isDarkMode,
 	markdown,
 	color,
 	shouldWrapOverflow,
@@ -20,7 +18,7 @@ export default function TagCell({
 	const className = "NLT__tag-cell" + " " + overflowClassName;
 	return (
 		<div className={className}>
-			<Tag isDarkMode={isDarkMode} markdown={markdown} color={color} />
+			<Tag markdown={markdown} color={color} />
 		</div>
 	);
 }

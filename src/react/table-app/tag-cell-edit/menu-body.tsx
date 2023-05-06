@@ -8,7 +8,6 @@ import SelectableTag from "./selectable-tag";
 import { MenuPosition } from "src/shared/menu/types";
 
 interface MenuBodyProps {
-	isDarkMode: boolean;
 	tags: Tag[];
 	menuPosition: MenuPosition;
 	inputText: string;
@@ -20,7 +19,6 @@ interface MenuBodyProps {
 }
 
 export default function MenuBody({
-	isDarkMode,
 	tags,
 	inputText,
 	menuPosition,
@@ -40,7 +38,6 @@ export default function MenuBody({
 			<div style={{ width: "100%" }}>
 				{!found && inputText !== "" && (
 					<CreateTag
-						isDarkMode={isDarkMode}
 						markdown={inputText}
 						color={newTagColor}
 						onAddTag={onAddTag}
@@ -48,7 +45,6 @@ export default function MenuBody({
 				)}
 				{filteredTags.map((tag) => (
 					<SelectableTag
-						isDarkMode={isDarkMode}
 						menuPosition={menuPosition}
 						key={tag.id}
 						id={tag.id}
