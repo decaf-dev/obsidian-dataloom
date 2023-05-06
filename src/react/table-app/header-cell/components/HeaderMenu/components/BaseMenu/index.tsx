@@ -29,8 +29,10 @@ export default function BaseMenu({
 	onSortClick,
 	onSubmenuChange,
 }: Props) {
-	const inputRef = useFocusMenuInput(isMenuVisible, (value: string) =>
-		onColumnNameChange(cellId, value)
+	const inputRef = useFocusMenuInput(
+		isMenuVisible,
+		columnName,
+		(value: string) => onColumnNameChange(cellId, value)
 	);
 
 	return (

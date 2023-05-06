@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { useFocusMenuTextArea } from "src/shared/hooks";
+import { useFocusMenuTextArea, useInputSelection } from "src/shared/hooks";
 import { useOverflowClassName } from "src/shared/spacing/hooks";
 
 import "./styles.css";
@@ -20,18 +20,8 @@ export default function TextCellEdit({
 }: Props) {
 	const [isShiftDown, setShiftDown] = useState(false);
 	const [isEnterPressed, setEnterPressed] = useState(false);
-	const inputRef = useFocusMenuTextArea(isMenuVisible, onChange);
-
-	useEffect(() => {
-		if (isMenuVisible) setSelection(value.length);
-	}, [isMenuVisible]);
-
-	function setSelection(pos: number) {
-		if (inputRef.current) {
-			inputRef.current.selectionStart = pos;
-			inputRef.current.selectionEnd = pos;
-		}
-	}
+	const inputRef = useFocusMenuTextArea(isMenuVisible, value, onChange);
+	useInputSelection(isMenuVisible, inputRef, value.length);
 
 	function handleKeyDown(e: React.KeyboardEvent) {
 		if (e.shiftKey) setShiftDown(true);
@@ -43,18 +33,21 @@ export default function TextCellEdit({
 		if (e.code != "Enter") setEnterPressed(false);
 	}
 
-	function handleTextareaChange(newValue: string) {
+	function handleTextareaChange(value: string) {
+		let updatedValue = value;
 		if (inputRef.current) {
 			//If the user presses enter, a new line character will be added.
 			//We want to remove this character if the menu closes. This happens when shift is not being pressed.
 			if (!isShiftDown && isEnterPressed) {
 				//Remove new line character
-				newValue =
-					newValue.substring(0, inputRef.current.selectionStart - 1) +
-					newValue.substring(inputRef.current.selectionStart);
+				updatedValue =
+					updatedValue.substring(
+						0,
+						inputRef.current.selectionStart - 1
+					) + updatedValue.substring(inputRef.current.selectionStart);
 			}
-			onChange(newValue);
 		}
+		onChange(updatedValue);
 	}
 
 	const className = useOverflowClassName(shouldWrapOverflow);

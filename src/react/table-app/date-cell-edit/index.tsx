@@ -51,7 +51,11 @@ export default function DateCellEdit({
 		MenuLevel.TWO
 	);
 
-	const inputRef = useFocusMenuInput(isMenuVisible, setLocalValue);
+	const inputRef = useFocusMenuInput(
+		isMenuVisible,
+		value?.toString() || "",
+		setLocalValue
+	);
 
 	useEffect(() => {
 		setLocalValue(

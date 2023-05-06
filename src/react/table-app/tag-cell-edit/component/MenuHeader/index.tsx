@@ -25,7 +25,11 @@ export default function MenuHeader({
 	onInputTextChange,
 	onRemoveTag,
 }: MenuHeaderProps) {
-	const inputRef = useFocusMenuInput(isMenuVisible, onInputTextChange);
+	const inputRef = useFocusMenuInput(
+		isMenuVisible,
+		inputText,
+		onInputTextChange
+	);
 	return (
 		<div className="NLT__tag-menu-header">
 			<Wrap spacingX="sm">

@@ -12,7 +12,7 @@ export default function CurrencyCellEdit({
 	value,
 	onChange,
 }: Props) {
-	const inputRef = useFocusMenuInput(isMenuVisible, onChange);
+	const inputRef = useFocusMenuInput(isMenuVisible, value, onChange);
 
 	return (
 		<div className="NLT__currency-cell-edit">
