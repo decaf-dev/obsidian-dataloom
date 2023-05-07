@@ -8,7 +8,7 @@ interface TableRowProps {
 }
 
 export const TableBodyRow = ({ row }: TableRowProps) => {
-	const [tableState, setTableState] = useTableState();
+	const { tableState, setTableState } = useTableState();
 
 	function handleDragStart(e: React.DragEvent) {
 		const el = e.target as HTMLElement;

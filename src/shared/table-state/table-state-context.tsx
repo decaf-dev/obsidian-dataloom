@@ -1,4 +1,4 @@
-import { Dispatch, createContext, useContext, useState } from "react";
+import { Dispatch, createContext, useContext, useId, useState } from "react";
 import { TableState } from "../../data/types";
 
 interface Props {
@@ -6,9 +6,11 @@ interface Props {
 	children: React.ReactNode;
 }
 
-const TableStateContext = createContext<
-	[TableState, Dispatch<React.SetStateAction<TableState>>] | null
->(null);
+const TableStateContext = createContext<{
+	tableState: TableState;
+	setTableState: Dispatch<React.SetStateAction<TableState>>;
+	tableId: string;
+} | null>(null);
 
 export const useTableState = () => {
 	const value = useContext(TableStateContext);
@@ -23,9 +25,12 @@ export const useTableState = () => {
 
 export default function TableStateProvider({ initialState, children }: Props) {
 	const [tableState, setTableState] = useState(initialState);
+	const [tableId] = useId();
 
 	return (
-		<TableStateContext.Provider value={[tableState, setTableState]}>
+		<TableStateContext.Provider
+			value={{ tableState, setTableState, tableId }}
+		>
 			{children}
 		</TableStateContext.Provider>
 	);

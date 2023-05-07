@@ -68,7 +68,7 @@ interface Props {
 
 export default function TableApp({ onSaveTableState }: Props) {
 	const { searchText, sortTime } = useAppSelector((state) => state.global);
-	const [tableState, setTableState] = useTableState();
+	const { tableId, tableState, setTableState } = useTableState();
 
 	const { shouldDebug } = useAppSelector((state) => state.global);
 	const dispatch = useAppDispatch();
@@ -417,7 +417,7 @@ export default function TableApp({ onSaveTableState }: Props) {
 	}
 
 	return (
-		<div className="NLT__app">
+		<div id={tableId} className="NLT__app">
 			<OptionBar
 				headerCells={headerCells}
 				columns={columns}

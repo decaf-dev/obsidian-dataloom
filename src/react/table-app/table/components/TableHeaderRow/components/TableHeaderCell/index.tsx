@@ -12,7 +12,7 @@ export default function TableHeaderCell({
 	content,
 	isDraggable,
 }: TableHeaderCellProps) {
-	const [, setTableState] = useTableState();
+	const { setTableState } = useTableState();
 
 	function handleDragStart(e: React.DragEvent) {
 		const el = e.target as HTMLElement;

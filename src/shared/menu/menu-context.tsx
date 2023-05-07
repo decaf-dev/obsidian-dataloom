@@ -46,7 +46,7 @@ export default function MenuProvider({ children }: Props) {
 	/**
 	 * A reference to the current table state
 	 */
-	const [tableState] = useTableState();
+	const { tableState } = useTableState();
 
 	const [menuCloseRequestTime, setMenuCloseRequestTime] = React.useState<
 		number | null
