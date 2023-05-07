@@ -6,13 +6,19 @@ import { store } from "./redux/global/store";
 import { setDarkMode, setDebugMode } from "./redux/global/global-slice";
 import { NLTView, NOTION_LIKE_TABLES_VIEW } from "./obsidian/nlt-view";
 import { TABLE_EXTENSION } from "./data/constants";
-import { addColumn } from "./shared/table-state/column";
-import { addRow } from "./shared/table-state/row";
+import { addColumn, deleteColumn } from "./shared/table-state/column";
+import { addRow, deleteRow } from "./shared/table-state/row";
 import {
 	deserializeTableState,
 	serializeTableState,
 } from "./data/serialize-table-state";
 import { createTableFile } from "src/data/table-file";
+import {
+	ADD_COLUMN_EVENT,
+	ADD_ROW_EVENT,
+	DELETE_COLUMN_EVENT,
+	DELETE_ROW_EVENT,
+} from "./shared/events";
 
 export interface NLTSettings {
 	shouldDebug: boolean;
@@ -40,8 +46,6 @@ export const DEFAULT_SETTINGS: NLTSettings = {
 };
 export default class NLTPlugin extends Plugin {
 	settings: NLTSettings;
-	focusedTableId: string | null = null;
-	layoutChangeTime: number;
 
 	/**
 	 * Called on plugin load.
@@ -143,11 +147,7 @@ export default class NLTPlugin extends Plugin {
 				const view = this.app.workspace.getActiveViewOfType(NLTView);
 				if (view) {
 					if (!checking) {
-						const data = view.getViewData();
-						const tableState = deserializeTableState(data);
-						const updatedState = addColumn(tableState);
-						const serialized = serializeTableState(updatedState);
-						view.setViewData(serialized, true);
+						this.app.workspace.trigger(ADD_COLUMN_EVENT, view.leaf);
 					}
 					return true;
 				}
@@ -163,11 +163,7 @@ export default class NLTPlugin extends Plugin {
 				const view = this.app.workspace.getActiveViewOfType(NLTView);
 				if (view) {
 					if (!checking) {
-						const data = view.getViewData();
-						const tableState = deserializeTableState(data);
-						const updatedState = addRow(tableState);
-						const serialized = serializeTableState(updatedState);
-						view.setViewData(serialized, true);
+						this.app.workspace.trigger(ADD_ROW_EVENT, view.leaf);
 					}
 					return true;
 				}
@@ -175,12 +171,40 @@ export default class NLTPlugin extends Plugin {
 			},
 		});
 
-		// this.addCommand({
-		// 	id: "nlt-delete-last-row",
-		// 	name: "Delete last row",
-		// 	hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Enter" }],
-		// 	callback: async () => {},
-		// });
+		this.addCommand({
+			id: "nlt-row-column",
+			name: "Delete row",
+			hotkeys: [{ modifiers: ["Alt", "Shift"], key: "Backspace" }],
+			checkCallback: (checking: boolean) => {
+				const view = this.app.workspace.getActiveViewOfType(NLTView);
+				if (view) {
+					if (!checking) {
+						this.app.workspace.trigger(DELETE_ROW_EVENT, view.leaf);
+					}
+					return true;
+				}
+				return false;
+			},
+		});
+
+		this.addCommand({
+			id: "nlt-delete-column",
+			name: "Delete column",
+			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Backspace" }],
+			checkCallback: (checking: boolean) => {
+				const view = this.app.workspace.getActiveViewOfType(NLTView);
+				if (view) {
+					if (!checking) {
+						this.app.workspace.trigger(
+							DELETE_COLUMN_EVENT,
+							view.leaf
+						);
+					}
+					return true;
+				}
+				return false;
+			},
+		});
 	}
 
 	async loadSettings() {

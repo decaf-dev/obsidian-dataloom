@@ -21,14 +21,29 @@ export const addRow = (prevState: TableState): TableState => {
 	};
 };
 
-export const deleteRow = (prevState: TableState, rowId: string): TableState => {
+export const deleteRow = (
+	prevState: TableState,
+	options: {
+		id?: string;
+		last?: boolean;
+	}
+): TableState => {
+	const { id, last } = options;
+	if (!id && !last) throw new Error("deleteRow: no id or last provided");
+
+	if (last) {
+		const { bodyRows } = prevState.model;
+		const lastRow = bodyRows[bodyRows.length - 1];
+		return deleteRow(prevState, { id: lastRow.id });
+	}
+
 	const { bodyCells, bodyRows } = prevState.model;
 	return {
 		...prevState,
 		model: {
 			...prevState.model,
-			bodyRows: bodyRows.filter((row) => row.id !== rowId),
-			bodyCells: bodyCells.filter((cell) => cell.rowId !== rowId),
+			bodyRows: bodyRows.filter((row) => row.id !== id),
+			bodyCells: bodyCells.filter((cell) => cell.rowId !== id),
 		},
 	};
 };

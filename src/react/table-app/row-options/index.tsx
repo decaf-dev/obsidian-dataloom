@@ -53,8 +53,11 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 						ariaLabel="Drag to move or click to open"
 						onClick={() => handleButtonClick()}
 						onMouseDown={(e) => {
+							//On mouse down we want to create a synthetic drag event
+							//We do this because we have prevent the ability for the user to drag the row
+							//Otherwise the user would be able to drag the row from any cell in the table
 							const el = e.target as HTMLElement;
-							const row = el.closest(".NLT__tr");
+							const row = el.closest("tr");
 							if (row) {
 								row.setAttr("draggable", true);
 								const dragStartEvent = new DragEvent(
