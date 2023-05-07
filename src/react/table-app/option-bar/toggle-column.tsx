@@ -2,10 +2,8 @@ import { MenuButton } from "src/react/shared/button";
 import ToggleColumnMenu from "./toggle-column-menu";
 import { useMenu } from "src/shared/menu/hooks";
 import { MenuLevel } from "src/shared/menu/types";
-import Icon from "src/react/shared/icon";
 import { ToggleColumn } from "./types";
 import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
-import { IconType } from "src/react/shared/icon/types";
 
 interface Props {
 	onToggle: (id: string) => void;
@@ -13,7 +11,21 @@ interface Props {
 }
 
 export default function ToggleColumn({ columns, onToggle }: Props) {
-	const { menu, menuPosition, isMenuOpen, openMenu } = useMenu(MenuLevel.ONE);
+	const {
+		menu,
+		menuPosition,
+		isMenuOpen,
+		openMenu,
+		closeTopMenuAndFocusTrigger,
+	} = useMenu(MenuLevel.ONE);
+
+	function handleClick() {
+		if (isMenuOpen) {
+			closeTopMenuAndFocusTrigger();
+		} else {
+			openMenu(menu);
+		}
+	}
 
 	const { top, left } = shiftMenuIntoViewContent({
 		menuId: menu.id,
@@ -25,13 +37,13 @@ export default function ToggleColumn({ columns, onToggle }: Props) {
 		<>
 			<div className="NLT__toggle-column" ref={menuPosition.positionRef}>
 				<MenuButton
+					isLink
 					menuId={menu.id}
-					icon={<Icon type={IconType.VIEW_COLUMN} />}
 					ariaLabel="Toggle column"
-					onClick={() => {
-						openMenu(menu);
-					}}
-				/>
+					onClick={() => handleClick()}
+				>
+					Toggle
+				</MenuButton>
 			</div>
 			<ToggleColumnMenu
 				id={menu.id}

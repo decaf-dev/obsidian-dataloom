@@ -4,6 +4,7 @@ import "./styles.css";
 
 interface InternalButtonProps {
 	menuId?: string;
+	isLink?: boolean;
 	shouldMenuRequestOnClose?: boolean;
 	isSimple?: boolean;
 	ariaLabel?: string;
@@ -14,6 +15,7 @@ interface InternalButtonProps {
 }
 
 const InternalButton = ({
+	isLink,
 	children,
 	ariaLabel = "",
 	shouldMenuRequestOnClose,
@@ -26,6 +28,7 @@ const InternalButton = ({
 	let className = "NLT__button NLT__focusable";
 	if (icon !== undefined) className += " NLT__button--icon";
 	if (isSimple) className += " NLT__button--simple";
+	if (isLink) className += " NLT__button--link";
 
 	return (
 		<button
@@ -50,6 +53,7 @@ interface MenuButtonProps extends InternalButtonProps {
 
 export const Button = ({
 	isSimple,
+	isLink,
 	ariaLabel,
 	icon,
 	children,
@@ -58,6 +62,7 @@ export const Button = ({
 }: ButtonProps) => {
 	return (
 		<InternalButton
+			isLink={isLink}
 			isSimple={isSimple}
 			ariaLabel={ariaLabel}
 			icon={icon}
@@ -70,6 +75,7 @@ export const Button = ({
 
 export const MenuButton = ({
 	menuId,
+	isLink = false,
 	shouldMenuRequestOnClose = false,
 	isSimple,
 	ariaLabel,
@@ -80,6 +86,7 @@ export const MenuButton = ({
 }: MenuButtonProps) => {
 	return (
 		<InternalButton
+			isLink={isLink}
 			menuId={menuId}
 			shouldMenuRequestOnClose={shouldMenuRequestOnClose}
 			isSimple={isSimple}
