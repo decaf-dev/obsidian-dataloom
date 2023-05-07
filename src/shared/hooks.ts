@@ -1,6 +1,6 @@
 import React from "react";
 import { v4 as uuidv4 } from "uuid";
-import { useMenuContext } from "./menu";
+import { useMenuContext } from "./menu/menu-context";
 import { isNumber } from "./validators";
 
 export const useForceUpdate = (): [number, () => void] => {
@@ -105,7 +105,7 @@ const useFocusMenuContent = <T>(
 	return inputRef;
 };
 
-export const useId = (): string => {
-	const [id] = React.useState(uuidv4());
-	return id;
+export const useUUID = (): string => {
+	const [uuid] = React.useState(uuidv4());
+	return uuid;
 };

@@ -36,8 +36,7 @@ import {
 	updateFooterCell,
 } from "../../shared/table-state/cell";
 import { addRow, deleteRow } from "../../shared/table-state/row";
-import { useDidMountEffect } from "../../shared/hooks";
-import { useId } from "../../shared/hooks";
+import { useDidMountEffect, useUUID } from "../../shared/hooks";
 import {
 	CellNotFoundError,
 	ColumnIdError,
@@ -46,7 +45,7 @@ import { stringToCurrencyString } from "../../shared/conversion";
 import { updateSortTime } from "../../redux/global/global-slice";
 import HeaderCell from "./header-cell";
 import { Color } from "../../shared/types";
-import { useTableState } from "../../shared/table-state/useTableState";
+import { useTableState } from "../../shared/table-state/table-state-context";
 import FunctionCell from "./function-cell";
 import BodyCell from "./body-cell";
 import NewRowButton from "./new-row-button";
@@ -68,12 +67,12 @@ interface Props {
 
 export default function TableApp({ onSaveTableState }: Props) {
 	const { searchText, sortTime } = useAppSelector((state) => state.global);
-	const [tableState, setTableState] = useTableState();
+	const { tableId, tableState, setTableState } = useTableState();
 
 	const { shouldDebug } = useAppSelector((state) => state.global);
 	const dispatch = useAppDispatch();
 
-	const lastColumnId = useId();
+	const lastColumnId = useUUID();
 
 	//Once we have mounted, whenever the table state is updated
 	//save it to disk
@@ -417,7 +416,7 @@ export default function TableApp({ onSaveTableState }: Props) {
 	}
 
 	return (
-		<div className="NLT__app">
+		<div id={tableId} className="NLT__app">
 			<OptionBar
 				headerCells={headerCells}
 				columns={columns}

@@ -1,4 +1,4 @@
-import { useTableState } from "src/shared/table-state/useTableState";
+import { useTableState } from "src/shared/table-state/table-state-context";
 import { RenderTableBodyRow, TableDataTransferItem } from "../../types";
 import TableCell from "../TableCell";
 import { SortDir } from "src/data/types";
@@ -8,7 +8,7 @@ interface TableRowProps {
 }
 
 export const TableBodyRow = ({ row }: TableRowProps) => {
-	const [tableState, setTableState] = useTableState();
+	const { tableState, setTableState } = useTableState();
 
 	function handleDragStart(e: React.DragEvent) {
 		const el = e.target as HTMLElement;

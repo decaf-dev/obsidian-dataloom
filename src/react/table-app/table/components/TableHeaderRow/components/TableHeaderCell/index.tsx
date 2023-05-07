@@ -1,5 +1,5 @@
 import { TableDataTransferItem } from "src/react/table-app/table/types";
-import { useTableState } from "src/shared/table-state/useTableState";
+import { useTableState } from "src/shared/table-state/table-state-context";
 
 interface TableHeaderCellProps {
 	columnId: string;
@@ -12,7 +12,7 @@ export default function TableHeaderCell({
 	content,
 	isDraggable,
 }: TableHeaderCellProps) {
-	const [, setTableState] = useTableState();
+	const { setTableState } = useTableState();
 
 	function handleDragStart(e: React.DragEvent) {
 		const el = e.target as HTMLElement;
