@@ -114,23 +114,5 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 				});
 			}}
 		/>
-
-		// <table className="NLT__table">
-		// 	<thead className="NLT__thead">
-		// 		{headerRows.map((row) => (
-		// 			<TableHeaderRow key={row.id} row={row} />
-		// 		))}
-		// 	</thead>
-		// 	<tbody className="NLT__tbody">
-		// 		{bodyRows.map((row) => (
-		// 			<TableBodyRow key={row.id} row={row} />
-		// 		))}
-		// 	</tbody>
-		// 	<tfoot className="NLT__tfoot">
-		// 		{footerRows.map((row) => (
-		// 			<TableFooterRow key={row.id} row={row} />
-		// 		))}
-		// 	</tfoot>
-		// </table>
 	);
 }
