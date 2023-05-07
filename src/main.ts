@@ -40,8 +40,6 @@ export const DEFAULT_SETTINGS: NLTSettings = {
 };
 export default class NLTPlugin extends Plugin {
 	settings: NLTSettings;
-	focusedTableId: string | null = null;
-	layoutChangeTime: number;
 
 	/**
 	 * Called on plugin load.
