@@ -35,11 +35,10 @@ export default function ToggleColumn({ columns, onToggle }: Props) {
 	});
 	return (
 		<>
-			<div className="NLT__toggle-column" ref={menuPosition.positionRef}>
+			<div ref={menuPosition.positionRef}>
 				<MenuButton
 					isLink
 					menuId={menu.id}
-					ariaLabel="Toggle column"
 					onClick={() => handleClick()}
 				>
 					Toggle
