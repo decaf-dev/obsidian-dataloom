@@ -62,11 +62,11 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 							position: sticky;
 							bottom: 0;
 							background-color: var(--background-primary);
-							& > tr:first-child > td {
+							& > tr:first-of-type > td {
 								border-bottom: 1px solid
 									var(--background-modifier-border) !important;
 							}
-							& > tr:first-child > td:last-child {
+							& > tr:first-of-type > td:last-child {
 								border-left: 1px solid
 									var(--background-modifier-border) !important;
 								border-bottom: 0 !important;
@@ -132,7 +132,7 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 								*/
 								height: 1px;
 
-								&:first-child {
+								&:first-of-type {
 									border-left: 0 !important;
 								}
 
