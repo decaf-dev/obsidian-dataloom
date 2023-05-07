@@ -5,7 +5,7 @@ import {
 	removeFocusVisibleClass,
 } from "./focus-visible";
 import { Menu, MenuLevel } from "./types";
-import { useTableState } from "../table-state/useTableState";
+import { useTableState } from "../table-state/table-state-context";
 
 interface ContextProps {
 	openMenus: Menu[];
@@ -46,7 +46,7 @@ export default function MenuProvider({ children }: Props) {
 	/**
 	 * A reference to the current table state
 	 */
-	const [tableState] = useTableState();
+	const { tableId, tableState } = useTableState();
 
 	const [menuCloseRequestTime, setMenuCloseRequestTime] = React.useState<
 		number | null
@@ -222,10 +222,13 @@ export default function MenuProvider({ children }: Props) {
 				if (focusedEl) {
 					removeFocusVisibleClass();
 
-					const tabbableEls =
-						document.querySelectorAll(`.NLT__focusable`);
+					const tableEl = document.getElementById(tableId);
+					if (!tableEl) throw new Error("Table element not found");
 
-					const index = Array.from(tabbableEls).indexOf(focusedEl);
+					const focusableEls =
+						tableEl.querySelectorAll(".NLT__focusable");
+
+					const index = Array.from(focusableEls).indexOf(focusedEl);
 					switch (e.key) {
 						case "ArrowUp": {
 							//Normal number of columns in a row
@@ -236,27 +239,27 @@ export default function MenuProvider({ children }: Props) {
 							const numColumnsFunctionRow = numColumns - 1;
 
 							//Handle very last row
-							if (index === tabbableEls.length - 1) {
+							if (index === focusableEls.length - 1) {
 								focusedEl =
-									tabbableEls[index - numColumnsFunctionRow];
+									focusableEls[index - numColumnsFunctionRow];
 							} else if (index - numColumns >= 0) {
-								focusedEl = tabbableEls[index - numColumns];
+								focusedEl = focusableEls[index - numColumns];
 								//Handle the last row
 							}
 							break;
 						}
 						case "ArrowLeft":
 							if (index - 1 >= 0)
-								focusedEl = tabbableEls[index - 1];
+								focusedEl = focusableEls[index - 1];
 							break;
 						case "ArrowRight":
-							if (index + 1 < tabbableEls.length)
-								focusedEl = tabbableEls[index + 1];
+							if (index + 1 < focusableEls.length)
+								focusedEl = focusableEls[index + 1];
 							break;
 						case "ArrowDown":
 							{
 								//This is the "New Row" button
-								const rowIndexEnd = tabbableEls.length - 1;
+								const rowIndexEnd = focusableEls.length - 1;
 
 								//Normal number of columns in a row
 								//Num columns + drag menu cell
@@ -266,14 +269,15 @@ export default function MenuProvider({ children }: Props) {
 								const numColumnsFunctionRow = numColumns - 1;
 								//Handle until the last 2 rows
 								if (index + numColumns <= rowIndexEnd - 1) {
-									focusedEl = tabbableEls[index + numColumns];
+									focusedEl =
+										focusableEls[index + numColumns];
 									//Handle the function row
 								} else if (
 									index >=
 										rowIndexEnd - numColumnsFunctionRow &&
 									index <= rowIndexEnd
 								) {
-									focusedEl = tabbableEls[rowIndexEnd];
+									focusedEl = focusableEls[rowIndexEnd];
 								}
 							}
 							break;

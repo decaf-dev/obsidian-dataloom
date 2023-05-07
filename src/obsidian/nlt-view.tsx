@@ -4,17 +4,16 @@ import { Provider } from "react-redux";
 import App from "../react/table-app";
 import { store } from "../redux/global/store";
 import { TableState } from "../data/types";
-import TableStateProvider from "../shared/table-state/useTableState";
+import TableStateProvider from "../shared/table-state/table-state-context";
 import NLTImportModal from "./nlt-import-modal";
 import {
 	deserializeTableState,
 	serializeTableState,
 } from "src/data/serialize-table-state";
-import MenuProvider from "src/shared/menu";
+import MenuProvider from "src/shared/menu/menu-context";
+import { REFRESH_VIEW_EVENT } from "src/shared/events";
 
 export const NOTION_LIKE_TABLES_VIEW = "notion-like-tables";
-
-const REFRESH_VIEW_EVENT = "nlt:refresh-view";
 
 export class NLTView extends TextFileView {
 	root: Root | null = null;
@@ -68,7 +67,10 @@ export class NLTView extends TextFileView {
 				<Provider store={store}>
 					<TableStateProvider initialState={tableState}>
 						<MenuProvider>
-							<App onSaveTableState={this.handleSaveTableState} />
+							<App
+								viewLeaf={this.leaf}
+								onSaveTableState={this.handleSaveTableState}
+							/>
 						</MenuProvider>
 					</TableStateProvider>
 				</Provider>

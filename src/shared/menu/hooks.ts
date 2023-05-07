@@ -3,7 +3,7 @@ import { MenuPosition, Menu, MenuLevel } from "./types";
 import { v4 as uuidv4 } from "uuid";
 import { getElementPosition } from "./utils";
 import { useCompare } from "../hooks";
-import { useMenuContext } from ".";
+import { useMenuContext } from "./menu-context";
 
 const useMenuPosition = (): MenuPosition => {
 	const positionRef = useRef<any | null>(null);
