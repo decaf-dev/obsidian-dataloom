@@ -1,13 +1,13 @@
 import { useTableState } from "src/shared/table-state/table-state-context";
-import { RenderTableBodyRow, TableDataTransferItem } from "../../types";
-import TableCell from "../TableCell";
+import { TableDataTransferItem } from "./types";
 import { SortDir } from "src/data/types";
 
-interface TableRowProps {
-	row: RenderTableBodyRow;
+interface TableBodyRowProps {
+	id: string;
+	children?: React.ReactNode;
 }
 
-export const TableBodyRow = ({ row }: TableRowProps) => {
+export const TableBodyRow = ({ id, children, ...props }: TableBodyRowProps) => {
 	const { tableState, setTableState } = useTableState();
 
 	function handleDragStart(e: React.DragEvent) {
@@ -103,17 +103,16 @@ export const TableBodyRow = ({ row }: TableRowProps) => {
 
 	return (
 		<tr
-			id={row.id}
-			data-row-id={row.id}
+			id={id}
+			data-row-id={id}
 			className="NLT__tr"
 			onDrop={handleDrop}
 			onDragStart={handleDragStart}
 			onDragEnd={handleDragEnd}
 			onDragOver={handleDragOver}
+			{...props}
 		>
-			{row.cells.map((cell) => (
-				<TableCell key={cell.id} content={cell.content} />
-			))}
+			{children}
 		</tr>
 	);
 };
