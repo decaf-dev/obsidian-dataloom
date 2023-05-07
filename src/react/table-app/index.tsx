@@ -36,8 +36,7 @@ import {
 	updateFooterCell,
 } from "../../shared/table-state/cell";
 import { addRow, deleteRow } from "../../shared/table-state/row";
-import { useDidMountEffect } from "../../shared/hooks";
-import { useId } from "../../shared/hooks";
+import { useDidMountEffect, useUUID } from "../../shared/hooks";
 import {
 	CellNotFoundError,
 	ColumnIdError,
@@ -73,7 +72,7 @@ export default function TableApp({ onSaveTableState }: Props) {
 	const { shouldDebug } = useAppSelector((state) => state.global);
 	const dispatch = useAppDispatch();
 
-	const lastColumnId = useId();
+	const lastColumnId = useUUID();
 
 	//Once we have mounted, whenever the table state is updated
 	//save it to disk

@@ -105,7 +105,7 @@ const useFocusMenuContent = <T>(
 	return inputRef;
 };
 
-export const useId = (): string => {
-	const [id] = React.useState(uuidv4());
-	return id;
+export const useUUID = (): string => {
+	const [uuid] = React.useState(uuidv4());
+	return uuid;
 };

@@ -1,5 +1,6 @@
-import { Dispatch, createContext, useContext, useId, useState } from "react";
+import { Dispatch, createContext, useContext, useState } from "react";
 import { TableState } from "../../data/types";
+import { useUUID } from "../hooks";
 
 interface Props {
 	initialState: TableState;
@@ -25,7 +26,7 @@ export const useTableState = () => {
 
 export default function TableStateProvider({ initialState, children }: Props) {
 	const [tableState, setTableState] = useState(initialState);
-	const [tableId] = useId();
+	const [tableId] = useUUID();
 
 	return (
 		<TableStateContext.Provider
