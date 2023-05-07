@@ -1,4 +1,4 @@
-export const CURRENT_PLUGIN_VERSION = 662;
+export const CURRENT_PLUGIN_VERSION = 670;
 
 export const DEFAULT_TABLE_NAME = "Untitled";
 
