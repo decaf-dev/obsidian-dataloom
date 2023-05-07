@@ -12,6 +12,7 @@ import SortBubble from "./sort-button";
 import "./styles.css";
 import Flex from "../../shared/flex";
 import ToggleColumn from "./toggle-column";
+import Filter from "./filter/filter";
 
 interface SortButtonListProps {
 	bubbles: { sortDir: SortDir; markdown: string; columnId: string }[];
@@ -65,7 +66,7 @@ export default function OptionBar({
 			});
 	}, [headerCells, columns]);
 
-	const toggleColumns = useMemo(() => {
+	const columnsWithMarkdown = useMemo(() => {
 		return columns.map((column) => {
 			const cell = headerCells.find((cell) => cell.columnId == column.id);
 			if (!cell) throw new CellNotFoundError();
@@ -87,8 +88,9 @@ export default function OptionBar({
 					/>
 					<Stack spacing="sm" justify="flex-end">
 						<SearchBar />
+						<Filter columns={columnsWithMarkdown} />
 						<ToggleColumn
-							columns={toggleColumns}
+							columns={columnsWithMarkdown}
 							onToggle={onColumnToggle}
 						/>
 					</Stack>
