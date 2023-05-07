@@ -258,14 +258,14 @@ export default function TableApp({ onSaveTableState }: Props) {
 			columnId,
 		});
 
-		setTableState((prevState) => deleteColumn(prevState, columnId));
+		setTableState((prevState) => deleteColumn(prevState, { id: columnId }));
 	}
 
 	function handleRowDeleteClick(rowId: string) {
 		logFunc(shouldDebug, FILE_NAME, "handleRowDeleteClick", {
 			rowId,
 		});
-		setTableState((prevState) => deleteRow(prevState, rowId));
+		setTableState((prevState) => deleteRow(prevState, { id: rowId }));
 	}
 
 	function handleCurrencyChange(

@@ -6,8 +6,8 @@ import { store } from "./redux/global/store";
 import { setDarkMode, setDebugMode } from "./redux/global/global-slice";
 import { NLTView, NOTION_LIKE_TABLES_VIEW } from "./obsidian/nlt-view";
 import { TABLE_EXTENSION } from "./data/constants";
-import { addColumn } from "./shared/table-state/column";
-import { addRow } from "./shared/table-state/row";
+import { addColumn, deleteColumn } from "./shared/table-state/column";
+import { addRow, deleteRow } from "./shared/table-state/row";
 import {
 	deserializeTableState,
 	serializeTableState,
@@ -164,6 +164,54 @@ export default class NLTPlugin extends Plugin {
 						const data = view.getViewData();
 						const tableState = deserializeTableState(data);
 						const updatedState = addRow(tableState);
+						const serialized = serializeTableState(updatedState);
+						view.setViewData(serialized, true);
+					}
+					return true;
+				}
+				return false;
+			},
+		});
+
+		this.addCommand({
+			id: "nlt-row-column",
+			name: "Delete row",
+			hotkeys: [{ modifiers: ["Alt", "Shift"], key: "Backspace" }],
+			checkCallback: (checking: boolean) => {
+				console.log("YUP");
+				const view = this.app.workspace.getActiveViewOfType(NLTView);
+				if (view) {
+					if (!checking) {
+						console.log("DELETING COLUMN!");
+						const data = view.getViewData();
+						const tableState = deserializeTableState(data);
+						const updatedState = deleteRow(tableState, {
+							last: true,
+						});
+						const serialized = serializeTableState(updatedState);
+						view.setViewData(serialized, true);
+					}
+					return true;
+				}
+				return false;
+			},
+		});
+
+		this.addCommand({
+			id: "nlt-delete-column",
+			name: "Delete column",
+			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Backspace" }],
+			checkCallback: (checking: boolean) => {
+				console.log("YUP");
+				const view = this.app.workspace.getActiveViewOfType(NLTView);
+				if (view) {
+					if (!checking) {
+						console.log("DELETING COLUMN!");
+						const data = view.getViewData();
+						const tableState = deserializeTableState(data);
+						const updatedState = deleteColumn(tableState, {
+							last: true,
+						});
 						const serialized = serializeTableState(updatedState);
 						view.setViewData(serialized, true);
 					}
