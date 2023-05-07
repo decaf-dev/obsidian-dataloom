@@ -163,7 +163,6 @@ export default class NLTPlugin extends Plugin {
 				const view = this.app.workspace.getActiveViewOfType(NLTView);
 				if (view) {
 					if (!checking) {
-						//TODO optimize this
 						this.app.workspace.trigger(ADD_ROW_EVENT, view.leaf);
 					}
 					return true;
@@ -206,13 +205,6 @@ export default class NLTPlugin extends Plugin {
 				return false;
 			},
 		});
-
-		// this.addCommand({
-		// 	id: "nlt-delete-last-row",
-		// 	name: "Delete last row",
-		// 	hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Enter" }],
-		// 	callback: async () => {},
-		// });
 	}
 
 	async loadSettings() {

@@ -85,9 +85,6 @@ export default function TableBodyRow({
 				(row) => row.id == targetId
 			);
 
-			console.log(draggedElIndex);
-			console.log(targetElIndex);
-
 			//Move the actual element
 			let temp = rowsCopy[targetElIndex];
 			rowsCopy[targetElIndex] = rowsCopy[draggedElIndex];

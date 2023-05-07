@@ -217,8 +217,6 @@ export default function MenuProvider({ children }: Props) {
 				//Prevent scrolling the pane with the arrow keys
 				e.preventDefault();
 
-				//TODO add custom scrolling
-
 				//Only handle keys when the currentMenu isn't open
 				let focusedEl = document.activeElement;
 				if (focusedEl) {
