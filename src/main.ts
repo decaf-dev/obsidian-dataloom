@@ -13,6 +13,12 @@ import {
 	serializeTableState,
 } from "./data/serialize-table-state";
 import { createTableFile } from "src/data/table-file";
+import {
+	ADD_COLUMN_EVENT,
+	ADD_ROW_EVENT,
+	DELETE_COLUMN_EVENT,
+	DELETE_ROW_EVENT,
+} from "./shared/events";
 
 export interface NLTSettings {
 	shouldDebug: boolean;
@@ -141,11 +147,7 @@ export default class NLTPlugin extends Plugin {
 				const view = this.app.workspace.getActiveViewOfType(NLTView);
 				if (view) {
 					if (!checking) {
-						const data = view.getViewData();
-						const tableState = deserializeTableState(data);
-						const updatedState = addColumn(tableState);
-						const serialized = serializeTableState(updatedState);
-						view.setViewData(serialized, true);
+						this.app.workspace.trigger(ADD_COLUMN_EVENT, view.leaf);
 					}
 					return true;
 				}
@@ -161,11 +163,8 @@ export default class NLTPlugin extends Plugin {
 				const view = this.app.workspace.getActiveViewOfType(NLTView);
 				if (view) {
 					if (!checking) {
-						const data = view.getViewData();
-						const tableState = deserializeTableState(data);
-						const updatedState = addRow(tableState);
-						const serialized = serializeTableState(updatedState);
-						view.setViewData(serialized, true);
+						//TODO optimize this
+						this.app.workspace.trigger(ADD_ROW_EVENT, view.leaf);
 					}
 					return true;
 				}
@@ -181,13 +180,7 @@ export default class NLTPlugin extends Plugin {
 				const view = this.app.workspace.getActiveViewOfType(NLTView);
 				if (view) {
 					if (!checking) {
-						const data = view.getViewData();
-						const tableState = deserializeTableState(data);
-						const updatedState = deleteRow(tableState, {
-							last: true,
-						});
-						const serialized = serializeTableState(updatedState);
-						view.setViewData(serialized, true);
+						this.app.workspace.trigger(DELETE_ROW_EVENT, view.leaf);
 					}
 					return true;
 				}
@@ -200,18 +193,13 @@ export default class NLTPlugin extends Plugin {
 			name: "Delete column",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Backspace" }],
 			checkCallback: (checking: boolean) => {
-				console.log("YUP");
 				const view = this.app.workspace.getActiveViewOfType(NLTView);
 				if (view) {
 					if (!checking) {
-						console.log("DELETING COLUMN!");
-						const data = view.getViewData();
-						const tableState = deserializeTableState(data);
-						const updatedState = deleteColumn(tableState, {
-							last: true,
-						});
-						const serialized = serializeTableState(updatedState);
-						view.setViewData(serialized, true);
+						this.app.workspace.trigger(
+							DELETE_COLUMN_EVENT,
+							view.leaf
+						);
 					}
 					return true;
 				}

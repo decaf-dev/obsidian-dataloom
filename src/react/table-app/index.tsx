@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React from "react";
 
 import Table from "./table";
 import RowOptions from "./row-options";
@@ -50,7 +50,6 @@ import FunctionCell from "./function-cell";
 import BodyCell from "./body-cell";
 import NewRowButton from "./new-row-button";
 import NewColumnButton from "./new-column-button";
-import { Platform } from "obsidian";
 
 import "./styles.css";
 import { logFunc } from "src/shared/logger";
@@ -58,15 +57,22 @@ import {
 	unixTimeToDateString,
 	unixTimeToDateTimeString,
 } from "src/shared/date/date-conversion";
-import { css } from "@emotion/react";
+import { WorkspaceLeaf } from "obsidian";
+import {
+	ADD_COLUMN_EVENT,
+	ADD_ROW_EVENT,
+	DELETE_COLUMN_EVENT,
+	DELETE_ROW_EVENT,
+} from "src/shared/events";
 
 const FILE_NAME = "App";
 
 interface Props {
+	viewLeaf: WorkspaceLeaf;
 	onSaveTableState: (tableState: TableState) => void;
 }
 
-export default function TableApp({ onSaveTableState }: Props) {
+export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 	const { searchText, sortTime } = useAppSelector((state) => state.global);
 	const { tableId, tableState, setTableState } = useTableState();
 
@@ -75,13 +81,46 @@ export default function TableApp({ onSaveTableState }: Props) {
 
 	const lastColumnId = useUUID();
 
+	/**
+	 * Setup our event listeners
+	 */
+	React.useEffect(() => {
+		this.app.workspace.on(ADD_COLUMN_EVENT, (leaf: WorkspaceLeaf) => {
+			if (leaf === viewLeaf) {
+				setTableState((prevState) => addColumn(prevState));
+			}
+		});
+
+		this.app.workspace.on(DELETE_COLUMN_EVENT, (leaf: WorkspaceLeaf) => {
+			if (leaf === viewLeaf) {
+				setTableState((prevState) =>
+					deleteColumn(prevState, { last: true })
+				);
+			}
+		});
+
+		this.app.workspace.on(ADD_ROW_EVENT, (leaf: WorkspaceLeaf) => {
+			if (leaf === viewLeaf) {
+				setTableState((prevState) => addRow(prevState));
+			}
+		});
+
+		this.app.workspace.on(DELETE_ROW_EVENT, (leaf: WorkspaceLeaf) => {
+			if (leaf === viewLeaf) {
+				setTableState((prevState) =>
+					deleteRow(prevState, { last: true })
+				);
+			}
+		});
+	}, []);
+
 	//Once we have mounted, whenever the table state is updated
 	//save it to disk
 	useDidMountEffect(() => {
 		onSaveTableState(tableState);
 	}, [tableState]);
 
-	useEffect(() => {
+	React.useEffect(() => {
 		if (sortTime !== 0) {
 			setTableState((prevState) => sortRows(prevState));
 		}
