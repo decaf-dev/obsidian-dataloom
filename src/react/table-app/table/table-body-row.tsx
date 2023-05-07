@@ -7,7 +7,11 @@ interface TableBodyRowProps {
 	children?: React.ReactNode;
 }
 
-export const TableBodyRow = ({ id, children, ...props }: TableBodyRowProps) => {
+export default function TableBodyRow({
+	id,
+	children,
+	...props
+}: TableBodyRowProps) {
 	const { tableState, setTableState } = useTableState();
 
 	function handleDragStart(e: React.DragEvent) {
@@ -105,7 +109,6 @@ export const TableBodyRow = ({ id, children, ...props }: TableBodyRowProps) => {
 		<tr
 			id={id}
 			data-row-id={id}
-			className="NLT__tr"
 			onDrop={handleDrop}
 			onDragStart={handleDragStart}
 			onDragEnd={handleDragEnd}
@@ -115,4 +118,4 @@ export const TableBodyRow = ({ id, children, ...props }: TableBodyRowProps) => {
 			{children}
 		</tr>
 	);
-};
+}

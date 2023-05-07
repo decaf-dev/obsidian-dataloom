@@ -9,8 +9,7 @@ import {
 } from "./types";
 import "./styles.css";
 import { Platform } from "obsidian";
-import { TableBodyRow } from "./table-body-row";
-import TableCell from "./table-cell";
+import TableBodyRow from "./table-body-row";
 import TableHeaderCell from "./table-header-cell";
 import { css } from "@emotion/react";
 
@@ -31,7 +30,10 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 
 	return (
 		<TableVirtuoso
-			style={{ height: "calc(100vh - 9.5rem)" }}
+			style={{
+				width: "100%",
+				height: "100%",
+			}}
 			totalCount={bodyRows.length}
 			components={{
 				Table: ({ style, ...props }) => {
@@ -39,7 +41,7 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 						<table
 							css={css`
 								table-layout: fixed;
-								border-collapse: collapse;
+								border-collapse: separate;
 							`}
 							{...props}
 							style={style}
@@ -47,7 +49,7 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 					);
 				},
 				TableBody: React.forwardRef(({ style, ...props }, ref) => (
-					<tbody className="NLT__tbody" {...props} ref={ref} />
+					<tbody {...props} ref={ref} />
 				)),
 				TableRow: (props) => {
 					const index = props["data-index"];
@@ -59,8 +61,7 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 						css={css`
 							position: sticky;
 							bottom: 0;
-							background-color: #fff;
-							transform: translateZ(0);
+							background-color: var(--background-primary);
 							& > tr:first-child > td {
 								border-bottom: 1px solid
 									var(--background-modifier-border) !important;
@@ -80,7 +81,7 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 				headerRows.map((row) => {
 					const { id: rowId, cells } = row;
 					return (
-						<tr key={rowId} className="NLT__tr">
+						<tr key={rowId}>
 							{cells.map((cell, i) => {
 								const { id: cellId, columnId, content } = cell;
 								return (
@@ -98,7 +99,7 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 			}
 			fixedFooterContent={() =>
 				footerRows.map((row) => (
-					<tr key={row.id} className="NLT__tr">
+					<tr key={row.id}>
 						{row.cells.map((cell) => {
 							const { id, content } = cell;
 							return <td key={id}>{content}</td>;
@@ -110,7 +111,39 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 				const row = bodyRows[index];
 				return row.cells.map((cell) => {
 					const { id, content } = cell;
-					return <TableCell key={id} content={content} />;
+					return (
+						<td
+							key={id}
+							css={css`
+								border-top: 0 !important;
+								border-bottom: 1px solid
+									var(--background-modifier-border) !important;
+								border-left: 1px solid
+									var(--background-modifier-border) !important;
+								border-right: 0 !important;
+								padding: 0 !important;
+								overflow: visible;
+								vertical-align: top;
+								/** 
+								* This is a hack to make the children have something to calculate their height percentage from.
+								* i.e. if you have a child with height: 100%, it will be 100% of the height of the td, only
+								* if the td has a set height value.
+								* This doesn't represent the actual height of the td, as that is set by HTML
+								*/
+								height: 1px;
+
+								&:first-child {
+									border-left: 0 !important;
+								}
+
+								&:last-child {
+									border-bottom: 0 !important;
+								}
+							`}
+						>
+							{content}
+						</td>
+					);
 				});
 			}}
 		/>
