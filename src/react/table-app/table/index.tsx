@@ -1,6 +1,6 @@
 import React from "react";
 
-import { TableVirtuoso } from "react-virtuoso";
+import { TableVirtuoso, VirtuosoHandle } from "react-virtuoso";
 
 import {
 	RenderTableBodyRow,
@@ -12,6 +12,7 @@ import { Platform } from "obsidian";
 import TableBodyRow from "./table-body-row";
 import TableHeaderCell from "./table-header-cell";
 import { css } from "@emotion/react";
+import { useCompare } from "src/shared/hooks";
 
 interface Props {
 	headerRows: RenderTableHeaderRow[];
@@ -20,6 +21,18 @@ interface Props {
 }
 
 export default function Table({ headerRows, bodyRows, footerRows }: Props) {
+	const tableRef = React.useRef<VirtuosoHandle>(null);
+
+	const didRowsChange = useCompare(bodyRows.length);
+
+	/**
+	 * Scrolls to the bottom of the page when the "New Row" button is pressed
+	 */
+	React.useEffect(() => {
+		if (didRowsChange) tableRef.current?.scrollToIndex(bodyRows.length - 1);
+		tableRef.current?.scrollTo;
+	}, [didRowsChange, bodyRows.length]);
+
 	const isMobile = Platform.isMobile || Platform.isMobileApp;
 	let innerClassName = "NLT__table-inner";
 	if (isMobile) {
@@ -30,6 +43,8 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 
 	return (
 		<TableVirtuoso
+			ref={tableRef}
+			overscan={10}
 			style={{
 				width: "100%",
 				height: "100%",

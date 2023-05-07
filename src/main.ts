@@ -178,11 +178,9 @@ export default class NLTPlugin extends Plugin {
 			name: "Delete row",
 			hotkeys: [{ modifiers: ["Alt", "Shift"], key: "Backspace" }],
 			checkCallback: (checking: boolean) => {
-				console.log("YUP");
 				const view = this.app.workspace.getActiveViewOfType(NLTView);
 				if (view) {
 					if (!checking) {
-						console.log("DELETING COLUMN!");
 						const data = view.getViewData();
 						const tableState = deserializeTableState(data);
 						const updatedState = deleteRow(tableState, {
