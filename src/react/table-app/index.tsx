@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React from "react";
 
 import Table from "./table";
 import RowOptions from "./row-options";
@@ -50,7 +50,6 @@ import FunctionCell from "./function-cell";
 import BodyCell from "./body-cell";
 import NewRowButton from "./new-row-button";
 import NewColumnButton from "./new-column-button";
-import { Platform } from "obsidian";
 
 import "./styles.css";
 import { logFunc } from "src/shared/logger";
@@ -58,14 +57,22 @@ import {
 	unixTimeToDateString,
 	unixTimeToDateTimeString,
 } from "src/shared/date/date-conversion";
+import { WorkspaceLeaf } from "obsidian";
+import {
+	ADD_COLUMN_EVENT,
+	ADD_ROW_EVENT,
+	DELETE_COLUMN_EVENT,
+	DELETE_ROW_EVENT,
+} from "src/shared/events";
 
 const FILE_NAME = "App";
 
 interface Props {
+	viewLeaf: WorkspaceLeaf;
 	onSaveTableState: (tableState: TableState) => void;
 }
 
-export default function TableApp({ onSaveTableState }: Props) {
+export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 	const { searchText, sortTime } = useAppSelector((state) => state.global);
 	const { tableId, tableState, setTableState } = useTableState();
 
@@ -74,13 +81,46 @@ export default function TableApp({ onSaveTableState }: Props) {
 
 	const lastColumnId = useUUID();
 
+	/**
+	 * Setup our event listeners
+	 */
+	React.useEffect(() => {
+		this.app.workspace.on(ADD_COLUMN_EVENT, (leaf: WorkspaceLeaf) => {
+			if (leaf === viewLeaf) {
+				setTableState((prevState) => addColumn(prevState));
+			}
+		});
+
+		this.app.workspace.on(DELETE_COLUMN_EVENT, (leaf: WorkspaceLeaf) => {
+			if (leaf === viewLeaf) {
+				setTableState((prevState) =>
+					deleteColumn(prevState, { last: true })
+				);
+			}
+		});
+
+		this.app.workspace.on(ADD_ROW_EVENT, (leaf: WorkspaceLeaf) => {
+			if (leaf === viewLeaf) {
+				setTableState((prevState) => addRow(prevState));
+			}
+		});
+
+		this.app.workspace.on(DELETE_ROW_EVENT, (leaf: WorkspaceLeaf) => {
+			if (leaf === viewLeaf) {
+				setTableState((prevState) =>
+					deleteRow(prevState, { last: true })
+				);
+			}
+		});
+	}, []);
+
 	//Once we have mounted, whenever the table state is updated
 	//save it to disk
 	useDidMountEffect(() => {
 		onSaveTableState(tableState);
 	}, [tableState]);
 
-	useEffect(() => {
+	React.useEffect(() => {
 		if (sortTime !== 0) {
 			setTableState((prevState) => sortRows(prevState));
 		}
@@ -257,14 +297,14 @@ export default function TableApp({ onSaveTableState }: Props) {
 			columnId,
 		});
 
-		setTableState((prevState) => deleteColumn(prevState, columnId));
+		setTableState((prevState) => deleteColumn(prevState, { id: columnId }));
 	}
 
 	function handleRowDeleteClick(rowId: string) {
 		logFunc(shouldDebug, FILE_NAME, "handleRowDeleteClick", {
 			rowId,
 		});
-		setTableState((prevState) => deleteRow(prevState, rowId));
+		setTableState((prevState) => deleteRow(prevState, { id: rowId }));
 	}
 
 	function handleCurrencyChange(
@@ -409,12 +449,6 @@ export default function TableApp({ onSaveTableState }: Props) {
 
 	const visibleColumns = columns.filter((column) => column.isVisible);
 
-	const isMobile = Platform.isMobile || Platform.isMobileApp;
-	let innerClassName = "NLT__table-inner";
-	if (isMobile) {
-		innerClassName += " NLT__table-inner--mobile";
-	}
-
 	return (
 		<div id={tableId} className="NLT__app">
 			<OptionBar
@@ -423,305 +457,259 @@ export default function TableApp({ onSaveTableState }: Props) {
 				onColumnToggle={handleColumnToggle}
 				onSortRemoveClick={handleSortRemoveClick}
 			/>
-			<div className="NLT__table-outer">
-				<div className={innerClassName}>
-					<Table
-						headerRows={headerRows.map((row) => {
-							return {
-								id: row.id,
-								cells: [
-									...visibleColumns.map((column) => {
-										const {
-											id: columnId,
-											width,
-											type,
-											sortDir,
-											shouldWrapOverflow,
-											currencyType,
-											dateFormat,
-										} = column;
+			<Table
+				headerRows={headerRows.map((row) => {
+					return {
+						id: row.id,
+						cells: [
+							...visibleColumns.map((column) => {
+								const {
+									id: columnId,
+									width,
+									type,
+									sortDir,
+									shouldWrapOverflow,
+									currencyType,
+									dateFormat,
+								} = column;
 
-										const cell = headerCells.find(
-											(cell) => cell.columnId === columnId
-										);
-										if (!cell)
-											throw new CellNotFoundError();
+								const cell = headerCells.find(
+									(cell) => cell.columnId === columnId
+								);
+								if (!cell) throw new CellNotFoundError();
 
-										const {
-											id: cellId,
-											markdown,
-											rowId,
-										} = cell;
-										return {
-											id: cellId,
-											columnId,
-											content: (
-												<HeaderCell
-													key={columnId}
-													cellId={cellId}
-													rowId={rowId}
-													dateFormat={dateFormat}
-													currencyType={currencyType}
-													numColumns={columns.length}
-													columnId={cell.columnId}
-													width={width}
-													shouldWrapOverflow={
-														shouldWrapOverflow
-													}
-													markdown={markdown}
-													type={type}
-													sortDir={sortDir}
-													onSortClick={
-														handleHeaderSortSelect
-													}
-													onWidthChange={
-														handleHeaderWidthChange
-													}
-													onDeleteClick={
-														handleHeaderDeleteClick
-													}
-													onTypeSelect={
-														handleHeaderTypeClick
-													}
-													onDateFormatChange={
-														handleDateFormatChange
-													}
-													onWrapOverflowToggle={
-														handleWrapContentToggle
-													}
-													onNameChange={
-														handleHeaderCellContentChange
-													}
-													onCurrencyChange={
-														handleCurrencyChange
-													}
-												/>
-											),
-										};
-									}),
-									{
-										id: lastColumnId,
-										columnId: lastColumnId,
+								const { id: cellId, markdown, rowId } = cell;
+								return {
+									id: cellId,
+									columnId,
+									content: (
+										<HeaderCell
+											key={columnId}
+											cellId={cellId}
+											rowId={rowId}
+											dateFormat={dateFormat}
+											currencyType={currencyType}
+											numColumns={columns.length}
+											columnId={cell.columnId}
+											width={width}
+											shouldWrapOverflow={
+												shouldWrapOverflow
+											}
+											markdown={markdown}
+											type={type}
+											sortDir={sortDir}
+											onSortClick={handleHeaderSortSelect}
+											onWidthChange={
+												handleHeaderWidthChange
+											}
+											onDeleteClick={
+												handleHeaderDeleteClick
+											}
+											onTypeSelect={handleHeaderTypeClick}
+											onDateFormatChange={
+												handleDateFormatChange
+											}
+											onWrapOverflowToggle={
+												handleWrapContentToggle
+											}
+											onNameChange={
+												handleHeaderCellContentChange
+											}
+											onCurrencyChange={
+												handleCurrencyChange
+											}
+										/>
+									),
+								};
+							}),
+							{
+								id: lastColumnId,
+								columnId: lastColumnId,
+								content: (
+									<NewColumnButton
+										onClick={handleNewColumnClick}
+									/>
+								),
+							},
+						],
+					};
+				})}
+				bodyRows={filteredBodyRows.map((row) => {
+					const {
+						id: rowId,
+						menuCellId,
+						lastEditedTime,
+						creationTime,
+					} = row;
+					return {
+						id: rowId,
+						cells: [
+							...visibleColumns.map((column) => {
+								const {
+									id: columnId,
+									width,
+									type,
+									shouldWrapOverflow,
+									currencyType,
+									dateFormat,
+								} = column;
+
+								const cell = bodyCells.find(
+									(cell) =>
+										cell.columnId === columnId &&
+										cell.rowId === row.id
+								);
+								if (!cell) throw new CellNotFoundError();
+								const { id: cellId, markdown, dateTime } = cell;
+
+								const filteredTags = tags.filter(
+									(tag) => tag.columnId === column.id
+								);
+
+								return {
+									id: cellId,
+									content: (
+										<BodyCell
+											key={cellId}
+											cellId={cellId}
+											rowId={rowId}
+											tags={filteredTags}
+											columnId={columnId}
+											rowCreationTime={creationTime}
+											dateFormat={dateFormat}
+											columnCurrencyType={currencyType}
+											rowLastEditedTime={lastEditedTime}
+											dateTime={dateTime}
+											markdown={markdown}
+											columnType={type}
+											shouldWrapOverflow={
+												shouldWrapOverflow
+											}
+											width={width}
+											onTagClick={handleAddCellToTag}
+											onRemoveTagClick={
+												handleRemoveCellFromTag
+											}
+											onContentChange={
+												handleBodyCellContentChange
+											}
+											onTagColorChange={
+												handleTagChangeColor
+											}
+											onTagDelete={handleTagDeleteClick}
+											onDateTimeChange={
+												handleCellDateTimeChange
+											}
+											onDateFormatChange={
+												handleDateFormatChange
+											}
+											onTagAdd={handleAddTag}
+										/>
+									),
+								};
+							}),
+							{
+								id: menuCellId,
+								content: (
+									<RowOptions
+										rowId={rowId}
+										onDeleteClick={handleRowDeleteClick}
+									/>
+								),
+							},
+						],
+					};
+				})}
+				footerRows={footerRows.map((row, i) => {
+					if (i === 0) {
+						return {
+							id: row.id,
+							cells: [
+								...visibleColumns.map((column) => {
+									const {
+										id: columnId,
+										type,
+										currencyType,
+										dateFormat,
+										width,
+									} = column;
+									const cell = footerCells.find(
+										(cell) =>
+											cell.rowId == row.id &&
+											cell.columnId == column.id
+									);
+									if (!cell) throw new CellNotFoundError();
+									const { id: cellId, functionType } = cell;
+
+									const filteredBodyCells = bodyCells.filter(
+										(cell) =>
+											filteredBodyRows.find(
+												(row) => row.id === cell.rowId
+											) !== undefined
+									);
+
+									return {
+										id: cell.id,
 										content: (
-											<NewColumnButton
-												onClick={handleNewColumnClick}
-											/>
-										),
-									},
-								],
-							};
-						})}
-						bodyRows={filteredBodyRows.map((row) => {
-							const {
-								id: rowId,
-								menuCellId,
-								lastEditedTime,
-								creationTime,
-							} = row;
-							return {
-								id: rowId,
-								cells: [
-									...visibleColumns.map((column) => {
-										const {
-											id: columnId,
-											width,
-											type,
-											shouldWrapOverflow,
-											currencyType,
-											dateFormat,
-										} = column;
-
-										const cell = bodyCells.find(
-											(cell) =>
-												cell.columnId === columnId &&
-												cell.rowId === row.id
-										);
-										if (!cell)
-											throw new CellNotFoundError();
-										const {
-											id: cellId,
-											markdown,
-											dateTime,
-										} = cell;
-
-										const filteredTags = tags.filter(
-											(tag) => tag.columnId === column.id
-										);
-
-										return {
-											id: cellId,
-											content: (
-												<BodyCell
-													key={cellId}
-													cellId={cellId}
-													rowId={rowId}
-													tags={filteredTags}
-													columnId={columnId}
-													rowCreationTime={
-														creationTime
-													}
-													dateFormat={dateFormat}
-													columnCurrencyType={
-														currencyType
-													}
-													rowLastEditedTime={
-														lastEditedTime
-													}
-													dateTime={dateTime}
-													markdown={markdown}
-													columnType={type}
-													shouldWrapOverflow={
-														shouldWrapOverflow
-													}
-													width={width}
-													onTagClick={
-														handleAddCellToTag
-													}
-													onRemoveTagClick={
-														handleRemoveCellFromTag
-													}
-													onContentChange={
-														handleBodyCellContentChange
-													}
-													onTagColorChange={
-														handleTagChangeColor
-													}
-													onTagDelete={
-														handleTagDeleteClick
-													}
-													onDateTimeChange={
-														handleCellDateTimeChange
-													}
-													onDateFormatChange={
-														handleDateFormatChange
-													}
-													onTagAdd={handleAddTag}
-												/>
-											),
-										};
-									}),
-									{
-										id: menuCellId,
-										content: (
-											<RowOptions
-												rowId={rowId}
-												onDeleteClick={
-													handleRowDeleteClick
+											<FunctionCell
+												columnId={columnId}
+												width={width}
+												tags={tags}
+												cellId={cellId}
+												currencyType={currencyType}
+												dateFormat={dateFormat}
+												bodyCells={filteredBodyCells}
+												bodyRows={filteredBodyRows}
+												functionType={functionType}
+												cellType={type}
+												onFunctionTypeChange={
+													handleFunctionTypeChange
 												}
 											/>
 										),
-									},
-								],
-							};
-						})}
-						footerRows={footerRows.map((row, i) => {
-							if (i === 0) {
+									};
+								}),
+								{
+									id: lastColumnId,
+									content: <></>,
+								},
+							],
+						};
+					}
+					return {
+						id: row.id,
+						cells: [
+							...visibleColumns.map((column, i) => {
+								const cell = footerCells.find(
+									(cell) =>
+										cell.rowId == row.id &&
+										cell.columnId == column.id
+								);
+								if (!cell) throw new CellNotFoundError();
+
+								if (i === 0) {
+									return {
+										id: cell.id,
+										content: (
+											<NewRowButton
+												onClick={handleNewRowClick}
+											/>
+										),
+									};
+								}
 								return {
-									id: row.id,
-									cells: [
-										...visibleColumns.map((column) => {
-											const {
-												id: columnId,
-												type,
-												currencyType,
-												dateFormat,
-												width,
-											} = column;
-											const cell = footerCells.find(
-												(cell) =>
-													cell.rowId == row.id &&
-													cell.columnId == column.id
-											);
-											if (!cell)
-												throw new CellNotFoundError();
-											const { id: cellId, functionType } =
-												cell;
-
-											const filteredBodyCells =
-												bodyCells.filter(
-													(cell) =>
-														filteredBodyRows.find(
-															(row) =>
-																row.id ===
-																cell.rowId
-														) !== undefined
-												);
-
-											return {
-												id: cell.id,
-												content: (
-													<FunctionCell
-														columnId={columnId}
-														width={width}
-														tags={tags}
-														cellId={cellId}
-														currencyType={
-															currencyType
-														}
-														dateFormat={dateFormat}
-														bodyCells={
-															filteredBodyCells
-														}
-														bodyRows={
-															filteredBodyRows
-														}
-														functionType={
-															functionType
-														}
-														cellType={type}
-														onFunctionTypeChange={
-															handleFunctionTypeChange
-														}
-													/>
-												),
-											};
-										}),
-										{
-											id: lastColumnId,
-											content: <></>,
-										},
-									],
+									id: cell.id,
+									content: <></>,
 								};
-							}
-							return {
-								id: row.id,
-								cells: [
-									...visibleColumns.map((column, i) => {
-										const cell = footerCells.find(
-											(cell) =>
-												cell.rowId == row.id &&
-												cell.columnId == column.id
-										);
-										if (!cell)
-											throw new CellNotFoundError();
-
-										if (i === 0) {
-											return {
-												id: cell.id,
-												content: (
-													<NewRowButton
-														onClick={
-															handleNewRowClick
-														}
-													/>
-												),
-											};
-										}
-										return {
-											id: cell.id,
-											content: <></>,
-										};
-									}),
-									{
-										id: lastColumnId,
-										content: <></>,
-									},
-								],
-							};
-						})}
-					/>
-				</div>
-			</div>
+							}),
+							{
+								id: lastColumnId,
+								content: <></>,
+							},
+						],
+					};
+				})}
+			/>
 		</div>
 	);
 }

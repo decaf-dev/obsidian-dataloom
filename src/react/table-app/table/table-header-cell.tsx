@@ -1,3 +1,4 @@
+import { css } from "@emotion/react";
 import { TableDataTransferItem } from "src/react/table-app/table/types";
 import { useTableState } from "src/shared/table-state/table-state-context";
 
@@ -74,8 +75,30 @@ export default function TableHeaderCell({
 
 	return (
 		<th
-			className="NLT__th"
 			data-column-id={columnId}
+			css={css`
+				border-bottom: 1px solid var(--background-modifier-border) !important;
+				border-left: 1px solid var(--background-modifier-border) !important;
+				border-right: 0 !important;
+				padding: 0 !important;
+				font-weight: 400 !important;
+				overflow: visible;
+				text-align: start;
+				background-color: var(--background-secondary) !important;
+				position: sticky !important;
+				top: 0;
+				z-index: 1;
+
+				&:first-of-type {
+					border-left: 0 !important;
+				}
+
+				&:last-of-type {
+					border-top: 0 !important;
+					border-bottom: 0 !important;
+					background-color: var(--background-primary) !important;
+				}
+			`}
 			{...(isDraggable && {
 				draggable: true,
 				onDrop: handleDrop,

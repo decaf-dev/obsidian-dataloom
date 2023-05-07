@@ -119,23 +119,28 @@ export const updateColumn = (
 
 export const deleteColumn = (
 	prevState: TableState,
-	columnId: string
+	options: { id?: string; last?: boolean }
 ): TableState => {
+	const { id, last } = options;
+	if (!id && !last) throw new Error("deleteColumn: no id or last provided");
+
+	if (last) {
+		const { columns } = prevState.model;
+		const lastColumn = columns[columns.length - 1];
+		return deleteColumn(prevState, { id: lastColumn.id });
+	}
+
 	const { bodyCells, headerCells, footerCells, columns, tags } =
 		prevState.model;
 	return {
 		...prevState,
 		model: {
 			...prevState.model,
-			columns: columns.filter((column) => column.id !== columnId),
-			headerCells: headerCells.filter(
-				(cell) => cell.columnId !== columnId
-			),
-			bodyCells: bodyCells.filter((cell) => cell.columnId !== columnId),
-			footerCells: footerCells.filter(
-				(cell) => cell.columnId !== columnId
-			),
-			tags: tags.filter((tag) => tag.columnId !== columnId),
+			columns: columns.filter((column) => column.id !== id),
+			headerCells: headerCells.filter((cell) => cell.columnId !== id),
+			bodyCells: bodyCells.filter((cell) => cell.columnId !== id),
+			footerCells: footerCells.filter((cell) => cell.columnId !== id),
+			tags: tags.filter((tag) => tag.columnId !== id),
 		},
 	};
 };
