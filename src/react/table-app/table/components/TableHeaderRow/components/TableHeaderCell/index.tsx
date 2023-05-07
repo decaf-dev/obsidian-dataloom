@@ -1,5 +1,5 @@
 import { TableDataTransferItem } from "src/react/table-app/table/types";
-import { useTableState } from "src/shared/table-state/useTableState";
+import { useTableState } from "src/shared/table-state/table-state-context";
 
 interface TableHeaderCellProps {
 	columnId: string;

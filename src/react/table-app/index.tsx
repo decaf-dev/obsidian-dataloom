@@ -46,7 +46,7 @@ import { stringToCurrencyString } from "../../shared/conversion";
 import { updateSortTime } from "../../redux/global/global-slice";
 import HeaderCell from "./header-cell";
 import { Color } from "../../shared/types";
-import { useTableState } from "../../shared/table-state/useTableState";
+import { useTableState } from "../../shared/table-state/table-state-context";
 import FunctionCell from "./function-cell";
 import BodyCell from "./body-cell";
 import NewRowButton from "./new-row-button";

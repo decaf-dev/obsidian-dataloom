@@ -1,4 +1,4 @@
-import { useTableState } from "src/shared/table-state/useTableState";
+import { useTableState } from "src/shared/table-state/table-state-context";
 import { RenderTableBodyRow, TableDataTransferItem } from "../../types";
 import TableCell from "../TableCell";
 import { SortDir } from "src/data/types";

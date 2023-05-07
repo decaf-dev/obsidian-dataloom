@@ -5,7 +5,7 @@ import {
 	removeFocusVisibleClass,
 } from "./focus-visible";
 import { Menu, MenuLevel } from "./types";
-import { useTableState } from "../table-state/useTableState";
+import { useTableState } from "../table-state/table-state-context";
 
 interface ContextProps {
 	openMenus: Menu[];

@@ -4,13 +4,13 @@ import { Provider } from "react-redux";
 import App from "../react/table-app";
 import { store } from "../redux/global/store";
 import { TableState } from "../data/types";
-import TableStateProvider from "../shared/table-state/useTableState";
+import TableStateProvider from "../shared/table-state/table-state-context";
 import NLTImportModal from "./nlt-import-modal";
 import {
 	deserializeTableState,
 	serializeTableState,
 } from "src/data/serialize-table-state";
-import MenuProvider from "src/shared/menu";
+import MenuProvider from "src/shared/menu/menu-context";
 
 export const NOTION_LIKE_TABLES_VIEW = "notion-like-tables";
 

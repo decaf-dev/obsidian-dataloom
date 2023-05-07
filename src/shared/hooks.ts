@@ -1,6 +1,6 @@
 import React from "react";
 import { v4 as uuidv4 } from "uuid";
-import { useMenuContext } from "./menu";
+import { useMenuContext } from "./menu/menu-context";
 import { isNumber } from "./validators";
 
 export const useForceUpdate = (): [number, () => void] => {
