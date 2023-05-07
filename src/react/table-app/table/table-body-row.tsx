@@ -3,12 +3,10 @@ import { TableDataTransferItem } from "./types";
 import { SortDir } from "src/data/types";
 
 interface TableBodyRowProps {
-	id: string;
 	children?: React.ReactNode;
 }
 
 export default function TableBodyRow({
-	id,
 	children,
 	...props
 }: TableBodyRowProps) {
@@ -16,9 +14,15 @@ export default function TableBodyRow({
 
 	function handleDragStart(e: React.DragEvent) {
 		const el = e.target as HTMLElement;
+		//React Virtuoso only works with our keyboard focus navigation system when we memorize the row component
+		//We can only do this if we don't place a `data-row-id` attr on the row itself. The workaround to this is to place
+		//the `data-row-id` attr on the last td element in the row (which contains the drag menu)
+		const dragMenuEl = el.querySelector("td:last-child");
+		if (!dragMenuEl) throw new Error("Couldn't find drag menu td");
 
-		const rowId = el.getAttr("data-row-id");
-		if (!rowId) throw new Error("data-row-id is required for a row");
+		const rowId = dragMenuEl.getAttr("data-row-id");
+		if (!rowId)
+			throw new Error("Drag menu td must have a data-row-id attribute");
 
 		const item: TableDataTransferItem = {
 			type: "row",
@@ -36,15 +40,24 @@ export default function TableBodyRow({
 		e.preventDefault();
 
 		const data = e.dataTransfer.getData("application/json");
+		if (data === "") throw new Error("No data found in dataTransfer");
+
 		const item = JSON.parse(data) as TableDataTransferItem;
 		//If we're dragging a column type, then return
 		if (item.type !== "row") return;
 
 		const draggedId = item.id;
-		const targetId = (e.currentTarget as HTMLElement).getAttr(
-			"data-row-id"
-		);
-		if (!targetId) throw new Error("data-row-id is required for a row");
+
+		//React Virtuoso only works with our keyboard focus navigation system when we memorize the row component
+		//We can only do this if we don't place a `data-row-id` attr on the row itself. The workaround to this is to place
+		//the `data-row-id` attr on the last td element in the row (which contains the drag menu)
+		const target = e.currentTarget as HTMLElement;
+		const dragMenuEl = target.querySelector("td:last-child");
+		if (!dragMenuEl) throw new Error("Couldn't find drag menu td");
+
+		const targetId = dragMenuEl.getAttr("data-row-id");
+		if (!targetId)
+			throw new Error("Drag menu td must have a data-row-id attribute");
 
 		const { columns } = tableState.model;
 		const isSorted = columns.find(
@@ -71,6 +84,9 @@ export default function TableBodyRow({
 			const targetElIndex = bodyRows.findIndex(
 				(row) => row.id == targetId
 			);
+
+			console.log(draggedElIndex);
+			console.log(targetElIndex);
 
 			//Move the actual element
 			let temp = rowsCopy[targetElIndex];
@@ -107,8 +123,7 @@ export default function TableBodyRow({
 
 	return (
 		<tr
-			id={id}
-			data-row-id={id}
+			draggable
 			onDrop={handleDrop}
 			onDragStart={handleDragStart}
 			onDragEnd={handleDragEnd}

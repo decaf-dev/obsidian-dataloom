@@ -1,13 +1,13 @@
 import React from "react";
 
-import { TableVirtuoso, VirtuosoHandle } from "react-virtuoso";
+import { TableVirtuoso, VirtuosoHandle, TableComponents } from "react-virtuoso";
 
 import {
 	RenderTableBodyRow,
 	RenderTableFooterRow,
 	RenderTableHeaderRow,
 } from "./types";
-import "./styles.css";
+
 import { Platform } from "obsidian";
 import TableBodyRow from "./table-body-row";
 import TableHeaderCell from "./table-header-cell";
@@ -33,13 +33,8 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 		tableRef.current?.scrollTo;
 	}, [didRowsChange, bodyRows.length]);
 
+	//TODO handle mobile?
 	const isMobile = Platform.isMobile || Platform.isMobileApp;
-	let innerClassName = "NLT__table-inner";
-	if (isMobile) {
-		innerClassName += " NLT__table-inner--mobile";
-	}
-
-	//TODO handle mobile
 
 	return (
 		<TableVirtuoso
@@ -50,48 +45,7 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 				height: "100%",
 			}}
 			totalCount={bodyRows.length}
-			components={{
-				Table: ({ style, ...props }) => {
-					return (
-						<table
-							css={css`
-								table-layout: fixed;
-								border-collapse: separate;
-							`}
-							{...props}
-							style={style}
-						/>
-					);
-				},
-				TableBody: React.forwardRef(({ style, ...props }, ref) => (
-					<tbody {...props} ref={ref} />
-				)),
-				TableRow: (props) => {
-					const index = props["data-index"];
-					const row = bodyRows[index];
-					return <TableBodyRow id={row.id} {...props} />;
-				},
-				TableFoot: React.forwardRef(({ style, ...props }, ref) => (
-					<tfoot
-						css={css`
-							position: sticky;
-							bottom: 0;
-							background-color: var(--background-primary);
-							& > tr:first-of-type > td {
-								border-bottom: 1px solid
-									var(--background-modifier-border) !important;
-							}
-							& > tr:first-of-type > td:last-child {
-								border-left: 1px solid
-									var(--background-modifier-border) !important;
-								border-bottom: 0 !important;
-							}
-						`}
-						{...props}
-						ref={ref}
-					/>
-				)),
-			}}
+			components={Components}
 			fixedHeaderContent={() =>
 				headerRows.map((row) => {
 					const { id: rowId, cells } = row;
@@ -124,11 +78,15 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 			}
 			itemContent={(index) => {
 				const row = bodyRows[index];
-				return row.cells.map((cell) => {
-					const { id, content } = cell;
+				const { id: rowId, cells } = row;
+				return cells.map((cell, i) => {
+					const { id: cellId, content } = cell;
 					return (
 						<td
-							key={id}
+							key={cellId}
+							data-row-id={
+								i === cells.length - 1 ? rowId : undefined
+							}
 							css={css`
 								border-top: 0 !important;
 								border-bottom: 1px solid
@@ -164,3 +122,42 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 		/>
 	);
 }
+
+const Components: TableComponents = {
+	Table: ({ style, ...props }) => {
+		return (
+			<table
+				css={css`
+					table-layout: fixed;
+					border-collapse: separate;
+				`}
+				{...props}
+				style={style}
+			/>
+		);
+	},
+	TableRow: ({ style, ...props }) => {
+		return <TableBodyRow {...props} />;
+	},
+	TableBody: React.forwardRef(({ style, ...props }, ref) => (
+		<tbody {...props} ref={ref} />
+	)),
+	TableFoot: React.forwardRef(({ style, ...props }, ref) => (
+		<tfoot
+			css={css`
+				position: sticky;
+				bottom: 0;
+				background-color: var(--background-primary);
+				& > tr:first-of-type > td {
+					border-bottom: 1px solid var(--background-modifier-border) !important;
+				}
+				& > tr:first-of-type > td:last-child {
+					border-left: 1px solid var(--background-modifier-border) !important;
+					border-bottom: 0 !important;
+				}
+			`}
+			{...props}
+			ref={ref}
+		/>
+	)),
+};
