@@ -14,6 +14,8 @@ import MenuProvider from "src/shared/menu";
 
 export const NOTION_LIKE_TABLES_VIEW = "notion-like-tables";
 
+const REFRESH_VIEW_EVENT = "nlt:refresh-view";
+
 export class NLTView extends TextFileView {
 	root: Root | null = null;
 	data: string;
@@ -27,15 +29,26 @@ export class NLTView extends TextFileView {
 	}
 
 	handleSaveTableState = async (tableState: TableState) => {
-		const serialized = serializeTableState(tableState);
-		this.data = serialized;
-		await this.requestSave();
+		//Only save data if the view is in the active leaf
+		//This prevents the data being saved multiple times if we have
+		//multiple tabs of the same file opens
+		if (this.app.workspace.activeLeaf === this.leaf) {
+			const serialized = serializeTableState(tableState);
+			this.data = serialized;
+			await this.requestSave();
+
+			//Trigger an event to refresh the other open views of this file
+			this.app.workspace.trigger(
+				REFRESH_VIEW_EVENT,
+				this.leaf,
+				this.file.path,
+				tableState
+			);
+		}
 	};
 
 	setViewData(data: string, clear: boolean): void {
 		this.data = data;
-
-		const tableState = deserializeTableState(data);
 
 		//If a table pane is already open, we need to unmount the old instance
 		if (clear) {
@@ -45,6 +58,11 @@ export class NLTView extends TextFileView {
 			}
 		}
 
+		const tableState = deserializeTableState(data);
+		this.renderApp(tableState);
+	}
+
+	renderApp(tableState: TableState) {
 		if (this.root) {
 			this.root.render(
 				<Provider store={store}>
@@ -93,6 +111,23 @@ export class NLTView extends TextFileView {
 		this.addAction("import", "Import", () => {
 			new NLTImportModal(this.app).open();
 		});
+
+		this.app.workspace.on(
+			// @ts-ignore: not invalid event
+			REFRESH_VIEW_EVENT,
+			(leaf: WorkspaceLeaf, filePath: string, tableState: TableState) => {
+				//Make sure that the event is coming from a different leaf but the same file
+				//This occurs when we have multiple tabs of the same file open
+				if (leaf !== this.leaf && filePath === this.file.path) {
+					if (this.root) {
+						this.root.unmount();
+						this.root = createRoot(this.containerEl.children[1]);
+					}
+
+					this.renderApp(tableState);
+				}
+			}
+		);
 	}
 
 	async onClose() {
