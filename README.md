@@ -46,11 +46,13 @@ You can also right click on a folder and click `New Notion-Like table`
 
 ## Hot Keys
 
-| Name             | Windows                    | Mac                       |
-| ---------------- | -------------------------- | ------------------------- |
-| Create new table | `ctrl` + `shift` + `=`     | `cmd` + `shift` + `=`     |
-| Add new column   | `ctrl` + `shift` + `\`     | `cmd` + `shift` + `\`     |
-| Add new row      | `ctrl` + `shift` + `enter` | `cmd` + `shift` + `enter` |
+| Name               | Windows                        | Mac                              |
+| ------------------ | ------------------------------ | -------------------------------- |
+| Create new table   | `ctrl` + `shift` + `=`         | `cmd` + `shift` + `=`            |
+| Add new column     | `ctrl` + `shift` + `\`         | `cmd` + `shift` + `\`            |
+| Add new row        | `ctrl` + `shift` + `enter`     | `cmd` + `shift` + `enter`        |
+| Delete last column | `ctrl` + `shift` + `backspace` | `cmd` + `shift` + `backspace`    |
+| Delete last row    | `alt` + `shift` + `backspace`  | `option` + `shift` + `backspace` |
 
 ## Features
 
@@ -77,6 +79,7 @@ You can also right click on a folder and click `New Notion-Like table`
 -   Function cells - allows you to make calculations based on column data. If the column cell type is set to number or currency, you have arithmetic operations available such as: min, max, range, median, sum, and average
 -   Import modal - allows you to create cells from markdown data
 -   Keyboard focus navigation system - navigate focusable elements using the tab button, arrow keys, and enter button on your keyboard. If a cell is focused, press any key to have that character appended to the cell input
+-   Virtualization of table rows - allows the user to render thousands of rows with no miminal lag in the table
 
 ## Settings
 
@@ -101,15 +104,15 @@ There is currently no support for undoing changes. This is part of the road map 
 
 Please override the following classes for custom theme development.
 
-| Class                | Element  | Usage                  |
+| Class                | Element  | Purpose                |
 | -------------------- | -------- | ---------------------- |
-| `.NLT__button`       | `button` |                        |
-| `.NLT__table`        | `table`  |                        |
-| `.NLT__tr`           | `tr`     |                        |
-| `.NLT__th`           | `th`     | Border and text styles |
+| `.NLT__app table`    | `table`  |                        |
+| `.NLT__app tr`       | `tr`     |                        |
+| `.NLT__app th`       | `th`     | Border and text styles |
 | `.NLT__th-content`   | `div`    | Padding                |
-| `.NLT__td`           | `td`     | Border and text styles |
+| `.NLT__app td`       | `td`     | Border and text styles |
 | `.NLT__td-container` | `div`    | Padding                |
+| `.NLT__button`       | `button` |                        |
 
 ## Issues
 
