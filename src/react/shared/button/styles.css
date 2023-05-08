@@ -9,6 +9,19 @@
     width: unset;
 }
 
+.NLT__button--link {
+    color: var(--link-color);
+    text-decoration-line: var(--link-decoration);
+    cursor: var(--cursor-link);
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+.NLT__button--link:hover {
+    box-shadow: var(--input-shadow) !important;
+}
+
 .NLT__button--icon { 
     background-color: transparent !important;
     box-shadow: none !important;

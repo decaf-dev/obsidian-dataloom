@@ -2,16 +2,16 @@ import Flex from "src/react/shared/flex";
 import Menu from "src/react/shared/menu";
 import Switch from "src/react/shared/switch";
 import Text from "src/react/shared/text";
-import { ToggleColumn } from "./types";
 import Padding from "src/react/shared/padding";
 import Stack from "src/react/shared/stack";
+import { ColumnToggle } from "./types";
 
 interface Props {
 	id: string;
 	top: number;
 	left: number;
 	isOpen: boolean;
-	columns: ToggleColumn[];
+	columns: ColumnToggle[];
 	onToggle: (id: string) => void;
 }
 

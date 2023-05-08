@@ -1,19 +1,22 @@
 import { CURRENT_PLUGIN_VERSION } from "src/data/constants";
 import {
 	BaseTableState,
+	CellType,
 	CurrencyType,
 	DateFormat,
 	SortDir,
 	TableState,
 	TableState633,
+	TableState670,
 } from "./types";
 import { sortByCreationTime } from "../shared/table-state/sort";
-import { RowIdError } from "../shared/table-state/error";
+import { ColumnIdError, RowIdError } from "../shared/table-state/error";
 import {
 	createFooterCell,
 	createFooterRow,
 	createHeaderRow,
 } from "./table-state-factory";
+import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/table-state/constants";
 
 export const serializeTableState = (tableState: TableState): string => {
 	return JSON.stringify(tableState, null, 2);
@@ -21,9 +24,12 @@ export const serializeTableState = (tableState: TableState): string => {
 
 export const deserializeTableState = (data: string): TableState => {
 	const parsedState = JSON.parse(data);
+
 	const { pluginVersion } = parsedState as BaseTableState;
+	let currentState: unknown = parsedState;
+
 	if (pluginVersion <= 633) {
-		const tableState = parsedState as TableState633;
+		const tableState = currentState as TableState633;
 		const { columns, rows, cells } = tableState.model;
 
 		//Feat: Currency type
@@ -78,7 +84,7 @@ export const deserializeTableState = (data: string): TableState => {
 		const tableState = parsedState as TableState633;
 		const { columns, tags, rows, cells } = tableState.model;
 
-		const updatedState: TableState = {
+		const updatedState: TableState670 = {
 			...tableState,
 			model: {
 				columns: [],
@@ -164,12 +170,35 @@ export const deserializeTableState = (data: string): TableState => {
 				);
 			});
 		}
-
 		updatedState.model.tags = tags;
-		updatedState.pluginVersion = CURRENT_PLUGIN_VERSION;
-		return updatedState;
+		currentState = updatedState;
 	}
 
-	parsedState.pluginVersion = CURRENT_PLUGIN_VERSION;
-	return parsedState as TableState;
+	//Feat: filter
+	if (pluginVersion < 680) {
+		const tableState = currentState as TableState;
+		const { model } = tableState;
+		const { bodyCells, columns } = model;
+
+		//Add filter rules
+		model.filterRules = [];
+
+		//Make sure that all checkbox cells have a value
+		bodyCells.forEach((cell) => {
+			const column = columns.find(
+				(column) => column.id === cell.columnId
+			);
+			if (!column) throw new ColumnIdError(cell.columnId);
+
+			if (column.type === CellType.CHECKBOX) {
+				if (cell.markdown === "") {
+					cell.markdown = CHECKBOX_MARKDOWN_UNCHECKED;
+				}
+			}
+		});
+	}
+
+	const tableState = currentState as TableState;
+	tableState.pluginVersion = CURRENT_PLUGIN_VERSION;
+	return tableState;
 };
