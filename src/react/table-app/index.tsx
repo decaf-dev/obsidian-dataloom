@@ -22,10 +22,6 @@ import {
 	updateBodyCell,
 	updateFooterCell,
 } from "../../shared/table-state/cell-state-operations";
-import {
-	addRow,
-	deleteRow,
-} from "../../shared/table-state/row-state-operations";
 import { useDidMountEffect, useUUID } from "../../shared/hooks";
 import { CellNotFoundError } from "../../shared/table-state/table-error";
 import { updateSortTime } from "../../redux/global/global-slice";
@@ -39,11 +35,11 @@ import NewColumnButton from "./new-column-button";
 
 import "./styles.css";
 import { WorkspaceLeaf } from "obsidian";
-import { ADD_ROW_EVENT, DELETE_ROW_EVENT } from "src/shared/events";
 import { useLogger } from "src/shared/logger";
 import { useFilterRules } from "src/shared/table-state/use-filter-rules";
 import { filterBodyRowsBySearch } from "src/shared/table-state/filter-by-search";
 import { useColumn } from "src/shared/table-state/use-column";
+import { useRow } from "src/shared/table-state/use-row";
 
 interface Props {
 	viewLeaf: WorkspaceLeaf;
@@ -80,26 +76,12 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 		handleWrapContentToggle,
 	} = useColumn(viewLeaf, setTableState);
 
+	const { handleNewRowClick, handleRowDeleteClick } = useRow(
+		viewLeaf,
+		setTableState
+	);
+
 	const lastColumnId = useUUID();
-
-	/**
-	 * Setup our event listeners
-	 */
-	React.useEffect(() => {
-		this.app.workspace.on(ADD_ROW_EVENT, (leaf: WorkspaceLeaf) => {
-			if (leaf === viewLeaf) {
-				setTableState((prevState) => addRow(prevState));
-			}
-		});
-
-		this.app.workspace.on(DELETE_ROW_EVENT, (leaf: WorkspaceLeaf) => {
-			if (leaf === viewLeaf) {
-				setTableState((prevState) =>
-					deleteRow(prevState, { last: true })
-				);
-			}
-		});
-	}, []);
 
 	//Once we have mounted, whenever the table state is updated
 	//save it to disk
@@ -112,12 +94,6 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 			setTableState((prevState) => sortRows(prevState));
 		}
 	}, [sortTime]);
-
-	function handleNewRowClick() {
-		logFunc("handleNewRowClick");
-		setTableState((prevState) => addRow(prevState));
-		dispatch(updateSortTime());
-	}
 
 	function handleHeaderCellContentChange(cellId: string, value: string) {
 		logFunc("handleCellContentChange", {
@@ -244,12 +220,6 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 		setTableState((prevState) => deleteTag(prevState, tagId));
 	}
 
-	function handleRowDeleteClick(rowId: string) {
-		logFunc("handleRowDeleteClick", {
-			rowId,
-		});
-		setTableState((prevState) => deleteRow(prevState, { id: rowId }));
-	}
 	function handleTagChangeColor(tagId: string, color: Color) {
 		logFunc("handleTagChangeColor", {
 			tagId,

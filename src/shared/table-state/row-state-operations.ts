@@ -1,7 +1,7 @@
 import { createBodyCell, createBodyRow } from "src/data/table-state-factory";
 import { BodyRow, TableState } from "./types";
 
-export const addRow = (prevState: TableState): TableState => {
+export const rowAdd = (prevState: TableState): TableState => {
 	const { bodyRows, bodyCells, columns } = prevState.model;
 	const newRow = createBodyRow(bodyRows.length);
 	const cellsCopy = structuredClone(bodyCells);
@@ -21,7 +21,7 @@ export const addRow = (prevState: TableState): TableState => {
 	};
 };
 
-export const deleteRow = (
+export const rowDelete = (
 	prevState: TableState,
 	options: {
 		id?: string;
@@ -34,7 +34,7 @@ export const deleteRow = (
 	if (last) {
 		const { bodyRows } = prevState.model;
 		const lastRow = bodyRows[bodyRows.length - 1];
-		return deleteRow(prevState, { id: lastRow.id });
+		return rowDelete(prevState, { id: lastRow.id });
 	}
 
 	const { bodyCells, bodyRows } = prevState.model;
@@ -48,7 +48,7 @@ export const deleteRow = (
 	};
 };
 
-export const updateLastEditedTime = (
+export const rowUpdateLastEditedTime = (
 	rows: BodyRow[],
 	rowId: string
 ): BodyRow[] => {

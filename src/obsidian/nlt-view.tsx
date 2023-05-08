@@ -11,7 +11,8 @@ import {
 	serializeTableState,
 } from "src/data/serialize-table-state";
 import MenuProvider from "src/shared/menu/menu-context";
-import { REFRESH_VIEW_EVENT } from "src/shared/events";
+import { EVENT_REFRESH_VIEW } from "src/shared/events";
+import AppProvider from "src/shared/table-state/app-context";
 
 export const NOTION_LIKE_TABLES_VIEW = "notion-like-tables";
 
@@ -38,7 +39,7 @@ export class NLTView extends TextFileView {
 
 			//Trigger an event to refresh the other open views of this file
 			this.app.workspace.trigger(
-				REFRESH_VIEW_EVENT,
+				EVENT_REFRESH_VIEW,
 				this.leaf,
 				this.file.path,
 				tableState
@@ -65,14 +66,16 @@ export class NLTView extends TextFileView {
 		if (this.root) {
 			this.root.render(
 				<Provider store={store}>
-					<TableStateProvider initialState={tableState}>
-						<MenuProvider>
-							<App
-								viewLeaf={this.leaf}
-								onSaveTableState={this.handleSaveTableState}
-							/>
-						</MenuProvider>
-					</TableStateProvider>
+					<AppProvider app={this.app}>
+						<TableStateProvider initialState={tableState}>
+							<MenuProvider>
+								<App
+									viewLeaf={this.leaf}
+									onSaveTableState={this.handleSaveTableState}
+								/>
+							</MenuProvider>
+						</TableStateProvider>
+					</AppProvider>
 				</Provider>
 			);
 		}
@@ -115,8 +118,8 @@ export class NLTView extends TextFileView {
 		});
 
 		this.app.workspace.on(
-			// @ts-ignore: not invalid event
-			REFRESH_VIEW_EVENT,
+			// @ts-expect-error: not valid event
+			EVENT_REFRESH_VIEW,
 			(leaf: WorkspaceLeaf, filePath: string, tableState: TableState) => {
 				//Make sure that the event is coming from a different leaf but the same file
 				//This occurs when we have multiple tabs of the same file open
