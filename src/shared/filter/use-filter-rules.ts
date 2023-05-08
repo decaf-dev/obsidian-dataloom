@@ -2,7 +2,7 @@ import { SetStateAction } from "react";
 import { FilterType, TableState } from "src/data/types";
 import { useLogger } from "../logger";
 import { addRule, deleteRule, updateRule } from "./state-operations";
-import { filterBodyRows } from "./utils";
+import { filterBodyRowsByRules } from "./filter-by-rules";
 
 export const useFilterRules = (
 	onChange: React.Dispatch<SetStateAction<TableState>>
@@ -62,6 +62,6 @@ export const useFilterRules = (
 		handleRuleTextChange,
 		handleRuleToggle,
 		handleRuleTagsChange,
-		filterBodyRows,
+		filterBodyRowsByRules,
 	};
 };

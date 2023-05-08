@@ -64,7 +64,8 @@ import {
 	DELETE_ROW_EVENT,
 } from "src/shared/events";
 import { useLogger } from "src/shared/logger";
-import { useFilterRules } from "src/shared/filter/hooks";
+import { useFilterRules } from "src/shared/filter/use-filter-rules";
+import { filterBodyRowsBySearch } from "src/shared/filter/use-filter-search";
 
 interface Props {
 	viewLeaf: WorkspaceLeaf;
@@ -85,7 +86,7 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 		handleRuleTextChange,
 		handleRuleToggle,
 		handleRuleTagsChange,
-		filterBodyRows,
+		filterBodyRowsByRules,
 	} = useFilterRules(setTableState);
 
 	const lastColumnId = useUUID();
@@ -391,74 +392,12 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 		filterRules,
 	} = tableState.model;
 
-	let filteredBodyRows = filterBodyRows(tableState);
-	const columnBodyCells = bodyCells.map((cell) => {
-		const column = columns.find((column) => column.id === cell.columnId);
-		if (!column) throw new ColumnIdError(cell.columnId);
-		return {
-			...cell,
-			column,
-		};
-	});
-
-	filteredBodyRows = filteredBodyRows.filter((row) => {
-		const filteredCells = columnBodyCells.filter(
-			(cell) => cell.rowId === row.id
-		);
-		const matchedCell = filteredCells.find((cell) => {
-			const { dateTime, markdown } = cell;
-			const { currencyType, type, dateFormat } = cell.column;
-			const { lastEditedTime, creationTime } = row;
-
-			if (markdown.toLowerCase().includes(searchText.toLowerCase()))
-				return true;
-
-			if (type === CellType.CURRENCY) {
-				const currencyString = stringToCurrencyString(
-					cell.markdown,
-					currencyType
-				);
-				if (
-					currencyString
-						.toLowerCase()
-						.includes(searchText.toLowerCase())
-				)
-					return true;
-			} else if (type === CellType.LAST_EDITED_TIME) {
-				const dateString = unixTimeToDateTimeString(
-					lastEditedTime,
-					dateFormat
-				);
-				if (dateString.toLowerCase().includes(searchText.toLowerCase()))
-					return true;
-			} else if (type === CellType.CREATION_TIME) {
-				const dateString = unixTimeToDateTimeString(
-					creationTime,
-					dateFormat
-				);
-				if (dateString.toLowerCase().includes(searchText.toLowerCase()))
-					return true;
-			} else if (cell.column.type === CellType.DATE) {
-				if (dateTime) {
-					const dateString = unixTimeToDateString(
-						dateTime,
-						dateFormat
-					);
-					if (
-						dateString
-							.toLowerCase()
-							.includes(searchText.toLowerCase())
-					)
-						return true;
-				}
-			}
-			return false;
-		});
-		if (matchedCell !== undefined) return true;
-
-		return false;
-	});
-
+	let filteredBodyRows = filterBodyRowsByRules(tableState);
+	filteredBodyRows = filterBodyRowsBySearch(
+		tableState,
+		filteredBodyRows,
+		searchText
+	);
 	const visibleColumns = columns.filter((column) => column.isVisible);
 
 	return (
