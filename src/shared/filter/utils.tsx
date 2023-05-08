@@ -47,10 +47,6 @@ const doesCellMatchRules = (
 	cellTags: Tag[],
 	rules: FilterRule[]
 ) => {
-	console.log(cell);
-	console.log(cellType);
-	console.log(cellTags);
-	console.log(rules);
 	return rules.every((rule) =>
 		doesCellMatchRule(cell, cellType, cellTags, rule)
 	);
@@ -92,10 +88,8 @@ const doesMatchRule = (markdown: string, rule: FilterRule) => {
 	let compareRuleText = rule.text.toLowerCase().trim();
 
 	//If the rule text is empty, there is nothing to compare
-	if (
-		rule.type !== FilterType.IS_EMPTY &&
-		rule.type != FilterType.IS_NOT_EMPTY
-	) {
+	if (rule.type != FilterType.IS_NOT_EMPTY) {
+		if (markdown === "") return true;
 		if (compareRuleText == "") return true;
 	}
 
