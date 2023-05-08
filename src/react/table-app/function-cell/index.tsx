@@ -13,17 +13,15 @@ import {
 	FunctionType,
 	GeneralFunction,
 	Tag,
-} from "src/data/types";
+} from "src/shared/table-state/types";
 import Stack from "../../shared/stack";
-import {
-	getShortDisplayNameForFunctionType,
-	isGeneralFunction,
-} from "src/shared/table-state/utils";
 import { getNumberFunctionContent } from "./numberFunction";
 import { getGeneralFunctionContent } from "./generalFunction";
 
 import "./styles.css";
 import MenuTrigger from "src/react/shared/menu-trigger";
+import { isGeneralFunction } from "src/shared/validators";
+import { getShortDisplayNameForFunctionType } from "src/shared/table-state/display-name";
 
 interface Props {
 	columnId: string;

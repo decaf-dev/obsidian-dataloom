@@ -1,7 +1,7 @@
 import { useOverflowClassName } from "src/shared/spacing/hooks";
 
 import "./styles.css";
-import { CurrencyType } from "src/data/types";
+import { CurrencyType } from "src/shared/table-state/types";
 import { stringToCurrencyString } from "src/shared/conversion";
 
 interface Props {

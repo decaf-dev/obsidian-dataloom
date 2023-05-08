@@ -7,7 +7,12 @@ import BaseMenu from "./components/BaseMenu";
 import CurrencySubmenu from "./components/CurrencySubmenu";
 import DateFormatSubmenu from "./components/DateFormatSubmenu";
 
-import { CellType, CurrencyType, DateFormat, SortDir } from "src/data/types";
+import {
+	CellType,
+	CurrencyType,
+	DateFormat,
+	SortDir,
+} from "src/shared/table-state/types";
 import { SubmenuType } from "./types";
 
 import "./styles.css";

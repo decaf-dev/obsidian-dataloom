@@ -1,5 +1,5 @@
 import { Dispatch, createContext, useContext, useState } from "react";
-import { TableState } from "../../data/types";
+import { TableState } from "./types";
 import { useUUID } from "../hooks";
 
 interface Props {
@@ -17,7 +17,7 @@ export const useTableState = () => {
 	const value = useContext(TableStateContext);
 	if (value === null) {
 		throw new Error(
-			"useTableState() called without a <ThemeProvider /> in the tree."
+			"useTableState() called without a <TableStateProvider /> in the tree."
 		);
 	}
 

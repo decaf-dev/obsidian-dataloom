@@ -9,16 +9,16 @@ import {
 	isValidDateFormat,
 	unixTimeToDateString,
 } from "src/shared/date/date-conversion";
-import { DateFormat } from "src/data/types";
+import { DateFormat } from "src/shared/table-state/types";
 import { useCompare, useFocusMenuInput } from "src/shared/hooks";
 import DateFormatMenu from "./components/DateFormatMenu";
 import { useMenu } from "src/shared/menu/hooks";
 import { MenuLevel, MenuPosition } from "src/shared/menu/types";
-import { getDisplayNameForDateFormat } from "src/shared/table-state/utils";
 import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
 
 import "./styles.css";
 import MenuTrigger from "src/react/shared/menu-trigger";
+import { getDisplayNameForDateFormat } from "src/shared/table-state/display-name";
 
 interface Props {
 	isMenuVisible: boolean;

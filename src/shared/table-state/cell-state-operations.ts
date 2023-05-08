@@ -1,7 +1,7 @@
-import { updateLastEditedTime } from "./row";
-import { BodyCell, FooterCell, HeaderCell, TableState } from "../../data/types";
+import { rowUpdateLastEditedTime } from "./row-state-operations";
+import { BodyCell, FooterCell, HeaderCell, TableState } from "./types";
 
-export const updateHeaderCell = (
+export const cellUpdateHeader = (
 	prevState: TableState,
 	cellId: string,
 	key: keyof HeaderCell,
@@ -25,7 +25,7 @@ export const updateHeaderCell = (
 	};
 };
 
-export const updateBodyCell = (
+export const cellUpdateBody = (
 	prevState: TableState,
 	cellId: string,
 	rowId: string,
@@ -46,12 +46,12 @@ export const updateBodyCell = (
 				}
 				return cell;
 			}),
-			bodyRows: updateLastEditedTime(bodyRows, rowId),
+			bodyRows: rowUpdateLastEditedTime(bodyRows, rowId),
 		},
 	};
 };
 
-export const updateFooterCell = (
+export const cellUpdateFooter = (
 	prevState: TableState,
 	cellId: string,
 	key: keyof FooterCell,

@@ -1,3 +1,4 @@
+import { isGeneralFunction } from "../validators";
 import {
 	CellType,
 	CurrencyType,
@@ -5,25 +6,7 @@ import {
 	FunctionType,
 	GeneralFunction,
 	NumberFunction,
-} from "../../data/types";
-
-export const isGeneralFunction = (
-	value: GeneralFunction | NumberFunction
-): value is GeneralFunction => {
-	return Object.values(GeneralFunction).includes(value as GeneralFunction);
-};
-
-export const isNumberFunction = (
-	value: GeneralFunction | NumberFunction
-): value is NumberFunction => {
-	return Object.values(NumberFunction).includes(value as NumberFunction);
-};
-
-export const getShortDisplayNameForFunctionType = (value: FunctionType) => {
-	if (isGeneralFunction(value))
-		return getShortDisplayNameForGeneralFunction(value);
-	return getDisplayNameForNumberFunction(value);
-};
+} from "./types";
 
 const getShortDisplayNameForGeneralFunction = (value: GeneralFunction) => {
 	switch (value) {
@@ -46,6 +29,12 @@ const getShortDisplayNameForGeneralFunction = (value: GeneralFunction) => {
 		default:
 			return "";
 	}
+};
+
+export const getShortDisplayNameForFunctionType = (value: FunctionType) => {
+	if (isGeneralFunction(value))
+		return getShortDisplayNameForGeneralFunction(value);
+	return getDisplayNameForNumberFunction(value);
 };
 
 export const getAriaLabelForGeneralFunction = (value: GeneralFunction) => {
@@ -165,6 +154,14 @@ export const getDisplayNameForCurrencyType = (type: CurrencyType) => {
 			return "Colombian Peso";
 		case CurrencyType.EUROPE:
 			return "Euro";
+		case CurrencyType.SWEDEN:
+			return "Swedish Krona";
+		case CurrencyType.DENMARK:
+			return "Danish Krone";
+		case CurrencyType.NORWAY:
+			return "Norwegian Krone";
+		case CurrencyType.ICELAND:
+			return "Icelandic Króna";
 		case CurrencyType.BRAZIL:
 			return "Real";
 		case CurrencyType.POUND:

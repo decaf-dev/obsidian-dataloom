@@ -7,10 +7,10 @@ import {
 	FilterType,
 	TableState,
 	Tag,
-} from "src/data/types";
-import { ColumnIdError } from "../table-state/error";
+} from "src/shared/table-state/types";
+import { ColumnIdError } from "./table-error";
 
-export const filterBodyRows = (prevState: TableState): BodyRow[] => {
+export const filterBodyRowsByRules = (prevState: TableState): BodyRow[] => {
 	const { columns, bodyCells, bodyRows, filterRules, tags } = prevState.model;
 	//Map column id to column instance
 	const columnMap = new Map<string, Column>();

@@ -26,7 +26,7 @@ export default function Tag({
 	onRemoveClick,
 }: Props) {
 	const { isDarkMode } = useAppSelector((state) => state.global);
-  
+
 	let tagClass = "NLT__tag";
 	tagClass += " " + findColorClassName(isDarkMode, color);
 

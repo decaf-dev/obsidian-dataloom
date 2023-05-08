@@ -1,17 +1,17 @@
 import Menu from "src/react/shared/menu";
 import MenuItem from "src/react/shared/menu-item";
 import {
+	getDisplayNameForGeneralFunction,
+	getAriaLabelForGeneralFunction,
+	getAriaLabelForNumberFunction,
+	getDisplayNameForNumberFunction,
+} from "src/shared/table-state/display-name";
+import {
 	CellType,
 	FunctionType,
 	GeneralFunction,
 	NumberFunction,
-} from "src/data/types";
-import {
-	getAriaLabelForGeneralFunction,
-	getAriaLabelForNumberFunction,
-	getDisplayNameForGeneralFunction,
-	getDisplayNameForNumberFunction,
-} from "src/shared/table-state/utils";
+} from "src/shared/table-state/types";
 
 interface Props {
 	id: string;
