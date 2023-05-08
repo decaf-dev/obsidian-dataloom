@@ -13,7 +13,12 @@ import DateCellEdit from "../date-cell-edit";
 import MultiTagCell from "../multi-tag-cell";
 import Menu from "../../shared/menu";
 
-import { CellType, CurrencyType, DateFormat, Tag } from "src/data/types";
+import {
+	CellType,
+	CurrencyType,
+	DateFormat,
+	Tag,
+} from "src/shared/table-state/types";
 import { useMenu } from "src/shared/menu/hooks";
 import { MenuLevel } from "src/shared/menu/types";
 import { useAppDispatch, useAppSelector } from "src/redux/global/hooks";

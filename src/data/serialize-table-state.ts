@@ -8,9 +8,9 @@ import {
 	TableState,
 	TableState633,
 	TableState670,
-} from "./types";
-import { sortByCreationTime } from "../shared/table-state/sort";
-import { ColumnIdError, RowIdError } from "../shared/table-state/error";
+} from "../shared/table-state/types";
+import { sortByCreationTime } from "../shared/table-state/sort-state-operations";
+import { ColumnIdError, RowIdError } from "../shared/table-state/table-error";
 import {
 	createFooterCell,
 	createFooterRow,

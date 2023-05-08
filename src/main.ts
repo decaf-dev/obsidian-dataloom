@@ -6,18 +6,12 @@ import { store } from "./redux/global/store";
 import { setDarkMode, setDebugMode } from "./redux/global/global-slice";
 import { NLTView, NOTION_LIKE_TABLES_VIEW } from "./obsidian/nlt-view";
 import { TABLE_EXTENSION } from "./data/constants";
-import { addColumn, deleteColumn } from "./shared/table-state/column";
-import { addRow, deleteRow } from "./shared/table-state/row";
-import {
-	deserializeTableState,
-	serializeTableState,
-} from "./data/serialize-table-state";
 import { createTableFile } from "src/data/table-file";
 import {
-	ADD_COLUMN_EVENT,
-	ADD_ROW_EVENT,
-	DELETE_COLUMN_EVENT,
-	DELETE_ROW_EVENT,
+	EVENT_COLUMN_ADD,
+	EVENT_COLUMN_DELETE,
+	EVENT_ROW_ADD,
+	EVENT_ROW_DELETE,
 } from "./shared/events";
 
 export interface NLTSettings {
@@ -147,39 +141,7 @@ export default class NLTPlugin extends Plugin {
 				const view = this.app.workspace.getActiveViewOfType(NLTView);
 				if (view) {
 					if (!checking) {
-						this.app.workspace.trigger(ADD_COLUMN_EVENT, view.leaf);
-					}
-					return true;
-				}
-				return false;
-			},
-		});
-
-		this.addCommand({
-			id: "nlt-add-row",
-			name: "Add row",
-			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Enter" }],
-			checkCallback: (checking: boolean) => {
-				const view = this.app.workspace.getActiveViewOfType(NLTView);
-				if (view) {
-					if (!checking) {
-						this.app.workspace.trigger(ADD_ROW_EVENT, view.leaf);
-					}
-					return true;
-				}
-				return false;
-			},
-		});
-
-		this.addCommand({
-			id: "nlt-row-column",
-			name: "Delete row",
-			hotkeys: [{ modifiers: ["Alt", "Shift"], key: "Backspace" }],
-			checkCallback: (checking: boolean) => {
-				const view = this.app.workspace.getActiveViewOfType(NLTView);
-				if (view) {
-					if (!checking) {
-						this.app.workspace.trigger(DELETE_ROW_EVENT, view.leaf);
+						this.app.workspace.trigger(EVENT_COLUMN_ADD, view.leaf);
 					}
 					return true;
 				}
@@ -196,9 +158,41 @@ export default class NLTPlugin extends Plugin {
 				if (view) {
 					if (!checking) {
 						this.app.workspace.trigger(
-							DELETE_COLUMN_EVENT,
+							EVENT_COLUMN_DELETE,
 							view.leaf
 						);
+					}
+					return true;
+				}
+				return false;
+			},
+		});
+
+		this.addCommand({
+			id: "nlt-add-row",
+			name: "Add row",
+			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Enter" }],
+			checkCallback: (checking: boolean) => {
+				const view = this.app.workspace.getActiveViewOfType(NLTView);
+				if (view) {
+					if (!checking) {
+						this.app.workspace.trigger(EVENT_ROW_ADD, view.leaf);
+					}
+					return true;
+				}
+				return false;
+			},
+		});
+
+		this.addCommand({
+			id: "nlt-row-column",
+			name: "Delete row",
+			hotkeys: [{ modifiers: ["Alt", "Shift"], key: "Backspace" }],
+			checkCallback: (checking: boolean) => {
+				const view = this.app.workspace.getActiveViewOfType(NLTView);
+				if (view) {
+					if (!checking) {
+						this.app.workspace.trigger(EVENT_ROW_DELETE, view.leaf);
 					}
 					return true;
 				}

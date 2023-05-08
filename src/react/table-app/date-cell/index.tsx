@@ -1,4 +1,4 @@
-import { DateFormat } from "src/data/types";
+import { DateFormat } from "src/shared/table-state/types";
 import "./styles.css";
 import { unixTimeToDateString } from "src/shared/date/date-conversion";
 interface Props {

@@ -7,8 +7,8 @@ import {
 	DateFormat,
 	TableState,
 	Tag,
-} from "src/data/types";
-import { ColumnIdError, RowIdError } from "../table-state/error";
+} from "src/shared/table-state/types";
+import { ColumnIdError, RowIdError } from "./table-error";
 import { stringToCurrencyString } from "../conversion";
 import {
 	unixTimeToDateString,
@@ -123,7 +123,6 @@ const matchDateCell = (
 		const dateString = unixTimeToDateString(dateTime, dateFormat);
 		if (dateString.toLowerCase().includes(searchText)) return true;
 	}
-	//If the date time is empty this is a match
 	return false;
 };
 
