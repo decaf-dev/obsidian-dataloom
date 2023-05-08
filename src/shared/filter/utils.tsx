@@ -23,10 +23,12 @@ export const filterBodyRows = (prevState: TableState): BodyRow[] => {
 	bodyCells.forEach((cell) => {
 		const column = columnMap.get(cell.columnId);
 		if (!column) throw new ColumnIdError(cell.columnId);
+
+		const cellTags = tags.filter((tag) => tag.cellIds.includes(cell.id));
 		const doesMatch = doesCellMatchRules(
 			cell,
 			column.type,
-			tags,
+			cellTags,
 			filterRules
 		);
 		cellMatches.set(cell.id, doesMatch);
@@ -45,6 +47,10 @@ const doesCellMatchRules = (
 	cellTags: Tag[],
 	rules: FilterRule[]
 ) => {
+	console.log(cell);
+	console.log(cellType);
+	console.log(cellTags);
+	console.log(rules);
 	return rules.every((rule) =>
 		doesCellMatchRule(cell, cellType, cellTags, rule)
 	);
@@ -64,9 +70,14 @@ const doesCellMatchRule = (
 			cellType === CellType.TAG ||
 			cellType === CellType.MULTI_TAG
 		) {
-			return cellTags.some((tag) =>
-				doesMatchRule(tag.markdown.trim(), rule)
-			);
+			if (cellTags.length === 0) return doesMatchRule("", rule);
+			return cellTags.some((tag) => {
+				const doesMatch = doesMatchRule(tag.markdown.trim(), rule);
+				console.log(doesMatch);
+				console.log(tag.markdown);
+				console.log(rule);
+				return doesMatch;
+			});
 		} else if (cellType === CellType.CHECKBOX) {
 			return doesMatchRule(cell.markdown.trim(), rule);
 		} else {
@@ -87,10 +98,7 @@ const doesMatchRule = (markdown: string, rule: FilterRule) => {
 	) {
 		if (compareRuleText == "") return true;
 	}
-	if (compareMarkdown.includes("scott")) {
-		console.log(compareMarkdown);
-		console.log(compareRuleText);
-	}
+
 	switch (rule.type) {
 		case FilterType.IS:
 			return compareMarkdown === compareRuleText;
