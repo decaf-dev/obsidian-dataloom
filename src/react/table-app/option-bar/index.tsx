@@ -1,17 +1,25 @@
 import { useMemo } from "react";
 
-import { SortDir, Column, HeaderCell } from "src/data/types";
+import {
+	SortDir,
+	Column,
+	HeaderCell,
+	FilterRule,
+	CellType,
+	Tag,
+} from "src/data/types";
 
-import { useAppSelector } from "src/redux/global/hooks";
 import Stack from "../../shared/stack";
 
 import { CellNotFoundError, ColumnIdError } from "src/shared/table-state/error";
 import SearchBar from "./search-bar";
 import SortBubble from "./sort-button";
 
-import "./styles.css";
 import Flex from "../../shared/flex";
 import ToggleColumn from "./toggle-column";
+import Filter from "./filter/filter";
+
+import "./styles.css";
 
 interface SortButtonListProps {
 	bubbles: { sortDir: SortDir; markdown: string; columnId: string }[];
@@ -36,14 +44,32 @@ const SortBubbleList = ({ bubbles, onRemoveClick }: SortButtonListProps) => {
 interface Props {
 	headerCells: HeaderCell[];
 	columns: Column[];
+	filterRules: FilterRule[];
+	tags: Tag[];
 	onSortRemoveClick: (columnId: string) => void;
 	onColumnToggle: (columnId: string) => void;
+	onRuleToggle: (ruleId: string) => void;
+	onRuleColumnChange: (ruleId: string, columnId: string) => void;
+	onRuleFilterTypeChange: (ruleId: string, value: string) => void;
+	onRuleTextChange: (ruleId: string, value: string) => void;
+	onRuleDeleteClick: (ruleId: string) => void;
+	onRuleAddClick: (columnId: string) => void;
+	onRuleTagsChange: (ruleId: string, value: string[]) => void;
 }
 export default function OptionBar({
 	headerCells,
+	filterRules,
 	columns,
+	tags,
 	onSortRemoveClick,
 	onColumnToggle,
+	onRuleToggle,
+	onRuleColumnChange,
+	onRuleFilterTypeChange,
+	onRuleTextChange,
+	onRuleDeleteClick,
+	onRuleAddClick,
+	onRuleTagsChange,
 }: Props) {
 	const bubbles = useMemo(() => {
 		return headerCells
@@ -65,7 +91,7 @@ export default function OptionBar({
 			});
 	}, [headerCells, columns]);
 
-	const toggleColumns = useMemo(() => {
+	const togglableColumns = useMemo(() => {
 		return columns.map((column) => {
 			const cell = headerCells.find((cell) => cell.columnId == column.id);
 			if (!cell) throw new CellNotFoundError();
@@ -75,6 +101,32 @@ export default function OptionBar({
 				isVisible: column.isVisible,
 			};
 		});
+	}, [headerCells, columns]);
+
+	const filterableColumns = useMemo(() => {
+		return columns
+			.filter((column) => {
+				const { type } = column;
+				if (
+					type === CellType.TEXT ||
+					type == CellType.CHECKBOX ||
+					type == CellType.TAG ||
+					type == CellType.MULTI_TAG
+				)
+					return true;
+				return false;
+			})
+			.map((column) => {
+				const cell = headerCells.find(
+					(cell) => cell.columnId == column.id
+				);
+				if (!cell) throw new CellNotFoundError();
+				return {
+					id: column.id,
+					name: cell.markdown,
+					cellType: column.type,
+				};
+			});
 	}, [headerCells, columns]);
 
 	return (
@@ -87,8 +139,20 @@ export default function OptionBar({
 					/>
 					<Stack spacing="sm" justify="flex-end">
 						<SearchBar />
+						<Filter
+							columns={filterableColumns}
+							tags={tags}
+							filterRules={filterRules}
+							onAddClick={onRuleAddClick}
+							onToggle={onRuleToggle}
+							onColumnChange={onRuleColumnChange}
+							onFilterTypeChange={onRuleFilterTypeChange}
+							onTextChange={onRuleTextChange}
+							onDeleteClick={onRuleDeleteClick}
+							onTagsChange={onRuleTagsChange}
+						/>
 						<ToggleColumn
-							columns={toggleColumns}
+							columns={togglableColumns}
 							onToggle={onColumnToggle}
 						/>
 					</Stack>

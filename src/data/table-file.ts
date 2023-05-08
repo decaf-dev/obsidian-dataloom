@@ -21,6 +21,11 @@ const getFileName = (useActiveFileNameAndTimestamp: boolean): string => {
 	return `${fileName}.${TABLE_EXTENSION}`;
 };
 
+export const getFilePath = (folderPath: string, fileName: string) => {
+	if (folderPath === "") return fileName;
+	return folderPath + "/" + fileName;
+};
+
 export const createTableFile = async (options: {
 	folderPath: string;
 	useActiveFileNameAndTimestamp: boolean;
@@ -32,10 +37,9 @@ export const createTableFile = async (options: {
 		const fileName = getFileName(options.useActiveFileNameAndTimestamp);
 		const tableState = createTableState(1, 1);
 		const serialized = serializeTableState(tableState);
-		return await createFile(
-			options.folderPath + "/" + fileName,
-			serialized
-		);
+		const filePath = getFilePath(options.folderPath, fileName);
+
+		return await createFile(filePath, serialized);
 	} catch (err) {
 		new Notice("Could not create Notion-Like table");
 		throw err;

@@ -52,7 +52,6 @@ import NewRowButton from "./new-row-button";
 import NewColumnButton from "./new-column-button";
 
 import "./styles.css";
-import { logFunc } from "src/shared/logger";
 import {
 	unixTimeToDateString,
 	unixTimeToDateTimeString,
@@ -64,8 +63,8 @@ import {
 	DELETE_COLUMN_EVENT,
 	DELETE_ROW_EVENT,
 } from "src/shared/events";
-
-const FILE_NAME = "App";
+import { useLogger } from "src/shared/logger";
+import { useFilterRules } from "src/shared/filter/hooks";
 
 interface Props {
 	viewLeaf: WorkspaceLeaf;
@@ -76,8 +75,18 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 	const { searchText, sortTime } = useAppSelector((state) => state.global);
 	const { tableId, tableState, setTableState } = useTableState();
 
-	const { shouldDebug } = useAppSelector((state) => state.global);
 	const dispatch = useAppDispatch();
+	const logFunc = useLogger();
+	const {
+		handleRuleAddClick,
+		handleRuleColumnChange,
+		handleRuleDeleteClick,
+		handleRuleFilterTypeChange,
+		handleRuleTextChange,
+		handleRuleToggle,
+		handleRuleTagsChange,
+		filterBodyRows,
+	} = useFilterRules(setTableState);
 
 	const lastColumnId = useUUID();
 
@@ -127,18 +136,18 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 	}, [sortTime]);
 
 	function handleNewColumnClick() {
-		logFunc(shouldDebug, FILE_NAME, "handleNewColumnClick");
+		logFunc("handleNewColumnClick");
 		setTableState((prevState) => addColumn(prevState));
 	}
 
 	function handleNewRowClick() {
-		logFunc(shouldDebug, FILE_NAME, "handleNewRowClick");
+		logFunc("handleNewRowClick");
 		setTableState((prevState) => addRow(prevState));
 		dispatch(updateSortTime());
 	}
 
 	function handleHeaderTypeClick(columnId: string, type: CellType) {
-		logFunc(shouldDebug, FILE_NAME, "handleHeaderTypeClick", {
+		logFunc("handleHeaderTypeClick", {
 			columnId,
 			type,
 		});
@@ -148,7 +157,7 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 	}
 
 	function handleHeaderSortSelect(columnId: string, sortDir: SortDir) {
-		logFunc(shouldDebug, FILE_NAME, "handleHeaderSortSelect", {
+		logFunc("handleHeaderSortSelect", {
 			columnId,
 			sortDir,
 		});
@@ -159,7 +168,7 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 	}
 
 	function handleHeaderCellContentChange(cellId: string, value: string) {
-		logFunc(shouldDebug, FILE_NAME, "handleCellContentChange", {
+		logFunc("handleCellContentChange", {
 			cellId,
 			markdown: value,
 		});
@@ -174,7 +183,7 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 		rowId: string,
 		value: string
 	) {
-		logFunc(shouldDebug, FILE_NAME, "handleCellContentChange", {
+		logFunc("handleCellContentChange", {
 			cellId,
 			rowId,
 			markdown: value,
@@ -190,7 +199,7 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 		rowId: string,
 		value: number | null
 	) {
-		logFunc(shouldDebug, FILE_NAME, "handleCellContentChange", {
+		logFunc("handleCellContentChange", {
 			cellId,
 			rowId,
 			dateTime: value,
@@ -205,7 +214,7 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 		cellId: string,
 		functionType: FunctionType
 	) {
-		logFunc(shouldDebug, FILE_NAME, "handleFunctionTypeChange", {
+		logFunc("handleFunctionTypeChange", {
 			cellId,
 			functionType,
 		});
@@ -223,7 +232,7 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 		color: Color,
 		canAddMultiple: boolean
 	) {
-		logFunc(shouldDebug, FILE_NAME, "handleAddTag", {
+		logFunc("handleAddTag", {
 			cellId,
 			columnId,
 			rowId,
@@ -250,7 +259,7 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 		tagId: string,
 		canAddMultiple: boolean
 	) {
-		logFunc(shouldDebug, FILE_NAME, "handleAddCellToTag", {
+		logFunc("handleAddCellToTag", {
 			cellId,
 			rowId,
 			tagId,
@@ -266,7 +275,7 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 		rowId: string,
 		tagId: string
 	) {
-		logFunc(shouldDebug, FILE_NAME, "handleRemoveCellFromTag", {
+		logFunc("handleRemoveCellFromTag", {
 			cellId,
 			rowId,
 			tagId,
@@ -277,7 +286,7 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 	}
 
 	function handleColumnToggle(columnId: string) {
-		logFunc(shouldDebug, FILE_NAME, "handleColumnToggle", {
+		logFunc("handleColumnToggle", {
 			columnId,
 		});
 		setTableState((prevState) =>
@@ -286,14 +295,14 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 	}
 
 	function handleTagDeleteClick(tagId: string) {
-		logFunc(shouldDebug, FILE_NAME, "handleTagDeleteClick", {
+		logFunc("handleTagDeleteClick", {
 			tagId,
 		});
 		setTableState((prevState) => deleteTag(prevState, tagId));
 	}
 
 	function handleHeaderDeleteClick(columnId: string) {
-		logFunc(shouldDebug, FILE_NAME, "handleHeaderDeleteClick", {
+		logFunc("handleHeaderDeleteClick", {
 			columnId,
 		});
 
@@ -301,7 +310,7 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 	}
 
 	function handleRowDeleteClick(rowId: string) {
-		logFunc(shouldDebug, FILE_NAME, "handleRowDeleteClick", {
+		logFunc("handleRowDeleteClick", {
 			rowId,
 		});
 		setTableState((prevState) => deleteRow(prevState, { id: rowId }));
@@ -311,7 +320,7 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 		columnId: string,
 		currencyType: CurrencyType
 	) {
-		logFunc(shouldDebug, FILE_NAME, "handleCurrencyChange", {
+		logFunc("handleCurrencyChange", {
 			columnId,
 			currencyType,
 		});
@@ -322,7 +331,7 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 	}
 
 	function handleDateFormatChange(columnId: string, dateFormat: DateFormat) {
-		logFunc(shouldDebug, FILE_NAME, "handleDateFormatChange", {
+		logFunc("handleDateFormatChange", {
 			columnId,
 			dateFormat,
 		});
@@ -333,7 +342,7 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 	}
 
 	function handleSortRemoveClick(columnId: string) {
-		logFunc(shouldDebug, FILE_NAME, "handleSortRemoveClick", {
+		logFunc("handleSortRemoveClick", {
 			columnId,
 		});
 		setTableState((prevState) =>
@@ -343,7 +352,7 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 	}
 
 	function handleHeaderWidthChange(columnId: string, width: string) {
-		logFunc(shouldDebug, FILE_NAME, "handleHeaderWidthChange", {
+		logFunc("handleHeaderWidthChange", {
 			columnId,
 			width,
 		});
@@ -353,7 +362,7 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 	}
 
 	function handleTagChangeColor(tagId: string, color: Color) {
-		logFunc(shouldDebug, FILE_NAME, "handleTagChangeColor", {
+		logFunc("handleTagChangeColor", {
 			tagId,
 			color,
 		});
@@ -361,7 +370,7 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 	}
 
 	function handleWrapContentToggle(columnId: string, value: boolean) {
-		logFunc(shouldDebug, FILE_NAME, "handleWrapContentToggle", {
+		logFunc("handleWrapContentToggle", {
 			columnId,
 			value,
 		});
@@ -379,7 +388,10 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 		bodyCells,
 		footerCells,
 		tags,
+		filterRules,
 	} = tableState.model;
+
+	let filteredBodyRows = filterBodyRows(tableState);
 	const columnBodyCells = bodyCells.map((cell) => {
 		const column = columns.find((column) => column.id === cell.columnId);
 		if (!column) throw new ColumnIdError(cell.columnId);
@@ -389,7 +401,7 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 		};
 	});
 
-	const filteredBodyRows = bodyRows.filter((row) => {
+	filteredBodyRows = filteredBodyRows.filter((row) => {
 		const filteredCells = columnBodyCells.filter(
 			(cell) => cell.rowId === row.id
 		);
@@ -453,9 +465,18 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 		<div id={tableId} className="NLT__app">
 			<OptionBar
 				headerCells={headerCells}
+				tags={tags}
 				columns={columns}
+				filterRules={filterRules}
 				onColumnToggle={handleColumnToggle}
 				onSortRemoveClick={handleSortRemoveClick}
+				onRuleAddClick={handleRuleAddClick}
+				onRuleDeleteClick={handleRuleDeleteClick}
+				onRuleFilterTypeChange={handleRuleFilterTypeChange}
+				onRuleColumnChange={handleRuleColumnChange}
+				onRuleTextChange={handleRuleTextChange}
+				onRuleToggle={handleRuleToggle}
+				onRuleTagsChange={handleRuleTagsChange}
 			/>
 			<Table
 				headerRows={headerRows.map((row) => {
