@@ -4,10 +4,11 @@ import { MenuLevel } from "src/shared/menu/types";
 import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
 import FilterMenu from "./filter-menu";
 import { ColumnFilter } from "../types";
-import { FilterRule } from "src/data/types";
+import { FilterRule, Tag } from "src/data/types";
 
 interface Props {
 	columns: ColumnFilter[];
+	tags: Tag[];
 	filterRules: FilterRule[];
 	onDeleteClick: (id: string) => void;
 	onToggle: (id: string) => void;
@@ -20,6 +21,7 @@ interface Props {
 export default function Filter({
 	columns,
 	filterRules,
+	tags,
 	onAddClick,
 	onColumnChange,
 	onDeleteClick,
@@ -66,6 +68,7 @@ export default function Filter({
 				left={left}
 				isOpen={isMenuOpen}
 				columns={columns}
+				tags={tags}
 				onTextChange={onTextChange}
 				onColumnChange={onColumnChange}
 				onFilterTypeChange={onFilterTypeChange}

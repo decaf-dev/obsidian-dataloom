@@ -6,6 +6,7 @@ import {
 	HeaderCell,
 	FilterRule,
 	CellType,
+	Tag,
 } from "src/data/types";
 
 import Stack from "../../shared/stack";
@@ -44,6 +45,7 @@ interface Props {
 	headerCells: HeaderCell[];
 	columns: Column[];
 	filterRules: FilterRule[];
+	tags: Tag[];
 	onSortRemoveClick: (columnId: string) => void;
 	onColumnToggle: (columnId: string) => void;
 	onRuleToggle: (ruleId: string) => void;
@@ -57,6 +59,7 @@ export default function OptionBar({
 	headerCells,
 	filterRules,
 	columns,
+	tags,
 	onSortRemoveClick,
 	onColumnToggle,
 	onRuleToggle,
@@ -136,6 +139,7 @@ export default function OptionBar({
 						<SearchBar />
 						<Filter
 							columns={filterableColumns}
+							tags={tags}
 							filterRules={filterRules}
 							onAddClick={onRuleAddClick}
 							onToggle={onRuleToggle}

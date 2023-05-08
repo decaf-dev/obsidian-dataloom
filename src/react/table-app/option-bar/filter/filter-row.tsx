@@ -1,17 +1,18 @@
 import Stack from "src/react/shared/stack";
-import FilterRowDropdown from "./filter-type-dropdown";
+import FilterRowDropdown from "./filter-type-select";
 import Icon from "src/react/shared/icon";
 import { IconType } from "src/react/shared/icon/types";
 import { Button } from "src/react/shared/button";
 import Switch from "src/react/shared/switch";
 import { css } from "@emotion/react";
-import { CellType, FilterType } from "src/data/types";
-import FilterColumnDropdown from "./filter-column-dropdown";
+import { CellType, FilterType, Tag } from "src/data/types";
+import FilterColumnDropdown from "./filter-column-select";
 import { ColumnFilter } from "../types";
 import {
 	CHECKBOX_MARKDOWN_CHECKED,
 	CHECKBOX_MARKDOWN_UNCHECKED,
 } from "src/shared/table-state/constants";
+import FilterTextInput from "./filter-text-input";
 
 interface Props {
 	id: string;
@@ -19,6 +20,7 @@ interface Props {
 	isEnabled: boolean;
 	columnId: string;
 	cellType: CellType;
+	columnTags: Tag[];
 	filterType: FilterType;
 	text: string;
 	onToggle: (id: string) => void;
@@ -34,6 +36,7 @@ export default function FilterRow({
 	isEnabled,
 	columnId,
 	filterType,
+	columnTags,
 	cellType,
 	text,
 	onToggle,
@@ -63,28 +66,16 @@ export default function FilterRow({
 				value={filterType}
 				onChange={onFilterTypeChange}
 			/>
-			{cellType !== CellType.CHECKBOX && (
-				<input
-					value={text}
-					type="text"
-					css={css`
-						width: 150px;
-					`}
-					onChange={(e) => onTextChange(id, e.target.value)}
-				/>
-			)}
-			{cellType == CellType.CHECKBOX && (
-				<select
-					value={text}
-					onChange={(e) => onTextChange(id, e.target.value)}
-				>
-					<option value="">Select an option</option>
-					<option value={CHECKBOX_MARKDOWN_CHECKED}>Checked</option>
-					<option value={CHECKBOX_MARKDOWN_UNCHECKED}>
-						Unchecked
-					</option>
-				</select>
-			)}
+			{filterType !== FilterType.IS_EMPTY &&
+				filterType !== FilterType.IS_NOT_EMPTY && (
+					<FilterTextInput
+						id={id}
+						columnTags={columnTags}
+						cellType={cellType}
+						value={text}
+						onChange={onTextChange}
+					/>
+				)}
 			<Button
 				icon={<Icon type={IconType.DELETE} />}
 				ariaLabel="Delete filter rule"

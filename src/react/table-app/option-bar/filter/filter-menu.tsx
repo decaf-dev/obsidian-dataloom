@@ -6,7 +6,7 @@ import Icon from "src/react/shared/icon";
 import { IconType } from "src/react/shared/icon/types";
 import { Button } from "src/react/shared/button";
 import FilterRow from "./filter-row";
-import { FilterRule, FilterType } from "src/data/types";
+import { FilterRule, FilterType, Tag } from "src/data/types";
 import { ColumnIdError } from "src/shared/table-state/error";
 
 interface Props {
@@ -16,6 +16,7 @@ interface Props {
 	isOpen: boolean;
 	columns: ColumnFilter[];
 	filterRules: FilterRule[];
+	tags: Tag[];
 	onAddClick: (columnId: string) => void;
 	onToggle: (id: string) => void;
 	onColumnChange: (id: string, columnId: string) => void;
@@ -31,6 +32,7 @@ export default function FilterMenu({
 	isOpen,
 	columns,
 	filterRules,
+	tags,
 	onAddClick,
 	onToggle,
 	onColumnChange,
@@ -51,12 +53,16 @@ export default function FilterMenu({
 							);
 							if (!column) throw new ColumnIdError(columnId);
 							const { cellType } = column;
+							const columnTags = tags.filter(
+								(tag) => tag.columnId === columnId
+							);
 							return (
 								<FilterRow
 									key={id}
 									id={id}
 									columns={columns}
 									text={text}
+									columnTags={columnTags}
 									cellType={cellType}
 									filterType={type}
 									columnId={columnId}
