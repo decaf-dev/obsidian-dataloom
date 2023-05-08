@@ -3,13 +3,30 @@ import { useMenu } from "src/shared/menu/hooks";
 import { MenuLevel } from "src/shared/menu/types";
 import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
 import FilterMenu from "./filter-menu";
-import { ToggleColumn } from "../types";
+import { ColumnData } from "../types";
+import { FilterRule } from "src/data/types";
 
 interface Props {
-	columns: ToggleColumn[];
+	columns: ColumnData[];
+	filterRules: FilterRule[];
+	onDeleteClick: (id: string) => void;
+	onToggle: (id: string) => void;
+	onColumnChange: (id: string, columnId: string) => void;
+	onFilterTypeChange: (id: string, value: string) => void;
+	onValueChange: (id: string, value: string) => void;
+	onAddClick: () => void;
 }
 
-export default function Filter({ columns }: Props) {
+export default function Filter({
+	columns,
+	filterRules,
+	onAddClick,
+	onColumnChange,
+	onDeleteClick,
+	onFilterTypeChange,
+	onToggle,
+	onValueChange,
+}: Props) {
 	const {
 		menu,
 		menuPosition,
@@ -49,6 +66,13 @@ export default function Filter({ columns }: Props) {
 				left={left}
 				isOpen={isMenuOpen}
 				columns={columns}
+				onValueChange={onValueChange}
+				onColumnChange={onColumnChange}
+				onFilterTypeChange={onFilterTypeChange}
+				onDeleteClick={onDeleteClick}
+				onAddClick={onAddClick}
+				onToggle={onToggle}
+				filterRules={filterRules}
 			/>
 		</>
 	);
