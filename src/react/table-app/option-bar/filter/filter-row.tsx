@@ -4,14 +4,10 @@ import Icon from "src/react/shared/icon";
 import { IconType } from "src/react/shared/icon/types";
 import { Button } from "src/react/shared/button";
 import Switch from "src/react/shared/switch";
-import { css } from "@emotion/react";
 import { CellType, FilterType, Tag } from "src/data/types";
 import FilterColumnDropdown from "./filter-column-select";
 import { ColumnFilter } from "../types";
-import {
-	CHECKBOX_MARKDOWN_CHECKED,
-	CHECKBOX_MARKDOWN_UNCHECKED,
-} from "src/shared/table-state/constants";
+import Wrap from "src/react/shared/wrap";
 import FilterTextInput from "./filter-text-input";
 
 interface Props {
@@ -51,13 +47,6 @@ export default function FilterRow({
 }: Props) {
 	return (
 		<Stack>
-			<Switch
-				isChecked={isEnabled}
-				ariaLabel={
-					isEnabled ? "Disable filter rule" : "Enable filter rule"
-				}
-				onToggle={() => onToggle(id)}
-			/>
 			<FilterColumnDropdown
 				id={id}
 				columns={columns}
@@ -86,6 +75,13 @@ export default function FilterRow({
 				icon={<Icon type={IconType.DELETE} />}
 				ariaLabel="Delete filter rule"
 				onClick={() => onDeleteClick(id)}
+			/>
+			<Switch
+				isChecked={isEnabled}
+				ariaLabel={
+					isEnabled ? "Disable filter rule" : "Enable filter rule"
+				}
+				onToggle={() => onToggle(id)}
 			/>
 		</Stack>
 	);
