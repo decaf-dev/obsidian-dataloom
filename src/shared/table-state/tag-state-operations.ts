@@ -1,10 +1,10 @@
 import { Color } from "../types";
+import { rowUpdateLastEditedTime } from "./row-state-operations";
 import { TagIdError } from "./table-error";
-import { updateLastEditedTime } from "./row-state-operations";
 import { TableState } from "./types";
 import { createTag } from "src/data/table-state-factory";
 
-export const addNewTag = (
+export const tagAddNew = (
 	prevState: TableState,
 	cellId: string,
 	columnId: string,
@@ -32,12 +32,12 @@ export const addNewTag = (
 		model: {
 			...prevState.model,
 			tags: tagsCopy,
-			bodyRows: updateLastEditedTime(bodyRows, rowId),
+			bodyRows: rowUpdateLastEditedTime(bodyRows, rowId),
 		},
 	};
 };
 
-export const removeCellFromTag = (
+export const tagRemoveCell = (
 	prevState: TableState,
 	cellId: string,
 	rowId: string,
@@ -58,12 +58,12 @@ export const removeCellFromTag = (
 		model: {
 			...prevState.model,
 			tags: tagsCopy,
-			bodyRows: updateLastEditedTime(bodyRows, rowId),
+			bodyRows: rowUpdateLastEditedTime(bodyRows, rowId),
 		},
 	};
 };
 
-export const addCellToTag = (
+export const tagAddCell = (
 	prevState: TableState,
 	cellId: string,
 	rowId: string,
@@ -93,12 +93,12 @@ export const addCellToTag = (
 		model: {
 			...prevState.model,
 			tags: tagsCopy,
-			bodyRows: updateLastEditedTime(bodyRows, rowId),
+			bodyRows: rowUpdateLastEditedTime(bodyRows, rowId),
 		},
 	};
 };
 
-export const updateTagColor = (
+export const tagUpdateColor = (
 	prevState: TableState,
 	tagId: string,
 	newColor: Color
@@ -116,7 +116,7 @@ export const updateTagColor = (
 	};
 };
 
-export const deleteTag = (prevState: TableState, tagId: string): TableState => {
+export const tagDelete = (prevState: TableState, tagId: string): TableState => {
 	const { tags } = prevState.model;
 	return {
 		...prevState,

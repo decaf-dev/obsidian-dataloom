@@ -1,8 +1,8 @@
 import { TableState } from "src/shared/table-state/types";
 import { MARKDOWN_LIST_ITEM_REGEX } from "./constants";
 import { ImportType } from "./types";
-import { addRow } from "src/shared/table-state/row-state-operations";
 import { CellNotFoundError } from "src/shared/table-state/table-error";
+import { rowAdd } from "src/shared/table-state/row-state-operations";
 
 export const getDisplayNameForImportType = (type: ImportType) => {
 	switch (type) {
@@ -31,7 +31,7 @@ export const importMarkdownListItems = (
 	let stateCopy = structuredClone(state);
 
 	//For each list item add a new row
-	for (let i = 0; i < listItems.length; i++) stateCopy = addRow(stateCopy);
+	for (let i = 0; i < listItems.length; i++) stateCopy = rowAdd(stateCopy);
 
 	const { bodyRows, bodyCells } = stateCopy.model;
 

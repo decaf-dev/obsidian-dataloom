@@ -1,39 +1,31 @@
 import React from "react";
 
+import { WorkspaceLeaf } from "obsidian";
+
 import Table from "./table";
 import RowOptions from "./row-options";
 import OptionBar from "./option-bar";
-
-import { FunctionType } from "../../shared/table-state/types";
-import { TableState } from "../../shared/table-state/types";
-import { useAppDispatch, useAppSelector } from "../../redux/global/hooks";
-
-import {
-	addCellToTag,
-	addNewTag,
-	deleteTag,
-	removeCellFromTag,
-	updateTagColor,
-} from "../../shared/table-state/tag-state-operations";
-import { sortRows } from "../../shared/table-state/sort-state-operations";
-import { useDidMountEffect, useUUID } from "../../shared/hooks";
-import { CellNotFoundError } from "../../shared/table-state/table-error";
-import HeaderCell from "./header-cell";
-import { Color } from "../../shared/types";
-import { useTableState } from "../../shared/table-state/table-state-context";
 import FunctionCell from "./function-cell";
 import BodyCell from "./body-cell";
 import NewRowButton from "./new-row-button";
 import NewColumnButton from "./new-column-button";
+import HeaderCell from "./header-cell";
 
-import "./styles.css";
-import { WorkspaceLeaf } from "obsidian";
+import { TableState } from "../../shared/table-state/types";
+import { useAppSelector } from "../../redux/global/hooks";
+import { sortRows } from "../../shared/table-state/sort-state-operations";
+import { useDidMountEffect, useUUID } from "../../shared/hooks";
+import { CellNotFoundError } from "../../shared/table-state/table-error";
+import { useTableState } from "../../shared/table-state/table-state-context";
 import { useLogger } from "src/shared/logger";
 import { useFilterRules } from "src/shared/table-state/use-filter-rules";
 import { filterBodyRowsBySearch } from "src/shared/table-state/filter-by-search";
 import { useColumn } from "src/shared/table-state/use-column";
 import { useRow } from "src/shared/table-state/use-row";
 import { useCell } from "src/shared/table-state/use-cell";
+import { useTag } from "src/shared/table-state/use-tag";
+
+import "./styles.css";
 
 interface Props {
 	viewLeaf: WorkspaceLeaf;
@@ -44,7 +36,6 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 	const { searchText, sortTime } = useAppSelector((state) => state.global);
 	const { tableId, tableState, setTableState } = useTableState();
 
-	const logFunc = useLogger();
 	const {
 		handleRuleAddClick,
 		handleRuleColumnChange,
@@ -81,6 +72,14 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 		handleHeaderCellContentChange,
 	} = useCell(setTableState);
 
+	const {
+		handleAddCellToTag,
+		handleAddTag,
+		handleRemoveCellFromTag,
+		handleTagChangeColor,
+		handleTagDeleteClick,
+	} = useTag(setTableState);
+
 	const lastColumnId = useUUID();
 
 	//Once we have mounted, whenever the table state is updated
@@ -94,82 +93,6 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 			setTableState((prevState) => sortRows(prevState));
 		}
 	}, [sortTime]);
-
-	function handleAddTag(
-		cellId: string,
-		columnId: string,
-		rowId: string,
-		markdown: string,
-		color: Color,
-		canAddMultiple: boolean
-	) {
-		logFunc("handleAddTag", {
-			cellId,
-			columnId,
-			rowId,
-			markdown,
-			color,
-			canAddMultiple,
-		});
-		setTableState((prevState) =>
-			addNewTag(
-				prevState,
-				cellId,
-				columnId,
-				rowId,
-				markdown,
-				color,
-				canAddMultiple
-			)
-		);
-	}
-
-	function handleAddCellToTag(
-		cellId: string,
-		rowId: string,
-		tagId: string,
-		canAddMultiple: boolean
-	) {
-		logFunc("handleAddCellToTag", {
-			cellId,
-			rowId,
-			tagId,
-			canAddMultiple,
-		});
-		setTableState((prevState) =>
-			addCellToTag(prevState, cellId, rowId, tagId, canAddMultiple)
-		);
-	}
-
-	function handleRemoveCellFromTag(
-		cellId: string,
-		rowId: string,
-		tagId: string
-	) {
-		logFunc("handleRemoveCellFromTag", {
-			cellId,
-			rowId,
-			tagId,
-		});
-		setTableState((prevState) =>
-			removeCellFromTag(prevState, cellId, rowId, tagId)
-		);
-	}
-
-	function handleTagDeleteClick(tagId: string) {
-		logFunc("handleTagDeleteClick", {
-			tagId,
-		});
-		setTableState((prevState) => deleteTag(prevState, tagId));
-	}
-
-	function handleTagChangeColor(tagId: string, color: Color) {
-		logFunc("handleTagChangeColor", {
-			tagId,
-			color,
-		});
-		setTableState((prevState) => updateTagColor(prevState, tagId, color));
-	}
 
 	const {
 		headerRows,
