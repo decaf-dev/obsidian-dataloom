@@ -7,7 +7,7 @@ export const addRow = (prevState: TableState): TableState => {
 	const cellsCopy = structuredClone(bodyCells);
 
 	columns.forEach((column) => {
-		const newCell = createBodyCell(column.id, newRow.id);
+		const newCell = createBodyCell(column.id, newRow.id, column.type);
 		cellsCopy.push(newCell);
 	});
 

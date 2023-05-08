@@ -20,6 +20,7 @@ import {
 } from "./types";
 
 import { v4 as uuidv4 } from "uuid";
+import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/table-state/constants";
 
 export const createColumn = (): Column => {
 	return {
@@ -69,13 +70,18 @@ export const createHeaderCell = (
 	};
 };
 
-export const createBodyCell = (columnId: string, rowId: string): BodyCell => {
+export const createBodyCell = (
+	columnId: string,
+	rowId: string,
+	cellType?: CellType
+): BodyCell => {
 	return {
 		id: uuidv4(),
 		columnId,
 		rowId,
 		dateTime: null,
-		markdown: "",
+		markdown:
+			cellType === CellType.CHECKBOX ? CHECKBOX_MARKDOWN_UNCHECKED : "",
 	};
 };
 
