@@ -165,6 +165,14 @@ export const getDisplayNameForCurrencyType = (type: CurrencyType) => {
 			return "Colombian Peso";
 		case CurrencyType.EUROPE:
 			return "Euro";
+		case CurrencyType.SWEDEN:
+			return "Swedish Krona";
+		case CurrencyType.DENMARK:
+			return "Danish Krone";
+		case CurrencyType.NORWAY:
+			return "Norwegian Krone";
+		case CurrencyType.ICELAND:
+			return "Icelandic Króna";
 		case CurrencyType.BRAZIL:
 			return "Real";
 		case CurrencyType.POUND:
