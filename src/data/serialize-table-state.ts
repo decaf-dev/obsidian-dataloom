@@ -1,6 +1,7 @@
 import { CURRENT_PLUGIN_VERSION } from "src/data/constants";
 import {
 	BaseTableState,
+	CellType,
 	CurrencyType,
 	DateFormat,
 	SortDir,
@@ -9,12 +10,13 @@ import {
 	TableState670,
 } from "./types";
 import { sortByCreationTime } from "../shared/table-state/sort";
-import { RowIdError } from "../shared/table-state/error";
+import { ColumnIdError, RowIdError } from "../shared/table-state/error";
 import {
 	createFooterCell,
 	createFooterRow,
 	createHeaderRow,
 } from "./table-state-factory";
+import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/table-state/constants";
 
 export const serializeTableState = (tableState: TableState): string => {
 	return JSON.stringify(tableState, null, 2);
@@ -176,9 +178,27 @@ export const deserializeTableState = (data: string): TableState => {
 	if (pluginVersion < 680) {
 		const tableState = currentState as TableState;
 		const { model } = tableState;
+		const { bodyCells, columns } = model;
+
+		//Add filter rules
 		model.filterRules = [];
+
+		//Make sure that all checkbox cells have a value
+		bodyCells.forEach((cell) => {
+			const column = columns.find(
+				(column) => column.id === cell.columnId
+			);
+			if (!column) throw new ColumnIdError(cell.columnId);
+
+			if (column.type === CellType.CHECKBOX) {
+				if (cell.markdown === "") {
+					cell.markdown = CHECKBOX_MARKDOWN_UNCHECKED;
+				}
+			}
+		});
 	}
 
-	parsedState.pluginVersion = CURRENT_PLUGIN_VERSION;
-	return parsedState as TableState;
+	const tableState = currentState as TableState;
+	tableState.pluginVersion = CURRENT_PLUGIN_VERSION;
+	return tableState;
 };
