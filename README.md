@@ -10,7 +10,7 @@ Notion-Like Tables is your premiere tool for creating and managing tabular data 
 
 <video src="https://user-images.githubusercontent.com/40307803/236613880-ddbf2fbe-bf01-49a4-b21c-e2a00ed92072.mov" controls></video>
 
-[Lastest release notes](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/6.7.0)
+[Lastest release notes](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/6.8.0)
 
 ## About
 
@@ -80,6 +80,7 @@ You can also right click on a folder and click `New Notion-Like table`
 -   Import modal - allows you to create cells from markdown data
 -   Keyboard focus navigation system - navigate focusable elements using the tab button, arrow keys, and enter button on your keyboard. If a cell is focused, press any key to have that character appended to the cell input
 -   Virtualization of table rows - allows the user to render thousands of rows with no miminal lag in the table
+-   Filter rules - add rules to filter rows that only match speific criteria for a column
 
 ## Settings
 

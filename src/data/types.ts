@@ -18,6 +18,17 @@ export enum CellType {
 	LAST_EDITED_TIME = "last-edited-time",
 }
 
+export enum FilterType {
+	IS = "is",
+	IS_NOT = "is-not",
+	CONTAINS = "contains",
+	DOES_NOT_CONTAIN = "does-not-contain",
+	STARTS_WITH = "starts-with",
+	ENDS_WITH = "ends-with",
+	IS_EMPTY = "is-empty",
+	IS_NOT_EMPTY = "is-not-empty",
+}
+
 export enum DateFormat {
 	MM_DD_YYYY = "mm/dd/yyyy",
 	DD_MM_YYYY = "dd/mm/yyyy",
@@ -96,6 +107,15 @@ export interface Row633 {
 	lastEditedTime: number;
 }
 
+export interface FilterRule {
+	id: string;
+	columnId: string;
+	type: FilterType;
+	text: string;
+	tagIds: string[];
+	isEnabled: boolean;
+}
+
 interface Row {
 	id: string;
 }
@@ -162,12 +182,28 @@ export interface TableModel {
 	bodyCells: BodyCell[];
 	footerCells: FooterCell[];
 	tags: Tag[];
+	filterRules: FilterRule[];
+}
+
+export interface TableModel670 {
+	columns: Column[];
+	headerRows: HeaderRow[];
+	bodyRows: BodyRow[];
+	footerRows: FooterRow[];
+	headerCells: HeaderCell[];
+	bodyCells: BodyCell[];
+	footerCells: FooterCell[];
+	tags: Tag[];
 }
 export interface BaseTableState {
 	pluginVersion: number;
 }
 export interface TableState extends BaseTableState {
 	model: TableModel;
+}
+
+export interface TableState670 extends BaseTableState {
+	model: TableModel670;
 }
 
 export interface TableState633 extends BaseTableState {

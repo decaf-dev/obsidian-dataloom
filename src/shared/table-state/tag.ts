@@ -58,8 +58,8 @@ export const removeCellFromTag = (
 		model: {
 			...prevState.model,
 			tags: tagsCopy,
+			bodyRows: updateLastEditedTime(bodyRows, rowId),
 		},
-		bodyRows: updateLastEditedTime(bodyRows, rowId),
 	};
 };
 
