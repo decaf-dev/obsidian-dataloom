@@ -8,6 +8,10 @@ import { css } from "@emotion/react";
 import { CellType, FilterType } from "src/data/types";
 import FilterColumnDropdown from "./filter-column-dropdown";
 import { ColumnFilter } from "../types";
+import {
+	CHECKBOX_MARKDOWN_CHECKED,
+	CHECKBOX_MARKDOWN_UNCHECKED,
+} from "src/shared/table-state/constants";
 
 interface Props {
 	id: string;
@@ -59,14 +63,28 @@ export default function FilterRow({
 				value={filterType}
 				onChange={onFilterTypeChange}
 			/>
-			<input
-				value={text}
-				type="text"
-				css={css`
-					width: 150px;
-				`}
-				onChange={(e) => onTextChange(id, e.target.value)}
-			/>
+			{cellType !== CellType.CHECKBOX && (
+				<input
+					value={text}
+					type="text"
+					css={css`
+						width: 150px;
+					`}
+					onChange={(e) => onTextChange(id, e.target.value)}
+				/>
+			)}
+			{cellType == CellType.CHECKBOX && (
+				<select
+					value={text}
+					onChange={(e) => onTextChange(id, e.target.value)}
+				>
+					<option value="">Select an option</option>
+					<option value={CHECKBOX_MARKDOWN_CHECKED}>Checked</option>
+					<option value={CHECKBOX_MARKDOWN_UNCHECKED}>
+						Unchecked
+					</option>
+				</select>
+			)}
 			<Button
 				icon={<Icon type={IconType.DELETE} />}
 				ariaLabel="Delete filter rule"
