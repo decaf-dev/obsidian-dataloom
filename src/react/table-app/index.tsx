@@ -84,6 +84,7 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 		handleRuleFilterTypeChange,
 		handleRuleTextChange,
 		handleRuleToggle,
+		handleRuleTagsChange,
 		filterBodyRows,
 	} = useFilterRules(setTableState);
 
@@ -475,6 +476,7 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 				onRuleColumnChange={handleRuleColumnChange}
 				onRuleTextChange={handleRuleTextChange}
 				onRuleToggle={handleRuleToggle}
+				onRuleTagsChange={handleRuleTagsChange}
 			/>
 			<Table
 				headerRows={headerRows.map((row) => {

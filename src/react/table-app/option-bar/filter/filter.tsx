@@ -16,6 +16,7 @@ interface Props {
 	onFilterTypeChange: (id: string, value: string) => void;
 	onTextChange: (id: string, value: string) => void;
 	onAddClick: (columnId: string) => void;
+	onTagsChange: (id: string, value: string[]) => void;
 }
 
 export default function Filter({
@@ -28,6 +29,7 @@ export default function Filter({
 	onFilterTypeChange,
 	onToggle,
 	onTextChange,
+	onTagsChange,
 }: Props) {
 	const {
 		menu,
@@ -69,13 +71,14 @@ export default function Filter({
 				isOpen={isMenuOpen}
 				columns={columns}
 				tags={tags}
+				filterRules={filterRules}
 				onTextChange={onTextChange}
 				onColumnChange={onColumnChange}
 				onFilterTypeChange={onFilterTypeChange}
 				onDeleteClick={onDeleteClick}
 				onAddClick={onAddClick}
 				onToggle={onToggle}
-				filterRules={filterRules}
+				onTagsChange={onTagsChange}
 			/>
 		</>
 	);

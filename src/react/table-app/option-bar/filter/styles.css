@@ -1,0 +1,12 @@
+.react-select {
+    max-width: 250px !important;
+}
+
+.react-select input:focus {
+    border: 0 !important;
+    box-shadow: none !important;
+}
+.react-select input:focus-visible {
+    border: 0 !important;
+    box-shadow: none !important;
+}
