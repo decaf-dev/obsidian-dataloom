@@ -1,12 +1,14 @@
+import { css } from "@emotion/react";
 import "./styles.css";
 
 interface Props {
 	variant?: "semibold" | "faint" | "muted" | "normal";
 	size?: "xs" | "sm" | "md" | "lg" | "xl";
 	value: string;
+	maxWidth?: string;
 }
 
-export default function Text({ value, variant, size = "sm" }: Props) {
+export default function Text({ value, variant, size = "sm", maxWidth }: Props) {
 	let className = "NLT__p";
 
 	if (variant == "faint") className += " NLT__text-faint";
@@ -25,7 +27,16 @@ export default function Text({ value, variant, size = "sm" }: Props) {
 	}
 
 	return (
-		<p className={className} style={{ fontSize }}>
+		<p
+			className={className}
+			css={css`
+				font-size: ${fontSize};
+				max-width: ${maxWidth === undefined ? "unset" : maxWidth};
+				white-space: ${maxWidth === undefined ? "unset" : "nowrap"};
+				overflow: ${maxWidth === undefined ? "unset" : "hidden"};
+				text-overflow: ${maxWidth === undefined ? "unset" : "ellipsis"};
+			`}
+		>
 			{value}
 		</p>
 	);
