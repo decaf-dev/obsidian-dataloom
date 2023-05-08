@@ -1,7 +1,7 @@
 import React from "react";
 import { TableState } from "src/shared/table-state/types";
 import { useLogger } from "../logger";
-import { useAppContext } from "./app-context";
+import { useApp } from "./app-context";
 import { WorkspaceLeaf } from "obsidian";
 import { EVENT_ROW_ADD, EVENT_ROW_DELETE } from "../events";
 import { rowAdd, rowDelete } from "./row-state-operations";
@@ -13,7 +13,7 @@ export const useRow = (
 	onChange: React.Dispatch<React.SetStateAction<TableState>>
 ) => {
 	const logFunc = useLogger();
-	const app = useAppContext();
+	const app = useApp();
 	const dispatch = useAppDispatch();
 
 	React.useEffect(() => {

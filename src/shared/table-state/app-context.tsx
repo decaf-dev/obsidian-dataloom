@@ -3,11 +3,11 @@ import React from "react";
 
 const AppContext = React.createContext<App | null>(null);
 
-export const useAppContext = () => {
+export const useApp = () => {
 	const value = React.useContext(AppContext);
 	if (value === null) {
 		throw new Error(
-			"useAppContext() called without a <AppProvider /> in the tree."
+			"useApp() called without a <AppProvider /> in the tree."
 		);
 	}
 

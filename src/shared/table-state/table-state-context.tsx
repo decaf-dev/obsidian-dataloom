@@ -17,7 +17,7 @@ export const useTableState = () => {
 	const value = useContext(TableStateContext);
 	if (value === null) {
 		throw new Error(
-			"useTableState() called without a <ThemeProvider /> in the tree."
+			"useTableState() called without a <TableStateProvider /> in the tree."
 		);
 	}
 
