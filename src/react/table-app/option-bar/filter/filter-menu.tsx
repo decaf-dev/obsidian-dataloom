@@ -44,7 +44,7 @@ export default function FilterMenu({
 	onTagsChange,
 }: Props) {
 	return (
-		<Menu isOpen={isOpen} id={id} top={top} left={left}>
+		<Menu isOpen={isOpen} id={id} top={top} left={left} width={575}>
 			<div className="NLT__filter-menu">
 				<Padding p="md">
 					<Stack spacing="md" isVertical>
@@ -86,16 +86,16 @@ export default function FilterMenu({
 								/>
 							);
 						})}
-					</Stack>
-					<Stack>
-						<Button
-							icon={<Icon type={IconType.ADD} />}
-							ariaLabel="Add filter rule"
-							onClick={() => onAddClick(columns[0].id)}
-						/>
-						{filterRules.length == 0 && (
-							<Text value="No rules to display" />
-						)}
+						<Stack>
+							<Button
+								icon={<Icon type={IconType.ADD} />}
+								ariaLabel="Add filter rule"
+								onClick={() => onAddClick(columns[0].id)}
+							/>
+							{filterRules.length == 0 && (
+								<Text value="No rules to display" />
+							)}
+						</Stack>
 					</Stack>
 				</Padding>
 			</div>

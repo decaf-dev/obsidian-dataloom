@@ -1,3 +1,4 @@
+import { css } from "@emotion/react";
 import { ColumnFilter } from "../types";
 
 interface Props {
@@ -14,7 +15,16 @@ export default function FilterColumnDropdown({
 	onChange,
 }: Props) {
 	return (
-		<select value={value} onChange={(e) => onChange(id, e.target.value)}>
+		<select
+			css={css`
+				max-width: 175px;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			`}
+			value={value}
+			onChange={(e) => onChange(id, e.target.value)}
+		>
 			{columns.map((column) => (
 				<option key={column.id} value={column.id}>
 					{column.name}
