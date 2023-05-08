@@ -7,6 +7,7 @@ import {
 	createHeaderCell,
 	createTag,
 } from "src/data/table-state-factory";
+import { CHECKBOX_MARKDOWN_UNCHECKED } from "./constants";
 
 export const addColumn = (prevState: TableState): TableState => {
 	const {
@@ -62,27 +63,25 @@ export const sortOnColumn = (
 	columnId: string,
 	sortDir: SortDir
 ): TableState => {
-	const { columns } = prevState.model;
-
-	let columnsCopy = structuredClone(columns);
-	columnsCopy = columnsCopy.map((column) => {
-		if (column.id === columnId) {
-			return {
-				...column,
-				sortDir,
-			};
-		}
-		return {
-			...column,
-			sortDir: SortDir.NONE,
-		};
-	});
+	const { model } = prevState;
+	const { columns } = model;
 
 	return {
 		...prevState,
 		model: {
-			...prevState.model,
-			columns: columnsCopy,
+			...model,
+			columns: columns.map((column) => {
+				if (column.id === columnId) {
+					return {
+						...column,
+						sortDir,
+					};
+				}
+				return {
+					...column,
+					sortDir: SortDir.NONE,
+				};
+			}),
 		},
 	};
 };
@@ -203,6 +202,19 @@ export const changeColumnType = (
 			});
 		});
 	}
+
+	let bodyCellsCopy = structuredClone(bodyCells);
+	if (newType === CellType.CHECKBOX) {
+		const cells = bodyCellsCopy.filter(
+			(cell) => cell.columnId === columnId
+		);
+		cells.forEach((cell) => {
+			if (cell.markdown === "") {
+				const index = bodyCellsCopy.indexOf(cell);
+				bodyCellsCopy[index].markdown = CHECKBOX_MARKDOWN_UNCHECKED;
+			}
+		});
+	}
 	return {
 		...prevState,
 		model: {
@@ -216,6 +228,7 @@ export const changeColumnType = (
 				}
 				return column;
 			}),
+			bodyCells: bodyCellsCopy,
 			tags: tagsCopy,
 		},
 	};
