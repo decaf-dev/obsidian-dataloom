@@ -9,7 +9,7 @@ import {
 } from "src/data/table-state-factory";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "./constants";
 
-export const addColumn = (prevState: TableState): TableState => {
+export const columnAdd = (prevState: TableState): TableState => {
 	const {
 		headerCells,
 		bodyCells,
@@ -58,7 +58,7 @@ export const addColumn = (prevState: TableState): TableState => {
 	};
 };
 
-export const sortOnColumn = (
+export const columnSort = (
 	prevState: TableState,
 	columnId: string,
 	sortDir: SortDir
@@ -86,7 +86,7 @@ export const sortOnColumn = (
 	};
 };
 
-export const updateColumn = (
+export const columnUpdate = (
 	prevState: TableState,
 	columnId: string,
 	key: keyof Column,
@@ -116,7 +116,7 @@ export const updateColumn = (
 	};
 };
 
-export const deleteColumn = (
+export const columnDelete = (
 	prevState: TableState,
 	options: { id?: string; last?: boolean }
 ): TableState => {
@@ -126,7 +126,7 @@ export const deleteColumn = (
 	if (last) {
 		const { columns } = prevState.model;
 		const lastColumn = columns[columns.length - 1];
-		return deleteColumn(prevState, { id: lastColumn.id });
+		return columnDelete(prevState, { id: lastColumn.id });
 	}
 
 	const { bodyCells, headerCells, footerCells, columns, tags, filterRules } =
@@ -145,7 +145,7 @@ export const deleteColumn = (
 	};
 };
 
-export const changeColumnType = (
+export const columnChangeType = (
 	prevState: TableState,
 	columnId: string,
 	newType: CellType
