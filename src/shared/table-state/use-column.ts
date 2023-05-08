@@ -18,7 +18,7 @@ import { WorkspaceLeaf } from "obsidian";
 import { updateSortTime } from "src/redux/global/global-slice";
 import { EVENT_COLUMN_ADD, EVENT_COLUMN_DELETE } from "../events";
 import { useAppDispatch } from "src/redux/global/hooks";
-import { useAppContext } from "./app-context";
+import { useApp } from "./app-context";
 
 export const useColumn = (
 	viewLeaf: WorkspaceLeaf,
@@ -26,7 +26,7 @@ export const useColumn = (
 ) => {
 	const dispatch = useAppDispatch();
 	const logFunc = useLogger();
-	const app = useAppContext();
+	const app = useApp();
 
 	React.useEffect(() => {
 		//@ts-expect-error missing overload
