@@ -21,6 +21,7 @@ interface Props {
 	columnId: string;
 	cellType: CellType;
 	columnTags: Tag[];
+	tagIds: string[];
 	filterType: FilterType;
 	text: string;
 	onToggle: (id: string) => void;
@@ -28,6 +29,7 @@ interface Props {
 	onFilterTypeChange: (id: string, value: FilterType) => void;
 	onTextChange: (id: string, value: string) => void;
 	onDeleteClick: (id: string) => void;
+	onTagsChange: (id: string, value: string[]) => void;
 }
 
 export default function FilterRow({
@@ -37,6 +39,7 @@ export default function FilterRow({
 	columnId,
 	filterType,
 	columnTags,
+	tagIds,
 	cellType,
 	text,
 	onToggle,
@@ -44,6 +47,7 @@ export default function FilterRow({
 	onFilterTypeChange,
 	onTextChange,
 	onDeleteClick,
+	onTagsChange,
 }: Props) {
 	return (
 		<Stack>
@@ -70,10 +74,12 @@ export default function FilterRow({
 				filterType !== FilterType.IS_NOT_EMPTY && (
 					<FilterTextInput
 						id={id}
+						tagIds={tagIds}
 						columnTags={columnTags}
 						cellType={cellType}
-						value={text}
-						onChange={onTextChange}
+						text={text}
+						onTextChange={onTextChange}
+						onTagsChange={onTagsChange}
 					/>
 				)}
 			<Button

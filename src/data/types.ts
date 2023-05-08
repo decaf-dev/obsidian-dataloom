@@ -112,6 +112,7 @@ export interface FilterRule {
 	columnId: string;
 	type: FilterType;
 	text: string;
+	tagIds: string[];
 	isEnabled: boolean;
 }
 

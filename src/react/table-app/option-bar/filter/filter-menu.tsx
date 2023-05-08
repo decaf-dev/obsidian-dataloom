@@ -23,6 +23,7 @@ interface Props {
 	onFilterTypeChange: (id: string, value: FilterType) => void;
 	onTextChange: (id: string, value: string) => void;
 	onDeleteClick: (id: string) => void;
+	onTagsChange: (id: string, value: string[]) => void;
 }
 
 export default function FilterMenu({
@@ -39,6 +40,7 @@ export default function FilterMenu({
 	onFilterTypeChange,
 	onTextChange,
 	onDeleteClick,
+	onTagsChange,
 }: Props) {
 	return (
 		<Menu isOpen={isOpen} id={id} top={top} left={left}>
@@ -46,8 +48,14 @@ export default function FilterMenu({
 				<Padding p="md">
 					<Stack spacing="md" isVertical>
 						{filterRules.map((rule) => {
-							const { id, text, columnId, isEnabled, type } =
-								rule;
+							const {
+								id,
+								text,
+								columnId,
+								isEnabled,
+								type,
+								tagIds,
+							} = rule;
 							const column = columns.find(
 								(column) => column.id == columnId
 							);
@@ -64,6 +72,7 @@ export default function FilterMenu({
 									text={text}
 									columnTags={columnTags}
 									cellType={cellType}
+									tagIds={tagIds}
 									filterType={type}
 									columnId={columnId}
 									isEnabled={isEnabled}
@@ -72,6 +81,7 @@ export default function FilterMenu({
 									onFilterTypeChange={onFilterTypeChange}
 									onToggle={onToggle}
 									onDeleteClick={onDeleteClick}
+									onTagsChange={onTagsChange}
 								/>
 							);
 						})}

@@ -24,11 +24,10 @@ export const filterBodyRows = (prevState: TableState): BodyRow[] => {
 		const column = columnMap.get(cell.columnId);
 		if (!column) throw new ColumnIdError(cell.columnId);
 
-		const cellTags = tags.filter((tag) => tag.cellIds.includes(cell.id));
 		const doesMatch = doesCellMatchRules(
 			cell,
 			column.type,
-			cellTags,
+			tags,
 			filterRules
 		);
 		cellMatches.set(cell.id, doesMatch);
@@ -44,38 +43,45 @@ export const filterBodyRows = (prevState: TableState): BodyRow[] => {
 const doesCellMatchRules = (
 	cell: BodyCell,
 	cellType: CellType,
-	cellTags: Tag[],
+	tags: Tag[],
 	rules: FilterRule[]
 ) => {
-	return rules.every((rule) =>
-		doesCellMatchRule(cell, cellType, cellTags, rule)
-	);
+	return rules.every((rule) => doesCellMatchRule(cell, cellType, tags, rule));
 };
 
 const doesCellMatchRule = (
 	cell: BodyCell,
 	cellType: CellType,
-	cellTags: Tag[],
+	tags: Tag[],
 	rule: FilterRule
 ) => {
 	if (rule.columnId !== cell.columnId) return true;
 	if (rule.isEnabled) {
 		if (cellType === CellType.TEXT) {
-			return doesMatchRule(cell.markdown.trim(), rule);
+			return doesTextMatch(cell.markdown, rule.text, rule.type);
 		} else if (
 			cellType === CellType.TAG ||
 			cellType === CellType.MULTI_TAG
 		) {
-			if (cellTags.length === 0) return doesMatchRule("", rule);
-			return cellTags.some((tag) => {
-				const doesMatch = doesMatchRule(tag.markdown.trim(), rule);
-				console.log(doesMatch);
-				console.log(tag.markdown);
-				console.log(rule);
-				return doesMatch;
-			});
+			const cellTags = tags
+				.filter((tag) => tag.cellIds.includes(cell.id))
+				.map((tag) => tag.markdown);
+
+			//The tags that we are filtering by
+			const ruleTags = tags.filter((tag) => rule.tagIds.includes(tag.id));
+
+			//As long as we're not filtering by not empty, we want to render empty rows
+			if (cellTags.length === 0) {
+				return doesTextMatch("", "", rule.type);
+			}
+
+			//The cell matches if it has at least 1 tag that satifies every rule tag
+			//cellTags contains each rule tag
+			return ruleTags.every((ruleTag) =>
+				doesTagMatch(cellTags, ruleTag.markdown, rule.type)
+			);
 		} else if (cellType === CellType.CHECKBOX) {
-			return doesMatchRule(cell.markdown.trim(), rule);
+			return doesTextMatch(cell.markdown, rule.text, rule.type);
 		} else {
 			throw new Error("Cell type not yet supported");
 		}
@@ -83,17 +89,44 @@ const doesCellMatchRule = (
 	return true;
 };
 
-const doesMatchRule = (markdown: string, rule: FilterRule) => {
-	let compareMarkdown = markdown.toLowerCase();
-	let compareRuleText = rule.text.toLowerCase().trim();
+const doesTagMatch = (
+	markdown: string[],
+	ruleText: string,
+	filterType: FilterType
+) => {
+	switch (filterType) {
+		case FilterType.IS:
+			return markdown[0] === ruleText;
+		case FilterType.IS_NOT:
+			return markdown[0] !== ruleText;
+		case FilterType.CONTAINS:
+			return markdown.some((tag) => ruleText.includes(tag));
+		case FilterType.DOES_NOT_CONTAIN:
+			return markdown.every((tag) => !ruleText.includes(tag));
+		case FilterType.IS_EMPTY:
+			return markdown.length === 0;
+		case FilterType.IS_NOT_EMPTY:
+			return markdown.length !== 0;
+	}
+};
+
+const doesTextMatch = (
+	markdown: string,
+	ruleText: string,
+	filterType: FilterType
+) => {
+	const compareMarkdown = markdown.toLowerCase().trim();
+	const compareRuleText = ruleText.toLowerCase().trim();
 
 	//If the rule text is empty, there is nothing to compare
-	if (rule.type != FilterType.IS_NOT_EMPTY) {
-		if (markdown === "") return true;
+	if (
+		filterType != FilterType.IS_NOT_EMPTY &&
+		filterType != FilterType.IS_EMPTY
+	) {
 		if (compareRuleText == "") return true;
 	}
 
-	switch (rule.type) {
+	switch (filterType) {
 		case FilterType.IS:
 			return compareMarkdown === compareRuleText;
 		case FilterType.IS_NOT:

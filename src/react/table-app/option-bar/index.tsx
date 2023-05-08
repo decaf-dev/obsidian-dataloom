@@ -54,6 +54,7 @@ interface Props {
 	onRuleTextChange: (ruleId: string, value: string) => void;
 	onRuleDeleteClick: (ruleId: string) => void;
 	onRuleAddClick: (columnId: string) => void;
+	onRuleTagsChange: (ruleId: string, value: string[]) => void;
 }
 export default function OptionBar({
 	headerCells,
@@ -68,6 +69,7 @@ export default function OptionBar({
 	onRuleTextChange,
 	onRuleDeleteClick,
 	onRuleAddClick,
+	onRuleTagsChange,
 }: Props) {
 	const bubbles = useMemo(() => {
 		return headerCells
@@ -147,6 +149,7 @@ export default function OptionBar({
 							onFilterTypeChange={onRuleFilterTypeChange}
 							onTextChange={onRuleTextChange}
 							onDeleteClick={onRuleDeleteClick}
+							onTagsChange={onRuleTagsChange}
 						/>
 						<ToggleColumn
 							columns={togglableColumns}

@@ -85,7 +85,8 @@ export const createFilterRule = (columnId: string): FilterRule => {
 		columnId,
 		type: FilterType.IS,
 		text: "",
-		isEnabled: false,
+		tagIds: [],
+		isEnabled: true,
 	};
 };
 

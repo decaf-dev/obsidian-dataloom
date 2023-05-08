@@ -10,14 +10,14 @@ export const useFilterRules = (
 	const logFunc = useLogger();
 
 	function handleRuleColumnChange(id: string, columnId: string) {
-		logFunc("handleRuleDeleteClick", { id, columnId });
+		logFunc("handleRuleColumnChange", { id, columnId });
 		onChange((prevState) =>
 			updateRule(prevState, id, "columnId", columnId)
 		);
 	}
 
 	function handleRuleFilterTypeChange(id: string, type: FilterType) {
-		logFunc("handleRuleDeleteClick", {
+		logFunc("handleRuleFilterTypeChange", {
 			id,
 			type,
 		});
@@ -25,17 +25,17 @@ export const useFilterRules = (
 	}
 
 	function handleRuleTextChange(id: string, text: string) {
-		logFunc("handleRuleDeleteClick", { id, text });
+		logFunc("handleRuleTextChange", { id, text });
 		onChange((prevState) => updateRule(prevState, id, "text", text));
 	}
 
 	function handleRuleToggle(id: string) {
-		logFunc("handleRuleDeleteClick", { id });
+		logFunc("handleRuleToggle", { id });
 		onChange((prevState) => updateRule(prevState, id, "isEnabled"));
 	}
 
 	function handleRuleAddClick(columnId: string) {
-		logFunc("handleRuleDeleteClick", { columnId });
+		logFunc("handleRuleAddClick", { columnId });
 		onChange((prevState) => addRule(prevState, columnId));
 	}
 
@@ -46,6 +46,14 @@ export const useFilterRules = (
 		onChange((prevState) => deleteRule(prevState, id));
 	}
 
+	function handleRuleTagsChange(id: string, tagIds: string[]) {
+		logFunc("handleRuleTagsChange", {
+			id,
+			tagIds,
+		});
+		onChange((prevState) => updateRule(prevState, id, "tagIds", tagIds));
+	}
+
 	return {
 		handleRuleAddClick,
 		handleRuleColumnChange,
@@ -53,6 +61,7 @@ export const useFilterRules = (
 		handleRuleFilterTypeChange,
 		handleRuleTextChange,
 		handleRuleToggle,
+		handleRuleTagsChange,
 		filterBodyRows,
 	};
 };
