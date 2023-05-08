@@ -129,7 +129,7 @@ export const deleteColumn = (
 		return deleteColumn(prevState, { id: lastColumn.id });
 	}
 
-	const { bodyCells, headerCells, footerCells, columns, tags } =
+	const { bodyCells, headerCells, footerCells, columns, tags, filterRules } =
 		prevState.model;
 	return {
 		...prevState,
@@ -140,6 +140,7 @@ export const deleteColumn = (
 			bodyCells: bodyCells.filter((cell) => cell.columnId !== id),
 			footerCells: footerCells.filter((cell) => cell.columnId !== id),
 			tags: tags.filter((tag) => tag.columnId !== id),
+			filterRules: filterRules.filter((rule) => rule.columnId !== id),
 		},
 	};
 };
