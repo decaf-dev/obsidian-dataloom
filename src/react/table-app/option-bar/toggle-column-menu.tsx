@@ -31,7 +31,10 @@ export default function ToggleColumnMenu({
 						{columns.map((column) => {
 							return (
 								<Flex key={column.id} justify="space-between">
-									<Text value={column.name} />
+									<Text
+										value={column.name}
+										maxWidth="100px"
+									/>
 									<Switch
 										isChecked={column.isVisible}
 										onToggle={() => onToggle(column.id)}
