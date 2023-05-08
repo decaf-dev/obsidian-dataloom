@@ -16,15 +16,8 @@ import {
 	updateTagColor,
 } from "../../shared/table-state/tag-state-operations";
 import { sortRows } from "../../shared/table-state/sort-state-operations";
-
-import {
-	updateHeaderCell,
-	updateBodyCell,
-	updateFooterCell,
-} from "../../shared/table-state/cell-state-operations";
 import { useDidMountEffect, useUUID } from "../../shared/hooks";
 import { CellNotFoundError } from "../../shared/table-state/table-error";
-import { updateSortTime } from "../../redux/global/global-slice";
 import HeaderCell from "./header-cell";
 import { Color } from "../../shared/types";
 import { useTableState } from "../../shared/table-state/table-state-context";
@@ -40,6 +33,7 @@ import { useFilterRules } from "src/shared/table-state/use-filter-rules";
 import { filterBodyRowsBySearch } from "src/shared/table-state/filter-by-search";
 import { useColumn } from "src/shared/table-state/use-column";
 import { useRow } from "src/shared/table-state/use-row";
+import { useCell } from "src/shared/table-state/use-cell";
 
 interface Props {
 	viewLeaf: WorkspaceLeaf;
@@ -50,7 +44,6 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 	const { searchText, sortTime } = useAppSelector((state) => state.global);
 	const { tableId, tableState, setTableState } = useTableState();
 
-	const dispatch = useAppDispatch();
 	const logFunc = useLogger();
 	const {
 		handleRuleAddClick,
@@ -81,6 +74,13 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 		setTableState
 	);
 
+	const {
+		handleBodyCellContentChange,
+		handleCellDateTimeChange,
+		handleFunctionTypeChange,
+		handleHeaderCellContentChange,
+	} = useCell(setTableState);
+
 	const lastColumnId = useUUID();
 
 	//Once we have mounted, whenever the table state is updated
@@ -94,63 +94,6 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 			setTableState((prevState) => sortRows(prevState));
 		}
 	}, [sortTime]);
-
-	function handleHeaderCellContentChange(cellId: string, value: string) {
-		logFunc("handleCellContentChange", {
-			cellId,
-			markdown: value,
-		});
-
-		setTableState((prevState) =>
-			updateHeaderCell(prevState, cellId, "markdown", value)
-		);
-	}
-
-	function handleBodyCellContentChange(
-		cellId: string,
-		rowId: string,
-		value: string
-	) {
-		logFunc("handleCellContentChange", {
-			cellId,
-			rowId,
-			markdown: value,
-		});
-
-		setTableState((prevState) =>
-			updateBodyCell(prevState, cellId, rowId, "markdown", value)
-		);
-	}
-
-	function handleCellDateTimeChange(
-		cellId: string,
-		rowId: string,
-		value: number | null
-	) {
-		logFunc("handleCellContentChange", {
-			cellId,
-			rowId,
-			dateTime: value,
-		});
-
-		setTableState((prevState) =>
-			updateBodyCell(prevState, cellId, rowId, "dateTime", value)
-		);
-	}
-
-	function handleFunctionTypeChange(
-		cellId: string,
-		functionType: FunctionType
-	) {
-		logFunc("handleFunctionTypeChange", {
-			cellId,
-			functionType,
-		});
-
-		setTableState((prevState) =>
-			updateFooterCell(prevState, cellId, "functionType", functionType)
-		);
-	}
 
 	function handleAddTag(
 		cellId: string,
