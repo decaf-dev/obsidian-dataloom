@@ -174,16 +174,22 @@ export const deserializeTableState = (data: string): TableState => {
 		currentState = updatedState;
 	}
 
-	//Feat: filter
+	//Feat: filter rules
 	if (pluginVersion < 680) {
 		const tableState = currentState as TableState;
 		const { model } = tableState;
 		const { bodyCells, columns } = model;
 
-		//Add filter rules
+		//Fix: clean up any bodyRows that were saved outside of the model
+		const invalidState = currentState as Record<string, unknown>;
+		if (invalidState.hasOwnProperty("bodyRows")) {
+			delete invalidState.bodyRows;
+		}
+
+		//Feat: add filter rules
 		model.filterRules = [];
 
-		//Make sure that all checkbox cells have a value
+		//Fix: set all checkbox cells to unchecked
 		bodyCells.forEach((cell) => {
 			const column = columns.find(
 				(column) => column.id === cell.columnId
