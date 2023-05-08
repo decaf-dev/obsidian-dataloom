@@ -10,7 +10,7 @@ import {
 } from "src/data/types";
 import { ColumnIdError } from "../table-state/error";
 
-export const filterBodyRows = (prevState: TableState): BodyRow[] => {
+export const filterBodyRowsByRules = (prevState: TableState): BodyRow[] => {
 	const { columns, bodyCells, bodyRows, filterRules, tags } = prevState.model;
 	//Map column id to column instance
 	const columnMap = new Map<string, Column>();
