@@ -8,6 +8,7 @@ import { Button } from "src/react/shared/button";
 import FilterRow from "./filter-row";
 import { FilterRule, FilterType, Tag } from "src/data/types";
 import { ColumnIdError } from "src/shared/table-state/error";
+import Text from "src/react/shared/text";
 
 interface Props {
 	id: string;
@@ -86,11 +87,16 @@ export default function FilterMenu({
 							);
 						})}
 					</Stack>
-					<Button
-						icon={<Icon type={IconType.ADD} />}
-						ariaLabel="Add filter rule"
-						onClick={() => onAddClick(columns[0].id)}
-					/>
+					<Stack>
+						<Button
+							icon={<Icon type={IconType.ADD} />}
+							ariaLabel="Add filter rule"
+							onClick={() => onAddClick(columns[0].id)}
+						/>
+						{filterRules.length == 0 && (
+							<Text value="No rules to display" />
+						)}
+					</Stack>
 				</Padding>
 			</div>
 		</Menu>
