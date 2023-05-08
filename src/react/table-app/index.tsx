@@ -464,6 +464,7 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 		<div id={tableId} className="NLT__app">
 			<OptionBar
 				headerCells={headerCells}
+				tags={tags}
 				columns={columns}
 				filterRules={filterRules}
 				onColumnToggle={handleColumnToggle}
