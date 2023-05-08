@@ -1,4 +1,4 @@
-import { Color } from "../shared/types";
+import { Color } from "../types";
 
 export enum SortDir {
 	ASC = "asc",
@@ -58,6 +58,9 @@ export enum CurrencyType {
 	ARGENTINA = "ARS",
 }
 
+//TOOD
+//Simplify the structure of the table
+//TODO change
 export enum GeneralFunction {
 	NONE = "none",
 	COUNT_ALL = "count_all",

@@ -6,9 +6,9 @@ import {
 	DateFormat,
 	GeneralFunction,
 	Tag,
-} from "src/data/types";
+} from "src/shared/table-state/types";
 import { hashString, round2Digits } from "./utils";
-import { RowIdError } from "src/shared/table-state/error";
+import { RowIdError } from "src/shared/table-state/table-error";
 import { unixTimeToDateTimeString } from "src/shared/date/date-conversion";
 
 export const getGeneralFunctionContent = (

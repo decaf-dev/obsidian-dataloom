@@ -1,12 +1,6 @@
 import { isCheckboxChecked } from "../validators";
-import { CellNotFoundError } from "./error";
-import {
-	TableState,
-	BodyCell,
-	BodyRow,
-	CellType,
-	SortDir,
-} from "../../data/types";
+import { CellNotFoundError } from "./table-error";
+import { TableState, BodyCell, BodyRow, CellType, SortDir } from "./types";
 
 const sortByDir = (
 	columnId: string,

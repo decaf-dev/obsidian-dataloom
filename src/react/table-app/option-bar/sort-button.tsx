@@ -1,5 +1,5 @@
 import { Button } from "src/react/shared/button";
-import { SortDir } from "src/data/types";
+import { SortDir } from "src/shared/table-state/types";
 import Stack from "src/react/shared/stack";
 import Icon from "src/react/shared/icon";
 import { IconType } from "src/react/shared/icon/types";

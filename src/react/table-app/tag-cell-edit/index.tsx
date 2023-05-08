@@ -3,7 +3,7 @@ import React from "react";
 import MenuHeader from "./menu-header";
 import MenuBody from "./menu-body";
 
-import { Tag as TagType } from "src/data/types";
+import { Tag as TagType } from "src/shared/table-state/types";
 import { Color } from "src/shared/types";
 import { MenuPosition } from "src/shared/menu/types";
 import { randomColor } from "src/shared/colors";

@@ -1,5 +1,5 @@
 import { Dispatch, createContext, useContext, useState } from "react";
-import { TableState } from "../../data/types";
+import { TableState } from "./types";
 import { useUUID } from "../hooks";
 
 interface Props {

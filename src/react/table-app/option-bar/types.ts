@@ -1,4 +1,4 @@
-import { CellType } from "src/data/types";
+import { CellType } from "src/shared/table-state/types";
 
 export type ColumnFilter = {
 	id: string;

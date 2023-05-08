@@ -1,4 +1,4 @@
-import { DateFormat } from "../../data/types";
+import { DateFormat } from "../table-state/types";
 import {
 	isValidDateFormat,
 	dateStringToUnixTime,
