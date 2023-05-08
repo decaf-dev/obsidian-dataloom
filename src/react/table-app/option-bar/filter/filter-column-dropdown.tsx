@@ -1,8 +1,8 @@
-import { ColumnData } from "../types";
+import { ColumnFilter } from "../types";
 
 interface Props {
 	id: string;
-	columns: ColumnData[];
+	columns: ColumnFilter[];
 	value: string;
 	onChange: (id: string, columnId: string) => void;
 }

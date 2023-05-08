@@ -1,6 +1,12 @@
 import { useMemo } from "react";
 
-import { SortDir, Column, HeaderCell, FilterRule } from "src/data/types";
+import {
+	SortDir,
+	Column,
+	HeaderCell,
+	FilterRule,
+	CellType,
+} from "src/data/types";
 
 import Stack from "../../shared/stack";
 
@@ -45,7 +51,7 @@ interface Props {
 	onRuleFilterTypeChange: (ruleId: string, value: string) => void;
 	onRuleTextChange: (ruleId: string, value: string) => void;
 	onRuleDeleteClick: (ruleId: string) => void;
-	onRuleAddClick: () => void;
+	onRuleAddClick: (columnId: string) => void;
 }
 export default function OptionBar({
 	headerCells,
@@ -80,17 +86,42 @@ export default function OptionBar({
 			});
 	}, [headerCells, columns]);
 
-	const columnsWithMarkdown = useMemo(() => {
+	const togglableColumns = useMemo(() => {
 		return columns.map((column) => {
 			const cell = headerCells.find((cell) => cell.columnId == column.id);
 			if (!cell) throw new CellNotFoundError();
 			return {
 				id: column.id,
 				name: cell.markdown,
-				cellType: column.type,
 				isVisible: column.isVisible,
 			};
 		});
+	}, [headerCells, columns]);
+
+	const filterableColumns = useMemo(() => {
+		return columns
+			.filter((column) => {
+				const { type } = column;
+				if (
+					type === CellType.TEXT ||
+					type == CellType.CHECKBOX ||
+					type == CellType.TAG ||
+					type == CellType.MULTI_TAG
+				)
+					return true;
+				return false;
+			})
+			.map((column) => {
+				const cell = headerCells.find(
+					(cell) => cell.columnId == column.id
+				);
+				if (!cell) throw new CellNotFoundError();
+				return {
+					id: column.id,
+					name: cell.markdown,
+					cellType: column.type,
+				};
+			});
 	}, [headerCells, columns]);
 
 	return (
@@ -104,17 +135,17 @@ export default function OptionBar({
 					<Stack spacing="sm" justify="flex-end">
 						<SearchBar />
 						<Filter
-							columns={columnsWithMarkdown}
+							columns={filterableColumns}
 							filterRules={filterRules}
 							onAddClick={onRuleAddClick}
 							onToggle={onRuleToggle}
 							onColumnChange={onRuleColumnChange}
 							onFilterTypeChange={onRuleFilterTypeChange}
-							onValueChange={onRuleTextChange}
+							onTextChange={onRuleTextChange}
 							onDeleteClick={onRuleDeleteClick}
 						/>
 						<ToggleColumn
-							columns={columnsWithMarkdown}
+							columns={togglableColumns}
 							onToggle={onColumnToggle}
 						/>
 					</Stack>

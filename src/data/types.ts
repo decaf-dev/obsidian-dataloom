@@ -111,7 +111,7 @@ export interface FilterRule {
 	id: string;
 	columnId: string;
 	type: FilterType;
-	value: string;
+	text: string;
 	isEnabled: boolean;
 }
 
@@ -181,12 +181,28 @@ export interface TableModel {
 	bodyCells: BodyCell[];
 	footerCells: FooterCell[];
 	tags: Tag[];
+	filterRules: FilterRule[];
+}
+
+export interface TableModel670 {
+	columns: Column[];
+	headerRows: HeaderRow[];
+	bodyRows: BodyRow[];
+	footerRows: FooterRow[];
+	headerCells: HeaderCell[];
+	bodyCells: BodyCell[];
+	footerCells: FooterCell[];
+	tags: Tag[];
 }
 export interface BaseTableState {
 	pluginVersion: number;
 }
 export interface TableState extends BaseTableState {
 	model: TableModel;
+}
+
+export interface TableState670 extends BaseTableState {
+	model: TableModel670;
 }
 
 export interface TableState633 extends BaseTableState {

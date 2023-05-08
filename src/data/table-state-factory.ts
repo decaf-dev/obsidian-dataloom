@@ -7,6 +7,8 @@ import {
 	Column,
 	CurrencyType,
 	DateFormat,
+	FilterRule,
+	FilterType,
 	FooterCell,
 	FooterRow,
 	GeneralFunction,
@@ -74,6 +76,16 @@ export const createBodyCell = (columnId: string, rowId: string): BodyCell => {
 		rowId,
 		dateTime: null,
 		markdown: "",
+	};
+};
+
+export const createFilterRule = (columnId: string): FilterRule => {
+	return {
+		id: uuidv4(),
+		columnId,
+		type: FilterType.IS,
+		text: "",
+		isEnabled: false,
 	};
 };
 
@@ -147,6 +159,7 @@ export const createTableState = (
 	}
 
 	const tags: Tag[] = [];
+	const filterRules: FilterRule[] = [];
 
 	return {
 		model: {
@@ -158,6 +171,7 @@ export const createTableState = (
 			bodyCells,
 			footerCells,
 			tags,
+			filterRules,
 		},
 		pluginVersion: CURRENT_PLUGIN_VERSION,
 	};

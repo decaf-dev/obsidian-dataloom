@@ -1,7 +1,7 @@
 import Menu from "src/react/shared/menu";
 import Padding from "src/react/shared/padding";
 import Stack from "src/react/shared/stack";
-import { ColumnData } from "../types";
+import { ColumnFilter } from "../types";
 import Icon from "src/react/shared/icon";
 import { IconType } from "src/react/shared/icon/types";
 import { Button } from "src/react/shared/button";
@@ -14,13 +14,13 @@ interface Props {
 	top: number;
 	left: number;
 	isOpen: boolean;
-	columns: ColumnData[];
+	columns: ColumnFilter[];
 	filterRules: FilterRule[];
-	onAddClick: () => void;
+	onAddClick: (columnId: string) => void;
 	onToggle: (id: string) => void;
 	onColumnChange: (id: string, columnId: string) => void;
 	onFilterTypeChange: (id: string, value: FilterType) => void;
-	onValueChange: (id: string, value: string) => void;
+	onTextChange: (id: string, value: string) => void;
 	onDeleteClick: (id: string) => void;
 }
 
@@ -35,7 +35,7 @@ export default function FilterMenu({
 	onToggle,
 	onColumnChange,
 	onFilterTypeChange,
-	onValueChange,
+	onTextChange,
 	onDeleteClick,
 }: Props) {
 	return (
@@ -44,7 +44,7 @@ export default function FilterMenu({
 				<Padding p="md">
 					<Stack spacing="md" isVertical>
 						{filterRules.map((rule) => {
-							const { id, value, columnId, isEnabled, type } =
+							const { id, text, columnId, isEnabled, type } =
 								rule;
 							const column = columns.find(
 								(column) => column.id == columnId
@@ -56,12 +56,12 @@ export default function FilterMenu({
 									key={id}
 									id={id}
 									columns={columns}
-									value={value}
+									text={text}
 									cellType={cellType}
 									filterType={type}
 									columnId={columnId}
 									isEnabled={isEnabled}
-									onValueChange={onValueChange}
+									onTextChange={onTextChange}
 									onColumnChange={onColumnChange}
 									onFilterTypeChange={onFilterTypeChange}
 									onToggle={onToggle}
@@ -73,7 +73,7 @@ export default function FilterMenu({
 					<Button
 						icon={<Icon type={IconType.ADD} />}
 						ariaLabel="Add filter rule"
-						onClick={() => onAddClick()}
+						onClick={() => onAddClick(columns[0].id)}
 					/>
 				</Padding>
 			</div>
