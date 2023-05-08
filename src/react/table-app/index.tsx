@@ -64,7 +64,7 @@ import {
 	DELETE_ROW_EVENT,
 } from "src/shared/events";
 import { useLogger } from "src/shared/logger";
-import { useFilterRules } from "src/shared/table-state/hooks";
+import { useFilterRules } from "src/shared/filter/hooks";
 
 interface Props {
 	viewLeaf: WorkspaceLeaf;
@@ -84,6 +84,7 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 		handleRuleFilterTypeChange,
 		handleRuleTextChange,
 		handleRuleToggle,
+		filterBodyRows,
 	} = useFilterRules(setTableState);
 
 	const lastColumnId = useUUID();
@@ -388,6 +389,8 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 		tags,
 		filterRules,
 	} = tableState.model;
+
+	let filteredBodyRows = filterBodyRows(tableState);
 	const columnBodyCells = bodyCells.map((cell) => {
 		const column = columns.find((column) => column.id === cell.columnId);
 		if (!column) throw new ColumnIdError(cell.columnId);
@@ -397,7 +400,7 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 		};
 	});
 
-	const filteredBodyRows = bodyRows.filter((row) => {
+	filteredBodyRows = filteredBodyRows.filter((row) => {
 		const filteredCells = columnBodyCells.filter(
 			(cell) => cell.rowId === row.id
 		);

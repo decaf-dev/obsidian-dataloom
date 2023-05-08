@@ -1,7 +1,8 @@
 import { SetStateAction } from "react";
 import { FilterType, TableState } from "src/data/types";
 import { useLogger } from "../logger";
-import { addRule, deleteRule, updateRule } from "./filter-rules";
+import { addRule, deleteRule, updateRule } from "./state-operations";
+import { filterBodyRows } from "./utils";
 
 export const useFilterRules = (
 	onChange: React.Dispatch<SetStateAction<TableState>>
@@ -52,5 +53,6 @@ export const useFilterRules = (
 		handleRuleFilterTypeChange,
 		handleRuleTextChange,
 		handleRuleToggle,
+		filterBodyRows,
 	};
 };
