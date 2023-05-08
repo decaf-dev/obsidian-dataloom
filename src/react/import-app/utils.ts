@@ -1,8 +1,8 @@
-import { TableState } from "src/data/types";
+import { TableState } from "src/shared/table-state/types";
 import { MARKDOWN_LIST_ITEM_REGEX } from "./constants";
 import { ImportType } from "./types";
-import { addRow } from "src/shared/table-state/row";
-import { CellNotFoundError } from "src/shared/table-state/error";
+import { addRow } from "src/shared/table-state/row-state-operations";
+import { CellNotFoundError } from "src/shared/table-state/table-error";
 
 export const getDisplayNameForImportType = (type: ImportType) => {
 	switch (type) {

@@ -1,7 +1,7 @@
 import { Color } from "../types";
-import { TagIdError } from "./error";
-import { updateLastEditedTime } from "./row";
-import { TableState } from "../../data/types";
+import { TagIdError } from "./table-error";
+import { updateLastEditedTime } from "./row-state-operations";
+import { TableState } from "./types";
 import { createTag } from "src/data/table-state-factory";
 
 export const addNewTag = (

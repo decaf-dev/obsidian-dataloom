@@ -1,5 +1,5 @@
 import { createBodyCell, createBodyRow } from "src/data/table-state-factory";
-import { BodyRow, TableState } from "../../data/types";
+import { BodyRow, TableState } from "./types";
 
 export const addRow = (prevState: TableState): TableState => {
 	const { bodyRows, bodyCells, columns } = prevState.model;

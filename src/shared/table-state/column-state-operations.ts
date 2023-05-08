@@ -1,5 +1,5 @@
-import { ColumnIdError } from "./error";
-import { CellType, Column, TableState, SortDir } from "../../data/types";
+import { ColumnIdError } from "./table-error";
+import { CellType, Column, TableState, SortDir } from "./types";
 import {
 	createBodyCell,
 	createColumn,

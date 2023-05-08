@@ -4,7 +4,7 @@ import Icon from "src/react/shared/icon";
 import { IconType } from "src/react/shared/icon/types";
 import { Button } from "src/react/shared/button";
 import Switch from "src/react/shared/switch";
-import { CellType, FilterType, Tag } from "src/data/types";
+import { CellType, FilterType, Tag } from "src/shared/table-state/types";
 import FilterColumnDropdown from "./filter-column-select";
 import { ColumnFilter } from "../types";
 import Wrap from "src/react/shared/wrap";

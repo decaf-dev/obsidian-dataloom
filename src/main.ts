@@ -6,8 +6,11 @@ import { store } from "./redux/global/store";
 import { setDarkMode, setDebugMode } from "./redux/global/global-slice";
 import { NLTView, NOTION_LIKE_TABLES_VIEW } from "./obsidian/nlt-view";
 import { TABLE_EXTENSION } from "./data/constants";
-import { addColumn, deleteColumn } from "./shared/table-state/column";
-import { addRow, deleteRow } from "./shared/table-state/row";
+import {
+	addColumn,
+	deleteColumn,
+} from "./shared/table-state/column-state-operations";
+import { addRow, deleteRow } from "./shared/table-state/row-state-operations";
 import {
 	deserializeTableState,
 	serializeTableState,

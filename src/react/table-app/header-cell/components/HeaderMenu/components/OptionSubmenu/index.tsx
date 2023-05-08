@@ -2,17 +2,21 @@ import Submenu from "../Submenu";
 import { Button } from "src/react/shared/button";
 import Switch from "src/react/shared/switch";
 
-import { CellType, CurrencyType, DateFormat } from "src/data/types";
+import {
+	CellType,
+	CurrencyType,
+	DateFormat,
+} from "src/shared/table-state/types";
 import Stack from "src/react/shared/stack";
 import Padding from "src/react/shared/padding";
 import Text from "src/react/shared/text";
 import MenuItem from "src/react/shared/menu-item";
 import Flex from "src/react/shared/flex";
+import { SubmenuType } from "../../types";
 import {
 	getDisplayNameForCurrencyType,
 	getDisplayNameForDateFormat,
-} from "src/shared/table-state/utils";
-import { SubmenuType } from "../../types";
+} from "src/shared/table-state/display-name";
 
 interface Props {
 	canDeleteColumn: boolean;

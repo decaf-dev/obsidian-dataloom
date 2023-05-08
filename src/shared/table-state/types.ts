@@ -1,4 +1,4 @@
-import { Color } from "../shared/types";
+import { Color } from "../types";
 
 export enum SortDir {
 	ASC = "asc",

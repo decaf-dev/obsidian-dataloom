@@ -10,8 +10,8 @@ import {
 	DateFormat,
 	FunctionType,
 	SortDir,
-} from "../../data/types";
-import { TableState } from "../../data/types";
+} from "../../shared/table-state/types";
+import { TableState } from "../../shared/table-state/types";
 import { useAppDispatch, useAppSelector } from "../../redux/global/hooks";
 
 import {
@@ -20,27 +20,30 @@ import {
 	deleteTag,
 	removeCellFromTag,
 	updateTagColor,
-} from "../../shared/table-state/tag";
+} from "../../shared/table-state/tag-state-operations";
 import {
 	addColumn,
 	changeColumnType,
 	deleteColumn,
 	sortOnColumn,
 	updateColumn,
-} from "../../shared/table-state/column";
-import { sortRows } from "../../shared/table-state/sort";
+} from "../../shared/table-state/column-state-operations";
+import { sortRows } from "../../shared/table-state/sort-state-operations";
 
 import {
 	updateHeaderCell,
 	updateBodyCell,
 	updateFooterCell,
-} from "../../shared/table-state/cell";
-import { addRow, deleteRow } from "../../shared/table-state/row";
+} from "../../shared/table-state/cell-state-operations";
+import {
+	addRow,
+	deleteRow,
+} from "../../shared/table-state/row-state-operations";
 import { useDidMountEffect, useUUID } from "../../shared/hooks";
 import {
 	CellNotFoundError,
 	ColumnIdError,
-} from "../../shared/table-state/error";
+} from "../../shared/table-state/table-error";
 import { stringToCurrencyString } from "../../shared/conversion";
 import { updateSortTime } from "../../redux/global/global-slice";
 import HeaderCell from "./header-cell";
@@ -64,8 +67,8 @@ import {
 	DELETE_ROW_EVENT,
 } from "src/shared/events";
 import { useLogger } from "src/shared/logger";
-import { useFilterRules } from "src/shared/filter/use-filter-rules";
-import { filterBodyRowsBySearch } from "src/shared/filter/use-filter-search";
+import { useFilterRules } from "src/shared/table-state/use-filter-rules";
+import { filterBodyRowsBySearch } from "src/shared/table-state/filter-by-search";
 
 interface Props {
 	viewLeaf: WorkspaceLeaf;

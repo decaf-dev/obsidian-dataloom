@@ -1,5 +1,5 @@
-import { updateLastEditedTime } from "./row";
-import { BodyCell, FooterCell, HeaderCell, TableState } from "../../data/types";
+import { updateLastEditedTime } from "./row-state-operations";
+import { BodyCell, FooterCell, HeaderCell, TableState } from "./types";
 
 export const updateHeaderCell = (
 	prevState: TableState,

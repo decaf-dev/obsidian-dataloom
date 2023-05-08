@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { CellType, Tag } from "src/data/types";
+import { CellType, Tag } from "src/shared/table-state/types";
 import Select from "react-select";
 import {
 	CHECKBOX_MARKDOWN_CHECKED,
