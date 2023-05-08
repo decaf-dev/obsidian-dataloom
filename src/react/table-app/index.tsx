@@ -64,6 +64,7 @@ import {
 	DELETE_ROW_EVENT,
 } from "src/shared/events";
 import { useLogger } from "src/shared/logger";
+import { useFilterRules } from "src/shared/table-state/hooks";
 
 interface Props {
 	viewLeaf: WorkspaceLeaf;
@@ -74,9 +75,16 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 	const { searchText, sortTime } = useAppSelector((state) => state.global);
 	const { tableId, tableState, setTableState } = useTableState();
 
-	const { shouldDebug } = useAppSelector((state) => state.global);
 	const dispatch = useAppDispatch();
 	const logFunc = useLogger();
+	const {
+		handleRuleAddClick,
+		handleRuleColumnChange,
+		handleRuleDeleteClick,
+		handleRuleFilterTypeChange,
+		handleRuleTextChange,
+		handleRuleToggle,
+	} = useFilterRules(setTableState);
 
 	const lastColumnId = useUUID();
 
@@ -462,6 +470,7 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 				onRuleFilterTypeChange={handleRuleFilterTypeChange}
 				onRuleColumnChange={handleRuleColumnChange}
 				onRuleTextChange={handleRuleTextChange}
+				onRuleToggle={handleRuleToggle}
 			/>
 			<Table
 				headerRows={headerRows.map((row) => {

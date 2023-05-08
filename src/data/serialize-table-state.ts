@@ -6,6 +6,7 @@ import {
 	SortDir,
 	TableState,
 	TableState633,
+	TableState670,
 } from "./types";
 import { sortByCreationTime } from "../shared/table-state/sort";
 import { RowIdError } from "../shared/table-state/error";
@@ -21,9 +22,12 @@ export const serializeTableState = (tableState: TableState): string => {
 
 export const deserializeTableState = (data: string): TableState => {
 	const parsedState = JSON.parse(data);
+
 	const { pluginVersion } = parsedState as BaseTableState;
+	let currentState: unknown = parsedState;
+
 	if (pluginVersion <= 633) {
-		const tableState = parsedState as TableState633;
+		const tableState = currentState as TableState633;
 		const { columns, rows, cells } = tableState.model;
 
 		//Feat: Currency type
@@ -78,7 +82,7 @@ export const deserializeTableState = (data: string): TableState => {
 		const tableState = parsedState as TableState633;
 		const { columns, tags, rows, cells } = tableState.model;
 
-		const updatedState: TableState = {
+		const updatedState: TableState670 = {
 			...tableState,
 			model: {
 				columns: [],
@@ -164,10 +168,15 @@ export const deserializeTableState = (data: string): TableState => {
 				);
 			});
 		}
-
 		updatedState.model.tags = tags;
-		updatedState.pluginVersion = CURRENT_PLUGIN_VERSION;
-		return updatedState;
+		currentState = updatedState;
+	}
+
+	//Feat: filter
+	if (pluginVersion < 680) {
+		const tableState = currentState as TableState;
+		const { model } = tableState;
+		model.filterRules = [];
 	}
 
 	parsedState.pluginVersion = CURRENT_PLUGIN_VERSION;

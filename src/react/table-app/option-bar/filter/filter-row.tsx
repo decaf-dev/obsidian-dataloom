@@ -7,20 +7,20 @@ import Switch from "src/react/shared/switch";
 import { css } from "@emotion/react";
 import { CellType, FilterType } from "src/data/types";
 import FilterColumnDropdown from "./filter-column-dropdown";
-import { ColumnData } from "../types";
+import { ColumnFilter } from "../types";
 
 interface Props {
 	id: string;
-	columns: ColumnData[];
+	columns: ColumnFilter[];
 	isEnabled: boolean;
 	columnId: string;
 	cellType: CellType;
 	filterType: FilterType;
-	value: string;
+	text: string;
 	onToggle: (id: string) => void;
 	onColumnChange: (id: string, columnId: string) => void;
 	onFilterTypeChange: (id: string, value: FilterType) => void;
-	onValueChange: (id: string, value: string) => void;
+	onTextChange: (id: string, value: string) => void;
 	onDeleteClick: (id: string) => void;
 }
 
@@ -31,11 +31,11 @@ export default function FilterRow({
 	columnId,
 	filterType,
 	cellType,
-	value,
+	text,
 	onToggle,
 	onColumnChange,
 	onFilterTypeChange,
-	onValueChange,
+	onTextChange,
 	onDeleteClick,
 }: Props) {
 	return (
@@ -60,12 +60,12 @@ export default function FilterRow({
 				onChange={onFilterTypeChange}
 			/>
 			<input
-				value={value}
+				value={text}
 				type="text"
 				css={css`
 					width: 150px;
 				`}
-				onChange={(e) => onValueChange(id, e.target.value)}
+				onChange={(e) => onTextChange(id, e.target.value)}
 			/>
 			<Button
 				icon={<Icon type={IconType.DELETE} />}
