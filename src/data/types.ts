@@ -18,6 +18,17 @@ export enum CellType {
 	LAST_EDITED_TIME = "last-edited-time",
 }
 
+export enum FilterType {
+	IS = "is",
+	IS_NOT = "is-not",
+	CONTAINS = "contains",
+	DOES_NOT_CONTAIN = "does-not-contain",
+	STARTS_WITH = "starts-with",
+	ENDS_WITH = "ends-with",
+	IS_EMPTY = "is-empty",
+	IS_NOT_EMPTY = "is-not-empty",
+}
+
 export enum DateFormat {
 	MM_DD_YYYY = "mm/dd/yyyy",
 	DD_MM_YYYY = "dd/mm/yyyy",
@@ -94,6 +105,14 @@ export interface Row633 {
 	menuCellId: string;
 	creationTime: number;
 	lastEditedTime: number;
+}
+
+export interface FilterRule {
+	id: string;
+	columnId: string;
+	type: FilterType;
+	value: string;
+	isEnabled: boolean;
 }
 
 interface Row {

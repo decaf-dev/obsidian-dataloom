@@ -1,18 +1,18 @@
 import { useMemo } from "react";
 
-import { SortDir, Column, HeaderCell } from "src/data/types";
+import { SortDir, Column, HeaderCell, FilterRule } from "src/data/types";
 
-import { useAppSelector } from "src/redux/global/hooks";
 import Stack from "../../shared/stack";
 
 import { CellNotFoundError, ColumnIdError } from "src/shared/table-state/error";
 import SearchBar from "./search-bar";
 import SortBubble from "./sort-button";
 
-import "./styles.css";
 import Flex from "../../shared/flex";
 import ToggleColumn from "./toggle-column";
 import Filter from "./filter/filter";
+
+import "./styles.css";
 
 interface SortButtonListProps {
 	bubbles: { sortDir: SortDir; markdown: string; columnId: string }[];
@@ -37,14 +37,28 @@ const SortBubbleList = ({ bubbles, onRemoveClick }: SortButtonListProps) => {
 interface Props {
 	headerCells: HeaderCell[];
 	columns: Column[];
+	filterRules: FilterRule[];
 	onSortRemoveClick: (columnId: string) => void;
 	onColumnToggle: (columnId: string) => void;
+	onRuleToggle: (ruleId: string) => void;
+	onRuleColumnChange: (ruleId: string, columnId: string) => void;
+	onRuleFilterTypeChange: (ruleId: string, value: string) => void;
+	onRuleTextChange: (ruleId: string, value: string) => void;
+	onRuleDeleteClick: (ruleId: string) => void;
+	onRuleAddClick: () => void;
 }
 export default function OptionBar({
 	headerCells,
+	filterRules,
 	columns,
 	onSortRemoveClick,
 	onColumnToggle,
+	onRuleToggle,
+	onRuleColumnChange,
+	onRuleFilterTypeChange,
+	onRuleTextChange,
+	onRuleDeleteClick,
+	onRuleAddClick,
 }: Props) {
 	const bubbles = useMemo(() => {
 		return headerCells
@@ -73,6 +87,7 @@ export default function OptionBar({
 			return {
 				id: column.id,
 				name: cell.markdown,
+				cellType: column.type,
 				isVisible: column.isVisible,
 			};
 		});
@@ -88,7 +103,16 @@ export default function OptionBar({
 					/>
 					<Stack spacing="sm" justify="flex-end">
 						<SearchBar />
-						<Filter columns={columnsWithMarkdown} />
+						<Filter
+							columns={columnsWithMarkdown}
+							filterRules={filterRules}
+							onAddClick={onRuleAddClick}
+							onToggle={onRuleToggle}
+							onColumnChange={onRuleColumnChange}
+							onFilterTypeChange={onRuleFilterTypeChange}
+							onValueChange={onRuleTextChange}
+							onDeleteClick={onRuleDeleteClick}
+						/>
 						<ToggleColumn
 							columns={columnsWithMarkdown}
 							onToggle={onColumnToggle}
