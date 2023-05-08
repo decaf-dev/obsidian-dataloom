@@ -1,8 +1,8 @@
 import MenuItem from "src/react/shared/menu-item";
 import Submenu from "../Submenu";
-import { CellType } from "src/data/types";
-import { getDisplayNameForCellType } from "src/shared/table-state/utils";
+import { CellType } from "src/shared/table-state/types";
 import { getIconTypeFromCellType } from "src/react/shared/icon/utils";
+import { getDisplayNameForCellType } from "src/shared/table-state/display-name";
 interface Props {
 	title: string;
 	value: CellType;

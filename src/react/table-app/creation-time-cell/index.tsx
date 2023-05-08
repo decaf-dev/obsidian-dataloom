@@ -1,5 +1,5 @@
 import { useOverflowClassName } from "src/shared/spacing/hooks";
-import { DateFormat } from "src/data/types";
+import { DateFormat } from "src/shared/table-state/types";
 import { unixTimeToDateTimeString } from "src/shared/date/date-conversion";
 
 interface Props {

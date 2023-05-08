@@ -17,7 +17,7 @@ import {
 	SortDir,
 	TableState,
 	Tag,
-} from "./types";
+} from "../shared/table-state/types";
 
 import { v4 as uuidv4 } from "uuid";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/table-state/constants";

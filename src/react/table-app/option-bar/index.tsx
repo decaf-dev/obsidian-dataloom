@@ -7,11 +7,14 @@ import {
 	FilterRule,
 	CellType,
 	Tag,
-} from "src/data/types";
+} from "src/shared/table-state/types";
 
 import Stack from "../../shared/stack";
 
-import { CellNotFoundError, ColumnIdError } from "src/shared/table-state/error";
+import {
+	CellNotFoundError,
+	ColumnIdError,
+} from "src/shared/table-state/table-error";
 import SearchBar from "./search-bar";
 import SortBubble from "./sort-button";
 

@@ -34,7 +34,7 @@ import {
 	ViewColumnOutlined,
 } from "@mui/icons-material";
 import { IconType } from "./types";
-import { CellType } from "src/data/types";
+import { CellType } from "src/shared/table-state/types";
 
 export const findIcon = (
 	type: IconType,

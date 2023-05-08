@@ -1,7 +1,12 @@
 import { useEffect } from "react";
 
 import { numToPx, pxToNum } from "src/shared/conversion";
-import { CellType, CurrencyType, DateFormat, SortDir } from "src/data/types";
+import {
+	CellType,
+	CurrencyType,
+	DateFormat,
+	SortDir,
+} from "src/shared/table-state/types";
 import { useMenu } from "src/shared/menu/hooks";
 import { MenuLevel } from "src/shared/menu/types";
 import { MIN_COLUMN_WIDTH } from "src/shared/table-state/constants";
