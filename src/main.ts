@@ -205,7 +205,7 @@ export default class NLTPlugin extends Plugin {
 		this.addCommand({
 			id: "nlt-undo",
 			name: "Undo",
-			hotkeys: [{ modifiers: ["Mod"], key: "Z" }],
+			hotkeys: [{ modifiers: ["Mod"], key: "z" }],
 			checkCallback: (checking: boolean) => {
 				const view = this.app.workspace.getActiveViewOfType(NLTView);
 				if (view) {
@@ -221,7 +221,7 @@ export default class NLTPlugin extends Plugin {
 		this.addCommand({
 			id: "nlt-redo",
 			name: "Redo",
-			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Z" }],
+			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "z" }],
 			checkCallback: (checking: boolean) => {
 				const view = this.app.workspace.getActiveViewOfType(NLTView);
 				if (view) {

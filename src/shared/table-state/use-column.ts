@@ -31,12 +31,14 @@ export const useColumn = (
 	React.useEffect(() => {
 		function handleColumnAddEvent(leaf: WorkspaceLeaf) {
 			if (leaf === viewLeaf) {
+				logFunc("handleColumnAddEvent");
 				doCommand(new ColumnAddCommand());
 			}
 		}
 
 		function handleColumnDeleteEvent(leaf: WorkspaceLeaf) {
 			if (leaf === viewLeaf) {
+				logFunc("handleColumnDeleteEvent");
 				doCommand(new ColumnDeleteCommand({ last: true }));
 			}
 		}
@@ -50,7 +52,7 @@ export const useColumn = (
 			app.workspace.off(EVENT_COLUMN_ADD, handleColumnAddEvent);
 			app.workspace.off(EVENT_COLUMN_DELETE, handleColumnDeleteEvent);
 		};
-	}, [app, viewLeaf]);
+	}, [viewLeaf, doCommand]);
 
 	function handleNewColumnClick() {
 		logFunc("handleNewColumnClick");
