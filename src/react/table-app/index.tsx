@@ -29,10 +29,9 @@ import "./styles.css";
 
 interface Props {
 	viewLeaf: WorkspaceLeaf;
-	onSaveTableState: (tableState: TableState) => void;
 }
 
-export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
+export default function TableApp({ viewLeaf }: Props) {
 	const { searchText, sortTime } = useAppSelector((state) => state.global);
 	const { tableId, tableState, setTableState } = useTableState();
 
@@ -81,12 +80,6 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 	} = useTag(setTableState);
 
 	const lastColumnId = useUUID();
-
-	//Once we have mounted, whenever the table state is updated
-	//save it to disk
-	useDidMountEffect(() => {
-		onSaveTableState(tableState);
-	}, [tableState]);
 
 	React.useEffect(() => {
 		if (sortTime !== 0) {

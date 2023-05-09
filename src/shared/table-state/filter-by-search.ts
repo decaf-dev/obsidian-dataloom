@@ -47,7 +47,6 @@ export const filterBodyRowsBySearch = (
 				cellTags,
 				searchText.toLowerCase()
 			);
-			console.log(match);
 			return match;
 		});
 	});

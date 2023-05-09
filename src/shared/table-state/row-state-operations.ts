@@ -1,5 +1,53 @@
 import { createBodyCell, createBodyRow } from "src/data/table-state-factory";
-import { BodyRow, TableState } from "./types";
+import { BodyCell, BodyRow, TableState } from "./types";
+import { RowIdError } from "./table-error";
+import TableStateCommand from "./table-state-command";
+
+export class RowDeleteCommand implements TableStateCommand {
+	id: string;
+	deletedRow: BodyRow | undefined = undefined;
+	deletedCells: BodyCell[] | undefined = undefined;
+
+	constructor(id: string) {
+		this.id = id;
+	}
+
+	execute(prevState: TableState): TableState {
+		const { bodyRows, bodyCells } = prevState.model;
+
+		const rowToDelete = bodyRows.find((row) => row.id === this.id);
+		if (!rowToDelete) throw new RowIdError(this.id);
+
+		const cellsToDelete = bodyCells.filter(
+			(cell) => cell.rowId === this.id
+		);
+
+		this.deletedRow = structuredClone(rowToDelete);
+		this.deletedCells = structuredClone(cellsToDelete);
+
+		return {
+			...prevState,
+			model: {
+				...prevState.model,
+				bodyRows: bodyRows.filter((row) => row.id !== this.id),
+				bodyCells: bodyCells.filter((cell) => cell.rowId !== this.id),
+			},
+		};
+	}
+
+	undo(prevState: TableState): TableState {
+		if (this.deletedRow === undefined || this.deletedCells === undefined)
+			throw new Error("Execute must be called before undo is available");
+		return {
+			...prevState,
+			model: {
+				...prevState.model,
+				bodyRows: [...prevState.model.bodyRows, this.deletedRow],
+				bodyCells: [...prevState.model.bodyCells, ...this.deletedCells],
+			},
+		};
+	}
+}
 
 export const rowAdd = (prevState: TableState): TableState => {
 	const { bodyRows, bodyCells, columns } = prevState.model;

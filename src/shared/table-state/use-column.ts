@@ -18,7 +18,6 @@ import { WorkspaceLeaf } from "obsidian";
 import { updateSortTime } from "src/redux/global/global-slice";
 import { EVENT_COLUMN_ADD, EVENT_COLUMN_DELETE } from "../events";
 import { useAppDispatch } from "src/redux/global/hooks";
-import { useApp } from "./app-context";
 
 export const useColumn = (
 	viewLeaf: WorkspaceLeaf,
@@ -26,25 +25,32 @@ export const useColumn = (
 ) => {
 	const dispatch = useAppDispatch();
 	const logFunc = useLogger();
-	const app = useApp();
 
 	React.useEffect(() => {
-		//@ts-expect-error missing overload
-		app.workspace.on(EVENT_COLUMN_ADD, (leaf: WorkspaceLeaf) => {
+		function handleColumnAddEvent(leaf: WorkspaceLeaf) {
 			if (leaf === viewLeaf) {
 				onChange((prevState) => columnAdd(prevState));
 			}
-		});
+		}
 
-		//@ts-expect-error missing overload
-		app.workspace.on(EVENT_COLUMN_DELETE, (leaf: WorkspaceLeaf) => {
+		function handleColumnDeleteEvent(leaf: WorkspaceLeaf) {
 			if (leaf === viewLeaf) {
 				onChange((prevState) =>
 					columnDelete(prevState, { last: true })
 				);
 			}
-		});
-	}, [app]);
+		}
+		//@ts-expect-error missing overload
+		app.workspace.on(EVENT_COLUMN_ADD, handleColumnAddEvent);
+
+		//@ts-expect-error missing overload
+		app.workspace.on(EVENT_COLUMN_DELETE, handleColumnDeleteEvent);
+
+		return () => {
+			app.workspace.off(EVENT_COLUMN_ADD, handleColumnAddEvent);
+			app.workspace.off(EVENT_COLUMN_DELETE, handleColumnDeleteEvent);
+		};
+	}, [app, viewLeaf]);
 
 	function handleNewColumnClick() {
 		logFunc("handleNewColumnClick");
