@@ -8,9 +8,9 @@ import {
 } from "src/shared/table-state/types";
 import { useLogger } from "../logger";
 import {
-	columnAdd,
+	ColumnAddCommand,
+	ColumnDeleteCommand,
 	columnChangeType,
-	columnDelete,
 	columnSort,
 	columnUpdate,
 } from "./column-state-operations";
@@ -18,7 +18,7 @@ import { WorkspaceLeaf } from "obsidian";
 import { updateSortTime } from "src/redux/global/global-slice";
 import { EVENT_COLUMN_ADD, EVENT_COLUMN_DELETE } from "../events";
 import { useAppDispatch } from "src/redux/global/hooks";
-import { useApp } from "./app-context";
+import { useTableState } from "./table-state-context";
 
 export const useColumn = (
 	viewLeaf: WorkspaceLeaf,
@@ -26,29 +26,37 @@ export const useColumn = (
 ) => {
 	const dispatch = useAppDispatch();
 	const logFunc = useLogger();
-	const app = useApp();
+	const { doCommand } = useTableState();
 
 	React.useEffect(() => {
-		//@ts-expect-error missing overload
-		app.workspace.on(EVENT_COLUMN_ADD, (leaf: WorkspaceLeaf) => {
+		function handleColumnAddEvent(leaf: WorkspaceLeaf) {
 			if (leaf === viewLeaf) {
-				onChange((prevState) => columnAdd(prevState));
+				logFunc("handleColumnAddEvent");
+				doCommand(new ColumnAddCommand());
 			}
-		});
+		}
+
+		function handleColumnDeleteEvent(leaf: WorkspaceLeaf) {
+			if (leaf === viewLeaf) {
+				logFunc("handleColumnDeleteEvent");
+				doCommand(new ColumnDeleteCommand({ last: true }));
+			}
+		}
+		//@ts-expect-error missing overload
+		app.workspace.on(EVENT_COLUMN_ADD, handleColumnAddEvent);
 
 		//@ts-expect-error missing overload
-		app.workspace.on(EVENT_COLUMN_DELETE, (leaf: WorkspaceLeaf) => {
-			if (leaf === viewLeaf) {
-				onChange((prevState) =>
-					columnDelete(prevState, { last: true })
-				);
-			}
-		});
-	}, [app]);
+		app.workspace.on(EVENT_COLUMN_DELETE, handleColumnDeleteEvent);
+
+		return () => {
+			app.workspace.off(EVENT_COLUMN_ADD, handleColumnAddEvent);
+			app.workspace.off(EVENT_COLUMN_DELETE, handleColumnDeleteEvent);
+		};
+	}, [viewLeaf, doCommand]);
 
 	function handleNewColumnClick() {
 		logFunc("handleNewColumnClick");
-		onChange((prevState) => columnAdd(prevState));
+		doCommand(new ColumnAddCommand());
 	}
 	function handleHeaderTypeClick(columnId: string, type: CellType) {
 		logFunc("handleHeaderTypeClick", {
@@ -78,8 +86,7 @@ export const useColumn = (
 		logFunc("handleHeaderDeleteClick", {
 			columnId,
 		});
-
-		onChange((prevState) => columnDelete(prevState, { id: columnId }));
+		doCommand(new ColumnDeleteCommand({ id: columnId }));
 	}
 
 	function handleCurrencyChange(
