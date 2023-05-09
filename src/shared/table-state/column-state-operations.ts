@@ -8,6 +8,11 @@ import {
 	createTag,
 } from "src/data/table-state-factory";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "./constants";
+import { isCellTypeFilterable } from "./filter-by-rules";
+import {
+	unixTimeToDateString,
+	unixTimeToDateTimeString,
+} from "../date/date-conversion";
 
 export const columnAdd = (prevState: TableState): TableState => {
 	const {
@@ -150,16 +155,18 @@ export const columnChangeType = (
 	columnId: string,
 	newType: CellType
 ): TableState => {
-	const { columns, tags, bodyCells } = prevState.model;
+	const { columns, tags, bodyCells, filterRules } = prevState.model;
 	const column = columns.find((column) => column.id === columnId);
 	if (!column) throw new ColumnIdError(columnId);
-
 	const { type: previousType } = column;
 
 	//If same type return
 	if (previousType === newType) return prevState;
 
+	console.log(newType);
+
 	let tagsCopy = structuredClone(tags);
+	let bodyCellsCopy = structuredClone(bodyCells);
 
 	if (
 		(previousType === CellType.MULTI_TAG && newType !== CellType.TAG) ||
@@ -172,7 +179,7 @@ export const columnChangeType = (
 				cells: [],
 			};
 		});
-	} else if (newType === CellType.TAG || CellType.MULTI_TAG) {
+	} else if (newType === CellType.TAG || newType === CellType.MULTI_TAG) {
 		const cells = bodyCells.filter(
 			(cell) => cell.columnId === columnId && cell.markdown !== ""
 		);
@@ -202,10 +209,7 @@ export const columnChangeType = (
 				tagsCopy.push(createTag(columnId, cell.id, markdown));
 			});
 		});
-	}
-
-	let bodyCellsCopy = structuredClone(bodyCells);
-	if (newType === CellType.CHECKBOX) {
+	} else if (newType === CellType.CHECKBOX) {
 		const cells = bodyCellsCopy.filter(
 			(cell) => cell.columnId === columnId
 		);
@@ -215,7 +219,22 @@ export const columnChangeType = (
 				bodyCellsCopy[index].markdown = CHECKBOX_MARKDOWN_UNCHECKED;
 			}
 		});
+	} else if (newType === CellType.TEXT && previousType == CellType.DATE) {
+		const cells = bodyCellsCopy.filter(
+			(cell) => cell.columnId === columnId
+		);
+		cells.forEach((cell) => {
+			const { dateTime } = cell;
+			if (dateTime !== null) {
+				const index = bodyCellsCopy.indexOf(cell);
+				bodyCellsCopy[index].markdown = unixTimeToDateString(
+					dateTime,
+					column.dateFormat
+				);
+			}
+		});
 	}
+
 	return {
 		...prevState,
 		model: {
@@ -231,6 +250,13 @@ export const columnChangeType = (
 			}),
 			bodyCells: bodyCellsCopy,
 			tags: tagsCopy,
+			filterRules: filterRules.filter((rule) => {
+				if (rule.columnId === columnId) {
+					if (isCellTypeFilterable(newType)) return true;
+					return false;
+				}
+				return true;
+			}),
 		},
 	};
 };

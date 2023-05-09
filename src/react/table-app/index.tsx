@@ -17,7 +17,6 @@ import { sortRows } from "../../shared/table-state/sort-state-operations";
 import { useDidMountEffect, useUUID } from "../../shared/hooks";
 import { CellNotFoundError } from "../../shared/table-state/table-error";
 import { useTableState } from "../../shared/table-state/table-state-context";
-import { useLogger } from "src/shared/logger";
 import { useFilterRules } from "src/shared/table-state/use-filter-rules";
 import { filterBodyRowsBySearch } from "src/shared/table-state/filter-by-search";
 import { useColumn } from "src/shared/table-state/use-column";
