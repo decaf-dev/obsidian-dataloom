@@ -22,19 +22,6 @@ export default class NLTSettingsTab extends PluginSettingTab {
 				(span.innerHTML = `<strong style="color: var(--text-accent); font-size: 12px;">Please restart Obsidian for these settings to take effect</strong>`)
 		);
 
-		new Setting(containerEl).setName("Debug").setHeading();
-		new Setting(containerEl)
-			.setName("Debug mode")
-			.setDesc("Turns on console.log for various table events")
-			.addToggle((cb) => {
-				cb.setValue(this.plugin.settings.shouldDebug).onChange(
-					async (value) => {
-						this.plugin.settings.shouldDebug = value;
-						await this.plugin.saveSettings();
-					}
-				);
-			});
-
 		new Setting(containerEl).setName("File").setHeading();
 
 		const attachmentsFolderDesc = new DocumentFragment();
@@ -93,6 +80,19 @@ export default class NLTSettingsTab extends PluginSettingTab {
 						value;
 					await this.plugin.saveSettings();
 				});
+			});
+
+		new Setting(containerEl).setName("Debug").setHeading();
+		new Setting(containerEl)
+			.setName("Debug mode")
+			.setDesc("Turns on console.log for various table events")
+			.addToggle((cb) => {
+				cb.setValue(this.plugin.settings.shouldDebug).onChange(
+					async (value) => {
+						this.plugin.settings.shouldDebug = value;
+						await this.plugin.saveSettings();
+					}
+				);
 			});
 	}
 }

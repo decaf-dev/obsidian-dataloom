@@ -19,10 +19,16 @@ export default function NumberCellEdit({
 	useInputSelection(isMenuVisible, inputRef, value.length);
 
 	function handleChange(value: string) {
-		if (!isNumber(value)) return;
+		if (!isNumber(value) && value !== "") return;
 		onChange(value);
 	}
 
+	let valueFormatted = "";
+	if (isNumber(value)) {
+		valueFormatted = value;
+	}
+
+	//We use an input of type text so that the selection is available
 	return (
 		<div className="NLT__number-cell-edit">
 			<input
@@ -30,7 +36,7 @@ export default function NumberCellEdit({
 				ref={inputRef}
 				inputMode="numeric"
 				autoFocus
-				value={value}
+				value={valueFormatted}
 				onChange={(e) => handleChange(e.target.value)}
 			/>
 		</div>
