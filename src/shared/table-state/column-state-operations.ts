@@ -154,13 +154,15 @@ export const columnChangeType = (
 	const { columns, tags, bodyCells, filterRules } = prevState.model;
 	const column = columns.find((column) => column.id === columnId);
 	if (!column) throw new ColumnIdError(columnId);
-
 	const { type: previousType } = column;
 
 	//If same type return
 	if (previousType === newType) return prevState;
 
+	console.log(newType);
+
 	let tagsCopy = structuredClone(tags);
+	let bodyCellsCopy = structuredClone(bodyCells);
 
 	if (
 		(previousType === CellType.MULTI_TAG && newType !== CellType.TAG) ||
@@ -173,7 +175,7 @@ export const columnChangeType = (
 				cells: [],
 			};
 		});
-	} else if (newType === CellType.TAG || CellType.MULTI_TAG) {
+	} else if (newType === CellType.TAG || newType === CellType.MULTI_TAG) {
 		const cells = bodyCells.filter(
 			(cell) => cell.columnId === columnId && cell.markdown !== ""
 		);
@@ -203,10 +205,7 @@ export const columnChangeType = (
 				tagsCopy.push(createTag(columnId, cell.id, markdown));
 			});
 		});
-	}
-
-	let bodyCellsCopy = structuredClone(bodyCells);
-	if (newType === CellType.CHECKBOX) {
+	} else if (newType === CellType.CHECKBOX) {
 		const cells = bodyCellsCopy.filter(
 			(cell) => cell.columnId === columnId
 		);
