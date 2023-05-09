@@ -11,13 +11,11 @@ import NewRowButton from "./new-row-button";
 import NewColumnButton from "./new-column-button";
 import HeaderCell from "./header-cell";
 
-import { TableState } from "../../shared/table-state/types";
 import { useAppSelector } from "../../redux/global/hooks";
 import { sortRows } from "../../shared/table-state/sort-state-operations";
-import { useDidMountEffect, useUUID } from "../../shared/hooks";
+import { useUUID } from "../../shared/hooks";
 import { CellNotFoundError } from "../../shared/table-state/table-error";
 import { useTableState } from "../../shared/table-state/table-state-context";
-import { useLogger } from "src/shared/logger";
 import { useFilterRules } from "src/shared/table-state/use-filter-rules";
 import { filterBodyRowsBySearch } from "src/shared/table-state/filter-by-search";
 import { useColumn } from "src/shared/table-state/use-column";
@@ -59,10 +57,7 @@ export default function TableApp({ viewLeaf }: Props) {
 		handleWrapContentToggle,
 	} = useColumn(viewLeaf, setTableState);
 
-	const { handleNewRowClick, handleRowDeleteClick } = useRow(
-		viewLeaf,
-		setTableState
-	);
+	const { handleNewRowClick, handleRowDeleteClick } = useRow(viewLeaf);
 
 	const {
 		handleBodyCellContentChange,

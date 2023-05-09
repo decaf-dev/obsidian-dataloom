@@ -1,25 +1,21 @@
 import React from "react";
-import { TableState } from "src/shared/table-state/types";
 import { useLogger } from "../logger";
 import { WorkspaceLeaf } from "obsidian";
 import { EVENT_ROW_ADD, EVENT_ROW_DELETE } from "../events";
-import { RowDeleteCommand, rowAdd, rowDelete } from "./row-state-operations";
+import { RowAddCommand, RowDeleteCommand } from "./row-state-operations";
 import { useAppDispatch } from "src/redux/global/hooks";
 import { updateSortTime } from "src/redux/global/global-slice";
 import { useTableState } from "./table-state-context";
 
-export const useRow = (
-	viewLeaf: WorkspaceLeaf,
-	onChange: React.Dispatch<React.SetStateAction<TableState>>
-) => {
-	const logFunc = useLogger();
+export const useRow = (viewLeaf: WorkspaceLeaf) => {
+	const logger = useLogger();
 	const dispatch = useAppDispatch();
 	const { doCommand } = useTableState();
 
 	React.useEffect(() => {
 		function handleRowAddEvent(leaf: WorkspaceLeaf) {
 			if (leaf === viewLeaf) {
-				onChange((prevState) => rowAdd(prevState));
+				doCommand(new RowAddCommand());
 			}
 		}
 
@@ -41,15 +37,15 @@ export const useRow = (
 	}, [doCommand]);
 
 	function handleRowDeleteClick(rowId: string) {
-		logFunc("handleRowDeleteClick", {
+		logger("handleRowDeleteClick", {
 			rowId,
 		});
 		doCommand(new RowDeleteCommand({ id: rowId }));
 	}
 
 	function handleNewRowClick() {
-		logFunc("handleNewRowClick");
-		onChange((prevState) => rowAdd(prevState));
+		logger("handleNewRowClick");
+		doCommand(new RowAddCommand());
 		dispatch(updateSortTime());
 	}
 

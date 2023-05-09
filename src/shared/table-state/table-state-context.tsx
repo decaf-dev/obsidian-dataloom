@@ -4,6 +4,7 @@ import { useDidMountEffect, useUUID } from "../hooks";
 import React from "react";
 import { WorkspaceLeaf } from "obsidian";
 import { EVENT_REDO, EVENT_UNDO } from "../events";
+import { useLogger } from "../logger";
 
 interface Props {
 	initialState: TableState;
@@ -43,12 +44,12 @@ export default function TableStateProvider({
 		null,
 	]);
 	const [position, setPosition] = React.useState(0);
-
-	console.log(history);
-	console.log(position);
+	const logger = useLogger();
 
 	const undo = React.useCallback(() => {
 		if (position > 0) {
+			logger("handleUndoEvent");
+
 			const currentPosition = position - 1;
 			setPosition(currentPosition);
 
@@ -62,6 +63,8 @@ export default function TableStateProvider({
 
 	const redo = React.useCallback(() => {
 		if (position < history.length - 1) {
+			logger("handleRedoEvent");
+
 			const currentPosition = position + 1;
 			setPosition(currentPosition);
 
