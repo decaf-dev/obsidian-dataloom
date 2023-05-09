@@ -3,6 +3,7 @@ import { useOverflowClassName } from "src/shared/spacing/hooks";
 import "./styles.css";
 import { CurrencyType } from "src/shared/table-state/types";
 import { stringToCurrencyString } from "src/shared/conversion";
+import { isNumber } from "src/shared/validators";
 
 interface Props {
 	value: string;
@@ -18,7 +19,7 @@ export default function CurrencyCell({
 	const overflowClassName = useOverflowClassName(shouldWrapOverflow);
 
 	let valueFormatted = "";
-	if (value !== "") {
+	if (isNumber(value)) {
 		valueFormatted = stringToCurrencyString(value, currencyType);
 	}
 
