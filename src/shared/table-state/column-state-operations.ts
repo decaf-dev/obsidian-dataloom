@@ -8,6 +8,7 @@ import {
 	createTag,
 } from "src/data/table-state-factory";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "./constants";
+import { isCellTypeFilterable } from "./filter-by-rules";
 
 export const columnAdd = (prevState: TableState): TableState => {
 	const {
@@ -150,7 +151,7 @@ export const columnChangeType = (
 	columnId: string,
 	newType: CellType
 ): TableState => {
-	const { columns, tags, bodyCells } = prevState.model;
+	const { columns, tags, bodyCells, filterRules } = prevState.model;
 	const column = columns.find((column) => column.id === columnId);
 	if (!column) throw new ColumnIdError(columnId);
 
@@ -216,6 +217,7 @@ export const columnChangeType = (
 			}
 		});
 	}
+
 	return {
 		...prevState,
 		model: {
@@ -231,6 +233,13 @@ export const columnChangeType = (
 			}),
 			bodyCells: bodyCellsCopy,
 			tags: tagsCopy,
+			filterRules: filterRules.filter((rule) => {
+				if (rule.columnId === columnId) {
+					if (isCellTypeFilterable(newType)) return true;
+					return false;
+				}
+				return true;
+			}),
 		},
 	};
 };
