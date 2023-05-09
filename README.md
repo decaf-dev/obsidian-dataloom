@@ -53,6 +53,8 @@ You can also right click on a folder and click `New Notion-Like table`
 | Add new row        | `ctrl` + `shift` + `enter`     | `cmd` + `shift` + `enter`        |
 | Delete last column | `ctrl` + `shift` + `backspace` | `cmd` + `shift` + `backspace`    |
 | Delete last row    | `alt` + `shift` + `backspace`  | `option` + `shift` + `backspace` |
+| Undo               | `ctrl` + `z`                   | `cmd` + `z`                      |
+| Redo               | `ctrl` + `shift` + `z`         | `cmd` + `shift` + `z`            |
 
 ## Features
 
@@ -80,7 +82,8 @@ You can also right click on a folder and click `New Notion-Like table`
 -   Import modal - allows you to create cells from markdown data
 -   Keyboard focus navigation system - navigate focusable elements using the tab button, arrow keys, and enter button on your keyboard. If a cell is focused, press any key to have that character appended to the cell input
 -   Virtualization of table rows - allows the user to render thousands of rows with no miminal lag in the table
--   Filter rules - add rules to filter rows that only match speific criteria for a column
+-   Filter rules - add rules to filter rows that only match speific criteria for a column. Currently supports filtering on: text, tag, multi-tag, and checkbox column types only
+-   Undo system - currently only supports undo/redo for add/delete column and add/delete row
 
 ## Settings
 
