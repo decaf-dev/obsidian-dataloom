@@ -10,6 +10,18 @@ import {
 } from "src/shared/table-state/types";
 import { ColumnIdError } from "./table-error";
 
+export const isCellTypeFilterable = (cellType: CellType): boolean => {
+	switch (cellType) {
+		case CellType.TEXT:
+		case CellType.TAG:
+		case CellType.MULTI_TAG:
+		case CellType.CHECKBOX:
+			return true;
+		default:
+			return false;
+	}
+};
+
 export const filterBodyRowsByRules = (prevState: TableState): BodyRow[] => {
 	const { columns, bodyCells, bodyRows, filterRules, tags } = prevState.model;
 	//Map column id to column instance
@@ -56,6 +68,7 @@ const doesCellMatchRule = (
 	rule: FilterRule
 ) => {
 	if (rule.columnId !== cell.columnId) return true;
+	if (!isCellTypeFilterable(cellType)) return true;
 	if (rule.isEnabled) {
 		if (cellType === CellType.TEXT) {
 			return doesTextMatch(cell.markdown, rule.text, rule.type);
@@ -82,8 +95,6 @@ const doesCellMatchRule = (
 			);
 		} else if (cellType === CellType.CHECKBOX) {
 			return doesTextMatch(cell.markdown, rule.text, rule.type);
-		} else {
-			throw new Error("Cell type not yet supported");
 		}
 	}
 	return true;

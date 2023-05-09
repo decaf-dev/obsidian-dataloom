@@ -3,7 +3,7 @@ export const TAG_REGEX = new RegExp(/^[#][^\s]+$/);
 /**
  * Matches both whole numbers and decimals
  */
-export const NUMBER_REGEX = new RegExp(/^\d*\.?\d*$/);
+export const NUMBER_REGEX = new RegExp(/^\d+\.?\d*$/);
 
 export const TAGS_REGEX = new RegExp(/#[^ \t]+/g);
 
