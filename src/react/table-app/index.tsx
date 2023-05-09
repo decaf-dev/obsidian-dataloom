@@ -11,10 +11,9 @@ import NewRowButton from "./new-row-button";
 import NewColumnButton from "./new-column-button";
 import HeaderCell from "./header-cell";
 
-import { TableState } from "../../shared/table-state/types";
 import { useAppSelector } from "../../redux/global/hooks";
 import { sortRows } from "../../shared/table-state/sort-state-operations";
-import { useDidMountEffect, useUUID } from "../../shared/hooks";
+import { useUUID } from "../../shared/hooks";
 import { CellNotFoundError } from "../../shared/table-state/table-error";
 import { useTableState } from "../../shared/table-state/table-state-context";
 import { useFilterRules } from "src/shared/table-state/use-filter-rules";
@@ -28,10 +27,9 @@ import "./styles.css";
 
 interface Props {
 	viewLeaf: WorkspaceLeaf;
-	onSaveTableState: (tableState: TableState) => void;
 }
 
-export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
+export default function TableApp({ viewLeaf }: Props) {
 	const { searchText, sortTime } = useAppSelector((state) => state.global);
 	const { tableId, tableState, setTableState } = useTableState();
 
@@ -59,10 +57,7 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 		handleWrapContentToggle,
 	} = useColumn(viewLeaf, setTableState);
 
-	const { handleNewRowClick, handleRowDeleteClick } = useRow(
-		viewLeaf,
-		setTableState
-	);
+	const { handleNewRowClick, handleRowDeleteClick } = useRow(viewLeaf);
 
 	const {
 		handleBodyCellContentChange,
@@ -80,12 +75,6 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 	} = useTag(setTableState);
 
 	const lastColumnId = useUUID();
-
-	//Once we have mounted, whenever the table state is updated
-	//save it to disk
-	useDidMountEffect(() => {
-		onSaveTableState(tableState);
-	}, [tableState]);
 
 	React.useEffect(() => {
 		if (sortTime !== 0) {

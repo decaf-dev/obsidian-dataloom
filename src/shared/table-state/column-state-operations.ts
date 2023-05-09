@@ -1,5 +1,15 @@
 import { ColumnIdError } from "./table-error";
-import { CellType, Column, TableState, SortDir } from "./types";
+import {
+	CellType,
+	Column,
+	TableState,
+	SortDir,
+	HeaderCell,
+	BodyCell,
+	FooterCell,
+	Tag,
+	FilterRule,
+} from "./types";
 import {
 	createBodyCell,
 	createColumn,
@@ -8,60 +18,193 @@ import {
 	createTag,
 } from "src/data/table-state-factory";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "./constants";
+import TableStateCommand from "./table-state-command";
 import { isCellTypeFilterable } from "./filter-by-rules";
 import {
 	unixTimeToDateString,
 	unixTimeToDateTimeString,
 } from "../date/date-conversion";
 
-export const columnAdd = (prevState: TableState): TableState => {
-	const {
-		headerCells,
-		bodyCells,
-		footerCells,
-		columns,
-		headerRows,
-		bodyRows,
-		footerRows,
-	} = prevState.model;
+export class ColumnDeleteCommand implements TableStateCommand {
+	columnId: string | undefined;
+	last: boolean | undefined;
 
-	//Add column
-	const columnsCopy = structuredClone(columns);
-	const newColumn = createColumn();
-	columnsCopy.push(newColumn);
+	deletedColumn: Column | undefined = undefined;
+	deletedHeaderCells: HeaderCell[] | undefined = undefined;
+	deletedBodyCells: BodyCell[] | undefined = undefined;
+	deletedFooterCells: FooterCell[] | undefined = undefined;
+	deletedTags: Tag[] | undefined = undefined;
+	deletedFilterRules: FilterRule[] | undefined = undefined;
 
-	//Add header cells
-	const headerCellsCopy = structuredClone(headerCells);
+	constructor(options: { id?: string; last?: boolean }) {
+		const { id, last } = options;
+		if (id === undefined && last === undefined)
+			throw new Error("Either id or last must be defined");
+		this.columnId = id;
+		this.last = last;
+	}
 
-	headerRows.forEach((row, i) => {
-		headerCellsCopy.push(createHeaderCell(newColumn.id, row.id));
-	});
+	execute(prevState: TableState): TableState {
+		const {
+			columns,
+			headerCells,
+			bodyCells,
+			footerCells,
+			tags,
+			filterRules,
+		} = prevState.model;
+		if (columns.length === 1) return prevState;
 
-	//Add bdoy cells
-	const bodyCellsCopy = structuredClone(bodyCells);
+		let id = this.columnId;
+		if (this.last) {
+			id = columns[columns.length - 1].id;
+		}
 
-	bodyRows.forEach((row, i) => {
-		bodyCellsCopy.push(createBodyCell(newColumn.id, row.id));
-	});
+		const columnToDelete = columns.find((column) => column.id === id);
+		if (!columnToDelete) throw new ColumnIdError(id!);
 
-	//Add footer cells
-	const footerCellsCopy = structuredClone(footerCells);
+		const headerCellsToDelete = headerCells.filter(
+			(cell) => cell.columnId === id
+		);
+		if (headerCellsToDelete.length === 0)
+			throw new Error("No header cells to delete");
 
-	footerRows.forEach((row, i) => {
-		footerCellsCopy.push(createFooterCell(newColumn.id, row.id));
-	});
+		const bodyCellsToDelete = bodyCells.filter(
+			(cell) => cell.columnId === id
+		);
 
-	return {
-		...prevState,
-		model: {
-			...prevState.model,
-			columns: columnsCopy,
-			headerCells: headerCellsCopy,
-			bodyCells: bodyCellsCopy,
-			footerCells: footerCellsCopy,
-		},
-	};
-};
+		const footerCellsToDelete = footerCells.filter(
+			(cell) => cell.columnId === id
+		);
+		if (footerCellsToDelete.length === 0)
+			throw new Error("No footer cells to delete");
+
+		const tagsToDelete = tags.filter((tag) => tag.columnId === id);
+		const filterRulesToDelete = filterRules.filter(
+			(rule) => rule.columnId === id
+		);
+
+		this.deletedColumn = structuredClone(columnToDelete);
+		this.deletedHeaderCells = structuredClone(headerCellsToDelete);
+		this.deletedBodyCells = structuredClone(bodyCellsToDelete);
+		this.deletedFooterCells = structuredClone(footerCellsToDelete);
+		this.deletedTags = structuredClone(tagsToDelete);
+		this.deletedFilterRules = structuredClone(filterRulesToDelete);
+
+		return {
+			...prevState,
+			model: {
+				...prevState.model,
+				columns: columns.filter((column) => column.id !== id),
+				headerCells: headerCells.filter((cell) => cell.columnId !== id),
+				bodyCells: bodyCells.filter((cell) => cell.columnId !== id),
+				footerCells: footerCells.filter((cell) => cell.columnId !== id),
+				tags: tags.filter((tag) => tag.columnId !== id),
+				filterRules: filterRules.filter((rule) => rule.columnId !== id),
+			},
+		};
+	}
+
+	undo(prevState: TableState): TableState {
+		if (
+			this.deletedColumn === undefined ||
+			this.deletedBodyCells === undefined ||
+			this.deletedFilterRules === undefined ||
+			this.deletedFooterCells === undefined ||
+			this.deletedHeaderCells === undefined ||
+			this.deletedTags === undefined
+		)
+			throw new Error("Execute must be called before undo is available");
+
+		const {
+			columns,
+			headerCells,
+			bodyCells,
+			footerCells,
+			tags,
+			filterRules,
+		} = prevState.model;
+		return {
+			...prevState,
+			model: {
+				...prevState.model,
+				columns: [...columns, this.deletedColumn],
+				headerCells: [...headerCells, ...this.deletedHeaderCells],
+				bodyCells: [...bodyCells, ...this.deletedBodyCells],
+				footerCells: [...footerCells, ...this.deletedFooterCells],
+				tags: [...tags, ...this.deletedTags],
+				filterRules: [...filterRules, ...this.deletedFilterRules],
+			},
+		};
+	}
+}
+
+export class ColumnAddCommand implements TableStateCommand {
+	newColumnId: string | undefined = undefined;
+
+	execute(prevState: TableState): TableState {
+		const {
+			headerCells,
+			bodyCells,
+			footerCells,
+			columns,
+			headerRows,
+			bodyRows,
+			footerRows,
+		} = prevState.model;
+
+		//Add column
+		const newColumn = createColumn();
+		this.newColumnId = newColumn.id;
+
+		const newHeaderCells = headerRows.map((row) =>
+			createHeaderCell(newColumn.id, row.id)
+		);
+
+		const newBodyCells = bodyRows.map((row) =>
+			createBodyCell(newColumn.id, row.id)
+		);
+		const newFooterCells = footerRows.map((row) =>
+			createFooterCell(newColumn.id, row.id)
+		);
+
+		return {
+			...prevState,
+			model: {
+				...prevState.model,
+				columns: [...columns, newColumn],
+				headerCells: [...headerCells, ...newHeaderCells],
+				bodyCells: [...bodyCells, ...newBodyCells],
+				footerCells: [...footerCells, ...newFooterCells],
+			},
+		};
+	}
+	undo(prevState: TableState): TableState {
+		if (this.newColumnId === undefined)
+			throw new Error("Execute must be called before undo is available");
+
+		const { columns, headerCells, bodyCells, footerCells } =
+			prevState.model;
+		return {
+			...prevState,
+			model: {
+				...prevState.model,
+				columns: columns.filter(
+					(column) => column.id !== this.newColumnId
+				),
+				headerCells: headerCells.filter(
+					(cell) => cell.columnId !== this.newColumnId
+				),
+				bodyCells: bodyCells.filter(
+					(cell) => cell.columnId !== this.newColumnId
+				),
+				footerCells: footerCells.filter(
+					(cell) => cell.columnId !== this.newColumnId
+				),
+			},
+		};
+	}
+}
 
 export const columnSort = (
 	prevState: TableState,
@@ -117,35 +260,6 @@ export const columnUpdate = (
 				}
 				return column;
 			}),
-		},
-	};
-};
-
-export const columnDelete = (
-	prevState: TableState,
-	options: { id?: string; last?: boolean }
-): TableState => {
-	const { id, last } = options;
-	if (!id && !last) throw new Error("deleteColumn: no id or last provided");
-
-	if (last) {
-		const { columns } = prevState.model;
-		const lastColumn = columns[columns.length - 1];
-		return columnDelete(prevState, { id: lastColumn.id });
-	}
-
-	const { bodyCells, headerCells, footerCells, columns, tags, filterRules } =
-		prevState.model;
-	return {
-		...prevState,
-		model: {
-			...prevState.model,
-			columns: columns.filter((column) => column.id !== id),
-			headerCells: headerCells.filter((cell) => cell.columnId !== id),
-			bodyCells: bodyCells.filter((cell) => cell.columnId !== id),
-			footerCells: footerCells.filter((cell) => cell.columnId !== id),
-			tags: tags.filter((tag) => tag.columnId !== id),
-			filterRules: filterRules.filter((rule) => rule.columnId !== id),
 		},
 	};
 };

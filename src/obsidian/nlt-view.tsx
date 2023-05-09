@@ -12,7 +12,6 @@ import {
 } from "src/data/serialize-table-state";
 import MenuProvider from "src/shared/menu/menu-context";
 import { EVENT_REFRESH_VIEW } from "src/shared/events";
-import AppProvider from "src/shared/table-state/app-context";
 
 export const NOTION_LIKE_TABLES_VIEW = "notion-like-tables";
 
@@ -66,16 +65,15 @@ export class NLTView extends TextFileView {
 		if (this.root) {
 			this.root.render(
 				<Provider store={store}>
-					<AppProvider app={this.app}>
-						<TableStateProvider initialState={tableState}>
-							<MenuProvider>
-								<App
-									viewLeaf={this.leaf}
-									onSaveTableState={this.handleSaveTableState}
-								/>
-							</MenuProvider>
-						</TableStateProvider>
-					</AppProvider>
+					<TableStateProvider
+						viewLeaf={this.leaf}
+						initialState={tableState}
+						onSaveState={this.handleSaveTableState}
+					>
+						<MenuProvider>
+							<App viewLeaf={this.leaf} />
+						</MenuProvider>
+					</TableStateProvider>
 				</Provider>
 			);
 		}
