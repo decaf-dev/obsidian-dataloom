@@ -40,15 +40,13 @@ export const filterBodyRowsBySearch = (
 			if (!cellTags)
 				throw new Error(`Tags not found for cell ${cell.id}`);
 
-			const match = doesCellMatch(
+			return doesCellMatch(
 				cell,
 				columnMap,
 				rowMap,
 				cellTags,
 				searchText.toLowerCase()
 			);
-			console.log(match);
-			return match;
 		});
 	});
 };

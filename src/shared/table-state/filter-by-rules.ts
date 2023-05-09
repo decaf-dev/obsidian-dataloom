@@ -82,8 +82,6 @@ const doesCellMatchRule = (
 			);
 		} else if (cellType === CellType.CHECKBOX) {
 			return doesTextMatch(cell.markdown, rule.text, rule.type);
-		} else {
-			throw new Error("Cell type not yet supported");
 		}
 	}
 	return true;
