@@ -44,6 +44,9 @@ export default function TableStateProvider({
 	]);
 	const [position, setPosition] = React.useState(0);
 
+	console.log(history);
+	console.log(position);
+
 	const undo = React.useCallback(() => {
 		if (position > 0) {
 			const currentPosition = position - 1;

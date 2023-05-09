@@ -4,23 +4,34 @@ import { RowIdError } from "./table-error";
 import TableStateCommand from "./table-state-command";
 
 export class RowDeleteCommand implements TableStateCommand {
-	id: string;
+	id: string | undefined;
+	last: boolean | undefined;
+
 	deletedRow: BodyRow | undefined = undefined;
 	deletedCells: BodyCell[] | undefined = undefined;
 
-	constructor(id: string) {
+	constructor(options: { id?: string; last?: boolean }) {
+		const { id, last } = options;
+		if (id === undefined && last === undefined)
+			throw new Error("Either id or last must be defined");
 		this.id = id;
+		this.last = last;
 	}
 
 	execute(prevState: TableState): TableState {
 		const { bodyRows, bodyCells } = prevState.model;
+		if (bodyRows.length === 0) return prevState;
 
-		const rowToDelete = bodyRows.find((row) => row.id === this.id);
-		if (!rowToDelete) throw new RowIdError(this.id);
+		let id = this.id;
+		if (this.last) {
+			id = bodyRows[bodyRows.length - 1].id;
+		}
 
-		const cellsToDelete = bodyCells.filter(
-			(cell) => cell.rowId === this.id
-		);
+		const rowToDelete = bodyRows.find((row) => row.id === id);
+		if (!rowToDelete) throw new RowIdError(id!);
+
+		const cellsToDelete = bodyCells.filter((cell) => cell.rowId === id);
+		if (cellsToDelete.length === 0) throw new Error("No cells to delete");
 
 		this.deletedRow = structuredClone(rowToDelete);
 		this.deletedCells = structuredClone(cellsToDelete);
@@ -29,8 +40,8 @@ export class RowDeleteCommand implements TableStateCommand {
 			...prevState,
 			model: {
 				...prevState.model,
-				bodyRows: bodyRows.filter((row) => row.id !== this.id),
-				bodyCells: bodyCells.filter((cell) => cell.rowId !== this.id),
+				bodyRows: bodyRows.filter((row) => row.id !== id),
+				bodyCells: bodyCells.filter((cell) => cell.rowId !== id),
 			},
 		};
 	}

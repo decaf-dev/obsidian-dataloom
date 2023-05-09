@@ -25,7 +25,7 @@ export const useRow = (
 
 		function handleRowDeleteEvent(leaf: WorkspaceLeaf) {
 			if (leaf === viewLeaf) {
-				onChange((prevState) => rowDelete(prevState, { last: true }));
+				doCommand(new RowDeleteCommand({ last: true }));
 			}
 		}
 
@@ -38,14 +38,13 @@ export const useRow = (
 			app.workspace.off(EVENT_ROW_ADD, handleRowAddEvent);
 			app.workspace.off(EVENT_ROW_DELETE, handleRowDeleteEvent);
 		};
-	}, []);
+	}, [doCommand]);
 
 	function handleRowDeleteClick(rowId: string) {
 		logFunc("handleRowDeleteClick", {
 			rowId,
 		});
-		doCommand(new RowDeleteCommand(rowId));
-		//onChange((prevState) => rowDelete(prevState, { id: rowId }));
+		doCommand(new RowDeleteCommand({ id: rowId }));
 	}
 
 	function handleNewRowClick() {
