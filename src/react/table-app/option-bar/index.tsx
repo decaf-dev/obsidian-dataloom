@@ -23,6 +23,7 @@ import ToggleColumn from "./toggle-column";
 import Filter from "./filter/filter";
 
 import "./styles.css";
+import { isCellTypeFilterable } from "src/shared/table-state/filter-by-rules";
 
 interface SortButtonListProps {
 	bubbles: { sortDir: SortDir; markdown: string; columnId: string }[];
@@ -110,14 +111,7 @@ export default function OptionBar({
 		return columns
 			.filter((column) => {
 				const { type } = column;
-				if (
-					type === CellType.TEXT ||
-					type == CellType.CHECKBOX ||
-					type == CellType.TAG ||
-					type == CellType.MULTI_TAG
-				)
-					return true;
-				return false;
+				return isCellTypeFilterable(type);
 			})
 			.map((column) => {
 				const cell = headerCells.find(
