@@ -277,8 +277,6 @@ export const columnChangeType = (
 	//If same type return
 	if (previousType === newType) return prevState;
 
-	console.log(newType);
-
 	let tagsCopy = structuredClone(tags);
 	let bodyCellsCopy = structuredClone(bodyCells);
 

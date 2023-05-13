@@ -8,10 +8,10 @@ export const useForceUpdate = (): [number, () => void] => {
 	return [time, React.useCallback(() => setTime(Date.now()), [])];
 };
 
-export const useCompare = (value: any) => {
+export const useCompare = (value: any, runOnMount = false) => {
 	const prevValue = usePrevious(value);
 	//On mount the value will be undefined, so we don't want to return true
-	if (prevValue === undefined) return false;
+	if (prevValue === undefined) return runOnMount;
 	return prevValue !== value;
 };
 
@@ -33,19 +33,27 @@ export const useDidMountEffect = (func: (...rest: any) => any, deps: any[]) => {
 };
 
 export const useInputSelection = (
-	isMenuVisible: boolean,
 	inputRef: React.RefObject<HTMLInputElement | HTMLTextAreaElement | null>,
-	index: number
+	value: string
 ) => {
+	const [previousSelectionStart, setPreviousSelectionStart] = React.useState(
+		value.length
+	);
+
+	const didValueChange = useCompare(value, true);
 	React.useEffect(() => {
-		function setSelection(pos: number) {
-			if (inputRef.current) {
-				inputRef.current.selectionStart = pos;
-				inputRef.current.selectionEnd = pos;
+		function setSelection() {
+			if (didValueChange) {
+				if (inputRef.current) {
+					inputRef.current.selectionStart = previousSelectionStart;
+					inputRef.current.selectionEnd = previousSelectionStart;
+				}
 			}
 		}
-		if (isMenuVisible) setSelection(index);
-	}, [isMenuVisible]);
+		if (inputRef.current) setSelection();
+	}, [previousSelectionStart, value, didValueChange]);
+
+	return { setPreviousSelectionStart };
 };
 
 export const useFocusMenuTextArea = (
@@ -76,7 +84,7 @@ export const useFocusMenuInput = (
 };
 
 const useFocusMenuContent = <T>(
-	isNumeric: boolean,
+	hasNumericInput: boolean,
 	isMenuVisible: boolean,
 	value: string,
 	onChange: (value: string) => void
@@ -91,13 +99,11 @@ const useFocusMenuContent = <T>(
 			if (!inputRef.current) return;
 			if (inputRef.current instanceof HTMLElement) {
 				inputRef.current.focus();
-				if (menuKey !== null) {
-					if (isNumeric) {
-						if (!isNumber(menuKey)) return;
-					}
-					onChange(value + menuKey);
-				}
 			}
+
+			if (menuKey == null) return;
+			if (hasNumericInput && !isNumber(menuKey)) return;
+			onChange(value + menuKey);
 		}
 		if (isMenuVisible) focusInput();
 	}, [isMenuVisible]);

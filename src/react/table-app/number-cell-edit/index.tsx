@@ -16,10 +16,15 @@ export default function NumberCellEdit({
 	const inputRef = useFocusMenuInput(isMenuVisible, value, onChange, {
 		isNumeric: true,
 	});
-	useInputSelection(isMenuVisible, inputRef, value.length);
+	const { setPreviousSelectionStart } = useInputSelection(inputRef, value);
 
 	function handleChange(value: string) {
 		if (!isNumber(value) && value !== "") return;
+		if (inputRef.current) {
+			setPreviousSelectionStart(
+				inputRef.current.selectionStart || value.length
+			);
+		}
 		onChange(value);
 	}
 
@@ -28,11 +33,10 @@ export default function NumberCellEdit({
 		valueFormatted = value;
 	}
 
-	//We use an input of type text so that the selection is available
 	return (
 		<div className="NLT__number-cell-edit">
 			<input
-				type="text"
+				type="text" //We use an input of type text so that the selection is available
 				ref={inputRef}
 				inputMode="numeric"
 				autoFocus
