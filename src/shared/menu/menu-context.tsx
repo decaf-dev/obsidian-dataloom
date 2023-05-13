@@ -181,6 +181,8 @@ export default function MenuProvider({ children }: Props) {
 		function handleEnterDown(e: KeyboardEvent) {
 			const target = e.target as HTMLElement;
 
+			if (e.shiftKey) return;
+
 			//Prevents the event key from triggering the click event
 			if (target.getAttribute("data-menu-id") !== null) {
 				e.preventDefault();
