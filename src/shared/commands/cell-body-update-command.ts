@@ -2,7 +2,7 @@ import {
 	rowLastEditedTime,
 	rowLastEditedTimeUpdate,
 } from "../table-state/row-state-operations";
-import { CellNotFoundError } from "../table-state/table-error";
+import { CellIdError } from "../table-state/table-error";
 import TableStateCommand from "../table-state/table-state-command";
 import { BodyCell, TableState } from "../table-state/types";
 import { CommandUndoError } from "./command-errors";
@@ -31,7 +31,7 @@ export default class CellBodyUpdateCommand implements TableStateCommand {
 	execute(prevState: TableState): TableState {
 		const { bodyCells, bodyRows } = prevState.model;
 		const cell = bodyCells.find((cell) => cell.id === this.cellId);
-		if (!cell) throw new CellNotFoundError();
+		if (!cell) throw new CellIdError(this.cellId);
 		this.previousValue = cell[this.key];
 		this.previousEditedTime = rowLastEditedTime(bodyRows, this.rowId);
 
