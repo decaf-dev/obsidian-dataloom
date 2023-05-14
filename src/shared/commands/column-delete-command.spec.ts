@@ -58,7 +58,8 @@ describe("column-delete-command", () => {
 		expect(executeState.model.headerCells.length).toEqual(1);
 		expect(executeState.model.bodyCells.length).toEqual(1);
 		expect(executeState.model.footerCells.length).toEqual(2);
-		expect(executeState.model.tags.length).toEqual(1);
+		expect(executeState.model.tags.length).toEqual(0);
+		expect(executeState.model.filterRules.length).toEqual(0);
 	});
 
 	it("should delete the last column when execute() is called", () => {

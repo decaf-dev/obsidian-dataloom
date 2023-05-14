@@ -19,6 +19,7 @@ export default class ColumnAddCommand implements TableStateCommand {
 	newHeaderCells?: HeaderCell[];
 	newBodyCells?: BodyCell[];
 	newFooterCells?: FooterCell[];
+	hasUndoBeenCalled: boolean = false;
 
 	execute(prevState: TableState): TableState {
 		const {
@@ -71,12 +72,15 @@ export default class ColumnAddCommand implements TableStateCommand {
 			newColumn === undefined ||
 			newHeaderCells === undefined ||
 			newBodyCells === undefined ||
-			newFooterCells === undefined
+			newFooterCells === undefined ||
+			this.hasUndoBeenCalled === false
 		)
 			throw new CommandRedoError();
 
 		const { headerCells, bodyCells, footerCells, columns } =
 			prevState.model;
+
+		this.hasUndoBeenCalled = false;
 
 		return {
 			...prevState,
@@ -96,6 +100,8 @@ export default class ColumnAddCommand implements TableStateCommand {
 
 		const { columns, headerCells, bodyCells, footerCells } =
 			prevState.model;
+
+		this.hasUndoBeenCalled = true;
 		return {
 			...prevState,
 			model: {
