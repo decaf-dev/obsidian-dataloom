@@ -1,5 +1,5 @@
 import { Color } from "../types";
-import { rowUpdateLastEditedTime } from "./row-state-operations";
+import { rowLastEditedTimeUpdate } from "./row-state-operations";
 import { TagIdError } from "./table-error";
 import { TableState } from "./types";
 import { createTag } from "src/data/table-state-factory";
@@ -32,7 +32,7 @@ export const tagAddNew = (
 		model: {
 			...prevState.model,
 			tags: tagsCopy,
-			bodyRows: rowUpdateLastEditedTime(bodyRows, rowId),
+			bodyRows: rowLastEditedTimeUpdate(bodyRows, rowId),
 		},
 	};
 };
@@ -58,7 +58,7 @@ export const tagRemoveCell = (
 		model: {
 			...prevState.model,
 			tags: tagsCopy,
-			bodyRows: rowUpdateLastEditedTime(bodyRows, rowId),
+			bodyRows: rowLastEditedTimeUpdate(bodyRows, rowId),
 		},
 	};
 };
@@ -93,7 +93,7 @@ export const tagAddCell = (
 		model: {
 			...prevState.model,
 			tags: tagsCopy,
-			bodyRows: rowUpdateLastEditedTime(bodyRows, rowId),
+			bodyRows: rowLastEditedTimeUpdate(bodyRows, rowId),
 		},
 	};
 };

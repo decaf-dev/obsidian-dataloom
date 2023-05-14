@@ -8,8 +8,6 @@ import {
 } from "src/shared/table-state/types";
 import { useLogger } from "../logger";
 import {
-	ColumnAddCommand,
-	ColumnDeleteCommand,
 	columnChangeType,
 	columnSort,
 	columnUpdate,
@@ -19,6 +17,8 @@ import { updateSortTime } from "src/redux/global/global-slice";
 import { EVENT_COLUMN_ADD, EVENT_COLUMN_DELETE } from "../events";
 import { useAppDispatch } from "src/redux/global/hooks";
 import { useTableState } from "./table-state-context";
+import ColumnAddCommand from "../commands/column-add-command";
+import ColumnDeleteCommand from "../commands/column-delete-command";
 
 export const useColumn = (
 	viewLeaf: WorkspaceLeaf,
