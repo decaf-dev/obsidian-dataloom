@@ -22,9 +22,9 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/table-state/constants";
 
-export const createColumn = (id = uuidv4()): Column => {
+export const createColumn = (): Column => {
 	return {
-		id,
+		id: uuidv4(),
 		sortDir: SortDir.NONE,
 		isVisible: true,
 		width: "140px",
@@ -47,10 +47,10 @@ export const createFooterRow = (): FooterRow => {
 	};
 };
 
-export const createBodyRow = (index: number, id = uuidv4()): BodyRow => {
+export const createBodyRow = (index: number): BodyRow => {
 	const currentTime = Date.now();
 	return {
-		id,
+		id: uuidv4(),
 		index,
 		menuCellId: uuidv4(),
 		creationTime: currentTime,
@@ -60,12 +60,10 @@ export const createBodyRow = (index: number, id = uuidv4()): BodyRow => {
 
 export const createHeaderCell = (
 	columnId: string,
-	rowId: string,
-	options: { id?: string } = {}
+	rowId: string
 ): HeaderCell => {
-	const { id = uuidv4() } = options || {};
 	return {
-		id,
+		id: uuidv4(),
 		columnId,
 		rowId,
 		markdown: "New Column",
@@ -75,11 +73,11 @@ export const createHeaderCell = (
 export const createBodyCell = (
 	columnId: string,
 	rowId: string,
-	options: { cellType?: CellType; id?: string } = {}
+	options: { cellType?: CellType } = {}
 ): BodyCell => {
-	const { id = uuidv4(), cellType } = options || {};
+	const { cellType } = options || {};
 	return {
-		id,
+		id: uuidv4(),
 		columnId,
 		rowId,
 		dateTime: null,
@@ -101,12 +99,10 @@ export const createFilterRule = (columnId: string): FilterRule => {
 
 export const createFooterCell = (
 	columnId: string,
-	rowId: string,
-	options: { id?: string } = {}
+	rowId: string
 ): FooterCell => {
-	const { id = uuidv4() } = options || {};
 	return {
-		id,
+		id: uuidv4(),
 		columnId,
 		rowId,
 		functionType: GeneralFunction.NONE,
