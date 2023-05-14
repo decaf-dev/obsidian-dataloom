@@ -6,6 +6,7 @@ import { CommandRedoError, CommandUndoError } from "./command-errors";
 export default class RowAddCommand implements TableStateCommand {
 	newRow?: BodyRow;
 	newBodyCells?: BodyCell[];
+	hasUndoBeenCalled: boolean = false;
 
 	execute(prevState: TableState): TableState {
 		const { bodyRows, bodyCells, columns } = prevState.model;
@@ -31,10 +32,16 @@ export default class RowAddCommand implements TableStateCommand {
 	redo(prevState: TableState): TableState {
 		const newRow = this.newRow;
 		const newBodyCells = this.newBodyCells;
-		if (newRow === undefined || newBodyCells === undefined)
+		if (
+			newRow === undefined ||
+			newBodyCells === undefined ||
+			this.hasUndoBeenCalled === false
+		)
 			throw new CommandRedoError();
 
 		const { bodyRows, bodyCells } = prevState.model;
+
+		this.hasUndoBeenCalled = false;
 
 		return {
 			...prevState,
@@ -51,6 +58,8 @@ export default class RowAddCommand implements TableStateCommand {
 		if (newRow === undefined) throw new CommandUndoError();
 
 		const { bodyRows, bodyCells } = prevState.model;
+
+		this.hasUndoBeenCalled = true;
 		return {
 			...prevState,
 			model: {

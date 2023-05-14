@@ -1,5 +1,5 @@
 import { createTableState } from "src/data/table-state-factory";
-import { CommandUndoError } from "./command-errors";
+import { CommandRedoError, CommandUndoError } from "./command-errors";
 import ColumnAddCommand from "./column-add-command";
 
 describe("column-add-command", () => {
@@ -14,6 +14,16 @@ describe("column-add-command", () => {
 			command.undo(prevState);
 		} catch (err) {
 			expect(err).toBeInstanceOf(CommandUndoError);
+		}
+	});
+
+	it("should throw an error when redo() is called before undo()", () => {
+		try {
+			const prevState = createTableState(1, 1);
+			const executeState = command.execute(prevState);
+			command.redo(executeState);
+		} catch (err) {
+			expect(err).toBeInstanceOf(CommandRedoError);
 		}
 	});
 
