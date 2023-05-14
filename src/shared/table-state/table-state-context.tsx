@@ -108,11 +108,15 @@ export default function TableStateProvider({
 	}, [tableState]);
 
 	function doCommand(command: TableStateCommand) {
-		if (position < history.length - 1) {
-			setHistory((prevState) => prevState.slice(0, position + 1));
-		}
-
-		setHistory((prevState) => [...prevState, command]);
+		setHistory((prevState) => {
+			//If the position is not at the end of the history, then we want to remove all the commands after the current position
+			if (position < history.length - 1) {
+				const newState = prevState.slice(0, position + 1);
+				return [...newState, command];
+			} else {
+				return [...prevState, command];
+			}
+		});
 		setPosition((prevState) => prevState + 1);
 
 		//Execute command

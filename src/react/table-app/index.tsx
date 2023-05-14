@@ -64,7 +64,7 @@ export default function TableApp({ viewLeaf }: Props) {
 		handleCellDateTimeChange,
 		handleFunctionTypeChange,
 		handleHeaderCellContentChange,
-	} = useCell(setTableState);
+	} = useCell();
 
 	const {
 		handleAddCellToTag,
