@@ -9,11 +9,15 @@ export default class RowAddCommand implements TableStateCommand {
 	execute(prevState: TableState): TableState {
 		const { bodyRows, bodyCells, columns } = prevState.model;
 
-		const newRow = createBodyRow(bodyRows.length);
+		//Consider the case where a user executes a RowAddCommand and then a CellBodyUpdateCommand
+		//if they undo the commands and then redo them, the row will be added again. However, the CellBodyUpdateCommand
+		//is referencing the old row id, so it will fail to find the cell to update.
+		//To fix this, we make sure that we pass the newRowId from the previous execution to the new row
+		const newRow = createBodyRow(bodyRows.length, this.newRowId);
 		this.newRowId = newRow.id;
 
 		const newCells = columns.map((column) =>
-			createBodyCell(column.id, newRow.id, column.type)
+			createBodyCell(column.id, newRow.id, { cellType: column.type })
 		);
 
 		return {

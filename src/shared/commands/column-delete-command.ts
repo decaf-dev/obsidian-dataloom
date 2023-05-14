@@ -34,11 +34,6 @@ export default class ColumnDeleteCommand implements TableStateCommand {
 		this.last = last;
 	}
 
-	// original 0,1,2,3
-	// delete column 0,2
-	// insert first value 0,1,2
-	// insert second value 0,1,2,3
-
 	execute(prevState: TableState): TableState {
 		const {
 			columns,

@@ -70,7 +70,12 @@ export default function TableStateProvider({
 
 			const command = history[currentPosition];
 			if (command !== null) {
-				const newState = command.execute(tableState);
+				let newState;
+				if (command.redo === undefined) {
+					newState = command.execute(tableState);
+				} else {
+					newState = command.redo(tableState);
+				}
 				setTableState(newState);
 			}
 		}

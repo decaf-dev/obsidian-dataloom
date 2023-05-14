@@ -1,7 +1,5 @@
 import { createTableState } from "src/data/table-state-factory";
 import { CommandUndoError } from "./command-errors";
-import CellFooterUpdateCommand from "./cell-footer-update-command";
-import { GeneralFunction } from "../table-state/types";
 import CellHeaderUpdateCommand from "./cell-header-update-command";
 
 describe("row-header-update-command", () => {
