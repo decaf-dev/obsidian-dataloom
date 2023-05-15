@@ -5,13 +5,15 @@ import {
 import { CellIdError } from "../table-state/table-error";
 import TableStateCommand from "../table-state/table-state-command";
 import { BodyCell, TableState } from "../table-state/types";
-import { CommandUndoError } from "./command-errors";
 
-export default class CellBodyUpdateCommand implements TableStateCommand {
+export default class CellBodyUpdateCommand extends TableStateCommand {
 	cellId: string;
 	rowId: string;
 	key: keyof BodyCell;
 	value: unknown;
+
+	previousValue: unknown;
+	previousEditedTime: number;
 
 	constructor(
 		cellId: string,
@@ -19,16 +21,16 @@ export default class CellBodyUpdateCommand implements TableStateCommand {
 		key: keyof BodyCell,
 		value: unknown
 	) {
+		super();
 		this.cellId = cellId;
 		this.rowId = rowId;
 		this.key = key;
 		this.value = value;
 	}
 
-	previousValue?: unknown;
-	previousEditedTime?: number;
-
 	execute(prevState: TableState): TableState {
+		super.onExecute();
+
 		const { bodyCells, bodyRows } = prevState.model;
 		const cell = bodyCells.find((cell) => cell.id === this.cellId);
 		if (!cell) throw new CellIdError(this.cellId);
@@ -57,12 +59,13 @@ export default class CellBodyUpdateCommand implements TableStateCommand {
 		};
 	}
 
+	redo(prevState: TableState): TableState {
+		super.onRedo();
+		return this.execute(prevState);
+	}
+
 	undo(prevState: TableState): TableState {
-		if (
-			this.previousValue === undefined ||
-			this.previousEditedTime === undefined
-		)
-			throw new CommandUndoError();
+		super.onUndo();
 
 		const { bodyCells, bodyRows } = prevState.model;
 		return {

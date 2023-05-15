@@ -1,17 +1,11 @@
-import React, { SetStateAction } from "react";
+import React from "react";
 import {
 	CellType,
 	CurrencyType,
 	DateFormat,
 	SortDir,
-	TableState,
 } from "src/shared/table-state/types";
 import { useLogger } from "../logger";
-import {
-	columnChangeType,
-	columnSort,
-	columnUpdate,
-} from "./column-state-operations";
 import { WorkspaceLeaf } from "obsidian";
 import { updateSortTime } from "src/redux/global/global-slice";
 import { EVENT_COLUMN_ADD, EVENT_COLUMN_DELETE } from "../events";
@@ -19,11 +13,10 @@ import { useAppDispatch } from "src/redux/global/hooks";
 import { useTableState } from "./table-state-context";
 import ColumnAddCommand from "../commands/column-add-command";
 import ColumnDeleteCommand from "../commands/column-delete-command";
+import ColumnUpdateCommand from "../commands/column-update-command";
+import { ColumnTypeChangeCommand } from "../commands/column-type-change-comand";
 
-export const useColumn = (
-	viewLeaf: WorkspaceLeaf,
-	onChange: React.Dispatch<SetStateAction<TableState>>
-) => {
+export const useColumn = (viewLeaf: WorkspaceLeaf) => {
 	const dispatch = useAppDispatch();
 	const logFunc = useLogger();
 	const { doCommand } = useTableState();
@@ -58,20 +51,21 @@ export const useColumn = (
 		logFunc("handleNewColumnClick");
 		doCommand(new ColumnAddCommand());
 	}
-	function handleHeaderTypeClick(columnId: string, type: CellType) {
-		logFunc("handleHeaderTypeClick", {
+	function handleColumnTypeClick(columnId: string, type: CellType) {
+		logFunc("handleColumnTypeClick", {
 			columnId,
 			type,
 		});
-		onChange((prevState) => columnChangeType(prevState, columnId, type));
+		doCommand(new ColumnTypeChangeCommand(columnId, type));
 	}
 
-	function handleHeaderSortSelect(columnId: string, sortDir: SortDir) {
-		logFunc("handleHeaderSortSelect", {
+	function handleColumnSortClick(columnId: string, sortDir: SortDir) {
+		logFunc("handleColumnSortClick", {
 			columnId,
 			sortDir,
 		});
-		onChange((prevState) => columnSort(prevState, columnId, sortDir));
+		doCommand(new ColumnUpdateCommand(columnId, "sortDir", sortDir));
+		//TODO check?
 		dispatch(updateSortTime());
 	}
 
@@ -79,11 +73,11 @@ export const useColumn = (
 		logFunc("handleColumnToggle", {
 			columnId,
 		});
-		onChange((prevState) => columnUpdate(prevState, columnId, "isVisible"));
+		doCommand(new ColumnUpdateCommand(columnId, "isVisible"));
 	}
 
-	function handleHeaderDeleteClick(columnId: string) {
-		logFunc("handleHeaderDeleteClick", {
+	function handleColumnDeleteClick(columnId: string) {
+		logFunc("handleColumnDeleteClick", {
 			columnId,
 		});
 		doCommand(new ColumnDeleteCommand({ id: columnId }));
@@ -97,8 +91,8 @@ export const useColumn = (
 			columnId,
 			currencyType,
 		});
-		onChange((prevState) =>
-			columnUpdate(prevState, columnId, "currencyType", currencyType)
+		doCommand(
+			new ColumnUpdateCommand(columnId, "currencyType", currencyType)
 		);
 		dispatch(updateSortTime());
 	}
@@ -108,9 +102,7 @@ export const useColumn = (
 			columnId,
 			dateFormat,
 		});
-		onChange((prevState) =>
-			columnUpdate(prevState, columnId, "dateFormat", dateFormat)
-		);
+		doCommand(new ColumnUpdateCommand(columnId, "dateFormat", dateFormat));
 		dispatch(updateSortTime());
 	}
 
@@ -118,40 +110,38 @@ export const useColumn = (
 		logFunc("handleSortRemoveClick", {
 			columnId,
 		});
-		onChange((prevState) => columnSort(prevState, columnId, SortDir.NONE));
+		doCommand(new ColumnUpdateCommand(columnId, "sortDir", SortDir.NONE));
 		dispatch(updateSortTime());
 	}
 
-	function handleHeaderWidthChange(columnId: string, width: string) {
-		logFunc("handleHeaderWidthChange", {
+	function handleColumnWidthChange(columnId: string, width: string) {
+		logFunc("handleColumnWidthChange", {
 			columnId,
 			width,
 		});
-		onChange((prevState) =>
-			columnUpdate(prevState, columnId, "width", width)
-		);
+		doCommand(new ColumnUpdateCommand(columnId, "width", width));
 	}
 
-	function handleWrapContentToggle(columnId: string, value: boolean) {
+	function handleWrapContentToggle(columnId: string, shouldWrap: boolean) {
 		logFunc("handleWrapContentToggle", {
 			columnId,
-			value,
+			shouldWrap,
 		});
-		onChange((prevState) =>
-			columnUpdate(prevState, columnId, "shouldWrapOverflow", value)
+		doCommand(
+			new ColumnUpdateCommand(columnId, "shouldWrapOverflow", shouldWrap)
 		);
 	}
 
 	return {
 		handleNewColumnClick,
-		handleHeaderTypeClick,
-		handleHeaderSortSelect,
+		handleColumnTypeClick,
+		handleColumnSortClick,
 		handleColumnToggle,
-		handleHeaderDeleteClick,
+		handleColumnDeleteClick,
 		handleCurrencyChange,
 		handleDateFormatChange,
 		handleSortRemoveClick,
-		handleHeaderWidthChange,
+		handleColumnWidthChange,
 		handleWrapContentToggle,
 	};
 };

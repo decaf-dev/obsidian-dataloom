@@ -21,6 +21,7 @@ import {
 
 import { v4 as uuidv4 } from "uuid";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/table-state/constants";
+import { Color } from "src/shared/types";
 
 export const createColumn = (): Column => {
 	return {
@@ -111,16 +112,16 @@ export const createFooterCell = (
 
 export const createTag = (
 	columnId: string,
-	cellId: string,
 	markdown: string,
-	color = randomColor()
+	options?: { color?: Color; cellId?: string }
 ): Tag => {
+	const { color = randomColor(), cellId } = options || {};
 	return {
 		id: uuidv4(),
 		columnId,
 		markdown: markdown,
 		color,
-		cellIds: [cellId],
+		cellIds: cellId !== undefined ? [cellId] : [],
 	};
 };
 

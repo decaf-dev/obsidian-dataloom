@@ -26,7 +26,7 @@ export const tagAddNew = (
 		}
 	}
 
-	tagsCopy.push(createTag(columnId, cellId, markdown, color));
+	tagsCopy.push(createTag(columnId, markdown, { color, cellId }));
 	return {
 		...prevState,
 		model: {
@@ -94,35 +94,6 @@ export const tagAddCell = (
 			...prevState.model,
 			tags: tagsCopy,
 			bodyRows: rowLastEditedTimeUpdate(bodyRows, rowId),
-		},
-	};
-};
-
-export const tagUpdateColor = (
-	prevState: TableState,
-	tagId: string,
-	newColor: Color
-): TableState => {
-	const { tags } = prevState.model;
-	const tagsCopy = structuredClone(tags);
-	const index = tagsCopy.findIndex((t) => t.id === tagId);
-	tagsCopy[index].color = newColor;
-	return {
-		...prevState,
-		model: {
-			...prevState.model,
-			tags: tagsCopy,
-		},
-	};
-};
-
-export const tagDelete = (prevState: TableState, tagId: string): TableState => {
-	const { tags } = prevState.model;
-	return {
-		...prevState,
-		model: {
-			...prevState.model,
-			tags: tags.filter((tag) => tag.id !== tagId),
 		},
 	};
 };

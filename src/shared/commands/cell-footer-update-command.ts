@@ -1,22 +1,24 @@
 import { CellIdError } from "../table-state/table-error";
 import TableStateCommand from "../table-state/table-state-command";
 import { FooterCell, TableState } from "../table-state/types";
-import { CommandUndoError } from "./command-errors";
 
-export default class CellFooterUpdateCommand implements TableStateCommand {
+export default class CellFooterUpdateCommand extends TableStateCommand {
 	cellId: string;
 	key: keyof FooterCell;
 	value: unknown;
 
+	previousValue: unknown;
+
 	constructor(cellId: string, key: keyof FooterCell, value: unknown) {
+		super();
 		this.cellId = cellId;
 		this.key = key;
 		this.value = value;
 	}
 
-	previousValue?: unknown;
-
 	execute(prevState: TableState): TableState {
+		super.onExecute();
+
 		const { footerCells } = prevState.model;
 		const cell = footerCells.find((cell) => cell.id === this.cellId);
 		if (!cell) throw new CellIdError(this.cellId);
@@ -39,8 +41,13 @@ export default class CellFooterUpdateCommand implements TableStateCommand {
 		};
 	}
 
+	redo(prevState: TableState): TableState {
+		super.onRedo();
+		return this.execute(prevState);
+	}
+
 	undo(prevState: TableState): TableState {
-		if (this.previousValue === undefined) throw new CommandUndoError();
+		super.onUndo();
 
 		const { footerCells } = prevState.model;
 		return {

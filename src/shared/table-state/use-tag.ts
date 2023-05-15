@@ -2,17 +2,15 @@ import { SetStateAction } from "react";
 import { TableState } from "src/shared/table-state/types";
 import { useLogger } from "../logger";
 import { Color } from "../types";
-import {
-	tagAddCell,
-	tagAddNew,
-	tagDelete,
-	tagRemoveCell,
-	tagUpdateColor,
-} from "./tag-state-operations";
+import { tagAddCell, tagAddNew, tagRemoveCell } from "./tag-state-operations";
+import TagDeleteCommand from "../commands/tag-delete-command";
+import { useTableState } from "./table-state-context";
+import TagUpdateCommand from "../commands/tag-update-command";
 
 export const useTag = (
 	onChange: React.Dispatch<SetStateAction<TableState>>
 ) => {
+	const { doCommand } = useTableState();
 	const logFunc = useLogger();
 
 	function handleAddTag(
@@ -78,7 +76,7 @@ export const useTag = (
 		logFunc("handleTagDeleteClick", {
 			tagId,
 		});
-		onChange((prevState) => tagDelete(prevState, tagId));
+		doCommand(new TagDeleteCommand(tagId));
 	}
 
 	function handleTagChangeColor(tagId: string, color: Color) {
@@ -86,7 +84,7 @@ export const useTag = (
 			tagId,
 			color,
 		});
-		onChange((prevState) => tagUpdateColor(prevState, tagId, color));
+		doCommand(new TagUpdateCommand(tagId, "color", color));
 	}
 
 	return {

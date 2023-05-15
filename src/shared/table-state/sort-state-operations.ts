@@ -205,7 +205,7 @@ const sortByLastEditedTime = (rows: BodyRow[], sortDir: SortDir): BodyRow[] => {
 	return rowsCopy;
 };
 
-export const sortByRowIndex = (rows: BodyRow[]): BodyRow[] => {
+const sortByRowIndex = (rows: BodyRow[]): BodyRow[] => {
 	const rowsCopy = structuredClone(rows);
 	rowsCopy.sort((a, b) => {
 		return a.index - b.index;
