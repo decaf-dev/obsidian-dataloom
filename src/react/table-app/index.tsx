@@ -49,13 +49,13 @@ export default function TableApp({ viewLeaf }: Props) {
 		handleColumnToggle,
 		handleCurrencyChange,
 		handleDateFormatChange,
-		handleHeaderDeleteClick,
-		handleHeaderSortSelect,
-		handleHeaderTypeClick,
-		handleHeaderWidthChange,
+		handleColumnDeleteClick,
+		handleColumnSortClick,
+		handleColumnTypeClick,
+		handleColumnWidthChange,
 		handleSortRemoveClick,
 		handleWrapContentToggle,
-	} = useColumn(viewLeaf, setTableState);
+	} = useColumn(viewLeaf);
 
 	const { handleNewRowClick, handleRowDeleteClick } = useRow(viewLeaf);
 
@@ -159,14 +159,14 @@ export default function TableApp({ viewLeaf }: Props) {
 											markdown={markdown}
 											type={type}
 											sortDir={sortDir}
-											onSortClick={handleHeaderSortSelect}
+											onSortClick={handleColumnSortClick}
 											onWidthChange={
-												handleHeaderWidthChange
+												handleColumnWidthChange
 											}
 											onDeleteClick={
-												handleHeaderDeleteClick
+												handleColumnDeleteClick
 											}
-											onTypeSelect={handleHeaderTypeClick}
+											onTypeSelect={handleColumnTypeClick}
 											onDateFormatChange={
 												handleDateFormatChange
 											}

@@ -9,23 +9,21 @@ import {
 	FilterRule,
 } from "../table-state/types";
 import TableStateCommand from "../table-state/table-state-command";
-import {
-	CommandUndoError,
-	DeleteCommandArgumentsError,
-} from "./command-errors";
+import { DeleteCommandArgumentsError } from "./command-errors";
 
-export default class ColumnDeleteCommand implements TableStateCommand {
+export default class ColumnDeleteCommand extends TableStateCommand {
 	columnId?: string;
 	last?: boolean;
 
-	deletedColumn?: { arrIndex: number; column: Column };
-	deletedHeaderCells?: { arrIndex: number; cell: HeaderCell }[];
-	deletedBodyCells?: { arrIndex: number; cell: BodyCell }[];
-	deletedFooterCells?: { arrIndex: number; cell: FooterCell }[];
-	deletedTags?: { arrIndex: number; tag: Tag }[];
-	deletedFilterRules?: { arrIndex: number; rule: FilterRule }[];
+	deletedColumn: { arrIndex: number; column: Column };
+	deletedHeaderCells: { arrIndex: number; cell: HeaderCell }[];
+	deletedBodyCells: { arrIndex: number; cell: BodyCell }[];
+	deletedFooterCells: { arrIndex: number; cell: FooterCell }[];
+	deletedTags: { arrIndex: number; tag: Tag }[];
+	deletedFilterRules: { arrIndex: number; rule: FilterRule }[];
 
 	constructor(options: { id?: string; last?: boolean }) {
+		super();
 		const { id, last } = options;
 		if (id === undefined && last === undefined)
 			throw new DeleteCommandArgumentsError();
@@ -35,6 +33,8 @@ export default class ColumnDeleteCommand implements TableStateCommand {
 	}
 
 	execute(prevState: TableState): TableState {
+		super.onExecute();
+
 		const {
 			columns,
 			headerCells,
@@ -55,7 +55,7 @@ export default class ColumnDeleteCommand implements TableStateCommand {
 		const columnToDelete = columns.find((column) => column.id === id);
 		if (!columnToDelete) throw new ColumnIdError(id!);
 		this.deletedColumn = {
-			arrIndex: columns.findIndex((column) => column.id === id),
+			arrIndex: columns.indexOf(columnToDelete),
 			column: structuredClone(columnToDelete),
 		};
 
@@ -63,7 +63,7 @@ export default class ColumnDeleteCommand implements TableStateCommand {
 			(cell) => cell.columnId === id
 		);
 		this.deletedHeaderCells = headerCellsToDelete.map((cell) => ({
-			arrIndex: headerCells.findIndex((c) => c.id === cell.id),
+			arrIndex: headerCells.indexOf(cell),
 			cell: structuredClone(cell),
 		}));
 
@@ -71,7 +71,7 @@ export default class ColumnDeleteCommand implements TableStateCommand {
 			(cell) => cell.columnId === id
 		);
 		this.deletedBodyCells = bodyCellsToDelete.map((cell) => ({
-			arrIndex: bodyCells.findIndex((c) => c.id === cell.id),
+			arrIndex: bodyCells.indexOf(cell),
 			cell: structuredClone(cell),
 		}));
 
@@ -79,13 +79,13 @@ export default class ColumnDeleteCommand implements TableStateCommand {
 			(cell) => cell.columnId === id
 		);
 		this.deletedFooterCells = footerCellsToDelete.map((cell) => ({
-			arrIndex: footerCells.findIndex((c) => c.id === cell.id),
+			arrIndex: footerCells.indexOf(cell),
 			cell: structuredClone(cell),
 		}));
 
 		const tagsToDelete = tags.filter((tag) => tag.columnId === id);
 		this.deletedTags = tagsToDelete.map((tag) => ({
-			arrIndex: tags.findIndex((t) => t.id === tag.id),
+			arrIndex: tags.indexOf(tag),
 			tag: structuredClone(tag),
 		}));
 
@@ -93,7 +93,7 @@ export default class ColumnDeleteCommand implements TableStateCommand {
 			(rule) => rule.columnId === id
 		);
 		this.deletedFilterRules = rulesToDelete.map((rule) => ({
-			arrIndex: filterRules.findIndex((r) => r.id === rule.id),
+			arrIndex: filterRules.indexOf(rule),
 			rule: structuredClone(rule),
 		}));
 
@@ -111,16 +111,13 @@ export default class ColumnDeleteCommand implements TableStateCommand {
 		};
 	}
 
+	redo(prevState: TableState): TableState {
+		super.onRedo();
+		return this.execute(prevState);
+	}
+
 	undo(prevState: TableState): TableState {
-		if (
-			this.deletedColumn === undefined ||
-			this.deletedBodyCells === undefined ||
-			this.deletedFilterRules === undefined ||
-			this.deletedFooterCells === undefined ||
-			this.deletedHeaderCells === undefined ||
-			this.deletedTags === undefined
-		)
-			throw new CommandUndoError();
+		super.onUndo();
 
 		const {
 			columns,

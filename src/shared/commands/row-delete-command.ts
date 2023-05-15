@@ -1,26 +1,23 @@
 import { BodyCell, BodyRow, TableState } from "../table-state/types";
 import { RowIdError } from "../table-state/table-error";
 import TableStateCommand from "../table-state/table-state-command";
-import {
-	DeleteCommandArgumentsError,
-	CommandUndoError,
-} from "./command-errors";
+import { DeleteCommandArgumentsError } from "./command-errors";
 
-export default class RowDeleteCommand implements TableStateCommand {
+export default class RowDeleteCommand extends TableStateCommand {
 	rowId?: string;
 	last?: boolean;
 
-	deletedRowIndex?: number;
-	deletedRow?: {
+	deletedRow: {
 		arrIndex: number;
 		row: BodyRow;
 	};
-	deletedCells?: {
+	deletedCells: {
 		arrIndex: number;
 		cell: BodyCell;
 	}[];
 
 	constructor(options: { id?: string; last?: boolean }) {
+		super();
 		const { id, last } = options;
 		if (id === undefined && last === undefined)
 			throw new DeleteCommandArgumentsError();
@@ -30,6 +27,8 @@ export default class RowDeleteCommand implements TableStateCommand {
 	}
 
 	execute(prevState: TableState): TableState {
+		super.onExecute();
+
 		const { bodyRows, bodyCells } = prevState.model;
 		if (bodyRows.length === 0) return prevState;
 
@@ -41,13 +40,13 @@ export default class RowDeleteCommand implements TableStateCommand {
 		const rowToDelete = bodyRows.find((row) => row.id === id);
 		if (!rowToDelete) throw new RowIdError(id!);
 		this.deletedRow = {
-			arrIndex: bodyRows.findIndex((row) => row.id === id),
+			arrIndex: bodyRows.indexOf(rowToDelete),
 			row: structuredClone(rowToDelete),
 		};
 
 		const cellsToDelete = bodyCells.filter((cell) => cell.rowId === id);
 		this.deletedCells = cellsToDelete.map((cell) => ({
-			arrIndex: bodyCells.findIndex((c) => c.id === cell.id),
+			arrIndex: bodyCells.indexOf(cell),
 			cell: structuredClone(cell),
 		}));
 
@@ -61,9 +60,13 @@ export default class RowDeleteCommand implements TableStateCommand {
 		};
 	}
 
+	redo(prevState: TableState): TableState {
+		super.onRedo();
+		return this.execute(prevState);
+	}
+
 	undo(prevState: TableState): TableState {
-		if (this.deletedRow === undefined || this.deletedCells === undefined)
-			throw new CommandUndoError();
+		super.onUndo();
 
 		const { bodyRows, bodyCells } = prevState.model;
 
