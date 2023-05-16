@@ -1,8 +1,8 @@
 import MenuItem from "src/react/shared/menu-item";
 import Submenu from "../Submenu";
 import { CellType } from "src/shared/table-state/types";
-import { getIconTypeFromCellType } from "src/react/shared/icon/utils";
 import { getDisplayNameForCellType } from "src/shared/table-state/display-name";
+import { getIconIdForCellType } from "src/react/shared/icon/utils";
 interface Props {
 	title: string;
 	value: CellType;
@@ -22,7 +22,7 @@ export default function TypeSubmenu({
 				<MenuItem
 					key={type}
 					name={getDisplayNameForCellType(type)}
-					iconType={getIconTypeFromCellType(type)}
+					lucideId={getIconIdForCellType(type)}
 					onClick={() => onValueClick(type)}
 					isSelected={type === value}
 				/>

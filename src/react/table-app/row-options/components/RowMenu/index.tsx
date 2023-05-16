@@ -1,6 +1,5 @@
 import Menu from "src/react/shared/menu";
 import MenuItem from "src/react/shared/menu-item";
-import { IconType } from "src/react/shared/icon/types";
 
 interface Props {
 	id: string;
@@ -22,7 +21,7 @@ export default function RowMenu({
 		<Menu id={id} isOpen={isOpen} top={top} left={left}>
 			<div className="NLT__row-menu">
 				<MenuItem
-					iconType={IconType.DELETE}
+					lucideId="trash-2"
 					name="Delete"
 					onClick={() => onDeleteClick(rowId)}
 				/>

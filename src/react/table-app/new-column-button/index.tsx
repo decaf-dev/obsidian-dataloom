@@ -1,4 +1,3 @@
-import { IconType } from "src/react/shared/icon/types";
 import { Button } from "../../shared/button";
 import Icon from "../../shared/icon";
 
@@ -12,7 +11,7 @@ export default function NewColumnButton({ onClick }: Props) {
 	return (
 		<div className="NLT__new-column">
 			<Button
-				icon={<Icon type={IconType.ADD} />}
+				icon={<Icon lucideId="plus" />}
 				ariaLabel="New column"
 				onClick={() => onClick()}
 			/>

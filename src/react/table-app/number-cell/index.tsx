@@ -12,10 +12,8 @@ export default function NumberCell({ value, shouldWrapOverflow }: Props) {
 	const overflowClassName = useOverflowClassName(shouldWrapOverflow);
 	const className = "NLT__number-cell" + " " + overflowClassName;
 
-	let valueFormatted = "";
-	if (isNumber(value)) {
-		valueFormatted = value;
-	}
+	let valueString = "";
+	if (isNumber(value)) valueString = value;
 
-	return <div className={className}>{valueFormatted}</div>;
+	return <div className={className}>{valueString}</div>;
 }

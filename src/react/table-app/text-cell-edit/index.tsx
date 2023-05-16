@@ -22,14 +22,28 @@ export default function TextCellEdit({
 	value,
 	onChange,
 }: Props) {
-	const inputRef = useFocusMenuTextArea(isMenuVisible, value, onChange);
+	const inputRef = useFocusMenuTextArea(
+		isMenuVisible,
+		value,
+		(updatedValue) => handleTextareaChange(updatedValue, true)
+	);
 	const { setPreviousSelectionStart } = useInputSelection(inputRef, value);
 
-	function handleTextareaChange(value: string) {
+	function handleTextareaChange(
+		inputValue: string,
+		setSelectionToLength = false
+	) {
+		//When we press the menu key, an extra character will be added
+		//we need to update the selection to be after this character
+		//Otherwise keep the selection where it was
 		if (inputRef.current) {
-			setPreviousSelectionStart(inputRef.current.selectionStart);
+			if (setSelectionToLength) {
+				setPreviousSelectionStart(inputValue.length);
+			} else {
+				setPreviousSelectionStart(inputRef.current.selectionStart);
+			}
 		}
-		onChange(value);
+		onChange(inputValue);
 	}
 
 	const className = useOverflowClassName(shouldWrapOverflow);

@@ -3,12 +3,17 @@ import TableStateCommand from "./table-state-command";
 import { useDidMountEffect, useUUID } from "../hooks";
 import React from "react";
 import { WorkspaceLeaf } from "obsidian";
-import { EVENT_REDO, EVENT_UNDO } from "../events";
 import { useLogger } from "../logger";
+import _ from "lodash";
+import {
+	isMacRedo,
+	isMacUndo,
+	isWindowsRedo,
+	isWindowsUndo,
+} from "../keyboard-event";
 
 interface Props {
 	initialState: TableState;
-	viewLeaf: WorkspaceLeaf;
 	children: React.ReactNode;
 	onSaveState: (value: TableState) => void;
 }
@@ -33,7 +38,6 @@ export const useTableState = () => {
 
 export default function TableStateProvider({
 	initialState,
-	viewLeaf,
 	onSaveState,
 	children,
 }: Props) {
@@ -55,6 +59,7 @@ export default function TableStateProvider({
 
 			const command = history[position];
 			if (command !== null) {
+				logger(command.constructor.name + ".undo");
 				const newState = command.undo(tableState);
 				setTableState(newState);
 			}
@@ -70,12 +75,8 @@ export default function TableStateProvider({
 
 			const command = history[currentPosition];
 			if (command !== null) {
-				let newState;
-				if (command.redo === undefined) {
-					newState = command.execute(tableState);
-				} else {
-					newState = command.redo(tableState);
-				}
+				logger(command.constructor.name + ".redo");
+				const newState = command.redo(tableState);
 				setTableState(newState);
 			}
 		}
@@ -83,26 +84,20 @@ export default function TableStateProvider({
 
 	//Handle hot key press
 	React.useEffect(() => {
-		function handleUndoEvent(leaf: WorkspaceLeaf) {
-			if (leaf === viewLeaf) {
+		function handleKeyDown(e: KeyboardEvent) {
+			if (isWindowsRedo(e) || isMacRedo(e)) {
+				e.preventDefault();
+				redo();
+			} else if (isWindowsUndo(e) || isMacUndo(e)) {
+				e.preventDefault();
 				undo();
 			}
 		}
 
-		function handleRedoEvent(leaf: WorkspaceLeaf) {
-			if (leaf === viewLeaf) {
-				redo();
-			}
-		}
-
-		//@ts-expect-error missing overload
-		app.workspace.on(EVENT_UNDO, handleUndoEvent);
-		//@ts-expect-error missing overload
-		app.workspace.on(EVENT_REDO, handleRedoEvent);
-
+		const throttleKeyDownEvent = _.throttle(handleKeyDown, 100);
+		document.addEventListener("keydown", throttleKeyDownEvent);
 		return () => {
-			app.workspace.off(EVENT_UNDO, handleUndoEvent);
-			app.workspace.off(EVENT_REDO, handleRedoEvent);
+			document.removeEventListener("keydown", throttleKeyDownEvent);
 		};
 	}, [redo, undo]);
 

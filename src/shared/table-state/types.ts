@@ -58,7 +58,7 @@ export enum CurrencyType {
 	ARGENTINA = "ARS",
 }
 
-export enum GeneralFunction {
+export enum GeneralFunction680 {
 	NONE = "none",
 	COUNT_ALL = "count_all",
 	COUNT_VALUES = "count_values",
@@ -67,6 +67,17 @@ export enum GeneralFunction {
 	COUNT_NOT_EMPTY = "count_not_empty",
 	PERCENT_EMPTY = "percent_empty",
 	PERCENT_NOT_EMPTY = "percent_not_empty",
+}
+
+export enum GeneralFunction {
+	NONE = "none",
+	COUNT_ALL = "count-all",
+	COUNT_VALUES = "count-values",
+	COUNT_UNIQUE = "count-unique",
+	COUNT_EMPTY = "count-empty",
+	COUNT_NOT_EMPTY = "count-not-empty",
+	PERCENT_EMPTY = "percent-empty",
+	PERCENT_NOT_EMPTY = "percent-not-empty",
 }
 
 export enum NumberFunction {
@@ -79,6 +90,7 @@ export enum NumberFunction {
 }
 
 export type FunctionType = GeneralFunction | NumberFunction;
+export type FunctionType680 = GeneralFunction680 | NumberFunction;
 
 export interface Column633 {
 	id: string;
@@ -149,6 +161,10 @@ export interface BodyCell extends Cell {
 	markdown: string;
 }
 
+export interface FooterCell680 extends Cell {
+	functionType: FunctionType680;
+}
+
 export interface FooterCell extends Cell {
 	functionType: FunctionType;
 }
@@ -189,6 +205,18 @@ export interface TableModel {
 	filterRules: FilterRule[];
 }
 
+export interface TableModel680 {
+	columns: Column[];
+	headerRows: HeaderRow[];
+	bodyRows: BodyRow[];
+	footerRows: FooterRow[];
+	headerCells: HeaderCell[];
+	bodyCells: BodyCell[];
+	footerCells: FooterCell680[];
+	tags: Tag[];
+	filterRules: FilterRule[];
+}
+
 export interface TableModel670 {
 	columns: Column[];
 	headerRows: HeaderRow[];
@@ -202,8 +230,13 @@ export interface TableModel670 {
 export interface BaseTableState {
 	pluginVersion: number;
 }
+
 export interface TableState extends BaseTableState {
 	model: TableModel;
+}
+
+export interface TableState680 extends BaseTableState {
+	model: TableModel680;
 }
 
 export interface TableState670 extends BaseTableState {
