@@ -1,7 +1,7 @@
-import { useFocusMenuInput } from "src/shared/hooks";
+import { useFocusMenuInput, useInputSelection } from "src/shared/hooks";
+import { isValidNumberInput } from "src/shared/validators";
+
 import "./styles.css";
-import { isNumber } from "src/shared/validators";
-import { MINUS_REGEX } from "src/shared/regex";
 interface Props {
 	isMenuVisible: boolean;
 	value: string;
@@ -13,19 +13,38 @@ export default function CurrencyCellEdit({
 	value,
 	onChange,
 }: Props) {
-	const inputRef = useFocusMenuInput(isMenuVisible, value, onChange);
+	const inputRef = useFocusMenuInput(
+		isMenuVisible,
+		value,
+		(value) => handleChange(value, true),
+		{
+			isNumeric: true,
+		}
+	);
 
-	function handleChange(value: string) {
-		if (!isNumber(value) && value !== "" && !value.match(MINUS_REGEX))
-			return;
-		onChange(value);
+	const { setPreviousSelectionStart } = useInputSelection(inputRef, value);
+
+	function handleChange(inputValue: string, setSelectionToLength = false) {
+		if (!isValidNumberInput(inputValue)) return;
+
+		//When we press the menu key, an extra character will be added
+		//we need to update the selection to be after this character
+		//Otherwise keep the selection where it was
+		if (inputRef.current) {
+			if (setSelectionToLength) {
+				setPreviousSelectionStart(inputValue.length);
+			} else if (inputRef.current.selectionStart) {
+				setPreviousSelectionStart(inputRef.current.selectionStart);
+			}
+		}
+		onChange(inputValue);
 	}
 
 	return (
 		<div className="NLT__currency-cell-edit">
 			<input
 				ref={inputRef}
-				type="text"
+				type="text" //We use an input of type text so that the selection is available
 				inputMode="numeric"
 				autoFocus
 				value={value}
