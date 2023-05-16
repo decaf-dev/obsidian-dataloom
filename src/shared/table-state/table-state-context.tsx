@@ -10,7 +10,7 @@ import {
 	isMacUndo,
 	isWindowsRedo,
 	isWindowsUndo,
-} from "../keyboardEvent";
+} from "../keyboard-event";
 
 interface Props {
 	initialState: TableState;
@@ -59,6 +59,7 @@ export default function TableStateProvider({
 
 			const command = history[position];
 			if (command !== null) {
+				logger(command.constructor.name + ".undo");
 				const newState = command.undo(tableState);
 				setTableState(newState);
 			}
@@ -74,12 +75,8 @@ export default function TableStateProvider({
 
 			const command = history[currentPosition];
 			if (command !== null) {
-				let newState;
-				if (command.redo === undefined) {
-					newState = command.execute(tableState);
-				} else {
-					newState = command.redo(tableState);
-				}
+				logger(command.constructor.name + ".redo");
+				const newState = command.redo(tableState);
 				setTableState(newState);
 			}
 		}
