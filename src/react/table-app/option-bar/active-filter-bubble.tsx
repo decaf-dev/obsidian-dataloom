@@ -16,7 +16,7 @@ export default function ActiveFilterBubble({ numActive }: Props) {
 				background-color: var(--color-accent);
 			`}
 		>
-			{numActive} active filter
+			{numActive} active filter{numActive > 1 ? "s" : ""}
 		</div>
 	);
 }
