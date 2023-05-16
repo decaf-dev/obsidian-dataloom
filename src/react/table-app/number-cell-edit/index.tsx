@@ -1,6 +1,8 @@
 import { useFocusMenuInput, useInputSelection } from "src/shared/hooks";
-import "./styles.css";
 import { isNumber } from "src/shared/validators";
+
+import "./styles.css";
+import { MINUS_REGEX } from "src/shared/regex";
 
 interface Props {
 	isMenuVisible: boolean;
@@ -19,18 +21,14 @@ export default function NumberCellEdit({
 	const { setPreviousSelectionStart } = useInputSelection(inputRef, value);
 
 	function handleChange(value: string) {
-		if (!isNumber(value) && value !== "") return;
+		if (!isNumber(value) && value !== "" && !value.match(MINUS_REGEX))
+			return;
 		if (inputRef.current) {
 			setPreviousSelectionStart(
 				inputRef.current.selectionStart || value.length
 			);
 		}
 		onChange(value);
-	}
-
-	let valueFormatted = "";
-	if (isNumber(value)) {
-		valueFormatted = value;
 	}
 
 	return (
@@ -40,7 +38,7 @@ export default function NumberCellEdit({
 				ref={inputRef}
 				inputMode="numeric"
 				autoFocus
-				value={valueFormatted}
+				value={value}
 				onChange={(e) => handleChange(e.target.value)}
 			/>
 		</div>
