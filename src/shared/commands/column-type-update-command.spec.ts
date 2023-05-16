@@ -457,4 +457,56 @@ describe("column-type-update-command", () => {
 			prevState.model.filterRules
 		);
 	});
+
+	it("should handle text -> multi-tag when redo() is called", async () => {
+		//Arrange
+		const prevState = createTableState(1, 1);
+		prevState.model.bodyCells[0].markdown = "test1,test2";
+
+		const command = new ColumnTypeUpdateCommand(
+			prevState.model.columns[0].id,
+			CellType.MULTI_TAG
+		);
+
+		//Act
+		const executeState = command.execute(prevState);
+		const undoState = command.undo(executeState);
+		const redoState = command.redo(undoState);
+
+		//Assert
+		expect(redoState.model.columns).toEqual(executeState.model.columns);
+		expect(redoState.model.bodyCells).toEqual(executeState.model.bodyCells);
+		expect(redoState.model.tags).toEqual(executeState.model.tags);
+		expect(redoState.model.filterRules).toEqual(
+			executeState.model.filterRules
+		);
+	});
+
+	it("should delete filter rules when redo() is called", async () => {
+		//Arrange
+		const prevState = createTableState(1, 1, {
+			cellType: CellType.TEXT,
+		});
+
+		const filterRules = [
+			createFilterRule(prevState.model.columns[0].id),
+			createFilterRule(prevState.model.columns[0].id),
+		];
+		prevState.model.filterRules = filterRules;
+
+		const command = new ColumnTypeUpdateCommand(
+			prevState.model.columns[0].id,
+			CellType.TAG
+		);
+
+		//Act
+		const executeState = command.execute(prevState);
+		const undoState = command.undo(executeState);
+		const redoState = command.redo(undoState);
+
+		//Assert
+		expect(redoState.model.filterRules).toEqual(
+			executeState.model.filterRules
+		);
+	});
 });

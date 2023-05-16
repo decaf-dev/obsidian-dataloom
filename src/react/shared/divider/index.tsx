@@ -15,10 +15,10 @@ export default function Divider({
 		<hr
 			css={css`
 				margin: 0;
-				width: ${isVertical === false ? width : "unset"};
+				width: ${!isVertical ? width : "unset"};
 				height: ${isVertical === true ? height : "unset"};
 				border-left: ${isVertical === true
-					? "2px solid var(--background-modifier-border)"
+					? "var(--hr-thickness) var(--hr-color) solid"
 					: "unset"};
 			`}
 		/>
