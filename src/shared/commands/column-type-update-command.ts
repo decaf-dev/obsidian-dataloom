@@ -1,7 +1,6 @@
 import { createTag } from "src/data/table-state-factory";
 import { unixTimeToDateString } from "../date/date-conversion";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "../table-state/constants";
-import { isCellTypeFilterable } from "../table-state/filter-by-rules";
 import { ColumnIdError } from "../table-state/table-error";
 import TableStateCommand from "../table-state/table-state-command";
 import {
@@ -11,7 +10,6 @@ import {
 	TableState,
 	Tag,
 } from "../table-state/types";
-import { FilterType } from "../table-state/types";
 
 export class ColumnTypeUpdateCommand extends TableStateCommand {
 	columnId: string;

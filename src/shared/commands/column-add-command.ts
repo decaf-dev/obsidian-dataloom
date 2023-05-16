@@ -32,26 +32,25 @@ export default class ColumnAddCommand extends TableStateCommand {
 			footerRows,
 		} = prevState.model;
 
-		const newColumn = createColumn();
-		this.newColumn = newColumn;
+		this.newColumn = createColumn();
 
 		this.newHeaderCells = headerRows.map((row) =>
-			createHeaderCell(newColumn.id, row.id)
+			createHeaderCell(this.newColumn.id, row.id)
 		);
 
 		this.newBodyCells = bodyRows.map((row) =>
-			createBodyCell(newColumn.id, row.id)
+			createBodyCell(this.newColumn.id, row.id)
 		);
 
 		this.newFooterCells = footerRows.map((row) =>
-			createFooterCell(newColumn.id, row.id)
+			createFooterCell(this.newColumn.id, row.id)
 		);
 
 		return {
 			...prevState,
 			model: {
 				...prevState.model,
-				columns: [...columns, newColumn],
+				columns: [...columns, this.newColumn],
 				headerCells: [...headerCells, ...this.newHeaderCells],
 				bodyCells: [...bodyCells, ...this.newBodyCells],
 				footerCells: [...footerCells, ...this.newFooterCells],

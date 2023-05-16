@@ -5,12 +5,16 @@ import ColumnUpdateCommand from "./column-update-command";
 describe("column-update-command", () => {
 	it("should throw an error when undo() is called before execute()", () => {
 		try {
+			//Arrange
 			const prevState = createTableState(1, 1);
-			new ColumnUpdateCommand(
+			const command = new ColumnUpdateCommand(
 				prevState.model.columns[0].id,
 				"width",
 				"250px"
-			).undo(prevState);
+			);
+
+			//Act
+			command.undo(prevState);
 		} catch (err) {
 			expect(err).toBeInstanceOf(CommandUndoError);
 		}
@@ -18,12 +22,15 @@ describe("column-update-command", () => {
 
 	it("should throw an error when redo() is called before redo()", () => {
 		try {
+			//Arrange
 			const prevState = createTableState(1, 1);
 			const command = new ColumnUpdateCommand(
 				prevState.model.columns[0].id,
 				"width",
 				"250px"
 			);
+
+			//Act
 			command.execute(prevState);
 			command.redo(prevState);
 		} catch (err) {
@@ -32,19 +39,7 @@ describe("column-update-command", () => {
 	});
 
 	it("should update a column property when execute() is called", async () => {
-		const prevState = createTableState(1, 1);
-
-		const executeState = new ColumnUpdateCommand(
-			prevState.model.columns[0].id,
-			"width",
-			"250px"
-		).execute(prevState);
-
-		expect(executeState.model.columns.length).toEqual(1);
-		expect(executeState.model.columns[0].width).toEqual("250px");
-	});
-
-	it("should reset the cell property when undo() is called", () => {
+		//Arrange
 		const prevState = createTableState(1, 1);
 		const command = new ColumnUpdateCommand(
 			prevState.model.columns[0].id,
@@ -52,10 +47,28 @@ describe("column-update-command", () => {
 			"250px"
 		);
 
+		//Act
+		const executeState = command.execute(prevState);
+
+		//Assert
+		expect(executeState.model.columns.length).toEqual(1);
+		expect(executeState.model.columns[0].width).toEqual("250px");
+	});
+
+	it("should reset the cell property when undo() is called", () => {
+		//Arrange
+		const prevState = createTableState(1, 1);
+		const command = new ColumnUpdateCommand(
+			prevState.model.columns[0].id,
+			"width",
+			"250px"
+		);
+
+		//Act
 		const executeState = command.execute(prevState);
 		const undoState = command.undo(executeState);
 
-		expect(undoState.model.columns.length).toEqual(1);
-		expect(undoState.model.columns[0].width).toEqual("140px");
+		//Assert
+		expect(undoState.model.columns).toEqual(prevState.model.columns);
 	});
 });

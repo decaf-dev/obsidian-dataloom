@@ -10,7 +10,10 @@ describe("row-add-command", () => {
 
 	it("should throw an error when undo() is called before execute()", () => {
 		try {
+			//Arrange
 			const prevState = createTableState(1, 1);
+
+			//Act
 			command.undo(prevState);
 		} catch (err) {
 			expect(err).toBeInstanceOf(CommandUndoError);
@@ -19,8 +22,11 @@ describe("row-add-command", () => {
 
 	it("should throw an error when redo() is called before undo()", () => {
 		try {
+			//Arrange
 			const prevState = createTableState(1, 1);
 			const executeState = command.execute(prevState);
+
+			//Act
 			command.redo(executeState);
 		} catch (err) {
 			expect(err).toBeInstanceOf(CommandRedoError);
@@ -28,18 +34,26 @@ describe("row-add-command", () => {
 	});
 
 	it("should add a row when execute() is called", () => {
+		//Arrange
 		const prevState = createTableState(1, 1);
+
+		//Act
 		const executeState = command.execute(prevState);
 
+		//Assert
 		expect(executeState.model.bodyRows.length).toEqual(2);
 		expect(executeState.model.bodyCells.length).toEqual(2);
 	});
 
 	it("should remove the added row when undo() is called", () => {
+		//Arrange
 		const prevState = createTableState(1, 1);
+
+		//Act
 		const executeState = command.execute(prevState);
 		const undoState = command.undo(executeState);
 
+		//Assert
 		expect(undoState.model.bodyRows).toEqual(prevState.model.bodyRows);
 		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
 	});

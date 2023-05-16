@@ -28,9 +28,13 @@ describe("column-add-command", () => {
 	});
 
 	it("should add a column when execute() is called", () => {
+		//Arrange
 		const prevState = createTableState(1, 1);
+
+		//Act
 		const executeState = command.execute(prevState);
 
+		//Assert
 		expect(executeState.model.columns.length).toEqual(2);
 		expect(executeState.model.headerCells.length).toEqual(2);
 		expect(executeState.model.bodyCells.length).toEqual(2);
@@ -38,10 +42,14 @@ describe("column-add-command", () => {
 	});
 
 	it("should remove the added column when undo() is called", () => {
+		//Arrange
 		const prevState = createTableState(1, 1);
+
+		//Act
 		const executeState = command.execute(prevState);
 		const undoState = command.undo(executeState);
 
+		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
 		expect(undoState.model.headerCells).toEqual(
 			prevState.model.headerCells
