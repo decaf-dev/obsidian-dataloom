@@ -6,7 +6,6 @@ import { useMenu } from "src/shared/menu/hooks";
 import { Button } from "src/react/shared/button";
 import Icon from "src/react/shared/icon";
 import Tag from "src/react/shared/tag";
-import { IconType } from "src/react/shared/icon/types";
 import { Color } from "src/shared/types";
 import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
 import { css } from "@emotion/react";
@@ -65,7 +64,7 @@ export default function SelectableTag({
 			>
 				<Tag markdown={markdown} color={color} maxWidth="150px" />
 				<Button
-					icon={<Icon type={IconType.MORE_HORIZ} />}
+					icon={<Icon lucideId="more-horizontal" />}
 					isSimple
 					onClick={(e) => {
 						// Prevents a tag from being added when the button is clicked

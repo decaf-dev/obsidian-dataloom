@@ -5,14 +5,3 @@
     border-top: 1px solid var(--background-modifier-border);
     border-bottom: 1px solid var(--background-modifier-border);
 }
-
-.NLT__sort-bubble {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 8px;
-    padding: 2px 6px;
-    border: 1px solid var(--background-modifier-border);
-    user-select: none;
-    background-color: var(--background-modifier-border);
-}

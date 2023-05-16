@@ -1,7 +1,6 @@
 import Icon from "../icon";
 import Stack from "../stack";
 import { Color } from "src/shared/types";
-import { IconType } from "src/react/shared/icon/types";
 import { findColorClassName } from "src/shared/colors";
 import { Button } from "../button";
 
@@ -51,7 +50,7 @@ export default function Tag({
 				</div>
 				{showRemove && (
 					<Button
-						icon={<Icon size="sm" type={IconType.CLOSE} />}
+						icon={<Icon size="sm" lucideId="x" />}
 						isSimple
 						onClick={() => {
 							onRemoveClick !== undefined && onRemoveClick(id!);
