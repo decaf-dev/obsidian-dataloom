@@ -98,10 +98,6 @@ You can also right click on a folder and click `New Notion-Like table`
 Notion-Like Tables uses the Obsidian function `MarkdownRenderer.renderMarkdown` to render HTML element from markdown.
 There are some known issues with this function where embedded elements, such as rendering links, is not working properly. This part of the road map for future releases.
 
-### Undoing Changes
-
-There is currently no support for undoing changes. This is part of the road map for future releases.
-
 ## CSS Styling
 
 Please override the following classes for custom theme development.
