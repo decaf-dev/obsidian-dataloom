@@ -52,7 +52,7 @@ You can also right click on a folder and click `New Notion-Like table`
 | Delete last column | `ctrl` + `shift` + `backspace` | `cmd` + `shift` + `backspace`    |
 | Delete last row    | `alt` + `shift` + `backspace`  | `option` + `shift` + `backspace` |
 | Undo               | `ctrl` + `z`                   | `cmd` + `z`                      |
-| Redo               | `ctrl` + `shift` + `z`         | `cmd` + `shift` + `z`            |
+| Redo               | `ctrl` + `y`                   | `cmd` + `shift` + `z`            |
 
 ## Features
 
