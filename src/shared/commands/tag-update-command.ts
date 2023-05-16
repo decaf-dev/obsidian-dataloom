@@ -3,10 +3,10 @@ import TableStateCommand from "../table-state/table-state-command";
 import { TableState, Tag } from "../table-state/types";
 
 export default class TagUpdateCommand extends TableStateCommand {
-	id: string;
-	key: keyof Tag;
-	value: unknown;
-	previousValue: unknown;
+	private id: string;
+	private key: keyof Tag;
+	private value: unknown;
+	private previousValue: unknown;
 
 	constructor(id: string, key: keyof Tag, value: unknown) {
 		super();

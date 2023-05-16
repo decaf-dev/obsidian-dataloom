@@ -1,14 +1,13 @@
 import { ColumnIdError } from "../table-state/table-error";
 import TableStateCommand from "../table-state/table-state-command";
 import { Column, TableState } from "../table-state/types";
-import { CommandUndoError } from "./command-errors";
 
 export default class ColumnUpdateCommand extends TableStateCommand {
-	columnId: string;
-	key: keyof Column;
-	value?: unknown;
+	private columnId: string;
+	private key: keyof Column;
+	private value?: unknown;
 
-	previousValue: unknown;
+	private previousValue: unknown;
 
 	constructor(columnId: string, key: keyof Column, value?: unknown) {
 		super();

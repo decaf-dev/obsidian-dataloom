@@ -4,14 +4,14 @@ import TableStateCommand from "../table-state/table-state-command";
 import { DeleteCommandArgumentsError } from "./command-errors";
 
 export default class RowDeleteCommand extends TableStateCommand {
-	rowId?: string;
-	last?: boolean;
+	private rowId?: string;
+	private last?: boolean;
 
-	deletedRow: {
+	private deletedRow: {
 		arrIndex: number;
 		row: BodyRow;
 	};
-	deletedCells: {
+	private deletedCells: {
 		arrIndex: number;
 		cell: BodyCell;
 	}[];

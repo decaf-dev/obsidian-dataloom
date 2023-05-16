@@ -3,8 +3,8 @@ import TableStateCommand from "../table-state/table-state-command";
 import { BodyCell, BodyRow, TableState } from "../table-state/types";
 
 export default class RowAddCommand extends TableStateCommand {
-	newRow: BodyRow;
-	newBodyCells: BodyCell[];
+	private newRow: BodyRow;
+	private newBodyCells: BodyCell[];
 
 	execute(prevState: TableState): TableState {
 		super.onExecute();

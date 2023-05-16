@@ -12,15 +12,15 @@ import TableStateCommand from "../table-state/table-state-command";
 import { DeleteCommandArgumentsError } from "./command-errors";
 
 export default class ColumnDeleteCommand extends TableStateCommand {
-	columnId?: string;
-	last?: boolean;
+	private columnId?: string;
+	private last?: boolean;
 
-	deletedColumn: { arrIndex: number; column: Column };
-	deletedHeaderCells: { arrIndex: number; cell: HeaderCell }[];
-	deletedBodyCells: { arrIndex: number; cell: BodyCell }[];
-	deletedFooterCells: { arrIndex: number; cell: FooterCell }[];
-	deletedTags: { arrIndex: number; tag: Tag }[];
-	deletedFilterRules: { arrIndex: number; rule: FilterRule }[];
+	private deletedColumn: { arrIndex: number; column: Column };
+	private deletedHeaderCells: { arrIndex: number; cell: HeaderCell }[];
+	private deletedBodyCells: { arrIndex: number; cell: BodyCell }[];
+	private deletedFooterCells: { arrIndex: number; cell: FooterCell }[];
+	private deletedTags: { arrIndex: number; tag: Tag }[];
+	private deletedFilterRules: { arrIndex: number; rule: FilterRule }[];
 
 	constructor(options: { id?: string; last?: boolean }) {
 		super();

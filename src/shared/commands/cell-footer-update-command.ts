@@ -3,11 +3,11 @@ import TableStateCommand from "../table-state/table-state-command";
 import { FooterCell, TableState } from "../table-state/types";
 
 export default class CellFooterUpdateCommand extends TableStateCommand {
-	cellId: string;
-	key: keyof FooterCell;
-	value: unknown;
+	private cellId: string;
+	private key: keyof FooterCell;
+	private value: unknown;
 
-	previousValue: unknown;
+	private previousValue: unknown;
 
 	constructor(cellId: string, key: keyof FooterCell, value: unknown) {
 		super();
