@@ -1,4 +1,8 @@
-import { createTableState } from "src/data/table-state-factory";
+import {
+	createFilterRule,
+	createTableState,
+	createTag,
+} from "src/data/table-state-factory";
 import RowDeleteCommand from "./row-delete-command";
 import {
 	DeleteCommandArgumentsError,
@@ -28,11 +32,27 @@ describe("column-delete-command", () => {
 	});
 
 	it("should return the same state when only 1 column is in the table", () => {
+		//Setup
 		const prevState = createTableState(1, 1);
+
+		const tags = [
+			createTag(prevState.model.columns[0].id, "test1"),
+			createTag(prevState.model.columns[0].id, "test2"),
+		];
+		prevState.model.tags = tags;
+
+		const filterRules = [
+			createFilterRule(prevState.model.columns[0].id),
+			createFilterRule(prevState.model.columns[0].id),
+		];
+		prevState.model.filterRules = filterRules;
+
+		//Mutate
 		const executeState = new ColumnDeleteCommand({
 			id: prevState.model.columns[0].id,
 		}).execute(prevState);
 
+		//Assert
 		expect(executeState.model.columns).toEqual(prevState.model.columns);
 		expect(executeState.model.headerCells).toEqual(
 			prevState.model.headerCells
@@ -49,11 +69,27 @@ describe("column-delete-command", () => {
 	});
 
 	it("should delete a column when execute() is called", () => {
+		//Setup
 		const prevState = createTableState(2, 1);
+
+		const tags = [
+			createTag(prevState.model.columns[0].id, "test1"),
+			createTag(prevState.model.columns[0].id, "test2"),
+		];
+		prevState.model.tags = tags;
+
+		const filterRules = [
+			createFilterRule(prevState.model.columns[0].id),
+			createFilterRule(prevState.model.columns[0].id),
+		];
+		prevState.model.filterRules = filterRules;
+
+		//Mutate
 		const executeState = new ColumnDeleteCommand({
 			id: prevState.model.columns[0].id,
 		}).execute(prevState);
 
+		//Assert
 		expect(executeState.model.columns.length).toEqual(1);
 		expect(executeState.model.headerCells.length).toEqual(1);
 		expect(executeState.model.bodyCells.length).toEqual(1);
@@ -63,11 +99,27 @@ describe("column-delete-command", () => {
 	});
 
 	it("should delete the last column when execute() is called", () => {
+		//Setup
 		const prevState = createTableState(2, 1);
+
+		const tags = [
+			createTag(prevState.model.columns[1].id, "test1"),
+			createTag(prevState.model.columns[1].id, "test2"),
+		];
+		prevState.model.tags = tags;
+
+		const filterRules = [
+			createFilterRule(prevState.model.columns[1].id),
+			createFilterRule(prevState.model.columns[1].id),
+		];
+		prevState.model.filterRules = filterRules;
+
+		//Mutate
 		const executeState = new ColumnDeleteCommand({
 			last: true,
 		}).execute(prevState);
 
+		//Assert
 		expect(executeState.model.columns[0].id).toEqual(
 			prevState.model.columns[0].id
 		);
@@ -96,14 +148,30 @@ describe("column-delete-command", () => {
 	});
 
 	it("should restore the deleted column when undo() is called", () => {
+		//Setup
 		const prevState = createTableState(2, 1);
+
+		const tags = [
+			createTag(prevState.model.columns[0].id, "test1"),
+			createTag(prevState.model.columns[0].id, "test2"),
+		];
+		prevState.model.tags = tags;
+
+		const filterRules = [
+			createFilterRule(prevState.model.columns[0].id),
+			createFilterRule(prevState.model.columns[0].id),
+		];
+		prevState.model.filterRules = filterRules;
+
 		const command = new ColumnDeleteCommand({
 			id: prevState.model.columns[0].id,
 		});
 
+		//Mutate
 		const executeState = command.execute(prevState);
 		const undoState = command.undo(executeState);
 
+		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
 		expect(undoState.model.headerCells).toEqual(
 			prevState.model.headerCells
@@ -119,14 +187,30 @@ describe("column-delete-command", () => {
 	});
 
 	it("should restore the last deleted column when undo() is called", () => {
+		//Setup
 		const prevState = createTableState(2, 1);
+
+		const tags = [
+			createTag(prevState.model.columns[1].id, "test1"),
+			createTag(prevState.model.columns[1].id, "test2"),
+		];
+		prevState.model.tags = tags;
+
+		const filterRules = [
+			createFilterRule(prevState.model.columns[1].id),
+			createFilterRule(prevState.model.columns[1].id),
+		];
+		prevState.model.filterRules = filterRules;
+
 		const command = new RowDeleteCommand({
 			last: true,
 		});
 
+		//Mutate
 		const executeState = command.execute(prevState);
 		const undoState = command.undo(executeState);
 
+		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
 		expect(undoState.model.headerCells).toEqual(
 			prevState.model.headerCells

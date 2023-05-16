@@ -20,8 +20,8 @@ describe("row-body-update-command", () => {
 	it("should update a cell property when execute() is called", async () => {
 		const prevState = createTableState(1, 1);
 
-		//Wait one millis so that the time will be different
-		await new Promise((resolve) => setTimeout(resolve, 1));
+		//Wait so that the time will be different
+		await new Promise((resolve) => setTimeout(resolve, 5));
 
 		const executeState = new CellBodyUpdateCommand(
 			prevState.model.bodyCells[0].id,

@@ -4,7 +4,7 @@ import { TagIdError } from "./table-error";
 import { TableState } from "./types";
 import { createTag } from "src/data/table-state-factory";
 
-export const tagAddNew = (
+export const tagAdd = (
 	prevState: TableState,
 	cellId: string,
 	columnId: string,

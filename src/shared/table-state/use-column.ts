@@ -14,7 +14,7 @@ import { useTableState } from "./table-state-context";
 import ColumnAddCommand from "../commands/column-add-command";
 import ColumnDeleteCommand from "../commands/column-delete-command";
 import ColumnUpdateCommand from "../commands/column-update-command";
-import { ColumnTypeChangeCommand } from "../commands/column-type-change-comand";
+import { ColumnTypeUpdateCommand } from "../commands/column-type-update-command";
 
 export const useColumn = (viewLeaf: WorkspaceLeaf) => {
 	const dispatch = useAppDispatch();
@@ -56,7 +56,7 @@ export const useColumn = (viewLeaf: WorkspaceLeaf) => {
 			columnId,
 			type,
 		});
-		doCommand(new ColumnTypeChangeCommand(columnId, type));
+		doCommand(new ColumnTypeUpdateCommand(columnId, type));
 	}
 
 	function handleColumnSortClick(columnId: string, sortDir: SortDir) {
