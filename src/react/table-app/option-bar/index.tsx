@@ -24,6 +24,8 @@ import Filter from "./filter/filter";
 
 import "./styles.css";
 import { isCellTypeFilterable } from "src/shared/table-state/filter-by-rules";
+import ActiveFilterBubble from "./active-filter-bubble";
+import Divider from "src/react/shared/divider";
 
 interface SortButtonListProps {
 	bubbles: { sortDir: SortDir; markdown: string; columnId: string }[];
@@ -126,14 +128,22 @@ export default function OptionBar({
 			});
 	}, [headerCells, columns]);
 
+	const activeRules = filterRules.filter((rule) => rule.isEnabled);
+
 	return (
 		<div className="NLT__option-bar">
 			<Stack spacing="lg" isVertical>
 				<Flex justify="space-between" align="flex-end">
-					<SortBubbleList
-						bubbles={bubbles}
-						onRemoveClick={onSortRemoveClick}
-					/>
+					<Stack spacing="md">
+						<SortBubbleList
+							bubbles={bubbles}
+							onRemoveClick={onSortRemoveClick}
+						/>
+						{activeRules.length !== 0 && bubbles.length !== 0 && (
+							<Divider isVertical height="1.5rem" />
+						)}
+						<ActiveFilterBubble numActive={activeRules.length} />
+					</Stack>
 					<Stack spacing="sm" justify="flex-end">
 						<SearchBar />
 						<Filter

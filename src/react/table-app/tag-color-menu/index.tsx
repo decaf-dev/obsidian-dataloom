@@ -8,11 +8,10 @@ import Divider from "../../shared/divider";
 import Stack from "../../shared/stack";
 import MenuItem from "../../shared/menu-item";
 
-import "./styles.css";
-import { IconType } from "src/react/shared/icon/types";
 import { Color } from "src/shared/types";
 import Padding from "src/react/shared/padding";
 
+import "./styles.css";
 interface Props {
 	menuId: string;
 	isOpen: boolean;
@@ -54,7 +53,7 @@ export default function TagColorMenu({
 					</div>
 					<Divider />
 					<MenuItem
-						iconType={IconType.DELETE}
+						lucideId="trash-2"
 						name="Delete"
 						onClick={onDeleteClick}
 					/>

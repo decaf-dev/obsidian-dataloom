@@ -3,11 +3,10 @@ import Stack from "src/react/shared/stack";
 import Flex from "../flex";
 import Text from "../text";
 
-import { IconType } from "src/react/shared/icon/types";
 import "./styles.css";
 
 interface Props {
-	iconType?: IconType;
+	lucideId?: string;
 	ariaLabel?: string;
 	name: string;
 	value?: string;
@@ -16,7 +15,7 @@ interface Props {
 }
 
 export default function MenuItem({
-	iconType,
+	lucideId,
 	ariaLabel,
 	name,
 	value,
@@ -34,7 +33,7 @@ export default function MenuItem({
 		>
 			<Flex justify="space-between">
 				<Stack>
-					{iconType !== undefined && <Icon type={iconType} />}
+					{lucideId !== undefined && <Icon lucideId={lucideId} />}
 					<Text value={name} />
 				</Stack>
 				{value !== undefined && <Text variant="faint" value={value} />}

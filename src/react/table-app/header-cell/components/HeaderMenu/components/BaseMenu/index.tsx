@@ -4,7 +4,6 @@ import Padding from "src/react/shared/padding";
 import Stack from "src/react/shared/stack";
 import { CellType, SortDir } from "src/shared/table-state/types";
 import { SubmenuType } from "../../types";
-import { IconType } from "src/react/shared/icon/types";
 import { useFocusMenuInput } from "src/shared/hooks";
 import { getDisplayNameForCellType } from "src/shared/table-state/display-name";
 
@@ -49,7 +48,7 @@ export default function BaseMenu({
 					/>
 				</Padding>
 				<MenuItem
-					iconType={IconType.NOTES}
+					lucideId="list"
 					name="Type"
 					value={getDisplayNameForCellType(columnType)}
 					onClick={() => {
@@ -57,7 +56,7 @@ export default function BaseMenu({
 					}}
 				/>
 				<MenuItem
-					iconType={IconType.TUNE}
+					lucideId="settings"
 					name="Options"
 					onClick={() => {
 						onSubmenuChange(SubmenuType.OPTIONS);
@@ -66,13 +65,13 @@ export default function BaseMenu({
 			</Stack>
 			<Divider />
 			<MenuItem
-				iconType={IconType.ARROW_UPWARD}
+				lucideId="arrow-up"
 				name="Ascending"
 				onClick={() => onSortClick(SortDir.ASC)}
 				isSelected={columnSortDir === SortDir.ASC}
 			/>
 			<MenuItem
-				iconType={IconType.ARROW_DOWNWARD}
+				lucideId="arrow-down"
 				name="Descending"
 				onClick={() => onSortClick(SortDir.DESC)}
 				isSelected={columnSortDir === SortDir.DESC}
