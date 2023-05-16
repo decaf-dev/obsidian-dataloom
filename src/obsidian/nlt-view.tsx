@@ -66,7 +66,6 @@ export class NLTView extends TextFileView {
 			this.root.render(
 				<Provider store={store}>
 					<TableStateProvider
-						viewLeaf={this.leaf}
 						initialState={tableState}
 						onSaveState={this.handleSaveTableState}
 					>
