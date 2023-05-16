@@ -10,10 +10,8 @@ import { createTableFile } from "src/data/table-file";
 import {
 	EVENT_COLUMN_ADD,
 	EVENT_COLUMN_DELETE,
-	EVENT_REDO,
 	EVENT_ROW_ADD,
 	EVENT_ROW_DELETE,
-	EVENT_UNDO,
 } from "./shared/events";
 
 export interface NLTSettings {
@@ -195,38 +193,6 @@ export default class NLTPlugin extends Plugin {
 				if (view) {
 					if (!checking) {
 						this.app.workspace.trigger(EVENT_ROW_DELETE, view.leaf);
-					}
-					return true;
-				}
-				return false;
-			},
-		});
-
-		this.addCommand({
-			id: "nlt-undo",
-			name: "Undo",
-			hotkeys: [{ modifiers: ["Mod"], key: "z" }],
-			checkCallback: (checking: boolean) => {
-				const view = this.app.workspace.getActiveViewOfType(NLTView);
-				if (view) {
-					if (!checking) {
-						this.app.workspace.trigger(EVENT_UNDO, view.leaf);
-					}
-					return true;
-				}
-				return false;
-			},
-		});
-
-		this.addCommand({
-			id: "nlt-redo",
-			name: "Redo",
-			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "z" }],
-			checkCallback: (checking: boolean) => {
-				const view = this.app.workspace.getActiveViewOfType(NLTView);
-				if (view) {
-					if (!checking) {
-						this.app.workspace.trigger(EVENT_REDO, view.leaf);
 					}
 					return true;
 				}

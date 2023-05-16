@@ -20,7 +20,7 @@ import { getGeneralFunctionContent } from "./generalFunction";
 
 import "./styles.css";
 import MenuTrigger from "src/react/shared/menu-trigger";
-import { isGeneralFunction } from "src/shared/validators";
+import { isGeneralFunction, isNumber } from "src/shared/validators";
 import { getShortDisplayNameForFunctionType } from "src/shared/table-state/display-name";
 
 interface Props {
@@ -89,7 +89,7 @@ export default function FunctionCell({
 		);
 	} else {
 		const cellValues = columnCells
-			.filter((cell) => cell.markdown !== "")
+			.filter((cell) => isNumber(cell.markdown))
 			.map((cell) => parseFloat(cell.markdown));
 		if (cellValues.length !== 0)
 			content = getNumberFunctionContent(

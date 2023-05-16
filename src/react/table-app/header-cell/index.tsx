@@ -18,7 +18,7 @@ import HeaderMenu from "./components/HeaderMenu";
 import { useResizeColumn } from "./services/hooks";
 import { useCompare, useForceUpdate } from "src/shared/hooks";
 import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
-import { getIconTypeFromCellType } from "src/react/shared/icon/utils";
+import { getIconIdForCellType } from "src/react/shared/icon/utils";
 import "./styles.css";
 import MenuTrigger from "src/react/shared/menu-trigger";
 
@@ -119,7 +119,7 @@ export default function HeaderCell({
 		menuPositionEl: menuPosition.positionRef.current,
 		menuPosition: menuPosition.position,
 	});
-	const iconType = getIconTypeFromCellType(type);
+	const lucideId = getIconIdForCellType(type);
 
 	let contentClassName = "NLT__th-content";
 	if (resizingColumnId == null) contentClassName += " NLT__selectable";
@@ -140,7 +140,7 @@ export default function HeaderCell({
 				>
 					<div className={contentClassName}>
 						<Stack spacing="md">
-							<Icon type={iconType} size="md" />
+							<Icon lucideId={lucideId} size="md" />
 							{markdown}
 						</Stack>
 					</div>

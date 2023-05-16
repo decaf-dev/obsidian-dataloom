@@ -3,7 +3,6 @@ import Padding from "src/react/shared/padding";
 import Stack from "src/react/shared/stack";
 import { ColumnFilter } from "../types";
 import Icon from "src/react/shared/icon";
-import { IconType } from "src/react/shared/icon/types";
 import { Button } from "src/react/shared/button";
 import FilterRow from "./filter-row";
 import { FilterRule, FilterType, Tag } from "src/shared/table-state/types";
@@ -88,7 +87,7 @@ export default function FilterMenu({
 						})}
 						<Stack>
 							<Button
-								icon={<Icon type={IconType.ADD} />}
+								icon={<Icon lucideId="plus" />}
 								ariaLabel="Add filter rule"
 								onClick={() => onAddClick(columns[0].id)}
 							/>

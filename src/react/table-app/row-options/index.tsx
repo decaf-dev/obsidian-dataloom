@@ -7,7 +7,6 @@ import "./styles.css";
 import { MenuLevel } from "src/shared/menu/types";
 import RowMenu from "./components/RowMenu";
 import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
-import { IconType } from "src/react/shared/icon/types";
 
 interface Props {
 	rowId: string;
@@ -49,7 +48,7 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 				<div ref={menuPosition.positionRef}>
 					<MenuButton
 						menuId={menu.id}
-						icon={<Icon type={IconType.DRAG_INDICATOR} />}
+						icon={<Icon lucideId="grip-vertical" />}
 						ariaLabel="Drag to move or click to open"
 						onClick={() => handleButtonClick()}
 						onMouseDown={(e) => {

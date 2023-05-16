@@ -4,10 +4,12 @@ import {
 	CellType,
 	CurrencyType,
 	DateFormat,
+	FunctionType,
 	SortDir,
 	TableState,
 	TableState633,
 	TableState670,
+	TableState680,
 } from "../shared/table-state/types";
 import { sortByCreationTime } from "../shared/table-state/sort-state-operations";
 import { ColumnIdError, RowIdError } from "../shared/table-state/table-error";
@@ -176,7 +178,7 @@ export const deserializeTableState = (data: string): TableState => {
 
 	//Feat: filter rules
 	if (pluginVersion < 680) {
-		const tableState = currentState as TableState;
+		const tableState = currentState as TableState680;
 		const { model } = tableState;
 		const { bodyCells, columns } = model;
 
@@ -201,6 +203,20 @@ export const deserializeTableState = (data: string): TableState => {
 					cell.markdown = CHECKBOX_MARKDOWN_UNCHECKED;
 				}
 			}
+		});
+	}
+
+	//Feat: make all variable names consistent
+	if (pluginVersion < 691) {
+		const tableState = currentState as TableState;
+		const { model } = tableState;
+		const { footerCells } = model;
+
+		footerCells.forEach((cell) => {
+			cell.functionType = cell.functionType.replace(
+				/_/g,
+				"-"
+			) as FunctionType;
 		});
 	}
 

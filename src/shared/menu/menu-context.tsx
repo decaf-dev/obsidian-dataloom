@@ -312,11 +312,11 @@ export default function MenuProvider({ children }: Props) {
 					break;
 			}
 		}
-		window.addEventListener("click", handleClick);
-		window.addEventListener("keydown", handleKeyDown);
+		document.addEventListener("click", handleClick);
+		document.addEventListener("keydown", handleKeyDown);
 		return () => {
-			window.removeEventListener("click", handleClick);
-			window.removeEventListener("keydown", handleKeyDown);
+			document.removeEventListener("click", handleClick);
+			document.removeEventListener("keydown", handleKeyDown);
 		};
 	}, [isMenuOpen, openMenu, tableState.model.columns.length]);
 

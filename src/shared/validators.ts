@@ -5,10 +5,15 @@ import {
 	DATE_REGEX,
 	CHECKBOX_REGEX,
 	CHECKBOX_CHECKED_REGEX,
+	NUMBER_INPUT_REGEX,
 } from "./regex";
 
 export const isNumber = (input: string): boolean => {
 	return input.match(NUMBER_REGEX) !== null;
+};
+
+export const isValidNumberInput = (input: string): boolean => {
+	return input.match(NUMBER_INPUT_REGEX) !== null;
 };
 
 export const isDate = (input: string): boolean => {

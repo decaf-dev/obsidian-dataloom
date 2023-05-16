@@ -1,28 +1,51 @@
 import React from "react";
-import { findIcon } from "./utils";
 
-import "./styles.css";
-import { IconType } from "./types";
+import { setIcon } from "obsidian";
+import { appendOrReplaceFirstChild } from "src/shared/renderUtils";
 
 interface Props {
-	type: IconType;
+	lucideId: string;
 	size?: "sm" | "md" | "lg";
-	onClick?: (e: React.MouseEvent) => void;
+	color?: string;
 }
 
-export default function Icon({ type, size = "md", onClick }: Props) {
-	let className = "";
-	if (size === "sm") {
-		className = "NLT__icon--sm";
-	} else if (size === "md") {
-		className = "NLT__icon--md";
-	} else if (size === "lg") {
-		className = "NLT__icon--lg";
-	}
+export default function Icon({
+	lucideId,
+	size = "md",
+	color = "unset",
+}: Props) {
+	const ref = React.useRef<HTMLDivElement | null>(null);
 
 	return (
-		<div className="NLT__icon" onClick={onClick && onClick}>
-			{findIcon(type, className)}
-		</div>
+		<div
+			ref={(node) => {
+				//Set the reference
+				ref.current = node;
+
+				//Create an empty div
+				const div = document.body.createDiv();
+				div.style.display = "flex";
+				div.style.color = color;
+
+				if (size === "sm") {
+					div.style.width = "0.9rem";
+					div.style.height = "0.9rem";
+				} else if (size === "md") {
+					div.style.width = "1rem";
+					div.style.height = "1rem";
+				} else if (size === "lg") {
+					div.style.width = "1.1rem";
+					div.style.height = "1.1rem";
+				}
+
+				div.detach();
+
+				//Set the lucid icon on the div
+				setIcon(div, lucideId); //The id should match lucide.dev
+
+				//Update the reference content
+				appendOrReplaceFirstChild(node, div);
+			}}
+		/>
 	);
 }

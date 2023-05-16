@@ -15,8 +15,8 @@ export const useResizeColumn = (
 	}
 
 	function handleMouseUp() {
-		window.removeEventListener("mousemove", handleMouseMove);
-		window.removeEventListener("mouseup", handleMouseUp);
+		document.removeEventListener("mousemove", handleMouseMove);
+		document.removeEventListener("mouseup", handleMouseUp);
 
 		setTimeout(() => {
 			dispatch(setResizingColumnId(null));
@@ -31,8 +31,8 @@ export const useResizeColumn = (
 		e.preventDefault();
 
 		//Add event listeners
-		window.addEventListener("mousemove", handleMouseMove);
-		window.addEventListener("mouseup", handleMouseUp);
+		document.addEventListener("mousemove", handleMouseMove);
+		document.addEventListener("mouseup", handleMouseUp);
 
 		mouseDownX.current = e.pageX;
 		dispatch(setResizingColumnId(columnId));
