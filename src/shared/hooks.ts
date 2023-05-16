@@ -41,16 +41,16 @@ export const useInputSelection = (
 	);
 
 	const didValueChange = useCompare(value, true);
+	//When the value changes, we want to set the selection to the previous position
 	React.useEffect(() => {
 		function setSelection() {
-			if (didValueChange) {
-				if (inputRef.current) {
-					inputRef.current.selectionStart = previousSelectionStart;
-					inputRef.current.selectionEnd = previousSelectionStart;
-				}
+			if (inputRef.current) {
+				inputRef.current.selectionStart = previousSelectionStart;
+				inputRef.current.selectionEnd = previousSelectionStart;
 			}
 		}
-		if (inputRef.current) setSelection();
+		//Only run when the value changes, not when the previousSelect changes
+		if (didValueChange) setSelection();
 	}, [previousSelectionStart, value, didValueChange]);
 
 	return { setPreviousSelectionStart };
