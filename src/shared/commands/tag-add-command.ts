@@ -17,7 +17,7 @@ export default class TagAddCommand extends TableStateCommand {
 
 	private previousEditedTime: number;
 	private newEditedTime: number;
-	private addedTag: Tag;
+	private newTag: Tag;
 	private changedTag?: Tag;
 
 	constructor(
@@ -57,11 +57,11 @@ export default class TagAddCommand extends TableStateCommand {
 			}
 		}
 
-		this.addedTag = createTag(this.columnId, this.markdown, {
+		this.newTag = createTag(this.columnId, this.markdown, {
 			color: this.color,
 			cellId: this.cellId,
 		});
-		updatedTags.push(this.addedTag);
+		updatedTags.push(this.newTag);
 
 		this.previousEditedTime = rowLastEditedTime(bodyRows, this.rowId);
 		this.newEditedTime = Date.now();
@@ -93,7 +93,7 @@ export default class TagAddCommand extends TableStateCommand {
 			}
 			return tag;
 		});
-		updatedTags.push(this.addedTag);
+		updatedTags.push(this.newTag);
 
 		return {
 			...prevState,
@@ -114,7 +114,7 @@ export default class TagAddCommand extends TableStateCommand {
 		const { bodyRows, tags } = prevState.model;
 		let updatedTags = structuredClone(tags);
 		updatedTags = updatedTags
-			.filter((tag) => tag.id !== this.addedTag.id)
+			.filter((tag) => tag.id !== this.newTag.id)
 			.map((tag) => {
 				if (tag.id == this.changedTag?.id) return this.changedTag;
 				return tag;
