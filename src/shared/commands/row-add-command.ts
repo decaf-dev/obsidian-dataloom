@@ -3,18 +3,18 @@ import TableStateCommand from "../table-state/table-state-command";
 import { BodyCell, BodyRow, TableState } from "../table-state/types";
 
 export default class RowAddCommand extends TableStateCommand {
-	private newRow: BodyRow;
-	private newBodyCells: BodyCell[];
+	private addedRow: BodyRow;
+	private addedBodyCells: BodyCell[];
 
 	execute(prevState: TableState): TableState {
 		super.onExecute();
 
 		const { bodyRows, bodyCells, columns } = prevState.model;
 
-		this.newRow = createBodyRow(bodyRows.length);
-		this.newBodyCells = columns.map((column) => {
+		this.addedRow = createBodyRow(bodyRows.length);
+		this.addedBodyCells = columns.map((column) => {
 			const { id, type } = column;
-			return createBodyCell(id, this.newRow.id, {
+			return createBodyCell(id, this.addedRow.id, {
 				cellType: type,
 			});
 		});
@@ -23,8 +23,8 @@ export default class RowAddCommand extends TableStateCommand {
 			...prevState,
 			model: {
 				...prevState.model,
-				bodyCells: [...bodyCells, ...this.newBodyCells],
-				bodyRows: [...bodyRows, this.newRow],
+				bodyCells: [...bodyCells, ...this.addedBodyCells],
+				bodyRows: [...bodyRows, this.addedRow],
 			},
 		};
 	}
@@ -38,8 +38,8 @@ export default class RowAddCommand extends TableStateCommand {
 			...prevState,
 			model: {
 				...prevState.model,
-				bodyCells: [...bodyCells, ...this.newBodyCells],
-				bodyRows: [...bodyRows, this.newRow],
+				bodyCells: [...bodyCells, ...this.addedBodyCells],
+				bodyRows: [...bodyRows, this.addedRow],
 			},
 		};
 	}
@@ -53,9 +53,9 @@ export default class RowAddCommand extends TableStateCommand {
 			...prevState,
 			model: {
 				...prevState.model,
-				bodyRows: bodyRows.filter((row) => row.id !== this.newRow.id),
+				bodyRows: bodyRows.filter((row) => row.id !== this.addedRow.id),
 				bodyCells: bodyCells.filter(
-					(cell) => cell.rowId !== this.newRow.id
+					(cell) => cell.rowId !== this.addedRow.id
 				),
 			},
 		};

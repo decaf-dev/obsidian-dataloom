@@ -14,10 +14,10 @@ import {
 import TableStateCommand from "../table-state/table-state-command";
 
 export default class ColumnAddCommand extends TableStateCommand {
-	private newColumn: Column;
-	private newHeaderCells: HeaderCell[];
-	private newBodyCells: BodyCell[];
-	private newFooterCells: FooterCell[];
+	private addedColumn: Column;
+	private addedHeaderCells: HeaderCell[];
+	private addedBodyCells: BodyCell[];
+	private addedFooterCells: FooterCell[];
 
 	execute(prevState: TableState): TableState {
 		super.onExecute();
@@ -32,28 +32,28 @@ export default class ColumnAddCommand extends TableStateCommand {
 			footerRows,
 		} = prevState.model;
 
-		this.newColumn = createColumn();
+		this.addedColumn = createColumn();
 
-		this.newHeaderCells = headerRows.map((row) =>
-			createHeaderCell(this.newColumn.id, row.id)
+		this.addedHeaderCells = headerRows.map((row) =>
+			createHeaderCell(this.addedColumn.id, row.id)
 		);
 
-		this.newBodyCells = bodyRows.map((row) =>
-			createBodyCell(this.newColumn.id, row.id)
+		this.addedBodyCells = bodyRows.map((row) =>
+			createBodyCell(this.addedColumn.id, row.id)
 		);
 
-		this.newFooterCells = footerRows.map((row) =>
-			createFooterCell(this.newColumn.id, row.id)
+		this.addedFooterCells = footerRows.map((row) =>
+			createFooterCell(this.addedColumn.id, row.id)
 		);
 
 		return {
 			...prevState,
 			model: {
 				...prevState.model,
-				columns: [...columns, this.newColumn],
-				headerCells: [...headerCells, ...this.newHeaderCells],
-				bodyCells: [...bodyCells, ...this.newBodyCells],
-				footerCells: [...footerCells, ...this.newFooterCells],
+				columns: [...columns, this.addedColumn],
+				headerCells: [...headerCells, ...this.addedHeaderCells],
+				bodyCells: [...bodyCells, ...this.addedBodyCells],
+				footerCells: [...footerCells, ...this.addedFooterCells],
 			},
 		};
 	}
@@ -68,10 +68,10 @@ export default class ColumnAddCommand extends TableStateCommand {
 			...prevState,
 			model: {
 				...prevState.model,
-				columns: [...columns, this.newColumn],
-				headerCells: [...headerCells, ...this.newHeaderCells],
-				bodyCells: [...bodyCells, ...this.newBodyCells],
-				footerCells: [...footerCells, ...this.newFooterCells],
+				columns: [...columns, this.addedColumn],
+				headerCells: [...headerCells, ...this.addedHeaderCells],
+				bodyCells: [...bodyCells, ...this.addedBodyCells],
+				footerCells: [...footerCells, ...this.addedFooterCells],
 			},
 		};
 	}
@@ -82,7 +82,7 @@ export default class ColumnAddCommand extends TableStateCommand {
 		const { columns, headerCells, bodyCells, footerCells } =
 			prevState.model;
 
-		const { id } = this.newColumn;
+		const { id } = this.addedColumn;
 		return {
 			...prevState,
 			model: {
