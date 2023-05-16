@@ -1,11 +1,26 @@
 export const TAG_REGEX = new RegExp(/^[#][^\s]+$/);
 
 /**
- * Matches both whole numbers and decimals
+ * Matches a number. The number can be a whole number, a decimal, or a negative number.
+ * @example
+ * 1
+ * @example
+ * 22.05
+ * @example
+ * -5.0
  */
 export const NUMBER_REGEX = new RegExp(/^-?\d+\.?\d*$/);
 
-export const MINUS_REGEX = new RegExp(/^-$/);
+/**
+ * Matches a empty string, a minus sign, or a number
+ * @example
+ * ""
+ * @example
+ * "-"
+ * @example
+ * "-22.05"
+ */
+export const NUMBER_INPUT_REGEX = new RegExp(/(^$)|(^-$)|(^-?\d+\.?\d*$)/);
 
 export const TAGS_REGEX = new RegExp(/#[^ \t]+/g);
 

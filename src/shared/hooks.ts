@@ -41,6 +41,7 @@ export const useInputSelection = (
 	);
 
 	const didValueChange = useCompare(value, true);
+
 	//When the value changes, we want to set the selection to the previous position
 	React.useEffect(() => {
 		function setSelection() {
