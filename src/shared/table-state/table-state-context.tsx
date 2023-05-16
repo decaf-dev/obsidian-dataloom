@@ -3,12 +3,17 @@ import TableStateCommand from "./table-state-command";
 import { useDidMountEffect, useUUID } from "../hooks";
 import React from "react";
 import { WorkspaceLeaf } from "obsidian";
-import { EVENT_REDO, EVENT_UNDO } from "../events";
 import { useLogger } from "../logger";
+import _ from "lodash";
+import {
+	isMacRedo,
+	isMacUndo,
+	isWindowsRedo,
+	isWindowsUndo,
+} from "../keyboardEvent";
 
 interface Props {
 	initialState: TableState;
-	viewLeaf: WorkspaceLeaf;
 	children: React.ReactNode;
 	onSaveState: (value: TableState) => void;
 }
@@ -33,7 +38,6 @@ export const useTableState = () => {
 
 export default function TableStateProvider({
 	initialState,
-	viewLeaf,
 	onSaveState,
 	children,
 }: Props) {
@@ -83,26 +87,20 @@ export default function TableStateProvider({
 
 	//Handle hot key press
 	React.useEffect(() => {
-		function handleUndoEvent(leaf: WorkspaceLeaf) {
-			if (leaf === viewLeaf) {
+		function handleKeyDown(e: KeyboardEvent) {
+			if (isWindowsRedo(e) || isMacRedo(e)) {
+				e.preventDefault();
+				redo();
+			} else if (isWindowsUndo(e) || isMacUndo(e)) {
+				e.preventDefault();
 				undo();
 			}
 		}
 
-		function handleRedoEvent(leaf: WorkspaceLeaf) {
-			if (leaf === viewLeaf) {
-				redo();
-			}
-		}
-
-		//@ts-expect-error missing overload
-		app.workspace.on(EVENT_UNDO, handleUndoEvent);
-		//@ts-expect-error missing overload
-		app.workspace.on(EVENT_REDO, handleRedoEvent);
-
+		const throttleKeyDownEvent = _.throttle(handleKeyDown, 100);
+		document.addEventListener("keydown", throttleKeyDownEvent);
 		return () => {
-			app.workspace.off(EVENT_UNDO, handleUndoEvent);
-			app.workspace.off(EVENT_REDO, handleRedoEvent);
+			document.removeEventListener("keydown", throttleKeyDownEvent);
 		};
 	}, [redo, undo]);
 
