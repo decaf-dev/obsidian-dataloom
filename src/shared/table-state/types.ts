@@ -58,9 +58,6 @@ export enum CurrencyType {
 	ARGENTINA = "ARS",
 }
 
-//TOOD
-//Simplify the structure of the table
-//TODO change
 export enum GeneralFunction {
 	NONE = "none",
 	COUNT_ALL = "count_all",

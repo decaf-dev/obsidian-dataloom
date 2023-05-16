@@ -2,7 +2,7 @@ import { SetStateAction } from "react";
 import { TableState } from "src/shared/table-state/types";
 import { useLogger } from "../logger";
 import { Color } from "../types";
-import { tagAddCell, tagAddNew, tagRemoveCell } from "./tag-state-operations";
+import { tagAdd, tagAddCell, tagRemoveCell } from "./tag-state-operations";
 import TagDeleteCommand from "../commands/tag-delete-command";
 import { useTableState } from "./table-state-context";
 import TagUpdateCommand from "../commands/tag-update-command";
@@ -30,7 +30,7 @@ export const useTag = (
 			canAddMultiple,
 		});
 		onChange((prevState) =>
-			tagAddNew(
+			tagAdd(
 				prevState,
 				cellId,
 				columnId,

@@ -150,7 +150,7 @@ export default class ColumnDeleteCommand extends TableStateCommand {
 			updatedFooterCells.splice(cell.arrIndex, 0, cell.cell);
 		});
 
-		const updatedTags = [...tags];
+		const updatedTags = structuredClone(tags);
 		this.deletedTags.forEach((tag) => {
 			updatedTags.splice(tag.arrIndex, 0, tag.tag);
 		});
