@@ -17,7 +17,7 @@ export default function Submenu({ title, children, onBackClick }: Props) {
 				<Stack spacing="md" isVertical>
 					<Stack>
 						<Button
-							icon={<Icon lucideId="corner-down-left" />}
+							icon={<Icon lucideId="arrow-left" />}
 							onClick={() => {
 								onBackClick();
 							}}
