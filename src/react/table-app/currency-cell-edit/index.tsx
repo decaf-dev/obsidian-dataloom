@@ -1,4 +1,4 @@
-import { useFocusMenuInput } from "src/shared/hooks";
+import { useFocusMenuInput, useInputSelection } from "src/shared/hooks";
 import "./styles.css";
 import { isNumber } from "src/shared/validators";
 import { MINUS_REGEX } from "src/shared/regex";
@@ -13,11 +13,20 @@ export default function CurrencyCellEdit({
 	value,
 	onChange,
 }: Props) {
-	const inputRef = useFocusMenuInput(isMenuVisible, value, onChange);
+	const inputRef = useFocusMenuInput(isMenuVisible, value, onChange, {
+		isNumeric: true,
+	});
+
+	const { setPreviousSelectionStart } = useInputSelection(inputRef, value);
 
 	function handleChange(value: string) {
 		if (!isNumber(value) && value !== "" && !value.match(MINUS_REGEX))
 			return;
+		if (inputRef.current) {
+			setPreviousSelectionStart(
+				inputRef.current.selectionStart || value.length
+			);
+		}
 		onChange(value);
 	}
 
