@@ -11,13 +11,13 @@ export const tagAdd = (
 	rowId: string,
 	markdown: string,
 	color: Color,
-	canAddMultiple: boolean
+	isMultiTag: boolean
 ) => {
 	const { tags, bodyRows } = prevState.model;
 
 	const tagsCopy = structuredClone(tags);
 
-	if (!canAddMultiple) {
+	if (!isMultiTag) {
 		const tag = tagsCopy.find((t) => t.cellIds.find((c) => c === cellId));
 		//If there was already a tag selected for this cell
 		if (tag) {
@@ -68,12 +68,12 @@ export const tagAddCell = (
 	cellId: string,
 	rowId: string,
 	tagId: string,
-	canAddMultiple: boolean
+	isMultiTag: boolean
 ): TableState => {
 	const { tags, bodyRows } = prevState.model;
 	const tagsCopy = structuredClone(tags);
 
-	if (!canAddMultiple) {
+	if (!isMultiTag) {
 		const tag = tagsCopy.find((t) => t.cellIds.find((c) => c == cellId));
 		if (tag) {
 			//If we click on the same cell, then return

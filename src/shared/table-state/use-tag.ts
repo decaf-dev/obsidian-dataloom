@@ -19,7 +19,7 @@ export const useTag = (
 		rowId: string,
 		markdown: string,
 		color: Color,
-		canAddMultiple: boolean
+		isMultiTag: boolean
 	) {
 		logFunc("handleAddTag", {
 			cellId,
@@ -27,7 +27,7 @@ export const useTag = (
 			rowId,
 			markdown,
 			color,
-			canAddMultiple,
+			isMultiTag,
 		});
 		onChange((prevState) =>
 			tagAdd(
@@ -37,7 +37,7 @@ export const useTag = (
 				rowId,
 				markdown,
 				color,
-				canAddMultiple
+				isMultiTag
 			)
 		);
 	}
@@ -46,16 +46,16 @@ export const useTag = (
 		cellId: string,
 		rowId: string,
 		tagId: string,
-		canAddMultiple: boolean
+		isMultiTag: boolean
 	) {
 		logFunc("handleAddCellToTag", {
 			cellId,
 			rowId,
 			tagId,
-			canAddMultiple,
+			isMultiTag,
 		});
 		onChange((prevState) =>
-			tagAddCell(prevState, cellId, rowId, tagId, canAddMultiple)
+			tagAddCell(prevState, cellId, rowId, tagId, isMultiTag)
 		);
 	}
 
