@@ -6,25 +6,199 @@ import TableStateCommand from "../table-state/table-state-command";
 import {
 	BodyCell,
 	CellType,
+	Column,
 	FilterRule,
 	TableState,
 	Tag,
 } from "../table-state/types";
+import { isCheckbox } from "../validators";
 
 export class ColumnTypeUpdateCommand extends TableStateCommand {
 	private columnId: string;
-	private newType: CellType;
+	private type: CellType;
 
 	private previousType: CellType;
 	private deletedFilterRules: { arrIndex: number; rule: FilterRule }[] = [];
-	private changedBodyCells: BodyCell[] = [];
-	private changedTags: Tag[] = [];
+
+	private updatedBodyCells: {
+		current: BodyCell[];
+		previous: BodyCell[];
+	} = {
+		current: [],
+		previous: [],
+	};
+	private updatedTags: {
+		current: Tag[];
+		previous: Tag[];
+	} = {
+		current: [],
+		previous: [],
+	};
+
 	private addedTags: Tag[] = [];
 
 	constructor(id: string, type: CellType) {
 		super();
 		this.columnId = id;
-		this.newType = type;
+		this.type = type;
+	}
+
+	private fromTagOrMultiTag(tags: Tag[]) {
+		return tags.map((tag) => {
+			if (tag.columnId == this.columnId) {
+				if (tag.cellIds.length !== 0) {
+					//Remove any cell id references to the tag
+					const updatedTag = { ...tag, cellIds: [] };
+					this.updatedTags.previous.push(structuredClone(tag));
+					this.updatedTags.current.push(structuredClone(updatedTag));
+					return updatedTag;
+				}
+			}
+			return tag;
+		});
+	}
+
+	private fromDateToText(column: Column, bodyCells: BodyCell[]) {
+		return bodyCells.map((cell) => {
+			const { dateTime } = cell;
+
+			if (cell.columnId === column.id) {
+				if (dateTime !== null) {
+					const dateString = unixTimeToDateString(
+						dateTime,
+						column.dateFormat
+					);
+					const updatedCell = { ...cell, markdown: dateString };
+					this.updatedBodyCells.previous.push(structuredClone(cell));
+					this.updatedBodyCells.current.push(
+						structuredClone(updatedCell)
+					);
+					return updatedCell;
+				}
+			}
+			return cell;
+		});
+	}
+
+	private toTag(bodyCells: BodyCell[], tags: Tag[]) {
+		bodyCells.forEach((cell) => {
+			if (cell.columnId !== this.columnId) return;
+			if (cell.markdown === "") return;
+
+			cell.markdown.split(",").map((markdown, i) => {
+				const existingTag = tags.find(
+					(tag) =>
+						tag.markdown === markdown &&
+						tag.columnId === this.columnId
+				);
+				if (existingTag) {
+					const index = tags.indexOf(existingTag);
+					const updatedTag = {
+						...existingTag,
+						cellIds: [...existingTag.cellIds, cell.id],
+					};
+					this.updatedTags.previous.push(
+						structuredClone(existingTag)
+					);
+					this.updatedTags.current.push(structuredClone(updatedTag));
+					tags[index] = updatedTag;
+				} else {
+					//Create a tag and attach it to the cell if it's the first tag
+					if (i === 0) {
+						const tag = createTag(this.columnId, markdown, {
+							cellId: cell.id,
+						});
+						this.addedTags.push(structuredClone(tag));
+						tags.push(tag);
+						//Otherwise just create the tag
+					} else {
+						const tag = createTag(this.columnId, markdown);
+						this.addedTags.push(structuredClone(tag));
+						tags.push(tag);
+					}
+				}
+			});
+		});
+	}
+
+	private toMultiTag(bodyCells: BodyCell[], tags: Tag[]) {
+		bodyCells.forEach((cell) => {
+			if (cell.columnId !== this.columnId) return;
+			//If the cell is empty, we don't need to do anything
+			if (cell.markdown === "") return;
+
+			//Split the markdown into an array of tags
+			cell.markdown.split(",").map((markdown) => {
+				const existingTag = tags.find(
+					(tag) =>
+						tag.markdown === markdown &&
+						tag.columnId === this.columnId
+				);
+
+				if (existingTag) {
+					const index = tags.indexOf(existingTag);
+					const updatedTag = {
+						...existingTag,
+						cellIds: [...existingTag.cellIds, cell.id],
+					};
+					this.updatedTags.previous.push(
+						structuredClone(existingTag)
+					);
+					this.updatedTags.current.push(structuredClone(updatedTag));
+					tags[index] = updatedTag;
+				} else {
+					const newTag = createTag(this.columnId, markdown, {
+						cellId: cell.id,
+					});
+					this.addedTags.push(structuredClone(newTag));
+					tags.push(newTag);
+				}
+			});
+		});
+	}
+
+	private fromMultiTagToTag(tags: Tag[]) {
+		const cellIds: Set<string> = new Set();
+
+		//We want to make sure that every cell id is only referenced once in a tag
+		return tags.map((tag) => {
+			if (tag.columnId == this.columnId) {
+				const filteredIds = tag.cellIds.filter(
+					(id) => !cellIds.has(id)
+				);
+				for (const id of tag.cellIds) cellIds.add(id);
+
+				if (filteredIds.length < tag.cellIds.length) {
+					const updatedTag = {
+						...tag,
+						cellIds: filteredIds,
+					};
+					this.updatedTags.previous.push(structuredClone(tag));
+					this.updatedTags.current.push(structuredClone(updatedTag));
+					return updatedTag;
+				}
+			}
+			return tag;
+		});
+	}
+
+	private toCheckbox(bodyCells: BodyCell[]) {
+		return bodyCells.map((cell) => {
+			if (cell.columnId == this.columnId) {
+				if (!isCheckbox(cell.markdown)) {
+					const updatedCell = {
+						...cell,
+						markdown: CHECKBOX_MARKDOWN_UNCHECKED,
+					};
+					this.updatedBodyCells.previous.push(structuredClone(cell));
+					this.updatedBodyCells.current.push(
+						structuredClone(updatedCell)
+					);
+					return updatedCell;
+				}
+			}
+			return cell;
+		});
 	}
 
 	execute(prevState: TableState): TableState {
@@ -35,145 +209,51 @@ export class ColumnTypeUpdateCommand extends TableStateCommand {
 		if (!column) throw new ColumnIdError(this.columnId);
 
 		this.previousType = column.type;
-		if (this.previousType === this.newType) return prevState;
+		if (this.previousType === this.type) return prevState;
 
-		const columnCells = bodyCells.filter(
-			(cell) => cell.columnId === this.columnId
-		);
-
-		let updatedTags = structuredClone(tags);
-		let updatedBodyCells = [...bodyCells];
+		let newTags = structuredClone(tags);
+		let newBodyCells = structuredClone(bodyCells);
 
 		if (
 			(this.previousType === CellType.MULTI_TAG &&
-				this.newType !== CellType.TAG) ||
+				this.type !== CellType.TAG) ||
 			(this.previousType === CellType.TAG &&
-				this.newType !== CellType.MULTI_TAG)
+				this.type !== CellType.MULTI_TAG)
 		) {
-			//Remove tag references to cells but don't delete the tags
-			updatedTags = updatedTags.map((tag) => {
-				if (tag.cellIds.length !== 0) {
-					this.changedTags.push(structuredClone(tag));
-					return {
-						...tag,
-						cellIds: [],
-					};
-				}
-				return tag;
-			});
+			newTags = this.fromTagOrMultiTag(newTags);
 		} else if (
 			this.previousType !== CellType.MULTI_TAG &&
-			this.newType === CellType.TAG
+			this.type === CellType.TAG
 		) {
-			columnCells.forEach((cell) => {
-				if (cell.markdown === "") return;
-				cell.markdown.split(",").map((markdown, i) => {
-					const found = tags.find(
-						(tag) =>
-							tag.markdown === markdown &&
-							tag.columnId === this.columnId
-					);
-					if (found) {
-						//We found a previous tag that matches this markdown
-						const index = tags.indexOf(found);
-						updatedTags[index] = {
-							...found,
-							cellIds: [...updatedTags[index].cellIds, cell.id],
-						};
-						this.changedTags.push(structuredClone(found));
-					} else {
-						//Create a tag and attach it to the cell if it's the first tag
-						if (i === 0) {
-							const tag = createTag(this.columnId, markdown, {
-								cellId: cell.id,
-							});
-							this.addedTags.push(structuredClone(tag));
-							updatedTags.push(tag);
-							//Otherwise just create the tag
-						} else {
-							const tag = createTag(this.columnId, markdown);
-							this.addedTags.push(structuredClone(tag));
-							updatedTags.push(tag);
-						}
-					}
-				});
-			});
+			this.toTag(newBodyCells, newTags);
 		} else if (
 			this.previousType !== CellType.TAG &&
-			this.newType === CellType.MULTI_TAG
+			this.type === CellType.MULTI_TAG
 		) {
-			columnCells.forEach((cell) => {
-				if (cell.markdown === "") return;
-				cell.markdown.split(",").map((markdown) => {
-					//We found a previous tag that matches this markdown
-					const found = tags.find(
-						(tag) =>
-							tag.markdown === markdown &&
-							tag.columnId === this.columnId
-					);
-					if (found) {
-						//We found a previous tag that matches this markdown
-						const index = tags.indexOf(found);
-						updatedTags[index] = {
-							...found,
-							cellIds: [...found.cellIds, cell.id],
-						};
-						this.changedTags.push(structuredClone(found));
-					} else {
-						const tag = createTag(this.columnId, markdown, {
-							cellId: cell.id,
-						});
-						this.addedTags.push(structuredClone(tag));
-						updatedTags.push(tag);
-					}
-				});
-			});
+			this.toMultiTag(newBodyCells, newTags);
 		} else if (
 			this.previousType === CellType.MULTI_TAG &&
-			this.newType === CellType.TAG
+			this.type === CellType.TAG
 		) {
-			const cellIds: Set<string> = new Set();
-			updatedTags = tags.map((tag) => {
-				//We want to make sure that every cell id is only referenced once
-				const filteredIds = tag.cellIds.filter(
-					(id) => !cellIds.has(id)
-				);
-				for (const id of tag.cellIds) cellIds.add(id);
-
-				if (filteredIds.length < tag.cellIds.length) {
-					this.changedTags.push(structuredClone(tag));
-					return {
-						...tag,
-						cellIds: filteredIds,
-					};
-				}
-				return tag;
-			});
-		} else if (this.newType === CellType.CHECKBOX) {
-			columnCells.forEach((cell) => {
-				if (cell.markdown === "") {
-					const index = updatedBodyCells.indexOf(cell);
-					updatedBodyCells[index].markdown =
-						CHECKBOX_MARKDOWN_UNCHECKED;
-					this.changedBodyCells.push(structuredClone(cell));
-				}
-			});
+			newTags = this.fromMultiTagToTag(newTags);
+		} else if (this.type === CellType.CHECKBOX) {
+			newBodyCells = this.toCheckbox(newBodyCells);
 		} else if (
 			this.previousType == CellType.DATE &&
-			this.newType === CellType.TEXT
+			this.type === CellType.TEXT
 		) {
-			columnCells.forEach((cell) => {
-				const { dateTime } = cell;
-				if (dateTime !== null) {
-					const index = updatedBodyCells.indexOf(cell);
-					updatedBodyCells[index].markdown = unixTimeToDateString(
-						dateTime,
-						column.dateFormat
-					);
-					this.changedBodyCells.push(structuredClone(cell));
-				}
-			});
+			newBodyCells = this.fromDateToText(column, newBodyCells);
 		}
+
+		const newColumns = columns.map((column) => {
+			if (column.id === this.columnId) {
+				return {
+					...column,
+					type: this.type,
+				};
+			}
+			return column;
+		});
 
 		const shouldFilterRule = (rule: FilterRule) =>
 			rule.columnId !== this.columnId;
@@ -186,29 +266,62 @@ export class ColumnTypeUpdateCommand extends TableStateCommand {
 			rule: structuredClone(rule),
 		}));
 
+		const newFilterRules = filterRules.filter(shouldFilterRule);
+
 		return {
 			...prevState,
 			model: {
 				...prevState.model,
-				columns: columns.map((column) => {
-					if (column.id === this.columnId) {
-						return {
-							...column,
-							type: this.newType,
-						};
-					}
-					return column;
-				}),
-				bodyCells: updatedBodyCells,
-				tags: updatedTags,
-				filterRules: filterRules.filter(shouldFilterRule),
+				columns: newColumns,
+				bodyCells: newBodyCells,
+				tags: newTags,
+				filterRules: newFilterRules,
 			},
 		};
 	}
 
 	redo(prevState: TableState): TableState {
 		super.onRedo();
-		return this.execute(prevState);
+		const { columns, tags, bodyCells, filterRules } = prevState.model;
+
+		const newTags = [
+			...tags.map(
+				(tag) =>
+					this.updatedTags.current.find((t) => t.id === tag.id) || tag
+			),
+			...this.addedTags,
+		];
+
+		const newBodyCells = bodyCells.map(
+			(cell) =>
+				this.updatedBodyCells.current.find((c) => c.id === cell.id) ||
+				cell
+		);
+
+		const newColumns = columns.map((column) => {
+			if (column.id === this.columnId) {
+				return {
+					...column,
+					type: this.type,
+				};
+			}
+			return column;
+		});
+
+		const newFilterRules = filterRules.filter((rule) =>
+			this.deletedFilterRules.find((r) => r.rule.id === rule.id)
+		);
+
+		return {
+			...prevState,
+			model: {
+				...prevState.model,
+				columns: newColumns,
+				bodyCells: newBodyCells,
+				tags: newTags,
+				filterRules: newFilterRules,
+			},
+		};
 	}
 
 	undo(prevState: TableState): TableState {
@@ -216,48 +329,47 @@ export class ColumnTypeUpdateCommand extends TableStateCommand {
 
 		const { columns, tags, bodyCells, filterRules } = prevState.model;
 
-		const updatedBodyCells = bodyCells.map((cell) => {
-			const previousCell = this.changedBodyCells.find(
-				(c) => c.id === cell.id
-			);
-			if (previousCell) return previousCell;
-			return cell;
-		});
+		const newBodyCells = bodyCells.map(
+			(cell) =>
+				this.updatedBodyCells.previous.find((c) => c.id === cell.id) ||
+				cell
+		);
 
-		const updatedTags = tags
+		const newTags = tags
 			.filter(
 				(tag) =>
 					this.addedTags.find((t) => t.id === tag.id) === undefined
 			)
-			.map((tag) => {
-				const previousTag = this.changedTags.find(
-					(t) => t.id === tag.id
-				);
-				if (previousTag) return structuredClone(previousTag);
-				return tag;
-			});
+			.map(
+				(tag) =>
+					this.updatedTags.previous.find((t) => t.id === tag.id) ||
+					tag
+			);
 
-		const updatedFilterRules = [...filterRules];
-		this.deletedFilterRules.forEach((rule) => {
-			updatedFilterRules.splice(rule.arrIndex, 0, rule.rule);
+		const newFilterRules = [...filterRules];
+		this.deletedFilterRules.forEach((r) => {
+			const { arrIndex, rule } = r;
+			newFilterRules.splice(arrIndex, 0, rule);
+		});
+
+		const newColumns = columns.map((column) => {
+			if (column.id === this.columnId) {
+				return {
+					...column,
+					type: this.previousType,
+				};
+			}
+			return column;
 		});
 
 		return {
 			...prevState,
 			model: {
 				...prevState.model,
-				columns: columns.map((column) => {
-					if (column.id === this.columnId) {
-						return {
-							...column,
-							type: this.previousType,
-						};
-					}
-					return column;
-				}),
-				bodyCells: updatedBodyCells,
-				tags: updatedTags,
-				filterRules: updatedFilterRules,
+				columns: newColumns,
+				bodyCells: newBodyCells,
+				tags: newTags,
+				filterRules: newFilterRules,
 			},
 		};
 	}
