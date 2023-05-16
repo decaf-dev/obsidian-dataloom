@@ -6,6 +6,7 @@ export default class TagUpdateCommand extends TableStateCommand {
 	private id: string;
 	private key: keyof Tag;
 	private value: unknown;
+
 	private previousValue: unknown;
 
 	constructor(id: string, key: keyof Tag, value: unknown) {
