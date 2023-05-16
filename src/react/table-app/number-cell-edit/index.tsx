@@ -15,7 +15,7 @@ export default function NumberCellEdit({
 	value,
 	onChange,
 }: Props) {
-	const inputRef = useFocusMenuInput(isMenuVisible, value, onChange, {
+	const inputRef = useFocusMenuInput(isMenuVisible, value, handleChange, {
 		isNumeric: true,
 	});
 	const { setPreviousSelectionStart } = useInputSelection(inputRef, value);
