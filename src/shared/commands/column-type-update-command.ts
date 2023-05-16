@@ -308,8 +308,9 @@ export class ColumnTypeUpdateCommand extends TableStateCommand {
 			return column;
 		});
 
-		const newFilterRules = filterRules.filter((rule) =>
-			this.deletedFilterRules.find((r) => r.rule.id === rule.id)
+		const newFilterRules = filterRules.filter(
+			(rule) =>
+				!this.deletedFilterRules.find((r) => r.rule.id === rule.id)
 		);
 
 		return {
@@ -346,7 +347,7 @@ export class ColumnTypeUpdateCommand extends TableStateCommand {
 					tag
 			);
 
-		const newFilterRules = [...filterRules];
+		const newFilterRules = structuredClone(filterRules);
 		this.deletedFilterRules.forEach((r) => {
 			const { arrIndex, rule } = r;
 			newFilterRules.splice(arrIndex, 0, rule);
