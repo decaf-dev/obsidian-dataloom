@@ -6,35 +6,15 @@ import { appendOrReplaceFirstChild } from "src/shared/renderUtils";
 interface Props {
 	lucideId: string;
 	size?: "sm" | "md" | "lg";
-	fill?: string;
+	color?: string;
 }
 
-export default function Icon({ lucideId, size = "md" }: Props) {
-	let className = "";
-	if (size === "sm") {
-		className = "NLT__icon--sm";
-	} else if (size === "md") {
-		className = "NLT__icon--md";
-	} else if (size === "lg") {
-		className = "NLT__icon--lg";
-	}
-
+export default function Icon({
+	lucideId,
+	size = "md",
+	color = "unset",
+}: Props) {
 	const ref = React.useRef<HTMLDivElement | null>(null);
-
-	// .NLT__icon--sm {
-	//     width: 0.9rem !important;
-	//     height: 0.9rem !important;
-	// }
-
-	// .NLT__icon--md {
-	//     width: 1rem !important;
-	//     height: 1rem !important;
-	// }
-
-	// .NLT__icon--lg {
-	//     width: 1.1rem !important;
-	//     height: 1.1rem !important;
-	// }
 
 	return (
 		<div
@@ -45,6 +25,19 @@ export default function Icon({ lucideId, size = "md" }: Props) {
 				//Create an empty div
 				const div = document.body.createDiv();
 				div.style.display = "flex";
+				div.style.color = color;
+
+				if (size === "sm") {
+					div.style.width = "0.9rem";
+					div.style.height = "0.9rem";
+				} else if (size === "md") {
+					div.style.width = "1rem";
+					div.style.height = "1rem";
+				} else if (size === "lg") {
+					div.style.width = "1.1rem";
+					div.style.height = "1.1rem";
+				}
+
 				div.detach();
 
 				//Set the lucid icon on the div

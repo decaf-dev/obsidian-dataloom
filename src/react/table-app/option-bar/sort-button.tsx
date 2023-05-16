@@ -36,7 +36,7 @@ export default function SortBubble({
 					<span>{markdown}</span>
 				</Stack>
 				<Button
-					icon={<Icon lucideId="x" fill="var(--text-on-accent)" />}
+					icon={<Icon lucideId="x" color="var(--text-on-accent)" />}
 					ariaLabel="Remove sort"
 					isSimple
 					onClick={onRemoveClick}
