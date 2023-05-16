@@ -18,7 +18,7 @@ export const getIconIdForCellType = (type: CellType) => {
 		case CellType.DATE:
 			return "calendar";
 		case CellType.CURRENCY:
-			return "coins";
+			return "banknote";
 		default:
 			return "text";
 	}
