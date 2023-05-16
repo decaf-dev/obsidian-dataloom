@@ -22,12 +22,21 @@ export default function TextCellEdit({
 	value,
 	onChange,
 }: Props) {
-	const inputRef = useFocusMenuTextArea(isMenuVisible, value, onChange);
+	const inputRef = useFocusMenuTextArea(isMenuVisible, value, (value) =>
+		handleTextareaChange(value, true)
+	);
 	const { setPreviousSelectionStart } = useInputSelection(inputRef, value);
 
-	function handleTextareaChange(value: string) {
+	function handleTextareaChange(
+		value: string,
+		setSelectionToLength: boolean
+	) {
 		if (inputRef.current) {
-			setPreviousSelectionStart(inputRef.current.selectionStart);
+			if (setSelectionToLength) {
+				setPreviousSelectionStart(value.length);
+			} else {
+				setPreviousSelectionStart(inputRef.current.selectionStart);
+			}
 		}
 		onChange(value);
 	}
@@ -39,7 +48,7 @@ export default function TextCellEdit({
 				className={className}
 				ref={inputRef}
 				value={value}
-				onChange={(e) => handleTextareaChange(e.target.value)}
+				onChange={(e) => handleTextareaChange(e.target.value, false)}
 			/>
 		</div>
 	);
