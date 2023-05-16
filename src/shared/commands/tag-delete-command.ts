@@ -1,11 +1,10 @@
 import TableStateCommand from "../table-state/table-state-command";
 import { TableState, Tag } from "../table-state/types";
 import { TagIdError } from "../table-state/table-error";
-import { CommandUndoError } from "./command-errors";
 
 export default class TagDeleteCommand extends TableStateCommand {
-	id: string;
-	deletedTag?: {
+	private id: string;
+	private deletedTag: {
 		arrIndex: number;
 		tag: Tag;
 	};
@@ -44,7 +43,6 @@ export default class TagDeleteCommand extends TableStateCommand {
 	undo(prevState: TableState): TableState {
 		super.onUndo();
 
-		if (this.deletedTag === undefined) throw new CommandUndoError();
 		const { tags } = prevState.model;
 
 		const updatedTags = [...tags];

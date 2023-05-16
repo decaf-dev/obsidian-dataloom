@@ -7,13 +7,13 @@ import TableStateCommand from "../table-state/table-state-command";
 import { BodyCell, TableState } from "../table-state/types";
 
 export default class CellBodyUpdateCommand extends TableStateCommand {
-	cellId: string;
-	rowId: string;
-	key: keyof BodyCell;
-	value: unknown;
+	private cellId: string;
+	private rowId: string;
+	private key: keyof BodyCell;
+	private value: unknown;
 
-	previousValue: unknown;
-	previousEditedTime: number;
+	private previousValue: unknown;
+	private previousEditedTime: number;
 
 	constructor(
 		cellId: string,

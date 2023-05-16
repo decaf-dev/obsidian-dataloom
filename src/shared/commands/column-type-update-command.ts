@@ -12,14 +12,14 @@ import {
 } from "../table-state/types";
 
 export class ColumnTypeUpdateCommand extends TableStateCommand {
-	columnId: string;
-	newType: CellType;
+	private columnId: string;
+	private newType: CellType;
 
-	previousType: CellType;
-	deletedFilterRules: { arrIndex: number; rule: FilterRule }[] = [];
-	changedBodyCells: BodyCell[] = [];
-	changedTags: Tag[] = [];
-	addedTags: Tag[] = [];
+	private previousType: CellType;
+	private deletedFilterRules: { arrIndex: number; rule: FilterRule }[] = [];
+	private changedBodyCells: BodyCell[] = [];
+	private changedTags: Tag[] = [];
+	private addedTags: Tag[] = [];
 
 	constructor(id: string, type: CellType) {
 		super();

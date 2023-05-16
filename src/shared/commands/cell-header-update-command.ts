@@ -3,11 +3,11 @@ import TableStateCommand from "../table-state/table-state-command";
 import { HeaderCell, TableState } from "../table-state/types";
 
 export default class CellHeaderUpdateCommand extends TableStateCommand {
-	cellId: string;
-	key: keyof HeaderCell;
-	value: unknown;
+	private cellId: string;
+	private key: keyof HeaderCell;
+	private value: unknown;
 
-	previousValue: unknown;
+	private previousValue: unknown;
 
 	constructor(cellId: string, key: keyof HeaderCell, value: unknown) {
 		super();

@@ -14,10 +14,10 @@ import {
 import TableStateCommand from "../table-state/table-state-command";
 
 export default class ColumnAddCommand extends TableStateCommand {
-	newColumn: Column;
-	newHeaderCells: HeaderCell[];
-	newBodyCells: BodyCell[];
-	newFooterCells: FooterCell[];
+	private newColumn: Column;
+	private newHeaderCells: HeaderCell[];
+	private newBodyCells: BodyCell[];
+	private newFooterCells: FooterCell[];
 
 	execute(prevState: TableState): TableState {
 		super.onExecute();
