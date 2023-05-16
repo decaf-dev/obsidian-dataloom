@@ -50,11 +50,7 @@ export default class CellBodyUpdateCommand extends TableStateCommand {
 					}
 					return cell;
 				}),
-				bodyRows: rowLastEditedTimeUpdate(
-					bodyRows,
-					this.rowId,
-					Date.now()
-				),
+				bodyRows: rowLastEditedTimeUpdate(bodyRows, this.rowId),
 			},
 		};
 	}

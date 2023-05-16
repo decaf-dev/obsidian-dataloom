@@ -36,6 +36,7 @@ describe("column-type-update-command", () => {
 	});
 
 	it("should handle multi-tag -> text when execute() is called", async () => {
+		//Arrange
 		const prevState = createTableState(1, 1, {
 			cellType: CellType.MULTI_TAG,
 		});
@@ -49,11 +50,15 @@ describe("column-type-update-command", () => {
 		];
 		prevState.model.tags = tags;
 
-		const executeState = new ColumnTypeUpdateCommand(
+		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
 			CellType.TEXT
-		).execute(prevState);
+		);
 
+		//Act
+		const executeState = command.execute(prevState);
+
+		//Assert
 		expect(executeState.model.columns.length).toEqual(1);
 		expect(executeState.model.columns[0].type).toEqual(CellType.TEXT);
 		expect(executeState.model.tags.length).toEqual(2);
@@ -62,6 +67,7 @@ describe("column-type-update-command", () => {
 	});
 
 	it("should handle tag -> text when execute() is called", async () => {
+		//Arrange
 		const prevState = createTableState(1, 1, {
 			cellType: CellType.TAG,
 		});
@@ -74,12 +80,15 @@ describe("column-type-update-command", () => {
 			}),
 		];
 		prevState.model.tags = tags;
-
-		const executeState = new ColumnTypeUpdateCommand(
+		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
 			CellType.TEXT
-		).execute(prevState);
+		);
 
+		//Act
+		const executeState = command.execute(prevState);
+
+		//Assert
 		expect(executeState.model.columns.length).toEqual(1);
 		expect(executeState.model.columns[0].type).toEqual(CellType.TEXT);
 		expect(executeState.model.tags.length).toEqual(2);
@@ -88,14 +97,18 @@ describe("column-type-update-command", () => {
 	});
 
 	it("should handle text -> tag when execute() is called", async () => {
+		//Arrange
 		const prevState = createTableState(1, 1);
 		prevState.model.bodyCells[0].markdown = "test1,test2";
-
-		const executeState = new ColumnTypeUpdateCommand(
+		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
 			CellType.TAG
-		).execute(prevState);
+		);
 
+		//Act
+		const executeState = command.execute(prevState);
+
+		//Assert
 		expect(executeState.model.columns.length).toEqual(1);
 		expect(executeState.model.columns[0].type).toEqual(CellType.TAG);
 		expect(executeState.model.tags.length).toEqual(2);
@@ -106,14 +119,18 @@ describe("column-type-update-command", () => {
 	});
 
 	it("should handle text -> multi-tag when execute() is called", async () => {
+		//Arrange
 		const prevState = createTableState(1, 1);
 		prevState.model.bodyCells[0].markdown = "test1,test2";
-
-		const executeState = new ColumnTypeUpdateCommand(
+		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
 			CellType.MULTI_TAG
-		).execute(prevState);
+		);
 
+		//Act
+		const executeState = command.execute(prevState);
+
+		//Assert
 		expect(executeState.model.columns.length).toEqual(1);
 		expect(executeState.model.columns[0].type).toEqual(CellType.MULTI_TAG);
 		expect(executeState.model.tags.length).toEqual(2);
@@ -124,6 +141,7 @@ describe("column-type-update-command", () => {
 	});
 
 	it("should handle multi-tag -> tag when execute() is called", async () => {
+		//Arrange
 		const prevState = createTableState(1, 1, {
 			cellType: CellType.MULTI_TAG,
 		});
@@ -136,12 +154,15 @@ describe("column-type-update-command", () => {
 			}),
 		];
 		prevState.model.tags = tags;
-
-		const executeState = new ColumnTypeUpdateCommand(
+		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
 			CellType.TAG
-		).execute(prevState);
+		);
 
+		//Act
+		const executeState = command.execute(prevState);
+
+		//Assert
 		expect(executeState.model.columns.length).toEqual(1);
 		expect(executeState.model.columns[0].type).toEqual(CellType.TAG);
 		expect(executeState.model.tags.length).toEqual(2);
@@ -152,13 +173,17 @@ describe("column-type-update-command", () => {
 	});
 
 	it("should handle text -> checkbox when execute() is called", async () => {
+		//Arrange
 		const prevState = createTableState(1, 1);
-
-		const executeState = new ColumnTypeUpdateCommand(
+		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
 			CellType.CHECKBOX
-		).execute(prevState);
+		);
 
+		//Act
+		const executeState = command.execute(prevState);
+
+		//Assert
 		expect(executeState.model.columns.length).toEqual(1);
 		expect(executeState.model.columns[0].type).toEqual(CellType.CHECKBOX);
 		expect(executeState.model.bodyCells[0].markdown).toEqual(
@@ -167,23 +192,28 @@ describe("column-type-update-command", () => {
 	});
 
 	it("should handle date -> text when execute() is called", async () => {
+		//Arrange
 		const prevState = createTableState(1, 1, { cellType: CellType.DATE });
 		prevState.model.bodyCells[0].dateTime = new Date(
 			"2020-01-01"
 		).getTime();
 
-		const executeState = new ColumnTypeUpdateCommand(
+		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
 			CellType.TEXT
-		).execute(prevState);
+		);
 
+		//Act
+		const executeState = command.execute(prevState);
+
+		//Assert
 		expect(executeState.model.columns.length).toEqual(1);
 		expect(executeState.model.columns[0].type).toEqual(CellType.TEXT);
 		expect(executeState.model.bodyCells[0].markdown).toEqual("12/31/2019");
 	});
 
 	it("should delete referenced filter rules when execute() is called", async () => {
-		//Setup
+		//Arrange
 		const prevState = createTableState(1, 1, {
 			cellType: CellType.TEXT,
 		});
@@ -194,7 +224,7 @@ describe("column-type-update-command", () => {
 		];
 		prevState.model.filterRules = filterRules;
 
-		//Mutate
+		//Act
 		const executeState = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
 			CellType.TAG
@@ -205,7 +235,7 @@ describe("column-type-update-command", () => {
 	});
 
 	it("should handle multi-tag -> text when undo() is called", async () => {
-		//Setup
+		//Arrange
 		const prevState = createTableState(1, 1, {
 			cellType: CellType.MULTI_TAG,
 		});
@@ -225,7 +255,7 @@ describe("column-type-update-command", () => {
 			CellType.TEXT
 		);
 
-		//Mutate
+		//Act
 		const executeState = command.execute(prevState);
 		const undoState = command.undo(executeState);
 
@@ -239,7 +269,7 @@ describe("column-type-update-command", () => {
 	});
 
 	it("should handle tag -> text when undo() is called", async () => {
-		//Setup
+		//Arrange
 		const prevState = createTableState(1, 1, {
 			cellType: CellType.TAG,
 		});
@@ -259,7 +289,7 @@ describe("column-type-update-command", () => {
 			CellType.TEXT
 		);
 
-		//Mutate
+		//Act
 		const executeState = command.execute(prevState);
 		const undoState = command.undo(executeState);
 
@@ -273,7 +303,7 @@ describe("column-type-update-command", () => {
 	});
 
 	it("should handle text -> tag when undo() is called", async () => {
-		//Setup
+		//Arrange
 		const prevState = createTableState(1, 1);
 		prevState.model.bodyCells[0].markdown = "test1,test2";
 
@@ -282,7 +312,7 @@ describe("column-type-update-command", () => {
 			CellType.TAG
 		);
 
-		//Mutate
+		//Act
 		const executeState = command.execute(prevState);
 		const undoState = command.undo(executeState);
 
@@ -296,7 +326,7 @@ describe("column-type-update-command", () => {
 	});
 
 	it("should handle text -> multi-tag when undo() is called", async () => {
-		//Setup
+		//Arrange
 		const prevState = createTableState(1, 1);
 		prevState.model.bodyCells[0].markdown = "test1,test2";
 
@@ -305,7 +335,7 @@ describe("column-type-update-command", () => {
 			CellType.MULTI_TAG
 		);
 
-		//Mutate
+		//Act
 		const executeState = command.execute(prevState);
 		const undoState = command.undo(executeState);
 
@@ -319,7 +349,7 @@ describe("column-type-update-command", () => {
 	});
 
 	it("should handle multi-tag -> tag when undo() is called", async () => {
-		//Setup
+		//Arrange
 		const prevState = createTableState(1, 1, {
 			cellType: CellType.MULTI_TAG,
 		});
@@ -339,7 +369,7 @@ describe("column-type-update-command", () => {
 			CellType.TAG
 		);
 
-		//Mutate
+		//Act
 		const executeState = command.execute(prevState);
 		const undoState = command.undo(executeState);
 
@@ -353,7 +383,7 @@ describe("column-type-update-command", () => {
 	});
 
 	it("should handle text -> checkbox when undo() is called", async () => {
-		//Setup
+		//Arrange
 		const prevState = createTableState(1, 1);
 
 		const command = new ColumnTypeUpdateCommand(
@@ -361,7 +391,7 @@ describe("column-type-update-command", () => {
 			CellType.CHECKBOX
 		);
 
-		//Mutate
+		//Act
 		const executeState = command.execute(prevState);
 		const undoState = command.undo(executeState);
 
@@ -375,7 +405,7 @@ describe("column-type-update-command", () => {
 	});
 
 	it("should handle date -> text when undo() is called", async () => {
-		//Setup
+		//Arrange
 		const prevState = createTableState(1, 1, {
 			cellType: CellType.DATE,
 		});
@@ -388,7 +418,7 @@ describe("column-type-update-command", () => {
 			CellType.TEXT
 		);
 
-		//Mutate
+		//Act
 		const executeState = command.execute(prevState);
 		const undoState = command.undo(executeState);
 
@@ -402,7 +432,7 @@ describe("column-type-update-command", () => {
 	});
 
 	it("should restore deleted filter rules when undo() is called", async () => {
-		//Setup
+		//Arrange
 		const prevState = createTableState(1, 1, {
 			cellType: CellType.TEXT,
 		});
@@ -418,7 +448,7 @@ describe("column-type-update-command", () => {
 			CellType.TAG
 		);
 
-		//Mutate
+		//Act
 		const executeState = command.execute(prevState);
 		const undoState = command.undo(executeState);
 

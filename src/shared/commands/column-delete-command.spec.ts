@@ -32,7 +32,7 @@ describe("column-delete-command", () => {
 	});
 
 	it("should return the same state when only 1 column is in the table", () => {
-		//Setup
+		//Arrange
 		const prevState = createTableState(1, 1);
 
 		const tags = [
@@ -47,7 +47,7 @@ describe("column-delete-command", () => {
 		];
 		prevState.model.filterRules = filterRules;
 
-		//Mutate
+		//Act
 		const executeState = new ColumnDeleteCommand({
 			id: prevState.model.columns[0].id,
 		}).execute(prevState);
@@ -69,7 +69,7 @@ describe("column-delete-command", () => {
 	});
 
 	it("should delete a column when execute() is called", () => {
-		//Setup
+		//Arrange
 		const prevState = createTableState(2, 1);
 
 		const tags = [
@@ -83,11 +83,12 @@ describe("column-delete-command", () => {
 			createFilterRule(prevState.model.columns[0].id),
 		];
 		prevState.model.filterRules = filterRules;
-
-		//Mutate
-		const executeState = new ColumnDeleteCommand({
+		const command = new ColumnDeleteCommand({
 			id: prevState.model.columns[0].id,
-		}).execute(prevState);
+		});
+
+		//Act
+		const executeState = command.execute(prevState);
 
 		//Assert
 		expect(executeState.model.columns.length).toEqual(1);
@@ -99,7 +100,7 @@ describe("column-delete-command", () => {
 	});
 
 	it("should delete the last column when execute() is called", () => {
-		//Setup
+		//Arrange
 		const prevState = createTableState(2, 1);
 
 		const tags = [
@@ -113,11 +114,12 @@ describe("column-delete-command", () => {
 			createFilterRule(prevState.model.columns[1].id),
 		];
 		prevState.model.filterRules = filterRules;
-
-		//Mutate
-		const executeState = new ColumnDeleteCommand({
+		const command = new ColumnDeleteCommand({
 			last: true,
-		}).execute(prevState);
+		});
+
+		//Act
+		const executeState = command.execute(prevState);
 
 		//Assert
 		expect(executeState.model.columns[0].id).toEqual(
@@ -148,7 +150,7 @@ describe("column-delete-command", () => {
 	});
 
 	it("should restore the deleted column when undo() is called", () => {
-		//Setup
+		//Arrange
 		const prevState = createTableState(2, 1);
 
 		const tags = [
@@ -167,7 +169,7 @@ describe("column-delete-command", () => {
 			id: prevState.model.columns[0].id,
 		});
 
-		//Mutate
+		//Act
 		const executeState = command.execute(prevState);
 		const undoState = command.undo(executeState);
 
@@ -187,7 +189,7 @@ describe("column-delete-command", () => {
 	});
 
 	it("should restore the last deleted column when undo() is called", () => {
-		//Setup
+		//Arrange
 		const prevState = createTableState(2, 1);
 
 		const tags = [
@@ -206,7 +208,7 @@ describe("column-delete-command", () => {
 			last: true,
 		});
 
-		//Mutate
+		//Act
 		const executeState = command.execute(prevState);
 		const undoState = command.undo(executeState);
 

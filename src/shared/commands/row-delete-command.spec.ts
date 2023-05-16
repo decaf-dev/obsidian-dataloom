@@ -16,10 +16,13 @@ describe("row-delete-command", () => {
 
 	it("should throw an error when undo() is called before execute()", () => {
 		try {
+			//Arrange
 			const prevState = createTableState(1, 2);
 			const command = new RowDeleteCommand({
 				last: true,
 			});
+
+			//Act
 			command.undo(prevState);
 		} catch (err) {
 			expect(err).toBeInstanceOf(CommandUndoError);
@@ -27,21 +30,31 @@ describe("row-delete-command", () => {
 	});
 
 	it("should delete a row when execute() is called", () => {
+		//Arrange
 		const prevState = createTableState(1, 1);
-		const executeState = new RowDeleteCommand({
+		const command = new RowDeleteCommand({
 			id: prevState.model.bodyRows[0].id,
-		}).execute(prevState);
+		});
 
+		//Act
+		const executeState = command.execute(prevState);
+
+		//Assert
 		expect(executeState.model.bodyRows.length).toEqual(0);
 		expect(executeState.model.bodyCells.length).toEqual(0);
 	});
 
 	it("should delete the last row when execute() is called", () => {
+		//Arrange
 		const prevState = createTableState(1, 2);
-		const executeState = new RowDeleteCommand({
+		const command = new RowDeleteCommand({
 			last: true,
-		}).execute(prevState);
+		});
 
+		//Act
+		const executeState = command.execute(prevState);
+
+		//Assert
 		expect(executeState.model.bodyRows[0].id).toEqual(
 			prevState.model.bodyRows[0].id
 		);
@@ -51,27 +64,33 @@ describe("row-delete-command", () => {
 	});
 
 	it("should restore the deleted row when undo() is called", () => {
+		//Arrange
 		const prevState = createTableState(1, 2);
 		const command = new RowDeleteCommand({
 			id: prevState.model.bodyRows[0].id,
 		});
 
+		//Act
 		const executeState = command.execute(prevState);
 		const undoState = command.undo(executeState);
 
+		//Assert
 		expect(undoState.model.bodyRows).toEqual(prevState.model.bodyRows);
 		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
 	});
 
 	it("should restore the last deleted row when undo() is called", () => {
+		//Arrange
 		const prevState = createTableState(1, 2);
 		const command = new RowDeleteCommand({
 			last: true,
 		});
 
+		//Act
 		const executeState = command.execute(prevState);
 		const undoState = command.undo(executeState);
 
+		//Assert
 		expect(undoState.model.bodyRows).toEqual(prevState.model.bodyRows);
 		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
 	});
