@@ -3,7 +3,6 @@ import Divider from "src/react/shared/divider";
 import Icon from "src/react/shared/icon";
 import Padding from "src/react/shared/padding";
 import Stack from "src/react/shared/stack";
-import { IconType } from "src/react/shared/icon/types";
 
 interface Props {
 	title: string;
@@ -18,7 +17,7 @@ export default function Submenu({ title, children, onBackClick }: Props) {
 				<Stack spacing="md" isVertical>
 					<Stack>
 						<Button
-							icon={<Icon type={IconType.KEYBOARD_BACKSPACE} />}
+							icon={<Icon lucideId="corner-down-left" />}
 							onClick={() => {
 								onBackClick();
 							}}

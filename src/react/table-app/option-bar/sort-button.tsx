@@ -2,7 +2,7 @@ import { Button } from "src/react/shared/button";
 import { SortDir } from "src/shared/table-state/types";
 import Stack from "src/react/shared/stack";
 import Icon from "src/react/shared/icon";
-import { IconType } from "src/react/shared/icon/types";
+import { css } from "@emotion/react";
 
 interface SortBubbleProps {
 	sortDir: SortDir;
@@ -16,18 +16,28 @@ export default function SortBubble({
 	onRemoveClick,
 }: SortBubbleProps) {
 	return (
-		<div className="NLT__sort-bubble">
+		<div
+			css={css`
+				border-radius: 8px;
+				padding: 2px 6px;
+				user-select: none;
+				color: var(--text-on-accent);
+				border: 1px solid var(--background-modifier-border);
+				background-color: var(--color-accent);
+			`}
+		>
 			<Stack spacing="lg">
 				<Stack spacing="sm">
 					{sortDir === SortDir.ASC ? (
-						<Icon type={IconType.ARROW_UPWARD} />
+						<Icon lucideId="arrow-up" />
 					) : (
-						<Icon type={IconType.ARROW_DOWNWARD} />
+						<Icon lucideId="arrow-down" />
 					)}
 					<span>{markdown}</span>
 				</Stack>
 				<Button
-					icon={<Icon type={IconType.CLOSE} />}
+					icon={<Icon lucideId="x" fill="var(--text-on-accent)" />}
+					ariaLabel="Remove sort"
 					isSimple
 					onClick={onRemoveClick}
 				/>

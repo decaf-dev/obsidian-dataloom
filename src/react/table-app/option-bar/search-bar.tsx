@@ -4,7 +4,6 @@ import Stack from "src/react/shared/stack";
 import { setSearchText, toggleSearchBar } from "src/redux/global/global-slice";
 import { useAppDispatch, useAppSelector } from "src/redux/global/hooks";
 
-import { IconType } from "src/react/shared/icon/types";
 import { css } from "@emotion/react";
 
 export default function SearchBar() {
@@ -33,7 +32,7 @@ export default function SearchBar() {
 				/>
 			)}
 			<Button
-				icon={<Icon type={IconType.SEARCH} />}
+				icon={<Icon lucideId="search" />}
 				ariaLabel="Search"
 				onClick={() => dispatch(toggleSearchBar())}
 			/>
