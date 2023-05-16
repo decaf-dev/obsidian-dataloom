@@ -166,7 +166,7 @@ export default function BodyCell({
 		}
 	}
 
-	function handleAddTag(markdown: string, color: Color) {
+	function handleTagAdd(markdown: string, color: Color) {
 		onTagAdd(
 			cellId,
 			columnId,
@@ -362,7 +362,7 @@ export default function BodyCell({
 						tags={tags}
 						cellId={cellId}
 						onTagColorChange={onTagColorChange}
-						onTagAdd={handleAddTag}
+						onTagAdd={handleTagAdd}
 						onRemoveTag={handleRemoveTagClick}
 						onTagClick={handleTagClick}
 						onTagDelete={onTagDelete}

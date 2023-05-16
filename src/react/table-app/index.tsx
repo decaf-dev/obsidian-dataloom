@@ -67,12 +67,12 @@ export default function TableApp({ viewLeaf }: Props) {
 	} = useCell();
 
 	const {
-		handleAddCellToTag,
-		handleAddTag,
-		handleRemoveCellFromTag,
-		handleTagChangeColor,
+		handleTagCellAdd,
+		handleTagAdd,
+		handleTagCellRemove,
+		handleTagColorChange,
 		handleTagDeleteClick,
-	} = useTag(setTableState);
+	} = useTag();
 
 	const lastColumnId = useUUID();
 
@@ -247,15 +247,15 @@ export default function TableApp({ viewLeaf }: Props) {
 												shouldWrapOverflow
 											}
 											width={width}
-											onTagClick={handleAddCellToTag}
+											onTagClick={handleTagCellAdd}
 											onRemoveTagClick={
-												handleRemoveCellFromTag
+												handleTagCellRemove
 											}
 											onContentChange={
 												handleBodyCellContentChange
 											}
 											onTagColorChange={
-												handleTagChangeColor
+												handleTagColorChange
 											}
 											onTagDelete={handleTagDeleteClick}
 											onDateTimeChange={
@@ -264,7 +264,7 @@ export default function TableApp({ viewLeaf }: Props) {
 											onDateFormatChange={
 												handleDateFormatChange
 											}
-											onTagAdd={handleAddTag}
+											onTagAdd={handleTagAdd}
 										/>
 									),
 								};

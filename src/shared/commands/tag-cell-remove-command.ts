@@ -1,14 +1,83 @@
+import {
+	rowLastEditedTime,
+	rowLastEditedTimeUpdate,
+} from "../table-state/row-state-operations";
 import TableStateCommand from "../table-state/table-state-command";
-import { TableState } from "../table-state/types";
+import { TableState, Tag } from "../table-state/types";
 
-class TagCellRemoveCommand extends TableStateCommand {
+export default class TagCellRemoveCommand extends TableStateCommand {
+	private cellId: string;
+	private rowId: string;
+	private tagId: string;
+
+	private previousEditedTime: number;
+	private changedTag: Tag;
+
+	constructor(cellId: string, rowId: string, tagId: string) {
+		super();
+		this.cellId = cellId;
+		this.rowId = rowId;
+		this.tagId = tagId;
+	}
+
 	execute(prevState: TableState): TableState {
-		throw new Error("Method not implemented.");
+		super.onExecute();
+
+		const { tags, bodyRows } = prevState.model;
+
+		let updatedTags = structuredClone(tags);
+		updatedTags = updatedTags.map((tag) => {
+			if (tag.id === this.tagId) {
+				this.changedTag = structuredClone(tag);
+				return {
+					...tag,
+					cellIds: tag.cellIds.filter((c) => c !== this.cellId),
+				};
+			}
+			return tag;
+		});
+
+		this.previousEditedTime = rowLastEditedTime(bodyRows, this.rowId);
+
+		//TODO fix the newEditedTime for all commands
+		// this.newEditedTime = Date.now();
+
+		return {
+			...prevState,
+			model: {
+				...prevState.model,
+				tags: updatedTags,
+				bodyRows: rowLastEditedTimeUpdate(bodyRows, this.rowId),
+			},
+		};
 	}
+
 	redo(prevState: TableState): TableState {
-		throw new Error("Method not implemented.");
+		super.onRedo();
+		return this.execute(prevState);
 	}
+
 	undo(prevState: TableState): TableState {
-		throw new Error("Method not implemented.");
+		super.onUndo();
+		const { tags, bodyRows } = prevState.model;
+
+		let updatedTags = structuredClone(tags);
+		updatedTags = updatedTags.map((tag) => {
+			if (tag.id === this.changedTag.id) return this.changedTag;
+			return tag;
+		});
+
+		return {
+			...prevState,
+			model: {
+				...prevState.model,
+				tags: updatedTags,
+				bodyRows: rowLastEditedTimeUpdate(
+					bodyRows,
+					this.rowId,
+					this.previousEditedTime
+				),
+			},
+		};
 	}
 }

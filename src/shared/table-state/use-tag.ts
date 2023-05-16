@@ -1,19 +1,17 @@
-import { SetStateAction } from "react";
-import { TableState } from "src/shared/table-state/types";
 import { useLogger } from "../logger";
 import { Color } from "../types";
-import { tagAdd, tagAddCell, tagRemoveCell } from "./tag-state-operations";
 import TagDeleteCommand from "../commands/tag-delete-command";
 import { useTableState } from "./table-state-context";
 import TagUpdateCommand from "../commands/tag-update-command";
+import TagAddCommand from "../commands/tag-add-command";
+import TagCellRemoveCommand from "../commands/tag-cell-remove-command";
+import TagCellAddCommand from "../commands/tag-cell-add-command";
 
-export const useTag = (
-	onChange: React.Dispatch<SetStateAction<TableState>>
-) => {
+export const useTag = () => {
 	const { doCommand } = useTableState();
 	const logFunc = useLogger();
 
-	function handleAddTag(
+	function handleTagAdd(
 		cellId: string,
 		columnId: string,
 		rowId: string,
@@ -21,7 +19,7 @@ export const useTag = (
 		color: Color,
 		isMultiTag: boolean
 	) {
-		logFunc("handleAddTag", {
+		logFunc("handleTagAdd", {
 			cellId,
 			columnId,
 			rowId,
@@ -29,9 +27,8 @@ export const useTag = (
 			color,
 			isMultiTag,
 		});
-		onChange((prevState) =>
-			tagAdd(
-				prevState,
+		doCommand(
+			new TagAddCommand(
 				cellId,
 				columnId,
 				rowId,
@@ -42,34 +39,28 @@ export const useTag = (
 		);
 	}
 
-	function handleAddCellToTag(
+	function handleTagCellAdd(
 		cellId: string,
 		rowId: string,
 		tagId: string,
 		isMultiTag: boolean
 	) {
-		logFunc("handleAddCellToTag", {
+		logFunc("handleTagCellAdd", {
 			cellId,
 			rowId,
 			tagId,
 			isMultiTag,
 		});
-		onChange((prevState) =>
-			tagAddCell(prevState, cellId, rowId, tagId, isMultiTag)
-		);
+		doCommand(new TagCellAddCommand(cellId, rowId, tagId, isMultiTag));
 	}
 
-	function handleRemoveCellFromTag(
-		cellId: string,
-		rowId: string,
-		tagId: string
-	) {
-		logFunc("handleRemoveCellFromTag", {
+	function handleTagCellRemove(cellId: string, rowId: string, tagId: string) {
+		logFunc("handleTagCellRemove", {
 			cellId,
 			rowId,
 			tagId,
 		});
-		onChange((prevState) => tagRemoveCell(prevState, cellId, rowId, tagId));
+		doCommand(new TagCellRemoveCommand(cellId, rowId, tagId));
 	}
 
 	function handleTagDeleteClick(tagId: string) {
@@ -79,8 +70,8 @@ export const useTag = (
 		doCommand(new TagDeleteCommand(tagId));
 	}
 
-	function handleTagChangeColor(tagId: string, color: Color) {
-		logFunc("handleTagChangeColor", {
+	function handleTagColorChange(tagId: string, color: Color) {
+		logFunc("handleTagColorChange", {
 			tagId,
 			color,
 		});
@@ -88,10 +79,10 @@ export const useTag = (
 	}
 
 	return {
-		handleAddCellToTag,
-		handleAddTag,
-		handleRemoveCellFromTag,
-		handleTagChangeColor,
+		handleTagCellAdd,
+		handleTagAdd,
+		handleTagCellRemove,
+		handleTagColorChange,
 		handleTagDeleteClick,
 	};
 };
