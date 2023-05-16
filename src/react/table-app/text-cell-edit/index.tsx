@@ -1,6 +1,10 @@
-import { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
-import { useFocusMenuTextArea, useInputSelection } from "src/shared/hooks";
+import {
+	useCompare,
+	useFocusMenuTextArea,
+	useInputSelection,
+} from "src/shared/hooks";
 import { useOverflowClassName } from "src/shared/spacing/hooks";
 
 import "./styles.css";
@@ -18,36 +22,14 @@ export default function TextCellEdit({
 	value,
 	onChange,
 }: Props) {
-	const [isShiftDown, setShiftDown] = useState(false);
-	const [isEnterPressed, setEnterPressed] = useState(false);
 	const inputRef = useFocusMenuTextArea(isMenuVisible, value, onChange);
-	useInputSelection(isMenuVisible, inputRef, value.length);
-
-	function handleKeyDown(e: React.KeyboardEvent) {
-		if (e.shiftKey) setShiftDown(true);
-		if (e.code === "Enter") setEnterPressed(true);
-	}
-
-	function handleKeyUp(e: React.KeyboardEvent) {
-		if (!e.shiftKey) setShiftDown(false);
-		if (e.code != "Enter") setEnterPressed(false);
-	}
+	const { setPreviousSelectionStart } = useInputSelection(inputRef, value);
 
 	function handleTextareaChange(value: string) {
-		let updatedValue = value;
 		if (inputRef.current) {
-			//If the user presses enter, a new line character will be added.
-			//We want to remove this character if the menu closes. This happens when shift is not being pressed.
-			if (!isShiftDown && isEnterPressed) {
-				//Remove new line character
-				updatedValue =
-					updatedValue.substring(
-						0,
-						inputRef.current.selectionStart - 1
-					) + updatedValue.substring(inputRef.current.selectionStart);
-			}
+			setPreviousSelectionStart(inputRef.current.selectionStart);
 		}
-		onChange(updatedValue);
+		onChange(value);
 	}
 
 	const className = useOverflowClassName(shouldWrapOverflow);
@@ -56,9 +38,6 @@ export default function TextCellEdit({
 			<textarea
 				className={className}
 				ref={inputRef}
-				onKeyDown={handleKeyDown}
-				onKeyUp={handleKeyUp}
-				autoFocus
 				value={value}
 				onChange={(e) => handleTextareaChange(e.target.value)}
 			/>

@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-notion-like-tables",
-	"version": "6.8.2",
+	"version": "6.9.0",
 	"description": "Notion-like tables for Obsidian.md",
 	"main": "main.js",
 	"scripts": {
@@ -33,6 +33,7 @@
 		"builtin-modules": "^3.2.0",
 		"esbuild": "^0.15.7",
 		"jest": "^29.5.0",
+		"jest-date-mock": "^1.0.8",
 		"obsidian": "^1.2.5",
 		"react-test-renderer": "^18.2.0",
 		"renamer": "^4.0.0",

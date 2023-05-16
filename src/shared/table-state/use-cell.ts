@@ -1,16 +1,13 @@
-import { SetStateAction } from "react";
-import { FunctionType, TableState } from "src/shared/table-state/types";
+import { FunctionType } from "src/shared/table-state/types";
 import { useLogger } from "../logger";
-import {
-	cellUpdateBody,
-	cellUpdateFooter,
-	cellUpdateHeader,
-} from "./cell-state-operations";
+import { useTableState } from "./table-state-context";
+import CellBodyUpdateCommand from "../commands/cell-body-update-command";
+import CellFooterUpdateCommand from "../commands/cell-footer-update-command";
+import CellHeaderUpdateCommand from "../commands/cell-header-update-command";
 
-export const useCell = (
-	onChange: React.Dispatch<SetStateAction<TableState>>
-) => {
+export const useCell = () => {
 	const logFunc = useLogger();
+	const { doCommand } = useTableState();
 
 	function handleHeaderCellContentChange(cellId: string, value: string) {
 		logFunc("handleCellContentChange", {
@@ -18,9 +15,7 @@ export const useCell = (
 			markdown: value,
 		});
 
-		onChange((prevState) =>
-			cellUpdateHeader(prevState, cellId, "markdown", value)
-		);
+		doCommand(new CellHeaderUpdateCommand(cellId, "markdown", value));
 	}
 
 	function handleBodyCellContentChange(
@@ -34,9 +29,7 @@ export const useCell = (
 			markdown: value,
 		});
 
-		onChange((prevState) =>
-			cellUpdateBody(prevState, cellId, rowId, "markdown", value)
-		);
+		doCommand(new CellBodyUpdateCommand(cellId, rowId, "markdown", value));
 	}
 
 	function handleCellDateTimeChange(
@@ -50,9 +43,7 @@ export const useCell = (
 			dateTime: value,
 		});
 
-		onChange((prevState) =>
-			cellUpdateBody(prevState, cellId, rowId, "dateTime", value)
-		);
+		doCommand(new CellBodyUpdateCommand(cellId, rowId, "dateTime", value));
 	}
 
 	function handleFunctionTypeChange(
@@ -64,8 +55,8 @@ export const useCell = (
 			functionType,
 		});
 
-		onChange((prevState) =>
-			cellUpdateFooter(prevState, cellId, "functionType", functionType)
+		doCommand(
+			new CellFooterUpdateCommand(cellId, "functionType", functionType)
 		);
 	}
 

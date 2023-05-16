@@ -8,9 +8,7 @@ Notion-Like Tables is your premiere tool for creating and managing tabular data 
 
 ![Obsidian Downloads](https://img.shields.io/badge/dynamic/json?logo=obsidian&color=%23483699&label=downloads&query=%24%5B%22notion-like-tables%22%5D.downloads&url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json) ![Release Version](https://img.shields.io/github/v/release/trey-wallis/obsidian-notion-like-tables)
 
-<video src="https://user-images.githubusercontent.com/40307803/236613880-ddbf2fbe-bf01-49a4-b21c-e2a00ed92072.mov" controls></video>
-
-[Lastest release notes](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/6.8.2)
+[Lastest release notes](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/6.9.0)
 
 ## About
 
@@ -53,6 +51,8 @@ You can also right click on a folder and click `New Notion-Like table`
 | Add new row        | `ctrl` + `shift` + `enter`     | `cmd` + `shift` + `enter`        |
 | Delete last column | `ctrl` + `shift` + `backspace` | `cmd` + `shift` + `backspace`    |
 | Delete last row    | `alt` + `shift` + `backspace`  | `option` + `shift` + `backspace` |
+| Undo               | `ctrl` + `z`                   | `cmd` + `z`                      |
+| Redo               | `ctrl` + `shift` + `z`         | `cmd` + `shift` + `z`            |
 
 ## Features
 
@@ -80,7 +80,8 @@ You can also right click on a folder and click `New Notion-Like table`
 -   Import modal - allows you to create cells from markdown data
 -   Keyboard focus navigation system - navigate focusable elements using the tab button, arrow keys, and enter button on your keyboard. If a cell is focused, press any key to have that character appended to the cell input
 -   Virtualization of table rows - allows the user to render thousands of rows with no miminal lag in the table
--   Filter rules - add rules to filter rows that only match speific criteria for a column
+-   Filter rules - add rules to filter rows that only match speific criteria for a column. Currently supports filtering on: text, tag, multi-tag, and checkbox column types only
+-   Undo system - currently only supports undo/redo for add/delete column and add/delete row
 
 ## Settings
 

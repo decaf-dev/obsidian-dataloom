@@ -11,10 +11,9 @@ import NewRowButton from "./new-row-button";
 import NewColumnButton from "./new-column-button";
 import HeaderCell from "./header-cell";
 
-import { TableState } from "../../shared/table-state/types";
 import { useAppSelector } from "../../redux/global/hooks";
 import { sortRows } from "../../shared/table-state/sort-state-operations";
-import { useDidMountEffect, useUUID } from "../../shared/hooks";
+import { useUUID } from "../../shared/hooks";
 import { CellNotFoundError } from "../../shared/table-state/table-error";
 import { useTableState } from "../../shared/table-state/table-state-context";
 import { useFilterRules } from "src/shared/table-state/use-filter-rules";
@@ -28,10 +27,9 @@ import "./styles.css";
 
 interface Props {
 	viewLeaf: WorkspaceLeaf;
-	onSaveTableState: (tableState: TableState) => void;
 }
 
-export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
+export default function TableApp({ viewLeaf }: Props) {
 	const { searchText, sortTime } = useAppSelector((state) => state.global);
 	const { tableId, tableState, setTableState } = useTableState();
 
@@ -51,41 +49,32 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 		handleColumnToggle,
 		handleCurrencyChange,
 		handleDateFormatChange,
-		handleHeaderDeleteClick,
-		handleHeaderSortSelect,
-		handleHeaderTypeClick,
-		handleHeaderWidthChange,
+		handleColumnDeleteClick,
+		handleColumnSortClick,
+		handleColumnTypeClick,
+		handleColumnWidthChange,
 		handleSortRemoveClick,
 		handleWrapContentToggle,
-	} = useColumn(viewLeaf, setTableState);
+	} = useColumn(viewLeaf);
 
-	const { handleNewRowClick, handleRowDeleteClick } = useRow(
-		viewLeaf,
-		setTableState
-	);
+	const { handleNewRowClick, handleRowDeleteClick } = useRow(viewLeaf);
 
 	const {
 		handleBodyCellContentChange,
 		handleCellDateTimeChange,
 		handleFunctionTypeChange,
 		handleHeaderCellContentChange,
-	} = useCell(setTableState);
+	} = useCell();
 
 	const {
-		handleAddCellToTag,
-		handleAddTag,
-		handleRemoveCellFromTag,
-		handleTagChangeColor,
+		handleTagCellAdd,
+		handleTagAdd,
+		handleTagCellRemove,
+		handleTagColorChange,
 		handleTagDeleteClick,
-	} = useTag(setTableState);
+	} = useTag();
 
 	const lastColumnId = useUUID();
-
-	//Once we have mounted, whenever the table state is updated
-	//save it to disk
-	useDidMountEffect(() => {
-		onSaveTableState(tableState);
-	}, [tableState]);
 
 	React.useEffect(() => {
 		if (sortTime !== 0) {
@@ -170,14 +159,14 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 											markdown={markdown}
 											type={type}
 											sortDir={sortDir}
-											onSortClick={handleHeaderSortSelect}
+											onSortClick={handleColumnSortClick}
 											onWidthChange={
-												handleHeaderWidthChange
+												handleColumnWidthChange
 											}
 											onDeleteClick={
-												handleHeaderDeleteClick
+												handleColumnDeleteClick
 											}
-											onTypeSelect={handleHeaderTypeClick}
+											onTypeSelect={handleColumnTypeClick}
 											onDateFormatChange={
 												handleDateFormatChange
 											}
@@ -258,15 +247,15 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 												shouldWrapOverflow
 											}
 											width={width}
-											onTagClick={handleAddCellToTag}
+											onTagClick={handleTagCellAdd}
 											onRemoveTagClick={
-												handleRemoveCellFromTag
+												handleTagCellRemove
 											}
 											onContentChange={
 												handleBodyCellContentChange
 											}
 											onTagColorChange={
-												handleTagChangeColor
+												handleTagColorChange
 											}
 											onTagDelete={handleTagDeleteClick}
 											onDateTimeChange={
@@ -275,7 +264,7 @@ export default function TableApp({ viewLeaf, onSaveTableState }: Props) {
 											onDateFormatChange={
 												handleDateFormatChange
 											}
-											onTagAdd={handleAddTag}
+											onTagAdd={handleTagAdd}
 										/>
 									),
 								};

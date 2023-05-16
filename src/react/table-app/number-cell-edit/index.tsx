@@ -1,6 +1,8 @@
 import { useFocusMenuInput, useInputSelection } from "src/shared/hooks";
-import "./styles.css";
 import { isNumber } from "src/shared/validators";
+
+import "./styles.css";
+import { MINUS_REGEX } from "src/shared/regex";
 
 interface Props {
 	isMenuVisible: boolean;
@@ -16,27 +18,27 @@ export default function NumberCellEdit({
 	const inputRef = useFocusMenuInput(isMenuVisible, value, onChange, {
 		isNumeric: true,
 	});
-	useInputSelection(isMenuVisible, inputRef, value.length);
+	const { setPreviousSelectionStart } = useInputSelection(inputRef, value);
 
 	function handleChange(value: string) {
-		if (!isNumber(value) && value !== "") return;
+		if (!isNumber(value) && value !== "" && !value.match(MINUS_REGEX))
+			return;
+		if (inputRef.current) {
+			setPreviousSelectionStart(
+				inputRef.current.selectionStart || value.length
+			);
+		}
 		onChange(value);
 	}
 
-	let valueFormatted = "";
-	if (isNumber(value)) {
-		valueFormatted = value;
-	}
-
-	//We use an input of type text so that the selection is available
 	return (
 		<div className="NLT__number-cell-edit">
 			<input
-				type="text"
+				type="text" //We use an input of type text so that the selection is available
 				ref={inputRef}
 				inputMode="numeric"
 				autoFocus
-				value={valueFormatted}
+				value={value}
 				onChange={(e) => handleChange(e.target.value)}
 			/>
 		</div>

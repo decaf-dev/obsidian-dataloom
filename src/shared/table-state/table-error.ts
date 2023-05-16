@@ -18,6 +18,12 @@ export class RowIdError extends Error {
 	}
 }
 
+export class CellIdError extends Error {
+	constructor(id: string) {
+		super(`Reference cell ${id} is undefined`);
+		this.name = "CellIdError";
+	}
+}
 export class CellNotFoundError extends Error {
 	constructor() {
 		super("Cell not found");
