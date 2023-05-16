@@ -1,14 +1,136 @@
+import { createTag } from "src/data/table-state-factory";
 import TableStateCommand from "../table-state/table-state-command";
-import { TableState } from "../table-state/types";
+import { TableState, Tag } from "../table-state/types";
+import { Color } from "../types";
+import {
+	rowLastEditedTime,
+	rowLastEditedTimeUpdate,
+} from "../table-state/row-state-operations";
 
 export default class TagAddCommand extends TableStateCommand {
+	private cellId: string;
+	private columnId: string;
+	private rowId: string;
+	private markdown: string;
+	private color: Color;
+	private isMultiTag: boolean;
+
+	private previousEditedTime: number;
+	private newEditedTime: number;
+	private addedTag: Tag;
+	private changedTag?: Tag;
+
+	constructor(
+		cellId: string,
+		columnId: string,
+		rowId: string,
+		markdown: string,
+		color: Color,
+		isMultiTag: boolean
+	) {
+		super();
+		this.cellId = cellId;
+		this.columnId = columnId;
+		this.rowId = rowId;
+		this.markdown = markdown;
+		this.color = color;
+		this.isMultiTag = isMultiTag;
+	}
+
 	execute(prevState: TableState): TableState {
-		throw new Error("Method not implemented.");
+		super.onExecute();
+
+		const { tags, bodyRows } = prevState.model;
+
+		const updatedTags = structuredClone(tags);
+
+		//If there was already a tag attached to the cell, remove it
+		if (!this.isMultiTag) {
+			const cellTag = updatedTags.find((tag) =>
+				tag.cellIds.find((c) => c === this.cellId)
+			);
+			if (cellTag) {
+				this.changedTag = structuredClone(cellTag);
+				cellTag.cellIds = cellTag.cellIds.filter(
+					(c) => c !== this.cellId
+				);
+			}
+		}
+
+		this.addedTag = createTag(this.columnId, this.markdown, {
+			color: this.color,
+			cellId: this.cellId,
+		});
+		updatedTags.push(this.addedTag);
+
+		this.previousEditedTime = rowLastEditedTime(bodyRows, this.rowId);
+		this.newEditedTime = Date.now();
+
+		return {
+			...prevState,
+			model: {
+				...prevState.model,
+				tags: updatedTags,
+				bodyRows: rowLastEditedTimeUpdate(
+					bodyRows,
+					this.rowId,
+					this.newEditedTime
+				),
+			},
+		};
 	}
 	redo(prevState: TableState): TableState {
-		throw new Error("Method not implemented.");
+		super.onRedo();
+		const { tags, bodyRows } = prevState.model;
+
+		let updatedTags = structuredClone(tags);
+		updatedTags = updatedTags.map((tag) => {
+			if (tag.id === this.changedTag?.id) {
+				return {
+					...tag,
+					cellIds: tag.cellIds.filter((c) => c !== this.cellId),
+				};
+			}
+			return tag;
+		});
+		updatedTags.push(this.addedTag);
+
+		return {
+			...prevState,
+			model: {
+				...prevState.model,
+				tags: updatedTags,
+				bodyRows: rowLastEditedTimeUpdate(
+					bodyRows,
+					this.rowId,
+					this.newEditedTime
+				),
+			},
+		};
 	}
 	undo(prevState: TableState): TableState {
-		throw new Error("Method not implemented.");
+		super.onUndo();
+
+		const { bodyRows, tags } = prevState.model;
+		let updatedTags = structuredClone(tags);
+		updatedTags = updatedTags
+			.filter((tag) => tag.id !== this.addedTag.id)
+			.map((tag) => {
+				if (tag.id == this.changedTag?.id) return this.changedTag;
+				return tag;
+			});
+
+		return {
+			...prevState,
+			model: {
+				...prevState.model,
+				tags: updatedTags,
+				bodyRows: rowLastEditedTimeUpdate(
+					bodyRows,
+					this.rowId,
+					this.previousEditedTime
+				),
+			},
+		};
 	}
 }
