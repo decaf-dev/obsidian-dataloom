@@ -1,69 +1,71 @@
-import React, { SetStateAction } from "react";
+import React from "react";
 import {
 	CellType,
 	CurrencyType,
 	DateFormat,
 	SortDir,
-	TableState,
 } from "src/shared/table-state/types";
 import { useLogger } from "../logger";
-import {
-	columnAdd,
-	columnChangeType,
-	columnDelete,
-	columnSort,
-	columnUpdate,
-} from "./column-state-operations";
 import { WorkspaceLeaf } from "obsidian";
 import { updateSortTime } from "src/redux/global/global-slice";
 import { EVENT_COLUMN_ADD, EVENT_COLUMN_DELETE } from "../events";
 import { useAppDispatch } from "src/redux/global/hooks";
-import { useApp } from "./app-context";
+import { useTableState } from "./table-state-context";
+import ColumnAddCommand from "../commands/column-add-command";
+import ColumnDeleteCommand from "../commands/column-delete-command";
+import ColumnUpdateCommand from "../commands/column-update-command";
+import { ColumnTypeUpdateCommand } from "../commands/column-type-update-command";
 
-export const useColumn = (
-	viewLeaf: WorkspaceLeaf,
-	onChange: React.Dispatch<SetStateAction<TableState>>
-) => {
+export const useColumn = (viewLeaf: WorkspaceLeaf) => {
 	const dispatch = useAppDispatch();
 	const logFunc = useLogger();
-	const app = useApp();
+	const { doCommand } = useTableState();
 
 	React.useEffect(() => {
-		//@ts-expect-error missing overload
-		app.workspace.on(EVENT_COLUMN_ADD, (leaf: WorkspaceLeaf) => {
+		function handleColumnAddEvent(leaf: WorkspaceLeaf) {
 			if (leaf === viewLeaf) {
-				onChange((prevState) => columnAdd(prevState));
+				logFunc("handleColumnAddEvent");
+				doCommand(new ColumnAddCommand());
 			}
-		});
+		}
+
+		function handleColumnDeleteEvent(leaf: WorkspaceLeaf) {
+			if (leaf === viewLeaf) {
+				logFunc("handleColumnDeleteEvent");
+				doCommand(new ColumnDeleteCommand({ last: true }));
+			}
+		}
+		//@ts-expect-error missing overload
+		app.workspace.on(EVENT_COLUMN_ADD, handleColumnAddEvent);
 
 		//@ts-expect-error missing overload
-		app.workspace.on(EVENT_COLUMN_DELETE, (leaf: WorkspaceLeaf) => {
-			if (leaf === viewLeaf) {
-				onChange((prevState) =>
-					columnDelete(prevState, { last: true })
-				);
-			}
-		});
-	}, [app]);
+		app.workspace.on(EVENT_COLUMN_DELETE, handleColumnDeleteEvent);
+
+		return () => {
+			app.workspace.off(EVENT_COLUMN_ADD, handleColumnAddEvent);
+			app.workspace.off(EVENT_COLUMN_DELETE, handleColumnDeleteEvent);
+		};
+	}, [viewLeaf, doCommand]);
 
 	function handleNewColumnClick() {
 		logFunc("handleNewColumnClick");
-		onChange((prevState) => columnAdd(prevState));
+		doCommand(new ColumnAddCommand());
 	}
-	function handleHeaderTypeClick(columnId: string, type: CellType) {
-		logFunc("handleHeaderTypeClick", {
+	function handleColumnTypeClick(columnId: string, type: CellType) {
+		logFunc("handleColumnTypeClick", {
 			columnId,
 			type,
 		});
-		onChange((prevState) => columnChangeType(prevState, columnId, type));
+		doCommand(new ColumnTypeUpdateCommand(columnId, type));
 	}
 
-	function handleHeaderSortSelect(columnId: string, sortDir: SortDir) {
-		logFunc("handleHeaderSortSelect", {
+	function handleColumnSortClick(columnId: string, sortDir: SortDir) {
+		logFunc("handleColumnSortClick", {
 			columnId,
 			sortDir,
 		});
-		onChange((prevState) => columnSort(prevState, columnId, sortDir));
+		doCommand(new ColumnUpdateCommand(columnId, "sortDir", sortDir));
+		//TODO check?
 		dispatch(updateSortTime());
 	}
 
@@ -71,15 +73,14 @@ export const useColumn = (
 		logFunc("handleColumnToggle", {
 			columnId,
 		});
-		onChange((prevState) => columnUpdate(prevState, columnId, "isVisible"));
+		doCommand(new ColumnUpdateCommand(columnId, "isVisible"));
 	}
 
-	function handleHeaderDeleteClick(columnId: string) {
-		logFunc("handleHeaderDeleteClick", {
+	function handleColumnDeleteClick(columnId: string) {
+		logFunc("handleColumnDeleteClick", {
 			columnId,
 		});
-
-		onChange((prevState) => columnDelete(prevState, { id: columnId }));
+		doCommand(new ColumnDeleteCommand({ id: columnId }));
 	}
 
 	function handleCurrencyChange(
@@ -90,8 +91,8 @@ export const useColumn = (
 			columnId,
 			currencyType,
 		});
-		onChange((prevState) =>
-			columnUpdate(prevState, columnId, "currencyType", currencyType)
+		doCommand(
+			new ColumnUpdateCommand(columnId, "currencyType", currencyType)
 		);
 		dispatch(updateSortTime());
 	}
@@ -101,9 +102,7 @@ export const useColumn = (
 			columnId,
 			dateFormat,
 		});
-		onChange((prevState) =>
-			columnUpdate(prevState, columnId, "dateFormat", dateFormat)
-		);
+		doCommand(new ColumnUpdateCommand(columnId, "dateFormat", dateFormat));
 		dispatch(updateSortTime());
 	}
 
@@ -111,40 +110,38 @@ export const useColumn = (
 		logFunc("handleSortRemoveClick", {
 			columnId,
 		});
-		onChange((prevState) => columnSort(prevState, columnId, SortDir.NONE));
+		doCommand(new ColumnUpdateCommand(columnId, "sortDir", SortDir.NONE));
 		dispatch(updateSortTime());
 	}
 
-	function handleHeaderWidthChange(columnId: string, width: string) {
-		logFunc("handleHeaderWidthChange", {
+	function handleColumnWidthChange(columnId: string, width: string) {
+		logFunc("handleColumnWidthChange", {
 			columnId,
 			width,
 		});
-		onChange((prevState) =>
-			columnUpdate(prevState, columnId, "width", width)
-		);
+		doCommand(new ColumnUpdateCommand(columnId, "width", width));
 	}
 
-	function handleWrapContentToggle(columnId: string, value: boolean) {
+	function handleWrapContentToggle(columnId: string, shouldWrap: boolean) {
 		logFunc("handleWrapContentToggle", {
 			columnId,
-			value,
+			shouldWrap,
 		});
-		onChange((prevState) =>
-			columnUpdate(prevState, columnId, "shouldWrapOverflow", value)
+		doCommand(
+			new ColumnUpdateCommand(columnId, "shouldWrapOverflow", shouldWrap)
 		);
 	}
 
 	return {
 		handleNewColumnClick,
-		handleHeaderTypeClick,
-		handleHeaderSortSelect,
+		handleColumnTypeClick,
+		handleColumnSortClick,
 		handleColumnToggle,
-		handleHeaderDeleteClick,
+		handleColumnDeleteClick,
 		handleCurrencyChange,
 		handleDateFormatChange,
 		handleSortRemoveClick,
-		handleHeaderWidthChange,
+		handleColumnWidthChange,
 		handleWrapContentToggle,
 	};
 };

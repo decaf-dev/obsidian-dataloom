@@ -10,6 +10,7 @@ import {
 } from "src/shared/table-state/types";
 import { ColumnIdError } from "./table-error";
 
+//TODO implement all Cell Types
 export const isCellTypeFilterable = (cellType: CellType): boolean => {
 	switch (cellType) {
 		case CellType.TEXT:

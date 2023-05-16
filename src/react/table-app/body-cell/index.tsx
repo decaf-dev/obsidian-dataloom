@@ -59,7 +59,7 @@ interface Props {
 		cellId: string,
 		rowId: string,
 		tagId: string,
-		canAddMultiple: boolean
+		isMultiTag: boolean
 	) => void;
 	onContentChange: (cellId: string, rowId: string, value: string) => void;
 	onTagAdd: (
@@ -68,7 +68,7 @@ interface Props {
 		rowId: string,
 		markdown: string,
 		color: Color,
-		canAddMultiple: boolean
+		isMultiTag: boolean
 	) => void;
 	onTagDelete: (tagId: string) => void;
 	onTagColorChange: (tagId: string, color: Color) => void;
@@ -166,7 +166,7 @@ export default function BodyCell({
 		}
 	}
 
-	function handleAddTag(markdown: string, color: Color) {
+	function handleTagAdd(markdown: string, color: Color) {
 		onTagAdd(
 			cellId,
 			columnId,
@@ -362,7 +362,7 @@ export default function BodyCell({
 						tags={tags}
 						cellId={cellId}
 						onTagColorChange={onTagColorChange}
-						onTagAdd={handleAddTag}
+						onTagAdd={handleTagAdd}
 						onRemoveTag={handleRemoveTagClick}
 						onTagClick={handleTagClick}
 						onTagDelete={onTagDelete}

@@ -21,14 +21,16 @@ import {
 
 import { v4 as uuidv4 } from "uuid";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/table-state/constants";
+import { Color } from "src/shared/types";
 
-export const createColumn = (): Column => {
+export const createColumn = (options?: { cellType?: CellType }): Column => {
+	const { cellType = CellType.TEXT } = options || {};
 	return {
 		id: uuidv4(),
 		sortDir: SortDir.NONE,
 		isVisible: true,
 		width: "140px",
-		type: CellType.TEXT,
+		type: cellType,
 		currencyType: CurrencyType.UNITED_STATES,
 		dateFormat: DateFormat.MM_DD_YYYY,
 		shouldWrapOverflow: false,
@@ -47,11 +49,11 @@ export const createFooterRow = (): FooterRow => {
 	};
 };
 
-export const createBodyRow = (currentBodyRowCount: number): BodyRow => {
+export const createBodyRow = (index: number): BodyRow => {
 	const currentTime = Date.now();
 	return {
 		id: uuidv4(),
-		index: currentBodyRowCount,
+		index,
 		menuCellId: uuidv4(),
 		creationTime: currentTime,
 		lastEditedTime: currentTime,
@@ -73,8 +75,9 @@ export const createHeaderCell = (
 export const createBodyCell = (
 	columnId: string,
 	rowId: string,
-	cellType?: CellType
+	options: { cellType?: CellType } = {}
 ): BodyCell => {
+	const { cellType } = options || {};
 	return {
 		id: uuidv4(),
 		columnId,
@@ -110,26 +113,31 @@ export const createFooterCell = (
 
 export const createTag = (
 	columnId: string,
-	cellId: string,
 	markdown: string,
-	color = randomColor()
+	options?: { color?: Color; cellId?: string }
 ): Tag => {
+	const { color = randomColor(), cellId } = options || {};
 	return {
 		id: uuidv4(),
 		columnId,
 		markdown: markdown,
 		color,
-		cellIds: [cellId],
+		cellIds: cellId !== undefined ? [cellId] : [],
 	};
 };
 
 export const createTableState = (
 	numColumns: number,
-	numRows: number
+	numRows: number,
+	options?: {
+		cellType?: CellType;
+	}
 ): TableState => {
+	const { cellType } = options || {};
 	//Create columns
 	const columns: Column[] = [];
-	for (let i = 0; i < numColumns; i++) columns.push(createColumn());
+	for (let i = 0; i < numColumns; i++)
+		columns.push(createColumn({ cellType }));
 
 	//Create headers
 	const headerRows: HeaderRow[] = [];
