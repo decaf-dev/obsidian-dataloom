@@ -15,8 +15,8 @@ import {
 	Tag,
 } from "src/shared/table-state/types";
 import Stack from "../../shared/stack";
-import { getNumberFunctionContent } from "./numberFunction";
-import { getGeneralFunctionContent } from "./generalFunction";
+import { getNumberFunctionContent } from "./number-function";
+import { getGeneralFunctionContent } from "./general-function";
 
 import "./styles.css";
 import MenuTrigger from "src/react/shared/menu-trigger";
