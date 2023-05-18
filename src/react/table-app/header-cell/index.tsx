@@ -15,12 +15,13 @@ import { useAppSelector } from "src/redux/global/hooks";
 import Icon from "../../shared/icon";
 import Stack from "../../shared/stack";
 import HeaderMenu from "./components/HeaderMenu";
-import { useResizeColumn } from "./services/hooks";
 import { useCompare, useForceUpdate } from "src/shared/hooks";
 import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
 import { getIconIdForCellType } from "src/react/shared/icon/utils";
-import "./styles.css";
 import MenuTrigger from "src/react/shared/menu-trigger";
+import ResizeContainer from "./resize-container";
+
+import "./styles.css";
 
 interface Props {
 	cellId: string;
@@ -95,13 +96,6 @@ export default function HeaderCell({
 	}, [shouldUpdateWidth, menuPosition]);
 
 	const { resizingColumnId } = useAppSelector((state) => state.global);
-	const { handleMouseDown } = useResizeColumn(columnId, (dist) => {
-		const oldWidth = pxToNum(width);
-		const newWidth = oldWidth + dist;
-
-		if (newWidth < MIN_COLUMN_WIDTH) return;
-		onWidthChange(columnId, numToPx(newWidth));
-	});
 
 	function handleMenuTriggerClick() {
 		//If we're resizing a column, then don't open the menu
@@ -124,10 +118,6 @@ export default function HeaderCell({
 	let contentClassName = "NLT__th-content";
 	if (resizingColumnId == null) contentClassName += " NLT__selectable";
 
-	let resizeClassName = "NLT__th-resize";
-	if (resizingColumnId == columnId)
-		resizeClassName += " NLT__th-resize--active";
-
 	return (
 		<>
 			<MenuTrigger menuId={menu.id} onClick={handleMenuTriggerClick}>
@@ -144,24 +134,12 @@ export default function HeaderCell({
 							{markdown}
 						</Stack>
 					</div>
-					<div className="NLT__th-resize-container">
-						<div
-							className={resizeClassName}
-							onMouseDown={(e) => {
-								//TODO fix
-								//closeHeaderMenu();
-								handleMouseDown(e);
-							}}
-							onClick={(e) => {
-								//Stop propagation so we don't open the header
-								e.stopPropagation();
-
-								//If the user is double clicking then set width to max
-								if (e.detail === 2)
-									onWidthChange(columnId, "unset");
-							}}
-						/>
-					</div>
+					<ResizeContainer
+						currentResizingId={resizingColumnId}
+						columnId={columnId}
+						width={width}
+						onWidthChange={onWidthChange}
+					/>
 				</div>
 			</MenuTrigger>
 			<HeaderMenu

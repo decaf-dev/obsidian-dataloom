@@ -16,23 +16,3 @@
     user-select: none;
     padding: var(--nlt-cell-spacing-x) var(--nlt-cell-spacing-y);
 }
-
-.NLT__th-resize-container {
-    position: relative;
-}
-
-.NLT__th-resize {
-    position: absolute;
-    left: -5px;
-    cursor: col-resize;
-    width: 5px;
-    height: 100%;
-}
-
-.NLT__th-resize:hover {
-    background-color: var(--interactive-accent);
-}
-
-.NLT__th-resize--active {
-    background-color: var(--interactive-accent);
-}
