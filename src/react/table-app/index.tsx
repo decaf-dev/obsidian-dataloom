@@ -352,9 +352,13 @@ export default function TableApp({ viewLeaf }: Props) {
 									return {
 										id: cell.id,
 										content: (
-											<NewRowButton
-												onClick={handleNewRowClick}
-											/>
+											<div
+												style={{ width: column.width }}
+											>
+												<NewRowButton
+													onClick={handleNewRowClick}
+												/>
+											</div>
 										),
 									};
 								}
