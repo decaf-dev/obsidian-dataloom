@@ -9,7 +9,6 @@ import {
 } from "src/shared/table-state/types";
 import { useMenu } from "src/shared/menu/hooks";
 import { MenuLevel } from "src/shared/menu/types";
-import { MIN_COLUMN_WIDTH } from "src/shared/table-state/constants";
 import { useAppSelector } from "src/redux/global/hooks";
 
 import Icon from "../../shared/icon";
@@ -77,12 +76,11 @@ export default function HeaderCell({
 
 	const [updateTime, forceUpdate] = useForceUpdate();
 
-	//A width of "unset" means that we have double clicked to resize the column
+	//A width of "unset" means that we have double clicked to fore the column to resize
+	//to the width of the cell contents
 	//We need to force an update so that the menu ref will have the correct width
 	useEffect(() => {
-		if (width === "unset") {
-			forceUpdate();
-		}
+		if (width === "unset") forceUpdate();
 	}, [width, forceUpdate]);
 
 	//We will then need to update the width of the column so that the header cell will

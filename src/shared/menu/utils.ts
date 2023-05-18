@@ -4,11 +4,15 @@ export const getElementPosition = (el: HTMLElement | null): Position => {
 	if (el) {
 		const { top, left, width, height } = el.getBoundingClientRect();
 
+		//All values are decimals, but our menu system uses whole numbers
+		//so we need to round the values.
+		//We round up the width and height so that will always be enough room for items
+		//otherwise some letters may wrap
 		return {
-			width: Math.round(width),
-			height: Math.round(height),
-			top: Math.round(top),
-			left: Math.round(left),
+			width: Math.ceil(width),
+			height: Math.ceil(height),
+			top: Math.ceil(top),
+			left: Math.ceil(left),
 		};
 	}
 	return {
