@@ -16,6 +16,9 @@ const innerStyle = css`
 	&:hover {
 		background-color: var(--interactive-accent);
 	}
+	&:active {
+		background-color: var(--interactive-accent);
+	}
 `;
 
 const dragStyle = css`
