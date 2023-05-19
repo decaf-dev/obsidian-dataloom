@@ -15,8 +15,8 @@ import {
 	Tag,
 } from "src/shared/table-state/types";
 import Stack from "../../shared/stack";
-import { getNumberFunctionContent } from "./numberFunction";
-import { getGeneralFunctionContent } from "./generalFunction";
+import { getNumberFunctionContent } from "./number-function";
+import { getGeneralFunctionContent } from "./general-function";
 
 import "./styles.css";
 import MenuTrigger from "src/react/shared/menu-trigger";
@@ -50,17 +50,13 @@ export default function FunctionCell({
 	cellType,
 	onFunctionTypeChange,
 }: Props) {
-	const {
-		menu,
-		menuPosition,
-		isMenuOpen,
-		openMenu,
-		closeTopMenuAndFocusTrigger,
-	} = useMenu(MenuLevel.ONE);
+	const { menu, menuPosition, isMenuOpen, openMenu, closeTopMenu } = useMenu(
+		MenuLevel.ONE
+	);
 
 	function handleFunctionTypeClick(value: FunctionType) {
 		onFunctionTypeChange(cellId, value);
-		closeTopMenuAndFocusTrigger();
+		closeTopMenu();
 	}
 
 	const { top, left } = shiftMenuIntoViewContent({
