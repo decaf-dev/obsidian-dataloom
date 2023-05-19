@@ -6,6 +6,12 @@ import {
 } from "./focus-visible";
 import { Menu, MenuLevel } from "./types";
 import { useTableState } from "../table-state/table-state-context";
+import {
+	isMacRedo,
+	isMacUndo,
+	isWindowsRedo,
+	isWindowsUndo,
+} from "../keyboard-event";
 
 interface ContextProps {
 	openMenus: Menu[];
@@ -296,6 +302,14 @@ export default function MenuProvider({ children }: Props) {
 					handleArrowDown(e);
 					break;
 				default:
+					if (
+						isMacUndo(e) ||
+						isMacRedo(e) ||
+						isWindowsUndo(e) ||
+						isWindowsRedo(e)
+					)
+						return;
+
 					if (e.key.length !== 1) return;
 					openMenuFromFocusedTrigger();
 					//Our menu will render twice, so the key won't enter the input
