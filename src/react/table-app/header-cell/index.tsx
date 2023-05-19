@@ -9,18 +9,18 @@ import {
 } from "src/shared/table-state/types";
 import { useMenu } from "src/shared/menu/hooks";
 import { MenuLevel } from "src/shared/menu/types";
-import { MIN_COLUMN_WIDTH } from "src/shared/table-state/constants";
 import { useAppSelector } from "src/redux/global/hooks";
 
 import Icon from "../../shared/icon";
 import Stack from "../../shared/stack";
 import HeaderMenu from "./components/HeaderMenu";
-import { useResizeColumn } from "./services/hooks";
 import { useCompare, useForceUpdate } from "src/shared/hooks";
 import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
 import { getIconIdForCellType } from "src/react/shared/icon/utils";
-import "./styles.css";
 import MenuTrigger from "src/react/shared/menu-trigger";
+import ResizeContainer from "./resize-container";
+
+import "./styles.css";
 
 interface Props {
 	cellId: string;
@@ -70,18 +70,17 @@ export default function HeaderCell({
 		menuPosition,
 		isMenuOpen,
 		isMenuVisible,
-		closeTopMenuAndFocusTrigger,
+		closeTopMenu,
 		openMenu,
 	} = useMenu(MenuLevel.ONE);
 
 	const [updateTime, forceUpdate] = useForceUpdate();
 
-	//A width of "unset" means that we have double clicked to resize the column
+	//A width of "unset" means that we have double clicked to fore the column to resize
+	//to the width of the cell contents
 	//We need to force an update so that the menu ref will have the correct width
 	useEffect(() => {
-		if (width === "unset") {
-			forceUpdate();
-		}
+		if (width === "unset") forceUpdate();
 	}, [width, forceUpdate]);
 
 	//We will then need to update the width of the column so that the header cell will
@@ -95,23 +94,11 @@ export default function HeaderCell({
 	}, [shouldUpdateWidth, menuPosition]);
 
 	const { resizingColumnId } = useAppSelector((state) => state.global);
-	const { handleMouseDown } = useResizeColumn(columnId, (dist) => {
-		const oldWidth = pxToNum(width);
-		const newWidth = oldWidth + dist;
-
-		if (newWidth < MIN_COLUMN_WIDTH) return;
-		onWidthChange(columnId, numToPx(newWidth));
-	});
 
 	function handleMenuTriggerClick() {
 		//If we're resizing a column, then don't open the menu
 		if (resizingColumnId !== null) return;
-
 		openMenu(menu);
-	}
-
-	function closeHeaderMenu() {
-		closeTopMenuAndFocusTrigger();
 	}
 
 	const { top, left } = shiftMenuIntoViewContent({
@@ -123,10 +110,6 @@ export default function HeaderCell({
 
 	let contentClassName = "NLT__th-content";
 	if (resizingColumnId == null) contentClassName += " NLT__selectable";
-
-	let resizeClassName = "NLT__th-resize";
-	if (resizingColumnId == columnId)
-		resizeClassName += " NLT__th-resize--active";
 
 	return (
 		<>
@@ -144,24 +127,13 @@ export default function HeaderCell({
 							{markdown}
 						</Stack>
 					</div>
-					<div className="NLT__th-resize-container">
-						<div
-							className={resizeClassName}
-							onMouseDown={(e) => {
-								//TODO fix
-								//closeHeaderMenu();
-								handleMouseDown(e);
-							}}
-							onClick={(e) => {
-								//Stop propagation so we don't open the header
-								e.stopPropagation();
-
-								//If the user is double clicking then set width to max
-								if (e.detail === 2)
-									onWidthChange(columnId, "unset");
-							}}
-						/>
-					</div>
+					<ResizeContainer
+						currentResizingId={resizingColumnId}
+						columnId={columnId}
+						width={width}
+						onWidthChange={onWidthChange}
+						onMenuClose={() => closeTopMenu(false)}
+					/>
 				</div>
 			</MenuTrigger>
 			<HeaderMenu
@@ -184,7 +156,7 @@ export default function HeaderCell({
 				onSortClick={onSortClick}
 				onTypeSelect={onTypeSelect}
 				onDeleteClick={onDeleteClick}
-				onClose={closeHeaderMenu}
+				onClose={() => closeTopMenu()}
 				onWrapOverflowToggle={onWrapOverflowToggle}
 				onNameChange={onNameChange}
 				onCurrencyChange={onCurrencyChange}
