@@ -110,7 +110,7 @@ export default function BodyCell({
 		menuCloseRequestTime,
 		isMenuVisible,
 		openMenu,
-		closeTopMenuAndFocusTrigger,
+		closeTopMenu,
 	} = useMenu(
 		MenuLevel.ONE,
 		columnType === CellType.DATE ||
@@ -210,7 +210,7 @@ export default function BodyCell({
 	}
 
 	function handleMenuClose() {
-		closeTopMenuAndFocusTrigger();
+		closeTopMenu();
 	}
 
 	const { top, left } = shiftMenuIntoViewContent({

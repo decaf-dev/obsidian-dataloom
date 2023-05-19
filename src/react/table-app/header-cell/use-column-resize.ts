@@ -43,6 +43,9 @@ export const useColumnResize = (
 	}
 
 	function handleTouchStart(e: React.TouchEvent) {
+		//If we double click, then don't resize
+		if (e.detail >= 2) return;
+
 		//Mouse event
 		e.preventDefault();
 
