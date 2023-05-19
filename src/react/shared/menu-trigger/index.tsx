@@ -7,6 +7,7 @@ interface Props {
 	children: React.ReactNode;
 	onClick: (e: React.MouseEvent) => void;
 	onEnterDown?: () => void;
+	onBackspaceDown?: () => void;
 }
 
 const MenuTrigger = ({
@@ -16,7 +17,16 @@ const MenuTrigger = ({
 	menuId,
 	onClick,
 	onEnterDown,
+	onBackspaceDown,
 }: Props) => {
+	function handleKeyDown(e: React.KeyboardEvent) {
+		if (e.key === "Enter") {
+			onEnterDown?.();
+		} else if (e.key == "Backspace") {
+			onBackspaceDown?.();
+		}
+	}
+
 	return (
 		<div
 			tabIndex={0}
@@ -25,7 +35,7 @@ const MenuTrigger = ({
 			className="NLT__focusable"
 			style={{ width: "100%", height: "100%" }}
 			onClick={onClick}
-			onKeyDown={(e) => e.key === "Enter" && onEnterDown?.()}
+			onKeyDown={handleKeyDown}
 		>
 			{children}
 		</div>

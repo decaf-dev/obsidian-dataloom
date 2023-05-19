@@ -5,19 +5,19 @@ import {
 import TableStateCommand from "../table-state/table-state-command";
 import { TableState, Tag } from "../table-state/types";
 
-export default class TagCellRemoveCommand extends TableStateCommand {
+export default class TagCellMultipleRemoveCommand extends TableStateCommand {
 	private cellId: string;
 	private rowId: string;
-	private tagId: string;
+	private tagIds: string[];
 
 	private previousEditedTime: number;
-	private changedTag: Tag;
+	private changedTags: Tag[] = [];
 
-	constructor(cellId: string, rowId: string, tagId: string) {
+	constructor(cellId: string, rowId: string, tagIds: string[]) {
 		super();
 		this.cellId = cellId;
 		this.rowId = rowId;
-		this.tagId = tagId;
+		this.tagIds = tagIds;
 	}
 
 	execute(prevState: TableState): TableState {
@@ -27,8 +27,8 @@ export default class TagCellRemoveCommand extends TableStateCommand {
 
 		let updatedTags = structuredClone(tags);
 		updatedTags = updatedTags.map((tag) => {
-			if (tag.id === this.tagId) {
-				this.changedTag = structuredClone(tag);
+			if (this.tagIds.includes(tag.id)) {
+				this.changedTags.push(structuredClone(tag));
 				return {
 					...tag,
 					cellIds: tag.cellIds.filter((id) => id !== this.cellId),
@@ -62,10 +62,9 @@ export default class TagCellRemoveCommand extends TableStateCommand {
 		const { tags, bodyRows } = prevState.model;
 
 		let updatedTags = structuredClone(tags);
-		updatedTags = updatedTags.map((tag) => {
-			if (tag.id === this.changedTag.id) return this.changedTag;
-			return tag;
-		});
+		updatedTags = updatedTags.map(
+			(tag) => this.changedTags.find((t) => t.id === tag.id) || tag
+		);
 
 		return {
 			...prevState,
