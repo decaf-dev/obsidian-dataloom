@@ -1,6 +1,5 @@
 import { createTableState, createTag } from "src/data/table-state-factory";
 import { CommandUndoError } from "./command-errors";
-import TagCellRemoveCommand from "./tag-cell-remove-command";
 import { advanceBy, clear } from "jest-date-mock";
 import TagCellMultipleRemoveCommand from "./tag-cell-multiple-remove-command";
 
