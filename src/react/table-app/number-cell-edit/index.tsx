@@ -47,7 +47,6 @@ export default function NumberCellEdit({
 				type="text" //We use an input of type text so that the selection is available
 				ref={inputRef}
 				inputMode="numeric"
-				autoFocus
 				value={value}
 				onChange={(e) => handleChange(e.target.value)}
 			/>
