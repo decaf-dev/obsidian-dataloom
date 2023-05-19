@@ -21,8 +21,8 @@ export default function SearchBar() {
 						border-top: 0 !important;
 						border-left: 0 !important;
 						border-right: 0 !important;
-						border-bottom: 1px solid
-							var(--background-modifier-border) !important;
+						border-bottom: 1px solid;
+						var(--background-modifier-border) !important;
 					`}
 					autoFocus
 					type="text"

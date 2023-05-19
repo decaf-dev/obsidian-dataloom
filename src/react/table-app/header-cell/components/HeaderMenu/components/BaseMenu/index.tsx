@@ -6,6 +6,8 @@ import { CellType, SortDir } from "src/shared/table-state/types";
 import { SubmenuType } from "../../types";
 import { useFocusMenuInput, useInputSelection } from "src/shared/hooks";
 import { getDisplayNameForCellType } from "src/shared/table-state/display-name";
+import { css } from "@emotion/react";
+import { getTableBackgroundColor, getTableBorderColor } from "src/shared/color";
 
 interface Props {
 	isMenuVisible: boolean;
@@ -54,11 +56,21 @@ export default function BaseMenu({
 		onColumnNameChange(cellId, inputValue);
 	}
 
+	const tableBackgroundColor = getTableBackgroundColor();
+	const tableBorderColor = getTableBorderColor();
+
 	return (
 		<Stack spacing="sm" isVertical>
 			<Stack spacing="sm" isVertical>
 				<Padding px="md" py="sm">
 					<input
+						css={css`
+							background-color: ${tableBackgroundColor};
+							border: 1px solid ${tableBorderColor};
+							padding: 4px 10px;
+							font-size: 0.95rem;
+							width: 100%;
+						`}
 						ref={inputRef}
 						value={columnName}
 						onChange={(e) => handleInputChange(e.target.value)}

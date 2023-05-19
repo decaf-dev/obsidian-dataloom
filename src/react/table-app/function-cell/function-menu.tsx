@@ -18,6 +18,7 @@ interface Props {
 	value: FunctionType;
 	cellType: CellType;
 	isOpen: boolean;
+	isReady: boolean;
 	top: number;
 	left: number;
 	onClick: (value: FunctionType) => void;
@@ -26,13 +27,14 @@ export default function FunctionMenu({
 	id,
 	value,
 	cellType,
+	isReady,
 	isOpen,
 	top,
 	left,
 	onClick,
 }: Props) {
 	return (
-		<Menu id={id} isOpen={isOpen} top={top} left={left}>
+		<Menu id={id} isOpen={isOpen} isReady={isReady} top={top} left={left}>
 			<div className="NLT__function-menu">
 				{Object.values(GeneralFunction).map((type) => (
 					<MenuItem

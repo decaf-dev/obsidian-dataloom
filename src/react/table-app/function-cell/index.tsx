@@ -59,7 +59,10 @@ export default function FunctionCell({
 		closeTopMenu();
 	}
 
-	const { top, left } = shiftMenuIntoViewContent({
+	const {
+		position: { top, left },
+		isMenuReady,
+	} = shiftMenuIntoViewContent({
 		menuId: menu.id,
 		menuPositionEl: menuPosition.positionRef.current,
 		menuPosition: menuPosition.position,
@@ -128,6 +131,7 @@ export default function FunctionCell({
 				cellType={cellType}
 				left={left}
 				isOpen={isMenuOpen}
+				isReady={isMenuReady}
 				value={functionType}
 				onClick={handleFunctionTypeClick}
 			/>

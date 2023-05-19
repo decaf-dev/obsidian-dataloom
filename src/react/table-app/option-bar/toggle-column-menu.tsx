@@ -11,6 +11,7 @@ interface Props {
 	top: number;
 	left: number;
 	isOpen: boolean;
+	isReady: boolean;
 	columns: ColumnToggle[];
 	onToggle: (id: string) => void;
 }
@@ -20,11 +21,19 @@ export default function ToggleColumnMenu({
 	top,
 	left,
 	isOpen,
+	isReady,
 	columns,
 	onToggle,
 }: Props) {
 	return (
-		<Menu isOpen={isOpen} id={id} top={top} left={left} width={175}>
+		<Menu
+			isOpen={isOpen}
+			isReady={isReady}
+			id={id}
+			top={top}
+			left={left}
+			width={175}
+		>
 			<div className="NLT__toggle-column-menu">
 				<Padding p="md">
 					<Stack spacing="md" isVertical>

@@ -41,7 +41,10 @@ export default function SelectableTag({
 		closeTopMenu();
 	}
 
-	const { top, left } = shiftMenuIntoViewContent({
+	const {
+		position: { top, left },
+		isMenuReady,
+	} = shiftMenuIntoViewContent({
 		menuId: menu.id,
 		menuPositionEl: menuPosition.positionRef.current,
 		menuPosition: menuPosition.position,
@@ -76,6 +79,7 @@ export default function SelectableTag({
 				menuId={menu.id}
 				top={top}
 				left={left}
+				isReady={isMenuReady}
 				isOpen={isMenuOpen}
 				selectedColor={color}
 				onColorClick={(color) => handleColorChange(color)}
