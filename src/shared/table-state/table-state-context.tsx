@@ -43,6 +43,9 @@ export default function TableStateProvider({
 }: Props) {
 	const [tableState, setTableState] = React.useState(initialState);
 	const [tableId] = useUUID();
+	const [commandQueue, setCommandQueue] = React.useState<TableStateCommand[]>(
+		[]
+	);
 
 	const [history, setHistory] = React.useState<(TableStateCommand | null)[]>([
 		null,
