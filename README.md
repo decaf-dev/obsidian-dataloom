@@ -73,15 +73,15 @@ You can also right click on a folder and click `New Notion-Like table`
 -   Search filter - filter rows by a search value
 -   Sort by column - sort rows by ascending or descending order
 -   Toggle column filter - toggle visibility of columns
--   Drag and drop columns - drag a column above another column to have them change positions
--   Drag and drop rows - drag a row to above another row to have them change positions
+-   Drag and drop columns - drag a column above another column to insert it at that position
+-   Drag and drop rows - drag a row to above another row to insert it at that position
 -   Sticky headers - headers will remain visible as you scroll
 -   Function cells - allows you to make calculations based on column data. If the column cell type is set to number or currency, you have arithmetic operations available such as: min, max, range, median, sum, and average
 -   Import modal - allows you to create cells from markdown data
--   Keyboard focus navigation system - navigate focusable elements using the tab button, arrow keys, and enter button on your keyboard. If a cell is focused, press any key to have that character appended to the cell input
+-   Keyboard focus navigation system - navigate focusable elements using the tab button, arrow keys, and enter button on your keyboard. If a cell is focused, press any key to have that character appended to the cell input and have the menu open. Or just press enter to open the menu. If a cell is focused, press backspace to delete the contents.
 -   Virtualization of table rows - allows the user to render thousands of rows with no miminal lag in the table
 -   Filter rules - add rules to filter rows that only match speific criteria for a column. Currently supports filtering on: text, tag, multi-tag, and checkbox column types only
--   Undo system - currently only supports undo/redo for add/delete column and add/delete row
+-   Undo system - Undo or redo table state operations
 
 ## Settings
 
