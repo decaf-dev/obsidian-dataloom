@@ -76,7 +76,6 @@ export default function TableBodyRow({
 
 		setTableState((prevState) => {
 			const { bodyRows, columns } = prevState.model;
-			const rowsCopy = structuredClone(bodyRows);
 
 			const draggedElIndex = bodyRows.findIndex(
 				(row) => row.id === draggedId
@@ -85,14 +84,17 @@ export default function TableBodyRow({
 				(row) => row.id == targetId
 			);
 
-			//Move the actual element
-			let temp = rowsCopy[targetElIndex];
-			rowsCopy[targetElIndex] = rowsCopy[draggedElIndex];
-			rowsCopy[draggedElIndex] = temp;
+			const newRows = structuredClone(bodyRows);
+			const draggedEl = newRows[draggedElIndex];
+
+			//Remove the element
+			newRows.splice(draggedElIndex, 1);
+			//Append it to the new location
+			newRows.splice(targetElIndex, 0, draggedEl);
 
 			//Set the current index of all the values to their current positions
 			//This will allow us to retain the order of sorted rows once we drag an item
-			rowsCopy.forEach((row, index) => {
+			newRows.forEach((row, index) => {
 				row.index = index;
 			});
 
@@ -100,7 +102,7 @@ export default function TableBodyRow({
 				...prevState,
 				model: {
 					...prevState.model,
-					bodyRows: rowsCopy,
+					bodyRows: newRows,
 					columns: columns.map((column) => {
 						//If we're sorting, reset the sort
 						return {

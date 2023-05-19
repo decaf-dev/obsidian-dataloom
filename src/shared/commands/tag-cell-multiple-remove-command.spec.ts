@@ -1,7 +1,7 @@
 import { createTableState, createTag } from "src/data/table-state-factory";
 import { CommandUndoError } from "./command-errors";
-import TagCellRemoveCommand from "./tag-cell-remove-command";
 import { advanceBy, clear } from "jest-date-mock";
+import TagCellMultipleRemoveCommand from "./tag-cell-multiple-remove-command";
 
 describe("tag-cell-remove-command", () => {
 	it("should throw an error when undo() is called before execute()", () => {
@@ -10,16 +10,19 @@ describe("tag-cell-remove-command", () => {
 			const prevState = createTableState(1, 1);
 
 			const tags = [
-				createTag(prevState.model.columns[0].id, "test", {
+				createTag(prevState.model.columns[0].id, "test1", {
+					cellId: prevState.model.bodyCells[0].id,
+				}),
+				createTag(prevState.model.columns[0].id, "test2", {
 					cellId: prevState.model.bodyCells[0].id,
 				}),
 			];
 			prevState.model.tags = tags;
 
-			const command = new TagCellRemoveCommand(
+			const command = new TagCellMultipleRemoveCommand(
 				prevState.model.bodyCells[0].id,
 				prevState.model.bodyRows[0].id,
-				prevState.model.tags[0].id
+				[prevState.model.tags[0].id, prevState.model.tags[1].id]
 			);
 
 			//Act
@@ -34,16 +37,19 @@ describe("tag-cell-remove-command", () => {
 		const prevState = createTableState(1, 1);
 
 		const tags = [
-			createTag(prevState.model.columns[0].id, "test", {
+			createTag(prevState.model.columns[0].id, "test1", {
+				cellId: prevState.model.bodyCells[0].id,
+			}),
+			createTag(prevState.model.columns[0].id, "test2", {
 				cellId: prevState.model.bodyCells[0].id,
 			}),
 		];
 		prevState.model.tags = tags;
 
-		const command = new TagCellRemoveCommand(
+		const command = new TagCellMultipleRemoveCommand(
 			prevState.model.bodyCells[0].id,
 			prevState.model.bodyRows[0].id,
-			prevState.model.tags[0].id
+			[prevState.model.tags[0].id, prevState.model.tags[1].id]
 		);
 
 		//Act
@@ -53,6 +59,7 @@ describe("tag-cell-remove-command", () => {
 
 		//Assert
 		expect(executeState.model.tags[0].cellIds.length).toEqual(0);
+		expect(executeState.model.tags[1].cellIds.length).toEqual(0);
 		expect(executeState.model.bodyRows[0].lastEditedTime).toBeGreaterThan(
 			prevState.model.bodyRows[0].lastEditedTime
 		);
@@ -63,16 +70,19 @@ describe("tag-cell-remove-command", () => {
 		const prevState = createTableState(1, 1);
 
 		const tags = [
-			createTag(prevState.model.columns[0].id, "test", {
+			createTag(prevState.model.columns[0].id, "test1", {
+				cellId: prevState.model.bodyCells[0].id,
+			}),
+			createTag(prevState.model.columns[0].id, "test2", {
 				cellId: prevState.model.bodyCells[0].id,
 			}),
 		];
 		prevState.model.tags = tags;
 
-		const command = new TagCellRemoveCommand(
+		const command = new TagCellMultipleRemoveCommand(
 			prevState.model.bodyCells[0].id,
 			prevState.model.bodyRows[0].id,
-			prevState.model.tags[0].id
+			[prevState.model.tags[0].id, prevState.model.tags[1].id]
 		);
 
 		//Act

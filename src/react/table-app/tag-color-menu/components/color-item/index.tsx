@@ -1,4 +1,4 @@
-import { findColorClassName } from "src/shared/colors";
+import { findColorClassName } from "src/shared/color";
 import { Color } from "src/shared/types";
 import { uppercaseFirst } from "src/shared/stringUtils";
 import "./styles.css";

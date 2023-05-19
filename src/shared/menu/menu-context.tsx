@@ -6,6 +6,12 @@ import {
 } from "./focus-visible";
 import { Menu, MenuLevel } from "./types";
 import { useTableState } from "../table-state/table-state-context";
+import {
+	isMacRedo,
+	isMacUndo,
+	isWindowsRedo,
+	isWindowsUndo,
+} from "../keyboard-event";
 
 interface ContextProps {
 	openMenus: Menu[];
@@ -100,14 +106,14 @@ export default function MenuProvider({ children }: Props) {
 	/**
 	 * Closes the top level menu
 	 */
-	function closeTopMenu(shouldFocusTriggerOnClose = true) {
+	function closeTopMenu(shouldFocusTrigger = true) {
 		const menu = topLevelMenu();
 		//If there is no menu open, just return
 		if (!menu) return;
 
 		const { id, level } = menu;
 
-		if (shouldFocusTriggerOnClose) {
+		if (shouldFocusTrigger) {
 			//If the menu level is one, we want to focus the trigger on close
 			if (level === MenuLevel.ONE) {
 				focusMenuElement(id);
@@ -128,7 +134,7 @@ export default function MenuProvider({ children }: Props) {
 				const menu = topLevelMenu();
 				if (!menu) throw new Error("Menu is open but no menu exists");
 
-				const { id, level } = menu;
+				const { id } = menu;
 
 				//If the menu is not mounted, we don't need to do anything
 				//This can happen when a menu changes
@@ -143,12 +149,6 @@ export default function MenuProvider({ children }: Props) {
 				)
 					return;
 
-				//If we didn't click on the current menu then close the menu
-				//and focus the parent
-				if (level === MenuLevel.ONE) {
-					focusMenuElement(id);
-					addFocusVisibleClass(id);
-				}
 				closeTopMenu();
 			} else {
 				removeFocusVisibleClass();
@@ -302,6 +302,14 @@ export default function MenuProvider({ children }: Props) {
 					handleArrowDown(e);
 					break;
 				default:
+					if (
+						isMacUndo(e) ||
+						isMacRedo(e) ||
+						isWindowsUndo(e) ||
+						isWindowsRedo(e)
+					)
+						return;
+
 					if (e.key.length !== 1) return;
 					openMenuFromFocusedTrigger();
 					//Our menu will render twice, so the key won't enter the input

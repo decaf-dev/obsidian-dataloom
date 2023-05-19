@@ -19,6 +19,8 @@ import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
 import "./styles.css";
 import MenuTrigger from "src/react/shared/menu-trigger";
 import { getDisplayNameForDateFormat } from "src/shared/table-state/display-name";
+import { css } from "@emotion/react";
+import { getTableBackgroundColor, getTableBorderColor } from "src/shared/color";
 
 interface Props {
 	isMenuVisible: boolean;
@@ -105,7 +107,10 @@ export default function DateCellEdit({
 		onMenuClose();
 	}
 
-	const { top, left } = shiftMenuIntoViewContent({
+	const {
+		position: { top, left },
+		isMenuReady,
+	} = shiftMenuIntoViewContent({
 		menuId: menu.id,
 		menuPositionEl: menuPosition.positionRef.current,
 		menuPosition: menuPosition.position,
@@ -113,12 +118,22 @@ export default function DateCellEdit({
 		leftOffset: 135,
 	});
 
+	const tableBackgroundColor = getTableBackgroundColor();
+	const tableBorderColor = getTableBorderColor();
+
 	return (
 		<>
 			<div className="NLT__date-cell-edit">
 				<Stack spacing="md" isVertical>
 					<Padding px="md" py="md">
 						<input
+							css={css`
+								width: 100%;
+								height: 100%;
+								border: 1px solid ${tableBorderColor};
+								padding: 5px;
+								background-color: ${tableBackgroundColor};
+							`}
 							ref={inputRef}
 							aria-invalid={isInputInvalid}
 							autoFocus
@@ -140,6 +155,7 @@ export default function DateCellEdit({
 			</div>
 			<DateFormatMenu
 				id={menu.id}
+				isReady={isMenuReady}
 				isOpen={isMenuOpen}
 				top={top}
 				left={left}

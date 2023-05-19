@@ -43,7 +43,10 @@ export default function Filter({
 		}
 	}
 
-	const { top, left } = shiftMenuIntoViewContent({
+	const {
+		position: { top, left },
+		isMenuReady,
+	} = shiftMenuIntoViewContent({
 		menuId: menu.id,
 		menuPositionEl: menuPosition.positionRef.current,
 		menuPosition: menuPosition.position,
@@ -64,6 +67,7 @@ export default function Filter({
 				id={menu.id}
 				top={top}
 				left={left}
+				isReady={isMenuReady}
 				isOpen={isMenuOpen}
 				columns={columns}
 				tags={tags}

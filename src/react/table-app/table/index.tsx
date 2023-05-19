@@ -8,17 +8,19 @@ import {
 	RenderTableHeaderRow,
 } from "./types";
 
-import { Platform } from "obsidian";
 import TableBodyRow from "./table-body-row";
 import TableHeaderCell from "./table-header-cell";
 import { css } from "@emotion/react";
 import { useCompare } from "src/shared/hooks";
+import { getTableBorderColor } from "src/shared/color";
 
 interface Props {
 	headerRows: RenderTableHeaderRow[];
 	bodyRows: RenderTableBodyRow[];
 	footerRows: RenderTableFooterRow[];
 }
+
+const tableBorderColor = getTableBorderColor();
 
 export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 	const tableRef = React.useRef<VirtuosoHandle>(null);
@@ -32,9 +34,6 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 		if (didRowsChange) tableRef.current?.scrollToIndex(bodyRows.length - 1);
 		tableRef.current?.scrollTo;
 	}, [didRowsChange, bodyRows.length]);
-
-	//TODO handle mobile?
-	const isMobile = Platform.isMobile || Platform.isMobileApp;
 
 	return (
 		<TableVirtuoso
@@ -89,10 +88,8 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 							}
 							css={css`
 								border-top: 0 !important;
-								border-bottom: 1px solid
-									var(--background-modifier-border) !important;
-								border-left: 1px solid
-									var(--background-modifier-border) !important;
+								border-bottom: 1px solid ${tableBorderColor} !important;
+								border-left: 1px solid ${tableBorderColor} !important;
 								border-right: 0 !important;
 								padding: 0 !important;
 								overflow: visible;
@@ -149,10 +146,10 @@ const Components: TableComponents = {
 				bottom: 0;
 				background-color: var(--background-primary);
 				& > tr:first-of-type > td {
-					border-bottom: 1px solid var(--background-modifier-border) !important;
+					border-bottom: 1px solid ${tableBorderColor} !important;
 				}
 				& > tr:first-of-type > td:last-child {
-					border-left: 1px solid var(--background-modifier-border) !important;
+					border-left: 1px solid ${tableBorderColor} !important;
 					border-bottom: 0 !important;
 				}
 			`}

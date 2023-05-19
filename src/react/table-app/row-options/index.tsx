@@ -31,7 +31,10 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 		closeTopMenu();
 	}
 
-	const { top, left } = shiftMenuIntoViewContent({
+	const {
+		position: { top, left },
+		isMenuReady,
+	} = shiftMenuIntoViewContent({
 		menuId: menu.id,
 		menuPositionEl: menuPosition.positionRef.current,
 		menuPosition: menuPosition.position,
@@ -74,6 +77,7 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 			<RowMenu
 				id={menu.id}
 				rowId={rowId}
+				isReady={isMenuReady}
 				isOpen={isMenuOpen}
 				top={top}
 				left={left}

@@ -21,11 +21,11 @@ interface Props {
 	canDeleteColumn: boolean;
 	top: number;
 	left: number;
+	isReady: boolean;
 	id: string;
 	dateFormat: DateFormat;
 	currencyType: CurrencyType;
 	rowId: string;
-	isMenuVisible: boolean;
 	cellId: string;
 	markdown: string;
 	shouldWrapOverflow: boolean;
@@ -46,9 +46,9 @@ interface Props {
 export default function HeaderMenu({
 	isOpen,
 	id,
-	isMenuVisible,
 	top,
 	left,
+	isReady,
 	cellId,
 	markdown,
 	dateFormat,
@@ -97,11 +97,18 @@ export default function HeaderMenu({
 	}
 
 	return (
-		<Menu isOpen={isOpen} id={id} top={top} left={left} width={175}>
+		<Menu
+			isOpen={isOpen}
+			id={id}
+			top={top}
+			left={left}
+			isReady={isReady}
+			width={175}
+		>
 			<div className="NLT__header-menu">
 				{submenu === null && (
 					<BaseMenu
-						isMenuVisible={isMenuVisible}
+						isMenuVisible={isReady}
 						cellId={cellId}
 						columnName={markdown}
 						columnType={columnType}

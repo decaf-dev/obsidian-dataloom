@@ -1,5 +1,6 @@
 import { css } from "@emotion/react";
 import { TableDataTransferItem } from "src/react/table-app/table/types";
+import { getTableBackgroundColor, getTableBorderColor } from "src/shared/color";
 import { useTableState } from "src/shared/table-state/table-state-context";
 
 interface TableHeaderCellProps {
@@ -45,7 +46,6 @@ export default function TableHeaderCell({
 
 		setTableState((prevState) => {
 			const { columns } = prevState.model;
-			const columnsCopy = structuredClone(columns);
 
 			const draggedElIndex = columns.findIndex(
 				(column) => column.id === draggedId
@@ -54,15 +54,19 @@ export default function TableHeaderCell({
 				(column) => column.id == targetId
 			);
 
-			let temp = columnsCopy[targetElIndex];
-			columnsCopy[targetElIndex] = columnsCopy[draggedElIndex];
-			columnsCopy[draggedElIndex] = temp;
+			const newColumns = structuredClone(columns);
+			const draggedEl = newColumns[draggedElIndex];
+
+			//Remove the element
+			newColumns.splice(draggedElIndex, 1);
+			//Append it to the new location
+			newColumns.splice(targetElIndex, 0, draggedEl);
 
 			return {
 				...prevState,
 				model: {
 					...prevState.model,
-					columns: columnsCopy,
+					columns: newColumns,
 				},
 			};
 		});
@@ -73,18 +77,21 @@ export default function TableHeaderCell({
 		e.preventDefault();
 	}
 
+	const tableBorderColor = getTableBorderColor();
+	const tableBackgroundColor = getTableBackgroundColor();
+
 	return (
 		<th
 			data-column-id={columnId}
 			css={css`
-				border-bottom: 1px solid var(--background-modifier-border) !important;
-				border-left: 1px solid var(--background-modifier-border) !important;
+				border-bottom: 1px solid ${tableBorderColor} !important;
+				border-left: 1px solid ${tableBorderColor} !important;
 				border-right: 0 !important;
 				padding: 0 !important;
 				font-weight: 400 !important;
 				overflow: visible;
 				text-align: start;
-				background-color: var(--background-secondary) !important;
+				background-color: ${tableBackgroundColor} !important;
 				position: sticky !important;
 				top: 0;
 				z-index: 1;
