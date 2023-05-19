@@ -1,4 +1,4 @@
-import { randomColor } from "src/shared/colors";
+import { randomColor } from "src/shared/color";
 import { CURRENT_PLUGIN_VERSION } from "./constants";
 import {
 	BodyCell,

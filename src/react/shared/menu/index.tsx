@@ -1,8 +1,10 @@
 import React from "react";
-import ReactDOM from "react-dom";
-import { numToPx } from "src/shared/conversion";
 
-import "./styles.css";
+import ReactDOM from "react-dom";
+import { css } from "@emotion/react";
+
+import { numToPx } from "src/shared/conversion";
+import { getTableBorderColor } from "src/shared/color";
 
 interface Props {
 	id: string;
@@ -12,6 +14,7 @@ interface Props {
 	width?: number;
 	height?: number;
 	children: React.ReactNode;
+	isReady: boolean;
 }
 
 export default function Menu({
@@ -22,27 +25,41 @@ export default function Menu({
 	width = 0,
 	height = 0,
 	children,
+	isReady,
 }: Props) {
+	const tableBorderColor = getTableBorderColor();
 	return (
 		<>
 			{isOpen &&
 				ReactDOM.createPortal(
-					<div className="NLT__menu" data-menu-id={id}>
+					<div
+						className="NLT__menu"
+						data-menu-id={id}
+						css={css`
+							width: 0;
+							height: 0;
+						`}
+					>
 						<div
-							className="NLT__menu-container"
-							style={{
-								visibility: "hidden",
-								top: numToPx(top),
-								left: numToPx(left),
-								width:
-									width !== 0
-										? numToPx(width)
-										: "max-content",
-								height:
-									height !== 0
-										? numToPx(height)
-										: "max-content",
-							}}
+							css={css`
+								background-color: var(--background-primary);
+								border: 1px solid ${tableBorderColor};
+								box-shadow: 0 2px 8px
+									var(--background-modifier-box-shadow);
+								z-index: var(--layer-menu);
+								position: absolute;
+								border-radius: 4px;
+								font-weight: 400;
+								visibility: ${isReady ? "visible" : "hidden"};
+								top: ${numToPx(top)};
+								left: ${numToPx(left)};
+								width: ${width !== 0
+									? numToPx(width)
+									: "max-content"};
+								height: ${height !== 0
+									? numToPx(height)
+									: "max-content"};
+							`}
 						>
 							{children}
 						</div>

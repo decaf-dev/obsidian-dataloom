@@ -1,11 +1,3 @@
 .NLT__header-menu {
 	color: var(--text-normal);
 }
-
-.NLT__header-menu input {
-	background-color: var(--background-secondary);
-	border: 1px solid var(--background-modifier-border);
-	padding: 4px 10px;
-	font-size: 0.95rem;
-	width: 100%;
-}
