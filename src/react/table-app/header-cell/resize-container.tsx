@@ -18,7 +18,7 @@ const innerStyle = css`
 	}
 `;
 
-const activeStyle = css`
+const dragStyle = css`
 	background-color: var(--interactive-accent);
 `;
 
@@ -27,6 +27,7 @@ interface Props {
 	columnId: string;
 	width: string;
 	onWidthChange: (columnId: string, value: string) => void;
+	onMenuClose: () => void;
 }
 
 export default function ResizeContainer({
@@ -34,6 +35,7 @@ export default function ResizeContainer({
 	columnId,
 	width,
 	onWidthChange,
+	onMenuClose,
 }: Props) {
 	const { handleMouseDown, handleTouchStart } = useColumnResize(
 		columnId,
@@ -46,13 +48,16 @@ export default function ResizeContainer({
 		}
 	);
 
-	const isActive = columnId == currentResizingId;
+	const isDragging = columnId == currentResizingId;
 
 	return (
 		<div css={containerStyle}>
 			<div
-				css={[innerStyle, isActive && activeStyle]}
-				onMouseDown={handleMouseDown}
+				css={[innerStyle, isDragging && dragStyle]}
+				onMouseDown={(e) => {
+					onMenuClose();
+					handleMouseDown(e);
+				}}
 				onTouchStart={handleTouchStart}
 				onClick={(e) => {
 					//Stop propagation so we don't open the header

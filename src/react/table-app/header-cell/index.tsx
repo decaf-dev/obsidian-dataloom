@@ -70,7 +70,7 @@ export default function HeaderCell({
 		menuPosition,
 		isMenuOpen,
 		isMenuVisible,
-		closeTopMenuAndFocusTrigger,
+		closeTopMenu,
 		openMenu,
 	} = useMenu(MenuLevel.ONE);
 
@@ -98,12 +98,7 @@ export default function HeaderCell({
 	function handleMenuTriggerClick() {
 		//If we're resizing a column, then don't open the menu
 		if (resizingColumnId !== null) return;
-
 		openMenu(menu);
-	}
-
-	function closeHeaderMenu() {
-		closeTopMenuAndFocusTrigger();
 	}
 
 	const { top, left } = shiftMenuIntoViewContent({
@@ -137,6 +132,7 @@ export default function HeaderCell({
 						columnId={columnId}
 						width={width}
 						onWidthChange={onWidthChange}
+						onMenuClose={() => closeTopMenu(false)}
 					/>
 				</div>
 			</MenuTrigger>
@@ -160,7 +156,7 @@ export default function HeaderCell({
 				onSortClick={onSortClick}
 				onTypeSelect={onTypeSelect}
 				onDeleteClick={onDeleteClick}
-				onClose={closeHeaderMenu}
+				onClose={() => closeTopMenu()}
 				onWrapOverflowToggle={onWrapOverflowToggle}
 				onNameChange={onNameChange}
 				onCurrencyChange={onCurrencyChange}

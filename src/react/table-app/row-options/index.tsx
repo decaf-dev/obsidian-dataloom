@@ -14,17 +14,13 @@ interface Props {
 }
 
 export default function RowOptions({ rowId, onDeleteClick }: Props) {
-	const {
-		menu,
-		menuPosition,
-		isMenuOpen,
-		openMenu,
-		closeTopMenuAndFocusTrigger,
-	} = useMenu(MenuLevel.ONE);
+	const { menu, menuPosition, isMenuOpen, openMenu, closeTopMenu } = useMenu(
+		MenuLevel.ONE
+	);
 
 	function handleButtonClick() {
 		if (isMenuOpen) {
-			closeTopMenuAndFocusTrigger();
+			closeTopMenu();
 		} else {
 			openMenu(menu);
 		}
@@ -32,7 +28,7 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 
 	function handleDeleteClick(rowId: string) {
 		onDeleteClick(rowId);
-		closeTopMenuAndFocusTrigger();
+		closeTopMenu();
 	}
 
 	const { top, left } = shiftMenuIntoViewContent({
