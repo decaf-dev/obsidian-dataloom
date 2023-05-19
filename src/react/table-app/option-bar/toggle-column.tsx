@@ -23,7 +23,10 @@ export default function ToggleColumn({ columns, onToggle }: Props) {
 		}
 	}
 
-	const { top, left } = shiftMenuIntoViewContent({
+	const {
+		position: { top, left },
+		isMenuReady,
+	} = shiftMenuIntoViewContent({
 		menuId: menu.id,
 		menuPositionEl: menuPosition.positionRef.current,
 		menuPosition: menuPosition.position,
@@ -44,6 +47,7 @@ export default function ToggleColumn({ columns, onToggle }: Props) {
 				id={menu.id}
 				top={top}
 				left={left}
+				isReady={isMenuReady}
 				isOpen={isMenuOpen}
 				columns={columns}
 				onToggle={onToggle}

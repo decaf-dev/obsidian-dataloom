@@ -36,6 +36,8 @@ export const shiftMenuIntoViewContent = ({
 	topOffset?: number;
 	leftOffset?: number;
 }) => {
+	let isMenuReady = false;
+
 	//The menuPositionEl will be null on first render since the element is not in the DOM yet
 	if (menuPositionEl !== null) {
 		//Now we want to make sure that this is within bounds
@@ -59,8 +61,8 @@ export const shiftMenuIntoViewContent = ({
 		if (menu) {
 			const menuContainerEl = menu.firstChild as HTMLElement;
 			const { width, height } = menuContainerEl.getBoundingClientRect();
-			menuElWidth = Math.round(width);
-			menuElHeight = Math.round(height);
+			menuElWidth = Math.ceil(width);
+			menuElHeight = Math.ceil(height);
 
 			//It takes 2 renders to calculate the correct position for the menu.
 			//When you first open the menu, the menu container is set to the width and height of the menuPositionRef.
@@ -68,17 +70,20 @@ export const shiftMenuIntoViewContent = ({
 			//Therefore we render the menu with visibility set to hidden. Then we use the useForceUpdate hook to force a re-render.
 			//The menu is now available in the DOM and we can progamatically get the width and height of the menu to
 			//shift it into the view container.
-			menuContainerEl.toggleVisibility(true);
+			isMenuReady = true;
 		}
 
-		return moveElementIntoContainer(containerPosition, {
-			top: menuPosition.top + topOffset,
-			left: menuPosition.left + leftOffset,
-			width: menuElWidth,
-			height: menuElHeight,
-		});
+		return {
+			position: moveElementIntoContainer(containerPosition, {
+				top: menuPosition.top + topOffset,
+				left: menuPosition.left + leftOffset,
+				width: menuElWidth,
+				height: menuElHeight,
+			}),
+			isMenuReady,
+		};
 	}
-	return menuPosition;
+	return { position: menuPosition, isMenuReady };
 };
 
 const moveElementIntoContainer = (

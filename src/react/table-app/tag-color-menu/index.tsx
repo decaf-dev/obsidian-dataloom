@@ -15,6 +15,7 @@ import "./styles.css";
 interface Props {
 	menuId: string;
 	isOpen: boolean;
+	isReady: boolean;
 	top: number;
 	left: number;
 	selectedColor: string;
@@ -25,6 +26,7 @@ interface Props {
 export default function TagColorMenu({
 	menuId,
 	isOpen,
+	isReady,
 	top,
 	left,
 	selectedColor,
@@ -34,7 +36,13 @@ export default function TagColorMenu({
 	const { isDarkMode } = useAppSelector((state) => state.global);
 
 	return (
-		<Menu id={menuId} isOpen={isOpen} top={top} left={left}>
+		<Menu
+			id={menuId}
+			isReady={isReady}
+			isOpen={isOpen}
+			top={top}
+			left={left}
+		>
 			<div className="NLT__tag-color-menu">
 				<Stack spacing="sm" isVertical>
 					<Padding px="lg" py="sm">

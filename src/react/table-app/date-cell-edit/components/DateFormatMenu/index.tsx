@@ -7,6 +7,7 @@ interface Props {
 	top: number;
 	left: number;
 	isOpen: boolean;
+	isReady: boolean;
 	value: DateFormat;
 	onChange: (value: DateFormat) => void;
 }
@@ -16,12 +17,20 @@ export default function DateFormatMenu({
 	top,
 	left,
 	isOpen,
+	isReady,
 	value,
 	onChange,
 }: Props) {
 	//TODO add all formats
 	return (
-		<Menu isOpen={isOpen} id={id} top={top} left={left} width={175}>
+		<Menu
+			isOpen={isOpen}
+			id={id}
+			top={top}
+			left={left}
+			isReady={isReady}
+			width={175}
+		>
 			<div className="NLT__currency-menu">
 				{Object.values([
 					DateFormat.DD_MM_YYYY,
