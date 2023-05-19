@@ -12,7 +12,7 @@ interface ContextProps {
 	menuKey: string | null;
 	menuCloseRequestTime: number | null;
 	openMenu: (menu: Menu) => void;
-	closeTopMenuAndFocusTrigger: () => void;
+	closeTopMenu: (shouldFocusTriggerOnClose?: boolean) => void;
 }
 
 const MenuContext = React.createContext<ContextProps | null>(null);
@@ -100,25 +100,23 @@ export default function MenuProvider({ children }: Props) {
 	/**
 	 * Closes the top level menu
 	 */
-	function closeTopMenu() {
-		setOpenMenus((prev) => prev.slice(0, prev.length - 1));
-	}
-
-	/**
-	 * Closes the top level menu and focuses the MenuTrigger element
-	 */
-	function closeTopMenuAndFocusTrigger() {
+	function closeTopMenu(shouldFocusTriggerOnClose = true) {
 		const menu = topLevelMenu();
-		if (!menu) throw new Error("Menu is open but no menu exists");
+		//If there is no menu open, just return
+		if (!menu) return;
 
 		const { id, level } = menu;
 
-		//If the menu level is one, we want to focus the menu element
-		if (level === MenuLevel.ONE) {
-			focusMenuElement(id);
-			addFocusVisibleClass(id);
+		if (shouldFocusTriggerOnClose) {
+			//If the menu level is one, we want to focus the trigger on close
+			if (level === MenuLevel.ONE) {
+				focusMenuElement(id);
+				addFocusVisibleClass(id);
+			}
 		}
-		closeTopMenu();
+
+		//Remove the menu
+		setOpenMenus((prev) => prev.slice(0, prev.length - 1));
 		setMenuCloseRequestTime(null);
 	}
 
@@ -151,7 +149,7 @@ export default function MenuProvider({ children }: Props) {
 					focusMenuElement(id);
 					addFocusVisibleClass(id);
 				}
-				closeTopMenuAndFocusTrigger();
+				closeTopMenu();
 			} else {
 				removeFocusVisibleClass();
 			}
@@ -196,7 +194,7 @@ export default function MenuProvider({ children }: Props) {
 				if (menu.shouldRequestOnClose) {
 					setMenuCloseRequestTime(Date.now());
 				} else {
-					closeTopMenuAndFocusTrigger();
+					closeTopMenu();
 				}
 			} else {
 				//Otherwise if we're focused on a MenuTrigger, open the menu
@@ -327,7 +325,7 @@ export default function MenuProvider({ children }: Props) {
 				openMenu,
 				menuKey,
 				menuCloseRequestTime,
-				closeTopMenuAndFocusTrigger,
+				closeTopMenu,
 			}}
 		>
 			{children}

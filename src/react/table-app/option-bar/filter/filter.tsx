@@ -31,17 +31,13 @@ export default function Filter({
 	onTextChange,
 	onTagsChange,
 }: Props) {
-	const {
-		menu,
-		menuPosition,
-		isMenuOpen,
-		openMenu,
-		closeTopMenuAndFocusTrigger,
-	} = useMenu(MenuLevel.ONE);
+	const { menu, menuPosition, isMenuOpen, openMenu, closeTopMenu } = useMenu(
+		MenuLevel.ONE
+	);
 
 	function handleClick() {
 		if (isMenuOpen) {
-			closeTopMenuAndFocusTrigger();
+			closeTopMenu();
 		} else {
 			openMenu(menu);
 		}
