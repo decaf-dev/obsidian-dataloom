@@ -70,6 +70,7 @@ export default function TableApp({ viewLeaf }: Props) {
 		handleTagCellAdd,
 		handleTagAdd,
 		handleTagCellRemove,
+		handleTagCellMultipleRemove,
 		handleTagColorChange,
 		handleTagDeleteClick,
 	} = useTag();
@@ -248,8 +249,11 @@ export default function TableApp({ viewLeaf }: Props) {
 											}
 											width={width}
 											onTagClick={handleTagCellAdd}
-											onRemoveTagClick={
+											onTagRemoveClick={
 												handleTagCellRemove
+											}
+											onTagMultipleRemove={
+												handleTagCellMultipleRemove
 											}
 											onContentChange={
 												handleBodyCellContentChange

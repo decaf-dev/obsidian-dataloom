@@ -6,6 +6,7 @@ import TagUpdateCommand from "../commands/tag-update-command";
 import TagAddCommand from "../commands/tag-add-command";
 import TagCellRemoveCommand from "../commands/tag-cell-remove-command";
 import TagCellAddCommand from "../commands/tag-cell-add-command";
+import TagCellMultipleRemoveCommand from "../commands/tag-cell-multiple-remove-command";
 
 export const useTag = () => {
 	const { doCommand } = useTableState();
@@ -63,6 +64,19 @@ export const useTag = () => {
 		doCommand(new TagCellRemoveCommand(cellId, rowId, tagId));
 	}
 
+	function handleTagCellMultipleRemove(
+		cellId: string,
+		rowId: string,
+		tagIds: string[]
+	) {
+		logFunc("handleTagCellMultipleRemove", {
+			cellId,
+			rowId,
+			tagIds,
+		});
+		doCommand(new TagCellMultipleRemoveCommand(cellId, rowId, tagIds));
+	}
+
 	function handleTagDeleteClick(tagId: string) {
 		logFunc("handleTagDeleteClick", {
 			tagId,
@@ -83,6 +97,7 @@ export const useTag = () => {
 		handleTagAdd,
 		handleTagCellRemove,
 		handleTagColorChange,
+		handleTagCellMultipleRemove,
 		handleTagDeleteClick,
 	};
 };

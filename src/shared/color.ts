@@ -1,5 +1,7 @@
 import { Color } from "./types";
 
+const RED_GRAPHITE_THEME = "Red Graphite";
+
 export const findColorClassName = (
 	isDarkMode: boolean,
 	color: Color
@@ -35,4 +37,22 @@ export const findColorClassName = (
 export const randomColor = () => {
 	const index = Math.floor(Math.random() * Object.values(Color).length);
 	return Object.values(Color)[index];
+};
+
+export const getTableBorderColor = (): string => {
+	//@ts-ignore
+	const theme = app.vault.getConfig("cssTheme");
+	if (theme == RED_GRAPHITE_THEME) {
+		return "var(--table-border-color)";
+	}
+	return "var(--background-modifier-border)";
+};
+
+export const getTableBackgroundColor = (): string => {
+	//@ts-ignore
+	const theme = app.vault.getConfig("cssTheme");
+	if (theme == RED_GRAPHITE_THEME) {
+		return "var(--table-header-background)";
+	}
+	return "var(--background-secondary)";
 };

@@ -21,7 +21,7 @@ import {
 } from "src/shared/table-state/types";
 import { useMenu } from "src/shared/menu/hooks";
 import { MenuLevel } from "src/shared/menu/types";
-import { useAppDispatch, useAppSelector } from "src/redux/global/hooks";
+import { useAppDispatch } from "src/redux/global/hooks";
 
 import LastEditedTimeCell from "../last-edited-time-cell";
 import CreationTimeCell from "../creation-time-cell";
@@ -54,7 +54,12 @@ interface Props {
 	width: string;
 	tags: Tag[];
 	shouldWrapOverflow: boolean;
-	onRemoveTagClick: (cellId: string, rowId: string, tagId: string) => void;
+	onTagRemoveClick: (cellId: string, rowId: string, tagId: string) => void;
+	onTagMultipleRemove: (
+		cellId: string,
+		rowId: string,
+		tagIds: string[]
+	) => void;
 	onTagClick: (
 		cellId: string,
 		rowId: string,
@@ -94,7 +99,8 @@ export default function BodyCell({
 	tags,
 	width,
 	shouldWrapOverflow,
-	onRemoveTagClick,
+	onTagRemoveClick,
+	onTagMultipleRemove,
 	onTagColorChange,
 	onTagDelete,
 	onTagClick,
@@ -147,6 +153,28 @@ export default function BodyCell({
 		}
 	}
 
+	function handleBackspaceDown() {
+		if (
+			columnType === CellType.TEXT ||
+			columnType === CellType.NUMBER ||
+			columnType === CellType.CURRENCY
+		) {
+			onContentChange(cellId, rowId, "");
+		} else if (columnType === CellType.DATE) {
+			onDateTimeChange(cellId, rowId, null);
+		} else if (columnType === CellType.CHECKBOX) {
+			onContentChange(cellId, rowId, CHECKBOX_MARKDOWN_UNCHECKED);
+		} else if (
+			columnType === CellType.TAG ||
+			columnType === CellType.MULTI_TAG
+		) {
+			const cellTagIds = tags
+				.filter((tag) => tag.cellIds.includes(cellId))
+				.map((tag) => tag.id);
+			onTagMultipleRemove(cellId, rowId, cellTagIds);
+		}
+	}
+
 	function handleEnterDown() {
 		if (columnType === CellType.CHECKBOX) toggleCheckbox();
 	}
@@ -178,7 +206,7 @@ export default function BodyCell({
 	}
 
 	function handleRemoveTagClick(tagId: string) {
-		onRemoveTagClick(cellId, rowId, tagId);
+		onTagRemoveClick(cellId, rowId, tagId);
 	}
 
 	function handleTagClick(tagId: string) {
@@ -213,7 +241,10 @@ export default function BodyCell({
 		closeTopMenu();
 	}
 
-	const { top, left } = shiftMenuIntoViewContent({
+	const {
+		position: { top, left },
+		isMenuReady,
+	} = shiftMenuIntoViewContent({
 		menuId: menu.id,
 		menuPositionEl: menuPosition.positionRef.current,
 		menuPosition: menuPosition.position,
@@ -258,6 +289,7 @@ export default function BodyCell({
 				onClick={handleMenuTriggerClick}
 				shouldMenuRequestOnClose={menu.shouldRequestOnClose}
 				onEnterDown={handleEnterDown}
+				onBackspaceDown={handleBackspaceDown}
 				canMenuOpen={
 					columnType !== CellType.CHECKBOX &&
 					columnType !== CellType.CREATION_TIME &&
@@ -332,6 +364,7 @@ export default function BodyCell({
 			</MenuTrigger>
 			<Menu
 				id={menu.id}
+				isReady={isMenuReady}
 				isOpen={isMenuOpen}
 				top={top}
 				left={left}

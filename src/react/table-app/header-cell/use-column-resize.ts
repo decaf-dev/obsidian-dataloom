@@ -18,6 +18,9 @@ export const useColumnResize = (
 	}
 
 	function handleTouchMove(e: TouchEvent) {
+		//Prevent Obsidian events from firing
+		e.stopPropagation();
+
 		const dist = e.touches[0].pageX - mouseDownX.current;
 		onMove(dist);
 	}

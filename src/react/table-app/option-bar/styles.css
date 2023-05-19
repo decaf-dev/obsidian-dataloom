@@ -1,7 +1,6 @@
 .NLT__option-bar {
     width: 100%;
     padding: var(--nlt-spacing--md) var(--nlt-spacing--lg);
-    /* background-color: var(--background-secondary); */
     border-top: 1px solid var(--background-modifier-border);
     border-bottom: 1px solid var(--background-modifier-border);
 }

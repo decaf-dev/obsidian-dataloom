@@ -4,8 +4,10 @@ import Padding from "src/react/shared/padding";
 import Stack from "src/react/shared/stack";
 import { CellType, SortDir } from "src/shared/table-state/types";
 import { SubmenuType } from "../../types";
-import { useFocusMenuInput } from "src/shared/hooks";
+import { useFocusMenuInput, useInputSelection } from "src/shared/hooks";
 import { getDisplayNameForCellType } from "src/shared/table-state/display-name";
+import { css } from "@emotion/react";
+import { getTableBackgroundColor, getTableBorderColor } from "src/shared/color";
 
 interface Props {
 	isMenuVisible: boolean;
@@ -28,23 +30,50 @@ export default function BaseMenu({
 	onSortClick,
 	onSubmenuChange,
 }: Props) {
-	const inputRef = useFocusMenuInput(
-		isMenuVisible,
-		columnName,
-		(value: string) => onColumnNameChange(cellId, value)
+	const inputRef = useFocusMenuInput(isMenuVisible, columnName, (value) =>
+		handleInputChange(value, true)
 	);
+
+	const { setPreviousSelectionStart } = useInputSelection(
+		inputRef,
+		columnName
+	);
+
+	function handleInputChange(
+		inputValue: string,
+		setSelectionToLength = false
+	) {
+		//When we press the menu key, an extra character will be added
+		//we need to update the selection to be after this character
+		//Otherwise keep the selection where it was
+		if (inputRef.current) {
+			if (setSelectionToLength) {
+				setPreviousSelectionStart(inputValue.length);
+			} else if (inputRef.current.selectionStart) {
+				setPreviousSelectionStart(inputRef.current.selectionStart);
+			}
+		}
+		onColumnNameChange(cellId, inputValue);
+	}
+
+	const tableBackgroundColor = getTableBackgroundColor();
+	const tableBorderColor = getTableBorderColor();
 
 	return (
 		<Stack spacing="sm" isVertical>
 			<Stack spacing="sm" isVertical>
 				<Padding px="md" py="sm">
 					<input
+						css={css`
+							background-color: ${tableBackgroundColor};
+							border: 1px solid ${tableBorderColor};
+							padding: 4px 10px;
+							font-size: 0.95rem;
+							width: 100%;
+						`}
 						ref={inputRef}
-						autoFocus
 						value={columnName}
-						onChange={(e) =>
-							onColumnNameChange(cellId, e.target.value)
-						}
+						onChange={(e) => handleInputChange(e.target.value)}
 					/>
 				</Padding>
 				<MenuItem

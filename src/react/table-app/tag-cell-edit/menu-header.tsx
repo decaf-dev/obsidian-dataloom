@@ -4,6 +4,7 @@ import Tag from "src/react/shared/tag";
 import Wrap from "src/react/shared/wrap";
 
 import { useFocusMenuInput } from "src/shared/hooks";
+import { getTableBackgroundColor, getTableBorderColor } from "src/shared/color";
 
 interface MenuHeaderProps {
 	cellId: string;
@@ -34,10 +35,14 @@ export default function MenuHeader({
 		onInputValueChange(value);
 	}
 
+	const tableBackgroundColor = getTableBackgroundColor();
+	const tableBorderColor = getTableBorderColor();
+
 	return (
 		<div
 			css={css`
-				background-color: rgba(0, 0, 0, 0.25);
+				background-color: ${tableBackgroundColor};
+				border-bottom: 1px solid ${tableBorderColor};
 				padding: 4px 10px;
 			`}
 		>

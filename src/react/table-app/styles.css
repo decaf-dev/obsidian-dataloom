@@ -125,6 +125,7 @@
  */
 .NLT__wrap-overflow {
 	overflow-wrap: break-word;
+	overflow: hidden;
 }
 
 .NLT__hide-overflow {

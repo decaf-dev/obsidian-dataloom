@@ -105,6 +105,15 @@ export default class NLTPlugin extends Plugin {
 		this.registerEvent(
 			this.app.workspace.on("css-change", () => {
 				this.checkForDarkMode();
+
+				//When the theme changes, we need to re-render the view to update the values
+				//TODO optimize this
+				//Use the redux store instead?
+				const view = this.app.workspace.getActiveViewOfType(NLTView);
+				if (view) {
+					const data = view.getViewData();
+					view.setViewData(data, true);
+				}
 			})
 		);
 

@@ -46,7 +46,6 @@ export default function CurrencyCellEdit({
 				ref={inputRef}
 				type="text" //We use an input of type text so that the selection is available
 				inputMode="numeric"
-				autoFocus
 				value={value}
 				onChange={(e) => handleChange(e.target.value)}
 			/>
