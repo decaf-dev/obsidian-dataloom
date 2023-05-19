@@ -14,6 +14,7 @@ interface Props {
 	top: number;
 	left: number;
 	isOpen: boolean;
+	isReady: boolean;
 	columns: ColumnFilter[];
 	filterRules: FilterRule[];
 	tags: Tag[];
@@ -31,6 +32,7 @@ export default function FilterMenu({
 	top,
 	left,
 	isOpen,
+	isReady,
 	columns,
 	filterRules,
 	tags,
@@ -43,7 +45,14 @@ export default function FilterMenu({
 	onTagsChange,
 }: Props) {
 	return (
-		<Menu isOpen={isOpen} id={id} top={top} left={left} width={575}>
+		<Menu
+			isOpen={isOpen}
+			isReady={isReady}
+			id={id}
+			top={top}
+			left={left}
+			width={575}
+		>
 			<div className="NLT__filter-menu">
 				<Padding p="md">
 					<Stack spacing="md" isVertical>

@@ -241,7 +241,10 @@ export default function BodyCell({
 		closeTopMenu();
 	}
 
-	const { top, left } = shiftMenuIntoViewContent({
+	const {
+		position: { top, left },
+		isMenuReady,
+	} = shiftMenuIntoViewContent({
 		menuId: menu.id,
 		menuPositionEl: menuPosition.positionRef.current,
 		menuPosition: menuPosition.position,
@@ -361,6 +364,7 @@ export default function BodyCell({
 			</MenuTrigger>
 			<Menu
 				id={menu.id}
+				isReady={isMenuReady}
 				isOpen={isMenuOpen}
 				top={top}
 				left={left}

@@ -6,7 +6,7 @@ import MenuBody from "./menu-body";
 import { Tag as TagType } from "src/shared/table-state/types";
 import { Color } from "src/shared/types";
 import { MenuPosition } from "src/shared/menu/types";
-import { randomColor } from "src/shared/colors";
+import { randomColor } from "src/shared/color";
 
 import { css } from "@emotion/react";
 import { useCompare } from "src/shared/hooks";

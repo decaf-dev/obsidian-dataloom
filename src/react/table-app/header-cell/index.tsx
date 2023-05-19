@@ -65,14 +65,9 @@ export default function HeaderCell({
 	onCurrencyChange,
 	onDateFormatChange,
 }: Props) {
-	const {
-		menu,
-		menuPosition,
-		isMenuOpen,
-		isMenuVisible,
-		closeTopMenu,
-		openMenu,
-	} = useMenu(MenuLevel.ONE);
+	const { menu, menuPosition, isMenuOpen, closeTopMenu, openMenu } = useMenu(
+		MenuLevel.ONE
+	);
 
 	const [updateTime, forceUpdate] = useForceUpdate();
 
@@ -101,7 +96,10 @@ export default function HeaderCell({
 		openMenu(menu);
 	}
 
-	const { top, left } = shiftMenuIntoViewContent({
+	const {
+		position: { top, left },
+		isMenuReady,
+	} = shiftMenuIntoViewContent({
 		menuId: menu.id,
 		menuPositionEl: menuPosition.positionRef.current,
 		menuPosition: menuPosition.position,
@@ -138,7 +136,7 @@ export default function HeaderCell({
 			</MenuTrigger>
 			<HeaderMenu
 				isOpen={isMenuOpen}
-				isMenuVisible={isMenuVisible}
+				isReady={isMenuReady}
 				top={top}
 				left={left}
 				id={menu.id}
