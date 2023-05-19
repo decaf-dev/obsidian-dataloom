@@ -45,7 +45,6 @@ export default function TableHeaderCell({
 
 		setTableState((prevState) => {
 			const { columns } = prevState.model;
-			const columnsCopy = structuredClone(columns);
 
 			const draggedElIndex = columns.findIndex(
 				(column) => column.id === draggedId
@@ -54,15 +53,19 @@ export default function TableHeaderCell({
 				(column) => column.id == targetId
 			);
 
-			let temp = columnsCopy[targetElIndex];
-			columnsCopy[targetElIndex] = columnsCopy[draggedElIndex];
-			columnsCopy[draggedElIndex] = temp;
+			const newColumns = structuredClone(columns);
+			const draggedEl = newColumns[draggedElIndex];
+
+			//Remove the element
+			newColumns.splice(draggedElIndex, 1);
+			//Append it to the new location
+			newColumns.splice(targetElIndex, 0, draggedEl);
 
 			return {
 				...prevState,
 				model: {
 					...prevState.model,
-					columns: columnsCopy,
+					columns: newColumns,
 				},
 			};
 		});
