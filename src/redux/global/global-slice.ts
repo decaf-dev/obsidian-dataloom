@@ -18,6 +18,9 @@ const initialState: GlobalState = {
 	resizingColumnId: null,
 };
 
+//This is the global slice of the redux store.
+//This state will be shared across all instances of our table view
+//TODO update
 const globalSlice = createSlice({
 	name: "global",
 	initialState,
