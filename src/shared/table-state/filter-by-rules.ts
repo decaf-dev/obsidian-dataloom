@@ -84,6 +84,7 @@ const doesCellMatchRule = (
 			//The tags that we are filtering by
 			const ruleTags = tags.filter((tag) => rule.tagIds.includes(tag.id));
 
+			//If the cell has no tags, return false
 			//As long as we're not filtering by not empty, we want to render empty rows
 			if (cellTags.length === 0) {
 				return doesTextMatch("", "", rule.type);
@@ -130,12 +131,14 @@ const doesTextMatch = (
 	const compareMarkdown = markdown.toLowerCase().trim();
 	const compareRuleText = ruleText.toLowerCase().trim();
 
-	//If the rule text is empty, there is nothing to compare
 	if (
 		filterType != FilterType.IS_NOT_EMPTY &&
 		filterType != FilterType.IS_EMPTY
 	) {
+		//If the rule text is empty, there is nothing to compare
 		if (compareRuleText == "") return true;
+		//If the markdown is emtpy, there is nothing to compare
+		if (markdown === "") return true;
 	}
 
 	switch (filterType) {
