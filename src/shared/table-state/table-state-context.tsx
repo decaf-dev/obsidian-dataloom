@@ -104,9 +104,8 @@ export default function TableStateProvider({
 		};
 	}, [redo, undo]);
 
-	//Once we have mounted
 	//Whenever the table state is updated save it to disk
-	useDidMountEffect(() => {
+	React.useEffect(() => {
 		onSaveState(tableState);
 	}, [tableState]);
 
