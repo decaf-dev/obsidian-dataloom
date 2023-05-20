@@ -9,7 +9,7 @@ const sortByDir = (
 	rows: BodyRow[],
 	cells: BodyCell[]
 ) => {
-	if (columnType == CellType.NUMBER) {
+	if (columnType == CellType.NUMBER || columnType === CellType.CURRENCY) {
 		return sortByNumber(columnId, rows, cells, sortDir);
 	} else if (columnType === CellType.DATE) {
 		return sortByDate(columnId, rows, cells, sortDir);
