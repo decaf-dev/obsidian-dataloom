@@ -6,7 +6,7 @@ import {
 	DateFormat,
 	GeneralFunction,
 	Tag,
-} from "src/shared/table-state/types";
+} from "src/shared/types/types";
 import { hashString, round2Digits } from "./utils";
 import { RowIdError } from "src/shared/table-state/table-error";
 import { unixTimeToDateTimeString } from "src/shared/date/date-conversion";

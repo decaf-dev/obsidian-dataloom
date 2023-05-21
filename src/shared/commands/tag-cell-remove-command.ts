@@ -3,7 +3,7 @@ import {
 	rowLastEditedTimeUpdate,
 } from "../table-state/row-state-operations";
 import TableStateCommand from "../table-state/table-state-command";
-import { TableState, Tag } from "../table-state/types";
+import { TableState, Tag } from "../types/types";
 
 export default class TagCellRemoveCommand extends TableStateCommand {
 	private cellId: string;

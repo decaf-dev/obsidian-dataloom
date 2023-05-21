@@ -11,7 +11,7 @@ import {
 	FunctionType,
 	GeneralFunction,
 	NumberFunction,
-} from "src/shared/table-state/types";
+} from "src/shared/types/types";
 
 interface Props {
 	id: string;

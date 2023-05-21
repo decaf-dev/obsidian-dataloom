@@ -1,5 +1,5 @@
 import { useLogger } from "../logger";
-import { Color } from "../types";
+import { Color } from "../types/types";
 import TagDeleteCommand from "../commands/tag-delete-command";
 import { useTableState } from "./table-state-context";
 import TagUpdateCommand from "../commands/tag-update-command";

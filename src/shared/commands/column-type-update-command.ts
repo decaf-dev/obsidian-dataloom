@@ -10,7 +10,7 @@ import {
 	FilterRule,
 	TableState,
 	Tag,
-} from "../table-state/types";
+} from "../types/types";
 import { isCheckbox } from "../validators";
 
 export class ColumnTypeUpdateCommand extends TableStateCommand {

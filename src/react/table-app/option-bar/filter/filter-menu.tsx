@@ -5,7 +5,7 @@ import { ColumnFilter } from "../types";
 import Icon from "src/react/shared/icon";
 import { Button } from "src/react/shared/button";
 import FilterRow from "./filter-row";
-import { FilterRule, FilterType, Tag } from "src/shared/table-state/types";
+import { FilterRule, FilterType, Tag } from "src/shared/types/types";
 import { ColumnIdError } from "src/shared/table-state/table-error";
 import Text from "src/react/shared/text";
 

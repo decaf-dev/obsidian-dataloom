@@ -7,7 +7,7 @@ import {
 	FilterRule,
 	CellType,
 	Tag,
-} from "src/shared/table-state/types";
+} from "src/shared/types/types";
 
 import Stack from "../../shared/stack";
 

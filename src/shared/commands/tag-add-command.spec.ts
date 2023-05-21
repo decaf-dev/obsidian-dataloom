@@ -1,7 +1,7 @@
 import { createTableState, createTag } from "src/data/table-state-factory";
 import { CommandRedoError, CommandUndoError } from "./command-errors";
 import TagAddCommand from "./tag-add-command";
-import { Color } from "../types";
+import { Color } from "../types/types";
 import { advanceBy, clear } from "jest-date-mock";
 
 describe("tag-add-command", () => {

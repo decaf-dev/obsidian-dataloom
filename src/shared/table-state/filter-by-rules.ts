@@ -7,7 +7,7 @@ import {
 	FilterType,
 	TableState,
 	Tag,
-} from "src/shared/table-state/types";
+} from "src/shared/types/types";
 import { ColumnIdError } from "./table-error";
 
 //TODO implement all Cell Types

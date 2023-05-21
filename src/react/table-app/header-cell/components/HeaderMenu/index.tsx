@@ -12,7 +12,7 @@ import {
 	CurrencyType,
 	DateFormat,
 	SortDir,
-} from "src/shared/table-state/types";
+} from "src/shared/types/types";
 import { SubmenuType } from "./types";
 
 import "./styles.css";

@@ -1,6 +1,6 @@
 import { useTableState } from "src/shared/table-state/table-state-context";
 import { TableDataTransferItem } from "./types";
-import { SortDir } from "src/shared/table-state/types";
+import { SortDir } from "src/shared/types/types";
 
 interface TableBodyRowProps {
 	children?: React.ReactNode;

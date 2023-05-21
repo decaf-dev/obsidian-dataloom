@@ -18,7 +18,7 @@ import {
 	CurrencyType,
 	DateFormat,
 	Tag,
-} from "src/shared/table-state/types";
+} from "src/shared/types/types";
 import { useMenu } from "src/shared/menu/hooks";
 import { MenuLevel } from "src/shared/menu/types";
 import { useAppDispatch } from "src/redux/global/hooks";
@@ -34,7 +34,7 @@ import { isCheckboxChecked } from "src/shared/validators";
 import "./styles.css";
 import { useDidMountEffect } from "src/shared/hooks";
 import { updateSortTime } from "src/redux/global/global-slice";
-import { Color } from "src/shared/types";
+import { Color } from "src/shared/types/types";
 import CurrencyCell from "../currency-cell";
 import CurrencyCellEdit from "../currency-cell-edit";
 import { shiftMenuIntoViewContent } from "src/shared/menu/utils";

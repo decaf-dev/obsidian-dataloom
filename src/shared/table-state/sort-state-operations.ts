@@ -1,16 +1,29 @@
 import { isCheckboxChecked } from "../validators";
 import { CellNotFoundError } from "./table-error";
-import { TableState, BodyCell, BodyRow, CellType, SortDir } from "./types";
+import {
+	TableState,
+	BodyCell,
+	BodyRow,
+	CellType,
+	SortDir,
+	Tag,
+} from "../types/types";
 
 const sortByDir = (
 	columnId: string,
 	columnType: string,
 	sortDir: SortDir,
 	rows: BodyRow[],
-	cells: BodyCell[]
+	cells: BodyCell[],
+	tags: Tag[]
 ) => {
 	if (columnType == CellType.NUMBER || columnType === CellType.CURRENCY) {
 		return sortByNumber(columnId, rows, cells, sortDir);
+	} else if (
+		columnType === CellType.TAG ||
+		columnType === CellType.MULTI_TAG
+	) {
+		return sortByTag(columnId, rows, cells, tags, sortDir);
 	} else if (columnType === CellType.DATE) {
 		return sortByDate(columnId, rows, cells, sortDir);
 	} else if (columnType == CellType.LAST_EDITED_TIME) {
@@ -22,6 +35,46 @@ const sortByDir = (
 	} else {
 		return sortByMarkdown(columnId, rows, cells, sortDir);
 	}
+};
+
+const sortByTag = (
+	columnId: string,
+	rows: BodyRow[],
+	cells: BodyCell[],
+	tags: Tag[],
+	sortDir: SortDir
+): BodyRow[] => {
+	const rowsCopy = structuredClone(rows);
+	rowsCopy.sort((a, b) => {
+		const cellA = cells.find(
+			(c) => c.columnId === columnId && c.rowId === a.id
+		);
+
+		if (!cellA) throw new CellNotFoundError();
+
+		const cellB = cells.find(
+			(c) => c.columnId === columnId && c.rowId === b.id
+		);
+
+		if (!cellB) throw new CellNotFoundError();
+
+		const markdownA = cellA.markdown;
+		const markdownB = cellB.markdown;
+
+		//Force empty cells to the bottom
+		if (markdownA === "" && markdownB !== "") return 1;
+		if (markdownA !== "" && markdownB === "") return -1;
+		if (markdownA === "" && markdownB === "") return 0;
+
+		if (sortDir === SortDir.ASC) {
+			return parseFloat(markdownA) - parseFloat(markdownB);
+		} else if (sortDir === SortDir.DESC) {
+			return parseFloat(markdownB) - parseFloat(markdownA);
+		} else {
+			return 0;
+		}
+	});
+	return rowsCopy;
 };
 
 const sortByMarkdown = (
@@ -214,7 +267,7 @@ const sortByRowIndex = (rows: BodyRow[]): BodyRow[] => {
 };
 
 export const sortRows = (prevState: TableState): TableState => {
-	const { columns, bodyRows, bodyCells } = prevState.model;
+	const { columns, bodyRows, bodyCells, tags } = prevState.model;
 	const sortedColumn = columns.find(
 		(columns) => columns.sortDir !== SortDir.NONE
 	);
@@ -228,7 +281,8 @@ export const sortRows = (prevState: TableState): TableState => {
 					sortedColumn.type,
 					sortedColumn.sortDir,
 					bodyRows,
-					bodyCells
+					bodyCells,
+					tags
 				),
 			},
 		};

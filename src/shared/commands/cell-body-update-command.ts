@@ -4,7 +4,7 @@ import {
 } from "../table-state/row-state-operations";
 import { CellIdError } from "../table-state/table-error";
 import TableStateCommand from "../table-state/table-state-command";
-import { BodyCell, TableState } from "../table-state/types";
+import { BodyCell, TableState } from "../types/types";
 
 export default class CellBodyUpdateCommand extends TableStateCommand {
 	private cellId: string;

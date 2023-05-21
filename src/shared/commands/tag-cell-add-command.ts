@@ -4,7 +4,7 @@ import {
 } from "../table-state/row-state-operations";
 import { TagIdError } from "../table-state/table-error";
 import TableStateCommand from "../table-state/table-state-command";
-import { TableState, Tag } from "../table-state/types";
+import { TableState, Tag } from "../types/types";
 
 export default class TagCellAddCommand extends TableStateCommand {
 	private cellId: string;

@@ -7,11 +7,7 @@ import {
 	getSum,
 } from "./arithmetic";
 import { stringToCurrencyString } from "src/shared/conversion";
-import {
-	CellType,
-	CurrencyType,
-	NumberFunction,
-} from "src/shared/table-state/types";
+import { CellType, CurrencyType, NumberFunction } from "src/shared/types/types";
 import { round2Digits } from "./utils";
 
 export const getNumberFunctionContent = (

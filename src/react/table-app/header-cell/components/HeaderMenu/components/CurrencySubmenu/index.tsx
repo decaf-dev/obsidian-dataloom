@@ -1,6 +1,6 @@
 import MenuItem from "src/react/shared/menu-item";
 import Submenu from "../Submenu";
-import { CurrencyType } from "src/shared/table-state/types";
+import { CurrencyType } from "src/shared/types/types";
 import { getDisplayNameForCurrencyType } from "src/shared/table-state/display-name";
 
 interface Props {

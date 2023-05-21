@@ -1,6 +1,6 @@
 import { CellIdError } from "../table-state/table-error";
 import TableStateCommand from "../table-state/table-state-command";
-import { HeaderCell, TableState } from "../table-state/types";
+import { HeaderCell, TableState } from "../types/types";
 
 export default class CellHeaderUpdateCommand extends TableStateCommand {
 	private cellId: string;

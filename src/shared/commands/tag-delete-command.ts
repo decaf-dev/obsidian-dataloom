@@ -1,5 +1,5 @@
 import TableStateCommand from "../table-state/table-state-command";
-import { TableState, Tag } from "../table-state/types";
+import { TableState, Tag } from "../types/types";
 import { TagIdError } from "../table-state/table-error";
 
 export default class TagDeleteCommand extends TableStateCommand {

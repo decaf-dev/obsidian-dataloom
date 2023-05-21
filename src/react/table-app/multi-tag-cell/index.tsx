@@ -1,6 +1,6 @@
 import Tag from "../../shared/tag";
 
-import { Tag as TagType } from "../../../shared/table-state/types";
+import { Tag as TagType } from "../../../shared/types/types";
 import Wrap from "src/react/shared/wrap";
 
 import "./styles.css";

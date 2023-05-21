@@ -4,7 +4,7 @@ import { MenuLevel } from "src/shared/menu/types";
 import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
 import FilterMenu from "./filter-menu";
 import { ColumnFilter } from "../types";
-import { FilterRule, Tag } from "src/shared/table-state/types";
+import { FilterRule, Tag } from "src/shared/types/types";
 
 interface Props {
 	columns: ColumnFilter[];

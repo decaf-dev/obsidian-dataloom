@@ -1,5 +1,5 @@
 import { SetStateAction } from "react";
-import { FilterType, TableState } from "src/shared/table-state/types";
+import { FilterType, TableState } from "src/shared/types/types";
 import { useLogger } from "../logger";
 import { addRule, deleteRule, updateRule } from "./filter-state-operations";
 import { filterBodyRowsByRules } from "./filter-by-rules";

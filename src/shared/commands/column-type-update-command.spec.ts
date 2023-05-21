@@ -5,7 +5,7 @@ import {
 } from "src/data/table-state-factory";
 import { CommandRedoError, CommandUndoError } from "./command-errors";
 import { ColumnTypeUpdateCommand } from "./column-type-update-command";
-import { CellType } from "../table-state/types";
+import { CellType } from "../types/types";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "../table-state/constants";
 
 describe("column-type-update-command", () => {

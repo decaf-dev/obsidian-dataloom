@@ -2,11 +2,7 @@ import Submenu from "../Submenu";
 import { Button } from "src/react/shared/button";
 import Switch from "src/react/shared/switch";
 
-import {
-	CellType,
-	CurrencyType,
-	DateFormat,
-} from "src/shared/table-state/types";
+import { CellType, CurrencyType, DateFormat } from "src/shared/types/types";
 import Stack from "src/react/shared/stack";
 import Padding from "src/react/shared/padding";
 import Text from "src/react/shared/text";
