@@ -100,11 +100,12 @@ export interface Column {
 	dateFormat: DateFormat;
 	currencyType: CurrencyType;
 	shouldWrapOverflow: boolean;
+	tags: Tag[];
+	filterRules: FilterRule[];
 }
 
 export interface FilterRule {
 	id: string;
-	columnId: string;
 	type: FilterType;
 	text: string;
 	tagIds: string[];
@@ -138,6 +139,7 @@ export interface HeaderCell extends Cell {
 export interface BodyCell extends Cell {
 	dateTime: number | null;
 	markdown: string;
+	tagIds: string[];
 }
 
 export interface FooterCell extends Cell {
@@ -148,8 +150,6 @@ export interface Tag {
 	id: string;
 	markdown: string;
 	color: Color;
-	columnId: string;
-	cellIds: string[];
 }
 
 export interface TableModel {

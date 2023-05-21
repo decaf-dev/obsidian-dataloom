@@ -1,8 +1,16 @@
 import { CURRENT_PLUGIN_VERSION } from "src/data/constants";
-import { BaseTableState, CellType, TableState } from "../shared/types/types";
+import {
+	BaseTableState,
+	BodyCell,
+	CellType,
+	Column,
+	FilterRule,
+	TableState,
+	Tag,
+} from "../shared/types/types";
 import { TableState630 } from "src/shared/types/types-630";
 import { GeneralFunction670, TableState670 } from "src/shared/types/types-670";
-import { ColumnIdError } from "../shared/table-state/table-error";
+import { CellIdError, ColumnIdError } from "../shared/table-state/table-error";
 import { createFooterRow, createHeaderRow } from "./table-state-factory";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/table-state/constants";
 import { TableState680 } from "src/shared/types/types-680";
@@ -11,6 +19,7 @@ import { CurrencyType610, TableState610 } from "src/shared/types/types-610";
 import { DateFormat620, TableState620 } from "src/shared/types/types-620";
 import { v4 as uuidv4 } from "uuid";
 import { TableState691 } from "src/shared/types/types-691";
+import { Cell } from "../shared/types/types";
 
 export const serializeTableState = (tableState: TableState): string => {
 	return JSON.stringify(tableState, null, 2);
@@ -218,11 +227,70 @@ export const deserializeTableState = (data: string): TableState => {
 		});
 	}
 
-	//Refactor: move filter rules into columns
-	//Refactor: move tags into columns and cells
 	//Feat: support tag sorting
 	if (pluginVersion < 6100) {
 		const tableState = currentState as TableState691;
+		const { filterRules, columns, tags, bodyCells } = tableState.model;
+
+		//Migrate filter rules to the columns
+		filterRules.forEach((filterRule) => {
+			const { columnId, id, type, text, tagIds, isEnabled } = filterRule;
+			const column: unknown | undefined = columns.find(
+				(column) => column.id === columnId
+			);
+			if (!column) throw new ColumnIdError(columnId);
+
+			const typedColumn = column as Record<string, unknown>;
+			typedColumn.filterRule = {
+				id,
+				type,
+				text,
+				tagIds,
+				isEnabled,
+			} as FilterRule;
+		});
+
+		const unknownModel = tableState.model as unknown;
+		const typedModel = unknownModel as Record<string, unknown>;
+		delete typedModel.filterRules;
+
+		//Migrate tags to the columns and cells
+		columns.forEach((column: unknown) => {
+			const typedColumn = column as Record<string, unknown>;
+			typedColumn.tags = [];
+		});
+
+		bodyCells.forEach((cell: unknown) => {
+			const typedCell = cell as BodyCell;
+			typedCell.tagIds = [];
+		});
+
+		tags.forEach((tag) => {
+			const { id, columnId, markdown, color } = tag;
+			const column: unknown | undefined = columns.find(
+				(column) => column.id === columnId
+			);
+			if (!column) throw new ColumnIdError(columnId);
+
+			const typedColumn = column as Column;
+			typedColumn.tags.push({
+				id,
+				markdown,
+				color,
+			} as Tag);
+
+			tag.cellIds.forEach((cellId) => {
+				const cell: unknown | undefined = bodyCells.find(
+					(cell) => cell.id === cellId
+				);
+				if (!cell) throw new CellIdError(cellId);
+
+				const typedCell = cell as BodyCell;
+				typedCell.tagIds.push(id);
+			});
+		});
+
+		delete typedModel.tags;
 	}
 
 	const tableState = currentState as TableState;
