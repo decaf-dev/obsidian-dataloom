@@ -19,7 +19,6 @@ import { CurrencyType610, TableState610 } from "src/shared/types/types-610";
 import { DateFormat620, TableState620 } from "src/shared/types/types-620";
 import { v4 as uuidv4 } from "uuid";
 import { TableState691 } from "src/shared/types/types-691";
-import { Cell } from "../shared/types/types";
 
 export const serializeTableState = (tableState: TableState): string => {
 	return JSON.stringify(tableState, null, 2);
@@ -230,29 +229,7 @@ export const deserializeTableState = (data: string): TableState => {
 	//Feat: support tag sorting
 	if (pluginVersion < 6100) {
 		const tableState = currentState as TableState691;
-		const { filterRules, columns, tags, bodyCells } = tableState.model;
-
-		//Migrate filter rules to the columns
-		filterRules.forEach((filterRule) => {
-			const { columnId, id, type, text, tagIds, isEnabled } = filterRule;
-			const column: unknown | undefined = columns.find(
-				(column) => column.id === columnId
-			);
-			if (!column) throw new ColumnIdError(columnId);
-
-			const typedColumn = column as Record<string, unknown>;
-			typedColumn.filterRule = {
-				id,
-				type,
-				text,
-				tagIds,
-				isEnabled,
-			} as FilterRule;
-		});
-
-		const unknownModel = tableState.model as unknown;
-		const typedModel = unknownModel as Record<string, unknown>;
-		delete typedModel.filterRules;
+		const { columns, tags, bodyCells } = tableState.model;
 
 		//Migrate tags to the columns and cells
 		columns.forEach((column: unknown) => {
@@ -290,6 +267,8 @@ export const deserializeTableState = (data: string): TableState => {
 			});
 		});
 
+		const unknownModel = tableState.model as unknown;
+		const typedModel = unknownModel as Record<string, unknown>;
 		delete typedModel.tags;
 	}
 
