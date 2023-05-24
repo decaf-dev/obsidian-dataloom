@@ -162,11 +162,7 @@ export interface TableModel {
 	footerCells: FooterCell[];
 	filterRules: FilterRule[];
 }
-
-export interface BaseTableState {
-	pluginVersion: number;
-}
-
-export interface TableState extends BaseTableState {
+export interface TableState {
+	pluginVersion: string;
 	model: TableModel;
 }
