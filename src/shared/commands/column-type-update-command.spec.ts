@@ -5,7 +5,7 @@ import {
 } from "src/data/table-state-factory";
 import { CommandRedoError, CommandUndoError } from "./command-errors";
 import { ColumnTypeUpdateCommand } from "./column-type-update-command";
-import { CellType } from "../table-state/types";
+import { CellType } from "../types/types";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "../table-state/constants";
 
 describe("column-type-update-command", () => {
@@ -37,18 +37,15 @@ describe("column-type-update-command", () => {
 
 	it("should handle multi-tag -> text when execute() is called", async () => {
 		//Arrange
-		const prevState = createTableState(1, 1, {
+		const prevState = createTableState(1, 2, {
 			cellType: CellType.MULTI_TAG,
 		});
-		const tags = [
-			createTag(prevState.model.columns[0].id, "test1", {
-				cellId: prevState.model.bodyCells[0].id,
-			}),
-			createTag(prevState.model.columns[0].id, "test2", {
-				cellId: prevState.model.bodyCells[0].id,
-			}),
-		];
-		prevState.model.tags = tags;
+		const tags = [createTag("test1"), createTag("test2")];
+		prevState.model.columns[0].tags = tags;
+
+		const tagIds = tags.map((t) => t.id);
+		prevState.model.bodyCells[0].tagIds = tagIds;
+		prevState.model.bodyCells[1].tagIds = tagIds;
 
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
@@ -61,25 +58,24 @@ describe("column-type-update-command", () => {
 		//Assert
 		expect(executeState.model.columns.length).toEqual(1);
 		expect(executeState.model.columns[0].type).toEqual(CellType.TEXT);
-		expect(executeState.model.tags.length).toEqual(2);
-		expect(executeState.model.tags[0].cellIds).toEqual([]);
-		expect(executeState.model.tags[1].cellIds).toEqual([]);
+		expect(executeState.model.columns[0].tags.length).toEqual(2);
+		expect(executeState.model.bodyCells[0].tagIds).toEqual([]);
+		expect(executeState.model.bodyCells[1].tagIds).toEqual([]);
 	});
 
 	it("should handle tag -> text when execute() is called", async () => {
 		//Arrange
-		const prevState = createTableState(1, 1, {
+		const prevState = createTableState(1, 2, {
 			cellType: CellType.TAG,
 		});
-		const tags = [
-			createTag(prevState.model.columns[0].id, "test1", {
-				cellId: prevState.model.bodyCells[0].id,
-			}),
-			createTag(prevState.model.columns[0].id, "test2", {
-				cellId: prevState.model.bodyCells[0].id,
-			}),
-		];
-		prevState.model.tags = tags;
+
+		const tags = [createTag("test1"), createTag("test2")];
+		prevState.model.columns[0].tags = tags;
+
+		const tagIds = tags.map((t) => t.id);
+		prevState.model.bodyCells[0].tagIds = tagIds;
+		prevState.model.bodyCells[1].tagIds = tagIds;
+
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
 			CellType.TEXT
@@ -91,9 +87,9 @@ describe("column-type-update-command", () => {
 		//Assert
 		expect(executeState.model.columns.length).toEqual(1);
 		expect(executeState.model.columns[0].type).toEqual(CellType.TEXT);
-		expect(executeState.model.tags.length).toEqual(2);
-		expect(executeState.model.tags[0].cellIds).toEqual([]);
-		expect(executeState.model.tags[1].cellIds).toEqual([]);
+		expect(executeState.model.columns[0].tags.length).toEqual(2);
+		expect(executeState.model.bodyCells[0].tagIds).toEqual([]);
+		expect(executeState.model.bodyCells[1].tagIds).toEqual([]);
 	});
 
 	it("should handle text -> tag when execute() is called", async () => {
@@ -111,11 +107,10 @@ describe("column-type-update-command", () => {
 		//Assert
 		expect(executeState.model.columns.length).toEqual(1);
 		expect(executeState.model.columns[0].type).toEqual(CellType.TAG);
-		expect(executeState.model.tags.length).toEqual(2);
-		expect(executeState.model.tags[0].cellIds.length).toEqual(1);
-		expect(executeState.model.tags[1].cellIds.length).toEqual(0);
-		expect(executeState.model.tags[0].markdown).toEqual("test1");
-		expect(executeState.model.tags[1].markdown).toEqual("test2");
+		expect(executeState.model.columns[0].tags.length).toEqual(2);
+		expect(executeState.model.columns[0].tags[0].markdown).toEqual("test1");
+		expect(executeState.model.columns[0].tags[1].markdown).toEqual("test2");
+		expect(executeState.model.bodyCells[0].tagIds.length).toEqual(1);
 	});
 
 	it("should handle text -> multi-tag when execute() is called", async () => {
@@ -133,27 +128,25 @@ describe("column-type-update-command", () => {
 		//Assert
 		expect(executeState.model.columns.length).toEqual(1);
 		expect(executeState.model.columns[0].type).toEqual(CellType.MULTI_TAG);
-		expect(executeState.model.tags.length).toEqual(2);
-		expect(executeState.model.tags[0].cellIds.length).toEqual(1);
-		expect(executeState.model.tags[1].cellIds.length).toEqual(1);
-		expect(executeState.model.tags[0].markdown).toEqual("test1");
-		expect(executeState.model.tags[1].markdown).toEqual("test2");
+		expect(executeState.model.columns[0].tags.length).toEqual(2);
+		expect(executeState.model.columns[0].tags[0].markdown).toEqual("test1");
+		expect(executeState.model.columns[0].tags[1].markdown).toEqual("test2");
+		expect(executeState.model.bodyCells[0].tagIds.length).toEqual(2);
 	});
 
 	it("should handle multi-tag -> tag when execute() is called", async () => {
 		//Arrange
-		const prevState = createTableState(1, 1, {
+		const prevState = createTableState(1, 2, {
 			cellType: CellType.MULTI_TAG,
 		});
-		const tags = [
-			createTag(prevState.model.columns[0].id, "test1", {
-				cellId: prevState.model.bodyCells[0].id,
-			}),
-			createTag(prevState.model.columns[0].id, "test2", {
-				cellId: prevState.model.bodyCells[0].id,
-			}),
-		];
-		prevState.model.tags = tags;
+
+		const tags = [createTag("test1"), createTag("test2")];
+		prevState.model.columns[0].tags = tags;
+
+		const tagIds = tags.map((t) => t.id);
+		prevState.model.bodyCells[0].tagIds = tagIds;
+		prevState.model.bodyCells[1].tagIds = tagIds;
+
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
 			CellType.TAG
@@ -165,11 +158,8 @@ describe("column-type-update-command", () => {
 		//Assert
 		expect(executeState.model.columns.length).toEqual(1);
 		expect(executeState.model.columns[0].type).toEqual(CellType.TAG);
-		expect(executeState.model.tags.length).toEqual(2);
-		expect(executeState.model.tags[0].cellIds.length).toEqual(1);
-		expect(executeState.model.tags[1].cellIds.length).toEqual(0);
-		expect(executeState.model.tags[0].markdown).toEqual("test1");
-		expect(executeState.model.tags[1].markdown).toEqual("test2");
+		expect(executeState.model.columns[0].tags.length).toEqual(2);
+		expect(executeState.model.bodyCells[0].tagIds.length).toEqual(1);
 	});
 
 	it("should handle text -> checkbox when execute() is called", async () => {
@@ -236,19 +226,16 @@ describe("column-type-update-command", () => {
 
 	it("should handle multi-tag -> text when undo() is called", async () => {
 		//Arrange
-		const prevState = createTableState(1, 1, {
+		const prevState = createTableState(1, 2, {
 			cellType: CellType.MULTI_TAG,
 		});
 
-		const tags = [
-			createTag(prevState.model.columns[0].id, "test1", {
-				cellId: prevState.model.bodyCells[0].id,
-			}),
-			createTag(prevState.model.columns[0].id, "test2", {
-				cellId: prevState.model.bodyCells[0].id,
-			}),
-		];
-		prevState.model.tags = tags;
+		const tags = [createTag("test1"), createTag("test2")];
+		prevState.model.columns[0].tags = tags;
+
+		const tagIds = tags.map((t) => t.id);
+		prevState.model.bodyCells[0].tagIds = tagIds;
+		prevState.model.bodyCells[1].tagIds = tagIds;
 
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
@@ -262,7 +249,6 @@ describe("column-type-update-command", () => {
 		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
 		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
-		expect(undoState.model.tags).toEqual(prevState.model.tags);
 		expect(undoState.model.filterRules).toEqual(
 			prevState.model.filterRules
 		);
@@ -270,20 +256,16 @@ describe("column-type-update-command", () => {
 
 	it("should handle tag -> text when undo() is called", async () => {
 		//Arrange
-		const prevState = createTableState(1, 1, {
+		const prevState = createTableState(1, 2, {
 			cellType: CellType.TAG,
 		});
 
-		const tags = [
-			createTag(prevState.model.columns[0].id, "test1", {
-				cellId: prevState.model.bodyCells[0].id,
-			}),
-			createTag(prevState.model.columns[0].id, "test2", {
-				cellId: prevState.model.bodyCells[0].id,
-			}),
-		];
-		prevState.model.tags = tags;
+		const tags = [createTag("test1"), createTag("test2")];
+		prevState.model.columns[0].tags = tags;
 
+		const tagIds = tags.map((t) => t.id);
+		prevState.model.bodyCells[0].tagIds = tagIds;
+		prevState.model.bodyCells[1].tagIds = tagIds;
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
 			CellType.TEXT
@@ -296,7 +278,6 @@ describe("column-type-update-command", () => {
 		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
 		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
-		expect(undoState.model.tags).toEqual(prevState.model.tags);
 		expect(undoState.model.filterRules).toEqual(
 			prevState.model.filterRules
 		);
@@ -319,7 +300,6 @@ describe("column-type-update-command", () => {
 		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
 		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
-		expect(undoState.model.tags).toEqual(prevState.model.tags);
 		expect(undoState.model.filterRules).toEqual(
 			prevState.model.filterRules
 		);
@@ -342,7 +322,6 @@ describe("column-type-update-command", () => {
 		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
 		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
-		expect(undoState.model.tags).toEqual(prevState.model.tags);
 		expect(undoState.model.filterRules).toEqual(
 			prevState.model.filterRules
 		);
@@ -350,19 +329,16 @@ describe("column-type-update-command", () => {
 
 	it("should handle multi-tag -> tag when undo() is called", async () => {
 		//Arrange
-		const prevState = createTableState(1, 1, {
+		const prevState = createTableState(1, 2, {
 			cellType: CellType.MULTI_TAG,
 		});
 
-		const tags = [
-			createTag(prevState.model.columns[0].id, "test1", {
-				cellId: prevState.model.bodyCells[0].id,
-			}),
-			createTag(prevState.model.columns[0].id, "test2", {
-				cellId: prevState.model.bodyCells[0].id,
-			}),
-		];
-		prevState.model.tags = tags;
+		const tags = [createTag("test1"), createTag("test2")];
+		prevState.model.columns[0].tags = tags;
+
+		const tagIds = tags.map((t) => t.id);
+		prevState.model.bodyCells[0].tagIds = tagIds;
+		prevState.model.bodyCells[1].tagIds = tagIds;
 
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
@@ -376,7 +352,6 @@ describe("column-type-update-command", () => {
 		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
 		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
-		expect(undoState.model.tags).toEqual(prevState.model.tags);
 		expect(undoState.model.filterRules).toEqual(
 			prevState.model.filterRules
 		);
@@ -398,7 +373,6 @@ describe("column-type-update-command", () => {
 		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
 		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
-		expect(undoState.model.tags).toEqual(prevState.model.tags);
 		expect(undoState.model.filterRules).toEqual(
 			prevState.model.filterRules
 		);
@@ -425,7 +399,6 @@ describe("column-type-update-command", () => {
 		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
 		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
-		expect(undoState.model.tags).toEqual(prevState.model.tags);
 		expect(undoState.model.filterRules).toEqual(
 			prevState.model.filterRules
 		);
@@ -476,7 +449,6 @@ describe("column-type-update-command", () => {
 		//Assert
 		expect(redoState.model.columns).toEqual(executeState.model.columns);
 		expect(redoState.model.bodyCells).toEqual(executeState.model.bodyCells);
-		expect(redoState.model.tags).toEqual(executeState.model.tags);
 		expect(redoState.model.filterRules).toEqual(
 			executeState.model.filterRules
 		);

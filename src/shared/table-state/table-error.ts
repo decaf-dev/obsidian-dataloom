@@ -1,13 +1,13 @@
-export class ColumnIdError extends Error {
+export class ColumNotFoundError extends Error {
 	constructor(id: string) {
-		super(`Reference column ${id} is undefined`);
-		this.name = "ColumnIdError";
+		super(`Column ${id} is undefined`);
+		this.name = "ColumNotFoundError";
 	}
 }
-export class TagIdError extends Error {
+export class TagNotFoundError extends Error {
 	constructor(id: string) {
-		super(`Reference tag ${id} is undefined`);
-		this.name = "TagIdError";
+		super(`Tag ${id} is undefined`);
+		this.name = "TagNotFoundError";
 	}
 }
 

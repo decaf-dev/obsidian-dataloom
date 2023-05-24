@@ -3,7 +3,7 @@ import { createRoot, Root } from "react-dom/client";
 import { Provider } from "react-redux";
 import App from "../react/table-app";
 import { store } from "../redux/global/store";
-import { TableState } from "../shared/table-state/types";
+import { TableState } from "../shared/types/types";
 import TableStateProvider from "../shared/table-state/table-state-context";
 import NLTImportModal from "./nlt-import-modal";
 import {

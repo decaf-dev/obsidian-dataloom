@@ -4,7 +4,7 @@ import Switch from "src/react/shared/switch";
 import Text from "src/react/shared/text";
 import Padding from "src/react/shared/padding";
 import Stack from "src/react/shared/stack";
-import { ColumnToggle } from "./types";
+import { ColumnWithMarkdown } from "./types";
 
 interface Props {
 	id: string;
@@ -12,7 +12,7 @@ interface Props {
 	left: number;
 	isOpen: boolean;
 	isReady: boolean;
-	columns: ColumnToggle[];
+	columns: ColumnWithMarkdown[];
 	onToggle: (id: string) => void;
 }
 
@@ -38,15 +38,13 @@ export default function ToggleColumnMenu({
 				<Padding p="md">
 					<Stack spacing="md" isVertical>
 						{columns.map((column) => {
+							const { id, markdown, isVisible } = column;
 							return (
-								<Flex key={column.id} justify="space-between">
-									<Text
-										value={column.name}
-										maxWidth="100px"
-									/>
+								<Flex key={id} justify="space-between">
+									<Text value={markdown} maxWidth="100px" />
 									<Switch
-										isChecked={column.isVisible}
-										onToggle={() => onToggle(column.id)}
+										isChecked={isVisible}
+										onToggle={() => onToggle(id)}
 									/>
 								</Flex>
 							);

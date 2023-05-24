@@ -4,7 +4,7 @@ import {
 	CurrencyType,
 	DateFormat,
 	SortDir,
-} from "src/shared/table-state/types";
+} from "src/shared/types/types";
 import { useLogger } from "../logger";
 import { WorkspaceLeaf } from "obsidian";
 import { updateSortTime } from "src/redux/global/global-slice";
@@ -65,7 +65,7 @@ export const useColumn = (viewLeaf: WorkspaceLeaf) => {
 			sortDir,
 		});
 		doCommand(new ColumnUpdateCommand(columnId, "sortDir", sortDir));
-		//TODO check?
+		//TODO IMPLEMENT NEXT
 		dispatch(updateSortTime());
 	}
 

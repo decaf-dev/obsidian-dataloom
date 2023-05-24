@@ -1,9 +1,9 @@
 import { css } from "@emotion/react";
-import { ColumnFilter } from "../types";
+import { ColumnWithMarkdown } from "../types";
 
 interface Props {
 	id: string;
-	columns: ColumnFilter[];
+	columns: ColumnWithMarkdown[];
 	value: string;
 	onChange: (id: string, columnId: string) => void;
 }
@@ -25,11 +25,14 @@ export default function FilterColumnDropdown({
 			value={value}
 			onChange={(e) => onChange(id, e.target.value)}
 		>
-			{columns.map((column) => (
-				<option key={column.id} value={column.id}>
-					{column.name}
-				</option>
-			))}
+			{columns.map((column) => {
+				const { id, markdown } = column;
+				return (
+					<option key={id} value={id}>
+						{markdown}
+					</option>
+				);
+			})}
 		</select>
 	);
 }

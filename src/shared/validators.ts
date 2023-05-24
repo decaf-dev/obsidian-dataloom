@@ -1,4 +1,4 @@
-import { GeneralFunction, NumberFunction } from "src/shared/table-state/types";
+import { GeneralFunction, NumberFunction } from "src/shared/types/types";
 import {
 	NUMBER_REGEX,
 	TAG_REGEX,

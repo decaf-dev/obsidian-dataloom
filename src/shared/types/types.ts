@@ -1,4 +1,15 @@
-import { Color } from "../types";
+export enum Color {
+	LIGHT_GRAY = "light gray",
+	GRAY = "gray",
+	BROWN = "brown",
+	ORANGE = "orange",
+	YELLOW = "yellow",
+	GREEN = "green",
+	BLUE = "blue",
+	PURPLE = "purple",
+	PINK = "pink",
+	RED = "red",
+}
 
 export enum SortDir {
 	ASC = "asc",
@@ -58,17 +69,6 @@ export enum CurrencyType {
 	ARGENTINA = "ARS",
 }
 
-export enum GeneralFunction680 {
-	NONE = "none",
-	COUNT_ALL = "count_all",
-	COUNT_VALUES = "count_values",
-	COUNT_UNIQUE = "count_unique",
-	COUNT_EMPTY = "count_empty",
-	COUNT_NOT_EMPTY = "count_not_empty",
-	PERCENT_EMPTY = "percent_empty",
-	PERCENT_NOT_EMPTY = "percent_not_empty",
-}
-
 export enum GeneralFunction {
 	NONE = "none",
 	COUNT_ALL = "count-all",
@@ -90,19 +90,6 @@ export enum NumberFunction {
 }
 
 export type FunctionType = GeneralFunction | NumberFunction;
-export type FunctionType680 = GeneralFunction680 | NumberFunction;
-
-export interface Column633 {
-	id: string;
-	sortDir: SortDir;
-	width: string;
-	type: CellType;
-	isVisible: boolean;
-	dateFormat: DateFormat;
-	currencyType: CurrencyType;
-	shouldWrapOverflow: boolean;
-	footerCellId: string;
-}
 
 export interface Column {
 	id: string;
@@ -113,14 +100,7 @@ export interface Column {
 	dateFormat: DateFormat;
 	currencyType: CurrencyType;
 	shouldWrapOverflow: boolean;
-}
-
-export interface Row633 {
-	id: string;
-	index: number;
-	menuCellId: string;
-	creationTime: number;
-	lastEditedTime: number;
+	tags: Tag[];
 }
 
 export interface FilterRule {
@@ -146,7 +126,7 @@ export interface BodyRow extends Row {
 export type HeaderRow = Row;
 export type FooterRow = Row;
 
-interface Cell {
+export interface Cell {
 	id: string;
 	columnId: string;
 	rowId: string;
@@ -159,38 +139,17 @@ export interface HeaderCell extends Cell {
 export interface BodyCell extends Cell {
 	dateTime: number | null;
 	markdown: string;
-}
-
-export interface FooterCell680 extends Cell {
-	functionType: FunctionType680;
+	tagIds: string[];
 }
 
 export interface FooterCell extends Cell {
 	functionType: FunctionType;
 }
 
-export interface Cell633 {
-	id: string;
-	columnId: string;
-	dateTime: number | null;
-	rowId: string;
-	markdown: string;
-	isHeader: boolean;
-}
-
 export interface Tag {
 	id: string;
 	markdown: string;
 	color: Color;
-	columnId: string;
-	cellIds: string[];
-}
-
-export interface TableModel633 {
-	columns: Column633[];
-	rows: Row633[];
-	cells: Cell633[];
-	tags: Tag[];
 }
 
 export interface TableModel {
@@ -201,48 +160,13 @@ export interface TableModel {
 	headerCells: HeaderCell[];
 	bodyCells: BodyCell[];
 	footerCells: FooterCell[];
-	tags: Tag[];
 	filterRules: FilterRule[];
 }
 
-export interface TableModel680 {
-	columns: Column[];
-	headerRows: HeaderRow[];
-	bodyRows: BodyRow[];
-	footerRows: FooterRow[];
-	headerCells: HeaderCell[];
-	bodyCells: BodyCell[];
-	footerCells: FooterCell680[];
-	tags: Tag[];
-	filterRules: FilterRule[];
-}
-
-export interface TableModel670 {
-	columns: Column[];
-	headerRows: HeaderRow[];
-	bodyRows: BodyRow[];
-	footerRows: FooterRow[];
-	headerCells: HeaderCell[];
-	bodyCells: BodyCell[];
-	footerCells: FooterCell[];
-	tags: Tag[];
-}
 export interface BaseTableState {
 	pluginVersion: number;
 }
 
 export interface TableState extends BaseTableState {
 	model: TableModel;
-}
-
-export interface TableState680 extends BaseTableState {
-	model: TableModel680;
-}
-
-export interface TableState670 extends BaseTableState {
-	model: TableModel670;
-}
-
-export interface TableState633 extends BaseTableState {
-	model: TableModel633;
 }
