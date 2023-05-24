@@ -1,5 +1,3 @@
-import { BaseTableState } from "./types";
-
 enum Color {
 	LIGHT_GRAY = "light gray",
 	GRAY = "gray",
@@ -166,6 +164,7 @@ interface TableModel {
 	filterRules: FilterRule[];
 }
 
-export interface TableState691 extends BaseTableState {
+export interface TableState691 {
+	pluginVersion: string;
 	model: TableModel;
 }
