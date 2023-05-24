@@ -1,7 +1,7 @@
 import Menu from "src/react/shared/menu";
 import MenuItem from "src/react/shared/menu-item";
 import { getDisplayNameForDateFormat } from "src/shared/table-state/display-name";
-import { DateFormat } from "src/shared/table-state/types";
+import { DateFormat } from "src/shared/types/types";
 interface Props {
 	id: string;
 	top: number;

@@ -1,4 +1,4 @@
-import { BodyRow } from "./types";
+import { BodyRow } from "../types/types";
 import { RowIdError } from "./table-error";
 
 export const rowLastEditedTime = (rows: BodyRow[], rowId: string) => {

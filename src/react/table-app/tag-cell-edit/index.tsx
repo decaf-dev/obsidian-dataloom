@@ -3,8 +3,8 @@ import React from "react";
 import MenuHeader from "./menu-header";
 import MenuBody from "./menu-body";
 
-import { Tag as TagType } from "src/shared/table-state/types";
-import { Color } from "src/shared/types";
+import { Tag as TagType } from "src/shared/types/types";
+import { Color } from "src/shared/types/types";
 import { MenuPosition } from "src/shared/menu/types";
 import { randomColor } from "src/shared/color";
 
@@ -12,7 +12,8 @@ import { css } from "@emotion/react";
 import { useCompare } from "src/shared/hooks";
 
 interface Props {
-	tags: TagType[];
+	columnTags: TagType[];
+	cellTags: TagType[];
 	cellId: string;
 	menuCloseRequestTime: number | null;
 	menuPosition: MenuPosition;
@@ -26,7 +27,8 @@ interface Props {
 }
 
 export default function TagCellEdit({
-	tags,
+	columnTags,
+	cellTags,
 	cellId,
 	menuCloseRequestTime,
 	menuPosition,
@@ -51,11 +53,12 @@ export default function TagCellEdit({
 	React.useEffect(() => {
 		if (hasCloseRequestTimeChange && menuCloseRequestTime !== null) {
 			const shouldAddTag =
-				tags.find((tag) => tag.markdown === inputValue) === undefined;
+				columnTags.find((tag) => tag.markdown === inputValue) ===
+				undefined;
 			if (shouldAddTag) handleTagAdd(inputValue, newTagColor);
 			onMenuClose();
 		}
-	}, [tags, inputValue, newTagColor, hasCloseRequestTimeChange]);
+	}, [columnTags, inputValue, newTagColor, hasCloseRequestTimeChange]);
 
 	return (
 		<div
@@ -65,16 +68,15 @@ export default function TagCellEdit({
 		>
 			<MenuHeader
 				isMenuVisible={isMenuVisible}
-				cellId={cellId}
 				inputValue={inputValue}
-				tags={tags}
+				cellTags={cellTags}
 				onInputValueChange={setInputValue}
 				onRemoveTag={onRemoveTag}
 			/>
 			<MenuBody
 				menuPosition={menuPosition}
 				inputValue={inputValue}
-				tags={tags}
+				columnTags={columnTags}
 				newTagColor={newTagColor}
 				onTagAdd={handleTagAdd}
 				onTagClick={onTagClick}

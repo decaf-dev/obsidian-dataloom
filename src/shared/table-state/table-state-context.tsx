@@ -1,4 +1,4 @@
-import { TableState } from "./types";
+import { TableState } from "../types/types";
 import TableStateCommand from "./table-state-command";
 import { useDidMountEffect, useUUID } from "../hooks";
 import React from "react";

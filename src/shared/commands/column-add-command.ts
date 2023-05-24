@@ -4,7 +4,7 @@ import {
 	FooterCell,
 	HeaderCell,
 	TableState,
-} from "../table-state/types";
+} from "../types/types";
 import {
 	createBodyCell,
 	createColumn,

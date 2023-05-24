@@ -1,4 +1,4 @@
-import { TableState } from "src/shared/table-state/types";
+import { TableState } from "src/shared/types/types";
 import { MARKDOWN_LIST_ITEM_REGEX } from "./constants";
 import { ImportType } from "./types";
 import { CellNotFoundError } from "src/shared/table-state/table-error";

@@ -1,4 +1,4 @@
-import { FunctionType } from "src/shared/table-state/types";
+import { FunctionType } from "src/shared/types/types";
 import { useLogger } from "../logger";
 import { useTableState } from "./table-state-context";
 import CellBodyUpdateCommand from "../commands/cell-body-update-command";

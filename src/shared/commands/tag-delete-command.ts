@@ -1,36 +1,77 @@
 import TableStateCommand from "../table-state/table-state-command";
-import { TableState, Tag } from "../table-state/types";
-import { TagIdError } from "../table-state/table-error";
+import { TableState, Tag } from "../types/types";
+import { TagNotFoundError } from "../table-state/table-error";
 
 export default class TagDeleteCommand extends TableStateCommand {
-	private id: string;
+	private columnId: string;
+	private tagId: string;
+
+	/**
+	 * The tag that was deleted from the column
+	 */
 	private deletedTag: {
 		arrIndex: number;
 		tag: Tag;
 	};
 
-	constructor(id: string) {
+	/**
+	 * The previous cell tag ids before the command is executed
+	 */
+	private previousCellTagIds: {
+		cellId: string;
+		tagIds: string[];
+	}[] = [];
+
+	constructor(columnId: string, tagId: string) {
 		super();
-		this.id = id;
+		this.columnId = columnId;
+		this.tagId = tagId;
 	}
 
 	execute(prevState: TableState): TableState {
 		super.onExecute();
 
-		const { tags } = prevState.model;
-		const tag = tags.find((tag) => tag.id === this.id);
-		if (!tag) throw new TagIdError(this.id);
+		const { bodyCells, columns } = prevState.model;
 
-		this.deletedTag = {
-			arrIndex: tags.indexOf(tag),
-			tag,
-		};
+		const newColumns = columns.map((column) => {
+			if (column.id === this.columnId) {
+				const tag = column.tags.find((tag) => tag.id === this.tagId);
+				if (!tag) throw new TagNotFoundError(this.tagId);
+
+				this.deletedTag = {
+					arrIndex: column.tags.indexOf(tag),
+					tag,
+				};
+
+				return {
+					...column,
+					tags: column.tags.filter((tag) => tag.id !== this.tagId),
+				};
+			}
+			return column;
+		});
+
+		const newBodyCells = bodyCells.map((cell) => {
+			if (cell.tagIds.includes(this.tagId)) {
+				this.previousCellTagIds.push({
+					cellId: cell.id,
+					tagIds: [...cell.tagIds],
+				});
+
+				return {
+					...cell,
+					tagIds: cell.tagIds.filter((tagId) => tagId !== this.tagId),
+				};
+			}
+			return cell;
+		});
 
 		return {
 			...prevState,
 			model: {
 				...prevState.model,
-				tags: tags.filter((tag) => tag.id !== this.id),
+				columns: newColumns,
+				bodyCells: newBodyCells,
 			},
 		};
 	}
@@ -43,16 +84,44 @@ export default class TagDeleteCommand extends TableStateCommand {
 	undo(prevState: TableState): TableState {
 		super.onUndo();
 
-		const { tags } = prevState.model;
+		const { columns, bodyCells } = prevState.model;
 
-		const updatedTags = [...tags];
-		updatedTags.splice(this.deletedTag.arrIndex, 0, this.deletedTag.tag);
+		const newColumns = columns.map((column) => {
+			if (column.id === this.columnId) {
+				const updatedTags = [...column.tags];
+				updatedTags.splice(
+					this.deletedTag.arrIndex,
+					0,
+					this.deletedTag.tag
+				);
+
+				return {
+					...column,
+					tags: updatedTags,
+				};
+			}
+			return column;
+		});
+
+		const newBodyCells = bodyCells.map((cell) => {
+			const previousTagIds = this.previousCellTagIds.find(
+				(previousCellTagId) => previousCellTagId.cellId === cell.id
+			);
+			if (previousTagIds) {
+				return {
+					...cell,
+					tagIds: previousTagIds.tagIds,
+				};
+			}
+			return cell;
+		});
 
 		return {
 			...prevState,
 			model: {
 				...prevState.model,
-				tags: updatedTags,
+				columns: newColumns,
+				bodyCells: newBodyCells,
 			},
 		};
 	}

@@ -6,9 +6,12 @@ import {
 	DateFormat,
 	GeneralFunction,
 	Tag,
-} from "src/shared/table-state/types";
+} from "src/shared/types/types";
 import { hashString, round2Digits } from "./utils";
-import { RowIdError } from "src/shared/table-state/table-error";
+import {
+	RowIdError,
+	TagNotFoundError,
+} from "src/shared/table-state/table-error";
 import { unixTimeToDateTimeString } from "src/shared/date/date-conversion";
 
 export const getGeneralFunctionContent = (
@@ -173,9 +176,11 @@ const getCellValues = (
 		if (cell.dateTime) return [cell.dateTime.toString()];
 		return [];
 	} else if (cellType === CellType.TAG || cellType === CellType.MULTI_TAG) {
-		return columnTags
-			.filter((tag) => tag.cellIds.includes(cell.id))
-			.map((tag) => tag.markdown);
+		return cell.tagIds.map((tagId) => {
+			const tag = columnTags.find((tag) => tag.id === tagId);
+			if (!tag) throw new TagNotFoundError(tagId);
+			return tag.markdown;
+		});
 	} else if (cellType === CellType.LAST_EDITED_TIME) {
 		return [unixTimeToDateTimeString(bodyRow.lastEditedTime, dateFormat)];
 	} else if (cellType === CellType.CREATION_TIME) {
@@ -199,7 +204,7 @@ const countCellValues = (
 	} else if (cellType === CellType.DATE) {
 		return cell.dateTime == null ? 0 : 1;
 	} else if (cellType === CellType.TAG || cellType === CellType.MULTI_TAG) {
-		return columnTags.filter((tag) => tag.cellIds.includes(cell.id)).length;
+		return cell.tagIds.length;
 	} else if (cellType === CellType.CHECKBOX) {
 		return isCheckboxChecked(cell.markdown) ? 1 : 0;
 	} else if (
@@ -226,9 +231,7 @@ const isCellContentEmpty = (
 	} else if (cellType === CellType.DATE) {
 		return cell.dateTime == null;
 	} else if (cellType === CellType.TAG || cellType === CellType.MULTI_TAG) {
-		return (
-			columnTags.find((tag) => tag.cellIds.includes(cell.id)) == undefined
-		);
+		return cell.tagIds.length === 0;
 	} else if (cellType === CellType.CHECKBOX) {
 		return !isCheckboxChecked(cell.markdown);
 	} else if (

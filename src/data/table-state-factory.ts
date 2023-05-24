@@ -17,11 +17,11 @@ import {
 	SortDir,
 	TableState,
 	Tag,
-} from "../shared/table-state/types";
+} from "../shared/types/types";
 
 import { v4 as uuidv4 } from "uuid";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/table-state/constants";
-import { Color } from "src/shared/types";
+import { Color } from "src/shared/types/types";
 
 export const createColumn = (options?: { cellType?: CellType }): Column => {
 	const { cellType = CellType.TEXT } = options || {};
@@ -34,6 +34,7 @@ export const createColumn = (options?: { cellType?: CellType }): Column => {
 		currencyType: CurrencyType.UNITED_STATES,
 		dateFormat: DateFormat.MM_DD_YYYY,
 		shouldWrapOverflow: false,
+		tags: [],
 	};
 };
 
@@ -75,9 +76,9 @@ export const createHeaderCell = (
 export const createBodyCell = (
 	columnId: string,
 	rowId: string,
-	options: { cellType?: CellType } = {}
+	options: { cellType?: CellType; tagIds?: string[] } = {}
 ): BodyCell => {
-	const { cellType } = options || {};
+	const { cellType, tagIds = [] } = options || {};
 	return {
 		id: uuidv4(),
 		columnId,
@@ -85,6 +86,7 @@ export const createBodyCell = (
 		dateTime: null,
 		markdown:
 			cellType === CellType.CHECKBOX ? CHECKBOX_MARKDOWN_UNCHECKED : "",
+		tagIds,
 	};
 };
 
@@ -112,17 +114,14 @@ export const createFooterCell = (
 };
 
 export const createTag = (
-	columnId: string,
 	markdown: string,
-	options?: { color?: Color; cellId?: string }
+	options?: { color?: Color }
 ): Tag => {
-	const { color = randomColor(), cellId } = options || {};
+	const { color = randomColor() } = options || {};
 	return {
 		id: uuidv4(),
-		columnId,
 		markdown: markdown,
 		color,
-		cellIds: cellId !== undefined ? [cellId] : [],
 	};
 };
 
@@ -173,7 +172,6 @@ export const createTableState = (
 		}
 	}
 
-	const tags: Tag[] = [];
 	const filterRules: FilterRule[] = [];
 
 	return {
@@ -185,7 +183,6 @@ export const createTableState = (
 			headerCells,
 			bodyCells,
 			footerCells,
-			tags,
 			filterRules,
 		},
 		pluginVersion: CURRENT_PLUGIN_VERSION,

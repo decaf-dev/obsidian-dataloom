@@ -1,5 +1,5 @@
 import { CommandRedoError, CommandUndoError } from "../commands/command-errors";
-import { TableState } from "./types";
+import { TableState } from "../types/types";
 
 export default abstract class TableStateCommand {
 	hasExecuteBeenCalled: boolean = false;

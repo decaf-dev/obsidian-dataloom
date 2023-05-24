@@ -6,7 +6,7 @@ import { useMenu } from "src/shared/menu/hooks";
 import { Button } from "src/react/shared/button";
 import Icon from "src/react/shared/icon";
 import Tag from "src/react/shared/tag";
-import { Color } from "src/shared/types";
+import { Color } from "src/shared/types/types";
 import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
 import { css } from "@emotion/react";
 

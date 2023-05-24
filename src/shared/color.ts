@@ -1,4 +1,4 @@
-import { Color } from "./types";
+import { Color } from "src/shared/types/types";
 
 const RED_GRAPHITE_THEME = "Red Graphite";
 

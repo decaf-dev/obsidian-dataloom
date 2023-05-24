@@ -6,7 +6,7 @@ import {
 	CurrencyType,
 	DateFormat,
 	SortDir,
-} from "src/shared/table-state/types";
+} from "src/shared/types/types";
 import { useMenu } from "src/shared/menu/hooks";
 import { MenuLevel } from "src/shared/menu/types";
 import { useAppSelector } from "src/redux/global/hooks";
