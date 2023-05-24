@@ -10,7 +10,10 @@ import {
 } from "../shared/types/types";
 import { TableState630 } from "src/shared/types/types-630";
 import { GeneralFunction670, TableState670 } from "src/shared/types/types-670";
-import { CellIdError, ColumnIdError } from "../shared/table-state/table-error";
+import {
+	CellIdError,
+	ColumNotFoundError,
+} from "../shared/table-state/table-error";
 import { createFooterRow, createHeaderRow } from "./table-state-factory";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/table-state/constants";
 import { TableState680 } from "src/shared/types/types-680";
@@ -201,7 +204,7 @@ export const deserializeTableState = (data: string): TableState => {
 			const column = columns.find(
 				(column) => column.id === cell.columnId
 			);
-			if (!column) throw new ColumnIdError(cell.columnId);
+			if (!column) throw new ColumNotFoundError(cell.columnId);
 
 			if (column.type === CellType.CHECKBOX) {
 				if (cell.markdown === "") {
@@ -247,7 +250,7 @@ export const deserializeTableState = (data: string): TableState => {
 			const column: unknown | undefined = columns.find(
 				(column) => column.id === columnId
 			);
-			if (!column) throw new ColumnIdError(columnId);
+			if (!column) throw new ColumNotFoundError(columnId);
 
 			const typedColumn = column as Column;
 			typedColumn.tags.push({

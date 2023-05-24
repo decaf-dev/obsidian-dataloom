@@ -5,12 +5,12 @@ import { Button } from "src/react/shared/button";
 import Switch from "src/react/shared/switch";
 import { CellType, FilterType, Tag } from "src/shared/types/types";
 import FilterColumnDropdown from "./filter-column-select";
-import { ColumnFilter } from "../types";
 import FilterTextInput from "./filter-text-input";
+import { ColumnWithMarkdown } from "../types";
 
 interface Props {
 	id: string;
-	columns: ColumnFilter[];
+	columns: ColumnWithMarkdown[];
 	isEnabled: boolean;
 	columnId: string;
 	cellType: CellType;

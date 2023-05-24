@@ -9,7 +9,7 @@ import { MenuPosition } from "src/shared/menu/types";
 import { css } from "@emotion/react";
 
 interface MenuBodyProps {
-	tags: Tag[];
+	columnTags: Tag[];
 	menuPosition: MenuPosition;
 	inputValue: string;
 	newTagColor: Color;
@@ -20,7 +20,7 @@ interface MenuBodyProps {
 }
 
 export default function MenuBody({
-	tags,
+	columnTags,
 	inputValue,
 	menuPosition,
 	newTagColor,
@@ -29,8 +29,7 @@ export default function MenuBody({
 	onTagColorChange,
 	onTagDelete,
 }: MenuBodyProps) {
-	const found = tags.find((tag) => tag.markdown === inputValue);
-	const filteredTags = tags.filter((tag) =>
+	const filteredTags = columnTags.filter((tag) =>
 		tag.markdown.includes(inputValue)
 	);
 
@@ -49,7 +48,7 @@ export default function MenuBody({
 					width: 100%;
 				`}
 			>
-				{!found && inputValue !== "" && (
+				{filteredTags.length === 0 && inputValue !== "" && (
 					<CreateTag
 						markdown={inputValue}
 						color={newTagColor}

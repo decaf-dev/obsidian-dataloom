@@ -15,10 +15,31 @@ export default class TagAddCommand extends TableStateCommand {
 	private color: Color;
 	private isMultiTag: boolean;
 
+	/**
+	 * The edited time of the row before the command is executed
+	 */
 	private previousEditedTime: number;
+
+	/**
+	 * The edited time of the row after the command is executed
+	 *
+	 */
 	private newEditedTime: number;
-	private newTag: Tag;
-	private changedTag?: Tag;
+
+	/**
+	 * The tag that was added to the column
+	 */
+	private addedTag: Tag;
+
+	/**
+	 * The cell tag ids before the command is executed
+	 */
+	private previousCellTagIds: string[];
+
+	/**
+	 * The cell tag ids after the command is executed
+	 */
+	private newCellTagIds: string[];
 
 	constructor(
 		cellId: string,
@@ -40,28 +61,46 @@ export default class TagAddCommand extends TableStateCommand {
 	execute(prevState: TableState): TableState {
 		super.onExecute();
 
-		const { tags, bodyRows } = prevState.model;
+		const { bodyRows, bodyCells, columns } = prevState.model;
 
-		const updatedTags = structuredClone(tags);
-
-		//If there was already a tag attached to the cell, remove it
-		if (!this.isMultiTag) {
-			const cellTag = updatedTags.find((tag) =>
-				tag.cellIds.find((c) => c === this.cellId)
-			);
-			if (cellTag) {
-				this.changedTag = structuredClone(cellTag);
-				cellTag.cellIds = cellTag.cellIds.filter(
-					(c) => c !== this.cellId
-				);
-			}
-		}
-
-		this.newTag = createTag(this.columnId, this.markdown, {
+		this.addedTag = createTag(this.markdown, {
 			color: this.color,
-			cellId: this.cellId,
 		});
-		updatedTags.push(this.newTag);
+
+		const newColumns = columns.map((column) => {
+			if (column.id === this.columnId) {
+				return {
+					...column,
+					tags: [...column.tags, this.addedTag],
+				};
+			}
+			return column;
+		});
+
+		const newBodyCells = bodyCells.map((cell) => {
+			if (cell.id === this.cellId) {
+				this.previousCellTagIds = [...cell.tagIds];
+
+				if (this.isMultiTag === false) {
+					//If there was already a tag attached to the cell, remove it
+					if (cell.tagIds.length > 0) {
+						this.newCellTagIds = [this.addedTag.id];
+						return {
+							...cell,
+							tagIds: this.newCellTagIds,
+						};
+					}
+				}
+
+				this.newCellTagIds = [...cell.tagIds, this.addedTag.id];
+
+				return {
+					...cell,
+					tagIds: [...cell.tagIds, this.addedTag.id],
+				};
+			}
+			return cell;
+		});
 
 		this.previousEditedTime = rowLastEditedTime(bodyRows, this.rowId);
 		this.newEditedTime = Date.now();
@@ -70,7 +109,8 @@ export default class TagAddCommand extends TableStateCommand {
 			...prevState,
 			model: {
 				...prevState.model,
-				tags: updatedTags,
+				columns: newColumns,
+				bodyCells: newBodyCells,
 				bodyRows: rowLastEditedTimeUpdate(
 					bodyRows,
 					this.rowId,
@@ -81,25 +121,32 @@ export default class TagAddCommand extends TableStateCommand {
 	}
 	redo(prevState: TableState): TableState {
 		super.onRedo();
-		const { tags, bodyRows } = prevState.model;
+		const { bodyRows, columns, bodyCells } = prevState.model;
 
-		let updatedTags = structuredClone(tags);
-		updatedTags = updatedTags.map((tag) => {
-			if (tag.id === this.changedTag?.id) {
+		const newColumns = columns.map((column) => {
+			if (column.id === this.columnId)
 				return {
-					...tag,
-					cellIds: tag.cellIds.filter((c) => c !== this.cellId),
+					...column,
+					tags: [...column.tags, this.addedTag],
 				};
-			}
-			return tag;
+			return column;
 		});
-		updatedTags.push(this.newTag);
+
+		const newBodyCells = bodyCells.map((cell) => {
+			if (cell.id === this.cellId)
+				return {
+					...cell,
+					tagIds: this.newCellTagIds,
+				};
+			return cell;
+		});
 
 		return {
 			...prevState,
 			model: {
 				...prevState.model,
-				tags: updatedTags,
+				columns: newColumns,
+				bodyCells: newBodyCells,
 				bodyRows: rowLastEditedTimeUpdate(
 					bodyRows,
 					this.rowId,
@@ -111,20 +158,36 @@ export default class TagAddCommand extends TableStateCommand {
 	undo(prevState: TableState): TableState {
 		super.onUndo();
 
-		const { bodyRows, tags } = prevState.model;
-		let updatedTags = structuredClone(tags);
-		updatedTags = updatedTags
-			.filter((tag) => tag.id !== this.newTag.id)
-			.map((tag) => {
-				if (tag.id == this.changedTag?.id) return this.changedTag;
-				return tag;
-			});
+		const { bodyRows, columns } = prevState.model;
+
+		const newColumns = columns.map((column) => {
+			if (column.id === this.columnId) {
+				return {
+					...column,
+					tags: column.tags.filter(
+						(tag) => tag.id !== this.addedTag.id
+					),
+				};
+			}
+			return column;
+		});
+
+		const newBodyCells = prevState.model.bodyCells.map((cell) => {
+			if (cell.id === this.cellId) {
+				return {
+					...cell,
+					tagIds: this.previousCellTagIds,
+				};
+			}
+			return cell;
+		});
 
 		return {
 			...prevState,
 			model: {
 				...prevState.model,
-				tags: updatedTags,
+				columns: newColumns,
+				bodyCells: newBodyCells,
 				bodyRows: rowLastEditedTimeUpdate(
 					bodyRows,
 					this.rowId,

@@ -1,4 +1,4 @@
-import { ColumnIdError } from "../table-state/table-error";
+import { ColumNotFoundError } from "../table-state/table-error";
 import TableStateCommand from "../table-state/table-state-command";
 import { Column, TableState } from "../types/types";
 
@@ -21,7 +21,7 @@ export default class ColumnUpdateCommand extends TableStateCommand {
 
 		const { columns } = prevState.model;
 		const column = columns.find((column) => column.id === this.columnId);
-		if (!column) throw new ColumnIdError(this.columnId);
+		if (!column) throw new ColumNotFoundError(this.columnId);
 
 		this.previousValue = column[this.key];
 

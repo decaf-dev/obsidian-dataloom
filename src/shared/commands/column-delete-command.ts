@@ -1,4 +1,4 @@
-import { ColumnIdError } from "../table-state/table-error";
+import { ColumNotFoundError } from "../table-state/table-error";
 import {
 	Column,
 	TableState,
@@ -35,14 +35,8 @@ export default class ColumnDeleteCommand extends TableStateCommand {
 	execute(prevState: TableState): TableState {
 		super.onExecute();
 
-		const {
-			columns,
-			headerCells,
-			bodyCells,
-			footerCells,
-			tags,
-			filterRules,
-		} = prevState.model;
+		const { columns, headerCells, bodyCells, footerCells, filterRules } =
+			prevState.model;
 
 		//Maintains at least 1 column in the table
 		if (columns.length === 1) return prevState;
@@ -53,7 +47,7 @@ export default class ColumnDeleteCommand extends TableStateCommand {
 		}
 
 		const columnToDelete = columns.find((column) => column.id === id);
-		if (!columnToDelete) throw new ColumnIdError(id!);
+		if (!columnToDelete) throw new ColumNotFoundError(id!);
 		this.deletedColumn = {
 			arrIndex: columns.indexOf(columnToDelete),
 			column: structuredClone(columnToDelete),
@@ -83,12 +77,6 @@ export default class ColumnDeleteCommand extends TableStateCommand {
 			cell: structuredClone(cell),
 		}));
 
-		const tagsToDelete = tags.filter((tag) => tag.columnId === id);
-		this.deletedTags = tagsToDelete.map((tag) => ({
-			arrIndex: tags.indexOf(tag),
-			tag: structuredClone(tag),
-		}));
-
 		const rulesToDelete = filterRules.filter(
 			(rule) => rule.columnId === id
 		);
@@ -105,7 +93,6 @@ export default class ColumnDeleteCommand extends TableStateCommand {
 				headerCells: headerCells.filter((cell) => cell.columnId !== id),
 				bodyCells: bodyCells.filter((cell) => cell.columnId !== id),
 				footerCells: footerCells.filter((cell) => cell.columnId !== id),
-				tags: tags.filter((tag) => tag.columnId !== id),
 				filterRules: filterRules.filter((rule) => rule.columnId !== id),
 			},
 		};
@@ -119,14 +106,8 @@ export default class ColumnDeleteCommand extends TableStateCommand {
 	undo(prevState: TableState): TableState {
 		super.onUndo();
 
-		const {
-			columns,
-			headerCells,
-			bodyCells,
-			footerCells,
-			tags,
-			filterRules,
-		} = prevState.model;
+		const { columns, headerCells, bodyCells, footerCells, filterRules } =
+			prevState.model;
 
 		const updatedColumns = [...columns];
 		updatedColumns.splice(
@@ -150,11 +131,6 @@ export default class ColumnDeleteCommand extends TableStateCommand {
 			updatedFooterCells.splice(cell.arrIndex, 0, cell.cell);
 		});
 
-		const updatedTags = structuredClone(tags);
-		this.deletedTags.forEach((tag) => {
-			updatedTags.splice(tag.arrIndex, 0, tag.tag);
-		});
-
 		const updatedFilterRules = [...filterRules];
 		this.deletedFilterRules.forEach((rule) => {
 			updatedFilterRules.splice(rule.arrIndex, 0, rule.rule);
@@ -168,7 +144,6 @@ export default class ColumnDeleteCommand extends TableStateCommand {
 				headerCells: updatedHeaderCells,
 				bodyCells: updatedBodyCells,
 				footerCells: updatedFooterCells,
-				tags: updatedTags,
 				filterRules: updatedFilterRules,
 			},
 		};

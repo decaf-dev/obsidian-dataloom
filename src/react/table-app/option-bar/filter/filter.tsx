@@ -3,12 +3,11 @@ import { useMenu } from "src/shared/menu/hooks";
 import { MenuLevel } from "src/shared/menu/types";
 import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
 import FilterMenu from "./filter-menu";
-import { ColumnFilter } from "../types";
-import { FilterRule, Tag } from "src/shared/types/types";
+import { FilterRule } from "src/shared/types/types";
+import { ColumnWithMarkdown } from "../types";
 
 interface Props {
-	columns: ColumnFilter[];
-	tags: Tag[];
+	columns: ColumnWithMarkdown[];
 	filterRules: FilterRule[];
 	onDeleteClick: (id: string) => void;
 	onToggle: (id: string) => void;
@@ -22,7 +21,6 @@ interface Props {
 export default function Filter({
 	columns,
 	filterRules,
-	tags,
 	onAddClick,
 	onColumnChange,
 	onDeleteClick,
@@ -70,7 +68,6 @@ export default function Filter({
 				isReady={isMenuReady}
 				isOpen={isMenuOpen}
 				columns={columns}
-				tags={tags}
 				filterRules={filterRules}
 				onTextChange={onTextChange}
 				onColumnChange={onColumnChange}

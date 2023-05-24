@@ -7,9 +7,8 @@ import { useFocusMenuInput } from "src/shared/hooks";
 import { getTableBackgroundColor, getTableBorderColor } from "src/shared/color";
 
 interface MenuHeaderProps {
-	cellId: string;
 	isMenuVisible: boolean;
-	tags: TagType[];
+	cellTags: TagType[];
 	inputValue: string;
 	onInputValueChange: (value: string) => void;
 	onRemoveTag: (tagId: string) => void;
@@ -17,8 +16,7 @@ interface MenuHeaderProps {
 
 export default function MenuHeader({
 	isMenuVisible,
-	cellId,
-	tags,
+	cellTags,
 	inputValue,
 	onInputValueChange,
 	onRemoveTag,
@@ -47,19 +45,17 @@ export default function MenuHeader({
 			`}
 		>
 			<Wrap spacingX="sm">
-				{tags
-					.filter((tag) => tag.cellIds.find((c) => c === cellId))
-					.map((tag) => (
-						<Tag
-							key={tag.id}
-							id={tag.id}
-							color={tag.color}
-							markdown={tag.markdown}
-							maxWidth="150px"
-							showRemove
-							onRemoveClick={onRemoveTag}
-						/>
-					))}
+				{cellTags.map((tag) => (
+					<Tag
+						key={tag.id}
+						id={tag.id}
+						color={tag.color}
+						markdown={tag.markdown}
+						maxWidth="150px"
+						showRemove
+						onRemoveClick={onRemoveTag}
+					/>
+				))}
 				<input
 					css={css`
 						background-color: transparent !important;

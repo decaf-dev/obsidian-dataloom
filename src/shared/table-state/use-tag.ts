@@ -77,19 +77,25 @@ export const useTag = () => {
 		doCommand(new TagCellMultipleRemoveCommand(cellId, rowId, tagIds));
 	}
 
-	function handleTagDeleteClick(tagId: string) {
+	function handleTagDeleteClick(columnId: string, tagId: string) {
 		logFunc("handleTagDeleteClick", {
+			columnId,
 			tagId,
 		});
-		doCommand(new TagDeleteCommand(tagId));
+		doCommand(new TagDeleteCommand(columnId, tagId));
 	}
 
-	function handleTagColorChange(tagId: string, color: Color) {
+	function handleTagColorChange(
+		columnId: string,
+		tagId: string,
+		color: Color
+	) {
 		logFunc("handleTagColorChange", {
+			columnId,
 			tagId,
 			color,
 		});
-		doCommand(new TagUpdateCommand(tagId, "color", color));
+		doCommand(new TagUpdateCommand(columnId, tagId, "color", color));
 	}
 
 	return {

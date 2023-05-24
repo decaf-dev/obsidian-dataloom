@@ -1,13 +1,14 @@
-import { MenuButton } from "src/react/shared/button";
 import ToggleColumnMenu from "./toggle-column-menu";
+
+import { MenuButton } from "src/react/shared/button";
 import { useMenu } from "src/shared/menu/hooks";
 import { MenuLevel } from "src/shared/menu/types";
 import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
-import { ColumnToggle } from "./types";
+import { ColumnWithMarkdown } from "./types";
 
 interface Props {
+	columns: ColumnWithMarkdown[];
 	onToggle: (id: string) => void;
-	columns: ColumnToggle[];
 }
 
 export default function ToggleColumn({ columns, onToggle }: Props) {

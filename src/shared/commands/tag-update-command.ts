@@ -1,17 +1,27 @@
-import { TagIdError } from "../table-state/table-error";
+import { TagNotFoundError } from "../table-state/table-error";
 import TableStateCommand from "../table-state/table-state-command";
 import { TableState, Tag } from "../types/types";
 
 export default class TagUpdateCommand extends TableStateCommand {
-	private id: string;
+	private columnId: string;
+	private tagId: string;
 	private key: keyof Tag;
 	private value: unknown;
 
+	/**
+	 * The previous value of the tag before the command is executed
+	 */
 	private previousValue: unknown;
 
-	constructor(id: string, key: keyof Tag, value: unknown) {
+	constructor(
+		columnId: string,
+		tagId: string,
+		key: keyof Tag,
+		value: unknown
+	) {
 		super();
-		this.id = id;
+		this.columnId = columnId;
+		this.tagId = tagId;
 		this.key = key;
 		this.value = value;
 	}
@@ -19,24 +29,33 @@ export default class TagUpdateCommand extends TableStateCommand {
 	execute(prevState: TableState): TableState {
 		super.onExecute();
 
-		const { tags } = prevState.model;
-		const tag = tags.find((tag) => tag.id === this.id);
-		if (!tag) throw new TagIdError(this.id);
-		this.previousValue = tag[this.key];
+		const { columns } = prevState.model;
+		const newColumns = columns.map((column) => {
+			if (column.id === this.columnId) {
+				const tag = column.tags.find((tag) => tag.id === this.tagId);
+				if (!tag) throw new TagNotFoundError(this.tagId);
+				this.previousValue = tag[this.key];
+				return {
+					...column,
+					tags: column.tags.map((tag) => {
+						if (tag.id === this.tagId) {
+							return {
+								...tag,
+								[this.key]: this.value,
+							};
+						}
+						return tag;
+					}),
+				};
+			}
+			return column;
+		});
 
 		return {
 			...prevState,
 			model: {
 				...prevState.model,
-				tags: tags.map((tag) => {
-					if (tag.id === this.id) {
-						return {
-							...tag,
-							[this.key]: this.value,
-						};
-					}
-					return tag;
-				}),
+				columns: newColumns,
 			},
 		};
 	}
@@ -49,20 +68,31 @@ export default class TagUpdateCommand extends TableStateCommand {
 	undo(prevState: TableState): TableState {
 		super.onUndo();
 
-		const { tags } = prevState.model;
+		const { columns } = prevState.model;
+
+		const newColumns = columns.map((column) => {
+			if (column.id === this.columnId) {
+				return {
+					...column,
+					tags: column.tags.map((tag) => {
+						if (tag.id === this.tagId) {
+							return {
+								...tag,
+								[this.key]: this.previousValue,
+							};
+						}
+						return tag;
+					}),
+				};
+			}
+			return column;
+		});
+
 		return {
 			...prevState,
 			model: {
 				...prevState.model,
-				tags: tags.map((tag) => {
-					if (tag.id === this.id) {
-						return {
-							...tag,
-							[this.key]: this.previousValue,
-						};
-					}
-					return tag;
-				}),
+				columns: newColumns,
 			},
 		};
 	}

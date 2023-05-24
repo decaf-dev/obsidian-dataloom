@@ -28,7 +28,7 @@ interface Props {
 	cellId: string;
 	width: string;
 	functionType: FunctionType;
-	tags: Tag[];
+	columnTags: Tag[];
 	bodyRows: BodyRow[];
 	bodyCells: BodyCell[];
 	currencyType: CurrencyType;
@@ -41,7 +41,7 @@ export default function FunctionCell({
 	columnId,
 	cellId,
 	width,
-	tags,
+	columnTags,
 	bodyCells,
 	dateFormat,
 	bodyRows,
@@ -77,7 +77,6 @@ export default function FunctionCell({
 	let content = "";
 
 	if (isGeneralFunction(functionType)) {
-		const columnTags = tags.filter((tag) => tag.columnId === columnId);
 		content = getGeneralFunctionContent(
 			bodyRows,
 			columnCells,

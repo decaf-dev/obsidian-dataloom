@@ -101,11 +101,11 @@ export interface Column {
 	currencyType: CurrencyType;
 	shouldWrapOverflow: boolean;
 	tags: Tag[];
-	filterRules: FilterRule[];
 }
 
 export interface FilterRule {
 	id: string;
+	columnId: string;
 	type: FilterType;
 	text: string;
 	tagIds: string[];
@@ -160,7 +160,6 @@ export interface TableModel {
 	headerCells: HeaderCell[];
 	bodyCells: BodyCell[];
 	footerCells: FooterCell[];
-	tags: Tag[];
 	filterRules: FilterRule[];
 }
 

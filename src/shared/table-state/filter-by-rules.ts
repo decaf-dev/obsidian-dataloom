@@ -8,7 +8,7 @@ import {
 	TableState,
 	Tag,
 } from "src/shared/types/types";
-import { ColumnIdError } from "./table-error";
+import { ColumNotFoundError } from "./table-error";
 
 //TODO implement all Cell Types
 export const isCellTypeFilterable = (cellType: CellType): boolean => {
@@ -24,7 +24,7 @@ export const isCellTypeFilterable = (cellType: CellType): boolean => {
 };
 
 export const filterBodyRowsByRules = (prevState: TableState): BodyRow[] => {
-	const { columns, bodyCells, bodyRows, filterRules, tags } = prevState.model;
+	const { columns, bodyCells, bodyRows, filterRules } = prevState.model;
 	//Map column id to column instance
 	const columnMap = new Map<string, Column>();
 	columns.forEach((column) => columnMap.set(column.id, column));
@@ -35,7 +35,9 @@ export const filterBodyRowsByRules = (prevState: TableState): BodyRow[] => {
 	//Iterate over all cells and set whether they match the ruleset
 	bodyCells.forEach((cell) => {
 		const column = columnMap.get(cell.columnId);
-		if (!column) throw new ColumnIdError(cell.columnId);
+		if (!column) throw new ColumNotFoundError(cell.columnId);
+
+		const { tags } = column;
 
 		const doesMatch = doesCellMatchRules(
 			cell,
@@ -78,7 +80,7 @@ const doesCellMatchRule = (
 			cellType === CellType.MULTI_TAG
 		) {
 			const cellTags = tags
-				.filter((tag) => tag.cellIds.includes(cell.id))
+				.filter((tag) => cell.tagIds.includes(tag.id))
 				.map((tag) => tag.markdown);
 
 			//The tags that we are filtering by

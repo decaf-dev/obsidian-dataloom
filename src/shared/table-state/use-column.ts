@@ -65,7 +65,7 @@ export const useColumn = (viewLeaf: WorkspaceLeaf) => {
 			sortDir,
 		});
 		doCommand(new ColumnUpdateCommand(columnId, "sortDir", sortDir));
-		//TODO check?
+		//TODO IMPLEMENT NEXT
 		dispatch(updateSortTime());
 	}
 

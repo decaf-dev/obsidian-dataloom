@@ -14,8 +14,7 @@ const sortByDir = (
 	columnType: string,
 	sortDir: SortDir,
 	rows: BodyRow[],
-	cells: BodyCell[],
-	tags: Tag[]
+	cells: BodyCell[]
 ) => {
 	if (columnType == CellType.NUMBER || columnType === CellType.CURRENCY) {
 		return sortByNumber(columnId, rows, cells, sortDir);
@@ -23,7 +22,7 @@ const sortByDir = (
 		columnType === CellType.TAG ||
 		columnType === CellType.MULTI_TAG
 	) {
-		return sortByTag(columnId, rows, cells, tags, sortDir);
+		return sortByTag(columnId, rows, cells, sortDir);
 	} else if (columnType === CellType.DATE) {
 		return sortByDate(columnId, rows, cells, sortDir);
 	} else if (columnType == CellType.LAST_EDITED_TIME) {
@@ -37,11 +36,11 @@ const sortByDir = (
 	}
 };
 
+//TODO IMPLEMENT NEXT
 const sortByTag = (
 	columnId: string,
 	rows: BodyRow[],
 	cells: BodyCell[],
-	tags: Tag[],
 	sortDir: SortDir
 ): BodyRow[] => {
 	const rowsCopy = structuredClone(rows);
@@ -267,7 +266,7 @@ const sortByRowIndex = (rows: BodyRow[]): BodyRow[] => {
 };
 
 export const sortRows = (prevState: TableState): TableState => {
-	const { columns, bodyRows, bodyCells, tags } = prevState.model;
+	const { columns, bodyRows, bodyCells } = prevState.model;
 	const sortedColumn = columns.find(
 		(columns) => columns.sortDir !== SortDir.NONE
 	);
@@ -281,8 +280,7 @@ export const sortRows = (prevState: TableState): TableState => {
 					sortedColumn.type,
 					sortedColumn.sortDir,
 					bodyRows,
-					bodyCells,
-					tags
+					bodyCells
 				),
 			},
 		};

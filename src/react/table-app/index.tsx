@@ -90,7 +90,6 @@ export default function TableApp({ viewLeaf }: Props) {
 		headerCells,
 		bodyCells,
 		footerCells,
-		tags,
 		filterRules,
 	} = tableState.model;
 
@@ -106,7 +105,6 @@ export default function TableApp({ viewLeaf }: Props) {
 		<div id={tableId} className="NLT__app">
 			<OptionBar
 				headerCells={headerCells}
-				tags={tags}
 				columns={columns}
 				filterRules={filterRules}
 				onColumnToggle={handleColumnToggle}
@@ -214,6 +212,7 @@ export default function TableApp({ viewLeaf }: Props) {
 									shouldWrapOverflow,
 									currencyType,
 									dateFormat,
+									tags,
 								} = column;
 
 								const cell = bodyCells.find(
@@ -222,11 +221,12 @@ export default function TableApp({ viewLeaf }: Props) {
 										cell.rowId === row.id
 								);
 								if (!cell) throw new CellNotFoundError();
-								const { id: cellId, markdown, dateTime } = cell;
-
-								const filteredTags = tags.filter(
-									(tag) => tag.columnId === column.id
-								);
+								const {
+									id: cellId,
+									markdown,
+									dateTime,
+									tagIds,
+								} = cell;
 
 								return {
 									id: cellId,
@@ -235,7 +235,8 @@ export default function TableApp({ viewLeaf }: Props) {
 											key={cellId}
 											cellId={cellId}
 											rowId={rowId}
-											tags={filteredTags}
+											columnTags={tags}
+											cellTagIds={tagIds}
 											columnId={columnId}
 											rowCreationTime={creationTime}
 											dateFormat={dateFormat}
@@ -297,6 +298,7 @@ export default function TableApp({ viewLeaf }: Props) {
 										currencyType,
 										dateFormat,
 										width,
+										tags,
 									} = column;
 									const cell = footerCells.find(
 										(cell) =>
@@ -306,7 +308,7 @@ export default function TableApp({ viewLeaf }: Props) {
 									if (!cell) throw new CellNotFoundError();
 									const { id: cellId, functionType } = cell;
 
-									const filteredBodyCells = bodyCells.filter(
+									const columnBodyCells = bodyCells.filter(
 										(cell) =>
 											filteredBodyRows.find(
 												(row) => row.id === cell.rowId
@@ -319,11 +321,11 @@ export default function TableApp({ viewLeaf }: Props) {
 											<FunctionCell
 												columnId={columnId}
 												width={width}
-												tags={tags}
+												columnTags={tags}
 												cellId={cellId}
 												currencyType={currencyType}
 												dateFormat={dateFormat}
-												bodyCells={filteredBodyCells}
+												bodyCells={columnBodyCells}
 												bodyRows={filteredBodyRows}
 												functionType={functionType}
 												cellType={type}

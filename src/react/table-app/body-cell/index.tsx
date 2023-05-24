@@ -52,7 +52,8 @@ interface Props {
 	rowCreationTime: number;
 	rowLastEditedTime: number;
 	width: string;
-	tags: Tag[];
+	columnTags: Tag[];
+	cellTagIds: string[];
 	shouldWrapOverflow: boolean;
 	onTagRemoveClick: (cellId: string, rowId: string, tagId: string) => void;
 	onTagMultipleRemove: (
@@ -75,8 +76,8 @@ interface Props {
 		color: Color,
 		isMultiTag: boolean
 	) => void;
-	onTagDelete: (tagId: string) => void;
-	onTagColorChange: (tagId: string, color: Color) => void;
+	onTagDelete: (columnId: string, tagId: string) => void;
+	onTagColorChange: (columnId: string, tagId: string, color: Color) => void;
 	onDateFormatChange: (columnId: string, value: DateFormat) => void;
 	onDateTimeChange: (
 		cellId: string,
@@ -96,7 +97,8 @@ export default function BodyCell({
 	columnType,
 	rowCreationTime,
 	rowLastEditedTime,
-	tags,
+	columnTags,
+	cellTagIds,
 	width,
 	shouldWrapOverflow,
 	onTagRemoveClick,
@@ -168,9 +170,6 @@ export default function BodyCell({
 			columnType === CellType.TAG ||
 			columnType === CellType.MULTI_TAG
 		) {
-			const cellTagIds = tags
-				.filter((tag) => tag.cellIds.includes(cellId))
-				.map((tag) => tag.id);
 			onTagMultipleRemove(cellId, rowId, cellTagIds);
 		}
 	}
@@ -207,6 +206,14 @@ export default function BodyCell({
 
 	function handleRemoveTagClick(tagId: string) {
 		onTagRemoveClick(cellId, rowId, tagId);
+	}
+
+	function handleTagColorChange(tagId: string, color: Color) {
+		onTagColorChange(columnId, tagId, color);
+	}
+
+	function handleTagDeleteClick(tagId: string) {
+		onTagDelete(columnId, tagId);
 	}
 
 	function handleTagClick(tagId: string) {
@@ -279,8 +286,7 @@ export default function BodyCell({
 		className += " NLT__default-cursor";
 	}
 
-	const currentTag = tags.find((t) => t.cellIds.find((c) => c === cellId));
-	const filteredTags = tags.filter((t) => t.cellIds.find((c) => c == cellId));
+	const cellTags = columnTags.filter((tag) => cellTagIds.includes(tag.id));
 
 	return (
 		<>
@@ -323,17 +329,17 @@ export default function BodyCell({
 							shouldWrapOverflow={shouldWrapOverflow}
 						/>
 					)}
-					{columnType === CellType.TAG && currentTag && (
+					{columnType === CellType.TAG && cellTags.length === 1 && (
 						<TagCell
-							markdown={currentTag.markdown}
-							color={currentTag.color}
+							markdown={cellTags[0].markdown}
+							color={cellTags[0].color}
 							shouldWrapOverflow={shouldWrapOverflow}
 						/>
 					)}
 					{columnType === CellType.MULTI_TAG &&
-						filteredTags.length !== 0 && (
+						cellTags.length !== 0 && (
 							<MultiTagCell
-								tags={filteredTags}
+								cellTags={cellTags}
 								shouldWrapOverflow={shouldWrapOverflow}
 							/>
 						)}
@@ -392,13 +398,14 @@ export default function BodyCell({
 						isMenuVisible={isMenuVisible}
 						menuCloseRequestTime={menuCloseRequestTime}
 						menuPosition={menuPosition}
-						tags={tags}
+						columnTags={columnTags}
+						cellTags={cellTags}
 						cellId={cellId}
-						onTagColorChange={onTagColorChange}
+						onTagColorChange={handleTagColorChange}
 						onTagAdd={handleTagAdd}
 						onRemoveTag={handleRemoveTagClick}
 						onTagClick={handleTagClick}
-						onTagDelete={onTagDelete}
+						onTagDelete={handleTagDeleteClick}
 						onMenuClose={handleMenuClose}
 					/>
 				)}
