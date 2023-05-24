@@ -400,7 +400,6 @@ export default function BodyCell({
 						menuPosition={menuPosition}
 						columnTags={columnTags}
 						cellTags={cellTags}
-						cellId={cellId}
 						onTagColorChange={handleTagColorChange}
 						onTagAdd={handleTagAdd}
 						onRemoveTag={handleRemoveTagClick}
