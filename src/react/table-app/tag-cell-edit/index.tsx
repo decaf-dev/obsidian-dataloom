@@ -14,7 +14,6 @@ import { useCompare } from "src/shared/hooks";
 interface Props {
 	columnTags: TagType[];
 	cellTags: TagType[];
-	cellId: string;
 	menuCloseRequestTime: number | null;
 	menuPosition: MenuPosition;
 	isMenuVisible: boolean;
@@ -29,7 +28,6 @@ interface Props {
 export default function TagCellEdit({
 	columnTags,
 	cellTags,
-	cellId,
 	menuCloseRequestTime,
 	menuPosition,
 	isMenuVisible,
