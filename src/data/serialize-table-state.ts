@@ -1,10 +1,8 @@
 import { CURRENT_PLUGIN_VERSION } from "src/data/constants";
 import {
-	BaseTableState,
 	BodyCell,
 	CellType,
 	Column,
-	FilterRule,
 	TableState,
 	Tag,
 } from "../shared/types/types";
@@ -22,6 +20,10 @@ import { CurrencyType610, TableState610 } from "src/shared/types/types-610";
 import { DateFormat620, TableState620 } from "src/shared/types/types-620";
 import { v4 as uuidv4 } from "uuid";
 import { TableState691 } from "src/shared/types/types-691";
+import {
+	isVersionLessThan,
+	legacyVersionToString,
+} from "src/shared/versioning";
 
 export const serializeTableState = (tableState: TableState): string => {
 	return JSON.stringify(tableState, null, 2);
@@ -30,10 +32,18 @@ export const serializeTableState = (tableState: TableState): string => {
 export const deserializeTableState = (data: string): TableState => {
 	const parsedState = JSON.parse(data);
 
-	const { pluginVersion } = parsedState as BaseTableState;
+	const untypedVersion: unknown = parsedState["pluginVersion"];
+
+	let pluginVersion: string = "";
+	if (typeof untypedVersion === "number") {
+		pluginVersion = legacyVersionToString(pluginVersion);
+	} else if (typeof untypedVersion === "string") {
+		pluginVersion = untypedVersion;
+	}
+
 	let currentState: unknown = parsedState;
 
-	if (pluginVersion < 610) {
+	if (isVersionLessThan(pluginVersion, "6.1.0")) {
 		const tableState = currentState as TableState600;
 		const { columns } = tableState.model;
 
@@ -44,7 +54,7 @@ export const deserializeTableState = (data: string): TableState => {
 		});
 	}
 
-	if (pluginVersion < 620) {
+	if (isVersionLessThan(pluginVersion, "6.2.0")) {
 		const tableState = currentState as TableState610;
 		const { columns } = tableState.model;
 
@@ -55,7 +65,7 @@ export const deserializeTableState = (data: string): TableState => {
 		});
 	}
 
-	if (pluginVersion < 630) {
+	if (isVersionLessThan(pluginVersion, "6.3.0")) {
 		const tableState = currentState as TableState620;
 		const { columns, rows, cells } = tableState.model;
 
@@ -88,7 +98,7 @@ export const deserializeTableState = (data: string): TableState => {
 	}
 
 	//Feat: new table state structure
-	if (pluginVersion < 640) {
+	if (isVersionLessThan(pluginVersion, "6.4.0")) {
 		const tableState = parsedState as TableState630;
 		const { columns, tags, rows, cells } = tableState.model;
 
@@ -183,7 +193,7 @@ export const deserializeTableState = (data: string): TableState => {
 	}
 
 	//Feat: filter rules
-	if (pluginVersion < 680) {
+	if (isVersionLessThan(pluginVersion, "6.8.0")) {
 		const tableState = currentState as TableState670;
 		const { model } = tableState;
 		const { bodyCells, columns } = model;
@@ -214,7 +224,7 @@ export const deserializeTableState = (data: string): TableState => {
 		});
 	}
 
-	if (pluginVersion < 691) {
+	if (isVersionLessThan(pluginVersion, "6.9.1")) {
 		const tableState = currentState as TableState680;
 		const { footerCells } = tableState.model;
 
@@ -230,7 +240,7 @@ export const deserializeTableState = (data: string): TableState => {
 	}
 
 	//Feat: support tag sorting
-	if (pluginVersion < 6100) {
+	if (isVersionLessThan(pluginVersion, "6.10.0")) {
 		const tableState = currentState as TableState691;
 		const { columns, tags, bodyCells } = tableState.model;
 
