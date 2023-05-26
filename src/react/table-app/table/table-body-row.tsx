@@ -122,7 +122,6 @@ export default function TableBodyRow({
 
 	return (
 		<tr
-			draggable
 			onDrop={handleDrop}
 			onDragStart={handleDragStart}
 			onDragEnd={handleDragEnd}
