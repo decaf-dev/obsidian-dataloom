@@ -6,6 +6,10 @@ export default class RowAddCommand extends TableStateCommand {
 	private addedRow: BodyRow;
 	private addedBodyCells: BodyCell[];
 
+	constructor() {
+		super(true);
+	}
+
 	execute(prevState: TableState): TableState {
 		super.onExecute();
 
