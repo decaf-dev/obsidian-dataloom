@@ -42,6 +42,7 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 			style={{
 				width: "100%",
 				height: "100%",
+				marginBottom: "48px",
 			}}
 			totalCount={bodyRows.length}
 			components={Components}
