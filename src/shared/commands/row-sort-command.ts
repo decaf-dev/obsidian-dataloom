@@ -1,12 +1,15 @@
 import {
 	CellNotFoundError,
+	ColumNotFoundError,
 	RowNotFoundError,
+	TagNotFoundError,
 } from "../table-state/table-error";
 import TableStateCommand from "../table-state/table-state-command";
 import {
 	BodyCell,
 	BodyRow,
 	CellType,
+	Column,
 	SortDir,
 	TableState,
 } from "../types/types";
@@ -21,9 +24,9 @@ export default class RowSortCommand extends TableStateCommand {
 		index: number;
 	}[] = [];
 
-	//TODO IMPLEMENT NEXT
 	private sortByTag(
 		columnId: string,
+		columns: Column[],
 		rows: BodyRow[],
 		cells: BodyCell[],
 		sortDir: SortDir
@@ -33,30 +36,50 @@ export default class RowSortCommand extends TableStateCommand {
 			const cellA = cells.find(
 				(c) => c.columnId === columnId && c.rowId === a.id
 			);
-
 			if (!cellA) throw new CellNotFoundError();
 
 			const cellB = cells.find(
 				(c) => c.columnId === columnId && c.rowId === b.id
 			);
-
 			if (!cellB) throw new CellNotFoundError();
 
-			const markdownA = cellA.markdown;
-			const markdownB = cellB.markdown;
+			const column = columns.find((c) => c.id === columnId);
+			if (!column) throw new ColumNotFoundError(columnId);
 
 			//Force empty cells to the bottom
-			if (markdownA === "" && markdownB !== "") return 1;
-			if (markdownA !== "" && markdownB === "") return -1;
-			if (markdownA === "" && markdownB === "") return 0;
-
-			if (sortDir === SortDir.ASC) {
-				return parseFloat(markdownA) - parseFloat(markdownB);
-			} else if (sortDir === SortDir.DESC) {
-				return parseFloat(markdownB) - parseFloat(markdownA);
-			} else {
+			if (cellA.tagIds.length === 0 && cellB.tagIds.length > 0) return 1;
+			if (cellA.tagIds.length > 0 && cellB.tagIds.length === 0) return -1;
+			if (cellA.tagIds.length === 0 && cellB.tagIds.length === 0)
 				return 0;
+
+			let tagLength = cellA.tagIds.length;
+			if (cellB.tagIds.length > cellA.tagIds.length) {
+				tagLength = cellB.tagIds.length;
 			}
+
+			for (let i = 0; i < tagLength; i++) {
+				const tagIdA: string | undefined = cellA.tagIds[i];
+				console.log(tagIdA);
+				if (tagIdA === undefined) return -1;
+				const tagA = column.tags.find((t) => t.id === tagIdA);
+				if (!tagA) throw new TagNotFoundError(tagIdA);
+
+				const tagIdB: string | undefined = cellB.tagIds[i];
+				console.log(tagIdB);
+				if (tagIdB === undefined) return 1;
+				const tagB = column.tags.find((t) => t.id === tagIdB);
+				if (!tagB) throw new TagNotFoundError(tagIdA);
+
+				if (sortDir === SortDir.ASC) {
+					const result = tagA.markdown.localeCompare(tagB.markdown);
+					if (result !== 0) return result;
+				} else if (sortDir === SortDir.DESC) {
+					const result = tagB.markdown.localeCompare(tagA.markdown);
+					if (result !== 0) return result;
+				}
+			}
+			//If we got here, that means the cells have the exact same tags
+			return 0;
 		});
 		return newRows;
 	}
@@ -243,6 +266,7 @@ export default class RowSortCommand extends TableStateCommand {
 		columnId: string,
 		columnType: string,
 		sortDir: SortDir,
+		columns: Column[],
 		rows: BodyRow[],
 		cells: BodyCell[]
 	) {
@@ -252,7 +276,7 @@ export default class RowSortCommand extends TableStateCommand {
 			columnType === CellType.TAG ||
 			columnType === CellType.MULTI_TAG
 		) {
-			return this.sortByTag(columnId, rows, cells, sortDir);
+			return this.sortByTag(columnId, columns, rows, cells, sortDir);
 		} else if (columnType === CellType.DATE) {
 			return this.sortByDate(columnId, rows, cells, sortDir);
 		} else if (columnType == CellType.LAST_EDITED_TIME) {
@@ -282,29 +306,25 @@ export default class RowSortCommand extends TableStateCommand {
 			(columns) => columns.sortDir !== SortDir.NONE
 		);
 
-		let newBodyRows = [...bodyRows];
-
-		console.log("Original", newBodyRows);
-
 		this.previousRowSort = bodyRows.map((row) => ({
 			id: row.id,
 			index: row.index,
 		}));
 
+		let newBodyRows = [...bodyRows];
+
 		if (sortedColumn) {
-			console.log("Sorting by dir");
 			newBodyRows = this.sortByDir(
 				sortedColumn.id,
 				sortedColumn.type,
 				sortedColumn.sortDir,
+				columns,
 				bodyRows,
 				bodyCells
 			);
 		} else {
 			newBodyRows = this.sortByIndex(bodyRows);
 		}
-
-		console.log("New body rows", newBodyRows);
 
 		return {
 			...prevState,
@@ -330,7 +350,6 @@ export default class RowSortCommand extends TableStateCommand {
 				index: prev.index,
 			};
 		});
-		console.log("Previous", newBodyRows);
 
 		return {
 			...prevState,
