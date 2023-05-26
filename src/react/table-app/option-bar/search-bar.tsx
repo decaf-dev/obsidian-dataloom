@@ -32,9 +32,7 @@ export default function SearchBar() {
 				/>
 			)}
 			<Button
-				css={css`
-					width: max-content;
-				`}
+				constrainWidth
 				icon={<Icon lucideId="search" />}
 				ariaLabel="Search"
 				onClick={() => dispatch(toggleSearchBar())}

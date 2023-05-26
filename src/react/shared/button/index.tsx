@@ -1,11 +1,13 @@
 import React from "react";
 
 import "./styles.css";
-import { Interpolation, Theme } from "@emotion/react";
+import { css } from "@emotion/react";
 
 interface InternalButtonProps {
-	css?: Interpolation<Theme>;
 	menuId?: string;
+	//On mobile the width of a button will be 100% of the screen
+	//Constrain width will make the button the width of its content
+	constrainWidth?: boolean;
 	isLink?: boolean;
 	shouldMenuRequestOnClose?: boolean;
 	isSimple?: boolean;
@@ -18,8 +20,8 @@ interface InternalButtonProps {
 
 const InternalButton = ({
 	isLink,
-	css,
 	children,
+	constrainWidth = false,
 	ariaLabel = "",
 	shouldMenuRequestOnClose,
 	icon,
@@ -36,7 +38,9 @@ const InternalButton = ({
 	return (
 		<button
 			className={className}
-			css={css}
+			css={css`
+				width: ${constrainWidth ? "max-content !important" : "unset"};
+			`}
 			aria-label={ariaLabel}
 			data-menu-id={menuId}
 			data-menu-should-request-on-close={shouldMenuRequestOnClose}
@@ -56,7 +60,7 @@ interface MenuButtonProps extends InternalButtonProps {
 }
 
 export const Button = ({
-	css,
+	constrainWidth,
 	isSimple,
 	isLink,
 	ariaLabel,
@@ -67,7 +71,7 @@ export const Button = ({
 }: ButtonProps) => {
 	return (
 		<InternalButton
-			css={css}
+			constrainWidth={constrainWidth}
 			isLink={isLink}
 			isSimple={isSimple}
 			ariaLabel={ariaLabel}
@@ -80,7 +84,7 @@ export const Button = ({
 };
 
 export const MenuButton = ({
-	css,
+	constrainWidth,
 	menuId,
 	isLink = false,
 	shouldMenuRequestOnClose = false,
@@ -93,7 +97,7 @@ export const MenuButton = ({
 }: MenuButtonProps) => {
 	return (
 		<InternalButton
-			css={css}
+			constrainWidth={constrainWidth}
 			isLink={isLink}
 			menuId={menuId}
 			shouldMenuRequestOnClose={shouldMenuRequestOnClose}
