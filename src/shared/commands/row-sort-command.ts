@@ -1,4 +1,7 @@
-import { CellNotFoundError, RowIdError } from "../table-state/table-error";
+import {
+	CellNotFoundError,
+	RowNotFoundError,
+} from "../table-state/table-error";
 import TableStateCommand from "../table-state/table-state-command";
 import {
 	BodyCell,
@@ -272,6 +275,8 @@ export default class RowSortCommand extends TableStateCommand {
 	}
 
 	execute(prevState: TableState): TableState {
+		super.onExecute();
+
 		const { columns, bodyRows, bodyCells } = prevState.model;
 		const sortedColumn = columns.find(
 			(columns) => columns.sortDir !== SortDir.NONE
@@ -279,12 +284,15 @@ export default class RowSortCommand extends TableStateCommand {
 
 		let newBodyRows = [...bodyRows];
 
+		console.log("Original", newBodyRows);
+
 		this.previousRowSort = bodyRows.map((row) => ({
 			id: row.id,
 			index: row.index,
 		}));
 
 		if (sortedColumn) {
+			console.log("Sorting by dir");
 			newBodyRows = this.sortByDir(
 				sortedColumn.id,
 				sortedColumn.type,
@@ -296,6 +304,8 @@ export default class RowSortCommand extends TableStateCommand {
 			newBodyRows = this.sortByIndex(bodyRows);
 		}
 
+		console.log("New body rows", newBodyRows);
+
 		return {
 			...prevState,
 			model: {
@@ -305,20 +315,22 @@ export default class RowSortCommand extends TableStateCommand {
 		};
 	}
 	redo(prevState: TableState): TableState {
+		super.onRedo();
 		return this.execute(prevState);
 	}
 	undo(prevState: TableState): TableState {
+		super.onUndo();
+
 		const { bodyRows } = prevState.model;
-		const newBodyRows = bodyRows.map((row) => {
-			const previousRow = this.previousRowSort.find(
-				(previousRow) => previousRow.id === row.id
-			);
-			if (!previousRow) throw new RowIdError(row.id);
+		const newBodyRows = this.previousRowSort.map((prev) => {
+			const row = bodyRows.find((row) => row.id === prev.id);
+			if (!row) throw new RowNotFoundError(prev.id);
 			return {
 				...row,
-				index: previousRow.index,
+				index: prev.index,
 			};
 		});
+		console.log("Previous", newBodyRows);
 
 		return {
 			...prevState,

@@ -8,7 +8,7 @@ import {
 	TableState,
 	Tag,
 } from "src/shared/types/types";
-import { ColumNotFoundError, RowIdError } from "./table-error";
+import { ColumNotFoundError, RowNotFoundError } from "./table-error";
 import { stringToCurrencyString } from "../conversion";
 import {
 	unixTimeToDateString,
@@ -66,7 +66,7 @@ const doesCellMatch = (
 	const column = columnMap.get(cell.columnId);
 	if (!column) throw new ColumNotFoundError(cell.columnId);
 	const row = rowMap.get(cell.rowId);
-	if (!row) throw new RowIdError(cell.rowId);
+	if (!row) throw new RowNotFoundError(cell.rowId);
 
 	const { dateTime, markdown } = cell;
 	const { currencyType, type, dateFormat } = column;
