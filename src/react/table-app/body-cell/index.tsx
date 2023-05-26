@@ -21,7 +21,6 @@ import {
 } from "src/shared/types/types";
 import { useMenu } from "src/shared/menu/hooks";
 import { MenuLevel } from "src/shared/menu/types";
-import { useAppDispatch } from "src/redux/global/hooks";
 
 import LastEditedTimeCell from "../last-edited-time-cell";
 import CreationTimeCell from "../creation-time-cell";
@@ -31,14 +30,16 @@ import {
 } from "src/shared/table-state/constants";
 import { isCheckboxChecked } from "src/shared/validators";
 
-import "./styles.css";
-import { useDidMountEffect } from "src/shared/hooks";
-import { updateSortTime } from "src/redux/global/global-slice";
+import { useCompare, useDidMountEffect } from "src/shared/hooks";
 import { Color } from "src/shared/types/types";
 import CurrencyCell from "../currency-cell";
 import CurrencyCellEdit from "../currency-cell-edit";
 import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
 import MenuTrigger from "src/react/shared/menu-trigger";
+
+import "./styles.css";
+import { useTableState } from "src/shared/table-state/table-state-context";
+import RowSortCommand from "src/shared/commands/row-sort-command";
 
 interface Props {
 	columnType: string;
@@ -126,15 +127,17 @@ export default function BodyCell({
 			columnType === CellType.MULTI_TAG
 	);
 
-	const dispatch = useAppDispatch();
+	const { doCommand } = useTableState();
 
-	//If we open a menu and then close it, we want to sort all rows
-	//TODO optimize?
-	useDidMountEffect(() => {
-		if (!isMenuOpen) {
-			dispatch(updateSortTime());
+	//Once the menu is closed, we want to sort all rows
+	const didIsMenuOpenChange = useCompare(isMenuOpen);
+	React.useEffect(() => {
+		if (didIsMenuOpenChange) {
+			if (!isMenuOpen) {
+				doCommand(new RowSortCommand());
+			}
 		}
-	}, [isMenuOpen]);
+	}, [didIsMenuOpenChange, isMenuOpen, doCommand]);
 
 	async function handleCellContextClick() {
 		try {

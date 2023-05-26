@@ -1,5 +1,3 @@
-import React from "react";
-
 import { WorkspaceLeaf } from "obsidian";
 
 import Table from "./table";
@@ -12,7 +10,6 @@ import NewColumnButton from "./new-column-button";
 import HeaderCell from "./header-cell";
 
 import { useAppSelector } from "../../redux/global/hooks";
-import { sortRows } from "../../shared/table-state/sort-state-operations";
 import { useUUID } from "../../shared/hooks";
 import { CellNotFoundError } from "../../shared/table-state/table-error";
 import { useTableState } from "../../shared/table-state/table-state-context";
@@ -30,7 +27,7 @@ interface Props {
 }
 
 export default function TableApp({ viewLeaf }: Props) {
-	const { searchText, sortTime } = useAppSelector((state) => state.global);
+	const { searchText } = useAppSelector((state) => state.global);
 	const { tableId, tableState, setTableState } = useTableState();
 
 	const {
@@ -76,12 +73,6 @@ export default function TableApp({ viewLeaf }: Props) {
 	} = useTag();
 
 	const lastColumnId = useUUID();
-
-	React.useEffect(() => {
-		if (sortTime !== 0) {
-			setTableState((prevState) => sortRows(prevState));
-		}
-	}, [sortTime]);
 
 	const {
 		headerRows,
