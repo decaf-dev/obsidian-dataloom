@@ -1,8 +1,7 @@
 import { TableState } from "../types/types";
 import TableStateCommand from "./table-state-command";
-import { useDidMountEffect, useUUID } from "../hooks";
+import { useUUID } from "../hooks";
 import React from "react";
-import { WorkspaceLeaf } from "obsidian";
 import { useLogger } from "../logger";
 import _ from "lodash";
 import {
@@ -11,6 +10,8 @@ import {
 	isWindowsRedo,
 	isWindowsUndo,
 } from "../keyboard-event";
+import { useAppDispatch } from "src/redux/global/hooks";
+import { updateSortTime } from "src/redux/global/global-slice";
 
 interface Props {
 	initialState: TableState;
@@ -43,15 +44,12 @@ export default function TableStateProvider({
 }: Props) {
 	const [tableState, setTableState] = React.useState(initialState);
 	const [tableId] = useUUID();
-	const [commandQueue, setCommandQueue] = React.useState<TableStateCommand[]>(
-		[]
-	);
-
 	const [history, setHistory] = React.useState<(TableStateCommand | null)[]>([
 		null,
 	]);
 	const [position, setPosition] = React.useState(0);
 	const logger = useLogger();
+	const dispatch = useAppDispatch();
 
 	const undo = React.useCallback(() => {
 		if (position > 0) {
@@ -65,9 +63,13 @@ export default function TableStateProvider({
 				logger(command.constructor.name + ".undo");
 				const newState = command.undo(tableState);
 				setTableState(newState);
+
+				if (command.shouldSortRows) {
+					dispatch(updateSortTime());
+				}
 			}
 		}
-	}, [position, history, tableState]);
+	}, [position, history, tableState, dispatch]);
 
 	const redo = React.useCallback(() => {
 		if (position < history.length - 1) {
@@ -81,9 +83,13 @@ export default function TableStateProvider({
 				logger(command.constructor.name + ".redo");
 				const newState = command.redo(tableState);
 				setTableState(newState);
+
+				if (command.shouldSortRows) {
+					dispatch(updateSortTime());
+				}
 			}
 		}
-	}, [position, history, tableState]);
+	}, [position, history, tableState, dispatch]);
 
 	//Handle hot key press
 	React.useEffect(() => {
@@ -124,6 +130,10 @@ export default function TableStateProvider({
 		//Execute command
 		const newState = command.execute(tableState);
 		setTableState(newState);
+
+		if (command.shouldSortRows) {
+			dispatch(updateSortTime());
+		}
 	}
 
 	return (
