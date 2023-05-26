@@ -9,8 +9,17 @@ export default class ColumnUpdateCommand extends TableStateCommand {
 
 	private previousValue: unknown;
 
-	constructor(columnId: string, key: keyof Column, value?: unknown) {
-		super();
+	constructor(
+		columnId: string,
+		key: keyof Column,
+		options?: {
+			shouldSortRows?: boolean;
+			value?: unknown;
+		}
+	) {
+		const { shouldSortRows = false, value } = options || {};
+
+		super(shouldSortRows);
 		this.columnId = columnId;
 		this.key = key;
 		this.value = value;

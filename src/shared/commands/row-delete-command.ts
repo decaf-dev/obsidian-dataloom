@@ -1,5 +1,5 @@
 import { BodyCell, BodyRow, TableState } from "../types/types";
-import { RowIdError } from "../table-state/table-error";
+import { RowNotFoundError } from "../table-state/table-error";
 import TableStateCommand from "../table-state/table-state-command";
 import { DeleteCommandArgumentsError } from "./command-errors";
 
@@ -38,7 +38,7 @@ export default class RowDeleteCommand extends TableStateCommand {
 		}
 
 		const rowToDelete = bodyRows.find((row) => row.id === id);
-		if (!rowToDelete) throw new RowIdError(id!);
+		if (!rowToDelete) throw new RowNotFoundError(id!);
 		this.deletedRow = {
 			arrIndex: bodyRows.indexOf(rowToDelete),
 			row: structuredClone(rowToDelete),

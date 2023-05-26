@@ -2,15 +2,12 @@ import React from "react";
 import { useLogger } from "../logger";
 import { WorkspaceLeaf } from "obsidian";
 import { EVENT_ROW_ADD, EVENT_ROW_DELETE } from "../events";
-import { useAppDispatch } from "src/redux/global/hooks";
-import { updateSortTime } from "src/redux/global/global-slice";
 import { useTableState } from "./table-state-context";
 import RowAddCommand from "../commands/row-add-command";
 import RowDeleteCommand from "../commands/row-delete-command";
 
 export const useRow = (viewLeaf: WorkspaceLeaf) => {
 	const logger = useLogger();
-	const dispatch = useAppDispatch();
 	const { doCommand } = useTableState();
 
 	React.useEffect(() => {
@@ -47,7 +44,6 @@ export const useRow = (viewLeaf: WorkspaceLeaf) => {
 	function handleNewRowClick() {
 		logger("handleNewRowClick");
 		doCommand(new RowAddCommand());
-		dispatch(updateSortTime());
 	}
 
 	return {

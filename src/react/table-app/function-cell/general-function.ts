@@ -9,7 +9,7 @@ import {
 } from "src/shared/types/types";
 import { hashString, round2Digits } from "./utils";
 import {
-	RowIdError,
+	RowNotFoundError,
 	TagNotFoundError,
 } from "src/shared/table-state/table-error";
 import { unixTimeToDateTimeString } from "src/shared/date/date-conversion";
@@ -107,7 +107,7 @@ const countUnique = (
 	const hashes = columnCells
 		.map((cell) => {
 			const row = bodyRows.find((row) => row.id === cell.rowId);
-			if (!row) throw new RowIdError(cell.rowId);
+			if (!row) throw new RowNotFoundError(cell.rowId);
 
 			const cellValues = getCellValues(
 				row,

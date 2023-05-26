@@ -11,10 +11,10 @@ export class TagNotFoundError extends Error {
 	}
 }
 
-export class RowIdError extends Error {
+export class RowNotFoundError extends Error {
 	constructor(id: string) {
 		super(`Reference row ${id} is undefined`);
-		this.name = "RowIdError";
+		this.name = "RowNotFoundError";
 	}
 }
 
