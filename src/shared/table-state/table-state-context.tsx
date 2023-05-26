@@ -11,7 +11,7 @@ import {
 	isWindowsUndo,
 } from "../keyboard-event";
 import { useAppDispatch } from "src/redux/global/hooks";
-import { updateSortTime } from "src/redux/global/global-slice";
+import RowSortCommand from "../commands/row-sort-command";
 
 interface Props {
 	initialState: TableState;
@@ -61,12 +61,11 @@ export default function TableStateProvider({
 			const command = history[position];
 			if (command !== null) {
 				logger(command.constructor.name + ".undo");
-				const newState = command.undo(tableState);
-				setTableState(newState);
-
+				let newState = command.undo(tableState);
 				if (command.shouldSortRows) {
-					dispatch(updateSortTime());
+					newState = new RowSortCommand().execute(newState);
 				}
+				setTableState(newState);
 			}
 		}
 	}, [position, history, tableState, dispatch]);
@@ -81,12 +80,11 @@ export default function TableStateProvider({
 			const command = history[currentPosition];
 			if (command !== null) {
 				logger(command.constructor.name + ".redo");
-				const newState = command.redo(tableState);
-				setTableState(newState);
-
+				let newState = command.redo(tableState);
 				if (command.shouldSortRows) {
-					dispatch(updateSortTime());
+					newState = new RowSortCommand().execute(newState);
 				}
+				setTableState(newState);
 			}
 		}
 	}, [position, history, tableState, dispatch]);
@@ -115,26 +113,28 @@ export default function TableStateProvider({
 		onSaveState(tableState);
 	}, [tableState]);
 
-	function doCommand(command: TableStateCommand) {
-		setHistory((prevState) => {
-			//If the position is not at the end of the history, then we want to remove all the commands after the current position
-			if (position < history.length - 1) {
-				const newState = prevState.slice(0, position + 1);
-				return [...newState, command];
-			} else {
-				return [...prevState, command];
+	const doCommand = React.useCallback(
+		(command: TableStateCommand) => {
+			setHistory((prevState) => {
+				//If the position is not at the end of the history, then we want to remove all the commands after the current position
+				if (position < history.length - 1) {
+					const newState = prevState.slice(0, position + 1);
+					return [...newState, command];
+				} else {
+					return [...prevState, command];
+				}
+			});
+			setPosition((prevState) => prevState + 1);
+
+			//Execute command
+			let newState = command.execute(tableState);
+			if (command.shouldSortRows) {
+				newState = new RowSortCommand().execute(newState);
 			}
-		});
-		setPosition((prevState) => prevState + 1);
-
-		//Execute command
-		const newState = command.execute(tableState);
-		setTableState(newState);
-
-		if (command.shouldSortRows) {
-			dispatch(updateSortTime());
-		}
-	}
+			setTableState(newState);
+		},
+		[position, history, tableState, dispatch]
+	);
 
 	return (
 		<TableStateContext.Provider
