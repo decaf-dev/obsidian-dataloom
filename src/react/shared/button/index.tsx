@@ -1,8 +1,10 @@
 import React from "react";
 
 import "./styles.css";
+import { Interpolation, Theme } from "@emotion/react";
 
 interface InternalButtonProps {
+	css?: Interpolation<Theme>;
 	menuId?: string;
 	isLink?: boolean;
 	shouldMenuRequestOnClose?: boolean;
@@ -16,6 +18,7 @@ interface InternalButtonProps {
 
 const InternalButton = ({
 	isLink,
+	css,
 	children,
 	ariaLabel = "",
 	shouldMenuRequestOnClose,
@@ -33,6 +36,7 @@ const InternalButton = ({
 	return (
 		<button
 			className={className}
+			css={css}
 			aria-label={ariaLabel}
 			data-menu-id={menuId}
 			data-menu-should-request-on-close={shouldMenuRequestOnClose}
@@ -52,6 +56,7 @@ interface MenuButtonProps extends InternalButtonProps {
 }
 
 export const Button = ({
+	css,
 	isSimple,
 	isLink,
 	ariaLabel,
@@ -62,6 +67,7 @@ export const Button = ({
 }: ButtonProps) => {
 	return (
 		<InternalButton
+			css={css}
 			isLink={isLink}
 			isSimple={isSimple}
 			ariaLabel={ariaLabel}
@@ -74,6 +80,7 @@ export const Button = ({
 };
 
 export const MenuButton = ({
+	css,
 	menuId,
 	isLink = false,
 	shouldMenuRequestOnClose = false,
@@ -86,6 +93,7 @@ export const MenuButton = ({
 }: MenuButtonProps) => {
 	return (
 		<InternalButton
+			css={css}
 			isLink={isLink}
 			menuId={menuId}
 			shouldMenuRequestOnClose={shouldMenuRequestOnClose}
