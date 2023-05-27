@@ -15,17 +15,12 @@ export default function TableHeaderCell({
 	isDraggable,
 }: TableHeaderCellProps) {
 	const { setTableState } = useTableState();
-	const { dragData, setDragData } = useDragContext();
+	const { dragData, touchDropZone, setDragData, setTouchDropZone } =
+		useDragContext();
 
-	function handleDragEnd(e: React.DragEvent) {
-		setDragData(null);
-	}
-
-	function handleDragStart(e: React.DragEvent) {
-		const el = e.target as HTMLElement;
-		const columnId = el.getAttr("data-column-id");
-		if (!columnId)
-			throw new Error("data-column-id is required for a header cell");
+	function startDrag(el: HTMLElement) {
+		const columnId = getColumnId(el);
+		if (!columnId) return;
 
 		setDragData({
 			type: "column",
@@ -33,19 +28,15 @@ export default function TableHeaderCell({
 		});
 	}
 
-	function handleDrop(e: React.DragEvent) {
-		e.preventDefault();
+	function endDrag(_el: HTMLElement) {
+		setDragData(null);
+	}
 
+	function dropDrag(targetRowId: string) {
 		if (dragData == null) throw new Error("No drag data found");
 
 		//If we're dragging a column type, then return
 		if (dragData.type !== "column") return;
-
-		const targetId = (e.currentTarget as HTMLElement).getAttr(
-			"data-column-id"
-		);
-		if (!targetId)
-			throw new Error("data-column-id is required for a header cell");
 
 		setTableState((prevState) => {
 			const { columns } = prevState.model;
@@ -54,7 +45,7 @@ export default function TableHeaderCell({
 				(column) => column.id === dragData.id
 			);
 			const targetElIndex = columns.findIndex(
-				(column) => column.id == targetId
+				(column) => column.id == targetRowId
 			);
 
 			const newColumns = structuredClone(columns);
@@ -75,9 +66,121 @@ export default function TableHeaderCell({
 		});
 	}
 
-	function handleDragOver(e: React.DragEvent) {
-		//Alow drop
+	function addDragHover(thEl: HTMLElement) {
+		const child: HTMLElement | undefined = thEl.firstChild as HTMLElement;
+		if (!child) return;
+
+		if (child.classList.contains("NLT__focusable"))
+			thEl.classList.add("NLT__th--drag-over");
+	}
+
+	function removeDragHover() {
+		//Add dragging over class to all the children
+		const el = document.querySelector(".NLT__th--drag-over");
+		if (el) el.classList.remove("NLT__th--drag-over");
+	}
+
+	//We throw an error if the system
+	function getColumnId(columnEl: HTMLElement) {
+		const id = columnEl.getAttr("data-column-id");
+		if (!id) return null;
+		return id;
+	}
+	function handleDragStart(e: React.DragEvent) {
+		const el = e.target as HTMLElement;
+		startDrag(el);
+	}
+
+	function handleDrop(e: React.DragEvent) {
 		e.preventDefault();
+
+		//The target will be the td element
+		//The current target will be the parent tr element
+		const target = e.currentTarget as HTMLElement;
+
+		const targetId = getColumnId(target);
+		if (!targetId) return;
+
+		dropDrag(targetId);
+	}
+
+	function handleDragEnd(e: React.DragEvent) {
+		const el = e.target as HTMLElement;
+		endDrag(el);
+	}
+
+	function handleDragOver(e: React.DragEvent) {
+		//Allow drop
+		e.preventDefault();
+	}
+
+	function handleTouchStart(e: React.TouchEvent) {
+		//The target will be the td element
+		//The current target will be the parent tr element
+		const el = e.currentTarget as HTMLElement;
+		startDrag(el);
+	}
+
+	const handleTouchMove = (e: React.TouchEvent) => {
+		if (dragData == null) return;
+
+		const { clientX, clientY } = e.touches[0];
+
+		// Get the element underneath the dragging element at the current position
+		const elementUnderneath = document.elementFromPoint(clientX, clientY);
+		if (!elementUnderneath) return;
+
+		const thEl = elementUnderneath.closest("th");
+		if (!thEl) return;
+
+		const targetId = getColumnId(thEl);
+		if (!targetId) return;
+		//If we're dragging over the same column, then return
+		if (targetId === dragData.id) return;
+
+		const { top, left, bottom, right } = thEl.getBoundingClientRect();
+
+		setTouchDropZone({
+			id: targetId,
+			top,
+			left,
+			bottom,
+			right,
+		});
+
+		removeDragHover();
+		if (thEl.lastChild) addDragHover(thEl);
+	};
+
+	function handleTouchEnd(e: React.TouchEvent) {
+		const el = e.target as HTMLElement;
+
+		if (touchDropZone) {
+			const touchX = e.changedTouches[0].clientX;
+			const touchY = e.changedTouches[0].clientY;
+
+			//Check if the touch is inside the drop zone
+			const isInsideDropZone =
+				touchX >= touchDropZone.left &&
+				touchX <= touchDropZone.right &&
+				touchY >= touchDropZone.top &&
+				touchY <= touchDropZone.bottom;
+
+			if (isInsideDropZone) {
+				dropDrag(touchDropZone.id);
+			}
+		}
+
+		endDrag(el);
+		setTouchDropZone(null);
+		removeDragHover();
+	}
+
+	function handleTouchCancel(e: React.TouchEvent) {
+		const el = e.target as HTMLElement;
+		endDrag(el);
+		setTouchDropZone(null);
+		removeDragHover();
 	}
 
 	const tableBorderColor = getTableBorderColor();
@@ -87,26 +190,26 @@ export default function TableHeaderCell({
 		<th
 			data-column-id={columnId}
 			css={css`
-				border-bottom: 1px solid ${tableBorderColor} !important;
-				border-left: 1px solid ${tableBorderColor} !important;
-				border-right: 0 !important;
-				padding: 0 !important;
-				font-weight: 400 !important;
+				border-bottom: 1px solid ${tableBorderColor};
+				border-left: 1px solid ${tableBorderColor};
+				border-right: 0;
+				padding: 0;
+				font-weight: 400;
 				overflow: visible;
 				text-align: start;
-				background-color: ${tableBackgroundColor} !important;
-				position: sticky !important;
+				background-color: ${tableBackgroundColor};
+				position: sticky;
 				top: 0;
 				z-index: 1;
 
 				&:first-of-type {
-					border-left: 0 !important;
+					border-left: 0;
 				}
 
 				&:last-of-type {
-					border-top: 0 !important;
-					border-bottom: 0 !important;
-					background-color: var(--background-primary) !important;
+					border-top: 0;
+					border-bottom: 0;
+					background-color: var(--background-primary);
 				}
 			`}
 			{...(isDraggable && {
@@ -115,6 +218,10 @@ export default function TableHeaderCell({
 				onDragStart: handleDragStart,
 				onDragOver: handleDragOver,
 				onDragEnd: handleDragEnd,
+				onTouchStart: handleTouchStart,
+				onTouchMove: handleTouchMove,
+				onTouchEnd: handleTouchEnd,
+				onTouchCancel: handleTouchCancel,
 			})}
 		>
 			{content}

@@ -99,9 +99,9 @@ export default function TableBodyRow({
 		const dragMenuEl = rowEl.querySelector("td:last-child");
 		if (!dragMenuEl) return null;
 
-		const targetId = dragMenuEl.getAttr("data-row-id");
-		if (!targetId) return null;
-		return targetId;
+		const id = dragMenuEl.getAttr("data-row-id");
+		if (!id) return null;
+		return id;
 	}
 
 	function addDragHover(rowEl: HTMLElement) {
@@ -109,16 +109,16 @@ export default function TableBodyRow({
 		const children = rowEl.querySelectorAll("td:not(:last-child)");
 
 		for (var i = 0; i < children.length; i++) {
-			children[i].classList.add("NLT__dragging-over");
+			children[i].classList.add("NLT__tr--drag-over");
 		}
 	}
 
 	function removeDragHover() {
 		//Add dragging over class to all the children
-		const children = document.querySelectorAll(".NLT__dragging-over");
+		const children = document.querySelectorAll(".NLT__tr--drag-over");
 
 		for (var i = 0; i < children.length; i++) {
-			children[i].classList.remove("NLT__dragging-over");
+			children[i].classList.remove("NLT__tr--drag-over");
 		}
 	}
 
@@ -141,7 +141,6 @@ export default function TableBodyRow({
 
 		// Get the element underneath the dragging element at the current position
 		const elementUnderneath = document.elementFromPoint(clientX, clientY);
-
 		if (!elementUnderneath) return;
 
 		const rowEl = elementUnderneath.closest("tr");
@@ -149,7 +148,7 @@ export default function TableBodyRow({
 
 		const targetId = getRowId(rowEl);
 		if (!targetId) return;
-		//If the element is null or we're dragging over the same row
+		//If we're dragging over the same row, then return
 		if (targetId === dragData.id) return;
 
 		const { top, left, bottom, right } = rowEl.getBoundingClientRect();
