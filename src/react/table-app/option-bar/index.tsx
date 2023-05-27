@@ -1,8 +1,8 @@
 import Stack from "../../shared/stack";
 import SortBubble from "./sort-button";
-import Flex from "../../shared/flex";
 import ToggleColumn from "./toggle-column";
 import Filter from "./filter/filter";
+import Wrap from "../../shared/wrap";
 import SearchBar from "./search-bar";
 import Divider from "src/react/shared/divider";
 import ActiveFilterBubble from "./active-filter-bubble";
@@ -111,7 +111,7 @@ export default function OptionBar({
 	return (
 		<div className="NLT__option-bar">
 			<Stack spacing="lg" isVertical>
-				<Flex justify="space-between" align="flex-end">
+				<Wrap justify={{ base: "space-between", mobile: "flex-end" }}>
 					<Stack spacing="md">
 						<SortBubbleList
 							headerCells={sortedCells}
@@ -142,7 +142,7 @@ export default function OptionBar({
 							onToggle={onColumnToggle}
 						/>
 					</Stack>
-				</Flex>
+				</Wrap>
 			</Stack>
 		</div>
 	);
