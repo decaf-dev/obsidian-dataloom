@@ -71,7 +71,11 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 					<tr key={row.id}>
 						{row.cells.map((cell) => {
 							const { id, content } = cell;
-							return <td key={id}>{content}</td>;
+							return (
+								<td key={id} className="NLT__td-footer">
+									{content}
+								</td>
+							);
 						})}
 					</tr>
 				))
@@ -111,6 +115,7 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 									border-bottom: 0;
 								}
 							`}
+							className="NLT__td-body"
 						>
 							{content}
 						</td>
@@ -131,6 +136,7 @@ const Components: TableComponents = {
 				`}
 				{...props}
 				style={style}
+				className="NLT__table"
 			/>
 		);
 	},

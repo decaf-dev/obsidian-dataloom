@@ -281,7 +281,7 @@ export default function BodyCell({
 		menuWidth = 175;
 	}
 
-	let className = "NLT__td-container";
+	let className = "NLT__td-body-container";
 	if (
 		columnType === CellType.LAST_EDITED_TIME ||
 		columnType === CellType.CREATION_TIME
