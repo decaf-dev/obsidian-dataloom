@@ -33,7 +33,16 @@ export default function SortBubble({
 					) : (
 						<Icon lucideId="arrow-down" />
 					)}
-					<span>{markdown}</span>
+					<span
+						css={css`
+							max-width: 150px;
+							overflow: hidden;
+							text-overflow: ellipsis;
+							white-space: nowrap;
+						`}
+					>
+						{markdown}
+					</span>
 				</Stack>
 				<Button
 					icon={<Icon lucideId="x" color="var(--text-on-accent)" />}

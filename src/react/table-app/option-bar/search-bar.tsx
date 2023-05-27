@@ -32,6 +32,7 @@ export default function SearchBar() {
 				/>
 			)}
 			<Button
+				constrainWidth
 				icon={<Icon lucideId="search" />}
 				ariaLabel="Search"
 				onClick={() => dispatch(toggleSearchBar())}
