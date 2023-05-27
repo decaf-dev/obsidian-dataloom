@@ -1,6 +1,6 @@
 import { useTableState } from "src/shared/table-state/table-state-context";
-import { TableDataTransferItem } from "./types";
 import { SortDir } from "src/shared/types/types";
+import { useDragContext } from "src/shared/dragging/drag-context";
 
 interface TableBodyRowProps {
 	children?: React.ReactNode;
@@ -11,53 +11,29 @@ export default function TableBodyRow({
 	...props
 }: TableBodyRowProps) {
 	const { tableState, setTableState } = useTableState();
+	const { dragData, touchDropZone, setDragData, setTouchDropZone } =
+		useDragContext();
 
-	function handleDragStart(e: React.DragEvent) {
-		const el = e.target as HTMLElement;
-		//React Virtuoso only works with our keyboard focus navigation system when we memorize the row component
-		//We can only do this if we don't place a `data-row-id` attr on the row itself. The workaround to this is to place
-		//the `data-row-id` attr on the last td element in the row (which contains the drag menu)
-		const dragMenuEl = el.querySelector("td:last-child");
-		if (!dragMenuEl) throw new Error("Couldn't find drag menu td");
+	function startDrag(el: HTMLElement) {
+		const rowId = getRowId(el);
+		if (!rowId) return;
 
-		const rowId = dragMenuEl.getAttr("data-row-id");
-		if (!rowId)
-			throw new Error("Drag menu td must have a data-row-id attribute");
-
-		const item: TableDataTransferItem = {
+		setDragData({
 			type: "row",
 			id: rowId,
-		};
-		e.dataTransfer.setData("application/json", JSON.stringify(item));
+		});
 	}
 
-	function handleDragEnd(e: React.DragEvent) {
-		const el = e.target as HTMLElement;
+	function endDrag(el: HTMLElement) {
 		el.draggable = false;
+		setDragData(null);
 	}
 
-	function handleDrop(e: React.DragEvent) {
-		e.preventDefault();
+	function dropDrag(targetRowId: string) {
+		if (dragData === null) throw Error("No drag data found");
 
-		const data = e.dataTransfer.getData("application/json");
-		if (data === "") throw new Error("No data found in dataTransfer");
-
-		const item = JSON.parse(data) as TableDataTransferItem;
 		//If we're dragging a column type, then return
-		if (item.type !== "row") return;
-
-		const draggedId = item.id;
-
-		//React Virtuoso only works with our keyboard focus navigation system when we memorize the row component
-		//We can only do this if we don't place a `data-row-id` attr on the row itself. The workaround to this is to place
-		//the `data-row-id` attr on the last td element in the row (which contains the drag menu)
-		const target = e.currentTarget as HTMLElement;
-		const dragMenuEl = target.querySelector("td:last-child");
-		if (!dragMenuEl) throw new Error("Couldn't find drag menu td");
-
-		const targetId = dragMenuEl.getAttr("data-row-id");
-		if (!targetId)
-			throw new Error("Drag menu td must have a data-row-id attribute");
+		if (dragData.type !== "row") return;
 
 		const { columns } = tableState.model;
 		const isSorted = columns.find(
@@ -78,10 +54,10 @@ export default function TableBodyRow({
 			const { bodyRows, columns } = prevState.model;
 
 			const draggedElIndex = bodyRows.findIndex(
-				(row) => row.id === draggedId
+				(row) => row.id === dragData.id
 			);
 			const targetElIndex = bodyRows.findIndex(
-				(row) => row.id == targetId
+				(row) => row.id == targetRowId
 			);
 
 			const newRows = structuredClone(bodyRows);
@@ -115,6 +91,130 @@ export default function TableBodyRow({
 		});
 	}
 
+	//We throw an error if the system
+	function getRowId(rowEl: HTMLElement) {
+		//React Virtuoso only works with our keyboard focus navigation system when we memorize the row component
+		//We can only do this if we don't place a `data-row-id` attr on the row itself. The workaround to this is to place
+		//the `data-row-id` attr on the last td element in the row (which contains the drag menu)
+		const dragMenuEl = rowEl.querySelector("td:last-child");
+		if (!dragMenuEl) return null;
+
+		const targetId = dragMenuEl.getAttr("data-row-id");
+		if (!targetId) return null;
+		return targetId;
+	}
+
+	function addDragHover(rowEl: HTMLElement) {
+		//Add dragging over class to all the children
+		const children = rowEl.querySelectorAll("td:not(:last-child)");
+
+		for (var i = 0; i < children.length; i++) {
+			children[i].classList.add("NLT__dragging-over");
+		}
+	}
+
+	function removeDragHover() {
+		//Add dragging over class to all the children
+		const children = document.querySelectorAll(".NLT__dragging-over");
+
+		for (var i = 0; i < children.length; i++) {
+			children[i].classList.remove("NLT__dragging-over");
+		}
+	}
+
+	function handleTouchStart(e: React.TouchEvent) {
+		//The target will be the td element
+		//The current target will be the parent tr element
+		const el = e.currentTarget as HTMLElement;
+		startDrag(el);
+	}
+
+	function handleDragStart(e: React.DragEvent) {
+		const el = e.target as HTMLElement;
+		startDrag(el);
+	}
+
+	const handleTouchMove = (e: React.TouchEvent) => {
+		if (dragData == null) return;
+
+		const { clientX, clientY } = e.touches[0];
+
+		// Get the element underneath the dragging element at the current position
+		const elementUnderneath = document.elementFromPoint(clientX, clientY);
+
+		if (!elementUnderneath) return;
+
+		const rowEl = elementUnderneath.closest("tr");
+		if (!rowEl) return;
+
+		const targetId = getRowId(rowEl);
+		if (!targetId) return;
+		//If the element is null or we're dragging over the same row
+		if (targetId === dragData.id) return;
+
+		const { top, left, bottom, right } = rowEl.getBoundingClientRect();
+
+		setTouchDropZone({
+			id: targetId,
+			top,
+			left,
+			bottom,
+			right,
+		});
+
+		removeDragHover();
+		addDragHover(rowEl);
+	};
+
+	function handleDragEnd(e: React.DragEvent) {
+		const el = e.target as HTMLElement;
+		endDrag(el);
+	}
+
+	function handleTouchEnd(e: React.TouchEvent) {
+		const el = e.target as HTMLElement;
+
+		if (touchDropZone) {
+			const touchX = e.changedTouches[0].clientX;
+			const touchY = e.changedTouches[0].clientY;
+
+			//Check if the touch is inside the drop zone
+			const isInsideDropZone =
+				touchX >= touchDropZone.left &&
+				touchX <= touchDropZone.right &&
+				touchY >= touchDropZone.top &&
+				touchY <= touchDropZone.bottom;
+
+			if (isInsideDropZone) {
+				dropDrag(touchDropZone.id);
+			}
+		}
+
+		endDrag(el);
+		setTouchDropZone(null);
+		removeDragHover();
+	}
+
+	function handleTouchCancel(e: React.TouchEvent) {
+		const el = e.target as HTMLElement;
+		endDrag(el);
+		setTouchDropZone(null);
+		removeDragHover();
+	}
+
+	function handleDrop(e: React.DragEvent) {
+		e.preventDefault();
+
+		//The target will be the td element
+		//The current target will be the parent tr element
+		const target = e.currentTarget as HTMLElement;
+
+		const targetId = getRowId(target);
+		if (!targetId) return;
+
+		dropDrag(targetId);
+	}
+
 	function handleDragOver(e: React.DragEvent) {
 		//Alow drop
 		e.preventDefault();
@@ -126,6 +226,10 @@ export default function TableBodyRow({
 			onDragStart={handleDragStart}
 			onDragEnd={handleDragEnd}
 			onDragOver={handleDragOver}
+			onTouchStart={handleTouchStart}
+			onTouchMove={handleTouchMove}
+			onTouchEnd={handleTouchEnd}
+			onTouchCancel={handleTouchCancel}
 			{...props}
 		>
 			{children}

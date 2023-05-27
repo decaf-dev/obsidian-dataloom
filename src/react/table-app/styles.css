@@ -181,3 +181,7 @@
 .NLT__button:not(.NLT__button--icon):focus-visible {
 	outline-offset: 0;
 }
+
+.NLT__dragging-over {
+	border-bottom: 1px solid var(--color-accent) !important;
+}

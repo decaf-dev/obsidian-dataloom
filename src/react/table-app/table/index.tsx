@@ -88,11 +88,11 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 								i === cells.length - 1 ? rowId : undefined
 							}
 							css={css`
-								border-top: 0 !important;
-								border-bottom: 1px solid ${tableBorderColor} !important;
-								border-left: 1px solid ${tableBorderColor} !important;
-								border-right: 0 !important;
-								padding: 0 !important;
+								border-top: 0;
+								border-bottom: 1px solid ${tableBorderColor};
+								border-left: 1px solid ${tableBorderColor};
+								border-right: 0;
+								padding: 0;
 								overflow: visible;
 								vertical-align: top;
 								/** 
@@ -104,11 +104,11 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 								height: 1px;
 
 								&:first-of-type {
-									border-left: 0 !important;
+									border-left: 0;
 								}
 
 								&:last-child {
-									border-bottom: 0 !important;
+									border-bottom: 0;
 								}
 							`}
 						>

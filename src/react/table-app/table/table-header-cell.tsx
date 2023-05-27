@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
-import { TableDataTransferItem } from "src/react/table-app/table/types";
 import { getTableBackgroundColor, getTableBorderColor } from "src/shared/color";
+import { useDragContext } from "src/shared/dragging/drag-context";
 import { useTableState } from "src/shared/table-state/table-state-context";
 
 interface TableHeaderCellProps {
@@ -15,6 +15,11 @@ export default function TableHeaderCell({
 	isDraggable,
 }: TableHeaderCellProps) {
 	const { setTableState } = useTableState();
+	const { dragData, setDragData } = useDragContext();
+
+	function handleDragEnd(e: React.DragEvent) {
+		setDragData(null);
+	}
 
 	function handleDragStart(e: React.DragEvent) {
 		const el = e.target as HTMLElement;
@@ -22,22 +27,20 @@ export default function TableHeaderCell({
 		if (!columnId)
 			throw new Error("data-column-id is required for a header cell");
 
-		const item: TableDataTransferItem = {
+		setDragData({
 			type: "column",
 			id: columnId,
-		};
-		e.dataTransfer.setData("application/json", JSON.stringify(item));
+		});
 	}
 
 	function handleDrop(e: React.DragEvent) {
 		e.preventDefault();
 
-		const data = e.dataTransfer.getData("application/json");
-		const item = JSON.parse(data) as TableDataTransferItem;
-		//If we're dragging a column type, then return
-		if (item.type !== "column") return;
+		if (dragData == null) throw new Error("No drag data found");
 
-		const draggedId = item.id;
+		//If we're dragging a column type, then return
+		if (dragData.type !== "column") return;
+
 		const targetId = (e.currentTarget as HTMLElement).getAttr(
 			"data-column-id"
 		);
@@ -48,7 +51,7 @@ export default function TableHeaderCell({
 			const { columns } = prevState.model;
 
 			const draggedElIndex = columns.findIndex(
-				(column) => column.id === draggedId
+				(column) => column.id === dragData.id
 			);
 			const targetElIndex = columns.findIndex(
 				(column) => column.id == targetId
@@ -111,6 +114,7 @@ export default function TableHeaderCell({
 				onDrop: handleDrop,
 				onDragStart: handleDragStart,
 				onDragOver: handleDragOver,
+				onDragEnd: handleDragEnd,
 			})}
 		>
 			{content}
