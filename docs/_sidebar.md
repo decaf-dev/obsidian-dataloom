@@ -35,29 +35,37 @@
 
         -   [Filtering rows](row-filter.md)
 
-    -   Body Cell Types
+    -   Cells
 
-        -   [Text cell](body-cell-text.md)
+        -   [Body Cells](body-cell.md)
 
-        -   [Number cell](body-cell-number.md)
+            -   [Text cell](body-cell-text.md)
 
-        -   [Currency cell](body-cell-currency.md)
+            -   [Number cell](body-cell-number.md)
 
-        -   [Date cell](body-cell-date.md)
+            -   [Currency cell](body-cell-currency.md)
 
-        -   [Tag cell](body-cell-tag.md)
+            -   [Date cell](body-cell-date.md)
 
-        -   [Multi-tag cell](body-cell-multi-tag.md)
+            -   [Tag cell](body-cell-tag.md)
 
-        -   [Checkbox cell](body-cell-checkbox.md)
+            -   [Multi-tag cell](body-cell-multi-tag.md)
 
-        -   [Creation time cell](body-cell-creation-time.md)
+            -   [Checkbox cell](body-cell-checkbox.md)
 
-        -   [Last edited time cell](body-cell-last-edited-time.md)
+            -   [Creation time cell](body-cell-creation-time.md)
 
-    -   Footer Cell Types
+            -   [Last edited time cell](body-cell-last-edited-time.md)
 
-        -   [Function cell](footer-cell-function.md)
+        -   Footer Cells
+
+            -   [Function cell](footer-cell-function.md)
+
+    -   Import and Export
+
+        -   [Importing from markdown](import-markdown.md)
+
+        -   [Exporting to CSV](export-csv.md)
 
     -   Other
 
