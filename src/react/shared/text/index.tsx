@@ -6,9 +6,16 @@ interface Props {
 	size?: "xs" | "sm" | "md" | "lg" | "xl";
 	value: string;
 	maxWidth?: string;
+	whiteSpace?: "nowrap" | "pre" | "pre-wrap" | "pre-line" | "break-spaces";
 }
 
-export default function Text({ value, variant, size = "sm", maxWidth }: Props) {
+export default function Text({
+	value,
+	variant,
+	size = "sm",
+	maxWidth,
+	whiteSpace = "nowrap",
+}: Props) {
 	let className = "NLT__p";
 
 	if (variant == "faint") className += " NLT__text-faint";
@@ -32,7 +39,7 @@ export default function Text({ value, variant, size = "sm", maxWidth }: Props) {
 			css={css`
 				font-size: ${fontSize};
 				max-width: ${maxWidth === undefined ? "unset" : maxWidth};
-				white-space: ${maxWidth === undefined ? "unset" : "nowrap"};
+				white-space: ${whiteSpace}
 				overflow: ${maxWidth === undefined ? "unset" : "hidden"};
 				text-overflow: ${maxWidth === undefined ? "unset" : "ellipsis"};
 			`}
