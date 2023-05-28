@@ -9,6 +9,8 @@ import { Button } from "src/react/shared/button";
 import { FilterRule, FilterType } from "src/shared/types/types";
 import { ColumNotFoundError } from "src/shared/table-state/table-error";
 import { ColumnWithMarkdown } from "../types";
+import React, { useRef } from "react";
+import { useCompare, usePrevious } from "src/shared/hooks";
 
 interface Props {
 	id: string;
@@ -43,6 +45,20 @@ export default function FilterMenu({
 	onDeleteClick,
 	onTagsChange,
 }: Props) {
+	const menuRef = useRef<HTMLDivElement>(null);
+
+	const previousLength = usePrevious(filterRules.length);
+	React.useEffect(() => {
+		if (previousLength !== undefined) {
+			if (previousLength < filterRules.length) {
+				if (menuRef.current) {
+					//Scroll to the bottom if we're adding a new rule
+					menuRef.current.scrollTop = menuRef.current.scrollHeight;
+				}
+			}
+		}
+	}, [previousLength]);
+
 	return (
 		<Menu
 			isOpen={isOpen}
@@ -50,11 +66,12 @@ export default function FilterMenu({
 			id={id}
 			top={top}
 			left={left}
-			maxWidth={575}
+			maxHeight={255}
+			ref={menuRef}
 		>
 			<div className="NLT__filter-menu">
 				<Padding p="md">
-					<Stack spacing="md" isVertical>
+					<Stack spacing="lg" isVertical>
 						{filterRules.map((rule) => {
 							const {
 								id,

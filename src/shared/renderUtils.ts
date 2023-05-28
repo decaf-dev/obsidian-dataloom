@@ -12,3 +12,8 @@ export const appendOrReplaceFirstChild = (
 		container.replaceChild(child, container.firstChild);
 	}
 };
+
+export const isMobile = () => {
+	const viewportWidth = window.innerWidth;
+	return viewportWidth < 480;
+};

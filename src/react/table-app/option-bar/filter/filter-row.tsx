@@ -1,4 +1,3 @@
-import Stack from "src/react/shared/stack";
 import FilterRowDropdown from "./filter-type-select";
 import Icon from "src/react/shared/icon";
 import { Button } from "src/react/shared/button";
@@ -7,6 +6,7 @@ import { CellType, FilterType, Tag } from "src/shared/types/types";
 import FilterColumnDropdown from "./filter-column-select";
 import FilterTextInput from "./filter-text-input";
 import { ColumnWithMarkdown } from "../types";
+import Wrap from "src/react/shared/wrap";
 
 interface Props {
 	id: string;
@@ -44,7 +44,7 @@ export default function FilterRow({
 	onTagsChange,
 }: Props) {
 	return (
-		<Stack>
+		<Wrap width={{ base: "100%", mobile: "100vw" }}>
 			<FilterColumnDropdown
 				id={id}
 				columns={columns}
@@ -81,6 +81,6 @@ export default function FilterRow({
 				}
 				onToggle={() => onToggle(id)}
 			/>
-		</Stack>
+		</Wrap>
 	);
 }

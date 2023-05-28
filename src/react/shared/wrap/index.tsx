@@ -1,12 +1,10 @@
 import { css } from "@emotion/react";
-import { Platform } from "obsidian";
+import { isMobile } from "src/shared/renderUtils";
 import { getSpacing } from "src/shared/spacing";
 import { SpacingSize } from "src/shared/spacing/types";
 
 type Justify = "flex-start" | "center" | "flex-end" | "space-between";
 type Align = "flex-start" | "center" | "flex-end";
-
-const DEFAULT_JUSTIFY = "flex-start";
 
 interface DynamicSize<T> {
 	base: T;
@@ -16,26 +14,26 @@ interface DynamicSize<T> {
 interface Props {
 	justify?: DynamicSize<Justify> | Justify;
 	align?: Align;
+	width?: DynamicSize<string> | string;
 	spacingX?: SpacingSize;
 	spacingY?: SpacingSize;
 	children: React.ReactNode;
 }
 
 export default function Wrap({
-	justify = "flex-start",
+	justify,
 	align = "center",
 	spacingX = "md",
 	spacingY = "md",
+	width,
 	children,
 }: Props) {
-	const isMobile = Platform.isMobile;
-
-	let justifyContent = DEFAULT_JUSTIFY;
+	let justifyContent: Justify = "flex-start";
 	if (justify !== undefined) {
 		if (typeof justify === "string") {
 			justifyContent = justify;
 		} else {
-			if (isMobile && justify.mobile !== undefined) {
+			if (isMobile() && justify.mobile !== undefined) {
 				justifyContent = justify.mobile;
 			} else {
 				justifyContent = justify.base;
@@ -43,10 +41,23 @@ export default function Wrap({
 		}
 	}
 
+	let renderWidth = "100%";
+	if (width !== undefined) {
+		if (typeof width === "string") {
+			renderWidth = width;
+		} else {
+			if (isMobile() && width.mobile !== undefined) {
+				width = width.mobile;
+			} else {
+				width = width.base;
+			}
+		}
+	}
+
 	return (
 		<div
 			css={css`
-				width: 100%;
+				width: ${width};
 				display: flex;
 				flex-wrap: wrap;
 				row-gap: ${getSpacing(spacingX)};

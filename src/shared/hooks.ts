@@ -15,8 +15,8 @@ export const useCompare = (value: any, runOnMount = false) => {
 	return prevValue !== value;
 };
 
-const usePrevious = (value: any) => {
-	const ref = React.useRef();
+export const usePrevious = <T>(value: T) => {
+	const ref = React.useRef<T>();
 	React.useEffect(() => {
 		ref.current = value;
 	});
