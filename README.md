@@ -17,6 +17,7 @@ Find detailed documentation on how to use the plugin, please see: [https://trey-
 -   [Installation](#installation)
 -   [Getting Started](#getting-started)
 -   [Hot Keys](#hot-keys)
+-   [Features](#features)
 -   [Guides](#guides)
 -   [Settings](#settings)
 -   [Roadmap](#roadmap)
@@ -57,9 +58,13 @@ You can also right click on a folder and click **New Notion-Like table**
 | Undo               | `ctrl` + `z`                   | `cmd` + `z`                      |
 | Redo               | `ctrl` + `y`                   | `cmd` + `shift` + `z`            |
 
+## Features
+
+For a list of table features see: [https://trey-wallis.github.io/obsidian-notion-like-tables](https://trey-wallis.github.io/obsidian-notion-like-tables/features)
+
 ## Guides
 
-For detailed documentation on how to use the plugin please see: [https://trey-wallis.github.io/obsidian-notion-like-tables](https://trey-wallis.github.io/obsidian-notion-like-tables/guides)
+For detailed guides on how to use the table see: [https://trey-wallis.github.io/obsidian-notion-like-tables](https://trey-wallis.github.io/obsidian-notion-like-tables/guides)
 
 ## Settings
 
