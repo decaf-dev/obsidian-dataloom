@@ -1,10 +1,13 @@
+import { css } from "@emotion/react";
+import { AlignItems, JustifyContent } from "src/shared/renderTypes";
 import { getSpacing } from "src/shared/spacing";
 import { SpacingSize } from "src/shared/spacing/types";
 
 interface Props {
 	spacing?: SpacingSize;
 	children: React.ReactNode;
-	justify?: "flex-start" | "center" | "flex-end";
+	justify?: JustifyContent;
+	align?: AlignItems;
 	isVertical?: boolean;
 	width?: string;
 	height?: string;
@@ -12,7 +15,8 @@ interface Props {
 
 export default function Stack({
 	spacing = "md",
-	justify = "flex-start",
+	justify = "center",
+	align = "center",
 	children,
 	width = "unset",
 	height = "unset",
@@ -20,15 +24,15 @@ export default function Stack({
 }: Props) {
 	return (
 		<div
-			style={{
-				display: "flex",
-				flexDirection: isVertical ? "column" : "row",
-				alignItems: isVertical ? "flex-start" : "center",
-				justifyContent: isVertical ? "center" : justify,
-				[isVertical ? "rowGap" : "columnGap"]: getSpacing(spacing),
-				width,
-				height,
-			}}
+			css={css`
+				display: flex;
+				flex-direction: ${isVertical ? "column" : "row"};
+				align-items: ${align}
+				justify-content: ${justify};
+				${isVertical ? "row-gap" : "column-gap"}: ${getSpacing(spacing)};
+				width: ${width};
+				height: ${height};
+			`}
 		>
 			{children}
 		</div>

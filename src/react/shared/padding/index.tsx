@@ -1,3 +1,4 @@
+import { css } from "@emotion/react";
 import { getSpacing } from "src/shared/spacing";
 import { SpacingSize } from "src/shared/spacing/types";
 
@@ -8,11 +9,12 @@ interface Props {
 	pt?: SpacingSize;
 	pb?: SpacingSize;
 	p?: SpacingSize;
+	width?: string;
 	children: React.ReactNode;
 }
 
 export default function Padding({
-	className = "",
+	width = "100%",
 	px,
 	py,
 	pt,
@@ -20,44 +22,48 @@ export default function Padding({
 	p,
 	children,
 }: Props) {
-	let style: Record<string, any> = {
-		width: "100%",
-	};
+	let renderPt = "";
+	let renderPb = "";
+	let renderPl = "";
+	let renderPr = "";
 
 	if (p) {
-		style = { ...style, padding: getSpacing(p) };
+		renderPt = getSpacing(p);
+		renderPb = getSpacing(p);
+		renderPl = getSpacing(p);
+		renderPr = getSpacing(p);
 	} else if (px || py) {
 		if (px) {
 			const spacing = getSpacing(px);
-			style = { ...style, paddingLeft: spacing, paddingRight: spacing };
+			renderPl = spacing;
+			renderPr = spacing;
 		}
 		if (py) {
 			const spacing = getSpacing(py);
-			style = {
-				...style,
-				paddingTop: spacing,
-				paddingBottom: spacing,
-			};
+			renderPt = spacing;
+			renderPb = spacing;
 		}
 	} else if (pb || pt) {
 		if (pb) {
 			const spacing = getSpacing(pb);
-			style = {
-				...style,
-				paddingBottom: spacing,
-			};
+			renderPb = spacing;
 		}
 		if (pt) {
 			const spacing = getSpacing(pt);
-			style = {
-				...style,
-				paddingTop: spacing,
-			};
+			renderPt = spacing;
 		}
 	}
 
 	return (
-		<div style={style} className={className}>
+		<div
+			css={css`
+				width: ${width};
+				padding-top: ${renderPt};
+				padding-bottom: ${renderPb};
+				padding-left: ${renderPl};
+				padding-right: ${renderPr};
+			`}
+		>
 			{children}
 		</div>
 	);

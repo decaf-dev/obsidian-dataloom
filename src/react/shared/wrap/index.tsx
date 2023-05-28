@@ -1,19 +1,12 @@
 import { css } from "@emotion/react";
-import { isMobile } from "src/shared/renderUtils";
+import { AlignItems, JustifyContent } from "src/shared/renderTypes";
+import { getDynamicSize } from "src/shared/renderUtils";
 import { getSpacing } from "src/shared/spacing";
-import { SpacingSize } from "src/shared/spacing/types";
-
-type Justify = "flex-start" | "center" | "flex-end" | "space-between";
-type Align = "flex-start" | "center" | "flex-end";
-
-interface DynamicSize<T> {
-	base: T;
-	mobile?: T;
-}
+import { DynamicSize, SpacingSize } from "src/shared/spacing/types";
 
 interface Props {
-	justify?: DynamicSize<Justify> | Justify;
-	align?: Align;
+	justify?: DynamicSize<JustifyContent> | JustifyContent;
+	align?: AlignItems;
 	width?: DynamicSize<string> | string;
 	spacingX?: SpacingSize;
 	spacingY?: SpacingSize;
@@ -28,31 +21,8 @@ export default function Wrap({
 	width,
 	children,
 }: Props) {
-	let justifyContent: Justify = "flex-start";
-	if (justify !== undefined) {
-		if (typeof justify === "string") {
-			justifyContent = justify;
-		} else {
-			if (isMobile() && justify.mobile !== undefined) {
-				justifyContent = justify.mobile;
-			} else {
-				justifyContent = justify.base;
-			}
-		}
-	}
-
-	let renderWidth = "100%";
-	if (width !== undefined) {
-		if (typeof width === "string") {
-			renderWidth = width;
-		} else {
-			if (isMobile() && width.mobile !== undefined) {
-				renderWidth = width.mobile;
-			} else {
-				renderWidth = width.base;
-			}
-		}
-	}
+	const justifyContent = getDynamicSize("flex-start", justify);
+	const renderWidth = getDynamicSize("100%", width);
 
 	return (
 		<div
