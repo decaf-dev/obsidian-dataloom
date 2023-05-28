@@ -12,6 +12,7 @@ interface Props {
 	top?: number;
 	left?: number;
 	width?: number;
+	maxWidth?: number;
 	height?: number;
 	children: React.ReactNode;
 	isReady: boolean;
@@ -24,6 +25,7 @@ export default function Menu({
 	left = 0,
 	width = 0,
 	height = 0,
+	maxWidth = 0,
 	children,
 	isReady,
 }: Props) {
@@ -59,6 +61,9 @@ export default function Menu({
 								height: ${height !== 0
 									? numToPx(height)
 									: "max-content"};
+								max-width: ${maxWidth !== 0
+									? numToPx(maxWidth)
+									: "unset"};
 							`}
 						>
 							{children}

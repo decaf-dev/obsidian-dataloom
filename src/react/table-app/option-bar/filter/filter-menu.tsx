@@ -50,7 +50,7 @@ export default function FilterMenu({
 			id={id}
 			top={top}
 			left={left}
-			width={575}
+			maxWidth={575}
 		>
 			<div className="NLT__filter-menu">
 				<Padding p="md">
