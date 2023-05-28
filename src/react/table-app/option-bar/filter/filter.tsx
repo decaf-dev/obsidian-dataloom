@@ -48,7 +48,6 @@ export default function Filter({
 		menuId: menu.id,
 		menuPositionEl: menuPosition.positionRef.current,
 		menuPosition: menuPosition.position,
-		leftOffset: -575,
 	});
 	return (
 		<>
