@@ -1,12 +1,18 @@
-# Obsidian Notion-Like Tables
+# Notion-Like Tables
 
-<img width="1091" alt="cover" src="https://user-images.githubusercontent.com/40307803/233756888-5747bd5f-824b-42e1-be0e-e92518972cf0.png">
+Notion-Like Tables is a tabular data management plugin for [Obsidian.md](https://obsidian.md/).
 
-Notion-Like Tables is your premiere tool for creating and managing tabular data in Obsidian.md.
-
-[![Active Development](https://img.shields.io/badge/Maintenance%20Level-Actively%20Developed-brightgreen.svg)](https://gist.github.com/cheerfulstoic/d107229326a01ff0f333a1d3476e068d)
+Unlike [Notion](https://www.notion.so/), it is a free, offline, and open-source.
 
 ![Obsidian Downloads](https://img.shields.io/badge/dynamic/json?logo=obsidian&color=%23483699&label=downloads&query=%24%5B%22notion-like-tables%22%5D.downloads&url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json) ![Release Version](https://img.shields.io/github/v/release/trey-wallis/obsidian-notion-like-tables)
+
+Support developent of the plugin on [buymeacoffee.com](https://www.buymeacoffee.com/treywallis)
+
+<a href="https://buymeacoffee.com/treywallis" target="_blank" rel="noopener">
+<img width="180px" src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&amp;emoji=&amp;slug=treywallis&amp;button_colour=6a8695&amp;font_colour=ffffff&amp;font_family=Poppins&amp;outline_colour=000000&amp;coffee_colour=FFDD00" referrerpolicy="no-referrer" alt="?text=Buy me a coffee&amp;emoji=&amp;slug=treywallis&amp;button_colour=6a8695&amp;font_colour=ffffff&amp;font_family=Poppins&amp;outline_colour=000000&amp;coffee_colour=FFDD00"></a>
+
+<a href="https://github.com/trey-wallis/obsidian-notion-like-tables" target="_blank" rel="noopener">
+<img width="125" style="padding:7px 7px 5px" src="https://img.shields.io/github/stars/trey-wallis/obsidian-notion-like-tables?style=social" referrerpolicy="no-referrer" alt="obsidian-notion-like-tables?style=social"></a>
 
 [Lastest release notes](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/6.9.3)
 

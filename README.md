@@ -8,19 +8,17 @@ Notion-Like Tables is your premiere tool for creating and managing tabular data 
 
 ![Obsidian Downloads](https://img.shields.io/badge/dynamic/json?logo=obsidian&color=%23483699&label=downloads&query=%24%5B%22notion-like-tables%22%5D.downloads&url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json) ![Release Version](https://img.shields.io/github/v/release/trey-wallis/obsidian-notion-like-tables)
 
-Find detailed documentation on how to use the plugin, please see: [https://trey-wallis.github.io/obsidian-notion-like-tables](https://trey-wallis.github.io/obsidian-notion-like-tables/)
-
 [Lastest release notes](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/6.9.3)
 
 ## About
 
 -   [Installation](#installation)
--   [Getting Started](#getting-started)
+-   [Creating a table](#creating-a-table)
 -   [Features](#features)
 -   [Guides](#guides)
 -   [Roadmap](#roadmap)
--   [Feature Requests](#feature-requests)
--   [Bug Reports](#bug-reports)
+-   [Feature requests](#feature-requests)
+-   [Bug reports](#bug-reports)
 -   [License](#license)
 -   [Disclaimer](#disclaimer)
 
@@ -33,7 +31,7 @@ Find detailed documentation on how to use the plugin, please see: [https://trey-
 5. Click **Install**
 6. Finally click **Enable**
 
-## Getting Started
+## Creating a table
 
 Start by creating a new table. You can do this by clicking on the table icon on the sidebar.
 
@@ -45,7 +43,7 @@ You can also right click on a folder and click **New Notion-Like table**
 
 ## Features
 
-For a list of table features see: [https://trey-wallis.github.io/obsidian-notion-like-tables](https://trey-wallis.github.io/obsidian-notion-like-tables/features)
+For detailed documentation on table features see: [https://trey-wallis.github.io/obsidian-notion-like-tables](https://trey-wallis.github.io/obsidian-notion-like-tables/features)
 
 ## Guides
 
@@ -60,13 +58,22 @@ See our [project roadmap](https://github.com/users/trey-wallis/projects/2) for d
 -   What is in ready to be released
 -   What has already been completed
 
-## Feature Requests
+## Feature requests
 
 If you would like to suggest a feature for the plugin, please open a [feature request](https://github.com/trey-wallis/obsidian-notion-like-tables/issues/new/choose)
 
-## Bug Reports
+## Bug reports
 
 If you are experiencing a bug, please open a [bug report](https://github.com/trey-wallis/obsidian-notion-like-tables/issues/new/choose)
+
+## Support development
+
+If you appreciate the plugin or wish to support my work, feel free to donate.
+
+<a href="https://buymeacoffee.com/treywallis" target="_blank" rel="noopener">
+<img width="180px" src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&amp;emoji=&amp;slug=treywallis&amp;button_colour=6a8695&amp;font_colour=ffffff&amp;font_family=Poppins&amp;outline_colour=000000&amp;coffee_colour=FFDD00" referrerpolicy="no-referrer" alt="?text=Buy me a coffee&amp;emoji=&amp;slug=treywallis&amp;button_colour=6a8695&amp;font_colour=ffffff&amp;font_family=Poppins&amp;outline_colour=000000&amp;coffee_colour=FFDD00"></a>
+
+<br/>
 
 ## License
 
