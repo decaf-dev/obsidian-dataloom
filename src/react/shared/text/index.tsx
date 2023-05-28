@@ -39,7 +39,7 @@ export default function Text({
 			css={css`
 				font-size: ${fontSize};
 				max-width: ${maxWidth === undefined ? "unset" : maxWidth};
-				white-space: ${whiteSpace}
+				white-space: ${whiteSpace};
 				overflow: ${maxWidth === undefined ? "unset" : "hidden"};
 				text-overflow: ${maxWidth === undefined ? "unset" : "ellipsis"};
 			`}

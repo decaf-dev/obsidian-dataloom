@@ -7,6 +7,8 @@
 --nlt-spacing--lg: 12px;
 --nlt-spacing--xl: 16px;
 --nlt-spacing--2xl: 24px;
+--nlt-spacing--3xl: 36px;
+--nlt-spacing--4xl: 48px;
 
 --nlt-cell-spacing-x: var(--nlt-spacing--sm);
 --nlt-cell-spacing-y: var(--nlt-spacing--lg);
