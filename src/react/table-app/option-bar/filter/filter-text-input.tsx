@@ -36,7 +36,7 @@ export default function FilterTextInput({
 						value={text}
 						type="text"
 						css={css`
-							width: 150px;
+							width: 150px !important;
 						`}
 						onChange={(e) => onTextChange(id, e.target.value)}
 					/>
