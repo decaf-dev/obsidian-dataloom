@@ -16,12 +16,9 @@ Find detailed documentation on how to use the plugin, please see: [https://trey-
 
 -   [Installation](#installation)
 -   [Getting Started](#getting-started)
--   [Hot Keys](#hot-keys)
 -   [Features](#features)
 -   [Guides](#guides)
--   [Settings](#settings)
 -   [Roadmap](#roadmap)
--   [Themes and Snippets](#themes-and-snippets)
 -   [Feature Requests](#feature-requests)
 -   [Bug Reports](#bug-reports)
 -   [License](#license)
@@ -46,18 +43,6 @@ You can also right click on a folder and click **New Notion-Like table**
 
 <img width="500" alt="Screenshot 2023-05-06 at 3 36 12 AM" src="https://user-images.githubusercontent.com/40307803/236616281-51fdab3e-fb43-4d5b-a33d-86141ab192b7.png">
 
-## Hot Keys
-
-| Name               | Windows                        | Mac                              |
-| ------------------ | ------------------------------ | -------------------------------- |
-| Create new table   | `ctrl` + `shift` + `=`         | `cmd` + `shift` + `=`            |
-| Add new column     | `ctrl` + `shift` + `\`         | `cmd` + `shift` + `\`            |
-| Add new row        | `ctrl` + `shift` + `enter`     | `cmd` + `shift` + `enter`        |
-| Delete last column | `ctrl` + `shift` + `backspace` | `cmd` + `shift` + `backspace`    |
-| Delete last row    | `alt` + `shift` + `backspace`  | `option` + `shift` + `backspace` |
-| Undo               | `ctrl` + `z`                   | `cmd` + `z`                      |
-| Redo               | `ctrl` + `y`                   | `cmd` + `shift` + `z`            |
-
 ## Features
 
 For a list of table features see: [https://trey-wallis.github.io/obsidian-notion-like-tables](https://trey-wallis.github.io/obsidian-notion-like-tables/features)
@@ -65,32 +50,6 @@ For a list of table features see: [https://trey-wallis.github.io/obsidian-notion
 ## Guides
 
 For detailed guides on how to use the table see: [https://trey-wallis.github.io/obsidian-notion-like-tables](https://trey-wallis.github.io/obsidian-notion-like-tables/guides)
-
-## Settings
-
-| Name                                                      | Value           |
-| --------------------------------------------------------- | --------------- |
-| Create new tables in attachment folder                    | `<true/false>`  |
-| Custom location for new tables                            | `<folder path>` |
-| Create table name based on active file name and timestamp | `<true/false>`  |
-
-## Themes and Snippets
-
-For theme and snippet customization, please override the following classes
-
-| Class                     | Element               |
-| ------------------------- | --------------------- |
-| `.NLT__app`               | Main app conatiner    |
-| `.NLT__option-bar`        | Option bar            |
-| `.NLT__table`             | Table                 |
-| `.NLT__th`                | Header cell           |
-| `.NLT__th-container`      | Header cell container |
-| `.NLT__th-content`        | Header cell content   |
-| `.NLT__td-body`           | Body cell             |
-| `.NLT__td-body-container` | Body cell container   |
-| `.NLT__td-footer`         | Footer cell           |
-| `.NLT__button`            | Button                |
-| `.NLT__p`                 | Text                  |
 
 ## Roadmap
 
