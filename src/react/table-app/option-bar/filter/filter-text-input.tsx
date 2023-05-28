@@ -104,6 +104,7 @@ export default function FilterTextInput({
 						}),
 						singleValue: (base) => ({
 							...base,
+							borderRadius: "8px",
 							color: "var(--text-on-accent)",
 							backgroundColor: "var(--color-accent)",
 							fontSize: "var(--font-ui-smaller)",
@@ -113,6 +114,7 @@ export default function FilterTextInput({
 						multiValue: (base) => ({
 							...base,
 							backgroundColor: "var(--color-accent)",
+							borderRadius: "8px",
 						}),
 						multiValueLabel: (base) => ({
 							...base,
