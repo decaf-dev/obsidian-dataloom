@@ -30,7 +30,7 @@ import {
 } from "src/shared/table-state/constants";
 import { isCheckboxChecked } from "src/shared/validators";
 
-import { useCompare, useDidMountEffect } from "src/shared/hooks";
+import { useCompare } from "src/shared/hooks";
 import { Color } from "src/shared/types/types";
 import CurrencyCell from "../currency-cell";
 import CurrencyCellEdit from "../currency-cell-edit";
@@ -281,7 +281,7 @@ export default function BodyCell({
 		menuWidth = 175;
 	}
 
-	let className = "NLT__td-container";
+	let className = "NLT__body-td-container";
 	if (
 		columnType === CellType.LAST_EDITED_TIME ||
 		columnType === CellType.CREATION_TIME
