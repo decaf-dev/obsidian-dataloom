@@ -47,9 +47,9 @@ export default function Wrap({
 			renderWidth = width;
 		} else {
 			if (isMobile() && width.mobile !== undefined) {
-				width = width.mobile;
+				renderWidth = width.mobile;
 			} else {
-				width = width.base;
+				renderWidth = width.base;
 			}
 		}
 	}
@@ -57,7 +57,7 @@ export default function Wrap({
 	return (
 		<div
 			css={css`
-				width: ${width};
+				width: ${renderWidth};
 				display: flex;
 				flex-wrap: wrap;
 				row-gap: ${getSpacing(spacingX)};
