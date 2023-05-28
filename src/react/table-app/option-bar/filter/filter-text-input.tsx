@@ -84,7 +84,7 @@ export default function FilterTextInput({
 								? "var(--background-secondary)"
 								: "var(--background-primary)",
 							"&:hover": {
-								backgroundColor: "var(--background-secondary)",
+								backgroundColor: "var(--interactive-hover)",
 							},
 						}),
 						input: (base) => ({
@@ -95,6 +95,12 @@ export default function FilterTextInput({
 						menu: (base) => ({
 							...base,
 							backgroundColor: "var(--background-primary)",
+						}),
+						menuList: (base) => ({
+							...base,
+							backgroundColor: "var(--background-primary)",
+							height: "50px",
+							overflowY: "scroll",
 						}),
 						singleValue: (base) => ({
 							...base,
