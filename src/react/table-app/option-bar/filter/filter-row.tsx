@@ -7,6 +7,7 @@ import FilterColumnDropdown from "./filter-column-select";
 import FilterTextInput from "./filter-text-input";
 import { ColumnWithMarkdown } from "../types";
 import Wrap from "src/react/shared/wrap";
+import Stack from "src/react/shared/stack";
 
 interface Props {
 	id: string;
@@ -69,18 +70,20 @@ export default function FilterRow({
 						onTagsChange={onTagsChange}
 					/>
 				)}
-			<Button
-				icon={<Icon lucideId="trash-2" />}
-				ariaLabel="Delete filter rule"
-				onClick={() => onDeleteClick(id)}
-			/>
-			<Switch
-				isChecked={isEnabled}
-				ariaLabel={
-					isEnabled ? "Disable filter rule" : "Enable filter rule"
-				}
-				onToggle={() => onToggle(id)}
-			/>
+			<Stack grow justify="flex-end" align="center" spacing="lg">
+				<Button
+					icon={<Icon lucideId="trash-2" />}
+					ariaLabel="Delete filter rule"
+					onClick={() => onDeleteClick(id)}
+				/>
+				<Switch
+					isChecked={isEnabled}
+					ariaLabel={
+						isEnabled ? "Disable filter rule" : "Enable filter rule"
+					}
+					onToggle={() => onToggle(id)}
+				/>
+			</Stack>
 		</Wrap>
 	);
 }

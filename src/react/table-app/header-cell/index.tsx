@@ -120,7 +120,7 @@ export default function HeaderCell({
 					}}
 				>
 					<div className={contentClassName}>
-						<Stack spacing="md">
+						<Stack spacing="md" align="flex-start">
 							<Icon lucideId={lucideId} size="md" />
 							{markdown}
 						</Stack>

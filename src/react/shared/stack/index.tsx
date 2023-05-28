@@ -9,27 +9,42 @@ interface Props {
 	justify?: JustifyContent;
 	align?: AlignItems;
 	isVertical?: boolean;
+	grow?: boolean;
 	width?: string;
 	height?: string;
 }
 
 export default function Stack({
 	spacing = "md",
-	justify = "center",
-	align = "center",
+	justify,
+	align,
+	grow,
 	children,
 	width = "unset",
 	height = "unset",
 	isVertical,
 }: Props) {
+	let justifyContent = justify;
+	if (justifyContent === undefined) {
+		if (isVertical) justifyContent = "center";
+		else justifyContent = "flex-start";
+	}
+	let alignItems = align;
+	if (alignItems === undefined) {
+		if (!isVertical) alignItems = "center";
+		else alignItems = "flex-start";
+	}
 	return (
 		<div
 			css={css`
 				display: flex;
 				flex-direction: ${isVertical ? "column" : "row"};
-				align-items: ${align}
-				justify-content: ${justify};
-				${isVertical ? "row-gap" : "column-gap"}: ${getSpacing(spacing)};
+				flex-grow: ${grow ? 1 : 0};
+				justify-content: ${justifyContent};
+				align-items: ${alignItems};
+				${isVertical ? "row-gap" : "column-gap"}: ${getSpacing(
+					spacing
+				)};
 				width: ${width};
 				height: ${height};
 			`}

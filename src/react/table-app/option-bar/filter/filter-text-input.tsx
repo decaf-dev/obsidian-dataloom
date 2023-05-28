@@ -33,11 +33,11 @@ export default function FilterTextInput({
 				cellType !== CellType.TAG &&
 				cellType !== CellType.MULTI_TAG && (
 					<input
-						value={text}
-						type="text"
 						css={css`
 							width: 150px !important;
 						`}
+						value={text}
+						type="text"
 						onChange={(e) => onTextChange(id, e.target.value)}
 					/>
 				)}

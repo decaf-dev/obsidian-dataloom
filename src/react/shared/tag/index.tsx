@@ -50,7 +50,7 @@ export default function Tag({
 					{markdown}
 				</div>
 				{showRemove && (
-					<Padding pt="sm" width="max-content">
+					<Padding pb="sm" width="max-content">
 						<Button
 							icon={<Icon size="sm" lucideId="x" />}
 							isSimple
