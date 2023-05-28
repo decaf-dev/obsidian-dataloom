@@ -38,7 +38,8 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 		menuId: menu.id,
 		menuPositionEl: menuPosition.positionRef.current,
 		menuPosition: menuPosition.position,
-		leftOffset: -95,
+		openDirection: "left",
+		topOffset: 7,
 	});
 
 	return (

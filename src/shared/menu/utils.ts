@@ -27,12 +27,14 @@ export const shiftMenuIntoViewContent = ({
 	menuId,
 	menuPositionEl,
 	menuPosition,
+	openDirection = "normal",
 	topOffset = 0,
 	leftOffset = 0,
 }: {
 	menuId: string;
 	menuPositionEl: HTMLElement | null;
 	menuPosition: Position;
+	openDirection?: "left" | "right" | "normal";
 	topOffset?: number;
 	leftOffset?: number;
 }) => {
@@ -47,8 +49,8 @@ export const shiftMenuIntoViewContent = ({
 
 		const containerPosition = getElementPosition(viewContentEl);
 
-		let menuElWidth = menuPosition.width;
-		let menuElHeight = menuPosition.height;
+		let menuWidth = menuPosition.width;
+		let menuHeight = menuPosition.height;
 
 		//The menu position contains the position of the menu container, not the menu itself
 		//This means that the top and left values of the menu will match the menu container,
@@ -61,8 +63,9 @@ export const shiftMenuIntoViewContent = ({
 		if (menu) {
 			const menuContainerEl = menu.firstChild as HTMLElement;
 			const { width, height } = menuContainerEl.getBoundingClientRect();
-			menuElWidth = Math.ceil(width);
-			menuElHeight = Math.ceil(height);
+
+			menuWidth = Math.ceil(width);
+			menuHeight = Math.ceil(height);
 
 			//It takes 2 renders to calculate the correct position for the menu.
 			//When you first open the menu, the menu container is set to the width and height of the menuPositionRef.
@@ -73,12 +76,19 @@ export const shiftMenuIntoViewContent = ({
 			isMenuReady = true;
 		}
 
+		let top = menuPosition.top + topOffset;
+		let left = menuPosition.left + leftOffset;
+		if (openDirection === "left") {
+			left = menuPosition.left - menuWidth;
+		} else if (openDirection === "right") {
+			left = menuPosition.left + menuPosition.width;
+		}
 		return {
 			position: moveElementIntoContainer(containerPosition, {
-				top: menuPosition.top + topOffset,
-				left: menuPosition.left + leftOffset,
-				width: menuElWidth,
-				height: menuElHeight,
+				top,
+				left,
+				width: menuWidth,
+				height: menuHeight,
 			}),
 			isMenuReady,
 		};

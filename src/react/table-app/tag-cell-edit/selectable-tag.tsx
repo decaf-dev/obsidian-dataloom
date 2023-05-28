@@ -48,7 +48,7 @@ export default function SelectableTag({
 		menuId: menu.id,
 		menuPositionEl: menuPosition.positionRef.current,
 		menuPosition: menuPosition.position,
-		leftOffset: 235,
+		leftOffset: 180,
 	});
 	return (
 		<>

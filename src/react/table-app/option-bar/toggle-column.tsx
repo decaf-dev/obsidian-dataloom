@@ -31,7 +31,7 @@ export default function ToggleColumn({ columns, onToggle }: Props) {
 		menuId: menu.id,
 		menuPositionEl: menuPosition.positionRef.current,
 		menuPosition: menuPosition.position,
-		leftOffset: -175,
+		openDirection: "left",
 	});
 	return (
 		<>

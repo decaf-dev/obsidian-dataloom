@@ -114,8 +114,8 @@ export default function DateCellEdit({
 		menuId: menu.id,
 		menuPositionEl: menuPosition.positionRef.current,
 		menuPosition: menuPosition.position,
-		topOffset: 50,
-		leftOffset: 135,
+		topOffset: 35,
+		leftOffset: 115,
 	});
 
 	const tableBackgroundColor = getTableBackgroundColor();
