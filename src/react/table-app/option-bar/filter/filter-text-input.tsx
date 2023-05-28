@@ -53,20 +53,7 @@ export default function FilterTextInput({
 					</option>
 				</select>
 			)}
-			{cellType == CellType.TAG && (
-				<select
-					value={tagIds.length !== 0 ? tagIds[0] : ""}
-					onChange={(e) => onTagsChange(id, [e.target.value])}
-				>
-					<option value="">Select an option</option>
-					{columnTags.map((tag) => (
-						<option key={tag.id} value={tag.id}>
-							{tag.markdown}
-						</option>
-					))}
-				</select>
-			)}
-			{cellType == CellType.MULTI_TAG && (
+			{(cellType === CellType.TAG || cellType == CellType.MULTI_TAG) && (
 				<Select
 					className="react-select"
 					styles={{
@@ -78,6 +65,7 @@ export default function FilterTextInput({
 							...base,
 							// This line disable the blue border
 							border: 0,
+							backgroundColor: "var(--interactive-normal)",
 							boxShadow: "var(--input-shadow)",
 							borderRadius: "var(--input-radius)",
 							"&:focus-within": {
@@ -101,22 +89,61 @@ export default function FilterTextInput({
 						}),
 						input: (base) => ({
 							...base,
+							color: "var(--text-on-accent)",
 							fontSize: "var(--font-ui-small)",
+						}),
+						menu: (base) => ({
+							...base,
+							backgroundColor: "var(--background-primary)",
+						}),
+						singleValue: (base) => ({
+							...base,
+							color: "var(--text-on-accent)",
+							backgroundColor: "var(--color-accent)",
+							fontSize: "var(--font-ui-smaller)",
+							padding: "3px",
+							paddingLeft: "6px",
+						}),
+						multiValue: (base) => ({
+							...base,
+							backgroundColor: "var(--color-accent)",
+						}),
+						multiValueLabel: (base) => ({
+							...base,
+							fontSize: "var(--font-ui-smaller)",
+							color: "var(--text-on-accent)",
+						}),
+						multiValueRemove: (base) => ({
+							...base,
+							"&:hover": {
+								backgroundColor:
+									"var(--background-modifier-hover)",
+								color: "var(--text-on-accent)",
+							},
 						}),
 					}}
 					getOptionLabel={(tag) => tag.markdown}
 					getOptionValue={(tag) => tag.id}
 					options={columnTags}
-					isClearable
-					isMulti
+					isClearable={false}
+					isMulti={cellType === CellType.MULTI_TAG}
 					backspaceRemovesValue
 					value={columnTags.filter((tag) => tagIds.includes(tag.id))}
-					onChange={(value) =>
-						onTagsChange(
-							id,
-							value?.map((tag) => tag.id)
-						)
-					}
+					onChange={(value) => {
+						if (cellType === CellType.MULTI_TAG) {
+							onTagsChange(
+								id,
+								//@ts-ignore
+								value?.map((tag) => tag.id)
+							);
+						} else {
+							onTagsChange(
+								id,
+								//@ts-ignore
+								[value?.id]
+							);
+						}
+					}}
 				/>
 			)}
 		</>
