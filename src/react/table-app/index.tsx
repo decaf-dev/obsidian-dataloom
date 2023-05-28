@@ -21,6 +21,7 @@ import { useCell } from "src/shared/table-state/use-cell";
 import { useTag } from "src/shared/table-state/use-tag";
 
 import "./styles.css";
+import { css } from "@emotion/react";
 
 interface Props {
 	viewLeaf: WorkspaceLeaf;
@@ -309,21 +310,33 @@ export default function TableApp({ viewLeaf }: Props) {
 									return {
 										id: cell.id,
 										content: (
-											<FunctionCell
-												columnId={columnId}
-												width={width}
-												columnTags={tags}
-												cellId={cellId}
-												currencyType={currencyType}
-												dateFormat={dateFormat}
-												bodyCells={columnBodyCells}
-												bodyRows={filteredBodyRows}
-												functionType={functionType}
-												cellType={type}
-												onFunctionTypeChange={
-													handleFunctionTypeChange
-												}
-											/>
+											<div
+												className="NLT__footer-td-container"
+												css={css`
+													padding: var(
+															--nlt-cell-spacing-x
+														)
+														var(
+															--nlt-cell-spacing-y
+														);
+												`}
+											>
+												<FunctionCell
+													columnId={columnId}
+													width={width}
+													columnTags={tags}
+													cellId={cellId}
+													currencyType={currencyType}
+													dateFormat={dateFormat}
+													bodyCells={columnBodyCells}
+													bodyRows={filteredBodyRows}
+													functionType={functionType}
+													cellType={type}
+													onFunctionTypeChange={
+														handleFunctionTypeChange
+													}
+												/>
+											</div>
 										),
 									};
 								}),

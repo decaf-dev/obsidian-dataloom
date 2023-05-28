@@ -1,5 +1,4 @@
 .NLT__function-cell {
-    padding: var(--nlt-cell-spacing-x) var(--nlt-cell-spacing-y);
     display: flex;
     justify-content: flex-end;
     cursor: pointer;
