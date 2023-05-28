@@ -44,7 +44,7 @@ export default function FilterRow({
 	onTagsChange,
 }: Props) {
 	return (
-		<Wrap width={{ base: "100%", mobile: "100vw" }}>
+		<Wrap>
 			<FilterColumnDropdown
 				id={id}
 				columns={columns}

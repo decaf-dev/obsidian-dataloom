@@ -10,7 +10,9 @@ import { FilterRule, FilterType } from "src/shared/types/types";
 import { ColumNotFoundError } from "src/shared/table-state/table-error";
 import { ColumnWithMarkdown } from "../types";
 import React, { useRef } from "react";
-import { useCompare, usePrevious } from "src/shared/hooks";
+import { usePrevious } from "src/shared/hooks";
+import { css } from "@emotion/react";
+import { isMobile } from "src/shared/renderUtils";
 
 interface Props {
 	id: string;
@@ -69,7 +71,12 @@ export default function FilterMenu({
 			maxHeight={255}
 			ref={menuRef}
 		>
-			<div className="NLT__filter-menu">
+			<div
+				className="NLT__filter-menu"
+				css={css`
+					width: ${isMobile() ? "100vw" : "unset"};
+				`}
+			>
 				<Padding p="md">
 					<Stack spacing="lg" isVertical>
 						{filterRules.map((rule) => {

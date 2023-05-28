@@ -24,9 +24,13 @@ export const getDynamicSize = <T>(
 
 	const { base, mobile } = value as DynamicSize<T>;
 
-	if (window.innerWidth <= 480) {
+	if (isMobile()) {
 		return mobile ?? base;
 	} else {
 		return base;
 	}
+};
+
+export const isMobile = () => {
+	return window.innerWidth <= 480;
 };
