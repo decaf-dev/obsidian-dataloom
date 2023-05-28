@@ -72,7 +72,7 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 						{row.cells.map((cell) => {
 							const { id, content } = cell;
 							return (
-								<td key={id} className="NLT__td-footer">
+								<td key={id} className="NLT__footer-td">
 									{content}
 								</td>
 							);
@@ -115,7 +115,7 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 									border-bottom: 0;
 								}
 							`}
-							className="NLT__td-body"
+							className="NLT__body-td"
 						>
 							{content}
 						</td>
