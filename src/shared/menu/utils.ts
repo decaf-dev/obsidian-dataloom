@@ -116,27 +116,23 @@ const shiftElementIntoContainer = (
 
 	// Shift up if the element is below
 	if (element.top + element.height > container.top + container.height) {
-		console.log("HERE 1");
 		newTop =
 			container.top + container.height - element.height - PADDING_OFFSET;
 	}
 
 	// Shift left if the element is to the right
 	if (element.left + element.width > container.left + container.width) {
-		console.log("HERE 2");
 		newLeft =
 			container.left + container.width - element.width - PADDING_OFFSET;
 	}
 
 	//Shift down if the element is above
 	if (element.top < container.top) {
-		console.log("HERE 3");
 		newTop = container.top + PADDING_OFFSET;
 	}
 
 	//Shift right if the element is to the left
 	if (element.left < container.left) {
-		console.log("HERE 4");
 		newLeft = container.left + PADDING_OFFSET;
 	}
 

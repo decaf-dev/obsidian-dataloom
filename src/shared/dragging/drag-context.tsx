@@ -1,5 +1,5 @@
 import React from "react";
-import { TableDataTransferItem } from "./types";
+import { DragData } from "./types";
 
 type DropZone = {
 	id: string;
@@ -10,11 +10,9 @@ type DropZone = {
 };
 
 interface ContextProps {
-	dragData: TableDataTransferItem | null;
+	dragData: DragData | null;
 	touchDropZone: DropZone | null;
-	setDragData: React.Dispatch<
-		React.SetStateAction<TableDataTransferItem | null>
-	>;
+	setDragData: React.Dispatch<React.SetStateAction<DragData | null>>;
 	setTouchDropZone: React.Dispatch<React.SetStateAction<DropZone | null>>;
 }
 
@@ -36,8 +34,7 @@ interface Props {
 }
 
 export default function DragProvider({ children }: Props) {
-	const [dragData, setDragData] =
-		React.useState<TableDataTransferItem | null>(null);
+	const [dragData, setDragData] = React.useState<DragData | null>(null);
 	const [touchDropZone, setTouchDropZone] = React.useState(null);
 	return (
 		<DragContext.Provider
