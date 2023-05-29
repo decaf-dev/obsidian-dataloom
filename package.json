@@ -45,6 +45,7 @@
 		"@emotion/react": "^11.11.0",
 		"@emotion/styled": "^11.10.4",
 		"@reduxjs/toolkit": "^1.8.5",
+		"fuzzysort": "^2.0.4",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"react-redux": "^8.0.4",
