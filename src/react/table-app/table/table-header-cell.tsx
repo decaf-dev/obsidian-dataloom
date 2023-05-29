@@ -115,8 +115,7 @@ export default function TableHeaderCell({
 	}
 
 	function handleTouchStart(e: React.TouchEvent) {
-		//Prevent Obsidian pane from opening
-		e.preventDefault();
+		e.stopPropagation();
 
 		//The target will be the td element
 		//The current target will be the parent tr element
@@ -125,8 +124,7 @@ export default function TableHeaderCell({
 	}
 
 	const handleTouchMove = (e: React.TouchEvent) => {
-		//Prevent Obsidian pane from opening
-		e.preventDefault();
+		e.stopPropagation();
 
 		if (dragData == null) return;
 
