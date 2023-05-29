@@ -4,10 +4,11 @@ import Padding from "src/react/shared/padding";
 import Stack from "src/react/shared/stack";
 import { CellType, SortDir } from "src/shared/types/types";
 import { SubmenuType } from "../../types";
-import { useFocusMenuInput, useInputSelection } from "src/shared/hooks";
+import { useInputSelection } from "src/shared/hooks";
 import { getDisplayNameForCellType } from "src/shared/table-state/display-name";
 import { css } from "@emotion/react";
 import { getTableBackgroundColor, getTableBorderColor } from "src/shared/color";
+import React from "react";
 
 interface Props {
 	columnName: string;
@@ -28,10 +29,7 @@ export default function BaseMenu({
 	onSortClick,
 	onSubmenuChange,
 }: Props) {
-	const inputRef = useFocusMenuInput(columnName, (value) =>
-		handleInputChange(value, true)
-	);
-
+	const inputRef = React.useRef<HTMLInputElement | null>(null);
 	const { setPreviousSelectionStart } = useInputSelection(
 		inputRef,
 		columnName
@@ -62,6 +60,7 @@ export default function BaseMenu({
 			<Stack spacing="sm" isVertical>
 				<Padding px="md" py="sm">
 					<input
+						autoFocus
 						css={css`
 							background-color: ${tableBackgroundColor};
 							border: 1px solid ${tableBorderColor};

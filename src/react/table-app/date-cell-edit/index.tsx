@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import MenuItem from "src/react/shared/menu-item";
 import Stack from "src/react/shared/stack";
@@ -10,7 +10,7 @@ import {
 	unixTimeToDateString,
 } from "src/shared/date/date-conversion";
 import { DateFormat } from "src/shared/types/types";
-import { useCompare, useFocusMenuInput } from "src/shared/hooks";
+import { useCompare } from "src/shared/hooks";
 import DateFormatMenu from "./components/DateFormatMenu";
 import { useMenu } from "src/shared/menu/hooks";
 import { MenuLevel } from "src/shared/menu/types";
@@ -56,7 +56,7 @@ export default function DateCellEdit({
 
 	const [isInputInvalid, setInputInvalid] = useState(false);
 	const [closeTime, setCloseTime] = useState(0);
-	const inputRef = useFocusMenuInput(value?.toString() || "", setLocalValue);
+	const inputRef = React.useRef<HTMLInputElement | null>(null);
 
 	useEffect(() => {
 		setLocalValue(

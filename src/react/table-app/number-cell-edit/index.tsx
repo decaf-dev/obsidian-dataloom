@@ -1,7 +1,8 @@
-import { useFocusMenuInput, useInputSelection } from "src/shared/hooks";
+import { useInputSelection } from "src/shared/hooks";
 import { isValidNumberInput } from "src/shared/validators";
 
 import "./styles.css";
+import React from "react";
 
 interface Props {
 	value: string;
@@ -9,13 +10,7 @@ interface Props {
 }
 
 export default function NumberCellEdit({ value, onChange }: Props) {
-	const inputRef = useFocusMenuInput(
-		value,
-		(updatedValue) => handleChange(updatedValue, true),
-		{
-			isNumeric: true,
-		}
-	);
+	const inputRef = React.useRef<HTMLInputElement | null>(null);
 	const { setPreviousSelectionStart } = useInputSelection(inputRef, value);
 
 	function handleChange(inputValue: string, setSelectionToLength = false) {
@@ -38,6 +33,7 @@ export default function NumberCellEdit({ value, onChange }: Props) {
 	return (
 		<div className="NLT__number-cell-edit">
 			<input
+				autoFocus
 				type="text" //We use an input of type text so that the selection is available
 				ref={inputRef}
 				inputMode="numeric"
