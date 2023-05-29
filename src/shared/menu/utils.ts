@@ -64,7 +64,7 @@ export const useShiftMenu = (
 			if (openDirection === "left") {
 				left = left - menuRect.width;
 			} else if (openDirection === "right") {
-				left = left + menuRect.width;
+				left = left + triggerRefRect.width;
 			}
 
 			const isMobile = Platform.isMobile;
