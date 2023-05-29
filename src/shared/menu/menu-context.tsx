@@ -196,6 +196,10 @@ export default function MenuProvider({ children }: Props) {
 			}
 		}
 
+		function handleEscapeDown(e: KeyboardEvent) {
+			if (isMenuOpen()) closeTopMenu();
+		}
+
 		function handleTabDown(e: KeyboardEvent) {
 			if (isMenuOpen()) {
 				// Disallow the default event which will change focus to the next element
@@ -285,6 +289,8 @@ export default function MenuProvider({ children }: Props) {
 				case "Enter":
 					handleEnterDown(e);
 					break;
+				case "Escape":
+					handleEscapeDown(e);
 				case "Tab":
 					handleTabDown(e);
 					break;
