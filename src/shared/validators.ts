@@ -1,7 +1,6 @@
 import { GeneralFunction, NumberFunction } from "src/shared/types/types";
 import {
 	NUMBER_REGEX,
-	TAG_REGEX,
 	DATE_REGEX,
 	CHECKBOX_REGEX,
 	CHECKBOX_CHECKED_REGEX,
@@ -26,10 +25,6 @@ export const isCheckbox = (input: string): boolean => {
 
 export const isCheckboxChecked = (input: string): boolean => {
 	return input.match(CHECKBOX_CHECKED_REGEX) !== null;
-};
-
-export const isTag = (input: string): boolean => {
-	return input.match(TAG_REGEX) !== null;
 };
 
 export const isGeneralFunction = (
