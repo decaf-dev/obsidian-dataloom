@@ -26,6 +26,7 @@ export default function Icon({
 				const div = document.body.createDiv();
 				div.style.display = "flex";
 				div.style.color = color;
+				div.style.pointerEvents = "none";
 
 				if (size === "sm") {
 					div.style.width = "0.9rem";

@@ -88,9 +88,7 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 					return (
 						<td
 							key={cellId}
-							data-row-id={
-								i === cells.length - 1 ? rowId : undefined
-							}
+							data-row-id={i === 0 ? rowId : undefined}
 							css={css`
 								border-top: 0;
 								border-bottom: 1px solid ${tableBorderColor};
