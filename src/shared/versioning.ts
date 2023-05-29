@@ -1,5 +1,5 @@
-export const legacyVersionToString = (number: string) => {
-	return number.split("").join(".");
+export const legacyVersionToString = (version: number) => {
+	return version.toString().split("").join(".");
 };
 
 export const isVersionLessThan = (oldVersion: string, newVersion: string) => {

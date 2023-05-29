@@ -2,7 +2,7 @@ import { isVersionLessThan, legacyVersionToString } from "./versioning";
 
 describe("legacyVersionToString", () => {
 	it("should return a version string", () => {
-		const result = legacyVersionToString("152");
+		const result = legacyVersionToString(152);
 		expect(result).toEqual("1.5.2");
 	});
 });
