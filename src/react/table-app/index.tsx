@@ -73,6 +73,7 @@ export default function TableApp({ viewLeaf }: Props) {
 		handleTagDeleteClick,
 	} = useTag();
 
+	const firstColumnId = useUUID();
 	const lastColumnId = useUUID();
 
 	const {
@@ -114,6 +115,11 @@ export default function TableApp({ viewLeaf }: Props) {
 					return {
 						id: row.id,
 						cells: [
+							{
+								id: firstColumnId,
+								columnId: firstColumnId,
+								content: <></>,
+							},
 							...visibleColumns.map((column) => {
 								const {
 									id: columnId,
@@ -187,15 +193,19 @@ export default function TableApp({ viewLeaf }: Props) {
 					};
 				})}
 				bodyRows={filteredBodyRows.map((row) => {
-					const {
-						id: rowId,
-						menuCellId,
-						lastEditedTime,
-						creationTime,
-					} = row;
+					const { id: rowId, lastEditedTime, creationTime } = row;
 					return {
 						id: rowId,
 						cells: [
+							{
+								id: firstColumnId,
+								content: (
+									<RowOptions
+										rowId={rowId}
+										onDeleteClick={handleRowDeleteClick}
+									/>
+								),
+							},
 							...visibleColumns.map((column) => {
 								const {
 									id: columnId,
@@ -267,13 +277,8 @@ export default function TableApp({ viewLeaf }: Props) {
 								};
 							}),
 							{
-								id: menuCellId,
-								content: (
-									<RowOptions
-										rowId={rowId}
-										onDeleteClick={handleRowDeleteClick}
-									/>
-								),
+								id: lastColumnId,
+								content: <></>,
 							},
 						],
 					};
@@ -283,6 +288,10 @@ export default function TableApp({ viewLeaf }: Props) {
 						return {
 							id: row.id,
 							cells: [
+								{
+									id: firstColumnId,
+									content: <></>,
+								},
 								...visibleColumns.map((column) => {
 									const {
 										id: columnId,
@@ -344,6 +353,10 @@ export default function TableApp({ viewLeaf }: Props) {
 					return {
 						id: row.id,
 						cells: [
+							{
+								id: firstColumnId,
+								content: <></>,
+							},
 							...visibleColumns.map((column, i) => {
 								const cell = footerCells.find(
 									(cell) =>

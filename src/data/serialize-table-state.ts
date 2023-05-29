@@ -242,7 +242,7 @@ export const deserializeTableState = (data: string): TableState => {
 	//Feat: support tag sorting
 	if (isVersionLessThan(pluginVersion, "6.10.0")) {
 		const tableState = currentState as TableState691;
-		const { columns, tags, bodyCells } = tableState.model;
+		const { columns, tags, bodyCells, bodyRows } = tableState.model;
 
 		//Migrate tags to the columns and cells
 		columns.forEach((column: unknown) => {
@@ -283,6 +283,14 @@ export const deserializeTableState = (data: string): TableState => {
 		const unknownModel = tableState.model as unknown;
 		const typedModel = unknownModel as Record<string, unknown>;
 		delete typedModel.tags;
+
+		//Delete unnecessary properties
+		bodyRows.forEach((row: unknown) => {
+			const typedRow = row as Record<string, unknown>;
+			if (typedRow.hasOwnProperty("menuCellId")) {
+				delete typedRow.menuCellId;
+			}
+		});
 	}
 
 	const tableState = currentState as TableState;

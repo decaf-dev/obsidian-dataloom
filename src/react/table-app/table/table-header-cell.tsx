@@ -203,7 +203,10 @@ export default function TableHeaderCell({
 				z-index: 1;
 
 				&:first-of-type {
+					border-top: 0;
 					border-left: 0;
+					border-bottom: 0;
+					background-color: var(--background-primary);
 				}
 
 				&:last-of-type {
