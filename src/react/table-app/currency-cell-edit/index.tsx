@@ -1,21 +1,15 @@
-import { useFocusMenuInput, useInputSelection } from "src/shared/hooks";
+import { useInputSelection } from "src/shared/hooks";
 import { isValidNumberInput } from "src/shared/validators";
 
 import "./styles.css";
+import React from "react";
 interface Props {
 	value: string;
 	onChange: (value: string) => void;
 }
 
 export default function CurrencyCellEdit({ value, onChange }: Props) {
-	const inputRef = useFocusMenuInput(
-		value,
-		(value) => handleChange(value, true),
-		{
-			isNumeric: true,
-		}
-	);
-
+	const inputRef = React.useRef<HTMLInputElement | null>(null);
 	const { setPreviousSelectionStart } = useInputSelection(inputRef, value);
 
 	function handleChange(inputValue: string, setSelectionToLength = false) {
@@ -37,6 +31,7 @@ export default function CurrencyCellEdit({ value, onChange }: Props) {
 	return (
 		<div className="NLT__currency-cell-edit">
 			<input
+				autoFocus
 				ref={inputRef}
 				type="text" //We use an input of type text so that the selection is available
 				inputMode="numeric"

@@ -3,8 +3,8 @@ import { Tag as TagType } from "src/shared/types/types";
 import Tag from "src/react/shared/tag";
 import Wrap from "src/react/shared/wrap";
 
-import { useFocusMenuInput } from "src/shared/hooks";
 import { getTableBackgroundColor, getTableBorderColor } from "src/shared/color";
+import React from "react";
 
 interface MenuHeaderProps {
 	cellTags: TagType[];
@@ -19,7 +19,7 @@ export default function MenuHeader({
 	onInputValueChange,
 	onRemoveTag,
 }: MenuHeaderProps) {
-	const inputRef = useFocusMenuInput(inputValue, onInputValueChange);
+	const inputRef = React.useRef<HTMLInputElement | null>(null);
 
 	function handleInputChange(value: string) {
 		// If the value starts with whitespace don't add the tag
