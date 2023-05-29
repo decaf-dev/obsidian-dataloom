@@ -15,7 +15,6 @@ import {
 
 interface ContextProps {
 	openMenus: Menu[];
-	menuKey: string | null;
 	menuCloseRequestTime: number | null;
 	openMenu: (menu: Menu) => void;
 	closeTopMenu: (shouldFocusTriggerOnClose?: boolean) => void;
@@ -45,11 +44,6 @@ export default function MenuProvider({ children }: Props) {
 	const [openMenus, setOpenMenus] = React.useState<Menu[]>([]);
 
 	/**
-	 * The key that was used to open the menu
-	 */
-	const [menuKey, setMenuKey] = React.useState<string | null>(null);
-
-	/**
 	 * A reference to the current table state
 	 */
 	const { tableId, tableState } = useTableState();
@@ -74,7 +68,6 @@ export default function MenuProvider({ children }: Props) {
 	 * { id: "d57b26a2-0e0d-4c9a-ad54-7a8d4e0b517c", level: 3}
 	 */
 	const topLevelMenu = React.useCallback(() => {
-		setMenuKey(null);
 		return openMenus.last();
 	}, [openMenus]);
 
@@ -203,6 +196,10 @@ export default function MenuProvider({ children }: Props) {
 			}
 		}
 
+		function handleEscapeDown(e: KeyboardEvent) {
+			if (isMenuOpen()) closeTopMenu();
+		}
+
 		function handleTabDown(e: KeyboardEvent) {
 			if (isMenuOpen()) {
 				// Disallow the default event which will change focus to the next element
@@ -292,6 +289,8 @@ export default function MenuProvider({ children }: Props) {
 				case "Enter":
 					handleEnterDown(e);
 					break;
+				case "Escape":
+					handleEscapeDown(e);
 				case "Tab":
 					handleTabDown(e);
 					break;
@@ -312,9 +311,6 @@ export default function MenuProvider({ children }: Props) {
 
 					if (e.key.length !== 1) return;
 					openMenuFromFocusedTrigger();
-					//Our menu will render twice, so the key won't enter the input
-					//We will save the key value so we can apply it in our menu
-					setMenuKey(e.key);
 					break;
 			}
 		}
@@ -331,7 +327,6 @@ export default function MenuProvider({ children }: Props) {
 			value={{
 				openMenus,
 				openMenu,
-				menuKey,
 				menuCloseRequestTime,
 				closeTopMenu,
 			}}

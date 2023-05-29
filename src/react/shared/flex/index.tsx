@@ -1,8 +1,14 @@
+import { css } from "@emotion/react";
+import {
+	AlignItems,
+	FlexDirection,
+	JustifyContent,
+} from "src/shared/renderTypes";
+
 interface Props {
-	className?: string;
-	flexDir?: "column" | "row";
-	align?: "flex-start" | "center" | "flex-end";
-	justify?: "flex-start" | "center" | "flex-end" | "space-between";
+	flexDir?: FlexDirection;
+	justify?: JustifyContent;
+	align?: AlignItems;
 	children: React.ReactNode;
 }
 
@@ -10,20 +16,18 @@ export default function Flex({
 	flexDir = "row",
 	justify = "flex-start",
 	align = "flex-start",
-	className = "",
 	children,
 }: Props) {
 	return (
 		<div
-			style={{
-				width: "100%",
-				display: "flex",
-				flexDirection: flexDir,
-				justifyContent: justify,
-				alignItems: align,
-				flexWrap: "wrap",
-			}}
-			className={className}
+			css={css`
+				width: 100%;
+				display: flex;
+				flex-direction: ${flexDir};
+				justify-content: ${justify};
+				align-items: ${align};
+				flex-wrap: wrap;
+			`}
 		>
 			{children}
 		</div>

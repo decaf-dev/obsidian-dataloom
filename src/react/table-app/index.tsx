@@ -1,5 +1,3 @@
-import React from "react";
-
 import { WorkspaceLeaf } from "obsidian";
 
 import Table from "./table";
@@ -12,7 +10,6 @@ import NewColumnButton from "./new-column-button";
 import HeaderCell from "./header-cell";
 
 import { useAppSelector } from "../../redux/global/hooks";
-import { sortRows } from "../../shared/table-state/sort-state-operations";
 import { useUUID } from "../../shared/hooks";
 import { CellNotFoundError } from "../../shared/table-state/table-error";
 import { useTableState } from "../../shared/table-state/table-state-context";
@@ -24,13 +21,14 @@ import { useCell } from "src/shared/table-state/use-cell";
 import { useTag } from "src/shared/table-state/use-tag";
 
 import "./styles.css";
+import { css } from "@emotion/react";
 
 interface Props {
 	viewLeaf: WorkspaceLeaf;
 }
 
 export default function TableApp({ viewLeaf }: Props) {
-	const { searchText, sortTime } = useAppSelector((state) => state.global);
+	const { searchText } = useAppSelector((state) => state.global);
 	const { tableId, tableState, setTableState } = useTableState();
 
 	const {
@@ -75,13 +73,8 @@ export default function TableApp({ viewLeaf }: Props) {
 		handleTagDeleteClick,
 	} = useTag();
 
+	const firstColumnId = useUUID();
 	const lastColumnId = useUUID();
-
-	React.useEffect(() => {
-		if (sortTime !== 0) {
-			setTableState((prevState) => sortRows(prevState));
-		}
-	}, [sortTime]);
 
 	const {
 		headerRows,
@@ -90,7 +83,6 @@ export default function TableApp({ viewLeaf }: Props) {
 		headerCells,
 		bodyCells,
 		footerCells,
-		tags,
 		filterRules,
 	} = tableState.model;
 
@@ -106,7 +98,6 @@ export default function TableApp({ viewLeaf }: Props) {
 		<div id={tableId} className="NLT__app">
 			<OptionBar
 				headerCells={headerCells}
-				tags={tags}
 				columns={columns}
 				filterRules={filterRules}
 				onColumnToggle={handleColumnToggle}
@@ -124,6 +115,11 @@ export default function TableApp({ viewLeaf }: Props) {
 					return {
 						id: row.id,
 						cells: [
+							{
+								id: firstColumnId,
+								columnId: firstColumnId,
+								content: <></>,
+							},
 							...visibleColumns.map((column) => {
 								const {
 									id: columnId,
@@ -197,15 +193,19 @@ export default function TableApp({ viewLeaf }: Props) {
 					};
 				})}
 				bodyRows={filteredBodyRows.map((row) => {
-					const {
-						id: rowId,
-						menuCellId,
-						lastEditedTime,
-						creationTime,
-					} = row;
+					const { id: rowId, lastEditedTime, creationTime } = row;
 					return {
 						id: rowId,
 						cells: [
+							{
+								id: firstColumnId,
+								content: (
+									<RowOptions
+										rowId={rowId}
+										onDeleteClick={handleRowDeleteClick}
+									/>
+								),
+							},
 							...visibleColumns.map((column) => {
 								const {
 									id: columnId,
@@ -214,6 +214,7 @@ export default function TableApp({ viewLeaf }: Props) {
 									shouldWrapOverflow,
 									currencyType,
 									dateFormat,
+									tags,
 								} = column;
 
 								const cell = bodyCells.find(
@@ -222,11 +223,12 @@ export default function TableApp({ viewLeaf }: Props) {
 										cell.rowId === row.id
 								);
 								if (!cell) throw new CellNotFoundError();
-								const { id: cellId, markdown, dateTime } = cell;
-
-								const filteredTags = tags.filter(
-									(tag) => tag.columnId === column.id
-								);
+								const {
+									id: cellId,
+									markdown,
+									dateTime,
+									tagIds,
+								} = cell;
 
 								return {
 									id: cellId,
@@ -235,7 +237,8 @@ export default function TableApp({ viewLeaf }: Props) {
 											key={cellId}
 											cellId={cellId}
 											rowId={rowId}
-											tags={filteredTags}
+											columnTags={tags}
+											cellTagIds={tagIds}
 											columnId={columnId}
 											rowCreationTime={creationTime}
 											dateFormat={dateFormat}
@@ -274,13 +277,8 @@ export default function TableApp({ viewLeaf }: Props) {
 								};
 							}),
 							{
-								id: menuCellId,
-								content: (
-									<RowOptions
-										rowId={rowId}
-										onDeleteClick={handleRowDeleteClick}
-									/>
-								),
+								id: lastColumnId,
+								content: <></>,
 							},
 						],
 					};
@@ -290,6 +288,10 @@ export default function TableApp({ viewLeaf }: Props) {
 						return {
 							id: row.id,
 							cells: [
+								{
+									id: firstColumnId,
+									content: <></>,
+								},
 								...visibleColumns.map((column) => {
 									const {
 										id: columnId,
@@ -297,6 +299,7 @@ export default function TableApp({ viewLeaf }: Props) {
 										currencyType,
 										dateFormat,
 										width,
+										tags,
 									} = column;
 									const cell = footerCells.find(
 										(cell) =>
@@ -306,7 +309,7 @@ export default function TableApp({ viewLeaf }: Props) {
 									if (!cell) throw new CellNotFoundError();
 									const { id: cellId, functionType } = cell;
 
-									const filteredBodyCells = bodyCells.filter(
+									const columnBodyCells = bodyCells.filter(
 										(cell) =>
 											filteredBodyRows.find(
 												(row) => row.id === cell.rowId
@@ -316,21 +319,27 @@ export default function TableApp({ viewLeaf }: Props) {
 									return {
 										id: cell.id,
 										content: (
-											<FunctionCell
-												columnId={columnId}
-												width={width}
-												tags={tags}
-												cellId={cellId}
-												currencyType={currencyType}
-												dateFormat={dateFormat}
-												bodyCells={filteredBodyCells}
-												bodyRows={filteredBodyRows}
-												functionType={functionType}
-												cellType={type}
-												onFunctionTypeChange={
-													handleFunctionTypeChange
-												}
-											/>
+											<div
+												className="NLT__footer-td-container"
+												css={css`
+													width: ${width};
+												`}
+											>
+												<FunctionCell
+													columnId={columnId}
+													columnTags={tags}
+													cellId={cellId}
+													currencyType={currencyType}
+													dateFormat={dateFormat}
+													bodyCells={columnBodyCells}
+													bodyRows={filteredBodyRows}
+													functionType={functionType}
+													cellType={type}
+													onFunctionTypeChange={
+														handleFunctionTypeChange
+													}
+												/>
+											</div>
 										),
 									};
 								}),
@@ -344,6 +353,10 @@ export default function TableApp({ viewLeaf }: Props) {
 					return {
 						id: row.id,
 						cells: [
+							{
+								id: firstColumnId,
+								content: <></>,
+							},
 							...visibleColumns.map((column, i) => {
 								const cell = footerCells.find(
 									(cell) =>

@@ -1,33 +1,25 @@
 import { css } from "@emotion/react";
-import { Tag as TagType } from "src/shared/table-state/types";
+import { Tag as TagType } from "src/shared/types/types";
 import Tag from "src/react/shared/tag";
 import Wrap from "src/react/shared/wrap";
 
-import { useFocusMenuInput } from "src/shared/hooks";
 import { getTableBackgroundColor, getTableBorderColor } from "src/shared/color";
+import React from "react";
 
 interface MenuHeaderProps {
-	cellId: string;
-	isMenuVisible: boolean;
-	tags: TagType[];
+	cellTags: TagType[];
 	inputValue: string;
 	onInputValueChange: (value: string) => void;
 	onRemoveTag: (tagId: string) => void;
 }
 
 export default function MenuHeader({
-	isMenuVisible,
-	cellId,
-	tags,
+	cellTags,
 	inputValue,
 	onInputValueChange,
 	onRemoveTag,
 }: MenuHeaderProps) {
-	const inputRef = useFocusMenuInput(
-		isMenuVisible,
-		inputValue,
-		onInputValueChange
-	);
+	const inputRef = React.useRef<HTMLInputElement | null>(null);
 
 	function handleInputChange(value: string) {
 		// If the value starts with whitespace don't add the tag
@@ -47,19 +39,17 @@ export default function MenuHeader({
 			`}
 		>
 			<Wrap spacingX="sm">
-				{tags
-					.filter((tag) => tag.cellIds.find((c) => c === cellId))
-					.map((tag) => (
-						<Tag
-							key={tag.id}
-							id={tag.id}
-							color={tag.color}
-							markdown={tag.markdown}
-							maxWidth="150px"
-							showRemove
-							onRemoveClick={onRemoveTag}
-						/>
-					))}
+				{cellTags.map((tag) => (
+					<Tag
+						key={tag.id}
+						id={tag.id}
+						color={tag.color}
+						markdown={tag.markdown}
+						maxWidth="150px"
+						showRemove
+						onRemoveClick={onRemoveTag}
+					/>
+				))}
 				<input
 					css={css`
 						background-color: transparent !important;

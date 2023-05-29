@@ -1,4 +1,4 @@
-import { Color } from "src/shared/types";
+import { Color } from "src/shared/types/types";
 import { useOverflowClassName } from "src/shared/spacing/hooks";
 import Tag from "../../shared/tag";
 

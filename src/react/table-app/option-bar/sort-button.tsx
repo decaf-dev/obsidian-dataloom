@@ -1,5 +1,5 @@
 import { Button } from "src/react/shared/button";
-import { SortDir } from "src/shared/table-state/types";
+import { SortDir } from "src/shared/types/types";
 import Stack from "src/react/shared/stack";
 import Icon from "src/react/shared/icon";
 import { css } from "@emotion/react";
@@ -33,7 +33,16 @@ export default function SortBubble({
 					) : (
 						<Icon lucideId="arrow-down" />
 					)}
-					<span>{markdown}</span>
+					<span
+						css={css`
+							max-width: 150px;
+							overflow: hidden;
+							text-overflow: ellipsis;
+							white-space: nowrap;
+						`}
+					>
+						{markdown}
+					</span>
 				</Stack>
 				<Button
 					icon={<Icon lucideId="x" color="var(--text-on-accent)" />}

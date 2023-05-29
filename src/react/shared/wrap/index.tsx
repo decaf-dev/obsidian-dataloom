@@ -1,28 +1,40 @@
+import { css } from "@emotion/react";
+import { AlignItems, JustifyContent } from "src/shared/renderTypes";
+import { getDynamicSize } from "src/shared/renderUtils";
 import { getSpacing } from "src/shared/spacing";
-import { SpacingSize } from "src/shared/spacing/types";
+import { DynamicSize, SpacingSize } from "src/shared/spacing/types";
 
 interface Props {
+	justify?: DynamicSize<JustifyContent> | JustifyContent;
+	align?: AlignItems;
+	width?: DynamicSize<string> | string;
 	spacingX?: SpacingSize;
 	spacingY?: SpacingSize;
-	style?: Record<string, string | number>;
 	children: React.ReactNode;
 }
 
-export default function Stack({
+export default function Wrap({
+	justify,
+	align = "center",
 	spacingX = "md",
 	spacingY = "md",
-	style,
+	width,
 	children,
 }: Props) {
+	const justifyContent = getDynamicSize("flex-start", justify);
+	const renderWidth = getDynamicSize("100%", width);
+
 	return (
 		<div
-			style={{
-				...style,
-				display: "flex",
-				flexWrap: "wrap",
-				rowGap: getSpacing(spacingX),
-				columnGap: getSpacing(spacingY),
-			}}
+			css={css`
+				width: ${renderWidth};
+				display: flex;
+				flex-wrap: wrap;
+				row-gap: ${getSpacing(spacingX)};
+				column-gap: ${getSpacing(spacingY)};
+				justify-content: ${justifyContent};
+				align-items: ${align};
+			`}
 		>
 			{children}
 		</div>

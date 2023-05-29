@@ -1,13 +1,5 @@
-import { CellType } from "src/shared/table-state/types";
+import { Column } from "src/shared/types/types";
 
-export type ColumnFilter = {
-	id: string;
-	name: string;
-	cellType: CellType;
-};
-
-export type ColumnToggle = {
-	id: string;
-	name: string;
-	isVisible: boolean;
-};
+export interface ColumnWithMarkdown extends Column {
+	markdown: string;
+}

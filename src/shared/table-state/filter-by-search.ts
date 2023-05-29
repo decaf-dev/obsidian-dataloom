@@ -7,8 +7,8 @@ import {
 	DateFormat,
 	TableState,
 	Tag,
-} from "src/shared/table-state/types";
-import { ColumnIdError, RowIdError } from "./table-error";
+} from "src/shared/types/types";
+import { ColumNotFoundError, RowNotFoundError } from "./table-error";
 import { stringToCurrencyString } from "../conversion";
 import {
 	unixTimeToDateString,
@@ -20,7 +20,7 @@ export const filterBodyRowsBySearch = (
 	filteredBodyRows: BodyRow[],
 	searchText: string
 ): BodyRow[] => {
-	const { columns, bodyCells, bodyRows, tags } = tableState.model;
+	const { columns, bodyCells, bodyRows } = tableState.model;
 	const columnMap = new Map<string, Column>();
 	columns.forEach((column) => columnMap.set(column.id, column));
 
@@ -29,7 +29,12 @@ export const filterBodyRowsBySearch = (
 
 	const cellToTagMap = new Map<string, Tag[]>();
 	bodyCells.forEach((cell) => {
-		const cellTags = tags.filter((tag) => tag.cellIds.includes(cell.id));
+		const column = columnMap.get(cell.columnId);
+		if (!column) throw new ColumNotFoundError(cell.columnId);
+
+		const cellTags = column.tags.filter((tag) =>
+			cell.tagIds.includes(tag.id)
+		);
 		cellToTagMap.set(cell.id, cellTags);
 	});
 
@@ -59,9 +64,9 @@ const doesCellMatch = (
 	searchText: string
 ) => {
 	const column = columnMap.get(cell.columnId);
-	if (!column) throw new ColumnIdError(cell.columnId);
+	if (!column) throw new ColumNotFoundError(cell.columnId);
 	const row = rowMap.get(cell.rowId);
-	if (!row) throw new RowIdError(cell.rowId);
+	if (!row) throw new RowNotFoundError(cell.rowId);
 
 	const { dateTime, markdown } = cell;
 	const { currencyType, type, dateFormat } = column;

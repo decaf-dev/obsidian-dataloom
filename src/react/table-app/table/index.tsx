@@ -42,6 +42,7 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 			style={{
 				width: "100%",
 				height: "100%",
+				marginBottom: "48px",
 			}}
 			totalCount={bodyRows.length}
 			components={Components}
@@ -70,7 +71,11 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 					<tr key={row.id}>
 						{row.cells.map((cell) => {
 							const { id, content } = cell;
-							return <td key={id}>{content}</td>;
+							return (
+								<td key={id} className="NLT__footer-td">
+									{content}
+								</td>
+							);
 						})}
 					</tr>
 				))
@@ -87,11 +92,11 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 								i === cells.length - 1 ? rowId : undefined
 							}
 							css={css`
-								border-top: 0 !important;
-								border-bottom: 1px solid ${tableBorderColor} !important;
-								border-left: 1px solid ${tableBorderColor} !important;
-								border-right: 0 !important;
-								padding: 0 !important;
+								border-top: 0;
+								border-bottom: 1px solid ${tableBorderColor};
+								border-left: 1px solid ${tableBorderColor};
+								border-right: 0;
+								padding: 0;
 								overflow: visible;
 								vertical-align: top;
 								/** 
@@ -103,13 +108,15 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 								height: 1px;
 
 								&:first-of-type {
-									border-left: 0 !important;
+									border-left: 0;
+									border-bottom: 0;
 								}
 
 								&:last-child {
-									border-bottom: 0 !important;
+									border-bottom: 0;
 								}
 							`}
+							className="NLT__body-td"
 						>
 							{content}
 						</td>
@@ -130,6 +137,7 @@ const Components: TableComponents = {
 				`}
 				{...props}
 				style={style}
+				className="NLT__table"
 			/>
 		);
 	},
@@ -145,12 +153,22 @@ const Components: TableComponents = {
 				position: sticky;
 				bottom: 0;
 				background-color: var(--background-primary);
+
 				& > tr:first-of-type > td {
-					border-bottom: 1px solid ${tableBorderColor} !important;
+					border-bottom: 1px solid ${tableBorderColor};
 				}
+
+				& > tr:first-of-type > td:nth-child(1) {
+					border-bottom: 0;
+				}
+
+				& > tr:first-of-type > td:nth-child(2) {
+					border-left: 1px solid ${tableBorderColor};
+				}
+
 				& > tr:first-of-type > td:last-child {
-					border-left: 1px solid ${tableBorderColor} !important;
-					border-bottom: 0 !important;
+					border-left: 1px solid ${tableBorderColor};
+					border-bottom: 0;
 				}
 			`}
 			{...props}

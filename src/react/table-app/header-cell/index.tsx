@@ -1,12 +1,12 @@
-import { useEffect } from "react";
+import React from "react";
 
-import { numToPx, pxToNum } from "src/shared/conversion";
+import { numToPx } from "src/shared/conversion";
 import {
 	CellType,
 	CurrencyType,
 	DateFormat,
 	SortDir,
-} from "src/shared/table-state/types";
+} from "src/shared/types/types";
 import { useMenu } from "src/shared/menu/hooks";
 import { MenuLevel } from "src/shared/menu/types";
 import { useAppSelector } from "src/redux/global/hooks";
@@ -15,12 +15,12 @@ import Icon from "../../shared/icon";
 import Stack from "../../shared/stack";
 import HeaderMenu from "./components/HeaderMenu";
 import { useCompare, useForceUpdate } from "src/shared/hooks";
-import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
+import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 import { getIconIdForCellType } from "src/react/shared/icon/utils";
 import MenuTrigger from "src/react/shared/menu-trigger";
 import ResizeContainer from "./resize-container";
 
-import "./styles.css";
+import { css } from "@emotion/react";
 
 interface Props {
 	cellId: string;
@@ -65,30 +65,32 @@ export default function HeaderCell({
 	onCurrencyChange,
 	onDateFormatChange,
 }: Props) {
-	const { menu, menuPosition, isMenuOpen, closeTopMenu, openMenu } = useMenu(
+	const { menu, isMenuOpen, closeTopMenu, menuRef, openMenu } = useMenu(
 		MenuLevel.ONE
 	);
+	const { triggerPosition, triggerRef } = useMenuTriggerPosition();
+	useShiftMenu(triggerRef, menuRef, isMenuOpen);
 
-	const [updateTime, forceUpdate] = useForceUpdate();
+	const { resizingColumnId } = useAppSelector((state) => state.global);
+
+	const [forceUpdateTime, forceUpdate] = useForceUpdate();
 
 	//A width of "unset" means that we have double clicked to fore the column to resize
 	//to the width of the cell contents
 	//We need to force an update so that the menu ref will have the correct width
-	useEffect(() => {
+	React.useEffect(() => {
 		if (width === "unset") forceUpdate();
 	}, [width, forceUpdate]);
 
 	//We will then need to update the width of the column so that the header cell will
 	//have a value set in pixels
-	const shouldUpdateWidth = useCompare(updateTime);
-	useEffect(() => {
+	const shouldUpdateWidth = useCompare(forceUpdateTime);
+	React.useEffect(() => {
 		if (shouldUpdateWidth) {
-			const newWidth = numToPx(menuPosition.position.width);
+			const newWidth = numToPx(triggerPosition.width);
 			onWidthChange(columnId, newWidth);
 		}
-	}, [shouldUpdateWidth, menuPosition]);
-
-	const { resizingColumnId } = useAppSelector((state) => state.global);
+	}, [shouldUpdateWidth, triggerPosition]);
 
 	function handleMenuTriggerClick() {
 		//If we're resizing a column, then don't open the menu
@@ -96,14 +98,6 @@ export default function HeaderCell({
 		openMenu(menu);
 	}
 
-	const {
-		position: { top, left },
-		isMenuReady,
-	} = shiftMenuIntoViewContent({
-		menuId: menu.id,
-		menuPositionEl: menuPosition.positionRef.current,
-		menuPosition: menuPosition.position,
-	});
 	const lucideId = getIconIdForCellType(type);
 
 	let contentClassName = "NLT__th-content";
@@ -114,13 +108,30 @@ export default function HeaderCell({
 			<MenuTrigger menuId={menu.id} onClick={handleMenuTriggerClick}>
 				<div
 					className="NLT__th-container"
-					ref={menuPosition.positionRef}
-					style={{
-						width,
-					}}
+					ref={triggerRef}
+					css={css`
+						display: flex;
+						justify-content: space-between;
+						min-height: var(--nlt-cell-min-height);
+						width: ${width};
+					`}
 				>
-					<div className={contentClassName}>
-						<Stack spacing="md">
+					<div
+						className={contentClassName}
+						css={css`
+							display: flex;
+							align-items: center;
+							/* Use 100% so that the resize indicator appears at the end */
+							width: 100%;
+							overflow: hidden;
+							white-space: nowrap;
+							text-overflow: ellipsis;
+							user-select: none;
+							padding: var(--nlt-cell-spacing-x)
+								var(--nlt-cell-spacing-y);
+						`}
+					>
+						<Stack spacing="md" align="flex-start">
 							<Icon lucideId={lucideId} size="md" />
 							{markdown}
 						</Stack>
@@ -136,10 +147,10 @@ export default function HeaderCell({
 			</MenuTrigger>
 			<HeaderMenu
 				isOpen={isMenuOpen}
-				isReady={isMenuReady}
-				top={top}
-				left={left}
+				top={triggerPosition.top}
+				left={triggerPosition.left}
 				id={menu.id}
+				ref={menuRef}
 				rowId={rowId}
 				currencyType={currencyType}
 				dateFormat={dateFormat}

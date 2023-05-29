@@ -1,4 +1,4 @@
-import { TableState } from "src/shared/table-state/types";
+import { TableState } from "src/shared/types/types";
 import {
 	getMarkdownListItems,
 	importMarkdownListItems,

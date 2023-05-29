@@ -1,4 +1,4 @@
-import { isNumber, isTag } from "./validators";
+import { isNumber } from "./validators";
 
 describe("isNumber", () => {
 	it("returns true if number", () => {
@@ -13,23 +13,6 @@ describe("isNumber", () => {
 
 	it("returns false if contains test", () => {
 		const value = isNumber("ABC123");
-		expect(value).toEqual(false);
-	});
-});
-
-describe("isTag", () => {
-	it("matches a tag with a pound sign", () => {
-		const value = isTag("#tag");
-		expect(value).toEqual(true);
-	});
-
-	it("doesn't match multiple tags", () => {
-		const value = isTag("#tag1 #tag2");
-		expect(value).toEqual(false);
-	});
-
-	it("doesn't match tag with spaces", () => {
-		const value = isTag("#tag tag");
 		expect(value).toEqual(false);
 	});
 });

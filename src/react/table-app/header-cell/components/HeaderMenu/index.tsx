@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
 import Menu from "src/react/shared/menu";
 import OptionSubmenu from "./components/OptionSubmenu";
@@ -12,16 +12,16 @@ import {
 	CurrencyType,
 	DateFormat,
 	SortDir,
-} from "src/shared/table-state/types";
+} from "src/shared/types/types";
 import { SubmenuType } from "./types";
 
 import "./styles.css";
+
 interface Props {
 	isOpen: boolean;
 	canDeleteColumn: boolean;
 	top: number;
 	left: number;
-	isReady: boolean;
 	id: string;
 	dateFormat: DateFormat;
 	currencyType: CurrencyType;
@@ -43,30 +43,32 @@ interface Props {
 	onClose: () => void;
 }
 
-export default function HeaderMenu({
-	isOpen,
-	id,
-	top,
-	left,
-	isReady,
-	cellId,
-	markdown,
-	dateFormat,
-	currencyType,
-	canDeleteColumn,
-	columnType,
-	columnSortDir,
-	columnId,
-	shouldWrapOverflow,
-	onTypeSelect,
-	onSortClick,
-	onDeleteClick,
-	onClose,
-	onWrapOverflowToggle,
-	onNameChange,
-	onCurrencyChange,
-	onDateFormatChange,
-}: Props) {
+const HeaderMenu = React.forwardRef<HTMLDivElement, Props>(function HeaderMenu(
+	{
+		isOpen,
+		id,
+		top,
+		left,
+		cellId,
+		markdown,
+		dateFormat,
+		currencyType,
+		canDeleteColumn,
+		columnType,
+		columnSortDir,
+		columnId,
+		shouldWrapOverflow,
+		onTypeSelect,
+		onSortClick,
+		onDeleteClick,
+		onClose,
+		onWrapOverflowToggle,
+		onNameChange,
+		onCurrencyChange,
+		onDateFormatChange,
+	}: Props,
+	ref
+) {
 	const [submenu, setSubmenu] = useState<SubmenuType | null>(null);
 
 	function handleSortClick(sortDir: SortDir) {
@@ -102,13 +104,12 @@ export default function HeaderMenu({
 			id={id}
 			top={top}
 			left={left}
-			isReady={isReady}
+			ref={ref}
 			width={175}
 		>
 			<div className="NLT__header-menu">
 				{submenu === null && (
 					<BaseMenu
-						isMenuVisible={isReady}
 						cellId={cellId}
 						columnName={markdown}
 						columnType={columnType}
@@ -160,4 +161,6 @@ export default function HeaderMenu({
 			</div>
 		</Menu>
 	);
-}
+});
+
+export default HeaderMenu;

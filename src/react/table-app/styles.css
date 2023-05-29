@@ -7,6 +7,8 @@
 --nlt-spacing--lg: 12px;
 --nlt-spacing--xl: 16px;
 --nlt-spacing--2xl: 24px;
+--nlt-spacing--3xl: 36px;
+--nlt-spacing--4xl: 48px;
 
 --nlt-cell-spacing-x: var(--nlt-spacing--sm);
 --nlt-cell-spacing-y: var(--nlt-spacing--lg);
@@ -180,4 +182,16 @@
  */
 .NLT__button:not(.NLT__button--icon):focus-visible {
 	outline-offset: 0;
+}
+
+.NLT__tr--drag-over {
+	/* outline: 2px solid var(--color-accent);
+	outline-offset: -2px; */
+	border-bottom: 1px solid var(--color-accent) !important;
+}
+
+.NLT__th--drag-over {
+	/* outline: 2px solid var(--color-accent);
+	outline-offset: -2px; */
+	border-bottom: 1px solid var(--color-accent) !important;
 }

@@ -1,0 +1,1 @@
+# Deleting columns

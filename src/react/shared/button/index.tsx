@@ -1,6 +1,7 @@
 import React from "react";
 
 import "./styles.css";
+import { css } from "@emotion/react";
 
 interface InternalButtonProps {
 	menuId?: string;
@@ -33,6 +34,9 @@ const InternalButton = ({
 	return (
 		<button
 			className={className}
+			css={css`
+				width: max-content !important;
+			`}
 			aria-label={ariaLabel}
 			data-menu-id={menuId}
 			data-menu-should-request-on-close={shouldMenuRequestOnClose}

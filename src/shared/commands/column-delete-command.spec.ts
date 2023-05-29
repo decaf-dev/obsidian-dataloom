@@ -1,7 +1,6 @@
 import {
 	createFilterRule,
 	createTableState,
-	createTag,
 } from "src/data/table-state-factory";
 import RowDeleteCommand from "./row-delete-command";
 import {
@@ -35,12 +34,6 @@ describe("column-delete-command", () => {
 		//Arrange
 		const prevState = createTableState(1, 1);
 
-		const tags = [
-			createTag(prevState.model.columns[0].id, "test1"),
-			createTag(prevState.model.columns[0].id, "test2"),
-		];
-		prevState.model.tags = tags;
-
 		const filterRules = [
 			createFilterRule(prevState.model.columns[0].id),
 			createFilterRule(prevState.model.columns[0].id),
@@ -62,7 +55,6 @@ describe("column-delete-command", () => {
 		expect(executeState.model.footerCells).toEqual(
 			prevState.model.footerCells
 		);
-		expect(executeState.model.tags).toEqual(prevState.model.tags);
 		expect(executeState.model.filterRules).toEqual(
 			prevState.model.filterRules
 		);
@@ -71,12 +63,6 @@ describe("column-delete-command", () => {
 	it("should delete a column when execute() is called", () => {
 		//Arrange
 		const prevState = createTableState(2, 1);
-
-		const tags = [
-			createTag(prevState.model.columns[0].id, "test1"),
-			createTag(prevState.model.columns[0].id, "test2"),
-		];
-		prevState.model.tags = tags;
 
 		const filterRules = [
 			createFilterRule(prevState.model.columns[0].id),
@@ -95,19 +81,12 @@ describe("column-delete-command", () => {
 		expect(executeState.model.headerCells.length).toEqual(1);
 		expect(executeState.model.bodyCells.length).toEqual(1);
 		expect(executeState.model.footerCells.length).toEqual(2);
-		expect(executeState.model.tags.length).toEqual(0);
 		expect(executeState.model.filterRules.length).toEqual(0);
 	});
 
 	it("should delete the last column when execute() is called", () => {
 		//Arrange
 		const prevState = createTableState(2, 1);
-
-		const tags = [
-			createTag(prevState.model.columns[1].id, "test1"),
-			createTag(prevState.model.columns[1].id, "test2"),
-		];
-		prevState.model.tags = tags;
 
 		const filterRules = [
 			createFilterRule(prevState.model.columns[1].id),
@@ -137,11 +116,6 @@ describe("column-delete-command", () => {
 			prevState.model.footerCells[0],
 			prevState.model.footerCells[2],
 		]);
-		expect(executeState.model.tags).toEqual(
-			prevState.model.tags.filter(
-				(tag) => tag.columnId !== prevState.model.columns[1].id
-			)
-		);
 		expect(executeState.model.filterRules).toEqual(
 			prevState.model.filterRules.filter(
 				(rule) => rule.columnId !== prevState.model.columns[1].id
@@ -152,12 +126,6 @@ describe("column-delete-command", () => {
 	it("should restore the deleted column when undo() is called", () => {
 		//Arrange
 		const prevState = createTableState(2, 1);
-
-		const tags = [
-			createTag(prevState.model.columns[0].id, "test1"),
-			createTag(prevState.model.columns[0].id, "test2"),
-		];
-		prevState.model.tags = tags;
 
 		const filterRules = [
 			createFilterRule(prevState.model.columns[0].id),
@@ -182,7 +150,6 @@ describe("column-delete-command", () => {
 		expect(undoState.model.footerCells).toEqual(
 			prevState.model.footerCells
 		);
-		expect(undoState.model.tags).toEqual(prevState.model.tags);
 		expect(undoState.model.filterRules).toEqual(
 			prevState.model.filterRules
 		);
@@ -191,12 +158,6 @@ describe("column-delete-command", () => {
 	it("should restore the last deleted column when undo() is called", () => {
 		//Arrange
 		const prevState = createTableState(2, 1);
-
-		const tags = [
-			createTag(prevState.model.columns[1].id, "test1"),
-			createTag(prevState.model.columns[1].id, "test2"),
-		];
-		prevState.model.tags = tags;
 
 		const filterRules = [
 			createFilterRule(prevState.model.columns[1].id),
@@ -221,7 +182,6 @@ describe("column-delete-command", () => {
 		expect(undoState.model.footerCells).toEqual(
 			prevState.model.footerCells
 		);
-		expect(undoState.model.tags).toEqual(prevState.model.tags);
 		expect(undoState.model.filterRules).toEqual(
 			prevState.model.filterRules
 		);
