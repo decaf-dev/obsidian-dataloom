@@ -109,6 +109,7 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 
 								&:first-of-type {
 									border-left: 0;
+									border-bottom: 0;
 								}
 
 								&:last-child {
@@ -152,12 +153,22 @@ const Components: TableComponents = {
 				position: sticky;
 				bottom: 0;
 				background-color: var(--background-primary);
+
 				& > tr:first-of-type > td {
-					border-bottom: 1px solid ${tableBorderColor} !important;
+					border-bottom: 1px solid ${tableBorderColor};
 				}
+
+				& > tr:first-of-type > td:nth-child(1) {
+					border-bottom: 0;
+				}
+
+				& > tr:first-of-type > td:nth-child(2) {
+					border-left: 1px solid ${tableBorderColor};
+				}
+
 				& > tr:first-of-type > td:last-child {
-					border-left: 1px solid ${tableBorderColor} !important;
-					border-bottom: 0 !important;
+					border-left: 1px solid ${tableBorderColor};
+					border-bottom: 0;
 				}
 			`}
 			{...props}

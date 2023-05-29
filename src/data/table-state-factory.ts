@@ -55,7 +55,6 @@ export const createBodyRow = (index: number): BodyRow => {
 	return {
 		id: uuidv4(),
 		index,
-		menuCellId: uuidv4(),
 		creationTime: currentTime,
 		lastEditedTime: currentTime,
 	};

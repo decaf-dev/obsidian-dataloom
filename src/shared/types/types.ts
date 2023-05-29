@@ -118,7 +118,6 @@ interface Row {
 
 export interface BodyRow extends Row {
 	index: number;
-	menuCellId: string;
 	creationTime: number;
 	lastEditedTime: number;
 }
