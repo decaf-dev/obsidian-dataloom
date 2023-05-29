@@ -6,6 +6,7 @@ import { Button } from "../button";
 
 import "./styles.css";
 import { useAppSelector } from "src/redux/global/hooks";
+import Padding from "../padding";
 interface Props {
 	id?: string;
 	maxWidth?: string;
@@ -41,7 +42,7 @@ export default function Tag({
 	}
 	return (
 		<div className={tagClass}>
-			<Stack spacing="sm">
+			<Stack spacing="sm" justify="center">
 				<div
 					className={contentClassName}
 					{...(maxWidth !== undefined && { style: { maxWidth } })}
@@ -49,13 +50,16 @@ export default function Tag({
 					{markdown}
 				</div>
 				{showRemove && (
-					<Button
-						icon={<Icon size="sm" lucideId="x" />}
-						isSimple
-						onClick={() => {
-							onRemoveClick !== undefined && onRemoveClick(id!);
-						}}
-					/>
+					<Padding pb="sm" width="max-content">
+						<Button
+							icon={<Icon size="sm" lucideId="x" />}
+							isSimple
+							onClick={() => {
+								onRemoveClick !== undefined &&
+									onRemoveClick(id!);
+							}}
+						/>
+					</Padding>
 				)}
 			</Stack>
 		</div>

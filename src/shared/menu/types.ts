@@ -22,7 +22,7 @@ export interface CloseMenuRequest {
 	requestTime: number;
 }
 
-export interface MenuPosition {
-	position: Position;
-	positionRef: React.MutableRefObject<any | null>;
+export interface triggerPosition {
+	triggerPosition: Position;
+	menuTriggerRef: React.MutableRefObject<any | null>;
 }

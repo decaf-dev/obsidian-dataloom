@@ -7,7 +7,6 @@ import { useFocusMenuInput } from "src/shared/hooks";
 import { getTableBackgroundColor, getTableBorderColor } from "src/shared/color";
 
 interface MenuHeaderProps {
-	isMenuVisible: boolean;
 	cellTags: TagType[];
 	inputValue: string;
 	onInputValueChange: (value: string) => void;
@@ -15,17 +14,12 @@ interface MenuHeaderProps {
 }
 
 export default function MenuHeader({
-	isMenuVisible,
 	cellTags,
 	inputValue,
 	onInputValueChange,
 	onRemoveTag,
 }: MenuHeaderProps) {
-	const inputRef = useFocusMenuInput(
-		isMenuVisible,
-		inputValue,
-		onInputValueChange
-	);
+	const inputRef = useFocusMenuInput(inputValue, onInputValueChange);
 
 	function handleInputChange(value: string) {
 		// If the value starts with whitespace don't add the tag

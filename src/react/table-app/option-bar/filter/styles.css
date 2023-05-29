@@ -1,5 +1,5 @@
 .react-select {
-    max-width: 250px !important;
+    width: 150px !important;
 }
 
 .react-select input:focus {

@@ -4,18 +4,12 @@ import { isValidNumberInput } from "src/shared/validators";
 import "./styles.css";
 
 interface Props {
-	isMenuVisible: boolean;
 	value: string;
 	onChange: (value: string) => void;
 }
 
-export default function NumberCellEdit({
-	isMenuVisible,
-	value,
-	onChange,
-}: Props) {
+export default function NumberCellEdit({ value, onChange }: Props) {
 	const inputRef = useFocusMenuInput(
-		isMenuVisible,
 		value,
 		(updatedValue) => handleChange(updatedValue, true),
 		{

@@ -13,19 +13,18 @@ import { DateFormat } from "src/shared/types/types";
 import { useCompare, useFocusMenuInput } from "src/shared/hooks";
 import DateFormatMenu from "./components/DateFormatMenu";
 import { useMenu } from "src/shared/menu/hooks";
-import { MenuLevel, MenuPosition } from "src/shared/menu/types";
-import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
+import { MenuLevel } from "src/shared/menu/types";
 
-import "./styles.css";
 import MenuTrigger from "src/react/shared/menu-trigger";
 import { getDisplayNameForDateFormat } from "src/shared/table-state/display-name";
 import { css } from "@emotion/react";
 import { getTableBackgroundColor, getTableBorderColor } from "src/shared/color";
 
+import "./styles.css";
+import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
+
 interface Props {
-	isMenuVisible: boolean;
 	value: number | null;
-	menuPosition: MenuPosition;
 	menuCloseRequestTime: number | null;
 	dateFormat: DateFormat;
 	onDateTimeChange: (value: number | null) => void;
@@ -34,29 +33,30 @@ interface Props {
 }
 
 export default function DateCellEdit({
-	isMenuVisible,
 	value,
 	menuCloseRequestTime,
-	menuPosition,
 	dateFormat,
 	onDateTimeChange,
 	onMenuClose,
 	onDateFormatChange,
 }: Props) {
+	const { menu, isMenuOpen, menuRef, openMenu, closeTopMenu } = useMenu(
+		MenuLevel.TWO
+	);
+	const { triggerRef, triggerPosition } = useMenuTriggerPosition();
+	useShiftMenu(triggerRef, menuRef, isMenuOpen, {
+		openDirection: "right",
+		topOffset: 35,
+		leftOffset: -50,
+	});
+
 	const [localValue, setLocalValue] = useState(
 		value === null ? "" : unixTimeToDateString(value, dateFormat)
 	);
 
 	const [isInputInvalid, setInputInvalid] = useState(false);
 	const [closeTime, setCloseTime] = useState(0);
-
-	const { menu, isMenuOpen, openMenu, closeTopMenu } = useMenu(MenuLevel.TWO);
-
-	const inputRef = useFocusMenuInput(
-		isMenuVisible,
-		value?.toString() || "",
-		setLocalValue
-	);
+	const inputRef = useFocusMenuInput(value?.toString() || "", setLocalValue);
 
 	useEffect(() => {
 		setLocalValue(
@@ -107,23 +107,12 @@ export default function DateCellEdit({
 		onMenuClose();
 	}
 
-	const {
-		position: { top, left },
-		isMenuReady,
-	} = shiftMenuIntoViewContent({
-		menuId: menu.id,
-		menuPositionEl: menuPosition.positionRef.current,
-		menuPosition: menuPosition.position,
-		topOffset: 50,
-		leftOffset: 135,
-	});
-
 	const tableBackgroundColor = getTableBackgroundColor();
 	const tableBorderColor = getTableBorderColor();
 
 	return (
 		<>
-			<div className="NLT__date-cell-edit">
+			<div ref={triggerRef} className="NLT__date-cell-edit">
 				<Stack spacing="md" isVertical>
 					<Padding px="md" py="md">
 						<input
@@ -155,10 +144,10 @@ export default function DateCellEdit({
 			</div>
 			<DateFormatMenu
 				id={menu.id}
-				isReady={isMenuReady}
 				isOpen={isMenuOpen}
-				top={top}
-				left={left}
+				ref={menuRef}
+				top={triggerPosition.top}
+				left={triggerPosition.left}
 				value={dateFormat}
 				onChange={handleDateFormatChange}
 			/>

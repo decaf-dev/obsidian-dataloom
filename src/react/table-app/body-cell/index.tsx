@@ -34,12 +34,12 @@ import { useCompare } from "src/shared/hooks";
 import { Color } from "src/shared/types/types";
 import CurrencyCell from "../currency-cell";
 import CurrencyCellEdit from "../currency-cell-edit";
-import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
 import MenuTrigger from "src/react/shared/menu-trigger";
 
 import "./styles.css";
 import { useTableState } from "src/shared/table-state/table-state-context";
 import RowSortCommand from "src/shared/commands/row-sort-command";
+import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 
 interface Props {
 	columnType: string;
@@ -114,18 +114,19 @@ export default function BodyCell({
 }: Props) {
 	const {
 		menu,
-		menuPosition,
 		isMenuOpen,
 		menuCloseRequestTime,
-		isMenuVisible,
+		menuRef,
 		openMenu,
 		closeTopMenu,
-	} = useMenu(
-		MenuLevel.ONE,
-		columnType === CellType.DATE ||
+	} = useMenu(MenuLevel.ONE, {
+		shouldRequestOnClose:
+			columnType === CellType.DATE ||
 			columnType === CellType.TAG ||
-			columnType === CellType.MULTI_TAG
-	);
+			columnType === CellType.MULTI_TAG,
+	});
+	const { triggerPosition, triggerRef } = useMenuTriggerPosition();
+	useShiftMenu(triggerRef, menuRef, isMenuOpen);
 
 	const { doCommand } = useTableState();
 
@@ -251,17 +252,7 @@ export default function BodyCell({
 		closeTopMenu();
 	}
 
-	const {
-		position: { top, left },
-		isMenuReady,
-	} = shiftMenuIntoViewContent({
-		menuId: menu.id,
-		menuPositionEl: menuPosition.positionRef.current,
-		menuPosition: menuPosition.position,
-	});
-
-	const { width: measuredWidth, height: measuredHeight } =
-		menuPosition.position;
+	const { width: measuredWidth, height: measuredHeight } = triggerPosition;
 
 	let menuHeight = measuredHeight;
 	if (
@@ -306,7 +297,7 @@ export default function BodyCell({
 				}
 			>
 				<div
-					ref={menuPosition.positionRef}
+					ref={triggerRef}
 					onContextMenu={handleCellContextClick}
 					className={className}
 					style={{
@@ -372,11 +363,11 @@ export default function BodyCell({
 				</div>
 			</MenuTrigger>
 			<Menu
+				ref={menuRef}
 				id={menu.id}
-				isReady={isMenuReady}
 				isOpen={isMenuOpen}
-				top={top}
-				left={left}
+				top={triggerPosition.top}
+				left={triggerPosition.left}
 				width={menuWidth}
 				height={menuHeight}
 			>
@@ -384,23 +375,19 @@ export default function BodyCell({
 					<TextCellEdit
 						shouldWrapOverflow={shouldWrapOverflow}
 						value={markdown}
-						isMenuVisible={isMenuVisible}
 						onChange={handleTextInputChange}
 					/>
 				)}
 				{columnType === CellType.NUMBER && (
 					<NumberCellEdit
 						value={markdown}
-						isMenuVisible={isMenuVisible}
 						onChange={handleNumberInputChange}
 					/>
 				)}
 				{(columnType === CellType.TAG ||
 					columnType === CellType.MULTI_TAG) && (
 					<TagCellEdit
-						isMenuVisible={isMenuVisible}
 						menuCloseRequestTime={menuCloseRequestTime}
-						menuPosition={menuPosition}
 						columnTags={columnTags}
 						cellTags={cellTags}
 						onTagColorChange={handleTagColorChange}
@@ -413,8 +400,6 @@ export default function BodyCell({
 				)}
 				{columnType === CellType.DATE && (
 					<DateCellEdit
-						isMenuVisible={isMenuVisible}
-						menuPosition={menuPosition}
 						value={dateTime}
 						menuCloseRequestTime={menuCloseRequestTime}
 						dateFormat={dateFormat}
@@ -425,7 +410,6 @@ export default function BodyCell({
 				)}
 				{columnType === CellType.CURRENCY && (
 					<CurrencyCellEdit
-						isMenuVisible={isMenuVisible}
 						value={markdown}
 						onChange={handleCurrencyChange}
 					/>

@@ -108,6 +108,8 @@ export default function OptionBar({
 		}
 	);
 
+	const sortedColumn = columns.find((c) => c.sortDir !== SortDir.NONE);
+
 	return (
 		<div className="NLT__option-bar">
 			<Stack spacing="lg" isVertical>
@@ -119,7 +121,7 @@ export default function OptionBar({
 							onRemoveClick={onSortRemoveClick}
 						/>
 						{activeRules.length !== 0 &&
-							headerCells.length !== 0 && (
+							sortedColumn !== undefined && (
 								<Divider isVertical height="1.5rem" />
 							)}
 						<ActiveFilterBubble numActive={activeRules.length} />

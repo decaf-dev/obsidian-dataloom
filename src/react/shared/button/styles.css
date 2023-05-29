@@ -1,7 +1,7 @@
 .NLT__button {
     display: flex;
     align-items: center;
-    padding: 4px 6px;
+    padding: 4px 6px !important; /* Prevent tablet styles */
     white-space: nowrap;
     color: var(--text-normal);
     margin-right: 0;

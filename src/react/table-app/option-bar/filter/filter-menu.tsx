@@ -9,13 +9,15 @@ import { Button } from "src/react/shared/button";
 import { FilterRule, FilterType } from "src/shared/types/types";
 import { ColumNotFoundError } from "src/shared/table-state/table-error";
 import { ColumnWithMarkdown } from "../types";
+import React from "react";
+import { css } from "@emotion/react";
+import { isMobile } from "src/shared/renderUtils";
 
 interface Props {
 	id: string;
 	top: number;
 	left: number;
 	isOpen: boolean;
-	isReady: boolean;
 	columns: ColumnWithMarkdown[];
 	filterRules: FilterRule[];
 	onAddClick: (columnId: string) => void;
@@ -27,34 +29,41 @@ interface Props {
 	onTagsChange: (id: string, value: string[]) => void;
 }
 
-export default function FilterMenu({
-	id,
-	top,
-	left,
-	isOpen,
-	isReady,
-	columns,
-	filterRules,
-	onAddClick,
-	onToggle,
-	onColumnChange,
-	onFilterTypeChange,
-	onTextChange,
-	onDeleteClick,
-	onTagsChange,
-}: Props) {
+const FilterMenu = React.forwardRef<HTMLDivElement, Props>(function FilterMenu(
+	{
+		id,
+		top,
+		left,
+		isOpen,
+		columns,
+		filterRules,
+		onAddClick,
+		onToggle,
+		onColumnChange,
+		onFilterTypeChange,
+		onTextChange,
+		onDeleteClick,
+		onTagsChange,
+	}: Props,
+	ref
+) {
 	return (
 		<Menu
 			isOpen={isOpen}
-			isReady={isReady}
 			id={id}
 			top={top}
 			left={left}
-			width={575}
+			maxHeight={255}
+			ref={ref}
 		>
-			<div className="NLT__filter-menu">
+			<div
+				className="NLT__filter-menu"
+				css={css`
+					width: ${isMobile() ? "100vw" : "unset"};
+				`}
+			>
 				<Padding p="md">
-					<Stack spacing="md" isVertical>
+					<Stack spacing="lg" isVertical>
 						{filterRules.map((rule) => {
 							const {
 								id,
@@ -107,4 +116,6 @@ export default function FilterMenu({
 			</div>
 		</Menu>
 	);
-}
+});
+
+export default FilterMenu;

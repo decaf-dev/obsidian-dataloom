@@ -12,20 +12,16 @@ import "./styles.css";
 interface Props {
 	value: string;
 	shouldWrapOverflow: boolean;
-	isMenuVisible: boolean;
 	onChange: (value: string) => void;
 }
 
 export default function TextCellEdit({
-	isMenuVisible,
 	shouldWrapOverflow,
 	value,
 	onChange,
 }: Props) {
-	const inputRef = useFocusMenuTextArea(
-		isMenuVisible,
-		value,
-		(updatedValue) => handleTextareaChange(updatedValue, true)
+	const inputRef = useFocusMenuTextArea(value, (updatedValue) =>
+		handleTextareaChange(updatedValue, true)
 	);
 	const { setPreviousSelectionStart } = useInputSelection(inputRef, value);
 
