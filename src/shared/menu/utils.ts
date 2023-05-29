@@ -1,4 +1,7 @@
+import React from "react";
 import { Position } from "./types";
+import { numToPx } from "../conversion";
+import { NLTView, NOTION_LIKE_TABLES_VIEW } from "src/obsidian/nlt-view";
 
 export const getElementPosition = (el: HTMLElement | null): Position => {
 	if (el) {
@@ -23,115 +26,114 @@ export const getElementPosition = (el: HTMLElement | null): Position => {
 	};
 };
 
-export const shiftMenuIntoViewContent = ({
-	menuId,
-	menuPositionEl,
-	menuPosition,
-	topOffset = 0,
-	leftOffset = 0,
-}: {
-	menuId: string;
-	menuPositionEl: HTMLElement | null;
-	menuPosition: Position;
-	topOffset?: number;
-	leftOffset?: number;
-}) => {
-	let isMenuReady = false;
+export const useShiftMenu = (
+	triggerRef: React.RefObject<HTMLDivElement | null>,
+	menuRef: React.RefObject<HTMLDivElement | null>,
+	isOpen: boolean,
+	options?: {
+		openDirection?: "left" | "right" | "normal";
+		topOffset?: number;
+		leftOffset?: number;
+	}
+) => {
+	React.useEffect(() => {
+		function shiftMenuIntoView() {
+			if (menuRef.current === null) return;
+			if (triggerRef.current === null) return;
 
-	//The menuPositionEl will be null on first render since the element is not in the DOM yet
-	if (menuPositionEl !== null) {
-		//Now we want to make sure that this is within bounds
-		const viewContentEl = menuPositionEl.closest(
-			".view-content"
-		) as HTMLElement;
+			const {
+				openDirection = "normal",
+				topOffset = 0,
+				leftOffset = 0,
+			} = options || {};
 
-		const containerPosition = getElementPosition(viewContentEl);
+			const activeView = app.workspace.getActiveViewOfType(NLTView);
+			if (!activeView) return;
 
-		let menuElWidth = menuPosition.width;
-		let menuElHeight = menuPosition.height;
+			const viewContentEl = activeView.contentEl;
+			const viewContentRect = viewContentEl.getBoundingClientRect();
+			const triggerRefRect = triggerRef.current.getBoundingClientRect();
+			const menuRect = menuRef.current.getBoundingClientRect();
 
-		//The menu position contains the position of the menu container, not the menu itself
-		//This means that the top and left values of the menu will match the menu container,
-		//but the width and height may be different, depending on if the menu is set to `max-content`
-		//Therefore we need to get those values from the menu itself
-		const menu = document.querySelector(
-			`.NLT__menu[data-menu-id="${menuId}"]`
-		) as HTMLElement | null;
+			//Calculate the initial position
+			let top = triggerRefRect.top + topOffset;
+			let left = triggerRefRect.left + leftOffset;
 
-		if (menu) {
-			const menuContainerEl = menu.firstChild as HTMLElement;
-			const { width, height } = menuContainerEl.getBoundingClientRect();
-			menuElWidth = Math.ceil(width);
-			menuElHeight = Math.ceil(height);
+			//Offset by the open direction
+			if (openDirection === "left") {
+				left = left - menuRect.width;
+			} else if (openDirection === "right") {
+				left = left + menuRect.width;
+			}
 
-			//It takes 2 renders to calculate the correct position for the menu.
-			//When you first open the menu, the menu container is set to the width and height of the menuPositionRef.
-			//The menu, however, can have a width or height greater than this if `maxContent` is set.
-			//Therefore we render the menu with visibility set to hidden. Then we use the useForceUpdate hook to force a re-render.
-			//The menu is now available in the DOM and we can progamatically get the width and height of the menu to
-			//shift it into the view container.
-			isMenuReady = true;
+			const position = shiftElementIntoContainer(
+				{
+					top: viewContentRect.top,
+					left: viewContentRect.left,
+					width: viewContentRect.width,
+					height: viewContentRect.height,
+				},
+				{
+					top,
+					left,
+					width: menuRect.width,
+					height: menuRect.height,
+				}
+			);
+
+			menuRef.current.style.top = numToPx(position.top);
+			menuRef.current.style.left = numToPx(position.left);
 		}
 
-		return {
-			position: moveElementIntoContainer(containerPosition, {
-				top: menuPosition.top + topOffset,
-				left: menuPosition.left + leftOffset,
-				width: menuElWidth,
-				height: menuElHeight,
-			}),
-			isMenuReady,
-		};
-	}
-	return { position: menuPosition, isMenuReady };
+		if (isOpen) shiftMenuIntoView();
+	});
 };
 
-const moveElementIntoContainer = (
-	containerPosition: Position,
-	elementPosition: Position
-): Position => {
-	// Check if elementPosition is already inside containerPosition
-	if (
-		elementPosition.top >= containerPosition.top &&
-		elementPosition.left >= containerPosition.left &&
-		elementPosition.top + elementPosition.height <=
-			containerPosition.top + containerPosition.height &&
-		elementPosition.left + elementPosition.width <=
-			containerPosition.left + containerPosition.width
-	) {
-		return elementPosition;
-	}
+export const useMenuTriggerPosition = (): {
+	triggerRef: React.MutableRefObject<any | null>;
+	triggerPosition: Position;
+} => {
+	const ref = React.useRef<any | null>(null);
+	const position = getElementPosition(ref.current);
+	return { triggerRef: ref, triggerPosition: position };
+};
+
+const PADDING_OFFSET = 10;
+
+const shiftElementIntoContainer = (
+	container: Position,
+	element: Position
+): {
+	top: number;
+	left: number;
+} => {
+	let newTop = element.top;
+	let newLeft = element.left;
 
 	// Shift up if the element is below
-	if (
-		elementPosition.top + elementPosition.height >
-		containerPosition.top + containerPosition.height
-	) {
-		elementPosition.top =
-			containerPosition.top +
-			containerPosition.height -
-			elementPosition.height;
+	if (element.top + element.height > container.top + container.height) {
+		newTop =
+			container.top + container.height - element.height - PADDING_OFFSET;
 	}
 
 	// Shift left if the element is to the right
-	if (
-		elementPosition.left + elementPosition.width >
-		containerPosition.left + containerPosition.width
-	) {
-		elementPosition.left =
-			containerPosition.left +
-			containerPosition.width -
-			elementPosition.width;
+	if (element.left + element.width > container.left + container.width) {
+		newLeft =
+			container.left + container.width - element.width - PADDING_OFFSET;
 	}
 
 	//Shift down if the element is above
-	if (elementPosition.top < containerPosition.top) {
-		elementPosition.top = containerPosition.top;
+	if (element.top < container.top) {
+		newTop = container.top + PADDING_OFFSET;
 	}
 
 	//Shift right if the element is to the left
-	if (elementPosition.left < containerPosition.left) {
-		elementPosition.left = containerPosition.left;
+	if (element.left < container.left) {
+		newLeft = container.left + PADDING_OFFSET;
 	}
-	return elementPosition;
+
+	return {
+		top: Math.ceil(newTop),
+		left: Math.ceil(newLeft),
+	};
 };

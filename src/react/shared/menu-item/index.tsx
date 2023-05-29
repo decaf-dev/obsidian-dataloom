@@ -2,6 +2,7 @@ import Icon from "src/react/shared/icon";
 import Stack from "src/react/shared/stack";
 import Flex from "../flex";
 import Text from "../text";
+import Padding from "../padding";
 
 import "./styles.css";
 
@@ -33,7 +34,11 @@ export default function MenuItem({
 		>
 			<Flex justify="space-between">
 				<Stack>
-					{lucideId !== undefined && <Icon lucideId={lucideId} />}
+					{lucideId !== undefined && (
+						<Padding pb="sm">
+							<Icon lucideId={lucideId} />
+						</Padding>
+					)}
 					<Text value={name} />
 				</Stack>
 				{value !== undefined && <Text variant="faint" value={value} />}

@@ -10,7 +10,6 @@ import { css } from "@emotion/react";
 import { getTableBackgroundColor, getTableBorderColor } from "src/shared/color";
 
 interface Props {
-	isMenuVisible: boolean;
 	columnName: string;
 	cellId: string;
 	columnType: CellType;
@@ -21,7 +20,6 @@ interface Props {
 }
 
 export default function BaseMenu({
-	isMenuVisible,
 	cellId,
 	columnName,
 	columnType,
@@ -30,7 +28,7 @@ export default function BaseMenu({
 	onSortClick,
 	onSubmenuChange,
 }: Props) {
-	const inputRef = useFocusMenuInput(isMenuVisible, columnName, (value) =>
+	const inputRef = useFocusMenuInput(columnName, (value) =>
 		handleInputChange(value, true)
 	);
 

@@ -12,6 +12,10 @@ export const getSpacing = (size: SpacingSize) => {
 		spacing = "var(--nlt-spacing--xl)";
 	} else if (size === "2xl") {
 		spacing = "var(--nlt-spacing--2xl)";
+	} else if (size === "3xl") {
+		spacing = "var(--nlt-spacing--3xl)";
+	} else if (size === "4xl") {
+		spacing = "var(--nlt-spacing--4xl)";
 	}
 	return spacing;
 };

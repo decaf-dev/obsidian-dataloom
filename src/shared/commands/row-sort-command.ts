@@ -59,13 +59,11 @@ export default class RowSortCommand extends TableStateCommand {
 
 			for (let i = 0; i < tagLength; i++) {
 				const tagIdA: string | undefined = cellA.tagIds[i];
-				console.log(tagIdA);
 				if (tagIdA === undefined) return -1;
 				const tagA = column.tags.find((t) => t.id === tagIdA);
 				if (!tagA) throw new TagNotFoundError(tagIdA);
 
 				const tagIdB: string | undefined = cellB.tagIds[i];
-				console.log(tagIdB);
 				if (tagIdB === undefined) return 1;
 				const tagB = column.tags.find((t) => t.id === tagIdB);
 				if (!tagB) throw new TagNotFoundError(tagIdA);
