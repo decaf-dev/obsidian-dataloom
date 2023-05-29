@@ -1,7 +1,8 @@
 import React from "react";
 import { Position } from "./types";
 import { numToPx } from "../conversion";
-import { NLTView, NOTION_LIKE_TABLES_VIEW } from "src/obsidian/nlt-view";
+import { NLTView } from "src/obsidian/nlt-view";
+import { Platform } from "obsidian";
 
 export const getElementPosition = (el: HTMLElement | null): Position => {
 	if (el) {
@@ -66,12 +67,15 @@ export const useShiftMenu = (
 				left = left + menuRect.width;
 			}
 
+			const isMobile = Platform.isMobile;
+			let viewContentHeight = viewContentRect.height;
+			if (isMobile) viewContentHeight -= 48;
 			const position = shiftElementIntoContainer(
 				{
 					top: viewContentRect.top,
 					left: viewContentRect.left,
 					width: viewContentRect.width,
-					height: viewContentRect.height,
+					height: viewContentHeight,
 				},
 				{
 					top,
@@ -98,7 +102,7 @@ export const useMenuTriggerPosition = (): {
 	return { triggerRef: ref, triggerPosition: position };
 };
 
-const PADDING_OFFSET = 10;
+const PADDING_OFFSET = 5;
 
 const shiftElementIntoContainer = (
 	container: Position,

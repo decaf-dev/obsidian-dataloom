@@ -59,7 +59,7 @@ const FilterMenu = React.forwardRef<HTMLDivElement, Props>(function FilterMenu(
 			<div
 				className="NLT__filter-menu"
 				css={css`
-					width: ${isMobile() ? "100vw" : "unset"};
+					width: ${isMobile() ? "calc(100vw - 30px)" : "unset"};
 				`}
 			>
 				<Padding p="md">
