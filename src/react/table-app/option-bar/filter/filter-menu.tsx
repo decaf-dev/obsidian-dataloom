@@ -11,7 +11,7 @@ import { ColumNotFoundError } from "src/shared/table-state/table-error";
 import { ColumnWithMarkdown } from "../types";
 import React from "react";
 import { css } from "@emotion/react";
-import { isMobile } from "src/shared/renderUtils";
+import { isMobileSize } from "src/shared/renderUtils";
 
 interface Props {
 	id: string;
@@ -59,7 +59,7 @@ const FilterMenu = React.forwardRef<HTMLDivElement, Props>(function FilterMenu(
 			<div
 				className="NLT__filter-menu"
 				css={css`
-					width: ${isMobile() ? "calc(100vw - 30px)" : "unset"};
+					width: ${isMobileSize() ? "calc(100vw - 30px)" : "unset"};
 				`}
 			>
 				<Padding p="md">

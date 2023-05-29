@@ -13,6 +13,7 @@ interface InternalButtonProps {
 	children?: React.ReactNode;
 	onClick: (e: React.MouseEvent) => void;
 	onMouseDown?: (e: React.MouseEvent) => void;
+	onTouchStart?: (e: React.TouchEvent) => void;
 }
 
 const InternalButton = ({
