@@ -26,7 +26,6 @@ import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 interface Props {
 	columnId: string;
 	cellId: string;
-	width: string;
 	functionType: FunctionType;
 	columnTags: Tag[];
 	bodyRows: BodyRow[];
@@ -40,7 +39,6 @@ interface Props {
 export default function FunctionCell({
 	columnId,
 	cellId,
-	width,
 	columnTags,
 	bodyCells,
 	dateFormat,
@@ -93,9 +91,6 @@ export default function FunctionCell({
 			<MenuTrigger menuId={menu.id} onClick={() => openMenu(menu)}>
 				<div
 					className="NLT__function-cell NLT__selectable"
-					style={{
-						width,
-					}}
 					ref={triggerRef}
 				>
 					{functionType === GeneralFunction.NONE && (

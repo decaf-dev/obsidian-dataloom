@@ -20,7 +20,7 @@ import { getIconIdForCellType } from "src/react/shared/icon/utils";
 import MenuTrigger from "src/react/shared/menu-trigger";
 import ResizeContainer from "./resize-container";
 
-import "./styles.css";
+import { css } from "@emotion/react";
 
 interface Props {
 	cellId: string;
@@ -82,21 +82,15 @@ export default function HeaderCell({
 		if (width === "unset") forceUpdate();
 	}, [width, forceUpdate]);
 
-	console.log(triggerRef.current);
 	//We will then need to update the width of the column so that the header cell will
 	//have a value set in pixels
 	const shouldUpdateWidth = useCompare(forceUpdateTime);
 	React.useEffect(() => {
 		if (shouldUpdateWidth) {
-			if (triggerRef.current) {
-				console.log("DOUBLE YEP");
-				const { width } = triggerRef.current.getBoundingClientRect();
-				console.log(width);
-				const newWidth = numToPx(Math.ceil(width));
-				onWidthChange(columnId, newWidth);
-			}
+			const newWidth = numToPx(triggerPosition.width);
+			onWidthChange(columnId, newWidth);
 		}
-	}, [shouldUpdateWidth, triggerRef.current]);
+	}, [shouldUpdateWidth, triggerPosition]);
 
 	function handleMenuTriggerClick() {
 		//If we're resizing a column, then don't open the menu
@@ -115,11 +109,28 @@ export default function HeaderCell({
 				<div
 					className="NLT__th-container"
 					ref={triggerRef}
-					style={{
-						width,
-					}}
+					css={css`
+						display: flex;
+						justify-content: space-between;
+						min-height: var(--nlt-cell-min-height);
+						width: ${width};
+					`}
 				>
-					<div className={contentClassName}>
+					<div
+						className={contentClassName}
+						css={css`
+							display: flex;
+							align-items: center;
+							/* Use 100% so that the resize indicator appears at the end */
+							width: 100%;
+							overflow: hidden;
+							white-space: nowrap;
+							text-overflow: ellipsis;
+							user-select: none;
+							padding: var(--nlt-cell-spacing-x)
+								var(--nlt-cell-spacing-y);
+						`}
+					>
 						<Stack spacing="md" align="flex-start">
 							<Icon lucideId={lucideId} size="md" />
 							{markdown}
