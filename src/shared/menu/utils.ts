@@ -98,7 +98,7 @@ export const useMenuTriggerPosition = (): {
 	return { triggerRef: ref, triggerPosition: position };
 };
 
-const PADDING_OFFSET = 10;
+const PADDING_OFFSET = 5;
 
 const shiftElementIntoContainer = (
 	container: Position,
