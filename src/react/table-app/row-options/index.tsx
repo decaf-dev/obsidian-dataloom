@@ -18,7 +18,7 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 	);
 	const { triggerRef, triggerPosition } = useMenuTriggerPosition();
 	useShiftMenu(triggerRef, menuRef, isMenuOpen, {
-		openDirection: "left",
+		openDirection: "right",
 	});
 
 	function handleButtonClick() {
