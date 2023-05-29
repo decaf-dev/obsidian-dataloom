@@ -314,12 +314,6 @@ export default function TableApp({ viewLeaf }: Props) {
 												className="NLT__footer-td-container"
 												css={css`
 													width: ${width};
-													padding: var(
-															--nlt-cell-spacing-x
-														)
-														var(
-															--nlt-cell-spacing-y
-														);
 												`}
 											>
 												<FunctionCell
