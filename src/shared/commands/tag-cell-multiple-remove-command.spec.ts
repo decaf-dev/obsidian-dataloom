@@ -3,26 +3,23 @@ import { CommandUndoError } from "./command-errors";
 import { advanceBy, clear } from "jest-date-mock";
 import TagCellMultipleRemoveCommand from "./tag-cell-multiple-remove-command";
 
-describe("tag-cell-remove-command", () => {
+describe("tag-cell-multiple-remove-command", () => {
 	it("should throw an error when undo() is called before execute()", () => {
 		try {
 			//Arrange
-			const prevState = createTableState(1, 1);
+			const prevState = createTableState(1, 2);
 
-			const tags = [
-				createTag(prevState.model.columns[0].id, "test1", {
-					cellId: prevState.model.bodyCells[0].id,
-				}),
-				createTag(prevState.model.columns[0].id, "test2", {
-					cellId: prevState.model.bodyCells[0].id,
-				}),
-			];
-			prevState.model.tags = tags;
+			const tags = [createTag("test1"), createTag("test2")];
+			prevState.model.columns[0].tags = tags;
+
+			const tagIds = tags.map((t) => t.id);
+			prevState.model.bodyCells[0].tagIds = tagIds;
+			prevState.model.bodyCells[1].tagIds = tagIds;
 
 			const command = new TagCellMultipleRemoveCommand(
 				prevState.model.bodyCells[0].id,
 				prevState.model.bodyRows[0].id,
-				[prevState.model.tags[0].id, prevState.model.tags[1].id]
+				[tags[0].id]
 			);
 
 			//Act
@@ -34,22 +31,19 @@ describe("tag-cell-remove-command", () => {
 
 	it("should delete a cell reference when execute() is called", () => {
 		//Arrange
-		const prevState = createTableState(1, 1);
+		const prevState = createTableState(1, 2);
 
-		const tags = [
-			createTag(prevState.model.columns[0].id, "test1", {
-				cellId: prevState.model.bodyCells[0].id,
-			}),
-			createTag(prevState.model.columns[0].id, "test2", {
-				cellId: prevState.model.bodyCells[0].id,
-			}),
-		];
-		prevState.model.tags = tags;
+		const tags = [createTag("test1"), createTag("test2")];
+		prevState.model.columns[0].tags = tags;
+
+		const tagIds = tags.map((t) => t.id);
+		prevState.model.bodyCells[0].tagIds = tagIds;
+		prevState.model.bodyCells[1].tagIds = tagIds;
 
 		const command = new TagCellMultipleRemoveCommand(
 			prevState.model.bodyCells[0].id,
 			prevState.model.bodyRows[0].id,
-			[prevState.model.tags[0].id, prevState.model.tags[1].id]
+			[tags[0].id]
 		);
 
 		//Act
@@ -58,8 +52,13 @@ describe("tag-cell-remove-command", () => {
 		clear();
 
 		//Assert
-		expect(executeState.model.tags[0].cellIds.length).toEqual(0);
-		expect(executeState.model.tags[1].cellIds.length).toEqual(0);
+		expect(executeState.model.columns).toEqual(prevState.model.columns);
+
+		expect(executeState.model.bodyCells[0].tagIds).toEqual([tags[1].id]);
+		expect(executeState.model.bodyCells[1].tagIds).toEqual([
+			tags[0].id,
+			tags[1].id,
+		]);
 		expect(executeState.model.bodyRows[0].lastEditedTime).toBeGreaterThan(
 			prevState.model.bodyRows[0].lastEditedTime
 		);
@@ -67,22 +66,19 @@ describe("tag-cell-remove-command", () => {
 
 	it("should restore the deleted cell reference when undo() is called", () => {
 		//Arrange
-		const prevState = createTableState(1, 1);
+		const prevState = createTableState(1, 2);
 
-		const tags = [
-			createTag(prevState.model.columns[0].id, "test1", {
-				cellId: prevState.model.bodyCells[0].id,
-			}),
-			createTag(prevState.model.columns[0].id, "test2", {
-				cellId: prevState.model.bodyCells[0].id,
-			}),
-		];
-		prevState.model.tags = tags;
+		const tags = [createTag("test1"), createTag("test2")];
+		prevState.model.columns[0].tags = tags;
+
+		const tagIds = tags.map((t) => t.id);
+		prevState.model.bodyCells[0].tagIds = tagIds;
+		prevState.model.bodyCells[1].tagIds = tagIds;
 
 		const command = new TagCellMultipleRemoveCommand(
 			prevState.model.bodyCells[0].id,
 			prevState.model.bodyRows[0].id,
-			[prevState.model.tags[0].id, prevState.model.tags[1].id]
+			[tags[0].id]
 		);
 
 		//Act
@@ -90,7 +86,8 @@ describe("tag-cell-remove-command", () => {
 		const undoState = command.undo(executeState);
 
 		//Assert
-		expect(undoState.model.tags).toEqual(prevState.model.tags);
+		expect(undoState.model.columns).toEqual(prevState.model.columns);
+		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
 		expect(undoState.model.bodyRows[0].lastEditedTime).toEqual(
 			prevState.model.bodyRows[0].lastEditedTime
 		);

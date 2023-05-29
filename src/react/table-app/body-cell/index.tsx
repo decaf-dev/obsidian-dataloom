@@ -18,10 +18,9 @@ import {
 	CurrencyType,
 	DateFormat,
 	Tag,
-} from "src/shared/table-state/types";
+} from "src/shared/types/types";
 import { useMenu } from "src/shared/menu/hooks";
 import { MenuLevel } from "src/shared/menu/types";
-import { useAppDispatch } from "src/redux/global/hooks";
 
 import LastEditedTimeCell from "../last-edited-time-cell";
 import CreationTimeCell from "../creation-time-cell";
@@ -31,14 +30,16 @@ import {
 } from "src/shared/table-state/constants";
 import { isCheckboxChecked } from "src/shared/validators";
 
-import "./styles.css";
-import { useDidMountEffect } from "src/shared/hooks";
-import { updateSortTime } from "src/redux/global/global-slice";
-import { Color } from "src/shared/types";
+import { useCompare } from "src/shared/hooks";
+import { Color } from "src/shared/types/types";
 import CurrencyCell from "../currency-cell";
 import CurrencyCellEdit from "../currency-cell-edit";
-import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
 import MenuTrigger from "src/react/shared/menu-trigger";
+
+import "./styles.css";
+import { useTableState } from "src/shared/table-state/table-state-context";
+import RowSortCommand from "src/shared/commands/row-sort-command";
+import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 
 interface Props {
 	columnType: string;
@@ -52,7 +53,8 @@ interface Props {
 	rowCreationTime: number;
 	rowLastEditedTime: number;
 	width: string;
-	tags: Tag[];
+	columnTags: Tag[];
+	cellTagIds: string[];
 	shouldWrapOverflow: boolean;
 	onTagRemoveClick: (cellId: string, rowId: string, tagId: string) => void;
 	onTagMultipleRemove: (
@@ -75,8 +77,8 @@ interface Props {
 		color: Color,
 		isMultiTag: boolean
 	) => void;
-	onTagDelete: (tagId: string) => void;
-	onTagColorChange: (tagId: string, color: Color) => void;
+	onTagDelete: (columnId: string, tagId: string) => void;
+	onTagColorChange: (columnId: string, tagId: string, color: Color) => void;
 	onDateFormatChange: (columnId: string, value: DateFormat) => void;
 	onDateTimeChange: (
 		cellId: string,
@@ -96,7 +98,8 @@ export default function BodyCell({
 	columnType,
 	rowCreationTime,
 	rowLastEditedTime,
-	tags,
+	columnTags,
+	cellTagIds,
 	width,
 	shouldWrapOverflow,
 	onTagRemoveClick,
@@ -111,28 +114,31 @@ export default function BodyCell({
 }: Props) {
 	const {
 		menu,
-		menuPosition,
 		isMenuOpen,
 		menuCloseRequestTime,
-		isMenuVisible,
+		menuRef,
 		openMenu,
 		closeTopMenu,
-	} = useMenu(
-		MenuLevel.ONE,
-		columnType === CellType.DATE ||
+	} = useMenu(MenuLevel.ONE, {
+		shouldRequestOnClose:
+			columnType === CellType.DATE ||
 			columnType === CellType.TAG ||
-			columnType === CellType.MULTI_TAG
-	);
+			columnType === CellType.MULTI_TAG,
+	});
+	const { triggerPosition, triggerRef } = useMenuTriggerPosition();
+	useShiftMenu(triggerRef, menuRef, isMenuOpen);
 
-	const dispatch = useAppDispatch();
+	const { doCommand } = useTableState();
 
-	//If we open a menu and then close it, we want to sort all rows
-	//TODO optimize?
-	useDidMountEffect(() => {
-		if (!isMenuOpen) {
-			dispatch(updateSortTime());
+	//Once the menu is closed, we want to sort all rows
+	const didIsMenuOpenChange = useCompare(isMenuOpen);
+	React.useEffect(() => {
+		if (didIsMenuOpenChange) {
+			if (!isMenuOpen) {
+				doCommand(new RowSortCommand());
+			}
 		}
-	}, [isMenuOpen]);
+	}, [didIsMenuOpenChange, isMenuOpen, doCommand]);
 
 	async function handleCellContextClick() {
 		try {
@@ -168,9 +174,6 @@ export default function BodyCell({
 			columnType === CellType.TAG ||
 			columnType === CellType.MULTI_TAG
 		) {
-			const cellTagIds = tags
-				.filter((tag) => tag.cellIds.includes(cellId))
-				.map((tag) => tag.id);
 			onTagMultipleRemove(cellId, rowId, cellTagIds);
 		}
 	}
@@ -209,6 +212,14 @@ export default function BodyCell({
 		onTagRemoveClick(cellId, rowId, tagId);
 	}
 
+	function handleTagColorChange(tagId: string, color: Color) {
+		onTagColorChange(columnId, tagId, color);
+	}
+
+	function handleTagDeleteClick(tagId: string) {
+		onTagDelete(columnId, tagId);
+	}
+
 	function handleTagClick(tagId: string) {
 		onTagClick(cellId, rowId, tagId, columnType === CellType.MULTI_TAG);
 	}
@@ -241,17 +252,7 @@ export default function BodyCell({
 		closeTopMenu();
 	}
 
-	const {
-		position: { top, left },
-		isMenuReady,
-	} = shiftMenuIntoViewContent({
-		menuId: menu.id,
-		menuPositionEl: menuPosition.positionRef.current,
-		menuPosition: menuPosition.position,
-	});
-
-	const { width: measuredWidth, height: measuredHeight } =
-		menuPosition.position;
+	const { width: measuredWidth, height: measuredHeight } = triggerPosition;
 
 	let menuHeight = measuredHeight;
 	if (
@@ -271,7 +272,7 @@ export default function BodyCell({
 		menuWidth = 175;
 	}
 
-	let className = "NLT__td-container";
+	let className = "NLT__body-td-container";
 	if (
 		columnType === CellType.LAST_EDITED_TIME ||
 		columnType === CellType.CREATION_TIME
@@ -279,8 +280,7 @@ export default function BodyCell({
 		className += " NLT__default-cursor";
 	}
 
-	const currentTag = tags.find((t) => t.cellIds.find((c) => c === cellId));
-	const filteredTags = tags.filter((t) => t.cellIds.find((c) => c == cellId));
+	const cellTags = columnTags.filter((tag) => cellTagIds.includes(tag.id));
 
 	return (
 		<>
@@ -297,7 +297,7 @@ export default function BodyCell({
 				}
 			>
 				<div
-					ref={menuPosition.positionRef}
+					ref={triggerRef}
 					onContextMenu={handleCellContextClick}
 					className={className}
 					style={{
@@ -323,17 +323,17 @@ export default function BodyCell({
 							shouldWrapOverflow={shouldWrapOverflow}
 						/>
 					)}
-					{columnType === CellType.TAG && currentTag && (
+					{columnType === CellType.TAG && cellTags.length === 1 && (
 						<TagCell
-							markdown={currentTag.markdown}
-							color={currentTag.color}
+							markdown={cellTags[0].markdown}
+							color={cellTags[0].color}
 							shouldWrapOverflow={shouldWrapOverflow}
 						/>
 					)}
 					{columnType === CellType.MULTI_TAG &&
-						filteredTags.length !== 0 && (
+						cellTags.length !== 0 && (
 							<MultiTagCell
-								tags={filteredTags}
+								cellTags={cellTags}
 								shouldWrapOverflow={shouldWrapOverflow}
 							/>
 						)}
@@ -363,11 +363,11 @@ export default function BodyCell({
 				</div>
 			</MenuTrigger>
 			<Menu
+				ref={menuRef}
 				id={menu.id}
-				isReady={isMenuReady}
 				isOpen={isMenuOpen}
-				top={top}
-				left={left}
+				top={triggerPosition.top}
+				left={triggerPosition.left}
 				width={menuWidth}
 				height={menuHeight}
 			>
@@ -375,37 +375,31 @@ export default function BodyCell({
 					<TextCellEdit
 						shouldWrapOverflow={shouldWrapOverflow}
 						value={markdown}
-						isMenuVisible={isMenuVisible}
 						onChange={handleTextInputChange}
 					/>
 				)}
 				{columnType === CellType.NUMBER && (
 					<NumberCellEdit
 						value={markdown}
-						isMenuVisible={isMenuVisible}
 						onChange={handleNumberInputChange}
 					/>
 				)}
 				{(columnType === CellType.TAG ||
 					columnType === CellType.MULTI_TAG) && (
 					<TagCellEdit
-						isMenuVisible={isMenuVisible}
 						menuCloseRequestTime={menuCloseRequestTime}
-						menuPosition={menuPosition}
-						tags={tags}
-						cellId={cellId}
-						onTagColorChange={onTagColorChange}
+						columnTags={columnTags}
+						cellTags={cellTags}
+						onTagColorChange={handleTagColorChange}
 						onTagAdd={handleTagAdd}
 						onRemoveTag={handleRemoveTagClick}
 						onTagClick={handleTagClick}
-						onTagDelete={onTagDelete}
+						onTagDelete={handleTagDeleteClick}
 						onMenuClose={handleMenuClose}
 					/>
 				)}
 				{columnType === CellType.DATE && (
 					<DateCellEdit
-						isMenuVisible={isMenuVisible}
-						menuPosition={menuPosition}
 						value={dateTime}
 						menuCloseRequestTime={menuCloseRequestTime}
 						dateFormat={dateFormat}
@@ -416,7 +410,6 @@ export default function BodyCell({
 				)}
 				{columnType === CellType.CURRENCY && (
 					<CurrencyCellEdit
-						isMenuVisible={isMenuVisible}
 						value={markdown}
 						onChange={handleCurrencyChange}
 					/>

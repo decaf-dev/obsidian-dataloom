@@ -1,7 +1,7 @@
 import { createTableState } from "src/data/table-state-factory";
 import { CommandUndoError } from "./command-errors";
 import CellFooterUpdateCommand from "./cell-footer-update-command";
-import { GeneralFunction } from "../table-state/types";
+import { GeneralFunction } from "../types/types";
 
 describe("row-footer-update-command", () => {
 	it("should throw an error when undo() is called before execute()", () => {

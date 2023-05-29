@@ -10,7 +10,7 @@ describe("column-update-command", () => {
 			const command = new ColumnUpdateCommand(
 				prevState.model.columns[0].id,
 				"width",
-				"250px"
+				{ value: "250px" }
 			);
 
 			//Act
@@ -27,7 +27,7 @@ describe("column-update-command", () => {
 			const command = new ColumnUpdateCommand(
 				prevState.model.columns[0].id,
 				"width",
-				"250px"
+				{ value: "250px" }
 			);
 
 			//Act
@@ -44,7 +44,7 @@ describe("column-update-command", () => {
 		const command = new ColumnUpdateCommand(
 			prevState.model.columns[0].id,
 			"width",
-			"250px"
+			{ value: "250px" }
 		);
 
 		//Act
@@ -61,7 +61,7 @@ describe("column-update-command", () => {
 		const command = new ColumnUpdateCommand(
 			prevState.model.columns[0].id,
 			"width",
-			"250px"
+			{ value: "250px" }
 		);
 
 		//Act

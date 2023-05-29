@@ -1,10 +1,14 @@
 import { createBodyCell, createBodyRow } from "src/data/table-state-factory";
 import TableStateCommand from "../table-state/table-state-command";
-import { BodyCell, BodyRow, TableState } from "../table-state/types";
+import { BodyCell, BodyRow, TableState } from "../types/types";
 
 export default class RowAddCommand extends TableStateCommand {
 	private addedRow: BodyRow;
 	private addedBodyCells: BodyCell[];
+
+	constructor() {
+		super(true);
+	}
 
 	execute(prevState: TableState): TableState {
 		super.onExecute();

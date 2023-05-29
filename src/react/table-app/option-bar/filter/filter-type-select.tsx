@@ -1,4 +1,4 @@
-import { CellType, FilterType } from "src/shared/table-state/types";
+import { CellType, FilterType } from "src/shared/types/types";
 
 interface Props {
 	id: string;

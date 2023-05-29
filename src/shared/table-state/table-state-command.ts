@@ -1,9 +1,14 @@
 import { CommandRedoError, CommandUndoError } from "../commands/command-errors";
-import { TableState } from "./types";
+import { TableState } from "../types/types";
 
 export default abstract class TableStateCommand {
+	shouldSortRows: boolean;
 	hasExecuteBeenCalled: boolean = false;
 	hasUndoBeenCalled: boolean = false;
+
+	constructor(shouldSortRows = false) {
+		this.shouldSortRows = shouldSortRows;
+	}
 
 	onExecute() {
 		this.hasExecuteBeenCalled = true;

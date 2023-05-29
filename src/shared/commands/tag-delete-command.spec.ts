@@ -8,10 +8,17 @@ describe("tag-delete-command", () => {
 			//Arrange
 			const prevState = createTableState(1, 2);
 
-			const tag = createTag(prevState.model.columns[0].id, "test");
-			prevState.model.tags.push(tag);
+			const tags = [createTag("test1"), createTag("test2")];
+			prevState.model.columns[0].tags = tags;
 
-			const command = new TagDeleteCommand(tag.id);
+			const tagIds = tags.map((t) => t.id);
+			prevState.model.bodyCells[0].tagIds = tagIds;
+			prevState.model.bodyCells[1].tagIds = tagIds;
+
+			const command = new TagDeleteCommand(
+				prevState.model.columns[0].id,
+				tags[0].id
+			);
 
 			//Act
 			command.undo(prevState);
@@ -25,10 +32,17 @@ describe("tag-delete-command", () => {
 			//Arrange
 			const prevState = createTableState(1, 2);
 
-			const tag = createTag(prevState.model.columns[0].id, "test");
-			prevState.model.tags.push(tag);
+			const tags = [createTag("test1"), createTag("test2")];
+			prevState.model.columns[0].tags = tags;
 
-			const command = new TagDeleteCommand(tag.id);
+			const tagIds = tags.map((t) => t.id);
+			prevState.model.bodyCells[0].tagIds = tagIds;
+			prevState.model.bodyCells[1].tagIds = tagIds;
+
+			const command = new TagDeleteCommand(
+				prevState.model.columns[0].id,
+				tags[0].id
+			);
 
 			//Act
 			command.execute(prevState);
@@ -40,34 +54,51 @@ describe("tag-delete-command", () => {
 
 	it("should delete a tag when execute() is called", () => {
 		//Arrange
-		const prevState = createTableState(1, 1);
+		const prevState = createTableState(1, 2);
 
-		const tag = createTag(prevState.model.columns[0].id, "test");
-		prevState.model.tags.push(tag);
+		const tags = [createTag("test1"), createTag("test2")];
+		prevState.model.columns[0].tags = tags;
 
-		const command = new TagDeleteCommand(tag.id);
+		const tagIds = tags.map((t) => t.id);
+		prevState.model.bodyCells[0].tagIds = tagIds;
+		prevState.model.bodyCells[1].tagIds = tagIds;
+
+		const command = new TagDeleteCommand(
+			prevState.model.columns[0].id,
+			tags[0].id
+		);
 
 		//Act
 		const executeState = command.execute(prevState);
 
 		//Assert
-		expect(executeState.model.tags.length).toEqual(0);
+		expect(executeState.model.columns[0].tags).toEqual([tags[1]]);
+		expect(executeState.model.bodyCells[0].tagIds).toEqual([tags[1].id]);
+		expect(executeState.model.bodyCells[1].tagIds).toEqual([tags[1].id]);
 	});
 
 	it("should restore the deleted tag when undo() is called", () => {
 		//Arrange
-		const prevState = createTableState(1, 1);
+		const prevState = createTableState(1, 2);
 
-		const tag = createTag(prevState.model.columns[0].id, "test");
-		prevState.model.tags.push(tag);
+		const tags = [createTag("test1"), createTag("test2")];
+		prevState.model.columns[0].tags = tags;
 
-		const command = new TagDeleteCommand(tag.id);
+		const tagIds = tags.map((t) => t.id);
+		prevState.model.bodyCells[0].tagIds = tagIds;
+		prevState.model.bodyCells[1].tagIds = tagIds;
+
+		const command = new TagDeleteCommand(
+			prevState.model.columns[0].id,
+			tags[0].id
+		);
 
 		//Act
 		const executeState = command.execute(prevState);
 		const undoState = command.undo(executeState);
 
 		//Assert
-		expect(undoState.model.tags).toEqual(prevState.model.tags);
+		expect(undoState.model.columns).toEqual(prevState.model.columns);
+		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
 	});
 });

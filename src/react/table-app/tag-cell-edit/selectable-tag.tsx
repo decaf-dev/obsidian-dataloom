@@ -1,18 +1,17 @@
 import TagColorMenu from "src/react/table-app/tag-color-menu";
 
-import { MenuLevel, MenuPosition } from "src/shared/menu/types";
+import { MenuLevel, Position } from "src/shared/menu/types";
 import { useMenu } from "src/shared/menu/hooks";
 
 import { Button } from "src/react/shared/button";
 import Icon from "src/react/shared/icon";
 import Tag from "src/react/shared/tag";
-import { Color } from "src/shared/types";
-import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
+import { Color } from "src/shared/types/types";
 import { css } from "@emotion/react";
+import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 
 interface Props {
 	id: string;
-	menuPosition: MenuPosition;
 	markdown: string;
 	color: Color;
 	onClick: (tagId: string) => void;
@@ -21,7 +20,6 @@ interface Props {
 }
 
 export default function SelectableTag({
-	menuPosition,
 	id,
 	markdown,
 	color,
@@ -29,7 +27,15 @@ export default function SelectableTag({
 	onColorChange,
 	onDeleteClick,
 }: Props) {
-	const { menu, isMenuOpen, closeTopMenu, openMenu } = useMenu(MenuLevel.TWO);
+	const { menu, isMenuOpen, menuRef, closeTopMenu, openMenu } = useMenu(
+		MenuLevel.TWO
+	);
+	const { triggerRef, triggerPosition } = useMenuTriggerPosition();
+	useShiftMenu(triggerRef, menuRef, isMenuOpen, {
+		openDirection: "right",
+		leftOffset: 25,
+		topOffset: -50,
+	});
 
 	function handleColorChange(color: Color) {
 		onColorChange(id, color);
@@ -41,18 +47,10 @@ export default function SelectableTag({
 		closeTopMenu();
 	}
 
-	const {
-		position: { top, left },
-		isMenuReady,
-	} = shiftMenuIntoViewContent({
-		menuId: menu.id,
-		menuPositionEl: menuPosition.positionRef.current,
-		menuPosition: menuPosition.position,
-		leftOffset: 235,
-	});
 	return (
 		<>
 			<div
+				ref={triggerRef}
 				css={css`
 					display: flex;
 					justify-content: space-between;
@@ -76,11 +74,11 @@ export default function SelectableTag({
 				/>
 			</div>
 			<TagColorMenu
-				menuId={menu.id}
-				top={top}
-				left={left}
-				isReady={isMenuReady}
 				isOpen={isMenuOpen}
+				ref={menuRef}
+				menuId={menu.id}
+				top={triggerPosition.top}
+				left={triggerPosition.left}
 				selectedColor={color}
 				onColorClick={(color) => handleColorChange(color)}
 				onDeleteClick={handleDeleteClick}

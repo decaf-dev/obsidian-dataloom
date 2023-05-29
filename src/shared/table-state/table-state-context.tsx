@@ -1,8 +1,7 @@
-import { TableState } from "./types";
+import { TableState } from "../types/types";
 import TableStateCommand from "./table-state-command";
-import { useDidMountEffect, useUUID } from "../hooks";
+import { useUUID } from "../hooks";
 import React from "react";
-import { WorkspaceLeaf } from "obsidian";
 import { useLogger } from "../logger";
 import _ from "lodash";
 import {
@@ -11,6 +10,8 @@ import {
 	isWindowsRedo,
 	isWindowsUndo,
 } from "../keyboard-event";
+import { useAppDispatch } from "src/redux/global/hooks";
+import RowSortCommand from "../commands/row-sort-command";
 
 interface Props {
 	initialState: TableState;
@@ -43,15 +44,12 @@ export default function TableStateProvider({
 }: Props) {
 	const [tableState, setTableState] = React.useState(initialState);
 	const [tableId] = useUUID();
-	const [commandQueue, setCommandQueue] = React.useState<TableStateCommand[]>(
-		[]
-	);
-
 	const [history, setHistory] = React.useState<(TableStateCommand | null)[]>([
 		null,
 	]);
 	const [position, setPosition] = React.useState(0);
 	const logger = useLogger();
+	const dispatch = useAppDispatch();
 
 	const undo = React.useCallback(() => {
 		if (position > 0) {
@@ -63,11 +61,14 @@ export default function TableStateProvider({
 			const command = history[position];
 			if (command !== null) {
 				logger(command.constructor.name + ".undo");
-				const newState = command.undo(tableState);
+				let newState = command.undo(tableState);
+				if (command.shouldSortRows) {
+					newState = new RowSortCommand().execute(newState);
+				}
 				setTableState(newState);
 			}
 		}
-	}, [position, history, tableState]);
+	}, [position, history, tableState, dispatch]);
 
 	const redo = React.useCallback(() => {
 		if (position < history.length - 1) {
@@ -79,11 +80,14 @@ export default function TableStateProvider({
 			const command = history[currentPosition];
 			if (command !== null) {
 				logger(command.constructor.name + ".redo");
-				const newState = command.redo(tableState);
+				let newState = command.redo(tableState);
+				if (command.shouldSortRows) {
+					newState = new RowSortCommand().execute(newState);
+				}
 				setTableState(newState);
 			}
 		}
-	}, [position, history, tableState]);
+	}, [position, history, tableState, dispatch]);
 
 	//Handle hot key press
 	React.useEffect(() => {
@@ -109,22 +113,28 @@ export default function TableStateProvider({
 		onSaveState(tableState);
 	}, [tableState]);
 
-	function doCommand(command: TableStateCommand) {
-		setHistory((prevState) => {
-			//If the position is not at the end of the history, then we want to remove all the commands after the current position
-			if (position < history.length - 1) {
-				const newState = prevState.slice(0, position + 1);
-				return [...newState, command];
-			} else {
-				return [...prevState, command];
-			}
-		});
-		setPosition((prevState) => prevState + 1);
+	const doCommand = React.useCallback(
+		(command: TableStateCommand) => {
+			setHistory((prevState) => {
+				//If the position is not at the end of the history, then we want to remove all the commands after the current position
+				if (position < history.length - 1) {
+					const newState = prevState.slice(0, position + 1);
+					return [...newState, command];
+				} else {
+					return [...prevState, command];
+				}
+			});
+			setPosition((prevState) => prevState + 1);
 
-		//Execute command
-		const newState = command.execute(tableState);
-		setTableState(newState);
-	}
+			//Execute command
+			let newState = command.execute(tableState);
+			if (command.shouldSortRows) {
+				newState = new RowSortCommand().execute(newState);
+			}
+			setTableState(newState);
+		},
+		[position, history, tableState, dispatch]
+	);
 
 	return (
 		<TableStateContext.Provider

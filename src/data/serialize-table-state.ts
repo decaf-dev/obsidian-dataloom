@@ -1,24 +1,29 @@
 import { CURRENT_PLUGIN_VERSION } from "src/data/constants";
 import {
-	BaseTableState,
+	BodyCell,
 	CellType,
-	CurrencyType,
-	DateFormat,
-	FunctionType,
-	SortDir,
+	Column,
 	TableState,
-	TableState633,
-	TableState670,
-	TableState680,
-} from "../shared/table-state/types";
-import { sortByCreationTime } from "../shared/table-state/sort-state-operations";
-import { ColumnIdError, RowIdError } from "../shared/table-state/table-error";
+	Tag,
+} from "../shared/types/types";
+import { TableState630 } from "src/shared/types/types-630";
+import { GeneralFunction670, TableState670 } from "src/shared/types/types-670";
 import {
-	createFooterCell,
-	createFooterRow,
-	createHeaderRow,
-} from "./table-state-factory";
+	CellIdError,
+	ColumNotFoundError,
+} from "../shared/table-state/table-error";
+import { createFooterRow, createHeaderRow } from "./table-state-factory";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/table-state/constants";
+import { TableState680 } from "src/shared/types/types-680";
+import { TableState600 } from "src/shared/types/types-600";
+import { CurrencyType610, TableState610 } from "src/shared/types/types-610";
+import { DateFormat620, TableState620 } from "src/shared/types/types-620";
+import { v4 as uuidv4 } from "uuid";
+import { TableState691 } from "src/shared/types/types-691";
+import {
+	isVersionLessThan,
+	legacyVersionToString,
+} from "src/shared/versioning";
 
 export const serializeTableState = (tableState: TableState): string => {
 	return JSON.stringify(tableState, null, 2);
@@ -27,66 +32,77 @@ export const serializeTableState = (tableState: TableState): string => {
 export const deserializeTableState = (data: string): TableState => {
 	const parsedState = JSON.parse(data);
 
-	const { pluginVersion } = parsedState as BaseTableState;
-	let currentState: unknown = parsedState;
+	const untypedVersion: unknown = parsedState["pluginVersion"];
 
-	if (pluginVersion <= 633) {
-		const tableState = currentState as TableState633;
-		const { columns, rows, cells } = tableState.model;
-
-		//Feat: Currency type
-		if (pluginVersion < 610) {
-			columns.forEach((column) => {
-				column.currencyType = CurrencyType.UNITED_STATES;
-			});
-		}
-
-		//Feat: Date formats
-		if (pluginVersion < 620) {
-			columns.forEach((column) => {
-				column.dateFormat = DateFormat.YYYY_MM_DD;
-			});
-		}
-
-		if (pluginVersion < 630) {
-			//Feat: Double click to resize
-			//Delete hasAutoWidth property from columns
-			columns.forEach((column: unknown) => {
-				const typedColumn = column as Record<string, unknown>;
-				if (typedColumn.hasOwnProperty("hasAutoWidth")) {
-					delete typedColumn.hasAutoWidth;
-				}
-			});
-
-			//Feat: Drag and drag rows
-			//Set the initial row index based on the creation time
-			const sortedRows = sortByCreationTime(rows, SortDir.ASC);
-			sortedRows.forEach((row, i) => {
-				const loadedRow = rows.find((r) => r.id === row.id);
-				if (!loadedRow) throw new RowIdError(row.id);
-				//Set the index based on the index of the sorted row
-				loadedRow.index = i;
-			});
-
-			//Feat: Column toggle
-			columns.forEach((column: unknown) => {
-				const typedColumn = column as Record<string, unknown>;
-				typedColumn.isVisible = true;
-			});
-
-			//Feat: Date formats for Date type
-			cells.forEach((cell) => {
-				cell.dateTime = null;
-			});
-		}
+	let pluginVersion: string = "";
+	if (typeof untypedVersion === "number") {
+		pluginVersion = legacyVersionToString(untypedVersion);
+	} else if (typeof untypedVersion === "string") {
+		pluginVersion = untypedVersion;
 	}
 
-	//Upgrade to new table state
-	if (pluginVersion < 640) {
-		const tableState = parsedState as TableState633;
+	let currentState: unknown = parsedState;
+
+	if (isVersionLessThan(pluginVersion, "6.1.0")) {
+		const tableState = currentState as TableState600;
+		const { columns } = tableState.model;
+
+		//Feat: Currency type
+		columns.forEach((column: unknown) => {
+			const typedColumn = column as Record<string, unknown>;
+			typedColumn.currencyType = CurrencyType610.UNITED_STATES;
+		});
+	}
+
+	if (isVersionLessThan(pluginVersion, "6.2.0")) {
+		const tableState = currentState as TableState610;
+		const { columns } = tableState.model;
+
+		//Feat: Date formats
+		columns.forEach((column: unknown) => {
+			const typedColumn = column as Record<string, unknown>;
+			typedColumn.dateFormat = DateFormat620.YYYY_MM_DD;
+		});
+	}
+
+	if (isVersionLessThan(pluginVersion, "6.3.0")) {
+		const tableState = currentState as TableState620;
+		const { columns, rows, cells } = tableState.model;
+
+		//Feat: Double click to resize
+		columns.forEach((column: unknown) => {
+			const typedColumn = column as Record<string, unknown>;
+			if (typedColumn.hasOwnProperty("hasAutoWidth")) {
+				delete typedColumn.hasAutoWidth;
+			}
+		});
+
+		//Feat: Drag and drag rows
+		//Set the initial row index based on the creation time
+		rows.forEach((row: unknown, i) => {
+			const typedRow = row as Record<string, unknown>;
+			typedRow.index = i;
+		});
+
+		//Feat: Column toggle
+		columns.forEach((column: unknown) => {
+			const typedColumn = column as Record<string, unknown>;
+			typedColumn.isVisible = true;
+		});
+
+		//Feat: Date formats for Date type
+		cells.forEach((cell: unknown) => {
+			const typedCell = cell as Record<string, unknown>;
+			typedCell.dateTime = null;
+		});
+	}
+
+	//Feat: new table state structure
+	if (isVersionLessThan(pluginVersion, "6.4.0")) {
+		const tableState = parsedState as TableState630;
 		const { columns, tags, rows, cells } = tableState.model;
 
-		const updatedState: TableState670 = {
+		const newState: TableState670 = {
 			...tableState,
 			model: {
 				columns: [],
@@ -101,11 +117,11 @@ export const deserializeTableState = (data: string): TableState => {
 		};
 
 		//Create header rows
-		updatedState.model.headerRows = [];
-		updatedState.model.headerRows.push(createHeaderRow());
+		newState.model.headerRows = [];
+		newState.model.headerRows.push(createHeaderRow());
 
 		//Create body rows
-		updatedState.model.bodyRows = rows
+		newState.model.bodyRows = rows
 			.filter((_row, i) => i !== 0)
 			.map((row) => {
 				return {
@@ -118,12 +134,12 @@ export const deserializeTableState = (data: string): TableState => {
 			});
 
 		//Create footer rows
-		updatedState.model.footerRows = [];
-		updatedState.model.footerRows.push(createFooterRow());
-		updatedState.model.footerRows.push(createFooterRow());
+		newState.model.footerRows = [];
+		newState.model.footerRows.push(createFooterRow());
+		newState.model.footerRows.push(createFooterRow());
 
 		//Update columns
-		updatedState.model.columns = columns.map((column) => {
+		newState.model.columns = columns.map((column) => {
 			return {
 				id: column.id,
 				sortDir: column.sortDir,
@@ -137,19 +153,19 @@ export const deserializeTableState = (data: string): TableState => {
 		});
 
 		//Create header cells
-		updatedState.model.headerCells = cells
+		newState.model.headerCells = cells
 			.filter((cell) => cell.isHeader)
 			.map((cell) => {
 				return {
 					id: cell.id,
 					columnId: cell.columnId,
-					rowId: updatedState.model.headerRows[0].id,
+					rowId: newState.model.headerRows[0].id,
 					markdown: cell.markdown,
 				};
 			});
 
 		//Create body cells
-		updatedState.model.bodyCells = cells
+		newState.model.bodyCells = cells
 			.filter((cell) => !cell.isHeader)
 			.map((cell) => {
 				return {
@@ -164,21 +180,21 @@ export const deserializeTableState = (data: string): TableState => {
 		//Create footer cells
 		for (let i = 0; i < 2; i++) {
 			columns.forEach((column) => {
-				updatedState.model.footerCells.push(
-					createFooterCell(
-						column.id,
-						updatedState.model.footerRows[i].id
-					)
-				);
+				newState.model.footerCells.push({
+					id: uuidv4(),
+					columnId: column.id,
+					rowId: newState.model.footerRows[i].id,
+					functionType: GeneralFunction670.NONE,
+				});
 			});
 		}
-		updatedState.model.tags = tags;
-		currentState = updatedState;
+		newState.model.tags = tags;
+		currentState = newState;
 	}
 
 	//Feat: filter rules
-	if (pluginVersion < 680) {
-		const tableState = currentState as TableState680;
+	if (isVersionLessThan(pluginVersion, "6.8.0")) {
+		const tableState = currentState as TableState670;
 		const { model } = tableState;
 		const { bodyCells, columns } = model;
 
@@ -189,14 +205,16 @@ export const deserializeTableState = (data: string): TableState => {
 		}
 
 		//Feat: add filter rules
-		model.filterRules = [];
+		const unknownModel = model as unknown;
+		const typedModal = unknownModel as Record<string, unknown>;
+		typedModal.filterRules = [];
 
 		//Fix: set all checkbox cells to unchecked
 		bodyCells.forEach((cell) => {
 			const column = columns.find(
 				(column) => column.id === cell.columnId
 			);
-			if (!column) throw new ColumnIdError(cell.columnId);
+			if (!column) throw new ColumNotFoundError(cell.columnId);
 
 			if (column.type === CellType.CHECKBOX) {
 				if (cell.markdown === "") {
@@ -206,17 +224,72 @@ export const deserializeTableState = (data: string): TableState => {
 		});
 	}
 
-	//Feat: make all variable names consistent
-	if (pluginVersion < 691) {
-		const tableState = currentState as TableState;
-		const { model } = tableState;
-		const { footerCells } = model;
+	if (isVersionLessThan(pluginVersion, "6.9.1")) {
+		const tableState = currentState as TableState680;
+		const { footerCells } = tableState.model;
 
-		footerCells.forEach((cell) => {
-			cell.functionType = cell.functionType.replace(
-				/_/g,
-				"-"
-			) as FunctionType;
+		//Feat: make all variable names consistent
+		footerCells.forEach((cell: unknown) => {
+			const typedCell = cell as Record<string, unknown>;
+			if (typedCell.hasOwnProperty("functionType")) {
+				typedCell.functionType = (
+					typedCell.functionType as string
+				).replace(/_/g, "-");
+			}
+		});
+	}
+
+	//Feat: support tag sorting
+	if (isVersionLessThan(pluginVersion, "6.10.0")) {
+		const tableState = currentState as TableState691;
+		const { columns, tags, bodyCells, bodyRows } = tableState.model;
+
+		//Migrate tags to the columns and cells
+		columns.forEach((column: unknown) => {
+			const typedColumn = column as Record<string, unknown>;
+			typedColumn.tags = [];
+		});
+
+		bodyCells.forEach((cell: unknown) => {
+			const typedCell = cell as BodyCell;
+			typedCell.tagIds = [];
+		});
+
+		tags.forEach((tag) => {
+			const { id, columnId, markdown, color } = tag;
+			const column: unknown | undefined = columns.find(
+				(column) => column.id === columnId
+			);
+			if (!column) throw new ColumNotFoundError(columnId);
+
+			const typedColumn = column as Column;
+			typedColumn.tags.push({
+				id,
+				markdown,
+				color,
+			} as Tag);
+
+			tag.cellIds.forEach((cellId) => {
+				const cell: unknown | undefined = bodyCells.find(
+					(cell) => cell.id === cellId
+				);
+				if (!cell) throw new CellIdError(cellId);
+
+				const typedCell = cell as BodyCell;
+				typedCell.tagIds.push(id);
+			});
+		});
+
+		const unknownModel = tableState.model as unknown;
+		const typedModel = unknownModel as Record<string, unknown>;
+		delete typedModel.tags;
+
+		//Delete unnecessary properties
+		bodyRows.forEach((row: unknown) => {
+			const typedRow = row as Record<string, unknown>;
+			if (typedRow.hasOwnProperty("menuCellId")) {
+				delete typedRow.menuCellId;
+			}
 		});
 	}
 

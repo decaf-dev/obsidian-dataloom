@@ -4,12 +4,10 @@ import {
 	CurrencyType,
 	DateFormat,
 	SortDir,
-} from "src/shared/table-state/types";
+} from "src/shared/types/types";
 import { useLogger } from "../logger";
 import { WorkspaceLeaf } from "obsidian";
-import { updateSortTime } from "src/redux/global/global-slice";
 import { EVENT_COLUMN_ADD, EVENT_COLUMN_DELETE } from "../events";
-import { useAppDispatch } from "src/redux/global/hooks";
 import { useTableState } from "./table-state-context";
 import ColumnAddCommand from "../commands/column-add-command";
 import ColumnDeleteCommand from "../commands/column-delete-command";
@@ -17,7 +15,6 @@ import ColumnUpdateCommand from "../commands/column-update-command";
 import { ColumnTypeUpdateCommand } from "../commands/column-type-update-command";
 
 export const useColumn = (viewLeaf: WorkspaceLeaf) => {
-	const dispatch = useAppDispatch();
 	const logFunc = useLogger();
 	const { doCommand } = useTableState();
 
@@ -64,9 +61,12 @@ export const useColumn = (viewLeaf: WorkspaceLeaf) => {
 			columnId,
 			sortDir,
 		});
-		doCommand(new ColumnUpdateCommand(columnId, "sortDir", sortDir));
-		//TODO check?
-		dispatch(updateSortTime());
+		doCommand(
+			new ColumnUpdateCommand(columnId, "sortDir", {
+				value: sortDir,
+				shouldSortRows: true,
+			})
+		);
 	}
 
 	function handleColumnToggle(columnId: string) {
@@ -92,9 +92,11 @@ export const useColumn = (viewLeaf: WorkspaceLeaf) => {
 			currencyType,
 		});
 		doCommand(
-			new ColumnUpdateCommand(columnId, "currencyType", currencyType)
+			new ColumnUpdateCommand(columnId, "currencyType", {
+				value: currencyType,
+				shouldSortRows: true,
+			})
 		);
-		dispatch(updateSortTime());
 	}
 
 	function handleDateFormatChange(columnId: string, dateFormat: DateFormat) {
@@ -102,16 +104,24 @@ export const useColumn = (viewLeaf: WorkspaceLeaf) => {
 			columnId,
 			dateFormat,
 		});
-		doCommand(new ColumnUpdateCommand(columnId, "dateFormat", dateFormat));
-		dispatch(updateSortTime());
+		doCommand(
+			new ColumnUpdateCommand(columnId, "dateFormat", {
+				value: dateFormat,
+				shouldSortRows: true,
+			})
+		);
 	}
 
 	function handleSortRemoveClick(columnId: string) {
 		logFunc("handleSortRemoveClick", {
 			columnId,
 		});
-		doCommand(new ColumnUpdateCommand(columnId, "sortDir", SortDir.NONE));
-		dispatch(updateSortTime());
+		doCommand(
+			new ColumnUpdateCommand(columnId, "sortDir", {
+				value: SortDir.NONE,
+				shouldSortRows: true,
+			})
+		);
 	}
 
 	function handleColumnWidthChange(columnId: string, width: string) {
@@ -119,7 +129,12 @@ export const useColumn = (viewLeaf: WorkspaceLeaf) => {
 			columnId,
 			width,
 		});
-		doCommand(new ColumnUpdateCommand(columnId, "width", width));
+		doCommand(
+			new ColumnUpdateCommand(columnId, "width", {
+				value: width,
+				shouldSortRows: true,
+			})
+		);
 	}
 
 	function handleWrapContentToggle(columnId: string, shouldWrap: boolean) {
@@ -128,7 +143,10 @@ export const useColumn = (viewLeaf: WorkspaceLeaf) => {
 			shouldWrap,
 		});
 		doCommand(
-			new ColumnUpdateCommand(columnId, "shouldWrapOverflow", shouldWrap)
+			new ColumnUpdateCommand(columnId, "shouldWrapOverflow", {
+				value: shouldWrap,
+				shouldSortRows: true,
+			})
 		);
 	}
 

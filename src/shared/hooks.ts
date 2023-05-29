@@ -15,8 +15,8 @@ export const useCompare = (value: any, runOnMount = false) => {
 	return prevValue !== value;
 };
 
-const usePrevious = (value: any) => {
-	const ref = React.useRef();
+export const usePrevious = <T>(value: T) => {
+	const ref = React.useRef<T>();
 	React.useEffect(() => {
 		ref.current = value;
 	});
@@ -55,61 +55,6 @@ export const useInputSelection = (
 	}, [previousSelectionStart, value, didValueChange]);
 
 	return { setPreviousSelectionStart };
-};
-
-export const useFocusMenuTextArea = (
-	isMenuVisible: boolean,
-	value: string,
-	onChange: (value: string) => void
-) =>
-	useFocusMenuContent<HTMLTextAreaElement>(
-		false,
-		isMenuVisible,
-		value,
-		onChange
-	);
-
-export const useFocusMenuInput = (
-	isMenuVisible: boolean,
-	value: string,
-	onChange: (value: string) => void,
-	options?: { isNumeric: boolean }
-) => {
-	const { isNumeric = false } = options || {};
-	return useFocusMenuContent<HTMLInputElement>(
-		isNumeric,
-		isMenuVisible,
-		value,
-		onChange
-	);
-};
-
-const useFocusMenuContent = <T>(
-	hasNumericInput: boolean,
-	isMenuVisible: boolean,
-	value: string,
-	onChange: (value: string) => void
-) => {
-	const { menuKey } = useMenuContext();
-	const inputRef = React.useRef<T | null>(null);
-
-	//The menu will render 2 times, once for the initial position and then again to shift the menu into view.
-	//We only want to focus the input on the second render.
-	React.useEffect(() => {
-		function focusInput() {
-			if (!inputRef.current) return;
-			if (inputRef.current instanceof HTMLElement) {
-				inputRef.current.focus();
-			}
-
-			if (menuKey == null) return;
-			if (hasNumericInput && !isNumber(menuKey)) return;
-			onChange(value + menuKey);
-		}
-		if (isMenuVisible) focusInput();
-	}, [isMenuVisible]);
-
-	return inputRef;
 };
 
 export const useUUID = (): string => {

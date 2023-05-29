@@ -1,48 +1,54 @@
-import { useMemo } from "react";
+import Stack from "../../shared/stack";
+import SortBubble from "./sort-button";
+import ToggleColumn from "./toggle-column";
+import Filter from "./filter/filter";
+import Wrap from "../../shared/wrap";
+import SearchBar from "./search-bar";
+import Divider from "src/react/shared/divider";
+import ActiveFilterBubble from "./active-filter-bubble";
 
 import {
 	SortDir,
 	Column,
 	HeaderCell,
 	FilterRule,
-	CellType,
-	Tag,
-} from "src/shared/table-state/types";
-
-import Stack from "../../shared/stack";
-
+} from "src/shared/types/types";
 import {
 	CellNotFoundError,
-	ColumnIdError,
+	ColumNotFoundError,
 } from "src/shared/table-state/table-error";
-import SearchBar from "./search-bar";
-import SortBubble from "./sort-button";
-
-import Flex from "../../shared/flex";
-import ToggleColumn from "./toggle-column";
-import Filter from "./filter/filter";
+import { isCellTypeFilterable } from "src/shared/table-state/filter-by-rules";
 
 import "./styles.css";
-import { isCellTypeFilterable } from "src/shared/table-state/filter-by-rules";
-import ActiveFilterBubble from "./active-filter-bubble";
-import Divider from "src/react/shared/divider";
+import { ColumnWithMarkdown } from "./types";
 
 interface SortButtonListProps {
-	bubbles: { sortDir: SortDir; markdown: string; columnId: string }[];
+	headerCells: HeaderCell[];
+	columns: Column[];
 	onRemoveClick: (columnId: string) => void;
 }
 
-const SortBubbleList = ({ bubbles, onRemoveClick }: SortButtonListProps) => {
+const SortBubbleList = ({
+	headerCells,
+	columns,
+	onRemoveClick,
+}: SortButtonListProps) => {
 	return (
 		<Stack spacing="sm">
-			{bubbles.map((bubble, i) => (
-				<SortBubble
-					key={i}
-					sortDir={bubble.sortDir}
-					markdown={bubble.markdown}
-					onRemoveClick={() => onRemoveClick(bubble.columnId)}
-				/>
-			))}
+			{headerCells.map((cell, i) => {
+				const column = columns.find((c) => c.id === cell.columnId);
+				if (!column) throw new ColumNotFoundError(cell.columnId);
+				const { markdown, columnId } = cell;
+				const { sortDir } = column;
+				return (
+					<SortBubble
+						key={i}
+						sortDir={sortDir}
+						markdown={markdown}
+						onRemoveClick={() => onRemoveClick(columnId)}
+					/>
+				);
+			})}
 		</Stack>
 	);
 };
@@ -51,7 +57,6 @@ interface Props {
 	headerCells: HeaderCell[];
 	columns: Column[];
 	filterRules: FilterRule[];
-	tags: Tag[];
 	onSortRemoveClick: (columnId: string) => void;
 	onColumnToggle: (columnId: string) => void;
 	onRuleToggle: (ruleId: string) => void;
@@ -64,9 +69,8 @@ interface Props {
 }
 export default function OptionBar({
 	headerCells,
-	filterRules,
 	columns,
-	tags,
+	filterRules,
 	onSortRemoveClick,
 	onColumnToggle,
 	onRuleToggle,
@@ -77,78 +81,55 @@ export default function OptionBar({
 	onRuleAddClick,
 	onRuleTagsChange,
 }: Props) {
-	const bubbles = useMemo(() => {
-		return headerCells
-			.filter((cell) => {
-				const columnId = cell.columnId;
-				const column = columns.find((c) => c.id == columnId);
-				if (!column) throw new ColumnIdError(columnId);
-				return column.sortDir !== SortDir.NONE;
-			})
-			.map((cell) => {
-				const columnId = cell.columnId;
-				const column = columns.find((c) => c.id == columnId);
-				if (!column) throw new ColumnIdError(columnId);
-				return {
-					columnId: cell.columnId,
-					markdown: cell.markdown,
-					sortDir: column.sortDir,
-				};
-			});
-	}, [headerCells, columns]);
-
-	const togglableColumns = useMemo(() => {
-		return columns.map((column) => {
-			const cell = headerCells.find((cell) => cell.columnId == column.id);
-			if (!cell) throw new CellNotFoundError();
-			return {
-				id: column.id,
-				name: cell.markdown,
-				isVisible: column.isVisible,
-			};
-		});
-	}, [headerCells, columns]);
-
-	const filterableColumns = useMemo(() => {
-		return columns
-			.filter((column) => {
-				const { type } = column;
-				return isCellTypeFilterable(type);
-			})
-			.map((column) => {
-				const cell = headerCells.find(
-					(cell) => cell.columnId == column.id
-				);
-				if (!cell) throw new CellNotFoundError();
-				return {
-					id: column.id,
-					name: cell.markdown,
-					cellType: column.type,
-				};
-			});
-	}, [headerCells, columns]);
+	const sortedCells = headerCells.filter((cell) => {
+		const columnId = cell.columnId;
+		const column = columns.find((c) => c.id == columnId);
+		if (!column) throw new ColumNotFoundError(columnId);
+		return column.sortDir !== SortDir.NONE;
+	});
 
 	const activeRules = filterRules.filter((rule) => rule.isEnabled);
+
+	const columnsWithMarkdown: ColumnWithMarkdown[] = columns.map((column) => {
+		const headerCell = headerCells.find(
+			(cell) => cell.columnId === column.id
+		);
+		if (!headerCell) throw new CellNotFoundError();
+		return {
+			...column,
+			markdown: headerCell.markdown,
+		};
+	});
+
+	const filterableColumns: ColumnWithMarkdown[] = columnsWithMarkdown.filter(
+		(column) => {
+			const { type } = column;
+			return isCellTypeFilterable(type);
+		}
+	);
+
+	const sortedColumn = columns.find((c) => c.sortDir !== SortDir.NONE);
 
 	return (
 		<div className="NLT__option-bar">
 			<Stack spacing="lg" isVertical>
-				<Flex justify="space-between" align="flex-end">
+				<Wrap justify={{ base: "space-between", mobile: "flex-end" }}>
 					<Stack spacing="md">
 						<SortBubbleList
-							bubbles={bubbles}
+							headerCells={sortedCells}
+							columns={columns}
 							onRemoveClick={onSortRemoveClick}
 						/>
-						{activeRules.length !== 0 && bubbles.length !== 0 && (
-							<Divider isVertical height="1.5rem" />
-						)}
+						{activeRules.length !== 0 &&
+							sortedColumn !== undefined && (
+								<Divider isVertical height="1.5rem" />
+							)}
 						<ActiveFilterBubble numActive={activeRules.length} />
 					</Stack>
 					<Stack spacing="sm" justify="flex-end">
 						<SearchBar />
 						<Filter
 							columns={filterableColumns}
-							tags={tags}
 							filterRules={filterRules}
 							onAddClick={onRuleAddClick}
 							onToggle={onRuleToggle}
@@ -159,11 +140,11 @@ export default function OptionBar({
 							onTagsChange={onRuleTagsChange}
 						/>
 						<ToggleColumn
-							columns={togglableColumns}
+							columns={columnsWithMarkdown}
 							onToggle={onColumnToggle}
 						/>
 					</Stack>
-				</Flex>
+				</Wrap>
 			</Stack>
 		</div>
 	);

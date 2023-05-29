@@ -6,12 +6,21 @@ describe("tag-update-command", () => {
 	it("should throw an error when undo() is called before execute()", () => {
 		try {
 			//Arrange
-			const prevState = createTableState(1, 1);
+			const prevState = createTableState(1, 2);
 
-			const tag = createTag(prevState.model.columns[0].id, "test");
-			prevState.model.tags.push(tag);
+			const tags = [createTag("test1"), createTag("test2")];
+			prevState.model.columns[0].tags = tags;
 
-			const command = new TagUpdateCommand(tag.id, "markdown", "");
+			const tagIds = tags.map((t) => t.id);
+			prevState.model.bodyCells[0].tagIds = tagIds;
+			prevState.model.bodyCells[1].tagIds = tagIds;
+
+			const command = new TagUpdateCommand(
+				prevState.model.columns[0].id,
+				tags[0].id,
+				"markdown",
+				""
+			);
 
 			//Act
 			command.undo(prevState);
@@ -23,12 +32,21 @@ describe("tag-update-command", () => {
 	it("should throw an error when redo() is called before redo()", () => {
 		try {
 			//Arrange
-			const prevState = createTableState(1, 1);
+			const prevState = createTableState(1, 2);
 
-			const tag = createTag(prevState.model.columns[0].id, "test");
-			prevState.model.tags.push(tag);
+			const tags = [createTag("test1"), createTag("test2")];
+			prevState.model.columns[0].tags = tags;
 
-			const command = new TagUpdateCommand(tag.id, "markdown", "");
+			const tagIds = tags.map((t) => t.id);
+			prevState.model.bodyCells[0].tagIds = tagIds;
+			prevState.model.bodyCells[1].tagIds = tagIds;
+
+			const command = new TagUpdateCommand(
+				prevState.model.columns[0].id,
+				tags[0].id,
+				"markdown",
+				""
+			);
 
 			//Act
 			command.execute(prevState);
@@ -40,34 +58,56 @@ describe("tag-update-command", () => {
 
 	it("should update a tag property when execute() is called", async () => {
 		//Arrange
-		const prevState = createTableState(1, 1);
-		const tag = createTag(prevState.model.columns[0].id, "test");
-		prevState.model.tags.push(tag);
-		const command = new TagUpdateCommand(tag.id, "markdown", "");
+		const prevState = createTableState(1, 2);
+
+		const tags = [createTag("test1"), createTag("test2")];
+		prevState.model.columns[0].tags = tags;
+
+		const tagIds = tags.map((t) => t.id);
+		prevState.model.bodyCells[0].tagIds = tagIds;
+		prevState.model.bodyCells[1].tagIds = tagIds;
+
+		const command = new TagUpdateCommand(
+			prevState.model.columns[0].id,
+			tags[0].id,
+			"markdown",
+			""
+		);
 
 		//Act
 		const executeState = command.execute(prevState);
 
 		//Assert
-		expect(executeState.model.tags.length).toEqual(1);
-		expect(executeState.model.tags[0].markdown).toEqual("");
+		expect(executeState.model.columns[0].tags.length).toEqual(2);
+		expect(executeState.model.columns[0].tags[0].markdown).toEqual("");
+		expect(executeState.model.columns[0].tags[1].markdown).toEqual("test2");
+		expect(executeState.model.bodyCells).toEqual(prevState.model.bodyCells);
 	});
 
 	it("should reset the cell property when undo() is called", () => {
 		//Arrange
-		const prevState = createTableState(1, 1);
+		const prevState = createTableState(1, 2);
 
-		const tag = createTag(prevState.model.columns[0].id, "test");
-		prevState.model.tags.push(tag);
+		const tags = [createTag("test1"), createTag("test2")];
+		prevState.model.columns[0].tags = tags;
 
-		const command = new TagUpdateCommand(tag.id, "markdown", "");
+		const tagIds = tags.map((t) => t.id);
+		prevState.model.bodyCells[0].tagIds = tagIds;
+		prevState.model.bodyCells[1].tagIds = tagIds;
+
+		const command = new TagUpdateCommand(
+			prevState.model.columns[0].id,
+			tags[0].id,
+			"markdown",
+			""
+		);
 
 		//Act
 		const executeState = command.execute(prevState);
 		const undoState = command.undo(executeState);
 
 		//Assert
-		expect(undoState.model.tags.length).toEqual(1);
-		expect(undoState.model.tags[0].markdown).toEqual("test");
+		expect(undoState.model.columns).toEqual(prevState.model.columns);
+		expect(executeState.model.bodyCells).toEqual(prevState.model.bodyCells);
 	});
 });

@@ -17,7 +17,7 @@ export default function SearchBar() {
 			{isSearchBarVisible && (
 				<input
 					css={css`
-						width: 175px;
+						max-width: 200px;
 						border-top: 0 !important;
 						border-left: 0 !important;
 						border-right: 0 !important;

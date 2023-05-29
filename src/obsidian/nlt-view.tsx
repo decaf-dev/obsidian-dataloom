@@ -3,7 +3,7 @@ import { createRoot, Root } from "react-dom/client";
 import { Provider } from "react-redux";
 import App from "../react/table-app";
 import { store } from "../redux/global/store";
-import { TableState } from "../shared/table-state/types";
+import { TableState } from "../shared/types/types";
 import TableStateProvider from "../shared/table-state/table-state-context";
 import NLTImportModal from "./nlt-import-modal";
 import {
@@ -12,6 +12,7 @@ import {
 } from "src/data/serialize-table-state";
 import MenuProvider from "src/shared/menu/menu-context";
 import { EVENT_REFRESH_VIEW } from "src/shared/events";
+import DragProvider from "src/shared/dragging/drag-context";
 
 export const NOTION_LIKE_TABLES_VIEW = "notion-like-tables";
 
@@ -70,7 +71,9 @@ export class NLTView extends TextFileView {
 						onSaveState={this.handleSaveTableState}
 					>
 						<MenuProvider>
-							<App viewLeaf={this.leaf} />
+							<DragProvider>
+								<App viewLeaf={this.leaf} />
+							</DragProvider>
 						</MenuProvider>
 					</TableStateProvider>
 				</Provider>
