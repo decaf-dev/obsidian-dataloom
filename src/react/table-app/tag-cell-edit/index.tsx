@@ -5,7 +5,7 @@ import MenuBody from "./menu-body";
 
 import { Tag as TagType } from "src/shared/types/types";
 import { Color } from "src/shared/types/types";
-import { MenuPosition } from "src/shared/menu/types";
+import { Position } from "src/shared/menu/types";
 import { randomColor } from "src/shared/color";
 
 import { css } from "@emotion/react";
@@ -15,8 +15,6 @@ interface Props {
 	columnTags: TagType[];
 	cellTags: TagType[];
 	menuCloseRequestTime: number | null;
-	menuPosition: MenuPosition;
-	isMenuVisible: boolean;
 	onTagClick: (tagId: string) => void;
 	onTagAdd: (markdown: string, color: Color) => void;
 	onRemoveTag: (tagId: string) => void;
@@ -29,8 +27,6 @@ export default function TagCellEdit({
 	columnTags,
 	cellTags,
 	menuCloseRequestTime,
-	menuPosition,
-	isMenuVisible,
 	onTagClick,
 	onTagAdd,
 	onTagColorChange,
@@ -65,14 +61,12 @@ export default function TagCellEdit({
 			`}
 		>
 			<MenuHeader
-				isMenuVisible={isMenuVisible}
 				inputValue={inputValue}
 				cellTags={cellTags}
 				onInputValueChange={setInputValue}
 				onRemoveTag={onRemoveTag}
 			/>
 			<MenuBody
-				menuPosition={menuPosition}
 				inputValue={inputValue}
 				columnTags={columnTags}
 				newTagColor={newTagColor}

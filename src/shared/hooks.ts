@@ -58,35 +58,21 @@ export const useInputSelection = (
 };
 
 export const useFocusMenuTextArea = (
-	isMenuVisible: boolean,
 	value: string,
 	onChange: (value: string) => void
-) =>
-	useFocusMenuContent<HTMLTextAreaElement>(
-		false,
-		isMenuVisible,
-		value,
-		onChange
-	);
+) => useFocusMenuContent<HTMLTextAreaElement>(false, value, onChange);
 
 export const useFocusMenuInput = (
-	isMenuVisible: boolean,
 	value: string,
 	onChange: (value: string) => void,
 	options?: { isNumeric: boolean }
 ) => {
 	const { isNumeric = false } = options || {};
-	return useFocusMenuContent<HTMLInputElement>(
-		isNumeric,
-		isMenuVisible,
-		value,
-		onChange
-	);
+	return useFocusMenuContent<HTMLInputElement>(isNumeric, value, onChange);
 };
 
 const useFocusMenuContent = <T>(
 	hasNumericInput: boolean,
-	isMenuVisible: boolean,
 	value: string,
 	onChange: (value: string) => void
 ) => {
@@ -106,8 +92,8 @@ const useFocusMenuContent = <T>(
 			if (hasNumericInput && !isNumber(menuKey)) return;
 			onChange(value + menuKey);
 		}
-		if (isMenuVisible) focusInput();
-	}, [isMenuVisible]);
+		focusInput();
+	}, []);
 
 	return inputRef;
 };

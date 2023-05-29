@@ -3,7 +3,6 @@ import FunctionMenu from "./function-menu";
 
 import { useMenu } from "src/shared/menu/hooks";
 import { MenuLevel } from "src/shared/menu/types";
-import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
 import {
 	BodyCell,
 	BodyRow,
@@ -22,6 +21,7 @@ import "./styles.css";
 import MenuTrigger from "src/react/shared/menu-trigger";
 import { isGeneralFunction, isNumber } from "src/shared/validators";
 import { getShortDisplayNameForFunctionType } from "src/shared/table-state/display-name";
+import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 
 interface Props {
 	columnId: string;
@@ -50,27 +50,17 @@ export default function FunctionCell({
 	cellType,
 	onFunctionTypeChange,
 }: Props) {
-	const { menu, menuPosition, isMenuOpen, openMenu, closeTopMenu } = useMenu(
+	const { menu, isMenuOpen, openMenu, menuRef, closeTopMenu } = useMenu(
 		MenuLevel.ONE
 	);
+
+	const { triggerPosition, triggerRef } = useMenuTriggerPosition();
+	useShiftMenu(triggerRef, menuRef, isMenuOpen);
 
 	function handleFunctionTypeClick(value: FunctionType) {
 		onFunctionTypeChange(cellId, value);
 		closeTopMenu();
 	}
-
-	const {
-		position: { top, left },
-		isMenuReady,
-	} = shiftMenuIntoViewContent({
-		menuId: menu.id,
-		menuPositionEl: menuPosition.positionRef.current,
-		menuPosition: menuPosition.position,
-		topOffset:
-			cellType === CellType.NUMBER || cellType === CellType.CURRENCY
-				? -165
-				: 0,
-	});
 
 	const columnCells = bodyCells.filter((cell) => cell.columnId === columnId);
 
@@ -106,7 +96,7 @@ export default function FunctionCell({
 					style={{
 						width,
 					}}
-					ref={menuPosition.positionRef}
+					ref={triggerRef}
 				>
 					{functionType === GeneralFunction.NONE && (
 						<Text value="Calculate" variant="faint" />
@@ -126,11 +116,11 @@ export default function FunctionCell({
 			</MenuTrigger>
 			<FunctionMenu
 				id={menu.id}
-				top={top}
+				top={triggerPosition.top}
+				ref={menuRef}
 				cellType={cellType}
-				left={left}
+				left={triggerPosition.left}
 				isOpen={isMenuOpen}
-				isReady={isMenuReady}
 				value={functionType}
 				onClick={handleFunctionTypeClick}
 			/>

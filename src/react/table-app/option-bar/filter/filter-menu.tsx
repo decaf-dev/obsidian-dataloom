@@ -9,8 +9,7 @@ import { Button } from "src/react/shared/button";
 import { FilterRule, FilterType } from "src/shared/types/types";
 import { ColumNotFoundError } from "src/shared/table-state/table-error";
 import { ColumnWithMarkdown } from "../types";
-import React, { useRef } from "react";
-import { usePrevious } from "src/shared/hooks";
+import React from "react";
 import { css } from "@emotion/react";
 import { isMobile } from "src/shared/renderUtils";
 
@@ -19,7 +18,6 @@ interface Props {
 	top: number;
 	left: number;
 	isOpen: boolean;
-	isReady: boolean;
 	columns: ColumnWithMarkdown[];
 	filterRules: FilterRule[];
 	onAddClick: (columnId: string) => void;
@@ -31,45 +29,32 @@ interface Props {
 	onTagsChange: (id: string, value: string[]) => void;
 }
 
-export default function FilterMenu({
-	id,
-	top,
-	left,
-	isOpen,
-	isReady,
-	columns,
-	filterRules,
-	onAddClick,
-	onToggle,
-	onColumnChange,
-	onFilterTypeChange,
-	onTextChange,
-	onDeleteClick,
-	onTagsChange,
-}: Props) {
-	const menuRef = useRef<HTMLDivElement>(null);
-
-	const previousLength = usePrevious(filterRules.length);
-	React.useEffect(() => {
-		if (previousLength !== undefined) {
-			if (previousLength < filterRules.length) {
-				if (menuRef.current) {
-					//Scroll to the bottom if we're adding a new rule
-					menuRef.current.scrollTop = menuRef.current.scrollHeight;
-				}
-			}
-		}
-	}, [previousLength]);
-
+const FilterMenu = React.forwardRef<HTMLDivElement, Props>(function FilterMenu(
+	{
+		id,
+		top,
+		left,
+		isOpen,
+		columns,
+		filterRules,
+		onAddClick,
+		onToggle,
+		onColumnChange,
+		onFilterTypeChange,
+		onTextChange,
+		onDeleteClick,
+		onTagsChange,
+	}: Props,
+	ref
+) {
 	return (
 		<Menu
 			isOpen={isOpen}
-			isReady={isReady}
 			id={id}
 			top={top}
 			left={left}
 			maxHeight={255}
-			ref={menuRef}
+			ref={ref}
 		>
 			<div
 				className="NLT__filter-menu"
@@ -131,4 +116,6 @@ export default function FilterMenu({
 			</div>
 		</Menu>
 	);
-}
+});
+
+export default FilterMenu;

@@ -1,6 +1,6 @@
-import { useEffect } from "react";
+import React from "react";
 
-import { numToPx, pxToNum } from "src/shared/conversion";
+import { numToPx } from "src/shared/conversion";
 import {
 	CellType,
 	CurrencyType,
@@ -15,7 +15,7 @@ import Icon from "../../shared/icon";
 import Stack from "../../shared/stack";
 import HeaderMenu from "./components/HeaderMenu";
 import { useCompare, useForceUpdate } from "src/shared/hooks";
-import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
+import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 import { getIconIdForCellType } from "src/react/shared/icon/utils";
 import MenuTrigger from "src/react/shared/menu-trigger";
 import ResizeContainer from "./resize-container";
@@ -65,30 +65,38 @@ export default function HeaderCell({
 	onCurrencyChange,
 	onDateFormatChange,
 }: Props) {
-	const { menu, menuPosition, isMenuOpen, closeTopMenu, openMenu } = useMenu(
+	const { menu, isMenuOpen, closeTopMenu, menuRef, openMenu } = useMenu(
 		MenuLevel.ONE
 	);
+	const { triggerPosition, triggerRef } = useMenuTriggerPosition();
+	useShiftMenu(triggerRef, menuRef, isMenuOpen);
 
-	const [updateTime, forceUpdate] = useForceUpdate();
+	const { resizingColumnId } = useAppSelector((state) => state.global);
+
+	const [forceUpdateTime, forceUpdate] = useForceUpdate();
 
 	//A width of "unset" means that we have double clicked to fore the column to resize
 	//to the width of the cell contents
 	//We need to force an update so that the menu ref will have the correct width
-	useEffect(() => {
+	React.useEffect(() => {
 		if (width === "unset") forceUpdate();
 	}, [width, forceUpdate]);
 
+	console.log(triggerRef.current);
 	//We will then need to update the width of the column so that the header cell will
 	//have a value set in pixels
-	const shouldUpdateWidth = useCompare(updateTime);
-	useEffect(() => {
+	const shouldUpdateWidth = useCompare(forceUpdateTime);
+	React.useEffect(() => {
 		if (shouldUpdateWidth) {
-			const newWidth = numToPx(menuPosition.position.width);
-			onWidthChange(columnId, newWidth);
+			if (triggerRef.current) {
+				console.log("DOUBLE YEP");
+				const { width } = triggerRef.current.getBoundingClientRect();
+				console.log(width);
+				const newWidth = numToPx(Math.ceil(width));
+				onWidthChange(columnId, newWidth);
+			}
 		}
-	}, [shouldUpdateWidth, menuPosition]);
-
-	const { resizingColumnId } = useAppSelector((state) => state.global);
+	}, [shouldUpdateWidth, triggerRef.current]);
 
 	function handleMenuTriggerClick() {
 		//If we're resizing a column, then don't open the menu
@@ -96,14 +104,6 @@ export default function HeaderCell({
 		openMenu(menu);
 	}
 
-	const {
-		position: { top, left },
-		isMenuReady,
-	} = shiftMenuIntoViewContent({
-		menuId: menu.id,
-		menuPositionEl: menuPosition.positionRef.current,
-		menuPosition: menuPosition.position,
-	});
 	const lucideId = getIconIdForCellType(type);
 
 	let contentClassName = "NLT__th-content";
@@ -114,7 +114,7 @@ export default function HeaderCell({
 			<MenuTrigger menuId={menu.id} onClick={handleMenuTriggerClick}>
 				<div
 					className="NLT__th-container"
-					ref={menuPosition.positionRef}
+					ref={triggerRef}
 					style={{
 						width,
 					}}
@@ -136,10 +136,10 @@ export default function HeaderCell({
 			</MenuTrigger>
 			<HeaderMenu
 				isOpen={isMenuOpen}
-				isReady={isMenuReady}
-				top={top}
-				left={left}
+				top={triggerPosition.top}
+				left={triggerPosition.left}
 				id={menu.id}
+				ref={menuRef}
 				rowId={rowId}
 				currencyType={currencyType}
 				dateFormat={dateFormat}

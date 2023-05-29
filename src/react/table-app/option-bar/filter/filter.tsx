@@ -1,10 +1,13 @@
+import React from "react";
+
 import { MenuButton } from "src/react/shared/button";
 import { useMenu } from "src/shared/menu/hooks";
 import { MenuLevel } from "src/shared/menu/types";
-import { shiftMenuIntoViewContent } from "src/shared/menu/utils";
+import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 import FilterMenu from "./filter-menu";
 import { FilterRule } from "src/shared/types/types";
 import { ColumnWithMarkdown } from "../types";
+import { usePrevious } from "src/shared/hooks";
 
 interface Props {
 	columns: ColumnWithMarkdown[];
@@ -29,9 +32,25 @@ export default function Filter({
 	onTextChange,
 	onTagsChange,
 }: Props) {
-	const { menu, menuPosition, isMenuOpen, openMenu, closeTopMenu } = useMenu(
+	const { menu, menuRef, isMenuOpen, openMenu, closeTopMenu } = useMenu(
 		MenuLevel.ONE
 	);
+	const { triggerRef, triggerPosition } = useMenuTriggerPosition();
+	useShiftMenu(triggerRef, menuRef, isMenuOpen, {
+		openDirection: "left",
+	});
+
+	const previousLength = usePrevious(filterRules.length);
+	React.useEffect(() => {
+		if (previousLength !== undefined) {
+			if (previousLength < filterRules.length) {
+				if (menuRef.current) {
+					//Scroll to the bottom if we're adding a new rule
+					menuRef.current.scrollTop = menuRef.current.scrollHeight;
+				}
+			}
+		}
+	}, [previousLength, filterRules.length]);
 
 	function handleClick() {
 		if (isMenuOpen) {
@@ -41,18 +60,9 @@ export default function Filter({
 		}
 	}
 
-	const {
-		position: { top, left },
-		isMenuReady,
-	} = shiftMenuIntoViewContent({
-		menuId: menu.id,
-		menuPositionEl: menuPosition.positionRef.current,
-		menuPosition: menuPosition.position,
-		openDirection: "left",
-	});
 	return (
 		<>
-			<div ref={menuPosition.positionRef}>
+			<div ref={triggerRef}>
 				<MenuButton
 					isLink
 					menuId={menu.id}
@@ -63,9 +73,9 @@ export default function Filter({
 			</div>
 			<FilterMenu
 				id={menu.id}
-				top={top}
-				left={left}
-				isReady={isMenuReady}
+				ref={menuRef}
+				top={triggerPosition.top}
+				left={triggerPosition.left}
 				isOpen={isMenuOpen}
 				columns={columns}
 				filterRules={filterRules}

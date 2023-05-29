@@ -5,12 +5,11 @@ import { Tag } from "src/shared/types/types";
 import CreateTag from "./create-tag";
 import SelectableTag from "./selectable-tag";
 
-import { MenuPosition } from "src/shared/menu/types";
+import { Position } from "src/shared/menu/types";
 import { css } from "@emotion/react";
 
 interface MenuBodyProps {
 	columnTags: Tag[];
-	menuPosition: MenuPosition;
 	inputValue: string;
 	newTagColor: Color;
 	onTagAdd: (markdown: string, color: Color) => void;
@@ -22,7 +21,6 @@ interface MenuBodyProps {
 export default function MenuBody({
 	columnTags,
 	inputValue,
-	menuPosition,
 	newTagColor,
 	onTagAdd,
 	onTagClick,
@@ -60,7 +58,6 @@ export default function MenuBody({
 				)}
 				{filteredTags.map((tag) => (
 					<SelectableTag
-						menuPosition={menuPosition}
 						key={tag.id}
 						id={tag.id}
 						color={tag.color}

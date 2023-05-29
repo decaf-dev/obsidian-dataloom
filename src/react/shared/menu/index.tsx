@@ -16,7 +16,6 @@ interface Props {
 	maxHeight?: number;
 	height?: number;
 	children: React.ReactNode;
-	isReady: boolean;
 }
 
 const Menu = React.forwardRef<HTMLDivElement, Props>(function Menu(
@@ -30,7 +29,6 @@ const Menu = React.forwardRef<HTMLDivElement, Props>(function Menu(
 		maxHeight = 0,
 		maxWidth = 0,
 		children,
-		isReady,
 	}: Props,
 	ref
 ) {
@@ -53,7 +51,6 @@ const Menu = React.forwardRef<HTMLDivElement, Props>(function Menu(
 							css={css`
 								position: absolute;
 								z-index: var(--layer-menu);
-								visibility: ${isReady ? "visible" : "hidden"};
 								top: ${numToPx(top)};
 								left: ${numToPx(left)};
 								width: ${width !== 0

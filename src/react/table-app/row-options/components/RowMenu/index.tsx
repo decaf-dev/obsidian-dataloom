@@ -1,3 +1,4 @@
+import React from "react";
 import Menu from "src/react/shared/menu";
 import MenuItem from "src/react/shared/menu-item";
 
@@ -5,22 +6,16 @@ interface Props {
 	id: string;
 	rowId: string;
 	isOpen: boolean;
-	isReady: boolean;
 	top: number;
 	left: number;
 	onDeleteClick: (id: string) => void;
 }
-export default function RowMenu({
-	id,
-	rowId,
-	isOpen,
-	top,
-	left,
-	isReady,
-	onDeleteClick,
-}: Props) {
+const RowMenu = React.forwardRef<HTMLDivElement, Props>(function RowMenu(
+	{ id, rowId, isOpen, top, left, onDeleteClick }: Props,
+	ref
+) {
 	return (
-		<Menu id={id} isOpen={isOpen} top={top} left={left} isReady={isReady}>
+		<Menu id={id} isOpen={isOpen} top={top} left={left} ref={ref}>
 			<div className="NLT__row-menu">
 				<MenuItem
 					lucideId="trash-2"
@@ -30,4 +25,6 @@ export default function RowMenu({
 			</div>
 		</Menu>
 	);
-}
+});
+
+export default RowMenu;
