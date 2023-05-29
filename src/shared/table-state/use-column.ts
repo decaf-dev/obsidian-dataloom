@@ -13,24 +13,24 @@ import ColumnAddCommand from "../commands/column-add-command";
 import ColumnDeleteCommand from "../commands/column-delete-command";
 import ColumnUpdateCommand from "../commands/column-update-command";
 import { ColumnTypeUpdateCommand } from "../commands/column-type-update-command";
+import { isEventForThisLeaf } from "../renderUtils";
 
-export const useColumn = (viewLeaf: WorkspaceLeaf) => {
+export const useColumn = () => {
 	const logFunc = useLogger();
 	const { doCommand } = useTableState();
 
 	React.useEffect(() => {
 		function handleColumnAddEvent(leaf: WorkspaceLeaf) {
-			if (leaf === viewLeaf) {
-				logFunc("handleColumnAddEvent");
-				doCommand(new ColumnAddCommand());
-			}
+			if (!isEventForThisLeaf(leaf)) return;
+			logFunc("handleColumnAddEvent");
+			doCommand(new ColumnAddCommand());
 		}
 
 		function handleColumnDeleteEvent(leaf: WorkspaceLeaf) {
-			if (leaf === viewLeaf) {
-				logFunc("handleColumnDeleteEvent");
-				doCommand(new ColumnDeleteCommand({ last: true }));
-			}
+			if (!isEventForThisLeaf(leaf)) return;
+
+			logFunc("handleColumnDeleteEvent");
+			doCommand(new ColumnDeleteCommand({ last: true }));
 		}
 		//@ts-expect-error missing overload
 		app.workspace.on(EVENT_COLUMN_ADD, handleColumnAddEvent);
@@ -42,7 +42,7 @@ export const useColumn = (viewLeaf: WorkspaceLeaf) => {
 			app.workspace.off(EVENT_COLUMN_ADD, handleColumnAddEvent);
 			app.workspace.off(EVENT_COLUMN_DELETE, handleColumnDeleteEvent);
 		};
-	}, [viewLeaf, doCommand]);
+	}, [doCommand]);
 
 	function handleNewColumnClick() {
 		logFunc("handleNewColumnClick");

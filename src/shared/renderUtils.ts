@@ -1,4 +1,6 @@
+import { NLTView } from "src/obsidian/nlt-view";
 import { DynamicSize } from "./spacing/types";
+import { WorkspaceLeaf } from "obsidian";
 
 export const appendOrReplaceFirstChild = (
 	container: HTMLDivElement | null,
@@ -33,4 +35,12 @@ export const getDynamicSize = <T>(
 
 export const isMobileSize = () => {
 	return window.innerWidth <= 480;
+};
+
+export const isEventForThisLeaf = (eventLeaf: WorkspaceLeaf) => {
+	const activeView = app.workspace.getActiveViewOfType(NLTView);
+	if (!activeView) return false;
+
+	if (eventLeaf === activeView.leaf) return true;
+	return false;
 };

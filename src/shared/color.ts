@@ -40,7 +40,7 @@ export const randomColor = () => {
 };
 
 export const getTableBorderColor = (): string => {
-	//@ts-ignore
+	//@ts-expect-error
 	const theme = app.vault.getConfig("cssTheme");
 	if (theme == RED_GRAPHITE_THEME) {
 		return "var(--table-border-color)";
@@ -49,7 +49,7 @@ export const getTableBorderColor = (): string => {
 };
 
 export const getTableBackgroundColor = (): string => {
-	//@ts-ignore
+	//@ts-expect-error
 	const theme = app.vault.getConfig("cssTheme");
 	if (theme == RED_GRAPHITE_THEME) {
 		return "var(--table-header-background)";

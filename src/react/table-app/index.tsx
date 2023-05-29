@@ -23,11 +23,7 @@ import { useTag } from "src/shared/table-state/use-tag";
 import "./styles.css";
 import { css } from "@emotion/react";
 
-interface Props {
-	viewLeaf: WorkspaceLeaf;
-}
-
-export default function TableApp({ viewLeaf }: Props) {
+export default function TableApp() {
 	const { searchText } = useAppSelector((state) => state.global);
 	const { tableId, tableState, setTableState } = useTableState();
 
@@ -53,9 +49,9 @@ export default function TableApp({ viewLeaf }: Props) {
 		handleColumnWidthChange,
 		handleSortRemoveClick,
 		handleWrapContentToggle,
-	} = useColumn(viewLeaf);
+	} = useColumn();
 
-	const { handleNewRowClick, handleRowDeleteClick } = useRow(viewLeaf);
+	const { handleNewRowClick, handleRowDeleteClick } = useRow();
 
 	const {
 		handleBodyCellContentChange,

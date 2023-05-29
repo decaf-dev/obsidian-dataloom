@@ -141,13 +141,13 @@ export default function FilterTextInput({
 						if (cellType === CellType.MULTI_TAG) {
 							onTagsChange(
 								id,
-								//@ts-ignore
+								//@ts-expect-error
 								value?.map((tag) => tag.id)
 							);
 						} else {
 							onTagsChange(
 								id,
-								//@ts-ignore
+								//@ts-expect-error
 								[value?.id]
 							);
 						}

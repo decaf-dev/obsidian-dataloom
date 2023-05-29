@@ -5,22 +5,23 @@ import { EVENT_ROW_ADD, EVENT_ROW_DELETE } from "../events";
 import { useTableState } from "./table-state-context";
 import RowAddCommand from "../commands/row-add-command";
 import RowDeleteCommand from "../commands/row-delete-command";
+import { NLTView } from "src/obsidian/nlt-view";
+import { isEventForThisLeaf } from "../renderUtils";
 
-export const useRow = (viewLeaf: WorkspaceLeaf) => {
+export const useRow = () => {
 	const logger = useLogger();
 	const { doCommand } = useTableState();
 
 	React.useEffect(() => {
 		function handleRowAddEvent(leaf: WorkspaceLeaf) {
-			if (leaf === viewLeaf) {
-				doCommand(new RowAddCommand());
-			}
+			if (!isEventForThisLeaf(leaf)) return;
+			doCommand(new RowAddCommand());
 		}
 
 		function handleRowDeleteEvent(leaf: WorkspaceLeaf) {
-			if (leaf === viewLeaf) {
-				doCommand(new RowDeleteCommand({ last: true }));
-			}
+			if (!isEventForThisLeaf(leaf)) return;
+
+			doCommand(new RowDeleteCommand({ last: true }));
 		}
 
 		//@ts-expect-error unknown event type

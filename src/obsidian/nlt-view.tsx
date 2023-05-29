@@ -32,7 +32,10 @@ export class NLTView extends TextFileView {
 		//Only save data if the view is in the active leaf
 		//This prevents the data being saved multiple times if we have
 		//multiple tabs of the same file opens
-		if (this.app.workspace.activeLeaf === this.leaf) {
+		const activeView = this.app.workspace.getActiveViewOfType(NLTView);
+		if (!activeView) return;
+
+		if (activeView.leaf === this.leaf) {
 			const serialized = serializeTableState(tableState);
 			this.data = serialized;
 			await this.requestSave();
@@ -72,7 +75,7 @@ export class NLTView extends TextFileView {
 					>
 						<MenuProvider>
 							<DragProvider>
-								<App viewLeaf={this.leaf} />
+								<App />
 							</DragProvider>
 						</MenuProvider>
 					</TableStateProvider>
