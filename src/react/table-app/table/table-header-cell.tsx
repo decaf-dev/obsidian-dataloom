@@ -115,6 +115,8 @@ export default function TableHeaderCell({
 	}
 
 	function handleTouchStart(e: React.TouchEvent) {
+		e.stopPropagation();
+
 		//The target will be the td element
 		//The current target will be the parent tr element
 		const el = e.currentTarget as HTMLElement;
@@ -122,6 +124,8 @@ export default function TableHeaderCell({
 	}
 
 	const handleTouchMove = (e: React.TouchEvent) => {
+		e.stopPropagation();
+
 		if (dragData == null) return;
 
 		const { clientX, clientY } = e.touches[0];

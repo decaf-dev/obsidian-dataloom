@@ -158,11 +158,11 @@ const Components: TableComponents = {
 					border-bottom: 1px solid ${tableBorderColor};
 				}
 
-				& > tr:first-of-type > td:nth-child(1) {
+				& > tr:first-of-type > td:nth-of-type(1) {
 					border-bottom: 0;
 				}
 
-				& > tr:first-of-type > td:nth-child(2) {
+				& > tr:first-of-type > td:nth-of-type(2) {
 					border-left: 1px solid ${tableBorderColor};
 				}
 
