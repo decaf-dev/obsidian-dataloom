@@ -12,9 +12,11 @@ import { TFile } from "obsidian";
 import {
 	addClosingBracket,
 	doubleBracketsInnerReplace,
+	getFilterValue,
 	isSurroundedByDoubleBrackets,
 	removeClosingBracket,
 } from "./utils";
+import { isSpecialActionDown } from "src/shared/keyboard-event";
 
 interface Props {
 	value: string;
@@ -27,20 +29,36 @@ export default function TextCellEdit({
 	value,
 	onChange,
 }: Props) {
-	const { menu, isMenuOpen, menuRef, openMenu, closeAllMenus } = useMenu(
-		MenuLevel.TWO
-	);
+	const { menu, isMenuOpen, menuRef, openMenu, closeAllMenus, closeTopMenu } =
+		useMenu(MenuLevel.TWO);
 	const { triggerRef, triggerPosition } = useMenuTriggerPosition();
 	useShiftMenu(triggerRef, menuRef, isMenuOpen, {
 		topOffset: 35,
 	});
 
 	const inputRef = React.useRef<HTMLTextAreaElement | null>(null);
-	const { setPreviousSelectionStart } = useInputSelection(inputRef, value);
+	const { setPreviousSelectionStart, previousSelectionStart } =
+		useInputSelection(inputRef, value);
 	const previousValue = useRef("");
 
 	function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
-		if (e.key === "Enter" && !e.shiftKey) e.preventDefault();
+		const el = e.target as HTMLTextAreaElement;
+
+		if (e.key === "Enter") {
+			if (isSpecialActionDown(e)) return;
+			e.preventDefault();
+		} else if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+			const cursorPosition = el.selectionStart;
+
+			if (isMenuOpen) {
+				//Close menu if cursor is outside of double brackets
+				if (!isSurroundedByDoubleBrackets(value, cursorPosition))
+					closeTopMenu();
+			}
+
+			//Update cursor position for filterValue calculation
+			setPreviousSelectionStart(cursorPosition);
+		}
 	}
 
 	function handleTextareaChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
@@ -63,7 +81,9 @@ export default function TextCellEdit({
 			if (
 				isSurroundedByDoubleBrackets(newValue, inputEl.selectionStart)
 			) {
-				if (!isMenuOpen) openMenu(menu);
+				if (!isMenuOpen) {
+					openMenu(menu);
+				}
 			}
 
 			if (inputEl.selectionStart)
@@ -88,7 +108,7 @@ export default function TextCellEdit({
 
 			const newValue = doubleBracketsInnerReplace(
 				value,
-				inputRef.current?.selectionStart || 0,
+				previousSelectionStart,
 				markdown
 			);
 
@@ -98,7 +118,8 @@ export default function TextCellEdit({
 	}
 
 	const className = useOverflowClassName(shouldWrapOverflow);
-	const filterValue = value.substring(2, value.length - 2);
+	const filterValue = getFilterValue(value, previousSelectionStart) ?? "";
+
 	return (
 		<>
 			<div className="NLT__text-cell-edit" ref={triggerRef}>

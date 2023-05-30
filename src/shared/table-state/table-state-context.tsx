@@ -4,13 +4,14 @@ import { useUUID } from "../hooks";
 import React from "react";
 import { useLogger } from "../logger";
 import _ from "lodash";
-import {
-	isMacRedo,
-	isMacUndo,
-	isWindowsRedo,
-	isWindowsUndo,
-} from "../keyboard-event";
 import RowSortCommand from "../commands/row-sort-command";
+import {
+	isMacRedoDown,
+	isMacUndoDown,
+	isWindowsRedoDown,
+	isWindowsUndoDown,
+} from "../keyboard-event";
+import { eventSystem } from "../event-system/event-system";
 
 interface Props {
 	initialState: TableState;
@@ -91,19 +92,19 @@ export default function TableStateProvider({
 	//Handle hot key press
 	React.useEffect(() => {
 		function handleKeyDown(e: KeyboardEvent) {
-			if (isWindowsRedo(e) || isMacRedo(e)) {
+			if (isWindowsRedoDown(e) || isMacRedoDown(e)) {
 				e.preventDefault();
 				redo();
-			} else if (isWindowsUndo(e) || isMacUndo(e)) {
+			} else if (isWindowsUndoDown(e) || isMacUndoDown(e)) {
 				e.preventDefault();
 				undo();
 			}
 		}
 
-		const throttleKeyDownEvent = _.throttle(handleKeyDown, 100);
-		document.addEventListener("keydown", throttleKeyDownEvent);
+		const throttleKeyDownEvent = _.throttle(handleKeyDown, 20);
+		eventSystem.addEventListener("keydown", throttleKeyDownEvent);
 		return () => {
-			document.removeEventListener("keydown", throttleKeyDownEvent);
+			eventSystem.removeEventListener("keydown", throttleKeyDownEvent);
 		};
 	}, [redo, undo]);
 

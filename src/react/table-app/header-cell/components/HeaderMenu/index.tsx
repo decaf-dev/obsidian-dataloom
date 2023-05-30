@@ -110,28 +110,28 @@ const HeaderMenu = React.forwardRef<HTMLDivElement, Props>(function HeaderMenu(
 			<div className="NLT__header-menu">
 				{submenu === null && (
 					<BaseMenu
+						canDeleteColumn={canDeleteColumn}
 						cellId={cellId}
+						shouldWrapOverflow={shouldWrapOverflow}
+						columnId={columnId}
 						columnName={markdown}
 						columnType={columnType}
 						columnSortDir={columnSortDir}
 						onColumnNameChange={onNameChange}
 						onSortClick={handleSortClick}
 						onSubmenuChange={setSubmenu}
+						onWrapOverflowToggle={onWrapOverflowToggle}
+						onDeleteClick={handleDeleteClick}
 					/>
 				)}
 				{submenu === SubmenuType.OPTIONS && (
 					<OptionSubmenu
-						canDeleteColumn={canDeleteColumn}
 						title="Options"
 						type={columnType}
-						columnId={columnId}
 						dateFormat={dateFormat}
 						currencyType={currencyType}
-						shouldWrapOverflow={shouldWrapOverflow}
 						onBackClick={() => setSubmenu(null)}
-						onWrapOverflowToggle={onWrapOverflowToggle}
 						onSubmenuChange={setSubmenu}
-						onDeleteClick={handleDeleteClick}
 					/>
 				)}
 				{submenu === SubmenuType.TYPE && (
