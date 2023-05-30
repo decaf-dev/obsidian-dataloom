@@ -13,8 +13,13 @@ export const useMenu = (
 	const [id] = React.useState("m" + uuidv4());
 	const menuRef = React.useRef<HTMLDivElement>(null);
 
-	const { openMenus, openMenu, closeTopMenu, menuCloseRequestTime } =
-		useMenuContext();
+	const {
+		openMenus,
+		openMenu,
+		closeTopMenu,
+		menuCloseRequestTime,
+		closeAllMenus,
+	} = useMenuContext();
 	const isOpen = openMenus.find((menu) => menu.id == id) ? true : false;
 
 	const menu: Menu = React.useMemo(() => {
@@ -28,5 +33,6 @@ export const useMenu = (
 		menuCloseRequestTime,
 		openMenu,
 		closeTopMenu,
+		closeAllMenus,
 	};
 };

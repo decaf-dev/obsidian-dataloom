@@ -1,5 +1,3 @@
-import { WorkspaceLeaf } from "obsidian";
-
 import Table from "./table";
 import RowOptions from "./row-options";
 import OptionBar from "./option-bar";
@@ -22,10 +20,12 @@ import { useTag } from "src/shared/table-state/use-tag";
 
 import "./styles.css";
 import { css } from "@emotion/react";
+import { useEventSystem } from "src/shared/event-system/hooks";
 
 export default function TableApp() {
 	const { searchText } = useAppSelector((state) => state.global);
 	const { tableId, tableState, setTableState } = useTableState();
+	useEventSystem();
 
 	const {
 		handleRuleAddClick,

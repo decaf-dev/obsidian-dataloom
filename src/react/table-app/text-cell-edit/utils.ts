@@ -1,61 +1,69 @@
+import { DOUBLE_BRACKET_REGEX } from "./constants";
+
 /**
- * Checks if the current index is surrounded by double brackets
- * @param str the string to check
- * @param index the index to check
+ * Checks if the current position of the input cursor is surrounded by double brackets
+ * @param inputValue the input value to check
+ * @param selectionStart the current position of the cursor
  * @example
  * isSurroundedByDoubleBrackets("[[filename]]", 4) // true
  */
-export const isSurroundedByDoubleBrackets = (str: string, index: number) => {
-	const regex = /\[\[(.*?)\]\]/g;
+export const isSurroundedByDoubleBrackets = (
+	inputValue: string,
+	selectionStart: number
+) => {
 	let match;
 
-	while ((match = regex.exec(str)) !== null) {
-		const [fullMatch] = match;
-		const startIndex = match.index + 1;
-		const endIndex = startIndex + fullMatch.length - 2;
+	const regex = structuredClone(DOUBLE_BRACKET_REGEX);
+	//We create a copy because exec stores state in the regex
+	while ((match = regex.exec(inputValue)) !== null) {
+		//The inner text of the double brackets
+		const innerText = match[1];
 
-		if (index >= startIndex && index <= endIndex) {
-			// Index is surrounded by [[ ]]
+		//Index of the inner text
+		const startIndex = match.index + 2;
+
+		//End index of the inner text
+		const endIndex = startIndex + innerText.length;
+
+		//The cursor is to the right of the character
+		if (selectionStart >= startIndex && selectionStart <= endIndex)
 			return true;
-		}
 	}
 	return false;
 };
 
-export const replaceDoubleBracketText = (
-	str: string,
-	index: number,
+export const doubleBracketsInnerReplace = (
+	inputValue: string,
+	selectionStart: number,
 	replacement: string
 ) => {
-	const regex = /\[\[(.*?)\]\]/g;
 	let match;
+	//We create a copy because exec stores state in the regex
+	const regex = structuredClone(DOUBLE_BRACKET_REGEX);
+	while ((match = regex.exec(inputValue)) !== null) {
+		//The inner text of the double brackets
+		const startIndex = match.index + 2;
+		//End index of the inner text
+		const endIndex = startIndex + match[1].length;
 
-	while ((match = regex.exec(str)) !== null) {
-		const [fullMatch] = match;
-		const startIndex = match.index + 1;
-		const endIndex = startIndex + fullMatch.length - 2;
-
-		if (index >= startIndex && index <= endIndex) {
-			str =
-				str.slice(0, startIndex + 1) +
+		//The cursor is to the right of the character
+		if (selectionStart >= startIndex && selectionStart <= endIndex) {
+			return (
+				inputValue.slice(0, startIndex) +
 				replacement +
-				str.slice(endIndex - 1);
+				inputValue.slice(endIndex)
+			);
 		}
 	}
-	return str;
+	return inputValue;
 };
 
 /**
  * Adds a closing bracket when the user types an opening bracket
- * @param inputEl the input element
- * @param previousValue the previous input value
  * @param value the new input value
+ * @param selectionStart the current position of the cursor
  */
-export const addClosingBracket = (
-	inputEl: HTMLTextAreaElement,
-	value: string
-) => {
-	const { selectionStart } = inputEl;
+export const addClosingBracket = (value: string, selectionStart: number) => {
 	const char = value[selectionStart - 1];
 	if (char === "[") value = value + "]";
 	return value;
@@ -63,17 +71,15 @@ export const addClosingBracket = (
 
 /**
  * Removes the closing bracket when the user deletes the opening bracket
- * @param inputEl the input element
  * @param previousValue the previous input value
  * @param value the new input value
+ * @param selectionStart the current position of the cursor
  */
 export const removeClosingBracket = (
-	inputEl: HTMLTextAreaElement,
 	previousValue: string,
-	value: string
+	value: string,
+	selectionStart: number
 ) => {
-	const { selectionStart } = inputEl;
-
 	// If the user is deleting a bracket, delete the closing bracket
 	const previousChar = previousValue[selectionStart];
 	const nextChar = value[selectionStart];
@@ -91,8 +97,6 @@ export const findUniqueStrings = (arr: string[]) => {
 	arr.forEach((string) => {
 		frequencyMap.set(string, (frequencyMap.get(string) || 0) + 1);
 	});
-
-	console.log(frequencyMap);
 
 	const uniqueStrings = [];
 	for (const string of frequencyMap.keys()) {

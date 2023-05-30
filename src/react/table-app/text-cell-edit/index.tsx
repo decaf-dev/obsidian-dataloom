@@ -11,9 +11,9 @@ import SuggestMenu from "./suggest-menu";
 import { TFile } from "obsidian";
 import {
 	addClosingBracket,
+	doubleBracketsInnerReplace,
 	isSurroundedByDoubleBrackets,
 	removeClosingBracket,
-	replaceDoubleBracketText,
 } from "./utils";
 
 interface Props {
@@ -27,7 +27,7 @@ export default function TextCellEdit({
 	value,
 	onChange,
 }: Props) {
-	const { menu, isMenuOpen, menuRef, openMenu, closeTopMenu } = useMenu(
+	const { menu, isMenuOpen, menuRef, openMenu, closeAllMenus } = useMenu(
 		MenuLevel.TWO
 	);
 	const { triggerRef, triggerPosition } = useMenuTriggerPosition();
@@ -37,15 +37,10 @@ export default function TextCellEdit({
 
 	const inputRef = React.useRef<HTMLTextAreaElement | null>(null);
 	const { setPreviousSelectionStart } = useInputSelection(inputRef, value);
-
 	const previousValue = useRef("");
 
 	function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
-		if (e.key === "Enter") {
-			if (isMenuOpen) {
-				e.preventDefault();
-			}
-		}
+		if (e.key === "Enter") if (isMenuOpen) e.preventDefault();
 	}
 
 	function handleTextareaChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
@@ -56,20 +51,17 @@ export default function TextCellEdit({
 			const inputEl = inputRef.current;
 
 			if (value.length > previousValue.current.length) {
-				newValue = addClosingBracket(inputEl, newValue);
+				newValue = addClosingBracket(newValue, inputEl.selectionStart);
 			} else {
 				newValue = removeClosingBracket(
-					inputEl,
 					previousValue.current,
-					newValue
+					newValue,
+					inputEl.selectionStart
 				);
 			}
 
 			if (
-				isSurroundedByDoubleBrackets(
-					newValue,
-					inputEl.selectionStart - 1
-				)
+				isSurroundedByDoubleBrackets(newValue, inputEl.selectionStart)
 			) {
 				if (!isMenuOpen) openMenu(menu);
 			}
@@ -87,11 +79,14 @@ export default function TextCellEdit({
 		isFileNameUnique: boolean
 	) {
 		if (file) {
-			let markdown = file.name;
-			if (!isFileNameUnique) markdown = `${file.path}|${file.name}`;
+			//The basename does not include an extension
+			let markdown = file.basename;
+			//The name includes an extension
+			if (file.extension !== "md") markdown = file.name;
+			//If the file name is not unique, add the path so that the system can find it
+			if (!isFileNameUnique) markdown = `${file.path}|${markdown}`;
 
-			//Replace if necessary
-			const newValue = replaceDoubleBracketText(
+			const newValue = doubleBracketsInnerReplace(
 				value,
 				inputRef.current?.selectionStart || 0,
 				markdown
@@ -99,11 +94,11 @@ export default function TextCellEdit({
 
 			onChange(newValue);
 		}
-		closeTopMenu();
-		closeTopMenu();
+		closeAllMenus();
 	}
 
 	const className = useOverflowClassName(shouldWrapOverflow);
+	const filterValue = value.substring(2, value.length - 2);
 	return (
 		<>
 			<div className="NLT__text-cell-edit" ref={triggerRef}>
@@ -122,7 +117,7 @@ export default function TextCellEdit({
 				isOpen={isMenuOpen}
 				top={triggerPosition.top}
 				left={triggerPosition.left}
-				filterValue={value.substring(2, value.length - 2)}
+				filterValue={filterValue}
 				onItemClick={handleSuggestItemClick}
 			/>
 		</>
