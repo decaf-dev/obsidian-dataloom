@@ -5,7 +5,6 @@ import {
 	HeaderCell,
 	BodyCell,
 	FooterCell,
-	Tag,
 	FilterRule,
 } from "../types/types";
 import TableStateCommand from "../table-state/table-state-command";
@@ -19,7 +18,6 @@ export default class ColumnDeleteCommand extends TableStateCommand {
 	private deletedHeaderCells: { arrIndex: number; cell: HeaderCell }[];
 	private deletedBodyCells: { arrIndex: number; cell: BodyCell }[];
 	private deletedFooterCells: { arrIndex: number; cell: FooterCell }[];
-	private deletedTags: { arrIndex: number; tag: Tag }[];
 	private deletedFilterRules: { arrIndex: number; rule: FilterRule }[];
 
 	constructor(options: { id?: string; last?: boolean }) {
@@ -41,13 +39,10 @@ export default class ColumnDeleteCommand extends TableStateCommand {
 		//Maintains at least 1 column in the table
 		if (columns.length === 1) return prevState;
 
-		let id = this.columnId;
-		if (this.last) {
-			id = columns[columns.length - 1].id;
-		}
-
+		const id = this.columnId ?? columns[columns.length - 1].id;
 		const columnToDelete = columns.find((column) => column.id === id);
-		if (!columnToDelete) throw new ColumNotFoundError(id!);
+		if (!columnToDelete) throw new ColumNotFoundError(id);
+
 		this.deletedColumn = {
 			arrIndex: columns.indexOf(columnToDelete),
 			column: structuredClone(columnToDelete),

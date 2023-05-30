@@ -49,6 +49,7 @@ const InternalButton = ({
 	);
 };
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface ButtonProps
 	extends Omit<Omit<InternalButtonProps, "menuId">, "shouldRequestOnClose"> {}
 

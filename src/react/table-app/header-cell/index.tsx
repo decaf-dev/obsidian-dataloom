@@ -90,7 +90,8 @@ export default function HeaderCell({
 			const newWidth = numToPx(triggerPosition.width);
 			onWidthChange(columnId, newWidth);
 		}
-	}, [shouldUpdateWidth, triggerPosition]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [columnId, shouldUpdateWidth, triggerPosition]);
 
 	function handleMenuTriggerClick() {
 		//If we're resizing a column, then don't open the menu

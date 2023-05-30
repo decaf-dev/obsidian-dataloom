@@ -32,13 +32,10 @@ export default class RowDeleteCommand extends TableStateCommand {
 		const { bodyRows, bodyCells } = prevState.model;
 		if (bodyRows.length === 0) return prevState;
 
-		let id = this.rowId;
-		if (this.last) {
-			id = bodyRows[bodyRows.length - 1].id;
-		}
-
+		const id = this.rowId ?? bodyRows[bodyRows.length - 1].id;
 		const rowToDelete = bodyRows.find((row) => row.id === id);
-		if (!rowToDelete) throw new RowNotFoundError(id!);
+		if (!rowToDelete) throw new RowNotFoundError(id);
+
 		this.deletedRow = {
 			arrIndex: bodyRows.indexOf(rowToDelete),
 			row: structuredClone(rowToDelete),

@@ -50,7 +50,7 @@ export default function Filter({
 				}
 			}
 		}
-	}, [previousLength, filterRules.length]);
+	}, [previousLength, filterRules.length, menuRef]);
 
 	function handleClick() {
 		if (isMenuOpen) {

@@ -134,11 +134,11 @@ const doesTextMatch = (
 	const compareRuleText = ruleText.toLowerCase().trim();
 
 	if (
-		filterType != FilterType.IS_NOT_EMPTY &&
-		filterType != FilterType.IS_EMPTY
+		filterType !== FilterType.IS_NOT_EMPTY &&
+		filterType !== FilterType.IS_EMPTY
 	) {
 		//If the rule text is empty, there is nothing to compare
-		if (compareRuleText == "") return true;
+		if (compareRuleText === "") return true;
 		//If the markdown is emtpy, there is nothing to compare
 		if (markdown === "") return true;
 	}

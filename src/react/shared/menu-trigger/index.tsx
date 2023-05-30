@@ -22,7 +22,7 @@ const MenuTrigger = ({
 	function handleKeyDown(e: React.KeyboardEvent) {
 		if (e.key === "Enter") {
 			onEnterDown?.();
-		} else if (e.key == "Backspace") {
+		} else if (e.key === "Backspace") {
 			onBackspaceDown?.();
 		}
 	}

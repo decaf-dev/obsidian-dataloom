@@ -12,7 +12,7 @@ interface Props {
 }
 export default function MultiTagCell({ cellTags, shouldWrapOverflow }: Props) {
 	const overflowClassName = useOverflowClassName(shouldWrapOverflow);
-	const className = "NLT__multi-tag-cell" + " " + overflowClassName;
+	const className = `NLT__multi-tag-cell ${overflowClassName}`;
 	return (
 		<div className={className}>
 			<Wrap>

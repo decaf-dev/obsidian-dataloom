@@ -57,7 +57,7 @@ export const useShiftMenu = (
 			const menuRect = menuRef.current.getBoundingClientRect();
 
 			//Calculate the initial position
-			let top = triggerRefRect.top + topOffset;
+			const top = triggerRefRect.top + topOffset;
 			let left = triggerRefRect.left + leftOffset;
 
 			//Offset by the open direction

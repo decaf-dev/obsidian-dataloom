@@ -43,7 +43,7 @@ export const dropDrag = (
 			(row) => row.id === dragData.id
 		);
 		const targetElIndex = bodyRows.findIndex(
-			(row) => row.id == targetRowId
+			(row) => row.id === targetRowId
 		);
 
 		const newRows = structuredClone(bodyRows);

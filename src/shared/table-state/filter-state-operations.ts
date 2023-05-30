@@ -48,7 +48,7 @@ export const updateRule = (
 						"If the key type is not a boolean, a value must be provided"
 					);
 
-				if (rule.id == id) {
+				if (rule.id === id) {
 					return {
 						...rule,
 						[key as keyof FilterRule]: isBoolean

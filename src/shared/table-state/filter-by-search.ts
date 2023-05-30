@@ -59,7 +59,7 @@ export const filterBodyRowsBySearch = (
 const doesCellMatch = (
 	cell: BodyCell,
 	columnMap: Map<string, Column>,
-	rowMap: Map<String, BodyRow>,
+	rowMap: Map<string, BodyRow>,
 	cellTags: Tag[],
 	searchText: string
 ) => {

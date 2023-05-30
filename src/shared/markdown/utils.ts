@@ -1,4 +1,4 @@
-export const replaceNewLinesWithBreakTag = (markdown: string) => {
+export const replaceNewLinesWithBr = (markdown: string) => {
 	const lines = markdown.split("\n");
 	let updated = "";
 	lines.forEach((line) => {
