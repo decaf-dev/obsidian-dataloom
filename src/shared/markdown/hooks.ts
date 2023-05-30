@@ -32,6 +32,7 @@ export const useRenderMarkdown = (
 	React.useEffect(() => {
 		async function renderMarkdown() {
 			const div = document.body.createDiv();
+			div.classList.add("markdown-rendered");
 			div.detach();
 
 			try {
@@ -43,22 +44,28 @@ export const useRenderMarkdown = (
 					view
 				);
 
-				//TODO fix
-				//Handle embeds
 				const embeds = div.querySelectorAll(".internal-link");
 				embeds.forEach((embed) => {
 					const el = embed as HTMLAnchorElement;
-					el.onmouseover = (e) => {
+					const dataHref = el.getAttr("data-href") ?? "";
+					const destination = app.metadataCache.getFirstLinkpathDest(
+						dataHref,
+						view.file.path
+					);
+
+					if (!destination) embed.classList.add("is-unresolved");
+
+					el.addEventListener("mouseover", (e) => {
 						app.workspace.trigger("hover-link", {
 							event: e,
 							source: NOTION_LIKE_TABLES_VIEW,
 							hoverParent: view.containerEl,
 							targetEl: el,
-							linktext: el.getAttr("data-href"),
+							linktext: dataHref,
 							sourcePath: el.href,
 						});
-					};
-					el.onclick = handleLinkClick;
+					});
+					el.addEventListener("click", handleLinkClick);
 				});
 			} catch (e) {
 				console.error(e);
