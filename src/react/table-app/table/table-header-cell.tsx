@@ -45,7 +45,7 @@ export default function TableHeaderCell({
 				(column) => column.id === dragData.id
 			);
 			const targetElIndex = columns.findIndex(
-				(column) => column.id == targetRowId
+				(column) => column.id === targetRowId
 			);
 
 			const newColumns = structuredClone(columns);

@@ -32,7 +32,6 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 	 */
 	React.useEffect(() => {
 		if (didRowsChange) tableRef.current?.scrollToIndex(bodyRows.length - 1);
-		tableRef.current?.scrollTo;
 	}, [didRowsChange, bodyRows.length]);
 
 	return (

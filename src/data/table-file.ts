@@ -32,7 +32,10 @@ export const createTableFile = async (options: {
 }) => {
 	try {
 		//Create folder if it doesn't exist
-		if (options.folderPath !== "") await createFolder(options.folderPath);
+		if (options.folderPath !== "") {
+			if (app.vault.getAbstractFileByPath(options.folderPath) == null)
+				await createFolder(options.folderPath);
+		}
 
 		const fileName = getFileName(options.useActiveFileNameAndTimestamp);
 		const tableState = createTableState(1, 1);

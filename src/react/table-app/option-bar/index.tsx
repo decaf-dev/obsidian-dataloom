@@ -83,7 +83,7 @@ export default function OptionBar({
 }: Props) {
 	const sortedCells = headerCells.filter((cell) => {
 		const columnId = cell.columnId;
-		const column = columns.find((c) => c.id == columnId);
+		const column = columns.find((c) => c.id === columnId);
 		if (!column) throw new ColumNotFoundError(columnId);
 		return column.sortDir !== SortDir.NONE;
 	});

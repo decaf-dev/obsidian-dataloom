@@ -13,24 +13,24 @@ import ColumnAddCommand from "../commands/column-add-command";
 import ColumnDeleteCommand from "../commands/column-delete-command";
 import ColumnUpdateCommand from "../commands/column-update-command";
 import { ColumnTypeUpdateCommand } from "../commands/column-type-update-command";
+import { isEventForThisLeaf } from "../renderUtils";
 
-export const useColumn = (viewLeaf: WorkspaceLeaf) => {
-	const logFunc = useLogger();
+export const useColumn = () => {
+	const logger = useLogger();
 	const { doCommand } = useTableState();
 
 	React.useEffect(() => {
 		function handleColumnAddEvent(leaf: WorkspaceLeaf) {
-			if (leaf === viewLeaf) {
-				logFunc("handleColumnAddEvent");
-				doCommand(new ColumnAddCommand());
-			}
+			if (!isEventForThisLeaf(leaf)) return;
+			logger("handleColumnAddEvent");
+			doCommand(new ColumnAddCommand());
 		}
 
 		function handleColumnDeleteEvent(leaf: WorkspaceLeaf) {
-			if (leaf === viewLeaf) {
-				logFunc("handleColumnDeleteEvent");
-				doCommand(new ColumnDeleteCommand({ last: true }));
-			}
+			if (!isEventForThisLeaf(leaf)) return;
+
+			logger("handleColumnDeleteEvent");
+			doCommand(new ColumnDeleteCommand({ last: true }));
 		}
 		//@ts-expect-error missing overload
 		app.workspace.on(EVENT_COLUMN_ADD, handleColumnAddEvent);
@@ -42,14 +42,14 @@ export const useColumn = (viewLeaf: WorkspaceLeaf) => {
 			app.workspace.off(EVENT_COLUMN_ADD, handleColumnAddEvent);
 			app.workspace.off(EVENT_COLUMN_DELETE, handleColumnDeleteEvent);
 		};
-	}, [viewLeaf, doCommand]);
+	}, [doCommand, logger]);
 
 	function handleNewColumnClick() {
-		logFunc("handleNewColumnClick");
+		logger("handleNewColumnClick");
 		doCommand(new ColumnAddCommand());
 	}
 	function handleColumnTypeClick(columnId: string, type: CellType) {
-		logFunc("handleColumnTypeClick", {
+		logger("handleColumnTypeClick", {
 			columnId,
 			type,
 		});
@@ -57,7 +57,7 @@ export const useColumn = (viewLeaf: WorkspaceLeaf) => {
 	}
 
 	function handleColumnSortClick(columnId: string, sortDir: SortDir) {
-		logFunc("handleColumnSortClick", {
+		logger("handleColumnSortClick", {
 			columnId,
 			sortDir,
 		});
@@ -70,14 +70,14 @@ export const useColumn = (viewLeaf: WorkspaceLeaf) => {
 	}
 
 	function handleColumnToggle(columnId: string) {
-		logFunc("handleColumnToggle", {
+		logger("handleColumnToggle", {
 			columnId,
 		});
 		doCommand(new ColumnUpdateCommand(columnId, "isVisible"));
 	}
 
 	function handleColumnDeleteClick(columnId: string) {
-		logFunc("handleColumnDeleteClick", {
+		logger("handleColumnDeleteClick", {
 			columnId,
 		});
 		doCommand(new ColumnDeleteCommand({ id: columnId }));
@@ -87,7 +87,7 @@ export const useColumn = (viewLeaf: WorkspaceLeaf) => {
 		columnId: string,
 		currencyType: CurrencyType
 	) {
-		logFunc("handleCurrencyChange", {
+		logger("handleCurrencyChange", {
 			columnId,
 			currencyType,
 		});
@@ -100,7 +100,7 @@ export const useColumn = (viewLeaf: WorkspaceLeaf) => {
 	}
 
 	function handleDateFormatChange(columnId: string, dateFormat: DateFormat) {
-		logFunc("handleDateFormatChange", {
+		logger("handleDateFormatChange", {
 			columnId,
 			dateFormat,
 		});
@@ -113,7 +113,7 @@ export const useColumn = (viewLeaf: WorkspaceLeaf) => {
 	}
 
 	function handleSortRemoveClick(columnId: string) {
-		logFunc("handleSortRemoveClick", {
+		logger("handleSortRemoveClick", {
 			columnId,
 		});
 		doCommand(
@@ -125,7 +125,7 @@ export const useColumn = (viewLeaf: WorkspaceLeaf) => {
 	}
 
 	function handleColumnWidthChange(columnId: string, width: string) {
-		logFunc("handleColumnWidthChange", {
+		logger("handleColumnWidthChange", {
 			columnId,
 			width,
 		});
@@ -138,7 +138,7 @@ export const useColumn = (viewLeaf: WorkspaceLeaf) => {
 	}
 
 	function handleWrapContentToggle(columnId: string, shouldWrap: boolean) {
-		logFunc("handleWrapContentToggle", {
+		logger("handleWrapContentToggle", {
 			columnId,
 			shouldWrap,
 		});

@@ -3,10 +3,12 @@ import { TableState } from "../types/types";
 
 export default abstract class TableStateCommand {
 	shouldSortRows: boolean;
-	hasExecuteBeenCalled: boolean = false;
-	hasUndoBeenCalled: boolean = false;
+	hasExecuteBeenCalled: boolean;
+	hasUndoBeenCalled: boolean;
 
 	constructor(shouldSortRows = false) {
+		this.hasExecuteBeenCalled = false;
+		this.hasUndoBeenCalled = false;
 		this.shouldSortRows = shouldSortRows;
 	}
 

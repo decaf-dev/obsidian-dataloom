@@ -75,7 +75,7 @@ const FilterMenu = React.forwardRef<HTMLDivElement, Props>(function FilterMenu(
 							} = rule;
 
 							const column = columns.find(
-								(column) => column.id == columnId
+								(column) => column.id === columnId
 							);
 							if (!column) throw new ColumNotFoundError(columnId);
 							const { tags, type: cellType } = column;
@@ -107,7 +107,7 @@ const FilterMenu = React.forwardRef<HTMLDivElement, Props>(function FilterMenu(
 								ariaLabel="Add filter rule"
 								onClick={() => onAddClick(columns[0].id)}
 							/>
-							{filterRules.length == 0 && (
+							{filterRules.length === 0 && (
 								<Text value="No rules to display" />
 							)}
 						</Stack>
