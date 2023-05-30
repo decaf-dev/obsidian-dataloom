@@ -13,6 +13,7 @@ import {
 import MenuProvider from "src/shared/menu/menu-context";
 import { EVENT_REFRESH_VIEW } from "src/shared/events";
 import DragProvider from "src/shared/dragging/drag-context";
+import ViewProvider from "src/shared/view-context";
 
 export const NOTION_LIKE_TABLES_VIEW = "notion-like-tables";
 
@@ -68,18 +69,20 @@ export class NLTView extends TextFileView {
 	renderApp(tableState: TableState) {
 		if (this.root) {
 			this.root.render(
-				<Provider store={store}>
-					<TableStateProvider
-						initialState={tableState}
-						onSaveState={this.handleSaveTableState}
-					>
-						<MenuProvider>
-							<DragProvider>
-								<App />
-							</DragProvider>
-						</MenuProvider>
-					</TableStateProvider>
-				</Provider>
+				<ViewProvider view={this}>
+					<Provider store={store}>
+						<TableStateProvider
+							initialState={tableState}
+							onSaveState={this.handleSaveTableState}
+						>
+							<MenuProvider>
+								<DragProvider>
+									<App />
+								</DragProvider>
+							</MenuProvider>
+						</TableStateProvider>
+					</Provider>
+				</ViewProvider>
 			);
 		}
 	}

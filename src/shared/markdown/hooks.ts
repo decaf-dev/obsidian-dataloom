@@ -1,15 +1,17 @@
+import React from "react";
 import { MarkdownRenderer } from "obsidian";
-import { useEffect, useRef } from "react";
-import { NLTView, NOTION_LIKE_TABLES_VIEW } from "src/obsidian/nlt-view";
+import { NOTION_LIKE_TABLES_VIEW } from "src/obsidian/nlt-view";
 import { handleLinkClick } from "./embed";
 import { replaceNewLinesWithBreakTag } from "./utils";
+import { useViewContext } from "../view-context";
 
 export const useRenderMarkdown = (
 	markdown: string,
 	shouldWrapOverflow: boolean
 ) => {
-	const containerRef = useRef<HTMLDivElement | null>(null);
-	const contentRef = useRef<HTMLDivElement | null>(null);
+	const view = useViewContext();
+	const containerRef = React.useRef<HTMLDivElement | null>(null);
+	const contentRef = React.useRef<HTMLDivElement | null>(null);
 
 	function appendOrReplaceFirstChild(
 		container: HTMLDivElement | null,
@@ -27,9 +29,8 @@ export const useRenderMarkdown = (
 		}
 	}
 
-	useEffect(() => {
+	React.useEffect(() => {
 		async function renderMarkdown() {
-			const view = app.workspace.getActiveViewOfType(NLTView);
 			if (view) {
 				const div = document.body.createDiv();
 				div.detach();
@@ -67,6 +68,7 @@ export const useRenderMarkdown = (
 			}
 			return null;
 		}
+
 		renderMarkdown().then((el) => {
 			if (el) {
 				//Set the content ref equal to the markdown element that we just created
