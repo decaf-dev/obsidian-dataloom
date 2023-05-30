@@ -1,5 +1,4 @@
 import { DOUBLE_BRACKET_REGEX } from "./constants";
-
 /**
  * Checks if the current position of the input cursor is surrounded by double brackets
  * @param inputValue the input value to check
@@ -23,11 +22,19 @@ export const isSurroundedByDoubleBrackets = (
 		const startIndex = match.index + 2;
 
 		//End index of the inner text
-		const endIndex = startIndex + innerText.length;
+		const endIndex = startIndex + innerText.length - 1;
 
-		//The cursor is to the right of the character
-		if (selectionStart >= startIndex && selectionStart <= endIndex)
-			return true;
+		//The character index of the cursor
+		//The cursor is to the right of a character
+		const index = selectionStart - 1;
+
+		//Handle empty brackets case [[]]
+		//The cursor will be to the right of the first left bracket
+		if (innerText === "" && index === startIndex - 1) return true;
+
+		//Handle non-empty brackets case [[filename]]
+		//The cursor will be inbetween start and end brackets
+		if (index >= startIndex && index <= endIndex) return true;
 	}
 	return false;
 };
@@ -42,20 +49,80 @@ export const doubleBracketsInnerReplace = (
 	const regex = structuredClone(DOUBLE_BRACKET_REGEX);
 	while ((match = regex.exec(inputValue)) !== null) {
 		//The inner text of the double brackets
-		const startIndex = match.index + 2;
-		//End index of the inner text
-		const endIndex = startIndex + match[1].length;
+		const innerText = match[1];
 
-		//The cursor is to the right of the character
-		if (selectionStart >= startIndex && selectionStart <= endIndex) {
+		//The inner text of the double brackets
+		const startIndex = match.index + 2;
+
+		//End index of the inner text
+		const endIndex = startIndex + innerText.length - 1;
+
+		//The character index of the cursor
+		//The cursor is to the right of a character
+		const index = selectionStart - 1;
+
+		//Handle empty brackets case [[]]
+		//The cursor will be to the right of the first left bracket
+		if (innerText === "" && index === startIndex - 1) {
 			return (
 				inputValue.slice(0, startIndex) +
 				replacement +
-				inputValue.slice(endIndex)
+				inputValue.slice(endIndex + 1)
+			);
+		}
+
+		//Handle non-empty brackets case [[filename]]
+		//The cursor will be inbetween start and end brackets
+		if (index >= startIndex && index <= endIndex) {
+			return (
+				inputValue.slice(0, startIndex) +
+				replacement +
+				inputValue.slice(endIndex + 1)
 			);
 		}
 	}
 	return inputValue;
+};
+
+/**
+ * If the current cursor position is in double brackets, it gets the inner text
+ * @param inputValue the input value to check
+ * @param selectionStart the current position of the cursor
+ * @example
+ * getFileValue("[[filename]]", 4) // filename
+ */
+export const getFilterValue = (inputValue: string, selectionStart: number) => {
+	let match;
+
+	const regex = structuredClone(DOUBLE_BRACKET_REGEX);
+	//We create a copy because exec stores state in the regex
+	while ((match = regex.exec(inputValue)) !== null) {
+		//The inner text of the double brackets
+		const innerText = match[1];
+
+		//Index of the inner text
+		const startIndex = match.index + 2;
+
+		//End index of the inner text
+		const endIndex = startIndex + innerText.length - 1;
+
+		//The character index of the cursor
+		//The cursor is to the right of a character
+		const index = selectionStart - 1;
+
+		//Handle empty brackets case [[]]
+		//The cursor will be to the right of the first left bracket
+		if (innerText === "" && index === startIndex - 1) {
+			return innerText;
+		}
+
+		//Handle non-empty brackets case [[filename]]
+		//The cursor will be inbetween start and end brackets
+		if (index >= startIndex && index <= endIndex) {
+			return innerText;
+		}
+	}
+	return null;
 };
 
 /**

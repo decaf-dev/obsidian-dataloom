@@ -2,11 +2,13 @@
 
 ## Description
 
-This cell renders text.
+Renders markdown.
 
 ## Usage
 
-It uses the `MarkdownRenderer.renderMarkdown` function from Obsidian to render. This means that any markdown syntax that Obsidian can render is also renderable by this cell.
+Input any text and close the menu to have it render the markdown to HTML.
+
+All Obsidian markdown is supported.
 
 ```markdown
 **Bold**
@@ -22,16 +24,21 @@ _Italics_
 
 ### Links to Notes
 
-Currently there is no popup to automatically select a note when you type `[[`. However, you may still make a direct link to a note using the normal Obsidian syntax
+To create a link to a note start by typing two front brackets `[[`. A file suggestion menu will popup by which you can choose a file name.
 
-```markdown
-[[My note]]
-```
-
-```markdown
-[[My note|My note with alias]]
-```
+Links follow the exact syntax as [Obsidian wiki links](https://help.obsidian.md/Linking+notes+and+files/Internal+links).
 
 ### Insert a new line
 
-While the edit menu is open, press `shift` + `enter` to insert a new line
+By default, pressing enter will close the text cell edit menu. To insert a line, you need to hold down a modifier key while pressing enter.
+
+**Windows**
+
+-   Hold `shift` and press `enter`
+-   Hold `ctrl` and press `enter`
+
+**Mac**
+
+-   Hold `shift` and press `return`
+-   Hold `ctrl` and press `return`
+-   Hold `cmd` and press `return`
