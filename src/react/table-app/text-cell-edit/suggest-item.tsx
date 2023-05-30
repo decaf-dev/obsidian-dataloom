@@ -57,13 +57,10 @@ export default function SuggestItem({
 				padding: 4px 6px;
 				margin: 2px 0;
 				background-color: ${isHighlighted
-					? "var(--background-secondary-alt)"
+					? "var(--background-modifier-hover)"
 					: "transparent"};
 				&:hover {
-					background-color: var(--background-secondary-alt);
-				}
-				&:focus-visible {
-					background-color: var(--background-secondary-alt);
+					background-color: var(--background-modifier-hover);
 				}
 			`}
 			onClick={handleClick}

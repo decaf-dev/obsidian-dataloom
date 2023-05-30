@@ -17,11 +17,10 @@ export const useRenderMarkdown = (
 		container: HTMLDivElement | null,
 		child: HTMLDivElement | null
 	) {
-		if (child === null) return;
-		if (container === null) return;
+		if (!container || !child) return;
 
 		//If there is no first child, append the child
-		if (container && container.firstChild === null) {
+		if (container && !container.firstChild) {
 			container.appendChild(child);
 			//If there is already a child and it is not the same as the child, replace the child
 		} else if (container.firstChild && container.firstChild !== child) {
@@ -32,6 +31,9 @@ export const useRenderMarkdown = (
 	React.useEffect(() => {
 		async function renderMarkdown() {
 			const div = document.body.createDiv();
+
+			//We need to attach this class so that the `is-unresolved` link renders properly by Obsidian
+			div.classList.add("markdown-rendered");
 			div.detach();
 
 			try {
@@ -43,22 +45,29 @@ export const useRenderMarkdown = (
 					view
 				);
 
-				//TODO fix
-				//Handle embeds
 				const embeds = div.querySelectorAll(".internal-link");
 				embeds.forEach((embed) => {
 					const el = embed as HTMLAnchorElement;
-					el.onmouseover = (e) => {
+					const href = el.getAttr("data-href") ?? "";
+
+					const destination = app.metadataCache.getFirstLinkpathDest(
+						href,
+						view.file.path
+					);
+					if (!destination) embed.classList.add("is-unresolved");
+
+					el.addEventListener("mouseover", (e) => {
 						app.workspace.trigger("hover-link", {
 							event: e,
 							source: NOTION_LIKE_TABLES_VIEW,
 							hoverParent: view.containerEl,
 							targetEl: el,
-							linktext: el.getAttr("data-href"),
+							linktext: href,
 							sourcePath: el.href,
 						});
-					};
-					el.onclick = handleLinkClick;
+					});
+
+					el.addEventListener("click", handleLinkClick);
 				});
 			} catch (e) {
 				console.error(e);
