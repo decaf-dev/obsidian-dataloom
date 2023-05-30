@@ -16,20 +16,20 @@ import { ColumnTypeUpdateCommand } from "../commands/column-type-update-command"
 import { isEventForThisLeaf } from "../renderUtils";
 
 export const useColumn = () => {
-	const logFunc = useLogger();
+	const logger = useLogger();
 	const { doCommand } = useTableState();
 
 	React.useEffect(() => {
 		function handleColumnAddEvent(leaf: WorkspaceLeaf) {
 			if (!isEventForThisLeaf(leaf)) return;
-			logFunc("handleColumnAddEvent");
+			logger("handleColumnAddEvent");
 			doCommand(new ColumnAddCommand());
 		}
 
 		function handleColumnDeleteEvent(leaf: WorkspaceLeaf) {
 			if (!isEventForThisLeaf(leaf)) return;
 
-			logFunc("handleColumnDeleteEvent");
+			logger("handleColumnDeleteEvent");
 			doCommand(new ColumnDeleteCommand({ last: true }));
 		}
 		//@ts-expect-error missing overload
@@ -42,14 +42,14 @@ export const useColumn = () => {
 			app.workspace.off(EVENT_COLUMN_ADD, handleColumnAddEvent);
 			app.workspace.off(EVENT_COLUMN_DELETE, handleColumnDeleteEvent);
 		};
-	}, [doCommand]);
+	}, [doCommand, logger]);
 
 	function handleNewColumnClick() {
-		logFunc("handleNewColumnClick");
+		logger("handleNewColumnClick");
 		doCommand(new ColumnAddCommand());
 	}
 	function handleColumnTypeClick(columnId: string, type: CellType) {
-		logFunc("handleColumnTypeClick", {
+		logger("handleColumnTypeClick", {
 			columnId,
 			type,
 		});
@@ -57,7 +57,7 @@ export const useColumn = () => {
 	}
 
 	function handleColumnSortClick(columnId: string, sortDir: SortDir) {
-		logFunc("handleColumnSortClick", {
+		logger("handleColumnSortClick", {
 			columnId,
 			sortDir,
 		});
@@ -70,14 +70,14 @@ export const useColumn = () => {
 	}
 
 	function handleColumnToggle(columnId: string) {
-		logFunc("handleColumnToggle", {
+		logger("handleColumnToggle", {
 			columnId,
 		});
 		doCommand(new ColumnUpdateCommand(columnId, "isVisible"));
 	}
 
 	function handleColumnDeleteClick(columnId: string) {
-		logFunc("handleColumnDeleteClick", {
+		logger("handleColumnDeleteClick", {
 			columnId,
 		});
 		doCommand(new ColumnDeleteCommand({ id: columnId }));
@@ -87,7 +87,7 @@ export const useColumn = () => {
 		columnId: string,
 		currencyType: CurrencyType
 	) {
-		logFunc("handleCurrencyChange", {
+		logger("handleCurrencyChange", {
 			columnId,
 			currencyType,
 		});
@@ -100,7 +100,7 @@ export const useColumn = () => {
 	}
 
 	function handleDateFormatChange(columnId: string, dateFormat: DateFormat) {
-		logFunc("handleDateFormatChange", {
+		logger("handleDateFormatChange", {
 			columnId,
 			dateFormat,
 		});
@@ -113,7 +113,7 @@ export const useColumn = () => {
 	}
 
 	function handleSortRemoveClick(columnId: string) {
-		logFunc("handleSortRemoveClick", {
+		logger("handleSortRemoveClick", {
 			columnId,
 		});
 		doCommand(
@@ -125,7 +125,7 @@ export const useColumn = () => {
 	}
 
 	function handleColumnWidthChange(columnId: string, width: string) {
-		logFunc("handleColumnWidthChange", {
+		logger("handleColumnWidthChange", {
 			columnId,
 			width,
 		});
@@ -138,7 +138,7 @@ export const useColumn = () => {
 	}
 
 	function handleWrapContentToggle(columnId: string, shouldWrap: boolean) {
-		logFunc("handleWrapContentToggle", {
+		logger("handleWrapContentToggle", {
 			columnId,
 			shouldWrap,
 		});

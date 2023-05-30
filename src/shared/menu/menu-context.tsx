@@ -106,22 +106,25 @@ export default function MenuProvider({ children }: Props) {
 	/**
 	 * Closes the top level menu
 	 */
-	function closeTopMenu(shouldFocusTrigger = true) {
-		const menu = openMenus.last();
-		if (!menu) return;
+	const closeTopMenu = React.useCallback(
+		(shouldFocusTrigger = true) => {
+			const menu = openMenus.last();
+			if (!menu) return;
 
-		if (shouldFocusTrigger) {
-			const { id, level } = menu;
-			if (level === MenuLevel.ONE) {
-				focusMenuElement(id);
-				addFocusVisibleClass(id);
+			if (shouldFocusTrigger) {
+				const { id, level } = menu;
+				if (level === MenuLevel.ONE) {
+					focusMenuElement(id);
+					addFocusVisibleClass(id);
+				}
 			}
-		}
 
-		//Remove the menu
-		setOpenMenus((prev) => prev.slice(0, prev.length - 1));
-		setMenuCloseRequestTime(null);
-	}
+			//Remove the menu
+			setOpenMenus((prev) => prev.slice(0, prev.length - 1));
+			setMenuCloseRequestTime(null);
+		},
+		[openMenus]
+	);
 
 	React.useEffect(() => {
 		function handleClick(e: MouseEvent) {
@@ -295,6 +298,7 @@ export default function MenuProvider({ children }: Props) {
 					break;
 				case "Escape":
 					handleEscapeDown(e);
+					break;
 				case "Tab":
 					handleTabDown(e);
 					break;
@@ -325,7 +329,14 @@ export default function MenuProvider({ children }: Props) {
 			document.removeEventListener("click", handleClick);
 			eventSystem.removeEventListener("keydown", handleKeyDown);
 		};
-	}, [isMenuOpen, openMenu, tableState.model.columns.length]);
+	}, [
+		isMenuOpen,
+		closeTopMenu,
+		openMenu,
+		openMenus,
+		tableId,
+		tableState.model.columns.length,
+	]);
 
 	return (
 		<MenuContext.Provider

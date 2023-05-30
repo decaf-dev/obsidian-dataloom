@@ -85,7 +85,12 @@ export default function DateCellEdit({
 
 		if (hasCloseRequestTimeChange && menuCloseRequestTime !== null)
 			validateInput();
-	}, [hasCloseRequestTimeChange, localValue, menuCloseRequestTime]);
+	}, [
+		hasCloseRequestTimeChange,
+		localValue,
+		menuCloseRequestTime,
+		dateFormat,
+	]);
 
 	//If we call onMenuClose directly in the validateInput function, we can see the cell markdown
 	//change to the new value as the menu closes

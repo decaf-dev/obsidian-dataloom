@@ -30,7 +30,7 @@ export default function Tag({
 	let tagClass = "NLT__tag";
 	tagClass += " " + findColorClassName(isDarkMode, color);
 
-	if (onRemoveClick && id == undefined) {
+	if (onRemoveClick !== undefined && id === undefined) {
 		throw new Error(
 			"An id must defined when the onRemoveClick handler is present."
 		);
@@ -56,7 +56,7 @@ export default function Tag({
 							isSimple
 							onClick={() => {
 								onRemoveClick !== undefined &&
-									onRemoveClick(id!);
+									onRemoveClick(id!); // eslint-disable-line @typescript-eslint/no-non-null-assertion
 							}}
 						/>
 					</Padding>

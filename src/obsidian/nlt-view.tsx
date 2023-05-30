@@ -21,10 +21,6 @@ export class NLTView extends TextFileView {
 	root: Root | null = null;
 	data: string;
 
-	constructor(leaf: WorkspaceLeaf) {
-		super(leaf);
-	}
-
 	getViewData(): string {
 		return this.data;
 	}

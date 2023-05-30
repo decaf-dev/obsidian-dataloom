@@ -6,7 +6,7 @@ export const useForceUpdate = (): [number, () => void] => {
 	return [time, React.useCallback(() => setTime(Date.now()), [])];
 };
 
-export const useCompare = (value: any, runOnMount = false) => {
+export const useCompare = <T>(value: T, runOnMount = false) => {
 	const prevValue = usePrevious(value);
 	//On mount the value will be undefined, so we don't want to return true
 	if (prevValue === undefined) return runOnMount;
@@ -19,15 +19,6 @@ export const usePrevious = <T>(value: T) => {
 		ref.current = value;
 	});
 	return ref.current;
-};
-
-export const useDidMountEffect = (func: (...rest: any) => any, deps: any[]) => {
-	const didMount = React.useRef(false);
-
-	React.useEffect(() => {
-		if (didMount.current) func();
-		else didMount.current = true;
-	}, deps);
 };
 
 export const useInputSelection = (
@@ -50,7 +41,7 @@ export const useInputSelection = (
 		}
 		//Only run when the value changes, not when the previousSelect changes
 		if (didValueChange) setSelection();
-	}, [previousSelectionStart, value, didValueChange]);
+	}, [previousSelectionStart, value, didValueChange, inputRef]);
 
 	return { setPreviousSelectionStart };
 };

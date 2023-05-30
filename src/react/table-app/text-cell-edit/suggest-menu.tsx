@@ -69,12 +69,10 @@ const SuggestMenuContent = ({ filterValue, onItemClick }: ContentProps) => {
 
 		eventSystem.addEventListener("keydown", handleKeyDown);
 		return () => eventSystem.removeEventListener("keydown", handleKeyDown);
-	}, [filteredFiles.length, virtuosoRef.current]);
+	}, [filteredFiles.length]);
 
 	const fileNames = filteredFiles.map((file) => file.name);
 	const uniqueFileNames = findUniqueStrings(fileNames);
-
-	console.log(fileNames);
 
 	return (
 		<div className="NLT__suggest-menu">

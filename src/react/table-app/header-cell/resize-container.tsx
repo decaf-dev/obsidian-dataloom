@@ -51,7 +51,7 @@ export default function ResizeContainer({
 		}
 	);
 
-	const isDragging = columnId == currentResizingId;
+	const isDragging = columnId === currentResizingId;
 
 	return (
 		<div css={containerStyle}>

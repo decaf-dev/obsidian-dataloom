@@ -21,7 +21,7 @@ export const getDynamicSize = <T>(
 	defaultValue: string,
 	value?: T | DynamicSize<T>
 ) => {
-	if (value == undefined) return defaultValue;
+	if (value === undefined) return defaultValue;
 	if (typeof value === "string") return value;
 
 	const { base, mobile } = value as DynamicSize<T>;

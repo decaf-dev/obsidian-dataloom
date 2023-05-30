@@ -36,10 +36,13 @@ export default function TagCellEdit({
 	const [inputValue, setInputValue] = React.useState("");
 	const [newTagColor] = React.useState(randomColor());
 
-	function handleTagAdd(markdown: string, color: Color) {
-		onTagAdd(markdown, color);
-		setInputValue("");
-	}
+	const handleTagAdd = React.useCallback(
+		(markdown: string, color: Color) => {
+			onTagAdd(markdown, color);
+			setInputValue("");
+		},
+		[onTagAdd]
+	);
 
 	const hasCloseRequestTimeChange = useCompare(menuCloseRequestTime);
 
@@ -51,7 +54,15 @@ export default function TagCellEdit({
 			if (shouldAddTag) handleTagAdd(inputValue, newTagColor);
 			onMenuClose();
 		}
-	}, [columnTags, inputValue, newTagColor, hasCloseRequestTimeChange]);
+	}, [
+		handleTagAdd,
+		columnTags,
+		inputValue,
+		newTagColor,
+		hasCloseRequestTimeChange,
+		menuCloseRequestTime,
+		onMenuClose,
+	]);
 
 	return (
 		<div

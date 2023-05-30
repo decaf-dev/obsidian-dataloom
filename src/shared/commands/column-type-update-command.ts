@@ -125,7 +125,7 @@ export class ColumnTypeUpdateCommand extends TableStateCommand {
 				if (cell.markdown !== "") {
 					const tagIds: string[] = [];
 
-					cell.markdown.split(",").map((markdown, i) => {
+					cell.markdown.split(",").forEach((markdown, i) => {
 						const column = newColumns.find(
 							(column) => column.id === this.columnId
 						);
@@ -187,7 +187,7 @@ export class ColumnTypeUpdateCommand extends TableStateCommand {
 				if (cell.markdown !== "") {
 					const tagIds: string[] = [];
 
-					cell.markdown.split(",").map((markdown, i) => {
+					cell.markdown.split(",").forEach((markdown) => {
 						const column = newColumns.find(
 							(column) => column.id === this.columnId
 						);
@@ -230,7 +230,7 @@ export class ColumnTypeUpdateCommand extends TableStateCommand {
 
 	private fromMultiTagToTag(bodyCells: BodyCell[]) {
 		return bodyCells.map((cell) => {
-			if (cell.columnId == this.columnId) {
+			if (cell.columnId === this.columnId) {
 				//Make sure that the cell only has 1 tag id reference
 				if (cell.tagIds.length > 0) {
 					this.updatedBodyCellTagIds.previous.push({
@@ -253,7 +253,7 @@ export class ColumnTypeUpdateCommand extends TableStateCommand {
 
 	private toCheckbox(bodyCells: BodyCell[]) {
 		return bodyCells.map((cell) => {
-			if (cell.columnId == this.columnId) {
+			if (cell.columnId === this.columnId) {
 				if (!isCheckbox(cell.markdown)) {
 					this.updatedBodyCellMarkdown.previous.push({
 						cellId: cell.id,
@@ -321,7 +321,7 @@ export class ColumnTypeUpdateCommand extends TableStateCommand {
 		} else if (this.type === CellType.CHECKBOX) {
 			newBodyCells = this.toCheckbox(newBodyCells);
 		} else if (
-			this.previousType == CellType.DATE &&
+			this.previousType === CellType.DATE &&
 			this.type === CellType.TEXT
 		) {
 			newBodyCells = this.fromDateToText(column, newBodyCells);

@@ -20,7 +20,7 @@ export const useMenu = (
 		menuCloseRequestTime,
 		closeAllMenus,
 	} = useMenuContext();
-	const isOpen = openMenus.find((menu) => menu.id == id) ? true : false;
+	const isOpen = openMenus.find((menu) => menu.id === id) ? true : false;
 
 	const menu: Menu = React.useMemo(() => {
 		return { id, level, shouldRequestOnClose };

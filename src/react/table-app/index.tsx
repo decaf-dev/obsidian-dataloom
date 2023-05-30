@@ -299,8 +299,8 @@ export default function TableApp() {
 									} = column;
 									const cell = footerCells.find(
 										(cell) =>
-											cell.rowId == row.id &&
-											cell.columnId == column.id
+											cell.rowId === row.id &&
+											cell.columnId === column.id
 									);
 									if (!cell) throw new CellNotFoundError();
 									const { id: cellId, functionType } = cell;
@@ -356,8 +356,8 @@ export default function TableApp() {
 							...visibleColumns.map((column, i) => {
 								const cell = footerCells.find(
 									(cell) =>
-										cell.rowId == row.id &&
-										cell.columnId == column.id
+										cell.rowId === row.id &&
+										cell.columnId === column.id
 								);
 								if (!cell) throw new CellNotFoundError();
 

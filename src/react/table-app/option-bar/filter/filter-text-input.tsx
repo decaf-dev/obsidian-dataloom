@@ -41,7 +41,7 @@ export default function FilterTextInput({
 						onChange={(e) => onTextChange(id, e.target.value)}
 					/>
 				)}
-			{cellType == CellType.CHECKBOX && (
+			{cellType === CellType.CHECKBOX && (
 				<select
 					value={text}
 					onChange={(e) => onTextChange(id, e.target.value)}
@@ -53,7 +53,7 @@ export default function FilterTextInput({
 					</option>
 				</select>
 			)}
-			{(cellType === CellType.TAG || cellType == CellType.MULTI_TAG) && (
+			{(cellType === CellType.TAG || cellType === CellType.MULTI_TAG) && (
 				<Select
 					className="react-select"
 					styles={{

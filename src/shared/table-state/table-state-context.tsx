@@ -10,7 +10,6 @@ import {
 	isWindowsRedo,
 	isWindowsUndo,
 } from "../keyboard-event";
-import { useAppDispatch } from "src/redux/global/hooks";
 import RowSortCommand from "../commands/row-sort-command";
 
 interface Props {
@@ -49,7 +48,6 @@ export default function TableStateProvider({
 	]);
 	const [position, setPosition] = React.useState(0);
 	const logger = useLogger();
-	const dispatch = useAppDispatch();
 
 	const undo = React.useCallback(() => {
 		if (position > 0) {
@@ -68,7 +66,7 @@ export default function TableStateProvider({
 				setTableState(newState);
 			}
 		}
-	}, [position, history, tableState, dispatch]);
+	}, [position, history, tableState, logger]);
 
 	const redo = React.useCallback(() => {
 		if (position < history.length - 1) {
@@ -87,7 +85,7 @@ export default function TableStateProvider({
 				setTableState(newState);
 			}
 		}
-	}, [position, history, tableState, dispatch]);
+	}, [position, history, tableState, logger]);
 
 	//Handle hot key press
 	React.useEffect(() => {
@@ -111,7 +109,7 @@ export default function TableStateProvider({
 	//Whenever the table state is updated save it to disk
 	React.useEffect(() => {
 		onSaveState(tableState);
-	}, [tableState]);
+	}, [tableState, onSaveState]);
 
 	const doCommand = React.useCallback(
 		(command: TableStateCommand) => {
@@ -133,7 +131,7 @@ export default function TableStateProvider({
 			}
 			setTableState(newState);
 		},
-		[position, history, tableState, dispatch]
+		[position, history, tableState]
 	);
 
 	return (

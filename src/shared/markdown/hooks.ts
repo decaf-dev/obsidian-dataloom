@@ -79,7 +79,7 @@ export const useRenderMarkdown = (
 		}
 
 		updateContainerRef();
-	}, [markdown, shouldWrapOverflow]);
+	}, [markdown, shouldWrapOverflow, view]);
 
 	return {
 		containerRef,

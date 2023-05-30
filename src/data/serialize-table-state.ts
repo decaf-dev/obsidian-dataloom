@@ -34,7 +34,7 @@ export const deserializeTableState = (data: string): TableState => {
 
 	const untypedVersion: unknown = parsedState["pluginVersion"];
 
-	let pluginVersion: string = "";
+	let pluginVersion = "";
 	if (typeof untypedVersion === "number") {
 		pluginVersion = legacyVersionToString(untypedVersion);
 	} else if (typeof untypedVersion === "string") {
