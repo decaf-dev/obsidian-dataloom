@@ -30,15 +30,12 @@ Links follow the exact syntax as [Obsidian wiki links](https://help.obsidian.md/
 
 ### Insert a new line
 
-By default, pressing enter will close the text cell edit menu. To insert a line, you need to hold down a modifier key while pressing enter.
+By default, pressing enter will close the text cell edit menu. To insert a line, you need to hold down a shift key while pressing enter.
 
 **Windows**
 
 -   Hold `shift` and press `enter`
--   Hold `ctrl` and press `enter`
 
 **Mac**
 
 -   Hold `shift` and press `return`
--   Hold `ctrl` and press `return`
--   Hold `cmd` and press `return`
