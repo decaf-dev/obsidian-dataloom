@@ -11,6 +11,7 @@ import {
 	isWindowsRedoDown,
 	isWindowsUndoDown,
 } from "../keyboard-event";
+import { eventSystem } from "../event-system/event-system";
 
 interface Props {
 	initialState: TableState;
@@ -101,9 +102,9 @@ export default function TableStateProvider({
 		}
 
 		const throttleKeyDownEvent = _.throttle(handleKeyDown, 100);
-		document.addEventListener("keydown", throttleKeyDownEvent);
+		eventSystem.addEventListener("keydown", throttleKeyDownEvent);
 		return () => {
-			document.removeEventListener("keydown", throttleKeyDownEvent);
+			eventSystem.removeEventListener("keydown", throttleKeyDownEvent);
 		};
 	}, [redo, undo]);
 
