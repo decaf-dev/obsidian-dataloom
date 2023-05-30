@@ -14,6 +14,7 @@ import {
 	isWindowsUndoDown,
 } from "../keyboard-event";
 import { eventSystem } from "../event-system/event-system";
+import { moveFocusDown, moveFocusUp } from "./arrow-move-focus";
 
 interface ContextProps {
 	openMenus: Menu[];
@@ -234,25 +235,19 @@ export default function MenuProvider({ children }: Props) {
 						tableEl.querySelectorAll(".NLT__focusable");
 
 					const index = Array.from(focusableEls).indexOf(focusedEl);
-					switch (e.key) {
-						case "ArrowUp": {
-							//Normal number of columns in a row
-							//Num columns + drag menu cell
-							const numColumns =
-								tableState.model.columns.length + 1;
-							//The function row doesn't have a drag menu cell
-							const numColumnsFunctionRow = numColumns - 1;
 
-							//Handle very last row
-							if (index === focusableEls.length - 1) {
-								focusedEl =
-									focusableEls[index - numColumnsFunctionRow];
-							} else if (index - numColumns >= 0) {
-								focusedEl = focusableEls[index - numColumns];
-								//Handle the last row
-							}
+					const numColumns = tableState.model.columns.length;
+					const numBodyRows = tableState.model.bodyRows.length;
+
+					switch (e.key) {
+						case "ArrowUp":
+							focusedEl = moveFocusUp(
+								focusableEls,
+								numColumns,
+								numBodyRows,
+								index
+							);
 							break;
-						}
 						case "ArrowLeft":
 							if (index - 1 >= 0)
 								focusedEl = focusableEls[index - 1];
@@ -262,29 +257,12 @@ export default function MenuProvider({ children }: Props) {
 								focusedEl = focusableEls[index + 1];
 							break;
 						case "ArrowDown":
-							{
-								//This is the "New Row" button
-								const rowIndexEnd = focusableEls.length - 1;
-
-								//Normal number of columns in a row
-								//Num columns + drag menu cell
-								const numColumns =
-									tableState.model.columns.length + 1;
-								//The last row doesn't have a drag menu cell
-								const numColumnsFunctionRow = numColumns - 1;
-								//Handle until the last 2 rows
-								if (index + numColumns <= rowIndexEnd - 1) {
-									focusedEl =
-										focusableEls[index + numColumns];
-									//Handle the function row
-								} else if (
-									index >=
-										rowIndexEnd - numColumnsFunctionRow &&
-									index <= rowIndexEnd
-								) {
-									focusedEl = focusableEls[rowIndexEnd];
-								}
-							}
+							focusedEl = moveFocusDown(
+								focusableEls,
+								numColumns,
+								numBodyRows,
+								index
+							);
 							break;
 					}
 					(focusedEl as HTMLElement).focus();
@@ -330,14 +308,7 @@ export default function MenuProvider({ children }: Props) {
 			eventSystem.removeEventListener("click", handleClick);
 			eventSystem.removeEventListener("keydown", handleKeyDown);
 		};
-	}, [
-		isMenuOpen,
-		closeTopMenu,
-		openMenu,
-		openMenus,
-		tableId,
-		tableState.model.columns.length,
-	]);
+	}, [isMenuOpen, closeTopMenu, openMenu, openMenus, tableId, tableState]);
 
 	return (
 		<MenuContext.Provider
