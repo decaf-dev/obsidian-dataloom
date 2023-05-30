@@ -43,7 +43,7 @@ export const useInputSelection = (
 		if (didValueChange) setSelection();
 	}, [previousSelectionStart, value, didValueChange, inputRef]);
 
-	return { setPreviousSelectionStart };
+	return { setPreviousSelectionStart, previousSelectionStart };
 };
 
 export const useUUID = (): string => {
