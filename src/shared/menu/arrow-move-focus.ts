@@ -9,27 +9,27 @@ export const moveFocusUp = (
 		currentIndex >= focusedEls.length - 1 - numColumns &&
 		currentIndex < focusedEls.length - 1
 	) {
-		console.log("Function cell");
-		console.log(numBodyRows);
+		// console.log("Function cell");
+		// console.log(numBodyRows);
 		if (numBodyRows === 0) return focusedEls[currentIndex - numColumns - 1];
 		return focusedEls[currentIndex - numColumns];
 	}
 
 	//Add row button row
 	if (currentIndex === focusedEls.length - 1) {
-		console.log("Add row button row");
+		// console.log("Add row button row");
 		return focusedEls[focusedEls.length - 1 - numColumns];
 	}
 
 	//Header row
 	if (currentIndex > 2 && currentIndex <= 2 + numColumns) {
-		console.log("Header row");
+		// console.log("Header row");
 		return focusedEls[0];
 	}
 
 	//First body row - drag button
 	if (currentIndex === 2 + numColumns + 2) {
-		console.log("First body row - drag button");
+		// console.log("First body row - drag button");
 		return focusedEls[currentIndex - 1 - numColumns];
 	}
 
@@ -38,13 +38,13 @@ export const moveFocusUp = (
 		currentIndex > 2 + numColumns + 2 &&
 		currentIndex <= 2 + numColumns + 2 + numColumns
 	) {
-		console.log("First body row - columns");
+		// console.log("First body row - columns");
 		return focusedEls[currentIndex - 2 - numColumns];
 	}
 
 	//Regular body row
 	const index = currentIndex - 1 - numColumns;
-	console.log("Regular row");
+	// console.log("Regular row");
 	if (index < 0) return focusedEls[currentIndex];
 	return focusedEls[index];
 };
@@ -57,7 +57,7 @@ export const moveFocusDown = (
 ) => {
 	//Option bar
 	if (currentIndex <= 2) {
-		console.log("Option bar");
+		// console.log("Option bar");
 		return focusedEls[3];
 	}
 
@@ -66,13 +66,13 @@ export const moveFocusDown = (
 		currentIndex >= focusedEls.length - 1 - numColumns &&
 		currentIndex < focusedEls.length - 1
 	) {
-		console.log("Function cell");
+		// console.log("Function cell");
 		return focusedEls[focusedEls.length - 1];
 	}
 
 	//Header row - columns
 	if (currentIndex > 2 && currentIndex <= 2 + numColumns) {
-		console.log("Header row - columns");
+		// console.log("Header row - columns");
 		if (numBodyRows === 0) return focusedEls[currentIndex + numColumns + 1];
 		return focusedEls[currentIndex + numColumns + 2];
 	}
@@ -82,19 +82,19 @@ export const moveFocusDown = (
 		currentIndex >= focusedEls.length - 1 - numColumns - numColumns &&
 		currentIndex < focusedEls.length - 1 - numColumns
 	) {
-		console.log("Last body row");
+		// console.log("Last body row");
 		return focusedEls[currentIndex + numColumns];
 	}
 
 	//Header row - add column button
 	if (currentIndex === 2 + numColumns + 1) {
-		console.log("Header rows - button");
+		// console.log("Header rows - button");
 		return focusedEls[currentIndex + numColumns + 1];
 	}
 
 	//Regular row
 	const index = currentIndex + numColumns + 1;
-	console.log("Regular row");
+	// console.log("Regular row");
 	if (index >= focusedEls.length) return focusedEls[currentIndex];
 	return focusedEls[index];
 };
