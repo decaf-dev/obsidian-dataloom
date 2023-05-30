@@ -1,4 +1,4 @@
-import { Plugin, TFolder } from "obsidian";
+import { Plugin, TAbstractFile, TFolder } from "obsidian";
 
 import NLTSettingsTab from "./obsidian/nlt-settings-tab";
 
@@ -58,6 +58,27 @@ export default class NLTPlugin extends Plugin {
 		this.addSettingTab(new NLTSettingsTab(this.app, this));
 		this.registerCommands();
 		this.registerEvents();
+
+		// this.app.vault.on(
+		// 	"rename",
+		// 	async (file: TAbstractFile, oldPath: string) => {
+		// 		//Search all table files for the old path and rename them
+
+		// 		//Get all table files
+		// 		const tableFiles = this.app.vault
+		// 			.getFiles()
+		// 			.filter((file) => file.extension === TABLE_EXTENSION);
+
+		// 		for (let i = 0; i < tableFiles.length; i++) {
+		// 			const file = tableFiles[i];
+		// 			const content = await file.vault.read(tableFiles[i]);
+		// 			const newContent = content;
+		// 			await file.vault.modify(file, newContent);
+
+		// 			//If find wiki links up
+		// 		}
+		// 	}
+		// );
 
 		this.app.workspace.onLayoutReady(() => {
 			this.checkForDarkMode();

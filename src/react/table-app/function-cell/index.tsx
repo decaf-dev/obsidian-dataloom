@@ -86,9 +86,17 @@ export default function FunctionCell({
 			);
 	}
 
+	function handleClick() {
+		if (isMenuOpen) {
+			closeTopMenu();
+		} else {
+			openMenu(menu);
+		}
+	}
+
 	return (
 		<>
-			<MenuTrigger menuId={menu.id} onClick={() => openMenu(menu)}>
+			<MenuTrigger menuId={menu.id} onClick={handleClick}>
 				<div
 					className="NLT__function-cell NLT__selectable"
 					ref={triggerRef}

@@ -48,6 +48,7 @@ export default function TableStateProvider({
 	]);
 	const [position, setPosition] = React.useState(0);
 	const logger = useLogger();
+	const isMountedRef = React.useRef(false);
 
 	const undo = React.useCallback(() => {
 		if (position > 0) {
@@ -108,7 +109,11 @@ export default function TableStateProvider({
 
 	//Whenever the table state is updated save it to disk
 	React.useEffect(() => {
-		onSaveState(tableState);
+		if (!isMountedRef.current) {
+			isMountedRef.current = true;
+		} else {
+			onSaveState(tableState);
+		}
 	}, [tableState, onSaveState]);
 
 	const doCommand = React.useCallback(
