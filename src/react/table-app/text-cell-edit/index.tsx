@@ -40,7 +40,7 @@ export default function TextCellEdit({
 	const previousValue = useRef("");
 
 	function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
-		if (e.key === "Enter") e.preventDefault();
+		if (e.key === "Enter" && !e.shiftKey) e.preventDefault();
 	}
 
 	function handleTextareaChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
