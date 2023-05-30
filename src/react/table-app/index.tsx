@@ -114,7 +114,13 @@ export default function TableApp() {
 							{
 								id: firstColumnId,
 								columnId: firstColumnId,
-								content: <></>,
+								content: (
+									<div
+										css={css`
+											width: 35px;
+										`}
+									/>
+								),
 							},
 							...visibleColumns.map((column) => {
 								const {
