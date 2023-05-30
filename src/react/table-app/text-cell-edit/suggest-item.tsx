@@ -32,7 +32,7 @@ export default function SuggestItem({
 		return () => eventSystem.removeEventListener("keydown", handleKeyDown);
 	}, [isHighlighted, handleClick]);
 
-	let name: string = "No match found";
+	let name = "No match found";
 	if (file) {
 		if (file.extension === "md") {
 			//The basename does not include an extension

@@ -117,13 +117,13 @@ export class ColumnTypeUpdateCommand extends TableStateCommand {
 	}
 
 	private toTag(columns: Column[], bodyCells: BodyCell[]) {
-		let newColumns = structuredClone(columns);
+		const newColumns = structuredClone(columns);
 		let newBodyCells = structuredClone(bodyCells);
 
 		newBodyCells = newBodyCells.map((cell) => {
 			if (cell.columnId === this.columnId) {
 				if (cell.markdown !== "") {
-					let tagIds: string[] = [];
+					const tagIds: string[] = [];
 
 					cell.markdown.split(",").map((markdown, i) => {
 						const column = newColumns.find(
@@ -179,13 +179,13 @@ export class ColumnTypeUpdateCommand extends TableStateCommand {
 	}
 
 	private toMultiTag(columns: Column[], bodyCells: BodyCell[]) {
-		let newColumns = structuredClone(columns);
+		const newColumns = structuredClone(columns);
 		let newBodyCells = structuredClone(bodyCells);
 
 		newBodyCells = newBodyCells.map((cell) => {
 			if (cell.columnId === this.columnId) {
 				if (cell.markdown !== "") {
-					let tagIds: string[] = [];
+					const tagIds: string[] = [];
 
 					cell.markdown.split(",").map((markdown, i) => {
 						const column = newColumns.find(

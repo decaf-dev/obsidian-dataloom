@@ -5,7 +5,6 @@ import MenuBody from "./menu-body";
 
 import { Tag as TagType } from "src/shared/types/types";
 import { Color } from "src/shared/types/types";
-import { Position } from "src/shared/menu/types";
 import { randomColor } from "src/shared/color";
 
 import { css } from "@emotion/react";

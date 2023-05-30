@@ -5,7 +5,6 @@ import { EVENT_ROW_ADD, EVENT_ROW_DELETE } from "../events";
 import { useTableState } from "./table-state-context";
 import RowAddCommand from "../commands/row-add-command";
 import RowDeleteCommand from "../commands/row-delete-command";
-import { NLTView } from "src/obsidian/nlt-view";
 import { isEventForThisLeaf } from "../renderUtils";
 
 export const useRow = () => {
