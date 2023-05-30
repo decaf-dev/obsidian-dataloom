@@ -1,5 +1,3 @@
-import { WorkspaceLeaf } from "obsidian";
-
 import Table from "./table";
 import RowOptions from "./row-options";
 import OptionBar from "./option-bar";
@@ -22,14 +20,12 @@ import { useTag } from "src/shared/table-state/use-tag";
 
 import "./styles.css";
 import { css } from "@emotion/react";
+import { useEventSystem } from "src/shared/event-system/hooks";
 
-interface Props {
-	viewLeaf: WorkspaceLeaf;
-}
-
-export default function TableApp({ viewLeaf }: Props) {
+export default function TableApp() {
 	const { searchText } = useAppSelector((state) => state.global);
 	const { tableId, tableState, setTableState } = useTableState();
+	useEventSystem();
 
 	const {
 		handleRuleAddClick,
@@ -53,9 +49,9 @@ export default function TableApp({ viewLeaf }: Props) {
 		handleColumnWidthChange,
 		handleSortRemoveClick,
 		handleWrapContentToggle,
-	} = useColumn(viewLeaf);
+	} = useColumn();
 
-	const { handleNewRowClick, handleRowDeleteClick } = useRow(viewLeaf);
+	const { handleNewRowClick, handleRowDeleteClick } = useRow();
 
 	const {
 		handleBodyCellContentChange,
@@ -303,8 +299,8 @@ export default function TableApp({ viewLeaf }: Props) {
 									} = column;
 									const cell = footerCells.find(
 										(cell) =>
-											cell.rowId == row.id &&
-											cell.columnId == column.id
+											cell.rowId === row.id &&
+											cell.columnId === column.id
 									);
 									if (!cell) throw new CellNotFoundError();
 									const { id: cellId, functionType } = cell;
@@ -360,8 +356,8 @@ export default function TableApp({ viewLeaf }: Props) {
 							...visibleColumns.map((column, i) => {
 								const cell = footerCells.find(
 									(cell) =>
-										cell.rowId == row.id &&
-										cell.columnId == column.id
+										cell.rowId === row.id &&
+										cell.columnId === column.id
 								);
 								if (!cell) throw new CellNotFoundError();
 

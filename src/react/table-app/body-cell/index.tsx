@@ -248,9 +248,9 @@ export default function BodyCell({
 		onDateTimeChange(cellId, rowId, value);
 	}
 
-	function handleMenuClose() {
+	const handleMenuClose = React.useCallback(() => {
 		closeTopMenu();
-	}
+	}, [closeTopMenu]);
 
 	const { width: measuredWidth, height: measuredHeight } = triggerPosition;
 
@@ -268,7 +268,7 @@ export default function BodyCell({
 	let menuWidth = measuredWidth;
 	if (columnType === CellType.TAG || columnType === CellType.MULTI_TAG) {
 		menuWidth = 250;
-	} else if (columnType == CellType.DATE) {
+	} else if (columnType === CellType.DATE) {
 		menuWidth = 175;
 	}
 

@@ -18,18 +18,18 @@ export default function Text({
 }: Props) {
 	let className = "NLT__p";
 
-	if (variant == "faint") className += " NLT__text-faint";
-	if (variant == "muted") className += " NLT__text-muted";
-	if (variant == "semibold") className += " NLT__text-semibold";
+	if (variant === "faint") className += " NLT__text-faint";
+	if (variant === "muted") className += " NLT__text-muted";
+	if (variant === "semibold") className += " NLT__text-semibold";
 
 	let fontSize = "";
 	if (size === "xs") {
 		fontSize = "var(--nlt-font-size--xs)";
-	} else if (size == "sm") {
+	} else if (size === "sm") {
 		fontSize = "var(--nlt-font-size--sm)";
-	} else if (size == "md") {
+	} else if (size === "md") {
 		fontSize = "var(--nlt-font-size--md)";
-	} else if (size == "lg") {
+	} else if (size === "lg") {
 		fontSize = "var(--nlt-font-size--lg)";
 	}
 

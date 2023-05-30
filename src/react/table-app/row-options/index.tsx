@@ -145,7 +145,7 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 		//Add dragging over class to all the children
 		const children = rowEl.querySelectorAll("td:not(:last-child)");
 
-		for (var i = 0; i < children.length; i++) {
+		for (let i = 0; i < children.length; i++) {
 			children[i].classList.add("NLT__tr--drag-over");
 		}
 	}
@@ -154,7 +154,7 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 		//Add dragging over class to all the children
 		const children = document.querySelectorAll(".NLT__tr--drag-over");
 
-		for (var i = 0; i < children.length; i++) {
+		for (let i = 0; i < children.length; i++) {
 			children[i].classList.remove("NLT__tr--drag-over");
 		}
 	}

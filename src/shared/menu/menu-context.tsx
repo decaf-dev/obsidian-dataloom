@@ -12,12 +12,14 @@ import {
 	isWindowsRedo,
 	isWindowsUndo,
 } from "../keyboard-event";
+import { eventSystem } from "../event-system/event-system";
 
 interface ContextProps {
 	openMenus: Menu[];
 	menuCloseRequestTime: number | null;
 	openMenu: (menu: Menu) => void;
 	closeTopMenu: (shouldFocusTriggerOnClose?: boolean) => void;
+	closeAllMenus: (shouldFocusTriggerOnClose?: boolean) => void;
 }
 
 const MenuContext = React.createContext<ContextProps | null>(null);
@@ -60,18 +62,6 @@ export default function MenuProvider({ children }: Props) {
 	}, [openMenus]);
 
 	/**
-	 * Returns the top level menu
-	 *
-	 * @example
-	 * const menu = topLevelMenu();
-	 * console.log(menu);
-	 * { id: "d57b26a2-0e0d-4c9a-ad54-7a8d4e0b517c", level: 3}
-	 */
-	const topLevelMenu = React.useCallback(() => {
-		return openMenus.last();
-	}, [openMenus]);
-
-	/**
 	 * Opens a menu.
 	 * There must be 0 open menus or the menu must be a higher level than the current one for the menu to be opened
 	 * @param menu The menu to open
@@ -96,17 +86,12 @@ export default function MenuProvider({ children }: Props) {
 		[openMenus]
 	);
 
-	/**
-	 * Closes the top level menu
-	 */
-	function closeTopMenu(shouldFocusTrigger = true) {
-		const menu = topLevelMenu();
-		//If there is no menu open, just return
+	function closeAllMenus(shouldFocusTrigger = true) {
+		const menu = openMenus.first();
 		if (!menu) return;
 
-		const { id, level } = menu;
-
 		if (shouldFocusTrigger) {
+			const { id, level } = menu;
 			//If the menu level is one, we want to focus the trigger on close
 			if (level === MenuLevel.ONE) {
 				focusMenuElement(id);
@@ -114,17 +99,39 @@ export default function MenuProvider({ children }: Props) {
 			}
 		}
 
-		//Remove the menu
-		setOpenMenus((prev) => prev.slice(0, prev.length - 1));
+		setOpenMenus([]);
 		setMenuCloseRequestTime(null);
 	}
+
+	/**
+	 * Closes the top level menu
+	 */
+	const closeTopMenu = React.useCallback(
+		(shouldFocusTrigger = true) => {
+			const menu = openMenus.last();
+			if (!menu) return;
+
+			if (shouldFocusTrigger) {
+				const { id, level } = menu;
+				if (level === MenuLevel.ONE) {
+					focusMenuElement(id);
+					addFocusVisibleClass(id);
+				}
+			}
+
+			//Remove the menu
+			setOpenMenus((prev) => prev.slice(0, prev.length - 1));
+			setMenuCloseRequestTime(null);
+		},
+		[openMenus]
+	);
 
 	React.useEffect(() => {
 		function handleClick(e: MouseEvent) {
 			const target = e.target as HTMLElement;
 
 			if (isMenuOpen()) {
-				const menu = topLevelMenu();
+				const menu = openMenus.last();
 				if (!menu) throw new Error("Menu is open but no menu exists");
 
 				const { id } = menu;
@@ -181,7 +188,7 @@ export default function MenuProvider({ children }: Props) {
 
 			//If a menu is open, then close the menu
 			if (isMenuOpen()) {
-				const menu = topLevelMenu();
+				const menu = openMenus.last();
 				if (!menu) throw new Error("Menu is open but no menu exists");
 
 				if (menu.shouldRequestOnClose) {
@@ -291,6 +298,7 @@ export default function MenuProvider({ children }: Props) {
 					break;
 				case "Escape":
 					handleEscapeDown(e);
+					break;
 				case "Tab":
 					handleTabDown(e);
 					break;
@@ -314,13 +322,21 @@ export default function MenuProvider({ children }: Props) {
 					break;
 			}
 		}
+
 		document.addEventListener("click", handleClick);
-		document.addEventListener("keydown", handleKeyDown);
+		eventSystem.addEventListener("keydown", handleKeyDown);
 		return () => {
 			document.removeEventListener("click", handleClick);
-			document.removeEventListener("keydown", handleKeyDown);
+			eventSystem.removeEventListener("keydown", handleKeyDown);
 		};
-	}, [isMenuOpen, openMenu, tableState.model.columns.length]);
+	}, [
+		isMenuOpen,
+		closeTopMenu,
+		openMenu,
+		openMenus,
+		tableId,
+		tableState.model.columns.length,
+	]);
 
 	return (
 		<MenuContext.Provider
@@ -329,6 +345,7 @@ export default function MenuProvider({ children }: Props) {
 				openMenu,
 				menuCloseRequestTime,
 				closeTopMenu,
+				closeAllMenus,
 			}}
 		>
 			{children}

@@ -1,12 +1,7 @@
 import { splitFileExtension } from "./utils";
 
 export const createFolder = async (folderPath: string): Promise<void> => {
-	try {
-		if (app.vault.getAbstractFileByPath(folderPath) == null)
-			await app.vault.createFolder(folderPath);
-	} catch (err) {
-		throw err;
-	}
+	return await app.vault.createFolder(folderPath);
 };
 
 export const createFile = async (

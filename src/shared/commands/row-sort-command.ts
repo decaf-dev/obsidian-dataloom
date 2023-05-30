@@ -268,7 +268,10 @@ export default class RowSortCommand extends TableStateCommand {
 		rows: BodyRow[],
 		cells: BodyCell[]
 	) {
-		if (columnType == CellType.NUMBER || columnType === CellType.CURRENCY) {
+		if (
+			columnType === CellType.NUMBER ||
+			columnType === CellType.CURRENCY
+		) {
 			return this.sortByNumber(columnId, rows, cells, sortDir);
 		} else if (
 			columnType === CellType.TAG ||
@@ -277,11 +280,11 @@ export default class RowSortCommand extends TableStateCommand {
 			return this.sortByTag(columnId, columns, rows, cells, sortDir);
 		} else if (columnType === CellType.DATE) {
 			return this.sortByDate(columnId, rows, cells, sortDir);
-		} else if (columnType == CellType.LAST_EDITED_TIME) {
+		} else if (columnType === CellType.LAST_EDITED_TIME) {
 			return this.sortByLastEditedTime(rows, sortDir);
-		} else if (columnType == CellType.CREATION_TIME) {
+		} else if (columnType === CellType.CREATION_TIME) {
 			return this.sortByCreationTime(rows, sortDir);
-		} else if (columnType == CellType.CHECKBOX) {
+		} else if (columnType === CellType.CHECKBOX) {
 			return this.sortByCheckbox(columnId, rows, cells, sortDir);
 		} else {
 			return this.sortByMarkdown(columnId, rows, cells, sortDir);

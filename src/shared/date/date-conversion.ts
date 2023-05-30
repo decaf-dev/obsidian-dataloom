@@ -75,7 +75,7 @@ export const unixTimeToDateTimeString = (
 			return `${day}/${month}/${year} ${time}`;
 		case DateFormat.YYYY_MM_DD:
 			return `${year}/${month}/${day} ${time}`;
-		case DateFormat.FULL:
+		case DateFormat.FULL: {
 			const value = date.toLocaleString("en-US", {
 				month: "short",
 				day: "numeric",
@@ -85,6 +85,7 @@ export const unixTimeToDateTimeString = (
 				hour12: true,
 			});
 			return removeLastComma(value);
+		}
 		case DateFormat.RELATIVE: {
 			const diff = Date.now() - date.getTime();
 			const time = date.toLocaleString("en-US", {

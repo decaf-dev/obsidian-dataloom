@@ -1,6 +1,6 @@
 import TagColorMenu from "src/react/table-app/tag-color-menu";
 
-import { MenuLevel, Position } from "src/shared/menu/types";
+import { MenuLevel } from "src/shared/menu/types";
 import { useMenu } from "src/shared/menu/hooks";
 
 import { Button } from "src/react/shared/button";

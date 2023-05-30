@@ -13,16 +13,13 @@ import {
 import MenuProvider from "src/shared/menu/menu-context";
 import { EVENT_REFRESH_VIEW } from "src/shared/events";
 import DragProvider from "src/shared/dragging/drag-context";
+import ViewProvider from "src/shared/view-context";
 
 export const NOTION_LIKE_TABLES_VIEW = "notion-like-tables";
 
 export class NLTView extends TextFileView {
 	root: Root | null = null;
 	data: string;
-
-	constructor(leaf: WorkspaceLeaf) {
-		super(leaf);
-	}
 
 	getViewData(): string {
 		return this.data;
@@ -32,7 +29,10 @@ export class NLTView extends TextFileView {
 		//Only save data if the view is in the active leaf
 		//This prevents the data being saved multiple times if we have
 		//multiple tabs of the same file opens
-		if (this.app.workspace.activeLeaf === this.leaf) {
+		const activeView = this.app.workspace.getActiveViewOfType(NLTView);
+		if (!activeView) return;
+
+		if (activeView.leaf === this.leaf) {
 			const serialized = serializeTableState(tableState);
 			this.data = serialized;
 			await this.requestSave();
@@ -65,18 +65,20 @@ export class NLTView extends TextFileView {
 	renderApp(tableState: TableState) {
 		if (this.root) {
 			this.root.render(
-				<Provider store={store}>
-					<TableStateProvider
-						initialState={tableState}
-						onSaveState={this.handleSaveTableState}
-					>
-						<MenuProvider>
-							<DragProvider>
-								<App viewLeaf={this.leaf} />
-							</DragProvider>
-						</MenuProvider>
-					</TableStateProvider>
-				</Provider>
+				<ViewProvider view={this}>
+					<Provider store={store}>
+						<TableStateProvider
+							initialState={tableState}
+							onSaveState={this.handleSaveTableState}
+						>
+							<MenuProvider>
+								<DragProvider>
+									<App />
+								</DragProvider>
+							</MenuProvider>
+						</TableStateProvider>
+					</Provider>
+				</ViewProvider>
 			);
 		}
 	}
