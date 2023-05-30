@@ -15,9 +15,20 @@ export const useEventSystem = () => {
 			}
 		}
 
+		function handleClick(e: KeyboardEvent) {
+			const activeView = app.workspace.getActiveViewOfType(NLTView);
+			if (!activeView) return;
+
+			if (activeView.leaf === view.leaf) {
+				eventSystem.dispatchEvent("click", e);
+			}
+		}
+
 		document.addEventListener("keydown", handleKeyDown);
+		document.addEventListener("click", handleClick);
 		return () => {
 			document.removeEventListener("keydown", handleKeyDown);
+			document.addEventListener("click", handleClick);
 		};
 	}, [view]);
 };
