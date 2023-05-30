@@ -7,10 +7,11 @@ import {
 import { Menu, MenuLevel } from "./types";
 import { useTableState } from "../table-state/table-state-context";
 import {
-	isMacRedo,
-	isMacUndo,
-	isWindowsRedo,
-	isWindowsUndo,
+	isMacRedoDown,
+	isMacUndoDown,
+	isSpecialActionDown,
+	isWindowsRedoDown,
+	isWindowsUndoDown,
 } from "../keyboard-event";
 import { eventSystem } from "../event-system/event-system";
 
@@ -179,7 +180,7 @@ export default function MenuProvider({ children }: Props) {
 		function handleEnterDown(e: KeyboardEvent) {
 			const target = e.target as HTMLElement;
 
-			if (e.shiftKey) return;
+			if (isSpecialActionDown(e)) return;
 
 			//Prevents the event key from triggering the click event
 			if (target.getAttribute("data-menu-id") !== null) {
@@ -310,10 +311,10 @@ export default function MenuProvider({ children }: Props) {
 					break;
 				default:
 					if (
-						isMacUndo(e) ||
-						isMacRedo(e) ||
-						isWindowsUndo(e) ||
-						isWindowsRedo(e)
+						isMacUndoDown(e) ||
+						isMacRedoDown(e) ||
+						isWindowsUndoDown(e) ||
+						isWindowsRedoDown(e)
 					)
 						return;
 

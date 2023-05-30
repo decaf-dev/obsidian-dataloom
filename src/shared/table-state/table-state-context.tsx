@@ -4,13 +4,13 @@ import { useUUID } from "../hooks";
 import React from "react";
 import { useLogger } from "../logger";
 import _ from "lodash";
-import {
-	isMacRedo,
-	isMacUndo,
-	isWindowsRedo,
-	isWindowsUndo,
-} from "../keyboard-event";
 import RowSortCommand from "../commands/row-sort-command";
+import {
+	isMacRedoDown,
+	isMacUndoDown,
+	isWindowsRedoDown,
+	isWindowsUndoDown,
+} from "../keyboard-event";
 
 interface Props {
 	initialState: TableState;
@@ -91,10 +91,10 @@ export default function TableStateProvider({
 	//Handle hot key press
 	React.useEffect(() => {
 		function handleKeyDown(e: KeyboardEvent) {
-			if (isWindowsRedo(e) || isMacRedo(e)) {
+			if (isWindowsRedoDown(e) || isMacRedoDown(e)) {
 				e.preventDefault();
 				redo();
-			} else if (isWindowsUndo(e) || isMacUndo(e)) {
+			} else if (isWindowsUndoDown(e) || isMacUndoDown(e)) {
 				e.preventDefault();
 				undo();
 			}

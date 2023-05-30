@@ -15,6 +15,7 @@ import {
 	isSurroundedByDoubleBrackets,
 	removeClosingBracket,
 } from "./utils";
+import { isSpecialActionDown } from "src/shared/keyboard-event";
 
 interface Props {
 	value: string;
@@ -40,7 +41,10 @@ export default function TextCellEdit({
 	const previousValue = useRef("");
 
 	function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
-		if (e.key === "Enter" && !e.shiftKey) e.preventDefault();
+		if (e.key === "Enter") {
+			if (isSpecialActionDown(e)) return;
+			e.preventDefault();
+		}
 	}
 
 	function handleTextareaChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
