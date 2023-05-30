@@ -324,10 +324,10 @@ export default function MenuProvider({ children }: Props) {
 			}
 		}
 
-		document.addEventListener("click", handleClick);
+		eventSystem.addEventListener("click", handleClick);
 		eventSystem.addEventListener("keydown", handleKeyDown);
 		return () => {
-			document.removeEventListener("click", handleClick);
+			eventSystem.removeEventListener("click", handleClick);
 			eventSystem.removeEventListener("keydown", handleKeyDown);
 		};
 	}, [
