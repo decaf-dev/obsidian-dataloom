@@ -101,7 +101,7 @@ export default function TableStateProvider({
 			}
 		}
 
-		const throttleKeyDownEvent = _.throttle(handleKeyDown, 20);
+		const throttleKeyDownEvent = _.throttle(handleKeyDown, 40);
 		eventSystem.addEventListener("keydown", throttleKeyDownEvent);
 		return () => {
 			eventSystem.removeEventListener("keydown", throttleKeyDownEvent);
