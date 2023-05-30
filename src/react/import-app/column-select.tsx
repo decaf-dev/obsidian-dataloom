@@ -25,7 +25,7 @@ export default function ColumnSelect({
 			>
 				<option value="">Select column</option>
 				{columns
-					.filter((column) => column.type == CellType.TEXT)
+					.filter((column) => column.type === CellType.TEXT)
 					.map((column) => {
 						const cell = headerCells.find(
 							(cell) => cell.columnId === column.id

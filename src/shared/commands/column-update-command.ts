@@ -46,7 +46,7 @@ export default class ColumnUpdateCommand extends TableStateCommand {
 							"a value must be provided when the column expects a non-boolean value"
 						);
 
-					if (column.id == this.columnId) {
+					if (column.id === this.columnId) {
 						return {
 							...column,
 							[this.key]: isBoolean
@@ -73,7 +73,7 @@ export default class ColumnUpdateCommand extends TableStateCommand {
 			model: {
 				...prevState.model,
 				columns: prevState.model.columns.map((column) => {
-					if (column.id == this.columnId) {
+					if (column.id === this.columnId) {
 						return {
 							...column,
 							[this.key]: this.previousValue,

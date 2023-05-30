@@ -5,7 +5,6 @@ import { Tag } from "src/shared/types/types";
 import CreateTag from "./create-tag";
 import SelectableTag from "./selectable-tag";
 
-import { Position } from "src/shared/menu/types";
 import { css } from "@emotion/react";
 
 interface MenuBodyProps {
