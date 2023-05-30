@@ -30,4 +30,4 @@ export const isMacRedoDown = (e: KeyboardEvent) =>
  * @param e the keyboard event
  */
 export const isSpecialActionDown = (e: KeyboardEvent | React.KeyboardEvent) =>
-	e.metaKey || e.ctrlKey || e.shiftKey;
+	e.shiftKey;
