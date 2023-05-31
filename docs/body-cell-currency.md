@@ -10,13 +10,4 @@ Select a currency cell to open the currency cell edit menu. Type any numeric val
 
 ## Settings
 
-Currency format
-
-1. Open the column header cell menu
-2. Select `Options`
-3. Select `Currency`
-4. Select a currency
-
-## Data
-
-The currency value is saved as a number. The currency format is saved as a string value.
+[Currency](https://trey-wallis.github.io/obsidian-notion-like-tables/#/column-settings?id=currency)
