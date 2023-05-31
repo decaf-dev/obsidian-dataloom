@@ -1,100 +1,124 @@
+export const moveFocusLeft = (
+	focusableEls: NodeListOf<Element>,
+	index: number
+) => {
+	//Out of bounds
+	if (index === 0) return focusableEls[index];
+
+	//Default
+	return focusableEls[index - 1];
+};
+
+export const moveFocusRight = (
+	focusableEls: NodeListOf<Element>,
+	index: number
+) => {
+	//Out of bounds
+	if (index === focusableEls.length - 1) return focusableEls[index];
+
+	//Default
+	return focusableEls[index + 1];
+};
+
 export const moveFocusUp = (
-	focusedEls: NodeListOf<Element>,
+	focusableEls: NodeListOf<Element>,
 	numColumns: number,
 	numBodyRows: number,
-	currentIndex: number
+	numSortedColumns: number,
+	index: number
 ) => {
+	const noFocusIndex = -1;
+	const searchInputIndex = numSortedColumns;
+	const optionBarIndexEnd = numSortedColumns + 2;
+	const newRowButtonIndex = focusableEls.length - 1;
+
+	//No focus
+	//Set focus on the row button
+	if (index === noFocusIndex) return focusableEls[newRowButtonIndex];
+
+	//Already in the option bar
+	//Don't do anything
+	if (index <= optionBarIndexEnd) return focusableEls[index];
+
+	//Column row
+	if (index > optionBarIndexEnd && index <= optionBarIndexEnd + numColumns) {
+		return focusableEls[searchInputIndex];
+	}
+
 	//Function cell
-	if (
-		currentIndex >= focusedEls.length - 1 - numColumns &&
-		currentIndex < focusedEls.length - 1
-	) {
-		// console.log("Function cell");
-		// console.log(numBodyRows);
-		if (numBodyRows === 0) return focusedEls[currentIndex - numColumns - 1];
-		return focusedEls[currentIndex - numColumns];
+	if (index >= newRowButtonIndex - numColumns && index < newRowButtonIndex) {
+		if (numBodyRows === 0) return focusableEls[index - numColumns - 1];
+		return focusableEls[index - numColumns];
 	}
 
 	//Add row button row
-	if (currentIndex === focusedEls.length - 1) {
-		// console.log("Add row button row");
-		return focusedEls[focusedEls.length - 1 - numColumns];
-	}
+	if (index === newRowButtonIndex)
+		return focusableEls[newRowButtonIndex - numColumns];
 
 	//Header row
-	if (currentIndex > 2 && currentIndex <= 2 + numColumns) {
-		// console.log("Header row");
-		return focusedEls[0];
-	}
+	//Go to the first element
+	if (index > optionBarIndexEnd && index <= optionBarIndexEnd + numColumns)
+		return focusableEls[0];
 
 	//First body row - drag button
-	if (currentIndex === 2 + numColumns + 2) {
-		// console.log("First body row - drag button");
-		return focusedEls[currentIndex - 1 - numColumns];
-	}
+	if (index === optionBarIndexEnd + numColumns + 2)
+		return focusableEls[index - 1 - numColumns];
 
 	//First body row - columns
 	if (
-		currentIndex > 2 + numColumns + 2 &&
-		currentIndex <= 2 + numColumns + 2 + numColumns
-	) {
-		// console.log("First body row - columns");
-		return focusedEls[currentIndex - 2 - numColumns];
-	}
+		index > optionBarIndexEnd + numColumns + 2 &&
+		index <= optionBarIndexEnd + numColumns + 2 + numColumns
+	)
+		return focusableEls[index - 2 - numColumns];
 
-	//Regular body row
-	const index = currentIndex - 1 - numColumns;
-	// console.log("Regular row");
-	if (index < 0) return focusedEls[currentIndex];
-	return focusedEls[index];
+	//Body row
+	return focusableEls[index - 1 - numColumns];
 };
 
 export const moveFocusDown = (
-	focusedEls: NodeListOf<Element>,
+	focusableEls: NodeListOf<Element>,
 	numColumns: number,
 	numBodyRows: number,
-	currentIndex: number
+	numSortedColumns: number,
+	index: number
 ) => {
-	//Option bar
-	if (currentIndex <= 2) {
-		// console.log("Option bar");
-		return focusedEls[3];
-	}
+	const noFocusIndex = -1;
+	const firstColumnIndex = numSortedColumns + 3;
+	const optionBarIndexEnd = numSortedColumns + 2;
+	const newRowButtonIndex = focusableEls.length - 1;
+
+	//No focus
+	if (index === noFocusIndex) return focusableEls[firstColumnIndex];
+
+	//At the row button
+	//Don't do anything
+	if (index === newRowButtonIndex) return focusableEls[index];
+
+	//Option bar row
+	if (index >= 0 && index <= optionBarIndexEnd)
+		return focusableEls[firstColumnIndex];
 
 	//Function cell
-	if (
-		currentIndex >= focusedEls.length - 1 - numColumns &&
-		currentIndex < focusedEls.length - 1
-	) {
-		// console.log("Function cell");
-		return focusedEls[focusedEls.length - 1];
-	}
+	if (index >= newRowButtonIndex - numColumns && index < newRowButtonIndex)
+		return focusableEls[newRowButtonIndex];
 
 	//Header row - columns
-	if (currentIndex > 2 && currentIndex <= 2 + numColumns) {
-		// console.log("Header row - columns");
-		if (numBodyRows === 0) return focusedEls[currentIndex + numColumns + 1];
-		return focusedEls[currentIndex + numColumns + 2];
+	if (index > optionBarIndexEnd && index <= optionBarIndexEnd + numColumns) {
+		if (numBodyRows === 0) return focusableEls[index + numColumns + 1];
+		return focusableEls[index + numColumns + 2];
 	}
 
 	//Last body row
 	if (
-		currentIndex >= focusedEls.length - 1 - numColumns - numColumns &&
-		currentIndex < focusedEls.length - 1 - numColumns
-	) {
-		// console.log("Last body row");
-		return focusedEls[currentIndex + numColumns];
-	}
+		index >= newRowButtonIndex - numColumns - numColumns &&
+		index < newRowButtonIndex - numColumns
+	)
+		return focusableEls[index + numColumns];
 
 	//Header row - add column button
-	if (currentIndex === 2 + numColumns + 1) {
-		// console.log("Header rows - button");
-		return focusedEls[currentIndex + numColumns + 1];
-	}
+	if (index === optionBarIndexEnd + numColumns + 1)
+		return focusableEls[index + numColumns + 1];
 
-	//Regular row
-	const index = currentIndex + numColumns + 1;
-	// console.log("Regular row");
-	if (index >= focusedEls.length) return focusedEls[currentIndex];
-	return focusedEls[index];
+	//Body row
+	return focusableEls[index + numColumns + 1];
 };

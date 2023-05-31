@@ -14,7 +14,13 @@ import {
 	isWindowsUndoDown,
 } from "../keyboard-event";
 import { eventSystem } from "../event-system/event-system";
-import { moveFocusDown, moveFocusUp } from "./arrow-move-focus";
+import {
+	moveFocusDown,
+	moveFocusLeft,
+	moveFocusRight,
+	moveFocusUp,
+} from "./arrow-move-focus";
+import { SortDir } from "../types/types";
 
 interface ContextProps {
 	openMenus: Menu[];
@@ -224,7 +230,7 @@ export default function MenuProvider({ children }: Props) {
 				e.preventDefault();
 
 				//Only handle keys when the currentMenu isn't open
-				let focusedEl = document.activeElement;
+				const focusedEl = document.activeElement;
 				if (focusedEl) {
 					removeFocusVisibleClass();
 
@@ -238,34 +244,42 @@ export default function MenuProvider({ children }: Props) {
 
 					const numColumns = tableState.model.columns.length;
 					const numBodyRows = tableState.model.bodyRows.length;
+					const numSortedColumns = tableState.model.columns.filter(
+						(column) => column.sortDir !== SortDir.NONE
+					).length;
 
+					let elementToFocus: Element | null = null;
 					switch (e.key) {
 						case "ArrowUp":
-							focusedEl = moveFocusUp(
+							elementToFocus = moveFocusUp(
 								focusableEls,
 								numColumns,
 								numBodyRows,
+								numSortedColumns,
 								index
 							);
 							break;
 						case "ArrowLeft":
-							if (index - 1 >= 0)
-								focusedEl = focusableEls[index - 1];
+							elementToFocus = moveFocusLeft(focusableEls, index);
 							break;
 						case "ArrowRight":
-							if (index + 1 < focusableEls.length)
-								focusedEl = focusableEls[index + 1];
+							elementToFocus = moveFocusRight(
+								focusableEls,
+								index
+							);
 							break;
 						case "ArrowDown":
-							focusedEl = moveFocusDown(
+							elementToFocus = moveFocusDown(
 								focusableEls,
 								numColumns,
 								numBodyRows,
+								numSortedColumns,
 								index
 							);
 							break;
 					}
-					(focusedEl as HTMLElement).focus();
+					if (elementToFocus !== null)
+						(elementToFocus as HTMLElement).focus();
 				}
 			}
 		}
