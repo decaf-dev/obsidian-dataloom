@@ -1,3 +1,4 @@
+import { css } from "@emotion/react";
 import { useRenderMarkdown } from "src/shared/markdown/hooks";
 import { useOverflow } from "src/shared/spacing/hooks";
 
@@ -15,6 +16,11 @@ export default function FileCell({ markdown, shouldWrapOverflow }: Props) {
 	return (
 		<div className="NLT__file-cell" css={overflowStyle}>
 			<div
+				css={css`
+					p {
+						margin: 0;
+					}
+				`}
 				ref={(node) => {
 					containerRef.current = node;
 					appendOrReplaceFirstChild(node, markdownRef.current);
