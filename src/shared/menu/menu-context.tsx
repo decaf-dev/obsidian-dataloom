@@ -278,7 +278,6 @@ export default function MenuProvider({ children }: Props) {
 		}
 
 		function handleKeyDown(e: KeyboardEvent) {
-			console.log("HANDLE KEY DOWN");
 			switch (e.code) {
 				case "Enter":
 					handleEnterDown(e);
