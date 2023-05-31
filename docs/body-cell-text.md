@@ -2,13 +2,15 @@
 
 ## Description
 
-Renders markdown.
+This cell renders a text value.
+
+A text value may include any Obsidian markdown.
 
 ## Usage
 
-Input any text and close the menu to have it render the markdown to HTML.
+Select a text cell to open the text cell edit menu. Type any value. Click outside the menu or press `Enter` or `Return` for the value to be saved.
 
-All Obsidian markdown is supported.
+Examples of Obsidian markdown include:
 
 ```markdown
 **Bold**
@@ -24,18 +26,10 @@ _Italics_
 
 ### Links to Notes
 
-To create a link to a note start by typing two front brackets `[[`. A file suggestion menu will popup by which you can choose a file name.
+Create a link to a note by typing two front brackets `[[`. A file suggestion menu will then appear. Type any value to filter the list of notes. You may also use the `up` and `down` arrow keys to navigate. Click an item or press `Enter` or `Return` to select the highlighted item. The value you choose will be saved.
 
-Links follow the exact syntax as [Obsidian wiki links](https://help.obsidian.md/Linking+notes+and+files/Internal+links).
+Links follow the same syntax as [Obsidian wiki links](https://help.obsidian.md/Linking+notes+and+files/Internal+links).
 
 ### Insert a new line
 
-By default, pressing enter will close the text cell edit menu. To insert a line, you need to hold down a shift key while pressing enter.
-
-**Windows**
-
--   Hold `shift` and press `enter`
-
-**Mac**
-
--   Hold `shift` and press `return`
+By default, pressing `Enter` or `Return` will close the edit menu. To insert a line, hold down the `shift` key while pressing `Enter` or `Return`.

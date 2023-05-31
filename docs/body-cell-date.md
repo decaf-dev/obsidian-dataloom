@@ -4,6 +4,23 @@
 
 This cell renders a date.
 
+A date must match the selected date format.
+
+## Usage
+
+Select a date cell to open the date cell edit menu. Type a date value. Rress `Enter` or `Return` for it to be saved. If the value is invalid, a red outline will appear around the input. Fix the value and press `Enter` or `Return` for it to be saved.
+
+To close the menu without saving, click outside of the menu or press `esc`.
+
+The date format is how the date will be displayed. Changing the date format from the cell will change the date format for all cells in the column.
+
+You may clear the date by pressing the `clear` button.
+
 ## Settings
 
-Change the date format in the header options menu.
+Date format
+
+1. Open the column header cell menu
+2. Select `Options`
+3. Select `Date format`
+4. Select a format
