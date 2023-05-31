@@ -211,7 +211,7 @@ export default function MenuProvider({ children }: Props) {
 			}
 		}
 
-		function handleEscapeDown(e: KeyboardEvent) {
+		function handleEscapeDown() {
 			if (isMenuOpen()) closeTopMenu();
 		}
 
@@ -225,63 +225,56 @@ export default function MenuProvider({ children }: Props) {
 		}
 
 		function handleArrowDown(e: KeyboardEvent) {
-			if (!isMenuOpen()) {
-				//Prevent scrolling the pane with the arrow keys
-				e.preventDefault();
+			if (isMenuOpen()) return;
 
-				//Only handle keys when the currentMenu isn't open
-				const focusedEl = document.activeElement;
-				if (focusedEl) {
-					removeFocusVisibleClass();
+			//Only handle keys when the currentMenu isn't open
+			const focusedEl = document.activeElement;
+			if (!focusedEl) return;
 
-					const tableEl = document.getElementById(tableId);
-					if (!tableEl) throw new Error("Table element not found");
+			const tableEl = document.getElementById(tableId);
+			if (!tableEl) throw new Error("Table element not found");
 
-					const focusableEls =
-						tableEl.querySelectorAll(".NLT__focusable");
+			const focusableEls = tableEl.querySelectorAll(".NLT__focusable");
+			const index = Array.from(focusableEls).indexOf(focusedEl);
+			if (index === -1) return;
 
-					const index = Array.from(focusableEls).indexOf(focusedEl);
+			removeFocusVisibleClass();
 
-					const numColumns = tableState.model.columns.length;
-					const numBodyRows = tableState.model.bodyRows.length;
-					const numSortedColumns = tableState.model.columns.filter(
-						(column) => column.sortDir !== SortDir.NONE
-					).length;
+			const numColumns = tableState.model.columns.length;
+			const numBodyRows = tableState.model.bodyRows.length;
+			const numSortedColumns = tableState.model.columns.filter(
+				(column) => column.sortDir !== SortDir.NONE
+			).length;
 
-					let elementToFocus: Element | null = null;
-					switch (e.key) {
-						case "ArrowUp":
-							elementToFocus = moveFocusUp(
-								focusableEls,
-								numColumns,
-								numBodyRows,
-								numSortedColumns,
-								index
-							);
-							break;
-						case "ArrowLeft":
-							elementToFocus = moveFocusLeft(focusableEls, index);
-							break;
-						case "ArrowRight":
-							elementToFocus = moveFocusRight(
-								focusableEls,
-								index
-							);
-							break;
-						case "ArrowDown":
-							elementToFocus = moveFocusDown(
-								focusableEls,
-								numColumns,
-								numBodyRows,
-								numSortedColumns,
-								index
-							);
-							break;
-					}
-					if (elementToFocus !== null)
-						(elementToFocus as HTMLElement).focus();
-				}
+			let elementToFocus: Element | null = null;
+			switch (e.key) {
+				case "ArrowUp":
+					elementToFocus = moveFocusUp(
+						focusableEls,
+						numColumns,
+						numBodyRows,
+						numSortedColumns,
+						index
+					);
+					break;
+				case "ArrowLeft":
+					elementToFocus = moveFocusLeft(focusableEls, index);
+					break;
+				case "ArrowRight":
+					elementToFocus = moveFocusRight(focusableEls, index);
+					break;
+				case "ArrowDown":
+					elementToFocus = moveFocusDown(
+						focusableEls,
+						numColumns,
+						numBodyRows,
+						numSortedColumns,
+						index
+					);
+					break;
 			}
+			if (elementToFocus !== null)
+				(elementToFocus as HTMLElement).focus();
 		}
 
 		function handleKeyDown(e: KeyboardEvent) {
@@ -290,7 +283,7 @@ export default function MenuProvider({ children }: Props) {
 					handleEnterDown(e);
 					break;
 				case "Escape":
-					handleEscapeDown(e);
+					handleEscapeDown();
 					break;
 				case "Tab":
 					handleTabDown(e);
