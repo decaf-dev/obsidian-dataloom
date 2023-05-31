@@ -74,6 +74,7 @@ const doesCellMatch = (
 
 	switch (type) {
 		case CellType.TEXT:
+		case CellType.FILE:
 		case CellType.NUMBER:
 		case CellType.CHECKBOX:
 			return matchCell(markdown, searchText);

@@ -1,5 +1,5 @@
 import { Color } from "src/shared/types/types";
-import { useOverflowClassName } from "src/shared/spacing/hooks";
+import { useOverflow } from "src/shared/spacing/hooks";
 import Tag from "../../shared/tag";
 
 import "./styles.css";
@@ -14,10 +14,9 @@ export default function TagCell({
 	color,
 	shouldWrapOverflow,
 }: Props) {
-	const overflowClassName = useOverflowClassName(shouldWrapOverflow);
-	const className = "NLT__tag-cell" + " " + overflowClassName;
+	const overflowStyle = useOverflow(shouldWrapOverflow);
 	return (
-		<div className={className}>
+		<div className="NLT__tag-cell" css={overflowStyle}>
 			<Tag markdown={markdown} color={color} />
 		</div>
 	);

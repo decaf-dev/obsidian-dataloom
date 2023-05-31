@@ -4,6 +4,8 @@ export const getIconIdForCellType = (type: CellType) => {
 	switch (type) {
 		case CellType.TEXT:
 			return "text";
+		case CellType.FILE:
+			return "file";
 		case CellType.NUMBER:
 			return "hash";
 		case CellType.CHECKBOX:

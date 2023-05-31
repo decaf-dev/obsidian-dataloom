@@ -33,6 +33,7 @@ export default function OptionSubmenu({
 			<Padding pt="sm" pb="lg">
 				<Stack spacing="lg" isVertical>
 					{(type === CellType.TEXT ||
+						type === CellType.FILE ||
 						type === CellType.NUMBER ||
 						type === CellType.CHECKBOX ||
 						type === CellType.TAG ||

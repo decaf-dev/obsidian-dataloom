@@ -183,6 +183,8 @@ export const getDisplayNameForCellType = (type: CellType): string => {
 	switch (type) {
 		case CellType.TEXT:
 			return "Text";
+		case CellType.FILE:
+			return "File";
 		case CellType.NUMBER:
 			return "Number";
 		case CellType.CHECKBOX:
