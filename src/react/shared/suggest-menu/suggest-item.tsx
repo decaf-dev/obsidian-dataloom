@@ -58,15 +58,15 @@ export default function SuggestItem({
 				margin: 2px 0;
 				background-color: ${isHighlighted
 					? "var(--background-modifier-hover)"
-					: "transparent"};
+					: "var(--background-primary)"};
 				&:hover {
 					background-color: var(--background-modifier-hover);
 				}
 			`}
 			onClick={handleClick}
 		>
-			<Text variant="semibold" value={name} />
-			{path && <Text value={path} />}
+			<Text variant="semibold" size="xs" value={name} />
+			{path && <Text value={path} size="xs" />}
 		</div>
 	);
 }

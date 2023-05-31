@@ -8,14 +8,14 @@ import { useOverflow } from "src/shared/spacing/hooks";
 import { useMenu } from "src/shared/menu/hooks";
 import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 import { MenuLevel } from "src/shared/menu/types";
-import SuggestMenu from "./suggest-menu";
+import SuggestMenu from "../../shared/suggest-menu/suggest-menu";
 import {
 	addClosingBracket,
 	doubleBracketsInnerReplace,
 	getFilterValue,
 	isSurroundedByDoubleBrackets,
 	removeClosingBracket,
-} from "./utils";
+} from "../../shared/suggest-menu/utils";
 import { isSpecialActionDown } from "src/shared/keyboard-event";
 
 import "./styles.css";
@@ -102,16 +102,16 @@ export default function TextCellEdit({
 	) {
 		if (file) {
 			//The basename does not include an extension
-			let markdown = file.basename;
+			let fileName = file.basename;
 			//The name includes an extension
-			if (file.extension !== "md") markdown = file.name;
+			if (file.extension !== "md") fileName = file.name;
 			//If the file name is not unique, add the path so that the system can find it
-			if (!isFileNameUnique) markdown = `${file.path}|${markdown}`;
+			if (!isFileNameUnique) fileName = `${file.path}|${fileName}`;
 
 			const newValue = doubleBracketsInnerReplace(
 				value,
 				previousSelectionStart,
-				markdown
+				fileName
 			);
 
 			onChange(newValue);

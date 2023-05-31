@@ -14,6 +14,7 @@ import { ColumNotFoundError } from "./table-error";
 export const isCellTypeFilterable = (cellType: CellType): boolean => {
 	switch (cellType) {
 		case CellType.TEXT:
+		case CellType.FILE:
 		case CellType.TAG:
 		case CellType.MULTI_TAG:
 		case CellType.CHECKBOX:

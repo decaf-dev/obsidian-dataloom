@@ -4,26 +4,34 @@ import { TFile } from "obsidian";
 import { Virtuoso, VirtuosoHandle } from "react-virtuoso";
 import fuzzysort from "fuzzysort";
 
-import Menu from "src/react/shared/menu";
 import SuggestItem from "./suggest-item";
 import { findUniqueStrings } from "./utils";
 import { css } from "@emotion/react";
 import { eventSystem } from "src/shared/event-system/event-system";
+import { getTableBackgroundColor, getTableBorderColor } from "src/shared/color";
 
 interface ContentProps {
-	filterValue: string;
+	showInput?: boolean;
+	filterValue?: string;
 	onItemClick: (item: TFile | null, isFileNameUnique: boolean) => void;
 }
 
-const SuggestMenuContent = ({ filterValue, onItemClick }: ContentProps) => {
+export default function SuggestMenuContent({
+	showInput,
+	filterValue,
+	onItemClick,
+}: ContentProps) {
+	const [localFilterValue, setLocalFilterValue] = React.useState(
+		filterValue ?? ""
+	);
 	const [highlightedIndex, setHighlightedIndex] = React.useState(0);
 	const virtuosoRef = React.useRef<VirtuosoHandle>(null);
 
 	const files = app.vault.getFiles();
 	let filteredFiles: TFile[] = [];
-	if (filterValue !== "") {
+	if (localFilterValue !== "") {
 		//Do a fuzzy sort on the filtered items
-		const results = fuzzysort.go(filterValue, files, {
+		const results = fuzzysort.go(localFilterValue, files, {
 			key: "path",
 			limit: 20,
 		});
@@ -37,7 +45,7 @@ const SuggestMenuContent = ({ filterValue, onItemClick }: ContentProps) => {
 
 	React.useEffect(() => {
 		setHighlightedIndex(0);
-	}, [filterValue]);
+	}, [localFilterValue]);
 
 	React.useEffect(() => {
 		function handleKeyDown(e: KeyboardEvent) {
@@ -74,12 +82,38 @@ const SuggestMenuContent = ({ filterValue, onItemClick }: ContentProps) => {
 	const fileNames = filteredFiles.map((file) => file.name);
 	const uniqueFileNames = findUniqueStrings(fileNames);
 
+	const tableBackgroundColor = getTableBackgroundColor();
+	const tableBorderColor = getTableBorderColor();
+
 	return (
 		<div className="NLT__suggest-menu">
+			{showInput && (
+				<div
+					css={css`
+						background-color: ${tableBackgroundColor};
+						border-bottom: 1px solid ${tableBorderColor};
+						padding: 4px 10px;
+					`}
+				>
+					<input
+						css={css`
+							background-color: transparent !important;
+							border: 0 !important;
+							box-shadow: none !important;
+							width: 100%;
+							padding-left: 5px !important;
+							padding-right: 5px !important;
+						`}
+						autoFocus
+						value={localFilterValue}
+						onChange={(e) => setLocalFilterValue(e.target.value)}
+					/>
+				</div>
+			)}
 			{filteredFiles.length === 0 && (
 				<div
 					css={css`
-						width: 375px;
+						width: 325px;
 						height: 50px;
 					`}
 				>
@@ -91,10 +125,11 @@ const SuggestMenuContent = ({ filterValue, onItemClick }: ContentProps) => {
 					/>
 				</div>
 			)}
+
 			{filteredFiles.length !== 0 && (
 				<Virtuoso
 					ref={virtuosoRef}
-					style={{ height: "300px", width: "375px" }}
+					style={{ width: "325px", height: "300px" }}
 					totalCount={filteredFiles.length}
 					itemContent={(index) => {
 						const file = filteredFiles[index];
@@ -113,31 +148,4 @@ const SuggestMenuContent = ({ filterValue, onItemClick }: ContentProps) => {
 			)}
 		</div>
 	);
-};
-
-interface Props {
-	id: string;
-	isOpen: boolean;
-	top: number;
-	left: number;
-	filterValue: string;
-	onItemClick: (item: TFile | null, isFileNameUnique: boolean) => void;
 }
-
-const SuggestMenu = React.forwardRef<HTMLDivElement, Props>(
-	function SuggestMenu(
-		{ id, isOpen, top, left, filterValue, onItemClick }: Props,
-		ref
-	) {
-		return (
-			<Menu id={id} isOpen={isOpen} top={top} left={left} ref={ref}>
-				<SuggestMenuContent
-					filterValue={filterValue}
-					onItemClick={onItemClick}
-				/>
-			</Menu>
-		);
-	}
-);
-
-export default SuggestMenu;
