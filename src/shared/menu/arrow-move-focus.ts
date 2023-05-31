@@ -27,14 +27,9 @@ export const moveFocusUp = (
 	numSortedColumns: number,
 	index: number
 ) => {
-	const noFocusIndex = -1;
 	const searchInputIndex = numSortedColumns;
 	const optionBarIndexEnd = numSortedColumns + 2;
 	const newRowButtonIndex = focusableEls.length - 1;
-
-	//No focus
-	//Set focus on the row button
-	if (index === noFocusIndex) return focusableEls[newRowButtonIndex];
 
 	//Already in the option bar
 	//Don't do anything
@@ -82,13 +77,9 @@ export const moveFocusDown = (
 	numSortedColumns: number,
 	index: number
 ) => {
-	const noFocusIndex = -1;
 	const firstColumnIndex = numSortedColumns + 3;
 	const optionBarIndexEnd = numSortedColumns + 2;
 	const newRowButtonIndex = focusableEls.length - 1;
-
-	//No focus
-	if (index === noFocusIndex) return focusableEls[firstColumnIndex];
 
 	//At the row button
 	//Don't do anything
