@@ -394,7 +394,10 @@ export default function BodyCell({
 					/>
 				)}
 				{columnType === CellType.FILE && (
-					<FileCellEdit onChange={handleFileInputChange} />
+					<FileCellEdit
+						onChange={handleFileInputChange}
+						onMenuClose={handleMenuClose}
+					/>
 				)}
 				{columnType === CellType.NUMBER && (
 					<NumberCellEdit
