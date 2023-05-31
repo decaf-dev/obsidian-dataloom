@@ -123,27 +123,6 @@
 }
 
 /**
- * Overflow
- */
-.NLT__wrap-overflow {
-	overflow-wrap: break-word;
-	overflow: hidden;
-}
-
-.NLT__hide-overflow {
-	overflow: hidden;
-	overflow-wrap: normal;
-	white-space: nowrap;
-}
-
-.NLT__hide-overflow-ellipsis {
-	overflow: hidden;
-	overflow-wrap: normal;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-}
-
-/**
  * Components
  */
 .workspace-leaf-content[data-type="notion-like-tables"] .view-content {

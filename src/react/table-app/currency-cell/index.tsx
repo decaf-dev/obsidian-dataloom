@@ -1,9 +1,10 @@
-import { useOverflowClassName } from "src/shared/spacing/hooks";
+import { useOverflow } from "src/shared/spacing/hooks";
 
-import "./styles.css";
 import { CurrencyType } from "src/shared/types/types";
 import { stringToCurrencyString } from "src/shared/conversion";
 import { isNumber } from "src/shared/validators";
+
+import "./styles.css";
 
 interface Props {
 	value: string;
@@ -16,13 +17,15 @@ export default function CurrencyCell({
 	currencyType,
 	shouldWrapOverflow,
 }: Props) {
-	const overflowClassName = useOverflowClassName(shouldWrapOverflow);
-
 	let valueString = "";
 	if (isNumber(value))
 		valueString = stringToCurrencyString(value, currencyType);
 
-	const className = "NLT__currency-cell" + " " + overflowClassName;
+	const overflowStyle = useOverflow(shouldWrapOverflow);
 
-	return <div className={className}>{valueString}</div>;
+	return (
+		<div className="NLT__currency-cell" css={overflowStyle}>
+			{valueString}
+		</div>
+	);
 }

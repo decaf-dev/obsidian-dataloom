@@ -19,6 +19,7 @@ export enum SortDir {
 
 export enum CellType {
 	TEXT = "text",
+	FILE = "file",
 	NUMBER = "number",
 	CURRENCY = "currency",
 	TAG = "tag",

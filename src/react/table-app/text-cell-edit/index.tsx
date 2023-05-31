@@ -1,14 +1,14 @@
-import React, { useRef } from "react";
+import React from "react";
+
+import { TFile } from "obsidian";
 
 import { useInputSelection } from "src/shared/hooks";
-import { useOverflowClassName } from "src/shared/spacing/hooks";
+import { useOverflow } from "src/shared/spacing/hooks";
 
-import "./styles.css";
 import { useMenu } from "src/shared/menu/hooks";
 import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 import { MenuLevel } from "src/shared/menu/types";
 import SuggestMenu from "./suggest-menu";
-import { TFile } from "obsidian";
 import {
 	addClosingBracket,
 	doubleBracketsInnerReplace,
@@ -17,6 +17,8 @@ import {
 	removeClosingBracket,
 } from "./utils";
 import { isSpecialActionDown } from "src/shared/keyboard-event";
+
+import "./styles.css";
 
 interface Props {
 	value: string;
@@ -39,7 +41,7 @@ export default function TextCellEdit({
 	const inputRef = React.useRef<HTMLTextAreaElement | null>(null);
 	const { setPreviousSelectionStart, previousSelectionStart } =
 		useInputSelection(inputRef, value);
-	const previousValue = useRef("");
+	const previousValue = React.useRef("");
 
 	function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
 		const el = e.target as HTMLTextAreaElement;
@@ -117,7 +119,7 @@ export default function TextCellEdit({
 		closeAllMenus();
 	}
 
-	const className = useOverflowClassName(shouldWrapOverflow);
+	const overflowStyle = useOverflow(shouldWrapOverflow);
 	const filterValue = getFilterValue(value, previousSelectionStart) ?? "";
 
 	return (
@@ -125,7 +127,7 @@ export default function TextCellEdit({
 			<div className="NLT__text-cell-edit" ref={triggerRef}>
 				<textarea
 					autoFocus
-					className={className}
+					css={overflowStyle}
 					ref={inputRef}
 					value={value}
 					onKeyDown={handleKeyDown}
