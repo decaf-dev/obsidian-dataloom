@@ -44,6 +44,10 @@ export default function SuggestMenuContent({
 	}
 
 	React.useEffect(() => {
+		setLocalFilterValue(filterValue ?? "");
+	}, [filterValue]);
+
+	React.useEffect(() => {
 		setHighlightIndex(0);
 	}, [localFilterValue]);
 
@@ -137,6 +141,7 @@ export default function SuggestMenuContent({
 				>
 					{filteredFiles.map((file, index) => (
 						<SuggestItem
+							key={file.path}
 							ref={
 								highlightIndex === index
 									? highlightItemRef
