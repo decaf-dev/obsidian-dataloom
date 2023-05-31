@@ -14,7 +14,7 @@ Support developent of the plugin on [buymeacoffee.com](https://www.buymeacoffee.
 <a href="https://github.com/trey-wallis/obsidian-notion-like-tables" target="_blank" rel="noopener">
 <img width="125" style="padding:7px 7px 5px" src="https://img.shields.io/github/stars/trey-wallis/obsidian-notion-like-tables?style=social" referrerpolicy="no-referrer" alt="obsidian-notion-like-tables?style=social"></a>
 
-[Lastest release notes](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/6.11.0)
+[Lastest release notes](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/6.12.0)
 
 ## Feature Requests
 

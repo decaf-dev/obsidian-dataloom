@@ -14,6 +14,7 @@ import { ColumNotFoundError } from "./table-error";
 export const isCellTypeFilterable = (cellType: CellType): boolean => {
 	switch (cellType) {
 		case CellType.TEXT:
+		case CellType.FILE:
 		case CellType.TAG:
 		case CellType.MULTI_TAG:
 		case CellType.CHECKBOX:
@@ -73,7 +74,7 @@ const doesCellMatchRule = (
 	if (rule.columnId !== cell.columnId) return true;
 	if (!isCellTypeFilterable(cellType)) return true;
 	if (rule.isEnabled) {
-		if (cellType === CellType.TEXT) {
+		if (cellType === CellType.TEXT || cellType === CellType.FILE) {
 			return doesTextMatch(cell.markdown, rule.text, rule.type);
 		} else if (
 			cellType === CellType.TAG ||

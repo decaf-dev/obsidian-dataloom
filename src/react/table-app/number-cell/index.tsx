@@ -1,4 +1,4 @@
-import { useOverflowClassName } from "src/shared/spacing/hooks";
+import { useOverflow } from "src/shared/spacing/hooks";
 
 import "./styles.css";
 import { isNumber } from "src/shared/validators";
@@ -9,11 +9,14 @@ interface Props {
 }
 
 export default function NumberCell({ value, shouldWrapOverflow }: Props) {
-	const overflowClassName = useOverflowClassName(shouldWrapOverflow);
-	const className = "NLT__number-cell" + " " + overflowClassName;
+	const overflowStyle = useOverflow(shouldWrapOverflow);
 
 	let valueString = "";
 	if (isNumber(value)) valueString = value;
 
-	return <div className={className}>{valueString}</div>;
+	return (
+		<div className="NLT__number-cell" css={overflowStyle}>
+			{valueString}
+		</div>
+	);
 }
