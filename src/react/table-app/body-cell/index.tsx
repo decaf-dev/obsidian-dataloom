@@ -40,6 +40,8 @@ import "./styles.css";
 import { useTableState } from "src/shared/table-state/table-state-context";
 import RowSortCommand from "src/shared/commands/row-sort-command";
 import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
+import FileCell from "../file-cell";
+import FileCellEdit from "../file-cell-edit";
 
 interface Props {
 	columnType: string;
@@ -228,6 +230,10 @@ export default function BodyCell({
 		onContentChange(cellId, rowId, value);
 	}
 
+	function handleFileInputChange(value: string) {
+		onContentChange(cellId, rowId, value);
+	}
+
 	function handleNumberInputChange(value: string) {
 		onContentChange(cellId, rowId, value);
 	}
@@ -260,7 +266,8 @@ export default function BodyCell({
 		columnType === CellType.MULTI_TAG ||
 		columnType === CellType.DATE ||
 		columnType === CellType.NUMBER ||
-		columnType === CellType.CURRENCY
+		columnType === CellType.CURRENCY ||
+		columnType === CellType.FILE
 	) {
 		menuHeight = 0;
 	}
@@ -268,6 +275,8 @@ export default function BodyCell({
 	let menuWidth = measuredWidth;
 	if (columnType === CellType.TAG || columnType === CellType.MULTI_TAG) {
 		menuWidth = 250;
+	} else if (columnType === CellType.FILE) {
+		menuWidth = 325;
 	} else if (columnType === CellType.DATE) {
 		menuWidth = 175;
 	}
@@ -306,6 +315,12 @@ export default function BodyCell({
 				>
 					{columnType === CellType.TEXT && (
 						<TextCell
+							markdown={markdown}
+							shouldWrapOverflow={shouldWrapOverflow}
+						/>
+					)}
+					{columnType === CellType.FILE && (
+						<FileCell
 							markdown={markdown}
 							shouldWrapOverflow={shouldWrapOverflow}
 						/>
@@ -377,6 +392,9 @@ export default function BodyCell({
 						value={markdown}
 						onChange={handleTextInputChange}
 					/>
+				)}
+				{columnType === CellType.FILE && (
+					<FileCellEdit onChange={handleFileInputChange} />
 				)}
 				{columnType === CellType.NUMBER && (
 					<NumberCellEdit

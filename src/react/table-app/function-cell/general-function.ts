@@ -43,9 +43,9 @@ const getGeneralFunctionValue = (
 	if (functionType === GeneralFunction.COUNT_ALL) {
 		return countAll(bodyRows);
 	} else if (functionType === GeneralFunction.COUNT_EMPTY) {
-		return countEmpty(columnCells, columnTags, cellType);
+		return countEmpty(columnCells, cellType);
 	} else if (functionType === GeneralFunction.COUNT_NOT_EMPTY) {
-		return countNotEmpty(columnCells, columnTags, cellType);
+		return countNotEmpty(columnCells, cellType);
 	} else if (functionType === GeneralFunction.COUNT_UNIQUE) {
 		return countUnique(
 			bodyRows,
@@ -55,11 +55,11 @@ const getGeneralFunctionValue = (
 			dateFormat
 		);
 	} else if (functionType === GeneralFunction.COUNT_VALUES) {
-		return countValues(columnCells, columnTags, cellType);
+		return countValues(columnCells, cellType);
 	} else if (functionType === GeneralFunction.PERCENT_EMPTY) {
-		return percentEmpty(columnCells, columnTags, cellType);
+		return percentEmpty(columnCells, cellType);
 	} else if (functionType === GeneralFunction.PERCENT_NOT_EMPTY) {
-		return percentNotEmpty(columnCells, columnTags, cellType);
+		return percentNotEmpty(columnCells, cellType);
 	} else if (functionType === GeneralFunction.NONE) {
 		return "";
 	} else {
@@ -71,26 +71,18 @@ const countAll = (bodyRows: BodyRow[]) => {
 	return bodyRows.length;
 };
 
-const countEmpty = (
-	columnCells: BodyCell[],
-	columnTags: Tag[],
-	cellType: CellType
-) => {
+const countEmpty = (columnCells: BodyCell[], cellType: CellType) => {
 	return columnCells
-		.map((cell) => isCellContentEmpty(cell, columnTags, cellType))
+		.map((cell) => isCellContentEmpty(cell, cellType))
 		.reduce((accum, value) => {
 			if (value === true) return accum + 1;
 			return accum;
 		}, 0);
 };
 
-const countNotEmpty = (
-	columnCells: BodyCell[],
-	columnTags: Tag[],
-	cellType: CellType
-) => {
+const countNotEmpty = (columnCells: BodyCell[], cellType: CellType) => {
 	return columnCells
-		.map((cell) => isCellContentEmpty(cell, columnTags, cellType))
+		.map((cell) => isCellContentEmpty(cell, cellType))
 		.reduce((accum, value) => {
 			if (value === false) return accum + 1;
 			return accum;
@@ -123,37 +115,22 @@ const countUnique = (
 	return uniqueHashes.size;
 };
 
-const countValues = (
-	columnCells: BodyCell[],
-	columnTags: Tag[],
-	cellType: CellType
-) => {
+const countValues = (columnCells: BodyCell[], cellType: CellType) => {
 	return columnCells
-		.map((cell) => countCellValues(cell, columnTags, cellType))
+		.map((cell) => countCellValues(cell, cellType))
 		.reduce((accum, value) => accum + value, 0);
 };
 
-const percentEmpty = (
-	columnCells: BodyCell[],
-	columnTags: Tag[],
-	cellType: CellType
-) => {
+const percentEmpty = (columnCells: BodyCell[], cellType: CellType) => {
 	const percent =
-		(countEmpty(columnCells, columnTags, cellType) / columnCells.length) *
-		100;
+		(countEmpty(columnCells, cellType) / columnCells.length) * 100;
 	const normalized = round2Digits(percent);
 	return normalized + "%";
 };
 
-const percentNotEmpty = (
-	columnCells: BodyCell[],
-	columnTags: Tag[],
-	cellType: CellType
-) => {
+const percentNotEmpty = (columnCells: BodyCell[], cellType: CellType) => {
 	const percent =
-		(countNotEmpty(columnCells, columnTags, cellType) /
-			columnCells.length) *
-		100;
+		(countNotEmpty(columnCells, cellType) / columnCells.length) * 100;
 	const normalized = round2Digits(percent);
 	return normalized + "%";
 };
@@ -190,11 +167,7 @@ const getCellValues = (
 	}
 };
 
-const countCellValues = (
-	cell: BodyCell,
-	columnTags: Tag[],
-	cellType: CellType
-): number => {
+const countCellValues = (cell: BodyCell, cellType: CellType): number => {
 	if (
 		cellType === CellType.TEXT ||
 		cellType === CellType.NUMBER ||
@@ -217,11 +190,7 @@ const countCellValues = (
 	}
 };
 
-const isCellContentEmpty = (
-	cell: BodyCell,
-	columnTags: Tag[],
-	cellType: CellType
-): boolean => {
+const isCellContentEmpty = (cell: BodyCell, cellType: CellType): boolean => {
 	if (
 		cellType === CellType.TEXT ||
 		cellType === CellType.NUMBER ||

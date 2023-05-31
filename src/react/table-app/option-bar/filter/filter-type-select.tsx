@@ -13,14 +13,6 @@ export default function FilterRowDropdown({
 	value,
 	onChange,
 }: Props) {
-	if (
-		cellType !== CellType.CHECKBOX &&
-		cellType !== CellType.TAG &&
-		cellType !== CellType.MULTI_TAG &&
-		cellType !== CellType.TEXT
-	) {
-		throw new Error("Cell type not yet supported");
-	}
 	return (
 		<select
 			value={value}
@@ -54,7 +46,7 @@ export default function FilterRowDropdown({
 					</option>
 				</>
 			)}
-			{cellType === CellType.TEXT && (
+			{(cellType === CellType.TEXT || cellType === CellType.FILE) && (
 				<>
 					<option value={FilterType.IS}>Is</option>
 					<option value={FilterType.IS_NOT}>Is not</option>
