@@ -24,8 +24,8 @@ export default function SuggestMenuContent({
 	const [localFilterValue, setLocalFilterValue] = React.useState(
 		filterValue ?? ""
 	);
-	const [highlightedIndex, setHighlightedIndex] = React.useState(0);
-	const virtuosoRef = React.useRef<VirtuosoHandle>(null);
+	const highlightItemRef = React.useRef<HTMLDivElement | null>(null);
+	const [highlightIndex, setHighlightIndex] = React.useState(0);
 
 	const files = app.vault.getFiles();
 	let filteredFiles: TFile[] = [];
@@ -44,32 +44,33 @@ export default function SuggestMenuContent({
 	}
 
 	React.useEffect(() => {
-		setHighlightedIndex(0);
+		setHighlightIndex(0);
 	}, [localFilterValue]);
+
+	React.useEffect(() => {
+		if (highlightItemRef.current) {
+			highlightItemRef.current.scrollIntoView({
+				behavior: "auto",
+				block: "nearest",
+			});
+		}
+	}, [highlightIndex]);
 
 	React.useEffect(() => {
 		function handleKeyDown(e: KeyboardEvent) {
 			if (e.key === "ArrowUp") {
 				e.preventDefault();
-				setHighlightedIndex((prevIndex) => {
+				setHighlightIndex((prevIndex) => {
 					const newIndex = Math.max(prevIndex - 1, 0);
-					virtuosoRef.current?.scrollIntoView({
-						index: newIndex,
-						behavior: "auto",
-					});
 					return newIndex;
 				});
 			} else if (e.key === "ArrowDown") {
 				e.preventDefault();
-				setHighlightedIndex((prevIndex) => {
+				setHighlightIndex((prevIndex) => {
 					const newIndex = Math.min(
 						prevIndex + 1,
 						filteredFiles.length - 1
 					);
-					virtuosoRef.current?.scrollIntoView({
-						index: newIndex,
-						behavior: "auto",
-					});
 					return newIndex;
 				});
 			}
@@ -119,6 +120,7 @@ export default function SuggestMenuContent({
 				>
 					<SuggestItem
 						file={null}
+						ref={null}
 						isHighlighted
 						isFileNameUnique={false}
 						onItemClick={onItemClick}
@@ -127,24 +129,28 @@ export default function SuggestMenuContent({
 			)}
 
 			{filteredFiles.length !== 0 && (
-				<Virtuoso
-					ref={virtuosoRef}
-					style={{ width: "325px", height: "300px" }}
-					totalCount={filteredFiles.length}
-					itemContent={(index) => {
-						const file = filteredFiles[index];
-						return (
-							<SuggestItem
-								file={file}
-								isHighlighted={index === highlightedIndex}
-								isFileNameUnique={uniqueFileNames.includes(
-									file.name
-								)}
-								onItemClick={onItemClick}
-							/>
-						);
-					}}
-				/>
+				<div
+					css={css`
+						max-height: 275px;
+						overflow-y: auto;
+					`}
+				>
+					{filteredFiles.map((file, index) => (
+						<SuggestItem
+							ref={
+								highlightIndex === index
+									? highlightItemRef
+									: null
+							}
+							file={file}
+							isHighlighted={index === highlightIndex}
+							isFileNameUnique={uniqueFileNames.includes(
+								file.name
+							)}
+							onItemClick={onItemClick}
+						/>
+					))}
+				</div>
 			)}
 		</div>
 	);
