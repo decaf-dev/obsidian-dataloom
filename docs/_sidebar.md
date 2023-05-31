@@ -41,6 +41,8 @@
 
             -   [Text cell](body-cell-text.md)
 
+            -   [File cell](body-cell-file.md)
+
             -   [Number cell](body-cell-number.md)
 
             -   [Currency cell](body-cell-currency.md)
@@ -83,6 +85,6 @@
 
 -   Links
 
-    -   [Lastest release notes](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/6.11.0)
+    -   [Lastest release notes](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/6.12.0)
     -   [Roadmap](https://github.com/users/trey-wallis/projects/2)
     -   [Support the plugin](https://www.buymeacoffee.com/treywallis)
