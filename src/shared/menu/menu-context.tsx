@@ -240,7 +240,9 @@ export default function MenuProvider({ children }: Props) {
 
 			removeFocusVisibleClass();
 
-			const numColumns = tableState.model.columns.length;
+			const numVisibleColumns = tableState.model.columns.filter(
+				(column) => column.isVisible
+			).length;
 			const numBodyRows = tableState.model.bodyRows.length;
 			const numSortedColumns = tableState.model.columns.filter(
 				(column) => column.sortDir !== SortDir.NONE
@@ -251,7 +253,7 @@ export default function MenuProvider({ children }: Props) {
 				case "ArrowUp":
 					elementToFocus = moveFocusUp(
 						focusableEls,
-						numColumns,
+						numVisibleColumns,
 						numBodyRows,
 						numSortedColumns,
 						index
@@ -266,7 +268,7 @@ export default function MenuProvider({ children }: Props) {
 				case "ArrowDown":
 					elementToFocus = moveFocusDown(
 						focusableEls,
-						numColumns,
+						numVisibleColumns,
 						numBodyRows,
 						numSortedColumns,
 						index
