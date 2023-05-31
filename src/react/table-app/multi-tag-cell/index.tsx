@@ -4,17 +4,16 @@ import { Tag as TagType } from "../../../shared/types/types";
 import Wrap from "src/react/shared/wrap";
 
 import "./styles.css";
-import { useOverflowClassName } from "src/shared/spacing/hooks";
+import { useOverflow } from "src/shared/spacing/hooks";
 
 interface Props {
 	cellTags: TagType[];
 	shouldWrapOverflow: boolean;
 }
 export default function MultiTagCell({ cellTags, shouldWrapOverflow }: Props) {
-	const overflowClassName = useOverflowClassName(shouldWrapOverflow);
-	const className = `NLT__multi-tag-cell ${overflowClassName}`;
+	const overflowStyle = useOverflow(shouldWrapOverflow);
 	return (
-		<div className={className}>
+		<div className="NLT__multi-tag-cell" css={overflowStyle}>
 			<Wrap>
 				{cellTags.map((tag: TagType) => (
 					<Tag

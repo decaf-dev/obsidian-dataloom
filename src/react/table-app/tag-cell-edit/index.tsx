@@ -65,11 +65,7 @@ export default function TagCellEdit({
 	]);
 
 	return (
-		<div
-			css={css`
-				background-color: var(--background-primary);
-			`}
-		>
+		<div className="NLT__tag-cell-edit">
 			<MenuHeader
 				inputValue={inputValue}
 				cellTags={cellTags}

@@ -1,5 +1,5 @@
 import { unixTimeToDateTimeString } from "src/shared/date/date-conversion";
-import { useOverflowClassName } from "src/shared/spacing/hooks";
+import { useOverflow } from "src/shared/spacing/hooks";
 import { DateFormat } from "src/shared/types/types";
 
 interface Props {
@@ -13,11 +13,9 @@ export default function LastEditedTimeCell({
 	format,
 	shouldWrapOverflow,
 }: Props) {
-	const overflowClassName = useOverflowClassName(shouldWrapOverflow);
-	const className = "NLT__last-edited-time-cell" + " " + overflowClassName;
-
+	const overflowStyle = useOverflow(shouldWrapOverflow);
 	return (
-		<div className={className}>
+		<div className="NLT__last-edited-time-cell" css={overflowStyle}>
 			{unixTimeToDateTimeString(value, format)}
 		</div>
 	);

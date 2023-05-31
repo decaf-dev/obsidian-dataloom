@@ -1,4 +1,4 @@
-import { useOverflowClassName } from "src/shared/spacing/hooks";
+import { useOverflow } from "src/shared/spacing/hooks";
 import { DateFormat } from "src/shared/types/types";
 import { unixTimeToDateTimeString } from "src/shared/date/date-conversion";
 
@@ -13,11 +13,9 @@ export default function CreationTimeCell({
 	format,
 	shouldWrapOverflow,
 }: Props) {
-	const overflowClassName = useOverflowClassName(shouldWrapOverflow);
-	const className = "NLT__creation-time-cell" + " " + overflowClassName;
-
+	const overflowStyle = useOverflow(shouldWrapOverflow);
 	return (
-		<div className={className}>
+		<div className="NLT__creation-time-cell" css={overflowStyle}>
 			{unixTimeToDateTimeString(value, format)}
 		</div>
 	);
