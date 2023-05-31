@@ -6,20 +6,23 @@ import {
 	TableState,
 	Tag,
 } from "../shared/types/types";
-import { TableState630 } from "src/shared/types/types-630";
-import { GeneralFunction670, TableState670 } from "src/shared/types/types-670";
+import { TableState630 } from "src/shared/types/types-6.3.0";
+import {
+	GeneralFunction670,
+	TableState670,
+} from "src/shared/types/types-6.7.0";
 import {
 	CellIdError,
 	ColumNotFoundError,
 } from "../shared/table-state/table-error";
 import { createFooterRow, createHeaderRow } from "./table-state-factory";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/table-state/constants";
-import { TableState680 } from "src/shared/types/types-680";
-import { TableState600 } from "src/shared/types/types-600";
-import { CurrencyType610, TableState610 } from "src/shared/types/types-610";
-import { DateFormat620, TableState620 } from "src/shared/types/types-620";
+import { TableState680 } from "src/shared/types/types-6.8.0";
+import { TableState600 } from "src/shared/types/types-6.0.0";
+import { CurrencyType610, TableState610 } from "src/shared/types/types-6.1.0";
+import { DateFormat620, TableState620 } from "src/shared/types/types-6.2.0";
 import { v4 as uuidv4 } from "uuid";
-import { TableState691 } from "src/shared/types/types-691";
+import { TableState691 } from "src/shared/types/types-6.9.1";
 import {
 	isVersionLessThan,
 	legacyVersionToString,
