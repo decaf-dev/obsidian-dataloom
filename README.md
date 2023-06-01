@@ -1,6 +1,6 @@
 # Obsidian Notion-Like Tables
 
-<img width="1382" alt="screenshot" src="https://github.com/trey-wallis/obsidian-notion-like-tables/assets/40307803/b2bb3513-df52-4d97-8a42-c699bb2bddf1">
+<img alt="screenshot" src="https://github.com/trey-wallis/obsidian-notion-like-tables/assets/40307803/b2bb3513-df52-4d97-8a42-c699bb2bddf1">
 
 Notion-Like Tables is your premiere tool for creating and managing tabular data in Obsidian.md.
 
