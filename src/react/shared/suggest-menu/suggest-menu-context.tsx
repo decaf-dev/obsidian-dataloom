@@ -121,7 +121,7 @@ export default function SuggestMenuContent({
 			)}
 			<div
 				css={css`
-					max-height: 275px;
+					max-height: 175px;
 					overflow-y: auto;
 				`}
 			>
