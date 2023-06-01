@@ -67,6 +67,11 @@ export default function BaseMenu({
 
 	const tableBackgroundColor = getTableBackgroundColor();
 	const tableBorderColor = getTableBorderColor();
+	const hasOptions =
+		columnType === CellType.DATE ||
+		columnType === CellType.CURRENCY ||
+		columnType === CellType.LAST_EDITED_TIME ||
+		columnType === CellType.CREATION_TIME;
 
 	return (
 		<Stack spacing="sm" isVertical>
@@ -94,13 +99,15 @@ export default function BaseMenu({
 						onSubmenuChange(SubmenuType.TYPE);
 					}}
 				/>
-				<MenuItem
-					lucideId="settings"
-					name="Options"
-					onClick={() => {
-						onSubmenuChange(SubmenuType.OPTIONS);
-					}}
-				/>
+				{hasOptions && (
+					<MenuItem
+						lucideId="settings"
+						name="Options"
+						onClick={() => {
+							onSubmenuChange(SubmenuType.OPTIONS);
+						}}
+					/>
+				)}
 			</Stack>
 			<Divider />
 			<MenuItem
