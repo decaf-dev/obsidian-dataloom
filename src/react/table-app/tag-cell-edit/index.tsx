@@ -7,7 +7,6 @@ import { Tag as TagType } from "src/shared/types/types";
 import { Color } from "src/shared/types/types";
 import { randomColor } from "src/shared/color";
 
-import { css } from "@emotion/react";
 import { useCompare } from "src/shared/hooks";
 
 interface Props {
@@ -34,12 +33,13 @@ export default function TagCellEdit({
 	onMenuClose,
 }: Props) {
 	const [inputValue, setInputValue] = React.useState("");
-	const [newTagColor] = React.useState(randomColor());
+	const [newTagColor, setNewTagColor] = React.useState(randomColor());
 
 	const handleTagAdd = React.useCallback(
 		(markdown: string, color: Color) => {
 			onTagAdd(markdown, color);
 			setInputValue("");
+			setNewTagColor(randomColor());
 		},
 		[onTagAdd]
 	);
