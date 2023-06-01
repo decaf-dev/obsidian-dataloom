@@ -3,9 +3,10 @@ import SuggestMenuContent from "src/react/shared/suggest-menu/suggest-menu-conte
 
 interface Props {
 	onChange: (value: string) => void;
+	onMenuClose: () => void;
 }
 
-export default function FileCellEdit({ onChange }: Props) {
+export default function FileCellEdit({ onChange, onMenuClose }: Props) {
 	function handleSuggestItemClick(
 		file: TFile | null,
 		isFileNameUnique: boolean
@@ -19,6 +20,7 @@ export default function FileCellEdit({ onChange }: Props) {
 			if (!isFileNameUnique) fileName = `${file.path}|${fileName}`;
 			onChange(`[[${fileName}]]`);
 		}
+		onMenuClose();
 	}
 
 	return (
