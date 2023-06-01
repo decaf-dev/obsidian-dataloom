@@ -21,6 +21,7 @@ import { isCellTypeFilterable } from "src/shared/table-state/filter-by-rules";
 
 import "./styles.css";
 import { ColumnWithMarkdown } from "./types";
+import Padding from "src/react/shared/padding";
 
 interface SortButtonListProps {
 	headerCells: HeaderCell[];
@@ -112,40 +113,46 @@ export default function OptionBar({
 
 	return (
 		<div className="NLT__option-bar">
-			<Stack spacing="lg" isVertical>
-				<Wrap justify={{ base: "space-between", mobile: "flex-end" }}>
-					<Stack spacing="md">
-						<SortBubbleList
-							headerCells={sortedCells}
-							columns={columns}
-							onRemoveClick={onSortRemoveClick}
-						/>
-						{activeRules.length !== 0 &&
-							sortedColumn !== undefined && (
-								<Divider isVertical height="1.5rem" />
-							)}
-						<ActiveFilterBubble numActive={activeRules.length} />
-					</Stack>
-					<Stack spacing="sm" justify="flex-end">
-						<SearchBar />
-						<Filter
-							columns={filterableColumns}
-							filterRules={filterRules}
-							onAddClick={onRuleAddClick}
-							onToggle={onRuleToggle}
-							onColumnChange={onRuleColumnChange}
-							onFilterTypeChange={onRuleFilterTypeChange}
-							onTextChange={onRuleTextChange}
-							onDeleteClick={onRuleDeleteClick}
-							onTagsChange={onRuleTagsChange}
-						/>
-						<ToggleColumn
-							columns={columnsWithMarkdown}
-							onToggle={onColumnToggle}
-						/>
-					</Stack>
-				</Wrap>
-			</Stack>
+			<Padding px="2xl">
+				<Stack spacing="lg" isVertical>
+					<Wrap
+						justify={{ base: "space-between", mobile: "flex-end" }}
+					>
+						<Stack spacing="md">
+							<SortBubbleList
+								headerCells={sortedCells}
+								columns={columns}
+								onRemoveClick={onSortRemoveClick}
+							/>
+							{activeRules.length !== 0 &&
+								sortedColumn !== undefined && (
+									<Divider isVertical height="1.5rem" />
+								)}
+							<ActiveFilterBubble
+								numActive={activeRules.length}
+							/>
+						</Stack>
+						<Stack spacing="sm" justify="flex-end">
+							<SearchBar />
+							<Filter
+								columns={filterableColumns}
+								filterRules={filterRules}
+								onAddClick={onRuleAddClick}
+								onToggle={onRuleToggle}
+								onColumnChange={onRuleColumnChange}
+								onFilterTypeChange={onRuleFilterTypeChange}
+								onTextChange={onRuleTextChange}
+								onDeleteClick={onRuleDeleteClick}
+								onTagsChange={onRuleTagsChange}
+							/>
+							<ToggleColumn
+								columns={columnsWithMarkdown}
+								onToggle={onColumnToggle}
+							/>
+						</Stack>
+					</Wrap>
+				</Stack>
+			</Padding>
 		</div>
 	);
 }
