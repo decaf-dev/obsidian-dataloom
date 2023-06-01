@@ -2,10 +2,10 @@
 
 ## Description
 
-This cell renders Obsidian markdown.
+This cell renders text.
 
 Each column will have exactly one header cell.
 
 ## Usage
 
-Select a header cell to open the header cell menu. The input is used to change the title of the cell. Any Obsidian markdown may be placed into this input.
+Select a header cell to open the header cell menu. The input is used to change the title of the cell.
