@@ -6,7 +6,7 @@ interface Props {
 	className?: string;
 	px?: SpacingSize;
 	py?: SpacingSize;
-	pl: SpacingSize;
+	pl?: SpacingSize;
 	pt?: SpacingSize;
 	pb?: SpacingSize;
 	p?: SpacingSize;
