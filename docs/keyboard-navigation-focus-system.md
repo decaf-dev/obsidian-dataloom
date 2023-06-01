@@ -12,4 +12,4 @@ If an element is focused, you may open its menu by pressing the `Enter` key.
 
 ## Deleting cell contents
 
-If a body cell is focused, you may delete its contents by pressing `Delete` on your keyboard
+If a body cell is focused, you may delete its contents by pressing `delete` on your keyboard
