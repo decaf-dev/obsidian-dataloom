@@ -19,9 +19,11 @@ _Italics_
 
 ===Highlight===
 
-<img src="https://placehold.co/300x200">
+Image <img src="https://placehold.co/300x200">
 
-😃
+Emoji 😃
+
+## heading
 ```
 
 ### Links to Notes
