@@ -9,11 +9,15 @@ import {
 	Tag,
 } from "src/shared/types/types";
 import { ColumNotFoundError, RowNotFoundError } from "./table-error";
-import { stringToCurrencyString } from "../conversion";
 import {
 	unixTimeToDateString,
 	unixTimeToDateTimeString,
 } from "../date/date-conversion";
+import {
+	getCurrencyCellContent,
+	getDateCellContent,
+	getTimeCellContent,
+} from "../export/utils";
 
 export const filterBodyRowsBySearch = (
 	tableState: TableState,
@@ -107,9 +111,8 @@ const matchCurrencyCell = (
 	currencyType: CurrencyType,
 	searchText: string
 ) => {
-	const currencyString = stringToCurrencyString(markdown, currencyType);
-	if (currencyString.toLowerCase().includes(searchText.toLowerCase()))
-		return true;
+	const content = getCurrencyCellContent(markdown, currencyType);
+	if (content.toLowerCase().includes(searchText.toLowerCase())) return true;
 };
 
 const matchTags = (cellTags: Tag[], searchText: string) => {
@@ -123,11 +126,8 @@ const matchDateCell = (
 	dateTime: number | null,
 	searchText: string
 ) => {
-	if (dateTime) {
-		const dateString = unixTimeToDateString(dateTime, dateFormat);
-		if (dateString.toLowerCase().includes(searchText)) return true;
-	}
-	return false;
+	const content = getDateCellContent(dateTime, dateFormat);
+	return content.toLowerCase().includes(searchText);
 };
 
 const matchCreationTimeCell = (
@@ -135,9 +135,8 @@ const matchCreationTimeCell = (
 	dateFormat: DateFormat,
 	searchText: string
 ) => {
-	const dateString = unixTimeToDateTimeString(creationTime, dateFormat);
-	if (dateString.toLowerCase().includes(searchText)) return true;
-	return false;
+	const content = getTimeCellContent(creationTime, dateFormat);
+	return content.toLowerCase().includes(searchText);
 };
 
 const matchLastEditedTimeCell = (
@@ -145,7 +144,6 @@ const matchLastEditedTimeCell = (
 	dateFormat: DateFormat,
 	searchText: string
 ) => {
-	const dateString = unixTimeToDateString(lastEditedTime, dateFormat);
-	if (dateString.toLowerCase().includes(searchText)) return true;
-	return false;
+	const content = getTimeCellContent(lastEditedTime, dateFormat);
+	return content.toLowerCase().includes(searchText);
 };

@@ -6,9 +6,9 @@ import {
 	getRange,
 	getSum,
 } from "./arithmetic";
-import { stringToCurrencyString } from "src/shared/conversion";
 import { CellType, CurrencyType, NumberFunction } from "src/shared/types/types";
 import { round2Digits } from "./utils";
+import { getCurrencyCellContent } from "src/shared/export/utils";
 
 export const getNumberFunctionContent = (
 	values: number[],
@@ -18,7 +18,7 @@ export const getNumberFunctionContent = (
 ) => {
 	const value = getNumberFunctionValue(values, functionType).toString();
 	if (cellType === CellType.CURRENCY)
-		return stringToCurrencyString(value, currencyType);
+		return getCurrencyCellContent(value, currencyType);
 	return value;
 };
 

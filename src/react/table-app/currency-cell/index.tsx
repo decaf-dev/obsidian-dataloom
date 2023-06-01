@@ -1,9 +1,7 @@
 import { useOverflow } from "src/shared/spacing/hooks";
 
 import { CurrencyType } from "src/shared/types/types";
-import { stringToCurrencyString } from "src/shared/conversion";
-import { isNumber } from "src/shared/validators";
-
+import { getCurrencyCellContent } from "src/shared/export/utils";
 import "./styles.css";
 
 interface Props {
@@ -17,15 +15,12 @@ export default function CurrencyCell({
 	currencyType,
 	shouldWrapOverflow,
 }: Props) {
-	let valueString = "";
-	if (isNumber(value))
-		valueString = stringToCurrencyString(value, currencyType);
-
+	const content = getCurrencyCellContent(value, currencyType);
 	const overflowStyle = useOverflow(shouldWrapOverflow);
 
 	return (
 		<div className="NLT__currency-cell" css={overflowStyle}>
-			{valueString}
+			{content}
 		</div>
 	);
 }
