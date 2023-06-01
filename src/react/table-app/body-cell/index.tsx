@@ -277,7 +277,7 @@ export default function BodyCell({
 	if (columnType === CellType.TAG || columnType === CellType.MULTI_TAG) {
 		menuWidth = 250;
 	} else if (columnType === CellType.FILE) {
-		menuWidth = 325;
+		menuWidth = 275;
 	} else if (columnType === CellType.DATE) {
 		menuWidth = 175;
 	}
