@@ -32,16 +32,6 @@ export default function OptionSubmenu({
 		<Submenu title={title} onBackClick={onBackClick}>
 			<Padding pt="sm" pb="lg">
 				<Stack spacing="lg" isVertical>
-					{(type === CellType.TEXT ||
-						type === CellType.FILE ||
-						type === CellType.NUMBER ||
-						type === CellType.CHECKBOX ||
-						type === CellType.TAG ||
-						type === CellType.MULTI_TAG) && (
-						<Padding px="lg">
-							<Text value="No settings to display" />
-						</Padding>
-					)}
 					{type === CellType.CURRENCY && (
 						<MenuItem
 							name="Currency"
