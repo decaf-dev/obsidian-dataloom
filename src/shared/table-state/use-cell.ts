@@ -1,8 +1,6 @@
-import { FunctionType } from "src/shared/types/types";
 import { useLogger } from "../logger";
 import { useTableState } from "./table-state-context";
 import CellBodyUpdateCommand from "../commands/cell-body-update-command";
-import CellFooterUpdateCommand from "../commands/cell-footer-update-command";
 import CellHeaderUpdateCommand from "../commands/cell-header-update-command";
 
 export const useCell = () => {
@@ -46,24 +44,9 @@ export const useCell = () => {
 		doCommand(new CellBodyUpdateCommand(cellId, rowId, "dateTime", value));
 	}
 
-	function handleFunctionTypeChange(
-		cellId: string,
-		functionType: FunctionType
-	) {
-		logFunc("handleFunctionTypeChange", {
-			cellId,
-			functionType,
-		});
-
-		doCommand(
-			new CellFooterUpdateCommand(cellId, "functionType", functionType)
-		);
-	}
-
 	return {
 		handleHeaderCellContentChange,
 		handleBodyCellContentChange,
 		handleCellDateTimeChange,
-		handleFunctionTypeChange,
 	};
 };

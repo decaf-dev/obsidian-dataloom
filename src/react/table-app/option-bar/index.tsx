@@ -113,7 +113,7 @@ export default function OptionBar({
 
 	return (
 		<div className="NLT__option-bar">
-			<Padding px="2xl">
+			<Padding pl="2xl">
 				<Stack spacing="lg" isVertical>
 					<Wrap
 						justify={{ base: "space-between", mobile: "flex-end" }}

@@ -48,6 +48,7 @@ export default function TableApp() {
 		handleColumnTypeClick,
 		handleColumnWidthChange,
 		handleSortRemoveClick,
+		handleFunctionTypeChange,
 		handleWrapContentToggle,
 	} = useColumn();
 
@@ -56,7 +57,6 @@ export default function TableApp() {
 	const {
 		handleBodyCellContentChange,
 		handleCellDateTimeChange,
-		handleFunctionTypeChange,
 		handleHeaderCellContentChange,
 	} = useCell();
 
@@ -302,6 +302,7 @@ export default function TableApp() {
 										dateFormat,
 										width,
 										tags,
+										functionType,
 									} = column;
 									const cell = footerCells.find(
 										(cell) =>
@@ -309,7 +310,7 @@ export default function TableApp() {
 											cell.columnId === column.id
 									);
 									if (!cell) throw new CellNotFoundError();
-									const { id: cellId, functionType } = cell;
+									const { id: cellId } = cell;
 
 									const columnBodyCells = bodyCells.filter(
 										(cell) =>

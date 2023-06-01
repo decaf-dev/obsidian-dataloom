@@ -6,6 +6,7 @@ interface Props {
 	className?: string;
 	px?: SpacingSize;
 	py?: SpacingSize;
+	pl?: SpacingSize;
 	pt?: SpacingSize;
 	pb?: SpacingSize;
 	p?: SpacingSize;
@@ -19,6 +20,7 @@ export default function Padding({
 	py,
 	pt,
 	pb,
+	pl,
 	p,
 	children,
 }: Props) {
@@ -43,7 +45,7 @@ export default function Padding({
 			renderPt = spacing;
 			renderPb = spacing;
 		}
-	} else if (pb || pt) {
+	} else if (pb || pt || pl) {
 		if (pb) {
 			const spacing = getSpacing(pb);
 			renderPb = spacing;
@@ -51,6 +53,10 @@ export default function Padding({
 		if (pt) {
 			const spacing = getSpacing(pt);
 			renderPt = spacing;
+		}
+		if (pl) {
+			const spacing = getSpacing(pl);
+			renderPl = spacing;
 		}
 	}
 

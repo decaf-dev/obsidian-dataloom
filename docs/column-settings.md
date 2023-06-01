@@ -2,7 +2,7 @@
 
 ## Wrap overflow
 
-If enabled, the content of a cell will wrap instead of being cut off if the cell width is smaller than the content width.
+If enabled, the content of a cell will wrap instead of being cut off when the cell width is smaller than the content width.
 
 ## Date format
 
@@ -22,4 +22,8 @@ There are 5 different formats
 
 ## Currency
 
-Appends a currency symbol to a number. e.g. $50 for USA. This follows [ISO4217](https://en.wikipedia.org/wiki/ISO_4217)
+Appends a currency symbol to a number.
+
+e.g. $50 for USA
+
+This follows [ISO4217](https://en.wikipedia.org/wiki/ISO_4217)
