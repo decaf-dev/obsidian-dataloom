@@ -1,6 +1,6 @@
 # Obsidian Notion-Like Tables
 
-<img width="1382" alt="screenshot" src="https://github.com/trey-wallis/obsidian-notion-like-tables/assets/40307803/b2bb3513-df52-4d97-8a42-c699bb2bddf1">
+<img alt="screenshot" src="https://github.com/trey-wallis/obsidian-notion-like-tables/assets/40307803/b2bb3513-df52-4d97-8a42-c699bb2bddf1">
 
 Notion-Like Tables is your premiere tool for creating and managing tabular data in Obsidian.md.
 
@@ -8,9 +8,9 @@ Notion-Like Tables is your premiere tool for creating and managing tabular data 
 
 ![Obsidian Downloads](https://img.shields.io/badge/dynamic/json?logo=obsidian&color=%23483699&label=downloads&query=%24%5B%22notion-like-tables%22%5D.downloads&url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json) ![Release Version](https://img.shields.io/github/v/release/trey-wallis/obsidian-notion-like-tables)
 
-### There is now a new documentation website: [trey-wallis.github.io/obsidian-notion-like-tables](https://trey-wallis.github.io/obsidian-notion-like-tables)
+#### [Documentation website](https://trey-wallis.github.io/obsidian-notion-like-tables)
 
-[Lastest release notes](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/6.12.0)
+#### [Lastest release notes](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/6.12.0)
 
 ## About
 
@@ -26,12 +26,24 @@ Notion-Like Tables is your premiere tool for creating and managing tabular data 
 
 ## Installation
 
+### Installing the plugin
+
 1. In Obsidian, open **Settings**
-2. Click **Community plugins**
-3. Click **Browse**
+2. Go to **Community plugins**
+3. Select **Browse**
 4. Search for **Notion-Like Tables** by **Trey Wallis**
-5. Click **Install**
-6. Finally click **Enable**
+5. Select **Install**
+6. Then select **Enable**
+
+### Linking table files
+
+By default, Obsidian won't display `.table` files in the menu that opens when you type double brackets `[[`. In order for Obsidian to do this, you must enable detection of all file extensions.
+
+1. In Obsidian, open **Settings**
+2. Select **File & Links**
+3. Toggle **Detect all file extensions**
+
+This will allow you to make links to a table e.g. `[[mytable.table]]`
 
 ## Creating a table
 

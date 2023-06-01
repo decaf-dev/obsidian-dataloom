@@ -8,10 +8,12 @@ import {
 	CellType,
 	Column,
 	FilterRule,
+	FunctionType,
+	GeneralFunction,
 	TableState,
 	Tag,
 } from "../types/types";
-import { isCheckbox } from "../validators";
+import { isCheckbox, isNumberFunction } from "../validators";
 
 export class ColumnTypeUpdateCommand extends TableStateCommand {
 	private columnId: string;
@@ -19,6 +21,9 @@ export class ColumnTypeUpdateCommand extends TableStateCommand {
 
 	private previousType: CellType;
 	private deletedFilterRules: { arrIndex: number; rule: FilterRule }[] = [];
+
+	private previousFunctionType?: FunctionType;
+	private newFunctionType?: FunctionType;
 
 	/**
 	 * The body cells whose tag ids have been updated as a result of the command execution
@@ -64,6 +69,22 @@ export class ColumnTypeUpdateCommand extends TableStateCommand {
 		super();
 		this.columnId = id;
 		this.type = type;
+	}
+
+	private fromNumberOrCurrency(columns: Column[]) {
+		return columns.map((column) => {
+			if (column.id === this.columnId) {
+				if (isNumberFunction(column.functionType)) {
+					this.previousFunctionType = column.functionType;
+					this.newFunctionType = GeneralFunction.NONE;
+					return {
+						...column,
+						functionType: GeneralFunction.NONE,
+					};
+				}
+			}
+			return column;
+		});
 	}
 
 	private fromTagOrMultiTag(bodyCells: BodyCell[]) {
@@ -327,6 +348,13 @@ export class ColumnTypeUpdateCommand extends TableStateCommand {
 			newBodyCells = this.fromDateToText(column, newBodyCells);
 		}
 
+		if (
+			this.previousType === CellType.NUMBER ||
+			this.previousType === CellType.CURRENCY
+		) {
+			newColumns = this.fromNumberOrCurrency(newColumns);
+		}
+
 		newColumns = newColumns.map((column) => {
 			if (column.id === this.columnId) {
 				return {
@@ -393,6 +421,9 @@ export class ColumnTypeUpdateCommand extends TableStateCommand {
 				return {
 					...column,
 					type: this.type,
+					functionType: this.newFunctionType
+						? this.newFunctionType
+						: column.functionType,
 					tags: [...column.tags, ...this.addedTags],
 				};
 			}
@@ -453,6 +484,9 @@ export class ColumnTypeUpdateCommand extends TableStateCommand {
 			if (column.id === this.columnId) {
 				return {
 					...column,
+					functionType: this.previousFunctionType
+						? this.previousFunctionType
+						: column.functionType,
 					type: this.previousType,
 					tags: column.tags.filter(
 						(t) =>
