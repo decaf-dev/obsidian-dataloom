@@ -2,15 +2,13 @@
 
 ## Description
 
-This cell renders a text value.
-
-A text value may include any Obsidian markdown.
+This cell renders Obsidian markdown.
 
 ## Usage
 
 Select a text cell to open the text cell edit menu. Type any value. Click outside the menu or press `Enter` or `Return` for the value to be saved.
 
-Examples of Obsidian markdown include:
+Examples of Obsidian markdown include
 
 ```markdown
 **Bold**
