@@ -1,6 +1,6 @@
-import { get, isNumber } from "lodash";
 import {
 	BodyCell,
+	BodyRow,
 	CellType,
 	Column,
 	CurrencyType,
@@ -11,6 +11,7 @@ import {
 	unixTimeToDateString,
 	unixTimeToDateTimeString,
 } from "../date/date-conversion";
+import { isCheckboxChecked, isNumber } from "../validators";
 
 const getTagCellContent = (column: Column, cell: BodyCell) => {
 	return column.tags
@@ -35,6 +36,17 @@ export const getTimeCellContent = (
 	return "";
 };
 
+export const getCheckboxContent = (
+	markdown: string,
+	shouldEscapeMarkdown: boolean
+) => {
+	if (shouldEscapeMarkdown) {
+		if (isCheckboxChecked(markdown)) return "true";
+		return "false";
+	}
+	return markdown;
+};
+
 export const getCurrencyCellContent = (
 	value: string,
 	currencyType: CurrencyType
@@ -43,13 +55,19 @@ export const getCurrencyCellContent = (
 	return value;
 };
 
-export const getCellContent = (column: Column, cell: BodyCell) => {
+export const getCellContent = (
+	column: Column,
+	row: BodyRow,
+	cell: BodyCell,
+	shouldEscapeMarkdown: boolean
+) => {
 	switch (column.type) {
 		case CellType.TEXT:
 		case CellType.FILE:
-		case CellType.CHECKBOX:
 		case CellType.NUMBER:
 			return cell.markdown;
+		case CellType.CHECKBOX:
+			return getCheckboxContent(cell.markdown, shouldEscapeMarkdown);
 		case CellType.CURRENCY:
 			return getCurrencyCellContent(cell.markdown, column.currencyType);
 		case CellType.TAG:
@@ -58,7 +76,8 @@ export const getCellContent = (column: Column, cell: BodyCell) => {
 		case CellType.DATE:
 			return getDateCellContent(cell.dateTime, column.dateFormat);
 		case CellType.CREATION_TIME:
+			return getTimeCellContent(row.creationTime, column.dateFormat);
 		case CellType.LAST_EDITED_TIME:
-			return getTimeCellContent(cell.dateTime, column.dateFormat);
+			return getTimeCellContent(row.lastEditedTime, column.dateFormat);
 	}
 };
