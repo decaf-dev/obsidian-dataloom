@@ -35,6 +35,7 @@ export const createColumn = (options?: { cellType?: CellType }): Column => {
 		dateFormat: DateFormat.MM_DD_YYYY,
 		shouldWrapOverflow: false,
 		tags: [],
+		functionType: GeneralFunction.NONE,
 	};
 };
 
@@ -108,7 +109,6 @@ export const createFooterCell = (
 		id: uuidv4(),
 		columnId,
 		rowId,
-		functionType: GeneralFunction.NONE,
 	};
 };
 

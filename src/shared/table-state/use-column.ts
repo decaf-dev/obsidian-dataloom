@@ -3,6 +3,7 @@ import {
 	CellType,
 	CurrencyType,
 	DateFormat,
+	FunctionType,
 	SortDir,
 } from "src/shared/types/types";
 import { useLogger } from "../logger";
@@ -83,6 +84,22 @@ export const useColumn = () => {
 		doCommand(new ColumnDeleteCommand({ id: columnId }));
 	}
 
+	function handleFunctionTypeChange(
+		columnId: string,
+		functionType: FunctionType
+	) {
+		logger("handleFunctionTypeChange", {
+			columnId,
+			functionType,
+		});
+
+		doCommand(
+			new ColumnUpdateCommand(columnId, "functionType", {
+				value: functionType,
+			})
+		);
+	}
+
 	function handleCurrencyChange(
 		columnId: string,
 		currencyType: CurrencyType
@@ -161,5 +178,6 @@ export const useColumn = () => {
 		handleSortRemoveClick,
 		handleColumnWidthChange,
 		handleWrapContentToggle,
+		handleFunctionTypeChange,
 	};
 };

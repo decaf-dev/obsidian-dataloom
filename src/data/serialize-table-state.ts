@@ -27,6 +27,7 @@ import {
 	isVersionLessThan,
 	legacyVersionToString,
 } from "src/shared/versioning";
+import { TableState6122 } from "src/shared/types/types-6.12.2";
 
 export const serializeTableState = (tableState: TableState): string => {
 	return JSON.stringify(tableState, null, 2);
@@ -292,6 +293,29 @@ export const deserializeTableState = (data: string): TableState => {
 			const typedRow = row as Record<string, unknown>;
 			if (typedRow.hasOwnProperty("menuCellId")) {
 				delete typedRow.menuCellId;
+			}
+		});
+	}
+
+	if (isVersionLessThan(pluginVersion, "6.12.3")) {
+		const tableState = currentState as TableState6122;
+		const { columns, footerCells } = tableState.model;
+
+		//Refactor: move function type into the column
+		footerCells.forEach((cell) => {
+			const column = columns.find(
+				(column) => column.id === cell.columnId
+			);
+			if (!column) throw new ColumNotFoundError(cell.columnId);
+
+			const unknownColumn = column as unknown;
+			const typedColumn = unknownColumn as Record<string, unknown>;
+			typedColumn.functionType = cell.functionType;
+
+			const unknownCell = cell as unknown;
+			const typedCell = unknownCell as Record<string, unknown>;
+			if (typedCell.hasOwnProperty("functionType")) {
+				delete typedCell.functionType;
 			}
 		});
 	}

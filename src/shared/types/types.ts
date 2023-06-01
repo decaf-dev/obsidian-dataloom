@@ -102,6 +102,7 @@ export interface Column {
 	currencyType: CurrencyType;
 	shouldWrapOverflow: boolean;
 	tags: Tag[];
+	functionType: FunctionType;
 }
 
 export interface FilterRule {
@@ -142,9 +143,7 @@ export interface BodyCell extends Cell {
 	tagIds: string[];
 }
 
-export interface FooterCell extends Cell {
-	functionType: FunctionType;
-}
+export type FooterCell = Cell;
 
 export interface Tag {
 	id: string;
