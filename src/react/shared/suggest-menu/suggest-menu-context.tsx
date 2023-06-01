@@ -119,13 +119,13 @@ export default function SuggestMenuContent({
 					/>
 				</div>
 			)}
-			{filteredFiles.length === 0 && (
-				<div
-					css={css`
-						width: 325px;
-						height: 50px;
-					`}
-				>
+			<div
+				css={css`
+					max-height: 275px;
+					overflow-y: auto;
+				`}
+			>
+				{filteredFiles.length === 0 && (
 					<SuggestItem
 						file={null}
 						ref={null}
@@ -133,34 +133,28 @@ export default function SuggestMenuContent({
 						isFileNameUnique={false}
 						onItemClick={onItemClick}
 					/>
-				</div>
-			)}
-
-			{filteredFiles.length !== 0 && (
-				<div
-					css={css`
-						max-height: 275px;
-						overflow-y: auto;
-					`}
-				>
-					{filteredFiles.map((file, index) => (
-						<SuggestItem
-							key={file.path}
-							ref={
-								highlightIndex === index
-									? highlightItemRef
-									: null
-							}
-							file={file}
-							isHighlighted={index === highlightIndex}
-							isFileNameUnique={uniqueFileNames.includes(
-								file.name
-							)}
-							onItemClick={onItemClick}
-						/>
-					))}
-				</div>
-			)}
+				)}
+				{filteredFiles.length > 0 && (
+					<>
+						{filteredFiles.map((file, index) => (
+							<SuggestItem
+								key={file.path}
+								ref={
+									highlightIndex === index
+										? highlightItemRef
+										: null
+								}
+								file={file}
+								isHighlighted={index === highlightIndex}
+								isFileNameUnique={uniqueFileNames.includes(
+									file.name
+								)}
+								onItemClick={onItemClick}
+							/>
+						))}
+					</>
+				)}
+			</div>
 		</div>
 	);
 }
