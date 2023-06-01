@@ -165,7 +165,8 @@ export default function BodyCell({
 		if (
 			columnType === CellType.TEXT ||
 			columnType === CellType.NUMBER ||
-			columnType === CellType.CURRENCY
+			columnType === CellType.CURRENCY ||
+			columnType === CellType.FILE
 		) {
 			onContentChange(cellId, rowId, "");
 		} else if (columnType === CellType.DATE) {
