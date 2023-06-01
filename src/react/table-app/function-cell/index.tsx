@@ -33,12 +33,11 @@ interface Props {
 	currencyType: CurrencyType;
 	cellType: CellType;
 	dateFormat: DateFormat;
-	onFunctionTypeChange: (cellId: string, value: FunctionType) => void;
+	onFunctionTypeChange: (columnId: string, value: FunctionType) => void;
 }
 
 export default function FunctionCell({
 	columnId,
-	cellId,
 	columnTags,
 	bodyCells,
 	dateFormat,
@@ -56,7 +55,7 @@ export default function FunctionCell({
 	useShiftMenu(triggerRef, menuRef, isMenuOpen);
 
 	function handleFunctionTypeClick(value: FunctionType) {
-		onFunctionTypeChange(cellId, value);
+		onFunctionTypeChange(columnId, value);
 		closeTopMenu();
 	}
 

@@ -19,6 +19,7 @@ export enum SortDir {
 
 export enum CellType {
 	TEXT = "text",
+	FILE = "file",
 	NUMBER = "number",
 	CURRENCY = "currency",
 	TAG = "tag",
@@ -161,7 +162,7 @@ export interface TableModel {
 	footerCells: FooterCell[];
 	filterRules: FilterRule[];
 }
-export interface TableState {
+export interface TableState6122 {
 	pluginVersion: string;
 	model: TableModel;
 }
