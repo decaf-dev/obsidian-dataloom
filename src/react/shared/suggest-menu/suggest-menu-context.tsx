@@ -1,7 +1,6 @@
 import React from "react";
 
 import { TFile } from "obsidian";
-import { Virtuoso, VirtuosoHandle } from "react-virtuoso";
 import fuzzysort from "fuzzysort";
 
 import SuggestItem from "./suggest-item";
@@ -25,7 +24,7 @@ export default function SuggestMenuContent({
 		filterValue ?? ""
 	);
 	const highlightItemRef = React.useRef<HTMLDivElement | null>(null);
-	const [highlightIndex, setHighlightIndex] = React.useState(0);
+	const [highlightIndex, setHighlightIndex] = React.useState(-1);
 
 	const files = app.vault.getFiles();
 	let filteredFiles: TFile[] = [];
@@ -47,8 +46,13 @@ export default function SuggestMenuContent({
 		setLocalFilterValue(filterValue ?? "");
 	}, [filterValue]);
 
+	const isMountedRef = React.useRef(false);
 	React.useEffect(() => {
-		setHighlightIndex(0);
+		if (!isMountedRef.current) {
+			isMountedRef.current = true;
+		} else {
+			setHighlightIndex(0);
+		}
 	}, [localFilterValue]);
 
 	React.useEffect(() => {
