@@ -52,10 +52,10 @@ class NLTEmbeddedPlugin implements PluginValue {
 
 			if (!tableFile) return;
 
-			linkEl.style.height = "300px";
+			linkEl.style.height = "340px";
 			linkEl.style.backgroundColor = "var(--color-primary)";
 			linkEl.style.cursor = "unset";
-			linkEl.style.padding = "0px";
+			linkEl.style.padding = "10px 0px";
 
 			const containerEl = linkEl.createDiv();
 			containerEl.style.height = "100%";
