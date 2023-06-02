@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-notion-like-tables",
-	"version": "6.13.0",
+	"version": "6.13.1",
 	"description": "Notion-like tables for Obsidian.md",
 	"main": "main.js",
 	"scripts": {
@@ -48,6 +48,7 @@
 		"@emotion/react": "^11.11.0",
 		"@emotion/styled": "^11.10.4",
 		"@reduxjs/toolkit": "^1.8.5",
+		"buffer": "^6.0.3",
 		"csv-stringify": "^6.4.0",
 		"fuzzysort": "^2.0.4",
 		"markdown-table": "^3.0.3",
