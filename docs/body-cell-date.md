@@ -18,4 +18,4 @@ You may clear the date by pressing the `clear` button.
 
 ## Settings
 
-[Date format](https://trey-wallis.github.io/obsidian-notion-like-tables/#/column-settings?id=date-format)
+[Date format](column-settings.md?id=date-format)
