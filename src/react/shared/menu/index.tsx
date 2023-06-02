@@ -40,7 +40,7 @@ const Menu = React.forwardRef<HTMLDivElement, Props>(function Menu(
 				ReactDOM.createPortal(
 					<div
 						className="NLT__menu"
-						data-menu-id={id}
+						data-id={id}
 						css={css`
 							width: 0;
 							height: 0;

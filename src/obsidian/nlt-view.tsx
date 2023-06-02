@@ -1,20 +1,15 @@
 import { TextFileView, WorkspaceLeaf } from "obsidian";
 import { createRoot, Root } from "react-dom/client";
-import { Provider } from "react-redux";
-import App from "../react/table-app";
+import { NotionLikeTable } from "../react/table-app";
 import { store } from "../redux/global/store";
 import { TableState } from "../shared/types/types";
-import TableStateProvider from "../shared/table-state/table-state-context";
-import NLTImportModal from "./nlt-import-modal";
 import {
 	deserializeTableState,
 	serializeTableState,
 } from "src/data/serialize-table-state";
-import MenuProvider from "src/shared/menu/menu-context";
-import { EVENT_REFRESH_VIEW } from "src/shared/events";
-import DragProvider from "src/shared/dragging/drag-context";
-import ViewProvider from "src/shared/view-context";
+import { EVENT_REFRESH_TABLES } from "src/shared/events";
 import NLTExportModal from "./nlt-export-modal";
+import { isEventForThisLeaf } from "src/shared/renderUtils";
 
 export const NOTION_LIKE_TABLES_VIEW = "notion-like-tables";
 
@@ -26,27 +21,53 @@ export class NLTView extends TextFileView {
 		return this.data;
 	}
 
-	handleSaveTableState = async (tableState: TableState) => {
-		//Only save data if the view is in the active leaf
-		//This prevents the data being saved multiple times if we have
-		//multiple tabs of the same file opens
-		const activeView = this.app.workspace.getActiveViewOfType(NLTView);
-		if (!activeView) return;
+	private handleRefreshEvent = (
+		leaf: WorkspaceLeaf,
+		filePath: string,
+		tableState: TableState
+	) => {
+		//Make sure that the event is coming from a different leaf but the same file
+		//This occurs when we have multiple tabs of the same file open
+		if (leaf !== this.leaf && filePath === this.file.path) {
+			if (this.root) {
+				this.root.unmount();
+				this.root = createRoot(this.containerEl.children[1]);
+			}
+			this.renderApp(tableState);
+		}
+	};
 
-		if (activeView.leaf === this.leaf) {
+	private handleSaveTableState = async (tableState: TableState) => {
+		//Only save data if the view is in the active leaf
+		//This prevents the data being saved multiple times if we have multiple tabs of the same file opens
+		if (isEventForThisLeaf(this.leaf)) {
 			const serialized = serializeTableState(tableState);
 			this.data = serialized;
 			await this.requestSave();
 
 			//Trigger an event to refresh the other open views of this file
 			this.app.workspace.trigger(
-				EVENT_REFRESH_VIEW,
+				EVENT_REFRESH_TABLES,
 				this.leaf,
 				this.file.path,
 				tableState
 			);
 		}
 	};
+
+	private renderApp(state: TableState) {
+		if (this.root) {
+			this.root.render(
+				<NotionLikeTable
+					fileName={this.file.name}
+					leaf={this.leaf}
+					store={store}
+					tableState={state}
+					onSaveState={this.handleSaveTableState}
+				/>
+			);
+		}
+	}
 
 	setViewData(data: string, clear: boolean): void {
 		this.data = data;
@@ -61,27 +82,6 @@ export class NLTView extends TextFileView {
 
 		const tableState = deserializeTableState(data);
 		this.renderApp(tableState);
-	}
-
-	renderApp(tableState: TableState) {
-		if (this.root) {
-			this.root.render(
-				<ViewProvider view={this}>
-					<Provider store={store}>
-						<TableStateProvider
-							initialState={tableState}
-							onSaveState={this.handleSaveTableState}
-						>
-							<MenuProvider>
-								<DragProvider>
-									<App />
-								</DragProvider>
-							</MenuProvider>
-						</TableStateProvider>
-					</Provider>
-				</ViewProvider>
-			);
-		}
 	}
 
 	clear(): void {
@@ -102,6 +102,9 @@ export class NLTView extends TextFileView {
 	}
 
 	async onOpen() {
+		//Add offset to the container to account for the mobile action bar
+		this.containerEl.style.paddingBottom = "48px";
+
 		//This is the view content container
 		const container = this.containerEl.children[1];
 		this.root = createRoot(container);
@@ -123,20 +126,9 @@ export class NLTView extends TextFileView {
 		// });
 
 		this.app.workspace.on(
-			// @ts-expect-error: not valid event
-			EVENT_REFRESH_VIEW,
-			(leaf: WorkspaceLeaf, filePath: string, tableState: TableState) => {
-				//Make sure that the event is coming from a different leaf but the same file
-				//This occurs when we have multiple tabs of the same file open
-				if (leaf !== this.leaf && filePath === this.file.path) {
-					if (this.root) {
-						this.root.unmount();
-						this.root = createRoot(this.containerEl.children[1]);
-					}
-
-					this.renderApp(tableState);
-				}
-			}
+			// @ts-expect-error: not a native Obsidian event
+			EVENT_REFRESH_TABLES,
+			this.handleRefreshEvent
 		);
 	}
 
@@ -145,5 +137,6 @@ export class NLTView extends TextFileView {
 			this.root.unmount();
 			this.root = null;
 		}
+		this.app.workspace.off(EVENT_REFRESH_TABLES, this.handleRefreshEvent);
 	}
 }

@@ -15,6 +15,9 @@ import {
 	EVENT_ROW_ADD,
 	EVENT_ROW_DELETE,
 } from "./shared/events";
+import { nltEmbeddedPlugin } from "./obsidian/nlt-embedded-plugin";
+import { getEmbeddedTableLinkEls } from "./obsidian/utils";
+import NLTEmbeddedRenderChild from "./obsidian/nlt-embedded-render-child";
 
 export interface NLTSettings {
 	shouldDebug: boolean;
@@ -58,6 +61,7 @@ export default class NLTPlugin extends Plugin {
 		});
 
 		this.addSettingTab(new NLTSettingsTab(this.app, this));
+		this.registerEmbeddedView();
 		this.registerCommands();
 		this.registerEvents();
 
@@ -86,6 +90,27 @@ export default class NLTPlugin extends Plugin {
 			this.checkForDarkMode();
 			this.checkForDebug();
 		});
+	}
+
+	private registerEmbeddedView() {
+		//This registers a CodeMirror extension. It is used to render the embedded
+		//table in live preview mode.
+		this.registerEditorExtension(nltEmbeddedPlugin);
+
+		//This registers a Markdown post processor. It is used to render the embedded
+		//table in preview mode.
+		// this.registerMarkdownPostProcessor((element, context) => {
+		// 	const embeddedTableLinkEls = getEmbeddedTableLinkEls(element);
+		// 	for (let i = 0; i < embeddedTableLinkEls.length; i++) {
+		// 		const linkEl = embeddedTableLinkEls[i];
+		// 		context.addChild(
+		// 			new NLTEmbeddedRenderChild(
+		// 				linkEl,
+		// 				linkEl.getAttribute("src")!
+		// 			)
+		// 		);
+		// 	}
+		// });
 	}
 
 	private async newTableFile(contextMenuFolderPath: string | null) {

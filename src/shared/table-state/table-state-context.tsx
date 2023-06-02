@@ -1,6 +1,5 @@
 import { TableState } from "../types/types";
 import TableStateCommand from "./table-state-command";
-import { useUUID } from "../hooks";
 import React from "react";
 import { useLogger } from "../logger";
 import _ from "lodash";
@@ -20,9 +19,14 @@ interface Props {
 }
 
 const TableStateContext = React.createContext<{
+	searchText: string;
+	isSearchBarVisible: boolean;
+	resizingColumnId: string | null;
 	tableState: TableState;
 	setTableState: React.Dispatch<React.SetStateAction<TableState>>;
-	tableId: string;
+	toggleSearchBar: () => void;
+	setResizingColumnId: React.Dispatch<React.SetStateAction<string | null>>;
+	setSearchText: React.Dispatch<React.SetStateAction<string>>;
 	doCommand: (command: TableStateCommand) => void;
 } | null>(null);
 
@@ -43,13 +47,34 @@ export default function TableStateProvider({
 	children,
 }: Props) {
 	const [tableState, setTableState] = React.useState(initialState);
-	const [tableId] = useUUID();
+
+	const [searchText, setSearchText] = React.useState("");
+	const [isSearchBarVisible, setSearchBarVisible] = React.useState(false);
+	const [resizingColumnId, setResizingColumnId] = React.useState<
+		string | null
+	>(null);
+
 	const [history, setHistory] = React.useState<(TableStateCommand | null)[]>([
 		null,
 	]);
 	const [position, setPosition] = React.useState(0);
+
 	const logger = useLogger();
+
+	//Whenever the table state is updated save it to disk
 	const isMountedRef = React.useRef(false);
+	React.useEffect(() => {
+		if (!isMountedRef.current) {
+			isMountedRef.current = true;
+			return;
+		}
+
+		onSaveState(tableState);
+	}, [tableState, onSaveState]);
+
+	function handleToggleSearchBar() {
+		setSearchBarVisible((prevState) => !prevState);
+	}
 
 	const undo = React.useCallback(() => {
 		if (position > 0) {
@@ -108,15 +133,6 @@ export default function TableStateProvider({
 		};
 	}, [redo, undo]);
 
-	//Whenever the table state is updated save it to disk
-	React.useEffect(() => {
-		if (!isMountedRef.current) {
-			isMountedRef.current = true;
-		} else {
-			onSaveState(tableState);
-		}
-	}, [tableState, onSaveState]);
-
 	const doCommand = React.useCallback(
 		(command: TableStateCommand) => {
 			setHistory((prevState) => {
@@ -142,7 +158,17 @@ export default function TableStateProvider({
 
 	return (
 		<TableStateContext.Provider
-			value={{ tableState, setTableState, doCommand, tableId }}
+			value={{
+				tableState,
+				setTableState,
+				doCommand,
+				isSearchBarVisible,
+				searchText,
+				resizingColumnId,
+				setResizingColumnId,
+				toggleSearchBar: handleToggleSearchBar,
+				setSearchText,
+			}}
 		>
 			{children}
 		</TableStateContext.Provider>
