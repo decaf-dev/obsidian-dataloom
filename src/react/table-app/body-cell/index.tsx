@@ -185,7 +185,8 @@ export default function BodyCell({
 		if (columnType === CellType.CHECKBOX) toggleCheckbox();
 	}
 
-	function handleMenuTriggerClick(e: React.MouseEvent) {
+	function handleMenuTriggerClick(e: MouseEvent) {
+		console.log("handleMenuTriggerClick");
 		if (columnType === CellType.CREATION_TIME) return;
 		if (columnType === CellType.LAST_EDITED_TIME) return;
 

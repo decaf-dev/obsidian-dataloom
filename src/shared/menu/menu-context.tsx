@@ -135,28 +135,33 @@ export default function MenuProvider({ children }: Props) {
 
 	React.useEffect(() => {
 		function handleClick(e: MouseEvent) {
-			const target = e.target as HTMLElement;
-
 			if (isMenuOpen()) {
 				const menu = openMenus.last();
 				if (!menu) throw new Error("Menu is open but no menu exists");
 
 				const { id } = menu;
+				const target = e.target as HTMLElement;
 
 				//If the menu is not mounted, we don't need to do anything
 				//This can happen when a menu changes
 				const isElementMounted = document.contains(target);
 				if (!isElementMounted) return;
 
+				//If we're clicking on the menu then don't close
 				if (target.closest(`.NLT__menu[data-id="${id}"]`) !== null)
 					return;
+				//If we're clicking on the menu then don't close
 				if (
 					target.closest(`.NLT__focusable[data-menu-id="${id}"]`) !==
 					null
 				)
 					return;
 
-				closeTopMenu();
+				const shouldFocusOnClose =
+					target.closest(".NLT__app") !== null ||
+					target.closest(".NLT__menu") !== null;
+
+				closeTopMenu(shouldFocusOnClose);
 			} else {
 				removeFocusVisibleClass();
 			}
@@ -312,7 +317,9 @@ export default function MenuProvider({ children }: Props) {
 			}
 		}
 
-		eventSystem.addEventListener("click", handleClick);
+		//We add a priority of 2, because we want the menu trigger to always
+		//run first
+		eventSystem.addEventListener("click", handleClick, 2);
 		eventSystem.addEventListener("keydown", handleKeyDown);
 		return () => {
 			eventSystem.removeEventListener("click", handleClick);

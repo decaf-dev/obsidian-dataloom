@@ -59,6 +59,10 @@ class NLTEmbeddedPlugin implements PluginValue {
 				container.style.height = "100%";
 				container.style.width = "100%";
 
+				activeView.containerEl.addEventListener("click", (e) => {
+					eventSystem.dispatchEvent("click", e);
+				});
+
 				container.addEventListener("click", (e) => {
 					//We stop propagation so that the embedded link doesn't navigate to the file
 					e.stopPropagation();
