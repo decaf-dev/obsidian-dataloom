@@ -35,7 +35,7 @@
 
             -   [Function cell](footer-cell-function.md)
 
-                -   Columns
+        -   Columns
 
         -   [Adding columns](column-add.md)
 
@@ -65,11 +65,11 @@
 
         -   [Filtering rows](row-filter.md)
 
-    -   Import and Export
+    -   Import and export
 
-        -   [Importing](import-markdown.md)
+        -   [Import](import.md)
 
-        -   [Export](export-csv.md)
+        -   [Export](export.md)
 
     -   Other
 
