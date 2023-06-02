@@ -23,7 +23,6 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 	const { triggerRef, triggerPosition } = useMenuTriggerPosition();
 	useShiftMenu(triggerRef, menuRef, isMenuOpen, {
 		openDirection: "right",
-		topOffset: 4,
 	});
 
 	const { dragData, touchDropZone, setDragData, setTouchDropZone } =
