@@ -15,8 +15,9 @@ import {
 	EVENT_ROW_ADD,
 	EVENT_ROW_DELETE,
 } from "./shared/events";
-import NLTEmbeddedView from "./obsidian/nlt-embedded-render-child";
 import { nltEmbeddedPlugin } from "./obsidian/nlt-embedded-plugin";
+import { getEmbeddedTableLinkEls } from "./obsidian/utils";
+import NLTEmbeddedRenderChild from "./obsidian/nlt-embedded-render-child";
 
 export interface NLTSettings {
 	shouldDebug: boolean;
@@ -92,25 +93,20 @@ export default class NLTPlugin extends Plugin {
 	}
 
 	private registerEmbeddedView() {
+		//This registers a CodeMirror extension. It is used to render the embedded
+		//table in live preview mode.
 		this.registerEditorExtension(nltEmbeddedPlugin);
 
+		//This registers a Markdown post processor. It is used to render the embedded
+		//table in preview mode.
 		this.registerMarkdownPostProcessor((element, context) => {
-			const embeddedLinks = element.querySelectorAll(".internal-embed");
-
-			const embeddedTableLinks: HTMLElement[] = [];
-			for (let i = 0; i < embeddedLinks.length; i++) {
-				const file = embeddedLinks[i];
-				const src = file.getAttribute("src");
-				if (src?.endsWith(".table"))
-					embeddedTableLinks.push(file as HTMLElement);
-			}
-
-			for (let i = 0; i < embeddedTableLinks.length; i++) {
-				const embeddedLink = embeddedTableLinks[i];
+			const embeddedTableLinkEls = getEmbeddedTableLinkEls(element);
+			for (let i = 0; i < embeddedTableLinkEls.length; i++) {
+				const linkEl = embeddedTableLinkEls[i];
 				context.addChild(
-					new NLTEmbeddedView(
-						embeddedLink,
-						embeddedLink.getAttribute("src")!
+					new NLTEmbeddedRenderChild(
+						linkEl,
+						linkEl.getAttribute("src")!
 					)
 				);
 			}

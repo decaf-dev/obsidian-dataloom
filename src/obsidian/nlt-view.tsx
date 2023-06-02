@@ -55,14 +55,14 @@ export class NLTView extends TextFileView {
 		}
 	};
 
-	private renderApp(tableState: TableState) {
+	private renderApp(state: TableState) {
 		if (this.root) {
 			this.root.render(
 				<NotionLikeTable
-					fileName={this.getDisplayText()}
+					fileName={this.file.name}
 					leaf={this.leaf}
 					store={store}
-					tableState={tableState}
+					tableState={state}
 					onSaveState={this.handleSaveTableState}
 				/>
 			);

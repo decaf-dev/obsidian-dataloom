@@ -13,9 +13,10 @@ export const getBlobTypeForExportType = (type: ExportType) => {
 };
 
 export const getExportFileName = (viewFileName: string) => {
-	const replaced = viewFileName.toLowerCase().replace(/ /g, "_");
+	const replaceSlash = viewFileName.replace(/\//g, "-");
+	const replaceSpaces = replaceSlash.replace(/ /g, "_");
 	const timestamp = moment().format("YYYY_MM_DD-HH_mm_ss");
-	return replaced + "-" + timestamp;
+	return replaceSpaces + "-" + timestamp;
 };
 
 export const downloadFile = (
