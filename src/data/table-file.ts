@@ -5,21 +5,24 @@ import { createTableState } from "./table-state-factory";
 import { serializeTableState } from "./serialize-table-state";
 import { DEFAULT_TABLE_NAME, TABLE_EXTENSION } from "./constants";
 
+const getActiveFileNameAndTimestamp = () => {
+	const activeView = app.workspace.getActiveViewOfType(MarkdownView);
+	if (!activeView) return null;
+
+	const file = activeView.file;
+	if (!file) return null;
+
+	return `${file.basename}-${moment().format().replaceAll(":", ".")}`;
+};
+
 const getFileName = (useActiveFileNameAndTimestamp: boolean): string => {
 	let fileName = DEFAULT_TABLE_NAME;
 
-	const activeView = app.workspace.getActiveViewOfType(MarkdownView);
-	if (activeView) {
-		const activeNote = activeView.file;
-		if (activeNote !== undefined) {
-			//If the active note is a new note, use the default name
-			if (useActiveFileNameAndTimestamp) {
-				fileName = `${activeNote.basename}-${moment()
-					.format()
-					.replaceAll(":", ".")}`;
-			}
-		}
+	if (useActiveFileNameAndTimestamp) {
+		const name = getActiveFileNameAndTimestamp();
+		if (name) fileName = name;
 	}
+
 	return `${fileName}.${TABLE_EXTENSION}`;
 };
 
