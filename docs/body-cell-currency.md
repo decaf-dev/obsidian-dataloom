@@ -2,7 +2,9 @@
 
 ## Description
 
-This cell renders a currency value. A currency value may be any positive or negative integer, or a decimal.
+This cell renders a currency value.
+
+A currency value may be any positive or negative integer, or a decimal.
 
 ## Usage
 
@@ -10,4 +12,4 @@ Select a currency cell to open the currency cell edit menu. Type any numeric val
 
 ## Settings
 
-[Currency](https://trey-wallis.github.io/obsidian-notion-like-tables/#/column-settings?id=currency)
+[Currency](column-settings.md?id=currency)
