@@ -7,25 +7,34 @@ import NewRowButton from "./new-row-button";
 import NewColumnButton from "./new-column-button";
 import HeaderCell from "./header-cell";
 
-import { useAppSelector } from "../../redux/global/hooks";
 import { useUUID } from "../../shared/hooks";
 import { CellNotFoundError } from "../../shared/table-state/table-error";
-import { useTableState } from "../../shared/table-state/table-state-context";
+import TableStateProvider, {
+	useTableState,
+} from "../../shared/table-state/table-state-context";
 import { useFilterRules } from "src/shared/table-state/use-filter-rules";
 import { filterBodyRowsBySearch } from "src/shared/table-state/filter-by-search";
 import { useColumn } from "src/shared/table-state/use-column";
 import { useRow } from "src/shared/table-state/use-row";
 import { useCell } from "src/shared/table-state/use-cell";
 import { useTag } from "src/shared/table-state/use-tag";
-
-import "./styles.css";
 import { css } from "@emotion/react";
 import { useEventSystem } from "src/shared/event-system/hooks";
 import { useExportEvents } from "src/shared/export/hooks";
+import MountProvider, { useMountContext } from "src/shared/view-context";
+import { Provider } from "react-redux";
+import MenuProvider from "src/shared/menu/menu-context";
+import DragProvider from "src/shared/dragging/drag-context";
+import { TableState } from "src/shared/types/types";
+import { Store } from "@reduxjs/toolkit";
+import { MarkdownView, WorkspaceLeaf } from "obsidian";
 
-export default function TableApp() {
-	const { searchText } = useAppSelector((state) => state.global);
-	const { tableId, tableState, setTableState } = useTableState();
+import "./styles.css";
+
+const TableApp = () => {
+	const { appId, leaf } = useMountContext();
+	const { tableState, resizingColumnId, searchText, setTableState } =
+		useTableState();
 
 	useEventSystem();
 	useExportEvents(tableState);
@@ -92,9 +101,19 @@ export default function TableApp() {
 		searchText
 	);
 	const visibleColumns = columns.filter((column) => column.isVisible);
+	const isMarkdownView = leaf.view instanceof MarkdownView;
 
 	return (
-		<div id={tableId} className="NLT__app">
+		<div
+			data-id={appId}
+			className="NLT__app"
+			css={css`
+				border-top: 1px solid var(--background-modifier-border);
+				border-bottom: ${isMarkdownView
+					? "1px solid var(--background-modifier-border)"
+					: "unset"};
+			`}
+		>
 			<OptionBar
 				headerCells={headerCells}
 				columns={columns}
@@ -154,6 +173,7 @@ export default function TableApp() {
 											currencyType={currencyType}
 											numColumns={columns.length}
 											columnId={cell.columnId}
+											resizingColumnId={resizingColumnId}
 											width={width}
 											shouldWrapOverflow={
 												shouldWrapOverflow
@@ -400,4 +420,36 @@ export default function TableApp() {
 			/>
 		</div>
 	);
+};
+
+interface Props {
+	leaf: WorkspaceLeaf;
+	fileName: string;
+	store: Store;
+	tableState: TableState;
+	onSaveState: (value: TableState) => void;
 }
+export const NotionLikeTable = ({
+	leaf,
+	store,
+	fileName,
+	tableState,
+	onSaveState,
+}: Props) => {
+	return (
+		<MountProvider leaf={leaf} fileName={fileName}>
+			<Provider store={store}>
+				<TableStateProvider
+					initialState={tableState}
+					onSaveState={onSaveState}
+				>
+					<MenuProvider>
+						<DragProvider>
+							<TableApp />
+						</DragProvider>
+					</MenuProvider>
+				</TableStateProvider>
+			</Provider>
+		</MountProvider>
+	);
+};
