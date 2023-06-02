@@ -19,9 +19,9 @@ import {
 } from "src/shared/table-state/table-error";
 import { isCellTypeFilterable } from "src/shared/table-state/filter-by-rules";
 
-import "./styles.css";
 import { ColumnWithMarkdown } from "./types";
 import Padding from "src/react/shared/padding";
+import { css } from "@emotion/react";
 
 interface SortButtonListProps {
 	headerCells: HeaderCell[];
@@ -112,7 +112,15 @@ export default function OptionBar({
 	const sortedColumn = columns.find((c) => c.sortDir !== SortDir.NONE);
 
 	return (
-		<div className="NLT__option-bar">
+		<div
+			className="NLT__option-bar"
+			css={css`
+				width: 100%;
+				padding-left: var(--nlt-spacing--lg);
+				padding-bottom: var(--nlt-spacing--md);
+				padding-top: var(--nlt-spacing--md);
+			`}
+		>
 			<Padding pl="2xl">
 				<Stack spacing="lg" isVertical>
 					<Wrap

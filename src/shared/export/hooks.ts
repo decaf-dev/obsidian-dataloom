@@ -1,6 +1,6 @@
 import React from "react";
 import { TableState } from "../types/types";
-import { useViewContext } from "../view-context";
+import { useMountContext } from "../view-context";
 import {
 	downloadFile,
 	getBlobTypeForExportType,
@@ -12,16 +12,16 @@ import { exportToMarkdown } from "./export-to-markdown";
 import { EVENT_DOWNLOAD_CSV, EVENT_DOWNLOAD_MARKDOWN } from "../events";
 
 export const useExportEvents = (state: TableState) => {
-	const view = useViewContext();
+	const { fileName } = useMountContext();
 
 	React.useEffect(() => {
 		function handleDownloadCSV() {
 			//Set timeout to wait for the command window to disappear
 			setTimeout(() => {
 				const data = exportToCSV(state);
-				const fileName = getExportFileName(view.getDisplayText());
+				const exportFileName = getExportFileName(fileName);
 				const blobType = getBlobTypeForExportType(ExportType.MARKDOWN);
-				downloadFile(fileName, blobType, data);
+				downloadFile(exportFileName, blobType, data);
 			}, 100);
 		}
 
@@ -29,9 +29,9 @@ export const useExportEvents = (state: TableState) => {
 			//Set timeout to wait for the command window to disappear
 			setTimeout(() => {
 				const data = exportToMarkdown(state);
-				const fileName = getExportFileName(view.getDisplayText());
+				const exportFileName = getExportFileName(fileName);
 				const blobType = getBlobTypeForExportType(ExportType.MARKDOWN);
-				downloadFile(fileName, blobType, data);
+				downloadFile(exportFileName, blobType, data);
 			}, 100);
 		}
 
@@ -44,5 +44,5 @@ export const useExportEvents = (state: TableState) => {
 			app.workspace.off(EVENT_DOWNLOAD_CSV, handleDownloadCSV);
 			app.workspace.off(EVENT_DOWNLOAD_MARKDOWN, handleDownloadMarkdown);
 		};
-	}, [view, state]);
+	}, [fileName, state]);
 };

@@ -10,7 +10,9 @@ import HeaderCell from "./header-cell";
 import { useAppSelector } from "../../redux/global/hooks";
 import { useUUID } from "../../shared/hooks";
 import { CellNotFoundError } from "../../shared/table-state/table-error";
-import { useTableState } from "../../shared/table-state/table-state-context";
+import TableStateProvider, {
+	useTableState,
+} from "../../shared/table-state/table-state-context";
 import { useFilterRules } from "src/shared/table-state/use-filter-rules";
 import { filterBodyRowsBySearch } from "src/shared/table-state/filter-by-search";
 import { useColumn } from "src/shared/table-state/use-column";
@@ -22,8 +24,16 @@ import "./styles.css";
 import { css } from "@emotion/react";
 import { useEventSystem } from "src/shared/event-system/hooks";
 import { useExportEvents } from "src/shared/export/hooks";
+import ViewProvider from "src/shared/view-context";
+import { Provider } from "react-redux";
+import MenuProvider from "src/shared/menu/menu-context";
+import DragProvider from "src/shared/dragging/drag-context";
+import { TableState } from "src/shared/types/types";
+import { NLTView } from "src/obsidian/nlt-view";
+import { Store } from "@reduxjs/toolkit";
+import { MarkdownView } from "obsidian";
 
-export default function TableApp() {
+const TableApp = () => {
 	const { searchText } = useAppSelector((state) => state.global);
 	const { tableId, tableState, setTableState } = useTableState();
 
@@ -400,4 +410,36 @@ export default function TableApp() {
 			/>
 		</div>
 	);
+};
+
+interface Props {
+	view: NLTView | MarkdownView;
+	fileName: string;
+	store: Store;
+	tableState: TableState;
+	onSaveState?: (tableState: TableState) => void;
 }
+export const NotionLikeTable = ({
+	view,
+	store,
+	fileName,
+	tableState,
+	onSaveState,
+}: Props) => {
+	return (
+		<ViewProvider view={view} fileName={fileName}>
+			<Provider store={store}>
+				<TableStateProvider
+					initialState={tableState}
+					onSaveState={onSaveState}
+				>
+					<MenuProvider>
+						<DragProvider>
+							<TableApp />
+						</DragProvider>
+					</MenuProvider>
+				</TableStateProvider>
+			</Provider>
+		</ViewProvider>
+	);
+};

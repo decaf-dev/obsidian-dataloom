@@ -3,13 +3,13 @@ import { MarkdownRenderer } from "obsidian";
 import { NOTION_LIKE_TABLES_VIEW } from "src/obsidian/nlt-view";
 import { handleLinkClick } from "./embed";
 import { replaceNewLinesWithBr } from "./utils";
-import { useViewContext } from "../view-context";
+import { useMountContext } from "../view-context";
 
 export const useRenderMarkdown = (
 	markdown: string,
 	shouldWrapOverflow: boolean
 ) => {
-	const view = useViewContext();
+	const { view } = useMountContext();
 	const containerRef = React.useRef<HTMLDivElement | null>(null);
 	const markdownRef = React.useRef<HTMLDivElement | null>(null);
 
@@ -50,7 +50,8 @@ export const useRenderMarkdown = (
 				const embeds = div.querySelectorAll(".internal-link");
 				embeds.forEach((embed) => {
 					const el = embed as HTMLAnchorElement;
-					const href = el.getAttr("data-href") ?? "";
+					const href = el.getAttr("data-href");
+					if (!href) return;
 
 					const destination = app.metadataCache.getFirstLinkpathDest(
 						href,

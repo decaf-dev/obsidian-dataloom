@@ -1,19 +1,13 @@
 import { TextFileView, WorkspaceLeaf } from "obsidian";
 import { createRoot, Root } from "react-dom/client";
-import { Provider } from "react-redux";
-import App from "../react/table-app";
+import { NotionLikeTable } from "../react/table-app";
 import { store } from "../redux/global/store";
 import { TableState } from "../shared/types/types";
-import TableStateProvider from "../shared/table-state/table-state-context";
-import NLTImportModal from "./nlt-import-modal";
 import {
 	deserializeTableState,
 	serializeTableState,
 } from "src/data/serialize-table-state";
-import MenuProvider from "src/shared/menu/menu-context";
 import { EVENT_REFRESH_VIEW } from "src/shared/events";
-import DragProvider from "src/shared/dragging/drag-context";
-import ViewProvider from "src/shared/view-context";
 import NLTExportModal from "./nlt-export-modal";
 
 export const NOTION_LIKE_TABLES_VIEW = "notion-like-tables";
@@ -66,20 +60,13 @@ export class NLTView extends TextFileView {
 	renderApp(tableState: TableState) {
 		if (this.root) {
 			this.root.render(
-				<ViewProvider view={this}>
-					<Provider store={store}>
-						<TableStateProvider
-							initialState={tableState}
-							onSaveState={this.handleSaveTableState}
-						>
-							<MenuProvider>
-								<DragProvider>
-									<App />
-								</DragProvider>
-							</MenuProvider>
-						</TableStateProvider>
-					</Provider>
-				</ViewProvider>
+				<NotionLikeTable
+					fileName={this.getDisplayText()}
+					view={this}
+					store={store}
+					tableState={tableState}
+					onSaveState={this.handleSaveTableState}
+				/>
 			);
 		}
 	}

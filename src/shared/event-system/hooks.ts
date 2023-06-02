@@ -1,10 +1,11 @@
 import React from "react";
 import { eventSystem } from "./event-system";
 import { NLTView } from "src/obsidian/nlt-view";
-import { useViewContext } from "../view-context";
+import { useMountContext } from "../view-context";
 
 export const useEventSystem = () => {
-	const view = useViewContext();
+	const { view } = useMountContext();
+
 	React.useEffect(() => {
 		function handleKeyDown(e: KeyboardEvent) {
 			const activeView = app.workspace.getActiveViewOfType(NLTView);
