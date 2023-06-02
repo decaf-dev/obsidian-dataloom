@@ -2,7 +2,7 @@ import React from "react";
 import { Position } from "./types";
 import { numToPx } from "../conversion";
 import { NLTView } from "src/obsidian/nlt-view";
-import { Platform } from "obsidian";
+import { MarkdownView, Platform } from "obsidian";
 
 export const getElementPosition = (el: HTMLElement | null): Position => {
 	if (el) {
@@ -48,7 +48,9 @@ export const useShiftMenu = (
 				leftOffset = 0,
 			} = options || {};
 
-			const activeView = app.workspace.getActiveViewOfType(NLTView);
+			const activeView =
+				app.workspace.getActiveViewOfType(NLTView) ??
+				app.workspace.getActiveViewOfType(MarkdownView);
 			if (!activeView) return;
 
 			const viewContentEl = activeView.contentEl;

@@ -9,6 +9,7 @@ import {
 } from "src/data/serialize-table-state";
 import { EVENT_REFRESH_VIEW } from "src/shared/events";
 import NLTExportModal from "./nlt-export-modal";
+import { isEventForThisLeaf } from "src/shared/renderUtils";
 
 export const NOTION_LIKE_TABLES_VIEW = "notion-like-tables";
 
@@ -24,10 +25,7 @@ export class NLTView extends TextFileView {
 		//Only save data if the view is in the active leaf
 		//This prevents the data being saved multiple times if we have
 		//multiple tabs of the same file opens
-		const activeView = this.app.workspace.getActiveViewOfType(NLTView);
-		if (!activeView) return;
-
-		if (activeView.leaf === this.leaf) {
+		if (isEventForThisLeaf(this.leaf)) {
 			const serialized = serializeTableState(tableState);
 			this.data = serialized;
 			await this.requestSave();

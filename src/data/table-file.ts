@@ -8,16 +8,18 @@ import { DEFAULT_TABLE_NAME, TABLE_EXTENSION } from "./constants";
 const getFileName = (useActiveFileNameAndTimestamp: boolean): string => {
 	let fileName = DEFAULT_TABLE_NAME;
 
-	const activeNote = app.workspace.getActiveViewOfType(MarkdownView)?.file;
-	if (activeNote !== undefined) {
-		//If the active note is a new note, use the default name
-		if (useActiveFileNameAndTimestamp) {
-			fileName = `${activeNote.basename}-${moment()
-				.format()
-				.replaceAll(":", ".")}`;
+	const activeView = app.workspace.getActiveViewOfType(MarkdownView);
+	if (activeView) {
+		const activeNote = activeView.file;
+		if (activeNote !== undefined) {
+			//If the active note is a new note, use the default name
+			if (useActiveFileNameAndTimestamp) {
+				fileName = `${activeNote.basename}-${moment()
+					.format()
+					.replaceAll(":", ".")}`;
+			}
 		}
 	}
-
 	return `${fileName}.${TABLE_EXTENSION}`;
 };
 
