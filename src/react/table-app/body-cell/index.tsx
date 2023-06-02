@@ -186,18 +186,18 @@ export default function BodyCell({
 	}
 
 	function handleMenuTriggerClick(e: React.MouseEvent) {
+		if (columnType === CellType.CREATION_TIME) return;
+		if (columnType === CellType.LAST_EDITED_TIME) return;
+
 		if (columnType === CellType.CHECKBOX) {
 			toggleCheckbox();
-		} else if (
-			columnType !== CellType.CREATION_TIME &&
-			columnType !== CellType.LAST_EDITED_TIME
-		) {
-			const el = e.target as HTMLInputElement;
-
-			//If we clicked on the link for a file or tag, return
-			if (el.nodeName === "A") return;
-			openMenu(menu);
+			return;
 		}
+
+		const el = e.target as HTMLInputElement;
+		//If we clicked on the link for a file or tag, return
+		if (el.nodeName === "A") return;
+		openMenu(menu);
 	}
 
 	function handleTagAdd(markdown: string, color: Color) {

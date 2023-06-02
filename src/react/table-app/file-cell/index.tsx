@@ -19,6 +19,7 @@ export default function FileCell({ markdown, shouldWrapOverflow }: Props) {
 				css={css`
 					p {
 						margin: 0;
+						text-align: left;
 					}
 				`}
 				ref={(node) => {
