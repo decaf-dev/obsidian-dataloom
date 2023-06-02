@@ -1,4 +1,4 @@
-# Embedding Tables
+# Embedding tables
 
 A table may be embedded into a note by using the [embedded file syntax](https://help.obsidian.md/Linking+notes+and+files/Embedding+files). For example, to embed a table called `Untitled.table` you would use the syntax `![[Untitled.table]]`.
 
