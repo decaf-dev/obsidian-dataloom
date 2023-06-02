@@ -8,7 +8,7 @@ import {
 } from "./arithmetic";
 import { CellType, CurrencyType, NumberFunction } from "src/shared/types/types";
 import { round2Digits } from "./utils";
-import { getCurrencyCellContent } from "src/shared/export/utils";
+import { getCurrencyCellContent } from "src/shared/export/cell-content";
 
 export const getNumberFunctionContent = (
 	values: number[],

@@ -1,13 +1,17 @@
 import { TableState } from "src/shared/types/types";
 import Stack from "../shared/stack";
 import React from "react";
-import { ExportType } from "./types";
+import { ExportType } from "../../shared/export/types";
 import ExportTypeSelect from "./export-type-select";
 import ContentTextArea from "./content-textarea";
 import { exportToMarkdown } from "src/shared/export/export-to-markdown";
-import { Notice, moment } from "obsidian";
+import { Notice } from "obsidian";
 import Padding from "../shared/padding";
-import { downloadFile, getBlobTypeForExportType } from "./utils";
+import {
+	downloadFile,
+	getBlobTypeForExportType,
+	getExportFileName,
+} from "../../shared/export/download-utils";
 import { exportToCSV } from "src/shared/export/export-to-csv";
 import { css } from "@emotion/react";
 
@@ -27,9 +31,7 @@ export function ExportApp({ tableState, viewDisplayText }: Props) {
 	}
 
 	function handleDownloadClick() {
-		const modifiedTitle = viewDisplayText.toLowerCase().replace(/ /g, "_");
-		const time = moment().format("YYYY_MM_DD-HH_mm_ss");
-		const fileName = `${modifiedTitle}-${time}`;
+		const fileName = getExportFileName(viewDisplayText);
 		const blobType = getBlobTypeForExportType(exportType);
 		downloadFile(fileName, blobType, content);
 	}

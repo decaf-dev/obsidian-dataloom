@@ -1,5 +1,5 @@
 import { DateFormat } from "src/shared/types/types";
-import { getDateCellContent } from "src/shared/export/utils";
+import { getDateCellContent } from "src/shared/export/cell-content";
 
 import "./styles.css";
 

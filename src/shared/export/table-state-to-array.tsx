@@ -5,7 +5,7 @@ import {
 	HeaderCell,
 	TableState,
 } from "../types/types";
-import { getCellContent } from "./utils";
+import { getCellContent } from "./cell-content";
 import { ColumNotFoundError } from "../table-state/table-error";
 
 const serializeHeaderCells = (cells: HeaderCell[]): string[] => {

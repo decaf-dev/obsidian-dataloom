@@ -1,4 +1,4 @@
-import { Plugin, TAbstractFile, TFolder } from "obsidian";
+import { Plugin, TFolder } from "obsidian";
 
 import NLTSettingsTab from "./obsidian/nlt-settings-tab";
 
@@ -10,6 +10,8 @@ import { createTableFile } from "src/data/table-file";
 import {
 	EVENT_COLUMN_ADD,
 	EVENT_COLUMN_DELETE,
+	EVENT_DOWNLOAD_CSV,
+	EVENT_DOWNLOAD_MARKDOWN,
 	EVENT_ROW_ADD,
 	EVENT_ROW_DELETE,
 } from "./shared/events";
@@ -205,9 +207,8 @@ export default class NLTPlugin extends Plugin {
 			checkCallback: (checking: boolean) => {
 				const view = this.app.workspace.getActiveViewOfType(NLTView);
 				if (view) {
-					if (!checking) {
+					if (!checking)
 						this.app.workspace.trigger(EVENT_ROW_ADD, view.leaf);
-					}
 					return true;
 				}
 				return false;
@@ -223,6 +224,42 @@ export default class NLTPlugin extends Plugin {
 				if (view) {
 					if (!checking) {
 						this.app.workspace.trigger(EVENT_ROW_DELETE, view.leaf);
+					}
+					return true;
+				}
+				return false;
+			},
+		});
+
+		this.addCommand({
+			id: "nlt-export-markdown",
+			name: "Export as markdown",
+			checkCallback: (checking: boolean) => {
+				const view = this.app.workspace.getActiveViewOfType(NLTView);
+				if (view) {
+					if (!checking) {
+						this.app.workspace.trigger(
+							EVENT_DOWNLOAD_MARKDOWN,
+							view.leaf
+						);
+					}
+					return true;
+				}
+				return false;
+			},
+		});
+
+		this.addCommand({
+			id: "nlt-export-csv",
+			name: "Export as CSV",
+			checkCallback: (checking: boolean) => {
+				const view = this.app.workspace.getActiveViewOfType(NLTView);
+				if (view) {
+					if (!checking) {
+						this.app.workspace.trigger(
+							EVENT_DOWNLOAD_CSV,
+							view.leaf
+						);
 					}
 					return true;
 				}

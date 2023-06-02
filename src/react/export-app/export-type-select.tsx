@@ -1,5 +1,5 @@
 import Stack from "src/react/shared/stack";
-import { ExportType } from "./types";
+import { ExportType } from "../../shared/export/types";
 
 interface Props {
 	value: ExportType;

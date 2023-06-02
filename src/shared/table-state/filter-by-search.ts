@@ -10,14 +10,10 @@ import {
 } from "src/shared/types/types";
 import { ColumNotFoundError, RowNotFoundError } from "./table-error";
 import {
-	unixTimeToDateString,
-	unixTimeToDateTimeString,
-} from "../date/date-conversion";
-import {
 	getCurrencyCellContent,
 	getDateCellContent,
 	getTimeCellContent,
-} from "../export/utils";
+} from "../export/cell-content";
 
 export const filterBodyRowsBySearch = (
 	tableState: TableState,

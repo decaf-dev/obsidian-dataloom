@@ -1,3 +1,4 @@
+import { moment } from "obsidian";
 import { ExportType } from "./types";
 
 export const getBlobTypeForExportType = (type: ExportType) => {
@@ -9,6 +10,12 @@ export const getBlobTypeForExportType = (type: ExportType) => {
 		default:
 			throw new Error(`Unknown export type: ${type}`);
 	}
+};
+
+export const getExportFileName = (viewDisplayText: string) => {
+	const replaced = viewDisplayText.toLowerCase().replace(/ /g, "_");
+	const timestamp = moment().format("YYYY_MM_DD-HH_mm_ss");
+	return replaced + "-" + timestamp;
 };
 
 export const downloadFile = (
