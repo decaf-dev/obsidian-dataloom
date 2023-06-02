@@ -1,4 +1,4 @@
-# Body Cell
+# Body cell
 
 A body cell is a cell that is rendered in the `tbody` HTML tag.
 
