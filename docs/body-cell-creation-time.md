@@ -10,4 +10,4 @@ This value is uneditable. It is set when you create the row.
 
 ## Settings
 
-[Date format](https://trey-wallis.github.io/obsidian-notion-like-tables/#/column-settings?id=date-format)
+[Date format](column-settings.md?id=date-format)

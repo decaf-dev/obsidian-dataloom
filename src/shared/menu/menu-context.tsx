@@ -21,6 +21,7 @@ import {
 	moveFocusUp,
 } from "./arrow-move-focus";
 import { SortDir } from "../types/types";
+import { useMountContext } from "../view-context";
 
 interface ContextProps {
 	openMenus: Menu[];
@@ -53,10 +54,8 @@ export default function MenuProvider({ children }: Props) {
 	 */
 	const [openMenus, setOpenMenus] = React.useState<Menu[]>([]);
 
-	/**
-	 * A reference to the current table state
-	 */
-	const { tableId, tableState } = useTableState();
+	const { tableState } = useTableState();
+	const { appId } = useMountContext();
 
 	const [menuCloseRequestTime, setMenuCloseRequestTime] = React.useState<
 		number | null
@@ -136,28 +135,33 @@ export default function MenuProvider({ children }: Props) {
 
 	React.useEffect(() => {
 		function handleClick(e: MouseEvent) {
-			const target = e.target as HTMLElement;
-
 			if (isMenuOpen()) {
 				const menu = openMenus.last();
 				if (!menu) throw new Error("Menu is open but no menu exists");
 
 				const { id } = menu;
+				const target = e.target as HTMLElement;
 
 				//If the menu is not mounted, we don't need to do anything
 				//This can happen when a menu changes
 				const isElementMounted = document.contains(target);
 				if (!isElementMounted) return;
 
-				if (target.closest(`.NLT__menu[data-menu-id="${id}"]`) !== null)
+				//If we're clicking on the menu then don't close
+				if (target.closest(`.NLT__menu[data-id="${id}"]`) !== null)
 					return;
+				//If we're clicking on the menu then don't close
 				if (
 					target.closest(`.NLT__focusable[data-menu-id="${id}"]`) !==
 					null
 				)
 					return;
 
-				closeTopMenu();
+				const shouldFocusOnClose =
+					target.closest(".NLT__app") !== null ||
+					target.closest(".NLT__menu") !== null;
+
+				closeTopMenu(shouldFocusOnClose);
 			} else {
 				removeFocusVisibleClass();
 			}
@@ -231,8 +235,10 @@ export default function MenuProvider({ children }: Props) {
 			const focusedEl = document.activeElement;
 			if (!focusedEl) return;
 
-			const tableEl = document.getElementById(tableId);
-			if (!tableEl) throw new Error("Table element not found");
+			const tableEl = document.querySelector(
+				`.NLT__app[data-id="${appId}"]`
+			);
+			if (!tableEl) throw new Error("Table el not found");
 
 			const focusableEls = tableEl.querySelectorAll(".NLT__focusable");
 			const index = Array.from(focusableEls).indexOf(focusedEl);
@@ -311,13 +317,15 @@ export default function MenuProvider({ children }: Props) {
 			}
 		}
 
-		eventSystem.addEventListener("click", handleClick);
+		//We add a priority of 2, because we want the menu trigger to always
+		//run first
+		eventSystem.addEventListener("click", handleClick, 2);
 		eventSystem.addEventListener("keydown", handleKeyDown);
 		return () => {
 			eventSystem.removeEventListener("click", handleClick);
 			eventSystem.removeEventListener("keydown", handleKeyDown);
 		};
-	}, [isMenuOpen, closeTopMenu, openMenu, openMenus, tableId, tableState]);
+	}, [isMenuOpen, closeTopMenu, openMenu, openMenus, appId, tableState]);
 
 	return (
 		<MenuContext.Provider

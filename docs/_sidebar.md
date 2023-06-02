@@ -35,7 +35,7 @@
 
             -   [Function cell](footer-cell-function.md)
 
-        -   Columns
+    -   Columns
 
         -   [Adding columns](column-add.md)
 
@@ -73,13 +73,15 @@
 
     -   Other
 
-        -   [Keyboard navigation focus system](keyboard-navigation-focus-system.md)
+        -   [Embed tables into notes](embed-tables.md)
 
-        -   [Undo and redo](undo-and-redo.md)
-
-        -   [Virtualization](virtualization.md)
+        -   [Undo and redo](undo-redo.md)
 
         -   [Settings](settings.md)
+
+        -   [Keyboard navigation focus system](keyboard-navigation-focus-system.md)
+
+        -   [Virtualization](virtualization.md)
 
 -   Guides
 

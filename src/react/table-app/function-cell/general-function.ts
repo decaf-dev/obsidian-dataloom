@@ -146,7 +146,8 @@ const getCellValues = (
 		cellType === CellType.TEXT ||
 		cellType === CellType.NUMBER ||
 		cellType === CellType.CURRENCY ||
-		cellType === CellType.CHECKBOX
+		cellType === CellType.CHECKBOX ||
+		cellType === CellType.FILE
 	) {
 		return [cell.markdown];
 	} else if (cellType === CellType.DATE) {
@@ -171,7 +172,8 @@ const countCellValues = (cell: BodyCell, cellType: CellType): number => {
 	if (
 		cellType === CellType.TEXT ||
 		cellType === CellType.NUMBER ||
-		cellType === CellType.CURRENCY
+		cellType === CellType.CURRENCY ||
+		cellType === CellType.FILE
 	) {
 		return cell.markdown === "" ? 0 : 1;
 	} else if (cellType === CellType.DATE) {
@@ -194,7 +196,8 @@ const isCellContentEmpty = (cell: BodyCell, cellType: CellType): boolean => {
 	if (
 		cellType === CellType.TEXT ||
 		cellType === CellType.NUMBER ||
-		cellType === CellType.CURRENCY
+		cellType === CellType.CURRENCY ||
+		cellType === CellType.FILE
 	) {
 		return cell.markdown === "";
 	} else if (cellType === CellType.DATE) {

@@ -1,14 +1,19 @@
+import { MarkdownView, WorkspaceLeaf } from "obsidian";
 import React from "react";
-
 import { NLTView } from "src/obsidian/nlt-view";
+import { useUUID } from "./hooks";
 
-const ViewContext = React.createContext<NLTView | null>(null);
+const MountContext = React.createContext<{
+	fileName: string;
+	leaf: WorkspaceLeaf;
+	appId: string;
+} | null>(null);
 
-export const useViewContext = () => {
-	const value = React.useContext(ViewContext);
+export const useMountContext = () => {
+	const value = React.useContext(MountContext);
 	if (value === null) {
 		throw new Error(
-			"useViewContext() called without a <DragProvider /> in the tree."
+			"useMountContext() called without a <MountProvider /> in the tree."
 		);
 	}
 
@@ -16,10 +21,16 @@ export const useViewContext = () => {
 };
 
 interface Props {
-	view: NLTView;
+	fileName: string;
+	leaf: WorkspaceLeaf;
 	children: React.ReactNode;
 }
 
-export default function ViewProvider({ view, children }: Props) {
-	return <ViewContext.Provider value={view}>{children}</ViewContext.Provider>;
+export default function MountProvider({ fileName, leaf, children }: Props) {
+	const appId = useUUID();
+	return (
+		<MountContext.Provider value={{ fileName, leaf, appId }}>
+			{children}
+		</MountContext.Provider>
+	);
 }

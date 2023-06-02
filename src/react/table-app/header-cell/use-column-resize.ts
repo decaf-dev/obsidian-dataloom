@@ -1,16 +1,15 @@
 import { useRef } from "react";
-import { setResizingColumnId } from "src/redux/global/global-slice";
-import { useAppDispatch } from "src/redux/global/hooks";
+import { useTableState } from "src/shared/table-state/table-state-context";
 
 export const useColumnResize = (
 	columnId: string,
 	onMove: (dist: number) => void
 ) => {
+	const { setResizingColumnId } = useTableState();
+
 	//The x position of the mouse when it is pressed down
 	//This should be the same for both mouse and touch events
 	const mouseDownX = useRef(0);
-
-	const dispatch = useAppDispatch();
 
 	function handleMouseMove(e: MouseEvent) {
 		const dist = e.pageX - mouseDownX.current;
@@ -31,7 +30,7 @@ export const useColumnResize = (
 
 		//Prevents the column menu from opening when the user releases the mouse
 		setTimeout(() => {
-			dispatch(setResizingColumnId(null));
+			setResizingColumnId(null);
 		}, 100);
 	}
 
@@ -41,7 +40,7 @@ export const useColumnResize = (
 
 		//Prevents the column menu from opening when the user releases the mouse
 		setTimeout(() => {
-			dispatch(setResizingColumnId(null));
+			setResizingColumnId(null);
 		}, 100);
 	}
 
@@ -56,7 +55,7 @@ export const useColumnResize = (
 		//Set the current mouse position, this will be used to calculate the distance
 		//the touch has moved
 		mouseDownX.current = e.touches[0].pageX;
-		dispatch(setResizingColumnId(columnId));
+		setResizingColumnId(columnId);
 	}
 
 	function handleMouseDown(e: React.MouseEvent) {
@@ -73,7 +72,7 @@ export const useColumnResize = (
 		//Set the current mouse position, this will be used to calculate the distance
 		//the mouse has moved
 		mouseDownX.current = e.pageX;
-		dispatch(setResizingColumnId(columnId));
+		setResizingColumnId(columnId);
 	}
 
 	return { handleMouseDown, handleTouchStart };
