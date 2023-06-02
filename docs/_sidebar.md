@@ -73,7 +73,7 @@
 
     -   Other
 
-        -   [Embed tables into notes](embed-tables.md)
+        -   [Embeding tables into notes](embedding-tables.md)
 
         -   [Undo and redo](undo-redo.md)
 
