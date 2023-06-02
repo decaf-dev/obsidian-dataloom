@@ -1,6 +1,5 @@
 import { TableState } from "../types/types";
 import TableStateCommand from "./table-state-command";
-import { useUUID } from "../hooks";
 import React from "react";
 import { useLogger } from "../logger";
 import _ from "lodash";
@@ -22,7 +21,6 @@ interface Props {
 const TableStateContext = React.createContext<{
 	tableState: TableState;
 	setTableState: React.Dispatch<React.SetStateAction<TableState>>;
-	tableId: string;
 	doCommand: (command: TableStateCommand) => void;
 } | null>(null);
 
@@ -43,7 +41,6 @@ export default function TableStateProvider({
 	children,
 }: Props) {
 	const [tableState, setTableState] = React.useState(initialState);
-	const [tableId] = useUUID();
 	const [history, setHistory] = React.useState<(TableStateCommand | null)[]>([
 		null,
 	]);
@@ -142,7 +139,7 @@ export default function TableStateProvider({
 
 	return (
 		<TableStateContext.Provider
-			value={{ tableState, setTableState, doCommand, tableId }}
+			value={{ tableState, setTableState, doCommand }}
 		>
 			{children}
 		</TableStateContext.Provider>

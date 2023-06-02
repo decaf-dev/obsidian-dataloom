@@ -1,10 +1,12 @@
 import { MarkdownView } from "obsidian";
 import React from "react";
 import { NLTView } from "src/obsidian/nlt-view";
+import { useUUID } from "./hooks";
 
 const MountContext = React.createContext<{
 	fileName: string;
 	view: NLTView | MarkdownView;
+	appId: string;
 } | null>(null);
 
 export const useMountContext = () => {
@@ -25,8 +27,9 @@ interface Props {
 }
 
 export default function MountProvider({ fileName, view, children }: Props) {
+	const appId = useUUID();
 	return (
-		<MountContext.Provider value={{ fileName, view }}>
+		<MountContext.Provider value={{ fileName, view, appId }}>
 			{children}
 		</MountContext.Provider>
 	);

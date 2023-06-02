@@ -187,21 +187,6 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 						onClick={handleClick}
 						onMouseDown={handleMouseDown}
 					/>
-					{/* <div
-						className="NLT__focusable"
-						css={css`
-							display: flex;
-							justify-content: center;
-							width: 35px;
-						`}
-						// aria-label="Drag to move or click to open"
-						// data-menu-id={menu.id}
-						// data-menu-should-request-on-close={false}
-						// onClick={handleClick}
-						// onMouseDown={handleMouseDown}
-					>
-						<Icon lucideId="grip-vertical" />
-					</div> */}
 				</div>
 			</div>
 			<RowMenu

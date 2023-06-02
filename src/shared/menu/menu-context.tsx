@@ -21,6 +21,7 @@ import {
 	moveFocusUp,
 } from "./arrow-move-focus";
 import { SortDir } from "../types/types";
+import { useMountContext } from "../view-context";
 
 interface ContextProps {
 	openMenus: Menu[];
@@ -53,10 +54,8 @@ export default function MenuProvider({ children }: Props) {
 	 */
 	const [openMenus, setOpenMenus] = React.useState<Menu[]>([]);
 
-	/**
-	 * A reference to the current table state
-	 */
-	const { tableId, tableState } = useTableState();
+	const { tableState } = useTableState();
+	const { appId } = useMountContext();
 
 	const [menuCloseRequestTime, setMenuCloseRequestTime] = React.useState<
 		number | null
@@ -149,7 +148,7 @@ export default function MenuProvider({ children }: Props) {
 				const isElementMounted = document.contains(target);
 				if (!isElementMounted) return;
 
-				if (target.closest(`.NLT__menu[data-menu-id="${id}"]`) !== null)
+				if (target.closest(`.NLT__menu[data-id="${id}"]`) !== null)
 					return;
 				if (
 					target.closest(`.NLT__focusable[data-menu-id="${id}"]`) !==
@@ -231,8 +230,10 @@ export default function MenuProvider({ children }: Props) {
 			const focusedEl = document.activeElement;
 			if (!focusedEl) return;
 
-			const tableEl = document.getElementById(tableId);
-			if (!tableEl) throw new Error("Table element not found");
+			const tableEl = document.querySelector(
+				`.NLT__app[data-id="${appId}"]`
+			);
+			if (!tableEl) throw new Error("Table el not found");
 
 			const focusableEls = tableEl.querySelectorAll(".NLT__focusable");
 			const index = Array.from(focusableEls).indexOf(focusedEl);
@@ -317,7 +318,7 @@ export default function MenuProvider({ children }: Props) {
 			eventSystem.removeEventListener("click", handleClick);
 			eventSystem.removeEventListener("keydown", handleKeyDown);
 		};
-	}, [isMenuOpen, closeTopMenu, openMenu, openMenus, tableId, tableState]);
+	}, [isMenuOpen, closeTopMenu, openMenu, openMenus, appId, tableState]);
 
 	return (
 		<MenuContext.Provider

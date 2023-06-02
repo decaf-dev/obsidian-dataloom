@@ -24,7 +24,7 @@ import "./styles.css";
 import { css } from "@emotion/react";
 import { useEventSystem } from "src/shared/event-system/hooks";
 import { useExportEvents } from "src/shared/export/hooks";
-import ViewProvider from "src/shared/view-context";
+import ViewProvider, { useMountContext } from "src/shared/view-context";
 import { Provider } from "react-redux";
 import MenuProvider from "src/shared/menu/menu-context";
 import DragProvider from "src/shared/dragging/drag-context";
@@ -35,7 +35,8 @@ import { MarkdownView } from "obsidian";
 
 const TableApp = () => {
 	const { searchText } = useAppSelector((state) => state.global);
-	const { tableId, tableState, setTableState } = useTableState();
+	const { appId } = useMountContext();
+	const { tableState, setTableState } = useTableState();
 
 	useEventSystem();
 	useExportEvents(tableState);
@@ -104,7 +105,7 @@ const TableApp = () => {
 	const visibleColumns = columns.filter((column) => column.isVisible);
 
 	return (
-		<div id={tableId} className="NLT__app">
+		<div data-id={appId} className="NLT__app">
 			<OptionBar
 				headerCells={headerCells}
 				columns={columns}
