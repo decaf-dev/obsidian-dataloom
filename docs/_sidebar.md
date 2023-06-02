@@ -75,7 +75,7 @@
 
         -   [Keyboard navigation focus system](keyboard-navigation-focus-system.md)
 
-        -   [Undo and redo](undo-and-redo.md)
+        -   [Undo and redo](undo-redo.md)
 
         -   [Virtualization](virtualization.md)
 
