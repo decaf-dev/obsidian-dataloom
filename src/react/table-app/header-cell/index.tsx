@@ -28,6 +28,7 @@ interface Props {
 	rowId: string;
 	columnId: string;
 	width: string;
+	resizingColumnId: string | null;
 	numColumns: number;
 	dateFormat: DateFormat;
 	markdown: string;
@@ -53,6 +54,7 @@ export default function HeaderCell({
 	dateFormat,
 	markdown,
 	shouldWrapOverflow,
+	resizingColumnId,
 	type,
 	sortDir,
 	numColumns,
@@ -70,8 +72,6 @@ export default function HeaderCell({
 	);
 	const { triggerPosition, triggerRef } = useMenuTriggerPosition();
 	useShiftMenu(triggerRef, menuRef, isMenuOpen);
-
-	const { resizingColumnId } = useAppSelector((state) => state.global);
 
 	const [forceUpdateTime, forceUpdate] = useForceUpdate();
 

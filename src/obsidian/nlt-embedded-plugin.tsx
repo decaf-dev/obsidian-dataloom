@@ -1,9 +1,4 @@
-import {
-	ViewUpdate,
-	PluginValue,
-	EditorView,
-	ViewPlugin,
-} from "@codemirror/view";
+import { PluginValue, ViewPlugin } from "@codemirror/view";
 
 import { MarkdownView } from "obsidian";
 import { Root, createRoot } from "react-dom/client";

@@ -7,7 +7,6 @@ import NewRowButton from "./new-row-button";
 import NewColumnButton from "./new-column-button";
 import HeaderCell from "./header-cell";
 
-import { useAppSelector } from "../../redux/global/hooks";
 import { useUUID } from "../../shared/hooks";
 import { CellNotFoundError } from "../../shared/table-state/table-error";
 import TableStateProvider, {
@@ -19,8 +18,6 @@ import { useColumn } from "src/shared/table-state/use-column";
 import { useRow } from "src/shared/table-state/use-row";
 import { useCell } from "src/shared/table-state/use-cell";
 import { useTag } from "src/shared/table-state/use-tag";
-
-import "./styles.css";
 import { css } from "@emotion/react";
 import { useEventSystem } from "src/shared/event-system/hooks";
 import { useExportEvents } from "src/shared/export/hooks";
@@ -33,10 +30,12 @@ import { NLTView } from "src/obsidian/nlt-view";
 import { Store } from "@reduxjs/toolkit";
 import { MarkdownView } from "obsidian";
 
+import "./styles.css";
+
 const TableApp = () => {
-	const { searchText } = useAppSelector((state) => state.global);
 	const { appId, view } = useMountContext();
-	const { tableState, setTableState } = useTableState();
+	const { tableState, resizingColumnId, searchText, setTableState } =
+		useTableState();
 
 	useEventSystem();
 	useExportEvents(tableState);
@@ -175,6 +174,7 @@ const TableApp = () => {
 											currencyType={currencyType}
 											numColumns={columns.length}
 											columnId={cell.columnId}
+											resizingColumnId={resizingColumnId}
 											width={width}
 											shouldWrapOverflow={
 												shouldWrapOverflow

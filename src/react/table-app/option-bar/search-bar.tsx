@@ -1,16 +1,13 @@
 import { Button } from "src/react/shared/button";
 import Icon from "src/react/shared/icon";
 import Stack from "src/react/shared/stack";
-import { setSearchText, toggleSearchBar } from "src/redux/global/global-slice";
-import { useAppDispatch, useAppSelector } from "src/redux/global/hooks";
 
 import { css } from "@emotion/react";
+import { useTableState } from "src/shared/table-state/table-state-context";
 
 export default function SearchBar() {
-	const { searchText, isSearchBarVisible } = useAppSelector(
-		(state) => state.global
-	);
-	const dispatch = useAppDispatch();
+	const { searchText, setSearchText, isSearchBarVisible, toggleSearchBar } =
+		useTableState();
 
 	return (
 		<Stack spacing="lg">
@@ -28,13 +25,13 @@ export default function SearchBar() {
 					type="text"
 					placeholder="Type to search..."
 					value={searchText}
-					onChange={(e) => dispatch(setSearchText(e.target.value))}
+					onChange={(e) => setSearchText(e.target.value)}
 				/>
 			)}
 			<Button
 				icon={<Icon lucideId="search" />}
 				ariaLabel="Search"
-				onClick={() => dispatch(toggleSearchBar())}
+				onClick={() => toggleSearchBar()}
 			/>
 		</Stack>
 	);
