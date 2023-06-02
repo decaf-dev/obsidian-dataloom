@@ -21,11 +21,14 @@ import { useTag } from "src/shared/table-state/use-tag";
 import "./styles.css";
 import { css } from "@emotion/react";
 import { useEventSystem } from "src/shared/event-system/hooks";
+import { useExportEvents } from "src/shared/export/hooks";
 
 export default function TableApp() {
 	const { searchText } = useAppSelector((state) => state.global);
 	const { tableId, tableState, setTableState } = useTableState();
+
 	useEventSystem();
+	useExportEvents(tableState);
 
 	const {
 		handleRuleAddClick,
