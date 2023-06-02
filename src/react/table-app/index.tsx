@@ -35,7 +35,7 @@ import { MarkdownView } from "obsidian";
 
 const TableApp = () => {
 	const { searchText } = useAppSelector((state) => state.global);
-	const { appId } = useMountContext();
+	const { appId, view } = useMountContext();
 	const { tableState, setTableState } = useTableState();
 
 	useEventSystem();
@@ -103,9 +103,19 @@ const TableApp = () => {
 		searchText
 	);
 	const visibleColumns = columns.filter((column) => column.isVisible);
+	const isMarkdownView = view instanceof MarkdownView;
 
 	return (
-		<div data-id={appId} className="NLT__app">
+		<div
+			data-id={appId}
+			className="NLT__app"
+			css={css`
+				border-top: 1px solid var(--background-modifier-border);
+				border-bottom: ${isMarkdownView
+					? "1px solid var(--background-modifier-border)"
+					: "unset"};
+			`}
+		>
 			<OptionBar
 				headerCells={headerCells}
 				columns={columns}
