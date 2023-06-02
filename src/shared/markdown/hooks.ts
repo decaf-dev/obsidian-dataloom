@@ -34,6 +34,8 @@ export const useRenderMarkdown = (
 
 			//We need to attach this class so that the `is-unresolved` link renders properly by Obsidian
 			div.classList.add("markdown-rendered");
+
+			//TODO what do this do?
 			div.detach();
 
 			try {

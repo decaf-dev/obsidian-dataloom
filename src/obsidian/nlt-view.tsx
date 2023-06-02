@@ -14,6 +14,7 @@ import MenuProvider from "src/shared/menu/menu-context";
 import { EVENT_REFRESH_VIEW } from "src/shared/events";
 import DragProvider from "src/shared/dragging/drag-context";
 import ViewProvider from "src/shared/view-context";
+import NLTExportModal from "./nlt-export-modal";
 
 export const NOTION_LIKE_TABLES_VIEW = "notion-like-tables";
 
@@ -113,11 +114,13 @@ export class NLTView extends TextFileView {
 			(this.app as any).setting.openTabById("notion-like-tables");
 		});
 
-		//this.addAction("download", "Export", () => {});
-
-		this.addAction("import", "Import", () => {
-			new NLTImportModal(this.app).open();
+		this.addAction("download", "Export", () => {
+			new NLTExportModal(this.app, this.getDisplayText()).open();
 		});
+
+		// this.addAction("import", "Import", () => {
+		// 	new NLTImportModal(this.app).open();
+		// });
 
 		this.app.workspace.on(
 			// @ts-expect-error: not valid event
