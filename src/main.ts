@@ -99,18 +99,18 @@ export default class NLTPlugin extends Plugin {
 
 		//This registers a Markdown post processor. It is used to render the embedded
 		//table in preview mode.
-		this.registerMarkdownPostProcessor((element, context) => {
-			const embeddedTableLinkEls = getEmbeddedTableLinkEls(element);
-			for (let i = 0; i < embeddedTableLinkEls.length; i++) {
-				const linkEl = embeddedTableLinkEls[i];
-				context.addChild(
-					new NLTEmbeddedRenderChild(
-						linkEl,
-						linkEl.getAttribute("src")!
-					)
-				);
-			}
-		});
+		// this.registerMarkdownPostProcessor((element, context) => {
+		// 	const embeddedTableLinkEls = getEmbeddedTableLinkEls(element);
+		// 	for (let i = 0; i < embeddedTableLinkEls.length; i++) {
+		// 		const linkEl = embeddedTableLinkEls[i];
+		// 		context.addChild(
+		// 			new NLTEmbeddedRenderChild(
+		// 				linkEl,
+		// 				linkEl.getAttribute("src")!
+		// 			)
+		// 		);
+		// 	}
+		// });
 	}
 
 	private async newTableFile(contextMenuFolderPath: string | null) {
