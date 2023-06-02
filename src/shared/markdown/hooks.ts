@@ -1,6 +1,6 @@
 import React from "react";
-import { MarkdownRenderer } from "obsidian";
-import { NOTION_LIKE_TABLES_VIEW } from "src/obsidian/nlt-view";
+import { MarkdownRenderer, MarkdownView } from "obsidian";
+import { NLTView, NOTION_LIKE_TABLES_VIEW } from "src/obsidian/nlt-view";
 import { handleLinkClick } from "./embed";
 import { replaceNewLinesWithBr } from "./utils";
 import { useMountContext } from "../view-context";
@@ -9,7 +9,7 @@ export const useRenderMarkdown = (
 	markdown: string,
 	shouldWrapOverflow: boolean
 ) => {
-	const { view } = useMountContext();
+	const { leaf } = useMountContext();
 	const containerRef = React.useRef<HTMLDivElement | null>(null);
 	const markdownRef = React.useRef<HTMLDivElement | null>(null);
 
@@ -40,38 +40,42 @@ export const useRenderMarkdown = (
 
 			try {
 				const updated = replaceNewLinesWithBr(markdown);
-				await MarkdownRenderer.renderMarkdown(
-					updated,
-					div,
-					view.file.path,
-					view
-				);
-
-				const embeds = div.querySelectorAll(".internal-link");
-				embeds.forEach((embed) => {
-					const el = embed as HTMLAnchorElement;
-					const href = el.getAttr("data-href");
-					if (!href) return;
-
-					const destination = app.metadataCache.getFirstLinkpathDest(
-						href,
-						view.file.path
+				const view = leaf.view;
+				if (view instanceof MarkdownView || view instanceof NLTView) {
+					await MarkdownRenderer.renderMarkdown(
+						updated,
+						div,
+						view.file.path,
+						view
 					);
-					if (!destination) embed.classList.add("is-unresolved");
 
-					el.addEventListener("mouseover", (e) => {
-						app.workspace.trigger("hover-link", {
-							event: e,
-							source: NOTION_LIKE_TABLES_VIEW,
-							hoverParent: view.containerEl,
-							targetEl: el,
-							linktext: href,
-							sourcePath: el.href,
+					const embeds = div.querySelectorAll(".internal-link");
+					embeds.forEach((embed) => {
+						const el = embed as HTMLAnchorElement;
+						const href = el.getAttr("data-href");
+						if (!href) return;
+
+						const destination =
+							app.metadataCache.getFirstLinkpathDest(
+								href,
+								view.file.path
+							);
+						if (!destination) embed.classList.add("is-unresolved");
+
+						el.addEventListener("mouseover", (e) => {
+							app.workspace.trigger("hover-link", {
+								event: e,
+								source: NOTION_LIKE_TABLES_VIEW,
+								hoverParent: view.containerEl,
+								targetEl: el,
+								linktext: href,
+								sourcePath: el.href,
+							});
 						});
-					});
 
-					el.addEventListener("click", handleLinkClick);
-				});
+						el.addEventListener("click", handleLinkClick);
+					});
+				}
 			} catch (e) {
 				console.error(e);
 			}
@@ -91,7 +95,7 @@ export const useRenderMarkdown = (
 		}
 
 		updateContainerRef();
-	}, [markdown, shouldWrapOverflow, view]);
+	}, [markdown, shouldWrapOverflow, leaf]);
 
 	return {
 		containerRef,

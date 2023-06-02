@@ -21,19 +21,18 @@ import { useTag } from "src/shared/table-state/use-tag";
 import { css } from "@emotion/react";
 import { useEventSystem } from "src/shared/event-system/hooks";
 import { useExportEvents } from "src/shared/export/hooks";
-import ViewProvider, { useMountContext } from "src/shared/view-context";
+import MountProvider, { useMountContext } from "src/shared/view-context";
 import { Provider } from "react-redux";
 import MenuProvider from "src/shared/menu/menu-context";
 import DragProvider from "src/shared/dragging/drag-context";
 import { TableState } from "src/shared/types/types";
-import { NLTView } from "src/obsidian/nlt-view";
 import { Store } from "@reduxjs/toolkit";
-import { MarkdownView } from "obsidian";
+import { MarkdownView, WorkspaceLeaf } from "obsidian";
 
 import "./styles.css";
 
 const TableApp = () => {
-	const { appId, view } = useMountContext();
+	const { appId, leaf } = useMountContext();
 	const { tableState, resizingColumnId, searchText, setTableState } =
 		useTableState();
 
@@ -102,7 +101,7 @@ const TableApp = () => {
 		searchText
 	);
 	const visibleColumns = columns.filter((column) => column.isVisible);
-	const isMarkdownView = view instanceof MarkdownView;
+	const isMarkdownView = leaf.view instanceof MarkdownView;
 
 	return (
 		<div
@@ -424,21 +423,21 @@ const TableApp = () => {
 };
 
 interface Props {
-	view: NLTView | MarkdownView;
+	leaf: WorkspaceLeaf;
 	fileName: string;
 	store: Store;
 	tableState: TableState;
-	onSaveState?: (tableState: TableState) => void;
+	onSaveState: (value: TableState) => void;
 }
 export const NotionLikeTable = ({
-	view,
+	leaf,
 	store,
 	fileName,
 	tableState,
 	onSaveState,
 }: Props) => {
 	return (
-		<ViewProvider view={view} fileName={fileName}>
+		<MountProvider leaf={leaf} fileName={fileName}>
 			<Provider store={store}>
 				<TableStateProvider
 					initialState={tableState}
@@ -451,6 +450,6 @@ export const NotionLikeTable = ({
 					</MenuProvider>
 				</TableStateProvider>
 			</Provider>
-		</ViewProvider>
+		</MountProvider>
 	);
 };

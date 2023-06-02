@@ -6,30 +6,30 @@ import { isEventForThisLeaf } from "../renderUtils";
 import { NLTView } from "src/obsidian/nlt-view";
 
 export const useEventSystem = () => {
-	const { view } = useMountContext();
+	const { leaf } = useMountContext();
 
 	React.useEffect(() => {
 		function handleKeyDown(e: KeyboardEvent) {
-			if (isEventForThisLeaf(view.leaf))
+			if (isEventForThisLeaf(leaf))
 				eventSystem.dispatchEvent("keydown", e);
 		}
+		document.addEventListener("keydown", handleKeyDown);
+		return () => document.removeEventListener("keydown", handleKeyDown);
+	}, [leaf]);
 
+	React.useEffect(() => {
 		function handleClick(e: KeyboardEvent) {
-			if (isEventForThisLeaf(view.leaf))
-				eventSystem.dispatchEvent("click", e);
+			if (isEventForThisLeaf(leaf)) eventSystem.dispatchEvent("click", e);
 		}
 
-		document.addEventListener("keydown", handleKeyDown);
-
 		//The markdown view has its click handler set on the embedded link
-		if (view instanceof NLTView)
+		//We don't handle events multiple times
+		if (leaf.view instanceof NLTView)
 			document.addEventListener("click", handleClick);
-		return () => {
-			document.removeEventListener("keydown", handleKeyDown);
 
-			//The markdown view has its click handler set on the embedded link
-			if (view instanceof NLTView)
+		return () => {
+			if (leaf.view instanceof NLTView)
 				document.removeEventListener("click", handleClick);
 		};
-	}, [view]);
+	}, [leaf]);
 };

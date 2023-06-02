@@ -15,7 +15,7 @@ import { eventSystem } from "../event-system/event-system";
 interface Props {
 	initialState: TableState;
 	children: React.ReactNode;
-	onSaveState?: (value: TableState) => void;
+	onSaveState: (value: TableState) => void;
 }
 
 const TableStateContext = React.createContext<{
@@ -66,9 +66,10 @@ export default function TableStateProvider({
 	React.useEffect(() => {
 		if (!isMountedRef.current) {
 			isMountedRef.current = true;
-		} else {
-			onSaveState?.(tableState);
+			return;
 		}
+
+		onSaveState(tableState);
 	}, [tableState, onSaveState]);
 
 	function handleToggleSearchBar() {

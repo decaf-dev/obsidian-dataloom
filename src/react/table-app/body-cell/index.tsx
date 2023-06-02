@@ -186,7 +186,6 @@ export default function BodyCell({
 	}
 
 	function handleMenuTriggerClick(e: MouseEvent) {
-		console.log("handleMenuTriggerClick");
 		if (columnType === CellType.CREATION_TIME) return;
 		if (columnType === CellType.LAST_EDITED_TIME) return;
 
