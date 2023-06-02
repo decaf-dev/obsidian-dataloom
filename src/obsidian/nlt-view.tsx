@@ -87,6 +87,9 @@ export class NLTView extends TextFileView {
 	}
 
 	async onOpen() {
+		//Add offset to the container to account for the mobile action bar
+		this.containerEl.style.paddingBottom = "48px";
+
 		//This is the view content container
 		const container = this.containerEl.children[1];
 		this.root = createRoot(container);
