@@ -1,6 +1,5 @@
-//Shim the buffer object because it's not available on mobile
-//It is used by the csv-stringify package
-global.Buffer = require("buffer").Buffer;
+import { Buffer } from "buffer";
+global.Buffer = Buffer;
 
 import { stringify } from "csv-stringify/sync";
 import { tableStateToArray } from "./table-state-to-array";
