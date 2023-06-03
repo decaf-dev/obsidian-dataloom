@@ -17,10 +17,10 @@ import { css } from "@emotion/react";
 
 interface Props {
 	tableState: TableState;
-	viewDisplayText: string;
+	filePath: string;
 }
 
-export function ExportApp({ tableState, viewDisplayText }: Props) {
+export function ExportApp({ tableState, filePath }: Props) {
 	const [exportType, setExportType] = React.useState<ExportType>(
 		ExportType.UNSELECTED
 	);
@@ -31,7 +31,7 @@ export function ExportApp({ tableState, viewDisplayText }: Props) {
 	}
 
 	function handleDownloadClick() {
-		const fileName = getExportFileName(viewDisplayText);
+		const fileName = getExportFileName(filePath);
 		const blobType = getBlobTypeForExportType(exportType);
 		downloadFile(fileName, blobType, content);
 	}
