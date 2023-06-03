@@ -30,7 +30,7 @@ export const useMenu = (
 		menu,
 		menuRef,
 		isMenuOpen: isOpen,
-		menuCloseRequest,
+		menuCloseRequest: menuCloseRequest?.id === id ? menuCloseRequest : null,
 		openMenu,
 		closeTopMenu,
 		forceCloseAllMenus,

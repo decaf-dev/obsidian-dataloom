@@ -5,8 +5,8 @@ import {
 	removeFocusVisibleClass,
 } from "./focus-visible";
 import {
-	CloseMenuRequest,
-	CloseMenuRequestType,
+	MenuCloseRequest,
+	MenuCloseRequestType,
 	Menu,
 	MenuLevel,
 } from "./types";
@@ -35,7 +35,7 @@ interface CloseOptions {
 
 interface ContextProps {
 	openMenus: Menu[];
-	menuCloseRequest: CloseMenuRequest | null;
+	menuCloseRequest: MenuCloseRequest | null;
 	openMenu: (menu: Menu) => void;
 	closeTopMenu: (options?: CloseOptions) => void;
 	forceCloseAllMenus: (shouldFocusTriggerOnClose?: boolean) => void;
@@ -68,7 +68,7 @@ export default function MenuProvider({ children }: Props) {
 	const { appId } = useMountContext();
 
 	const [menuCloseRequest, setMenuCloseRequest] =
-		React.useState<CloseMenuRequest | null>(null);
+		React.useState<MenuCloseRequest | null>(null);
 
 	/**
 	 * Returns whether or not a menu is open
@@ -119,16 +119,24 @@ export default function MenuProvider({ children }: Props) {
 		setMenuCloseRequest(null);
 	}
 
-	const requestCloseTopMenu = (type: CloseMenuRequestType) => {
+	const requestCloseTopMenu = (type: MenuCloseRequestType) => {
 		const menu = openMenus.last();
 		if (!menu) return;
 
+		console.log(menu);
+
+		console.log("HERE1");
+		console.log(menu.shouldRequestOnClose, menuCloseRequest === null);
+
 		if (menu.shouldRequestOnClose && menuCloseRequest === null) {
+			console.log("HERE2");
 			setMenuCloseRequest({
+				id: menu.id,
 				requestTime: Date.now(),
 				type,
 			});
 		} else {
+			console.log("HERE2.3");
 			closeTopMenu();
 		}
 	};
@@ -207,9 +215,7 @@ export default function MenuProvider({ children }: Props) {
 			if (isSpecialActionDown(e)) return;
 
 			//Prevents the event key from triggering the click event
-			if (target.getAttribute("data-menu-id") !== null) {
-				e.preventDefault();
-			}
+			if (target.getAttribute("data-menu-id")) e.preventDefault();
 
 			//If a menu is open, then close the menu
 			if (isMenuOpen()) {

@@ -13,7 +13,7 @@ import { DateFormat } from "src/shared/types/types";
 import { useCompare } from "src/shared/hooks";
 import DateFormatMenu from "./components/DateFormatMenu";
 import { useMenu } from "src/shared/menu/hooks";
-import { CloseMenuRequest, MenuLevel } from "src/shared/menu/types";
+import { MenuCloseRequest, MenuLevel } from "src/shared/menu/types";
 
 import MenuTrigger from "src/react/shared/menu-trigger";
 import { getDisplayNameForDateFormat } from "src/shared/table-state/display-name";
@@ -25,7 +25,7 @@ import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 
 interface Props {
 	value: number | null;
-	menuCloseRequest: CloseMenuRequest | null;
+	menuCloseRequest: MenuCloseRequest | null;
 	dateFormat: DateFormat;
 	onDateTimeChange: (value: number | null) => void;
 	onDateFormatChange: (value: DateFormat) => void;

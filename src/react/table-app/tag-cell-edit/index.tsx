@@ -8,12 +8,12 @@ import { Color } from "src/shared/types/types";
 import { randomColor } from "src/shared/color";
 
 import { useCompare } from "src/shared/hooks";
-import { CloseMenuRequest } from "src/shared/menu/types";
+import { MenuCloseRequest } from "src/shared/menu/types";
 
 interface Props {
 	columnTags: TagType[];
 	cellTags: TagType[];
-	menuCloseRequest: CloseMenuRequest | null;
+	menuCloseRequest: MenuCloseRequest | null;
 	onTagClick: (tagId: string) => void;
 	onTagAdd: (markdown: string, color: Color) => void;
 	onRemoveTag: (tagId: string) => void;

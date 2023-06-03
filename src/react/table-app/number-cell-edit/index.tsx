@@ -3,10 +3,10 @@ import { isValidNumberInput } from "src/shared/validators";
 
 import "./styles.css";
 import React from "react";
-import { CloseMenuRequest } from "src/shared/menu/types";
+import { MenuCloseRequest } from "src/shared/menu/types";
 
 interface Props {
-	menuCloseRequest: CloseMenuRequest | null;
+	menuCloseRequest: MenuCloseRequest | null;
 	value: string;
 	onChange: (value: string) => void;
 	onMenuClose: () => void;

@@ -7,7 +7,7 @@ import { useOverflow } from "src/shared/spacing/hooks";
 
 import { useMenu } from "src/shared/menu/hooks";
 import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
-import { CloseMenuRequest, MenuLevel } from "src/shared/menu/types";
+import { MenuCloseRequest, MenuLevel } from "src/shared/menu/types";
 import SuggestMenu from "../../shared/suggest-menu/suggest-menu";
 import {
 	addClosingBracket,
@@ -21,7 +21,7 @@ import { isSpecialActionDown } from "src/shared/keyboard-event";
 import "./styles.css";
 
 interface Props {
-	menuCloseRequest: CloseMenuRequest | null;
+	menuCloseRequest: MenuCloseRequest | null;
 	value: string;
 	shouldWrapOverflow: boolean;
 	onChange: (value: string) => void;

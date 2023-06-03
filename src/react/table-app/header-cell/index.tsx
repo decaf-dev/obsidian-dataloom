@@ -66,9 +66,14 @@ export default function HeaderCell({
 	onCurrencyChange,
 	onDateFormatChange,
 }: Props) {
-	const { menu, isMenuOpen, closeTopMenu, menuRef, openMenu } = useMenu(
-		MenuLevel.ONE
-	);
+	const {
+		menu,
+		isMenuOpen,
+		closeTopMenu,
+		menuRef,
+		openMenu,
+		menuCloseRequest,
+	} = useMenu(MenuLevel.ONE, { shouldRequestOnClose: true });
 	const { triggerPosition, triggerRef } = useMenuTriggerPosition();
 	useShiftMenu(triggerRef, menuRef, isMenuOpen);
 
@@ -95,11 +100,11 @@ export default function HeaderCell({
 	function handleMenuTriggerClick() {
 		//If we're resizing a column, then don't open the menu
 		if (resizingColumnId !== null) return;
-		if (isMenuOpen) {
-			closeTopMenu();
-		} else {
-			openMenu(menu);
-		}
+		openMenu(menu);
+	}
+
+	function handleMenuClose() {
+		closeTopMenu();
 	}
 
 	const lucideId = getIconIdForCellType(type);
@@ -109,7 +114,11 @@ export default function HeaderCell({
 
 	return (
 		<>
-			<MenuTrigger menuId={menu.id} onClick={handleMenuTriggerClick}>
+			<MenuTrigger
+				menuId={menu.id}
+				shouldMenuRequestOnClose={menu.shouldRequestOnClose}
+				onClick={handleMenuTriggerClick}
+			>
 				<div
 					className="NLT__th-container"
 					ref={triggerRef}
@@ -153,6 +162,7 @@ export default function HeaderCell({
 			</MenuTrigger>
 			<HeaderMenu
 				isOpen={isMenuOpen}
+				menuCloseRequest={menuCloseRequest}
 				top={triggerPosition.top}
 				left={triggerPosition.left}
 				id={menu.id}
@@ -171,7 +181,7 @@ export default function HeaderCell({
 				onSortClick={onSortClick}
 				onTypeSelect={onTypeSelect}
 				onDeleteClick={onDeleteClick}
-				onClose={() => closeTopMenu()}
+				onMenuClose={handleMenuClose}
 				onWrapOverflowToggle={onWrapOverflowToggle}
 				onNameChange={onNameChange}
 				onCurrencyChange={onCurrencyChange}
