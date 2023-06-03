@@ -114,8 +114,6 @@ export class NLTView extends TextFileView {
 	};
 
 	private handleSaveTableState = (appId: string, state: TableState) => {
-		//REMOVE, just for testing
-		if (Platform.isAndroidApp) return;
 		//We need this for when we open a new tab of the same file
 		//so that the data is up to date
 		const serialized = serializeTableState(state);
