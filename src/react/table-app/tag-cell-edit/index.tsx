@@ -8,11 +8,12 @@ import { Color } from "src/shared/types/types";
 import { randomColor } from "src/shared/color";
 
 import { useCompare } from "src/shared/hooks";
+import { MenuCloseRequest } from "src/shared/menu/types";
 
 interface Props {
 	columnTags: TagType[];
 	cellTags: TagType[];
-	menuCloseRequestTime: number | null;
+	menuCloseRequest: MenuCloseRequest | null;
 	onTagClick: (tagId: string) => void;
 	onTagAdd: (markdown: string, color: Color) => void;
 	onRemoveTag: (tagId: string) => void;
@@ -24,7 +25,7 @@ interface Props {
 export default function TagCellEdit({
 	columnTags,
 	cellTags,
-	menuCloseRequestTime,
+	menuCloseRequest,
 	onTagClick,
 	onTagAdd,
 	onTagColorChange,
@@ -44,14 +45,21 @@ export default function TagCellEdit({
 		[onTagAdd]
 	);
 
-	const hasCloseRequestTimeChange = useCompare(menuCloseRequestTime);
+	const hasCloseRequestTimeChanged = useCompare(
+		menuCloseRequest?.requestTime
+	);
 
 	React.useEffect(() => {
-		if (hasCloseRequestTimeChange && menuCloseRequestTime !== null) {
-			const shouldAddTag =
-				columnTags.find((tag) => tag.markdown === inputValue) ===
-				undefined;
-			if (shouldAddTag) handleTagAdd(inputValue, newTagColor);
+		if (hasCloseRequestTimeChanged && menuCloseRequest !== null) {
+			if (menuCloseRequest.type === "enter") {
+				if (!inputValue.match(/^\s$/)) {
+					const shouldAddTag =
+						columnTags.find(
+							(tag) => tag.markdown === inputValue
+						) === undefined;
+					if (shouldAddTag) handleTagAdd(inputValue, newTagColor);
+				}
+			}
 			onMenuClose();
 		}
 	}, [
@@ -59,8 +67,8 @@ export default function TagCellEdit({
 		columnTags,
 		inputValue,
 		newTagColor,
-		hasCloseRequestTimeChange,
-		menuCloseRequestTime,
+		hasCloseRequestTimeChanged,
+		menuCloseRequest,
 		onMenuClose,
 	]);
 

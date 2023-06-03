@@ -6,7 +6,7 @@ export const useForceUpdate = (): [number, () => void] => {
 	return [time, React.useCallback(() => setTime(Date.now()), [])];
 };
 
-export const useCompare = <T>(value: T, runOnMount = false) => {
+export const useCompare = <T>(value: T, runOnMount = true) => {
 	const prevValue = usePrevious(value);
 	//On mount the value will be undefined, so we don't want to return true
 	if (prevValue === undefined) return runOnMount;
@@ -29,7 +29,7 @@ export const useInputSelection = (
 		value.length
 	);
 
-	const didValueChange = useCompare(value, true);
+	const didValueChange = useCompare(value);
 
 	//When the value changes, we want to set the selection to the previous position
 	React.useEffect(() => {

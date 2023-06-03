@@ -17,8 +17,8 @@ export const useMenu = (
 		openMenus,
 		openMenu,
 		closeTopMenu,
-		menuCloseRequestTime,
-		closeAllMenus,
+		menuCloseRequest,
+		forceCloseAllMenus,
 	} = useMenuContext();
 	const isOpen = openMenus.find((menu) => menu.id === id) ? true : false;
 
@@ -30,9 +30,9 @@ export const useMenu = (
 		menu,
 		menuRef,
 		isMenuOpen: isOpen,
-		menuCloseRequestTime,
+		menuCloseRequest: menuCloseRequest?.id === id ? menuCloseRequest : null,
 		openMenu,
 		closeTopMenu,
-		closeAllMenus,
+		forceCloseAllMenus,
 	};
 };
