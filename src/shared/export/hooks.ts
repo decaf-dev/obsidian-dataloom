@@ -12,14 +12,14 @@ import { exportToMarkdown } from "./export-to-markdown";
 import { EVENT_DOWNLOAD_CSV, EVENT_DOWNLOAD_MARKDOWN } from "../events";
 
 export const useExportEvents = (state: TableState) => {
-	const { fileName } = useMountContext();
+	const { filePath } = useMountContext();
 
 	React.useEffect(() => {
 		function handleDownloadCSV() {
 			//Set timeout to wait for the command window to disappear
 			setTimeout(() => {
 				const data = exportToCSV(state);
-				const exportFileName = getExportFileName(fileName);
+				const exportFileName = getExportFileName(filePath);
 				const blobType = getBlobTypeForExportType(ExportType.MARKDOWN);
 				downloadFile(exportFileName, blobType, data);
 			}, 100);
@@ -29,7 +29,7 @@ export const useExportEvents = (state: TableState) => {
 			//Set timeout to wait for the command window to disappear
 			setTimeout(() => {
 				const data = exportToMarkdown(state);
-				const exportFileName = getExportFileName(fileName);
+				const exportFileName = getExportFileName(filePath);
 				const blobType = getBlobTypeForExportType(ExportType.MARKDOWN);
 				downloadFile(exportFileName, blobType, data);
 			}, 100);
@@ -44,5 +44,5 @@ export const useExportEvents = (state: TableState) => {
 			app.workspace.off(EVENT_DOWNLOAD_CSV, handleDownloadCSV);
 			app.workspace.off(EVENT_DOWNLOAD_MARKDOWN, handleDownloadMarkdown);
 		};
-	}, [fileName, state]);
+	}, [filePath, state]);
 };
