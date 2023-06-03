@@ -12,7 +12,7 @@ import { MenuLevel } from "src/shared/menu/types";
 
 import Icon from "../../shared/icon";
 import Stack from "../../shared/stack";
-import HeaderMenu from "./components/HeaderMenu";
+import HeaderCellEditMenu from "../header-cell-edit";
 import { useCompare, useForceUpdate } from "src/shared/hooks";
 import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 import { getIconIdForCellType } from "src/react/shared/icon/utils";
@@ -164,7 +164,7 @@ export default function HeaderCell({
 					/>
 				</div>
 			</MenuTrigger>
-			<HeaderMenu
+			<HeaderCellEditMenu
 				isOpen={isMenuOpen}
 				menuCloseRequest={menuCloseRequest}
 				top={triggerPosition.top}

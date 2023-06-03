@@ -1,5 +1,5 @@
 import MenuItem from "src/react/shared/menu-item";
-import Submenu from "../Submenu";
+import Submenu from "./submenu";
 import { CellType } from "src/shared/types/types";
 import { getDisplayNameForCellType } from "src/shared/table-state/display-name";
 import { getIconIdForCellType } from "src/react/shared/icon/utils";

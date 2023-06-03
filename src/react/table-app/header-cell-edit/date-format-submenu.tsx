@@ -1,5 +1,5 @@
 import MenuItem from "src/react/shared/menu-item";
-import Submenu from "../Submenu";
+import Submenu from "./submenu";
 import { DateFormat } from "src/shared/types/types";
 import { getDisplayNameForDateFormat } from "src/shared/table-state/display-name";
 
