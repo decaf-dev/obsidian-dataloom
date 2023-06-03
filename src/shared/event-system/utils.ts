@@ -14,7 +14,6 @@ export const isEventForThisApp = (appId: string) => {
 		const menuTrigger = document.querySelector(
 			`[data-menu-id="${menuId}"]`
 		);
-		console.log(menuTrigger);
 		if (!menuTrigger) return false;
 		const appEl = menuTrigger.closest(".NLT__app");
 		if (appEl) return appEl.getAttribute("data-id") === appId;
