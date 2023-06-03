@@ -4,11 +4,11 @@ import CellBodyUpdateCommand from "../commands/cell-body-update-command";
 import CellHeaderUpdateCommand from "../commands/cell-header-update-command";
 
 export const useCell = () => {
-	const logFunc = useLogger();
+	const logger = useLogger();
 	const { doCommand } = useTableState();
 
 	function handleHeaderCellContentChange(cellId: string, value: string) {
-		logFunc("handleCellContentChange", {
+		logger("handleCellContentChange", {
 			cellId,
 			markdown: value,
 		});
@@ -21,7 +21,7 @@ export const useCell = () => {
 		rowId: string,
 		value: string
 	) {
-		logFunc("handleCellContentChange", {
+		logger("handleCellContentChange", {
 			cellId,
 			rowId,
 			markdown: value,
@@ -35,7 +35,7 @@ export const useCell = () => {
 		rowId: string,
 		value: number | null
 	) {
-		logFunc("handleCellContentChange", {
+		logger("handleCellContentChange", {
 			cellId,
 			rowId,
 			dateTime: value,
