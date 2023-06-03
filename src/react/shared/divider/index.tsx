@@ -7,7 +7,7 @@ interface Props {
 }
 
 export default function Divider({
-	isVertical,
+	isVertical = false,
 	width = "100%",
 	height = "100%",
 }: Props) {
@@ -17,8 +17,11 @@ export default function Divider({
 				margin: 0;
 				width: ${!isVertical ? width : "unset"};
 				height: ${isVertical === true ? height : "unset"};
+				border-top: ${isVertical === false
+					? "1px solid var(--hr-color)"
+					: "unset"};
 				border-left: ${isVertical === true
-					? "var(--hr-thickness) var(--hr-color) solid"
+					? "1px var(--hr-color) solid"
 					: "unset"};
 			`}
 		/>

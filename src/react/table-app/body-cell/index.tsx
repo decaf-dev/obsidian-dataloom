@@ -357,10 +357,7 @@ export default function BodyCell({
 						<DateCell value={dateTime} format={dateFormat} />
 					)}
 					{columnType === CellType.CHECKBOX && (
-						<CheckboxCell
-							value={markdown}
-							onCheckboxChange={handleCheckboxChange}
-						/>
+						<CheckboxCell value={markdown} />
 					)}
 					{columnType === CellType.CREATION_TIME && (
 						<CreationTimeCell

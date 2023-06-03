@@ -1,11 +1,14 @@
 import { WorkspaceLeaf } from "obsidian";
 import React from "react";
 
-const MountContext = React.createContext<{
+interface ContextProps {
+	isEmbedded: boolean;
 	appId: string;
 	filePath: string;
 	leaf: WorkspaceLeaf;
-} | null>(null);
+}
+
+const MountContext = React.createContext<ContextProps | null>(null);
 
 export const useMountContext = () => {
 	const value = React.useContext(MountContext);
@@ -18,21 +21,19 @@ export const useMountContext = () => {
 	return value;
 };
 
-interface Props {
-	appId: string;
-	filePath: string;
-	leaf: WorkspaceLeaf;
+interface Props extends ContextProps {
 	children: React.ReactNode;
 }
 
 export default function MountProvider({
 	appId,
+	isEmbedded,
 	filePath,
 	leaf,
 	children,
 }: Props) {
 	return (
-		<MountContext.Provider value={{ appId, filePath, leaf }}>
+		<MountContext.Provider value={{ isEmbedded, appId, filePath, leaf }}>
 			{children}
 		</MountContext.Provider>
 	);

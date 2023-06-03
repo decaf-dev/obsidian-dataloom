@@ -1,4 +1,4 @@
-import { Platform, TextFileView, WorkspaceLeaf } from "obsidian";
+import { TextFileView, WorkspaceLeaf } from "obsidian";
 import { createRoot, Root } from "react-dom/client";
 import { NotionLikeTable } from "../react/table-app";
 import { store } from "../redux/global/store";
@@ -133,10 +133,10 @@ export class NLTView extends TextFileView {
 
 	private renderApp(appId: string, state: TableState) {
 		if (this.root) {
-			// const throttledSaved = _.throttle(this.handleSaveTableState, 2000);
 			this.root.render(
 				<NotionLikeTable
 					appId={appId}
+					isEmbedded={false}
 					filePath={this.file.path}
 					leaf={this.leaf}
 					store={store}

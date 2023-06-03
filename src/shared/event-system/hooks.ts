@@ -10,10 +10,8 @@ export const useEventSystem = () => {
 
 	React.useEffect(() => {
 		function handleKeyDown(e: KeyboardEvent) {
-			if (isEventForThisApp(appId)) {
-				console.log("dispatching event");
+			if (isEventForThisApp(appId))
 				eventSystem.dispatchEvent("keydown", e);
-			}
 		}
 		document.addEventListener("keydown", handleKeyDown);
 		return () => document.removeEventListener("keydown", handleKeyDown);
