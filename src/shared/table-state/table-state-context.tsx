@@ -69,7 +69,7 @@ export default function TableStateProvider({
 			return;
 		}
 
-		logger("onSaveState", tableState);
+		logger("TableStateContext onSaveState()", tableState);
 		onSaveState(tableState);
 	}, [tableState, onSaveState, logger]);
 
