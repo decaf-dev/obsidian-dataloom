@@ -10,29 +10,39 @@ import { ExportType } from "src/shared/export/types";
 import { exportToCSV } from "./export-to-csv";
 import { exportToMarkdown } from "./export-to-markdown";
 import { EVENT_DOWNLOAD_CSV, EVENT_DOWNLOAD_MARKDOWN } from "../events";
+import { isEventForThisApp } from "../event-system/utils";
 
 export const useExportEvents = (state: TableState) => {
 	const { filePath } = useMountContext();
+	const { appId } = useMountContext();
 
 	React.useEffect(() => {
 		function handleDownloadCSV() {
-			//Set timeout to wait for the command window to disappear
-			setTimeout(() => {
-				const data = exportToCSV(state);
-				const exportFileName = getExportFileName(filePath);
-				const blobType = getBlobTypeForExportType(ExportType.MARKDOWN);
-				downloadFile(exportFileName, blobType, data);
-			}, 100);
+			if (isEventForThisApp(appId)) {
+				//Set timeout to wait for the command window to disappear
+				setTimeout(() => {
+					const data = exportToCSV(state);
+					const exportFileName = getExportFileName(filePath);
+					const blobType = getBlobTypeForExportType(
+						ExportType.MARKDOWN
+					);
+					downloadFile(exportFileName, blobType, data);
+				}, 100);
+			}
 		}
 
 		function handleDownloadMarkdown() {
-			//Set timeout to wait for the command window to disappear
-			setTimeout(() => {
-				const data = exportToMarkdown(state);
-				const exportFileName = getExportFileName(filePath);
-				const blobType = getBlobTypeForExportType(ExportType.MARKDOWN);
-				downloadFile(exportFileName, blobType, data);
-			}, 100);
+			if (isEventForThisApp(appId)) {
+				//Set timeout to wait for the command window to disappear
+				setTimeout(() => {
+					const data = exportToMarkdown(state);
+					const exportFileName = getExportFileName(filePath);
+					const blobType = getBlobTypeForExportType(
+						ExportType.MARKDOWN
+					);
+					downloadFile(exportFileName, blobType, data);
+				}, 100);
+			}
 		}
 
 		//@ts-expect-error missing overload

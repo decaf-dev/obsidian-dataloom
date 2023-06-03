@@ -1,4 +1,4 @@
-import { Plugin, TFolder } from "obsidian";
+import { MarkdownView, Plugin, TFolder } from "obsidian";
 
 import NLTSettingsTab from "./obsidian/nlt-settings-tab";
 
@@ -16,8 +16,6 @@ import {
 	EVENT_ROW_DELETE,
 } from "./shared/events";
 import { nltEmbeddedPlugin } from "./obsidian/nlt-embedded-plugin";
-import { getEmbeddedTableLinkEls } from "./obsidian/utils";
-import NLTEmbeddedRenderChild from "./obsidian/nlt-embedded-render-child";
 
 export interface NLTSettings {
 	shouldDebug: boolean;
@@ -195,10 +193,12 @@ export default class NLTPlugin extends Plugin {
 			name: "Add column",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "\\" }],
 			checkCallback: (checking: boolean) => {
-				const view = this.app.workspace.getActiveViewOfType(NLTView);
-				if (view) {
+				const nltView = this.app.workspace.getActiveViewOfType(NLTView);
+				const markdownView =
+					this.app.workspace.getActiveViewOfType(MarkdownView);
+				if (nltView || markdownView) {
 					if (!checking) {
-						this.app.workspace.trigger(EVENT_COLUMN_ADD, view.leaf);
+						this.app.workspace.trigger(EVENT_COLUMN_ADD);
 					}
 					return true;
 				}
@@ -211,13 +211,12 @@ export default class NLTPlugin extends Plugin {
 			name: "Delete column",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Backspace" }],
 			checkCallback: (checking: boolean) => {
-				const view = this.app.workspace.getActiveViewOfType(NLTView);
-				if (view) {
+				const nltView = this.app.workspace.getActiveViewOfType(NLTView);
+				const markdownView =
+					this.app.workspace.getActiveViewOfType(MarkdownView);
+				if (nltView || markdownView) {
 					if (!checking) {
-						this.app.workspace.trigger(
-							EVENT_COLUMN_DELETE,
-							view.leaf
-						);
+						this.app.workspace.trigger(EVENT_COLUMN_DELETE);
 					}
 					return true;
 				}
@@ -230,10 +229,11 @@ export default class NLTPlugin extends Plugin {
 			name: "Add row",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Enter" }],
 			checkCallback: (checking: boolean) => {
-				const view = this.app.workspace.getActiveViewOfType(NLTView);
-				if (view) {
-					if (!checking)
-						this.app.workspace.trigger(EVENT_ROW_ADD, view.leaf);
+				const nltView = this.app.workspace.getActiveViewOfType(NLTView);
+				const markdownView =
+					this.app.workspace.getActiveViewOfType(MarkdownView);
+				if (nltView || markdownView) {
+					if (!checking) this.app.workspace.trigger(EVENT_ROW_ADD);
 					return true;
 				}
 				return false;
@@ -245,10 +245,12 @@ export default class NLTPlugin extends Plugin {
 			name: "Delete row",
 			hotkeys: [{ modifiers: ["Alt", "Shift"], key: "Backspace" }],
 			checkCallback: (checking: boolean) => {
-				const view = this.app.workspace.getActiveViewOfType(NLTView);
-				if (view) {
+				const nltView = this.app.workspace.getActiveViewOfType(NLTView);
+				const markdownView =
+					this.app.workspace.getActiveViewOfType(MarkdownView);
+				if (nltView || markdownView) {
 					if (!checking) {
-						this.app.workspace.trigger(EVENT_ROW_DELETE, view.leaf);
+						this.app.workspace.trigger(EVENT_ROW_DELETE);
 					}
 					return true;
 				}
@@ -260,13 +262,12 @@ export default class NLTPlugin extends Plugin {
 			id: "nlt-export-markdown",
 			name: "Export as markdown",
 			checkCallback: (checking: boolean) => {
-				const view = this.app.workspace.getActiveViewOfType(NLTView);
-				if (view) {
+				const nltView = this.app.workspace.getActiveViewOfType(NLTView);
+				const markdownView =
+					this.app.workspace.getActiveViewOfType(MarkdownView);
+				if (nltView || markdownView) {
 					if (!checking) {
-						this.app.workspace.trigger(
-							EVENT_DOWNLOAD_MARKDOWN,
-							view.leaf
-						);
+						this.app.workspace.trigger(EVENT_DOWNLOAD_MARKDOWN);
 					}
 					return true;
 				}
@@ -278,13 +279,12 @@ export default class NLTPlugin extends Plugin {
 			id: "nlt-export-csv",
 			name: "Export as CSV",
 			checkCallback: (checking: boolean) => {
-				const view = this.app.workspace.getActiveViewOfType(NLTView);
-				if (view) {
+				const nltView = this.app.workspace.getActiveViewOfType(NLTView);
+				const markdownView =
+					this.app.workspace.getActiveViewOfType(MarkdownView);
+				if (nltView || markdownView) {
 					if (!checking) {
-						this.app.workspace.trigger(
-							EVENT_DOWNLOAD_CSV,
-							view.leaf
-						);
+						this.app.workspace.trigger(EVENT_DOWNLOAD_CSV);
 					}
 					return true;
 				}
