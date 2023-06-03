@@ -123,7 +123,7 @@ export default function MenuProvider({ children }: Props) {
 		const menu = openMenus.last();
 		if (!menu) return;
 
-		if (menu.shouldRequestOnClose && menuCloseRequest === null) {
+		if (menu.shouldRequestOnClose) {
 			setMenuCloseRequest({
 				id: menu.id,
 				requestTime: Date.now(),
