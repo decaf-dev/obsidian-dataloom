@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 
 import Menu from "src/react/shared/menu";
-import OptionSubmenu from "./components/OptionSubmenu";
-import TypeSubmenu from "./components/TypeSubmenu";
-import BaseMenu from "./components/BaseMenu";
-import CurrencySubmenu from "./components/CurrencySubmenu";
-import DateFormatSubmenu from "./components/DateFormatSubmenu";
+import OptionSubmenu from "./option-submenu";
+import TypeSubmenu from "./type-submenu";
+import BaseMenu from "./base-menu";
+import CurrencySubmenu from "./currency-submenu";
+import DateFormatSubmenu from "./date-format-submenu";
 
 import {
 	CellType,
@@ -15,9 +15,9 @@ import {
 } from "src/shared/types/types";
 import { SubmenuType } from "./types";
 
-import "./styles.css";
 import { MenuCloseRequest } from "src/shared/menu/types";
 import { useCompare } from "src/shared/hooks";
+import { css } from "@emotion/react";
 
 interface Props {
 	isOpen: boolean;
@@ -131,7 +131,12 @@ const HeaderMenu = React.forwardRef<HTMLDivElement, Props>(function HeaderMenu(
 			ref={ref}
 			width={175}
 		>
-			<div className="NLT__header-menu">
+			<div
+				className="NLT__header-menu"
+				css={css`
+					color: var(--text-normal);
+				`}
+			>
 				{submenu === null && (
 					<BaseMenu
 						canDeleteColumn={canDeleteColumn}
