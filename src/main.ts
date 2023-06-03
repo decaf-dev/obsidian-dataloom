@@ -53,10 +53,7 @@ export default class NLTPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
-		this.registerView(
-			NOTION_LIKE_TABLES_VIEW,
-			(leaf) => new NLTView(leaf, this.settings.shouldDebug)
-		);
+		this.registerView(NOTION_LIKE_TABLES_VIEW, (leaf) => new NLTView(leaf));
 		this.registerExtensions([TABLE_EXTENSION], NOTION_LIKE_TABLES_VIEW);
 
 		this.addRibbonIcon("table", "Create Notion-Like table", async () => {
