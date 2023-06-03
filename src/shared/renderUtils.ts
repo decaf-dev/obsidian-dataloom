@@ -36,13 +36,3 @@ export const getDynamicSize = <T>(
 export const isMobileSize = () => {
 	return window.innerWidth <= 480;
 };
-
-export const isEventForThisLeaf = (leaf: WorkspaceLeaf) => {
-	const activeView =
-		app.workspace.getActiveViewOfType(NLTView) ??
-		app.workspace.getActiveViewOfType(MarkdownView);
-	if (!activeView) return false;
-
-	if (leaf === activeView.leaf) return true;
-	return false;
-};
