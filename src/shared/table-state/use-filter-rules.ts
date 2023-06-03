@@ -7,17 +7,17 @@ import { filterBodyRowsByRules } from "./filter-by-rules";
 export const useFilterRules = (
 	onChange: React.Dispatch<SetStateAction<TableState>>
 ) => {
-	const logFunc = useLogger();
+	const logger = useLogger();
 
 	function handleRuleColumnChange(id: string, columnId: string) {
-		logFunc("handleRuleColumnChange", { id, columnId });
+		logger("handleRuleColumnChange", { id, columnId });
 		onChange((prevState) =>
 			updateRule(prevState, id, "columnId", columnId)
 		);
 	}
 
 	function handleRuleFilterTypeChange(id: string, type: FilterType) {
-		logFunc("handleRuleFilterTypeChange", {
+		logger("handleRuleFilterTypeChange", {
 			id,
 			type,
 		});
@@ -25,29 +25,29 @@ export const useFilterRules = (
 	}
 
 	function handleRuleTextChange(id: string, text: string) {
-		logFunc("handleRuleTextChange", { id, text });
+		logger("handleRuleTextChange", { id, text });
 		onChange((prevState) => updateRule(prevState, id, "text", text));
 	}
 
 	function handleRuleToggle(id: string) {
-		logFunc("handleRuleToggle", { id });
+		logger("handleRuleToggle", { id });
 		onChange((prevState) => updateRule(prevState, id, "isEnabled"));
 	}
 
 	function handleRuleAddClick(columnId: string) {
-		logFunc("handleRuleAddClick", { columnId });
+		logger("handleRuleAddClick", { columnId });
 		onChange((prevState) => addRule(prevState, columnId));
 	}
 
 	function handleRuleDeleteClick(id: string) {
-		logFunc("handleRuleDeleteClick", {
+		logger("handleRuleDeleteClick", {
 			id,
 		});
 		onChange((prevState) => deleteRule(prevState, id));
 	}
 
 	function handleRuleTagsChange(id: string, tagIds: string[]) {
-		logFunc("handleRuleTagsChange", {
+		logger("handleRuleTagsChange", {
 			id,
 			tagIds,
 		});
