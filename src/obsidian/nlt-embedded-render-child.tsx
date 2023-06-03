@@ -4,15 +4,18 @@ import { NotionLikeTable } from "src/react/table-app";
 import { store } from "src/redux/global/store";
 import { NLTView } from "./nlt-view";
 import { deserializeTableState } from "src/data/serialize-table-state";
+import { v4 as uuidv4 } from "uuid";
 
 export default class NLTEmbeddedRenderChild extends MarkdownRenderChild {
 	private root: Root | null;
 	private fileName: string;
+	private appId: string;
 
 	constructor(containerEl: HTMLElement, fileName: string) {
 		super(containerEl);
 		this.root = null;
 		this.fileName = fileName;
+		this.appId = uuidv4();
 	}
 
 	private handleSaveTableState() {}
@@ -34,7 +37,8 @@ export default class NLTEmbeddedRenderChild extends MarkdownRenderChild {
 
 			this.root.render(
 				<NotionLikeTable
-					fileName={this.fileName}
+					appId={this.appId}
+					filePath={file.path}
 					leaf={activeView.leaf}
 					store={store}
 					tableState={state}
