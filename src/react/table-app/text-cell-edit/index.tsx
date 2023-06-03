@@ -2,7 +2,7 @@ import React from "react";
 
 import { TFile } from "obsidian";
 
-import { useInputSelection } from "src/shared/hooks";
+import { useCompare, useInputSelection } from "src/shared/hooks";
 import { useOverflow } from "src/shared/spacing/hooks";
 
 import { useMenu } from "src/shared/menu/hooks";
@@ -21,15 +21,19 @@ import { isSpecialActionDown } from "src/shared/keyboard-event";
 import "./styles.css";
 
 interface Props {
+	menuCloseRequestTime: number | null;
 	value: string;
 	shouldWrapOverflow: boolean;
 	onChange: (value: string) => void;
+	onMenuClose: () => void;
 }
 
 export default function TextCellEdit({
 	shouldWrapOverflow,
+	menuCloseRequestTime,
 	value,
 	onChange,
+	onMenuClose,
 }: Props) {
 	const { menu, isMenuOpen, menuRef, openMenu, closeAllMenus, closeTopMenu } =
 		useMenu(MenuLevel.TWO);
@@ -38,10 +42,29 @@ export default function TextCellEdit({
 		topOffset: 35,
 	});
 
+	const [localValue, setLocalValue] = React.useState(value);
 	const inputRef = React.useRef<HTMLTextAreaElement | null>(null);
 	const { setPreviousSelectionStart, previousSelectionStart } =
-		useInputSelection(inputRef, value);
+		useInputSelection(inputRef, localValue);
+
 	const previousValue = React.useRef("");
+
+	const hasCloseRequestTimeChanged = useCompare(menuCloseRequestTime);
+	console.log(menuCloseRequestTime);
+	console.log(hasCloseRequestTimeChanged);
+
+	React.useEffect(() => {
+		if (hasCloseRequestTimeChanged && menuCloseRequestTime !== null) {
+			console.log("TextCellEdit: useEffect: value", value);
+			onChange(localValue);
+			onMenuClose();
+		}
+	}, [
+		localValue,
+		hasCloseRequestTimeChanged,
+		menuCloseRequestTime,
+		onMenuClose,
+	]);
 
 	function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
 		const el = e.target as HTMLTextAreaElement;
@@ -64,18 +87,18 @@ export default function TextCellEdit({
 	}
 
 	function handleTextareaChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-		const value = e.target.value;
-		let newValue = value;
+		const inputValue = e.target.value;
+		let newValue = inputValue;
 
 		if (inputRef.current) {
 			const inputEl = inputRef.current;
 
-			if (value.length > previousValue.current.length) {
+			if (inputValue.length > previousValue.current.length) {
 				newValue = addClosingBracket(newValue, inputEl.selectionStart);
 			} else {
 				newValue = removeClosingBracket(
 					previousValue.current,
-					newValue,
+					inputValue,
 					inputEl.selectionStart
 				);
 			}
@@ -93,7 +116,7 @@ export default function TextCellEdit({
 		}
 
 		previousValue.current = newValue;
-		onChange(newValue);
+		setLocalValue(newValue);
 	}
 
 	function handleSuggestItemClick(
@@ -109,7 +132,7 @@ export default function TextCellEdit({
 			if (!isFileNameUnique) fileName = `${file.path}|${fileName}`;
 
 			const newValue = doubleBracketsInnerReplace(
-				value,
+				localValue,
 				previousSelectionStart,
 				fileName
 			);
@@ -120,7 +143,8 @@ export default function TextCellEdit({
 	}
 
 	const overflowStyle = useOverflow(shouldWrapOverflow);
-	const filterValue = getFilterValue(value, previousSelectionStart) ?? "";
+	const filterValue =
+		getFilterValue(localValue, previousSelectionStart) ?? "";
 
 	return (
 		<>
@@ -129,7 +153,7 @@ export default function TextCellEdit({
 					autoFocus
 					css={overflowStyle}
 					ref={inputRef}
-					value={value}
+					value={localValue}
 					onKeyDown={handleKeyDown}
 					onChange={handleTextareaChange}
 				/>

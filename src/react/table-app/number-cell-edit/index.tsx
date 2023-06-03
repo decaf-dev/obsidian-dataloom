@@ -1,17 +1,42 @@
-import { useInputSelection } from "src/shared/hooks";
+import { useCompare, useInputSelection } from "src/shared/hooks";
 import { isValidNumberInput } from "src/shared/validators";
 
 import "./styles.css";
 import React from "react";
 
 interface Props {
+	menuCloseRequestTime: number | null;
 	value: string;
 	onChange: (value: string) => void;
+	onMenuClose: () => void;
 }
 
-export default function NumberCellEdit({ value, onChange }: Props) {
+export default function NumberCellEdit({
+	menuCloseRequestTime,
+	value,
+	onChange,
+	onMenuClose,
+}: Props) {
+	const [localValue, setLocalValue] = React.useState(value);
 	const inputRef = React.useRef<HTMLInputElement | null>(null);
-	const { setPreviousSelectionStart } = useInputSelection(inputRef, value);
+	const { setPreviousSelectionStart } = useInputSelection(
+		inputRef,
+		localValue
+	);
+
+	const hasCloseRequestTimeChange = useCompare(menuCloseRequestTime);
+
+	React.useEffect(() => {
+		if (hasCloseRequestTimeChange && menuCloseRequestTime !== null) {
+			onChange(localValue);
+			onMenuClose();
+		}
+	}, [
+		localValue,
+		hasCloseRequestTimeChange,
+		menuCloseRequestTime,
+		onMenuClose,
+	]);
 
 	function handleChange(inputValue: string, setSelectionToLength = false) {
 		if (!isValidNumberInput(inputValue)) return;
@@ -27,7 +52,7 @@ export default function NumberCellEdit({ value, onChange }: Props) {
 			}
 		}
 
-		onChange(inputValue);
+		setLocalValue(inputValue);
 	}
 
 	return (
@@ -37,7 +62,7 @@ export default function NumberCellEdit({ value, onChange }: Props) {
 				type="text" //We use an input of type text so that the selection is available
 				ref={inputRef}
 				inputMode="numeric"
-				value={value}
+				value={localValue}
 				onChange={(e) => handleChange(e.target.value)}
 			/>
 		</div>

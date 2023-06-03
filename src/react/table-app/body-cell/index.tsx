@@ -122,10 +122,7 @@ export default function BodyCell({
 		openMenu,
 		closeTopMenu,
 	} = useMenu(MenuLevel.ONE, {
-		shouldRequestOnClose:
-			columnType === CellType.DATE ||
-			columnType === CellType.TAG ||
-			columnType === CellType.MULTI_TAG,
+		shouldRequestOnClose: true,
 	});
 	const { triggerPosition, triggerRef } = useMenuTriggerPosition();
 	useShiftMenu(triggerRef, menuRef, isMenuOpen);
@@ -386,9 +383,11 @@ export default function BodyCell({
 			>
 				{columnType === CellType.TEXT && (
 					<TextCellEdit
+						menuCloseRequestTime={menuCloseRequestTime}
 						shouldWrapOverflow={shouldWrapOverflow}
 						value={markdown}
 						onChange={handleTextInputChange}
+						onMenuClose={handleMenuClose}
 					/>
 				)}
 				{columnType === CellType.FILE && (
@@ -399,8 +398,10 @@ export default function BodyCell({
 				)}
 				{columnType === CellType.NUMBER && (
 					<NumberCellEdit
+						menuCloseRequestTime={menuCloseRequestTime}
 						value={markdown}
 						onChange={handleNumberInputChange}
+						onMenuClose={handleMenuClose}
 					/>
 				)}
 				{(columnType === CellType.TAG ||
@@ -429,8 +430,10 @@ export default function BodyCell({
 				)}
 				{columnType === CellType.CURRENCY && (
 					<CurrencyCellEdit
+						menuCloseRequestTime={menuCloseRequestTime}
 						value={markdown}
 						onChange={handleCurrencyChange}
+						onMenuClose={handleMenuClose}
 					/>
 				)}
 			</Menu>

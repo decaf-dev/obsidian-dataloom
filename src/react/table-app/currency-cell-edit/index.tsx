@@ -1,16 +1,41 @@
-import { useInputSelection } from "src/shared/hooks";
+import { useCompare, useInputSelection } from "src/shared/hooks";
 import { isValidNumberInput } from "src/shared/validators";
 
 import "./styles.css";
 import React from "react";
 interface Props {
+	menuCloseRequestTime: number | null;
 	value: string;
 	onChange: (value: string) => void;
+	onMenuClose: () => void;
 }
 
-export default function CurrencyCellEdit({ value, onChange }: Props) {
+export default function CurrencyCellEdit({
+	value,
+	menuCloseRequestTime,
+	onChange,
+	onMenuClose,
+}: Props) {
+	const [localValue, setLocalValue] = React.useState(value);
 	const inputRef = React.useRef<HTMLInputElement | null>(null);
-	const { setPreviousSelectionStart } = useInputSelection(inputRef, value);
+	const { setPreviousSelectionStart } = useInputSelection(
+		inputRef,
+		localValue
+	);
+
+	const hasCloseRequestTimeChange = useCompare(menuCloseRequestTime);
+
+	React.useEffect(() => {
+		if (hasCloseRequestTimeChange && menuCloseRequestTime !== null) {
+			onChange(localValue);
+			onMenuClose();
+		}
+	}, [
+		localValue,
+		hasCloseRequestTimeChange,
+		menuCloseRequestTime,
+		onMenuClose,
+	]);
 
 	function handleChange(inputValue: string, setSelectionToLength = false) {
 		if (!isValidNumberInput(inputValue)) return;
@@ -25,7 +50,7 @@ export default function CurrencyCellEdit({ value, onChange }: Props) {
 				setPreviousSelectionStart(inputRef.current.selectionStart);
 			}
 		}
-		onChange(inputValue);
+		setLocalValue(inputValue);
 	}
 
 	return (
@@ -35,7 +60,7 @@ export default function CurrencyCellEdit({ value, onChange }: Props) {
 				ref={inputRef}
 				type="text" //We use an input of type text so that the selection is available
 				inputMode="numeric"
-				value={value}
+				value={localValue}
 				onChange={(e) => handleChange(e.target.value)}
 			/>
 		</div>
