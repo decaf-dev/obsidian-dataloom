@@ -7,12 +7,12 @@ export const dateToString = (date: Date): string => {
 	return `${year}/${month}/${day}`;
 };
 
-export const pxToNum = (pixels: string) => {
-	return parseFloat(pixels.split("px")[0]);
+export const pxToNum = (value: string) => {
+	return parseFloat(value.split("px")[0]);
 };
 
-export const numToPx = (num: number) => {
-	return `${num}px`;
+export const numToPx = (value: number | string) => {
+	return `${value}px`;
 };
 
 export const stringToCurrencyString = (value: string, type: CurrencyType) => {
