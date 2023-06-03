@@ -9,132 +9,25 @@ import {
 } from "src/data/serialize-table-state";
 import { EVENT_REFRESH_TABLES } from "src/shared/events";
 import NLTExportModal from "./nlt-export-modal";
-import { isEventForThisLeaf } from "src/shared/renderUtils";
-import { log } from "src/shared/logger";
+import { v4 as uuidv4 } from "uuid";
+import _ from "lodash";
 
 export const NOTION_LIKE_TABLES_VIEW = "notion-like-tables";
 
 export class NLTView extends TextFileView {
-	root: Root | null;
-	data: string;
-	shouldDebug: boolean;
-	logger: (name: string, args?: Record<string, any>) => void;
+	private root: Root | null;
+	private appId: string;
 
-	constructor(leaf: WorkspaceLeaf, shouldDebug: boolean) {
+	data: string;
+
+	constructor(leaf: WorkspaceLeaf) {
 		super(leaf);
 		this.root = null;
 		this.data = "";
-		this.logger = log(shouldDebug);
-	}
-
-	getViewData(): string {
-		return this.data;
-	}
-
-	private handleRefreshEvent = (
-		leaf: WorkspaceLeaf,
-		filePath: string,
-		tableState: TableState
-	) => {
-		this.logger("NLTView handleRefreshEvent()", {
-			leaf,
-			filePath,
-			tableState,
-		});
-
-		//@ts-expect-error
-		const eventLeafId = leaf.id;
-		//@ts-expect-error
-		const thisLeafId = this.leaf.id;
-
-		//Make sure that the event is coming from a different leaf
-		if (eventLeafId === thisLeafId) return;
-
-		if (filePath === this.file.path) {
-			this.logger("handling refresh event");
-			if (this.root) {
-				this.root.unmount();
-				this.root = createRoot(this.containerEl.children[1]);
-			}
-			this.renderApp(tableState);
-		}
-	};
-
-	private handleSaveTableState = (tableState: TableState) => {
-		this.logger("NLTView handleSaveTableState()");
-
-		//Only save data if the view is in the active leaf
-		//This prevents the data being saved multiple times if we have multiple tabs of the same file opens
-		if (isEventForThisLeaf(this.leaf)) {
-			this.logger("requesting save");
-
-			const serialized = serializeTableState(tableState);
-			this.data = serialized;
-			this.requestSave();
-
-			this.logger("trigger refresh event");
-
-			//Trigger an event to refresh the other open views of this file
-			this.app.workspace.trigger(
-				EVENT_REFRESH_TABLES,
-				this.leaf,
-				this.file.path,
-				tableState
-			);
-		}
-	};
-
-	private renderApp(state: TableState) {
-		this.logger("NLTView renderApp()");
-		if (this.root) {
-			this.logger("rendering app");
-			this.root.render(
-				<NotionLikeTable
-					fileName={this.file.name}
-					leaf={this.leaf}
-					store={store}
-					tableState={state}
-					onSaveState={this.handleSaveTableState}
-				/>
-			);
-		}
-	}
-
-	setViewData(data: string, clear: boolean): void {
-		this.data = data;
-
-		//If a table pane is already open, we need to unmount the old instance
-		if (clear) {
-			if (this.root) {
-				this.logger("clearing old app");
-				this.root.unmount();
-				this.root = createRoot(this.containerEl.children[1]);
-			}
-		}
-
-		const tableState = deserializeTableState(data);
-		this.renderApp(tableState);
-	}
-
-	clear(): void {
-		this.data = "{}";
-	}
-
-	getViewType() {
-		return NOTION_LIKE_TABLES_VIEW;
-	}
-
-	getDisplayText() {
-		const fileName = this.file?.name;
-		if (fileName) {
-			const extensionIndex = fileName.lastIndexOf(".");
-			return fileName.substring(0, extensionIndex);
-		}
-		return "";
+		this.appId = uuidv4();
 	}
 
 	async onOpen() {
-		this.logger("NLTView onOpen()");
 		//Add offset to the container to account for the mobile action bar
 		this.containerEl.style.paddingBottom = "48px";
 
@@ -151,12 +44,8 @@ export class NLTView extends TextFileView {
 		});
 
 		this.addAction("download", "Export", () => {
-			new NLTExportModal(this.app, this.getDisplayText()).open();
+			new NLTExportModal(this.app, this.file.path).open();
 		});
-
-		// this.addAction("import", "Import", () => {
-		// 	new NLTImportModal(this.app).open();
-		// });
 
 		this.app.workspace.on(
 			// @ts-expect-error: not a native Obsidian event
@@ -166,11 +55,95 @@ export class NLTView extends TextFileView {
 	}
 
 	async onClose() {
-		this.logger("NLTView onClose()");
+		this.app.workspace.off(EVENT_REFRESH_TABLES, this.handleRefreshEvent);
 		if (this.root) {
 			this.root.unmount();
 			this.root = null;
 		}
-		this.app.workspace.off(EVENT_REFRESH_TABLES, this.handleRefreshEvent);
+	}
+
+	setViewData(data: string, clear: boolean): void {
+		this.data = data;
+
+		const state = deserializeTableState(data);
+		if (clear) {
+			//We need to set this in a timeout to prevent errors from React
+			setTimeout(() => {
+				if (this.root) {
+					this.root.unmount();
+					const container = this.containerEl.children[1];
+					this.root = createRoot(container);
+					this.renderApp(this.appId, state);
+				}
+			}, 0);
+		} else {
+			this.renderApp(this.appId, state);
+		}
+	}
+
+	clear(): void {
+		this.data = "{}";
+	}
+
+	getViewData(): string {
+		return this.data;
+	}
+
+	getViewType() {
+		return NOTION_LIKE_TABLES_VIEW;
+	}
+
+	getDisplayText() {
+		const fileName = this.file?.name;
+		if (fileName) {
+			const extensionIndex = fileName.lastIndexOf(".");
+			return fileName.substring(0, extensionIndex);
+		}
+		return "";
+	}
+
+	private handleRefreshEvent = (
+		filePath: string,
+		sourceAppId: string,
+		state: TableState
+	) => {
+		if (this.appId !== sourceAppId && filePath == this.file.path) {
+			const serialized = serializeTableState(state);
+			this.setViewData(serialized, true);
+		}
+	};
+
+	private handleSaveTableState = (appId: string, state: TableState) => {
+		//We need this for when we open a new tab of the same file
+		//so that the data is up to date
+		const serialized = serializeTableState(state);
+		this.data = serialized;
+
+		//Request a save - every 2s
+		this.requestSave();
+
+		//Trigger an event to refresh the other open views of this file
+		this.app.workspace.trigger(
+			EVENT_REFRESH_TABLES,
+			this.file.path,
+			appId,
+			state
+		);
+	};
+
+	private renderApp(appId: string, state: TableState) {
+		if (this.root) {
+			// const throttledSaved = _.throttle(this.handleSaveTableState, 2000);
+			this.root.render(
+				<NotionLikeTable
+					appId={appId}
+					filePath={this.file.path}
+					leaf={this.leaf}
+					store={store}
+					tableState={state}
+					onSaveState={this.handleSaveTableState}
+				/>
+			);
+		}
 	}
 }

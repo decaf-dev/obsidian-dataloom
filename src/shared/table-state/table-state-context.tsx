@@ -70,9 +70,8 @@ export default function TableStateProvider({
 			return;
 		}
 
-		logger("TableStateContext onSaveState()", tableState);
 		onSaveState(appId, tableState);
-	}, [appId, tableState, onSaveState, logger]);
+	}, [appId, tableState, onSaveState]);
 
 	function handleToggleSearchBar() {
 		setSearchBarVisible((prevState) => !prevState);

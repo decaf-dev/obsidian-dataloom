@@ -30,13 +30,11 @@ import { Store } from "@reduxjs/toolkit";
 import { MarkdownView, WorkspaceLeaf } from "obsidian";
 
 import "./styles.css";
-import { useLogger } from "src/shared/logger";
 
 const TableApp = () => {
 	const { appId, leaf } = useMountContext();
 	const { tableState, resizingColumnId, searchText, setTableState } =
 		useTableState();
-	const logger = useLogger();
 
 	useEventSystem();
 	useExportEvents(tableState);
@@ -104,8 +102,6 @@ const TableApp = () => {
 	);
 	const visibleColumns = columns.filter((column) => column.isVisible);
 	const isMarkdownView = leaf.view instanceof MarkdownView;
-
-	logger("TableApp rendering");
 
 	return (
 		<div

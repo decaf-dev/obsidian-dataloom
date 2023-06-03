@@ -29,7 +29,6 @@ class NLTEmbeddedPlugin implements PluginValue {
 
 	//This is ran on any editor change
 	async update() {
-		console.log("NLTEmbeddedPlugin update");
 		const activeView = app.workspace.getActiveViewOfType(MarkdownView);
 		if (!activeView) return;
 
@@ -54,12 +53,14 @@ class NLTEmbeddedPlugin implements PluginValue {
 			//Get the table file that matches the src
 			const src = linkEl.getAttribute("src")!;
 
-			// if (this.activeTables.find((table) => table.file.path === src))
-			// 	return;
-
-			const tableFile = app.vault
+			let tableFile = app.vault
 				.getFiles()
 				.find((file) => file.path === src);
+			if (tableFile === undefined) {
+				tableFile = app.vault
+					.getFiles()
+					.find((file) => file.name === src);
+			}
 
 			if (!tableFile) continue;
 
@@ -93,8 +94,6 @@ class NLTEmbeddedPlugin implements PluginValue {
 			const data = await app.vault.read(tableFile);
 			const tableState = deserializeTableState(data);
 
-			console.log("rendering table");
-
 			const appId = uuidv4();
 			const root = createRoot(containerEl);
 			this.renderApp(appId, activeView.leaf, tableFile, root, tableState);
@@ -114,7 +113,6 @@ class NLTEmbeddedPlugin implements PluginValue {
 		appId: string,
 		state: TableState
 	) {
-		console.log("NLTEmbeddedPlugin handleSave");
 		//Save the new state
 		const serialized = serializeTableState(state);
 		await app.vault.modify(tableFile, serialized);
@@ -136,7 +134,6 @@ class NLTEmbeddedPlugin implements PluginValue {
 		tableState: TableState
 	) {
 		//Throttle the save function so we don't save too often
-		//This is the same time as the `debounceFunction`
 		const throttleHandleSave = _.throttle(this.handleSave, 2000);
 
 		root.render(
@@ -155,24 +152,20 @@ class NLTEmbeddedPlugin implements PluginValue {
 
 	private handleRefreshEvent = (
 		filePath: string,
-		appId: string,
+		sourceAppId: string,
 		state: TableState
 	) => {
-		console.log("NLTEmbeddedPlugin handleRefreshEvent", {
-			appId,
-			filePath,
-			state,
-		});
-
 		const apps = this.tableApps.filter(
-			(app) => app.id !== appId && app.file.path === filePath
+			(app) => app.id !== sourceAppId && app.file.path === filePath
 		);
 		apps.forEach((app) => {
-			const { parentEl, root, leaf, file } = app;
-			console.log("handling refresh event");
-			root.unmount();
-			app.root = createRoot(parentEl);
-			this.renderApp(appId, leaf, file, app.root, state);
+			const { id, parentEl, leaf, file } = app;
+
+			setTimeout(() => {
+				app.root.unmount();
+				app.root = createRoot(parentEl);
+				this.renderApp(id, leaf, file, app.root, state);
+			}, 0);
 		});
 	};
 
