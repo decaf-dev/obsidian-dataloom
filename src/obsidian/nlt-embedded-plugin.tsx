@@ -27,6 +27,7 @@ class NLTEmbeddedPlugin implements PluginValue {
 
 	//This is ran on any editor change
 	async update() {
+		console.log("NLTEmbeddedPlugin update");
 		const activeView = app.workspace.getActiveViewOfType(MarkdownView);
 		if (!activeView) return;
 
@@ -81,6 +82,7 @@ class NLTEmbeddedPlugin implements PluginValue {
 			const data = await app.vault.read(tableFile);
 			const tableState = deserializeTableState(data);
 
+			console.log("rendering table");
 			const root = createRoot(containerEl);
 			this.renderApp(activeView.leaf, tableFile, root, tableState);
 
@@ -100,6 +102,7 @@ class NLTEmbeddedPlugin implements PluginValue {
 		tableState: TableState
 	) {
 		async function handleSave(value: TableState) {
+			console.log("NLTEmbeddedPlugin handleSave");
 			//Save the new state
 			const serialized = serializeTableState(value);
 			await app.vault.modify(tableFile, serialized);
@@ -133,6 +136,8 @@ class NLTEmbeddedPlugin implements PluginValue {
 		filePath: string,
 		tableState: TableState
 	) => {
+		console.log("NLTEmbeddedPlugin handleRefreshEvent");
+
 		const table = this.activeTables.find(
 			(table) => table.file.path === filePath
 		);
@@ -142,6 +147,7 @@ class NLTEmbeddedPlugin implements PluginValue {
 
 		const { containerEl, root } = table;
 
+		console.log("handling refresh event");
 		root.unmount();
 		table.root = createRoot(containerEl);
 		this.renderApp(tableLeaf, table.file, table.root, tableState);
