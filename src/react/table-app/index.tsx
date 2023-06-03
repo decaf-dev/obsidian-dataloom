@@ -105,7 +105,7 @@ const TableApp = () => {
 	const visibleColumns = columns.filter((column) => column.isVisible);
 	const isMarkdownView = leaf.view instanceof MarkdownView;
 
-	logger("TableApp is rendering");
+	logger("TableApp rendering");
 
 	return (
 		<div
