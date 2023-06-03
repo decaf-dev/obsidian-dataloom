@@ -69,19 +69,23 @@ export default function DateCellEdit({
 	);
 	React.useEffect(() => {
 		function validateInput() {
-			let value: number | null = null;
+			let newValue: number | null = null;
 			//If the user has not entered a value, we don't need to validate the date format
 			if (localValue !== "") {
-				if (!isValidDateFormat(localValue, dateFormat)) {
-					setInputInvalid(true);
-					return;
+				if (isValidDateFormat(localValue, dateFormat)) {
+					//Convert local value to unix time
+					newValue = dateStringToUnixTime(localValue, dateFormat);
+				} else {
+					if (menuCloseRequest?.type === "enter") {
+						setInputInvalid(true);
+						return;
+					}
+					newValue = value;
 				}
-				//Convert local value to unix time
-				value = dateStringToUnixTime(localValue, dateFormat);
 			}
 
 			setInputInvalid(false);
-			onDateTimeChange(value);
+			onDateTimeChange(newValue);
 			setCloseTime(Date.now());
 		}
 
