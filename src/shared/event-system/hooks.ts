@@ -19,7 +19,8 @@ export const useEventSystem = () => {
 
 	React.useEffect(() => {
 		function handleClick(e: KeyboardEvent) {
-			if (isEventForThisApp(appId)) eventSystem.dispatchEvent("click", e);
+			if (isEventForThisApp(appId, true))
+				eventSystem.dispatchEvent("click", e);
 		}
 
 		//The markdown view has its click handler set on the embedded link

@@ -247,7 +247,6 @@ export default function MenuProvider({ children }: Props) {
 			const tableEl = document.querySelector(
 				`.NLT__app[data-id="${appId}"]`
 			);
-			//TODO handle events
 			if (!tableEl) throw new Error("Table el not found");
 
 			const focusableEls = tableEl.querySelectorAll(".NLT__focusable");
