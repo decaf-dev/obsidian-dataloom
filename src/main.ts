@@ -1,4 +1,4 @@
-import { MarkdownView, Plugin, TFolder } from "obsidian";
+import { MarkdownView, Plugin, TAbstractFile, TFolder } from "obsidian";
 
 import NLTSettingsTab from "./obsidian/nlt-settings-tab";
 
@@ -12,10 +12,16 @@ import {
 	EVENT_COLUMN_DELETE,
 	EVENT_DOWNLOAD_CSV,
 	EVENT_DOWNLOAD_MARKDOWN,
+	EVENT_REFRESH_TABLES,
 	EVENT_ROW_ADD,
 	EVENT_ROW_DELETE,
 } from "./shared/events";
 import { nltEmbeddedPlugin } from "./obsidian/nlt-embedded-plugin";
+import {
+	deserializeTableState,
+	serializeTableState,
+} from "./data/serialize-table-state";
+import { updateWikiLinks } from "./data/utils";
 
 export interface NLTSettings {
 	shouldDebug: boolean;
@@ -63,26 +69,67 @@ export default class NLTPlugin extends Plugin {
 		this.registerCommands();
 		this.registerEvents();
 
-		// this.app.vault.on(
-		// 	"rename",
-		// 	async (file: TAbstractFile, oldPath: string) => {
-		// 		//Search all table files for the old path and rename them
+		this.app.vault.on(
+			"rename",
+			async (updatedFile: TAbstractFile, oldPath: string) => {
+				//Search all table files for the old path and rename them
 
-		// 		//Get all table files
-		// 		const tableFiles = this.app.vault
-		// 			.getFiles()
-		// 			.filter((file) => file.extension === TABLE_EXTENSION);
+				//Get all table files
+				const tableFiles = this.app.vault
+					.getFiles()
+					.filter((file) => file.extension === TABLE_EXTENSION);
 
-		// 		for (let i = 0; i < tableFiles.length; i++) {
-		// 			const file = tableFiles[i];
-		// 			const content = await file.vault.read(tableFiles[i]);
-		// 			const newContent = content;
-		// 			await file.vault.modify(file, newContent);
+				for (let i = 0; i < tableFiles.length; i++) {
+					const tableFile = tableFiles[i];
 
-		// 			//If find wiki links up
-		// 		}
-		// 	}
-		// );
+					//For each file read its contents
+					const content = await tableFile.vault.read(tableFiles[i]);
+					const deserializedState = deserializeTableState(content);
+
+					//Iterate over all body cells and check the markdwon
+					const newState = structuredClone(deserializedState);
+					newState.model.bodyCells.forEach((cell) => {
+						//If the markdown contains a wiki link with old path, update it
+						const updatedMarkdown = updateWikiLinks(
+							cell.markdown,
+							oldPath,
+							updatedFile.path
+						);
+						cell.markdown = updatedMarkdown;
+					});
+
+					//If the state has changed, update the file
+					if (
+						JSON.stringify(deserializedState) !==
+						JSON.stringify(newState)
+					) {
+						const serializedState = serializeTableState(newState);
+						await tableFile.vault.modify(
+							tableFile,
+							serializedState
+						);
+
+						//Update all tables that match this path
+						app.workspace.trigger(
+							EVENT_REFRESH_TABLES,
+							tableFile.path,
+							-1, //update all tables that match this path
+							newState
+						);
+						// app.workspace
+						// 	.getLeavesOfType(NOTION_LIKE_TABLES_VIEW)
+						// 	.forEach((leaf) => {
+						// 		const view = leaf.view;
+						// 		if (view instanceof NLTView) {
+						// 			const path = view.file.path;
+						// 			if (path === tableFile.path)
+						// 				view.setViewData(serializedState, true);
+						// 		}
+						// 	});
+					}
+				}
+			}
+		);
 
 		this.app.workspace.onLayoutReady(() => {
 			this.checkForDarkMode();

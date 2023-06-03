@@ -49,7 +49,6 @@ export default function TextCellEdit({
 		if (e.key === "Enter") {
 			if (isSpecialActionDown(e)) return;
 			e.preventDefault();
-			console.log("prevent default 3");
 		} else if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
 			const cursorPosition = el.selectionStart;
 

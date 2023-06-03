@@ -424,6 +424,7 @@ const TableApp = () => {
 
 interface Props {
 	appId: string;
+	isEmbedded: boolean;
 	leaf: WorkspaceLeaf;
 	filePath: string;
 	store: Store;
@@ -432,6 +433,7 @@ interface Props {
 }
 export const NotionLikeTable = ({
 	appId,
+	isEmbedded,
 	leaf,
 	store,
 	filePath,
@@ -439,7 +441,12 @@ export const NotionLikeTable = ({
 	onSaveState,
 }: Props) => {
 	return (
-		<MountProvider appId={appId} leaf={leaf} filePath={filePath}>
+		<MountProvider
+			appId={appId}
+			isEmbedded={isEmbedded}
+			leaf={leaf}
+			filePath={filePath}
+		>
 			<Provider store={store}>
 				<TableStateProvider
 					initialState={tableState}

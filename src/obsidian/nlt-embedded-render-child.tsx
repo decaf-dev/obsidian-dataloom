@@ -37,6 +37,7 @@ export default class NLTEmbeddedRenderChild extends MarkdownRenderChild {
 
 			this.root.render(
 				<NotionLikeTable
+					isEmbedded
 					appId={this.appId}
 					filePath={file.path}
 					leaf={activeView.leaf}
