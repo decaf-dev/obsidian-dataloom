@@ -25,12 +25,9 @@ const MenuTrigger = ({
 	const id = useUUID();
 	React.useEffect(() => {
 		function handleClick(e: MouseEvent) {
-			console.log("HANDLE CLICK");
 			const target = e.target as HTMLElement;
-			console.log(target);
-			if (target.closest(`.NLT__focusable[data-id="${id}"]`)) {
-				onClick(e);
-			}
+			//If we're clicking on this element
+			if (target.closest(`.NLT__focusable[data-id="${id}"]`)) onClick(e);
 		}
 
 		eventSystem.addEventListener("click", handleClick, 1);

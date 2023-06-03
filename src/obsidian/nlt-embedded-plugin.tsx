@@ -107,8 +107,11 @@ class NLTEmbeddedPlugin implements PluginValue {
 		const data = await app.vault.read(file);
 		const tableState = deserializeTableState(data);
 
-		const root = createRoot(containerEl);
-		this.renderApp(appId, activeView.leaf, file, root, tableState);
+		const table = this.tableApps.find((app) => app.id === appId);
+		if (!table) return;
+
+		table.root = createRoot(containerEl);
+		this.renderApp(appId, activeView.leaf, file, table.root, tableState);
 	}
 
 	private async handleSave(
@@ -159,9 +162,9 @@ class NLTEmbeddedPlugin implements PluginValue {
 		sourceAppId: string,
 		state: TableState
 	) => {
-		//Find an instance of the same table
+		//Find a table instance with the same file path
 		const app = this.tableApps.find(
-			(app) => app.id === sourceAppId && app.file.path === filePath
+			(app) => app.id !== sourceAppId && app.file.path === filePath
 		);
 		if (!app) return;
 
