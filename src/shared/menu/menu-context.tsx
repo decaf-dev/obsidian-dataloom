@@ -195,7 +195,6 @@ export default function MenuProvider({ children }: Props) {
 
 			//Prevents the event key from triggering the click event
 			if (target.getAttribute("data-menu-id") !== null) {
-				console.log("Prevent default 2");
 				e.preventDefault();
 			}
 
@@ -223,7 +222,6 @@ export default function MenuProvider({ children }: Props) {
 		function handleTabDown(e: KeyboardEvent) {
 			if (isMenuOpen()) {
 				// Disallow the default event which will change focus to the next element
-				console.log("prevent default 1");
 				e.preventDefault();
 			} else {
 				removeFocusVisibleClass();
