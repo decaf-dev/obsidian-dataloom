@@ -35,8 +35,14 @@ export default function TextCellEdit({
 	onChange,
 	onMenuClose,
 }: Props) {
-	const { menu, isMenuOpen, menuRef, openMenu, closeAllMenus, closeTopMenu } =
-		useMenu(MenuLevel.TWO);
+	const {
+		menu,
+		isMenuOpen,
+		menuRef,
+		openMenu,
+		forceCloseAllMenus,
+		closeTopMenu,
+	} = useMenu(MenuLevel.TWO);
 	const { triggerRef, triggerPosition } = useMenuTriggerPosition();
 	useShiftMenu(triggerRef, menuRef, isMenuOpen, {
 		topOffset: 35,
@@ -139,7 +145,7 @@ export default function TextCellEdit({
 
 			onChange(newValue);
 		}
-		closeAllMenus();
+		forceCloseAllMenus();
 	}
 
 	const overflowStyle = useOverflow(shouldWrapOverflow);

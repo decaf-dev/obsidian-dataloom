@@ -9,7 +9,6 @@ import {
 } from "src/shared/types/types";
 import { useMenu } from "src/shared/menu/hooks";
 import { MenuLevel } from "src/shared/menu/types";
-import { useAppSelector } from "src/redux/global/hooks";
 
 import Icon from "../../shared/icon";
 import Stack from "../../shared/stack";
@@ -146,7 +145,9 @@ export default function HeaderCell({
 						columnId={columnId}
 						width={width}
 						onWidthChange={onWidthChange}
-						onMenuClose={() => closeTopMenu(false)}
+						onMenuClose={() =>
+							closeTopMenu({ shouldFocusTrigger: false })
+						}
 					/>
 				</div>
 			</MenuTrigger>

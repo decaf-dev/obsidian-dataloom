@@ -23,12 +23,17 @@ import {
 import { SortDir } from "../types/types";
 import { useMountContext } from "../view-context";
 
+interface CloseOptions {
+	shouldFocusTrigger?: boolean;
+	forceClose?: boolean;
+}
+
 interface ContextProps {
 	openMenus: Menu[];
 	menuCloseRequestTime: number | null;
 	openMenu: (menu: Menu) => void;
-	closeTopMenu: (shouldFocusTriggerOnClose?: boolean) => void;
-	closeAllMenus: (shouldFocusTriggerOnClose?: boolean) => void;
+	closeTopMenu: (options?: CloseOptions) => void;
+	forceCloseAllMenus: (shouldFocusTriggerOnClose?: boolean) => void;
 }
 
 const MenuContext = React.createContext<ContextProps | null>(null);
@@ -93,7 +98,7 @@ export default function MenuProvider({ children }: Props) {
 		[openMenus]
 	);
 
-	function closeAllMenus(shouldFocusTrigger = true) {
+	function forceCloseAllMenus(shouldFocusTrigger = true) {
 		const menu = openMenus.first();
 		if (!menu) return;
 
@@ -114,9 +119,23 @@ export default function MenuProvider({ children }: Props) {
 	 * Closes the top level menu
 	 */
 	const closeTopMenu = React.useCallback(
-		(shouldFocusTrigger = true) => {
+		(options?: CloseOptions) => {
+			const { shouldFocusTrigger = true, forceClose = false } =
+				options || {};
 			const menu = openMenus.last();
 			if (!menu) return;
+
+			//Forcing close means that if the menu we would otherwise wait for the request to finish
+			//we will close it immediately
+			if (!forceClose) {
+				if (
+					menu.shouldRequestOnClose &&
+					menuCloseRequestTime === null
+				) {
+					setMenuCloseRequestTime(Date.now());
+					return;
+				}
+			}
 
 			if (shouldFocusTrigger) {
 				const { id, level } = menu;
@@ -130,7 +149,7 @@ export default function MenuProvider({ children }: Props) {
 			setOpenMenus((prev) => prev.slice(0, prev.length - 1));
 			setMenuCloseRequestTime(null);
 		},
-		[openMenus]
+		[openMenus, menuCloseRequestTime]
 	);
 
 	React.useEffect(() => {
@@ -161,7 +180,7 @@ export default function MenuProvider({ children }: Props) {
 					target.closest(".NLT__app") !== null ||
 					target.closest(".NLT__menu") !== null;
 
-				closeTopMenu(shouldFocusOnClose);
+				closeTopMenu({ shouldFocusTrigger: shouldFocusOnClose });
 			} else {
 				removeFocusVisibleClass();
 			}
@@ -203,11 +222,7 @@ export default function MenuProvider({ children }: Props) {
 				const menu = openMenus.last();
 				if (!menu) throw new Error("Menu is open but no menu exists");
 
-				if (menu.shouldRequestOnClose) {
-					setMenuCloseRequestTime(Date.now());
-				} else {
-					closeTopMenu();
-				}
+				closeTopMenu();
 			} else {
 				//Otherwise if we're focused on a MenuTrigger, open the menu
 				openMenuFromFocusedTrigger();
@@ -216,16 +231,16 @@ export default function MenuProvider({ children }: Props) {
 		}
 
 		function handleEscapeDown() {
-			if (isMenuOpen()) closeTopMenu();
+			if (isMenuOpen()) closeTopMenu({ forceClose: true });
 		}
 
 		function handleTabDown(e: KeyboardEvent) {
 			if (isMenuOpen()) {
 				// Disallow the default event which will change focus to the next element
 				e.preventDefault();
-			} else {
-				removeFocusVisibleClass();
+				return;
 			}
+			removeFocusVisibleClass();
 		}
 
 		function handleArrowDown(e: KeyboardEvent) {
@@ -335,7 +350,7 @@ export default function MenuProvider({ children }: Props) {
 				openMenu,
 				menuCloseRequestTime,
 				closeTopMenu,
-				closeAllMenus,
+				forceCloseAllMenus,
 			}}
 		>
 			{children}
