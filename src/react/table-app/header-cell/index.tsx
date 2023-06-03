@@ -100,7 +100,11 @@ export default function HeaderCell({
 	function handleMenuTriggerClick() {
 		//If we're resizing a column, then don't open the menu
 		if (resizingColumnId !== null) return;
-		openMenu(menu);
+		if (isMenuOpen) {
+			closeTopMenu();
+		} else {
+			openMenu(menu);
+		}
 	}
 
 	function handleMenuClose() {

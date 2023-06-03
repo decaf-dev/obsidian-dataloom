@@ -173,7 +173,11 @@ export default function MenuProvider({ children }: Props) {
 				if (!isElementMounted) return;
 
 				//If we're clicking on the menu then don't close
-				if (target.closest(`.NLT__menu[data-id="${id}"]`) !== null)
+				if (target.closest(`.NLT__menu[data-id="${id}"]`)) return;
+
+				//The event will propagate from the menu trigger to the document
+				//If we don't have this check, then we will close the menu when we click on the trigger
+				if (target.closest(`.NLT__focusable[data-menu-id="${id}"]`))
 					return;
 
 				requestCloseTopMenu("click");
