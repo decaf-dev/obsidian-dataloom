@@ -2,9 +2,11 @@
 
 ## Basic usage
 
+> Please make sure that you have enabled [detection of all extensions](quickstart.md?id=linking-table-files)
+
 A table may be embedded into a note by using the [embedded file syntax](https://help.obsidian.md/Linking+notes+and+files/Embedding+files).
 
-Embedded table example
+Example table
 
 ```markdown
 ![[my-table.table]]
@@ -14,7 +16,7 @@ An embedded table will preform the same functions as a normal table, the only li
 
 Changes that are made to an embedded table will be saved to the table file. Changes made to an embedded table will also update any open tabs that contain a Notion-Like table.
 
-## Setting a width or height
+## Setting a width and height
 
 An embedded table has a default width of `100%` and a default height of `340px`. A height of `340px` will render exactly 4 body rows.
 
