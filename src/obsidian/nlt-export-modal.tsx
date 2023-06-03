@@ -6,12 +6,12 @@ import { ExportApp } from "src/react/export-app";
 
 export default class NLTExportModal extends Modal {
 	root: Root;
-	viewDisplayText: string;
+	filePath: string;
 
-	constructor(app: App, viewDisplayText: string) {
+	constructor(app: App, filePath: string) {
 		super(app);
 		this.app = app;
-		this.viewDisplayText = viewDisplayText;
+		this.filePath = filePath;
 	}
 
 	onOpen() {
@@ -25,10 +25,7 @@ export default class NLTExportModal extends Modal {
 
 			this.root = createRoot(container);
 			this.root.render(
-				<ExportApp
-					tableState={state}
-					viewDisplayText={this.viewDisplayText}
-				/>
+				<ExportApp tableState={state} filePath={this.filePath} />
 			);
 		}
 	}

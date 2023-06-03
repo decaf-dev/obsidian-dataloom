@@ -30,13 +30,11 @@ import { Store } from "@reduxjs/toolkit";
 import { MarkdownView, WorkspaceLeaf } from "obsidian";
 
 import "./styles.css";
-import { useLogger } from "src/shared/logger";
 
 const TableApp = () => {
 	const { appId, leaf } = useMountContext();
 	const { tableState, resizingColumnId, searchText, setTableState } =
 		useTableState();
-	const logger = useLogger();
 
 	useEventSystem();
 	useExportEvents(tableState);
@@ -104,8 +102,6 @@ const TableApp = () => {
 	);
 	const visibleColumns = columns.filter((column) => column.isVisible);
 	const isMarkdownView = leaf.view instanceof MarkdownView;
-
-	logger("TableApp rendering");
 
 	return (
 		<div
@@ -427,21 +423,23 @@ const TableApp = () => {
 };
 
 interface Props {
+	appId: string;
 	leaf: WorkspaceLeaf;
-	fileName: string;
+	filePath: string;
 	store: Store;
 	tableState: TableState;
-	onSaveState: (value: TableState) => void;
+	onSaveState: (appId: string, state: TableState) => void;
 }
 export const NotionLikeTable = ({
+	appId,
 	leaf,
 	store,
-	fileName,
+	filePath,
 	tableState,
 	onSaveState,
 }: Props) => {
 	return (
-		<MountProvider leaf={leaf} fileName={fileName}>
+		<MountProvider appId={appId} leaf={leaf} filePath={filePath}>
 			<Provider store={store}>
 				<TableStateProvider
 					initialState={tableState}

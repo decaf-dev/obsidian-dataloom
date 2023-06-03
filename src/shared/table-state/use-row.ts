@@ -1,26 +1,25 @@
 import React from "react";
 import { useLogger } from "../logger";
-import { WorkspaceLeaf } from "obsidian";
 import { EVENT_ROW_ADD, EVENT_ROW_DELETE } from "../events";
 import { useTableState } from "./table-state-context";
 import RowAddCommand from "../commands/row-add-command";
 import RowDeleteCommand from "../commands/row-delete-command";
-import { isEventForThisLeaf } from "../renderUtils";
+import { useMountContext } from "../view-context";
+import { isEventForThisApp } from "../event-system/utils";
 
 export const useRow = () => {
 	const logger = useLogger();
 	const { doCommand } = useTableState();
+	const { appId } = useMountContext();
 
 	React.useEffect(() => {
-		function handleRowAddEvent(leaf: WorkspaceLeaf) {
-			if (!isEventForThisLeaf(leaf)) return;
-			doCommand(new RowAddCommand());
+		function handleRowAddEvent() {
+			if (isEventForThisApp(appId)) doCommand(new RowAddCommand());
 		}
 
-		function handleRowDeleteEvent(leaf: WorkspaceLeaf) {
-			if (!isEventForThisLeaf(leaf)) return;
-
-			doCommand(new RowDeleteCommand({ last: true }));
+		function handleRowDeleteEvent() {
+			if (isEventForThisApp(appId))
+				doCommand(new RowDeleteCommand({ last: true }));
 		}
 
 		//@ts-expect-error unknown event type
@@ -32,7 +31,7 @@ export const useRow = () => {
 			app.workspace.off(EVENT_ROW_ADD, handleRowAddEvent);
 			app.workspace.off(EVENT_ROW_DELETE, handleRowDeleteEvent);
 		};
-	}, [doCommand]);
+	}, [doCommand, appId]);
 
 	function handleRowDeleteClick(rowId: string) {
 		logger("handleRowDeleteClick", {
