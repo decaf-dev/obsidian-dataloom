@@ -69,8 +69,9 @@ export default function TableStateProvider({
 			return;
 		}
 
+		logger("onSaveState", tableState);
 		onSaveState(tableState);
-	}, [tableState, onSaveState]);
+	}, [tableState, onSaveState, logger]);
 
 	function handleToggleSearchBar() {
 		setSearchBarVisible((prevState) => !prevState);
