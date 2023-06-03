@@ -427,21 +427,23 @@ const TableApp = () => {
 };
 
 interface Props {
+	appId: string;
 	leaf: WorkspaceLeaf;
-	fileName: string;
+	filePath: string;
 	store: Store;
 	tableState: TableState;
-	onSaveState: (value: TableState) => void;
+	onSaveState: (appId: string, state: TableState) => void;
 }
 export const NotionLikeTable = ({
+	appId,
 	leaf,
 	store,
-	fileName,
+	filePath,
 	tableState,
 	onSaveState,
 }: Props) => {
 	return (
-		<MountProvider leaf={leaf} fileName={fileName}>
+		<MountProvider appId={appId} leaf={leaf} filePath={filePath}>
 			<Provider store={store}>
 				<TableStateProvider
 					initialState={tableState}

@@ -11,11 +11,12 @@ import {
 	isWindowsUndoDown,
 } from "../keyboard-event";
 import { eventSystem } from "../event-system/event-system";
+import { useMountContext } from "../view-context";
 
 interface Props {
 	initialState: TableState;
 	children: React.ReactNode;
-	onSaveState: (value: TableState) => void;
+	onSaveState: (appId: string, state: TableState) => void;
 }
 
 const TableStateContext = React.createContext<{
@@ -47,7 +48,6 @@ export default function TableStateProvider({
 	children,
 }: Props) {
 	const [tableState, setTableState] = React.useState(initialState);
-
 	const [searchText, setSearchText] = React.useState("");
 	const [isSearchBarVisible, setSearchBarVisible] = React.useState(false);
 	const [resizingColumnId, setResizingColumnId] = React.useState<
@@ -60,6 +60,7 @@ export default function TableStateProvider({
 	const [position, setPosition] = React.useState(0);
 
 	const logger = useLogger();
+	const { appId } = useMountContext();
 
 	//Whenever the table state is updated save it to disk
 	const isMountedRef = React.useRef(false);
@@ -70,8 +71,8 @@ export default function TableStateProvider({
 		}
 
 		logger("TableStateContext onSaveState()", tableState);
-		onSaveState(tableState);
-	}, [tableState, onSaveState, logger]);
+		onSaveState(appId, tableState);
+	}, [appId, tableState, onSaveState, logger]);
 
 	function handleToggleSearchBar() {
 		setSearchBarVisible((prevState) => !prevState);

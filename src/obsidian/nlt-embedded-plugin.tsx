@@ -11,17 +11,19 @@ import { EVENT_REFRESH_TABLES } from "src/shared/events";
 import { TableState } from "src/shared/types/types";
 import _ from "lodash";
 import { getEmbeddedTableLinkEls } from "./utils";
+import { v4 as uuidv4 } from "uuid";
 
 class NLTEmbeddedPlugin implements PluginValue {
-	activeTables: {
+	private tableApps: {
+		id: string;
+		parentEl: HTMLElement;
 		leaf: WorkspaceLeaf;
-		containerEl: HTMLElement;
 		root: Root;
 		file: TFile;
 	}[];
 
 	constructor() {
-		this.activeTables = [];
+		this.tableApps = [];
 		this.setupEventListeners();
 	}
 
@@ -37,21 +39,29 @@ class NLTEmbeddedPlugin implements PluginValue {
 
 		for (let i = 0; i < embeddedTableLinkEls.length; i++) {
 			const linkEl = embeddedTableLinkEls[i];
-			const child = linkEl.children[0];
 
-			//If the child is not a title, we have already mounted an app
-			if (!child.className.includes("file-embed-title")) return;
+			if (linkEl.children.length === 1) {
+				const child = linkEl.children[0];
+				if (child.classList.contains("NLT__embedded-container"))
+					continue;
+			}
 
-			//Remove the child, we don't need it
-			linkEl.removeChild(child);
+			//Remove any children
+			for (let i = 0; i < linkEl.children.length; i++) {
+				linkEl.removeChild(linkEl.children[i]);
+			}
 
 			//Get the table file that matches the src
 			const src = linkEl.getAttribute("src")!;
+
+			// if (this.activeTables.find((table) => table.file.path === src))
+			// 	return;
+
 			const tableFile = app.vault
 				.getFiles()
-				.find((file) => file.name === src);
+				.find((file) => file.path === src);
 
-			if (!tableFile) return;
+			if (!tableFile) continue;
 
 			linkEl.style.height = "340px";
 			linkEl.style.backgroundColor = "var(--color-primary)";
@@ -59,6 +69,7 @@ class NLTEmbeddedPlugin implements PluginValue {
 			linkEl.style.padding = "10px 0px";
 
 			const containerEl = linkEl.createDiv();
+			containerEl.className = "NLT__embedded-container";
 			containerEl.style.height = "100%";
 			containerEl.style.width = "100%";
 
@@ -83,74 +94,86 @@ class NLTEmbeddedPlugin implements PluginValue {
 			const tableState = deserializeTableState(data);
 
 			console.log("rendering table");
-			const root = createRoot(containerEl);
-			this.renderApp(activeView.leaf, tableFile, root, tableState);
 
-			this.activeTables.push({
+			const appId = uuidv4();
+			const root = createRoot(containerEl);
+			this.renderApp(appId, activeView.leaf, tableFile, root, tableState);
+
+			this.tableApps.push({
+				id: appId,
 				leaf: activeView.leaf,
-				containerEl,
+				parentEl: containerEl,
 				root,
 				file: tableFile,
 			});
 		}
 	}
 
+	private async handleSave(
+		tableFile: TFile,
+		appId: string,
+		state: TableState
+	) {
+		console.log("NLTEmbeddedPlugin handleSave");
+		//Save the new state
+		const serialized = serializeTableState(state);
+		await app.vault.modify(tableFile, serialized);
+
+		//Tell all other views to refresh
+		app.workspace.trigger(
+			EVENT_REFRESH_TABLES,
+			tableFile.path,
+			appId,
+			state
+		);
+	}
+
 	private renderApp(
+		id: string,
 		leaf: WorkspaceLeaf,
 		tableFile: TFile,
 		root: Root,
 		tableState: TableState
 	) {
-		async function handleSave(value: TableState) {
-			console.log("NLTEmbeddedPlugin handleSave");
-			//Save the new state
-			const serialized = serializeTableState(value);
-			await app.vault.modify(tableFile, serialized);
-
-			//Tell all other views to refresh
-			app.workspace.trigger(
-				EVENT_REFRESH_TABLES,
-				leaf,
-				tableFile.path,
-				value
-			);
-		}
-
 		//Throttle the save function so we don't save too often
 		//This is the same time as the `debounceFunction`
-		const throttleHandleSave = _.throttle(handleSave, 2000);
+		const throttleHandleSave = _.throttle(this.handleSave, 2000);
 
 		root.render(
 			<NotionLikeTable
-				fileName={tableFile.name}
+				appId={id}
+				filePath={tableFile.path}
 				leaf={leaf}
 				store={store}
 				tableState={tableState}
-				onSaveState={throttleHandleSave}
+				onSaveState={(appId, state) =>
+					throttleHandleSave(tableFile, appId, state)
+				}
 			/>
 		);
 	}
 
 	private handleRefreshEvent = (
-		leaf: WorkspaceLeaf,
 		filePath: string,
-		tableState: TableState
+		appId: string,
+		state: TableState
 	) => {
-		console.log("NLTEmbeddedPlugin handleRefreshEvent");
+		console.log("NLTEmbeddedPlugin handleRefreshEvent", {
+			appId,
+			filePath,
+			state,
+		});
 
-		const table = this.activeTables.find(
-			(table) => table.file.path === filePath
+		const apps = this.tableApps.filter(
+			(app) => app.id !== appId && app.file.path === filePath
 		);
-		if (!table) return;
-		const { leaf: tableLeaf } = table;
-		if (leaf === tableLeaf) return;
-
-		const { containerEl, root } = table;
-
-		console.log("handling refresh event");
-		root.unmount();
-		table.root = createRoot(containerEl);
-		this.renderApp(tableLeaf, table.file, table.root, tableState);
+		apps.forEach((app) => {
+			const { parentEl, root, leaf, file } = app;
+			console.log("handling refresh event");
+			root.unmount();
+			app.root = createRoot(parentEl);
+			this.renderApp(appId, leaf, file, app.root, state);
+		});
 	};
 
 	private setupEventListeners() {
@@ -159,7 +182,7 @@ class NLTEmbeddedPlugin implements PluginValue {
 	}
 
 	destroy() {
-		this.activeTables.forEach((table) => table.root.unmount());
+		this.tableApps.forEach((app) => app.root.unmount());
 		app.workspace.off(EVENT_REFRESH_TABLES, this.handleRefreshEvent);
 	}
 }
