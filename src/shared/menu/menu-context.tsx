@@ -173,12 +173,6 @@ export default function MenuProvider({ children }: Props) {
 				//If we're clicking on the menu then don't close
 				if (target.closest(`.NLT__menu[data-id="${id}"]`) !== null)
 					return;
-				//If we're clicking on the trigger then don't close
-				if (
-					target.closest(`.NLT__focusable[data-menu-id="${id}"]`) !==
-					null
-				)
-					return;
 
 				requestCloseTopMenu("click");
 			} else {
