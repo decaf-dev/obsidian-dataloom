@@ -133,7 +133,6 @@ export class NLTView extends TextFileView {
 
 	private renderApp(appId: string, state: TableState) {
 		if (this.root) {
-			// const throttledSaved = _.throttle(this.handleSaveTableState, 2000);
 			this.root.render(
 				<NotionLikeTable
 					appId={appId}
