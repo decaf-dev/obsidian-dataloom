@@ -1,12 +1,10 @@
-import { MarkdownView, WorkspaceLeaf } from "obsidian";
+import { WorkspaceLeaf } from "obsidian";
 import React from "react";
-import { NLTView } from "src/obsidian/nlt-view";
-import { useUUID } from "./hooks";
 
 const MountContext = React.createContext<{
-	fileName: string;
-	leaf: WorkspaceLeaf;
 	appId: string;
+	filePath: string;
+	leaf: WorkspaceLeaf;
 } | null>(null);
 
 export const useMountContext = () => {
@@ -21,15 +19,20 @@ export const useMountContext = () => {
 };
 
 interface Props {
-	fileName: string;
+	appId: string;
+	filePath: string;
 	leaf: WorkspaceLeaf;
 	children: React.ReactNode;
 }
 
-export default function MountProvider({ fileName, leaf, children }: Props) {
-	const appId = useUUID();
+export default function MountProvider({
+	appId,
+	filePath,
+	leaf,
+	children,
+}: Props) {
 	return (
-		<MountContext.Provider value={{ fileName, leaf, appId }}>
+		<MountContext.Provider value={{ appId, filePath, leaf }}>
 			{children}
 		</MountContext.Provider>
 	);
