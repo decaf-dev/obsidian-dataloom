@@ -36,15 +36,21 @@ export class NLTView extends TextFileView {
 		filePath: string,
 		tableState: TableState
 	) => {
-		this.logger("NLTView handleRefreshEvent", {
+		this.logger("NLTView handleRefreshEvent()", {
 			leaf,
 			filePath,
 			tableState,
 		});
 
-		//Make sure that the event is coming from a different leaf but the same file
-		//This occurs when we have multiple tabs of the same file open
-		if (leaf !== this.leaf && filePath === this.file.path) {
+		//@ts-expect-error
+		const eventLeafId = leaf.id;
+		//@ts-expect-error
+		const thisLeafId = this.leaf.id;
+
+		//Make sure that the event is coming from a different leaf
+		if (eventLeafId === thisLeafId) return;
+
+		if (filePath === this.file.path) {
 			this.logger("handling refresh event");
 			if (this.root) {
 				this.root.unmount();
@@ -54,8 +60,8 @@ export class NLTView extends TextFileView {
 		}
 	};
 
-	private handleSaveTableState = async (tableState: TableState) => {
-		this.logger("NLTView handleSaveTableState");
+	private handleSaveTableState = (tableState: TableState) => {
+		this.logger("NLTView handleSaveTableState()");
 
 		//Only save data if the view is in the active leaf
 		//This prevents the data being saved multiple times if we have multiple tabs of the same file opens
@@ -64,7 +70,7 @@ export class NLTView extends TextFileView {
 
 			const serialized = serializeTableState(tableState);
 			this.data = serialized;
-			await this.requestSave();
+			this.requestSave();
 
 			this.logger("trigger refresh event");
 
@@ -79,7 +85,7 @@ export class NLTView extends TextFileView {
 	};
 
 	private renderApp(state: TableState) {
-		this.logger("NLTView renderApp");
+		this.logger("NLTView renderApp()");
 		if (this.root) {
 			this.logger("rendering app");
 			this.root.render(
@@ -128,7 +134,7 @@ export class NLTView extends TextFileView {
 	}
 
 	async onOpen() {
-		this.logger("NLTView onOpen");
+		this.logger("NLTView onOpen()");
 		//Add offset to the container to account for the mobile action bar
 		this.containerEl.style.paddingBottom = "48px";
 
@@ -160,7 +166,7 @@ export class NLTView extends TextFileView {
 	}
 
 	async onClose() {
-		this.logger("NLTView onClose");
+		this.logger("NLTView onClose()");
 		if (this.root) {
 			this.root.unmount();
 			this.root = null;
