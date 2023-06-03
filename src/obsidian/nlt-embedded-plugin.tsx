@@ -87,7 +87,6 @@ class NLTEmbeddedPlugin implements PluginValue {
 			});
 			containerEl.addEventListener("click", (e) => {
 				e.stopPropagation();
-				console.log("Click event");
 				eventSystem.dispatchEvent("click", e);
 			});
 

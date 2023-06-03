@@ -1,4 +1,4 @@
-import { Platform, TextFileView, WorkspaceLeaf } from "obsidian";
+import { TextFileView, WorkspaceLeaf } from "obsidian";
 import { createRoot, Root } from "react-dom/client";
 import { NotionLikeTable } from "../react/table-app";
 import { store } from "../redux/global/store";
