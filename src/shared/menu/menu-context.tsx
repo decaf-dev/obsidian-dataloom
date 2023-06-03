@@ -4,7 +4,12 @@ import {
 	focusMenuElement,
 	removeFocusVisibleClass,
 } from "./focus-visible";
-import { Menu, MenuLevel } from "./types";
+import {
+	MenuCloseRequest,
+	MenuCloseRequestType,
+	Menu,
+	MenuLevel,
+} from "./types";
 import { useTableState } from "../table-state/table-state-context";
 import {
 	isMacRedoDown,
@@ -23,12 +28,17 @@ import {
 import { SortDir } from "../types/types";
 import { useMountContext } from "../view-context";
 
+interface CloseOptions {
+	shouldFocusTrigger?: boolean;
+	forceClose?: boolean;
+}
+
 interface ContextProps {
 	openMenus: Menu[];
-	menuCloseRequestTime: number | null;
+	menuCloseRequest: MenuCloseRequest | null;
 	openMenu: (menu: Menu) => void;
-	closeTopMenu: (shouldFocusTriggerOnClose?: boolean) => void;
-	closeAllMenus: (shouldFocusTriggerOnClose?: boolean) => void;
+	closeTopMenu: (options?: CloseOptions) => void;
+	forceCloseAllMenus: (shouldFocusTriggerOnClose?: boolean) => void;
 }
 
 const MenuContext = React.createContext<ContextProps | null>(null);
@@ -57,9 +67,8 @@ export default function MenuProvider({ children }: Props) {
 	const { tableState } = useTableState();
 	const { appId } = useMountContext();
 
-	const [menuCloseRequestTime, setMenuCloseRequestTime] = React.useState<
-		number | null
-	>(null);
+	const [menuCloseRequest, setMenuCloseRequest] =
+		React.useState<MenuCloseRequest | null>(null);
 
 	/**
 	 * Returns whether or not a menu is open
@@ -93,7 +102,7 @@ export default function MenuProvider({ children }: Props) {
 		[openMenus]
 	);
 
-	function closeAllMenus(shouldFocusTrigger = true) {
+	function forceCloseAllMenus(shouldFocusTrigger = true) {
 		const menu = openMenus.first();
 		if (!menu) return;
 
@@ -107,14 +116,31 @@ export default function MenuProvider({ children }: Props) {
 		}
 
 		setOpenMenus([]);
-		setMenuCloseRequestTime(null);
+		setMenuCloseRequest(null);
 	}
+
+	const requestCloseTopMenu = (type: MenuCloseRequestType) => {
+		const menu = openMenus.last();
+		if (!menu) return;
+
+		if (menu.shouldRequestOnClose) {
+			setMenuCloseRequest({
+				id: menu.id,
+				requestTime: Date.now(),
+				type,
+			});
+			return;
+		}
+
+		closeTopMenu();
+	};
 
 	/**
 	 * Closes the top level menu
 	 */
 	const closeTopMenu = React.useCallback(
-		(shouldFocusTrigger = true) => {
+		(options?: CloseOptions) => {
+			const { shouldFocusTrigger = true } = options || {};
 			const menu = openMenus.last();
 			if (!menu) return;
 
@@ -128,9 +154,9 @@ export default function MenuProvider({ children }: Props) {
 
 			//Remove the menu
 			setOpenMenus((prev) => prev.slice(0, prev.length - 1));
-			setMenuCloseRequestTime(null);
+			setMenuCloseRequest(null);
 		},
-		[openMenus]
+		[openMenus, menuCloseRequest]
 	);
 
 	React.useEffect(() => {
@@ -141,27 +167,20 @@ export default function MenuProvider({ children }: Props) {
 
 				const { id } = menu;
 				const target = e.target as HTMLElement;
-
 				//If the menu is not mounted, we don't need to do anything
 				//This can happen when a menu changes
 				const isElementMounted = document.contains(target);
 				if (!isElementMounted) return;
 
 				//If we're clicking on the menu then don't close
-				if (target.closest(`.NLT__menu[data-id="${id}"]`) !== null)
-					return;
-				//If we're clicking on the menu then don't close
-				if (
-					target.closest(`.NLT__focusable[data-menu-id="${id}"]`) !==
-					null
-				)
+				if (target.closest(`.NLT__menu[data-id="${id}"]`)) return;
+
+				//The event will propagate from the menu trigger to the document
+				//If we don't have this check, then we will close the menu when we click on the trigger
+				if (target.closest(`.NLT__focusable[data-menu-id="${id}"]`))
 					return;
 
-				const shouldFocusOnClose =
-					target.closest(".NLT__app") !== null ||
-					target.closest(".NLT__menu") !== null;
-
-				closeTopMenu(shouldFocusOnClose);
+				requestCloseTopMenu("click");
 			} else {
 				removeFocusVisibleClass();
 			}
@@ -194,20 +213,14 @@ export default function MenuProvider({ children }: Props) {
 			if (isSpecialActionDown(e)) return;
 
 			//Prevents the event key from triggering the click event
-			if (target.getAttribute("data-menu-id") !== null) {
-				e.preventDefault();
-			}
+			if (target.getAttribute("data-menu-id")) e.preventDefault();
 
 			//If a menu is open, then close the menu
 			if (isMenuOpen()) {
 				const menu = openMenus.last();
 				if (!menu) throw new Error("Menu is open but no menu exists");
 
-				if (menu.shouldRequestOnClose) {
-					setMenuCloseRequestTime(Date.now());
-				} else {
-					closeTopMenu();
-				}
+				requestCloseTopMenu("enter");
 			} else {
 				//Otherwise if we're focused on a MenuTrigger, open the menu
 				openMenuFromFocusedTrigger();
@@ -223,9 +236,9 @@ export default function MenuProvider({ children }: Props) {
 			if (isMenuOpen()) {
 				// Disallow the default event which will change focus to the next element
 				e.preventDefault();
-			} else {
-				removeFocusVisibleClass();
+				return;
 			}
+			removeFocusVisibleClass();
 		}
 
 		function handleArrowDown(e: KeyboardEvent) {
@@ -238,7 +251,6 @@ export default function MenuProvider({ children }: Props) {
 			const tableEl = document.querySelector(
 				`.NLT__app[data-id="${appId}"]`
 			);
-			//TODO handle events
 			if (!tableEl) throw new Error("Table el not found");
 
 			const focusableEls = tableEl.querySelectorAll(".NLT__focusable");
@@ -333,9 +345,9 @@ export default function MenuProvider({ children }: Props) {
 			value={{
 				openMenus,
 				openMenu,
-				menuCloseRequestTime,
+				menuCloseRequest,
 				closeTopMenu,
-				closeAllMenus,
+				forceCloseAllMenus,
 			}}
 		>
 			{children}

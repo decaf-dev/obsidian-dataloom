@@ -23,6 +23,7 @@ const MenuTrigger = ({
 	onBackspaceDown,
 }: Props) => {
 	const id = useUUID();
+
 	React.useEffect(() => {
 		function handleClick(e: MouseEvent) {
 			const target = e.target as HTMLElement;

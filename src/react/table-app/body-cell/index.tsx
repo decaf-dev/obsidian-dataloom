@@ -114,18 +114,24 @@ export default function BodyCell({
 	onDateTimeChange,
 	onTagAdd,
 }: Props) {
+	//All of these cells have local values
+	const shouldRequestOnClose =
+		columnType === CellType.TEXT ||
+		columnType === CellType.NUMBER ||
+		columnType === CellType.CURRENCY ||
+		columnType === CellType.TAG ||
+		columnType === CellType.MULTI_TAG ||
+		columnType === CellType.DATE;
+
 	const {
 		menu,
 		isMenuOpen,
-		menuCloseRequestTime,
+		menuCloseRequest,
 		menuRef,
 		openMenu,
 		closeTopMenu,
 	} = useMenu(MenuLevel.ONE, {
-		shouldRequestOnClose:
-			columnType === CellType.DATE ||
-			columnType === CellType.TAG ||
-			columnType === CellType.MULTI_TAG,
+		shouldRequestOnClose,
 	});
 	const { triggerPosition, triggerRef } = useMenuTriggerPosition();
 	useShiftMenu(triggerRef, menuRef, isMenuOpen);
@@ -133,7 +139,7 @@ export default function BodyCell({
 	const { doCommand } = useTableState();
 
 	//Once the menu is closed, we want to sort all rows
-	const didIsMenuOpenChange = useCompare(isMenuOpen);
+	const didIsMenuOpenChange = useCompare(isMenuOpen, false);
 	React.useEffect(() => {
 		if (didIsMenuOpenChange) {
 			if (!isMenuOpen) {
@@ -386,9 +392,11 @@ export default function BodyCell({
 			>
 				{columnType === CellType.TEXT && (
 					<TextCellEdit
+						menuCloseRequest={menuCloseRequest}
 						shouldWrapOverflow={shouldWrapOverflow}
 						value={markdown}
 						onChange={handleTextInputChange}
+						onMenuClose={handleMenuClose}
 					/>
 				)}
 				{columnType === CellType.FILE && (
@@ -399,14 +407,16 @@ export default function BodyCell({
 				)}
 				{columnType === CellType.NUMBER && (
 					<NumberCellEdit
+						menuCloseRequest={menuCloseRequest}
 						value={markdown}
 						onChange={handleNumberInputChange}
+						onMenuClose={handleMenuClose}
 					/>
 				)}
 				{(columnType === CellType.TAG ||
 					columnType === CellType.MULTI_TAG) && (
 					<TagCellEdit
-						menuCloseRequestTime={menuCloseRequestTime}
+						menuCloseRequest={menuCloseRequest}
 						columnTags={columnTags}
 						cellTags={cellTags}
 						onTagColorChange={handleTagColorChange}
@@ -420,7 +430,7 @@ export default function BodyCell({
 				{columnType === CellType.DATE && (
 					<DateCellEdit
 						value={dateTime}
-						menuCloseRequestTime={menuCloseRequestTime}
+						menuCloseRequest={menuCloseRequest}
 						dateFormat={dateFormat}
 						onDateTimeChange={handleDateTimeChange}
 						onDateFormatChange={handleDateFormatChange}
@@ -429,8 +439,10 @@ export default function BodyCell({
 				)}
 				{columnType === CellType.CURRENCY && (
 					<CurrencyCellEdit
+						menuCloseRequest={menuCloseRequest}
 						value={markdown}
 						onChange={handleCurrencyChange}
+						onMenuClose={handleMenuClose}
 					/>
 				)}
 			</Menu>
