@@ -17,8 +17,10 @@ export interface Menu {
 	shouldRequestOnClose: boolean;
 }
 
+export type CloseMenuRequestType = "enter" | "click";
+
 export interface CloseMenuRequest {
-	id: string;
+	type: CloseMenuRequestType;
 	requestTime: number;
 }
 

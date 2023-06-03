@@ -3,16 +3,17 @@ import { isValidNumberInput } from "src/shared/validators";
 
 import "./styles.css";
 import React from "react";
+import { CloseMenuRequest } from "src/shared/menu/types";
 
 interface Props {
-	menuCloseRequestTime: number | null;
+	menuCloseRequest: CloseMenuRequest | null;
 	value: string;
 	onChange: (value: string) => void;
 	onMenuClose: () => void;
 }
 
 export default function NumberCellEdit({
-	menuCloseRequestTime,
+	menuCloseRequest,
 	value,
 	onChange,
 	onMenuClose,
@@ -24,19 +25,16 @@ export default function NumberCellEdit({
 		localValue
 	);
 
-	const hasCloseRequestTimeChange = useCompare(menuCloseRequestTime);
+	const hasCloseRequestTimeChanged = useCompare(
+		menuCloseRequest?.requestTime
+	);
 
 	React.useEffect(() => {
-		if (hasCloseRequestTimeChange && menuCloseRequestTime !== null) {
+		if (hasCloseRequestTimeChanged && menuCloseRequest !== null) {
 			onChange(localValue);
 			onMenuClose();
 		}
-	}, [
-		localValue,
-		hasCloseRequestTimeChange,
-		menuCloseRequestTime,
-		onMenuClose,
-	]);
+	}, [localValue, hasCloseRequestTimeChanged, menuCloseRequest, onMenuClose]);
 
 	function handleChange(inputValue: string, setSelectionToLength = false) {
 		if (!isValidNumberInput(inputValue)) return;

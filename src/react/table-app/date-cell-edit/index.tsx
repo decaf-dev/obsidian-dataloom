@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import MenuItem from "src/react/shared/menu-item";
 import Stack from "src/react/shared/stack";
@@ -13,7 +13,7 @@ import { DateFormat } from "src/shared/types/types";
 import { useCompare } from "src/shared/hooks";
 import DateFormatMenu from "./components/DateFormatMenu";
 import { useMenu } from "src/shared/menu/hooks";
-import { MenuLevel } from "src/shared/menu/types";
+import { CloseMenuRequest, MenuLevel } from "src/shared/menu/types";
 
 import MenuTrigger from "src/react/shared/menu-trigger";
 import { getDisplayNameForDateFormat } from "src/shared/table-state/display-name";
@@ -25,7 +25,7 @@ import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 
 interface Props {
 	value: number | null;
-	menuCloseRequestTime: number | null;
+	menuCloseRequest: CloseMenuRequest | null;
 	dateFormat: DateFormat;
 	onDateTimeChange: (value: number | null) => void;
 	onDateFormatChange: (value: DateFormat) => void;
@@ -34,7 +34,7 @@ interface Props {
 
 export default function DateCellEdit({
 	value,
-	menuCloseRequestTime,
+	menuCloseRequest,
 	dateFormat,
 	onDateTimeChange,
 	onMenuClose,
@@ -50,22 +50,24 @@ export default function DateCellEdit({
 		leftOffset: -50,
 	});
 
-	const [localValue, setLocalValue] = useState(
+	const [localValue, setLocalValue] = React.useState(
 		value === null ? "" : unixTimeToDateString(value, dateFormat)
 	);
 
-	const [isInputInvalid, setInputInvalid] = useState(false);
-	const [closeTime, setCloseTime] = useState(0);
+	const [isInputInvalid, setInputInvalid] = React.useState(false);
+	const [closeTime, setCloseTime] = React.useState(0);
 	const inputRef = React.useRef<HTMLInputElement | null>(null);
 
-	useEffect(() => {
+	React.useEffect(() => {
 		setLocalValue(
 			value === null ? "" : unixTimeToDateString(value, dateFormat)
 		);
 	}, [value, dateFormat]);
 
-	const hasCloseRequestTimeChange = useCompare(menuCloseRequestTime);
-	useEffect(() => {
+	const hasCloseRequestTimeChanged = useCompare(
+		menuCloseRequest?.requestTime
+	);
+	React.useEffect(() => {
 		function validateInput() {
 			let value: number | null = null;
 			//If the user has not entered a value, we don't need to validate the date format
@@ -83,20 +85,15 @@ export default function DateCellEdit({
 			setCloseTime(Date.now());
 		}
 
-		if (hasCloseRequestTimeChange && menuCloseRequestTime !== null)
+		if (hasCloseRequestTimeChanged && menuCloseRequest !== null)
 			validateInput();
-	}, [
-		hasCloseRequestTimeChange,
-		localValue,
-		menuCloseRequestTime,
-		dateFormat,
-	]);
+	}, [hasCloseRequestTimeChanged, localValue, menuCloseRequest, dateFormat]);
 
 	//If we call onMenuClose directly in the validateInput function, we can see the cell markdown
 	//change to the new value as the menu closes
 	//If we call onMenuClose in a useEffect, we wait an entire render cycle before closing the menu
 	//This allows us to see the cell markdown change to the new value before the menu closes
-	useEffect(() => {
+	React.useEffect(() => {
 		if (closeTime !== 0) {
 			onMenuClose();
 		}

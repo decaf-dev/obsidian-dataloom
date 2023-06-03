@@ -4,7 +4,12 @@ import {
 	focusMenuElement,
 	removeFocusVisibleClass,
 } from "./focus-visible";
-import { Menu, MenuLevel } from "./types";
+import {
+	CloseMenuRequest,
+	CloseMenuRequestType,
+	Menu,
+	MenuLevel,
+} from "./types";
 import { useTableState } from "../table-state/table-state-context";
 import {
 	isMacRedoDown,
@@ -30,7 +35,7 @@ interface CloseOptions {
 
 interface ContextProps {
 	openMenus: Menu[];
-	menuCloseRequestTime: number | null;
+	menuCloseRequest: CloseMenuRequest | null;
 	openMenu: (menu: Menu) => void;
 	closeTopMenu: (options?: CloseOptions) => void;
 	forceCloseAllMenus: (shouldFocusTriggerOnClose?: boolean) => void;
@@ -62,9 +67,8 @@ export default function MenuProvider({ children }: Props) {
 	const { tableState } = useTableState();
 	const { appId } = useMountContext();
 
-	const [menuCloseRequestTime, setMenuCloseRequestTime] = React.useState<
-		number | null
-	>(null);
+	const [menuCloseRequest, setMenuCloseRequest] =
+		React.useState<CloseMenuRequest | null>(null);
 
 	/**
 	 * Returns whether or not a menu is open
@@ -112,30 +116,31 @@ export default function MenuProvider({ children }: Props) {
 		}
 
 		setOpenMenus([]);
-		setMenuCloseRequestTime(null);
+		setMenuCloseRequest(null);
 	}
+
+	const requestCloseTopMenu = (type: CloseMenuRequestType) => {
+		const menu = openMenus.last();
+		if (!menu) return;
+
+		if (menu.shouldRequestOnClose && menuCloseRequest === null) {
+			setMenuCloseRequest({
+				requestTime: Date.now(),
+				type,
+			});
+		} else {
+			closeTopMenu();
+		}
+	};
 
 	/**
 	 * Closes the top level menu
 	 */
 	const closeTopMenu = React.useCallback(
 		(options?: CloseOptions) => {
-			const { shouldFocusTrigger = true, forceClose = false } =
-				options || {};
+			const { shouldFocusTrigger = true } = options || {};
 			const menu = openMenus.last();
 			if (!menu) return;
-
-			//Forcing close means that if the menu we would otherwise wait for the request to finish
-			//we will close it immediately
-			if (!forceClose) {
-				if (
-					menu.shouldRequestOnClose &&
-					menuCloseRequestTime === null
-				) {
-					setMenuCloseRequestTime(Date.now());
-					return;
-				}
-			}
 
 			if (shouldFocusTrigger) {
 				const { id, level } = menu;
@@ -147,9 +152,9 @@ export default function MenuProvider({ children }: Props) {
 
 			//Remove the menu
 			setOpenMenus((prev) => prev.slice(0, prev.length - 1));
-			setMenuCloseRequestTime(null);
+			setMenuCloseRequest(null);
 		},
-		[openMenus, menuCloseRequestTime]
+		[openMenus, menuCloseRequest]
 	);
 
 	React.useEffect(() => {
@@ -160,7 +165,6 @@ export default function MenuProvider({ children }: Props) {
 
 				const { id } = menu;
 				const target = e.target as HTMLElement;
-
 				//If the menu is not mounted, we don't need to do anything
 				//This can happen when a menu changes
 				const isElementMounted = document.contains(target);
@@ -169,18 +173,14 @@ export default function MenuProvider({ children }: Props) {
 				//If we're clicking on the menu then don't close
 				if (target.closest(`.NLT__menu[data-id="${id}"]`) !== null)
 					return;
-				//If we're clicking on the menu then don't close
+				//If we're clicking on the trigger then don't close
 				if (
 					target.closest(`.NLT__focusable[data-menu-id="${id}"]`) !==
 					null
 				)
 					return;
 
-				const shouldFocusOnClose =
-					target.closest(".NLT__app") !== null ||
-					target.closest(".NLT__menu") !== null;
-
-				closeTopMenu({ shouldFocusTrigger: shouldFocusOnClose });
+				requestCloseTopMenu("click");
 			} else {
 				removeFocusVisibleClass();
 			}
@@ -222,7 +222,7 @@ export default function MenuProvider({ children }: Props) {
 				const menu = openMenus.last();
 				if (!menu) throw new Error("Menu is open but no menu exists");
 
-				closeTopMenu();
+				requestCloseTopMenu("enter");
 			} else {
 				//Otherwise if we're focused on a MenuTrigger, open the menu
 				openMenuFromFocusedTrigger();
@@ -231,7 +231,7 @@ export default function MenuProvider({ children }: Props) {
 		}
 
 		function handleEscapeDown() {
-			if (isMenuOpen()) closeTopMenu({ forceClose: true });
+			if (isMenuOpen()) closeTopMenu();
 		}
 
 		function handleTabDown(e: KeyboardEvent) {
@@ -348,7 +348,7 @@ export default function MenuProvider({ children }: Props) {
 			value={{
 				openMenus,
 				openMenu,
-				menuCloseRequestTime,
+				menuCloseRequest,
 				closeTopMenu,
 				forceCloseAllMenus,
 			}}

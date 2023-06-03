@@ -117,7 +117,7 @@ export default function BodyCell({
 	const {
 		menu,
 		isMenuOpen,
-		menuCloseRequestTime,
+		menuCloseRequest,
 		menuRef,
 		openMenu,
 		closeTopMenu,
@@ -130,7 +130,7 @@ export default function BodyCell({
 	const { doCommand } = useTableState();
 
 	//Once the menu is closed, we want to sort all rows
-	const didIsMenuOpenChange = useCompare(isMenuOpen);
+	const didIsMenuOpenChange = useCompare(isMenuOpen, false);
 	React.useEffect(() => {
 		if (didIsMenuOpenChange) {
 			if (!isMenuOpen) {
@@ -383,7 +383,7 @@ export default function BodyCell({
 			>
 				{columnType === CellType.TEXT && (
 					<TextCellEdit
-						menuCloseRequestTime={menuCloseRequestTime}
+						menuCloseRequest={menuCloseRequest}
 						shouldWrapOverflow={shouldWrapOverflow}
 						value={markdown}
 						onChange={handleTextInputChange}
@@ -398,7 +398,7 @@ export default function BodyCell({
 				)}
 				{columnType === CellType.NUMBER && (
 					<NumberCellEdit
-						menuCloseRequestTime={menuCloseRequestTime}
+						menuCloseRequest={menuCloseRequest}
 						value={markdown}
 						onChange={handleNumberInputChange}
 						onMenuClose={handleMenuClose}
@@ -407,7 +407,7 @@ export default function BodyCell({
 				{(columnType === CellType.TAG ||
 					columnType === CellType.MULTI_TAG) && (
 					<TagCellEdit
-						menuCloseRequestTime={menuCloseRequestTime}
+						menuCloseRequest={menuCloseRequest}
 						columnTags={columnTags}
 						cellTags={cellTags}
 						onTagColorChange={handleTagColorChange}
@@ -421,7 +421,7 @@ export default function BodyCell({
 				{columnType === CellType.DATE && (
 					<DateCellEdit
 						value={dateTime}
-						menuCloseRequestTime={menuCloseRequestTime}
+						menuCloseRequest={menuCloseRequest}
 						dateFormat={dateFormat}
 						onDateTimeChange={handleDateTimeChange}
 						onDateFormatChange={handleDateFormatChange}
@@ -430,7 +430,7 @@ export default function BodyCell({
 				)}
 				{columnType === CellType.CURRENCY && (
 					<CurrencyCellEdit
-						menuCloseRequestTime={menuCloseRequestTime}
+						menuCloseRequest={menuCloseRequest}
 						value={markdown}
 						onChange={handleCurrencyChange}
 						onMenuClose={handleMenuClose}

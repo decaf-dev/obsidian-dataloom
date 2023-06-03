@@ -83,7 +83,7 @@ export default function HeaderCell({
 
 	//We will then need to update the width of the column so that the header cell will
 	//have a value set in pixels
-	const shouldUpdateWidth = useCompare(forceUpdateTime);
+	const shouldUpdateWidth = useCompare(forceUpdateTime, false);
 	React.useEffect(() => {
 		if (shouldUpdateWidth) {
 			const newWidth = numToPx(triggerPosition.width);

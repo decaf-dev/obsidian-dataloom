@@ -7,7 +7,7 @@ import { useOverflow } from "src/shared/spacing/hooks";
 
 import { useMenu } from "src/shared/menu/hooks";
 import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
-import { MenuLevel } from "src/shared/menu/types";
+import { CloseMenuRequest, MenuLevel } from "src/shared/menu/types";
 import SuggestMenu from "../../shared/suggest-menu/suggest-menu";
 import {
 	addClosingBracket,
@@ -21,7 +21,7 @@ import { isSpecialActionDown } from "src/shared/keyboard-event";
 import "./styles.css";
 
 interface Props {
-	menuCloseRequestTime: number | null;
+	menuCloseRequest: CloseMenuRequest | null;
 	value: string;
 	shouldWrapOverflow: boolean;
 	onChange: (value: string) => void;
@@ -30,7 +30,7 @@ interface Props {
 
 export default function TextCellEdit({
 	shouldWrapOverflow,
-	menuCloseRequestTime,
+	menuCloseRequest,
 	value,
 	onChange,
 	onMenuClose,
@@ -55,22 +55,16 @@ export default function TextCellEdit({
 
 	const previousValue = React.useRef("");
 
-	const hasCloseRequestTimeChanged = useCompare(menuCloseRequestTime);
-	console.log(menuCloseRequestTime);
-	console.log(hasCloseRequestTimeChanged);
+	const hasCloseRequestTimeChanged = useCompare(
+		menuCloseRequest?.requestTime
+	);
 
 	React.useEffect(() => {
-		if (hasCloseRequestTimeChanged && menuCloseRequestTime !== null) {
-			console.log("TextCellEdit: useEffect: value", value);
+		if (hasCloseRequestTimeChanged && menuCloseRequest !== null) {
 			onChange(localValue);
 			onMenuClose();
 		}
-	}, [
-		localValue,
-		hasCloseRequestTimeChanged,
-		menuCloseRequestTime,
-		onMenuClose,
-	]);
+	}, [localValue, hasCloseRequestTimeChanged, menuCloseRequest, onMenuClose]);
 
 	function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
 		const el = e.target as HTMLTextAreaElement;
