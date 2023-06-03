@@ -123,22 +123,16 @@ export default function MenuProvider({ children }: Props) {
 		const menu = openMenus.last();
 		if (!menu) return;
 
-		console.log(menu);
-
-		console.log("HERE1");
-		console.log(menu.shouldRequestOnClose, menuCloseRequest === null);
-
 		if (menu.shouldRequestOnClose && menuCloseRequest === null) {
-			console.log("HERE2");
 			setMenuCloseRequest({
 				id: menu.id,
 				requestTime: Date.now(),
 				type,
 			});
-		} else {
-			console.log("HERE2.3");
-			closeTopMenu();
+			return;
 		}
+
+		closeTopMenu();
 	};
 
 	/**

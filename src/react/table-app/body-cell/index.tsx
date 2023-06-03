@@ -114,6 +114,15 @@ export default function BodyCell({
 	onDateTimeChange,
 	onTagAdd,
 }: Props) {
+	//All of these cells have local values
+	const shouldRequestOnClose =
+		columnType === CellType.TEXT ||
+		columnType === CellType.NUMBER ||
+		columnType === CellType.CURRENCY ||
+		columnType === CellType.TAG ||
+		columnType === CellType.MULTI_TAG ||
+		columnType === CellType.DATE;
+
 	const {
 		menu,
 		isMenuOpen,
@@ -122,7 +131,7 @@ export default function BodyCell({
 		openMenu,
 		closeTopMenu,
 	} = useMenu(MenuLevel.ONE, {
-		shouldRequestOnClose: true,
+		shouldRequestOnClose,
 	});
 	const { triggerPosition, triggerRef } = useMenuTriggerPosition();
 	useShiftMenu(triggerRef, menuRef, isMenuOpen);

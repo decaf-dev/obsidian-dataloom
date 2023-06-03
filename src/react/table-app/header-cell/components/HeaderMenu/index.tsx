@@ -82,7 +82,6 @@ const HeaderMenu = React.forwardRef<HTMLDivElement, Props>(function HeaderMenu(
 
 	React.useEffect(() => {
 		if (hasCloseRequestTimeChanged && menuCloseRequest !== null) {
-			console.log(localValue);
 			//If we're on the base menu
 			if (submenu === null) onNameChange(cellId, localValue);
 			onMenuClose();
