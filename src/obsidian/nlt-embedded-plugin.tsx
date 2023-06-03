@@ -12,6 +12,7 @@ import { TableState } from "src/shared/types/types";
 import _ from "lodash";
 import { getEmbeddedTableLinkEls } from "./utils";
 import { v4 as uuidv4 } from "uuid";
+import { numToPx } from "src/shared/conversion";
 
 class NLTEmbeddedPlugin implements PluginValue {
 	private tableApps: {
@@ -51,7 +52,7 @@ class NLTEmbeddedPlugin implements PluginValue {
 			}
 
 			//Get the table file that matches the src
-			const src = linkEl.getAttribute("src")!;
+			const src = linkEl.getAttribute("src");
 
 			let tableFile = app.vault
 				.getFiles()
@@ -61,10 +62,19 @@ class NLTEmbeddedPlugin implements PluginValue {
 					.getFiles()
 					.find((file) => file.name === src);
 			}
-
 			if (!tableFile) continue;
 
-			linkEl.style.height = "340px";
+			let renderWidth = "100%";
+			const width = linkEl.getAttribute("width");
+			if (width !== null && width !== "1") renderWidth = numToPx(width);
+
+			let renderHeight = "340px";
+			const height = linkEl.getAttribute("height");
+			if (height !== null && height !== "1")
+				renderHeight = numToPx(height);
+
+			linkEl.style.width = renderWidth;
+			linkEl.style.height = renderHeight;
 			linkEl.style.backgroundColor = "var(--color-primary)";
 			linkEl.style.cursor = "unset";
 			linkEl.style.padding = "10px 0px";
