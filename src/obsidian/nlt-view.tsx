@@ -137,6 +137,7 @@ export class NLTView extends TextFileView {
 			this.root.render(
 				<NotionLikeTable
 					appId={appId}
+					isEmbedded={false}
 					filePath={this.file.path}
 					leaf={this.leaf}
 					store={store}

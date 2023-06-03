@@ -149,6 +149,7 @@ class NLTEmbeddedPlugin implements PluginValue {
 		root.render(
 			<NotionLikeTable
 				appId={id}
+				isEmbedded
 				filePath={tableFile.path}
 				leaf={leaf}
 				store={store}
