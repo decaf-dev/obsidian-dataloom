@@ -52,6 +52,7 @@
 		"@reduxjs/toolkit": "^1.8.5",
 		"codemirror": "^6.0.1",
 		"fuzzysort": "^2.0.4",
+		"lodash": "^4.17.21",
 		"markdown-table": "^3.0.3",
 		"papaparse": "^5.4.1",
 		"react": "^18.2.0",

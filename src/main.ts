@@ -158,7 +158,7 @@ export default class NLTPlugin extends Plugin {
 		// });
 	}
 
-	private async newTableFile(contextMenuFolderPath: string | null) {
+	private async newTableFile(contextMenuFolderPath: string | null, embedded?: boolean) {
 		let folderPath = "";
 		if (contextMenuFolderPath) {
 			folderPath = contextMenuFolderPath;
@@ -175,6 +175,7 @@ export default class NLTPlugin extends Plugin {
 			useActiveFileNameAndTimestamp:
 				this.settings.nameWithActiveFileNameAndTimestamp,
 		});
+		if(embedded) return filePath;
 		//Open file in a new tab and set it to active
 		await app.workspace.getLeaf(true).setViewState({
 			type: NOTION_LIKE_TABLES_VIEW,
@@ -232,6 +233,28 @@ export default class NLTPlugin extends Plugin {
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "=" }],
 			callback: async () => {
 				await this.newTableFile(null);
+			},
+		});
+
+
+		this.addCommand({
+			id: "nlt-create-table-and-embed",
+			name: "Create table and embed it into current file",
+			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "+" }],
+			callback: async () => {
+				const markdownView =
+					this.app.workspace.getActiveViewOfType(MarkdownView);
+				if (markdownView) {
+					const file = await this.newTableFile(null, true);
+					if(!file) return;
+					const editor = markdownView.editor;
+					// Internal Method
+					// @ts-ignore
+					const preferFormat = app.vault.config.useMarkdownLinks;
+					editor.replaceRange((
+						preferFormat ? `![${file?.replace(/\.(.*)$/,"")}](<${file}>)` : `![[${file}]]`),
+						editor.getCursor());
+				}
 			},
 		});
 
