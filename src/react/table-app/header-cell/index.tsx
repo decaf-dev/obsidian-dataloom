@@ -9,11 +9,10 @@ import {
 } from "src/shared/types/types";
 import { useMenu } from "src/shared/menu/hooks";
 import { MenuLevel } from "src/shared/menu/types";
-import { useAppSelector } from "src/redux/global/hooks";
 
 import Icon from "../../shared/icon";
 import Stack from "../../shared/stack";
-import HeaderMenu from "./components/HeaderMenu";
+import HeaderCellEditMenu from "../header-cell-edit";
 import { useCompare, useForceUpdate } from "src/shared/hooks";
 import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 import { getIconIdForCellType } from "src/react/shared/icon/utils";
@@ -67,9 +66,14 @@ export default function HeaderCell({
 	onCurrencyChange,
 	onDateFormatChange,
 }: Props) {
-	const { menu, isMenuOpen, closeTopMenu, menuRef, openMenu } = useMenu(
-		MenuLevel.ONE
-	);
+	const {
+		menu,
+		isMenuOpen,
+		closeTopMenu,
+		menuRef,
+		openMenu,
+		menuCloseRequest,
+	} = useMenu(MenuLevel.ONE, { shouldRequestOnClose: true });
 	const { triggerPosition, triggerRef } = useMenuTriggerPosition();
 	useShiftMenu(triggerRef, menuRef, isMenuOpen);
 
@@ -84,7 +88,7 @@ export default function HeaderCell({
 
 	//We will then need to update the width of the column so that the header cell will
 	//have a value set in pixels
-	const shouldUpdateWidth = useCompare(forceUpdateTime);
+	const shouldUpdateWidth = useCompare(forceUpdateTime, false);
 	React.useEffect(() => {
 		if (shouldUpdateWidth) {
 			const newWidth = numToPx(triggerPosition.width);
@@ -103,6 +107,10 @@ export default function HeaderCell({
 		}
 	}
 
+	function handleMenuClose() {
+		closeTopMenu();
+	}
+
 	const lucideId = getIconIdForCellType(type);
 
 	let contentClassName = "NLT__th-content";
@@ -110,7 +118,11 @@ export default function HeaderCell({
 
 	return (
 		<>
-			<MenuTrigger menuId={menu.id} onClick={handleMenuTriggerClick}>
+			<MenuTrigger
+				menuId={menu.id}
+				shouldMenuRequestOnClose={menu.shouldRequestOnClose}
+				onClick={handleMenuTriggerClick}
+			>
 				<div
 					className="NLT__th-container"
 					ref={triggerRef}
@@ -146,12 +158,15 @@ export default function HeaderCell({
 						columnId={columnId}
 						width={width}
 						onWidthChange={onWidthChange}
-						onMenuClose={() => closeTopMenu(false)}
+						onMenuClose={() =>
+							closeTopMenu({ shouldFocusTrigger: false })
+						}
 					/>
 				</div>
 			</MenuTrigger>
-			<HeaderMenu
+			<HeaderCellEditMenu
 				isOpen={isMenuOpen}
+				menuCloseRequest={menuCloseRequest}
 				top={triggerPosition.top}
 				left={triggerPosition.left}
 				id={menu.id}
@@ -170,7 +185,7 @@ export default function HeaderCell({
 				onSortClick={onSortClick}
 				onTypeSelect={onTypeSelect}
 				onDeleteClick={onDeleteClick}
-				onClose={() => closeTopMenu()}
+				onMenuClose={handleMenuClose}
 				onWrapOverflowToggle={onWrapOverflowToggle}
 				onNameChange={onNameChange}
 				onCurrencyChange={onCurrencyChange}

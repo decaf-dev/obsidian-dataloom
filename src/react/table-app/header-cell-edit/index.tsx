@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 
 import Menu from "src/react/shared/menu";
-import OptionSubmenu from "./components/OptionSubmenu";
-import TypeSubmenu from "./components/TypeSubmenu";
-import BaseMenu from "./components/BaseMenu";
-import CurrencySubmenu from "./components/CurrencySubmenu";
-import DateFormatSubmenu from "./components/DateFormatSubmenu";
+import OptionSubmenu from "./option-submenu";
+import TypeSubmenu from "./type-submenu";
+import BaseMenu from "./base-menu";
+import CurrencySubmenu from "./currency-submenu";
+import DateFormatSubmenu from "./date-format-submenu";
 
 import {
 	CellType,
@@ -15,7 +15,9 @@ import {
 } from "src/shared/types/types";
 import { SubmenuType } from "./types";
 
-import "./styles.css";
+import { MenuCloseRequest } from "src/shared/menu/types";
+import { useCompare } from "src/shared/hooks";
+import { css } from "@emotion/react";
 
 interface Props {
 	isOpen: boolean;
@@ -31,6 +33,7 @@ interface Props {
 	shouldWrapOverflow: boolean;
 	columnSortDir: SortDir;
 	columnType: CellType;
+	menuCloseRequest: MenuCloseRequest | null;
 	columnId: string;
 	numColumns: number;
 	onTypeSelect: (columnId: string, type: CellType) => void;
@@ -40,7 +43,7 @@ interface Props {
 	onNameChange: (cellId: string, value: string) => void;
 	onCurrencyChange: (columnId: string, value: CurrencyType) => void;
 	onDateFormatChange: (columnId: string, value: DateFormat) => void;
-	onClose: () => void;
+	onMenuClose: () => void;
 }
 
 const HeaderMenu = React.forwardRef<HTMLDivElement, Props>(function HeaderMenu(
@@ -57,11 +60,12 @@ const HeaderMenu = React.forwardRef<HTMLDivElement, Props>(function HeaderMenu(
 		columnType,
 		columnSortDir,
 		columnId,
+		menuCloseRequest,
 		shouldWrapOverflow,
 		onTypeSelect,
 		onSortClick,
 		onDeleteClick,
-		onClose,
+		onMenuClose,
 		onWrapOverflowToggle,
 		onNameChange,
 		onCurrencyChange,
@@ -70,21 +74,41 @@ const HeaderMenu = React.forwardRef<HTMLDivElement, Props>(function HeaderMenu(
 	ref
 ) {
 	const [submenu, setSubmenu] = useState<SubmenuType | null>(null);
+	const [localValue, setLocalValue] = useState(markdown);
+
+	const hasCloseRequestTimeChanged = useCompare(
+		menuCloseRequest?.requestTime
+	);
+
+	React.useEffect(() => {
+		if (hasCloseRequestTimeChanged && menuCloseRequest !== null) {
+			//If we're on the base menu
+			if (submenu === null) onNameChange(cellId, localValue);
+			onMenuClose();
+		}
+	}, [
+		hasCloseRequestTimeChanged,
+		menuCloseRequest,
+		submenu,
+		localValue,
+		onNameChange,
+		onMenuClose,
+	]);
 
 	function handleSortClick(sortDir: SortDir) {
 		onSortClick(columnId, sortDir);
-		onClose();
+		onMenuClose();
 	}
 
 	function handleTypeClick(type: CellType) {
 		onTypeSelect(columnId, type);
-		onClose();
+		onMenuClose();
 		setSubmenu(null);
 	}
 
 	function handleDeleteClick() {
 		onDeleteClick(columnId);
-		onClose();
+		onMenuClose();
 		setSubmenu(null);
 	}
 
@@ -107,17 +131,23 @@ const HeaderMenu = React.forwardRef<HTMLDivElement, Props>(function HeaderMenu(
 			ref={ref}
 			width={175}
 		>
-			<div className="NLT__header-menu">
+			<div
+				className="NLT__header-menu"
+				css={css`
+					color: var(--text-normal);
+				`}
+			>
 				{submenu === null && (
 					<BaseMenu
 						canDeleteColumn={canDeleteColumn}
 						cellId={cellId}
 						shouldWrapOverflow={shouldWrapOverflow}
 						columnId={columnId}
-						columnName={markdown}
+						columnName={localValue}
 						columnType={columnType}
+						menuCloseRequest={menuCloseRequest}
 						columnSortDir={columnSortDir}
-						onColumnNameChange={onNameChange}
+						onColumnNameChange={setLocalValue}
 						onSortClick={handleSortClick}
 						onSubmenuChange={setSubmenu}
 						onWrapOverflowToggle={onWrapOverflowToggle}

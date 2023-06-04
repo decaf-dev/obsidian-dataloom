@@ -1,5 +1,6 @@
 import Stack from "src/react/shared/stack";
 import { ExportType } from "../../shared/export/types";
+import { css } from "@emotion/react";
 
 interface Props {
 	value: ExportType;
@@ -12,6 +13,11 @@ export default function ExportTypeSelect({ value, onChange }: Props) {
 			<label htmlFor="type-select">File Type</label>
 			<select
 				id="type-select"
+				css={css`
+					background-color: var(
+						--background-secondary-alt
+					) !important;
+				`}
 				value={value}
 				onChange={(e) => onChange(e.target.value as ExportType)}
 			>
