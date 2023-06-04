@@ -1,10 +1,10 @@
-import Submenu from "../Submenu";
+import Submenu from "./submenu";
 
 import { CellType, CurrencyType, DateFormat } from "src/shared/types/types";
 import Stack from "src/react/shared/stack";
 import Padding from "src/react/shared/padding";
 import MenuItem from "src/react/shared/menu-item";
-import { SubmenuType } from "../../types";
+import { SubmenuType } from "./types";
 import {
 	getDisplayNameForCurrencyType,
 	getDisplayNameForDateFormat,

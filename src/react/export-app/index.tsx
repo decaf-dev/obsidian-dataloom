@@ -45,7 +45,7 @@ export function ExportApp({ tableState, filePath }: Props) {
 
 	return (
 		<div className="NLT__export-app">
-			<Padding pb="xl">
+			<Padding p="xl">
 				<h5
 					css={css`
 						margin-top: 0px;
@@ -75,6 +75,11 @@ export function ExportApp({ tableState, filePath }: Props) {
 									Download
 								</button>
 								<button
+									css={css`
+										background-color: var(
+											--background-secondary-alt
+										) !important;
+									`}
 									onClick={() => handleCopyClick(content)}
 								>
 									Copy to clipboard

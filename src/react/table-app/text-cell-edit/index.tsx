@@ -2,12 +2,12 @@ import React from "react";
 
 import { TFile } from "obsidian";
 
-import { useInputSelection } from "src/shared/hooks";
+import { useCompare, useInputSelection } from "src/shared/hooks";
 import { useOverflow } from "src/shared/spacing/hooks";
 
 import { useMenu } from "src/shared/menu/hooks";
 import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
-import { MenuLevel } from "src/shared/menu/types";
+import { MenuCloseRequest, MenuLevel } from "src/shared/menu/types";
 import SuggestMenu from "../../shared/suggest-menu/suggest-menu";
 import {
 	addClosingBracket,
@@ -21,27 +21,50 @@ import { isSpecialActionDown } from "src/shared/keyboard-event";
 import "./styles.css";
 
 interface Props {
+	menuCloseRequest: MenuCloseRequest | null;
 	value: string;
 	shouldWrapOverflow: boolean;
 	onChange: (value: string) => void;
+	onMenuClose: () => void;
 }
 
 export default function TextCellEdit({
 	shouldWrapOverflow,
+	menuCloseRequest,
 	value,
 	onChange,
+	onMenuClose,
 }: Props) {
-	const { menu, isMenuOpen, menuRef, openMenu, closeAllMenus, closeTopMenu } =
-		useMenu(MenuLevel.TWO);
+	const {
+		menu,
+		isMenuOpen,
+		menuRef,
+		openMenu,
+		forceCloseAllMenus,
+		closeTopMenu,
+	} = useMenu(MenuLevel.TWO);
 	const { triggerRef, triggerPosition } = useMenuTriggerPosition();
 	useShiftMenu(triggerRef, menuRef, isMenuOpen, {
 		topOffset: 35,
 	});
 
+	const [localValue, setLocalValue] = React.useState(value);
 	const inputRef = React.useRef<HTMLTextAreaElement | null>(null);
 	const { setPreviousSelectionStart, previousSelectionStart } =
-		useInputSelection(inputRef, value);
+		useInputSelection(inputRef, localValue);
+
 	const previousValue = React.useRef("");
+
+	const hasCloseRequestTimeChanged = useCompare(
+		menuCloseRequest?.requestTime
+	);
+
+	React.useEffect(() => {
+		if (hasCloseRequestTimeChanged && menuCloseRequest !== null) {
+			onChange(localValue);
+			onMenuClose();
+		}
+	}, [localValue, hasCloseRequestTimeChanged, menuCloseRequest, onMenuClose]);
 
 	function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
 		const el = e.target as HTMLTextAreaElement;
@@ -64,18 +87,18 @@ export default function TextCellEdit({
 	}
 
 	function handleTextareaChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-		const value = e.target.value;
-		let newValue = value;
+		const inputValue = e.target.value;
+		let newValue = inputValue;
 
 		if (inputRef.current) {
 			const inputEl = inputRef.current;
 
-			if (value.length > previousValue.current.length) {
+			if (inputValue.length > previousValue.current.length) {
 				newValue = addClosingBracket(newValue, inputEl.selectionStart);
 			} else {
 				newValue = removeClosingBracket(
 					previousValue.current,
-					newValue,
+					inputValue,
 					inputEl.selectionStart
 				);
 			}
@@ -93,7 +116,7 @@ export default function TextCellEdit({
 		}
 
 		previousValue.current = newValue;
-		onChange(newValue);
+		setLocalValue(newValue);
 	}
 
 	function handleSuggestItemClick(
@@ -109,18 +132,19 @@ export default function TextCellEdit({
 			if (!isFileNameUnique) fileName = `${file.path}|${fileName}`;
 
 			const newValue = doubleBracketsInnerReplace(
-				value,
+				localValue,
 				previousSelectionStart,
 				fileName
 			);
 
 			onChange(newValue);
 		}
-		closeAllMenus();
+		forceCloseAllMenus();
 	}
 
 	const overflowStyle = useOverflow(shouldWrapOverflow);
-	const filterValue = getFilterValue(value, previousSelectionStart) ?? "";
+	const filterValue =
+		getFilterValue(localValue, previousSelectionStart) ?? "";
 
 	return (
 		<>
@@ -129,7 +153,7 @@ export default function TextCellEdit({
 					autoFocus
 					css={overflowStyle}
 					ref={inputRef}
-					value={value}
+					value={localValue}
 					onKeyDown={handleKeyDown}
 					onChange={handleTextareaChange}
 				/>

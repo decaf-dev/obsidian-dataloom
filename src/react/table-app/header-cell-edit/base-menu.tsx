@@ -3,8 +3,8 @@ import MenuItem from "src/react/shared/menu-item";
 import Padding from "src/react/shared/padding";
 import Stack from "src/react/shared/stack";
 import { CellType, SortDir } from "src/shared/types/types";
-import { SubmenuType } from "../../types";
-import { useInputSelection } from "src/shared/hooks";
+import { SubmenuType } from "./types";
+import { useCompare, useInputSelection } from "src/shared/hooks";
 import { getDisplayNameForCellType } from "src/shared/table-state/display-name";
 import { css } from "@emotion/react";
 import { getTableBackgroundColor, getTableBorderColor } from "src/shared/color";
@@ -12,6 +12,7 @@ import React from "react";
 import Flex from "src/react/shared/flex";
 import Switch from "src/react/shared/switch";
 import Text from "src/react/shared/text";
+import { MenuCloseRequest } from "src/shared/menu/types";
 
 interface Props {
 	canDeleteColumn: boolean;
@@ -21,7 +22,8 @@ interface Props {
 	cellId: string;
 	columnType: CellType;
 	columnSortDir: SortDir;
-	onColumnNameChange: (cellId: string, value: string) => void;
+	menuCloseRequest: MenuCloseRequest | null;
+	onColumnNameChange: (value: string) => void;
 	onSortClick: (value: SortDir) => void;
 	onSubmenuChange: (value: SubmenuType) => void;
 	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
@@ -29,18 +31,17 @@ interface Props {
 }
 
 export default function BaseMenu({
-	cellId,
 	shouldWrapOverflow,
 	columnName,
 	columnId,
 	columnType,
 	columnSortDir,
 	canDeleteColumn,
-	onColumnNameChange,
 	onSortClick,
 	onSubmenuChange,
 	onWrapOverflowToggle,
 	onDeleteClick,
+	onColumnNameChange,
 }: Props) {
 	const inputRef = React.useRef<HTMLInputElement | null>(null);
 	const { setPreviousSelectionStart } = useInputSelection(
@@ -62,7 +63,7 @@ export default function BaseMenu({
 				setPreviousSelectionStart(inputRef.current.selectionStart);
 			}
 		}
-		onColumnNameChange(cellId, inputValue);
+		onColumnNameChange(inputValue);
 	}
 
 	const tableBackgroundColor = getTableBackgroundColor();

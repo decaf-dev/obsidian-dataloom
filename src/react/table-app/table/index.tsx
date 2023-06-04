@@ -25,7 +25,7 @@ const tableBorderColor = getTableBorderColor();
 export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 	const tableRef = React.useRef<VirtuosoHandle>(null);
 
-	const didRowsChange = useCompare(bodyRows.length);
+	const didRowsChange = useCompare(bodyRows.length, false);
 
 	/**
 	 * Scrolls to the bottom of the page when the "New Row" button is pressed
