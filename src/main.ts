@@ -116,16 +116,6 @@ export default class NLTPlugin extends Plugin {
 							-1, //update all tables that match this path
 							newState
 						);
-						// app.workspace
-						// 	.getLeavesOfType(NOTION_LIKE_TABLES_VIEW)
-						// 	.forEach((leaf) => {
-						// 		const view = leaf.view;
-						// 		if (view instanceof NLTView) {
-						// 			const path = view.file.path;
-						// 			if (path === tableFile.path)
-						// 				view.setViewData(serializedState, true);
-						// 		}
-						// 	});
 					}
 				}
 			}
