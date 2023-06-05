@@ -10,7 +10,6 @@ import {
 import { EVENT_REFRESH_TABLES } from "src/shared/events";
 import NLTExportModal from "./nlt-export-modal";
 import { v4 as uuidv4 } from "uuid";
-import _ from "lodash";
 
 export const NOTION_LIKE_TABLES_VIEW = "notion-like-tables";
 
@@ -107,7 +106,7 @@ export class NLTView extends TextFileView {
 		sourceAppId: string,
 		state: TableState
 	) => {
-		if (this.appId !== sourceAppId && filePath == this.file.path) {
+		if (this.appId !== sourceAppId && filePath === this.file.path) {
 			const serialized = serializeTableState(state);
 			this.setViewData(serialized, true);
 		}

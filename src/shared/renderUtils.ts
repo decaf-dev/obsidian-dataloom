@@ -1,6 +1,4 @@
-import { NLTView } from "src/obsidian/nlt-view";
 import { DynamicSize } from "./spacing/types";
-import { MarkdownView, WorkspaceLeaf } from "obsidian";
 
 export const appendOrReplaceFirstChild = (
 	container: HTMLDivElement | null,

@@ -58,7 +58,13 @@ export default function TextCellEdit({
 			onChange(localValue);
 			onMenuClose();
 		}
-	}, [localValue, hasCloseRequestTimeChanged, menuCloseRequest, onMenuClose]);
+	}, [
+		localValue,
+		hasCloseRequestTimeChanged,
+		menuCloseRequest,
+		onMenuClose,
+		onChange,
+	]);
 
 	function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
 		const el = e.target as HTMLTextAreaElement;
