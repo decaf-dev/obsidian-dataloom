@@ -3,6 +3,12 @@ import { Position } from "./types";
 import { numToPx } from "../conversion";
 import { NLTView } from "src/obsidian/nlt-view";
 import { MarkdownView, Platform } from "obsidian";
+import { MENU_SHIFT_PADDING } from "./constants";
+
+export const isTextSelected = () => {
+	const selection = window.getSelection();
+	return selection?.type === "Range";
+};
 
 export const getElementPosition = (el: HTMLElement | null): Position => {
 	if (el) {
@@ -104,8 +110,6 @@ export const useMenuTriggerPosition = (): {
 	return { triggerRef: ref, triggerPosition: position };
 };
 
-const PADDING_OFFSET = 5;
-
 const shiftElementIntoContainer = (
 	container: Position,
 	element: Position
@@ -119,23 +123,29 @@ const shiftElementIntoContainer = (
 	// Shift up if the element is below
 	if (element.top + element.height > container.top + container.height) {
 		newTop =
-			container.top + container.height - element.height - PADDING_OFFSET;
+			container.top +
+			container.height -
+			element.height -
+			MENU_SHIFT_PADDING;
 	}
 
 	// Shift left if the element is to the right
 	if (element.left + element.width > container.left + container.width) {
 		newLeft =
-			container.left + container.width - element.width - PADDING_OFFSET;
+			container.left +
+			container.width -
+			element.width -
+			MENU_SHIFT_PADDING;
 	}
 
 	//Shift down if the element is above
 	if (element.top < container.top) {
-		newTop = container.top + PADDING_OFFSET;
+		newTop = container.top + MENU_SHIFT_PADDING;
 	}
 
 	//Shift right if the element is to the left
 	if (element.left < container.left) {
-		newLeft = container.left + PADDING_OFFSET;
+		newLeft = container.left + MENU_SHIFT_PADDING;
 	}
 
 	return {
