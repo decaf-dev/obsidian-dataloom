@@ -1,4 +1,4 @@
-import { MarkdownView, Plugin, TAbstractFile, TFolder } from "obsidian";
+import {MarkdownView, normalizePath, Plugin, TAbstractFile, TFolder} from "obsidian";
 
 import NLTSettingsTab from "./obsidian/nlt-settings-tab";
 
@@ -239,22 +239,21 @@ export default class NLTPlugin extends Plugin {
 
 		this.addCommand({
 			id: "nlt-create-table-and-embed",
-			name: "Create table and embed it into current file",
+			name: "Create table and embed it into current editor",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "+" }],
-			callback: async () => {
-				const markdownView =
-					this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (markdownView) {
-					const file = await this.newTableFile(null, true);
-					if(!file) return;
-					const editor = markdownView.editor;
-					// Internal Method
-					// @ts-ignore
-					const preferFormat = app.vault.config.useMarkdownLinks;
-					editor.replaceRange((
-						preferFormat ? `![${file?.replace(/\.(.*)$/,"")}](<${file}>)` : `![[${file}]]`),
-						editor.getCursor());
-				}
+			editorCallback: async (editor) => {
+				const file = await this.newTableFile(null, true);
+				if(!file) return;
+				let useMarkdownLinks: boolean | undefined = false;
+
+				const config = await app.vault.adapter.read(normalizePath(app.vault.configDir + "/app.json"));
+				if(config) useMarkdownLinks = JSON.parse(config).useMarkdownLinks;
+
+				editor.replaceRange((
+					// Use basename rather than whole name when using Markdownlink like ![abcd](abcd.table) instead of ![abcd.table](abcd.table)
+					// It will replace `.table` to "" in abcd.table
+					useMarkdownLinks ? `![${file?.replace(/\.(.*)$/,"")}](<${file}>)` : `![[${file}]]`),
+					editor.getCursor());
 			},
 		});
 
