@@ -1,4 +1,7 @@
-export const isEventForThisApp = (appId: string, isClickEvent = false) => {
+export const isEventForThisApp = (
+	appId: string,
+	allowOutsideEvents = false
+) => {
 	const activeEl = document.activeElement;
 	if (!activeEl) return false;
 
@@ -6,8 +9,8 @@ export const isEventForThisApp = (appId: string, isClickEvent = false) => {
 	const appEl = activeEl.closest(".NLT__app");
 	if (appEl) return appEl.getAttribute("data-id") === appId;
 
-	//If it's a click event, then we will pass on events that are outside of an app
-	if (isClickEvent) return true;
+	//We will pass on events that are outside of an app instance
+	if (allowOutsideEvents) return true;
 
 	//Otherwise we have an active element that is part of a menu. That means that it is rendered
 	//in a portal. To get the app id, we first need to get the menu, then the menu trigger, then the app
