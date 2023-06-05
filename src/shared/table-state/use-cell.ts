@@ -2,6 +2,7 @@ import { useLogger } from "../logger";
 import { useTableState } from "./table-state-context";
 import CellBodyUpdateCommand from "../commands/cell-body-update-command";
 import CellHeaderUpdateCommand from "../commands/cell-header-update-command";
+import React from "react";
 
 export const useCell = () => {
 	const logger = useLogger();
@@ -16,33 +17,35 @@ export const useCell = () => {
 		doCommand(new CellHeaderUpdateCommand(cellId, "markdown", value));
 	}
 
-	function handleBodyCellContentChange(
-		cellId: string,
-		rowId: string,
-		value: string
-	) {
-		logger("handleCellContentChange", {
-			cellId,
-			rowId,
-			markdown: value,
-		});
+	const handleBodyCellContentChange = React.useCallback(
+		(cellId: string, rowId: string, value: string) => {
+			logger("handleCellContentChange", {
+				cellId,
+				rowId,
+				markdown: value,
+			});
 
-		doCommand(new CellBodyUpdateCommand(cellId, rowId, "markdown", value));
-	}
+			doCommand(
+				new CellBodyUpdateCommand(cellId, rowId, "markdown", value)
+			);
+		},
+		[logger, doCommand]
+	);
 
-	function handleCellDateTimeChange(
-		cellId: string,
-		rowId: string,
-		value: number | null
-	) {
-		logger("handleCellContentChange", {
-			cellId,
-			rowId,
-			dateTime: value,
-		});
+	const handleCellDateTimeChange = React.useCallback(
+		(cellId: string, rowId: string, value: number | null) => {
+			logger("handleCellContentChange", {
+				cellId,
+				rowId,
+				dateTime: value,
+			});
 
-		doCommand(new CellBodyUpdateCommand(cellId, rowId, "dateTime", value));
-	}
+			doCommand(
+				new CellBodyUpdateCommand(cellId, rowId, "dateTime", value)
+			);
+		},
+		[logger, doCommand]
+	);
 
 	return {
 		handleHeaderCellContentChange,

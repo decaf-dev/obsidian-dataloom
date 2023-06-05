@@ -54,5 +54,5 @@ export const useExportEvents = (state: TableState) => {
 			app.workspace.off(EVENT_DOWNLOAD_CSV, handleDownloadCSV);
 			app.workspace.off(EVENT_DOWNLOAD_MARKDOWN, handleDownloadMarkdown);
 		};
-	}, [filePath, state]);
+	}, [filePath, state, appId]);
 };

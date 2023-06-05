@@ -153,28 +153,31 @@ export default function MenuProvider({ children }: Props) {
 			setMenuCloseRequest(null);
 			isTextHighlighted.current = false;
 		},
-		[openMenus, menuCloseRequest]
+		[openMenus]
 	);
 
 	/**
 	 * Requests to close the top level menu
 	 * @param type The type of close request
 	 */
-	const requestCloseTopMenu = (type: MenuCloseRequestType) => {
-		const menu = openMenus.last();
-		if (!menu) return;
+	const requestCloseTopMenu = React.useCallback(
+		(type: MenuCloseRequestType) => {
+			const menu = openMenus.last();
+			if (!menu) return;
 
-		if (menu.shouldRequestOnClose) {
-			setMenuCloseRequest({
-				id: menu.id,
-				requestTime: Date.now(),
-				type,
-			});
-			return;
-		}
+			if (menu.shouldRequestOnClose) {
+				setMenuCloseRequest({
+					id: menu.id,
+					requestTime: Date.now(),
+					type,
+				});
+				return;
+			}
 
-		closeTopMenu();
-	};
+			closeTopMenu();
+		},
+		[openMenus, closeTopMenu]
+	);
 
 	React.useEffect(() => {
 		function handleClick(e: MouseEvent) {
@@ -373,7 +376,15 @@ export default function MenuProvider({ children }: Props) {
 			eventSystem.removeEventListener("mousedown", handleMouseDown);
 			eventSystem.removeEventListener("mouseup", handleSelectionChange);
 		};
-	}, [isMenuOpen, closeTopMenu, openMenu, openMenus, appId, tableState]);
+	}, [
+		isMenuOpen,
+		closeTopMenu,
+		openMenu,
+		requestCloseTopMenu,
+		openMenus,
+		appId,
+		tableState,
+	]);
 
 	return (
 		<MenuContext.Provider
