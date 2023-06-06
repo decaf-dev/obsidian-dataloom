@@ -282,9 +282,7 @@ export default function MenuProvider({ children }: Props) {
 			const focusedEl = document.activeElement;
 			if (!focusedEl) return;
 
-			const tableEl = document.querySelector(
-				`.NLT__app[data-id="${appId}"]`
-			);
+			const tableEl = focusedEl.closest(`.NLT__app[data-id="${appId}"]`);
 			if (!tableEl) throw new Error("Table el not found");
 
 			const focusableEls = tableEl.querySelectorAll(".NLT__focusable");
