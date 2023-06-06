@@ -216,48 +216,45 @@ export default function MenuProvider({ children }: Props) {
 	}, [openMenu, findMenuFromTriggerEl]);
 
 	React.useEffect(() => {
+		function attemptToOpenMenu(el: HTMLElement) {
+			//Check for menu trigger
+			const menuTriggerEl = el.closest(".NLT__focusable");
+			if (!menuTriggerEl) return false;
+
+			//Don't open the menu if we're clicking on the resize handle
+			if (el.className.includes("NLT__resize-handle")) return false;
+
+			//Don't open the menu if we're clicking on the resize handle
+			const menu = findMenuFromTriggerEl(menuTriggerEl as HTMLElement);
+
+			if (!canOpenMenu(menu)) return false;
+
+			openMenu(menu);
+			return true;
+		}
+
 		function handleClick(e: MouseEvent) {
 			const target = e.target as HTMLElement;
 
-			//If we clicked on the link for a file or tag, return
-			// if (el.nodeName === "A") return;
+			//Attempt to open a menu
+			if (attemptToOpenMenu(target)) return;
 
-			//Check for menu trigger
-			const menuTriggerEl = target.closest(".NLT__focusable");
-
-			//If we have a menu trigger, try to open the menu
-			if (menuTriggerEl) {
-				if (!target.className.includes("NLT__resize-handle")) {
-					const menu = findMenuFromTriggerEl(
-						menuTriggerEl as HTMLElement
-					);
-
-					if (canOpenMenu(menu)) {
-						openMenu(menu);
-						return;
-					}
-				}
-			}
-
+			//Otherwise remove the focus visible class if no menu is open
 			if (!isMenuOpen()) {
 				removeFocusVisibleClass();
 				return;
 			}
 
+			//Otherwise close the top menu
 			const menu = openMenus.last();
 			if (!menu) return;
 
 			const { id } = menu;
 
-			//If the menu is not mounted, we don't need to do anything
-			//This can happen when a menu changes
-			const isElementMounted = document.contains(target);
-			if (!isElementMounted) return;
-
 			//If we're clicking on the menu then don't close
 			if (target.closest(`.NLT__menu[data-id="${id}"]`)) return;
 
-			//If we're highlighting text then don't close the menu
+			//If we're highlighting text then don't close
 			if (isTextHighlighted.current) return;
 
 			requestCloseTopMenu("click");
