@@ -1,11 +1,4 @@
-import {
-	MarkdownView,
-	normalizePath,
-	Plugin,
-	TAbstractFile,
-	TFile,
-	TFolder,
-} from "obsidian";
+import { MarkdownView, Plugin, TAbstractFile, TFile, TFolder } from "obsidian";
 
 import NLTSettingsTab from "./obsidian/nlt-settings-tab";
 
@@ -31,7 +24,6 @@ import {
 import { updateLinkReferences } from "./data/utils";
 import { hasDarkTheme } from "./shared/renderUtils";
 import { filterUniqueStrings } from "./react/shared/suggest-menu/utils";
-import { getObsidianConfigValue } from "./shared/configUtils";
 import { getBasename } from "./shared/link/link-utils";
 
 export interface NLTSettings {
