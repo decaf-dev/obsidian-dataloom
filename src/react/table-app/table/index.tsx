@@ -11,7 +11,7 @@ import {
 import TableBodyRow from "./table-body-row";
 import TableHeaderCell from "./table-header-cell";
 import { css } from "@emotion/react";
-import { useCompare } from "src/shared/hooks";
+import { useCompare, usePrevious } from "src/shared/hooks";
 import { getTableBorderColor } from "src/shared/color";
 
 interface Props {
@@ -25,14 +25,16 @@ const tableBorderColor = getTableBorderColor();
 export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 	const tableRef = React.useRef<VirtuosoHandle>(null);
 
-	const didRowsChange = useCompare(bodyRows.length, false);
+	const previousRowLength = usePrevious(bodyRows.length);
 
 	/**
 	 * Scrolls to the bottom of the page when the "New Row" button is pressed
 	 */
 	React.useEffect(() => {
-		if (didRowsChange) tableRef.current?.scrollToIndex(bodyRows.length - 1);
-	}, [didRowsChange, bodyRows.length]);
+		if (previousRowLength === undefined) return;
+		if (previousRowLength < bodyRows.length)
+			tableRef.current?.scrollToIndex(bodyRows.length - 1);
+	}, [previousRowLength, bodyRows.length]);
 
 	return (
 		<TableVirtuoso
