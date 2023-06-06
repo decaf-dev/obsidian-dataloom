@@ -1,5 +1,6 @@
 import { CURRENT_PLUGIN_VERSION } from "src/data/constants";
 import {
+	AspectRatio,
 	BodyCell,
 	CellType,
 	Column,
@@ -28,6 +29,7 @@ import {
 	legacyVersionToString,
 } from "src/shared/versioning";
 import { TableState6122 } from "src/shared/types/types-6.12.2";
+import { TableState6160 } from "src/shared/types/types-6.16.0";
 
 export const serializeTableState = (tableState: TableState): string => {
 	return JSON.stringify(tableState, null, 2);
@@ -317,6 +319,19 @@ export const deserializeTableState = (data: string): TableState => {
 			if (typedCell.hasOwnProperty("functionType")) {
 				delete typedCell.functionType;
 			}
+		});
+	}
+
+	if (isVersionLessThan(pluginVersion, "6.17.0")) {
+		const tableState = currentState as TableState6160;
+		const { columns } = tableState.model;
+
+		columns.forEach((column: unknown) => {
+			const typedColumn = column as Record<string, unknown>;
+			typedColumn.isLocked = false;
+			typedColumn.aspectRatio = AspectRatio.SIXTEEN_BY_NINE;
+			typedColumn.horizontalPadding = "unset";
+			typedColumn.verticalPadding = "unset";
 		});
 	}
 

@@ -22,7 +22,6 @@ import { isCellTypeFilterable } from "src/shared/table-state/filter-by-rules";
 import { ColumnWithMarkdown } from "./types";
 import Padding from "src/react/shared/padding";
 import { css } from "@emotion/react";
-import { useMountContext } from "src/shared/view-context";
 
 interface SortButtonListProps {
 	headerCells: HeaderCell[];
@@ -83,7 +82,6 @@ export default function OptionBar({
 	onRuleAddClick,
 	onRuleTagsChange,
 }: Props) {
-	const { isEmbedded } = useMountContext();
 	const sortedCells = headerCells.filter((cell) => {
 		const columnId = cell.columnId;
 		const column = columns.find((c) => c.id === columnId);

@@ -14,9 +14,11 @@ import MultiTagCell from "../multi-tag-cell";
 import Menu from "../../shared/menu";
 
 import {
+	AspectRatio,
 	CellType,
 	CurrencyType,
 	DateFormat,
+	PaddingSize,
 	Tag,
 } from "src/shared/types/types";
 import { useMenu } from "src/shared/menu/hooks";
@@ -54,6 +56,9 @@ interface Props {
 	columnCurrencyType: CurrencyType;
 	columnId: string;
 	markdown: string;
+	aspectRatio: AspectRatio;
+	verticalPadding: PaddingSize;
+	horizontalPadding: PaddingSize;
 	rowCreationTime: number;
 	rowLastEditedTime: number;
 	width: string;
@@ -96,6 +101,9 @@ export default function BodyCell({
 	columnId,
 	rowId,
 	markdown,
+	aspectRatio,
+	verticalPadding,
+	horizontalPadding,
 	dateFormat,
 	dateTime,
 	columnCurrencyType,
@@ -317,7 +325,12 @@ export default function BodyCell({
 						/>
 					)}
 					{columnType === CellType.EMBED && (
-						<EmbedCell markdown={markdown} />
+						<EmbedCell
+							markdown={markdown}
+							verticalPadding={verticalPadding}
+							horizontalPadding={horizontalPadding}
+							aspectRatio={aspectRatio}
+						/>
 					)}
 					{columnType === CellType.FILE && (
 						<FileCell
