@@ -1,6 +1,4 @@
-import { NLTView } from "src/obsidian/nlt-view";
 import { DynamicSize } from "./spacing/types";
-import { MarkdownView, WorkspaceLeaf } from "obsidian";
 
 export const appendOrReplaceFirstChild = (
 	container: HTMLDivElement | null,
@@ -35,4 +33,9 @@ export const getDynamicSize = <T>(
 
 export const isMobileSize = () => {
 	return window.innerWidth <= 480;
+};
+
+export const hasDarkTheme = () => {
+	const el = document.querySelector("body");
+	return el?.className.includes("theme-dark") ?? false;
 };

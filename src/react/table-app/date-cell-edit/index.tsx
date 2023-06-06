@@ -91,7 +91,15 @@ export default function DateCellEdit({
 
 		if (hasCloseRequestTimeChanged && menuCloseRequest !== null)
 			validateInput();
-	}, [hasCloseRequestTimeChanged, localValue, menuCloseRequest, dateFormat]);
+	}, [
+		value,
+		hasCloseRequestTimeChanged,
+		localValue,
+		menuCloseRequest,
+		dateFormat,
+		onDateTimeChange,
+		onMenuClose,
+	]);
 
 	//If we call onMenuClose directly in the validateInput function, we can see the cell markdown
 	//change to the new value as the menu closes
@@ -101,7 +109,7 @@ export default function DateCellEdit({
 		if (closeTime !== 0) {
 			onMenuClose();
 		}
-	}, [closeTime]);
+	}, [closeTime, onMenuClose]);
 
 	function handleDateFormatChange(value: DateFormat) {
 		onDateFormatChange(value);

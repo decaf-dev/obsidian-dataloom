@@ -159,7 +159,7 @@ export const removeClosingBracket = (
 	return value;
 };
 
-export const findUniqueStrings = (arr: string[]) => {
+export const filterUniqueStrings = (arr: string[]) => {
 	const frequencyMap = new Map<string, number>();
 	arr.forEach((string) => {
 		frequencyMap.set(string, (frequencyMap.get(string) || 0) + 1);
