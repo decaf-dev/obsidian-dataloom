@@ -1,4 +1,4 @@
-import { MarkdownView, Plugin, TAbstractFile, TFile, TFolder } from "obsidian";
+import { MarkdownView, normalizePath, Plugin, TAbstractFile, TFolder} from "obsidian";
 
 import NLTSettingsTab from "./obsidian/nlt-settings-tab";
 
@@ -82,7 +82,7 @@ export default class NLTPlugin extends Plugin {
 		// });
 	}
 
-	private async newTableFile(contextMenuFolderPath: string | null) {
+	private async newTableFile(contextMenuFolderPath: string | null, embedded?: boolean) {
 		let folderPath = "";
 		if (contextMenuFolderPath) {
 			folderPath = contextMenuFolderPath;
@@ -99,6 +99,7 @@ export default class NLTPlugin extends Plugin {
 			useActiveFileNameAndTimestamp:
 				this.settings.nameWithActiveFileNameAndTimestamp,
 		});
+		if(embedded) return filePath;
 		//Open file in a new tab and set it to active
 		await app.workspace.getLeaf(true).setViewState({
 			type: NOTION_LIKE_TABLES_VIEW,
@@ -208,6 +209,27 @@ export default class NLTPlugin extends Plugin {
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "=" }],
 			callback: async () => {
 				await this.newTableFile(null);
+			},
+		});
+
+
+		this.addCommand({
+			id: "nlt-create-table-and-embed",
+			name: "Create table and embed it into current editor",
+			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "+" }],
+			editorCallback: async (editor) => {
+				const file = await this.newTableFile(null, true);
+				if(!file) return;
+				let useMarkdownLinks: boolean | undefined = false;
+
+				const config = await app.vault.adapter.read(normalizePath(app.vault.configDir + "/app.json"));
+				if(config) useMarkdownLinks = JSON.parse(config).useMarkdownLinks;
+
+				editor.replaceRange((
+					// Use basename rather than whole name when using Markdownlink like ![abcd](abcd.table) instead of ![abcd.table](abcd.table)
+					// It will replace `.table` to "" in abcd.table
+					useMarkdownLinks ? `![${file?.replace(/\.(.*)$/,"")}](<${file}>)` : `![[${file}]]`),
+					editor.getCursor());
 			},
 		});
 

@@ -1,5 +1,5 @@
 # vscode
-.vscode 
+.vscode
 
 # Intellij
 *.iml
@@ -29,3 +29,6 @@ main.js.map
 
 # obsidian
 data.json
+
+# pnpm lock yaml
+pnpm-lock.yaml
