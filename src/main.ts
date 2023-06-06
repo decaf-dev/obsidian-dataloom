@@ -32,6 +32,7 @@ import { updateLinkReferences } from "./data/utils";
 import { hasDarkTheme } from "./shared/renderUtils";
 import { filterUniqueStrings } from "./react/shared/suggest-menu/utils";
 import { getObsidianConfigValue } from "./shared/configUtils";
+import { getBasename } from "./shared/link/link-utils";
 
 export interface NLTSettings {
 	shouldDebug: boolean;
@@ -228,8 +229,8 @@ export default class NLTPlugin extends Plugin {
 			name: "Create table and embed it into current editor",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "+" }],
 			editorCallback: async (editor) => {
-				const file = await this.newTableFile(null, true);
-				if (!file) return;
+				const filePath = await this.newTableFile(null, true);
+				if (!filePath) return;
 
 				const useMarkdownLinks = (this.app.vault as any).getConfig(
 					"useMarkdownLinks"
@@ -238,8 +239,9 @@ export default class NLTPlugin extends Plugin {
 				// Use basename rather than whole name when using Markdownlink like ![abcd](abcd.table) instead of ![abcd.table](abcd.table)
 				// It will replace `.table` to "" in abcd.table
 				const linkText = useMarkdownLinks
-					? `![${file?.replace(/\.(.*)$/, "")}](<${file}>)`
-					: `![[${file}]]`;
+					? `![${getBasename(filePath)}](${encodeURI(filePath)})`
+					: `![[${filePath}]]`;
+
 				editor.replaceRange(linkText, editor.getCursor());
 				editor.setCursor(
 					editor.getCursor().line,

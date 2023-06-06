@@ -1,8 +1,27 @@
-import { getWikiLinkText, stripFileExtension } from "./link-utils";
+import {
+	getBasename,
+	getWikiLinkText,
+	stripDirectory,
+	stripFileExtension,
+} from "./link-utils";
 
 describe("stripFileExtension", () => {
 	it("strips the file extension", () => {
 		const result = stripFileExtension("abc.md");
+		expect(result).toEqual("abc");
+	});
+});
+
+describe("stripDirectory", () => {
+	it("strips the absolute path", () => {
+		const result = stripDirectory("my/path/abc.md");
+		expect(result).toEqual("abc.md");
+	});
+});
+
+describe("getBasename", () => {
+	it("gets the basename", () => {
+		const result = getBasename("my/path/abc.md");
 		expect(result).toEqual("abc");
 	});
 });
