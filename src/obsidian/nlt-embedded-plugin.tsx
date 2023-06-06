@@ -6,7 +6,6 @@ import { serializeTableState } from "src/data/serialize-table-state";
 import { deserializeTableState } from "src/data/serialize-table-state";
 import { NotionLikeTable } from "src/react/table-app";
 import { store } from "src/redux/global/store";
-import { eventSystem } from "src/shared/event-system/event-system";
 import { EVENT_REFRESH_TABLES } from "src/shared/events";
 import { TableState } from "src/shared/types/types";
 import _ from "lodash";
@@ -61,46 +60,61 @@ class NLTEmbeddedPlugin implements PluginValue {
 
 			linkEl.style.backgroundColor = "var(--color-primary)";
 			linkEl.style.cursor = "unset";
-			linkEl.style.padding = "10px 0px";
+			linkEl.style.margin = "0px";
+			linkEl.style.padding = "0px";
 
-			const containerEl = linkEl.createDiv();
-			containerEl.className = "NLT__embedded-container";
-			containerEl.style.height = "100%";
-			containerEl.style.width = "100%";
+			const tableContainerEl = linkEl.createDiv();
+			tableContainerEl.className = "NLT__embedded-container";
+			tableContainerEl.style.height = "100%";
+			tableContainerEl.style.width = "100%";
+			tableContainerEl.style.padding = "10px 0px";
 
 			const appId = uuidv4();
 			this.tableApps.push({
 				id: appId,
 				leaf: activeView.leaf,
-				parentEl: containerEl,
+				parentEl: tableContainerEl,
 				file,
 			});
 
 			//Call a separate function to not block the update function
-			this.setupTable(activeView, containerEl, file, appId);
+			this.setupTable(activeView, linkEl, tableContainerEl, file, appId);
 		}
 	}
 
 	private async setupTable(
 		activeView: MarkdownView,
-		containerEl: HTMLElement,
+		linkEl: HTMLElement,
+		tableContainerEl: HTMLElement,
 		file: TFile,
 		appId: string
 	) {
 		/**
-		 * Setup event listeners
+		 * Stop propagation of the click event. We do this so that the embedded link div
+		 * don't navigate to the linked file when it is clicked.
 		 *
-		 * We do this so we can stop propagation to the embedded link,
-		 * otherwise we will navigate to the linked file when it is clicked.
-		 * The containerEl listener is needed because the event bubbling chain is broken
-		 * between the embedded link and the container when we stop propagation.
+		 * Then pass the event on the grandparent
 		 */
-		activeView.containerEl.addEventListener("click", (e) => {
-			eventSystem.dispatchEvent("click", e);
-		});
-		containerEl.addEventListener("click", (e) => {
+		tableContainerEl.addEventListener("click", (e) => {
 			e.stopPropagation();
-			eventSystem.dispatchEvent("click", e);
+
+			//Create a synthetic event
+			const syntheticEvent = new CustomEvent("click", {
+				bubbles: true, // Allow the event to bubble up
+			});
+
+			Object.defineProperty(syntheticEvent, "target", {
+				value: e.target,
+			});
+			Object.defineProperty(syntheticEvent, "currentTarget", {
+				value: e.currentTarget,
+			});
+
+			//Pass it to the grandparent
+			const parent = linkEl.parentElement;
+			if (parent) {
+				parent.dispatchEvent(syntheticEvent);
+			}
 		});
 
 		//Get the table state
@@ -110,7 +124,7 @@ class NLTEmbeddedPlugin implements PluginValue {
 		const table = this.tableApps.find((app) => app.id === appId);
 		if (!table) return;
 
-		table.root = createRoot(containerEl);
+		table.root = createRoot(tableContainerEl);
 		this.renderApp(appId, activeView.leaf, file, table.root, tableState);
 	}
 

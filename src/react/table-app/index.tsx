@@ -62,6 +62,9 @@ const TableApp = () => {
 		handleSortRemoveClick,
 		handleFunctionTypeChange,
 		handleWrapContentToggle,
+		handleAspectRatioClick,
+		handleHorizontalPaddingClick,
+		handleVerticalPaddingClick,
 	} = useColumn();
 
 	const { handleNewRowClick, handleRowDeleteClick } = useRow();
@@ -153,6 +156,9 @@ const TableApp = () => {
 									shouldWrapOverflow,
 									currencyType,
 									dateFormat,
+									verticalPadding,
+									horizontalPadding,
+									aspectRatio,
 								} = column;
 
 								const cell = headerCells.find(
@@ -171,6 +177,11 @@ const TableApp = () => {
 											rowId={rowId}
 											dateFormat={dateFormat}
 											currencyType={currencyType}
+											verticalPadding={verticalPadding}
+											horizontalPadding={
+												horizontalPadding
+											}
+											aspectRatio={aspectRatio}
 											numColumns={columns.length}
 											columnId={cell.columnId}
 											resizingColumnId={resizingColumnId}
@@ -200,6 +211,15 @@ const TableApp = () => {
 											}
 											onCurrencyChange={
 												handleCurrencyChange
+											}
+											onVerticalPaddingClick={
+												handleVerticalPaddingClick
+											}
+											onHorizontalPaddingClick={
+												handleHorizontalPaddingClick
+											}
+											onAspectRatioClick={
+												handleAspectRatioClick
 											}
 										/>
 									),
@@ -240,6 +260,9 @@ const TableApp = () => {
 									currencyType,
 									dateFormat,
 									tags,
+									verticalPadding,
+									horizontalPadding,
+									aspectRatio,
 								} = column;
 
 								const cell = bodyCells.find(
@@ -261,6 +284,11 @@ const TableApp = () => {
 										<BodyCell
 											key={cellId}
 											cellId={cellId}
+											verticalPadding={verticalPadding}
+											horizontalPadding={
+												horizontalPadding
+											}
+											aspectRatio={aspectRatio}
 											rowId={rowId}
 											columnTags={tags}
 											cellTagIds={tagIds}

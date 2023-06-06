@@ -197,6 +197,9 @@ export default function TableHeaderCell({
 				font-weight: 400;
 				overflow: visible;
 				text-align: start;
+				color: var(
+					--text-normal
+				); //Prevents hover style in embedded table
 				background-color: var(--table-header-background);
 				position: sticky;
 				top: 0;
