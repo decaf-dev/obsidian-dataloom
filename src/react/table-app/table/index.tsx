@@ -11,7 +11,7 @@ import {
 import TableBodyRow from "./table-body-row";
 import TableHeaderCell from "./table-header-cell";
 import { css } from "@emotion/react";
-import { useCompare, usePrevious } from "src/shared/hooks";
+import { usePrevious } from "src/shared/hooks";
 import { getTableBorderColor } from "src/shared/color";
 
 interface Props {
