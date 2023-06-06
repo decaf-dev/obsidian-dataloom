@@ -35,7 +35,7 @@ const MenuTrigger = ({
 
 	return (
 		<div
-			className="NLT__focusable"
+			className="NLT__menu-trigger NLT__focusable"
 			css={css`
 				width: 100%;
 				height: 100%;

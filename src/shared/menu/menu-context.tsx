@@ -209,7 +209,7 @@ export default function MenuProvider({ children }: Props) {
 	const openMenuFromFocusedTrigger = React.useCallback(() => {
 		const focusedEl = document.activeElement as HTMLElement;
 		if (!focusedEl) return;
-		if (!focusedEl.className.includes("NLT__focusable")) return;
+		if (!focusedEl.className.includes("NLT__menu-trigger")) return;
 
 		const menu = findMenuFromTriggerEl(focusedEl);
 		if (menu) openMenu(menu);
@@ -218,7 +218,7 @@ export default function MenuProvider({ children }: Props) {
 	React.useEffect(() => {
 		function attemptToOpenMenu(el: HTMLElement) {
 			//Check for menu trigger
-			const menuTriggerEl = el.closest(".NLT__focusable");
+			const menuTriggerEl = el.closest(".NLT__menu-trigger");
 			if (!menuTriggerEl) return false;
 
 			//Don't open the menu if we're clicking on the resize handle

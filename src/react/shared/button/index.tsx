@@ -84,7 +84,7 @@ export const MenuButton = ({
 
 	return (
 		<button
-			className={className}
+			className={"NLT__menu-trigger " + className}
 			css={css`
 				width: max-content !important;
 			`}
