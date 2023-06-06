@@ -33,8 +33,8 @@ export default function SelectableTag({
 	const { triggerRef, triggerPosition } = useMenuTriggerPosition();
 	useShiftMenu(triggerRef, menuRef, isMenuOpen, {
 		openDirection: "right",
-		leftOffset: 25,
-		topOffset: -50,
+		leftOffset: -55,
+		topOffset: -100,
 	});
 
 	function handleColorChange(color: Color) {
