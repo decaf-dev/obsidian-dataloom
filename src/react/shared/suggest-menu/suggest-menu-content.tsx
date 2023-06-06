@@ -7,7 +7,6 @@ import SuggestItem from "./suggest-item";
 import { filterUniqueStrings } from "./utils";
 import { css } from "@emotion/react";
 import { eventSystem } from "src/shared/event-system/event-system";
-import { getTableBackgroundColor } from "src/shared/color";
 
 interface ContentProps {
 	showInput?: boolean;
@@ -91,14 +90,12 @@ export default function SuggestMenuContent({
 	const fileNames = filteredFiles.map((file) => file.name);
 	const uniqueFileNames = filterUniqueStrings(fileNames);
 
-	const tableBackgroundColor = getTableBackgroundColor();
-
 	return (
 		<div className="NLT__suggest-menu">
 			{showInput && (
 				<div
 					css={css`
-						background-color: ${tableBackgroundColor};
+						background-color: var(--background-secondary);
 						border-bottom: 1px solid var(--table-border-color);
 						padding: 4px 10px;
 					`}

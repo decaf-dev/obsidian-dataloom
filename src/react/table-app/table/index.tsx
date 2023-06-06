@@ -47,7 +47,12 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 				headerRows.map((row) => {
 					const { id: rowId, cells } = row;
 					return (
-						<tr key={rowId}>
+						<tr
+							key={rowId}
+							css={css`
+								background-color: var(--background-secondary);
+							`}
+						>
 							{cells.map((cell, i) => {
 								const { id: cellId, columnId, content } = cell;
 								return (

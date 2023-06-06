@@ -38,12 +38,3 @@ export const randomColor = () => {
 	const index = Math.floor(Math.random() * Object.values(Color).length);
 	return Object.values(Color)[index];
 };
-
-export const getTableBackgroundColor = (): string => {
-	//@ts-expect-error
-	const theme = app.vault.getConfig("cssTheme");
-	if (theme === RED_GRAPHITE_THEME) {
-		return "var(--table-header-background)";
-	}
-	return "var(--background-secondary)";
-};

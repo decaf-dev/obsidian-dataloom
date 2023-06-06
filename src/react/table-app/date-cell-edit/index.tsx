@@ -18,8 +18,6 @@ import { MenuCloseRequest, MenuLevel } from "src/shared/menu/types";
 import MenuTrigger from "src/react/shared/menu-trigger";
 import { getDisplayNameForDateFormat } from "src/shared/table-state/display-name";
 import { css } from "@emotion/react";
-import { getTableBackgroundColor } from "src/shared/color";
-
 import "./styles.css";
 import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 
@@ -121,8 +119,6 @@ export default function DateCellEdit({
 		onMenuClose();
 	}
 
-	const tableBackgroundColor = getTableBackgroundColor();
-
 	return (
 		<>
 			<div ref={triggerRef} className="NLT__date-cell-edit">
@@ -134,7 +130,7 @@ export default function DateCellEdit({
 								height: 100%;
 								border: 1px solid var(--table-border-color);
 								padding: 5px;
-								background-color: ${tableBackgroundColor};
+								background-color: var(--background-secondary);
 							`}
 							ref={inputRef}
 							aria-invalid={isInputInvalid}
