@@ -4,7 +4,7 @@ import Padding from "src/react/shared/padding";
 import Stack from "src/react/shared/stack";
 import { CellType, SortDir } from "src/shared/types/types";
 import { SubmenuType } from "./types";
-import { useCompare, useInputSelection } from "src/shared/hooks";
+import { useInputSelection } from "src/shared/hooks";
 import { getDisplayNameForCellType } from "src/shared/table-state/display-name";
 import { css } from "@emotion/react";
 import { getTableBackgroundColor, getTableBorderColor } from "src/shared/color";

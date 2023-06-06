@@ -27,6 +27,7 @@ import {
 } from "./arrow-move-focus";
 import { SortDir } from "../types/types";
 import { useMountContext } from "../view-context";
+import { isTextSelected } from "./utils";
 
 interface CloseOptions {
 	shouldFocusTrigger?: boolean;
@@ -38,7 +39,7 @@ interface ContextProps {
 	menuCloseRequest: MenuCloseRequest | null;
 	openMenu: (menu: Menu) => void;
 	closeTopMenu: (options?: CloseOptions) => void;
-	forceCloseAllMenus: (shouldFocusTriggerOnClose?: boolean) => void;
+	closeAllMenus: (shouldFocusTriggerOnClose?: boolean) => void;
 }
 
 const MenuContext = React.createContext<ContextProps | null>(null);
@@ -59,16 +60,21 @@ interface Props {
 }
 
 export default function MenuProvider({ children }: Props) {
+	const { tableState } = useTableState();
+	const { appId } = useMountContext();
+
 	/**
 	 * The menus that are currently open
 	 */
 	const [openMenus, setOpenMenus] = React.useState<Menu[]>([]);
 
-	const { tableState } = useTableState();
-	const { appId } = useMountContext();
-
 	const [menuCloseRequest, setMenuCloseRequest] =
 		React.useState<MenuCloseRequest | null>(null);
+
+	/**
+	 * Whether or not text is currently highlighted
+	 */
+	const isTextHighlighted = React.useRef(false);
 
 	/**
 	 * Returns whether or not a menu is open
@@ -102,7 +108,11 @@ export default function MenuProvider({ children }: Props) {
 		[openMenus]
 	);
 
-	function forceCloseAllMenus(shouldFocusTrigger = true) {
+	/**
+	 * Closes all menus
+	 * @param shouldFocusTrigger should focus the menu trigger when on close
+	 */
+	function closeAllMenus(shouldFocusTrigger = true) {
 		const menu = openMenus.first();
 		if (!menu) return;
 
@@ -117,26 +127,12 @@ export default function MenuProvider({ children }: Props) {
 
 		setOpenMenus([]);
 		setMenuCloseRequest(null);
+		isTextHighlighted.current = false;
 	}
-
-	const requestCloseTopMenu = (type: MenuCloseRequestType) => {
-		const menu = openMenus.last();
-		if (!menu) return;
-
-		if (menu.shouldRequestOnClose) {
-			setMenuCloseRequest({
-				id: menu.id,
-				requestTime: Date.now(),
-				type,
-			});
-			return;
-		}
-
-		closeTopMenu();
-	};
 
 	/**
 	 * Closes the top level menu
+	 * @param options Options for closing the menu
 	 */
 	const closeTopMenu = React.useCallback(
 		(options?: CloseOptions) => {
@@ -155,8 +151,32 @@ export default function MenuProvider({ children }: Props) {
 			//Remove the menu
 			setOpenMenus((prev) => prev.slice(0, prev.length - 1));
 			setMenuCloseRequest(null);
+			isTextHighlighted.current = false;
 		},
-		[openMenus, menuCloseRequest]
+		[openMenus]
+	);
+
+	/**
+	 * Requests to close the top level menu
+	 * @param type The type of close request
+	 */
+	const requestCloseTopMenu = React.useCallback(
+		(type: MenuCloseRequestType) => {
+			const menu = openMenus.last();
+			if (!menu) return;
+
+			if (menu.shouldRequestOnClose) {
+				setMenuCloseRequest({
+					id: menu.id,
+					requestTime: Date.now(),
+					type,
+				});
+				return;
+			}
+
+			closeTopMenu();
+		},
+		[openMenus, closeTopMenu]
 	);
 
 	React.useEffect(() => {
@@ -179,6 +199,9 @@ export default function MenuProvider({ children }: Props) {
 				//If we don't have this check, then we will close the menu when we click on the trigger
 				if (target.closest(`.NLT__focusable[data-menu-id="${id}"]`))
 					return;
+
+				//If we're highlighting text then don't close the menu
+				if (isTextHighlighted.current) return;
 
 				requestCloseTopMenu("click");
 			} else {
@@ -207,6 +230,14 @@ export default function MenuProvider({ children }: Props) {
 			}
 		}
 
+		function handleMouseDown() {
+			isTextHighlighted.current = false;
+		}
+
+		function handleSelectionChange() {
+			isTextHighlighted.current = isTextSelected();
+		}
+
 		function handleEnterDown(e: KeyboardEvent) {
 			const target = e.target as HTMLElement;
 
@@ -219,6 +250,9 @@ export default function MenuProvider({ children }: Props) {
 			if (isMenuOpen()) {
 				const menu = openMenus.last();
 				if (!menu) throw new Error("Menu is open but no menu exists");
+
+				//If we're highlighting text then don't close the menu
+				if (isTextHighlighted.current) return;
 
 				requestCloseTopMenu("enter");
 			} else {
@@ -334,11 +368,23 @@ export default function MenuProvider({ children }: Props) {
 		//run first
 		eventSystem.addEventListener("click", handleClick, 2);
 		eventSystem.addEventListener("keydown", handleKeyDown);
+		eventSystem.addEventListener("mousedown", handleMouseDown);
+		eventSystem.addEventListener("selectionchange", handleSelectionChange);
 		return () => {
 			eventSystem.removeEventListener("click", handleClick);
 			eventSystem.removeEventListener("keydown", handleKeyDown);
+			eventSystem.removeEventListener("mousedown", handleMouseDown);
+			eventSystem.removeEventListener("mouseup", handleSelectionChange);
 		};
-	}, [isMenuOpen, closeTopMenu, openMenu, openMenus, appId, tableState]);
+	}, [
+		isMenuOpen,
+		closeTopMenu,
+		openMenu,
+		requestCloseTopMenu,
+		openMenus,
+		appId,
+		tableState,
+	]);
 
 	return (
 		<MenuContext.Provider
@@ -347,7 +393,7 @@ export default function MenuProvider({ children }: Props) {
 				openMenu,
 				menuCloseRequest,
 				closeTopMenu,
-				forceCloseAllMenus,
+				closeAllMenus,
 			}}
 		>
 			{children}

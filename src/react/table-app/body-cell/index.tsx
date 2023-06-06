@@ -233,33 +233,45 @@ export default function BodyCell({
 		onTagClick(cellId, rowId, tagId, columnType === CellType.MULTI_TAG);
 	}
 
-	function handleTextInputChange(value: string) {
-		onContentChange(cellId, rowId, value);
-	}
+	const handleTextInputChange = React.useCallback(
+		(value: string) => {
+			onContentChange(cellId, rowId, value);
+		},
+		[cellId, rowId, onContentChange]
+	);
 
 	function handleFileInputChange(value: string) {
 		onContentChange(cellId, rowId, value);
 	}
 
-	function handleNumberInputChange(value: string) {
-		onContentChange(cellId, rowId, value);
-	}
+	const handleNumberInputChange = React.useCallback(
+		(value: string) => {
+			onContentChange(cellId, rowId, value);
+		},
+		[cellId, rowId, onContentChange]
+	);
 
 	function handleCheckboxChange(value: string) {
 		onContentChange(cellId, rowId, value);
 	}
 
-	function handleCurrencyChange(value: string) {
-		onContentChange(cellId, rowId, value);
-	}
+	const handleCurrencyChange = React.useCallback(
+		(value: string) => {
+			onContentChange(cellId, rowId, value);
+		},
+		[cellId, rowId, onContentChange]
+	);
 
 	function handleDateFormatChange(value: DateFormat) {
 		onDateFormatChange(columnId, value);
 	}
 
-	function handleDateTimeChange(value: number | null) {
-		onDateTimeChange(cellId, rowId, value);
-	}
+	const handleDateTimeChange = React.useCallback(
+		(value: number | null) => {
+			onDateTimeChange(cellId, rowId, value);
+		},
+		[cellId, rowId, onDateTimeChange]
+	);
 
 	const handleMenuClose = React.useCallback(() => {
 		closeTopMenu();

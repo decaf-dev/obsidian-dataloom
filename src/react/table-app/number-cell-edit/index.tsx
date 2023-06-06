@@ -34,7 +34,13 @@ export default function NumberCellEdit({
 			onChange(localValue);
 			onMenuClose();
 		}
-	}, [localValue, hasCloseRequestTimeChanged, menuCloseRequest, onMenuClose]);
+	}, [
+		localValue,
+		hasCloseRequestTimeChanged,
+		menuCloseRequest,
+		onMenuClose,
+		onChange,
+	]);
 
 	function handleChange(inputValue: string, setSelectionToLength = false) {
 		if (!isValidNumberInput(inputValue)) return;

@@ -5,4 +5,9 @@ export interface EventListener {
 }
 
 export type CallbackFunc = (...data: any[]) => void;
-export type EventName = "keydown" | "click";
+export type EventName =
+	| "keydown"
+	| "click"
+	| "mousedown"
+	| "mouseup"
+	| "selectionchange";
