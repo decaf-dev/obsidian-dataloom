@@ -5,6 +5,7 @@ import {
 	CHECKBOX_REGEX,
 	CHECKBOX_CHECKED_REGEX,
 	NUMBER_INPUT_REGEX,
+	URL_REGEX,
 } from "./regex";
 
 export const isNumber = (input: string): boolean => {
@@ -25,6 +26,10 @@ export const isCheckbox = (input: string): boolean => {
 
 export const isCheckboxChecked = (input: string): boolean => {
 	return input.match(CHECKBOX_CHECKED_REGEX) !== null;
+};
+
+export const isURL = (input: string): boolean => {
+	return input.match(URL_REGEX) !== null;
 };
 
 export const isGeneralFunction = (

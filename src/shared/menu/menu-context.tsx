@@ -241,6 +241,7 @@ export default function MenuProvider({ children }: Props) {
 		function handleEnterDown(e: KeyboardEvent) {
 			const target = e.target as HTMLElement;
 
+			//TODO fix
 			if (isSpecialActionDown(e)) return;
 
 			//Prevents the event key from triggering the click event

@@ -36,12 +36,14 @@ import CurrencyCell from "../currency-cell";
 import CurrencyCellEdit from "../currency-cell-edit";
 import MenuTrigger from "src/react/shared/menu-trigger";
 
-import "./styles.css";
 import { useTableState } from "src/shared/table-state/table-state-context";
 import RowSortCommand from "src/shared/commands/row-sort-command";
 import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 import FileCell from "../file-cell";
 import FileCellEdit from "../file-cell-edit";
+import { css } from "@emotion/react";
+import EmbedCell from "../embed-cell";
+import EmbedCellEdit from "../embed-cell-edit";
 
 interface Props {
 	columnType: string;
@@ -117,6 +119,7 @@ export default function BodyCell({
 	//All of these cells have local values
 	const shouldRequestOnClose =
 		columnType === CellType.TEXT ||
+		columnType === CellType.EMBED ||
 		columnType === CellType.NUMBER ||
 		columnType === CellType.CURRENCY ||
 		columnType === CellType.TAG ||
@@ -170,6 +173,7 @@ export default function BodyCell({
 	function handleBackspaceDown() {
 		if (
 			columnType === CellType.TEXT ||
+			columnType === CellType.EMBED ||
 			columnType === CellType.NUMBER ||
 			columnType === CellType.CURRENCY ||
 			columnType === CellType.FILE
@@ -234,6 +238,13 @@ export default function BodyCell({
 	}
 
 	const handleTextInputChange = React.useCallback(
+		(value: string) => {
+			onContentChange(cellId, rowId, value);
+		},
+		[cellId, rowId, onContentChange]
+	);
+
+	const handleEmbedInputChange = React.useCallback(
 		(value: string) => {
 			onContentChange(cellId, rowId, value);
 		},
@@ -327,6 +338,15 @@ export default function BodyCell({
 				<div
 					ref={triggerRef}
 					onContextMenu={handleCellContextClick}
+					css={css`
+						display: flex;
+						width: 100%;
+						height: 100%;
+						min-height: var(--nlt-cell-min-height);
+						padding: var(--nlt-cell-spacing-x)
+							var(--nlt-cell-spacing-y);
+						cursor: pointer;
+					`}
 					className={className}
 					style={{
 						width,
@@ -334,6 +354,12 @@ export default function BodyCell({
 				>
 					{columnType === CellType.TEXT && (
 						<TextCell
+							markdown={markdown}
+							shouldWrapOverflow={shouldWrapOverflow}
+						/>
+					)}
+					{columnType === CellType.EMBED && (
+						<EmbedCell
 							markdown={markdown}
 							shouldWrapOverflow={shouldWrapOverflow}
 						/>
@@ -404,6 +430,15 @@ export default function BodyCell({
 			>
 				{columnType === CellType.TEXT && (
 					<TextCellEdit
+						menuCloseRequest={menuCloseRequest}
+						shouldWrapOverflow={shouldWrapOverflow}
+						value={markdown}
+						onChange={handleTextInputChange}
+						onMenuClose={handleMenuClose}
+					/>
+				)}
+				{columnType === CellType.EMBED && (
+					<EmbedCellEdit
 						menuCloseRequest={menuCloseRequest}
 						shouldWrapOverflow={shouldWrapOverflow}
 						value={markdown}
