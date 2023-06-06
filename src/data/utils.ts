@@ -1,5 +1,6 @@
 import {
 	getWikiLinkText,
+	stripDirectory,
 	stripFileExtension,
 } from "src/shared/link/link-utils";
 import { EXTENSION_REGEX, WIKI_LINK_REGEX } from "./constants";
@@ -18,10 +19,6 @@ export const splitFileExtension = (
 	return null;
 };
 
-export const stripAbsolutePath = (filePath: string): string => {
-	return filePath.substring(filePath.lastIndexOf("/") + 1);
-};
-
 export const updateLinkReferences = (
 	markdown: string,
 	updatedFileInfo: Pick<TFile, "basename" | "path" | "name" | "extension">,
@@ -33,7 +30,7 @@ export const updateLinkReferences = (
 		//The path may or may not contain a file extension
 		//It also may or may not contain a slash, depending on if its a relative or absolute path
 		let comparePath = oldPath;
-		if (!path.includes("/")) comparePath = stripAbsolutePath(comparePath);
+		if (!path.includes("/")) comparePath = stripDirectory(comparePath);
 
 		if (!path.match(EXTENSION_REGEX))
 			comparePath = stripFileExtension(comparePath);

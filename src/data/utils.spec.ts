@@ -1,8 +1,4 @@
-import {
-	splitFileExtension,
-	stripAbsolutePath,
-	updateLinkReferences,
-} from "./utils";
+import { splitFileExtension, updateLinkReferences } from "./utils";
 
 describe("splitFileExtension", () => {
 	test("returns the extension", () => {
@@ -16,13 +12,6 @@ describe("splitFileExtension", () => {
 	test("returns null when no extension is present", () => {
 		const result = splitFileExtension("abc");
 		expect(result).toEqual(null);
-	});
-});
-
-describe("stripAbsolutePath", () => {
-	it("strips the absolute path", () => {
-		const result = stripAbsolutePath("my/path/abc.md");
-		expect(result).toEqual("abc.md");
 	});
 });
 
