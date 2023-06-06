@@ -1,4 +1,4 @@
-import { MarkdownView, Plugin, TAbstractFile, TFolder } from "obsidian";
+import { MarkdownView, Plugin, TAbstractFile, TFile, TFolder } from "obsidian";
 
 import NLTSettingsTab from "./obsidian/nlt-settings-tab";
 
@@ -21,8 +21,9 @@ import {
 	deserializeTableState,
 	serializeTableState,
 } from "./data/serialize-table-state";
-import { updateWikiLinks } from "./data/utils";
+import { updateLinkReferences } from "./data/utils";
 import { hasDarkTheme } from "./shared/renderUtils";
+import { filterUniqueStrings } from "./react/shared/suggest-menu/utils";
 
 export interface NLTSettings {
 	shouldDebug: boolean;
@@ -130,51 +131,64 @@ export default class NLTPlugin extends Plugin {
 
 		this.app.vault.on(
 			"rename",
-			async (updatedFile: TAbstractFile, oldPath: string) => {
-				if (updatedFile instanceof TFolder) return;
+			async (file: TAbstractFile, oldPath: string) => {
+				if (file instanceof TFile) {
+					const files = this.app.vault.getFiles();
 
-				//Get all table files
-				const tableFiles = this.app.vault
-					.getFiles()
-					.filter((file) => file.extension === TABLE_EXTENSION);
+					const uniqueFileNames = filterUniqueStrings(
+						files.map((file) => file.name)
+					);
+					const isUniqueFileName = uniqueFileNames.includes(
+						file.name
+					);
 
-				for (let i = 0; i < tableFiles.length; i++) {
-					const tableFile = tableFiles[i];
+					//Get all table files
+					const tableFiles = files.filter(
+						(file) => file.extension === TABLE_EXTENSION
+					);
+					for (let i = 0; i < tableFiles.length; i++) {
+						const tableFile = tableFiles[i];
 
-					//For each file read its contents
-					const content = await tableFile.vault.read(tableFiles[i]);
-					const deserializedState = deserializeTableState(content);
-
-					//Iterate over all body cells and check the markdwon
-					const newState = structuredClone(deserializedState);
-					newState.model.bodyCells.forEach((cell) => {
-						//If the markdown contains a wiki link with old path, update it
-						const updatedMarkdown = updateWikiLinks(
-							cell.markdown,
-							oldPath,
-							updatedFile.path
+						//For each file read its contents
+						const content = await tableFile.vault.read(
+							tableFiles[i]
 						);
-						cell.markdown = updatedMarkdown;
-					});
+						const deserializedState =
+							deserializeTableState(content);
 
-					//If the state has changed, update the file
-					if (
-						JSON.stringify(deserializedState) !==
-						JSON.stringify(newState)
-					) {
-						const serializedState = serializeTableState(newState);
-						await tableFile.vault.modify(
-							tableFile,
-							serializedState
-						);
+						//Iterate over all body cells and check the markdwon
+						const newState = structuredClone(deserializedState);
+						newState.model.bodyCells.forEach((cell) => {
+							//If the markdown contains a wiki link with old path, update it
+							const updatedMarkdown = updateLinkReferences(
+								cell.markdown,
+								file,
+								oldPath,
+								isUniqueFileName
+							);
+							cell.markdown = updatedMarkdown;
+						});
 
-						//Update all tables that match this path
-						app.workspace.trigger(
-							EVENT_REFRESH_TABLES,
-							tableFile.path,
-							-1, //update all tables that match this path
-							newState
-						);
+						//If the state has changed, update the file
+						if (
+							JSON.stringify(deserializedState) !==
+							JSON.stringify(newState)
+						) {
+							const serializedState =
+								serializeTableState(newState);
+							await tableFile.vault.modify(
+								tableFile,
+								serializedState
+							);
+
+							//Update all tables that match this path
+							app.workspace.trigger(
+								EVENT_REFRESH_TABLES,
+								tableFile.path,
+								-1, //update all tables that match this path
+								newState
+							);
+						}
 					}
 				}
 			}

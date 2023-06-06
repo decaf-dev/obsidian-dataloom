@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { useRenderMarkdown } from "src/shared/markdown/hooks";
+import { useRenderMarkdown } from "src/shared/render/hooks";
 import { useOverflow } from "src/shared/spacing/hooks";
 
 interface Props {

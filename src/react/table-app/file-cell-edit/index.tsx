@@ -1,5 +1,5 @@
 import { TFile } from "obsidian";
-import SuggestMenuContent from "src/react/shared/suggest-menu/suggest-menu-context";
+import SuggestMenuContent from "src/react/shared/suggest-menu/suggest-menu-content";
 
 interface Props {
 	onChange: (value: string) => void;

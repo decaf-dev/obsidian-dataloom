@@ -4,7 +4,7 @@ import { TFile } from "obsidian";
 import fuzzysort from "fuzzysort";
 
 import SuggestItem from "./suggest-item";
-import { findUniqueStrings } from "./utils";
+import { filterUniqueStrings } from "./utils";
 import { css } from "@emotion/react";
 import { eventSystem } from "src/shared/event-system/event-system";
 import { getTableBackgroundColor, getTableBorderColor } from "src/shared/color";
@@ -89,7 +89,7 @@ export default function SuggestMenuContent({
 	}, [filteredFiles.length]);
 
 	const fileNames = filteredFiles.map((file) => file.name);
-	const uniqueFileNames = findUniqueStrings(fileNames);
+	const uniqueFileNames = filterUniqueStrings(fileNames);
 
 	const tableBackgroundColor = getTableBackgroundColor();
 	const tableBorderColor = getTableBorderColor();
