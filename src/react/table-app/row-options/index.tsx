@@ -17,9 +17,7 @@ interface Props {
 }
 
 export default function RowOptions({ rowId, onDeleteClick }: Props) {
-	const { menu, isMenuOpen, menuRef, openMenu, closeTopMenu } = useMenu(
-		MenuLevel.ONE
-	);
+	const { menu, isMenuOpen, menuRef, closeTopMenu } = useMenu(MenuLevel.ONE);
 	const { triggerRef, triggerPosition } = useMenuTriggerPosition();
 	useShiftMenu(triggerRef, menuRef, isMenuOpen, {
 		openDirection: "right",

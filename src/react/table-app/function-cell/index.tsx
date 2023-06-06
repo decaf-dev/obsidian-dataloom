@@ -47,9 +47,7 @@ export default function FunctionCell({
 	cellType,
 	onFunctionTypeChange,
 }: Props) {
-	const { menu, isMenuOpen, openMenu, menuRef, closeTopMenu } = useMenu(
-		MenuLevel.ONE
-	);
+	const { menu, isMenuOpen, menuRef, closeTopMenu } = useMenu(MenuLevel.ONE);
 
 	const { triggerPosition, triggerRef } = useMenuTriggerPosition();
 	useShiftMenu(triggerRef, menuRef, isMenuOpen);

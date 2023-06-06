@@ -38,9 +38,7 @@ export default function DateCellEdit({
 	onMenuClose,
 	onDateFormatChange,
 }: Props) {
-	const { menu, isMenuOpen, menuRef, openMenu, closeTopMenu } = useMenu(
-		MenuLevel.TWO
-	);
+	const { menu, isMenuOpen, menuRef, closeTopMenu } = useMenu(MenuLevel.TWO);
 	const { triggerRef, triggerPosition } = useMenuTriggerPosition();
 	useShiftMenu(triggerRef, menuRef, isMenuOpen, {
 		openDirection: "right",

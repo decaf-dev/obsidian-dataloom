@@ -227,13 +227,15 @@ export default function MenuProvider({ children }: Props) {
 
 			//If we have a menu trigger, try to open the menu
 			if (menuTriggerEl) {
-				const menu = findMenuFromTriggerEl(
-					menuTriggerEl as HTMLElement
-				);
+				if (!target.className.includes("NLT__resize-handle")) {
+					const menu = findMenuFromTriggerEl(
+						menuTriggerEl as HTMLElement
+					);
 
-				if (canOpenMenu(menu)) {
-					openMenu(menu);
-					return;
+					if (canOpenMenu(menu)) {
+						openMenu(menu);
+						return;
+					}
 				}
 			}
 

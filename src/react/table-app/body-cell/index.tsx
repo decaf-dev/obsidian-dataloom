@@ -126,16 +126,10 @@ export default function BodyCell({
 		columnType === CellType.MULTI_TAG ||
 		columnType === CellType.DATE;
 
-	const {
-		menu,
-		isMenuOpen,
-		menuCloseRequest,
-		menuRef,
-		openMenu,
-		closeTopMenu,
-	} = useMenu(MenuLevel.ONE, {
-		shouldRequestOnClose,
-	});
+	const { menu, isMenuOpen, menuCloseRequest, menuRef, closeTopMenu } =
+		useMenu(MenuLevel.ONE, {
+			shouldRequestOnClose,
+		});
 	const { triggerPosition, triggerRef } = useMenuTriggerPosition();
 	useShiftMenu(triggerRef, menuRef, isMenuOpen);
 
@@ -145,9 +139,7 @@ export default function BodyCell({
 	const didIsMenuOpenChange = useCompare(isMenuOpen, false);
 	React.useEffect(() => {
 		if (didIsMenuOpenChange) {
-			if (!isMenuOpen) {
-				doCommand(new RowSortCommand());
-			}
+			if (!isMenuOpen) doCommand(new RowSortCommand());
 		}
 	}, [didIsMenuOpenChange, isMenuOpen, doCommand]);
 
@@ -195,7 +187,7 @@ export default function BodyCell({
 		if (columnType === CellType.CHECKBOX) toggleCheckbox();
 	}
 
-	function handleMenuTriggerClick(e: React.MouseEvent) {
+	function handleMenuTriggerClick() {
 		if (columnType === CellType.CHECKBOX) {
 			toggleCheckbox();
 		}
