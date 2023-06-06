@@ -1,7 +1,5 @@
 import { Color } from "src/shared/types/types";
 
-const RED_GRAPHITE_THEME = "Red Graphite";
-
 export const findColorClassName = (
 	isDarkMode: boolean,
 	color: Color

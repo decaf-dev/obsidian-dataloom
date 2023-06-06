@@ -1,4 +1,5 @@
 import { css } from "@emotion/react";
+import { getEmbedContent } from "src/shared/export/cell-content";
 import { useRenderMarkdown } from "src/shared/render/hooks";
 import { isURL } from "src/shared/validators";
 interface Props {
@@ -11,7 +12,7 @@ export default function EmbedCell({ markdown }: Props) {
 	if (markdown !== "") {
 		if (isURL(markdown)) {
 			isValidURL = true;
-			externalLinkMarkdown = `![](${markdown})`;
+			externalLinkMarkdown = getEmbedContent(markdown);
 		} else {
 			externalLinkMarkdown = "Invalid URL";
 		}

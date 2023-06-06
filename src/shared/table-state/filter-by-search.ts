@@ -74,6 +74,7 @@ const doesCellMatch = (
 
 	switch (type) {
 		case CellType.TEXT:
+		case CellType.EMBED:
 		case CellType.FILE:
 		case CellType.NUMBER:
 		case CellType.CHECKBOX:
