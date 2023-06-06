@@ -91,6 +91,6 @@
 
 -   Links
 
-    -   [Lastest release notes](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/6.16.0)
+    -   [Lastest release notes](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/6.17.0)
     -   [Roadmap](https://github.com/users/trey-wallis/projects/2)
     -   [Support the plugin](https://www.buymeacoffee.com/treywallis)
