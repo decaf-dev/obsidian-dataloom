@@ -61,12 +61,14 @@ class NLTEmbeddedPlugin implements PluginValue {
 
 			linkEl.style.backgroundColor = "var(--color-primary)";
 			linkEl.style.cursor = "unset";
-			linkEl.style.padding = "10px 0px";
+			linkEl.style.margin = "0px";
+			linkEl.style.padding = "0px";
 
 			const tableContainerEl = linkEl.createDiv();
 			tableContainerEl.className = "NLT__embedded-container";
 			tableContainerEl.style.height = "100%";
 			tableContainerEl.style.width = "100%";
+			tableContainerEl.style.padding = "10px 0px";
 
 			const appId = uuidv4();
 			this.tableApps.push({
