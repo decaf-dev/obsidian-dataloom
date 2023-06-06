@@ -13,6 +13,8 @@
 
             -   [Text cell](body-cell-text.md)
 
+            -   [Embed cell](body-cell-embed.md)
+
             -   [File cell](body-cell-file.md)
 
             -   [Number cell](body-cell-number.md)

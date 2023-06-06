@@ -2,9 +2,11 @@
 
 A body cell is a cell that is rendered in the `tbody` HTML tag.
 
-There are 10 different types of body cells.
+There are 11 different types of body cells.
 
 -   `Text`
+
+-   `Embed`
 
 -   `File`
 
