@@ -79,5 +79,7 @@ export const getCellContent = (
 			return getTimeCellContent(row.creationTime, column.dateFormat);
 		case CellType.LAST_EDITED_TIME:
 			return getTimeCellContent(row.lastEditedTime, column.dateFormat);
+		default:
+			throw new Error("Unsupported cell type");
 	}
 };
