@@ -108,7 +108,9 @@ const countUnique = (
 				cellType,
 				dateFormat
 			);
-			return cellValues.map((value) => hashString(value));
+			return cellValues
+				.filter((value) => value !== "")
+				.map((value) => hashString(value));
 		})
 		.flat(1);
 	const uniqueHashes = new Set(hashes);
