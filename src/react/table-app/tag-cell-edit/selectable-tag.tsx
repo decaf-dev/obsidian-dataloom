@@ -3,7 +3,7 @@ import TagColorMenu from "src/react/table-app/tag-color-menu";
 import { MenuLevel } from "src/shared/menu/types";
 import { useMenu } from "src/shared/menu/hooks";
 
-import { Button } from "src/react/shared/button";
+import { MenuButton } from "src/react/shared/button";
 import Icon from "src/react/shared/icon";
 import Tag from "src/react/shared/tag";
 import { Color } from "src/shared/types/types";
@@ -27,9 +27,7 @@ export default function SelectableTag({
 	onColorChange,
 	onDeleteClick,
 }: Props) {
-	const { menu, isMenuOpen, menuRef, closeTopMenu, openMenu } = useMenu(
-		MenuLevel.TWO
-	);
+	const { menu, isMenuOpen, menuRef, closeTopMenu } = useMenu(MenuLevel.TWO);
 	const { triggerRef, triggerPosition } = useMenuTriggerPosition();
 	useShiftMenu(triggerRef, menuRef, isMenuOpen, {
 		openDirection: "right",
@@ -59,18 +57,18 @@ export default function SelectableTag({
 					overflow: hidden;
 				`}
 				className="NLT__selectable"
-				onClick={() => onClick(id)}
+				onClick={(e) => {
+					//Only trigger onClick if the click is on the tag and not the menu button
+					if (e.target === triggerRef.current) {
+						onClick(id);
+					}
+				}}
 			>
 				<Tag markdown={markdown} color={color} maxWidth="150px" />
-				<Button
-					icon={<Icon lucideId="more-horizontal" />}
+				<MenuButton
 					isSimple
-					onClick={(e) => {
-						// Prevents a tag from being added when the button is clicked
-						// we just want to open the menu
-						e.stopPropagation();
-						openMenu(menu);
-					}}
+					icon={<Icon lucideId="more-horizontal" />}
+					menu={menu}
 				/>
 			</div>
 			<TagColorMenu

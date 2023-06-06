@@ -66,14 +66,8 @@ export default function HeaderCell({
 	onCurrencyChange,
 	onDateFormatChange,
 }: Props) {
-	const {
-		menu,
-		isMenuOpen,
-		closeTopMenu,
-		menuRef,
-		openMenu,
-		menuCloseRequest,
-	} = useMenu(MenuLevel.ONE, { shouldRequestOnClose: true });
+	const { menu, isMenuOpen, closeTopMenu, menuRef, menuCloseRequest } =
+		useMenu(MenuLevel.ONE, { shouldRequestOnClose: true });
 	const { triggerPosition, triggerRef } = useMenuTriggerPosition();
 	useShiftMenu(triggerRef, menuRef, isMenuOpen);
 
@@ -97,16 +91,6 @@ export default function HeaderCell({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [columnId, shouldUpdateWidth, triggerPosition]);
 
-	function handleMenuTriggerClick() {
-		//If we're resizing a column, then don't open the menu
-		if (resizingColumnId !== null) return;
-		if (isMenuOpen) {
-			closeTopMenu();
-		} else {
-			openMenu(menu);
-		}
-	}
-
 	function handleMenuClose() {
 		closeTopMenu();
 	}
@@ -118,11 +102,7 @@ export default function HeaderCell({
 
 	return (
 		<>
-			<MenuTrigger
-				menuId={menu.id}
-				shouldMenuRequestOnClose={menu.shouldRequestOnClose}
-				onClick={handleMenuTriggerClick}
-			>
+			<MenuTrigger menu={menu} canMenuOpen={resizingColumnId === null}>
 				<div
 					className="NLT__th-container"
 					ref={triggerRef}

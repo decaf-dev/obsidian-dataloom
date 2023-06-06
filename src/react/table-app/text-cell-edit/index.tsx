@@ -18,8 +18,20 @@ import {
 } from "../../shared/suggest-menu/utils";
 import { isSpecialActionDown } from "src/shared/keyboard-event";
 
-import "./styles.css";
 import { getWikiLinkText } from "src/shared/link/link-utils";
+import { css } from "@emotion/react";
+
+const textAreaStyle = css`
+	width: 100%;
+	height: 100%;
+	border: 0;
+	border-radius: 0;
+	overflow: hidden;
+	padding: var(--nlt-cell-spacing-x) var(--nlt-cell-spacing-y);
+	resize: none;
+	font-size: var(--font-ui-medium);
+	transition: none !important;
+`;
 
 interface Props {
 	menuCloseRequest: MenuCloseRequest | null;
@@ -107,9 +119,7 @@ export default function TextCellEdit({
 			if (
 				isSurroundedByDoubleBrackets(newValue, inputEl.selectionStart)
 			) {
-				if (!isMenuOpen) {
-					openMenu(menu);
-				}
+				if (!isMenuOpen) openMenu(menu);
 			}
 
 			if (inputEl.selectionStart)
@@ -144,14 +154,27 @@ export default function TextCellEdit({
 
 	return (
 		<>
-			<div className="NLT__text-cell-edit" ref={triggerRef}>
+			<div
+				className="NLT__text-cell-edit"
+				ref={triggerRef}
+				css={css`
+					width: 100%;
+					height: 100%;
+				`}
+			>
 				<textarea
 					autoFocus
-					css={overflowStyle}
+					css={css`
+						${textAreaStyle}
+						${overflowStyle}
+					`}
 					ref={inputRef}
 					value={localValue}
 					onKeyDown={handleKeyDown}
 					onChange={handleTextareaChange}
+					onBlur={(e) => {
+						e.target.classList.add("NLT__blur");
+					}}
 				/>
 			</div>
 			<SuggestMenu

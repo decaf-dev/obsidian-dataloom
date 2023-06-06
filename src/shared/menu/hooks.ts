@@ -9,7 +9,6 @@ export const useMenu = (
 		shouldRequestOnClose?: boolean;
 	}
 ) => {
-	const { shouldRequestOnClose = false } = options || {};
 	const [id] = React.useState("m" + uuidv4());
 	const menuRef = React.useRef<HTMLDivElement>(null);
 
@@ -21,6 +20,8 @@ export const useMenu = (
 		closeAllMenus,
 	} = useMenuContext();
 	const isOpen = openMenus.find((menu) => menu.id === id) ? true : false;
+
+	const { shouldRequestOnClose = false } = options || {};
 
 	const menu: Menu = React.useMemo(() => {
 		return { id, level, shouldRequestOnClose };

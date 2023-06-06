@@ -38,9 +38,7 @@ export default function DateCellEdit({
 	onMenuClose,
 	onDateFormatChange,
 }: Props) {
-	const { menu, isMenuOpen, menuRef, openMenu, closeTopMenu } = useMenu(
-		MenuLevel.TWO
-	);
+	const { menu, isMenuOpen, menuRef, closeTopMenu } = useMenu(MenuLevel.TWO);
 	const { triggerRef, triggerPosition } = useMenuTriggerPosition();
 	useShiftMenu(triggerRef, menuRef, isMenuOpen, {
 		openDirection: "right",
@@ -128,6 +126,8 @@ export default function DateCellEdit({
 							css={css`
 								width: 100%;
 								height: 100%;
+								transition: none !improtant;
+								border-radius: 0px;
 								border: 1px solid var(--table-border-color);
 								padding: 5px;
 								background-color: var(--background-secondary);
@@ -139,10 +139,7 @@ export default function DateCellEdit({
 							onChange={(e) => setLocalValue(e.target.value)}
 						/>
 					</Padding>
-					<MenuTrigger
-						menuId={menu.id}
-						onClick={() => openMenu(menu)}
-					>
+					<MenuTrigger menu={menu}>
 						<MenuItem
 							name="Date format"
 							value={getDisplayNameForDateFormat(dateFormat)}

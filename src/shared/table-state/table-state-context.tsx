@@ -10,7 +10,7 @@ import {
 	isWindowsRedoDown,
 	isWindowsUndoDown,
 } from "../keyboard-event";
-import { eventSystem } from "../event-system/event-system";
+import { nltEventSystem } from "../event-system/event-system";
 import { useMountContext } from "../view-context";
 
 interface Props {
@@ -128,9 +128,9 @@ export default function TableStateProvider({
 		}
 
 		const throttleKeyDownEvent = _.throttle(handleKeyDown, 40);
-		eventSystem.addEventListener("keydown", throttleKeyDownEvent);
+		nltEventSystem.addEventListener("keydown", throttleKeyDownEvent);
 		return () => {
-			eventSystem.removeEventListener("keydown", throttleKeyDownEvent);
+			nltEventSystem.removeEventListener("keydown", throttleKeyDownEvent);
 		};
 	}, [redo, undo]);
 

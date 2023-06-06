@@ -56,6 +56,7 @@ export default function ResizeContainer({
 	return (
 		<div css={containerStyle}>
 			<div
+				className="NLT__resize-handle"
 				css={[innerStyle, isDragging && dragStyle]}
 				onMouseDown={(e) => {
 					onMenuClose();
@@ -63,9 +64,6 @@ export default function ResizeContainer({
 				}}
 				onTouchStart={handleTouchStart}
 				onClick={(e) => {
-					//Stop propagation so we don't open the header
-					e.stopPropagation();
-
 					//If the user is double clicking then set width to max
 					if (e.detail === 2) onWidthChange(columnId, "unset");
 				}}

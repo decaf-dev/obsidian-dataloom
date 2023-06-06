@@ -40,7 +40,9 @@ const DateFormatMenu = React.forwardRef<HTMLDivElement, Props>(
 							key={format}
 							name={getDisplayNameForDateFormat(format)}
 							isSelected={value === format}
-							onClick={() => onChange(format)}
+							onClick={() => {
+								onChange(format);
+							}}
 						/>
 					))}
 				</div>

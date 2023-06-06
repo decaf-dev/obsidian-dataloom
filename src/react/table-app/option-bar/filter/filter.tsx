@@ -32,9 +32,7 @@ export default function Filter({
 	onTextChange,
 	onTagsChange,
 }: Props) {
-	const { menu, menuRef, isMenuOpen, openMenu, closeTopMenu } = useMenu(
-		MenuLevel.ONE
-	);
+	const { menu, menuRef, isMenuOpen } = useMenu(MenuLevel.ONE);
 	const { triggerRef, triggerPosition } = useMenuTriggerPosition();
 	useShiftMenu(triggerRef, menuRef, isMenuOpen, {
 		openDirection: "left",
@@ -52,22 +50,10 @@ export default function Filter({
 		}
 	}, [previousLength, filterRules.length, menuRef]);
 
-	function handleClick() {
-		if (isMenuOpen) {
-			closeTopMenu();
-		} else {
-			openMenu(menu);
-		}
-	}
-
 	return (
 		<>
 			<div ref={triggerRef}>
-				<MenuButton
-					isLink
-					menuId={menu.id}
-					onClick={() => handleClick()}
-				>
+				<MenuButton isLink menu={menu}>
 					Filter
 				</MenuButton>
 			</div>
