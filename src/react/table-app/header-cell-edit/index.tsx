@@ -120,19 +120,19 @@ const HeaderMenu = React.forwardRef<HTMLDivElement, Props>(function HeaderMenu(
 	function handleAspectRatioClick(value: AspectRatio) {
 		onAspectRatioClick(columnId, value);
 		onMenuClose();
-		setSubmenu(null);
+		setSubmenu(SubmenuType.OPTIONS);
 	}
 
 	function handleHorizontalPaddingClick(value: PaddingSize) {
 		onHorizontalPaddingClick(columnId, value);
 		onMenuClose();
-		setSubmenu(null);
+		setSubmenu(SubmenuType.OPTIONS);
 	}
 
 	function handleVerticalPaddingClick(value: PaddingSize) {
 		onVerticalPaddingClick(columnId, value);
 		onMenuClose();
-		setSubmenu(null);
+		setSubmenu(SubmenuType.OPTIONS);
 	}
 
 	function handleTypeClick(type: CellType) {
