@@ -14,6 +14,7 @@ class EventSystem {
 			priority,
 		});
 		// Sort in descending order by priority
+		//The higher priority goes first
 		this.eventListeners.sort((a, b) => b.priority - a.priority);
 	}
 
@@ -33,4 +34,4 @@ class EventSystem {
 	}
 }
 
-export const eventSystem = new EventSystem();
+export const nltEventSystem = new EventSystem();

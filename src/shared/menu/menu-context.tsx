@@ -18,7 +18,7 @@ import {
 	isWindowsRedoDown,
 	isWindowsUndoDown,
 } from "../keyboard-event";
-import { eventSystem } from "../event-system/event-system";
+import { nltEventSystem } from "../event-system/event-system";
 import {
 	moveFocusDown,
 	moveFocusLeft,
@@ -68,6 +68,8 @@ export default function MenuProvider({ children }: Props) {
 	 */
 	const [openMenus, setOpenMenus] = React.useState<Menu[]>([]);
 
+	const [lastMenuOpenTime, setLastMenuOpenTime] = React.useState(0);
+
 	const [menuCloseRequest, setMenuCloseRequest] =
 		React.useState<MenuCloseRequest | null>(null);
 
@@ -83,6 +85,18 @@ export default function MenuProvider({ children }: Props) {
 		return openMenus.length !== 0;
 	}, [openMenus]);
 
+	const canOpenMenu = React.useCallback(
+		(menu: Menu) => {
+			//A user can open a menu when no other menu is open or if the menu is a higher level
+			//than the current one
+			return (
+				openMenus.find((m) => m.level < menu.level) ||
+				openMenus.length === 0
+			);
+		},
+		[openMenus]
+	);
+
 	/**
 	 * Opens a menu.
 	 * There must be 0 open menus or the menu must be a higher level than the current one for the menu to be opened
@@ -90,15 +104,10 @@ export default function MenuProvider({ children }: Props) {
 	 */
 	const openMenu = React.useCallback(
 		(menu: Menu) => {
-			//A user can open a menu when no other menu is open or if the menu is a higher level
-			//than the current one
-			const canOpen =
-				openMenus.find((m) => m.level < menu.level) ||
-				openMenus.length === 0;
-
-			if (!canOpen) return;
+			if (!canOpenMenu(menu)) return;
 
 			setOpenMenus((prev) => [...prev, menu]);
+			setLastMenuOpenTime(Date.now());
 
 			//When we close a menu, we add the focus class to the parent element.
 			//If we then click on another menu, we will remove the focus class. Without this,
@@ -179,65 +188,86 @@ export default function MenuProvider({ children }: Props) {
 		[openMenus, closeTopMenu]
 	);
 
+	const findMenuFromTriggerEl = React.useCallback(
+		(triggerEl: HTMLElement) => {
+			const menuId = triggerEl.getAttribute("data-menu-id");
+			const shouldRequestOnClose = triggerEl.getAttribute(
+				"data-menu-should-request-on-close"
+			);
+			const level = triggerEl.getAttribute("data-menu-level");
+			if (!menuId || !level || !shouldRequestOnClose)
+				throw Error("Missing menu params");
+			return {
+				id: menuId,
+				shouldRequestOnClose: shouldRequestOnClose === "true",
+				level: parseInt(level),
+			};
+		},
+		[]
+	);
+
+	const openMenuFromFocusedTrigger = React.useCallback(() => {
+		const focusedEl = document.activeElement as HTMLElement;
+		if (!focusedEl) return;
+		if (!focusedEl.className.includes("NLT__focusable")) return;
+
+		const menu = findMenuFromTriggerEl(focusedEl);
+		if (menu) openMenu(menu);
+	}, [openMenu, findMenuFromTriggerEl]);
+
 	React.useEffect(() => {
 		function handleClick(e: MouseEvent) {
-			if (isMenuOpen()) {
-				const menu = openMenus.last();
-				if (!menu) throw new Error("Menu is open but no menu exists");
+			const target = e.target as HTMLElement;
 
-				const { id } = menu;
-				const target = e.target as HTMLElement;
-				//If the menu is not mounted, we don't need to do anything
-				//This can happen when a menu changes
-				const isElementMounted = document.contains(target);
-				if (!isElementMounted) return;
+			//If we clicked on the link for a file or tag, return
+			// if (el.nodeName === "A") return;
 
-				//If we're clicking on the menu then don't close
-				if (target.closest(`.NLT__menu[data-id="${id}"]`)) return;
+			//Check for menu trigger
+			const menuTriggerEl = target.closest(".NLT__focusable");
 
-				//The event will propagate from the menu trigger to the document
-				//If we don't have this check, then we will close the menu when we click on the trigger
-				if (target.closest(`.NLT__focusable[data-menu-id="${id}"]`))
+			//If we have a menu trigger, try to open the menu
+			if (menuTriggerEl) {
+				const menu = findMenuFromTriggerEl(
+					menuTriggerEl as HTMLElement
+				);
+
+				if (canOpenMenu(menu)) {
+					openMenu(menu);
 					return;
-
-				//If we're highlighting text then don't close the menu
-				if (isTextHighlighted.current) return;
-
-				requestCloseTopMenu("click");
-			} else {
-				removeFocusVisibleClass();
-			}
-		}
-
-		function openMenuFromFocusedTrigger() {
-			const focusedEl = document.activeElement as HTMLElement;
-			if (focusedEl) {
-				if (focusedEl.className.includes("NLT__focusable")) {
-					const menuId = focusedEl.getAttribute("data-menu-id");
-					const shouldRequestOnClose = focusedEl.getAttribute(
-						"data-menu-should-request-on-close"
-					);
-
-					//If this is a MenuTrigger element, then open the menu
-					if (menuId && shouldRequestOnClose)
-						openMenu({
-							id: menuId,
-							level: MenuLevel.ONE,
-							shouldRequestOnClose:
-								shouldRequestOnClose === "true",
-						});
 				}
 			}
+
+			if (!isMenuOpen()) {
+				removeFocusVisibleClass();
+				return;
+			}
+
+			const menu = openMenus.last();
+			if (!menu) return;
+
+			const { id } = menu;
+
+			//If the menu is not mounted, we don't need to do anything
+			//This can happen when a menu changes
+			const isElementMounted = document.contains(target);
+			if (!isElementMounted) return;
+
+			//If we're clicking on the menu then don't close
+			if (target.closest(`.NLT__menu[data-id="${id}"]`)) return;
+
+			//If we're highlighting text then don't close the menu
+			if (isTextHighlighted.current) return;
+
+			requestCloseTopMenu("click");
 		}
 
-		function handleMouseDown() {
-			isTextHighlighted.current = false;
-		}
+		//We add a priority of 1, because we want the menu trigger to always
+		//run first
+		nltEventSystem.addEventListener("click", handleClick, 2);
+		return () => nltEventSystem.removeEventListener("click", handleClick);
+	}, [isMenuOpen, openMenus, requestCloseTopMenu]);
 
-		function handleSelectionChange() {
-			isTextHighlighted.current = isTextSelected();
-		}
-
+	React.useEffect(() => {
 		function handleEnterDown(e: KeyboardEvent) {
 			const target = e.target as HTMLElement;
 
@@ -264,7 +294,10 @@ export default function MenuProvider({ children }: Props) {
 		}
 
 		function handleEscapeDown() {
-			if (isMenuOpen()) closeTopMenu();
+			if (isMenuOpen()) {
+				closeTopMenu();
+				return;
+			}
 		}
 
 		function handleTabDown(e: KeyboardEvent) {
@@ -362,28 +395,43 @@ export default function MenuProvider({ children }: Props) {
 					break;
 			}
 		}
-
-		//We add a priority of 2, because we want the menu trigger to always
-		//run first
-		eventSystem.addEventListener("click", handleClick, 2);
-		eventSystem.addEventListener("keydown", handleKeyDown);
-		eventSystem.addEventListener("mousedown", handleMouseDown);
-		eventSystem.addEventListener("selectionchange", handleSelectionChange);
-		return () => {
-			eventSystem.removeEventListener("click", handleClick);
-			eventSystem.removeEventListener("keydown", handleKeyDown);
-			eventSystem.removeEventListener("mousedown", handleMouseDown);
-			eventSystem.removeEventListener("mouseup", handleSelectionChange);
-		};
+		nltEventSystem.addEventListener("keydown", handleKeyDown);
+		return () =>
+			nltEventSystem.removeEventListener("keydown", handleKeyDown);
 	}, [
 		isMenuOpen,
 		closeTopMenu,
 		openMenu,
 		requestCloseTopMenu,
+		openMenuFromFocusedTrigger,
 		openMenus,
 		appId,
 		tableState,
+		lastMenuOpenTime,
 	]);
+
+	React.useEffect(() => {
+		function handleMouseDown() {
+			isTextHighlighted.current = false;
+		}
+
+		function handleSelectionChange() {
+			isTextHighlighted.current = isTextSelected();
+		}
+
+		nltEventSystem.addEventListener("mousedown", handleMouseDown);
+		nltEventSystem.addEventListener(
+			"selectionchange",
+			handleSelectionChange
+		);
+		return () => {
+			nltEventSystem.removeEventListener("mousedown", handleMouseDown);
+			nltEventSystem.removeEventListener(
+				"mouseup",
+				handleSelectionChange
+			);
+		};
+	}, []);
 
 	return (
 		<MenuContext.Provider

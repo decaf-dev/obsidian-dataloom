@@ -1,43 +1,24 @@
 import { css } from "@emotion/react";
+import { Menu } from "src/shared/menu/types";
 import React from "react";
-import { eventSystem } from "src/shared/event-system/event-system";
-import { useUUID } from "src/shared/hooks";
 
 interface Props {
 	canMenuOpen?: boolean;
-	shouldMenuRequestOnClose?: boolean;
-	menuId: string;
+	menu: Menu;
 	children: React.ReactNode;
-	onClick: (e: MouseEvent) => void;
 	onEnterDown?: () => void;
 	onBackspaceDown?: () => void;
+	onClick?: (e: React.MouseEvent) => void;
 }
 
 const MenuTrigger = ({
 	canMenuOpen = true,
-	shouldMenuRequestOnClose = false,
+	menu,
 	children,
-	menuId,
-	onClick,
 	onEnterDown,
 	onBackspaceDown,
+	onClick,
 }: Props) => {
-	const id = useUUID();
-
-	React.useEffect(() => {
-		function handleClick(e: MouseEvent) {
-			const target = e.target as HTMLElement;
-			//If we're clicking on this element
-			if (target.closest(`.NLT__focusable[data-id="${id}"]`)) onClick(e);
-		}
-
-		eventSystem.addEventListener("click", handleClick, 1);
-
-		return () => {
-			eventSystem.removeEventListener("click", handleClick);
-		};
-	}, [id, onClick]);
-
 	function handleKeyDown(e: React.KeyboardEvent) {
 		if (e.key === "Enter") {
 			onEnterDown?.();
@@ -46,18 +27,25 @@ const MenuTrigger = ({
 		}
 	}
 
+	function handleClick(e: React.MouseEvent) {
+		onClick?.(e);
+	}
+
+	const { id, level, shouldRequestOnClose } = menu;
+
 	return (
 		<div
-			tabIndex={0}
-			data-id={id}
-			data-menu-id={canMenuOpen ? menuId : undefined}
-			data-menu-should-request-on-close={shouldMenuRequestOnClose}
 			className="NLT__focusable"
 			css={css`
 				width: 100%;
 				height: 100%;
 			`}
+			tabIndex={0}
+			data-menu-id={canMenuOpen ? id : undefined}
+			data-menu-level={canMenuOpen ? level : undefined}
+			data-menu-should-request-on-close={shouldRequestOnClose}
 			onKeyDown={handleKeyDown}
+			onClick={handleClick}
 		>
 			{children}
 		</div>

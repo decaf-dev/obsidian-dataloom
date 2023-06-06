@@ -170,7 +170,7 @@ export default function BodyCell({
 		}
 	}
 
-	function handleBackspaceDown() {
+	function handleMenuTriggerBackspaceDown() {
 		if (
 			columnType === CellType.TEXT ||
 			columnType === CellType.EMBED ||
@@ -191,23 +191,14 @@ export default function BodyCell({
 		}
 	}
 
-	function handleEnterDown() {
+	function handleMenuTriggerEnterDown() {
 		if (columnType === CellType.CHECKBOX) toggleCheckbox();
 	}
 
-	function handleMenuTriggerClick(e: MouseEvent) {
-		if (columnType === CellType.CREATION_TIME) return;
-		if (columnType === CellType.LAST_EDITED_TIME) return;
-
+	function handleMenuTriggerClick(e: React.MouseEvent) {
 		if (columnType === CellType.CHECKBOX) {
 			toggleCheckbox();
-			return;
 		}
-
-		const el = e.target as HTMLInputElement;
-		//If we clicked on the link for a file or tag, return
-		if (el.nodeName === "A") return;
-		openMenu(menu);
 	}
 
 	function handleTagAdd(markdown: string, color: Color) {
@@ -300,11 +291,10 @@ export default function BodyCell({
 	return (
 		<>
 			<MenuTrigger
-				menuId={menu.id}
+				menu={menu}
 				onClick={handleMenuTriggerClick}
-				shouldMenuRequestOnClose={menu.shouldRequestOnClose}
-				onEnterDown={handleEnterDown}
-				onBackspaceDown={handleBackspaceDown}
+				onEnterDown={handleMenuTriggerEnterDown}
+				onBackspaceDown={handleMenuTriggerBackspaceDown}
 				canMenuOpen={
 					columnType !== CellType.CHECKBOX &&
 					columnType !== CellType.CREATION_TIME &&

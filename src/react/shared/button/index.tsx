@@ -1,36 +1,34 @@
 import React from "react";
 
-import "./styles.css";
 import { css } from "@emotion/react";
+import "./styles.css";
+import { Menu } from "src/shared/menu/types";
+import { getButtonClassName } from "./utils";
 
-interface InternalButtonProps {
-	menuId?: string;
+interface ButtonProps {
 	isLink?: boolean;
-	shouldMenuRequestOnClose?: boolean;
 	isSimple?: boolean;
 	ariaLabel?: string;
 	icon?: React.ReactNode;
 	children?: React.ReactNode;
 	onClick: (e: React.MouseEvent) => void;
 	onMouseDown?: (e: React.MouseEvent) => void;
-	onTouchStart?: (e: React.TouchEvent) => void;
 }
 
-const InternalButton = ({
+export const Button = ({
 	isLink,
 	children,
 	ariaLabel = "",
-	shouldMenuRequestOnClose,
 	icon,
-	menuId,
 	isSimple,
 	onClick,
 	onMouseDown,
-}: InternalButtonProps) => {
-	let className = "NLT__button NLT__focusable";
-	if (icon !== undefined) className += " NLT__button--icon";
-	if (isSimple) className += " NLT__button--simple";
-	if (isLink) className += " NLT__button--link";
+}: ButtonProps) => {
+	const className = getButtonClassName({
+		isLink,
+		isSimple,
+		hasIcon: icon !== undefined,
+	});
 
 	return (
 		<button
@@ -39,50 +37,28 @@ const InternalButton = ({
 				width: max-content !important;
 			`}
 			aria-label={ariaLabel}
-			data-menu-id={menuId}
-			data-menu-should-request-on-close={shouldMenuRequestOnClose}
-			onClick={onClick}
 			onMouseDown={onMouseDown}
+			onClick={onClick}
 		>
 			{icon !== undefined ? icon : children}
 		</button>
 	);
 };
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface ButtonProps
-	extends Omit<Omit<InternalButtonProps, "menuId">, "shouldRequestOnClose"> {}
-
-interface MenuButtonProps extends InternalButtonProps {
-	menuId: string;
+interface MenuButtonProps {
+	menu: Menu;
+	isLink?: boolean;
+	isSimple?: boolean;
+	ariaLabel?: string;
+	icon?: React.ReactNode;
+	children?: React.ReactNode;
+	onClick?: (e: React.MouseEvent) => void;
+	onMouseDown?: (e: React.MouseEvent) => void;
 }
 
-export const Button = ({
-	isSimple,
-	isLink,
-	ariaLabel,
-	icon,
-	children,
-	onClick,
-	onMouseDown,
-}: ButtonProps) => {
-	return (
-		<InternalButton
-			isLink={isLink}
-			isSimple={isSimple}
-			ariaLabel={ariaLabel}
-			icon={icon}
-			children={children}
-			onClick={onClick}
-			onMouseDown={onMouseDown}
-		/>
-	);
-};
-
 export const MenuButton = ({
-	menuId,
+	menu,
 	isLink = false,
-	shouldMenuRequestOnClose = false,
 	isSimple,
 	ariaLabel,
 	icon,
@@ -90,17 +66,36 @@ export const MenuButton = ({
 	onClick,
 	onMouseDown,
 }: MenuButtonProps) => {
+	const { id, level, shouldRequestOnClose } = menu;
+
+	function handleMouseDown(e: React.MouseEvent) {
+		onMouseDown?.(e);
+	}
+
+	function handleClick(e: React.MouseEvent) {
+		onClick?.(e);
+	}
+
+	const className = getButtonClassName({
+		isLink,
+		isSimple,
+		hasIcon: icon !== undefined,
+	});
+
 	return (
-		<InternalButton
-			isLink={isLink}
-			menuId={menuId}
-			shouldMenuRequestOnClose={shouldMenuRequestOnClose}
-			isSimple={isSimple}
-			ariaLabel={ariaLabel}
-			icon={icon}
-			children={children}
-			onClick={onClick}
-			onMouseDown={onMouseDown}
-		/>
+		<button
+			className={className}
+			css={css`
+				width: max-content !important;
+			`}
+			aria-label={ariaLabel}
+			data-menu-id={id}
+			data-menu-level={level}
+			data-menu-should-request-on-close={shouldRequestOnClose}
+			onMouseDown={handleMouseDown}
+			onClick={handleClick}
+		>
+			{icon !== undefined ? icon : children}
+		</button>
 	);
 };

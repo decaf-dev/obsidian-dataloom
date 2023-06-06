@@ -139,10 +139,7 @@ export default function DateCellEdit({
 							onChange={(e) => setLocalValue(e.target.value)}
 						/>
 					</Padding>
-					<MenuTrigger
-						menuId={menu.id}
-						onClick={() => openMenu(menu)}
-					>
+					<MenuTrigger menu={menu}>
 						<MenuItem
 							name="Date format"
 							value={getDisplayNameForDateFormat(dateFormat)}

@@ -52,22 +52,10 @@ export default function Filter({
 		}
 	}, [previousLength, filterRules.length, menuRef]);
 
-	function handleClick() {
-		if (isMenuOpen) {
-			closeTopMenu();
-		} else {
-			openMenu(menu);
-		}
-	}
-
 	return (
 		<>
 			<div ref={triggerRef}>
-				<MenuButton
-					isLink
-					menuId={menu.id}
-					onClick={() => handleClick()}
-				>
+				<MenuButton isLink menu={menu}>
 					Filter
 				</MenuButton>
 			</div>

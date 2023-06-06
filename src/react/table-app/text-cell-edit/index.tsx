@@ -107,9 +107,7 @@ export default function TextCellEdit({
 			if (
 				isSurroundedByDoubleBrackets(newValue, inputEl.selectionStart)
 			) {
-				if (!isMenuOpen) {
-					openMenu(menu);
-				}
+				if (!isMenuOpen) openMenu(menu);
 			}
 
 			if (inputEl.selectionStart)

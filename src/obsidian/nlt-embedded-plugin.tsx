@@ -6,7 +6,6 @@ import { serializeTableState } from "src/data/serialize-table-state";
 import { deserializeTableState } from "src/data/serialize-table-state";
 import { NotionLikeTable } from "src/react/table-app";
 import { store } from "src/redux/global/store";
-import { eventSystem } from "src/shared/event-system/event-system";
 import { EVENT_REFRESH_TABLES } from "src/shared/events";
 import { TableState } from "src/shared/types/types";
 import _ from "lodash";
@@ -18,6 +17,7 @@ import {
 	removeEmbeddedLinkChildren,
 } from "./utils";
 import { v4 as uuidv4 } from "uuid";
+import { nltEventSystem } from "src/shared/event-system/event-system";
 
 class NLTEmbeddedPlugin implements PluginValue {
 	private tableApps: {
@@ -96,11 +96,11 @@ class NLTEmbeddedPlugin implements PluginValue {
 		 * between the embedded link and the container when we stop propagation.
 		 */
 		activeView.containerEl.addEventListener("click", (e) => {
-			eventSystem.dispatchEvent("click", e);
+			nltEventSystem.dispatchEvent("click", e);
 		});
 		containerEl.addEventListener("click", (e) => {
 			e.stopPropagation();
-			eventSystem.dispatchEvent("click", e);
+			nltEventSystem.dispatchEvent("click", e);
 		});
 
 		//Get the table state

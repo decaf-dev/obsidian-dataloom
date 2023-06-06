@@ -1,6 +1,6 @@
 import React from "react";
 
-import { eventSystem } from "./event-system";
+import { nltEventSystem } from "./event-system";
 import { useMountContext } from "../view-context";
 import { NLTView } from "src/obsidian/nlt-view";
 import { isEventForThisApp } from "./utils";
@@ -11,26 +11,26 @@ export const useEventSystem = () => {
 	React.useEffect(() => {
 		function handleMouseUp(e: MouseEvent) {
 			if (isEventForThisApp(appId))
-				eventSystem.dispatchEvent("mouseup", e);
+				nltEventSystem.dispatchEvent("mouseup", e);
 		}
 		function handleMouseDown(e: MouseEvent) {
 			if (isEventForThisApp(appId))
-				eventSystem.dispatchEvent("mousedown", e);
+				nltEventSystem.dispatchEvent("mousedown", e);
 		}
 
 		function handleKeyDown(e: KeyboardEvent) {
 			if (isEventForThisApp(appId))
-				eventSystem.dispatchEvent("keydown", e);
+				nltEventSystem.dispatchEvent("keydown", e);
 		}
 
 		function handleClick(e: KeyboardEvent) {
 			if (isEventForThisApp(appId, true))
-				eventSystem.dispatchEvent("click", e);
+				nltEventSystem.dispatchEvent("click", e);
 		}
 
 		function handleSelectionChange(e: MouseEvent) {
 			if (isEventForThisApp(appId))
-				eventSystem.dispatchEvent("selectionchange", e);
+				nltEventSystem.dispatchEvent("selectionchange", e);
 		}
 
 		//The markdown view has its click handler set on the embedded link

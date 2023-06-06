@@ -29,14 +29,6 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 		useDragContext();
 	const { tableState, setTableState } = useTableState();
 
-	function handleClick() {
-		if (isMenuOpen) {
-			closeTopMenu();
-		} else {
-			openMenu(menu);
-		}
-	}
-
 	function handleDeleteClick(rowId: string) {
 		onDeleteClick(rowId);
 		closeTopMenu();
@@ -180,10 +172,9 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 					onTouchCancel={handleTouchCancel}
 				>
 					<MenuButton
-						menuId={menu.id}
+						menu={menu}
 						icon={<Icon lucideId="grip-vertical" />}
 						ariaLabel="Drag to move or click to open"
-						onClick={handleClick}
 						onMouseDown={handleMouseDown}
 					/>
 				</div>
