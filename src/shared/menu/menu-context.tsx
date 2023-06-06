@@ -241,12 +241,8 @@ export default function MenuProvider({ children }: Props) {
 		function handleClick(e: MouseEvent) {
 			const target = e.target as HTMLElement;
 
-			console.log("HERE 0");
-
 			//Attempt to open a menu
 			if (attemptToOpenMenu(target)) return;
-
-			console.log("HERE 1");
 
 			//Otherwise remove the focus visible class if no menu is open
 			if (!isMenuOpen()) {
@@ -254,23 +250,22 @@ export default function MenuProvider({ children }: Props) {
 				return;
 			}
 
-			console.log("HERE 2");
+			//This can happen when we click on a menu item that opens a submenu
+			//in the column menu
+			const isElementMounted = document.contains(target);
+			if (!isElementMounted) return;
 
 			//Otherwise close the top menu
 			const menu = openMenus.last();
 			if (!menu) return;
 
 			const { id } = menu;
-			console.log("HERE 3");
 
-			console.log(menu);
 			//If we're clicking on the menu then don't close
 			if (target.closest(`.NLT__menu[data-id="${id}"]`)) return;
-			console.log("HERE 4");
 
 			//If we're highlighting text then don't close
 			if (isTextHighlighted.current) return;
-			console.log("HERE 5");
 
 			requestCloseTopMenu("click");
 		}
