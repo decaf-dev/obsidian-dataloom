@@ -69,7 +69,13 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 						{row.cells.map((cell) => {
 							const { id, content } = cell;
 							return (
-								<td key={id} className="NLT__footer-td">
+								<td
+									key={id}
+									className="NLT__footer-td"
+									css={css`
+										padding: 0px;
+									`}
+								>
 									{content}
 								</td>
 							);
