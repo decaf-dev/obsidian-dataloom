@@ -1,6 +1,7 @@
 .NLT__p {
     white-space: nowrap;
     margin: 0;
+    color: var(--text-normal);
 }
 
 .NLT__text-muted {
