@@ -1,5 +1,4 @@
 import { css } from "@emotion/react";
-import { getTableBackgroundColor } from "src/shared/color";
 import { useDragContext } from "src/shared/dragging/drag-context";
 import { useTableState } from "src/shared/table-state/table-state-context";
 
@@ -187,8 +186,6 @@ export default function TableHeaderCell({
 		removeDragHover();
 	}
 
-	const tableBackgroundColor = getTableBackgroundColor();
-
 	return (
 		<th
 			data-column-id={columnId}
@@ -200,7 +197,7 @@ export default function TableHeaderCell({
 				font-weight: 400;
 				overflow: visible;
 				text-align: start;
-				background-color: ${tableBackgroundColor};
+				background-color: var(--table-header-background);
 				position: sticky;
 				top: 0;
 				z-index: 1;
