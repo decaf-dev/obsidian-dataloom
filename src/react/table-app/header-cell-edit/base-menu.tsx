@@ -7,7 +7,7 @@ import { SubmenuType } from "./types";
 import { useInputSelection } from "src/shared/hooks";
 import { getDisplayNameForCellType } from "src/shared/table-state/display-name";
 import { css } from "@emotion/react";
-import { getTableBackgroundColor, getTableBorderColor } from "src/shared/color";
+import { getTableBackgroundColor } from "src/shared/color";
 import React from "react";
 import Flex from "src/react/shared/flex";
 import Switch from "src/react/shared/switch";
@@ -67,7 +67,7 @@ export default function BaseMenu({
 	}
 
 	const tableBackgroundColor = getTableBackgroundColor();
-	const tableBorderColor = getTableBorderColor();
+
 	const hasOptions =
 		columnType === CellType.DATE ||
 		columnType === CellType.CURRENCY ||
@@ -82,7 +82,7 @@ export default function BaseMenu({
 						autoFocus
 						css={css`
 							background-color: ${tableBackgroundColor};
-							border: 1px solid ${tableBorderColor};
+							border: 1px solid var(--table-border-color);
 							padding: 4px 10px;
 							font-size: 0.95rem;
 							width: 100%;

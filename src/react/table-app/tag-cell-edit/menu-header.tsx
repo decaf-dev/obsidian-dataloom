@@ -3,7 +3,7 @@ import { Tag as TagType } from "src/shared/types/types";
 import Tag from "src/react/shared/tag";
 import Wrap from "src/react/shared/wrap";
 
-import { getTableBackgroundColor, getTableBorderColor } from "src/shared/color";
+import { getTableBackgroundColor } from "src/shared/color";
 import React from "react";
 
 interface MenuHeaderProps {
@@ -28,13 +28,12 @@ export default function MenuHeader({
 	}
 
 	const tableBackgroundColor = getTableBackgroundColor();
-	const tableBorderColor = getTableBorderColor();
 
 	return (
 		<div
 			css={css`
 				background-color: ${tableBackgroundColor};
-				border-bottom: 1px solid ${tableBorderColor};
+				border-bottom: 1px solid var(--table-border-color);
 				padding: 4px 10px;
 			`}
 		>
