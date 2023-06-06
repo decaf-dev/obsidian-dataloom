@@ -1,6 +1,7 @@
 import { randomColor } from "src/shared/color";
 import { CURRENT_PLUGIN_VERSION } from "./constants";
 import {
+	AspectRatio,
 	BodyCell,
 	BodyRow,
 	CellType,
@@ -14,6 +15,7 @@ import {
 	GeneralFunction,
 	HeaderCell,
 	HeaderRow,
+	PaddingSize,
 	SortDir,
 	TableState,
 	Tag,
@@ -36,6 +38,9 @@ export const createColumn = (options?: { cellType?: CellType }): Column => {
 		shouldWrapOverflow: false,
 		tags: [],
 		functionType: GeneralFunction.NONE,
+		aspectRatio: AspectRatio.SIXTEEN_BY_NINE,
+		horizontalPadding: PaddingSize.UNSET,
+		verticalPadding: PaddingSize.UNSET,
 	};
 };
 
