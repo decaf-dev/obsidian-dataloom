@@ -6,7 +6,7 @@ import fuzzysort from "fuzzysort";
 import SuggestItem from "./suggest-item";
 import { filterUniqueStrings } from "./utils";
 import { css } from "@emotion/react";
-import { eventSystem } from "src/shared/event-system/event-system";
+import { nltEventSystem } from "src/shared/event-system/event-system";
 
 interface ContentProps {
 	showInput?: boolean;
@@ -83,8 +83,9 @@ export default function SuggestMenuContent({
 			}
 		}
 
-		eventSystem.addEventListener("keydown", handleKeyDown);
-		return () => eventSystem.removeEventListener("keydown", handleKeyDown);
+		nltEventSystem.addEventListener("keydown", handleKeyDown);
+		return () =>
+			nltEventSystem.removeEventListener("keydown", handleKeyDown);
 	}, [filteredFiles.length]);
 
 	const fileNames = filteredFiles.map((file) => file.name);

@@ -106,6 +106,10 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 								padding: 0;
 								overflow: visible;
 								vertical-align: top;
+								color: var(
+									--text-normal
+								); //Prevents hover style in embedded table
+								color: var(--text-normal);
 								/** 
 								* This is a hack to make the children have something to calculate their height percentage from.
 								* i.e. if you have a child with height: 100%, it will be 100% of the height of the td, only

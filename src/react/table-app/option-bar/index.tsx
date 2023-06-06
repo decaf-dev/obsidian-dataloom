@@ -124,7 +124,7 @@ export default function OptionBar({
 				border-bottom: 1px solid var(--background-modifier-border);
 			`}
 		>
-			<Padding pl="xl" pr={isEmbedded ? "unset" : "xl"}>
+			<Padding px="xl">
 				<Stack spacing="lg" isVertical>
 					<Wrap
 						justify={{ base: "space-between", mobile: "flex-end" }}

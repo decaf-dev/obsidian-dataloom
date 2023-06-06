@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { TFile } from "obsidian";
 import React from "react";
 import Text from "src/react/shared/text";
-import { eventSystem } from "src/shared/event-system/event-system";
+import { nltEventSystem } from "src/shared/event-system/event-system";
 
 interface Props {
 	file: TFile | null;
@@ -26,10 +26,10 @@ const SuggestItem = React.forwardRef<HTMLDivElement, Props>(
 			}
 
 			if (isHighlighted)
-				eventSystem.addEventListener("keydown", handleKeyDown, 1);
+				nltEventSystem.addEventListener("keydown", handleKeyDown, 1);
 
 			return () =>
-				eventSystem.removeEventListener("keydown", handleKeyDown);
+				nltEventSystem.removeEventListener("keydown", handleKeyDown);
 		}, [isHighlighted, handleClick]);
 
 		let name = "No match found";

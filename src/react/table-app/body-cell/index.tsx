@@ -126,16 +126,10 @@ export default function BodyCell({
 		columnType === CellType.MULTI_TAG ||
 		columnType === CellType.DATE;
 
-	const {
-		menu,
-		isMenuOpen,
-		menuCloseRequest,
-		menuRef,
-		openMenu,
-		closeTopMenu,
-	} = useMenu(MenuLevel.ONE, {
-		shouldRequestOnClose,
-	});
+	const { menu, isMenuOpen, menuCloseRequest, menuRef, closeTopMenu } =
+		useMenu(MenuLevel.ONE, {
+			shouldRequestOnClose,
+		});
 	const { triggerPosition, triggerRef } = useMenuTriggerPosition();
 	useShiftMenu(triggerRef, menuRef, isMenuOpen);
 
@@ -145,9 +139,7 @@ export default function BodyCell({
 	const didIsMenuOpenChange = useCompare(isMenuOpen, false);
 	React.useEffect(() => {
 		if (didIsMenuOpenChange) {
-			if (!isMenuOpen) {
-				doCommand(new RowSortCommand());
-			}
+			if (!isMenuOpen) doCommand(new RowSortCommand());
 		}
 	}, [didIsMenuOpenChange, isMenuOpen, doCommand]);
 
@@ -170,7 +162,7 @@ export default function BodyCell({
 		}
 	}
 
-	function handleBackspaceDown() {
+	function handleMenuTriggerBackspaceDown() {
 		if (
 			columnType === CellType.TEXT ||
 			columnType === CellType.EMBED ||
@@ -191,23 +183,14 @@ export default function BodyCell({
 		}
 	}
 
-	function handleEnterDown() {
+	function handleMenuTriggerEnterDown() {
 		if (columnType === CellType.CHECKBOX) toggleCheckbox();
 	}
 
-	function handleMenuTriggerClick(e: MouseEvent) {
-		if (columnType === CellType.CREATION_TIME) return;
-		if (columnType === CellType.LAST_EDITED_TIME) return;
-
+	function handleMenuTriggerClick() {
 		if (columnType === CellType.CHECKBOX) {
 			toggleCheckbox();
-			return;
 		}
-
-		const el = e.target as HTMLInputElement;
-		//If we clicked on the link for a file or tag, return
-		if (el.nodeName === "A") return;
-		openMenu(menu);
 	}
 
 	function handleTagAdd(markdown: string, color: Color) {
@@ -300,11 +283,10 @@ export default function BodyCell({
 	return (
 		<>
 			<MenuTrigger
-				menuId={menu.id}
+				menu={menu}
 				onClick={handleMenuTriggerClick}
-				shouldMenuRequestOnClose={menu.shouldRequestOnClose}
-				onEnterDown={handleEnterDown}
-				onBackspaceDown={handleBackspaceDown}
+				onEnterDown={handleMenuTriggerEnterDown}
+				onBackspaceDown={handleMenuTriggerBackspaceDown}
 				canMenuOpen={
 					columnType !== CellType.CHECKBOX &&
 					columnType !== CellType.CREATION_TIME &&
