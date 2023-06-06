@@ -11,7 +11,7 @@ import {
 	unixTimeToDateString,
 	unixTimeToDateTimeString,
 } from "../date/date-conversion";
-import { isCheckboxChecked, isNumber } from "../validators";
+import { isCheckboxChecked, isNumber, isURL } from "../validators";
 
 const getTagCellContent = (column: Column, cell: BodyCell) => {
 	return column.tags
@@ -36,14 +36,13 @@ export const getTimeCellContent = (
 	return "";
 };
 
-export const getCheckboxContent = (
-	markdown: string,
-	shouldEscapeMarkdown: boolean
-) => {
-	if (shouldEscapeMarkdown) {
-		if (isCheckboxChecked(markdown)) return "true";
-		return "false";
-	}
+export const getCheckboxContent = (markdown: string) => {
+	if (isCheckboxChecked(markdown)) return "true";
+	return "false";
+};
+
+export const getEmbedContent = (markdown: string) => {
+	if (isURL(markdown)) return `![](${markdown})`;
 	return markdown;
 };
 
@@ -58,16 +57,17 @@ export const getCurrencyCellContent = (
 export const getCellContent = (
 	column: Column,
 	row: BodyRow,
-	cell: BodyCell,
-	shouldEscapeMarkdown: boolean
+	cell: BodyCell
 ) => {
 	switch (column.type) {
 		case CellType.TEXT:
 		case CellType.FILE:
 		case CellType.NUMBER:
 			return cell.markdown;
+		case CellType.EMBED:
+			return getEmbedContent(cell.markdown);
 		case CellType.CHECKBOX:
-			return getCheckboxContent(cell.markdown, shouldEscapeMarkdown);
+			return getCheckboxContent(cell.markdown);
 		case CellType.CURRENCY:
 			return getCurrencyCellContent(cell.markdown, column.currencyType);
 		case CellType.TAG:
