@@ -218,7 +218,7 @@ export default class NLTPlugin extends Plugin {
 
 		this.addCommand({
 			id: "nlt-create-table-and-embed",
-			name: "Create table and embed it into current editor",
+			name: "Create table and embed it into current file",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "+" }],
 			editorCallback: async (editor) => {
 				const filePath = await this.newTableFile(null, true);
