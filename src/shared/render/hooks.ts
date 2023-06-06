@@ -33,7 +33,8 @@ export const useRenderMarkdown = (
 			const div = document.body.createDiv();
 
 			//We need to attach this class so that the `is-unresolved` link renders properly by Obsidian
-			div.classList.add("markdown-rendered");
+			const view = leaf.view;
+			if (view instanceof NLTView) div.classList.add("markdown-rendered");
 
 			//TODO what do this do?
 			div.detach();
@@ -63,6 +64,7 @@ export const useRenderMarkdown = (
 						if (!destination) embed.classList.add("is-unresolved");
 
 						el.addEventListener("mouseover", (e) => {
+							e.stopPropagation();
 							app.workspace.trigger("hover-link", {
 								event: e,
 								source: NOTION_LIKE_TABLES_VIEW,
