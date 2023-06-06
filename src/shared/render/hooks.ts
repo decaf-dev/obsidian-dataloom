@@ -31,6 +31,8 @@ export const useRenderMarkdown = (
 	React.useEffect(() => {
 		async function renderMarkdown() {
 			const div = document.body.createDiv();
+			div.style.height = "100%";
+			div.style.width = "100%";
 
 			//We need to attach this class so that the `is-unresolved` link renders properly by Obsidian
 			const view = leaf.view;
