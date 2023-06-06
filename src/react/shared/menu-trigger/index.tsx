@@ -43,7 +43,9 @@ const MenuTrigger = ({
 			tabIndex={0}
 			data-menu-id={canMenuOpen ? id : undefined}
 			data-menu-level={canMenuOpen ? level : undefined}
-			data-menu-should-request-on-close={shouldRequestOnClose}
+			data-menu-should-request-on-close={
+				canMenuOpen ? shouldRequestOnClose : undefined
+			}
 			onKeyDown={handleKeyDown}
 			onClick={handleClick}
 		>
