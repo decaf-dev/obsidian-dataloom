@@ -39,15 +39,6 @@ export const randomColor = () => {
 	return Object.values(Color)[index];
 };
 
-export const getTableBorderColor = (): string => {
-	//@ts-expect-error
-	const theme = app.vault.getConfig("cssTheme");
-	if (theme === RED_GRAPHITE_THEME) {
-		return "var(--table-border-color)";
-	}
-	return "var(--background-modifier-border)";
-};
-
 export const getTableBackgroundColor = (): string => {
 	//@ts-expect-error
 	const theme = app.vault.getConfig("cssTheme");

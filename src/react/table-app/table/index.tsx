@@ -12,15 +12,12 @@ import TableBodyRow from "./table-body-row";
 import TableHeaderCell from "./table-header-cell";
 import { css } from "@emotion/react";
 import { usePrevious } from "src/shared/hooks";
-import { getTableBorderColor } from "src/shared/color";
 
 interface Props {
 	headerRows: RenderTableHeaderRow[];
 	bodyRows: RenderTableBodyRow[];
 	footerRows: RenderTableFooterRow[];
 }
-
-const tableBorderColor = getTableBorderColor();
 
 export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 	const tableRef = React.useRef<VirtuosoHandle>(null);
@@ -91,8 +88,9 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 							data-row-id={i === 0 ? rowId : undefined}
 							css={css`
 								border-top: 0;
-								border-bottom: 1px solid ${tableBorderColor};
-								border-left: 1px solid ${tableBorderColor};
+								border-bottom: 1px solid
+									var(--table-border-color);
+								border-left: 1px solid var(--table-border-color);
 								border-right: 0;
 								padding: 0;
 								overflow: visible;
@@ -153,7 +151,7 @@ const Components: TableComponents = {
 				background-color: var(--background-primary);
 
 				& > tr:first-of-type > td {
-					border-bottom: 1px solid ${tableBorderColor};
+					border-bottom: 1px solid var(--table-border-color);
 				}
 
 				& > tr:first-of-type > td:nth-of-type(1) {
@@ -161,11 +159,11 @@ const Components: TableComponents = {
 				}
 
 				& > tr:first-of-type > td:nth-of-type(2) {
-					border-left: 1px solid ${tableBorderColor};
+					border-left: 1px solid var(--table-border-color);
 				}
 
 				& > tr:first-of-type > td:last-child {
-					border-left: 1px solid ${tableBorderColor};
+					border-left: 1px solid var(--table-border-color);
 					border-bottom: 0;
 				}
 			`}
