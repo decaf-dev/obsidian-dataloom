@@ -1,4 +1,11 @@
-import { MarkdownView, normalizePath, Plugin, TAbstractFile, TFolder} from "obsidian";
+import {
+	MarkdownView,
+	normalizePath,
+	Plugin,
+	TAbstractFile,
+	TFile,
+	TFolder,
+} from "obsidian";
 
 import NLTSettingsTab from "./obsidian/nlt-settings-tab";
 
@@ -24,6 +31,7 @@ import {
 import { updateLinkReferences } from "./data/utils";
 import { hasDarkTheme } from "./shared/renderUtils";
 import { filterUniqueStrings } from "./react/shared/suggest-menu/utils";
+import { getObsidianConfigValue } from "./shared/configUtils";
 
 export interface NLTSettings {
 	shouldDebug: boolean;
@@ -82,7 +90,10 @@ export default class NLTPlugin extends Plugin {
 		// });
 	}
 
-	private async newTableFile(contextMenuFolderPath: string | null, embedded?: boolean) {
+	private async newTableFile(
+		contextMenuFolderPath: string | null,
+		embedded?: boolean
+	) {
 		let folderPath = "";
 		if (contextMenuFolderPath) {
 			folderPath = contextMenuFolderPath;
@@ -99,7 +110,7 @@ export default class NLTPlugin extends Plugin {
 			useActiveFileNameAndTimestamp:
 				this.settings.nameWithActiveFileNameAndTimestamp,
 		});
-		if(embedded) return filePath;
+		if (embedded) return filePath;
 		//Open file in a new tab and set it to active
 		await app.workspace.getLeaf(true).setViewState({
 			type: NOTION_LIKE_TABLES_VIEW,
@@ -212,24 +223,28 @@ export default class NLTPlugin extends Plugin {
 			},
 		});
 
-
 		this.addCommand({
 			id: "nlt-create-table-and-embed",
 			name: "Create table and embed it into current editor",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "+" }],
 			editorCallback: async (editor) => {
 				const file = await this.newTableFile(null, true);
-				if(!file) return;
-				let useMarkdownLinks: boolean | undefined = false;
+				if (!file) return;
 
-				const config = await app.vault.adapter.read(normalizePath(app.vault.configDir + "/app.json"));
-				if(config) useMarkdownLinks = JSON.parse(config).useMarkdownLinks;
+				const useMarkdownLinks = (this.app.vault as any).getConfig(
+					"useMarkdownLinks"
+				);
 
-				editor.replaceRange((
-					// Use basename rather than whole name when using Markdownlink like ![abcd](abcd.table) instead of ![abcd.table](abcd.table)
-					// It will replace `.table` to "" in abcd.table
-					useMarkdownLinks ? `![${file?.replace(/\.(.*)$/,"")}](<${file}>)` : `![[${file}]]`),
-					editor.getCursor());
+				// Use basename rather than whole name when using Markdownlink like ![abcd](abcd.table) instead of ![abcd.table](abcd.table)
+				// It will replace `.table` to "" in abcd.table
+				const linkText = useMarkdownLinks
+					? `![${file?.replace(/\.(.*)$/, "")}](<${file}>)`
+					: `![[${file}]]`;
+				editor.replaceRange(linkText, editor.getCursor());
+				editor.setCursor(
+					editor.getCursor().line,
+					editor.getCursor().ch + linkText.length
+				);
 			},
 		});
 
