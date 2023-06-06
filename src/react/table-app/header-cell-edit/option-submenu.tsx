@@ -9,7 +9,6 @@ import {
 	getDisplayNameForCurrencyType,
 	getDisplayNameForDateFormat,
 } from "src/shared/table-state/display-name";
-import Text from "src/react/shared/text";
 
 interface Props {
 	title: string;

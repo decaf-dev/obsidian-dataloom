@@ -19,6 +19,7 @@ import {
 import { isSpecialActionDown } from "src/shared/keyboard-event";
 
 import "./styles.css";
+import { getWikiLinkText } from "src/shared/link/link-utils";
 
 interface Props {
 	menuCloseRequest: MenuCloseRequest | null;
@@ -35,14 +36,8 @@ export default function TextCellEdit({
 	onChange,
 	onMenuClose,
 }: Props) {
-	const {
-		menu,
-		isMenuOpen,
-		menuRef,
-		openMenu,
-		forceCloseAllMenus,
-		closeTopMenu,
-	} = useMenu(MenuLevel.TWO);
+	const { menu, isMenuOpen, menuRef, openMenu, closeAllMenus, closeTopMenu } =
+		useMenu(MenuLevel.TWO);
 	const { triggerRef, triggerPosition } = useMenuTriggerPosition();
 	useShiftMenu(triggerRef, menuRef, isMenuOpen, {
 		topOffset: 35,
@@ -64,7 +59,13 @@ export default function TextCellEdit({
 			onChange(localValue);
 			onMenuClose();
 		}
-	}, [localValue, hasCloseRequestTimeChanged, menuCloseRequest, onMenuClose]);
+	}, [
+		localValue,
+		hasCloseRequestTimeChanged,
+		menuCloseRequest,
+		onMenuClose,
+		onChange,
+	]);
 
 	function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
 		const el = e.target as HTMLTextAreaElement;
@@ -124,12 +125,7 @@ export default function TextCellEdit({
 		isFileNameUnique: boolean
 	) {
 		if (file) {
-			//The basename does not include an extension
-			let fileName = file.basename;
-			//The name includes an extension
-			if (file.extension !== "md") fileName = file.name;
-			//If the file name is not unique, add the path so that the system can find it
-			if (!isFileNameUnique) fileName = `${file.path}|${fileName}`;
+			const fileName = getWikiLinkText(file, isFileNameUnique);
 
 			const newValue = doubleBracketsInnerReplace(
 				localValue,
@@ -139,7 +135,7 @@ export default function TextCellEdit({
 
 			onChange(newValue);
 		}
-		forceCloseAllMenus();
+		closeAllMenus();
 	}
 
 	const overflowStyle = useOverflow(shouldWrapOverflow);

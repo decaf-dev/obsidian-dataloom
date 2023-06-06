@@ -1,4 +1,4 @@
-import { MarkdownView, Plugin, TAbstractFile, TFolder } from "obsidian";
+import { MarkdownView, Plugin, TAbstractFile, TFile, TFolder } from "obsidian";
 
 import NLTSettingsTab from "./obsidian/nlt-settings-tab";
 
@@ -21,23 +21,15 @@ import {
 	deserializeTableState,
 	serializeTableState,
 } from "./data/serialize-table-state";
-import { updateWikiLinks } from "./data/utils";
+import { updateLinkReferences } from "./data/utils";
+import { hasDarkTheme } from "./shared/renderUtils";
+import { filterUniqueStrings } from "./react/shared/suggest-menu/utils";
+import { getBasename } from "./shared/link/link-utils";
 
 export interface NLTSettings {
 	shouldDebug: boolean;
-
-	// If true, new tables will be created in the attachments folder define in
-	// Obsidian settings. Otherwise, the `customFolderForNewTables` value will
-	// be used.
 	createAtObsidianAttachmentFolder: boolean;
-
-	// Custom location for newly created tables. If the value is an empty string,
-	// the root vault folder will be used.
 	customFolderForNewTables: string;
-
-	// If true, new tables will be named as ${activeFileName}-${timestamp}. However,
-	// if no file has been opened, creating a new table will still use the default
-	// table name.
 	nameWithActiveFileNameAndTimestamp: boolean;
 }
 
@@ -68,73 +60,6 @@ export default class NLTPlugin extends Plugin {
 		this.registerEmbeddedView();
 		this.registerCommands();
 		this.registerEvents();
-
-		this.app.vault.on(
-			"rename",
-			async (updatedFile: TAbstractFile, oldPath: string) => {
-				//Search all table files for the old path and rename them
-
-				//Get all table files
-				const tableFiles = this.app.vault
-					.getFiles()
-					.filter((file) => file.extension === TABLE_EXTENSION);
-
-				for (let i = 0; i < tableFiles.length; i++) {
-					const tableFile = tableFiles[i];
-
-					//For each file read its contents
-					const content = await tableFile.vault.read(tableFiles[i]);
-					const deserializedState = deserializeTableState(content);
-
-					//Iterate over all body cells and check the markdwon
-					const newState = structuredClone(deserializedState);
-					newState.model.bodyCells.forEach((cell) => {
-						//If the markdown contains a wiki link with old path, update it
-						const updatedMarkdown = updateWikiLinks(
-							cell.markdown,
-							oldPath,
-							updatedFile.path
-						);
-						cell.markdown = updatedMarkdown;
-					});
-
-					//If the state has changed, update the file
-					if (
-						JSON.stringify(deserializedState) !==
-						JSON.stringify(newState)
-					) {
-						const serializedState = serializeTableState(newState);
-						await tableFile.vault.modify(
-							tableFile,
-							serializedState
-						);
-
-						//Update all tables that match this path
-						app.workspace.trigger(
-							EVENT_REFRESH_TABLES,
-							tableFile.path,
-							-1, //update all tables that match this path
-							newState
-						);
-						// app.workspace
-						// 	.getLeavesOfType(NOTION_LIKE_TABLES_VIEW)
-						// 	.forEach((leaf) => {
-						// 		const view = leaf.view;
-						// 		if (view instanceof NLTView) {
-						// 			const path = view.file.path;
-						// 			if (path === tableFile.path)
-						// 				view.setViewData(serializedState, true);
-						// 		}
-						// 	});
-					}
-				}
-			}
-		);
-
-		this.app.workspace.onLayoutReady(() => {
-			this.checkForDarkMode();
-			this.checkForDebug();
-		});
 	}
 
 	private registerEmbeddedView() {
@@ -158,7 +83,10 @@ export default class NLTPlugin extends Plugin {
 		// });
 	}
 
-	private async newTableFile(contextMenuFolderPath: string | null) {
+	private async newTableFile(
+		contextMenuFolderPath: string | null,
+		embedded?: boolean
+	) {
 		let folderPath = "";
 		if (contextMenuFolderPath) {
 			folderPath = contextMenuFolderPath;
@@ -175,6 +103,7 @@ export default class NLTPlugin extends Plugin {
 			useActiveFileNameAndTimestamp:
 				this.settings.nameWithActiveFileNameAndTimestamp,
 		});
+		if (embedded) return filePath;
 		//Open file in a new tab and set it to active
 		await app.workspace.getLeaf(true).setViewState({
 			type: NOTION_LIKE_TABLES_VIEW,
@@ -183,30 +112,11 @@ export default class NLTPlugin extends Plugin {
 		});
 	}
 
-	private checkForDebug() {
-		store.dispatch(setDebugMode(this.settings.shouldDebug));
-	}
-
-	private checkForDarkMode() {
-		let hasDarkTheme = false;
-		const el = document.querySelector("body");
-		if (el) hasDarkTheme = el.className.includes("theme-dark");
-		store.dispatch(setDarkMode(hasDarkTheme));
-	}
-
-	registerEvents() {
+	private registerEvents() {
 		this.registerEvent(
 			this.app.workspace.on("css-change", () => {
-				this.checkForDarkMode();
-
-				//When the theme changes, we need to re-render the view to update the values
-				//TODO optimize this
-				//Use the redux store instead?
-				const view = this.app.workspace.getActiveViewOfType(NLTView);
-				if (view) {
-					const data = view.getViewData();
-					view.setViewData(data, true);
-				}
+				const isDark = hasDarkTheme();
+				store.dispatch(setDarkMode(isDark));
 			})
 		);
 
@@ -223,6 +133,77 @@ export default class NLTPlugin extends Plugin {
 				}
 			})
 		);
+
+		this.app.vault.on(
+			"rename",
+			async (file: TAbstractFile, oldPath: string) => {
+				if (file instanceof TFile) {
+					const files = this.app.vault.getFiles();
+
+					const uniqueFileNames = filterUniqueStrings(
+						files.map((file) => file.name)
+					);
+					const isUniqueFileName = uniqueFileNames.includes(
+						file.name
+					);
+
+					//Get all table files
+					const tableFiles = files.filter(
+						(file) => file.extension === TABLE_EXTENSION
+					);
+					for (let i = 0; i < tableFiles.length; i++) {
+						const tableFile = tableFiles[i];
+
+						//For each file read its contents
+						const content = await tableFile.vault.read(
+							tableFiles[i]
+						);
+						const deserializedState =
+							deserializeTableState(content);
+
+						//Iterate over all body cells and check the markdwon
+						const newState = structuredClone(deserializedState);
+						newState.model.bodyCells.forEach((cell) => {
+							//If the markdown contains a wiki link with old path, update it
+							const updatedMarkdown = updateLinkReferences(
+								cell.markdown,
+								file,
+								oldPath,
+								isUniqueFileName
+							);
+							cell.markdown = updatedMarkdown;
+						});
+
+						//If the state has changed, update the file
+						if (
+							JSON.stringify(deserializedState) !==
+							JSON.stringify(newState)
+						) {
+							const serializedState =
+								serializeTableState(newState);
+							await tableFile.vault.modify(
+								tableFile,
+								serializedState
+							);
+
+							//Update all tables that match this path
+							app.workspace.trigger(
+								EVENT_REFRESH_TABLES,
+								tableFile.path,
+								-1, //update all tables that match this path
+								newState
+							);
+						}
+					}
+				}
+			}
+		);
+
+		this.app.workspace.onLayoutReady(() => {
+			const isDark = hasDarkTheme();
+			store.dispatch(setDarkMode(isDark));
+			store.dispatch(setDebugMode(this.settings.shouldDebug));
+		});
 	}
 
 	registerCommands() {
@@ -232,6 +213,32 @@ export default class NLTPlugin extends Plugin {
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "=" }],
 			callback: async () => {
 				await this.newTableFile(null);
+			},
+		});
+
+		this.addCommand({
+			id: "nlt-create-table-and-embed",
+			name: "Create table and embed it into current editor",
+			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "+" }],
+			editorCallback: async (editor) => {
+				const filePath = await this.newTableFile(null, true);
+				if (!filePath) return;
+
+				const useMarkdownLinks = (this.app.vault as any).getConfig(
+					"useMarkdownLinks"
+				);
+
+				// Use basename rather than whole name when using Markdownlink like ![abcd](abcd.table) instead of ![abcd.table](abcd.table)
+				// It will replace `.table` to "" in abcd.table
+				const linkText = useMarkdownLinks
+					? `![${getBasename(filePath)}](${encodeURI(filePath)})`
+					: `![[${filePath}]]`;
+
+				editor.replaceRange(linkText, editor.getCursor());
+				editor.setCursor(
+					editor.getCursor().line,
+					editor.getCursor().ch + linkText.length
+				);
 			},
 		});
 

@@ -1,12 +1,10 @@
-import { EXTENSION_REGEX } from "./constants";
-
-/**
- * Matches all wiki links
- * [[my-file]]: Matches the pattern with only the filename.
- * [[my-file|alias]]: Matches the pattern with both the filename and the alias.
- * [[my-file|]]: Matches the pattern with the filename and an empty alias.
- */
-const WIKI_LINK_REGEX = new RegExp(/\[\[([^|\]]+)(?:\|([\w-]+))?\]\]/g);
+import {
+	getWikiLinkText,
+	stripDirectory,
+	stripFileExtension,
+} from "src/shared/link/link-utils";
+import { EXTENSION_REGEX, WIKI_LINK_REGEX } from "./constants";
+import { TFile } from "obsidian";
 
 export const splitFileExtension = (
 	filePath: string
@@ -21,17 +19,26 @@ export const splitFileExtension = (
 	return null;
 };
 
-export const updateWikiLinks = (
+export const updateLinkReferences = (
 	markdown: string,
-	oldFilePath: string,
-	newFilePath: string
+	updatedFileInfo: Pick<TFile, "basename" | "path" | "name" | "extension">,
+	oldPath: string,
+	isFileNameUnique: boolean
 ) => {
-	return markdown.replace(WIKI_LINK_REGEX, (match, fileName, alias) => {
-		const fileNameWithExtension = fileName.endsWith(".md")
-			? fileName
-			: fileName + ".md";
-		if (fileNameWithExtension === oldFilePath)
-			return `[[${newFilePath}${alias ? "|" + alias : ""}]]`;
+	//Create a replace function for the markdown
+	return markdown.replace(WIKI_LINK_REGEX, (match, path) => {
+		//The path may or may not contain a file extension
+		//It also may or may not contain a slash, depending on if its a relative or absolute path
+		let comparePath = oldPath;
+		if (!path.includes("/")) comparePath = stripDirectory(comparePath);
+
+		if (!path.match(EXTENSION_REGEX))
+			comparePath = stripFileExtension(comparePath);
+
+		if (comparePath === path) {
+			const linkText = getWikiLinkText(updatedFileInfo, isFileNameUnique);
+			return `[[${linkText}]]`;
+		}
 		return match;
 	});
 };

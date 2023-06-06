@@ -108,7 +108,9 @@ const countUnique = (
 				cellType,
 				dateFormat
 			);
-			return cellValues.map((value) => hashString(value));
+			return cellValues
+				.filter((value) => value !== "")
+				.map((value) => hashString(value));
 		})
 		.flat(1);
 	const uniqueHashes = new Set(hashes);
@@ -144,6 +146,7 @@ const getCellValues = (
 ): string[] => {
 	if (
 		cellType === CellType.TEXT ||
+		cellType === CellType.EMBED ||
 		cellType === CellType.NUMBER ||
 		cellType === CellType.CURRENCY ||
 		cellType === CellType.CHECKBOX ||
@@ -171,6 +174,7 @@ const getCellValues = (
 const countCellValues = (cell: BodyCell, cellType: CellType): number => {
 	if (
 		cellType === CellType.TEXT ||
+		cellType === CellType.EMBED ||
 		cellType === CellType.NUMBER ||
 		cellType === CellType.CURRENCY ||
 		cellType === CellType.FILE
@@ -195,6 +199,7 @@ const countCellValues = (cell: BodyCell, cellType: CellType): number => {
 const isCellContentEmpty = (cell: BodyCell, cellType: CellType): boolean => {
 	if (
 		cellType === CellType.TEXT ||
+		cellType === CellType.EMBED ||
 		cellType === CellType.NUMBER ||
 		cellType === CellType.CURRENCY ||
 		cellType === CellType.FILE

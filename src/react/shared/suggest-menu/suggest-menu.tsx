@@ -2,7 +2,7 @@ import React from "react";
 
 import { TFile } from "obsidian";
 import Menu from "src/react/shared/menu";
-import SuggestMenuContent from "./suggest-menu-context";
+import SuggestMenuContent from "./suggest-menu-content";
 
 interface Props {
 	id: string;

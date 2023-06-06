@@ -4,10 +4,9 @@ import { TFile } from "obsidian";
 import fuzzysort from "fuzzysort";
 
 import SuggestItem from "./suggest-item";
-import { findUniqueStrings } from "./utils";
+import { filterUniqueStrings } from "./utils";
 import { css } from "@emotion/react";
 import { eventSystem } from "src/shared/event-system/event-system";
-import { getTableBackgroundColor, getTableBorderColor } from "src/shared/color";
 
 interface ContentProps {
 	showInput?: boolean;
@@ -89,18 +88,15 @@ export default function SuggestMenuContent({
 	}, [filteredFiles.length]);
 
 	const fileNames = filteredFiles.map((file) => file.name);
-	const uniqueFileNames = findUniqueStrings(fileNames);
-
-	const tableBackgroundColor = getTableBackgroundColor();
-	const tableBorderColor = getTableBorderColor();
+	const uniqueFileNames = filterUniqueStrings(fileNames);
 
 	return (
 		<div className="NLT__suggest-menu">
 			{showInput && (
 				<div
 					css={css`
-						background-color: ${tableBackgroundColor};
-						border-bottom: 1px solid ${tableBorderColor};
+						background-color: var(--background-secondary);
+						border-bottom: 1px solid var(--table-border-color);
 						padding: 4px 10px;
 					`}
 				>

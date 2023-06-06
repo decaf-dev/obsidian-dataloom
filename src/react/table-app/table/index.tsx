@@ -11,8 +11,7 @@ import {
 import TableBodyRow from "./table-body-row";
 import TableHeaderCell from "./table-header-cell";
 import { css } from "@emotion/react";
-import { useCompare } from "src/shared/hooks";
-import { getTableBorderColor } from "src/shared/color";
+import { usePrevious } from "src/shared/hooks";
 
 interface Props {
 	headerRows: RenderTableHeaderRow[];
@@ -20,19 +19,19 @@ interface Props {
 	footerRows: RenderTableFooterRow[];
 }
 
-const tableBorderColor = getTableBorderColor();
-
 export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 	const tableRef = React.useRef<VirtuosoHandle>(null);
 
-	const didRowsChange = useCompare(bodyRows.length, false);
+	const previousRowLength = usePrevious(bodyRows.length);
 
 	/**
 	 * Scrolls to the bottom of the page when the "New Row" button is pressed
 	 */
 	React.useEffect(() => {
-		if (didRowsChange) tableRef.current?.scrollToIndex(bodyRows.length - 1);
-	}, [didRowsChange, bodyRows.length]);
+		if (previousRowLength === undefined) return;
+		if (previousRowLength < bodyRows.length)
+			tableRef.current?.scrollToIndex(bodyRows.length - 1);
+	}, [previousRowLength, bodyRows.length]);
 
 	return (
 		<TableVirtuoso
@@ -48,7 +47,12 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 				headerRows.map((row) => {
 					const { id: rowId, cells } = row;
 					return (
-						<tr key={rowId}>
+						<tr
+							key={rowId}
+							css={css`
+								background-color: var(--background-secondary);
+							`}
+						>
 							{cells.map((cell, i) => {
 								const { id: cellId, columnId, content } = cell;
 								return (
@@ -70,7 +74,13 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 						{row.cells.map((cell) => {
 							const { id, content } = cell;
 							return (
-								<td key={id} className="NLT__footer-td">
+								<td
+									key={id}
+									className="NLT__footer-td"
+									css={css`
+										padding: 0px;
+									`}
+								>
 									{content}
 								</td>
 							);
@@ -89,8 +99,9 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 							data-row-id={i === 0 ? rowId : undefined}
 							css={css`
 								border-top: 0;
-								border-bottom: 1px solid ${tableBorderColor};
-								border-left: 1px solid ${tableBorderColor};
+								border-bottom: 1px solid
+									var(--table-border-color);
+								border-left: 1px solid var(--table-border-color);
 								border-right: 0;
 								padding: 0;
 								overflow: visible;
@@ -151,7 +162,7 @@ const Components: TableComponents = {
 				background-color: var(--background-primary);
 
 				& > tr:first-of-type > td {
-					border-bottom: 1px solid ${tableBorderColor};
+					border-bottom: 1px solid var(--table-border-color);
 				}
 
 				& > tr:first-of-type > td:nth-of-type(1) {
@@ -159,11 +170,11 @@ const Components: TableComponents = {
 				}
 
 				& > tr:first-of-type > td:nth-of-type(2) {
-					border-left: 1px solid ${tableBorderColor};
+					border-left: 1px solid var(--table-border-color);
 				}
 
 				& > tr:first-of-type > td:last-child {
-					border-left: 1px solid ${tableBorderColor};
+					border-left: 1px solid var(--table-border-color);
 					border-bottom: 0;
 				}
 			`}
