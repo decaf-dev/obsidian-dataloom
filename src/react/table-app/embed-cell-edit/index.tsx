@@ -7,7 +7,7 @@ import { css } from "@emotion/react";
 
 const textAreaStyle = css`
 	width: 100%;
-	height: max-content;
+	height: 100%;
 	border: 0 !important;
 	overflow: hidden;
 	padding: var(--nlt-cell-spacing-x) var(--nlt-cell-spacing-y);
