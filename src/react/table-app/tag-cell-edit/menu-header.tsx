@@ -21,8 +21,8 @@ export default function MenuHeader({
 	const inputRef = React.useRef<HTMLInputElement | null>(null);
 
 	function handleInputChange(value: string) {
-		// If the value starts with whitespace don't add the tag
-		if (value.match(/^\s+$/)) return;
+		if (value.match(/^\s/)) return;
+		//Trim white space when we're adding it
 		onInputValueChange(value);
 	}
 

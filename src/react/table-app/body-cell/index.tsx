@@ -211,11 +211,12 @@ export default function BodyCell({
 	}
 
 	function handleTagAdd(markdown: string, color: Color) {
+		if (markdown === "") return;
 		onTagAdd(
 			cellId,
 			columnId,
 			rowId,
-			markdown,
+			markdown.trim(),
 			color,
 			columnType === CellType.MULTI_TAG
 		);
