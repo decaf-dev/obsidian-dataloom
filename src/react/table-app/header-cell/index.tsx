@@ -2,9 +2,11 @@ import React from "react";
 
 import { numToPx } from "src/shared/conversion";
 import {
+	AspectRatio,
 	CellType,
 	CurrencyType,
 	DateFormat,
+	PaddingSize,
 	SortDir,
 } from "src/shared/types/types";
 import { useMenu } from "src/shared/menu/hooks";
@@ -12,7 +14,6 @@ import { MenuLevel } from "src/shared/menu/types";
 
 import Icon from "../../shared/icon";
 import Stack from "../../shared/stack";
-import HeaderCellEditMenu from "../header-cell-edit";
 import { useCompare, useForceUpdate } from "src/shared/hooks";
 import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 import { getIconIdForCellType } from "src/react/shared/icon/utils";
@@ -20,10 +21,14 @@ import MenuTrigger from "src/react/shared/menu-trigger";
 import ResizeContainer from "./resize-container";
 
 import { css } from "@emotion/react";
+import HeaderMenu from "../header-cell-edit";
 
 interface Props {
 	cellId: string;
 	currencyType: CurrencyType;
+	horizontalPadding: PaddingSize;
+	verticalPadding: PaddingSize;
+	aspectRatio: AspectRatio;
 	rowId: string;
 	columnId: string;
 	width: string;
@@ -42,6 +47,9 @@ interface Props {
 	onNameChange: (cellId: string, value: string) => void;
 	onCurrencyChange: (columnId: string, value: CurrencyType) => void;
 	onDateFormatChange: (columnId: string, value: DateFormat) => void;
+	onVerticalPaddingClick: (columnId: string, value: PaddingSize) => void;
+	onHorizontalPaddingClick: (columnId: string, value: PaddingSize) => void;
+	onAspectRatioClick: (columnId: string, value: AspectRatio) => void;
 }
 
 export default function HeaderCell({
@@ -51,6 +59,9 @@ export default function HeaderCell({
 	currencyType,
 	width,
 	dateFormat,
+	horizontalPadding,
+	verticalPadding,
+	aspectRatio,
 	markdown,
 	shouldWrapOverflow,
 	resizingColumnId,
@@ -60,20 +71,17 @@ export default function HeaderCell({
 	onWidthChange,
 	onSortClick,
 	onTypeSelect,
+	onVerticalPaddingClick,
+	onHorizontalPaddingClick,
+	onAspectRatioClick,
 	onDeleteClick,
 	onWrapOverflowToggle,
 	onNameChange,
 	onCurrencyChange,
 	onDateFormatChange,
 }: Props) {
-	const {
-		menu,
-		isMenuOpen,
-		closeTopMenu,
-		menuRef,
-		openMenu,
-		menuCloseRequest,
-	} = useMenu(MenuLevel.ONE, { shouldRequestOnClose: true });
+	const { menu, isMenuOpen, closeTopMenu, menuRef, menuCloseRequest } =
+		useMenu(MenuLevel.ONE, { shouldRequestOnClose: true });
 	const { triggerPosition, triggerRef } = useMenuTriggerPosition();
 	useShiftMenu(triggerRef, menuRef, isMenuOpen);
 
@@ -97,16 +105,6 @@ export default function HeaderCell({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [columnId, shouldUpdateWidth, triggerPosition]);
 
-	function handleMenuTriggerClick() {
-		//If we're resizing a column, then don't open the menu
-		if (resizingColumnId !== null) return;
-		if (isMenuOpen) {
-			closeTopMenu();
-		} else {
-			openMenu(menu);
-		}
-	}
-
 	function handleMenuClose() {
 		closeTopMenu();
 	}
@@ -118,11 +116,7 @@ export default function HeaderCell({
 
 	return (
 		<>
-			<MenuTrigger
-				menuId={menu.id}
-				shouldMenuRequestOnClose={menu.shouldRequestOnClose}
-				onClick={handleMenuTriggerClick}
-			>
+			<MenuTrigger menu={menu} canMenuOpen={resizingColumnId === null}>
 				<div
 					className="NLT__th-container"
 					ref={triggerRef}
@@ -164,13 +158,16 @@ export default function HeaderCell({
 					/>
 				</div>
 			</MenuTrigger>
-			<HeaderCellEditMenu
+			<HeaderMenu
 				isOpen={isMenuOpen}
 				menuCloseRequest={menuCloseRequest}
 				top={triggerPosition.top}
 				left={triggerPosition.left}
 				id={menu.id}
 				ref={menuRef}
+				aspectRatio={aspectRatio}
+				horizontalPadding={horizontalPadding}
+				verticalPadding={verticalPadding}
 				rowId={rowId}
 				currencyType={currencyType}
 				dateFormat={dateFormat}
@@ -190,6 +187,9 @@ export default function HeaderCell({
 				onNameChange={onNameChange}
 				onCurrencyChange={onCurrencyChange}
 				onDateFormatChange={onDateFormatChange}
+				onVerticalPaddingClick={onVerticalPaddingClick}
+				onHorizontalPaddingClick={onHorizontalPaddingClick}
+				onAspectRatioClick={onAspectRatioClick}
 			/>
 		</>
 	);

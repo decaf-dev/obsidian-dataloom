@@ -1,6 +1,12 @@
 import Submenu from "./submenu";
 
-import { CellType, CurrencyType, DateFormat } from "src/shared/types/types";
+import {
+	AspectRatio,
+	CellType,
+	CurrencyType,
+	DateFormat,
+	PaddingSize,
+} from "src/shared/types/types";
 import Stack from "src/react/shared/stack";
 import Padding from "src/react/shared/padding";
 import MenuItem from "src/react/shared/menu-item";
@@ -15,6 +21,9 @@ interface Props {
 	currencyType: CurrencyType;
 	type: CellType;
 	dateFormat: DateFormat;
+	verticalPadding: PaddingSize;
+	horizontalPadding: PaddingSize;
+	aspectRatio: AspectRatio;
 	onBackClick: () => void;
 	onSubmenuChange: (value: SubmenuType) => void;
 }
@@ -22,6 +31,9 @@ interface Props {
 export default function OptionSubmenu({
 	type,
 	currencyType,
+	aspectRatio,
+	verticalPadding,
+	horizontalPadding,
 	title,
 	dateFormat,
 	onBackClick,
@@ -31,6 +43,33 @@ export default function OptionSubmenu({
 		<Submenu title={title} onBackClick={onBackClick}>
 			<Padding pt="sm" pb="lg">
 				<Stack spacing="lg" isVertical>
+					{type === CellType.EMBED && (
+						<MenuItem
+							name="Aspect Ratio"
+							value={aspectRatio}
+							onClick={() =>
+								onSubmenuChange(SubmenuType.ASPECT_RATIO)
+							}
+						/>
+					)}
+					{type === CellType.EMBED && (
+						<MenuItem
+							name="Horizontal Padding"
+							value={horizontalPadding}
+							onClick={() =>
+								onSubmenuChange(SubmenuType.HORIZONTAL_PADDING)
+							}
+						/>
+					)}
+					{type === CellType.EMBED && (
+						<MenuItem
+							name="Vertical Padding"
+							value={verticalPadding}
+							onClick={() =>
+								onSubmenuChange(SubmenuType.VERTICAL_PADDING)
+							}
+						/>
+					)}
 					{type === CellType.CURRENCY && (
 						<MenuItem
 							name="Currency"

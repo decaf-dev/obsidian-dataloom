@@ -1,12 +1,22 @@
 import { css } from "@emotion/react";
 import { getEmbedContent } from "src/shared/export/cell-content";
 import { useRenderMarkdown } from "src/shared/render/hooks";
+import { getSpacing } from "src/shared/spacing";
+import { AspectRatio, PaddingSize } from "src/shared/types/types";
 import { isURL } from "src/shared/validators";
 interface Props {
 	markdown: string;
+	aspectRatio: AspectRatio;
+	horizontalPadding: PaddingSize;
+	verticalPadding: PaddingSize;
 }
 
-export default function EmbedCell({ markdown }: Props) {
+export default function EmbedCell({
+	markdown,
+	aspectRatio,
+	horizontalPadding,
+	verticalPadding,
+}: Props) {
 	let externalLinkMarkdown = "";
 	let isValidURL = false;
 	if (markdown !== "") {
@@ -31,7 +41,19 @@ export default function EmbedCell({ markdown }: Props) {
 			<div
 				css={css`
 					width: 100%;
-					aspect-ratio: ${isValidURL ? "16/9" : "unset"};
+					aspect-ratio: ${aspectRatio};
+					padding-left: ${isValidURL
+						? getSpacing(horizontalPadding)
+						: "unset"};
+					padding-right: ${isValidURL
+						? getSpacing(horizontalPadding)
+						: "unset"};
+					padding-top: ${isValidURL
+						? getSpacing(verticalPadding)
+						: "unset"};
+					padding-bottom: ${isValidURL
+						? getSpacing(verticalPadding)
+						: "unset"};
 
 					iframe {
 						width: 100%;

@@ -47,9 +47,7 @@ export default function FunctionCell({
 	cellType,
 	onFunctionTypeChange,
 }: Props) {
-	const { menu, isMenuOpen, openMenu, menuRef, closeTopMenu } = useMenu(
-		MenuLevel.ONE
-	);
+	const { menu, isMenuOpen, menuRef, closeTopMenu } = useMenu(MenuLevel.ONE);
 
 	const { triggerPosition, triggerRef } = useMenuTriggerPosition();
 	useShiftMenu(triggerRef, menuRef, isMenuOpen);
@@ -85,17 +83,9 @@ export default function FunctionCell({
 			);
 	}
 
-	function handleClick() {
-		if (isMenuOpen) {
-			closeTopMenu();
-		} else {
-			openMenu(menu);
-		}
-	}
-
 	return (
 		<>
-			<MenuTrigger menuId={menu.id} onClick={handleClick}>
+			<MenuTrigger menu={menu}>
 				<div
 					className="NLT__function-cell NLT__selectable"
 					ref={triggerRef}

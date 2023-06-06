@@ -66,6 +66,7 @@ export default function BaseMenu({
 	}
 
 	const hasOptions =
+		columnType === CellType.EMBED ||
 		columnType === CellType.DATE ||
 		columnType === CellType.CURRENCY ||
 		columnType === CellType.LAST_EDITED_TIME ||
