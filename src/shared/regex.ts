@@ -48,3 +48,20 @@ export const CHECKBOX_REGEX = new RegExp(/^\[[x ]{0,1}\]$/);
  * [x]
  */
 export const CHECKBOX_CHECKED_REGEX = new RegExp(/^\[[x]\]$/);
+
+/**
+ * Matches a URL
+ * ^ - Start of the string
+ * https?:\/\/ - Matches "http://" or "https://"
+ * (www\.)? - Matches an optional "www." at the beginning of the domain
+ * [\w.-]+ - Matches the domain name (alphanumeric characters, dots, and hyphens)
+ * \. - Matches a literal dot before the top-level domain
+ * (\/[\w.-]+)* - Matches optional path segments separated by slashes
+ * [\w.-]+ - Matches the top-level domain (alphanumeric characters, dots, and hyphens)
+ * (\/?(\?[\w.-]+=[\w.-]+(&[\w.-]+=[\w.-]+)*)?)? - Matches an optional query
+ * $ - End of the string
+ * /i - Case-insensitive matching
+ */
+export const URL_REGEX = new RegExp(
+	/^https?:\/\/(www\.)?[\w.-]+\.[\w.-]+(\/[\w.-]+)*(\/?(\?[\w.-]+=[\w.-]+(&[\w.-]+=[\w.-]+)*)?)?$/i
+);
