@@ -237,25 +237,7 @@ export default function BodyCell({
 		onTagClick(cellId, rowId, tagId, columnType === CellType.MULTI_TAG);
 	}
 
-	const handleTextInputChange = React.useCallback(
-		(value: string) => {
-			onContentChange(cellId, rowId, value);
-		},
-		[cellId, rowId, onContentChange]
-	);
-
-	const handleEmbedInputChange = React.useCallback(
-		(value: string) => {
-			onContentChange(cellId, rowId, value);
-		},
-		[cellId, rowId, onContentChange]
-	);
-
-	function handleFileInputChange(value: string) {
-		onContentChange(cellId, rowId, value);
-	}
-
-	const handleNumberInputChange = React.useCallback(
+	const handleInputChange = React.useCallback(
 		(value: string) => {
 			onContentChange(cellId, rowId, value);
 		},
@@ -265,13 +247,6 @@ export default function BodyCell({
 	function handleCheckboxChange(value: string) {
 		onContentChange(cellId, rowId, value);
 	}
-
-	const handleCurrencyChange = React.useCallback(
-		(value: string) => {
-			onContentChange(cellId, rowId, value);
-		},
-		[cellId, rowId, onContentChange]
-	);
 
 	function handleDateFormatChange(value: DateFormat) {
 		onDateFormatChange(columnId, value);
@@ -359,10 +334,7 @@ export default function BodyCell({
 						/>
 					)}
 					{columnType === CellType.EMBED && (
-						<EmbedCell
-							markdown={markdown}
-							shouldWrapOverflow={shouldWrapOverflow}
-						/>
+						<EmbedCell markdown={markdown} />
 					)}
 					{columnType === CellType.FILE && (
 						<FileCell
@@ -433,7 +405,7 @@ export default function BodyCell({
 						menuCloseRequest={menuCloseRequest}
 						shouldWrapOverflow={shouldWrapOverflow}
 						value={markdown}
-						onChange={handleTextInputChange}
+						onChange={handleInputChange}
 						onMenuClose={handleMenuClose}
 					/>
 				)}
@@ -442,13 +414,13 @@ export default function BodyCell({
 						menuCloseRequest={menuCloseRequest}
 						shouldWrapOverflow={shouldWrapOverflow}
 						value={markdown}
-						onChange={handleTextInputChange}
+						onChange={handleInputChange}
 						onMenuClose={handleMenuClose}
 					/>
 				)}
 				{columnType === CellType.FILE && (
 					<FileCellEdit
-						onChange={handleFileInputChange}
+						onChange={handleInputChange}
 						onMenuClose={handleMenuClose}
 					/>
 				)}
@@ -456,7 +428,7 @@ export default function BodyCell({
 					<NumberCellEdit
 						menuCloseRequest={menuCloseRequest}
 						value={markdown}
-						onChange={handleNumberInputChange}
+						onChange={handleInputChange}
 						onMenuClose={handleMenuClose}
 					/>
 				)}
@@ -488,7 +460,7 @@ export default function BodyCell({
 					<CurrencyCellEdit
 						menuCloseRequest={menuCloseRequest}
 						value={markdown}
-						onChange={handleCurrencyChange}
+						onChange={handleInputChange}
 						onMenuClose={handleMenuClose}
 					/>
 				)}
