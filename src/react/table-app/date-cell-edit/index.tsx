@@ -18,8 +18,6 @@ import { MenuCloseRequest, MenuLevel } from "src/shared/menu/types";
 import MenuTrigger from "src/react/shared/menu-trigger";
 import { getDisplayNameForDateFormat } from "src/shared/table-state/display-name";
 import { css } from "@emotion/react";
-import { getTableBackgroundColor, getTableBorderColor } from "src/shared/color";
-
 import "./styles.css";
 import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 
@@ -91,7 +89,15 @@ export default function DateCellEdit({
 
 		if (hasCloseRequestTimeChanged && menuCloseRequest !== null)
 			validateInput();
-	}, [hasCloseRequestTimeChanged, localValue, menuCloseRequest, dateFormat]);
+	}, [
+		value,
+		hasCloseRequestTimeChanged,
+		localValue,
+		menuCloseRequest,
+		dateFormat,
+		onDateTimeChange,
+		onMenuClose,
+	]);
 
 	//If we call onMenuClose directly in the validateInput function, we can see the cell markdown
 	//change to the new value as the menu closes
@@ -101,7 +107,7 @@ export default function DateCellEdit({
 		if (closeTime !== 0) {
 			onMenuClose();
 		}
-	}, [closeTime]);
+	}, [closeTime, onMenuClose]);
 
 	function handleDateFormatChange(value: DateFormat) {
 		onDateFormatChange(value);
@@ -113,9 +119,6 @@ export default function DateCellEdit({
 		onMenuClose();
 	}
 
-	const tableBackgroundColor = getTableBackgroundColor();
-	const tableBorderColor = getTableBorderColor();
-
 	return (
 		<>
 			<div ref={triggerRef} className="NLT__date-cell-edit">
@@ -125,9 +128,9 @@ export default function DateCellEdit({
 							css={css`
 								width: 100%;
 								height: 100%;
-								border: 1px solid ${tableBorderColor};
+								border: 1px solid var(--table-border-color);
 								padding: 5px;
-								background-color: ${tableBackgroundColor};
+								background-color: var(--background-secondary);
 							`}
 							ref={inputRef}
 							aria-invalid={isInputInvalid}

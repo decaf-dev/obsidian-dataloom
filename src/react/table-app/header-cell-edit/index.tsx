@@ -87,6 +87,7 @@ const HeaderMenu = React.forwardRef<HTMLDivElement, Props>(function HeaderMenu(
 			onMenuClose();
 		}
 	}, [
+		cellId,
 		hasCloseRequestTimeChanged,
 		menuCloseRequest,
 		submenu,

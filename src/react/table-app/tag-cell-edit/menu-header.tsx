@@ -3,7 +3,6 @@ import { Tag as TagType } from "src/shared/types/types";
 import Tag from "src/react/shared/tag";
 import Wrap from "src/react/shared/wrap";
 
-import { getTableBackgroundColor, getTableBorderColor } from "src/shared/color";
 import React from "react";
 
 interface MenuHeaderProps {
@@ -22,19 +21,16 @@ export default function MenuHeader({
 	const inputRef = React.useRef<HTMLInputElement | null>(null);
 
 	function handleInputChange(value: string) {
-		// If the value starts with whitespace don't add the tag
-		if (value.match(/^\s+$/)) return;
+		if (value.match(/^\s/)) return;
+		//Trim white space when we're adding it
 		onInputValueChange(value);
 	}
-
-	const tableBackgroundColor = getTableBackgroundColor();
-	const tableBorderColor = getTableBorderColor();
 
 	return (
 		<div
 			css={css`
-				background-color: ${tableBackgroundColor};
-				border-bottom: 1px solid ${tableBorderColor};
+				background-color: var(--background-secondary);
+				border-bottom: 1px solid var(--table-border-color);
 				padding: 4px 10px;
 			`}
 		>
