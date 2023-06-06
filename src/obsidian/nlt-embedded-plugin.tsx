@@ -17,7 +17,6 @@ import {
 	removeEmbeddedLinkChildren,
 } from "./utils";
 import { v4 as uuidv4 } from "uuid";
-import { nltEventSystem } from "src/shared/event-system/event-system";
 
 class NLTEmbeddedPlugin implements PluginValue {
 	private tableApps: {

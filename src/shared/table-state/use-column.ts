@@ -1,9 +1,11 @@
 import React from "react";
 import {
+	AspectRatio,
 	CellType,
 	CurrencyType,
 	DateFormat,
 	FunctionType,
+	PaddingSize,
 	SortDir,
 } from "src/shared/types/types";
 import { useLogger } from "../logger";
@@ -68,6 +70,51 @@ export const useColumn = () => {
 			new ColumnUpdateCommand(columnId, "sortDir", {
 				value: sortDir,
 				shouldSortRows: true,
+			})
+		);
+	}
+
+	function handleHorizontalPaddingClick(
+		columnId: string,
+		padding: PaddingSize
+	) {
+		logger("handleHorziontalPaddingClick", {
+			columnId,
+			padding,
+		});
+		doCommand(
+			new ColumnUpdateCommand(columnId, "horizontalPadding", {
+				value: padding,
+			})
+		);
+	}
+
+	function handleVerticalPaddingClick(
+		columnId: string,
+		padding: PaddingSize
+	) {
+		logger("handleVerticalPaddingClick", {
+			columnId,
+			padding,
+		});
+		doCommand(
+			new ColumnUpdateCommand(columnId, "verticalPadding", {
+				value: padding,
+			})
+		);
+	}
+
+	function handleAspectRatioClick(
+		columnId: string,
+		aspectRatio: AspectRatio
+	) {
+		logger("handleVerticalPaddingClick", {
+			columnId,
+			aspectRatio,
+		});
+		doCommand(
+			new ColumnUpdateCommand(columnId, "aspectRatio", {
+				value: aspectRatio,
 			})
 		);
 	}
@@ -181,5 +228,8 @@ export const useColumn = () => {
 		handleColumnWidthChange,
 		handleWrapContentToggle,
 		handleFunctionTypeChange,
+		handleHorizontalPaddingClick,
+		handleVerticalPaddingClick,
+		handleAspectRatioClick,
 	};
 };

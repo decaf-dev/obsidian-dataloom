@@ -8,16 +8,20 @@ import CurrencySubmenu from "./currency-submenu";
 import DateFormatSubmenu from "./date-format-submenu";
 
 import {
+	AspectRatio,
 	CellType,
 	CurrencyType,
 	DateFormat,
 	SortDir,
+	PaddingSize,
 } from "src/shared/types/types";
 import { SubmenuType } from "./types";
 
 import { MenuCloseRequest } from "src/shared/menu/types";
 import { useCompare } from "src/shared/hooks";
 import { css } from "@emotion/react";
+import AspectRatioSubmenu from "./aspect-ratio-submenu";
+import PaddingSubmenu from "./padding-submenu";
 
 interface Props {
 	isOpen: boolean;
@@ -29,6 +33,9 @@ interface Props {
 	currencyType: CurrencyType;
 	rowId: string;
 	cellId: string;
+	aspectRatio: AspectRatio;
+	horizontalPadding: PaddingSize;
+	verticalPadding: PaddingSize;
 	markdown: string;
 	shouldWrapOverflow: boolean;
 	columnSortDir: SortDir;
@@ -43,6 +50,9 @@ interface Props {
 	onNameChange: (cellId: string, value: string) => void;
 	onCurrencyChange: (columnId: string, value: CurrencyType) => void;
 	onDateFormatChange: (columnId: string, value: DateFormat) => void;
+	onAspectRatioClick: (columnId: string, value: AspectRatio) => void;
+	onHorizontalPaddingClick: (columnId: string, value: PaddingSize) => void;
+	onVerticalPaddingClick: (columnId: string, value: PaddingSize) => void;
 	onMenuClose: () => void;
 }
 
@@ -56,6 +66,9 @@ const HeaderMenu = React.forwardRef<HTMLDivElement, Props>(function HeaderMenu(
 		markdown,
 		dateFormat,
 		currencyType,
+		horizontalPadding,
+		verticalPadding,
+		aspectRatio,
 		canDeleteColumn,
 		columnType,
 		columnSortDir,
@@ -63,6 +76,9 @@ const HeaderMenu = React.forwardRef<HTMLDivElement, Props>(function HeaderMenu(
 		menuCloseRequest,
 		shouldWrapOverflow,
 		onTypeSelect,
+		onVerticalPaddingClick,
+		onHorizontalPaddingClick,
+		onAspectRatioClick,
 		onSortClick,
 		onDeleteClick,
 		onMenuClose,
@@ -99,6 +115,24 @@ const HeaderMenu = React.forwardRef<HTMLDivElement, Props>(function HeaderMenu(
 	function handleSortClick(sortDir: SortDir) {
 		onSortClick(columnId, sortDir);
 		onMenuClose();
+	}
+
+	function handleAspectRatioClick(value: AspectRatio) {
+		onAspectRatioClick(columnId, value);
+		onMenuClose();
+		setSubmenu(null);
+	}
+
+	function handleHorizontalPaddingClick(value: PaddingSize) {
+		onHorizontalPaddingClick(columnId, value);
+		onMenuClose();
+		setSubmenu(null);
+	}
+
+	function handleVerticalPaddingClick(value: PaddingSize) {
+		onVerticalPaddingClick(columnId, value);
+		onMenuClose();
+		setSubmenu(null);
 	}
 
 	function handleTypeClick(type: CellType) {
@@ -159,10 +193,39 @@ const HeaderMenu = React.forwardRef<HTMLDivElement, Props>(function HeaderMenu(
 					<OptionSubmenu
 						title="Options"
 						type={columnType}
+						horizontalPadding={horizontalPadding}
+						verticalPadding={verticalPadding}
+						aspectRatio={aspectRatio}
 						dateFormat={dateFormat}
 						currencyType={currencyType}
 						onBackClick={() => setSubmenu(null)}
 						onSubmenuChange={setSubmenu}
+					/>
+				)}
+				{submenu === SubmenuType.ASPECT_RATIO && (
+					<AspectRatioSubmenu
+						title="Aspect Ratio"
+						value={aspectRatio}
+						onValueClick={handleAspectRatioClick}
+						onBackClick={() => setSubmenu(null)}
+					/>
+				)}
+
+				{submenu === SubmenuType.HORIZONTAL_PADDING && (
+					<PaddingSubmenu
+						title="Horizontal Padding"
+						value={horizontalPadding}
+						onValueClick={handleHorizontalPaddingClick}
+						onBackClick={() => setSubmenu(null)}
+					/>
+				)}
+
+				{submenu === SubmenuType.VERTICAL_PADDING && (
+					<PaddingSubmenu
+						title="Vertical Padding"
+						value={verticalPadding}
+						onValueClick={handleVerticalPaddingClick}
+						onBackClick={() => setSubmenu(null)}
 					/>
 				)}
 				{submenu === SubmenuType.TYPE && (

@@ -1,4 +1,4 @@
-export enum Color {
+enum Color {
 	LIGHT_GRAY = "light gray",
 	GRAY = "gray",
 	BROWN = "brown",
@@ -11,24 +11,13 @@ export enum Color {
 	RED = "red",
 }
 
-export enum PaddingSize {
-	SM = "sm",
-	MD = "md",
-	LG = "lg",
-	XL = "xl",
-	XXL = "2xl",
-	XXXL = "3xl",
-	XXXXL = "4xl",
-	UNSET = "unset",
-}
-
-export enum SortDir {
+enum SortDir {
 	ASC = "asc",
 	DESC = "desc",
 	NONE = "default",
 }
 
-export enum CellType {
+enum CellType {
 	TEXT = "text",
 	EMBED = "embed",
 	FILE = "file",
@@ -42,7 +31,7 @@ export enum CellType {
 	LAST_EDITED_TIME = "last-edited-time",
 }
 
-export enum FilterType {
+enum FilterType {
 	IS = "is",
 	IS_NOT = "is-not",
 	CONTAINS = "contains",
@@ -53,7 +42,7 @@ export enum FilterType {
 	IS_NOT_EMPTY = "is-not-empty",
 }
 
-export enum DateFormat {
+enum DateFormat {
 	MM_DD_YYYY = "mm/dd/yyyy",
 	DD_MM_YYYY = "dd/mm/yyyy",
 	YYYY_MM_DD = "yyyy/mm/dd",
@@ -61,7 +50,7 @@ export enum DateFormat {
 	RELATIVE = "relative",
 }
 
-export enum CurrencyType {
+enum CurrencyType {
 	UNITED_STATES = "USD",
 	CANADA = "CAD",
 	SINGAPORE = "SGB",
@@ -82,7 +71,7 @@ export enum CurrencyType {
 	ARGENTINA = "ARS",
 }
 
-export enum GeneralFunction {
+enum GeneralFunction {
 	NONE = "none",
 	COUNT_ALL = "count-all",
 	COUNT_VALUES = "count-values",
@@ -93,7 +82,7 @@ export enum GeneralFunction {
 	PERCENT_NOT_EMPTY = "percent-not-empty",
 }
 
-export enum NumberFunction {
+enum NumberFunction {
 	SUM = "sum",
 	AVG = "avg",
 	MIN = "min",
@@ -102,16 +91,9 @@ export enum NumberFunction {
 	RANGE = "range",
 }
 
-export enum AspectRatio {
-	ONE_BY_ONE = "1/1",
-	NINE_BY_SIXTEEN = "9/16",
-	FOUR_BY_THREE = "4/3",
-	SIXTEEN_BY_NINE = "16/9",
-}
+type FunctionType = GeneralFunction | NumberFunction;
 
-export type FunctionType = GeneralFunction | NumberFunction;
-
-export interface Column {
+interface Column {
 	id: string;
 	sortDir: SortDir;
 	width: string;
@@ -122,12 +104,9 @@ export interface Column {
 	shouldWrapOverflow: boolean;
 	tags: Tag[];
 	functionType: FunctionType;
-	aspectRatio: AspectRatio;
-	horizontalPadding: PaddingSize;
-	verticalPadding: PaddingSize;
 }
 
-export interface FilterRule {
+interface FilterRule {
 	id: string;
 	columnId: string;
 	type: FilterType;
@@ -140,40 +119,40 @@ interface Row {
 	id: string;
 }
 
-export interface BodyRow extends Row {
+interface BodyRow extends Row {
 	index: number;
 	creationTime: number;
 	lastEditedTime: number;
 }
 
-export type HeaderRow = Row;
-export type FooterRow = Row;
+type HeaderRow = Row;
+type FooterRow = Row;
 
-export interface Cell {
+interface Cell {
 	id: string;
 	columnId: string;
 	rowId: string;
 }
 
-export interface HeaderCell extends Cell {
+interface HeaderCell extends Cell {
 	markdown: string;
 }
 
-export interface BodyCell extends Cell {
+interface BodyCell extends Cell {
 	dateTime: number | null;
 	markdown: string;
 	tagIds: string[];
 }
 
-export type FooterCell = Cell;
+type FooterCell = Cell;
 
-export interface Tag {
+interface Tag {
 	id: string;
 	markdown: string;
 	color: Color;
 }
 
-export interface TableModel {
+interface TableModel {
 	columns: Column[];
 	headerRows: HeaderRow[];
 	bodyRows: BodyRow[];
@@ -183,7 +162,7 @@ export interface TableModel {
 	footerCells: FooterCell[];
 	filterRules: FilterRule[];
 }
-export interface TableState {
+export interface TableState6160 {
 	pluginVersion: string;
 	model: TableModel;
 }

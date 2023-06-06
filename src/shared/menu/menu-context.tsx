@@ -114,7 +114,7 @@ export default function MenuProvider({ children }: Props) {
 			//we will have 2 parent elements that are focused
 			removeFocusVisibleClass();
 		},
-		[openMenus]
+		[canOpenMenu]
 	);
 
 	/**
@@ -274,7 +274,14 @@ export default function MenuProvider({ children }: Props) {
 		//run first
 		nltEventSystem.addEventListener("click", handleClick, 2);
 		return () => nltEventSystem.removeEventListener("click", handleClick);
-	}, [isMenuOpen, openMenus, requestCloseTopMenu]);
+	}, [
+		isMenuOpen,
+		openMenus,
+		requestCloseTopMenu,
+		canOpenMenu,
+		findMenuFromTriggerEl,
+		openMenu,
+	]);
 
 	React.useEffect(() => {
 		function handleEnterDown(e: KeyboardEvent) {
