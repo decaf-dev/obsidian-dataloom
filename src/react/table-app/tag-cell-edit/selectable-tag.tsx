@@ -57,14 +57,18 @@ export default function SelectableTag({
 					overflow: hidden;
 				`}
 				className="NLT__selectable"
-				onClick={() => onClick(id)}
+				onClick={(e) => {
+					//Only trigger onClick if the click is on the tag and not the menu button
+					if (e.target === triggerRef.current) {
+						onClick(id);
+					}
+				}}
 			>
 				<Tag markdown={markdown} color={color} maxWidth="150px" />
 				<MenuButton
 					isSimple
 					icon={<Icon lucideId="more-horizontal" />}
 					menu={menu}
-					onClick={(e) => e.stopPropagation()}
 				/>
 			</div>
 			<TagColorMenu
