@@ -66,11 +66,7 @@ const Menu = React.forwardRef<HTMLDivElement, Props>(function Menu(
 									? "scroll"
 									: "unset"};
 								background-color: var(--background-primary);
-								border: 1px solid
-									var(--background-modifier-border);
-								box-shadow: 0 2px 8px
-									var(--background-modifier-box-shadow);
-								border-radius: 4px;
+								border: 1px solid var(--modal-border-color);
 								font-weight: 400;
 							`}
 						>

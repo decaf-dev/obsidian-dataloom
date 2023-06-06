@@ -126,6 +126,8 @@ export default function DateCellEdit({
 							css={css`
 								width: 100%;
 								height: 100%;
+								transition: none !improtant;
+								border-radius: 0px;
 								border: 1px solid var(--table-border-color);
 								padding: 5px;
 								background-color: var(--background-secondary);

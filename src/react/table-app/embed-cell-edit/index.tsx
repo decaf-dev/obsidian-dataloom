@@ -8,11 +8,13 @@ import { css } from "@emotion/react";
 const textAreaStyle = css`
 	width: 100%;
 	height: 100%;
-	border: 0 !important;
+	border: 0;
+	border-radius: 0;
 	overflow: hidden;
 	padding: var(--nlt-cell-spacing-x) var(--nlt-cell-spacing-y);
 	resize: none;
-	font-size: var(--font-ui-medium) !important;
+	font-size: var(--font-ui-medium);
+	transition: none !important;
 `;
 
 interface Props {
@@ -85,6 +87,9 @@ export default function EmbedCellEdit({
 				ref={inputRef}
 				value={localValue}
 				onChange={handleTextareaChange}
+				onBlur={(e) => {
+					e.target.classList.add("NLT__blur");
+				}}
 			/>
 		</div>
 	);
