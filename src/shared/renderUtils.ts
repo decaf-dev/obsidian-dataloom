@@ -34,3 +34,8 @@ export const getDynamicSize = <T>(
 export const isMobileSize = () => {
 	return window.innerWidth <= 480;
 };
+
+export const hasDarkTheme = () => {
+	const el = document.querySelector("body");
+	return el?.className.includes("theme-dark") ?? false;
+};
