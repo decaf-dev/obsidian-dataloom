@@ -11,7 +11,7 @@ import { ColumNotFoundError } from "src/shared/table-state/table-error";
 import { ColumnWithMarkdown } from "../types";
 import React from "react";
 import { css } from "@emotion/react";
-import { isMobileSize } from "src/shared/renderUtils";
+import { isMobileSize } from "src/shared/render/utils";
 
 interface Props {
 	id: string;

@@ -22,9 +22,9 @@ import {
 	serializeTableState,
 } from "./data/serialize-table-state";
 import { updateLinkReferences } from "./data/utils";
-import { hasDarkTheme } from "./shared/renderUtils";
 import { filterUniqueStrings } from "./react/shared/suggest-menu/utils";
 import { getBasename } from "./shared/link/link-utils";
+import { hasDarkTheme } from "./shared/render/utils";
 
 export interface NLTSettings {
 	shouldDebug: boolean;

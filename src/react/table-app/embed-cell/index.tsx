@@ -1,9 +1,59 @@
+import React from "react";
+
 import { css } from "@emotion/react";
 import { getEmbedContent } from "src/shared/export/cell-content";
-import { useRenderMarkdown } from "src/shared/render/hooks";
+import { useRenderEmbed } from "src/shared/render/hooks";
 import { getSpacing } from "src/shared/spacing";
 import { AspectRatio, PaddingSize } from "src/shared/types/types";
 import { isURL } from "src/shared/validators";
+import Text from "src/react/shared/text";
+
+interface LinkProps extends Props {
+	source: string;
+}
+
+const EmbeddedLink = ({
+	source,
+	markdown,
+	aspectRatio,
+	horizontalPadding,
+	verticalPadding,
+}: LinkProps) => {
+	const { containerRef, embedRef, appendOrReplaceFirstChild } =
+		useRenderEmbed(source, markdown);
+
+	const paddingX = getSpacing(horizontalPadding);
+	const paddingY = getSpacing(verticalPadding);
+
+	return (
+		<div
+			css={css`
+				width: 100%;
+				aspect-ratio: ${aspectRatio};
+				padding-left: ${paddingX};
+				padding-right: ${paddingX};
+				padding-top: ${paddingY};
+				padding-bottom: ${paddingY};
+
+				iframe {
+					width: 100%;
+					height: 100%;
+				}
+
+				p {
+					width: 100%;
+					height: 100%;
+					margin: 0px;
+				}
+			`}
+			ref={(node) => {
+				containerRef.current = node;
+				appendOrReplaceFirstChild(node, embedRef.current);
+			}}
+		/>
+	);
+};
+
 interface Props {
 	markdown: string;
 	aspectRatio: AspectRatio;
@@ -17,19 +67,13 @@ export default function EmbedCell({
 	horizontalPadding,
 	verticalPadding,
 }: Props) {
-	let externalLinkMarkdown = "";
+	let linkMarkdown = "";
 	let isValidURL = false;
-	if (markdown !== "") {
-		if (isURL(markdown)) {
-			isValidURL = true;
-			externalLinkMarkdown = getEmbedContent(markdown);
-		} else {
-			externalLinkMarkdown = "Invalid URL";
-		}
-	}
 
-	const { containerRef, markdownRef, appendOrReplaceFirstChild } =
-		useRenderMarkdown(externalLinkMarkdown, false);
+	if (isURL(markdown)) {
+		isValidURL = true;
+		linkMarkdown = getEmbedContent(markdown);
+	}
 	return (
 		<div
 			className="NLT__embed-cell"
@@ -38,39 +82,16 @@ export default function EmbedCell({
 				height: 100%;
 			`}
 		>
-			<div
-				css={css`
-					width: 100%;
-					aspect-ratio: ${aspectRatio};
-					padding-left: ${isValidURL
-						? getSpacing(horizontalPadding)
-						: "unset"};
-					padding-right: ${isValidURL
-						? getSpacing(horizontalPadding)
-						: "unset"};
-					padding-top: ${isValidURL
-						? getSpacing(verticalPadding)
-						: "unset"};
-					padding-bottom: ${isValidURL
-						? getSpacing(verticalPadding)
-						: "unset"};
-
-					iframe {
-						width: 100%;
-						height: 100%;
-					}
-
-					p {
-						width: 100%;
-						height: 100%;
-						margin: 0px;
-					}
-				`}
-				ref={(node) => {
-					containerRef.current = node;
-					appendOrReplaceFirstChild(node, markdownRef.current);
-				}}
-			/>
+			{isValidURL && (
+				<EmbeddedLink
+					source={markdown}
+					markdown={linkMarkdown}
+					aspectRatio={aspectRatio}
+					horizontalPadding={horizontalPadding}
+					verticalPadding={verticalPadding}
+				/>
+			)}
+			{!isValidURL && markdown !== "" && <Text value="Invalid URL" />}
 		</div>
 	);
 }
