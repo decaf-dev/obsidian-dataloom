@@ -1,7 +1,7 @@
 import React from "react";
 
 import { setIcon } from "obsidian";
-import { appendOrReplaceFirstChild } from "src/shared/renderUtils";
+import { appendOrReplaceFirstChild } from "src/shared/render/utils";
 
 interface Props {
 	lucideId: string;
