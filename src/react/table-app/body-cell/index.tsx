@@ -32,14 +32,11 @@ import {
 } from "src/shared/table-state/constants";
 import { isCheckboxChecked } from "src/shared/validators";
 
-import { useCompare } from "src/shared/hooks";
 import { Color } from "src/shared/types/types";
 import CurrencyCell from "../currency-cell";
 import CurrencyCellEdit from "../currency-cell-edit";
 import MenuTrigger from "src/react/shared/menu-trigger";
 
-import { useTableState } from "src/shared/table-state/table-state-context";
-import RowSortCommand from "src/shared/commands/row-sort-command";
 import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 import FileCell from "../file-cell";
 import FileCellEdit from "../file-cell-edit";
@@ -140,16 +137,6 @@ export default function BodyCell({
 		});
 	const { triggerPosition, triggerRef } = useMenuTriggerPosition();
 	useShiftMenu(triggerRef, menuRef, isMenuOpen);
-
-	const { doCommand } = useTableState();
-
-	//Once the menu is closed, we want to sort all rows
-	const didIsMenuOpenChange = useCompare(isMenuOpen, false);
-	React.useEffect(() => {
-		if (didIsMenuOpenChange) {
-			if (!isMenuOpen) doCommand(new RowSortCommand());
-		}
-	}, [didIsMenuOpenChange, isMenuOpen, doCommand]);
 
 	async function handleCellContextClick() {
 		try {
