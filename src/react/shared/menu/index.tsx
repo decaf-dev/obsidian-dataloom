@@ -5,6 +5,8 @@ import { css } from "@emotion/react";
 
 import { numToPx } from "src/shared/conversion";
 import { useMenuContext } from "src/shared/menu/menu-context";
+import { EVENT_OUTSIDE_CLICK } from "src/shared/events";
+import { isTextSelected } from "src/shared/menu/utils";
 
 interface Props {
 	id: string;
@@ -32,17 +34,47 @@ const Menu = React.forwardRef<HTMLDivElement, Props>(function Menu(
 	}: Props,
 	ref
 ) {
-	const { topMenu, closeTopMenu } = useMenuContext();
+	const { topMenu, closeTopMenu, requestCloseTopMenu } = useMenuContext();
+	const isTextHighlighted = React.useRef(false);
+
+	function handleMouseDown() {
+		isTextHighlighted.current = false;
+	}
+
+	function handleSelect() {
+		isTextHighlighted.current = isTextSelected();
+	}
+
+	//Handle outside clicks
+	//The events are triggered from the Obsidian event registered in main.ts
+	React.useEffect(() => {
+		function handleOutsideClick() {
+			if (topMenu?.id !== id) return;
+
+			//If we just highlighted text in an input and we released the mouse outside of the
+			//menu, don't close the menu
+			if (isTextHighlighted.current) {
+				isTextHighlighted.current = false;
+				return;
+			}
+			closeTopMenu();
+		}
+
+		if (isOpen) {
+			//@ts-expect-error not a native Obsidian event
+			app.workspace.on(EVENT_OUTSIDE_CLICK, handleOutsideClick);
+		}
+
+		return () => app.workspace.off(EVENT_OUTSIDE_CLICK, handleOutsideClick);
+	}, [isOpen]);
 
 	function handleKeyDown(e: React.KeyboardEvent) {
-		//Don't propagate click events to menus further up the tree
-		e.stopPropagation();
-
-		//Stop click event from running
-		e.preventDefault();
+		console.log("MENU KEY DOWN");
 
 		if (e.key === "Enter") {
-			closeTopMenu();
+			//Stop click event from running
+			e.preventDefault();
+			requestCloseTopMenu("enter");
 		}
 	}
 
@@ -94,6 +126,8 @@ const Menu = React.forwardRef<HTMLDivElement, Props>(function Menu(
 							`}
 							onClick={handleClick}
 							onKeyDown={handleKeyDown}
+							onMouseDown={handleMouseDown}
+							onSelect={handleSelect}
 						>
 							{children}
 						</div>

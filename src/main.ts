@@ -12,6 +12,7 @@ import {
 	EVENT_COLUMN_DELETE,
 	EVENT_DOWNLOAD_CSV,
 	EVENT_DOWNLOAD_MARKDOWN,
+	EVENT_OUTSIDE_CLICK,
 	EVENT_REFRESH_TABLES,
 	EVENT_ROW_ADD,
 	EVENT_ROW_DELETE,
@@ -25,6 +26,7 @@ import { updateLinkReferences } from "./data/utils";
 import { filterUniqueStrings } from "./react/shared/suggest-menu/utils";
 import { getBasename } from "./shared/link/link-utils";
 import { hasDarkTheme } from "./shared/render/utils";
+import { removeFocusVisibleClass } from "./shared/menu/focus-visible";
 
 export interface NLTSettings {
 	shouldDebug: boolean;
@@ -114,9 +116,13 @@ export default class NLTPlugin extends Plugin {
 	}
 
 	private registerDOMEvents() {
-		//These events are guaranteed to fire after our React events
-		this.registerDomEvent(document, "click", (evt: MouseEvent) => {
-			console.log("click", evt);
+		//This event is guaranteed to fire after our React synthetic event handlers
+		this.registerDomEvent(document, "click", () => {
+			console.log("OUTSIDE CLICK");
+
+			//Clear the focus-visible class from the last focused element
+			removeFocusVisibleClass();
+			this.app.workspace.trigger(EVENT_OUTSIDE_CLICK);
 		});
 	}
 
