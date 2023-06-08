@@ -12,6 +12,7 @@ interface Props {
 	grow?: boolean;
 	width?: string;
 	height?: string;
+	minHeight?: string;
 }
 
 export default function Stack({
@@ -22,6 +23,7 @@ export default function Stack({
 	children,
 	width = "unset",
 	height = "unset",
+	minHeight = "unset",
 	isVertical,
 }: Props) {
 	let justifyContent = justify;
@@ -47,6 +49,7 @@ export default function Stack({
 				)};
 				width: ${width};
 				height: ${height};
+				min-height: ${minHeight};
 			`}
 		>
 			{children}

@@ -42,6 +42,7 @@ export default function BaseMenu({
 	onDeleteClick,
 	onColumnNameChange,
 }: Props) {
+	const lastKeyPressed = React.useRef<string | null>(null);
 	const inputRef = React.useRef<HTMLInputElement | null>(null);
 	const { setPreviousSelectionStart } = useInputSelection(
 		inputRef,
@@ -65,6 +66,10 @@ export default function BaseMenu({
 		onColumnNameChange(inputValue);
 	}
 
+	function handleKeyDown(e: React.KeyboardEvent) {
+		lastKeyPressed.current = e.key;
+	}
+
 	const hasOptions =
 		columnType === CellType.EMBED ||
 		columnType === CellType.DATE ||
@@ -77,6 +82,7 @@ export default function BaseMenu({
 			<Stack spacing="sm" isVertical>
 				<Padding px="md" py="sm">
 					<input
+						className="NLT__focusable"
 						autoFocus
 						css={css`
 							background-color: var(--background-secondary);
@@ -88,6 +94,11 @@ export default function BaseMenu({
 						ref={inputRef}
 						value={columnName}
 						onChange={(e) => handleInputChange(e.target.value)}
+						onKeyDown={handleKeyDown}
+						onBlur={(e) => {
+							if (lastKeyPressed.current === "Tab") return;
+							e.target.classList.add("NLT__focus-visible");
+						}}
 					/>
 				</Padding>
 				<MenuItem

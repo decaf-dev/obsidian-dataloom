@@ -29,11 +29,27 @@ import { Store } from "@reduxjs/toolkit";
 import { MarkdownView, WorkspaceLeaf } from "obsidian";
 
 import "./styles.css";
+import _ from "lodash";
+import React from "react";
+import {
+	isMacRedoDown,
+	isMacUndoDown,
+	isWindowsRedoDown,
+	isWindowsUndoDown,
+} from "src/shared/keyboard-event";
+import { removeFocusVisibleClass } from "src/shared/menu/focus-visible";
+import { nltEventSystem } from "src/shared/event-system/event-system";
 
 const TableApp = () => {
 	const { appId, leaf } = useMountContext();
-	const { tableState, resizingColumnId, searchText, setTableState } =
-		useTableState();
+	const {
+		tableState,
+		resizingColumnId,
+		searchText,
+		commandRedo,
+		commandUndo,
+		setTableState,
+	} = useTableState();
 
 	useExportEvents(tableState);
 
@@ -85,6 +101,24 @@ const TableApp = () => {
 	const firstColumnId = useUUID();
 	const lastColumnId = useUUID();
 
+	function handleKeyDown(e: React.KeyboardEvent) {
+		console.log("APP KEY DOWN");
+
+		if (e.key === "Tab") {
+			removeFocusVisibleClass();
+		} else if (isWindowsRedoDown(e) || isMacRedoDown(e)) {
+			e.preventDefault();
+			commandRedo();
+		} else if (isWindowsUndoDown(e) || isMacUndoDown(e)) {
+			e.preventDefault();
+			commandUndo();
+		}
+
+		//Send the event to the event system
+		//This is necessary to enabling scrolling with the arrow keys
+		nltEventSystem.dispatchEvent("keydown", e);
+	}
+
 	const {
 		headerRows,
 		footerRows,
@@ -119,6 +153,7 @@ const TableApp = () => {
 					? "1px solid var(--background-modifier-border)"
 					: "unset"};
 			`}
+			onKeyDown={handleKeyDown}
 		>
 			<OptionBar
 				headerCells={headerCells}

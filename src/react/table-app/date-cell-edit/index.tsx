@@ -112,7 +112,7 @@ export default function DateCellEdit({
 		closeTopMenu();
 	}
 
-	function handleClearClick(e: React.MouseEvent) {
+	function handleClearClick() {
 		onDateTimeChange(null);
 		onMenuClose();
 	}

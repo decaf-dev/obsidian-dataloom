@@ -16,7 +16,15 @@ export default function ColorItem({
 	isSelected,
 	onColorClick,
 }: Props) {
-	let containerClass = "NLT__color-item NLT__selectable";
+	function handleKeyDown(e: React.KeyboardEvent) {
+		if (e.key === "Enter") {
+			//Stop propagation so the the menu doesn't close when pressing enter
+			e.stopPropagation();
+			onColorClick(color);
+		}
+	}
+
+	let containerClass = "NLT__color-item NLT__focusable NLT__selectable";
 	if (isSelected) containerClass += " NLT__selected";
 
 	const colorClass = findColorClassName(isDarkMode, color);
@@ -25,7 +33,9 @@ export default function ColorItem({
 
 	return (
 		<div
+			tabIndex={0}
 			className={containerClass}
+			onKeyDown={handleKeyDown}
 			onClick={() => {
 				onColorClick(color);
 			}}

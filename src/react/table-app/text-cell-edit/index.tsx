@@ -80,6 +80,7 @@ export default function TextCellEdit({
 	]);
 
 	function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+		console.log("TEXT CELL EDIT KEY DOWN");
 		const el = e.target as HTMLTextAreaElement;
 
 		if (e.key === "Enter") {

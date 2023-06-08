@@ -42,7 +42,7 @@ export default function TagCellEdit({
 			setInputValue("");
 			setNewTagColor(randomColor());
 		},
-		[onTagAdd, onMenuClose]
+		[onTagAdd]
 	);
 
 	const hasCloseRequestTimeChanged = useCompare(

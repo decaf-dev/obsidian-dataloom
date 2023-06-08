@@ -133,10 +133,6 @@
 	cursor: default !important;
 }
 
-.NLT__blur {
-	box-shadow: 0 0 0 2px var(--background-modifier-border-focus);
-}
-
 /**
  * A style for when the focus is gained from using the keyboard e.g. pressing the tab key
  */

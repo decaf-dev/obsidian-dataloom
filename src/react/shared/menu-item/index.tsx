@@ -12,7 +12,7 @@ interface Props {
 	name: string;
 	value?: string;
 	isSelected?: boolean;
-	onClick?: (e: React.MouseEvent) => void;
+	onClick?: () => void;
 }
 
 export default function MenuItem({
@@ -23,14 +23,31 @@ export default function MenuItem({
 	onClick,
 	isSelected = false,
 }: Props) {
-	let className = "NLT__menu-item NLT__selectable";
+	let className = "NLT__menu-item NLT__selectable NLT__focusable";
 	if (isSelected) className += " NLT__selected";
+
+	function handleClick() {
+		if (!onClick) return;
+		onClick();
+	}
+
+	function handleKeyDown(e: React.KeyboardEvent) {
+		if (e.key === "Enter") {
+			//Stop propagation so the the menu doesn't close when pressing enter
+			e.stopPropagation();
+
+			if (!onClick) return;
+			onClick();
+		}
+	}
 
 	return (
 		<div
+			tabIndex={0}
 			className={className}
 			aria-label={ariaLabel}
-			onClick={(e) => onClick && onClick(e)}
+			onClick={handleClick}
+			onKeyDown={handleKeyDown}
 		>
 			<Flex justify="space-between">
 				<Stack>

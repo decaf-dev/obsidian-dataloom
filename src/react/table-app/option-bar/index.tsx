@@ -123,7 +123,7 @@ export default function OptionBar({
 			`}
 		>
 			<Padding px="xl">
-				<Stack spacing="lg" isVertical>
+				<Stack spacing="lg" isVertical align="center" minHeight="40px">
 					<Wrap
 						justify={{ base: "space-between", mobile: "flex-end" }}
 					>

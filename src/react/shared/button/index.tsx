@@ -33,9 +33,10 @@ export const Button = ({
 
 	return (
 		<button
-			className={className}
+			className={className + " NLT__focusable"}
 			css={css`
 				width: max-content !important;
+				height: fit-content;
 			`}
 			aria-label={ariaLabel}
 			onMouseDown={onMouseDown}
@@ -82,8 +83,10 @@ export const MenuButton = ({
 		>
 			<button
 				className={className}
+				tabIndex={-1}
 				css={css`
 					width: max-content !important;
+					height: fit-content;
 				`}
 				aria-label={ariaLabel}
 			>

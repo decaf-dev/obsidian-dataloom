@@ -2,6 +2,12 @@ import { css } from "@emotion/react";
 import { Menu } from "src/shared/menu/types";
 import React from "react";
 import { useMenuContext } from "src/shared/menu/menu-context";
+import {
+	isMacRedoDown,
+	isMacUndoDown,
+	isWindowsRedoDown,
+	isWindowsUndoDown,
+} from "src/shared/keyboard-event";
 
 interface Props {
 	isActive?: boolean;
@@ -27,17 +33,42 @@ const MenuTrigger = ({
 	const { openMenu, closeTopMenu, canOpenMenu } = useMenuContext();
 
 	function handleKeyDown(e: React.KeyboardEvent) {
+		console.log("MENU TRIGGER KEY DOWN");
+
 		if (e.key === "Enter") {
+			e.stopPropagation();
 			onEnterDown?.();
+
+			//Stop click event from running
+			e.preventDefault();
+
+			//Is the trigger isn't active, return
+			if (!isActive) return;
+
+			if (canOpenMenu(menu)) {
+				openMenu(menu);
+				return;
+			}
+
+			closeTopMenu();
 		} else if (e.key === "Backspace") {
 			onBackspaceDown?.();
+		} else if (e.key.length === 1) {
+			if (
+				isWindowsRedoDown(e) ||
+				isWindowsUndoDown(e) ||
+				isMacRedoDown(e) ||
+				isMacUndoDown(e)
+			)
+				return;
+
+			openMenu(menu);
 		}
 	}
 
 	function handleClick(e: React.MouseEvent) {
 		console.log("TRIGGER CLICK");
 		//Don't propagate to the DOM handler
-		//This is important
 		e.stopPropagation();
 		onClick?.(e);
 
@@ -57,7 +88,7 @@ const MenuTrigger = ({
 		closeTopMenu();
 	}
 
-	const { id, level, shouldRequestOnClose } = menu;
+	const { id } = menu;
 
 	return (
 		<div
@@ -68,10 +99,6 @@ const MenuTrigger = ({
 			`}
 			tabIndex={0}
 			data-menu-id={isActive ? id : undefined}
-			data-menu-level={isActive ? level : undefined}
-			data-menu-should-request-on-close={
-				isActive ? shouldRequestOnClose : undefined
-			}
 			onKeyDown={handleKeyDown}
 			onClick={handleClick}
 			onMouseDown={onMouseDown}

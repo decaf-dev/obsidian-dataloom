@@ -1,5 +1,5 @@
 import React from "react";
-import { Menu, MenuLevel } from "./types";
+import { MenuLevel } from "./types";
 import { v4 as uuidv4 } from "uuid";
 import { useMenuContext } from "./menu-context";
 

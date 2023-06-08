@@ -10,24 +10,6 @@ import {
 	Menu,
 	MenuLevel,
 } from "./types";
-import { useTableState } from "../table-state/table-state-context";
-import {
-	isMacRedoDown,
-	isMacUndoDown,
-	isSpecialActionDown,
-	isWindowsRedoDown,
-	isWindowsUndoDown,
-} from "../keyboard-event";
-import { nltEventSystem } from "../event-system/event-system";
-import {
-	moveFocusDown,
-	moveFocusLeft,
-	moveFocusRight,
-	moveFocusUp,
-} from "./arrow-move-focus";
-import { SortDir } from "../types/types";
-import { useMountContext } from "../view-context";
-import { isTextSelected } from "./utils";
 
 interface CloseOptions {
 	shouldFocusTrigger?: boolean;
@@ -42,6 +24,7 @@ interface ContextProps {
 	canOpenMenu: (menu: Menu) => boolean;
 	isMenuOpen: (menu: Menu) => boolean;
 	closeTopMenu: (options?: CloseOptions) => void;
+	requestCloseTopMenu: (type: MenuCloseRequestType) => void;
 	closeAllMenus: (shouldFocusTriggerOnClose?: boolean) => void;
 }
 
@@ -63,15 +46,10 @@ interface Props {
 }
 
 export default function MenuProvider({ children }: Props) {
-	const { tableState } = useTableState();
-	const { appId } = useMountContext();
-
 	/**
 	 * The menus that are currently open
 	 */
 	const [currentMenus, setCurrentMenus] = React.useState<Menu[]>([]);
-
-	const [lastMenuOpenTime, setLastMenuOpenTime] = React.useState(0);
 
 	const [menuCloseRequest, setMenuCloseRequest] =
 		React.useState<MenuCloseRequest | null>(null);
@@ -120,7 +98,6 @@ export default function MenuProvider({ children }: Props) {
 			if (!canOpenMenu(menu)) return;
 
 			setCurrentMenus((prev) => [...prev, menu]);
-			setLastMenuOpenTime(Date.now());
 
 			//When we close a menu, we add the focus class to the parent element.
 			//If we then click on another menu, we will remove the focus class. Without this,
@@ -201,253 +178,71 @@ export default function MenuProvider({ children }: Props) {
 		[currentMenus, closeTopMenu]
 	);
 
-	const findMenuFromTriggerEl = React.useCallback(
-		(triggerEl: HTMLElement) => {
-			const menuId = triggerEl.getAttribute("data-menu-id");
-			const shouldRequestOnClose = triggerEl.getAttribute(
-				"data-menu-should-request-on-close"
-			);
-			const level = triggerEl.getAttribute("data-menu-level");
-			if (
-				menuId === null ||
-				level === null ||
-				shouldRequestOnClose === null
-			)
-				return null;
-			return {
-				id: menuId,
-				shouldRequestOnClose: shouldRequestOnClose === "true",
-				level: parseInt(level),
-			};
-		},
-		[]
-	);
+	// function handleArrowDown(e: KeyboardEvent) {
+	// 	if (hasOpenMenu()) return;
 
-	const openMenuFromFocusedTrigger = React.useCallback(() => {
-		const focusedEl = document.activeElement as HTMLElement;
-		if (!focusedEl) return;
-		if (!focusedEl.className.includes("NLT__menu-trigger")) return;
+	// 	//Only handle keys when the currentMenu isn't open
+	// 	const focusedEl = document.activeElement;
+	// 	if (!focusedEl) return;
 
-		const menu = findMenuFromTriggerEl(focusedEl);
-		if (menu) openMenu(menu);
-	}, [openMenu, findMenuFromTriggerEl]);
+	// 	const tableEl = focusedEl.closest(`.NLT__app[data-id="${appId}"]`);
+	// 	if (!tableEl) throw new Error("Table el not found");
 
-	React.useEffect(() => {
-		function attemptToOpenMenu(el: HTMLElement) {
-			//Check for menu trigger
-			const menuTriggerEl = el.closest(".NLT__menu-trigger");
-			if (!menuTriggerEl) return false;
+	// 	const focusableEls = tableEl.querySelectorAll(".NLT__focusable");
+	// 	const index = Array.from(focusableEls).indexOf(focusedEl);
+	// 	if (index === -1) return;
 
-			//Don't open the menu if we're clicking on the resize handle
-			if (el.className.includes("NLT__resize-handle")) return false;
+	// 	removeFocusVisibleClass();
 
-			//Don't open the menu if we're clicking on the resize handle
-			const menu = findMenuFromTriggerEl(menuTriggerEl as HTMLElement);
-			if (!menu) return false;
+	// 	const numVisibleColumns = tableState.model.columns.filter(
+	// 		(column) => column.isVisible
+	// 	).length;
+	// 	const numBodyRows = tableState.model.bodyRows.length;
+	// 	const numSortedColumns = tableState.model.columns.filter(
+	// 		(column) => column.sortDir !== SortDir.NONE
+	// 	).length;
 
-			if (!canOpenMenu(menu)) return false;
+	// 	let elementToFocus: Element | null = null;
+	// 	switch (e.key) {
+	// 		case "ArrowUp":
+	// 			elementToFocus = moveFocusUp(
+	// 				focusableEls,
+	// 				numVisibleColumns,
+	// 				numBodyRows,
+	// 				numSortedColumns,
+	// 				index
+	// 			);
+	// 			break;
+	// 		case "ArrowLeft":
+	// 			elementToFocus = moveFocusLeft(focusableEls, index);
+	// 			break;
+	// 		case "ArrowRight":
+	// 			elementToFocus = moveFocusRight(focusableEls, index);
+	// 			break;
+	// 		case "ArrowDown":
+	// 			elementToFocus = moveFocusDown(
+	// 				focusableEls,
+	// 				numVisibleColumns,
+	// 				numBodyRows,
+	// 				numSortedColumns,
+	// 				index
+	// 			);
+	// 			break;
+	// 	}
+	// 	if (elementToFocus !== null)
+	// 		(elementToFocus as HTMLElement).focus();
+	// }
 
-			openMenu(menu);
-			return true;
-		}
-
-		function handleClick(e: MouseEvent) {
-			const target = e.target as HTMLElement;
-
-			// // //Attempt to open a menu
-			// if (attemptToOpenMenu(target)) return;
-
-			//Otherwise remove the focus visible class if no menu is open
-			if (!hasOpenMenu()) {
-				removeFocusVisibleClass();
-				return;
-			}
-
-			//This can happen when we click on a menu item that opens a submenu
-			//in the column menu
-			const isElementMounted = document.contains(target);
-			if (!isElementMounted) return;
-
-			//Otherwise close the top menu
-			const menu = currentMenus.last();
-			if (!menu) return;
-
-			const { id } = menu;
-
-			//If we're clicking on the menu then don't close
-			if (target.closest(`.NLT__menu[data-id="${id}"]`)) return;
-
-			//If we're highlighting text then don't close
-			if (isTextHighlighted.current) return;
-
-			requestCloseTopMenu("click");
-		}
-
-		//We add a priority of 1, because we want the menu trigger to always
-		//run first
-		nltEventSystem.addEventListener("click", handleClick, 2);
-		return () => nltEventSystem.removeEventListener("click", handleClick);
-	}, [
-		hasOpenMenu,
-		currentMenus,
-		requestCloseTopMenu,
-		canOpenMenu,
-		findMenuFromTriggerEl,
-		openMenu,
-	]);
-
-	React.useEffect(() => {
-		function handleEnterDown(e: KeyboardEvent) {
-			const target = e.target as HTMLElement;
-
-			//TODO fix
-			if (isSpecialActionDown(e)) return;
-
-			//Prevents the event key from triggering the click event
-			if (target.getAttribute("data-menu-id")) e.preventDefault();
-
-			//If a menu is open, then close the menu
-			if (hasOpenMenu()) {
-				const menu = currentMenus.last();
-				if (!menu) throw new Error("Menu is open but no menu exists");
-
-				//If we're highlighting text then don't close the menu
-				if (isTextHighlighted.current) return;
-
-				requestCloseTopMenu("enter");
-			} else {
-				//Otherwise if we're focused on a MenuTrigger, open the menu
-				openMenuFromFocusedTrigger();
-				removeFocusVisibleClass();
-			}
-		}
-
-		function handleTabDown(e: KeyboardEvent) {
-			if (hasOpenMenu()) {
-				// Disallow the default event which will change focus to the next element
-				e.preventDefault();
-				return;
-			}
-			removeFocusVisibleClass();
-		}
-
-		function handleArrowDown(e: KeyboardEvent) {
-			if (hasOpenMenu()) return;
-
-			//Only handle keys when the currentMenu isn't open
-			const focusedEl = document.activeElement;
-			if (!focusedEl) return;
-
-			const tableEl = focusedEl.closest(`.NLT__app[data-id="${appId}"]`);
-			if (!tableEl) throw new Error("Table el not found");
-
-			const focusableEls = tableEl.querySelectorAll(".NLT__focusable");
-			const index = Array.from(focusableEls).indexOf(focusedEl);
-			if (index === -1) return;
-
-			removeFocusVisibleClass();
-
-			const numVisibleColumns = tableState.model.columns.filter(
-				(column) => column.isVisible
-			).length;
-			const numBodyRows = tableState.model.bodyRows.length;
-			const numSortedColumns = tableState.model.columns.filter(
-				(column) => column.sortDir !== SortDir.NONE
-			).length;
-
-			let elementToFocus: Element | null = null;
-			switch (e.key) {
-				case "ArrowUp":
-					elementToFocus = moveFocusUp(
-						focusableEls,
-						numVisibleColumns,
-						numBodyRows,
-						numSortedColumns,
-						index
-					);
-					break;
-				case "ArrowLeft":
-					elementToFocus = moveFocusLeft(focusableEls, index);
-					break;
-				case "ArrowRight":
-					elementToFocus = moveFocusRight(focusableEls, index);
-					break;
-				case "ArrowDown":
-					elementToFocus = moveFocusDown(
-						focusableEls,
-						numVisibleColumns,
-						numBodyRows,
-						numSortedColumns,
-						index
-					);
-					break;
-			}
-			if (elementToFocus !== null)
-				(elementToFocus as HTMLElement).focus();
-		}
-
-		function handleKeyDown(e: KeyboardEvent) {
-			switch (e.code) {
-				case "Tab":
-					handleTabDown(e);
-					break;
-				case "ArrowLeft":
-				case "ArrowRight":
-				case "ArrowUp":
-				case "ArrowDown":
-					handleArrowDown(e);
-					break;
-				default:
-					if (
-						isMacUndoDown(e) ||
-						isMacRedoDown(e) ||
-						isWindowsUndoDown(e) ||
-						isWindowsRedoDown(e)
-					)
-						return;
-
-					if (e.key.length !== 1) return;
-					openMenuFromFocusedTrigger();
-					break;
-			}
-		}
-		nltEventSystem.addEventListener("keydown", handleKeyDown);
-		return () =>
-			nltEventSystem.removeEventListener("keydown", handleKeyDown);
-	}, [
-		currentMenus,
-		hasOpenMenu,
-		closeTopMenu,
-		openMenu,
-		requestCloseTopMenu,
-		openMenuFromFocusedTrigger,
-		appId,
-		tableState,
-		lastMenuOpenTime,
-	]);
-
-	React.useEffect(() => {
-		function handleMouseDown() {
-			isTextHighlighted.current = false;
-		}
-
-		function handleSelectionChange() {
-			isTextHighlighted.current = isTextSelected();
-		}
-
-		nltEventSystem.addEventListener("mousedown", handleMouseDown);
-		nltEventSystem.addEventListener(
-			"selectionchange",
-			handleSelectionChange
-		);
-		return () => {
-			nltEventSystem.removeEventListener("mousedown", handleMouseDown);
-			nltEventSystem.removeEventListener(
-				"mouseup",
-				handleSelectionChange
-			);
-		};
-	}, []);
+	// function handleKeyDown(e: KeyboardEvent) {
+	// 	switch (e.code) {
+	// 		case "ArrowLeft":
+	// 		case "ArrowRight":
+	// 		case "ArrowUp":
+	// 		case "ArrowDown":
+	// 			handleArrowDown(e);
+	// 			break;
+	// 	}
+	// }
 
 	return (
 		<MenuContext.Provider
@@ -458,6 +253,7 @@ export default function MenuProvider({ children }: Props) {
 				openMenu,
 				canOpenMenu,
 				menuCloseRequest,
+				requestCloseTopMenu,
 				closeTopMenu,
 				closeAllMenus,
 			}}
