@@ -1,6 +1,6 @@
 import FilterRowDropdown from "./filter-type-select";
 import Icon from "src/react/shared/icon";
-import { Button } from "src/react/shared/button";
+import Button from "src/react/shared/button";
 import Switch from "src/react/shared/switch";
 import { CellType, FilterType, Tag } from "src/shared/types/types";
 import FilterColumnDropdown from "./filter-column-select";

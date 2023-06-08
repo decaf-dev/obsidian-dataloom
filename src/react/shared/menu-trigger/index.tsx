@@ -10,6 +10,7 @@ import {
 } from "src/shared/keyboard-event";
 
 interface Props {
+	isButton?: boolean;
 	isActive?: boolean;
 	fillParent?: boolean;
 	menu: Menu;
@@ -21,6 +22,7 @@ interface Props {
 }
 
 const MenuTrigger = ({
+	isButton = false,
 	isActive = true,
 	fillParent = true,
 	menu,
@@ -102,6 +104,7 @@ const MenuTrigger = ({
 			css={css`
 				width: ${fillParent ? "100%" : "unset"};
 				height: ${fillParent ? "100%" : "unset"};
+				border-radius: ${isButton ? "var(--button-radius)" : "unset"};
 			`}
 			tabIndex={0}
 			data-menu-id={isActive ? id : undefined}

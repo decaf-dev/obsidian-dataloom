@@ -3,7 +3,7 @@ import TagColorMenu from "src/react/table-app/tag-color-menu";
 import { MenuLevel } from "src/shared/menu/types";
 import { useMenu } from "src/shared/menu/hooks";
 
-import { MenuButton } from "src/react/shared/button";
+import MenuButton from "src/react/shared/menu-button";
 import Icon from "src/react/shared/icon";
 import Tag from "src/react/shared/tag";
 import { Color } from "src/shared/types/types";

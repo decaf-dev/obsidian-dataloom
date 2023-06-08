@@ -1,4 +1,4 @@
-import { Button } from "src/react/shared/button";
+import Button from "src/react/shared/button";
 import Icon from "src/react/shared/icon";
 import Stack from "src/react/shared/stack";
 

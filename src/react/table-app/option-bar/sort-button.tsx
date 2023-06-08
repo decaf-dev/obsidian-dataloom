@@ -1,4 +1,4 @@
-import { Button } from "src/react/shared/button";
+import Button from "src/react/shared/button";
 import { SortDir } from "src/shared/types/types";
 import Stack from "src/react/shared/stack";
 import Icon from "src/react/shared/icon";
@@ -45,10 +45,10 @@ export default function SortBubble({
 					</span>
 				</Stack>
 				<Button
-					inverted
+					isSmall
+					shouldInvert
 					icon={<Icon lucideId="x" color="var(--text-on-accent)" />}
 					ariaLabel="Remove sort"
-					isSimple
 					onClick={onRemoveClick}
 				/>
 			</Stack>
