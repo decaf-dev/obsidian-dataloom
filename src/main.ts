@@ -60,6 +60,7 @@ export default class NLTPlugin extends Plugin {
 		this.registerEmbeddedView();
 		this.registerCommands();
 		this.registerEvents();
+		this.registerDOMEvents();
 	}
 
 	private registerEmbeddedView() {
@@ -109,6 +110,13 @@ export default class NLTPlugin extends Plugin {
 			type: NOTION_LIKE_TABLES_VIEW,
 			active: true,
 			state: { file: filePath },
+		});
+	}
+
+	private registerDOMEvents() {
+		//These events are guaranteed to fire after our React events
+		this.registerDomEvent(document, "click", (evt: MouseEvent) => {
+			console.log("click", evt);
 		});
 	}
 

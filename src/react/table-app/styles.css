@@ -129,13 +129,6 @@
 	padding: 0;
 }
 
-.NLT__app {
-	display: flex;
-	flex-direction: column;
-	width: 100%;
-	height: 100%;
-}
-
 .NLT__default-cursor {
 	cursor: default !important;
 }

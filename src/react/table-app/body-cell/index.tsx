@@ -295,7 +295,7 @@ export default function BodyCell({
 				onClick={handleMenuTriggerClick}
 				onEnterDown={handleMenuTriggerEnterDown}
 				onBackspaceDown={handleMenuTriggerBackspaceDown}
-				canMenuOpen={
+				isActive={
 					columnType !== CellType.CHECKBOX &&
 					columnType !== CellType.CREATION_TIME &&
 					columnType !== CellType.LAST_EDITED_TIME

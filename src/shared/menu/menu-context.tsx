@@ -35,9 +35,12 @@ interface CloseOptions {
 }
 
 interface ContextProps {
-	openMenus: Menu[];
+	topMenu: Menu | null;
 	menuCloseRequest: MenuCloseRequest | null;
 	openMenu: (menu: Menu) => void;
+	hasOpenMenu: () => boolean;
+	canOpenMenu: (menu: Menu) => boolean;
+	isMenuOpen: (menu: Menu) => boolean;
 	closeTopMenu: (options?: CloseOptions) => void;
 	closeAllMenus: (shouldFocusTriggerOnClose?: boolean) => void;
 }
@@ -66,7 +69,7 @@ export default function MenuProvider({ children }: Props) {
 	/**
 	 * The menus that are currently open
 	 */
-	const [openMenus, setOpenMenus] = React.useState<Menu[]>([]);
+	const [currentMenus, setCurrentMenus] = React.useState<Menu[]>([]);
 
 	const [lastMenuOpenTime, setLastMenuOpenTime] = React.useState(0);
 
@@ -81,20 +84,30 @@ export default function MenuProvider({ children }: Props) {
 	/**
 	 * Returns whether or not a menu is open
 	 */
-	const isMenuOpen = React.useCallback(() => {
-		return openMenus.length !== 0;
-	}, [openMenus]);
+	const isMenuOpen = React.useCallback(
+		(menu: Menu) => {
+			return currentMenus.find((m) => m.id === menu.id) !== undefined;
+		},
+		[currentMenus]
+	);
+
+	/**
+	 * Returns whether or not a menu is open
+	 */
+	const hasOpenMenu = React.useCallback(() => {
+		return currentMenus.length !== 0;
+	}, [currentMenus]);
 
 	const canOpenMenu = React.useCallback(
 		(menu: Menu) => {
 			//A user can open a menu when no other menu is open or if the menu is a higher level
 			//than the current one
 			return (
-				openMenus.find((m) => m.level < menu.level) ||
-				openMenus.length === 0
+				currentMenus.find((m) => m.level === menu.level) ===
+					undefined || currentMenus.length === 0
 			);
 		},
-		[openMenus]
+		[currentMenus]
 	);
 
 	/**
@@ -106,7 +119,7 @@ export default function MenuProvider({ children }: Props) {
 		(menu: Menu) => {
 			if (!canOpenMenu(menu)) return;
 
-			setOpenMenus((prev) => [...prev, menu]);
+			setCurrentMenus((prev) => [...prev, menu]);
 			setLastMenuOpenTime(Date.now());
 
 			//When we close a menu, we add the focus class to the parent element.
@@ -122,7 +135,7 @@ export default function MenuProvider({ children }: Props) {
 	 * @param shouldFocusTrigger should focus the menu trigger when on close
 	 */
 	function closeAllMenus(shouldFocusTrigger = true) {
-		const menu = openMenus.first();
+		const menu = currentMenus.first();
 		if (!menu) return;
 
 		if (shouldFocusTrigger) {
@@ -134,7 +147,7 @@ export default function MenuProvider({ children }: Props) {
 			}
 		}
 
-		setOpenMenus([]);
+		setCurrentMenus([]);
 		setMenuCloseRequest(null);
 		isTextHighlighted.current = false;
 	}
@@ -146,7 +159,7 @@ export default function MenuProvider({ children }: Props) {
 	const closeTopMenu = React.useCallback(
 		(options?: CloseOptions) => {
 			const { shouldFocusTrigger = true } = options || {};
-			const menu = openMenus.last();
+			const menu = currentMenus.last();
 			if (!menu) return;
 
 			if (shouldFocusTrigger) {
@@ -158,11 +171,11 @@ export default function MenuProvider({ children }: Props) {
 			}
 
 			//Remove the menu
-			setOpenMenus((prev) => prev.slice(0, prev.length - 1));
+			setCurrentMenus((prev) => prev.slice(0, prev.length - 1));
 			setMenuCloseRequest(null);
 			isTextHighlighted.current = false;
 		},
-		[openMenus]
+		[currentMenus]
 	);
 
 	/**
@@ -171,7 +184,7 @@ export default function MenuProvider({ children }: Props) {
 	 */
 	const requestCloseTopMenu = React.useCallback(
 		(type: MenuCloseRequestType) => {
-			const menu = openMenus.last();
+			const menu = currentMenus.last();
 			if (!menu) return;
 
 			if (menu.shouldRequestOnClose) {
@@ -185,7 +198,7 @@ export default function MenuProvider({ children }: Props) {
 
 			closeTopMenu();
 		},
-		[openMenus, closeTopMenu]
+		[currentMenus, closeTopMenu]
 	);
 
 	const findMenuFromTriggerEl = React.useCallback(
@@ -241,11 +254,11 @@ export default function MenuProvider({ children }: Props) {
 		function handleClick(e: MouseEvent) {
 			const target = e.target as HTMLElement;
 
-			//Attempt to open a menu
-			if (attemptToOpenMenu(target)) return;
+			// // //Attempt to open a menu
+			// if (attemptToOpenMenu(target)) return;
 
 			//Otherwise remove the focus visible class if no menu is open
-			if (!isMenuOpen()) {
+			if (!hasOpenMenu()) {
 				removeFocusVisibleClass();
 				return;
 			}
@@ -256,7 +269,7 @@ export default function MenuProvider({ children }: Props) {
 			if (!isElementMounted) return;
 
 			//Otherwise close the top menu
-			const menu = openMenus.last();
+			const menu = currentMenus.last();
 			if (!menu) return;
 
 			const { id } = menu;
@@ -275,8 +288,8 @@ export default function MenuProvider({ children }: Props) {
 		nltEventSystem.addEventListener("click", handleClick, 2);
 		return () => nltEventSystem.removeEventListener("click", handleClick);
 	}, [
-		isMenuOpen,
-		openMenus,
+		hasOpenMenu,
+		currentMenus,
 		requestCloseTopMenu,
 		canOpenMenu,
 		findMenuFromTriggerEl,
@@ -294,8 +307,8 @@ export default function MenuProvider({ children }: Props) {
 			if (target.getAttribute("data-menu-id")) e.preventDefault();
 
 			//If a menu is open, then close the menu
-			if (isMenuOpen()) {
-				const menu = openMenus.last();
+			if (hasOpenMenu()) {
+				const menu = currentMenus.last();
 				if (!menu) throw new Error("Menu is open but no menu exists");
 
 				//If we're highlighting text then don't close the menu
@@ -309,15 +322,8 @@ export default function MenuProvider({ children }: Props) {
 			}
 		}
 
-		function handleEscapeDown() {
-			if (isMenuOpen()) {
-				closeTopMenu();
-				return;
-			}
-		}
-
 		function handleTabDown(e: KeyboardEvent) {
-			if (isMenuOpen()) {
+			if (hasOpenMenu()) {
 				// Disallow the default event which will change focus to the next element
 				e.preventDefault();
 				return;
@@ -326,7 +332,7 @@ export default function MenuProvider({ children }: Props) {
 		}
 
 		function handleArrowDown(e: KeyboardEvent) {
-			if (isMenuOpen()) return;
+			if (hasOpenMenu()) return;
 
 			//Only handle keys when the currentMenu isn't open
 			const focusedEl = document.activeElement;
@@ -382,12 +388,6 @@ export default function MenuProvider({ children }: Props) {
 
 		function handleKeyDown(e: KeyboardEvent) {
 			switch (e.code) {
-				case "Enter":
-					handleEnterDown(e);
-					break;
-				case "Escape":
-					handleEscapeDown();
-					break;
 				case "Tab":
 					handleTabDown(e);
 					break;
@@ -415,12 +415,12 @@ export default function MenuProvider({ children }: Props) {
 		return () =>
 			nltEventSystem.removeEventListener("keydown", handleKeyDown);
 	}, [
-		isMenuOpen,
+		currentMenus,
+		hasOpenMenu,
 		closeTopMenu,
 		openMenu,
 		requestCloseTopMenu,
 		openMenuFromFocusedTrigger,
-		openMenus,
 		appId,
 		tableState,
 		lastMenuOpenTime,
@@ -452,8 +452,11 @@ export default function MenuProvider({ children }: Props) {
 	return (
 		<MenuContext.Provider
 			value={{
-				openMenus,
+				topMenu: currentMenus.last() ?? null,
+				hasOpenMenu,
+				isMenuOpen,
 				openMenu,
+				canOpenMenu,
 				menuCloseRequest,
 				closeTopMenu,
 				closeAllMenus,

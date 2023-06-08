@@ -19,7 +19,6 @@ import { useRow } from "src/shared/table-state/use-row";
 import { useCell } from "src/shared/table-state/use-cell";
 import { useTag } from "src/shared/table-state/use-tag";
 import { css } from "@emotion/react";
-import { useEventSystem } from "src/shared/event-system/hooks";
 import { useExportEvents } from "src/shared/export/hooks";
 import MountProvider, { useMountContext } from "src/shared/view-context";
 import { Provider } from "react-redux";
@@ -36,7 +35,6 @@ const TableApp = () => {
 	const { tableState, resizingColumnId, searchText, setTableState } =
 		useTableState();
 
-	useEventSystem();
 	useExportEvents(tableState);
 
 	const {
@@ -111,6 +109,11 @@ const TableApp = () => {
 			data-id={appId}
 			className="NLT__app"
 			css={css`
+				display: flex;
+				flex-direction: column;
+				width: 100%;
+				height: 100%;
+				padding: 10px 0px;
 				border-top: 1px solid var(--background-modifier-border);
 				border-bottom: ${isMarkdownView
 					? "1px solid var(--background-modifier-border)"

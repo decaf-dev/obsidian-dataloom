@@ -4,6 +4,7 @@ import ReactDOM from "react-dom";
 import { css } from "@emotion/react";
 
 import { numToPx } from "src/shared/conversion";
+import { useMenuContext } from "src/shared/menu/menu-context";
 
 interface Props {
 	id: string;
@@ -31,6 +32,28 @@ const Menu = React.forwardRef<HTMLDivElement, Props>(function Menu(
 	}: Props,
 	ref
 ) {
+	const { topMenu, closeTopMenu } = useMenuContext();
+
+	function handleKeyDown(e: React.KeyboardEvent) {
+		//Don't propagate click events to menus further up the tree
+		e.stopPropagation();
+
+		//Stop click event from running
+		e.preventDefault();
+
+		if (e.key === "Enter") {
+			closeTopMenu();
+		}
+	}
+
+	function handleClick(e: React.MouseEvent) {
+		e.stopPropagation();
+
+		//If we're clicking on the same menu, don't close it
+		if (topMenu?.id === id) return;
+		closeTopMenu();
+	}
+
 	return (
 		<>
 			{isOpen &&
@@ -69,6 +92,8 @@ const Menu = React.forwardRef<HTMLDivElement, Props>(function Menu(
 								border: 1px solid var(--modal-border-color);
 								font-weight: 400;
 							`}
+							onClick={handleClick}
+							onKeyDown={handleKeyDown}
 						>
 							{children}
 						</div>

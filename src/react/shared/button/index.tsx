@@ -4,6 +4,7 @@ import { css } from "@emotion/react";
 import "./styles.css";
 import { Menu } from "src/shared/menu/types";
 import { getButtonClassName } from "./utils";
+import MenuTrigger from "../menu-trigger";
 
 interface ButtonProps {
 	isLink?: boolean;
@@ -66,16 +67,6 @@ export const MenuButton = ({
 	onClick,
 	onMouseDown,
 }: MenuButtonProps) => {
-	const { id, level, shouldRequestOnClose } = menu;
-
-	function handleMouseDown(e: React.MouseEvent) {
-		onMouseDown?.(e);
-	}
-
-	function handleClick(e: React.MouseEvent) {
-		onClick?.(e);
-	}
-
 	const className = getButtonClassName({
 		isLink,
 		isSimple,
@@ -83,19 +74,21 @@ export const MenuButton = ({
 	});
 
 	return (
-		<button
-			className={"NLT__menu-trigger " + className}
-			css={css`
-				width: max-content !important;
-			`}
-			aria-label={ariaLabel}
-			data-menu-id={id}
-			data-menu-level={level}
-			data-menu-should-request-on-close={shouldRequestOnClose}
-			onMouseDown={handleMouseDown}
-			onClick={handleClick}
+		<MenuTrigger
+			fillParent={false}
+			menu={menu}
+			onClick={onClick}
+			onMouseDown={onMouseDown}
 		>
-			{icon !== undefined ? icon : children}
-		</button>
+			<button
+				className={className}
+				css={css`
+					width: max-content !important;
+				`}
+				aria-label={ariaLabel}
+			>
+				{icon !== undefined ? icon : children}
+			</button>
+		</MenuTrigger>
 	);
 };
