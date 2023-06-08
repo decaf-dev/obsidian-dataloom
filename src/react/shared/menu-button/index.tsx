@@ -1,11 +1,11 @@
 import React from "react";
 
-import { Menu } from "src/shared/menu/types";
+import { NltMenu } from "src/shared/menu/types";
 import MenuTrigger from "../menu-trigger";
 import Button from "../button";
 
 interface MenuButtonProps {
-	menu: Menu;
+	menu: NltMenu;
 	isLink?: boolean;
 	ariaLabel?: string;
 	icon?: React.ReactNode;

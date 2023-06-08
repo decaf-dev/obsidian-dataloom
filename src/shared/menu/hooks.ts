@@ -1,7 +1,7 @@
 import React from "react";
 import { MenuLevel } from "./types";
 import { v4 as uuidv4 } from "uuid";
-import { useMenuContext } from "./menu-context";
+import { useMenuState } from "./menu-context";
 
 export const useMenu = (
 	level: MenuLevel,
@@ -23,7 +23,7 @@ export const useMenu = (
 		closeTopMenu,
 		menuCloseRequest,
 		closeAllMenus,
-	} = useMenuContext();
+	} = useMenuState();
 
 	return {
 		menu,

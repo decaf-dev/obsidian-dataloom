@@ -134,7 +134,7 @@
 	cursor: default !important;
 }
 
-.NLT__focusable:focus-visible {
+.NLT__focusable:focus-visible, .NLT__focus-visible {
 	outline: 2px solid var(--color-accent);
 	outline-offset: -2px;
 }

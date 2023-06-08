@@ -20,9 +20,9 @@ import { useCell } from "src/shared/table-state/use-cell";
 import { useTag } from "src/shared/table-state/use-tag";
 import { css } from "@emotion/react";
 import { useExportEvents } from "src/shared/export/hooks";
-import MountProvider, { useMountContext } from "src/shared/view-context";
+import MountProvider, { useMountState } from "src/shared/view-context";
 import { Provider } from "react-redux";
-import MenuProvider, { useMenuContext } from "src/shared/menu/menu-context";
+import MenuProvider, { useMenuState } from "src/shared/menu/menu-context";
 import DragProvider from "src/shared/dragging/drag-context";
 import { TableState } from "src/shared/types/types";
 import { Store } from "@reduxjs/toolkit";
@@ -37,15 +37,16 @@ import {
 	isWindowsUndoDown,
 } from "src/shared/keyboard-event";
 import {
-	addFocusVisibleClass,
+	focusNextElement,
+	getFocusableLayerEl,
 	removeFocusVisibleClass,
 } from "src/shared/menu/focus-visible";
 import { nltEventSystem } from "src/shared/event-system/event-system";
 import { useLogger } from "src/shared/logger";
 
 const TableApp = () => {
-	const { appId, leaf } = useMountContext();
-	const { topMenu } = useMenuContext();
+	const { appId, leaf } = useMountState();
+	const { topMenu } = useMenuState();
 	const logger = useLogger();
 	const {
 		tableState,
@@ -107,61 +108,23 @@ const TableApp = () => {
 	const lastColumnId = useUUID();
 
 	function handleKeyDown(e: React.KeyboardEvent) {
-		e.stopPropagation();
 		logger("TableApp handleKeyDown");
+		e.stopPropagation();
 
 		if (e.key === "Tab") {
+			//Remove any class that has focus
 			removeFocusVisibleClass();
-
-			let parentEl = document.querySelector(
-				`.NLT__app[data-id="${appId}"]`
-			) as HTMLElement;
-
-			//If we have a menu open, set the parent element to the menu
-			if (topMenu) {
-				const { id } = topMenu;
-
-				const menuEl = document.querySelector(
-					`.NLT__menu[data-id="${id}"]`
-				);
-				if (menuEl) parentEl = menuEl as HTMLElement;
-			}
 
 			//Prevent default tab behavior
 			e.preventDefault();
 
-			const focusableEls = parentEl.querySelectorAll(".NLT__focusable");
+			const layerEl = getFocusableLayerEl(appId, topMenu);
+			if (!layerEl) return;
+
+			const focusableEls = layerEl.querySelectorAll(".NLT__focusable");
 			if (focusableEls.length === 0) return;
 
-			const focusedEl = document.activeElement;
-			if (focusedEl) {
-				const index = Array.from(focusableEls).indexOf(focusedEl);
-				if (index !== -1) {
-					//If we can increment 1 index, go to the next element
-					//otherwise focus the first element
-					if (index + 1 > focusableEls.length - 1) {
-						(focusableEls[0] as HTMLElement).focus();
-						addFocusVisibleClass(focusableEls[0] as HTMLElement);
-					} else {
-						(focusableEls[index + 1] as HTMLElement).focus();
-						addFocusVisibleClass(
-							focusableEls[index + 1] as HTMLElement
-						);
-					}
-					return;
-				}
-			}
-
-			const selectedEl = parentEl.querySelector(".NLT__selected");
-			//If there is a selected element, focus it
-			//otherwise focus the first element
-			if (selectedEl) {
-				(selectedEl as HTMLElement).focus();
-				addFocusVisibleClass(selectedEl as HTMLElement);
-			} else {
-				(focusableEls[0] as HTMLElement).focus();
-				addFocusVisibleClass(focusableEls[0] as HTMLElement);
-			}
+			focusNextElement(layerEl, focusableEls);
 		} else if (isWindowsRedoDown(e) || isMacRedoDown(e)) {
 			e.preventDefault();
 			commandRedo();
@@ -170,6 +133,7 @@ const TableApp = () => {
 			commandUndo();
 		}
 
+		console.log("DISPATCHING");
 		//Send the event to the event system
 		//This is necessary to enabling scrolling with the arrow keys
 		nltEventSystem.dispatchEvent("keydown", e);

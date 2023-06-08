@@ -1,6 +1,6 @@
 import React from "react";
 import { focusMenuElement, removeFocusVisibleClass } from "./focus-visible";
-import { MenuCloseRequest, MenuCloseRequestType, Menu } from "./types";
+import { MenuCloseRequest, MenuCloseRequestType, NltMenu } from "./types";
 
 interface CloseOptions {
 	shouldFocusTrigger?: boolean;
@@ -8,12 +8,12 @@ interface CloseOptions {
 }
 
 interface ContextProps {
-	topMenu: Menu | null;
+	topMenu: NltMenu | null;
 	menuCloseRequest: MenuCloseRequest | null;
-	openMenu: (menu: Menu) => void;
+	openMenu: (menu: NltMenu) => void;
 	hasOpenMenu: () => boolean;
-	canOpenMenu: (menu: Menu) => boolean;
-	isMenuOpen: (menu: Menu) => boolean;
+	canOpenMenu: (menu: NltMenu) => boolean;
+	isMenuOpen: (menu: NltMenu) => boolean;
 	closeTopMenu: (options?: CloseOptions) => void;
 	requestCloseTopMenu: (type: MenuCloseRequestType) => void;
 	closeAllMenus: (shouldFocusTriggerOnClose?: boolean) => void;
@@ -21,7 +21,7 @@ interface ContextProps {
 
 const MenuContext = React.createContext<ContextProps | null>(null);
 
-export const useMenuContext = () => {
+export const useMenuState = () => {
 	const value = React.useContext(MenuContext);
 	if (value === null) {
 		throw new Error(
@@ -40,7 +40,7 @@ export default function MenuProvider({ children }: Props) {
 	/**
 	 * The menus that are currently open
 	 */
-	const [currentMenus, setCurrentMenus] = React.useState<Menu[]>([]);
+	const [currentMenus, setCurrentMenus] = React.useState<NltMenu[]>([]);
 
 	const [menuCloseRequest, setMenuCloseRequest] =
 		React.useState<MenuCloseRequest | null>(null);
@@ -54,7 +54,7 @@ export default function MenuProvider({ children }: Props) {
 	 * Returns whether or not a menu is open
 	 */
 	const isMenuOpen = React.useCallback(
-		(menu: Menu) => {
+		(menu: NltMenu) => {
 			return currentMenus.find((m) => m.id === menu.id) !== undefined;
 		},
 		[currentMenus]
@@ -68,7 +68,7 @@ export default function MenuProvider({ children }: Props) {
 	}, [currentMenus]);
 
 	const canOpenMenu = React.useCallback(
-		(menu: Menu) => {
+		(menu: NltMenu) => {
 			//A user can open a menu when no other menu is open or if the menu is a higher level
 			//than the current one
 			return (
@@ -85,7 +85,7 @@ export default function MenuProvider({ children }: Props) {
 	 * @param menu The menu to open
 	 */
 	const openMenu = React.useCallback(
-		(menu: Menu) => {
+		(menu: NltMenu) => {
 			if (!canOpenMenu(menu)) return;
 
 			setCurrentMenus((prev) => [...prev, menu]);

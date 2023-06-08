@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
-import { Menu } from "src/shared/menu/types";
+import { NltMenu } from "src/shared/menu/types";
 import React from "react";
-import { useMenuContext } from "src/shared/menu/menu-context";
+import { useMenuState } from "src/shared/menu/menu-context";
 import {
 	isMacRedoDown,
 	isMacUndoDown,
@@ -17,7 +17,7 @@ interface Props {
 	shouldRun?: boolean;
 	/** Should the trigger be 100% width and 100% height of the parent */
 	isCell?: boolean;
-	menu: Menu;
+	menu: NltMenu;
 	children: React.ReactNode;
 	onEnterDown?: () => void;
 	onBackspaceDown?: () => void;
@@ -36,7 +36,7 @@ const MenuTrigger = ({
 	onClick,
 	onMouseDown,
 }: Props) => {
-	const { openMenu, closeTopMenu, canOpenMenu } = useMenuContext();
+	const { openMenu, closeTopMenu, canOpenMenu } = useMenuState();
 	const logger = useLogger();
 
 	function handleKeyDown(e: React.KeyboardEvent) {

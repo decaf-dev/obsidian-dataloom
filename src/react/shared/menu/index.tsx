@@ -4,7 +4,7 @@ import ReactDOM from "react-dom";
 import { css } from "@emotion/react";
 
 import { numToPx } from "src/shared/conversion";
-import { useMenuContext } from "src/shared/menu/menu-context";
+import { useMenuState } from "src/shared/menu/menu-context";
 import { EVENT_OUTSIDE_CLICK, EVENT_OUTSIDE_KEYDOWN } from "src/shared/events";
 import { isTextSelected } from "src/shared/menu/utils";
 import { removeFocusVisibleClass } from "src/shared/menu/focus-visible";
@@ -38,7 +38,7 @@ const Menu = React.forwardRef<HTMLDivElement, Props>(function Menu(
 	}: Props,
 	ref
 ) {
-	const { topMenu, closeTopMenu, requestCloseTopMenu } = useMenuContext();
+	const { topMenu, closeTopMenu, requestCloseTopMenu } = useMenuState();
 	const isTextHighlighted = React.useRef(false);
 	const logger = useLogger();
 

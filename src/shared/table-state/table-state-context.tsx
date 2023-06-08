@@ -3,7 +3,7 @@ import TableStateCommand from "./table-state-command";
 import React from "react";
 import { useLogger } from "../logger";
 import RowSortCommand from "../commands/row-sort-command";
-import { useMountContext } from "../view-context";
+import { useMountState } from "../view-context";
 
 interface Props {
 	initialState: TableState;
@@ -54,7 +54,7 @@ export default function TableStateProvider({
 	const [position, setPosition] = React.useState(0);
 
 	const logger = useLogger();
-	const { appId } = useMountContext();
+	const { appId } = useMountState();
 
 	//Whenever the table state is updated save it to disk
 	const isMountedRef = React.useRef(false);

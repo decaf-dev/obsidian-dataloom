@@ -70,24 +70,11 @@ export default function SuggestMenuContent({
 		function handleKeyDown(e: KeyboardEvent) {
 			logger("SuggestMenuContent handleKeyDown");
 			if (e.key === "ArrowUp") {
-				e.preventDefault();
 				setHighlightIndex((prevIndex) => {
 					const newIndex = Math.max(prevIndex - 1, 0);
 					return newIndex;
 				});
-			} else if (e.key === "ArrowDown") {
-				e.preventDefault();
-				setHighlightIndex((prevIndex) => {
-					const newIndex = Math.min(
-						prevIndex + 1,
-						filteredFiles.length - 1
-					);
-					return newIndex;
-				});
-			} else if (e.key === "Tab") {
-				console.log("YUP");
-				//e.preventDefault();
-				console.log(highlightIndex);
+			} else if (e.key === "ArrowDown" || e.key === "Tab") {
 				setHighlightIndex((prevIndex) => {
 					const newIndex = Math.min(
 						prevIndex + 1,
