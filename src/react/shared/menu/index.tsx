@@ -72,9 +72,9 @@ const Menu = React.forwardRef<HTMLDivElement, Props>(function Menu(
 		console.log("MENU KEY DOWN");
 
 		if (e.key === "Enter") {
-			//Stop click event from running
-			e.preventDefault();
 			requestCloseTopMenu("enter");
+		} else if (e.key === "Escape") {
+			closeTopMenu();
 		}
 	}
 

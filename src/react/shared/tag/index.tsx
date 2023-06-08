@@ -50,9 +50,9 @@ export default function Tag({
 					{markdown}
 				</div>
 				{showRemove && (
-					<Padding pb="sm" width="max-content">
+					<Padding width="max-content">
 						<Button
-							icon={<Icon size="sm" lucideId="x" />}
+							icon={<Icon lucideId="x" />}
 							isSimple
 							onClick={() => {
 								onRemoveClick !== undefined &&

@@ -45,6 +45,7 @@ export default function SortBubble({
 					</span>
 				</Stack>
 				<Button
+					inverted
 					icon={<Icon lucideId="x" color="var(--text-on-accent)" />}
 					ariaLabel="Remove sort"
 					isSimple

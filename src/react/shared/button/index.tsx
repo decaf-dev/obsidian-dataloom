@@ -7,17 +7,19 @@ import { getButtonClassName } from "./utils";
 import MenuTrigger from "../menu-trigger";
 
 interface ButtonProps {
+	inverted?: boolean;
 	isLink?: boolean;
 	isSimple?: boolean;
 	ariaLabel?: string;
 	icon?: React.ReactNode;
 	children?: React.ReactNode;
-	onClick: (e: React.MouseEvent) => void;
+	onClick: () => void;
 	onMouseDown?: (e: React.MouseEvent) => void;
 }
 
 export const Button = ({
 	isLink,
+	inverted,
 	children,
 	ariaLabel = "",
 	icon,
@@ -25,20 +27,37 @@ export const Button = ({
 	onClick,
 	onMouseDown,
 }: ButtonProps) => {
-	const className = getButtonClassName({
+	function handleKeyDown(e: React.KeyboardEvent) {
+		if (e.key === "Enter") {
+			//Stop click event
+			e.preventDefault();
+
+			//Stop propagation so the the menu doesn't close when pressing enter
+			e.stopPropagation();
+
+			onClick();
+		}
+	}
+
+	let className = getButtonClassName({
 		isLink,
 		isSimple,
 		hasIcon: icon !== undefined,
 	});
 
+	className += " NLT__focusable";
+
+	if (inverted) className += " NLT__focusable--inverted";
+
 	return (
 		<button
-			className={className + " NLT__focusable"}
+			className={className}
 			css={css`
 				width: max-content !important;
 				height: fit-content;
 			`}
 			aria-label={ariaLabel}
+			onKeyDown={handleKeyDown}
 			onMouseDown={onMouseDown}
 			onClick={onClick}
 		>

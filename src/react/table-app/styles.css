@@ -141,6 +141,16 @@
 	outline-offset: -2px;
 }
 
+.NLT__focusable--inverted:focus-visible {
+	outline: 2px solid var(--text-on-accent-inverted);
+	outline-offset: 0px;
+}
+
+.NLT__focusable--switch:focus-visible {
+	outline: 2px solid var(--text-on-accent);
+	outline-offset: 0px;
+}
+
 /**
  * A style to programatically add a visual focus. el.focus() will not call the style above
  */

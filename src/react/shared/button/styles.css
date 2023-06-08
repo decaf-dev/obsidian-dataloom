@@ -32,8 +32,7 @@
 }
 
 .NLT__button--simple {
-    padding: 0;
-    height: 1px;
+    padding: 0 !important;
 }
 
 .NLT__button--simple:hover {

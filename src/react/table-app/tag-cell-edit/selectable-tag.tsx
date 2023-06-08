@@ -66,7 +66,6 @@ export default function SelectableTag({
 			>
 				<Tag markdown={markdown} color={color} maxWidth="150px" />
 				<MenuButton
-					isSimple
 					icon={<Icon lucideId="more-horizontal" />}
 					menu={menu}
 				/>

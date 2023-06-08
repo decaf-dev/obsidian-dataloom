@@ -22,7 +22,7 @@ import { css } from "@emotion/react";
 import { useExportEvents } from "src/shared/export/hooks";
 import MountProvider, { useMountContext } from "src/shared/view-context";
 import { Provider } from "react-redux";
-import MenuProvider from "src/shared/menu/menu-context";
+import MenuProvider, { useMenuContext } from "src/shared/menu/menu-context";
 import DragProvider from "src/shared/dragging/drag-context";
 import { TableState } from "src/shared/types/types";
 import { Store } from "@reduxjs/toolkit";
@@ -42,6 +42,7 @@ import { nltEventSystem } from "src/shared/event-system/event-system";
 
 const TableApp = () => {
 	const { appId, leaf } = useMountContext();
+	const { hasOpenMenu, topMenu } = useMenuContext();
 	const {
 		tableState,
 		resizingColumnId,
@@ -106,6 +107,31 @@ const TableApp = () => {
 
 		if (e.key === "Tab") {
 			removeFocusVisibleClass();
+
+			if (!topMenu) return;
+			const { id } = topMenu;
+
+			const menuEl = document.querySelector(
+				`.NLT__menu[data-id="${id}"]`
+			);
+			if (!menuEl) return;
+
+			e.preventDefault(); // Prevent default tab behavior
+
+			const focusableEls = menuEl.querySelectorAll(".NLT__focusable");
+			if (focusableEls.length === 0) return;
+
+			const focusedEl = document.activeElement;
+			if (focusedEl) {
+				const index = Array.from(focusableEls).indexOf(focusedEl);
+				if (index + 1 > focusableEls.length - 1) {
+					(focusableEls[0] as HTMLElement).focus(); // Focus the first matching element
+				} else {
+					(focusableEls[index + 1] as HTMLElement).focus(); // Focus the first matching element
+				}
+			} else {
+				(focusableEls[0] as HTMLElement).focus(); // Focus the first matching element
+			}
 		} else if (isWindowsRedoDown(e) || isMacRedoDown(e)) {
 			e.preventDefault();
 			commandRedo();

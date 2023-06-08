@@ -1,6 +1,6 @@
 export const focusMenuElement = (menuId: string) => {
 	const el = document.querySelector(
-		`.NLT__focusable[data-menu-id="${menuId}"]`
+		`[data-menu-id="${menuId}"]`
 	) as HTMLElement | null;
 	if (el) el.focus();
 };
@@ -9,7 +9,7 @@ export const focusMenuElement = (menuId: string) => {
 //to programatically add a visual indicator we need to add a class
 export const addFocusVisibleClass = (menuId: string) => {
 	const el = document.querySelector(
-		`.NLT__focusable[data-menu-id="${menuId}"]`
+		`[data-menu-id="${menuId}"]`
 	) as HTMLElement | null;
 	if (el) el.classList.add("NLT__focus-visible");
 };
