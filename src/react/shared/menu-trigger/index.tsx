@@ -45,6 +45,9 @@ const MenuTrigger = ({
 			//Is the trigger isn't active, return
 			if (!isActive) return;
 
+			const tag = (e.target as HTMLElement).tagName;
+			if (tag === "A") return;
+
 			if (canOpenMenu(menu)) {
 				openMenu(menu);
 				return;
@@ -80,6 +83,9 @@ const MenuTrigger = ({
 
 		//Otherwise if we can open the menu, open it
 		if (canOpenMenu(menu)) {
+			const tag = (e.target as HTMLElement).tagName;
+			if (tag === "A") return;
+
 			openMenu(menu);
 			return;
 		}
