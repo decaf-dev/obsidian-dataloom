@@ -20,18 +20,7 @@ import { isSpecialActionDown } from "src/shared/keyboard-event";
 
 import { getWikiLinkText } from "src/shared/link/link-utils";
 import { css } from "@emotion/react";
-
-const textAreaStyle = css`
-	width: 100%;
-	height: 100%;
-	border: 0;
-	border-radius: 0;
-	overflow: hidden;
-	padding: var(--nlt-cell-spacing-x) var(--nlt-cell-spacing-y);
-	resize: none;
-	font-size: var(--font-ui-medium);
-	transition: none !important;
-`;
+import { textAreaStyle } from "src/react/shared-styles";
 
 interface Props {
 	menuCloseRequest: MenuCloseRequest | null;
@@ -80,7 +69,6 @@ export default function TextCellEdit({
 	]);
 
 	function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
-		console.log("TEXT CELL EDIT KEY DOWN");
 		const el = e.target as HTMLTextAreaElement;
 
 		if (e.key === "Enter") {
@@ -174,7 +162,7 @@ export default function TextCellEdit({
 					onKeyDown={handleKeyDown}
 					onChange={handleTextareaChange}
 					onBlur={(e) => {
-						e.target.classList.add("NLT__blur");
+						e.target.classList.add("NLT__blur--cell");
 					}}
 				/>
 			</div>

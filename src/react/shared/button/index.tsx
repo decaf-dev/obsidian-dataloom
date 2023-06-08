@@ -1,6 +1,7 @@
 import React from "react";
 
 import { css } from "@emotion/react";
+import { useLogger } from "src/shared/logger";
 
 export const buttonStyle = css`
 	display: flex;
@@ -12,6 +13,10 @@ export const buttonStyle = css`
 	color: var(--text-normal);
 	margin-right: 0;
 	cursor: pointer;
+
+	&:focus-visible {
+		box-shadow: none !important;
+	}
 `;
 
 export const linkStyle = css`
@@ -41,27 +46,35 @@ export const smallStyle = css`
 `;
 
 interface ButtonProps {
-	shouldInvert?: boolean;
+	isFocusable?: boolean;
+	invertFocusColor?: boolean;
 	isLink?: boolean;
 	isSmall?: boolean;
 	ariaLabel?: string;
 	icon?: React.ReactNode;
 	children?: React.ReactNode;
-	onClick: () => void;
+	onClick?: () => void;
 	onMouseDown?: (e: React.MouseEvent) => void;
 }
 
 export default function Button({
+	isFocusable = true,
 	isLink,
 	isSmall,
-	shouldInvert,
+	invertFocusColor,
 	children,
 	ariaLabel = "",
 	icon,
 	onClick,
 	onMouseDown,
 }: ButtonProps) {
+	const logger = useLogger();
+	function handleClick() {
+		onClick?.();
+	}
+
 	function handleKeyDown(e: React.KeyboardEvent) {
+		logger("Button handleKeyDown");
 		if (e.key === "Enter") {
 			//Stop click event
 			e.preventDefault();
@@ -69,15 +82,20 @@ export default function Button({
 			//Stop propagation so the the menu doesn't close when pressing enter
 			e.stopPropagation();
 
-			onClick();
+			onClick?.();
 		}
 	}
 
-	let className = "NLT__button NLT__focusable";
-	if (shouldInvert) className += " NLT__focusable--inverted";
+	let className = "NLT__button";
+
+	if (isFocusable) {
+		className += " NLT__focusable";
+		if (invertFocusColor) className += " NLT__focusable--inverted";
+	}
 
 	return (
 		<button
+			tabIndex={isFocusable ? 0 : -1}
 			className={className}
 			css={css`
 				${buttonStyle}
@@ -88,7 +106,7 @@ export default function Button({
 			aria-label={ariaLabel}
 			onKeyDown={handleKeyDown}
 			onMouseDown={onMouseDown}
-			onClick={onClick}
+			onClick={handleClick}
 		>
 			{icon !== undefined ? icon : children}
 		</button>

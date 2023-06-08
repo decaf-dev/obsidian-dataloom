@@ -2,7 +2,6 @@ import { TableState } from "../types/types";
 import TableStateCommand from "./table-state-command";
 import React from "react";
 import { useLogger } from "../logger";
-import _ from "lodash";
 import RowSortCommand from "../commands/row-sort-command";
 import { useMountContext } from "../view-context";
 

@@ -2,6 +2,7 @@ import { findColorClassName } from "src/shared/color";
 import { Color } from "src/shared/types/types";
 import { uppercaseFirst } from "src/shared/stringUtils";
 import "./styles.css";
+import React from "react";
 
 interface Props {
 	isDarkMode: boolean;
@@ -16,6 +17,15 @@ export default function ColorItem({
 	isSelected,
 	onColorClick,
 }: Props) {
+	const ref = React.useRef(null);
+	React.useEffect(() => {
+		if (!ref.current) return;
+
+		if (isSelected) {
+			(ref.current as HTMLElement).focus();
+		}
+	}, [isSelected]);
+
 	function handleKeyDown(e: React.KeyboardEvent) {
 		if (e.key === "Enter") {
 			//Stop propagation so the the menu doesn't close when pressing enter
@@ -33,6 +43,7 @@ export default function ColorItem({
 
 	return (
 		<div
+			ref={ref}
 			tabIndex={0}
 			className={containerClass}
 			onKeyDown={handleKeyDown}

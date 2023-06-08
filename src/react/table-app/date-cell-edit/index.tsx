@@ -11,15 +11,15 @@ import {
 } from "src/shared/date/date-conversion";
 import { DateFormat } from "src/shared/types/types";
 import { useCompare } from "src/shared/hooks";
-import DateFormatMenu from "./components/DateFormatMenu";
+import DateFormatMenu from "./date-format-menu";
 import { useMenu } from "src/shared/menu/hooks";
 import { MenuCloseRequest, MenuLevel } from "src/shared/menu/types";
 
 import MenuTrigger from "src/react/shared/menu-trigger";
 import { getDisplayNameForDateFormat } from "src/shared/table-state/display-name";
-import { css } from "@emotion/react";
 import "./styles.css";
 import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
+import { borderInputStyle } from "src/react/shared-styles";
 
 interface Props {
 	value: number | null;
@@ -123,15 +123,9 @@ export default function DateCellEdit({
 				<Stack spacing="md" isVertical>
 					<Padding px="md" py="md">
 						<input
-							css={css`
-								width: 100%;
-								height: 100%;
-								transition: none !improtant;
-								border-radius: 0px;
-								border: 1px solid var(--table-border-color);
-								padding: 5px;
-								background-color: var(--background-secondary);
-							`}
+							tabIndex={0}
+							className="NLT__focusable"
+							css={borderInputStyle}
 							ref={inputRef}
 							aria-invalid={isInputInvalid}
 							autoFocus
@@ -141,6 +135,7 @@ export default function DateCellEdit({
 					</Padding>
 					<MenuTrigger menu={menu}>
 						<MenuItem
+							isFocusable={false}
 							name="Date format"
 							value={getDisplayNameForDateFormat(dateFormat)}
 						/>

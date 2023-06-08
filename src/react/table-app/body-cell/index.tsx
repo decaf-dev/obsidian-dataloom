@@ -278,11 +278,12 @@ export default function BodyCell({
 	return (
 		<>
 			<MenuTrigger
+				isCell
 				menu={menu}
 				onClick={handleMenuTriggerClick}
 				onEnterDown={handleMenuTriggerEnterDown}
 				onBackspaceDown={handleMenuTriggerBackspaceDown}
-				isActive={
+				shouldRun={
 					columnType !== CellType.CHECKBOX &&
 					columnType !== CellType.CREATION_TIME &&
 					columnType !== CellType.LAST_EDITED_TIME
@@ -377,6 +378,12 @@ export default function BodyCell({
 			<Menu
 				ref={menuRef}
 				id={menu.id}
+				hideBorder={
+					columnType === CellType.TEXT ||
+					columnType === CellType.EMBED ||
+					columnType === CellType.CURRENCY ||
+					columnType === CellType.NUMBER
+				}
 				isOpen={isMenuOpen}
 				top={triggerPosition.top}
 				left={triggerPosition.left}

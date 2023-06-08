@@ -2,15 +2,15 @@ export const focusMenuElement = (menuId: string) => {
 	const el = document.querySelector(
 		`[data-menu-id="${menuId}"]`
 	) as HTMLElement | null;
-	if (el) el.focus();
+	if (el) {
+		el.focus();
+		addFocusVisibleClass(el);
+	}
 };
 
 //Since .focus-visible only appears when a keyboard event happens e.g. tab is pressed
 //to programatically add a visual indicator we need to add a class
-export const addFocusVisibleClass = (menuId: string) => {
-	const el = document.querySelector(
-		`[data-menu-id="${menuId}"]`
-	) as HTMLElement | null;
+export const addFocusVisibleClass = (el: HTMLElement) => {
 	if (el) el.classList.add("NLT__focus-visible");
 };
 

@@ -7,6 +7,8 @@ import SuggestItem from "./suggest-item";
 import { filterUniqueStrings } from "./utils";
 import { css } from "@emotion/react";
 import { nltEventSystem } from "src/shared/event-system/event-system";
+import { transparentInputStyle } from "src/react/shared-styles";
+import { useLogger } from "src/shared/logger";
 
 interface ContentProps {
 	showInput?: boolean;
@@ -19,6 +21,7 @@ export default function SuggestMenuContent({
 	filterValue,
 	onItemClick,
 }: ContentProps) {
+	const logger = useLogger();
 	const [localFilterValue, setLocalFilterValue] = React.useState(
 		filterValue ?? ""
 	);
@@ -65,6 +68,7 @@ export default function SuggestMenuContent({
 
 	React.useEffect(() => {
 		function handleKeyDown(e: KeyboardEvent) {
+			logger("SuggestMenuContent handleKeyDown");
 			if (e.key === "ArrowUp") {
 				e.preventDefault();
 				setHighlightIndex((prevIndex) => {
@@ -80,13 +84,24 @@ export default function SuggestMenuContent({
 					);
 					return newIndex;
 				});
+			} else if (e.key === "Tab") {
+				console.log("YUP");
+				//e.preventDefault();
+				console.log(highlightIndex);
+				setHighlightIndex((prevIndex) => {
+					const newIndex = Math.min(
+						prevIndex + 1,
+						filteredFiles.length - 1
+					);
+					return newIndex;
+				});
 			}
 		}
 
 		nltEventSystem.addEventListener("keydown", handleKeyDown);
 		return () =>
 			nltEventSystem.removeEventListener("keydown", handleKeyDown);
-	}, [filteredFiles.length]);
+	}, [filteredFiles.length, logger, highlightIndex]);
 
 	const fileNames = filteredFiles.map((file) => file.name);
 	const uniqueFileNames = filterUniqueStrings(fileNames);
@@ -102,14 +117,7 @@ export default function SuggestMenuContent({
 					`}
 				>
 					<input
-						css={css`
-							background-color: transparent !important;
-							border: 0 !important;
-							box-shadow: none !important;
-							width: 100%;
-							padding-left: 5px !important;
-							padding-right: 5px !important;
-						`}
+						css={transparentInputStyle}
 						autoFocus
 						value={localFilterValue}
 						onChange={(e) => setLocalFilterValue(e.target.value)}

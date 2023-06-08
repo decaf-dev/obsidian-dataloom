@@ -1,15 +1,6 @@
 import React from "react";
-import {
-	addFocusVisibleClass,
-	focusMenuElement,
-	removeFocusVisibleClass,
-} from "./focus-visible";
-import {
-	MenuCloseRequest,
-	MenuCloseRequestType,
-	Menu,
-	MenuLevel,
-} from "./types";
+import { focusMenuElement, removeFocusVisibleClass } from "./focus-visible";
+import { MenuCloseRequest, MenuCloseRequestType, Menu } from "./types";
 
 interface CloseOptions {
 	shouldFocusTrigger?: boolean;
@@ -116,12 +107,8 @@ export default function MenuProvider({ children }: Props) {
 		if (!menu) return;
 
 		if (shouldFocusTrigger) {
-			const { id, level } = menu;
-			//If the menu level is one, we want to focus the trigger on close
-			if (level === MenuLevel.ONE) {
-				focusMenuElement(id);
-				addFocusVisibleClass(id);
-			}
+			const { id } = menu;
+			focusMenuElement(id);
 		}
 
 		setCurrentMenus([]);
@@ -140,11 +127,8 @@ export default function MenuProvider({ children }: Props) {
 			if (!menu) return;
 
 			if (shouldFocusTrigger) {
-				const { id, level } = menu;
-				if (level === MenuLevel.ONE) {
-					focusMenuElement(id);
-					addFocusVisibleClass(id);
-				}
+				const { id } = menu;
+				focusMenuElement(id);
 			}
 
 			//Remove the menu

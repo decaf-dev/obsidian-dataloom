@@ -1,9 +1,8 @@
 import React from "react";
 
-import { css } from "@emotion/react";
 import { Menu } from "src/shared/menu/types";
 import MenuTrigger from "../menu-trigger";
-import { buttonStyle, iconStyle, linkStyle } from "../button";
+import Button from "../button";
 
 interface MenuButtonProps {
 	menu: Menu;
@@ -27,23 +26,18 @@ export default function MenuButton({
 	return (
 		<MenuTrigger
 			isButton
-			fillParent={false}
 			menu={menu}
 			onClick={onClick}
 			onMouseDown={onMouseDown}
 		>
-			<button
-				className="NLT__menu-button"
-				tabIndex={-1}
-				css={css`
-					${buttonStyle}
-					${isLink ? linkStyle : undefined}
-				    ${icon !== undefined ? iconStyle : undefined}
-				`}
-				aria-label={ariaLabel}
+			<Button
+				isFocusable={false}
+				isLink={isLink}
+				icon={icon}
+				ariaLabel={ariaLabel}
 			>
-				{icon !== undefined ? icon : children}
-			</button>
+				{children}
+			</Button>
 		</MenuTrigger>
 	);
 }

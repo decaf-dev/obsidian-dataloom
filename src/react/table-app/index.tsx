@@ -29,7 +29,6 @@ import { Store } from "@reduxjs/toolkit";
 import { MarkdownView, WorkspaceLeaf } from "obsidian";
 
 import "./styles.css";
-import _ from "lodash";
 import React from "react";
 import {
 	isMacRedoDown,
@@ -37,12 +36,17 @@ import {
 	isWindowsRedoDown,
 	isWindowsUndoDown,
 } from "src/shared/keyboard-event";
-import { removeFocusVisibleClass } from "src/shared/menu/focus-visible";
+import {
+	addFocusVisibleClass,
+	removeFocusVisibleClass,
+} from "src/shared/menu/focus-visible";
 import { nltEventSystem } from "src/shared/event-system/event-system";
+import { useLogger } from "src/shared/logger";
 
 const TableApp = () => {
 	const { appId, leaf } = useMountContext();
-	const { hasOpenMenu, topMenu } = useMenuContext();
+	const { topMenu } = useMenuContext();
+	const logger = useLogger();
 	const {
 		tableState,
 		resizingColumnId,
@@ -103,34 +107,60 @@ const TableApp = () => {
 	const lastColumnId = useUUID();
 
 	function handleKeyDown(e: React.KeyboardEvent) {
-		console.log("APP KEY DOWN");
+		e.stopPropagation();
+		logger("TableApp handleKeyDown");
 
 		if (e.key === "Tab") {
 			removeFocusVisibleClass();
 
-			if (!topMenu) return;
-			const { id } = topMenu;
+			let parentEl = document.querySelector(
+				`.NLT__app[data-id="${appId}"]`
+			) as HTMLElement;
 
-			const menuEl = document.querySelector(
-				`.NLT__menu[data-id="${id}"]`
-			);
-			if (!menuEl) return;
+			//If we have a menu open, set the parent element to the menu
+			if (topMenu) {
+				const { id } = topMenu;
 
-			e.preventDefault(); // Prevent default tab behavior
+				const menuEl = document.querySelector(
+					`.NLT__menu[data-id="${id}"]`
+				);
+				if (menuEl) parentEl = menuEl as HTMLElement;
+			}
 
-			const focusableEls = menuEl.querySelectorAll(".NLT__focusable");
+			//Prevent default tab behavior
+			e.preventDefault();
+
+			const focusableEls = parentEl.querySelectorAll(".NLT__focusable");
 			if (focusableEls.length === 0) return;
 
 			const focusedEl = document.activeElement;
 			if (focusedEl) {
 				const index = Array.from(focusableEls).indexOf(focusedEl);
-				if (index + 1 > focusableEls.length - 1) {
-					(focusableEls[0] as HTMLElement).focus(); // Focus the first matching element
-				} else {
-					(focusableEls[index + 1] as HTMLElement).focus(); // Focus the first matching element
+				if (index !== -1) {
+					//If we can increment 1 index, go to the next element
+					//otherwise focus the first element
+					if (index + 1 > focusableEls.length - 1) {
+						(focusableEls[0] as HTMLElement).focus();
+						addFocusVisibleClass(focusableEls[0] as HTMLElement);
+					} else {
+						(focusableEls[index + 1] as HTMLElement).focus();
+						addFocusVisibleClass(
+							focusableEls[index + 1] as HTMLElement
+						);
+					}
+					return;
 				}
+			}
+
+			const selectedEl = parentEl.querySelector(".NLT__selected");
+			//If there is a selected element, focus it
+			//otherwise focus the first element
+			if (selectedEl) {
+				(selectedEl as HTMLElement).focus();
+				addFocusVisibleClass(selectedEl as HTMLElement);
 			} else {
-				(focusableEls[0] as HTMLElement).focus(); // Focus the first matching element
+				(focusableEls[0] as HTMLElement).focus();
+				addFocusVisibleClass(focusableEls[0] as HTMLElement);
 			}
 		} else if (isWindowsRedoDown(e) || isMacRedoDown(e)) {
 			e.preventDefault();

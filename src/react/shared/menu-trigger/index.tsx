@@ -8,11 +8,15 @@ import {
 	isWindowsRedoDown,
 	isWindowsUndoDown,
 } from "src/shared/keyboard-event";
+import { useLogger } from "src/shared/logger";
 
 interface Props {
+	/** If the trigger wraps a button */
 	isButton?: boolean;
-	isActive?: boolean;
-	fillParent?: boolean;
+	/** If the trigger should open a menu */
+	shouldRun?: boolean;
+	/** Should the trigger be 100% width and 100% height of the parent */
+	isCell?: boolean;
 	menu: Menu;
 	children: React.ReactNode;
 	onEnterDown?: () => void;
@@ -23,8 +27,8 @@ interface Props {
 
 const MenuTrigger = ({
 	isButton = false,
-	isActive = true,
-	fillParent = true,
+	isCell = false,
+	shouldRun = true,
 	menu,
 	children,
 	onEnterDown,
@@ -33,9 +37,10 @@ const MenuTrigger = ({
 	onMouseDown,
 }: Props) => {
 	const { openMenu, closeTopMenu, canOpenMenu } = useMenuContext();
+	const logger = useLogger();
 
 	function handleKeyDown(e: React.KeyboardEvent) {
-		console.log("MENU TRIGGER KEY DOWN");
+		logger("MenuTrigger handleKeyDown");
 
 		if (e.key === "Enter") {
 			e.stopPropagation();
@@ -45,7 +50,7 @@ const MenuTrigger = ({
 			e.preventDefault();
 
 			//Is the trigger isn't active, return
-			if (!isActive) return;
+			if (!shouldRun) return;
 
 			const tag = (e.target as HTMLElement).tagName;
 			if (tag === "A") return;
@@ -58,7 +63,9 @@ const MenuTrigger = ({
 			closeTopMenu();
 		} else if (e.key === "Backspace") {
 			onBackspaceDown?.();
-		} else if (e.key.length === 1) {
+		}
+
+		if (e.key.length === 1) {
 			if (
 				isWindowsRedoDown(e) ||
 				isWindowsUndoDown(e) ||
@@ -67,18 +74,21 @@ const MenuTrigger = ({
 			)
 				return;
 
+			//Unless the trigger is for a cell, don't open it when a user presses any key
+			if (!isCell) return;
+
 			openMenu(menu);
 		}
 	}
 
 	function handleClick(e: React.MouseEvent) {
-		console.log("TRIGGER CLICK");
+		logger("MenuTrigger handleClick");
 		//Don't propagate to the DOM handler
 		e.stopPropagation();
 		onClick?.(e);
 
 		//Is the trigger isn't active, just close any open menus on click
-		if (!isActive) {
+		if (!shouldRun) {
 			closeTopMenu();
 			return;
 		}
@@ -102,12 +112,12 @@ const MenuTrigger = ({
 		<div
 			className="NLT__menu-trigger NLT__focusable"
 			css={css`
-				width: ${fillParent ? "100%" : "unset"};
-				height: ${fillParent ? "100%" : "unset"};
+				width: ${isCell ? "100%" : "unset"};
+				height: ${isCell ? "100%" : "unset"};
 				border-radius: ${isButton ? "var(--button-radius)" : "unset"};
 			`}
 			tabIndex={0}
-			data-menu-id={isActive ? id : undefined}
+			data-menu-id={shouldRun ? id : undefined}
 			onKeyDown={handleKeyDown}
 			onClick={handleClick}
 			onMouseDown={onMouseDown}

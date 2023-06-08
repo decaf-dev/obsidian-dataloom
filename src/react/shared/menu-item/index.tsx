@@ -4,9 +4,11 @@ import Flex from "../flex";
 import Text from "../text";
 import Padding from "../padding";
 
-import "./styles.css";
+import { css } from "@emotion/react";
+import React from "react";
 
 interface Props {
+	isFocusable?: boolean;
 	lucideId?: string;
 	ariaLabel?: string;
 	name: string;
@@ -16,6 +18,7 @@ interface Props {
 }
 
 export default function MenuItem({
+	isFocusable = true,
 	lucideId,
 	ariaLabel,
 	name,
@@ -23,8 +26,14 @@ export default function MenuItem({
 	onClick,
 	isSelected = false,
 }: Props) {
-	let className = "NLT__menu-item NLT__selectable NLT__focusable";
-	if (isSelected) className += " NLT__selected";
+	const ref = React.useRef(null);
+	React.useEffect(() => {
+		if (!ref.current) return;
+
+		if (isSelected) {
+			(ref.current as HTMLElement).focus();
+		}
+	}, [isSelected]);
 
 	function handleClick() {
 		if (!onClick) return;
@@ -41,10 +50,21 @@ export default function MenuItem({
 		}
 	}
 
+	let className = "NLT__menu-item NLT__selectable";
+	if (isSelected) className += " NLT__selected";
+	if (isFocusable) className += " NLT__focusable";
+
 	return (
 		<div
+			ref={ref}
 			tabIndex={0}
 			className={className}
+			css={css`
+				display: flex;
+				align-items: center;
+				padding: var(--nlt-spacing--sm) var(--nlt-spacing--lg);
+				width: 100%;
+			`}
 			aria-label={ariaLabel}
 			onClick={handleClick}
 			onKeyDown={handleKeyDown}
