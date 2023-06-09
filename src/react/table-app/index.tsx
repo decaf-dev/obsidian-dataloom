@@ -155,11 +155,13 @@ const TableApp = () => {
 			const focusableEls = layerEl.querySelectorAll(".NLT__focusable");
 			if (focusableEls.length === 0) return;
 
+			//Prevent default scrolling of the table container
+			e.preventDefault();
+
 			const focusedEl = document.activeElement;
+
 			let index = -1;
-			if (focusedEl) {
-				index = Array.from(focusableEls).indexOf(focusedEl);
-			}
+			if (focusedEl) index = Array.from(focusableEls).indexOf(focusedEl);
 
 			const numVisibleColumns = tableState.model.columns.filter(
 				(column) => column.isVisible
