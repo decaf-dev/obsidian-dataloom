@@ -1,20 +1,9 @@
 import React from "react";
 
-import { css } from "@emotion/react";
-
 import { useCompare, useInputSelection } from "src/shared/hooks";
 import { isValidNumberInput } from "src/shared/validators";
 import { MenuCloseRequest } from "src/shared/menu/types";
-
-const inputStyle = css`
-	text-align: right;
-	width: 100%;
-	height: 100%;
-	border: 0 !important;
-	border-radius: 0 !important;
-	transition: none !important;
-	font-size: var(--font-ui-medium) !important;
-`;
+import { numberInputStyle } from "src/react/shared-styles";
 
 interface Props {
 	menuCloseRequest: MenuCloseRequest | null;
@@ -74,14 +63,14 @@ export default function NumberCellEdit({
 		<div className="NLT__number-cell-edit">
 			<input
 				autoFocus
-				css={inputStyle}
+				css={numberInputStyle}
 				type="text" //We use an input of type text so that the selection is available
 				ref={inputRef}
 				inputMode="numeric"
 				value={localValue}
 				onChange={(e) => handleChange(e.target.value)}
 				onBlur={(e) => {
-					e.target.classList.add("NLT__blur");
+					e.target.classList.add("NLT__blur--cell");
 				}}
 			/>
 		</div>

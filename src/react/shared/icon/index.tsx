@@ -39,8 +39,6 @@ export default function Icon({
 					div.style.height = "1.1rem";
 				}
 
-				div.detach();
-
 				//Set the lucid icon on the div
 				setIcon(div, lucideId); //The id should match lucide.dev
 

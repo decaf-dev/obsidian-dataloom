@@ -11,7 +11,7 @@ export interface Position {
 	height: number;
 }
 
-export interface Menu {
+export interface NltMenu {
 	id: string;
 	level: MenuLevel;
 	shouldRequestOnClose: boolean;

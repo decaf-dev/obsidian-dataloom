@@ -21,7 +21,7 @@ export default class CellBodyUpdateCommand extends TableStateCommand {
 		key: keyof BodyCell,
 		value: unknown
 	) {
-		super();
+		super(true);
 		this.cellId = cellId;
 		this.rowId = rowId;
 		this.key = key;

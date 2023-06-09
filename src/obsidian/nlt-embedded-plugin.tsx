@@ -67,7 +67,6 @@ class NLTEmbeddedPlugin implements PluginValue {
 			tableContainerEl.className = "NLT__embedded-container";
 			tableContainerEl.style.height = "100%";
 			tableContainerEl.style.width = "100%";
-			tableContainerEl.style.padding = "10px 0px";
 
 			const appId = uuidv4();
 			this.tableApps.push({
@@ -78,13 +77,12 @@ class NLTEmbeddedPlugin implements PluginValue {
 			});
 
 			//Call a separate function to not block the update function
-			this.setupTable(activeView, linkEl, tableContainerEl, file, appId);
+			this.setupTable(activeView, tableContainerEl, file, appId);
 		}
 	}
 
 	private async setupTable(
 		activeView: MarkdownView,
-		linkEl: HTMLElement,
 		tableContainerEl: HTMLElement,
 		file: TFile,
 		appId: string
@@ -97,24 +95,6 @@ class NLTEmbeddedPlugin implements PluginValue {
 		 */
 		tableContainerEl.addEventListener("click", (e) => {
 			e.stopPropagation();
-
-			//Create a synthetic event
-			const syntheticEvent = new CustomEvent("click", {
-				bubbles: true, // Allow the event to bubble up
-			});
-
-			Object.defineProperty(syntheticEvent, "target", {
-				value: e.target,
-			});
-			Object.defineProperty(syntheticEvent, "currentTarget", {
-				value: e.currentTarget,
-			});
-
-			//Pass it to the grandparent
-			const parent = linkEl.parentElement;
-			if (parent) {
-				parent.dispatchEvent(syntheticEvent);
-			}
 		});
 
 		//Get the table state

@@ -85,7 +85,7 @@ export default function FunctionCell({
 
 	return (
 		<>
-			<MenuTrigger menu={menu}>
+			<MenuTrigger isCell menu={menu}>
 				<div
 					className="NLT__function-cell NLT__selectable"
 					ref={triggerRef}

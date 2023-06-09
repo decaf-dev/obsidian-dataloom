@@ -7,6 +7,7 @@ import {
 } from "src/shared/table-state/constants";
 
 import "./styles.css";
+import { baseInputStyle, selectStyle } from "src/react/shared-styles";
 
 interface Props {
 	id: string;
@@ -27,13 +28,21 @@ export default function FilterTextInput({
 	onTextChange,
 	onTagsChange,
 }: Props) {
+	function handleKeyDown(e: React.KeyboardEvent) {
+		if (e.key === "Enter") {
+			e.stopPropagation();
+		}
+	}
+
 	return (
 		<>
 			{cellType !== CellType.CHECKBOX &&
 				cellType !== CellType.TAG &&
 				cellType !== CellType.MULTI_TAG && (
 					<input
+						className="NLT__focusable"
 						css={css`
+							${baseInputStyle}
 							width: 150px !important;
 						`}
 						value={text}
@@ -43,8 +52,14 @@ export default function FilterTextInput({
 				)}
 			{cellType === CellType.CHECKBOX && (
 				<select
+					tabIndex={0}
+					className="NLT__focusable"
+					css={css`
+						${selectStyle}
+					`}
 					value={text}
 					onChange={(e) => onTextChange(id, e.target.value)}
+					onKeyDown={handleKeyDown}
 				>
 					<option value="">Select an option</option>
 					<option value={CHECKBOX_MARKDOWN_CHECKED}>Checked</option>
@@ -55,7 +70,7 @@ export default function FilterTextInput({
 			)}
 			{(cellType === CellType.TAG || cellType === CellType.MULTI_TAG) && (
 				<Select
-					className="react-select"
+					className="react-select NLT__focusable"
 					styles={{
 						placeholder: (baseStyles) => ({
 							...baseStyles,

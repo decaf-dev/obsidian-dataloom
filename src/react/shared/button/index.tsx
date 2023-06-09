@@ -1,101 +1,114 @@
 import React from "react";
 
 import { css } from "@emotion/react";
-import "./styles.css";
-import { Menu } from "src/shared/menu/types";
-import { getButtonClassName } from "./utils";
+import { useLogger } from "src/shared/logger";
+
+export const buttonStyle = css`
+	display: flex;
+	align-items: center;
+	width: max-content !important;
+	height: max-content;
+	padding: 10px !important; /* Prevent tablet styles */
+	white-space: nowrap;
+	color: var(--text-normal);
+	margin-right: 0;
+	cursor: pointer;
+
+	&:focus-visible {
+		box-shadow: none !important;
+	}
+`;
+
+export const linkStyle = css`
+	color: var(--link-color);
+	text-decoration-line: var(--link-decoration);
+	cursor: var(--cursor-link);
+	background-color: transparent !important;
+	box-shadow: none !important;
+	border: none !important;
+	&:hover {
+		box-shadow: var(--input-shadow) !important;
+	}
+`;
+
+export const iconStyle = css`
+	background-color: transparent !important;
+	box-shadow: none !important;
+	padding: 6px !important;
+
+	&: hover {
+		box-shadow: var(--input-shadow) !important;
+	}
+`;
+
+export const smallStyle = css`
+	padding: 2px !important;
+`;
 
 interface ButtonProps {
+	isFocusable?: boolean;
+	invertFocusColor?: boolean;
 	isLink?: boolean;
-	isSimple?: boolean;
+	isSmall?: boolean;
 	ariaLabel?: string;
 	icon?: React.ReactNode;
 	children?: React.ReactNode;
-	onClick: (e: React.MouseEvent) => void;
+	onClick?: () => void;
 	onMouseDown?: (e: React.MouseEvent) => void;
 }
 
-export const Button = ({
+export default function Button({
+	isFocusable = true,
 	isLink,
+	isSmall,
+	invertFocusColor,
 	children,
 	ariaLabel = "",
 	icon,
-	isSimple,
 	onClick,
 	onMouseDown,
-}: ButtonProps) => {
-	const className = getButtonClassName({
-		isLink,
-		isSimple,
-		hasIcon: icon !== undefined,
-	});
+}: ButtonProps) {
+	const logger = useLogger();
+	function handleClick() {
+		onClick?.();
+	}
+
+	function handleKeyDown(e: React.KeyboardEvent) {
+		logger("Button handleKeyDown");
+		if (e.key === "Enter") {
+			//Stop click event
+			e.preventDefault();
+
+			//Stop propagation so the the menu doesn't close when pressing enter
+			e.stopPropagation();
+
+			onClick?.();
+		}
+	}
+
+	let className = "NLT__button";
+
+	if (isFocusable) {
+		className += " NLT__focusable";
+		if (invertFocusColor) className += " NLT__focusable--inverted";
+	}
 
 	return (
 		<button
+			tabIndex={isFocusable ? 0 : -1}
 			className={className}
 			css={css`
-				width: max-content !important;
+				${buttonStyle}
+				${isLink ? linkStyle : undefined}
+				${icon !== undefined ? iconStyle : undefined}
+				${isSmall ? smallStyle : undefined}
 			`}
 			aria-label={ariaLabel}
+			onKeyDown={handleKeyDown}
 			onMouseDown={onMouseDown}
-			onClick={onClick}
-		>
-			{icon !== undefined ? icon : children}
-		</button>
-	);
-};
-
-interface MenuButtonProps {
-	menu: Menu;
-	isLink?: boolean;
-	isSimple?: boolean;
-	ariaLabel?: string;
-	icon?: React.ReactNode;
-	children?: React.ReactNode;
-	onClick?: (e: React.MouseEvent) => void;
-	onMouseDown?: (e: React.MouseEvent) => void;
-}
-
-export const MenuButton = ({
-	menu,
-	isLink = false,
-	isSimple,
-	ariaLabel,
-	icon,
-	children,
-	onClick,
-	onMouseDown,
-}: MenuButtonProps) => {
-	const { id, level, shouldRequestOnClose } = menu;
-
-	function handleMouseDown(e: React.MouseEvent) {
-		onMouseDown?.(e);
-	}
-
-	function handleClick(e: React.MouseEvent) {
-		onClick?.(e);
-	}
-
-	const className = getButtonClassName({
-		isLink,
-		isSimple,
-		hasIcon: icon !== undefined,
-	});
-
-	return (
-		<button
-			className={"NLT__menu-trigger " + className}
-			css={css`
-				width: max-content !important;
-			`}
-			aria-label={ariaLabel}
-			data-menu-id={id}
-			data-menu-level={level}
-			data-menu-should-request-on-close={shouldRequestOnClose}
-			onMouseDown={handleMouseDown}
 			onClick={handleClick}
 		>
 			{icon !== undefined ? icon : children}
 		</button>
 	);
-};
+}

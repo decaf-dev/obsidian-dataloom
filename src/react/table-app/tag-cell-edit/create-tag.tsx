@@ -14,6 +14,7 @@ interface Props {
 export default function CreateTag({ markdown, color, onTagAdd }: Props) {
 	return (
 		<div
+			tabIndex={0}
 			css={css`
 				display: flex;
 				align-items: center;
@@ -21,7 +22,7 @@ export default function CreateTag({ markdown, color, onTagAdd }: Props) {
 				width: 100%;
 				overflow: hidden;
 			`}
-			className="NLT__selectable"
+			className="NLT__focusable NLT__selectable"
 			onClick={() => {
 				onTagAdd(markdown, color);
 			}}

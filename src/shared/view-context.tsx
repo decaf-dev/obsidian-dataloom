@@ -10,11 +10,11 @@ interface ContextProps {
 
 const MountContext = React.createContext<ContextProps | null>(null);
 
-export const useMountContext = () => {
+export const useMountState = () => {
 	const value = React.useContext(MountContext);
 	if (value === null) {
 		throw new Error(
-			"useMountContext() called without a <MountProvider /> in the tree."
+			"useMountState() called without a <MountProvider /> in the tree."
 		);
 	}
 

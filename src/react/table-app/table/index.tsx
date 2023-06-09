@@ -35,6 +35,7 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 
 	return (
 		<TableVirtuoso
+			tabIndex={-1}
 			ref={tableRef}
 			overscan={10}
 			style={{

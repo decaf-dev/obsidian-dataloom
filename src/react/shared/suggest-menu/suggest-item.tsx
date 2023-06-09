@@ -52,7 +52,8 @@ const SuggestItem = React.forwardRef<HTMLDivElement, Props>(
 
 		return (
 			<div
-				className="NLT__suggest-item"
+				tabIndex={0}
+				className="NLT__suggest-item NLT__focusable"
 				ref={ref}
 				css={css`
 					padding: 4px 6px;
