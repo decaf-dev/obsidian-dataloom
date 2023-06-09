@@ -24,7 +24,7 @@ import MountProvider, { useMountState } from "src/shared/view-context";
 import { Provider } from "react-redux";
 import MenuProvider, { useMenuState } from "src/shared/menu/menu-context";
 import DragProvider from "src/shared/dragging/drag-context";
-import { TableState } from "src/shared/types/types";
+import { SortDir, TableState } from "src/shared/types/types";
 import { Store } from "@reduxjs/toolkit";
 import { MarkdownView, WorkspaceLeaf } from "obsidian";
 
@@ -43,10 +43,18 @@ import {
 } from "src/shared/menu/focus-visible";
 import { nltEventSystem } from "src/shared/event-system/event-system";
 import { useLogger } from "src/shared/logger";
+import {
+	moveFocusDown,
+	moveFocusLeft,
+	moveFocusRight,
+	moveFocusUp,
+	moveMenuFocusDown,
+	moveMenuFocusUp,
+} from "src/shared/menu/arrow-move-focus";
 
 const TableApp = () => {
 	const { appId, leaf } = useMountState();
-	const { topMenu } = useMenuState();
+	const { topMenu, hasOpenMenu } = useMenuState();
 	const logger = useLogger();
 	const {
 		tableState,
@@ -116,6 +124,8 @@ const TableApp = () => {
 			removeFocusVisibleClass();
 
 			//Prevent default tab behavior
+			//which is to move focus to next element
+			//We will do that ourselves
 			e.preventDefault();
 
 			const layerEl = getFocusableLayerEl(appId, topMenu);
@@ -126,14 +136,81 @@ const TableApp = () => {
 
 			focusNextElement(layerEl, focusableEls);
 		} else if (isWindowsRedoDown(e) || isMacRedoDown(e)) {
+			//Prevent Obsidian action bar from triggering
 			e.preventDefault();
 			commandRedo();
 		} else if (isWindowsUndoDown(e) || isMacUndoDown(e)) {
+			//Prevent Obsidian action bar from triggering
 			e.preventDefault();
 			commandUndo();
+		} else if (
+			e.key === "ArrowDown" ||
+			e.key === "ArrowUp" ||
+			e.key === "ArrowLeft" ||
+			e.key === "ArrowRight"
+		) {
+			const layerEl = getFocusableLayerEl(appId, topMenu);
+			if (!layerEl) return;
+
+			const focusableEls = layerEl.querySelectorAll(".NLT__focusable");
+			if (focusableEls.length === 0) return;
+
+			const focusedEl = document.activeElement;
+			let index = -1;
+			if (focusedEl) {
+				index = Array.from(focusableEls).indexOf(focusedEl);
+			}
+
+			const numVisibleColumns = tableState.model.columns.filter(
+				(column) => column.isVisible
+			).length;
+			const numBodyRows = tableState.model.bodyRows.length;
+			const numSortedColumns = tableState.model.columns.filter(
+				(column) => column.sortDir !== SortDir.NONE
+			).length;
+
+			let elementToFocus: Element | null = null;
+
+			switch (e.key) {
+				case "ArrowLeft":
+					elementToFocus = moveFocusLeft(focusableEls, index);
+					break;
+				case "ArrowRight":
+					elementToFocus = moveFocusRight(focusableEls, index);
+					break;
+				case "ArrowUp":
+					if (hasOpenMenu()) {
+						elementToFocus = moveMenuFocusUp(focusableEls, index);
+					} else {
+						elementToFocus = moveFocusUp(
+							focusableEls,
+							numVisibleColumns,
+							numBodyRows,
+							numSortedColumns,
+							index
+						);
+					}
+					break;
+				case "ArrowDown":
+					if (hasOpenMenu()) {
+						elementToFocus = moveMenuFocusDown(focusableEls, index);
+					} else {
+						elementToFocus = moveFocusDown(
+							focusableEls,
+							numVisibleColumns,
+							numBodyRows,
+							numSortedColumns,
+							index
+						);
+						break;
+					}
+			}
+			if (elementToFocus !== null) {
+				removeFocusVisibleClass();
+				(elementToFocus as HTMLElement).focus();
+			}
 		}
 
-		console.log("DISPATCHING");
 		//Send the event to the event system
 		//This is necessary to enabling scrolling with the arrow keys
 		nltEventSystem.dispatchEvent("keydown", e);

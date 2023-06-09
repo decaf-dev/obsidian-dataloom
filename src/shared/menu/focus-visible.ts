@@ -46,32 +46,22 @@ export const focusNextElement = (
 ) => {
 	const focusedEl = document.activeElement;
 
+	//If there's an element that's focused, get the next element
 	if (focusedEl) {
-		const index = Array.from(focusableEls).indexOf(focusedEl);
-		if (index !== -1) {
-			if (index + 1 > focusableEls.length - 1) {
-				const el = focusableEls[0] as HTMLElement;
-				el.focus();
-				addFocusVisibleClass(el);
-			} else {
-				const el = focusableEls[index + 1] as HTMLElement;
-				el.focus();
-				addFocusVisibleClass(el);
-			}
+		const currentIndex = Array.from(focusableEls).indexOf(focusedEl);
+		if (currentIndex !== -1) {
+			let index = currentIndex + 1;
+			if (index > focusableEls.length - 1) index = 0;
+			(focusableEls[index] as HTMLElement).focus();
 			return;
 		}
 	}
 
+	//Otherwise focus the first element or the selected element
 	const selectedEl = layerEl.querySelector(".NLT__selected");
-	//If there is a selected element, focus it
-	//otherwise focus the first element
 	if (selectedEl) {
-		const el = selectedEl as HTMLElement;
-		el.focus();
-		addFocusVisibleClass(el);
+		(selectedEl as HTMLElement).focus();
 	} else {
-		const el = focusableEls[0] as HTMLElement;
-		el.focus();
-		addFocusVisibleClass(el);
+		(focusableEls[0] as HTMLElement).focus();
 	}
 };

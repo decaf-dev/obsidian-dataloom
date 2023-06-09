@@ -3,7 +3,7 @@ export const moveFocusLeft = (
 	index: number
 ) => {
 	//Out of bounds
-	if (index === 0) return focusableEls[index];
+	if (index - 1 < 0) return focusableEls[focusableEls.length - 1];
 
 	//Default
 	return focusableEls[index - 1];
@@ -14,10 +14,32 @@ export const moveFocusRight = (
 	index: number
 ) => {
 	//Out of bounds
-	if (index === focusableEls.length - 1) return focusableEls[index];
+	if (index + 1 > focusableEls.length - 1) return focusableEls[0];
 
 	//Default
 	return focusableEls[index + 1];
+};
+
+export const moveMenuFocusDown = (
+	focusableEls: NodeListOf<Element>,
+	index: number
+) => {
+	//Out of bounds
+	if (index + 1 > focusableEls.length - 1) return focusableEls[0];
+
+	//Default
+	return focusableEls[index + 1];
+};
+
+export const moveMenuFocusUp = (
+	focusableEls: NodeListOf<Element>,
+	index: number
+) => {
+	//Out of bounds
+	if (index - 1 < 0) return focusableEls[focusableEls.length - 1];
+
+	//Default
+	return focusableEls[index - 1];
 };
 
 export const moveFocusUp = (
