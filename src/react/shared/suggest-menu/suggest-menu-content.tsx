@@ -59,6 +59,8 @@ export default function SuggestMenuContent({
 
 	React.useEffect(() => {
 		if (highlightItemRef.current) {
+			console.log(highlightIndex);
+			console.log(highlightItemRef.current);
 			highlightItemRef.current.scrollIntoView({
 				behavior: "auto",
 				block: "nearest",
@@ -70,17 +72,27 @@ export default function SuggestMenuContent({
 		function handleKeyDown(e: KeyboardEvent) {
 			logger("SuggestMenuContent handleKeyDown");
 			if (e.key === "ArrowUp") {
+				//Prevent default scrolling
+				e.preventDefault();
 				setHighlightIndex((prevIndex) => {
-					const newIndex = Math.max(prevIndex - 1, 0);
-					return newIndex;
+					let index = prevIndex - 1;
+					if (index < 0) index = filteredFiles.length - 1;
+					return index;
 				});
-			} else if (e.key === "ArrowDown" || e.key === "Tab") {
+			} else if (e.key === "ArrowDown") {
+				//Prevent default scrolling
+				e.preventDefault();
+
 				setHighlightIndex((prevIndex) => {
-					const newIndex = Math.min(
-						prevIndex + 1,
-						filteredFiles.length - 1
-					);
-					return newIndex;
+					let index = prevIndex + 1;
+					if (index > filteredFiles.length - 1) index = 0;
+					return index;
+				});
+			} else if (e.key === "Tab") {
+				setHighlightIndex((prevIndex) => {
+					let index = prevIndex + 1;
+					if (index > filteredFiles.length - 1) index = 0;
+					return index;
 				});
 			}
 		}
