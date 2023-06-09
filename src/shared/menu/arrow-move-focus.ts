@@ -1,45 +1,41 @@
-export const moveFocusLeft = (
+export const moveMenuFocusUp = (
 	focusableEls: NodeListOf<Element>,
-	index: number
+	currentIndex: number
 ) => {
-	//Out of bounds
-	if (index - 1 < 0) return focusableEls[focusableEls.length - 1];
+	let index = currentIndex - 1;
+	if (index < 0) index = focusableEls.length - 1;
 
-	//Default
-	return focusableEls[index - 1];
-};
-
-export const moveFocusRight = (
-	focusableEls: NodeListOf<Element>,
-	index: number
-) => {
-	//Out of bounds
-	if (index + 1 > focusableEls.length - 1) return focusableEls[0];
-
-	//Default
-	return focusableEls[index + 1];
+	return focusableEls[index];
 };
 
 export const moveMenuFocusDown = (
 	focusableEls: NodeListOf<Element>,
-	index: number
+	currentIndex: number
 ) => {
-	//Out of bounds
-	if (index + 1 > focusableEls.length - 1) return focusableEls[0];
+	let index = currentIndex + 1;
+	if (index > focusableEls.length - 1) index = 0;
 
-	//Default
-	return focusableEls[index + 1];
+	return focusableEls[index];
 };
 
-export const moveMenuFocusUp = (
+export const moveFocusLeft = (
 	focusableEls: NodeListOf<Element>,
-	index: number
+	currentIndex: number
 ) => {
-	//Out of bounds
-	if (index - 1 < 0) return focusableEls[focusableEls.length - 1];
+	let index = currentIndex - 1;
+	if (index < 0) index = focusableEls.length - 1;
 
-	//Default
-	return focusableEls[index - 1];
+	return focusableEls[index];
+};
+
+export const moveFocusRight = (
+	focusableEls: NodeListOf<Element>,
+	currentIndex: number
+) => {
+	let index = currentIndex + 1;
+	if (index > focusableEls.length - 1) index = 0;
+
+	return focusableEls[index];
 };
 
 export const moveFocusUp = (
@@ -47,7 +43,7 @@ export const moveFocusUp = (
 	numColumns: number,
 	numBodyRows: number,
 	numSortedColumns: number,
-	index: number
+	currentIndex: number
 ) => {
 	const searchInputIndex = numSortedColumns;
 	const optionBarIndexEnd = numSortedColumns + 2;
@@ -55,41 +51,51 @@ export const moveFocusUp = (
 
 	//Already in the option bar
 	//Don't do anything
-	if (index <= optionBarIndexEnd) return focusableEls[index];
+	if (currentIndex <= optionBarIndexEnd) return focusableEls[currentIndex];
 
 	//Column row
-	if (index > optionBarIndexEnd && index <= optionBarIndexEnd + numColumns) {
+	if (
+		currentIndex > optionBarIndexEnd &&
+		currentIndex <= optionBarIndexEnd + numColumns
+	) {
 		return focusableEls[searchInputIndex];
 	}
 
 	//Function cell
-	if (index >= newRowButtonIndex - numColumns && index < newRowButtonIndex) {
-		if (numBodyRows === 0) return focusableEls[index - numColumns - 1];
-		return focusableEls[index - numColumns];
+	if (
+		currentIndex >= newRowButtonIndex - numColumns &&
+		currentIndex < newRowButtonIndex
+	) {
+		if (numBodyRows === 0)
+			return focusableEls[currentIndex - numColumns - 1];
+		return focusableEls[currentIndex - numColumns];
 	}
 
 	//Add row button row
-	if (index === newRowButtonIndex)
+	if (currentIndex === newRowButtonIndex)
 		return focusableEls[newRowButtonIndex - numColumns];
 
 	//Header row
 	//Go to the first element
-	if (index > optionBarIndexEnd && index <= optionBarIndexEnd + numColumns)
+	if (
+		currentIndex > optionBarIndexEnd &&
+		currentIndex <= optionBarIndexEnd + numColumns
+	)
 		return focusableEls[0];
 
 	//First body row - drag button
-	if (index === optionBarIndexEnd + numColumns + 2)
-		return focusableEls[index - 1 - numColumns];
+	if (currentIndex === optionBarIndexEnd + numColumns + 2)
+		return focusableEls[currentIndex - 1 - numColumns];
 
 	//First body row - columns
 	if (
-		index > optionBarIndexEnd + numColumns + 2 &&
-		index <= optionBarIndexEnd + numColumns + 2 + numColumns
+		currentIndex > optionBarIndexEnd + numColumns + 2 &&
+		currentIndex <= optionBarIndexEnd + numColumns + 2 + numColumns
 	)
-		return focusableEls[index - 2 - numColumns];
+		return focusableEls[currentIndex - 2 - numColumns];
 
 	//Body row
-	return focusableEls[index - 1 - numColumns];
+	return focusableEls[currentIndex - 1 - numColumns];
 };
 
 export const moveFocusDown = (
@@ -97,7 +103,7 @@ export const moveFocusDown = (
 	numColumns: number,
 	numBodyRows: number,
 	numSortedColumns: number,
-	index: number
+	currentIndex: number
 ) => {
 	const firstColumnIndex = numSortedColumns + 3;
 	const optionBarIndexEnd = numSortedColumns + 2;
@@ -105,33 +111,40 @@ export const moveFocusDown = (
 
 	//At the row button
 	//Don't do anything
-	if (index === newRowButtonIndex) return focusableEls[index];
+	if (currentIndex === newRowButtonIndex) return focusableEls[currentIndex];
 
 	//Option bar row
-	if (index >= 0 && index <= optionBarIndexEnd)
+	if (currentIndex >= 0 && currentIndex <= optionBarIndexEnd)
 		return focusableEls[firstColumnIndex];
 
 	//Function cell
-	if (index >= newRowButtonIndex - numColumns && index < newRowButtonIndex)
+	if (
+		currentIndex >= newRowButtonIndex - numColumns &&
+		currentIndex < newRowButtonIndex
+	)
 		return focusableEls[newRowButtonIndex];
 
 	//Header row - columns
-	if (index > optionBarIndexEnd && index <= optionBarIndexEnd + numColumns) {
-		if (numBodyRows === 0) return focusableEls[index + numColumns + 1];
-		return focusableEls[index + numColumns + 2];
+	if (
+		currentIndex > optionBarIndexEnd &&
+		currentIndex <= optionBarIndexEnd + numColumns
+	) {
+		if (numBodyRows === 0)
+			return focusableEls[currentIndex + numColumns + 1];
+		return focusableEls[currentIndex + numColumns + 2];
 	}
 
 	//Last body row
 	if (
-		index >= newRowButtonIndex - numColumns - numColumns &&
-		index < newRowButtonIndex - numColumns
+		currentIndex >= newRowButtonIndex - numColumns - numColumns &&
+		currentIndex < newRowButtonIndex - numColumns
 	)
-		return focusableEls[index + numColumns];
+		return focusableEls[currentIndex + numColumns];
 
 	//Header row - add column button
-	if (index === optionBarIndexEnd + numColumns + 1)
-		return focusableEls[index + numColumns + 1];
+	if (currentIndex === optionBarIndexEnd + numColumns + 1)
+		return focusableEls[currentIndex + numColumns + 1];
 
 	//Body row
-	return focusableEls[index + numColumns + 1];
+	return focusableEls[currentIndex + numColumns + 1];
 };
