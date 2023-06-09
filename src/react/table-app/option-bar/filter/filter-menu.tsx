@@ -4,7 +4,7 @@ import Stack from "src/react/shared/stack";
 import Icon from "src/react/shared/icon";
 import FilterRow from "./filter-row";
 import Text from "src/react/shared/text";
-import { Button } from "src/react/shared/button";
+import Button from "src/react/shared/button";
 
 import { FilterRule, FilterType } from "src/shared/types/types";
 import { ColumNotFoundError } from "src/shared/table-state/table-error";

@@ -18,12 +18,13 @@ export const getElementPosition = (el: HTMLElement | null): Position => {
 		//so we need to round the values.
 		//We round up the width and height so that will always be enough room for items
 		//otherwise some letters may wrap
-		return {
-			width: Math.ceil(width),
-			height: Math.ceil(height),
-			top: Math.ceil(top),
-			left: Math.ceil(left),
-		};
+		return el.getBoundingClientRect();
+		// return {
+		// 	width: Math.ceil(width),
+		// 	height: Math.ceil(height),
+		// 	top: Math.ceil(top),
+		// 	left: Math.ceil(left),
+		// };
 	}
 	return {
 		top: 0,
@@ -149,7 +150,7 @@ const shiftElementIntoContainer = (
 	}
 
 	return {
-		top: Math.ceil(newTop),
-		left: Math.ceil(newLeft),
+		top: newTop,
+		left: newLeft,
 	};
 };

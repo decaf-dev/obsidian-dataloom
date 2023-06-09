@@ -4,13 +4,13 @@ import { EVENT_ROW_ADD, EVENT_ROW_DELETE } from "../events";
 import { useTableState } from "./table-state-context";
 import RowAddCommand from "../commands/row-add-command";
 import RowDeleteCommand from "../commands/row-delete-command";
-import { useMountContext } from "../view-context";
+import { useMountState } from "../view-context";
 import { isEventForThisApp } from "../event-system/utils";
 
 export const useRow = () => {
 	const logger = useLogger();
 	const { doCommand } = useTableState();
-	const { appId } = useMountContext();
+	const { appId } = useMountState();
 
 	React.useEffect(() => {
 		function handleRowAddEvent() {

@@ -14,6 +14,7 @@ import { Color } from "src/shared/types/types";
 import Padding from "src/react/shared/padding";
 
 import "./styles.css";
+
 interface Props {
 	menuId: string;
 	isOpen: boolean;

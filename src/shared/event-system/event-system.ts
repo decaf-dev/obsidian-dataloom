@@ -40,7 +40,7 @@ class EventSystem {
 	 * @param event the DOM event
 	 * @param data any data
 	 */
-	dispatchEvent(name: EventName, event: Event, ...data: any[]) {
+	dispatchEvent(name: EventName, event: React.KeyboardEvent, ...data: any[]) {
 		const listeners = this.eventListeners.filter((l) => l.name === name);
 
 		// Call the listeners in the order they were added

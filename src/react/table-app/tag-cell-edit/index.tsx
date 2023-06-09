@@ -69,6 +69,11 @@ export default function TagCellEdit({
 		onMenuClose,
 	]);
 
+	function handleTagClick(id: string) {
+		onTagClick(id);
+		onMenuClose();
+	}
+
 	return (
 		<div className="NLT__tag-cell-edit">
 			<MenuHeader
@@ -82,7 +87,7 @@ export default function TagCellEdit({
 				columnTags={columnTags}
 				newTagColor={newTagColor}
 				onTagAdd={handleTagAdd}
-				onTagClick={onTagClick}
+				onTagClick={handleTagClick}
 				onTagDelete={onTagDelete}
 				onTagColorChange={onTagColorChange}
 			/>

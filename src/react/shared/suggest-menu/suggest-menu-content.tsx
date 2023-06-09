@@ -7,6 +7,8 @@ import SuggestItem from "./suggest-item";
 import { filterUniqueStrings } from "./utils";
 import { css } from "@emotion/react";
 import { nltEventSystem } from "src/shared/event-system/event-system";
+import { transparentInputStyle } from "src/react/shared-styles";
+import { useLogger } from "src/shared/logger";
 
 interface ContentProps {
 	showInput?: boolean;
@@ -19,6 +21,7 @@ export default function SuggestMenuContent({
 	filterValue,
 	onItemClick,
 }: ContentProps) {
+	const logger = useLogger();
 	const [localFilterValue, setLocalFilterValue] = React.useState(
 		filterValue ?? ""
 	);
@@ -56,6 +59,8 @@ export default function SuggestMenuContent({
 
 	React.useEffect(() => {
 		if (highlightItemRef.current) {
+			console.log(highlightIndex);
+			console.log(highlightItemRef.current);
 			highlightItemRef.current.scrollIntoView({
 				behavior: "auto",
 				block: "nearest",
@@ -65,20 +70,29 @@ export default function SuggestMenuContent({
 
 	React.useEffect(() => {
 		function handleKeyDown(e: KeyboardEvent) {
+			logger("SuggestMenuContent handleKeyDown");
 			if (e.key === "ArrowUp") {
+				//Prevent default scrolling
 				e.preventDefault();
 				setHighlightIndex((prevIndex) => {
-					const newIndex = Math.max(prevIndex - 1, 0);
-					return newIndex;
+					let index = prevIndex - 1;
+					if (index < 0) index = filteredFiles.length - 1;
+					return index;
 				});
 			} else if (e.key === "ArrowDown") {
+				//Prevent default scrolling
 				e.preventDefault();
+
 				setHighlightIndex((prevIndex) => {
-					const newIndex = Math.min(
-						prevIndex + 1,
-						filteredFiles.length - 1
-					);
-					return newIndex;
+					let index = prevIndex + 1;
+					if (index > filteredFiles.length - 1) index = 0;
+					return index;
+				});
+			} else if (e.key === "Tab") {
+				setHighlightIndex((prevIndex) => {
+					let index = prevIndex + 1;
+					if (index > filteredFiles.length - 1) index = 0;
+					return index;
 				});
 			}
 		}
@@ -86,7 +100,7 @@ export default function SuggestMenuContent({
 		nltEventSystem.addEventListener("keydown", handleKeyDown);
 		return () =>
 			nltEventSystem.removeEventListener("keydown", handleKeyDown);
-	}, [filteredFiles.length]);
+	}, [filteredFiles.length, logger, highlightIndex]);
 
 	const fileNames = filteredFiles.map((file) => file.name);
 	const uniqueFileNames = filterUniqueStrings(fileNames);
@@ -102,14 +116,7 @@ export default function SuggestMenuContent({
 					`}
 				>
 					<input
-						css={css`
-							background-color: transparent !important;
-							border: 0 !important;
-							box-shadow: none !important;
-							width: 100%;
-							padding-left: 5px !important;
-							padding-right: 5px !important;
-						`}
+						css={transparentInputStyle}
 						autoFocus
 						value={localFilterValue}
 						onChange={(e) => setLocalFilterValue(e.target.value)}

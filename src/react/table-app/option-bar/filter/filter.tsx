@@ -1,6 +1,6 @@
 import React from "react";
 
-import { MenuButton } from "src/react/shared/button";
+import MenuButton from "src/react/shared/menu-button";
 import { useMenu } from "src/shared/menu/hooks";
 import { MenuLevel } from "src/shared/menu/types";
 import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";

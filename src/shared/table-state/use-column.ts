@@ -16,12 +16,12 @@ import ColumnDeleteCommand from "../commands/column-delete-command";
 import ColumnUpdateCommand from "../commands/column-update-command";
 import { ColumnTypeUpdateCommand } from "../commands/column-type-update-command";
 import { isEventForThisApp } from "../event-system/utils";
-import { useMountContext } from "../view-context";
+import { useMountState } from "../view-context";
 
 export const useColumn = () => {
 	const logger = useLogger();
 	const { doCommand } = useTableState();
-	const { appId } = useMountContext();
+	const { appId } = useMountState();
 
 	React.useEffect(() => {
 		function handleColumnAddEvent() {

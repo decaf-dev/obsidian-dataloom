@@ -1,5 +1,5 @@
 import Icon from "../../shared/icon";
-import { MenuButton } from "../../shared/button";
+import MenuButton from "../../shared/menu-button";
 import RowMenu from "./components/RowMenu";
 
 import { useMenu } from "src/shared/menu/hooks";

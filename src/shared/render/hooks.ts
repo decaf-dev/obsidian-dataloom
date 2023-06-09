@@ -5,11 +5,11 @@ import { MarkdownRenderer, MarkdownView } from "obsidian";
 import { NLTView, NOTION_LIKE_TABLES_VIEW } from "src/obsidian/nlt-view";
 import { handleLinkClick } from "./embed";
 import { replaceNewLinesWithBr } from "./utils";
-import { useMountContext } from "../view-context";
+import { useMountState } from "../view-context";
 import { appendOrReplaceFirstChild } from "./utils";
 
 export const useRenderEmbed = (source: string, markdown: string) => {
-	const { leaf } = useMountContext();
+	const { leaf } = useMountState();
 	const containerRef = React.useRef<HTMLDivElement | null>(null);
 	const embedRef = React.useRef<HTMLElement | null>(null);
 
@@ -68,7 +68,7 @@ export const useRenderMarkdown = (
 	markdown: string,
 	shouldWrapOverflow: boolean
 ) => {
-	const { leaf } = useMountContext();
+	const { leaf } = useMountState();
 	const containerRef = React.useRef<HTMLDivElement | null>(null);
 	const markdownRef = React.useRef<HTMLDivElement | null>(null);
 

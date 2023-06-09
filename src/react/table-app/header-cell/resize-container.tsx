@@ -64,6 +64,9 @@ export default function ResizeContainer({
 				}}
 				onTouchStart={handleTouchStart}
 				onClick={(e) => {
+					//Don't propagate to the trigger, which will open the column menu
+					e.stopPropagation();
+
 					//If the user is double clicking then set width to max
 					if (e.detail === 2) onWidthChange(columnId, "unset");
 				}}
