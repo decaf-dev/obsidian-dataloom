@@ -111,6 +111,10 @@
 	display: none;
 }
 
+.NLT__menu ::-webkit-scrollbar {
+	display: none;
+}
+
 
 /*
  * Selectable and selected
