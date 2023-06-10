@@ -31,10 +31,11 @@ export default function CurrencyCellEdit({
 
 	React.useEffect(() => {
 		if (hasCloseRequestTimeChanged && menuCloseRequest !== null) {
-			onChange(localValue);
+			if (localValue !== value) onChange(localValue);
 			onMenuClose();
 		}
 	}, [
+		value,
 		localValue,
 		hasCloseRequestTimeChanged,
 		menuCloseRequest,
