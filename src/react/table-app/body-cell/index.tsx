@@ -1,5 +1,4 @@
 import React from "react";
-import { Notice } from "obsidian";
 
 import TextCell from "../text-cell";
 import TagCell from "../tag-cell";
@@ -32,20 +31,18 @@ import {
 } from "src/shared/table-state/constants";
 import { isCheckboxChecked } from "src/shared/validators";
 
-import { useCompare } from "src/shared/hooks";
 import { Color } from "src/shared/types/types";
 import CurrencyCell from "../currency-cell";
 import CurrencyCellEdit from "../currency-cell-edit";
 import MenuTrigger from "src/react/shared/menu-trigger";
 
-import { useTableState } from "src/shared/table-state/table-state-context";
-import RowSortCommand from "src/shared/commands/row-sort-command";
 import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 import FileCell from "../file-cell";
 import FileCellEdit from "../file-cell-edit";
 import { css } from "@emotion/react";
 import EmbedCell from "../embed-cell";
 import EmbedCellEdit from "../embed-cell-edit";
+import { Notification } from "src/obsidian-shim/development/notification";
 
 interface Props {
 	columnType: string;
@@ -141,20 +138,10 @@ export default function BodyCell({
 	const { triggerPosition, triggerRef } = useMenuTriggerPosition();
 	useShiftMenu(triggerRef, menuRef, isMenuOpen);
 
-	const { doCommand } = useTableState();
-
-	//Once the menu is closed, we want to sort all rows
-	const didIsMenuOpenChange = useCompare(isMenuOpen, false);
-	React.useEffect(() => {
-		if (didIsMenuOpenChange) {
-			if (!isMenuOpen) doCommand(new RowSortCommand());
-		}
-	}, [didIsMenuOpenChange, isMenuOpen, doCommand]);
-
 	async function handleCellContextClick() {
 		try {
 			await navigator.clipboard.writeText(markdown);
-			new Notice("Copied text to clipboard");
+			new Notification("Copied text to clipboard");
 		} catch (err) {
 			console.log(err);
 		}
@@ -291,11 +278,12 @@ export default function BodyCell({
 	return (
 		<>
 			<MenuTrigger
+				isCell
 				menu={menu}
 				onClick={handleMenuTriggerClick}
 				onEnterDown={handleMenuTriggerEnterDown}
 				onBackspaceDown={handleMenuTriggerBackspaceDown}
-				canMenuOpen={
+				shouldRun={
 					columnType !== CellType.CHECKBOX &&
 					columnType !== CellType.CREATION_TIME &&
 					columnType !== CellType.LAST_EDITED_TIME
@@ -390,6 +378,12 @@ export default function BodyCell({
 			<Menu
 				ref={menuRef}
 				id={menu.id}
+				hideBorder={
+					columnType === CellType.TEXT ||
+					columnType === CellType.EMBED ||
+					columnType === CellType.CURRENCY ||
+					columnType === CellType.NUMBER
+				}
 				isOpen={isMenuOpen}
 				top={triggerPosition.top}
 				left={triggerPosition.left}

@@ -1,7 +1,7 @@
 import React from "react";
 
-import { setIcon } from "obsidian";
-import { appendOrReplaceFirstChild } from "src/shared/renderUtils";
+import { setIcon } from "src/obsidian-shim/development/set-icon";
+import { appendOrReplaceFirstChild } from "src/shared/render/utils";
 
 interface Props {
 	lucideId: string;
@@ -23,7 +23,7 @@ export default function Icon({
 				ref.current = node;
 
 				//Create an empty div
-				const div = document.body.createDiv();
+				const div = document.createElement("div");
 				div.style.display = "flex";
 				div.style.color = color;
 				div.style.pointerEvents = "none";
@@ -38,8 +38,6 @@ export default function Icon({
 					div.style.width = "1.1rem";
 					div.style.height = "1.1rem";
 				}
-
-				div.detach();
 
 				//Set the lucid icon on the div
 				setIcon(div, lucideId); //The id should match lucide.dev

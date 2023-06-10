@@ -2,7 +2,7 @@ import Icon from "../icon";
 import Stack from "../stack";
 import { Color } from "src/shared/types/types";
 import { findColorClassName } from "src/shared/color";
-import { Button } from "../button";
+import Button from "../button";
 
 import "./styles.css";
 import { useAppSelector } from "src/redux/global/hooks";
@@ -50,10 +50,10 @@ export default function Tag({
 					{markdown}
 				</div>
 				{showRemove && (
-					<Padding pb="sm" width="max-content">
+					<Padding width="max-content">
 						<Button
-							icon={<Icon size="sm" lucideId="x" />}
-							isSimple
+							isSmall
+							icon={<Icon lucideId="x" />}
 							onClick={() => {
 								onRemoveClick !== undefined &&
 									onRemoveClick(id!); // eslint-disable-line @typescript-eslint/no-non-null-assertion

@@ -1,4 +1,5 @@
 import React from "react";
+
 import {
 	AspectRatio,
 	CellType,
@@ -9,45 +10,15 @@ import {
 	SortDir,
 } from "src/shared/types/types";
 import { useLogger } from "../logger";
-import { EVENT_COLUMN_ADD, EVENT_COLUMN_DELETE } from "../events";
 import { useTableState } from "./table-state-context";
 import ColumnAddCommand from "../commands/column-add-command";
 import ColumnDeleteCommand from "../commands/column-delete-command";
 import ColumnUpdateCommand from "../commands/column-update-command";
 import { ColumnTypeUpdateCommand } from "../commands/column-type-update-command";
-import { isEventForThisApp } from "../event-system/utils";
-import { useMountContext } from "../view-context";
 
 export const useColumn = () => {
 	const logger = useLogger();
 	const { doCommand } = useTableState();
-	const { appId } = useMountContext();
-
-	React.useEffect(() => {
-		function handleColumnAddEvent() {
-			if (isEventForThisApp(appId)) {
-				logger("handleColumnAddEvent");
-				doCommand(new ColumnAddCommand());
-			}
-		}
-
-		function handleColumnDeleteEvent() {
-			if (isEventForThisApp(appId)) {
-				logger("handleColumnDeleteEvent");
-				doCommand(new ColumnDeleteCommand({ last: true }));
-			}
-		}
-		//@ts-expect-error missing overload
-		app.workspace.on(EVENT_COLUMN_ADD, handleColumnAddEvent);
-
-		//@ts-expect-error missing overload
-		app.workspace.on(EVENT_COLUMN_DELETE, handleColumnDeleteEvent);
-
-		return () => {
-			app.workspace.off(EVENT_COLUMN_ADD, handleColumnAddEvent);
-			app.workspace.off(EVENT_COLUMN_DELETE, handleColumnDeleteEvent);
-		};
-	}, [doCommand, logger, appId]);
 
 	function handleNewColumnClick() {
 		logger("handleNewColumnClick");
@@ -119,12 +90,15 @@ export const useColumn = () => {
 		);
 	}
 
-	function handleColumnToggle(columnId: string) {
-		logger("handleColumnToggle", {
-			columnId,
-		});
-		doCommand(new ColumnUpdateCommand(columnId, "isVisible"));
-	}
+	const handleColumnToggle = React.useCallback(
+		(columnId: string) => {
+			logger("handleColumnToggle", {
+				columnId,
+			});
+			doCommand(new ColumnUpdateCommand(columnId, "isVisible"));
+		},
+		[doCommand, logger]
+	);
 
 	function handleColumnDeleteClick(columnId: string) {
 		logger("handleColumnDeleteClick", {

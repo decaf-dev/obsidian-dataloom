@@ -1,3 +1,5 @@
+import { css } from "@emotion/react";
+import { selectStyle } from "src/react/table-app/shared-styles";
 import { CellType, FilterType } from "src/shared/types/types";
 
 interface Props {
@@ -13,10 +15,22 @@ export default function FilterRowDropdown({
 	value,
 	onChange,
 }: Props) {
+	function handleKeyDown(e: React.KeyboardEvent) {
+		if (e.key === "Enter") {
+			e.stopPropagation();
+		}
+	}
+
 	return (
 		<select
+			tabIndex={0}
+			className="NLT__focusable"
+			css={css`
+				${selectStyle}
+			`}
 			value={value}
 			onChange={(e) => onChange(id, e.target.value as FilterType)}
+			onKeyDown={handleKeyDown}
 		>
 			{cellType === CellType.CHECKBOX && (
 				<>

@@ -41,7 +41,11 @@ export const importMarkdownListItems = (
 		const cell = bodyCells.find(
 			(cell) => cell.columnId === columnId && cell.rowId === row.id
 		);
-		if (!cell) throw new CellNotFoundError();
+		if (!cell)
+			throw new CellNotFoundError({
+				columnId,
+				rowId: row.id,
+			});
 		//Now update the markdown of the corresponding body cell with the list item
 		cell.markdown = item;
 	});

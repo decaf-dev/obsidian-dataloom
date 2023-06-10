@@ -1,4 +1,4 @@
-import { TFile } from "obsidian";
+import { VaultFile } from "src/obsidian-shim/development/vault-file";
 
 /**
  * Get basename
@@ -38,7 +38,7 @@ export const isMarkdownFile = (extension: string) => {
  * @param isFileNameUnique whether the file name (which doesn't include the directory) is unique across all vault files
  */
 export const getWikiLinkText = (
-	fileInfo: Pick<TFile, "basename" | "name" | "path" | "extension">,
+	fileInfo: Pick<VaultFile, "basename" | "name" | "path" | "extension">,
 	isFileNameUnique: boolean
 ) => {
 	const { basename, name, path, extension } = fileInfo;

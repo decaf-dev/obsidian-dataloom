@@ -1,5 +1,6 @@
 import { css } from "@emotion/react";
 import { ColumnWithMarkdown } from "../types";
+import { selectStyle } from "src/react/table-app/shared-styles";
 
 interface Props {
 	id: string;
@@ -14,9 +15,19 @@ export default function FilterColumnDropdown({
 	value,
 	onChange,
 }: Props) {
+	function handleKeyDown(e: React.KeyboardEvent) {
+		if (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Enter") {
+			//Stop propagation so the the menu doesn't close when pressing enter
+			e.stopPropagation();
+		}
+	}
+
 	return (
 		<select
+			tabIndex={0}
+			className="NLT__focusable"
 			css={css`
+				${selectStyle}
 				max-width: 175px;
 				white-space: nowrap;
 				overflow: hidden;
@@ -24,6 +35,7 @@ export default function FilterColumnDropdown({
 			`}
 			value={value}
 			onChange={(e) => onChange(id, e.target.value)}
+			onKeyDown={handleKeyDown}
 		>
 			{columns.map((column) => {
 				const { id, markdown } = column;

@@ -4,7 +4,7 @@ import { MarkdownView, TFile, WorkspaceLeaf } from "obsidian";
 import { Root, createRoot } from "react-dom/client";
 import { serializeTableState } from "src/data/serialize-table-state";
 import { deserializeTableState } from "src/data/serialize-table-state";
-import { NotionLikeTable } from "src/react/table-app";
+import NotionLikeTable from "src/obsidian-shim/build/notion-like-table";
 import { store } from "src/redux/global/store";
 import { EVENT_REFRESH_TABLES } from "src/shared/events";
 import { TableState } from "src/shared/types/types";
@@ -67,7 +67,6 @@ class NLTEmbeddedPlugin implements PluginValue {
 			tableContainerEl.className = "NLT__embedded-container";
 			tableContainerEl.style.height = "100%";
 			tableContainerEl.style.width = "100%";
-			tableContainerEl.style.padding = "10px 0px";
 
 			const appId = uuidv4();
 			this.tableApps.push({
@@ -78,13 +77,12 @@ class NLTEmbeddedPlugin implements PluginValue {
 			});
 
 			//Call a separate function to not block the update function
-			this.setupTable(activeView, linkEl, tableContainerEl, file, appId);
+			this.setupTable(activeView, tableContainerEl, file, appId);
 		}
 	}
 
 	private async setupTable(
 		activeView: MarkdownView,
-		linkEl: HTMLElement,
 		tableContainerEl: HTMLElement,
 		file: TFile,
 		appId: string
@@ -97,24 +95,6 @@ class NLTEmbeddedPlugin implements PluginValue {
 		 */
 		tableContainerEl.addEventListener("click", (e) => {
 			e.stopPropagation();
-
-			//Create a synthetic event
-			const syntheticEvent = new CustomEvent("click", {
-				bubbles: true, // Allow the event to bubble up
-			});
-
-			Object.defineProperty(syntheticEvent, "target", {
-				value: e.target,
-			});
-			Object.defineProperty(syntheticEvent, "currentTarget", {
-				value: e.currentTarget,
-			});
-
-			//Pass it to the grandparent
-			const parent = linkEl.parentElement;
-			if (parent) {
-				parent.dispatchEvent(syntheticEvent);
-			}
 		});
 
 		//Get the table state
@@ -159,7 +139,7 @@ class NLTEmbeddedPlugin implements PluginValue {
 		root.render(
 			<NotionLikeTable
 				appId={id}
-				isEmbedded
+				isMarkdownView
 				filePath={tableFile.path}
 				leaf={leaf}
 				store={store}
