@@ -17,13 +17,18 @@ const SuggestItem = React.forwardRef<HTMLDivElement, Props>(
 		{ file, isHighlighted, isFileNameUnique, onItemClick }: Props,
 		ref
 	) {
-		const handleClick = React.useCallback(() => {
-			onItemClick(file, isFileNameUnique);
-		}, [file, isFileNameUnique, onItemClick]);
+		const handleClick = React.useCallback(
+			(e: React.MouseEvent) => {
+				//Stop propagation so the menu doesn't remove the focus class
+				e.stopPropagation();
+				onItemClick(file, isFileNameUnique);
+			},
+			[file, isFileNameUnique, onItemClick]
+		);
 
 		React.useEffect(() => {
 			function handleKeyDown(e: KeyboardEvent) {
-				if (e.key === "Enter") handleClick();
+				if (e.key === "Enter") onItemClick(file, isFileNameUnique);
 			}
 
 			if (isHighlighted)
@@ -31,7 +36,7 @@ const SuggestItem = React.forwardRef<HTMLDivElement, Props>(
 
 			return () =>
 				nltEventSystem.removeEventListener("keydown", handleKeyDown);
-		}, [isHighlighted, handleClick]);
+		}, [isHighlighted, onItemClick, file, isFileNameUnique]);
 
 		let name = "No match found";
 		if (file) {

@@ -35,8 +35,11 @@ export default function MenuItem({
 		}
 	}, [isSelected]);
 
-	function handleClick() {
+	function handleClick(e: React.MouseEvent) {
 		if (!onClick) return;
+
+		//Stop propagation so the the menu doesn't remove the focus class
+		e.stopPropagation();
 		onClick();
 	}
 
