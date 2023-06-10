@@ -279,10 +279,12 @@ export const deserializeTableState = (data: string): TableState => {
 				const cell: unknown | undefined = bodyCells.find(
 					(cell) => cell.id === cellId
 				);
-				if (!cell)
-					throw new CellNotFoundError({
-						id: cellId,
-					});
+
+				//If the cell doesn't exist, then don't migrate it
+				//It seems that in older table versions the cellIds array of tags wasn't being cleaned up
+				//properly when a column, row, or cell was deleted. Therefore there will still be some
+				//dangling cellIds in the tags array.
+				if (!cell) return;
 
 				const typedCell = cell as BodyCell;
 				typedCell.tagIds.push(id);
