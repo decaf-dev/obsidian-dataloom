@@ -7,9 +7,14 @@
     "module": "ESNext",
     "skipLibCheck": true,
 
+    /* Source maps */
+    "inlineSourceMap": true,
+		"inlineSources": true,
+
     /* Bundler mode */
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "allowImportingTsExtensions": true,
+    "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
@@ -24,6 +29,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
+  "include": ["src", "**/*.tsx"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
