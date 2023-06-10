@@ -13,7 +13,7 @@ import {
 	TableState670,
 } from "src/shared/types/types-6.7.0";
 import {
-	CellIdError,
+	CellNotFoundError,
 	ColumNotFoundError,
 } from "../shared/table-state/table-error";
 import { createFooterRow, createHeaderRow } from "./table-state-factory";
@@ -78,7 +78,7 @@ export const deserializeTableState = (data: string): TableState => {
 		//Feat: Double click to resize
 		columns.forEach((column: unknown) => {
 			const typedColumn = column as Record<string, unknown>;
-			if (typedColumn.hasOwnProperty("hasAutoWidth")) {
+			if (typedColumn["hasAutoWidth"]) {
 				delete typedColumn.hasAutoWidth;
 			}
 		});
@@ -206,7 +206,7 @@ export const deserializeTableState = (data: string): TableState => {
 
 		//Fix: clean up any bodyRows that were saved outside of the model
 		const invalidState = currentState as Record<string, unknown>;
-		if (invalidState.hasOwnProperty("bodyRows")) {
+		if (invalidState["bodyRows"]) {
 			delete invalidState.bodyRows;
 		}
 
@@ -237,7 +237,7 @@ export const deserializeTableState = (data: string): TableState => {
 		//Feat: make all variable names consistent
 		footerCells.forEach((cell: unknown) => {
 			const typedCell = cell as Record<string, unknown>;
-			if (typedCell.hasOwnProperty("functionType")) {
+			if (typedCell["functionType"]) {
 				typedCell.functionType = (
 					typedCell.functionType as string
 				).replace(/_/g, "-");
@@ -279,7 +279,10 @@ export const deserializeTableState = (data: string): TableState => {
 				const cell: unknown | undefined = bodyCells.find(
 					(cell) => cell.id === cellId
 				);
-				if (!cell) throw new CellIdError(cellId);
+				if (!cell)
+					throw new CellNotFoundError({
+						id: cellId,
+					});
 
 				const typedCell = cell as BodyCell;
 				typedCell.tagIds.push(id);
@@ -293,7 +296,7 @@ export const deserializeTableState = (data: string): TableState => {
 		//Delete unnecessary properties
 		bodyRows.forEach((row: unknown) => {
 			const typedRow = row as Record<string, unknown>;
-			if (typedRow.hasOwnProperty("menuCellId")) {
+			if (typedRow["menuCellId"]) {
 				delete typedRow.menuCellId;
 			}
 		});
@@ -316,7 +319,7 @@ export const deserializeTableState = (data: string): TableState => {
 
 			const unknownCell = cell as unknown;
 			const typedCell = unknownCell as Record<string, unknown>;
-			if (typedCell.hasOwnProperty("functionType")) {
+			if (typedCell["functionType"]) {
 				delete typedCell.functionType;
 			}
 		});

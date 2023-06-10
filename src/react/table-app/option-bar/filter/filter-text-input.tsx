@@ -7,7 +7,7 @@ import {
 } from "src/shared/table-state/constants";
 
 import "./styles.css";
-import { baseInputStyle, selectStyle } from "src/react/shared-styles";
+import { baseInputStyle, selectStyle } from "src/react/table-app/shared-styles";
 
 interface Props {
 	id: string;
@@ -156,13 +156,13 @@ export default function FilterTextInput({
 						if (cellType === CellType.MULTI_TAG) {
 							onTagsChange(
 								id,
-								//@ts-expect-error
+								//@ts-expect-error value is not typed
 								value?.map((tag) => tag.id)
 							);
 						} else {
 							onTagsChange(
 								id,
-								//@ts-expect-error
+								//@ts-expect-error value is not typed
 								[value?.id]
 							);
 						}

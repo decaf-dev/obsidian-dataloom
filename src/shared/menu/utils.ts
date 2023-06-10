@@ -1,9 +1,11 @@
 import React from "react";
 import { Position } from "./types";
 import { numToPx } from "../conversion";
-import { NLTView } from "src/obsidian/nlt-view";
-import { MarkdownView, Platform } from "obsidian";
 import { MENU_SHIFT_PADDING } from "./constants";
+import {
+	useLeafContainer,
+	isOnMobile,
+} from "src/obsidian-shim/development/render-utils";
 
 export const isTextSelected = () => {
 	const selection = window.getSelection();
@@ -11,21 +13,7 @@ export const isTextSelected = () => {
 };
 
 export const getElementPosition = (el: HTMLElement | null): Position => {
-	if (el) {
-		const { top, left, width, height } = el.getBoundingClientRect();
-
-		//All values are decimals, but our menu system uses whole numbers
-		//so we need to round the values.
-		//We round up the width and height so that will always be enough room for items
-		//otherwise some letters may wrap
-		return el.getBoundingClientRect();
-		// return {
-		// 	width: Math.ceil(width),
-		// 	height: Math.ceil(height),
-		// 	top: Math.ceil(top),
-		// 	left: Math.ceil(left),
-		// };
-	}
+	if (el) return el.getBoundingClientRect();
 	return {
 		top: 0,
 		left: 0,
@@ -44,6 +32,8 @@ export const useShiftMenu = (
 		leftOffset?: number;
 	}
 ) => {
+	const viewContentEl = useLeafContainer();
+
 	React.useEffect(() => {
 		function shiftMenuIntoView() {
 			if (menuRef.current === null) return;
@@ -54,13 +44,6 @@ export const useShiftMenu = (
 				topOffset = 0,
 				leftOffset = 0,
 			} = options || {};
-
-			const activeView =
-				app.workspace.getActiveViewOfType(NLTView) ??
-				app.workspace.getActiveViewOfType(MarkdownView);
-			if (!activeView) return;
-
-			const viewContentEl = activeView.contentEl;
 			const viewContentRect = viewContentEl.getBoundingClientRect();
 			const triggerRefRect = triggerRef.current.getBoundingClientRect();
 			const menuRect = menuRef.current.getBoundingClientRect();
@@ -76,7 +59,7 @@ export const useShiftMenu = (
 				left = left + triggerRefRect.width;
 			}
 
-			const isMobile = Platform.isMobile;
+			const isMobile = isOnMobile();
 			let viewContentHeight = viewContentRect.height;
 			if (isMobile) viewContentHeight -= 48;
 			const position = shiftElementIntoContainer(

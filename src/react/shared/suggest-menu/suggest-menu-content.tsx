@@ -1,19 +1,22 @@
 import React from "react";
 
-import { TFile } from "obsidian";
 import fuzzysort from "fuzzysort";
 
 import SuggestItem from "./suggest-item";
 import { filterUniqueStrings } from "./utils";
 import { css } from "@emotion/react";
 import { nltEventSystem } from "src/shared/event-system/event-system";
-import { transparentInputStyle } from "src/react/shared-styles";
+import { transparentInputStyle } from "src/react/table-app/shared-styles";
 import { useLogger } from "src/shared/logger";
+import {
+	VaultFile,
+	getVaultFiles,
+} from "src/obsidian-shim/development/vault-file";
 
 interface ContentProps {
 	showInput?: boolean;
 	filterValue?: string;
-	onItemClick: (item: TFile | null, isFileNameUnique: boolean) => void;
+	onItemClick: (item: VaultFile | null, isFileNameUnique: boolean) => void;
 }
 
 export default function SuggestMenuContent({
@@ -28,8 +31,8 @@ export default function SuggestMenuContent({
 	const highlightItemRef = React.useRef<HTMLDivElement | null>(null);
 	const [highlightIndex, setHighlightIndex] = React.useState(-1);
 
-	const files = app.vault.getFiles();
-	let filteredFiles: TFile[] = [];
+	const files = getVaultFiles();
+	let filteredFiles: VaultFile[] = [];
 	if (localFilterValue !== "") {
 		//Do a fuzzy sort on the filtered items
 		const results = fuzzysort.go(localFilterValue, files, {
@@ -40,7 +43,7 @@ export default function SuggestMenuContent({
 	} else {
 		//Otherwise we just sort by last modified
 		filteredFiles = files;
-		filteredFiles.sort((a, b) => b.stat.mtime - a.stat.mtime);
+		filteredFiles.sort((a, b) => b.modifiedTime - a.modifiedTime);
 		filteredFiles = filteredFiles.slice(0, 20);
 	}
 
@@ -59,8 +62,6 @@ export default function SuggestMenuContent({
 
 	React.useEffect(() => {
 		if (highlightItemRef.current) {
-			console.log(highlightIndex);
-			console.log(highlightItemRef.current);
 			highlightItemRef.current.scrollIntoView({
 				behavior: "auto",
 				block: "nearest",

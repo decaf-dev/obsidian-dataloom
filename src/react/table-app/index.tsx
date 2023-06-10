@@ -19,14 +19,10 @@ import { useRow } from "src/shared/table-state/use-row";
 import { useCell } from "src/shared/table-state/use-cell";
 import { useTag } from "src/shared/table-state/use-tag";
 import { css } from "@emotion/react";
-import { useExportEvents } from "src/shared/export/hooks";
-import MountProvider, { useMountState } from "src/shared/view-context";
-import { Provider } from "react-redux";
+import { useMountState } from "src/obsidian-shim/development/mount-context";
 import MenuProvider, { useMenuState } from "src/shared/menu/menu-context";
-import DragProvider from "src/shared/dragging/drag-context";
 import { SortDir, TableState } from "src/shared/types/types";
 import { Store } from "@reduxjs/toolkit";
-import { MarkdownView, WorkspaceLeaf } from "obsidian";
 
 import "./styles.css";
 import React from "react";
@@ -51,10 +47,15 @@ import {
 	moveMenuFocusDown,
 	moveMenuFocusUp,
 } from "src/shared/menu/arrow-move-focus";
+import { useExportEvents } from "src/obsidian-shim/development/export-events";
+import { useRowEvents } from "src/obsidian-shim/development/row-events";
+import { useColumnEvents } from "src/obsidian-shim/development/column-events";
+import { Provider } from "react-redux";
+import DragProvider from "src/shared/dragging/drag-context";
 
 const TableApp = () => {
-	const { appId, leaf } = useMountState();
-	const { topMenu, hasOpenMenu } = useMenuState();
+	const { appId, isMarkdownView } = useMountState();
+	const { topMenu, hasOpenMenu, closeTopMenu } = useMenuState();
 	const logger = useLogger();
 	const {
 		tableState,
@@ -66,6 +67,8 @@ const TableApp = () => {
 	} = useTableState();
 
 	useExportEvents(tableState);
+	useRowEvents();
+	useColumnEvents();
 
 	const {
 		handleRuleAddClick,
@@ -114,6 +117,16 @@ const TableApp = () => {
 
 	const firstColumnId = useUUID();
 	const lastColumnId = useUUID();
+
+	function handleClick(e: React.MouseEvent) {
+		logger("TableApp handleClick");
+		e.stopPropagation();
+		if (hasOpenMenu()) {
+			closeTopMenu();
+		} else {
+			removeFocusVisibleClass();
+		}
+	}
 
 	function handleKeyDown(e: React.KeyboardEvent) {
 		logger("TableApp handleKeyDown");
@@ -235,7 +248,6 @@ const TableApp = () => {
 		searchText
 	);
 	const visibleColumns = columns.filter((column) => column.isVisible);
-	const isMarkdownView = leaf.view instanceof MarkdownView;
 
 	return (
 		<div
@@ -253,6 +265,7 @@ const TableApp = () => {
 					: "unset"};
 			`}
 			onKeyDown={handleKeyDown}
+			onClick={handleClick}
 		>
 			<OptionBar
 				headerCells={headerCells}
@@ -301,7 +314,10 @@ const TableApp = () => {
 								const cell = headerCells.find(
 									(cell) => cell.columnId === columnId
 								);
-								if (!cell) throw new CellNotFoundError();
+								if (!cell)
+									throw new CellNotFoundError({
+										columnId,
+									});
 
 								const { id: cellId, markdown, rowId } = cell;
 								return {
@@ -407,7 +423,11 @@ const TableApp = () => {
 										cell.columnId === columnId &&
 										cell.rowId === row.id
 								);
-								if (!cell) throw new CellNotFoundError();
+								if (!cell)
+									throw new CellNotFoundError({
+										columnId,
+										rowId,
+									});
 								const {
 									id: cellId,
 									markdown,
@@ -497,7 +517,11 @@ const TableApp = () => {
 											cell.rowId === row.id &&
 											cell.columnId === column.id
 									);
-									if (!cell) throw new CellNotFoundError();
+									if (!cell)
+										throw new CellNotFoundError({
+											rowId: row.id,
+											columnId: column.id,
+										});
 									const { id: cellId } = cell;
 
 									const columnBodyCells = bodyCells.filter(
@@ -554,7 +578,11 @@ const TableApp = () => {
 										cell.rowId === row.id &&
 										cell.columnId === column.id
 								);
-								if (!cell) throw new CellNotFoundError();
+								if (!cell)
+									throw new CellNotFoundError({
+										rowId: row.id,
+										columnId: column.id,
+									});
 
 								if (i === 0) {
 									return {
@@ -588,42 +616,24 @@ const TableApp = () => {
 };
 
 interface Props {
-	appId: string;
-	isEmbedded: boolean;
-	leaf: WorkspaceLeaf;
-	filePath: string;
 	store: Store;
 	tableState: TableState;
 	onSaveState: (appId: string, state: TableState) => void;
 }
-export const NotionLikeTable = ({
-	appId,
-	isEmbedded,
-	leaf,
-	store,
-	filePath,
-	tableState,
-	onSaveState,
-}: Props) => {
+
+export default function AppWrapper({ store, tableState, onSaveState }: Props) {
 	return (
-		<MountProvider
-			appId={appId}
-			isEmbedded={isEmbedded}
-			leaf={leaf}
-			filePath={filePath}
-		>
-			<Provider store={store}>
-				<TableStateProvider
-					initialState={tableState}
-					onSaveState={onSaveState}
-				>
-					<MenuProvider>
-						<DragProvider>
-							<TableApp />
-						</DragProvider>
-					</MenuProvider>
-				</TableStateProvider>
-			</Provider>
-		</MountProvider>
+		<Provider store={store}>
+			<TableStateProvider
+				initialState={tableState}
+				onSaveState={onSaveState}
+			>
+				<MenuProvider>
+					<DragProvider>
+						<TableApp />
+					</DragProvider>
+				</MenuProvider>
+			</TableStateProvider>
+		</Provider>
 	);
-};
+}

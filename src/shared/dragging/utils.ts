@@ -8,7 +8,7 @@ export const getRowId = (rowEl: HTMLElement) => {
 	const td = rowEl.firstChild as HTMLElement | null;
 	if (!td) return null;
 
-	const id = td.getAttr("data-row-id");
+	const id = td.getAttribute("data-row-id");
 	return id ?? null;
 };
 

@@ -1,8 +1,8 @@
 import React from "react";
 
-import { TFile } from "obsidian";
 import Menu from "src/react/shared/menu";
 import SuggestMenuContent from "./suggest-menu-content";
+import { VaultFile } from "src/obsidian-shim/development/vault-file";
 
 interface Props {
 	id: string;
@@ -10,7 +10,7 @@ interface Props {
 	top: number;
 	left: number;
 	filterValue: string;
-	onItemClick: (item: TFile | null, isFileNameUnique: boolean) => void;
+	onItemClick: (item: VaultFile | null, isFileNameUnique: boolean) => void;
 }
 
 const SuggestMenu = React.forwardRef<HTMLDivElement, Props>(

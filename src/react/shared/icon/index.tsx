@@ -1,6 +1,6 @@
 import React from "react";
 
-import { setIcon } from "obsidian";
+import { setIcon } from "src/obsidian-shim/development/set-icon";
 import { appendOrReplaceFirstChild } from "src/shared/render/utils";
 
 interface Props {
@@ -23,7 +23,7 @@ export default function Icon({
 				ref.current = node;
 
 				//Create an empty div
-				const div = document.body.createDiv();
+				const div = document.createElement("div");
 				div.style.display = "flex";
 				div.style.color = color;
 				div.style.pointerEvents = "none";

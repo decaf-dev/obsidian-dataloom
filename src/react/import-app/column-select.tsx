@@ -31,7 +31,10 @@ export default function ColumnSelect({
 						const cell = headerCells.find(
 							(cell) => cell.columnId === column.id
 						);
-						if (!cell) throw new CellNotFoundError();
+						if (!cell)
+							throw new CellNotFoundError({
+								columnId: column.id,
+							});
 						return (
 							<option key={column.id} value={column.id}>
 								{cell.markdown}

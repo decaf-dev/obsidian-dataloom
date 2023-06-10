@@ -3,7 +3,7 @@ import React from "react";
 import { css } from "@emotion/react";
 import { useLogger } from "src/shared/logger";
 
-export const buttonStyle = css`
+const buttonStyle = css`
 	display: flex;
 	align-items: center;
 	width: max-content !important;
@@ -19,7 +19,7 @@ export const buttonStyle = css`
 	}
 `;
 
-export const linkStyle = css`
+const linkStyle = css`
 	color: var(--link-color);
 	text-decoration-line: var(--link-decoration);
 	cursor: var(--cursor-link);
@@ -31,7 +31,7 @@ export const linkStyle = css`
 	}
 `;
 
-export const iconStyle = css`
+const iconStyle = css`
 	background-color: transparent !important;
 	box-shadow: none !important;
 	padding: 6px !important;

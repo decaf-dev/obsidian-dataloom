@@ -1,6 +1,6 @@
 import { MarkdownRenderChild, TFile } from "obsidian";
 import { Root, createRoot } from "react-dom/client";
-import { NotionLikeTable } from "src/react/table-app";
+import NotionLikeTable from "src/obsidian-shim/build/notion-like-table";
 import { store } from "src/redux/global/store";
 import { NLTView } from "./nlt-view";
 import { deserializeTableState } from "src/data/serialize-table-state";
@@ -37,10 +37,10 @@ export default class NLTEmbeddedRenderChild extends MarkdownRenderChild {
 
 			this.root.render(
 				<NotionLikeTable
-					isEmbedded
+					leaf={activeView.leaf}
 					appId={this.appId}
 					filePath={file.path}
-					leaf={activeView.leaf}
+					isMarkdownView
 					store={store}
 					tableState={state}
 					onSaveState={this.handleSaveTableState}

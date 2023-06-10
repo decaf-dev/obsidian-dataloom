@@ -17,9 +17,9 @@ import { MenuCloseRequest, MenuLevel } from "src/shared/menu/types";
 
 import MenuTrigger from "src/react/shared/menu-trigger";
 import { getDisplayNameForDateFormat } from "src/shared/table-state/display-name";
-import "./styles.css";
 import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
-import { borderInputStyle } from "src/react/shared-styles";
+import { borderInputStyle } from "src/react/table-app/shared-styles";
+import { css } from "@emotion/react";
 
 interface Props {
 	value: number | null;
@@ -80,8 +80,10 @@ export default function DateCellEdit({
 				}
 			}
 
-			setInputInvalid(false);
-			onDateTimeChange(newValue);
+			if (newValue !== value) {
+				setInputInvalid(false);
+				onDateTimeChange(newValue);
+			}
 			setCloseTime(Date.now());
 		}
 
@@ -125,9 +127,13 @@ export default function DateCellEdit({
 						<input
 							tabIndex={0}
 							className="NLT__focusable"
-							css={borderInputStyle}
+							css={css`
+								${borderInputStyle}
+								${isInputInvalid
+									? "&:focus-visible { outline: 2px solid var(--background-modifier-error) !important; }"
+									: ""}
+							`}
 							ref={inputRef}
-							aria-invalid={isInputInvalid}
 							autoFocus
 							value={localValue}
 							onChange={(e) => setLocalValue(e.target.value)}

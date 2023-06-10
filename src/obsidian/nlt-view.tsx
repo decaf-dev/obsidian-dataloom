@@ -1,8 +1,8 @@
 import { TextFileView, WorkspaceLeaf } from "obsidian";
 import { createRoot, Root } from "react-dom/client";
-import { NotionLikeTable } from "../react/table-app";
-import { store } from "../redux/global/store";
-import { TableState } from "../shared/types/types";
+import NotionLikeTable from "src/obsidian-shim/build/notion-like-table";
+import { store } from "src/redux/global/store";
+import { TableState } from "src/shared/types/types";
 import {
 	deserializeTableState,
 	serializeTableState,
@@ -134,10 +134,10 @@ export class NLTView extends TextFileView {
 		if (this.root) {
 			this.root.render(
 				<NotionLikeTable
-					appId={appId}
-					isEmbedded={false}
-					filePath={this.file.path}
 					leaf={this.leaf}
+					appId={appId}
+					filePath={this.file.path}
+					isMarkdownView={false}
 					store={store}
 					tableState={state}
 					onSaveState={this.handleSaveTableState}
