@@ -1,5 +1,5 @@
 import React from "react";
-import { EVENT_OUTSIDE_CLICK } from "src/shared/events";
+import { EVENT_OUTSIDE_CLICK, EVENT_OUTSIDE_KEYDOWN } from "src/shared/events";
 import { useLogger } from "src/shared/logger";
 import { useMenuState } from "src/shared/menu/menu-context";
 
