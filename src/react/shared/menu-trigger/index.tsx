@@ -9,10 +9,7 @@ import {
 	isWindowsUndoDown,
 } from "src/shared/keyboard-event";
 import { useLogger } from "src/shared/logger";
-import {
-	focusMenuElement,
-	removeFocusVisibleClass,
-} from "src/shared/menu/focus-visible";
+import { removeFocusVisibleClass } from "src/shared/menu/focus-visible";
 import { addFocusVisibleClass } from "src/shared/menu/focus-visible";
 
 interface Props {
