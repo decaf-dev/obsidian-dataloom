@@ -42,7 +42,7 @@ const Menu = React.forwardRef<HTMLDivElement, Props>(function Menu(
 	const isTextHighlighted = React.useRef(false);
 	const logger = useLogger();
 
-	useMenuEvents(id, isOpen);
+	useMenuEvents(id, isOpen, isTextHighlighted.current);
 
 	function handleMouseDown() {
 		isTextHighlighted.current = false;

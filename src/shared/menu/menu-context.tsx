@@ -49,11 +49,6 @@ export default function MenuProvider({ children }: Props) {
 		React.useState<MenuCloseRequest | null>(null);
 
 	/**
-	 * Whether or not text is currently highlighted
-	 */
-	const isTextHighlighted = React.useRef(false);
-
-	/**
 	 * Returns whether or not a menu is open
 	 */
 	const isMenuOpen = React.useCallback(
@@ -122,7 +117,6 @@ export default function MenuProvider({ children }: Props) {
 
 		setCurrentMenus([]);
 		setMenuCloseRequest(null);
-		isTextHighlighted.current = false;
 	}
 
 	/**
@@ -144,7 +138,6 @@ export default function MenuProvider({ children }: Props) {
 			//Remove the menu
 			setCurrentMenus((prev) => prev.slice(0, prev.length - 1));
 			setMenuCloseRequest(null);
-			isTextHighlighted.current = false;
 		},
 		[getTopMenu, logger]
 	);

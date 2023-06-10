@@ -118,8 +118,9 @@ const TableApp = () => {
 	const firstColumnId = useUUID();
 	const lastColumnId = useUUID();
 
-	function handleClick() {
+	function handleClick(e: React.MouseEvent) {
 		logger("TableApp handleClick");
+		e.stopPropagation();
 		if (hasOpenMenu()) {
 			closeTopMenu();
 		} else {

@@ -3,8 +3,11 @@ import { EVENT_OUTSIDE_CLICK, EVENT_OUTSIDE_KEYDOWN } from "src/shared/events";
 import { useLogger } from "src/shared/logger";
 import { useMenuState } from "src/shared/menu/menu-context";
 
-export const useMenuEvents = (id: string, isOpen: boolean) => {
-	const isTextHighlighted = React.useRef<boolean>(false);
+export const useMenuEvents = (
+	id: string,
+	isOpen: boolean,
+	isTextHighlighted: boolean
+) => {
 	const logger = useLogger();
 	const { requestCloseTopMenu, closeTopMenu, topMenu } = useMenuState();
 
@@ -40,8 +43,7 @@ export const useMenuEvents = (id: string, isOpen: boolean) => {
 
 			//If we just highlighted text in an input and we released the mouse outside of the
 			//menu, don't close the menu
-			if (isTextHighlighted.current) {
-				isTextHighlighted.current = false;
+			if (isTextHighlighted) {
 				return;
 			}
 			closeTopMenu();
@@ -53,5 +55,5 @@ export const useMenuEvents = (id: string, isOpen: boolean) => {
 		}
 
 		return () => app.workspace.off(EVENT_OUTSIDE_CLICK, handleOutsideClick);
-	}, [isOpen, logger, closeTopMenu, id, topMenu]);
+	}, [isOpen, logger, closeTopMenu, id, topMenu, isTextHighlighted]);
 };
