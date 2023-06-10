@@ -61,6 +61,8 @@ export default function SelectableTag({
 				onClick={(e) => {
 					//Only trigger onClick if the click is on the tag and not the menu button
 					if (e.target === triggerRef.current) {
+						//Stop propagation so the the menu doesn't remove the focus class
+						e.stopPropagation();
 						onClick(id);
 					}
 				}}
