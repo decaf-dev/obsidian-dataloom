@@ -1,14 +1,15 @@
-import { css } from "@emotion/react";
-import { TFile } from "obsidian";
 import React from "react";
+
+import { css } from "@emotion/react";
 import Text from "src/react/shared/text";
 import { nltEventSystem } from "src/shared/event-system/event-system";
+import { VaultFile } from "src/obsidian-shim/development/vault-file";
 
 interface Props {
-	file: TFile | null;
+	file: VaultFile | null;
 	isHighlighted: boolean;
 	isFileNameUnique: boolean;
-	onItemClick: (item: TFile | null, isFileNameUnique: boolean) => void;
+	onItemClick: (item: VaultFile | null, isFileNameUnique: boolean) => void;
 }
 
 const SuggestItem = React.forwardRef<HTMLDivElement, Props>(

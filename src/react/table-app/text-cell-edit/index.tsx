@@ -1,7 +1,5 @@
 import React from "react";
 
-import { TFile } from "obsidian";
-
 import { useCompare, useInputSelection } from "src/shared/hooks";
 import { useOverflow } from "src/shared/spacing/hooks";
 
@@ -20,7 +18,8 @@ import { isSpecialActionDown } from "src/shared/keyboard-event";
 
 import { getWikiLinkText } from "src/shared/link/link-utils";
 import { css } from "@emotion/react";
-import { textAreaStyle } from "src/react/shared-styles";
+import { textAreaStyle } from "src/react/table-app/shared-styles";
+import { VaultFile } from "src/obsidian-shim/development/vault-file";
 
 interface Props {
 	menuCloseRequest: MenuCloseRequest | null;
@@ -120,7 +119,7 @@ export default function TextCellEdit({
 	}
 
 	function handleSuggestItemClick(
-		file: TFile | null,
+		file: VaultFile | null,
 		isFileNameUnique: boolean
 	) {
 		if (file) {

@@ -2,6 +2,34 @@ import { css } from "@emotion/react";
 import { useDragContext } from "src/shared/dragging/drag-context";
 import { useTableState } from "src/shared/table-state/table-state-context";
 
+const cellStyle = css`
+	position: sticky;
+	top: 0;
+	z-index: 1;
+	background-color: var(--table-header-background);
+	border-bottom: 1px solid var(--table-border-color);
+	border-left: 1px solid var(--table-border-color);
+	border-right: 0;
+	padding: 0;
+	font-weight: 400;
+	overflow: visible;
+	text-align: start;
+	color: var(--text-normal); //Prevents dimming on hover in embedded table
+
+	&:first-of-type {
+		border-top: 0;
+		border-left: 0;
+		border-bottom: 0;
+		background-color: var(--background-primary);
+	}
+
+	&:last-of-type {
+		border-top: 0;
+		border-bottom: 0;
+		background-color: var(--background-primary);
+	}
+`;
+
 interface TableHeaderCellProps {
 	columnId: string;
 	content: React.ReactNode;
@@ -25,10 +53,6 @@ export default function TableHeaderCell({
 			type: "column",
 			id: columnId,
 		});
-	}
-
-	function endDrag(_el: HTMLElement) {
-		setDragData(null);
 	}
 
 	function dropDrag(targetRowId: string) {
@@ -81,7 +105,7 @@ export default function TableHeaderCell({
 
 	//We throw an error if the system
 	function getColumnId(columnEl: HTMLElement) {
-		const id = columnEl.getAttr("data-column-id");
+		const id = columnEl.getAttribute("data-column-id");
 		if (!id) return null;
 		return id;
 	}
@@ -103,9 +127,8 @@ export default function TableHeaderCell({
 		dropDrag(targetId);
 	}
 
-	function handleDragEnd(e: React.DragEvent) {
-		const el = e.target as HTMLElement;
-		endDrag(el);
+	function handleDragEnd() {
+		setDragData(null);
 	}
 
 	function handleDragOver(e: React.DragEvent) {
@@ -156,8 +179,6 @@ export default function TableHeaderCell({
 	};
 
 	function handleTouchEnd(e: React.TouchEvent) {
-		const el = e.target as HTMLElement;
-
 		if (touchDropZone) {
 			const touchX = e.changedTouches[0].clientX;
 			const touchY = e.changedTouches[0].clientY;
@@ -174,14 +195,13 @@ export default function TableHeaderCell({
 			}
 		}
 
-		endDrag(el);
+		setDragData(null);
 		setTouchDropZone(null);
 		removeDragHover();
 	}
 
-	function handleTouchCancel(e: React.TouchEvent) {
-		const el = e.target as HTMLElement;
-		endDrag(el);
+	function handleTouchCancel() {
+		setDragData(null);
 		setTouchDropZone(null);
 		removeDragHover();
 	}
@@ -189,35 +209,7 @@ export default function TableHeaderCell({
 	return (
 		<th
 			data-column-id={columnId}
-			css={css`
-				border-bottom: 1px solid var(--table-border-color);
-				border-left: 1px solid var(--table-border-color);
-				border-right: 0;
-				padding: 0;
-				font-weight: 400;
-				overflow: visible;
-				text-align: start;
-				color: var(
-					--text-normal
-				); //Prevents hover style in embedded table
-				background-color: var(--table-header-background);
-				position: sticky;
-				top: 0;
-				z-index: 1;
-
-				&:first-of-type {
-					border-top: 0;
-					border-left: 0;
-					border-bottom: 0;
-					background-color: var(--background-primary);
-				}
-
-				&:last-of-type {
-					border-top: 0;
-					border-bottom: 0;
-					background-color: var(--background-primary);
-				}
-			`}
+			css={cellStyle}
 			{...(isDraggable && {
 				draggable: true,
 				onDrop: handleDrop,

@@ -19,7 +19,7 @@ import MenuTrigger from "src/react/shared/menu-trigger";
 import { getDisplayNameForDateFormat } from "src/shared/table-state/display-name";
 import "./styles.css";
 import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
-import { borderInputStyle } from "src/react/shared-styles";
+import { borderInputStyle } from "src/react/table-app/shared-styles";
 
 interface Props {
 	value: number | null;

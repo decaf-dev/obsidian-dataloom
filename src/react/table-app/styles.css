@@ -135,8 +135,8 @@
 }
 
 .NLT__focusable:focus-visible, .NLT__focus-visible {
-	outline: 2px solid var(--color-accent);
-	outline-offset: -2px;
+	outline: 2px solid var(--color-accent) !important;
+	outline-offset: -2px !important;
 }
 
 .NLT__focusable--inverted:focus-visible {

@@ -5,10 +5,10 @@ import { css } from "@emotion/react";
 
 import { numToPx } from "src/shared/conversion";
 import { useMenuState } from "src/shared/menu/menu-context";
-import { EVENT_OUTSIDE_CLICK, EVENT_OUTSIDE_KEYDOWN } from "src/shared/events";
 import { isTextSelected } from "src/shared/menu/utils";
 import { removeFocusVisibleClass } from "src/shared/menu/focus-visible";
 import { useLogger } from "src/shared/logger";
+import { useMenuEvents } from "src/obsidian-shim/development/menu-events";
 
 interface Props {
 	id: string;
@@ -42,6 +42,8 @@ const Menu = React.forwardRef<HTMLDivElement, Props>(function Menu(
 	const isTextHighlighted = React.useRef(false);
 	const logger = useLogger();
 
+	useMenuEvents(id, isOpen);
+
 	function handleMouseDown() {
 		isTextHighlighted.current = false;
 	}
@@ -49,53 +51,6 @@ const Menu = React.forwardRef<HTMLDivElement, Props>(function Menu(
 	function handleSelect() {
 		isTextHighlighted.current = isTextSelected();
 	}
-
-	//Handle outside keydown
-	//The events are triggered from the Obsidian event registered in main.ts
-	React.useEffect(() => {
-		function handleOutsideKeyDown(e: KeyboardEvent) {
-			logger("Menu handleOutsideKeyDown");
-			if (topMenu?.id !== id) return;
-
-			if (e.key === "Enter") {
-				requestCloseTopMenu("enter");
-			} else if (e.key === "Escape") {
-				closeTopMenu();
-			}
-		}
-
-		if (isOpen) {
-			//@ts-expect-error not a native Obsidian event
-			app.workspace.on(EVENT_OUTSIDE_KEYDOWN, handleOutsideKeyDown);
-		}
-
-		return () =>
-			app.workspace.off(EVENT_OUTSIDE_KEYDOWN, handleOutsideKeyDown);
-	}, [isOpen, logger, closeTopMenu, requestCloseTopMenu, id, topMenu]);
-
-	//Handle outside clicks
-	//The events are triggered from the Obsidian event registered in main.ts
-	React.useEffect(() => {
-		function handleOutsideClick() {
-			logger("Menu handleOutsideClick");
-			if (topMenu?.id !== id) return;
-
-			//If we just highlighted text in an input and we released the mouse outside of the
-			//menu, don't close the menu
-			if (isTextHighlighted.current) {
-				isTextHighlighted.current = false;
-				return;
-			}
-			closeTopMenu();
-		}
-
-		if (isOpen) {
-			//@ts-expect-error not a native Obsidian event
-			app.workspace.on(EVENT_OUTSIDE_CLICK, handleOutsideClick);
-		}
-
-		return () => app.workspace.off(EVENT_OUTSIDE_CLICK, handleOutsideClick);
-	}, [isOpen, logger, closeTopMenu, id, topMenu]);
 
 	function handleKeyDown(e: React.KeyboardEvent) {
 		logger("Menu handleKeyDown");

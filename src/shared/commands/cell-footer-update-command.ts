@@ -1,4 +1,4 @@
-import { CellIdError } from "../table-state/table-error";
+import { CellNotFoundError } from "../table-state/table-error";
 import TableStateCommand from "../table-state/table-state-command";
 import { FooterCell, TableState } from "../types/types";
 
@@ -21,7 +21,10 @@ export default class CellFooterUpdateCommand extends TableStateCommand {
 
 		const { footerCells } = prevState.model;
 		const cell = footerCells.find((cell) => cell.id === this.cellId);
-		if (!cell) throw new CellIdError(this.cellId);
+		if (!cell)
+			throw new CellNotFoundError({
+				id: this.cellId,
+			});
 		this.previousValue = cell[this.key];
 
 		return {

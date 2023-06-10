@@ -36,12 +36,12 @@ export default class RowSortCommand extends TableStateCommand {
 			const cellA = cells.find(
 				(c) => c.columnId === columnId && c.rowId === a.id
 			);
-			if (!cellA) throw new CellNotFoundError();
+			if (!cellA) throw new CellNotFoundError({ rowId: a.id, columnId });
 
 			const cellB = cells.find(
 				(c) => c.columnId === columnId && c.rowId === b.id
 			);
-			if (!cellB) throw new CellNotFoundError();
+			if (!cellB) throw new CellNotFoundError({ rowId: b.id, columnId });
 
 			const column = columns.find((c) => c.id === columnId);
 			if (!column) throw new ColumNotFoundError(columnId);
@@ -94,13 +94,21 @@ export default class RowSortCommand extends TableStateCommand {
 				(c) => c.columnId === columnId && c.rowId === a.id
 			);
 
-			if (!cellA) throw new CellNotFoundError();
+			if (!cellA)
+				throw new CellNotFoundError({
+					rowId: a.id,
+					columnId,
+				});
 
 			const cellB = cells.find(
 				(c) => c.columnId === columnId && c.rowId === b.id
 			);
 
-			if (!cellB) throw new CellNotFoundError();
+			if (!cellB)
+				throw new CellNotFoundError({
+					rowId: b.id,
+					columnId,
+				});
 
 			const markdownA = cellA.markdown;
 			const markdownB = cellB.markdown;
@@ -133,13 +141,21 @@ export default class RowSortCommand extends TableStateCommand {
 				(c) => c.columnId === columnId && c.rowId === a.id
 			);
 
-			if (!cellA) throw new CellNotFoundError();
+			if (!cellA)
+				throw new CellNotFoundError({
+					rowId: a.id,
+					columnId,
+				});
 
 			const cellB = cells.find(
 				(c) => c.columnId === columnId && c.rowId === b.id
 			);
 
-			if (!cellB) throw new CellNotFoundError();
+			if (!cellB)
+				throw new CellNotFoundError({
+					rowId: b.id,
+					columnId,
+				});
 
 			const markdownA = cellA.markdown;
 			const markdownB = cellB.markdown;
@@ -172,13 +188,21 @@ export default class RowSortCommand extends TableStateCommand {
 				(c) => c.columnId === columnId && c.rowId === a.id
 			);
 
-			if (!cellA) throw new CellNotFoundError();
+			if (!cellA)
+				throw new CellNotFoundError({
+					rowId: a.id,
+					columnId,
+				});
 
 			const cellB = cells.find(
 				(c) => c.columnId === columnId && c.rowId === b.id
 			);
 
-			if (!cellB) throw new CellNotFoundError();
+			if (!cellB)
+				throw new CellNotFoundError({
+					rowId: b.id,
+					columnId,
+				});
 
 			const isCheckedA = isCheckboxChecked(cellA.markdown);
 			const isCheckedB = isCheckboxChecked(cellB.markdown);
@@ -210,13 +234,21 @@ export default class RowSortCommand extends TableStateCommand {
 				(c) => c.columnId === columnId && c.rowId === a.id
 			);
 
-			if (!cellA) throw new CellNotFoundError();
+			if (!cellA)
+				throw new CellNotFoundError({
+					rowId: a.id,
+					columnId,
+				});
 
 			const cellB = cells.find(
 				(c) => c.columnId === columnId && c.rowId === b.id
 			);
 
-			if (!cellB) throw new CellNotFoundError();
+			if (!cellB)
+				throw new CellNotFoundError({
+					rowId: b.id,
+					columnId,
+				});
 
 			const dateTimeA = cellA.dateTime || 0;
 			const dateTimeB = cellB.dateTime || 0;
