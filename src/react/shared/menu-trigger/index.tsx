@@ -9,6 +9,11 @@ import {
 	isWindowsUndoDown,
 } from "src/shared/keyboard-event";
 import { useLogger } from "src/shared/logger";
+import {
+	focusMenuElement,
+	removeFocusVisibleClass,
+} from "src/shared/menu/focus-visible";
+import { addFocusVisibleClass } from "src/shared/menu/focus-visible";
 
 interface Props {
 	/** If the trigger wraps a button */
@@ -36,7 +41,8 @@ const MenuTrigger = ({
 	onClick,
 	onMouseDown,
 }: Props) => {
-	const { openMenu, closeTopMenu, canOpenMenu } = useMenuState();
+	const { openMenu, closeTopMenu, canOpenMenu, hasOpenMenu } = useMenuState();
+	const ref = React.useRef<HTMLDivElement>(null);
 	const logger = useLogger();
 
 	function handleKeyDown(e: React.KeyboardEvent) {
@@ -89,7 +95,16 @@ const MenuTrigger = ({
 
 		//Is the trigger isn't active, just close any open menus on click
 		if (!shouldRun) {
-			closeTopMenu();
+			if (hasOpenMenu()) {
+				closeTopMenu();
+			} else {
+				if (!ref.current) return;
+
+				//If we're not opening a menu, remove the focus-visible class
+				//and then add the focus-visible class to this trigger
+				removeFocusVisibleClass();
+				addFocusVisibleClass(ref.current);
+			}
 			return;
 		}
 
@@ -111,6 +126,7 @@ const MenuTrigger = ({
 	return (
 		<div
 			className="NLT__menu-trigger NLT__focusable"
+			ref={ref}
 			css={css`
 				width: ${isCell ? "100%" : "unset"};
 				height: ${isCell ? "100%" : "unset"};
