@@ -1,9 +1,10 @@
-import { Button } from "src/react/shared/button";
+import Button from "src/react/shared/button";
 import Icon from "src/react/shared/icon";
 import Stack from "src/react/shared/stack";
 
 import { css } from "@emotion/react";
 import { useTableState } from "src/shared/table-state/table-state-context";
+import { baseInputStyle } from "src/react/table-app/shared-styles";
 
 export default function SearchBar() {
 	const { searchText, setSearchText, isSearchBarVisible, toggleSearchBar } =
@@ -13,10 +14,10 @@ export default function SearchBar() {
 		<Stack spacing="lg">
 			{isSearchBarVisible && (
 				<input
+					className="NLT__focusable"
 					css={css`
-						transition: none !important;
+						${baseInputStyle}
 						max-width: 200px;
-						border: 1px solid var(--background-modifier-border) !important;
 					`}
 					autoFocus
 					type="text"

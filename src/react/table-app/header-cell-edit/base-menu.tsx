@@ -6,12 +6,12 @@ import { CellType, SortDir } from "src/shared/types/types";
 import { SubmenuType } from "./types";
 import { useInputSelection } from "src/shared/hooks";
 import { getDisplayNameForCellType } from "src/shared/table-state/display-name";
-import { css } from "@emotion/react";
 import React from "react";
 import Flex from "src/react/shared/flex";
 import Switch from "src/react/shared/switch";
 import Text from "src/react/shared/text";
 import { MenuCloseRequest } from "src/shared/menu/types";
+import { borderInputStyle } from "src/react/table-app/shared-styles";
 
 interface Props {
 	canDeleteColumn: boolean;
@@ -42,6 +42,7 @@ export default function BaseMenu({
 	onDeleteClick,
 	onColumnNameChange,
 }: Props) {
+	const lastKeyPressed = React.useRef<string | null>(null);
 	const inputRef = React.useRef<HTMLInputElement | null>(null);
 	const { setPreviousSelectionStart } = useInputSelection(
 		inputRef,
@@ -65,6 +66,10 @@ export default function BaseMenu({
 		onColumnNameChange(inputValue);
 	}
 
+	function handleKeyDown(e: React.KeyboardEvent) {
+		lastKeyPressed.current = e.key;
+	}
+
 	const hasOptions =
 		columnType === CellType.EMBED ||
 		columnType === CellType.DATE ||
@@ -74,20 +79,16 @@ export default function BaseMenu({
 
 	return (
 		<Stack spacing="sm" isVertical>
-			<Stack spacing="sm" isVertical>
-				<Padding px="md" py="sm">
+			<Stack spacing="sm" isVertical width="100%">
+				<Padding px="md" py="sm" width="100%">
 					<input
+						className="NLT__focusable"
 						autoFocus
-						css={css`
-							background-color: var(--background-secondary);
-							border: 1px solid var(--table-border-color);
-							padding: 4px 10px;
-							font-size: 0.95rem;
-							width: 100%;
-						`}
+						css={borderInputStyle}
 						ref={inputRef}
 						value={columnName}
 						onChange={(e) => handleInputChange(e.target.value)}
+						onKeyDown={handleKeyDown}
 					/>
 				</Padding>
 				<MenuItem

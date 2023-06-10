@@ -1,5 +1,6 @@
 import { css } from "@emotion/react";
-import { useRenderMarkdown } from "src/shared/render/hooks";
+import { useRenderMarkdown } from "src/obsidian-shim/development/render-utils";
+import { appendOrReplaceFirstChild } from "src/shared/render/utils";
 import { useOverflow } from "src/shared/spacing/hooks";
 
 interface Props {
@@ -8,8 +9,7 @@ interface Props {
 }
 
 export default function FileCell({ markdown, shouldWrapOverflow }: Props) {
-	const { containerRef, markdownRef, appendOrReplaceFirstChild } =
-		useRenderMarkdown(markdown, shouldWrapOverflow);
+	const { containerRef, renderRef } = useRenderMarkdown(markdown, false);
 
 	const overflowStyle = useOverflow(shouldWrapOverflow);
 
@@ -24,7 +24,7 @@ export default function FileCell({ markdown, shouldWrapOverflow }: Props) {
 				`}
 				ref={(node) => {
 					containerRef.current = node;
-					appendOrReplaceFirstChild(node, markdownRef.current);
+					appendOrReplaceFirstChild(node, renderRef.current);
 				}}
 			/>
 		</div>

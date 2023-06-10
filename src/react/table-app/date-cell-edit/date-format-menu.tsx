@@ -30,7 +30,7 @@ const DateFormatMenu = React.forwardRef<HTMLDivElement, Props>(
 				left={left}
 				width={175}
 			>
-				<div className="NLT__currency-menu">
+				<div className="NLT__date-format-menu">
 					{Object.values([
 						DateFormat.DD_MM_YYYY,
 						DateFormat.MM_DD_YYYY,

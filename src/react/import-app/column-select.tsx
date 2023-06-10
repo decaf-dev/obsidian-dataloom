@@ -20,6 +20,7 @@ export default function ColumnSelect({
 			<label htmlFor="column-select">Column</label>
 			<select
 				id="column-select"
+				className="NLT__focusable"
 				value={value}
 				onChange={(e) => onChange(e.target.value)}
 			>
@@ -30,7 +31,10 @@ export default function ColumnSelect({
 						const cell = headerCells.find(
 							(cell) => cell.columnId === column.id
 						);
-						if (!cell) throw new CellNotFoundError();
+						if (!cell)
+							throw new CellNotFoundError({
+								columnId: column.id,
+							});
 						return (
 							<option key={column.id} value={column.id}>
 								{cell.markdown}

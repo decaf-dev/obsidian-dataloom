@@ -1,17 +1,22 @@
 import React from "react";
 
-import { TFile } from "obsidian";
 import fuzzysort from "fuzzysort";
 
 import SuggestItem from "./suggest-item";
 import { filterUniqueStrings } from "./utils";
 import { css } from "@emotion/react";
 import { nltEventSystem } from "src/shared/event-system/event-system";
+import { transparentInputStyle } from "src/react/table-app/shared-styles";
+import { useLogger } from "src/shared/logger";
+import {
+	VaultFile,
+	getVaultFiles,
+} from "src/obsidian-shim/development/vault-file";
 
 interface ContentProps {
 	showInput?: boolean;
 	filterValue?: string;
-	onItemClick: (item: TFile | null, isFileNameUnique: boolean) => void;
+	onItemClick: (item: VaultFile | null, isFileNameUnique: boolean) => void;
 }
 
 export default function SuggestMenuContent({
@@ -19,14 +24,15 @@ export default function SuggestMenuContent({
 	filterValue,
 	onItemClick,
 }: ContentProps) {
+	const logger = useLogger();
 	const [localFilterValue, setLocalFilterValue] = React.useState(
 		filterValue ?? ""
 	);
 	const highlightItemRef = React.useRef<HTMLDivElement | null>(null);
 	const [highlightIndex, setHighlightIndex] = React.useState(-1);
 
-	const files = app.vault.getFiles();
-	let filteredFiles: TFile[] = [];
+	const files = getVaultFiles();
+	let filteredFiles: VaultFile[] = [];
 	if (localFilterValue !== "") {
 		//Do a fuzzy sort on the filtered items
 		const results = fuzzysort.go(localFilterValue, files, {
@@ -37,7 +43,7 @@ export default function SuggestMenuContent({
 	} else {
 		//Otherwise we just sort by last modified
 		filteredFiles = files;
-		filteredFiles.sort((a, b) => b.stat.mtime - a.stat.mtime);
+		filteredFiles.sort((a, b) => b.modifiedTime - a.modifiedTime);
 		filteredFiles = filteredFiles.slice(0, 20);
 	}
 
@@ -65,20 +71,29 @@ export default function SuggestMenuContent({
 
 	React.useEffect(() => {
 		function handleKeyDown(e: KeyboardEvent) {
+			logger("SuggestMenuContent handleKeyDown");
 			if (e.key === "ArrowUp") {
+				//Prevent default scrolling
 				e.preventDefault();
 				setHighlightIndex((prevIndex) => {
-					const newIndex = Math.max(prevIndex - 1, 0);
-					return newIndex;
+					let index = prevIndex - 1;
+					if (index < 0) index = filteredFiles.length - 1;
+					return index;
 				});
 			} else if (e.key === "ArrowDown") {
+				//Prevent default scrolling
 				e.preventDefault();
+
 				setHighlightIndex((prevIndex) => {
-					const newIndex = Math.min(
-						prevIndex + 1,
-						filteredFiles.length - 1
-					);
-					return newIndex;
+					let index = prevIndex + 1;
+					if (index > filteredFiles.length - 1) index = 0;
+					return index;
+				});
+			} else if (e.key === "Tab") {
+				setHighlightIndex((prevIndex) => {
+					let index = prevIndex + 1;
+					if (index > filteredFiles.length - 1) index = 0;
+					return index;
 				});
 			}
 		}
@@ -86,7 +101,7 @@ export default function SuggestMenuContent({
 		nltEventSystem.addEventListener("keydown", handleKeyDown);
 		return () =>
 			nltEventSystem.removeEventListener("keydown", handleKeyDown);
-	}, [filteredFiles.length]);
+	}, [filteredFiles.length, logger, highlightIndex]);
 
 	const fileNames = filteredFiles.map((file) => file.name);
 	const uniqueFileNames = filterUniqueStrings(fileNames);
@@ -102,14 +117,7 @@ export default function SuggestMenuContent({
 					`}
 				>
 					<input
-						css={css`
-							background-color: transparent !important;
-							border: 0 !important;
-							box-shadow: none !important;
-							width: 100%;
-							padding-left: 5px !important;
-							padding-right: 5px !important;
-						`}
+						css={transparentInputStyle}
 						autoFocus
 						value={localFilterValue}
 						onChange={(e) => setLocalFilterValue(e.target.value)}

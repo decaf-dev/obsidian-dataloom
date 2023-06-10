@@ -1,20 +1,20 @@
 import React from "react";
-import { TableState } from "../types/types";
-import { useMountContext } from "../view-context";
+import { isEventForThisApp } from "src/shared/event-system/utils";
+import { EVENT_DOWNLOAD_CSV, EVENT_DOWNLOAD_MARKDOWN } from "src/shared/events";
 import {
-	downloadFile,
-	getBlobTypeForExportType,
 	getExportFileName,
+	getBlobTypeForExportType,
+	downloadFile,
 } from "src/shared/export/download-utils";
+import { exportToCSV } from "src/shared/export/export-to-csv";
+import { exportToMarkdown } from "src/shared/export/export-to-markdown";
 import { ExportType } from "src/shared/export/types";
-import { exportToCSV } from "./export-to-csv";
-import { exportToMarkdown } from "./export-to-markdown";
-import { EVENT_DOWNLOAD_CSV, EVENT_DOWNLOAD_MARKDOWN } from "../events";
-import { isEventForThisApp } from "../event-system/utils";
+import { TableState } from "src/shared/types/types";
+import { useMountState } from "./mount-context";
 
 export const useExportEvents = (state: TableState) => {
-	const { filePath } = useMountContext();
-	const { appId } = useMountContext();
+	const { filePath } = useMountState();
+	const { appId } = useMountState();
 
 	React.useEffect(() => {
 		function handleDownloadCSV() {

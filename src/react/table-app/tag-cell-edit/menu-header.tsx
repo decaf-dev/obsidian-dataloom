@@ -4,6 +4,7 @@ import Tag from "src/react/shared/tag";
 import Wrap from "src/react/shared/wrap";
 
 import React from "react";
+import { transparentInputStyle } from "src/react/table-app/shared-styles";
 
 interface MenuHeaderProps {
 	cellTags: TagType[];
@@ -47,14 +48,8 @@ export default function MenuHeader({
 					/>
 				))}
 				<input
-					css={css`
-						background-color: transparent !important;
-						border: 0 !important;
-						box-shadow: none !important;
-						width: 100%;
-						padding-left: 5px !important;
-						padding-right: 5px !important;
-					`}
+					className="NLT__focusable"
+					css={transparentInputStyle}
 					autoFocus
 					ref={inputRef}
 					type="text"

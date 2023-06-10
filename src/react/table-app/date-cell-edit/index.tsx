@@ -11,15 +11,15 @@ import {
 } from "src/shared/date/date-conversion";
 import { DateFormat } from "src/shared/types/types";
 import { useCompare } from "src/shared/hooks";
-import DateFormatMenu from "./components/DateFormatMenu";
+import DateFormatMenu from "./date-format-menu";
 import { useMenu } from "src/shared/menu/hooks";
 import { MenuCloseRequest, MenuLevel } from "src/shared/menu/types";
 
 import MenuTrigger from "src/react/shared/menu-trigger";
 import { getDisplayNameForDateFormat } from "src/shared/table-state/display-name";
-import { css } from "@emotion/react";
-import "./styles.css";
 import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
+import { borderInputStyle } from "src/react/table-app/shared-styles";
+import { css } from "@emotion/react";
 
 interface Props {
 	value: number | null;
@@ -80,8 +80,10 @@ export default function DateCellEdit({
 				}
 			}
 
-			setInputInvalid(false);
-			onDateTimeChange(newValue);
+			if (newValue !== value) {
+				setInputInvalid(false);
+				onDateTimeChange(newValue);
+			}
 			setCloseTime(Date.now());
 		}
 
@@ -112,7 +114,7 @@ export default function DateCellEdit({
 		closeTopMenu();
 	}
 
-	function handleClearClick(e: React.MouseEvent) {
+	function handleClearClick() {
 		onDateTimeChange(null);
 		onMenuClose();
 	}
@@ -123,17 +125,15 @@ export default function DateCellEdit({
 				<Stack spacing="md" isVertical>
 					<Padding px="md" py="md">
 						<input
+							tabIndex={0}
+							className="NLT__focusable"
 							css={css`
-								width: 100%;
-								height: 100%;
-								transition: none !improtant;
-								border-radius: 0px;
-								border: 1px solid var(--table-border-color);
-								padding: 5px;
-								background-color: var(--background-secondary);
+								${borderInputStyle}
+								${isInputInvalid
+									? "&:focus-visible { outline: 2px solid var(--background-modifier-error) !important; }"
+									: ""}
 							`}
 							ref={inputRef}
-							aria-invalid={isInputInvalid}
 							autoFocus
 							value={localValue}
 							onChange={(e) => setLocalValue(e.target.value)}
@@ -141,6 +141,7 @@ export default function DateCellEdit({
 					</Padding>
 					<MenuTrigger menu={menu}>
 						<MenuItem
+							isFocusable={false}
 							name="Date format"
 							value={getDisplayNameForDateFormat(dateFormat)}
 						/>

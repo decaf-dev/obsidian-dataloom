@@ -3,7 +3,7 @@ import TagColorMenu from "src/react/table-app/tag-color-menu";
 import { MenuLevel } from "src/shared/menu/types";
 import { useMenu } from "src/shared/menu/hooks";
 
-import { MenuButton } from "src/react/shared/button";
+import MenuButton from "src/react/shared/menu-button";
 import Icon from "src/react/shared/icon";
 import Tag from "src/react/shared/tag";
 import { Color } from "src/shared/types/types";
@@ -48,6 +48,7 @@ export default function SelectableTag({
 	return (
 		<>
 			<div
+				tabIndex={0}
 				ref={triggerRef}
 				css={css`
 					display: flex;
@@ -56,17 +57,18 @@ export default function SelectableTag({
 					padding: var(--nlt-spacing--sm) var(--nlt-spacing--md);
 					overflow: hidden;
 				`}
-				className="NLT__selectable"
+				className="NLT__focusable NLT__selectable"
 				onClick={(e) => {
 					//Only trigger onClick if the click is on the tag and not the menu button
 					if (e.target === triggerRef.current) {
+						//Stop propagation so the the menu doesn't remove the focus class
+						e.stopPropagation();
 						onClick(id);
 					}
 				}}
 			>
 				<Tag markdown={markdown} color={color} maxWidth="150px" />
 				<MenuButton
-					isSimple
 					icon={<Icon lucideId="more-horizontal" />}
 					menu={menu}
 				/>

@@ -4,18 +4,7 @@ import { useCompare, useInputSelection } from "src/shared/hooks";
 import { useOverflow } from "src/shared/spacing/hooks";
 import { MenuCloseRequest } from "src/shared/menu/types";
 import { css } from "@emotion/react";
-
-const textAreaStyle = css`
-	width: 100%;
-	height: 100%;
-	border: 0;
-	border-radius: 0;
-	overflow: hidden;
-	padding: var(--nlt-cell-spacing-x) var(--nlt-cell-spacing-y);
-	resize: none;
-	font-size: var(--font-ui-medium);
-	transition: none !important;
-`;
+import { textAreaStyle } from "src/react/table-app/shared-styles";
 
 interface Props {
 	menuCloseRequest: MenuCloseRequest | null;
@@ -45,10 +34,11 @@ export default function EmbedCellEdit({
 
 	React.useEffect(() => {
 		if (hasCloseRequestTimeChanged && menuCloseRequest !== null) {
-			onChange(localValue);
+			if (localValue !== value) onChange(localValue);
 			onMenuClose();
 		}
 	}, [
+		value,
 		localValue,
 		hasCloseRequestTimeChanged,
 		menuCloseRequest,
@@ -88,7 +78,7 @@ export default function EmbedCellEdit({
 				value={localValue}
 				onChange={handleTextareaChange}
 				onBlur={(e) => {
-					e.target.classList.add("NLT__blur");
+					e.target.classList.add("NLT__blur--cell");
 				}}
 			/>
 		</div>

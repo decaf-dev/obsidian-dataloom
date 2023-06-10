@@ -35,6 +35,7 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 
 	return (
 		<TableVirtuoso
+			tabIndex={-1}
 			ref={tableRef}
 			overscan={10}
 			style={{
@@ -153,10 +154,10 @@ const Components: TableComponents = {
 		);
 	},
 	TableRow: ({ style, ...props }) => {
-		return <TableBodyRow {...props} />;
+		return <TableBodyRow {...props} style={style} />;
 	},
 	TableBody: React.forwardRef(({ style, ...props }, ref) => (
-		<tbody {...props} ref={ref} />
+		<tbody {...props} style={style} ref={ref} />
 	)),
 	TableFoot: React.forwardRef(({ style, ...props }, ref) => (
 		<tfoot
@@ -183,6 +184,7 @@ const Components: TableComponents = {
 				}
 			`}
 			{...props}
+			style={style}
 			ref={ref}
 		/>
 	)),

@@ -12,6 +12,8 @@ import {
 	EVENT_COLUMN_DELETE,
 	EVENT_DOWNLOAD_CSV,
 	EVENT_DOWNLOAD_MARKDOWN,
+	EVENT_OUTSIDE_CLICK,
+	EVENT_OUTSIDE_KEYDOWN,
 	EVENT_REFRESH_TABLES,
 	EVENT_ROW_ADD,
 	EVENT_ROW_DELETE,
@@ -22,9 +24,10 @@ import {
 	serializeTableState,
 } from "./data/serialize-table-state";
 import { updateLinkReferences } from "./data/utils";
-import { hasDarkTheme } from "./shared/renderUtils";
 import { filterUniqueStrings } from "./react/shared/suggest-menu/utils";
 import { getBasename } from "./shared/link/link-utils";
+import { hasDarkTheme } from "./shared/render/utils";
+import { removeFocusVisibleClass } from "./shared/menu/focus-visible";
 
 export interface NLTSettings {
 	shouldDebug: boolean;
@@ -60,6 +63,7 @@ export default class NLTPlugin extends Plugin {
 		this.registerEmbeddedView();
 		this.registerCommands();
 		this.registerEvents();
+		this.registerDOMEvents();
 	}
 
 	private registerEmbeddedView() {
@@ -109,6 +113,23 @@ export default class NLTPlugin extends Plugin {
 			type: NOTION_LIKE_TABLES_VIEW,
 			active: true,
 			state: { file: filePath },
+		});
+	}
+
+	private registerDOMEvents() {
+		//This event is guaranteed to fire after our React synthetic event handlers
+		this.registerDomEvent(document, "click", () => {
+			if (this.settings.shouldDebug) console.log("main handleClick");
+
+			//Clear the focus-visible class from the last focused element
+			removeFocusVisibleClass();
+			this.app.workspace.trigger(EVENT_OUTSIDE_CLICK);
+		});
+
+		//This event is guaranteed to fire after our React synthetic event handlers
+		this.registerDomEvent(document, "keydown", (e) => {
+			if (this.settings.shouldDebug) console.log("main handleKeyDown");
+			this.app.workspace.trigger(EVENT_OUTSIDE_KEYDOWN, e);
 		});
 	}
 

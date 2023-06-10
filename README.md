@@ -10,7 +10,7 @@ Notion-Like Tables is your premiere tool for creating and managing tabular data 
 
 #### [Documentation website](https://trey-wallis.github.io/obsidian-notion-like-tables)
 
-#### [Lastest release notes](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/6.17.0)
+#### [Lastest release notes](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/6.18.0)
 
 ## About
 

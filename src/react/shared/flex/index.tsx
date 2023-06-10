@@ -3,7 +3,7 @@ import {
 	AlignItems,
 	FlexDirection,
 	JustifyContent,
-} from "src/shared/renderTypes";
+} from "src/shared/render/types";
 
 interface Props {
 	flexDir?: FlexDirection;

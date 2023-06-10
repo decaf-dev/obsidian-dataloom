@@ -146,7 +146,7 @@ export class ColumnTypeUpdateCommand extends TableStateCommand {
 				if (cell.markdown !== "") {
 					const tagIds: string[] = [];
 
-					cell.markdown.split(",").forEach((markdown, i) => {
+					cell.markdown.split(",").forEach((markdown) => {
 						const column = newColumns.find(
 							(column) => column.id === this.columnId
 						);

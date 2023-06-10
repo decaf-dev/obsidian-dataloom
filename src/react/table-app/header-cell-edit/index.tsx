@@ -99,10 +99,13 @@ const HeaderMenu = React.forwardRef<HTMLDivElement, Props>(function HeaderMenu(
 	React.useEffect(() => {
 		if (hasCloseRequestTimeChanged && menuCloseRequest !== null) {
 			//If we're on the base menu
-			if (submenu === null) onNameChange(cellId, localValue);
+			if (submenu === null) {
+				if (localValue !== markdown) onNameChange(cellId, localValue);
+			}
 			onMenuClose();
 		}
 	}, [
+		markdown,
 		cellId,
 		hasCloseRequestTimeChanged,
 		menuCloseRequest,

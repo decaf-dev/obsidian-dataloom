@@ -116,7 +116,11 @@ export default function HeaderCell({
 
 	return (
 		<>
-			<MenuTrigger menu={menu} canMenuOpen={resizingColumnId === null}>
+			<MenuTrigger
+				isCell
+				menu={menu}
+				shouldRun={resizingColumnId === null}
+			>
 				<div
 					className="NLT__th-container"
 					ref={triggerRef}

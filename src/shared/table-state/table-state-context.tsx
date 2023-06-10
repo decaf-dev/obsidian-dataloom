@@ -2,16 +2,8 @@ import { TableState } from "../types/types";
 import TableStateCommand from "./table-state-command";
 import React from "react";
 import { useLogger } from "../logger";
-import _ from "lodash";
 import RowSortCommand from "../commands/row-sort-command";
-import {
-	isMacRedoDown,
-	isMacUndoDown,
-	isWindowsRedoDown,
-	isWindowsUndoDown,
-} from "../keyboard-event";
-import { nltEventSystem } from "../event-system/event-system";
-import { useMountContext } from "../view-context";
+import { useMountState } from "src/obsidian-shim/development/mount-context";
 
 interface Props {
 	initialState: TableState;
@@ -29,6 +21,8 @@ const TableStateContext = React.createContext<{
 	setResizingColumnId: React.Dispatch<React.SetStateAction<string | null>>;
 	setSearchText: React.Dispatch<React.SetStateAction<string>>;
 	doCommand: (command: TableStateCommand) => void;
+	commandUndo: () => void;
+	commandRedo: () => void;
 } | null>(null);
 
 export const useTableState = () => {
@@ -60,7 +54,15 @@ export default function TableStateProvider({
 	const [position, setPosition] = React.useState(0);
 
 	const logger = useLogger();
-	const { appId } = useMountContext();
+	const { appId } = useMountState();
+
+	// React.useEffect(() => {
+	// 	const jsonSizeInBytes = new TextEncoder().encode(
+	// 		JSON.stringify(history)
+	// 	).length;
+	// 	console.log(`Size of data: ${jsonSizeInBytes / 1024} kb`);
+	// 	console.log(`Size of data: ${jsonSizeInBytes / (1024 * 1024)} mb`);
+	// }, [history]);
 
 	//Whenever the table state is updated save it to disk
 	const isMountedRef = React.useRef(false);
@@ -115,25 +117,6 @@ export default function TableStateProvider({
 		}
 	}, [position, history, tableState, logger]);
 
-	//Handle hot key press
-	React.useEffect(() => {
-		function handleKeyDown(e: KeyboardEvent) {
-			if (isWindowsRedoDown(e) || isMacRedoDown(e)) {
-				e.preventDefault();
-				redo();
-			} else if (isWindowsUndoDown(e) || isMacUndoDown(e)) {
-				e.preventDefault();
-				undo();
-			}
-		}
-
-		const throttleKeyDownEvent = _.throttle(handleKeyDown, 40);
-		nltEventSystem.addEventListener("keydown", throttleKeyDownEvent);
-		return () => {
-			nltEventSystem.removeEventListener("keydown", throttleKeyDownEvent);
-		};
-	}, [redo, undo]);
-
 	const doCommand = React.useCallback(
 		(command: TableStateCommand) => {
 			setHistory((prevState) => {
@@ -163,6 +146,8 @@ export default function TableStateProvider({
 				tableState,
 				setTableState,
 				doCommand,
+				commandRedo: redo,
+				commandUndo: undo,
 				isSearchBarVisible,
 				searchText,
 				resizingColumnId,

@@ -1,20 +1,17 @@
-import { WorkspaceLeaf } from "obsidian";
 import React from "react";
 
 interface ContextProps {
-	isEmbedded: boolean;
 	appId: string;
-	filePath: string;
-	leaf: WorkspaceLeaf;
+	isMarkdownView: boolean;
 }
 
 const MountContext = React.createContext<ContextProps | null>(null);
 
-export const useMountContext = () => {
+export const useMountState = () => {
 	const value = React.useContext(MountContext);
 	if (value === null) {
 		throw new Error(
-			"useMountContext() called without a <MountProvider /> in the tree."
+			"useMountState() called without a <MountProvider /> in the tree."
 		);
 	}
 
@@ -27,13 +24,11 @@ interface Props extends ContextProps {
 
 export default function MountProvider({
 	appId,
-	isEmbedded,
-	filePath,
-	leaf,
+	isMarkdownView,
 	children,
 }: Props) {
 	return (
-		<MountContext.Provider value={{ isEmbedded, appId, filePath, leaf }}>
+		<MountContext.Provider value={{ appId, isMarkdownView }}>
 			{children}
 		</MountContext.Provider>
 	);

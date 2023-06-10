@@ -107,6 +107,15 @@
 	background-color: hsl(8, 35%, 30%);
 }
 
+.NLT__app ::-webkit-scrollbar {
+	display: none;
+}
+
+.NLT__menu ::-webkit-scrollbar {
+	display: none;
+}
+
+
 /*
  * Selectable and selected
  */
@@ -129,42 +138,28 @@
 	padding: 0;
 }
 
-.NLT__app {
-	display: flex;
-	flex-direction: column;
-	width: 100%;
-	height: 100%;
-}
-
 .NLT__default-cursor {
 	cursor: default !important;
 }
 
+.NLT__focusable:focus-visible, .NLT__focus-visible {
+	outline: 2px solid var(--color-accent) !important;
+	outline-offset: -2px !important;
+}
+
+.NLT__focusable--inverted:focus-visible {
+	outline: 2px solid var(--text-on-accent-inverted);
+	outline-offset: 0px;
+}
+
+.NLT__blur--cell {
+	outline: 2px solid var(--background-modifier-border-focus) !important;
+	outline-offset: -2px;
+}
+
 .NLT__blur {
-	box-shadow: 0 0 0 2px var(--background-modifier-border-focus);
-}
-
-/**
- * A style for when the focus is gained from using the keyboard e.g. pressing the tab key
- */
-.NLT__focusable:focus-visible {
-	outline: 2px solid var(--color-accent);
+	outline: 2px solid var(--color-accent) !important;
 	outline-offset: -2px;
-}
-
-/**
- * A style to programatically add a visual focus. el.focus() will not call the style above
- */
-.NLT__focus-visible {
-	outline: 2px solid var(--color-accent);
-	outline-offset: -2px;
-}
-
-/**
- * Disables the outline offset for buttons that don't have icons
- */
-.NLT__button:not(.NLT__button--icon):focus-visible {
-	outline-offset: 0;
 }
 
 .NLT__tr--drag-over {
