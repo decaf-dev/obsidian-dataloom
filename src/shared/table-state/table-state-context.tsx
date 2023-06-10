@@ -3,7 +3,7 @@ import TableStateCommand from "./table-state-command";
 import React from "react";
 import { useLogger } from "../logger";
 import RowSortCommand from "../commands/row-sort-command";
-import { useMountState } from "../view-context";
+import { useMountState } from "src/obsidian-shim/development/mount-context";
 
 interface Props {
 	initialState: TableState;
@@ -55,6 +55,14 @@ export default function TableStateProvider({
 
 	const logger = useLogger();
 	const { appId } = useMountState();
+
+	// React.useEffect(() => {
+	// 	const jsonSizeInBytes = new TextEncoder().encode(
+	// 		JSON.stringify(history)
+	// 	).length;
+	// 	console.log(`Size of data: ${jsonSizeInBytes / 1024} kb`);
+	// 	console.log(`Size of data: ${jsonSizeInBytes / (1024 * 1024)} mb`);
+	// }, [history]);
 
 	//Whenever the table state is updated save it to disk
 	const isMountedRef = React.useRef(false);

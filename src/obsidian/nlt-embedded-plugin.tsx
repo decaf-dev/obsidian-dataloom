@@ -4,7 +4,7 @@ import { MarkdownView, TFile, WorkspaceLeaf } from "obsidian";
 import { Root, createRoot } from "react-dom/client";
 import { serializeTableState } from "src/data/serialize-table-state";
 import { deserializeTableState } from "src/data/serialize-table-state";
-import { NotionLikeTable } from "src/react/table-app";
+import NotionLikeTable from "src/obsidian-shim/build/notion-like-table";
 import { store } from "src/redux/global/store";
 import { EVENT_REFRESH_TABLES } from "src/shared/events";
 import { TableState } from "src/shared/types/types";
@@ -139,7 +139,7 @@ class NLTEmbeddedPlugin implements PluginValue {
 		root.render(
 			<NotionLikeTable
 				appId={id}
-				isEmbedded
+				isMarkdownView
 				filePath={tableFile.path}
 				leaf={leaf}
 				store={store}

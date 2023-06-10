@@ -39,7 +39,8 @@ export default class ColumnDeleteCommand extends TableStateCommand {
 		//Maintains at least 1 column in the table
 		if (columns.length === 1) return prevState;
 
-		const id = this.columnId ?? columns[columns.length - 1].id;
+		let id = this.columnId;
+		if (this.last) id = columns[columns.length - 1].id;
 		const columnToDelete = columns.find((column) => column.id === id);
 		if (!columnToDelete) throw new ColumNotFoundError(id);
 

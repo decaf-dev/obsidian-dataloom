@@ -1,5 +1,5 @@
-import { TFile } from "obsidian";
 import SuggestMenuContent from "src/react/shared/suggest-menu/suggest-menu-content";
+import { VaultFile } from "src/obsidian-shim/development/vault-file";
 
 interface Props {
 	onChange: (value: string) => void;
@@ -8,7 +8,7 @@ interface Props {
 
 export default function FileCellEdit({ onChange, onMenuClose }: Props) {
 	function handleSuggestItemClick(
-		file: TFile | null,
+		file: VaultFile | null,
 		isFileNameUnique: boolean
 	) {
 		if (file) {

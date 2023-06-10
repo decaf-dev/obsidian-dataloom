@@ -1,6 +1,7 @@
 import React from "react";
 import { focusMenuElement, removeFocusVisibleClass } from "./focus-visible";
 import { MenuCloseRequest, MenuCloseRequestType, NltMenu } from "./types";
+import { useLogger } from "../logger";
 
 interface CloseOptions {
 	shouldFocusTrigger?: boolean;
@@ -42,13 +43,10 @@ export default function MenuProvider({ children }: Props) {
 	 */
 	const [currentMenus, setCurrentMenus] = React.useState<NltMenu[]>([]);
 
+	const logger = useLogger();
+
 	const [menuCloseRequest, setMenuCloseRequest] =
 		React.useState<MenuCloseRequest | null>(null);
-
-	/**
-	 * Whether or not text is currently highlighted
-	 */
-	const isTextHighlighted = React.useRef(false);
 
 	/**
 	 * Returns whether or not a menu is open
@@ -65,6 +63,11 @@ export default function MenuProvider({ children }: Props) {
 	 */
 	const hasOpenMenu = React.useCallback(() => {
 		return currentMenus.length !== 0;
+	}, [currentMenus]);
+
+	const getTopMenu = React.useCallback(() => {
+		if (currentMenus.length === 0) return null;
+		return currentMenus[currentMenus.length - 1];
 	}, [currentMenus]);
 
 	const canOpenMenu = React.useCallback(
@@ -103,8 +106,9 @@ export default function MenuProvider({ children }: Props) {
 	 * @param shouldFocusTrigger should focus the menu trigger when on close
 	 */
 	function closeAllMenus(shouldFocusTrigger = true) {
-		const menu = currentMenus.first();
-		if (!menu) return;
+		logger("MenuProvider closeAllMenus");
+		if (currentMenus.length === 0) return;
+		const menu = currentMenus[0];
 
 		if (shouldFocusTrigger) {
 			const { id } = menu;
@@ -113,7 +117,6 @@ export default function MenuProvider({ children }: Props) {
 
 		setCurrentMenus([]);
 		setMenuCloseRequest(null);
-		isTextHighlighted.current = false;
 	}
 
 	/**
@@ -122,8 +125,9 @@ export default function MenuProvider({ children }: Props) {
 	 */
 	const closeTopMenu = React.useCallback(
 		(options?: CloseOptions) => {
+			logger("MenuProvider closeTopMenu");
 			const { shouldFocusTrigger = true } = options || {};
-			const menu = currentMenus.last();
+			const menu = getTopMenu();
 			if (!menu) return;
 
 			if (shouldFocusTrigger) {
@@ -134,9 +138,8 @@ export default function MenuProvider({ children }: Props) {
 			//Remove the menu
 			setCurrentMenus((prev) => prev.slice(0, prev.length - 1));
 			setMenuCloseRequest(null);
-			isTextHighlighted.current = false;
 		},
-		[currentMenus]
+		[getTopMenu, logger]
 	);
 
 	/**
@@ -145,7 +148,7 @@ export default function MenuProvider({ children }: Props) {
 	 */
 	const requestCloseTopMenu = React.useCallback(
 		(type: MenuCloseRequestType) => {
-			const menu = currentMenus.last();
+			const menu = getTopMenu();
 			if (!menu) return;
 
 			if (menu.shouldRequestOnClose) {
@@ -159,13 +162,13 @@ export default function MenuProvider({ children }: Props) {
 
 			closeTopMenu();
 		},
-		[currentMenus, closeTopMenu]
+		[closeTopMenu, getTopMenu]
 	);
 
 	return (
 		<MenuContext.Provider
 			value={{
-				topMenu: currentMenus.last() ?? null,
+				topMenu: getTopMenu(),
 				hasOpenMenu,
 				isMenuOpen,
 				openMenu,

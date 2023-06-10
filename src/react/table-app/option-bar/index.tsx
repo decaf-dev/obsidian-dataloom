@@ -6,6 +6,7 @@ import Wrap from "../../shared/wrap";
 import SearchBar from "./search-bar";
 import Divider from "src/react/shared/divider";
 import ActiveFilterBubble from "./active-filter-bubble";
+import { FilterType } from "src/shared/types/types";
 
 import {
 	SortDir,
@@ -62,7 +63,7 @@ interface Props {
 	onColumnToggle: (columnId: string) => void;
 	onRuleToggle: (ruleId: string) => void;
 	onRuleColumnChange: (ruleId: string, columnId: string) => void;
-	onRuleFilterTypeChange: (ruleId: string, value: string) => void;
+	onRuleFilterTypeChange: (ruleId: string, value: FilterType) => void;
 	onRuleTextChange: (ruleId: string, value: string) => void;
 	onRuleDeleteClick: (ruleId: string) => void;
 	onRuleAddClick: (columnId: string) => void;
@@ -95,7 +96,10 @@ export default function OptionBar({
 		const headerCell = headerCells.find(
 			(cell) => cell.columnId === column.id
 		);
-		if (!headerCell) throw new CellNotFoundError();
+		if (!headerCell)
+			throw new CellNotFoundError({
+				columnId: column.id,
+			});
 		return {
 			...column,
 			markdown: headerCell.markdown,

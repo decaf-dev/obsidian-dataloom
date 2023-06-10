@@ -1,5 +1,4 @@
 import React from "react";
-import { Notice } from "obsidian";
 
 import TextCell from "../text-cell";
 import TagCell from "../tag-cell";
@@ -43,6 +42,7 @@ import FileCellEdit from "../file-cell-edit";
 import { css } from "@emotion/react";
 import EmbedCell from "../embed-cell";
 import EmbedCellEdit from "../embed-cell-edit";
+import { Notification } from "src/obsidian-shim/development/notification";
 
 interface Props {
 	columnType: string;
@@ -141,7 +141,7 @@ export default function BodyCell({
 	async function handleCellContextClick() {
 		try {
 			await navigator.clipboard.writeText(markdown);
-			new Notice("Copied text to clipboard");
+			new Notification("Copied text to clipboard");
 		} catch (err) {
 			console.log(err);
 		}

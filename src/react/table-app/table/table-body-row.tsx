@@ -3,10 +3,12 @@ import { useDragContext } from "src/shared/dragging/drag-context";
 import { dropDrag, getRowId } from "src/shared/dragging/utils";
 
 interface TableBodyRowProps {
+	style?: React.CSSProperties;
 	children?: React.ReactNode;
 }
 
 export default function TableBodyRow({
+	style,
 	children,
 	...props
 }: TableBodyRowProps) {
@@ -56,6 +58,7 @@ export default function TableBodyRow({
 			onDragEnd={handleDragEnd}
 			onDragOver={handleDragOver}
 			{...props}
+			style={style}
 		>
 			{children}
 		</tr>

@@ -35,7 +35,9 @@ interface Props {
 
 export default function DragProvider({ children }: Props) {
 	const [dragData, setDragData] = React.useState<DragData | null>(null);
-	const [touchDropZone, setTouchDropZone] = React.useState(null);
+	const [touchDropZone, setTouchDropZone] = React.useState<DropZone | null>(
+		null
+	);
 	return (
 		<DragContext.Provider
 			value={{ dragData, touchDropZone, setDragData, setTouchDropZone }}
