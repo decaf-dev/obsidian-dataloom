@@ -41,8 +41,9 @@ export default function TagCellEdit({
 			onTagAdd(markdown, color);
 			setInputValue("");
 			setNewTagColor(randomColor());
+			onMenuClose();
 		},
-		[onTagAdd]
+		[onTagAdd, onMenuClose]
 	);
 
 	const hasCloseRequestTimeChanged = useCompare(
