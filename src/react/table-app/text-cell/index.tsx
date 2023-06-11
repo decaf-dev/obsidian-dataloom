@@ -22,7 +22,8 @@ export default function TextCell({ markdown, shouldWrapOverflow }: Props) {
 					}
 
 					ul {
-						padding: 0 var(--nlt-spacing--lg);
+						padding-left: var(--nlt-spacing--xl);
+						padding-right: 0;
 						margin: 0;
 					}
 				`}
