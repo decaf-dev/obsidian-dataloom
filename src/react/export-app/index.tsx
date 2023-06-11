@@ -14,6 +14,7 @@ import {
 } from "../../shared/export/download-utils";
 import { exportToCSV } from "src/shared/export/export-to-csv";
 import { css } from "@emotion/react";
+import { useAppSelector } from "src/redux/global/hooks";
 
 interface Props {
 	tableState: TableState;
@@ -24,7 +25,9 @@ export function ExportApp({ tableState, filePath }: Props) {
 	const [exportType, setExportType] = React.useState<ExportType>(
 		ExportType.UNSELECTED
 	);
-	const [renderMarkdown, setRenderMarkdown] = React.useState<boolean>(false);
+	const { exportRenderMarkdown } = useAppSelector((state) => state.global);
+	const [renderMarkdown, setRenderMarkdown] =
+		React.useState<boolean>(exportRenderMarkdown);
 
 	async function handleCopyClick(value: string) {
 		await navigator.clipboard.writeText(value);
