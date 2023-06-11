@@ -19,7 +19,14 @@ const SuggestMenu = React.forwardRef<HTMLDivElement, Props>(
 		ref
 	) {
 		return (
-			<Menu id={id} isOpen={isOpen} top={top} left={left} ref={ref}>
+			<Menu
+				id={id}
+				isOpen={isOpen}
+				top={top}
+				left={left}
+				ref={ref}
+				width={275}
+			>
 				<SuggestMenuContent
 					filterValue={filterValue}
 					onItemClick={onItemClick}
