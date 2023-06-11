@@ -1,5 +1,5 @@
 import { CommandRedoError, CommandUndoError } from "../commands/command-errors";
-import { TableState } from "../types/types";
+import { TableState } from "../types";
 
 export default abstract class TableStateCommand {
 	shouldSortRows: boolean;

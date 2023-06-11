@@ -1,6 +1,6 @@
 import { CellNotFoundError } from "../table-state/table-error";
 import TableStateCommand from "../table-state/table-state-command";
-import { FooterCell, TableState } from "../types/types";
+import { FooterCell, TableState } from "../types";
 
 export default class CellFooterUpdateCommand extends TableStateCommand {
 	private cellId: string;

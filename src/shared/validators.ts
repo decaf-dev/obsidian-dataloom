@@ -1,4 +1,4 @@
-import { GeneralFunction, NumberFunction } from "src/shared/types/types";
+import { GeneralFunction, NumberFunction } from "src/shared/types";
 import {
 	NUMBER_REGEX,
 	DATE_REGEX,

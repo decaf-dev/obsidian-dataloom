@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { selectStyle } from "src/react/table-app/shared-styles";
-import { CellType, FilterType } from "src/shared/types/types";
+import { CellType, FilterType } from "src/shared/types";
 
 interface Props {
 	id: string;

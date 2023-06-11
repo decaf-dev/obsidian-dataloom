@@ -23,10 +23,8 @@ export default function EmbedCellEdit({
 }: Props) {
 	const [localValue, setLocalValue] = React.useState(value);
 	const inputRef = React.useRef<HTMLTextAreaElement | null>(null);
-	const { setPreviousSelectionStart } = useInputSelection(
-		inputRef,
-		localValue
-	);
+
+	useInputSelection(inputRef, localValue);
 
 	const hasCloseRequestTimeChanged = useCompare(
 		menuCloseRequest?.requestTime
@@ -48,13 +46,6 @@ export default function EmbedCellEdit({
 
 	function handleTextareaChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
 		const inputValue = e.target.value;
-
-		if (inputRef.current) {
-			const inputEl = inputRef.current;
-
-			if (inputEl.selectionStart)
-				setPreviousSelectionStart(inputEl.selectionStart);
-		}
 		setLocalValue(inputValue);
 	}
 

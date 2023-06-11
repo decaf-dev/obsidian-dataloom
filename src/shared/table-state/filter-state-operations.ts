@@ -1,5 +1,5 @@
 import { createFilterRule } from "src/data/table-state-factory";
-import { FilterRule, TableState } from "src/shared/types/types";
+import { FilterRule, TableState } from "src/shared/types";
 
 export const addRule = (
 	prevState: TableState,

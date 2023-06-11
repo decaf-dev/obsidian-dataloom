@@ -1,11 +1,5 @@
-import {
-	BodyCell,
-	BodyRow,
-	Column,
-	HeaderCell,
-	TableState,
-} from "../types/types";
-import { getCellContent } from "./cell-content";
+import { BodyCell, BodyRow, Column, HeaderCell, TableState } from "../types";
+import { getCellContent } from "../cell-content";
 import { ColumNotFoundError } from "../table-state/table-error";
 
 const serializeHeaderCells = (cells: HeaderCell[]): string[] => {

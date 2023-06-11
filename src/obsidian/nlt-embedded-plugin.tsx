@@ -7,7 +7,7 @@ import { deserializeTableState } from "src/data/serialize-table-state";
 import NotionLikeTable from "src/obsidian-shim/build/notion-like-table";
 import { store } from "src/redux/global/store";
 import { EVENT_REFRESH_TABLES } from "src/shared/events";
-import { TableState } from "src/shared/types/types";
+import { TableState } from "src/shared/types";
 import _ from "lodash";
 import {
 	findEmbeddedTableFile,

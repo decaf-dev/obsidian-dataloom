@@ -1,4 +1,4 @@
-import { TableState } from "../types/types";
+import { TableState } from "../types";
 import { markdownTable } from "markdown-table";
 import { tableStateToArray } from "./table-state-to-array";
 

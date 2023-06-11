@@ -9,7 +9,7 @@ import {
 import { exportToCSV } from "src/shared/export/export-to-csv";
 import { exportToMarkdown } from "src/shared/export/export-to-markdown";
 import { ExportType } from "src/shared/export/types";
-import { TableState } from "src/shared/types/types";
+import { TableState } from "src/shared/types";
 import { useMountState } from "./mount-context";
 
 export const useExportEvents = (state: TableState) => {

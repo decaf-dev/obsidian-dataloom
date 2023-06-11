@@ -1,5 +1,5 @@
-import { DateFormat } from "src/shared/types/types";
-import { getDateCellContent } from "src/shared/export/cell-content";
+import { DateFormat } from "src/shared/types";
+import { getDateCellContent } from "src/shared/cell-content/date-cell-content";
 
 import { css } from "@emotion/react";
 
