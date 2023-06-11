@@ -12,7 +12,7 @@ import {
 	GeneralFunction,
 	TableState,
 	Tag,
-} from "../types/types";
+} from "../types";
 import { isCheckbox, isNumberFunction } from "../validators";
 
 export class ColumnTypeUpdateCommand extends TableStateCommand {

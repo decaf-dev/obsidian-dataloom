@@ -3,6 +3,7 @@ import { css } from "@emotion/react";
 const wrapOverflow = css`
 	overflow-wrap: break-word;
 	overflow: hidden;
+	white-space: pre-wrap;
 `;
 
 const hideOverflow = css`

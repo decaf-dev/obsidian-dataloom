@@ -1,4 +1,4 @@
-import { TableState } from "src/shared/types/types";
+import { TableState } from "src/shared/types";
 import Stack from "../shared/stack";
 import React from "react";
 import { ExportType } from "../../shared/export/types";

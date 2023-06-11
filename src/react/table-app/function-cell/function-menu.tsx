@@ -12,7 +12,7 @@ import {
 	FunctionType,
 	GeneralFunction,
 	NumberFunction,
-} from "src/shared/types/types";
+} from "src/shared/types";
 
 interface Props {
 	id: string;

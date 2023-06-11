@@ -3,8 +3,8 @@ import React from "react";
 import MenuHeader from "./menu-header";
 import MenuBody from "./menu-body";
 
-import { Tag as TagType } from "src/shared/types/types";
-import { Color } from "src/shared/types/types";
+import { Tag as TagType } from "src/shared/types";
+import { Color } from "src/shared/types";
 import { randomColor } from "src/shared/color";
 
 import { useCompare } from "src/shared/hooks";

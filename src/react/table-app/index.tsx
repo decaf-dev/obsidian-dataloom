@@ -21,7 +21,7 @@ import { useTag } from "src/shared/table-state/use-tag";
 import { css } from "@emotion/react";
 import { useMountState } from "src/obsidian-shim/development/mount-context";
 import MenuProvider, { useMenuState } from "src/shared/menu/menu-context";
-import { SortDir, TableState } from "src/shared/types/types";
+import { SortDir, TableState } from "src/shared/types";
 import { Store } from "@reduxjs/toolkit";
 
 import "./styles.css";

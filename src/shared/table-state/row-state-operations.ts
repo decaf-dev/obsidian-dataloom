@@ -1,4 +1,4 @@
-import { BodyRow } from "../types/types";
+import { BodyRow } from "../types";
 import { RowNotFoundError } from "./table-error";
 
 export const rowLastEditedTime = (rows: BodyRow[], rowId: string) => {

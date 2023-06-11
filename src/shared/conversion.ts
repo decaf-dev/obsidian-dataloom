@@ -1,4 +1,4 @@
-import { CurrencyType } from "./types/types";
+import { CurrencyType } from "./types";
 
 export const dateToString = (date: Date): string => {
 	const year = date.getFullYear();

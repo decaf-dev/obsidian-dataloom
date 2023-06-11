@@ -45,12 +45,31 @@ export default function TextCellEdit({
 
 	const [localValue, setLocalValue] = React.useState(value);
 	const inputRef = React.useRef<HTMLTextAreaElement | null>(null);
-	const { setPreviousSelectionStart, previousSelectionStart } =
-		useInputSelection(inputRef, localValue);
+
+	React.useEffect(() => {
+		if (inputRef.current) {
+			const selectionIndex = inputRef.current.selectionStart;
+			//If we just added a closing bracket, move the selection index back 1
+			if (
+				localValue[selectionIndex - 1] === "]" &&
+				localValue[selectionIndex - 2] === "["
+			) {
+				inputRef.current.selectionStart = selectionIndex - 1;
+				inputRef.current.selectionEnd = selectionIndex - 1;
+				//If we just added a the 2nd closing bracket, move the second index back 2
+			} else if (
+				localValue[selectionIndex - 1] === "]" &&
+				localValue[selectionIndex - 2] === "]" &&
+				localValue[selectionIndex - 3] === "["
+			) {
+				inputRef.current.selectionStart = selectionIndex - 2;
+				inputRef.current.selectionEnd = selectionIndex - 2;
+			}
+		}
+	}, [inputRef, localValue]);
+	useInputSelection(inputRef, localValue);
 
 	const logger = useLogger();
-
-	const previousValue = React.useRef("");
 
 	const hasCloseRequestTimeChanged = useCompare(
 		menuCloseRequest?.requestTime
@@ -83,8 +102,23 @@ export default function TextCellEdit({
 					closeTopMenu();
 			}
 
-			//Update cursor position for filterValue calculation
-			setPreviousSelectionStart(cursorPosition);
+			if (inputRef.current) {
+				//Update cursor position for filterValue calculation
+				const inputEl = inputRef.current;
+				inputEl.selectionStart = cursorPosition;
+				inputEl.selectionEnd = cursorPosition;
+			}
+		} else if (e.key === "Enter") {
+			//If we're pressing the shift key, don't propagate the event
+			//this will stop the menu from closing. And allow the default event,
+			//which is to insert a new line
+			if (e.shiftKey && !isMenuOpen) {
+				e.stopPropagation();
+				return;
+			}
+
+			//Prevent defaults stop enter from inserting a new line
+			e.preventDefault();
 		}
 	}
 
@@ -95,11 +129,11 @@ export default function TextCellEdit({
 		if (inputRef.current) {
 			const inputEl = inputRef.current;
 
-			if (inputValue.length > previousValue.current.length) {
+			if (inputValue.length > localValue.length) {
 				newValue = addClosingBracket(newValue, inputEl.selectionStart);
 			} else {
 				newValue = removeClosingBracket(
-					previousValue.current,
+					localValue,
 					inputValue,
 					inputEl.selectionStart
 				);
@@ -110,12 +144,8 @@ export default function TextCellEdit({
 			) {
 				if (!isMenuOpen) openMenu(menu);
 			}
-
-			if (inputEl.selectionStart)
-				setPreviousSelectionStart(inputEl.selectionStart);
 		}
 
-		previousValue.current = newValue;
 		setLocalValue(newValue);
 	}
 
@@ -128,7 +158,7 @@ export default function TextCellEdit({
 
 			const newValue = doubleBracketsInnerReplace(
 				localValue,
-				previousSelectionStart,
+				inputRef.current?.selectionStart ?? 0,
 				fileName
 			);
 
@@ -139,7 +169,7 @@ export default function TextCellEdit({
 
 	const overflowStyle = useOverflow(shouldWrapOverflow);
 	const filterValue =
-		getFilterValue(localValue, previousSelectionStart) ?? "";
+		getFilterValue(localValue, inputRef.current?.selectionStart ?? 0) ?? "";
 
 	return (
 		<>

@@ -6,9 +6,9 @@ import {
 	getRange,
 	getSum,
 } from "./arithmetic";
-import { CellType, CurrencyType, NumberFunction } from "src/shared/types/types";
+import { CellType, CurrencyType, NumberFunction } from "src/shared/types";
 import { round2Digits } from "./utils";
-import { getCurrencyCellContent } from "src/shared/export/cell-content";
+import { getCurrencyCellContent } from "src/shared/cell-content/currency-cell-content";
 
 export const getNumberFunctionContent = (
 	values: number[],
