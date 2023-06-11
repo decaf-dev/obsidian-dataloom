@@ -14,12 +14,12 @@ import {
 	isSurroundedByDoubleBrackets,
 	removeClosingBracket,
 } from "../../shared/suggest-menu/utils";
-import { isSpecialActionDown } from "src/shared/keyboard-event";
 
 import { getWikiLinkText } from "src/shared/link/link-utils";
 import { css } from "@emotion/react";
 import { textAreaStyle } from "src/react/table-app/shared-styles";
 import { VaultFile } from "src/obsidian-shim/development/vault-file";
+import { useLogger } from "src/shared/logger";
 
 interface Props {
 	menuCloseRequest: MenuCloseRequest | null;
@@ -48,6 +48,8 @@ export default function TextCellEdit({
 	const { setPreviousSelectionStart, previousSelectionStart } =
 		useInputSelection(inputRef, localValue);
 
+	const logger = useLogger();
+
 	const previousValue = React.useRef("");
 
 	const hasCloseRequestTimeChanged = useCompare(
@@ -70,11 +72,9 @@ export default function TextCellEdit({
 
 	function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
 		const el = e.target as HTMLTextAreaElement;
+		logger("TextCellEdit handleKeyDown");
 
-		if (e.key === "Enter") {
-			if (isSpecialActionDown(e)) return;
-			e.preventDefault();
-		} else if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+		if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
 			const cursorPosition = el.selectionStart;
 
 			if (isMenuOpen) {

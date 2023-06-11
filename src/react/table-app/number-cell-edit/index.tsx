@@ -1,7 +1,7 @@
 import React from "react";
 
 import { useCompare, useInputSelection } from "src/shared/hooks";
-import { isValidNumberInput } from "src/shared/validators";
+import { isNumber, isValidNumberInput } from "src/shared/validators";
 import { MenuCloseRequest } from "src/shared/menu/types";
 import { numberInputStyle } from "src/react/table-app/shared-styles";
 
@@ -18,7 +18,8 @@ export default function NumberCellEdit({
 	onChange,
 	onMenuClose,
 }: Props) {
-	const [localValue, setLocalValue] = React.useState(value);
+	const initialValue = isNumber(value) ? value : "";
+	const [localValue, setLocalValue] = React.useState(initialValue);
 	const inputRef = React.useRef<HTMLInputElement | null>(null);
 	const { setPreviousSelectionStart } = useInputSelection(
 		inputRef,
