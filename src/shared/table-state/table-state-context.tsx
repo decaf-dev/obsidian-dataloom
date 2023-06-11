@@ -1,4 +1,4 @@
-import { TableState } from "../types/types";
+import { TableState } from "../types";
 import TableStateCommand from "./table-state-command";
 import React from "react";
 import { useLogger } from "../logger";

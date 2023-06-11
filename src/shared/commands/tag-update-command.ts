@@ -1,6 +1,6 @@
 import { TagNotFoundError } from "../table-state/table-error";
 import TableStateCommand from "../table-state/table-state-command";
-import { TableState, Tag } from "../types/types";
+import { TableState, Tag } from "../types";
 
 export default class TagUpdateCommand extends TableStateCommand {
 	private columnId: string;

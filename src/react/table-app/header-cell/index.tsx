@@ -8,7 +8,7 @@ import {
 	DateFormat,
 	PaddingSize,
 	SortDir,
-} from "src/shared/types/types";
+} from "src/shared/types";
 import { useMenu } from "src/shared/menu/hooks";
 import { MenuLevel } from "src/shared/menu/types";
 

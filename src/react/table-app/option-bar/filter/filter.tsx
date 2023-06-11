@@ -5,7 +5,7 @@ import { useMenu } from "src/shared/menu/hooks";
 import { MenuLevel } from "src/shared/menu/types";
 import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 import FilterMenu from "./filter-menu";
-import { FilterRule, FilterType } from "src/shared/types/types";
+import { FilterRule, FilterType } from "src/shared/types";
 import { ColumnWithMarkdown } from "../types";
 import { usePrevious } from "src/shared/hooks";
 

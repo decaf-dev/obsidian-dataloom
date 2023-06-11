@@ -1,6 +1,6 @@
 import { App, Modal } from "obsidian";
 import { NLTView } from "./nlt-view";
-import { TableState } from "../shared/types/types";
+import { TableState } from "../shared/types";
 import { Root, createRoot } from "react-dom/client";
 import ImportApp from "../react/import-app";
 import {

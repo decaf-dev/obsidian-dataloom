@@ -6,14 +6,9 @@ import Wrap from "../../shared/wrap";
 import SearchBar from "./search-bar";
 import Divider from "src/react/shared/divider";
 import ActiveFilterBubble from "./active-filter-bubble";
-import { FilterType } from "src/shared/types/types";
+import { FilterType } from "src/shared/types";
 
-import {
-	SortDir,
-	Column,
-	HeaderCell,
-	FilterRule,
-} from "src/shared/types/types";
+import { SortDir, Column, HeaderCell, FilterRule } from "src/shared/types";
 import {
 	CellNotFoundError,
 	ColumNotFoundError,

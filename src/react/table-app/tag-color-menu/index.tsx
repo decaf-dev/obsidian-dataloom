@@ -10,7 +10,7 @@ import Divider from "../../shared/divider";
 import Stack from "../../shared/stack";
 import MenuItem from "../../shared/menu-item";
 
-import { Color } from "src/shared/types/types";
+import { Color } from "src/shared/types";
 import Padding from "src/react/shared/padding";
 
 import "./styles.css";

@@ -2,7 +2,7 @@ import { TextFileView, WorkspaceLeaf } from "obsidian";
 import { createRoot, Root } from "react-dom/client";
 import NotionLikeTable from "src/obsidian-shim/build/notion-like-table";
 import { store } from "src/redux/global/store";
-import { TableState } from "src/shared/types/types";
+import { TableState } from "src/shared/types";
 import {
 	deserializeTableState,
 	serializeTableState,

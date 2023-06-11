@@ -1,6 +1,6 @@
 import Icon from "../icon";
 import Stack from "../stack";
-import { Color } from "src/shared/types/types";
+import { Color } from "src/shared/types";
 import { findColorClassName } from "src/shared/color";
 import Button from "../button";
 

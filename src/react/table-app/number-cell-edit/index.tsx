@@ -21,10 +21,8 @@ export default function NumberCellEdit({
 	const initialValue = isNumber(value) ? value : "";
 	const [localValue, setLocalValue] = React.useState(initialValue);
 	const inputRef = React.useRef<HTMLInputElement | null>(null);
-	const { setPreviousSelectionStart } = useInputSelection(
-		inputRef,
-		localValue
-	);
+
+	useInputSelection(inputRef, localValue);
 
 	const hasCloseRequestTimeChanged = useCompare(
 		menuCloseRequest?.requestTime
@@ -44,19 +42,8 @@ export default function NumberCellEdit({
 		onChange,
 	]);
 
-	function handleChange(inputValue: string, setSelectionToLength = false) {
+	function handleChange(inputValue: string) {
 		if (!isValidNumberInput(inputValue)) return;
-
-		//When we press the menu key, an extra character will be added
-		//we need to update the selection to be after this character
-		//Otherwise keep the selection where it was
-		if (inputRef.current) {
-			if (setSelectionToLength) {
-				setPreviousSelectionStart(inputValue.length);
-			} else if (inputRef.current.selectionStart) {
-				setPreviousSelectionStart(inputRef.current.selectionStart);
-			}
-		}
 
 		setLocalValue(inputValue);
 	}

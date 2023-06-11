@@ -12,7 +12,7 @@ import {
 	Column,
 	SortDir,
 	TableState,
-} from "../types/types";
+} from "../types";
 import { isCheckboxChecked } from "../validators";
 
 export default class RowSortCommand extends TableStateCommand {
