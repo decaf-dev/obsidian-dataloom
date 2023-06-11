@@ -51,15 +51,6 @@ export default function SuggestMenuContent({
 		setLocalFilterValue(filterValue ?? "");
 	}, [filterValue]);
 
-	const isMountedRef = React.useRef(false);
-	React.useEffect(() => {
-		if (!isMountedRef.current) {
-			isMountedRef.current = true;
-		} else {
-			setHighlightIndex(0);
-		}
-	}, [localFilterValue]);
-
 	React.useEffect(() => {
 		if (highlightItemRef.current) {
 			highlightItemRef.current.scrollIntoView({
