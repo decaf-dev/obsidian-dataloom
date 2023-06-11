@@ -108,6 +108,17 @@ export default function TextCellEdit({
 				inputEl.selectionStart = cursorPosition;
 				inputEl.selectionEnd = cursorPosition;
 			}
+		} else if (e.key === "Enter") {
+			//If we're pressing the shift key, don't propagate the event
+			//this will stop the menu from closing. And allow the default event,
+			//which is to insert a new line
+			if (e.shiftKey && !isMenuOpen) {
+				e.stopPropagation();
+				return;
+			}
+
+			//Prevent defaults stop enter from inserting a new line
+			e.preventDefault();
 		}
 	}
 
