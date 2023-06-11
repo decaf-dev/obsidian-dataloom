@@ -1,21 +1,15 @@
 import { css } from "@emotion/react";
 import "./styles.css";
+import { useOverflow } from "src/shared/spacing/hooks";
 
 interface Props {
 	variant?: "semibold" | "faint" | "muted" | "normal";
 	size?: "xs" | "sm" | "md" | "lg" | "xl";
 	value: string;
 	maxWidth?: string;
-	whiteSpace?: "nowrap" | "pre" | "pre-wrap" | "pre-line" | "break-spaces";
 }
 
-export default function Text({
-	value,
-	variant,
-	size = "sm",
-	maxWidth,
-	whiteSpace = "nowrap",
-}: Props) {
+export default function Text({ value, variant, size = "sm", maxWidth }: Props) {
 	let className = "NLT__p";
 
 	if (variant === "faint") className += " NLT__text-faint";
@@ -33,15 +27,14 @@ export default function Text({
 		fontSize = "var(--nlt-font-size--lg)";
 	}
 
+	const overflowStyle = useOverflow(maxWidth !== undefined);
 	return (
 		<p
 			className={className}
 			css={css`
 				font-size: ${fontSize};
 				max-width: ${maxWidth === undefined ? "unset" : maxWidth};
-				white-space: ${whiteSpace};
-				overflow: ${maxWidth === undefined ? "unset" : "hidden"};
-				text-overflow: ${maxWidth === undefined ? "unset" : "ellipsis"};
+				${overflowStyle}
 			`}
 		>
 			{value}

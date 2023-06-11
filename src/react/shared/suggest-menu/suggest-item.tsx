@@ -73,7 +73,12 @@ const SuggestItem = React.forwardRef<HTMLDivElement, Props>(
 				`}
 				onClick={handleClick}
 			>
-				<Text variant="semibold" size="xs" value={name} />
+				<Text
+					variant="semibold"
+					size="xs"
+					value={name}
+					maxWidth="275px"
+				/>
 				{path && <Text value={path} size="xs" />}
 			</div>
 		);
