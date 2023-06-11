@@ -34,6 +34,7 @@ export const useInputSelection = (
 		}
 
 		setSelection();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [inputRef]);
 };
 

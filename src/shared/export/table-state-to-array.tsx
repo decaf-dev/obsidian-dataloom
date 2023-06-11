@@ -9,7 +9,8 @@ const serializeHeaderCells = (cells: HeaderCell[]): string[] => {
 const serializeBodyCells = (
 	columns: Column[],
 	rows: BodyRow[],
-	cells: BodyCell[]
+	cells: BodyCell[],
+	renderMarkdown: boolean
 ): string[][] => {
 	return rows.map((row) => {
 		const rowCells = cells.filter((cell) => cell.rowId === row.id);
@@ -18,18 +19,22 @@ const serializeBodyCells = (
 				(column) => column.id === cell.columnId
 			);
 			if (!column) throw new ColumNotFoundError(cell.columnId);
-			return getCellContent(column, row, cell);
+			return getCellContent(column, row, cell, renderMarkdown);
 		});
 	});
 };
 
-export const tableStateToArray = (tableState: TableState): string[][] => {
+export const tableStateToArray = (
+	tableState: TableState,
+	renderMarkdown: boolean
+): string[][] => {
 	const { headerCells, bodyCells, bodyRows, columns } = tableState.model;
 	const serializedHeaderCells = serializeHeaderCells(headerCells);
 	const serializedBodyCells = serializeBodyCells(
 		columns,
 		bodyRows,
-		bodyCells
+		bodyCells,
+		renderMarkdown
 	);
 	return [serializedHeaderCells, ...serializedBodyCells];
 };
