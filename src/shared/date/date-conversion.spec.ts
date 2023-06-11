@@ -1,4 +1,4 @@
-import { DateFormat } from "../types/types";
+import { DateFormat } from "../types";
 import {
 	isValidDateFormat,
 	dateStringToUnixTime,

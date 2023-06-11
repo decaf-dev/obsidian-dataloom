@@ -8,7 +8,7 @@ import {
 	FunctionType,
 	PaddingSize,
 	SortDir,
-} from "src/shared/types/types";
+} from "src/shared/types";
 import { useLogger } from "../logger";
 import { useTableState } from "./table-state-context";
 import ColumnAddCommand from "../commands/column-add-command";

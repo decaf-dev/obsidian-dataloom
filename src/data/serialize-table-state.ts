@@ -6,7 +6,7 @@ import {
 	Column,
 	TableState,
 	Tag,
-} from "../shared/types/types";
+} from "../shared/types";
 import { TableState630 } from "src/shared/types/types-6.3.0";
 import {
 	GeneralFunction670,

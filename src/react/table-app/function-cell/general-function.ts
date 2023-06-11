@@ -6,7 +6,7 @@ import {
 	DateFormat,
 	GeneralFunction,
 	Tag,
-} from "src/shared/types/types";
+} from "src/shared/types";
 import { hashString, round2Digits } from "./utils";
 import {
 	RowNotFoundError,

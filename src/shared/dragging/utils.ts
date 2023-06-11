@@ -1,4 +1,4 @@
-import { SortDir, TableState } from "../types/types";
+import { SortDir, TableState } from "../types";
 import { DragData } from "./types";
 
 export const getRowId = (rowEl: HTMLElement) => {

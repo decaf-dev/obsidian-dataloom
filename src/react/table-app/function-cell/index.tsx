@@ -12,7 +12,7 @@ import {
 	FunctionType,
 	GeneralFunction,
 	Tag,
-} from "src/shared/types/types";
+} from "src/shared/types";
 import Stack from "../../shared/stack";
 import { getNumberFunctionContent } from "./number-function";
 import { getGeneralFunctionContent } from "./general-function";

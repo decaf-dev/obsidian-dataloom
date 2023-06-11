@@ -7,13 +7,11 @@ import {
 	DateFormat,
 	TableState,
 	Tag,
-} from "src/shared/types/types";
+} from "src/shared/types";
 import { ColumNotFoundError, RowNotFoundError } from "./table-error";
-import {
-	getCurrencyCellContent,
-	getDateCellContent,
-	getTimeCellContent,
-} from "../export/cell-content";
+import { getTimeCellContent } from "../cell-content/time-content";
+import { getDateCellContent } from "../cell-content/date-cell-content";
+import { getCurrencyCellContent } from "../cell-content/currency-cell-content";
 
 export const filterBodyRowsBySearch = (
 	tableState: TableState,

@@ -6,7 +6,7 @@ import {
 	BodyCell,
 	FooterCell,
 	FilterRule,
-} from "../types/types";
+} from "../types";
 import TableStateCommand from "../table-state/table-state-command";
 import { DeleteCommandArgumentsError } from "./command-errors";
 

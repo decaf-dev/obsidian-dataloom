@@ -58,6 +58,7 @@ export default function TextCellEdit({
 
 	React.useEffect(() => {
 		if (hasCloseRequestTimeChanged && menuCloseRequest !== null) {
+			console.log("HERE");
 			if (localValue !== value) onChange(localValue);
 			onMenuClose();
 		}
@@ -95,11 +96,11 @@ export default function TextCellEdit({
 		if (inputRef.current) {
 			const inputEl = inputRef.current;
 
-			if (inputValue.length > previousValue.current.length) {
+			if (inputValue.length > localValue.length) {
 				newValue = addClosingBracket(newValue, inputEl.selectionStart);
 			} else {
 				newValue = removeClosingBracket(
-					previousValue.current,
+					localValue,
 					inputValue,
 					inputEl.selectionStart
 				);

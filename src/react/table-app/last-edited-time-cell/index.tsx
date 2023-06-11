@@ -1,6 +1,6 @@
 import { unixTimeToDateTimeString } from "src/shared/date/date-conversion";
 import { useOverflow } from "src/shared/spacing/hooks";
-import { DateFormat } from "src/shared/types/types";
+import { DateFormat } from "src/shared/types";
 
 interface Props {
 	value: number;
