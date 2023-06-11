@@ -14,7 +14,7 @@ import {
 	DateFormat,
 	SortDir,
 	PaddingSize,
-} from "src/shared/types/types";
+} from "src/shared/types";
 import { SubmenuType } from "./types";
 
 import { MenuCloseRequest } from "src/shared/menu/types";

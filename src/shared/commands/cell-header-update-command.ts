@@ -1,6 +1,6 @@
 import { CellNotFoundError } from "../table-state/table-error";
 import TableStateCommand from "../table-state/table-state-command";
-import { HeaderCell, TableState } from "../types/types";
+import { HeaderCell, TableState } from "../types";
 
 export default class CellHeaderUpdateCommand extends TableStateCommand {
 	private cellId: string;

@@ -6,7 +6,7 @@ import {
 	CurrencyType,
 	DateFormat,
 	PaddingSize,
-} from "src/shared/types/types";
+} from "src/shared/types";
 import Stack from "src/react/shared/stack";
 import Padding from "src/react/shared/padding";
 import MenuItem from "src/react/shared/menu-item";

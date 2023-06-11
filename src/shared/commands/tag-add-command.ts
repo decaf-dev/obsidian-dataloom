@@ -1,7 +1,7 @@
 import { createTag } from "src/data/table-state-factory";
 import TableStateCommand from "../table-state/table-state-command";
-import { TableState, Tag } from "../types/types";
-import { Color } from "../types/types";
+import { TableState, Tag } from "../types";
+import { Color } from "../types";
 import {
 	rowLastEditedTime,
 	rowLastEditedTimeUpdate,

@@ -6,7 +6,7 @@ import {
 	FunctionType,
 	GeneralFunction,
 	NumberFunction,
-} from "../types/types";
+} from "../types";
 
 const getShortDisplayNameForGeneralFunction = (value: GeneralFunction) => {
 	switch (value) {

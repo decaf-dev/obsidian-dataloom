@@ -2,7 +2,7 @@ import Divider from "src/react/shared/divider";
 import MenuItem from "src/react/shared/menu-item";
 import Padding from "src/react/shared/padding";
 import Stack from "src/react/shared/stack";
-import { CellType, SortDir } from "src/shared/types/types";
+import { CellType, SortDir } from "src/shared/types";
 import { SubmenuType } from "./types";
 import { useInputSelection } from "src/shared/hooks";
 import { getDisplayNameForCellType } from "src/shared/table-state/display-name";

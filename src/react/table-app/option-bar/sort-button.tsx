@@ -1,5 +1,5 @@
 import Button from "src/react/shared/button";
-import { SortDir } from "src/shared/types/types";
+import { SortDir } from "src/shared/types";
 import Stack from "src/react/shared/stack";
 import Icon from "src/react/shared/icon";
 import { css } from "@emotion/react";

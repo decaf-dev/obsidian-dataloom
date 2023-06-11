@@ -1,5 +1,5 @@
 import MountProvider from "./mount-context";
-import { TableState } from "src/shared/types/types";
+import { TableState } from "src/shared/types";
 import TableWrapper from "src/react/table-app";
 import { WorkspaceLeaf } from "obsidian";
 import { Store } from "@reduxjs/toolkit";

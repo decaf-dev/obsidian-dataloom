@@ -9,7 +9,7 @@ import {
 	isValidDateFormat,
 	unixTimeToDateString,
 } from "src/shared/date/date-conversion";
-import { DateFormat } from "src/shared/types/types";
+import { DateFormat } from "src/shared/types";
 import { useCompare } from "src/shared/hooks";
 import DateFormatMenu from "./date-format-menu";
 import { useMenu } from "src/shared/menu/hooks";

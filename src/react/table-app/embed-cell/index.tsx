@@ -1,8 +1,8 @@
 import { css } from "@emotion/react";
-import { getEmbedContent } from "src/shared/export/cell-content";
+import { getEmbedCellContent } from "src/shared/cell-content/embed-cell-content";
 import { useRenderMarkdown } from "src/obsidian-shim/development/render-utils";
 import { getSpacing } from "src/shared/spacing";
-import { AspectRatio, PaddingSize } from "src/shared/types/types";
+import { AspectRatio, PaddingSize } from "src/shared/types";
 import { isURL } from "src/shared/validators";
 import Text from "src/react/shared/text";
 import { appendOrReplaceFirstChild } from "src/shared/render/utils";
@@ -65,7 +65,7 @@ export default function EmbedCell({
 
 	if (isURL(markdown)) {
 		isValidURL = true;
-		linkMarkdown = getEmbedContent(markdown);
+		linkMarkdown = getEmbedCellContent(markdown);
 	}
 	return (
 		<div
