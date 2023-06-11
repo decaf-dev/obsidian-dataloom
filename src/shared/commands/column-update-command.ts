@@ -1,6 +1,6 @@
 import { ColumNotFoundError } from "../table-state/table-error";
 import TableStateCommand from "../table-state/table-state-command";
-import { Column, TableState } from "../types/types";
+import { Column, TableState } from "../types";
 
 export default class ColumnUpdateCommand extends TableStateCommand {
 	private columnId: string;

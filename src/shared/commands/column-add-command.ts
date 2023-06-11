@@ -1,10 +1,4 @@
-import {
-	BodyCell,
-	Column,
-	FooterCell,
-	HeaderCell,
-	TableState,
-} from "../types/types";
+import { BodyCell, Column, FooterCell, HeaderCell, TableState } from "../types";
 import {
 	createBodyCell,
 	createColumn,

@@ -19,11 +19,11 @@ import {
 	SortDir,
 	TableState,
 	Tag,
-} from "../shared/types/types";
+} from "../shared/types";
 
 import { v4 as uuidv4 } from "uuid";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/table-state/constants";
-import { Color } from "src/shared/types/types";
+import { Color } from "src/shared/types";
 
 export const createColumn = (options?: { cellType?: CellType }): Column => {
 	const { cellType = CellType.TEXT } = options || {};

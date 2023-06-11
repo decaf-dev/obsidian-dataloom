@@ -1,4 +1,4 @@
-import { Color } from "src/shared/types/types";
+import { Color } from "src/shared/types";
 
 export const findColorClassName = (
 	isDarkMode: boolean,

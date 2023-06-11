@@ -1,4 +1,4 @@
-import { BodyCell, BodyRow, TableState } from "../types/types";
+import { BodyCell, BodyRow, TableState } from "../types";
 import { RowNotFoundError } from "../table-state/table-error";
 import TableStateCommand from "../table-state/table-state-command";
 import { DeleteCommandArgumentsError } from "./command-errors";

@@ -19,7 +19,7 @@ import {
 	DateFormat,
 	PaddingSize,
 	Tag,
-} from "src/shared/types/types";
+} from "src/shared/types";
 import { useMenu } from "src/shared/menu/hooks";
 import { MenuLevel } from "src/shared/menu/types";
 
@@ -31,7 +31,7 @@ import {
 } from "src/shared/table-state/constants";
 import { isCheckboxChecked } from "src/shared/validators";
 
-import { Color } from "src/shared/types/types";
+import { Color } from "src/shared/types";
 import CurrencyCell from "../currency-cell";
 import CurrencyCellEdit from "../currency-cell-edit";
 import MenuTrigger from "src/react/shared/menu-trigger";

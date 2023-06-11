@@ -1,4 +1,4 @@
-import { CellType } from "src/shared/types/types";
+import { CellType } from "src/shared/types";
 
 export const getIconIdForCellType = (type: CellType) => {
 	switch (type) {
