@@ -56,6 +56,9 @@ const Menu = React.forwardRef<HTMLDivElement, Props>(function Menu(
 		logger("Menu handleKeyDown");
 
 		if (e.key === "Enter") {
+			//If we're pressing shift, don't close the menu
+			//This will allow us to insert a new line
+			if (e.shiftKey) return;
 			requestCloseTopMenu("enter");
 		} else if (e.key === "Escape") {
 			closeTopMenu();
