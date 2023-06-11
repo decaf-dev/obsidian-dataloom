@@ -75,7 +75,7 @@ export default function MenuItem({
 			<Flex justify="space-between">
 				<Stack>
 					{lucideId !== undefined && (
-						<Padding pb="sm">
+						<Padding width="unset" pb="sm">
 							<Icon lucideId={lucideId} />
 						</Padding>
 					)}
