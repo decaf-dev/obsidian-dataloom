@@ -46,12 +46,17 @@ export const getEmbedContent = (markdown: string) => {
 	return markdown;
 };
 
+export const getNumberCellContent = (value: string) => {
+	if (isNumber(value)) return value;
+	return "";
+};
+
 export const getCurrencyCellContent = (
 	value: string,
 	currencyType: CurrencyType
 ) => {
 	if (isNumber(value)) return stringToCurrencyString(value, currencyType);
-	return value;
+	return "";
 };
 
 export const getCellContent = (
@@ -62,8 +67,9 @@ export const getCellContent = (
 	switch (column.type) {
 		case CellType.TEXT:
 		case CellType.FILE:
-		case CellType.NUMBER:
 			return cell.markdown;
+		case CellType.NUMBER:
+			return getNumberCellContent(cell.markdown);
 		case CellType.EMBED:
 			return getEmbedContent(cell.markdown);
 		case CellType.CHECKBOX:
