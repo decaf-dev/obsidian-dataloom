@@ -4,6 +4,7 @@ import { getCurrencyCellContent } from "./currency-cell-content";
 import { getDateCellContent } from "./date-cell-content";
 import { getEmbedCellContent } from "./embed-cell-content";
 import { getNumberCellContent } from "./number-cell-content";
+import { getTextCellContent } from "./text-cell-content";
 import { getTimeCellContent } from "./time-content";
 
 const getTagCellContent = (column: Column, cell: BodyCell) => {
@@ -16,18 +17,19 @@ const getTagCellContent = (column: Column, cell: BodyCell) => {
 export const getCellContent = (
 	column: Column,
 	row: BodyRow,
-	cell: BodyCell
+	cell: BodyCell,
+	renderMarkdown: boolean
 ) => {
 	switch (column.type) {
 		case CellType.TEXT:
 		case CellType.FILE:
-			return cell.markdown;
+			return getTextCellContent(cell.markdown, renderMarkdown);
 		case CellType.NUMBER:
 			return getNumberCellContent(cell.markdown);
 		case CellType.EMBED:
-			return getEmbedCellContent(cell.markdown);
+			return getEmbedCellContent(cell.markdown, renderMarkdown);
 		case CellType.CHECKBOX:
-			return getCheckboxCellContent(cell.markdown);
+			return getCheckboxCellContent(cell.markdown, renderMarkdown);
 		case CellType.CURRENCY:
 			return getCurrencyCellContent(cell.markdown, column.currencyType);
 		case CellType.TAG:
