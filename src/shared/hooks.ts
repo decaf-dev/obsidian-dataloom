@@ -25,22 +25,16 @@ export const useInputSelection = (
 	inputRef: React.RefObject<HTMLInputElement | HTMLTextAreaElement | null>,
 	value: string
 ) => {
-	const [previousSelectionStart, setPreviousSelectionStart] = React.useState(
-		value.length
-	);
-
-	//When the value changes, we want to set the selection to the previous position
 	React.useEffect(() => {
 		function setSelection() {
 			if (inputRef.current) {
-				inputRef.current.selectionStart = previousSelectionStart;
-				inputRef.current.selectionEnd = previousSelectionStart;
+				inputRef.current.selectionStart = value.length;
+				inputRef.current.selectionEnd = value.length;
 			}
 		}
-		setSelection();
-	}, [previousSelectionStart, inputRef]);
 
-	return { setPreviousSelectionStart, previousSelectionStart };
+		setSelection();
+	}, [inputRef]);
 };
 
 export const useUUID = (): string => {

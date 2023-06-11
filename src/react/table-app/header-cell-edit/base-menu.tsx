@@ -44,25 +44,9 @@ export default function BaseMenu({
 }: Props) {
 	const lastKeyPressed = React.useRef<string | null>(null);
 	const inputRef = React.useRef<HTMLInputElement | null>(null);
-	const { setPreviousSelectionStart } = useInputSelection(
-		inputRef,
-		columnName
-	);
+	useInputSelection(inputRef, columnName);
 
-	function handleInputChange(
-		inputValue: string,
-		setSelectionToLength = false
-	) {
-		//When we press the menu key, an extra character will be added
-		//we need to update the selection to be after this character
-		//Otherwise keep the selection where it was
-		if (inputRef.current) {
-			if (setSelectionToLength) {
-				setPreviousSelectionStart(inputValue.length);
-			} else if (inputRef.current.selectionStart) {
-				setPreviousSelectionStart(inputRef.current.selectionStart);
-			}
-		}
+	function handleInputChange(inputValue: string) {
 		onColumnNameChange(inputValue);
 	}
 
