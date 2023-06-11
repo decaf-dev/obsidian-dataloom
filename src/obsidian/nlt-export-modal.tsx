@@ -3,6 +3,8 @@ import { NLTView } from "./nlt-view";
 import { Root, createRoot } from "react-dom/client";
 import { deserializeTableState } from "src/data/serialize-table-state";
 import { ExportApp } from "src/react/export-app";
+import { Provider } from "react-redux";
+import { store } from "src/redux/global/store";
 
 export default class NLTExportModal extends Modal {
 	root: Root;
@@ -25,7 +27,9 @@ export default class NLTExportModal extends Modal {
 
 			this.root = createRoot(container);
 			this.root.render(
-				<ExportApp tableState={state} filePath={this.filePath} />
+				<Provider store={store}>
+					<ExportApp tableState={state} filePath={this.filePath} />
+				</Provider>
 			);
 		}
 	}
