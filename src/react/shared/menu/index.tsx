@@ -71,7 +71,7 @@ const Menu = React.forwardRef<HTMLDivElement, Props>(function Menu(
 			if (topMenu.level === 0) removeFocusVisibleClass();
 			return;
 		}
-		closeTopMenu();
+		requestCloseTopMenu("click");
 	}
 
 	return (

@@ -46,7 +46,7 @@ export const useMenuEvents = (
 			if (isTextHighlighted) {
 				return;
 			}
-			closeTopMenu();
+			requestCloseTopMenu("click");
 		}
 
 		if (isOpen) {
@@ -55,5 +55,5 @@ export const useMenuEvents = (
 		}
 
 		return () => app.workspace.off(EVENT_OUTSIDE_CLICK, handleOutsideClick);
-	}, [isOpen, logger, closeTopMenu, id, topMenu, isTextHighlighted]);
+	}, [isOpen, logger, requestCloseTopMenu, id, topMenu, isTextHighlighted]);
 };
