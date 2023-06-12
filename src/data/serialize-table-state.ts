@@ -352,6 +352,10 @@ export const deserializeTableState = (data: string): TableState => {
 			typedColumn.sortDir = SortDir.NONE;
 		});
 
+		//Sort by index
+		bodyRows.sort((a, b) => a.index - b.index);
+
+		//Set the index to the correct value
 		bodyRows.forEach((row: unknown, i) => {
 			const typedRow = row as Record<string, unknown>;
 			typedRow.index = i;
