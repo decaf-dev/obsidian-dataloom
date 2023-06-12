@@ -59,12 +59,12 @@ export default function SelectableTag({
 				`}
 				className="NLT__focusable NLT__selectable"
 				onClick={(e) => {
-					//Only trigger onClick if the click is on the tag and not the menu button
-					if (e.target === triggerRef.current) {
-						//Stop propagation so the the menu doesn't remove the focus class
-						e.stopPropagation();
-						onClick(id);
-					}
+					const target = e.target as HTMLElement;
+					if (target.classList.contains("NLT__menu-trigger")) return;
+
+					//Stop propagation so the the menu doesn't remove the focus class
+					e.stopPropagation();
+					onClick(id);
 				}}
 			>
 				<Tag markdown={markdown} color={color} maxWidth="150px" />
