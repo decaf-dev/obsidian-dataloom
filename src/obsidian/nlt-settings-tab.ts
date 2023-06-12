@@ -82,10 +82,31 @@ export default class NLTSettingsTab extends PluginSettingTab {
 				});
 			});
 
+		const exportRenderMarkdownDesc = new DocumentFragment();
+		exportRenderMarkdownDesc.createSpan({}, (span) => {
+			span.innerHTML =
+				"This will cause all exported values to be rendered in markdown format. Disable this option if you primarily export in CSV and don't want markdown, like links wrapped in brackets.";
+		});
+
+		new Setting(containerEl).setName("Export").setHeading();
+		new Setting(containerEl)
+			.setName("Render markdown values")
+			.setDesc(exportRenderMarkdownDesc)
+			.addToggle((cb) => {
+				cb.setValue(this.plugin.settings.exportRenderMarkdown).onChange(
+					async (value) => {
+						this.plugin.settings.exportRenderMarkdown = value;
+						await this.plugin.saveSettings();
+					}
+				);
+			});
+
 		new Setting(containerEl).setName("Debug").setHeading();
 		new Setting(containerEl)
 			.setName("Debug mode")
-			.setDesc("Turns on console.log for various table events")
+			.setDesc(
+				"Turns on console.log for plugin events. This is useful for troubleshooting."
+			)
 			.addToggle((cb) => {
 				cb.setValue(this.plugin.settings.shouldDebug).onChange(
 					async (value) => {

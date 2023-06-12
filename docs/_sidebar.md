@@ -5,6 +5,8 @@
 
 -   Features
 
+    -   [Menu](menu.md)
+
     -   Cells
 
         -   [Header cell](header-cell.md)

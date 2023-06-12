@@ -8,7 +8,7 @@ If a body cell is focused, you may press any key on your keyboard. The cell edit
 
 ## Opening a menu
 
-If an element is focused, you may open its menu by pressing the `Enter` key.
+If an element is focused, you may open its menu by pressing the `Enter` or `return` key.
 
 ## Deleting cell contents
 

@@ -55,7 +55,7 @@ import DragProvider from "src/shared/dragging/drag-context";
 
 const TableApp = () => {
 	const { appId, isMarkdownView } = useMountState();
-	const { topMenu, hasOpenMenu, closeTopMenu } = useMenuState();
+	const { topMenu, hasOpenMenu, requestCloseTopMenu } = useMenuState();
 	const logger = useLogger();
 	const {
 		tableState,
@@ -122,7 +122,7 @@ const TableApp = () => {
 		logger("TableApp handleClick");
 		e.stopPropagation();
 		if (hasOpenMenu()) {
-			closeTopMenu();
+			requestCloseTopMenu("click");
 		} else {
 			removeFocusVisibleClass();
 		}

@@ -38,7 +38,13 @@ const MenuTrigger = ({
 	onClick,
 	onMouseDown,
 }: Props) => {
-	const { openMenu, closeTopMenu, canOpenMenu, hasOpenMenu } = useMenuState();
+	const {
+		openMenu,
+		closeTopMenu,
+		requestCloseTopMenu,
+		canOpenMenu,
+		hasOpenMenu,
+	} = useMenuState();
 	const ref = React.useRef<HTMLDivElement>(null);
 	const logger = useLogger();
 
@@ -93,7 +99,7 @@ const MenuTrigger = ({
 		//Is the trigger isn't active, just close any open menus on click
 		if (!shouldRun) {
 			if (hasOpenMenu()) {
-				closeTopMenu();
+				requestCloseTopMenu("click");
 			} else {
 				if (!ref.current) return;
 
@@ -115,7 +121,7 @@ const MenuTrigger = ({
 		}
 
 		//Otherwise close the open menu
-		closeTopMenu();
+		requestCloseTopMenu("click");
 	}
 
 	const { id } = menu;

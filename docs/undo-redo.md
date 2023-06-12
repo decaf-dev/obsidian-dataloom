@@ -1,7 +1,5 @@
 # Undo and redo
 
-Table changes can be undone or redone using the keyboard.
-
 | Name | Windows      | Mac                   |
 | ---- | ------------ | --------------------- |
 | Undo | `ctrl` + `z` | `cmd` + `z`           |

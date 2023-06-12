@@ -6,7 +6,7 @@ This cell renders many tags.
 
 ## Usage
 
-Select a tag cell to open the tag cell edit menu. You will see an input and a list of the column tags. Type a value into the input to filter the list of tags. If a tag with the value of the input doesn't exist, a `Create` button will appear. Select the button or press `Enter` or `return` to choose that tag.
+When the menu opens, you will see an input and a list of the column tags. Type a value into the input to filter the list of tags. If a tag with the value of the input doesn't exist, a `Create` button will appear. Click the button or press `Enter` or `return` to create the tag.
 
 To add an existing tag, select any tag from the list.
 
