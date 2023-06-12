@@ -4,6 +4,7 @@ import {
 	BodyCell,
 	CellType,
 	Column,
+	SortDir,
 	TableState,
 	Tag,
 } from "../shared/types";
@@ -334,6 +335,30 @@ export const deserializeTableState = (data: string): TableState => {
 			typedColumn.aspectRatio = AspectRatio.SIXTEEN_BY_NINE;
 			typedColumn.horizontalPadding = "unset";
 			typedColumn.verticalPadding = "unset";
+		});
+	}
+
+	if (isVersionLessThan(pluginVersion, "6.18.6")) {
+		const tableState = currentState as TableState6160;
+		const { columns, bodyRows } = tableState.model;
+
+		//Fix: resolve empty rows being inserted but appearing higher up in the table
+		//This was due to the index being set to the row's position in the array, which
+		//was sometimes less than the highest index value. This is because the index wasn't being
+		//decreased.
+		//This is a reset to force the index to be set to the correct value on all tables.
+		columns.forEach((column: unknown) => {
+			const typedColumn = column as Record<string, unknown>;
+			typedColumn.sortDir = SortDir.NONE;
+		});
+
+		//Sort by index
+		bodyRows.sort((a, b) => a.index - b.index);
+
+		//Set the index to the correct value
+		bodyRows.forEach((row: unknown, i) => {
+			const typedRow = row as Record<string, unknown>;
+			typedRow.index = i;
 		});
 	}
 
