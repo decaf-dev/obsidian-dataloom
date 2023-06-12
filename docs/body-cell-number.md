@@ -4,8 +4,6 @@
 
 This cell renders a number.
 
-A number can include positive or negative integers, or decimals.
-
 ## Usage
 
-Select a number cell to open the number cell edit menu. Type any numeric value. Click outside the cell or press `Enter` or `return` for the value to be saved.
+This cell accepts any number. A number is a positive or negative integer, or decimal.

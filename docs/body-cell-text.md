@@ -6,7 +6,7 @@ This cell renders Obsidian markdown.
 
 ## Usage
 
-Select a text cell to open the text cell edit menu. Type any value. Click outside the menu or press `Enter` or `return` for the value to be saved.
+This cell accepts any text. The text will then be rendered using the Obsidian `MarkdownRender.renderMarkdown` function.
 
 Examples of Obsidian markdown include
 
