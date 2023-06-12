@@ -11,17 +11,19 @@ import { exportToMarkdown } from "src/shared/export/export-to-markdown";
 import { ExportType } from "src/shared/export/types";
 import { TableState } from "src/shared/types";
 import { useMountState } from "./mount-context";
+import { useAppSelector } from "src/redux/global/hooks";
 
 export const useExportEvents = (state: TableState) => {
 	const { filePath } = useMountState();
 	const { appId } = useMountState();
+	const { exportRenderMarkdown } = useAppSelector((state) => state.global);
 
 	React.useEffect(() => {
 		function handleDownloadCSV() {
 			if (isEventForThisApp(appId)) {
 				//Set timeout to wait for the command window to disappear
 				setTimeout(() => {
-					const data = exportToCSV(state);
+					const data = exportToCSV(state, exportRenderMarkdown);
 					const exportFileName = getExportFileName(filePath);
 					const blobType = getBlobTypeForExportType(
 						ExportType.MARKDOWN
@@ -35,7 +37,7 @@ export const useExportEvents = (state: TableState) => {
 			if (isEventForThisApp(appId)) {
 				//Set timeout to wait for the command window to disappear
 				setTimeout(() => {
-					const data = exportToMarkdown(state);
+					const data = exportToMarkdown(state, exportRenderMarkdown);
 					const exportFileName = getExportFileName(filePath);
 					const blobType = getBlobTypeForExportType(
 						ExportType.MARKDOWN
@@ -54,5 +56,5 @@ export const useExportEvents = (state: TableState) => {
 			app.workspace.off(EVENT_DOWNLOAD_CSV, handleDownloadCSV);
 			app.workspace.off(EVENT_DOWNLOAD_MARKDOWN, handleDownloadMarkdown);
 		};
-	}, [filePath, state, appId]);
+	}, [filePath, state, appId, exportRenderMarkdown]);
 };

@@ -3,11 +3,13 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface GlobalState {
 	isDarkMode: boolean;
 	shouldDebug: boolean;
+	exportRenderMarkdown: boolean;
 }
 
 const initialState: GlobalState = {
 	isDarkMode: false,
 	shouldDebug: false,
+	exportRenderMarkdown: true,
 };
 
 //This is the global slice of the redux store.
@@ -22,8 +24,12 @@ const globalSlice = createSlice({
 		setDebugMode(state, action: PayloadAction<boolean>) {
 			state.shouldDebug = action.payload;
 		},
+		setExportRenderMarkdown(state, action: PayloadAction<boolean>) {
+			state.exportRenderMarkdown = action.payload;
+		},
 	},
 });
 
-export const { setDarkMode, setDebugMode } = globalSlice.actions;
+export const { setDarkMode, setDebugMode, setExportRenderMarkdown } =
+	globalSlice.actions;
 export default globalSlice.reducer;
