@@ -26,9 +26,8 @@ export default function MenuBody({
 	onTagColorChange,
 	onTagDelete,
 }: MenuBodyProps) {
-	const tagWithSameCase = columnTags.find(
-		(tag) => tag.markdown === inputValue
-	);
+	const hasTagWithSameCase =
+		columnTags.find((tag) => tag.markdown === inputValue) !== undefined;
 	const filteredTags = columnTags.filter((tag) =>
 		tag.markdown.toLowerCase().includes(inputValue.toLowerCase())
 	);
@@ -48,7 +47,7 @@ export default function MenuBody({
 					width: 100%;
 				`}
 			>
-				{tagWithSameCase === undefined && inputValue !== "" && (
+				{!hasTagWithSameCase && inputValue !== "" && (
 					<CreateTag
 						markdown={inputValue}
 						color={newTagColor}

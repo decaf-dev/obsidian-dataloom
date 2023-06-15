@@ -1,8 +1,0 @@
-.NLT__tag {
-    display: flex;
-    align-items: center;
-    border-radius: 8px;
-    padding: var(--nlt-spacing--xs) var(--nlt-spacing--md);
-    width: max-content;
-    color: var(--text-normal);
-}

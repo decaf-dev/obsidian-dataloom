@@ -45,6 +45,23 @@ export default function SelectableTag({
 		closeTopMenu();
 	}
 
+	function handleKeyDown(e: React.KeyboardEvent) {
+		if (e.key === "Enter") {
+			//Stop propagation so the the menu doesn't remove the focus class
+			e.stopPropagation();
+			onClick(id);
+		}
+	}
+
+	function handleClick(e: React.MouseEvent) {
+		const target = e.target as HTMLElement;
+		if (target.classList.contains("NLT__menu-trigger")) return;
+
+		//Stop propagation so the the menu doesn't remove the focus class
+		e.stopPropagation();
+		onClick(id);
+	}
+
 	return (
 		<>
 			<div
@@ -58,14 +75,8 @@ export default function SelectableTag({
 					overflow: hidden;
 				`}
 				className="NLT__focusable NLT__selectable"
-				onClick={(e) => {
-					const target = e.target as HTMLElement;
-					if (target.classList.contains("NLT__menu-trigger")) return;
-
-					//Stop propagation so the the menu doesn't remove the focus class
-					e.stopPropagation();
-					onClick(id);
-				}}
+				onClick={handleClick}
+				onKeyDown={handleKeyDown}
 			>
 				<Tag markdown={markdown} color={color} maxWidth="150px" />
 				<MenuButton
