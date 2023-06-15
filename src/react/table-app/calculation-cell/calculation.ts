@@ -125,12 +125,16 @@ const countValues = (columnCells: BodyCell[], cellType: CellType) => {
 };
 
 const percentEmpty = (columnCells: BodyCell[], cellType: CellType) => {
+	if (columnCells.length === 0) return "0%";
+
 	const percent =
 		(countEmpty(columnCells, cellType) / columnCells.length) * 100;
 	return round2Digits(percent) + "%";
 };
 
 const percentNotEmpty = (columnCells: BodyCell[], cellType: CellType) => {
+	if (columnCells.length === 0) return "0%";
+
 	const percent =
 		(countNotEmpty(columnCells, cellType) / columnCells.length) * 100;
 	return round2Digits(percent) + "%";
