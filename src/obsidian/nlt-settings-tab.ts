@@ -16,7 +16,7 @@ export default class NLTSettingsTab extends PluginSettingTab {
 		//Attachments folder
 		const attachmentsFolderDesc = new DocumentFragment();
 		attachmentsFolderDesc.createSpan({}, (span) => {
-			span.innerHTML = `Create tables in the attachments folder defined in the Obsidian settings.<br><br>This can be changed in <span style="color: var(--text-accent);">Files & Links -> Default location for new attachments</span><br><br>Otherwise, the custom location below will be used.`;
+			span.innerHTML = `Create tables in the attachments folder defined in the Obsidian settings.<br><br>This can be changed in <span style="color: var(--text-accent);">Files & Links -> Default location for new attachments</span><br><br>Otherwise, the folder location below will be used.`;
 		});
 
 		new Setting(containerEl)
@@ -33,16 +33,16 @@ export default class NLTSettingsTab extends PluginSettingTab {
 				});
 			});
 
-		//Custom location
-		const customLocationDesc = new DocumentFragment();
-		customLocationDesc.createSpan({}, (span) => {
-			span.innerHTML = `The folder that new tables will be created in. Please don't include a slash at the beginning or end of the value.<br>e.g. <strong>myfolder/subdirectory</strong><br><br>Default location is the vault root folder, if not specified.`;
+		//Folder location
+		const defaultLocationDesc = new DocumentFragment();
+		defaultLocationDesc.createSpan({}, (span) => {
+			span.innerHTML = `Where newly created tables are placed. Please don't include a slash at the beginning or end of the value.<br>e.g. <strong>myfolder/subdirectory</strong><br><br>Default location is the vault root folder, if not specified.`;
 		});
 
 		if (this.plugin.settings.createAtObsidianAttachmentFolder === false) {
 			new Setting(containerEl)
-				.setName("Custom location for new tables")
-				.setDesc(customLocationDesc)
+				.setName("Default location for new tables")
+				.setDesc(defaultLocationDesc)
 				.addText((cb) => {
 					cb.setValue(
 						this.plugin.settings.customFolderForNewTables
@@ -52,27 +52,6 @@ export default class NLTSettingsTab extends PluginSettingTab {
 					});
 				});
 		}
-
-		//Active file name
-		const activeFileNameTimestampDesc = new DocumentFragment();
-		activeFileNameTimestampDesc.createSpan({}, (span) => {
-			span.innerHTML = `If a markdown file is open, the active file name and current timestamp will be used as the table name.<br>e.g. if <strong>Test.md</strong> is open, the table will be named <strong>Test-2023-04-14T13.12.59-06.00.table</strong><br><br>Otherwise, the default table file name will be used.<br>e.g <strong>Untitled.table</strong>`;
-		});
-
-		new Setting(containerEl)
-			.setName(
-				"Create table name based on active file name and timestamp"
-			)
-			.setDesc(activeFileNameTimestampDesc)
-			.addToggle((cb) => {
-				cb.setValue(
-					this.plugin.settings.nameWithActiveFileNameAndTimestamp
-				).onChange(async (value) => {
-					this.plugin.settings.nameWithActiveFileNameAndTimestamp =
-						value;
-					await this.plugin.saveSettings();
-				});
-			});
 	}
 
 	private renderExportSettings(containerEl: HTMLElement) {
