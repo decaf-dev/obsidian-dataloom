@@ -35,7 +35,7 @@ export const createColumn = (options?: { cellType?: CellType }): Column => {
 		type: cellType,
 		currencyType: CurrencyType.UNITED_STATES,
 		dateFormat: DateFormat.MM_DD_YYYY,
-		shouldWrapOverflow: false,
+		shouldWrapOverflow: true,
 		tags: [],
 		calculationType: Calculation.NONE,
 		aspectRatio: AspectRatio.SIXTEEN_BY_NINE,
