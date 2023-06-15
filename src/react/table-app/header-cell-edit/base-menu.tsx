@@ -116,18 +116,22 @@ export default function BaseMenu({
 					/>
 				</>
 			)}
-			<Divider />
-			<Padding px="lg" py="md">
-				<Flex justify="space-between" align="center">
-					<Text value="Wrap overflow" />
-					<Switch
-						isChecked={shouldWrapOverflow}
-						onToggle={(value) =>
-							onWrapOverflowToggle(columnId, value)
-						}
-					/>
-				</Flex>
-			</Padding>
+			{columnType !== CellType.EMBED && (
+				<>
+					<Divider />
+					<Padding px="lg" py="md">
+						<Flex justify="space-between" align="center">
+							<Text value="Wrap overflow" />
+							<Switch
+								isChecked={shouldWrapOverflow}
+								onToggle={(value) =>
+									onWrapOverflowToggle(columnId, value)
+								}
+							/>
+						</Flex>
+					</Padding>
+				</>
+			)}
 		</Stack>
 	);
 }
