@@ -100,6 +100,15 @@ export const useColumn = () => {
 		[doCommand, logger]
 	);
 
+	function handleColumnHideClick(columnId: string) {
+		logger("handleColumnHideClick", {
+			columnId,
+		});
+		doCommand(
+			new ColumnUpdateCommand(columnId, "isVisible", { value: false })
+		);
+	}
+
 	function handleColumnDeleteClick(columnId: string) {
 		logger("handleColumnDeleteClick", {
 			columnId,
@@ -205,5 +214,6 @@ export const useColumn = () => {
 		handleHorizontalPaddingClick,
 		handleVerticalPaddingClick,
 		handleAspectRatioClick,
+		handleColumnHideClick,
 	};
 };
