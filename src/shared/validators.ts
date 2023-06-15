@@ -1,4 +1,4 @@
-import { GeneralFunction, NumberFunction } from "src/shared/types";
+import { Calculation, NumberCalculation } from "src/shared/types";
 import {
 	NUMBER_REGEX,
 	DATE_REGEX,
@@ -32,14 +32,10 @@ export const isURL = (input: string): boolean => {
 	return input.match(URL_REGEX) !== null;
 };
 
-export const isGeneralFunction = (
-	value: GeneralFunction | NumberFunction
-): value is GeneralFunction => {
-	return Object.values(GeneralFunction).includes(value as GeneralFunction);
-};
-
-export const isNumberFunction = (
-	value: GeneralFunction | NumberFunction
-): value is NumberFunction => {
-	return Object.values(NumberFunction).includes(value as NumberFunction);
+export const isNumberCalcuation = (
+	value: Calculation | NumberCalculation
+): value is NumberCalculation => {
+	return Object.values(NumberCalculation).includes(
+		value as NumberCalculation
+	);
 };
