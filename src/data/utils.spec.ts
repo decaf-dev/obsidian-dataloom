@@ -16,108 +16,21 @@ describe("splitFileExtension", () => {
 });
 
 describe("updateLinkReferences", () => {
-	it("handles no change in the file name", () => {
-		const result = updateLinkReferences(
-			"[[filename]]",
-			{
-				basename: "filename",
-				name: "filename.md",
-				extension: "md",
-				path: "my/path/filename.md",
-			},
-			"my/path/filename.md",
-			true
-		);
-		expect(result).toEqual("[[filename]]");
-	});
-
-	it("handles when the file name is now unique", () => {
+	it("returns same link when the path didn't change", () => {
 		const result = updateLinkReferences(
 			"[[my/path/filename|filename]]",
-			{
-				basename: "filename",
-				name: "filename.md",
-				extension: "md",
-				path: "my/path/filename.md",
-			},
 			"my/path/filename.md",
-			true
-		);
-		expect(result).toEqual("[[filename]]");
-	});
-
-	it("handles when the file name is now non-unique", () => {
-		const result = updateLinkReferences(
-			"[[filename]]",
-			{
-				basename: "filename",
-				name: "filename.md",
-				extension: "md",
-				path: "my/path/filename.md",
-			},
-			"my/path/filename.md",
-			false
+			"my/path/filename.md"
 		);
 		expect(result).toEqual("[[my/path/filename|filename]]");
 	});
 
-	it("handles when the file name changes and is unique", () => {
+	it("returns an updated link when the path has changed", () => {
 		const result = updateLinkReferences(
-			"[[filename]]",
-			{
-				basename: "new-filename",
-				name: "new-filename.md",
-				extension: "md",
-				path: "my/path/new-filename.md",
-			},
-			"my/path/filename.md",
-			true
+			"[[my/path/filename|filename]]",
+			"my/path/updated.md",
+			"my/path/filename.md"
 		);
-		expect(result).toEqual("[[new-filename]]");
-	});
-
-	it("handles when the file names changes and is non-unique", () => {
-		const result = updateLinkReferences(
-			"[[filename]]",
-			{
-				basename: "new-filename",
-				name: "new-filename.md",
-				extension: "md",
-				path: "my/path/new-filename.md",
-			},
-			"my/path/filename.md",
-			false
-		);
-		expect(result).toEqual("[[my/path/new-filename|new-filename]]");
-	});
-
-	it("handles when a table name changes and is unique", () => {
-		const result = updateLinkReferences(
-			"[[my/path/filename.table|filename]]",
-			{
-				basename: "new-filename",
-				name: "new-filename.table",
-				extension: "table",
-				path: "my/path/new-filename.table",
-			},
-			"my/path/filename.table",
-			true
-		);
-		expect(result).toEqual("[[new-filename.table]]");
-	});
-
-	it("handles when a table name changes and is non-unique", () => {
-		const result = updateLinkReferences(
-			"[[filename.table]]",
-			{
-				basename: "new-filename",
-				name: "new-filename.table",
-				extension: "table",
-				path: "my/path/new-filename.table",
-			},
-			"my/path/filename.table",
-			false
-		);
-		expect(result).toEqual("[[my/path/new-filename.table|new-filename]]");
+		expect(result).toEqual("[[my/path/updated|updated]]");
 	});
 });

@@ -237,7 +237,7 @@ export default class NLTPlugin extends Plugin {
 						newState.model.bodyCells.map((cell) => {
 							const updatedMarkdown = updateLinkReferences(
 								cell.markdown,
-								file,
+								file.path,
 								oldPath
 							);
 							if (cell.markdown !== updatedMarkdown) {

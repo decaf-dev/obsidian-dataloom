@@ -1,7 +1,10 @@
 import SuggestMenuContent from "src/react/shared/suggest-menu/suggest-menu-content";
 import { VaultFile } from "src/obsidian-shim/development/vault-file";
-import { stripDoubleBrackets } from "src/react/shared/suggest-menu/utils";
-import { stripDirectory } from "src/shared/link/link-utils";
+import {
+	stripAlias,
+	stripDoubleBrackets,
+} from "src/react/shared/suggest-menu/utils";
+import { getBasename } from "src/shared/link/link-utils";
 
 interface Props {
 	value: string;
@@ -14,9 +17,8 @@ export default function FileCellEdit({ value, onChange, onMenuClose }: Props) {
 		if (file) {
 			//The basename does not include an extension
 			let fileName = file.basename;
-			//The name includes an extension
-			if (file.extension !== "md") fileName = file.name;
-			if (file.path.includes("/")) fileName = `${file.path}|${fileName}`;
+			if (file.path.includes("/"))
+				fileName = `${file.path}|${file.basename}`;
 			onChange(`[[${fileName}]]`);
 		}
 		onMenuClose();
@@ -30,17 +32,20 @@ export default function FileCellEdit({ value, onChange, onMenuClose }: Props) {
 	function handleCreateClick(value: string) {
 		let link = `[[${value}]]`;
 		if (value.includes("/")) {
-			const fileName = stripDirectory(value);
+			const fileName = getBasename(value);
 			link = `${value}|${fileName}`;
 		}
 		onChange(link);
 		onMenuClose();
 	}
 
+	let filterValue = stripDoubleBrackets(value);
+	filterValue = stripAlias(filterValue);
+
 	return (
 		<div className="NLT__file-cell-edit">
 			<SuggestMenuContent
-				filterValue={stripDoubleBrackets(value)}
+				filterValue={filterValue}
 				showInput
 				showClear
 				showCreate

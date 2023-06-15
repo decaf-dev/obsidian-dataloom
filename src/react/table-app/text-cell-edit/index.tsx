@@ -151,7 +151,7 @@ export default function TextCellEdit({
 
 	function handleSuggestItemClick(file: VaultFile | null) {
 		if (file) {
-			const fileName = getWikiLinkText(file);
+			const fileName = getWikiLinkText(file.path);
 
 			const newValue = doubleBracketsInnerReplace(
 				localValue,

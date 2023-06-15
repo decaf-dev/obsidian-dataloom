@@ -1,11 +1,17 @@
-import { VaultFile } from "src/obsidian-shim/development/vault-file";
-
 /**
- * Get basename
+ * Gets the name of a file without the directory or extension
  */
 export const getBasename = (filePath: string): string => {
 	const fileName = stripDirectory(filePath);
 	return stripFileExtension(fileName);
+};
+
+/**
+ * Gets the file extension without the leading period
+ * @param filePath the file path
+ */
+export const getExtension = (filePath: string): string => {
+	return filePath.substring(filePath.lastIndexOf(".") + 1);
 };
 
 /**
@@ -35,18 +41,17 @@ export const isMarkdownFile = (extension: string) => {
 /**
  * Gets the text for a wiki link, which may include the path and an alias
  * @param fileInfo the file info
- * @param isFileNameUnique whether the file name (which doesn't include the directory) is unique across all vault files
  */
-export const getWikiLinkText = (
-	fileInfo: Pick<VaultFile, "basename" | "name" | "path" | "extension">
-) => {
-	const { basename, name, path, extension } = fileInfo;
+export const getWikiLinkText = (path: string) => {
+	const basename = getBasename(path);
+	const extension = getExtension(path);
+
 	//The initial name is the basename, which doesn't include an extension
 	let text = basename;
 
 	if (!isMarkdownFile(extension)) {
 		//If the file is a not markdown file, use the name, which includes the extension
-		text = name;
+		text = stripDirectory(path);
 
 		if (path.includes("/")) text = `${path}|${basename}`;
 	} else {
