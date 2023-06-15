@@ -254,6 +254,8 @@ export default function BodyCell({
 		columnType === CellType.FILE
 	) {
 		menuHeight = 0;
+	} else if (columnType === CellType.EMBED) {
+		menuHeight = 30;
 	}
 
 	let menuWidth = measuredWidth;

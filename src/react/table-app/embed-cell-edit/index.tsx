@@ -56,7 +56,7 @@ export default function EmbedCellEdit({
 			className="NLT__embed-cell-edit"
 			css={css`
 				width: 100%;
-				height: 100%;
+				height: 30px;
 			`}
 		>
 			<textarea
