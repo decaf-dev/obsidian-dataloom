@@ -11,7 +11,7 @@ export const log =
 	};
 
 export const useLogger = () => {
-	const { shouldDebug } = useAppSelector((state) => state.global);
+	const { shouldDebug } = useAppSelector((state) => state.global.settings);
 
 	const logger = React.useCallback(
 		(message: string, args?: Record<string, any>) =>

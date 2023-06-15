@@ -35,14 +35,20 @@ export const findEmbeddedTableFile = (embeddedLinkEl: HTMLElement) => {
 	return tableFile ?? null;
 };
 
-export const getEmbeddedTableWidth = (embeddedLinkEl: HTMLElement) => {
+export const getEmbeddedTableWidth = (
+	embeddedLinkEl: HTMLElement,
+	defaultWidth: string
+) => {
 	const width = embeddedLinkEl.getAttribute("width");
-	if (width === null || width === "1") return "100%";
+	if (width === null || width === "1") return defaultWidth;
 	return numToPx(width);
 };
 
-export const getEmbeddedTableHeight = (embeddedLinkEl: HTMLElement) => {
+export const getEmbeddedTableHeight = (
+	embeddedLinkEl: HTMLElement,
+	defaultHeight: string
+) => {
 	const height = embeddedLinkEl.getAttribute("height");
-	if (height === null || height === "1") return "340px"; //exactly 4 normal body rows
+	if (height === null || height === "1") return defaultHeight; //exactly 4 normal body rows
 	return numToPx(height);
 };
