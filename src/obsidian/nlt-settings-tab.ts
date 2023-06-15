@@ -10,20 +10,10 @@ export default class NLTSettingsTab extends PluginSettingTab {
 		this.plugin = plugin;
 	}
 
-	display(): void {
-		const { containerEl } = this;
-
-		containerEl.empty();
-
-		containerEl.createEl("h2", { text: "Notion-Like Tables" });
-		containerEl.createSpan(
-			{},
-			(span) =>
-				(span.innerHTML = `<strong style="color: var(--text-accent); font-size: 12px;">Please restart Obsidian for these settings to take effect</strong>`)
-		);
-
+	private renderFileSettings(containerEl: HTMLElement) {
 		new Setting(containerEl).setName("File").setHeading();
 
+		//Attachments folder
 		const attachmentsFolderDesc = new DocumentFragment();
 		attachmentsFolderDesc.createSpan({}, (span) => {
 			span.innerHTML = `Create tables in the attachments folder defined in the Obsidian settings.<br><br>This can be changed in <span style="color: var(--text-accent);">Files & Links -> Default location for new attachments</span><br><br>Otherwise, the custom location below will be used.`;
@@ -43,6 +33,7 @@ export default class NLTSettingsTab extends PluginSettingTab {
 				});
 			});
 
+		//Custom location
 		const customLocationDesc = new DocumentFragment();
 		customLocationDesc.createSpan({}, (span) => {
 			span.innerHTML = `Folder that new tables will be created in. Please don't include a slash at the start or end.<br>e.g. <strong>myfolder/subdirectory</strong><br><br>Default location is the vault root folder, if not specified.`;
@@ -62,6 +53,7 @@ export default class NLTSettingsTab extends PluginSettingTab {
 				});
 		}
 
+		//Active file name
 		const activeFileNameTimestampDesc = new DocumentFragment();
 		activeFileNameTimestampDesc.createSpan({}, (span) => {
 			span.innerHTML = `If a markdown file is open, the active file name and current timestamp will be used as the table name.<br>e.g. if <strong>Test.md</strong> is open, the table will be named <strong>Test-2023-04-14T13.12.59-06.00.table</strong><br><br>Otherwise, the default table file name will be used.<br>e.g <strong>Untitled.table</strong>`;
@@ -81,16 +73,18 @@ export default class NLTSettingsTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 				});
 			});
+	}
 
+	private renderExportSettings(containerEl: HTMLElement) {
 		const exportRenderMarkdownDesc = new DocumentFragment();
 		exportRenderMarkdownDesc.createSpan({}, (span) => {
 			span.innerHTML =
-				"This will cause all exported values to be rendered in markdown format. Disable this option if you primarily export in CSV and don't want markdown, like links wrapped in brackets.";
+				"When enabled, content will be rendered as markdown. For example, a checkbox cell's content will be exported as `[ ]` or `[x]`. If you disable this option, the content will be exported as `true` or `false`.";
 		});
 
 		new Setting(containerEl).setName("Export").setHeading();
 		new Setting(containerEl)
-			.setName("Render markdown values")
+			.setName("Export content as markdown")
 			.setDesc(exportRenderMarkdownDesc)
 			.addToggle((cb) => {
 				cb.setValue(this.plugin.settings.exportRenderMarkdown).onChange(
@@ -100,7 +94,49 @@ export default class NLTSettingsTab extends PluginSettingTab {
 					}
 				);
 			});
+	}
 
+	private renderEmbeddedTableSettings(containerEl: HTMLElement) {
+		new Setting(containerEl).setName("Embedded Tables").setHeading();
+
+		const defaultEmbedWidthDesc = new DocumentFragment();
+		defaultEmbedWidthDesc.createSpan({}, (span) => {
+			span.innerHTML =
+				"The default embedded table width. Accepts valid HTML width values. Like `100px`, `50%`, etc.";
+		});
+
+		new Setting(containerEl)
+			.setName("Default embedded table width")
+			.setDesc(defaultEmbedWidthDesc)
+			.addText((cb) => {
+				cb.setValue(this.plugin.settings.defaultEmbedWidth).onChange(
+					async (value) => {
+						this.plugin.settings.defaultEmbedWidth = value;
+						await this.plugin.saveSettings();
+					}
+				);
+			});
+
+		const defaultEmbedHeightDesc = new DocumentFragment();
+		defaultEmbedHeightDesc.createSpan({}, (span) => {
+			span.innerHTML =
+				"The default embedded table height. Accepts valid HTML width values. Like `100px`, `50%`, etc.";
+		});
+
+		new Setting(containerEl)
+			.setName("Default embedded table height")
+			.setDesc(defaultEmbedHeightDesc)
+			.addText((cb) => {
+				cb.setValue(this.plugin.settings.defaultEmbedHeight).onChange(
+					async (value) => {
+						this.plugin.settings.defaultEmbedHeight = value;
+						await this.plugin.saveSettings();
+					}
+				);
+			});
+	}
+
+	private renderDebugSettings(containerEl: HTMLElement) {
 		new Setting(containerEl).setName("Debug").setHeading();
 		new Setting(containerEl)
 			.setName("Debug mode")
@@ -115,5 +151,23 @@ export default class NLTSettingsTab extends PluginSettingTab {
 					}
 				);
 			});
+	}
+
+	display(): void {
+		const { containerEl } = this;
+
+		containerEl.empty();
+
+		containerEl.createEl("h2", { text: "Notion-Like Tables" });
+		// containerEl.createSpan(
+		// 	{},
+		// 	(span) =>
+		// 		(span.innerHTML = `<strong style="color: var(--text-accent); font-size: 12px;">Please restart Obsidian for these settings to take effect</strong>`)
+		// );
+
+		this.renderFileSettings(containerEl);
+		this.renderExportSettings(containerEl);
+		this.renderEmbeddedTableSettings(containerEl);
+		this.renderDebugSettings(containerEl);
 	}
 }

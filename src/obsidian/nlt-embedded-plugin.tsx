@@ -48,8 +48,10 @@ class NLTEmbeddedPlugin implements PluginValue {
 			const file = findEmbeddedTableFile(linkEl);
 			if (!file) return;
 
-			const width = getEmbeddedTableWidth(linkEl);
-			const height = getEmbeddedTableHeight(linkEl);
+			const { defaultEmbedWidth, defaultEmbedHeight } =
+				store.getState().global.settings;
+			const width = getEmbeddedTableWidth(linkEl, defaultEmbedWidth);
+			const height = getEmbeddedTableHeight(linkEl, defaultEmbedHeight);
 
 			linkEl.style.width = width;
 			linkEl.style.height = height;
