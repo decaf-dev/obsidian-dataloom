@@ -148,6 +148,7 @@ export default function MenuProvider({ children }: Props) {
 	 */
 	const requestCloseTopMenu = React.useCallback(
 		(type: MenuCloseRequestType) => {
+			logger("MenuProvider requestCloseTopMenu");
 			const menu = getTopMenu();
 			if (!menu) return;
 
@@ -162,7 +163,7 @@ export default function MenuProvider({ children }: Props) {
 
 			closeTopMenu();
 		},
-		[closeTopMenu, getTopMenu]
+		[closeTopMenu, getTopMenu, logger]
 	);
 
 	return (
