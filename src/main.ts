@@ -33,7 +33,6 @@ export interface NLTSettings {
 	shouldDebug: boolean;
 	createAtObsidianAttachmentFolder: boolean;
 	customFolderForNewTables: string;
-	nameWithActiveFileNameAndTimestamp: boolean;
 	exportRenderMarkdown: boolean;
 	defaultEmbedWidth: string;
 	defaultEmbedHeight: string;
@@ -43,7 +42,6 @@ export const DEFAULT_SETTINGS: NLTSettings = {
 	shouldDebug: false,
 	createAtObsidianAttachmentFolder: false,
 	customFolderForNewTables: "",
-	nameWithActiveFileNameAndTimestamp: false,
 	exportRenderMarkdown: true,
 	defaultEmbedWidth: "100%",
 	defaultEmbedHeight: "340px",
@@ -111,8 +109,6 @@ export default class NLTPlugin extends Plugin {
 
 		const filePath = await createTableFile({
 			folderPath,
-			useActiveFileNameAndTimestamp:
-				this.settings.nameWithActiveFileNameAndTimestamp,
 		});
 		if (embedded) return filePath;
 		//Open file in a new tab and set it to active
