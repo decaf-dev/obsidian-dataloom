@@ -87,6 +87,7 @@ const TableApp = () => {
 		handleCurrencyChange,
 		handleDateFormatChange,
 		handleColumnDeleteClick,
+		handleColumnHideClick,
 		handleColumnSortClick,
 		handleColumnTypeClick,
 		handleColumnWidthChange,
@@ -374,6 +375,7 @@ const TableApp = () => {
 											onAspectRatioClick={
 												handleAspectRatioClick
 											}
+											onHideClick={handleColumnHideClick}
 										/>
 									),
 								};

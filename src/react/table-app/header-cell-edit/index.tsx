@@ -54,6 +54,7 @@ interface Props {
 	onHorizontalPaddingClick: (columnId: string, value: PaddingSize) => void;
 	onVerticalPaddingClick: (columnId: string, value: PaddingSize) => void;
 	onMenuClose: () => void;
+	onHideClick: (columnId: string) => void;
 }
 
 const HeaderMenu = React.forwardRef<HTMLDivElement, Props>(function HeaderMenu(
@@ -86,6 +87,7 @@ const HeaderMenu = React.forwardRef<HTMLDivElement, Props>(function HeaderMenu(
 		onNameChange,
 		onCurrencyChange,
 		onDateFormatChange,
+		onHideClick,
 	}: Props,
 	ref
 ) {
@@ -144,6 +146,12 @@ const HeaderMenu = React.forwardRef<HTMLDivElement, Props>(function HeaderMenu(
 		setSubmenu(null);
 	}
 
+	function handleHideClick() {
+		onHideClick(columnId);
+		onMenuClose();
+		setSubmenu(null);
+	}
+
 	function handleDeleteClick() {
 		onDeleteClick(columnId);
 		onMenuClose();
@@ -190,6 +198,7 @@ const HeaderMenu = React.forwardRef<HTMLDivElement, Props>(function HeaderMenu(
 						onSubmenuChange={setSubmenu}
 						onWrapOverflowToggle={onWrapOverflowToggle}
 						onDeleteClick={handleDeleteClick}
+						onHideClick={handleHideClick}
 					/>
 				)}
 				{submenu === SubmenuType.OPTIONS && (

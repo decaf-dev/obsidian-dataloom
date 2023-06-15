@@ -27,6 +27,7 @@ interface Props {
 	onSubmenuChange: (value: SubmenuType) => void;
 	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
 	onDeleteClick: () => void;
+	onHideClick: () => void;
 }
 
 export default function BaseMenu({
@@ -41,6 +42,7 @@ export default function BaseMenu({
 	onWrapOverflowToggle,
 	onDeleteClick,
 	onColumnNameChange,
+	onHideClick,
 }: Props) {
 	const lastKeyPressed = React.useRef<string | null>(null);
 	const inputRef = React.useRef<HTMLInputElement | null>(null);
@@ -106,15 +108,18 @@ export default function BaseMenu({
 				onClick={() => onSortClick(SortDir.DESC)}
 				isSelected={columnSortDir === SortDir.DESC}
 			/>
+			<Divider />
+			<MenuItem
+				lucideId="eye-off"
+				name="Hide"
+				onClick={() => onHideClick()}
+			/>
 			{canDeleteColumn && (
-				<>
-					<Divider />
-					<MenuItem
-						lucideId="trash"
-						name="Delete"
-						onClick={() => onDeleteClick()}
-					/>
-				</>
+				<MenuItem
+					lucideId="trash"
+					name="Delete"
+					onClick={() => onDeleteClick()}
+				/>
 			)}
 			{columnType !== CellType.EMBED && (
 				<>
