@@ -10,7 +10,7 @@ interface Props {
 	top: number;
 	left: number;
 	filterValue: string;
-	onItemClick: (item: VaultFile | null, isFileNameUnique: boolean) => void;
+	onItemClick: (item: VaultFile | null) => void;
 }
 
 const SuggestMenu = React.forwardRef<HTMLDivElement, Props>(
