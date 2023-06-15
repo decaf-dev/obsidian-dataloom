@@ -126,7 +126,7 @@ export default function BaseMenu({
 					<Divider />
 					<Padding px="lg" py="md">
 						<Flex justify="space-between" align="center">
-							<Text value="Wrap overflow" />
+							<Text value="Wrap content" />
 							<Switch
 								isChecked={shouldWrapOverflow}
 								onToggle={(value) =>

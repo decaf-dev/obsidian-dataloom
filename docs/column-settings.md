@@ -1,6 +1,6 @@
 # Column settings
 
-## Wrap overflow
+## Wrap content
 
 If enabled, the content of a cell will wrap instead of being cut off when the cell width is smaller than the content width.
 
