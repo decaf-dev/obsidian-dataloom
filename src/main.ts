@@ -220,7 +220,7 @@ export default class NLTPlugin extends Plugin {
 								numLinks > 1 ? "s" : ""
 							} in ${
 								tablesToUpdate.length
-							} Notion-Like Table file ${
+							} Notion-Like Table file${
 								tablesToUpdate.length > 1 ? "s" : ""
 							}.`
 						);
