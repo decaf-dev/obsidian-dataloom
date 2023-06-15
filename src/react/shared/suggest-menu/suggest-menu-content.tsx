@@ -3,7 +3,6 @@ import React from "react";
 import fuzzysort from "fuzzysort";
 
 import SuggestItem from "./suggest-item";
-import { filterUniqueStrings } from "./utils";
 import { css } from "@emotion/react";
 import { nltEventSystem } from "src/shared/event-system/event-system";
 import { transparentInputStyle } from "src/react/table-app/shared-styles";
@@ -12,17 +11,27 @@ import {
 	VaultFile,
 	getVaultFiles,
 } from "src/obsidian-shim/development/vault-file";
+import MenuItem from "src/react/shared/menu-item";
+import Divider from "src/react/shared/divider";
 
 interface ContentProps {
 	showInput?: boolean;
+	showCreate?: boolean;
+	showClear?: boolean;
 	filterValue?: string;
-	onItemClick: (item: VaultFile | null, isFileNameUnique: boolean) => void;
+	onItemClick: (item: VaultFile | null) => void;
+	onClearClick?: () => void;
+	onCreateClick?: (value: string) => void;
 }
 
 export default function SuggestMenuContent({
 	showInput,
+	showCreate,
+	showClear,
 	filterValue,
 	onItemClick,
+	onClearClick,
+	onCreateClick,
 }: ContentProps) {
 	const logger = useLogger();
 	const [localFilterValue, setLocalFilterValue] = React.useState(
@@ -94,8 +103,9 @@ export default function SuggestMenuContent({
 			nltEventSystem.removeEventListener("keydown", handleKeyDown);
 	}, [filteredFiles.length, logger, highlightIndex]);
 
-	const fileNames = filteredFiles.map((file) => file.name);
-	const uniqueFileNames = filterUniqueStrings(fileNames);
+	const doesFilterFileExist = filteredFiles
+		.map((file) => file.path)
+		.includes(localFilterValue);
 
 	return (
 		<div className="NLT__suggest-menu">
@@ -104,7 +114,7 @@ export default function SuggestMenuContent({
 					css={css`
 						background-color: var(--background-secondary);
 						border-bottom: 1px solid var(--table-border-color);
-						padding: 4px 10px;
+						padding: var(--nlt-spacing--sm) var(--nlt-spacing--lg);
 					`}
 				>
 					<input
@@ -115,18 +125,26 @@ export default function SuggestMenuContent({
 					/>
 				</div>
 			)}
+			{showCreate && !doesFilterFileExist && localFilterValue !== "" && (
+				<>
+					<MenuItem
+						name={`Create ${localFilterValue}`}
+						onClick={() => onCreateClick?.(localFilterValue)}
+					/>
+					<Divider />
+				</>
+			)}
 			<div
 				css={css`
 					max-height: 175px;
 					overflow-y: auto;
 				`}
 			>
-				{filteredFiles.length === 0 && (
+				{filteredFiles.length === 0 && !showCreate && (
 					<SuggestItem
 						file={null}
 						ref={null}
 						isHighlighted
-						isFileNameUnique={false}
 						onItemClick={onItemClick}
 					/>
 				)}
@@ -142,15 +160,18 @@ export default function SuggestMenuContent({
 								}
 								file={file}
 								isHighlighted={index === highlightIndex}
-								isFileNameUnique={uniqueFileNames.includes(
-									file.name
-								)}
 								onItemClick={onItemClick}
 							/>
 						))}
 					</>
 				)}
 			</div>
+			{showClear && (
+				<>
+					<Divider />
+					<MenuItem name="Clear" onClick={onClearClick} />
+				</>
+			)}
 		</div>
 	);
 }
