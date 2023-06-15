@@ -174,3 +174,7 @@ export const filterUniqueStrings = (arr: string[]) => {
 
 	return uniqueStrings;
 };
+
+export const stripDoubleBrackets = (value: string) => {
+	return value.slice(2, value.length - 2);
+};

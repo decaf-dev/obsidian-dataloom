@@ -38,8 +38,7 @@ export const isMarkdownFile = (extension: string) => {
  * @param isFileNameUnique whether the file name (which doesn't include the directory) is unique across all vault files
  */
 export const getWikiLinkText = (
-	fileInfo: Pick<VaultFile, "basename" | "name" | "path" | "extension">,
-	isFileNameUnique: boolean
+	fileInfo: Pick<VaultFile, "basename" | "name" | "path" | "extension">
 ) => {
 	const { basename, name, path, extension } = fileInfo;
 	//The initial name is the basename, which doesn't include an extension
@@ -49,12 +48,11 @@ export const getWikiLinkText = (
 		//If the file is a not markdown file, use the name, which includes the extension
 		text = name;
 
-		//If the file is not unique, include the entire path
-		if (!isFileNameUnique) text = `${path}|${basename}`;
+		if (path.includes("/")) text = `${path}|${basename}`;
 	} else {
 		//If the file is a markdown file, use the path without the extension
 		const pathWithoutExtension = stripFileExtension(path);
-		if (!isFileNameUnique) text = `${pathWithoutExtension}|${basename}`;
+		if (path.includes("/")) text = `${pathWithoutExtension}|${basename}`;
 	}
 	return text;
 };

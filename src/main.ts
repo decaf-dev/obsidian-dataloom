@@ -31,12 +31,10 @@ import {
 	serializeTableState,
 } from "./data/serialize-table-state";
 import { updateLinkReferences } from "./data/utils";
-import { filterUniqueStrings } from "./react/shared/suggest-menu/utils";
 import { getBasename } from "./shared/link/link-utils";
 import { hasDarkTheme } from "./shared/render/utils";
 import { removeFocusVisibleClass } from "./shared/menu/focus-visible";
 import { TableState } from "./shared/types";
-import { log } from "./shared/logger";
 
 export interface NLTSettings {
 	shouldDebug: boolean;
@@ -226,13 +224,6 @@ export default class NLTPlugin extends Plugin {
 						);
 					}
 
-					const uniqueFileNames = filterUniqueStrings(
-						vaultTableFiles.map((file) => file.name)
-					);
-					const isFileNameUnique = uniqueFileNames.includes(
-						file.name
-					);
-
 					for (let i = 0; i < tablesToUpdate.length; i++) {
 						//If the state has changed, update the file
 						const { file: tableFile, state } = tablesToUpdate[i];
@@ -247,8 +238,7 @@ export default class NLTPlugin extends Plugin {
 							const updatedMarkdown = updateLinkReferences(
 								cell.markdown,
 								file,
-								oldPath,
-								isFileNameUnique
+								oldPath
 							);
 							if (cell.markdown !== updatedMarkdown) {
 								if (this.settings.shouldDebug) {

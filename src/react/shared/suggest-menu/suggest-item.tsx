@@ -8,27 +8,23 @@ import { VaultFile } from "src/obsidian-shim/development/vault-file";
 interface Props {
 	file: VaultFile | null;
 	isHighlighted: boolean;
-	isFileNameUnique: boolean;
-	onItemClick: (item: VaultFile | null, isFileNameUnique: boolean) => void;
+	onItemClick: (item: VaultFile | null) => void;
 }
 
 const SuggestItem = React.forwardRef<HTMLDivElement, Props>(
-	function SuggestItem(
-		{ file, isHighlighted, isFileNameUnique, onItemClick }: Props,
-		ref
-	) {
+	function SuggestItem({ file, isHighlighted, onItemClick }: Props, ref) {
 		const handleClick = React.useCallback(
 			(e: React.MouseEvent) => {
 				//Stop propagation so the menu doesn't remove the focus class
 				e.stopPropagation();
-				onItemClick(file, isFileNameUnique);
+				onItemClick(file);
 			},
-			[file, isFileNameUnique, onItemClick]
+			[file, onItemClick]
 		);
 
 		React.useEffect(() => {
 			function handleKeyDown(e: KeyboardEvent) {
-				if (e.key === "Enter") onItemClick(file, isFileNameUnique);
+				if (e.key === "Enter") onItemClick(file);
 			}
 
 			if (isHighlighted)
@@ -36,7 +32,7 @@ const SuggestItem = React.forwardRef<HTMLDivElement, Props>(
 
 			return () =>
 				nltEventSystem.removeEventListener("keydown", handleKeyDown);
-		}, [isHighlighted, onItemClick, file, isFileNameUnique]);
+		}, [isHighlighted, onItemClick, file]);
 
 		let name = "No match found";
 		if (file) {
@@ -62,7 +58,7 @@ const SuggestItem = React.forwardRef<HTMLDivElement, Props>(
 				className="NLT__suggest-item NLT__focusable"
 				ref={ref}
 				css={css`
-					padding: 4px 6px;
+					padding: var(--nlt-spacing--sm) var(--nlt-spacing--lg);
 					margin: 2px 0;
 					background-color: ${isHighlighted
 						? "var(--background-modifier-hover)"
