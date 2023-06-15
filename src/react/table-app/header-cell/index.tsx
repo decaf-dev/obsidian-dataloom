@@ -50,6 +50,7 @@ interface Props {
 	onVerticalPaddingClick: (columnId: string, value: PaddingSize) => void;
 	onHorizontalPaddingClick: (columnId: string, value: PaddingSize) => void;
 	onAspectRatioClick: (columnId: string, value: AspectRatio) => void;
+	onHideClick: (columnId: string) => void;
 }
 
 export default function HeaderCell({
@@ -79,6 +80,7 @@ export default function HeaderCell({
 	onNameChange,
 	onCurrencyChange,
 	onDateFormatChange,
+	onHideClick,
 }: Props) {
 	const { menu, isMenuOpen, closeTopMenu, menuRef, menuCloseRequest } =
 		useMenu(MenuLevel.ONE, { shouldRequestOnClose: true });
@@ -194,6 +196,7 @@ export default function HeaderCell({
 				onVerticalPaddingClick={onVerticalPaddingClick}
 				onHorizontalPaddingClick={onHorizontalPaddingClick}
 				onAspectRatioClick={onAspectRatioClick}
+				onHideClick={onHideClick}
 			/>
 		</>
 	);
