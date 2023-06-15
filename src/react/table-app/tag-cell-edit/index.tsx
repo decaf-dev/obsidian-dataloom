@@ -53,10 +53,13 @@ export default function TagCellEdit({
 	React.useEffect(() => {
 		if (hasCloseRequestTimeChanged && menuCloseRequest !== null) {
 			if (menuCloseRequest.type === "enter") {
-				const shouldAddTag =
-					columnTags.find((tag) => tag.markdown === inputValue) ===
-					undefined;
-				if (shouldAddTag) handleTagAdd(inputValue, newTagColor);
+				const doesTagExist = columnTags.find(
+					(tag) => tag.markdown === inputValue
+				);
+				if (!doesTagExist) {
+					handleTagAdd(inputValue, newTagColor);
+					return;
+				}
 			}
 			onMenuClose();
 		}
