@@ -64,7 +64,7 @@ export const getCalculation = (
 	} else if (calculationType === Calculation.NONE) {
 		return "";
 	} else {
-		throw new Error("Unhandled general function");
+		throw new Error("Unhandled calculation type");
 	}
 };
 
