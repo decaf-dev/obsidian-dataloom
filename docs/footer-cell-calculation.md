@@ -1,4 +1,4 @@
-# Function cell
+# Calculation cell
 
 ## Description
 

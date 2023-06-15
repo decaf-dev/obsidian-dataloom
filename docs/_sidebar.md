@@ -37,7 +37,7 @@
 
         -   Footer Cells
 
-            -   [Function cell](footer-cell-function.md)
+            -   [Calculation cell](footer-cell-calculation.md)
 
     -   Columns
 
