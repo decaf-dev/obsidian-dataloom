@@ -1,7 +1,7 @@
 import Table from "./table";
 import RowOptions from "./row-options";
 import OptionBar from "./option-bar";
-import FunctionCell from "./function-cell";
+import CalculationCell from "./calculation-cell";
 import BodyCell from "./body-cell";
 import NewRowButton from "./new-row-button";
 import NewColumnButton from "./new-column-button";
@@ -91,7 +91,7 @@ const TableApp = () => {
 		handleColumnTypeClick,
 		handleColumnWidthChange,
 		handleSortRemoveClick,
-		handleFunctionTypeChange,
+		handleCalculationTypeChange,
 		handleWrapContentToggle,
 		handleAspectRatioClick,
 		handleHorizontalPaddingClick,
@@ -510,7 +510,7 @@ const TableApp = () => {
 										dateFormat,
 										width,
 										tags,
-										functionType,
+										calculationType,
 									} = column;
 									const cell = footerCells.find(
 										(cell) =>
@@ -540,7 +540,7 @@ const TableApp = () => {
 													width: ${width};
 												`}
 											>
-												<FunctionCell
+												<CalculationCell
 													columnId={columnId}
 													columnTags={tags}
 													cellId={cellId}
@@ -548,10 +548,12 @@ const TableApp = () => {
 													dateFormat={dateFormat}
 													bodyCells={columnBodyCells}
 													bodyRows={filteredBodyRows}
-													functionType={functionType}
+													calculationType={
+														calculationType
+													}
 													cellType={type}
-													onFunctionTypeChange={
-														handleFunctionTypeChange
+													onTypeChange={
+														handleCalculationTypeChange
 													}
 												/>
 											</div>

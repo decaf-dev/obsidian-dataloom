@@ -4,7 +4,6 @@ import {
 	stripFileExtension,
 } from "src/shared/link/link-utils";
 import { EXTENSION_REGEX, WIKI_LINK_REGEX } from "./constants";
-import { TFile } from "obsidian";
 
 export const splitFileExtension = (
 	filePath: string

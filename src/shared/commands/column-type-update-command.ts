@@ -5,15 +5,15 @@ import { ColumNotFoundError } from "../table-state/table-error";
 import TableStateCommand from "../table-state/table-state-command";
 import {
 	BodyCell,
+	Calculation,
+	CalculationType,
 	CellType,
 	Column,
 	FilterRule,
-	FunctionType,
-	GeneralFunction,
 	TableState,
 	Tag,
 } from "../types";
-import { isCheckbox, isNumberFunction } from "../validators";
+import { isCheckbox, isNumberCalcuation } from "../validators";
 
 export class ColumnTypeUpdateCommand extends TableStateCommand {
 	private columnId: string;
@@ -22,8 +22,8 @@ export class ColumnTypeUpdateCommand extends TableStateCommand {
 	private previousType: CellType;
 	private deletedFilterRules: { arrIndex: number; rule: FilterRule }[] = [];
 
-	private previousFunctionType?: FunctionType;
-	private newFunctionType?: FunctionType;
+	private previousCalculationType?: CalculationType;
+	private newCalculationType?: CalculationType;
 
 	/**
 	 * The body cells whose tag ids have been updated as a result of the command execution
@@ -74,12 +74,12 @@ export class ColumnTypeUpdateCommand extends TableStateCommand {
 	private fromNumberOrCurrency(columns: Column[]) {
 		return columns.map((column) => {
 			if (column.id === this.columnId) {
-				if (isNumberFunction(column.functionType)) {
-					this.previousFunctionType = column.functionType;
-					this.newFunctionType = GeneralFunction.NONE;
+				if (isNumberCalcuation(column.calculationType)) {
+					this.previousCalculationType = column.calculationType;
+					this.newCalculationType = Calculation.NONE;
 					return {
 						...column,
-						functionType: GeneralFunction.NONE,
+						calculationType: Calculation.NONE,
 					};
 				}
 			}
@@ -421,9 +421,9 @@ export class ColumnTypeUpdateCommand extends TableStateCommand {
 				return {
 					...column,
 					type: this.type,
-					functionType: this.newFunctionType
-						? this.newFunctionType
-						: column.functionType,
+					calculationType: this.newCalculationType
+						? this.newCalculationType
+						: column.calculationType,
 					tags: [...column.tags, ...this.addedTags],
 				};
 			}
@@ -484,9 +484,9 @@ export class ColumnTypeUpdateCommand extends TableStateCommand {
 			if (column.id === this.columnId) {
 				return {
 					...column,
-					functionType: this.previousFunctionType
-						? this.previousFunctionType
-						: column.functionType,
+					calculationType: this.previousCalculationType
+						? this.previousCalculationType
+						: column.calculationType,
 					type: this.previousType,
 					tags: column.tags.filter(
 						(t) =>
