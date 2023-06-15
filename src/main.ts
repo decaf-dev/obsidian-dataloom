@@ -3,11 +3,7 @@ import { MarkdownView, Plugin, TAbstractFile, TFile, TFolder } from "obsidian";
 import NLTSettingsTab from "./obsidian/nlt-settings-tab";
 
 import { store } from "./redux/global/store";
-import {
-	setDarkMode,
-	setDebugMode,
-	setExportRenderMarkdown,
-} from "./redux/global/global-slice";
+import { setDarkMode, setSettings } from "./redux/global/global-slice";
 import { NLTView, NOTION_LIKE_TABLES_VIEW } from "./obsidian/nlt-view";
 import { TABLE_EXTENSION } from "./data/constants";
 import { createTableFile } from "src/data/table-file";
@@ -39,6 +35,8 @@ export interface NLTSettings {
 	customFolderForNewTables: string;
 	nameWithActiveFileNameAndTimestamp: boolean;
 	exportRenderMarkdown: boolean;
+	defaultEmbedWidth: string;
+	defaultEmbedHeight: string;
 }
 
 export const DEFAULT_SETTINGS: NLTSettings = {
@@ -47,7 +45,10 @@ export const DEFAULT_SETTINGS: NLTSettings = {
 	customFolderForNewTables: "",
 	nameWithActiveFileNameAndTimestamp: false,
 	exportRenderMarkdown: true,
+	defaultEmbedWidth: "100%",
+	defaultEmbedHeight: "340px",
 };
+
 export default class NLTPlugin extends Plugin {
 	settings: NLTSettings;
 
@@ -229,7 +230,6 @@ export default class NLTPlugin extends Plugin {
 		this.app.workspace.onLayoutReady(() => {
 			const isDark = hasDarkTheme();
 			store.dispatch(setDarkMode(isDark));
-			store.dispatch(setDebugMode(this.settings.shouldDebug));
 		});
 	}
 
@@ -380,13 +380,12 @@ export default class NLTPlugin extends Plugin {
 			DEFAULT_SETTINGS,
 			await this.loadData()
 		);
-		store.dispatch(
-			setExportRenderMarkdown(this.settings.exportRenderMarkdown)
-		);
+		store.dispatch(setSettings(this.settings));
 	}
 
 	async saveSettings() {
 		await this.saveData(this.settings);
+		store.dispatch(setSettings(this.settings));
 	}
 
 	/**
