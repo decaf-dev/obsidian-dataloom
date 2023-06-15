@@ -49,7 +49,7 @@ export default class TagAddCommand extends TableStateCommand {
 		color: Color,
 		isMultiTag: boolean
 	) {
-		super();
+		super(true);
 		this.cellId = cellId;
 		this.columnId = columnId;
 		this.rowId = rowId;

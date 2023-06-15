@@ -1,11 +1,18 @@
-import { MarkdownView, Plugin, TAbstractFile, TFile, TFolder } from "obsidian";
+import {
+	MarkdownView,
+	Notice,
+	Plugin,
+	TAbstractFile,
+	TFile,
+	TFolder,
+} from "obsidian";
 
 import NLTSettingsTab from "./obsidian/nlt-settings-tab";
 
 import { store } from "./redux/global/store";
 import { setDarkMode, setSettings } from "./redux/global/global-slice";
 import { NLTView, NOTION_LIKE_TABLES_VIEW } from "./obsidian/nlt-view";
-import { TABLE_EXTENSION } from "./data/constants";
+import { TABLE_EXTENSION, WIKI_LINK_REGEX } from "./data/constants";
 import { createTableFile } from "src/data/table-file";
 import {
 	EVENT_COLUMN_ADD,
@@ -28,6 +35,8 @@ import { filterUniqueStrings } from "./react/shared/suggest-menu/utils";
 import { getBasename } from "./shared/link/link-utils";
 import { hasDarkTheme } from "./shared/render/utils";
 import { removeFocusVisibleClass } from "./shared/menu/focus-visible";
+import { TableState } from "./shared/types";
+import { log } from "./shared/logger";
 
 export interface NLTSettings {
 	shouldDebug: boolean;
@@ -162,53 +171,104 @@ export default class NLTPlugin extends Plugin {
 			"rename",
 			async (file: TAbstractFile, oldPath: string) => {
 				if (file instanceof TFile) {
-					const files = this.app.vault.getFiles();
+					const vaultTableFiles = this.app.vault
+						.getFiles()
+						.filter((file) => file.extension === TABLE_EXTENSION);
+
+					const tablesToUpdate: {
+						file: TFile;
+						state: TableState;
+					}[] = [];
+
+					let numLinks = 0;
+					for (const tableFile of vaultTableFiles) {
+						//For each file read its contents
+						const data = await file.vault.read(tableFile);
+						const state = deserializeTableState(data);
+						//Search for old path in the file
+
+						state.model.bodyCells.forEach((cell) => {
+							const regex = structuredClone(WIKI_LINK_REGEX);
+							let matches;
+							while (
+								(matches = regex.exec(cell.markdown)) !== null
+							) {
+								const path = matches[1];
+
+								//The path will be the relative path e.g. mytable.table
+								//while the old path will be the absolute path in the vault e.g. /tables/mytables.table
+								if (oldPath.includes(path)) {
+									const found = tablesToUpdate.find(
+										(table) =>
+											table.file.path === tableFile.path
+									);
+									if (!found) {
+										tablesToUpdate.push({
+											file: tableFile,
+											state,
+										});
+									}
+									numLinks++;
+								}
+							}
+						});
+					}
+
+					if (numLinks > 0) {
+						new Notice(
+							`Updating ${numLinks} link${
+								numLinks > 1 ? "s" : ""
+							} in ${
+								tablesToUpdate.length
+							} Notion-Like Table file${
+								tablesToUpdate.length > 1 ? "s" : ""
+							}.`
+						);
+					}
 
 					const uniqueFileNames = filterUniqueStrings(
-						files.map((file) => file.name)
+						vaultTableFiles.map((file) => file.name)
 					);
-					const isUniqueFileName = uniqueFileNames.includes(
+					const isFileNameUnique = uniqueFileNames.includes(
 						file.name
 					);
 
-					//Get all table files
-					const tableFiles = files.filter(
-						(file) => file.extension === TABLE_EXTENSION
-					);
-					for (let i = 0; i < tableFiles.length; i++) {
-						const tableFile = tableFiles[i];
+					for (let i = 0; i < tablesToUpdate.length; i++) {
+						//If the state has changed, update the file
+						const { file: tableFile, state } = tablesToUpdate[i];
 
-						//For each file read its contents
-						const content = await tableFile.vault.read(
-							tableFiles[i]
-						);
-						const deserializedState =
-							deserializeTableState(content);
+						if (this.settings.shouldDebug)
+							console.log("Updating links in file", {
+								path: tableFile.path,
+							});
 
-						//Iterate over all body cells and check the markdwon
-						const newState = structuredClone(deserializedState);
-						newState.model.bodyCells.forEach((cell) => {
-							//If the markdown contains a wiki link with old path, update it
+						const newState = structuredClone(state);
+						newState.model.bodyCells.map((cell) => {
 							const updatedMarkdown = updateLinkReferences(
 								cell.markdown,
 								file,
 								oldPath,
-								isUniqueFileName
+								isFileNameUnique
 							);
+							if (cell.markdown !== updatedMarkdown) {
+								if (this.settings.shouldDebug) {
+									console.log("Updated link", {
+										oldLink: cell.markdown,
+										newLink: updatedMarkdown,
+									});
+								}
+							}
+
 							cell.markdown = updatedMarkdown;
 						});
 
-						//If the state has changed, update the file
 						if (
-							JSON.stringify(deserializedState) !==
-							JSON.stringify(newState)
+							JSON.stringify(state) !== JSON.stringify(newState)
 						) {
 							const serializedState =
 								serializeTableState(newState);
-							await tableFile.vault.modify(
-								tableFile,
-								serializedState
-							);
+
+							await file.vault.modify(tableFile, serializedState);
 
 							//Update all tables that match this path
 							app.workspace.trigger(

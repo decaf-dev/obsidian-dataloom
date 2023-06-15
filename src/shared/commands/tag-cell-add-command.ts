@@ -17,7 +17,7 @@ export default class TagCellAddCommand extends TableStateCommand {
 		tagId: string,
 		isMultiTag: boolean
 	) {
-		super();
+		super(true);
 		this.cellId = cellId;
 		this.rowId = rowId;
 		this.tagId = tagId;

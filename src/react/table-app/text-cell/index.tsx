@@ -13,18 +13,27 @@ export default function TextCell({ markdown, shouldWrapOverflow }: Props) {
 
 	const overflowStyle = useOverflow(shouldWrapOverflow);
 	return (
-		<div className="NLT__text-cell" css={overflowStyle}>
+		<div
+			className="NLT__text-cell"
+			css={css`
+				width: 100%;
+				height: 100%;
+				${overflowStyle}
+			`}
+		>
 			<div
 				css={css`
+					text-align: left;
+
 					p {
 						margin: 0;
-						text-align: left;
 					}
 
-					ul {
+					//.contains-task-list is from dataview
+					//it is what is rendered for a task list
+					ul:not(.contains-task-list) {
 						padding-left: var(--nlt-spacing--xl);
 						padding-right: 0;
-						margin: 0;
 					}
 				`}
 				ref={(node) => {
