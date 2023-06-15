@@ -113,6 +113,12 @@ export default class NLTSettingsTab extends PluginSettingTab {
 					}
 				);
 			});
+
+		containerEl.createSpan(
+			{},
+			(span) =>
+				(span.innerHTML = `<strong style="color: var(--text-accent); font-size: 12px;">Please close and reopen your embedded table tabs for these settings to take effect</strong>`)
+		);
 	}
 
 	private renderDebugSettings(containerEl: HTMLElement) {
@@ -136,13 +142,6 @@ export default class NLTSettingsTab extends PluginSettingTab {
 		const { containerEl } = this;
 
 		containerEl.empty();
-
-		containerEl.createEl("h2", { text: "Notion-Like Tables" });
-		// containerEl.createSpan(
-		// 	{},
-		// 	(span) =>
-		// 		(span.innerHTML = `<strong style="color: var(--text-accent); font-size: 12px;">Please restart Obsidian for these settings to take effect</strong>`)
-		// );
 
 		this.renderFileSettings(containerEl);
 		this.renderExportSettings(containerEl);
