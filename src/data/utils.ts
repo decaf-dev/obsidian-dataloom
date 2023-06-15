@@ -21,9 +21,8 @@ export const splitFileExtension = (
 
 export const updateLinkReferences = (
 	markdown: string,
-	updatedFileInfo: Pick<TFile, "basename" | "path" | "name" | "extension">,
-	oldPath: string,
-	isFileNameUnique: boolean
+	newPath: string,
+	oldPath: string
 ) => {
 	//Create a replace function for the markdown
 	return markdown.replace(WIKI_LINK_REGEX, (match, path) => {
@@ -36,7 +35,7 @@ export const updateLinkReferences = (
 			comparePath = stripFileExtension(comparePath);
 
 		if (comparePath === path) {
-			const linkText = getWikiLinkText(updatedFileInfo, isFileNameUnique);
+			const linkText = getWikiLinkText(newPath);
 			return `[[${linkText}]]`;
 		}
 		return match;
