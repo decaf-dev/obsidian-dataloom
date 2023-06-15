@@ -25,7 +25,9 @@ export function ExportApp({ tableState, filePath }: Props) {
 	const [exportType, setExportType] = React.useState<ExportType>(
 		ExportType.UNSELECTED
 	);
-	const { exportRenderMarkdown } = useAppSelector((state) => state.global);
+	const { exportRenderMarkdown } = useAppSelector(
+		(state) => state.global.settings
+	);
 	const [renderMarkdown, setRenderMarkdown] =
 		React.useState<boolean>(exportRenderMarkdown);
 
