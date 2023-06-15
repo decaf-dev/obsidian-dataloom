@@ -36,7 +36,7 @@ export default class NLTSettingsTab extends PluginSettingTab {
 		//Custom location
 		const customLocationDesc = new DocumentFragment();
 		customLocationDesc.createSpan({}, (span) => {
-			span.innerHTML = `Folder that new tables will be created in. Please don't include a slash at the start or end.<br>e.g. <strong>myfolder/subdirectory</strong><br><br>Default location is the vault root folder, if not specified.`;
+			span.innerHTML = `The folder that new tables will be created in. Please don't include a slash at the beginning or end of the value.<br>e.g. <strong>myfolder/subdirectory</strong><br><br>Default location is the vault root folder, if not specified.`;
 		});
 
 		if (this.plugin.settings.createAtObsidianAttachmentFolder === false) {
@@ -79,7 +79,7 @@ export default class NLTSettingsTab extends PluginSettingTab {
 		const exportRenderMarkdownDesc = new DocumentFragment();
 		exportRenderMarkdownDesc.createSpan({}, (span) => {
 			span.innerHTML =
-				"When enabled, content will be rendered as markdown. For example, a checkbox cell's content will be exported as `[ ]` or `[x]`. If you disable this option, the content will be exported as `true` or `false`.";
+				"If enabled, content will be exported as markdown. For example, if enabled, a checkbox cell's content will be exported as <strong>[ ]</strong> or <strong>[x]<strong>. If disabled, the content will be exported as <strong>true<strong> or <strong>false<strong>.";
 		});
 
 		new Setting(containerEl).setName("Export").setHeading();
@@ -102,7 +102,7 @@ export default class NLTSettingsTab extends PluginSettingTab {
 		const defaultEmbedWidthDesc = new DocumentFragment();
 		defaultEmbedWidthDesc.createSpan({}, (span) => {
 			span.innerHTML =
-				"The default embedded table width. Accepts valid HTML width values. Like `100px`, `50%`, etc.";
+				"The default embedded table width. Accepts valid HTML width values. Like <strong>100px<strong>, <strong>50%</strong>, etc.";
 		});
 
 		new Setting(containerEl)
@@ -120,7 +120,7 @@ export default class NLTSettingsTab extends PluginSettingTab {
 		const defaultEmbedHeightDesc = new DocumentFragment();
 		defaultEmbedHeightDesc.createSpan({}, (span) => {
 			span.innerHTML =
-				"The default embedded table height. Accepts valid HTML width values. Like `100px`, `50%`, etc.";
+				"The default embedded table height. Accepts valid HTML width values. Like <strong>100px</strong>, <strong>50%</strong>, etc.";
 		});
 
 		new Setting(containerEl)
