@@ -380,12 +380,12 @@ export default class NLTPlugin extends Plugin {
 			DEFAULT_SETTINGS,
 			await this.loadData()
 		);
-		store.dispatch(setSettings(this.settings));
+		store.dispatch(setSettings({ ...this.settings }));
 	}
 
 	async saveSettings() {
 		await this.saveData(this.settings);
-		store.dispatch(setSettings(this.settings));
+		store.dispatch(setSettings({ ...this.settings }));
 	}
 
 	/**
