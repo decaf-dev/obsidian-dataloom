@@ -29,7 +29,7 @@ import {
 	CHECKBOX_MARKDOWN_CHECKED,
 	CHECKBOX_MARKDOWN_UNCHECKED,
 } from "src/shared/table-state/constants";
-import { isCheckboxChecked } from "src/shared/validators";
+import { isCheckboxChecked } from "src/shared/match";
 
 import { Color } from "src/shared/types";
 import CurrencyCell from "../currency-cell";

@@ -33,6 +33,8 @@ export const renderEmbedMarkdown = async (
 			div.style.height = "100%";
 			div.style.width = "100%";
 
+			console.log(markdown);
+
 			await MarkdownRenderer.renderMarkdown(
 				markdown,
 				div,

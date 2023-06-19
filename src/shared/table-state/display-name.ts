@@ -1,4 +1,4 @@
-import { isNumberCalcuation } from "../validators";
+import { isNumberCalcuation } from "../match";
 import {
 	Calculation,
 	CalculationType,

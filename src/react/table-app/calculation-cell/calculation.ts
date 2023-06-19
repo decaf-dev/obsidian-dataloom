@@ -1,4 +1,4 @@
-import { isCheckboxChecked } from "src/shared/validators";
+import { isCheckboxChecked } from "src/shared/match";
 import {
 	BodyCell,
 	BodyRow,
