@@ -86,6 +86,7 @@ export const createBodyCell = (
 	const { cellType, tagIds = [] } = options || {};
 	return {
 		id: uuidv4(),
+		isExternalLink: true,
 		columnId,
 		rowId,
 		dateTime: null,

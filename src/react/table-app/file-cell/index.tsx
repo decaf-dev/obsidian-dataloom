@@ -11,7 +11,7 @@ interface Props {
 
 export default function FileCell({ markdown, shouldWrapOverflow }: Props) {
 	const content = getFileCellContent(markdown);
-	const { containerRef, renderRef } = useRenderMarkdown(content, false);
+	const { containerRef, renderRef } = useRenderMarkdown(content);
 
 	const overflowStyle = useOverflow(shouldWrapOverflow);
 

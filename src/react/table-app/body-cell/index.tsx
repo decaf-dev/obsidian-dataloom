@@ -45,6 +45,7 @@ import EmbedCellEdit from "../embed-cell-edit";
 import { Notification } from "src/obsidian-shim/development/notification";
 
 interface Props {
+	isExternalLink: boolean;
 	columnType: string;
 	cellId: string;
 	rowId: string;
@@ -97,6 +98,7 @@ export default function BodyCell({
 	cellId,
 	columnId,
 	rowId,
+	isExternalLink,
 	markdown,
 	aspectRatio,
 	verticalPadding,
@@ -251,15 +253,18 @@ export default function BodyCell({
 		columnType === CellType.DATE ||
 		columnType === CellType.NUMBER ||
 		columnType === CellType.CURRENCY ||
-		columnType === CellType.FILE
+		columnType === CellType.FILE ||
+		columnType === CellType.EMBED
 	) {
 		menuHeight = 0;
-	} else if (columnType === CellType.EMBED) {
-		menuHeight = 30;
 	}
 
 	let menuWidth = measuredWidth;
-	if (columnType === CellType.TAG || columnType === CellType.MULTI_TAG) {
+	if (
+		columnType === CellType.TAG ||
+		columnType === CellType.MULTI_TAG ||
+		columnType === CellType.EMBED
+	) {
 		menuWidth = 250;
 	} else if (columnType === CellType.FILE) {
 		menuWidth = 275;
@@ -316,6 +321,7 @@ export default function BodyCell({
 					)}
 					{columnType === CellType.EMBED && (
 						<EmbedCell
+							isExternalLink={isExternalLink}
 							markdown={markdown}
 							verticalPadding={verticalPadding}
 							horizontalPadding={horizontalPadding}
@@ -382,7 +388,6 @@ export default function BodyCell({
 				id={menu.id}
 				hideBorder={
 					columnType === CellType.TEXT ||
-					columnType === CellType.EMBED ||
 					columnType === CellType.CURRENCY ||
 					columnType === CellType.NUMBER
 				}
@@ -404,7 +409,6 @@ export default function BodyCell({
 				{columnType === CellType.EMBED && (
 					<EmbedCellEdit
 						menuCloseRequest={menuCloseRequest}
-						shouldWrapOverflow={shouldWrapOverflow}
 						value={markdown}
 						onChange={handleInputChange}
 						onMenuClose={handleMenuClose}

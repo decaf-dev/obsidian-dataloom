@@ -107,6 +107,7 @@ export enum AspectRatio {
 	NINE_BY_SIXTEEN = "9/16",
 	FOUR_BY_THREE = "4/3",
 	SIXTEEN_BY_NINE = "16/9",
+	UNSET = "unset",
 }
 
 export type CalculationType = Calculation | NumberCalculation;
@@ -160,6 +161,7 @@ export interface HeaderCell extends Cell {
 }
 
 export interface BodyCell extends Cell {
+	isExternalLink: boolean;
 	dateTime: number | null;
 	markdown: string;
 	tagIds: string[];

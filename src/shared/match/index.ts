@@ -5,8 +5,9 @@ import {
 	CHECKBOX_REGEX,
 	CHECKBOX_CHECKED_REGEX,
 	NUMBER_INPUT_REGEX,
-	URL_REGEX,
-	IMAGE_REGEX,
+	TWITTER_LINK_REGEX,
+	YOUTUBE_LINK_REGEX,
+	IMAGE_EXTENSION_REGEX,
 } from "./regex";
 
 export const isNumber = (value: string): boolean => {
@@ -29,12 +30,16 @@ export const isCheckboxChecked = (value: string): boolean => {
 	return value.match(CHECKBOX_CHECKED_REGEX) !== null;
 };
 
-export const isURL = (value: string): boolean => {
-	return value.match(URL_REGEX) !== null;
+export const isImage = (value: string): boolean => {
+	return value.match(IMAGE_EXTENSION_REGEX) !== null;
 };
 
-export const isImage = (value: string): boolean => {
-	return value.match(IMAGE_REGEX) !== null;
+export const isYouTubeLink = (value: string): boolean => {
+	return value.match(YOUTUBE_LINK_REGEX) !== null;
+};
+
+export const isTwitterLink = (value: string): boolean => {
+	return value.match(TWITTER_LINK_REGEX) !== null;
 };
 
 export const isNumberCalcuation = (

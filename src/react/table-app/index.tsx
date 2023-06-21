@@ -435,6 +435,7 @@ const TableApp = () => {
 									markdown,
 									dateTime,
 									tagIds,
+									isExternalLink,
 								} = cell;
 
 								return {
@@ -443,6 +444,7 @@ const TableApp = () => {
 										<BodyCell
 											key={cellId}
 											cellId={cellId}
+											isExternalLink={isExternalLink}
 											verticalPadding={verticalPadding}
 											horizontalPadding={
 												horizontalPadding

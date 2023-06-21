@@ -10,5 +10,5 @@ export default defineConfig({
 			src: path.resolve("src/"),
 		},
 	},
-	base: "/src/react/table-app",
+	base: "/src/react/table-app/",
 });

@@ -40,20 +40,6 @@ export const CHECKBOX_REGEX = new RegExp(/^\[[x ]{0,1}\]$/);
 export const CHECKBOX_CHECKED_REGEX = new RegExp(/^\[[x]\]$/);
 
 /**
- * Matches a URL
- * @example
- * http://example.com
- * https://www.example.com
- * http://subdomain.example.com
- * https://subdomain.example.com/path
- * http://www.example.com/?key=value
- * https://www.example.com/path/?key=value&key2=value2
- */
-export const URL_REGEX = new RegExp(
-	/^https?:\/\/([\w.-]+\.)?[\w.-]+\.[a-zA-Z]{2,}(\/[\w.-]+)*(\/?(\?[\w.-]+=[\w.-]+(&[\w.-]+=[\w.-]+)*)?)?$/i
-);
-
-/**
  * Matches an image extension
  * @example
  * image.jpg
@@ -65,4 +51,20 @@ export const URL_REGEX = new RegExp(
  * image.ico
  * image.webp
  */
-export const IMAGE_REGEX = new RegExp(/\.(jpe?g|png|gif|bmp|tiff?|ico|webp)$/i);
+export const IMAGE_EXTENSION_REGEX = new RegExp(
+	/\.(jpe?g|png|gif|bmp|tiff?|ico|webp)$/i
+);
+
+/**
+ * Matches a YouTube link or short link
+ */
+export const YOUTUBE_LINK_REGEX = new RegExp(
+	/^https?:\/\/(?:www\.)?(?:youtube\.com\/\S+|youtu\.be\/\S+)$/
+);
+
+/**
+ * Matches a Twitter link or short link
+ */
+export const TWITTER_LINK_REGEX = new RegExp(
+	/^https?:\/\/(?:www\.)?twitter\.com\/\S+|\bt\.co\/\S+$/
+);

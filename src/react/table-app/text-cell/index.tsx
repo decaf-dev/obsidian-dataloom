@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function TextCell({ markdown, shouldWrapOverflow }: Props) {
-	const { containerRef, renderRef } = useRenderMarkdown(markdown, false);
+	const { containerRef, renderRef } = useRenderMarkdown(markdown);
 
 	const overflowStyle = useOverflow(shouldWrapOverflow);
 	return (
