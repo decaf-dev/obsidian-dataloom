@@ -23,7 +23,7 @@ export default class TagDeleteCommand extends TableStateCommand {
 	}[] = [];
 
 	constructor(columnId: string, tagId: string) {
-		super();
+		super(true);
 		this.columnId = columnId;
 		this.tagId = tagId;
 	}

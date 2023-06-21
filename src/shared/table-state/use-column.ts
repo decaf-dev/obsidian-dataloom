@@ -2,10 +2,10 @@ import React from "react";
 
 import {
 	AspectRatio,
+	CalculationType,
 	CellType,
 	CurrencyType,
 	DateFormat,
-	FunctionType,
 	PaddingSize,
 	SortDir,
 } from "src/shared/types";
@@ -100,6 +100,15 @@ export const useColumn = () => {
 		[doCommand, logger]
 	);
 
+	function handleColumnHideClick(columnId: string) {
+		logger("handleColumnHideClick", {
+			columnId,
+		});
+		doCommand(
+			new ColumnUpdateCommand(columnId, "isVisible", { value: false })
+		);
+	}
+
 	function handleColumnDeleteClick(columnId: string) {
 		logger("handleColumnDeleteClick", {
 			columnId,
@@ -107,18 +116,18 @@ export const useColumn = () => {
 		doCommand(new ColumnDeleteCommand({ id: columnId }));
 	}
 
-	function handleFunctionTypeChange(
+	function handleCalculationTypeChange(
 		columnId: string,
-		functionType: FunctionType
+		calculationType: CalculationType
 	) {
-		logger("handleFunctionTypeChange", {
+		logger("handleCalculationTypeChange", {
 			columnId,
-			functionType,
+			calculationType,
 		});
 
 		doCommand(
-			new ColumnUpdateCommand(columnId, "functionType", {
-				value: functionType,
+			new ColumnUpdateCommand(columnId, "calculationType", {
+				value: calculationType,
 			})
 		);
 	}
@@ -201,9 +210,10 @@ export const useColumn = () => {
 		handleSortRemoveClick,
 		handleColumnWidthChange,
 		handleWrapContentToggle,
-		handleFunctionTypeChange,
+		handleCalculationTypeChange,
 		handleHorizontalPaddingClick,
 		handleVerticalPaddingClick,
 		handleAspectRatioClick,
+		handleColumnHideClick,
 	};
 };

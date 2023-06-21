@@ -27,6 +27,7 @@ interface Props {
 	onSubmenuChange: (value: SubmenuType) => void;
 	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
 	onDeleteClick: () => void;
+	onHideClick: () => void;
 }
 
 export default function BaseMenu({
@@ -41,6 +42,7 @@ export default function BaseMenu({
 	onWrapOverflowToggle,
 	onDeleteClick,
 	onColumnNameChange,
+	onHideClick,
 }: Props) {
 	const lastKeyPressed = React.useRef<string | null>(null);
 	const inputRef = React.useRef<HTMLInputElement | null>(null);
@@ -66,6 +68,7 @@ export default function BaseMenu({
 			<Stack spacing="sm" isVertical width="100%">
 				<Padding px="md" py="sm" width="100%">
 					<input
+						type="text"
 						className="NLT__focusable"
 						autoFocus
 						css={borderInputStyle}
@@ -106,28 +109,35 @@ export default function BaseMenu({
 				onClick={() => onSortClick(SortDir.DESC)}
 				isSelected={columnSortDir === SortDir.DESC}
 			/>
+			<Divider />
+			<MenuItem
+				lucideId="eye-off"
+				name="Hide"
+				onClick={() => onHideClick()}
+			/>
 			{canDeleteColumn && (
+				<MenuItem
+					lucideId="trash"
+					name="Delete"
+					onClick={() => onDeleteClick()}
+				/>
+			)}
+			{columnType !== CellType.EMBED && (
 				<>
 					<Divider />
-					<MenuItem
-						lucideId="trash"
-						name="Delete"
-						onClick={() => onDeleteClick()}
-					/>
+					<Padding px="lg" py="md">
+						<Flex justify="space-between" align="center">
+							<Text value="Wrap content" />
+							<Switch
+								isChecked={shouldWrapOverflow}
+								onToggle={(value) =>
+									onWrapOverflowToggle(columnId, value)
+								}
+							/>
+						</Flex>
+					</Padding>
 				</>
 			)}
-			<Divider />
-			<Padding px="lg" py="md">
-				<Flex justify="space-between" align="center">
-					<Text value="Wrap overflow" />
-					<Switch
-						isChecked={shouldWrapOverflow}
-						onToggle={(value) =>
-							onWrapOverflowToggle(columnId, value)
-						}
-					/>
-				</Flex>
-			</Padding>
 		</Stack>
 	);
 }

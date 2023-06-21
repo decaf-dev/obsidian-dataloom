@@ -27,55 +27,13 @@ describe("getBasename", () => {
 });
 
 describe("getWikiLinkText", () => {
-	it("handles a unique name, markdown file", () => {
-		const result = getWikiLinkText(
-			{
-				basename: "filename",
-				name: "filename.md",
-				extension: "md",
-				path: "my/path/filename.md",
-			},
-			true
-		);
+	it("handles a file path with no directory", () => {
+		const result = getWikiLinkText("filename.md");
 		expect(result).toEqual("filename");
 	});
 
-	it("handles a non-unique name, markdown file", () => {
-		const result = getWikiLinkText(
-			{
-				basename: "filename",
-				name: "filename.md",
-				extension: "md",
-				path: "my/path/filename.md",
-			},
-			false
-		);
+	it("handles a file path with a directory", () => {
+		const result = getWikiLinkText("my/path/filename.md");
 		expect(result).toEqual("my/path/filename|filename");
-	});
-
-	it("handles a unique name, table file", () => {
-		const result = getWikiLinkText(
-			{
-				basename: "filename",
-				name: "filename.table",
-				extension: "table",
-				path: "my/path/filename.table",
-			},
-			true
-		);
-		expect(result).toEqual("filename.table");
-	});
-
-	it("handles a non-unique name, table file", () => {
-		const result = getWikiLinkText(
-			{
-				basename: "filename",
-				name: "filename.table",
-				extension: "table",
-				path: "my/path/filename.table",
-			},
-			false
-		);
-		expect(result).toEqual("my/path/filename.table|filename");
 	});
 });

@@ -16,7 +16,9 @@ import { useAppSelector } from "src/redux/global/hooks";
 export const useExportEvents = (state: TableState) => {
 	const { filePath } = useMountState();
 	const { appId } = useMountState();
-	const { exportRenderMarkdown } = useAppSelector((state) => state.global);
+	const { exportRenderMarkdown } = useAppSelector(
+		(state) => state.global.settings
+	);
 
 	React.useEffect(() => {
 		function handleDownloadCSV() {

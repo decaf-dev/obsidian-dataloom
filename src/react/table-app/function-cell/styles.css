@@ -1,7 +1,0 @@
-.NLT__function-cell {
-    display: flex;
-    justify-content: flex-end;
-    cursor: pointer;
-    overflow: hidden;
-    padding: var(--nlt-cell-spacing-x) var(--nlt-cell-spacing-y);
-}

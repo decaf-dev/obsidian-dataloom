@@ -1,6 +1,5 @@
 import { CURRENT_PLUGIN_VERSION } from "src/data/constants";
 import {
-	AspectRatio,
 	BodyCell,
 	CellType,
 	Column,
@@ -28,6 +27,7 @@ import {
 } from "src/shared/versioning";
 import { TableState6122 } from "src/shared/types/types-6.12.2";
 import { TableState6160 } from "src/shared/types/types-6.16.0";
+import { TableState6186 } from "src/shared/types/types-6.18.6";
 
 export const serializeTableState = (tableState: TableState): string => {
 	return JSON.stringify(tableState, null, 2);
@@ -332,7 +332,7 @@ export const deserializeTableState = (data: string): TableState => {
 		columns.forEach((column: unknown) => {
 			const typedColumn = column as Record<string, unknown>;
 			typedColumn.isLocked = false;
-			typedColumn.aspectRatio = AspectRatio.SIXTEEN_BY_NINE;
+			typedColumn.aspectRatio = "unset";
 			typedColumn.horizontalPadding = "unset";
 			typedColumn.verticalPadding = "unset";
 		});
@@ -359,6 +359,25 @@ export const deserializeTableState = (data: string): TableState => {
 		bodyRows.forEach((row: unknown, i) => {
 			const typedRow = row as Record<string, unknown>;
 			typedRow.index = i;
+		});
+	}
+
+	if (isVersionLessThan(pluginVersion, "6.19.0")) {
+		const tableState = currentState as TableState6186;
+		const { columns, bodyCells } = tableState.model;
+
+		//Migrate from functionType to calculationType
+		columns.forEach((column: unknown) => {
+			const typedColumn = column as Record<string, unknown>;
+			typedColumn.calculationType = typedColumn.functionType;
+
+			if (typedColumn["functionType"]) delete typedColumn.functionType;
+		});
+
+		//Migrate from functionType to calculationType
+		bodyCells.forEach((cell: unknown) => {
+			const typedCell = cell as Record<string, unknown>;
+			typedCell.isExternalLink = true;
 		});
 	}
 

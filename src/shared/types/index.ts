@@ -12,6 +12,7 @@ export enum Color {
 }
 
 export enum PaddingSize {
+	UNSET = "unset",
 	SM = "sm",
 	MD = "md",
 	LG = "lg",
@@ -19,7 +20,6 @@ export enum PaddingSize {
 	XXL = "2xl",
 	XXXL = "3xl",
 	XXXXL = "4xl",
-	UNSET = "unset",
 }
 
 export enum SortDir {
@@ -82,7 +82,7 @@ export enum CurrencyType {
 	ARGENTINA = "ARS",
 }
 
-export enum GeneralFunction {
+export enum Calculation {
 	NONE = "none",
 	COUNT_ALL = "count-all",
 	COUNT_VALUES = "count-values",
@@ -93,7 +93,7 @@ export enum GeneralFunction {
 	PERCENT_NOT_EMPTY = "percent-not-empty",
 }
 
-export enum NumberFunction {
+export enum NumberCalculation {
 	SUM = "sum",
 	AVG = "avg",
 	MIN = "min",
@@ -103,13 +103,13 @@ export enum NumberFunction {
 }
 
 export enum AspectRatio {
-	ONE_BY_ONE = "1/1",
+	UNSET = "unset",
 	NINE_BY_SIXTEEN = "9/16",
 	FOUR_BY_THREE = "4/3",
 	SIXTEEN_BY_NINE = "16/9",
 }
 
-export type FunctionType = GeneralFunction | NumberFunction;
+export type CalculationType = Calculation | NumberCalculation;
 
 export interface Column {
 	id: string;
@@ -121,7 +121,7 @@ export interface Column {
 	currencyType: CurrencyType;
 	shouldWrapOverflow: boolean;
 	tags: Tag[];
-	functionType: FunctionType;
+	calculationType: CalculationType;
 	aspectRatio: AspectRatio;
 	horizontalPadding: PaddingSize;
 	verticalPadding: PaddingSize;
@@ -160,6 +160,7 @@ export interface HeaderCell extends Cell {
 }
 
 export interface BodyCell extends Cell {
+	isExternalLink: boolean;
 	dateTime: number | null;
 	markdown: string;
 	tagIds: string[];

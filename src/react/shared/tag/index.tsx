@@ -1,20 +1,22 @@
+import { css } from "@emotion/react";
+
 import Icon from "../icon";
 import Stack from "../stack";
+import Button from "../button";
+import Padding from "../padding";
+
 import { Color } from "src/shared/types";
 import { findColorClassName } from "src/shared/color";
-import Button from "../button";
-
-import "./styles.css";
 import { useAppSelector } from "src/redux/global/hooks";
-import Padding from "../padding";
+
 interface Props {
 	id?: string;
 	maxWidth?: string;
 	markdown: string;
 	color: Color;
-	showRemove?: boolean;
-	onRemoveClick?: (tagId: string) => void;
-	onClick?: (tagId: string) => void;
+	showRemoveButton?: boolean;
+	onRemoveClick?: (id: string) => void;
+	onClick?: (id: string) => void;
 }
 
 export default function Tag({
@@ -22,7 +24,7 @@ export default function Tag({
 	color,
 	maxWidth,
 	markdown,
-	showRemove,
+	showRemoveButton,
 	onRemoveClick,
 }: Props) {
 	const { isDarkMode } = useAppSelector((state) => state.global);
@@ -41,7 +43,17 @@ export default function Tag({
 		contentClassName += " " + "NLT__hide-overflow-ellipsis";
 	}
 	return (
-		<div className={tagClass}>
+		<div
+			className={tagClass}
+			css={css`
+				display: flex;
+				align-items: center;
+				border-radius: 8px;
+				padding: var(--nlt-spacing--xs) var(--nlt-spacing--md);
+				width: max-content;
+				color: var(--text-normal);
+			`}
+		>
 			<Stack spacing="sm" justify="center">
 				<div
 					className={contentClassName}
@@ -49,14 +61,13 @@ export default function Tag({
 				>
 					{markdown}
 				</div>
-				{showRemove && (
+				{showRemoveButton && (
 					<Padding width="max-content">
 						<Button
 							isSmall
 							icon={<Icon lucideId="x" />}
 							onClick={() => {
-								onRemoveClick !== undefined &&
-									onRemoveClick(id!); // eslint-disable-line @typescript-eslint/no-non-null-assertion
+								if (id && onRemoveClick) onRemoveClick(id);
 							}}
 						/>
 					</Padding>

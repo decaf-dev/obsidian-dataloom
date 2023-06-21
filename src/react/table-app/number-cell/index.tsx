@@ -1,7 +1,7 @@
 import { useOverflow } from "src/shared/spacing/hooks";
 
 import "./styles.css";
-import { isNumber } from "src/shared/validators";
+import { isNumber } from "src/shared/match";
 
 interface Props {
 	value: string;

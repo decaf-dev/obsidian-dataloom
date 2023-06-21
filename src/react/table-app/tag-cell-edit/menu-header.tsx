@@ -43,7 +43,7 @@ export default function MenuHeader({
 						color={tag.color}
 						markdown={tag.markdown}
 						maxWidth="150px"
-						showRemove
+						showRemoveButton
 						onRemoveClick={onRemoveTag}
 					/>
 				))}

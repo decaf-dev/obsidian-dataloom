@@ -18,7 +18,7 @@ export default class TagCellRemoveCommand extends TableStateCommand {
 	private previousTagIdIndex: number;
 
 	constructor(cellId: string, rowId: string, tagId: string) {
-		super();
+		super(true);
 		this.cellId = cellId;
 		this.rowId = rowId;
 		this.tagId = tagId;

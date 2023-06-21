@@ -19,7 +19,7 @@ export default class TagUpdateCommand extends TableStateCommand {
 		key: keyof Tag,
 		value: unknown
 	) {
-		super();
+		super(true);
 		this.columnId = columnId;
 		this.tagId = tagId;
 		this.key = key;
