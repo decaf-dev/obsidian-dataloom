@@ -9,9 +9,9 @@ export const isOnMobile = () => {
 	return false;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const useRenderMarkdown = (
 	markdown: string,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_options?: {
 		isExternalLink?: boolean;
 		isEmbed?: boolean;
