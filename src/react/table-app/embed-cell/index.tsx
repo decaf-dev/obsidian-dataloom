@@ -1,6 +1,7 @@
 import { css } from "@emotion/react";
 import { getEmbedCellContent } from "src/shared/cell-content/embed-cell-content";
 import { AspectRatio, PaddingSize } from "src/shared/types";
+
 import Embed from "./embed";
 
 interface Props {
@@ -18,7 +19,10 @@ export default function EmbedCell({
 	horizontalPadding,
 	verticalPadding,
 }: Props) {
-	const content = getEmbedCellContent(true, isExternalLink, markdown);
+	const content = getEmbedCellContent(markdown, {
+		shouldRenderMarkdown: true,
+		isExternalLink,
+	});
 	return (
 		<div
 			className="NLT__embed-cell"

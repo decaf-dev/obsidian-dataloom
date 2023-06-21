@@ -105,6 +105,7 @@ const TableApp = () => {
 		handleBodyCellContentChange,
 		handleCellDateTimeChange,
 		handleHeaderCellContentChange,
+		handleExternalLinkToggle,
 	} = useCell();
 
 	const {
@@ -486,6 +487,9 @@ const TableApp = () => {
 												handleDateFormatChange
 											}
 											onTagAdd={handleTagAdd}
+											onExternalLinkToggle={
+												handleExternalLinkToggle
+											}
 										/>
 									),
 								};

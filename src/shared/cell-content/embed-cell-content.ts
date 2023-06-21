@@ -7,11 +7,20 @@ import { isImage, isTwitterLink, isYouTubeLink } from "../match";
  * @param value The value of the cell
  */
 export const getEmbedCellContent = (
-	renderMarkdown: boolean,
-	isExternalLink: boolean,
-	value: string
+	value: string,
+	options?: {
+		shouldRenderMarkdown?: boolean;
+		isExternalLink?: boolean;
+		isExport?: boolean;
+	}
 ) => {
-	if (renderMarkdown) {
+	const {
+		shouldRenderMarkdown = true,
+		isExternalLink = false,
+		isExport = false,
+	} = options ?? {};
+
+	if (shouldRenderMarkdown) {
 		if (isExternalLink) {
 			if (
 				isImage(value) ||
@@ -21,6 +30,13 @@ export const getEmbedCellContent = (
 				return `![](${value})`;
 			}
 			if (value !== "") return "Unsupported link";
+		} else {
+			if (value !== "") {
+				//Export will use the normal embedded image syntax
+				if (isExport) return `![[${value}]]`;
+				//In order to render with `MarkdownRenderer.renderMarkdown`, we need to use the `![]()` syntax
+				return `![](${app.vault.adapter.getResourcePath(value)})`;
+			}
 		}
 	}
 	return value;

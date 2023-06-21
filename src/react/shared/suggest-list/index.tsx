@@ -1,30 +1,35 @@
 import React from "react";
 
+import { css } from "@emotion/react";
 import fuzzysort from "fuzzysort";
 
 import SuggestItem from "./suggest-item";
-import { css } from "@emotion/react";
+import Input from "./input";
+import Text from "src/react/shared/text";
+
 import { nltEventSystem } from "src/shared/event-system/event-system";
-import { transparentInputStyle } from "src/react/table-app/shared-styles";
 import { useLogger } from "src/shared/logger";
 import {
 	VaultFile,
 	getVaultFiles,
 } from "src/obsidian-shim/development/vault-file";
-import MenuItem from "src/react/shared/menu-item";
-import Divider from "src/react/shared/divider";
+import ClearButton from "./clear-button";
+import CreateButton from "./create-button";
+import Padding from "../padding";
 
 interface ContentProps {
 	showInput?: boolean;
 	showCreate?: boolean;
 	showClear?: boolean;
 	filterValue?: string;
+	hiddenExtensions?: string[];
 	onItemClick: (item: VaultFile | null) => void;
-	onClearClick?: () => void;
 	onCreateClick?: (value: string) => void;
+	onClearClick?: () => void;
 }
 
-export default function SuggestMenuContent({
+export function SuggestList({
+	hiddenExtensions = [],
 	showInput,
 	showCreate,
 	showClear,
@@ -33,14 +38,31 @@ export default function SuggestMenuContent({
 	onClearClick,
 	onCreateClick,
 }: ContentProps) {
-	const logger = useLogger();
 	const [localFilterValue, setLocalFilterValue] = React.useState(
 		filterValue ?? ""
 	);
 	const highlightItemRef = React.useRef<HTMLDivElement | null>(null);
 	const [highlightIndex, setHighlightIndex] = React.useState(-1);
 
-	const files = getVaultFiles();
+	const logger = useLogger();
+
+	React.useEffect(() => {
+		setLocalFilterValue(filterValue ?? "");
+	}, [filterValue]);
+
+	React.useEffect(() => {
+		if (highlightItemRef.current) {
+			highlightItemRef.current.scrollIntoView({
+				behavior: "auto",
+				block: "nearest",
+			});
+		}
+	}, [highlightIndex]);
+
+	const files = getVaultFiles().filter(
+		(file) => !hiddenExtensions.includes(file.extension)
+	);
+
 	let filteredFiles: VaultFile[] = [];
 	if (localFilterValue !== "") {
 		//Do a fuzzy sort on the filtered items
@@ -55,19 +77,6 @@ export default function SuggestMenuContent({
 		filteredFiles.sort((a, b) => b.modifiedTime - a.modifiedTime);
 		filteredFiles = filteredFiles.slice(0, 20);
 	}
-
-	React.useEffect(() => {
-		setLocalFilterValue(filterValue ?? "");
-	}, [filterValue]);
-
-	React.useEffect(() => {
-		if (highlightItemRef.current) {
-			highlightItemRef.current.scrollIntoView({
-				behavior: "auto",
-				block: "nearest",
-			});
-		}
-	}, [highlightIndex]);
 
 	React.useEffect(() => {
 		function handleKeyDown(e: KeyboardEvent) {
@@ -108,70 +117,64 @@ export default function SuggestMenuContent({
 		.includes(localFilterValue);
 
 	return (
-		<div className="NLT__suggest-menu">
-			{showInput && (
-				<div
-					css={css`
-						background-color: var(--background-secondary);
-						border-bottom: 1px solid var(--table-border-color);
-						padding: var(--nlt-spacing--sm) var(--nlt-spacing--lg);
-					`}
-				>
-					<input
-						css={transparentInputStyle}
-						autoFocus
-						value={localFilterValue}
-						onChange={(e) => setLocalFilterValue(e.target.value)}
-					/>
-				</div>
+		<div
+			className="NLT__suggest-menu"
+			css={css`
+				width: 100%;
+			`}
+		>
+			{showInput && files.length > 0 && (
+				<Input
+					value={localFilterValue}
+					onChange={setLocalFilterValue}
+				/>
 			)}
 			{showCreate && !doesFilterFileExist && localFilterValue !== "" && (
-				<>
-					<MenuItem
-						name={`Create ${localFilterValue}`}
-						onClick={() => onCreateClick?.(localFilterValue)}
-					/>
-					<Divider />
-				</>
+				<CreateButton
+					value={localFilterValue}
+					onClick={onCreateClick}
+				/>
 			)}
-			<div
-				css={css`
-					max-height: 175px;
-					overflow-y: auto;
-				`}
-			>
-				{filteredFiles.length === 0 && !showCreate && (
-					<SuggestItem
-						file={null}
-						ref={null}
-						isHighlighted
-						onItemClick={onItemClick}
-					/>
-				)}
-				{filteredFiles.length > 0 && (
-					<>
-						{filteredFiles.map((file, index) => (
-							<SuggestItem
-								key={file.path}
-								ref={
-									highlightIndex === index
-										? highlightItemRef
-										: null
-								}
-								file={file}
-								isHighlighted={index === highlightIndex}
-								onItemClick={onItemClick}
-							/>
-						))}
-					</>
-				)}
-			</div>
-			{showClear && (
-				<>
-					<Divider />
-					<MenuItem name="Clear" onClick={onClearClick} />
-				</>
+			{files.length > 0 && (
+				<div
+					css={css`
+						max-height: 175px;
+						overflow-y: auto;
+					`}
+				>
+					{filteredFiles.length === 0 && !showCreate && (
+						<SuggestItem
+							file={null}
+							ref={null}
+							isHighlighted
+							onItemClick={onItemClick}
+						/>
+					)}
+					{filteredFiles.length > 0 && (
+						<>
+							{filteredFiles.map((file, index) => (
+								<SuggestItem
+									key={file.path}
+									ref={
+										highlightIndex === index
+											? highlightItemRef
+											: null
+									}
+									file={file}
+									isHighlighted={index === highlightIndex}
+									onItemClick={onItemClick}
+								/>
+							))}
+						</>
+					)}
+				</div>
 			)}
+			{files.length === 0 && (
+				<Padding px="md" pb="md">
+					<Text value="No image files found" />
+				</Padding>
+			)}
+			{showClear && <ClearButton onClick={onClearClick} />}
 		</div>
 	);
 }

@@ -92,6 +92,11 @@ interface Props {
 		rowId: string,
 		value: number | null
 	) => void;
+	onExternalLinkToggle: (
+		cellId: string,
+		rowId: string,
+		value: boolean
+	) => void;
 }
 
 export default function BodyCell({
@@ -122,6 +127,7 @@ export default function BodyCell({
 	onDateFormatChange,
 	onDateTimeChange,
 	onTagAdd,
+	onExternalLinkToggle,
 }: Props) {
 	//All of these cells have local values
 	const shouldRequestOnClose =
@@ -188,6 +194,10 @@ export default function BodyCell({
 		if (columnType === CellType.CHECKBOX) {
 			toggleCheckbox();
 		}
+	}
+
+	function handleExternalLinkToggle(value: boolean) {
+		onExternalLinkToggle(cellId, rowId, value);
 	}
 
 	function handleTagAdd(markdown: string, color: Color) {
@@ -408,10 +418,12 @@ export default function BodyCell({
 				)}
 				{columnType === CellType.EMBED && (
 					<EmbedCellEdit
+						isExternalLink={isExternalLink}
 						menuCloseRequest={menuCloseRequest}
 						value={markdown}
 						onChange={handleInputChange}
 						onMenuClose={handleMenuClose}
+						onExternalLinkToggle={handleExternalLinkToggle}
 					/>
 				)}
 				{columnType === CellType.FILE && (
