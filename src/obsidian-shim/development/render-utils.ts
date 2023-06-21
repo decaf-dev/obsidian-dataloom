@@ -10,7 +10,13 @@ export const isOnMobile = () => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const useRenderMarkdown = (markdown: string, _isEmbed: boolean) => {
+export const useRenderMarkdown = (
+	markdown: string,
+	_options?: {
+		isExternalLink?: boolean;
+		isEmbed?: boolean;
+	}
+) => {
 	const containerRef = React.useRef<HTMLDivElement | null>(null);
 	const renderRef = React.useRef<HTMLElement | null>(null);
 

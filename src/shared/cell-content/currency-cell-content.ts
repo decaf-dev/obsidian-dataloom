@@ -1,6 +1,6 @@
 import { stringToCurrencyString } from "../conversion";
 import { CurrencyType } from "../types";
-import { isNumber } from "../validators";
+import { isNumber } from "../match";
 
 export const getCurrencyCellContent = (
 	value: string,

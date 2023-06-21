@@ -105,6 +105,7 @@ const TableApp = () => {
 		handleBodyCellContentChange,
 		handleCellDateTimeChange,
 		handleHeaderCellContentChange,
+		handleExternalLinkToggle,
 	} = useCell();
 
 	const {
@@ -435,6 +436,7 @@ const TableApp = () => {
 									markdown,
 									dateTime,
 									tagIds,
+									isExternalLink,
 								} = cell;
 
 								return {
@@ -443,6 +445,7 @@ const TableApp = () => {
 										<BodyCell
 											key={cellId}
 											cellId={cellId}
+											isExternalLink={isExternalLink}
 											verticalPadding={verticalPadding}
 											horizontalPadding={
 												horizontalPadding
@@ -484,6 +487,9 @@ const TableApp = () => {
 												handleDateFormatChange
 											}
 											onTagAdd={handleTagAdd}
+											onExternalLinkToggle={
+												handleExternalLinkToggle
+											}
 										/>
 									),
 								};

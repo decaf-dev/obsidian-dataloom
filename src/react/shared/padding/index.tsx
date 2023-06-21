@@ -36,26 +36,13 @@ export default function Padding({
 		renderPb = getSpacing(p);
 		renderPl = getSpacing(p);
 		renderPr = getSpacing(p);
-	} else if (px || py) {
-		if (px) {
-			const spacing = getSpacing(px);
-			renderPl = spacing;
-			renderPr = spacing;
-		}
-		if (py) {
-			const spacing = getSpacing(py);
-			renderPt = spacing;
-			renderPb = spacing;
-		}
-	} else if (pb || pt || pl || pr) {
-		if (pb) {
-			const spacing = getSpacing(pb);
-			renderPb = spacing;
-		}
-		if (pt) {
-			const spacing = getSpacing(pt);
-			renderPt = spacing;
-		}
+	}
+
+	if (px) {
+		const spacing = getSpacing(px);
+		renderPl = spacing;
+		renderPr = spacing;
+	} else if (pl || pr) {
 		if (pl) {
 			const spacing = getSpacing(pl);
 			renderPl = spacing;
@@ -63,6 +50,21 @@ export default function Padding({
 		if (pr) {
 			const spacing = getSpacing(pr);
 			renderPr = spacing;
+		}
+	}
+
+	if (py) {
+		const spacing = getSpacing(py);
+		renderPt = spacing;
+		renderPb = spacing;
+	} else if (pt || pb) {
+		if (pt) {
+			const spacing = getSpacing(pt);
+			renderPt = spacing;
+		}
+		if (pb) {
+			const spacing = getSpacing(pb);
+			renderPb = spacing;
 		}
 	}
 

@@ -333,7 +333,7 @@ export const deserializeTableState = (data: string): TableState => {
 		columns.forEach((column: unknown) => {
 			const typedColumn = column as Record<string, unknown>;
 			typedColumn.isLocked = false;
-			typedColumn.aspectRatio = AspectRatio.SIXTEEN_BY_NINE;
+			typedColumn.aspectRatio = "unset";
 			typedColumn.horizontalPadding = "unset";
 			typedColumn.verticalPadding = "unset";
 		});
@@ -365,7 +365,7 @@ export const deserializeTableState = (data: string): TableState => {
 
 	if (isVersionLessThan(pluginVersion, "6.19.0")) {
 		const tableState = currentState as TableState6186;
-		const { columns } = tableState.model;
+		const { columns, bodyCells } = tableState.model;
 
 		//Migrate from functionType to calculationType
 		columns.forEach((column: unknown) => {
@@ -373,6 +373,12 @@ export const deserializeTableState = (data: string): TableState => {
 			typedColumn.calculationType = typedColumn.functionType;
 
 			if (typedColumn["functionType"]) delete typedColumn.functionType;
+		});
+
+		//Migrate from functionType to calculationType
+		bodyCells.forEach((cell: unknown) => {
+			const typedCell = cell as Record<string, unknown>;
+			typedCell.isExternalLink = true;
 		});
 	}
 

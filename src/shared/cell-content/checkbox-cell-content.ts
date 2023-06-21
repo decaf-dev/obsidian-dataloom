@@ -1,4 +1,4 @@
-import { isCheckboxChecked } from "../validators";
+import { isCheckboxChecked } from "../match";
 
 export const getCheckboxCellContent = (
 	markdown: string,

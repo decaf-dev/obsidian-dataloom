@@ -6,13 +6,17 @@ import { nltEventSystem } from "src/shared/event-system/event-system";
 import { VaultFile } from "src/obsidian-shim/development/vault-file";
 
 interface Props {
+	index: number;
 	file: VaultFile | null;
 	isHighlighted: boolean;
 	onItemClick: (item: VaultFile | null) => void;
 }
 
 const SuggestItem = React.forwardRef<HTMLDivElement, Props>(
-	function SuggestItem({ file, isHighlighted, onItemClick }: Props, ref) {
+	function SuggestItem(
+		{ index, file, isHighlighted, onItemClick }: Props,
+		ref
+	) {
 		const handleClick = React.useCallback(
 			(e: React.MouseEvent) => {
 				//Stop propagation so the menu doesn't remove the focus class
@@ -55,6 +59,7 @@ const SuggestItem = React.forwardRef<HTMLDivElement, Props>(
 		return (
 			<div
 				tabIndex={0}
+				data-index={index}
 				className="NLT__suggest-item NLT__focusable"
 				ref={ref}
 				css={css`
