@@ -333,7 +333,7 @@ export const deserializeTableState = (data: string): TableState => {
 		columns.forEach((column: unknown) => {
 			const typedColumn = column as Record<string, unknown>;
 			typedColumn.isLocked = false;
-			typedColumn.aspectRatio = AspectRatio.SIXTEEN_BY_NINE;
+			typedColumn.aspectRatio = "unset";
 			typedColumn.horizontalPadding = "unset";
 			typedColumn.verticalPadding = "unset";
 		});
