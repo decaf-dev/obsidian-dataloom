@@ -27,7 +27,11 @@ export const getCellContent = (
 		case CellType.NUMBER:
 			return getNumberCellContent(cell.markdown);
 		case CellType.EMBED:
-			return getEmbedCellContent(cell.markdown, renderMarkdown);
+			return getEmbedCellContent(cell.markdown, {
+				isExport: true,
+				isExternalLink: cell.isExternalLink,
+				shouldRenderMarkdown: renderMarkdown,
+			});
 		case CellType.CHECKBOX:
 			return getCheckboxCellContent(cell.markdown, renderMarkdown);
 		case CellType.CURRENCY:

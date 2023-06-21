@@ -124,7 +124,7 @@
 }
 
 .NLT__selectable:hover {
-	background-color: var(--color-base-30)
+	background-color: var(--color-base-30);
 }
 
 .NLT__selected {
@@ -132,10 +132,20 @@
 }
 
 /**
- * Components
- */
+* Remove padding from the view container
+*/
 .workspace-leaf-content[data-type="notion-like-tables"] .view-content {
 	padding: 0;
+}
+
+/**
+* Obsidian automatically has a style applied to
+* button:not(.clickable-icon)
+* We want to override this for our butons
+*/
+.NLT__app button, .NLT__menu button {
+	background-color: unset;
+	box-shadow: unset;
 }
 
 .NLT__default-cursor {

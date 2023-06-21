@@ -122,10 +122,11 @@ export default function DateCellEdit({
 	return (
 		<>
 			<div ref={triggerRef} className="NLT__date-cell-edit">
-				<Stack spacing="md" isVertical>
-					<Padding px="md" py="md">
+				<Stack isVertical>
+					<Padding>
 						<input
 							tabIndex={0}
+							type="text"
 							className="NLT__focusable"
 							css={css`
 								${borderInputStyle}

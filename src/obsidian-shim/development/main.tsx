@@ -5,14 +5,20 @@ import { store } from "../../redux/global/store";
 import { v4 as uuidv4 } from "uuid";
 import { createTableState } from "../../data/table-state-factory";
 
-import { setDarkMode, setDebugMode } from "src/redux/global/global-slice";
+import { setDarkMode, setSettings } from "src/redux/global/global-slice";
 import "./app.css";
+import { DEFAULT_SETTINGS } from "src/main";
 
 const appId = uuidv4();
 const tableState = createTableState(2, 2);
 
 store.dispatch(setDarkMode(true));
-store.dispatch(setDebugMode(true));
+store.dispatch(
+	setSettings({
+		...DEFAULT_SETTINGS,
+		shouldDebug: true,
+	})
+);
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
 	//<React.StrictMode>

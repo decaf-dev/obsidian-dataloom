@@ -1,30 +1,35 @@
 import React from "react";
 
-import { useCompare, useInputSelection } from "src/shared/hooks";
-import { useOverflow } from "src/shared/spacing/hooks";
+import ExternalEmbedInput from "./external-embed-input";
+import InternalEmbedSuggest from "./internal-embed-suggest";
+
+import { useCompare } from "src/shared/hooks";
 import { MenuCloseRequest } from "src/shared/menu/types";
-import { css } from "@emotion/react";
-import { textAreaStyle } from "src/react/table-app/shared-styles";
+import Switch from "src/react/shared/switch";
+import Stack from "src/react/shared/stack";
+import Padding from "src/react/shared/padding";
+import Divider from "src/react/shared/divider";
 
 interface Props {
 	menuCloseRequest: MenuCloseRequest | null;
+	isExternalLink: boolean;
 	value: string;
-	shouldWrapOverflow: boolean;
 	onChange: (value: string) => void;
+	onExternalLinkToggle: (value: boolean) => void;
 	onMenuClose: () => void;
 }
 
 export default function EmbedCellEdit({
-	shouldWrapOverflow,
 	menuCloseRequest,
+	isExternalLink,
 	value,
 	onChange,
 	onMenuClose,
+	onExternalLinkToggle,
 }: Props) {
-	const [localValue, setLocalValue] = React.useState(value);
-	const inputRef = React.useRef<HTMLTextAreaElement | null>(null);
-
-	useInputSelection(inputRef, localValue);
+	const [externalLink, setExternalLink] = React.useState(
+		isExternalLink ? value : ""
+	);
 
 	const hasCloseRequestTimeChanged = useCompare(
 		menuCloseRequest?.requestTime
@@ -32,46 +37,52 @@ export default function EmbedCellEdit({
 
 	React.useEffect(() => {
 		if (hasCloseRequestTimeChanged && menuCloseRequest !== null) {
-			if (localValue !== value) onChange(localValue);
+			if (isExternalLink) {
+				if (externalLink !== value) onChange(externalLink);
+			}
 			onMenuClose();
 		}
 	}, [
+		isExternalLink,
 		value,
-		localValue,
+		externalLink,
 		hasCloseRequestTimeChanged,
 		menuCloseRequest,
 		onMenuClose,
 		onChange,
 	]);
 
-	function handleTextareaChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-		const inputValue = e.target.value;
-		setLocalValue(inputValue);
+	function handleSuggestChange(value: string) {
+		onChange(value);
+		onMenuClose();
 	}
 
-	const overflowStyle = useOverflow(shouldWrapOverflow);
-
 	return (
-		<div
-			className="NLT__embed-cell-edit"
-			css={css`
-				width: 100%;
-				height: 100%;
-			`}
-		>
-			<textarea
-				autoFocus
-				css={css`
-					${textAreaStyle}
-					${overflowStyle}
-				`}
-				ref={inputRef}
-				value={localValue}
-				onChange={handleTextareaChange}
-				onBlur={(e) => {
-					e.target.classList.add("NLT__blur--cell");
-				}}
-			/>
+		<div className="NLT__embed-cell-edit">
+			<Stack isVertical width="100%" spacing="lg">
+				<Padding width="100%" px="md" pt="md">
+					<Stack isVertical spacing="sm" width="100%">
+						<label htmlFor="external-switch">External Link</label>
+						<Switch
+							id="external-switch"
+							isChecked={isExternalLink}
+							onToggle={onExternalLinkToggle}
+						/>
+					</Stack>
+				</Padding>
+				<Divider />
+				{isExternalLink && (
+					<Padding width="100%" px="md" pb="md">
+						<ExternalEmbedInput
+							value={externalLink}
+							onChange={setExternalLink}
+						/>
+					</Padding>
+				)}
+				{!isExternalLink && (
+					<InternalEmbedSuggest onChange={handleSuggestChange} />
+				)}
+			</Stack>
 		</div>
 	);
 }

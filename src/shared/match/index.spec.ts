@@ -1,4 +1,4 @@
-import { isNumber } from "./validators";
+import { isNumber } from ".";
 
 describe("isNumber", () => {
 	it("returns true if number", () => {

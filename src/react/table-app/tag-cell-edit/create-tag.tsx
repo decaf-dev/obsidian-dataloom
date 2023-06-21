@@ -13,9 +13,9 @@ interface Props {
 
 export default function CreateTag({ markdown, color, onTagAdd }: Props) {
 	return (
-		<div
-			tabIndex={0}
+		<button
 			css={css`
+				all: unset; //reset button style
 				display: flex;
 				align-items: center;
 				padding: 4px 6px;
@@ -23,14 +23,12 @@ export default function CreateTag({ markdown, color, onTagAdd }: Props) {
 				overflow: hidden;
 			`}
 			className="NLT__focusable NLT__selectable"
-			onClick={() => {
-				onTagAdd(markdown, color);
-			}}
+			onClick={() => onTagAdd(markdown, color)}
 		>
 			<Stack spacing="sm">
 				<div>Create</div>
 				<Tag markdown={markdown} color={color} maxWidth="120px" />
 			</Stack>
-		</div>
+		</button>
 	);
 }

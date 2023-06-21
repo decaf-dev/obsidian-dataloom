@@ -4,6 +4,7 @@ import {
 	AspectRatio,
 	BodyCell,
 	BodyRow,
+	Calculation,
 	CellType,
 	Column,
 	CurrencyType,
@@ -12,7 +13,6 @@ import {
 	FilterType,
 	FooterCell,
 	FooterRow,
-	GeneralFunction,
 	HeaderCell,
 	HeaderRow,
 	PaddingSize,
@@ -35,10 +35,10 @@ export const createColumn = (options?: { cellType?: CellType }): Column => {
 		type: cellType,
 		currencyType: CurrencyType.UNITED_STATES,
 		dateFormat: DateFormat.MM_DD_YYYY,
-		shouldWrapOverflow: false,
+		shouldWrapOverflow: true,
 		tags: [],
-		functionType: GeneralFunction.NONE,
-		aspectRatio: AspectRatio.SIXTEEN_BY_NINE,
+		calculationType: Calculation.NONE,
+		aspectRatio: AspectRatio.UNSET,
 		horizontalPadding: PaddingSize.UNSET,
 		verticalPadding: PaddingSize.UNSET,
 	};
@@ -86,6 +86,7 @@ export const createBodyCell = (
 	const { cellType, tagIds = [] } = options || {};
 	return {
 		id: uuidv4(),
+		isExternalLink: false,
 		columnId,
 		rowId,
 		dateTime: null,

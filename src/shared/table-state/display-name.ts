@@ -1,118 +1,122 @@
-import { isGeneralFunction } from "../validators";
+import { isNumberCalcuation } from "../match";
 import {
+	Calculation,
+	CalculationType,
 	CellType,
 	CurrencyType,
 	DateFormat,
-	FunctionType,
-	GeneralFunction,
-	NumberFunction,
+	NumberCalculation,
 } from "../types";
 
-const getShortDisplayNameForGeneralFunction = (value: GeneralFunction) => {
+const getShortDisplayNameForCalculation = (value: Calculation) => {
 	switch (value) {
-		case GeneralFunction.COUNT_ALL:
+		case Calculation.COUNT_ALL:
 			return "Count";
-		case GeneralFunction.COUNT_NOT_EMPTY:
+		case Calculation.COUNT_NOT_EMPTY:
 			return "Not empty";
-		case GeneralFunction.COUNT_VALUES:
+		case Calculation.COUNT_VALUES:
 			return "Values";
-		case GeneralFunction.COUNT_EMPTY:
+		case Calculation.COUNT_EMPTY:
 			return "Empty";
-		case GeneralFunction.COUNT_UNIQUE:
+		case Calculation.COUNT_UNIQUE:
 			return "Unique";
-		case GeneralFunction.NONE:
+		case Calculation.NONE:
 			return "None";
-		case GeneralFunction.PERCENT_EMPTY:
+		case Calculation.PERCENT_EMPTY:
 			return "Empty";
-		case GeneralFunction.PERCENT_NOT_EMPTY:
+		case Calculation.PERCENT_NOT_EMPTY:
 			return "Not empty";
 		default:
 			return "";
 	}
 };
 
-export const getShortDisplayNameForFunctionType = (value: FunctionType) => {
-	if (isGeneralFunction(value))
-		return getShortDisplayNameForGeneralFunction(value);
-	return getDisplayNameForNumberFunction(value);
+export const getShortDisplayNameForCalculationType = (
+	value: CalculationType
+) => {
+	if (isNumberCalcuation(value))
+		return getDisplayNameForNumberCalculation(value);
+	return getShortDisplayNameForCalculation(value);
 };
 
-export const getAriaLabelForGeneralFunction = (value: GeneralFunction) => {
+export const getAriaLabelForCalculation = (value: CalculationType) => {
 	switch (value) {
-		case GeneralFunction.COUNT_ALL:
+		case Calculation.COUNT_ALL:
 			return "Counts the total number of rows";
-		case GeneralFunction.COUNT_EMPTY:
+		case Calculation.COUNT_EMPTY:
 			return "Counts the number of rows with an empty cell value";
-		case GeneralFunction.COUNT_NOT_EMPTY:
+		case Calculation.COUNT_NOT_EMPTY:
 			return "Counts the number of rows with a non-empty cell value";
-		case GeneralFunction.COUNT_UNIQUE:
+		case Calculation.COUNT_UNIQUE:
 			return "Counts the number of unique values in the column";
-		case GeneralFunction.COUNT_VALUES:
+		case Calculation.COUNT_VALUES:
 			return "Counts the number of values in the column";
-		case GeneralFunction.PERCENT_EMPTY:
+		case Calculation.PERCENT_EMPTY:
 			return "Displays the percentage of rows with an empty cell value";
-		case GeneralFunction.PERCENT_NOT_EMPTY:
+		case Calculation.PERCENT_NOT_EMPTY:
 			return "Displays the percentage of rows with a non-empty cell value";
 		default:
 			return "";
 	}
 };
 
-export const getAriaLabelForNumberFunction = (value: NumberFunction) => {
+export const getAriaLabelForNumberCalculation = (value: NumberCalculation) => {
 	switch (value) {
-		case NumberFunction.SUM:
+		case NumberCalculation.SUM:
 			return "Computes the sum of the cells in the column";
-		case NumberFunction.AVG:
+		case NumberCalculation.AVG:
 			return "Computes the average of the cells in the column";
-		case NumberFunction.MIN:
+		case NumberCalculation.MIN:
 			return "Computes the minimum of the cells in the column";
-		case NumberFunction.MAX:
+		case NumberCalculation.MAX:
 			return "Computes the maximum of the cells in the column";
-		case NumberFunction.MEDIAN:
+		case NumberCalculation.MEDIAN:
 			return "Computes the median of the cells in the column";
-		case NumberFunction.RANGE:
+		case NumberCalculation.RANGE:
 			return "Computes the range (max - min) of the cells in the column";
 		default:
 			return "";
 	}
 };
 
-export const getDisplayNameForGeneralFunction = (value: GeneralFunction) => {
+export const getDisplayNameForCalculation = (value: Calculation) => {
 	switch (value) {
-		case GeneralFunction.COUNT_ALL:
+		case Calculation.COUNT_ALL:
 			return "Count all";
-		case GeneralFunction.COUNT_NOT_EMPTY:
+		case Calculation.COUNT_NOT_EMPTY:
 			return "Count not empty";
-		case GeneralFunction.COUNT_VALUES:
+		case Calculation.COUNT_VALUES:
 			return "Count values";
-		case GeneralFunction.COUNT_EMPTY:
+		case Calculation.COUNT_EMPTY:
 			return "Count empty";
-		case GeneralFunction.COUNT_UNIQUE:
+		case Calculation.COUNT_UNIQUE:
 			return "Count unique";
-		case GeneralFunction.NONE:
+		case Calculation.NONE:
 			return "None";
-		case GeneralFunction.PERCENT_EMPTY:
+		case Calculation.PERCENT_EMPTY:
 			return "Percent empty";
-		case GeneralFunction.PERCENT_NOT_EMPTY:
+		case Calculation.PERCENT_NOT_EMPTY:
 			return "Percent not empty";
 		default:
 			return "";
 	}
 };
 
-export const getDisplayNameForNumberFunction = (value: NumberFunction) => {
+export const getDisplayNameForNumberCalculation = (
+	value: NumberCalculation
+) => {
 	switch (value) {
-		case NumberFunction.SUM:
+		case NumberCalculation.SUM:
 			return "Sum";
-		case NumberFunction.AVG:
+		case NumberCalculation.AVG:
 			return "Average";
-		case NumberFunction.MIN:
+		case NumberCalculation.MIN:
 			return "Min";
-		case NumberFunction.MAX:
+		case NumberCalculation.MAX:
 			return "Max";
-		case NumberFunction.MEDIAN:
+		case NumberCalculation.MEDIAN:
 			return "Median";
-		case NumberFunction.RANGE:
+		case NumberCalculation.RANGE:
 			return "Range";
 		default:
 			return "";

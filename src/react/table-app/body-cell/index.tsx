@@ -29,7 +29,7 @@ import {
 	CHECKBOX_MARKDOWN_CHECKED,
 	CHECKBOX_MARKDOWN_UNCHECKED,
 } from "src/shared/table-state/constants";
-import { isCheckboxChecked } from "src/shared/validators";
+import { isCheckboxChecked } from "src/shared/match";
 
 import { Color } from "src/shared/types";
 import CurrencyCell from "../currency-cell";
@@ -45,6 +45,7 @@ import EmbedCellEdit from "../embed-cell-edit";
 import { Notification } from "src/obsidian-shim/development/notification";
 
 interface Props {
+	isExternalLink: boolean;
 	columnType: string;
 	cellId: string;
 	rowId: string;
@@ -91,12 +92,18 @@ interface Props {
 		rowId: string,
 		value: number | null
 	) => void;
+	onExternalLinkToggle: (
+		cellId: string,
+		rowId: string,
+		value: boolean
+	) => void;
 }
 
 export default function BodyCell({
 	cellId,
 	columnId,
 	rowId,
+	isExternalLink,
 	markdown,
 	aspectRatio,
 	verticalPadding,
@@ -120,6 +127,7 @@ export default function BodyCell({
 	onDateFormatChange,
 	onDateTimeChange,
 	onTagAdd,
+	onExternalLinkToggle,
 }: Props) {
 	//All of these cells have local values
 	const shouldRequestOnClose =
@@ -188,6 +196,10 @@ export default function BodyCell({
 		}
 	}
 
+	function handleExternalLinkToggle(value: boolean) {
+		onExternalLinkToggle(cellId, rowId, value);
+	}
+
 	function handleTagAdd(markdown: string, color: Color) {
 		if (markdown === "") return;
 		onTagAdd(
@@ -251,13 +263,18 @@ export default function BodyCell({
 		columnType === CellType.DATE ||
 		columnType === CellType.NUMBER ||
 		columnType === CellType.CURRENCY ||
-		columnType === CellType.FILE
+		columnType === CellType.FILE ||
+		columnType === CellType.EMBED
 	) {
 		menuHeight = 0;
 	}
 
 	let menuWidth = measuredWidth;
-	if (columnType === CellType.TAG || columnType === CellType.MULTI_TAG) {
+	if (
+		columnType === CellType.TAG ||
+		columnType === CellType.MULTI_TAG ||
+		columnType === CellType.EMBED
+	) {
 		menuWidth = 250;
 	} else if (columnType === CellType.FILE) {
 		menuWidth = 275;
@@ -314,6 +331,7 @@ export default function BodyCell({
 					)}
 					{columnType === CellType.EMBED && (
 						<EmbedCell
+							isExternalLink={isExternalLink}
 							markdown={markdown}
 							verticalPadding={verticalPadding}
 							horizontalPadding={horizontalPadding}
@@ -380,7 +398,6 @@ export default function BodyCell({
 				id={menu.id}
 				hideBorder={
 					columnType === CellType.TEXT ||
-					columnType === CellType.EMBED ||
 					columnType === CellType.CURRENCY ||
 					columnType === CellType.NUMBER
 				}
@@ -401,11 +418,12 @@ export default function BodyCell({
 				)}
 				{columnType === CellType.EMBED && (
 					<EmbedCellEdit
+						isExternalLink={isExternalLink}
 						menuCloseRequest={menuCloseRequest}
-						shouldWrapOverflow={shouldWrapOverflow}
 						value={markdown}
 						onChange={handleInputChange}
 						onMenuClose={handleMenuClose}
+						onExternalLinkToggle={handleExternalLinkToggle}
 					/>
 				)}
 				{columnType === CellType.FILE && (

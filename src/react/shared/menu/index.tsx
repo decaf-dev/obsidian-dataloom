@@ -93,17 +93,25 @@ const Menu = React.forwardRef<HTMLDivElement, Props>(function Menu(
 								z-index: var(--layer-menu);
 								top: ${numToPx(top)};
 								left: ${numToPx(left)};
-								width: ${width !== 0 ? numToPx(width) : "max-content"};
-								height: ${height !== 0 ? numToPx(height) : "max-content"};
-								max-width: ${maxWidth !== 0 ? numToPx(maxWidth) : "unset"};
-								max-height: ${maxHeight !== 0 ? numToPx(maxHeight) : "unset"};
-								overflow-y: ${maxHeight !== 0 ? "scroll" : "unset"};
+								width: ${width !== 0
+									? numToPx(width)
+									: "max-content"};
+								height: ${height !== 0
+									? numToPx(height)
+									: "max-content"};
+								max-width: ${maxWidth !== 0
+									? numToPx(maxWidth)
+									: "unset"};
+								max-height: ${maxHeight !== 0
+									? numToPx(maxHeight)
+									: "unset"};
+								overflow-y: ${maxHeight !== 0
+									? "scroll"
+									: "unset"};
 								background-color: var(--background-primary);
-								box-shadow: ${
-									hideBorder
-										? "unset"
-										: "0px 0px 0px 2px var(--background-modifier-border);"
-								}
+								box-shadow: ${hideBorder
+									? "unset"
+									: "0px 0px 0px 2px var(--background-modifier-border)"};
 								font-weight: 400;
 							`}
 							onClick={handleClick}

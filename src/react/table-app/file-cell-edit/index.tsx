@@ -1,5 +1,6 @@
-import SuggestMenuContent from "src/react/shared/suggest-menu/suggest-menu-content";
+import { SuggestList } from "src/react/shared/suggest-list";
 import { VaultFile } from "src/obsidian-shim/development/vault-file";
+import { getBasename } from "src/shared/link/link-utils";
 
 interface Props {
 	onChange: (value: string) => void;
@@ -7,27 +8,41 @@ interface Props {
 }
 
 export default function FileCellEdit({ onChange, onMenuClose }: Props) {
-	function handleSuggestItemClick(
-		file: VaultFile | null,
-		isFileNameUnique: boolean
-	) {
+	function handleSuggestItemClick(file: VaultFile | null) {
 		if (file) {
 			//The basename does not include an extension
 			let fileName = file.basename;
-			//The name includes an extension
-			if (file.extension !== "md") fileName = file.name;
-			//If the file name is not unique, add the path so that the system can find it
-			if (!isFileNameUnique) fileName = `${file.path}|${fileName}`;
+			if (file.path.includes("/"))
+				fileName = `${file.path}|${file.basename}`;
 			onChange(`[[${fileName}]]`);
 		}
 		onMenuClose();
 	}
 
+	function handleClearClick() {
+		onChange("");
+		onMenuClose();
+	}
+
+	function handleCreateClick(value: string) {
+		let link = `[[${value}]]`;
+		if (value.includes("/")) {
+			const fileName = getBasename(value);
+			link = `${value}|${fileName}`;
+		}
+		onChange(link);
+		onMenuClose();
+	}
+
 	return (
 		<div className="NLT__file-cell-edit">
-			<SuggestMenuContent
+			<SuggestList
 				showInput
+				showClear
+				showCreate
 				onItemClick={handleSuggestItemClick}
+				onClearClick={handleClearClick}
+				onCreateClick={handleCreateClick}
 			/>
 		</div>
 	);

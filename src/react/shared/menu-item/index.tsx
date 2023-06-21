@@ -47,9 +47,7 @@ export default function MenuItem({
 		if (e.key === "Enter") {
 			//Stop propagation so the the menu doesn't close when pressing enter
 			e.stopPropagation();
-
-			if (!onClick) return;
-			onClick();
+			onClick?.();
 		}
 	}
 

@@ -1,10 +1,11 @@
-import { isCheckboxChecked } from "src/shared/validators";
+import { isCheckboxChecked } from "src/shared/match";
 import {
 	BodyCell,
 	BodyRow,
+	Calculation,
+	CalculationType,
 	CellType,
 	DateFormat,
-	GeneralFunction,
 	Tag,
 } from "src/shared/types";
 import { hashString, round2Digits } from "./utils";
@@ -14,39 +15,39 @@ import {
 } from "src/shared/table-state/table-error";
 import { unixTimeToDateTimeString } from "src/shared/date/date-conversion";
 
-export const getGeneralFunctionContent = (
+export const getCalculationContent = (
 	bodyRows: BodyRow[],
 	columnCells: BodyCell[],
 	columnTags: Tag[],
 	cellType: CellType,
-	functionType: GeneralFunction,
+	calculationType: CalculationType,
 	dateFormat: DateFormat
 ) => {
-	return getGeneralFunctionValue(
+	return getCalculation(
 		bodyRows,
 		columnCells,
 		columnTags,
 		cellType,
-		functionType,
+		calculationType,
 		dateFormat
 	).toString();
 };
 
-const getGeneralFunctionValue = (
+export const getCalculation = (
 	bodyRows: BodyRow[],
 	columnCells: BodyCell[],
 	columnTags: Tag[],
 	cellType: CellType,
-	functionType: GeneralFunction,
+	calculationType: CalculationType,
 	dateFormat: DateFormat
 ) => {
-	if (functionType === GeneralFunction.COUNT_ALL) {
+	if (calculationType === Calculation.COUNT_ALL) {
 		return countAll(bodyRows);
-	} else if (functionType === GeneralFunction.COUNT_EMPTY) {
+	} else if (calculationType === Calculation.COUNT_EMPTY) {
 		return countEmpty(columnCells, cellType);
-	} else if (functionType === GeneralFunction.COUNT_NOT_EMPTY) {
+	} else if (calculationType === Calculation.COUNT_NOT_EMPTY) {
 		return countNotEmpty(columnCells, cellType);
-	} else if (functionType === GeneralFunction.COUNT_UNIQUE) {
+	} else if (calculationType === Calculation.COUNT_UNIQUE) {
 		return countUnique(
 			bodyRows,
 			columnCells,
@@ -54,16 +55,16 @@ const getGeneralFunctionValue = (
 			cellType,
 			dateFormat
 		);
-	} else if (functionType === GeneralFunction.COUNT_VALUES) {
+	} else if (calculationType === Calculation.COUNT_VALUES) {
 		return countValues(columnCells, cellType);
-	} else if (functionType === GeneralFunction.PERCENT_EMPTY) {
+	} else if (calculationType === Calculation.PERCENT_EMPTY) {
 		return percentEmpty(columnCells, cellType);
-	} else if (functionType === GeneralFunction.PERCENT_NOT_EMPTY) {
+	} else if (calculationType === Calculation.PERCENT_NOT_EMPTY) {
 		return percentNotEmpty(columnCells, cellType);
-	} else if (functionType === GeneralFunction.NONE) {
+	} else if (calculationType === Calculation.NONE) {
 		return "";
 	} else {
-		throw new Error("Unhandled general function");
+		throw new Error("Unhandled calculation type");
 	}
 };
 
@@ -124,17 +125,19 @@ const countValues = (columnCells: BodyCell[], cellType: CellType) => {
 };
 
 const percentEmpty = (columnCells: BodyCell[], cellType: CellType) => {
+	if (columnCells.length === 0) return "0%";
+
 	const percent =
 		(countEmpty(columnCells, cellType) / columnCells.length) * 100;
-	const normalized = round2Digits(percent);
-	return normalized + "%";
+	return round2Digits(percent) + "%";
 };
 
 const percentNotEmpty = (columnCells: BodyCell[], cellType: CellType) => {
+	if (columnCells.length === 0) return "0%";
+
 	const percent =
 		(countNotEmpty(columnCells, cellType) / columnCells.length) * 100;
-	const normalized = round2Digits(percent);
-	return normalized + "%";
+	return round2Digits(percent) + "%";
 };
 
 const getCellValues = (
