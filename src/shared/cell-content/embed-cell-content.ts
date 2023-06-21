@@ -1,3 +1,4 @@
+import { getResourcePath } from "src/obsidian-shim/development/render-utils";
 import { isImage, isTwitterLink, isYouTubeLink } from "../match";
 
 /**
@@ -35,7 +36,7 @@ export const getEmbedCellContent = (
 				//Export will use the normal embedded image syntax
 				if (isExport) return `![[${value}]]`;
 				//In order to render with `MarkdownRenderer.renderMarkdown`, we need to use the `![]()` syntax
-				return `![](${app.vault.adapter.getResourcePath(value)})`;
+				return `![](${getResourcePath(value)})`;
 			}
 		}
 	}
