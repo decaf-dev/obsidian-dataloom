@@ -102,7 +102,7 @@ export const useRenderMarkdown = (
 		}
 
 		updateContainerRef();
-	}, [markdown, leaf, isExternalLink]);
+	}, [markdown, leaf, isExternalLink, isEmbed]);
 
 	return {
 		containerRef,
@@ -117,4 +117,8 @@ export const useLeafContainer = () => {
 
 export const isOnMobile = () => {
 	return Platform.isMobile;
+};
+
+export const getResourcePath = (filePath: string) => {
+	return app.vault.adapter.getResourcePath(filePath);
 };
