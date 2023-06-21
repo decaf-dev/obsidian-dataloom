@@ -13,7 +13,7 @@ import {
 	TableState,
 	Tag,
 } from "../types";
-import { isCheckbox, isNumberCalcuation } from "../validators";
+import { isCheckbox, isNumberCalcuation } from "../match";
 
 export class ColumnTypeUpdateCommand extends TableStateCommand {
 	private columnId: string;

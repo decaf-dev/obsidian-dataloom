@@ -12,6 +12,7 @@ export enum Color {
 }
 
 export enum PaddingSize {
+	UNSET = "unset",
 	SM = "sm",
 	MD = "md",
 	LG = "lg",
@@ -19,7 +20,6 @@ export enum PaddingSize {
 	XXL = "2xl",
 	XXXL = "3xl",
 	XXXXL = "4xl",
-	UNSET = "unset",
 }
 
 export enum SortDir {
@@ -103,7 +103,7 @@ export enum NumberCalculation {
 }
 
 export enum AspectRatio {
-	ONE_BY_ONE = "1/1",
+	UNSET = "unset",
 	NINE_BY_SIXTEEN = "9/16",
 	FOUR_BY_THREE = "4/3",
 	SIXTEEN_BY_NINE = "16/9",
@@ -160,6 +160,7 @@ export interface HeaderCell extends Cell {
 }
 
 export interface BodyCell extends Cell {
+	isExternalLink: boolean;
 	dateTime: number | null;
 	markdown: string;
 	tagIds: string[];

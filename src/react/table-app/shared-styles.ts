@@ -47,7 +47,7 @@ export const transparentInputStyle = css`
 	${baseInputStyle}
 	background-color: transparent !important;
 	border: 0px !important;
-	padding: 5px 0px;
+	padding: 5px;
 `;
 
 export const borderInputStyle = css`

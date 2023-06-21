@@ -38,7 +38,7 @@ export const createColumn = (options?: { cellType?: CellType }): Column => {
 		shouldWrapOverflow: true,
 		tags: [],
 		calculationType: Calculation.NONE,
-		aspectRatio: AspectRatio.SIXTEEN_BY_NINE,
+		aspectRatio: AspectRatio.UNSET,
 		horizontalPadding: PaddingSize.UNSET,
 		verticalPadding: PaddingSize.UNSET,
 	};
@@ -86,6 +86,7 @@ export const createBodyCell = (
 	const { cellType, tagIds = [] } = options || {};
 	return {
 		id: uuidv4(),
+		isExternalLink: false,
 		columnId,
 		rowId,
 		dateTime: null,

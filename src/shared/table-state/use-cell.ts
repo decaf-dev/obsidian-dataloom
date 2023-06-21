@@ -8,6 +8,21 @@ export const useCell = () => {
 	const logger = useLogger();
 	const { doCommand } = useTableState();
 
+	function handleExternalLinkToggle(
+		cellId: string,
+		rowId: string,
+		value: boolean
+	) {
+		logger("handleExternalLinkToggle", {
+			cellId,
+			value,
+		});
+
+		doCommand(
+			new CellBodyUpdateCommand(cellId, rowId, "isExternalLink", value)
+		);
+	}
+
 	function handleHeaderCellContentChange(cellId: string, value: string) {
 		logger("handleCellContentChange", {
 			cellId,
@@ -51,5 +66,6 @@ export const useCell = () => {
 		handleHeaderCellContentChange,
 		handleBodyCellContentChange,
 		handleCellDateTimeChange,
+		handleExternalLinkToggle,
 	};
 };

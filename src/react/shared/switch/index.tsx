@@ -1,14 +1,15 @@
 import { css } from "@emotion/react";
-import "./styles.css";
 import { useAppSelector } from "src/redux/global/hooks";
+import "./styles.css";
 
 interface Props {
+	id?: string;
 	isChecked: boolean;
 	ariaLabel?: string;
 	onToggle: (value: boolean) => void;
 }
 
-export default function Switch({ isChecked, ariaLabel, onToggle }: Props) {
+export default function Switch({ id, isChecked, ariaLabel, onToggle }: Props) {
 	const { isDarkMode } = useAppSelector((state) => state.global);
 	function handleKeyDown(e: React.KeyboardEvent) {
 		if (e.key === "Enter") {
@@ -21,6 +22,7 @@ export default function Switch({ isChecked, ariaLabel, onToggle }: Props) {
 	if (isChecked) className += " is-enabled";
 	return (
 		<div
+			id={id}
 			tabIndex={0}
 			className={className}
 			css={css`

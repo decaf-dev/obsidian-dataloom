@@ -6,14 +6,14 @@ import { useOverflow } from "src/shared/spacing/hooks";
 import { useMenu } from "src/shared/menu/hooks";
 import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 import { MenuCloseRequest, MenuLevel } from "src/shared/menu/types";
-import SuggestMenu from "../../shared/suggest-menu/suggest-menu";
+import SuggestMenu from "./suggest-menu";
 import {
 	addClosingBracket,
 	doubleBracketsInnerReplace,
 	getFilterValue,
 	isSurroundedByDoubleBrackets,
 	removeClosingBracket,
-} from "../../shared/suggest-menu/utils";
+} from "./utils";
 
 import { getWikiLinkText } from "src/shared/link/link-utils";
 import { css } from "@emotion/react";

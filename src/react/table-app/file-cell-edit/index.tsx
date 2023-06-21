@@ -1,9 +1,9 @@
-import SuggestMenuContent from "src/react/shared/suggest-menu/suggest-menu-content";
+import { SuggestList } from "src/react/shared/suggest-list";
 import { VaultFile } from "src/obsidian-shim/development/vault-file";
 import {
 	stripAlias,
 	stripDoubleBrackets,
-} from "src/react/shared/suggest-menu/utils";
+} from "src/react/table-app/text-cell-edit/utils";
 import { getBasename } from "src/shared/link/link-utils";
 
 interface Props {
@@ -44,7 +44,7 @@ export default function FileCellEdit({ value, onChange, onMenuClose }: Props) {
 
 	return (
 		<div className="NLT__file-cell-edit">
-			<SuggestMenuContent
+			<SuggestList
 				filterValue={filterValue}
 				showInput
 				showClear
