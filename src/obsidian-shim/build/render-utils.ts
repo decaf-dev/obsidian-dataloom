@@ -102,7 +102,7 @@ export const useRenderMarkdown = (
 		}
 
 		updateContainerRef();
-	}, [markdown, leaf, isExternalLink]);
+	}, [markdown, leaf, isExternalLink, isEmbed]);
 
 	return {
 		containerRef,
