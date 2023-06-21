@@ -79,32 +79,21 @@ export function SuggestList({
 	}
 
 	React.useEffect(() => {
-		function handleKeyDown(e: KeyboardEvent) {
+		function handleKeyDown() {
 			logger("SuggestMenuContent handleKeyDown");
-			if (e.key === "ArrowUp") {
-				//Prevent default scrolling
-				e.preventDefault();
-				setHighlightIndex((prevIndex) => {
-					let index = prevIndex - 1;
-					if (index < 0) index = filteredFiles.length - 1;
-					return index;
-				});
-			} else if (e.key === "ArrowDown") {
-				//Prevent default scrolling
-				e.preventDefault();
 
-				setHighlightIndex((prevIndex) => {
-					let index = prevIndex + 1;
-					if (index > filteredFiles.length - 1) index = 0;
-					return index;
-				});
-			} else if (e.key === "Tab") {
-				setHighlightIndex((prevIndex) => {
-					let index = prevIndex + 1;
-					if (index > filteredFiles.length - 1) index = 0;
-					return index;
-				});
+			const focusedEl = document.activeElement;
+			if (!focusedEl) return;
+
+			if (focusedEl.classList.contains("NLT__suggest-item")) {
+				const index = focusedEl.getAttribute("data-index");
+				if (!index) return;
+
+				setHighlightIndex(parseInt(index));
+				return;
 			}
+
+			setHighlightIndex(-1);
 		}
 
 		nltEventSystem.addEventListener("keydown", handleKeyDown);
@@ -144,6 +133,7 @@ export function SuggestList({
 				>
 					{filteredFiles.length === 0 && !showCreate && (
 						<SuggestItem
+							index={0}
 							file={null}
 							ref={null}
 							isHighlighted
@@ -155,6 +145,7 @@ export function SuggestList({
 							{filteredFiles.map((file, index) => (
 								<SuggestItem
 									key={file.path}
+									index={index}
 									ref={
 										highlightIndex === index
 											? highlightItemRef
