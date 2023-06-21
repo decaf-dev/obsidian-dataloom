@@ -126,6 +126,7 @@ export default function DateCellEdit({
 					<Padding>
 						<input
 							tabIndex={0}
+							type="text"
 							className="NLT__focusable"
 							css={css`
 								${borderInputStyle}

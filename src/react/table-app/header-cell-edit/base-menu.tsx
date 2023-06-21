@@ -68,6 +68,7 @@ export default function BaseMenu({
 			<Stack spacing="sm" isVertical width="100%">
 				<Padding px="md" py="sm" width="100%">
 					<input
+						type="text"
 						className="NLT__focusable"
 						autoFocus
 						css={borderInputStyle}
