@@ -428,7 +428,6 @@ export default function BodyCell({
 				)}
 				{columnType === CellType.FILE && (
 					<FileCellEdit
-						value={markdown}
 						onChange={handleInputChange}
 						onMenuClose={handleMenuClose}
 					/>

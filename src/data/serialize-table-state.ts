@@ -1,6 +1,5 @@
 import { CURRENT_PLUGIN_VERSION } from "src/data/constants";
 import {
-	AspectRatio,
 	BodyCell,
 	CellType,
 	Column,

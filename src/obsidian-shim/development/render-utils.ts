@@ -1,17 +1,9 @@
 import React from "react";
 import { appendOrReplaceFirstChild } from "src/shared/render/utils";
 
-export const useLeafContainer = () => {
-	return document.body;
-};
-
-export const isOnMobile = () => {
-	return false;
-};
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const useRenderMarkdown = (
 	markdown: string,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_options?: {
 		isExternalLink?: boolean;
 		isEmbed?: boolean;
@@ -34,4 +26,16 @@ export const useRenderMarkdown = (
 		containerRef,
 		renderRef,
 	};
+};
+
+export const getResourcePath = (filePath: string) => {
+	return filePath;
+};
+
+export const useLeafContainer = () => {
+	return document.body;
+};
+
+export const isOnMobile = () => {
+	return false;
 };
