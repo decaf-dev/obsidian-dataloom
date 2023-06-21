@@ -118,3 +118,7 @@ export const useLeafContainer = () => {
 export const isOnMobile = () => {
 	return Platform.isMobile;
 };
+
+export const getResourcePath = (filePath: string) => {
+	return app.vault.adapter.getResourcePath(filePath);
+};
