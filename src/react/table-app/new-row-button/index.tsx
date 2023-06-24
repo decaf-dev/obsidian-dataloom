@@ -8,7 +8,7 @@ interface Props {
 
 export default function NewRowButton({ onClick }: Props) {
 	return (
-		<div className="NLT__new-row">
+		<div className="Dashboards__new-row">
 			<Button onClick={() => onClick()}>New row</Button>
 		</div>
 	);

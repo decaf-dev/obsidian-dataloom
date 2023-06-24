@@ -58,7 +58,7 @@ export default class DashboardsSettingsTab extends PluginSettingTab {
 		const exportRenderMarkdownDesc = new DocumentFragment();
 		exportRenderMarkdownDesc.createSpan({}, (span) => {
 			span.innerHTML =
-				"If enabled, content will be exported as markdown. For example, if enabled, a checkbox cell's content will be exported as <strong>[ ]</strong> or <strong>[x]<strong>. If disabled, the content will be exported as <strong>true<strong> or <strong>false<strong>.";
+				"If enabled, content will be exported as markdown. For example, if enabled, a checkbox cell's content will be exported as <strong>[ ]</strong> or <strong>[x]</strong>. If disabled, the content will be exported as <strong>true</strong> or <strong>false</strong>.";
 		});
 
 		new Setting(containerEl).setName("Export").setHeading();

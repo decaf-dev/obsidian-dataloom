@@ -22,7 +22,7 @@ export default function CreateTag({ markdown, color, onTagAdd }: Props) {
 				width: 100%;
 				overflow: hidden;
 			`}
-			className="NLT__focusable NLT__selectable"
+			className="Dashboards__focusable Dashboards__selectable"
 			onClick={() => onTagAdd(markdown, color)}
 		>
 			<Stack spacing="sm">

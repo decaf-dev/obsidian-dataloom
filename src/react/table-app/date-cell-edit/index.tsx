@@ -121,13 +121,13 @@ export default function DateCellEdit({
 
 	return (
 		<>
-			<div ref={triggerRef} className="NLT__date-cell-edit">
+			<div ref={triggerRef} className="Dashboards__date-cell-edit">
 				<Stack isVertical>
 					<Padding>
 						<input
 							tabIndex={0}
 							type="text"
-							className="NLT__focusable"
+							className="Dashboards__focusable"
 							css={css`
 								${borderInputStyle}
 								${isInputInvalid

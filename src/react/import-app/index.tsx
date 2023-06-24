@@ -49,7 +49,7 @@ export default function ImportApp({ initialState, onStateSave }: Props) {
 	const { columns, headerCells } = initialState.model;
 
 	return (
-		<div className="NLT__import-app">
+		<div className="Dashboards__import-app">
 			<Stack spacing="lg" isVertical>
 				<Stack spacing="lg">
 					<ImportTypeSelect

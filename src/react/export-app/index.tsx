@@ -50,7 +50,7 @@ export function ExportApp({ tableState, filePath }: Props) {
 	}
 
 	return (
-		<div className="NLT__export-app">
+		<div className="Dashboards__export-app">
 			<Padding p="xl">
 				<h5
 					css={css`

@@ -42,7 +42,7 @@ const TagColorMenu = React.forwardRef<HTMLDivElement, Props>(
 
 		return (
 			<Menu ref={ref} id={menuId} isOpen={isOpen} top={top} left={left}>
-				<div className="NLT__tag-color-menu">
+				<div className="Dashboards__tag-color-menu">
 					<Stack spacing="sm" isVertical>
 						<Padding px="lg" py="sm">
 							<Text value="Color" />

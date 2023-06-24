@@ -51,9 +51,9 @@ export default function MenuItem({
 		}
 	}
 
-	let className = "NLT__menu-item NLT__selectable";
-	if (isSelected) className += " NLT__selected";
-	if (isFocusable) className += " NLT__focusable";
+	let className = "Dashboards__menu-item Dashboards__selectable";
+	if (isSelected) className += " Dashboards__selected";
+	if (isFocusable) className += " Dashboards__focusable";
 
 	return (
 		<div

@@ -113,8 +113,8 @@ export default function HeaderCell({
 
 	const lucideId = getIconIdForCellType(type);
 
-	let contentClassName = "NLT__th-content";
-	if (resizingColumnId == null) contentClassName += " NLT__selectable";
+	let contentClassName = "Dashboards__th-content";
+	if (resizingColumnId == null) contentClassName += " Dashboards__selectable";
 
 	return (
 		<>
@@ -124,7 +124,7 @@ export default function HeaderCell({
 				shouldRun={resizingColumnId === null}
 			>
 				<div
-					className="NLT__th-container"
+					className="Dashboards__th-container"
 					ref={triggerRef}
 					css={css`
 						display: flex;

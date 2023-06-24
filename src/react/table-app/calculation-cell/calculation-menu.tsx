@@ -30,7 +30,7 @@ const CalculationMenu = React.forwardRef<HTMLDivElement, Props>(
 	) {
 		return (
 			<Menu ref={ref} id={id} isOpen={isOpen} top={top} left={left}>
-				<div className="NLT__function-menu">
+				<div className="Dashboards__function-menu">
 					{Object.values(Calculation).map((type) => (
 						<MenuItem
 							key={type}

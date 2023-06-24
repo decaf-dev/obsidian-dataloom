@@ -25,7 +25,7 @@ export default function FilterColumnDropdown({
 	return (
 		<select
 			tabIndex={0}
-			className="NLT__focusable"
+			className="Dashboards__focusable"
 			css={css`
 				${selectStyle}
 				max-width: 175px;

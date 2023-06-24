@@ -135,23 +135,25 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 		const children = rowEl.querySelectorAll("td:not(:last-child)");
 
 		for (let i = 0; i < children.length; i++) {
-			children[i].classList.add("NLT__tr--drag-over");
+			children[i].classList.add("Dashboards__tr--drag-over");
 		}
 	}
 
 	function removeDragHover() {
 		//Add dragging over class to all the children
-		const children = document.querySelectorAll(".NLT__tr--drag-over");
+		const children = document.querySelectorAll(
+			".Dashboards__tr--drag-over"
+		);
 
 		for (let i = 0; i < children.length; i++) {
-			children[i].classList.remove("NLT__tr--drag-over");
+			children[i].classList.remove("Dashboards__tr--drag-over");
 		}
 	}
 
 	return (
 		<>
 			<div
-				className="NLT__row-options"
+				className="Dashboards__row-options"
 				css={css`
 					width: 100%;
 					height: 100%;

@@ -16,7 +16,7 @@ export default function Input({ value, onChange }: Props) {
 			`}
 		>
 			<input
-				className="NLT__focusable"
+				className="Dashboards__focusable"
 				type="text"
 				css={transparentInputStyle}
 				autoFocus

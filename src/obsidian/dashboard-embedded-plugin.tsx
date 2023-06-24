@@ -66,7 +66,7 @@ class DashboardsEmbeddedPlugin implements PluginValue {
 			linkEl.style.padding = "0px";
 
 			const tableContainerEl = linkEl.createDiv();
-			tableContainerEl.className = "NLT__embedded-container";
+			tableContainerEl.className = "Dashboards__embedded-container";
 			tableContainerEl.style.height = "100%";
 			tableContainerEl.style.width = "100%";
 

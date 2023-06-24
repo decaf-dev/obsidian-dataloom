@@ -171,7 +171,7 @@ export default function TextCellEdit({
 	return (
 		<>
 			<div
-				className="NLT__text-cell-edit"
+				className="Dashboards__text-cell-edit"
 				ref={triggerRef}
 				css={css`
 					width: 100%;
@@ -189,7 +189,7 @@ export default function TextCellEdit({
 					onKeyDown={handleKeyDown}
 					onChange={handleTextareaChange}
 					onBlur={(e) => {
-						e.target.classList.add("NLT__blur--cell");
+						e.target.classList.add("Dashboards__blur--cell");
 					}}
 				/>
 			</div>

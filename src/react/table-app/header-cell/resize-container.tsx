@@ -56,7 +56,7 @@ export default function ResizeContainer({
 	return (
 		<div css={containerStyle}>
 			<div
-				className="NLT__resize-handle"
+				className="Dashboards__resize-handle"
 				css={[innerStyle, isDragging && dragStyle]}
 				onMouseDown={(e) => {
 					onMenuClose();

@@ -14,7 +14,7 @@ export default function SearchBar() {
 		<Stack spacing="lg">
 			{isSearchBarVisible && (
 				<input
-					className="NLT__focusable"
+					className="Dashboards__focusable"
 					css={css`
 						${baseInputStyle}
 						max-width: 200px;

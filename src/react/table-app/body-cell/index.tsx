@@ -282,12 +282,12 @@ export default function BodyCell({
 		menuWidth = 175;
 	}
 
-	let className = "NLT__body-td-container";
+	let className = "Dashboards__body-td-container";
 	if (
 		columnType === CellType.LAST_EDITED_TIME ||
 		columnType === CellType.CREATION_TIME
 	) {
-		className += " NLT__default-cursor";
+		className += " Dashboards__default-cursor";
 	}
 
 	const cellTags = columnTags.filter((tag) => cellTagIds.includes(tag.id));
