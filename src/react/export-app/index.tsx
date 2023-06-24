@@ -58,7 +58,7 @@ export function ExportApp({ tableState, filePath }: Props) {
 						margin-bottom: 0px;
 					`}
 				>
-					Notion-Like Tables Export
+					Dashboards Export
 				</h5>
 				<hr
 					css={css`
