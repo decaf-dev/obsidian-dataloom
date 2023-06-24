@@ -1,8 +1,6 @@
-# Notion-Like Tables
+# Dashboards
 
-Notion-Like Tables is a tabular data management plugin for [Obsidian.md](https://obsidian.md/).
-
-Unlike [Notion](https://www.notion.so/), it is a free, offline, and open-source.
+Dashboards is a data management plugin for [Obsidian.md](https://obsidian.md/).
 
 ![Obsidian Downloads](https://img.shields.io/badge/dynamic/json?logo=obsidian&color=%23483699&label=downloads&query=%24%5B%22notion-like-tables%22%5D.downloads&url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json) ![Release Version](https://img.shields.io/github/v/release/trey-wallis/obsidian-notion-like-tables)
 
@@ -26,7 +24,7 @@ If you are experiencing a bug, please open a [bug report](https://github.com/tre
 
 ## License
 
-Notion-Like Tables is distributed under the [GNU General Public License v3.0](https://github.com/trey-wallis/obsidian-notion-like-tables/blob/master/LICENSE)
+Dashboards is distributed under the [GNU General Public License v3.0](https://github.com/trey-wallis/obsidian-notion-like-tables/blob/master/LICENSE)
 
 ## Disclaimer
 
