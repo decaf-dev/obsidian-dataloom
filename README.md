@@ -1,16 +1,14 @@
-# Obsidian Notion-Like Tables
+# Dashboards
 
-<img alt="screenshot" src="https://github.com/trey-wallis/obsidian-notion-like-tables/assets/40307803/b2bb3513-df52-4d97-8a42-c699bb2bddf1">
-
-Notion-Like Tables is your premiere tool for creating and managing tabular data in Obsidian.md.
+<img alt="screenshot" src="https://github.com/trey-wallis/obsidian-dashboards/assets/40307803/b2bb3513-df52-4d97-8a42-c699bb2bddf1">
 
 [![Active Development](https://img.shields.io/badge/Maintenance%20Level-Actively%20Developed-brightgreen.svg)](https://gist.github.com/cheerfulstoic/d107229326a01ff0f333a1d3476e068d)
 
-![Obsidian Downloads](https://img.shields.io/badge/dynamic/json?logo=obsidian&color=%23483699&label=downloads&query=%24%5B%22notion-like-tables%22%5D.downloads&url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json) ![Release Version](https://img.shields.io/github/v/release/trey-wallis/obsidian-notion-like-tables)
+![Obsidian Downloads](https://img.shields.io/badge/dynamic/json?logo=obsidian&color=%23483699&label=downloads&query=%24%5B%22dashboards%22%5D.downloads&url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json) ![Release Version](https://img.shields.io/github/v/release/trey-wallis/obsidian-dashboards)
 
-#### [Documentation website](https://trey-wallis.github.io/obsidian-notion-like-tables)
+#### [Documentation](https://trey-wallis.github.io/obsidian-dashboards)
 
-#### [Lastest release notes](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/6.18.0)
+#### [Lastest release notes](https://github.com/trey-wallis/obsidian-dashboards/releases/tag/6.18.0)
 
 ## About
 
@@ -57,11 +55,11 @@ You can also right click on a folder and click **New Notion-Like table**
 
 ## Features
 
-For detailed documentation on table features see: [https://trey-wallis.github.io/obsidian-notion-like-tables](https://trey-wallis.github.io/obsidian-notion-like-tables)
+For detailed documentation on table features see: [https://trey-wallis.github.io/obsidian-dashboards](https://trey-wallis.github.io/obsidian-dashboards)
 
 ## Guides
 
-For detailed guides on how to use the table see: [https://trey-wallis.github.io/obsidian-notion-like-tables](https://trey-wallis.github.io/obsidian-notion-like-tables)
+For detailed guides on how to use the table see: [https://trey-wallis.github.io/obsidian-dashboards](https://trey-wallis.github.io/obsidian-dashboards)
 
 ## Roadmap
 
@@ -74,11 +72,11 @@ See our [project roadmap](https://github.com/users/trey-wallis/projects/2) for d
 
 ## Feature requests
 
-If you would like to suggest a feature for the plugin, please open a [feature request](https://github.com/trey-wallis/obsidian-notion-like-tables/issues/new/choose)
+If you would like to suggest a feature for the plugin, please open a [feature request](https://github.com/trey-wallis/obsidian-dashboards/issues/new/choose)
 
 ## Bug reports
 
-If you are experiencing a bug, please open a [bug report](https://github.com/trey-wallis/obsidian-notion-like-tables/issues/new/choose)
+If you are experiencing a bug, please open a [bug report](https://github.com/trey-wallis/obsidian-dashboards/issues/new/choose)
 
 ## Support development
 
@@ -90,7 +88,7 @@ If you appreciate the plugin or wish to support my work, feel free to donate.
 
 ## License
 
-Notion-Like Tables is distributed under the [GNU General Public License v3.0](https://github.com/trey-wallis/obsidian-notion-like-tables/blob/master/LICENSE)
+Notion-Like Tables is distributed under the [GNU General Public License v3.0](https://github.com/trey-wallis/obsidian-dashboards/blob/master/LICENSE)
 
 ## Disclaimer
 
