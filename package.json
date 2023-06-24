@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-dashboards",
-	"version": "6.19.0",
+	"version": "6.19.1",
 	"description": "Powerful dashboard suite inspired by Notion.so.",
 	"main": "main.js",
 	"scripts": {
