@@ -18,7 +18,7 @@ export default class NLTImportModal extends Modal {
 
 	onOpen() {
 		const { contentEl } = this;
-		contentEl.createDiv({ text: "Notion-Like Tables Import" });
+		contentEl.createDiv({ text: "Dashboards Import" });
 		const appContainer = contentEl.createDiv();
 
 		const view = app.workspace.getActiveViewOfType(NLTView);
