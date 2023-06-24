@@ -34,11 +34,12 @@ export default function ColorItem({
 		}
 	}
 
-	let containerClass = "NLT__color-item NLT__focusable NLT__selectable";
-	if (isSelected) containerClass += " NLT__selected";
+	let containerClass =
+		"Dashboards__color-item Dashboards__focusable Dashboards__selectable";
+	if (isSelected) containerClass += " Dashboards__selected";
 
 	const colorClass = findColorClassName(isDarkMode, color);
-	let squareClass = "NLT__color-item-square";
+	let squareClass = "Dashboards__color-item-square";
 	squareClass += " " + colorClass;
 
 	return (

@@ -48,7 +48,7 @@ export default function MenuHeader({
 					/>
 				))}
 				<input
-					className="NLT__focusable"
+					className="Dashboards__focusable"
 					css={transparentInputStyle}
 					autoFocus
 					ref={inputRef}

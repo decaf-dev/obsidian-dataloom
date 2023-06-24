@@ -86,11 +86,11 @@ export default function Button({
 		}
 	}
 
-	let className = "NLT__button";
+	let className = "Dashboards__button";
 
 	if (isFocusable) {
-		className += " NLT__focusable";
-		if (invertFocusColor) className += " NLT__focusable--inverted";
+		className += " Dashboards__focusable";
+		if (invertFocusColor) className += " Dashboards__focusable--inverted";
 	}
 
 	return (

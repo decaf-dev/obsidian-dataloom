@@ -11,7 +11,7 @@ interface Props {
 export default function NewColumnButton({ onClick }: Props) {
 	return (
 		<div
-			className="NLT__new-column"
+			className="Dashboards__new-column"
 			css={css`
 				width: 50px;
 			`}

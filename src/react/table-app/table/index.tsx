@@ -77,7 +77,7 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 							return (
 								<td
 									key={id}
-									className="NLT__footer-td"
+									className="Dashboards__footer-td"
 									css={css`
 										padding: 0px;
 									`}
@@ -128,7 +128,7 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 									border-bottom: 0;
 								}
 							`}
-							className="NLT__body-td"
+							className="Dashboards__body-td"
 						>
 							{content}
 						</td>
@@ -149,7 +149,7 @@ const Components: TableComponents = {
 				`}
 				{...props}
 				style={style}
-				className="NLT__table"
+				className="Dashboards__table"
 			/>
 		);
 	},

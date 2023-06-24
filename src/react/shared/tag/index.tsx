@@ -29,7 +29,7 @@ export default function Tag({
 }: Props) {
 	const { isDarkMode } = useAppSelector((state) => state.global);
 
-	let tagClass = "NLT__tag";
+	let tagClass = "Dashboards__tag";
 	tagClass += " " + findColorClassName(isDarkMode, color);
 
 	if (onRemoveClick !== undefined && id === undefined) {
@@ -38,9 +38,9 @@ export default function Tag({
 		);
 	}
 
-	let contentClassName = "NLT__tag-content";
+	let contentClassName = "Dashboards__tag-content";
 	if (maxWidth !== undefined) {
-		contentClassName += " " + "NLT__hide-overflow-ellipsis";
+		contentClassName += " " + "Dashboards__hide-overflow-ellipsis";
 	}
 	return (
 		<div

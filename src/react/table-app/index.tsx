@@ -146,7 +146,9 @@ const TableApp = () => {
 			const layerEl = getFocusableLayerEl(appId, topMenu);
 			if (!layerEl) return;
 
-			const focusableEls = layerEl.querySelectorAll(".NLT__focusable");
+			const focusableEls = layerEl.querySelectorAll(
+				".Dashboards__focusable"
+			);
 			if (focusableEls.length === 0) return;
 
 			focusNextElement(layerEl, focusableEls);
@@ -167,7 +169,9 @@ const TableApp = () => {
 			const layerEl = getFocusableLayerEl(appId, topMenu);
 			if (!layerEl) return;
 
-			const focusableEls = layerEl.querySelectorAll(".NLT__focusable");
+			const focusableEls = layerEl.querySelectorAll(
+				".Dashboards__focusable"
+			);
 			if (focusableEls.length === 0) return;
 
 			//Prevent default scrolling of the table container
@@ -254,7 +258,7 @@ const TableApp = () => {
 	return (
 		<div
 			data-id={appId}
-			className="NLT__app"
+			className="Dashboards__app"
 			css={css`
 				display: flex;
 				flex-direction: column;
@@ -543,7 +547,7 @@ const TableApp = () => {
 										id: cell.id,
 										content: (
 											<div
-												className="NLT__footer-td-container"
+												className="Dashboards__footer-td-container"
 												css={css`
 													width: ${width};
 												`}

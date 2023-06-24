@@ -40,7 +40,7 @@ export default function FilterTextInput({
 				cellType !== CellType.TAG &&
 				cellType !== CellType.MULTI_TAG && (
 					<input
-						className="NLT__focusable"
+						className="Dashboards__focusable"
 						css={css`
 							${baseInputStyle}
 							width: 150px !important;
@@ -53,7 +53,7 @@ export default function FilterTextInput({
 			{cellType === CellType.CHECKBOX && (
 				<select
 					tabIndex={0}
-					className="NLT__focusable"
+					className="Dashboards__focusable"
 					css={css`
 						${selectStyle}
 					`}
@@ -70,7 +70,7 @@ export default function FilterTextInput({
 			)}
 			{(cellType === CellType.TAG || cellType === CellType.MULTI_TAG) && (
 				<Select
-					className="react-select NLT__focusable"
+					className="react-select Dashboards__focusable"
 					styles={{
 						placeholder: (baseStyles) => ({
 							...baseStyles,

@@ -57,7 +57,7 @@ const FilterMenu = React.forwardRef<HTMLDivElement, Props>(function FilterMenu(
 			ref={ref}
 		>
 			<div
-				className="NLT__filter-menu"
+				className="Dashboards__filter-menu"
 				css={css`
 					width: ${isMobileSize() ? "calc(100vw - 30px)" : "unset"};
 				`}

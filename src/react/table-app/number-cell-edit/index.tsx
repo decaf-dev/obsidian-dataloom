@@ -49,7 +49,7 @@ export default function NumberCellEdit({
 	}
 
 	return (
-		<div className="NLT__number-cell-edit">
+		<div className="Dashboards__number-cell-edit">
 			<input
 				autoFocus
 				css={numberInputStyle}
@@ -59,7 +59,7 @@ export default function NumberCellEdit({
 				value={localValue}
 				onChange={(e) => handleChange(e.target.value)}
 				onBlur={(e) => {
-					e.target.classList.add("NLT__blur--cell");
+					e.target.classList.add("Dashboards__blur--cell");
 				}}
 			/>
 		</div>

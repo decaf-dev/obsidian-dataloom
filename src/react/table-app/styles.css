@@ -25,93 +25,93 @@
 /*
  * Colors
  */
-.NLT__light-gray--light {
+.Dashboards__light-gray--light {
 	/* background-color: #cfcfc4; */
 	background-color: hsl(0, 3%, 94%);
 }
 
-.NLT__light-gray--dark {
+.Dashboards__light-gray--dark {
 	background-color: hsl(0, 0%, 22%);
 }
 
-.NLT__gray--light {
+.Dashboards__gray--light {
 	/* background-color: #cfcfc4; */
 	background-color: hsl(40, 5%, 88%);
 }
 
-.NLT__gray--dark {
+.Dashboards__gray--dark {
 	background-color: hsl(0, 0%, 35%);
 }
 
-.NLT__brown--light {
+.Dashboards__brown--light {
 	background-color: hsl(18, 31%, 89%);
 }
 
-.NLT__brown--dark {
+.Dashboards__brown--dark {
 	background-color: hsl(19, 32%, 27%);
 }
 
-.NLT__orange--light {
+.Dashboards__orange--light {
 	background-color: hsl(28, 67%, 88%);
 }
 
-.NLT__orange--dark {
+.Dashboards__orange--dark {
 	background-color: hsl(28, 52%, 32%);
 }
 
-.NLT__yellow--light {
+.Dashboards__yellow--light {
 	background-color: hsl(43, 82%, 89%);
 }
 
-.NLT__yellow--dark {
+.Dashboards__yellow--dark {
 	background-color: hsl(37, 43%, 36%);
 }
 
-.NLT__green--light {
+.Dashboards__green--light {
 	background-color: hsl(113, 30%, 89%);
 }
 
-.NLT__green--dark {
+.Dashboards__green--dark {
 	background-color: hsl(138, 23%, 28%);
 }
 
-.NLT__blue--light {
+.Dashboards__blue--light {
 	background-color: hsl(205, 41%, 89%);
 }
 
-.NLT__blue--dark {
+.Dashboards__blue--dark {
 	background-color: hsl(218, 38%, 30%);
 }
 
-.NLT__purple--light {
+.Dashboards__purple--light {
 	background-color: hsl(272, 29%, 90%);
 }
 
-.NLT__purple--dark {
+.Dashboards__purple--dark {
 	background-color: hsl(266, 34%, 28%);
 }
 
-.NLT__pink--light {
+.Dashboards__pink--light {
 	background-color: hsl(330, 36%, 91%);
 }
 
-.NLT__pink--dark {
+.Dashboards__pink--dark {
 	background-color: hsl(330, 31%, 30%);
 }
 
-.NLT__red--light {
+.Dashboards__red--light {
 	background-color: hsl(11, 64%, 91%);
 }
 
-.NLT__red--dark {
+.Dashboards__red--dark {
 	background-color: hsl(8, 35%, 30%);
 }
 
-.NLT__app ::-webkit-scrollbar {
+.Dashboards__app ::-webkit-scrollbar {
 	display: none;
 }
 
-.NLT__menu ::-webkit-scrollbar {
+.Dashboards__menu ::-webkit-scrollbar {
 	display: none;
 }
 
@@ -119,15 +119,15 @@
 /*
  * Selectable and selected
  */
-.NLT__selectable {
+.Dashboards__selectable {
 	cursor: pointer;
 }
 
-.NLT__selectable:hover {
+.Dashboards__selectable:hover {
 	background-color: var(--color-base-30);
 }
 
-.NLT__selected {
+.Dashboards__selected {
 	background-color: var(--color-base-20);
 }
 
@@ -143,42 +143,42 @@
 * button:not(.clickable-icon)
 * We want to override this for our butons
 */
-.NLT__app button, .NLT__menu button {
+.Dashboards__app button, .Dashboards__menu button {
 	background-color: unset;
 	box-shadow: unset;
 }
 
-.NLT__default-cursor {
+.Dashboards__default-cursor {
 	cursor: default !important;
 }
 
-.NLT__focusable:focus-visible, .NLT__focus-visible {
+.Dashboards__focusable:focus-visible, .Dashboards__focus-visible {
 	outline: 2px solid var(--color-accent) !important;
 	outline-offset: -2px !important;
 }
 
-.NLT__focusable--inverted:focus-visible {
+.Dashboards__focusable--inverted:focus-visible {
 	outline: 2px solid var(--text-on-accent-inverted);
 	outline-offset: 0px;
 }
 
-.NLT__blur--cell {
+.Dashboards__blur--cell {
 	outline: 2px solid var(--background-modifier-border-focus) !important;
 	outline-offset: -2px;
 }
 
-.NLT__blur {
+.Dashboards__blur {
 	outline: 2px solid var(--color-accent) !important;
 	outline-offset: -2px;
 }
 
-.NLT__tr--drag-over {
+.Dashboards__tr--drag-over {
 	/* outline: 2px solid var(--color-accent);
 	outline-offset: -2px; */
 	border-bottom: 1px solid var(--color-accent) !important;
 }
 
-.NLT__th--drag-over {
+.Dashboards__th--drag-over {
 	/* outline: 2px solid var(--color-accent);
 	outline-offset: -2px; */
 	border-bottom: 1px solid var(--color-accent) !important;

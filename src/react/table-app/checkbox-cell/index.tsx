@@ -10,7 +10,7 @@ export default function CheckboxCell({ value }: Props) {
 
 	return (
 		<div
-			className="NLT__checkbox-cell"
+			className="Dashboards__checkbox-cell"
 			css={css`
 				width: 100%;
 				padding: var(--nlt-cell-spacing);

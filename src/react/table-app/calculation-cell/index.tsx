@@ -87,7 +87,7 @@ export default function CalculationCell({
 		<>
 			<MenuTrigger isCell menu={menu}>
 				<div
-					className="NLT__function-cell NLT__selectable"
+					className="Dashboards__function-cell Dashboards__selectable"
 					ref={triggerRef}
 					css={css`
 						display: flex;

@@ -112,7 +112,7 @@ export default function OptionBar({
 
 	return (
 		<div
-			className="NLT__option-bar"
+			className="Dashboards__option-bar"
 			css={css`
 				width: 100%;
 				padding-left: var(--nlt-spacing--lg);

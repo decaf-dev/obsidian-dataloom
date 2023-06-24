@@ -15,7 +15,7 @@ export default function NumberCell({ value, shouldWrapOverflow }: Props) {
 	if (isNumber(value)) valueString = value;
 
 	return (
-		<div className="NLT__number-cell" css={overflowStyle}>
+		<div className="Dashboards__number-cell" css={overflowStyle}>
 			{valueString}
 		</div>
 	);

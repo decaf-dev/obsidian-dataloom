@@ -16,7 +16,7 @@ export default function ExternalEmbedInput({ value, onChange }: Props) {
 		<input
 			autoFocus
 			type="text"
-			className="NLT__focusable"
+			className="Dashboards__focusable"
 			css={css`
 				${borderInputStyle}
 			`}

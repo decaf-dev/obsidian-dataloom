@@ -60,7 +60,7 @@ const SuggestItem = React.forwardRef<HTMLDivElement, Props>(
 			<div
 				tabIndex={0}
 				data-index={index}
-				className="NLT__suggest-item NLT__focusable"
+				className="Dashboards__suggest-item Dashboards__focusable"
 				ref={ref}
 				css={css`
 					padding: var(--nlt-spacing--sm) var(--nlt-spacing--lg);

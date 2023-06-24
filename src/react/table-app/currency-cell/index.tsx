@@ -19,7 +19,7 @@ export default function CurrencyCell({
 	const overflowStyle = useOverflow(shouldWrapOverflow);
 
 	return (
-		<div className="NLT__currency-cell" css={overflowStyle}>
+		<div className="Dashboards__currency-cell" css={overflowStyle}>
 			{content}
 		</div>
 	);

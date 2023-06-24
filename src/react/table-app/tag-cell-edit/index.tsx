@@ -79,7 +79,7 @@ export default function TagCellEdit({
 	}
 
 	return (
-		<div className="NLT__tag-cell-edit">
+		<div className="Dashboards__tag-cell-edit">
 			<MenuHeader
 				inputValue={inputValue}
 				cellTags={cellTags}
