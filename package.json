@@ -1,7 +1,7 @@
 {
-	"name": "obsidian-notion-like-tables",
+	"name": "obsidian-dashboards",
 	"version": "6.19.0",
-	"description": "Notion-like tables for Obsidian.md",
+	"description": "Powerful dashboard suite inspired by Notion.so.",
 	"main": "main.js",
 	"scripts": {
 		"dev--obsidian": "node esbuild.config.mjs",
