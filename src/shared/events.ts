@@ -1,5 +1,5 @@
 const obsidianEvent = (name: string) => {
-	return "notion-like-tables-" + name;
+	return "dashboards-" + name;
 };
 
 export const EVENT_COLUMN_ADD = obsidianEvent("add-column");

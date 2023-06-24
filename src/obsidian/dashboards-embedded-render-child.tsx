@@ -1,12 +1,12 @@
 import { MarkdownRenderChild, TFile } from "obsidian";
 import { Root, createRoot } from "react-dom/client";
-import NotionLikeTable from "src/obsidian-shim/build/notion-like-table";
+import Dashboard from "src/obsidian-shim/build/dashboard";
 import { store } from "src/redux/global/store";
-import { NLTView } from "./nlt-view";
+import DashboardsView from "./dashboards-view";
 import { deserializeTableState } from "src/data/serialize-table-state";
 import { v4 as uuidv4 } from "uuid";
 
-export default class NLTEmbeddedRenderChild extends MarkdownRenderChild {
+export default class DashboardsEmbeddedRenderChild extends MarkdownRenderChild {
 	private root: Root | null;
 	private fileName: string;
 	private appId: string;
@@ -22,7 +22,7 @@ export default class NLTEmbeddedRenderChild extends MarkdownRenderChild {
 
 	async onload() {
 		const container = this.containerEl;
-		const activeView = app.workspace.getActiveViewOfType(NLTView);
+		const activeView = app.workspace.getActiveViewOfType(DashboardsView);
 		if (!activeView) return;
 
 		const file = app.vault.getAbstractFileByPath(this.fileName);
@@ -36,7 +36,7 @@ export default class NLTEmbeddedRenderChild extends MarkdownRenderChild {
 			this.root = createRoot(container);
 
 			this.root.render(
-				<NotionLikeTable
+				<Dashboard
 					leaf={activeView.leaf}
 					appId={this.appId}
 					filePath={file.path}

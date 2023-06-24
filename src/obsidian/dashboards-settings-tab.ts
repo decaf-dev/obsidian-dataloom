@@ -2,7 +2,7 @@ import { PluginSettingTab, App } from "obsidian";
 import NLTPlugin from "../main";
 import { Setting } from "obsidian";
 
-export default class NLTSettingsTab extends PluginSettingTab {
+export default class DashboardsSettingsTab extends PluginSettingTab {
 	plugin: NLTPlugin;
 
 	constructor(app: App, plugin: NLTPlugin) {

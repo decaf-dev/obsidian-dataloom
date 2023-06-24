@@ -1,5 +1,5 @@
 import ReactDOM from "react-dom/client";
-import NotionLikeTable from "./notion-like-table";
+import Dashboard from "./dashboard";
 import { store } from "../../redux/global/store";
 
 import { v4 as uuidv4 } from "uuid";
@@ -22,7 +22,7 @@ store.dispatch(
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
 	//<React.StrictMode>
-	<NotionLikeTable
+	<Dashboard
 		isMarkdownView={false}
 		appId={appId}
 		tableState={tableState}

@@ -1,6 +1,6 @@
 import { TextFileView, WorkspaceLeaf } from "obsidian";
 import { createRoot, Root } from "react-dom/client";
-import NotionLikeTable from "src/obsidian-shim/build/notion-like-table";
+import Dashboard from "src/obsidian-shim/build/dashboard";
 import { store } from "src/redux/global/store";
 import { TableState } from "src/shared/types";
 import {
@@ -8,12 +8,12 @@ import {
 	serializeTableState,
 } from "src/data/serialize-table-state";
 import { EVENT_REFRESH_TABLES } from "src/shared/events";
-import NLTExportModal from "./nlt-export-modal";
+import DashboardsExportModal from "./dashboards-export-modal";
 import { v4 as uuidv4 } from "uuid";
 
-export const NOTION_LIKE_TABLES_VIEW = "notion-like-tables";
+export const DASHBOARDS_VIEW = "dashboards";
 
-export class NLTView extends TextFileView {
+export default class DashboardsView extends TextFileView {
 	private root: Root | null;
 	private appId: string;
 
@@ -43,7 +43,7 @@ export class NLTView extends TextFileView {
 		});
 
 		this.addAction("download", "Export", () => {
-			new NLTExportModal(this.app, this.file.path).open();
+			new DashboardsExportModal(this.app, this.file.path).open();
 		});
 
 		this.app.workspace.on(
@@ -89,7 +89,7 @@ export class NLTView extends TextFileView {
 	}
 
 	getViewType() {
-		return NOTION_LIKE_TABLES_VIEW;
+		return DASHBOARDS_VIEW;
 	}
 
 	getDisplayText() {
@@ -133,7 +133,7 @@ export class NLTView extends TextFileView {
 	private renderApp(appId: string, state: TableState) {
 		if (this.root) {
 			this.root.render(
-				<NotionLikeTable
+				<Dashboard
 					leaf={this.leaf}
 					appId={appId}
 					filePath={this.file.path}
