@@ -4,7 +4,7 @@ import { MarkdownView, TFile, WorkspaceLeaf } from "obsidian";
 import { Root, createRoot } from "react-dom/client";
 import { serializeTableState } from "src/data/serialize-table-state";
 import { deserializeTableState } from "src/data/serialize-table-state";
-import NotionLikeTable from "src/obsidian-shim/build/notion-like-table";
+import Dashboard from "src/obsidian-shim/build/dashboard";
 import { store } from "src/redux/global/store";
 import { EVENT_REFRESH_TABLES } from "src/shared/events";
 import { TableState } from "src/shared/types";
@@ -18,7 +18,7 @@ import {
 } from "./utils";
 import { v4 as uuidv4 } from "uuid";
 
-class NLTEmbeddedPlugin implements PluginValue {
+class DashboardsEmbeddedPlugin implements PluginValue {
 	private tableApps: {
 		id: string;
 		parentEl: HTMLElement;
@@ -139,7 +139,7 @@ class NLTEmbeddedPlugin implements PluginValue {
 		const throttleHandleSave = _.throttle(this.handleSave, 2000);
 
 		root.render(
-			<NotionLikeTable
+			<Dashboard
 				appId={id}
 				isMarkdownView
 				filePath={tableFile.path}
@@ -186,4 +186,6 @@ class NLTEmbeddedPlugin implements PluginValue {
 	}
 }
 
-export const nltEmbeddedPlugin = ViewPlugin.fromClass(NLTEmbeddedPlugin);
+export const dashboardsEmbeddedPlugin = ViewPlugin.fromClass(
+	DashboardsEmbeddedPlugin
+);

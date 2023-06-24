@@ -1,5 +1,5 @@
 import { App, Modal } from "obsidian";
-import { NLTView } from "./nlt-view";
+import DashboardsView from "./dashboards-view";
 import { TableState } from "../shared/types";
 import { Root, createRoot } from "react-dom/client";
 import ImportApp from "../react/import-app";
@@ -8,7 +8,7 @@ import {
 	serializeTableState,
 } from "src/data/serialize-table-state";
 
-export default class NLTImportModal extends Modal {
+export default class DashboardsImportModal extends Modal {
 	root: Root;
 
 	constructor(app: App) {
@@ -21,7 +21,7 @@ export default class NLTImportModal extends Modal {
 		contentEl.createDiv({ text: "Dashboards Import" });
 		const appContainer = contentEl.createDiv();
 
-		const view = app.workspace.getActiveViewOfType(NLTView);
+		const view = app.workspace.getActiveViewOfType(DashboardsView);
 		if (view) {
 			//Get table state
 			const data = view.getViewData();
@@ -37,7 +37,7 @@ export default class NLTImportModal extends Modal {
 		}
 	}
 
-	private handleStateSave = (view: NLTView, state: TableState) => {
+	private handleStateSave = (view: DashboardsView, state: TableState) => {
 		const serialized = serializeTableState(state);
 
 		//Update the file contents and force an update of the React app

@@ -1,5 +1,5 @@
 import { MarkdownRenderer, MarkdownView, WorkspaceLeaf } from "obsidian";
-import { NLTView } from "src/obsidian/nlt-view";
+import DashboardsView from "src/obsidian/dashboards-view";
 
 const renderText = async (leaf: WorkspaceLeaf, value: string) => {
 	const div = document.createElement("div");
@@ -8,7 +8,7 @@ const renderText = async (leaf: WorkspaceLeaf, value: string) => {
 
 	try {
 		const view = leaf.view;
-		if (view instanceof MarkdownView || view instanceof NLTView) {
+		if (view instanceof MarkdownView || view instanceof DashboardsView) {
 			await MarkdownRenderer.renderMarkdown(
 				value,
 				div,

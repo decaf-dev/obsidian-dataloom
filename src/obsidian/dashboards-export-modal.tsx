@@ -1,12 +1,12 @@
 import { App, Modal } from "obsidian";
-import { NLTView } from "./nlt-view";
+import DashboardsView from "./dashboards-view";
 import { Root, createRoot } from "react-dom/client";
 import { deserializeTableState } from "src/data/serialize-table-state";
 import { ExportApp } from "src/react/export-app";
 import { Provider } from "react-redux";
 import { store } from "src/redux/global/store";
 
-export default class NLTExportModal extends Modal {
+export default class DashboardsExportModal extends Modal {
 	root: Root;
 	filePath: string;
 
@@ -19,7 +19,7 @@ export default class NLTExportModal extends Modal {
 	onOpen() {
 		const container = this.containerEl.children[1];
 
-		const view = app.workspace.getActiveViewOfType(NLTView);
+		const view = app.workspace.getActiveViewOfType(DashboardsView);
 		if (view) {
 			//Get table state
 			const data = view.getViewData();

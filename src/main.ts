@@ -7,11 +7,11 @@ import {
 	TFolder,
 } from "obsidian";
 
-import NLTSettingsTab from "./obsidian/nlt-settings-tab";
+import NLTSettingsTab from "./obsidian/dashboards-settings-tab";
 
 import { store } from "./redux/global/store";
 import { setDarkMode, setSettings } from "./redux/global/global-slice";
-import { NLTView, NOTION_LIKE_TABLES_VIEW } from "./obsidian/nlt-view";
+import DashboardsView, { DASHBOARDS_VIEW } from "./obsidian/dashboards-view";
 import { TABLE_EXTENSION, WIKI_LINK_REGEX } from "./data/constants";
 import { createTableFile } from "src/data/table-file";
 import {
@@ -25,7 +25,7 @@ import {
 	EVENT_ROW_ADD,
 	EVENT_ROW_DELETE,
 } from "./shared/events";
-import { nltEmbeddedPlugin } from "./obsidian/nlt-embedded-plugin";
+import { dashboardsEmbeddedPlugin } from "./obsidian/dashboard-embedded-plugin";
 import {
 	deserializeTableState,
 	serializeTableState,
@@ -64,8 +64,8 @@ export default class NLTPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
-		this.registerView(NOTION_LIKE_TABLES_VIEW, (leaf) => new NLTView(leaf));
-		this.registerExtensions([TABLE_EXTENSION], NOTION_LIKE_TABLES_VIEW);
+		this.registerView(DASHBOARDS_VIEW, (leaf) => new DashboardsView(leaf));
+		this.registerExtensions([TABLE_EXTENSION], DASHBOARDS_VIEW);
 
 		this.addRibbonIcon("table", "Create Notion-Like table", async () => {
 			await this.newTableFile(null);
@@ -81,7 +81,7 @@ export default class NLTPlugin extends Plugin {
 	private registerEmbeddedView() {
 		//This registers a CodeMirror extension. It is used to render the embedded
 		//table in live preview mode.
-		this.registerEditorExtension(nltEmbeddedPlugin);
+		this.registerEditorExtension(dashboardsEmbeddedPlugin);
 
 		//This registers a Markdown post processor. It is used to render the embedded
 		//table in preview mode.
@@ -120,7 +120,7 @@ export default class NLTPlugin extends Plugin {
 		if (embedded) return filePath;
 		//Open file in a new tab and set it to active
 		await app.workspace.getLeaf(true).setViewState({
-			type: NOTION_LIKE_TABLES_VIEW,
+			type: DASHBOARDS_VIEW,
 			active: true,
 			state: { file: filePath },
 		});
@@ -320,7 +320,8 @@ export default class NLTPlugin extends Plugin {
 			name: "Add column",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "\\" }],
 			checkCallback: (checking: boolean) => {
-				const nltView = this.app.workspace.getActiveViewOfType(NLTView);
+				const nltView =
+					this.app.workspace.getActiveViewOfType(DashboardsView);
 				const markdownView =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
 				if (nltView || markdownView) {
@@ -338,7 +339,8 @@ export default class NLTPlugin extends Plugin {
 			name: "Delete column",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Backspace" }],
 			checkCallback: (checking: boolean) => {
-				const nltView = this.app.workspace.getActiveViewOfType(NLTView);
+				const nltView =
+					this.app.workspace.getActiveViewOfType(DashboardsView);
 				const markdownView =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
 				if (nltView || markdownView) {
@@ -356,7 +358,8 @@ export default class NLTPlugin extends Plugin {
 			name: "Add row",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Enter" }],
 			checkCallback: (checking: boolean) => {
-				const nltView = this.app.workspace.getActiveViewOfType(NLTView);
+				const nltView =
+					this.app.workspace.getActiveViewOfType(DashboardsView);
 				const markdownView =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
 				if (nltView || markdownView) {
@@ -372,7 +375,8 @@ export default class NLTPlugin extends Plugin {
 			name: "Delete row",
 			hotkeys: [{ modifiers: ["Alt", "Shift"], key: "Backspace" }],
 			checkCallback: (checking: boolean) => {
-				const nltView = this.app.workspace.getActiveViewOfType(NLTView);
+				const nltView =
+					this.app.workspace.getActiveViewOfType(DashboardsView);
 				const markdownView =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
 				if (nltView || markdownView) {
@@ -389,7 +393,8 @@ export default class NLTPlugin extends Plugin {
 			id: "nlt-export-markdown",
 			name: "Export as markdown",
 			checkCallback: (checking: boolean) => {
-				const nltView = this.app.workspace.getActiveViewOfType(NLTView);
+				const nltView =
+					this.app.workspace.getActiveViewOfType(DashboardsView);
 				const markdownView =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
 				if (nltView || markdownView) {
@@ -406,7 +411,8 @@ export default class NLTPlugin extends Plugin {
 			id: "nlt-export-csv",
 			name: "Export as CSV",
 			checkCallback: (checking: boolean) => {
-				const nltView = this.app.workspace.getActiveViewOfType(NLTView);
+				const nltView =
+					this.app.workspace.getActiveViewOfType(DashboardsView);
 				const markdownView =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
 				if (nltView || markdownView) {
@@ -439,6 +445,6 @@ export default class NLTPlugin extends Plugin {
 	 * This can be when the plugin is disabled or Obsidian is closed.
 	 */
 	async onunload() {
-		this.app.workspace.detachLeavesOfType(NOTION_LIKE_TABLES_VIEW);
+		this.app.workspace.detachLeavesOfType(DASHBOARDS_VIEW);
 	}
 }
