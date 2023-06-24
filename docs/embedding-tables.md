@@ -46,7 +46,7 @@ An embedded table with a width of `300px` and a default height
 
 ## Bugs
 
-There is currently a [bug](https://github.com/trey-wallis/obsidian-notion-like-tables/issues/523) where if you rename a table, any embedded references in open tabs will render a gray rectangle. The temporary solution is to close the markdown files that contain the embedded table and reopen them.
+There is currently a [bug](https://github.com/trey-wallis/obsidian-dashboards/issues/523) where if you rename a table, any embedded references in open tabs will render a gray rectangle. The temporary solution is to close the markdown files that contain the embedded table and reopen them.
 
 ## Future development
 
