@@ -47,5 +47,5 @@ body:
       id: logs
       attributes:
           label: Relevant log output
-          description: Please copy and paste any relevant log output. In Obsidan press Cmd-Option-I (Mac) or Ctrl-Alt-I (Window) on keyboard. Copy any log messages that contain [Notion-Like Tables]
+          description: Please copy and paste any relevant log output. In Obsidan press Cmd-Option-I (Mac) or Ctrl-Alt-I (Window) on keyboard. Copy any log messages that contain [Dashboards]
           render: shell

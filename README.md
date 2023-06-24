@@ -29,7 +29,7 @@
 1. In Obsidian, open **Settings**
 2. Go to **Community plugins**
 3. Select **Browse**
-4. Search for **Notion-Like Tables** by **Trey Wallis**
+4. Search for **Dashboards** by **Trey Wallis**
 5. Select **Install**
 6. Then select **Enable**
 
@@ -88,7 +88,7 @@ If you appreciate the plugin or wish to support my work, feel free to donate.
 
 ## License
 
-Notion-Like Tables is distributed under the [GNU General Public License v3.0](https://github.com/trey-wallis/obsidian-dashboards/blob/master/LICENSE)
+Dashboards is distributed under the [GNU General Public License v3.0](https://github.com/trey-wallis/obsidian-dashboards/blob/master/LICENSE)
 
 ## Disclaimer
 

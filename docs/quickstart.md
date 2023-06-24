@@ -7,7 +7,7 @@
 1. In Obsidian, open **Settings**
 2. Go to **Community plugins**
 3. Select **Browse**
-4. Search for **Notion-Like Tables** by **Trey Wallis**
+4. Search for **Dashboards** by **Trey Wallis**
 5. Select **Install**
 6. Then select **Enable**
 
