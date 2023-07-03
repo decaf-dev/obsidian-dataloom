@@ -18,7 +18,7 @@ import {
 	removeEmbeddedLinkChildren,
 } from "./utils";
 import { v4 as uuidv4 } from "uuid";
-import DashboardsApp from "src/react/dashboard-app";
+import DashboardApp from "src/react/dashboard-app";
 
 class EditingViewPlugin implements PluginValue {
 	private tableApps: {
@@ -141,7 +141,7 @@ class EditingViewPlugin implements PluginValue {
 		const throttleHandleSave = _.throttle(this.handleSave, 2000);
 
 		root.render(
-			<DashboardsApp
+			<DashboardApp
 				appId={id}
 				isMarkdownView
 				filePath={tableFile.path}

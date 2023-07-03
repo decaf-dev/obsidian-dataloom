@@ -20,7 +20,7 @@ interface Props {
 	onSaveState: (appId: string, state: TableState) => void;
 }
 
-export default function DashboardsApp({
+export default function DashboardApp({
 	appId,
 	leaf,
 	isMarkdownView,

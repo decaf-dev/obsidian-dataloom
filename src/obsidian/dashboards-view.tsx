@@ -11,7 +11,7 @@ import {
 import { EVENT_REFRESH_TABLES } from "src/shared/events";
 import ExportModal from "./export-modal";
 import { v4 as uuidv4 } from "uuid";
-import DashboardsApp from "src/react/dashboard-app";
+import DashboardApp from "src/react/dashboard-app";
 import { DASHBOARDS_PLUGIN_ID } from "src/main";
 
 export const DASHBOARDS_VIEW = "dashboards";
@@ -136,7 +136,7 @@ export default class DashboardsView extends TextFileView {
 	private renderApp(appId: string, state: TableState) {
 		if (this.root) {
 			this.root.render(
-				<DashboardsApp
+				<DashboardApp
 					leaf={this.leaf}
 					appId={appId}
 					filePath={this.file.path}

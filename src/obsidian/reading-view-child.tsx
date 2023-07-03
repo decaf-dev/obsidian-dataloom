@@ -6,7 +6,7 @@ import { store } from "src/redux/global/store";
 import DashboardsView from "./dashboards-view";
 import { deserializeTableState } from "src/data/serialize-table-state";
 import { v4 as uuidv4 } from "uuid";
-import DashboardsApp from "src/react/dashboard-app";
+import DashboardApp from "src/react/dashboard-app";
 
 export default class ReadingViewChild extends MarkdownRenderChild {
 	private root: Root | null;
@@ -38,7 +38,7 @@ export default class ReadingViewChild extends MarkdownRenderChild {
 			this.root = createRoot(container);
 
 			this.root.render(
-				<DashboardsApp
+				<DashboardApp
 					leaf={activeView.leaf}
 					appId={this.appId}
 					filePath={file.path}
