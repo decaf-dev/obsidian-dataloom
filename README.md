@@ -28,9 +28,9 @@ Dashboards support both light and dark modes and a majority of Obsidian themes.
 ![](/assets/light-mode.png)
 ![](/assets/dark-mode.png)
 
-Choose from 11 different menu types
+Choose from 11 different cell types
 
-<img src="./assets/type-menu.png" alt="Alt Text" width="200">
+<img src="./assets/type-menu.png" width="200">
 
 Notion-like tag menu system
 
@@ -38,7 +38,7 @@ Notion-like tag menu system
 
 Toggle visibility of different columns
 
-<img src="./assets/toggle-menu.png" alt="Alt Text" width="200">
+<img src="./assets/toggle-menu.png" width="200">
 
 Reference notes directly from the table
 
@@ -104,7 +104,7 @@ Dashboards is built with [React.JS](https://react.dev/).
 Please make sure that you install yarn
 
 ```shell
-npm install --global yarn
+npm install -g yarn
 ```
 
 Install dependencies
@@ -116,7 +116,7 @@ yarn install
 Create a symbolic link the cloned repository to your Obsidan vault. I recommend making a new Obsidian vault just for testing.
 
 ```shell
-ln -s /users/trey/dashboards /users/trey/test-vault/.obsidian/plugins/
+ln -s /users/trey/dashboards /users/trey/test-vault/.obsidian/plugins
 ```
 
 Run the project
