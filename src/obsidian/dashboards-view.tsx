@@ -9,7 +9,7 @@ import {
 	serializeTableState,
 } from "src/data/serialize-table-state";
 import { EVENT_REFRESH_TABLES } from "src/shared/events";
-import DashboardsExportModal from "./dashboards-export-modal";
+import ExportModal from "./export-modal";
 import { v4 as uuidv4 } from "uuid";
 import DashboardsApp from "src/react/table-app";
 
@@ -45,7 +45,7 @@ export default class DashboardsView extends TextFileView {
 		});
 
 		this.addAction("download", "Export", () => {
-			new DashboardsExportModal(this.app, this.file.path).open();
+			new ExportModal(this.app, this.file.path).open();
 		});
 
 		this.app.workspace.on(

@@ -20,7 +20,7 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import DashboardsApp from "src/react/table-app";
 
-class DashboardsEmbeddedPlugin implements PluginValue {
+class EditingViewPlugin implements PluginValue {
 	private tableApps: {
 		id: string;
 		parentEl: HTMLElement;
@@ -188,6 +188,4 @@ class DashboardsEmbeddedPlugin implements PluginValue {
 	}
 }
 
-export const dashboardsEmbeddedPlugin = ViewPlugin.fromClass(
-	DashboardsEmbeddedPlugin
-);
+export const editingViewPlugin = ViewPlugin.fromClass(EditingViewPlugin);

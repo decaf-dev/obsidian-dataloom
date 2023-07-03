@@ -8,7 +8,7 @@ import { deserializeTableState } from "src/data/serialize-table-state";
 import { v4 as uuidv4 } from "uuid";
 import DashboardsApp from "src/react/table-app";
 
-export default class DashboardsEmbeddedRenderChild extends MarkdownRenderChild {
+export default class ReadingViewChild extends MarkdownRenderChild {
 	private root: Root | null;
 	private fileName: string;
 	private appId: string;

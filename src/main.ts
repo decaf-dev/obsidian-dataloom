@@ -25,7 +25,7 @@ import {
 	EVENT_ROW_ADD,
 	EVENT_ROW_DELETE,
 } from "./shared/events";
-import { dashboardsEmbeddedPlugin } from "./obsidian/dashboards-embedded-plugin";
+import { editingViewPlugin } from "./obsidian/editing-view-plugin";
 import {
 	deserializeTableState,
 	serializeTableState,
@@ -81,7 +81,7 @@ export default class DashboardsPlugin extends Plugin {
 	private registerEmbeddedView() {
 		//This registers a CodeMirror extension. It is used to render the embedded
 		//table in live preview mode.
-		this.registerEditorExtension(dashboardsEmbeddedPlugin);
+		this.registerEditorExtension(editingViewPlugin);
 
 		//This registers a Markdown post processor. It is used to render the embedded
 		//table in preview mode.
@@ -90,7 +90,7 @@ export default class DashboardsPlugin extends Plugin {
 		// 	for (let i = 0; i < embeddedTableLinkEls.length; i++) {
 		// 		const linkEl = embeddedTableLinkEls[i];
 		// 		context.addChild(
-		// 			new DashboardsEmbeddedRenderChild(
+		// 			new DashboardsReadingChild(
 		// 				linkEl,
 		// 				linkEl.getAttribute("src")!
 		// 			)
