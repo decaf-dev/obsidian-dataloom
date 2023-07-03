@@ -1,7 +1,7 @@
 import { App, Modal } from "obsidian";
 import DashboardsView from "./dashboards-view";
 import { Root, createRoot } from "react-dom/client";
-import { deserializeTableState } from "src/data/serialize-table-state";
+import { deserializeDashboardState } from "src/data/serialize-dashboard-state";
 import { ExportApp } from "src/react/export-app";
 import { Provider } from "react-redux";
 import { store } from "src/redux/global/store";
@@ -21,14 +21,17 @@ export default class ExportModal extends Modal {
 
 		const view = app.workspace.getActiveViewOfType(DashboardsView);
 		if (view) {
-			//Get table state
+			//Get dashboard state
 			const data = view.getViewData();
-			const state = deserializeTableState(data);
+			const state = deserializeDashboardState(data);
 
 			this.root = createRoot(container);
 			this.root.render(
 				<Provider store={store}>
-					<ExportApp tableState={state} filePath={this.filePath} />
+					<ExportApp
+						dashboardState={state}
+						filePath={this.filePath}
+					/>
 				</Provider>
 			);
 		}

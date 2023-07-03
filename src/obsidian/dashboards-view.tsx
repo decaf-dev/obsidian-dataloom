@@ -3,15 +3,16 @@ import { TextFileView, WorkspaceLeaf } from "obsidian";
 import "react-devtools";
 import { createRoot, Root } from "react-dom/client";
 import { store } from "src/redux/global/store";
-import { TableState } from "src/shared/types";
+import { DashboardState } from "src/shared/types";
 import {
-	deserializeTableState,
-	serializeTableState,
-} from "src/data/serialize-table-state";
-import { EVENT_REFRESH_TABLES } from "src/shared/events";
+	deserializeDashboardState,
+	serializeDashboardState,
+} from "src/data/serialize-dashboard-state";
+import { EVENT_REFRESH_DASHBOARDS } from "src/shared/events";
 import ExportModal from "./export-modal";
 import { v4 as uuidv4 } from "uuid";
-import DashboardsApp from "src/react/table-app";
+import DashboardApp from "src/react/dashboard-app";
+import { DASHBOARDS_PLUGIN_ID } from "src/main";
 
 export const DASHBOARDS_VIEW = "dashboards";
 
@@ -40,8 +41,8 @@ export default class DashboardsView extends TextFileView {
 		this.addAction("settings", "Settings", () => {
 			//Open settings tab
 			(this.app as any).setting.open();
-			//Navigate to Notion-Like-Tables settings
-			(this.app as any).setting.openTabById("notion-like-tables");
+			//Navigate to plugin settings
+			(this.app as any).setting.openTabById(DASHBOARDS_PLUGIN_ID);
 		});
 
 		this.addAction("download", "Export", () => {
@@ -50,13 +51,16 @@ export default class DashboardsView extends TextFileView {
 
 		this.app.workspace.on(
 			// @ts-expect-error: not a native Obsidian event
-			EVENT_REFRESH_TABLES,
+			EVENT_REFRESH_DASHBOARDS,
 			this.handleRefreshEvent
 		);
 	}
 
 	async onClose() {
-		this.app.workspace.off(EVENT_REFRESH_TABLES, this.handleRefreshEvent);
+		this.app.workspace.off(
+			EVENT_REFRESH_DASHBOARDS,
+			this.handleRefreshEvent
+		);
 		if (this.root) {
 			this.root.unmount();
 			this.root = null;
@@ -66,7 +70,7 @@ export default class DashboardsView extends TextFileView {
 	setViewData(data: string, clear: boolean): void {
 		this.data = data;
 
-		const state = deserializeTableState(data);
+		const state = deserializeDashboardState(data);
 		if (clear) {
 			//We need to set this in a timeout to prevent errors from React
 			setTimeout(() => {
@@ -106,18 +110,21 @@ export default class DashboardsView extends TextFileView {
 	private handleRefreshEvent = (
 		filePath: string,
 		sourceAppId: string,
-		state: TableState
+		state: DashboardState
 	) => {
 		if (this.appId !== sourceAppId && filePath === this.file.path) {
-			const serialized = serializeTableState(state);
+			const serialized = serializeDashboardState(state);
 			this.setViewData(serialized, true);
 		}
 	};
 
-	private handleSaveTableState = (appId: string, state: TableState) => {
+	private handleSaveDashboardState = (
+		appId: string,
+		state: DashboardState
+	) => {
 		//We need this for when we open a new tab of the same file
 		//so that the data is up to date
-		const serialized = serializeTableState(state);
+		const serialized = serializeDashboardState(state);
 		this.data = serialized;
 
 		//Request a save - every 2s
@@ -125,24 +132,24 @@ export default class DashboardsView extends TextFileView {
 
 		//Trigger an event to refresh the other open views of this file
 		this.app.workspace.trigger(
-			EVENT_REFRESH_TABLES,
+			EVENT_REFRESH_DASHBOARDS,
 			this.file.path,
 			appId,
 			state
 		);
 	};
 
-	private renderApp(appId: string, state: TableState) {
+	private renderApp(appId: string, state: DashboardState) {
 		if (this.root) {
 			this.root.render(
-				<DashboardsApp
+				<DashboardApp
 					leaf={this.leaf}
 					appId={appId}
 					filePath={this.file.path}
 					isMarkdownView={false}
 					store={store}
-					tableState={state}
-					onSaveState={this.handleSaveTableState}
+					dashboardState={state}
+					onSaveState={this.handleSaveDashboardState}
 				/>
 			);
 		}

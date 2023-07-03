@@ -1,4 +1,4 @@
-import { TableState } from "src/shared/types";
+import { DashboardState } from "src/shared/types";
 import {
 	getMarkdownListItems,
 	importMarkdownListItems,
@@ -16,8 +16,8 @@ import Stack from "../shared/stack";
 import "./styles.css";
 
 interface Props {
-	initialState: TableState;
-	onStateSave: (state: TableState) => void;
+	initialState: DashboardState;
+	onStateSave: (state: DashboardState) => void;
 }
 
 export default function ImportApp({ initialState, onStateSave }: Props) {

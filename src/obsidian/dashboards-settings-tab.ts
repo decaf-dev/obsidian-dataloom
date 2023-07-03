@@ -16,11 +16,11 @@ export default class DashboardsSettingsTab extends PluginSettingTab {
 		//Attachments folder
 		const attachmentsFolderDesc = new DocumentFragment();
 		attachmentsFolderDesc.createSpan({}, (span) => {
-			span.innerHTML = `Create tables in the attachments folder defined in the Obsidian settings.<br><br>This can be changed in <span style="color: var(--text-accent);">Files & Links -> Default location for new attachments</span><br><br>Otherwise, the folder location below will be used.`;
+			span.innerHTML = `Create dashboards in the attachments folder defined in the Obsidian settings.<br><br>This can be changed in <span style="color: var(--text-accent);">Files & Links -> Default location for new attachments</span><br><br>Otherwise, the folder location below will be used.`;
 		});
 
 		new Setting(containerEl)
-			.setName("Create new tables in the attachments folder")
+			.setName("Create new dashboards in the attachments folder")
 			.setDesc(attachmentsFolderDesc)
 			.addToggle((cb) => {
 				cb.setValue(
@@ -36,18 +36,18 @@ export default class DashboardsSettingsTab extends PluginSettingTab {
 		//Folder location
 		const defaultLocationDesc = new DocumentFragment();
 		defaultLocationDesc.createSpan({}, (span) => {
-			span.innerHTML = `Where newly created tables are placed. Please don't include a slash at the beginning or end of the value.<br>e.g. <strong>myfolder/subdirectory</strong><br><br>Default location is the vault root folder, if not specified.`;
+			span.innerHTML = `Where newly created dashboards are placed. Please don't include a slash at the beginning or end of the value.<br>e.g. <strong>myfolder/subdirectory</strong><br><br>Default location is the vault root folder, if not specified.`;
 		});
 
 		if (this.plugin.settings.createAtObsidianAttachmentFolder === false) {
 			new Setting(containerEl)
-				.setName("Default location for new tables")
+				.setName("Default location for new dashboards")
 				.setDesc(defaultLocationDesc)
 				.addText((cb) => {
 					cb.setValue(
-						this.plugin.settings.customFolderForNewTables
+						this.plugin.settings.customFolderForNewFiles
 					).onChange(async (value) => {
-						this.plugin.settings.customFolderForNewTables = value;
+						this.plugin.settings.customFolderForNewFiles = value;
 						await this.plugin.saveSettings();
 					});
 				});
@@ -75,17 +75,17 @@ export default class DashboardsSettingsTab extends PluginSettingTab {
 			});
 	}
 
-	private renderEmbeddedTableSettings(containerEl: HTMLElement) {
-		new Setting(containerEl).setName("Embedded Tables").setHeading();
+	private renderEmbeddedDashboardSettings(containerEl: HTMLElement) {
+		new Setting(containerEl).setName("Embedded Dashboards").setHeading();
 
 		const defaultEmbedWidthDesc = new DocumentFragment();
 		defaultEmbedWidthDesc.createSpan({}, (span) => {
 			span.innerHTML =
-				"The default embedded table width. Accepts valid HTML width values. Like <strong>100px<strong>, <strong>50%</strong>, etc.";
+				"The default embedded dashboard width. Accepts valid HTML width values. Like <strong>100px<strong>, <strong>50%</strong>, etc.";
 		});
 
 		new Setting(containerEl)
-			.setName("Default embedded table width")
+			.setName("Default embedded dashboard width")
 			.setDesc(defaultEmbedWidthDesc)
 			.addText((cb) => {
 				cb.setValue(this.plugin.settings.defaultEmbedWidth).onChange(
@@ -99,11 +99,11 @@ export default class DashboardsSettingsTab extends PluginSettingTab {
 		const defaultEmbedHeightDesc = new DocumentFragment();
 		defaultEmbedHeightDesc.createSpan({}, (span) => {
 			span.innerHTML =
-				"The default embedded table height. Accepts valid HTML width values. Like <strong>100px</strong>, <strong>50%</strong>, etc.";
+				"The default embedded dashboard height. Accepts valid HTML width values. Like <strong>100px</strong>, <strong>50%</strong>, etc.";
 		});
 
 		new Setting(containerEl)
-			.setName("Default embedded table height")
+			.setName("Default embedded dashboard height")
 			.setDesc(defaultEmbedHeightDesc)
 			.addText((cb) => {
 				cb.setValue(this.plugin.settings.defaultEmbedHeight).onChange(
@@ -117,7 +117,7 @@ export default class DashboardsSettingsTab extends PluginSettingTab {
 		containerEl.createSpan(
 			{},
 			(span) =>
-				(span.innerHTML = `<strong style="color: var(--text-accent); font-size: 12px;">Please close and reopen your embedded table tabs for these settings to take effect</strong>`)
+				(span.innerHTML = `<strong style="color: var(--text-accent); font-size: 12px;">Please close and reopen your embedded dashboards for these settings to take effect</strong>`)
 		);
 	}
 
@@ -145,7 +145,7 @@ export default class DashboardsSettingsTab extends PluginSettingTab {
 
 		this.renderFileSettings(containerEl);
 		this.renderExportSettings(containerEl);
-		this.renderEmbeddedTableSettings(containerEl);
+		this.renderEmbeddedDashboardSettings(containerEl);
 		this.renderDebugSettings(containerEl);
 	}
 }
