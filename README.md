@@ -42,11 +42,11 @@ This will allow you to make links to a dashboard e.g. `[[my-dashboard.dashboard]
 
 Start by creating a new dashboard. You can do this by clicking on the dashboard icon on the sidebar.
 
-<img src="./assets/new-dashboard-sidebar.png" alt="Alt Text" width="250">
+<img src="./assets/new-dashboard-sidebar.png" alt="Alt Text" width="350">
 
-You can also right click on a folder and click **New dashboard**'
+You can also right click on a folder and click **New dashboard**
 
-<img src="./assets/new-dashboard-folder.png" alt="Alt Text" width="350">
+<img src="./assets/new-dashboard-folder.png" alt="Alt Text" width="450">
 
 ## Roadmap
 
