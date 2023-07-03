@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { useRenderMarkdown } from "src/obsidian-shim/build/render-utils";
+import { useRenderMarkdown } from "src/shared/render-utils";
 import { getSpacing } from "src/shared/spacing";
 import { AspectRatio, PaddingSize } from "src/shared/types";
 import { appendOrReplaceFirstChild } from "src/shared/render/utils";

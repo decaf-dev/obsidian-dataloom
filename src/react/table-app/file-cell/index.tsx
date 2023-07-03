@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { useRenderMarkdown } from "src/obsidian-shim/build/render-utils";
+import { useRenderMarkdown } from "src/shared/render-utils";
 import { getFileCellContent } from "src/shared/cell-content/file-cell-content";
 import { appendOrReplaceFirstChild } from "src/shared/render/utils";
 import { useOverflow } from "src/shared/spacing/hooks";

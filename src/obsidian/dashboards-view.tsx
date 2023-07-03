@@ -2,7 +2,6 @@ import { TextFileView, WorkspaceLeaf } from "obsidian";
 
 import "react-devtools";
 import { createRoot, Root } from "react-dom/client";
-import Dashboard from "src/obsidian-shim/build/dashboard";
 import { store } from "src/redux/global/store";
 import { TableState } from "src/shared/types";
 import {
@@ -12,6 +11,7 @@ import {
 import { EVENT_REFRESH_TABLES } from "src/shared/events";
 import DashboardsExportModal from "./dashboards-export-modal";
 import { v4 as uuidv4 } from "uuid";
+import DashboardsApp from "src/react/table-app";
 
 export const DASHBOARDS_VIEW = "dashboards";
 
@@ -135,7 +135,7 @@ export default class DashboardsView extends TextFileView {
 	private renderApp(appId: string, state: TableState) {
 		if (this.root) {
 			this.root.render(
-				<Dashboard
+				<DashboardsApp
 					leaf={this.leaf}
 					appId={appId}
 					filePath={this.file.path}

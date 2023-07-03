@@ -4,7 +4,7 @@ import {
 	appendOrReplaceFirstChild,
 	replaceNewLinesWithBr,
 } from "src/shared/render/utils";
-import { useMountState } from "./mount-context";
+import { useMountState } from "../react/table-app/mount-provider";
 import {
 	MarkdownRenderer,
 	MarkdownView,

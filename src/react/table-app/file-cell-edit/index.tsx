@@ -1,5 +1,5 @@
+import { TFile } from "obsidian";
 import { SuggestList } from "src/react/shared/suggest-list";
-import { VaultFile } from "src/obsidian-shim/build/vault-file";
 import { getBasename } from "src/shared/link/link-utils";
 
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
 }
 
 export default function FileCellEdit({ onChange, onMenuClose }: Props) {
-	function handleSuggestItemClick(file: VaultFile | null) {
+	function handleSuggestItemClick(file: TFile | null) {
 		if (file) {
 			//The basename does not include an extension
 			let fileName = file.basename;

@@ -9,10 +9,10 @@ import Text from "src/react/shared/text";
 
 import { nltEventSystem } from "src/shared/event-system/event-system";
 import { useLogger } from "src/shared/logger";
-import { VaultFile, getVaultFiles } from "src/obsidian-shim/build/vault-file";
 import ClearButton from "./clear-button";
 import CreateButton from "./create-button";
 import Padding from "../padding";
+import { TFile } from "obsidian";
 
 interface ContentProps {
 	showInput?: boolean;
@@ -20,7 +20,7 @@ interface ContentProps {
 	showClear?: boolean;
 	filterValue?: string;
 	hiddenExtensions?: string[];
-	onItemClick: (item: VaultFile | null) => void;
+	onItemClick: (item: TFile | null) => void;
 	onCreateClick?: (value: string) => void;
 	onClearClick?: () => void;
 }
@@ -56,11 +56,11 @@ export function SuggestList({
 		}
 	}, [highlightIndex]);
 
-	const files = getVaultFiles().filter(
-		(file) => !hiddenExtensions.includes(file.extension)
-	);
+	const files = app.vault
+		.getFiles()
+		.filter((file) => !hiddenExtensions.includes(file.extension));
 
-	let filteredFiles: VaultFile[] = [];
+	let filteredFiles: TFile[] = [];
 	if (localFilterValue !== "") {
 		//Do a fuzzy sort on the filtered items
 		const results = fuzzysort.go(localFilterValue, files, {

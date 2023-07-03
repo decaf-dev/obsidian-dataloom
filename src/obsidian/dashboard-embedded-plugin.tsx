@@ -6,7 +6,6 @@ import { Root, createRoot } from "react-dom/client";
 
 import { serializeTableState } from "src/data/serialize-table-state";
 import { deserializeTableState } from "src/data/serialize-table-state";
-import Dashboard from "src/obsidian-shim/build/dashboard";
 import { store } from "src/redux/global/store";
 import { EVENT_REFRESH_TABLES } from "src/shared/events";
 import { TableState } from "src/shared/types";
@@ -19,6 +18,7 @@ import {
 	removeEmbeddedLinkChildren,
 } from "./utils";
 import { v4 as uuidv4 } from "uuid";
+import DashboardsApp from "src/react/table-app";
 
 class DashboardsEmbeddedPlugin implements PluginValue {
 	private tableApps: {
@@ -141,7 +141,7 @@ class DashboardsEmbeddedPlugin implements PluginValue {
 		const throttleHandleSave = _.throttle(this.handleSave, 2000);
 
 		root.render(
-			<Dashboard
+			<DashboardsApp
 				appId={id}
 				isMarkdownView
 				filePath={tableFile.path}

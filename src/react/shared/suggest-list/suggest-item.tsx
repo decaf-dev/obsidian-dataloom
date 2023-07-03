@@ -3,13 +3,13 @@ import React from "react";
 import { css } from "@emotion/react";
 import Text from "src/react/shared/text";
 import { nltEventSystem } from "src/shared/event-system/event-system";
-import { VaultFile } from "src/obsidian-shim/build/vault-file";
+import { TFile } from "obsidian";
 
 interface Props {
 	index: number;
-	file: VaultFile | null;
+	file: TFile | null;
 	isHighlighted: boolean;
-	onItemClick: (item: VaultFile | null) => void;
+	onItemClick: (item: TFile | null) => void;
 }
 
 const SuggestItem = React.forwardRef<HTMLDivElement, Props>(
