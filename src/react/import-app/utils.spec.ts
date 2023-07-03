@@ -1,4 +1,4 @@
-import { createDashboardState } from "src/data/table-state-factory";
+import { createDashboardState } from "src/data/dashboard-state-factory";
 import {
 	getMarkdownListItems,
 	importMarkdownListItems,

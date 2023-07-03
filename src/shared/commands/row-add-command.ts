@@ -1,4 +1,7 @@
-import { createBodyCell, createBodyRow } from "src/data/table-state-factory";
+import {
+	createBodyCell,
+	createBodyRow,
+} from "src/data/dashboard-state-factory";
 import DashboardStateCommand from "../dashboard-state/dashboard-state-command";
 import { BodyCell, BodyRow, DashboardState } from "../types";
 

@@ -1,4 +1,7 @@
-import { createDashboardState, createTag } from "src/data/table-state-factory";
+import {
+	createDashboardState,
+	createTag,
+} from "src/data/dashboard-state-factory";
 import { CommandUndoError } from "./command-errors";
 import { advanceBy, clear } from "jest-date-mock";
 import TagCellMultipleRemoveCommand from "./tag-cell-multiple-remove-command";

@@ -10,7 +10,7 @@ import {
 	createColumn,
 	createFooterCell,
 	createHeaderCell,
-} from "src/data/table-state-factory";
+} from "src/data/dashboard-state-factory";
 import DashboardStateCommand from "../dashboard-state/dashboard-state-command";
 
 export default class ColumnAddCommand extends DashboardStateCommand {

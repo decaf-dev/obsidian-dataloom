@@ -1,4 +1,4 @@
-import { createFilterRule } from "src/data/table-state-factory";
+import { createFilterRule } from "src/data/dashboard-state-factory";
 import { FilterRule, DashboardState } from "src/shared/types";
 
 export const addRule = (

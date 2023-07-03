@@ -1,4 +1,4 @@
-import { createDashboardState } from "src/data/table-state-factory";
+import { createDashboardState } from "src/data/dashboard-state-factory";
 import { CommandUndoError } from "./command-errors";
 import CellBodyUpdateCommand from "./cell-body-update-command";
 import { advanceBy, clear } from "jest-date-mock";
