@@ -3,19 +3,19 @@ import {
 	ColumNotFoundError,
 	RowNotFoundError,
 	TagNotFoundError,
-} from "../table-state/table-error";
-import TableStateCommand from "../table-state/table-state-command";
+} from "../dashboard-state/table-error";
+import DashboardStateCommand from "../dashboard-state/table-state-command";
 import {
 	BodyCell,
 	BodyRow,
 	CellType,
 	Column,
 	SortDir,
-	TableState,
+	DashboardState,
 } from "../types";
 import { isCheckboxChecked } from "../match";
 
-export default class RowSortCommand extends TableStateCommand {
+export default class RowSortCommand extends DashboardStateCommand {
 	/**
 	 * The previous row sort state
 	 */
@@ -331,7 +331,7 @@ export default class RowSortCommand extends TableStateCommand {
 		return newRows;
 	}
 
-	execute(prevState: TableState): TableState {
+	execute(prevState: DashboardState): DashboardState {
 		super.onExecute();
 
 		const { columns, bodyRows, bodyCells } = prevState.model;
@@ -367,11 +367,11 @@ export default class RowSortCommand extends TableStateCommand {
 			},
 		};
 	}
-	redo(prevState: TableState): TableState {
+	redo(prevState: DashboardState): DashboardState {
 		super.onRedo();
 		return this.execute(prevState);
 	}
-	undo(prevState: TableState): TableState {
+	undo(prevState: DashboardState): DashboardState {
 		super.onUndo();
 
 		const { bodyRows } = prevState.model;

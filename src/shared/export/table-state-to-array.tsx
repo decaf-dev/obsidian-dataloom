@@ -1,6 +1,12 @@
-import { BodyCell, BodyRow, Column, HeaderCell, TableState } from "../types";
+import {
+	BodyCell,
+	BodyRow,
+	Column,
+	HeaderCell,
+	DashboardState,
+} from "../types";
 import { getCellContent } from "../cell-content";
-import { ColumNotFoundError } from "../table-state/table-error";
+import { ColumNotFoundError } from "../dashboard-state/table-error";
 
 const serializeHeaderCells = (cells: HeaderCell[]): string[] => {
 	return cells.map((cell) => cell.markdown);
@@ -25,7 +31,7 @@ const serializeBodyCells = (
 };
 
 export const tableStateToArray = (
-	tableState: TableState,
+	tableState: DashboardState,
 	renderMarkdown: boolean
 ): string[][] => {
 	const { headerCells, bodyCells, bodyRows, columns } = tableState.model;

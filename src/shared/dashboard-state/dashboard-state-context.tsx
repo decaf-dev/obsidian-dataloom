@@ -1,56 +1,56 @@
-import { TableState } from "../types";
-import TableStateCommand from "./table-state-command";
+import { DashboardState } from "../types";
+import DashboardStateCommand from "./table-state-command";
 import React from "react";
 import { useLogger } from "../logger";
 import RowSortCommand from "../commands/row-sort-command";
 import { useMountState } from "src/react/dashboard-app/mount-provider";
 
 interface Props {
-	initialState: TableState;
+	initialState: DashboardState;
 	children: React.ReactNode;
-	onSaveState: (appId: string, state: TableState) => void;
+	onSaveState: (appId: string, state: DashboardState) => void;
 }
 
-const TableStateContext = React.createContext<{
+const DashboardStateContext = React.createContext<{
 	searchText: string;
 	isSearchBarVisible: boolean;
 	resizingColumnId: string | null;
-	tableState: TableState;
-	setTableState: React.Dispatch<React.SetStateAction<TableState>>;
+	tableState: DashboardState;
+	setDashboardState: React.Dispatch<React.SetStateAction<DashboardState>>;
 	toggleSearchBar: () => void;
 	setResizingColumnId: React.Dispatch<React.SetStateAction<string | null>>;
 	setSearchText: React.Dispatch<React.SetStateAction<string>>;
-	doCommand: (command: TableStateCommand) => void;
+	doCommand: (command: DashboardStateCommand) => void;
 	commandUndo: () => void;
 	commandRedo: () => void;
 } | null>(null);
 
-export const useTableState = () => {
-	const value = React.useContext(TableStateContext);
+export const useDashboardState = () => {
+	const value = React.useContext(DashboardStateContext);
 	if (value === null) {
 		throw new Error(
-			"useTableState() called without a <TableStateProvider /> in the tree."
+			"useDashboardState() called without a <DashboardStateProvider /> in the tree."
 		);
 	}
 
 	return value;
 };
 
-export default function TableStateProvider({
+export default function DashboardStateProvider({
 	initialState,
 	onSaveState,
 	children,
 }: Props) {
-	const [tableState, setTableState] = React.useState(initialState);
+	const [tableState, setDashboardState] = React.useState(initialState);
 	const [searchText, setSearchText] = React.useState("");
 	const [isSearchBarVisible, setSearchBarVisible] = React.useState(false);
 	const [resizingColumnId, setResizingColumnId] = React.useState<
 		string | null
 	>(null);
 
-	const [history, setHistory] = React.useState<(TableStateCommand | null)[]>([
-		null,
-	]);
+	const [history, setHistory] = React.useState<
+		(DashboardStateCommand | null)[]
+	>([null]);
 	const [position, setPosition] = React.useState(0);
 
 	const logger = useLogger();
@@ -93,7 +93,7 @@ export default function TableStateProvider({
 				if (command.shouldSortRows) {
 					newState = new RowSortCommand().execute(newState);
 				}
-				setTableState(newState);
+				setDashboardState(newState);
 			}
 		}
 	}, [position, history, tableState, logger]);
@@ -112,13 +112,13 @@ export default function TableStateProvider({
 				if (command.shouldSortRows) {
 					newState = new RowSortCommand().execute(newState);
 				}
-				setTableState(newState);
+				setDashboardState(newState);
 			}
 		}
 	}, [position, history, tableState, logger]);
 
 	const doCommand = React.useCallback(
-		(command: TableStateCommand) => {
+		(command: DashboardStateCommand) => {
 			setHistory((prevState) => {
 				//If the position is not at the end of the history, then we want to remove all the commands after the current position
 				if (position < history.length - 1) {
@@ -135,16 +135,16 @@ export default function TableStateProvider({
 			if (command.shouldSortRows) {
 				newState = new RowSortCommand().execute(newState);
 			}
-			setTableState(newState);
+			setDashboardState(newState);
 		},
 		[position, history, tableState]
 	);
 
 	return (
-		<TableStateContext.Provider
+		<DashboardStateContext.Provider
 			value={{
 				tableState,
-				setTableState,
+				setDashboardState,
 				doCommand,
 				commandRedo: redo,
 				commandUndo: undo,
@@ -157,6 +157,6 @@ export default function TableStateProvider({
 			}}
 		>
 			{children}
-		</TableStateContext.Provider>
+		</DashboardStateContext.Provider>
 	);
 }

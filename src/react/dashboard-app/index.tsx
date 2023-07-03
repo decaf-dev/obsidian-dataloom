@@ -5,8 +5,8 @@ import { Store } from "@reduxjs/toolkit";
 
 import DragProvider from "src/shared/dragging/drag-context";
 import MenuProvider from "src/shared/menu/menu-context";
-import TableStateProvider from "src/shared/table-state/table-state-context";
-import { TableState } from "src/shared/types";
+import DashboardStateProvider from "src/shared/dashboard-state/dashboard-state-context";
+import { DashboardState } from "src/shared/types";
 import MountProvider from "./mount-provider";
 import App from "./app";
 
@@ -16,8 +16,8 @@ interface Props {
 	isMarkdownView: boolean;
 	filePath: string;
 	store: Store;
-	tableState: TableState;
-	onSaveState: (appId: string, state: TableState) => void;
+	tableState: DashboardState;
+	onSaveState: (appId: string, state: DashboardState) => void;
 }
 
 export default function DashboardApp({
@@ -37,7 +37,7 @@ export default function DashboardApp({
 			filePath={filePath}
 		>
 			<Provider store={store}>
-				<TableStateProvider
+				<DashboardStateProvider
 					initialState={tableState}
 					onSaveState={onSaveState}
 				>
@@ -46,7 +46,7 @@ export default function DashboardApp({
 							<App />
 						</DragProvider>
 					</MenuProvider>
-				</TableStateProvider>
+				</DashboardStateProvider>
 			</Provider>
 		</MountProvider>
 	);

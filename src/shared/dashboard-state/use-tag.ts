@@ -1,7 +1,7 @@
 import { useLogger } from "../logger";
 import { Color } from "../types";
 import TagDeleteCommand from "../commands/tag-delete-command";
-import { useTableState } from "./table-state-context";
+import { useDashboardState } from "./dashboard-state-context";
 import TagUpdateCommand from "../commands/tag-update-command";
 import TagAddCommand from "../commands/tag-add-command";
 import TagCellRemoveCommand from "../commands/tag-cell-remove-command";
@@ -9,7 +9,7 @@ import TagCellAddCommand from "../commands/tag-cell-add-command";
 import TagCellMultipleRemoveCommand from "../commands/tag-cell-multiple-remove-command";
 
 export const useTag = () => {
-	const { doCommand } = useTableState();
+	const { doCommand } = useDashboardState();
 	const logFunc = useLogger();
 
 	function handleTagAdd(

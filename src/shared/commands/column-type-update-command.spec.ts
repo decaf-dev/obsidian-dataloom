@@ -1,17 +1,17 @@
 import {
 	createFilterRule,
-	createTableState,
+	createDashboardState,
 	createTag,
 } from "src/data/table-state-factory";
 import { CommandRedoError, CommandUndoError } from "./command-errors";
 import { ColumnTypeUpdateCommand } from "./column-type-update-command";
 import { CellType } from "../types";
-import { CHECKBOX_MARKDOWN_UNCHECKED } from "../table-state/constants";
+import { CHECKBOX_MARKDOWN_UNCHECKED } from "../dashboard-state/constants";
 
 describe("column-type-update-command", () => {
 	it("should throw an error when undo() is called before execute()", () => {
 		try {
-			const prevState = createTableState(1, 1);
+			const prevState = createDashboardState(1, 1);
 			new ColumnTypeUpdateCommand(
 				prevState.model.columns[0].id,
 				CellType.TAG
@@ -23,7 +23,7 @@ describe("column-type-update-command", () => {
 
 	it("should throw an error when redo() is called before redo()", () => {
 		try {
-			const prevState = createTableState(1, 1);
+			const prevState = createDashboardState(1, 1);
 			const command = new ColumnTypeUpdateCommand(
 				prevState.model.columns[0].id,
 				CellType.TAG
@@ -37,7 +37,7 @@ describe("column-type-update-command", () => {
 
 	it("should handle multi-tag -> text when execute() is called", async () => {
 		//Arrange
-		const prevState = createTableState(1, 2, {
+		const prevState = createDashboardState(1, 2, {
 			cellType: CellType.MULTI_TAG,
 		});
 		const tags = [createTag("test1"), createTag("test2")];
@@ -65,7 +65,7 @@ describe("column-type-update-command", () => {
 
 	it("should handle tag -> text when execute() is called", async () => {
 		//Arrange
-		const prevState = createTableState(1, 2, {
+		const prevState = createDashboardState(1, 2, {
 			cellType: CellType.TAG,
 		});
 
@@ -94,7 +94,7 @@ describe("column-type-update-command", () => {
 
 	it("should handle text -> tag when execute() is called", async () => {
 		//Arrange
-		const prevState = createTableState(1, 1);
+		const prevState = createDashboardState(1, 1);
 		prevState.model.bodyCells[0].markdown = "test1,test2";
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
@@ -115,7 +115,7 @@ describe("column-type-update-command", () => {
 
 	it("should handle text -> multi-tag when execute() is called", async () => {
 		//Arrange
-		const prevState = createTableState(1, 1);
+		const prevState = createDashboardState(1, 1);
 		prevState.model.bodyCells[0].markdown = "test1,test2";
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
@@ -136,7 +136,7 @@ describe("column-type-update-command", () => {
 
 	it("should handle multi-tag -> tag when execute() is called", async () => {
 		//Arrange
-		const prevState = createTableState(1, 2, {
+		const prevState = createDashboardState(1, 2, {
 			cellType: CellType.MULTI_TAG,
 		});
 
@@ -164,7 +164,7 @@ describe("column-type-update-command", () => {
 
 	it("should handle text -> checkbox when execute() is called", async () => {
 		//Arrange
-		const prevState = createTableState(1, 1);
+		const prevState = createDashboardState(1, 1);
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
 			CellType.CHECKBOX
@@ -183,7 +183,9 @@ describe("column-type-update-command", () => {
 
 	it("should handle date -> text when execute() is called", async () => {
 		//Arrange
-		const prevState = createTableState(1, 1, { cellType: CellType.DATE });
+		const prevState = createDashboardState(1, 1, {
+			cellType: CellType.DATE,
+		});
 		prevState.model.bodyCells[0].dateTime = new Date(
 			"2020-01-01"
 		).getTime();
@@ -204,7 +206,7 @@ describe("column-type-update-command", () => {
 
 	it("should delete referenced filter rules when execute() is called", async () => {
 		//Arrange
-		const prevState = createTableState(1, 1, {
+		const prevState = createDashboardState(1, 1, {
 			cellType: CellType.TEXT,
 		});
 
@@ -226,7 +228,7 @@ describe("column-type-update-command", () => {
 
 	it("should handle multi-tag -> text when undo() is called", async () => {
 		//Arrange
-		const prevState = createTableState(1, 2, {
+		const prevState = createDashboardState(1, 2, {
 			cellType: CellType.MULTI_TAG,
 		});
 
@@ -256,7 +258,7 @@ describe("column-type-update-command", () => {
 
 	it("should handle tag -> text when undo() is called", async () => {
 		//Arrange
-		const prevState = createTableState(1, 2, {
+		const prevState = createDashboardState(1, 2, {
 			cellType: CellType.TAG,
 		});
 
@@ -285,7 +287,7 @@ describe("column-type-update-command", () => {
 
 	it("should handle text -> tag when undo() is called", async () => {
 		//Arrange
-		const prevState = createTableState(1, 1);
+		const prevState = createDashboardState(1, 1);
 		prevState.model.bodyCells[0].markdown = "test1,test2";
 
 		const command = new ColumnTypeUpdateCommand(
@@ -307,7 +309,7 @@ describe("column-type-update-command", () => {
 
 	it("should handle text -> multi-tag when undo() is called", async () => {
 		//Arrange
-		const prevState = createTableState(1, 1);
+		const prevState = createDashboardState(1, 1);
 		prevState.model.bodyCells[0].markdown = "test1,test2";
 
 		const command = new ColumnTypeUpdateCommand(
@@ -329,7 +331,7 @@ describe("column-type-update-command", () => {
 
 	it("should handle multi-tag -> tag when undo() is called", async () => {
 		//Arrange
-		const prevState = createTableState(1, 2, {
+		const prevState = createDashboardState(1, 2, {
 			cellType: CellType.MULTI_TAG,
 		});
 
@@ -359,7 +361,7 @@ describe("column-type-update-command", () => {
 
 	it("should handle text -> checkbox when undo() is called", async () => {
 		//Arrange
-		const prevState = createTableState(1, 1);
+		const prevState = createDashboardState(1, 1);
 
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
@@ -380,7 +382,7 @@ describe("column-type-update-command", () => {
 
 	it("should handle date -> text when undo() is called", async () => {
 		//Arrange
-		const prevState = createTableState(1, 1, {
+		const prevState = createDashboardState(1, 1, {
 			cellType: CellType.DATE,
 		});
 		prevState.model.bodyCells[0].dateTime = new Date(
@@ -406,7 +408,7 @@ describe("column-type-update-command", () => {
 
 	it("should restore deleted filter rules when undo() is called", async () => {
 		//Arrange
-		const prevState = createTableState(1, 1, {
+		const prevState = createDashboardState(1, 1, {
 			cellType: CellType.TEXT,
 		});
 
@@ -433,7 +435,7 @@ describe("column-type-update-command", () => {
 
 	it("should handle text -> multi-tag when redo() is called", async () => {
 		//Arrange
-		const prevState = createTableState(1, 1);
+		const prevState = createDashboardState(1, 1);
 		prevState.model.bodyCells[0].markdown = "test1,test2";
 
 		const command = new ColumnTypeUpdateCommand(
@@ -456,7 +458,7 @@ describe("column-type-update-command", () => {
 
 	it("should delete filter rules when redo() is called", async () => {
 		//Arrange
-		const prevState = createTableState(1, 1, {
+		const prevState = createDashboardState(1, 1, {
 			cellType: CellType.TEXT,
 		});
 

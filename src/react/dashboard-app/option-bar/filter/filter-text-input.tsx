@@ -4,7 +4,7 @@ import Select from "react-select";
 import {
 	CHECKBOX_MARKDOWN_CHECKED,
 	CHECKBOX_MARKDOWN_UNCHECKED,
-} from "src/shared/table-state/constants";
+} from "src/shared/dashboard-state/constants";
 
 import "./styles.css";
 import {

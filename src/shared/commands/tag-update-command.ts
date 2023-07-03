@@ -1,8 +1,8 @@
-import { TagNotFoundError } from "../table-state/table-error";
-import TableStateCommand from "../table-state/table-state-command";
-import { TableState, Tag } from "../types";
+import { TagNotFoundError } from "../dashboard-state/table-error";
+import DashboardStateCommand from "../dashboard-state/table-state-command";
+import { DashboardState, Tag } from "../types";
 
-export default class TagUpdateCommand extends TableStateCommand {
+export default class TagUpdateCommand extends DashboardStateCommand {
 	private columnId: string;
 	private tagId: string;
 	private key: keyof Tag;
@@ -26,7 +26,7 @@ export default class TagUpdateCommand extends TableStateCommand {
 		this.value = value;
 	}
 
-	execute(prevState: TableState): TableState {
+	execute(prevState: DashboardState): DashboardState {
 		super.onExecute();
 
 		const { columns } = prevState.model;
@@ -60,12 +60,12 @@ export default class TagUpdateCommand extends TableStateCommand {
 		};
 	}
 
-	redo(prevState: TableState): TableState {
+	redo(prevState: DashboardState): DashboardState {
 		super.onRedo();
 		return this.execute(prevState);
 	}
 
-	undo(prevState: TableState): TableState {
+	undo(prevState: DashboardState): DashboardState {
 		super.onUndo();
 
 		const { columns } = prevState.model;

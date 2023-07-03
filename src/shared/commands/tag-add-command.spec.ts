@@ -1,4 +1,4 @@
-import { createTableState, createTag } from "src/data/table-state-factory";
+import { createDashboardState, createTag } from "src/data/table-state-factory";
 import { CommandRedoError, CommandUndoError } from "./command-errors";
 import TagAddCommand from "./tag-add-command";
 import { Color } from "../types";
@@ -8,7 +8,7 @@ describe("tag-add-command", () => {
 	it("should throw an error when undo() is called before execute()", () => {
 		try {
 			//Arrange
-			const prevState = createTableState(1, 1);
+			const prevState = createDashboardState(1, 1);
 			const command = new TagAddCommand(
 				prevState.model.bodyCells[0].id,
 				prevState.model.columns[0].id,
@@ -28,7 +28,7 @@ describe("tag-add-command", () => {
 	it("should throw an error when redo() is called before undo()", () => {
 		try {
 			//Arrange
-			const prevState = createTableState(1, 1);
+			const prevState = createDashboardState(1, 1);
 			const command = new TagAddCommand(
 				prevState.model.bodyCells[0].id,
 				prevState.model.columns[0].id,
@@ -49,7 +49,7 @@ describe("tag-add-command", () => {
 
 	it("should add a tag when execute() is called", () => {
 		//Arrange
-		const prevState = createTableState(1, 1);
+		const prevState = createDashboardState(1, 1);
 
 		const tags = [createTag("test1"), createTag("test2")];
 		prevState.model.columns[0].tags = tags;
@@ -91,7 +91,7 @@ describe("tag-add-command", () => {
 
 	it("should add a multi-tag when execute() is called", () => {
 		//Arrange
-		const prevState = createTableState(1, 1);
+		const prevState = createDashboardState(1, 1);
 
 		const tags = [createTag("test1"), createTag("test2")];
 		prevState.model.columns[0].tags = tags;
@@ -129,7 +129,7 @@ describe("tag-add-command", () => {
 
 	it("should remove the added tag when undo() is called", () => {
 		//Arrange
-		const prevState = createTableState(1, 1);
+		const prevState = createDashboardState(1, 1);
 
 		const tags = [createTag("test1"), createTag("test2")];
 		prevState.model.columns[0].tags = tags;
@@ -160,7 +160,7 @@ describe("tag-add-command", () => {
 
 	it("should restore the added tag when redo() is called", () => {
 		//Arrange
-		const prevState = createTableState(1, 1);
+		const prevState = createDashboardState(1, 1);
 
 		const tags = [createTag("test1"), createTag("test2")];
 		prevState.model.columns[0].tags = tags;

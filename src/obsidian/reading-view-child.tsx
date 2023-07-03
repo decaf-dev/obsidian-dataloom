@@ -4,7 +4,7 @@ import "react-devtools";
 import { Root, createRoot } from "react-dom/client";
 import { store } from "src/redux/global/store";
 import DashboardsView from "./dashboards-view";
-import { deserializeTableState } from "src/data/serialize-table-state";
+import { deserializeDashboardState } from "src/data/serialize-table-state";
 import { v4 as uuidv4 } from "uuid";
 import DashboardApp from "src/react/dashboard-app";
 
@@ -20,7 +20,7 @@ export default class ReadingViewChild extends MarkdownRenderChild {
 		this.appId = uuidv4();
 	}
 
-	private handleSaveTableState() {}
+	private handleSaveDashboardState() {}
 
 	async onload() {
 		const container = this.containerEl;
@@ -32,7 +32,7 @@ export default class ReadingViewChild extends MarkdownRenderChild {
 
 		if (file instanceof TFile) {
 			const data = await app.vault.read(file);
-			const state = deserializeTableState(data);
+			const state = deserializeDashboardState(data);
 
 			//Get table state
 			this.root = createRoot(container);
@@ -45,7 +45,7 @@ export default class ReadingViewChild extends MarkdownRenderChild {
 					isMarkdownView
 					store={store}
 					tableState={state}
-					onSaveState={this.handleSaveTableState}
+					onSaveState={this.handleSaveDashboardState}
 				/>
 			);
 		}

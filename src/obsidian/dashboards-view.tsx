@@ -3,10 +3,10 @@ import { TextFileView, WorkspaceLeaf } from "obsidian";
 import "react-devtools";
 import { createRoot, Root } from "react-dom/client";
 import { store } from "src/redux/global/store";
-import { TableState } from "src/shared/types";
+import { DashboardState } from "src/shared/types";
 import {
-	deserializeTableState,
-	serializeTableState,
+	deserializeDashboardState,
+	serializeDashboardState,
 } from "src/data/serialize-table-state";
 import { EVENT_REFRESH_TABLES } from "src/shared/events";
 import ExportModal from "./export-modal";
@@ -67,7 +67,7 @@ export default class DashboardsView extends TextFileView {
 	setViewData(data: string, clear: boolean): void {
 		this.data = data;
 
-		const state = deserializeTableState(data);
+		const state = deserializeDashboardState(data);
 		if (clear) {
 			//We need to set this in a timeout to prevent errors from React
 			setTimeout(() => {
@@ -107,18 +107,21 @@ export default class DashboardsView extends TextFileView {
 	private handleRefreshEvent = (
 		filePath: string,
 		sourceAppId: string,
-		state: TableState
+		state: DashboardState
 	) => {
 		if (this.appId !== sourceAppId && filePath === this.file.path) {
-			const serialized = serializeTableState(state);
+			const serialized = serializeDashboardState(state);
 			this.setViewData(serialized, true);
 		}
 	};
 
-	private handleSaveTableState = (appId: string, state: TableState) => {
+	private handleSaveDashboardState = (
+		appId: string,
+		state: DashboardState
+	) => {
 		//We need this for when we open a new tab of the same file
 		//so that the data is up to date
-		const serialized = serializeTableState(state);
+		const serialized = serializeDashboardState(state);
 		this.data = serialized;
 
 		//Request a save - every 2s
@@ -133,7 +136,7 @@ export default class DashboardsView extends TextFileView {
 		);
 	};
 
-	private renderApp(appId: string, state: TableState) {
+	private renderApp(appId: string, state: DashboardState) {
 		if (this.root) {
 			this.root.render(
 				<DashboardApp
@@ -143,7 +146,7 @@ export default class DashboardsView extends TextFileView {
 					isMarkdownView={false}
 					store={store}
 					tableState={state}
-					onSaveState={this.handleSaveTableState}
+					onSaveState={this.handleSaveDashboardState}
 				/>
 			);
 		}

@@ -1,9 +1,9 @@
-import { TableState } from "../types";
+import { DashboardState } from "../types";
 import { markdownTable } from "markdown-table";
 import { tableStateToArray } from "./table-state-to-array";
 
 export const exportToMarkdown = (
-	tableState: TableState,
+	tableState: DashboardState,
 	renderMarkdown: boolean
 ): string => {
 	const arr = tableStateToArray(tableState, renderMarkdown);

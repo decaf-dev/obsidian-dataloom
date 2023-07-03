@@ -4,36 +4,39 @@ import {
 	CellType,
 	Column,
 	SortDir,
-	TableState,
+	DashboardState,
 	Tag,
 } from "../shared/types";
-import { TableState630 } from "src/shared/types/types-6.3.0";
+import { DashboardState630 } from "src/shared/types/types-6.3.0";
 import {
 	GeneralFunction670,
-	TableState670,
+	DashboardState670,
 } from "src/shared/types/types-6.7.0";
-import { ColumNotFoundError } from "../shared/table-state/table-error";
+import { ColumNotFoundError } from "../shared/dashboard-state/table-error";
 import { createFooterRow, createHeaderRow } from "./table-state-factory";
-import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/table-state/constants";
-import { TableState680 } from "src/shared/types/types-6.8.0";
-import { TableState600 } from "src/shared/types/types-6.0.0";
-import { CurrencyType610, TableState610 } from "src/shared/types/types-6.1.0";
-import { DateFormat620, TableState620 } from "src/shared/types/types-6.2.0";
+import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/dashboard-state/constants";
+import { DashboardState680 } from "src/shared/types/types-6.8.0";
+import { DashboardState600 } from "src/shared/types/types-6.0.0";
+import {
+	CurrencyType610,
+	DashboardState610,
+} from "src/shared/types/types-6.1.0";
+import { DateFormat620, DashboardState620 } from "src/shared/types/types-6.2.0";
 import { v4 as uuidv4 } from "uuid";
-import { TableState691 } from "src/shared/types/types-6.9.1";
+import { DashboardState691 } from "src/shared/types/types-6.9.1";
 import {
 	isVersionLessThan,
 	legacyVersionToString,
 } from "src/shared/versioning";
-import { TableState6122 } from "src/shared/types/types-6.12.2";
-import { TableState6160 } from "src/shared/types/types-6.16.0";
-import { TableState6186 } from "src/shared/types/types-6.18.6";
+import { DashboardState6122 } from "src/shared/types/types-6.12.2";
+import { DashboardState6160 } from "src/shared/types/types-6.16.0";
+import { DashboardState6186 } from "src/shared/types/types-6.18.6";
 
-export const serializeTableState = (tableState: TableState): string => {
+export const serializeDashboardState = (tableState: DashboardState): string => {
 	return JSON.stringify(tableState, null, 2);
 };
 
-export const deserializeTableState = (data: string): TableState => {
+export const deserializeDashboardState = (data: string): DashboardState => {
 	const parsedState = JSON.parse(data);
 
 	const untypedVersion: unknown = parsedState["pluginVersion"];
@@ -48,7 +51,7 @@ export const deserializeTableState = (data: string): TableState => {
 	let currentState: unknown = parsedState;
 
 	if (isVersionLessThan(pluginVersion, "6.1.0")) {
-		const tableState = currentState as TableState600;
+		const tableState = currentState as DashboardState600;
 		const { columns } = tableState.model;
 
 		//Feat: Currency type
@@ -59,7 +62,7 @@ export const deserializeTableState = (data: string): TableState => {
 	}
 
 	if (isVersionLessThan(pluginVersion, "6.2.0")) {
-		const tableState = currentState as TableState610;
+		const tableState = currentState as DashboardState610;
 		const { columns } = tableState.model;
 
 		//Feat: Date formats
@@ -70,7 +73,7 @@ export const deserializeTableState = (data: string): TableState => {
 	}
 
 	if (isVersionLessThan(pluginVersion, "6.3.0")) {
-		const tableState = currentState as TableState620;
+		const tableState = currentState as DashboardState620;
 		const { columns, rows, cells } = tableState.model;
 
 		//Feat: Double click to resize
@@ -103,10 +106,10 @@ export const deserializeTableState = (data: string): TableState => {
 
 	//Feat: new table state structure
 	if (isVersionLessThan(pluginVersion, "6.4.0")) {
-		const tableState = parsedState as TableState630;
+		const tableState = parsedState as DashboardState630;
 		const { columns, tags, rows, cells } = tableState.model;
 
-		const newState: TableState670 = {
+		const newState: DashboardState670 = {
 			...tableState,
 			model: {
 				columns: [],
@@ -198,7 +201,7 @@ export const deserializeTableState = (data: string): TableState => {
 
 	//Feat: filter rules
 	if (isVersionLessThan(pluginVersion, "6.8.0")) {
-		const tableState = currentState as TableState670;
+		const tableState = currentState as DashboardState670;
 		const { model } = tableState;
 		const { bodyCells, columns } = model;
 
@@ -229,7 +232,7 @@ export const deserializeTableState = (data: string): TableState => {
 	}
 
 	if (isVersionLessThan(pluginVersion, "6.9.1")) {
-		const tableState = currentState as TableState680;
+		const tableState = currentState as DashboardState680;
 		const { footerCells } = tableState.model;
 
 		//Feat: make all variable names consistent
@@ -245,7 +248,7 @@ export const deserializeTableState = (data: string): TableState => {
 
 	//Feat: support tag sorting
 	if (isVersionLessThan(pluginVersion, "6.10.0")) {
-		const tableState = currentState as TableState691;
+		const tableState = currentState as DashboardState691;
 		const { columns, tags, bodyCells, bodyRows } = tableState.model;
 
 		//Migrate tags to the columns and cells
@@ -303,7 +306,7 @@ export const deserializeTableState = (data: string): TableState => {
 	}
 
 	if (isVersionLessThan(pluginVersion, "6.12.3")) {
-		const tableState = currentState as TableState6122;
+		const tableState = currentState as DashboardState6122;
 		const { columns, footerCells } = tableState.model;
 
 		//Refactor: move function type into the column
@@ -326,7 +329,7 @@ export const deserializeTableState = (data: string): TableState => {
 	}
 
 	if (isVersionLessThan(pluginVersion, "6.17.0")) {
-		const tableState = currentState as TableState6160;
+		const tableState = currentState as DashboardState6160;
 		const { columns } = tableState.model;
 
 		columns.forEach((column: unknown) => {
@@ -339,7 +342,7 @@ export const deserializeTableState = (data: string): TableState => {
 	}
 
 	if (isVersionLessThan(pluginVersion, "6.18.6")) {
-		const tableState = currentState as TableState6160;
+		const tableState = currentState as DashboardState6160;
 		const { columns, bodyRows } = tableState.model;
 
 		//Fix: resolve empty rows being inserted but appearing higher up in the table
@@ -363,7 +366,7 @@ export const deserializeTableState = (data: string): TableState => {
 	}
 
 	if (isVersionLessThan(pluginVersion, "6.19.0")) {
-		const tableState = currentState as TableState6186;
+		const tableState = currentState as DashboardState6186;
 		const { columns, bodyCells } = tableState.model;
 
 		//Migrate from functionType to calculationType
@@ -381,7 +384,7 @@ export const deserializeTableState = (data: string): TableState => {
 		});
 	}
 
-	const tableState = currentState as TableState;
+	const tableState = currentState as DashboardState;
 	tableState.pluginVersion = CURRENT_PLUGIN_VERSION;
 	return tableState;
 };

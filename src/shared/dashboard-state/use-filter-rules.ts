@@ -1,11 +1,11 @@
 import { SetStateAction } from "react";
-import { FilterType, TableState } from "src/shared/types";
+import { FilterType, DashboardState } from "src/shared/types";
 import { useLogger } from "../logger";
 import { addRule, deleteRule, updateRule } from "./filter-state-operations";
 import { filterBodyRowsByRules } from "./filter-by-rules";
 
 export const useFilterRules = (
-	onChange: React.Dispatch<SetStateAction<TableState>>
+	onChange: React.Dispatch<SetStateAction<DashboardState>>
 ) => {
 	const logger = useLogger();
 

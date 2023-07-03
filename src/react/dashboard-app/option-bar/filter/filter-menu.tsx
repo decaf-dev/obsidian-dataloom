@@ -7,7 +7,7 @@ import Text from "src/react/shared/text";
 import Button from "src/react/shared/button";
 
 import { FilterRule, FilterType } from "src/shared/types";
-import { ColumNotFoundError } from "src/shared/table-state/table-error";
+import { ColumNotFoundError } from "src/shared/dashboard-state/table-error";
 import { ColumnWithMarkdown } from "../types";
 import React from "react";
 import { css } from "@emotion/react";

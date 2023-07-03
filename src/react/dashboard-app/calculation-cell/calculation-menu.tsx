@@ -6,7 +6,7 @@ import {
 	getAriaLabelForNumberCalculation,
 	getDisplayNameForCalculation,
 	getDisplayNameForNumberCalculation,
-} from "src/shared/table-state/display-name";
+} from "src/shared/dashboard-state/display-name";
 import {
 	Calculation,
 	CalculationType,

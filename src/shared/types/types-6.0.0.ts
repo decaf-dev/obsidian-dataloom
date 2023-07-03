@@ -67,7 +67,7 @@ interface TableModel {
 	tags: Tag[];
 }
 
-export interface TableState600 {
+export interface DashboardState600 {
 	pluginVersion: string;
 	model: TableModel;
 }

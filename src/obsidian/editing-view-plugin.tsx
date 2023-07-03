@@ -4,11 +4,11 @@ import { MarkdownView, TFile, WorkspaceLeaf } from "obsidian";
 import "react-devtools";
 import { Root, createRoot } from "react-dom/client";
 
-import { serializeTableState } from "src/data/serialize-table-state";
-import { deserializeTableState } from "src/data/serialize-table-state";
+import { serializeDashboardState } from "src/data/serialize-table-state";
+import { deserializeDashboardState } from "src/data/serialize-table-state";
 import { store } from "src/redux/global/store";
 import { EVENT_REFRESH_TABLES } from "src/shared/events";
-import { TableState } from "src/shared/types";
+import { DashboardState } from "src/shared/types";
 import _ from "lodash";
 import {
 	findEmbeddedTableFile,
@@ -103,7 +103,7 @@ class EditingViewPlugin implements PluginValue {
 
 		//Get the table state
 		const data = await app.vault.read(file);
-		const tableState = deserializeTableState(data);
+		const tableState = deserializeDashboardState(data);
 
 		const table = this.tableApps.find((app) => app.id === appId);
 		if (!table) return;
@@ -115,10 +115,10 @@ class EditingViewPlugin implements PluginValue {
 	private async handleSave(
 		tableFile: TFile,
 		appId: string,
-		state: TableState
+		state: DashboardState
 	) {
 		//Save the new state
-		const serialized = serializeTableState(state);
+		const serialized = serializeDashboardState(state);
 		await app.vault.modify(tableFile, serialized);
 
 		//Tell all other views to refresh
@@ -135,7 +135,7 @@ class EditingViewPlugin implements PluginValue {
 		leaf: WorkspaceLeaf,
 		tableFile: TFile,
 		root: Root,
-		tableState: TableState
+		tableState: DashboardState
 	) {
 		//Throttle the save function so we don't save too often
 		const throttleHandleSave = _.throttle(this.handleSave, 2000);
@@ -158,7 +158,7 @@ class EditingViewPlugin implements PluginValue {
 	private handleRefreshEvent = (
 		filePath: string,
 		sourceAppId: string,
-		state: TableState
+		state: DashboardState
 	) => {
 		//Find a table instance with the same file path
 		const app = this.tableApps.find(

@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { useDragContext } from "src/shared/dragging/drag-context";
-import { useTableState } from "src/shared/table-state/table-state-context";
+import { useDashboardState } from "src/shared/dashboard-state/dashboard-state-context";
 
 const cellStyle = css`
 	position: sticky;
@@ -41,7 +41,7 @@ export default function TableHeaderCell({
 	content,
 	isDraggable,
 }: TableHeaderCellProps) {
-	const { setTableState } = useTableState();
+	const { setDashboardState } = useDashboardState();
 	const { dragData, touchDropZone, setDragData, setTouchDropZone } =
 		useDragContext();
 
@@ -61,7 +61,7 @@ export default function TableHeaderCell({
 		//If we're dragging a column type, then return
 		if (dragData.type !== "column") return;
 
-		setTableState((prevState) => {
+		setDashboardState((prevState) => {
 			const { columns } = prevState.model;
 
 			const draggedElIndex = columns.findIndex(

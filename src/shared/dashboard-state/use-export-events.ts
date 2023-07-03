@@ -9,11 +9,11 @@ import {
 import { exportToCSV } from "src/shared/export/export-to-csv";
 import { exportToMarkdown } from "src/shared/export/export-to-markdown";
 import { ExportType } from "src/shared/export/types";
-import { TableState } from "src/shared/types";
+import { DashboardState } from "src/shared/types";
 import { useMountState } from "../../react/dashboard-app/mount-provider";
 import { useAppSelector } from "src/redux/global/hooks";
 
-export const useExportEvents = (state: TableState) => {
+export const useExportEvents = (state: DashboardState) => {
 	const { filePath } = useMountState();
 	const { appId } = useMountState();
 	const { exportRenderMarkdown } = useAppSelector(

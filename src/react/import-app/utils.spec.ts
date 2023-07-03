@@ -1,4 +1,4 @@
-import { createTableState } from "src/data/table-state-factory";
+import { createDashboardState } from "src/data/table-state-factory";
 import {
 	getMarkdownListItems,
 	importMarkdownListItems,
@@ -53,7 +53,7 @@ describe("updateMarkdownListItems", () => {
 		//Initial data
 		const list = "- Item 1\n- Item 2";
 		const listItems = getMarkdownListItems(list);
-		const initialState = createTableState(1, 1);
+		const initialState = createDashboardState(1, 1);
 
 		const updatedState = importMarkdownListItems(
 			listItems,

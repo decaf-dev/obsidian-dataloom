@@ -17,12 +17,12 @@ import {
 	HeaderRow,
 	PaddingSize,
 	SortDir,
-	TableState,
+	DashboardState,
 	Tag,
 } from "../shared/types";
 
 import { v4 as uuidv4 } from "uuid";
-import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/table-state/constants";
+import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/dashboard-state/constants";
 import { Color } from "src/shared/types";
 
 export const createColumn = (options?: { cellType?: CellType }): Column => {
@@ -130,13 +130,13 @@ export const createTag = (
 	};
 };
 
-export const createTableState = (
+export const createDashboardState = (
 	numColumns: number,
 	numRows: number,
 	options?: {
 		cellType?: CellType;
 	}
-): TableState => {
+): DashboardState => {
 	const { cellType } = options || {};
 	//Create columns
 	const columns: Column[] = [];

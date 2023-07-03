@@ -1,4 +1,4 @@
-import { createTableState, createTag } from "src/data/table-state-factory";
+import { createDashboardState, createTag } from "src/data/table-state-factory";
 import { CommandRedoError, CommandUndoError } from "./command-errors";
 import TagCellAddCommand from "./tag-cell-add-command";
 import { advanceBy, clear } from "jest-date-mock";
@@ -7,7 +7,7 @@ describe("tag-cell-add-command", () => {
 	it("should throw an error when undo() is called before execute()", () => {
 		try {
 			//Arrange
-			const prevState = createTableState(1, 1);
+			const prevState = createDashboardState(1, 1);
 
 			const tags = [createTag("test1"), createTag("test2")];
 			prevState.model.columns[0].tags = tags;
@@ -31,7 +31,7 @@ describe("tag-cell-add-command", () => {
 	it("should throw an error when redo() is called before undo()", () => {
 		try {
 			//Arrange
-			const prevState = createTableState(1, 1);
+			const prevState = createDashboardState(1, 1);
 
 			const tags = [createTag("test1"), createTag("test2")];
 			prevState.model.columns[0].tags = tags;
@@ -55,7 +55,7 @@ describe("tag-cell-add-command", () => {
 
 	it("should add a cell reference to a tag when execute() is called", () => {
 		//Arrange
-		const prevState = createTableState(1, 1);
+		const prevState = createDashboardState(1, 1);
 
 		const tags = [createTag("test1"), createTag("test2")];
 		prevState.model.columns[0].tags = tags;
@@ -84,7 +84,7 @@ describe("tag-cell-add-command", () => {
 
 	it("should add a cell reference to a multi-tag when execute() is called", () => {
 		//Arrange
-		const prevState = createTableState(1, 1);
+		const prevState = createDashboardState(1, 1);
 
 		const tags = [createTag("test1"), createTag("test2")];
 		prevState.model.columns[0].tags = tags;
@@ -116,7 +116,7 @@ describe("tag-cell-add-command", () => {
 
 	it("should remove the added reference when undo() is called", () => {
 		//Arrange
-		const prevState = createTableState(1, 1);
+		const prevState = createDashboardState(1, 1);
 
 		const tags = [createTag("test1"), createTag("test2")];
 		prevState.model.columns[0].tags = tags;

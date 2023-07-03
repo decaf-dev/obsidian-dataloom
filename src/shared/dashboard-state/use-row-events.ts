@@ -3,12 +3,12 @@ import RowAddCommand from "src/shared/commands/row-add-command";
 import RowDeleteCommand from "src/shared/commands/row-delete-command";
 import { isEventForThisApp } from "src/shared/event-system/utils";
 import { EVENT_ROW_ADD, EVENT_ROW_DELETE } from "src/shared/events";
-import { useTableState } from "src/shared/table-state/table-state-context";
+import { useDashboardState } from "src/shared/dashboard-state/dashboard-state-context";
 import { useMountState } from "../../react/dashboard-app/mount-provider";
 
 export const useRowEvents = () => {
 	const { appId } = useMountState();
-	const { doCommand } = useTableState();
+	const { doCommand } = useDashboardState();
 
 	React.useEffect(() => {
 		function handleRowAddEvent() {
