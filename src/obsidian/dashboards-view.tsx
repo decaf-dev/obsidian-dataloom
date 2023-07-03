@@ -12,6 +12,7 @@ import { EVENT_REFRESH_TABLES } from "src/shared/events";
 import ExportModal from "./export-modal";
 import { v4 as uuidv4 } from "uuid";
 import DashboardsApp from "src/react/table-app";
+import { DASHBOARDS_PLUGIN_ID } from "src/main";
 
 export const DASHBOARDS_VIEW = "dashboards";
 
@@ -40,8 +41,8 @@ export default class DashboardsView extends TextFileView {
 		this.addAction("settings", "Settings", () => {
 			//Open settings tab
 			(this.app as any).setting.open();
-			//Navigate to Notion-Like-Tables settings
-			(this.app as any).setting.openTabById("notion-like-tables");
+			//Navigate to plugin settings
+			(this.app as any).setting.openTabById(DASHBOARDS_PLUGIN_ID);
 		});
 
 		this.addAction("download", "Export", () => {

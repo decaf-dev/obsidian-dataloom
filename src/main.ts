@@ -13,7 +13,7 @@ import { store } from "./redux/global/store";
 import { setDarkMode, setSettings } from "./redux/global/global-slice";
 import DashboardsView, { DASHBOARDS_VIEW } from "./obsidian/dashboards-view";
 import { TABLE_EXTENSION, WIKI_LINK_REGEX } from "./data/constants";
-import { createTableFile } from "src/data/table-file";
+import { createDashboardFile } from "src/data/table-file";
 import {
 	EVENT_COLUMN_ADD,
 	EVENT_COLUMN_DELETE,
@@ -54,6 +54,12 @@ export const DEFAULT_SETTINGS: DashboardsSettings = {
 	defaultEmbedHeight: "340px",
 };
 
+/**
+ * The plugin id is the id used in the manifest.json file
+ * We use the old plugin id to maintain our download count
+ */
+export const DASHBOARDS_PLUGIN_ID = "notion-like-tables";
+
 export default class DashboardsPlugin extends Plugin {
 	settings: DashboardsSettings;
 
@@ -67,8 +73,8 @@ export default class DashboardsPlugin extends Plugin {
 		this.registerView(DASHBOARDS_VIEW, (leaf) => new DashboardsView(leaf));
 		this.registerExtensions([TABLE_EXTENSION], DASHBOARDS_VIEW);
 
-		this.addRibbonIcon("table", "Create Notion-Like table", async () => {
-			await this.newTableFile(null);
+		this.addRibbonIcon("table", "Create dashboard", async () => {
+			await this.newDashboardFile(null);
 		});
 
 		this.addSettingTab(new DashboardsSettingsTab(this.app, this));
@@ -99,7 +105,7 @@ export default class DashboardsPlugin extends Plugin {
 		// });
 	}
 
-	private async newTableFile(
+	private async newDashboardFile(
 		contextMenuFolderPath: string | null,
 		embedded?: boolean
 	) {
@@ -114,7 +120,7 @@ export default class DashboardsPlugin extends Plugin {
 			folderPath = this.settings.customFolderForNewTables;
 		}
 
-		const filePath = await createTableFile({
+		const filePath = await createDashboardFile({
 			folderPath,
 		});
 		if (embedded) return filePath;
@@ -155,10 +161,10 @@ export default class DashboardsPlugin extends Plugin {
 			this.app.workspace.on("file-menu", (menu, file) => {
 				if (file instanceof TFolder) {
 					menu.addItem((item) => {
-						item.setTitle("New Notion-Like table")
+						item.setTitle("New dashboard")
 							.setIcon("document")
 							.onClick(async () => {
-								await this.newTableFile(file.path);
+								await this.newDashboardFile(file.path);
 							});
 					});
 				}
@@ -216,9 +222,7 @@ export default class DashboardsPlugin extends Plugin {
 						new Notice(
 							`Updating ${numLinks} link${
 								numLinks > 1 ? "s" : ""
-							} in ${
-								tablesToUpdate.length
-							} Notion-Like Table file${
+							} in ${tablesToUpdate.length} Dashboard file${
 								tablesToUpdate.length > 1 ? "s" : ""
 							}.`
 						);
@@ -281,20 +285,20 @@ export default class DashboardsPlugin extends Plugin {
 
 	registerCommands() {
 		this.addCommand({
-			id: "nlt-create-table",
-			name: "Create table",
+			id: "dashboards-create",
+			name: "Create dashboard",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "=" }],
 			callback: async () => {
-				await this.newTableFile(null);
+				await this.newDashboardFile(null);
 			},
 		});
 
 		this.addCommand({
-			id: "nlt-create-table-and-embed",
-			name: "Create table and embed it into current file",
+			id: "dashboards-create-and-embed",
+			name: "Create dashboard and embed it into current file",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "+" }],
 			editorCallback: async (editor) => {
-				const filePath = await this.newTableFile(null, true);
+				const filePath = await this.newDashboardFile(null, true);
 				if (!filePath) return;
 
 				const useMarkdownLinks = (this.app.vault as any).getConfig(
