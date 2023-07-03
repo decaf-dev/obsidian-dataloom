@@ -12,7 +12,7 @@ import { SortDir, Column, HeaderCell, FilterRule } from "src/shared/types";
 import {
 	CellNotFoundError,
 	ColumNotFoundError,
-} from "src/shared/dashboard-state/table-error";
+} from "src/shared/dashboard-state/dashboard-error";
 import { isCellTypeFilterable } from "src/shared/dashboard-state/filter-by-rules";
 
 import { ColumnWithMarkdown } from "./types";

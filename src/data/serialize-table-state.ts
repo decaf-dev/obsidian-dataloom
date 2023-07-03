@@ -12,7 +12,7 @@ import {
 	GeneralFunction670,
 	DashboardState670,
 } from "src/shared/types/types-6.7.0";
-import { ColumNotFoundError } from "../shared/dashboard-state/table-error";
+import { ColumNotFoundError } from "../shared/dashboard-state/dashboard-error";
 import { createFooterRow, createHeaderRow } from "./table-state-factory";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/dashboard-state/constants";
 import { DashboardState680 } from "src/shared/types/types-6.8.0";

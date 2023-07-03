@@ -1,4 +1,4 @@
-import { ColumNotFoundError } from "../dashboard-state/table-error";
+import { ColumNotFoundError } from "../dashboard-state/dashboard-error";
 import DashboardStateCommand from "../dashboard-state/table-state-command";
 import { Column, DashboardState } from "../types";
 

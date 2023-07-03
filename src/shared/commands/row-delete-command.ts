@@ -1,5 +1,5 @@
 import { BodyCell, BodyRow, DashboardState } from "../types";
-import { RowNotFoundError } from "../dashboard-state/table-error";
+import { RowNotFoundError } from "../dashboard-state/dashboard-error";
 import DashboardStateCommand from "../dashboard-state/table-state-command";
 import { DeleteCommandArgumentsError } from "./command-errors";
 

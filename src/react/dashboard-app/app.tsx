@@ -8,7 +8,7 @@ import NewColumnButton from "./new-column-button";
 import HeaderCell from "./header-cell";
 
 import { useUUID } from "../../shared/hooks";
-import { CellNotFoundError } from "../../shared/dashboard-state/table-error";
+import { CellNotFoundError } from "../../shared/dashboard-state/dashboard-error";
 import { useDashboardState } from "../../shared/dashboard-state/dashboard-state-context";
 import { useFilterRules } from "src/shared/dashboard-state/use-filter-rules";
 import { filterBodyRowsBySearch } from "src/shared/dashboard-state/filter-by-search";

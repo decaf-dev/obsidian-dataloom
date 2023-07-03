@@ -1,4 +1,4 @@
-import { TagNotFoundError } from "../dashboard-state/table-error";
+import { TagNotFoundError } from "../dashboard-state/dashboard-error";
 import DashboardStateCommand from "../dashboard-state/table-state-command";
 import { DashboardState, Tag } from "../types";
 

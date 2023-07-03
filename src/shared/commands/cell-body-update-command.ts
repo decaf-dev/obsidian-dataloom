@@ -2,7 +2,7 @@ import {
 	rowLastEditedTime,
 	rowLastEditedTimeUpdate,
 } from "../dashboard-state/row-state-operations";
-import { CellNotFoundError } from "../dashboard-state/table-error";
+import { CellNotFoundError } from "../dashboard-state/dashboard-error";
 import DashboardStateCommand from "../dashboard-state/table-state-command";
 import { BodyCell, DashboardState } from "../types";
 

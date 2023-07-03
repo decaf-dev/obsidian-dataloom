@@ -8,7 +8,7 @@ import {
 	DashboardState,
 	Tag,
 } from "src/shared/types";
-import { ColumNotFoundError } from "./table-error";
+import { ColumNotFoundError } from "./dashboard-error";
 
 //TODO implement all Cell Types
 export const isCellTypeFilterable = (cellType: CellType): boolean => {

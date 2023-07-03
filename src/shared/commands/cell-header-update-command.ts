@@ -1,4 +1,4 @@
-import { CellNotFoundError } from "../dashboard-state/table-error";
+import { CellNotFoundError } from "../dashboard-state/dashboard-error";
 import DashboardStateCommand from "../dashboard-state/table-state-command";
 import { HeaderCell, DashboardState } from "../types";
 
