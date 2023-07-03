@@ -3,7 +3,7 @@ import TableStateCommand from "./table-state-command";
 import React from "react";
 import { useLogger } from "../logger";
 import RowSortCommand from "../commands/row-sort-command";
-import { useMountState } from "src/react/table-app/mount-provider";
+import { useMountState } from "src/react/dashboard-app/mount-provider";
 
 interface Props {
 	initialState: TableState;

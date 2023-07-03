@@ -17,7 +17,7 @@ import { useRow } from "src/shared/table-state/use-row";
 import { useCell } from "src/shared/table-state/use-cell";
 import { useTag } from "src/shared/table-state/use-tag";
 import { css } from "@emotion/react";
-import { useMountState } from "src/react/table-app/mount-provider";
+import { useMountState } from "src/react/dashboard-app/mount-provider";
 import { useMenuState } from "src/shared/menu/menu-context";
 import { SortDir } from "src/shared/types";
 

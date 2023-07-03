@@ -17,7 +17,7 @@ import {
 
 import { getWikiLinkText } from "src/shared/link/link-utils";
 import { css } from "@emotion/react";
-import { textAreaStyle } from "src/react/table-app/shared-styles";
+import { textAreaStyle } from "src/react/dashboard-app/shared-styles";
 import { useLogger } from "src/shared/logger";
 import { TFile } from "obsidian";
 

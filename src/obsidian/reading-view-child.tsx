@@ -6,7 +6,7 @@ import { store } from "src/redux/global/store";
 import DashboardsView from "./dashboards-view";
 import { deserializeTableState } from "src/data/serialize-table-state";
 import { v4 as uuidv4 } from "uuid";
-import DashboardsApp from "src/react/table-app";
+import DashboardsApp from "src/react/dashboard-app";
 
 export default class ReadingViewChild extends MarkdownRenderChild {
 	private root: Root | null;

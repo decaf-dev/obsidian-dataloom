@@ -5,7 +5,7 @@ import { isEventForThisApp } from "src/shared/event-system/utils";
 import { EVENT_COLUMN_ADD, EVENT_COLUMN_DELETE } from "src/shared/events";
 import { useLogger } from "src/shared/logger";
 import { useTableState } from "src/shared/table-state/table-state-context";
-import { useMountState } from "../../react/table-app/mount-provider";
+import { useMountState } from "../../react/dashboard-app/mount-provider";
 
 export const useColumnEvents = () => {
 	const { appId } = useMountState();

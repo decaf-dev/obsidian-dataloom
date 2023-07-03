@@ -4,7 +4,7 @@ import Stack from "src/react/shared/stack";
 
 import { css } from "@emotion/react";
 import { useTableState } from "src/shared/table-state/table-state-context";
-import { baseInputStyle } from "src/react/table-app/shared-styles";
+import { baseInputStyle } from "src/react/dashboard-app/shared-styles";
 
 export default function SearchBar() {
 	const { searchText, setSearchText, isSearchBarVisible, toggleSearchBar } =

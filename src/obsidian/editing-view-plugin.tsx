@@ -18,7 +18,7 @@ import {
 	removeEmbeddedLinkChildren,
 } from "./utils";
 import { v4 as uuidv4 } from "uuid";
-import DashboardsApp from "src/react/table-app";
+import DashboardsApp from "src/react/dashboard-app";
 
 class EditingViewPlugin implements PluginValue {
 	private tableApps: {

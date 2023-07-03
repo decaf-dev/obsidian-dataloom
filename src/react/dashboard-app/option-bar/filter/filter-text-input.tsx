@@ -7,7 +7,10 @@ import {
 } from "src/shared/table-state/constants";
 
 import "./styles.css";
-import { baseInputStyle, selectStyle } from "src/react/table-app/shared-styles";
+import {
+	baseInputStyle,
+	selectStyle,
+} from "src/react/dashboard-app/shared-styles";
 
 interface Props {
 	id: string;
