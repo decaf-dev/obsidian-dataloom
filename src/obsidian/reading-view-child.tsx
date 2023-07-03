@@ -4,7 +4,7 @@ import "react-devtools";
 import { Root, createRoot } from "react-dom/client";
 import { store } from "src/redux/global/store";
 import DashboardsView from "./dashboards-view";
-import { deserializeDashboardState } from "src/data/serialize-table-state";
+import { deserializeDashboardState } from "src/data/serialize-dashboard-state";
 import { v4 as uuidv4 } from "uuid";
 import DashboardApp from "src/react/dashboard-app";
 

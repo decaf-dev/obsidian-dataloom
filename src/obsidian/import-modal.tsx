@@ -6,7 +6,7 @@ import ImportApp from "../react/import-app";
 import {
 	deserializeDashboardState,
 	serializeDashboardState,
-} from "src/data/serialize-table-state";
+} from "src/data/serialize-dashboard-state";
 
 export default class ImportModal extends Modal {
 	root: Root;

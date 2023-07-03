@@ -33,7 +33,7 @@ import { editingViewPlugin } from "./obsidian/editing-view-plugin";
 import {
 	deserializeDashboardState,
 	serializeDashboardState,
-} from "./data/serialize-table-state";
+} from "./data/serialize-dashboard-state";
 import { updateLinkReferences } from "./data/utils";
 import { getBasename } from "./shared/link/link-utils";
 import { hasDarkTheme } from "./shared/render/utils";

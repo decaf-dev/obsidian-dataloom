@@ -1,7 +1,7 @@
 import { App, Modal } from "obsidian";
 import DashboardsView from "./dashboards-view";
 import { Root, createRoot } from "react-dom/client";
-import { deserializeDashboardState } from "src/data/serialize-table-state";
+import { deserializeDashboardState } from "src/data/serialize-dashboard-state";
 import { ExportApp } from "src/react/export-app";
 import { Provider } from "react-redux";
 import { store } from "src/redux/global/store";

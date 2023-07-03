@@ -7,7 +7,7 @@ import { DashboardState } from "src/shared/types";
 import {
 	deserializeDashboardState,
 	serializeDashboardState,
-} from "src/data/serialize-table-state";
+} from "src/data/serialize-dashboard-state";
 import { EVENT_REFRESH_DASHBOARDS } from "src/shared/events";
 import ExportModal from "./export-modal";
 import { v4 as uuidv4 } from "uuid";

@@ -4,8 +4,8 @@ import { MarkdownView, TFile, WorkspaceLeaf } from "obsidian";
 import "react-devtools";
 import { Root, createRoot } from "react-dom/client";
 
-import { serializeDashboardState } from "src/data/serialize-table-state";
-import { deserializeDashboardState } from "src/data/serialize-table-state";
+import { serializeDashboardState } from "src/data/serialize-dashboard-state";
+import { deserializeDashboardState } from "src/data/serialize-dashboard-state";
 import { store } from "src/redux/global/store";
 import { EVENT_REFRESH_DASHBOARDS } from "src/shared/events";
 import { DashboardState } from "src/shared/types";

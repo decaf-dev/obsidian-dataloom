@@ -1,7 +1,7 @@
 import { Notice } from "obsidian";
 import { createFile, createFolder } from "./file-operations";
 import { createDashboardState } from "./table-state-factory";
-import { serializeDashboardState } from "./serialize-table-state";
+import { serializeDashboardState } from "./serialize-dashboard-state";
 import { DEFAULT_TABLE_NAME, PREVIOUS_FILE_EXTENSION } from "./constants";
 
 const getFileName = (): string => {
