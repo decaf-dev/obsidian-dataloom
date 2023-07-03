@@ -77,9 +77,9 @@ export default class DashboardsPlugin extends Plugin {
 		await this.loadSettings();
 
 		this.registerView(DASHBOARDS_VIEW, (leaf) => new DashboardsView(leaf));
-		this.registerExtensions([PREVIOUS_FILE_EXTENSION], DASHBOARDS_VIEW);
+		this.registerExtensions([CURRENT_FILE_EXTENSION], DASHBOARDS_VIEW);
 
-		this.addRibbonIcon("table", "Create dashboard", async () => {
+		this.addRibbonIcon("table", "Create new dashboard", async () => {
 			await this.newDashboardFile(null);
 		});
 
