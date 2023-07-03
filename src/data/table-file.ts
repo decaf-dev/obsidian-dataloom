@@ -2,12 +2,12 @@ import { Notice } from "obsidian";
 import { createFile, createFolder } from "./file-operations";
 import { createTableState } from "./table-state-factory";
 import { serializeTableState } from "./serialize-table-state";
-import { DEFAULT_TABLE_NAME, TABLE_EXTENSION } from "./constants";
+import { DEFAULT_TABLE_NAME, PREVIOUS_FILE_EXTENSION } from "./constants";
 
 const getFileName = (): string => {
 	const fileName = DEFAULT_TABLE_NAME;
 
-	return `${fileName}.${TABLE_EXTENSION}`;
+	return `${fileName}.${PREVIOUS_FILE_EXTENSION}`;
 };
 
 export const getFilePath = (folderPath: string, fileName: string) => {

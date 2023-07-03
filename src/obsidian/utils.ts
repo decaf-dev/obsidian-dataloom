@@ -1,4 +1,4 @@
-import { TABLE_EXTENSION } from "src/data/constants";
+import { PREVIOUS_FILE_EXTENSION } from "src/data/constants";
 import { numToPx } from "src/shared/conversion";
 
 export const getEmbeddedTableLinkEls = (el: HTMLElement) => {
@@ -8,7 +8,7 @@ export const getEmbeddedTableLinkEls = (el: HTMLElement) => {
 	for (let i = 0; i < embeddedLinkEls.length; i++) {
 		const linkEl = embeddedLinkEls[i];
 		const src = linkEl.getAttribute("src");
-		if (src?.endsWith(TABLE_EXTENSION))
+		if (src?.endsWith(PREVIOUS_FILE_EXTENSION))
 			tableLinkEls.push(linkEl as HTMLElement);
 	}
 	return tableLinkEls;

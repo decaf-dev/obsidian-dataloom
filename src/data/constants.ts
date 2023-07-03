@@ -2,7 +2,8 @@ export const CURRENT_PLUGIN_VERSION = "7.0.0";
 
 export const DEFAULT_TABLE_NAME = "Untitled";
 
-export const TABLE_EXTENSION = "table";
+export const PREVIOUS_FILE_EXTENSION = "table";
+export const CURRENT_FILE_EXTENSION = "dashboard";
 
 /**
  * Matches an extension with a leading period.

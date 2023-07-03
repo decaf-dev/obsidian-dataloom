@@ -12,7 +12,11 @@ import DashboardsSettingsTab from "./obsidian/dashboards-settings-tab";
 import { store } from "./redux/global/store";
 import { setDarkMode, setSettings } from "./redux/global/global-slice";
 import DashboardsView, { DASHBOARDS_VIEW } from "./obsidian/dashboards-view";
-import { TABLE_EXTENSION, WIKI_LINK_REGEX } from "./data/constants";
+import {
+	CURRENT_FILE_EXTENSION,
+	PREVIOUS_FILE_EXTENSION,
+	WIKI_LINK_REGEX,
+} from "./data/constants";
 import { createDashboardFile } from "src/data/table-file";
 import {
 	EVENT_COLUMN_ADD,
@@ -43,6 +47,7 @@ export interface DashboardsSettings {
 	exportRenderMarkdown: boolean;
 	defaultEmbedWidth: string;
 	defaultEmbedHeight: string;
+	hasMigratedTo700: boolean;
 }
 
 export const DEFAULT_SETTINGS: DashboardsSettings = {
@@ -52,6 +57,7 @@ export const DEFAULT_SETTINGS: DashboardsSettings = {
 	exportRenderMarkdown: true,
 	defaultEmbedWidth: "100%",
 	defaultEmbedHeight: "340px",
+	hasMigratedTo700: false,
 };
 
 /**
@@ -71,7 +77,7 @@ export default class DashboardsPlugin extends Plugin {
 		await this.loadSettings();
 
 		this.registerView(DASHBOARDS_VIEW, (leaf) => new DashboardsView(leaf));
-		this.registerExtensions([TABLE_EXTENSION], DASHBOARDS_VIEW);
+		this.registerExtensions([PREVIOUS_FILE_EXTENSION], DASHBOARDS_VIEW);
 
 		this.addRibbonIcon("table", "Create dashboard", async () => {
 			await this.newDashboardFile(null);
@@ -82,6 +88,40 @@ export default class DashboardsPlugin extends Plugin {
 		this.registerCommands();
 		this.registerEvents();
 		this.registerDOMEvents();
+
+		this.app.workspace.onLayoutReady(async () => {
+			const isDark = hasDarkTheme();
+			store.dispatch(setDarkMode(isDark));
+
+			await this.migrateTableFiles();
+		});
+	}
+
+	private async migrateTableFiles() {
+		// Migrate .table files to .dashboard files
+		if (!this.settings.hasMigratedTo700) {
+			const tableFiles = this.app.vault
+				.getFiles()
+				.filter((file) => file.extension === PREVIOUS_FILE_EXTENSION);
+			console.log(tableFiles);
+			for (let i = 0; i < tableFiles.length; i++) {
+				const file = tableFiles[i];
+				const newFilePath = file.path.replace(
+					`.${PREVIOUS_FILE_EXTENSION}`,
+					`.${CURRENT_FILE_EXTENSION}`
+				);
+				try {
+					await this.app.vault.rename(file, newFilePath);
+				} catch (err) {
+					new Notice(
+						`Failed renaming ${file.path} to ${newFilePath}`
+					);
+					new Notice("Please rename this file manually");
+				}
+			}
+			this.settings.hasMigratedTo700 = true;
+			await this.saveSettings();
+		}
 	}
 
 	private registerEmbeddedView() {
@@ -177,7 +217,9 @@ export default class DashboardsPlugin extends Plugin {
 				if (file instanceof TFile) {
 					const vaultTableFiles = this.app.vault
 						.getFiles()
-						.filter((file) => file.extension === TABLE_EXTENSION);
+						.filter(
+							(file) => file.extension === PREVIOUS_FILE_EXTENSION
+						);
 
 					const tablesToUpdate: {
 						file: TFile;
@@ -276,11 +318,6 @@ export default class DashboardsPlugin extends Plugin {
 				}
 			}
 		);
-
-		this.app.workspace.onLayoutReady(() => {
-			const isDark = hasDarkTheme();
-			store.dispatch(setDarkMode(isDark));
-		});
 	}
 
 	registerCommands() {
