@@ -25,7 +25,7 @@ import {
 	EVENT_DOWNLOAD_MARKDOWN,
 	EVENT_OUTSIDE_CLICK,
 	EVENT_OUTSIDE_KEYDOWN,
-	EVENT_REFRESH_TABLES,
+	EVENT_REFRESH_DASHBOARDS,
 	EVENT_ROW_ADD,
 	EVENT_ROW_DELETE,
 } from "./shared/events";
@@ -308,7 +308,7 @@ export default class DashboardsPlugin extends Plugin {
 
 							//Update all tables that match this path
 							app.workspace.trigger(
-								EVENT_REFRESH_TABLES,
+								EVENT_REFRESH_DASHBOARDS,
 								tableFile.path,
 								-1, //update all tables that match this path
 								newState

@@ -7,7 +7,7 @@ import { Root, createRoot } from "react-dom/client";
 import { serializeDashboardState } from "src/data/serialize-table-state";
 import { deserializeDashboardState } from "src/data/serialize-table-state";
 import { store } from "src/redux/global/store";
-import { EVENT_REFRESH_TABLES } from "src/shared/events";
+import { EVENT_REFRESH_DASHBOARDS } from "src/shared/events";
 import { DashboardState } from "src/shared/types";
 import _ from "lodash";
 import {
@@ -123,7 +123,7 @@ class EditingViewPlugin implements PluginValue {
 
 		//Tell all other views to refresh
 		app.workspace.trigger(
-			EVENT_REFRESH_TABLES,
+			EVENT_REFRESH_DASHBOARDS,
 			tableFile.path,
 			appId,
 			state
@@ -178,13 +178,13 @@ class EditingViewPlugin implements PluginValue {
 
 	private setupEventListeners() {
 		//@ts-expect-error not an native Obsidian event
-		app.workspace.on(EVENT_REFRESH_TABLES, this.handleRefreshEvent);
+		app.workspace.on(EVENT_REFRESH_DASHBOARDS, this.handleRefreshEvent);
 	}
 
 	destroy() {
 		this.tableApps.forEach((app) => app.root?.unmount());
 		this.tableApps = [];
-		app.workspace.off(EVENT_REFRESH_TABLES, this.handleRefreshEvent);
+		app.workspace.off(EVENT_REFRESH_DASHBOARDS, this.handleRefreshEvent);
 	}
 }
 
