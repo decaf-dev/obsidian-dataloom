@@ -36,7 +36,7 @@ By default, Obsidian won't display `.dashboard` files in the menu that opens whe
 2. Select **File & Links**
 3. Toggle **Detect all file extensions**
 
-This will allow you to make links to a dashboard e.g. `[[my-dashboard.dashboard]]`
+![](/assets/detect-all-extensions.png)
 
 ## Getting started
 
