@@ -25,27 +25,28 @@ Support development
 
 Dashboards support both light and dark modes and a majority of Obsidian themes.
 
-<img src="./assets/light-mode.png" alt="Alt Text">
-<img src="./assets/dark-mode.png" alt="Alt Text">
+![](/assets/light-mode.png)
+![](/assets/dark-mode.png)
 
 Choose from 11 different menu types
 
-<img src="./assets/type-menu.png" alt="Alt Text" width="350">
+<img src="./assets/type-menu.png" alt="Alt Text" width="200">
 
 Notion-like tag menu system
-<img src="./assets/tag-menu.png" alt="Alt Text" width="450">
+
+<img src="./assets/tag-menu.png" alt="Alt Text" width="200">
 
 Toggle visibility of different columns
 
-<img src="./assets/toggle-menu.png" alt="Alt Text" width="350">
+<img src="./assets/toggle-menu.png" alt="Alt Text" width="200">
 
 Reference notes directly from the table
 
-<img src="./assets/file-menu.png" alt="Alt Text" width="450">
+![](/assets/file-menu.png)
 
 Advanced filtering menu
 
-<img src="./assets/filter-menu.png" alt="Alt Text" width="450">
+![](/assets/filter-menu.png)
 
 ## Installation
 
