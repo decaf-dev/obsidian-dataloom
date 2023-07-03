@@ -3,7 +3,7 @@ import TableStateCommand from "./table-state-command";
 import React from "react";
 import { useLogger } from "../logger";
 import RowSortCommand from "../commands/row-sort-command";
-import { useMountState } from "src/obsidian-shim/development/mount-context";
+import { useMountState } from "src/react/table-app/mount-provider";
 
 interface Props {
 	initialState: TableState;

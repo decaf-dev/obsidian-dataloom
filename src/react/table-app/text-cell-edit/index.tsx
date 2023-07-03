@@ -18,8 +18,8 @@ import {
 import { getWikiLinkText } from "src/shared/link/link-utils";
 import { css } from "@emotion/react";
 import { textAreaStyle } from "src/react/table-app/shared-styles";
-import { VaultFile } from "src/obsidian-shim/development/vault-file";
 import { useLogger } from "src/shared/logger";
+import { TFile } from "obsidian";
 
 interface Props {
 	menuCloseRequest: MenuCloseRequest | null;
@@ -149,7 +149,7 @@ export default function TextCellEdit({
 		setLocalValue(newValue);
 	}
 
-	function handleSuggestItemClick(file: VaultFile | null) {
+	function handleSuggestItemClick(file: TFile | null) {
 		if (file) {
 			const fileName = getWikiLinkText(file.path);
 

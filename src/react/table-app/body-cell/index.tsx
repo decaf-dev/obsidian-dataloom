@@ -42,7 +42,7 @@ import FileCellEdit from "../file-cell-edit";
 import { css } from "@emotion/react";
 import EmbedCell from "../embed-cell";
 import EmbedCellEdit from "../embed-cell-edit";
-import { Notification } from "src/obsidian-shim/development/notification";
+import { Notice } from "obsidian";
 
 interface Props {
 	isExternalLink: boolean;
@@ -149,7 +149,7 @@ export default function BodyCell({
 	async function handleCellContextClick() {
 		try {
 			await navigator.clipboard.writeText(markdown);
-			new Notification("Copied text to clipboard");
+			new Notice("Copied text to clipboard");
 		} catch (err) {
 			console.log(err);
 		}
