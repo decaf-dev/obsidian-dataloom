@@ -43,7 +43,7 @@ import { TableState } from "./shared/types";
 export interface DashboardsSettings {
 	shouldDebug: boolean;
 	createAtObsidianAttachmentFolder: boolean;
-	customFolderForNewTables: string;
+	customFolderForNewFiles: string;
 	exportRenderMarkdown: boolean;
 	defaultEmbedWidth: string;
 	defaultEmbedHeight: string;
@@ -53,7 +53,7 @@ export interface DashboardsSettings {
 export const DEFAULT_SETTINGS: DashboardsSettings = {
 	shouldDebug: false,
 	createAtObsidianAttachmentFolder: false,
-	customFolderForNewTables: "",
+	customFolderForNewFiles: "",
 	exportRenderMarkdown: true,
 	defaultEmbedWidth: "100%",
 	defaultEmbedHeight: "340px",
@@ -157,7 +157,7 @@ export default class DashboardsPlugin extends Plugin {
 				"attachmentFolderPath"
 			);
 		} else {
-			folderPath = this.settings.customFolderForNewTables;
+			folderPath = this.settings.customFolderForNewFiles;
 		}
 
 		const filePath = await createDashboardFile({

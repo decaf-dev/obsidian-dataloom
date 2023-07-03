@@ -45,9 +45,9 @@ export default class DashboardsSettingsTab extends PluginSettingTab {
 				.setDesc(defaultLocationDesc)
 				.addText((cb) => {
 					cb.setValue(
-						this.plugin.settings.customFolderForNewTables
+						this.plugin.settings.customFolderForNewFiles
 					).onChange(async (value) => {
-						this.plugin.settings.customFolderForNewTables = value;
+						this.plugin.settings.customFolderForNewFiles = value;
 						await this.plugin.saveSettings();
 					});
 				});
