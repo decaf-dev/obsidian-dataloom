@@ -8,7 +8,7 @@
 
 #### [Documentation](https://trey-wallis.github.io/obsidian-dashboards)
 
-#### [Lastest release notes](https://github.com/trey-wallis/obsidian-dashboards/releases/tag/6.18.0)
+#### [Lastest release notes](https://github.com/trey-wallis/obsidian-dashboards/releases/tag/7.0.0)
 
 ## About
 
