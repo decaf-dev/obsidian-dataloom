@@ -17,7 +17,7 @@ import {
 	PREVIOUS_FILE_EXTENSION,
 	WIKI_LINK_REGEX,
 } from "./data/constants";
-import { createDashboardFile } from "src/data/table-file";
+import { createDashboardFile } from "src/data/dashboard-file";
 import {
 	EVENT_COLUMN_ADD,
 	EVENT_COLUMN_DELETE,
@@ -215,21 +215,21 @@ export default class DashboardsPlugin extends Plugin {
 			"rename",
 			async (file: TAbstractFile, oldPath: string) => {
 				if (file instanceof TFile) {
-					const vaultTableFiles = this.app.vault
+					const dashboardFiles = this.app.vault
 						.getFiles()
 						.filter(
-							(file) => file.extension === PREVIOUS_FILE_EXTENSION
+							(file) => file.extension === CURRENT_FILE_EXTENSION
 						);
 
-					const tablesToUpdate: {
+					const dashboardsToUpdate: {
 						file: TFile;
 						state: DashboardState;
 					}[] = [];
 
 					let numLinks = 0;
-					for (const tableFile of vaultTableFiles) {
+					for (const dashboardFile of dashboardFiles) {
 						//For each file read its contents
-						const data = await file.vault.read(tableFile);
+						const data = await file.vault.read(dashboardFile);
 						const state = deserializeDashboardState(data);
 						//Search for old path in the file
 
@@ -244,13 +244,14 @@ export default class DashboardsPlugin extends Plugin {
 								//The path will be the relative path e.g. mytable.table
 								//while the old path will be the absolute path in the vault e.g. /tables/mytables.table
 								if (oldPath.includes(path)) {
-									const found = tablesToUpdate.find(
+									const found = dashboardsToUpdate.find(
 										(table) =>
-											table.file.path === tableFile.path
+											table.file.path ===
+											dashboardFile.path
 									);
 									if (!found) {
-										tablesToUpdate.push({
-											file: tableFile,
+										dashboardsToUpdate.push({
+											file: dashboardFile,
 											state,
 										});
 									}
@@ -264,15 +265,16 @@ export default class DashboardsPlugin extends Plugin {
 						new Notice(
 							`Updating ${numLinks} link${
 								numLinks > 1 ? "s" : ""
-							} in ${tablesToUpdate.length} Dashboard file${
-								tablesToUpdate.length > 1 ? "s" : ""
+							} in ${dashboardsToUpdate.length} Dashboard file${
+								dashboardsToUpdate.length > 1 ? "s" : ""
 							}.`
 						);
 					}
 
-					for (let i = 0; i < tablesToUpdate.length; i++) {
+					for (let i = 0; i < dashboardsToUpdate.length; i++) {
 						//If the state has changed, update the file
-						const { file: tableFile, state } = tablesToUpdate[i];
+						const { file: tableFile, state } =
+							dashboardsToUpdate[i];
 
 						if (this.settings.shouldDebug)
 							console.log("Updating links in file", {
