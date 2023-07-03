@@ -11,7 +11,7 @@
 5. Select **Install**
 6. Then select **Enable**
 
-### Linking table files
+### Linking dashboard files
 
 By default, Obsidian won't display `.dashboard` files in the menu that opens when you type double brackets `[[`. In order for Obsidian to do this, you must enable detection of all file extensions.
 
