@@ -1,4 +1,6 @@
 import { TextFileView, WorkspaceLeaf } from "obsidian";
+
+import "react-devtools";
 import { createRoot, Root } from "react-dom/client";
 import Dashboard from "src/obsidian-shim/build/dashboard";
 import { store } from "src/redux/global/store";

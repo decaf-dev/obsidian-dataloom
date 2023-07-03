@@ -45,6 +45,7 @@
 		"jest": "^29.5.0",
 		"jest-date-mock": "^1.0.8",
 		"obsidian": "^1.2.8",
+		"react-devtools": "^4.27.8",
 		"react-test-renderer": "^18.2.0",
 		"renamer": "^4.0.0",
 		"ts-jest": "^29.0.5",

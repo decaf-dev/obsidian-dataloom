@@ -1,7 +1,9 @@
 import { PluginValue, ViewPlugin } from "@codemirror/view";
-
 import { MarkdownView, TFile, WorkspaceLeaf } from "obsidian";
+
+import "react-devtools";
 import { Root, createRoot } from "react-dom/client";
+
 import { serializeTableState } from "src/data/serialize-table-state";
 import { deserializeTableState } from "src/data/serialize-table-state";
 import Dashboard from "src/obsidian-shim/build/dashboard";
