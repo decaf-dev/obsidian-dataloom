@@ -34,7 +34,7 @@ Choose from 11 different menu types
 
 Notion-like tag menu system
 
-<img src="./assets/tag-menu.png" alt="Alt Text" width="200">
+![](/assets/tag-menu.png)
 
 Toggle visibility of different columns
 
