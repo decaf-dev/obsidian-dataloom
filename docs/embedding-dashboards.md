@@ -1,4 +1,4 @@
-# Embedding tables
+# Embedding dashboards
 
 ## Basic usage
 

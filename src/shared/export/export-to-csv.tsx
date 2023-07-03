@@ -1,12 +1,12 @@
 import Papa from "papaparse";
 
-import { tableStateToArray } from "./table-state-to-array";
+import { dashboardStateToArray } from "./table-state-to-array";
 import { DashboardState } from "../types";
 
 export const exportToCSV = (
-	tableState: DashboardState,
+	dashboardState: DashboardState,
 	renderMarkdown: boolean
 ): string => {
-	const arr = tableStateToArray(tableState, renderMarkdown);
+	const arr = dashboardStateToArray(dashboardState, renderMarkdown);
 	return Papa.unparse(arr);
 };

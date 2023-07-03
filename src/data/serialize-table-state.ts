@@ -32,8 +32,10 @@ import { DashboardState6122 } from "src/shared/types/types-6.12.2";
 import { DashboardState6160 } from "src/shared/types/types-6.16.0";
 import { DashboardState6186 } from "src/shared/types/types-6.18.6";
 
-export const serializeDashboardState = (tableState: DashboardState): string => {
-	return JSON.stringify(tableState, null, 2);
+export const serializeDashboardState = (
+	dashboardState: DashboardState
+): string => {
+	return JSON.stringify(dashboardState, null, 2);
 };
 
 export const deserializeDashboardState = (data: string): DashboardState => {
@@ -51,8 +53,8 @@ export const deserializeDashboardState = (data: string): DashboardState => {
 	let currentState: unknown = parsedState;
 
 	if (isVersionLessThan(pluginVersion, "6.1.0")) {
-		const tableState = currentState as DashboardState600;
-		const { columns } = tableState.model;
+		const dashboardState = currentState as DashboardState600;
+		const { columns } = dashboardState.model;
 
 		//Feat: Currency type
 		columns.forEach((column: unknown) => {
@@ -62,8 +64,8 @@ export const deserializeDashboardState = (data: string): DashboardState => {
 	}
 
 	if (isVersionLessThan(pluginVersion, "6.2.0")) {
-		const tableState = currentState as DashboardState610;
-		const { columns } = tableState.model;
+		const dashboardState = currentState as DashboardState610;
+		const { columns } = dashboardState.model;
 
 		//Feat: Date formats
 		columns.forEach((column: unknown) => {
@@ -73,8 +75,8 @@ export const deserializeDashboardState = (data: string): DashboardState => {
 	}
 
 	if (isVersionLessThan(pluginVersion, "6.3.0")) {
-		const tableState = currentState as DashboardState620;
-		const { columns, rows, cells } = tableState.model;
+		const dashboardState = currentState as DashboardState620;
+		const { columns, rows, cells } = dashboardState.model;
 
 		//Feat: Double click to resize
 		columns.forEach((column: unknown) => {
@@ -106,11 +108,11 @@ export const deserializeDashboardState = (data: string): DashboardState => {
 
 	//Feat: new table state structure
 	if (isVersionLessThan(pluginVersion, "6.4.0")) {
-		const tableState = parsedState as DashboardState630;
-		const { columns, tags, rows, cells } = tableState.model;
+		const dashboardState = parsedState as DashboardState630;
+		const { columns, tags, rows, cells } = dashboardState.model;
 
 		const newState: DashboardState670 = {
-			...tableState,
+			...dashboardState,
 			model: {
 				columns: [],
 				headerRows: [],
@@ -201,8 +203,8 @@ export const deserializeDashboardState = (data: string): DashboardState => {
 
 	//Feat: filter rules
 	if (isVersionLessThan(pluginVersion, "6.8.0")) {
-		const tableState = currentState as DashboardState670;
-		const { model } = tableState;
+		const dashboardState = currentState as DashboardState670;
+		const { model } = dashboardState;
 		const { bodyCells, columns } = model;
 
 		//Fix: clean up any bodyRows that were saved outside of the model
@@ -232,8 +234,8 @@ export const deserializeDashboardState = (data: string): DashboardState => {
 	}
 
 	if (isVersionLessThan(pluginVersion, "6.9.1")) {
-		const tableState = currentState as DashboardState680;
-		const { footerCells } = tableState.model;
+		const dashboardState = currentState as DashboardState680;
+		const { footerCells } = dashboardState.model;
 
 		//Feat: make all variable names consistent
 		footerCells.forEach((cell: unknown) => {
@@ -248,8 +250,8 @@ export const deserializeDashboardState = (data: string): DashboardState => {
 
 	//Feat: support tag sorting
 	if (isVersionLessThan(pluginVersion, "6.10.0")) {
-		const tableState = currentState as DashboardState691;
-		const { columns, tags, bodyCells, bodyRows } = tableState.model;
+		const dashboardState = currentState as DashboardState691;
+		const { columns, tags, bodyCells, bodyRows } = dashboardState.model;
 
 		//Migrate tags to the columns and cells
 		columns.forEach((column: unknown) => {
@@ -292,7 +294,7 @@ export const deserializeDashboardState = (data: string): DashboardState => {
 			});
 		});
 
-		const unknownModel = tableState.model as unknown;
+		const unknownModel = dashboardState.model as unknown;
 		const typedModel = unknownModel as Record<string, unknown>;
 		delete typedModel.tags;
 
@@ -306,8 +308,8 @@ export const deserializeDashboardState = (data: string): DashboardState => {
 	}
 
 	if (isVersionLessThan(pluginVersion, "6.12.3")) {
-		const tableState = currentState as DashboardState6122;
-		const { columns, footerCells } = tableState.model;
+		const dashboardState = currentState as DashboardState6122;
+		const { columns, footerCells } = dashboardState.model;
 
 		//Refactor: move function type into the column
 		footerCells.forEach((cell) => {
@@ -329,8 +331,8 @@ export const deserializeDashboardState = (data: string): DashboardState => {
 	}
 
 	if (isVersionLessThan(pluginVersion, "6.17.0")) {
-		const tableState = currentState as DashboardState6160;
-		const { columns } = tableState.model;
+		const dashboardState = currentState as DashboardState6160;
+		const { columns } = dashboardState.model;
 
 		columns.forEach((column: unknown) => {
 			const typedColumn = column as Record<string, unknown>;
@@ -342,8 +344,8 @@ export const deserializeDashboardState = (data: string): DashboardState => {
 	}
 
 	if (isVersionLessThan(pluginVersion, "6.18.6")) {
-		const tableState = currentState as DashboardState6160;
-		const { columns, bodyRows } = tableState.model;
+		const dashboardState = currentState as DashboardState6160;
+		const { columns, bodyRows } = dashboardState.model;
 
 		//Fix: resolve empty rows being inserted but appearing higher up in the table
 		//This was due to the index being set to the row's position in the array, which
@@ -366,8 +368,8 @@ export const deserializeDashboardState = (data: string): DashboardState => {
 	}
 
 	if (isVersionLessThan(pluginVersion, "6.19.0")) {
-		const tableState = currentState as DashboardState6186;
-		const { columns, bodyCells } = tableState.model;
+		const dashboardState = currentState as DashboardState6186;
+		const { columns, bodyCells } = dashboardState.model;
 
 		//Migrate from functionType to calculationType
 		columns.forEach((column: unknown) => {
@@ -384,7 +386,7 @@ export const deserializeDashboardState = (data: string): DashboardState => {
 		});
 	}
 
-	const tableState = currentState as DashboardState;
-	tableState.pluginVersion = CURRENT_PLUGIN_VERSION;
-	return tableState;
+	const dashboardState = currentState as DashboardState;
+	dashboardState.pluginVersion = CURRENT_PLUGIN_VERSION;
+	return dashboardState;
 };

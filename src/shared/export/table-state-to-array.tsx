@@ -30,11 +30,11 @@ const serializeBodyCells = (
 	});
 };
 
-export const tableStateToArray = (
-	tableState: DashboardState,
+export const dashboardStateToArray = (
+	dashboardState: DashboardState,
 	renderMarkdown: boolean
 ): string[][] => {
-	const { headerCells, bodyCells, bodyRows, columns } = tableState.model;
+	const { headerCells, bodyCells, bodyRows, columns } = dashboardState.model;
 	const serializedHeaderCells = serializeHeaderCells(headerCells);
 	const serializedBodyCells = serializeBodyCells(
 		columns,

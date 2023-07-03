@@ -25,7 +25,7 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 
 	const { dragData, touchDropZone, setDragData, setTouchDropZone } =
 		useDragContext();
-	const { tableState, setDashboardState } = useDashboardState();
+	const { dashboardState, setDashboardState } = useDashboardState();
 
 	function handleDeleteClick(rowId: string) {
 		onDeleteClick(rowId);
@@ -121,7 +121,7 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 				dropDrag(
 					touchDropZone.id,
 					dragData,
-					tableState,
+					dashboardState,
 					setDashboardState
 				);
 			}

@@ -14,11 +14,11 @@ import { getDateCellContent } from "../cell-content/date-cell-content";
 import { getCurrencyCellContent } from "../cell-content/currency-cell-content";
 
 export const filterBodyRowsBySearch = (
-	tableState: DashboardState,
+	dashboardState: DashboardState,
 	filteredBodyRows: BodyRow[],
 	searchText: string
 ): BodyRow[] => {
-	const { columns, bodyCells, bodyRows } = tableState.model;
+	const { columns, bodyCells, bodyRows } = dashboardState.model;
 	const columnMap = new Map<string, Column>();
 	columns.forEach((column) => columnMap.set(column.id, column));
 

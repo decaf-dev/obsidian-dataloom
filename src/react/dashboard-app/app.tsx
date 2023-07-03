@@ -53,7 +53,7 @@ export default function App() {
 	const { topMenu, hasOpenMenu, requestCloseTopMenu } = useMenuState();
 	const logger = useLogger();
 	const {
-		tableState,
+		dashboardState,
 		resizingColumnId,
 		searchText,
 		commandRedo,
@@ -61,7 +61,7 @@ export default function App() {
 		setDashboardState,
 	} = useDashboardState();
 
-	useExportEvents(tableState);
+	useExportEvents(dashboardState);
 	useRowEvents();
 	useColumnEvents();
 
@@ -177,11 +177,11 @@ export default function App() {
 			let index = -1;
 			if (focusedEl) index = Array.from(focusableEls).indexOf(focusedEl);
 
-			const numVisibleColumns = tableState.model.columns.filter(
+			const numVisibleColumns = dashboardState.model.columns.filter(
 				(column) => column.isVisible
 			).length;
-			const numBodyRows = tableState.model.bodyRows.length;
-			const numSortedColumns = tableState.model.columns.filter(
+			const numBodyRows = dashboardState.model.bodyRows.length;
+			const numSortedColumns = dashboardState.model.columns.filter(
 				(column) => column.sortDir !== SortDir.NONE
 			).length;
 
@@ -240,11 +240,11 @@ export default function App() {
 		bodyCells,
 		footerCells,
 		filterRules,
-	} = tableState.model;
+	} = dashboardState.model;
 
-	let filteredBodyRows = filterBodyRowsByRules(tableState);
+	let filteredBodyRows = filterBodyRowsByRules(dashboardState);
 	filteredBodyRows = filterBodyRowsBySearch(
-		tableState,
+		dashboardState,
 		filteredBodyRows,
 		searchText
 	);

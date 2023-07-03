@@ -15,7 +15,7 @@ const DashboardStateContext = React.createContext<{
 	searchText: string;
 	isSearchBarVisible: boolean;
 	resizingColumnId: string | null;
-	tableState: DashboardState;
+	dashboardState: DashboardState;
 	setDashboardState: React.Dispatch<React.SetStateAction<DashboardState>>;
 	toggleSearchBar: () => void;
 	setResizingColumnId: React.Dispatch<React.SetStateAction<string | null>>;
@@ -41,7 +41,7 @@ export default function DashboardStateProvider({
 	onSaveState,
 	children,
 }: Props) {
-	const [tableState, setDashboardState] = React.useState(initialState);
+	const [dashboardState, setDashboardState] = React.useState(initialState);
 	const [searchText, setSearchText] = React.useState("");
 	const [isSearchBarVisible, setSearchBarVisible] = React.useState(false);
 	const [resizingColumnId, setResizingColumnId] = React.useState<
@@ -72,8 +72,8 @@ export default function DashboardStateProvider({
 			return;
 		}
 
-		onSaveState(appId, tableState);
-	}, [appId, tableState, onSaveState]);
+		onSaveState(appId, dashboardState);
+	}, [appId, dashboardState, onSaveState]);
 
 	function handleToggleSearchBar() {
 		setSearchBarVisible((prevState) => !prevState);
@@ -89,14 +89,14 @@ export default function DashboardStateProvider({
 			const command = history[position];
 			if (command !== null) {
 				logger(command.constructor.name + ".undo");
-				let newState = command.undo(tableState);
+				let newState = command.undo(dashboardState);
 				if (command.shouldSortRows) {
 					newState = new RowSortCommand().execute(newState);
 				}
 				setDashboardState(newState);
 			}
 		}
-	}, [position, history, tableState, logger]);
+	}, [position, history, dashboardState, logger]);
 
 	const redo = React.useCallback(() => {
 		if (position < history.length - 1) {
@@ -108,14 +108,14 @@ export default function DashboardStateProvider({
 			const command = history[currentPosition];
 			if (command !== null) {
 				logger(command.constructor.name + ".redo");
-				let newState = command.redo(tableState);
+				let newState = command.redo(dashboardState);
 				if (command.shouldSortRows) {
 					newState = new RowSortCommand().execute(newState);
 				}
 				setDashboardState(newState);
 			}
 		}
-	}, [position, history, tableState, logger]);
+	}, [position, history, dashboardState, logger]);
 
 	const doCommand = React.useCallback(
 		(command: DashboardStateCommand) => {
@@ -131,19 +131,19 @@ export default function DashboardStateProvider({
 			setPosition((prevState) => prevState + 1);
 
 			//Execute command
-			let newState = command.execute(tableState);
+			let newState = command.execute(dashboardState);
 			if (command.shouldSortRows) {
 				newState = new RowSortCommand().execute(newState);
 			}
 			setDashboardState(newState);
 		},
-		[position, history, tableState]
+		[position, history, dashboardState]
 	);
 
 	return (
 		<DashboardStateContext.Provider
 			value={{
-				tableState,
+				dashboardState,
 				setDashboardState,
 				doCommand,
 				commandRedo: redo,
