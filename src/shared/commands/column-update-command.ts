@@ -1,8 +1,8 @@
-import { ColumNotFoundError } from "../table-state/table-error";
-import TableStateCommand from "../table-state/table-state-command";
-import { Column, TableState } from "../types";
+import { ColumNotFoundError } from "../dashboard-state/dashboard-error";
+import DashboardStateCommand from "../dashboard-state/dashboard-state-command";
+import { Column, DashboardState } from "../types";
 
-export default class ColumnUpdateCommand extends TableStateCommand {
+export default class ColumnUpdateCommand extends DashboardStateCommand {
 	private columnId: string;
 	private key: keyof Column;
 	private value?: unknown;
@@ -25,7 +25,7 @@ export default class ColumnUpdateCommand extends TableStateCommand {
 		this.value = value;
 	}
 
-	execute(prevState: TableState): TableState {
+	execute(prevState: DashboardState): DashboardState {
 		super.onExecute();
 
 		const { columns } = prevState.model;
@@ -60,12 +60,12 @@ export default class ColumnUpdateCommand extends TableStateCommand {
 		};
 	}
 
-	redo(prevState: TableState): TableState {
+	redo(prevState: DashboardState): DashboardState {
 		super.onRedo();
 		return this.execute(prevState);
 	}
 
-	undo(prevState: TableState): TableState {
+	undo(prevState: DashboardState): DashboardState {
 		super.onUndo();
 
 		return {

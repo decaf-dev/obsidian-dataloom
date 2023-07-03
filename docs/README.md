@@ -12,7 +12,7 @@ Support developent of the plugin on [buymeacoffee.com](https://www.buymeacoffee.
 <a href="https://github.com/trey-wallis/obsidian-dashboards" target="_blank" rel="noopener">
 <img width="125" style="padding:7px 7px 5px" src="https://img.shields.io/github/stars/trey-wallis/obsidian-dashboards?style=social" referrerpolicy="no-referrer" alt="obsidian-dashboards?style=social"></a>
 
-[Lastest release notes](https://github.com/trey-wallis/obsidian-dashboards/releases/tag/6.18.0)
+[Lastest release notes](https://github.com/trey-wallis/obsidian-dashboards/releases/tag/7.0.0)
 
 ## Feature Requests
 

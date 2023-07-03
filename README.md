@@ -8,12 +8,12 @@
 
 #### [Documentation](https://trey-wallis.github.io/obsidian-dashboards)
 
-#### [Lastest release notes](https://github.com/trey-wallis/obsidian-dashboards/releases/tag/6.18.0)
+#### [Lastest release notes](https://github.com/trey-wallis/obsidian-dashboards/releases/tag/7.0.0)
 
 ## About
 
 -   [Installation](#installation)
--   [Creating a table](#creating-a-table)
+-   [Creating a dashboard](#creating-a-dashboard)
 -   [Features](#features)
 -   [Guides](#guides)
 -   [Roadmap](#roadmap)
@@ -33,33 +33,33 @@
 5. Select **Install**
 6. Then select **Enable**
 
-### Linking table files
+### Linking dashboard files
 
-By default, Obsidian won't display `.table` files in the menu that opens when you type double brackets `[[`. In order for Obsidian to do this, you must enable detection of all file extensions.
+By default, Obsidian won't display `.dashboard` files in the menu that opens when you type double brackets `[[`. In order for Obsidian to do this, you must enable detection of all file extensions.
 
 1. In Obsidian, open **Settings**
 2. Select **File & Links**
 3. Toggle **Detect all file extensions**
 
-This will allow you to make links to a table e.g. `[[mytable.table]]`
+This will allow you to make links to a dashboard e.g. `[[my-dashboard.dashboard]]`
 
-## Creating a table
+## Creating a dashboard
 
-Start by creating a new table. You can do this by clicking on the table icon on the sidebar.
+Start by creating a new dashboard. You can do this by clicking on the dashboard icon on the sidebar.
 
 <img width="378" alt="Obsidian Sidebar" src="https://user-images.githubusercontent.com/40307803/233815916-c2c43dc6-5a99-4810-901a-d1e3cce97be0.png">
 
-You can also right click on a folder and click **New Notion-Like table**
+You can also right click on a folder and click **New dashboard**
 
 <img width="500" alt="Screenshot 2023-05-06 at 3 36 12 AM" src="https://user-images.githubusercontent.com/40307803/236616281-51fdab3e-fb43-4d5b-a33d-86141ab192b7.png">
 
 ## Features
 
-For detailed documentation on table features see: [https://trey-wallis.github.io/obsidian-dashboards](https://trey-wallis.github.io/obsidian-dashboards)
+For detailed documentation on dashboard features see: [https://trey-wallis.github.io/obsidian-dashboards](https://trey-wallis.github.io/obsidian-dashboards)
 
 ## Guides
 
-For detailed guides on how to use the table see: [https://trey-wallis.github.io/obsidian-dashboards](https://trey-wallis.github.io/obsidian-dashboards)
+For detailed guides on how to use the dashboard see: [https://trey-wallis.github.io/obsidian-dashboards](https://trey-wallis.github.io/obsidian-dashboards)
 
 ## Roadmap
 

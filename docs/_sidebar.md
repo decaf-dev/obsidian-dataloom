@@ -77,7 +77,7 @@
 
     -   Other
 
-        -   [Embedding tables](embedding-tables.md)
+        -   [Embedding dashboards](embedding-dashboards.md)
 
         -   [Undo and redo](undo-redo.md)
 

@@ -1,12 +1,12 @@
 import {
 	rowLastEditedTime,
 	rowLastEditedTimeUpdate,
-} from "../table-state/row-state-operations";
-import { CellNotFoundError } from "../table-state/table-error";
-import TableStateCommand from "../table-state/table-state-command";
-import { BodyCell, TableState } from "../types";
+} from "../dashboard-state/row-state-operations";
+import { CellNotFoundError } from "../dashboard-state/dashboard-error";
+import DashboardStateCommand from "../dashboard-state/dashboard-state-command";
+import { BodyCell, DashboardState } from "../types";
 
-export default class CellBodyUpdateCommand extends TableStateCommand {
+export default class CellBodyUpdateCommand extends DashboardStateCommand {
 	private cellId: string;
 	private rowId: string;
 	private key: keyof BodyCell;
@@ -28,7 +28,7 @@ export default class CellBodyUpdateCommand extends TableStateCommand {
 		this.value = value;
 	}
 
-	execute(prevState: TableState): TableState {
+	execute(prevState: DashboardState): DashboardState {
 		super.onExecute();
 
 		const { bodyCells, bodyRows } = prevState.model;
@@ -58,12 +58,12 @@ export default class CellBodyUpdateCommand extends TableStateCommand {
 		};
 	}
 
-	redo(prevState: TableState): TableState {
+	redo(prevState: DashboardState): DashboardState {
 		super.onRedo();
 		return this.execute(prevState);
 	}
 
-	undo(prevState: TableState): TableState {
+	undo(prevState: DashboardState): DashboardState {
 		super.onUndo();
 
 		const { bodyCells, bodyRows } = prevState.model;

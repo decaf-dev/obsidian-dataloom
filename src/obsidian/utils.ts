@@ -1,17 +1,17 @@
-import { TABLE_EXTENSION } from "src/data/constants";
+import { PREVIOUS_FILE_EXTENSION } from "src/data/constants";
 import { numToPx } from "src/shared/conversion";
 
-export const getEmbeddedTableLinkEls = (el: HTMLElement) => {
+export const getEmbeddedDashboardLinkEls = (el: HTMLElement) => {
 	const embeddedLinkEls = el.querySelectorAll(".internal-embed");
-	const tableLinkEls: HTMLElement[] = [];
+	const dashboardLinkEls: HTMLElement[] = [];
 
 	for (let i = 0; i < embeddedLinkEls.length; i++) {
 		const linkEl = embeddedLinkEls[i];
 		const src = linkEl.getAttribute("src");
-		if (src?.endsWith(TABLE_EXTENSION))
-			tableLinkEls.push(linkEl as HTMLElement);
+		if (src?.endsWith(PREVIOUS_FILE_EXTENSION))
+			dashboardLinkEls.push(linkEl as HTMLElement);
 	}
-	return tableLinkEls;
+	return dashboardLinkEls;
 };
 
 export const removeEmbeddedLinkChildren = (embeddedLinkEl: HTMLElement) => {
@@ -30,13 +30,15 @@ export const removeEmbeddedLinkChildren = (embeddedLinkEl: HTMLElement) => {
 export const findEmbeddedTableFile = (embeddedLinkEl: HTMLElement) => {
 	const src = embeddedLinkEl.getAttribute("src");
 
-	const tableFile = app.vault.getFiles().find((file) => file.path === src);
-	if (tableFile === undefined)
+	const dashboardFile = app.vault
+		.getFiles()
+		.find((file) => file.path === src);
+	if (dashboardFile === undefined)
 		return app.vault.getFiles().find((file) => file.name === src) ?? null;
-	return tableFile ?? null;
+	return dashboardFile ?? null;
 };
 
-export const getEmbeddedTableWidth = (
+export const getEmbeddedDashboardWidth = (
 	embeddedLinkEl: HTMLElement,
 	defaultWidth: string
 ) => {
@@ -45,7 +47,7 @@ export const getEmbeddedTableWidth = (
 	return numToPx(width);
 };
 
-export const getEmbeddedTableHeight = (
+export const getEmbeddedDashboardHeight = (
 	embeddedLinkEl: HTMLElement,
 	defaultHeight: string
 ) => {

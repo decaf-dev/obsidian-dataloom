@@ -6,41 +6,6 @@ import path from "path";
 
 const prod = process.argv[2] === "production";
 
-// Define your custom plugin
-const replaceImportPlugin = {
-	name: "replace-import-plugin",
-	setup(build) {
-		build.onResolve(
-			{ filter: /src\/obsidian-shim\/development/ },
-			(args) => {
-				const indexOfSrc = args.resolveDir.indexOf("src");
-				const srcDir = args.resolveDir.slice(0, indexOfSrc);
-				const resolvedPath = path.resolve(
-					srcDir,
-					args.path.replace(
-						"obsidian-shim/development",
-						"obsidian-shim/build"
-					)
-				);
-
-				const possibleExtensions = [".tsx", ".ts"];
-				let resolvedPathWithExtension = resolvedPath;
-				for (const extension of possibleExtensions) {
-					const pathWithExtension = resolvedPath + extension;
-					if (fs.existsSync(pathWithExtension)) {
-						resolvedPathWithExtension = pathWithExtension;
-						break;
-					}
-				}
-
-				return {
-					path: resolvedPathWithExtension,
-				};
-			}
-		);
-	},
-};
-
 esbuild
 	.build({
 		entryPoints: ["src/main.ts"],
@@ -89,7 +54,6 @@ esbuild
 		sourcemap: !prod,
 		treeShaking: true,
 		outfile: "main.js",
-		plugins: [replaceImportPlugin],
 	})
 	.then(() => {
 		if (prod) {

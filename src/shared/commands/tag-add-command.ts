@@ -1,13 +1,13 @@
-import { createTag } from "src/data/table-state-factory";
-import TableStateCommand from "../table-state/table-state-command";
-import { TableState, Tag } from "../types";
+import { createTag } from "src/data/dashboard-state-factory";
+import DashboardStateCommand from "../dashboard-state/dashboard-state-command";
+import { DashboardState, Tag } from "../types";
 import { Color } from "../types";
 import {
 	rowLastEditedTime,
 	rowLastEditedTimeUpdate,
-} from "../table-state/row-state-operations";
+} from "../dashboard-state/row-state-operations";
 
-export default class TagAddCommand extends TableStateCommand {
+export default class TagAddCommand extends DashboardStateCommand {
 	private cellId: string;
 	private columnId: string;
 	private rowId: string;
@@ -58,7 +58,7 @@ export default class TagAddCommand extends TableStateCommand {
 		this.isMultiTag = isMultiTag;
 	}
 
-	execute(prevState: TableState): TableState {
+	execute(prevState: DashboardState): DashboardState {
 		super.onExecute();
 
 		const { bodyRows, bodyCells, columns } = prevState.model;
@@ -119,7 +119,7 @@ export default class TagAddCommand extends TableStateCommand {
 			},
 		};
 	}
-	redo(prevState: TableState): TableState {
+	redo(prevState: DashboardState): DashboardState {
 		super.onRedo();
 		const { bodyRows, columns, bodyCells } = prevState.model;
 
@@ -155,7 +155,7 @@ export default class TagAddCommand extends TableStateCommand {
 			},
 		};
 	}
-	undo(prevState: TableState): TableState {
+	undo(prevState: DashboardState): DashboardState {
 		super.onUndo();
 
 		const { bodyRows, columns } = prevState.model;

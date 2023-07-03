@@ -12,7 +12,7 @@ const initialState: GlobalState = {
 };
 
 //This is the global slice of the redux store.
-//This state will be shared across all instances of our table view
+//This state will be shared across all dashboards instances
 const globalSlice = createSlice({
 	name: "global",
 	initialState,

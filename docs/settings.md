@@ -1,9 +1,9 @@
 ## Settings
 
-| Name                                   | Value          |
-| -------------------------------------- | -------------- |
-| Create new tables in attachment folder | `<true/false>` |
-| Default location for new tables        | `<path>`       |
-| Export content as markdown             | `<true/false>` |
-| Default embedded table width           | `<width>`      |
-| Default embedded table height          | `<height>`     |
+| Name                                       | Value          |
+| ------------------------------------------ | -------------- |
+| Create new dashboards in attachment folder | `<true/false>` |
+| Default location for new dashboards        | `<path>`       |
+| Export content as markdown                 | `<true/false>` |
+| Default embedded dashboard width           | `<width>`      |
+| Default embedded dashboard height          | `<height>`     |
