@@ -19,7 +19,7 @@ import { useRow } from "src/shared/table-state/use-row";
 import { useCell } from "src/shared/table-state/use-cell";
 import { useTag } from "src/shared/table-state/use-tag";
 import { css } from "@emotion/react";
-import { useMountState } from "src/obsidian-shim/development/mount-context";
+import { useMountState } from "src/obsidian-shim/build/mount-context";
 import MenuProvider, { useMenuState } from "src/shared/menu/menu-context";
 import { SortDir, TableState } from "src/shared/types";
 import { Store } from "@reduxjs/toolkit";
@@ -47,9 +47,9 @@ import {
 	moveMenuFocusDown,
 	moveMenuFocusUp,
 } from "src/shared/menu/arrow-move-focus";
-import { useExportEvents } from "src/obsidian-shim/development/export-events";
-import { useRowEvents } from "src/obsidian-shim/development/row-events";
-import { useColumnEvents } from "src/obsidian-shim/development/column-events";
+import { useExportEvents } from "src/obsidian-shim/build/export-events";
+import { useRowEvents } from "src/obsidian-shim/build/row-events";
+import { useColumnEvents } from "src/obsidian-shim/build/column-events";
 import { Provider } from "react-redux";
 import DragProvider from "src/shared/dragging/drag-context";
 

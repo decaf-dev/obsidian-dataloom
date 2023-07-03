@@ -1,4 +1,4 @@
-import { getResourcePath } from "src/obsidian-shim/development/render-utils";
+import { getResourcePath } from "src/obsidian-shim/build/render-utils";
 import { isImage, isTwitterLink, isYouTubeLink } from "../match";
 
 /**

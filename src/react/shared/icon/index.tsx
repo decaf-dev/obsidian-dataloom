@@ -1,6 +1,6 @@
 import React from "react";
 
-import { setIcon } from "src/obsidian-shim/development/set-icon";
+import { setIcon } from "src/obsidian-shim/build/set-icon";
 import { appendOrReplaceFirstChild } from "src/shared/render/utils";
 
 interface Props {

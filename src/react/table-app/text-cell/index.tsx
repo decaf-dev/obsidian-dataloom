@@ -1,4 +1,4 @@
-import { useRenderMarkdown } from "src/obsidian-shim/development/render-utils";
+import { useRenderMarkdown } from "src/obsidian-shim/build/render-utils";
 import { useOverflow } from "src/shared/spacing/hooks";
 import { css } from "@emotion/react";
 import { appendOrReplaceFirstChild } from "src/shared/render/utils";

@@ -71,7 +71,7 @@ export const renderMarkdown = async (leaf: WorkspaceLeaf, markdown: string) => {
 
 export const useRenderMarkdown = (
 	markdown: string,
-	options: {
+	options?: {
 		isExternalLink?: boolean;
 		isEmbed?: boolean;
 	}

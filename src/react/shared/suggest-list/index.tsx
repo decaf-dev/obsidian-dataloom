@@ -9,10 +9,7 @@ import Text from "src/react/shared/text";
 
 import { nltEventSystem } from "src/shared/event-system/event-system";
 import { useLogger } from "src/shared/logger";
-import {
-	VaultFile,
-	getVaultFiles,
-} from "src/obsidian-shim/development/vault-file";
+import { VaultFile, getVaultFiles } from "src/obsidian-shim/build/vault-file";
 import ClearButton from "./clear-button";
 import CreateButton from "./create-button";
 import Padding from "../padding";
@@ -74,7 +71,7 @@ export function SuggestList({
 	} else {
 		//Otherwise we just sort by last modified
 		filteredFiles = files;
-		filteredFiles.sort((a, b) => b.modifiedTime - a.modifiedTime);
+		filteredFiles.sort((a, b) => b.stat.mtime - a.stat.mtime);
 		filteredFiles = filteredFiles.slice(0, 20);
 	}
 

@@ -42,7 +42,7 @@ import FileCellEdit from "../file-cell-edit";
 import { css } from "@emotion/react";
 import EmbedCell from "../embed-cell";
 import EmbedCellEdit from "../embed-cell-edit";
-import { Notification } from "src/obsidian-shim/development/notification";
+import { Notification } from "src/obsidian-shim/build/notification";
 
 interface Props {
 	isExternalLink: boolean;

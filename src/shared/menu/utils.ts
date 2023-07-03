@@ -5,7 +5,7 @@ import { MENU_SHIFT_PADDING } from "./constants";
 import {
 	useLeafContainer,
 	isOnMobile,
-} from "src/obsidian-shim/development/render-utils";
+} from "src/obsidian-shim/build/render-utils";
 
 export const isTextSelected = () => {
 	const selection = window.getSelection();

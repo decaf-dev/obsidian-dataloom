@@ -3,7 +3,7 @@ import React from "react";
 import { css } from "@emotion/react";
 import Text from "src/react/shared/text";
 import { nltEventSystem } from "src/shared/event-system/event-system";
-import { VaultFile } from "src/obsidian-shim/development/vault-file";
+import { VaultFile } from "src/obsidian-shim/build/vault-file";
 
 interface Props {
 	index: number;

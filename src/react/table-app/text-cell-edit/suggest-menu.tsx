@@ -2,7 +2,7 @@ import React from "react";
 
 import Menu from "src/react/shared/menu";
 import { SuggestList } from "../../shared/suggest-list";
-import { VaultFile } from "src/obsidian-shim/development/vault-file";
+import { VaultFile } from "src/obsidian-shim/build/vault-file";
 
 interface Props {
 	id: string;

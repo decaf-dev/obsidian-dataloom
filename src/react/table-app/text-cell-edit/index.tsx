@@ -18,7 +18,7 @@ import {
 import { getWikiLinkText } from "src/shared/link/link-utils";
 import { css } from "@emotion/react";
 import { textAreaStyle } from "src/react/table-app/shared-styles";
-import { VaultFile } from "src/obsidian-shim/development/vault-file";
+import { VaultFile } from "src/obsidian-shim/build/vault-file";
 import { useLogger } from "src/shared/logger";
 
 interface Props {

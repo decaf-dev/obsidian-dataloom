@@ -8,7 +8,7 @@ import { useMenuState } from "src/shared/menu/menu-context";
 import { isTextSelected } from "src/shared/menu/utils";
 import { removeFocusVisibleClass } from "src/shared/menu/focus-visible";
 import { useLogger } from "src/shared/logger";
-import { useMenuEvents } from "src/obsidian-shim/development/menu-events";
+import { useMenuEvents } from "src/obsidian-shim/build/menu-events";
 
 interface Props {
 	id: string;

@@ -1,5 +1,5 @@
 import { SuggestList } from "src/react/shared/suggest-list";
-import { VaultFile } from "src/obsidian-shim/development/vault-file";
+import { VaultFile } from "src/obsidian-shim/build/vault-file";
 import { getBasename } from "src/shared/link/link-utils";
 
 interface Props {
