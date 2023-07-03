@@ -6,7 +6,7 @@ import { ExportApp } from "src/react/export-app";
 import { Provider } from "react-redux";
 import { store } from "src/redux/global/store";
 
-export default class DashboardsExportModal extends Modal {
+export default class ExportModal extends Modal {
 	root: Root;
 	filePath: string;
 

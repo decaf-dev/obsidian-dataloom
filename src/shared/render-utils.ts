@@ -4,7 +4,7 @@ import {
 	appendOrReplaceFirstChild,
 	replaceNewLinesWithBr,
 } from "src/shared/render/utils";
-import { useMountState } from "./mount-context";
+import { useMountState } from "../react/table-app/mount-provider";
 import {
 	MarkdownRenderer,
 	MarkdownView,
@@ -71,7 +71,7 @@ export const renderMarkdown = async (leaf: WorkspaceLeaf, markdown: string) => {
 
 export const useRenderMarkdown = (
 	markdown: string,
-	options: {
+	options?: {
 		isExternalLink?: boolean;
 		isEmbed?: boolean;
 	}

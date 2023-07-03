@@ -8,7 +8,7 @@ import {
 	serializeTableState,
 } from "src/data/serialize-table-state";
 
-export default class DashboardsImportModal extends Modal {
+export default class ImportModal extends Modal {
 	root: Root;
 
 	constructor(app: App) {

@@ -1,11 +1,11 @@
 import { PluginSettingTab, App } from "obsidian";
-import NLTPlugin from "../main";
+import DashboardsPlugin from "../main";
 import { Setting } from "obsidian";
 
 export default class DashboardsSettingsTab extends PluginSettingTab {
-	plugin: NLTPlugin;
+	plugin: DashboardsPlugin;
 
-	constructor(app: App, plugin: NLTPlugin) {
+	constructor(app: App, plugin: DashboardsPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}
