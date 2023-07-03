@@ -132,7 +132,7 @@ export default class DashboardsPlugin extends Plugin {
 		//This registers a Markdown post processor. It is used to render the embedded
 		//table in preview mode.
 		// this.registerMarkdownPostProcessor((element, context) => {
-		// 	const embeddedTableLinkEls = getEmbeddedTableLinkEls(element);
+		// 	const embeddedTableLinkEls = getEmbeddedDashboardLinkEls(element);
 		// 	for (let i = 0; i < embeddedTableLinkEls.length; i++) {
 		// 		const linkEl = embeddedTableLinkEls[i];
 		// 		context.addChild(
@@ -344,8 +344,8 @@ export default class DashboardsPlugin extends Plugin {
 					"useMarkdownLinks"
 				);
 
-				// Use basename rather than whole name when using Markdownlink like ![abcd](abcd.table) instead of ![abcd.table](abcd.table)
-				// It will replace `.table` to "" in abcd.table
+				// Use basename rather than whole name when using Markdownlink like ![abcd](abcd.dashboard) instead of ![abcd.dashboard](abcd.dashboard)
+				// It will replace `.dashboard` to "" in abcd.dashboard
 				const linkText = useMarkdownLinks
 					? `![${getBasename(filePath)}](${encodeURI(filePath)})`
 					: `![[${filePath}]]`;

@@ -34,7 +34,7 @@ export default class ReadingViewChild extends MarkdownRenderChild {
 			const data = await app.vault.read(file);
 			const state = deserializeDashboardState(data);
 
-			//Get table state
+			//Get dashboard state
 			this.root = createRoot(container);
 
 			this.root.render(

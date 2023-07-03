@@ -21,7 +21,7 @@ export default class ExportModal extends Modal {
 
 		const view = app.workspace.getActiveViewOfType(DashboardsView);
 		if (view) {
-			//Get table state
+			//Get dashboard state
 			const data = view.getViewData();
 			const state = deserializeDashboardState(data);
 
