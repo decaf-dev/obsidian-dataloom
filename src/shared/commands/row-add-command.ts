@@ -1,5 +1,5 @@
 import { createBodyCell, createBodyRow } from "src/data/table-state-factory";
-import DashboardStateCommand from "../dashboard-state/table-state-command";
+import DashboardStateCommand from "../dashboard-state/dashboard-state-command";
 import { BodyCell, BodyRow, DashboardState } from "../types";
 
 export default class RowAddCommand extends DashboardStateCommand {

@@ -1,5 +1,5 @@
 import { ColumNotFoundError } from "../dashboard-state/dashboard-error";
-import DashboardStateCommand from "../dashboard-state/table-state-command";
+import DashboardStateCommand from "../dashboard-state/dashboard-state-command";
 import { Column, DashboardState } from "../types";
 
 export default class ColumnUpdateCommand extends DashboardStateCommand {

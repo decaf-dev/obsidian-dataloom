@@ -3,7 +3,7 @@ import {
 	rowLastEditedTimeUpdate,
 } from "../dashboard-state/row-state-operations";
 import { CellNotFoundError } from "../dashboard-state/dashboard-error";
-import DashboardStateCommand from "../dashboard-state/table-state-command";
+import DashboardStateCommand from "../dashboard-state/dashboard-state-command";
 import { BodyCell, DashboardState } from "../types";
 
 export default class CellBodyUpdateCommand extends DashboardStateCommand {

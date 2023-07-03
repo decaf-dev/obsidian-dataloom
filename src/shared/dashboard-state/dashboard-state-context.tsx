@@ -1,5 +1,5 @@
 import { DashboardState } from "../types";
-import DashboardStateCommand from "./table-state-command";
+import DashboardStateCommand from "./dashboard-state-command";
 import React from "react";
 import { useLogger } from "../logger";
 import RowSortCommand from "../commands/row-sort-command";

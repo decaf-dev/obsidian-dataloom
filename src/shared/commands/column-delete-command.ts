@@ -7,7 +7,7 @@ import {
 	FooterCell,
 	FilterRule,
 } from "../types";
-import DashboardStateCommand from "../dashboard-state/table-state-command";
+import DashboardStateCommand from "../dashboard-state/dashboard-state-command";
 import { DeleteCommandArgumentsError } from "./command-errors";
 
 export default class ColumnDeleteCommand extends DashboardStateCommand {

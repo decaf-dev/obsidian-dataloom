@@ -11,7 +11,7 @@ import {
 	createFooterCell,
 	createHeaderCell,
 } from "src/data/table-state-factory";
-import DashboardStateCommand from "../dashboard-state/table-state-command";
+import DashboardStateCommand from "../dashboard-state/dashboard-state-command";
 
 export default class ColumnAddCommand extends DashboardStateCommand {
 	private addedColumn: Column;

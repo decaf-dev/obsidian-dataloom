@@ -2,7 +2,7 @@ import { createTag } from "src/data/table-state-factory";
 import { unixTimeToDateString } from "../date/date-conversion";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "../dashboard-state/constants";
 import { ColumNotFoundError } from "../dashboard-state/dashboard-error";
-import DashboardStateCommand from "../dashboard-state/table-state-command";
+import DashboardStateCommand from "../dashboard-state/dashboard-state-command";
 import {
 	BodyCell,
 	Calculation,
