@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { DEFAULT_SETTINGS, NLTSettings } from "src/main";
+import { DEFAULT_SETTINGS, DashboardsSettings } from "src/main";
 
 interface GlobalState {
-	settings: NLTSettings;
+	settings: DashboardsSettings;
 	isDarkMode: boolean;
 }
 
@@ -20,7 +20,7 @@ const globalSlice = createSlice({
 		setDarkMode(state, action: PayloadAction<boolean>) {
 			state.isDarkMode = action.payload;
 		},
-		setSettings(state, action: PayloadAction<NLTSettings>) {
+		setSettings(state, action: PayloadAction<DashboardsSettings>) {
 			state.settings = action.payload;
 		},
 	},

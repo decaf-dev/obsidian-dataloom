@@ -7,7 +7,7 @@ import {
 	TFolder,
 } from "obsidian";
 
-import NLTSettingsTab from "./obsidian/dashboards-settings-tab";
+import DashboardsSettingsTab from "./obsidian/dashboards-settings-tab";
 
 import { store } from "./redux/global/store";
 import { setDarkMode, setSettings } from "./redux/global/global-slice";
@@ -25,7 +25,7 @@ import {
 	EVENT_ROW_ADD,
 	EVENT_ROW_DELETE,
 } from "./shared/events";
-import { dashboardsEmbeddedPlugin } from "./obsidian/dashboard-embedded-plugin";
+import { dashboardsEmbeddedPlugin } from "./obsidian/dashboards-embedded-plugin";
 import {
 	deserializeTableState,
 	serializeTableState,
@@ -36,7 +36,7 @@ import { hasDarkTheme } from "./shared/render/utils";
 import { removeFocusVisibleClass } from "./shared/menu/focus-visible";
 import { TableState } from "./shared/types";
 
-export interface NLTSettings {
+export interface DashboardsSettings {
 	shouldDebug: boolean;
 	createAtObsidianAttachmentFolder: boolean;
 	customFolderForNewTables: string;
@@ -45,7 +45,7 @@ export interface NLTSettings {
 	defaultEmbedHeight: string;
 }
 
-export const DEFAULT_SETTINGS: NLTSettings = {
+export const DEFAULT_SETTINGS: DashboardsSettings = {
 	shouldDebug: false,
 	createAtObsidianAttachmentFolder: false,
 	customFolderForNewTables: "",
@@ -54,8 +54,8 @@ export const DEFAULT_SETTINGS: NLTSettings = {
 	defaultEmbedHeight: "340px",
 };
 
-export default class NLTPlugin extends Plugin {
-	settings: NLTSettings;
+export default class DashboardsPlugin extends Plugin {
+	settings: DashboardsSettings;
 
 	/**
 	 * Called on plugin load.
@@ -71,7 +71,7 @@ export default class NLTPlugin extends Plugin {
 			await this.newTableFile(null);
 		});
 
-		this.addSettingTab(new NLTSettingsTab(this.app, this));
+		this.addSettingTab(new DashboardsSettingsTab(this.app, this));
 		this.registerEmbeddedView();
 		this.registerCommands();
 		this.registerEvents();
@@ -90,7 +90,7 @@ export default class NLTPlugin extends Plugin {
 		// 	for (let i = 0; i < embeddedTableLinkEls.length; i++) {
 		// 		const linkEl = embeddedTableLinkEls[i];
 		// 		context.addChild(
-		// 			new NLTEmbeddedRenderChild(
+		// 			new DashboardsEmbeddedRenderChild(
 		// 				linkEl,
 		// 				linkEl.getAttribute("src")!
 		// 			)
