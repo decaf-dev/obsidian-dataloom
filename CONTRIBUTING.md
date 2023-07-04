@@ -2,9 +2,9 @@
 
 ## Issues
 
-Issues are somewhat prioritized in the [project manager](https://github.com/users/trey-wallis/projects/2). However, you are welcome to work on whatever issue you would like.
+Issues are somewhat prioritized in the [project roadmap](https://github.com/users/trey-wallis/projects/2). However, you are welcome to work on whatever issue you would like.
 
-If the code you are contributing is related to an existing issue, please make a comment on that issue and tag @trey-wallis. This is so that I know that you are working on that it.
+If the code you are contributing is related to an existing issue, please make a comment on that issue and tag trey-wallis. This is so that I know that you are working on that it.
 
 ## Diagrams
 
@@ -24,10 +24,15 @@ We use yarn for dependency management instead of npm. Please make sure that you 
 npm install -g yarn
 ```
 
-Change to the repository and install dependencies
+Cd to the clone repository
 
 ```shell
-ch obsidian-dashboards
+cd obsidian-dashboards
+```
+
+Install dependencies
+
+```shell
 yarn install
 ```
 
@@ -36,8 +41,7 @@ Create a symbolic link from the cloned repository to your Obsidan vault.
 I recommend making a new Obsidian vault just for development.
 
 ```shell
-ln -s <source> <dest>
-ln -s obsidian-dashboards test-vault/.obsidian/plugins
+ln -s <repo-path> <dev-vault-path>/.obsidian/plugins
 ```
 
 Run esbuild in development mode
@@ -46,7 +50,11 @@ Run esbuild in development mode
 yarn run dev
 ```
 
-Open your development vault in Obsidian
+Open your vault in Obsidian
+
+Enable Dashboards
+
+Make a code change
 
 Restart Obsidian to see your code changes
 
