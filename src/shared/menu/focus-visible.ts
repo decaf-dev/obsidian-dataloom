@@ -13,13 +13,13 @@ export const focusMenuElement = (menuId: string) => {
 //Since .focus-visible only appears when a keyboard event happens e.g. tab is pressed
 //to programatically add a visual indicator we need to add a class
 export const addFocusVisibleClass = (el: HTMLElement) => {
-	if (el) el.classList.add("NLT__focus-visible");
+	if (el) el.classList.add("Dashboards__focus-visible");
 };
 
 //Once a focus visible class is added, it will stay there until we remove it
 export const removeFocusVisibleClass = () => {
-	const el = document.querySelector(".NLT__focus-visible");
-	if (el) el.classList.remove("NLT__focus-visible");
+	const el = document.querySelector(".Dashboards__focus-visible");
+	if (el) el.classList.remove("Dashboards__focus-visible");
 };
 
 export const getFocusableLayerEl = (
@@ -27,14 +27,18 @@ export const getFocusableLayerEl = (
 	topMenu: NltMenu | null
 ): HTMLElement | null => {
 	//Get the parent element
-	const appEl = document.querySelector(`.NLT__app[data-id="${appId}"]`);
+	const appEl = document.querySelector(
+		`.Dashboards__app[data-id="${appId}"]`
+	);
 	if (!appEl) return null;
 
 	let layerEl = appEl;
 	if (topMenu) {
 		const { id } = topMenu;
 
-		const menuEl = document.querySelector(`.NLT__menu[data-id="${id}"]`);
+		const menuEl = document.querySelector(
+			`.Dashboards__menu[data-id="${id}"]`
+		);
 		if (menuEl) layerEl = menuEl;
 	}
 	return layerEl as HTMLElement;
@@ -58,7 +62,7 @@ export const focusNextElement = (
 	}
 
 	//Otherwise focus the first element or the selected element
-	const selectedEl = layerEl.querySelector(".NLT__selected");
+	const selectedEl = layerEl.querySelector(".Dashboards__selected");
 	if (selectedEl) {
 		(selectedEl as HTMLElement).focus();
 	} else {

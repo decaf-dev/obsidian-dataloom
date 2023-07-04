@@ -1,8 +1,8 @@
-import { CellNotFoundError } from "../table-state/table-error";
-import TableStateCommand from "../table-state/table-state-command";
-import { FooterCell, TableState } from "../types";
+import { CellNotFoundError } from "../dashboard-state/dashboard-error";
+import DashboardStateCommand from "../dashboard-state/dashboard-state-command";
+import { FooterCell, DashboardState } from "../types";
 
-export default class CellFooterUpdateCommand extends TableStateCommand {
+export default class CellFooterUpdateCommand extends DashboardStateCommand {
 	private cellId: string;
 	private key: keyof FooterCell;
 	private value: unknown;
@@ -16,7 +16,7 @@ export default class CellFooterUpdateCommand extends TableStateCommand {
 		this.value = value;
 	}
 
-	execute(prevState: TableState): TableState {
+	execute(prevState: DashboardState): DashboardState {
 		super.onExecute();
 
 		const { footerCells } = prevState.model;
@@ -44,12 +44,12 @@ export default class CellFooterUpdateCommand extends TableStateCommand {
 		};
 	}
 
-	redo(prevState: TableState): TableState {
+	redo(prevState: DashboardState): DashboardState {
 		super.onRedo();
 		return this.execute(prevState);
 	}
 
-	undo(prevState: TableState): TableState {
+	undo(prevState: DashboardState): DashboardState {
 		super.onUndo();
 
 		const { footerCells } = prevState.model;

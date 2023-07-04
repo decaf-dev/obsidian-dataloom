@@ -8,7 +8,7 @@ class EventSystem {
 	}
 
 	/**
-	 * Adds an NLT event listener
+	 * Adds an Dashboards event listener
 	 * @param name the event name
 	 * @param callback the callback function
 	 * @param priority the priority. The higher the priority, the earlier the callback is called
@@ -24,7 +24,7 @@ class EventSystem {
 	}
 
 	/**
-	 * Removes an NLT event listener
+	 * Removes an Dashboards event listener
 	 * @param name the name
 	 * @param callback the callback function
 	 */
@@ -35,7 +35,7 @@ class EventSystem {
 	}
 
 	/**
-	 * Dispatches a event to all NLT event listeners
+	 * Dispatches a event to all Dashboards event listeners
 	 * @param name the event name
 	 * @param event the DOM event
 	 * @param data any data

@@ -2,10 +2,7 @@ import React from "react";
 import { Position } from "./types";
 import { numToPx } from "../conversion";
 import { MENU_SHIFT_PADDING } from "./constants";
-import {
-	useLeafContainer,
-	isOnMobile,
-} from "src/obsidian-shim/development/render-utils";
+import { useLeafContainer, isOnMobile } from "src/shared/render-utils";
 
 export const isTextSelected = () => {
 	const selection = window.getSelection();

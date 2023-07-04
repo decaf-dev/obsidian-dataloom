@@ -1,17 +1,17 @@
-.NLT__p {
+.Dashboards__p {
     white-space: nowrap;
     margin: 0;
     color: var(--text-normal);
 }
 
-.NLT__text-muted {
+.Dashboards__text-muted {
     color: var(--text-muted);
 }
 
-.NLT__text-faint {
+.Dashboards__text-faint {
     color: var(--text-faint);
 }
 
-.NLT__text-semibold {
+.Dashboards__text-semibold {
     font-weight: var(--font-semibold);
 }

@@ -9,15 +9,15 @@ For example, if you wanted to change the padding size of cells, you could create
 ```css
 /* nlt-snippet.css */
 
-.NLT__th-content {
+.Dashboards__th-content {
 	padding: 10px;
 }
 
-.NLT__body-td-container {
+.Dashboards__body-td-container {
 	padding: 20px 10px;
 }
 
-.NLT__footer-td-container {
+.Dashboards__footer-td-container {
 	padding: 20px 10px;
 }
 ```
@@ -26,17 +26,17 @@ For example, if you wanted to change the padding size of cells, you could create
 
 The following table is a list of various plugin classes that you may override.
 
-| Class                       | Element               |
-| --------------------------- | --------------------- |
-| `.NLT__app`                 | Main app conatiner    |
-| `.NLT__option-bar`          | Option bar            |
-| `.NLT__table`               | Table                 |
-| `.NLT__th`                  | Header cell           |
-| `.NLT__th-container`        | Header cell container |
-| `.NLT__th-content`          | Header cell content   |
-| `.NLT__body-td`             | Body cell             |
-| `.NLT__body-td-container`   | Body cell container   |
-| `.NLT__footer-td`           | Footer cell           |
-| `.NLT__footer-td-container` | Footer cell container |
-| `.NLT__button`              | Button                |
-| `.NLT__p`                   | Text                  |
+| Class                              | Element               |
+| ---------------------------------- | --------------------- |
+| `.Dashboards__app`                 | Main app conatiner    |
+| `.Dashboards__option-bar`          | Option bar            |
+| `.Dashboards__table`               | Table                 |
+| `.Dashboards__th`                  | Header cell           |
+| `.Dashboards__th-container`        | Header cell container |
+| `.Dashboards__th-content`          | Header cell content   |
+| `.Dashboards__body-td`             | Body cell             |
+| `.Dashboards__body-td-container`   | Body cell container   |
+| `.Dashboards__footer-td`           | Footer cell           |
+| `.Dashboards__footer-td-container` | Footer cell container |
+| `.Dashboards__button`              | Button                |
+| `.Dashboards__p`                   | Text                  |

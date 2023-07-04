@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { transparentInputStyle } from "src/react/table-app/shared-styles";
+import { transparentInputStyle } from "src/react/dashboard-app/shared-styles";
 
 interface Props {
 	value: string;
@@ -16,7 +16,7 @@ export default function Input({ value, onChange }: Props) {
 			`}
 		>
 			<input
-				className="NLT__focusable"
+				className="Dashboards__focusable"
 				type="text"
 				css={transparentInputStyle}
 				autoFocus

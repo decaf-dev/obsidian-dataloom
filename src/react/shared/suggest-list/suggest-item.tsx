@@ -3,13 +3,13 @@ import React from "react";
 import { css } from "@emotion/react";
 import Text from "src/react/shared/text";
 import { nltEventSystem } from "src/shared/event-system/event-system";
-import { VaultFile } from "src/obsidian-shim/development/vault-file";
+import { TFile } from "obsidian";
 
 interface Props {
 	index: number;
-	file: VaultFile | null;
+	file: TFile | null;
 	isHighlighted: boolean;
-	onItemClick: (item: VaultFile | null) => void;
+	onItemClick: (item: TFile | null) => void;
 }
 
 const SuggestItem = React.forwardRef<HTMLDivElement, Props>(
@@ -60,7 +60,7 @@ const SuggestItem = React.forwardRef<HTMLDivElement, Props>(
 			<div
 				tabIndex={0}
 				data-index={index}
-				className="NLT__suggest-item NLT__focusable"
+				className="Dashboards__suggest-item Dashboards__focusable"
 				ref={ref}
 				css={css`
 					padding: var(--nlt-spacing--sm) var(--nlt-spacing--lg);

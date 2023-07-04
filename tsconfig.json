@@ -1,8 +1,7 @@
 {
   "compilerOptions": {
     "baseUrl": "./",
-    "target": "ES2021",
-    "useDefineForClassFields": true,
+    "target": "ES6",
     "lib": ["ES2021", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
@@ -13,14 +12,11 @@
 
     /* Bundler mode */
     "moduleResolution": "node",
-    "allowImportingTsExtensions": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
     "jsx": "react-jsx",
     "jsxImportSource": "@emotion/react",
-    "strictNullChecks": true,
 
     /* Linting */
     "strict": true,
@@ -30,5 +26,4 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": ["**/*.tsx", "**/*.ts"],
-  "references": [{ "path": "./tsconfig.node.json" }]
 }
