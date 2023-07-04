@@ -1,4 +1,4 @@
-import { createTableState } from "src/data/table-state-factory";
+import { createDashboardState } from "src/data/dashboard-state-factory";
 import { CommandRedoError, CommandUndoError } from "./command-errors";
 import ColumnAddCommand from "./column-add-command";
 
@@ -10,7 +10,7 @@ describe("column-add-command", () => {
 
 	it("should throw an error when undo() is called before execute()", () => {
 		try {
-			const prevState = createTableState(1, 1);
+			const prevState = createDashboardState(1, 1);
 			command.undo(prevState);
 		} catch (err) {
 			expect(err).toBeInstanceOf(CommandUndoError);
@@ -19,7 +19,7 @@ describe("column-add-command", () => {
 
 	it("should throw an error when redo() is called before undo()", () => {
 		try {
-			const prevState = createTableState(1, 1);
+			const prevState = createDashboardState(1, 1);
 			const executeState = command.execute(prevState);
 			command.redo(executeState);
 		} catch (err) {
@@ -29,7 +29,7 @@ describe("column-add-command", () => {
 
 	it("should add a column when execute() is called", () => {
 		//Arrange
-		const prevState = createTableState(1, 1);
+		const prevState = createDashboardState(1, 1);
 
 		//Act
 		const executeState = command.execute(prevState);
@@ -43,7 +43,7 @@ describe("column-add-command", () => {
 
 	it("should remove the added column when undo() is called", () => {
 		//Arrange
-		const prevState = createTableState(1, 1);
+		const prevState = createDashboardState(1, 1);
 
 		//Act
 		const executeState = command.execute(prevState);

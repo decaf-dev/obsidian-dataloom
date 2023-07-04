@@ -128,7 +128,7 @@ const MenuTrigger = ({
 
 	return (
 		<div
-			className="NLT__menu-trigger NLT__focusable"
+			className="Dashboards__menu-trigger Dashboards__focusable"
 			ref={ref}
 			css={css`
 				width: ${isCell ? "100%" : "unset"};

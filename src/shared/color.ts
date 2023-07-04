@@ -7,26 +7,44 @@ export const findColorClassName = (
 	switch (color) {
 		case Color.LIGHT_GRAY:
 			return isDarkMode
-				? "NLT__light-gray--dark"
-				: "NLT__light-gray--light";
+				? "Dashboards__light-gray--dark"
+				: "Dashboards__light-gray--light";
 		case Color.GRAY:
-			return isDarkMode ? "NLT__gray--dark" : "NLT__gray--light";
+			return isDarkMode
+				? "Dashboards__gray--dark"
+				: "Dashboards__gray--light";
 		case Color.BROWN:
-			return isDarkMode ? "NLT__brown--dark" : "NLT__brown--light";
+			return isDarkMode
+				? "Dashboards__brown--dark"
+				: "Dashboards__brown--light";
 		case Color.ORANGE:
-			return isDarkMode ? "NLT__orange--dark" : "NLT__orange--light";
+			return isDarkMode
+				? "Dashboards__orange--dark"
+				: "Dashboards__orange--light";
 		case Color.YELLOW:
-			return isDarkMode ? "NLT__yellow--dark" : "NLT__yellow--light";
+			return isDarkMode
+				? "Dashboards__yellow--dark"
+				: "Dashboards__yellow--light";
 		case Color.GREEN:
-			return isDarkMode ? "NLT__green--dark" : "NLT__green--light";
+			return isDarkMode
+				? "Dashboards__green--dark"
+				: "Dashboards__green--light";
 		case Color.BLUE:
-			return isDarkMode ? "NLT__blue--dark" : "NLT__blue--light";
+			return isDarkMode
+				? "Dashboards__blue--dark"
+				: "Dashboards__blue--light";
 		case Color.PURPLE:
-			return isDarkMode ? "NLT__purple--dark" : "NLT__purple--light";
+			return isDarkMode
+				? "Dashboards__purple--dark"
+				: "Dashboards__purple--light";
 		case Color.PINK:
-			return isDarkMode ? "NLT__pink--dark" : "NLT__pink--light";
+			return isDarkMode
+				? "Dashboards__pink--dark"
+				: "Dashboards__pink--light";
 		case Color.RED:
-			return isDarkMode ? "NLT__red--dark" : "NLT__red--light";
+			return isDarkMode
+				? "Dashboards__red--dark"
+				: "Dashboards__red--light";
 		default:
 			return "";
 	}

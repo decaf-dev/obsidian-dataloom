@@ -18,7 +18,8 @@ export default function Switch({ id, isChecked, ariaLabel, onToggle }: Props) {
 		}
 	}
 
-	let className = "checkbox-container NLT__switch NLT__focusable";
+	let className =
+		"checkbox-container Dashboards__switch Dashboards__focusable";
 	if (isChecked) className += " is-enabled";
 	return (
 		<div

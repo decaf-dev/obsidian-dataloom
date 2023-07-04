@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { DEFAULT_SETTINGS, NLTSettings } from "src/main";
+import { DEFAULT_SETTINGS, DashboardsSettings } from "src/main";
 
 interface GlobalState {
-	settings: NLTSettings;
+	settings: DashboardsSettings;
 	isDarkMode: boolean;
 }
 
@@ -12,7 +12,7 @@ const initialState: GlobalState = {
 };
 
 //This is the global slice of the redux store.
-//This state will be shared across all instances of our table view
+//This state will be shared across all dashboards instances
 const globalSlice = createSlice({
 	name: "global",
 	initialState,
@@ -20,7 +20,7 @@ const globalSlice = createSlice({
 		setDarkMode(state, action: PayloadAction<boolean>) {
 			state.isDarkMode = action.payload;
 		},
-		setSettings(state, action: PayloadAction<NLTSettings>) {
+		setSettings(state, action: PayloadAction<DashboardsSettings>) {
 			state.settings = action.payload;
 		},
 	},

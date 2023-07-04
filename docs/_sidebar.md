@@ -77,7 +77,7 @@
 
     -   Other
 
-        -   [Embedding tables](embedding-tables.md)
+        -   [Embedding dashboards](embedding-dashboards.md)
 
         -   [Undo and redo](undo-redo.md)
 
@@ -93,6 +93,6 @@
 
 -   Links
 
-    -   [Lastest release notes](https://github.com/trey-wallis/obsidian-notion-like-tables/releases/tag/6.18.0)
+    -   [Lastest release notes](https://github.com/trey-wallis/obsidian-dashboards/releases/tag/6.19.0)
     -   [Roadmap](https://github.com/users/trey-wallis/projects/2)
     -   [Support the plugin](https://www.buymeacoffee.com/treywallis)

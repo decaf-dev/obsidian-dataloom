@@ -1,6 +1,6 @@
 import { moment } from "obsidian";
 import { ExportType } from "./types";
-import { TABLE_EXTENSION } from "src/data/constants";
+import { PREVIOUS_FILE_EXTENSION } from "src/data/constants";
 
 export const getBlobTypeForExportType = (type: ExportType) => {
 	switch (type) {
@@ -14,7 +14,10 @@ export const getBlobTypeForExportType = (type: ExportType) => {
 };
 
 export const getExportFileName = (filePath: string) => {
-	const replaceExtension = filePath.replace(`.${TABLE_EXTENSION}`, "");
+	const replaceExtension = filePath.replace(
+		`.${PREVIOUS_FILE_EXTENSION}`,
+		""
+	);
 	const replaceSlash = replaceExtension.replace(/\//g, "-");
 	const replaceSpaces = replaceSlash.replace(/ /g, "_");
 	const timestamp = moment().format("YYYY_MM_DD-HH_mm_ss");
