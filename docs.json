@@ -1,7 +1,7 @@
 {
 	"name": "Dashboards",
 	"theme": "#36B9B9",
-	"logo": "/docs/assets/logo-transparent.png",
+	"logo": "/assets/logo-transparent.png",
 	"sidebar": [
 		[
 			"Getting Started",
