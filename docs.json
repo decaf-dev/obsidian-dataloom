@@ -1,8 +1,16 @@
 {
 	"name": "Dashboards",
 	"theme": "#36B9B9",
+	"logo": "/docs/assets/logo-transparent.png",
 	"sidebar": [
-		["Home", "/"],
-		["Another Page", "/another-page"]
+		[
+			"Getting Started",
+			[
+				["Quick start", "/quick-start"],
+				["Hot keys", "/hot-keys"]
+			]
+		],
+		["Features", [["Menu", "/menu"]]],
+		["Guides", [["Creating a snippet", "guide-snippet"]]]
 	]
 }
