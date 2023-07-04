@@ -4,7 +4,7 @@
 
 Find detailed documentation at [docs.page/trey-wallis/obsidian-dashboards](https://docs.page/trey-wallis/obsidian-dashboards)
 
-Dashboards is an [Obsidian](https://obsidian.md/) plugin for desktop and mobile. A dashboard is a higher-level view that allows you to tag, sort, and display feeds from your notes. Dashboards is inspired by [Notion.so](https://www.notion.so/).
+Dashboards is an [Obsidian.md](https://obsidian.md/) plugin for desktop and mobile. A dashboard is a higher-level view that allows you to tag, sort, and display feeds from your notes. Dashboards is inspired by [Notion.so](https://www.notion.so/).
 
 Support development
 
