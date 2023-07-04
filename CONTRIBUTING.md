@@ -6,9 +6,9 @@ Issues are somewhat prioritized in the [project manager](https://github.com/user
 
 If the code you are contributing is related to an existing issue, please make a comment on that issue and tag @trey-wallis. This is so that I know that you are working on that it.
 
-## Documentation
+## Diagrams
 
-State machine diagrams and flowcharts can be found in the `documentation` folder
+State machine diagrams and flowcharts can be found in the `diagrams` folder
 
 ## Getting started
 

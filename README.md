@@ -97,7 +97,7 @@ If you are experiencing a problem with the plugin, please search the issues for 
 
 Dashboards is a community plugin. Contributions are welcome.
 
-Please see our [contribution guide](https://github.com/trey-wallis/obsidian-dashboards/CONTRIBUTION.md) for details on how to contribute
+Please see our [contribution guide](https://github.com/trey-wallis/obsidian-dashboards/CONTRIBUTING.md) for details on how to contribute
 
 ## License
 
