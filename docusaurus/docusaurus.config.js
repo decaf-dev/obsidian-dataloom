@@ -19,7 +19,7 @@ const config = {
 	// GitHub pages deployment config.
 	// If you aren't using GitHub pages, you don't need these.
 	organizationName: "trey-wallis", // Usually your GitHub org/user name.
-	projectName: "Dashboards", // Usually your repo name.
+	projectName: "obsidian-dashboards", // Usually your repo name.
 
 	onBrokenLinks: "throw",
 	onBrokenMarkdownLinks: "warn",
