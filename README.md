@@ -97,33 +97,7 @@ If you are experiencing a problem with the plugin, please search the issues for 
 
 Dashboards is a community plugin. Contributions are welcome.
 
-Dashboards is built with [React.JS](https://react.dev/).
-
-### Setting up the project
-
-Please make sure that you install yarn
-
-```shell
-npm install -g yarn
-```
-
-Install dependencies
-
-```shell
-yarn install
-```
-
-Create a symbolic link the cloned repository to your Obsidan vault. I recommend making a new Obsidian vault just for testing.
-
-```shell
-ln -s /users/trey/dashboards /users/trey/test-vault/.obsidian/plugins
-```
-
-Run the project
-
-```shell
-yarn run dev
-```
+Please see our [contribution guide](https://github.com/trey-wallis/obsidian-dashboards/CONTRIBUTION.md) for details on how to contribute
 
 ## License
 
