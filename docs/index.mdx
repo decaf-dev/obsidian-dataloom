@@ -1,6 +1,6 @@
 ![](/assets/cover.png)
 
-![Obsidian Downloads](https://img.shields.io/badge/dynamic/json?logo=obsidian&color=%23483699&label=downloads&query=%24%5B%22notion-like-tables%22%5D.downloads&url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json)
+<Banner />
 
 ![Github Stars](https://img.shields.io/github/stars/trey-wallis/obsidian-dashboards?style=social)
 
@@ -8,4 +8,21 @@ Dashboards is an [Obsidian](https://obsidian.md/) plugin for desktop and mobile.
 
 Support development
 
+<BuyMeACoffee />
+
 [Lastest release notes](https://github.com/trey-wallis/obsidian-dashboards/releases/tag/7.0.0)
+
+export const Banner = () => {
+  return (<div>
+  <a href="https://buymeacoffee.com/treywallis" target="_blank" rel="noopener">
+    <img width="180px" src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&amp;emoji=&amp;slug=treywallis&amp;button_colour=6a8695&amp;font_colour=ffffff&amp;font_family=Poppins&amp;outline_colour=000000&amp;coffee_colour=FFDD00" referrerpolicy="no-referrer" alt="?text=Buy me a coffee&amp;emoji=&amp;slug=treywallis&amp;button_colour=6a8695&amp;font_colour=ffffff&amp;font_family=Poppins&amp;outline_colour=000000&amp;coffee_colour=FFDD00">
+</a>
+<img src="https://img.shields.io/badge/dynamic/json?logo=obsidian&color=%23483699&label=downloads&query=%24%5B%22notion-like-tables%22%5D.downloads&url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json" alt="Obsidian Download Count">
+</div>);
+};
+
+export const BuyMeACoffee = () => {
+    return (<a href="https://github.com/trey-wallis/obsidian-dashboards" target="_blank" rel="noopener">
+<img width="125" style="padding:7px 7px 5px" src="https://img.shields.io/github/stars/trey-wallis/obsidian-dashboards?style=social" referrerpolicy="no-referrer" alt="obsidian-dashboards?style=social">
+</a>);
+};
