@@ -1,8 +1,8 @@
-![](/docs/assets/cover.png)
+![](/docusaurus/static/img/cover.png)
 
 ![Obsidian Downloads](https://img.shields.io/badge/dynamic/json?logo=obsidian&color=%23483699&label=downloads&query=%24%5B%22notion-like-tables%22%5D.downloads&url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json)
 
-Find detailed documentation at [docs.page/trey-wallis/obsidian-dashboards](https://docs.page/trey-wallis/obsidian-dashboards)
+Find detailed documentation at [trey-wallis.github.io/obsidian-dashboards](https://trey-wallis.github.io/obsidian-dashboards/)
 
 Dashboards is an [Obsidian.md](https://obsidian.md/) plugin for desktop and mobile. A dashboard is a higher-level view that allows you to tag, sort, and display feeds from your notes. Dashboards is inspired by [Notion.so](https://www.notion.so/).
 
@@ -25,28 +25,28 @@ Support development
 
 Dashboards support both light and dark modes and a majority of Obsidian themes.
 
-![](/docs/assets/light-mode.png)
-![](/docs/assets/dark-mode.png)
+![](/docusaurus/static/img/light-mode.png)
+![](/docusaurus/static/img/dark-mode.png)
 
 Choose from 11 different cell types
 
-<img src="./docs/assets/type-menu.png" width="200">
+<img src="./docusaurus/static/img/type-menu.png" width="200">
 
 Notion-like tag menu system
 
-![](/docs/assets/tag-menu.png)
+![](/docusaurus/static/img/tag-menu.png)
 
 Toggle visibility of different columns
 
-<img src="./docs/assets/toggle-menu.png" width="200">
+<img src="./docusaurus/static/img/toggle-menu.png" width="200">
 
 Reference notes directly from the table
 
-![](/docs/assets/file-menu.png)
+![](/docusaurus/static/img/file-menu.png)
 
 Advanced filtering menu
 
-![](/docs/assets/filter-menu.png)
+![](/docusaurus/static/img/filter-menu.png)
 
 ## Installation
 
@@ -67,17 +67,17 @@ By default, Obsidian doesn't display `.dashboard` files in the modal that opens 
 2. Select **File & Links**
 3. Toggle **Detect all file extensions**
 
-![](/docs/assets/detect-all-extensions.png)
+![](/docusaurus/static/img/detect-all-extensions.png)
 
 ## Getting started
 
 Start by creating a new dashboard. You can do this by clicking on the dashboard icon on the sidebar.
 
-<img src="./docs/assets/new-dashboard-sidebar.png"  width="350">
+<img src="./docusaurus/static/img/new-dashboard-sidebar.png"  width="350">
 
 You can also right click on a folder and click **New dashboard**
 
-<img src="./docs/assets/new-dashboard-folder.png" width="450">
+<img src="./docusaurus/static/img/new-dashboard-folder.png" width="450">
 
 ## Roadmap
 
