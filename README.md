@@ -1,4 +1,4 @@
-![](/cover.png)
+![](/docs/assets/cover.png)
 
 ![Obsidian Downloads](https://img.shields.io/badge/dynamic/json?logo=obsidian&color=%23483699&label=downloads&query=%24%5B%22notion-like-tables%22%5D.downloads&url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json)
 
@@ -25,28 +25,28 @@ Support development
 
 Dashboards support both light and dark modes and a majority of Obsidian themes.
 
-![](/assets/light-mode.png)
-![](/assets/dark-mode.png)
+![](/docs/assets/light-mode.png)
+![](/docs/assets/dark-mode.png)
 
 Choose from 11 different cell types
 
-<img src="./assets/type-menu.png" width="200">
+<img src="./docs/assets/type-menu.png" width="200">
 
 Notion-like tag menu system
 
-![](/assets/tag-menu.png)
+![](/docs/assets/tag-menu.png)
 
 Toggle visibility of different columns
 
-<img src="./assets/toggle-menu.png" width="200">
+<img src="./docs/assets/toggle-menu.png" width="200">
 
 Reference notes directly from the table
 
-![](/assets/file-menu.png)
+![](/docs/assets/file-menu.png)
 
 Advanced filtering menu
 
-![](/assets/filter-menu.png)
+![](/docs/assets/filter-menu.png)
 
 ## Installation
 
@@ -67,17 +67,17 @@ By default, Obsidian doesn't display `.dashboard` files in the modal that opens 
 2. Select **File & Links**
 3. Toggle **Detect all file extensions**
 
-![](/assets/detect-all-extensions.png)
+![](/docs/assets/detect-all-extensions.png)
 
 ## Getting started
 
 Start by creating a new dashboard. You can do this by clicking on the dashboard icon on the sidebar.
 
-<img src="./assets/new-dashboard-sidebar.png" alt="Alt Text" width="350">
+<img src="./docs/assets/new-dashboard-sidebar.png"  width="350">
 
 You can also right click on a folder and click **New dashboard**
 
-<img src="./assets/new-dashboard-folder.png" alt="Alt Text" width="450">
+<img src="./docs/assets/new-dashboard-folder.png" width="450">
 
 ## Roadmap
 
