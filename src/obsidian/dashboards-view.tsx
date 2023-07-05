@@ -1,6 +1,9 @@
 import { TextFileView, WorkspaceLeaf } from "obsidian";
 
-import "react-devtools";
+if (process.env.ENABLE_REACT_DEVTOOLS === "true") {
+	import("react-devtools");
+}
+
 import { createRoot, Root } from "react-dom/client";
 import { store } from "src/redux/global/store";
 import { DashboardState } from "src/shared/types";

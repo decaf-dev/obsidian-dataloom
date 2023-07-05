@@ -1,7 +1,9 @@
 import { PluginValue, ViewPlugin } from "@codemirror/view";
 import { MarkdownView, TFile, WorkspaceLeaf } from "obsidian";
 
-import "react-devtools";
+if (process.env.ENABLE_REACT_DEVTOOLS === "true") {
+	import("react-devtools");
+}
 import { Root, createRoot } from "react-dom/client";
 
 import { serializeDashboardState } from "src/data/serialize-dashboard-state";
@@ -48,7 +50,7 @@ class EditingViewPlugin implements PluginValue {
 			removeEmbeddedLinkChildren(linkEl);
 
 			const file = findEmbeddedTableFile(linkEl);
-			if (!file) return;
+			if (!file) continue;
 
 			const { defaultEmbedWidth, defaultEmbedHeight } =
 				store.getState().global.settings;
@@ -63,7 +65,7 @@ class EditingViewPlugin implements PluginValue {
 
 			//If we've already created the table, then return
 			if (this.dashboardApps.find((app) => app.file.path === file.path))
-				return;
+				continue;
 
 			linkEl.style.backgroundColor = "var(--color-primary)";
 			linkEl.style.cursor = "unset";
