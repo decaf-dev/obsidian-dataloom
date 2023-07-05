@@ -1,6 +1,8 @@
 import { MarkdownRenderChild, TFile } from "obsidian";
 
-import "react-devtools";
+if (process.env.ENABLE_REACT_DEVTOOLS === "true") {
+	import("react-devtools");
+}
 import { Root, createRoot } from "react-dom/client";
 import { store } from "src/redux/global/store";
 import DashboardsView from "./dashboards-view";
