@@ -1,4 +1,4 @@
-import { PREVIOUS_FILE_EXTENSION } from "src/data/constants";
+import { CURRENT_FILE_EXTENSION } from "src/data/constants";
 import { numToPx } from "src/shared/conversion";
 
 export const getEmbeddedDashboardLinkEls = (el: HTMLElement) => {
@@ -8,7 +8,7 @@ export const getEmbeddedDashboardLinkEls = (el: HTMLElement) => {
 	for (let i = 0; i < embeddedLinkEls.length; i++) {
 		const linkEl = embeddedLinkEls[i];
 		const src = linkEl.getAttribute("src");
-		if (src?.endsWith(PREVIOUS_FILE_EXTENSION))
+		if (src?.endsWith(CURRENT_FILE_EXTENSION))
 			dashboardLinkEls.push(linkEl as HTMLElement);
 	}
 	return dashboardLinkEls;
