@@ -2,7 +2,6 @@ import esbuild from "esbuild";
 import process from "process";
 import builtins from "builtin-modules";
 import * as fs from "fs";
-import path from "path";
 
 const prod = process.argv[2] === "production";
 

@@ -1,7 +1,7 @@
 import { PluginValue, ViewPlugin } from "@codemirror/view";
 import { MarkdownView, TFile, WorkspaceLeaf } from "obsidian";
 
-import "react-devtools";
+//import "react-devtools";
 import { Root, createRoot } from "react-dom/client";
 
 import { serializeDashboardState } from "src/data/serialize-dashboard-state";
