@@ -103,7 +103,7 @@ export default class DashboardsPlugin extends Plugin {
 			const tableFiles = this.app.vault
 				.getFiles()
 				.filter((file) => file.extension === PREVIOUS_FILE_EXTENSION);
-			console.log(tableFiles);
+
 			for (let i = 0; i < tableFiles.length; i++) {
 				const file = tableFiles[i];
 				const newFilePath = file.path.replace(
