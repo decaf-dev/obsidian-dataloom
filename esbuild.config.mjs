@@ -52,6 +52,11 @@ esbuild
 		target: "es2016",
 		logLevel: "info",
 		sourcemap: !prod,
+		define: {
+			"process.env.ENABLE_REACT_DEVTOOLS": prod
+				? JSON.stringify("false")
+				: JSON.stringify("true"),
+		},
 		treeShaking: true,
 		outfile: "main.js",
 	})
