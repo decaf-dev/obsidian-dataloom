@@ -63,7 +63,7 @@ const FilterMenu = React.forwardRef<HTMLDivElement, Props>(function FilterMenu(
 				`}
 			>
 				<Padding p="md">
-					<Stack spacing="lg" isVertical>
+					<Stack spacing="lg">
 						{filterRules.map((rule) => {
 							const {
 								id,
@@ -101,7 +101,7 @@ const FilterMenu = React.forwardRef<HTMLDivElement, Props>(function FilterMenu(
 								/>
 							);
 						})}
-						<Stack>
+						<Stack isHorizontal>
 							<Button
 								icon={<Icon lucideId="plus" />}
 								ariaLabel="Add filter rule"

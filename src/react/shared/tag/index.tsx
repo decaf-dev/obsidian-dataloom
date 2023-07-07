@@ -54,7 +54,7 @@ export default function Tag({
 				color: var(--text-normal);
 			`}
 		>
-			<Stack spacing="sm" justify="center">
+			<Stack spacing="sm" justify="center" isHorizontal>
 				<div
 					className={contentClassName}
 					{...(maxWidth !== undefined && { style: { maxWidth } })}

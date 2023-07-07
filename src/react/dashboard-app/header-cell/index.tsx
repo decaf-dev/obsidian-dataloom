@@ -148,7 +148,7 @@ export default function HeaderCell({
 								var(--nlt-cell-spacing-y);
 						`}
 					>
-						<Stack spacing="md" align="flex-start">
+						<Stack spacing="md" align="flex-start" isHorizontal>
 							<Icon lucideId={lucideId} size="md" />
 							{markdown}
 						</Stack>

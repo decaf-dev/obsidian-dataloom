@@ -64,8 +64,8 @@ export default function BaseMenu({
 		columnType === CellType.CREATION_TIME;
 
 	return (
-		<Stack spacing="sm" isVertical>
-			<Stack spacing="sm" isVertical width="100%">
+		<Stack spacing="sm">
+			<Stack spacing="sm" width="100%">
 				<Padding px="md" py="sm" width="100%">
 					<input
 						type="text"
@@ -129,7 +129,7 @@ export default function BaseMenu({
 						<Flex justify="space-between" align="center">
 							<Text value="Wrap content" />
 							<Switch
-								isChecked={shouldWrapOverflow}
+								value={shouldWrapOverflow}
 								onToggle={(value) =>
 									onWrapOverflowToggle(columnId, value)
 								}

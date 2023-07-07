@@ -50,7 +50,7 @@ export default function ImportApp({ initialState, onStateSave }: Props) {
 
 	return (
 		<div className="Dashboards__import-app">
-			<Stack spacing="lg" isVertical>
+			<Stack spacing="lg">
 				<Stack spacing="lg">
 					<ImportTypeSelect
 						value={importType}

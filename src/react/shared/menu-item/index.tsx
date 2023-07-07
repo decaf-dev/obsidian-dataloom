@@ -71,7 +71,7 @@ export default function MenuItem({
 			onKeyDown={handleKeyDown}
 		>
 			<Flex justify="space-between">
-				<Stack>
+				<Stack isHorizontal>
 					{lucideId !== undefined && (
 						<Padding width="unset" pb="sm">
 							<Icon lucideId={lucideId} />

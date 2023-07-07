@@ -65,7 +65,7 @@ export function ExportApp({ dashboardState, filePath }: Props) {
 						margin: 1rem 0;
 					`}
 				/>
-				<Stack spacing="xl" isVertical>
+				<Stack spacing="xl">
 					<ExportTypeSelect
 						value={exportType}
 						onChange={setExportType}
@@ -73,7 +73,7 @@ export function ExportApp({ dashboardState, filePath }: Props) {
 					{exportType !== ExportType.UNSELECTED && (
 						<>
 							<ContentTextArea value={content} />
-							<Stack isVertical spacing="sm">
+							<Stack spacing="sm">
 								<label htmlFor="render-markdown">
 									Render markdown
 								</label>

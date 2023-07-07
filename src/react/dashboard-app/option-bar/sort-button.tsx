@@ -26,8 +26,8 @@ export default function SortBubble({
 				background-color: var(--color-accent);
 			`}
 		>
-			<Stack spacing="lg">
-				<Stack spacing="sm">
+			<Stack spacing="lg" isHorizontal>
+				<Stack spacing="sm" isHorizontal>
 					{sortDir === SortDir.ASC ? (
 						<Icon lucideId="arrow-up" />
 					) : (
