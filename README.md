@@ -18,6 +18,7 @@ Support development
 -   [Getting started](#getting-started)
 -   [Issues](#issues)
 -   [Contributing](#contributing)
+-   [Network Usage](#network-usage)
 -   [License](#license)
 -   [Disclaimer](#disclaimer)
 
@@ -98,6 +99,12 @@ If you are experiencing a problem with the plugin, please search the issues for 
 Dashboards is a community plugin. Contributions are welcome.
 
 Please see our [contribution guide](https://github.com/trey-wallis/obsidian-dashboards/CONTRIBUTING.md) for details on how to contribute
+
+## Network Usage
+
+According to Obsidian developer policies, an Obsidian plugin must explain which network services are used and why.
+
+Dashboards will make one `GET` request to `https://api.github.com/repos/trey-wallis/obsidian-dashboards/releases/latest` to pull the lastest release for the What's New Modal. Besides this, Dashboards does not making any network requests. Dashboards does not include client-side telemetry.
 
 ## License
 
