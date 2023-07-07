@@ -25,8 +25,8 @@ export default function FooterBar({
 		>
 			<NewRowButton onClick={onNewRowClick} />
 			<Stack isHorizontal spacing="sm">
-				<Button>Top</Button>
-				<Button>Bottom</Button>
+				<Button onClick={onScrollToTopClick}>Top</Button>
+				<Button onClick={onScrollToBottomClick}>Bottom</Button>
 			</Stack>
 		</div>
 	);
