@@ -121,8 +121,6 @@ export default function OptionBar({
 			css={css`
 				width: 100%;
 				padding-left: var(--nlt-spacing--lg);
-				padding-bottom: var(--nlt-spacing--md);
-				padding-top: var(--nlt-spacing--md);
 				border-bottom: 1px solid var(--background-modifier-border);
 			`}
 		>

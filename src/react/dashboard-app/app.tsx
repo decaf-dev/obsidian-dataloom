@@ -272,7 +272,6 @@ export default function App() {
 				flex-direction: column;
 				width: 100%;
 				height: 100%;
-				padding: 10px 0px;
 				border-top: 1px solid var(--background-modifier-border);
 				border-bottom: ${isMarkdownView
 					? "1px solid var(--background-modifier-border)"
