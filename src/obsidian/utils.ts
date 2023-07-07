@@ -43,7 +43,7 @@ export const getEmbeddedDashboardWidth = (
 	defaultWidth: string
 ) => {
 	const width = embeddedLinkEl.getAttribute("width");
-	if (width === null || width === "1") return defaultWidth;
+	if (width === null || width === "0") return defaultWidth;
 	return numToPx(width);
 };
 
@@ -52,6 +52,6 @@ export const getEmbeddedDashboardHeight = (
 	defaultHeight: string
 ) => {
 	const height = embeddedLinkEl.getAttribute("height");
-	if (height === null || height === "1") return defaultHeight; //exactly 4 normal body rows
+	if (height === null || height === "0") return defaultHeight; //exactly 4 normal body rows
 	return numToPx(height);
 };
