@@ -2,6 +2,7 @@ import React from "react";
 
 import { css } from "@emotion/react";
 import { useLogger } from "src/shared/logger";
+import Stack from "../stack";
 
 const buttonStyle = css`
 	display: flex;
@@ -108,7 +109,10 @@ export default function Button({
 			onMouseDown={onMouseDown}
 			onClick={handleClick}
 		>
-			{icon !== undefined ? icon : children}
+			<Stack isHorizontal>
+				{icon && icon}
+				{children}
+			</Stack>
 		</button>
 	);
 }

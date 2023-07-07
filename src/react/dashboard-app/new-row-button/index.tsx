@@ -17,7 +17,9 @@ export default function NewRowButton({ onClick }: Props) {
 				icon={<Icon lucideId="plus" />}
 				ariaLabel="New row"
 				onClick={() => onClick()}
-			/>
+			>
+				New
+			</Button>
 		</div>
 	);
 }
