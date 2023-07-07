@@ -47,6 +47,7 @@ import {
 import { useExportEvents } from "src/shared/dashboard-state/use-export-events";
 import { useRowEvents } from "src/shared/dashboard-state/use-row-events";
 import { useColumnEvents } from "src/shared/dashboard-state/use-column-events";
+import FooterBar from "./footer-bar";
 
 export default function App() {
 	const { appId, isMarkdownView } = useMountState();
@@ -576,49 +577,14 @@ export default function App() {
 					}
 					return {
 						id: row.id,
-						cells: [
-							{
-								id: firstColumnId,
-								content: <></>,
-							},
-							...visibleColumns.map((column, i) => {
-								const cell = footerCells.find(
-									(cell) =>
-										cell.rowId === row.id &&
-										cell.columnId === column.id
-								);
-								if (!cell)
-									throw new CellNotFoundError({
-										rowId: row.id,
-										columnId: column.id,
-									});
-
-								if (i === 0) {
-									return {
-										id: cell.id,
-										content: (
-											<div
-												style={{ width: column.width }}
-											>
-												<NewRowButton
-													onClick={handleNewRowClick}
-												/>
-											</div>
-										),
-									};
-								}
-								return {
-									id: cell.id,
-									content: <></>,
-								};
-							}),
-							{
-								id: lastColumnId,
-								content: <></>,
-							},
-						],
+						cells: [],
 					};
 				})}
+			/>
+			<FooterBar
+				onNewRowClick={handleNewRowClick}
+				onScrollToBottomClick={() => undefined}
+				onScrollToTopClick={() => undefined}
 			/>
 		</div>
 	);
