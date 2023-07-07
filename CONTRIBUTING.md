@@ -8,7 +8,7 @@ If the code you are contributing is related to an existing issue, please make a 
 
 ## Diagrams
 
-State machine diagrams and flowcharts can be found in the `diagrams` folder
+State machines, flowcharts, and other development materials can be found can be found in the `development` folder
 
 ## Getting started
 
@@ -38,11 +38,13 @@ yarn install
 
 Create a symbolic link from the cloned repository to your Obsidan vault.
 
-I recommend making a new Obsidian vault just for development.
+Note: I recommend making a new Obsidian vault just for development.
 
 ```shell
 ln -s <repo-path> <dev-vault-path>/.obsidian/plugins
 ```
+
+e.g. `ln -s /users/trey/desktop/obsidian-dashboards /users/trey/desktop/test-vault/.obsidian/plugins`
 
 Run esbuild in development mode
 
@@ -64,6 +66,6 @@ Please make [jest](https://jestjs.io/) tests for the code that you create. Pleas
 
 ## Pull requests
 
-Once you have made your changes, make a pull request.
+Once you have made your changes, make a pull request. Please choose the `dev` branch for the branch that you would like to merge into.
 
-The pull request will be reviewed. Once it is approved, it will be merged into `master`.
+The pull request will be reviewed. Once it is approved, it will be merged into `dev`.
