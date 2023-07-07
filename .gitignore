@@ -32,3 +32,8 @@ data.json
 
 # pnpm lock yaml
 pnpm-lock.yaml
+
+*.log
+.DS_Store
+
+
