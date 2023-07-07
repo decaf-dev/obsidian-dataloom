@@ -3,10 +3,11 @@ import React from "react";
 import { NltMenu } from "src/shared/menu/types";
 import MenuTrigger from "../menu-trigger";
 import Button from "../button";
+import { ButtonVariant } from "../button/types";
 
 interface MenuButtonProps {
+	variant?: ButtonVariant;
 	menu: NltMenu;
-	isLink?: boolean;
 	ariaLabel?: string;
 	icon?: React.ReactNode;
 	children?: React.ReactNode;
@@ -15,8 +16,8 @@ interface MenuButtonProps {
 }
 
 export default function MenuButton({
+	variant,
 	menu,
-	isLink = false,
 	ariaLabel,
 	icon,
 	children,
@@ -32,7 +33,7 @@ export default function MenuButton({
 		>
 			<Button
 				isFocusable={false}
-				isLink={isLink}
+				variant={variant}
 				icon={icon}
 				ariaLabel={ariaLabel}
 			>
