@@ -39,6 +39,7 @@ import { getBasename } from "./shared/link/link-utils";
 import { hasDarkTheme } from "./shared/render/utils";
 import { removeFocusVisibleClass } from "./shared/menu/focus-visible";
 import { DashboardState } from "./shared/types";
+import WelcomeModal from "./obsidian/welcome-modal";
 
 export interface DashboardsSettings {
 	shouldDebug: boolean;
@@ -48,6 +49,7 @@ export interface DashboardsSettings {
 	defaultEmbedWidth: string;
 	defaultEmbedHeight: string;
 	hasMigratedTo700: boolean;
+	showWelcomeModal: boolean;
 }
 
 export const DEFAULT_SETTINGS: DashboardsSettings = {
@@ -58,6 +60,7 @@ export const DEFAULT_SETTINGS: DashboardsSettings = {
 	defaultEmbedWidth: "100%",
 	defaultEmbedHeight: "340px",
 	hasMigratedTo700: false,
+	showWelcomeModal: true,
 };
 
 /**
@@ -95,6 +98,12 @@ export default class DashboardsPlugin extends Plugin {
 
 			await this.migrateTableFiles();
 		});
+
+		if (this.settings.showWelcomeModal) {
+			new WelcomeModal(app).open();
+			this.settings.showWelcomeModal = false;
+			await this.saveSettings();
+		}
 	}
 
 	private async migrateTableFiles() {
