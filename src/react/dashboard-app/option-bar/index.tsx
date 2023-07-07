@@ -126,7 +126,7 @@ export default function OptionBar({
 					<Wrap
 						justify={{ base: "space-between", mobile: "flex-end" }}
 					>
-						<Stack spacing="md">
+						<Stack spacing="md" isHorizontal>
 							<SortBubbleList
 								headerCells={sortedCells}
 								columns={columns}
