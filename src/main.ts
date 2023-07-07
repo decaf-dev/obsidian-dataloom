@@ -40,6 +40,7 @@ import { hasDarkTheme } from "./shared/render/utils";
 import { removeFocusVisibleClass } from "./shared/menu/focus-visible";
 import { DashboardState } from "./shared/types";
 import WelcomeModal from "./obsidian/welcome-modal";
+import WhatsNewModal from "./obsidian/whats-new-modal";
 
 export interface DashboardsSettings {
 	shouldDebug: boolean;
@@ -50,6 +51,7 @@ export interface DashboardsSettings {
 	defaultEmbedHeight: string;
 	hasMigratedTo700: boolean;
 	showWelcomeModal: boolean;
+	pluginVersion: string;
 }
 
 export const DEFAULT_SETTINGS: DashboardsSettings = {
@@ -61,6 +63,7 @@ export const DEFAULT_SETTINGS: DashboardsSettings = {
 	defaultEmbedHeight: "340px",
 	hasMigratedTo700: false,
 	showWelcomeModal: true,
+	pluginVersion: "",
 };
 
 /**
@@ -102,6 +105,10 @@ export default class DashboardsPlugin extends Plugin {
 		if (this.settings.showWelcomeModal) {
 			new WelcomeModal(app).open();
 			this.settings.showWelcomeModal = false;
+			await this.saveSettings();
+		} else if (this.settings.pluginVersion !== this.manifest.version) {
+			new WhatsNewModal(this.app).open();
+			this.settings.pluginVersion = this.manifest.version;
 			await this.saveSettings();
 		}
 	}

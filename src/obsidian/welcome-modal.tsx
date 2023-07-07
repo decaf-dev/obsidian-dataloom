@@ -12,7 +12,9 @@ export default class WelcomeModal extends Modal {
 			text: "Powerful dashboard suite inspired by Notion.so",
 		});
 		this.renderDivider(contentEl);
-		contentEl.createEl("h5", { text: "Learn how to use" });
+		const titleEl = contentEl.createEl("h5", { text: "Learn how to use" });
+		titleEl.style.marginTop = "0em";
+		titleEl.style.marginBottom = "1em";
 
 		const cardContainerEl = contentEl.createDiv();
 		cardContainerEl.style.display = "flex";
@@ -44,14 +46,14 @@ export default class WelcomeModal extends Modal {
 		);
 	}
 
-	renderDivider(contentEl: HTMLElement) {
+	private renderDivider(contentEl: HTMLElement) {
 		const dividerEl = contentEl.createDiv();
-		dividerEl.style.padding = "0.75em 0";
-		dividerEl.style.borderBottom =
+		dividerEl.style.margin = "1.5em 0";
+		dividerEl.style.borderTop =
 			"1px solid var(--background-modifier-border)";
 	}
 
-	renderCard(
+	private renderCard(
 		contentEl: HTMLElement,
 		title: string,
 		description: string,
@@ -60,12 +62,6 @@ export default class WelcomeModal extends Modal {
 	) {
 		//Card
 		const cardEl = contentEl.createDiv();
-		// cardEl.addEventListener("mouseover", () => {
-		// 	cardEl.style.backgroundColor = "var(--background-modifier-hover)";
-		// });
-		// cardEl.addEventListener("mouseleave", () => {
-		// 	cardEl.style.backgroundColor = "unset";
-		// });
 		cardEl.style.display = "flex";
 		cardEl.style.padding = "1em 1.5em";
 		cardEl.style.columnGap = "1.5em";
