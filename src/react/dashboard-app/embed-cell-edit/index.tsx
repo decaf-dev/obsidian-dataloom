@@ -65,7 +65,7 @@ export default function EmbedCellEdit({
 						<label htmlFor="external-switch">External Link</label>
 						<Switch
 							id="external-switch"
-							isChecked={isExternalLink}
+							value={isExternalLink}
 							onToggle={onExternalLinkToggle}
 						/>
 					</Stack>

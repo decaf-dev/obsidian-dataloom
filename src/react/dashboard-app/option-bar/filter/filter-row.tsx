@@ -77,7 +77,7 @@ export default function FilterRow({
 					onClick={() => onDeleteClick(id)}
 				/>
 				<Switch
-					isChecked={isEnabled}
+					value={isEnabled}
 					ariaLabel={
 						isEnabled ? "Disable filter rule" : "Enable filter rule"
 					}

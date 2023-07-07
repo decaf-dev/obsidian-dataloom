@@ -38,7 +38,7 @@ const ToggleColumnMenu = React.forwardRef<HTMLDivElement, Props>(
 											maxWidth="250px"
 										/>
 										<Switch
-											isChecked={isVisible}
+											value={isVisible}
 											onToggle={() => onToggle(id)}
 										/>
 									</Wrap>

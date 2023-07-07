@@ -129,7 +129,7 @@ export default function BaseMenu({
 						<Flex justify="space-between" align="center">
 							<Text value="Wrap content" />
 							<Switch
-								isChecked={shouldWrapOverflow}
+								value={shouldWrapOverflow}
 								onToggle={(value) =>
 									onWrapOverflowToggle(columnId, value)
 								}
