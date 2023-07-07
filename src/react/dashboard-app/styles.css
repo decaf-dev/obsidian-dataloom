@@ -134,14 +134,14 @@
 /**
 * Remove padding from the view container
 */
-.workspace-leaf-content[data-type="notion-like-tables"] .view-content {
+.workspace-leaf-content[data-type="dashboards"] .view-content {
 	padding: 0;
 }
 
 /**
 * Obsidian automatically has a style applied to
 * button:not(.clickable-icon)
-* We want to override this for our butons
+* We want to override this for our buttons
 */
 .Dashboards__app button, .Dashboards__menu button {
 	background-color: unset;
