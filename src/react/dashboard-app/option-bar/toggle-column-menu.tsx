@@ -24,7 +24,7 @@ const ToggleColumnMenu = React.forwardRef<HTMLDivElement, Props>(
 			<Menu isOpen={isOpen} id={id} top={top} left={left} ref={ref}>
 				<div className="Dashboards__toggle-column-menu">
 					<Padding p="md">
-						<Stack spacing="md" isVertical>
+						<Stack spacing="md">
 							{columns.map((column) => {
 								const { id, markdown, isVisible } = column;
 								return (

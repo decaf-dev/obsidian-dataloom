@@ -59,9 +59,9 @@ export default function EmbedCellEdit({
 
 	return (
 		<div className="Dashboards__embed-cell-edit">
-			<Stack isVertical width="100%" spacing="lg">
+			<Stack width="100%" spacing="lg">
 				<Padding width="100%" px="md" pt="md">
-					<Stack isVertical spacing="sm" width="100%">
+					<Stack spacing="sm" width="100%">
 						<label htmlFor="external-switch">External Link</label>
 						<Switch
 							id="external-switch"

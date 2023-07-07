@@ -122,7 +122,7 @@ export default function DateCellEdit({
 	return (
 		<>
 			<div ref={triggerRef} className="Dashboards__date-cell-edit">
-				<Stack isVertical>
+				<Stack>
 					<Padding>
 						<input
 							tabIndex={0}

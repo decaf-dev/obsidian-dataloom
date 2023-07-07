@@ -11,7 +11,7 @@ export default function SearchBar() {
 		useDashboardState();
 
 	return (
-		<Stack spacing="lg">
+		<Stack spacing="lg" isHorizontal>
 			{isSearchBarVisible && (
 				<input
 					className="Dashboards__focusable"

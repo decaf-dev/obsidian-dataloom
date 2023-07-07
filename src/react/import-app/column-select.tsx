@@ -16,7 +16,7 @@ export default function ColumnSelect({
 	onChange,
 }: Props) {
 	return (
-		<Stack isVertical>
+		<Stack>
 			<label htmlFor="column-select">Column</label>
 			<select
 				id="column-select"

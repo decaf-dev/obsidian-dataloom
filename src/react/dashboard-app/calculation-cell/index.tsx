@@ -102,7 +102,7 @@ export default function CalculationCell({
 						<Text value="Calculate" variant="faint" />
 					)}
 					{calculationType !== Calculation.NONE && (
-						<Stack spacing="sm">
+						<Stack spacing="sm" isHorizontal>
 							<Text
 								value={getShortDisplayNameForCalculationType(
 									calculationType

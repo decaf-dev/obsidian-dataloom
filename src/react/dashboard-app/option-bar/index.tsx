@@ -31,7 +31,7 @@ const SortBubbleList = ({
 	onRemoveClick,
 }: SortButtonListProps) => {
 	return (
-		<Stack spacing="sm">
+		<Stack spacing="sm" isHorizontal>
 			{headerCells.map((cell, i) => {
 				const column = columns.find((c) => c.id === cell.columnId);
 				if (!column) throw new ColumNotFoundError(cell.columnId);
@@ -122,7 +122,7 @@ export default function OptionBar({
 			`}
 		>
 			<Padding px="xl">
-				<Stack spacing="lg" isVertical align="center" minHeight="40px">
+				<Stack spacing="lg" align="center" minHeight="40px">
 					<Wrap
 						justify={{ base: "space-between", mobile: "flex-end" }}
 					>
@@ -140,7 +140,7 @@ export default function OptionBar({
 								numActive={activeRules.length}
 							/>
 						</Stack>
-						<Stack spacing="sm" justify="flex-end">
+						<Stack spacing="sm" justify="flex-end" isHorizontal>
 							<SearchBar />
 							<Filter
 								columns={filterableColumns}

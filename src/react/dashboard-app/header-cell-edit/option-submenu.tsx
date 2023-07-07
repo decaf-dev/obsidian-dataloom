@@ -42,7 +42,7 @@ export default function OptionSubmenu({
 	return (
 		<Submenu title={title} onBackClick={onBackClick}>
 			<Padding pt="sm" pb="lg">
-				<Stack spacing="lg" isVertical>
+				<Stack spacing="lg">
 					{type === CellType.EMBED && (
 						<MenuItem
 							name="Aspect Ratio"

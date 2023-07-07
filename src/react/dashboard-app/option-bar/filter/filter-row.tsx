@@ -70,7 +70,13 @@ export default function FilterRow({
 						onTagsChange={onTagsChange}
 					/>
 				)}
-			<Stack grow justify="flex-end" align="center" spacing="lg">
+			<Stack
+				grow
+				justify="flex-end"
+				align="center"
+				spacing="lg"
+				isHorizontal
+			>
 				<Button
 					icon={<Icon lucideId="trash-2" />}
 					ariaLabel="Delete filter rule"

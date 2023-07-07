@@ -63,7 +63,7 @@ const FilterMenu = React.forwardRef<HTMLDivElement, Props>(function FilterMenu(
 				`}
 			>
 				<Padding p="md">
-					<Stack spacing="lg" isVertical>
+					<Stack spacing="lg">
 						{filterRules.map((rule) => {
 							const {
 								id,
