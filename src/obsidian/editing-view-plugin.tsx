@@ -76,7 +76,7 @@ class EditingViewPlugin implements PluginValue {
 			dashboardContainerEl.className = "Dashboards__embedded-container";
 			dashboardContainerEl.style.height = "100%";
 			dashboardContainerEl.style.width = "100%";
-			dashboardContainerEl.style.padding = "5px 0px";
+			dashboardContainerEl.style.padding = "10px 0px";
 
 			const appId = uuidv4();
 			this.dashboardApps.push({
