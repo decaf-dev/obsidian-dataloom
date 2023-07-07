@@ -18,6 +18,10 @@ import { isCellTypeFilterable } from "src/shared/dashboard-state/filter-by-rules
 import { ColumnWithMarkdown } from "./types";
 import Padding from "src/react/shared/padding";
 import { css } from "@emotion/react";
+import Button from "src/react/shared/button";
+import Icon from "src/react/shared/icon";
+import { useMountState } from "../mount-provider";
+import ExportModal from "src/obsidian/export-modal";
 
 interface SortButtonListProps {
 	headerCells: HeaderCell[];
@@ -78,6 +82,7 @@ export default function OptionBar({
 	onRuleAddClick,
 	onRuleTagsChange,
 }: Props) {
+	const { filePath } = useMountState();
 	const sortedCells = headerCells.filter((cell) => {
 		const columnId = cell.columnId;
 		const column = columns.find((c) => c.id === columnId);
@@ -157,6 +162,12 @@ export default function OptionBar({
 								columns={columnsWithMarkdown}
 								onToggle={onColumnToggle}
 							/>
+							<Button
+								icon={<Icon lucideId="download" />}
+								onClick={() => {
+									new ExportModal(app, filePath).open();
+								}}
+							></Button>
 						</Stack>
 					</Wrap>
 				</Stack>

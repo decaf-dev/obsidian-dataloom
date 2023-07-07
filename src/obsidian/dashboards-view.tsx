@@ -12,7 +12,6 @@ import {
 	serializeDashboardState,
 } from "src/data/serialize-dashboard-state";
 import { EVENT_REFRESH_DASHBOARDS } from "src/shared/events";
-import ExportModal from "./export-modal";
 import { v4 as uuidv4 } from "uuid";
 import DashboardApp from "src/react/dashboard-app";
 import { DASHBOARDS_PLUGIN_ID } from "src/main";
@@ -46,10 +45,6 @@ export default class DashboardsView extends TextFileView {
 			(this.app as any).setting.open();
 			//Navigate to plugin settings
 			(this.app as any).setting.openTabById(DASHBOARDS_PLUGIN_ID);
-		});
-
-		this.addAction("download", "Export", () => {
-			new ExportModal(this.app, this.file.path).open();
 		});
 
 		this.app.workspace.on(

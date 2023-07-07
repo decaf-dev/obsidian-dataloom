@@ -2,13 +2,15 @@ import React from "react";
 
 import { css } from "@emotion/react";
 import { useLogger } from "src/shared/logger";
+import Stack from "../stack";
+import { ButtonVariant } from "./types";
 
 const buttonStyle = css`
 	display: flex;
 	align-items: center;
 	width: max-content !important;
 	height: max-content;
-	padding: 10px !important; /* Prevent tablet styles */
+	padding: 6px !important;
 	white-space: nowrap;
 	color: var(--text-normal);
 	margin-right: 0;
@@ -31,13 +33,12 @@ const linkStyle = css`
 	}
 `;
 
-const iconStyle = css`
+const textStyle = css`
 	background-color: transparent !important;
 	box-shadow: none !important;
-	padding: 6px !important;
 
 	&: hover {
-		box-shadow: var(--input-shadow) !important;
+		background-color: var(--background-modifier-hover) !important;
 	}
 `;
 
@@ -46,9 +47,9 @@ export const smallStyle = css`
 `;
 
 interface ButtonProps {
+	variant?: ButtonVariant;
 	isFocusable?: boolean;
 	invertFocusColor?: boolean;
-	isLink?: boolean;
 	isSmall?: boolean;
 	ariaLabel?: string;
 	icon?: React.ReactNode;
@@ -58,8 +59,8 @@ interface ButtonProps {
 }
 
 export default function Button({
+	variant = "text",
 	isFocusable = true,
-	isLink,
 	isSmall,
 	invertFocusColor,
 	children,
@@ -99,8 +100,8 @@ export default function Button({
 			className={className}
 			css={css`
 				${buttonStyle}
-				${isLink ? linkStyle : undefined}
-				${icon !== undefined ? iconStyle : undefined}
+				${variant == "link" ? linkStyle : undefined}
+				${variant == "text" ? textStyle : undefined}
 				${isSmall ? smallStyle : undefined}
 			`}
 			aria-label={ariaLabel}
@@ -108,7 +109,10 @@ export default function Button({
 			onMouseDown={onMouseDown}
 			onClick={handleClick}
 		>
-			{icon !== undefined ? icon : children}
+			<Stack isHorizontal>
+				{icon && icon}
+				{children}
+			</Stack>
 		</button>
 	);
 }

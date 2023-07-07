@@ -3,7 +3,6 @@ import RowOptions from "./row-options";
 import OptionBar from "./option-bar";
 import CalculationCell from "./calculation-cell";
 import BodyCell from "./body-cell";
-import NewRowButton from "./new-row-button";
 import NewColumnButton from "./new-column-button";
 import HeaderCell from "./header-cell";
 
@@ -47,6 +46,8 @@ import {
 import { useExportEvents } from "src/shared/dashboard-state/use-export-events";
 import { useRowEvents } from "src/shared/dashboard-state/use-row-events";
 import { useColumnEvents } from "src/shared/dashboard-state/use-column-events";
+import FooterBar from "./footer-bar";
+import { VirtuosoHandle } from "react-virtuoso";
 
 export default function App() {
 	const { appId, isMarkdownView } = useMountState();
@@ -60,6 +61,8 @@ export default function App() {
 		commandUndo,
 		setDashboardState,
 	} = useDashboardState();
+
+	const tableRef = React.useRef<VirtuosoHandle | null>(null);
 
 	useExportEvents(dashboardState);
 	useRowEvents();
@@ -232,6 +235,16 @@ export default function App() {
 		nltEventSystem.dispatchEvent("keydown", e);
 	}
 
+	function handleScrollToTopClick() {
+		console.log("YUP");
+		console.log(tableRef.current);
+		tableRef.current?.scrollToIndex(0);
+	}
+
+	function handleScrollToBottomClick() {
+		tableRef.current?.scrollToIndex(filteredBodyRows.length - 1);
+	}
+
 	const {
 		headerRows,
 		footerRows,
@@ -283,6 +296,7 @@ export default function App() {
 				onRuleTagsChange={handleRuleTagsChange}
 			/>
 			<Table
+				ref={tableRef}
 				headerRows={headerRows.map((row) => {
 					return {
 						id: row.id,
@@ -576,49 +590,14 @@ export default function App() {
 					}
 					return {
 						id: row.id,
-						cells: [
-							{
-								id: firstColumnId,
-								content: <></>,
-							},
-							...visibleColumns.map((column, i) => {
-								const cell = footerCells.find(
-									(cell) =>
-										cell.rowId === row.id &&
-										cell.columnId === column.id
-								);
-								if (!cell)
-									throw new CellNotFoundError({
-										rowId: row.id,
-										columnId: column.id,
-									});
-
-								if (i === 0) {
-									return {
-										id: cell.id,
-										content: (
-											<div
-												style={{ width: column.width }}
-											>
-												<NewRowButton
-													onClick={handleNewRowClick}
-												/>
-											</div>
-										),
-									};
-								}
-								return {
-									id: cell.id,
-									content: <></>,
-								};
-							}),
-							{
-								id: lastColumnId,
-								content: <></>,
-							},
-						],
+						cells: [],
 					};
 				})}
+			/>
+			<FooterBar
+				onNewRowClick={handleNewRowClick}
+				onScrollToTopClick={handleScrollToTopClick}
+				onScrollToBottomClick={handleScrollToBottomClick}
 			/>
 		</div>
 	);

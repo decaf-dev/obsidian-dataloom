@@ -19,9 +19,10 @@ interface Props {
 	footerRows: RenderTableFooterRow[];
 }
 
-export default function Table({ headerRows, bodyRows, footerRows }: Props) {
-	const tableRef = React.useRef<VirtuosoHandle>(null);
-
+const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
+	{ headerRows, bodyRows, footerRows },
+	ref
+) {
 	const previousRowLength = usePrevious(bodyRows.length);
 
 	/**
@@ -30,13 +31,15 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 	React.useEffect(() => {
 		if (previousRowLength === undefined) return;
 		if (previousRowLength < bodyRows.length)
-			tableRef.current?.scrollToIndex(bodyRows.length - 1);
+			(
+				ref as React.MutableRefObject<VirtuosoHandle | null>
+			).current?.scrollToIndex(bodyRows.length - 1);
 	}, [previousRowLength, bodyRows.length]);
 
 	return (
 		<TableVirtuoso
 			tabIndex={-1}
-			ref={tableRef}
+			ref={ref}
 			overscan={10}
 			style={{
 				width: "100%",
@@ -137,7 +140,7 @@ export default function Table({ headerRows, bodyRows, footerRows }: Props) {
 			}}
 		/>
 	);
-}
+});
 
 const Components: TableComponents = {
 	Table: ({ style, ...props }) => {
@@ -189,3 +192,5 @@ const Components: TableComponents = {
 		/>
 	)),
 };
+
+export default Table;

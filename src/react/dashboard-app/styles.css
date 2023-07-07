@@ -143,10 +143,10 @@
 * button:not(.clickable-icon)
 * We want to override this for our buttons
 */
-.Dashboards__app button, .Dashboards__menu button {
+/* .Dashboards__app button, .Dashboards__menu button {
 	background-color: unset;
 	box-shadow: unset;
-}
+} */
 
 .Dashboards__default-cursor {
 	cursor: default !important;

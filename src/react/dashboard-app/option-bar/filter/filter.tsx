@@ -63,9 +63,7 @@ const Filter = ({
 	return (
 		<>
 			<div ref={triggerRef}>
-				<MenuButton isLink menu={menu}>
-					Filter
-				</MenuButton>
+				<MenuButton menu={menu}>Filter</MenuButton>
 			</div>
 			<FilterMenu
 				id={menu.id}

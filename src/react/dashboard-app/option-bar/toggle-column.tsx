@@ -29,9 +29,7 @@ const ToggleColumn = ({ columns, onToggle }: Props) => {
 	return (
 		<>
 			<div ref={triggerRef}>
-				<MenuButton isLink menu={menu}>
-					Toggle
-				</MenuButton>
+				<MenuButton menu={menu}>Toggle</MenuButton>
 			</div>
 			<ToggleColumnMenu
 				id={menu.id}

@@ -1,6 +1,5 @@
 import Button from "../../shared/button";
-
-import "./styles.css";
+import Icon from "src/react/shared/icon";
 
 interface Props {
 	onClick: () => void;
@@ -8,8 +7,12 @@ interface Props {
 
 export default function NewRowButton({ onClick }: Props) {
 	return (
-		<div className="Dashboards__new-row">
-			<Button onClick={() => onClick()}>New row</Button>
-		</div>
+		<Button
+			icon={<Icon lucideId="plus" />}
+			ariaLabel="New row"
+			onClick={() => onClick()}
+		>
+			New
+		</Button>
 	);
 }
