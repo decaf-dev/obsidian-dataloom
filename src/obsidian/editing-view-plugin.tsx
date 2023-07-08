@@ -1,4 +1,4 @@
-import { PluginValue, ViewPlugin } from "@codemirror/view";
+import { PluginValue, ViewPlugin, EditorView } from "@codemirror/view";
 import { MarkdownView, TFile, WorkspaceLeaf } from "obsidian";
 
 if (process.env.ENABLE_REACT_DEVTOOLS === "true") {
@@ -9,7 +9,10 @@ import { Root, createRoot } from "react-dom/client";
 import { serializeDashboardState } from "src/data/serialize-dashboard-state";
 import { deserializeDashboardState } from "src/data/serialize-dashboard-state";
 import { store } from "src/redux/global/store";
-import { EVENT_REFRESH_DASHBOARDS } from "src/shared/events";
+import {
+	EVENT_REFRESH_APP,
+	EVENT_REFRESH_EDITING_VIEW,
+} from "src/shared/events";
 import { DashboardState } from "src/shared/types";
 import _ from "lodash";
 import {
@@ -17,12 +20,13 @@ import {
 	getEmbeddedDashboardHeight,
 	getEmbeddedDashboardLinkEls,
 	getEmbeddedDashboardWidth,
-	removeEmbeddedLinkChildren,
+	hasLoadedEmbeddedDashboard,
 } from "./utils";
 import { v4 as uuidv4 } from "uuid";
 import DashboardApp from "src/react/dashboard-app";
 
 class EditingViewPlugin implements PluginValue {
+	private editorView: EditorView;
 	private dashboardApps: {
 		id: string;
 		parentEl: HTMLElement;
@@ -31,15 +35,23 @@ class EditingViewPlugin implements PluginValue {
 		file: TFile;
 	}[];
 
-	constructor() {
+	constructor(view: EditorView) {
+		this.editorView = view;
 		this.dashboardApps = [];
 		this.setupEventListeners();
 	}
 
 	//This is ran on any editor change
 	update() {
-		const activeView = app.workspace.getActiveViewOfType(MarkdownView);
-		if (!activeView) return;
+		console.log("update() called");
+		const markdownLeaves = app.workspace.getLeavesOfType("markdown");
+		const activeLeaf = markdownLeaves.find(
+			//@ts-expect-error - private property
+			(leaf) => leaf.view.editor.cm === this.editorView
+		);
+		if (!activeLeaf) return;
+
+		const activeView = activeLeaf.view as MarkdownView;
 
 		const embeddedTableLinkEls = getEmbeddedDashboardLinkEls(
 			activeView.containerEl
@@ -47,13 +59,10 @@ class EditingViewPlugin implements PluginValue {
 
 		for (let i = 0; i < embeddedTableLinkEls.length; i++) {
 			const linkEl = embeddedTableLinkEls[i];
-			removeEmbeddedLinkChildren(linkEl);
-
-			const file = findEmbeddedTableFile(linkEl);
-			if (!file) continue;
 
 			const { defaultEmbedWidth, defaultEmbedHeight } =
 				store.getState().global.settings;
+
 			const width = getEmbeddedDashboardWidth(linkEl, defaultEmbedWidth);
 			const height = getEmbeddedDashboardHeight(
 				linkEl,
@@ -63,9 +72,18 @@ class EditingViewPlugin implements PluginValue {
 			linkEl.style.width = width;
 			linkEl.style.height = height;
 
-			//If we've already created the table, then return
-			if (this.dashboardApps.find((app) => app.file.path === file.path))
-				continue;
+			if (hasLoadedEmbeddedDashboard(linkEl)) continue;
+
+			//Clear default Obsidian placeholder children
+			linkEl.empty();
+
+			const file = findEmbeddedTableFile(linkEl);
+			if (!file) continue;
+
+			//Filter out any old dashboards
+			this.dashboardApps = this.dashboardApps.filter(
+				(app) => app.file.path !== file.path
+			);
 
 			linkEl.style.backgroundColor = "var(--color-primary)";
 			linkEl.style.cursor = "unset";
@@ -76,6 +94,7 @@ class EditingViewPlugin implements PluginValue {
 			dashboardContainerEl.className = "Dashboards__embedded-container";
 			dashboardContainerEl.style.height = "100%";
 			dashboardContainerEl.style.width = "100%";
+			dashboardContainerEl.style.padding = "10px 0px";
 
 			const appId = uuidv4();
 			this.dashboardApps.push({
@@ -132,7 +151,7 @@ class EditingViewPlugin implements PluginValue {
 
 		//Tell all other views to refresh
 		app.workspace.trigger(
-			EVENT_REFRESH_DASHBOARDS,
+			EVENT_REFRESH_APP,
 			dashboardFile.path,
 			appId,
 			state
@@ -165,13 +184,13 @@ class EditingViewPlugin implements PluginValue {
 	}
 
 	private handleRefreshEvent = (
-		filePath: string,
+		sourceFilePath: string,
 		sourceAppId: string,
 		state: DashboardState
 	) => {
 		//Find a dashboard instance with the same file path
 		const app = this.dashboardApps.find(
-			(app) => app.id !== sourceAppId && app.file.path === filePath
+			(app) => app.id !== sourceAppId && app.file.path === sourceFilePath
 		);
 		if (!app) return;
 
@@ -187,13 +206,16 @@ class EditingViewPlugin implements PluginValue {
 
 	private setupEventListeners() {
 		//@ts-expect-error not an native Obsidian event
-		app.workspace.on(EVENT_REFRESH_DASHBOARDS, this.handleRefreshEvent);
+		app.workspace.on(EVENT_REFRESH_APP, this.handleRefreshEvent);
+		//@ts-expect-error not an native Obsidian event
+		app.workspace.on(EVENT_REFRESH_EDITING_VIEW, this.update);
 	}
 
 	destroy() {
 		this.dashboardApps.forEach((app) => app.root?.unmount());
 		this.dashboardApps = [];
-		app.workspace.off(EVENT_REFRESH_DASHBOARDS, this.handleRefreshEvent);
+		app.workspace.off(EVENT_REFRESH_APP, this.handleRefreshEvent);
+		app.workspace.off(EVENT_REFRESH_EDITING_VIEW, this.update);
 	}
 }
 

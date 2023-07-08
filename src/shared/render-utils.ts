@@ -110,11 +110,6 @@ export const useRenderMarkdown = (
 	};
 };
 
-export const useLeafContainer = () => {
-	const { leaf } = useMountState();
-	return leaf.view.containerEl;
-};
-
 export const isOnMobile = () => {
 	return Platform.isMobile;
 };

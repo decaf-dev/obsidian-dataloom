@@ -25,7 +25,8 @@ import {
 	EVENT_DOWNLOAD_MARKDOWN,
 	EVENT_OUTSIDE_CLICK,
 	EVENT_OUTSIDE_KEYDOWN,
-	EVENT_REFRESH_DASHBOARDS,
+	EVENT_REFRESH_APP,
+	EVENT_REFRESH_EDITING_VIEW,
 	EVENT_ROW_ADD,
 	EVENT_ROW_DELETE,
 } from "./shared/events";
@@ -144,7 +145,6 @@ export default class DashboardsPlugin extends Plugin {
 		//This registers a CodeMirror extension. It is used to render the embedded
 		//table in live preview mode.
 		this.registerEditorExtension(editingViewPlugin);
-
 		//This registers a Markdown post processor. It is used to render the embedded
 		//table in preview mode.
 		// this.registerMarkdownPostProcessor((element, context) => {
@@ -230,6 +230,13 @@ export default class DashboardsPlugin extends Plugin {
 		this.app.vault.on(
 			"rename",
 			async (file: TAbstractFile, oldPath: string) => {
+				//When a file is renamed, we want to refresh all open leafs
+				//that contain an embedded table
+				const leafs = app.workspace.getLeavesOfType("markdown");
+				leafs.forEach((leaf) => {
+					leaf.trigger(EVENT_REFRESH_EDITING_VIEW);
+				});
+
 				if (file instanceof TFile) {
 					const dashboardFiles = this.app.vault
 						.getFiles()
@@ -326,7 +333,7 @@ export default class DashboardsPlugin extends Plugin {
 
 							//Update all tables that match this path
 							app.workspace.trigger(
-								EVENT_REFRESH_DASHBOARDS,
+								EVENT_REFRESH_APP,
 								tableFile.path,
 								-1, //update all tables that match this path
 								newState

@@ -173,17 +173,12 @@ const Components: TableComponents = {
 					border-bottom: 1px solid var(--table-border-color);
 				}
 
-				& > tr:first-of-type > td:nth-of-type(1) {
-					border-bottom: 0;
-				}
-
 				& > tr:first-of-type > td:nth-of-type(2) {
 					border-left: 1px solid var(--table-border-color);
 				}
 
 				& > tr:first-of-type > td:last-child {
 					border-left: 1px solid var(--table-border-color);
-					border-bottom: 0;
 				}
 			`}
 			{...props}

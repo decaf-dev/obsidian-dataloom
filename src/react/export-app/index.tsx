@@ -87,7 +87,7 @@ export function ExportApp({ dashboardState, filePath }: Props) {
 								/>
 							</Stack>
 
-							<Stack>
+							<Stack isHorizontal>
 								<button
 									className="mod-cta"
 									onClick={handleDownloadClick}

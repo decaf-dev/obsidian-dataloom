@@ -46,8 +46,8 @@ import {
 import { useExportEvents } from "src/shared/dashboard-state/use-export-events";
 import { useRowEvents } from "src/shared/dashboard-state/use-row-events";
 import { useColumnEvents } from "src/shared/dashboard-state/use-column-events";
-import FooterBar from "./footer-bar";
 import { VirtuosoHandle } from "react-virtuoso";
+import BottomBar from "./bottom-bar";
 
 export default function App() {
 	const { appId, isMarkdownView } = useMountState();
@@ -236,8 +236,6 @@ export default function App() {
 	}
 
 	function handleScrollToTopClick() {
-		console.log("YUP");
-		console.log(tableRef.current);
 		tableRef.current?.scrollToIndex(0);
 	}
 
@@ -272,7 +270,6 @@ export default function App() {
 				flex-direction: column;
 				width: 100%;
 				height: 100%;
-				padding: 10px 0px;
 				border-top: 1px solid var(--background-modifier-border);
 				border-bottom: ${isMarkdownView
 					? "1px solid var(--background-modifier-border)"
@@ -594,7 +591,8 @@ export default function App() {
 					};
 				})}
 			/>
-			<FooterBar
+			<BottomBar
+				appId={appId}
 				onNewRowClick={handleNewRowClick}
 				onScrollToTopClick={handleScrollToTopClick}
 				onScrollToBottomClick={handleScrollToBottomClick}
