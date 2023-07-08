@@ -14,17 +14,13 @@ export const getEmbeddedDashboardLinkEls = (el: HTMLElement) => {
 	return dashboardLinkEls;
 };
 
-export const removeEmbeddedLinkChildren = (embeddedLinkEl: HTMLElement) => {
+export const hasLoadedEmbeddedDashboard = (embeddedLinkEl: HTMLElement) => {
 	if (embeddedLinkEl.children.length > 0) {
 		const firstChildEl = embeddedLinkEl.children[0];
 		if (firstChildEl.classList.contains("Dashboards__embedded-container"))
-			return;
-
-		//Remove any default children that Obsidian has created
-		for (let i = 0; i < embeddedLinkEl.children.length; i++) {
-			embeddedLinkEl.removeChild(embeddedLinkEl.children[i]);
-		}
+			return true;
 	}
+	return false;
 };
 
 export const findEmbeddedTableFile = (embeddedLinkEl: HTMLElement) => {

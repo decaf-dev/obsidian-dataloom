@@ -236,8 +236,6 @@ export default function App() {
 	}
 
 	function handleScrollToTopClick() {
-		console.log("YUP");
-		console.log(tableRef.current);
 		tableRef.current?.scrollToIndex(0);
 	}
 
