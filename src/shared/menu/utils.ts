@@ -2,7 +2,8 @@ import React from "react";
 import { Position } from "./types";
 import { numToPx } from "../conversion";
 import { MENU_SHIFT_PADDING } from "./constants";
-import { useLeafContainer, isOnMobile } from "src/shared/render-utils";
+import { isOnMobile } from "src/shared/render-utils";
+import { useMountState } from "src/react/dashboard-app/mount-provider";
 
 export const isTextSelected = () => {
 	const selection = window.getSelection();
@@ -29,7 +30,8 @@ export const useShiftMenu = (
 		leftOffset?: number;
 	}
 ) => {
-	const viewContentEl = useLeafContainer();
+	const { leaf } = useMountState();
+	const viewContentEl = leaf.view.containerEl;
 
 	React.useEffect(() => {
 		function shiftMenuIntoView() {
