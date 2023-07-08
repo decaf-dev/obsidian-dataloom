@@ -46,8 +46,8 @@ import {
 import { useExportEvents } from "src/shared/dashboard-state/use-export-events";
 import { useRowEvents } from "src/shared/dashboard-state/use-row-events";
 import { useColumnEvents } from "src/shared/dashboard-state/use-column-events";
-import FooterBar from "./footer-bar";
 import { VirtuosoHandle } from "react-virtuoso";
+import BottomBar from "./bottom-bar";
 
 export default function App() {
 	const { appId, isMarkdownView } = useMountState();
@@ -591,7 +591,8 @@ export default function App() {
 					};
 				})}
 			/>
-			<FooterBar
+			<BottomBar
+				appId={appId}
 				onNewRowClick={handleNewRowClick}
 				onScrollToTopClick={handleScrollToTopClick}
 				onScrollToBottomClick={handleScrollToBottomClick}
