@@ -59,22 +59,10 @@ class EditingViewPlugin implements PluginValue {
 
 		for (let i = 0; i < embeddedTableLinkEls.length; i++) {
 			const linkEl = embeddedTableLinkEls[i];
-			//If the dashboard has already been loaded, skip it
-			if (hasLoadedEmbeddedDashboard(linkEl)) continue;
-
-			const file = findEmbeddedTableFile(linkEl);
-			if (!file) continue;
-
-			//Clear default Obsidian placeholder children
-			linkEl.empty();
-
-			//Filter out any old dashboards
-			this.dashboardApps = this.dashboardApps.filter(
-				(app) => app.file.path !== file.path
-			);
 
 			const { defaultEmbedWidth, defaultEmbedHeight } =
 				store.getState().global.settings;
+
 			const width = getEmbeddedDashboardWidth(linkEl, defaultEmbedWidth);
 			const height = getEmbeddedDashboardHeight(
 				linkEl,
@@ -83,6 +71,20 @@ class EditingViewPlugin implements PluginValue {
 
 			linkEl.style.width = width;
 			linkEl.style.height = height;
+
+			if (hasLoadedEmbeddedDashboard(linkEl)) continue;
+
+			//Clear default Obsidian placeholder children
+			linkEl.empty();
+
+			const file = findEmbeddedTableFile(linkEl);
+			if (!file) continue;
+
+			//Filter out any old dashboards
+			this.dashboardApps = this.dashboardApps.filter(
+				(app) => app.file.path !== file.path
+			);
+
 			linkEl.style.backgroundColor = "var(--color-primary)";
 			linkEl.style.cursor = "unset";
 			linkEl.style.margin = "0px";

@@ -14,17 +14,17 @@ export const getEmbeddedDashboardLinkEls = (el: HTMLElement) => {
 	return dashboardLinkEls;
 };
 
-export const hasLoadedEmbeddedDashboard = (embeddedLinkEl: HTMLElement) => {
-	if (embeddedLinkEl.children.length > 0) {
-		const firstChildEl = embeddedLinkEl.children[0];
+export const hasLoadedEmbeddedDashboard = (linkEl: HTMLElement) => {
+	if (linkEl.children.length > 0) {
+		const firstChildEl = linkEl.children[0];
 		if (firstChildEl.classList.contains("Dashboards__embedded-container"))
 			return true;
 	}
 	return false;
 };
 
-export const findEmbeddedTableFile = (embeddedLinkEl: HTMLElement) => {
-	const src = embeddedLinkEl.getAttribute("src");
+export const findEmbeddedTableFile = (linkEl: HTMLElement) => {
+	const src = linkEl.getAttribute("src");
 
 	const dashboardFile = app.vault
 		.getFiles()
@@ -35,19 +35,19 @@ export const findEmbeddedTableFile = (embeddedLinkEl: HTMLElement) => {
 };
 
 export const getEmbeddedDashboardWidth = (
-	embeddedLinkEl: HTMLElement,
+	linkEl: HTMLElement,
 	defaultWidth: string
 ) => {
-	const width = embeddedLinkEl.getAttribute("width");
+	const width = linkEl.getAttribute("width");
 	if (width === null || width === "0") return defaultWidth;
 	return numToPx(width);
 };
 
 export const getEmbeddedDashboardHeight = (
-	embeddedLinkEl: HTMLElement,
+	linkEl: HTMLElement,
 	defaultHeight: string
 ) => {
-	const height = embeddedLinkEl.getAttribute("height");
-	if (height === null || height === "0") return defaultHeight; //exactly 4 normal body rows
+	const height = linkEl.getAttribute("height");
+	if (height === null || height === "0") return defaultHeight;
 	return numToPx(height);
 };
