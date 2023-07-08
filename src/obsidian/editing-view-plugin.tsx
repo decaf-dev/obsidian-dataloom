@@ -10,7 +10,7 @@ import { serializeDashboardState } from "src/data/serialize-dashboard-state";
 import { deserializeDashboardState } from "src/data/serialize-dashboard-state";
 import { store } from "src/redux/global/store";
 import {
-	EVENT_REFRESH_DASHBOARDS,
+	EVENT_REFRESH_APP,
 	EVENT_REFRESH_EDITING_VIEW,
 } from "src/shared/events";
 import { DashboardState } from "src/shared/types";
@@ -149,7 +149,7 @@ class EditingViewPlugin implements PluginValue {
 
 		//Tell all other views to refresh
 		app.workspace.trigger(
-			EVENT_REFRESH_DASHBOARDS,
+			EVENT_REFRESH_APP,
 			dashboardFile.path,
 			appId,
 			state
@@ -204,7 +204,7 @@ class EditingViewPlugin implements PluginValue {
 
 	private setupEventListeners() {
 		//@ts-expect-error not an native Obsidian event
-		app.workspace.on(EVENT_REFRESH_DASHBOARDS, this.handleRefreshEvent);
+		app.workspace.on(EVENT_REFRESH_APP, this.handleRefreshEvent);
 		//@ts-expect-error not an native Obsidian event
 		app.workspace.on(EVENT_REFRESH_EDITING_VIEW, this.update);
 	}
@@ -212,7 +212,7 @@ class EditingViewPlugin implements PluginValue {
 	destroy() {
 		this.dashboardApps.forEach((app) => app.root?.unmount());
 		this.dashboardApps = [];
-		app.workspace.off(EVENT_REFRESH_DASHBOARDS, this.handleRefreshEvent);
+		app.workspace.off(EVENT_REFRESH_APP, this.handleRefreshEvent);
 		app.workspace.off(EVENT_REFRESH_EDITING_VIEW, this.update);
 	}
 }

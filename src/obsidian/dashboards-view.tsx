@@ -11,7 +11,7 @@ import {
 	deserializeDashboardState,
 	serializeDashboardState,
 } from "src/data/serialize-dashboard-state";
-import { EVENT_REFRESH_DASHBOARDS } from "src/shared/events";
+import { EVENT_REFRESH_APP } from "src/shared/events";
 import { v4 as uuidv4 } from "uuid";
 import DashboardApp from "src/react/dashboard-app";
 import { DASHBOARDS_PLUGIN_ID } from "src/main";
@@ -49,16 +49,13 @@ export default class DashboardsView extends TextFileView {
 
 		this.app.workspace.on(
 			// @ts-expect-error: not a native Obsidian event
-			EVENT_REFRESH_DASHBOARDS,
+			EVENT_REFRESH_APP,
 			this.handleRefreshEvent
 		);
 	}
 
 	async onClose() {
-		this.app.workspace.off(
-			EVENT_REFRESH_DASHBOARDS,
-			this.handleRefreshEvent
-		);
+		this.app.workspace.off(EVENT_REFRESH_APP, this.handleRefreshEvent);
 		if (this.root) {
 			this.root.unmount();
 			this.root = null;
@@ -130,7 +127,7 @@ export default class DashboardsView extends TextFileView {
 
 		//Trigger an event to refresh the other open views of this file
 		this.app.workspace.trigger(
-			EVENT_REFRESH_DASHBOARDS,
+			EVENT_REFRESH_APP,
 			this.file.path,
 			appId,
 			state
