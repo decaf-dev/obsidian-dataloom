@@ -4,7 +4,6 @@ import ToggleColumn from "./toggle-column";
 import Filter from "./filter/filter";
 import Wrap from "../../shared/wrap";
 import SearchBar from "./search-bar";
-import Divider from "src/react/shared/divider";
 import ActiveFilterBubble from "./active-filter-bubble";
 import { FilterType } from "src/shared/types";
 
@@ -113,18 +112,17 @@ export default function OptionBar({
 		}
 	);
 
-	const sortedColumn = columns.find((c) => c.sortDir !== SortDir.NONE);
+	const { isMarkdownView } = useMountState();
 
 	return (
 		<div
 			className="Dashboards__option-bar"
 			css={css`
 				width: 100%;
-				padding-left: var(--nlt-spacing--lg);
 				border-bottom: 1px solid var(--background-modifier-border);
 			`}
 		>
-			<Padding px="xl">
+			<Padding px={isMarkdownView ? "unset" : "lg"} py="md">
 				<Stack spacing="lg" align="center" minHeight="40px">
 					<Wrap
 						justify={{ base: "space-between", mobile: "flex-end" }}
@@ -135,10 +133,6 @@ export default function OptionBar({
 								columns={columns}
 								onRemoveClick={onSortRemoveClick}
 							/>
-							{activeRules.length !== 0 &&
-								sortedColumn !== undefined && (
-									<Divider isVertical height="1.5rem" />
-								)}
 							<ActiveFilterBubble
 								numActive={activeRules.length}
 							/>
