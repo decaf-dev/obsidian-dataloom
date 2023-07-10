@@ -98,15 +98,22 @@ export default class DataLoomPlugin extends Plugin {
 			await this.migrateLoomFiles();
 		});
 
+		if (this.settings.pluginVersion !== this.manifest.version) {
+			//Don't show updates for the first install
+			//unless you have already downloaded the plugin
+			if (this.settings.pluginVersion !== "") {
+				new WhatsNewModal(this.app).open();
+			}
+		}
+
 		if (this.settings.showWelcomeModal) {
 			new WelcomeModal(app).open();
 			this.settings.showWelcomeModal = false;
 			await this.saveSettings();
-		} else if (this.settings.pluginVersion !== this.manifest.version) {
-			new WhatsNewModal(this.app).open();
-			this.settings.pluginVersion = this.manifest.version;
-			await this.saveSettings();
 		}
+
+		this.settings.pluginVersion = this.manifest.version;
+		await this.saveSettings();
 	}
 
 	private async migrateLoomFiles() {
