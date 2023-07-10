@@ -15,7 +15,7 @@ export const getFilePath = (folderPath: string, fileName: string) => {
 	return folderPath + "/" + fileName;
 };
 
-export const createTableFile = async (options: { folderPath: string }) => {
+export const createLoomFile = async (options: { folderPath: string }) => {
 	try {
 		//Create folder if it doesn't exist
 		if (options.folderPath !== "") {
@@ -30,7 +30,7 @@ export const createTableFile = async (options: { folderPath: string }) => {
 
 		return await createFile(filePath, serialized);
 	} catch (err) {
-		new Notice("Could not create DataLoom table file");
+		new Notice("Could not create loom file");
 		throw err;
 	}
 };

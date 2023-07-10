@@ -15,7 +15,7 @@ import {
 	PREVIOUS_FILE_EXTENSION,
 	WIKI_LINK_REGEX,
 } from "./data/constants";
-import { createTableFile } from "src/data/table-file";
+import { createLoomFile } from "src/data/table-file";
 import {
 	EVENT_COLUMN_ADD,
 	EVENT_COLUMN_DELETE,
@@ -175,7 +175,7 @@ export default class DataLoomPlugin extends Plugin {
 			folderPath = this.settings.customFolderForNewFiles;
 		}
 
-		const filePath = await createTableFile({
+		const filePath = await createLoomFile({
 			folderPath,
 		});
 		if (embedded) return filePath;
