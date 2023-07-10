@@ -10,7 +10,7 @@ import {
 	SortDir,
 } from "src/shared/types";
 import { useLogger } from "../logger";
-import { useDashboardState } from "./dashboard-state-context";
+import { useTableState } from "./dashboard-state-context";
 import ColumnAddCommand from "../commands/column-add-command";
 import ColumnDeleteCommand from "../commands/column-delete-command";
 import ColumnUpdateCommand from "../commands/column-update-command";
@@ -18,7 +18,7 @@ import { ColumnTypeUpdateCommand } from "../commands/column-type-update-command"
 
 export const useColumn = () => {
 	const logger = useLogger();
-	const { doCommand } = useDashboardState();
+	const { doCommand } = useTableState();
 
 	function handleNewColumnClick() {
 		logger("handleNewColumnClick");

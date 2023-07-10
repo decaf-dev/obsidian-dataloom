@@ -5,7 +5,7 @@ import {
 	Column,
 	FilterRule,
 	FilterType,
-	DashboardState,
+	TableState,
 	Tag,
 } from "src/shared/types";
 import { ColumNotFoundError } from "./dashboard-error";
@@ -24,7 +24,7 @@ export const isCellTypeFilterable = (cellType: CellType): boolean => {
 	}
 };
 
-export const filterBodyRowsByRules = (prevState: DashboardState): BodyRow[] => {
+export const filterBodyRowsByRules = (prevState: TableState): BodyRow[] => {
 	const { columns, bodyCells, bodyRows, filterRules } = prevState.model;
 	//Map column id to column instance
 	const columnMap = new Map<string, Column>();

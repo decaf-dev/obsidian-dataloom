@@ -1,6 +1,6 @@
 import { App, Modal, Notice, TFile } from "obsidian";
 import { Root, createRoot } from "react-dom/client";
-import { deserializeDashboardState } from "src/data/serialize-dashboard-state";
+import { deserializeTableState } from "src/data/serialize-dashboard-state";
 import { ExportApp } from "src/react/export-app";
 import { Provider } from "react-redux";
 import { store } from "src/redux/global/store";
@@ -22,7 +22,7 @@ export default class ExportModal extends Modal {
 	private async renderApp() {
 		try {
 			const data = await app.vault.read(this.tableFile);
-			const state = deserializeDashboardState(data);
+			const state = deserializeTableState(data);
 
 			this.root = createRoot(this.containerEl.children[1]);
 			this.root.render(

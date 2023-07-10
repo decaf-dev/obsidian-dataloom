@@ -2,10 +2,10 @@ import {
 	createBodyCell,
 	createBodyRow,
 } from "src/data/dashboard-state-factory";
-import DashboardStateCommand from "../dashboard-state/dashboard-state-command";
-import { BodyCell, BodyRow, DashboardState } from "../types";
+import TableStateCommand from "../dashboard-state/dashboard-state-command";
+import { BodyCell, BodyRow, TableState } from "../types";
 
-export default class RowAddCommand extends DashboardStateCommand {
+export default class RowAddCommand extends TableStateCommand {
 	private addedRow: BodyRow;
 	private addedBodyCells: BodyCell[];
 
@@ -13,7 +13,7 @@ export default class RowAddCommand extends DashboardStateCommand {
 		super(true);
 	}
 
-	execute(prevState: DashboardState): DashboardState {
+	execute(prevState: TableState): TableState {
 		super.onExecute();
 
 		const { bodyRows, bodyCells, columns } = prevState.model;
@@ -36,7 +36,7 @@ export default class RowAddCommand extends DashboardStateCommand {
 		};
 	}
 
-	redo(prevState: DashboardState): DashboardState {
+	redo(prevState: TableState): TableState {
 		super.onRedo();
 
 		const { bodyRows, bodyCells } = prevState.model;
@@ -51,7 +51,7 @@ export default class RowAddCommand extends DashboardStateCommand {
 		};
 	}
 
-	undo(prevState: DashboardState): DashboardState {
+	undo(prevState: TableState): TableState {
 		super.onUndo();
 
 		const { bodyRows, bodyCells } = prevState.model;

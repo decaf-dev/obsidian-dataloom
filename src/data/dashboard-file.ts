@@ -1,7 +1,7 @@
 import { Notice } from "obsidian";
 import { createFile, createFolder } from "./file-operations";
-import { createDashboardState } from "./dashboard-state-factory";
-import { serializeDashboardState } from "./serialize-dashboard-state";
+import { createTableState } from "./dashboard-state-factory";
+import { serializeTableState } from "./serialize-dashboard-state";
 import { CURRENT_FILE_EXTENSION, DEFAULT_TABLE_NAME } from "./constants";
 
 const getFileName = (): string => {
@@ -24,8 +24,8 @@ export const createDashboardFile = async (options: { folderPath: string }) => {
 		}
 
 		const fileName = getFileName();
-		const dashboardState = createDashboardState(1, 1);
-		const serialized = serializeDashboardState(dashboardState);
+		const dashboardState = createTableState(1, 1);
+		const serialized = serializeTableState(dashboardState);
 		const filePath = getFilePath(options.folderPath, fileName);
 
 		return await createFile(filePath, serialized);

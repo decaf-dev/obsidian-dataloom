@@ -1,8 +1,8 @@
-import DashboardStateCommand from "../dashboard-state/dashboard-state-command";
-import { DashboardState, Tag } from "../types";
+import TableStateCommand from "../dashboard-state/dashboard-state-command";
+import { TableState, Tag } from "../types";
 import { TagNotFoundError } from "../dashboard-state/dashboard-error";
 
-export default class TagDeleteCommand extends DashboardStateCommand {
+export default class TagDeleteCommand extends TableStateCommand {
 	private columnId: string;
 	private tagId: string;
 
@@ -28,7 +28,7 @@ export default class TagDeleteCommand extends DashboardStateCommand {
 		this.tagId = tagId;
 	}
 
-	execute(prevState: DashboardState): DashboardState {
+	execute(prevState: TableState): TableState {
 		super.onExecute();
 
 		const { bodyCells, columns } = prevState.model;
@@ -76,12 +76,12 @@ export default class TagDeleteCommand extends DashboardStateCommand {
 		};
 	}
 
-	redo(prevState: DashboardState): DashboardState {
+	redo(prevState: TableState): TableState {
 		super.onRedo();
 		return this.execute(prevState);
 	}
 
-	undo(prevState: DashboardState): DashboardState {
+	undo(prevState: TableState): TableState {
 		super.onUndo();
 
 		const { columns, bodyCells } = prevState.model;

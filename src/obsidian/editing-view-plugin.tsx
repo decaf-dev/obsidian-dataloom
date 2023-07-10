@@ -6,14 +6,14 @@ if (process.env.ENABLE_REACT_DEVTOOLS === "true") {
 }
 import { Root, createRoot } from "react-dom/client";
 
-import { serializeDashboardState } from "src/data/serialize-dashboard-state";
-import { deserializeDashboardState } from "src/data/serialize-dashboard-state";
+import { serializeTableState } from "src/data/serialize-dashboard-state";
+import { deserializeTableState } from "src/data/serialize-dashboard-state";
 import { store } from "src/redux/global/store";
 import {
 	EVENT_REFRESH_APP,
 	EVENT_REFRESH_EDITING_VIEW,
 } from "src/shared/events";
-import { DashboardState } from "src/shared/types";
+import { TableState } from "src/shared/types";
 import _ from "lodash";
 import {
 	findEmbeddedTableFile,
@@ -124,7 +124,7 @@ class EditingViewPlugin implements PluginValue {
 
 		//Get the dashboard state
 		const data = await app.vault.read(file);
-		const dashboardState = deserializeDashboardState(data);
+		const dashboardState = deserializeTableState(data);
 
 		const dashboard = this.dashboardApps.find((app) => app.id === appId);
 		if (!dashboard) return;
@@ -142,10 +142,10 @@ class EditingViewPlugin implements PluginValue {
 	private async handleSave(
 		dashboardFile: TFile,
 		appId: string,
-		state: DashboardState
+		state: TableState
 	) {
 		//Save the new state
-		const serialized = serializeDashboardState(state);
+		const serialized = serializeTableState(state);
 		await app.vault.modify(dashboardFile, serialized);
 
 		//Tell all other views to refresh
@@ -162,7 +162,7 @@ class EditingViewPlugin implements PluginValue {
 		leaf: WorkspaceLeaf,
 		dashboardFile: TFile,
 		root: Root,
-		dashboardState: DashboardState
+		dashboardState: TableState
 	) {
 		//Throttle the save function so we don't save too often
 		const throttleHandleSave = _.throttle(this.handleSave, 2000);
@@ -185,7 +185,7 @@ class EditingViewPlugin implements PluginValue {
 	private handleRefreshEvent = (
 		sourceFilePath: string,
 		sourceAppId: string,
-		state: DashboardState
+		state: TableState
 	) => {
 		//Find a dashboard instance with the same file path
 		const app = this.dashboardApps.find(

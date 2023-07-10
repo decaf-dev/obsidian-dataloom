@@ -1,7 +1,7 @@
 import { CommandRedoError, CommandUndoError } from "../commands/command-errors";
-import { DashboardState } from "../types";
+import { TableState } from "../types";
 
-export default abstract class DashboardStateCommand {
+export default abstract class TableStateCommand {
 	shouldSortRows: boolean;
 	hasExecuteBeenCalled: boolean;
 	hasUndoBeenCalled: boolean;
@@ -26,7 +26,7 @@ export default abstract class DashboardStateCommand {
 		this.hasUndoBeenCalled = true;
 	}
 
-	abstract execute(prevState: DashboardState): DashboardState;
-	abstract redo(prevState: DashboardState): DashboardState;
-	abstract undo(prevState: DashboardState): DashboardState;
+	abstract execute(prevState: TableState): TableState;
+	abstract redo(prevState: TableState): TableState;
+	abstract undo(prevState: TableState): TableState;
 }

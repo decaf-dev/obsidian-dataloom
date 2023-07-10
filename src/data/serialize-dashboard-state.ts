@@ -4,41 +4,36 @@ import {
 	CellType,
 	Column,
 	SortDir,
-	DashboardState,
+	TableState,
 	Tag,
 } from "../shared/types";
-import { DashboardState630 } from "src/shared/types/types-6.3.0";
+import { TableState630 } from "src/shared/types/types-6.3.0";
 import {
 	GeneralFunction670,
-	DashboardState670,
+	TableState670,
 } from "src/shared/types/types-6.7.0";
 import { ColumNotFoundError } from "../shared/dashboard-state/dashboard-error";
 import { createFooterRow, createHeaderRow } from "./dashboard-state-factory";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/dashboard-state/constants";
-import { DashboardState680 } from "src/shared/types/types-6.8.0";
-import { DashboardState600 } from "src/shared/types/types-6.0.0";
-import {
-	CurrencyType610,
-	DashboardState610,
-} from "src/shared/types/types-6.1.0";
-import { DateFormat620, DashboardState620 } from "src/shared/types/types-6.2.0";
+import { TableState680 } from "src/shared/types/types-6.8.0";
+import { TableState600 } from "src/shared/types/types-6.0.0";
+import { CurrencyType610, TableState610 } from "src/shared/types/types-6.1.0";
+import { DateFormat620, TableState620 } from "src/shared/types/types-6.2.0";
 import { v4 as uuidv4 } from "uuid";
-import { DashboardState691 } from "src/shared/types/types-6.9.1";
+import { TableState691 } from "src/shared/types/types-6.9.1";
 import {
 	isVersionLessThan,
 	legacyVersionToString,
 } from "src/shared/versioning";
-import { DashboardState6122 } from "src/shared/types/types-6.12.2";
-import { DashboardState6160 } from "src/shared/types/types-6.16.0";
-import { DashboardState6186 } from "src/shared/types/types-6.18.6";
+import { TableState6122 } from "src/shared/types/types-6.12.2";
+import { TableState6160 } from "src/shared/types/types-6.16.0";
+import { TableState6186 } from "src/shared/types/types-6.18.6";
 
-export const serializeDashboardState = (
-	dashboardState: DashboardState
-): string => {
+export const serializeTableState = (dashboardState: TableState): string => {
 	return JSON.stringify(dashboardState, null, 2);
 };
 
-export const deserializeDashboardState = (data: string): DashboardState => {
+export const deserializeTableState = (data: string): TableState => {
 	const parsedState = JSON.parse(data);
 
 	const untypedVersion: unknown = parsedState["pluginVersion"];
@@ -53,7 +48,7 @@ export const deserializeDashboardState = (data: string): DashboardState => {
 	let currentState: unknown = parsedState;
 
 	if (isVersionLessThan(pluginVersion, "6.1.0")) {
-		const dashboardState = currentState as DashboardState600;
+		const dashboardState = currentState as TableState600;
 		const { columns } = dashboardState.model;
 
 		//Feat: Currency type
@@ -64,7 +59,7 @@ export const deserializeDashboardState = (data: string): DashboardState => {
 	}
 
 	if (isVersionLessThan(pluginVersion, "6.2.0")) {
-		const dashboardState = currentState as DashboardState610;
+		const dashboardState = currentState as TableState610;
 		const { columns } = dashboardState.model;
 
 		//Feat: Date formats
@@ -75,7 +70,7 @@ export const deserializeDashboardState = (data: string): DashboardState => {
 	}
 
 	if (isVersionLessThan(pluginVersion, "6.3.0")) {
-		const dashboardState = currentState as DashboardState620;
+		const dashboardState = currentState as TableState620;
 		const { columns, rows, cells } = dashboardState.model;
 
 		//Feat: Double click to resize
@@ -108,10 +103,10 @@ export const deserializeDashboardState = (data: string): DashboardState => {
 
 	//Feat: new table state structure
 	if (isVersionLessThan(pluginVersion, "6.4.0")) {
-		const dashboardState = parsedState as DashboardState630;
+		const dashboardState = parsedState as TableState630;
 		const { columns, tags, rows, cells } = dashboardState.model;
 
-		const newState: DashboardState670 = {
+		const newState: TableState670 = {
 			...dashboardState,
 			model: {
 				columns: [],
@@ -203,7 +198,7 @@ export const deserializeDashboardState = (data: string): DashboardState => {
 
 	//Feat: filter rules
 	if (isVersionLessThan(pluginVersion, "6.8.0")) {
-		const dashboardState = currentState as DashboardState670;
+		const dashboardState = currentState as TableState670;
 		const { model } = dashboardState;
 		const { bodyCells, columns } = model;
 
@@ -234,7 +229,7 @@ export const deserializeDashboardState = (data: string): DashboardState => {
 	}
 
 	if (isVersionLessThan(pluginVersion, "6.9.1")) {
-		const dashboardState = currentState as DashboardState680;
+		const dashboardState = currentState as TableState680;
 		const { footerCells } = dashboardState.model;
 
 		//Feat: make all variable names consistent
@@ -250,7 +245,7 @@ export const deserializeDashboardState = (data: string): DashboardState => {
 
 	//Feat: support tag sorting
 	if (isVersionLessThan(pluginVersion, "6.10.0")) {
-		const dashboardState = currentState as DashboardState691;
+		const dashboardState = currentState as TableState691;
 		const { columns, tags, bodyCells, bodyRows } = dashboardState.model;
 
 		//Migrate tags to the columns and cells
@@ -308,7 +303,7 @@ export const deserializeDashboardState = (data: string): DashboardState => {
 	}
 
 	if (isVersionLessThan(pluginVersion, "6.12.3")) {
-		const dashboardState = currentState as DashboardState6122;
+		const dashboardState = currentState as TableState6122;
 		const { columns, footerCells } = dashboardState.model;
 
 		//Refactor: move function type into the column
@@ -331,7 +326,7 @@ export const deserializeDashboardState = (data: string): DashboardState => {
 	}
 
 	if (isVersionLessThan(pluginVersion, "6.17.0")) {
-		const dashboardState = currentState as DashboardState6160;
+		const dashboardState = currentState as TableState6160;
 		const { columns } = dashboardState.model;
 
 		columns.forEach((column: unknown) => {
@@ -344,7 +339,7 @@ export const deserializeDashboardState = (data: string): DashboardState => {
 	}
 
 	if (isVersionLessThan(pluginVersion, "6.18.6")) {
-		const dashboardState = currentState as DashboardState6160;
+		const dashboardState = currentState as TableState6160;
 		const { columns, bodyRows } = dashboardState.model;
 
 		//Fix: resolve empty rows being inserted but appearing higher up in the table
@@ -368,7 +363,7 @@ export const deserializeDashboardState = (data: string): DashboardState => {
 	}
 
 	if (isVersionLessThan(pluginVersion, "6.19.0")) {
-		const dashboardState = currentState as DashboardState6186;
+		const dashboardState = currentState as TableState6186;
 		const { columns, bodyCells } = dashboardState.model;
 
 		//Migrate from functionType to calculationType
@@ -386,7 +381,7 @@ export const deserializeDashboardState = (data: string): DashboardState => {
 		});
 	}
 
-	const dashboardState = currentState as DashboardState;
+	const dashboardState = currentState as TableState;
 	dashboardState.pluginVersion = CURRENT_PLUGIN_VERSION;
 	return dashboardState;
 };

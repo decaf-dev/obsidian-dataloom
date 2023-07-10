@@ -1,4 +1,4 @@
-import { SortDir, DashboardState } from "../types";
+import { SortDir, TableState } from "../types";
 import { DragData } from "./types";
 
 export const getRowId = (rowEl: HTMLElement) => {
@@ -15,8 +15,8 @@ export const getRowId = (rowEl: HTMLElement) => {
 export const dropDrag = (
 	targetRowId: string,
 	dragData: DragData | null,
-	dashboardState: DashboardState,
-	onDashboardStateChange: React.Dispatch<React.SetStateAction<DashboardState>>
+	dashboardState: TableState,
+	onTableStateChange: React.Dispatch<React.SetStateAction<TableState>>
 ) => {
 	if (dragData === null) throw Error("No drag data found");
 
@@ -36,7 +36,7 @@ export const dropDrag = (
 			return;
 	}
 
-	onDashboardStateChange((prevState) => {
+	onTableStateChange((prevState) => {
 		const { bodyRows, columns } = prevState.model;
 
 		const draggedElIndex = bodyRows.findIndex(

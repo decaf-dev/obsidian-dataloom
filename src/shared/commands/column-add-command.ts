@@ -1,25 +1,19 @@
-import {
-	BodyCell,
-	Column,
-	FooterCell,
-	HeaderCell,
-	DashboardState,
-} from "../types";
+import { BodyCell, Column, FooterCell, HeaderCell, TableState } from "../types";
 import {
 	createBodyCell,
 	createColumn,
 	createFooterCell,
 	createHeaderCell,
 } from "src/data/dashboard-state-factory";
-import DashboardStateCommand from "../dashboard-state/dashboard-state-command";
+import TableStateCommand from "../dashboard-state/dashboard-state-command";
 
-export default class ColumnAddCommand extends DashboardStateCommand {
+export default class ColumnAddCommand extends TableStateCommand {
 	private addedColumn: Column;
 	private addedHeaderCells: HeaderCell[];
 	private addedBodyCells: BodyCell[];
 	private addedFooterCells: FooterCell[];
 
-	execute(prevState: DashboardState): DashboardState {
+	execute(prevState: TableState): TableState {
 		super.onExecute();
 
 		const {
@@ -58,7 +52,7 @@ export default class ColumnAddCommand extends DashboardStateCommand {
 		};
 	}
 
-	redo(prevState: DashboardState): DashboardState {
+	redo(prevState: TableState): TableState {
 		super.onRedo();
 
 		const { headerCells, bodyCells, footerCells, columns } =
@@ -76,7 +70,7 @@ export default class ColumnAddCommand extends DashboardStateCommand {
 		};
 	}
 
-	undo(prevState: DashboardState): DashboardState {
+	undo(prevState: TableState): TableState {
 		super.onUndo();
 
 		const { columns, headerCells, bodyCells, footerCells } =

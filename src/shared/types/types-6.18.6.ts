@@ -184,7 +184,7 @@ interface TableModel {
 	filterRules: FilterRule[];
 }
 
-export interface DashboardState6186 {
+export interface TableState6186 {
 	pluginVersion: string;
 	model: TableModel;
 }

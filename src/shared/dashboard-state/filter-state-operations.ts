@@ -1,10 +1,10 @@
 import { createFilterRule } from "src/data/dashboard-state-factory";
-import { FilterRule, DashboardState } from "src/shared/types";
+import { FilterRule, TableState } from "src/shared/types";
 
 export const addRule = (
-	prevState: DashboardState,
+	prevState: TableState,
 	columnId: string
-): DashboardState => {
+): TableState => {
 	const { model } = prevState;
 	return {
 		...prevState,
@@ -15,10 +15,7 @@ export const addRule = (
 	};
 };
 
-export const deleteRule = (
-	prevState: DashboardState,
-	id: string
-): DashboardState => {
+export const deleteRule = (prevState: TableState, id: string): TableState => {
 	const { model } = prevState;
 	const { filterRules } = model;
 
@@ -32,11 +29,11 @@ export const deleteRule = (
 };
 
 export const updateRule = (
-	prevState: DashboardState,
+	prevState: TableState,
 	id: string,
 	key: keyof FilterRule,
 	value?: unknown
-): DashboardState => {
+): TableState => {
 	return {
 		...prevState,
 		model: {

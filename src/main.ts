@@ -32,14 +32,14 @@ import {
 } from "./shared/events";
 import { editingViewPlugin } from "./obsidian/editing-view-plugin";
 import {
-	deserializeDashboardState,
-	serializeDashboardState,
+	deserializeTableState,
+	serializeTableState,
 } from "./data/serialize-dashboard-state";
 import { updateLinkReferences } from "./data/utils";
 import { getBasename } from "./shared/link/link-utils";
 import { hasDarkTheme } from "./shared/render/utils";
 import { removeFocusVisibleClass } from "./shared/menu/focus-visible";
-import { DashboardState } from "./shared/types";
+import { TableState } from "./shared/types";
 import WelcomeModal from "./obsidian/welcome-modal";
 import WhatsNewModal from "./obsidian/whats-new-modal";
 
@@ -246,14 +246,14 @@ export default class DashboardsPlugin extends Plugin {
 
 					const dashboardsToUpdate: {
 						file: TFile;
-						state: DashboardState;
+						state: TableState;
 					}[] = [];
 
 					let numLinks = 0;
 					for (const dashboardFile of dashboardFiles) {
 						//For each file read its contents
 						const data = await file.vault.read(dashboardFile);
-						const state = deserializeDashboardState(data);
+						const state = deserializeTableState(data);
 						//Search for old path in the file
 
 						state.model.bodyCells.forEach((cell) => {
@@ -327,7 +327,7 @@ export default class DashboardsPlugin extends Plugin {
 							JSON.stringify(state) !== JSON.stringify(newState)
 						) {
 							const serializedState =
-								serializeDashboardState(newState);
+								serializeTableState(newState);
 
 							await file.vault.modify(tableFile, serializedState);
 

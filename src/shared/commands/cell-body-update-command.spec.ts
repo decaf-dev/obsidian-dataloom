@@ -1,4 +1,4 @@
-import { createDashboardState } from "src/data/dashboard-state-factory";
+import { createTableState } from "src/data/dashboard-state-factory";
 import { CommandUndoError } from "./command-errors";
 import CellBodyUpdateCommand from "./cell-body-update-command";
 import { advanceBy, clear } from "jest-date-mock";
@@ -6,7 +6,7 @@ import { advanceBy, clear } from "jest-date-mock";
 describe("row-body-update-command", () => {
 	it("should throw an error when undo() is called before execute()", () => {
 		try {
-			const prevState = createDashboardState(1, 1);
+			const prevState = createTableState(1, 1);
 			const command = new CellBodyUpdateCommand(
 				prevState.model.bodyCells[0].id,
 				prevState.model.bodyRows[0].id,
@@ -21,7 +21,7 @@ describe("row-body-update-command", () => {
 
 	it("should update a cell property when execute() is called", async () => {
 		//Arrange
-		const prevState = createDashboardState(1, 1);
+		const prevState = createTableState(1, 1);
 		const command = new CellBodyUpdateCommand(
 			prevState.model.bodyCells[0].id,
 			prevState.model.bodyRows[0].id,
@@ -45,7 +45,7 @@ describe("row-body-update-command", () => {
 
 	it("should reset the cell property when undo() is called", () => {
 		//Arrange
-		const prevState = createDashboardState(1, 1);
+		const prevState = createTableState(1, 1);
 		const command = new CellBodyUpdateCommand(
 			prevState.model.bodyCells[0].id,
 			prevState.model.bodyRows[0].id,

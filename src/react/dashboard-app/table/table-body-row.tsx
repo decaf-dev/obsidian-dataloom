@@ -1,4 +1,4 @@
-import { useDashboardState } from "src/shared/dashboard-state/dashboard-state-context";
+import { useTableState } from "src/shared/dashboard-state/dashboard-state-context";
 import { useDragContext } from "src/shared/dragging/drag-context";
 import { dropDrag, getRowId } from "src/shared/dragging/utils";
 
@@ -12,7 +12,7 @@ export default function TableBodyRow({
 	children,
 	...props
 }: TableBodyRowProps) {
-	const { dashboardState, setDashboardState } = useDashboardState();
+	const { dashboardState, setTableState } = useTableState();
 	const { dragData, setDragData } = useDragContext();
 
 	function handleDragStart(e: React.DragEvent) {
@@ -43,7 +43,7 @@ export default function TableBodyRow({
 		const targetId = getRowId(target);
 		if (!targetId) return;
 
-		dropDrag(targetId, dragData, dashboardState, setDashboardState);
+		dropDrag(targetId, dragData, dashboardState, setTableState);
 	}
 
 	function handleDragOver(e: React.DragEvent) {

@@ -1,9 +1,9 @@
-import { BodyCell, BodyRow, DashboardState } from "../types";
+import { BodyCell, BodyRow, TableState } from "../types";
 import { RowNotFoundError } from "../dashboard-state/dashboard-error";
-import DashboardStateCommand from "../dashboard-state/dashboard-state-command";
+import TableStateCommand from "../dashboard-state/dashboard-state-command";
 import { DeleteCommandArgumentsError } from "./command-errors";
 
-export default class RowDeleteCommand extends DashboardStateCommand {
+export default class RowDeleteCommand extends TableStateCommand {
 	private rowId?: string;
 	private last?: boolean;
 
@@ -31,7 +31,7 @@ export default class RowDeleteCommand extends DashboardStateCommand {
 		this.last = last;
 	}
 
-	execute(prevState: DashboardState): DashboardState {
+	execute(prevState: TableState): TableState {
 		super.onExecute();
 
 		const { bodyRows, bodyCells } = prevState.model;
@@ -97,12 +97,12 @@ export default class RowDeleteCommand extends DashboardStateCommand {
 		};
 	}
 
-	redo(prevState: DashboardState): DashboardState {
+	redo(prevState: TableState): TableState {
 		super.onRedo();
 		return this.execute(prevState);
 	}
 
-	undo(prevState: DashboardState): DashboardState {
+	undo(prevState: TableState): TableState {
 		super.onUndo();
 
 		const { bodyRows, bodyCells } = prevState.model;

@@ -3,10 +3,10 @@ import {
 	rowLastEditedTimeUpdate,
 } from "../dashboard-state/row-state-operations";
 import { CellNotFoundError } from "../dashboard-state/dashboard-error";
-import DashboardStateCommand from "../dashboard-state/dashboard-state-command";
-import { BodyCell, DashboardState } from "../types";
+import TableStateCommand from "../dashboard-state/dashboard-state-command";
+import { BodyCell, TableState } from "../types";
 
-export default class CellBodyUpdateCommand extends DashboardStateCommand {
+export default class CellBodyUpdateCommand extends TableStateCommand {
 	private cellId: string;
 	private rowId: string;
 	private key: keyof BodyCell;
@@ -28,7 +28,7 @@ export default class CellBodyUpdateCommand extends DashboardStateCommand {
 		this.value = value;
 	}
 
-	execute(prevState: DashboardState): DashboardState {
+	execute(prevState: TableState): TableState {
 		super.onExecute();
 
 		const { bodyCells, bodyRows } = prevState.model;
@@ -58,12 +58,12 @@ export default class CellBodyUpdateCommand extends DashboardStateCommand {
 		};
 	}
 
-	redo(prevState: DashboardState): DashboardState {
+	redo(prevState: TableState): TableState {
 		super.onRedo();
 		return this.execute(prevState);
 	}
 
-	undo(prevState: DashboardState): DashboardState {
+	undo(prevState: TableState): TableState {
 		super.onUndo();
 
 		const { bodyCells, bodyRows } = prevState.model;

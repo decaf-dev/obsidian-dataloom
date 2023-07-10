@@ -162,7 +162,7 @@ interface TableModel {
 	footerCells: FooterCell[];
 	filterRules: FilterRule[];
 }
-export interface DashboardState6160 {
+export interface TableState6160 {
 	pluginVersion: string;
 	model: TableModel;
 }

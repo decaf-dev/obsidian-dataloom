@@ -5,7 +5,7 @@ import {
 	Column,
 	CurrencyType,
 	DateFormat,
-	DashboardState,
+	TableState,
 	Tag,
 } from "src/shared/types";
 import { ColumNotFoundError, RowNotFoundError } from "./dashboard-error";
@@ -14,7 +14,7 @@ import { getDateCellContent } from "../cell-content/date-cell-content";
 import { getCurrencyCellContent } from "../cell-content/currency-cell-content";
 
 export const filterBodyRowsBySearch = (
-	dashboardState: DashboardState,
+	dashboardState: TableState,
 	filteredBodyRows: BodyRow[],
 	searchText: string
 ): BodyRow[] => {

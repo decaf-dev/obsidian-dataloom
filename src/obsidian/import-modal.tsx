@@ -1,11 +1,11 @@
 import { App, Modal } from "obsidian";
 import DashboardsView from "./dashboards-view";
-import { DashboardState } from "../shared/types";
+import { TableState } from "../shared/types";
 import { Root, createRoot } from "react-dom/client";
 import ImportApp from "../react/import-app";
 import {
-	deserializeDashboardState,
-	serializeDashboardState,
+	deserializeTableState,
+	serializeTableState,
 } from "src/data/serialize-dashboard-state";
 
 export default class ImportModal extends Modal {
@@ -25,7 +25,7 @@ export default class ImportModal extends Modal {
 		if (view) {
 			//Get dashboard state
 			const data = view.getViewData();
-			const state = deserializeDashboardState(data);
+			const state = deserializeTableState(data);
 
 			this.root = createRoot(appContainer);
 			this.root.render(
@@ -37,8 +37,8 @@ export default class ImportModal extends Modal {
 		}
 	}
 
-	private handleStateSave = (view: DashboardsView, state: DashboardState) => {
-		const serialized = serializeDashboardState(state);
+	private handleStateSave = (view: DashboardsView, state: TableState) => {
+		const serialized = serializeTableState(state);
 
 		//Update the file contents and force an update of the React app
 		view.setViewData(serialized, true);

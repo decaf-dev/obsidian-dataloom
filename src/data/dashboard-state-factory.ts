@@ -17,7 +17,7 @@ import {
 	HeaderRow,
 	PaddingSize,
 	SortDir,
-	DashboardState,
+	TableState,
 	Tag,
 } from "../shared/types";
 
@@ -130,13 +130,13 @@ export const createTag = (
 	};
 };
 
-export const createDashboardState = (
+export const createTableState = (
 	numColumns: number,
 	numRows: number,
 	options?: {
 		cellType?: CellType;
 	}
-): DashboardState => {
+): TableState => {
 	const { cellType } = options || {};
 	//Create columns
 	const columns: Column[] = [];

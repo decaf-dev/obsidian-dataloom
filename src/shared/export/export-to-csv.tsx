@@ -1,10 +1,10 @@
 import Papa from "papaparse";
 
 import { dashboardStateToArray } from "./table-state-to-array";
-import { DashboardState } from "../types";
+import { TableState } from "../types";
 
 export const exportToCSV = (
-	dashboardState: DashboardState,
+	dashboardState: TableState,
 	renderMarkdown: boolean
 ): string => {
 	const arr = dashboardStateToArray(dashboardState, renderMarkdown);

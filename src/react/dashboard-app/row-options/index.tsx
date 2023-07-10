@@ -8,7 +8,7 @@ import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 
 import { useDragContext } from "src/shared/dragging/drag-context";
 import { dropDrag, getRowId } from "src/shared/dragging/utils";
-import { useDashboardState } from "src/shared/dashboard-state/dashboard-state-context";
+import { useTableState } from "src/shared/dashboard-state/dashboard-state-context";
 import { css } from "@emotion/react";
 
 interface Props {
@@ -25,7 +25,7 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 
 	const { dragData, touchDropZone, setDragData, setTouchDropZone } =
 		useDragContext();
-	const { dashboardState, setDashboardState } = useDashboardState();
+	const { dashboardState, setTableState } = useTableState();
 
 	function handleDeleteClick(rowId: string) {
 		onDeleteClick(rowId);
@@ -122,7 +122,7 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 					touchDropZone.id,
 					dragData,
 					dashboardState,
-					setDashboardState
+					setTableState
 				);
 			}
 		}

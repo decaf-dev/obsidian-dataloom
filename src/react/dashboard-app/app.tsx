@@ -8,7 +8,7 @@ import HeaderCell from "./header-cell";
 
 import { useUUID } from "../../shared/hooks";
 import { CellNotFoundError } from "../../shared/dashboard-state/dashboard-error";
-import { useDashboardState } from "../../shared/dashboard-state/dashboard-state-context";
+import { useTableState } from "../../shared/dashboard-state/dashboard-state-context";
 import { useFilterRules } from "src/shared/dashboard-state/use-filter-rules";
 import { filterBodyRowsBySearch } from "src/shared/dashboard-state/filter-by-search";
 import { useColumn } from "src/shared/dashboard-state/use-column";
@@ -59,8 +59,8 @@ export default function App() {
 		searchText,
 		commandRedo,
 		commandUndo,
-		setDashboardState,
-	} = useDashboardState();
+		setTableState,
+	} = useTableState();
 
 	const tableRef = React.useRef<VirtuosoHandle | null>(null);
 
@@ -77,7 +77,7 @@ export default function App() {
 		handleRuleToggle,
 		handleRuleTagsChange,
 		filterBodyRowsByRules,
-	} = useFilterRules(setDashboardState);
+	} = useFilterRules(setTableState);
 
 	const {
 		handleNewColumnClick,

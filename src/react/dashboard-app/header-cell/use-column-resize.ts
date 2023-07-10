@@ -1,11 +1,11 @@
 import { useRef } from "react";
-import { useDashboardState } from "src/shared/dashboard-state/dashboard-state-context";
+import { useTableState } from "src/shared/dashboard-state/dashboard-state-context";
 
 export const useColumnResize = (
 	columnId: string,
 	onMove: (dist: number) => void
 ) => {
-	const { setResizingColumnId } = useDashboardState();
+	const { setResizingColumnId } = useTableState();
 
 	//The x position of the mouse when it is pressed down
 	//This should be the same for both mouse and touch events

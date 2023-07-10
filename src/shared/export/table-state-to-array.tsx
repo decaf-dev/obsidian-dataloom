@@ -1,10 +1,4 @@
-import {
-	BodyCell,
-	BodyRow,
-	Column,
-	HeaderCell,
-	DashboardState,
-} from "../types";
+import { BodyCell, BodyRow, Column, HeaderCell, TableState } from "../types";
 import { getCellContent } from "../cell-content";
 import { ColumNotFoundError } from "../dashboard-state/dashboard-error";
 
@@ -31,7 +25,7 @@ const serializeBodyCells = (
 };
 
 export const dashboardStateToArray = (
-	dashboardState: DashboardState,
+	dashboardState: TableState,
 	renderMarkdown: boolean
 ): string[][] => {
 	const { headerCells, bodyCells, bodyRows, columns } = dashboardState.model;

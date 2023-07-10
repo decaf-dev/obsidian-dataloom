@@ -6,10 +6,10 @@ if (process.env.ENABLE_REACT_DEVTOOLS === "true") {
 
 import { createRoot, Root } from "react-dom/client";
 import { store } from "src/redux/global/store";
-import { DashboardState } from "src/shared/types";
+import { TableState } from "src/shared/types";
 import {
-	deserializeDashboardState,
-	serializeDashboardState,
+	deserializeTableState,
+	serializeTableState,
 } from "src/data/serialize-dashboard-state";
 import { EVENT_REFRESH_APP } from "src/shared/events";
 import { v4 as uuidv4 } from "uuid";
@@ -65,7 +65,7 @@ export default class DashboardsView extends TextFileView {
 	setViewData(data: string, clear: boolean): void {
 		this.data = data;
 
-		const state = deserializeDashboardState(data);
+		const state = deserializeTableState(data);
 		if (clear) {
 			//We need to set this in a timeout to prevent errors from React
 			setTimeout(() => {
@@ -105,21 +105,18 @@ export default class DashboardsView extends TextFileView {
 	private handleRefreshEvent = (
 		filePath: string,
 		sourceAppId: string,
-		state: DashboardState
+		state: TableState
 	) => {
 		if (this.appId !== sourceAppId && filePath === this.file.path) {
-			const serialized = serializeDashboardState(state);
+			const serialized = serializeTableState(state);
 			this.setViewData(serialized, true);
 		}
 	};
 
-	private handleSaveDashboardState = (
-		appId: string,
-		state: DashboardState
-	) => {
+	private handleSaveTableState = (appId: string, state: TableState) => {
 		//We need this for when we open a new tab of the same file
 		//so that the data is up to date
-		const serialized = serializeDashboardState(state);
+		const serialized = serializeTableState(state);
 		this.data = serialized;
 
 		//Request a save - every 2s
@@ -134,7 +131,7 @@ export default class DashboardsView extends TextFileView {
 		);
 	};
 
-	private renderApp(appId: string, state: DashboardState) {
+	private renderApp(appId: string, state: TableState) {
 		if (this.root) {
 			this.root.render(
 				<DashboardApp
@@ -144,7 +141,7 @@ export default class DashboardsView extends TextFileView {
 					isMarkdownView={false}
 					store={store}
 					dashboardState={state}
-					onSaveState={this.handleSaveDashboardState}
+					onSaveState={this.handleSaveTableState}
 				/>
 			);
 		}

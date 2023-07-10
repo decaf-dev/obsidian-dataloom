@@ -1,12 +1,12 @@
 import { useLogger } from "../logger";
-import { useDashboardState } from "./dashboard-state-context";
+import { useTableState } from "./dashboard-state-context";
 import CellBodyUpdateCommand from "../commands/cell-body-update-command";
 import CellHeaderUpdateCommand from "../commands/cell-header-update-command";
 import React from "react";
 
 export const useCell = () => {
 	const logger = useLogger();
-	const { doCommand } = useDashboardState();
+	const { doCommand } = useTableState();
 
 	function handleExternalLinkToggle(
 		cellId: string,

@@ -2,10 +2,10 @@ import {
 	rowLastEditedTime,
 	rowLastEditedTimeUpdate,
 } from "../dashboard-state/row-state-operations";
-import DashboardStateCommand from "../dashboard-state/dashboard-state-command";
-import { DashboardState } from "../types";
+import TableStateCommand from "../dashboard-state/dashboard-state-command";
+import { TableState } from "../types";
 
-export default class TagCellAddCommand extends DashboardStateCommand {
+export default class TagCellAddCommand extends TableStateCommand {
 	private cellId: string;
 	private rowId: string;
 	private tagId: string;
@@ -27,7 +27,7 @@ export default class TagCellAddCommand extends DashboardStateCommand {
 	private previousCellTagIds: string[];
 	private previousEditedTime: number;
 
-	execute(prevState: DashboardState): DashboardState {
+	execute(prevState: TableState): TableState {
 		super.onExecute();
 
 		const { bodyCells, bodyRows } = prevState.model;
@@ -64,12 +64,12 @@ export default class TagCellAddCommand extends DashboardStateCommand {
 			},
 		};
 	}
-	redo(prevState: DashboardState): DashboardState {
+	redo(prevState: TableState): TableState {
 		super.onRedo();
 		return this.execute(prevState);
 	}
 
-	undo(prevState: DashboardState): DashboardState {
+	undo(prevState: TableState): TableState {
 		super.onUndo();
 
 		const { bodyCells, bodyRows } = prevState.model;
