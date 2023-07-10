@@ -4,7 +4,7 @@
 
 Find detailed documentation at [dataloom.xyz](https://dataloom.xyz)
 
-DataLoom is an [Obsidian.md](https://obsidian.md/) plugin for desktop and mobile. A dashboard is a higher-level view that allows you to tag, sort, and display feeds from your notes. DataLoom is inspired by [Notion.so](https://www.notion.so/).
+DataLoom is an [Obsidian.md](https://obsidian.md/) plugin for desktop and mobile. DataLoom allows you to weave together data from diverse sources into a cohesive table view.
 
 Support development
 
@@ -60,9 +60,9 @@ Advanced filtering menu
 5. Select **Install**
 6. Then select **Enable**
 
-### Linking table files
+### Linking loom files
 
-By default, Obsidian doesn't display `.table` files in the modal that opens when you type double brackets `[[`. In order to allow this, you must enable detection of all file extensions.
+By default, Obsidian doesn't display `.loom` files in the modal that opens when you type double brackets `[[`. In order to allow this, you must enable detection of all file extensions.
 
 1. In Obsidian, open **Settings**
 2. Select **File & Links**
