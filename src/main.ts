@@ -73,8 +73,8 @@ export const DEFAULT_SETTINGS: DataLoomSettings = {
  */
 export const DATA_LOOM_PLUGIN_ID = "notion-like-tables";
 
-export default class DashboardsPlugin extends Plugin {
-	settings: DashboardsSettings;
+export default class DataLoomPlugin extends Plugin {
+	settings: DataLoomSettings;
 
 	/**
 	 * Called on plugin load.

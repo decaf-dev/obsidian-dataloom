@@ -1,5 +1,5 @@
 import { MarkdownRenderer, MarkdownView, WorkspaceLeaf } from "obsidian";
-import DashboardsView from "src/obsidian/dataloom-view";
+import DataLoomView from "src/obsidian/dataloom-view";
 
 const renderText = async (leaf: WorkspaceLeaf, value: string) => {
 	const div = document.createElement("div");
@@ -8,7 +8,7 @@ const renderText = async (leaf: WorkspaceLeaf, value: string) => {
 
 	try {
 		const view = leaf.view;
-		if (view instanceof MarkdownView || view instanceof DashboardsView) {
+		if (view instanceof MarkdownView || view instanceof DataLoomView) {
 			await MarkdownRenderer.renderMarkdown(
 				value,
 				div,

@@ -75,7 +75,7 @@ export default class DashboardsSettingsTab extends PluginSettingTab {
 			});
 	}
 
-	private renderEmbeddedDashboardSettings(containerEl: HTMLElement) {
+	private renderEmbeddedTableSettings(containerEl: HTMLElement) {
 		new Setting(containerEl).setName("Embedded Tables").setHeading();
 
 		const defaultEmbedWidthDesc = new DocumentFragment();
@@ -145,7 +145,7 @@ export default class DashboardsSettingsTab extends PluginSettingTab {
 
 		this.renderFileSettings(containerEl);
 		this.renderExportSettings(containerEl);
-		this.renderEmbeddedDashboardSettings(containerEl);
+		this.renderEmbeddedTableSettings(containerEl);
 		this.renderDebugSettings(containerEl);
 	}
 }

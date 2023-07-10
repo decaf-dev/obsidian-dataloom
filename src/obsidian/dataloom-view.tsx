@@ -18,7 +18,7 @@ import { DATA_LOOM_PLUGIN_ID } from "src/main";
 
 export const DATA_LOOM_VIEW = "dashloom";
 
-export default class DashLoomView extends TextFileView {
+export default class DataLoomView extends TextFileView {
 	private root: Root | null;
 	private appId: string;
 
