@@ -50,7 +50,7 @@ export interface DashboardsSettings {
 	exportRenderMarkdown: boolean;
 	defaultEmbedWidth: string;
 	defaultEmbedHeight: string;
-	hasMigratedTo700: boolean;
+	hasMigratedTo800: boolean;
 	showWelcomeModal: boolean;
 	pluginVersion: string;
 }
@@ -62,7 +62,7 @@ export const DEFAULT_SETTINGS: DashboardsSettings = {
 	exportRenderMarkdown: true,
 	defaultEmbedWidth: "100%",
 	defaultEmbedHeight: "340px",
-	hasMigratedTo700: false,
+	hasMigratedTo800: false,
 	showWelcomeModal: true,
 	pluginVersion: "",
 };
@@ -116,7 +116,7 @@ export default class DashboardsPlugin extends Plugin {
 
 	private async migrateTableFiles() {
 		// Migrate .table files to .dashboard files
-		if (!this.settings.hasMigratedTo700) {
+		if (!this.settings.hasMigratedTo800) {
 			const tableFiles = this.app.vault
 				.getFiles()
 				.filter((file) => file.extension === PREVIOUS_FILE_EXTENSION);
@@ -136,7 +136,7 @@ export default class DashboardsPlugin extends Plugin {
 					new Notice("Please rename this file manually");
 				}
 			}
-			this.settings.hasMigratedTo700 = true;
+			this.settings.hasMigratedTo800 = true;
 			await this.saveSettings();
 		}
 	}
