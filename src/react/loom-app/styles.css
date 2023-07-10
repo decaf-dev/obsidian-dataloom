@@ -25,93 +25,93 @@
 /*
  * Colors
  */
-.DataLoom_light-gray--light {
+.DataLoom__light-gray--light {
 	/* background-color: #cfcfc4; */
 	background-color: hsl(0, 3%, 94%);
 }
 
-.DataLoom_light-gray--dark {
+.DataLoom__light-gray--dark {
 	background-color: hsl(0, 0%, 22%);
 }
 
-.DataLoom_gray--light {
+.DataLoom__gray--light {
 	/* background-color: #cfcfc4; */
 	background-color: hsl(40, 5%, 88%);
 }
 
-.DataLoom_gray--dark {
+.DataLoom__gray--dark {
 	background-color: hsl(0, 0%, 35%);
 }
 
-.DataLoom_brown--light {
+.DataLoom__brown--light {
 	background-color: hsl(18, 31%, 89%);
 }
 
-.DataLoom_brown--dark {
+.DataLoom__brown--dark {
 	background-color: hsl(19, 32%, 27%);
 }
 
-.DataLoom_orange--light {
+.DataLoom__orange--light {
 	background-color: hsl(28, 67%, 88%);
 }
 
-.DataLoom_orange--dark {
+.DataLoom__orange--dark {
 	background-color: hsl(28, 52%, 32%);
 }
 
-.DataLoom_yellow--light {
+.DataLoom__yellow--light {
 	background-color: hsl(43, 82%, 89%);
 }
 
-.DataLoom_yellow--dark {
+.DataLoom__yellow--dark {
 	background-color: hsl(37, 43%, 36%);
 }
 
-.DataLoom_green--light {
+.DataLoom__green--light {
 	background-color: hsl(113, 30%, 89%);
 }
 
-.DataLoom_green--dark {
+.DataLoom__green--dark {
 	background-color: hsl(138, 23%, 28%);
 }
 
-.DataLoom_blue--light {
+.DataLoom__blue--light {
 	background-color: hsl(205, 41%, 89%);
 }
 
-.DataLoom_blue--dark {
+.DataLoom__blue--dark {
 	background-color: hsl(218, 38%, 30%);
 }
 
-.DataLoom_purple--light {
+.DataLoom__purple--light {
 	background-color: hsl(272, 29%, 90%);
 }
 
-.DataLoom_purple--dark {
+.DataLoom__purple--dark {
 	background-color: hsl(266, 34%, 28%);
 }
 
-.DataLoom_pink--light {
+.DataLoom__pink--light {
 	background-color: hsl(330, 36%, 91%);
 }
 
-.DataLoom_pink--dark {
+.DataLoom__pink--dark {
 	background-color: hsl(330, 31%, 30%);
 }
 
-.DataLoom_red--light {
+.DataLoom__red--light {
 	background-color: hsl(11, 64%, 91%);
 }
 
-.DataLoom_red--dark {
+.DataLoom__red--dark {
 	background-color: hsl(8, 35%, 30%);
 }
 
-.DataLoom_app ::-webkit-scrollbar {
+.DataLoom__app ::-webkit-scrollbar {
 	display: none;
 }
 
-.DataLoom_menu ::-webkit-scrollbar {
+.DataLoom__menu ::-webkit-scrollbar {
 	display: none;
 }
 
@@ -119,15 +119,15 @@
 /*
  * Selectable and selected
  */
-.DataLoom_selectable {
+.DataLoom__selectable {
 	cursor: pointer;
 }
 
-.DataLoom_selectable:hover {
+.DataLoom__selectable:hover {
 	background-color: var(--color-base-30);
 }
 
-.DataLoom_selected {
+.DataLoom__selected {
 	background-color: var(--color-base-20);
 }
 
@@ -143,42 +143,42 @@
 * button:not(.clickable-icon)
 * We want to override this for our buttons
 */
-/* .DataLoom_app button, .DataLoom_menu button {
+/* .DataLoom__app button, .DataLoom__menu button {
 	background-color: unset;
 	box-shadow: unset;
 } */
 
-.DataLoom_default-cursor {
+.DataLoom__default-cursor {
 	cursor: default !important;
 }
 
-.DataLoom_focusable:focus-visible, .DataLoom_focus-visible {
+.DataLoom__focusable:focus-visible, .DataLoom__focus-visible {
 	outline: 2px solid var(--color-accent) !important;
 	outline-offset: -2px !important;
 }
 
-.DataLoom_focusable--inverted:focus-visible {
+.DataLoom__focusable--inverted:focus-visible {
 	outline: 2px solid var(--text-on-accent-inverted);
 	outline-offset: 0px;
 }
 
-.DataLoom_blur--cell {
+.DataLoom__blur--cell {
 	outline: 2px solid var(--background-modifier-border-focus) !important;
 	outline-offset: -2px;
 }
 
-.DataLoom_blur {
+.DataLoom__blur {
 	outline: 2px solid var(--color-accent) !important;
 	outline-offset: -2px;
 }
 
-.DataLoom_tr--drag-over {
+.DataLoom__tr--drag-over {
 	/* outline: 2px solid var(--color-accent);
 	outline-offset: -2px; */
 	border-bottom: 1px solid var(--color-accent) !important;
 }
 
-.DataLoom_th--drag-over {
+.DataLoom__th--drag-over {
 	/* outline: 2px solid var(--color-accent);
 	outline-offset: -2px; */
 	border-bottom: 1px solid var(--color-accent) !important;

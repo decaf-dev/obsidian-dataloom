@@ -141,7 +141,7 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 
 	function removeDragHover() {
 		//Add dragging over class to all the children
-		const children = document.querySelectorAll(".DataLoom_tr--drag-over");
+		const children = document.querySelectorAll(".DataLoom__tr--drag-over");
 
 		for (let i = 0; i < children.length; i++) {
 			children[i].classList.remove("DataLoom__tr--drag-over");

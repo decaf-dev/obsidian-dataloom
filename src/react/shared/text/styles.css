@@ -1,17 +1,17 @@
-.DataLoom_p {
+.DataLoom__p {
     white-space: nowrap;
     margin: 0;
     color: var(--text-normal);
 }
 
-.DataLoom_text-muted {
+.DataLoom__text-muted {
     color: var(--text-muted);
 }
 
-.DataLoom_text-faint {
+.DataLoom__text-faint {
     color: var(--text-faint);
 }
 
-.DataLoom_text-semibold {
+.DataLoom__text-semibold {
     font-weight: var(--font-semibold);
 }

@@ -1,23 +1,23 @@
 /** This sizes down the original Obsidian switch by 0.75 **/
-.DataLoom_switch {
+.DataLoom__switch {
     width: calc(var(--toggle-width) * 0.75);
     height: calc((var(--toggle-thumb-height) * 0.75) + (var(--toggle-border-width) * 2 * 0.75));
 }
 
-.DataLoom_switch:after {
+.DataLoom__switch:after {
     width: calc(var(--toggle-thumb-width) * 0.75); 
     height: calc(var(--toggle-thumb-height) * 0.75);
 }
 
-.DataLoom_switch.is-enabled:after {
+.DataLoom__switch.is-enabled:after {
     transform: translate3d(calc((var(--toggle-width) - var(--toggle-thumb-width) - var(--toggle-border-width)) * 0.75), 0, 0);
 }
 
-.DataLoom_switch input {
+.DataLoom__switch input {
     width: calc(var(--checkbox-size) * 0.75);
     height: calc(var(--checkbox-size) * 0.75);
 }
 
-.DataLoom_switch:active:after {
+.DataLoom__switch:active:after {
     width: calc((var(--toggle-thumb-width) * 0.75) + (var(--toggle-border-width)));
 }

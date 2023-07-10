@@ -42,7 +42,7 @@ export const findColorClassName = (
 				? "DataLoom__pink--dark"
 				: "DataLoom__pink--light";
 		case Color.RED:
-			return isDarkMode ? "DataLoom__red--dark" : "DataLoom--light";
+			return isDarkMode ? "DataLoom__red--dark" : "DataLoom__red--light";
 		default:
 			return "";
 	}

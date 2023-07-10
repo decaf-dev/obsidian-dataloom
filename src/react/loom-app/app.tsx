@@ -145,7 +145,7 @@ export default function App() {
 			if (!layerEl) return;
 
 			const focusableEls = layerEl.querySelectorAll(
-				".DataLoom_focusable"
+				".DataLoom__focusable"
 			);
 			if (focusableEls.length === 0) return;
 
@@ -168,7 +168,7 @@ export default function App() {
 			if (!layerEl) return;
 
 			const focusableEls = layerEl.querySelectorAll(
-				".DataLoom_focusable"
+				".DataLoom__focusable"
 			);
 			if (focusableEls.length === 0) return;
 
