@@ -16,7 +16,7 @@ interface Props {
 	isMarkdownView: boolean;
 	tableFile: TFile;
 	store: Store;
-	dashboardState: TableState;
+	tableState: TableState;
 	onSaveState: (appId: string, state: TableState) => void;
 }
 
@@ -26,7 +26,7 @@ export default function DashboardApp({
 	isMarkdownView,
 	store,
 	tableFile,
-	dashboardState,
+	tableState,
 	onSaveState,
 }: Props) {
 	return (
@@ -38,7 +38,7 @@ export default function DashboardApp({
 		>
 			<Provider store={store}>
 				<TableStateProvider
-					initialState={dashboardState}
+					initialState={tableState}
 					onSaveState={onSaveState}
 				>
 					<MenuProvider>

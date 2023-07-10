@@ -140,7 +140,7 @@ export default class DashboardsView extends TextFileView {
 					tableFile={this.file}
 					isMarkdownView={false}
 					store={store}
-					dashboardState={state}
+					tableState={state}
 					onSaveState={this.handleSaveTableState}
 				/>
 			);

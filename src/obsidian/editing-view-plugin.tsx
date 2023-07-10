@@ -124,7 +124,7 @@ class EditingViewPlugin implements PluginValue {
 
 		//Get the dashboard state
 		const data = await app.vault.read(file);
-		const dashboardState = deserializeTableState(data);
+		const tableState = deserializeTableState(data);
 
 		const dashboard = this.dashboardApps.find((app) => app.id === appId);
 		if (!dashboard) return;
@@ -135,7 +135,7 @@ class EditingViewPlugin implements PluginValue {
 			activeView.leaf,
 			file,
 			dashboard.root,
-			dashboardState
+			tableState
 		);
 	}
 
@@ -162,7 +162,7 @@ class EditingViewPlugin implements PluginValue {
 		leaf: WorkspaceLeaf,
 		dashboardFile: TFile,
 		root: Root,
-		dashboardState: TableState
+		tableState: TableState
 	) {
 		//Throttle the save function so we don't save too often
 		const throttleHandleSave = _.throttle(this.handleSave, 2000);
@@ -174,7 +174,7 @@ class EditingViewPlugin implements PluginValue {
 				tableFile={dashboardFile}
 				mountLeaf={leaf}
 				store={store}
-				dashboardState={dashboardState}
+				tableState={tableState}
 				onSaveState={(appId, state) =>
 					throttleHandleSave(dashboardFile, appId, state)
 				}

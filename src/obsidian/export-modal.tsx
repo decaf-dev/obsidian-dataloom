@@ -28,7 +28,7 @@ export default class ExportModal extends Modal {
 			this.root.render(
 				<Provider store={store}>
 					<ExportApp
-						dashboardState={state}
+						tableState={state}
 						tableFilePath={this.tableFile.path}
 					/>
 				</Provider>

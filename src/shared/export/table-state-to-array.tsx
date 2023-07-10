@@ -24,11 +24,11 @@ const serializeBodyCells = (
 	});
 };
 
-export const dashboardStateToArray = (
-	dashboardState: TableState,
+export const tableStateToArray = (
+	tableState: TableState,
 	renderMarkdown: boolean
 ): string[][] => {
-	const { headerCells, bodyCells, bodyRows, columns } = dashboardState.model;
+	const { headerCells, bodyCells, bodyRows, columns } = tableState.model;
 	const serializedHeaderCells = serializeHeaderCells(headerCells);
 	const serializedBodyCells = serializeBodyCells(
 		columns,

@@ -24,8 +24,8 @@ export const createDashboardFile = async (options: { folderPath: string }) => {
 		}
 
 		const fileName = getFileName();
-		const dashboardState = createTableState(1, 1);
-		const serialized = serializeTableState(dashboardState);
+		const tableState = createTableState(1, 1);
+		const serialized = serializeTableState(tableState);
 		const filePath = getFilePath(options.folderPath, fileName);
 
 		return await createFile(filePath, serialized);

@@ -46,7 +46,7 @@ export default class ReadingViewChild extends MarkdownRenderChild {
 					tableFile={file}
 					isMarkdownView
 					store={store}
-					dashboardState={state}
+					tableState={state}
 					onSaveState={this.handleSaveTableState}
 				/>
 			);

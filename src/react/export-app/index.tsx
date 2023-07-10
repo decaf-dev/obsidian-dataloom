@@ -17,11 +17,11 @@ import { css } from "@emotion/react";
 import { useAppSelector } from "src/redux/global/hooks";
 
 interface Props {
-	dashboardState: TableState;
+	tableState: TableState;
 	tableFilePath: string;
 }
 
-export function ExportApp({ dashboardState, tableFilePath }: Props) {
+export function ExportApp({ tableState, tableFilePath }: Props) {
 	const [exportType, setExportType] = React.useState<ExportType>(
 		ExportType.UNSELECTED
 	);
@@ -44,9 +44,9 @@ export function ExportApp({ dashboardState, tableFilePath }: Props) {
 
 	let content = "";
 	if (exportType === ExportType.MARKDOWN) {
-		content = exportToMarkdown(dashboardState, renderMarkdown);
+		content = exportToMarkdown(tableState, renderMarkdown);
 	} else if (exportType === ExportType.CSV) {
-		content = exportToCSV(dashboardState, renderMarkdown);
+		content = exportToCSV(tableState, renderMarkdown);
 	}
 
 	return (

@@ -54,7 +54,7 @@ export default function App() {
 	const { topMenu, hasOpenMenu, requestCloseTopMenu } = useMenuState();
 	const logger = useLogger();
 	const {
-		dashboardState,
+		tableState,
 		resizingColumnId,
 		searchText,
 		commandRedo,
@@ -64,7 +64,7 @@ export default function App() {
 
 	const tableRef = React.useRef<VirtuosoHandle | null>(null);
 
-	useExportEvents(dashboardState);
+	useExportEvents(tableState);
 	useRowEvents();
 	useColumnEvents();
 
@@ -180,11 +180,11 @@ export default function App() {
 			let index = -1;
 			if (focusedEl) index = Array.from(focusableEls).indexOf(focusedEl);
 
-			const numVisibleColumns = dashboardState.model.columns.filter(
+			const numVisibleColumns = tableState.model.columns.filter(
 				(column) => column.isVisible
 			).length;
-			const numBodyRows = dashboardState.model.bodyRows.length;
-			const numSortedColumns = dashboardState.model.columns.filter(
+			const numBodyRows = tableState.model.bodyRows.length;
+			const numSortedColumns = tableState.model.columns.filter(
 				(column) => column.sortDir !== SortDir.NONE
 			).length;
 
@@ -251,11 +251,11 @@ export default function App() {
 		bodyCells,
 		footerCells,
 		filterRules,
-	} = dashboardState.model;
+	} = tableState.model;
 
-	let filteredBodyRows = filterBodyRowsByRules(dashboardState);
+	let filteredBodyRows = filterBodyRowsByRules(tableState);
 	filteredBodyRows = filterBodyRowsBySearch(
-		dashboardState,
+		tableState,
 		filteredBodyRows,
 		searchText
 	);

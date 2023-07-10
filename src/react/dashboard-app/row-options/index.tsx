@@ -25,7 +25,7 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 
 	const { dragData, touchDropZone, setDragData, setTouchDropZone } =
 		useDragContext();
-	const { dashboardState, setTableState } = useTableState();
+	const { tableState, setTableState } = useTableState();
 
 	function handleDeleteClick(rowId: string) {
 		onDeleteClick(rowId);
@@ -118,12 +118,7 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 				touchY <= touchDropZone.bottom;
 
 			if (isInsideDropZone) {
-				dropDrag(
-					touchDropZone.id,
-					dragData,
-					dashboardState,
-					setTableState
-				);
+				dropDrag(touchDropZone.id, dragData, tableState, setTableState);
 			}
 		}
 		endDrag();

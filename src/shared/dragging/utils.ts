@@ -15,7 +15,7 @@ export const getRowId = (rowEl: HTMLElement) => {
 export const dropDrag = (
 	targetRowId: string,
 	dragData: DragData | null,
-	dashboardState: TableState,
+	tableState: TableState,
 	onTableStateChange: React.Dispatch<React.SetStateAction<TableState>>
 ) => {
 	if (dragData === null) throw Error("No drag data found");
@@ -23,7 +23,7 @@ export const dropDrag = (
 	//If we're dragging a column type, then return
 	if (dragData.type !== "row") return;
 
-	const { columns } = dashboardState.model;
+	const { columns } = tableState.model;
 	const isSorted = columns.find((column) => column.sortDir !== SortDir.NONE);
 	if (isSorted) {
 		if (
