@@ -69,7 +69,7 @@ const config = {
 				},
 				items: [
 					{
-						href: "https://github.com/trey-wallis/obsidian-dashboards",
+						href: "https://github.com/trey-wallis/obsidian-dataloom",
 						label: "GitHub",
 						position: "right",
 					},
