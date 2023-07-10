@@ -1,4 +1,4 @@
-import { WorkspaceLeaf } from "obsidian";
+import { TFile, WorkspaceLeaf } from "obsidian";
 
 import { Provider } from "react-redux";
 import { Store } from "@reduxjs/toolkit";
@@ -12,9 +12,9 @@ import App from "./app";
 
 interface Props {
 	appId: string;
-	leaf: WorkspaceLeaf;
+	mountLeaf: WorkspaceLeaf;
 	isMarkdownView: boolean;
-	filePath: string;
+	tableFile: TFile;
 	store: Store;
 	dashboardState: DashboardState;
 	onSaveState: (appId: string, state: DashboardState) => void;
@@ -22,19 +22,19 @@ interface Props {
 
 export default function DashboardApp({
 	appId,
-	leaf,
+	mountLeaf,
 	isMarkdownView,
 	store,
-	filePath,
+	tableFile,
 	dashboardState,
 	onSaveState,
 }: Props) {
 	return (
 		<MountProvider
-			leaf={leaf}
+			mountLeaf={mountLeaf}
 			appId={appId}
 			isMarkdownView={isMarkdownView}
-			filePath={filePath}
+			tableFile={tableFile}
 		>
 			<Provider store={store}>
 				<DashboardStateProvider

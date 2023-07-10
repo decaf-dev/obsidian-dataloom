@@ -43,7 +43,6 @@ class EditingViewPlugin implements PluginValue {
 
 	//This is ran on any editor change
 	update() {
-		console.log("update() called");
 		const markdownLeaves = app.workspace.getLeavesOfType("markdown");
 		const activeLeaf = markdownLeaves.find(
 			//@ts-expect-error - private property
@@ -172,8 +171,8 @@ class EditingViewPlugin implements PluginValue {
 			<DashboardApp
 				appId={id}
 				isMarkdownView
-				filePath={dashboardFile.path}
-				leaf={leaf}
+				tableFile={dashboardFile}
+				mountLeaf={leaf}
 				store={store}
 				dashboardState={dashboardState}
 				onSaveState={(appId, state) =>

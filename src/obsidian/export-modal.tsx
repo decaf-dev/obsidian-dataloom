@@ -1,5 +1,4 @@
-import { App, Modal } from "obsidian";
-import DashboardsView from "./dashboards-view";
+import { App, Modal, Notice, TFile } from "obsidian";
 import { Root, createRoot } from "react-dom/client";
 import { deserializeDashboardState } from "src/data/serialize-dashboard-state";
 import { ExportApp } from "src/react/export-app";
@@ -8,32 +7,34 @@ import { store } from "src/redux/global/store";
 
 export default class ExportModal extends Modal {
 	root: Root;
-	filePath: string;
+	tableFile: TFile;
 
-	constructor(app: App, filePath: string) {
+	constructor(app: App, tableFile: TFile) {
 		super(app);
 		this.app = app;
-		this.filePath = filePath;
+		this.tableFile = tableFile;
 	}
 
 	onOpen() {
-		const container = this.containerEl.children[1];
+		this.renderApp();
+	}
 
-		const view = app.workspace.getActiveViewOfType(DashboardsView);
-		if (view) {
-			//Get dashboard state
-			const data = view.getViewData();
+	private async renderApp() {
+		try {
+			const data = await app.vault.read(this.tableFile);
 			const state = deserializeDashboardState(data);
 
-			this.root = createRoot(container);
+			this.root = createRoot(this.containerEl.children[1]);
 			this.root.render(
 				<Provider store={store}>
 					<ExportApp
 						dashboardState={state}
-						filePath={this.filePath}
+						tableFilePath={this.tableFile.path}
 					/>
 				</Provider>
 			);
+		} catch (err) {
+			new Notice("Error reading table file data.");
 		}
 	}
 

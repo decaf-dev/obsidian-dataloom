@@ -51,9 +51,6 @@ export default function BottomBar({
 		};
 	}, [ref]);
 
-	const footerRect = ref.current?.getBoundingClientRect();
-	console.log(spaceBetweenTableAndContainer);
-
 	const { isMarkdownView } = useMountState();
 
 	return (

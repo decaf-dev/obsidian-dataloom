@@ -14,11 +14,12 @@ import { useMountState } from "../../react/dashboard-app/mount-provider";
 import { useAppSelector } from "src/redux/global/hooks";
 
 export const useExportEvents = (state: DashboardState) => {
-	const { filePath } = useMountState();
+	const { tableFile } = useMountState();
 	const { appId } = useMountState();
 	const { exportRenderMarkdown } = useAppSelector(
 		(state) => state.global.settings
 	);
+	const filePath = tableFile.path;
 
 	React.useEffect(() => {
 		function handleDownloadCSV() {

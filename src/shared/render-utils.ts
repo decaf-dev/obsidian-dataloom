@@ -80,15 +80,15 @@ export const useRenderMarkdown = (
 	const containerRef = React.useRef<HTMLDivElement | null>(null);
 	const renderRef = React.useRef<HTMLElement | null>(null);
 
-	const { leaf } = useMountState();
+	const { mountLeaf } = useMountState();
 
 	React.useEffect(() => {
 		async function updateContainerRef() {
 			let el = null;
 			if (isEmbed) {
-				el = await renderEmbed(leaf, markdown);
+				el = await renderEmbed(mountLeaf, markdown);
 			} else {
-				el = await renderMarkdown(leaf, markdown);
+				el = await renderMarkdown(mountLeaf, markdown);
 			}
 
 			if (el) {
@@ -102,7 +102,7 @@ export const useRenderMarkdown = (
 		}
 
 		updateContainerRef();
-	}, [markdown, leaf, isExternalLink, isEmbed]);
+	}, [markdown, mountLeaf, isExternalLink, isEmbed]);
 
 	return {
 		containerRef,

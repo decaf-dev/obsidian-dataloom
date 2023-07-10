@@ -41,9 +41,9 @@ export default class ReadingViewChild extends MarkdownRenderChild {
 
 			this.root.render(
 				<DashboardApp
-					leaf={activeView.leaf}
+					mountLeaf={activeView.leaf}
 					appId={this.appId}
-					filePath={file.path}
+					tableFile={file}
 					isMarkdownView
 					store={store}
 					dashboardState={state}
