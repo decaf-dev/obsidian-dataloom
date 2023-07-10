@@ -10,7 +10,7 @@ import { LoomState } from "src/shared/types";
 import {
 	deserializeLoomState,
 	serializeLoomState,
-} from "src/data/serialize-table-state";
+} from "src/data/serialize-loom-state";
 import { EVENT_REFRESH_APP } from "src/shared/events";
 import { v4 as uuidv4 } from "uuid";
 import { DATA_LOOM_PLUGIN_ID } from "src/main";

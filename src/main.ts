@@ -10,11 +10,7 @@ import {
 import { store } from "./redux/global/store";
 import { setDarkMode, setSettings } from "./redux/global/global-slice";
 import DataLoomView, { DATA_LOOM_VIEW } from "./obsidian/dataloom-view";
-import {
-	CURRENT_FILE_EXTENSION,
-	PREVIOUS_FILE_EXTENSION,
-	WIKI_LINK_REGEX,
-} from "./data/constants";
+import { CURRENT_FILE_EXTENSION, WIKI_LINK_REGEX } from "./data/constants";
 import { createLoomFile } from "src/data/loom-file";
 import {
 	EVENT_COLUMN_ADD,
@@ -32,7 +28,7 @@ import { editingViewPlugin } from "./obsidian/editing-view-plugin";
 import {
 	deserializeLoomState,
 	serializeLoomState,
-} from "./data/serialize-table-state";
+} from "./data/serialize-loom-state";
 import { updateLinkReferences } from "./data/utils";
 import { getBasename } from "./shared/link/link-utils";
 import { hasDarkTheme } from "./shared/render/utils";
@@ -85,7 +81,7 @@ export default class DataLoomPlugin extends Plugin {
 		this.registerView(DATA_LOOM_VIEW, (leaf) => new DataLoomView(leaf));
 		this.registerExtensions([CURRENT_FILE_EXTENSION], DATA_LOOM_VIEW);
 
-		this.addRibbonIcon("table", "Create new table", async () => {
+		this.addRibbonIcon("table", "Create new loom", async () => {
 			await this.newLoomFile(null);
 		});
 
@@ -99,7 +95,7 @@ export default class DataLoomPlugin extends Plugin {
 			const isDark = hasDarkTheme();
 			store.dispatch(setDarkMode(isDark));
 
-			await this.migrateloomFiles();
+			await this.migrateLoomFiles();
 		});
 
 		if (this.settings.showWelcomeModal) {
@@ -113,17 +109,21 @@ export default class DataLoomPlugin extends Plugin {
 		}
 	}
 
-	private async migrateloomFiles() {
-		// Migrate .table files to .table files
+	private async migrateLoomFiles() {
+		// Migrate .dashboard files to .loom files
 		if (!this.settings.hasMigratedTo800) {
 			const loomFiles = this.app.vault
 				.getFiles()
-				.filter((file) => file.extension === PREVIOUS_FILE_EXTENSION);
+				.filter(
+					(file) =>
+						file.extension === "dashboard" ||
+						file.extension === "table"
+				);
 
 			for (let i = 0; i < loomFiles.length; i++) {
 				const file = loomFiles[i];
 				const newFilePath = file.path.replace(
-					`.${PREVIOUS_FILE_EXTENSION}`,
+					`.${file.extension}`,
 					`.${CURRENT_FILE_EXTENSION}`
 				);
 				try {
@@ -142,14 +142,14 @@ export default class DataLoomPlugin extends Plugin {
 
 	private registerEmbeddedView() {
 		//This registers a CodeMirror extension. It is used to render the embedded
-		//table in live preview mode.
+		//loom in live preview mode.
 		this.registerEditorExtension(editingViewPlugin);
 		//This registers a Markdown post processor. It is used to render the embedded
-		//table in preview mode.
+		//loom in preview mode.
 		// this.registerMarkdownPostProcessor((element, context) => {
-		// 	const embeddedTableLinkEls = getEmbeddedDataLoomLinkEls(element);
-		// 	for (let i = 0; i < embeddedTableLinkEls.length; i++) {
-		// 		const linkEl = embeddedTableLinkEls[i];
+		// 	const embeddedLoomLinkEls = getEmbeddedDataLoomLinkEls(element);
+		// 	for (let i = 0; i < embeddedLoomLinkEls.length; i++) {
+		// 		const linkEl = embeddedLoomLinkEls[i];
 		// 		context.addChild(
 		// 			new DataLoomReadingChild(
 		// 				linkEl,
@@ -230,7 +230,7 @@ export default class DataLoomPlugin extends Plugin {
 			"rename",
 			async (file: TAbstractFile, oldPath: string) => {
 				//When a file is renamed, we want to refresh all open leafs
-				//that contain an embedded table
+				//that contain an embedded loom
 				const leafs = app.workspace.getLeavesOfType("markdown");
 				leafs.forEach((leaf) => {
 					leaf.trigger(EVENT_REFRESH_EDITING_VIEW);
@@ -243,7 +243,7 @@ export default class DataLoomPlugin extends Plugin {
 							(file) => file.extension === CURRENT_FILE_EXTENSION
 						);
 
-					const tablesToUpdate: {
+					const loomsToUpdate: {
 						file: TFile;
 						state: LoomState;
 					}[] = [];
@@ -263,15 +263,15 @@ export default class DataLoomPlugin extends Plugin {
 							) {
 								const path = matches[1];
 
-								//The path will be the relative path e.g. mytable.table
-								//while the old path will be the absolute path in the vault e.g. /tables/mytables.table
+								//The path will be the relative path e.g. my-loom.loom
+								//while the old path will be the absolute path in the vault e.g. /looms/my-loom.loom
 								if (oldPath.includes(path)) {
-									const found = tablesToUpdate.find(
-										(table) =>
-											table.file.path === loomFile.path
+									const found = loomsToUpdate.find(
+										(loom) =>
+											loom.file.path === loomFile.path
 									);
 									if (!found) {
-										tablesToUpdate.push({
+										loomsToUpdate.push({
 											file: loomFile,
 											state,
 										});
@@ -286,15 +286,15 @@ export default class DataLoomPlugin extends Plugin {
 						new Notice(
 							`Updating ${numLinks} link${
 								numLinks > 1 ? "s" : ""
-							} in ${tablesToUpdate.length} DataLoom table file${
-								tablesToUpdate.length > 1 ? "s" : ""
+							} in ${loomsToUpdate.length} loom file${
+								loomsToUpdate.length > 1 ? "s" : ""
 							}.`
 						);
 					}
 
-					for (let i = 0; i < tablesToUpdate.length; i++) {
+					for (let i = 0; i < loomsToUpdate.length; i++) {
 						//If the state has changed, update the file
-						const { file: loomFile, state } = tablesToUpdate[i];
+						const { file: loomFile, state } = loomsToUpdate[i];
 
 						if (this.settings.shouldDebug)
 							console.log("Updating links in file", {
@@ -328,11 +328,11 @@ export default class DataLoomPlugin extends Plugin {
 
 							await file.vault.modify(loomFile, serializedState);
 
-							//Update all tables that match this path
+							//Update all looms that match this path
 							app.workspace.trigger(
 								EVENT_REFRESH_APP,
 								loomFile.path,
-								-1, //update all tables that match this path
+								-1, //update all looms that match this path
 								newState
 							);
 						}
@@ -345,7 +345,7 @@ export default class DataLoomPlugin extends Plugin {
 	registerCommands() {
 		this.addCommand({
 			id: "dataloom-create",
-			name: "Create table",
+			name: "Create loom",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "=" }],
 			callback: async () => {
 				await this.newLoomFile(null);
@@ -354,7 +354,7 @@ export default class DataLoomPlugin extends Plugin {
 
 		this.addCommand({
 			id: "dataloom-create-and-embed",
-			name: "Create table and embed it into current file",
+			name: "Create loom and embed it into current file",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "+" }],
 			editorCallback: async (editor) => {
 				const filePath = await this.newLoomFile(null, true);
@@ -364,8 +364,8 @@ export default class DataLoomPlugin extends Plugin {
 					"useMarkdownLinks"
 				);
 
-				// Use basename rather than whole name when using Markdownlink like ![abcd](abcd.table) instead of ![abcd.table](abcd.table)
-				// It will replace `.table` to "" in abcd.table
+				// Use basename rather than whole name when using Markdownlink like ![abcd](abcd.loom) instead of ![abcd.loom](abcd.loom)
+				// It will replace `.loom` to "" in abcd.loom
 				const linkText = useMarkdownLinks
 					? `![${getBasename(filePath)}](${encodeURI(filePath)})`
 					: `![[${filePath}]]`;

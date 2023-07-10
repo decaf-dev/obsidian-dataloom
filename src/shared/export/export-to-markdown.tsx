@@ -1,6 +1,6 @@
 import { LoomState } from "../types";
 import { markdownTable } from "markdown-table";
-import { LoomStateToArray } from "./table-state-to-array";
+import { LoomStateToArray } from "./loom-state-to-array";
 
 export const exportToMarkdown = (
 	LoomState: LoomState,

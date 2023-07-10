@@ -1,6 +1,6 @@
 import Papa from "papaparse";
 
-import { LoomStateToArray } from "./table-state-to-array";
+import { LoomStateToArray } from "./loom-state-to-array";
 import { LoomState } from "../types";
 
 export const exportToCSV = (

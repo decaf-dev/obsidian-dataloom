@@ -6,8 +6,8 @@ if (process.env.ENABLE_REACT_DEVTOOLS === "true") {
 }
 import { Root, createRoot } from "react-dom/client";
 
-import { serializeLoomState } from "src/data/serialize-table-state";
-import { deserializeLoomState } from "src/data/serialize-table-state";
+import { serializeLoomState } from "src/data/serialize-loom-state";
+import { deserializeLoomState } from "src/data/serialize-loom-state";
 import { store } from "src/redux/global/store";
 import {
 	EVENT_REFRESH_APP,
@@ -27,7 +27,7 @@ import LoomApp from "src/react/loom-app";
 
 class EditingViewPlugin implements PluginValue {
 	private editorView: EditorView;
-	private tableApps: {
+	private loomApps: {
 		id: string;
 		parentEl: HTMLElement;
 		leaf: WorkspaceLeaf;
@@ -37,7 +37,7 @@ class EditingViewPlugin implements PluginValue {
 
 	constructor(view: EditorView) {
 		this.editorView = view;
-		this.tableApps = [];
+		this.loomApps = [];
 		this.setupEventListeners();
 	}
 
@@ -52,12 +52,12 @@ class EditingViewPlugin implements PluginValue {
 
 		const activeView = activeLeaf.view as MarkdownView;
 
-		const embeddedTableLinkEls = getEmbeddedLoomLinkEls(
+		const embeddedLoomLinkEls = getEmbeddedLoomLinkEls(
 			activeView.containerEl
 		);
 
-		for (let i = 0; i < embeddedTableLinkEls.length; i++) {
-			const linkEl = embeddedTableLinkEls[i];
+		for (let i = 0; i < embeddedLoomLinkEls.length; i++) {
+			const linkEl = embeddedLoomLinkEls[i];
 
 			const { defaultEmbedWidth, defaultEmbedHeight } =
 				store.getState().global.settings;
@@ -76,8 +76,8 @@ class EditingViewPlugin implements PluginValue {
 			const file = findEmbeddedLoomFile(linkEl);
 			if (!file) continue;
 
-			//Filter out any old tables
-			this.tableApps = this.tableApps.filter(
+			//Filter out any old looms
+			this.loomApps = this.loomApps.filter(
 				(app) => app.file.path !== file.path
 			);
 
@@ -86,28 +86,28 @@ class EditingViewPlugin implements PluginValue {
 			linkEl.style.margin = "0px";
 			linkEl.style.padding = "0px";
 
-			const tableContainerEl = linkEl.createDiv();
-			tableContainerEl.className = "DataLoom__embedded-container";
-			tableContainerEl.style.height = "100%";
-			tableContainerEl.style.width = "100%";
-			tableContainerEl.style.padding = "10px 0px";
+			const loomContainerEl = linkEl.createDiv();
+			loomContainerEl.className = "DataLoom__embedded-container";
+			loomContainerEl.style.height = "100%";
+			loomContainerEl.style.width = "100%";
+			loomContainerEl.style.padding = "10px 0px";
 
 			const appId = uuidv4();
-			this.tableApps.push({
+			this.loomApps.push({
 				id: appId,
 				leaf: activeView.leaf,
-				parentEl: tableContainerEl,
+				parentEl: loomContainerEl,
 				file,
 			});
 
 			//Call a separate function to not block the update function
-			this.setupTable(activeView, tableContainerEl, file, appId);
+			this.setupLoom(activeView, loomContainerEl, file, appId);
 		}
 	}
 
-	private async setupTable(
+	private async setupLoom(
 		activeView: MarkdownView,
-		tableContainerEl: HTMLElement,
+		loomContainerEl: HTMLElement,
 		file: TFile,
 		appId: string
 	) {
@@ -115,19 +115,19 @@ class EditingViewPlugin implements PluginValue {
 		 * Stop propagation of the click event. We do this so that the embedded link div
 		 * don't navigate to the linked file when it is clicked.
 		 */
-		tableContainerEl.addEventListener("click", (e) => {
+		loomContainerEl.addEventListener("click", (e) => {
 			e.stopPropagation();
 		});
 
-		//Get the table state
+		//Get the loom state
 		const data = await app.vault.read(file);
 		const LoomState = deserializeLoomState(data);
 
-		const table = this.tableApps.find((app) => app.id === appId);
-		if (!table) return;
+		const loom = this.loomApps.find((app) => app.id === appId);
+		if (!loom) return;
 
-		table.root = createRoot(tableContainerEl);
-		this.renderApp(appId, activeView.leaf, file, table.root, LoomState);
+		loom.root = createRoot(loomContainerEl);
+		this.renderApp(appId, activeView.leaf, file, loom.root, LoomState);
 	}
 
 	private async handleSave(loomFile: TFile, appId: string, state: LoomState) {
@@ -169,8 +169,8 @@ class EditingViewPlugin implements PluginValue {
 		sourceAppId: string,
 		state: LoomState
 	) => {
-		//Find a table instance with the same file path
-		const app = this.tableApps.find(
+		//Find a loom instance with the same file path
+		const app = this.loomApps.find(
 			(app) => app.id !== sourceAppId && app.file.path === sourceFilePath
 		);
 		if (!app) return;
@@ -193,8 +193,8 @@ class EditingViewPlugin implements PluginValue {
 	}
 
 	destroy() {
-		this.tableApps.forEach((app) => app.root?.unmount());
-		this.tableApps = [];
+		this.loomApps.forEach((app) => app.root?.unmount());
+		this.loomApps = [];
 		app.workspace.off(EVENT_REFRESH_APP, this.handleRefreshEvent);
 		app.workspace.off(EVENT_REFRESH_EDITING_VIEW, this.update);
 	}

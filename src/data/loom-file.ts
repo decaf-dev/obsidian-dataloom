@@ -1,11 +1,11 @@
 import { Notice } from "obsidian";
 import { createFile, createFolder } from "./file-operations";
 import { createLoomState } from "./loom-state-factory";
-import { serializeLoomState } from "./serialize-table-state";
-import { CURRENT_FILE_EXTENSION, DEFAULT_TABLE_NAME } from "./constants";
+import { serializeLoomState } from "./serialize-loom-state";
+import { CURRENT_FILE_EXTENSION, DEFAULT_LOOM_NAME } from "./constants";
 
 const getFileName = (): string => {
-	const fileName = DEFAULT_TABLE_NAME;
+	const fileName = DEFAULT_LOOM_NAME;
 
 	return `${fileName}.${CURRENT_FILE_EXTENSION}`;
 };

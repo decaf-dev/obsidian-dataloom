@@ -1,6 +1,6 @@
 import { App, Modal, Notice, TFile } from "obsidian";
 import { Root, createRoot } from "react-dom/client";
-import { deserializeLoomState } from "src/data/serialize-table-state";
+import { deserializeLoomState } from "src/data/serialize-loom-state";
 import { ExportApp } from "src/react/export-app";
 import { Provider } from "react-redux";
 import { store } from "src/redux/global/store";
@@ -34,7 +34,7 @@ export default class ExportModal extends Modal {
 				</Provider>
 			);
 		} catch (err) {
-			new Notice("Error reading table file data.");
+			new Notice("Error reading loom file data.");
 		}
 	}
 

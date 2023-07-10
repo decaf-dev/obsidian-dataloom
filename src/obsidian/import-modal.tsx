@@ -6,7 +6,7 @@ import ImportApp from "../react/import-app";
 import {
 	deserializeLoomState,
 	serializeLoomState,
-} from "src/data/serialize-table-state";
+} from "src/data/serialize-loom-state";
 
 export default class ImportModal extends Modal {
 	root: Root;
@@ -23,7 +23,7 @@ export default class ImportModal extends Modal {
 
 		const view = app.workspace.getActiveViewOfType(DataLoomView);
 		if (view) {
-			//Get table state
+			//Get loom state
 			const data = view.getViewData();
 			const state = deserializeLoomState(data);
 

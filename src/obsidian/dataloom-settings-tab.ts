@@ -16,11 +16,11 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 		//Attachments folder
 		const attachmentsFolderDesc = new DocumentFragment();
 		attachmentsFolderDesc.createSpan({}, (span) => {
-			span.innerHTML = `Create tables in the attachments folder defined in the Obsidian settings.<br><br>This can be changed in <span style="color: var(--text-accent);">Files & Links -> Default location for new attachments</span><br><br>Otherwise, the folder location below will be used.`;
+			span.innerHTML = `Create looms in the attachments folder defined in the Obsidian settings.<br><br>This can be changed in <span style="color: var(--text-accent);">Files & Links -> Default location for new attachments</span><br><br>Otherwise, the folder location below will be used.`;
 		});
 
 		new Setting(containerEl)
-			.setName("Create new tables in the attachments folder")
+			.setName("Create new looms in the attachments folder")
 			.setDesc(attachmentsFolderDesc)
 			.addToggle((cb) => {
 				cb.setValue(
@@ -36,12 +36,12 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 		//Folder location
 		const defaultLocationDesc = new DocumentFragment();
 		defaultLocationDesc.createSpan({}, (span) => {
-			span.innerHTML = `Where newly created tables are placed. Please don't include a slash at the beginning or end of the value.<br>e.g. <strong>myfolder/subdirectory</strong><br><br>Default location is the vault root folder, if not specified.`;
+			span.innerHTML = `Where newly created looms are placed. Please don't include a slash at the beginning or end of the value.<br>e.g. <strong>myfolder/subdirectory</strong><br><br>Default location is the vault root folder, if not specified.`;
 		});
 
 		if (this.plugin.settings.createAtObsidianAttachmentFolder === false) {
 			new Setting(containerEl)
-				.setName("Default location for new tables")
+				.setName("Default location for new looms")
 				.setDesc(defaultLocationDesc)
 				.addText((cb) => {
 					cb.setValue(
@@ -76,16 +76,16 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 	}
 
 	private renderEmbeddedLoomSettings(containerEl: HTMLElement) {
-		new Setting(containerEl).setName("Embedded Tables").setHeading();
+		new Setting(containerEl).setName("Embedded Looms").setHeading();
 
 		const defaultEmbedWidthDesc = new DocumentFragment();
 		defaultEmbedWidthDesc.createSpan({}, (span) => {
 			span.innerHTML =
-				"The default embedded table width. Accepts valid HTML width values. Like <strong>100px<strong>, <strong>50%</strong>, etc.";
+				"The default embedded loom width. Accepts valid HTML width values. Like <strong>100px<strong>, <strong>50%</strong>, etc.";
 		});
 
 		new Setting(containerEl)
-			.setName("Default embedded table width")
+			.setName("Default embedded loom width")
 			.setDesc(defaultEmbedWidthDesc)
 			.addText((cb) => {
 				cb.setValue(this.plugin.settings.defaultEmbedWidth).onChange(
@@ -99,11 +99,11 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 		const defaultEmbedHeightDesc = new DocumentFragment();
 		defaultEmbedHeightDesc.createSpan({}, (span) => {
 			span.innerHTML =
-				"The default embedded table height. Accepts valid HTML width values. Like <strong>100px</strong>, <strong>50%</strong>, etc.";
+				"The default embedded loom height. Accepts valid HTML width values. Like <strong>100px</strong>, <strong>50%</strong>, etc.";
 		});
 
 		new Setting(containerEl)
-			.setName("Default embedded table height")
+			.setName("Default embedded loom height")
 			.setDesc(defaultEmbedHeightDesc)
 			.addText((cb) => {
 				cb.setValue(this.plugin.settings.defaultEmbedHeight).onChange(
@@ -117,7 +117,7 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 		containerEl.createSpan(
 			{},
 			(span) =>
-				(span.innerHTML = `<strong style="color: var(--text-accent); font-size: 12px;">Please close and reopen your embedded tables for these settings to take effect</strong>`)
+				(span.innerHTML = `<strong style="color: var(--text-accent); font-size: 12px;">Please close and reopen your embedded looms for these settings to take effect</strong>`)
 		);
 	}
 
