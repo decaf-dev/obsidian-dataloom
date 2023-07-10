@@ -6,20 +6,21 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-	title: "Dashboards",
-	tagline: "Powerful dashboards suite inspired by Notion.so",
+	title: "DataLoom",
+	tagline:
+		"Weave together information from diverse sources into a cohesive table view. Inspired by Excel Spreadsheets and Notion.so.",
 	favicon: "img/favicon.png",
 
 	// Set the production url of your site here
-	url: "https://trey-wallis.github.io",
+	url: "https://dataloom.xyz",
 	// Set the /<baseUrl>/ pathname under which your site is served
 	// For GitHub pages deployment, it is often '/<projectName>/'
-	baseUrl: "/obsidian-dashboards/",
+	baseUrl: "/",
 
 	// GitHub pages deployment config.
 	// If you aren't using GitHub pages, you don't need these.
 	organizationName: "trey-wallis", // Usually your GitHub org/user name.
-	projectName: "obsidian-dashboards", // Usually your repo name.
+	projectName: "obsidian-dataloom", // Usually your repo name.
 
 	onBrokenLinks: "throw",
 	onBrokenMarkdownLinks: "warn",
@@ -43,7 +44,7 @@ const config = {
 					// Please change this to your repo.
 					// Remove this to remove the "edit this page" links.
 					editUrl:
-						"https://github.com/trey-wallis/obsidian-dashboards/tree/master/docusaurus/",
+						"https://github.com/trey-wallis/obsidian-dataloom/tree/master/docusaurus/",
 				},
 				blog: false,
 				theme: {
