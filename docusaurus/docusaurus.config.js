@@ -64,8 +64,8 @@ const config = {
 				title: "DataLoom",
 				logo: {
 					alt: "logo",
-					src: "img/light-logo.png",
-					srcDark: "img/dark-logo.png",
+					src: "img/logo-light.png",
+					srcDark: "img/logo-dark.png",
 				},
 				items: [
 					{
