@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { useLoomState } from "src/shared/table-state/loom-state-context";
+import { useLoomState } from "src/shared/loom-state/loom-state-context";
 
 export const useColumnResize = (
 	columnId: string,

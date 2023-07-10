@@ -1,5 +1,5 @@
-import { CellNotFoundError } from "../table-state/loom-error";
-import LoomStateCommand from "../table-state/loom-state-command";
+import { CellNotFoundError } from "../loom-state/loom-error";
+import LoomStateCommand from "../loom-state/loom-state-command";
 import { FooterCell, LoomState } from "../types";
 
 export default class CellFooterUpdateCommand extends LoomStateCommand {

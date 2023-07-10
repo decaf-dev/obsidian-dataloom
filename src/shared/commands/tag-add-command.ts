@@ -1,11 +1,11 @@
 import { createTag } from "src/data/table-state-factory";
-import LoomStateCommand from "../table-state/loom-state-command";
+import LoomStateCommand from "../loom-state/loom-state-command";
 import { LoomState, Tag } from "../types";
 import { Color } from "../types";
 import {
 	rowLastEditedTime,
 	rowLastEditedTimeUpdate,
-} from "../table-state/row-state-operations";
+} from "../loom-state/row-state-operations";
 
 export default class TagAddCommand extends LoomStateCommand {
 	private cellId: string;

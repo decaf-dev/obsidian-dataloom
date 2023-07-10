@@ -1,5 +1,5 @@
-import { TagNotFoundError } from "../table-state/loom-error";
-import LoomStateCommand from "../table-state/loom-state-command";
+import { TagNotFoundError } from "../loom-state/loom-error";
+import LoomStateCommand from "../loom-state/loom-state-command";
 import { LoomState, Tag } from "../types";
 
 export default class TagUpdateCommand extends LoomStateCommand {

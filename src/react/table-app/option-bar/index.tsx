@@ -11,8 +11,8 @@ import { SortDir, Column, HeaderCell, FilterRule } from "src/shared/types";
 import {
 	CellNotFoundError,
 	ColumNotFoundError,
-} from "src/shared/table-state/loom-error";
-import { isCellTypeFilterable } from "src/shared/table-state/filter-by-rules";
+} from "src/shared/loom-state/loom-error";
+import { isCellTypeFilterable } from "src/shared/loom-state/filter-by-rules";
 
 import { ColumnWithMarkdown } from "./types";
 import Padding from "src/react/shared/padding";

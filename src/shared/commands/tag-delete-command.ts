@@ -1,6 +1,6 @@
-import LoomStateCommand from "../table-state/loom-state-command";
+import LoomStateCommand from "../loom-state/loom-state-command";
 import { LoomState, Tag } from "../types";
-import { TagNotFoundError } from "../table-state/loom-error";
+import { TagNotFoundError } from "../loom-state/loom-error";
 
 export default class TagDeleteCommand extends LoomStateCommand {
 	private columnId: string;

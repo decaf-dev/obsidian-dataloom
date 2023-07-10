@@ -1,9 +1,9 @@
 import {
 	rowLastEditedTime,
 	rowLastEditedTimeUpdate,
-} from "../table-state/row-state-operations";
-import { CellNotFoundError } from "../table-state/loom-error";
-import LoomStateCommand from "../table-state/loom-state-command";
+} from "../loom-state/row-state-operations";
+import { CellNotFoundError } from "../loom-state/loom-error";
+import LoomStateCommand from "../loom-state/loom-state-command";
 import { BodyCell, LoomState } from "../types";
 
 export default class CellBodyUpdateCommand extends LoomStateCommand {

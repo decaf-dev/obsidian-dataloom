@@ -22,7 +22,7 @@ import {
 } from "../shared/types";
 
 import { v4 as uuidv4 } from "uuid";
-import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/table-state/constants";
+import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/loom-state/constants";
 import { Color } from "src/shared/types";
 
 export const createColumn = (options?: { cellType?: CellType }): Column => {

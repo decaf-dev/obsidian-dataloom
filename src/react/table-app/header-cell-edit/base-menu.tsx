@@ -5,7 +5,7 @@ import Stack from "src/react/shared/stack";
 import { CellType, SortDir } from "src/shared/types";
 import { SubmenuType } from "./types";
 import { useInputSelection } from "src/shared/hooks";
-import { getDisplayNameForCellType } from "src/shared/table-state/display-name";
+import { getDisplayNameForCellType } from "src/shared/loom-state/display-name";
 import React from "react";
 import Flex from "src/react/shared/flex";
 import Switch from "src/react/shared/switch";

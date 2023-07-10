@@ -1,4 +1,4 @@
-import { ColumNotFoundError } from "../table-state/loom-error";
+import { ColumNotFoundError } from "../loom-state/loom-error";
 import {
 	Column,
 	LoomState,
@@ -7,7 +7,7 @@ import {
 	FooterCell,
 	FilterRule,
 } from "../types";
-import LoomStateCommand from "../table-state/loom-state-command";
+import LoomStateCommand from "../loom-state/loom-state-command";
 import { DeleteCommandArgumentsError } from "./command-errors";
 
 export default class ColumnDeleteCommand extends LoomStateCommand {

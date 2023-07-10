@@ -3,7 +3,7 @@ import RowAddCommand from "src/shared/commands/row-add-command";
 import RowDeleteCommand from "src/shared/commands/row-delete-command";
 import { isEventForThisApp } from "src/shared/event-system/utils";
 import { EVENT_ROW_ADD, EVENT_ROW_DELETE } from "src/shared/events";
-import { useLoomState } from "src/shared/table-state/loom-state-context";
+import { useLoomState } from "src/shared/loom-state/loom-state-context";
 import { useMountState } from "../../react/table-app/mount-provider";
 
 export const useRowEvents = () => {

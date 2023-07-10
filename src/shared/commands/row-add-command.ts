@@ -1,5 +1,5 @@
 import { createBodyCell, createBodyRow } from "src/data/table-state-factory";
-import LoomStateCommand from "../table-state/loom-state-command";
+import LoomStateCommand from "../loom-state/loom-state-command";
 import { BodyCell, BodyRow, LoomState } from "../types";
 
 export default class RowAddCommand extends LoomStateCommand {

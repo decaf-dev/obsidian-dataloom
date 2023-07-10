@@ -3,7 +3,7 @@ import React from "react";
 import Menu from "src/react/shared/menu";
 import MenuItem from "src/react/shared/menu-item";
 
-import { getDisplayNameForDateFormat } from "src/shared/table-state/display-name";
+import { getDisplayNameForDateFormat } from "src/shared/loom-state/display-name";
 import { DateFormat } from "src/shared/types";
 
 interface Props {

@@ -1,6 +1,6 @@
 import { BodyCell, BodyRow, LoomState } from "../types";
-import { RowNotFoundError } from "../table-state/loom-error";
-import LoomStateCommand from "../table-state/loom-state-command";
+import { RowNotFoundError } from "../loom-state/loom-error";
+import LoomStateCommand from "../loom-state/loom-state-command";
 import { DeleteCommandArgumentsError } from "./command-errors";
 
 export default class RowDeleteCommand extends LoomStateCommand {
