@@ -4,7 +4,7 @@ import {
 	createColumn,
 	createFooterCell,
 	createHeaderCell,
-} from "src/data/table-state-factory";
+} from "src/data/loom-state-factory";
 import LoomStateCommand from "../loom-state/loom-state-command";
 
 export default class ColumnAddCommand extends LoomStateCommand {

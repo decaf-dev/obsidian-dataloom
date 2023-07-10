@@ -1,4 +1,4 @@
-import { createBodyCell, createBodyRow } from "src/data/table-state-factory";
+import { createBodyCell, createBodyRow } from "src/data/loom-state-factory";
 import LoomStateCommand from "../loom-state/loom-state-command";
 import { BodyCell, BodyRow, LoomState } from "../types";
 

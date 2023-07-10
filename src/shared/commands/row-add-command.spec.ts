@@ -1,4 +1,4 @@
-import { createLoomState } from "src/data/table-state-factory";
+import { createLoomState } from "src/data/loom-state-factory";
 import RowAddCommand from "./row-add-command";
 import { CommandRedoError, CommandUndoError } from "./command-errors";
 

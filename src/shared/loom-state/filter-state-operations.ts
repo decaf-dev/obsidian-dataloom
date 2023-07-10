@@ -1,4 +1,4 @@
-import { createFilterRule } from "src/data/table-state-factory";
+import { createFilterRule } from "src/data/loom-state-factory";
 import { FilterRule, LoomState } from "src/shared/types";
 
 export const addRule = (prevState: LoomState, columnId: string): LoomState => {

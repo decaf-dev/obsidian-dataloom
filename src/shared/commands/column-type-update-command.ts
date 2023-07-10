@@ -1,4 +1,4 @@
-import { createTag } from "src/data/table-state-factory";
+import { createTag } from "src/data/loom-state-factory";
 import { unixTimeToDateString } from "../date/date-conversion";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "../loom-state/constants";
 import { ColumNotFoundError } from "../loom-state/loom-error";

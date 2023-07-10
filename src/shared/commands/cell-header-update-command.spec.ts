@@ -1,4 +1,4 @@
-import { createLoomState } from "src/data/table-state-factory";
+import { createLoomState } from "src/data/loom-state-factory";
 import { CommandUndoError } from "./command-errors";
 import CellHeaderUpdateCommand from "./cell-header-update-command";
 

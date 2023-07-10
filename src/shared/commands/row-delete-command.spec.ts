@@ -1,4 +1,4 @@
-import { createLoomState } from "src/data/table-state-factory";
+import { createLoomState } from "src/data/loom-state-factory";
 import RowDeleteCommand from "./row-delete-command";
 import {
 	DeleteCommandArgumentsError,

@@ -1,4 +1,4 @@
-import { createLoomState, createTag } from "src/data/table-state-factory";
+import { createLoomState, createTag } from "src/data/loom-state-factory";
 import { CommandUndoError, CommandRedoError } from "./command-errors";
 import TagDeleteCommand from "./tag-delete-command";
 

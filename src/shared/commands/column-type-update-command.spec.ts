@@ -2,7 +2,7 @@ import {
 	createFilterRule,
 	createLoomState,
 	createTag,
-} from "src/data/table-state-factory";
+} from "src/data/loom-state-factory";
 import { CommandRedoError, CommandUndoError } from "./command-errors";
 import { ColumnTypeUpdateCommand } from "./column-type-update-command";
 import { CellType } from "../types";

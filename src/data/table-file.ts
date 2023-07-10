@@ -1,6 +1,6 @@
 import { Notice } from "obsidian";
 import { createFile, createFolder } from "./file-operations";
-import { createLoomState } from "./table-state-factory";
+import { createLoomState } from "./loom-state-factory";
 import { serializeLoomState } from "./serialize-table-state";
 import { CURRENT_FILE_EXTENSION, DEFAULT_TABLE_NAME } from "./constants";
 

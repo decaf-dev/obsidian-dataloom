@@ -1,4 +1,4 @@
-import { createLoomState, createTag } from "src/data/table-state-factory";
+import { createLoomState, createTag } from "src/data/loom-state-factory";
 import { CommandRedoError, CommandUndoError } from "./command-errors";
 import TagCellAddCommand from "./tag-cell-add-command";
 import { advanceBy, clear } from "jest-date-mock";
