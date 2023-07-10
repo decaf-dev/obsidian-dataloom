@@ -1,4 +1,4 @@
-import { DashboardState } from "src/shared/types";
+import { LoomState } from "src/shared/types";
 import {
 	getMarkdownListItems,
 	importMarkdownListItems,
@@ -16,8 +16,8 @@ import Stack from "../shared/stack";
 import "./styles.css";
 
 interface Props {
-	initialState: DashboardState;
-	onStateSave: (state: DashboardState) => void;
+	initialState: LoomState;
+	onStateSave: (state: LoomState) => void;
 }
 
 export default function ImportApp({ initialState, onStateSave }: Props) {
@@ -49,7 +49,7 @@ export default function ImportApp({ initialState, onStateSave }: Props) {
 	const { columns, headerCells } = initialState.model;
 
 	return (
-		<div className="Dashboards__import-app">
+		<div className="DataLoom__import-app">
 			<Stack spacing="lg">
 				<Stack spacing="lg">
 					<ImportTypeSelect

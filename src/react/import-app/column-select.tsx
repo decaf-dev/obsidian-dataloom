@@ -1,5 +1,5 @@
 import { CellType, Column, HeaderCell } from "src/shared/types";
-import { CellNotFoundError } from "src/shared/dashboard-state/dashboard-error";
+import { CellNotFoundError } from "src/shared/loom-state/loom-error";
 import Stack from "../shared/stack";
 
 interface Props {
@@ -20,7 +20,7 @@ export default function ColumnSelect({
 			<label htmlFor="column-select">Column</label>
 			<select
 				id="column-select"
-				className="Dashboards__focusable"
+				className="DataLoom__focusable"
 				value={value}
 				onChange={(e) => onChange(e.target.value)}
 			>

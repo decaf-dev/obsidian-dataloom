@@ -1,7 +1,7 @@
-import { DashboardState } from "src/shared/types";
+import { LoomState } from "src/shared/types";
 import { MARKDOWN_LIST_ITEM_REGEX } from "./constants";
 import { ImportType } from "./types";
-import { CellNotFoundError } from "src/shared/dashboard-state/dashboard-error";
+import { CellNotFoundError } from "src/shared/loom-state/loom-error";
 import RowAddCommand from "src/shared/commands/row-add-command";
 
 export const getDisplayNameForImportType = (type: ImportType) => {
@@ -26,8 +26,8 @@ export const getMarkdownListItems = (text: string) => {
 export const importMarkdownListItems = (
 	listItems: string[],
 	columnId: string,
-	state: DashboardState
-): DashboardState => {
+	state: LoomState
+): LoomState => {
 	let stateCopy = structuredClone(state);
 
 	//For each list item add a new row

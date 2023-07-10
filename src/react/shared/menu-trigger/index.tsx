@@ -128,7 +128,7 @@ const MenuTrigger = ({
 
 	return (
 		<div
-			className="Dashboards__menu-trigger Dashboards__focusable"
+			className="DataLoom__menu-trigger DataLoom__focusable"
 			ref={ref}
 			css={css`
 				width: ${isCell ? "100%" : "unset"};

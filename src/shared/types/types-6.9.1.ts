@@ -164,7 +164,7 @@ interface TableModel {
 	filterRules: FilterRule[];
 }
 
-export interface DashboardState691 {
+export interface LoomState691 {
 	pluginVersion: string;
 	model: TableModel;
 }

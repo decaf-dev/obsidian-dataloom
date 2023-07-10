@@ -1,4 +1,4 @@
-# Dashboards Contributing Guide
+# DataLoom Contributing Guide
 
 ## Issues
 
@@ -15,7 +15,7 @@ State machines, flowcharts, and other development materials can be found can be 
 Start by cloning the repository
 
 ```shell
-git clone https://github.com/trey-wallis/obsidian-dashboards.git
+git clone https://github.com/trey-wallis/obsidian-dataloom.git
 ```
 
 We use yarn for dependency management instead of npm. Please make sure that you have installed yarn.
@@ -27,7 +27,7 @@ npm install -g yarn
 Cd to the clone repository
 
 ```shell
-cd obsidian-dashboards
+cd obsidian-dataloom
 ```
 
 Install dependencies
@@ -44,7 +44,7 @@ Note: I recommend making a new Obsidian vault just for development.
 ln -s <repo-path> <dev-vault-path>/.obsidian/plugins
 ```
 
-e.g. `ln -s /users/trey/desktop/obsidian-dashboards /users/trey/desktop/test-vault/.obsidian/plugins`
+e.g. `ln -s /users/trey/desktop/obsidian-dataloom /users/trey/desktop/test-vault/.obsidian/plugins`
 
 Run esbuild in development mode
 
@@ -54,7 +54,7 @@ yarn run dev
 
 Open your vault in Obsidian
 
-Enable Dashboards
+Enable DataLoom
 
 Make a code change
 

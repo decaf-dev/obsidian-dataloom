@@ -1,13 +1,13 @@
-import { createTag } from "src/data/dashboard-state-factory";
-import DashboardStateCommand from "../dashboard-state/dashboard-state-command";
-import { DashboardState, Tag } from "../types";
+import { createTag } from "src/data/loom-state-factory";
+import LoomStateCommand from "../loom-state/loom-state-command";
+import { LoomState, Tag } from "../types";
 import { Color } from "../types";
 import {
 	rowLastEditedTime,
 	rowLastEditedTimeUpdate,
-} from "../dashboard-state/row-state-operations";
+} from "../loom-state/row-state-operations";
 
-export default class TagAddCommand extends DashboardStateCommand {
+export default class TagAddCommand extends LoomStateCommand {
 	private cellId: string;
 	private columnId: string;
 	private rowId: string;
@@ -58,7 +58,7 @@ export default class TagAddCommand extends DashboardStateCommand {
 		this.isMultiTag = isMultiTag;
 	}
 
-	execute(prevState: DashboardState): DashboardState {
+	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
 		const { bodyRows, bodyCells, columns } = prevState.model;
@@ -119,7 +119,7 @@ export default class TagAddCommand extends DashboardStateCommand {
 			},
 		};
 	}
-	redo(prevState: DashboardState): DashboardState {
+	redo(prevState: LoomState): LoomState {
 		super.onRedo();
 		const { bodyRows, columns, bodyCells } = prevState.model;
 
@@ -155,7 +155,7 @@ export default class TagAddCommand extends DashboardStateCommand {
 			},
 		};
 	}
-	undo(prevState: DashboardState): DashboardState {
+	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
 		const { bodyRows, columns } = prevState.model;

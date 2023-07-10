@@ -6,28 +6,28 @@ if (process.env.ENABLE_REACT_DEVTOOLS === "true") {
 }
 import { Root, createRoot } from "react-dom/client";
 
-import { serializeDashboardState } from "src/data/serialize-dashboard-state";
-import { deserializeDashboardState } from "src/data/serialize-dashboard-state";
+import { serializeLoomState } from "src/data/serialize-loom-state";
+import { deserializeLoomState } from "src/data/serialize-loom-state";
 import { store } from "src/redux/global/store";
 import {
 	EVENT_REFRESH_APP,
 	EVENT_REFRESH_EDITING_VIEW,
 } from "src/shared/events";
-import { DashboardState } from "src/shared/types";
+import { LoomState } from "src/shared/types";
 import _ from "lodash";
 import {
-	findEmbeddedTableFile,
-	getEmbeddedDashboardHeight,
-	getEmbeddedDashboardLinkEls,
-	getEmbeddedDashboardWidth,
-	hasLoadedEmbeddedDashboard,
+	findEmbeddedLoomFile,
+	getEmbeddedLoomHeight,
+	getEmbeddedLoomLinkEls,
+	getEmbeddedLoomWidth,
+	hasLoadedEmbeddedLoom,
 } from "./utils";
 import { v4 as uuidv4 } from "uuid";
-import DashboardApp from "src/react/dashboard-app";
+import LoomApp from "src/react/loom-app";
 
 class EditingViewPlugin implements PluginValue {
 	private editorView: EditorView;
-	private dashboardApps: {
+	private loomApps: {
 		id: string;
 		parentEl: HTMLElement;
 		leaf: WorkspaceLeaf;
@@ -37,7 +37,7 @@ class EditingViewPlugin implements PluginValue {
 
 	constructor(view: EditorView) {
 		this.editorView = view;
-		this.dashboardApps = [];
+		this.loomApps = [];
 		this.setupEventListeners();
 	}
 
@@ -52,35 +52,32 @@ class EditingViewPlugin implements PluginValue {
 
 		const activeView = activeLeaf.view as MarkdownView;
 
-		const embeddedTableLinkEls = getEmbeddedDashboardLinkEls(
+		const embeddedLoomLinkEls = getEmbeddedLoomLinkEls(
 			activeView.containerEl
 		);
 
-		for (let i = 0; i < embeddedTableLinkEls.length; i++) {
-			const linkEl = embeddedTableLinkEls[i];
+		for (let i = 0; i < embeddedLoomLinkEls.length; i++) {
+			const linkEl = embeddedLoomLinkEls[i];
 
 			const { defaultEmbedWidth, defaultEmbedHeight } =
 				store.getState().global.settings;
 
-			const width = getEmbeddedDashboardWidth(linkEl, defaultEmbedWidth);
-			const height = getEmbeddedDashboardHeight(
-				linkEl,
-				defaultEmbedHeight
-			);
+			const width = getEmbeddedLoomWidth(linkEl, defaultEmbedWidth);
+			const height = getEmbeddedLoomHeight(linkEl, defaultEmbedHeight);
 
 			linkEl.style.width = width;
 			linkEl.style.height = height;
 
-			if (hasLoadedEmbeddedDashboard(linkEl)) continue;
+			if (hasLoadedEmbeddedLoom(linkEl)) continue;
 
 			//Clear default Obsidian placeholder children
 			linkEl.empty();
 
-			const file = findEmbeddedTableFile(linkEl);
+			const file = findEmbeddedLoomFile(linkEl);
 			if (!file) continue;
 
-			//Filter out any old dashboards
-			this.dashboardApps = this.dashboardApps.filter(
+			//Filter out any old looms
+			this.loomApps = this.loomApps.filter(
 				(app) => app.file.path !== file.path
 			);
 
@@ -89,28 +86,28 @@ class EditingViewPlugin implements PluginValue {
 			linkEl.style.margin = "0px";
 			linkEl.style.padding = "0px";
 
-			const dashboardContainerEl = linkEl.createDiv();
-			dashboardContainerEl.className = "Dashboards__embedded-container";
-			dashboardContainerEl.style.height = "100%";
-			dashboardContainerEl.style.width = "100%";
-			dashboardContainerEl.style.padding = "10px 0px";
+			const loomContainerEl = linkEl.createDiv();
+			loomContainerEl.className = "DataLoom__embedded-container";
+			loomContainerEl.style.height = "100%";
+			loomContainerEl.style.width = "100%";
+			loomContainerEl.style.padding = "10px 0px";
 
 			const appId = uuidv4();
-			this.dashboardApps.push({
+			this.loomApps.push({
 				id: appId,
 				leaf: activeView.leaf,
-				parentEl: dashboardContainerEl,
+				parentEl: loomContainerEl,
 				file,
 			});
 
 			//Call a separate function to not block the update function
-			this.setupTable(activeView, dashboardContainerEl, file, appId);
+			this.setupLoom(activeView, loomContainerEl, file, appId);
 		}
 	}
 
-	private async setupTable(
+	private async setupLoom(
 		activeView: MarkdownView,
-		dashboardContainerEl: HTMLElement,
+		loomContainerEl: HTMLElement,
 		file: TFile,
 		appId: string
 	) {
@@ -118,65 +115,50 @@ class EditingViewPlugin implements PluginValue {
 		 * Stop propagation of the click event. We do this so that the embedded link div
 		 * don't navigate to the linked file when it is clicked.
 		 */
-		dashboardContainerEl.addEventListener("click", (e) => {
+		loomContainerEl.addEventListener("click", (e) => {
 			e.stopPropagation();
 		});
 
-		//Get the dashboard state
+		//Get the loom state
 		const data = await app.vault.read(file);
-		const dashboardState = deserializeDashboardState(data);
+		const LoomState = deserializeLoomState(data);
 
-		const dashboard = this.dashboardApps.find((app) => app.id === appId);
-		if (!dashboard) return;
+		const loom = this.loomApps.find((app) => app.id === appId);
+		if (!loom) return;
 
-		dashboard.root = createRoot(dashboardContainerEl);
-		this.renderApp(
-			appId,
-			activeView.leaf,
-			file,
-			dashboard.root,
-			dashboardState
-		);
+		loom.root = createRoot(loomContainerEl);
+		this.renderApp(appId, activeView.leaf, file, loom.root, LoomState);
 	}
 
-	private async handleSave(
-		dashboardFile: TFile,
-		appId: string,
-		state: DashboardState
-	) {
+	private async handleSave(loomFile: TFile, appId: string, state: LoomState) {
 		//Save the new state
-		const serialized = serializeDashboardState(state);
-		await app.vault.modify(dashboardFile, serialized);
+		const serialized = serializeLoomState(state);
+		await app.vault.modify(loomFile, serialized);
 
 		//Tell all other views to refresh
-		app.workspace.trigger(
-			EVENT_REFRESH_APP,
-			dashboardFile.path,
-			appId,
-			state
-		);
+		app.workspace.trigger(EVENT_REFRESH_APP, loomFile.path, appId, state);
 	}
 
 	private renderApp(
 		id: string,
 		leaf: WorkspaceLeaf,
-		dashboardFile: TFile,
+		loomFile: TFile,
 		root: Root,
-		dashboardState: DashboardState
+		LoomState: LoomState
 	) {
 		//Throttle the save function so we don't save too often
 		const throttleHandleSave = _.throttle(this.handleSave, 2000);
 
 		root.render(
-			<DashboardApp
+			<LoomApp
 				appId={id}
 				isMarkdownView
-				tableFile={dashboardFile}
+				loomFile={loomFile}
 				mountLeaf={leaf}
 				store={store}
-				dashboardState={dashboardState}
+				LoomState={LoomState}
 				onSaveState={(appId, state) =>
-					throttleHandleSave(dashboardFile, appId, state)
+					throttleHandleSave(loomFile, appId, state)
 				}
 			/>
 		);
@@ -185,10 +167,10 @@ class EditingViewPlugin implements PluginValue {
 	private handleRefreshEvent = (
 		sourceFilePath: string,
 		sourceAppId: string,
-		state: DashboardState
+		state: LoomState
 	) => {
-		//Find a dashboard instance with the same file path
-		const app = this.dashboardApps.find(
+		//Find a loom instance with the same file path
+		const app = this.loomApps.find(
 			(app) => app.id !== sourceAppId && app.file.path === sourceFilePath
 		);
 		if (!app) return;
@@ -211,8 +193,8 @@ class EditingViewPlugin implements PluginValue {
 	}
 
 	destroy() {
-		this.dashboardApps.forEach((app) => app.root?.unmount());
-		this.dashboardApps = [];
+		this.loomApps.forEach((app) => app.root?.unmount());
+		this.loomApps = [];
 		app.workspace.off(EVENT_REFRESH_APP, this.handleRefreshEvent);
 		app.workspace.off(EVENT_REFRESH_EDITING_VIEW, this.update);
 	}

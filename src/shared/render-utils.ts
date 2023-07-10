@@ -4,14 +4,14 @@ import {
 	appendOrReplaceFirstChild,
 	replaceNewLinesWithBr,
 } from "src/shared/render/utils";
-import { useMountState } from "../react/dashboard-app/mount-provider";
+import { useMountState } from "../react/loom-app/mount-provider";
 import {
 	MarkdownRenderer,
 	MarkdownView,
 	Platform,
 	WorkspaceLeaf,
 } from "obsidian";
-import DashboardsView, { DASHBOARDS_VIEW } from "src/obsidian/dashboards-view";
+import DataLoomView, { DATA_LOOM_VIEW } from "src/obsidian/dataloom-view";
 import { handleLinkClick } from "src/shared/render/embed";
 import { renderEmbed } from "./render-embed";
 
@@ -22,13 +22,13 @@ export const renderMarkdown = async (leaf: WorkspaceLeaf, markdown: string) => {
 
 	//We need to attach this class so that the `is-unresolved` link renders properly by Obsidian
 	const view = leaf?.view;
-	if (view instanceof DashboardsView) div.classList.add("markdown-rendered");
+	if (view instanceof DataLoomView) div.classList.add("markdown-rendered");
 
 	try {
 		const updated = replaceNewLinesWithBr(markdown);
 		const view = leaf?.view;
 
-		if (view instanceof MarkdownView || view instanceof DashboardsView) {
+		if (view instanceof MarkdownView || view instanceof DataLoomView) {
 			await MarkdownRenderer.renderMarkdown(
 				updated,
 				div,
@@ -52,7 +52,7 @@ export const renderMarkdown = async (leaf: WorkspaceLeaf, markdown: string) => {
 					e.stopPropagation();
 					app.workspace.trigger("hover-link", {
 						event: e,
-						source: DASHBOARDS_VIEW,
+						source: DATA_LOOM_VIEW,
 						hoverParent: view.containerEl,
 						targetEl: el,
 						linktext: href,

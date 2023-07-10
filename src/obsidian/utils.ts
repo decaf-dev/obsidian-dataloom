@@ -1,40 +1,38 @@
 import { CURRENT_FILE_EXTENSION } from "src/data/constants";
 import { numToPx } from "src/shared/conversion";
 
-export const getEmbeddedDashboardLinkEls = (el: HTMLElement) => {
+export const getEmbeddedLoomLinkEls = (el: HTMLElement) => {
 	const embeddedLinkEls = el.querySelectorAll(".internal-embed");
-	const dashboardLinkEls: HTMLElement[] = [];
+	const loomLinkEls: HTMLElement[] = [];
 
 	for (let i = 0; i < embeddedLinkEls.length; i++) {
 		const linkEl = embeddedLinkEls[i];
 		const src = linkEl.getAttribute("src");
 		if (src?.endsWith(CURRENT_FILE_EXTENSION))
-			dashboardLinkEls.push(linkEl as HTMLElement);
+			loomLinkEls.push(linkEl as HTMLElement);
 	}
-	return dashboardLinkEls;
+	return loomLinkEls;
 };
 
-export const hasLoadedEmbeddedDashboard = (linkEl: HTMLElement) => {
+export const hasLoadedEmbeddedLoom = (linkEl: HTMLElement) => {
 	if (linkEl.children.length > 0) {
 		const firstChildEl = linkEl.children[0];
-		if (firstChildEl.classList.contains("Dashboards__embedded-container"))
+		if (firstChildEl.classList.contains("DataLoom__embedded-container"))
 			return true;
 	}
 	return false;
 };
 
-export const findEmbeddedTableFile = (linkEl: HTMLElement) => {
+export const findEmbeddedLoomFile = (linkEl: HTMLElement) => {
 	const src = linkEl.getAttribute("src");
 
-	const dashboardFile = app.vault
-		.getFiles()
-		.find((file) => file.path === src);
-	if (dashboardFile === undefined)
+	const loomFile = app.vault.getFiles().find((file) => file.path === src);
+	if (loomFile === undefined)
 		return app.vault.getFiles().find((file) => file.name === src) ?? null;
-	return dashboardFile ?? null;
+	return loomFile ?? null;
 };
 
-export const getEmbeddedDashboardWidth = (
+export const getEmbeddedLoomWidth = (
 	linkEl: HTMLElement,
 	defaultWidth: string
 ) => {
@@ -43,7 +41,7 @@ export const getEmbeddedDashboardWidth = (
 	return numToPx(width);
 };
 
-export const getEmbeddedDashboardHeight = (
+export const getEmbeddedLoomHeight = (
 	linkEl: HTMLElement,
 	defaultHeight: string
 ) => {

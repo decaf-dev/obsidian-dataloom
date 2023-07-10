@@ -9,12 +9,12 @@ export default function Badges() {
 				height="20"
 			/>
 			<a
-				href="https://github.com/trey-wallis/obsidian-dashboards"
+				href="https://github.com/trey-wallis/obsidian-dataloom"
 				target="_blank"
 				rel="noopener"
 			>
 				<img
-					src="https://img.shields.io/github/stars/trey-wallis/obsidian-dashboards?style=social"
+					src="https://img.shields.io/github/stars/trey-wallis/obsidian-dataloom?style=social"
 					referrerPolicy="no-referrer"
 					alt="Github stars"
 				/>

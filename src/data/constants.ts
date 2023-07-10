@@ -1,14 +1,13 @@
-export const CURRENT_PLUGIN_VERSION = "7.0.1";
+export const CURRENT_PLUGIN_VERSION = "8.0.0";
 
-export const DEFAULT_TABLE_NAME = "Untitled";
+export const DEFAULT_LOOM_NAME = "Untitled";
 
-export const PREVIOUS_FILE_EXTENSION = "table";
-export const CURRENT_FILE_EXTENSION = "dashboard";
+export const CURRENT_FILE_EXTENSION = "loom";
 
 /**
  * Matches an extension with a leading period.
  * @example
- * .table
+ * .loom
  */
 export const EXTENSION_REGEX = new RegExp(/\.[a-z]*$/);
 

@@ -8,7 +8,7 @@ export default class WhatsNewModal extends Modal {
 
 	async onOpen() {
 		let { contentEl } = this;
-		contentEl.createEl("h2", { text: "Dashboards - What's New" });
+		contentEl.createEl("h2", { text: "DataLoom - What's New" });
 		this.renderDivider(contentEl);
 		this.renderContent(contentEl);
 	}
@@ -45,7 +45,7 @@ export default class WhatsNewModal extends Modal {
 
 			contentEl.createEl("a", {
 				text: "View all releases",
-				href: "https://github.com/trey-wallis/obsidian-dashboards/releases",
+				href: "https://github.com/trey-wallis/obsidian-dataloom/releases",
 			});
 		} else {
 			contentEl.createDiv({
@@ -66,7 +66,7 @@ export default class WhatsNewModal extends Modal {
 		const regex = /#(\d+)/g;
 		const replacedText = text.replace(
 			regex,
-			"https://github.com/trey-wallis/obsidian-dashboards/issues/$1"
+			"https://github.com/trey-wallis/obsidian-dataloom/issues/$1"
 		);
 		return replacedText;
 	}

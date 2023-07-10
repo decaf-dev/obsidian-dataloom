@@ -2,9 +2,9 @@
 
 ![Obsidian Downloads](https://img.shields.io/badge/dynamic/json?logo=obsidian&color=%23483699&label=downloads&query=%24%5B%22notion-like-tables%22%5D.downloads&url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json)
 
-Find detailed documentation at [trey-wallis.github.io/obsidian-dashboards](https://trey-wallis.github.io/obsidian-dashboards/)
+Find detailed documentation at [dataloom.xyz](https://dataloom.xyz)
 
-Dashboards is an [Obsidian.md](https://obsidian.md/) plugin for desktop and mobile. A dashboard is a higher-level view that allows you to tag, sort, and display feeds from your notes. Dashboards is inspired by [Notion.so](https://www.notion.so/).
+DataLoom is an [Obsidian.md](https://obsidian.md/) plugin for desktop and mobile. DataLoom allows you to weave together data from diverse sources into a cohesive table view.
 
 Support development
 
@@ -24,7 +24,7 @@ Support development
 
 ## Screenshots
 
-Dashboards support both light and dark modes and a majority of Obsidian themes.
+DataLoom supports both light and dark modes and a majority of Obsidian themes.
 
 ![](/docusaurus/static/img/light-mode.png)
 ![](/docusaurus/static/img/dark-mode.png)
@@ -56,13 +56,13 @@ Advanced filtering menu
 1. In Obsidian, open **Settings**
 2. Go to **Community plugins**
 3. Select **Browse**
-4. Search for **Dashboards** by **Trey Wallis**
+4. Search for **DataLoom** by **Trey Wallis**
 5. Select **Install**
 6. Then select **Enable**
 
-### Linking dashboard files
+### Linking loom files
 
-By default, Obsidian doesn't display `.dashboard` files in the modal that opens when you type double brackets `[[`. In order to allow this, you must enable detection of all file extensions.
+By default, Obsidian doesn't display `.loom` files in the modal that opens when you type double brackets `[[`. In order to allow this, you must enable detection of all file extensions.
 
 1. In Obsidian, open **Settings**
 2. Select **File & Links**
@@ -72,13 +72,13 @@ By default, Obsidian doesn't display `.dashboard` files in the modal that opens 
 
 ## Getting started
 
-Start by creating a new dashboard. You can do this by clicking on the dashboard icon on the sidebar.
+Start by creating a new loom. You can do this by clicking on the table icon on the sidebar.
 
-<img src="./docusaurus/static/img/new-dashboard-sidebar.png"  width="350">
+<img src="./docusaurus/static/img/new-loom-sidebar.png"  width="350">
 
-You can also right click on a folder and click **New dashboard**
+You can also right click on a folder and click **New loom**
 
-<img src="./docusaurus/static/img/new-dashboard-folder.png" width="450">
+<img src="./docusaurus/static/img/new-loom-folder.png" width="450">
 
 ## Roadmap
 
@@ -90,25 +90,25 @@ See our [project roadmap](https://github.com/users/trey-wallis/projects/2) for d
 
 ## Issues
 
-Please see [issues](https://github.com/trey-wallis/obsidian-dashboards/issues) for feature requests and bug reports.
+Please see [issues](https://github.com/trey-wallis/obsidian-dataloom/issues) for feature requests and bug reports.
 
 If you are experiencing a problem with the plugin, please search the issues for any open bug reports related to your problem before opening a new issue.
 
 ## Contributing
 
-Dashboards is a community plugin. Contributions are welcome.
+DataLoom is a community plugin. Contributions are welcome.
 
-Please see our [contribution guide](https://github.com/trey-wallis/obsidian-dashboards/blob/master/CONTRIBUTING.md) for details on how to contribute
+Please see our [contribution guide](https://github.com/trey-wallis/obsidian-dataloom/blob/master/CONTRIBUTING.md) for details on how to contribute
 
 ## Network Usage
 
 According to Obsidian developer policies, an Obsidian plugin must explain which network services are used and why.
 
-Dashboards will make one `GET` request to `https://api.github.com/repos/trey-wallis/obsidian-dashboards/releases/latest` to pull the lastest release for the What's New Modal. Besides this, Dashboards does not making any network requests. Dashboards does not include client-side telemetry.
+DataLoom will make one `GET` request to `https://api.github.com/repos/trey-wallis/obsidian-dataloom/releases/latest` to pull the lastest release for the What's New Modal. Besides this, DataLoom does not making any network requests. DataLoom does not include client-side telemetry.
 
 ## License
 
-Dashboards is distributed under the [GNU General Public License v3.0](https://github.com/trey-wallis/obsidian-dashboards/blob/master/LICENSE)
+DataLoom is distributed under the [GNU General Public License v3.0](https://github.com/trey-wallis/obsidian-dataloom/blob/master/LICENSE)
 
 ## Disclaimer
 

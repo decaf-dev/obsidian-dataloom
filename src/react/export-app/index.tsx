@@ -1,4 +1,4 @@
-import { DashboardState } from "src/shared/types";
+import { LoomState } from "src/shared/types";
 import Stack from "../shared/stack";
 import React from "react";
 import { ExportType } from "../../shared/export/types";
@@ -17,11 +17,11 @@ import { css } from "@emotion/react";
 import { useAppSelector } from "src/redux/global/hooks";
 
 interface Props {
-	dashboardState: DashboardState;
-	tableFilePath: string;
+	LoomState: LoomState;
+	loomFilePath: string;
 }
 
-export function ExportApp({ dashboardState, tableFilePath }: Props) {
+export function ExportApp({ LoomState, loomFilePath }: Props) {
 	const [exportType, setExportType] = React.useState<ExportType>(
 		ExportType.UNSELECTED
 	);
@@ -37,20 +37,20 @@ export function ExportApp({ dashboardState, tableFilePath }: Props) {
 	}
 
 	function handleDownloadClick() {
-		const fileName = getExportFileName(tableFilePath);
+		const fileName = getExportFileName(loomFilePath);
 		const blobType = getBlobTypeForExportType(exportType);
 		downloadFile(fileName, blobType, content);
 	}
 
 	let content = "";
 	if (exportType === ExportType.MARKDOWN) {
-		content = exportToMarkdown(dashboardState, renderMarkdown);
+		content = exportToMarkdown(LoomState, renderMarkdown);
 	} else if (exportType === ExportType.CSV) {
-		content = exportToCSV(dashboardState, renderMarkdown);
+		content = exportToCSV(LoomState, renderMarkdown);
 	}
 
 	return (
-		<div className="Dashboards__export-app">
+		<div className="DataLoom__export-app">
 			<Padding p="xl">
 				<h5
 					css={css`
@@ -58,7 +58,7 @@ export function ExportApp({ dashboardState, tableFilePath }: Props) {
 						margin-bottom: 0px;
 					`}
 				>
-					Dashboards Export
+					DataLoom Export
 				</h5>
 				<hr
 					css={css`

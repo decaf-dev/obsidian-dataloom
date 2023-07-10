@@ -1,11 +1,8 @@
-import {
-	createBodyCell,
-	createBodyRow,
-} from "src/data/dashboard-state-factory";
-import DashboardStateCommand from "../dashboard-state/dashboard-state-command";
-import { BodyCell, BodyRow, DashboardState } from "../types";
+import { createBodyCell, createBodyRow } from "src/data/loom-state-factory";
+import LoomStateCommand from "../loom-state/loom-state-command";
+import { BodyCell, BodyRow, LoomState } from "../types";
 
-export default class RowAddCommand extends DashboardStateCommand {
+export default class RowAddCommand extends LoomStateCommand {
 	private addedRow: BodyRow;
 	private addedBodyCells: BodyCell[];
 
@@ -13,7 +10,7 @@ export default class RowAddCommand extends DashboardStateCommand {
 		super(true);
 	}
 
-	execute(prevState: DashboardState): DashboardState {
+	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
 		const { bodyRows, bodyCells, columns } = prevState.model;
@@ -36,7 +33,7 @@ export default class RowAddCommand extends DashboardStateCommand {
 		};
 	}
 
-	redo(prevState: DashboardState): DashboardState {
+	redo(prevState: LoomState): LoomState {
 		super.onRedo();
 
 		const { bodyRows, bodyCells } = prevState.model;
@@ -51,7 +48,7 @@ export default class RowAddCommand extends DashboardStateCommand {
 		};
 	}
 
-	undo(prevState: DashboardState): DashboardState {
+	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
 		const { bodyRows, bodyCells } = prevState.model;

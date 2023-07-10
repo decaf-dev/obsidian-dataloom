@@ -5,10 +5,10 @@ if (process.env.ENABLE_REACT_DEVTOOLS === "true") {
 }
 import { Root, createRoot } from "react-dom/client";
 import { store } from "src/redux/global/store";
-import DashboardsView from "./dashboards-view";
-import { deserializeDashboardState } from "src/data/serialize-dashboard-state";
+import { deserializeLoomState } from "src/data/serialize-loom-state";
 import { v4 as uuidv4 } from "uuid";
-import DashboardApp from "src/react/dashboard-app";
+import LoomApp from "src/react/loom-app";
+import DataLoomView from "./dataloom-view";
 
 export default class ReadingViewChild extends MarkdownRenderChild {
 	private root: Root | null;
@@ -22,11 +22,11 @@ export default class ReadingViewChild extends MarkdownRenderChild {
 		this.appId = uuidv4();
 	}
 
-	private handleSaveDashboardState() {}
+	private handleSaveLoomState() {}
 
 	async onload() {
 		const container = this.containerEl;
-		const activeView = app.workspace.getActiveViewOfType(DashboardsView);
+		const activeView = app.workspace.getActiveViewOfType(DataLoomView);
 		if (!activeView) return;
 
 		const file = app.vault.getAbstractFileByPath(this.fileName);
@@ -34,20 +34,20 @@ export default class ReadingViewChild extends MarkdownRenderChild {
 
 		if (file instanceof TFile) {
 			const data = await app.vault.read(file);
-			const state = deserializeDashboardState(data);
+			const state = deserializeLoomState(data);
 
-			//Get dashboard state
+			//Get loom state
 			this.root = createRoot(container);
 
 			this.root.render(
-				<DashboardApp
+				<LoomApp
 					mountLeaf={activeView.leaf}
 					appId={this.appId}
-					tableFile={file}
+					loomFile={file}
 					isMarkdownView
 					store={store}
-					dashboardState={state}
-					onSaveState={this.handleSaveDashboardState}
+					LoomState={state}
+					onSaveState={this.handleSaveLoomState}
 				/>
 			);
 		}

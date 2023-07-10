@@ -1,8 +1,8 @@
-import { TagNotFoundError } from "../dashboard-state/dashboard-error";
-import DashboardStateCommand from "../dashboard-state/dashboard-state-command";
-import { DashboardState, Tag } from "../types";
+import { TagNotFoundError } from "../loom-state/loom-error";
+import LoomStateCommand from "../loom-state/loom-state-command";
+import { LoomState, Tag } from "../types";
 
-export default class TagUpdateCommand extends DashboardStateCommand {
+export default class TagUpdateCommand extends LoomStateCommand {
 	private columnId: string;
 	private tagId: string;
 	private key: keyof Tag;
@@ -26,7 +26,7 @@ export default class TagUpdateCommand extends DashboardStateCommand {
 		this.value = value;
 	}
 
-	execute(prevState: DashboardState): DashboardState {
+	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
 		const { columns } = prevState.model;
@@ -60,12 +60,12 @@ export default class TagUpdateCommand extends DashboardStateCommand {
 		};
 	}
 
-	redo(prevState: DashboardState): DashboardState {
+	redo(prevState: LoomState): LoomState {
 		super.onRedo();
 		return this.execute(prevState);
 	}
 
-	undo(prevState: DashboardState): DashboardState {
+	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
 		const { columns } = prevState.model;
