@@ -29,7 +29,7 @@ export default function Tag({
 }: Props) {
 	const { isDarkMode } = useAppSelector((state) => state.global);
 
-	let tagClass = "Dashboards__tag";
+	let tagClass = "DataLoom__tag";
 	tagClass += " " + findColorClassName(isDarkMode, color);
 
 	if (onRemoveClick !== undefined && id === undefined) {
@@ -38,9 +38,9 @@ export default function Tag({
 		);
 	}
 
-	let contentClassName = "Dashboards__tag-content";
+	let contentClassName = "DataLoom__tag-content";
 	if (maxWidth !== undefined) {
-		contentClassName += " " + "Dashboards__hide-overflow-ellipsis";
+		contentClassName += " " + "DataLoom__hide-overflow-ellipsis";
 	}
 	return (
 		<div

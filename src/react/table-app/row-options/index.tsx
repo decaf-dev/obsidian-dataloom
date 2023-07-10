@@ -135,7 +135,7 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 		const children = rowEl.querySelectorAll("td:not(:last-child)");
 
 		for (let i = 0; i < children.length; i++) {
-			children[i].classList.add("Dashboards__tr--drag-over");
+			children[i].classList.add("DataLoom__tr--drag-over");
 		}
 	}
 
@@ -144,14 +144,14 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 		const children = document.querySelectorAll(".DataLoom_tr--drag-over");
 
 		for (let i = 0; i < children.length; i++) {
-			children[i].classList.remove("Dashboards__tr--drag-over");
+			children[i].classList.remove("DataLoom__tr--drag-over");
 		}
 	}
 
 	return (
 		<>
 			<div
-				className="Dashboards__row-options"
+				className="DataLoom__row-options"
 				css={css`
 					width: 100%;
 					height: 100%;

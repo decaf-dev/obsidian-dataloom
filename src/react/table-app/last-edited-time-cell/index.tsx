@@ -15,7 +15,7 @@ export default function LastEditedTimeCell({
 }: Props) {
 	const overflowStyle = useOverflow(shouldWrapOverflow);
 	return (
-		<div className="Dashboards__last-edited-time-cell" css={overflowStyle}>
+		<div className="DataLoom__last-edited-time-cell" css={overflowStyle}>
 			{unixTimeToDateTimeString(value, format)}
 		</div>
 	);

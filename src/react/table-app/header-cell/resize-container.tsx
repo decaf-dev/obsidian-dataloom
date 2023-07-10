@@ -56,7 +56,7 @@ export default function ResizeContainer({
 	return (
 		<div css={containerStyle}>
 			<div
-				className="Dashboards__resize-handle"
+				className="DataLoom__resize-handle"
 				css={[innerStyle, isDragging && dragStyle]}
 				onMouseDown={(e) => {
 					onMenuClose();

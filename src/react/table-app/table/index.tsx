@@ -80,7 +80,7 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 							return (
 								<td
 									key={id}
-									className="Dashboards__footer-td"
+									className="DataLoom__footer-td"
 									css={css`
 										padding: 0px;
 									`}
@@ -131,7 +131,7 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 									border-bottom: 0;
 								}
 							`}
-							className="Dashboards__body-td"
+							className="DataLoom__body-td"
 						>
 							{content}
 						</td>
@@ -152,7 +152,7 @@ const Components: TableComponents = {
 				`}
 				{...props}
 				style={style}
-				className="Dashboards__table"
+				className="DataLoom__table"
 			/>
 		);
 	},

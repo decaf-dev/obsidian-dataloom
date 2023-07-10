@@ -15,7 +15,7 @@ export default function NumberCell({ value, shouldWrapOverflow }: Props) {
 	if (isNumber(value)) valueString = value;
 
 	return (
-		<div className="Dashboards__number-cell" css={overflowStyle}>
+		<div className="DataLoom__number-cell" css={overflowStyle}>
 			{valueString}
 		</div>
 	);

@@ -69,7 +69,7 @@ export default function BaseMenu({
 				<Padding px="md" py="sm" width="100%">
 					<input
 						type="text"
-						className="Dashboards__focusable"
+						className="DataLoom__focusable"
 						autoFocus
 						css={borderInputStyle}
 						ref={inputRef}

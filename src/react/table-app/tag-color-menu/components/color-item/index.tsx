@@ -35,11 +35,11 @@ export default function ColorItem({
 	}
 
 	let containerClass =
-		"Dashboards__color-item Dashboards__focusable Dashboards__selectable";
-	if (isSelected) containerClass += " Dashboards__selected";
+		"DataLoom__color-item DataLoom__focusable DataLoom__selectable";
+	if (isSelected) containerClass += " DataLoom__selected";
 
 	const colorClass = findColorClassName(isDarkMode, color);
-	let squareClass = "Dashboards__color-item-square";
+	let squareClass = "DataLoom__color-item-square";
 	squareClass += " " + colorClass;
 
 	return (

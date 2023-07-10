@@ -25,7 +25,7 @@ export default function EmbedCell({
 	});
 	return (
 		<div
-			className="Dashboards__embed-cell"
+			className="DataLoom__embed-cell"
 			css={css`
 				width: 100%;
 				height: 100%;

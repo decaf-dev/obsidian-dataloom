@@ -55,7 +55,7 @@ export default function SelectableTag({
 
 	function handleClick(e: React.MouseEvent) {
 		const target = e.target as HTMLElement;
-		if (target.classList.contains("Dashboards__menu-trigger")) return;
+		if (target.classList.contains("DataLoom__menu-trigger")) return;
 
 		//Stop propagation so the the menu doesn't remove the focus class
 		e.stopPropagation();
@@ -74,7 +74,7 @@ export default function SelectableTag({
 					padding: var(--nlt-spacing--sm) var(--nlt-spacing--md);
 					overflow: hidden;
 				`}
-				className="Dashboards__focusable Dashboards__selectable"
+				className="DataLoom__focusable DataLoom__selectable"
 				onClick={handleClick}
 				onKeyDown={handleKeyDown}
 			>

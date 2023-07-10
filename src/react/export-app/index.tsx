@@ -50,7 +50,7 @@ export function ExportApp({ tableState, tableFilePath }: Props) {
 	}
 
 	return (
-		<div className="Dashboards__export-app">
+		<div className="DataLoom__export-app">
 			<Padding p="xl">
 				<h5
 					css={css`

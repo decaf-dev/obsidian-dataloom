@@ -13,7 +13,7 @@ interface Props {
 export default function MultiTagCell({ cellTags, shouldWrapOverflow }: Props) {
 	const overflowStyle = useOverflow(shouldWrapOverflow);
 	return (
-		<div className="Dashboards__multi-tag-cell" css={overflowStyle}>
+		<div className="DataLoom__multi-tag-cell" css={overflowStyle}>
 			<Wrap>
 				{cellTags.map((tag: TagType) => (
 					<Tag

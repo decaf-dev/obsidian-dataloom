@@ -93,14 +93,14 @@ export default function TableHeaderCell({
 		const child: HTMLElement | undefined = thEl.firstChild as HTMLElement;
 		if (!child) return;
 
-		if (child.classList.contains("Dashboards__focusable"))
-			thEl.classList.add("Dashboards__th--drag-over");
+		if (child.classList.contains("DataLoom__focusable"))
+			thEl.classList.add("DataLoom__th--drag-over");
 	}
 
 	function removeDragHover() {
 		//Add dragging over class to all the children
 		const el = document.querySelector(".DataLoom_th--drag-over");
-		if (el) el.classList.remove("Dashboards__th--drag-over");
+		if (el) el.classList.remove("DataLoom__th--drag-over");
 	}
 
 	//We throw an error if the system

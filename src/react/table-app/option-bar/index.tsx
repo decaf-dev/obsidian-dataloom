@@ -116,7 +116,7 @@ export default function OptionBar({
 
 	return (
 		<div
-			className="Dashboards__option-bar"
+			className="DataLoom__option-bar"
 			css={css`
 				width: 100%;
 				border-bottom: 1px solid var(--background-modifier-border);

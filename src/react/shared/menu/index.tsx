@@ -79,7 +79,7 @@ const Menu = React.forwardRef<HTMLDivElement, Props>(function Menu(
 			{isOpen &&
 				ReactDOM.createPortal(
 					<div
-						className="Dashboards__menu"
+						className="DataLoom__menu"
 						data-id={id}
 						css={css`
 							width: 0;

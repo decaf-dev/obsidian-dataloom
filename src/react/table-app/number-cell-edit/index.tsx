@@ -49,7 +49,7 @@ export default function NumberCellEdit({
 	}
 
 	return (
-		<div className="Dashboards__number-cell-edit">
+		<div className="DataLoom__number-cell-edit">
 			<input
 				autoFocus
 				css={numberInputStyle}
@@ -59,7 +59,7 @@ export default function NumberCellEdit({
 				value={localValue}
 				onChange={(e) => handleChange(e.target.value)}
 				onBlur={(e) => {
-					e.target.classList.add("Dashboards__blur--cell");
+					e.target.classList.add("DataLoom__blur--cell");
 				}}
 			/>
 		</div>

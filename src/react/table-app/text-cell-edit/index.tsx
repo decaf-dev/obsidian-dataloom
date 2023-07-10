@@ -171,7 +171,7 @@ export default function TextCellEdit({
 	return (
 		<>
 			<div
-				className="Dashboards__text-cell-edit"
+				className="DataLoom__text-cell-edit"
 				ref={triggerRef}
 				css={css`
 					width: 100%;
@@ -189,7 +189,7 @@ export default function TextCellEdit({
 					onKeyDown={handleKeyDown}
 					onChange={handleTextareaChange}
 					onBlur={(e) => {
-						e.target.classList.add("Dashboards__blur--cell");
+						e.target.classList.add("DataLoom__blur--cell");
 					}}
 				/>
 			</div>

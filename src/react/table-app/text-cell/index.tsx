@@ -14,7 +14,7 @@ export default function TextCell({ markdown, shouldWrapOverflow }: Props) {
 	const overflowStyle = useOverflow(shouldWrapOverflow);
 	return (
 		<div
-			className="Dashboards__text-cell"
+			className="DataLoom__text-cell"
 			css={css`
 				width: 100%;
 				height: 100%;

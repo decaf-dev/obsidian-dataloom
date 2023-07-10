@@ -17,7 +17,7 @@ export const getEmbeddedTableLinkEls = (el: HTMLElement) => {
 export const hasLoadedEmbeddedTable = (linkEl: HTMLElement) => {
 	if (linkEl.children.length > 0) {
 		const firstChildEl = linkEl.children[0];
-		if (firstChildEl.classList.contains("Dashboards__embedded-container"))
+		if (firstChildEl.classList.contains("DataLoom__embedded-container"))
 			return true;
 	}
 	return false;

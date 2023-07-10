@@ -55,7 +55,7 @@ export default function BottomBar({
 
 	return (
 		<div
-			className="Dashboards__bottom-bar"
+			className="DataLoom__bottom-bar"
 			css={css`
 				position: relative;
 				height: 60px;

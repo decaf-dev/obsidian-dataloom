@@ -264,7 +264,7 @@ export default function App() {
 	return (
 		<div
 			data-id={appId}
-			className="Dashboards__app"
+			className="DataLoom__app"
 			css={css`
 				display: flex;
 				flex-direction: column;
@@ -553,7 +553,7 @@ export default function App() {
 										id: cell.id,
 										content: (
 											<div
-												className="Dashboards__footer-td-container"
+												className="DataLoom__footer-td-container"
 												css={css`
 													width: ${width};
 												`}

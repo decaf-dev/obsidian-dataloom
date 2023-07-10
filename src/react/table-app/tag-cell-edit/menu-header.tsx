@@ -48,7 +48,7 @@ export default function MenuHeader({
 					/>
 				))}
 				<input
-					className="Dashboards__focusable"
+					className="DataLoom__focusable"
 					css={transparentInputStyle}
 					autoFocus
 					ref={inputRef}

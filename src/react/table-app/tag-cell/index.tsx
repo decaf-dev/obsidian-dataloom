@@ -16,7 +16,7 @@ export default function TagCell({
 }: Props) {
 	const overflowStyle = useOverflow(shouldWrapOverflow);
 	return (
-		<div className="Dashboards__tag-cell" css={overflowStyle}>
+		<div className="DataLoom__tag-cell" css={overflowStyle}>
 			<Tag markdown={markdown} color={color} />
 		</div>
 	);

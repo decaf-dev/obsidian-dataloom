@@ -20,7 +20,7 @@ export default function ColumnSelect({
 			<label htmlFor="column-select">Column</label>
 			<select
 				id="column-select"
-				className="Dashboards__focusable"
+				className="DataLoom__focusable"
 				value={value}
 				onChange={(e) => onChange(e.target.value)}
 			>

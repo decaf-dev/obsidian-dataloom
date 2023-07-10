@@ -16,7 +16,7 @@ export default function Input({ value, onChange }: Props) {
 			`}
 		>
 			<input
-				className="Dashboards__focusable"
+				className="DataLoom__focusable"
 				type="text"
 				css={transparentInputStyle}
 				autoFocus

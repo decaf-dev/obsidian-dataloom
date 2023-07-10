@@ -87,11 +87,11 @@ export default function Button({
 		}
 	}
 
-	let className = "Dashboards__button";
+	let className = "DataLoom__button";
 
 	if (isFocusable) {
-		className += " Dashboards__focusable";
-		if (invertFocusColor) className += " Dashboards__focusable--inverted";
+		className += " DataLoom__focusable";
+		if (invertFocusColor) className += " DataLoom__focusable--inverted";
 	}
 
 	return (

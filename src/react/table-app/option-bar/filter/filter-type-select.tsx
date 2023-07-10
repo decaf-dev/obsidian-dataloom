@@ -24,7 +24,7 @@ export default function FilterRowDropdown({
 	return (
 		<select
 			tabIndex={0}
-			className="Dashboards__focusable"
+			className="DataLoom__focusable"
 			css={css`
 				${selectStyle}
 			`}

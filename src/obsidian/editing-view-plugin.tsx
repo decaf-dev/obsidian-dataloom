@@ -87,7 +87,7 @@ class EditingViewPlugin implements PluginValue {
 			linkEl.style.padding = "0px";
 
 			const tableContainerEl = linkEl.createDiv();
-			tableContainerEl.className = "Dashboards__embedded-container";
+			tableContainerEl.className = "DataLoom__embedded-container";
 			tableContainerEl.style.height = "100%";
 			tableContainerEl.style.width = "100%";
 			tableContainerEl.style.padding = "10px 0px";
