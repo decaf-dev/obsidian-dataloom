@@ -1,5 +1,5 @@
 import { useLogger } from "../logger";
-import { useLoomState } from "./table-state-context";
+import { useLoomState } from "./loom-state-context";
 import RowAddCommand from "../commands/row-add-command";
 import RowDeleteCommand from "../commands/row-delete-command";
 import React from "react";

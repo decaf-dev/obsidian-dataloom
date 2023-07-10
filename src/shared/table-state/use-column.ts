@@ -10,7 +10,7 @@ import {
 	SortDir,
 } from "src/shared/types";
 import { useLogger } from "../logger";
-import { useLoomState } from "./table-state-context";
+import { useLoomState } from "./loom-state-context";
 import ColumnAddCommand from "../commands/column-add-command";
 import ColumnDeleteCommand from "../commands/column-delete-command";
 import ColumnUpdateCommand from "../commands/column-update-command";

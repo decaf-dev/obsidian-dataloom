@@ -3,8 +3,8 @@ import {
 	ColumNotFoundError,
 	RowNotFoundError,
 	TagNotFoundError,
-} from "../table-state/table-error";
-import LoomStateCommand from "../table-state/table-state-command";
+} from "../table-state/loom-error";
+import LoomStateCommand from "../table-state/loom-state-command";
 import {
 	BodyCell,
 	BodyRow,

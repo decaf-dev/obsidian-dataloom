@@ -72,7 +72,7 @@ By default, Obsidian doesn't display `.loom` files in the modal that opens when 
 
 ## Getting started
 
-Start by creating a new table. You can do this by clicking on the table icon on the sidebar.
+Start by creating a new loom. You can do this by clicking on the table icon on the sidebar.
 
 <img src="./docusaurus/static/img/new-table-sidebar.png"  width="350">
 

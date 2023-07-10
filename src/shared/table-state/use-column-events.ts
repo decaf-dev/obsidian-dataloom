@@ -4,7 +4,7 @@ import ColumnDeleteCommand from "src/shared/commands/column-delete-command";
 import { isEventForThisApp } from "src/shared/event-system/utils";
 import { EVENT_COLUMN_ADD, EVENT_COLUMN_DELETE } from "src/shared/events";
 import { useLogger } from "src/shared/logger";
-import { useLoomState } from "src/shared/table-state/table-state-context";
+import { useLoomState } from "src/shared/table-state/loom-state-context";
 import { useMountState } from "../../react/table-app/mount-provider";
 
 export const useColumnEvents = () => {

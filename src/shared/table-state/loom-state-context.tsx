@@ -1,5 +1,5 @@
 import { LoomState } from "../types";
-import LoomStateCommand from "./table-state-command";
+import LoomStateCommand from "./loom-state-command";
 import React from "react";
 import { useLogger } from "../logger";
 import RowSortCommand from "../commands/row-sort-command";

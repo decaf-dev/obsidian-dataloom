@@ -8,7 +8,7 @@ import {
 	LoomState,
 	Tag,
 } from "src/shared/types";
-import { ColumNotFoundError, RowNotFoundError } from "./table-error";
+import { ColumNotFoundError, RowNotFoundError } from "./loom-error";
 import { getTimeCellContent } from "../cell-content/time-content";
 import { getDateCellContent } from "../cell-content/date-cell-content";
 import { getCurrencyCellContent } from "../cell-content/currency-cell-content";

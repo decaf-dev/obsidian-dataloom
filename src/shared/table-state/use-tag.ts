@@ -1,7 +1,7 @@
 import { useLogger } from "../logger";
 import { Color } from "../types";
 import TagDeleteCommand from "../commands/tag-delete-command";
-import { useLoomState } from "./table-state-context";
+import { useLoomState } from "./loom-state-context";
 import TagUpdateCommand from "../commands/tag-update-command";
 import TagAddCommand from "../commands/tag-add-command";
 import TagCellRemoveCommand from "../commands/tag-cell-remove-command";

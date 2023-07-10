@@ -1,5 +1,5 @@
 import { useLogger } from "../logger";
-import { useLoomState } from "./table-state-context";
+import { useLoomState } from "./loom-state-context";
 import CellBodyUpdateCommand from "../commands/cell-body-update-command";
 import CellHeaderUpdateCommand from "../commands/cell-header-update-command";
 import React from "react";

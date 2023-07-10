@@ -9,7 +9,7 @@ import {
 } from "../shared/types";
 import { LoomState630 } from "src/shared/types/types-6.3.0";
 import { GeneralFunction670, LoomState670 } from "src/shared/types/types-6.7.0";
-import { ColumNotFoundError } from "../shared/table-state/table-error";
+import { ColumNotFoundError } from "../shared/table-state/loom-error";
 import { createFooterRow, createHeaderRow } from "./table-state-factory";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/table-state/constants";
 import { LoomState680 } from "src/shared/types/types-6.8.0";

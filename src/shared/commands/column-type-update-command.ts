@@ -1,8 +1,8 @@
 import { createTag } from "src/data/table-state-factory";
 import { unixTimeToDateString } from "../date/date-conversion";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "../table-state/constants";
-import { ColumNotFoundError } from "../table-state/table-error";
-import LoomStateCommand from "../table-state/table-state-command";
+import { ColumNotFoundError } from "../table-state/loom-error";
+import LoomStateCommand from "../table-state/loom-state-command";
 import {
 	BodyCell,
 	Calculation,

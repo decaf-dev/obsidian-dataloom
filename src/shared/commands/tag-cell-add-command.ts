@@ -2,7 +2,7 @@ import {
 	rowLastEditedTime,
 	rowLastEditedTimeUpdate,
 } from "../table-state/row-state-operations";
-import LoomStateCommand from "../table-state/table-state-command";
+import LoomStateCommand from "../table-state/loom-state-command";
 import { LoomState } from "../types";
 
 export default class TagCellAddCommand extends LoomStateCommand {

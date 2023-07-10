@@ -1,5 +1,5 @@
 import { BodyRow } from "../types";
-import { RowNotFoundError } from "./table-error";
+import { RowNotFoundError } from "./loom-error";
 
 export const rowLastEditedTime = (rows: BodyRow[], rowId: string) => {
 	const row = rows.find((row) => row.id === rowId);

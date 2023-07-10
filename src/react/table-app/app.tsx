@@ -7,8 +7,8 @@ import NewColumnButton from "./new-column-button";
 import HeaderCell from "./header-cell";
 
 import { useUUID } from "../../shared/hooks";
-import { CellNotFoundError } from "../../shared/table-state/table-error";
-import { useLoomState } from "../../shared/table-state/table-state-context";
+import { CellNotFoundError } from "../../shared/table-state/loom-error";
+import { useLoomState } from "../../shared/table-state/loom-state-context";
 import { useFilterRules } from "src/shared/table-state/use-filter-rules";
 import { filterBodyRowsBySearch } from "src/shared/table-state/filter-by-search";
 import { useColumn } from "src/shared/table-state/use-column";

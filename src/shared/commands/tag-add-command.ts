@@ -1,5 +1,5 @@
 import { createTag } from "src/data/table-state-factory";
-import LoomStateCommand from "../table-state/table-state-command";
+import LoomStateCommand from "../table-state/loom-state-command";
 import { LoomState, Tag } from "../types";
 import { Color } from "../types";
 import {
