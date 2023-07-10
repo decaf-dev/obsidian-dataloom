@@ -270,8 +270,8 @@ export default class DataLoomPlugin extends Plugin {
 							) {
 								const path = matches[1];
 
-								//The path will be the relative path e.g. my-loom.loom
-								//while the old path will be the absolute path in the vault e.g. /looms/my-loom.loom
+								//The path will be the relative path e.g. filename.loom
+								//while the old path will be the absolute path in the vault e.g. /looms/filename.loom
 								if (oldPath.includes(path)) {
 									const found = loomsToUpdate.find(
 										(loom) =>

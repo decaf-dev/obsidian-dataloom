@@ -98,7 +98,7 @@ export const deserializeLoomState = (data: string): LoomState => {
 		});
 	}
 
-	//Feat: new table state structure
+	//Feat: new loom state structure
 	if (isVersionLessThan(pluginVersion, "6.4.0")) {
 		const LoomState = parsedState as LoomState630;
 		const { columns, tags, rows, cells } = LoomState.model;
@@ -276,7 +276,7 @@ export const deserializeLoomState = (data: string): LoomState => {
 				);
 
 				//If the cell doesn't exist, then don't migrate it
-				//It seems that in older table versions the cellIds array of tags wasn't being cleaned up
+				//It seems that in older loom versions the cellIds array of tags wasn't being cleaned up
 				//properly when a column, row, or cell was deleted. Therefore there will still be some
 				//dangling cellIds in the tags array.
 				if (!cell) return;
@@ -339,11 +339,11 @@ export const deserializeLoomState = (data: string): LoomState => {
 		const LoomState = currentState as LoomState6160;
 		const { columns, bodyRows } = LoomState.model;
 
-		//Fix: resolve empty rows being inserted but appearing higher up in the table
+		//Fix: resolve empty rows being inserted but appearing higher up in the loom
 		//This was due to the index being set to the row's position in the array, which
 		//was sometimes less than the highest index value. This is because the index wasn't being
 		//decreased.
-		//This is a reset to force the index to be set to the correct value on all tables.
+		//This is a reset to force the index to be set to the correct value on all looms.
 		columns.forEach((column: unknown) => {
 			const typedColumn = column as Record<string, unknown>;
 			typedColumn.sortDir = SortDir.NONE;
