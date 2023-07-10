@@ -1,45 +1,45 @@
-# Embedding dashboards
+# Embedding tables
 
 ## Basic usage
 
-> Please make sure that you have enabled [detection of all extensions](../getting-started/quick-start#linking-dashboard-files)
+> Please make sure that you have enabled [detection of all extensions](../getting-started/quick-start#linking-table-files)
 
-A dashboard may be embedded into a note by using the [embedded file syntax](https://help.obsidian.md/Linking+notes+and+files/Embedding+files).
+A table may be embedded into a note by using the [embedded file syntax](https://help.obsidian.md/Linking+notes+and+files/Embedding+files).
 
-Example dashboard
+Example table
 
 ```markdown
-![[my-dashboard.dashboard]]
+![[my-table.table]]
 ```
 
-An embedded dashboard will preform the same functions as a normal dashboard, the only limitation being a smaller window.
+An embedded table will preform the same functions as a normal table, the only limitation being a smaller window.
 
-Changes that are made to an embedded dashboard will be saved to the dashboard file. Changes made to an embedded dashboard will also update any open tabs that contain a dashboard.
+Changes that are made to an embedded table will be saved to the table file. Changes made to an embedded table will also update any open tabs that contain a table.
 
 ## Setting a width and height
 
-An embedded dashboard has a default width of `100%` and a default height of `340px`. A height of `340px` will render exactly 4 body rows.
+An embedded table has a default width of `100%` and a default height of `340px`. A height of `340px` will render exactly 4 body rows.
 
-If you would like to modify the width or height of a dashboard, you can use the [embedded image syntax](https://help.obsidian.md/Linking+notes+and+files/Embedding+files#Embed+an+image+in+a+note).
+If you would like to modify the width or height of a table, you can use the [embedded image syntax](https://help.obsidian.md/Linking+notes+and+files/Embedding+files#Embed+an+image+in+a+note).
 
 > Note: setting a value of `0` will use the default value.
 
 ### Examples
 
-An embedded dashboard with a width of `300px` and height of `300px`
+An embedded table with a width of `300px` and height of `300px`
 
 ```markdown
-![[Untitled.dashboard|300x300]]
+![[Untitled.table|300x300]]
 ```
 
-An embedded dashboard with a default with and height of `300px`
+An embedded table with a default with and height of `300px`
 
 ```markdown
-![[Untitled.dashboard|0x300]]
+![[Untitled.table|0x300]]
 ```
 
-An embedded dashboard with a width of `300px` and a default height
+An embedded table with a width of `300px` and a default height
 
 ```markdown
-![[Untitled.dashboard|300x0]]
+![[Untitled.table|300x0]]
 ```

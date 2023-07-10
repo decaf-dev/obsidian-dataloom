@@ -10,15 +10,15 @@ import { TableState } from "src/shared/types";
 import {
 	deserializeTableState,
 	serializeTableState,
-} from "src/data/serialize-dashboard-state";
+} from "src/data/serialize-table-state";
 import { EVENT_REFRESH_APP } from "src/shared/events";
 import { v4 as uuidv4 } from "uuid";
 import DashboardApp from "src/react/table-app";
-import { DASHBOARDS_PLUGIN_ID } from "src/main";
+import { DATA_LOOM_PLUGIN_ID } from "src/main";
 
-export const DASHBOARDS_VIEW = "dashboards";
+export const DATA_LOOM_VIEW = "dashloom";
 
-export default class DashboardsView extends TextFileView {
+export default class DashLoomView extends TextFileView {
 	private root: Root | null;
 	private appId: string;
 
@@ -44,7 +44,7 @@ export default class DashboardsView extends TextFileView {
 			//Open settings tab
 			(this.app as any).setting.open();
 			//Navigate to plugin settings
-			(this.app as any).setting.openTabById(DASHBOARDS_PLUGIN_ID);
+			(this.app as any).setting.openTabById(DATA_LOOM_PLUGIN_ID);
 		});
 
 		this.app.workspace.on(
@@ -90,7 +90,7 @@ export default class DashboardsView extends TextFileView {
 	}
 
 	getViewType() {
-		return DASHBOARDS_VIEW;
+		return DATA_LOOM_VIEW;
 	}
 
 	getDisplayText() {

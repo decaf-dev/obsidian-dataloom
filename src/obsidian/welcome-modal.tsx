@@ -7,9 +7,9 @@ export default class WelcomeModal extends Modal {
 
 	onOpen() {
 		const { contentEl } = this;
-		contentEl.createEl("h2", { text: "Welcome to Dashboards" });
+		contentEl.createEl("h2", { text: "Welcome to DataLoom" });
 		contentEl.createDiv({
-			text: "Powerful dashboard suite inspired by Notion.so",
+			text: "Weave together data from diverse sources into a cohesive table view.",
 		});
 		this.renderDivider(contentEl);
 		const titleEl = contentEl.createEl("h5", { text: "Learn how to use" });
@@ -24,23 +24,23 @@ export default class WelcomeModal extends Modal {
 		this.renderCard(
 			cardContainerEl,
 			"Quick start",
-			"Learn the basics of creating a dashboard",
+			"Learn the basics of creating a table",
 			"https://dataloom.xyz/getting-started/quick-start",
 			"table"
 		);
 
 		this.renderCard(
 			cardContainerEl,
-			"Embedded dashboards",
-			"Learn how to embed a dashboard into a markdown note",
-			"https://dataloom.xyz/other/embedding-dashboards",
+			"Embedded tables",
+			"Learn how to embed a tables into a markdown note",
+			"https://dataloom.xyz/other/embedding-tables",
 			"sticky-note"
 		);
 
 		this.renderCard(
 			cardContainerEl,
 			"Keyboard focus system",
-			"Learn how to navigate dashboards with your keyboard",
+			"Learn how to navigate tables with your keyboard",
 			"https://dataloom.xyz/other/keyboard-focus-system",
 			"list-plus"
 		);

@@ -1,5 +1,5 @@
 import { MarkdownRenderer, MarkdownView, WorkspaceLeaf } from "obsidian";
-import DashboardsView from "src/obsidian/dashboards-view";
+import DashboardsView from "src/obsidian/dataloom-view";
 
 const renderText = async (leaf: WorkspaceLeaf, value: string) => {
 	const div = document.createElement("div");

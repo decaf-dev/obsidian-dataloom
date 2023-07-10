@@ -1,7 +1,7 @@
 import { Notice } from "obsidian";
 import { createFile, createFolder } from "./file-operations";
 import { createTableState } from "./table-state-factory";
-import { serializeTableState } from "./serialize-dashboard-state";
+import { serializeTableState } from "./serialize-table-state";
 import { CURRENT_FILE_EXTENSION, DEFAULT_TABLE_NAME } from "./constants";
 
 const getFileName = (): string => {
@@ -30,7 +30,7 @@ export const createDashboardFile = async (options: { folderPath: string }) => {
 
 		return await createFile(filePath, serialized);
 	} catch (err) {
-		new Notice("Could not create dashboard");
+		new Notice("Could not create DataLoom table file");
 		throw err;
 	}
 };

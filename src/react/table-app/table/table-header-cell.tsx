@@ -99,7 +99,7 @@ export default function TableHeaderCell({
 
 	function removeDragHover() {
 		//Add dragging over class to all the children
-		const el = document.querySelector(".Dashboards__th--drag-over");
+		const el = document.querySelector(".DataLoom_th--drag-over");
 		if (el) el.classList.remove("Dashboards__th--drag-over");
 	}
 

@@ -1,5 +1,5 @@
 const obsidianEvent = (name: string) => {
-	return "dashboards-" + name;
+	return "dataloom-" + name;
 };
 
 export const EVENT_COLUMN_ADD = obsidianEvent("add-column");

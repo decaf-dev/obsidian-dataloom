@@ -25,93 +25,93 @@
 /*
  * Colors
  */
-.Dashboards__light-gray--light {
+.DataLoom_light-gray--light {
 	/* background-color: #cfcfc4; */
 	background-color: hsl(0, 3%, 94%);
 }
 
-.Dashboards__light-gray--dark {
+.DataLoom_light-gray--dark {
 	background-color: hsl(0, 0%, 22%);
 }
 
-.Dashboards__gray--light {
+.DataLoom_gray--light {
 	/* background-color: #cfcfc4; */
 	background-color: hsl(40, 5%, 88%);
 }
 
-.Dashboards__gray--dark {
+.DataLoom_gray--dark {
 	background-color: hsl(0, 0%, 35%);
 }
 
-.Dashboards__brown--light {
+.DataLoom_brown--light {
 	background-color: hsl(18, 31%, 89%);
 }
 
-.Dashboards__brown--dark {
+.DataLoom_brown--dark {
 	background-color: hsl(19, 32%, 27%);
 }
 
-.Dashboards__orange--light {
+.DataLoom_orange--light {
 	background-color: hsl(28, 67%, 88%);
 }
 
-.Dashboards__orange--dark {
+.DataLoom_orange--dark {
 	background-color: hsl(28, 52%, 32%);
 }
 
-.Dashboards__yellow--light {
+.DataLoom_yellow--light {
 	background-color: hsl(43, 82%, 89%);
 }
 
-.Dashboards__yellow--dark {
+.DataLoom_yellow--dark {
 	background-color: hsl(37, 43%, 36%);
 }
 
-.Dashboards__green--light {
+.DataLoom_green--light {
 	background-color: hsl(113, 30%, 89%);
 }
 
-.Dashboards__green--dark {
+.DataLoom_green--dark {
 	background-color: hsl(138, 23%, 28%);
 }
 
-.Dashboards__blue--light {
+.DataLoom_blue--light {
 	background-color: hsl(205, 41%, 89%);
 }
 
-.Dashboards__blue--dark {
+.DataLoom_blue--dark {
 	background-color: hsl(218, 38%, 30%);
 }
 
-.Dashboards__purple--light {
+.DataLoom_purple--light {
 	background-color: hsl(272, 29%, 90%);
 }
 
-.Dashboards__purple--dark {
+.DataLoom_purple--dark {
 	background-color: hsl(266, 34%, 28%);
 }
 
-.Dashboards__pink--light {
+.DataLoom_pink--light {
 	background-color: hsl(330, 36%, 91%);
 }
 
-.Dashboards__pink--dark {
+.DataLoom_pink--dark {
 	background-color: hsl(330, 31%, 30%);
 }
 
-.Dashboards__red--light {
+.DataLoom_red--light {
 	background-color: hsl(11, 64%, 91%);
 }
 
-.Dashboards__red--dark {
+.DataLoom_red--dark {
 	background-color: hsl(8, 35%, 30%);
 }
 
-.Dashboards__app ::-webkit-scrollbar {
+.DataLoom_app ::-webkit-scrollbar {
 	display: none;
 }
 
-.Dashboards__menu ::-webkit-scrollbar {
+.DataLoom_menu ::-webkit-scrollbar {
 	display: none;
 }
 
@@ -119,22 +119,22 @@
 /*
  * Selectable and selected
  */
-.Dashboards__selectable {
+.DataLoom_selectable {
 	cursor: pointer;
 }
 
-.Dashboards__selectable:hover {
+.DataLoom_selectable:hover {
 	background-color: var(--color-base-30);
 }
 
-.Dashboards__selected {
+.DataLoom_selected {
 	background-color: var(--color-base-20);
 }
 
 /**
 * Remove padding from the view container
 */
-.workspace-leaf-content[data-type="dashboards"] .view-content {
+.workspace-leaf-content[data-type="table"] .view-content {
 	padding: 0;
 }
 
@@ -143,42 +143,42 @@
 * button:not(.clickable-icon)
 * We want to override this for our buttons
 */
-/* .Dashboards__app button, .Dashboards__menu button {
+/* .DataLoom_app button, .DataLoom_menu button {
 	background-color: unset;
 	box-shadow: unset;
 } */
 
-.Dashboards__default-cursor {
+.DataLoom_default-cursor {
 	cursor: default !important;
 }
 
-.Dashboards__focusable:focus-visible, .Dashboards__focus-visible {
+.DataLoom_focusable:focus-visible, .DataLoom_focus-visible {
 	outline: 2px solid var(--color-accent) !important;
 	outline-offset: -2px !important;
 }
 
-.Dashboards__focusable--inverted:focus-visible {
+.DataLoom_focusable--inverted:focus-visible {
 	outline: 2px solid var(--text-on-accent-inverted);
 	outline-offset: 0px;
 }
 
-.Dashboards__blur--cell {
+.DataLoom_blur--cell {
 	outline: 2px solid var(--background-modifier-border-focus) !important;
 	outline-offset: -2px;
 }
 
-.Dashboards__blur {
+.DataLoom_blur {
 	outline: 2px solid var(--color-accent) !important;
 	outline-offset: -2px;
 }
 
-.Dashboards__tr--drag-over {
+.DataLoom_tr--drag-over {
 	/* outline: 2px solid var(--color-accent);
 	outline-offset: -2px; */
 	border-bottom: 1px solid var(--color-accent) !important;
 }
 
-.Dashboards__th--drag-over {
+.DataLoom_th--drag-over {
 	/* outline: 2px solid var(--color-accent);
 	outline-offset: -2px; */
 	border-bottom: 1px solid var(--color-accent) !important;

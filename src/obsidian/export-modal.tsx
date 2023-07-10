@@ -1,6 +1,6 @@
 import { App, Modal, Notice, TFile } from "obsidian";
 import { Root, createRoot } from "react-dom/client";
-import { deserializeTableState } from "src/data/serialize-dashboard-state";
+import { deserializeTableState } from "src/data/serialize-table-state";
 import { ExportApp } from "src/react/export-app";
 import { Provider } from "react-redux";
 import { store } from "src/redux/global/store";

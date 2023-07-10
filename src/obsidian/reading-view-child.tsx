@@ -5,8 +5,8 @@ if (process.env.ENABLE_REACT_DEVTOOLS === "true") {
 }
 import { Root, createRoot } from "react-dom/client";
 import { store } from "src/redux/global/store";
-import DashboardsView from "./dashboards-view";
-import { deserializeTableState } from "src/data/serialize-dashboard-state";
+import DashboardsView from "./dataloom-view";
+import { deserializeTableState } from "src/data/serialize-table-state";
 import { v4 as uuidv4 } from "uuid";
 import DashboardApp from "src/react/table-app";
 
@@ -36,7 +36,7 @@ export default class ReadingViewChild extends MarkdownRenderChild {
 			const data = await app.vault.read(file);
 			const state = deserializeTableState(data);
 
-			//Get dashboard state
+			//Get table state
 			this.root = createRoot(container);
 
 			this.root.render(

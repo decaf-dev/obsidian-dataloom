@@ -6,8 +6,8 @@ if (process.env.ENABLE_REACT_DEVTOOLS === "true") {
 }
 import { Root, createRoot } from "react-dom/client";
 
-import { serializeTableState } from "src/data/serialize-dashboard-state";
-import { deserializeTableState } from "src/data/serialize-dashboard-state";
+import { serializeTableState } from "src/data/serialize-table-state";
+import { deserializeTableState } from "src/data/serialize-table-state";
 import { store } from "src/redux/global/store";
 import {
 	EVENT_REFRESH_APP,
@@ -17,17 +17,17 @@ import { TableState } from "src/shared/types";
 import _ from "lodash";
 import {
 	findEmbeddedTableFile,
-	getEmbeddedDashboardHeight,
-	getEmbeddedDashboardLinkEls,
-	getEmbeddedDashboardWidth,
-	hasLoadedEmbeddedDashboard,
+	getEmbeddedTableHeight,
+	getEmbeddedTableLinkEls,
+	getEmbeddedTableWidth,
+	hasLoadedEmbeddedTable,
 } from "./utils";
 import { v4 as uuidv4 } from "uuid";
 import DashboardApp from "src/react/table-app";
 
 class EditingViewPlugin implements PluginValue {
 	private editorView: EditorView;
-	private dashboardApps: {
+	private tableApps: {
 		id: string;
 		parentEl: HTMLElement;
 		leaf: WorkspaceLeaf;
@@ -37,7 +37,7 @@ class EditingViewPlugin implements PluginValue {
 
 	constructor(view: EditorView) {
 		this.editorView = view;
-		this.dashboardApps = [];
+		this.tableApps = [];
 		this.setupEventListeners();
 	}
 
@@ -52,7 +52,7 @@ class EditingViewPlugin implements PluginValue {
 
 		const activeView = activeLeaf.view as MarkdownView;
 
-		const embeddedTableLinkEls = getEmbeddedDashboardLinkEls(
+		const embeddedTableLinkEls = getEmbeddedTableLinkEls(
 			activeView.containerEl
 		);
 
@@ -62,16 +62,13 @@ class EditingViewPlugin implements PluginValue {
 			const { defaultEmbedWidth, defaultEmbedHeight } =
 				store.getState().global.settings;
 
-			const width = getEmbeddedDashboardWidth(linkEl, defaultEmbedWidth);
-			const height = getEmbeddedDashboardHeight(
-				linkEl,
-				defaultEmbedHeight
-			);
+			const width = getEmbeddedTableWidth(linkEl, defaultEmbedWidth);
+			const height = getEmbeddedTableHeight(linkEl, defaultEmbedHeight);
 
 			linkEl.style.width = width;
 			linkEl.style.height = height;
 
-			if (hasLoadedEmbeddedDashboard(linkEl)) continue;
+			if (hasLoadedEmbeddedTable(linkEl)) continue;
 
 			//Clear default Obsidian placeholder children
 			linkEl.empty();
@@ -79,8 +76,8 @@ class EditingViewPlugin implements PluginValue {
 			const file = findEmbeddedTableFile(linkEl);
 			if (!file) continue;
 
-			//Filter out any old dashboards
-			this.dashboardApps = this.dashboardApps.filter(
+			//Filter out any old tables
+			this.tableApps = this.tableApps.filter(
 				(app) => app.file.path !== file.path
 			);
 
@@ -89,28 +86,28 @@ class EditingViewPlugin implements PluginValue {
 			linkEl.style.margin = "0px";
 			linkEl.style.padding = "0px";
 
-			const dashboardContainerEl = linkEl.createDiv();
-			dashboardContainerEl.className = "Dashboards__embedded-container";
-			dashboardContainerEl.style.height = "100%";
-			dashboardContainerEl.style.width = "100%";
-			dashboardContainerEl.style.padding = "10px 0px";
+			const tableContainerEl = linkEl.createDiv();
+			tableContainerEl.className = "Dashboards__embedded-container";
+			tableContainerEl.style.height = "100%";
+			tableContainerEl.style.width = "100%";
+			tableContainerEl.style.padding = "10px 0px";
 
 			const appId = uuidv4();
-			this.dashboardApps.push({
+			this.tableApps.push({
 				id: appId,
 				leaf: activeView.leaf,
-				parentEl: dashboardContainerEl,
+				parentEl: tableContainerEl,
 				file,
 			});
 
 			//Call a separate function to not block the update function
-			this.setupTable(activeView, dashboardContainerEl, file, appId);
+			this.setupTable(activeView, tableContainerEl, file, appId);
 		}
 	}
 
 	private async setupTable(
 		activeView: MarkdownView,
-		dashboardContainerEl: HTMLElement,
+		tableContainerEl: HTMLElement,
 		file: TFile,
 		appId: string
 	) {
@@ -118,49 +115,38 @@ class EditingViewPlugin implements PluginValue {
 		 * Stop propagation of the click event. We do this so that the embedded link div
 		 * don't navigate to the linked file when it is clicked.
 		 */
-		dashboardContainerEl.addEventListener("click", (e) => {
+		tableContainerEl.addEventListener("click", (e) => {
 			e.stopPropagation();
 		});
 
-		//Get the dashboard state
+		//Get the table state
 		const data = await app.vault.read(file);
 		const tableState = deserializeTableState(data);
 
-		const dashboard = this.dashboardApps.find((app) => app.id === appId);
-		if (!dashboard) return;
+		const table = this.tableApps.find((app) => app.id === appId);
+		if (!table) return;
 
-		dashboard.root = createRoot(dashboardContainerEl);
-		this.renderApp(
-			appId,
-			activeView.leaf,
-			file,
-			dashboard.root,
-			tableState
-		);
+		table.root = createRoot(tableContainerEl);
+		this.renderApp(appId, activeView.leaf, file, table.root, tableState);
 	}
 
 	private async handleSave(
-		dashboardFile: TFile,
+		tableFile: TFile,
 		appId: string,
 		state: TableState
 	) {
 		//Save the new state
 		const serialized = serializeTableState(state);
-		await app.vault.modify(dashboardFile, serialized);
+		await app.vault.modify(tableFile, serialized);
 
 		//Tell all other views to refresh
-		app.workspace.trigger(
-			EVENT_REFRESH_APP,
-			dashboardFile.path,
-			appId,
-			state
-		);
+		app.workspace.trigger(EVENT_REFRESH_APP, tableFile.path, appId, state);
 	}
 
 	private renderApp(
 		id: string,
 		leaf: WorkspaceLeaf,
-		dashboardFile: TFile,
+		tableFile: TFile,
 		root: Root,
 		tableState: TableState
 	) {
@@ -171,12 +157,12 @@ class EditingViewPlugin implements PluginValue {
 			<DashboardApp
 				appId={id}
 				isMarkdownView
-				tableFile={dashboardFile}
+				tableFile={tableFile}
 				mountLeaf={leaf}
 				store={store}
 				tableState={tableState}
 				onSaveState={(appId, state) =>
-					throttleHandleSave(dashboardFile, appId, state)
+					throttleHandleSave(tableFile, appId, state)
 				}
 			/>
 		);
@@ -187,8 +173,8 @@ class EditingViewPlugin implements PluginValue {
 		sourceAppId: string,
 		state: TableState
 	) => {
-		//Find a dashboard instance with the same file path
-		const app = this.dashboardApps.find(
+		//Find a table instance with the same file path
+		const app = this.tableApps.find(
 			(app) => app.id !== sourceAppId && app.file.path === sourceFilePath
 		);
 		if (!app) return;
@@ -211,8 +197,8 @@ class EditingViewPlugin implements PluginValue {
 	}
 
 	destroy() {
-		this.dashboardApps.forEach((app) => app.root?.unmount());
-		this.dashboardApps = [];
+		this.tableApps.forEach((app) => app.root?.unmount());
+		this.tableApps = [];
 		app.workspace.off(EVENT_REFRESH_APP, this.handleRefreshEvent);
 		app.workspace.off(EVENT_REFRESH_EDITING_VIEW, this.update);
 	}

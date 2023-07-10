@@ -1,11 +1,11 @@
-.Dashboards__color-item {
+.DataLoom_color-item {
     display: flex;
     align-items: center;
     padding: var(--nlt-spacing--xs) var(--nlt-spacing--lg);
     width: 100%;
 }
 
-.Dashboards__color-item-square {
+.DataLoom_color-item-square {
     width: 10px;
     height: 10px;
     padding: 0;
