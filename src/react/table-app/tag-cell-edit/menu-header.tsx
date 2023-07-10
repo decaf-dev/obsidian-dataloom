@@ -4,7 +4,7 @@ import Tag from "src/react/shared/tag";
 import Wrap from "src/react/shared/wrap";
 
 import React from "react";
-import { transparentInputStyle } from "src/react/dashboard-app/shared-styles";
+import { transparentInputStyle } from "src/react/table-app/shared-styles";
 
 interface MenuHeaderProps {
 	cellTags: TagType[];

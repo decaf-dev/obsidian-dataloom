@@ -1,4 +1,4 @@
-import TagColorMenu from "src/react/dashboard-app/tag-color-menu";
+import TagColorMenu from "src/react/table-app/tag-color-menu";
 
 import { MenuLevel } from "src/shared/menu/types";
 import { useMenu } from "src/shared/menu/hooks";

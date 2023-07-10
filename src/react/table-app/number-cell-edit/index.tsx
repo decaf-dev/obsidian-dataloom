@@ -3,7 +3,7 @@ import React from "react";
 import { useCompare, useInputSelection } from "src/shared/hooks";
 import { isNumber, isNumberInput } from "src/shared/match";
 import { MenuCloseRequest } from "src/shared/menu/types";
-import { numberInputStyle } from "src/react/dashboard-app/shared-styles";
+import { numberInputStyle } from "src/react/table-app/shared-styles";
 
 interface Props {
 	menuCloseRequest: MenuCloseRequest | null;
@@ -12,15 +12,16 @@ interface Props {
 	onMenuClose: () => void;
 }
 
-export default function CurrencyCellEdit({
-	value,
+export default function NumberCellEdit({
 	menuCloseRequest,
+	value,
 	onChange,
 	onMenuClose,
 }: Props) {
 	const initialValue = isNumber(value) ? value : "";
 	const [localValue, setLocalValue] = React.useState(initialValue);
 	const inputRef = React.useRef<HTMLInputElement | null>(null);
+
 	useInputSelection(inputRef, localValue);
 
 	const hasCloseRequestTimeChanged = useCompare(
@@ -48,12 +49,12 @@ export default function CurrencyCellEdit({
 	}
 
 	return (
-		<div className="Dashboards__currency-cell-edit">
+		<div className="Dashboards__number-cell-edit">
 			<input
 				autoFocus
 				css={numberInputStyle}
-				ref={inputRef}
 				type="text" //We use an input of type text so that the selection is available
+				ref={inputRef}
 				inputMode="numeric"
 				value={localValue}
 				onChange={(e) => handleChange(e.target.value)}

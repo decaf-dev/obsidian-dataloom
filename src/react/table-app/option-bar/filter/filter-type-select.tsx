@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { selectStyle } from "src/react/dashboard-app/shared-styles";
+import { selectStyle } from "src/react/table-app/shared-styles";
 import { CellType, FilterType } from "src/shared/types";
 
 interface Props {

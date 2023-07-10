@@ -3,7 +3,7 @@ import { Position } from "./types";
 import { numToPx } from "../conversion";
 import { MENU_SHIFT_PADDING } from "./constants";
 import { isOnMobile } from "src/shared/render-utils";
-import { useMountState } from "src/react/dashboard-app/mount-provider";
+import { useMountState } from "src/react/table-app/mount-provider";
 
 export const isTextSelected = () => {
 	const selection = window.getSelection();

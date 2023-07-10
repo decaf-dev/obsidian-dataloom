@@ -23,7 +23,7 @@ import {
 	hasLoadedEmbeddedDashboard,
 } from "./utils";
 import { v4 as uuidv4 } from "uuid";
-import DashboardApp from "src/react/dashboard-app";
+import DashboardApp from "src/react/table-app";
 
 class EditingViewPlugin implements PluginValue {
 	private editorView: EditorView;

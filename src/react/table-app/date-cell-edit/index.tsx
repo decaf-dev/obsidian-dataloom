@@ -18,7 +18,7 @@ import { MenuCloseRequest, MenuLevel } from "src/shared/menu/types";
 import MenuTrigger from "src/react/shared/menu-trigger";
 import { getDisplayNameForDateFormat } from "src/shared/dashboard-state/display-name";
 import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
-import { borderInputStyle } from "src/react/dashboard-app/shared-styles";
+import { borderInputStyle } from "src/react/table-app/shared-styles";
 import { css } from "@emotion/react";
 
 interface Props {

@@ -13,7 +13,7 @@ import {
 } from "src/data/serialize-dashboard-state";
 import { EVENT_REFRESH_APP } from "src/shared/events";
 import { v4 as uuidv4 } from "uuid";
-import DashboardApp from "src/react/dashboard-app";
+import DashboardApp from "src/react/table-app";
 import { DASHBOARDS_PLUGIN_ID } from "src/main";
 
 export const DASHBOARDS_VIEW = "dashboards";

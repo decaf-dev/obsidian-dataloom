@@ -4,7 +4,7 @@ import RowDeleteCommand from "src/shared/commands/row-delete-command";
 import { isEventForThisApp } from "src/shared/event-system/utils";
 import { EVENT_ROW_ADD, EVENT_ROW_DELETE } from "src/shared/events";
 import { useTableState } from "src/shared/dashboard-state/dashboard-state-context";
-import { useMountState } from "../../react/dashboard-app/mount-provider";
+import { useMountState } from "../../react/table-app/mount-provider";
 
 export const useRowEvents = () => {
 	const { appId } = useMountState();
