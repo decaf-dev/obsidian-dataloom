@@ -18,10 +18,10 @@ import { useAppSelector } from "src/redux/global/hooks";
 
 interface Props {
 	LoomState: LoomState;
-	tableFilePath: string;
+	loomFilePath: string;
 }
 
-export function ExportApp({ LoomState, tableFilePath }: Props) {
+export function ExportApp({ LoomState, loomFilePath }: Props) {
 	const [exportType, setExportType] = React.useState<ExportType>(
 		ExportType.UNSELECTED
 	);
@@ -37,7 +37,7 @@ export function ExportApp({ LoomState, tableFilePath }: Props) {
 	}
 
 	function handleDownloadClick() {
-		const fileName = getExportFileName(tableFilePath);
+		const fileName = getExportFileName(loomFilePath);
 		const blobType = getBlobTypeForExportType(exportType);
 		downloadFile(fileName, blobType, content);
 	}

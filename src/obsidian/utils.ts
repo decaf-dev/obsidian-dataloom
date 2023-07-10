@@ -23,13 +23,13 @@ export const hasLoadedEmbeddedTable = (linkEl: HTMLElement) => {
 	return false;
 };
 
-export const findEmbeddedTableFile = (linkEl: HTMLElement) => {
+export const findEmbeddedloomFile = (linkEl: HTMLElement) => {
 	const src = linkEl.getAttribute("src");
 
-	const tableFile = app.vault.getFiles().find((file) => file.path === src);
-	if (tableFile === undefined)
+	const loomFile = app.vault.getFiles().find((file) => file.path === src);
+	if (loomFile === undefined)
 		return app.vault.getFiles().find((file) => file.name === src) ?? null;
-	return tableFile ?? null;
+	return loomFile ?? null;
 };
 
 export const getEmbeddedTableWidth = (

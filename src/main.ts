@@ -99,7 +99,7 @@ export default class DataLoomPlugin extends Plugin {
 			const isDark = hasDarkTheme();
 			store.dispatch(setDarkMode(isDark));
 
-			await this.migrateTableFiles();
+			await this.migrateloomFiles();
 		});
 
 		if (this.settings.showWelcomeModal) {
@@ -113,15 +113,15 @@ export default class DataLoomPlugin extends Plugin {
 		}
 	}
 
-	private async migrateTableFiles() {
+	private async migrateloomFiles() {
 		// Migrate .table files to .table files
 		if (!this.settings.hasMigratedTo800) {
-			const tableFiles = this.app.vault
+			const loomFiles = this.app.vault
 				.getFiles()
 				.filter((file) => file.extension === PREVIOUS_FILE_EXTENSION);
 
-			for (let i = 0; i < tableFiles.length; i++) {
-				const file = tableFiles[i];
+			for (let i = 0; i < loomFiles.length; i++) {
+				const file = loomFiles[i];
 				const newFilePath = file.path.replace(
 					`.${PREVIOUS_FILE_EXTENSION}`,
 					`.${CURRENT_FILE_EXTENSION}`
@@ -237,7 +237,7 @@ export default class DataLoomPlugin extends Plugin {
 				});
 
 				if (file instanceof TFile) {
-					const tableFiles = this.app.vault
+					const loomFiles = this.app.vault
 						.getFiles()
 						.filter(
 							(file) => file.extension === CURRENT_FILE_EXTENSION
@@ -249,9 +249,9 @@ export default class DataLoomPlugin extends Plugin {
 					}[] = [];
 
 					let numLinks = 0;
-					for (const tableFile of tableFiles) {
+					for (const loomFile of loomFiles) {
 						//For each file read its contents
-						const data = await file.vault.read(tableFile);
+						const data = await file.vault.read(loomFile);
 						const state = deserializeLoomState(data);
 						//Search for old path in the file
 
@@ -268,11 +268,11 @@ export default class DataLoomPlugin extends Plugin {
 								if (oldPath.includes(path)) {
 									const found = tablesToUpdate.find(
 										(table) =>
-											table.file.path === tableFile.path
+											table.file.path === loomFile.path
 									);
 									if (!found) {
 										tablesToUpdate.push({
-											file: tableFile,
+											file: loomFile,
 											state,
 										});
 									}
@@ -294,11 +294,11 @@ export default class DataLoomPlugin extends Plugin {
 
 					for (let i = 0; i < tablesToUpdate.length; i++) {
 						//If the state has changed, update the file
-						const { file: tableFile, state } = tablesToUpdate[i];
+						const { file: loomFile, state } = tablesToUpdate[i];
 
 						if (this.settings.shouldDebug)
 							console.log("Updating links in file", {
-								path: tableFile.path,
+								path: loomFile.path,
 							});
 
 						const newState = structuredClone(state);
@@ -326,12 +326,12 @@ export default class DataLoomPlugin extends Plugin {
 							const serializedState =
 								serializeLoomState(newState);
 
-							await file.vault.modify(tableFile, serializedState);
+							await file.vault.modify(loomFile, serializedState);
 
 							//Update all tables that match this path
 							app.workspace.trigger(
 								EVENT_REFRESH_APP,
-								tableFile.path,
+								loomFile.path,
 								-1, //update all tables that match this path
 								newState
 							);

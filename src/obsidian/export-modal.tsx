@@ -7,12 +7,12 @@ import { store } from "src/redux/global/store";
 
 export default class ExportModal extends Modal {
 	root: Root;
-	tableFile: TFile;
+	loomFile: TFile;
 
-	constructor(app: App, tableFile: TFile) {
+	constructor(app: App, loomFile: TFile) {
 		super(app);
 		this.app = app;
-		this.tableFile = tableFile;
+		this.loomFile = loomFile;
 	}
 
 	onOpen() {
@@ -21,7 +21,7 @@ export default class ExportModal extends Modal {
 
 	private async renderApp() {
 		try {
-			const data = await app.vault.read(this.tableFile);
+			const data = await app.vault.read(this.loomFile);
 			const state = deserializeLoomState(data);
 
 			this.root = createRoot(this.containerEl.children[1]);
@@ -29,7 +29,7 @@ export default class ExportModal extends Modal {
 				<Provider store={store}>
 					<ExportApp
 						LoomState={state}
-						tableFilePath={this.tableFile.path}
+						loomFilePath={this.loomFile.path}
 					/>
 				</Provider>
 			);

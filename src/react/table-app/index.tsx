@@ -14,7 +14,7 @@ interface Props {
 	appId: string;
 	mountLeaf: WorkspaceLeaf;
 	isMarkdownView: boolean;
-	tableFile: TFile;
+	loomFile: TFile;
 	store: Store;
 	LoomState: LoomState;
 	onSaveState: (appId: string, state: LoomState) => void;
@@ -25,7 +25,7 @@ export default function TableApp({
 	mountLeaf,
 	isMarkdownView,
 	store,
-	tableFile,
+	loomFile,
 	LoomState,
 	onSaveState,
 }: Props) {
@@ -34,7 +34,7 @@ export default function TableApp({
 			mountLeaf={mountLeaf}
 			appId={appId}
 			isMarkdownView={isMarkdownView}
-			tableFile={tableFile}
+			loomFile={loomFile}
 		>
 			<Provider store={store}>
 				<LoomStateProvider

@@ -16,7 +16,7 @@ import {
 import { LoomState } from "src/shared/types";
 import _ from "lodash";
 import {
-	findEmbeddedTableFile,
+	findEmbeddedloomFile,
 	getEmbeddedTableHeight,
 	getEmbeddedTableLinkEls,
 	getEmbeddedTableWidth,
@@ -73,7 +73,7 @@ class EditingViewPlugin implements PluginValue {
 			//Clear default Obsidian placeholder children
 			linkEl.empty();
 
-			const file = findEmbeddedTableFile(linkEl);
+			const file = findEmbeddedloomFile(linkEl);
 			if (!file) continue;
 
 			//Filter out any old tables
@@ -130,23 +130,19 @@ class EditingViewPlugin implements PluginValue {
 		this.renderApp(appId, activeView.leaf, file, table.root, LoomState);
 	}
 
-	private async handleSave(
-		tableFile: TFile,
-		appId: string,
-		state: LoomState
-	) {
+	private async handleSave(loomFile: TFile, appId: string, state: LoomState) {
 		//Save the new state
 		const serialized = serializeLoomState(state);
-		await app.vault.modify(tableFile, serialized);
+		await app.vault.modify(loomFile, serialized);
 
 		//Tell all other views to refresh
-		app.workspace.trigger(EVENT_REFRESH_APP, tableFile.path, appId, state);
+		app.workspace.trigger(EVENT_REFRESH_APP, loomFile.path, appId, state);
 	}
 
 	private renderApp(
 		id: string,
 		leaf: WorkspaceLeaf,
-		tableFile: TFile,
+		loomFile: TFile,
 		root: Root,
 		LoomState: LoomState
 	) {
@@ -157,12 +153,12 @@ class EditingViewPlugin implements PluginValue {
 			<TableApp
 				appId={id}
 				isMarkdownView
-				tableFile={tableFile}
+				loomFile={loomFile}
 				mountLeaf={leaf}
 				store={store}
 				LoomState={LoomState}
 				onSaveState={(appId, state) =>
-					throttleHandleSave(tableFile, appId, state)
+					throttleHandleSave(loomFile, appId, state)
 				}
 			/>
 		);

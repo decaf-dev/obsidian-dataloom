@@ -137,7 +137,7 @@ export default class DataLoomView extends TextFileView {
 				<TableApp
 					mountLeaf={this.leaf}
 					appId={appId}
-					tableFile={this.file}
+					loomFile={this.file}
 					isMarkdownView={false}
 					store={store}
 					LoomState={state}

@@ -43,7 +43,7 @@ export default class ReadingViewChild extends MarkdownRenderChild {
 				<TableApp
 					mountLeaf={activeView.leaf}
 					appId={this.appId}
-					tableFile={file}
+					loomFile={file}
 					isMarkdownView
 					store={store}
 					LoomState={state}
