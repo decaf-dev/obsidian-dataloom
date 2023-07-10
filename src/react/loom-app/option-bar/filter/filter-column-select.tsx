@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { ColumnWithMarkdown } from "../types";
-import { selectStyle } from "src/react/table-app/shared-styles";
+import { selectStyle } from "src/react/loom-app/shared-styles";
 
 interface Props {
 	id: string;

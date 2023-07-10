@@ -3,15 +3,15 @@ import { numToPx } from "src/shared/conversion";
 
 export const getEmbeddedLoomLinkEls = (el: HTMLElement) => {
 	const embeddedLinkEls = el.querySelectorAll(".internal-embed");
-	const tableLinkEls: HTMLElement[] = [];
+	const loomLinkEls: HTMLElement[] = [];
 
 	for (let i = 0; i < embeddedLinkEls.length; i++) {
 		const linkEl = embeddedLinkEls[i];
 		const src = linkEl.getAttribute("src");
 		if (src?.endsWith(CURRENT_FILE_EXTENSION))
-			tableLinkEls.push(linkEl as HTMLElement);
+			loomLinkEls.push(linkEl as HTMLElement);
 	}
-	return tableLinkEls;
+	return loomLinkEls;
 };
 
 export const hasLoadedEmbeddedLoom = (linkEl: HTMLElement) => {
@@ -23,7 +23,7 @@ export const hasLoadedEmbeddedLoom = (linkEl: HTMLElement) => {
 	return false;
 };
 
-export const findEmbeddedloomFile = (linkEl: HTMLElement) => {
+export const findEmbeddedLoomFile = (linkEl: HTMLElement) => {
 	const src = linkEl.getAttribute("src");
 
 	const loomFile = app.vault.getFiles().find((file) => file.path === src);

@@ -3,7 +3,7 @@ import React from "react";
 import { useCompare, useInputSelection } from "src/shared/hooks";
 import { isNumber, isNumberInput } from "src/shared/match";
 import { MenuCloseRequest } from "src/shared/menu/types";
-import { numberInputStyle } from "src/react/table-app/shared-styles";
+import { numberInputStyle } from "src/react/loom-app/shared-styles";
 
 interface Props {
 	menuCloseRequest: MenuCloseRequest | null;

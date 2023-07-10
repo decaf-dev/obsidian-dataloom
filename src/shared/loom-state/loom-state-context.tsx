@@ -3,7 +3,7 @@ import LoomStateCommand from "./loom-state-command";
 import React from "react";
 import { useLogger } from "../logger";
 import RowSortCommand from "../commands/row-sort-command";
-import { useMountState } from "src/react/table-app/mount-provider";
+import { useMountState } from "src/react/loom-app/mount-provider";
 
 interface Props {
 	initialState: LoomState;

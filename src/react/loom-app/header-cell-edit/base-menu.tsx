@@ -11,7 +11,7 @@ import Flex from "src/react/shared/flex";
 import Switch from "src/react/shared/switch";
 import Text from "src/react/shared/text";
 import { MenuCloseRequest } from "src/shared/menu/types";
-import { borderInputStyle } from "src/react/table-app/shared-styles";
+import { borderInputStyle } from "src/react/loom-app/shared-styles";
 
 interface Props {
 	canDeleteColumn: boolean;

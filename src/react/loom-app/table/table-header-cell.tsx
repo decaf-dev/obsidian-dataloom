@@ -14,7 +14,7 @@ const cellStyle = css`
 	font-weight: 400;
 	overflow: visible;
 	text-align: start;
-	color: var(--text-normal); //Prevents dimming on hover in embedded table
+	color: var(--text-normal); //Prevents dimming on hover in embedded loom
 
 	&:first-of-type {
 		border-top: 0;

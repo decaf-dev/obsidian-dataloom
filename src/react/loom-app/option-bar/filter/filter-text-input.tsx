@@ -7,7 +7,7 @@ import {
 } from "src/shared/loom-state/constants";
 
 import "./styles.css";
-import { baseInputStyle, selectStyle } from "src/react/table-app/shared-styles";
+import { baseInputStyle, selectStyle } from "src/react/loom-app/shared-styles";
 
 interface Props {
 	id: string;

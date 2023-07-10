@@ -20,7 +20,7 @@ interface Props {
 	onSaveState: (appId: string, state: LoomState) => void;
 }
 
-export default function TableApp({
+export default function LoomApp({
 	appId,
 	mountLeaf,
 	isMarkdownView,

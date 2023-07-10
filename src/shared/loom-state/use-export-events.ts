@@ -10,7 +10,7 @@ import { exportToCSV } from "src/shared/export/export-to-csv";
 import { exportToMarkdown } from "src/shared/export/export-to-markdown";
 import { ExportType } from "src/shared/export/types";
 import { LoomState } from "src/shared/types";
-import { useMountState } from "../../react/table-app/mount-provider";
+import { useMountState } from "../../react/loom-app/mount-provider";
 import { useAppSelector } from "src/redux/global/hooks";
 
 export const useExportEvents = (state: LoomState) => {

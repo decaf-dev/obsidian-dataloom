@@ -7,7 +7,7 @@ import { Root, createRoot } from "react-dom/client";
 import { store } from "src/redux/global/store";
 import { deserializeLoomState } from "src/data/serialize-table-state";
 import { v4 as uuidv4 } from "uuid";
-import TableApp from "src/react/table-app";
+import LoomApp from "src/react/loom-app";
 import DataLoomView from "./dataloom-view";
 
 export default class ReadingViewChild extends MarkdownRenderChild {
@@ -40,7 +40,7 @@ export default class ReadingViewChild extends MarkdownRenderChild {
 			this.root = createRoot(container);
 
 			this.root.render(
-				<TableApp
+				<LoomApp
 					mountLeaf={activeView.leaf}
 					appId={this.appId}
 					loomFile={file}

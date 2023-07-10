@@ -16,14 +16,14 @@ import {
 import { LoomState } from "src/shared/types";
 import _ from "lodash";
 import {
-	findEmbeddedloomFile,
+	findEmbeddedLoomFile,
 	getEmbeddedLoomHeight,
 	getEmbeddedLoomLinkEls,
 	getEmbeddedLoomWidth,
 	hasLoadedEmbeddedLoom,
 } from "./utils";
 import { v4 as uuidv4 } from "uuid";
-import TableApp from "src/react/table-app";
+import LoomApp from "src/react/loom-app";
 
 class EditingViewPlugin implements PluginValue {
 	private editorView: EditorView;
@@ -73,7 +73,7 @@ class EditingViewPlugin implements PluginValue {
 			//Clear default Obsidian placeholder children
 			linkEl.empty();
 
-			const file = findEmbeddedloomFile(linkEl);
+			const file = findEmbeddedLoomFile(linkEl);
 			if (!file) continue;
 
 			//Filter out any old tables
@@ -150,7 +150,7 @@ class EditingViewPlugin implements PluginValue {
 		const throttleHandleSave = _.throttle(this.handleSave, 2000);
 
 		root.render(
-			<TableApp
+			<LoomApp
 				appId={id}
 				isMarkdownView
 				loomFile={loomFile}

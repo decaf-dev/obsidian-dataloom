@@ -14,7 +14,7 @@ import {
 import { EVENT_REFRESH_APP } from "src/shared/events";
 import { v4 as uuidv4 } from "uuid";
 import { DATA_LOOM_PLUGIN_ID } from "src/main";
-import TableApp from "src/react/table-app";
+import LoomApp from "src/react/loom-app";
 
 export const DATA_LOOM_VIEW = "dashloom";
 
@@ -134,7 +134,7 @@ export default class DataLoomView extends TextFileView {
 	private renderApp(appId: string, state: LoomState) {
 		if (this.root) {
 			this.root.render(
-				<TableApp
+				<LoomApp
 					mountLeaf={this.leaf}
 					appId={appId}
 					loomFile={this.file}

@@ -4,7 +4,7 @@ import Stack from "src/react/shared/stack";
 
 import { css } from "@emotion/react";
 import { useLoomState } from "src/shared/loom-state/loom-state-context";
-import { baseInputStyle } from "src/react/table-app/shared-styles";
+import { baseInputStyle } from "src/react/loom-app/shared-styles";
 
 export default function SearchBar() {
 	const { searchText, setSearchText, isSearchBarVisible, toggleSearchBar } =
