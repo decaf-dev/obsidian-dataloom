@@ -4,23 +4,22 @@ import "./styles.css";
 
 interface Props {
 	id?: string;
-	isChecked: boolean;
 	ariaLabel?: string;
+	value: boolean;
 	onToggle: (value: boolean) => void;
 }
 
-export default function Switch({ id, isChecked, ariaLabel, onToggle }: Props) {
+export default function Switch({ id, value, ariaLabel, onToggle }: Props) {
 	const { isDarkMode } = useAppSelector((state) => state.global);
 	function handleKeyDown(e: React.KeyboardEvent) {
 		if (e.key === "Enter") {
 			e.stopPropagation();
-			onToggle(!isChecked);
+			onToggle(!value);
 		}
 	}
 
-	let className =
-		"checkbox-container Dashboards__switch Dashboards__focusable";
-	if (isChecked) className += " is-enabled";
+	let className = "checkbox-container DataLoom__switch DataLoom__focusable";
+	if (value) className += " is-enabled";
 	return (
 		<div
 			id={id}
@@ -38,7 +37,7 @@ export default function Switch({ id, isChecked, ariaLabel, onToggle }: Props) {
 				}
 			`}
 			aria-label={ariaLabel}
-			onClick={() => onToggle(!isChecked)}
+			onClick={() => onToggle(!value)}
 			onKeyDown={handleKeyDown}
 		>
 			<input type="checkbox" />

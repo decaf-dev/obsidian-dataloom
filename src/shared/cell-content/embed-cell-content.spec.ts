@@ -44,9 +44,9 @@ describe("getEmbedCellContent", () => {
 	});
 
 	it("should return a normal embed when export is true", () => {
-		const result = getEmbedCellContent("tables/filename.table", {
+		const result = getEmbedCellContent("tables/filename.loom", {
 			isExport: true,
 		});
-		expect(result).toEqual("![[tables/filename.table]]");
+		expect(result).toEqual("![[tables/filename.loom]]");
 	});
 });

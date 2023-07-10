@@ -1,4 +1,4 @@
-import { PluginValue, ViewPlugin } from "@codemirror/view";
+import { PluginValue, ViewPlugin, EditorView } from "@codemirror/view";
 import { MarkdownView, TFile, WorkspaceLeaf } from "obsidian";
 
 if (process.env.ENABLE_REACT_DEVTOOLS === "true") {
@@ -6,24 +6,28 @@ if (process.env.ENABLE_REACT_DEVTOOLS === "true") {
 }
 import { Root, createRoot } from "react-dom/client";
 
-import { serializeDashboardState } from "src/data/serialize-dashboard-state";
-import { deserializeDashboardState } from "src/data/serialize-dashboard-state";
+import { serializeLoomState } from "src/data/serialize-loom-state";
+import { deserializeLoomState } from "src/data/serialize-loom-state";
 import { store } from "src/redux/global/store";
-import { EVENT_REFRESH_DASHBOARDS } from "src/shared/events";
-import { DashboardState } from "src/shared/types";
+import {
+	EVENT_REFRESH_APP,
+	EVENT_REFRESH_EDITING_VIEW,
+} from "src/shared/events";
+import { LoomState } from "src/shared/types";
 import _ from "lodash";
 import {
-	findEmbeddedTableFile,
-	getEmbeddedDashboardHeight,
-	getEmbeddedDashboardLinkEls,
-	getEmbeddedDashboardWidth,
-	removeEmbeddedLinkChildren,
+	findEmbeddedLoomFile,
+	getEmbeddedLoomHeight,
+	getEmbeddedLoomLinkEls,
+	getEmbeddedLoomWidth,
+	hasLoadedEmbeddedLoom,
 } from "./utils";
 import { v4 as uuidv4 } from "uuid";
-import DashboardApp from "src/react/dashboard-app";
+import LoomApp from "src/react/loom-app";
 
 class EditingViewPlugin implements PluginValue {
-	private dashboardApps: {
+	private editorView: EditorView;
+	private loomApps: {
 		id: string;
 		parentEl: HTMLElement;
 		leaf: WorkspaceLeaf;
@@ -31,68 +35,79 @@ class EditingViewPlugin implements PluginValue {
 		file: TFile;
 	}[];
 
-	constructor() {
-		this.dashboardApps = [];
+	constructor(view: EditorView) {
+		this.editorView = view;
+		this.loomApps = [];
 		this.setupEventListeners();
 	}
 
 	//This is ran on any editor change
 	update() {
-		const activeView = app.workspace.getActiveViewOfType(MarkdownView);
-		if (!activeView) return;
+		const markdownLeaves = app.workspace.getLeavesOfType("markdown");
+		const activeLeaf = markdownLeaves.find(
+			//@ts-expect-error - private property
+			(leaf) => leaf.view.editor.cm === this.editorView
+		);
+		if (!activeLeaf) return;
 
-		const embeddedTableLinkEls = getEmbeddedDashboardLinkEls(
+		const activeView = activeLeaf.view as MarkdownView;
+
+		const embeddedLoomLinkEls = getEmbeddedLoomLinkEls(
 			activeView.containerEl
 		);
 
-		for (let i = 0; i < embeddedTableLinkEls.length; i++) {
-			const linkEl = embeddedTableLinkEls[i];
-			removeEmbeddedLinkChildren(linkEl);
-
-			const file = findEmbeddedTableFile(linkEl);
-			if (!file) continue;
+		for (let i = 0; i < embeddedLoomLinkEls.length; i++) {
+			const linkEl = embeddedLoomLinkEls[i];
 
 			const { defaultEmbedWidth, defaultEmbedHeight } =
 				store.getState().global.settings;
-			const width = getEmbeddedDashboardWidth(linkEl, defaultEmbedWidth);
-			const height = getEmbeddedDashboardHeight(
-				linkEl,
-				defaultEmbedHeight
-			);
+
+			const width = getEmbeddedLoomWidth(linkEl, defaultEmbedWidth);
+			const height = getEmbeddedLoomHeight(linkEl, defaultEmbedHeight);
 
 			linkEl.style.width = width;
 			linkEl.style.height = height;
 
-			//If we've already created the table, then return
-			if (this.dashboardApps.find((app) => app.file.path === file.path))
-				continue;
+			if (hasLoadedEmbeddedLoom(linkEl)) continue;
+
+			//Clear default Obsidian placeholder children
+			linkEl.empty();
+
+			const file = findEmbeddedLoomFile(linkEl);
+			if (!file) continue;
+
+			//Filter out any old looms
+			this.loomApps = this.loomApps.filter(
+				(app) => app.file.path !== file.path
+			);
 
 			linkEl.style.backgroundColor = "var(--color-primary)";
 			linkEl.style.cursor = "unset";
 			linkEl.style.margin = "0px";
 			linkEl.style.padding = "0px";
 
-			const dashboardContainerEl = linkEl.createDiv();
-			dashboardContainerEl.className = "Dashboards__embedded-container";
-			dashboardContainerEl.style.height = "100%";
-			dashboardContainerEl.style.width = "100%";
+			const loomContainerEl = linkEl.createDiv();
+			loomContainerEl.className = "DataLoom__embedded-container";
+			loomContainerEl.style.height = "100%";
+			loomContainerEl.style.width = "100%";
+			loomContainerEl.style.padding = "10px 0px";
 
 			const appId = uuidv4();
-			this.dashboardApps.push({
+			this.loomApps.push({
 				id: appId,
 				leaf: activeView.leaf,
-				parentEl: dashboardContainerEl,
+				parentEl: loomContainerEl,
 				file,
 			});
 
 			//Call a separate function to not block the update function
-			this.setupTable(activeView, dashboardContainerEl, file, appId);
+			this.setupLoom(activeView, loomContainerEl, file, appId);
 		}
 	}
 
-	private async setupTable(
+	private async setupLoom(
 		activeView: MarkdownView,
-		dashboardContainerEl: HTMLElement,
+		loomContainerEl: HTMLElement,
 		file: TFile,
 		appId: string
 	) {
@@ -100,78 +115,63 @@ class EditingViewPlugin implements PluginValue {
 		 * Stop propagation of the click event. We do this so that the embedded link div
 		 * don't navigate to the linked file when it is clicked.
 		 */
-		dashboardContainerEl.addEventListener("click", (e) => {
+		loomContainerEl.addEventListener("click", (e) => {
 			e.stopPropagation();
 		});
 
-		//Get the dashboard state
+		//Get the loom state
 		const data = await app.vault.read(file);
-		const dashboardState = deserializeDashboardState(data);
+		const LoomState = deserializeLoomState(data);
 
-		const dashboard = this.dashboardApps.find((app) => app.id === appId);
-		if (!dashboard) return;
+		const loom = this.loomApps.find((app) => app.id === appId);
+		if (!loom) return;
 
-		dashboard.root = createRoot(dashboardContainerEl);
-		this.renderApp(
-			appId,
-			activeView.leaf,
-			file,
-			dashboard.root,
-			dashboardState
-		);
+		loom.root = createRoot(loomContainerEl);
+		this.renderApp(appId, activeView.leaf, file, loom.root, LoomState);
 	}
 
-	private async handleSave(
-		dashboardFile: TFile,
-		appId: string,
-		state: DashboardState
-	) {
+	private async handleSave(loomFile: TFile, appId: string, state: LoomState) {
 		//Save the new state
-		const serialized = serializeDashboardState(state);
-		await app.vault.modify(dashboardFile, serialized);
+		const serialized = serializeLoomState(state);
+		await app.vault.modify(loomFile, serialized);
 
 		//Tell all other views to refresh
-		app.workspace.trigger(
-			EVENT_REFRESH_DASHBOARDS,
-			dashboardFile.path,
-			appId,
-			state
-		);
+		app.workspace.trigger(EVENT_REFRESH_APP, loomFile.path, appId, state);
 	}
 
 	private renderApp(
 		id: string,
 		leaf: WorkspaceLeaf,
-		dashboardFile: TFile,
+		loomFile: TFile,
 		root: Root,
-		dashboardState: DashboardState
+		LoomState: LoomState
 	) {
 		//Throttle the save function so we don't save too often
 		const throttleHandleSave = _.throttle(this.handleSave, 2000);
 
 		root.render(
-			<DashboardApp
+			<LoomApp
 				appId={id}
 				isMarkdownView
-				filePath={dashboardFile.path}
-				leaf={leaf}
+				loomFile={loomFile}
+				mountLeaf={leaf}
 				store={store}
-				dashboardState={dashboardState}
+				LoomState={LoomState}
 				onSaveState={(appId, state) =>
-					throttleHandleSave(dashboardFile, appId, state)
+					throttleHandleSave(loomFile, appId, state)
 				}
 			/>
 		);
 	}
 
 	private handleRefreshEvent = (
-		filePath: string,
+		sourceFilePath: string,
 		sourceAppId: string,
-		state: DashboardState
+		state: LoomState
 	) => {
-		//Find a dashboard instance with the same file path
-		const app = this.dashboardApps.find(
-			(app) => app.id !== sourceAppId && app.file.path === filePath
+		//Find a loom instance with the same file path
+		const app = this.loomApps.find(
+			(app) => app.id !== sourceAppId && app.file.path === sourceFilePath
 		);
 		if (!app) return;
 
@@ -187,13 +187,16 @@ class EditingViewPlugin implements PluginValue {
 
 	private setupEventListeners() {
 		//@ts-expect-error not an native Obsidian event
-		app.workspace.on(EVENT_REFRESH_DASHBOARDS, this.handleRefreshEvent);
+		app.workspace.on(EVENT_REFRESH_APP, this.handleRefreshEvent);
+		//@ts-expect-error not an native Obsidian event
+		app.workspace.on(EVENT_REFRESH_EDITING_VIEW, this.update);
 	}
 
 	destroy() {
-		this.dashboardApps.forEach((app) => app.root?.unmount());
-		this.dashboardApps = [];
-		app.workspace.off(EVENT_REFRESH_DASHBOARDS, this.handleRefreshEvent);
+		this.loomApps.forEach((app) => app.root?.unmount());
+		this.loomApps = [];
+		app.workspace.off(EVENT_REFRESH_APP, this.handleRefreshEvent);
+		app.workspace.off(EVENT_REFRESH_EDITING_VIEW, this.update);
 	}
 }
 

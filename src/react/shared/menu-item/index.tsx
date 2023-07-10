@@ -51,9 +51,9 @@ export default function MenuItem({
 		}
 	}
 
-	let className = "Dashboards__menu-item Dashboards__selectable";
-	if (isSelected) className += " Dashboards__selected";
-	if (isFocusable) className += " Dashboards__focusable";
+	let className = "DataLoom__menu-item DataLoom__selectable";
+	if (isSelected) className += " DataLoom__selected";
+	if (isFocusable) className += " DataLoom__focusable";
 
 	return (
 		<div
@@ -71,7 +71,7 @@ export default function MenuItem({
 			onKeyDown={handleKeyDown}
 		>
 			<Flex justify="space-between">
-				<Stack>
+				<Stack isHorizontal>
 					{lucideId !== undefined && (
 						<Padding width="unset" pb="sm">
 							<Icon lucideId={lucideId} />

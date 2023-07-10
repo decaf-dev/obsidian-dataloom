@@ -9,7 +9,7 @@ interface Props {
 
 export default function ImportTypeSelect({ value, onChange }: Props) {
 	return (
-		<Stack isVertical>
+		<Stack>
 			<label htmlFor="import-type-select">Import Type</label>
 			<select
 				id="import-type-select"

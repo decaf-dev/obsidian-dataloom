@@ -1,7 +1,4 @@
-import {
-	createFilterRule,
-	createDashboardState,
-} from "src/data/dashboard-state-factory";
+import { createFilterRule, createLoomState } from "src/data/loom-state-factory";
 import RowDeleteCommand from "./row-delete-command";
 import {
 	DeleteCommandArgumentsError,
@@ -20,7 +17,7 @@ describe("column-delete-command", () => {
 
 	it("should throw an error when undo() is called before execute()", () => {
 		try {
-			const prevState = createDashboardState(2, 1);
+			const prevState = createLoomState(2, 1);
 			const command = new ColumnDeleteCommand({
 				last: true,
 			});
@@ -32,7 +29,7 @@ describe("column-delete-command", () => {
 
 	it("should return the same state when only 1 column is in the table", () => {
 		//Arrange
-		const prevState = createDashboardState(1, 1);
+		const prevState = createLoomState(1, 1);
 
 		const filterRules = [
 			createFilterRule(prevState.model.columns[0].id),
@@ -62,7 +59,7 @@ describe("column-delete-command", () => {
 
 	it("should delete a column when execute() is called", () => {
 		//Arrange
-		const prevState = createDashboardState(2, 1);
+		const prevState = createLoomState(2, 1);
 
 		const filterRules = [
 			createFilterRule(prevState.model.columns[0].id),
@@ -86,7 +83,7 @@ describe("column-delete-command", () => {
 
 	it("should delete the last column when execute() is called", () => {
 		//Arrange
-		const prevState = createDashboardState(2, 1);
+		const prevState = createLoomState(2, 1);
 
 		const filterRules = [
 			createFilterRule(prevState.model.columns[1].id),
@@ -125,7 +122,7 @@ describe("column-delete-command", () => {
 
 	it("should restore the deleted column when undo() is called", () => {
 		//Arrange
-		const prevState = createDashboardState(2, 1);
+		const prevState = createLoomState(2, 1);
 
 		const filterRules = [
 			createFilterRule(prevState.model.columns[0].id),
@@ -157,7 +154,7 @@ describe("column-delete-command", () => {
 
 	it("should restore the last deleted column when undo() is called", () => {
 		//Arrange
-		const prevState = createDashboardState(2, 1);
+		const prevState = createLoomState(2, 1);
 
 		const filterRules = [
 			createFilterRule(prevState.model.columns[1].id),

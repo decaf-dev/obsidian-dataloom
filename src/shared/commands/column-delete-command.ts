@@ -1,16 +1,16 @@
-import { ColumNotFoundError } from "../dashboard-state/dashboard-error";
+import { ColumNotFoundError } from "../loom-state/loom-error";
 import {
 	Column,
-	DashboardState,
+	LoomState,
 	HeaderCell,
 	BodyCell,
 	FooterCell,
 	FilterRule,
 } from "../types";
-import DashboardStateCommand from "../dashboard-state/dashboard-state-command";
+import LoomStateCommand from "../loom-state/loom-state-command";
 import { DeleteCommandArgumentsError } from "./command-errors";
 
-export default class ColumnDeleteCommand extends DashboardStateCommand {
+export default class ColumnDeleteCommand extends LoomStateCommand {
 	private columnId?: string;
 	private last?: boolean;
 
@@ -30,7 +30,7 @@ export default class ColumnDeleteCommand extends DashboardStateCommand {
 		this.last = last;
 	}
 
-	execute(prevState: DashboardState): DashboardState {
+	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
 		const { columns, headerCells, bodyCells, footerCells, filterRules } =
@@ -94,12 +94,12 @@ export default class ColumnDeleteCommand extends DashboardStateCommand {
 		};
 	}
 
-	redo(prevState: DashboardState): DashboardState {
+	redo(prevState: LoomState): LoomState {
 		super.onRedo();
 		return this.execute(prevState);
 	}
 
-	undo(prevState: DashboardState): DashboardState {
+	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
 		const { columns, headerCells, bodyCells, footerCells, filterRules } =

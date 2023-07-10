@@ -1,8 +1,8 @@
-import { createTag } from "src/data/dashboard-state-factory";
+import { createTag } from "src/data/loom-state-factory";
 import { unixTimeToDateString } from "../date/date-conversion";
-import { CHECKBOX_MARKDOWN_UNCHECKED } from "../dashboard-state/constants";
-import { ColumNotFoundError } from "../dashboard-state/dashboard-error";
-import DashboardStateCommand from "../dashboard-state/dashboard-state-command";
+import { CHECKBOX_MARKDOWN_UNCHECKED } from "../loom-state/constants";
+import { ColumNotFoundError } from "../loom-state/loom-error";
+import LoomStateCommand from "../loom-state/loom-state-command";
 import {
 	BodyCell,
 	Calculation,
@@ -10,12 +10,12 @@ import {
 	CellType,
 	Column,
 	FilterRule,
-	DashboardState,
+	LoomState,
 	Tag,
 } from "../types";
 import { isCheckbox, isNumberCalcuation } from "../match";
 
-export class ColumnTypeUpdateCommand extends DashboardStateCommand {
+export class ColumnTypeUpdateCommand extends LoomStateCommand {
 	private columnId: string;
 	private type: CellType;
 
@@ -294,7 +294,7 @@ export class ColumnTypeUpdateCommand extends DashboardStateCommand {
 		});
 	}
 
-	execute(prevState: DashboardState): DashboardState {
+	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
 		const { columns, bodyCells, filterRules } = prevState.model;
@@ -389,7 +389,7 @@ export class ColumnTypeUpdateCommand extends DashboardStateCommand {
 		};
 	}
 
-	redo(prevState: DashboardState): DashboardState {
+	redo(prevState: LoomState): LoomState {
 		super.onRedo();
 		const { columns, bodyCells, filterRules } = prevState.model;
 
@@ -446,7 +446,7 @@ export class ColumnTypeUpdateCommand extends DashboardStateCommand {
 		};
 	}
 
-	undo(prevState: DashboardState): DashboardState {
+	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
 		const { columns, bodyCells, filterRules } = prevState.model;

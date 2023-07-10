@@ -1,12 +1,12 @@
 import Papa from "papaparse";
 
-import { dashboardStateToArray } from "./table-state-to-array";
-import { DashboardState } from "../types";
+import { LoomStateToArray } from "./loom-state-to-array";
+import { LoomState } from "../types";
 
 export const exportToCSV = (
-	dashboardState: DashboardState,
+	LoomState: LoomState,
 	renderMarkdown: boolean
 ): string => {
-	const arr = dashboardStateToArray(dashboardState, renderMarkdown);
+	const arr = LoomStateToArray(LoomState, renderMarkdown);
 	return Papa.unparse(arr);
 };

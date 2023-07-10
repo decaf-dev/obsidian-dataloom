@@ -8,7 +8,7 @@ class EventSystem {
 	}
 
 	/**
-	 * Adds an Dashboards event listener
+	 * Adds an DataLoom event listener
 	 * @param name the event name
 	 * @param callback the callback function
 	 * @param priority the priority. The higher the priority, the earlier the callback is called
@@ -24,7 +24,7 @@ class EventSystem {
 	}
 
 	/**
-	 * Removes an Dashboards event listener
+	 * Removes an DataLoom event listener
 	 * @param name the name
 	 * @param callback the callback function
 	 */
@@ -35,7 +35,7 @@ class EventSystem {
 	}
 
 	/**
-	 * Dispatches a event to all Dashboards event listeners
+	 * Dispatches a event to all DataLoom event listeners
 	 * @param name the event name
 	 * @param event the DOM event
 	 * @param data any data

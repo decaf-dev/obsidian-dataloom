@@ -1,11 +1,11 @@
 import {
 	rowLastEditedTime,
 	rowLastEditedTimeUpdate,
-} from "../dashboard-state/row-state-operations";
-import DashboardStateCommand from "../dashboard-state/dashboard-state-command";
-import { DashboardState } from "../types";
+} from "../loom-state/row-state-operations";
+import LoomStateCommand from "../loom-state/loom-state-command";
+import { LoomState } from "../types";
 
-export default class TagCellAddCommand extends DashboardStateCommand {
+export default class TagCellAddCommand extends LoomStateCommand {
 	private cellId: string;
 	private rowId: string;
 	private tagId: string;
@@ -27,7 +27,7 @@ export default class TagCellAddCommand extends DashboardStateCommand {
 	private previousCellTagIds: string[];
 	private previousEditedTime: number;
 
-	execute(prevState: DashboardState): DashboardState {
+	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
 		const { bodyCells, bodyRows } = prevState.model;
@@ -64,12 +64,12 @@ export default class TagCellAddCommand extends DashboardStateCommand {
 			},
 		};
 	}
-	redo(prevState: DashboardState): DashboardState {
+	redo(prevState: LoomState): LoomState {
 		super.onRedo();
 		return this.execute(prevState);
 	}
 
-	undo(prevState: DashboardState): DashboardState {
+	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
 		const { bodyCells, bodyRows } = prevState.model;

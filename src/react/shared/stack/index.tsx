@@ -8,7 +8,7 @@ interface Props {
 	children: React.ReactNode;
 	justify?: JustifyContent;
 	align?: AlignItems;
-	isVertical?: boolean;
+	isHorizontal?: boolean;
 	grow?: boolean;
 	width?: string;
 	height?: string;
@@ -24,27 +24,27 @@ export default function Stack({
 	width = "unset",
 	height = "unset",
 	minHeight = "unset",
-	isVertical,
+	isHorizontal = false,
 }: Props) {
 	let justifyContent = justify;
 	if (justifyContent === undefined) {
-		if (isVertical) justifyContent = "center";
+		if (!isHorizontal) justifyContent = "center";
 		else justifyContent = "flex-start";
 	}
 	let alignItems = align;
 	if (alignItems === undefined) {
-		if (!isVertical) alignItems = "center";
+		if (isHorizontal) alignItems = "center";
 		else alignItems = "flex-start";
 	}
 	return (
 		<div
 			css={css`
 				display: flex;
-				flex-direction: ${isVertical ? "column" : "row"};
+				flex-direction: ${isHorizontal ? "row" : "column"};
 				flex-grow: ${grow ? 1 : 0};
 				justify-content: ${justifyContent};
 				align-items: ${alignItems};
-				${isVertical ? "row-gap" : "column-gap"}: ${getSpacing(
+				${isHorizontal ? "column-gap" : "row-gap"}: ${getSpacing(
 					spacing
 				)};
 				width: ${width};

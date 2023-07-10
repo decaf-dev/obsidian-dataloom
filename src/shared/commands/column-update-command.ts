@@ -1,8 +1,8 @@
-import { ColumNotFoundError } from "../dashboard-state/dashboard-error";
-import DashboardStateCommand from "../dashboard-state/dashboard-state-command";
-import { Column, DashboardState } from "../types";
+import { ColumNotFoundError } from "../loom-state/loom-error";
+import LoomStateCommand from "../loom-state/loom-state-command";
+import { Column, LoomState } from "../types";
 
-export default class ColumnUpdateCommand extends DashboardStateCommand {
+export default class ColumnUpdateCommand extends LoomStateCommand {
 	private columnId: string;
 	private key: keyof Column;
 	private value?: unknown;
@@ -25,7 +25,7 @@ export default class ColumnUpdateCommand extends DashboardStateCommand {
 		this.value = value;
 	}
 
-	execute(prevState: DashboardState): DashboardState {
+	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
 		const { columns } = prevState.model;
@@ -60,12 +60,12 @@ export default class ColumnUpdateCommand extends DashboardStateCommand {
 		};
 	}
 
-	redo(prevState: DashboardState): DashboardState {
+	redo(prevState: LoomState): LoomState {
 		super.onRedo();
 		return this.execute(prevState);
 	}
 
-	undo(prevState: DashboardState): DashboardState {
+	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
 		return {

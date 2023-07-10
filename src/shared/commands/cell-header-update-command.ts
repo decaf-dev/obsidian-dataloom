@@ -1,8 +1,8 @@
-import { CellNotFoundError } from "../dashboard-state/dashboard-error";
-import DashboardStateCommand from "../dashboard-state/dashboard-state-command";
-import { HeaderCell, DashboardState } from "../types";
+import { CellNotFoundError } from "../loom-state/loom-error";
+import LoomStateCommand from "../loom-state/loom-state-command";
+import { HeaderCell, LoomState } from "../types";
 
-export default class CellHeaderUpdateCommand extends DashboardStateCommand {
+export default class CellHeaderUpdateCommand extends LoomStateCommand {
 	private cellId: string;
 	private key: keyof HeaderCell;
 	private value: unknown;
@@ -16,7 +16,7 @@ export default class CellHeaderUpdateCommand extends DashboardStateCommand {
 		this.value = value;
 	}
 
-	execute(prevState: DashboardState): DashboardState {
+	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
 		const { headerCells } = prevState.model;
@@ -44,12 +44,12 @@ export default class CellHeaderUpdateCommand extends DashboardStateCommand {
 		};
 	}
 
-	redo(prevState: DashboardState): DashboardState {
+	redo(prevState: LoomState): LoomState {
 		super.onRedo();
 		return this.execute(prevState);
 	}
 
-	undo(prevState: DashboardState): DashboardState {
+	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
 		const { headerCells } = prevState.model;

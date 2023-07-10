@@ -1,4 +1,4 @@
-# Dashboards Contributing Guide
+# DataLoom Contributing Guide
 
 ## Issues
 
@@ -8,14 +8,14 @@ If the code you are contributing is related to an existing issue, please make a 
 
 ## Diagrams
 
-State machine diagrams and flowcharts can be found in the `diagrams` folder
+State machines, flowcharts, and other development materials can be found can be found in the `development` folder
 
 ## Getting started
 
 Start by cloning the repository
 
 ```shell
-git clone https://github.com/trey-wallis/obsidian-dashboards.git
+git clone https://github.com/trey-wallis/obsidian-dataloom.git
 ```
 
 We use yarn for dependency management instead of npm. Please make sure that you have installed yarn.
@@ -27,7 +27,7 @@ npm install -g yarn
 Cd to the clone repository
 
 ```shell
-cd obsidian-dashboards
+cd obsidian-dataloom
 ```
 
 Install dependencies
@@ -38,11 +38,13 @@ yarn install
 
 Create a symbolic link from the cloned repository to your Obsidan vault.
 
-I recommend making a new Obsidian vault just for development.
+Note: I recommend making a new Obsidian vault just for development.
 
 ```shell
 ln -s <repo-path> <dev-vault-path>/.obsidian/plugins
 ```
+
+e.g. `ln -s /users/trey/desktop/obsidian-dataloom /users/trey/desktop/test-vault/.obsidian/plugins`
 
 Run esbuild in development mode
 
@@ -52,7 +54,7 @@ yarn run dev
 
 Open your vault in Obsidian
 
-Enable Dashboards
+Enable DataLoom
 
 Make a code change
 
@@ -64,6 +66,6 @@ Please make [jest](https://jestjs.io/) tests for the code that you create. Pleas
 
 ## Pull requests
 
-Once you have made your changes, make a pull request.
+Once you have made your changes, make a pull request. Please choose the `dev` branch for the branch that you would like to merge into.
 
-The pull request will be reviewed. Once it is approved, it will be merged into `master`.
+The pull request will be reviewed. Once it is approved, it will be merged into `dev`.

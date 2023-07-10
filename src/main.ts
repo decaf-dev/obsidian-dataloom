@@ -7,17 +7,11 @@ import {
 	TFolder,
 } from "obsidian";
 
-import DashboardsSettingsTab from "./obsidian/dashboards-settings-tab";
-
 import { store } from "./redux/global/store";
 import { setDarkMode, setSettings } from "./redux/global/global-slice";
-import DashboardsView, { DASHBOARDS_VIEW } from "./obsidian/dashboards-view";
-import {
-	CURRENT_FILE_EXTENSION,
-	PREVIOUS_FILE_EXTENSION,
-	WIKI_LINK_REGEX,
-} from "./data/constants";
-import { createDashboardFile } from "src/data/dashboard-file";
+import DataLoomView, { DATA_LOOM_VIEW } from "./obsidian/dataloom-view";
+import { CURRENT_FILE_EXTENSION, WIKI_LINK_REGEX } from "./data/constants";
+import { createLoomFile } from "src/data/loom-file";
 import {
 	EVENT_COLUMN_ADD,
 	EVENT_COLUMN_DELETE,
@@ -25,49 +19,57 @@ import {
 	EVENT_DOWNLOAD_MARKDOWN,
 	EVENT_OUTSIDE_CLICK,
 	EVENT_OUTSIDE_KEYDOWN,
-	EVENT_REFRESH_DASHBOARDS,
+	EVENT_REFRESH_APP,
+	EVENT_REFRESH_EDITING_VIEW,
 	EVENT_ROW_ADD,
 	EVENT_ROW_DELETE,
 } from "./shared/events";
 import { editingViewPlugin } from "./obsidian/editing-view-plugin";
 import {
-	deserializeDashboardState,
-	serializeDashboardState,
-} from "./data/serialize-dashboard-state";
+	deserializeLoomState,
+	serializeLoomState,
+} from "./data/serialize-loom-state";
 import { updateLinkReferences } from "./data/utils";
 import { getBasename } from "./shared/link/link-utils";
 import { hasDarkTheme } from "./shared/render/utils";
 import { removeFocusVisibleClass } from "./shared/menu/focus-visible";
-import { DashboardState } from "./shared/types";
+import { LoomState } from "./shared/types";
+import WelcomeModal from "./obsidian/welcome-modal";
+import WhatsNewModal from "./obsidian/whats-new-modal";
+import DataLoomSettingsTab from "./obsidian/dataloom-settings-tab";
 
-export interface DashboardsSettings {
+export interface DataLoomSettings {
 	shouldDebug: boolean;
 	createAtObsidianAttachmentFolder: boolean;
 	customFolderForNewFiles: string;
 	exportRenderMarkdown: boolean;
 	defaultEmbedWidth: string;
 	defaultEmbedHeight: string;
-	hasMigratedTo700: boolean;
+	hasMigratedTo800: boolean;
+	showWelcomeModal: boolean;
+	pluginVersion: string;
 }
 
-export const DEFAULT_SETTINGS: DashboardsSettings = {
+export const DEFAULT_SETTINGS: DataLoomSettings = {
 	shouldDebug: false,
 	createAtObsidianAttachmentFolder: false,
 	customFolderForNewFiles: "",
 	exportRenderMarkdown: true,
 	defaultEmbedWidth: "100%",
 	defaultEmbedHeight: "340px",
-	hasMigratedTo700: false,
+	hasMigratedTo800: false,
+	showWelcomeModal: true,
+	pluginVersion: "",
 };
 
 /**
  * The plugin id is the id used in the manifest.json file
  * We use the old plugin id to maintain our download count
  */
-export const DASHBOARDS_PLUGIN_ID = "notion-like-tables";
+export const DATA_LOOM_PLUGIN_ID = "notion-like-tables";
 
-export default class DashboardsPlugin extends Plugin {
-	settings: DashboardsSettings;
+export default class DataLoomPlugin extends Plugin {
+	settings: DataLoomSettings;
 
 	/**
 	 * Called on plugin load.
@@ -76,14 +78,14 @@ export default class DashboardsPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
-		this.registerView(DASHBOARDS_VIEW, (leaf) => new DashboardsView(leaf));
-		this.registerExtensions([CURRENT_FILE_EXTENSION], DASHBOARDS_VIEW);
+		this.registerView(DATA_LOOM_VIEW, (leaf) => new DataLoomView(leaf));
+		this.registerExtensions([CURRENT_FILE_EXTENSION], DATA_LOOM_VIEW);
 
-		this.addRibbonIcon("table", "Create new dashboard", async () => {
-			await this.newDashboardFile(null);
+		this.addRibbonIcon("table", "Create new loom", async () => {
+			await this.newLoomFile(null);
 		});
 
-		this.addSettingTab(new DashboardsSettingsTab(this.app, this));
+		this.addSettingTab(new DataLoomSettingsTab(this.app, this));
 		this.registerEmbeddedView();
 		this.registerCommands();
 		this.registerEvents();
@@ -93,21 +95,42 @@ export default class DashboardsPlugin extends Plugin {
 			const isDark = hasDarkTheme();
 			store.dispatch(setDarkMode(isDark));
 
-			await this.migrateTableFiles();
+			await this.migrateLoomFiles();
 		});
+
+		if (this.settings.pluginVersion !== this.manifest.version) {
+			//Don't show updates for the first install
+			//unless you have already downloaded the plugin
+			if (this.settings.pluginVersion !== "") {
+				new WhatsNewModal(this.app).open();
+			}
+		}
+
+		if (this.settings.showWelcomeModal) {
+			new WelcomeModal(app).open();
+			this.settings.showWelcomeModal = false;
+			await this.saveSettings();
+		}
+
+		this.settings.pluginVersion = this.manifest.version;
+		await this.saveSettings();
 	}
 
-	private async migrateTableFiles() {
-		// Migrate .table files to .dashboard files
-		if (!this.settings.hasMigratedTo700) {
-			const tableFiles = this.app.vault
+	private async migrateLoomFiles() {
+		// Migrate .dashboard files to .loom files
+		if (!this.settings.hasMigratedTo800) {
+			const loomFiles = this.app.vault
 				.getFiles()
-				.filter((file) => file.extension === PREVIOUS_FILE_EXTENSION);
+				.filter(
+					(file) =>
+						file.extension === "dashboard" ||
+						file.extension === "table"
+				);
 
-			for (let i = 0; i < tableFiles.length; i++) {
-				const file = tableFiles[i];
+			for (let i = 0; i < loomFiles.length; i++) {
+				const file = loomFiles[i];
 				const newFilePath = file.path.replace(
-					`.${PREVIOUS_FILE_EXTENSION}`,
+					`.${file.extension}`,
 					`.${CURRENT_FILE_EXTENSION}`
 				);
 				try {
@@ -119,24 +142,23 @@ export default class DashboardsPlugin extends Plugin {
 					new Notice("Please rename this file manually");
 				}
 			}
-			this.settings.hasMigratedTo700 = true;
+			this.settings.hasMigratedTo800 = true;
 			await this.saveSettings();
 		}
 	}
 
 	private registerEmbeddedView() {
 		//This registers a CodeMirror extension. It is used to render the embedded
-		//table in live preview mode.
+		//loom in live preview mode.
 		this.registerEditorExtension(editingViewPlugin);
-
 		//This registers a Markdown post processor. It is used to render the embedded
-		//table in preview mode.
+		//loom in preview mode.
 		// this.registerMarkdownPostProcessor((element, context) => {
-		// 	const embeddedTableLinkEls = getEmbeddedDashboardLinkEls(element);
-		// 	for (let i = 0; i < embeddedTableLinkEls.length; i++) {
-		// 		const linkEl = embeddedTableLinkEls[i];
+		// 	const embeddedLoomLinkEls = getEmbeddedDataLoomLinkEls(element);
+		// 	for (let i = 0; i < embeddedLoomLinkEls.length; i++) {
+		// 		const linkEl = embeddedLoomLinkEls[i];
 		// 		context.addChild(
-		// 			new DashboardsReadingChild(
+		// 			new DataLoomReadingChild(
 		// 				linkEl,
 		// 				linkEl.getAttribute("src")!
 		// 			)
@@ -145,7 +167,7 @@ export default class DashboardsPlugin extends Plugin {
 		// });
 	}
 
-	private async newDashboardFile(
+	private async newLoomFile(
 		contextMenuFolderPath: string | null,
 		embedded?: boolean
 	) {
@@ -160,13 +182,13 @@ export default class DashboardsPlugin extends Plugin {
 			folderPath = this.settings.customFolderForNewFiles;
 		}
 
-		const filePath = await createDashboardFile({
+		const filePath = await createLoomFile({
 			folderPath,
 		});
 		if (embedded) return filePath;
 		//Open file in a new tab and set it to active
 		await app.workspace.getLeaf(true).setViewState({
-			type: DASHBOARDS_VIEW,
+			type: DATA_LOOM_VIEW,
 			active: true,
 			state: { file: filePath },
 		});
@@ -201,10 +223,10 @@ export default class DashboardsPlugin extends Plugin {
 			this.app.workspace.on("file-menu", (menu, file) => {
 				if (file instanceof TFolder) {
 					menu.addItem((item) => {
-						item.setTitle("New dashboard")
+						item.setTitle("New loom")
 							.setIcon("document")
 							.onClick(async () => {
-								await this.newDashboardFile(file.path);
+								await this.newLoomFile(file.path);
 							});
 					});
 				}
@@ -214,23 +236,30 @@ export default class DashboardsPlugin extends Plugin {
 		this.app.vault.on(
 			"rename",
 			async (file: TAbstractFile, oldPath: string) => {
+				//When a file is renamed, we want to refresh all open leafs
+				//that contain an embedded loom
+				const leafs = app.workspace.getLeavesOfType("markdown");
+				leafs.forEach((leaf) => {
+					leaf.trigger(EVENT_REFRESH_EDITING_VIEW);
+				});
+
 				if (file instanceof TFile) {
-					const dashboardFiles = this.app.vault
+					const loomFiles = this.app.vault
 						.getFiles()
 						.filter(
 							(file) => file.extension === CURRENT_FILE_EXTENSION
 						);
 
-					const dashboardsToUpdate: {
+					const loomsToUpdate: {
 						file: TFile;
-						state: DashboardState;
+						state: LoomState;
 					}[] = [];
 
 					let numLinks = 0;
-					for (const dashboardFile of dashboardFiles) {
+					for (const loomFile of loomFiles) {
 						//For each file read its contents
-						const data = await file.vault.read(dashboardFile);
-						const state = deserializeDashboardState(data);
+						const data = await file.vault.read(loomFile);
+						const state = deserializeLoomState(data);
 						//Search for old path in the file
 
 						state.model.bodyCells.forEach((cell) => {
@@ -241,17 +270,16 @@ export default class DashboardsPlugin extends Plugin {
 							) {
 								const path = matches[1];
 
-								//The path will be the relative path e.g. mytable.table
-								//while the old path will be the absolute path in the vault e.g. /tables/mytables.table
+								//The path will be the relative path e.g. my-loom.loom
+								//while the old path will be the absolute path in the vault e.g. /looms/my-loom.loom
 								if (oldPath.includes(path)) {
-									const found = dashboardsToUpdate.find(
-										(table) =>
-											table.file.path ===
-											dashboardFile.path
+									const found = loomsToUpdate.find(
+										(loom) =>
+											loom.file.path === loomFile.path
 									);
 									if (!found) {
-										dashboardsToUpdate.push({
-											file: dashboardFile,
+										loomsToUpdate.push({
+											file: loomFile,
 											state,
 										});
 									}
@@ -265,20 +293,19 @@ export default class DashboardsPlugin extends Plugin {
 						new Notice(
 							`Updating ${numLinks} link${
 								numLinks > 1 ? "s" : ""
-							} in ${dashboardsToUpdate.length} Dashboard file${
-								dashboardsToUpdate.length > 1 ? "s" : ""
+							} in ${loomsToUpdate.length} loom file${
+								loomsToUpdate.length > 1 ? "s" : ""
 							}.`
 						);
 					}
 
-					for (let i = 0; i < dashboardsToUpdate.length; i++) {
+					for (let i = 0; i < loomsToUpdate.length; i++) {
 						//If the state has changed, update the file
-						const { file: tableFile, state } =
-							dashboardsToUpdate[i];
+						const { file: loomFile, state } = loomsToUpdate[i];
 
 						if (this.settings.shouldDebug)
 							console.log("Updating links in file", {
-								path: tableFile.path,
+								path: loomFile.path,
 							});
 
 						const newState = structuredClone(state);
@@ -304,15 +331,15 @@ export default class DashboardsPlugin extends Plugin {
 							JSON.stringify(state) !== JSON.stringify(newState)
 						) {
 							const serializedState =
-								serializeDashboardState(newState);
+								serializeLoomState(newState);
 
-							await file.vault.modify(tableFile, serializedState);
+							await file.vault.modify(loomFile, serializedState);
 
-							//Update all tables that match this path
+							//Update all looms that match this path
 							app.workspace.trigger(
-								EVENT_REFRESH_DASHBOARDS,
-								tableFile.path,
-								-1, //update all tables that match this path
+								EVENT_REFRESH_APP,
+								loomFile.path,
+								-1, //update all looms that match this path
 								newState
 							);
 						}
@@ -324,28 +351,28 @@ export default class DashboardsPlugin extends Plugin {
 
 	registerCommands() {
 		this.addCommand({
-			id: "dashboards-create",
-			name: "Create dashboard",
+			id: "dataloom-create",
+			name: "Create loom",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "=" }],
 			callback: async () => {
-				await this.newDashboardFile(null);
+				await this.newLoomFile(null);
 			},
 		});
 
 		this.addCommand({
-			id: "dashboards-create-and-embed",
-			name: "Create dashboard and embed it into current file",
+			id: "dataloom-create-and-embed",
+			name: "Create loom and embed it into current file",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "+" }],
 			editorCallback: async (editor) => {
-				const filePath = await this.newDashboardFile(null, true);
+				const filePath = await this.newLoomFile(null, true);
 				if (!filePath) return;
 
 				const useMarkdownLinks = (this.app.vault as any).getConfig(
 					"useMarkdownLinks"
 				);
 
-				// Use basename rather than whole name when using Markdownlink like ![abcd](abcd.dashboard) instead of ![abcd.dashboard](abcd.dashboard)
-				// It will replace `.dashboard` to "" in abcd.dashboard
+				// Use basename rather than whole name when using Markdownlink like ![abcd](abcd.loom) instead of ![abcd.loom](abcd.loom)
+				// It will replace `.loom` to "" in abcd.loom
 				const linkText = useMarkdownLinks
 					? `![${getBasename(filePath)}](${encodeURI(filePath)})`
 					: `![[${filePath}]]`;
@@ -364,7 +391,7 @@ export default class DashboardsPlugin extends Plugin {
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "\\" }],
 			checkCallback: (checking: boolean) => {
 				const nltView =
-					this.app.workspace.getActiveViewOfType(DashboardsView);
+					this.app.workspace.getActiveViewOfType(DataLoomView);
 				const markdownView =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
 				if (nltView || markdownView) {
@@ -383,7 +410,7 @@ export default class DashboardsPlugin extends Plugin {
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Backspace" }],
 			checkCallback: (checking: boolean) => {
 				const nltView =
-					this.app.workspace.getActiveViewOfType(DashboardsView);
+					this.app.workspace.getActiveViewOfType(DataLoomView);
 				const markdownView =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
 				if (nltView || markdownView) {
@@ -402,7 +429,7 @@ export default class DashboardsPlugin extends Plugin {
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Enter" }],
 			checkCallback: (checking: boolean) => {
 				const nltView =
-					this.app.workspace.getActiveViewOfType(DashboardsView);
+					this.app.workspace.getActiveViewOfType(DataLoomView);
 				const markdownView =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
 				if (nltView || markdownView) {
@@ -419,7 +446,7 @@ export default class DashboardsPlugin extends Plugin {
 			hotkeys: [{ modifiers: ["Alt", "Shift"], key: "Backspace" }],
 			checkCallback: (checking: boolean) => {
 				const nltView =
-					this.app.workspace.getActiveViewOfType(DashboardsView);
+					this.app.workspace.getActiveViewOfType(DataLoomView);
 				const markdownView =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
 				if (nltView || markdownView) {
@@ -437,7 +464,7 @@ export default class DashboardsPlugin extends Plugin {
 			name: "Export as markdown",
 			checkCallback: (checking: boolean) => {
 				const nltView =
-					this.app.workspace.getActiveViewOfType(DashboardsView);
+					this.app.workspace.getActiveViewOfType(DataLoomView);
 				const markdownView =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
 				if (nltView || markdownView) {
@@ -455,7 +482,7 @@ export default class DashboardsPlugin extends Plugin {
 			name: "Export as CSV",
 			checkCallback: (checking: boolean) => {
 				const nltView =
-					this.app.workspace.getActiveViewOfType(DashboardsView);
+					this.app.workspace.getActiveViewOfType(DataLoomView);
 				const markdownView =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
 				if (nltView || markdownView) {
@@ -488,6 +515,6 @@ export default class DashboardsPlugin extends Plugin {
 	 * This can be when the plugin is disabled or Obsidian is closed.
 	 */
 	async onunload() {
-		this.app.workspace.detachLeavesOfType(DASHBOARDS_VIEW);
+		this.app.workspace.detachLeavesOfType(DATA_LOOM_VIEW);
 	}
 }

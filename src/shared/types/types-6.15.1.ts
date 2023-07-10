@@ -161,7 +161,7 @@ interface TableModel {
 	footerCells: FooterCell[];
 	filterRules: FilterRule[];
 }
-export interface DashboardState6151 {
+export interface LoomState6151 {
 	pluginVersion: string;
 	model: TableModel;
 }

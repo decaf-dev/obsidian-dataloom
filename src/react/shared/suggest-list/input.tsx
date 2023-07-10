@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { transparentInputStyle } from "src/react/dashboard-app/shared-styles";
+import { transparentInputStyle } from "src/react/loom-app/shared-styles";
 
 interface Props {
 	value: string;
@@ -16,7 +16,7 @@ export default function Input({ value, onChange }: Props) {
 			`}
 		>
 			<input
-				className="Dashboards__focusable"
+				className="DataLoom__focusable"
 				type="text"
 				css={transparentInputStyle}
 				autoFocus

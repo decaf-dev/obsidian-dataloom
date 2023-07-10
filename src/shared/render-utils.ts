@@ -4,14 +4,14 @@ import {
 	appendOrReplaceFirstChild,
 	replaceNewLinesWithBr,
 } from "src/shared/render/utils";
-import { useMountState } from "../react/dashboard-app/mount-provider";
+import { useMountState } from "../react/loom-app/mount-provider";
 import {
 	MarkdownRenderer,
 	MarkdownView,
 	Platform,
 	WorkspaceLeaf,
 } from "obsidian";
-import DashboardsView, { DASHBOARDS_VIEW } from "src/obsidian/dashboards-view";
+import DataLoomView, { DATA_LOOM_VIEW } from "src/obsidian/dataloom-view";
 import { handleLinkClick } from "src/shared/render/embed";
 import { renderEmbed } from "./render-embed";
 
@@ -22,13 +22,13 @@ export const renderMarkdown = async (leaf: WorkspaceLeaf, markdown: string) => {
 
 	//We need to attach this class so that the `is-unresolved` link renders properly by Obsidian
 	const view = leaf?.view;
-	if (view instanceof DashboardsView) div.classList.add("markdown-rendered");
+	if (view instanceof DataLoomView) div.classList.add("markdown-rendered");
 
 	try {
 		const updated = replaceNewLinesWithBr(markdown);
 		const view = leaf?.view;
 
-		if (view instanceof MarkdownView || view instanceof DashboardsView) {
+		if (view instanceof MarkdownView || view instanceof DataLoomView) {
 			await MarkdownRenderer.renderMarkdown(
 				updated,
 				div,
@@ -52,7 +52,7 @@ export const renderMarkdown = async (leaf: WorkspaceLeaf, markdown: string) => {
 					e.stopPropagation();
 					app.workspace.trigger("hover-link", {
 						event: e,
-						source: DASHBOARDS_VIEW,
+						source: DATA_LOOM_VIEW,
 						hoverParent: view.containerEl,
 						targetEl: el,
 						linktext: href,
@@ -80,15 +80,15 @@ export const useRenderMarkdown = (
 	const containerRef = React.useRef<HTMLDivElement | null>(null);
 	const renderRef = React.useRef<HTMLElement | null>(null);
 
-	const { leaf } = useMountState();
+	const { mountLeaf } = useMountState();
 
 	React.useEffect(() => {
 		async function updateContainerRef() {
 			let el = null;
 			if (isEmbed) {
-				el = await renderEmbed(leaf, markdown);
+				el = await renderEmbed(mountLeaf, markdown);
 			} else {
-				el = await renderMarkdown(leaf, markdown);
+				el = await renderMarkdown(mountLeaf, markdown);
 			}
 
 			if (el) {
@@ -102,17 +102,12 @@ export const useRenderMarkdown = (
 		}
 
 		updateContainerRef();
-	}, [markdown, leaf, isExternalLink, isEmbed]);
+	}, [markdown, mountLeaf, isExternalLink, isEmbed]);
 
 	return {
 		containerRef,
 		renderRef,
 	};
-};
-
-export const useLeafContainer = () => {
-	const { leaf } = useMountState();
-	return leaf.view.containerEl;
 };
 
 export const isOnMobile = () => {

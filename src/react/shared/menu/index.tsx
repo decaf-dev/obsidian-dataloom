@@ -8,7 +8,7 @@ import { useMenuState } from "src/shared/menu/menu-context";
 import { isTextSelected } from "src/shared/menu/utils";
 import { removeFocusVisibleClass } from "src/shared/menu/focus-visible";
 import { useLogger } from "src/shared/logger";
-import { useMenuEvents } from "src/shared/dashboard-state/use-menu-events";
+import { useMenuEvents } from "src/shared/loom-state/use-menu-events";
 
 interface Props {
 	id: string;
@@ -79,7 +79,7 @@ const Menu = React.forwardRef<HTMLDivElement, Props>(function Menu(
 			{isOpen &&
 				ReactDOM.createPortal(
 					<div
-						className="Dashboards__menu"
+						className="DataLoom__menu"
 						data-id={id}
 						css={css`
 							width: 0;

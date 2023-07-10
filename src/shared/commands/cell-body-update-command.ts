@@ -1,12 +1,12 @@
 import {
 	rowLastEditedTime,
 	rowLastEditedTimeUpdate,
-} from "../dashboard-state/row-state-operations";
-import { CellNotFoundError } from "../dashboard-state/dashboard-error";
-import DashboardStateCommand from "../dashboard-state/dashboard-state-command";
-import { BodyCell, DashboardState } from "../types";
+} from "../loom-state/row-state-operations";
+import { CellNotFoundError } from "../loom-state/loom-error";
+import LoomStateCommand from "../loom-state/loom-state-command";
+import { BodyCell, LoomState } from "../types";
 
-export default class CellBodyUpdateCommand extends DashboardStateCommand {
+export default class CellBodyUpdateCommand extends LoomStateCommand {
 	private cellId: string;
 	private rowId: string;
 	private key: keyof BodyCell;
@@ -28,7 +28,7 @@ export default class CellBodyUpdateCommand extends DashboardStateCommand {
 		this.value = value;
 	}
 
-	execute(prevState: DashboardState): DashboardState {
+	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
 		const { bodyCells, bodyRows } = prevState.model;
@@ -58,12 +58,12 @@ export default class CellBodyUpdateCommand extends DashboardStateCommand {
 		};
 	}
 
-	redo(prevState: DashboardState): DashboardState {
+	redo(prevState: LoomState): LoomState {
 		super.onRedo();
 		return this.execute(prevState);
 	}
 
-	undo(prevState: DashboardState): DashboardState {
+	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
 		const { bodyCells, bodyRows } = prevState.model;

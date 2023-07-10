@@ -1,17 +1,17 @@
-.Dashboards__p {
+.DataLoom__p {
     white-space: nowrap;
     margin: 0;
     color: var(--text-normal);
 }
 
-.Dashboards__text-muted {
+.DataLoom__text-muted {
     color: var(--text-muted);
 }
 
-.Dashboards__text-faint {
+.DataLoom__text-faint {
     color: var(--text-faint);
 }
 
-.Dashboards__text-semibold {
+.DataLoom__text-semibold {
     font-weight: var(--font-semibold);
 }

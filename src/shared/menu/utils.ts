@@ -2,7 +2,8 @@ import React from "react";
 import { Position } from "./types";
 import { numToPx } from "../conversion";
 import { MENU_SHIFT_PADDING } from "./constants";
-import { useLeafContainer, isOnMobile } from "src/shared/render-utils";
+import { isOnMobile } from "src/shared/render-utils";
+import { useMountState } from "src/react/loom-app/mount-provider";
 
 export const isTextSelected = () => {
 	const selection = window.getSelection();
@@ -29,7 +30,8 @@ export const useShiftMenu = (
 		leftOffset?: number;
 	}
 ) => {
-	const viewContentEl = useLeafContainer();
+	const { mountLeaf } = useMountState();
+	const viewContentEl = mountLeaf.view.containerEl;
 
 	React.useEffect(() => {
 		function shiftMenuIntoView() {

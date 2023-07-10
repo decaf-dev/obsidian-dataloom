@@ -1,11 +1,11 @@
-import { DashboardState } from "../types";
+import { LoomState } from "../types";
 import { markdownTable } from "markdown-table";
-import { dashboardStateToArray } from "./table-state-to-array";
+import { LoomStateToArray } from "./loom-state-to-array";
 
 export const exportToMarkdown = (
-	dashboardState: DashboardState,
+	LoomState: LoomState,
 	renderMarkdown: boolean
 ): string => {
-	const arr = dashboardStateToArray(dashboardState, renderMarkdown);
+	const arr = LoomStateToArray(LoomState, renderMarkdown);
 	return markdownTable(arr);
 };
