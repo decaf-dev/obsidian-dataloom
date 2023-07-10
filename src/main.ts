@@ -15,7 +15,7 @@ import {
 	PREVIOUS_FILE_EXTENSION,
 	WIKI_LINK_REGEX,
 } from "./data/constants";
-import { createLoomFile } from "src/data/table-file";
+import { createLoomFile } from "src/data/loom-file";
 import {
 	EVENT_COLUMN_ADD,
 	EVENT_COLUMN_DELETE,
