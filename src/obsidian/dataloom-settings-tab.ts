@@ -1,11 +1,11 @@
 import { PluginSettingTab, App } from "obsidian";
-import DashboardsPlugin from "../main";
 import { Setting } from "obsidian";
+import DataLoomPlugin from "../main";
 
-export default class DashboardsSettingsTab extends PluginSettingTab {
-	plugin: DashboardsPlugin;
+export default class DataLoomSettingsTab extends PluginSettingTab {
+	plugin: DataLoomPlugin;
 
-	constructor(app: App, plugin: DashboardsPlugin) {
+	constructor(app: App, plugin: DataLoomPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}

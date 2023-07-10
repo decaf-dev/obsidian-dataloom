@@ -18,7 +18,7 @@ export default class ImportModal extends Modal {
 
 	onOpen() {
 		const { contentEl } = this;
-		contentEl.createDiv({ text: "Dashboards Import" });
+		contentEl.createDiv({ text: "DataLoom Import" });
 		const appContainer = contentEl.createDiv();
 
 		const view = app.workspace.getActiveViewOfType(DataLoomView);

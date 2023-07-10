@@ -7,8 +7,6 @@ import {
 	TFolder,
 } from "obsidian";
 
-import DashboardsSettingsTab from "./obsidian/datalook-settings-tab";
-
 import { store } from "./redux/global/store";
 import { setDarkMode, setSettings } from "./redux/global/global-slice";
 import DataLoomView, { DATA_LOOM_VIEW } from "./obsidian/dataloom-view";
@@ -17,7 +15,7 @@ import {
 	PREVIOUS_FILE_EXTENSION,
 	WIKI_LINK_REGEX,
 } from "./data/constants";
-import { createDashboardFile } from "src/data/table-file";
+import { createTableFile } from "src/data/table-file";
 import {
 	EVENT_COLUMN_ADD,
 	EVENT_COLUMN_DELETE,
@@ -42,6 +40,7 @@ import { removeFocusVisibleClass } from "./shared/menu/focus-visible";
 import { TableState } from "./shared/types";
 import WelcomeModal from "./obsidian/welcome-modal";
 import WhatsNewModal from "./obsidian/whats-new-modal";
+import DataLoomSettingsTab from "./obsidian/dataloom-settings-tab";
 
 export interface DataLoomSettings {
 	shouldDebug: boolean;
@@ -90,7 +89,7 @@ export default class DataLoomPlugin extends Plugin {
 			await this.newTableFile(null);
 		});
 
-		this.addSettingTab(new DashboardsSettingsTab(this.app, this));
+		this.addSettingTab(new DataLoomSettingsTab(this.app, this));
 		this.registerEmbeddedView();
 		this.registerCommands();
 		this.registerEvents();
@@ -148,11 +147,11 @@ export default class DataLoomPlugin extends Plugin {
 		//This registers a Markdown post processor. It is used to render the embedded
 		//table in preview mode.
 		// this.registerMarkdownPostProcessor((element, context) => {
-		// 	const embeddedTableLinkEls = getEmbeddedDashboardLinkEls(element);
+		// 	const embeddedTableLinkEls = getEmbeddedDataLoomLinkEls(element);
 		// 	for (let i = 0; i < embeddedTableLinkEls.length; i++) {
 		// 		const linkEl = embeddedTableLinkEls[i];
 		// 		context.addChild(
-		// 			new DashboardsReadingChild(
+		// 			new DataLoomReadingChild(
 		// 				linkEl,
 		// 				linkEl.getAttribute("src")!
 		// 			)
@@ -176,7 +175,7 @@ export default class DataLoomPlugin extends Plugin {
 			folderPath = this.settings.customFolderForNewFiles;
 		}
 
-		const filePath = await createDashboardFile({
+		const filePath = await createTableFile({
 			folderPath,
 		});
 		if (embedded) return filePath;
@@ -287,7 +286,7 @@ export default class DataLoomPlugin extends Plugin {
 						new Notice(
 							`Updating ${numLinks} link${
 								numLinks > 1 ? "s" : ""
-							} in ${tablesToUpdate.length} Dashboard file${
+							} in ${tablesToUpdate.length} DataLoom table file${
 								tablesToUpdate.length > 1 ? "s" : ""
 							}.`
 						);

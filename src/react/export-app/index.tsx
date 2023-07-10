@@ -58,7 +58,7 @@ export function ExportApp({ tableState, tableFilePath }: Props) {
 						margin-bottom: 0px;
 					`}
 				>
-					Dashboards Export
+					DataLoom Export
 				</h5>
 				<hr
 					css={css`

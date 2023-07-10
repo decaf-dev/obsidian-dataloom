@@ -15,7 +15,7 @@ export const getFilePath = (folderPath: string, fileName: string) => {
 	return folderPath + "/" + fileName;
 };
 
-export const createDashboardFile = async (options: { folderPath: string }) => {
+export const createTableFile = async (options: { folderPath: string }) => {
 	try {
 		//Create folder if it doesn't exist
 		if (options.folderPath !== "") {

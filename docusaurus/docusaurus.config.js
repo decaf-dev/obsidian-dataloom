@@ -61,7 +61,7 @@ const config = {
 			image: "img/social-card.png",
 			blog: false,
 			navbar: {
-				title: "Dashboards",
+				title: "DataLoom",
 				logo: {
 					alt: "logo",
 					src: "img/light-logo.png",

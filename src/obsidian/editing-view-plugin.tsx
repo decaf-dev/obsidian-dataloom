@@ -23,7 +23,7 @@ import {
 	hasLoadedEmbeddedTable,
 } from "./utils";
 import { v4 as uuidv4 } from "uuid";
-import DashboardApp from "src/react/table-app";
+import TableApp from "src/react/table-app";
 
 class EditingViewPlugin implements PluginValue {
 	private editorView: EditorView;
@@ -154,7 +154,7 @@ class EditingViewPlugin implements PluginValue {
 		const throttleHandleSave = _.throttle(this.handleSave, 2000);
 
 		root.render(
-			<DashboardApp
+			<TableApp
 				appId={id}
 				isMarkdownView
 				tableFile={tableFile}

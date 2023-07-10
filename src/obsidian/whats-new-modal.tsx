@@ -8,7 +8,7 @@ export default class WhatsNewModal extends Modal {
 
 	async onOpen() {
 		let { contentEl } = this;
-		contentEl.createEl("h2", { text: "Dashboards - What's New" });
+		contentEl.createEl("h2", { text: "DataLoom - What's New" });
 		this.renderDivider(contentEl);
 		this.renderContent(contentEl);
 	}

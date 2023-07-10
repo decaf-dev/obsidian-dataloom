@@ -5,10 +5,10 @@ if (process.env.ENABLE_REACT_DEVTOOLS === "true") {
 }
 import { Root, createRoot } from "react-dom/client";
 import { store } from "src/redux/global/store";
-import DashboardsView from "./dataloom-view";
 import { deserializeTableState } from "src/data/serialize-table-state";
 import { v4 as uuidv4 } from "uuid";
-import DashboardApp from "src/react/table-app";
+import TableApp from "src/react/table-app";
+import DataLoomView from "./dataloom-view";
 
 export default class ReadingViewChild extends MarkdownRenderChild {
 	private root: Root | null;
@@ -26,7 +26,7 @@ export default class ReadingViewChild extends MarkdownRenderChild {
 
 	async onload() {
 		const container = this.containerEl;
-		const activeView = app.workspace.getActiveViewOfType(DashboardsView);
+		const activeView = app.workspace.getActiveViewOfType(DataLoomView);
 		if (!activeView) return;
 
 		const file = app.vault.getAbstractFileByPath(this.fileName);
@@ -40,7 +40,7 @@ export default class ReadingViewChild extends MarkdownRenderChild {
 			this.root = createRoot(container);
 
 			this.root.render(
-				<DashboardApp
+				<TableApp
 					mountLeaf={activeView.leaf}
 					appId={this.appId}
 					tableFile={file}

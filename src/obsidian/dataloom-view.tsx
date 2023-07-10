@@ -13,8 +13,8 @@ import {
 } from "src/data/serialize-table-state";
 import { EVENT_REFRESH_APP } from "src/shared/events";
 import { v4 as uuidv4 } from "uuid";
-import DashboardApp from "src/react/table-app";
 import { DATA_LOOM_PLUGIN_ID } from "src/main";
+import TableApp from "src/react/table-app";
 
 export const DATA_LOOM_VIEW = "dashloom";
 
@@ -134,7 +134,7 @@ export default class DataLoomView extends TextFileView {
 	private renderApp(appId: string, state: TableState) {
 		if (this.root) {
 			this.root.render(
-				<DashboardApp
+				<TableApp
 					mountLeaf={this.leaf}
 					appId={appId}
 					tableFile={this.file}
