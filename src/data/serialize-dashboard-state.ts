@@ -13,7 +13,7 @@ import {
 	TableState670,
 } from "src/shared/types/types-6.7.0";
 import { ColumNotFoundError } from "../shared/table-state/dashboard-error";
-import { createFooterRow, createHeaderRow } from "./dashboard-state-factory";
+import { createFooterRow, createHeaderRow } from "./table-state-factory";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/table-state/constants";
 import { TableState680 } from "src/shared/types/types-6.8.0";
 import { TableState600 } from "src/shared/types/types-6.0.0";

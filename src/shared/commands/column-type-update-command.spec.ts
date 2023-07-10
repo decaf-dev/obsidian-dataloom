@@ -2,7 +2,7 @@ import {
 	createFilterRule,
 	createTableState,
 	createTag,
-} from "src/data/dashboard-state-factory";
+} from "src/data/table-state-factory";
 import { CommandRedoError, CommandUndoError } from "./command-errors";
 import { ColumnTypeUpdateCommand } from "./column-type-update-command";
 import { CellType } from "../types";

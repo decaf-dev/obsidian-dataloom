@@ -1,4 +1,4 @@
-import { createTableState, createTag } from "src/data/dashboard-state-factory";
+import { createTableState, createTag } from "src/data/table-state-factory";
 import { CommandRedoError, CommandUndoError } from "./command-errors";
 import TagCellAddCommand from "./tag-cell-add-command";
 import { advanceBy, clear } from "jest-date-mock";

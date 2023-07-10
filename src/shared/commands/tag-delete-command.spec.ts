@@ -1,4 +1,4 @@
-import { createTableState, createTag } from "src/data/dashboard-state-factory";
+import { createTableState, createTag } from "src/data/table-state-factory";
 import { CommandUndoError, CommandRedoError } from "./command-errors";
 import TagDeleteCommand from "./tag-delete-command";
 

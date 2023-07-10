@@ -1,4 +1,4 @@
-import { createTag } from "src/data/dashboard-state-factory";
+import { createTag } from "src/data/table-state-factory";
 import { unixTimeToDateString } from "../date/date-conversion";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "../table-state/constants";
 import { ColumNotFoundError } from "../table-state/dashboard-error";

@@ -1,4 +1,4 @@
-import { createTableState, createTag } from "src/data/dashboard-state-factory";
+import { createTableState, createTag } from "src/data/table-state-factory";
 import { CommandRedoError, CommandUndoError } from "./command-errors";
 import TagAddCommand from "./tag-add-command";
 import { Color } from "../types";

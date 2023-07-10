@@ -1,6 +1,6 @@
 import { Notice } from "obsidian";
 import { createFile, createFolder } from "./file-operations";
-import { createTableState } from "./dashboard-state-factory";
+import { createTableState } from "./table-state-factory";
 import { serializeTableState } from "./serialize-dashboard-state";
 import { CURRENT_FILE_EXTENSION, DEFAULT_TABLE_NAME } from "./constants";
 

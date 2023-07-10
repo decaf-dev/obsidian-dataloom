@@ -1,4 +1,4 @@
-import { createTableState } from "src/data/dashboard-state-factory";
+import { createTableState } from "src/data/table-state-factory";
 import RowDeleteCommand from "./row-delete-command";
 import {
 	DeleteCommandArgumentsError,

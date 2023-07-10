@@ -1,7 +1,7 @@
 import {
 	createFilterRule,
 	createTableState,
-} from "src/data/dashboard-state-factory";
+} from "src/data/table-state-factory";
 import RowDeleteCommand from "./row-delete-command";
 import {
 	DeleteCommandArgumentsError,

@@ -1,4 +1,4 @@
-import { createTableState } from "src/data/dashboard-state-factory";
+import { createTableState } from "src/data/table-state-factory";
 import RowAddCommand from "./row-add-command";
 import { CommandRedoError, CommandUndoError } from "./command-errors";
 
