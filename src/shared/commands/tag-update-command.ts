@@ -1,5 +1,5 @@
-import { TagNotFoundError } from "../dashboard-state/dashboard-error";
-import TableStateCommand from "../dashboard-state/dashboard-state-command";
+import { TagNotFoundError } from "../table-state/dashboard-error";
+import TableStateCommand from "../table-state/dashboard-state-command";
 import { TableState, Tag } from "../types";
 
 export default class TagUpdateCommand extends TableStateCommand {

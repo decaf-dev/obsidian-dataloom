@@ -1,6 +1,6 @@
-import TableStateCommand from "../dashboard-state/dashboard-state-command";
+import TableStateCommand from "../table-state/dashboard-state-command";
 import { TableState, Tag } from "../types";
-import { TagNotFoundError } from "../dashboard-state/dashboard-error";
+import { TagNotFoundError } from "../table-state/dashboard-error";
 
 export default class TagDeleteCommand extends TableStateCommand {
 	private columnId: string;

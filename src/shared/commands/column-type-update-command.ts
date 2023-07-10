@@ -1,8 +1,8 @@
 import { createTag } from "src/data/dashboard-state-factory";
 import { unixTimeToDateString } from "../date/date-conversion";
-import { CHECKBOX_MARKDOWN_UNCHECKED } from "../dashboard-state/constants";
-import { ColumNotFoundError } from "../dashboard-state/dashboard-error";
-import TableStateCommand from "../dashboard-state/dashboard-state-command";
+import { CHECKBOX_MARKDOWN_UNCHECKED } from "../table-state/constants";
+import { ColumNotFoundError } from "../table-state/dashboard-error";
+import TableStateCommand from "../table-state/dashboard-state-command";
 import {
 	BodyCell,
 	Calculation,

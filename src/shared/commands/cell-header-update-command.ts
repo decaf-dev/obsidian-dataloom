@@ -1,5 +1,5 @@
-import { CellNotFoundError } from "../dashboard-state/dashboard-error";
-import TableStateCommand from "../dashboard-state/dashboard-state-command";
+import { CellNotFoundError } from "../table-state/dashboard-error";
+import TableStateCommand from "../table-state/dashboard-state-command";
 import { HeaderCell, TableState } from "../types";
 
 export default class CellHeaderUpdateCommand extends TableStateCommand {

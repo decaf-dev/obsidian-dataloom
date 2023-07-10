@@ -1,6 +1,6 @@
 import { numToPx, pxToNum } from "src/shared/conversion";
 import { useColumnResize } from "./use-column-resize";
-import { MIN_COLUMN_WIDTH } from "src/shared/dashboard-state/constants";
+import { MIN_COLUMN_WIDTH } from "src/shared/table-state/constants";
 import { css } from "@emotion/react";
 
 const containerStyle = css`

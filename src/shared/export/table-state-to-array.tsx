@@ -1,6 +1,6 @@
 import { BodyCell, BodyRow, Column, HeaderCell, TableState } from "../types";
 import { getCellContent } from "../cell-content";
-import { ColumNotFoundError } from "../dashboard-state/dashboard-error";
+import { ColumNotFoundError } from "../table-state/dashboard-error";
 
 const serializeHeaderCells = (cells: HeaderCell[]): string[] => {
 	return cells.map((cell) => cell.markdown);

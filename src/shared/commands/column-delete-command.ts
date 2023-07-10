@@ -1,4 +1,4 @@
-import { ColumNotFoundError } from "../dashboard-state/dashboard-error";
+import { ColumNotFoundError } from "../table-state/dashboard-error";
 import {
 	Column,
 	TableState,
@@ -7,7 +7,7 @@ import {
 	FooterCell,
 	FilterRule,
 } from "../types";
-import TableStateCommand from "../dashboard-state/dashboard-state-command";
+import TableStateCommand from "../table-state/dashboard-state-command";
 import { DeleteCommandArgumentsError } from "./command-errors";
 
 export default class ColumnDeleteCommand extends TableStateCommand {

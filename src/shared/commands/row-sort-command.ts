@@ -3,8 +3,8 @@ import {
 	ColumNotFoundError,
 	RowNotFoundError,
 	TagNotFoundError,
-} from "../dashboard-state/dashboard-error";
-import TableStateCommand from "../dashboard-state/dashboard-state-command";
+} from "../table-state/dashboard-error";
+import TableStateCommand from "../table-state/dashboard-state-command";
 import {
 	BodyCell,
 	BodyRow,

@@ -14,7 +14,7 @@ import { SubmenuType } from "./types";
 import {
 	getDisplayNameForCurrencyType,
 	getDisplayNameForDateFormat,
-} from "src/shared/dashboard-state/display-name";
+} from "src/shared/table-state/display-name";
 
 interface Props {
 	title: string;

@@ -18,7 +18,7 @@ import Stack from "../../shared/stack";
 import MenuTrigger from "src/react/shared/menu-trigger";
 import { isNumber, isNumberCalcuation } from "src/shared/match";
 import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
-import { getShortDisplayNameForCalculationType } from "src/shared/dashboard-state/display-name";
+import { getShortDisplayNameForCalculationType } from "src/shared/table-state/display-name";
 import { css } from "@emotion/react";
 import { getCalculationContent } from "./calculation";
 import { getNumberCalculationContent } from "./number-calculation";

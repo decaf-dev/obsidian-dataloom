@@ -5,7 +5,7 @@ import { Store } from "@reduxjs/toolkit";
 
 import DragProvider from "src/shared/dragging/drag-context";
 import MenuProvider from "src/shared/menu/menu-context";
-import TableStateProvider from "src/shared/dashboard-state/dashboard-state-context";
+import TableStateProvider from "src/shared/table-state/dashboard-state-context";
 import { TableState } from "src/shared/types";
 import MountProvider from "./mount-provider";
 import App from "./app";

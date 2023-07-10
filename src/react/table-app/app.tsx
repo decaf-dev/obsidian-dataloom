@@ -7,14 +7,14 @@ import NewColumnButton from "./new-column-button";
 import HeaderCell from "./header-cell";
 
 import { useUUID } from "../../shared/hooks";
-import { CellNotFoundError } from "../../shared/dashboard-state/dashboard-error";
-import { useTableState } from "../../shared/dashboard-state/dashboard-state-context";
-import { useFilterRules } from "src/shared/dashboard-state/use-filter-rules";
-import { filterBodyRowsBySearch } from "src/shared/dashboard-state/filter-by-search";
-import { useColumn } from "src/shared/dashboard-state/use-column";
-import { useRow } from "src/shared/dashboard-state/use-row";
-import { useCell } from "src/shared/dashboard-state/use-cell";
-import { useTag } from "src/shared/dashboard-state/use-tag";
+import { CellNotFoundError } from "../../shared/table-state/dashboard-error";
+import { useTableState } from "../../shared/table-state/dashboard-state-context";
+import { useFilterRules } from "src/shared/table-state/use-filter-rules";
+import { filterBodyRowsBySearch } from "src/shared/table-state/filter-by-search";
+import { useColumn } from "src/shared/table-state/use-column";
+import { useRow } from "src/shared/table-state/use-row";
+import { useCell } from "src/shared/table-state/use-cell";
+import { useTag } from "src/shared/table-state/use-tag";
 import { css } from "@emotion/react";
 import { useMountState } from "src/react/table-app/mount-provider";
 import { useMenuState } from "src/shared/menu/menu-context";
@@ -43,9 +43,9 @@ import {
 	moveMenuFocusDown,
 	moveMenuFocusUp,
 } from "src/shared/menu/arrow-move-focus";
-import { useExportEvents } from "src/shared/dashboard-state/use-export-events";
-import { useRowEvents } from "src/shared/dashboard-state/use-row-events";
-import { useColumnEvents } from "src/shared/dashboard-state/use-column-events";
+import { useExportEvents } from "src/shared/table-state/use-export-events";
+import { useRowEvents } from "src/shared/table-state/use-row-events";
+import { useColumnEvents } from "src/shared/table-state/use-column-events";
 import { VirtuosoHandle } from "react-virtuoso";
 import BottomBar from "./bottom-bar";
 

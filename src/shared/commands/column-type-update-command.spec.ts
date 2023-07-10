@@ -6,7 +6,7 @@ import {
 import { CommandRedoError, CommandUndoError } from "./command-errors";
 import { ColumnTypeUpdateCommand } from "./column-type-update-command";
 import { CellType } from "../types";
-import { CHECKBOX_MARKDOWN_UNCHECKED } from "../dashboard-state/constants";
+import { CHECKBOX_MARKDOWN_UNCHECKED } from "../table-state/constants";
 
 describe("column-type-update-command", () => {
 	it("should throw an error when undo() is called before execute()", () => {

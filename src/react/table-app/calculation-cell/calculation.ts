@@ -12,7 +12,7 @@ import { hashString, round2Digits } from "./utils";
 import {
 	RowNotFoundError,
 	TagNotFoundError,
-} from "src/shared/dashboard-state/dashboard-error";
+} from "src/shared/table-state/dashboard-error";
 import { unixTimeToDateTimeString } from "src/shared/date/date-conversion";
 
 export const getCalculationContent = (

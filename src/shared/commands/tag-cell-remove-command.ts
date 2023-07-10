@@ -1,8 +1,8 @@
 import {
 	rowLastEditedTime,
 	rowLastEditedTimeUpdate,
-} from "../dashboard-state/row-state-operations";
-import TableStateCommand from "../dashboard-state/dashboard-state-command";
+} from "../table-state/row-state-operations";
+import TableStateCommand from "../table-state/dashboard-state-command";
 import { TableState } from "../types";
 
 export default class TagCellRemoveCommand extends TableStateCommand {

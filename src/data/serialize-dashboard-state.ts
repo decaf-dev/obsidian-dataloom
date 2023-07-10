@@ -12,9 +12,9 @@ import {
 	GeneralFunction670,
 	TableState670,
 } from "src/shared/types/types-6.7.0";
-import { ColumNotFoundError } from "../shared/dashboard-state/dashboard-error";
+import { ColumNotFoundError } from "../shared/table-state/dashboard-error";
 import { createFooterRow, createHeaderRow } from "./dashboard-state-factory";
-import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/dashboard-state/constants";
+import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/table-state/constants";
 import { TableState680 } from "src/shared/types/types-6.8.0";
 import { TableState600 } from "src/shared/types/types-6.0.0";
 import { CurrencyType610, TableState610 } from "src/shared/types/types-6.1.0";

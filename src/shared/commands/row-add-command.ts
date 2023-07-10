@@ -2,7 +2,7 @@ import {
 	createBodyCell,
 	createBodyRow,
 } from "src/data/dashboard-state-factory";
-import TableStateCommand from "../dashboard-state/dashboard-state-command";
+import TableStateCommand from "../table-state/dashboard-state-command";
 import { BodyCell, BodyRow, TableState } from "../types";
 
 export default class RowAddCommand extends TableStateCommand {

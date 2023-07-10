@@ -1,11 +1,11 @@
 import { createTag } from "src/data/dashboard-state-factory";
-import TableStateCommand from "../dashboard-state/dashboard-state-command";
+import TableStateCommand from "../table-state/dashboard-state-command";
 import { TableState, Tag } from "../types";
 import { Color } from "../types";
 import {
 	rowLastEditedTime,
 	rowLastEditedTimeUpdate,
-} from "../dashboard-state/row-state-operations";
+} from "../table-state/row-state-operations";
 
 export default class TagAddCommand extends TableStateCommand {
 	private cellId: string;
