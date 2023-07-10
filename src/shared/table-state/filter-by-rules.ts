@@ -5,7 +5,7 @@ import {
 	Column,
 	FilterRule,
 	FilterType,
-	TableState,
+	LoomState,
 	Tag,
 } from "src/shared/types";
 import { ColumNotFoundError } from "./table-error";
@@ -24,7 +24,7 @@ export const isCellTypeFilterable = (cellType: CellType): boolean => {
 	}
 };
 
-export const filterBodyRowsByRules = (prevState: TableState): BodyRow[] => {
+export const filterBodyRowsByRules = (prevState: LoomState): BodyRow[] => {
 	const { columns, bodyCells, bodyRows, filterRules } = prevState.model;
 	//Map column id to column instance
 	const columnMap = new Map<string, Column>();

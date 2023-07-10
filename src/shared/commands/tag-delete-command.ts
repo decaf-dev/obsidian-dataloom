@@ -1,8 +1,8 @@
-import TableStateCommand from "../table-state/table-state-command";
-import { TableState, Tag } from "../types";
+import LoomStateCommand from "../table-state/table-state-command";
+import { LoomState, Tag } from "../types";
 import { TagNotFoundError } from "../table-state/table-error";
 
-export default class TagDeleteCommand extends TableStateCommand {
+export default class TagDeleteCommand extends LoomStateCommand {
 	private columnId: string;
 	private tagId: string;
 
@@ -28,7 +28,7 @@ export default class TagDeleteCommand extends TableStateCommand {
 		this.tagId = tagId;
 	}
 
-	execute(prevState: TableState): TableState {
+	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
 		const { bodyCells, columns } = prevState.model;
@@ -76,12 +76,12 @@ export default class TagDeleteCommand extends TableStateCommand {
 		};
 	}
 
-	redo(prevState: TableState): TableState {
+	redo(prevState: LoomState): LoomState {
 		super.onRedo();
 		return this.execute(prevState);
 	}
 
-	undo(prevState: TableState): TableState {
+	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
 		const { columns, bodyCells } = prevState.model;

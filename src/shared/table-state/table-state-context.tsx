@@ -1,54 +1,54 @@
-import { TableState } from "../types";
-import TableStateCommand from "./table-state-command";
+import { LoomState } from "../types";
+import LoomStateCommand from "./table-state-command";
 import React from "react";
 import { useLogger } from "../logger";
 import RowSortCommand from "../commands/row-sort-command";
 import { useMountState } from "src/react/table-app/mount-provider";
 
 interface Props {
-	initialState: TableState;
+	initialState: LoomState;
 	children: React.ReactNode;
-	onSaveState: (appId: string, state: TableState) => void;
+	onSaveState: (appId: string, state: LoomState) => void;
 }
 
-const TableStateContext = React.createContext<{
+const LoomStateContext = React.createContext<{
 	searchText: string;
 	isSearchBarVisible: boolean;
 	resizingColumnId: string | null;
-	tableState: TableState;
-	setTableState: React.Dispatch<React.SetStateAction<TableState>>;
+	LoomState: LoomState;
+	setLoomState: React.Dispatch<React.SetStateAction<LoomState>>;
 	toggleSearchBar: () => void;
 	setResizingColumnId: React.Dispatch<React.SetStateAction<string | null>>;
 	setSearchText: React.Dispatch<React.SetStateAction<string>>;
-	doCommand: (command: TableStateCommand) => void;
+	doCommand: (command: LoomStateCommand) => void;
 	commandUndo: () => void;
 	commandRedo: () => void;
 } | null>(null);
 
-export const useTableState = () => {
-	const value = React.useContext(TableStateContext);
+export const useLoomState = () => {
+	const value = React.useContext(LoomStateContext);
 	if (value === null) {
 		throw new Error(
-			"useTableState() called without a <TableStateProvider /> in the tree."
+			"useLoomState() called without a <LoomStateProvider /> in the tree."
 		);
 	}
 
 	return value;
 };
 
-export default function TableStateProvider({
+export default function LoomStateProvider({
 	initialState,
 	onSaveState,
 	children,
 }: Props) {
-	const [tableState, setTableState] = React.useState(initialState);
+	const [LoomState, setLoomState] = React.useState(initialState);
 	const [searchText, setSearchText] = React.useState("");
 	const [isSearchBarVisible, setSearchBarVisible] = React.useState(false);
 	const [resizingColumnId, setResizingColumnId] = React.useState<
 		string | null
 	>(null);
 
-	const [history, setHistory] = React.useState<(TableStateCommand | null)[]>([
+	const [history, setHistory] = React.useState<(LoomStateCommand | null)[]>([
 		null,
 	]);
 	const [position, setPosition] = React.useState(0);
@@ -72,8 +72,8 @@ export default function TableStateProvider({
 			return;
 		}
 
-		onSaveState(appId, tableState);
-	}, [appId, tableState, onSaveState]);
+		onSaveState(appId, LoomState);
+	}, [appId, LoomState, onSaveState]);
 
 	function handleToggleSearchBar() {
 		setSearchBarVisible((prevState) => !prevState);
@@ -89,14 +89,14 @@ export default function TableStateProvider({
 			const command = history[position];
 			if (command !== null) {
 				logger(command.constructor.name + ".undo");
-				let newState = command.undo(tableState);
+				let newState = command.undo(LoomState);
 				if (command.shouldSortRows) {
 					newState = new RowSortCommand().execute(newState);
 				}
-				setTableState(newState);
+				setLoomState(newState);
 			}
 		}
-	}, [position, history, tableState, logger]);
+	}, [position, history, LoomState, logger]);
 
 	const redo = React.useCallback(() => {
 		if (position < history.length - 1) {
@@ -108,17 +108,17 @@ export default function TableStateProvider({
 			const command = history[currentPosition];
 			if (command !== null) {
 				logger(command.constructor.name + ".redo");
-				let newState = command.redo(tableState);
+				let newState = command.redo(LoomState);
 				if (command.shouldSortRows) {
 					newState = new RowSortCommand().execute(newState);
 				}
-				setTableState(newState);
+				setLoomState(newState);
 			}
 		}
-	}, [position, history, tableState, logger]);
+	}, [position, history, LoomState, logger]);
 
 	const doCommand = React.useCallback(
-		(command: TableStateCommand) => {
+		(command: LoomStateCommand) => {
 			setHistory((prevState) => {
 				//If the position is not at the end of the history, then we want to remove all the commands after the current position
 				if (position < history.length - 1) {
@@ -131,20 +131,20 @@ export default function TableStateProvider({
 			setPosition((prevState) => prevState + 1);
 
 			//Execute command
-			let newState = command.execute(tableState);
+			let newState = command.execute(LoomState);
 			if (command.shouldSortRows) {
 				newState = new RowSortCommand().execute(newState);
 			}
-			setTableState(newState);
+			setLoomState(newState);
 		},
-		[position, history, tableState]
+		[position, history, LoomState]
 	);
 
 	return (
-		<TableStateContext.Provider
+		<LoomStateContext.Provider
 			value={{
-				tableState,
-				setTableState,
+				LoomState,
+				setLoomState,
 				doCommand,
 				commandRedo: redo,
 				commandUndo: undo,
@@ -157,6 +157,6 @@ export default function TableStateProvider({
 			}}
 		>
 			{children}
-		</TableStateContext.Provider>
+		</LoomStateContext.Provider>
 	);
 }

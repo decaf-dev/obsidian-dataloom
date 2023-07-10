@@ -1,10 +1,7 @@
 import { createFilterRule } from "src/data/table-state-factory";
-import { FilterRule, TableState } from "src/shared/types";
+import { FilterRule, LoomState } from "src/shared/types";
 
-export const addRule = (
-	prevState: TableState,
-	columnId: string
-): TableState => {
+export const addRule = (prevState: LoomState, columnId: string): LoomState => {
 	const { model } = prevState;
 	return {
 		...prevState,
@@ -15,7 +12,7 @@ export const addRule = (
 	};
 };
 
-export const deleteRule = (prevState: TableState, id: string): TableState => {
+export const deleteRule = (prevState: LoomState, id: string): LoomState => {
 	const { model } = prevState;
 	const { filterRules } = model;
 
@@ -29,11 +26,11 @@ export const deleteRule = (prevState: TableState, id: string): TableState => {
 };
 
 export const updateRule = (
-	prevState: TableState,
+	prevState: LoomState,
 	id: string,
 	key: keyof FilterRule,
 	value?: unknown
-): TableState => {
+): LoomState => {
 	return {
 		...prevState,
 		model: {

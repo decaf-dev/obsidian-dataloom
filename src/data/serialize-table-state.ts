@@ -4,36 +4,33 @@ import {
 	CellType,
 	Column,
 	SortDir,
-	TableState,
+	LoomState,
 	Tag,
 } from "../shared/types";
-import { TableState630 } from "src/shared/types/types-6.3.0";
-import {
-	GeneralFunction670,
-	TableState670,
-} from "src/shared/types/types-6.7.0";
+import { LoomState630 } from "src/shared/types/types-6.3.0";
+import { GeneralFunction670, LoomState670 } from "src/shared/types/types-6.7.0";
 import { ColumNotFoundError } from "../shared/table-state/table-error";
 import { createFooterRow, createHeaderRow } from "./table-state-factory";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/table-state/constants";
-import { TableState680 } from "src/shared/types/types-6.8.0";
-import { TableState600 } from "src/shared/types/types-6.0.0";
-import { CurrencyType610, TableState610 } from "src/shared/types/types-6.1.0";
-import { DateFormat620, TableState620 } from "src/shared/types/types-6.2.0";
+import { LoomState680 } from "src/shared/types/types-6.8.0";
+import { LoomState600 } from "src/shared/types/types-6.0.0";
+import { CurrencyType610, LoomState610 } from "src/shared/types/types-6.1.0";
+import { DateFormat620, LoomState620 } from "src/shared/types/types-6.2.0";
 import { v4 as uuidv4 } from "uuid";
-import { TableState691 } from "src/shared/types/types-6.9.1";
+import { LoomState691 } from "src/shared/types/types-6.9.1";
 import {
 	isVersionLessThan,
 	legacyVersionToString,
 } from "src/shared/versioning";
-import { TableState6122 } from "src/shared/types/types-6.12.2";
-import { TableState6160 } from "src/shared/types/types-6.16.0";
-import { TableState6186 } from "src/shared/types/types-6.18.6";
+import { LoomState6122 } from "src/shared/types/types-6.12.2";
+import { LoomState6160 } from "src/shared/types/types-6.16.0";
+import { LoomState6186 } from "src/shared/types/types-6.18.6";
 
-export const serializeTableState = (tableState: TableState): string => {
-	return JSON.stringify(tableState, null, 2);
+export const serializeLoomState = (LoomState: LoomState): string => {
+	return JSON.stringify(LoomState, null, 2);
 };
 
-export const deserializeTableState = (data: string): TableState => {
+export const deserializeLoomState = (data: string): LoomState => {
 	const parsedState = JSON.parse(data);
 
 	const untypedVersion: unknown = parsedState["pluginVersion"];
@@ -48,8 +45,8 @@ export const deserializeTableState = (data: string): TableState => {
 	let currentState: unknown = parsedState;
 
 	if (isVersionLessThan(pluginVersion, "6.1.0")) {
-		const tableState = currentState as TableState600;
-		const { columns } = tableState.model;
+		const LoomState = currentState as LoomState600;
+		const { columns } = LoomState.model;
 
 		//Feat: Currency type
 		columns.forEach((column: unknown) => {
@@ -59,8 +56,8 @@ export const deserializeTableState = (data: string): TableState => {
 	}
 
 	if (isVersionLessThan(pluginVersion, "6.2.0")) {
-		const tableState = currentState as TableState610;
-		const { columns } = tableState.model;
+		const LoomState = currentState as LoomState610;
+		const { columns } = LoomState.model;
 
 		//Feat: Date formats
 		columns.forEach((column: unknown) => {
@@ -70,8 +67,8 @@ export const deserializeTableState = (data: string): TableState => {
 	}
 
 	if (isVersionLessThan(pluginVersion, "6.3.0")) {
-		const tableState = currentState as TableState620;
-		const { columns, rows, cells } = tableState.model;
+		const LoomState = currentState as LoomState620;
+		const { columns, rows, cells } = LoomState.model;
 
 		//Feat: Double click to resize
 		columns.forEach((column: unknown) => {
@@ -103,11 +100,11 @@ export const deserializeTableState = (data: string): TableState => {
 
 	//Feat: new table state structure
 	if (isVersionLessThan(pluginVersion, "6.4.0")) {
-		const tableState = parsedState as TableState630;
-		const { columns, tags, rows, cells } = tableState.model;
+		const LoomState = parsedState as LoomState630;
+		const { columns, tags, rows, cells } = LoomState.model;
 
-		const newState: TableState670 = {
-			...tableState,
+		const newState: LoomState670 = {
+			...LoomState,
 			model: {
 				columns: [],
 				headerRows: [],
@@ -198,8 +195,8 @@ export const deserializeTableState = (data: string): TableState => {
 
 	//Feat: filter rules
 	if (isVersionLessThan(pluginVersion, "6.8.0")) {
-		const tableState = currentState as TableState670;
-		const { model } = tableState;
+		const LoomState = currentState as LoomState670;
+		const { model } = LoomState;
 		const { bodyCells, columns } = model;
 
 		//Fix: clean up any bodyRows that were saved outside of the model
@@ -229,8 +226,8 @@ export const deserializeTableState = (data: string): TableState => {
 	}
 
 	if (isVersionLessThan(pluginVersion, "6.9.1")) {
-		const tableState = currentState as TableState680;
-		const { footerCells } = tableState.model;
+		const LoomState = currentState as LoomState680;
+		const { footerCells } = LoomState.model;
 
 		//Feat: make all variable names consistent
 		footerCells.forEach((cell: unknown) => {
@@ -245,8 +242,8 @@ export const deserializeTableState = (data: string): TableState => {
 
 	//Feat: support tag sorting
 	if (isVersionLessThan(pluginVersion, "6.10.0")) {
-		const tableState = currentState as TableState691;
-		const { columns, tags, bodyCells, bodyRows } = tableState.model;
+		const LoomState = currentState as LoomState691;
+		const { columns, tags, bodyCells, bodyRows } = LoomState.model;
 
 		//Migrate tags to the columns and cells
 		columns.forEach((column: unknown) => {
@@ -289,7 +286,7 @@ export const deserializeTableState = (data: string): TableState => {
 			});
 		});
 
-		const unknownModel = tableState.model as unknown;
+		const unknownModel = LoomState.model as unknown;
 		const typedModel = unknownModel as Record<string, unknown>;
 		delete typedModel.tags;
 
@@ -303,8 +300,8 @@ export const deserializeTableState = (data: string): TableState => {
 	}
 
 	if (isVersionLessThan(pluginVersion, "6.12.3")) {
-		const tableState = currentState as TableState6122;
-		const { columns, footerCells } = tableState.model;
+		const LoomState = currentState as LoomState6122;
+		const { columns, footerCells } = LoomState.model;
 
 		//Refactor: move function type into the column
 		footerCells.forEach((cell) => {
@@ -326,8 +323,8 @@ export const deserializeTableState = (data: string): TableState => {
 	}
 
 	if (isVersionLessThan(pluginVersion, "6.17.0")) {
-		const tableState = currentState as TableState6160;
-		const { columns } = tableState.model;
+		const LoomState = currentState as LoomState6160;
+		const { columns } = LoomState.model;
 
 		columns.forEach((column: unknown) => {
 			const typedColumn = column as Record<string, unknown>;
@@ -339,8 +336,8 @@ export const deserializeTableState = (data: string): TableState => {
 	}
 
 	if (isVersionLessThan(pluginVersion, "6.18.6")) {
-		const tableState = currentState as TableState6160;
-		const { columns, bodyRows } = tableState.model;
+		const LoomState = currentState as LoomState6160;
+		const { columns, bodyRows } = LoomState.model;
 
 		//Fix: resolve empty rows being inserted but appearing higher up in the table
 		//This was due to the index being set to the row's position in the array, which
@@ -363,8 +360,8 @@ export const deserializeTableState = (data: string): TableState => {
 	}
 
 	if (isVersionLessThan(pluginVersion, "6.19.0")) {
-		const tableState = currentState as TableState6186;
-		const { columns, bodyCells } = tableState.model;
+		const LoomState = currentState as LoomState6186;
+		const { columns, bodyCells } = LoomState.model;
 
 		//Migrate from functionType to calculationType
 		columns.forEach((column: unknown) => {
@@ -381,7 +378,7 @@ export const deserializeTableState = (data: string): TableState => {
 		});
 	}
 
-	const tableState = currentState as TableState;
-	tableState.pluginVersion = CURRENT_PLUGIN_VERSION;
-	return tableState;
+	const LoomState = currentState as LoomState;
+	LoomState.pluginVersion = CURRENT_PLUGIN_VERSION;
+	return LoomState;
 };

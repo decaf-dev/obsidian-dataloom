@@ -1,7 +1,7 @@
 import { Notice } from "obsidian";
 import { createFile, createFolder } from "./file-operations";
-import { createTableState } from "./table-state-factory";
-import { serializeTableState } from "./serialize-table-state";
+import { createLoomState } from "./table-state-factory";
+import { serializeLoomState } from "./serialize-table-state";
 import { CURRENT_FILE_EXTENSION, DEFAULT_TABLE_NAME } from "./constants";
 
 const getFileName = (): string => {
@@ -24,8 +24,8 @@ export const createLoomFile = async (options: { folderPath: string }) => {
 		}
 
 		const fileName = getFileName();
-		const tableState = createTableState(1, 1);
-		const serialized = serializeTableState(tableState);
+		const LoomState = createLoomState(1, 1);
+		const serialized = serializeLoomState(LoomState);
 		const filePath = getFilePath(options.folderPath, fileName);
 
 		return await createFile(filePath, serialized);

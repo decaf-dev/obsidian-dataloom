@@ -30,14 +30,14 @@ import {
 } from "./shared/events";
 import { editingViewPlugin } from "./obsidian/editing-view-plugin";
 import {
-	deserializeTableState,
-	serializeTableState,
+	deserializeLoomState,
+	serializeLoomState,
 } from "./data/serialize-table-state";
 import { updateLinkReferences } from "./data/utils";
 import { getBasename } from "./shared/link/link-utils";
 import { hasDarkTheme } from "./shared/render/utils";
 import { removeFocusVisibleClass } from "./shared/menu/focus-visible";
-import { TableState } from "./shared/types";
+import { LoomState } from "./shared/types";
 import WelcomeModal from "./obsidian/welcome-modal";
 import WhatsNewModal from "./obsidian/whats-new-modal";
 import DataLoomSettingsTab from "./obsidian/dataloom-settings-tab";
@@ -86,7 +86,7 @@ export default class DataLoomPlugin extends Plugin {
 		this.registerExtensions([CURRENT_FILE_EXTENSION], DATA_LOOM_VIEW);
 
 		this.addRibbonIcon("table", "Create new table", async () => {
-			await this.newTableFile(null);
+			await this.newLoomFile(null);
 		});
 
 		this.addSettingTab(new DataLoomSettingsTab(this.app, this));
@@ -160,7 +160,7 @@ export default class DataLoomPlugin extends Plugin {
 		// });
 	}
 
-	private async newTableFile(
+	private async newLoomFile(
 		contextMenuFolderPath: string | null,
 		embedded?: boolean
 	) {
@@ -216,10 +216,10 @@ export default class DataLoomPlugin extends Plugin {
 			this.app.workspace.on("file-menu", (menu, file) => {
 				if (file instanceof TFolder) {
 					menu.addItem((item) => {
-						item.setTitle("New table")
+						item.setTitle("New loom")
 							.setIcon("document")
 							.onClick(async () => {
-								await this.newTableFile(file.path);
+								await this.newLoomFile(file.path);
 							});
 					});
 				}
@@ -245,14 +245,14 @@ export default class DataLoomPlugin extends Plugin {
 
 					const tablesToUpdate: {
 						file: TFile;
-						state: TableState;
+						state: LoomState;
 					}[] = [];
 
 					let numLinks = 0;
 					for (const tableFile of tableFiles) {
 						//For each file read its contents
 						const data = await file.vault.read(tableFile);
-						const state = deserializeTableState(data);
+						const state = deserializeLoomState(data);
 						//Search for old path in the file
 
 						state.model.bodyCells.forEach((cell) => {
@@ -324,7 +324,7 @@ export default class DataLoomPlugin extends Plugin {
 							JSON.stringify(state) !== JSON.stringify(newState)
 						) {
 							const serializedState =
-								serializeTableState(newState);
+								serializeLoomState(newState);
 
 							await file.vault.modify(tableFile, serializedState);
 
@@ -348,7 +348,7 @@ export default class DataLoomPlugin extends Plugin {
 			name: "Create table",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "=" }],
 			callback: async () => {
-				await this.newTableFile(null);
+				await this.newLoomFile(null);
 			},
 		});
 
@@ -357,7 +357,7 @@ export default class DataLoomPlugin extends Plugin {
 			name: "Create table and embed it into current file",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "+" }],
 			editorCallback: async (editor) => {
-				const filePath = await this.newTableFile(null, true);
+				const filePath = await this.newLoomFile(null, true);
 				if (!filePath) return;
 
 				const useMarkdownLinks = (this.app.vault as any).getConfig(

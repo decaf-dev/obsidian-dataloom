@@ -1,7 +1,7 @@
 import { CommandRedoError, CommandUndoError } from "../commands/command-errors";
-import { TableState } from "../types";
+import { LoomState } from "../types";
 
-export default abstract class TableStateCommand {
+export default abstract class LoomStateCommand {
 	shouldSortRows: boolean;
 	hasExecuteBeenCalled: boolean;
 	hasUndoBeenCalled: boolean;
@@ -26,7 +26,7 @@ export default abstract class TableStateCommand {
 		this.hasUndoBeenCalled = true;
 	}
 
-	abstract execute(prevState: TableState): TableState;
-	abstract redo(prevState: TableState): TableState;
-	abstract undo(prevState: TableState): TableState;
+	abstract execute(prevState: LoomState): LoomState;
+	abstract redo(prevState: LoomState): LoomState;
+	abstract undo(prevState: LoomState): LoomState;
 }

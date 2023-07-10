@@ -2,7 +2,7 @@ import { createTag } from "src/data/table-state-factory";
 import { unixTimeToDateString } from "../date/date-conversion";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "../table-state/constants";
 import { ColumNotFoundError } from "../table-state/table-error";
-import TableStateCommand from "../table-state/table-state-command";
+import LoomStateCommand from "../table-state/table-state-command";
 import {
 	BodyCell,
 	Calculation,
@@ -10,12 +10,12 @@ import {
 	CellType,
 	Column,
 	FilterRule,
-	TableState,
+	LoomState,
 	Tag,
 } from "../types";
 import { isCheckbox, isNumberCalcuation } from "../match";
 
-export class ColumnTypeUpdateCommand extends TableStateCommand {
+export class ColumnTypeUpdateCommand extends LoomStateCommand {
 	private columnId: string;
 	private type: CellType;
 
@@ -294,7 +294,7 @@ export class ColumnTypeUpdateCommand extends TableStateCommand {
 		});
 	}
 
-	execute(prevState: TableState): TableState {
+	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
 		const { columns, bodyCells, filterRules } = prevState.model;
@@ -389,7 +389,7 @@ export class ColumnTypeUpdateCommand extends TableStateCommand {
 		};
 	}
 
-	redo(prevState: TableState): TableState {
+	redo(prevState: LoomState): LoomState {
 		super.onRedo();
 		const { columns, bodyCells, filterRules } = prevState.model;
 
@@ -446,7 +446,7 @@ export class ColumnTypeUpdateCommand extends TableStateCommand {
 		};
 	}
 
-	undo(prevState: TableState): TableState {
+	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
 		const { columns, bodyCells, filterRules } = prevState.model;

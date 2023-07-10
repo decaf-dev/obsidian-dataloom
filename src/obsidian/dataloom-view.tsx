@@ -6,10 +6,10 @@ if (process.env.ENABLE_REACT_DEVTOOLS === "true") {
 
 import { createRoot, Root } from "react-dom/client";
 import { store } from "src/redux/global/store";
-import { TableState } from "src/shared/types";
+import { LoomState } from "src/shared/types";
 import {
-	deserializeTableState,
-	serializeTableState,
+	deserializeLoomState,
+	serializeLoomState,
 } from "src/data/serialize-table-state";
 import { EVENT_REFRESH_APP } from "src/shared/events";
 import { v4 as uuidv4 } from "uuid";
@@ -65,7 +65,7 @@ export default class DataLoomView extends TextFileView {
 	setViewData(data: string, clear: boolean): void {
 		this.data = data;
 
-		const state = deserializeTableState(data);
+		const state = deserializeLoomState(data);
 		if (clear) {
 			//We need to set this in a timeout to prevent errors from React
 			setTimeout(() => {
@@ -105,18 +105,18 @@ export default class DataLoomView extends TextFileView {
 	private handleRefreshEvent = (
 		filePath: string,
 		sourceAppId: string,
-		state: TableState
+		state: LoomState
 	) => {
 		if (this.appId !== sourceAppId && filePath === this.file.path) {
-			const serialized = serializeTableState(state);
+			const serialized = serializeLoomState(state);
 			this.setViewData(serialized, true);
 		}
 	};
 
-	private handleSaveTableState = (appId: string, state: TableState) => {
+	private handleSaveLoomState = (appId: string, state: LoomState) => {
 		//We need this for when we open a new tab of the same file
 		//so that the data is up to date
-		const serialized = serializeTableState(state);
+		const serialized = serializeLoomState(state);
 		this.data = serialized;
 
 		//Request a save - every 2s
@@ -131,7 +131,7 @@ export default class DataLoomView extends TextFileView {
 		);
 	};
 
-	private renderApp(appId: string, state: TableState) {
+	private renderApp(appId: string, state: LoomState) {
 		if (this.root) {
 			this.root.render(
 				<TableApp
@@ -140,8 +140,8 @@ export default class DataLoomView extends TextFileView {
 					tableFile={this.file}
 					isMarkdownView={false}
 					store={store}
-					tableState={state}
-					onSaveState={this.handleSaveTableState}
+					LoomState={state}
+					onSaveState={this.handleSaveLoomState}
 				/>
 			);
 		}

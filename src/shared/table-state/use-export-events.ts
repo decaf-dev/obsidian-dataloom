@@ -9,11 +9,11 @@ import {
 import { exportToCSV } from "src/shared/export/export-to-csv";
 import { exportToMarkdown } from "src/shared/export/export-to-markdown";
 import { ExportType } from "src/shared/export/types";
-import { TableState } from "src/shared/types";
+import { LoomState } from "src/shared/types";
 import { useMountState } from "../../react/table-app/mount-provider";
 import { useAppSelector } from "src/redux/global/hooks";
 
-export const useExportEvents = (state: TableState) => {
+export const useExportEvents = (state: LoomState) => {
 	const { tableFile } = useMountState();
 	const { appId } = useMountState();
 	const { exportRenderMarkdown } = useAppSelector(

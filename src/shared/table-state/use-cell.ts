@@ -1,12 +1,12 @@
 import { useLogger } from "../logger";
-import { useTableState } from "./table-state-context";
+import { useLoomState } from "./table-state-context";
 import CellBodyUpdateCommand from "../commands/cell-body-update-command";
 import CellHeaderUpdateCommand from "../commands/cell-header-update-command";
 import React from "react";
 
 export const useCell = () => {
 	const logger = useLogger();
-	const { doCommand } = useTableState();
+	const { doCommand } = useLoomState();
 
 	function handleExternalLinkToggle(
 		cellId: string,

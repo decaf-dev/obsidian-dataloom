@@ -1,4 +1,4 @@
-import { TableState } from "src/shared/types";
+import { LoomState } from "src/shared/types";
 import Stack from "../shared/stack";
 import React from "react";
 import { ExportType } from "../../shared/export/types";
@@ -17,11 +17,11 @@ import { css } from "@emotion/react";
 import { useAppSelector } from "src/redux/global/hooks";
 
 interface Props {
-	tableState: TableState;
+	LoomState: LoomState;
 	tableFilePath: string;
 }
 
-export function ExportApp({ tableState, tableFilePath }: Props) {
+export function ExportApp({ LoomState, tableFilePath }: Props) {
 	const [exportType, setExportType] = React.useState<ExportType>(
 		ExportType.UNSELECTED
 	);
@@ -44,9 +44,9 @@ export function ExportApp({ tableState, tableFilePath }: Props) {
 
 	let content = "";
 	if (exportType === ExportType.MARKDOWN) {
-		content = exportToMarkdown(tableState, renderMarkdown);
+		content = exportToMarkdown(LoomState, renderMarkdown);
 	} else if (exportType === ExportType.CSV) {
-		content = exportToCSV(tableState, renderMarkdown);
+		content = exportToCSV(LoomState, renderMarkdown);
 	}
 
 	return (

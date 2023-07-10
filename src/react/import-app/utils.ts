@@ -1,4 +1,4 @@
-import { TableState } from "src/shared/types";
+import { LoomState } from "src/shared/types";
 import { MARKDOWN_LIST_ITEM_REGEX } from "./constants";
 import { ImportType } from "./types";
 import { CellNotFoundError } from "src/shared/table-state/table-error";
@@ -26,8 +26,8 @@ export const getMarkdownListItems = (text: string) => {
 export const importMarkdownListItems = (
 	listItems: string[],
 	columnId: string,
-	state: TableState
-): TableState => {
+	state: LoomState
+): LoomState => {
 	let stateCopy = structuredClone(state);
 
 	//For each list item add a new row

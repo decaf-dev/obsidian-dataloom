@@ -1,11 +1,11 @@
 import { useRef } from "react";
-import { useTableState } from "src/shared/table-state/table-state-context";
+import { useLoomState } from "src/shared/table-state/table-state-context";
 
 export const useColumnResize = (
 	columnId: string,
 	onMove: (dist: number) => void
 ) => {
-	const { setResizingColumnId } = useTableState();
+	const { setResizingColumnId } = useLoomState();
 
 	//The x position of the mouse when it is pressed down
 	//This should be the same for both mouse and touch events

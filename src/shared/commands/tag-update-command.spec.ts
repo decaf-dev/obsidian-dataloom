@@ -1,4 +1,4 @@
-import { createTableState, createTag } from "src/data/table-state-factory";
+import { createLoomState, createTag } from "src/data/table-state-factory";
 import { CommandRedoError, CommandUndoError } from "./command-errors";
 import TagUpdateCommand from "./tag-update-command";
 
@@ -6,7 +6,7 @@ describe("tag-update-command", () => {
 	it("should throw an error when undo() is called before execute()", () => {
 		try {
 			//Arrange
-			const prevState = createTableState(1, 2);
+			const prevState = createLoomState(1, 2);
 
 			const tags = [createTag("test1"), createTag("test2")];
 			prevState.model.columns[0].tags = tags;
@@ -32,7 +32,7 @@ describe("tag-update-command", () => {
 	it("should throw an error when redo() is called before redo()", () => {
 		try {
 			//Arrange
-			const prevState = createTableState(1, 2);
+			const prevState = createLoomState(1, 2);
 
 			const tags = [createTag("test1"), createTag("test2")];
 			prevState.model.columns[0].tags = tags;
@@ -58,7 +58,7 @@ describe("tag-update-command", () => {
 
 	it("should update a tag property when execute() is called", async () => {
 		//Arrange
-		const prevState = createTableState(1, 2);
+		const prevState = createLoomState(1, 2);
 
 		const tags = [createTag("test1"), createTag("test2")];
 		prevState.model.columns[0].tags = tags;
@@ -86,7 +86,7 @@ describe("tag-update-command", () => {
 
 	it("should reset the cell property when undo() is called", () => {
 		//Arrange
-		const prevState = createTableState(1, 2);
+		const prevState = createLoomState(1, 2);
 
 		const tags = [createTag("test1"), createTag("test2")];
 		prevState.model.columns[0].tags = tags;

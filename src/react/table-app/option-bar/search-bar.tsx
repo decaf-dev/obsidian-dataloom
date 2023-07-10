@@ -3,12 +3,12 @@ import Icon from "src/react/shared/icon";
 import Stack from "src/react/shared/stack";
 
 import { css } from "@emotion/react";
-import { useTableState } from "src/shared/table-state/table-state-context";
+import { useLoomState } from "src/shared/table-state/table-state-context";
 import { baseInputStyle } from "src/react/table-app/shared-styles";
 
 export default function SearchBar() {
 	const { searchText, setSearchText, isSearchBarVisible, toggleSearchBar } =
-		useTableState();
+		useLoomState();
 
 	return (
 		<Stack spacing="lg" isHorizontal>

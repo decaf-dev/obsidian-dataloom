@@ -5,8 +5,8 @@ import { Store } from "@reduxjs/toolkit";
 
 import DragProvider from "src/shared/dragging/drag-context";
 import MenuProvider from "src/shared/menu/menu-context";
-import TableStateProvider from "src/shared/table-state/table-state-context";
-import { TableState } from "src/shared/types";
+import LoomStateProvider from "src/shared/table-state/table-state-context";
+import { LoomState } from "src/shared/types";
 import MountProvider from "./mount-provider";
 import App from "./app";
 
@@ -16,8 +16,8 @@ interface Props {
 	isMarkdownView: boolean;
 	tableFile: TFile;
 	store: Store;
-	tableState: TableState;
-	onSaveState: (appId: string, state: TableState) => void;
+	LoomState: LoomState;
+	onSaveState: (appId: string, state: LoomState) => void;
 }
 
 export default function TableApp({
@@ -26,7 +26,7 @@ export default function TableApp({
 	isMarkdownView,
 	store,
 	tableFile,
-	tableState,
+	LoomState,
 	onSaveState,
 }: Props) {
 	return (
@@ -37,8 +37,8 @@ export default function TableApp({
 			tableFile={tableFile}
 		>
 			<Provider store={store}>
-				<TableStateProvider
-					initialState={tableState}
+				<LoomStateProvider
+					initialState={LoomState}
 					onSaveState={onSaveState}
 				>
 					<MenuProvider>
@@ -46,7 +46,7 @@ export default function TableApp({
 							<App />
 						</DragProvider>
 					</MenuProvider>
-				</TableStateProvider>
+				</LoomStateProvider>
 			</Provider>
 		</MountProvider>
 	);

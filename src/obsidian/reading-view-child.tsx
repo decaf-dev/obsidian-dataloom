@@ -5,7 +5,7 @@ if (process.env.ENABLE_REACT_DEVTOOLS === "true") {
 }
 import { Root, createRoot } from "react-dom/client";
 import { store } from "src/redux/global/store";
-import { deserializeTableState } from "src/data/serialize-table-state";
+import { deserializeLoomState } from "src/data/serialize-table-state";
 import { v4 as uuidv4 } from "uuid";
 import TableApp from "src/react/table-app";
 import DataLoomView from "./dataloom-view";
@@ -22,7 +22,7 @@ export default class ReadingViewChild extends MarkdownRenderChild {
 		this.appId = uuidv4();
 	}
 
-	private handleSaveTableState() {}
+	private handleSaveLoomState() {}
 
 	async onload() {
 		const container = this.containerEl;
@@ -34,7 +34,7 @@ export default class ReadingViewChild extends MarkdownRenderChild {
 
 		if (file instanceof TFile) {
 			const data = await app.vault.read(file);
-			const state = deserializeTableState(data);
+			const state = deserializeLoomState(data);
 
 			//Get table state
 			this.root = createRoot(container);
@@ -46,8 +46,8 @@ export default class ReadingViewChild extends MarkdownRenderChild {
 					tableFile={file}
 					isMarkdownView
 					store={store}
-					tableState={state}
-					onSaveState={this.handleSaveTableState}
+					LoomState={state}
+					onSaveState={this.handleSaveLoomState}
 				/>
 			);
 		}

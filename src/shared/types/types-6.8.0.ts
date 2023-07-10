@@ -160,6 +160,6 @@ interface TableModel {
 	filterRules: FilterRule[];
 }
 
-export interface TableState680 {
+export interface LoomState680 {
 	model: TableModel;
 }

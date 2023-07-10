@@ -1,16 +1,16 @@
 import { ColumNotFoundError } from "../table-state/table-error";
 import {
 	Column,
-	TableState,
+	LoomState,
 	HeaderCell,
 	BodyCell,
 	FooterCell,
 	FilterRule,
 } from "../types";
-import TableStateCommand from "../table-state/table-state-command";
+import LoomStateCommand from "../table-state/table-state-command";
 import { DeleteCommandArgumentsError } from "./command-errors";
 
-export default class ColumnDeleteCommand extends TableStateCommand {
+export default class ColumnDeleteCommand extends LoomStateCommand {
 	private columnId?: string;
 	private last?: boolean;
 
@@ -30,7 +30,7 @@ export default class ColumnDeleteCommand extends TableStateCommand {
 		this.last = last;
 	}
 
-	execute(prevState: TableState): TableState {
+	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
 		const { columns, headerCells, bodyCells, footerCells, filterRules } =
@@ -94,12 +94,12 @@ export default class ColumnDeleteCommand extends TableStateCommand {
 		};
 	}
 
-	redo(prevState: TableState): TableState {
+	redo(prevState: LoomState): LoomState {
 		super.onRedo();
 		return this.execute(prevState);
 	}
 
-	undo(prevState: TableState): TableState {
+	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
 		const { columns, headerCells, bodyCells, footerCells, filterRules } =

@@ -2,10 +2,10 @@ import {
 	rowLastEditedTime,
 	rowLastEditedTimeUpdate,
 } from "../table-state/row-state-operations";
-import TableStateCommand from "../table-state/table-state-command";
-import { TableState } from "../types";
+import LoomStateCommand from "../table-state/table-state-command";
+import { LoomState } from "../types";
 
-export default class TagCellRemoveCommand extends TableStateCommand {
+export default class TagCellRemoveCommand extends LoomStateCommand {
 	private cellId: string;
 	private rowId: string;
 	private tagId: string;
@@ -24,7 +24,7 @@ export default class TagCellRemoveCommand extends TableStateCommand {
 		this.tagId = tagId;
 	}
 
-	execute(prevState: TableState): TableState {
+	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
 		const { bodyCells, bodyRows } = prevState.model;
@@ -54,12 +54,12 @@ export default class TagCellRemoveCommand extends TableStateCommand {
 		};
 	}
 
-	redo(prevState: TableState): TableState {
+	redo(prevState: LoomState): LoomState {
 		super.onRedo();
 		return this.execute(prevState);
 	}
 
-	undo(prevState: TableState): TableState {
+	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 		const { bodyCells, bodyRows } = prevState.model;
 

@@ -162,7 +162,7 @@ interface TableModel {
 	footerCells: FooterCell[];
 	filterRules: FilterRule[];
 }
-export interface TableState6160 {
+export interface LoomState6160 {
 	pluginVersion: string;
 	model: TableModel;
 }

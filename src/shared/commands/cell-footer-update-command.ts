@@ -1,8 +1,8 @@
 import { CellNotFoundError } from "../table-state/table-error";
-import TableStateCommand from "../table-state/table-state-command";
-import { FooterCell, TableState } from "../types";
+import LoomStateCommand from "../table-state/table-state-command";
+import { FooterCell, LoomState } from "../types";
 
-export default class CellFooterUpdateCommand extends TableStateCommand {
+export default class CellFooterUpdateCommand extends LoomStateCommand {
 	private cellId: string;
 	private key: keyof FooterCell;
 	private value: unknown;
@@ -16,7 +16,7 @@ export default class CellFooterUpdateCommand extends TableStateCommand {
 		this.value = value;
 	}
 
-	execute(prevState: TableState): TableState {
+	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
 		const { footerCells } = prevState.model;
@@ -44,12 +44,12 @@ export default class CellFooterUpdateCommand extends TableStateCommand {
 		};
 	}
 
-	redo(prevState: TableState): TableState {
+	redo(prevState: LoomState): LoomState {
 		super.onRedo();
 		return this.execute(prevState);
 	}
 
-	undo(prevState: TableState): TableState {
+	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
 		const { footerCells } = prevState.model;

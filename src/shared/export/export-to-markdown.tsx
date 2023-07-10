@@ -1,11 +1,11 @@
-import { TableState } from "../types";
+import { LoomState } from "../types";
 import { markdownTable } from "markdown-table";
-import { tableStateToArray } from "./table-state-to-array";
+import { LoomStateToArray } from "./table-state-to-array";
 
 export const exportToMarkdown = (
-	tableState: TableState,
+	LoomState: LoomState,
 	renderMarkdown: boolean
 ): string => {
-	const arr = tableStateToArray(tableState, renderMarkdown);
+	const arr = LoomStateToArray(LoomState, renderMarkdown);
 	return markdownTable(arr);
 };

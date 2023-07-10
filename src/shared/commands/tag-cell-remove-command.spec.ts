@@ -1,4 +1,4 @@
-import { createTableState, createTag } from "src/data/table-state-factory";
+import { createLoomState, createTag } from "src/data/table-state-factory";
 import { CommandUndoError } from "./command-errors";
 import TagCellRemoveCommand from "./tag-cell-remove-command";
 import { advanceBy, clear } from "jest-date-mock";
@@ -7,7 +7,7 @@ describe("tag-cell-remove-command", () => {
 	it("should throw an error when undo() is called before execute()", () => {
 		try {
 			//Arrange
-			const prevState = createTableState(1, 2);
+			const prevState = createLoomState(1, 2);
 
 			const tags = [createTag("test1"), createTag("test2")];
 			prevState.model.columns[0].tags = tags;
@@ -31,7 +31,7 @@ describe("tag-cell-remove-command", () => {
 
 	it("should delete a cell reference when execute() is called", () => {
 		//Arrange
-		const prevState = createTableState(1, 2);
+		const prevState = createLoomState(1, 2);
 
 		const tags = [createTag("test1"), createTag("test2")];
 		prevState.model.columns[0].tags = tags;
@@ -67,7 +67,7 @@ describe("tag-cell-remove-command", () => {
 
 	it("should restore the deleted cell reference when undo() is called", () => {
 		//Arrange
-		const prevState = createTableState(1, 2);
+		const prevState = createLoomState(1, 2);
 
 		const tags = [createTag("test1"), createTag("test2")];
 		prevState.model.columns[0].tags = tags;

@@ -1,4 +1,4 @@
-import { BodyCell, BodyRow, Column, HeaderCell, TableState } from "../types";
+import { BodyCell, BodyRow, Column, HeaderCell, LoomState } from "../types";
 import { getCellContent } from "../cell-content";
 import { ColumNotFoundError } from "../table-state/table-error";
 
@@ -24,11 +24,11 @@ const serializeBodyCells = (
 	});
 };
 
-export const tableStateToArray = (
-	tableState: TableState,
+export const LoomStateToArray = (
+	LoomState: LoomState,
 	renderMarkdown: boolean
 ): string[][] => {
-	const { headerCells, bodyCells, bodyRows, columns } = tableState.model;
+	const { headerCells, bodyCells, bodyRows, columns } = LoomState.model;
 	const serializedHeaderCells = serializeHeaderCells(headerCells);
 	const serializedBodyCells = serializeBodyCells(
 		columns,

@@ -3,10 +3,10 @@ import {
 	rowLastEditedTimeUpdate,
 } from "../table-state/row-state-operations";
 import { CellNotFoundError } from "../table-state/table-error";
-import TableStateCommand from "../table-state/table-state-command";
-import { BodyCell, TableState } from "../types";
+import LoomStateCommand from "../table-state/table-state-command";
+import { BodyCell, LoomState } from "../types";
 
-export default class CellBodyUpdateCommand extends TableStateCommand {
+export default class CellBodyUpdateCommand extends LoomStateCommand {
 	private cellId: string;
 	private rowId: string;
 	private key: keyof BodyCell;
@@ -28,7 +28,7 @@ export default class CellBodyUpdateCommand extends TableStateCommand {
 		this.value = value;
 	}
 
-	execute(prevState: TableState): TableState {
+	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
 		const { bodyCells, bodyRows } = prevState.model;
@@ -58,12 +58,12 @@ export default class CellBodyUpdateCommand extends TableStateCommand {
 		};
 	}
 
-	redo(prevState: TableState): TableState {
+	redo(prevState: LoomState): LoomState {
 		super.onRedo();
 		return this.execute(prevState);
 	}
 
-	undo(prevState: TableState): TableState {
+	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
 		const { bodyCells, bodyRows } = prevState.model;

@@ -1,8 +1,8 @@
 import { ColumNotFoundError } from "../table-state/table-error";
-import TableStateCommand from "../table-state/table-state-command";
-import { Column, TableState } from "../types";
+import LoomStateCommand from "../table-state/table-state-command";
+import { Column, LoomState } from "../types";
 
-export default class ColumnUpdateCommand extends TableStateCommand {
+export default class ColumnUpdateCommand extends LoomStateCommand {
 	private columnId: string;
 	private key: keyof Column;
 	private value?: unknown;
@@ -25,7 +25,7 @@ export default class ColumnUpdateCommand extends TableStateCommand {
 		this.value = value;
 	}
 
-	execute(prevState: TableState): TableState {
+	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
 		const { columns } = prevState.model;
@@ -60,12 +60,12 @@ export default class ColumnUpdateCommand extends TableStateCommand {
 		};
 	}
 
-	redo(prevState: TableState): TableState {
+	redo(prevState: LoomState): LoomState {
 		super.onRedo();
 		return this.execute(prevState);
 	}
 
-	undo(prevState: TableState): TableState {
+	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
 		return {

@@ -1,13 +1,13 @@
 import { createTag } from "src/data/table-state-factory";
-import TableStateCommand from "../table-state/table-state-command";
-import { TableState, Tag } from "../types";
+import LoomStateCommand from "../table-state/table-state-command";
+import { LoomState, Tag } from "../types";
 import { Color } from "../types";
 import {
 	rowLastEditedTime,
 	rowLastEditedTimeUpdate,
 } from "../table-state/row-state-operations";
 
-export default class TagAddCommand extends TableStateCommand {
+export default class TagAddCommand extends LoomStateCommand {
 	private cellId: string;
 	private columnId: string;
 	private rowId: string;
@@ -58,7 +58,7 @@ export default class TagAddCommand extends TableStateCommand {
 		this.isMultiTag = isMultiTag;
 	}
 
-	execute(prevState: TableState): TableState {
+	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
 		const { bodyRows, bodyCells, columns } = prevState.model;
@@ -119,7 +119,7 @@ export default class TagAddCommand extends TableStateCommand {
 			},
 		};
 	}
-	redo(prevState: TableState): TableState {
+	redo(prevState: LoomState): LoomState {
 		super.onRedo();
 		const { bodyRows, columns, bodyCells } = prevState.model;
 
@@ -155,7 +155,7 @@ export default class TagAddCommand extends TableStateCommand {
 			},
 		};
 	}
-	undo(prevState: TableState): TableState {
+	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
 		const { bodyRows, columns } = prevState.model;

@@ -1,4 +1,4 @@
-import { TableState } from "src/shared/types";
+import { LoomState } from "src/shared/types";
 import {
 	getMarkdownListItems,
 	importMarkdownListItems,
@@ -16,8 +16,8 @@ import Stack from "../shared/stack";
 import "./styles.css";
 
 interface Props {
-	initialState: TableState;
-	onStateSave: (state: TableState) => void;
+	initialState: LoomState;
+	onStateSave: (state: LoomState) => void;
 }
 
 export default function ImportApp({ initialState, onStateSave }: Props) {

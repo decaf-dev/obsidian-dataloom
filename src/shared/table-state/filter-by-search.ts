@@ -5,7 +5,7 @@ import {
 	Column,
 	CurrencyType,
 	DateFormat,
-	TableState,
+	LoomState,
 	Tag,
 } from "src/shared/types";
 import { ColumNotFoundError, RowNotFoundError } from "./table-error";
@@ -14,11 +14,11 @@ import { getDateCellContent } from "../cell-content/date-cell-content";
 import { getCurrencyCellContent } from "../cell-content/currency-cell-content";
 
 export const filterBodyRowsBySearch = (
-	tableState: TableState,
+	LoomState: LoomState,
 	filteredBodyRows: BodyRow[],
 	searchText: string
 ): BodyRow[] => {
-	const { columns, bodyCells, bodyRows } = tableState.model;
+	const { columns, bodyCells, bodyRows } = LoomState.model;
 	const columnMap = new Map<string, Column>();
 	columns.forEach((column) => columnMap.set(column.id, column));
 

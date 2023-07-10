@@ -1,12 +1,12 @@
 import { useLogger } from "../logger";
-import { useTableState } from "./table-state-context";
+import { useLoomState } from "./table-state-context";
 import RowAddCommand from "../commands/row-add-command";
 import RowDeleteCommand from "../commands/row-delete-command";
 import React from "react";
 
 export const useRow = () => {
 	const logger = useLogger();
-	const { doCommand } = useTableState();
+	const { doCommand } = useLoomState();
 
 	const handleRowDeleteClick = React.useCallback(
 		(rowId: string) => {

@@ -163,7 +163,7 @@ interface TableModel {
 	filterRules: FilterRule[];
 }
 
-export interface TableState6122 {
+export interface LoomState6122 {
 	pluginVersion: string;
 	model: TableModel;
 }

@@ -17,7 +17,7 @@ import {
 	HeaderRow,
 	PaddingSize,
 	SortDir,
-	TableState,
+	LoomState,
 	Tag,
 } from "../shared/types";
 
@@ -130,13 +130,13 @@ export const createTag = (
 	};
 };
 
-export const createTableState = (
+export const createLoomState = (
 	numColumns: number,
 	numRows: number,
 	options?: {
 		cellType?: CellType;
 	}
-): TableState => {
+): LoomState => {
 	const { cellType } = options || {};
 	//Create columns
 	const columns: Column[] = [];

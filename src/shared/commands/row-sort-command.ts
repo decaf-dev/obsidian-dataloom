@@ -4,18 +4,18 @@ import {
 	RowNotFoundError,
 	TagNotFoundError,
 } from "../table-state/table-error";
-import TableStateCommand from "../table-state/table-state-command";
+import LoomStateCommand from "../table-state/table-state-command";
 import {
 	BodyCell,
 	BodyRow,
 	CellType,
 	Column,
 	SortDir,
-	TableState,
+	LoomState,
 } from "../types";
 import { isCheckboxChecked } from "../match";
 
-export default class RowSortCommand extends TableStateCommand {
+export default class RowSortCommand extends LoomStateCommand {
 	/**
 	 * The previous row sort state
 	 */
@@ -331,7 +331,7 @@ export default class RowSortCommand extends TableStateCommand {
 		return newRows;
 	}
 
-	execute(prevState: TableState): TableState {
+	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
 		const { columns, bodyRows, bodyCells } = prevState.model;
@@ -367,11 +367,11 @@ export default class RowSortCommand extends TableStateCommand {
 			},
 		};
 	}
-	redo(prevState: TableState): TableState {
+	redo(prevState: LoomState): LoomState {
 		super.onRedo();
 		return this.execute(prevState);
 	}
-	undo(prevState: TableState): TableState {
+	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
 		const { bodyRows } = prevState.model;

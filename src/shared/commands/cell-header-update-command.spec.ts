@@ -1,11 +1,11 @@
-import { createTableState } from "src/data/table-state-factory";
+import { createLoomState } from "src/data/table-state-factory";
 import { CommandUndoError } from "./command-errors";
 import CellHeaderUpdateCommand from "./cell-header-update-command";
 
 describe("row-header-update-command", () => {
 	it("should throw an error when undo() is called before execute()", () => {
 		try {
-			const prevState = createTableState(1, 1);
+			const prevState = createLoomState(1, 1);
 			const command = new CellHeaderUpdateCommand(
 				prevState.model.headerCells[0].id,
 				"markdown",
@@ -19,7 +19,7 @@ describe("row-header-update-command", () => {
 
 	it("should update a cell property when execute() is called", async () => {
 		//Arrange
-		const prevState = createTableState(1, 1);
+		const prevState = createLoomState(1, 1);
 
 		const command = new CellHeaderUpdateCommand(
 			prevState.model.headerCells[0].id,
@@ -37,7 +37,7 @@ describe("row-header-update-command", () => {
 
 	it("should reset the cell property when undo() is called", () => {
 		//Arrange
-		const prevState = createTableState(1, 1);
+		const prevState = createLoomState(1, 1);
 		const command = new CellHeaderUpdateCommand(
 			prevState.model.headerCells[0].id,
 			"markdown",

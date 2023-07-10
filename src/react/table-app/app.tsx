@@ -8,7 +8,7 @@ import HeaderCell from "./header-cell";
 
 import { useUUID } from "../../shared/hooks";
 import { CellNotFoundError } from "../../shared/table-state/table-error";
-import { useTableState } from "../../shared/table-state/table-state-context";
+import { useLoomState } from "../../shared/table-state/table-state-context";
 import { useFilterRules } from "src/shared/table-state/use-filter-rules";
 import { filterBodyRowsBySearch } from "src/shared/table-state/filter-by-search";
 import { useColumn } from "src/shared/table-state/use-column";
@@ -54,17 +54,17 @@ export default function App() {
 	const { topMenu, hasOpenMenu, requestCloseTopMenu } = useMenuState();
 	const logger = useLogger();
 	const {
-		tableState,
+		LoomState,
 		resizingColumnId,
 		searchText,
 		commandRedo,
 		commandUndo,
-		setTableState,
-	} = useTableState();
+		setLoomState,
+	} = useLoomState();
 
 	const tableRef = React.useRef<VirtuosoHandle | null>(null);
 
-	useExportEvents(tableState);
+	useExportEvents(LoomState);
 	useRowEvents();
 	useColumnEvents();
 
@@ -77,7 +77,7 @@ export default function App() {
 		handleRuleToggle,
 		handleRuleTagsChange,
 		filterBodyRowsByRules,
-	} = useFilterRules(setTableState);
+	} = useFilterRules(setLoomState);
 
 	const {
 		handleNewColumnClick,
@@ -180,11 +180,11 @@ export default function App() {
 			let index = -1;
 			if (focusedEl) index = Array.from(focusableEls).indexOf(focusedEl);
 
-			const numVisibleColumns = tableState.model.columns.filter(
+			const numVisibleColumns = LoomState.model.columns.filter(
 				(column) => column.isVisible
 			).length;
-			const numBodyRows = tableState.model.bodyRows.length;
-			const numSortedColumns = tableState.model.columns.filter(
+			const numBodyRows = LoomState.model.bodyRows.length;
+			const numSortedColumns = LoomState.model.columns.filter(
 				(column) => column.sortDir !== SortDir.NONE
 			).length;
 
@@ -251,11 +251,11 @@ export default function App() {
 		bodyCells,
 		footerCells,
 		filterRules,
-	} = tableState.model;
+	} = LoomState.model;
 
-	let filteredBodyRows = filterBodyRowsByRules(tableState);
+	let filteredBodyRows = filterBodyRowsByRules(LoomState);
 	filteredBodyRows = filterBodyRowsBySearch(
-		tableState,
+		LoomState,
 		filteredBodyRows,
 		searchText
 	);
