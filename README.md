@@ -2,7 +2,7 @@
 
 ![Obsidian Downloads](https://img.shields.io/badge/dynamic/json?logo=obsidian&color=%23483699&label=downloads&query=%24%5B%22notion-like-tables%22%5D.downloads&url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json)
 
-Find detailed documentation at [trey-wallis.github.io/obsidian-dashboards](https://trey-wallis.github.io/obsidian-dashboards/)
+Find detailed documentation at [dataloom.xyz](https://dataloom.xyz)
 
 Dashboards is an [Obsidian.md](https://obsidian.md/) plugin for desktop and mobile. A dashboard is a higher-level view that allows you to tag, sort, and display feeds from your notes. Dashboards is inspired by [Notion.so](https://www.notion.so/).
 
@@ -90,7 +90,7 @@ See our [project roadmap](https://github.com/users/trey-wallis/projects/2) for d
 
 ## Issues
 
-Please see [issues](https://github.com/trey-wallis/obsidian-dashboards/issues) for feature requests and bug reports.
+Please see [issues](https://github.com/trey-wallis/obsidian-dataloom/issues) for feature requests and bug reports.
 
 If you are experiencing a problem with the plugin, please search the issues for any open bug reports related to your problem before opening a new issue.
 
@@ -98,17 +98,17 @@ If you are experiencing a problem with the plugin, please search the issues for 
 
 Dashboards is a community plugin. Contributions are welcome.
 
-Please see our [contribution guide](https://github.com/trey-wallis/obsidian-dashboards/blob/master/CONTRIBUTING.md) for details on how to contribute
+Please see our [contribution guide](https://github.com/trey-wallis/obsidian-dataloom/blob/master/CONTRIBUTING.md) for details on how to contribute
 
 ## Network Usage
 
 According to Obsidian developer policies, an Obsidian plugin must explain which network services are used and why.
 
-Dashboards will make one `GET` request to `https://api.github.com/repos/trey-wallis/obsidian-dashboards/releases/latest` to pull the lastest release for the What's New Modal. Besides this, Dashboards does not making any network requests. Dashboards does not include client-side telemetry.
+Dashboards will make one `GET` request to `https://api.github.com/repos/trey-wallis/obsidian-dataloom/releases/latest` to pull the lastest release for the What's New Modal. Besides this, Dashboards does not making any network requests. Dashboards does not include client-side telemetry.
 
 ## License
 
-Dashboards is distributed under the [GNU General Public License v3.0](https://github.com/trey-wallis/obsidian-dashboards/blob/master/LICENSE)
+Dashboards is distributed under the [GNU General Public License v3.0](https://github.com/trey-wallis/obsidian-dataloom/blob/master/LICENSE)
 
 ## Disclaimer
 

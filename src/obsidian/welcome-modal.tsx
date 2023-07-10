@@ -25,7 +25,7 @@ export default class WelcomeModal extends Modal {
 			cardContainerEl,
 			"Quick start",
 			"Learn the basics of creating a dashboard",
-			"https://trey-wallis.github.io/obsidian-dashboards/getting-started/quick-start",
+			"https://dataloom.xyz/getting-started/quick-start",
 			"table"
 		);
 
@@ -33,7 +33,7 @@ export default class WelcomeModal extends Modal {
 			cardContainerEl,
 			"Embedded dashboards",
 			"Learn how to embed a dashboard into a markdown note",
-			"https://trey-wallis.github.io/obsidian-dashboards/other/embedding-dashboards",
+			"https://dataloom.xyz/other/embedding-dashboards",
 			"sticky-note"
 		);
 
@@ -41,7 +41,7 @@ export default class WelcomeModal extends Modal {
 			cardContainerEl,
 			"Keyboard focus system",
 			"Learn how to navigate dashboards with your keyboard",
-			"https://trey-wallis.github.io/obsidian-dashboards/other/keyboard-focus-system",
+			"https://dataloom.xyz/other/keyboard-focus-system",
 			"list-plus"
 		);
 	}
