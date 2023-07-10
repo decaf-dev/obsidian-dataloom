@@ -101,9 +101,12 @@ export default class DataLoomPlugin extends Plugin {
 		if (this.settings.pluginVersion !== this.manifest.version) {
 			//Don't show updates for the first install
 			//unless you have already downloaded the plugin
-			if (this.settings.pluginVersion !== "") {
-				new WhatsNewModal(this.app).open();
-			}
+
+			//Since current users won't have a plugin version set, we will disable this
+			//until maybe 8.2.0 or 8.3.0
+			//if (this.settings.pluginVersion !== "") {
+			new WhatsNewModal(this.app).open();
+			//}
 		}
 
 		if (this.settings.showWelcomeModal) {
