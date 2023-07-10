@@ -21,11 +21,12 @@ export default function CreateTag({ markdown, color, onTagAdd }: Props) {
 				padding: 4px 6px;
 				width: 100%;
 				overflow: hidden;
+				box-shadow: none !important;
 			`}
 			className="DataLoom__focusable DataLoom__selectable"
 			onClick={() => onTagAdd(markdown, color)}
 		>
-			<Stack spacing="sm">
+			<Stack spacing="sm" isHorizontal>
 				<div>Create</div>
 				<Tag markdown={markdown} color={color} maxWidth="120px" />
 			</Stack>
