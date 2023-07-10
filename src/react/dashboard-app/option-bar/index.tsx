@@ -81,7 +81,7 @@ export default function OptionBar({
 	onRuleAddClick,
 	onRuleTagsChange,
 }: Props) {
-	const { filePath } = useMountState();
+	const { tableFile } = useMountState();
 	const sortedCells = headerCells.filter((cell) => {
 		const columnId = cell.columnId;
 		const column = columns.find((c) => c.id === columnId);
@@ -157,7 +157,7 @@ export default function OptionBar({
 							<Button
 								icon={<Icon lucideId="download" />}
 								onClick={() => {
-									new ExportModal(app, filePath).open();
+									new ExportModal(app, tableFile).open();
 								}}
 							></Button>
 						</Stack>

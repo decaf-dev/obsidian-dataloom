@@ -172,8 +172,8 @@ class EditingViewPlugin implements PluginValue {
 			<DashboardApp
 				appId={id}
 				isMarkdownView
-				filePath={dashboardFile.path}
-				leaf={leaf}
+				tableFile={dashboardFile}
+				mountLeaf={leaf}
 				store={store}
 				dashboardState={dashboardState}
 				onSaveState={(appId, state) =>

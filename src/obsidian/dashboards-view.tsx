@@ -138,9 +138,9 @@ export default class DashboardsView extends TextFileView {
 		if (this.root) {
 			this.root.render(
 				<DashboardApp
-					leaf={this.leaf}
+					mountLeaf={this.leaf}
 					appId={appId}
-					filePath={this.file.path}
+					tableFile={this.file}
 					isMarkdownView={false}
 					store={store}
 					dashboardState={state}

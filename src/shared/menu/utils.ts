@@ -30,8 +30,8 @@ export const useShiftMenu = (
 		leftOffset?: number;
 	}
 ) => {
-	const { leaf } = useMountState();
-	const viewContentEl = leaf.view.containerEl;
+	const { mountLeaf } = useMountState();
+	const viewContentEl = mountLeaf.view.containerEl;
 
 	React.useEffect(() => {
 		function shiftMenuIntoView() {
