@@ -8,7 +8,7 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 const config = {
 	title: "DataLoom",
 	tagline:
-		"Weave together information from diverse sources into a cohesive table view. Inspired by Excel Spreadsheets and Notion.so.",
+		"Weave together data from diverse sources into a cohesive table view. Inspired by Excel Spreadsheets and Notion.so.",
 	favicon: "img/favicon.png",
 
 	// Set the production url of your site here
