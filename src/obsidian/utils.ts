@@ -1,7 +1,7 @@
 import { CURRENT_FILE_EXTENSION } from "src/data/constants";
 import { numToPx } from "src/shared/conversion";
 
-export const getEmbeddedTableLinkEls = (el: HTMLElement) => {
+export const getEmbeddedLoomLinkEls = (el: HTMLElement) => {
 	const embeddedLinkEls = el.querySelectorAll(".internal-embed");
 	const tableLinkEls: HTMLElement[] = [];
 
@@ -14,7 +14,7 @@ export const getEmbeddedTableLinkEls = (el: HTMLElement) => {
 	return tableLinkEls;
 };
 
-export const hasLoadedEmbeddedTable = (linkEl: HTMLElement) => {
+export const hasLoadedEmbeddedLoom = (linkEl: HTMLElement) => {
 	if (linkEl.children.length > 0) {
 		const firstChildEl = linkEl.children[0];
 		if (firstChildEl.classList.contains("DataLoom__embedded-container"))
@@ -32,7 +32,7 @@ export const findEmbeddedloomFile = (linkEl: HTMLElement) => {
 	return loomFile ?? null;
 };
 
-export const getEmbeddedTableWidth = (
+export const getEmbeddedLoomWidth = (
 	linkEl: HTMLElement,
 	defaultWidth: string
 ) => {
@@ -41,7 +41,7 @@ export const getEmbeddedTableWidth = (
 	return numToPx(width);
 };
 
-export const getEmbeddedTableHeight = (
+export const getEmbeddedLoomHeight = (
 	linkEl: HTMLElement,
 	defaultHeight: string
 ) => {

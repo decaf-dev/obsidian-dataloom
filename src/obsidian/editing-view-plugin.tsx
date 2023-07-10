@@ -17,10 +17,10 @@ import { LoomState } from "src/shared/types";
 import _ from "lodash";
 import {
 	findEmbeddedloomFile,
-	getEmbeddedTableHeight,
-	getEmbeddedTableLinkEls,
-	getEmbeddedTableWidth,
-	hasLoadedEmbeddedTable,
+	getEmbeddedLoomHeight,
+	getEmbeddedLoomLinkEls,
+	getEmbeddedLoomWidth,
+	hasLoadedEmbeddedLoom,
 } from "./utils";
 import { v4 as uuidv4 } from "uuid";
 import TableApp from "src/react/table-app";
@@ -52,7 +52,7 @@ class EditingViewPlugin implements PluginValue {
 
 		const activeView = activeLeaf.view as MarkdownView;
 
-		const embeddedTableLinkEls = getEmbeddedTableLinkEls(
+		const embeddedTableLinkEls = getEmbeddedLoomLinkEls(
 			activeView.containerEl
 		);
 
@@ -62,13 +62,13 @@ class EditingViewPlugin implements PluginValue {
 			const { defaultEmbedWidth, defaultEmbedHeight } =
 				store.getState().global.settings;
 
-			const width = getEmbeddedTableWidth(linkEl, defaultEmbedWidth);
-			const height = getEmbeddedTableHeight(linkEl, defaultEmbedHeight);
+			const width = getEmbeddedLoomWidth(linkEl, defaultEmbedWidth);
+			const height = getEmbeddedLoomHeight(linkEl, defaultEmbedHeight);
 
 			linkEl.style.width = width;
 			linkEl.style.height = height;
 
-			if (hasLoadedEmbeddedTable(linkEl)) continue;
+			if (hasLoadedEmbeddedLoom(linkEl)) continue;
 
 			//Clear default Obsidian placeholder children
 			linkEl.empty();

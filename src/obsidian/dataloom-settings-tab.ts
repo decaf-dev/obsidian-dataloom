@@ -75,7 +75,7 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 			});
 	}
 
-	private renderEmbeddedTableSettings(containerEl: HTMLElement) {
+	private renderEmbeddedLoomSettings(containerEl: HTMLElement) {
 		new Setting(containerEl).setName("Embedded Tables").setHeading();
 
 		const defaultEmbedWidthDesc = new DocumentFragment();
@@ -145,7 +145,7 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 
 		this.renderFileSettings(containerEl);
 		this.renderExportSettings(containerEl);
-		this.renderEmbeddedTableSettings(containerEl);
+		this.renderEmbeddedLoomSettings(containerEl);
 		this.renderDebugSettings(containerEl);
 	}
 }

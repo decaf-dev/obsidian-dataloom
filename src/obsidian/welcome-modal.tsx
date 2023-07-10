@@ -24,23 +24,23 @@ export default class WelcomeModal extends Modal {
 		this.renderCard(
 			cardContainerEl,
 			"Quick start",
-			"Learn the basics of creating a table",
+			"Learn the basics of creating a loom",
 			"https://dataloom.xyz/getting-started/quick-start",
 			"table"
 		);
 
 		this.renderCard(
 			cardContainerEl,
-			"Embedded tables",
-			"Learn how to embed a tables into a markdown note",
-			"https://dataloom.xyz/other/embedding-tables",
+			"Embedded looms",
+			"Learn how to embed a loom into a markdown note",
+			"https://dataloom.xyz/other/embedding-looms",
 			"sticky-note"
 		);
 
 		this.renderCard(
 			cardContainerEl,
 			"Keyboard focus system",
-			"Learn how to navigate tables with your keyboard",
+			"Learn how to navigate looms with your keyboard",
 			"https://dataloom.xyz/other/keyboard-focus-system",
 			"list-plus"
 		);
