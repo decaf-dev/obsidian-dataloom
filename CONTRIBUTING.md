@@ -1,4 +1,4 @@
-# Dashboards Contributing Guide
+# DataLoom Contributing Guide
 
 ## Issues
 
@@ -54,7 +54,7 @@ yarn run dev
 
 Open your vault in Obsidian
 
-Enable Dashboards
+Enable DataLoom
 
 Make a code change
 
