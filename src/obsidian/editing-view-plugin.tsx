@@ -43,7 +43,6 @@ class EditingViewPlugin implements PluginValue {
 
 	//This is ran on any editor change
 	update() {
-		console.log("update() called");
 		const markdownLeaves = app.workspace.getLeavesOfType("markdown");
 		const activeLeaf = markdownLeaves.find(
 			//@ts-expect-error - private property
