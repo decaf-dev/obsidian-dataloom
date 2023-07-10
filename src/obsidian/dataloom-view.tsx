@@ -16,7 +16,7 @@ import { v4 as uuidv4 } from "uuid";
 import { DATA_LOOM_PLUGIN_ID } from "src/main";
 import LoomApp from "src/react/loom-app";
 
-export const DATA_LOOM_VIEW = "dashloom";
+export const DATA_LOOM_VIEW = "dataloom";
 
 export default class DataLoomView extends TextFileView {
 	private root: Root | null;
