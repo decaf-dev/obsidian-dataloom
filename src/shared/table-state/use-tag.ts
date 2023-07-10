@@ -1,7 +1,7 @@
 import { useLogger } from "../logger";
 import { Color } from "../types";
 import TagDeleteCommand from "../commands/tag-delete-command";
-import { useTableState } from "./dashboard-state-context";
+import { useTableState } from "./table-state-context";
 import TagUpdateCommand from "../commands/tag-update-command";
 import TagAddCommand from "../commands/tag-add-command";
 import TagCellRemoveCommand from "../commands/tag-cell-remove-command";

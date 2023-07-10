@@ -1,5 +1,5 @@
 import { useLogger } from "../logger";
-import { useTableState } from "./dashboard-state-context";
+import { useTableState } from "./table-state-context";
 import RowAddCommand from "../commands/row-add-command";
 import RowDeleteCommand from "../commands/row-delete-command";
 import React from "react";

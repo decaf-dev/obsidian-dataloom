@@ -1,6 +1,6 @@
 import { BodyCell, BodyRow, TableState } from "../types";
-import { RowNotFoundError } from "../table-state/dashboard-error";
-import TableStateCommand from "../table-state/dashboard-state-command";
+import { RowNotFoundError } from "../table-state/table-error";
+import TableStateCommand from "../table-state/table-state-command";
 import { DeleteCommandArgumentsError } from "./command-errors";
 
 export default class RowDeleteCommand extends TableStateCommand {

@@ -8,7 +8,7 @@ import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 
 import { useDragContext } from "src/shared/dragging/drag-context";
 import { dropDrag, getRowId } from "src/shared/dragging/utils";
-import { useTableState } from "src/shared/table-state/dashboard-state-context";
+import { useTableState } from "src/shared/table-state/table-state-context";
 import { css } from "@emotion/react";
 
 interface Props {

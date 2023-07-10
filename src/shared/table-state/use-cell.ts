@@ -1,5 +1,5 @@
 import { useLogger } from "../logger";
-import { useTableState } from "./dashboard-state-context";
+import { useTableState } from "./table-state-context";
 import CellBodyUpdateCommand from "../commands/cell-body-update-command";
 import CellHeaderUpdateCommand from "../commands/cell-header-update-command";
 import React from "react";

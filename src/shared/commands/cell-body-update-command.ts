@@ -2,8 +2,8 @@ import {
 	rowLastEditedTime,
 	rowLastEditedTimeUpdate,
 } from "../table-state/row-state-operations";
-import { CellNotFoundError } from "../table-state/dashboard-error";
-import TableStateCommand from "../table-state/dashboard-state-command";
+import { CellNotFoundError } from "../table-state/table-error";
+import TableStateCommand from "../table-state/table-state-command";
 import { BodyCell, TableState } from "../types";
 
 export default class CellBodyUpdateCommand extends TableStateCommand {

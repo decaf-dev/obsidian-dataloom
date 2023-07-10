@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { useDragContext } from "src/shared/dragging/drag-context";
-import { useTableState } from "src/shared/table-state/dashboard-state-context";
+import { useTableState } from "src/shared/table-state/table-state-context";
 
 const cellStyle = css`
 	position: sticky;

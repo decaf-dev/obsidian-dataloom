@@ -3,7 +3,7 @@ import Icon from "src/react/shared/icon";
 import Stack from "src/react/shared/stack";
 
 import { css } from "@emotion/react";
-import { useTableState } from "src/shared/table-state/dashboard-state-context";
+import { useTableState } from "src/shared/table-state/table-state-context";
 import { baseInputStyle } from "src/react/table-app/shared-styles";
 
 export default function SearchBar() {

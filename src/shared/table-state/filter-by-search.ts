@@ -8,7 +8,7 @@ import {
 	TableState,
 	Tag,
 } from "src/shared/types";
-import { ColumNotFoundError, RowNotFoundError } from "./dashboard-error";
+import { ColumNotFoundError, RowNotFoundError } from "./table-error";
 import { getTimeCellContent } from "../cell-content/time-content";
 import { getDateCellContent } from "../cell-content/date-cell-content";
 import { getCurrencyCellContent } from "../cell-content/currency-cell-content";

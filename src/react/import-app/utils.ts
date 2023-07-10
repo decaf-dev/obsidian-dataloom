@@ -1,7 +1,7 @@
 import { TableState } from "src/shared/types";
 import { MARKDOWN_LIST_ITEM_REGEX } from "./constants";
 import { ImportType } from "./types";
-import { CellNotFoundError } from "src/shared/table-state/dashboard-error";
+import { CellNotFoundError } from "src/shared/table-state/table-error";
 import RowAddCommand from "src/shared/commands/row-add-command";
 
 export const getDisplayNameForImportType = (type: ImportType) => {

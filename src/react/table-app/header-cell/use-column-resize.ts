@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { useTableState } from "src/shared/table-state/dashboard-state-context";
+import { useTableState } from "src/shared/table-state/table-state-context";
 
 export const useColumnResize = (
 	columnId: string,

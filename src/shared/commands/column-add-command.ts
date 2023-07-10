@@ -5,7 +5,7 @@ import {
 	createFooterCell,
 	createHeaderCell,
 } from "src/data/table-state-factory";
-import TableStateCommand from "../table-state/dashboard-state-command";
+import TableStateCommand from "../table-state/table-state-command";
 
 export default class ColumnAddCommand extends TableStateCommand {
 	private addedColumn: Column;

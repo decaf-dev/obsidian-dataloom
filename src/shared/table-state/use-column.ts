@@ -10,7 +10,7 @@ import {
 	SortDir,
 } from "src/shared/types";
 import { useLogger } from "../logger";
-import { useTableState } from "./dashboard-state-context";
+import { useTableState } from "./table-state-context";
 import ColumnAddCommand from "../commands/column-add-command";
 import ColumnDeleteCommand from "../commands/column-delete-command";
 import ColumnUpdateCommand from "../commands/column-update-command";

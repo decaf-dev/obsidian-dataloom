@@ -1,5 +1,5 @@
 import { createTag } from "src/data/table-state-factory";
-import TableStateCommand from "../table-state/dashboard-state-command";
+import TableStateCommand from "../table-state/table-state-command";
 import { TableState, Tag } from "../types";
 import { Color } from "../types";
 import {

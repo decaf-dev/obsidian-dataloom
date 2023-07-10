@@ -1,4 +1,4 @@
-import { useTableState } from "src/shared/table-state/dashboard-state-context";
+import { useTableState } from "src/shared/table-state/table-state-context";
 import { useDragContext } from "src/shared/dragging/drag-context";
 import { dropDrag, getRowId } from "src/shared/dragging/utils";
 

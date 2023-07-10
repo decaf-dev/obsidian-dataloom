@@ -1,5 +1,5 @@
-import { CellNotFoundError } from "../table-state/dashboard-error";
-import TableStateCommand from "../table-state/dashboard-state-command";
+import { CellNotFoundError } from "../table-state/table-error";
+import TableStateCommand from "../table-state/table-state-command";
 import { FooterCell, TableState } from "../types";
 
 export default class CellFooterUpdateCommand extends TableStateCommand {
