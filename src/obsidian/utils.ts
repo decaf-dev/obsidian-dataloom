@@ -1,4 +1,4 @@
-import { CURRENT_FILE_EXTENSION } from "src/data/constants";
+import { FILE_EXTENSION } from "src/data/constants";
 import { numToPx } from "src/shared/conversion";
 
 export const getEmbeddedLoomLinkEls = (el: HTMLElement) => {
@@ -8,7 +8,7 @@ export const getEmbeddedLoomLinkEls = (el: HTMLElement) => {
 	for (let i = 0; i < embeddedLinkEls.length; i++) {
 		const linkEl = embeddedLinkEls[i];
 		const src = linkEl.getAttribute("src");
-		if (src?.endsWith(CURRENT_FILE_EXTENSION))
+		if (src?.endsWith(FILE_EXTENSION))
 			loomLinkEls.push(linkEl as HTMLElement);
 	}
 	return loomLinkEls;
