@@ -1,34 +1,34 @@
-import { Notice } from "obsidian";
+import { Notice, normalizePath } from "obsidian";
 import { createFile, createFolder } from "./file-operations";
 import { createLoomState } from "./loom-state-factory";
 import { serializeLoomState } from "./serialize-loom-state";
-import { CURRENT_FILE_EXTENSION, DEFAULT_LOOM_NAME } from "./constants";
+import { FILE_EXTENSION, DEFAULT_LOOM_NAME } from "./constants";
 
 const getFileName = (): string => {
 	const fileName = DEFAULT_LOOM_NAME;
-
-	return `${fileName}.${CURRENT_FILE_EXTENSION}`;
+	return `${fileName}.${FILE_EXTENSION}`;
 };
 
-export const getFilePath = (folderPath: string, fileName: string) => {
-	if (folderPath === "") return fileName;
-	return folderPath + "/" + fileName;
+const getFilePath = (folderPath: string) => {
+	const fileName = getFileName();
+	return normalizePath(folderPath + "/" + fileName);
 };
 
-export const createLoomFile = async (options: { folderPath: string }) => {
+const createFolderIfNotExists = async (folderPath: string) => {
+	if (app.vault.getAbstractFileByPath(folderPath) == null)
+		await createFolder(folderPath);
+};
+
+export const createLoomFile = async (folderPath: string) => {
 	try {
-		//Create folder if it doesn't exist
-		if (options.folderPath !== "") {
-			if (app.vault.getAbstractFileByPath(options.folderPath) == null)
-				await createFolder(options.folderPath);
-		}
+		await createFolderIfNotExists(folderPath);
+		const filePath = getFilePath(folderPath);
 
-		const fileName = getFileName();
-		const LoomState = createLoomState(1, 1);
-		const serialized = serializeLoomState(LoomState);
-		const filePath = getFilePath(options.folderPath, fileName);
+		const loomState = createLoomState(1, 1);
+		const serializedState = serializeLoomState(loomState);
 
-		return await createFile(filePath, serialized);
+		console.log("Creating loom file at: ", filePath);
+		return await createFile(filePath, serializedState);
 	} catch (err) {
 		new Notice("Could not create loom file");
 		throw err;

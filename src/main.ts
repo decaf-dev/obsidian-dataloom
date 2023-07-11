@@ -5,12 +5,13 @@ import {
 	TAbstractFile,
 	TFile,
 	TFolder,
+	normalizePath,
 } from "obsidian";
 
 import { store } from "./redux/global/store";
 import { setDarkMode, setSettings } from "./redux/global/global-slice";
 import DataLoomView, { DATA_LOOM_VIEW } from "./obsidian/dataloom-view";
-import { CURRENT_FILE_EXTENSION, WIKI_LINK_REGEX } from "./data/constants";
+import { FILE_EXTENSION, WIKI_LINK_REGEX } from "./data/constants";
 import { createLoomFile } from "src/data/loom-file";
 import {
 	EVENT_COLUMN_ADD,
@@ -37,6 +38,7 @@ import { LoomState } from "./shared/types";
 import WelcomeModal from "./obsidian/welcome-modal";
 import WhatsNewModal from "./obsidian/whats-new-modal";
 import DataLoomSettingsTab from "./obsidian/dataloom-settings-tab";
+import { normalize } from "path";
 
 export interface DataLoomSettings {
 	shouldDebug: boolean;
@@ -79,7 +81,7 @@ export default class DataLoomPlugin extends Plugin {
 		await this.loadSettings();
 
 		this.registerView(DATA_LOOM_VIEW, (leaf) => new DataLoomView(leaf));
-		this.registerExtensions([CURRENT_FILE_EXTENSION], DATA_LOOM_VIEW);
+		this.registerExtensions([FILE_EXTENSION], DATA_LOOM_VIEW);
 
 		this.addRibbonIcon("table", "Create new loom", async () => {
 			await this.newLoomFile(null);
@@ -134,7 +136,7 @@ export default class DataLoomPlugin extends Plugin {
 				const file = loomFiles[i];
 				const newFilePath = file.path.replace(
 					`.${file.extension}`,
-					`.${CURRENT_FILE_EXTENSION}`
+					`.${FILE_EXTENSION}`
 				);
 				try {
 					await this.app.vault.rename(file, newFilePath);
@@ -170,11 +172,9 @@ export default class DataLoomPlugin extends Plugin {
 		// });
 	}
 
-	private async newLoomFile(
-		contextMenuFolderPath: string | null,
-		embedded?: boolean
-	) {
+	private getFolderForNewLoomFile(contextMenuFolderPath: string | null) {
 		let folderPath = "";
+
 		if (contextMenuFolderPath) {
 			folderPath = contextMenuFolderPath;
 		} else if (this.settings.createAtObsidianAttachmentFolder) {
@@ -184,11 +184,21 @@ export default class DataLoomPlugin extends Plugin {
 		} else {
 			folderPath = this.settings.customFolderForNewFiles;
 		}
+		const normalized = normalizePath(folderPath);
+		if (normalized === ".") return "/";
+		return normalized;
+	}
 
-		const filePath = await createLoomFile({
-			folderPath,
-		});
+	private async newLoomFile(
+		contextMenuFolderPath: string | null,
+		embedded?: boolean
+	) {
+		const folderPath = this.getFolderForNewLoomFile(contextMenuFolderPath);
+		const filePath = await createLoomFile(folderPath);
+
+		//If the file is embedded, we don't need to open it
 		if (embedded) return filePath;
+
 		//Open file in a new tab and set it to active
 		await app.workspace.getLeaf(true).setViewState({
 			type: DATA_LOOM_VIEW,
@@ -249,9 +259,7 @@ export default class DataLoomPlugin extends Plugin {
 				if (file instanceof TFile) {
 					const loomFiles = this.app.vault
 						.getFiles()
-						.filter(
-							(file) => file.extension === CURRENT_FILE_EXTENSION
-						);
+						.filter((file) => file.extension === FILE_EXTENSION);
 
 					const loomsToUpdate: {
 						file: TFile;

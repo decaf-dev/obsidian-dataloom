@@ -26,8 +26,8 @@ import { LoomState6122 } from "src/shared/types/types-6.12.2";
 import { LoomState6160 } from "src/shared/types/types-6.16.0";
 import { LoomState6186 } from "src/shared/types/types-6.18.6";
 
-export const serializeLoomState = (LoomState: LoomState): string => {
-	return JSON.stringify(LoomState, null, 2);
+export const serializeLoomState = (state: LoomState): string => {
+	return JSON.stringify(state, null, 2);
 };
 
 export const deserializeLoomState = (data: string): LoomState => {
