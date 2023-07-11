@@ -178,6 +178,8 @@ export const getDisplayNameForCurrencyType = (type: CurrencyType) => {
 			return "Mexican Peso";
 		case CurrencyType.RUSSIA:
 			return "Ruble";
+		case CurrencyType.ISRAEL:
+			return "Israeli Shekel";
 		default:
 			return "";
 	}
