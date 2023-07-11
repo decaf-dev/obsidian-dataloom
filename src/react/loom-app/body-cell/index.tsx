@@ -443,6 +443,7 @@ export default function BodyCell({
 				{(columnType === CellType.TAG ||
 					columnType === CellType.MULTI_TAG) && (
 					<TagCellEdit
+						isMulti={columnType === CellType.MULTI_TAG}
 						menuCloseRequest={menuCloseRequest}
 						columnTags={columnTags}
 						cellTags={cellTags}
