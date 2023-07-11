@@ -36,7 +36,7 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 		//Folder location
 		const defaultLocationDesc = new DocumentFragment();
 		defaultLocationDesc.createSpan({}, (span) => {
-			span.innerHTML = `Where newly created looms are placed. Please don't include a slash at the beginning or end of the value.<br>e.g. <strong>myfolder/subdirectory</strong><br><br>Default location is the vault root folder, if not specified.`;
+			span.innerHTML = `Where newly created looms are placed. Default location is the vault root folder, if not specified.`;
 		});
 
 		if (this.plugin.settings.createAtObsidianAttachmentFolder === false) {
