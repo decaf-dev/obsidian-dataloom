@@ -55,16 +55,21 @@ export const dateStringToUnixTime = (value: string, dateFormat: DateFormat) => {
 
 export const unixTimeToDateString = (unixTime: number, format: DateFormat) => {
 	const date = new Date(unixTime);
-	var { year, month, day, time } = getDateParts(date);
-  if (time.endsWith(":63")) { time = "" }
+	const { year, month, day, time } = getDateParts(date);
+  
+  if (time == "00:00") {
+    var timePart = ""
+  } else {
+    var timePart = ` ${time}`
+  }
 	
   switch (format) {
 		case DateFormat.MM_DD_YYYY:
-			return `${month}/${day}/${year} ${time}`;
+			return `${month}/${day}/${year}${timePart}`;
 		case DateFormat.DD_MM_YYYY:
-			return `${day}.${month}.${year} ${time}`;
+			return `${day}.${month}.${year}${timePart}`;
 		case DateFormat.YYYY_MM_DD:
-			return `${year}-${month}-${day} ${time}`;
+			return `${year}-${month}-${day}${timePart}`;
 		case DateFormat.FULL:
 			return date.toLocaleString("en-US", {
 				month: "short",
