@@ -24,30 +24,14 @@ const getDatePartsFromMatch = (value: string, dateFormat: DateFormat) => {
   const re = getRegExForFomat(dateFormat);
   const match = value.match(re);
   console.log(match);
-  if (match == null) {
+  if (match == null || match.groups == undefined) {
     throw new Error("Date format not supported.");
   }
 
-  switch (dateFormat) {
-    case DateFormat.MM_DD_YYYY:
-      var year = match[3];
-      var month = match[1];
-      var day = match[2];
-      break;
-    case DateFormat.DD_MM_YYYY:
-      var year = match[3];
-      var month = match[2];
-      var day = match[1];
-      break;
-    case DateFormat.YYYY_MM_DD:
-      var year = match[1];
-      var month = match[2];
-      var day = match[3];
-      break;
-    default:
-      throw new Error("Unreachable");
-  }
-  
+  var year = match.groups["year"];
+  var month = match.groups["month"];
+  var day = match.groups["day"];
+
   var am_pm = match[6];
   if (am_pm == undefined) {
     var hour: number | string = match[7] || "00";
