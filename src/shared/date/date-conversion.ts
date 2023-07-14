@@ -7,31 +7,80 @@ import {
 	removeLastComma,
 } from "./utils";
 
+const getRegExForFomat = (dateFormat: DateFormat) => {
+  switch (dateFormat) {
+    case DateFormat.MM_DD_YYYY:
+      return MM_DD_YYYY_REGEX
+    case DateFormat.DD_MM_YYYY:
+      return DD_MM_YYYY_REGEX
+    case DateFormat.YYYY_MM_DD:
+      return YYYY_MM_DD_REGEX
+    default:
+      throw new Error("Date format not supported.");
+  }
+}
+
+const getDatePartsFromMatch = (value: string, dateFormat: DateFormat) => {
+  const re = getRegExForFomat(dateFormat);
+  const match = value.match(re);
+  console.log(match);
+  if (match == null) {
+    throw new Error("Date format not supported.");
+  }
+
+  switch (dateFormat) {
+    case DateFormat.MM_DD_YYYY:
+      var year = match[3];
+      var month = match[1];
+      var day = match[2];
+      break;
+    case DateFormat.DD_MM_YYYY:
+      var year = match[3];
+      var month = match[2];
+      var day = match[1];
+      break;
+    case DateFormat.YYYY_MM_DD:
+      var year = match[1];
+      var month = match[2];
+      var day = match[3];
+      break;
+    default:
+      throw new Error("Unreachable");
+  }
+  
+  var am_pm = match[6];
+  if (am_pm == undefined) {
+    var hour: number | string = match[7] || "00";
+    var minute = match[8] || "00";
+  } else {
+    var hour: number | string = parseInt(match[4] || "00");
+    var minute = match[5] || "00";
+    if (am_pm == "PM") { hour = hour + 12;}
+    hour = hour.toString();
+  }
+
+  if (hour.length == 1) hour = '0' + hour;
+
+  return {year, month, day, hour, minute}
+}
+
 export const dateStringToUnixTime = (value: string, dateFormat: DateFormat) => {
-	const parts = value.split("/");
-	switch (dateFormat) {
-		case DateFormat.MM_DD_YYYY:
-			return getUTCTimeFromDateParts(parts[2], parts[0], parts[1]);
-		case DateFormat.DD_MM_YYYY:
-			return getUTCTimeFromDateParts(parts[2], parts[1], parts[0]);
-		case DateFormat.YYYY_MM_DD:
-			return getUTCTimeFromDateParts(parts[0], parts[1], parts[2]);
-		default:
-			throw new Error("Date format not supported.");
-	}
+	const {year, month, day, hour, minute} = getDatePartsFromMatch(value, dateFormat);
+  return getUTCTimeFromDateParts(year, month, day, hour, minute);
 };
 
 export const unixTimeToDateString = (unixTime: number, format: DateFormat) => {
 	const date = new Date(unixTime);
-	const { year, month, day } = getDateParts(date);
-
-	switch (format) {
+	var { year, month, day, time } = getDateParts(date);
+  if (time.endsWith(":63")) { time = "" }
+	
+  switch (format) {
 		case DateFormat.MM_DD_YYYY:
-			return `${month}/${day}/${year}`;
+			return `${month}/${day}/${year} ${time}`;
 		case DateFormat.DD_MM_YYYY:
-			return `${day}/${month}/${year}`;
+			return `${day}.${month}.${year} ${time}`;
 		case DateFormat.YYYY_MM_DD:
-			return `${year}/${month}/${day}`;
+			return `${year}-${month}-${day} ${time}`;
 		case DateFormat.FULL:
 			return date.toLocaleString("en-US", {
 				month: "short",

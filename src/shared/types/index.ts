@@ -55,8 +55,8 @@ export enum FilterType {
 
 export enum DateFormat {
 	MM_DD_YYYY = "mm/dd/yyyy",
-	DD_MM_YYYY = "dd/mm/yyyy",
-	YYYY_MM_DD = "yyyy/mm/dd",
+	DD_MM_YYYY = "dd.mm.yyyy",
+	YYYY_MM_DD = "yyyy-mm-dd",
 	FULL = "full",
 	RELATIVE = "relative",
 }

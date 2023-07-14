@@ -126,11 +126,11 @@ export const getDisplayNameForNumberCalculation = (
 export const getDisplayNameForDateFormat = (format: DateFormat) => {
 	switch (format) {
 		case DateFormat.DD_MM_YYYY:
-			return "Day/Month/Year";
+			return "Day.Month.Year";
 		case DateFormat.MM_DD_YYYY:
 			return "Month/Day/Year";
 		case DateFormat.YYYY_MM_DD:
-			return "Year/Month/Day";
+			return "Year-Month-Day";
 		case DateFormat.FULL:
 			return "Full";
 		case DateFormat.RELATIVE:

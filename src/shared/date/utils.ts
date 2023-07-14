@@ -5,7 +5,7 @@ export const getDateParts = (date: Date) => {
 	const time = date.toLocaleString("en-US", {
 		hour: "numeric",
 		minute: "numeric",
-		hour12: true,
+    hourCycle: 'h23'
 	});
 	return { year, month, day, time };
 };
@@ -13,9 +13,11 @@ export const getDateParts = (date: Date) => {
 export const getUTCTimeFromDateParts = (
 	year: string,
 	month: string,
-	day: string
+	day: string,
+  hour: string,
+  minute: string
 ) => {
-	return new Date(`${year}-${month}-${day}T00:00:00`).getTime();
+	return new Date(`${year}-${month}-${day}T${hour}:${minute}:00`).getTime();
 };
 
 export const removeLastComma = (value: string) => {
