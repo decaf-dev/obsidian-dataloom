@@ -23,13 +23,14 @@ export const hasLoadedEmbeddedLoom = (linkEl: HTMLElement) => {
 	return false;
 };
 
-export const findEmbeddedLoomFile = (linkEl: HTMLElement) => {
+export const findEmbeddedLoomFile = (
+	linkEl: HTMLElement,
+	sourcePath: string
+) => {
 	const src = linkEl.getAttribute("src");
+	if (!src) return null;
 
-	const loomFile = app.vault.getFiles().find((file) => file.path === src);
-	if (loomFile === undefined)
-		return app.vault.getFiles().find((file) => file.name === src) ?? null;
-	return loomFile ?? null;
+	return app.metadataCache.getFirstLinkpathDest(src, sourcePath);
 };
 
 export const getEmbeddedLoomWidth = (
