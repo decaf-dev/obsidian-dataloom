@@ -158,18 +158,20 @@ export default class DataLoomPlugin extends Plugin {
 		this.registerEditorExtension(editingViewPlugin);
 		//This registers a Markdown post processor. It is used to render the embedded
 		//loom in preview mode.
-		// this.registerMarkdownPostProcessor((element, context) => {
-		// 	const embeddedLoomLinkEls = getEmbeddedDataLoomLinkEls(element);
-		// 	for (let i = 0; i < embeddedLoomLinkEls.length; i++) {
-		// 		const linkEl = embeddedLoomLinkEls[i];
-		// 		context.addChild(
-		// 			new DataLoomReadingChild(
-		// 				linkEl,
-		// 				linkEl.getAttribute("src")!
-		// 			)
-		// 		);
-		// 	}
-		// });
+		this.registerMarkdownPostProcessor((element, context) => {
+			console.log("YUP");
+			console.log(context);
+			// const embeddedLoomLinkEls = getEmbeddedDataLoomLinkEls(element);
+			// for (let i = 0; i < embeddedLoomLinkEls.length; i++) {
+			// 	const linkEl = embeddedLoomLinkEls[i];
+			// 	context.addChild(
+			// 		new DataLoomReadingChild(
+			// 			linkEl,
+			// 			linkEl.getAttribute("src")!
+			// 		)
+			// 	);
+			// }
+		});
 	}
 
 	private getFolderForNewLoomFile(contextMenuFolderPath: string | null) {

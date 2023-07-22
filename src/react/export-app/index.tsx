@@ -17,11 +17,11 @@ import { css } from "@emotion/react";
 import { useAppSelector } from "src/redux/global/hooks";
 
 interface Props {
-	LoomState: LoomState;
+	loomState: LoomState;
 	loomFilePath: string;
 }
 
-export function ExportApp({ LoomState, loomFilePath }: Props) {
+export function ExportApp({ loomState, loomFilePath }: Props) {
 	const [exportType, setExportType] = React.useState<ExportType>(
 		ExportType.UNSELECTED
 	);
@@ -44,9 +44,9 @@ export function ExportApp({ LoomState, loomFilePath }: Props) {
 
 	let content = "";
 	if (exportType === ExportType.MARKDOWN) {
-		content = exportToMarkdown(LoomState, renderMarkdown);
+		content = exportToMarkdown(loomState, renderMarkdown);
 	} else if (exportType === ExportType.CSV) {
-		content = exportToCSV(LoomState, renderMarkdown);
+		content = exportToCSV(loomState, renderMarkdown);
 	}
 
 	return (

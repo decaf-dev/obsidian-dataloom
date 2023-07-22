@@ -16,7 +16,7 @@ interface Props {
 	isMarkdownView: boolean;
 	loomFile: TFile;
 	store: Store;
-	LoomState: LoomState;
+	loomState: LoomState;
 	onSaveState: (appId: string, state: LoomState) => void;
 }
 
@@ -26,7 +26,7 @@ export default function LoomApp({
 	isMarkdownView,
 	store,
 	loomFile,
-	LoomState,
+	loomState,
 	onSaveState,
 }: Props) {
 	return (
@@ -38,7 +38,7 @@ export default function LoomApp({
 		>
 			<Provider store={store}>
 				<LoomStateProvider
-					initialState={LoomState}
+					initialState={loomState}
 					onSaveState={onSaveState}
 				>
 					<MenuProvider>

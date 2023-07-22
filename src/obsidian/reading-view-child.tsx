@@ -46,7 +46,7 @@ export default class ReadingViewChild extends MarkdownRenderChild {
 					loomFile={file}
 					isMarkdownView
 					store={store}
-					LoomState={state}
+					loomState={state}
 					onSaveState={this.handleSaveLoomState}
 				/>
 			);

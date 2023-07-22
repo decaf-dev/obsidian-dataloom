@@ -145,7 +145,7 @@ class EditingViewPlugin implements PluginValue {
 		leaf: WorkspaceLeaf,
 		loomFile: TFile,
 		root: Root,
-		LoomState: LoomState
+		loomState: LoomState
 	) {
 		//Throttle the save function so we don't save too often
 		const throttleHandleSave = _.throttle(this.handleSave, 2000);
@@ -157,7 +157,7 @@ class EditingViewPlugin implements PluginValue {
 				loomFile={loomFile}
 				mountLeaf={leaf}
 				store={store}
-				LoomState={LoomState}
+				loomState={loomState}
 				onSaveState={(appId, state) =>
 					throttleHandleSave(loomFile, appId, state)
 				}
