@@ -73,7 +73,8 @@ class EditingViewPlugin implements PluginValue {
 			//Clear default Obsidian placeholder children
 			linkEl.empty();
 
-			const file = findEmbeddedLoomFile(linkEl);
+			const sourcePath = activeView.file.path;
+			const file = findEmbeddedLoomFile(linkEl, sourcePath);
 			if (!file) continue;
 
 			//Filter out any old looms
