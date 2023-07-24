@@ -45,16 +45,7 @@ export const loadPreviewModeApps = (markdownLeaves: WorkspaceLeaf[]) => {
 		const view = leaf.view as MarkdownView;
 		const mode = view.getMode();
 
-		if (mode === "preview") {
-			const app = embeddedApps.find(
-				(app) =>
-					app.leafFilePath ===
-						(leaf.view as MarkdownView).file.path &&
-					app.mode === "preview"
-			);
-			if (app) continue;
-			loadEmbeddedLoomApps(leaf, "preview");
-		}
+		if (mode === "preview") loadEmbeddedLoomApps(leaf, "preview");
 	}
 };
 
