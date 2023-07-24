@@ -1,17 +1,29 @@
+import { MarkdownView } from "obsidian";
 import { FILE_EXTENSION } from "src/data/constants";
 import { numToPx } from "src/shared/conversion";
 
-export const getEmbeddedLoomLinkEls = (el: HTMLElement) => {
-	const embeddedLinkEls = el.querySelectorAll(".internal-embed");
-	const loomLinkEls: HTMLElement[] = [];
+export const getEmbeddedLoomLinkEls = (
+	view: MarkdownView,
+	mode: "source" | "preview"
+) => {
+	const linkEls: HTMLElement[] = [];
 
-	for (let i = 0; i < embeddedLinkEls.length; i++) {
-		const linkEl = embeddedLinkEls[i];
-		const src = linkEl.getAttribute("src");
-		if (src?.endsWith(FILE_EXTENSION))
-			loomLinkEls.push(linkEl as HTMLElement);
+	const { contentEl } = view;
+	const el =
+		mode === "source"
+			? contentEl.querySelector(".markdown-source-view")
+			: contentEl.querySelector(".markdown-reading-view");
+
+	if (el) {
+		const embeddedLinkEls = el.querySelectorAll(".internal-embed");
+		for (let i = 0; i < embeddedLinkEls.length; i++) {
+			const linkEl = embeddedLinkEls[i];
+			const src = linkEl.getAttribute("src");
+			if (src?.endsWith(FILE_EXTENSION))
+				linkEls.push(linkEl as HTMLElement);
+		}
 	}
-	return loomLinkEls;
+	return linkEls;
 };
 
 export const hasLoadedEmbeddedLoom = (linkEl: HTMLElement) => {
@@ -30,6 +42,8 @@ export const findEmbeddedLoomFile = (
 	const src = linkEl.getAttribute("src");
 	if (!src) return null;
 
+	//We use the getFirstLinkpathDest to handle absolute links, relative links, and short links
+	//in Obsidian.
 	return app.metadataCache.getFirstLinkpathDest(src, sourcePath);
 };
 

@@ -38,7 +38,10 @@ import { LoomState } from "./shared/types";
 import WelcomeModal from "./obsidian/welcome-modal";
 import WhatsNewModal from "./obsidian/whats-new-modal";
 import DataLoomSettingsTab from "./obsidian/dataloom-settings-tab";
-import { normalize } from "path";
+import {
+	loadPreviewModeApps,
+	purgeEmbeddedLoomApps,
+} from "./obsidian/embedded-app-manager";
 
 export interface DataLoomSettings {
 	shouldDebug: boolean;
@@ -156,22 +159,6 @@ export default class DataLoomPlugin extends Plugin {
 		//This registers a CodeMirror extension. It is used to render the embedded
 		//loom in live preview mode.
 		this.registerEditorExtension(editingViewPlugin);
-		//This registers a Markdown post processor. It is used to render the embedded
-		//loom in preview mode.
-		this.registerMarkdownPostProcessor((element, context) => {
-			console.log("YUP");
-			console.log(context);
-			// const embeddedLoomLinkEls = getEmbeddedDataLoomLinkEls(element);
-			// for (let i = 0; i < embeddedLoomLinkEls.length; i++) {
-			// 	const linkEl = embeddedLoomLinkEls[i];
-			// 	context.addChild(
-			// 		new DataLoomReadingChild(
-			// 			linkEl,
-			// 			linkEl.getAttribute("src")!
-			// 		)
-			// 	);
-			// }
-		});
 	}
 
 	private getFolderForNewLoomFile(contextMenuFolderPath: string | null) {
@@ -231,6 +218,20 @@ export default class DataLoomPlugin extends Plugin {
 			this.app.workspace.on("css-change", () => {
 				const isDark = hasDarkTheme();
 				store.dispatch(setDarkMode(isDark));
+			})
+		);
+
+		//This event is fired whenever a leaf is opened, close, moved,
+		//or the user switches between editing and preview mode
+		this.registerEvent(
+			this.app.workspace.on("layout-change", () => {
+				const leaves = this.app.workspace.getLeavesOfType("markdown");
+
+				purgeEmbeddedLoomApps(leaves);
+				//Wait for the DOM to update before loading the preview mode apps
+				setTimeout(() => {
+					loadPreviewModeApps(leaves);
+				}, 0);
 			})
 		);
 
