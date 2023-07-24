@@ -23,44 +23,43 @@ interface EmbeddedApp {
 	id: string;
 	containerEl: HTMLElement;
 	leaf: WorkspaceLeaf;
+	leafFilePath: string; //Leafs and views are reused, so we need to store a value that won't change
 	root?: Root;
 	file: TFile;
 	mode: "source" | "preview";
 }
 
+//Stores all embedded apps
 let embeddedApps: EmbeddedApp[] = [];
 
-let registeredLeaves: {
-	id: string;
-	lastMode: "preview" | "source";
-}[] = [];
-
+/**
+ * Iterates through all open markdown leaves and then iterates through all embedded loom links
+ * for each leaf and renders a loom for each one.
+ * This is intended to be used in the `on("layout-change")` callback function
+ * @param markdownLeaves - The open markdown leaves
+ */
 export const loadPreviewModeApps = (markdownLeaves: WorkspaceLeaf[]) => {
-	markdownLeaves.forEach((leaf) => {
-		//@ts-expect-error - private property
-		const { id } = leaf;
+	for (let i = 0; i < markdownLeaves.length; i++) {
+		const leaf = markdownLeaves[i];
 
 		const view = leaf.view as MarkdownView;
 		const mode = view.getMode();
 
-		const registeredLeaf = registeredLeaves.find((leaf) => leaf.id === id);
-		if (registeredLeaf) {
-			//If the leaf was previously in source mode and is now in preview mode,
-			if (registeredLeaf.lastMode === "source" && mode === "preview") {
-				loadEmbeddedLoomApps(leaf, "preview");
-			}
-			registeredLeaf.lastMode = mode;
-		} else {
-			if (mode === "preview") {
-				registeredLeaves.push({ id, lastMode: mode });
-				loadEmbeddedLoomApps(leaf, "preview");
-			}
+		if (mode === "preview") {
+			const app = embeddedApps.find(
+				(app) =>
+					app.leafFilePath ===
+						(leaf.view as MarkdownView).file.path &&
+					app.mode === "preview"
+			);
+			if (app) continue;
+			loadEmbeddedLoomApps(leaf, "preview");
 		}
-	});
+	}
 };
 
 /**
- * Iterates through all embedded loom links and renders a loop app for each one
+ * Iterates through all embedded loom links and renders a Loom for each one.
  * Since a leaf can have an editing and reading view, we specify which child
  * to look in
  * @param markdownLeaf - The leaf that contains the markdown view
@@ -72,11 +71,9 @@ export const loadEmbeddedLoomApps = (
 ) => {
 	const view = markdownLeaf.view as MarkdownView;
 	const linkEls = getEmbeddedLoomLinkEls(view, mode);
-	console.log(linkEls);
 	linkEls.forEach((linkEl) =>
 		processEmbeddedLink(linkEl, markdownLeaf, mode)
 	);
-	console.log(embeddedApps);
 };
 
 /**
@@ -84,14 +81,11 @@ export const loadEmbeddedLoomApps = (
  * @param leaves - The open markdown leaves
  */
 export const purgeEmbeddedLoomApps = (leaves: WorkspaceLeaf[]) => {
-	//@ts-expect-error - private property
-	const leafIds = leaves.map((leaf) => leaf.id);
-
-	registeredLeaves = registeredLeaves.filter((leaf) =>
-		leafIds.includes(leaf.id)
+	embeddedApps = embeddedApps.filter((app) =>
+		leaves.find(
+			(l) => (l.view as MarkdownView).file.path === app.leafFilePath
+		)
 	);
-	//@ts-expect-error - private property
-	embeddedApps = embeddedApps.filter((app) => leafIds.includes(app.leaf.id));
 };
 
 /**
@@ -117,59 +111,47 @@ const processEmbeddedLink = async (
 	const file = findEmbeddedLoomFile(linkEl, sourcePath);
 	if (!file) return;
 
-	//Clear default Obsidian placeholder content
-	linkEl.empty();
+	resetEmbedStyles(linkEl);
 
-	//Set link el styles
-	linkEl.style.backgroundColor = "var(--color-primary)";
-	linkEl.style.cursor = "unset";
-	linkEl.style.margin = "0px";
-	linkEl.style.padding = "0px";
+	//Create a container
+	const containerEl = renderContainerEl(linkEl);
 
-	const containerEl = linkEl.createDiv({
-		cls: "DataLoom__embedded-container",
-	});
-	containerEl.style.height = "100%";
-	containerEl.style.width = "100%";
-	containerEl.style.padding = "10px 0px";
+	//Get the loom state
+	const data = await app.vault.read(file);
+	const state = deserializeLoomState(data);
 
+	//Store the embed in memory
 	const appId = uuid();
 	const embeddedApp: EmbeddedApp = {
 		id: appId,
 		leaf,
+		leafFilePath: sourcePath,
 		containerEl,
 		file,
 		mode,
 	};
 	embeddedApps.push(embeddedApp);
 
-	//Stop propagation of the click event. We do this so that the embedded link div
-	//don't navigate to the linked file when it is clicked.
-	containerEl.addEventListener("click", (e) => {
-		e.stopPropagation();
-	});
-
-	//Get the loom state
-	const data = await app.vault.read(file);
-	const appState = deserializeLoomState(data);
-
-	embeddedApp.root = createRoot(containerEl);
-	renderApp(appId, leaf, file, embeddedApp.root, appState);
+	//Create the react app
+	const root = createRoot(containerEl);
+	embeddedApp.root = root;
+	renderApp(appId, leaf, file, root, state);
 };
 
 const renderApp = (
-	id: string,
+	appId: string,
 	leaf: WorkspaceLeaf,
 	file: TFile,
 	root: Root,
 	state: LoomState
 ) => {
 	//Throttle the save function so we don't save too often
-	const throttleHandleSave = _.throttle(handleSave, 2000);
+	const THROTTLE_TIME_MILLIS = 2000;
+	const throttleHandleSave = _.throttle(handleSave, THROTTLE_TIME_MILLIS);
 
 	root.render(
 		<LoomApp
-			appId={id}
+			appId={appId}
 			isMarkdownView
 			loomFile={file}
 			mountLeaf={leaf}
@@ -180,6 +162,11 @@ const renderApp = (
 	);
 };
 
+/**
+ * Saves the loom state to the loom file
+ * @param file - The loom file
+ * @param state - The loom state
+ */
 const handleSave = async (file: TFile, state: LoomState) => {
 	const serialized = serializeLoomState(state);
 	await app.vault.modify(file, serialized);
@@ -188,7 +175,43 @@ const handleSave = async (file: TFile, state: LoomState) => {
 };
 
 /**
- * Sets the embed size based on the width or height in the markdown link
+ * Creates a container for the embedded loom
+ * This container has padding so that text doesn't touch the edges of the embed
+ * @param linkEl - The link element that contains the embedded loom
+ */
+const renderContainerEl = (linkEl: HTMLElement) => {
+	const containerEl = linkEl.createDiv({
+		cls: "DataLoom__embedded-container",
+	});
+	containerEl.style.height = "100%";
+	containerEl.style.width = "100%";
+	containerEl.style.padding = "10px 0px";
+
+	//Stop propagation of the click event. We do this so that the embed link
+	//doesn't navigate to the linked file when clicked
+	containerEl.addEventListener("click", (e) => {
+		e.stopPropagation();
+	});
+	return containerEl;
+};
+
+/**
+ * Resets the background styles of the embed
+ * Obsidian by default will have a gray rectangle with padding and margin
+ * @param linkEl - The link element that contains the embedded loom
+ */
+const resetEmbedStyles = (linkEl: HTMLElement) => {
+	//Clear default Obsidian placeholder content
+	linkEl.empty();
+
+	linkEl.style.backgroundColor = "var(--color-primary)";
+	linkEl.style.cursor = "unset";
+	linkEl.style.margin = "0px";
+	linkEl.style.padding = "0px";
+};
+
+/**
+ * Sets the embed size based on the width or height of the markdown link
  * If no width or height is specified, the default width and height is used
  * @example
  * ![[filename.loom|300x300]]

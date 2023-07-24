@@ -226,12 +226,12 @@ export default class DataLoomPlugin extends Plugin {
 		this.registerEvent(
 			this.app.workspace.on("layout-change", () => {
 				const leaves = this.app.workspace.getLeavesOfType("markdown");
-
 				purgeEmbeddedLoomApps(leaves);
+
 				//Wait for the DOM to update before loading the preview mode apps
 				setTimeout(() => {
 					loadPreviewModeApps(leaves);
-				}, 0);
+				}, 1);
 			})
 		);
 
