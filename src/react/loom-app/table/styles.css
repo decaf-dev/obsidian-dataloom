@@ -1,0 +1,94 @@
+.dataloom-table {
+    display: table;
+    table-layout: fixed;
+    border-collapse: separate;
+}
+
+.dataloom-head {
+    display: table-header-group;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.dataloom-body {
+    display: table-row-group;
+}
+
+.dataloom-row {
+    display: table-row;
+}
+
+.dataloom-cell {
+    display: table-cell;
+}
+
+.dataloom-cell--header {
+    background-color: var(--table-header-background);
+    border-bottom: 1px solid var(--table-border-color);
+    border-left: 1px solid var(--table-border-color);
+    border-right: 0;
+    overflow: visible;
+    text-align: start;
+        
+    &:first-of-type {
+        border-top: 0;
+        border-left: 0;
+        border-bottom: 0;
+        background-color: var(--background-primary);
+    }
+        
+    &:last-of-type {
+        border-top: 0;
+        border-bottom: 0;
+        background-color: var(--background-primary);
+    }
+}
+
+.dataloom-cell--body {
+    border-top: 0;
+    border-bottom: 1px solid var(--table-border-color);
+    border-left: 1px solid var(--table-border-color);
+    border-right: 0;
+    vertical-align: top;
+   /** 
+    * This is a hack to make the children have something to calculate their height percentage from.
+    * i.e. if you have a child with height: 100%, it will be 100% of the height of the td, only
+    * if the td has a set height value.
+    * This doesn't represent the actual height of the td, as that is set by HTML
+    */
+    height: 1px;
+                                
+    &:first-of-type {
+        border-left: 0;
+        border-bottom: 0;
+    }
+                                
+    &:last-child {
+       border-bottom: 0;
+    }
+}
+
+.dataloom-row--header {
+    background-color: var(--background-secondary);
+}
+
+.dataloom-foot {
+    display: table-footer-group;
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+    background-color: var(--background-primary);
+                
+    & > .dataloom-row:first-of-type > .dataloom-cell {
+        border-bottom: 1px solid var(--table-border-color);
+    }
+                
+    & > .dataloom-row:first-of-type > .dataloom-cell:nth-of-type(2) {
+        border-left: 1px solid var(--table-border-color);
+    }
+                
+    & > .dataloom-row:first-of-type > .dataloom-cell:last-child {
+        border-left: 1px solid var(--table-border-color);
+    }
+}

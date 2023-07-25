@@ -1,34 +1,5 @@
-import { css } from "@emotion/react";
 import { useDragContext } from "src/shared/dragging/drag-context";
 import { useLoomState } from "src/shared/loom-state/loom-state-context";
-
-const cellStyle = css`
-	position: sticky;
-	top: 0;
-	z-index: 1;
-	background-color: var(--table-header-background);
-	border-bottom: 1px solid var(--table-border-color);
-	border-left: 1px solid var(--table-border-color);
-	border-right: 0;
-	padding: 0;
-	font-weight: 400;
-	overflow: visible;
-	text-align: start;
-	color: var(--text-normal); //Prevents dimming on hover in embedded loom
-
-	&:first-of-type {
-		border-top: 0;
-		border-left: 0;
-		border-bottom: 0;
-		background-color: var(--background-primary);
-	}
-
-	&:last-of-type {
-		border-top: 0;
-		border-bottom: 0;
-		background-color: var(--background-primary);
-	}
-`;
 
 interface TableHeaderCellProps {
 	columnId: string;
@@ -207,9 +178,9 @@ export default function TableHeaderCell({
 	}
 
 	return (
-		<th
+		<div
+			className="dataloom-cell dataloom-cell--header"
 			data-column-id={columnId}
-			css={cellStyle}
 			{...(isDraggable && {
 				draggable: true,
 				onDrop: handleDrop,
@@ -223,6 +194,6 @@ export default function TableHeaderCell({
 			})}
 		>
 			{content}
-		</th>
+		</div>
 	);
 }
