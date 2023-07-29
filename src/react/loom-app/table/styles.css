@@ -19,53 +19,35 @@
     display: table-row;
 }
 
+.dataloom-body > .dataloom-row:last-child > .dataloom-cell {
+    border-bottom: 0;
+}
+
 .dataloom-cell {
     display: table-cell;
 }
 
-.dataloom-cell--header {
+.dataloom-cell--head {
     background-color: var(--table-header-background);
     border-bottom: 1px solid var(--table-border-color);
-    border-left: 1px solid var(--table-border-color);
-    border-right: 0;
-    overflow: visible;
-    text-align: start;
-        
-    &:first-of-type {
-        border-top: 0;
-        border-left: 0;
-        border-bottom: 0;
-        background-color: var(--background-primary);
-    }
+    border-right: 1px solid var(--table-border-color);
         
     &:last-of-type {
-        border-top: 0;
-        border-bottom: 0;
+        border-right: 0;
         background-color: var(--background-primary);
     }
 }
 
 .dataloom-cell--body {
-    border-top: 0;
     border-bottom: 1px solid var(--table-border-color);
-    border-left: 1px solid var(--table-border-color);
-    border-right: 0;
+    border-right: 1px solid var(--table-border-color);
     vertical-align: top;
-   /** 
-    * This is a hack to make the children have something to calculate their height percentage from.
-    * i.e. if you have a child with height: 100%, it will be 100% of the height of the td, only
-    * if the td has a set height value.
-    * This doesn't represent the actual height of the td, as that is set by HTML
-    */
+
+    /** This is hack to make the children to have something to calculate their height percentage from. */
     height: 1px;
                                 
-    &:first-of-type {
-        border-left: 0;
-        border-bottom: 0;
-    }
-                                
-    &:last-child {
-       border-bottom: 0;
+    &:last-of-type {
+        border-right: 0;
     }
 }
 
@@ -79,16 +61,8 @@
     bottom: 0;
     z-index: 1;
     background-color: var(--background-primary);
-                
-    & > .dataloom-row:first-of-type > .dataloom-cell {
-        border-bottom: 1px solid var(--table-border-color);
-    }
-                
-    & > .dataloom-row:first-of-type > .dataloom-cell:nth-of-type(2) {
-        border-left: 1px solid var(--table-border-color);
-    }
-                
-    & > .dataloom-row:first-of-type > .dataloom-cell:last-child {
-        border-left: 1px solid var(--table-border-color);
-    }
+}
+
+.dataloom-cell--foot {
+    border-top: 1px solid var(--table-border-color);
 }

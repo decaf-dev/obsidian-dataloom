@@ -179,7 +179,7 @@ export default function TableHeaderCell({
 
 	return (
 		<div
-			className="dataloom-cell dataloom-cell--header"
+			className="dataloom-cell dataloom-cell--head"
 			data-column-id={columnId}
 			{...(isDraggable && {
 				draggable: true,
