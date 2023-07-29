@@ -127,7 +127,9 @@ export default function TableHeaderCell({
 		const elementUnderneath = document.elementFromPoint(clientX, clientY);
 		if (!elementUnderneath) return;
 
-		const thEl = elementUnderneath.closest("th");
+		const thEl = elementUnderneath.closest(
+			".dataloom-cell--head"
+		) as HTMLElement | null;
 		if (!thEl) return;
 
 		const targetId = getColumnId(thEl);

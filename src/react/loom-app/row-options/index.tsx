@@ -37,7 +37,7 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 		//We do this because we have prevent the ability for the user to drag the row
 		//Otherwise the user would be able to drag the row from any cell in the table
 		const el = e.target as HTMLElement;
-		const row = el.closest("tr");
+		const row = el.closest(".dataloom-row");
 		if (row) {
 			row.setAttr("draggable", true);
 			const dragStartEvent = new DragEvent("dragstart");
@@ -54,7 +54,7 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 		//The target will be the td element
 		//The current target will be the parent tr element
 		const targetEl = e.currentTarget as HTMLElement;
-		const rowEl = targetEl.closest("tr");
+		const rowEl = targetEl.closest(".dataloom-row") as HTMLElement | null;
 		if (!rowEl) throw new Error("Row not found");
 
 		const rowId = getRowId(rowEl);
@@ -78,7 +78,9 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 
 		if (!elementUnderneath) return;
 
-		const rowEl = elementUnderneath.closest("tr");
+		const rowEl = elementUnderneath.closest(
+			".dataloom-row"
+		) as HTMLElement | null;
 		if (!rowEl) return;
 
 		const targetId = getRowId(rowEl);
@@ -132,7 +134,7 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 
 	function addDragHover(rowEl: HTMLElement) {
 		//Add dragging over class to all the children
-		const children = rowEl.querySelectorAll("td:not(:last-child)");
+		const children = rowEl.querySelectorAll(".dataloom-cell");
 
 		for (let i = 0; i < children.length; i++) {
 			children[i].classList.add("DataLoom__tr--drag-over");
