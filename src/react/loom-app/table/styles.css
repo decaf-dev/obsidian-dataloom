@@ -19,8 +19,8 @@
     display: table-row;
 }
 
-.dataloom-body > .dataloom-row:last-child > .dataloom-cell {
-    border-bottom: 0;
+.dataloom-row--head {
+    background-color: var(--background-secondary);
 }
 
 .dataloom-cell {
@@ -51,18 +51,6 @@
     }
 }
 
-.dataloom-row--header {
-    background-color: var(--background-secondary);
-}
-
-.dataloom-foot {
-    display: table-footer-group;
-    position: sticky;
-    bottom: 0;
-    z-index: 1;
-    background-color: var(--background-primary);
-}
-
-.dataloom-cell--foot {
-    border-top: 1px solid var(--table-border-color);
+.dataloom-body > .dataloom-row:last-child > .dataloom-cell {
+    border-bottom: 0;
 }

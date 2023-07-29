@@ -1,6 +1,6 @@
 import React from "react";
 
-import { TableVirtuoso, VirtuosoHandle, TableComponents } from "react-virtuoso";
+import { TableVirtuoso, VirtuosoHandle } from "react-virtuoso";
 
 import { HeaderTableRow, TableRow } from "./types";
 
@@ -13,11 +13,10 @@ import "./styles.css";
 interface Props {
 	headerRows: HeaderTableRow[];
 	bodyRows: TableRow[];
-	footerRows: TableRow[];
 }
 
 const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
-	{ headerRows, bodyRows, footerRows },
+	{ headerRows, bodyRows },
 	ref
 ) {
 	const previousRowLength = usePrevious(bodyRows.length);
@@ -35,7 +34,6 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 
 	return (
 		<TableVirtuoso
-			tabIndex={-1}
 			ref={ref}
 			overscan={10}
 			style={{
@@ -43,14 +41,35 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 				height: "100%",
 			}}
 			totalCount={bodyRows.length}
-			components={Components}
+			components={{
+				Table: ({ style, ...props }) => {
+					return <div className="dataloom-table" {...props} />;
+				},
+				TableHead: React.forwardRef(({ style, ...props }, ref) => (
+					<div className="dataloom-head" {...props} ref={ref} />
+				)),
+				TableRow: ({ style, ...props }) => {
+					return <TableBodyRow {...props} style={style} />;
+				},
+				TableBody: React.forwardRef(({ style, ...props }, ref) => (
+					<div
+						className="dataloom-body"
+						{...props}
+						style={style}
+						ref={ref}
+					/>
+				)),
+				FillerRow: ({ height }) => {
+					return <div className="dataloom-row" style={{ height }} />;
+				},
+			}}
 			fixedHeaderContent={() =>
 				headerRows.map((row) => {
 					const { id: rowId, cells } = row;
 					return (
 						<div
 							key={rowId}
-							className="dataloom-row dataloom-row--header"
+							className="dataloom-row dataloom-row--head"
 						>
 							{cells.map((cell, i) => {
 								const { id: cellId, columnId, content } = cell;
@@ -66,23 +85,6 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 						</div>
 					);
 				})
-			}
-			fixedFooterContent={() =>
-				footerRows.map((row) => (
-					<div key={row.id} className="dataloom-row">
-						{row.cells.map((cell) => {
-							const { id, content } = cell;
-							return (
-								<div
-									key={id}
-									className="dataloom-cell dataloom-cell--foot"
-								>
-									{content}
-								</div>
-							);
-						})}
-					</div>
-				))
 			}
 			itemContent={(index) => {
 				const row = bodyRows[index];
@@ -103,26 +105,5 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 		/>
 	);
 });
-
-const Components: TableComponents = {
-	Table: ({ style, ...props }) => {
-		return <div className="dataloom-table" {...props} />;
-	},
-	TableHead: React.forwardRef(({ style, ...props }, ref) => (
-		<div className="dataloom-head" {...props} ref={ref} />
-	)),
-	TableRow: ({ style, ...props }) => {
-		return <TableBodyRow {...props} style={style} />;
-	},
-	TableBody: React.forwardRef(({ style, ...props }, ref) => (
-		<div className="dataloom-body" {...props} style={style} ref={ref} />
-	)),
-	TableFoot: React.forwardRef(({ style, ...props }, ref) => (
-		<div className="dataloom-foot" {...props} ref={ref} />
-	)),
-	FillerRow: ({ height }) => {
-		return <div className="dataloom-row" style={{ height }} />;
-	},
-};
 
 export default Table;
