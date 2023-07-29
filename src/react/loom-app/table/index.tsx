@@ -73,7 +73,10 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 						{row.cells.map((cell) => {
 							const { id, content } = cell;
 							return (
-								<div key={id} className="dataloom-cell">
+								<div
+									key={id}
+									className="dataloom-cell dataloom-cell--foot"
+								>
 									{content}
 								</div>
 							);
@@ -117,6 +120,9 @@ const Components: TableComponents = {
 	TableFoot: React.forwardRef(({ style, ...props }, ref) => (
 		<div className="dataloom-foot" {...props} ref={ref} />
 	)),
+	FillerRow: ({ height }) => {
+		return <div className="dataloom-row" style={{ height }} />;
+	},
 };
 
 export default Table;
