@@ -9,6 +9,8 @@ import Icon from "src/react/shared/icon";
 
 import { numToPx } from "src/shared/conversion";
 
+import "./styles.css";
+
 interface Props {
 	appId: string;
 	onScrollToTopClick: () => void;
@@ -31,11 +33,18 @@ export default function BottomBar({
 
 		if (!ref.current) return;
 
-		const tableEl = document.querySelector(`[data-id="${appId}"] table`);
+		const tableEl = document.querySelector(
+			`[data-id="${appId}"] .dataloom-table`
+		);
+		console.log("HERE");
 		if (!tableEl) return;
+
+		console.log(tableEl);
 
 		const tableContainerEl = tableEl.parentElement;
 		if (!tableContainerEl) return;
+
+		console.log(tableContainerEl);
 
 		observer = new ResizeObserver(() => {
 			const containerRect = tableContainerEl.getBoundingClientRect();
@@ -57,7 +66,7 @@ export default function BottomBar({
 			<div
 				ref={ref}
 				style={{
-					top: -numToPx(spaceBetweenTableAndContainer),
+					top: numToPx(-spaceBetweenTableAndContainer),
 				}}
 			>
 				<Padding py="md" width="100%">
