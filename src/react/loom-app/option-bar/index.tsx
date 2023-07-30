@@ -155,7 +155,7 @@ export default function OptionBar({
 								onToggle={onColumnToggle}
 							/>
 							<Button
-								icon={<Icon lucideId="download" />}
+								icon={<Icon lucideId="more-vertical" />}
 								onClick={() => {
 									new ExportModal(app, loomFile).open();
 								}}
