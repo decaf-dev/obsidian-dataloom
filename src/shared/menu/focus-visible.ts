@@ -27,7 +27,7 @@ export const getFocusableLayerEl = (
 	topMenu: NltMenu | null
 ): HTMLElement | null => {
 	//Get the parent element
-	const appEl = document.querySelector(`.DataLoom__app[data-id="${appId}"]`);
+	const appEl = document.querySelector(`.dataloom-app[data-id="${appId}"]`);
 	if (!appEl) return null;
 
 	let layerEl = appEl;

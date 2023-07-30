@@ -74,7 +74,7 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 							return (
 								<div
 									key={id}
-									className="dataloom-cell dataloom-cell--foot"
+									className="dataloom-cell dataloom-cell--footer"
 								>
 									{content}
 								</div>

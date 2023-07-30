@@ -1,13 +1,13 @@
-import { css } from "@emotion/react";
+import React from "react";
+
 import NewRowButton from "../new-row-button";
 import Stack from "src/react/shared/stack";
 import Button from "src/react/shared/button";
-import React from "react";
 import Flex from "src/react/shared/flex";
-import { numToPx } from "src/shared/conversion";
 import Padding from "src/react/shared/padding";
-import { useMountState } from "../mount-provider";
 import Icon from "src/react/shared/icon";
+
+import { numToPx } from "src/shared/conversion";
 
 interface Props {
 	appId: string;
@@ -52,23 +52,13 @@ export default function BottomBar({
 		};
 	}, [ref]);
 
-	const { isMarkdownView } = useMountState();
-
 	return (
-		<div
-			className="DataLoom__bottom-bar"
-			css={css`
-				position: relative;
-				height: 60px;
-			`}
-		>
+		<div className="dataloom-bottom-bar">
 			<div
 				ref={ref}
-				css={css`
-					position: absolute;
-					top: -${numToPx(spaceBetweenTableAndContainer)};
-					width: 100%;
-				`}
+				style={{
+					top: -numToPx(spaceBetweenTableAndContainer),
+				}}
 			>
 				<Padding py="md" width="100%">
 					<Flex justify="space-between">

@@ -264,7 +264,7 @@ export default function App() {
 	return (
 		<div
 			data-id={appId}
-			className="DataLoom__app"
+			className="dataloom-app"
 			css={css`
 				display: flex;
 				flex-direction: column;

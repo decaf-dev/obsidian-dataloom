@@ -31,7 +31,7 @@
     display: table-cell;
 }
 
-.dataloom-cell--head {
+.dataloom-cell--header {
     background-color: var(--table-header-background);
     border-bottom: 1px solid var(--table-border-color);
     border-right: 1px solid var(--table-border-color);
@@ -55,7 +55,7 @@
     }
 }
 
-.dataloom-cell--foot {
+.dataloom-cell--footer {
     background-color: var(--background-primary);
     border-top: 1px solid var(--table-border-color);
     border-bottom: 1px solid var(--table-border-color);

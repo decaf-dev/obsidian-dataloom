@@ -128,7 +128,7 @@ export default function TableHeaderCell({
 		if (!elementUnderneath) return;
 
 		const thEl = elementUnderneath.closest(
-			".dataloom-cell--head"
+			".dataloom-cell--header"
 		) as HTMLElement | null;
 		if (!thEl) return;
 
@@ -181,7 +181,7 @@ export default function TableHeaderCell({
 
 	return (
 		<div
-			className="dataloom-cell dataloom-cell--head"
+			className="dataloom-cell dataloom-cell--header"
 			data-column-id={columnId}
 			{...(isDraggable && {
 				draggable: true,

@@ -87,7 +87,7 @@ export default function Button({
 		}
 	}
 
-	let className = "DataLoom__button";
+	let className = "dataloom-button";
 
 	if (isFocusable) {
 		className += " DataLoom__focusable";

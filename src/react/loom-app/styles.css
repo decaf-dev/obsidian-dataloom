@@ -122,23 +122,6 @@
 	background-color: var(--color-base-20);
 }
 
-/**
-* Remove padding from the view container
-*/
-.workspace-leaf-content[data-type="table"] .view-content {
-	padding: 0;
-}
-
-/**
-* Obsidian automatically has a style applied to
-* button:not(.clickable-icon)
-* We want to override this for our buttons
-*/
-/* .DataLoom__app button, .DataLoom__menu button {
-	background-color: unset;
-	box-shadow: unset;
-} */
-
 .DataLoom__default-cursor {
 	cursor: default !important;
 }
