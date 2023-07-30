@@ -58,7 +58,7 @@ export default function EmbedCellEdit({
 	}
 
 	return (
-		<div className="DataLoom__embed-cell-edit">
+		<div className="dataloom-embed-cell-edit">
 			<Stack width="100%" spacing="lg">
 				<Padding width="100%" px="md" pt="md">
 					<Stack spacing="sm" width="100%">

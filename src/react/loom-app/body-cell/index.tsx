@@ -288,7 +288,7 @@ export default function BodyCell({
 		columnType === CellType.LAST_EDITED_TIME ||
 		columnType === CellType.CREATION_TIME
 	) {
-		className += " DataLoom__default-cursor";
+		className += " dataloom-default-cursor";
 	}
 
 	const cellTags = columnTags.filter((tag) => cellTagIds.includes(tag.id));

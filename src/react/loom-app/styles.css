@@ -25,134 +25,134 @@
 /*
  * Colors
  */
-.DataLoom__light-gray--light {
+.dataloom-light-gray--light {
 	/* background-color: #cfcfc4; */
 	background-color: hsl(0, 3%, 94%);
 }
 
-.DataLoom__light-gray--dark {
+.dataloom-light-gray--dark {
 	background-color: hsl(0, 0%, 22%);
 }
 
-.DataLoom__gray--light {
+.dataloom-gray--light {
 	/* background-color: #cfcfc4; */
 	background-color: hsl(40, 5%, 88%);
 }
 
-.DataLoom__gray--dark {
+.dataloom-gray--dark {
 	background-color: hsl(0, 0%, 35%);
 }
 
-.DataLoom__brown--light {
+.dataloom-brown--light {
 	background-color: hsl(18, 31%, 89%);
 }
 
-.DataLoom__brown--dark {
+.dataloom-brown--dark {
 	background-color: hsl(19, 32%, 27%);
 }
 
-.DataLoom__orange--light {
+.dataloom-orange--light {
 	background-color: hsl(28, 67%, 88%);
 }
 
-.DataLoom__orange--dark {
+.dataloom-orange--dark {
 	background-color: hsl(28, 52%, 32%);
 }
 
-.DataLoom__yellow--light {
+.dataloom-yellow--light {
 	background-color: hsl(43, 82%, 89%);
 }
 
-.DataLoom__yellow--dark {
+.dataloom-yellow--dark {
 	background-color: hsl(37, 43%, 36%);
 }
 
-.DataLoom__green--light {
+.dataloom-green--light {
 	background-color: hsl(113, 30%, 89%);
 }
 
-.DataLoom__green--dark {
+.dataloom-green--dark {
 	background-color: hsl(138, 23%, 28%);
 }
 
-.DataLoom__blue--light {
+.dataloom-blue--light {
 	background-color: hsl(205, 41%, 89%);
 }
 
-.DataLoom__blue--dark {
+.dataloom-blue--dark {
 	background-color: hsl(218, 38%, 30%);
 }
 
-.DataLoom__purple--light {
+.dataloom-purple--light {
 	background-color: hsl(272, 29%, 90%);
 }
 
-.DataLoom__purple--dark {
+.dataloom-purple--dark {
 	background-color: hsl(266, 34%, 28%);
 }
 
-.DataLoom__pink--light {
+.dataloom-pink--light {
 	background-color: hsl(330, 36%, 91%);
 }
 
-.DataLoom__pink--dark {
+.dataloom-pink--dark {
 	background-color: hsl(330, 31%, 30%);
 }
 
-.DataLoom__red--light {
+.dataloom-red--light {
 	background-color: hsl(11, 64%, 91%);
 }
 
-.DataLoom__red--dark {
+.dataloom-red--dark {
 	background-color: hsl(8, 35%, 30%);
 }
 
 /*
  * Selectable and selected
  */
-.DataLoom__selectable {
+.dataloom-selectable {
 	cursor: pointer;
 }
 
-.DataLoom__selectable:hover {
+.dataloom-selectable:hover {
 	background-color: var(--color-base-30);
 }
 
-.DataLoom__selected {
+.dataloom-selected {
 	background-color: var(--color-base-20);
 }
 
-.DataLoom__default-cursor {
+.dataloom-default-cursor {
 	cursor: default !important;
 }
 
-.DataLoom__focusable:focus-visible, .DataLoom__focus-visible {
+.dataloom-focusable:focus-visible, .dataloom-focus-visible {
 	outline: 2px solid var(--color-accent) !important;
 	outline-offset: -2px !important;
 }
 
-.DataLoom__focusable--inverted:focus-visible {
+.dataloom-focusable--inverted:focus-visible {
 	outline: 2px solid var(--text-on-accent-inverted);
 	outline-offset: 0px;
 }
 
-.DataLoom__blur--cell {
+.dataloom-blur--cell {
 	outline: 2px solid var(--background-modifier-border-focus) !important;
 	outline-offset: -2px;
 }
 
-.DataLoom__blur {
+.dataloom-blur {
 	outline: 2px solid var(--color-accent) !important;
 	outline-offset: -2px;
 }
 
-.DataLoom__tr--drag-over {
+.dataloom-tr--drag-over {
 	/* outline: 2px solid var(--color-accent);
 	outline-offset: -2px; */
 	border-bottom: 1px solid var(--color-accent) !important;
 }
 
-.DataLoom__th--drag-over {
+.dataloom-th--drag-over {
 	/* outline: 2px solid var(--color-accent);
 	outline-offset: -2px; */
 	border-bottom: 1px solid var(--color-accent) !important;

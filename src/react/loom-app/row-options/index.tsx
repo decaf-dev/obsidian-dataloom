@@ -137,23 +137,23 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 		const children = rowEl.querySelectorAll(".dataloom-cell");
 
 		for (let i = 0; i < children.length; i++) {
-			children[i].classList.add("DataLoom__tr--drag-over");
+			children[i].classList.add("dataloom-tr--drag-over");
 		}
 	}
 
 	function removeDragHover() {
 		//Add dragging over class to all the children
-		const children = document.querySelectorAll(".DataLoom__tr--drag-over");
+		const children = document.querySelectorAll(".dataloom-tr--drag-over");
 
 		for (let i = 0; i < children.length; i++) {
-			children[i].classList.remove("DataLoom__tr--drag-over");
+			children[i].classList.remove("dataloom-tr--drag-over");
 		}
 	}
 
 	return (
 		<>
 			<div
-				className="DataLoom__row-options"
+				className="dataloom-row-options"
 				css={css`
 					width: 100%;
 					height: 100%;

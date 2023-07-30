@@ -116,7 +116,7 @@ export default function HeaderCell({
 	const lucideId = getIconIdForCellType(type);
 
 	let contentClassName = "dataloom-cell--header__inner-container";
-	if (resizingColumnId == null) contentClassName += " DataLoom__selectable";
+	if (resizingColumnId == null) contentClassName += " dataloom-selectable";
 
 	return (
 		<>

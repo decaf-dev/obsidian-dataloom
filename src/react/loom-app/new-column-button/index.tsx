@@ -11,7 +11,7 @@ interface Props {
 export default function NewColumnButton({ onClick }: Props) {
 	return (
 		<div
-			className="DataLoom__new-column"
+			className="dataloom-new-column"
 			css={css`
 				width: 50px;
 			`}

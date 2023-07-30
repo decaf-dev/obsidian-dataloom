@@ -7,42 +7,36 @@ export const findColorClassName = (
 	switch (color) {
 		case Color.LIGHT_GRAY:
 			return isDarkMode
-				? "DataLoom__light-gray--dark"
-				: "DataLoom__light-gray--light";
+				? "dataloom-light-gray--dark"
+				: "dataloom-light-gray--light";
 		case Color.GRAY:
-			return isDarkMode
-				? "DataLoom__gray--dark"
-				: "DataLoom__gray--light";
+			return isDarkMode ? "dataloom-gray--dark" : "dataloom-gray--light";
 		case Color.BROWN:
 			return isDarkMode
-				? "DataLoom__brown--dark"
-				: "DataLoom__brown--light";
+				? "dataloom-brown--dark"
+				: "dataloom-brown--light";
 		case Color.ORANGE:
 			return isDarkMode
-				? "DataLoom__orange--dark"
-				: "DataLoom__orange--light";
+				? "dataloom-orange--dark"
+				: "dataloom-orange--light";
 		case Color.YELLOW:
 			return isDarkMode
-				? "DataLoom__yellow--dark"
-				: "DataLoom__yellow--light";
+				? "dataloom-yellow--dark"
+				: "dataloom-yellow--light";
 		case Color.GREEN:
 			return isDarkMode
-				? "DataLoom__green--dark"
-				: "DataLoom__green--light";
+				? "dataloom-green--dark"
+				: "dataloom-green--light";
 		case Color.BLUE:
-			return isDarkMode
-				? "DataLoom__blue--dark"
-				: "DataLoom__blue--light";
+			return isDarkMode ? "dataloom-blue--dark" : "dataloom-blue--light";
 		case Color.PURPLE:
 			return isDarkMode
-				? "DataLoom__purple--dark"
-				: "DataLoom__purple--light";
+				? "dataloom-purple--dark"
+				: "dataloom-purple--light";
 		case Color.PINK:
-			return isDarkMode
-				? "DataLoom__pink--dark"
-				: "DataLoom__pink--light";
+			return isDarkMode ? "dataloom-pink--dark" : "dataloom-pink--light";
 		case Color.RED:
-			return isDarkMode ? "DataLoom__red--dark" : "DataLoom__red--light";
+			return isDarkMode ? "dataloom-red--dark" : "dataloom-red--light";
 		default:
 			return "";
 	}

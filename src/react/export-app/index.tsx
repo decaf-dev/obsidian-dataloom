@@ -50,7 +50,7 @@ export function ExportApp({ loomState, loomFilePath }: Props) {
 	}
 
 	return (
-		<div className="DataLoom__export-app">
+		<div className="dataloom-export-app">
 			<Padding p="xl">
 				<h5
 					css={css`

@@ -4,14 +4,14 @@
     color: var(--text-normal);
 }
 
-.DataLoom__text-muted {
+.dataloom-text-muted {
     color: var(--text-muted);
 }
 
-.DataLoom__text-faint {
+.dataloom-text-faint {
     color: var(--text-faint);
 }
 
-.DataLoom__text-semibold {
+.dataloom-text-semibold {
     font-weight: var(--font-semibold);
 }

@@ -48,7 +48,7 @@ export default function CurrencyCellEdit({
 	}
 
 	return (
-		<div className="DataLoom__currency-cell-edit">
+		<div className="dataloom-currency-cell-edit">
 			<input
 				autoFocus
 				css={numberInputStyle}
@@ -58,7 +58,7 @@ export default function CurrencyCellEdit({
 				value={localValue}
 				onChange={(e) => handleChange(e.target.value)}
 				onBlur={(e) => {
-					e.target.classList.add("DataLoom__blur--cell");
+					e.target.classList.add("dataloom-blur--cell");
 				}}
 			/>
 		</div>

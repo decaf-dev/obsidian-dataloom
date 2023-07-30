@@ -90,8 +90,8 @@ export default function Button({
 	let className = "dataloom-button";
 
 	if (isFocusable) {
-		className += " DataLoom__focusable";
-		if (invertFocusColor) className += " DataLoom__focusable--inverted";
+		className += " dataloom-focusable";
+		if (invertFocusColor) className += " dataloom-focusable--inverted";
 	}
 
 	return (

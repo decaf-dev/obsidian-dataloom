@@ -16,7 +16,7 @@ const RowMenu = React.forwardRef<HTMLDivElement, Props>(function RowMenu(
 ) {
 	return (
 		<Menu id={id} isOpen={isOpen} top={top} left={left} ref={ref}>
-			<div className="DataLoom__row-menu">
+			<div className="dataloom-row-menu">
 				<MenuItem
 					lucideId="trash-2"
 					name="Delete"

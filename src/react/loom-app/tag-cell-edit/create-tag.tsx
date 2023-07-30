@@ -23,7 +23,7 @@ export default function CreateTag({ markdown, color, onTagAdd }: Props) {
 				overflow: hidden;
 				box-shadow: none !important;
 			`}
-			className="DataLoom__focusable DataLoom__selectable"
+			className="dataloom-focusable dataloom-selectable"
 			onClick={() => onTagAdd(markdown, color)}
 		>
 			<Stack spacing="sm" isHorizontal>

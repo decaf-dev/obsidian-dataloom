@@ -172,7 +172,7 @@ const handleSave = async (file: TFile, state: LoomState) => {
  */
 const renderContainerEl = (linkEl: HTMLElement) => {
 	const containerEl = linkEl.createDiv({
-		cls: "DataLoom__embedded-container",
+		cls: "dataloom-embedded-container",
 	});
 	containerEl.style.height = "100%";
 	containerEl.style.width = "100%";

@@ -90,7 +90,7 @@ export default function FooterCell({
 		<>
 			<MenuTrigger isCell menu={menu}>
 				<div
-					className="dataloom-cell--footer__container DataLoom__selectable"
+					className="dataloom-cell--footer__container dataloom-selectable"
 					ref={triggerRef}
 					style={{
 						width,

@@ -12,7 +12,7 @@ export default function DateCell({ value, format }: Props) {
 	const content = getDateCellContent(value, format);
 	return (
 		<div
-			className="DataLoom__date-cell"
+			className="dataloom-date-cell"
 			css={css`
 				width: 100%;
 				text-align: left;

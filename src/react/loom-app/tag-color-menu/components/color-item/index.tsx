@@ -35,11 +35,11 @@ export default function ColorItem({
 	}
 
 	let containerClass =
-		"DataLoom__color-item DataLoom__focusable DataLoom__selectable";
-	if (isSelected) containerClass += " DataLoom__selected";
+		"dataloom-color-item dataloom-focusable dataloom-selectable";
+	if (isSelected) containerClass += " dataloom-selected";
 
 	const colorClass = findColorClassName(isDarkMode, color);
-	let squareClass = "DataLoom__color-item-square";
+	let squareClass = "dataloom-color-item-square";
 	squareClass += " " + colorClass;
 
 	return (
