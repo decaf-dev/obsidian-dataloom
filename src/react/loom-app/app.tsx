@@ -1,10 +1,10 @@
 import Table from "./table";
 import RowOptions from "./row-options";
 import OptionBar from "./option-bar";
-import CalculationCell from "./calculation-cell";
-import BodyCell from "./body-cell";
-import NewColumnButton from "./new-column-button";
 import HeaderCell from "./header-cell";
+import BodyCell from "./body-cell";
+import FooterCell from "./footer-cell";
+import NewColumnButton from "./new-column-button";
 
 import { useUUID } from "../../shared/hooks";
 import { CellNotFoundError } from "../../shared/loom-state/loom-error";
@@ -552,29 +552,23 @@ export default function App() {
 									return {
 										id: cell.id,
 										content: (
-											<div
-												className="DataLoom__footer-td-container"
-												css={css`
-													width: ${width};
-												`}
-											>
-												<CalculationCell
-													columnId={columnId}
-													columnTags={tags}
-													cellId={cellId}
-													currencyType={currencyType}
-													dateFormat={dateFormat}
-													bodyCells={columnBodyCells}
-													bodyRows={filteredBodyRows}
-													calculationType={
-														calculationType
-													}
-													cellType={type}
-													onTypeChange={
-														handleCalculationTypeChange
-													}
-												/>
-											</div>
+											<FooterCell
+												columnId={columnId}
+												columnTags={tags}
+												cellId={cellId}
+												currencyType={currencyType}
+												dateFormat={dateFormat}
+												bodyCells={columnBodyCells}
+												bodyRows={filteredBodyRows}
+												calculationType={
+													calculationType
+												}
+												width={width}
+												cellType={type}
+												onTypeChange={
+													handleCalculationTypeChange
+												}
+											/>
 										),
 									};
 								}),
