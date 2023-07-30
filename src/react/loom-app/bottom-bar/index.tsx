@@ -36,15 +36,10 @@ export default function BottomBar({
 		const tableEl = document.querySelector(
 			`[data-id="${appId}"] .dataloom-table`
 		);
-		console.log("HERE");
 		if (!tableEl) return;
-
-		console.log(tableEl);
 
 		const tableContainerEl = tableEl.parentElement;
 		if (!tableContainerEl) return;
-
-		console.log(tableContainerEl);
 
 		observer = new ResizeObserver(() => {
 			const containerRect = tableContainerEl.getBoundingClientRect();

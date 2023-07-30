@@ -47,19 +47,13 @@ export const findEmbeddedLoomFile = (
 	return app.metadataCache.getFirstLinkpathDest(src, sourcePath);
 };
 
-export const getEmbeddedLoomWidth = (
-	linkEl: HTMLElement,
-	defaultWidth: string
-) => {
+export const getLinkWidth = (linkEl: HTMLElement, defaultWidth: string) => {
 	const width = linkEl.getAttribute("width");
 	if (width === null || width === "0") return defaultWidth;
 	return numToPx(width);
 };
 
-export const getEmbeddedLoomHeight = (
-	linkEl: HTMLElement,
-	defaultHeight: string
-) => {
+export const getLinkHeight = (linkEl: HTMLElement, defaultHeight: string) => {
 	const height = linkEl.getAttribute("height");
 	if (height === null || height === "0") return defaultHeight;
 	return numToPx(height);

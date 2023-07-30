@@ -4,9 +4,9 @@ import { v4 as uuid } from "uuid";
 
 import {
 	findEmbeddedLoomFile,
-	getEmbeddedLoomHeight,
 	getEmbeddedLoomLinkEls,
-	getEmbeddedLoomWidth,
+	getLinkWidth,
+	getLinkHeight,
 	hasLoadedEmbeddedLoom,
 } from "./embed-utils";
 import { Root, createRoot } from "react-dom/client";
@@ -62,9 +62,7 @@ export const loadEmbeddedLoomApps = (
 ) => {
 	const view = markdownLeaf.view as MarkdownView;
 	const linkEls = getEmbeddedLoomLinkEls(view, mode);
-	linkEls.forEach((linkEl) =>
-		processEmbeddedLink(linkEl, markdownLeaf, mode)
-	);
+	linkEls.forEach((linkEl) => processLinkEl(linkEl, markdownLeaf, mode));
 };
 
 /**
@@ -85,7 +83,7 @@ export const purgeEmbeddedLoomApps = (leaves: WorkspaceLeaf[]) => {
  * @param leaf - The leaf that contains the markdown view
  * @returns
  */
-const processEmbeddedLink = async (
+const processLinkEl = async (
 	linkEl: HTMLElement,
 	leaf: WorkspaceLeaf,
 	mode: "source" | "preview"
@@ -93,7 +91,7 @@ const processEmbeddedLink = async (
 	//Set the width and height of the embedded loom
 	//We do this first because if we have already loaded the loom, we stil want
 	//the width and height of the embed to update if the user changes it
-	setEmbedSize(linkEl);
+	setLinkSize(linkEl);
 
 	//If the loom has already been loaded, we don't need to do anything else
 	if (hasLoadedEmbeddedLoom(linkEl)) return;
@@ -102,7 +100,7 @@ const processEmbeddedLink = async (
 	const file = findEmbeddedLoomFile(linkEl, sourcePath);
 	if (!file) return;
 
-	resetEmbedStyles(linkEl);
+	resetLinkStyles(linkEl);
 
 	//Create a container
 	const containerEl = renderContainerEl(linkEl);
@@ -129,6 +127,14 @@ const processEmbeddedLink = async (
 	renderApp(appId, leaf, file, root, state);
 };
 
+/**
+ * Renders a React application for a loom file
+ * @param appId - The unique id of the embedded app
+ * @param leaf - The leaf that contains the markdown view
+ * @param file - The loom file
+ * @param root - The root element of the react app
+ * @param state - The loom state
+ */
 const renderApp = (
 	appId: string,
 	leaf: WorkspaceLeaf,
@@ -187,14 +193,15 @@ const renderContainerEl = (linkEl: HTMLElement) => {
 };
 
 /**
- * Resets the background styles of the embed
+ * Removes the default Obsidian styles from the link element
  * Obsidian by default will have a gray rectangle with padding and margin
  * @param linkEl - The link element that contains the embedded loom
  */
-const resetEmbedStyles = (linkEl: HTMLElement) => {
+const resetLinkStyles = (linkEl: HTMLElement) => {
 	//Clear default Obsidian placeholder content
 	linkEl.empty();
 
+	//Reset styles
 	linkEl.style.backgroundColor = "var(--color-primary)";
 	linkEl.style.cursor = "unset";
 	linkEl.style.margin = "0px";
@@ -202,7 +209,7 @@ const resetEmbedStyles = (linkEl: HTMLElement) => {
 };
 
 /**
- * Sets the embed size based on the width or height of the markdown link
+ * Sets the link size based on the width and height attributes of link
  * If no width or height is specified, the default width and height is used
  * @example
  * ![[filename.loom|300x300]]
@@ -210,12 +217,12 @@ const resetEmbedStyles = (linkEl: HTMLElement) => {
  * //height: 300px
  * @param linkEl - The link element that contains the embedded loom
  */
-const setEmbedSize = (linkEl: HTMLElement) => {
+const setLinkSize = (linkEl: HTMLElement) => {
 	const { defaultEmbedWidth, defaultEmbedHeight } =
 		store.getState().global.settings;
 
-	const width = getEmbeddedLoomWidth(linkEl, defaultEmbedWidth);
-	const height = getEmbeddedLoomHeight(linkEl, defaultEmbedHeight);
+	const width = getLinkWidth(linkEl, defaultEmbedWidth);
+	const height = getLinkHeight(linkEl, defaultEmbedHeight);
 
 	linkEl.style.width = width;
 	linkEl.style.height = height;
