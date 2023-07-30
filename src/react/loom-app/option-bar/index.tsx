@@ -112,8 +112,6 @@ export default function OptionBar({
 		}
 	);
 
-	const { isMarkdownView } = useMountState();
-
 	return (
 		<div
 			className="DataLoom__option-bar"
@@ -122,7 +120,7 @@ export default function OptionBar({
 				border-bottom: 1px solid var(--background-modifier-border);
 			`}
 		>
-			<Padding px={isMarkdownView ? "unset" : "lg"} py="md">
+			<Padding py="md">
 				<Stack spacing="lg" align="center" minHeight="40px">
 					<Wrap
 						justify={{ base: "space-between", mobile: "flex-end" }}

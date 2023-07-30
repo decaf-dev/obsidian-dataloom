@@ -70,11 +70,7 @@ export default function BottomBar({
 					width: 100%;
 				`}
 			>
-				<Padding
-					px={isMarkdownView ? "unset" : "lg"}
-					py="md"
-					width="100%"
-				>
+				<Padding py="md" width="100%">
 					<Flex justify="space-between">
 						<NewRowButton onClick={onNewRowClick} />
 						<Stack isHorizontal spacing="sm">
