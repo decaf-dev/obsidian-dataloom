@@ -15,6 +15,10 @@
     display: table-row-group;
 }
 
+.dataloom-foot {
+    display: table-footer-group;
+}
+
 .dataloom-row {
     display: table-row;
 }
@@ -49,6 +53,12 @@
     &:last-of-type {
         border-right: 0;
     }
+}
+
+.dataloom-cell--foot {
+    background-color: var(--background-primary);
+    border-top: 1px solid var(--table-border-color);
+    border-bottom: 1px solid var(--table-border-color);
 }
 
 .dataloom-body > .dataloom-row:last-child > .dataloom-cell {
