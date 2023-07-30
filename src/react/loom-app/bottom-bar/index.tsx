@@ -7,6 +7,7 @@ import Flex from "src/react/shared/flex";
 import { numToPx } from "src/shared/conversion";
 import Padding from "src/react/shared/padding";
 import { useMountState } from "../mount-provider";
+import Icon from "src/react/shared/icon";
 
 interface Props {
 	appId: string;
@@ -77,10 +78,16 @@ export default function BottomBar({
 					<Flex justify="space-between">
 						<NewRowButton onClick={onNewRowClick} />
 						<Stack isHorizontal spacing="sm">
-							<Button onClick={onScrollToTopClick}>Top</Button>
-							<Button onClick={onScrollToBottomClick}>
-								Bottom
-							</Button>
+							<Button
+								ariaLabel="Scroll to top"
+								icon={<Icon lucideId="chevron-up" />}
+								onClick={onScrollToTopClick}
+							/>
+							<Button
+								ariaLabel="Scroll to bottom"
+								onClick={onScrollToBottomClick}
+								icon={<Icon lucideId="chevron-down" />}
+							/>
 						</Stack>
 					</Flex>
 				</Padding>
