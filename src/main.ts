@@ -393,11 +393,11 @@ export default class DataLoomPlugin extends Plugin {
 			name: "Add column",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "\\" }],
 			checkCallback: (checking: boolean) => {
-				const nltView =
+				const loomView =
 					this.app.workspace.getActiveViewOfType(DataLoomView);
 				const markdownView =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (nltView || markdownView) {
+				if (loomView || markdownView) {
 					if (!checking) {
 						this.app.workspace.trigger(EVENT_COLUMN_ADD);
 					}
@@ -412,11 +412,11 @@ export default class DataLoomPlugin extends Plugin {
 			name: "Delete column",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Backspace" }],
 			checkCallback: (checking: boolean) => {
-				const nltView =
+				const loomView =
 					this.app.workspace.getActiveViewOfType(DataLoomView);
 				const markdownView =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (nltView || markdownView) {
+				if (loomView || markdownView) {
 					if (!checking) {
 						this.app.workspace.trigger(EVENT_COLUMN_DELETE);
 					}
@@ -431,11 +431,11 @@ export default class DataLoomPlugin extends Plugin {
 			name: "Add row",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Enter" }],
 			checkCallback: (checking: boolean) => {
-				const nltView =
+				const loomView =
 					this.app.workspace.getActiveViewOfType(DataLoomView);
 				const markdownView =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (nltView || markdownView) {
+				if (loomView || markdownView) {
 					if (!checking) this.app.workspace.trigger(EVENT_ROW_ADD);
 					return true;
 				}
@@ -448,11 +448,11 @@ export default class DataLoomPlugin extends Plugin {
 			name: "Delete row",
 			hotkeys: [{ modifiers: ["Alt", "Shift"], key: "Backspace" }],
 			checkCallback: (checking: boolean) => {
-				const nltView =
+				const loomView =
 					this.app.workspace.getActiveViewOfType(DataLoomView);
 				const markdownView =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (nltView || markdownView) {
+				if (loomView || markdownView) {
 					if (!checking) {
 						this.app.workspace.trigger(EVENT_ROW_DELETE);
 					}
@@ -466,11 +466,11 @@ export default class DataLoomPlugin extends Plugin {
 			id: "export-markdown",
 			name: "Export as markdown",
 			checkCallback: (checking: boolean) => {
-				const nltView =
+				const loomView =
 					this.app.workspace.getActiveViewOfType(DataLoomView);
 				const markdownView =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (nltView || markdownView) {
+				if (loomView || markdownView) {
 					if (!checking) {
 						this.app.workspace.trigger(EVENT_DOWNLOAD_MARKDOWN);
 					}
@@ -484,11 +484,11 @@ export default class DataLoomPlugin extends Plugin {
 			id: "export-csv",
 			name: "Export as CSV",
 			checkCallback: (checking: boolean) => {
-				const nltView =
+				const loomView =
 					this.app.workspace.getActiveViewOfType(DataLoomView);
 				const markdownView =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (nltView || markdownView) {
+				if (loomView || markdownView) {
 					if (!checking) {
 						this.app.workspace.trigger(EVENT_DOWNLOAD_CSV);
 					}
