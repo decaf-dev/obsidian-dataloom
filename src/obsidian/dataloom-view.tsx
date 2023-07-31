@@ -57,6 +57,9 @@ export default class DataLoomView extends TextFileView {
 
 		//This is only called when the view is initially opened
 		if (clear) {
+			if (this.root) {
+				this.root.unmount();
+			}
 			const state = deserializeLoomState(data);
 			const container = this.containerEl.children[1];
 			this.root = createRoot(container);
