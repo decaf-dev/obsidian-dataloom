@@ -131,6 +131,10 @@ export default class DataLoomPlugin extends Plugin {
 
 			for (let i = 0; i < loomFiles.length; i++) {
 				const file = loomFiles[i];
+				const data = await this.app.vault.read(file);
+				const parsedState = JSON.parse(data);
+				if (!parsedState.model) return;
+
 				const newFilePath = file.path.replace(
 					`.${file.extension}`,
 					`.${FILE_EXTENSION}`
