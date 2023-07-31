@@ -4,13 +4,11 @@ import { DEFAULT_SETTINGS, DataLoomSettings } from "src/main";
 interface GlobalState {
 	settings: DataLoomSettings;
 	isDarkMode: boolean;
-	manifestPluginVersion: string;
 }
 
 const initialState: GlobalState = {
 	settings: DEFAULT_SETTINGS,
 	isDarkMode: false,
-	manifestPluginVersion: "",
 };
 
 //This is the global slice of the redux store.
@@ -25,12 +23,8 @@ const globalSlice = createSlice({
 		setSettings(state, action: PayloadAction<DataLoomSettings>) {
 			state.settings = action.payload;
 		},
-		setManifestPluginVersion(state, action: PayloadAction<string>) {
-			state.manifestPluginVersion = action.payload;
-		},
 	},
 });
 
-export const { setDarkMode, setSettings, setManifestPluginVersion } =
-	globalSlice.actions;
+export const { setDarkMode, setSettings } = globalSlice.actions;
 export default globalSlice.reducer;
