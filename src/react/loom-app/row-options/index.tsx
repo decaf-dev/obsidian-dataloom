@@ -25,7 +25,7 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 
 	const { dragData, touchDropZone, setDragData, setTouchDropZone } =
 		useDragContext();
-	const { LoomState, setLoomState } = useLoomState();
+	const { loomState, setLoomState } = useLoomState();
 
 	function handleDeleteClick(rowId: string) {
 		onDeleteClick(rowId);
@@ -120,7 +120,7 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 				touchY <= touchDropZone.bottom;
 
 			if (isInsideDropZone) {
-				dropDrag(touchDropZone.id, dragData, LoomState, setLoomState);
+				dropDrag(touchDropZone.id, dragData, loomState, setLoomState);
 			}
 		}
 		endDrag();
