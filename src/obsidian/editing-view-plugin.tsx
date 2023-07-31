@@ -31,41 +31,6 @@ class EditingViewPlugin implements PluginValue {
 		if (!activeLeaf) return;
 		loadEmbeddedLoomApps(activeLeaf, "source");
 	}
-
-	// private handleRefreshEvent = (
-	// 	sourceFilePath: string,
-	// 	sourceAppId: string,
-	// 	state: LoomState
-	// ) => {
-	// 	//Find a loom instance with the same file path
-	// 	const app = this.loomApps.find(
-	// 		(app) => app.id !== sourceAppId && app.file.path === sourceFilePath
-	// 	);
-	// 	if (!app) return;
-
-	// 	const { id, parentEl, leaf, file } = app;
-	// 	if (!app.root) return;
-
-	// 	setTimeout(() => {
-	// 		app.root?.unmount();
-	// 		app.root = createRoot(parentEl);
-	// 		this.renderApp(id, leaf, file, app.root, state);
-	// 	}, 0);
-	// };
-
-	// private setupEventListeners() {
-	// 	//@ts-expect-error not an native Obsidian event
-	// 	app.workspace.on(EVENT_REFRESH_APP, this.handleRefreshEvent);
-	// 	//@ts-expect-error not an native Obsidian event
-	// 	app.workspace.on(EVENT_REFRESH_EDITING_VIEW, this.update);
-	// }
-
-	destroy() {
-		// this.loomApps.forEach((app) => app.root?.unmount());
-		// this.loomApps = [];
-		// app.workspace.off(EVENT_REFRESH_APP, this.handleRefreshEvent);
-		// app.workspace.off(EVENT_REFRESH_EDITING_VIEW, this.update);
-	}
 }
 
 export const editingViewPlugin = ViewPlugin.fromClass(EditingViewPlugin);
