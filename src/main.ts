@@ -21,7 +21,6 @@ import {
 	EVENT_GLOBAL_CLICK,
 	EVENT_GLOBAL_KEYDOWN,
 	EVENT_APP_REFRESH,
-	EVENT_REFRESH_EDITING_VIEW,
 	EVENT_ROW_ADD,
 	EVENT_ROW_DELETE,
 } from "./shared/events";
@@ -229,9 +228,11 @@ export default class DataLoomPlugin extends Plugin {
 				purgeEmbeddedLoomApps(leaves);
 
 				//Wait for the DOM to update before loading the preview mode apps
+				//2ms should be enough time
+				//TODO find a better way to do this
 				setTimeout(() => {
 					loadPreviewModeApps(leaves);
-				}, 1);
+				}, 2);
 			})
 		);
 
@@ -252,13 +253,6 @@ export default class DataLoomPlugin extends Plugin {
 		this.app.vault.on(
 			"rename",
 			async (file: TAbstractFile, oldPath: string) => {
-				//When a file is renamed, we want to refresh all open leafs
-				//that contain an embedded loom
-				const leafs = app.workspace.getLeavesOfType("markdown");
-				leafs.forEach((leaf) => {
-					leaf.trigger(EVENT_REFRESH_EDITING_VIEW);
-				});
-
 				if (file instanceof TFile) {
 					const loomFiles = this.app.vault
 						.getFiles()

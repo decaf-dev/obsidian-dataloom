@@ -27,8 +27,6 @@ export const EVENT_ROW_DELETE = obsidianEvent("delete-row");
  */
 export const EVENT_APP_REFRESH = obsidianEvent("app-refresh");
 
-export const EVENT_REFRESH_EDITING_VIEW = obsidianEvent("refresh-editing-view");
-
 /**
  * Event for handling the global Obsidian click event
  */
