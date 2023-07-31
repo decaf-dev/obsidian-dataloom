@@ -18,9 +18,9 @@ import {
 	EVENT_COLUMN_DELETE,
 	EVENT_DOWNLOAD_CSV,
 	EVENT_DOWNLOAD_MARKDOWN,
-	EVENT_OUTSIDE_CLICK,
-	EVENT_OUTSIDE_KEYDOWN,
-	EVENT_REFRESH_APP,
+	EVENT_GLOBAL_CLICK,
+	EVENT_GLOBAL_KEYDOWN,
+	EVENT_APP_REFRESH,
 	EVENT_REFRESH_EDITING_VIEW,
 	EVENT_ROW_ADD,
 	EVENT_ROW_DELETE,
@@ -203,13 +203,13 @@ export default class DataLoomPlugin extends Plugin {
 
 			//Clear the focus-visible class from the last focused element
 			removeFocusVisibleClass();
-			this.app.workspace.trigger(EVENT_OUTSIDE_CLICK);
+			this.app.workspace.trigger(EVENT_GLOBAL_CLICK);
 		});
 
 		//This event is guaranteed to fire after our React synthetic event handlers
 		this.registerDomEvent(document, "keydown", (e) => {
 			if (this.settings.shouldDebug) console.log("main handleKeyDown");
-			this.app.workspace.trigger(EVENT_OUTSIDE_KEYDOWN, e);
+			this.app.workspace.trigger(EVENT_GLOBAL_KEYDOWN, e);
 		});
 	}
 
@@ -351,7 +351,7 @@ export default class DataLoomPlugin extends Plugin {
 
 							//Update all looms that match this path
 							app.workspace.trigger(
-								EVENT_REFRESH_APP,
+								EVENT_APP_REFRESH,
 								loomFile.path,
 								-1, //update all looms that match this path
 								newState
