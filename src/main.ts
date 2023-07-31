@@ -354,7 +354,7 @@ export default class DataLoomPlugin extends Plugin {
 
 	registerCommands() {
 		this.addCommand({
-			id: "dataloom-create",
+			id: "create",
 			name: "Create loom",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "=" }],
 			callback: async () => {
@@ -363,7 +363,7 @@ export default class DataLoomPlugin extends Plugin {
 		});
 
 		this.addCommand({
-			id: "dataloom-create-and-embed",
+			id: "create-and-embed",
 			name: "Create loom and embed it into current file",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "+" }],
 			editorCallback: async (editor) => {
@@ -389,7 +389,7 @@ export default class DataLoomPlugin extends Plugin {
 		});
 
 		this.addCommand({
-			id: "nlt-add-column",
+			id: "add-column",
 			name: "Add column",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "\\" }],
 			checkCallback: (checking: boolean) => {
@@ -408,7 +408,7 @@ export default class DataLoomPlugin extends Plugin {
 		});
 
 		this.addCommand({
-			id: "nlt-delete-column",
+			id: "delete-column",
 			name: "Delete column",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Backspace" }],
 			checkCallback: (checking: boolean) => {
@@ -427,7 +427,7 @@ export default class DataLoomPlugin extends Plugin {
 		});
 
 		this.addCommand({
-			id: "nlt-add-row",
+			id: "add-row",
 			name: "Add row",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Enter" }],
 			checkCallback: (checking: boolean) => {
@@ -444,7 +444,7 @@ export default class DataLoomPlugin extends Plugin {
 		});
 
 		this.addCommand({
-			id: "nlt-row-column",
+			id: "delete-row",
 			name: "Delete row",
 			hotkeys: [{ modifiers: ["Alt", "Shift"], key: "Backspace" }],
 			checkCallback: (checking: boolean) => {
@@ -463,7 +463,7 @@ export default class DataLoomPlugin extends Plugin {
 		});
 
 		this.addCommand({
-			id: "nlt-export-markdown",
+			id: "export-markdown",
 			name: "Export as markdown",
 			checkCallback: (checking: boolean) => {
 				const nltView =
@@ -481,7 +481,7 @@ export default class DataLoomPlugin extends Plugin {
 		});
 
 		this.addCommand({
-			id: "nlt-export-csv",
+			id: "export-csv",
 			name: "Export as CSV",
 			checkCallback: (checking: boolean) => {
 				const nltView =
