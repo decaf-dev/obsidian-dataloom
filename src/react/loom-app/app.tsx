@@ -54,7 +54,7 @@ export default function App() {
 	const { topMenu, hasOpenMenu, requestCloseTopMenu } = useMenuState();
 	const logger = useLogger();
 	const {
-		LoomState,
+		loomState,
 		resizingColumnId,
 		searchText,
 		commandRedo,
@@ -64,7 +64,7 @@ export default function App() {
 
 	const tableRef = React.useRef<VirtuosoHandle | null>(null);
 
-	useExportEvents(LoomState);
+	useExportEvents(loomState);
 	useRowEvents();
 	useColumnEvents();
 
@@ -180,11 +180,11 @@ export default function App() {
 			let index = -1;
 			if (focusedEl) index = Array.from(focusableEls).indexOf(focusedEl);
 
-			const numVisibleColumns = LoomState.model.columns.filter(
+			const numVisibleColumns = loomState.model.columns.filter(
 				(column) => column.isVisible
 			).length;
-			const numBodyRows = LoomState.model.bodyRows.length;
-			const numSortedColumns = LoomState.model.columns.filter(
+			const numBodyRows = loomState.model.bodyRows.length;
+			const numSortedColumns = loomState.model.columns.filter(
 				(column) => column.sortDir !== SortDir.NONE
 			).length;
 
@@ -251,11 +251,11 @@ export default function App() {
 		bodyCells,
 		footerCells,
 		filterRules,
-	} = LoomState.model;
+	} = loomState.model;
 
-	let filteredBodyRows = filterBodyRowsByRules(LoomState);
+	let filteredBodyRows = filterBodyRowsByRules(loomState);
 	filteredBodyRows = filterBodyRowsBySearch(
-		LoomState,
+		loomState,
 		filteredBodyRows,
 		searchText
 	);
