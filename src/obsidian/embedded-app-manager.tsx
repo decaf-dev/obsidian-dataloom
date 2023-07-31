@@ -18,6 +18,7 @@ import {
 import { LoomState } from "src/shared/types";
 import _ from "lodash";
 import LoomApp from "src/react/loom-app";
+import { EVENT_APP_REFRESH } from "src/shared/events";
 
 interface EmbeddedApp {
 	id: string;
@@ -128,7 +129,7 @@ const processLinkEl = async (
 };
 
 /**
- * Renders a React application for a loom file
+ * Renders a React app for a loom file
  * @param appId - The unique id of the embedded app
  * @param leaf - The leaf that contains the markdown view
  * @param file - The loom file
@@ -154,7 +155,9 @@ const renderApp = (
 			mountLeaf={leaf}
 			store={store}
 			loomState={state}
-			onSaveState={(_appId, state) => throttleHandleSave(file, state)}
+			onSaveState={(appId, state) =>
+				throttleHandleSave(file, appId, state)
+			}
 		/>
 	);
 };
@@ -164,11 +167,12 @@ const renderApp = (
  * @param file - The loom file
  * @param state - The loom state
  */
-const handleSave = async (file: TFile, state: LoomState) => {
+const handleSave = async (file: TFile, appId: string, state: LoomState) => {
 	const serialized = serializeLoomState(state);
 	await app.vault.modify(file, serialized);
 
-	// app.workspace.trigger(EVENT_REFRESH_APP, loomFile.path, appId, state);
+	//Trigger an event to refresh the other open views of this file
+	app.workspace.trigger(EVENT_APP_REFRESH, file.path, appId, state);
 };
 
 /**
@@ -209,7 +213,7 @@ const resetLinkStyles = (linkEl: HTMLElement) => {
 };
 
 /**
- * Sets the link size based on the width and height attributes of link
+ * Sets the link size based on the width and height attributes of the link
  * If no width or height is specified, the default width and height is used
  * @example
  * ![[filename.loom|300x300]]
