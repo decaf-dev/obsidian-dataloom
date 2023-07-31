@@ -66,12 +66,6 @@ export const DEFAULT_SETTINGS: DataLoomSettings = {
 	pluginVersion: "",
 };
 
-/**
- * The plugin id is the id used in the manifest.json file
- * We use the old plugin id to maintain our download count
- */
-export const DATA_LOOM_PLUGIN_ID = "notion-like-tables";
-
 export default class DataLoomPlugin extends Plugin {
 	settings: DataLoomSettings;
 
@@ -82,7 +76,10 @@ export default class DataLoomPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
-		this.registerView(DATA_LOOM_VIEW, (leaf) => new DataLoomView(leaf));
+		this.registerView(
+			DATA_LOOM_VIEW,
+			(leaf) => new DataLoomView(leaf, this.manifest.id)
+		);
 		this.registerExtensions([FILE_EXTENSION], DATA_LOOM_VIEW);
 
 		this.addRibbonIcon("table", "Create new loom", async () => {
@@ -118,8 +115,8 @@ export default class DataLoomPlugin extends Plugin {
 		await this.saveSettings();
 	}
 
+	//TODO this will be removed in a future version
 	private async migrateLoomFiles() {
-		// Migrate .dashboard files to .loom files
 		if (!this.settings.hasMigratedTo800) {
 			const loomFiles = this.app.vault
 				.getFiles()
@@ -153,9 +150,10 @@ export default class DataLoomPlugin extends Plugin {
 		}
 	}
 
+	/**
+	 * Registers a Code Mirror 6 extension. This is used to render embedded apps in live preview.
+	 */
 	private registerEmbeddedView() {
-		//This registers a CodeMirror extension. It is used to render the embedded
-		//loom in live preview mode.
 		this.registerEditorExtension(editingViewPlugin);
 	}
 
