@@ -19,12 +19,17 @@ const createFolderIfNotExists = async (folderPath: string) => {
 		await createFolder(folderPath);
 };
 
-export const createLoomFile = async (folderPath: string) => {
+export const createLoomFile = async (
+	folderPath: string,
+	manifestPluginVersion: string
+) => {
 	try {
 		await createFolderIfNotExists(folderPath);
 		const filePath = getFilePath(folderPath);
 
-		const loomState = createLoomState(1, 1);
+		const loomState = createLoomState(1, 1, {
+			pluginVersion: manifestPluginVersion,
+		});
 		const serializedState = serializeLoomState(loomState);
 
 		console.log("Creating loom file at: ", filePath);

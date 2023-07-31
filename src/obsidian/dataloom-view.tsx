@@ -21,15 +21,17 @@ export default class DataLoomView extends TextFileView {
 	private root: Root | null;
 	private appId: string;
 	private pluginId: string;
+	private pluginVersion: string;
 
 	data: string;
 
-	constructor(leaf: WorkspaceLeaf, pluginId: string) {
+	constructor(leaf: WorkspaceLeaf, pluginId: string, pluginVersion: string) {
 		super(leaf);
+		this.pluginId = pluginId;
+		this.pluginVersion = pluginVersion;
 		this.root = null;
 		this.data = "";
 		this.appId = uuidv4();
-		this.pluginId = pluginId;
 	}
 
 	async onOpen() {
@@ -60,7 +62,7 @@ export default class DataLoomView extends TextFileView {
 			if (this.root) {
 				this.root.unmount();
 			}
-			const state = deserializeLoomState(data);
+			const state = deserializeLoomState(data, this.pluginVersion);
 			const container = this.containerEl.children[1];
 			this.root = createRoot(container);
 			this.renderApp(this.appId, state);

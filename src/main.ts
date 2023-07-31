@@ -9,7 +9,11 @@ import {
 } from "obsidian";
 
 import { store } from "./redux/global/store";
-import { setDarkMode, setSettings } from "./redux/global/global-slice";
+import {
+	setManifestPluginVersion,
+	setDarkMode,
+	setSettings,
+} from "./redux/global/global-slice";
 import DataLoomView, { DATA_LOOM_VIEW } from "./obsidian/dataloom-view";
 import { FILE_EXTENSION, WIKI_LINK_REGEX } from "./data/constants";
 import { createLoomFile } from "src/data/loom-file";
@@ -78,7 +82,8 @@ export default class DataLoomPlugin extends Plugin {
 
 		this.registerView(
 			DATA_LOOM_VIEW,
-			(leaf) => new DataLoomView(leaf, this.manifest.id)
+			(leaf) =>
+				new DataLoomView(leaf, this.manifest.id, this.manifest.version)
 		);
 		this.registerExtensions([FILE_EXTENSION], DATA_LOOM_VIEW);
 
@@ -151,9 +156,10 @@ export default class DataLoomPlugin extends Plugin {
 	}
 
 	/**
-	 * Registers a Code Mirror 6 extension. This is used to render embedded apps in live preview.
+	 * Registers a CodeMirror 6 extension. This is used to render embedded apps in live preview.
 	 */
 	private registerEmbeddedView() {
+		store.dispatch(setManifestPluginVersion(this.manifest.version));
 		this.registerEditorExtension(editingViewPlugin);
 	}
 
@@ -179,7 +185,10 @@ export default class DataLoomPlugin extends Plugin {
 		embedded?: boolean
 	) {
 		const folderPath = this.getFolderForNewLoomFile(contextMenuFolderPath);
-		const filePath = await createLoomFile(folderPath);
+		const filePath = await createLoomFile(
+			folderPath,
+			this.manifest.version
+		);
 
 		//If the file is embedded, we don't need to open it
 		if (embedded) return filePath;
@@ -224,11 +233,11 @@ export default class DataLoomPlugin extends Plugin {
 				const leaves = this.app.workspace.getLeavesOfType("markdown");
 				purgeEmbeddedLoomApps(leaves);
 
+				//TODO find a better way to do this
 				//Wait for the DOM to update before loading the preview mode apps
 				//2ms should be enough time
-				//TODO find a better way to do this
 				setTimeout(() => {
-					loadPreviewModeApps(leaves);
+					loadPreviewModeApps(leaves, this.manifest.version);
 				}, 2);
 			})
 		);
@@ -264,7 +273,10 @@ export default class DataLoomPlugin extends Plugin {
 					for (const loomFile of loomFiles) {
 						//For each file read its contents
 						const data = await file.vault.read(loomFile);
-						const state = deserializeLoomState(data);
+						const state = deserializeLoomState(
+							data,
+							this.manifest.version
+						);
 						//Search for old path in the file
 
 						state.model.bodyCells.forEach((cell) => {
