@@ -102,7 +102,7 @@ Please see our [contribution guide](https://github.com/trey-wallis/obsidian-data
 
 ## Network Usage
 
-According to Obsidian developer policies, an Obsidian plugin must explain which network services are used and why.
+According to [Obsidian developer policies](https://docs.obsidian.md/Developer+policies), an Obsidian plugin must explain which network services are used and why.
 
 DataLoom will make one `GET` request to `https://api.github.com/repos/trey-wallis/obsidian-dataloom/releases/latest` to pull the lastest release for the What's New Modal. Besides this, DataLoom does not making any network requests. DataLoom does not include client-side telemetry.
 
