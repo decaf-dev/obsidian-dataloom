@@ -1,9 +1,9 @@
 import Table from "./table";
 import RowOptions from "./row-options";
 import OptionBar from "./option-bar";
-import HeaderCell from "./header-cell";
-import BodyCell from "./body-cell";
-import FooterCell from "./footer-cell";
+import HeaderCell from "./header-cell-container";
+import BodyCell from "./body-cell-container";
+import FooterCell from "./footer-cell-container";
 import NewColumnButton from "./new-column-button";
 
 import { useUUID } from "../../shared/hooks";
