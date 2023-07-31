@@ -56,7 +56,7 @@ export default function LoomStateProvider({
 	const refreshTime = React.useRef(0);
 
 	const logger = useLogger();
-	const { appId, loomFile } = useMountState();
+	const { appId, loomFile, app } = useMountState();
 
 	// React.useEffect(() => {
 	// 	const jsonSizeInBytes = new TextEncoder().encode(
@@ -103,7 +103,7 @@ export default function LoomStateProvider({
 			handleRefreshEvent
 		);
 		return () => app.workspace.off(EVENT_APP_REFRESH, handleRefreshEvent);
-	}, [appId, loomFile]);
+	}, [appId, loomFile, app]);
 
 	function handleToggleSearchBar() {
 		setSearchBarVisible((prevState) => !prevState);

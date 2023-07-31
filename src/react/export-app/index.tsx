@@ -5,7 +5,7 @@ import { ExportType } from "../../shared/export/types";
 import ExportTypeSelect from "./export-type-select";
 import ContentTextArea from "./content-textarea";
 import { exportToMarkdown } from "src/shared/export/export-to-markdown";
-import { Notice } from "obsidian";
+import { App, Notice } from "obsidian";
 import Padding from "../shared/padding";
 import {
 	downloadFile,
@@ -17,6 +17,7 @@ import { css } from "@emotion/react";
 import { useAppSelector } from "src/redux/global/hooks";
 
 interface Props {
+	app: App;
 	loomState: LoomState;
 	loomFilePath: string;
 }
@@ -44,9 +45,9 @@ export function ExportApp({ loomState, loomFilePath }: Props) {
 
 	let content = "";
 	if (exportType === ExportType.MARKDOWN) {
-		content = exportToMarkdown(loomState, renderMarkdown);
+		content = exportToMarkdown(app, loomState, renderMarkdown);
 	} else if (exportType === ExportType.CSV) {
-		content = exportToCSV(loomState, renderMarkdown);
+		content = exportToCSV(app, loomState, renderMarkdown);
 	}
 
 	return (

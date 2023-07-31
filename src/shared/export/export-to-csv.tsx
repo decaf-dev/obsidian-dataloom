@@ -1,12 +1,14 @@
 import Papa from "papaparse";
 
-import { LoomStateToArray } from "./loom-state-to-array";
+import { loomStateToArray } from "./loom-state-to-array";
 import { LoomState } from "../types";
+import { App } from "obsidian";
 
 export const exportToCSV = (
-	LoomState: LoomState,
+	app: App,
+	loomState: LoomState,
 	renderMarkdown: boolean
 ): string => {
-	const arr = LoomStateToArray(LoomState, renderMarkdown);
+	const arr = loomStateToArray(app, loomState, renderMarkdown);
 	return Papa.unparse(arr);
 };

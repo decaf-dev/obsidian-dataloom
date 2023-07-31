@@ -1,4 +1,4 @@
-import { MarkdownView } from "obsidian";
+import { App, MarkdownView } from "obsidian";
 import { FILE_EXTENSION } from "src/data/constants";
 import { numToPx } from "src/shared/conversion";
 
@@ -36,6 +36,7 @@ export const hasLoadedEmbeddedLoom = (linkEl: HTMLElement) => {
 };
 
 export const findEmbeddedLoomFile = (
+	app: App,
 	linkEl: HTMLElement,
 	sourcePath: string
 ) => {

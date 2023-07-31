@@ -21,6 +21,7 @@ import Button from "src/react/shared/button";
 import Icon from "src/react/shared/icon";
 import { useMountState } from "../mount-provider";
 import ExportModal from "src/obsidian/export-modal";
+import { useAppSelector } from "src/redux/global/hooks";
 
 interface SortButtonListProps {
 	headerCells: HeaderCell[];
@@ -81,7 +82,8 @@ export default function OptionBar({
 	onRuleAddClick,
 	onRuleTagsChange,
 }: Props) {
-	const { loomFile } = useMountState();
+	const { manifestPluginVersion } = useAppSelector((state) => state.global);
+	const { loomFile, app } = useMountState();
 	const sortedCells = headerCells.filter((cell) => {
 		const columnId = cell.columnId;
 		const column = columns.find((c) => c.id === columnId);
@@ -155,7 +157,11 @@ export default function OptionBar({
 							<Button
 								icon={<Icon lucideId="more-vertical" />}
 								onClick={() => {
-									new ExportModal(app, loomFile).open();
+									new ExportModal(
+										app,
+										loomFile,
+										manifestPluginVersion
+									).open();
 								}}
 							></Button>
 						</Stack>

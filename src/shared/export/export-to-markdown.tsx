@@ -1,11 +1,13 @@
 import { LoomState } from "../types";
 import { markdownTable } from "markdown-table";
-import { LoomStateToArray } from "./loom-state-to-array";
+import { loomStateToArray } from "./loom-state-to-array";
+import { App } from "obsidian";
 
 export const exportToMarkdown = (
-	LoomState: LoomState,
+	app: App,
+	loomState: LoomState,
 	renderMarkdown: boolean
 ): string => {
-	const arr = LoomStateToArray(LoomState, renderMarkdown);
+	const arr = loomStateToArray(app, loomState, renderMarkdown);
 	return markdownTable(arr);
 };
