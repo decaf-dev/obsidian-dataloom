@@ -82,7 +82,7 @@ export function SuggestList({
 			const focusedEl = document.activeElement;
 			if (!focusedEl) return;
 
-			if (focusedEl.classList.contains("DataLoom__suggest-item")) {
+			if (focusedEl.classList.contains("dataloom-suggest-item")) {
 				const index = focusedEl.getAttribute("data-index");
 				if (!index) return;
 
@@ -104,7 +104,7 @@ export function SuggestList({
 
 	return (
 		<div
-			className="DataLoom__suggest-menu"
+			className="dataloom-suggest-menu"
 			css={css`
 				width: 100%;
 			`}

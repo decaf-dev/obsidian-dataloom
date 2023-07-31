@@ -10,7 +10,7 @@ export default function CheckboxCell({ value }: Props) {
 
 	return (
 		<div
-			className="DataLoom__checkbox-cell"
+			className="dataloom-checkbox-cell"
 			css={css`
 				width: 100%;
 				padding: var(--nlt-cell-spacing);

@@ -23,6 +23,8 @@ import ResizeContainer from "./resize-container";
 import { css } from "@emotion/react";
 import HeaderMenu from "../header-cell-edit";
 
+import "./styles.css";
+
 interface Props {
 	cellId: string;
 	currencyType: CurrencyType;
@@ -113,8 +115,8 @@ export default function HeaderCell({
 
 	const lucideId = getIconIdForCellType(type);
 
-	let contentClassName = "DataLoom__th-content";
-	if (resizingColumnId == null) contentClassName += " DataLoom__selectable";
+	let contentClassName = "dataloom-cell--header__inner-container";
+	if (resizingColumnId == null) contentClassName += " dataloom-selectable";
 
 	return (
 		<>
@@ -124,30 +126,13 @@ export default function HeaderCell({
 				shouldRun={resizingColumnId === null}
 			>
 				<div
-					className="DataLoom__th-container"
+					className="dataloom-cell--header__container"
 					ref={triggerRef}
-					css={css`
-						display: flex;
-						justify-content: space-between;
-						min-height: var(--nlt-cell-min-height);
-						width: ${width};
-					`}
+					style={{
+						width,
+					}}
 				>
-					<div
-						className={contentClassName}
-						css={css`
-							display: flex;
-							align-items: center;
-							/* Use 100% so that the resize indicator appears at the end */
-							width: 100%;
-							overflow: hidden;
-							white-space: nowrap;
-							text-overflow: ellipsis;
-							user-select: none;
-							padding: var(--nlt-cell-spacing-x)
-								var(--nlt-cell-spacing-y);
-						`}
-					>
+					<div className={contentClassName}>
 						<Stack spacing="md" align="flex-start" isHorizontal>
 							<Icon lucideId={lucideId} size="md" />
 							{markdown}

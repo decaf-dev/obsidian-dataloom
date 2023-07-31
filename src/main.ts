@@ -18,10 +18,9 @@ import {
 	EVENT_COLUMN_DELETE,
 	EVENT_DOWNLOAD_CSV,
 	EVENT_DOWNLOAD_MARKDOWN,
-	EVENT_OUTSIDE_CLICK,
-	EVENT_OUTSIDE_KEYDOWN,
-	EVENT_REFRESH_APP,
-	EVENT_REFRESH_EDITING_VIEW,
+	EVENT_GLOBAL_CLICK,
+	EVENT_GLOBAL_KEYDOWN,
+	EVENT_APP_REFRESH,
 	EVENT_ROW_ADD,
 	EVENT_ROW_DELETE,
 } from "./shared/events";
@@ -38,7 +37,10 @@ import { LoomState } from "./shared/types";
 import WelcomeModal from "./obsidian/welcome-modal";
 import WhatsNewModal from "./obsidian/whats-new-modal";
 import DataLoomSettingsTab from "./obsidian/dataloom-settings-tab";
-import { normalize } from "path";
+import {
+	loadPreviewModeApps,
+	purgeEmbeddedLoomApps,
+} from "./obsidian/embedded-app-manager";
 
 export interface DataLoomSettings {
 	shouldDebug: boolean;
@@ -156,20 +158,6 @@ export default class DataLoomPlugin extends Plugin {
 		//This registers a CodeMirror extension. It is used to render the embedded
 		//loom in live preview mode.
 		this.registerEditorExtension(editingViewPlugin);
-		//This registers a Markdown post processor. It is used to render the embedded
-		//loom in preview mode.
-		// this.registerMarkdownPostProcessor((element, context) => {
-		// 	const embeddedLoomLinkEls = getEmbeddedDataLoomLinkEls(element);
-		// 	for (let i = 0; i < embeddedLoomLinkEls.length; i++) {
-		// 		const linkEl = embeddedLoomLinkEls[i];
-		// 		context.addChild(
-		// 			new DataLoomReadingChild(
-		// 				linkEl,
-		// 				linkEl.getAttribute("src")!
-		// 			)
-		// 		);
-		// 	}
-		// });
 	}
 
 	private getFolderForNewLoomFile(contextMenuFolderPath: string | null) {
@@ -214,13 +202,13 @@ export default class DataLoomPlugin extends Plugin {
 
 			//Clear the focus-visible class from the last focused element
 			removeFocusVisibleClass();
-			this.app.workspace.trigger(EVENT_OUTSIDE_CLICK);
+			this.app.workspace.trigger(EVENT_GLOBAL_CLICK);
 		});
 
 		//This event is guaranteed to fire after our React synthetic event handlers
 		this.registerDomEvent(document, "keydown", (e) => {
 			if (this.settings.shouldDebug) console.log("main handleKeyDown");
-			this.app.workspace.trigger(EVENT_OUTSIDE_KEYDOWN, e);
+			this.app.workspace.trigger(EVENT_GLOBAL_KEYDOWN, e);
 		});
 	}
 
@@ -229,6 +217,22 @@ export default class DataLoomPlugin extends Plugin {
 			this.app.workspace.on("css-change", () => {
 				const isDark = hasDarkTheme();
 				store.dispatch(setDarkMode(isDark));
+			})
+		);
+
+		//This event is fired whenever a leaf is opened, close, moved,
+		//or the user switches between editing and preview mode
+		this.registerEvent(
+			this.app.workspace.on("layout-change", () => {
+				const leaves = this.app.workspace.getLeavesOfType("markdown");
+				purgeEmbeddedLoomApps(leaves);
+
+				//Wait for the DOM to update before loading the preview mode apps
+				//2ms should be enough time
+				//TODO find a better way to do this
+				setTimeout(() => {
+					loadPreviewModeApps(leaves);
+				}, 2);
 			})
 		);
 
@@ -249,13 +253,6 @@ export default class DataLoomPlugin extends Plugin {
 		this.app.vault.on(
 			"rename",
 			async (file: TAbstractFile, oldPath: string) => {
-				//When a file is renamed, we want to refresh all open leafs
-				//that contain an embedded loom
-				const leafs = app.workspace.getLeavesOfType("markdown");
-				leafs.forEach((leaf) => {
-					leaf.trigger(EVENT_REFRESH_EDITING_VIEW);
-				});
-
 				if (file instanceof TFile) {
 					const loomFiles = this.app.vault
 						.getFiles()
@@ -348,7 +345,7 @@ export default class DataLoomPlugin extends Plugin {
 
 							//Update all looms that match this path
 							app.workspace.trigger(
-								EVENT_REFRESH_APP,
+								EVENT_APP_REFRESH,
 								loomFile.path,
 								-1, //update all looms that match this path
 								newState

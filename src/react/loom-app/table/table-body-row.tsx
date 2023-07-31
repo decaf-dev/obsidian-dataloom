@@ -52,7 +52,8 @@ export default function TableBodyRow({
 	}
 
 	return (
-		<tr
+		<div
+			className="dataloom-row"
 			onDrop={handleDrop}
 			onDragStart={handleDragStart}
 			onDragEnd={handleDragEnd}
@@ -61,6 +62,6 @@ export default function TableBodyRow({
 			style={style}
 		>
 			{children}
-		</tr>
+		</div>
 	);
 }

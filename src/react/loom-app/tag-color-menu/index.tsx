@@ -42,7 +42,7 @@ const TagColorMenu = React.forwardRef<HTMLDivElement, Props>(
 
 		return (
 			<Menu ref={ref} id={menuId} isOpen={isOpen} top={top} left={left}>
-				<div className="DataLoom__tag-color-menu">
+				<div className="dataloom-tag-color-menu">
 					<Stack spacing="sm">
 						<Padding px="lg" py="sm">
 							<Text value="Color" />

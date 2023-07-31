@@ -112,17 +112,15 @@ export default function OptionBar({
 		}
 	);
 
-	const { isMarkdownView } = useMountState();
-
 	return (
 		<div
-			className="DataLoom__option-bar"
+			className="dataloom-option-bar"
 			css={css`
 				width: 100%;
 				border-bottom: 1px solid var(--background-modifier-border);
 			`}
 		>
-			<Padding px={isMarkdownView ? "unset" : "lg"} py="md">
+			<Padding py="md">
 				<Stack spacing="lg" align="center" minHeight="40px">
 					<Wrap
 						justify={{ base: "space-between", mobile: "flex-end" }}
@@ -155,7 +153,7 @@ export default function OptionBar({
 								onToggle={onColumnToggle}
 							/>
 							<Button
-								icon={<Icon lucideId="download" />}
+								icon={<Icon lucideId="more-vertical" />}
 								onClick={() => {
 									new ExportModal(app, loomFile).open();
 								}}

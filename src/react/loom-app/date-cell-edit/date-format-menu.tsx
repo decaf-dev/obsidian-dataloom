@@ -30,7 +30,7 @@ const DateFormatMenu = React.forwardRef<HTMLDivElement, Props>(
 				left={left}
 				width={175}
 			>
-				<div className="DataLoom__date-format-menu">
+				<div className="dataloom-date-format-menu">
 					{Object.values([
 						DateFormat.DD_MM_YYYY,
 						DateFormat.MM_DD_YYYY,

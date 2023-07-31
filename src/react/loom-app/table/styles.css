@@ -1,0 +1,66 @@
+.dataloom-table {
+    display: table;
+    table-layout: fixed;
+    border-collapse: separate;
+}
+
+.dataloom-head {
+    display: table-header-group;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.dataloom-body {
+    display: table-row-group;
+}
+
+.dataloom-foot {
+    display: table-footer-group;
+}
+
+.dataloom-row {
+    display: table-row;
+}
+
+.dataloom-row--head {
+    background-color: var(--background-secondary);
+}
+
+.dataloom-cell {
+    display: table-cell;
+}
+
+.dataloom-cell--header {
+    background-color: var(--table-header-background);
+    border-bottom: 1px solid var(--table-border-color);
+    border-right: 1px solid var(--table-border-color);
+        
+    &:last-of-type {
+        border-right: 0;
+        background-color: var(--background-primary);
+    }
+}
+
+.dataloom-cell--body {
+    border-bottom: 1px solid var(--table-border-color);
+    border-right: 1px solid var(--table-border-color);
+    vertical-align: top;
+
+    /** This is hack to make the children to have something to calculate their height percentage from. */
+    height: 1px;
+                                
+    &:last-of-type {
+        border-right: 0;
+    }
+}
+
+.dataloom-cell--footer {
+    background-color: var(--background-primary);
+    border-top: 1px solid var(--table-border-color);
+    border-bottom: 1px solid var(--table-border-color);
+}
+
+.dataloom-body > .dataloom-row:last-child > .dataloom-cell {
+    border-bottom: 0;
+}

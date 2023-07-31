@@ -28,7 +28,7 @@ export default class ExportModal extends Modal {
 			this.root.render(
 				<Provider store={store}>
 					<ExportApp
-						LoomState={state}
+						loomState={state}
 						loomFilePath={this.loomFile.path}
 					/>
 				</Provider>

@@ -40,7 +40,7 @@ export default function FilterTextInput({
 				cellType !== CellType.TAG &&
 				cellType !== CellType.MULTI_TAG && (
 					<input
-						className="DataLoom__focusable"
+						className="dataloom-focusable"
 						css={css`
 							${baseInputStyle}
 							width: 150px !important;
@@ -53,7 +53,7 @@ export default function FilterTextInput({
 			{cellType === CellType.CHECKBOX && (
 				<select
 					tabIndex={0}
-					className="DataLoom__focusable"
+					className="dataloom-focusable"
 					css={css`
 						${selectStyle}
 					`}
@@ -70,7 +70,7 @@ export default function FilterTextInput({
 			)}
 			{(cellType === CellType.TAG || cellType === CellType.MULTI_TAG) && (
 				<Select
-					className="react-select DataLoom__focusable"
+					className="react-select dataloom-focusable"
 					styles={{
 						placeholder: (baseStyles) => ({
 							...baseStyles,

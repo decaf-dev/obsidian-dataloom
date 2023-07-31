@@ -19,15 +19,17 @@ import MenuTrigger from "src/react/shared/menu-trigger";
 import { isNumber, isNumberCalcuation } from "src/shared/match";
 import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 import { getShortDisplayNameForCalculationType } from "src/shared/loom-state/display-name";
-import { css } from "@emotion/react";
 import { getCalculationContent } from "./calculation";
 import { getNumberCalculationContent } from "./number-calculation";
+
+import "./styles.css";
 
 interface Props {
 	columnId: string;
 	cellId: string;
 	calculationType: CalculationType;
 	columnTags: Tag[];
+	width: string;
 	bodyRows: BodyRow[];
 	bodyCells: BodyCell[];
 	currencyType: CurrencyType;
@@ -36,12 +38,13 @@ interface Props {
 	onTypeChange: (columnId: string, value: CalculationType) => void;
 }
 
-export default function CalculationCell({
+export default function FooterCell({
 	columnId,
 	columnTags,
 	bodyCells,
 	dateFormat,
 	bodyRows,
+	width,
 	calculationType,
 	currencyType,
 	cellType,
@@ -87,16 +90,11 @@ export default function CalculationCell({
 		<>
 			<MenuTrigger isCell menu={menu}>
 				<div
-					className="DataLoom__function-cell DataLoom__selectable"
+					className="dataloom-cell--footer__container dataloom-selectable"
 					ref={triggerRef}
-					css={css`
-						display: flex;
-						justify-content: flex-end;
-						cursor: pointer;
-						overflow: hidden;
-						padding: var(--nlt-cell-spacing-x)
-							var(--nlt-cell-spacing-y);
-					`}
+					style={{
+						width,
+					}}
 				>
 					{calculationType === Calculation.NONE && (
 						<Text value="Calculate" variant="faint" />

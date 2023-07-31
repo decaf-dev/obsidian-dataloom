@@ -25,7 +25,7 @@ export default function FilterColumnDropdown({
 	return (
 		<select
 			tabIndex={0}
-			className="DataLoom__focusable"
+			className="dataloom-focusable"
 			css={css`
 				${selectStyle}
 				max-width: 175px;

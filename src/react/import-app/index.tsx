@@ -49,7 +49,7 @@ export default function ImportApp({ initialState, onStateSave }: Props) {
 	const { columns, headerCells } = initialState.model;
 
 	return (
-		<div className="DataLoom__import-app">
+		<div className="dataloom-import-app">
 			<Stack spacing="lg">
 				<Stack spacing="lg">
 					<ImportTypeSelect

@@ -12,6 +12,8 @@ import DateCellEdit from "../date-cell-edit";
 import MultiTagCell from "../multi-tag-cell";
 import Menu from "../../shared/menu";
 
+import "./styles.css";
+
 import {
 	AspectRatio,
 	CellType,
@@ -39,7 +41,6 @@ import MenuTrigger from "src/react/shared/menu-trigger";
 import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 import FileCell from "../file-cell";
 import FileCellEdit from "../file-cell-edit";
-import { css } from "@emotion/react";
 import EmbedCell from "../embed-cell";
 import EmbedCellEdit from "../embed-cell-edit";
 import { Notice } from "obsidian";
@@ -282,12 +283,12 @@ export default function BodyCell({
 		menuWidth = 175;
 	}
 
-	let className = "DataLoom__body-td-container";
+	let className = "dataloom-cell--body__container";
 	if (
 		columnType === CellType.LAST_EDITED_TIME ||
 		columnType === CellType.CREATION_TIME
 	) {
-		className += " DataLoom__default-cursor";
+		className += " dataloom-default-cursor";
 	}
 
 	const cellTags = columnTags.filter((tag) => cellTagIds.includes(tag.id));
@@ -309,15 +310,6 @@ export default function BodyCell({
 				<div
 					ref={triggerRef}
 					onContextMenu={handleCellContextClick}
-					css={css`
-						display: flex;
-						width: 100%;
-						height: 100%;
-						min-height: var(--nlt-cell-min-height);
-						padding: var(--nlt-cell-spacing-x)
-							var(--nlt-cell-spacing-y);
-						cursor: pointer;
-					`}
 					className={className}
 					style={{
 						width,

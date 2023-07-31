@@ -60,7 +60,7 @@ const SuggestItem = React.forwardRef<HTMLDivElement, Props>(
 			<div
 				tabIndex={0}
 				data-index={index}
-				className="DataLoom__suggest-item DataLoom__focusable"
+				className="dataloom-suggest-item dataloom-focusable"
 				ref={ref}
 				css={css`
 					padding: var(--nlt-spacing--sm) var(--nlt-spacing--lg);
