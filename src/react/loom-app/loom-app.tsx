@@ -49,7 +49,7 @@ import { useColumnEvents } from "src/shared/loom-state/use-column-events";
 import { VirtuosoHandle } from "react-virtuoso";
 import BottomBar from "./bottom-bar";
 
-export default function App() {
+export default function LoomApp() {
 	const { appId, isMarkdownView } = useMountState();
 	const { topMenu, hasOpenMenu, requestCloseTopMenu } = useMenuState();
 	const logger = useLogger();

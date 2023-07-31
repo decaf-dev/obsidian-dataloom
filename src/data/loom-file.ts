@@ -1,4 +1,4 @@
-import { Notice, normalizePath } from "obsidian";
+import { App, Notice, normalizePath } from "obsidian";
 import { createFile, createFolder } from "./file-operations";
 import { createLoomState } from "./loom-state-factory";
 import { serializeLoomState } from "./serialize-loom-state";
@@ -14,17 +14,18 @@ const getFilePath = (folderPath: string) => {
 	return normalizePath(folderPath + "/" + fileName);
 };
 
-const createFolderIfNotExists = async (folderPath: string) => {
+const createFolderIfNotExists = async (app: App, folderPath: string) => {
 	if (app.vault.getAbstractFileByPath(folderPath) == null)
-		await createFolder(folderPath);
+		await createFolder(app, folderPath);
 };
 
 export const createLoomFile = async (
+	app: App,
 	folderPath: string,
 	manifestPluginVersion: string
 ) => {
 	try {
-		await createFolderIfNotExists(folderPath);
+		await createFolderIfNotExists(app, folderPath);
 		const filePath = getFilePath(folderPath);
 
 		const loomState = createLoomState(1, 1, {
@@ -33,7 +34,7 @@ export const createLoomFile = async (
 		const serializedState = serializeLoomState(loomState);
 
 		console.log("Creating loom file at: ", filePath);
-		return await createFile(filePath, serializedState);
+		return await createFile(app, filePath, serializedState);
 	} catch (err) {
 		new Notice("Could not create loom file");
 		throw err;

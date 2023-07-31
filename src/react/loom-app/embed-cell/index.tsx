@@ -3,6 +3,7 @@ import { getEmbedCellContent } from "src/shared/cell-content/embed-cell-content"
 import { AspectRatio, PaddingSize } from "src/shared/types";
 
 import Embed from "./embed";
+import { useMountState } from "../mount-provider";
 
 interface Props {
 	isExternalLink: boolean;
@@ -19,7 +20,8 @@ export default function EmbedCell({
 	horizontalPadding,
 	verticalPadding,
 }: Props) {
-	const content = getEmbedCellContent(markdown, {
+	const { app } = useMountState();
+	const content = getEmbedCellContent(app, markdown, {
 		shouldRenderMarkdown: true,
 		isExternalLink,
 	});

@@ -83,7 +83,7 @@ export default function OptionBar({
 	onRuleTagsChange,
 }: Props) {
 	const { manifestPluginVersion } = useAppSelector((state) => state.global);
-	const { loomFile } = useMountState();
+	const { loomFile, app } = useMountState();
 	const sortedCells = headerCells.filter((cell) => {
 		const columnId = cell.columnId;
 		const column = columns.find((c) => c.id === columnId);

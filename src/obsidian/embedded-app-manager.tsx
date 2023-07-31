@@ -1,4 +1,4 @@
-import { MarkdownView, TFile, WorkspaceLeaf } from "obsidian";
+import { App, MarkdownView, TFile, WorkspaceLeaf } from "obsidian";
 
 import { v4 as uuid } from "uuid";
 
@@ -17,8 +17,8 @@ import {
 } from "src/data/serialize-loom-state";
 import { LoomState } from "src/shared/types";
 import _ from "lodash";
-import LoomApp from "src/react/loom-app";
 import { EVENT_APP_REFRESH } from "src/shared/events";
+import LoomAppWrapper from "src/react/loom-app";
 
 interface EmbeddedApp {
 	id: string;
@@ -40,6 +40,7 @@ let embeddedApps: EmbeddedApp[] = [];
  * @param markdownLeaves - The open markdown leaves
  */
 export const loadPreviewModeApps = (
+	app: App,
 	markdownLeaves: WorkspaceLeaf[],
 	manifestPluginVersion: string
 ) => {
@@ -50,7 +51,7 @@ export const loadPreviewModeApps = (
 		const mode = view.getMode();
 
 		if (mode === "preview")
-			loadEmbeddedLoomApps(leaf, "preview", manifestPluginVersion);
+			loadEmbeddedLoomApps(app, manifestPluginVersion, leaf, "preview");
 	}
 };
 
@@ -62,14 +63,15 @@ export const loadPreviewModeApps = (
  * @param mode - The mode of the markdown view (source or preview)
  */
 export const loadEmbeddedLoomApps = (
+	app: App,
+	manifestPluginVersion: string,
 	markdownLeaf: WorkspaceLeaf,
-	mode: "source" | "preview",
-	manifestPluginVersion: string
+	mode: "source" | "preview"
 ) => {
 	const view = markdownLeaf.view as MarkdownView;
 	const linkEls = getEmbeddedLoomLinkEls(view, mode);
 	linkEls.forEach((linkEl) =>
-		processLinkEl(linkEl, markdownLeaf, mode, manifestPluginVersion)
+		processLinkEl(app, manifestPluginVersion, markdownLeaf, linkEl, mode)
 	);
 };
 
@@ -92,10 +94,11 @@ export const purgeEmbeddedLoomApps = (leaves: WorkspaceLeaf[]) => {
  * @returns
  */
 const processLinkEl = async (
-	linkEl: HTMLElement,
+	app: App,
+	manifestPluginVersion: string,
 	leaf: WorkspaceLeaf,
-	mode: "source" | "preview",
-	manifestPluginVersion: string
+	linkEl: HTMLElement,
+	mode: "source" | "preview"
 ) => {
 	//Set the width and height of the embedded loom
 	//We do this first because if we have already loaded the loom, we stil want
@@ -106,7 +109,7 @@ const processLinkEl = async (
 	if (hasLoadedEmbeddedLoom(linkEl)) return;
 
 	const sourcePath = (leaf.view as MarkdownView).file.path;
-	const file = findEmbeddedLoomFile(linkEl, sourcePath);
+	const file = findEmbeddedLoomFile(app, linkEl, sourcePath);
 	if (!file) return;
 
 	resetLinkStyles(linkEl);
@@ -133,7 +136,7 @@ const processLinkEl = async (
 	//Create the react app
 	const root = createRoot(containerEl);
 	embeddedApp.root = root;
-	renderApp(appId, leaf, file, root, state);
+	renderApp(app, appId, leaf, file, root, state);
 };
 
 /**
@@ -145,6 +148,7 @@ const processLinkEl = async (
  * @param state - The loom state
  */
 const renderApp = (
+	app: App,
 	appId: string,
 	leaf: WorkspaceLeaf,
 	file: TFile,
@@ -156,7 +160,8 @@ const renderApp = (
 	const throttleHandleSave = _.throttle(handleSave, THROTTLE_TIME_MILLIS);
 
 	root.render(
-		<LoomApp
+		<LoomAppWrapper
+			app={app}
 			appId={appId}
 			isMarkdownView
 			loomFile={file}
@@ -164,7 +169,7 @@ const renderApp = (
 			store={store}
 			loomState={state}
 			onSaveState={(appId, state) =>
-				throttleHandleSave(file, appId, state)
+				throttleHandleSave(app, file, appId, state)
 			}
 		/>
 	);
@@ -175,7 +180,12 @@ const renderApp = (
  * @param file - The loom file
  * @param state - The loom state
  */
-const handleSave = async (file: TFile, appId: string, state: LoomState) => {
+const handleSave = async (
+	app: App,
+	file: TFile,
+	appId: string,
+	state: LoomState
+) => {
 	const serialized = serializeLoomState(state);
 	await app.vault.modify(file, serialized);
 

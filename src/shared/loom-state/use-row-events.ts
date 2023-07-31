@@ -7,7 +7,7 @@ import { useLoomState } from "src/shared/loom-state/loom-state-context";
 import { useMountState } from "../../react/loom-app/mount-provider";
 
 export const useRowEvents = () => {
-	const { appId } = useMountState();
+	const { appId, app } = useMountState();
 	const { doCommand } = useLoomState();
 
 	React.useEffect(() => {
@@ -29,5 +29,5 @@ export const useRowEvents = () => {
 			app.workspace.off(EVENT_ROW_ADD, handleRowAddEvent);
 			app.workspace.off(EVENT_ROW_DELETE, handleRowDeleteEvent);
 		};
-	}, [doCommand, appId]);
+	}, [doCommand, app, appId]);
 };

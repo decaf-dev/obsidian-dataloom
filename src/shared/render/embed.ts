@@ -1,4 +1,6 @@
-export const handleLinkClick = (event: MouseEvent) => {
+import { App } from "obsidian";
+
+export const handleLinkClick = (app: App, event: MouseEvent) => {
 	const targetEl = event.target as HTMLElement;
 	const closestAnchor =
 		targetEl.tagName === "A" ? targetEl : targetEl.closest("a");

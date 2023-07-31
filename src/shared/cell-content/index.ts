@@ -1,3 +1,4 @@
+import { App } from "obsidian";
 import { BodyCell, BodyRow, CellType, Column } from "../types";
 import { getCheckboxCellContent } from "./checkbox-cell-content";
 import { getCurrencyCellContent } from "./currency-cell-content";
@@ -15,6 +16,7 @@ const getTagCellContent = (column: Column, cell: BodyCell) => {
 };
 
 export const getCellContent = (
+	app: App,
 	column: Column,
 	row: BodyRow,
 	cell: BodyCell,
@@ -27,7 +29,7 @@ export const getCellContent = (
 		case CellType.NUMBER:
 			return getNumberCellContent(cell.markdown);
 		case CellType.EMBED:
-			return getEmbedCellContent(cell.markdown, {
+			return getEmbedCellContent(app, cell.markdown, {
 				isExport: true,
 				isExternalLink: cell.isExternalLink,
 				shouldRenderMarkdown: renderMarkdown,

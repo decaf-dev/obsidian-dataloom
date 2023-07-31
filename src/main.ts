@@ -28,7 +28,7 @@ import {
 	EVENT_ROW_ADD,
 	EVENT_ROW_DELETE,
 } from "./shared/events";
-import { editingViewPlugin } from "./obsidian/editing-view-plugin";
+import EditingViewPlugin from "./obsidian/editing-view-plugin";
 import {
 	deserializeLoomState,
 	serializeLoomState,
@@ -92,7 +92,11 @@ export default class DataLoomPlugin extends Plugin {
 		});
 
 		this.addSettingTab(new DataLoomSettingsTab(this.app, this));
-		this.registerEmbeddedView();
+
+		this.registerEditorExtension(
+			EditingViewPlugin(this.app, this.manifest.version)
+		);
+
 		this.registerCommands();
 		this.registerEvents();
 		this.registerDOMEvents();
@@ -118,9 +122,10 @@ export default class DataLoomPlugin extends Plugin {
 
 		this.settings.pluginVersion = this.manifest.version;
 		await this.saveSettings();
+		store.dispatch(setManifestPluginVersion(this.manifest.version));
 	}
 
-	//TODO this will be removed in a future version
+	//TODO remove this in future versions
 	private async migrateLoomFiles() {
 		if (!this.settings.hasMigratedTo800) {
 			const loomFiles = this.app.vault
@@ -155,14 +160,6 @@ export default class DataLoomPlugin extends Plugin {
 		}
 	}
 
-	/**
-	 * Registers a CodeMirror 6 extension. This is used to render embedded apps in live preview.
-	 */
-	private registerEmbeddedView() {
-		store.dispatch(setManifestPluginVersion(this.manifest.version));
-		this.registerEditorExtension(editingViewPlugin);
-	}
-
 	private getFolderForNewLoomFile(contextMenuFolderPath: string | null) {
 		let folderPath = "";
 
@@ -186,6 +183,7 @@ export default class DataLoomPlugin extends Plugin {
 	) {
 		const folderPath = this.getFolderForNewLoomFile(contextMenuFolderPath);
 		const filePath = await createLoomFile(
+			this.app,
 			folderPath,
 			this.manifest.version
 		);
@@ -237,7 +235,11 @@ export default class DataLoomPlugin extends Plugin {
 				//Wait for the DOM to update before loading the preview mode apps
 				//2ms should be enough time
 				setTimeout(() => {
-					loadPreviewModeApps(leaves, this.manifest.version);
+					loadPreviewModeApps(
+						this.app,
+						leaves,
+						this.manifest.version
+					);
 				}, 2);
 			})
 		);

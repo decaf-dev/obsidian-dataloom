@@ -13,7 +13,7 @@ import {
 } from "src/data/serialize-loom-state";
 import { EVENT_APP_REFRESH } from "src/shared/events";
 import { v4 as uuidv4 } from "uuid";
-import LoomApp from "src/react/loom-app";
+import LoomAppWrapper from "src/react/loom-app";
 
 export const DATA_LOOM_VIEW = "dataloom";
 
@@ -111,7 +111,8 @@ export default class DataLoomView extends TextFileView {
 	private renderApp(appId: string, state: LoomState) {
 		if (this.root) {
 			this.root.render(
-				<LoomApp
+				<LoomAppWrapper
+					app={this.app}
 					mountLeaf={this.leaf}
 					appId={appId}
 					loomFile={this.file}

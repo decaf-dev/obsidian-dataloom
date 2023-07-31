@@ -8,7 +8,7 @@ import { useLoomState } from "src/shared/loom-state/loom-state-context";
 import { useMountState } from "../../react/loom-app/mount-provider";
 
 export const useColumnEvents = () => {
-	const { appId } = useMountState();
+	const { appId, app } = useMountState();
 	const { doCommand } = useLoomState();
 	const logger = useLogger();
 
@@ -36,5 +36,5 @@ export const useColumnEvents = () => {
 			app.workspace.off(EVENT_COLUMN_ADD, handleColumnAddEvent);
 			app.workspace.off(EVENT_COLUMN_DELETE, handleColumnDeleteEvent);
 		};
-	}, [doCommand, logger, appId]);
+	}, [doCommand, logger, appId, app]);
 };

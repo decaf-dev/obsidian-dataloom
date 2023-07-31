@@ -23,13 +23,14 @@ export default class ExportModal extends Modal {
 
 	private async renderApp() {
 		try {
-			const data = await app.vault.read(this.loomFile);
+			const data = await this.app.vault.read(this.loomFile);
 			const state = deserializeLoomState(data, this.pluginVersion);
 
 			this.root = createRoot(this.containerEl.children[1]);
 			this.root.render(
 				<Provider store={store}>
 					<ExportApp
+						app={this.app}
 						loomState={state}
 						loomFilePath={this.loomFile.path}
 					/>
