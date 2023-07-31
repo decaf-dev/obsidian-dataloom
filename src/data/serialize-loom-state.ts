@@ -1,3 +1,4 @@
+import { CURRENT_PLUGIN_VERSION } from "src/data/constants";
 import {
 	BodyCell,
 	CellType,
@@ -29,10 +30,7 @@ export const serializeLoomState = (state: LoomState): string => {
 	return JSON.stringify(state, null, 2);
 };
 
-export const deserializeLoomState = (
-	data: string,
-	manifestPluginVersion: string
-): LoomState => {
+export const deserializeLoomState = (data: string): LoomState => {
 	const parsedState = JSON.parse(data);
 
 	const untypedVersion: unknown = parsedState["pluginVersion"];
@@ -380,7 +378,7 @@ export const deserializeLoomState = (
 		});
 	}
 
-	const state = currentState as LoomState;
-	state.pluginVersion = manifestPluginVersion;
-	return state;
+	const LoomState = currentState as LoomState;
+	LoomState.pluginVersion = CURRENT_PLUGIN_VERSION;
+	return LoomState;
 };
