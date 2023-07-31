@@ -100,7 +100,7 @@ interface Props {
 	) => void;
 }
 
-export default function BodyCell({
+export default function BodyCellContainer({
 	cellId,
 	columnId,
 	rowId,

@@ -38,7 +38,7 @@ interface Props {
 	onTypeChange: (columnId: string, value: CalculationType) => void;
 }
 
-export default function FooterCell({
+export default function FooterCellContainer({
 	columnId,
 	columnTags,
 	bodyCells,

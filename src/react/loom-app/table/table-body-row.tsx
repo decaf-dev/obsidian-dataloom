@@ -12,7 +12,7 @@ export default function TableBodyRow({
 	children,
 	...props
 }: TableBodyRowProps) {
-	const { LoomState, setLoomState } = useLoomState();
+	const { loomState, setLoomState } = useLoomState();
 	const { dragData, setDragData } = useDragContext();
 
 	function handleDragStart(e: React.DragEvent) {
@@ -43,7 +43,7 @@ export default function TableBodyRow({
 		const targetId = getRowId(target);
 		if (!targetId) return;
 
-		dropDrag(targetId, dragData, LoomState, setLoomState);
+		dropDrag(targetId, dragData, loomState, setLoomState);
 	}
 
 	function handleDragOver(e: React.DragEvent) {

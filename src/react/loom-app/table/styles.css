@@ -4,7 +4,7 @@
     border-collapse: separate;
 }
 
-.dataloom-head {
+.dataloom-header {
     display: table-header-group;
     position: sticky;
     top: 0;
@@ -15,7 +15,7 @@
     display: table-row-group;
 }
 
-.dataloom-foot {
+.dataloom-footer {
     display: table-footer-group;
 }
 
@@ -23,7 +23,7 @@
     display: table-row;
 }
 
-.dataloom-row--head {
+.dataloom-row--header {
     background-color: var(--background-secondary);
 }
 

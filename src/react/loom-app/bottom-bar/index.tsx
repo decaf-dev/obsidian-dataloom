@@ -10,11 +10,14 @@ import Icon from "src/react/shared/icon";
 import { numToPx } from "src/shared/conversion";
 
 import "./styles.css";
+import { isOnMobile } from "src/shared/render-utils";
 
 interface Props {
 	appId: string;
 	onScrollToTopClick: () => void;
 	onScrollToBottomClick: () => void;
+	onUndoClick: () => void;
+	onRedoClick: () => void;
 	onNewRowClick: () => void;
 }
 
@@ -23,6 +26,8 @@ export default function BottomBar({
 	onNewRowClick,
 	onScrollToTopClick,
 	onScrollToBottomClick,
+	onUndoClick,
+	onRedoClick,
 }: Props) {
 	const ref = React.useRef<HTMLDivElement>(null);
 	const [spaceBetweenTableAndContainer, setSpaceBetweenTableAndContainer] =
@@ -56,6 +61,8 @@ export default function BottomBar({
 		};
 	}, [ref]);
 
+	const isMobile = isOnMobile();
+
 	return (
 		<div className="dataloom-bottom-bar">
 			<div
@@ -64,9 +71,18 @@ export default function BottomBar({
 					top: numToPx(-spaceBetweenTableAndContainer),
 				}}
 			>
-				<Padding py="md" width="100%">
+				<Padding pt="md" width="100%">
 					<Flex justify="space-between">
-						<NewRowButton onClick={onNewRowClick} />
+						<Stack spacing="md" isHorizontal>
+							{isMobile && (
+								<Button
+									ariaLabel="Undo"
+									icon={<Icon lucideId="undo" />}
+									onClick={onUndoClick}
+								/>
+							)}
+							<NewRowButton onClick={onNewRowClick} />
+						</Stack>
 						<Stack isHorizontal spacing="sm">
 							<Button
 								ariaLabel="Scroll to top"
@@ -78,6 +94,13 @@ export default function BottomBar({
 								onClick={onScrollToBottomClick}
 								icon={<Icon lucideId="chevron-down" />}
 							/>
+							{isMobile && (
+								<Button
+									ariaLabel="Redo"
+									icon={<Icon lucideId="redo" />}
+									onClick={onRedoClick}
+								/>
+							)}
 						</Stack>
 					</Flex>
 				</Padding>

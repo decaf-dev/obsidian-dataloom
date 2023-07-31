@@ -20,7 +20,6 @@ import { getIconIdForCellType } from "src/react/shared/icon/utils";
 import MenuTrigger from "src/react/shared/menu-trigger";
 import ResizeContainer from "./resize-container";
 
-import { css } from "@emotion/react";
 import HeaderMenu from "../header-cell-edit";
 
 import "./styles.css";
@@ -55,7 +54,7 @@ interface Props {
 	onHideClick: (columnId: string) => void;
 }
 
-export default function HeaderCell({
+export default function HeaderCellContainer({
 	cellId,
 	rowId,
 	columnId,

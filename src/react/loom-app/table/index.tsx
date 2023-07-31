@@ -49,7 +49,7 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 					return (
 						<div
 							key={rowId}
-							className="dataloom-row dataloom-row--head"
+							className="dataloom-row dataloom-row--header"
 						>
 							{cells.map((cell, i) => {
 								const { id: cellId, columnId, content } = cell;
@@ -108,7 +108,7 @@ const Components: TableComponents = {
 		return <div className="dataloom-table" {...props} />;
 	},
 	TableHead: React.forwardRef(({ style, ...props }, ref) => (
-		<div className="dataloom-head" {...props} ref={ref} />
+		<div className="dataloom-header" {...props} ref={ref} />
 	)),
 	TableRow: ({ style, ...props }) => {
 		return <TableBodyRow {...props} style={style} />;
@@ -117,7 +117,7 @@ const Components: TableComponents = {
 		<div className="dataloom-body" {...props} style={style} ref={ref} />
 	)),
 	TableFoot: React.forwardRef(({ style, ...props }, ref) => (
-		<div className="dataloom-foot" {...props} style={style} ref={ref} />
+		<div className="dataloom-footer" {...props} style={style} ref={ref} />
 	)),
 	FillerRow: ({ height }) => {
 		return <div className="dataloom-row" style={{ height }} />;
