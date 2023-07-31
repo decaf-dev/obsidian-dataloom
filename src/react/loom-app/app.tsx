@@ -243,6 +243,14 @@ export default function App() {
 		tableRef.current?.scrollToIndex(filteredBodyRows.length - 1);
 	}
 
+	function handleRedoClick() {
+		commandRedo();
+	}
+
+	function handleUndoClick() {
+		commandUndo();
+	}
+
 	const {
 		headerRows,
 		footerRows,
@@ -590,6 +598,8 @@ export default function App() {
 				onNewRowClick={handleNewRowClick}
 				onScrollToTopClick={handleScrollToTopClick}
 				onScrollToBottomClick={handleScrollToBottomClick}
+				onUndoClick={handleUndoClick}
+				onRedoClick={handleRedoClick}
 			/>
 		</div>
 	);
