@@ -13,7 +13,6 @@ import {
 } from "src/data/serialize-loom-state";
 import { EVENT_APP_REFRESH } from "src/shared/events";
 import { v4 as uuidv4 } from "uuid";
-import { DATA_LOOM_PLUGIN_ID } from "src/main";
 import LoomApp from "src/react/loom-app";
 
 export const DATA_LOOM_VIEW = "dataloom";
@@ -21,11 +20,15 @@ export const DATA_LOOM_VIEW = "dataloom";
 export default class DataLoomView extends TextFileView {
 	private root: Root | null;
 	private appId: string;
+	private pluginId: string;
+	private pluginVersion: string;
 
 	data: string;
 
-	constructor(leaf: WorkspaceLeaf) {
+	constructor(leaf: WorkspaceLeaf, pluginId: string, pluginVersion: string) {
 		super(leaf);
+		this.pluginId = pluginId;
+		this.pluginVersion = pluginVersion;
 		this.root = null;
 		this.data = "";
 		this.appId = uuidv4();
@@ -40,7 +43,7 @@ export default class DataLoomView extends TextFileView {
 			//Open settings tab
 			(this.app as any).setting.open();
 			//Navigate to plugin settings
-			(this.app as any).setting.openTabById(DATA_LOOM_PLUGIN_ID);
+			(this.app as any).setting.openTabById(this.pluginId);
 		});
 	}
 
@@ -56,7 +59,10 @@ export default class DataLoomView extends TextFileView {
 
 		//This is only called when the view is initially opened
 		if (clear) {
-			const state = deserializeLoomState(data);
+			if (this.root) {
+				this.root.unmount();
+			}
+			const state = deserializeLoomState(data, this.pluginVersion);
 			const container = this.containerEl.children[1];
 			this.root = createRoot(container);
 			this.renderApp(this.appId, state);

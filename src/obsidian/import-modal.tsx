@@ -10,10 +10,12 @@ import {
 
 export default class ImportModal extends Modal {
 	root: Root;
+	pluginVersion: string;
 
-	constructor(app: App) {
+	constructor(app: App, pluginVersion: string) {
 		super(app);
 		this.app = app;
+		this.pluginVersion = pluginVersion;
 	}
 
 	onOpen() {
@@ -25,7 +27,7 @@ export default class ImportModal extends Modal {
 		if (view) {
 			//Get loom state
 			const data = view.getViewData();
-			const state = deserializeLoomState(data);
+			const state = deserializeLoomState(data, this.pluginVersion);
 
 			this.root = createRoot(appContainer);
 			this.root.render(

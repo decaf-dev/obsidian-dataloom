@@ -9,7 +9,11 @@ import {
 } from "obsidian";
 
 import { store } from "./redux/global/store";
-import { setDarkMode, setSettings } from "./redux/global/global-slice";
+import {
+	setManifestPluginVersion,
+	setDarkMode,
+	setSettings,
+} from "./redux/global/global-slice";
 import DataLoomView, { DATA_LOOM_VIEW } from "./obsidian/dataloom-view";
 import { FILE_EXTENSION, WIKI_LINK_REGEX } from "./data/constants";
 import { createLoomFile } from "src/data/loom-file";
@@ -66,12 +70,6 @@ export const DEFAULT_SETTINGS: DataLoomSettings = {
 	pluginVersion: "",
 };
 
-/**
- * The plugin id is the id used in the manifest.json file
- * We use the old plugin id to maintain our download count
- */
-export const DATA_LOOM_PLUGIN_ID = "notion-like-tables";
-
 export default class DataLoomPlugin extends Plugin {
 	settings: DataLoomSettings;
 
@@ -82,7 +80,11 @@ export default class DataLoomPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
-		this.registerView(DATA_LOOM_VIEW, (leaf) => new DataLoomView(leaf));
+		this.registerView(
+			DATA_LOOM_VIEW,
+			(leaf) =>
+				new DataLoomView(leaf, this.manifest.id, this.manifest.version)
+		);
 		this.registerExtensions([FILE_EXTENSION], DATA_LOOM_VIEW);
 
 		this.addRibbonIcon("table", "Create new loom", async () => {
@@ -118,8 +120,8 @@ export default class DataLoomPlugin extends Plugin {
 		await this.saveSettings();
 	}
 
+	//TODO this will be removed in a future version
 	private async migrateLoomFiles() {
-		// Migrate .dashboard files to .loom files
 		if (!this.settings.hasMigratedTo800) {
 			const loomFiles = this.app.vault
 				.getFiles()
@@ -131,6 +133,10 @@ export default class DataLoomPlugin extends Plugin {
 
 			for (let i = 0; i < loomFiles.length; i++) {
 				const file = loomFiles[i];
+				const data = await this.app.vault.read(file);
+				const parsedState = JSON.parse(data);
+				if (!parsedState.model) return;
+
 				const newFilePath = file.path.replace(
 					`.${file.extension}`,
 					`.${FILE_EXTENSION}`
@@ -149,9 +155,11 @@ export default class DataLoomPlugin extends Plugin {
 		}
 	}
 
+	/**
+	 * Registers a CodeMirror 6 extension. This is used to render embedded apps in live preview.
+	 */
 	private registerEmbeddedView() {
-		//This registers a CodeMirror extension. It is used to render the embedded
-		//loom in live preview mode.
+		store.dispatch(setManifestPluginVersion(this.manifest.version));
 		this.registerEditorExtension(editingViewPlugin);
 	}
 
@@ -177,7 +185,10 @@ export default class DataLoomPlugin extends Plugin {
 		embedded?: boolean
 	) {
 		const folderPath = this.getFolderForNewLoomFile(contextMenuFolderPath);
-		const filePath = await createLoomFile(folderPath);
+		const filePath = await createLoomFile(
+			folderPath,
+			this.manifest.version
+		);
 
 		//If the file is embedded, we don't need to open it
 		if (embedded) return filePath;
@@ -222,11 +233,11 @@ export default class DataLoomPlugin extends Plugin {
 				const leaves = this.app.workspace.getLeavesOfType("markdown");
 				purgeEmbeddedLoomApps(leaves);
 
+				//TODO find a better way to do this
 				//Wait for the DOM to update before loading the preview mode apps
 				//2ms should be enough time
-				//TODO find a better way to do this
 				setTimeout(() => {
-					loadPreviewModeApps(leaves);
+					loadPreviewModeApps(leaves, this.manifest.version);
 				}, 2);
 			})
 		);
@@ -262,7 +273,10 @@ export default class DataLoomPlugin extends Plugin {
 					for (const loomFile of loomFiles) {
 						//For each file read its contents
 						const data = await file.vault.read(loomFile);
-						const state = deserializeLoomState(data);
+						const state = deserializeLoomState(
+							data,
+							this.manifest.version
+						);
 						//Search for old path in the file
 
 						state.model.bodyCells.forEach((cell) => {
@@ -354,7 +368,7 @@ export default class DataLoomPlugin extends Plugin {
 
 	registerCommands() {
 		this.addCommand({
-			id: "dataloom-create",
+			id: "create",
 			name: "Create loom",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "=" }],
 			callback: async () => {
@@ -363,7 +377,7 @@ export default class DataLoomPlugin extends Plugin {
 		});
 
 		this.addCommand({
-			id: "dataloom-create-and-embed",
+			id: "create-and-embed",
 			name: "Create loom and embed it into current file",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "+" }],
 			editorCallback: async (editor) => {
@@ -389,15 +403,15 @@ export default class DataLoomPlugin extends Plugin {
 		});
 
 		this.addCommand({
-			id: "nlt-add-column",
+			id: "add-column",
 			name: "Add column",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "\\" }],
 			checkCallback: (checking: boolean) => {
-				const nltView =
+				const loomView =
 					this.app.workspace.getActiveViewOfType(DataLoomView);
 				const markdownView =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (nltView || markdownView) {
+				if (loomView || markdownView) {
 					if (!checking) {
 						this.app.workspace.trigger(EVENT_COLUMN_ADD);
 					}
@@ -408,15 +422,15 @@ export default class DataLoomPlugin extends Plugin {
 		});
 
 		this.addCommand({
-			id: "nlt-delete-column",
+			id: "delete-column",
 			name: "Delete column",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Backspace" }],
 			checkCallback: (checking: boolean) => {
-				const nltView =
+				const loomView =
 					this.app.workspace.getActiveViewOfType(DataLoomView);
 				const markdownView =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (nltView || markdownView) {
+				if (loomView || markdownView) {
 					if (!checking) {
 						this.app.workspace.trigger(EVENT_COLUMN_DELETE);
 					}
@@ -427,15 +441,15 @@ export default class DataLoomPlugin extends Plugin {
 		});
 
 		this.addCommand({
-			id: "nlt-add-row",
+			id: "add-row",
 			name: "Add row",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Enter" }],
 			checkCallback: (checking: boolean) => {
-				const nltView =
+				const loomView =
 					this.app.workspace.getActiveViewOfType(DataLoomView);
 				const markdownView =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (nltView || markdownView) {
+				if (loomView || markdownView) {
 					if (!checking) this.app.workspace.trigger(EVENT_ROW_ADD);
 					return true;
 				}
@@ -444,15 +458,15 @@ export default class DataLoomPlugin extends Plugin {
 		});
 
 		this.addCommand({
-			id: "nlt-row-column",
+			id: "delete-row",
 			name: "Delete row",
 			hotkeys: [{ modifiers: ["Alt", "Shift"], key: "Backspace" }],
 			checkCallback: (checking: boolean) => {
-				const nltView =
+				const loomView =
 					this.app.workspace.getActiveViewOfType(DataLoomView);
 				const markdownView =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (nltView || markdownView) {
+				if (loomView || markdownView) {
 					if (!checking) {
 						this.app.workspace.trigger(EVENT_ROW_DELETE);
 					}
@@ -463,14 +477,14 @@ export default class DataLoomPlugin extends Plugin {
 		});
 
 		this.addCommand({
-			id: "nlt-export-markdown",
+			id: "export-markdown",
 			name: "Export as markdown",
 			checkCallback: (checking: boolean) => {
-				const nltView =
+				const loomView =
 					this.app.workspace.getActiveViewOfType(DataLoomView);
 				const markdownView =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (nltView || markdownView) {
+				if (loomView || markdownView) {
 					if (!checking) {
 						this.app.workspace.trigger(EVENT_DOWNLOAD_MARKDOWN);
 					}
@@ -481,14 +495,14 @@ export default class DataLoomPlugin extends Plugin {
 		});
 
 		this.addCommand({
-			id: "nlt-export-csv",
+			id: "export-csv",
 			name: "Export as CSV",
 			checkCallback: (checking: boolean) => {
-				const nltView =
+				const loomView =
 					this.app.workspace.getActiveViewOfType(DataLoomView);
 				const markdownView =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (nltView || markdownView) {
+				if (loomView || markdownView) {
 					if (!checking) {
 						this.app.workspace.trigger(EVENT_DOWNLOAD_CSV);
 					}

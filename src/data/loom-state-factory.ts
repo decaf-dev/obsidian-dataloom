@@ -1,5 +1,4 @@
 import { randomColor } from "src/shared/color";
-import { CURRENT_PLUGIN_VERSION } from "./constants";
 import {
 	AspectRatio,
 	BodyCell,
@@ -135,9 +134,10 @@ export const createLoomState = (
 	numRows: number,
 	options?: {
 		cellType?: CellType;
+		pluginVersion?: string;
 	}
 ): LoomState => {
-	const { cellType } = options || {};
+	const { cellType, pluginVersion = "1.0.0" } = options || {};
 	//Create columns
 	const columns: Column[] = [];
 	for (let i = 0; i < numColumns; i++)
@@ -190,6 +190,6 @@ export const createLoomState = (
 			footerCells,
 			filterRules,
 		},
-		pluginVersion: CURRENT_PLUGIN_VERSION,
+		pluginVersion,
 	};
 };

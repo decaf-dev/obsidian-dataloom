@@ -8,7 +8,7 @@ If the code you are contributing is related to an existing issue, please make a 
 
 ## Diagrams
 
-State machines, flowcharts, and other development materials can be found can be found in the `development` folder
+State machines and flowcharts can be found can be found in the `diagrams` folder
 
 ## Getting started
 

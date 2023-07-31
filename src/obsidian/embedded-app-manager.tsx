@@ -39,14 +39,18 @@ let embeddedApps: EmbeddedApp[] = [];
  * This is intended to be used in the `on("layout-change")` callback function
  * @param markdownLeaves - The open markdown leaves
  */
-export const loadPreviewModeApps = (markdownLeaves: WorkspaceLeaf[]) => {
+export const loadPreviewModeApps = (
+	markdownLeaves: WorkspaceLeaf[],
+	manifestPluginVersion: string
+) => {
 	for (let i = 0; i < markdownLeaves.length; i++) {
 		const leaf = markdownLeaves[i];
 
 		const view = leaf.view as MarkdownView;
 		const mode = view.getMode();
 
-		if (mode === "preview") loadEmbeddedLoomApps(leaf, "preview");
+		if (mode === "preview")
+			loadEmbeddedLoomApps(leaf, "preview", manifestPluginVersion);
 	}
 };
 
@@ -59,11 +63,14 @@ export const loadPreviewModeApps = (markdownLeaves: WorkspaceLeaf[]) => {
  */
 export const loadEmbeddedLoomApps = (
 	markdownLeaf: WorkspaceLeaf,
-	mode: "source" | "preview"
+	mode: "source" | "preview",
+	manifestPluginVersion: string
 ) => {
 	const view = markdownLeaf.view as MarkdownView;
 	const linkEls = getEmbeddedLoomLinkEls(view, mode);
-	linkEls.forEach((linkEl) => processLinkEl(linkEl, markdownLeaf, mode));
+	linkEls.forEach((linkEl) =>
+		processLinkEl(linkEl, markdownLeaf, mode, manifestPluginVersion)
+	);
 };
 
 /**
@@ -87,7 +94,8 @@ export const purgeEmbeddedLoomApps = (leaves: WorkspaceLeaf[]) => {
 const processLinkEl = async (
 	linkEl: HTMLElement,
 	leaf: WorkspaceLeaf,
-	mode: "source" | "preview"
+	mode: "source" | "preview",
+	manifestPluginVersion: string
 ) => {
 	//Set the width and height of the embedded loom
 	//We do this first because if we have already loaded the loom, we stil want
@@ -108,7 +116,7 @@ const processLinkEl = async (
 
 	//Get the loom state
 	const data = await app.vault.read(file);
-	const state = deserializeLoomState(data);
+	const state = deserializeLoomState(data, manifestPluginVersion);
 
 	//Store the embed in memory
 	const appId = uuid();

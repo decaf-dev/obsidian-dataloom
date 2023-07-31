@@ -4,6 +4,7 @@ if (process.env.ENABLE_REACT_DEVTOOLS === "true") {
 	import("react-devtools");
 }
 import { loadEmbeddedLoomApps } from "./embedded-app-manager";
+import { store } from "src/redux/global/store";
 
 /**
  * This plugin is responsible for rendering the loom app in live preview mode.
@@ -29,7 +30,11 @@ class EditingViewPlugin implements PluginValue {
 			(leaf) => leaf.view.editor.cm === this.editorView
 		);
 		if (!activeLeaf) return;
-		loadEmbeddedLoomApps(activeLeaf, "source");
+		loadEmbeddedLoomApps(
+			activeLeaf,
+			"source",
+			store.getState().global.manifestPluginVersion
+		);
 	}
 }
 
