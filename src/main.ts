@@ -45,6 +45,7 @@ import {
 	loadPreviewModeApps,
 	purgeEmbeddedLoomApps,
 } from "./obsidian/embedded-app-manager";
+import DonationModal from "./obsidian/donation-modal";
 
 export interface DataLoomSettings {
 	shouldDebug: boolean;
@@ -55,6 +56,8 @@ export interface DataLoomSettings {
 	defaultEmbedHeight: string;
 	hasMigratedTo800: boolean;
 	showWelcomeModal: boolean;
+	showDonationModal: boolean;
+	showWhatsNewModal: boolean;
 	pluginVersion: string;
 }
 
@@ -67,6 +70,8 @@ export const DEFAULT_SETTINGS: DataLoomSettings = {
 	defaultEmbedHeight: "340px",
 	hasMigratedTo800: false,
 	showWelcomeModal: true,
+	showDonationModal: true,
+	showWhatsNewModal: true,
 	pluginVersion: "",
 };
 
@@ -110,7 +115,13 @@ export default class DataLoomPlugin extends Plugin {
 
 		if (this.settings.pluginVersion !== this.manifest.version) {
 			if (this.settings.pluginVersion !== "") {
-				new WhatsNewModal(this.app).open();
+				if (this.settings.showDonationModal) {
+					new DonationModal(this.app).open();
+				}
+
+				if (this.settings.showWhatsNewModal) {
+					new WhatsNewModal(this.app).open();
+				}
 			}
 		}
 

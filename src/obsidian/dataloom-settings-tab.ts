@@ -1,6 +1,7 @@
 import { PluginSettingTab, App } from "obsidian";
 import { Setting } from "obsidian";
 import DataLoomPlugin from "../main";
+import { renderDonationBadge } from "./html-utils";
 
 export default class DataLoomSettingsTab extends PluginSettingTab {
 	plugin: DataLoomPlugin;
@@ -8,6 +9,32 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 	constructor(app: App, plugin: DataLoomPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
+	}
+
+	display(): void {
+		const { containerEl } = this;
+
+		containerEl.empty();
+
+		this.renderDonationHeader(containerEl);
+		this.renderFileSettings(containerEl);
+		this.renderExportSettings(containerEl);
+		this.renderEmbeddedLoomSettings(containerEl);
+		this.renderModalSettings(containerEl);
+		this.renderDebugSettings(containerEl);
+	}
+
+	private renderDonationHeader(containerEl: HTMLElement) {
+		new Setting(containerEl).setName("DataLoom").setHeading();
+
+		const donationDesc = new DocumentFragment();
+		const textEl = donationDesc.createDiv({
+			text: "I need your support - this project is dependent on donations from people like you",
+		});
+		textEl.style.marginBottom = "1.5em";
+		renderDonationBadge(donationDesc);
+
+		new Setting(containerEl).setDesc(donationDesc);
 	}
 
 	private renderFileSettings(containerEl: HTMLElement) {
@@ -121,6 +148,33 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 		);
 	}
 
+	private renderModalSettings(containerEl: HTMLElement) {
+		new Setting(containerEl).setName("Modal").setHeading();
+		new Setting(containerEl)
+			.setName("What's New Modal")
+			.setDesc("Show the what's new modal when the plugin is updated.")
+			.addToggle((cb) => {
+				cb.setValue(this.plugin.settings.showWhatsNewModal).onChange(
+					async (value) => {
+						this.plugin.settings.showWhatsNewModal = value;
+						await this.plugin.saveSettings();
+					}
+				);
+			});
+
+		new Setting(containerEl)
+			.setName("Donation Modal")
+			.setDesc("Show the donation modal when the plugin is updated.")
+			.addToggle((cb) => {
+				cb.setValue(this.plugin.settings.shouldDebug).onChange(
+					async (value) => {
+						this.plugin.settings.showDonationModal = value;
+						await this.plugin.saveSettings();
+					}
+				);
+			});
+	}
+
 	private renderDebugSettings(containerEl: HTMLElement) {
 		new Setting(containerEl).setName("Debug").setHeading();
 		new Setting(containerEl)
@@ -136,16 +190,5 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 					}
 				);
 			});
-	}
-
-	display(): void {
-		const { containerEl } = this;
-
-		containerEl.empty();
-
-		this.renderFileSettings(containerEl);
-		this.renderExportSettings(containerEl);
-		this.renderEmbeddedLoomSettings(containerEl);
-		this.renderDebugSettings(containerEl);
 	}
 }
