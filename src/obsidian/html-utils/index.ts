@@ -1,7 +1,9 @@
+import "./styles.css";
+
 export const renderDonationBadge = (
-	parentEl: HTMLElement | DocumentFragment
+	contentEl: HTMLElement | DocumentFragment
 ) => {
-	const linkEl = parentEl.createEl("a", {
+	const linkEl = contentEl.createEl("a", {
 		href: "https://www.buymeacoffee.com/treywallis",
 	});
 	const imgEl = linkEl.createEl("img");
@@ -10,4 +12,8 @@ export const renderDonationBadge = (
 	imgEl.referrerPolicy = "no-referrer";
 	imgEl.alt = "Buymeacoffee";
 	imgEl.width = 180;
+};
+
+export const renderDivider = (contentEl: HTMLElement | DocumentFragment) => {
+	contentEl.createDiv({ cls: "dataloom-modal__divider" });
 };

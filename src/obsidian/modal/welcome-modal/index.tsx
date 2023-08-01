@@ -1,4 +1,5 @@
 import { App, Modal, setIcon } from "obsidian";
+import { renderDivider } from "src/obsidian/html-utils";
 
 export default class WelcomeModal extends Modal {
 	constructor(app: App) {
@@ -11,15 +12,15 @@ export default class WelcomeModal extends Modal {
 		contentEl.createDiv({
 			text: "Weave together data from diverse sources into a cohesive table view.",
 		});
-		this.renderDivider(contentEl);
-		const titleEl = contentEl.createEl("h5", { text: "Learn how to use" });
-		titleEl.style.marginTop = "0em";
-		titleEl.style.marginBottom = "1em";
+		renderDivider(contentEl);
+		contentEl.createEl("h5", {
+			text: "Learn how to use",
+			cls: "dataloom-welcome-modal__title",
+		});
 
-		const cardContainerEl = contentEl.createDiv();
-		cardContainerEl.style.display = "flex";
-		cardContainerEl.style.flexDirection = "column";
-		cardContainerEl.style.rowGap = "1rem";
+		const cardContainerEl = contentEl.createDiv({
+			cls: "dataloom-welcome-modal__card-container",
+		});
 
 		this.renderCard(
 			cardContainerEl,
@@ -46,13 +47,6 @@ export default class WelcomeModal extends Modal {
 		);
 	}
 
-	private renderDivider(contentEl: HTMLElement) {
-		const dividerEl = contentEl.createDiv();
-		dividerEl.style.margin = "1.5em 0";
-		dividerEl.style.borderTop =
-			"1px solid var(--background-modifier-border)";
-	}
-
 	private renderCard(
 		contentEl: HTMLElement,
 		title: string,
@@ -61,29 +55,27 @@ export default class WelcomeModal extends Modal {
 		iconId: string
 	) {
 		//Card
-		const cardEl = contentEl.createDiv();
-		cardEl.style.display = "flex";
-		cardEl.style.padding = "1em 1.5em";
-		cardEl.style.columnGap = "1.5em";
-		cardEl.style.alignItems = "center";
-		cardEl.style.border = "1px solid var(--background-modifier-border)";
-
+		const cardEl = contentEl.createDiv({
+			cls: "dataloom-welcome-modal__card",
+		});
 		const iconEl = cardEl.createDiv();
 		setIcon(iconEl, iconId);
-		(iconEl.firstChild as HTMLElement).style.width = "1.5em";
-		(iconEl.firstChild as HTMLElement).style.height = "1.5em";
+		(iconEl.firstChild as HTMLElement).classList.add(
+			"dataloom-welcome-modal__card-icon"
+		);
 
 		//Card container
 		const cardContainerEl = cardEl.createDiv();
 
-		const titleEl = cardContainerEl.createEl("h6", { text: title });
-		titleEl.style.margin = "0";
-
-		const descriptionEl = cardContainerEl.createEl("p", {
-			text: description,
+		cardContainerEl.createEl("h6", {
+			text: title,
+			cls: "dataloom-welcome-modal__card-title",
 		});
-		descriptionEl.style.marginTop = "0.25em";
-		descriptionEl.style.marginBottom = "0.5em";
+
+		cardContainerEl.createEl("p", {
+			text: description,
+			cls: "dataloom-welcome-modal__card-description",
+		});
 
 		cardContainerEl.createEl("a", { text: "Get started", href: link });
 	}

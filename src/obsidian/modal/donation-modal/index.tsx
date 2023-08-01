@@ -1,5 +1,7 @@
 import { App, Modal } from "obsidian";
-import { renderDonationBadge } from "./html-utils";
+import { renderDonationBadge } from "../../html-utils";
+
+import "./styles.css";
 
 export default class DonationModal extends Modal {
 	constructor(app: App) {
@@ -9,13 +11,14 @@ export default class DonationModal extends Modal {
 	onOpen() {
 		const { contentEl } = this;
 		contentEl.createEl("h2", { text: "Support DataLoom" });
-		this.renderTextEl(contentEl);
+		this.renderText(contentEl);
 		renderDonationBadge(contentEl);
 	}
 
-	private renderTextEl(contentEl: HTMLElement) {
-		const containerEl = contentEl.createEl("div");
-		containerEl.style.marginBottom = "1.5em";
+	private renderText(contentEl: HTMLElement) {
+		const containerEl = contentEl.createEl("div", {
+			cls: "dataloom-donation-modal__container",
+		});
 		containerEl.createEl("p", {
 			text: "I need your help. I develop this plugin as a free service, however I cannot dedicate adequate time to it without some support.",
 		});
