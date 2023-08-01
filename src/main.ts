@@ -113,6 +113,10 @@ export default class DataLoomPlugin extends Plugin {
 			await this.migrateLoomFiles();
 		});
 
+		new DonationModal(this.app).open();
+		new WhatsNewModal(this.app).open();
+		new WelcomeModal(app).open();
+
 		if (this.settings.pluginVersion !== this.manifest.version) {
 			if (this.settings.pluginVersion !== "") {
 				if (this.settings.showDonationModal) {

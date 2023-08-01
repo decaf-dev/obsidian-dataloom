@@ -1,6 +1,8 @@
 import { App, Modal, setIcon } from "obsidian";
 import { renderDivider } from "src/obsidian/html-utils";
 
+import "./styles.css";
+
 export default class WelcomeModal extends Modal {
 	constructor(app: App) {
 		super(app);

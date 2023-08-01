@@ -26,7 +26,10 @@ export default class WhatsNewModal extends Modal {
 			});
 
 			const date = new Date(published_at);
-			tagEl.innerHTML += ` <span style="font-size: 0.75em; color: var(--text-muted);">(${date.toLocaleDateString()})</span>`;
+			tagEl.createSpan({
+				text: date.toLocaleDateString(),
+				cls: "dataloom-whats-new-modal__date",
+			});
 
 			const bodyEl = contentEl.createDiv();
 			const replacedText = this.replaceIssueNumbersWithLinks(body);
