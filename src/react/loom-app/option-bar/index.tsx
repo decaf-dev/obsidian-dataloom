@@ -20,7 +20,7 @@ import { css } from "@emotion/react";
 import Button from "src/react/shared/button";
 import Icon from "src/react/shared/icon";
 import { useMountState } from "../mount-provider";
-import ExportModal from "src/obsidian/export-modal";
+import ExportModal from "src/obsidian/modal/export-modal";
 import { useAppSelector } from "src/redux/global/hooks";
 
 interface SortButtonListProps {

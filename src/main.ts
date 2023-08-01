@@ -38,14 +38,14 @@ import { getBasename } from "./shared/link/link-utils";
 import { hasDarkTheme } from "./shared/render/utils";
 import { removeFocusVisibleClass } from "./shared/menu/focus-visible";
 import { LoomState } from "./shared/types";
-import WelcomeModal from "./obsidian/welcome-modal";
-import WhatsNewModal from "./obsidian/whats-new-modal";
+import WelcomeModal from "./obsidian/modal/welcome-modal";
+import WhatsNewModal from "./obsidian/modal/whats-new-modal/whats-new-modal";
 import DataLoomSettingsTab from "./obsidian/dataloom-settings-tab";
 import {
 	loadPreviewModeApps,
 	purgeEmbeddedLoomApps,
-} from "./obsidian/embedded-app-manager";
-import DonationModal from "./obsidian/donation-modal";
+} from "./obsidian/embedded-app/embedded-app-manager";
+import DonationModal from "./obsidian/modal/donation-modal";
 
 export interface DataLoomSettings {
 	shouldDebug: boolean;

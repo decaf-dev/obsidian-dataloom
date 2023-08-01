@@ -1,6 +1,9 @@
 import { App, Component, MarkdownRenderer, Modal } from "obsidian";
 import { getLastestGithubRelease } from "src/data/network";
 
+import "./styles.css";
+import { renderDivider } from "src/obsidian/html-utils";
+
 export default class WhatsNewModal extends Modal {
 	constructor(app: App) {
 		super(app);
@@ -9,7 +12,7 @@ export default class WhatsNewModal extends Modal {
 	async onOpen() {
 		let { contentEl } = this;
 		contentEl.createEl("h2", { text: "DataLoom - What's New" });
-		this.renderDivider(contentEl);
+		renderDivider(contentEl);
 		this.renderContent(contentEl);
 	}
 
@@ -19,12 +22,14 @@ export default class WhatsNewModal extends Modal {
 		if (data) {
 			const tagEl = contentEl.createEl("h5", {
 				text: `v${tag_name}`,
+				cls: "dataloom-whats-new-modal__tag",
 			});
-			tagEl.style.marginTop = "0.5em";
-			tagEl.style.marginBottom = "0";
 
 			const date = new Date(published_at);
-			tagEl.innerHTML += ` <span style="font-size: 0.75em; color: var(--text-muted);">(${date.toLocaleDateString()})</span>`;
+			tagEl.createSpan({
+				text: date.toLocaleDateString(),
+				cls: "dataloom-whats-new-modal__date",
+			});
 
 			const bodyEl = contentEl.createDiv();
 			const replacedText = this.replaceIssueNumbersWithLinks(body);
@@ -40,8 +45,6 @@ export default class WhatsNewModal extends Modal {
 					a.setText(issueNumber);
 				}
 			});
-			// (bodyEl.firstChild as HTMLElement).style.paddingInlineStart =
-			// 	"20px";
 
 			contentEl.createEl("a", {
 				text: "View all releases",
@@ -52,13 +55,6 @@ export default class WhatsNewModal extends Modal {
 				text: "Couldn't fetch latest release from GitHub.",
 			});
 		}
-	}
-
-	private renderDivider(contentEl: HTMLElement) {
-		const dividerEl = contentEl.createDiv();
-		dividerEl.style.margin = "1.5em 0";
-		dividerEl.style.borderTop =
-			"1px solid var(--background-modifier-border)";
 	}
 
 	private replaceIssueNumbersWithLinks(text: string) {

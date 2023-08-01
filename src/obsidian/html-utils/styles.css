@@ -1,0 +1,8 @@
+.dataloom-modal__divider {
+    margin: 1.5em 0;
+    border-top: 1px solid var(--background-modifier-border);
+}
+
+.dataloom-modal-text--emphasize {
+    color: var(--text-accent);
+}
