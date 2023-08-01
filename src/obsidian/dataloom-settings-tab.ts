@@ -186,6 +186,33 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 			});
 	}
 
+	private renderModalSettings(containerEl: HTMLElement) {
+		new Setting(containerEl).setName("Modal").setHeading();
+		new Setting(containerEl)
+			.setName("What's New Modal")
+			.setDesc("Show the what's new modal when the plugin is updated.")
+			.addToggle((cb) => {
+				cb.setValue(this.plugin.settings.showWhatsNewModal).onChange(
+					async (value) => {
+						this.plugin.settings.showWhatsNewModal = value;
+						await this.plugin.saveSettings();
+					}
+				);
+			});
+
+		new Setting(containerEl)
+			.setName("Donation Modal")
+			.setDesc("Show the donation modal when the plugin is updated.")
+			.addToggle((cb) => {
+				cb.setValue(this.plugin.settings.shouldDebug).onChange(
+					async (value) => {
+						this.plugin.settings.showDonationModal = value;
+						await this.plugin.saveSettings();
+					}
+				);
+			});
+	}
+
 	private renderDebugSettings(containerEl: HTMLElement) {
 		new Setting(containerEl).setName("Debug").setHeading();
 		new Setting(containerEl)
