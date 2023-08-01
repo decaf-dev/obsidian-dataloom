@@ -42,8 +42,20 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 
 		//Attachments folder
 		const attachmentsFolderDesc = new DocumentFragment();
-		attachmentsFolderDesc.createSpan({}, (span) => {
-			span.innerHTML = `Create looms in the attachments folder defined in the Obsidian settings.<br><br>This can be changed in <span style="color: var(--text-accent);">Files & Links -> Default location for new attachments</span><br><br>Otherwise, the folder location below will be used.`;
+		attachmentsFolderDesc.createDiv({
+			text: "Create looms in the attachments folder defined in the Obsidian settings.",
+		});
+		attachmentsFolderDesc.createSpan({
+			text: "This can be changed in",
+		});
+
+		attachmentsFolderDesc.createSpan({
+			text: " Files & Links -> Default location for new attachments",
+			cls: "Dashboards__setting-emphasize",
+		});
+		attachmentsFolderDesc.createEl("br");
+		attachmentsFolderDesc.createDiv({
+			text: "Otherwise, the folder location below will be used",
 		});
 
 		new Setting(containerEl)
@@ -62,8 +74,8 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 
 		//Folder location
 		const defaultLocationDesc = new DocumentFragment();
-		defaultLocationDesc.createSpan({}, (span) => {
-			span.innerHTML = `Where newly created looms are placed. Default location is the vault root folder, if not specified.`;
+		defaultLocationDesc.createSpan({
+			text: "Where newly created looms are placed. Default location is the vault root folder, if not specified.",
 		});
 
 		if (this.plugin.settings.createAtObsidianAttachmentFolder === false) {
@@ -83,9 +95,8 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 
 	private renderExportSettings(containerEl: HTMLElement) {
 		const exportRenderMarkdownDesc = new DocumentFragment();
-		exportRenderMarkdownDesc.createSpan({}, (span) => {
-			span.innerHTML =
-				"If enabled, content will be exported as markdown. For example, if enabled, a checkbox cell's content will be exported as <strong>[ ]</strong> or <strong>[x]</strong>. If disabled, the content will be exported as <strong>true</strong> or <strong>false</strong>.";
+		exportRenderMarkdownDesc.createSpan({
+			text: "If enabled, content will be exported as markdown. For example, if enabled, a checkbox cell's content will be exported as [ ] or [x]. If disabled, the content will be exported as true or false.",
 		});
 
 		new Setting(containerEl).setName("Export").setHeading();
@@ -106,9 +117,12 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 		new Setting(containerEl).setName("Embedded looms").setHeading();
 
 		const defaultEmbedWidthDesc = new DocumentFragment();
-		defaultEmbedWidthDesc.createSpan({}, (span) => {
-			span.innerHTML =
-				"The default embedded loom width. Accepts valid HTML width values. Like <strong>100px<strong>, <strong>50%</strong>, etc.";
+		defaultEmbedWidthDesc.createSpan({
+			text: "The default embedded loom width. Accepts valid HTML width values. Like 100px, 50%, etc.",
+		});
+		defaultEmbedWidthDesc.createDiv({
+			text: "Please close and reopen your embedded looms for this setting to take effect",
+			cls: "dataloom-modal-text--emphasize",
 		});
 
 		new Setting(containerEl)
@@ -124,9 +138,12 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 			});
 
 		const defaultEmbedHeightDesc = new DocumentFragment();
-		defaultEmbedHeightDesc.createSpan({}, (span) => {
-			span.innerHTML =
-				"The default embedded loom height. Accepts valid HTML width values. Like <strong>100px</strong>, <strong>50%</strong>, etc.";
+		defaultEmbedHeightDesc.createSpan({
+			text: "The default embedded loom height. Accepts valid HTML width values. Like 100px, 50%, etc.",
+		});
+		defaultEmbedHeightDesc.createDiv({
+			text: "Please close and reopen your embedded looms for this setting to take effect",
+			cls: "dataloom-modal-text--emphasize",
 		});
 
 		new Setting(containerEl)
@@ -140,12 +157,6 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 					}
 				);
 			});
-
-		containerEl.createSpan(
-			{},
-			(span) =>
-				(span.innerHTML = `<strong style="color: var(--text-accent); font-size: 12px;">Please close and reopen your embedded looms for these settings to take effect</strong>`)
-		);
 	}
 
 	private renderModalSettings(containerEl: HTMLElement) {
