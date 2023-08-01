@@ -2,9 +2,9 @@ import esbuild from "esbuild";
 import process from "process";
 import builtins from "builtin-modules";
 import * as fs from "fs";
-import path from "path";
 
 const prod = process.argv[2] === "production";
+const tools = process.argv[2] === "tools";
 
 esbuild
 	.build({
@@ -53,9 +53,9 @@ esbuild
 		logLevel: "info",
 		sourcemap: !prod,
 		define: {
-			"process.env.ENABLE_REACT_DEVTOOLS": prod
-				? JSON.stringify("false")
-				: JSON.stringify("true"),
+			"process.env.ENABLE_REACT_DEVTOOLS": tools
+				? JSON.stringify("true")
+				: JSON.stringify("false"),
 		},
 		treeShaking: true,
 		outfile: "main.js",

@@ -5,26 +5,30 @@ import {
 	TAbstractFile,
 	TFile,
 	TFolder,
+	normalizePath,
 } from "obsidian";
 
 import { store } from "./redux/global/store";
-import { setDarkMode, setSettings } from "./redux/global/global-slice";
+import {
+	setManifestPluginVersion,
+	setDarkMode,
+	setSettings,
+} from "./redux/global/global-slice";
 import DataLoomView, { DATA_LOOM_VIEW } from "./obsidian/dataloom-view";
-import { CURRENT_FILE_EXTENSION, WIKI_LINK_REGEX } from "./data/constants";
+import { FILE_EXTENSION, WIKI_LINK_REGEX } from "./data/constants";
 import { createLoomFile } from "src/data/loom-file";
 import {
 	EVENT_COLUMN_ADD,
 	EVENT_COLUMN_DELETE,
 	EVENT_DOWNLOAD_CSV,
 	EVENT_DOWNLOAD_MARKDOWN,
-	EVENT_OUTSIDE_CLICK,
-	EVENT_OUTSIDE_KEYDOWN,
-	EVENT_REFRESH_APP,
-	EVENT_REFRESH_EDITING_VIEW,
+	EVENT_GLOBAL_CLICK,
+	EVENT_GLOBAL_KEYDOWN,
+	EVENT_APP_REFRESH,
 	EVENT_ROW_ADD,
 	EVENT_ROW_DELETE,
 } from "./shared/events";
-import { editingViewPlugin } from "./obsidian/editing-view-plugin";
+import EditingViewPlugin from "./obsidian/editing-view-plugin";
 import {
 	deserializeLoomState,
 	serializeLoomState,
@@ -34,9 +38,14 @@ import { getBasename } from "./shared/link/link-utils";
 import { hasDarkTheme } from "./shared/render/utils";
 import { removeFocusVisibleClass } from "./shared/menu/focus-visible";
 import { LoomState } from "./shared/types";
-import WelcomeModal from "./obsidian/welcome-modal";
-import WhatsNewModal from "./obsidian/whats-new-modal";
+import WelcomeModal from "./obsidian/modal/welcome-modal";
+import WhatsNewModal from "./obsidian/modal/whats-new-modal/whats-new-modal";
 import DataLoomSettingsTab from "./obsidian/dataloom-settings-tab";
+import {
+	loadPreviewModeApps,
+	purgeEmbeddedLoomApps,
+} from "./obsidian/embedded-app/embedded-app-manager";
+import DonationModal from "./obsidian/modal/donation-modal";
 
 export interface DataLoomSettings {
 	shouldDebug: boolean;
@@ -47,6 +56,8 @@ export interface DataLoomSettings {
 	defaultEmbedHeight: string;
 	hasMigratedTo800: boolean;
 	showWelcomeModal: boolean;
+	showDonationModal: boolean;
+	showWhatsNewModal: boolean;
 	pluginVersion: string;
 }
 
@@ -59,14 +70,10 @@ export const DEFAULT_SETTINGS: DataLoomSettings = {
 	defaultEmbedHeight: "340px",
 	hasMigratedTo800: false,
 	showWelcomeModal: true,
+	showDonationModal: true,
+	showWhatsNewModal: true,
 	pluginVersion: "",
 };
-
-/**
- * The plugin id is the id used in the manifest.json file
- * We use the old plugin id to maintain our download count
- */
-export const DATA_LOOM_PLUGIN_ID = "notion-like-tables";
 
 export default class DataLoomPlugin extends Plugin {
 	settings: DataLoomSettings;
@@ -78,15 +85,23 @@ export default class DataLoomPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
-		this.registerView(DATA_LOOM_VIEW, (leaf) => new DataLoomView(leaf));
-		this.registerExtensions([CURRENT_FILE_EXTENSION], DATA_LOOM_VIEW);
+		this.registerView(
+			DATA_LOOM_VIEW,
+			(leaf) =>
+				new DataLoomView(leaf, this.manifest.id, this.manifest.version)
+		);
+		this.registerExtensions([FILE_EXTENSION], DATA_LOOM_VIEW);
 
 		this.addRibbonIcon("table", "Create new loom", async () => {
 			await this.newLoomFile(null);
 		});
 
 		this.addSettingTab(new DataLoomSettingsTab(this.app, this));
-		this.registerEmbeddedView();
+
+		this.registerEditorExtension(
+			EditingViewPlugin(this.app, this.manifest.version)
+		);
+
 		this.registerCommands();
 		this.registerEvents();
 		this.registerDOMEvents();
@@ -99,14 +114,15 @@ export default class DataLoomPlugin extends Plugin {
 		});
 
 		if (this.settings.pluginVersion !== this.manifest.version) {
-			//Don't show updates for the first install
-			//unless you have already downloaded the plugin
+			if (this.settings.pluginVersion !== "") {
+				if (this.settings.showDonationModal) {
+					new DonationModal(this.app).open();
+				}
 
-			//Since current users won't have a plugin version set, we will disable this
-			//until maybe 8.2.0 or 8.3.0
-			//if (this.settings.pluginVersion !== "") {
-			new WhatsNewModal(this.app).open();
-			//}
+				if (this.settings.showWhatsNewModal) {
+					new WhatsNewModal(this.app).open();
+				}
+			}
 		}
 
 		if (this.settings.showWelcomeModal) {
@@ -117,10 +133,11 @@ export default class DataLoomPlugin extends Plugin {
 
 		this.settings.pluginVersion = this.manifest.version;
 		await this.saveSettings();
+		store.dispatch(setManifestPluginVersion(this.manifest.version));
 	}
 
+	//TODO remove this in future versions
 	private async migrateLoomFiles() {
-		// Migrate .dashboard files to .loom files
 		if (!this.settings.hasMigratedTo800) {
 			const loomFiles = this.app.vault
 				.getFiles()
@@ -132,9 +149,13 @@ export default class DataLoomPlugin extends Plugin {
 
 			for (let i = 0; i < loomFiles.length; i++) {
 				const file = loomFiles[i];
+				const data = await this.app.vault.read(file);
+				const parsedState = JSON.parse(data);
+				if (!parsedState.model) return;
+
 				const newFilePath = file.path.replace(
 					`.${file.extension}`,
-					`.${CURRENT_FILE_EXTENSION}`
+					`.${FILE_EXTENSION}`
 				);
 				try {
 					await this.app.vault.rename(file, newFilePath);
@@ -150,31 +171,9 @@ export default class DataLoomPlugin extends Plugin {
 		}
 	}
 
-	private registerEmbeddedView() {
-		//This registers a CodeMirror extension. It is used to render the embedded
-		//loom in live preview mode.
-		this.registerEditorExtension(editingViewPlugin);
-		//This registers a Markdown post processor. It is used to render the embedded
-		//loom in preview mode.
-		// this.registerMarkdownPostProcessor((element, context) => {
-		// 	const embeddedLoomLinkEls = getEmbeddedDataLoomLinkEls(element);
-		// 	for (let i = 0; i < embeddedLoomLinkEls.length; i++) {
-		// 		const linkEl = embeddedLoomLinkEls[i];
-		// 		context.addChild(
-		// 			new DataLoomReadingChild(
-		// 				linkEl,
-		// 				linkEl.getAttribute("src")!
-		// 			)
-		// 		);
-		// 	}
-		// });
-	}
-
-	private async newLoomFile(
-		contextMenuFolderPath: string | null,
-		embedded?: boolean
-	) {
+	private getFolderForNewLoomFile(contextMenuFolderPath: string | null) {
 		let folderPath = "";
+
 		if (contextMenuFolderPath) {
 			folderPath = contextMenuFolderPath;
 		} else if (this.settings.createAtObsidianAttachmentFolder) {
@@ -184,11 +183,25 @@ export default class DataLoomPlugin extends Plugin {
 		} else {
 			folderPath = this.settings.customFolderForNewFiles;
 		}
+		const normalized = normalizePath(folderPath);
+		if (normalized === ".") return "/";
+		return normalized;
+	}
 
-		const filePath = await createLoomFile({
+	private async newLoomFile(
+		contextMenuFolderPath: string | null,
+		embedded?: boolean
+	) {
+		const folderPath = this.getFolderForNewLoomFile(contextMenuFolderPath);
+		const filePath = await createLoomFile(
+			this.app,
 			folderPath,
-		});
+			this.manifest.version
+		);
+
+		//If the file is embedded, we don't need to open it
 		if (embedded) return filePath;
+
 		//Open file in a new tab and set it to active
 		await app.workspace.getLeaf(true).setViewState({
 			type: DATA_LOOM_VIEW,
@@ -204,13 +217,13 @@ export default class DataLoomPlugin extends Plugin {
 
 			//Clear the focus-visible class from the last focused element
 			removeFocusVisibleClass();
-			this.app.workspace.trigger(EVENT_OUTSIDE_CLICK);
+			this.app.workspace.trigger(EVENT_GLOBAL_CLICK);
 		});
 
 		//This event is guaranteed to fire after our React synthetic event handlers
 		this.registerDomEvent(document, "keydown", (e) => {
 			if (this.settings.shouldDebug) console.log("main handleKeyDown");
-			this.app.workspace.trigger(EVENT_OUTSIDE_KEYDOWN, e);
+			this.app.workspace.trigger(EVENT_GLOBAL_KEYDOWN, e);
 		});
 	}
 
@@ -219,6 +232,26 @@ export default class DataLoomPlugin extends Plugin {
 			this.app.workspace.on("css-change", () => {
 				const isDark = hasDarkTheme();
 				store.dispatch(setDarkMode(isDark));
+			})
+		);
+
+		//This event is fired whenever a leaf is opened, close, moved,
+		//or the user switches between editing and preview mode
+		this.registerEvent(
+			this.app.workspace.on("layout-change", () => {
+				const leaves = this.app.workspace.getLeavesOfType("markdown");
+				purgeEmbeddedLoomApps(leaves);
+
+				//TODO find a better way to do this
+				//Wait for the DOM to update before loading the preview mode apps
+				//2ms should be enough time
+				setTimeout(() => {
+					loadPreviewModeApps(
+						this.app,
+						leaves,
+						this.manifest.version
+					);
+				}, 2);
 			})
 		);
 
@@ -239,19 +272,10 @@ export default class DataLoomPlugin extends Plugin {
 		this.app.vault.on(
 			"rename",
 			async (file: TAbstractFile, oldPath: string) => {
-				//When a file is renamed, we want to refresh all open leafs
-				//that contain an embedded loom
-				const leafs = app.workspace.getLeavesOfType("markdown");
-				leafs.forEach((leaf) => {
-					leaf.trigger(EVENT_REFRESH_EDITING_VIEW);
-				});
-
 				if (file instanceof TFile) {
 					const loomFiles = this.app.vault
 						.getFiles()
-						.filter(
-							(file) => file.extension === CURRENT_FILE_EXTENSION
-						);
+						.filter((file) => file.extension === FILE_EXTENSION);
 
 					const loomsToUpdate: {
 						file: TFile;
@@ -262,7 +286,10 @@ export default class DataLoomPlugin extends Plugin {
 					for (const loomFile of loomFiles) {
 						//For each file read its contents
 						const data = await file.vault.read(loomFile);
-						const state = deserializeLoomState(data);
+						const state = deserializeLoomState(
+							data,
+							this.manifest.version
+						);
 						//Search for old path in the file
 
 						state.model.bodyCells.forEach((cell) => {
@@ -340,7 +367,7 @@ export default class DataLoomPlugin extends Plugin {
 
 							//Update all looms that match this path
 							app.workspace.trigger(
-								EVENT_REFRESH_APP,
+								EVENT_APP_REFRESH,
 								loomFile.path,
 								-1, //update all looms that match this path
 								newState
@@ -354,7 +381,7 @@ export default class DataLoomPlugin extends Plugin {
 
 	registerCommands() {
 		this.addCommand({
-			id: "dataloom-create",
+			id: "create",
 			name: "Create loom",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "=" }],
 			callback: async () => {
@@ -363,7 +390,7 @@ export default class DataLoomPlugin extends Plugin {
 		});
 
 		this.addCommand({
-			id: "dataloom-create-and-embed",
+			id: "create-and-embed",
 			name: "Create loom and embed it into current file",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "+" }],
 			editorCallback: async (editor) => {
@@ -389,15 +416,15 @@ export default class DataLoomPlugin extends Plugin {
 		});
 
 		this.addCommand({
-			id: "nlt-add-column",
+			id: "add-column",
 			name: "Add column",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "\\" }],
 			checkCallback: (checking: boolean) => {
-				const nltView =
+				const loomView =
 					this.app.workspace.getActiveViewOfType(DataLoomView);
 				const markdownView =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (nltView || markdownView) {
+				if (loomView || markdownView) {
 					if (!checking) {
 						this.app.workspace.trigger(EVENT_COLUMN_ADD);
 					}
@@ -408,15 +435,15 @@ export default class DataLoomPlugin extends Plugin {
 		});
 
 		this.addCommand({
-			id: "nlt-delete-column",
+			id: "delete-column",
 			name: "Delete column",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Backspace" }],
 			checkCallback: (checking: boolean) => {
-				const nltView =
+				const loomView =
 					this.app.workspace.getActiveViewOfType(DataLoomView);
 				const markdownView =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (nltView || markdownView) {
+				if (loomView || markdownView) {
 					if (!checking) {
 						this.app.workspace.trigger(EVENT_COLUMN_DELETE);
 					}
@@ -427,15 +454,15 @@ export default class DataLoomPlugin extends Plugin {
 		});
 
 		this.addCommand({
-			id: "nlt-add-row",
+			id: "add-row",
 			name: "Add row",
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "Enter" }],
 			checkCallback: (checking: boolean) => {
-				const nltView =
+				const loomView =
 					this.app.workspace.getActiveViewOfType(DataLoomView);
 				const markdownView =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (nltView || markdownView) {
+				if (loomView || markdownView) {
 					if (!checking) this.app.workspace.trigger(EVENT_ROW_ADD);
 					return true;
 				}
@@ -444,15 +471,15 @@ export default class DataLoomPlugin extends Plugin {
 		});
 
 		this.addCommand({
-			id: "nlt-row-column",
+			id: "delete-row",
 			name: "Delete row",
 			hotkeys: [{ modifiers: ["Alt", "Shift"], key: "Backspace" }],
 			checkCallback: (checking: boolean) => {
-				const nltView =
+				const loomView =
 					this.app.workspace.getActiveViewOfType(DataLoomView);
 				const markdownView =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (nltView || markdownView) {
+				if (loomView || markdownView) {
 					if (!checking) {
 						this.app.workspace.trigger(EVENT_ROW_DELETE);
 					}
@@ -463,14 +490,14 @@ export default class DataLoomPlugin extends Plugin {
 		});
 
 		this.addCommand({
-			id: "nlt-export-markdown",
+			id: "export-markdown",
 			name: "Export as markdown",
 			checkCallback: (checking: boolean) => {
-				const nltView =
+				const loomView =
 					this.app.workspace.getActiveViewOfType(DataLoomView);
 				const markdownView =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (nltView || markdownView) {
+				if (loomView || markdownView) {
 					if (!checking) {
 						this.app.workspace.trigger(EVENT_DOWNLOAD_MARKDOWN);
 					}
@@ -481,14 +508,14 @@ export default class DataLoomPlugin extends Plugin {
 		});
 
 		this.addCommand({
-			id: "nlt-export-csv",
+			id: "export-csv",
 			name: "Export as CSV",
 			checkCallback: (checking: boolean) => {
-				const nltView =
+				const loomView =
 					this.app.workspace.getActiveViewOfType(DataLoomView);
 				const markdownView =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (nltView || markdownView) {
+				if (loomView || markdownView) {
 					if (!checking) {
 						this.app.workspace.trigger(EVENT_DOWNLOAD_CSV);
 					}

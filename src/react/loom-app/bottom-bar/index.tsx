@@ -1,17 +1,23 @@
-import { css } from "@emotion/react";
+import React from "react";
+
 import NewRowButton from "../new-row-button";
 import Stack from "src/react/shared/stack";
 import Button from "src/react/shared/button";
-import React from "react";
 import Flex from "src/react/shared/flex";
-import { numToPx } from "src/shared/conversion";
 import Padding from "src/react/shared/padding";
-import { useMountState } from "../mount-provider";
+import Icon from "src/react/shared/icon";
+
+import { numToPx } from "src/shared/conversion";
+
+import "./styles.css";
+import { isOnMobile } from "src/shared/render-utils";
 
 interface Props {
 	appId: string;
 	onScrollToTopClick: () => void;
 	onScrollToBottomClick: () => void;
+	onUndoClick: () => void;
+	onRedoClick: () => void;
 	onNewRowClick: () => void;
 }
 
@@ -20,6 +26,8 @@ export default function BottomBar({
 	onNewRowClick,
 	onScrollToTopClick,
 	onScrollToBottomClick,
+	onUndoClick,
+	onRedoClick,
 }: Props) {
 	const ref = React.useRef<HTMLDivElement>(null);
 	const [spaceBetweenTableAndContainer, setSpaceBetweenTableAndContainer] =
@@ -30,7 +38,9 @@ export default function BottomBar({
 
 		if (!ref.current) return;
 
-		const tableEl = document.querySelector(`[data-id="${appId}"] table`);
+		const tableEl = document.querySelector(
+			`[data-id="${appId}"] .dataloom-table`
+		);
 		if (!tableEl) return;
 
 		const tableContainerEl = tableEl.parentElement;
@@ -51,36 +61,46 @@ export default function BottomBar({
 		};
 	}, [ref]);
 
-	const { isMarkdownView } = useMountState();
+	const isMobile = isOnMobile();
 
 	return (
-		<div
-			className="DataLoom__bottom-bar"
-			css={css`
-				position: relative;
-				height: 60px;
-			`}
-		>
+		<div className="dataloom-bottom-bar">
 			<div
 				ref={ref}
-				css={css`
-					position: absolute;
-					top: -${numToPx(spaceBetweenTableAndContainer)};
-					width: 100%;
-				`}
+				style={{
+					top: numToPx(-spaceBetweenTableAndContainer),
+				}}
 			>
-				<Padding
-					px={isMarkdownView ? "unset" : "lg"}
-					py="md"
-					width="100%"
-				>
+				<Padding pt="md" width="100%">
 					<Flex justify="space-between">
-						<NewRowButton onClick={onNewRowClick} />
+						<Stack spacing="md" isHorizontal>
+							{isMobile && (
+								<Button
+									ariaLabel="Undo"
+									icon={<Icon lucideId="undo" />}
+									onClick={onUndoClick}
+								/>
+							)}
+							<NewRowButton onClick={onNewRowClick} />
+						</Stack>
 						<Stack isHorizontal spacing="sm">
-							<Button onClick={onScrollToTopClick}>Top</Button>
-							<Button onClick={onScrollToBottomClick}>
-								Bottom
-							</Button>
+							<Button
+								ariaLabel="Scroll to top"
+								icon={<Icon lucideId="chevron-up" />}
+								onClick={onScrollToTopClick}
+							/>
+							<Button
+								ariaLabel="Scroll to bottom"
+								onClick={onScrollToBottomClick}
+								icon={<Icon lucideId="chevron-down" />}
+							/>
+							{isMobile && (
+								<Button
+									ariaLabel="Redo"
+									icon={<Icon lucideId="redo" />}
+									onClick={onRedoClick}
+								/>
+							)}
 						</Stack>
 					</Flex>
 				</Padding>

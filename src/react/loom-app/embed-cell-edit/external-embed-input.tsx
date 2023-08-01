@@ -16,7 +16,7 @@ export default function ExternalEmbedInput({ value, onChange }: Props) {
 		<input
 			autoFocus
 			type="text"
-			className="DataLoom__focusable"
+			className="dataloom-focusable"
 			css={css`
 				${borderInputStyle}
 			`}

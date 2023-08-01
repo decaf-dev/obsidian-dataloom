@@ -20,7 +20,8 @@ import { css } from "@emotion/react";
 import Button from "src/react/shared/button";
 import Icon from "src/react/shared/icon";
 import { useMountState } from "../mount-provider";
-import ExportModal from "src/obsidian/export-modal";
+import ExportModal from "src/obsidian/modal/export-modal";
+import { useAppSelector } from "src/redux/global/hooks";
 
 interface SortButtonListProps {
 	headerCells: HeaderCell[];
@@ -81,7 +82,8 @@ export default function OptionBar({
 	onRuleAddClick,
 	onRuleTagsChange,
 }: Props) {
-	const { loomFile } = useMountState();
+	const { manifestPluginVersion } = useAppSelector((state) => state.global);
+	const { loomFile, app } = useMountState();
 	const sortedCells = headerCells.filter((cell) => {
 		const columnId = cell.columnId;
 		const column = columns.find((c) => c.id === columnId);
@@ -112,17 +114,15 @@ export default function OptionBar({
 		}
 	);
 
-	const { isMarkdownView } = useMountState();
-
 	return (
 		<div
-			className="DataLoom__option-bar"
+			className="dataloom-option-bar"
 			css={css`
 				width: 100%;
 				border-bottom: 1px solid var(--background-modifier-border);
 			`}
 		>
-			<Padding px={isMarkdownView ? "unset" : "lg"} py="md">
+			<Padding py="md">
 				<Stack spacing="lg" align="center" minHeight="40px">
 					<Wrap
 						justify={{ base: "space-between", mobile: "flex-end" }}
@@ -155,9 +155,13 @@ export default function OptionBar({
 								onToggle={onColumnToggle}
 							/>
 							<Button
-								icon={<Icon lucideId="download" />}
+								icon={<Icon lucideId="more-vertical" />}
 								onClick={() => {
-									new ExportModal(app, loomFile).open();
+									new ExportModal(
+										app,
+										loomFile,
+										manifestPluginVersion
+									).open();
 								}}
 							></Button>
 						</Stack>

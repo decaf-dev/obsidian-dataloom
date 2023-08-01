@@ -1,10 +1,11 @@
 {
 	"name": "obsidian-dataloom",
-	"version": "8.0.0",
+	"version": "8.1.0",
 	"description": "Weave together data from diverse sources into a cohesive table view. Inspired by Excel Spreadsheets and Notion.so.",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
+		"dev-with-tools": "node esbuild.config.mjs tools",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
 		"lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
 		"test": "jest",

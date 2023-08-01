@@ -51,9 +51,9 @@ export default function MenuItem({
 		}
 	}
 
-	let className = "DataLoom__menu-item DataLoom__selectable";
-	if (isSelected) className += " DataLoom__selected";
-	if (isFocusable) className += " DataLoom__focusable";
+	let className = "dataloom-menu-item dataloom-selectable";
+	if (isSelected) className += " dataloom-selected";
+	if (isFocusable) className += " dataloom-focusable";
 
 	return (
 		<div

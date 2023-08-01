@@ -18,7 +18,7 @@ export default function Switch({ id, value, ariaLabel, onToggle }: Props) {
 		}
 	}
 
-	let className = "checkbox-container DataLoom__switch DataLoom__focusable";
+	let className = "checkbox-container dataloom-switch dataloom-focusable";
 	if (value) className += " is-enabled";
 	return (
 		<div

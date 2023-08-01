@@ -1,8 +1,6 @@
-export const CURRENT_PLUGIN_VERSION = "8.0.0";
-
 export const DEFAULT_LOOM_NAME = "Untitled";
 
-export const CURRENT_FILE_EXTENSION = "loom";
+export const FILE_EXTENSION = "loom";
 
 /**
  * Matches an extension with a leading period.

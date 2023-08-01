@@ -1,10 +1,10 @@
 import Table from "./table";
 import RowOptions from "./row-options";
 import OptionBar from "./option-bar";
-import CalculationCell from "./calculation-cell";
-import BodyCell from "./body-cell";
+import HeaderCell from "./header-cell-container";
+import BodyCell from "./body-cell-container";
+import FooterCell from "./footer-cell-container";
 import NewColumnButton from "./new-column-button";
-import HeaderCell from "./header-cell";
 
 import { useUUID } from "../../shared/hooks";
 import { CellNotFoundError } from "../../shared/loom-state/loom-error";
@@ -49,12 +49,12 @@ import { useColumnEvents } from "src/shared/loom-state/use-column-events";
 import { VirtuosoHandle } from "react-virtuoso";
 import BottomBar from "./bottom-bar";
 
-export default function App() {
+export default function LoomApp() {
 	const { appId, isMarkdownView } = useMountState();
 	const { topMenu, hasOpenMenu, requestCloseTopMenu } = useMenuState();
 	const logger = useLogger();
 	const {
-		LoomState,
+		loomState,
 		resizingColumnId,
 		searchText,
 		commandRedo,
@@ -64,7 +64,7 @@ export default function App() {
 
 	const tableRef = React.useRef<VirtuosoHandle | null>(null);
 
-	useExportEvents(LoomState);
+	useExportEvents(loomState);
 	useRowEvents();
 	useColumnEvents();
 
@@ -145,7 +145,7 @@ export default function App() {
 			if (!layerEl) return;
 
 			const focusableEls = layerEl.querySelectorAll(
-				".DataLoom__focusable"
+				".dataloom-focusable"
 			);
 			if (focusableEls.length === 0) return;
 
@@ -168,7 +168,7 @@ export default function App() {
 			if (!layerEl) return;
 
 			const focusableEls = layerEl.querySelectorAll(
-				".DataLoom__focusable"
+				".dataloom-focusable"
 			);
 			if (focusableEls.length === 0) return;
 
@@ -180,11 +180,11 @@ export default function App() {
 			let index = -1;
 			if (focusedEl) index = Array.from(focusableEls).indexOf(focusedEl);
 
-			const numVisibleColumns = LoomState.model.columns.filter(
+			const numVisibleColumns = loomState.model.columns.filter(
 				(column) => column.isVisible
 			).length;
-			const numBodyRows = LoomState.model.bodyRows.length;
-			const numSortedColumns = LoomState.model.columns.filter(
+			const numBodyRows = loomState.model.bodyRows.length;
+			const numSortedColumns = loomState.model.columns.filter(
 				(column) => column.sortDir !== SortDir.NONE
 			).length;
 
@@ -243,6 +243,14 @@ export default function App() {
 		tableRef.current?.scrollToIndex(filteredBodyRows.length - 1);
 	}
 
+	function handleRedoClick() {
+		commandRedo();
+	}
+
+	function handleUndoClick() {
+		commandUndo();
+	}
+
 	const {
 		headerRows,
 		footerRows,
@@ -251,11 +259,11 @@ export default function App() {
 		bodyCells,
 		footerCells,
 		filterRules,
-	} = LoomState.model;
+	} = loomState.model;
 
-	let filteredBodyRows = filterBodyRowsByRules(LoomState);
+	let filteredBodyRows = filterBodyRowsByRules(loomState);
 	filteredBodyRows = filterBodyRowsBySearch(
-		LoomState,
+		loomState,
 		filteredBodyRows,
 		searchText
 	);
@@ -264,7 +272,7 @@ export default function App() {
 	return (
 		<div
 			data-id={appId}
-			className="DataLoom__app"
+			className="dataloom-app"
 			css={css`
 				display: flex;
 				flex-direction: column;
@@ -552,29 +560,23 @@ export default function App() {
 									return {
 										id: cell.id,
 										content: (
-											<div
-												className="DataLoom__footer-td-container"
-												css={css`
-													width: ${width};
-												`}
-											>
-												<CalculationCell
-													columnId={columnId}
-													columnTags={tags}
-													cellId={cellId}
-													currencyType={currencyType}
-													dateFormat={dateFormat}
-													bodyCells={columnBodyCells}
-													bodyRows={filteredBodyRows}
-													calculationType={
-														calculationType
-													}
-													cellType={type}
-													onTypeChange={
-														handleCalculationTypeChange
-													}
-												/>
-											</div>
+											<FooterCell
+												columnId={columnId}
+												columnTags={tags}
+												cellId={cellId}
+												currencyType={currencyType}
+												dateFormat={dateFormat}
+												bodyCells={columnBodyCells}
+												bodyRows={filteredBodyRows}
+												calculationType={
+													calculationType
+												}
+												width={width}
+												cellType={type}
+												onTypeChange={
+													handleCalculationTypeChange
+												}
+											/>
 										),
 									};
 								}),
@@ -596,6 +598,8 @@ export default function App() {
 				onNewRowClick={handleNewRowClick}
 				onScrollToTopClick={handleScrollToTopClick}
 				onScrollToBottomClick={handleScrollToBottomClick}
+				onUndoClick={handleUndoClick}
+				onRedoClick={handleRedoClick}
 			/>
 		</div>
 	);

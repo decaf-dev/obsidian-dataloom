@@ -14,7 +14,7 @@ export default function SearchBar() {
 		<Stack spacing="lg" isHorizontal>
 			{isSearchBarVisible && (
 				<input
-					className="DataLoom__focusable"
+					className="dataloom-focusable"
 					css={css`
 						${baseInputStyle}
 						max-width: 200px;

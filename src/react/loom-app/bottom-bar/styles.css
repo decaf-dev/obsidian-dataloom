@@ -1,0 +1,9 @@
+.dataloom-bottom-bar {
+    position: relative;
+    height: 60px;
+}
+
+.dataloom-bottom-bar > div {
+    position: absolute;
+    width: 100%;
+}

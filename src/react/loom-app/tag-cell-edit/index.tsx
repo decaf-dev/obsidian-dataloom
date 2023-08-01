@@ -11,6 +11,7 @@ import { useCompare } from "src/shared/hooks";
 import { MenuCloseRequest } from "src/shared/menu/types";
 
 interface Props {
+	isMulti: boolean;
 	columnTags: TagType[];
 	cellTags: TagType[];
 	menuCloseRequest: MenuCloseRequest | null;
@@ -23,6 +24,7 @@ interface Props {
 }
 
 export default function TagCellEdit({
+	isMulti,
 	columnTags,
 	cellTags,
 	menuCloseRequest,
@@ -41,7 +43,7 @@ export default function TagCellEdit({
 			onTagAdd(markdown, color);
 			setInputValue("");
 			setNewTagColor(randomColor());
-			onMenuClose();
+			if (!isMulti) onMenuClose();
 		},
 		[onTagAdd, onMenuClose]
 	);
@@ -53,12 +55,14 @@ export default function TagCellEdit({
 	React.useEffect(() => {
 		if (hasCloseRequestTimeChanged && menuCloseRequest !== null) {
 			if (menuCloseRequest.type === "enter") {
-				const doesTagExist = columnTags.find(
-					(tag) => tag.markdown === inputValue
-				);
-				if (!doesTagExist) {
-					handleTagAdd(inputValue, newTagColor);
-					return;
+				if (inputValue !== "") {
+					const doesTagExist = columnTags.find(
+						(tag) => tag.markdown === inputValue
+					);
+					if (!doesTagExist) {
+						handleTagAdd(inputValue, newTagColor);
+						return;
+					}
 				}
 			}
 			onMenuClose();
@@ -75,11 +79,11 @@ export default function TagCellEdit({
 
 	function handleTagClick(id: string) {
 		onTagClick(id);
-		onMenuClose();
+		if (!isMulti) onMenuClose();
 	}
 
 	return (
-		<div className="DataLoom__tag-cell-edit">
+		<div className="dataloom-tag-cell-edit">
 			<MenuHeader
 				inputValue={inputValue}
 				cellTags={cellTags}

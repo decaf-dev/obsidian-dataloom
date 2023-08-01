@@ -1,7 +1,8 @@
-import { TFile, WorkspaceLeaf } from "obsidian";
+import { App, TFile, WorkspaceLeaf } from "obsidian";
 import React from "react";
 
 interface ContextProps {
+	app: App;
 	mountLeaf: WorkspaceLeaf;
 	appId: string;
 	loomFile: TFile;
@@ -26,6 +27,7 @@ interface Props extends ContextProps {
 }
 
 export default function MountProvider({
+	app,
 	appId,
 	mountLeaf,
 	loomFile,
@@ -34,7 +36,7 @@ export default function MountProvider({
 }: Props) {
 	return (
 		<MountContext.Provider
-			value={{ appId, mountLeaf, loomFile, isMarkdownView }}
+			value={{ app, appId, mountLeaf, loomFile, isMarkdownView }}
 		>
 			{children}
 		</MountContext.Provider>

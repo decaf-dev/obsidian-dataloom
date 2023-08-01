@@ -16,7 +16,7 @@ export default function FileCell({ markdown, shouldWrapOverflow }: Props) {
 	const overflowStyle = useOverflow(shouldWrapOverflow);
 
 	return (
-		<div className="DataLoom__file-cell" css={overflowStyle}>
+		<div className="dataloom-file-cell" css={overflowStyle}>
 			<div
 				css={css`
 					p {

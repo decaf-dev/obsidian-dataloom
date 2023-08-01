@@ -21,8 +21,15 @@ const ToggleColumnMenu = React.forwardRef<HTMLDivElement, Props>(
 		ref
 	) {
 		return (
-			<Menu isOpen={isOpen} id={id} top={top} left={left} ref={ref}>
-				<div className="DataLoom__toggle-column-menu">
+			<Menu
+				isOpen={isOpen}
+				id={id}
+				top={top}
+				left={left}
+				ref={ref}
+				maxHeight={220}
+			>
+				<div className="dataloom-toggle-column-menu">
 					<Padding p="md">
 						<Stack spacing="md">
 							{columns.map((column) => {

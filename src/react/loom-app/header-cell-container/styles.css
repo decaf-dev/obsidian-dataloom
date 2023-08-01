@@ -1,0 +1,17 @@
+.dataloom-cell--header__container {
+    display: flex;
+    justify-content: space-between;
+    min-height: var(--nlt-cell-min-height);
+}
+
+.dataloom-cell--header__inner-container {
+    display: flex;
+    align-items: center;
+    /* Use 100% so that the resize indicator appears at the end */
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    user-select: none;
+    padding: var(--nlt-cell-spacing-x) var(--nlt-cell-spacing-y);
+}

@@ -4,6 +4,7 @@ import React from "react";
 import { useLogger } from "../logger";
 import RowSortCommand from "../commands/row-sort-command";
 import { useMountState } from "src/react/loom-app/mount-provider";
+import { EVENT_APP_REFRESH } from "../events";
 
 interface Props {
 	initialState: LoomState;
@@ -15,7 +16,7 @@ const LoomStateContext = React.createContext<{
 	searchText: string;
 	isSearchBarVisible: boolean;
 	resizingColumnId: string | null;
-	LoomState: LoomState;
+	loomState: LoomState;
 	setLoomState: React.Dispatch<React.SetStateAction<LoomState>>;
 	toggleSearchBar: () => void;
 	setResizingColumnId: React.Dispatch<React.SetStateAction<string | null>>;
@@ -41,7 +42,7 @@ export default function LoomStateProvider({
 	onSaveState,
 	children,
 }: Props) {
-	const [LoomState, setLoomState] = React.useState(initialState);
+	const [loomState, setLoomState] = React.useState(initialState);
 	const [searchText, setSearchText] = React.useState("");
 	const [isSearchBarVisible, setSearchBarVisible] = React.useState(false);
 	const [resizingColumnId, setResizingColumnId] = React.useState<
@@ -52,9 +53,10 @@ export default function LoomStateProvider({
 		null,
 	]);
 	const [position, setPosition] = React.useState(0);
+	const refreshTime = React.useRef(0);
 
 	const logger = useLogger();
-	const { appId } = useMountState();
+	const { appId, loomFile, app } = useMountState();
 
 	// React.useEffect(() => {
 	// 	const jsonSizeInBytes = new TextEncoder().encode(
@@ -72,8 +74,36 @@ export default function LoomStateProvider({
 			return;
 		}
 
-		onSaveState(appId, LoomState);
-	}, [appId, LoomState, onSaveState]);
+		//If the refresh time is not 0, then we know that the state was updated by a refresh event
+		//and we don't want to save it to disk, as it was already saved by the app instance that
+		//sent the refresh event
+		if (refreshTime.current !== 0) {
+			refreshTime.current = 0;
+			return;
+		}
+
+		onSaveState(appId, loomState);
+	}, [appId, loomState, onSaveState]);
+
+	React.useEffect(() => {
+		function handleRefreshEvent(
+			filePath: string,
+			sourceAppId: string,
+			state: LoomState
+		) {
+			if (appId !== sourceAppId && filePath === loomFile.path) {
+				refreshTime.current = Date.now();
+				setLoomState(state);
+			}
+		}
+
+		app.workspace.on(
+			// @ts-expect-error: not a native Obsidian event
+			EVENT_APP_REFRESH,
+			handleRefreshEvent
+		);
+		return () => app.workspace.off(EVENT_APP_REFRESH, handleRefreshEvent);
+	}, [appId, loomFile, app]);
 
 	function handleToggleSearchBar() {
 		setSearchBarVisible((prevState) => !prevState);
@@ -89,14 +119,14 @@ export default function LoomStateProvider({
 			const command = history[position];
 			if (command !== null) {
 				logger(command.constructor.name + ".undo");
-				let newState = command.undo(LoomState);
+				let newState = command.undo(loomState);
 				if (command.shouldSortRows) {
 					newState = new RowSortCommand().execute(newState);
 				}
 				setLoomState(newState);
 			}
 		}
-	}, [position, history, LoomState, logger]);
+	}, [position, history, loomState, logger]);
 
 	const redo = React.useCallback(() => {
 		if (position < history.length - 1) {
@@ -108,14 +138,14 @@ export default function LoomStateProvider({
 			const command = history[currentPosition];
 			if (command !== null) {
 				logger(command.constructor.name + ".redo");
-				let newState = command.redo(LoomState);
+				let newState = command.redo(loomState);
 				if (command.shouldSortRows) {
 					newState = new RowSortCommand().execute(newState);
 				}
 				setLoomState(newState);
 			}
 		}
-	}, [position, history, LoomState, logger]);
+	}, [position, history, loomState, logger]);
 
 	const doCommand = React.useCallback(
 		(command: LoomStateCommand) => {
@@ -131,19 +161,19 @@ export default function LoomStateProvider({
 			setPosition((prevState) => prevState + 1);
 
 			//Execute command
-			let newState = command.execute(LoomState);
+			let newState = command.execute(loomState);
 			if (command.shouldSortRows) {
 				newState = new RowSortCommand().execute(newState);
 			}
 			setLoomState(newState);
 		},
-		[position, history, LoomState]
+		[position, history, loomState]
 	);
 
 	return (
 		<LoomStateContext.Provider
 			value={{
-				LoomState,
+				loomState,
 				setLoomState,
 				doCommand,
 				commandRedo: redo,

@@ -1,0 +1,32 @@
+.data-welcome-modal__title {
+    margin-top: 0em;
+    margin-bottom: 1em;
+}
+
+.dataloom-welcome-modal__card-container {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+}
+
+.dataloom-welcome-modal__card {
+    display: flex;
+    padding: 1em 1.5em;
+    column-gap: 1.5em;
+    align-items: center;
+    border: 1px solid var(--background-modifier-border);
+}
+
+.dataloom-welcome-modal__card-icon {
+    width: 1.5em;
+    height: 1.5em;
+}
+
+.dataloom-welcome-modal__card-title {
+    margin: 0;
+}
+
+.dataloom-welcome-modal__card-description {
+    margin-top: 0.25em;
+    margin-bottom: 0.5em;
+}

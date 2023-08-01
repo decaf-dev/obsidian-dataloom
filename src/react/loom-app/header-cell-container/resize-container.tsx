@@ -9,9 +9,10 @@ const containerStyle = css`
 
 const innerStyle = css`
 	position: absolute;
-	left: -5px;
+	right: 0;
+	bottom: 0;
+	width: 5px;
 	cursor: col-resize;
-	width: 8px;
 	height: 100%;
 	&:hover {
 		background-color: var(--interactive-accent);
@@ -56,7 +57,7 @@ export default function ResizeContainer({
 	return (
 		<div css={containerStyle}>
 			<div
-				className="DataLoom__resize-handle"
+				className="dataloom-resize-handle"
 				css={[innerStyle, isDragging && dragStyle]}
 				onMouseDown={(e) => {
 					onMenuClose();

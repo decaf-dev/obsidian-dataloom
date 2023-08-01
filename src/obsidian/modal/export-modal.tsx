@@ -8,11 +8,13 @@ import { store } from "src/redux/global/store";
 export default class ExportModal extends Modal {
 	root: Root;
 	loomFile: TFile;
+	pluginVersion: string;
 
-	constructor(app: App, loomFile: TFile) {
+	constructor(app: App, loomFile: TFile, pluginVersion: string) {
 		super(app);
 		this.app = app;
 		this.loomFile = loomFile;
+		this.pluginVersion = pluginVersion;
 	}
 
 	onOpen() {
@@ -21,14 +23,15 @@ export default class ExportModal extends Modal {
 
 	private async renderApp() {
 		try {
-			const data = await app.vault.read(this.loomFile);
-			const state = deserializeLoomState(data);
+			const data = await this.app.vault.read(this.loomFile);
+			const state = deserializeLoomState(data, this.pluginVersion);
 
 			this.root = createRoot(this.containerEl.children[1]);
 			this.root.render(
 				<Provider store={store}>
 					<ExportApp
-						LoomState={state}
+						app={this.app}
+						loomState={state}
 						loomFilePath={this.loomFile.path}
 					/>
 				</Provider>

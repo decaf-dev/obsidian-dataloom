@@ -178,7 +178,7 @@ const HeaderMenu = React.forwardRef<HTMLDivElement, Props>(function HeaderMenu(
 			width={175}
 		>
 			<div
-				className="DataLoom__header-menu"
+				className="dataloom-header-menu"
 				css={css`
 					color: var(--text-normal);
 				`}

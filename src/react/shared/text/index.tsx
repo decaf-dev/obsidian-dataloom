@@ -10,11 +10,11 @@ interface Props {
 }
 
 export default function Text({ value, variant, size = "sm", maxWidth }: Props) {
-	let className = "DataLoom__p";
+	let className = "dataloom-p";
 
-	if (variant === "faint") className += " DataLoom__text-faint";
-	if (variant === "muted") className += " DataLoom__text-muted";
-	if (variant === "semibold") className += " DataLoom__text-semibold";
+	if (variant === "faint") className += " dataloom-text-faint";
+	if (variant === "muted") className += " dataloom-text-muted";
+	if (variant === "semibold") className += " dataloom-text-semibold";
 
 	let fontSize = "";
 	if (size === "xs") {

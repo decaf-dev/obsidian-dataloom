@@ -6,6 +6,7 @@ import {
 } from "src/shared/render/utils";
 import { useMountState } from "../react/loom-app/mount-provider";
 import {
+	App,
 	MarkdownRenderer,
 	MarkdownView,
 	Platform,
@@ -60,7 +61,7 @@ export const renderMarkdown = async (leaf: WorkspaceLeaf, markdown: string) => {
 					});
 				});
 
-				el.addEventListener("click", handleLinkClick);
+				el.addEventListener("click", (e) => handleLinkClick(app, e));
 			});
 		}
 	} catch (e) {
@@ -114,6 +115,6 @@ export const isOnMobile = () => {
 	return Platform.isMobile;
 };
 
-export const getResourcePath = (filePath: string) => {
+export const getResourcePath = (app: App, filePath: string) => {
 	return app.vault.adapter.getResourcePath(filePath);
 };

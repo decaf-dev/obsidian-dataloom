@@ -1,5 +1,6 @@
 import React from "react";
-import { EVENT_OUTSIDE_CLICK, EVENT_OUTSIDE_KEYDOWN } from "src/shared/events";
+import { useMountState } from "src/react/loom-app/mount-provider";
+import { EVENT_GLOBAL_CLICK, EVENT_GLOBAL_KEYDOWN } from "src/shared/events";
 import { useLogger } from "src/shared/logger";
 import { useMenuState } from "src/shared/menu/menu-context";
 
@@ -8,6 +9,7 @@ export const useMenuEvents = (
 	isOpen: boolean,
 	isTextHighlighted: boolean
 ) => {
+	const { app } = useMountState();
 	const logger = useLogger();
 	const { requestCloseTopMenu, closeTopMenu, topMenu } = useMenuState();
 
@@ -27,12 +29,12 @@ export const useMenuEvents = (
 
 		if (isOpen) {
 			//@ts-expect-error not a native Obsidian event
-			app.workspace.on(EVENT_OUTSIDE_KEYDOWN, handleOutsideKeyDown);
+			app.workspace.on(EVENT_GLOBAL_KEYDOWN, handleOutsideKeyDown);
 		}
 
 		return () =>
-			app.workspace.off(EVENT_OUTSIDE_CLICK, handleOutsideKeyDown);
-	}, [isOpen, logger, closeTopMenu, requestCloseTopMenu, id, topMenu]);
+			app.workspace.off(EVENT_GLOBAL_CLICK, handleOutsideKeyDown);
+	}, [isOpen, logger, closeTopMenu, requestCloseTopMenu, id, app, topMenu]);
 
 	//Handle outside clicks
 	//The events are triggered from the Obsidian event registered in main.ts
@@ -51,9 +53,9 @@ export const useMenuEvents = (
 
 		if (isOpen) {
 			//@ts-expect-error not a native Obsidian event
-			app.workspace.on(EVENT_OUTSIDE_CLICK, handleOutsideClick);
+			app.workspace.on(EVENT_GLOBAL_CLICK, handleOutsideClick);
 		}
 
-		return () => app.workspace.off(EVENT_OUTSIDE_CLICK, handleOutsideClick);
+		return () => app.workspace.off(EVENT_GLOBAL_CLICK, handleOutsideClick);
 	}, [isOpen, logger, requestCloseTopMenu, id, topMenu, isTextHighlighted]);
 };

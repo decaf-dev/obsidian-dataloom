@@ -6,7 +6,7 @@ export const isEventForThisApp = (
 	if (!activeEl) return false;
 
 	//If we have an active element that part of the app, then compare the id
-	const appEl = activeEl.closest(".DataLoom__app");
+	const appEl = activeEl.closest(".dataloom-app");
 	if (appEl) return appEl.getAttribute("data-id") === appId;
 
 	//We will pass on events that are outside of an app instance
@@ -14,14 +14,14 @@ export const isEventForThisApp = (
 
 	//Otherwise we have an active element that is part of a menu. That means that it is rendered
 	//in a portal. To get the app id, we first need to get the menu, then the menu trigger, then the app
-	const menuEl = activeEl.closest(".DataLoom__menu");
+	const menuEl = activeEl.closest(".dataloom-menu");
 	if (menuEl) {
 		const menuId = menuEl.getAttribute("data-id");
 		const menuTrigger = document.querySelector(
 			`[data-menu-id="${menuId}"]`
 		);
 		if (!menuTrigger) return false;
-		const appEl = menuTrigger.closest(".DataLoom__app");
+		const appEl = menuTrigger.closest(".dataloom-app");
 		if (appEl) return appEl.getAttribute("data-id") === appId;
 	}
 	return false;

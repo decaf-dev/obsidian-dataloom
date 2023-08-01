@@ -35,7 +35,7 @@ export default function FileCellEdit({ onChange, onMenuClose }: Props) {
 	}
 
 	return (
-		<div className="DataLoom__file-cell-edit">
+		<div className="dataloom-file-cell-edit">
 			<SuggestList
 				showInput
 				showClear
