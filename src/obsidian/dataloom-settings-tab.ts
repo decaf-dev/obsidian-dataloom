@@ -103,7 +103,7 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 	}
 
 	private renderEmbeddedLoomSettings(containerEl: HTMLElement) {
-		new Setting(containerEl).setName("Embedded Looms").setHeading();
+		new Setting(containerEl).setName("Embedded looms").setHeading();
 
 		const defaultEmbedWidthDesc = new DocumentFragment();
 		defaultEmbedWidthDesc.createSpan({}, (span) => {
@@ -151,7 +151,7 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 	private renderModalSettings(containerEl: HTMLElement) {
 		new Setting(containerEl).setName("Modal").setHeading();
 		new Setting(containerEl)
-			.setName("What's New Modal")
+			.setName("What's new modal")
 			.setDesc("Show the what's new modal when the plugin is updated.")
 			.addToggle((cb) => {
 				cb.setValue(this.plugin.settings.showWhatsNewModal).onChange(
@@ -163,7 +163,7 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName("Donation Modal")
+			.setName("Donation modal")
 			.setDesc("Show the donation modal when the plugin is updated.")
 			.addToggle((cb) => {
 				cb.setValue(this.plugin.settings.shouldDebug).onChange(
