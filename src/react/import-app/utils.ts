@@ -1,7 +1,7 @@
 import { LoomState } from "src/shared/loom-state/types";
 import { MARKDOWN_LIST_ITEM_REGEX } from "./constants";
 import { ImportType } from "./types";
-import { CellNotFoundError } from "src/shared/loom-error";
+import CellNotFoundError from "src/shared/error/cell-not-found-error";
 import RowAddCommand from "src/shared/loom-state/commands/row-add-command";
 
 export const getDisplayNameForImportType = (type: ImportType) => {

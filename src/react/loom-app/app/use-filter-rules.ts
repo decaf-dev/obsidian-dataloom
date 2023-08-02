@@ -1,11 +1,11 @@
 import { SetStateAction } from "react";
 import { FilterType, LoomState } from "src/shared/loom-state/types";
-import { useLogger } from "../../../shared/logger";
+import { useLogger } from "src/shared/logger";
 import {
 	addRule,
 	deleteRule,
 	updateRule,
-} from "../../../shared/loom-state/filter-utils";
+} from "src/shared/loom-state/filter-utils";
 import { filterBodyRowsByRules } from "./filter-by-rules";
 
 export const useFilterRules = (

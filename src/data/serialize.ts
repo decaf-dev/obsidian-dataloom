@@ -11,7 +11,7 @@ import {
 	GeneralFunction670,
 	LoomState670,
 } from "src/shared/loom-state/types/6.7.0";
-import { ColumNotFoundError } from "../shared/loom-error";
+import ColumNotFoundError from "src/shared/error/column-not-found-error";
 import {
 	createFooterRow,
 	createHeaderRow,

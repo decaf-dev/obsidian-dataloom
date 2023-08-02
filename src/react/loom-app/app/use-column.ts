@@ -9,12 +9,12 @@ import {
 	PaddingSize,
 	SortDir,
 } from "src/shared/loom-state/types";
-import { useLogger } from "../../../shared/logger";
+import { useLogger } from "src/shared/logger";
 import { useLoomState } from "../loom-state-provider";
-import ColumnAddCommand from "../../../shared/loom-state/commands/column-add-command";
-import ColumnDeleteCommand from "../../../shared/loom-state/commands/column-delete-command";
-import ColumnUpdateCommand from "../../../shared/loom-state/commands/column-update-command";
-import { ColumnTypeUpdateCommand } from "../../../shared/loom-state/commands/column-type-update-command";
+import ColumnAddCommand from "src/shared/loom-state/commands/column-add-command";
+import ColumnDeleteCommand from "src/shared/loom-state/commands/column-delete-command";
+import ColumnUpdateCommand from "src/shared/loom-state/commands/column-update-command";
+import { ColumnTypeUpdateCommand } from "src/shared/loom-state/commands/column-type-update-command";
 
 export const useColumn = () => {
 	const logger = useLogger();

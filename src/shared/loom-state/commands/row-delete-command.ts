@@ -1,5 +1,5 @@
 import { BodyCell, BodyRow, LoomState } from "../types";
-import { RowNotFoundError } from "../../loom-error";
+import RowNotFoundError from "src/shared/error/row-not-found-error";
 import LoomStateCommand from "../loom-state-command";
 import { DeleteCommandArgumentsError } from "./command-errors";
 

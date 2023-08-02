@@ -8,13 +8,19 @@ import {
 	normalizePath,
 } from "obsidian";
 
-import { store } from "./redux/global/store";
+import DonationModal from "./obsidian/modal/donation-modal";
+import WelcomeModal from "./obsidian/modal/welcome-modal";
+import WhatsNewModal from "./obsidian/modal/whats-new-modal";
+import DataLoomSettingsTab from "./obsidian/dataloom-settings-tab";
+import EditingViewPlugin from "./obsidian/editing-view-plugin";
+import DataLoomView, { DATA_LOOM_VIEW } from "./obsidian/dataloom-view";
+
+import { store } from "./redux/store";
 import {
 	setManifestPluginVersion,
 	setDarkMode,
 	setSettings,
-} from "./redux/global/global-slice";
-import DataLoomView, { DATA_LOOM_VIEW } from "./obsidian/dataloom-view";
+} from "./redux/global-slice";
 import { FILE_EXTENSION, WIKI_LINK_REGEX } from "./data/constants";
 import { createLoomFile } from "src/data/loom-file";
 import {
@@ -28,24 +34,16 @@ import {
 	EVENT_ROW_ADD,
 	EVENT_ROW_DELETE,
 } from "./shared/events";
-import EditingViewPlugin from "./obsidian/editing-view-plugin";
-import {
-	deserializeLoomState,
-	serializeLoomState,
-} from "./data/serialize-loom-state";
+import { deserializeLoomState, serializeLoomState } from "./data/serialize";
 import { updateLinkReferences } from "./data/utils";
 import { getBasename } from "./shared/link/link-utils";
 import { hasDarkTheme } from "./shared/render/utils";
 import { removeFocusVisibleClass } from "./shared/menu/focus-visible";
 import { LoomState } from "./shared/loom-state/types";
-import WelcomeModal from "./obsidian/modal/welcome-modal";
-import WhatsNewModal from "./obsidian/modal/whats-new-modal/whats-new-modal";
-import DataLoomSettingsTab from "./obsidian/dataloom-settings-tab";
 import {
 	loadPreviewModeApps,
 	purgeEmbeddedLoomApps,
 } from "./obsidian/embedded/embedded-app-manager";
-import DonationModal from "./obsidian/modal/donation-modal";
 
 export interface DataLoomSettings {
 	shouldDebug: boolean;

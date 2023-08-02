@@ -1,5 +1,5 @@
 import { rowLastEditedTime, rowLastEditedTimeUpdate } from "../row-utils";
-import { CellNotFoundError } from "../../loom-error";
+import CellNotFoundError from "src/shared/error/cell-not-found-error";
 import LoomStateCommand from "../loom-state-command";
 import { BodyCell, LoomState } from "../types";
 

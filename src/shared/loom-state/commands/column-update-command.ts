@@ -1,4 +1,4 @@
-import { ColumNotFoundError } from "../../loom-error";
+import ColumNotFoundError from "src/shared/error/column-not-found-error";
 import LoomStateCommand from "../loom-state-command";
 import { Column, LoomState } from "../types";
 

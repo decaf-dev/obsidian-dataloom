@@ -3,10 +3,7 @@ import DataLoomView from "../dataloom-view";
 import { LoomState } from "../../shared/loom-state/types";
 import { Root, createRoot } from "react-dom/client";
 import ImportApp from "../../react/import-app";
-import {
-	deserializeLoomState,
-	serializeLoomState,
-} from "src/data/serialize-loom-state";
+import { deserializeLoomState, serializeLoomState } from "src/data/serialize";
 
 export default class ImportModal extends Modal {
 	root: Root;

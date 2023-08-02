@@ -11,7 +11,7 @@ import { exportToMarkdown } from "src/shared/export/export-to-markdown";
 import { ExportType } from "src/shared/export/types";
 import { LoomState } from "src/shared/loom-state/types";
 import { useMountState } from "../mount-provider";
-import { useAppSelector } from "src/redux/global/hooks";
+import { useAppSelector } from "src/redux/hooks";
 
 export const useExportEvents = (state: LoomState) => {
 	const { appId, loomFile } = useMountState();

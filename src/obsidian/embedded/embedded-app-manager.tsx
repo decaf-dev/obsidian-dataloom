@@ -10,11 +10,8 @@ import {
 	hasLoadedEmbeddedLoom,
 } from "./embed-utils";
 import { Root, createRoot } from "react-dom/client";
-import { store } from "src/redux/global/store";
-import {
-	deserializeLoomState,
-	serializeLoomState,
-} from "src/data/serialize-loom-state";
+import { store } from "src/redux/store";
+import { deserializeLoomState, serializeLoomState } from "src/data/serialize";
 import { LoomState } from "src/shared/loom-state/types";
 import _ from "lodash";
 import { EVENT_APP_REFRESH } from "src/shared/events";

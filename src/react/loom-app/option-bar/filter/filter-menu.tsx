@@ -7,7 +7,7 @@ import Text from "src/react/shared/text";
 import Button from "src/react/shared/button";
 
 import { FilterRule, FilterType } from "src/shared/loom-state/types";
-import { ColumNotFoundError } from "src/shared/loom-error";
+import ColumNotFoundError from "src/shared/error/column-not-found-error";
 import { ColumnWithMarkdown } from "../types";
 import React from "react";
 import { css } from "@emotion/react";

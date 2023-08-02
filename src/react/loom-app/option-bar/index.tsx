@@ -13,7 +13,8 @@ import {
 	HeaderCell,
 	FilterRule,
 } from "src/shared/loom-state/types";
-import { CellNotFoundError, ColumNotFoundError } from "src/shared/loom-error";
+import CellNotFoundError from "src/shared/error/cell-not-found-error";
+import ColumNotFoundError from "src/shared/error/column-not-found-error";
 import { isCellTypeFilterable } from "src/react/loom-app/app/filter-by-rules";
 
 import { ColumnWithMarkdown } from "./types";
@@ -23,7 +24,7 @@ import Button from "src/react/shared/button";
 import Icon from "src/react/shared/icon";
 import { useMountState } from "../mount-provider";
 import ExportModal from "src/obsidian/modal/export-modal";
-import { useAppSelector } from "src/redux/global/hooks";
+import { useAppSelector } from "src/redux/hooks";
 
 interface SortButtonListProps {
 	headerCells: HeaderCell[];

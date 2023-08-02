@@ -1,6 +1,6 @@
 import LoomStateCommand from "../loom-state-command";
 import { LoomState, Tag } from "../types";
-import { TagNotFoundError } from "../../loom-error";
+import TagNotFoundError from "src/shared/error/tag-not-found-error";
 
 export default class TagDeleteCommand extends LoomStateCommand {
 	private columnId: string;

@@ -1,5 +1,5 @@
 import React from "react";
-import { useAppSelector } from "src/redux/global/hooks";
+import { useAppSelector } from "src/redux/hooks";
 
 export const log =
 	(shouldDebug: boolean) =>

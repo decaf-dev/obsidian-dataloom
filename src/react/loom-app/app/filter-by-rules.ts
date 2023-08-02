@@ -8,7 +8,7 @@ import {
 	LoomState,
 	Tag,
 } from "src/shared/loom-state/types";
-import { ColumNotFoundError } from "../../../shared/loom-error";
+import ColumNotFoundError from "src/shared/error/column-not-found-error";
 
 //TODO implement all Cell Types
 export const isCellTypeFilterable = (cellType: CellType): boolean => {

@@ -1,12 +1,12 @@
-import { useLogger } from "../../../shared/logger";
-import { Color } from "../../../shared/loom-state/types";
-import TagDeleteCommand from "../../../shared/loom-state/commands/tag-delete-command";
+import { useLogger } from "src/shared/logger";
+import { Color } from "src/shared/loom-state/types";
+import TagDeleteCommand from "src/shared/loom-state/commands/tag-delete-command";
 import { useLoomState } from "../loom-state-provider";
-import TagUpdateCommand from "../../../shared/loom-state/commands/tag-update-command";
-import TagAddCommand from "../../../shared/loom-state/commands/tag-add-command";
-import TagCellRemoveCommand from "../../../shared/loom-state/commands/tag-cell-remove-command";
-import TagCellAddCommand from "../../../shared/loom-state/commands/tag-cell-add-command";
-import TagCellMultipleRemoveCommand from "../../../shared/loom-state/commands/tag-cell-multiple-remove-command";
+import TagUpdateCommand from "src/shared/loom-state/commands/tag-update-command";
+import TagAddCommand from "src/shared/loom-state/commands/tag-add-command";
+import TagCellRemoveCommand from "src/shared/loom-state/commands/tag-cell-remove-command";
+import TagCellAddCommand from "src/shared/loom-state/commands/tag-cell-add-command";
+import TagCellMultipleRemoveCommand from "src/shared/loom-state/commands/tag-cell-multiple-remove-command";
 
 export const useTag = () => {
 	const { doCommand } = useLoomState();

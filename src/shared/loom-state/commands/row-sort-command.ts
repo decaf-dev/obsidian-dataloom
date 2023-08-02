@@ -1,9 +1,7 @@
-import {
-	CellNotFoundError,
-	ColumNotFoundError,
-	RowNotFoundError,
-	TagNotFoundError,
-} from "../../loom-error";
+import CellNotFoundError from "src/shared/error/cell-not-found-error";
+import RowNotFoundError from "src/shared/error/row-not-found-error";
+import TagNotFoundError from "src/shared/error/tag-not-found-error";
+import ColumNotFoundError from "src/shared/error/column-not-found-error";
 import LoomStateCommand from "../loom-state-command";
 import {
 	BodyCell,

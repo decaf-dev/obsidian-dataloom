@@ -1,5 +1,5 @@
 import { CellType, Column, HeaderCell } from "src/shared/loom-state/types";
-import { CellNotFoundError } from "src/shared/loom-error";
+import CellNotFoundError from "src/shared/error/cell-not-found-error";
 import Stack from "../shared/stack";
 
 interface Props {

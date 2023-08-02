@@ -8,13 +8,11 @@ import {
 	LoomState,
 	Tag,
 } from "src/shared/loom-state/types";
-import {
-	ColumNotFoundError,
-	RowNotFoundError,
-} from "../../../shared/loom-error";
-import { getTimeCellContent } from "../../../shared/cell-content/time-content";
-import { getDateCellContent } from "../../../shared/cell-content/date-cell-content";
-import { getCurrencyCellContent } from "../../../shared/cell-content/currency-cell-content";
+import RowNotFoundError from "src/shared/error/row-not-found-error";
+import ColumNotFoundError from "src/shared/error/column-not-found-error";
+import { getTimeCellContent } from "src/shared/cell-content/time-content";
+import { getDateCellContent } from "src/shared/cell-content/date-cell-content";
+import { getCurrencyCellContent } from "src/shared/cell-content/currency-cell-content";
 
 export const filterBodyRowsBySearch = (
 	LoomState: LoomState,

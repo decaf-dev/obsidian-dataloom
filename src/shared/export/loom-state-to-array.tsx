@@ -6,7 +6,7 @@ import {
 	LoomState,
 } from "../loom-state/types";
 import { getCellContent } from "../cell-content";
-import { ColumNotFoundError } from "../loom-error";
+import ColumNotFoundError from "../error/column-not-found-error";
 import { App } from "obsidian";
 
 const serializeHeaderCells = (cells: HeaderCell[]): string[] => {

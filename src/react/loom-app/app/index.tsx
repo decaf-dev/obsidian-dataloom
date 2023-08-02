@@ -12,17 +12,17 @@ import NewColumnButton from "../new-column-button";
 import BottomBar from "../bottom-bar";
 
 import { useUUID } from "../../../shared/hooks";
-import { CellNotFoundError } from "../../../shared/loom-error";
+import CellNotFoundError from "src/shared/error/cell-not-found-error";
 import { useLoomState } from "../loom-state-provider";
-import { useFilterRules } from "src/react/loom-app/app/use-filter-rules";
-import { filterBodyRowsBySearch } from "src/react/loom-app/app/filter-by-search";
-import { useColumn } from "src/react/loom-app/app/use-column";
-import { useRow } from "src/react/loom-app/app/use-row";
-import { useCell } from "src/react/loom-app/app/use-cell";
-import { useTag } from "src/react/loom-app/app/use-tag";
+import { useFilterRules } from "./use-filter-rules";
+import { filterBodyRowsBySearch } from "./filter-by-search";
+import { useColumn } from "./use-column";
+import { useRow } from "./use-row";
+import { useCell } from "./use-cell";
+import { useTag } from "./use-tag";
 import { css } from "@emotion/react";
-import { useMountState } from "src/react/loom-app/mount-provider";
-import { useMenuState } from "src/react/loom-app/menu-provider";
+import { useMountState } from "../mount-provider";
+import { useMenuState } from "../menu-provider";
 import { SortDir } from "src/shared/loom-state/types";
 
 import {
