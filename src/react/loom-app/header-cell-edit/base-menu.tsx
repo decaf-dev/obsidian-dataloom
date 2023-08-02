@@ -44,16 +44,11 @@ export default function BaseMenu({
 	onColumnNameChange,
 	onHideClick,
 }: Props) {
-	const lastKeyPressed = React.useRef<string | null>(null);
 	const inputRef = React.useRef<HTMLInputElement | null>(null);
 	useInputSelection(inputRef, columnName);
 
 	function handleInputChange(inputValue: string) {
 		onColumnNameChange(inputValue);
-	}
-
-	function handleKeyDown(e: React.KeyboardEvent) {
-		lastKeyPressed.current = e.key;
 	}
 
 	const hasOptions =
@@ -75,7 +70,6 @@ export default function BaseMenu({
 						ref={inputRef}
 						value={columnName}
 						onChange={(e) => handleInputChange(e.target.value)}
-						onKeyDown={handleKeyDown}
 					/>
 				</Padding>
 				<MenuItem
