@@ -33,6 +33,7 @@ import {
 import { LoomState6122 } from "src/shared/loom-state/types/6.12.2";
 import { LoomState6160 } from "src/shared/loom-state/types/6.16.0";
 import { LoomState6186 } from "src/shared/loom-state/types/6.18.6";
+import { DEFAULT_SETTINGS } from "src/main";
 
 export const serializeLoomState = (state: LoomState): string => {
 	return JSON.stringify(state, null, 2);
@@ -393,7 +394,9 @@ export const deserializeLoomState = (
 		const loomState = currentState as LoomState;
 		const untypedModel = loomState.model as unknown;
 		const typedModel = untypedModel as Record<string, unknown>;
-		typedModel.numFrozenColumns = 1;
+		typedModel.settings = {
+			numFrozenColumns: DEFAULT_SETTINGS.defaultFrozenColumnCount,
+		};
 	}
 
 	const state = currentState as LoomState;

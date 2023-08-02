@@ -97,20 +97,28 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 	private renderTableSettings(containerEl: HTMLElement) {
 		const freezeColumnsDesc = new DocumentFragment();
 		freezeColumnsDesc.createSpan({
-			text: "If enabled, the first column of the table will stay in place while the table scrolls horizontally. Other columns may also be frozen from their header menu",
+			text: "The number of columns to stay in place when the table scrolls horizontally.",
 		});
 
 		new Setting(containerEl).setName("Table").setHeading();
 		new Setting(containerEl)
-			.setName("Enable frozen columns")
+			.setName("Frozen columns")
 			.setDesc(freezeColumnsDesc)
-			.addToggle((cb) => {
-				cb.setValue(this.plugin.settings.canFreezeColumns).onChange(
-					async (value) => {
-						this.plugin.settings.canFreezeColumns = value;
+			.addDropdown((cb) => {
+				cb.addOptions({
+					"0": "0",
+					"1": "1",
+					"2": "2",
+					"3": "3",
+				})
+					.setValue(
+						this.plugin.settings.defaultFrozenColumnCount.toString()
+					)
+					.onChange(async (value) => {
+						this.plugin.settings.defaultFrozenColumnCount =
+							parseInt(value);
 						await this.plugin.saveSettings();
-					}
-				);
+					});
 			});
 	}
 

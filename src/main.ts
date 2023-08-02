@@ -56,7 +56,7 @@ export interface DataLoomSettings {
 	showWelcomeModal: boolean;
 	showDonationModal: boolean;
 	showWhatsNewModal: boolean;
-	canFreezeColumns: boolean;
+	defaultFrozenColumnCount: number;
 	pluginVersion: string;
 }
 
@@ -71,7 +71,7 @@ export const DEFAULT_SETTINGS: DataLoomSettings = {
 	showWelcomeModal: true,
 	showDonationModal: true,
 	showWhatsNewModal: true,
-	canFreezeColumns: true,
+	defaultFrozenColumnCount: 1,
 	pluginVersion: "",
 };
 

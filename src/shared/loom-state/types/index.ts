@@ -175,6 +175,10 @@ export interface Tag {
 	color: Color;
 }
 
+export interface TableSettings {
+	numFrozenColumns: number;
+}
+
 export interface TableModel {
 	columns: Column[];
 	headerRows: HeaderRow[];
@@ -184,7 +188,7 @@ export interface TableModel {
 	bodyCells: BodyCell[];
 	footerCells: FooterCell[];
 	filterRules: FilterRule[];
-	numFrozenColumns: number;
+	settings: TableSettings;
 }
 
 export interface LoomState {

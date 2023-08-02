@@ -189,7 +189,9 @@ export const createLoomState = (
 			bodyCells,
 			footerCells,
 			filterRules,
-			numFrozenColumns: 1,
+			settings: {
+				numFrozenColumns: 1,
+			},
 		},
 		pluginVersion,
 	};

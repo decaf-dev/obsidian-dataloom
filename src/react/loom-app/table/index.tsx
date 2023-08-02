@@ -14,11 +14,11 @@ interface Props {
 	headerRows: HeaderTableRow[];
 	bodyRows: TableRow[];
 	footerRows: TableRow[];
-	shouldFreeze: boolean;
+	numFrozenColumns: number;
 }
 
 const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
-	{ headerRows, bodyRows, footerRows, shouldFreeze },
+	{ headerRows, bodyRows, footerRows, numFrozenColumns },
 	ref
 ) {
 	const previousRowLength = usePrevious(bodyRows.length);
@@ -54,7 +54,7 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 								return (
 									<TableHeaderCell
 										key={cellId}
-										shouldFreeze={shouldFreeze && i === 0}
+										shouldFreeze={i + 1 <= numFrozenColumns}
 										columnId={columnId}
 										content={content}
 										isDraggable={i < cells.length - 1}
@@ -73,7 +73,7 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 
 							let className =
 								"dataloom-cell dataloom-cell--footer";
-							if (shouldFreeze && i === 0)
+							if (i + 1 <= numFrozenColumns)
 								className +=
 									" dataloom-cell--freeze dataloom-cell--freeze-footer";
 							return (
@@ -92,7 +92,7 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 					const { id: cellId, content } = cell;
 
 					let className = "dataloom-cell dataloom-cell--body";
-					if (shouldFreeze && i === 0)
+					if (i + 1 <= numFrozenColumns)
 						className += " dataloom-cell--freeze";
 					return (
 						<div
