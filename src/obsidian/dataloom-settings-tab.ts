@@ -51,7 +51,7 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 
 		attachmentsFolderDesc.createSpan({
 			text: " Files & Links -> Default location for new attachments",
-			cls: "Dashboards__setting-emphasize",
+			cls: "dataloom-modal-text--emphasize",
 		});
 		attachmentsFolderDesc.createEl("br");
 		attachmentsFolderDesc.createDiv({
