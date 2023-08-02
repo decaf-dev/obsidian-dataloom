@@ -1,5 +1,5 @@
-import { CommandRedoError, CommandUndoError } from "../commands/command-errors";
-import { LoomState } from "../types";
+import { CommandRedoError, CommandUndoError } from "./commands/command-errors";
+import { LoomState } from "./types";
 
 export default abstract class LoomStateCommand {
 	shouldSortRows: boolean;

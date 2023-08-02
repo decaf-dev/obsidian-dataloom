@@ -1,7 +1,7 @@
 import React from "react";
 import { MenuLevel } from "./types";
 import { v4 as uuidv4 } from "uuid";
-import { useMenuState } from "./menu-context";
+import { useMenuState } from "../../react/loom-app/menu-provider";
 
 export const useMenu = (
 	level: MenuLevel,

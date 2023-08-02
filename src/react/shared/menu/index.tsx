@@ -4,11 +4,11 @@ import ReactDOM from "react-dom";
 import { css } from "@emotion/react";
 
 import { numToPx } from "src/shared/conversion";
-import { useMenuState } from "src/shared/menu/menu-context";
+import { useMenuState } from "src/react/loom-app/menu-provider";
 import { isTextSelected } from "src/shared/menu/utils";
 import { removeFocusVisibleClass } from "src/shared/menu/focus-visible";
 import { useLogger } from "src/shared/logger";
-import { useMenuEvents } from "src/shared/loom-state/use-menu-events";
+import { useMenuEvents } from "src/react/loom-app/app/use-menu-events";
 
 interface Props {
 	id: string;

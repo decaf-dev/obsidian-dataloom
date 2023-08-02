@@ -1,5 +1,5 @@
 import { App, Modal, setIcon } from "obsidian";
-import { renderDivider } from "src/obsidian/html-utils";
+import { renderDivider } from "src/obsidian/shared";
 
 import "./styles.css";
 

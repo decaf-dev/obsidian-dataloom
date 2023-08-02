@@ -1,7 +1,7 @@
 import MenuItem from "src/react/shared/menu-item";
 import Submenu from "./submenu";
-import { CurrencyType } from "src/shared/types";
-import { getDisplayNameForCurrencyType } from "src/shared/loom-state/display-name";
+import { CurrencyType } from "src/shared/loom-state/types";
+import { getDisplayNameForCurrencyType } from "src/shared/loom-state/type-display-names";
 
 interface Props {
 	title: string;

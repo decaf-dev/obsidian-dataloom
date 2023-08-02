@@ -1,6 +1,6 @@
 import { App, Modal } from "obsidian";
 import DataLoomView from "../dataloom-view";
-import { LoomState } from "../../shared/types";
+import { LoomState } from "../../shared/loom-state/types";
 import { Root, createRoot } from "react-dom/client";
 import ImportApp from "../../react/import-app";
 import {

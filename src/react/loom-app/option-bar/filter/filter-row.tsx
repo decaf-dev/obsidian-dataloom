@@ -2,7 +2,7 @@ import FilterRowDropdown from "./filter-type-select";
 import Icon from "src/react/shared/icon";
 import Button from "src/react/shared/button";
 import Switch from "src/react/shared/switch";
-import { CellType, FilterType, Tag } from "src/shared/types";
+import { CellType, FilterType, Tag } from "src/shared/loom-state/types";
 import FilterColumnDropdown from "./filter-column-select";
 import FilterTextInput from "./filter-text-input";
 import { ColumnWithMarkdown } from "../types";

@@ -1,5 +1,5 @@
 import { findColorClassName } from "src/shared/color";
-import { Color } from "src/shared/types";
+import { Color } from "src/shared/loom-state/types";
 import { uppercaseFirst } from "src/shared/stringUtils";
 import "./styles.css";
 import React from "react";

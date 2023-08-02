@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { selectStyle } from "src/react/loom-app/shared-styles";
-import { CellType, FilterType } from "src/shared/types";
+import { CellType, FilterType } from "src/shared/loom-state/types";
 
 interface Props {
 	id: string;

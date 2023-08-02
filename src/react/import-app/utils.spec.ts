@@ -1,4 +1,4 @@
-import { createLoomState } from "src/data/loom-state-factory";
+import { createLoomState } from "src/shared/loom-state/loom-state-factory";
 import {
 	getMarkdownListItems,
 	importMarkdownListItems,

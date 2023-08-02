@@ -1,4 +1,4 @@
-import { LoomState } from "src/shared/types";
+import { LoomState } from "src/shared/loom-state/types";
 import {
 	getMarkdownListItems,
 	importMarkdownListItems,

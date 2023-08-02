@@ -1,6 +1,6 @@
 import { App, Notice, normalizePath } from "obsidian";
 import { createFile, createFolder } from "./file-operations";
-import { createLoomState } from "./loom-state-factory";
+import { createLoomState } from "../shared/loom-state/loom-state-factory";
 import { serializeLoomState } from "./serialize-loom-state";
 import { FILE_EXTENSION, DEFAULT_LOOM_NAME } from "./constants";
 

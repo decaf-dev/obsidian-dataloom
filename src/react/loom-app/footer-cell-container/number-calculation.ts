@@ -6,7 +6,11 @@ import {
 	getRange,
 	getSum,
 } from "./arithmetic";
-import { CellType, CurrencyType, NumberCalculation } from "src/shared/types";
+import {
+	CellType,
+	CurrencyType,
+	NumberCalculation,
+} from "src/shared/loom-state/types";
 import { round2Digits } from "./utils";
 import { getCurrencyCellContent } from "src/shared/cell-content/currency-cell-content";
 

@@ -1,4 +1,4 @@
-import { useLoomState } from "src/shared/loom-state/loom-state-context";
+import { useLoomState } from "src/react/loom-app/loom-state-provider";
 import { useDragContext } from "src/shared/dragging/drag-context";
 import { dropDrag, getRowId } from "src/shared/dragging/utils";
 

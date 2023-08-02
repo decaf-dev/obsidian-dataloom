@@ -1,4 +1,4 @@
-import { LoomState } from "src/shared/types";
+import { LoomState } from "src/shared/loom-state/types";
 import Stack from "../shared/stack";
 import React from "react";
 import { ExportType } from "../../shared/export/types";

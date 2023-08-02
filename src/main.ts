@@ -37,14 +37,14 @@ import { updateLinkReferences } from "./data/utils";
 import { getBasename } from "./shared/link/link-utils";
 import { hasDarkTheme } from "./shared/render/utils";
 import { removeFocusVisibleClass } from "./shared/menu/focus-visible";
-import { LoomState } from "./shared/types";
+import { LoomState } from "./shared/loom-state/types";
 import WelcomeModal from "./obsidian/modal/welcome-modal";
 import WhatsNewModal from "./obsidian/modal/whats-new-modal/whats-new-modal";
 import DataLoomSettingsTab from "./obsidian/dataloom-settings-tab";
 import {
 	loadPreviewModeApps,
 	purgeEmbeddedLoomApps,
-} from "./obsidian/embedded-app/embedded-app-manager";
+} from "./obsidian/embedded/embedded-app-manager";
 import DonationModal from "./obsidian/modal/donation-modal";
 
 export interface DataLoomSettings {
@@ -58,6 +58,7 @@ export interface DataLoomSettings {
 	showWelcomeModal: boolean;
 	showDonationModal: boolean;
 	showWhatsNewModal: boolean;
+	canFreezeColumns: boolean;
 	pluginVersion: string;
 }
 
@@ -72,6 +73,7 @@ export const DEFAULT_SETTINGS: DataLoomSettings = {
 	showWelcomeModal: true,
 	showDonationModal: true,
 	showWhatsNewModal: true,
+	canFreezeColumns: true,
 	pluginVersion: "",
 };
 

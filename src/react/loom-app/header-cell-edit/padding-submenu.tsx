@@ -1,6 +1,6 @@
 import MenuItem from "src/react/shared/menu-item";
 import Submenu from "./submenu";
-import { PaddingSize } from "src/shared/types";
+import { PaddingSize } from "src/shared/loom-state/types";
 
 interface Props {
 	title: string;

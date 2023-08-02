@@ -1,7 +1,7 @@
 import { PluginSettingTab, App } from "obsidian";
 import { Setting } from "obsidian";
 import DataLoomPlugin from "../main";
-import { renderDonationBadge } from "./html-utils";
+import { renderDonationBadge } from "./shared";
 
 export default class DataLoomSettingsTab extends PluginSettingTab {
 	plugin: DataLoomPlugin;
@@ -18,6 +18,7 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 
 		this.renderDonationHeader(containerEl);
 		this.renderFileSettings(containerEl);
+		this.renderTableSettings(containerEl);
 		this.renderExportSettings(containerEl);
 		this.renderEmbeddedLoomSettings(containerEl);
 		this.renderModalSettings(containerEl);
@@ -91,6 +92,26 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 					});
 				});
 		}
+	}
+
+	private renderTableSettings(containerEl: HTMLElement) {
+		const freezeColumnsDesc = new DocumentFragment();
+		freezeColumnsDesc.createSpan({
+			text: "If enabled, the first column of the table will stay in place while the table scrolls horizontally. Other columns may also be frozen from their header menu",
+		});
+
+		new Setting(containerEl).setName("Table").setHeading();
+		new Setting(containerEl)
+			.setName("Enable frozen columns")
+			.setDesc(freezeColumnsDesc)
+			.addToggle((cb) => {
+				cb.setValue(this.plugin.settings.canFreezeColumns).onChange(
+					async (value) => {
+						this.plugin.settings.canFreezeColumns = value;
+						await this.plugin.saveSettings();
+					}
+				);
+			});
 	}
 
 	private renderExportSettings(containerEl: HTMLElement) {

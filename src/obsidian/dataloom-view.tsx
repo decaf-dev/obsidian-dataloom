@@ -6,7 +6,7 @@ if (process.env.ENABLE_REACT_DEVTOOLS === "true") {
 
 import { createRoot, Root } from "react-dom/client";
 import { store } from "src/redux/global/store";
-import { LoomState } from "src/shared/types";
+import { LoomState } from "src/shared/loom-state/types";
 import {
 	deserializeLoomState,
 	serializeLoomState,

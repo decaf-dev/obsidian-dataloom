@@ -1,10 +1,10 @@
 import { css } from "@emotion/react";
-import { CellType, Tag } from "src/shared/types";
+import { CellType, Tag } from "src/shared/loom-state/types";
 import Select from "react-select";
 import {
 	CHECKBOX_MARKDOWN_CHECKED,
 	CHECKBOX_MARKDOWN_UNCHECKED,
-} from "src/shared/loom-state/constants";
+} from "src/shared/constants";
 
 import "./styles.css";
 import { baseInputStyle, selectStyle } from "src/react/loom-app/shared-styles";

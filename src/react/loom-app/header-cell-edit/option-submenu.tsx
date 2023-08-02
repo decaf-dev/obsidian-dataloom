@@ -6,7 +6,7 @@ import {
 	CurrencyType,
 	DateFormat,
 	PaddingSize,
-} from "src/shared/types";
+} from "src/shared/loom-state/types";
 import Stack from "src/react/shared/stack";
 import Padding from "src/react/shared/padding";
 import MenuItem from "src/react/shared/menu-item";
@@ -14,7 +14,7 @@ import { SubmenuType } from "./types";
 import {
 	getDisplayNameForCurrencyType,
 	getDisplayNameForDateFormat,
-} from "src/shared/loom-state/display-name";
+} from "src/shared/loom-state/type-display-names";
 
 interface Props {
 	title: string;

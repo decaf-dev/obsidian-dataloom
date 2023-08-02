@@ -1,4 +1,4 @@
-import { DateFormat } from "src/shared/types";
+import { DateFormat } from "src/shared/loom-state/types";
 import { getDateCellContent } from "src/shared/cell-content/date-cell-content";
 
 import { css } from "@emotion/react";

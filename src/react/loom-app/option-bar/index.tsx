@@ -5,14 +5,16 @@ import Filter from "./filter/filter";
 import Wrap from "../../shared/wrap";
 import SearchBar from "./search-bar";
 import ActiveFilterBubble from "./active-filter-bubble";
-import { FilterType } from "src/shared/types";
+import { FilterType } from "src/shared/loom-state/types";
 
-import { SortDir, Column, HeaderCell, FilterRule } from "src/shared/types";
 import {
-	CellNotFoundError,
-	ColumNotFoundError,
-} from "src/shared/loom-state/loom-error";
-import { isCellTypeFilterable } from "src/shared/loom-state/filter-by-rules";
+	SortDir,
+	Column,
+	HeaderCell,
+	FilterRule,
+} from "src/shared/loom-state/types";
+import { CellNotFoundError, ColumNotFoundError } from "src/shared/loom-error";
+import { isCellTypeFilterable } from "src/react/loom-app/app/filter-by-rules";
 
 import { ColumnWithMarkdown } from "./types";
 import Padding from "src/react/shared/padding";

@@ -2,7 +2,7 @@ import { App, Component, MarkdownRenderer, Modal } from "obsidian";
 import { getLastestGithubRelease } from "src/data/network";
 
 import "./styles.css";
-import { renderDivider } from "src/obsidian/html-utils";
+import { renderDivider } from "src/obsidian/shared";
 
 export default class WhatsNewModal extends Modal {
 	constructor(app: App) {

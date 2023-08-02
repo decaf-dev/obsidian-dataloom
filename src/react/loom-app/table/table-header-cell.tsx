@@ -1,14 +1,16 @@
 import { useDragContext } from "src/shared/dragging/drag-context";
-import { useLoomState } from "src/shared/loom-state/loom-state-context";
+import { useLoomState } from "src/react/loom-app/loom-state-provider";
 
 interface TableHeaderCellProps {
 	columnId: string;
+	shouldFreeze: boolean;
 	content: React.ReactNode;
 	isDraggable: boolean;
 }
 
 export default function TableHeaderCell({
 	columnId,
+	shouldFreeze,
 	content,
 	isDraggable,
 }: TableHeaderCellProps) {
@@ -179,9 +181,12 @@ export default function TableHeaderCell({
 		removeDragHover();
 	}
 
+	let className = "dataloom-cell dataloom-cell--header";
+	if (shouldFreeze)
+		className += " dataloom-cell--freeze dataloom-cell--freeze-header";
 	return (
 		<div
-			className="dataloom-cell dataloom-cell--header"
+			className={className}
 			data-column-id={columnId}
 			{...(isDraggable && {
 				draggable: true,

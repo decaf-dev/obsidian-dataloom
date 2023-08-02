@@ -9,14 +9,14 @@ import {
 	isValidDateFormat,
 	unixTimeToDateString,
 } from "src/shared/date/date-conversion";
-import { DateFormat } from "src/shared/types";
+import { DateFormat } from "src/shared/loom-state/types";
 import { useCompare } from "src/shared/hooks";
 import DateFormatMenu from "./date-format-menu";
 import { useMenu } from "src/shared/menu/hooks";
 import { MenuCloseRequest, MenuLevel } from "src/shared/menu/types";
 
 import MenuTrigger from "src/react/shared/menu-trigger";
-import { getDisplayNameForDateFormat } from "src/shared/loom-state/display-name";
+import { getDisplayNameForDateFormat } from "src/shared/loom-state/type-display-names";
 import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 import { borderInputStyle } from "src/react/loom-app/shared-styles";
 import { css } from "@emotion/react";

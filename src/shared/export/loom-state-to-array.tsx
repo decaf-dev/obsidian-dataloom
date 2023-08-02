@@ -1,6 +1,12 @@
-import { BodyCell, BodyRow, Column, HeaderCell, LoomState } from "../types";
+import {
+	BodyCell,
+	BodyRow,
+	Column,
+	HeaderCell,
+	LoomState,
+} from "../loom-state/types";
 import { getCellContent } from "../cell-content";
-import { ColumNotFoundError } from "../loom-state/loom-error";
+import { ColumNotFoundError } from "../loom-error";
 import { App } from "obsidian";
 
 const serializeHeaderCells = (cells: HeaderCell[]): string[] => {

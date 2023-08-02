@@ -1,5 +1,5 @@
 import { unixTimeToDateString } from "../date/date-conversion";
-import { DateFormat } from "../types";
+import { DateFormat } from "../loom-state/types";
 
 export const getDateCellContent = (
 	dateTime: number | null,
