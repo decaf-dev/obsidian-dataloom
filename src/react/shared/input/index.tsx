@@ -3,7 +3,6 @@ import React from "react";
 import "./styles.css";
 
 interface Props {
-	className?: string;
 	isTransparent?: boolean;
 	showBorder?: boolean;
 	hasError?: boolean;
@@ -17,7 +16,6 @@ interface Props {
 const Input = React.forwardRef<HTMLInputElement, Props>(
 	(
 		{
-			className,
 			isTransparent,
 			showBorder,
 			hasError,
@@ -29,25 +27,18 @@ const Input = React.forwardRef<HTMLInputElement, Props>(
 		},
 		ref
 	) => {
-		let newClassName = "dataloom-input dataloom-focusable";
+		let className = "dataloom-input dataloom-focusable";
 		if (isTransparent) {
-			newClassName += " dataloom-input--transparent";
+			className += " dataloom-input--transparent";
 		} else if (showBorder) {
-			newClassName += " dataloom-input--border";
+			className += " dataloom-input--border";
 		}
-		if (hasError) {
-			newClassName += " dataloom-input--error";
-		}
-		if (className) {
-			newClassName += " " + className;
-		}
-		if (inputMode === "numeric") {
-			newClassName += " dataloom-input--numeric";
-		}
+		if (inputMode === "numeric") className += " dataloom-input--numeric";
+		if (hasError) className += " dataloom-input--error";
 		return (
 			<input
 				ref={ref}
-				className={newClassName}
+				className={className}
 				placeholder={placeholder}
 				type="text"
 				inputMode={inputMode}

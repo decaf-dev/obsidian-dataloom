@@ -9,11 +9,12 @@
     overflow: hidden;
     padding: var(--nlt-cell-spacing-x) var(--nlt-cell-spacing-y);
     resize: none;
-    border: 0 !important;
-    border-radius: 0 !important;
+    border: 0;
+    border-radius: 0;
 }
 
 .dataloom-text-cell-edit textarea:focus {
-    outline: 2px solid var(--background-modifier-border-focus) !important;
+    box-shadow: none;
+    outline: 2px solid var(--background-modifier-border-focus);
     outline-offset: -2px;
 }
