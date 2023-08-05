@@ -1,10 +1,9 @@
 import Tag from "src/react/shared/tag";
+import Stack from "src/react/shared/stack";
+import Button from "src/react/shared/button";
 
 import { Color } from "src/shared/loom-state/types";
-
-import Stack from "src/react/shared/stack";
-
-import "./styles.css";
+import Padding from "src/react/shared/padding";
 
 interface Props {
 	markdown: string;
@@ -14,14 +13,23 @@ interface Props {
 
 export default function CreateTag({ markdown, color, onTagAdd }: Props) {
 	return (
-		<button
-			className="dataloom-create-tag dataloom-focusable dataloom-selectable"
-			onClick={() => onTagAdd(markdown, color)}
-		>
-			<Stack spacing="sm" isHorizontal>
-				<div>Create</div>
-				<Tag markdown={markdown} color={color} maxWidth="120px" />
-			</Stack>
-		</button>
+		<div className="dataloom-create-tag">
+			<Button
+				variant="text"
+				isFullWidth
+				onClick={() => onTagAdd(markdown, color)}
+			>
+				<Padding px="md">
+					<Stack spacing="sm" isHorizontal>
+						<div>Create</div>
+						<Tag
+							markdown={markdown}
+							color={color}
+							maxWidth="120px"
+						/>
+					</Stack>
+				</Padding>
+			</Button>
+		</div>
 	);
 }

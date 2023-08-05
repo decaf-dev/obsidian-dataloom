@@ -8,6 +8,7 @@ import "./styles.css";
 
 interface ButtonProps {
 	variant?: ButtonVariant;
+	isFullWidth?: boolean;
 	isFocusable?: boolean;
 	invertFocusColor?: boolean;
 	isSmall?: boolean;
@@ -20,6 +21,7 @@ interface ButtonProps {
 
 export default function Button({
 	variant = "text",
+	isFullWidth,
 	isFocusable = true,
 	isSmall,
 	invertFocusColor,
@@ -57,6 +59,7 @@ export default function Button({
 	if (variant == "link") className += " dataloom-button--link";
 	else if (variant == "text") className += " dataloom-button--text";
 	if (isSmall) className += " dataloom-button--small";
+	if (isFullWidth) className += " dataloom-button--full-width";
 
 	return (
 		<button

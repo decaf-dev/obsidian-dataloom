@@ -9,13 +9,13 @@
     overflow: hidden;
     padding: var(--nlt-cell-spacing-x) var(--nlt-cell-spacing-y);
     resize: none;
-    border: 0; /* Clear default Obsidian border style */
-    border-radius: 0; /* Clear default Obsidian border style */
-    font-size: var(--font-ui-medium); /* Reset to body fontn size */
+    border: 0; /* Clear default Obsidian style */
+    border-radius: 0; /* Clear default Obsidian style */
+    font-size: var(--font-size-normal); /* Reset to default Obsidian style */
 }
 
 .dataloom-text-cell-edit textarea:focus {
-    box-shadow: none; /* Clear default Obsidian hover */
+    box-shadow: none; /* Clear default Obsidian style */
     outline: 2px solid var(--background-modifier-border-focus);
     outline-offset: -2px;
 }

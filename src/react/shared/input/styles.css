@@ -2,7 +2,7 @@
     width: 100%;
     height: 100%;
     transition: none !important;
-    font-size: var(--font-ui-medium) !important;
+    font-size: var(--text-normal) !important; /* Reset to default Obsidian style */
     box-shadow: none !important;
 }
 
@@ -22,11 +22,6 @@
     border-radius: 0 !important;
     text-align: right;
 }
-
-                        /* &:focus {
-                            outline: 2px solid var(--background-modifier-border-focus);
-                            outline-offset: -2px;
-                        } */
 
 .dataloom-input--error {
     outline: 2px solid var(--background-modifier-error) !important;

@@ -6,6 +6,7 @@
     padding: 6px !important;
     white-space: nowrap;
     color: var(--text-normal);
+    font-size: var(--font-size-normal); /* Clear default Obsidian style */
     margin-right: 0;
     cursor: pointer;
 }
@@ -29,6 +30,13 @@
 
 .dataloom-button--small {
     padding: 2px !important;
+}
+
+.dataloom-button--full-width {
+    display: flex;
+    justify-content: flex-start;
+    width: 100% !important;
+    border-radius: 0px;
 }
 
 .dataloom-button--text {
