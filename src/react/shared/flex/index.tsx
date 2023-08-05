@@ -21,6 +21,7 @@ export default function Flex({
 }: Props) {
 	return (
 		<div
+			className="dataloom-flex"
 			style={{
 				flexDirection: flexDir,
 				justifyContent: justify,
