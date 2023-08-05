@@ -1,30 +1,8 @@
 import { numToPx, pxToNum } from "src/shared/conversion";
-import { useColumnResize } from "./use-column-resize";
+import { useColumnResize } from "../use-column-resize";
 import { MIN_COLUMN_WIDTH } from "src/shared/constants";
-import { css } from "@emotion/react";
 
-const containerStyle = css`
-	position: relative;
-`;
-
-const innerStyle = css`
-	position: absolute;
-	right: 0;
-	bottom: 0;
-	width: 5px;
-	cursor: col-resize;
-	height: 100%;
-	&:hover {
-		background-color: var(--interactive-accent);
-	}
-	&:active {
-		background-color: var(--interactive-accent);
-	}
-`;
-
-const dragStyle = css`
-	background-color: var(--interactive-accent);
-`;
+import "./styles.css";
 
 interface Props {
 	currentResizingId: string | null;
@@ -34,7 +12,7 @@ interface Props {
 	onMenuClose: () => void;
 }
 
-export default function ResizeContainer({
+export default function ColumnResize({
 	currentResizingId,
 	columnId,
 	width,
@@ -53,12 +31,14 @@ export default function ResizeContainer({
 	);
 
 	const isDragging = columnId === currentResizingId;
+	let innerClassName = "dataloom-column-resize__handle";
+	if (isDragging)
+		innerClassName += " dataloom-column-resize__handle--dragging";
 
 	return (
-		<div css={containerStyle}>
+		<div className="dataloom-column-resize">
 			<div
-				className="dataloom-resize-handle"
-				css={[innerStyle, isDragging && dragStyle]}
+				className={innerClassName}
 				onMouseDown={(e) => {
 					onMenuClose();
 					handleMouseDown(e);
