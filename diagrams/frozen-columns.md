@@ -56,7 +56,9 @@ By default, the first column will be frozen. This can be changed in the settings
 ```javascript
 interface LoomState {
 	model: {
-		numFrozenColumns: number,
+		settings: {
+			numFrozenColumns: number,
+		},
 	};
 }
 ```
