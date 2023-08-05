@@ -1,0 +1,8 @@
+.dataloom-suggest-menu {
+    width: 100%;
+}
+
+.dataloom-suggest-menu__container {
+    max-height: 175px;
+    overflow-y: auto;
+}
