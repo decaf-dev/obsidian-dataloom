@@ -10,12 +10,7 @@ interface Props {
 
 export default function NewColumnButton({ onClick }: Props) {
 	return (
-		<div
-			className="dataloom-new-column"
-			css={css`
-				width: 50px;
-			`}
-		>
+		<div className="dataloom-new-column">
 			<Button
 				icon={<Icon lucideId="plus" />}
 				ariaLabel="New column"
