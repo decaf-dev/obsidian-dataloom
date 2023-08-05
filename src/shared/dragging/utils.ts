@@ -1,4 +1,4 @@
-import { SortDir, LoomState } from "../types";
+import { SortDir, LoomState } from "../loom-state/types";
 import { DragData } from "./types";
 
 export const getRowId = (rowEl: HTMLElement) => {

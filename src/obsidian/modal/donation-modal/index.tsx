@@ -1,5 +1,5 @@
 import { App, Modal } from "obsidian";
-import { renderDivider, renderDonationBadge } from "../../html-utils";
+import { renderDivider, renderDonationBadge } from "../../shared";
 
 import "./styles.css";
 

@@ -1,4 +1,4 @@
-import { DateFormat } from "../types";
+import { DateFormat } from "../loom-state/types";
 import { getTimeCellContent } from "./time-content";
 
 describe("getTimeCellContent", () => {

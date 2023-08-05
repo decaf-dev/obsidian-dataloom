@@ -12,13 +12,13 @@ import {
 	CurrencyType,
 	DateFormat,
 	Tag,
-} from "src/shared/types";
+} from "src/shared/loom-state/types";
 import Stack from "../../shared/stack";
 
 import MenuTrigger from "src/react/shared/menu-trigger";
 import { isNumber, isNumberCalcuation } from "src/shared/match";
 import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
-import { getShortDisplayNameForCalculationType } from "src/shared/loom-state/display-name";
+import { getShortDisplayNameForCalculationType } from "src/shared/loom-state/type-display-names";
 import { getCalculationContent } from "./calculation";
 import { getNumberCalculationContent } from "./number-calculation";
 

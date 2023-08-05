@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { useAppSelector } from "src/redux/global/hooks";
+import { useAppSelector } from "src/redux/hooks";
 import "./styles.css";
 
 interface Props {

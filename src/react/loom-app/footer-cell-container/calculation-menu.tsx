@@ -6,13 +6,13 @@ import {
 	getAriaLabelForNumberCalculation,
 	getDisplayNameForCalculation,
 	getDisplayNameForNumberCalculation,
-} from "src/shared/loom-state/display-name";
+} from "src/shared/loom-state/type-display-names";
 import {
 	Calculation,
 	CalculationType,
 	CellType,
 	NumberCalculation,
-} from "src/shared/types";
+} from "src/shared/loom-state/types";
 
 interface Props {
 	id: string;

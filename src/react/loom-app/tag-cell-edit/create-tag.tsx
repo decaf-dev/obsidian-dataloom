@@ -1,6 +1,6 @@
 import Tag from "src/react/shared/tag";
 
-import { Color } from "src/shared/types";
+import { Color } from "src/shared/loom-state/types";
 
 import { css } from "@emotion/react";
 import Stack from "src/react/shared/stack";

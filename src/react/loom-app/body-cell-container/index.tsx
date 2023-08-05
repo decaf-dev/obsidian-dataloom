@@ -21,7 +21,7 @@ import {
 	DateFormat,
 	PaddingSize,
 	Tag,
-} from "src/shared/types";
+} from "src/shared/loom-state/types";
 import { useMenu } from "src/shared/menu/hooks";
 import { MenuLevel } from "src/shared/menu/types";
 
@@ -30,10 +30,10 @@ import CreationTimeCell from "../creation-time-cell";
 import {
 	CHECKBOX_MARKDOWN_CHECKED,
 	CHECKBOX_MARKDOWN_UNCHECKED,
-} from "src/shared/loom-state/constants";
+} from "src/shared/constants";
 import { isCheckboxChecked } from "src/shared/match";
 
-import { Color } from "src/shared/types";
+import { Color } from "src/shared/loom-state/types";
 import CurrencyCell from "../currency-cell";
 import CurrencyCellEdit from "../currency-cell-edit";
 import MenuTrigger from "src/react/shared/menu-trigger";

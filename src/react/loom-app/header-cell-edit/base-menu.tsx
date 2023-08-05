@@ -2,10 +2,10 @@ import Divider from "src/react/shared/divider";
 import MenuItem from "src/react/shared/menu-item";
 import Padding from "src/react/shared/padding";
 import Stack from "src/react/shared/stack";
-import { CellType, SortDir } from "src/shared/types";
+import { CellType, SortDir } from "src/shared/loom-state/types";
 import { SubmenuType } from "./types";
 import { useInputSelection } from "src/shared/hooks";
-import { getDisplayNameForCellType } from "src/shared/loom-state/display-name";
+import { getDisplayNameForCellType } from "src/shared/loom-state/type-display-names";
 import React from "react";
 import Flex from "src/react/shared/flex";
 import Switch from "src/react/shared/switch";
@@ -44,16 +44,11 @@ export default function BaseMenu({
 	onColumnNameChange,
 	onHideClick,
 }: Props) {
-	const lastKeyPressed = React.useRef<string | null>(null);
 	const inputRef = React.useRef<HTMLInputElement | null>(null);
 	useInputSelection(inputRef, columnName);
 
 	function handleInputChange(inputValue: string) {
 		onColumnNameChange(inputValue);
-	}
-
-	function handleKeyDown(e: React.KeyboardEvent) {
-		lastKeyPressed.current = e.key;
 	}
 
 	const hasOptions =
@@ -75,7 +70,6 @@ export default function BaseMenu({
 						ref={inputRef}
 						value={columnName}
 						onChange={(e) => handleInputChange(e.target.value)}
-						onKeyDown={handleKeyDown}
 					/>
 				</Padding>
 				<MenuItem

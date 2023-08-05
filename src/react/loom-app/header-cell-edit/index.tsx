@@ -14,7 +14,7 @@ import {
 	DateFormat,
 	SortDir,
 	PaddingSize,
-} from "src/shared/types";
+} from "src/shared/loom-state/types";
 import { SubmenuType } from "./types";
 
 import { MenuCloseRequest } from "src/shared/menu/types";

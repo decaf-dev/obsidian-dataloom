@@ -1,4 +1,4 @@
-import { LoomState } from "src/shared/types";
+import { LoomState } from "src/shared/loom-state/types";
 import Stack from "../shared/stack";
 import React from "react";
 import { ExportType } from "../../shared/export/types";
@@ -14,7 +14,7 @@ import {
 } from "../../shared/export/download-utils";
 import { exportToCSV } from "src/shared/export/export-to-csv";
 import { css } from "@emotion/react";
-import { useAppSelector } from "src/redux/global/hooks";
+import { useAppSelector } from "src/redux/hooks";
 
 interface Props {
 	app: App;

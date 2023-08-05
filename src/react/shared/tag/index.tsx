@@ -5,9 +5,9 @@ import Stack from "../stack";
 import Button from "../button";
 import Padding from "../padding";
 
-import { Color } from "src/shared/types";
+import { Color } from "src/shared/loom-state/types";
 import { findColorClassName } from "src/shared/color";
-import { useAppSelector } from "src/redux/global/hooks";
+import { useAppSelector } from "src/redux/hooks";
 
 interface Props {
 	id?: string;

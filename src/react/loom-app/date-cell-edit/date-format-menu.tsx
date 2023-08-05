@@ -3,8 +3,8 @@ import React from "react";
 import Menu from "src/react/shared/menu";
 import MenuItem from "src/react/shared/menu-item";
 
-import { getDisplayNameForDateFormat } from "src/shared/loom-state/display-name";
-import { DateFormat } from "src/shared/types";
+import { getDisplayNameForDateFormat } from "src/shared/loom-state/type-display-names";
+import { DateFormat } from "src/shared/loom-state/types";
 
 interface Props {
 	id: string;

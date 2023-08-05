@@ -7,12 +7,10 @@ import {
 	CellType,
 	DateFormat,
 	Tag,
-} from "src/shared/types";
+} from "src/shared/loom-state/types";
 import { hashString, round2Digits } from "./utils";
-import {
-	RowNotFoundError,
-	TagNotFoundError,
-} from "src/shared/loom-state/loom-error";
+import RowNotFoundError from "src/shared/error/row-not-found-error";
+import TagNotFoundError from "src/shared/error/tag-not-found-error";
 import { unixTimeToDateTimeString } from "src/shared/date/date-conversion";
 
 export const getCalculationContent = (

@@ -1,6 +1,6 @@
 import { numToPx, pxToNum } from "src/shared/conversion";
 import { useColumnResize } from "./use-column-resize";
-import { MIN_COLUMN_WIDTH } from "src/shared/loom-state/constants";
+import { MIN_COLUMN_WIDTH } from "src/shared/constants";
 import { css } from "@emotion/react";
 
 const containerStyle = css`

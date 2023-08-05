@@ -6,7 +6,7 @@ import { useMenu } from "src/shared/menu/hooks";
 import MenuButton from "src/react/shared/menu-button";
 import Icon from "src/react/shared/icon";
 import Tag from "src/react/shared/tag";
-import { Color } from "src/shared/types";
+import { Color } from "src/shared/loom-state/types";
 import { css } from "@emotion/react";
 import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 

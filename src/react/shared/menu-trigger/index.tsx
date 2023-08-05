@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import { NltMenu } from "src/shared/menu/types";
 import React from "react";
-import { useMenuState } from "src/shared/menu/menu-context";
+import { useMenuState } from "src/react/loom-app/menu-provider";
 import {
 	isMacRedoDown,
 	isMacUndoDown,

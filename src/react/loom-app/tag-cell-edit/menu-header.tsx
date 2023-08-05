@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { Tag as TagType } from "src/shared/types";
+import { Tag as TagType } from "src/shared/loom-state/types";
 import Tag from "src/react/shared/tag";
 import Wrap from "src/react/shared/wrap";
 

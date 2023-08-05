@@ -5,12 +5,9 @@ if (process.env.ENABLE_REACT_DEVTOOLS === "true") {
 }
 
 import { createRoot, Root } from "react-dom/client";
-import { store } from "src/redux/global/store";
-import { LoomState } from "src/shared/types";
-import {
-	deserializeLoomState,
-	serializeLoomState,
-} from "src/data/serialize-loom-state";
+import { store } from "src/redux/store";
+import { LoomState } from "src/shared/loom-state/types";
+import { deserializeLoomState, serializeLoomState } from "src/data/serialize";
 import { EVENT_APP_REFRESH } from "src/shared/events";
 import { v4 as uuidv4 } from "uuid";
 import LoomAppWrapper from "src/react/loom-app";

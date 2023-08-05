@@ -1,4 +1,4 @@
-import { DateFormat } from "../types";
+import { DateFormat } from "../loom-state/types";
 import { MILLIS_IN_DAY } from "./constants";
 import { DD_MM_YYYY_REGEX, MM_DD_YYYY_REGEX, YYYY_MM_DD_REGEX } from "./regex";
 import {

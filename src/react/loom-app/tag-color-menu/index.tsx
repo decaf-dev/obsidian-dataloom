@@ -4,13 +4,13 @@ import Menu from "src/react/shared/menu";
 import ColorItem from "./components/color-item";
 import Text from "src/react/shared/text";
 
-import { useAppSelector } from "src/redux/global/hooks";
+import { useAppSelector } from "src/redux/hooks";
 
 import Divider from "../../shared/divider";
 import Stack from "../../shared/stack";
 import MenuItem from "../../shared/menu-item";
 
-import { Color } from "src/shared/types";
+import { Color } from "src/shared/loom-state/types";
 import Padding from "src/react/shared/padding";
 
 import "./styles.css";

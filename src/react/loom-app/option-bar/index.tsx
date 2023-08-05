@@ -5,23 +5,28 @@ import Filter from "./filter/filter";
 import Wrap from "../../shared/wrap";
 import SearchBar from "./search-bar";
 import ActiveFilterBubble from "./active-filter-bubble";
-import { FilterType } from "src/shared/types";
+import { FilterType } from "src/shared/loom-state/types";
 
-import { SortDir, Column, HeaderCell, FilterRule } from "src/shared/types";
 import {
-	CellNotFoundError,
-	ColumNotFoundError,
-} from "src/shared/loom-state/loom-error";
-import { isCellTypeFilterable } from "src/shared/loom-state/filter-by-rules";
+	SortDir,
+	Column,
+	HeaderCell,
+	FilterRule,
+} from "src/shared/loom-state/types";
+import CellNotFoundError from "src/shared/error/cell-not-found-error";
+import ColumNotFoundError from "src/shared/error/column-not-found-error";
+import { isCellTypeFilterable } from "src/react/loom-app/app/filter-by-rules";
 
 import { ColumnWithMarkdown } from "./types";
 import Padding from "src/react/shared/padding";
-import { css } from "@emotion/react";
-import Button from "src/react/shared/button";
 import Icon from "src/react/shared/icon";
-import { useMountState } from "../mount-provider";
-import ExportModal from "src/obsidian/modal/export-modal";
-import { useAppSelector } from "src/redux/global/hooks";
+import { MenuLevel } from "src/shared/menu/types";
+import { useMenu } from "src/shared/menu/hooks";
+import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
+import MenuButton from "src/react/shared/menu-button";
+import MoreMenu from "./more-menu";
+
+import "./styles.css";
 
 interface SortButtonListProps {
 	headerCells: HeaderCell[];
@@ -55,6 +60,7 @@ const SortBubbleList = ({
 };
 
 interface Props {
+	numFrozenColumns: number;
 	headerCells: HeaderCell[];
 	columns: Column[];
 	filterRules: FilterRule[];
@@ -67,8 +73,10 @@ interface Props {
 	onRuleDeleteClick: (ruleId: string) => void;
 	onRuleAddClick: (columnId: string) => void;
 	onRuleTagsChange: (ruleId: string, value: string[]) => void;
+	onFrozenColumnsChange: (value: number) => void;
 }
 export default function OptionBar({
+	numFrozenColumns,
 	headerCells,
 	columns,
 	filterRules,
@@ -81,15 +89,24 @@ export default function OptionBar({
 	onRuleDeleteClick,
 	onRuleAddClick,
 	onRuleTagsChange,
+	onFrozenColumnsChange,
 }: Props) {
-	const { manifestPluginVersion } = useAppSelector((state) => state.global);
-	const { loomFile, app } = useMountState();
 	const sortedCells = headerCells.filter((cell) => {
 		const columnId = cell.columnId;
 		const column = columns.find((c) => c.id === columnId);
 		if (!column) throw new ColumNotFoundError(columnId);
 		return column.sortDir !== SortDir.NONE;
 	});
+
+	const { menu, isMenuOpen, menuRef, closeTopMenu } = useMenu(MenuLevel.ONE);
+	const { triggerRef, triggerPosition } = useMenuTriggerPosition();
+	useShiftMenu(triggerRef, menuRef, isMenuOpen, {
+		openDirection: "left",
+	});
+
+	function handleMenuCloseClick(shouldFocusTrigger: boolean) {
+		closeTopMenu({ shouldFocusTrigger });
+	}
 
 	const activeRules = filterRules.filter((rule) => rule.isEnabled);
 
@@ -115,59 +132,64 @@ export default function OptionBar({
 	);
 
 	return (
-		<div
-			className="dataloom-option-bar"
-			css={css`
-				width: 100%;
-				border-bottom: 1px solid var(--background-modifier-border);
-			`}
-		>
-			<Padding py="md">
-				<Stack spacing="lg" align="center" minHeight="40px">
-					<Wrap
-						justify={{ base: "space-between", mobile: "flex-end" }}
-					>
-						<Stack spacing="md" isHorizontal>
-							<SortBubbleList
-								headerCells={sortedCells}
-								columns={columns}
-								onRemoveClick={onSortRemoveClick}
-							/>
-							<ActiveFilterBubble
-								numActive={activeRules.length}
-							/>
-						</Stack>
-						<Stack spacing="sm" justify="flex-end" isHorizontal>
-							<SearchBar />
-							<Filter
-								columns={filterableColumns}
-								filterRules={filterRules}
-								onAddClick={onRuleAddClick}
-								onToggle={onRuleToggle}
-								onColumnChange={onRuleColumnChange}
-								onFilterTypeChange={onRuleFilterTypeChange}
-								onTextChange={onRuleTextChange}
-								onDeleteClick={onRuleDeleteClick}
-								onTagsChange={onRuleTagsChange}
-							/>
-							<ToggleColumn
-								columns={columnsWithMarkdown}
-								onToggle={onColumnToggle}
-							/>
-							<Button
-								icon={<Icon lucideId="more-vertical" />}
-								onClick={() => {
-									new ExportModal(
-										app,
-										loomFile,
-										manifestPluginVersion
-									).open();
-								}}
-							></Button>
-						</Stack>
-					</Wrap>
-				</Stack>
-			</Padding>
-		</div>
+		<>
+			<div className="dataloom-option-bar">
+				<Padding py="md">
+					<Stack spacing="lg" align="center" minHeight="40px">
+						<Wrap
+							justify={{
+								base: "space-between",
+								mobile: "flex-end",
+							}}
+						>
+							<Stack spacing="md" isHorizontal>
+								<SortBubbleList
+									headerCells={sortedCells}
+									columns={columns}
+									onRemoveClick={onSortRemoveClick}
+								/>
+								<ActiveFilterBubble
+									numActive={activeRules.length}
+								/>
+							</Stack>
+							<Stack spacing="sm" justify="flex-end" isHorizontal>
+								<SearchBar />
+								<Filter
+									columns={filterableColumns}
+									filterRules={filterRules}
+									onAddClick={onRuleAddClick}
+									onToggle={onRuleToggle}
+									onColumnChange={onRuleColumnChange}
+									onFilterTypeChange={onRuleFilterTypeChange}
+									onTextChange={onRuleTextChange}
+									onDeleteClick={onRuleDeleteClick}
+									onTagsChange={onRuleTagsChange}
+								/>
+								<ToggleColumn
+									columns={columnsWithMarkdown}
+									onToggle={onColumnToggle}
+								/>
+								<div ref={triggerRef}>
+									<MenuButton
+										menu={menu}
+										icon={<Icon lucideId="more-vertical" />}
+									/>
+								</div>
+							</Stack>
+						</Wrap>
+					</Stack>
+				</Padding>
+			</div>
+			<MoreMenu
+				id={menu.id}
+				ref={menuRef}
+				isOpen={isMenuOpen}
+				top={triggerPosition.top}
+				left={triggerPosition.left}
+				numFrozenColumns={numFrozenColumns}
+				onFrozenColumnsChange={onFrozenColumnsChange}
+				onCloseClick={handleMenuCloseClick}
+			/>
+		</>
 	);
 }
