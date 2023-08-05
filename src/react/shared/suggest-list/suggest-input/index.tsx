@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import { transparentInputStyle } from "src/react/loom-app/shared-styles";
 
 interface Props {
@@ -6,15 +5,9 @@ interface Props {
 	onChange: (value: string) => void;
 }
 
-export default function Input({ value, onChange }: Props) {
+export default function SuggestInput({ value, onChange }: Props) {
 	return (
-		<div
-			css={css`
-				background-color: var(--background-secondary);
-				border-bottom: 1px solid var(--table-border-color);
-				padding: var(--nlt-spacing--sm) var(--nlt-spacing--lg);
-			`}
-		>
+		<div className="dataloom-suggest-input">
 			<input
 				className="dataloom-focusable"
 				type="text"

@@ -3,7 +3,7 @@ import React from "react";
 import fuzzysort from "fuzzysort";
 
 import SuggestItem from "./suggest-item";
-import Input from "./input";
+import Input from "./suggest-input";
 import Text from "src/react/shared/text";
 
 import { nltEventSystem } from "src/shared/event-system/event-system";
