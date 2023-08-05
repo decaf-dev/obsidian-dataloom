@@ -24,6 +24,10 @@
     display: table-cell;
 }
 
+.dataloom-cell--left-corner {
+    width: 35px;
+}
+
 .dataloom-cell.dataloom-cell--freeze {
     position: sticky;
     left: 0;

@@ -314,14 +314,10 @@ export default function App() {
 								id: firstColumnId,
 								columnId: firstColumnId,
 								content: (
-									<div
-										css={css`
-											width: 35px;
-										`}
-									/>
+									<div className="dataloom-cell--left-corner" />
 								),
 							},
-							...visibleColumns.map((column, i) => {
+							...visibleColumns.map((column) => {
 								const {
 									id: columnId,
 									width,
