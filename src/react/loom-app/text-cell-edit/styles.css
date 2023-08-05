@@ -9,12 +9,13 @@
     overflow: hidden;
     padding: var(--nlt-cell-spacing-x) var(--nlt-cell-spacing-y);
     resize: none;
-    border: 0;
-    border-radius: 0;
+    border: 0; /* Clear default Obsidian border style */
+    border-radius: 0; /* Clear default Obsidian border style */
+    font-size: var(--font-ui-medium); /* Reset to body fontn size */
 }
 
 .dataloom-text-cell-edit textarea:focus {
-    box-shadow: none;
+    box-shadow: none; /* Clear default Obsidian hover */
     outline: 2px solid var(--background-modifier-border-focus);
     outline-offset: -2px;
 }
