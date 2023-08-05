@@ -1,0 +1,22 @@
+.dataloom-export-app textarea {
+    width: 100%;
+    height: 200px;
+    resize: vertical;
+}
+
+.dataloom-export-app h5 {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.dataloom-export-app hr {
+    margin: 1rem 0;
+}
+
+.dataloom-export-app select {
+    background-color: var(--background-secondary-alt) !important;
+}
+
+.dataloom-copy-button {
+    background-color: var(--background-secondary-alt) !important;
+}
