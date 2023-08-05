@@ -17,6 +17,9 @@ import {
 import { exportToCSV } from "src/shared/export/export-to-csv";
 import { useAppSelector } from "src/redux/hooks";
 
+import "./styles.css";
+import Divider from "../shared/divider";
+
 interface Props {
 	app: App;
 	loomState: LoomState;
@@ -55,7 +58,7 @@ export function ExportApp({ loomState, loomFilePath }: Props) {
 		<div className="dataloom-export-app">
 			<Padding p="xl">
 				<h5>DataLoom Export</h5>
-				<hr />
+				<Divider />
 				<Stack spacing="xl">
 					<ExportTypeSelect
 						value={exportType}

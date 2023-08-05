@@ -9,10 +9,6 @@
     margin-bottom: 0px;
 }
 
-.dataloom-export-app hr {
-    margin: 1rem 0;
-}
-
 .dataloom-export-app select {
     background-color: var(--background-secondary-alt) !important;
 }
