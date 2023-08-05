@@ -4,6 +4,8 @@ import Text from "src/react/shared/text";
 import { nltEventSystem } from "src/shared/event-system/event-system";
 import { TFile } from "obsidian";
 
+import "./styles.css";
+
 interface Props {
 	index: number;
 	file: TFile | null;
