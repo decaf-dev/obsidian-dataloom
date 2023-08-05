@@ -2,6 +2,8 @@ import { useRenderMarkdown } from "src/shared/render-utils";
 import { useOverflow } from "src/shared/spacing/hooks";
 import { appendOrReplaceFirstChild } from "src/shared/render/utils";
 
+import "./styles.css";
+
 interface Props {
 	markdown: string;
 	shouldWrapOverflow: boolean;
