@@ -14,18 +14,6 @@ const borderlessStyle = css`
 	border-radius: 0 !important;
 `;
 
-export const textAreaStyle = css`
-	${borderlessStyle}
-	overflow: hidden;
-	padding: var(--nlt-cell-spacing-x) var(--nlt-cell-spacing-y);
-	resize: none;
-
-	&:focus {
-		outline: 2px solid var(--background-modifier-border-focus);
-		outline-offset: -2px;
-	}
-`;
-
 export const numberInputStyle = css`
 	${borderlessStyle}
 	text-align: right;

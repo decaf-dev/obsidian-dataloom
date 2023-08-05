@@ -1,5 +1,7 @@
 import React from "react";
 
+import { TFile } from "obsidian";
+
 import { useCompare, useInputSelection } from "src/shared/hooks";
 import { useOverflow } from "src/shared/spacing/hooks";
 
@@ -16,10 +18,9 @@ import {
 } from "./utils";
 
 import { getWikiLinkText } from "src/shared/link/link-utils";
-import { css } from "@emotion/react";
-import { textAreaStyle } from "src/react/loom-app/shared-styles";
 import { useLogger } from "src/shared/logger";
-import { TFile } from "obsidian";
+
+import "./styles.css";
 
 interface Props {
 	menuCloseRequest: MenuCloseRequest | null;
@@ -170,20 +171,10 @@ export default function TextCellEdit({
 
 	return (
 		<>
-			<div
-				className="dataloom-text-cell-edit"
-				ref={triggerRef}
-				css={css`
-					width: 100%;
-					height: 100%;
-				`}
-			>
+			<div className="dataloom-text-cell-edit" ref={triggerRef}>
 				<textarea
 					className={overflowClassName}
 					autoFocus
-					css={css`
-						${textAreaStyle}
-					`}
 					ref={inputRef}
 					value={localValue}
 					onKeyDown={handleKeyDown}
