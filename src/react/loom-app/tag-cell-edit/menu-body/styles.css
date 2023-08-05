@@ -1,0 +1,8 @@
+.dataloom-tag-cell-edit__menu-body {
+    max-height: 140px;
+    overflow-y: scroll;
+}
+
+.dataloom-tag-cell-edit__menu-body-container {
+    width: 100%;
+}
