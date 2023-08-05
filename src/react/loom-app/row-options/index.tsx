@@ -16,9 +16,16 @@ import "./styles.css";
 interface Props {
 	rowId: string;
 	onDeleteClick: (rowId: string) => void;
+	onInsertAboveClick: (rowId: string) => void;
+	onInsertBelowClick: (rowId: string) => void;
 }
 
-export default function RowOptions({ rowId, onDeleteClick }: Props) {
+export default function RowOptions({
+	rowId,
+	onDeleteClick,
+	onInsertAboveClick,
+	onInsertBelowClick,
+}: Props) {
 	const { menu, isMenuOpen, menuRef, closeTopMenu } = useMenu(MenuLevel.ONE);
 	const { triggerRef, triggerPosition } = useMenuTriggerPosition();
 	useShiftMenu(triggerRef, menuRef, isMenuOpen, {
@@ -29,8 +36,18 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 		useDragContext();
 	const { loomState, setLoomState } = useLoomState();
 
-	function handleDeleteClick(rowId: string) {
+	function handleDeleteClick() {
 		onDeleteClick(rowId);
+		closeTopMenu();
+	}
+
+	function handleInsertAboveClick() {
+		onInsertAboveClick(rowId);
+		closeTopMenu();
+	}
+
+	function handleInsertBelowClick() {
+		onInsertBelowClick(rowId);
 		closeTopMenu();
 	}
 
@@ -175,12 +192,13 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 			</div>
 			<RowMenu
 				id={menu.id}
-				rowId={rowId}
 				ref={menuRef}
 				isOpen={isMenuOpen}
 				top={triggerPosition.top}
 				left={triggerPosition.left}
 				onDeleteClick={handleDeleteClick}
+				onInsertAboveClick={handleInsertAboveClick}
+				onInsertBelowClick={handleInsertBelowClick}
 			/>
 		</>
 	);
