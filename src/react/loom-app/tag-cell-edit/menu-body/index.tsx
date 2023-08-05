@@ -2,10 +2,10 @@ import Padding from "src/react/shared/padding";
 import Text from "src/react/shared/text";
 import { Color } from "src/shared/loom-state/types";
 import { Tag } from "src/shared/loom-state/types";
-import CreateTag from "./create-tag";
-import SelectableTag from "./selectable-tag";
+import CreateTag from "../create-tag";
+import SelectableTag from "../selectable-tag";
 
-import { css } from "@emotion/react";
+import "./styles.css";
 
 interface MenuBodyProps {
 	columnTags: Tag[];
@@ -33,20 +33,11 @@ export default function MenuBody({
 	);
 
 	return (
-		<div
-			css={css`
-				max-height: 140px;
-				overflow-y: scroll;
-			`}
-		>
+		<div className="dataloom-tag-cell-edit__menu-body">
 			<Padding px="lg" py="md">
 				<Text value="Select an option or create one" />
 			</Padding>
-			<div
-				css={css`
-					width: 100%;
-				`}
-			>
+			<div className="dataloom-tag-cell-edit__menu-body-container">
 				{!hasTagWithSameCase && inputValue !== "" && (
 					<CreateTag
 						markdown={inputValue}

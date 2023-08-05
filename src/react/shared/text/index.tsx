@@ -1,6 +1,5 @@
-import { css } from "@emotion/react";
-import "./styles.css";
 import { useOverflow } from "src/shared/spacing/hooks";
+import "./styles.css";
 
 interface Props {
 	variant?: "semibold" | "faint" | "muted" | "normal";
@@ -10,11 +9,14 @@ interface Props {
 }
 
 export default function Text({ value, variant, size = "sm", maxWidth }: Props) {
-	let className = "dataloom-p";
+	const overflowClassName = useOverflow(maxWidth !== undefined);
 
-	if (variant === "faint") className += " dataloom-text-faint";
-	if (variant === "muted") className += " dataloom-text-muted";
-	if (variant === "semibold") className += " dataloom-text-semibold";
+	let className = "dataloom-text";
+
+	if (variant === "faint") className += " dataloom-text--faint";
+	if (variant === "muted") className += " dataloom-text--muted";
+	if (variant === "semibold") className += " dataloom-text--semibold";
+	className += " " + overflowClassName;
 
 	let fontSize = "";
 	if (size === "xs") {
@@ -26,16 +28,13 @@ export default function Text({ value, variant, size = "sm", maxWidth }: Props) {
 	} else if (size === "lg") {
 		fontSize = "var(--nlt-font-size--lg)";
 	}
-
-	const overflowStyle = useOverflow(maxWidth !== undefined);
 	return (
 		<p
 			className={className}
-			css={css`
-				font-size: ${fontSize};
-				max-width: ${maxWidth === undefined ? "unset" : maxWidth};
-				${overflowStyle}
-			`}
+			style={{
+				fontSize,
+				maxWidth: maxWidth === undefined ? "unset" : maxWidth,
+			}}
 		>
 			{value}
 		</p>

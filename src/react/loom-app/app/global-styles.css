@@ -127,8 +127,8 @@
 }
 
 .dataloom-focusable:focus-visible, .dataloom-focus-visible {
-	outline: 2px solid var(--color-accent) !important;
-	outline-offset: -2px !important;
+	outline: 2px solid var(--color-accent);
+	outline-offset: -2px;
 }
 
 .dataloom-focusable--inverted:focus-visible {

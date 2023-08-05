@@ -1,9 +1,10 @@
 import React from "react";
 
-import { css } from "@emotion/react";
 import Text from "src/react/shared/text";
 import { nltEventSystem } from "src/shared/event-system/event-system";
 import { TFile } from "obsidian";
+
+import "./styles.css";
 
 interface Props {
 	index: number;
@@ -62,16 +63,11 @@ const SuggestItem = React.forwardRef<HTMLDivElement, Props>(
 				data-index={index}
 				className="dataloom-suggest-item dataloom-focusable"
 				ref={ref}
-				css={css`
-					padding: var(--nlt-spacing--sm) var(--nlt-spacing--lg);
-					margin: 2px 0;
-					background-color: ${isHighlighted
+				style={{
+					backgroundColor: isHighlighted
 						? "var(--background-modifier-hover)"
-						: "var(--background-primary)"};
-					&:hover {
-						background-color: var(--background-modifier-hover);
-					}
-				`}
+						: "var(--background-primary)",
+				}}
 				onClick={handleClick}
 			>
 				<Text

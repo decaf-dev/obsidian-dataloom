@@ -18,7 +18,7 @@ import { useCompare, useForceUpdate } from "src/shared/hooks";
 import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 import { getIconIdForCellType } from "src/react/shared/icon/utils";
 import MenuTrigger from "src/react/shared/menu-trigger";
-import ResizeContainer from "./resize-container";
+import ResizeContainer from "./column-resize";
 
 import HeaderMenu from "../header-cell-edit";
 

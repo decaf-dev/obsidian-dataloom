@@ -1,0 +1,6 @@
+.dataloom-filter-column-select {
+    max-width: 175px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

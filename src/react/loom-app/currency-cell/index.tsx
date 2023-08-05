@@ -16,11 +16,10 @@ export default function CurrencyCell({
 	shouldWrapOverflow,
 }: Props) {
 	const content = getCurrencyCellContent(value, currencyType);
-	const overflowStyle = useOverflow(shouldWrapOverflow);
+	const overflowClassName = useOverflow(shouldWrapOverflow);
 
-	return (
-		<div className="dataloom-currency-cell" css={overflowStyle}>
-			{content}
-		</div>
-	);
+	let className = "dataloom-currency-cell";
+	className += " " + overflowClassName;
+
+	return <div className={className}>{content}</div>;
 }

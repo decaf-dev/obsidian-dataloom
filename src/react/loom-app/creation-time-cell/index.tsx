@@ -13,9 +13,12 @@ export default function CreationTimeCell({
 	format,
 	shouldWrapOverflow,
 }: Props) {
-	const overflowStyle = useOverflow(shouldWrapOverflow);
+	const overflowClassName = useOverflow(shouldWrapOverflow);
+
+	let className = "dataloom-creation-time-cell";
+	className += " " + overflowClassName;
 	return (
-		<div className="dataloom-creation-time-cell" css={overflowStyle}>
+		<div className={className}>
 			{unixTimeToDateTimeString(value, format)}
 		</div>
 	);

@@ -1,5 +1,5 @@
 import Stack from "../../shared/stack";
-import SortBubble from "./sort-button";
+import SortBubble from "./sort-bubble";
 import ToggleColumn from "./toggle-column";
 import Filter from "./filter/filter";
 import Wrap from "../../shared/wrap";

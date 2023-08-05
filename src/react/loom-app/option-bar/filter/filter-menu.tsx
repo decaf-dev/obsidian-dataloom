@@ -1,3 +1,5 @@
+import React from "react";
+
 import Menu from "src/react/shared/menu";
 import Padding from "src/react/shared/padding";
 import Stack from "src/react/shared/stack";
@@ -6,11 +8,9 @@ import FilterRow from "./filter-row";
 import Text from "src/react/shared/text";
 import Button from "src/react/shared/button";
 
-import { FilterRule, FilterType } from "src/shared/loom-state/types";
 import ColumNotFoundError from "src/shared/error/column-not-found-error";
+import { FilterRule, FilterType } from "src/shared/loom-state/types";
 import { ColumnWithMarkdown } from "../types";
-import React from "react";
-import { css } from "@emotion/react";
 import { isMobileSize } from "src/shared/render/utils";
 
 interface Props {
@@ -58,9 +58,9 @@ const FilterMenu = React.forwardRef<HTMLDivElement, Props>(function FilterMenu(
 		>
 			<div
 				className="dataloom-filter-menu"
-				css={css`
-					width: ${isMobileSize() ? "calc(100vw - 30px)" : "unset"};
-				`}
+				style={{
+					width: isMobileSize() ? "calc(100vw - 30px)" : "unset",
+				}}
 			>
 				<Padding p="md">
 					<Stack spacing="lg">

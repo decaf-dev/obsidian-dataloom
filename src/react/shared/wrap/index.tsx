@@ -1,8 +1,9 @@
-import { css } from "@emotion/react";
 import { AlignItems, JustifyContent } from "src/shared/render/types";
 import { getDynamicSize } from "src/shared/render/utils";
 import { getSpacing } from "src/shared/spacing";
 import { DynamicSize, SpacingSize } from "src/shared/spacing/types";
+
+import "./styles.css";
 
 interface Props {
 	justify?: DynamicSize<JustifyContent> | JustifyContent;
@@ -26,15 +27,14 @@ export default function Wrap({
 
 	return (
 		<div
-			css={css`
-				width: ${renderWidth};
-				display: flex;
-				flex-wrap: wrap;
-				row-gap: ${getSpacing(spacingX)};
-				column-gap: ${getSpacing(spacingY)};
-				justify-content: ${justifyContent};
-				align-items: ${align};
-			`}
+			className="dataloom-wrap"
+			style={{
+				width: renderWidth,
+				rowGap: getSpacing(spacingX),
+				columnGap: getSpacing(spacingY),
+				justifyContent,
+				alignItems: align,
+			}}
 		>
 			{children}
 		</div>

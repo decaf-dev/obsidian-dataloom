@@ -75,7 +75,7 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 							const { id, content } = cell;
 							return (
 								<FooterCell
-									id={id}
+									key={id}
 									index={i}
 									numFrozenColumns={numFrozenColumns}
 									content={content}

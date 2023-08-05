@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import { useAppSelector } from "src/redux/hooks";
 import "./styles.css";
 
@@ -20,22 +19,12 @@ export default function Switch({ id, value, ariaLabel, onToggle }: Props) {
 
 	let className = "checkbox-container dataloom-switch dataloom-focusable";
 	if (value) className += " is-enabled";
+	if (isDarkMode) className += " dataloom-switch--dark";
 	return (
 		<div
 			id={id}
 			tabIndex={0}
 			className={className}
-			css={css`
-				transition: none !important;
-				&:focus-visible {
-					outline: 2px solid ${
-						isDarkMode
-							? "var(--text-on-accent);"
-							: "var(--text-on-accent-inverted);"
-					}
-					outline-offset: 0px;
-				}
-			`}
 			aria-label={ariaLabel}
 			onClick={() => onToggle(!value)}
 			onKeyDown={handleKeyDown}

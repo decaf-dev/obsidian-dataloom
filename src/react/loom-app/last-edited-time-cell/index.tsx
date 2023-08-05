@@ -13,9 +13,12 @@ export default function LastEditedTimeCell({
 	format,
 	shouldWrapOverflow,
 }: Props) {
-	const overflowStyle = useOverflow(shouldWrapOverflow);
+	const overflowClassName = useOverflow(shouldWrapOverflow);
+
+	let className = "dataloom-last-edited-time-cell";
+	className += " " + overflowClassName;
 	return (
-		<div className="dataloom-last-edited-time-cell" css={overflowStyle}>
+		<div className={className}>
 			{unixTimeToDateTimeString(value, format)}
 		</div>
 	);

@@ -1,7 +1,8 @@
 import React from "react";
+
+import Input from "src/react/shared/input";
+
 import { useInputSelection } from "src/shared/hooks";
-import { borderInputStyle } from "../shared-styles";
-import { css } from "@emotion/react";
 
 interface Props {
 	value: string;
@@ -9,20 +10,8 @@ interface Props {
 }
 
 export default function ExternalEmbedInput({ value, onChange }: Props) {
-	const inputRef = React.useRef<HTMLInputElement | null>(null);
+	const ref = React.useRef<HTMLInputElement | null>(null);
 
-	useInputSelection(inputRef, value);
-	return (
-		<input
-			autoFocus
-			type="text"
-			className="dataloom-focusable"
-			css={css`
-				${borderInputStyle}
-			`}
-			ref={inputRef}
-			value={value}
-			onChange={(e) => onChange(e.target.value)}
-		/>
-	);
+	useInputSelection(ref, value);
+	return <Input ref={ref} showBorder value={value} onChange={onChange} />;
 }

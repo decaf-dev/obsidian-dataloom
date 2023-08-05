@@ -1,8 +1,9 @@
-import { css } from "@emotion/react";
 import { useRenderMarkdown } from "src/shared/render-utils";
 import { getSpacing } from "src/shared/spacing";
 import { AspectRatio, PaddingSize } from "src/shared/loom-state/types";
 import { appendOrReplaceFirstChild } from "src/shared/render/utils";
+
+import "./styles.css";
 
 interface Props {
 	isExternalLink: boolean;
@@ -29,25 +30,13 @@ export default function Embed({
 
 	return (
 		<div
-			css={css`
-				width: 100%;
-				aspect-ratio: ${aspectRatio};
-				padding-left: ${paddingX};
-				padding-right: ${paddingX};
-				padding-top: ${paddingY};
-				padding-bottom: ${paddingY};
-
-				iframe {
-					width: 100%;
-					height: 100%;
-				}
-
-				p {
-					width: 100%;
-					height: 100%;
-					margin: 0px;
-				}
-			`}
+			style={{
+				aspectRatio,
+				paddingLeft: paddingX,
+				paddingRight: paddingX,
+				paddingTop: paddingY,
+				paddingBottom: paddingY,
+			}}
 			ref={(node) => {
 				containerRef.current = node;
 				appendOrReplaceFirstChild(node, renderRef.current);

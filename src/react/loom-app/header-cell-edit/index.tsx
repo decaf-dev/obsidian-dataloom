@@ -6,6 +6,8 @@ import TypeSubmenu from "./type-submenu";
 import BaseMenu from "./base-menu";
 import CurrencySubmenu from "./currency-submenu";
 import DateFormatSubmenu from "./date-format-submenu";
+import AspectRatioSubmenu from "./aspect-ratio-submenu";
+import PaddingSubmenu from "./padding-submenu";
 
 import {
 	AspectRatio,
@@ -16,12 +18,10 @@ import {
 	PaddingSize,
 } from "src/shared/loom-state/types";
 import { SubmenuType } from "./types";
-
 import { MenuCloseRequest } from "src/shared/menu/types";
 import { useCompare } from "src/shared/hooks";
-import { css } from "@emotion/react";
-import AspectRatioSubmenu from "./aspect-ratio-submenu";
-import PaddingSubmenu from "./padding-submenu";
+
+import "./styles.css";
 
 interface Props {
 	isOpen: boolean;
@@ -177,12 +177,7 @@ const HeaderMenu = React.forwardRef<HTMLDivElement, Props>(function HeaderMenu(
 			ref={ref}
 			width={175}
 		>
-			<div
-				className="dataloom-header-menu"
-				css={css`
-					color: var(--text-normal);
-				`}
-			>
+			<div className="dataloom-header-menu">
 				{submenu === null && (
 					<BaseMenu
 						canDeleteColumn={canDeleteColumn}

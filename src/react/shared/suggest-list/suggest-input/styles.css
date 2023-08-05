@@ -1,0 +1,5 @@
+.dataloom-suggest-input {
+    background-color: var(--background-secondary);
+    border-bottom: 1px solid var(--table-border-color);
+    padding: var(--nlt-spacing--sm) var(--nlt-spacing--lg);
+}

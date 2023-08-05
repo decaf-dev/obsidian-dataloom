@@ -1,13 +1,14 @@
-import { css } from "@emotion/react";
+import ReactSelect from "react-select";
+import Select from "src/react/shared/select";
+import Input from "src/react/shared/input";
+
 import { CellType, Tag } from "src/shared/loom-state/types";
-import Select from "react-select";
 import {
 	CHECKBOX_MARKDOWN_CHECKED,
 	CHECKBOX_MARKDOWN_UNCHECKED,
 } from "src/shared/constants";
 
 import "./styles.css";
-import { baseInputStyle, selectStyle } from "src/react/loom-app/shared-styles";
 
 interface Props {
 	id: string;
@@ -35,41 +36,30 @@ export default function FilterTextInput({
 	}
 
 	return (
-		<>
+		<div className="dataloom-filter-text-input">
 			{cellType !== CellType.CHECKBOX &&
 				cellType !== CellType.TAG &&
 				cellType !== CellType.MULTI_TAG && (
-					<input
-						className="dataloom-focusable"
-						css={css`
-							${baseInputStyle}
-							width: 150px !important;
-						`}
+					<Input
 						value={text}
-						type="text"
-						onChange={(e) => onTextChange(id, e.target.value)}
+						onChange={(value) => onTextChange(id, value)}
 					/>
 				)}
 			{cellType === CellType.CHECKBOX && (
-				<select
-					tabIndex={0}
-					className="dataloom-focusable"
-					css={css`
-						${selectStyle}
-					`}
+				<Select
 					value={text}
-					onChange={(e) => onTextChange(id, e.target.value)}
 					onKeyDown={handleKeyDown}
+					onChange={(value) => onTextChange(id, value)}
 				>
 					<option value="">Select an option</option>
 					<option value={CHECKBOX_MARKDOWN_CHECKED}>Checked</option>
 					<option value={CHECKBOX_MARKDOWN_UNCHECKED}>
 						Unchecked
 					</option>
-				</select>
+				</Select>
 			)}
 			{(cellType === CellType.TAG || cellType === CellType.MULTI_TAG) && (
-				<Select
+				<ReactSelect
 					className="react-select dataloom-focusable"
 					styles={{
 						placeholder: (baseStyles) => ({
@@ -169,6 +159,6 @@ export default function FilterTextInput({
 					}}
 				/>
 			)}
-		</>
+		</div>
 	);
 }

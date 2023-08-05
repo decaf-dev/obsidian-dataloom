@@ -1,10 +1,9 @@
 import React from "react";
 
-import { css } from "@emotion/react";
 import fuzzysort from "fuzzysort";
 
 import SuggestItem from "./suggest-item";
-import Input from "./input";
+import Input from "./suggest-input";
 import Text from "src/react/shared/text";
 
 import { nltEventSystem } from "src/shared/event-system/event-system";
@@ -13,6 +12,8 @@ import ClearButton from "./clear-button";
 import CreateButton from "./create-button";
 import Padding from "../padding";
 import { TFile } from "obsidian";
+
+import "./styles.css";
 
 interface ContentProps {
 	showInput?: boolean;
@@ -103,17 +104,14 @@ export function SuggestList({
 		.includes(localFilterValue);
 
 	return (
-		<div
-			className="dataloom-suggest-menu"
-			css={css`
-				width: 100%;
-			`}
-		>
+		<div className="dataloom-suggest-menu">
 			{showInput && files.length > 0 && (
-				<Input
-					value={localFilterValue}
-					onChange={setLocalFilterValue}
-				/>
+				<Padding p="md">
+					<Input
+						value={localFilterValue}
+						onChange={setLocalFilterValue}
+					/>
+				</Padding>
 			)}
 			{showCreate && !doesFilterFileExist && localFilterValue !== "" && (
 				<CreateButton
@@ -122,12 +120,7 @@ export function SuggestList({
 				/>
 			)}
 			{files.length > 0 && (
-				<div
-					css={css`
-						max-height: 175px;
-						overflow-y: auto;
-					`}
-				>
+				<div className="dataloom-suggest-menu__container">
 					{filteredFiles.length === 0 && !showCreate && (
 						<SuggestItem
 							index={0}

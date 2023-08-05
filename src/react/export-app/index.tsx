@@ -1,20 +1,24 @@
-import { LoomState } from "src/shared/loom-state/types";
-import Stack from "../shared/stack";
 import React from "react";
-import { ExportType } from "../../shared/export/types";
+
+import Stack from "../shared/stack";
+import Padding from "../shared/padding";
 import ExportTypeSelect from "./export-type-select";
 import ContentTextArea from "./content-textarea";
+
+import { LoomState } from "src/shared/loom-state/types";
+import { ExportType } from "../../shared/export/types";
 import { exportToMarkdown } from "src/shared/export/export-to-markdown";
 import { App, Notice } from "obsidian";
-import Padding from "../shared/padding";
 import {
 	downloadFile,
 	getBlobTypeForExportType,
 	getExportFileName,
 } from "../../shared/export/download-utils";
 import { exportToCSV } from "src/shared/export/export-to-csv";
-import { css } from "@emotion/react";
 import { useAppSelector } from "src/redux/hooks";
+
+import "./styles.css";
+import Divider from "../shared/divider";
 
 interface Props {
 	app: App;
@@ -53,19 +57,8 @@ export function ExportApp({ loomState, loomFilePath }: Props) {
 	return (
 		<div className="dataloom-export-app">
 			<Padding p="xl">
-				<h5
-					css={css`
-						margin-top: 0px;
-						margin-bottom: 0px;
-					`}
-				>
-					DataLoom Export
-				</h5>
-				<hr
-					css={css`
-						margin: 1rem 0;
-					`}
-				/>
+				<h5>DataLoom Export</h5>
+				<Divider />
 				<Stack spacing="xl">
 					<ExportTypeSelect
 						value={exportType}
@@ -96,11 +89,7 @@ export function ExportApp({ loomState, loomFilePath }: Props) {
 									Download
 								</button>
 								<button
-									css={css`
-										background-color: var(
-											--background-secondary-alt
-										) !important;
-									`}
+									className="dataloom-copy-button"
 									onClick={() => handleCopyClick(content)}
 								>
 									Copy to clipboard

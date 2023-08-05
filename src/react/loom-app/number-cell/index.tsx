@@ -1,7 +1,7 @@
 import { useOverflow } from "src/shared/spacing/hooks";
 
-import "./styles.css";
 import { isNumber } from "src/shared/match";
+import "./styles.css";
 
 interface Props {
 	value: string;
@@ -9,14 +9,13 @@ interface Props {
 }
 
 export default function NumberCell({ value, shouldWrapOverflow }: Props) {
-	const overflowStyle = useOverflow(shouldWrapOverflow);
+	const overflowClassName = useOverflow(shouldWrapOverflow);
 
 	let valueString = "";
 	if (isNumber(value)) valueString = value;
 
-	return (
-		<div className="dataloom-number-cell" css={overflowStyle}>
-			{valueString}
-		</div>
-	);
+	let className = "dataloom-number-cell";
+	className += " " + overflowClassName;
+
+	return <div className={overflowClassName}>{valueString}</div>;
 }

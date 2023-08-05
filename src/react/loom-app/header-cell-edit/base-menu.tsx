@@ -11,7 +11,8 @@ import Flex from "src/react/shared/flex";
 import Switch from "src/react/shared/switch";
 import Text from "src/react/shared/text";
 import { MenuCloseRequest } from "src/shared/menu/types";
-import { borderInputStyle } from "src/react/loom-app/shared-styles";
+
+import Input from "src/react/shared/input";
 
 interface Props {
 	canDeleteColumn: boolean;
@@ -62,14 +63,11 @@ export default function BaseMenu({
 		<Stack spacing="sm">
 			<Stack spacing="sm" width="100%">
 				<Padding px="md" py="sm" width="100%">
-					<input
-						type="text"
-						className="dataloom-focusable"
-						autoFocus
-						css={borderInputStyle}
+					<Input
 						ref={inputRef}
+						showBorder
 						value={columnName}
-						onChange={(e) => handleInputChange(e.target.value)}
+						onChange={handleInputChange}
 					/>
 				</Padding>
 				<MenuItem

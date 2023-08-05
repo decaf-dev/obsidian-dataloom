@@ -1,6 +1,7 @@
 import Icon from "../../shared/icon";
 import MenuButton from "../../shared/menu-button";
-import RowMenu from "./components/RowMenu";
+import RowMenu from "./row-menu";
+import Padding from "src/react/shared/padding";
 
 import { useMenu } from "src/shared/menu/hooks";
 import { MenuLevel } from "src/shared/menu/types";
@@ -9,7 +10,8 @@ import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 import { useDragContext } from "src/shared/dragging/drag-context";
 import { dropDrag, getRowId } from "src/shared/dragging/utils";
 import { useLoomState } from "src/react/loom-app/loom-state-provider";
-import { css } from "@emotion/react";
+
+import "./styles.css";
 
 interface Props {
 	rowId: string;
@@ -152,32 +154,24 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 
 	return (
 		<>
-			<div
-				className="dataloom-row-options"
-				css={css`
-					width: 100%;
-					height: 100%;
-				`}
-			>
-				<div
-					ref={triggerRef}
-					css={css`
-						width: 100%;
-						height: 100%;
-						padding-left: 5px;
-					`}
-					onTouchStart={handleTouchStart}
-					onTouchMove={handleTouchMove}
-					onTouchEnd={handleTouchEnd}
-					onTouchCancel={handleTouchCancel}
-				>
-					<MenuButton
-						menu={menu}
-						icon={<Icon lucideId="grip-vertical" />}
-						ariaLabel="Drag to move or click to open"
-						onMouseDown={handleMouseDown}
-					/>
-				</div>
+			<div className="dataloom-row-options">
+				<Padding p="sm">
+					<div
+						ref={triggerRef}
+						className="dataloom-row-options__container"
+						onTouchStart={handleTouchStart}
+						onTouchMove={handleTouchMove}
+						onTouchEnd={handleTouchEnd}
+						onTouchCancel={handleTouchCancel}
+					>
+						<MenuButton
+							menu={menu}
+							icon={<Icon lucideId="grip-vertical" />}
+							ariaLabel="Drag to move or click to open"
+							onMouseDown={handleMouseDown}
+						/>
+					</div>
+				</Padding>
 			</div>
 			<RowMenu
 				id={menu.id}

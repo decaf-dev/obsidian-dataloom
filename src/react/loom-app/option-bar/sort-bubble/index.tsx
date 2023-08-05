@@ -1,8 +1,10 @@
 import Button from "src/react/shared/button";
-import { SortDir } from "src/shared/loom-state/types";
 import Stack from "src/react/shared/stack";
 import Icon from "src/react/shared/icon";
-import { css } from "@emotion/react";
+
+import { SortDir } from "src/shared/loom-state/types";
+
+import "./styles.css";
 
 interface SortBubbleProps {
 	sortDir: SortDir;
@@ -16,16 +18,7 @@ export default function SortBubble({
 	onRemoveClick,
 }: SortBubbleProps) {
 	return (
-		<div
-			css={css`
-				border-radius: 8px;
-				padding: 2px 6px;
-				user-select: none;
-				color: var(--text-on-accent);
-				border: 1px solid var(--background-modifier-border);
-				background-color: var(--color-accent);
-			`}
-		>
+		<div className="dataloom-sort-bubble">
 			<Stack spacing="lg" isHorizontal>
 				<Stack spacing="sm" isHorizontal>
 					{sortDir === SortDir.ASC ? (
@@ -33,16 +26,7 @@ export default function SortBubble({
 					) : (
 						<Icon lucideId="arrow-down" />
 					)}
-					<span
-						css={css`
-							max-width: 150px;
-							overflow: hidden;
-							text-overflow: ellipsis;
-							white-space: nowrap;
-						`}
-					>
-						{markdown}
-					</span>
+					<span>{markdown}</span>
 				</Stack>
 				<Button
 					isSmall
