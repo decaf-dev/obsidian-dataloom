@@ -1,14 +1,14 @@
 import TagColorMenu from "src/react/loom-app/tag-color-menu";
-
-import { MenuLevel } from "src/shared/menu/types";
-import { useMenu } from "src/shared/menu/hooks";
-
 import MenuButton from "src/react/shared/menu-button";
 import Icon from "src/react/shared/icon";
 import Tag from "src/react/shared/tag";
+
+import { MenuLevel } from "src/shared/menu/types";
+import { useMenu } from "src/shared/menu/hooks";
 import { Color } from "src/shared/loom-state/types";
-import { css } from "@emotion/react";
 import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
+
+import "./styles.css";
 
 interface Props {
 	id: string;
@@ -67,14 +67,7 @@ export default function SelectableTag({
 			<div
 				tabIndex={0}
 				ref={triggerRef}
-				css={css`
-					display: flex;
-					justify-content: space-between;
-					align-items: center;
-					padding: var(--nlt-spacing--sm) var(--nlt-spacing--md);
-					overflow: hidden;
-				`}
-				className="dataloom-focusable dataloom-selectable"
+				className="dataloom-selectable-tag dataloom-focusable dataloom-selectable"
 				onClick={handleClick}
 				onKeyDown={handleKeyDown}
 			>
