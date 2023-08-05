@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import { NltMenu } from "src/shared/menu/types";
 import React from "react";
 import { useMenuState } from "src/react/loom-app/menu-provider";
@@ -130,11 +129,11 @@ const MenuTrigger = ({
 		<div
 			className="dataloom-menu-trigger dataloom-focusable"
 			ref={ref}
-			css={css`
-				width: ${isCell ? "100%" : "unset"};
-				height: ${isCell ? "100%" : "unset"};
-				border-radius: ${isButton ? "var(--button-radius)" : "unset"};
-			`}
+			style={{
+				width: isCell ? "100%" : "unset",
+				height: isCell ? "100%" : "unset",
+				borderRadius: isButton ? "var(--button-radius)" : "unset",
+			}}
 			tabIndex={0}
 			data-menu-id={shouldRun ? id : undefined}
 			onKeyDown={handleKeyDown}

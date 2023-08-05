@@ -14,10 +14,13 @@ export default function FileCell({ markdown, shouldWrapOverflow }: Props) {
 	const content = getFileCellContent(markdown);
 	const { containerRef, renderRef } = useRenderMarkdown(content);
 
-	const overflowStyle = useOverflow(shouldWrapOverflow);
+	const overflowClassName = useOverflow(shouldWrapOverflow);
+
+	let className = "dataloom-file-cell";
+	className += " " + overflowClassName;
 
 	return (
-		<div className="dataloom-file-cell" css={overflowStyle}>
+		<div className={className}>
 			<div
 				ref={(node) => {
 					containerRef.current = node;

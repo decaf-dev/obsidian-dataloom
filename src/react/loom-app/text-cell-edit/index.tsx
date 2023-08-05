@@ -164,7 +164,7 @@ export default function TextCellEdit({
 		closeAllMenus();
 	}
 
-	const overflowStyle = useOverflow(shouldWrapOverflow);
+	const overflowClassName = useOverflow(shouldWrapOverflow);
 	const filterValue =
 		getFilterValue(localValue, inputRef.current?.selectionStart ?? 0) ?? "";
 
@@ -179,10 +179,10 @@ export default function TextCellEdit({
 				`}
 			>
 				<textarea
+					className={overflowClassName}
 					autoFocus
 					css={css`
 						${textAreaStyle}
-						${overflowStyle}
 					`}
 					ref={inputRef}
 					value={localValue}
