@@ -4,27 +4,48 @@ import MenuItem from "src/react/shared/menu-item";
 
 interface Props {
 	id: string;
-	rowId: string;
 	isOpen: boolean;
 	top: number;
 	left: number;
-	onDeleteClick: (id: string) => void;
+	onDeleteClick: () => void;
+	onInsertAboveClick: () => void;
+	onInsertBelowClick: () => void;
 }
-const RowMenu = React.forwardRef<HTMLDivElement, Props>(function RowMenu(
-	{ id, rowId, isOpen, top, left, onDeleteClick }: Props,
-	ref
-) {
-	return (
-		<Menu id={id} isOpen={isOpen} top={top} left={left} ref={ref}>
-			<div className="dataloom-row-menu">
-				<MenuItem
-					lucideId="trash-2"
-					name="Delete"
-					onClick={() => onDeleteClick(rowId)}
-				/>
-			</div>
-		</Menu>
-	);
-});
+const RowMenu = React.forwardRef<HTMLDivElement, Props>(
+	(
+		{
+			id,
+			isOpen,
+			top,
+			left,
+			onDeleteClick,
+			onInsertAboveClick,
+			onInsertBelowClick,
+		}: Props,
+		ref
+	) => {
+		return (
+			<Menu id={id} isOpen={isOpen} top={top} left={left} ref={ref}>
+				<div className="dataloom-row-menu">
+					<MenuItem
+						lucideId="chevrons-up"
+						name="Insert above"
+						onClick={() => onInsertAboveClick()}
+					/>
+					<MenuItem
+						lucideId="chevrons-down"
+						name="Insert below"
+						onClick={() => onInsertBelowClick()}
+					/>
+					<MenuItem
+						lucideId="trash-2"
+						name="Delete"
+						onClick={() => onDeleteClick()}
+					/>
+				</div>
+			</Menu>
+		);
+	}
+);
 
 export default RowMenu;

@@ -104,7 +104,12 @@ export default function App() {
 		handleVerticalPaddingClick,
 	} = useColumn();
 
-	const { handleNewRowClick, handleRowDeleteClick } = useRow();
+	const {
+		handleNewRowClick,
+		handleRowDeleteClick,
+		handleRowInsertAboveClick,
+		handleRowInsertBelowClick,
+	} = useRow();
 
 	const {
 		handleBodyCellContentChange,
@@ -422,6 +427,12 @@ export default function App() {
 									<RowOptions
 										rowId={rowId}
 										onDeleteClick={handleRowDeleteClick}
+										onInsertAboveClick={
+											handleRowInsertAboveClick
+										}
+										onInsertBelowClick={
+											handleRowInsertBelowClick
+										}
 									/>
 								),
 							},
