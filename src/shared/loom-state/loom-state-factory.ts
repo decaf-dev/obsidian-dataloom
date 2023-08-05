@@ -129,15 +129,42 @@ export const createTag = (
 	};
 };
 
+export const createTestLoomState = (
+	numColumns: number,
+	numRows: number,
+	options?: {
+		cellType?: CellType;
+	}
+): LoomState => {
+	return createGenericLoomState(numColumns, numRows, {
+		cellType: options?.cellType,
+	});
+};
+
 export const createLoomState = (
+	pluginVersion: string,
+	defaultFrozenColumnCount: number
+): LoomState => {
+	return createGenericLoomState(1, 1, {
+		pluginVersion,
+		defaultFrozenColumnCount,
+	});
+};
+
+const createGenericLoomState = (
 	numColumns: number,
 	numRows: number,
 	options?: {
 		cellType?: CellType;
 		pluginVersion?: string;
+		defaultFrozenColumnCount?: number;
 	}
 ): LoomState => {
-	const { cellType, pluginVersion = "1.0.0" } = options || {};
+	const {
+		cellType,
+		pluginVersion = "1.0.0",
+		defaultFrozenColumnCount = 1,
+	} = options || {};
 	//Create columns
 	const columns: Column[] = [];
 	for (let i = 0; i < numColumns; i++)
@@ -190,7 +217,7 @@ export const createLoomState = (
 			footerCells,
 			filterRules,
 			settings: {
-				numFrozenColumns: 1,
+				numFrozenColumns: defaultFrozenColumnCount,
 			},
 		},
 		pluginVersion,

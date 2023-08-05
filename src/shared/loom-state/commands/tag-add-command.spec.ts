@@ -1,5 +1,5 @@
 import {
-	createLoomState,
+	createTestLoomState,
 	createTag,
 } from "src/shared/loom-state/loom-state-factory";
 import { CommandRedoError, CommandUndoError } from "./command-errors";
@@ -11,7 +11,7 @@ describe("tag-add-command", () => {
 	it("should throw an error when undo() is called before execute()", () => {
 		try {
 			//Arrange
-			const prevState = createLoomState(1, 1);
+			const prevState = createTestLoomState(1, 1);
 			const command = new TagAddCommand(
 				prevState.model.bodyCells[0].id,
 				prevState.model.columns[0].id,
@@ -31,7 +31,7 @@ describe("tag-add-command", () => {
 	it("should throw an error when redo() is called before undo()", () => {
 		try {
 			//Arrange
-			const prevState = createLoomState(1, 1);
+			const prevState = createTestLoomState(1, 1);
 			const command = new TagAddCommand(
 				prevState.model.bodyCells[0].id,
 				prevState.model.columns[0].id,
@@ -52,7 +52,7 @@ describe("tag-add-command", () => {
 
 	it("should add a tag when execute() is called", () => {
 		//Arrange
-		const prevState = createLoomState(1, 1);
+		const prevState = createTestLoomState(1, 1);
 
 		const tags = [createTag("test1"), createTag("test2")];
 		prevState.model.columns[0].tags = tags;
@@ -94,7 +94,7 @@ describe("tag-add-command", () => {
 
 	it("should add a multi-tag when execute() is called", () => {
 		//Arrange
-		const prevState = createLoomState(1, 1);
+		const prevState = createTestLoomState(1, 1);
 
 		const tags = [createTag("test1"), createTag("test2")];
 		prevState.model.columns[0].tags = tags;
@@ -132,7 +132,7 @@ describe("tag-add-command", () => {
 
 	it("should remove the added tag when undo() is called", () => {
 		//Arrange
-		const prevState = createLoomState(1, 1);
+		const prevState = createTestLoomState(1, 1);
 
 		const tags = [createTag("test1"), createTag("test2")];
 		prevState.model.columns[0].tags = tags;
@@ -163,7 +163,7 @@ describe("tag-add-command", () => {
 
 	it("should restore the added tag when redo() is called", () => {
 		//Arrange
-		const prevState = createLoomState(1, 1);
+		const prevState = createTestLoomState(1, 1);
 
 		const tags = [createTag("test1"), createTag("test2")];
 		prevState.model.columns[0].tags = tags;

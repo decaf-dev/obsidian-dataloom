@@ -1,4 +1,4 @@
-import { createLoomState } from "src/shared/loom-state/loom-state-factory";
+import { createTestLoomState } from "src/shared/loom-state/loom-state-factory";
 import RowAddCommand from "./row-add-command";
 import { CommandRedoError, CommandUndoError } from "./command-errors";
 
@@ -11,7 +11,7 @@ describe("row-add-command", () => {
 	it("should throw an error when undo() is called before execute()", () => {
 		try {
 			//Arrange
-			const prevState = createLoomState(1, 1);
+			const prevState = createTestLoomState(1, 1);
 
 			//Act
 			command.undo(prevState);
@@ -23,7 +23,7 @@ describe("row-add-command", () => {
 	it("should throw an error when redo() is called before undo()", () => {
 		try {
 			//Arrange
-			const prevState = createLoomState(1, 1);
+			const prevState = createTestLoomState(1, 1);
 			const executeState = command.execute(prevState);
 
 			//Act
@@ -35,7 +35,7 @@ describe("row-add-command", () => {
 
 	it("should add a row when execute() is called", () => {
 		//Arrange
-		const prevState = createLoomState(1, 1);
+		const prevState = createTestLoomState(1, 1);
 
 		//Act
 		const executeState = command.execute(prevState);
@@ -47,7 +47,7 @@ describe("row-add-command", () => {
 
 	it("should remove the added row when undo() is called", () => {
 		//Arrange
-		const prevState = createLoomState(1, 1);
+		const prevState = createTestLoomState(1, 1);
 
 		//Act
 		const executeState = command.execute(prevState);

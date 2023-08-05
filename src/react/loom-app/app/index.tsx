@@ -49,17 +49,13 @@ import {
 import { useExportEvents } from "src/react/loom-app/app/use-export-events";
 import { useRowEvents } from "src/react/loom-app/app/use-row-events";
 import { useColumnEvents } from "src/react/loom-app/app/use-column-events";
+import { useTableSettings } from "./use-table-settings";
 
 import "./global-styles.css";
 import "./styles.css";
-import { useAppSelector } from "src/redux/hooks";
-import { useTableSettings } from "./use-table-settings";
 
 export default function App() {
 	const { appId, isMarkdownView } = useMountState();
-	const { defaultFrozenColumnCount } = useAppSelector(
-		(state) => state.global.settings
-	);
 	const { topMenu, hasOpenMenu, requestCloseTopMenu } = useMenuState();
 	const logger = useLogger();
 	const {

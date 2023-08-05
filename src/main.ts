@@ -196,7 +196,8 @@ export default class DataLoomPlugin extends Plugin {
 		const filePath = await createLoomFile(
 			this.app,
 			folderPath,
-			this.manifest.version
+			this.manifest.version,
+			this.settings.defaultFrozenColumnCount
 		);
 
 		//If the file is embedded, we don't need to open it

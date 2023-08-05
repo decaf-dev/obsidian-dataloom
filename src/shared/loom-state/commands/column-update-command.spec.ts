@@ -1,4 +1,4 @@
-import { createLoomState } from "src/shared/loom-state/loom-state-factory";
+import { createTestLoomState } from "src/shared/loom-state/loom-state-factory";
 import { CommandRedoError, CommandUndoError } from "./command-errors";
 import ColumnUpdateCommand from "./column-update-command";
 
@@ -6,7 +6,7 @@ describe("column-update-command", () => {
 	it("should throw an error when undo() is called before execute()", () => {
 		try {
 			//Arrange
-			const prevState = createLoomState(1, 1);
+			const prevState = createTestLoomState(1, 1);
 			const command = new ColumnUpdateCommand(
 				prevState.model.columns[0].id,
 				"width",
@@ -23,7 +23,7 @@ describe("column-update-command", () => {
 	it("should throw an error when redo() is called before redo()", () => {
 		try {
 			//Arrange
-			const prevState = createLoomState(1, 1);
+			const prevState = createTestLoomState(1, 1);
 			const command = new ColumnUpdateCommand(
 				prevState.model.columns[0].id,
 				"width",
@@ -40,7 +40,7 @@ describe("column-update-command", () => {
 
 	it("should update a column property when execute() is called", async () => {
 		//Arrange
-		const prevState = createLoomState(1, 1);
+		const prevState = createTestLoomState(1, 1);
 		const command = new ColumnUpdateCommand(
 			prevState.model.columns[0].id,
 			"width",
@@ -57,7 +57,7 @@ describe("column-update-command", () => {
 
 	it("should reset the cell property when undo() is called", () => {
 		//Arrange
-		const prevState = createLoomState(1, 1);
+		const prevState = createTestLoomState(1, 1);
 		const command = new ColumnUpdateCommand(
 			prevState.model.columns[0].id,
 			"width",
