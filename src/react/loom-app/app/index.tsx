@@ -50,10 +50,16 @@ import { useExportEvents } from "src/react/loom-app/app/use-export-events";
 import { useRowEvents } from "src/react/loom-app/app/use-row-events";
 import { useColumnEvents } from "src/react/loom-app/app/use-column-events";
 
+import "./global-styles.css";
 import "./styles.css";
+import { useAppSelector } from "src/redux/hooks";
+import { useTableSettings } from "./use-table-settings";
 
 export default function App() {
 	const { appId, isMarkdownView } = useMountState();
+	const { defaultFrozenColumnCount } = useAppSelector(
+		(state) => state.global.settings
+	);
 	const { topMenu, hasOpenMenu, requestCloseTopMenu } = useMenuState();
 	const logger = useLogger();
 	const {
@@ -70,6 +76,8 @@ export default function App() {
 	useExportEvents(loomState);
 	useRowEvents();
 	useColumnEvents();
+
+	const { handleFrozenColumnsChange } = useTableSettings();
 
 	const {
 		handleRuleAddClick,
@@ -262,7 +270,9 @@ export default function App() {
 		bodyCells,
 		footerCells,
 		filterRules,
+		settings,
 	} = loomState.model;
+	const { numFrozenColumns } = settings;
 
 	let filteredBodyRows = filterBodyRowsByRules(loomState);
 	filteredBodyRows = filterBodyRowsBySearch(
@@ -272,20 +282,12 @@ export default function App() {
 	);
 	const visibleColumns = columns.filter((column) => column.isVisible);
 
+	let className = "dataloom-app";
+	if (isMarkdownView) className += " dataloom-app--markdown-view";
 	return (
 		<div
 			data-id={appId}
-			className="dataloom-app"
-			css={css`
-				display: flex;
-				flex-direction: column;
-				width: 100%;
-				height: 100%;
-				border-top: 1px solid var(--background-modifier-border);
-				border-bottom: ${isMarkdownView
-					? "1px solid var(--background-modifier-border)"
-					: "unset"};
-			`}
+			className={className}
 			onKeyDown={handleKeyDown}
 			onClick={handleClick}
 		>
@@ -293,6 +295,7 @@ export default function App() {
 				headerCells={headerCells}
 				columns={columns}
 				filterRules={filterRules}
+				numFrozenColumns={numFrozenColumns}
 				onColumnToggle={handleColumnToggle}
 				onSortRemoveClick={handleSortRemoveClick}
 				onRuleAddClick={handleRuleAddClick}
@@ -302,9 +305,10 @@ export default function App() {
 				onRuleTextChange={handleRuleTextChange}
 				onRuleToggle={handleRuleToggle}
 				onRuleTagsChange={handleRuleTagsChange}
+				onFrozenColumnsChange={handleFrozenColumnsChange}
 			/>
 			<Table
-				shouldFreeze={true}
+				numFrozenColumns={numFrozenColumns}
 				ref={tableRef}
 				headerRows={headerRows.map((row) => {
 					return {
@@ -321,7 +325,7 @@ export default function App() {
 									/>
 								),
 							},
-							...visibleColumns.map((column) => {
+							...visibleColumns.map((column, i) => {
 								const {
 									id: columnId,
 									width,

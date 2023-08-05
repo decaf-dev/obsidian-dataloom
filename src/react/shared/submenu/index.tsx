@@ -12,22 +12,20 @@ interface Props {
 
 export default function Submenu({ title, children, onBackClick }: Props) {
 	return (
-		<>
-			<Padding p="md">
-				<Stack spacing="md">
-					<Stack isHorizontal>
-						<Button
-							icon={<Icon lucideId="arrow-left" />}
-							onClick={() => {
-								onBackClick();
-							}}
-						/>
-						{title}
-					</Stack>
-					<Divider />
+		<Padding p="sm">
+			<Stack spacing="md">
+				<Stack isHorizontal>
+					<Button
+						icon={<Icon lucideId="arrow-left" />}
+						onClick={() => {
+							onBackClick();
+						}}
+					/>
+					{title}
 				</Stack>
-			</Padding>
-			<div>{children}</div>
-		</>
+				<Divider />
+			</Stack>
+			{children}
+		</Padding>
 	);
 }

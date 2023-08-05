@@ -1,5 +1,5 @@
 import MenuItem from "src/react/shared/menu-item";
-import Submenu from "./submenu";
+import Submenu from "../../shared/submenu";
 import { CurrencyType } from "src/shared/loom-state/types";
 import { getDisplayNameForCurrencyType } from "src/shared/loom-state/type-display-names";
 

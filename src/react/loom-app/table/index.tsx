@@ -9,6 +9,8 @@ import TableHeaderCell from "./table-header-cell";
 import { usePrevious } from "src/shared/hooks";
 
 import "./styles.css";
+import TableBodyCell from "./table-body-cell";
+import TableFooterCell from "./table-footer-cell";
 
 interface Props {
 	headerRows: HeaderTableRow[];
@@ -54,7 +56,8 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 								return (
 									<TableHeaderCell
 										key={cellId}
-										shouldFreeze={i + 1 <= numFrozenColumns}
+										index={i}
+										numFrozenColumns={numFrozenColumns}
 										columnId={columnId}
 										content={content}
 										isDraggable={i < cells.length - 1}
@@ -70,16 +73,13 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 					<div className="dataloom-row" key={row.id}>
 						{row.cells.map((cell, i) => {
 							const { id, content } = cell;
-
-							let className =
-								"dataloom-cell dataloom-cell--footer";
-							if (i + 1 <= numFrozenColumns)
-								className +=
-									" dataloom-cell--freeze dataloom-cell--freeze-footer";
 							return (
-								<div key={id} className={className}>
-									{content}
-								</div>
+								<TableFooterCell
+									id={id}
+									index={i}
+									numFrozenColumns={numFrozenColumns}
+									content={content}
+								/>
 							);
 						})}
 					</div>
@@ -89,19 +89,15 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 				const row = bodyRows[index];
 				const { id: rowId, cells } = row;
 				return cells.map((cell, i) => {
-					const { id: cellId, content } = cell;
-
-					let className = "dataloom-cell dataloom-cell--body";
-					if (i + 1 <= numFrozenColumns)
-						className += " dataloom-cell--freeze";
+					const { id, content } = cell;
 					return (
-						<div
-							key={cellId}
-							className={className}
-							data-row-id={i === 0 ? rowId : undefined}
-						>
-							{content}
-						</div>
+						<TableBodyCell
+							key={id}
+							rowId={rowId}
+							content={content}
+							index={i}
+							numFrozenColumns={numFrozenColumns}
+						/>
 					);
 				});
 			}}

@@ -1,22 +1,29 @@
 import { useDragContext } from "src/shared/dragging/drag-context";
 import { useLoomState } from "src/react/loom-app/loom-state-provider";
+import { useStickyOffset } from "./hooks";
+import { numToPx } from "src/shared/conversion";
+import React from "react";
 
 interface TableHeaderCellProps {
+	index: number;
 	columnId: string;
-	shouldFreeze: boolean;
+	numFrozenColumns: number;
 	content: React.ReactNode;
 	isDraggable: boolean;
 }
 
 export default function TableHeaderCell({
+	index,
 	columnId,
-	shouldFreeze,
+	numFrozenColumns,
 	content,
 	isDraggable,
 }: TableHeaderCellProps) {
 	const { setLoomState } = useLoomState();
 	const { dragData, touchDropZone, setDragData, setTouchDropZone } =
 		useDragContext();
+	const ref = React.useRef<HTMLDivElement>(null);
+	const leftOffset = useStickyOffset(ref, numFrozenColumns, index);
 
 	function startDrag(el: HTMLElement) {
 		const columnId = getColumnId(el);
@@ -182,12 +189,16 @@ export default function TableHeaderCell({
 	}
 
 	let className = "dataloom-cell dataloom-cell--header";
-	if (shouldFreeze)
+	if (index + 1 <= numFrozenColumns)
 		className += " dataloom-cell--freeze dataloom-cell--freeze-header";
 	return (
 		<div
 			className={className}
+			ref={ref}
 			data-column-id={columnId}
+			style={{
+				left: numToPx(leftOffset),
+			}}
 			{...(isDraggable && {
 				draggable: true,
 				onDrop: handleDrop,

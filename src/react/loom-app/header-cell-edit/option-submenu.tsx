@@ -1,4 +1,4 @@
-import Submenu from "./submenu";
+import Submenu from "../../shared/submenu";
 
 import {
 	AspectRatio,
