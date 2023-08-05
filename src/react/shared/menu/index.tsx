@@ -9,6 +9,8 @@ import { removeFocusVisibleClass } from "src/shared/menu/focus-visible";
 import { useLogger } from "src/shared/logger";
 import { useMenuEvents } from "src/react/loom-app/app/use-menu-events";
 
+import "./styles.css";
+
 interface Props {
 	id: string;
 	isOpen: boolean;
