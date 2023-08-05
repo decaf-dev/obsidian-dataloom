@@ -1,7 +1,6 @@
 import React from "react";
 
 import ReactDOM from "react-dom";
-import { css } from "@emotion/react";
 
 import { numToPx } from "src/shared/conversion";
 import { useMenuState } from "src/react/loom-app/menu-provider";
@@ -78,42 +77,34 @@ const Menu = React.forwardRef<HTMLDivElement, Props>(function Menu(
 		<>
 			{isOpen &&
 				ReactDOM.createPortal(
-					<div
-						className="dataloom-menu"
-						data-id={id}
-						css={css`
-							width: 0;
-							height: 0;
-						`}
-					>
+					<div className="dataloom-menu" data-id={id}>
 						<div
 							ref={ref}
-							css={css`
-								position: absolute;
-								z-index: var(--layer-menu);
-								top: ${numToPx(top)};
-								left: ${numToPx(left)};
-								width: ${width !== 0
-									? numToPx(width)
-									: "max-content"};
-								height: ${height !== 0
-									? numToPx(height)
-									: "max-content"};
-								max-width: ${maxWidth !== 0
-									? numToPx(maxWidth)
-									: "unset"};
-								max-height: ${maxHeight !== 0
-									? numToPx(maxHeight)
-									: "unset"};
-								overflow-y: ${maxHeight !== 0
-									? "scroll"
-									: "unset"};
-								background-color: var(--background-primary);
-								box-shadow: ${hideBorder
+							className="dataloom-menu__container"
+							style={{
+								top: numToPx(top),
+								left: numToPx(left),
+								width:
+									width !== 0
+										? numToPx(width)
+										: "max-content",
+								height:
+									height !== 0
+										? numToPx(height)
+										: "max-content",
+								maxWidth:
+									maxWidth !== 0
+										? numToPx(maxWidth)
+										: "unset",
+								maxHeight:
+									maxHeight !== 0
+										? numToPx(maxHeight)
+										: "unset",
+								overflowY: maxHeight !== 0 ? "scroll" : "unset",
+								boxShadow: hideBorder
 									? "unset"
-									: "0px 0px 0px 2px var(--background-modifier-border)"};
-								font-weight: 400;
-							`}
+									: "0px 0px 0px 2px var(--background-modifier-border)",
+							}}
 							onClick={handleClick}
 							onKeyDown={handleKeyDown}
 							onMouseDown={handleMouseDown}
