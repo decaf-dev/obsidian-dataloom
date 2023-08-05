@@ -1,6 +1,5 @@
-import { css } from "@emotion/react";
-import { ColumnWithMarkdown } from "../types";
-import { selectStyle } from "src/react/loom-app/shared-styles";
+import { ColumnWithMarkdown } from "../../types";
+import Select from "src/react/shared/select";
 
 interface Props {
 	id: string;
@@ -9,7 +8,7 @@ interface Props {
 	onChange: (id: string, columnId: string) => void;
 }
 
-export default function FilterColumnDropdown({
+export default function FilterColumnSelect({
 	id,
 	columns,
 	value,
@@ -23,19 +22,11 @@ export default function FilterColumnDropdown({
 	}
 
 	return (
-		<select
-			tabIndex={0}
-			className="dataloom-focusable"
-			css={css`
-				${selectStyle}
-				max-width: 175px;
-				white-space: nowrap;
-				overflow: hidden;
-				text-overflow: ellipsis;
-			`}
+		<Select
+			className="dataloom-filter-column-select"
 			value={value}
-			onChange={(e) => onChange(id, e.target.value)}
 			onKeyDown={handleKeyDown}
+			onChange={() => onChange(id, value)}
 		>
 			{columns.map((column) => {
 				const { id, markdown } = column;
@@ -45,6 +36,6 @@ export default function FilterColumnDropdown({
 					</option>
 				);
 			})}
-		</select>
+		</Select>
 	);
 }

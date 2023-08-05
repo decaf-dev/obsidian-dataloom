@@ -1,5 +1,4 @@
-import { css } from "@emotion/react";
-import { selectStyle } from "src/react/loom-app/shared-styles";
+import Select from "src/react/shared/select";
 import { CellType, FilterType } from "src/shared/loom-state/types";
 
 interface Props {
@@ -22,15 +21,10 @@ export default function FilterRowDropdown({
 	}
 
 	return (
-		<select
-			tabIndex={0}
-			className="dataloom-focusable"
-			css={css`
-				${selectStyle}
-			`}
+		<Select
 			value={value}
-			onChange={(e) => onChange(id, e.target.value as FilterType)}
 			onKeyDown={handleKeyDown}
+			onChange={(value) => onChange(id, value as FilterType)}
 		>
 			{cellType === CellType.CHECKBOX && (
 				<>
@@ -76,6 +70,6 @@ export default function FilterRowDropdown({
 					</option>
 				</>
 			)}
-		</select>
+		</Select>
 	);
 }

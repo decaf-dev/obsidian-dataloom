@@ -1,12 +1,5 @@
 import { css } from "@emotion/react";
 
-export const selectStyle = css`
-	&:focus {
-		box-shadow: none !important;
-		transition: none !important;
-	}
-`;
-
 export const baseInputStyle = css`
 	width: 100%;
 	height: 100%;
