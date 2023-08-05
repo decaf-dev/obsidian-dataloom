@@ -16,13 +16,15 @@ export default function FrozenColumnsSubmenu({
 	onBackClick,
 }: Props) {
 	function handlePlusClick() {
-		if (numFrozenColumns > 3) return;
-		onFrozenColumnsChange(numFrozenColumns + 1);
+		const newValue = numFrozenColumns + 1;
+		if (newValue > 3) return;
+		onFrozenColumnsChange(newValue);
 	}
 
 	function handleMinusClick() {
-		if (numFrozenColumns < 0) return;
-		onFrozenColumnsChange(numFrozenColumns - 1);
+		const newValue = numFrozenColumns - 1;
+		if (newValue < 0) return;
+		onFrozenColumnsChange(newValue);
 	}
 
 	return (
@@ -35,15 +37,15 @@ export default function FrozenColumnsSubmenu({
 						onClick={() => onFrozenColumnsChange(-1)}
 					/>
 					<Button
-						icon={<Icon lucideId="plus" />}
-						ariaLabel="Add frozen column"
-						onClick={() => handlePlusClick()}
-					/>
-					<div>{numFrozenColumns}</div>
-					<Button
 						icon={<Icon lucideId="minus" />}
 						ariaLabel="Subtract frozen column"
 						onClick={() => handleMinusClick()}
+					/>
+					<div>{numFrozenColumns}</div>
+					<Button
+						icon={<Icon lucideId="plus" />}
+						ariaLabel="Add frozen column"
+						onClick={() => handlePlusClick()}
 					/>
 				</Stack>
 			</Padding>
