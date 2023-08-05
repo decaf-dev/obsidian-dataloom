@@ -605,7 +605,6 @@ export default function App() {
 				})}
 			/>
 			<BottomBar
-				appId={appId}
 				onNewRowClick={handleNewRowClick}
 				onScrollToTopClick={handleScrollToTopClick}
 				onScrollToBottomClick={handleScrollToBottomClick}

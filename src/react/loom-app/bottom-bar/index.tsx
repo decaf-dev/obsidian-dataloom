@@ -12,7 +12,6 @@ import { isOnMobile } from "src/shared/render-utils";
 import "./styles.css";
 
 interface Props {
-	appId: string;
 	onScrollToTopClick: () => void;
 	onScrollToBottomClick: () => void;
 	onUndoClick: () => void;
@@ -21,7 +20,6 @@ interface Props {
 }
 
 export default function BottomBar({
-	appId,
 	onNewRowClick,
 	onScrollToTopClick,
 	onScrollToBottomClick,
@@ -32,14 +30,11 @@ export default function BottomBar({
 	const [spaceBetweenTableAndContainer, setSpaceBetweenTableAndContainer] =
 		React.useState(0);
 
-	console.log(spaceBetweenTableAndContainer);
-
 	React.useEffect(() => {
 		let observer: ResizeObserver | null = null;
 
 		if (!ref.current) return;
 
-		console.log(ref.current);
 		const appEl = ref.current.closest(".dataloom-app");
 		const tableEl = appEl?.querySelector(".dataloom-table");
 		if (!tableEl) return;
