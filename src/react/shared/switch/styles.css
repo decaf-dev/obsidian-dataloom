@@ -2,6 +2,7 @@
 .dataloom-switch {
     width: calc(var(--toggle-width) * 0.75);
     height: calc((var(--toggle-thumb-height) * 0.75) + (var(--toggle-border-width) * 2 * 0.75));
+    transition: none !important;
 }
 
 .dataloom-switch:after {
@@ -20,4 +21,13 @@
 
 .dataloom-switch:active:after {
     width: calc((var(--toggle-thumb-width) * 0.75) + (var(--toggle-border-width)));
+}
+
+.dataloom-switch:focus-visible {
+    outline: 2px solid var(--text-on-accent-inverted);
+    outline-offset: 0px;
+}
+
+.dataloom-switch--dark {
+    outline-color: var(--text-on-accent);
 }
