@@ -2,16 +2,12 @@ import { useLoomState } from "src/react/loom-app/loom-state-provider";
 import { useDragContext } from "src/shared/dragging/drag-context";
 import { dropDrag, getRowId } from "src/shared/dragging/utils";
 
-interface TableBodyRowProps {
+interface Props {
 	style?: React.CSSProperties;
 	children?: React.ReactNode;
 }
 
-export default function TableBodyRow({
-	style,
-	children,
-	...props
-}: TableBodyRowProps) {
+export default function BodyRow({ style, children, ...props }: Props) {
 	const { loomState, setLoomState } = useLoomState();
 	const { dragData, setDragData } = useDragContext();
 

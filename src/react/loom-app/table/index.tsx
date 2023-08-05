@@ -2,15 +2,15 @@ import React from "react";
 
 import { TableComponents, TableVirtuoso, VirtuosoHandle } from "react-virtuoso";
 
+import BodyRow from "./body-row";
+import HeaderCell from "./header-cell";
+import BodyCell from "./body-cell";
+import FooterCell from "./footer-cell";
+
+import { usePrevious } from "src/shared/hooks";
 import { HeaderTableRow, TableRow } from "./types";
 
-import TableBodyRow from "./table-body-row";
-import TableHeaderCell from "./table-header-cell";
-import { usePrevious } from "src/shared/hooks";
-
 import "./styles.css";
-import TableBodyCell from "./table-body-cell";
-import TableFooterCell from "./table-footer-cell";
 
 interface Props {
 	headerRows: HeaderTableRow[];
@@ -54,7 +54,7 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 							{cells.map((cell, i) => {
 								const { id: cellId, columnId, content } = cell;
 								return (
-									<TableHeaderCell
+									<HeaderCell
 										key={cellId}
 										index={i}
 										numFrozenColumns={numFrozenColumns}
@@ -74,7 +74,7 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 						{row.cells.map((cell, i) => {
 							const { id, content } = cell;
 							return (
-								<TableFooterCell
+								<FooterCell
 									id={id}
 									index={i}
 									numFrozenColumns={numFrozenColumns}
@@ -91,7 +91,7 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 				return cells.map((cell, i) => {
 					const { id, content } = cell;
 					return (
-						<TableBodyCell
+						<BodyCell
 							key={id}
 							rowId={rowId}
 							content={content}
@@ -115,7 +115,7 @@ const Components: TableComponents = {
 		<div className="dataloom-header" {...props} ref={ref} />
 	)),
 	TableRow: ({ style, ...props }) => {
-		return <TableBodyRow {...props} style={style} />;
+		return <BodyRow {...props} style={style} />;
 	},
 	TableBody: React.forwardRef(({ style, ...props }, ref) => (
 		<div className="dataloom-body" {...props} style={style} ref={ref} />

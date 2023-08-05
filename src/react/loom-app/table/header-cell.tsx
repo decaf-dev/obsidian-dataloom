@@ -4,21 +4,21 @@ import { useStickyOffset } from "./hooks";
 import { numToPx } from "src/shared/conversion";
 import React from "react";
 
-interface TableHeaderCellProps {
+interface Props {
 	index: number;
 	columnId: string;
+	isDraggable: boolean;
 	numFrozenColumns: number;
 	content: React.ReactNode;
-	isDraggable: boolean;
 }
 
-export default function TableHeaderCell({
+export default function HeaderCell({
 	index,
 	columnId,
+	isDraggable,
 	numFrozenColumns,
 	content,
-	isDraggable,
-}: TableHeaderCellProps) {
+}: Props) {
 	const { setLoomState } = useLoomState();
 	const { dragData, touchDropZone, setDragData, setTouchDropZone } =
 		useDragContext();

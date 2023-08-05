@@ -3,28 +3,29 @@ import { useStickyOffset } from "./hooks";
 import { numToPx } from "src/shared/conversion";
 
 interface Props {
-	rowId: string;
+	id: string;
 	index: number;
-	numFrozenColumns: number;
 	content: React.ReactNode;
+	numFrozenColumns: number;
 }
 
-export default function TableBodyCell({
-	rowId,
+export default function FooterCell({
+	id,
 	index,
-	numFrozenColumns,
 	content,
+	numFrozenColumns,
 }: Props) {
 	const ref = React.useRef<HTMLDivElement>(null);
 	const leftOffset = useStickyOffset(ref, numFrozenColumns, index);
 
-	let className = "dataloom-cell dataloom-cell--body";
-	if (index + 1 <= numFrozenColumns) className += " dataloom-cell--freeze";
+	let className = "dataloom-cell dataloom-cell--footer";
+	if (index + 1 <= numFrozenColumns)
+		className += " dataloom-cell--freeze dataloom-cell--freeze-footer";
 	return (
 		<div
-			className={className}
+			key={id}
 			ref={ref}
-			data-row-id={index === 0 ? rowId : undefined}
+			className={className}
 			style={{ left: numToPx(leftOffset) }}
 		>
 			{content}
