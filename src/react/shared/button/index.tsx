@@ -1,50 +1,10 @@
 import React from "react";
 
-import { css } from "@emotion/react";
 import { useLogger } from "src/shared/logger";
 import Stack from "../stack";
 import { ButtonVariant } from "./types";
 
-const buttonStyle = css`
-	display: flex;
-	align-items: center;
-	width: max-content !important;
-	height: max-content;
-	padding: 6px !important;
-	white-space: nowrap;
-	color: var(--text-normal);
-	margin-right: 0;
-	cursor: pointer;
-
-	&:focus-visible {
-		box-shadow: none !important;
-	}
-`;
-
-const linkStyle = css`
-	color: var(--link-color);
-	text-decoration-line: var(--link-decoration);
-	cursor: var(--cursor-link);
-	background-color: transparent !important;
-	box-shadow: none !important;
-	border: none !important;
-	&:hover {
-		box-shadow: var(--input-shadow) !important;
-	}
-`;
-
-const textStyle = css`
-	background-color: transparent !important;
-	box-shadow: none !important;
-
-	&: hover {
-		background-color: var(--background-modifier-hover) !important;
-	}
-`;
-
-export const smallStyle = css`
-	padding: 2px !important;
-`;
+import "./styles.css";
 
 interface ButtonProps {
 	variant?: ButtonVariant;
@@ -94,16 +54,14 @@ export default function Button({
 		if (invertFocusColor) className += " dataloom-focusable--inverted";
 	}
 
+	if (variant == "link") className += " dataloom-button--link";
+	else if (variant == "text") className += " dataloom-button--text";
+	if (isSmall) className += " dataloom-button--small";
+
 	return (
 		<button
 			tabIndex={isFocusable ? 0 : -1}
 			className={className}
-			css={css`
-				${buttonStyle}
-				${variant == "link" ? linkStyle : undefined}
-				${variant == "text" ? textStyle : undefined}
-				${isSmall ? smallStyle : undefined}
-			`}
 			aria-label={ariaLabel}
 			onKeyDown={handleKeyDown}
 			onMouseDown={onMouseDown}

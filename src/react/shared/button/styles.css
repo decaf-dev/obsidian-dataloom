@@ -1,0 +1,41 @@
+.dataloom-button {
+    display: flex;
+    align-items: center;
+    width: max-content !important;
+    height: max-content;
+    padding: 6px !important;
+    white-space: nowrap;
+    color: var(--text-normal);
+    margin-right: 0;
+    cursor: pointer;
+}
+
+.dataloom-button:focus-visible {
+    box-shadow: none !important;
+}
+
+.dataloom-button--link {
+    color: var(--link-color);
+    text-decoration-line: var(--link-decoration);
+    cursor: var(--cursor-link);
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+.dataloom-button--link:hover{
+    box-shadow: var(--input-shadow) !important;
+}
+
+.dataloom-button--small {
+    padding: 2px !important;
+}
+
+.dataloom-button--text {
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+.dataloom-button--text:hover {
+    background-color: var(--background-modifier-hover) !important;
+}
