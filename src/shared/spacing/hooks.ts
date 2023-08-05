@@ -1,18 +1,6 @@
-import { css } from "@emotion/react";
-
-const wrapOverflow = css`
-	overflow-wrap: break-word;
-	overflow: hidden;
-	white-space: normal;
-`;
-
-const hideOverflow = css`
-	overflow: hidden;
-	overflow-wrap: normal;
-	white-space: nowrap;
-`;
+import "./styles.css";
 
 export const useOverflow = (shouldWrapOverflow: boolean) => {
-	if (shouldWrapOverflow) return wrapOverflow;
-	return hideOverflow;
+	if (shouldWrapOverflow) return "dataloom-overflow--wrap";
+	return "dataloom-overflow--hide";
 };
