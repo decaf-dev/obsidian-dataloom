@@ -1,11 +1,10 @@
+import React from "react";
+
 import Icon from "src/react/shared/icon";
 import Stack from "src/react/shared/stack";
 import Flex from "../flex";
 import Text from "../text";
 import Padding from "../padding";
-
-import { css } from "@emotion/react";
-import React from "react";
 
 interface Props {
 	isFocusable?: boolean;
@@ -60,12 +59,6 @@ export default function MenuItem({
 			ref={ref}
 			tabIndex={0}
 			className={className}
-			css={css`
-				display: flex;
-				align-items: center;
-				padding: var(--nlt-spacing--sm) var(--nlt-spacing--lg);
-				width: 100%;
-			`}
 			aria-label={ariaLabel}
 			onClick={handleClick}
 			onKeyDown={handleKeyDown}
