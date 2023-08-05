@@ -40,7 +40,7 @@ export default function Tag({
 
 	let contentClassName = "dataloom-tag-content";
 	if (maxWidth !== undefined) {
-		contentClassName += " " + "dataloom-hide-overflow-ellipsis";
+		contentClassName += " " + "dataloom-overflow--ellipsis";
 	}
 	return (
 		<div className={tagClassName}>

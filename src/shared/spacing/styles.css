@@ -9,3 +9,9 @@
     overflow-wrap: normal;
     white-space: nowrap;
 }
+
+.dataloom-overflow--ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
