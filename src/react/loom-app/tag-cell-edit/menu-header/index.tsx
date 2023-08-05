@@ -1,10 +1,11 @@
-import { css } from "@emotion/react";
-import { Tag as TagType } from "src/shared/loom-state/types";
+import React from "react";
+
 import Tag from "src/react/shared/tag";
 import Wrap from "src/react/shared/wrap";
+import Input from "src/react/shared/input";
 
-import React from "react";
-import { transparentInputStyle } from "src/react/loom-app/shared-styles";
+import { Tag as TagType } from "src/shared/loom-state/types";
+import Padding from "src/react/shared/padding";
 
 interface MenuHeaderProps {
 	cellTags: TagType[];
@@ -28,13 +29,7 @@ export default function MenuHeader({
 	}
 
 	return (
-		<div
-			css={css`
-				background-color: var(--background-secondary);
-				border-bottom: 1px solid var(--table-border-color);
-				padding: 4px 10px;
-			`}
-		>
+		<div className="dataloom-tag-cell-edit__menu-header">
 			<Wrap spacingX="sm">
 				{cellTags.map((tag) => (
 					<Tag
@@ -47,15 +42,14 @@ export default function MenuHeader({
 						onRemoveClick={onRemoveTag}
 					/>
 				))}
-				<input
-					className="dataloom-focusable"
-					css={transparentInputStyle}
-					autoFocus
-					ref={inputRef}
-					type="text"
-					value={inputValue}
-					onChange={(e) => handleInputChange(e.target.value)}
-				/>
+				<Padding p="md">
+					<Input
+						ref={inputRef}
+						isTransparent
+						value={inputValue}
+						onChange={handleInputChange}
+					/>
+				</Padding>
 			</Wrap>
 		</div>
 	);

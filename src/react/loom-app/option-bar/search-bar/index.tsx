@@ -1,10 +1,9 @@
 import Button from "src/react/shared/button";
 import Icon from "src/react/shared/icon";
 import Stack from "src/react/shared/stack";
+import Input from "src/react/shared/input";
 
-import { css } from "@emotion/react";
 import { useLoomState } from "src/react/loom-app/loom-state-provider";
-import { baseInputStyle } from "src/react/loom-app/shared-styles";
 
 export default function SearchBar() {
 	const { searchText, setSearchText, isSearchBarVisible, toggleSearchBar } =
@@ -14,16 +13,10 @@ export default function SearchBar() {
 		<div className="dataloom-search-bar">
 			<Stack spacing="lg" isHorizontal>
 				{isSearchBarVisible && (
-					<input
-						className="dataloom-focusable"
-						css={css`
-							${baseInputStyle}
-						`}
-						autoFocus
-						type="text"
+					<Input
 						placeholder="Type to search..."
 						value={searchText}
-						onChange={(e) => setSearchText(e.target.value)}
+						onChange={(value) => setSearchText(value)}
 					/>
 				)}
 				<Button

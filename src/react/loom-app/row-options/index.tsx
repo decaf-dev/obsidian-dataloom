@@ -9,7 +9,6 @@ import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 import { useDragContext } from "src/shared/dragging/drag-context";
 import { dropDrag, getRowId } from "src/shared/dragging/utils";
 import { useLoomState } from "src/react/loom-app/loom-state-provider";
-import { css } from "@emotion/react";
 
 interface Props {
 	rowId: string;

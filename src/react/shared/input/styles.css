@@ -1,0 +1,38 @@
+.dataloom-input {
+    width: 100%;
+    height: 100%;
+    transition: none !important;
+    font-size: var(--font-ui-medium) !important;
+    box-shadow: none !important;
+}
+
+.dataloom-input--transparent {
+    background-color: transparent !important;
+    border: 0px !important;
+}
+
+.dataloom-input--border {
+    border: 1px solid var(--table-border-color) !important;
+    padding: 5px 10px;
+    background-color: var(--background-secondary);
+}
+
+.dataloom-input--numeric {
+    border: 0 !important;
+    border-radius: 0 !important;
+    text-align: right;
+}
+
+                        /* &:focus {
+                            outline: 2px solid var(--background-modifier-border-focus);
+                            outline-offset: -2px;
+                        } */
+
+.dataloom-input--error {
+    outline: 2px solid var(--background-modifier-error) !important;
+    outline-offset: -2px;
+}
+
+.dataloom-input--error:focus {
+    outline: 2px solid var(--background-modifier-error) !important;
+}

@@ -1,14 +1,14 @@
-import { css } from "@emotion/react";
-import { CellType, Tag } from "src/shared/loom-state/types";
 import ReactSelect from "react-select";
 import Select from "src/react/shared/select";
+import Input from "src/react/shared/input";
+
+import { CellType, Tag } from "src/shared/loom-state/types";
 import {
 	CHECKBOX_MARKDOWN_CHECKED,
 	CHECKBOX_MARKDOWN_UNCHECKED,
 } from "src/shared/constants";
 
 import "./styles.css";
-import { baseInputStyle } from "src/react/loom-app/shared-styles";
 
 interface Props {
 	id: string;
@@ -36,19 +36,13 @@ export default function FilterTextInput({
 	}
 
 	return (
-		<>
+		<div className="dataloom-filter-text-input">
 			{cellType !== CellType.CHECKBOX &&
 				cellType !== CellType.TAG &&
 				cellType !== CellType.MULTI_TAG && (
-					<input
-						className="dataloom-focusable"
-						css={css`
-							${baseInputStyle}
-							width: 150px !important;
-						`}
+					<Input
 						value={text}
-						type="text"
-						onChange={(e) => onTextChange(id, e.target.value)}
+						onChange={(value) => onTextChange(id, value)}
 					/>
 				)}
 			{cellType === CellType.CHECKBOX && (
@@ -165,6 +159,6 @@ export default function FilterTextInput({
 					}}
 				/>
 			)}
-		</>
+		</div>
 	);
 }

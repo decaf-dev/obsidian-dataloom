@@ -3,7 +3,8 @@ import React from "react";
 import { useCompare, useInputSelection } from "src/shared/hooks";
 import { isNumber, isNumberInput } from "src/shared/match";
 import { MenuCloseRequest } from "src/shared/menu/types";
-import { numberInputStyle } from "src/react/loom-app/shared-styles";
+
+import Input from "src/react/shared/input";
 
 interface Props {
 	menuCloseRequest: MenuCloseRequest | null;
@@ -49,14 +50,13 @@ export default function CurrencyCellEdit({
 
 	return (
 		<div className="dataloom-currency-cell-edit">
-			<input
-				autoFocus
-				css={numberInputStyle}
+			<Input
 				ref={inputRef}
-				type="text" //We use an input of type text so that the selection is available
+				//Set input mode so that the keyboard is numeric
+				//but selection is still available
 				inputMode="numeric"
 				value={localValue}
-				onChange={(e) => handleChange(e.target.value)}
+				onChange={handleChange}
 				onBlur={(e) => {
 					e.target.classList.add("dataloom-blur--cell");
 				}}

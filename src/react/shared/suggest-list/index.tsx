@@ -106,10 +106,12 @@ export function SuggestList({
 	return (
 		<div className="dataloom-suggest-menu">
 			{showInput && files.length > 0 && (
-				<Input
-					value={localFilterValue}
-					onChange={setLocalFilterValue}
-				/>
+				<Padding p="md">
+					<Input
+						value={localFilterValue}
+						onChange={setLocalFilterValue}
+					/>
+				</Padding>
 			)}
 			{showCreate && !doesFilterFileExist && localFilterValue !== "" && (
 				<CreateButton

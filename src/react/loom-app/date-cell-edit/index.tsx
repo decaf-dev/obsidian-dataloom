@@ -3,6 +3,8 @@ import React from "react";
 import MenuItem from "src/react/shared/menu-item";
 import Stack from "src/react/shared/stack";
 import Padding from "src/react/shared/padding";
+import MenuTrigger from "src/react/shared/menu-trigger";
+import Input from "src/react/shared/input";
 
 import {
 	dateStringToUnixTime,
@@ -15,11 +17,8 @@ import DateFormatMenu from "./date-format-menu";
 import { useMenu } from "src/shared/menu/hooks";
 import { MenuCloseRequest, MenuLevel } from "src/shared/menu/types";
 
-import MenuTrigger from "src/react/shared/menu-trigger";
 import { getDisplayNameForDateFormat } from "src/shared/loom-state/type-display-names";
 import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
-import { borderInputStyle } from "src/react/loom-app/shared-styles";
-import { css } from "@emotion/react";
 
 interface Props {
 	value: number | null;
@@ -123,21 +122,13 @@ export default function DateCellEdit({
 		<>
 			<div ref={triggerRef} className="dataloom-date-cell-edit">
 				<Stack>
-					<Padding>
-						<input
-							tabIndex={0}
-							type="text"
-							className="dataloom-focusable"
-							css={css`
-								${borderInputStyle}
-								${isInputInvalid
-									? "&:focus-visible { outline: 2px solid var(--background-modifier-error) !important; }"
-									: ""}
-							`}
+					<Padding p="md">
+						<Input
 							ref={inputRef}
-							autoFocus
+							showBorder
+							hasError={isInputInvalid}
 							value={localValue}
-							onChange={(e) => setLocalValue(e.target.value)}
+							onChange={setLocalValue}
 						/>
 					</Padding>
 					<MenuTrigger menu={menu}>

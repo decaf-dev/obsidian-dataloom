@@ -59,7 +59,7 @@ export default function EmbedCellEdit({
 
 	return (
 		<div className="dataloom-embed-cell-edit">
-			<Stack width="100%" spacing="lg">
+			<Stack width="100%" spacing="md">
 				<Padding width="100%" px="md" pt="md">
 					<Stack spacing="sm" width="100%">
 						<label htmlFor="external-switch">External Link</label>

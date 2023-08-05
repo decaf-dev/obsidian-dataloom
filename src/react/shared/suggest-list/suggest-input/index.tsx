@@ -1,4 +1,4 @@
-import { transparentInputStyle } from "src/react/loom-app/shared-styles";
+import Input from "../../input";
 
 interface Props {
 	value: string;
@@ -8,14 +8,7 @@ interface Props {
 export default function SuggestInput({ value, onChange }: Props) {
 	return (
 		<div className="dataloom-suggest-input">
-			<input
-				className="dataloom-focusable"
-				type="text"
-				css={transparentInputStyle}
-				autoFocus
-				value={value}
-				onChange={(e) => onChange(e.target.value)}
-			/>
+			<Input isTransparent value={value} onChange={onChange} />
 		</div>
 	);
 }

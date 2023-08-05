@@ -1,6 +1,5 @@
 import Stack from "src/react/shared/stack";
 import { ExportType } from "../../shared/export/types";
-import { css } from "@emotion/react";
 
 interface Props {
 	value: ExportType;
