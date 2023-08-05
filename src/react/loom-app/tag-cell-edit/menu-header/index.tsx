@@ -30,27 +30,29 @@ export default function MenuHeader({
 
 	return (
 		<div className="dataloom-tag-cell-edit__menu-header">
-			<Wrap spacingX="sm">
-				{cellTags.map((tag) => (
-					<Tag
-						key={tag.id}
-						id={tag.id}
-						color={tag.color}
-						markdown={tag.markdown}
-						maxWidth="150px"
-						showRemoveButton
-						onRemoveClick={onRemoveTag}
-					/>
-				))}
-				<Padding p="md">
-					<Input
-						ref={inputRef}
-						isTransparent
-						value={inputValue}
-						onChange={handleInputChange}
-					/>
-				</Padding>
-			</Wrap>
+			<Padding px="md" pt="md" pb="sm">
+				<Wrap spacingX="sm">
+					{cellTags.map((tag) => (
+						<Tag
+							key={tag.id}
+							id={tag.id}
+							color={tag.color}
+							markdown={tag.markdown}
+							maxWidth="150px"
+							showRemoveButton
+							onRemoveClick={onRemoveTag}
+						/>
+					))}
+				</Wrap>
+			</Padding>
+			<Padding p="md">
+				<Input
+					ref={inputRef}
+					isTransparent
+					value={inputValue}
+					onChange={handleInputChange}
+				/>
+			</Padding>
 		</div>
 	);
 }
