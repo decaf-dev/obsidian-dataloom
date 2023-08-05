@@ -1,6 +1,6 @@
 import Icon from "../../shared/icon";
 import MenuButton from "../../shared/menu-button";
-import RowMenu from "./components/RowMenu";
+import RowMenu from "./row-menu";
 
 import { useMenu } from "src/shared/menu/hooks";
 import { MenuLevel } from "src/shared/menu/types";
@@ -152,20 +152,10 @@ export default function RowOptions({ rowId, onDeleteClick }: Props) {
 
 	return (
 		<>
-			<div
-				className="dataloom-row-options"
-				css={css`
-					width: 100%;
-					height: 100%;
-				`}
-			>
+			<div className="dataloom-row-options">
 				<div
 					ref={triggerRef}
-					css={css`
-						width: 100%;
-						height: 100%;
-						padding-left: 5px;
-					`}
+					className="dataloom-row-options__container"
 					onTouchStart={handleTouchStart}
 					onTouchMove={handleTouchMove}
 					onTouchEnd={handleTouchEnd}
