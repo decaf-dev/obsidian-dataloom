@@ -6,6 +6,8 @@ import Flex from "../flex";
 import Text from "../text";
 import Padding from "../padding";
 
+import "./styles.css";
+
 interface Props {
 	isFocusable?: boolean;
 	lucideId?: string;
