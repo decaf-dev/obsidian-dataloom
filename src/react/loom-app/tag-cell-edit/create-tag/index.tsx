@@ -4,6 +4,8 @@ import { Color } from "src/shared/loom-state/types";
 
 import Stack from "src/react/shared/stack";
 
+import "./styles.css";
+
 interface Props {
 	markdown: string;
 	color: Color;
