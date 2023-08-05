@@ -1,10 +1,10 @@
-.dataloom-wrap-overflow {
+.dataloom-overflow--wrap {
     overflow-wrap: break-word;
     overflow: hidden;
     white-space: normal;
 }
 
-.dataloom-hide-overflow {
+.dataloom-overflow--hide {
     overflow: hidden;
     overflow-wrap: normal;
     white-space: nowrap;
