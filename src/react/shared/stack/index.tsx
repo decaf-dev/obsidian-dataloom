@@ -22,9 +22,9 @@ export default function Stack({
 	align,
 	grow,
 	children,
-	width = "unset",
-	height = "unset",
-	minHeight = "unset",
+	width,
+	height,
+	minHeight,
 	isHorizontal = false,
 }: Props) {
 	let justifyContent = justify;

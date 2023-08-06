@@ -57,10 +57,10 @@ export function ExportApp({ loomState, loomFilePath }: Props) {
 	return (
 		<div className="dataloom-export-app">
 			<Padding p="xl">
-				<Stack spacing="lg">
+				<Stack spacing="lg" width="100%">
 					<h5>DataLoom Export</h5>
 					<Divider />
-					<Stack spacing="xl">
+					<Stack spacing="xl" width="100%">
 						<ExportTypeSelect
 							value={exportType}
 							onChange={setExportType}
