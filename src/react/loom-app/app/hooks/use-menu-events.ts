@@ -11,7 +11,35 @@ export const useMenuEvents = (
 ) => {
 	const { app } = useMountState();
 	const logger = useLogger();
-	const { requestCloseTopMenu, closeTopMenu, topMenu } = useMenuState();
+	const { requestCloseTopMenu, closeTopMenu, topMenu, closeAllMenus } =
+		useMenuState();
+
+	//When an Obsidian modal is opened, close all menus
+	React.useEffect(() => {
+		function isModalOpen() {
+			return (
+				document.body.querySelector(":scope > .modal-container") !==
+				null
+			);
+		}
+
+		// Create a new ResizeObserver instance
+		const mutationObserver = new MutationObserver((entries) => {
+			for (let entry of entries) {
+				if (entry.target === document.body) {
+					if (isModalOpen()) {
+						closeAllMenus();
+						break;
+					}
+				}
+			}
+		});
+
+		// Start observing the body element
+		mutationObserver.observe(document.body, { childList: true });
+
+		return () => mutationObserver.disconnect();
+	}, [closeAllMenus]);
 
 	//Handle outside keydown
 	//The events are triggered from the Obsidian event registered in main.ts
