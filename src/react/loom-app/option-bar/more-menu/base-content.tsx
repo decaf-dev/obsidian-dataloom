@@ -18,6 +18,11 @@ export default function BaseContent({
 	return (
 		<Padding p="sm">
 			<MenuItem
+				lucideId="snowflake"
+				name="Freeze columns"
+				onClick={onFreezeColumnsClick}
+			/>
+			<MenuItem
 				lucideId="download"
 				name="Export"
 				onClick={() => {
@@ -28,11 +33,6 @@ export default function BaseContent({
 						manifestPluginVersion
 					).open();
 				}}
-			/>
-			<MenuItem
-				lucideId="snowflake"
-				name="Freeze columns"
-				onClick={onFreezeColumnsClick}
 			/>
 		</Padding>
 	);
