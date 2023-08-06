@@ -1,10 +1,7 @@
-import Button from "src/react/shared/button";
-import Stack from "src/react/shared/stack";
 import Icon from "src/react/shared/icon";
+import Bubble from "src/react/shared/bubble";
 
 import { SortDir } from "src/shared/loom-state/types";
-
-import "./styles.css";
 
 interface SortBubbleProps {
 	sortDir: SortDir;
@@ -19,23 +16,18 @@ export default function SortBubble({
 }: SortBubbleProps) {
 	return (
 		<div className="dataloom-sort-bubble">
-			<Stack spacing="lg" isHorizontal>
-				<Stack spacing="sm" isHorizontal>
-					{sortDir === SortDir.ASC ? (
+			<Bubble
+				value={markdown}
+				icon={
+					sortDir === SortDir.ASC ? (
 						<Icon lucideId="arrow-up" />
 					) : (
 						<Icon lucideId="arrow-down" />
-					)}
-					<span>{markdown}</span>
-				</Stack>
-				<Button
-					isSmall
-					invertFocusColor
-					icon={<Icon lucideId="x" color="var(--text-on-accent)" />}
-					ariaLabel="Remove sort"
-					onClick={onRemoveClick}
-				/>
-			</Stack>
+					)
+				}
+				canRemove
+				onRemoveClick={onRemoveClick}
+			/>
 		</div>
 	);
 }

@@ -1,7 +1,15 @@
-.dataloom-active-filter-bubble {
+.dataloom-bubble {
     border-radius: 8px;
     padding: 2px 6px;
+    user-select: none;
     color: var(--text-on-accent);
     border: 1px solid var(--background-modifier-border);
     background-color: var(--color-accent);
+}
+
+.dataloom-bubble span {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
