@@ -1,13 +1,13 @@
 import React from "react";
 
-import { NltMenu } from "src/shared/menu/types";
+import { LoomMenu } from "src/shared/menu/types";
 import MenuTrigger from "../menu-trigger";
 import Button from "../button";
 import { ButtonVariant } from "../button/types";
 
 interface MenuButtonProps {
 	variant?: ButtonVariant;
-	menu: NltMenu;
+	menu: LoomMenu;
 	ariaLabel?: string;
 	icon?: React.ReactNode;
 	children?: React.ReactNode;

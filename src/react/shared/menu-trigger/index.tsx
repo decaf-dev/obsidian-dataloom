@@ -1,4 +1,4 @@
-import { NltMenu } from "src/shared/menu/types";
+import { LoomMenu } from "src/shared/menu/types";
 import React from "react";
 import { useMenuState } from "src/react/loom-app/menu-provider";
 import {
@@ -18,7 +18,7 @@ interface Props {
 	shouldRun?: boolean;
 	/** Should the trigger be 100% width and 100% height of the parent */
 	isCell?: boolean;
-	menu: NltMenu;
+	menu: LoomMenu;
 	children: React.ReactNode;
 	onEnterDown?: () => void;
 	onBackspaceDown?: () => void;

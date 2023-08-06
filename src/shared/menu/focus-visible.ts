@@ -1,4 +1,4 @@
-import { NltMenu } from "./types";
+import { LoomMenu } from "./types";
 
 export const focusMenuElement = (menuId: string) => {
 	const el = document.querySelector(
@@ -24,7 +24,7 @@ export const removeFocusVisibleClass = () => {
 
 export const getFocusableLayerEl = (
 	appId: string,
-	topMenu: NltMenu | null
+	topMenu: LoomMenu | null
 ): HTMLElement | null => {
 	//Get the parent element
 	const appEl = document.querySelector(`.dataloom-app[data-id="${appId}"]`);

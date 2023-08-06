@@ -6,7 +6,7 @@ import {
 import {
 	MenuCloseRequest,
 	MenuCloseRequestType,
-	NltMenu,
+	LoomMenu,
 } from "../../../shared/menu/types";
 import { useLogger } from "../../../shared/logger";
 
@@ -16,12 +16,12 @@ interface CloseOptions {
 }
 
 interface ContextProps {
-	topMenu: NltMenu | null;
+	topMenu: LoomMenu | null;
 	menuCloseRequest: MenuCloseRequest | null;
-	openMenu: (menu: NltMenu) => void;
+	openMenu: (menu: LoomMenu) => void;
 	hasOpenMenu: () => boolean;
-	canOpenMenu: (menu: NltMenu) => boolean;
-	isMenuOpen: (menu: NltMenu) => boolean;
+	canOpenMenu: (menu: LoomMenu) => boolean;
+	isMenuOpen: (menu: LoomMenu) => boolean;
 	closeTopMenu: (options?: CloseOptions) => void;
 	requestCloseTopMenu: (type: MenuCloseRequestType) => void;
 	closeAllMenus: (shouldFocusTriggerOnClose?: boolean) => void;
@@ -48,7 +48,7 @@ export default function MenuProvider({ children }: Props) {
 	/**
 	 * The menus that are currently open
 	 */
-	const [currentMenus, setCurrentMenus] = React.useState<NltMenu[]>([]);
+	const [currentMenus, setCurrentMenus] = React.useState<LoomMenu[]>([]);
 
 	const logger = useLogger();
 
@@ -59,7 +59,7 @@ export default function MenuProvider({ children }: Props) {
 	 * Returns whether or not a menu is open
 	 */
 	const isMenuOpen = React.useCallback(
-		(menu: NltMenu) => {
+		(menu: LoomMenu) => {
 			return currentMenus.find((m) => m.id === menu.id) !== undefined;
 		},
 		[currentMenus]
@@ -78,7 +78,7 @@ export default function MenuProvider({ children }: Props) {
 	}, [currentMenus]);
 
 	const canOpenMenu = React.useCallback(
-		(menu: NltMenu) => {
+		(menu: LoomMenu) => {
 			//A user can open a menu when no other menu is open or if the menu is a higher level
 			//than the current one
 			return (
@@ -95,7 +95,7 @@ export default function MenuProvider({ children }: Props) {
 	 * @param menu The menu to open
 	 */
 	const openMenu = React.useCallback(
-		(menu: NltMenu) => {
+		(menu: LoomMenu) => {
 			if (!canOpenMenu(menu)) return;
 
 			setCurrentMenus((prev) => [...prev, menu]);
