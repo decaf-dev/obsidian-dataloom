@@ -1,5 +1,5 @@
 import { useLogger } from "src/shared/logger";
-import { useLoomState } from "../loom-state-provider";
+import { useLoomState } from "src/react/loom-app/loom-state-provider";
 import CellBodyUpdateCommand from "src/shared/loom-state/commands/cell-body-update-command";
 import CellHeaderUpdateCommand from "src/shared/loom-state/commands/cell-header-update-command";
 import React from "react";

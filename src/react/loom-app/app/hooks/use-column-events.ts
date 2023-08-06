@@ -5,7 +5,7 @@ import { isEventForThisApp } from "src/shared/event-system/utils";
 import { EVENT_COLUMN_ADD, EVENT_COLUMN_DELETE } from "src/shared/events";
 import { useLogger } from "src/shared/logger";
 import { useLoomState } from "src/react/loom-app/loom-state-provider";
-import { useMountState } from "../mount-provider";
+import { useMountState } from "../../mount-provider";
 
 export const useColumnEvents = () => {
 	const { appId, app } = useMountState();

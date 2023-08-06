@@ -10,7 +10,7 @@ import {
 	SortDir,
 } from "src/shared/loom-state/types";
 import { useLogger } from "src/shared/logger";
-import { useLoomState } from "../loom-state-provider";
+import { useLoomState } from "../../loom-state-provider";
 import ColumnAddCommand from "src/shared/loom-state/commands/column-add-command";
 import ColumnDeleteCommand from "src/shared/loom-state/commands/column-delete-command";
 import ColumnUpdateCommand from "src/shared/loom-state/commands/column-update-command";

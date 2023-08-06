@@ -1,7 +1,7 @@
 import { useLogger } from "src/shared/logger";
 import { Color } from "src/shared/loom-state/types";
 import TagDeleteCommand from "src/shared/loom-state/commands/tag-delete-command";
-import { useLoomState } from "../loom-state-provider";
+import { useLoomState } from "../../loom-state-provider";
 import TagUpdateCommand from "src/shared/loom-state/commands/tag-update-command";
 import TagAddCommand from "src/shared/loom-state/commands/tag-add-command";
 import TagCellRemoveCommand from "src/shared/loom-state/commands/tag-cell-remove-command";

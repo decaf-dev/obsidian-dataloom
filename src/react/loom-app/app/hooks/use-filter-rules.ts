@@ -6,7 +6,7 @@ import {
 	deleteRule,
 	updateRule,
 } from "src/shared/loom-state/filter-utils";
-import { filterBodyRowsByRules } from "./filter-by-rules";
+import { filterBodyRowsByRules } from "../filter-by-rules";
 
 export const useFilterRules = (
 	onChange: React.Dispatch<SetStateAction<LoomState>>

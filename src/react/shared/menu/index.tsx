@@ -7,7 +7,7 @@ import { useMenuState } from "src/react/loom-app/menu-provider";
 import { isTextSelected } from "src/shared/menu/utils";
 import { removeFocusVisibleClass } from "src/shared/menu/focus-visible";
 import { useLogger } from "src/shared/logger";
-import { useMenuEvents } from "src/react/loom-app/app/use-menu-events";
+import { useMenuEvents } from "src/react/loom-app/app/hooks/use-menu-events";
 
 import "./styles.css";
 

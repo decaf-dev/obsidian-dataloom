@@ -1,5 +1,5 @@
 import { useLogger } from "src/shared/logger";
-import { useLoomState } from "../loom-state-provider";
+import { useLoomState } from "../../loom-state-provider";
 import RowAddCommand from "src/shared/loom-state/commands/row-add-command";
 import RowDeleteCommand from "src/shared/loom-state/commands/row-delete-command";
 import React from "react";

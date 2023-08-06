@@ -4,7 +4,7 @@ import RowDeleteCommand from "src/shared/loom-state/commands/row-delete-command"
 import { isEventForThisApp } from "src/shared/event-system/utils";
 import { EVENT_ROW_ADD, EVENT_ROW_DELETE } from "src/shared/events";
 import { useLoomState } from "src/react/loom-app/loom-state-provider";
-import { useMountState } from "../mount-provider";
+import { useMountState } from "../../mount-provider";
 
 export const useRowEvents = () => {
 	const { appId, app } = useMountState();
