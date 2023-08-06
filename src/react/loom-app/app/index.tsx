@@ -14,12 +14,12 @@ import BottomBar from "../bottom-bar";
 import { useUUID } from "../../../shared/hooks";
 import CellNotFoundError from "src/shared/error/cell-not-found-error";
 import { useLoomState } from "../loom-state-provider";
-import { useFilterRules } from "./use-filter-rules";
+import { useFilterRules } from "./hooks/use-filter-rules";
 import { filterBodyRowsBySearch } from "./filter-by-search";
-import { useColumn } from "./use-column";
-import { useRow } from "./use-row";
-import { useCell } from "./use-cell";
-import { useTag } from "./use-tag";
+import { useColumn } from "./hooks/use-column";
+import { useRow } from "./hooks/use-row";
+import { useCell } from "./hooks/use-cell";
+import { useTag } from "./hooks/use-tag";
 
 import { useMountState } from "../mount-provider";
 import { useMenuState } from "../menu-provider";
@@ -46,10 +46,10 @@ import {
 	moveMenuFocusDown,
 	moveMenuFocusUp,
 } from "src/shared/menu/arrow-move-focus";
-import { useExportEvents } from "src/react/loom-app/app/use-export-events";
-import { useRowEvents } from "src/react/loom-app/app/use-row-events";
-import { useColumnEvents } from "src/react/loom-app/app/use-column-events";
-import { useTableSettings } from "./use-table-settings";
+import { useExportEvents } from "src/react/loom-app/app/hooks/use-export-events";
+import { useRowEvents } from "src/react/loom-app/app/hooks/use-row-events";
+import { useColumnEvents } from "src/react/loom-app/app/hooks/use-column-events";
+import { useTableSettings } from "./hooks/use-table-settings";
 
 import "./global-styles.css";
 import "./styles.css";
