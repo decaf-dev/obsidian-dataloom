@@ -1,4 +1,5 @@
 import React from "react";
+import Divider from "src/react/shared/divider";
 import Menu from "src/react/shared/menu";
 import MenuItem from "src/react/shared/menu-item";
 
@@ -28,6 +29,11 @@ const RowMenu = React.forwardRef<HTMLDivElement, Props>(
 			<Menu id={id} isOpen={isOpen} top={top} left={left} ref={ref}>
 				<div className="dataloom-row-menu">
 					<MenuItem
+						lucideId="trash-2"
+						name="Delete"
+						onClick={() => onDeleteClick()}
+					/>
+					<MenuItem
 						lucideId="chevrons-up"
 						name="Insert above"
 						onClick={() => onInsertAboveClick()}
@@ -36,11 +42,6 @@ const RowMenu = React.forwardRef<HTMLDivElement, Props>(
 						lucideId="chevrons-down"
 						name="Insert below"
 						onClick={() => onInsertBelowClick()}
-					/>
-					<MenuItem
-						lucideId="trash-2"
-						name="Delete"
-						onClick={() => onDeleteClick()}
 					/>
 				</div>
 			</Menu>
