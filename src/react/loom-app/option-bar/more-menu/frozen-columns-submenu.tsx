@@ -45,13 +45,13 @@ export default function FrozenColumnsSubmenu({
 					/>
 					<Button
 						icon={<Icon lucideId="minus" />}
-						ariaLabel="Subtract frozen column"
+						ariaLabel="Subtract"
 						onClick={() => handleMinusClick()}
 					/>
 					<div>{numFrozenColumns}</div>
 					<Button
 						icon={<Icon lucideId="plus" />}
-						ariaLabel="Add frozen column"
+						ariaLabel="Add"
 						onClick={() => handlePlusClick()}
 					/>
 				</Stack>
