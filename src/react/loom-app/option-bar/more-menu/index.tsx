@@ -13,6 +13,8 @@ interface Props {
 	numFrozenColumns: number;
 	onFrozenColumnsChange: (value: number) => void;
 	onCloseClick: (shouldFocusTrigger: boolean) => void;
+	onToggleColumnClick: () => void;
+	onFilterClick: () => void;
 }
 
 const MoreMenu = React.forwardRef<HTMLDivElement, Props>(function MoreMenu(
@@ -24,18 +26,33 @@ const MoreMenu = React.forwardRef<HTMLDivElement, Props>(function MoreMenu(
 		numFrozenColumns,
 		onCloseClick,
 		onFrozenColumnsChange,
+		onToggleColumnClick,
+		onFilterClick,
 	}: Props,
 	ref
 ) {
 	const [submenu, setSubmenu] = React.useState<MoreMenuSubmenu | null>(null);
+
+	function handleFilterClick() {
+		onCloseClick(false);
+		onFilterClick();
+	}
+
+	function handleToggleColumnClick() {
+		onCloseClick(false);
+		onToggleColumnClick();
+	}
+
 	return (
 		<Menu id={id} isOpen={isOpen} top={top} left={left} ref={ref}>
 			{submenu === null && (
 				<BaseContent
-					onExportClick={() => onCloseClick(false)}
+					onToggleColumnClick={handleToggleColumnClick}
+					onFilterClick={handleFilterClick}
 					onFreezeColumnsClick={() =>
 						setSubmenu(MoreMenuSubmenu.FROZEN_COLUMNS)
 					}
+					onExportClick={() => onCloseClick(false)}
 				/>
 			)}
 			{submenu == MoreMenuSubmenu.FROZEN_COLUMNS && (

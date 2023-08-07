@@ -19,6 +19,7 @@ interface ContextProps {
 	topMenu: LoomMenu | null;
 	menuCloseRequest: MenuCloseRequest | null;
 	openMenu: (menu: LoomMenu) => void;
+	replaceMenu: (menu: LoomMenu) => void;
 	hasOpenMenu: () => boolean;
 	canOpenMenu: (menu: LoomMenu) => boolean;
 	isMenuOpen: (menu: LoomMenu) => boolean;
@@ -108,6 +109,11 @@ export default function MenuProvider({ children }: Props) {
 		[canOpenMenu]
 	);
 
+	const replaceMenu = React.useCallback((menu: LoomMenu) => {
+		setCurrentMenus([menu]);
+		removeFocusVisibleClass();
+	}, []);
+
 	/**
 	 * Closes all menus
 	 * @param shouldFocusTrigger should focus the menu trigger when on close
@@ -181,6 +187,7 @@ export default function MenuProvider({ children }: Props) {
 				isMenuOpen,
 				openMenu,
 				canOpenMenu,
+				replaceMenu,
 				menuCloseRequest,
 				requestCloseTopMenu,
 				closeTopMenu,

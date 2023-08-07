@@ -10,6 +10,8 @@ interface Props {
 	flexDir?: FlexDirection;
 	justify?: JustifyContent;
 	align?: AlignItems;
+	width?: string;
+	height?: string;
 	children: React.ReactNode;
 }
 
@@ -17,6 +19,8 @@ export default function Flex({
 	flexDir = "row",
 	justify = "flex-start",
 	align = "flex-start",
+	width,
+	height,
 	children,
 }: Props) {
 	return (
@@ -26,6 +30,8 @@ export default function Flex({
 				flexDirection: flexDir,
 				justifyContent: justify,
 				alignItems: align,
+				width,
+				height,
 			}}
 		>
 			{children}

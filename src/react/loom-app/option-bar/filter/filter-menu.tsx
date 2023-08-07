@@ -11,7 +11,7 @@ import Button from "src/react/shared/button";
 import ColumNotFoundError from "src/shared/error/column-not-found-error";
 import { FilterRule, FilterType } from "src/shared/loom-state/types";
 import { ColumnWithMarkdown } from "../types";
-import { isMobileSize } from "src/shared/render/utils";
+import { isSmallScreenSize } from "src/shared/render/utils";
 
 interface Props {
 	id: string;
@@ -59,7 +59,7 @@ const FilterMenu = React.forwardRef<HTMLDivElement, Props>(function FilterMenu(
 			<div
 				className="dataloom-filter-menu"
 				style={{
-					width: isMobileSize() ? "calc(100vw - 30px)" : "unset",
+					width: isSmallScreenSize() ? "calc(100vw - 30px)" : "unset",
 				}}
 			>
 				<Padding p="md">

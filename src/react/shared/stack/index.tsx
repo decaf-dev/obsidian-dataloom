@@ -14,6 +14,7 @@ interface Props {
 	width?: string;
 	height?: string;
 	minHeight?: string;
+	overflow?: "auto" | "hidden" | "scroll" | "visible";
 }
 
 export default function Stack({
@@ -21,6 +22,7 @@ export default function Stack({
 	justify,
 	align,
 	grow,
+	overflow,
 	children,
 	width,
 	height,
@@ -49,6 +51,7 @@ export default function Stack({
 				width,
 				height,
 				minHeight,
+				overflow,
 			}}
 		>
 			{children}

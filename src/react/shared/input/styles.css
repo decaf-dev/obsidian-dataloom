@@ -1,6 +1,6 @@
 .dataloom-input {
     width: 100%;
-    height: 100%;
+    height: 100% !important; /* Override Obsidian mobile style */
     transition: none !important;
     font-size: var(--text-normal) !important; /* Reset to default Obsidian style */
     box-shadow: none !important;

@@ -17,6 +17,7 @@ export default function SortBubble({
 	return (
 		<div className="dataloom-sort-bubble">
 			<Bubble
+				canRemove
 				value={markdown}
 				icon={
 					sortDir === SortDir.ASC ? (
@@ -25,7 +26,6 @@ export default function SortBubble({
 						<Icon lucideId="arrow-down" />
 					)
 				}
-				canRemove
 				onRemoveClick={onRemoveClick}
 			/>
 		</div>
