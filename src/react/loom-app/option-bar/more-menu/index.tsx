@@ -33,22 +33,17 @@ const MoreMenu = React.forwardRef<HTMLDivElement, Props>(function MoreMenu(
 ) {
 	const [submenu, setSubmenu] = React.useState<MoreMenuSubmenu | null>(null);
 
-	function handleFilterClick() {
-		onCloseClick(false);
-		onFilterClick();
-	}
-
-	function handleToggleColumnClick() {
-		onCloseClick(false);
-		onToggleColumnClick();
-	}
+	React.useEffect(() => {
+		// If the menu is closed, clear the submenu.
+		if (!isOpen) setSubmenu(null);
+	}, [isOpen]);
 
 	return (
 		<Menu id={id} isOpen={isOpen} top={top} left={left} ref={ref}>
 			{submenu === null && (
 				<BaseContent
-					onToggleColumnClick={handleToggleColumnClick}
-					onFilterClick={handleFilterClick}
+					onToggleColumnClick={onToggleColumnClick}
+					onFilterClick={onFilterClick}
 					onFreezeColumnsClick={() =>
 						setSubmenu(MoreMenuSubmenu.FROZEN_COLUMNS)
 					}

@@ -1,3 +1,5 @@
+import React from "react";
+
 import Stack from "../../shared/stack";
 import SearchBar from "./search-bar";
 import ActiveFilterBubble from "./active-filter-bubble";
@@ -5,6 +7,9 @@ import Padding from "src/react/shared/padding";
 import Icon from "src/react/shared/icon";
 import MenuButton from "src/react/shared/menu-button";
 import MoreMenu from "./more-menu";
+import ToggleColumnMenu from "./toggle-column-menu";
+import FilterMenu from "./filter/filter-menu";
+import SortBubbleList from "./sort-bubble-list";
 
 import { FilterType } from "src/shared/loom-state/types";
 import {
@@ -21,13 +26,10 @@ import { MenuLevel } from "src/shared/menu/types";
 import { useMenu } from "src/shared/menu/hooks";
 import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 import { isSmallScreenSize } from "src/shared/render/utils";
-
-import ToggleColumnMenu from "./toggle-column-menu";
-import FilterMenu from "./filter/filter-menu";
+import { useMenuState } from "../menu-provider";
+import { usePrevious } from "src/shared/hooks";
 
 import "./styles.css";
-import SortBubbleList from "./sort-bubble-list";
-import { useMenuState } from "../menu-provider";
 
 interface Props {
 	numFrozenColumns: number;
@@ -116,18 +118,18 @@ export default function OptionBar({
 		}
 	);
 
-	// const previousLength = usePrevious(filterRules.length);
-	// React.useEffect(() => {
-	// 	if (previousLength !== undefined) {
-	// 		if (previousLength < filterRules.length) {
-	// 			if (menuRef.current) {
-	// 				//Scroll to the bottom if we're adding a new rule
-	// 				menuRef.current.scrollTop =
-	// 					menuRef.current.scrollHeight;
-	// 			}
-	// 		}
-	// 	}
-	// }, [previousLength, filterRules.length, menuRef]);
+	const previousLength = usePrevious(filterRules.length);
+	React.useEffect(() => {
+		if (previousLength !== undefined) {
+			if (previousLength < filterRules.length) {
+				if (filterMenuRef.current) {
+					//Scroll to the bottom if we're adding a new rule
+					filterMenuRef.current.scrollTop =
+						filterMenuRef.current.scrollHeight;
+				}
+			}
+		}
+	}, [previousLength, filterRules.length, filterMenuRef]);
 
 	function handleMenuCloseClick(shouldFocusTrigger: boolean) {
 		closeTopMenu({ shouldFocusTrigger });
