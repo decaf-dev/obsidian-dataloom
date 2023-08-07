@@ -24,18 +24,6 @@ export default function BaseContent({
 	const isSmallScreen = isSmallScreenSize();
 	return (
 		<Padding p="sm">
-			<MenuItem
-				lucideId="snowflake"
-				name="Freeze"
-				onClick={onFreezeColumnsClick}
-			/>
-			{isSmallScreen && (
-				<MenuItem
-					lucideId="eye-off"
-					name="Toggle"
-					onClick={onToggleColumnClick}
-				/>
-			)}
 			{isSmallScreen && (
 				<MenuItem
 					lucideId="filter"
@@ -43,6 +31,18 @@ export default function BaseContent({
 					onClick={onFilterClick}
 				/>
 			)}
+			{isSmallScreen && (
+				<MenuItem
+					lucideId="eye-off"
+					name="Toggle"
+					onClick={onToggleColumnClick}
+				/>
+			)}
+			<MenuItem
+				lucideId="snowflake"
+				name="Freeze"
+				onClick={onFreezeColumnsClick}
+			/>
 			<MenuItem
 				lucideId="download"
 				name="Export"
