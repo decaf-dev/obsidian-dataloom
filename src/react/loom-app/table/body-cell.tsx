@@ -17,15 +17,16 @@ export default function BodyCell({
 }: Props) {
 	const ref = React.useRef<HTMLDivElement>(null);
 	const leftOffset = useStickyOffset(ref, numFrozenColumns, index);
+	const shouldFreeze = index + 1 <= numFrozenColumns;
 
 	let className = "dataloom-cell dataloom-cell--body";
-	if (index + 1 <= numFrozenColumns) className += " dataloom-cell--freeze";
+	if (shouldFreeze) className += " dataloom-cell--freeze";
 	return (
 		<div
 			className={className}
 			ref={ref}
 			data-row-id={index === 0 ? rowId : undefined}
-			style={{ left: numToPx(leftOffset) }}
+			style={{ left: shouldFreeze ? numToPx(leftOffset) : undefined }}
 		>
 			{content}
 		</div>

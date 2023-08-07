@@ -15,15 +15,18 @@ export default function FooterCell({
 }: Props) {
 	const ref = React.useRef<HTMLDivElement>(null);
 	const leftOffset = useStickyOffset(ref, numFrozenColumns, index);
+	const shouldFreeze = index + 1 <= numFrozenColumns;
 
 	let className = "dataloom-cell dataloom-cell--footer";
-	if (index + 1 <= numFrozenColumns)
+	if (shouldFreeze)
 		className += " dataloom-cell--freeze dataloom-cell--freeze-footer";
 	return (
 		<div
 			ref={ref}
 			className={className}
-			style={{ left: numToPx(leftOffset) }}
+			style={{
+				left: shouldFreeze ? numToPx(leftOffset) : undefined,
+			}}
 		>
 			{content}
 		</div>

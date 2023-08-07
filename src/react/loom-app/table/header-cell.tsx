@@ -24,6 +24,7 @@ export default function HeaderCell({
 		useDragContext();
 	const ref = React.useRef<HTMLDivElement>(null);
 	const leftOffset = useStickyOffset(ref, numFrozenColumns, index);
+	const shouldFreeze = index + 1 <= numFrozenColumns;
 
 	function startDrag(el: HTMLElement) {
 		const columnId = getColumnId(el);
@@ -189,7 +190,7 @@ export default function HeaderCell({
 	}
 
 	let className = "dataloom-cell dataloom-cell--header";
-	if (index + 1 <= numFrozenColumns)
+	if (shouldFreeze)
 		className += " dataloom-cell--freeze dataloom-cell--freeze-header";
 	return (
 		<div
@@ -197,7 +198,7 @@ export default function HeaderCell({
 			ref={ref}
 			data-column-id={columnId}
 			style={{
-				left: numToPx(leftOffset),
+				left: shouldFreeze ? numToPx(leftOffset) : undefined,
 			}}
 			{...(isDraggable && {
 				draggable: true,
