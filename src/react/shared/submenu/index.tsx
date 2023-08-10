@@ -21,7 +21,7 @@ export default function Submenu({ title, children, onBackClick }: Props) {
 							onBackClick();
 						}}
 					/>
-					{title}
+					<Padding pr="md">{title}</Padding>
 				</Stack>
 				<Divider />
 			</Stack>

@@ -4,33 +4,34 @@ import Menu from "src/react/shared/menu";
 import { MoreMenuSubmenu } from "./constants";
 import FrozenColumnsSubmenu from "./frozen-columns-submenu";
 import BaseContent from "./base-content";
+import {
+	LoomMenuCloseRequestType,
+	Position,
+} from "src/react/shared/menu/types";
 
 interface Props {
 	id: string;
 	isOpen: boolean;
-	top: number;
-	left: number;
+	triggerPosition: Position;
 	numFrozenColumns: number;
 	onFrozenColumnsChange: (value: number) => void;
-	onCloseClick: (shouldFocusTrigger: boolean) => void;
 	onToggleColumnClick: () => void;
 	onFilterClick: () => void;
+	onRequestClose: (type: LoomMenuCloseRequestType) => void;
+	onClose: () => void;
 }
 
-const MoreMenu = React.forwardRef<HTMLDivElement, Props>(function MoreMenu(
-	{
-		id,
-		isOpen,
-		top,
-		left,
-		numFrozenColumns,
-		onCloseClick,
-		onFrozenColumnsChange,
-		onToggleColumnClick,
-		onFilterClick,
-	}: Props,
-	ref
-) {
+export default function MoreMenu({
+	id,
+	isOpen,
+	triggerPosition,
+	numFrozenColumns,
+	onFrozenColumnsChange,
+	onToggleColumnClick,
+	onFilterClick,
+	onRequestClose,
+	onClose,
+}: Props) {
 	const [submenu, setSubmenu] = React.useState<MoreMenuSubmenu | null>(null);
 
 	React.useEffect(() => {
@@ -39,7 +40,14 @@ const MoreMenu = React.forwardRef<HTMLDivElement, Props>(function MoreMenu(
 	}, [isOpen]);
 
 	return (
-		<Menu id={id} isOpen={isOpen} top={top} left={left} ref={ref}>
+		<Menu
+			id={id}
+			openDirection="bottom-left"
+			isOpen={isOpen}
+			triggerPosition={triggerPosition}
+			onRequestClose={onRequestClose}
+			onClose={onClose}
+		>
 			{submenu === null && (
 				<BaseContent
 					onToggleColumnClick={onToggleColumnClick}
@@ -47,7 +55,7 @@ const MoreMenu = React.forwardRef<HTMLDivElement, Props>(function MoreMenu(
 					onFreezeColumnsClick={() =>
 						setSubmenu(MoreMenuSubmenu.FROZEN_COLUMNS)
 					}
-					onExportClick={() => onCloseClick(false)}
+					onExportClick={() => onClose()}
 				/>
 			)}
 			{submenu == MoreMenuSubmenu.FROZEN_COLUMNS && (
@@ -59,6 +67,4 @@ const MoreMenu = React.forwardRef<HTMLDivElement, Props>(function MoreMenu(
 			)}
 		</Menu>
 	);
-});
-
-export default MoreMenu;
+}

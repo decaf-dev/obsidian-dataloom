@@ -4,10 +4,10 @@ import { getBasename } from "src/shared/link/link-utils";
 
 interface Props {
 	onChange: (value: string) => void;
-	onMenuClose: () => void;
+	onClose: () => void;
 }
 
-export default function FileCellEdit({ onChange, onMenuClose }: Props) {
+export default function FileCellEdit({ onChange, onClose }: Props) {
 	function handleSuggestItemClick(file: TFile | null) {
 		if (file) {
 			//The basename does not include an extension
@@ -16,12 +16,12 @@ export default function FileCellEdit({ onChange, onMenuClose }: Props) {
 				fileName = `${file.path}|${file.basename}`;
 			onChange(`[[${fileName}]]`);
 		}
-		onMenuClose();
+		onClose();
 	}
 
 	function handleClearClick() {
 		onChange("");
-		onMenuClose();
+		onClose();
 	}
 
 	function handleCreateClick(value: string) {
@@ -31,7 +31,7 @@ export default function FileCellEdit({ onChange, onMenuClose }: Props) {
 			link = `${value}|${fileName}`;
 		}
 		onChange(link);
-		onMenuClose();
+		onClose();
 	}
 
 	return (

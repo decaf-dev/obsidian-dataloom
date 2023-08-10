@@ -3,10 +3,9 @@ import MenuButton from "src/react/shared/menu-button";
 import Icon from "src/react/shared/icon";
 import Tag from "src/react/shared/tag";
 
-import { MenuLevel } from "src/shared/menu/types";
-import { useMenu } from "src/shared/menu/hooks";
 import { Color } from "src/shared/loom-state/types";
-import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
+import { useMenu } from "../../../shared/menu/hooks";
+import { LoomMenuLevel } from "../../../shared/menu/types";
 
 import "./styles.css";
 
@@ -27,22 +26,24 @@ export default function SelectableTag({
 	onColorChange,
 	onDeleteClick,
 }: Props) {
-	const { menu, isMenuOpen, menuRef, closeTopMenu } = useMenu(MenuLevel.TWO);
-	const { triggerRef, triggerPosition } = useMenuTriggerPosition();
-	useShiftMenu(triggerRef, menuRef, isMenuOpen, {
-		openDirection: "right",
-		leftOffset: -55,
-		topOffset: -100,
-	});
+	const {
+		menuId,
+		triggerRef,
+		triggerPosition,
+		isOpen,
+		onOpen,
+		onClose,
+		onRequestClose,
+	} = useMenu({ level: LoomMenuLevel.TWO });
 
 	function handleColorChange(color: Color) {
 		onColorChange(id, color);
-		closeTopMenu();
+		onClose();
 	}
 
 	function handleDeleteClick() {
 		onDeleteClick(id);
-		closeTopMenu();
+		onClose();
 	}
 
 	function handleKeyDown(e: React.KeyboardEvent) {
@@ -66,26 +67,26 @@ export default function SelectableTag({
 		<>
 			<div
 				tabIndex={0}
-				ref={triggerRef}
 				className="dataloom-selectable-tag dataloom-focusable dataloom-selectable"
 				onClick={handleClick}
 				onKeyDown={handleKeyDown}
 			>
 				<Tag markdown={markdown} color={color} maxWidth="150px" />
 				<MenuButton
+					ref={triggerRef}
 					icon={<Icon lucideId="more-horizontal" />}
-					menu={menu}
+					onOpen={onOpen}
 				/>
 			</div>
 			<TagColorMenu
-				isOpen={isMenuOpen}
-				ref={menuRef}
-				menuId={menu.id}
-				top={triggerPosition.top}
-				left={triggerPosition.left}
+				isOpen={isOpen}
+				menuId={menuId}
+				triggerPosition={triggerPosition}
 				selectedColor={color}
 				onColorClick={(color) => handleColorChange(color)}
 				onDeleteClick={handleDeleteClick}
+				onRequestClose={onRequestClose}
+				onClose={onClose}
 			/>
 		</>
 	);

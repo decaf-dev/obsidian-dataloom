@@ -38,7 +38,7 @@ import { deserializeLoomState, serializeLoomState } from "./data/serialize";
 import { updateLinkReferences } from "./data/utils";
 import { getBasename } from "./shared/link/link-utils";
 import { hasDarkTheme } from "./shared/render/utils";
-import { removeFocusVisibleClass } from "./shared/menu/focus-visible";
+import { removeFocusVisibleClass } from "./react/loom-app/app/hooks/use-focus/focus-visible";
 import { LoomState } from "./shared/loom-state/types";
 import {
 	loadPreviewModeApps,

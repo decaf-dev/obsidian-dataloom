@@ -5,6 +5,7 @@ import "./styles.css";
 interface Props {
 	isTransparent?: boolean;
 	showBorder?: boolean;
+	defaultOutline?: boolean;
 	hasError?: boolean;
 	value: string;
 	placeholder?: string;
@@ -20,6 +21,7 @@ const Input = React.forwardRef<HTMLInputElement, Props>(
 			showBorder,
 			hasError,
 			value,
+			defaultOutline,
 			placeholder,
 			inputMode,
 			onChange,
@@ -34,6 +36,7 @@ const Input = React.forwardRef<HTMLInputElement, Props>(
 			className += " dataloom-input--border";
 		}
 		if (inputMode === "numeric") className += " dataloom-input--numeric";
+		if (defaultOutline) className += " dataloom-input--default-outline";
 		if (hasError) className += " dataloom-input--error";
 		return (
 			<input

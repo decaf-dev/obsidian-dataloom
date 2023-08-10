@@ -1,34 +1,30 @@
 import React from "react";
-import { useMountState } from "src/react/loom-app/mount-provider";
-import { EVENT_GLOBAL_CLICK, EVENT_GLOBAL_KEYDOWN } from "src/shared/events";
-import { useLogger } from "src/shared/logger";
-import { useMenuState } from "src/react/loom-app/menu-provider";
 
-export const useMenuEvents = (
-	id: string,
-	isOpen: boolean,
-	isTextHighlighted: boolean
-) => {
-	const { app } = useMountState();
+import { useMenuOperations } from "src/react/shared/menu/hooks";
+import { EVENT_GLOBAL_CLICK } from "src/shared/events";
+import { useLogger } from "src/shared/logger";
+
+export const useMenuEvents = () => {
+	const hookName = "useMenuEvents";
 	const logger = useLogger();
-	const { requestCloseTopMenu, closeTopMenu, topMenu, closeAllMenus } =
-		useMenuState();
+	const { onCloseAll } = useMenuOperations();
 
 	//When an Obsidian modal is opened, close all menus
 	React.useEffect(() => {
 		function isModalOpen() {
+			//A model is open if there is a modal-container element in the body of the document
 			return (
 				document.body.querySelector(":scope > .modal-container") !==
 				null
 			);
 		}
 
-		// Create a new ResizeObserver instance
-		const mutationObserver = new MutationObserver((entries) => {
+		const observer = new MutationObserver((entries) => {
 			for (let entry of entries) {
 				if (entry.target === document.body) {
 					if (isModalOpen()) {
-						closeAllMenus();
+						logger(`${hookName} onCloseAll`);
+						onCloseAll();
 						break;
 					}
 				}
@@ -36,54 +32,26 @@ export const useMenuEvents = (
 		});
 
 		// Start observing the body element
-		mutationObserver.observe(document.body, { childList: true });
+		observer.observe(document.body, { childList: true });
 
-		return () => mutationObserver.disconnect();
-	}, [closeAllMenus]);
+		return () => observer.disconnect();
+	}, [logger, onCloseAll]);
 
-	//Handle outside keydown
-	//The events are triggered from the Obsidian event registered in main.ts
 	React.useEffect(() => {
-		function handleOutsideKeyDown(e: KeyboardEvent) {
-			logger("Menu handleOutsideKeyDown");
-			if (topMenu?.id !== id) return;
+		function handleGlobalClick() {
+			logger(`${hookName} handleGlobalClick`);
 
-			if (e.key === "Enter") {
-				requestCloseTopMenu("enter");
-			} else if (e.key === "Escape") {
-				closeTopMenu();
-			}
+			//If the user selected text and then released outside the app
+			//we don't want to close the menu
+			// const selection = window.getSelection();
+			// if (selection && selection.toString().length > 0) return;
+
+			onCloseAll();
 		}
 
-		if (isOpen) {
-			//@ts-expect-error not a native Obsidian event
-			app.workspace.on(EVENT_GLOBAL_KEYDOWN, handleOutsideKeyDown);
-		}
+		//@ts-expect-error not a native Obsidian event
+		app.workspace.on(EVENT_GLOBAL_CLICK, handleGlobalClick);
 
-		return () =>
-			app.workspace.off(EVENT_GLOBAL_CLICK, handleOutsideKeyDown);
-	}, [isOpen, logger, closeTopMenu, requestCloseTopMenu, id, app, topMenu]);
-
-	//Handle outside clicks
-	//The events are triggered from the Obsidian event registered in main.ts
-	React.useEffect(() => {
-		function handleOutsideClick() {
-			logger("Menu handleOutsideClick");
-			if (topMenu?.id !== id) return;
-
-			//If we just highlighted text in an input and we released the mouse outside of the
-			//menu, don't close the menu
-			if (isTextHighlighted) {
-				return;
-			}
-			requestCloseTopMenu("click");
-		}
-
-		if (isOpen) {
-			//@ts-expect-error not a native Obsidian event
-			app.workspace.on(EVENT_GLOBAL_CLICK, handleOutsideClick);
-		}
-
-		return () => app.workspace.off(EVENT_GLOBAL_CLICK, handleOutsideClick);
-	}, [isOpen, logger, requestCloseTopMenu, id, topMenu, isTextHighlighted]);
+		return () => app.workspace.off(EVENT_GLOBAL_CLICK, handleGlobalClick);
+	}, [logger, onCloseAll]);
 };

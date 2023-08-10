@@ -1,39 +1,40 @@
-import React from "react";
-
 import Menu from "src/react/shared/menu";
 import { SuggestList } from "../../shared/suggest-list";
 import { TFile } from "obsidian";
+import {
+	LoomMenuCloseRequestType,
+	Position,
+} from "src/react/shared/menu/types";
 
 interface Props {
 	id: string;
 	isOpen: boolean;
-	top: number;
-	left: number;
+	triggerPosition: Position;
 	filterValue: string;
 	onItemClick: (item: TFile | null) => void;
+	onRequestClose: (type: LoomMenuCloseRequestType) => void;
+	onClose: () => void;
 }
 
-const SuggestMenu = React.forwardRef<HTMLDivElement, Props>(
-	function SuggestMenu(
-		{ id, isOpen, top, left, filterValue, onItemClick }: Props,
-		ref
-	) {
-		return (
-			<Menu
-				id={id}
-				isOpen={isOpen}
-				top={top}
-				left={left}
-				ref={ref}
-				width={275}
-			>
-				<SuggestList
-					filterValue={filterValue}
-					onItemClick={onItemClick}
-				/>
-			</Menu>
-		);
-	}
-);
-
-export default SuggestMenu;
+export default function SuggestMenu({
+	id,
+	isOpen,
+	triggerPosition,
+	filterValue,
+	onItemClick,
+	onRequestClose,
+	onClose,
+}: Props) {
+	return (
+		<Menu
+			id={id}
+			isOpen={isOpen}
+			triggerPosition={triggerPosition}
+			width={275}
+			onRequestClose={onRequestClose}
+			onClose={onClose}
+		>
+			<SuggestList filterValue={filterValue} onItemClick={onItemClick} />
+		</Menu>
+	);
+}

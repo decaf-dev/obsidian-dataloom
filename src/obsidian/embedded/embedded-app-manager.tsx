@@ -1,7 +1,5 @@
 import { App, MarkdownView, TFile, WorkspaceLeaf } from "obsidian";
 
-import { v4 as uuid } from "uuid";
-
 import {
 	findEmbeddedLoomFile,
 	getEmbeddedLoomLinkEls,
@@ -16,6 +14,7 @@ import { LoomState } from "src/shared/loom-state/types";
 import _ from "lodash";
 import { EVENT_APP_REFRESH } from "src/shared/events";
 import LoomAppWrapper from "src/react/loom-app";
+import { createAppId } from "../utils";
 
 interface EmbeddedApp {
 	id: string;
@@ -79,7 +78,7 @@ export const loadEmbeddedLoomApps = (
 export const purgeEmbeddedLoomApps = (leaves: WorkspaceLeaf[]) => {
 	embeddedApps = embeddedApps.filter((app) =>
 		leaves.find(
-			(l) => (l.view as MarkdownView).file.path === app.leafFilePath
+			(l) => (l.view as MarkdownView).file?.path === app.leafFilePath
 		)
 	);
 };
@@ -105,7 +104,7 @@ const processLinkEl = async (
 	//If the loom has already been loaded, we don't need to do anything else
 	if (hasLoadedEmbeddedLoom(linkEl)) return;
 
-	const sourcePath = (leaf.view as MarkdownView).file.path;
+	const sourcePath = (leaf.view as MarkdownView).file?.path ?? "";
 	const file = findEmbeddedLoomFile(app, linkEl, sourcePath);
 	if (!file) return;
 
@@ -119,7 +118,7 @@ const processLinkEl = async (
 	const state = deserializeLoomState(data, manifestPluginVersion);
 
 	//Store the embed in memory
-	const appId = uuid();
+	const appId = createAppId();
 	const embeddedApp: EmbeddedApp = {
 		id: appId,
 		leaf,

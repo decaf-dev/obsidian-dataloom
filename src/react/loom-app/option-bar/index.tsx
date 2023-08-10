@@ -1,5 +1,3 @@
-import React from "react";
-
 import Stack from "../../shared/stack";
 import SearchBar from "./search-bar";
 import ActiveFilterBubble from "./active-filter-bubble";
@@ -22,12 +20,8 @@ import CellNotFoundError from "src/shared/error/cell-not-found-error";
 import ColumNotFoundError from "src/shared/error/column-not-found-error";
 import { isCellTypeFilterable } from "src/react/loom-app/app/filter-by-rules";
 import { ColumnWithMarkdown } from "./types";
-import { MenuLevel } from "src/shared/menu/types";
-import { useMenu } from "src/shared/menu/hooks";
-import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
 import { isSmallScreenSize } from "src/shared/render/utils";
-import { useMenuState } from "../menu-provider";
-import { usePrevious } from "src/shared/hooks";
+import { useMenu } from "../../shared/menu/hooks";
 
 import "./styles.css";
 
@@ -70,70 +64,48 @@ export default function OptionBar({
 		return column.sortDir !== SortDir.NONE;
 	});
 
-	const { replaceMenu } = useMenuState();
 	const {
-		menu: moreMenu,
-		isMenuOpen: isMoreMenuOpen,
-		menuRef: moreMenuRef,
-		closeTopMenu,
-	} = useMenu(MenuLevel.ONE);
-	const {
+		menuId: moreMenuId,
 		triggerRef: moreMenuTriggerRef,
 		triggerPosition: moreMenuTriggerPosition,
-	} = useMenuTriggerPosition();
+		isOpen: isMoreMenuOpen,
+		onOpen: onMoreMenuOpen,
+		onRequestClose: onMoreMenuRequestClose,
+		onClose: onMoreMenuClose,
+	} = useMenu();
 
 	const {
-		menu: toggleColumnMenu,
-		isMenuOpen: isToggleColumnMenuOpen,
-		menuRef: toggleColumnMenuRef,
-	} = useMenu(MenuLevel.ONE);
-	const {
-		triggerRef: toggleColumnMenuTriggerRef,
+		menuId: toggleMenuId,
+		triggerRef: toggleMenuTriggerRef,
 		triggerPosition: toggleMenuTriggerPosition,
-	} = useMenuTriggerPosition();
+		isOpen: isToggleMenuOpen,
+		onOpen: onToggleMenuOpen,
+		onRequestClose: onToggleMenuRequestClose,
+		onClose: onToggleMenuClose,
+	} = useMenu();
 
 	const {
-		menu: filterMenu,
-		isMenuOpen: isFilterMenuOpen,
-		menuRef: filterMenuRef,
-	} = useMenu(MenuLevel.ONE);
-
-	const {
+		menuId: filterMenuId,
 		triggerRef: filterMenuTriggerRef,
 		triggerPosition: filterMenuTriggerPosition,
-	} = useMenuTriggerPosition();
+		isOpen: isFilterMenuOpen,
+		onOpen: onFilterMenuOpen,
+		onRequestClose: onFilterMenuRequestClose,
+		onClose: onFilterMenuClose,
+	} = useMenu();
 
-	useShiftMenu(moreMenuTriggerRef, moreMenuRef, isMoreMenuOpen, {
-		openDirection: "left",
-	});
-	useShiftMenu(filterMenuTriggerRef, filterMenuRef, isFilterMenuOpen, {
-		openDirection: "left",
-	});
-	useShiftMenu(
-		toggleColumnMenuTriggerRef,
-		toggleColumnMenuRef,
-		isToggleColumnMenuOpen,
-		{
-			openDirection: "left",
-		}
-	);
-
-	const previousLength = usePrevious(filterRules.length);
-	React.useEffect(() => {
-		if (previousLength !== undefined) {
-			if (previousLength < filterRules.length) {
-				if (filterMenuRef.current) {
-					//Scroll to the bottom if we're adding a new rule
-					filterMenuRef.current.scrollTop =
-						filterMenuRef.current.scrollHeight;
-				}
-			}
-		}
-	}, [previousLength, filterRules.length, filterMenuRef]);
-
-	function handleMenuCloseClick(shouldFocusTrigger: boolean) {
-		closeTopMenu({ shouldFocusTrigger });
-	}
+	// const previousLength = usePrevious(filterRules.length);
+	// React.useEffect(() => {
+	// 	if (previousLength !== undefined) {
+	// 		if (previousLength < filterRules.length) {
+	// 			if (filterMenuRef.current) {
+	// 				//Scroll to the bottom if we're adding a new rule
+	// 				filterMenuRef.current.scrollTop =
+	// 					filterMenuRef.current.scrollHeight;
+	// 			}
+	// 		}
+	// 	}
+	// }, [previousLength, filterRules.length, filterMenuRef]);
 
 	const activeRules = filterRules.filter((rule) => rule.isEnabled);
 
@@ -197,72 +169,62 @@ export default function OptionBar({
 						>
 							<SearchBar />
 							{isSmallScreen === false && (
-								<div ref={filterMenuTriggerRef}>
-									<MenuButton menu={filterMenu}>
-										Filter
-									</MenuButton>
-								</div>
+								<MenuButton
+									ref={filterMenuTriggerRef}
+									onOpen={onFilterMenuOpen}
+								>
+									Filter
+								</MenuButton>
 							)}
 							{isSmallScreen === false && (
-								<div ref={toggleColumnMenuTriggerRef}>
-									<MenuButton menu={toggleColumnMenu}>
-										Toggle
-									</MenuButton>
-								</div>
-							)}
-							<div ref={moreMenuTriggerRef}>
 								<MenuButton
-									menu={moreMenu}
-									icon={<Icon lucideId="more-vertical" />}
-								/>
-							</div>
+									ref={toggleMenuTriggerRef}
+									onOpen={onToggleMenuOpen}
+								>
+									Toggle
+								</MenuButton>
+							)}
+							<MenuButton
+								ref={moreMenuTriggerRef}
+								icon={<Icon lucideId="more-vertical" />}
+								onOpen={onMoreMenuOpen}
+							/>
 						</Stack>
 					</Stack>
 				</Padding>
 			</div>
 			<MoreMenu
-				id={moreMenu.id}
-				ref={moreMenuRef}
+				id={moreMenuId}
 				isOpen={isMoreMenuOpen}
-				top={moreMenuTriggerPosition.top}
-				left={moreMenuTriggerPosition.left}
+				triggerPosition={moreMenuTriggerPosition}
 				numFrozenColumns={numFrozenColumns}
 				onFrozenColumnsChange={onFrozenColumnsChange}
-				onCloseClick={handleMenuCloseClick}
-				onFilterClick={() => replaceMenu(filterMenu)}
-				onToggleColumnClick={() => replaceMenu(toggleColumnMenu)}
+				onFilterClick={() => onFilterMenuOpen()}
+				onToggleColumnClick={() => onToggleMenuOpen()}
+				onRequestClose={onMoreMenuRequestClose}
+				onClose={onMoreMenuClose}
 			/>
 			<ToggleColumnMenu
-				id={toggleColumnMenu.id}
-				ref={toggleColumnMenuRef}
-				top={
+				id={toggleMenuId}
+				isOpen={isToggleMenuOpen}
+				triggerPosition={
 					isSmallScreen
-						? moreMenuTriggerPosition.top
-						: toggleMenuTriggerPosition.top
+						? moreMenuTriggerPosition
+						: toggleMenuTriggerPosition
 				}
-				left={
-					isSmallScreen
-						? moreMenuTriggerPosition.left
-						: toggleMenuTriggerPosition.left
-				}
-				isOpen={isToggleColumnMenuOpen}
 				columns={columnsWithMarkdown}
 				onToggle={onColumnToggle}
+				onRequestClose={onToggleMenuRequestClose}
+				onClose={onToggleMenuClose}
 			/>
 			<FilterMenu
-				id={filterMenu.id}
-				ref={filterMenuRef}
-				top={
-					isSmallScreen
-						? moreMenuTriggerPosition.top
-						: filterMenuTriggerPosition.top
-				}
-				left={
-					isSmallScreen
-						? moreMenuTriggerPosition.left
-						: filterMenuTriggerPosition.left
-				}
+				id={filterMenuId}
 				isOpen={isFilterMenuOpen}
+				triggerPosition={
+					isSmallScreen
+						? moreMenuTriggerPosition
+						: filterMenuTriggerPosition
+				}
 				columns={filterableColumns}
 				filterRules={filterRules}
 				onTextChange={onRuleTextChange}
@@ -272,6 +234,8 @@ export default function OptionBar({
 				onTagsChange={onRuleTagsChange}
 				onAddClick={onRuleAddClick}
 				onToggle={onRuleToggle}
+				onRequestClose={onFilterMenuRequestClose}
+				onClose={onFilterMenuClose}
 			/>
 		</>
 	);

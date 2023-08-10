@@ -2,13 +2,10 @@ import React from "react";
 
 import { TFile } from "obsidian";
 
-import { useCompare, useInputSelection } from "src/shared/hooks";
-import { useOverflow } from "src/shared/spacing/hooks";
-
-import { useMenu } from "src/shared/menu/hooks";
-import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
-import { MenuCloseRequest, MenuLevel } from "src/shared/menu/types";
 import SuggestMenu from "./suggest-menu";
+
+import { useInputSelection } from "src/shared/hooks";
+import { useOverflow } from "src/shared/spacing/hooks";
 import {
 	addClosingBracket,
 	doubleBracketsInnerReplace,
@@ -16,33 +13,38 @@ import {
 	isSurroundedByDoubleBrackets,
 	removeClosingBracket,
 } from "./utils";
-
 import { getWikiLinkText } from "src/shared/link/link-utils";
 import { useLogger } from "src/shared/logger";
+import { LoomMenuCloseRequest, LoomMenuLevel } from "../../shared/menu/types";
+import { useMenu, useMenuOperations } from "../../shared/menu/hooks";
 
 import "./styles.css";
 
 interface Props {
-	menuCloseRequest: MenuCloseRequest | null;
+	closeRequest: LoomMenuCloseRequest | null;
 	value: string;
 	shouldWrapOverflow: boolean;
 	onChange: (value: string) => void;
-	onMenuClose: () => void;
+	onClose: () => void;
 }
 
 export default function TextCellEdit({
 	shouldWrapOverflow,
-	menuCloseRequest,
+	closeRequest,
 	value,
 	onChange,
-	onMenuClose,
+	onClose,
 }: Props) {
-	const { menu, isMenuOpen, menuRef, openMenu, closeAllMenus, closeTopMenu } =
-		useMenu(MenuLevel.TWO);
-	const { triggerRef, triggerPosition } = useMenuTriggerPosition();
-	useShiftMenu(triggerRef, menuRef, isMenuOpen, {
-		topOffset: 35,
-	});
+	const { onCloseAll } = useMenuOperations();
+	const {
+		menuId: suggestMenuId,
+		triggerRef: suggestMenuTriggerRef,
+		triggerPosition: suggestMenuTriggerPosition,
+		isOpen: isSuggestMenuOpen,
+		onOpen: onSuggestMenuOpen,
+		onRequestClose: onSuggestMenuRequestClose,
+		onClose: onSuggestMenuClose,
+	} = useMenu({ level: LoomMenuLevel.TWO });
 
 	const [localValue, setLocalValue] = React.useState(value);
 	const inputRef = React.useRef<HTMLTextAreaElement | null>(null);
@@ -72,23 +74,12 @@ export default function TextCellEdit({
 
 	const logger = useLogger();
 
-	const hasCloseRequestTimeChanged = useCompare(
-		menuCloseRequest?.requestTime
-	);
-
 	React.useEffect(() => {
-		if (hasCloseRequestTimeChanged && menuCloseRequest !== null) {
+		if (closeRequest !== null) {
 			if (localValue !== value) onChange(localValue);
-			onMenuClose();
+			onClose();
 		}
-	}, [
-		value,
-		localValue,
-		hasCloseRequestTimeChanged,
-		menuCloseRequest,
-		onMenuClose,
-		onChange,
-	]);
+	}, [value, localValue, closeRequest, onClose, onChange]);
 
 	function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
 		const el = e.target as HTMLTextAreaElement;
@@ -97,10 +88,10 @@ export default function TextCellEdit({
 		if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
 			const cursorPosition = el.selectionStart;
 
-			if (isMenuOpen) {
+			if (isSuggestMenuOpen) {
 				//Close menu if cursor is outside of double brackets
 				if (!isSurroundedByDoubleBrackets(value, cursorPosition))
-					closeTopMenu();
+					onClose();
 			}
 
 			if (inputRef.current) {
@@ -113,7 +104,7 @@ export default function TextCellEdit({
 			//If we're pressing the shift key, don't propagate the event
 			//this will stop the menu from closing. And allow the default event,
 			//which is to insert a new line
-			if (e.shiftKey && !isMenuOpen) {
+			if (e.shiftKey && !isSuggestMenuOpen) {
 				e.stopPropagation();
 				return;
 			}
@@ -143,7 +134,7 @@ export default function TextCellEdit({
 			if (
 				isSurroundedByDoubleBrackets(newValue, inputEl.selectionStart)
 			) {
-				if (!isMenuOpen) openMenu(menu);
+				onSuggestMenuOpen();
 			}
 		}
 
@@ -162,7 +153,7 @@ export default function TextCellEdit({
 
 			onChange(newValue);
 		}
-		closeAllMenus();
+		onCloseAll();
 	}
 
 	const overflowClassName = useOverflow(shouldWrapOverflow);
@@ -171,7 +162,10 @@ export default function TextCellEdit({
 
 	return (
 		<>
-			<div className="dataloom-text-cell-edit" ref={triggerRef}>
+			<div
+				className="dataloom-text-cell-edit"
+				ref={suggestMenuTriggerRef}
+			>
 				<textarea
 					className={overflowClassName}
 					autoFocus
@@ -185,13 +179,13 @@ export default function TextCellEdit({
 				/>
 			</div>
 			<SuggestMenu
-				id={menu.id}
-				ref={menuRef}
-				isOpen={isMenuOpen}
-				top={triggerPosition.top}
-				left={triggerPosition.left}
+				id={suggestMenuId}
+				isOpen={isSuggestMenuOpen}
+				triggerPosition={suggestMenuTriggerPosition}
 				filterValue={filterValue}
 				onItemClick={handleSuggestItemClick}
+				onRequestClose={onSuggestMenuRequestClose}
+				onClose={onSuggestMenuClose}
 			/>
 		</>
 	);

@@ -1,9 +1,5 @@
-import { LoomMenu } from "./types";
-
 export const focusMenuElement = (menuId: string) => {
-	const el = document.querySelector(
-		`[data-menu-id="${menuId}"]`
-	) as HTMLElement | null;
+	const el = document.querySelector(`#${menuId}`) as HTMLElement | null;
 	if (el) {
 		el.focus();
 		addFocusVisibleClass(el);
@@ -22,24 +18,21 @@ export const removeFocusVisibleClass = () => {
 	if (el) el.classList.remove("dataloom-focus-visible");
 };
 
-export const getFocusableLayerEl = (
-	appId: string,
-	topMenu: LoomMenu | null
-): HTMLElement | null => {
-	//Get the parent element
-	const appEl = document.querySelector(`.dataloom-app[data-id="${appId}"]`);
-	if (!appEl) return null;
-
-	let layerEl = appEl;
-	if (topMenu) {
-		const { id } = topMenu;
-
-		const menuEl = document.querySelector(
-			`.dataloom-menu[data-id="${id}"]`
-		);
-		if (menuEl) layerEl = menuEl;
-	}
-	return layerEl as HTMLElement;
+export const getFocusableLayerEl = (appId: string): HTMLElement | null => {
+	// //Get the parent element
+	// const appEl = document.querySelector(`#${appId}`);
+	// if (!appEl) return null;
+	// let layerEl = appEl;
+	// if (topMenu) {
+	// 	const { id } = topMenu;
+	// 	const menuEl = document.querySelector(
+	// 		`.dataloom-menu[data-id="${id}"]`
+	// 	);
+	// 	if (menuEl) layerEl = menuEl;
+	// }
+	// return layerEl as HTMLElement;
+	console.log(appId);
+	return null;
 };
 
 export const focusNextElement = (

@@ -3,6 +3,7 @@ import Icon from "src/react/shared/icon";
 import Padding from "src/react/shared/padding";
 import Stack from "src/react/shared/stack";
 import Submenu from "src/react/shared/submenu";
+import Text from "src/react/shared/text";
 import { useAppSelector } from "src/redux/hooks";
 
 interface Props {
@@ -33,9 +34,9 @@ export default function FrozenColumnsSubmenu({
 	}
 
 	return (
-		<Submenu title="Freeze columns" onBackClick={onBackClick}>
+		<Submenu title="Freeze" onBackClick={onBackClick}>
 			<Padding py="sm">
-				<Stack isHorizontal spacing="md">
+				<Stack isHorizontal spacing="sm">
 					<Button
 						icon={<Icon lucideId="rotate-ccw" />}
 						ariaLabel="Restore default"
@@ -45,13 +46,15 @@ export default function FrozenColumnsSubmenu({
 					/>
 					<Button
 						icon={<Icon lucideId="minus" />}
-						ariaLabel="Subtract"
+						ariaLabel="Subtract column"
 						onClick={() => handleMinusClick()}
 					/>
-					<div>{numFrozenColumns}</div>
+					<Padding px="sm">
+						<Text value={numFrozenColumns} />
+					</Padding>
 					<Button
 						icon={<Icon lucideId="plus" />}
-						ariaLabel="Add"
+						ariaLabel="Add column"
 						onClick={() => handlePlusClick()}
 					/>
 				</Stack>

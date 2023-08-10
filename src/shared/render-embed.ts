@@ -12,7 +12,7 @@ const renderText = async (leaf: WorkspaceLeaf, value: string) => {
 			await MarkdownRenderer.renderMarkdown(
 				value,
 				div,
-				view.file.path,
+				view.file?.path ?? "",
 				view
 			);
 		}

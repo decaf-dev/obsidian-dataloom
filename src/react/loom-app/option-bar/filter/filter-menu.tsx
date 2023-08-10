@@ -1,5 +1,3 @@
-import React from "react";
-
 import Menu from "src/react/shared/menu";
 import Padding from "src/react/shared/padding";
 import Stack from "src/react/shared/stack";
@@ -12,11 +10,14 @@ import ColumNotFoundError from "src/shared/error/column-not-found-error";
 import { FilterRule, FilterType } from "src/shared/loom-state/types";
 import { ColumnWithMarkdown } from "../types";
 import { isSmallScreenSize } from "src/shared/render/utils";
+import {
+	LoomMenuCloseRequestType,
+	Position,
+} from "src/react/shared/menu/types";
 
 interface Props {
 	id: string;
-	top: number;
-	left: number;
+	triggerPosition: Position;
 	isOpen: boolean;
 	columns: ColumnWithMarkdown[];
 	filterRules: FilterRule[];
@@ -27,34 +28,35 @@ interface Props {
 	onTextChange: (id: string, value: string) => void;
 	onDeleteClick: (id: string) => void;
 	onTagsChange: (id: string, value: string[]) => void;
+	onRequestClose: (type: LoomMenuCloseRequestType) => void;
+	onClose: () => void;
 }
 
-const FilterMenu = React.forwardRef<HTMLDivElement, Props>(function FilterMenu(
-	{
-		id,
-		top,
-		left,
-		isOpen,
-		columns,
-		filterRules,
-		onAddClick,
-		onToggle,
-		onColumnChange,
-		onFilterTypeChange,
-		onTextChange,
-		onDeleteClick,
-		onTagsChange,
-	}: Props,
-	ref
-) {
+export default function FilterMenu({
+	id,
+	triggerPosition,
+	isOpen,
+	columns,
+	filterRules,
+	onAddClick,
+	onToggle,
+	onColumnChange,
+	onFilterTypeChange,
+	onTextChange,
+	onDeleteClick,
+	onTagsChange,
+	onRequestClose,
+	onClose,
+}: Props) {
 	return (
 		<Menu
-			isOpen={isOpen}
 			id={id}
-			top={top}
-			left={left}
+			isOpen={isOpen}
+			triggerPosition={triggerPosition}
+			openDirection="bottom-left"
 			maxHeight={255}
-			ref={ref}
+			onRequestClose={onRequestClose}
+			onClose={onClose}
 		>
 			<div
 				className="dataloom-filter-menu"
@@ -116,6 +118,4 @@ const FilterMenu = React.forwardRef<HTMLDivElement, Props>(function FilterMenu(
 			</div>
 		</Menu>
 	);
-});
-
-export default FilterMenu;
+}

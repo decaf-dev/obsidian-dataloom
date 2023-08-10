@@ -1,18 +1,18 @@
+import React from "react";
+
 import Divider from "src/react/shared/divider";
 import MenuItem from "src/react/shared/menu-item";
 import Padding from "src/react/shared/padding";
 import Stack from "src/react/shared/stack";
+import Switch from "src/react/shared/switch";
+import Flex from "src/react/shared/flex";
+import Text from "src/react/shared/text";
+import Input from "src/react/shared/input";
+
 import { CellType, SortDir } from "src/shared/loom-state/types";
 import { SubmenuType } from "./types";
 import { useInputSelection } from "src/shared/hooks";
 import { getDisplayNameForCellType } from "src/shared/loom-state/type-display-names";
-import React from "react";
-import Flex from "src/react/shared/flex";
-import Switch from "src/react/shared/switch";
-import Text from "src/react/shared/text";
-import { MenuCloseRequest } from "src/shared/menu/types";
-
-import Input from "src/react/shared/input";
 
 interface Props {
 	canDeleteColumn: boolean;
@@ -22,7 +22,6 @@ interface Props {
 	cellId: string;
 	columnType: CellType;
 	columnSortDir: SortDir;
-	menuCloseRequest: MenuCloseRequest | null;
 	onColumnNameChange: (value: string) => void;
 	onSortClick: (value: SortDir) => void;
 	onSubmenuChange: (value: SubmenuType) => void;
@@ -47,6 +46,12 @@ export default function BaseMenu({
 }: Props) {
 	const inputRef = React.useRef<HTMLInputElement | null>(null);
 	useInputSelection(inputRef, columnName);
+
+	React.useEffect(() => {
+		if (inputRef.current) {
+			inputRef.current.focus();
+		}
+	}, [inputRef]);
 
 	function handleInputChange(inputValue: string) {
 		onColumnNameChange(inputValue);

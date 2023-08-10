@@ -3,13 +3,11 @@ import MenuButton from "../../shared/menu-button";
 import RowMenu from "./row-menu";
 import Padding from "src/react/shared/padding";
 
-import { useMenu } from "src/shared/menu/hooks";
-import { MenuLevel } from "src/shared/menu/types";
-import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
-
 import { useDragContext } from "src/shared/dragging/drag-context";
 import { dropDrag, getRowId } from "src/shared/dragging/utils";
 import { useLoomState } from "src/react/loom-app/loom-state-provider";
+
+import { useMenu } from "../../shared/menu/hooks";
 
 import "./styles.css";
 
@@ -26,11 +24,15 @@ export default function RowOptions({
 	onInsertAboveClick,
 	onInsertBelowClick,
 }: Props) {
-	const { menu, isMenuOpen, menuRef, closeTopMenu } = useMenu(MenuLevel.ONE);
-	const { triggerRef, triggerPosition } = useMenuTriggerPosition();
-	useShiftMenu(triggerRef, menuRef, isMenuOpen, {
-		openDirection: "right",
-	});
+	const {
+		menuId,
+		triggerRef,
+		triggerPosition,
+		isOpen,
+		onOpen,
+		onClose,
+		onRequestClose,
+	} = useMenu();
 
 	const { dragData, touchDropZone, setDragData, setTouchDropZone } =
 		useDragContext();
@@ -38,17 +40,17 @@ export default function RowOptions({
 
 	function handleDeleteClick() {
 		onDeleteClick(rowId);
-		closeTopMenu();
+		onClose();
 	}
 
 	function handleInsertAboveClick() {
 		onInsertAboveClick(rowId);
-		closeTopMenu();
+		onClose();
 	}
 
 	function handleInsertBelowClick() {
 		onInsertBelowClick(rowId);
-		closeTopMenu();
+		onClose();
 	}
 
 	function handleMouseDown(e: React.MouseEvent) {
@@ -174,7 +176,6 @@ export default function RowOptions({
 			<div className="dataloom-row-options">
 				<Padding p="sm">
 					<div
-						ref={triggerRef}
 						className="dataloom-row-options__container"
 						onTouchStart={handleTouchStart}
 						onTouchMove={handleTouchMove}
@@ -182,23 +183,24 @@ export default function RowOptions({
 						onTouchCancel={handleTouchCancel}
 					>
 						<MenuButton
-							menu={menu}
+							ref={triggerRef}
 							icon={<Icon lucideId="grip-vertical" />}
 							ariaLabel="Drag to move or click to open"
 							onMouseDown={handleMouseDown}
+							onOpen={onOpen}
 						/>
 					</div>
 				</Padding>
 			</div>
 			<RowMenu
-				id={menu.id}
-				ref={menuRef}
-				isOpen={isMenuOpen}
-				top={triggerPosition.top}
-				left={triggerPosition.left}
+				id={menuId}
+				isOpen={isOpen}
+				triggerPosition={triggerPosition}
 				onDeleteClick={handleDeleteClick}
 				onInsertAboveClick={handleInsertAboveClick}
 				onInsertBelowClick={handleInsertBelowClick}
+				onRequestClose={onRequestClose}
+				onClose={onClose}
 			/>
 		</>
 	);

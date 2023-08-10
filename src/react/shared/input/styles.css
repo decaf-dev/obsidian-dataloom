@@ -31,3 +31,8 @@
 .dataloom-input--error:focus {
     outline: 2px solid var(--background-modifier-error) !important;
 }
+
+.dataloom-input--default-outline {
+    outline: 2px solid var(--background-modifier-border-focus) !important;
+    outline-offset: -2px;
+}

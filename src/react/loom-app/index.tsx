@@ -8,8 +8,8 @@ import MountProvider from "./mount-provider";
 import App from "./app";
 
 import DragProvider from "src/shared/dragging/drag-context";
-import MenuProvider from "src/react/loom-app/menu-provider";
 import { LoomState } from "src/shared/loom-state/types";
+import { RecoilRoot } from "recoil";
 
 interface Props {
 	app: ObsidianApp;
@@ -45,11 +45,11 @@ export default function LoomApp({
 					initialState={loomState}
 					onSaveState={onSaveState}
 				>
-					<MenuProvider>
-						<DragProvider>
+					<DragProvider>
+						<RecoilRoot>
 							<App />
-						</DragProvider>
-					</MenuProvider>
+						</RecoilRoot>
+					</DragProvider>
 				</LoomStateProvider>
 			</Provider>
 		</MountProvider>
