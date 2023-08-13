@@ -96,7 +96,6 @@ const MenuTrigger = React.forwardRef<HTMLDivElement, Props>(
 					const tag = (e.target as HTMLElement).tagName;
 					if (tag === "A") return;
 					onOpen();
-					console.log("HERE!");
 					return;
 				}
 			}

@@ -33,14 +33,8 @@ export const useMenu = ({
 	 */
 	const onOpen = React.useCallback(() => {
 		setOpenMenus((prevMenus) => {
-			if (prevMenus.length !== 0) {
-				const topMenu = prevMenus[prevMenus.length - 1];
-				if (topMenu.level <= level) return prevMenus;
-			}
-
 			const found = prevMenus.find((m) => m.id === menu.id);
 			if (found) return prevMenus;
-
 			return [...prevMenus, menu];
 		});
 	}, [menu, setOpenMenus, shouldRequestOnClose]);
