@@ -8,11 +8,13 @@ import {
 } from "src/shared/keyboard-event";
 import { useLogger } from "src/shared/logger";
 import { useMenuOperations } from "../menu/hooks";
+import { LoomMenu } from "../menu/types";
 
 interface Props {
+	menu: LoomMenu;
 	isButton?: boolean;
 	/** If the trigger should open a menu */
-	canOpen?: boolean;
+	shouldOpenOnTrigger?: boolean;
 	/** Should the trigger be 100% width and 100% height of the parent */
 	isCell?: boolean;
 	children: React.ReactNode;
@@ -26,9 +28,10 @@ interface Props {
 const MenuTrigger = React.forwardRef<HTMLDivElement, Props>(
 	(
 		{
+			menu,
 			isButton = false,
 			isCell = false,
-			canOpen = true,
+			shouldOpenOnTrigger = true,
 			children,
 			onEnterDown,
 			onBackspaceDown,
@@ -39,7 +42,7 @@ const MenuTrigger = React.forwardRef<HTMLDivElement, Props>(
 		ref
 	) => {
 		const logger = useLogger();
-		const { onRequestCloseTop, isMenuOpen } = useMenuOperations();
+		const { onRequestCloseTop, canOpen } = useMenuOperations();
 
 		function handleKeyDown(e: React.KeyboardEvent) {
 			logger("MenuTrigger handleKeyDown");
@@ -52,13 +55,13 @@ const MenuTrigger = React.forwardRef<HTMLDivElement, Props>(
 				e.preventDefault();
 
 				//Is the trigger isn't active, return
-				if (!canOpen) return;
-
-				if (!isMenuOpen()) {
-					const tag = (e.target as HTMLElement).tagName;
-					if (tag === "A") return;
-					onOpen();
-					return;
+				if (shouldOpenOnTrigger) {
+					if (canOpen(menu)) {
+						const tag = (e.target as HTMLElement).tagName;
+						if (tag === "A") return;
+						onOpen();
+						return;
+					}
 				}
 
 				onRequestCloseTop();
@@ -88,11 +91,13 @@ const MenuTrigger = React.forwardRef<HTMLDivElement, Props>(
 			e.stopPropagation();
 			onClick?.(e);
 
-			if (canOpen) {
-				if (!isMenuOpen()) {
+			if (shouldOpenOnTrigger) {
+				if (canOpen(menu)) {
 					const tag = (e.target as HTMLElement).tagName;
 					if (tag === "A") return;
 					onOpen();
+					console.log("HERE!");
+					return;
 				}
 			}
 

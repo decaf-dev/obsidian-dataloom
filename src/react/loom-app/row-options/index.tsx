@@ -25,7 +25,7 @@ export default function RowOptions({
 	onInsertBelowClick,
 }: Props) {
 	const {
-		menuId,
+		menu,
 		triggerRef,
 		triggerPosition,
 		isOpen,
@@ -184,6 +184,7 @@ export default function RowOptions({
 					>
 						<MenuButton
 							ref={triggerRef}
+							menu={menu}
 							icon={<Icon lucideId="grip-vertical" />}
 							ariaLabel="Drag to move or click to open"
 							onMouseDown={handleMouseDown}
@@ -193,7 +194,7 @@ export default function RowOptions({
 				</Padding>
 			</div>
 			<RowMenu
-				id={menuId}
+				id={menu.id}
 				isOpen={isOpen}
 				triggerPosition={triggerPosition}
 				onDeleteClick={handleDeleteClick}

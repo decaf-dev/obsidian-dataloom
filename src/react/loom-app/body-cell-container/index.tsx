@@ -137,7 +137,7 @@ export default function BodyCellContainer({
 		columnType === CellType.DATE;
 
 	const {
-		menuId,
+		menu,
 		triggerRef,
 		triggerPosition,
 		closeRequest,
@@ -293,11 +293,12 @@ export default function BodyCellContainer({
 		<>
 			<MenuTrigger
 				ref={triggerRef}
+				menu={menu}
 				isCell
 				onClick={handleMenuTriggerClick}
 				onEnterDown={handleMenuTriggerEnterDown}
 				onBackspaceDown={handleMenuTriggerBackspaceDown}
-				canOpen={
+				shouldOpenOnTrigger={
 					columnType !== CellType.CHECKBOX &&
 					columnType !== CellType.CREATION_TIME &&
 					columnType !== CellType.LAST_EDITED_TIME
@@ -382,7 +383,7 @@ export default function BodyCellContainer({
 				</div>
 			</MenuTrigger>
 			<Menu
-				id={menuId}
+				id={menu.id}
 				hideBorder={
 					columnType === CellType.TEXT ||
 					columnType === CellType.CURRENCY ||

@@ -81,7 +81,7 @@ export default function HeaderCellContainer({
 	onHideClick,
 }: Props) {
 	const {
-		menuId,
+		menu,
 		triggerRef,
 		triggerPosition,
 		isOpen,
@@ -122,8 +122,9 @@ export default function HeaderCellContainer({
 		<>
 			<MenuTrigger
 				ref={triggerRef}
+				menu={menu}
 				isCell
-				canOpen={resizingColumnId === null}
+				shouldOpenOnTrigger={resizingColumnId === null}
 				onOpen={onOpen}
 			>
 				<div
@@ -151,7 +152,7 @@ export default function HeaderCellContainer({
 				isOpen={isOpen}
 				closeRequest={closeRequest}
 				triggerPosition={triggerPosition}
-				id={menuId}
+				id={menu.id}
 				aspectRatio={aspectRatio}
 				horizontalPadding={horizontalPadding}
 				verticalPadding={verticalPadding}

@@ -1,7 +1,12 @@
 import React from "react";
 
-import { LoomMenuCloseRequestType, LoomMenuLevel, Position } from "./types";
-import { createCloseRequest, createMenu, createMenuId } from "./factory";
+import {
+	LoomMenu,
+	LoomMenuCloseRequestType,
+	LoomMenuLevel,
+	Position,
+} from "./types";
+import { createCloseRequest, createMenu } from "./factory";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { menuCloseRequestsAtom, openMenusAtom } from "./atom/atoms";
 import {
@@ -16,12 +21,11 @@ export const useMenu = ({
 	level = LoomMenuLevel.ONE,
 	shouldRequestOnClose = false,
 } = {}) => {
-	const [id] = React.useState(createMenuId());
-	const isOpen = useRecoilValue(isMenuOpenSelector(id));
-	const closeRequest = useRecoilValue(closeRequestSelector(id));
+	const [menu] = React.useState(createMenu(level, shouldRequestOnClose));
+	const isOpen = useRecoilValue(isMenuOpenSelector(menu.id));
+	const closeRequest = useRecoilValue(closeRequestSelector(menu.id));
 	const setOpenMenus = useSetRecoilState(openMenusAtom);
 	const setCloseRequests = useSetRecoilState(menuCloseRequestsAtom);
-
 	const { ref, position } = usePosition();
 
 	/**
@@ -34,32 +38,32 @@ export const useMenu = ({
 				if (topMenu.level <= level) return prevMenus;
 			}
 
-			const found = prevMenus.find((m) => m.id === id);
+			const found = prevMenus.find((m) => m.id === menu.id);
 			if (found) return prevMenus;
 
-			const menu = createMenu(id, level, shouldRequestOnClose);
 			return [...prevMenus, menu];
 		});
-	}, [id, level, setOpenMenus, shouldRequestOnClose]);
+	}, [menu, setOpenMenus, shouldRequestOnClose]);
 
 	/**
 	 * Removes the menu from the open menus list.
 	 */
 	const onClose = React.useCallback(
 		(shouldFocusTrigger = true) => {
+			//Add timeout to prevent flash of menu when closing
 			setTimeout(() => {
 				setOpenMenus((prevMenus) =>
-					prevMenus.filter((menu) => menu.id !== id)
+					prevMenus.filter((menu) => menu.id !== menu.id)
 				);
 				setCloseRequests((prevRequests) =>
-					prevRequests.filter((request) => request.menuId !== id)
+					prevRequests.filter((request) => request.menuId !== menu.id)
 				);
 				if (shouldFocusTrigger && ref.current) {
 					ref.current.focus();
 				}
 			}, 1);
 		},
-		[id, shouldRequestOnClose, setOpenMenus, setCloseRequests]
+		[menu, setOpenMenus, setCloseRequests]
 	);
 
 	/**
@@ -68,21 +72,25 @@ export const useMenu = ({
 	const onRequestClose = React.useCallback(
 		(type: LoomMenuCloseRequestType = "save-and-close") => {
 			if (shouldRequestOnClose) {
-				const request = createCloseRequest(id, type);
+				const request = createCloseRequest(menu.id, type);
 				setCloseRequests((prevRequests) => [...prevRequests, request]);
 			} else {
 				onClose();
 			}
 		},
-		[id, shouldRequestOnClose, setCloseRequests]
+		[menu, setCloseRequests]
 	);
 
+	/**
+	 * When the menu is unmounted, remove it from the open menus list.
+	 * This is necessary for support for the virtualized list
+	 */
 	React.useEffect(() => {
 		return () => onClose(false);
 	}, []);
 
 	return {
-		menuId: id,
+		menu,
 		triggerRef: ref,
 		triggerPosition: position,
 		isOpen,
@@ -99,9 +107,14 @@ export const useMenuOperations = () => {
 	const setOpenMenus = useSetRecoilState(openMenusAtom);
 	const setCloseRequests = useSetRecoilState(menuCloseRequestsAtom);
 
-	const isMenuOpen = React.useCallback(() => {
-		return openMenus.length !== 0;
-	}, [openMenus]);
+	const canOpen = React.useCallback(
+		(menu: LoomMenu) => {
+			if (topMenu === null) return true;
+			if (menu.level > topMenu.level) return true;
+			return false;
+		},
+		[topMenu]
+	);
 
 	const onCloseAll = React.useCallback(() => {
 		setOpenMenus((prevState) =>
@@ -127,7 +140,7 @@ export const useMenuOperations = () => {
 	}, [topMenu]);
 
 	return {
-		isMenuOpen,
+		canOpen,
 		topMenu,
 		onCloseAll,
 		onRequestCloseTop,
