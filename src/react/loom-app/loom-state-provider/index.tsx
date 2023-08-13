@@ -23,8 +23,8 @@ const LoomStateContext = React.createContext<{
 	setResizingColumnId: React.Dispatch<React.SetStateAction<string | null>>;
 	setSearchText: React.Dispatch<React.SetStateAction<string>>;
 	doCommand: (command: LoomStateCommand) => void;
-	commandUndo: () => void;
-	commandRedo: () => void;
+	onUndo: () => void;
+	onRedo: () => void;
 } | null>(null);
 
 export const useLoomState = () => {
@@ -177,8 +177,8 @@ export default function LoomStateProvider({
 				loomState,
 				setLoomState,
 				doCommand,
-				commandRedo: redo,
-				commandUndo: undo,
+				onRedo: redo,
+				onUndo: undo,
 				isSearchBarVisible,
 				searchText,
 				resizingColumnId,

@@ -1,5 +1,14 @@
 import React from "react";
 
+import Icon from "../../shared/icon";
+import Stack from "../../shared/stack";
+import MenuTrigger from "src/react/shared/menu-trigger";
+import ResizeContainer from "./column-resize";
+import HeaderMenu from "../header-cell-edit";
+
+import { useCompare, useForceUpdate } from "src/shared/hooks";
+import { getIconIdForCellType } from "src/react/shared/icon/utils";
+import { useMenu } from "../../shared/menu/hooks";
 import { numToPx } from "src/shared/conversion";
 import {
 	AspectRatio,
@@ -9,18 +18,6 @@ import {
 	PaddingSize,
 	SortDir,
 } from "src/shared/loom-state/types";
-import { useMenu } from "src/shared/menu/hooks";
-import { MenuLevel } from "src/shared/menu/types";
-
-import Icon from "../../shared/icon";
-import Stack from "../../shared/stack";
-import { useCompare, useForceUpdate } from "src/shared/hooks";
-import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
-import { getIconIdForCellType } from "src/react/shared/icon/utils";
-import MenuTrigger from "src/react/shared/menu-trigger";
-import ResizeContainer from "./column-resize";
-
-import HeaderMenu from "../header-cell-edit";
 
 import "./styles.css";
 
@@ -83,10 +80,18 @@ export default function HeaderCellContainer({
 	onDateFormatChange,
 	onHideClick,
 }: Props) {
-	const { menu, isMenuOpen, closeTopMenu, menuRef, menuCloseRequest } =
-		useMenu(MenuLevel.ONE, { shouldRequestOnClose: true });
-	const { triggerPosition, triggerRef } = useMenuTriggerPosition();
-	useShiftMenu(triggerRef, menuRef, isMenuOpen);
+	const {
+		menuId,
+		triggerRef,
+		triggerPosition,
+		isOpen,
+		closeRequest,
+		onOpen,
+		onClose,
+		onRequestClose,
+	} = useMenu({
+		shouldRequestOnClose: true,
+	});
 
 	const [forceUpdateTime, forceUpdate] = useForceUpdate();
 
@@ -108,10 +113,6 @@ export default function HeaderCellContainer({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [columnId, shouldUpdateWidth, triggerPosition]);
 
-	function handleMenuClose() {
-		closeTopMenu();
-	}
-
 	const lucideId = getIconIdForCellType(type);
 
 	let contentClassName = "dataloom-cell--header__inner-container";
@@ -120,13 +121,13 @@ export default function HeaderCellContainer({
 	return (
 		<>
 			<MenuTrigger
+				ref={triggerRef}
 				isCell
-				menu={menu}
-				shouldRun={resizingColumnId === null}
+				canOpen={resizingColumnId === null}
+				onOpen={onOpen}
 			>
 				<div
 					className="dataloom-cell--header__container"
-					ref={triggerRef}
 					style={{
 						width,
 					}}
@@ -142,19 +143,15 @@ export default function HeaderCellContainer({
 						columnId={columnId}
 						width={width}
 						onWidthChange={onWidthChange}
-						onMenuClose={() =>
-							closeTopMenu({ shouldFocusTrigger: false })
-						}
+						onMenuClose={() => onClose(false)}
 					/>
 				</div>
 			</MenuTrigger>
 			<HeaderMenu
-				isOpen={isMenuOpen}
-				menuCloseRequest={menuCloseRequest}
-				top={triggerPosition.top}
-				left={triggerPosition.left}
-				id={menu.id}
-				ref={menuRef}
+				isOpen={isOpen}
+				closeRequest={closeRequest}
+				triggerPosition={triggerPosition}
+				id={menuId}
 				aspectRatio={aspectRatio}
 				horizontalPadding={horizontalPadding}
 				verticalPadding={verticalPadding}
@@ -172,7 +169,8 @@ export default function HeaderCellContainer({
 				onSortClick={onSortClick}
 				onTypeSelect={onTypeSelect}
 				onDeleteClick={onDeleteClick}
-				onMenuClose={handleMenuClose}
+				onClose={onClose}
+				onRequestClose={onRequestClose}
 				onWrapOverflowToggle={onWrapOverflowToggle}
 				onNameChange={onNameChange}
 				onCurrencyChange={onCurrencyChange}

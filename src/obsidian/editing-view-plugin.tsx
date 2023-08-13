@@ -1,8 +1,5 @@
 import { PluginValue, ViewPlugin, ViewUpdate } from "@codemirror/view";
 
-if (process.env.ENABLE_REACT_DEVTOOLS === "true") {
-	import("react-devtools");
-}
 import { loadEmbeddedLoomApps } from "./embedded/embedded-app-manager";
 import { App } from "obsidian";
 

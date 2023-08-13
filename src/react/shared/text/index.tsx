@@ -4,7 +4,7 @@ import "./styles.css";
 interface Props {
 	variant?: "semibold" | "faint" | "muted" | "normal";
 	size?: "xs" | "sm" | "md" | "lg" | "xl";
-	value: string;
+	value: string | number;
 	maxWidth?: string;
 }
 

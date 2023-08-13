@@ -3,20 +3,46 @@ import MenuItem from "src/react/shared/menu-item";
 import ExportModal from "src/obsidian/modal/export-modal";
 import { useMountState } from "../../mount-provider";
 import { useAppSelector } from "src/redux/hooks";
+import { isSmallScreenSize } from "src/shared/render/utils";
 
 interface Props {
 	onExportClick: () => void;
 	onFreezeColumnsClick: () => void;
+	onToggleColumnClick: () => void;
+	onFilterClick: () => void;
 }
 
 export default function BaseContent({
 	onFreezeColumnsClick,
 	onExportClick,
+	onToggleColumnClick,
+	onFilterClick,
 }: Props) {
 	const { app, loomFile } = useMountState();
 	const { manifestPluginVersion } = useAppSelector((state) => state.global);
+
+	const isSmallScreen = isSmallScreenSize();
 	return (
 		<Padding p="sm">
+			{isSmallScreen && (
+				<MenuItem
+					lucideId="filter"
+					name="Filter"
+					onClick={onFilterClick}
+				/>
+			)}
+			{isSmallScreen && (
+				<MenuItem
+					lucideId="eye-off"
+					name="Toggle"
+					onClick={onToggleColumnClick}
+				/>
+			)}
+			<MenuItem
+				lucideId="snowflake"
+				name="Freeze"
+				onClick={onFreezeColumnsClick}
+			/>
 			<MenuItem
 				lucideId="download"
 				name="Export"
@@ -28,11 +54,6 @@ export default function BaseContent({
 						manifestPluginVersion
 					).open();
 				}}
-			/>
-			<MenuItem
-				lucideId="snowflake"
-				name="Freeze columns"
-				onClick={onFreezeColumnsClick}
 			/>
 		</Padding>
 	);

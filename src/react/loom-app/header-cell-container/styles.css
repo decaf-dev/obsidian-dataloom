@@ -14,4 +14,5 @@
     text-overflow: ellipsis;
     user-select: none;
     padding: var(--nlt-cell-spacing-x) var(--nlt-cell-spacing-y);
+    color: var(--text-normal); /* Stop dimming of text when mouse leaves embedded loom */
 }

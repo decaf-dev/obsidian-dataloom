@@ -13,7 +13,6 @@
 		"allowSyntheticDefaultImports": true,
 		"strictNullChecks": true,
 		"jsx": "react-jsx",
-		"jsxImportSource": "@emotion/react",
 		"lib": ["DOM", "ES5", "ES6", "ES7", "ES2021.String"]
 	},
 	"include": ["**/*.ts", "**/*.tsx"]

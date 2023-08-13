@@ -1,6 +1,6 @@
 .dataloom-input {
     width: 100%;
-    height: 100%;
+    height: 100% !important; /* Override Obsidian mobile style */
     transition: none !important;
     font-size: var(--text-normal) !important; /* Reset to default Obsidian style */
     box-shadow: none !important;
@@ -30,4 +30,9 @@
 
 .dataloom-input--error:focus {
     outline: 2px solid var(--background-modifier-error) !important;
+}
+
+.dataloom-input--default-outline {
+    outline: 2px solid var(--background-modifier-border-focus) !important;
+    outline-offset: -2px;
 }

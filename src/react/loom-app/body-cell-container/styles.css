@@ -5,4 +5,5 @@
     min-height: var(--nlt-cell-min-height);
     padding: var(--nlt-cell-spacing-x) var(--nlt-cell-spacing-y);
     cursor: pointer;
+    color: var(--text-normal); /* Stop dimming of text when mouse leaves embedded loom */
 }

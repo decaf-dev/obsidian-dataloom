@@ -7,7 +7,7 @@ export const isEventForThisApp = (
 
 	//If we have an active element that part of the app, then compare the id
 	const appEl = activeEl.closest(".dataloom-app");
-	if (appEl) return appEl.getAttribute("data-id") === appId;
+	if (appEl) return appEl.id === appId;
 
 	//We will pass on events that are outside of an app instance
 	if (allowOutsideEvents) return true;
@@ -16,7 +16,7 @@ export const isEventForThisApp = (
 	//in a portal. To get the app id, we first need to get the menu, then the menu trigger, then the app
 	const menuEl = activeEl.closest(".dataloom-menu");
 	if (menuEl) {
-		const menuId = menuEl.getAttribute("data-id");
+		const menuId = menuEl.id;
 		const menuTrigger = document.querySelector(
 			`[data-menu-id="${menuId}"]`
 		);

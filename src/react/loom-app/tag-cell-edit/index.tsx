@@ -7,33 +7,32 @@ import { Tag as TagType } from "src/shared/loom-state/types";
 import { Color } from "src/shared/loom-state/types";
 import { randomColor } from "src/shared/color";
 
-import { useCompare } from "src/shared/hooks";
-import { MenuCloseRequest } from "src/shared/menu/types";
+import { LoomMenuCloseRequest } from "../../shared/menu/types";
 
 interface Props {
 	isMulti: boolean;
 	columnTags: TagType[];
 	cellTags: TagType[];
-	menuCloseRequest: MenuCloseRequest | null;
+	closeRequest: LoomMenuCloseRequest | null;
 	onTagClick: (tagId: string) => void;
 	onTagAdd: (markdown: string, color: Color) => void;
 	onRemoveTag: (tagId: string) => void;
 	onTagColorChange: (tagId: string, color: Color) => void;
 	onTagDelete: (tagId: string) => void;
-	onMenuClose: () => void;
+	onClose: () => void;
 }
 
 export default function TagCellEdit({
 	isMulti,
 	columnTags,
 	cellTags,
-	menuCloseRequest,
+	closeRequest,
 	onTagClick,
 	onTagAdd,
 	onTagColorChange,
 	onTagDelete,
 	onRemoveTag,
-	onMenuClose,
+	onClose,
 }: Props) {
 	const [inputValue, setInputValue] = React.useState("");
 	const [newTagColor, setNewTagColor] = React.useState(randomColor());
@@ -43,18 +42,14 @@ export default function TagCellEdit({
 			onTagAdd(markdown, color);
 			setInputValue("");
 			setNewTagColor(randomColor());
-			if (!isMulti) onMenuClose();
+			if (!isMulti) onClose();
 		},
-		[onTagAdd, onMenuClose]
-	);
-
-	const hasCloseRequestTimeChanged = useCompare(
-		menuCloseRequest?.requestTime
+		[isMulti, onTagAdd, onClose]
 	);
 
 	React.useEffect(() => {
-		if (hasCloseRequestTimeChanged && menuCloseRequest !== null) {
-			if (menuCloseRequest.type === "enter") {
+		if (closeRequest !== null) {
+			if (closeRequest.type === "close-on-save") {
 				if (inputValue !== "") {
 					const doesTagExist = columnTags.find(
 						(tag) => tag.markdown === inputValue
@@ -65,21 +60,20 @@ export default function TagCellEdit({
 					}
 				}
 			}
-			onMenuClose();
+			onClose();
 		}
 	}, [
 		handleTagAdd,
 		columnTags,
 		inputValue,
 		newTagColor,
-		hasCloseRequestTimeChanged,
-		menuCloseRequest,
-		onMenuClose,
+		closeRequest,
+		onClose,
 	]);
 
 	function handleTagClick(id: string) {
 		onTagClick(id);
-		if (!isMulti) onMenuClose();
+		if (!isMulti) onClose();
 	}
 
 	return (

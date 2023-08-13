@@ -4,6 +4,7 @@ import Stack from "../shared/stack";
 import Padding from "../shared/padding";
 import ExportTypeSelect from "./export-type-select";
 import ContentTextArea from "./content-textarea";
+import Divider from "../shared/divider";
 
 import { LoomState } from "src/shared/loom-state/types";
 import { ExportType } from "../../shared/export/types";
@@ -18,7 +19,6 @@ import { exportToCSV } from "src/shared/export/export-to-csv";
 import { useAppSelector } from "src/redux/hooks";
 
 import "./styles.css";
-import Divider from "../shared/divider";
 
 interface Props {
 	app: App;
@@ -57,46 +57,48 @@ export function ExportApp({ loomState, loomFilePath }: Props) {
 	return (
 		<div className="dataloom-export-app">
 			<Padding p="xl">
-				<h5>DataLoom Export</h5>
-				<Divider />
-				<Stack spacing="xl">
-					<ExportTypeSelect
-						value={exportType}
-						onChange={setExportType}
-					/>
-					{exportType !== ExportType.UNSELECTED && (
-						<>
-							<ContentTextArea value={content} />
-							<Stack spacing="sm">
-								<label htmlFor="render-markdown">
-									Render markdown
-								</label>
-								<input
-									id="render-markdown"
-									type="checkbox"
-									checked={renderMarkdown}
-									onChange={() =>
-										setRenderMarkdown(!renderMarkdown)
-									}
-								/>
-							</Stack>
+				<Stack spacing="lg" width="100%">
+					<h5>DataLoom Export</h5>
+					<Divider />
+					<Stack spacing="xl" width="100%">
+						<ExportTypeSelect
+							value={exportType}
+							onChange={setExportType}
+						/>
+						{exportType !== ExportType.UNSELECTED && (
+							<>
+								<ContentTextArea value={content} />
+								<Stack spacing="sm">
+									<label htmlFor="render-markdown">
+										Render markdown
+									</label>
+									<input
+										id="render-markdown"
+										type="checkbox"
+										checked={renderMarkdown}
+										onChange={() =>
+											setRenderMarkdown(!renderMarkdown)
+										}
+									/>
+								</Stack>
 
-							<Stack isHorizontal>
-								<button
-									className="mod-cta"
-									onClick={handleDownloadClick}
-								>
-									Download
-								</button>
-								<button
-									className="dataloom-copy-button"
-									onClick={() => handleCopyClick(content)}
-								>
-									Copy to clipboard
-								</button>
-							</Stack>
-						</>
-					)}
+								<Stack isHorizontal>
+									<button
+										className="mod-cta"
+										onClick={handleDownloadClick}
+									>
+										Download
+									</button>
+									<button
+										className="dataloom-copy-button"
+										onClick={() => handleCopyClick(content)}
+									>
+										Copy to clipboard
+									</button>
+								</Stack>
+							</>
+						)}
+					</Stack>
 				</Stack>
 			</Padding>
 		</div>
