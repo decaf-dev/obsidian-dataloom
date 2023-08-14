@@ -334,16 +334,12 @@ export default function BodyCellContainer({
 						/>
 					)}
 					{columnType === CellType.NUMBER && (
-						<NumberCell
-							value={markdown}
-							shouldWrapOverflow={shouldWrapOverflow}
-						/>
+						<NumberCell value={markdown} />
 					)}
 					{columnType === CellType.CURRENCY && (
 						<CurrencyCell
 							value={markdown}
 							currencyType={columnCurrencyType}
-							shouldWrapOverflow={shouldWrapOverflow}
 						/>
 					)}
 					{columnType === CellType.TAG && cellTags.length === 1 && (

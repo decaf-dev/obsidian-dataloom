@@ -119,22 +119,24 @@ export default function BaseMenu({
 					onClick={() => onDeleteClick()}
 				/>
 			)}
-			{columnType !== CellType.EMBED && (
-				<>
-					<Divider />
-					<Padding px="lg" py="md">
-						<Flex justify="space-between" align="center">
-							<Text value="Wrap content" />
-							<Switch
-								value={shouldWrapOverflow}
-								onToggle={(value) =>
-									onWrapOverflowToggle(columnId, value)
-								}
-							/>
-						</Flex>
-					</Padding>
-				</>
-			)}
+			{columnType !== CellType.EMBED &&
+				columnType !== CellType.NUMBER &&
+				columnType !== CellType.CURRENCY && (
+					<>
+						<Divider />
+						<Padding px="lg" py="md">
+							<Flex justify="space-between" align="center">
+								<Text value="Wrap content" />
+								<Switch
+									value={shouldWrapOverflow}
+									onToggle={(value) =>
+										onWrapOverflowToggle(columnId, value)
+									}
+								/>
+							</Flex>
+						</Padding>
+					</>
+				)}
 		</Stack>
 	);
 }
