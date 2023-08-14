@@ -27,7 +27,6 @@ export const useMenu = ({
 	 * Adds the menu to the open menus list
 	 */
 	const onOpen = React.useCallback(() => {
-		console.log("useMenu onOpen");
 		setOpenMenus((prevMenus) => {
 			const found = prevMenus.find((m) => m.id === menu.id);
 			if (found) return prevMenus;
@@ -35,12 +34,32 @@ export const useMenu = ({
 		});
 	}, [menu, setOpenMenus, shouldRequestOnClose]);
 
+	React.useEffect(() => {
+		function setScroll(shouldLock: boolean) {
+			const el = ref.current;
+			if (!el) return;
+
+			const tableScroller = el.closest(
+				'[data-virtuoso-scroller="true"]'
+			) as HTMLElement | null;
+			if (!tableScroller) return;
+
+			tableScroller.style.overflow = shouldLock ? "hidden" : "auto";
+		}
+
+		if (isOpen) {
+			setScroll(true);
+		}
+		return () => {
+			setScroll(false);
+		};
+	}, [isOpen]);
+
 	/**
 	 * Removes the menu from the open menus list.
 	 */
 	const onClose = React.useCallback(
 		(shouldFocusTrigger = true) => {
-			console.log("useMenu onClose");
 			setOpenMenus((prevMenus) =>
 				prevMenus.filter((menu) => menu.id !== menu.id)
 			);
@@ -59,7 +78,6 @@ export const useMenu = ({
 	 */
 	const onRequestClose = React.useCallback(
 		(type: LoomMenuCloseRequestType = "save-and-close") => {
-			console.log("useMenu onRequestClose");
 			if (shouldRequestOnClose) {
 				const request = createCloseRequest(menu.id, type);
 				setCloseRequests((prevRequests) => [...prevRequests, request]);
@@ -75,8 +93,12 @@ export const useMenu = ({
 	 * This is necessary for support for the virtualized list
 	 */
 	React.useEffect(() => {
-		return () => onClose(false);
-	}, []);
+		return () => {
+			if (isOpen) {
+				onClose(false);
+			}
+		};
+	}, [isOpen]);
 
 	return {
 		menu,
@@ -96,7 +118,6 @@ export const useMenuOperations = () => {
 
 	const canOpen = React.useCallback(
 		(menu: LoomMenu) => {
-			console.log("useMenuOperations canOpen");
 			if (topMenu === null) return true;
 			if (menu.level > topMenu.level) return true;
 			return false;
@@ -105,7 +126,6 @@ export const useMenuOperations = () => {
 	);
 
 	const onCloseAll = React.useCallback(() => {
-		console.log("useMenuOperations onCloseAll");
 		setOpenMenus((prevState) =>
 			prevState.filter((menu) => menu.shouldRequestOnClose)
 		);
@@ -117,7 +137,6 @@ export const useMenuOperations = () => {
 	}, [openMenus]);
 
 	const onRequestCloseTop = React.useCallback(() => {
-		console.log("useMenuOperations onRequestCloseTop");
 		if (!topMenu) return;
 		if (topMenu.shouldRequestOnClose) {
 			const request = createCloseRequest(topMenu.id, "save-and-close");
@@ -164,7 +183,7 @@ const usePosition = (isOpen: boolean) => {
 		}
 
 		const observer = new ResizeObserver(() => throttleUpdatePosition());
-		//observer.observe(mountLeaf.view.containerEl);
+		observer.observe(mountLeaf.view.containerEl);
 
 		let pageScrollerEl: HTMLElement | null = null;
 		let focusContainerEl: HTMLElement | null = null;
@@ -185,7 +204,7 @@ const usePosition = (isOpen: boolean) => {
 
 		//The scroller will only be available for elements rendered in a virtuoso list
 		const tableScroller = el.closest('[data-virtuoso-scroller="true"]');
-		// tableScroller?.addEventListener("scroll", throttleUpdatePosition);
+		tableScroller?.addEventListener("scroll", throttleUpdatePosition);
 
 		return () => {
 			observer.disconnect();
