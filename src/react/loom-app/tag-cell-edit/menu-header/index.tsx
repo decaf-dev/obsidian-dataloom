@@ -7,6 +7,8 @@ import Input from "src/react/shared/input";
 import { Tag as TagType } from "src/shared/loom-state/types";
 import Padding from "src/react/shared/padding";
 
+import "./styles.css";
+
 interface MenuHeaderProps {
 	cellTags: TagType[];
 	inputValue: string;
@@ -30,29 +32,31 @@ export default function MenuHeader({
 
 	return (
 		<div className="dataloom-tag-cell-edit__menu-header">
-			<Padding px="md" pt="md" pb="sm">
-				<Wrap spacingX="sm">
-					{cellTags.map((tag) => (
-						<Tag
-							key={tag.id}
-							id={tag.id}
-							color={tag.color}
-							markdown={tag.markdown}
-							maxWidth="150px"
-							showRemoveButton
-							onRemoveClick={onRemoveTag}
-						/>
-					))}
-				</Wrap>
-			</Padding>
-			<Padding p="md">
-				<Input
-					ref={inputRef}
-					isTransparent
-					value={inputValue}
-					onChange={handleInputChange}
-				/>
-			</Padding>
+			{cellTags.length > 0 && (
+				<Padding px="md" pt="md" pb="sm">
+					<Wrap spacingX="sm">
+						{cellTags.map((tag) => (
+							<Tag
+								key={tag.id}
+								id={tag.id}
+								color={tag.color}
+								markdown={tag.markdown}
+								maxWidth="150px"
+								showRemoveButton
+								onRemoveClick={onRemoveTag}
+							/>
+						))}
+					</Wrap>
+				</Padding>
+			)}
+			<Input
+				ref={inputRef}
+				isTransparent
+				focusOutline="none"
+				placeholder="Search for an option..."
+				value={inputValue}
+				onChange={handleInputChange}
+			/>
 		</div>
 	);
 }

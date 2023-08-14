@@ -20,20 +20,20 @@ export default function Text({ value, variant, size = "sm", maxWidth }: Props) {
 
 	let fontSize = "";
 	if (size === "xs") {
-		fontSize = "var(--nlt-font-size--xs)";
+		fontSize = "var(--dataloom-font-size--xs)";
 	} else if (size === "sm") {
-		fontSize = "var(--nlt-font-size--sm)";
+		fontSize = "var(--dataloom-font-size--sm)";
 	} else if (size === "md") {
-		fontSize = "var(--nlt-font-size--md)";
+		fontSize = "var(--dataloom-font-size--md)";
 	} else if (size === "lg") {
-		fontSize = "var(--nlt-font-size--lg)";
+		fontSize = "var(--dataloom-font-size--lg)";
 	}
 	return (
 		<p
 			className={className}
 			style={{
 				fontSize,
-				maxWidth: maxWidth === undefined ? "unset" : maxWidth,
+				maxWidth: maxWidth !== undefined ? maxWidth : undefined,
 			}}
 		>
 			{value}

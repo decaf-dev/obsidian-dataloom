@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useInputSelection } from "src/shared/hooks";
+import { usePlaceCursorAtEnd } from "src/shared/hooks";
 import { isNumber, isNumberInput } from "src/shared/match";
 
 import Input from "src/react/shared/input";
@@ -23,7 +23,7 @@ export default function NumberCellEdit({
 	const [localValue, setLocalValue] = React.useState(initialValue);
 	const inputRef = React.useRef<HTMLInputElement | null>(null);
 
-	useInputSelection(inputRef, localValue);
+	usePlaceCursorAtEnd(inputRef, localValue);
 
 	React.useEffect(() => {
 		if (closeRequest !== null) {
@@ -41,7 +41,8 @@ export default function NumberCellEdit({
 	return (
 		<div className="dataloom-number-cell-edit">
 			<Input
-				defaultOutline
+				ref={inputRef}
+				focusOutline="default"
 				//Set input mode so that the keyboard is numeric
 				//but selection is still available
 				inputMode="numeric"

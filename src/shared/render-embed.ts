@@ -1,7 +1,7 @@
-import { MarkdownRenderer, MarkdownView, WorkspaceLeaf } from "obsidian";
+import { App, MarkdownRenderer, MarkdownView, WorkspaceLeaf } from "obsidian";
 import DataLoomView from "src/obsidian/dataloom-view";
 
-const renderText = async (leaf: WorkspaceLeaf, value: string) => {
+const renderText = async (app: App, leaf: WorkspaceLeaf, value: string) => {
 	const div = document.createElement("div");
 	div.style.width = "100%";
 	div.style.height = "100%";
@@ -9,7 +9,8 @@ const renderText = async (leaf: WorkspaceLeaf, value: string) => {
 	try {
 		const view = leaf.view;
 		if (view instanceof MarkdownView || view instanceof DataLoomView) {
-			await MarkdownRenderer.renderMarkdown(
+			await MarkdownRenderer.render(
+				app,
 				value,
 				div,
 				view.file?.path ?? "",
@@ -22,6 +23,10 @@ const renderText = async (leaf: WorkspaceLeaf, value: string) => {
 	return div;
 };
 
-export const renderEmbed = async (leaf: WorkspaceLeaf, value: string) => {
-	return renderText(leaf, value);
+export const renderEmbed = async (
+	app: App,
+	leaf: WorkspaceLeaf,
+	value: string
+) => {
+	return renderText(app, leaf, value);
 };

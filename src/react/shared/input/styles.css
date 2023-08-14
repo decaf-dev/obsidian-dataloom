@@ -8,13 +8,14 @@
 
 .dataloom-input--transparent {
     background-color: transparent !important;
-    border: 0px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    padding: var(--dataloom-spacing--sm) var(--dataloom-spacing--lg) !important;
 }
 
 .dataloom-input--border {
     border: 1px solid var(--table-border-color) !important;
-    padding: 5px 10px;
-    background-color: var(--background-secondary);
+    background-color: var(--background-secondary) !important;
 }
 
 .dataloom-input--numeric {
@@ -32,7 +33,11 @@
     outline: 2px solid var(--background-modifier-error) !important;
 }
 
-.dataloom-input--default-outline {
+.dataloom-input__focus-outline--default {
     outline: 2px solid var(--background-modifier-border-focus) !important;
     outline-offset: -2px;
+}
+
+.dataloom-input__focus-outline--none {
+    outline: none !important;
 }

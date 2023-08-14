@@ -14,7 +14,7 @@ import { useMountState } from "../../mount-provider";
 import { useAppSelector } from "src/redux/hooks";
 
 export const useExportEvents = (state: LoomState) => {
-	const { appId, loomFile } = useMountState();
+	const { appId, loomFile, app } = useMountState();
 	const { exportRenderMarkdown } = useAppSelector(
 		(state) => state.global.settings
 	);

@@ -7,16 +7,11 @@ import "./styles.css";
 interface Props {
 	value: string;
 	currencyType: CurrencyType;
-	shouldWrapOverflow: boolean;
 }
 
-export default function CurrencyCell({
-	value,
-	currencyType,
-	shouldWrapOverflow,
-}: Props) {
+export default function CurrencyCell({ value, currencyType }: Props) {
 	const content = getCurrencyCellContent(value, currencyType);
-	const overflowClassName = useOverflow(shouldWrapOverflow);
+	const overflowClassName = useOverflow(false);
 
 	let className = "dataloom-currency-cell";
 	className += " " + overflowClassName;

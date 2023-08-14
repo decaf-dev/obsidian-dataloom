@@ -1,7 +1,7 @@
 .dataloom-color-item {
     display: flex;
     align-items: center;
-    padding: var(--nlt-spacing--xs) var(--nlt-spacing--lg);
+    padding: var(--dataloom-spacing--xs) var(--dataloom-spacing--lg);
     width: 100%;
 }
 

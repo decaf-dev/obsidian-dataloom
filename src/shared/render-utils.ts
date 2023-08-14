@@ -95,7 +95,7 @@ export const useRenderMarkdown = (
 		async function updateContainerRef() {
 			let el = null;
 			if (isEmbed) {
-				el = await renderEmbed(mountLeaf, markdown);
+				el = await renderEmbed(app, mountLeaf, markdown);
 			} else {
 				el = await renderMarkdown(app, mountLeaf, markdown);
 			}

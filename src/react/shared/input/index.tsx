@@ -5,7 +5,7 @@ import "./styles.css";
 interface Props {
 	isTransparent?: boolean;
 	showBorder?: boolean;
-	defaultOutline?: boolean;
+	focusOutline?: "default" | "accent" | "none";
 	hasError?: boolean;
 	value: string;
 	placeholder?: string;
@@ -21,7 +21,7 @@ const Input = React.forwardRef<HTMLInputElement, Props>(
 			showBorder,
 			hasError,
 			value,
-			defaultOutline,
+			focusOutline = "accent",
 			placeholder,
 			inputMode,
 			onChange,
@@ -36,7 +36,13 @@ const Input = React.forwardRef<HTMLInputElement, Props>(
 			className += " dataloom-input--border";
 		}
 		if (inputMode === "numeric") className += " dataloom-input--numeric";
-		if (defaultOutline) className += " dataloom-input--default-outline";
+
+		if (focusOutline === "default") {
+			className += " dataloom-input__focus-outline--default";
+		} else if (focusOutline === "none") {
+			className += " dataloom-input__focus-outline--none";
+		}
+
 		if (hasError) className += " dataloom-input--error";
 		return (
 			<input

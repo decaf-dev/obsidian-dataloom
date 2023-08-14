@@ -5,11 +5,10 @@ import "./styles.css";
 
 interface Props {
 	value: string;
-	shouldWrapOverflow: boolean;
 }
 
-export default function NumberCell({ value, shouldWrapOverflow }: Props) {
-	const overflowClassName = useOverflow(shouldWrapOverflow);
+export default function NumberCell({ value }: Props) {
+	const overflowClassName = useOverflow(false);
 
 	let valueString = "";
 	if (isNumber(value)) valueString = value;

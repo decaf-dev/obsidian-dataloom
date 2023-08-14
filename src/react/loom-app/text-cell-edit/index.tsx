@@ -4,7 +4,7 @@ import { TFile } from "obsidian";
 
 import SuggestMenu from "./suggest-menu";
 
-import { useInputSelection } from "src/shared/hooks";
+import { usePlaceCursorAtEnd } from "src/shared/hooks";
 import { useOverflow } from "src/shared/spacing/hooks";
 import {
 	addClosingBracket,
@@ -70,7 +70,7 @@ export default function TextCellEdit({
 			}
 		}
 	}, [inputRef, localValue]);
-	useInputSelection(inputRef, localValue);
+	usePlaceCursorAtEnd(inputRef, localValue);
 
 	const logger = useLogger();
 

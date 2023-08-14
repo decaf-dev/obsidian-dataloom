@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useInputSelection } from "src/shared/hooks";
+import { usePlaceCursorAtEnd } from "src/shared/hooks";
 import { isNumber, isNumberInput } from "src/shared/match";
 
 import Input from "src/react/shared/input";
@@ -22,7 +22,7 @@ export default function CurrencyCellEdit({
 	const initialValue = isNumber(value) ? value : "";
 	const [localValue, setLocalValue] = React.useState(initialValue);
 	const inputRef = React.useRef<HTMLInputElement | null>(null);
-	useInputSelection(inputRef, localValue);
+	usePlaceCursorAtEnd(inputRef, localValue);
 
 	React.useEffect(() => {
 		if (closeRequest !== null) {
@@ -43,7 +43,7 @@ export default function CurrencyCellEdit({
 				ref={inputRef}
 				//Set input mode so that the keyboard is numeric
 				//but selection is still available
-				defaultOutline
+				focusOutline="default"
 				inputMode="numeric"
 				value={localValue}
 				onChange={handleChange}

@@ -9,7 +9,7 @@ import _ from "lodash";
 export const useMenuEvents = () => {
 	const hookName = "useMenuEvents";
 	const logger = useLogger();
-	const { appId, isMarkdownView } = useMountState();
+	const { appId, isMarkdownView, app } = useMountState();
 	const { onCloseAll } = useMenuOperations();
 
 	React.useEffect(() => {
@@ -130,5 +130,5 @@ export const useMenuEvents = () => {
 		app.workspace.on(EVENT_GLOBAL_CLICK, handleGlobalClick);
 
 		return () => app.workspace.off(EVENT_GLOBAL_CLICK, handleGlobalClick);
-	}, [logger, onCloseAll]);
+	}, [app, logger, onCloseAll]);
 };

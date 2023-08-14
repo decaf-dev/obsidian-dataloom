@@ -33,7 +33,8 @@ export default class WhatsNewModal extends Modal {
 
 			const bodyEl = contentEl.createDiv();
 			const replacedText = this.replaceIssueNumbersWithLinks(body);
-			MarkdownRenderer.renderMarkdown(
+			MarkdownRenderer.render(
+				this.app,
 				replacedText,
 				bodyEl,
 				"",
