@@ -35,9 +35,8 @@ export const useShiftMenu = (
 			leftOffset,
 			openDirection
 		);
-		const containerPosition = isMarkdownView
-			? getEmbeddedLoomContainerPosition(appId)
-			: getDataLoomViewContainerPosition(viewContentEl);
+		const containerPosition =
+			getDataLoomViewContainerPosition(viewContentEl);
 
 		const newPosition = shiftElementIntoContainer(
 			containerPosition,
@@ -79,24 +78,6 @@ const getMenuPosition = (
 	return {
 		top,
 		left,
-		width: rect.width,
-		height: rect.height,
-	};
-};
-
-const getEmbeddedLoomContainerPosition = (appId: string) => {
-	const DEFAULT_POSITION = { top: 0, left: 0, width: 0, height: 0 };
-
-	const appEl = document.getElementById(appId);
-	if (!appEl) return DEFAULT_POSITION;
-
-	const container = appEl.closest(".dataloom-embedded-container");
-	if (!container) return DEFAULT_POSITION;
-
-	const rect = container.getBoundingClientRect();
-	return {
-		top: rect.top,
-		left: rect.left,
 		width: rect.width,
 		height: rect.height,
 	};
