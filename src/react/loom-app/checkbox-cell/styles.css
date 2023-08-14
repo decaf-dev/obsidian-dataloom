@@ -1,6 +1,6 @@
 .dataloom-checkbox-cell {
     width: 100%;
-    padding: var(--nlt-cell-spacing);
+    padding: var(--dataloom-cell-spacing);
 }
 
 .datlaoom-checkbox-cell input {

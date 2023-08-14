@@ -10,7 +10,7 @@
     background-color: transparent !important;
     border: 0 !important;
     border-radius: 0 !important;
-    padding: var(--nlt-spacing--sm) var(--nlt-spacing--lg) !important;
+    padding: var(--dataloom-spacing--sm) var(--dataloom-spacing--lg) !important;
 }
 
 .dataloom-input--border {

@@ -1,5 +1,5 @@
 .dataloom-suggest-item {
-    padding: var(--nlt-spacing--sm) var(--nlt-spacing--lg);
+    padding: var(--dataloom-spacing--sm) var(--dataloom-spacing--lg);
     margin: 2px 0;                        
 }
 

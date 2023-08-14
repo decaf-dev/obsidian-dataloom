@@ -1,6 +1,6 @@
 .dataloom-menu-item {
     display: flex;
     align-items: center;
-    padding: var(--nlt-spacing--sm) var(--nlt-spacing--lg);
+    padding: var(--dataloom-spacing--sm) var(--dataloom-spacing--lg);
     width: 100%;
 }
