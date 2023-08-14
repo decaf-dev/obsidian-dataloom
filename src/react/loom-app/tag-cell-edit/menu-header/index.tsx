@@ -7,6 +7,8 @@ import Input from "src/react/shared/input";
 import { Tag as TagType } from "src/shared/loom-state/types";
 import Padding from "src/react/shared/padding";
 
+import "./styles.css";
+
 interface MenuHeaderProps {
 	cellTags: TagType[];
 	inputValue: string;
@@ -48,7 +50,7 @@ export default function MenuHeader({
 			<Padding p="md">
 				<Input
 					ref={inputRef}
-					isTransparent
+					showBorder
 					value={inputValue}
 					onChange={handleInputChange}
 				/>
