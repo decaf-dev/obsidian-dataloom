@@ -15,14 +15,16 @@ export default function Divider({
 		<hr
 			className="dataloom-hr"
 			style={{
-				width: !isVertical ? width : "unset",
-				height: isVertical === true ? height : "unset",
+				width: !isVertical ? width : undefined,
+				height: isVertical === true ? height : undefined,
 				borderTop:
 					isVertical === false
 						? "1px solid var(--hr-color)"
-						: "unset",
+						: undefined,
 				borderLeft:
-					isVertical === true ? "1px var(--hr-color) solid" : "unset",
+					isVertical === true
+						? "1px var(--hr-color) solid"
+						: undefined,
 			}}
 		/>
 	);

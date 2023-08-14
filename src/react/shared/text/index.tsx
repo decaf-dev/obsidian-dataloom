@@ -33,7 +33,7 @@ export default function Text({ value, variant, size = "sm", maxWidth }: Props) {
 			className={className}
 			style={{
 				fontSize,
-				maxWidth: maxWidth === undefined ? "unset" : maxWidth,
+				maxWidth: maxWidth !== undefined ? maxWidth : undefined,
 			}}
 		>
 			{value}

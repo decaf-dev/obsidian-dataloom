@@ -61,7 +61,9 @@ export default function FilterMenu({
 			<div
 				className="dataloom-filter-menu"
 				style={{
-					width: isSmallScreenSize() ? "calc(100vw - 30px)" : "unset",
+					width: isSmallScreenSize()
+						? "calc(100vw - 30px)"
+						: undefined,
 				}}
 			>
 				<Padding p="md">
