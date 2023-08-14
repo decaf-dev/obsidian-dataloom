@@ -27,11 +27,15 @@ export const useMenu = ({
 	 * Adds the menu to the open menus list
 	 */
 	const onOpen = React.useCallback(() => {
-		setOpenMenus((prevMenus) => {
-			const found = prevMenus.find((m) => m.id === menu.id);
-			if (found) return prevMenus;
-			return [...prevMenus, menu];
-		});
+		//Wait 10ms so that on mobile, the keyboard can popup and then the menu can already be
+		//positioned correctly
+		setTimeout(() => {
+			setOpenMenus((prevMenus) => {
+				const found = prevMenus.find((m) => m.id === menu.id);
+				if (found) return prevMenus;
+				return [...prevMenus, menu];
+			});
+		}, 10);
 	}, [menu, setOpenMenus, shouldRequestOnClose]);
 
 	React.useEffect(() => {
