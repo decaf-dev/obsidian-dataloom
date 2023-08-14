@@ -85,14 +85,15 @@ const getMenuPosition = (
 };
 
 const getEmbeddedLoomContainerPosition = (appId: string) => {
+	const DEFAULT_POSITION = { top: 0, left: 0, width: 0, height: 0 };
+
 	const appEl = document.getElementById(appId);
-	console.log(appEl);
-	if (!appEl) return { top: 0, left: 0, width: 0, height: 0 };
+	if (!appEl) return DEFAULT_POSITION;
+
 	const container = appEl.closest(".dataloom-embedded-container");
-	console.log(container);
-	if (!container) return { top: 0, left: 0, width: 0, height: 0 };
+	if (!container) return DEFAULT_POSITION;
+
 	const rect = container.getBoundingClientRect();
-	console.log("HERE");
 	return {
 		top: rect.top,
 		left: rect.left,
