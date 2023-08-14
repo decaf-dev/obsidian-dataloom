@@ -7,31 +7,27 @@ import {
 	Position,
 } from "./types";
 import { createCloseRequest, createMenu } from "./factory";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { menuCloseRequestsAtom, openMenusAtom } from "./atom/atoms";
-import {
-	closeRequestSelector,
-	isMenuOpenSelector,
-	topMenuSelector,
-} from "./atom/selectors";
 import { useMountState } from "src/react/loom-app/mount-provider";
 import _ from "lodash";
+import { useMenuContext } from "../menu-provider";
 
 export const useMenu = ({
 	level = LoomMenuLevel.ONE,
 	shouldRequestOnClose = false,
 } = {}) => {
+	const { openMenus, closeRequests, setOpenMenus, setCloseRequests } =
+		useMenuContext();
 	const [menu] = React.useState(createMenu(level, shouldRequestOnClose));
-	const isOpen = useRecoilValue(isMenuOpenSelector(menu.id));
-	const closeRequest = useRecoilValue(closeRequestSelector(menu.id));
-	const setOpenMenus = useSetRecoilState(openMenusAtom);
-	const setCloseRequests = useSetRecoilState(menuCloseRequestsAtom);
-	const { ref, position } = usePosition();
+	const isOpen = openMenus.find((m) => m.id === menu.id) !== undefined;
+	const closeRequest =
+		closeRequests.find((r) => r.menuId === menu.id) ?? null;
+	const { ref, position } = usePosition(isOpen);
 
 	/**
 	 * Adds the menu to the open menus list
 	 */
 	const onOpen = React.useCallback(() => {
+		console.log("useMenu onOpen");
 		setOpenMenus((prevMenus) => {
 			const found = prevMenus.find((m) => m.id === menu.id);
 			if (found) return prevMenus;
@@ -44,18 +40,16 @@ export const useMenu = ({
 	 */
 	const onClose = React.useCallback(
 		(shouldFocusTrigger = true) => {
-			//Add timeout to prevent flash of menu when closing
-			setTimeout(() => {
-				setOpenMenus((prevMenus) =>
-					prevMenus.filter((menu) => menu.id !== menu.id)
-				);
-				setCloseRequests((prevRequests) =>
-					prevRequests.filter((request) => request.menuId !== menu.id)
-				);
-				if (shouldFocusTrigger && ref.current) {
-					ref.current.focus();
-				}
-			}, 1);
+			console.log("useMenu onClose");
+			setOpenMenus((prevMenus) =>
+				prevMenus.filter((menu) => menu.id !== menu.id)
+			);
+			setCloseRequests((prevRequests) =>
+				prevRequests.filter((request) => request.menuId !== menu.id)
+			);
+			if (shouldFocusTrigger && ref.current) {
+				ref.current.focus();
+			}
 		},
 		[menu, setOpenMenus, setCloseRequests]
 	);
@@ -65,6 +59,7 @@ export const useMenu = ({
 	 */
 	const onRequestClose = React.useCallback(
 		(type: LoomMenuCloseRequestType = "save-and-close") => {
+			console.log("useMenu onRequestClose");
 			if (shouldRequestOnClose) {
 				const request = createCloseRequest(menu.id, type);
 				setCloseRequests((prevRequests) => [...prevRequests, request]);
@@ -96,13 +91,12 @@ export const useMenu = ({
 };
 
 export const useMenuOperations = () => {
-	const topMenu = useRecoilValue(topMenuSelector);
-	const openMenus = useRecoilValue(openMenusAtom);
-	const setOpenMenus = useSetRecoilState(openMenusAtom);
-	const setCloseRequests = useSetRecoilState(menuCloseRequestsAtom);
+	const { openMenus, setOpenMenus, setCloseRequests } = useMenuContext();
+	const topMenu = openMenus[openMenus.length - 1] ?? null;
 
 	const canOpen = React.useCallback(
 		(menu: LoomMenu) => {
+			console.log("useMenuOperations canOpen");
 			if (topMenu === null) return true;
 			if (menu.level > topMenu.level) return true;
 			return false;
@@ -111,6 +105,7 @@ export const useMenuOperations = () => {
 	);
 
 	const onCloseAll = React.useCallback(() => {
+		console.log("useMenuOperations onCloseAll");
 		setOpenMenus((prevState) =>
 			prevState.filter((menu) => menu.shouldRequestOnClose)
 		);
@@ -122,6 +117,7 @@ export const useMenuOperations = () => {
 	}, [openMenus]);
 
 	const onRequestCloseTop = React.useCallback(() => {
+		console.log("useMenuOperations onRequestCloseTop");
 		if (!topMenu) return;
 		if (topMenu.shouldRequestOnClose) {
 			const request = createCloseRequest(topMenu.id, "save-and-close");
@@ -141,7 +137,7 @@ export const useMenuOperations = () => {
 	};
 };
 
-const usePosition = () => {
+const usePosition = (isOpen: boolean) => {
 	const { mountLeaf, isMarkdownView } = useMountState();
 	const [position, setPosition] = React.useState<Position>({
 		top: 0,
@@ -168,7 +164,7 @@ const usePosition = () => {
 		}
 
 		const observer = new ResizeObserver(() => throttleUpdatePosition());
-		observer.observe(mountLeaf.view.containerEl);
+		//observer.observe(mountLeaf.view.containerEl);
 
 		let pageScrollerEl: HTMLElement | null = null;
 		let focusContainerEl: HTMLElement | null = null;
@@ -189,7 +185,7 @@ const usePosition = () => {
 
 		//The scroller will only be available for elements rendered in a virtuoso list
 		const tableScroller = el.closest('[data-virtuoso-scroller="true"]');
-		tableScroller?.addEventListener("scroll", throttleUpdatePosition);
+		// tableScroller?.addEventListener("scroll", throttleUpdatePosition);
 
 		return () => {
 			observer.disconnect();
@@ -203,7 +199,7 @@ const usePosition = () => {
 				throttleUpdatePosition
 			);
 		};
-	}, [mountLeaf.view.containerEl, isMarkdownView]);
+	}, [mountLeaf.view.containerEl, isMarkdownView, isOpen]);
 
 	return {
 		ref,

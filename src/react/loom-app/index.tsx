@@ -9,7 +9,7 @@ import App from "./app";
 
 import DragProvider from "src/shared/dragging/drag-context";
 import { LoomState } from "src/shared/loom-state/types";
-import { RecoilRoot } from "recoil";
+import MenuProvider from "../shared/menu-provider";
 
 interface Props {
 	app: ObsidianApp;
@@ -46,9 +46,9 @@ export default function LoomApp({
 					onSaveState={onSaveState}
 				>
 					<DragProvider>
-						<RecoilRoot>
+						<MenuProvider>
 							<App />
-						</RecoilRoot>
+						</MenuProvider>
 					</DragProvider>
 				</LoomStateProvider>
 			</Provider>
