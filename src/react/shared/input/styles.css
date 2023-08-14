@@ -13,8 +13,7 @@
 
 .dataloom-input--border {
     border: 1px solid var(--table-border-color) !important;
-    padding: 5px 10px;
-    background-color: var(--background-secondary);
+    background-color: var(--background-secondary) !important;
 }
 
 .dataloom-input--numeric {
