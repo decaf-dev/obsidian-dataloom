@@ -15,7 +15,7 @@ export const useShiftMenu = (
 		leftOffset?: number;
 	}
 ) => {
-	const { mountLeaf, isMarkdownView, appId } = useMountState();
+	const { mountLeaf } = useMountState();
 	const viewContentEl = mountLeaf.view.containerEl;
 
 	const {
@@ -35,9 +35,8 @@ export const useShiftMenu = (
 			leftOffset,
 			openDirection
 		);
-		const containerPosition = isMarkdownView
-			? getEmbeddedLoomContainerPosition(appId)
-			: getDataLoomViewContainerPosition(viewContentEl);
+		const containerPosition =
+			getDataLoomViewContainerPosition(viewContentEl);
 
 		const newPosition = shiftElementIntoContainer(
 			containerPosition,
@@ -79,23 +78,6 @@ const getMenuPosition = (
 	return {
 		top,
 		left,
-		width: rect.width,
-		height: rect.height,
-	};
-};
-
-const getEmbeddedLoomContainerPosition = (appId: string) => {
-	const appEl = document.getElementById(appId);
-	console.log(appEl);
-	if (!appEl) return { top: 0, left: 0, width: 0, height: 0 };
-	const container = appEl.closest(".dataloom-embedded-container");
-	console.log(container);
-	if (!container) return { top: 0, left: 0, width: 0, height: 0 };
-	const rect = container.getBoundingClientRect();
-	console.log("HERE");
-	return {
-		top: rect.top,
-		left: rect.left,
 		width: rect.width,
 		height: rect.height,
 	};

@@ -3,8 +3,10 @@ import React from "react";
 import MenuTrigger from "../menu-trigger";
 import Button from "../button";
 import { ButtonVariant } from "../button/types";
+import { LoomMenu } from "../menu/types";
 
 interface Props {
+	menu: LoomMenu;
 	variant?: ButtonVariant;
 	ariaLabel?: string;
 	icon?: React.ReactNode;
@@ -17,6 +19,7 @@ interface Props {
 const MenuButton = React.forwardRef<HTMLDivElement, Props>(
 	(
 		{
+			menu,
 			variant,
 			ariaLabel,
 			icon,
@@ -31,6 +34,7 @@ const MenuButton = React.forwardRef<HTMLDivElement, Props>(
 			<MenuTrigger
 				isButton
 				ref={ref}
+				menu={menu}
 				onClick={onClick}
 				onMouseDown={onMouseDown}
 				onOpen={onOpen}

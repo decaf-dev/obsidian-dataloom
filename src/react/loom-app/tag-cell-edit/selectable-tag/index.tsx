@@ -27,7 +27,7 @@ export default function SelectableTag({
 	onDeleteClick,
 }: Props) {
 	const {
-		menuId,
+		menu,
 		triggerRef,
 		triggerPosition,
 		isOpen,
@@ -74,13 +74,14 @@ export default function SelectableTag({
 				<Tag markdown={markdown} color={color} maxWidth="150px" />
 				<MenuButton
 					ref={triggerRef}
+					menu={menu}
 					icon={<Icon lucideId="more-horizontal" />}
 					onOpen={onOpen}
 				/>
 			</div>
 			<TagColorMenu
 				isOpen={isOpen}
-				menuId={menuId}
+				id={menu.id}
 				triggerPosition={triggerPosition}
 				selectedColor={color}
 				onColorClick={(color) => handleColorChange(color)}

@@ -18,7 +18,7 @@ import {
 } from "src/react/shared/menu/types";
 
 interface Props {
-	menuId: string;
+	id: string;
 	isOpen: boolean;
 	triggerPosition: Position;
 	selectedColor: string;
@@ -29,7 +29,7 @@ interface Props {
 }
 
 export default function TagColorMenu({
-	menuId,
+	id,
 	isOpen,
 	triggerPosition,
 	selectedColor,
@@ -42,7 +42,7 @@ export default function TagColorMenu({
 
 	return (
 		<Menu
-			id={menuId}
+			id={id}
 			isOpen={isOpen}
 			triggerPosition={triggerPosition}
 			onRequestClose={onRequestClose}

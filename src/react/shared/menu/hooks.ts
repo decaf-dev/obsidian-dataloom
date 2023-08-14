@@ -1,65 +1,59 @@
 import React from "react";
 
-import { LoomMenuCloseRequestType, LoomMenuLevel, Position } from "./types";
-import { createCloseRequest, createMenu, createMenuId } from "./factory";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { menuCloseRequestsAtom, openMenusAtom } from "./atom/atoms";
 import {
-	closeRequestSelector,
-	isMenuOpenSelector,
-	topMenuSelector,
-} from "./atom/selectors";
+	LoomMenu,
+	LoomMenuCloseRequestType,
+	LoomMenuLevel,
+	Position,
+} from "./types";
+import { createCloseRequest, createMenu } from "./factory";
 import { useMountState } from "src/react/loom-app/mount-provider";
 import _ from "lodash";
+import { useMenuContext } from "../menu-provider";
 
 export const useMenu = ({
 	level = LoomMenuLevel.ONE,
 	shouldRequestOnClose = false,
 } = {}) => {
-	const [id] = React.useState(createMenuId());
-	const isOpen = useRecoilValue(isMenuOpenSelector(id));
-	const closeRequest = useRecoilValue(closeRequestSelector(id));
-	const setOpenMenus = useSetRecoilState(openMenusAtom);
-	const setCloseRequests = useSetRecoilState(menuCloseRequestsAtom);
-
-	const { ref, position } = usePosition();
+	const { openMenus, closeRequests, setOpenMenus, setCloseRequests } =
+		useMenuContext();
+	const [menu] = React.useState(createMenu(level, shouldRequestOnClose));
+	const isOpen = openMenus.find((m) => m.id === menu.id) !== undefined;
+	const closeRequest =
+		closeRequests.find((r) => r.menuId === menu.id) ?? null;
+	const { ref, position } = usePosition(isOpen);
 
 	/**
 	 * Adds the menu to the open menus list
 	 */
 	const onOpen = React.useCallback(() => {
-		setOpenMenus((prevMenus) => {
-			if (prevMenus.length !== 0) {
-				const topMenu = prevMenus[prevMenus.length - 1];
-				if (topMenu.level <= level) return prevMenus;
-			}
-
-			const found = prevMenus.find((m) => m.id === id);
-			if (found) return prevMenus;
-
-			const menu = createMenu(id, level, shouldRequestOnClose);
-			return [...prevMenus, menu];
-		});
-	}, [id, level, setOpenMenus, shouldRequestOnClose]);
+		//Wait 10ms so that on mobile, the keyboard can popup and then the menu can already be
+		//positioned correctly
+		setTimeout(() => {
+			setOpenMenus((prevMenus) => {
+				const found = prevMenus.find((m) => m.id === menu.id);
+				if (found) return prevMenus;
+				return [...prevMenus, menu];
+			});
+		}, 10);
+	}, [menu, setOpenMenus, shouldRequestOnClose]);
 
 	/**
 	 * Removes the menu from the open menus list.
 	 */
 	const onClose = React.useCallback(
 		(shouldFocusTrigger = true) => {
-			setTimeout(() => {
-				setOpenMenus((prevMenus) =>
-					prevMenus.filter((menu) => menu.id !== id)
-				);
-				setCloseRequests((prevRequests) =>
-					prevRequests.filter((request) => request.menuId !== id)
-				);
-				if (shouldFocusTrigger && ref.current) {
-					ref.current.focus();
-				}
-			}, 1);
+			setOpenMenus((prevMenus) =>
+				prevMenus.filter((menu) => menu.id !== menu.id)
+			);
+			setCloseRequests((prevRequests) =>
+				prevRequests.filter((request) => request.menuId !== menu.id)
+			);
+			if (shouldFocusTrigger && ref.current) {
+				ref.current.focus();
+			}
 		},
-		[id, shouldRequestOnClose, setOpenMenus, setCloseRequests]
+		[menu, setOpenMenus, setCloseRequests]
 	);
 
 	/**
@@ -68,21 +62,29 @@ export const useMenu = ({
 	const onRequestClose = React.useCallback(
 		(type: LoomMenuCloseRequestType = "save-and-close") => {
 			if (shouldRequestOnClose) {
-				const request = createCloseRequest(id, type);
+				const request = createCloseRequest(menu.id, type);
 				setCloseRequests((prevRequests) => [...prevRequests, request]);
 			} else {
 				onClose();
 			}
 		},
-		[id, shouldRequestOnClose, setCloseRequests]
+		[menu, setCloseRequests]
 	);
 
+	/**
+	 * When the menu is unmounted, remove it from the open menus list.
+	 * This is necessary for support for the virtualized list
+	 */
 	React.useEffect(() => {
-		return () => onClose(false);
-	}, []);
+		return () => {
+			if (isOpen) {
+				onClose(false);
+			}
+		};
+	}, [isOpen]);
 
 	return {
-		menuId: id,
+		menu,
 		triggerRef: ref,
 		triggerPosition: position,
 		isOpen,
@@ -94,14 +96,17 @@ export const useMenu = ({
 };
 
 export const useMenuOperations = () => {
-	const topMenu = useRecoilValue(topMenuSelector);
-	const openMenus = useRecoilValue(openMenusAtom);
-	const setOpenMenus = useSetRecoilState(openMenusAtom);
-	const setCloseRequests = useSetRecoilState(menuCloseRequestsAtom);
+	const { openMenus, setOpenMenus, setCloseRequests } = useMenuContext();
+	const topMenu = openMenus[openMenus.length - 1] ?? null;
 
-	const isMenuOpen = React.useCallback(() => {
-		return openMenus.length !== 0;
-	}, [openMenus]);
+	const canOpen = React.useCallback(
+		(menu: LoomMenu) => {
+			if (topMenu === null) return true;
+			if (menu.level > topMenu.level) return true;
+			return false;
+		},
+		[topMenu]
+	);
 
 	const onCloseAll = React.useCallback(() => {
 		setOpenMenus((prevState) =>
@@ -127,14 +132,14 @@ export const useMenuOperations = () => {
 	}, [topMenu]);
 
 	return {
-		isMenuOpen,
+		canOpen,
 		topMenu,
 		onCloseAll,
 		onRequestCloseTop,
 	};
 };
 
-const usePosition = () => {
+const usePosition = (isOpen: boolean) => {
 	const { mountLeaf, isMarkdownView } = useMountState();
 	const [position, setPosition] = React.useState<Position>({
 		top: 0,
@@ -146,9 +151,13 @@ const usePosition = () => {
 
 	React.useEffect(() => {
 		if (!ref.current) return;
-
 		const el = ref.current;
-		const throttleUpdatePosition = _.throttle(updatePosition, 100);
+
+		const THROTTLE_TIME_MILLIS = 100;
+		const throttleUpdatePosition = _.throttle(
+			updatePosition,
+			THROTTLE_TIME_MILLIS
+		);
 
 		function updatePosition() {
 			const { top, left, width, height } = el.getBoundingClientRect();
@@ -181,12 +190,12 @@ const usePosition = () => {
 		if (table) observer.observe(table);
 
 		//The scroller will only be available for elements rendered in a virtuoso list
-		const tableScroller = el.closest('[data-virtuoso-scroller="true"]');
-		tableScroller?.addEventListener("scroll", throttleUpdatePosition);
+		const tableContainer = el.closest('[data-virtuoso-scroller="true"]');
+		tableContainer?.addEventListener("scroll", throttleUpdatePosition);
 
 		return () => {
 			observer.disconnect();
-			tableScroller?.removeEventListener("scroll", updatePosition);
+			tableContainer?.removeEventListener("scroll", updatePosition);
 			pageScrollerEl?.removeEventListener(
 				"scroll",
 				throttleUpdatePosition
@@ -196,7 +205,7 @@ const usePosition = () => {
 				throttleUpdatePosition
 			);
 		};
-	}, [mountLeaf.view.containerEl, isMarkdownView]);
+	}, [mountLeaf.view.containerEl, isMarkdownView, isOpen]);
 
 	return {
 		ref,

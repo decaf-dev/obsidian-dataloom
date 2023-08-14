@@ -49,7 +49,7 @@ export default function FooterCellContainer({
 	onTypeChange,
 }: Props) {
 	const {
-		menuId,
+		menu,
 		triggerRef,
 		triggerPosition,
 		isOpen,
@@ -91,7 +91,7 @@ export default function FooterCellContainer({
 
 	return (
 		<>
-			<MenuTrigger isCell ref={triggerRef} onOpen={onOpen}>
+			<MenuTrigger menu={menu} isCell ref={triggerRef} onOpen={onOpen}>
 				<div
 					className="dataloom-cell--footer__container dataloom-selectable"
 					style={{
@@ -115,7 +115,7 @@ export default function FooterCellContainer({
 				</div>
 			</MenuTrigger>
 			<CalculationMenu
-				id={menuId}
+				id={menu.id}
 				isOpen={isOpen}
 				triggerPosition={triggerPosition}
 				cellType={cellType}

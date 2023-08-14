@@ -65,7 +65,7 @@ export default function OptionBar({
 	});
 
 	const {
-		menuId: moreMenuId,
+		menu: moreMenu,
 		triggerRef: moreMenuTriggerRef,
 		triggerPosition: moreMenuTriggerPosition,
 		isOpen: isMoreMenuOpen,
@@ -75,7 +75,7 @@ export default function OptionBar({
 	} = useMenu();
 
 	const {
-		menuId: toggleMenuId,
+		menu: toggleMenu,
 		triggerRef: toggleMenuTriggerRef,
 		triggerPosition: toggleMenuTriggerPosition,
 		isOpen: isToggleMenuOpen,
@@ -85,7 +85,7 @@ export default function OptionBar({
 	} = useMenu();
 
 	const {
-		menuId: filterMenuId,
+		menu: filterMenu,
 		triggerRef: filterMenuTriggerRef,
 		triggerPosition: filterMenuTriggerPosition,
 		isOpen: isFilterMenuOpen,
@@ -171,6 +171,7 @@ export default function OptionBar({
 							{isSmallScreen === false && (
 								<MenuButton
 									ref={filterMenuTriggerRef}
+									menu={filterMenu}
 									onOpen={onFilterMenuOpen}
 								>
 									Filter
@@ -179,6 +180,7 @@ export default function OptionBar({
 							{isSmallScreen === false && (
 								<MenuButton
 									ref={toggleMenuTriggerRef}
+									menu={toggleMenu}
 									onOpen={onToggleMenuOpen}
 								>
 									Toggle
@@ -186,6 +188,7 @@ export default function OptionBar({
 							)}
 							<MenuButton
 								ref={moreMenuTriggerRef}
+								menu={moreMenu}
 								icon={<Icon lucideId="more-vertical" />}
 								onOpen={onMoreMenuOpen}
 							/>
@@ -194,7 +197,7 @@ export default function OptionBar({
 				</Padding>
 			</div>
 			<MoreMenu
-				id={moreMenuId}
+				id={moreMenu.id}
 				isOpen={isMoreMenuOpen}
 				triggerPosition={moreMenuTriggerPosition}
 				numFrozenColumns={numFrozenColumns}
@@ -205,7 +208,7 @@ export default function OptionBar({
 				onClose={onMoreMenuClose}
 			/>
 			<ToggleColumnMenu
-				id={toggleMenuId}
+				id={toggleMenu.id}
 				isOpen={isToggleMenuOpen}
 				triggerPosition={
 					isSmallScreen
@@ -218,7 +221,7 @@ export default function OptionBar({
 				onClose={onToggleMenuClose}
 			/>
 			<FilterMenu
-				id={filterMenuId}
+				id={filterMenu.id}
 				isOpen={isFilterMenuOpen}
 				triggerPosition={
 					isSmallScreen

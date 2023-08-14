@@ -37,7 +37,7 @@ export default function TextCellEdit({
 }: Props) {
 	const { onCloseAll } = useMenuOperations();
 	const {
-		menuId: suggestMenuId,
+		menu: suggestMenu,
 		triggerRef: suggestMenuTriggerRef,
 		triggerPosition: suggestMenuTriggerPosition,
 		isOpen: isSuggestMenuOpen,
@@ -179,7 +179,7 @@ export default function TextCellEdit({
 				/>
 			</div>
 			<SuggestMenu
-				id={suggestMenuId}
+				id={suggestMenu.id}
 				isOpen={isSuggestMenuOpen}
 				triggerPosition={suggestMenuTriggerPosition}
 				filterValue={filterValue}

@@ -36,7 +36,7 @@ export default function DateCellEdit({
 	onDateFormatChange,
 }: Props) {
 	const {
-		menuId: dateFormatMenuId,
+		menu: dateFormatMenu,
 		triggerRef: dateFormatMenuTriggerRef,
 		triggerPosition: dateFormatMenuTriggerPosition,
 		isOpen: isDateFormatMenuOpen,
@@ -127,6 +127,7 @@ export default function DateCellEdit({
 					</Padding>
 					<MenuTrigger
 						ref={dateFormatMenuTriggerRef}
+						menu={dateFormatMenu}
 						onOpen={onDateFormatMenuOpen}
 					>
 						<MenuItem
@@ -139,7 +140,7 @@ export default function DateCellEdit({
 				</Stack>
 			</div>
 			<DateFormatMenu
-				id={dateFormatMenuId}
+				id={dateFormatMenu.id}
 				isOpen={isDateFormatMenuOpen}
 				triggerPosition={dateFormatMenuTriggerPosition}
 				value={dateFormat}
