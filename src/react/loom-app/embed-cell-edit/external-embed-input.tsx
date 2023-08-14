@@ -13,5 +13,13 @@ export default function ExternalEmbedInput({ value, onChange }: Props) {
 	const ref = React.useRef<HTMLInputElement | null>(null);
 
 	usePlaceCursorAtEnd(ref, value);
-	return <Input ref={ref} showBorder value={value} onChange={onChange} />;
+	return (
+		<Input
+			ref={ref}
+			showBorder
+			placeholder="Enter a url"
+			value={value}
+			onChange={onChange}
+		/>
+	);
 }

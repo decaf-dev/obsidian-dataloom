@@ -46,30 +46,28 @@ export default function EmbedCellEdit({
 
 	return (
 		<div className="dataloom-embed-cell-edit">
-			<Stack width="100%" spacing="md">
-				<Padding width="100%" px="md" pt="md">
-					<Stack spacing="sm" width="100%">
-						<label htmlFor="external-switch">External Link</label>
-						<Switch
-							id="external-switch"
-							value={isExternalLink}
-							onToggle={onExternalLinkToggle}
-						/>
-					</Stack>
+			<Padding width="100%" p="md">
+				<Stack spacing="sm" width="100%">
+					<label htmlFor="external-switch">External Link</label>
+					<Switch
+						id="external-switch"
+						value={isExternalLink}
+						onToggle={onExternalLinkToggle}
+					/>
+				</Stack>
+			</Padding>
+			<Divider />
+			{isExternalLink && (
+				<Padding width="100%" p="md">
+					<ExternalEmbedInput
+						value={externalLink}
+						onChange={setExternalLink}
+					/>
 				</Padding>
-				<Divider />
-				{isExternalLink && (
-					<Padding width="100%" px="md" pb="md">
-						<ExternalEmbedInput
-							value={externalLink}
-							onChange={setExternalLink}
-						/>
-					</Padding>
-				)}
-				{!isExternalLink && (
-					<InternalEmbedSuggest onChange={handleSuggestChange} />
-				)}
-			</Stack>
+			)}
+			{!isExternalLink && (
+				<InternalEmbedSuggest onChange={handleSuggestChange} />
+			)}
 		</div>
 	);
 }

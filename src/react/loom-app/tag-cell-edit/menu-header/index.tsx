@@ -47,14 +47,14 @@ export default function MenuHeader({
 					))}
 				</Wrap>
 			</Padding>
-			<Padding p="md">
-				<Input
-					ref={inputRef}
-					showBorder
-					value={inputValue}
-					onChange={handleInputChange}
-				/>
-			</Padding>
+			<Input
+				ref={inputRef}
+				isTransparent
+				focusOutline="none"
+				placeholder="Search for an option..."
+				value={inputValue}
+				onChange={handleInputChange}
+			/>
 		</div>
 	);
 }

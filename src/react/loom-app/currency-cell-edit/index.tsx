@@ -43,7 +43,7 @@ export default function CurrencyCellEdit({
 				ref={inputRef}
 				//Set input mode so that the keyboard is numeric
 				//but selection is still available
-				defaultOutline
+				focusOutline="default"
 				inputMode="numeric"
 				value={localValue}
 				onChange={handleChange}

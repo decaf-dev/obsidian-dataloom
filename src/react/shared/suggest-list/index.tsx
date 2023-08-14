@@ -3,14 +3,15 @@ import React from "react";
 import fuzzysort from "fuzzysort";
 
 import SuggestItem from "./suggest-item";
-import Input from "./suggest-input";
+import SuggestInput from "./suggest-input";
 import Text from "src/react/shared/text";
+import ClearButton from "./clear-button";
+import CreateButton from "./create-button";
+import Divider from "../divider";
+import Padding from "../padding";
 
 import { nltEventSystem } from "src/shared/event-system/event-system";
 import { useLogger } from "src/shared/logger";
-import ClearButton from "./clear-button";
-import CreateButton from "./create-button";
-import Padding from "../padding";
 import { TFile } from "obsidian";
 
 import "./styles.css";
@@ -106,12 +107,13 @@ export function SuggestList({
 	return (
 		<div className="dataloom-suggest-menu">
 			{showInput && files.length > 0 && (
-				<Padding p="md">
-					<Input
+				<>
+					<SuggestInput
 						value={localFilterValue}
 						onChange={setLocalFilterValue}
 					/>
-				</Padding>
+					<Divider />
+				</>
 			)}
 			{showCreate && !doesFilterFileExist && localFilterValue !== "" && (
 				<CreateButton
