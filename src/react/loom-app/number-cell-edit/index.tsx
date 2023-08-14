@@ -41,6 +41,7 @@ export default function NumberCellEdit({
 	return (
 		<div className="dataloom-number-cell-edit">
 			<Input
+				ref={inputRef}
 				defaultOutline
 				//Set input mode so that the keyboard is numeric
 				//but selection is still available
