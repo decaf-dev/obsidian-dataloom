@@ -8,7 +8,7 @@ interface Props {
 export default function SuggestInput({ value, onChange }: Props) {
 	return (
 		<div className="dataloom-suggest-input">
-			<Input isTransparent value={value} onChange={onChange} />
+			<Input showBorder value={value} onChange={onChange} />
 		</div>
 	);
 }
