@@ -8,7 +8,7 @@ export const renderDonationBadge = (
 	});
 	const imgEl = linkEl.createEl("img");
 	imgEl.src =
-		"https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=treywallis&button_colour=6a8695&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00";
+		"https://img.buymeacoffee.com/button-api/?text=Buy me a herbal tea&emoji=🍵&slug=treywallis&button_colour=FF5F5F&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00";
 	imgEl.referrerPolicy = "no-referrer";
 	imgEl.alt = "Buymeacoffee";
 	imgEl.width = 180;

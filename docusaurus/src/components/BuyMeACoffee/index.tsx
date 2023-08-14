@@ -8,9 +8,8 @@ export default function BuyMeACoffee(): JSX.Element {
 			rel="noopener"
 		>
 			<img
-				width="180px"
-				src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&amp;emoji=&amp;slug=treywallis&amp;button_colour=6a8695&amp;font_colour=ffffff&amp;font_family=Poppins&amp;outline_colour=000000&amp;coffee_colour=FFDD00"
-				referrerPolicy="no-referrer"
+				width="180"
+				src="https://img.buymeacoffee.com/button-api/?text=Buy me a herbal tea&emoji=🍵&slug=treywallis&button_colour=9478F0&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00"
 				alt="Buymeacoffee"
 			/>
 		</a>

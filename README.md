@@ -8,8 +8,7 @@ DataLoom is an [Obsidian.md](https://obsidian.md/) plugin for desktop and mobile
 
 Support development
 
-<a href="https://buymeacoffee.com/treywallis" target="_blank" rel="noopener">
-<img width="180px" src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&amp;emoji=&amp;slug=treywallis&amp;button_colour=6a8695&amp;font_colour=ffffff&amp;font_family=Poppins&amp;outline_colour=000000&amp;coffee_colour=FFDD00" referrerpolicy="no-referrer" alt="?text=Buy me a coffee&amp;emoji=&amp;slug=treywallis&amp;button_colour=6a8695&amp;font_colour=ffffff&amp;font_family=Poppins&amp;outline_colour=000000&amp;coffee_colour=FFDD00"></a>
+<a href="https://www.buymeacoffee.com/treywallis" target="_blank" rel="noopener"><img width="180" src="https://img.buymeacoffee.com/button-api/?text=Buy me a herbal tea&emoji=🍵&slug=treywallis&button_colour=9478F0&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00" /></a>
 
 ## About
 
