@@ -11,7 +11,7 @@ import Input from "src/react/shared/input";
 
 import { CellType, SortDir } from "src/shared/loom-state/types";
 import { SubmenuType } from "./types";
-import { useInputSelection } from "src/shared/hooks";
+import { usePlaceCursorAtEnd } from "src/shared/hooks";
 import { getDisplayNameForCellType } from "src/shared/loom-state/type-display-names";
 
 interface Props {
@@ -45,7 +45,7 @@ export default function BaseMenu({
 	onHideClick,
 }: Props) {
 	const inputRef = React.useRef<HTMLInputElement | null>(null);
-	useInputSelection(inputRef, columnName);
+	usePlaceCursorAtEnd(inputRef, columnName);
 
 	React.useEffect(() => {
 		if (inputRef.current) {
