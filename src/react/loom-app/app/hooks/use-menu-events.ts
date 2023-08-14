@@ -3,13 +3,90 @@ import React from "react";
 import { useMenuOperations } from "src/react/shared/menu/hooks";
 import { EVENT_GLOBAL_CLICK } from "src/shared/events";
 import { useLogger } from "src/shared/logger";
+import { useMountState } from "../../mount-provider";
+import _ from "lodash";
 
 export const useMenuEvents = () => {
 	const hookName = "useMenuEvents";
 	const logger = useLogger();
+	const { appId, isMarkdownView } = useMountState();
 	const { onCloseAll } = useMenuOperations();
 
-	//When an Obsidian modal is opened, close all menus
+	React.useEffect(() => {
+		let tableContainer: HTMLElement | null;
+
+		const THROTTLE_TIME_MILLIS = 100;
+		const throttleHandleScroll = _.throttle(
+			handleScroll,
+			THROTTLE_TIME_MILLIS
+		);
+
+		function handleScroll() {
+			//Find any open menus
+			const openMenus = document.querySelectorAll(".dataloom-menu");
+
+			//Since it takes a noticable amount of time for React to update the DOM, we set
+			//the display to none and then wait for React to clean up the DOM
+			for (let menu of openMenus) {
+				(menu as HTMLElement).style.display = "none";
+			}
+			onCloseAll();
+		}
+
+		const appEl = document.getElementById(appId);
+		if (!appEl) return;
+
+		tableContainer = appEl.querySelector(
+			'[data-virtuoso-scroller="true"]'
+		) as HTMLElement | null;
+		if (!tableContainer) return;
+
+		tableContainer.addEventListener("scroll", throttleHandleScroll);
+		return () =>
+			tableContainer?.removeEventListener("scroll", throttleHandleScroll);
+	}, [onCloseAll, appId]);
+
+	/**
+	 * If the app is rendered in an MarkdownView, close all menus when the user scrolls
+	 */
+	React.useEffect(() => {
+		let pageScrollerEl: HTMLElement | null;
+
+		const THROTTLE_TIME_MILLIS = 100;
+		const throttleHandleScroll = _.throttle(
+			handleScroll,
+			THROTTLE_TIME_MILLIS
+		);
+
+		function handleScroll() {
+			//Find any open menus
+			const openMenus = document.querySelectorAll(".dataloom-menu");
+
+			//Since it takes a noticable amount of time for React to update the DOM, we set
+			//the display to none and then wait for React to clean up the DOM
+			for (let menu of openMenus) {
+				(menu as HTMLElement).style.display = "none";
+			}
+
+			onCloseAll();
+		}
+
+		if (isMarkdownView) {
+			const appEl = document.getElementById(appId);
+			if (!appEl) return;
+
+			pageScrollerEl =
+				appEl.closest(".markdown-preview-view") ??
+				appEl.closest(".cm-scroller");
+			pageScrollerEl?.addEventListener("scroll", throttleHandleScroll);
+		}
+		return () =>
+			pageScrollerEl?.removeEventListener("scroll", throttleHandleScroll);
+	}, [onCloseAll, isMarkdownView, appId]);
+
+	/**
+	 * If an Obsidian modal is opened, close all menus
+	 */
 	React.useEffect(() => {
 		function isModalOpen() {
 			//A model is open if there is a modal-container element in the body of the document

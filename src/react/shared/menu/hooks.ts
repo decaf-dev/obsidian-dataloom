@@ -38,27 +38,6 @@ export const useMenu = ({
 		}, 10);
 	}, [menu, setOpenMenus, shouldRequestOnClose]);
 
-	React.useEffect(() => {
-		function setScroll(shouldLock: boolean) {
-			const el = ref.current;
-			if (!el) return;
-
-			const tableScroller = el.closest(
-				'[data-virtuoso-scroller="true"]'
-			) as HTMLElement | null;
-			if (!tableScroller) return;
-
-			tableScroller.style.overflow = shouldLock ? "hidden" : "auto";
-		}
-
-		if (isOpen) {
-			setScroll(true);
-		}
-		return () => {
-			setScroll(false);
-		};
-	}, [isOpen]);
-
 	/**
 	 * Removes the menu from the open menus list.
 	 */
@@ -172,9 +151,13 @@ const usePosition = (isOpen: boolean) => {
 
 	React.useEffect(() => {
 		if (!ref.current) return;
-
 		const el = ref.current;
-		const throttleUpdatePosition = _.throttle(updatePosition, 100);
+
+		const THROTTLE_TIME_MILLIS = 100;
+		const throttleUpdatePosition = _.throttle(
+			updatePosition,
+			THROTTLE_TIME_MILLIS
+		);
 
 		function updatePosition() {
 			const { top, left, width, height } = el.getBoundingClientRect();
@@ -207,12 +190,12 @@ const usePosition = (isOpen: boolean) => {
 		if (table) observer.observe(table);
 
 		//The scroller will only be available for elements rendered in a virtuoso list
-		const tableScroller = el.closest('[data-virtuoso-scroller="true"]');
-		tableScroller?.addEventListener("scroll", throttleUpdatePosition);
+		const tableContainer = el.closest('[data-virtuoso-scroller="true"]');
+		tableContainer?.addEventListener("scroll", throttleUpdatePosition);
 
 		return () => {
 			observer.disconnect();
-			tableScroller?.removeEventListener("scroll", updatePosition);
+			tableContainer?.removeEventListener("scroll", updatePosition);
 			pageScrollerEl?.removeEventListener(
 				"scroll",
 				throttleUpdatePosition

@@ -15,7 +15,7 @@ export const useShiftMenu = (
 		leftOffset?: number;
 	}
 ) => {
-	const { mountLeaf, isMarkdownView, appId } = useMountState();
+	const { mountLeaf } = useMountState();
 	const viewContentEl = mountLeaf.view.containerEl;
 
 	const {
