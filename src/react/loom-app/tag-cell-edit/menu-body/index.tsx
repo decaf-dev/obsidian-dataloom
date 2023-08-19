@@ -35,7 +35,7 @@ export default function MenuBody({
 	return (
 		<div className="dataloom-tag-cell-edit__menu-body">
 			<Padding px="lg" py="md">
-				<Text value="Select an option or create one" />
+				<Text value="Select a tag or create one" />
 			</Padding>
 			<div className="dataloom-tag-cell-edit__menu-body-container">
 				{!hasTagWithSameCase && inputValue !== "" && (

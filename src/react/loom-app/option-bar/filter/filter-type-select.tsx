@@ -10,8 +10,8 @@ interface Props {
 
 export default function FilterRowDropdown({
 	id,
-	cellType,
 	value,
+	cellType,
 	onChange,
 }: Props) {
 	function handleKeyDown(e: React.KeyboardEvent) {
@@ -24,7 +24,7 @@ export default function FilterRowDropdown({
 		<Select
 			value={value}
 			onKeyDown={handleKeyDown}
-			onChange={(value) => onChange(id, value as FilterType)}
+			onChange={(newValue) => onChange(id, newValue as FilterType)}
 		>
 			{cellType === CellType.CHECKBOX && (
 				<>
