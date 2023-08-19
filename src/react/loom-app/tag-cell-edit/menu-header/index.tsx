@@ -53,7 +53,7 @@ export default function MenuHeader({
 				ref={inputRef}
 				isTransparent
 				focusOutline="none"
-				placeholder="Search for an option..."
+				placeholder="Search for a tag..."
 				value={inputValue}
 				onChange={handleInputChange}
 			/>
