@@ -42,14 +42,14 @@ export default function FilterTextInput({
 				cellType !== CellType.MULTI_TAG && (
 					<Input
 						value={text}
-						onChange={(value) => onTextChange(id, value)}
+						onChange={(newValue) => onTextChange(id, newValue)}
 					/>
 				)}
 			{cellType === CellType.CHECKBOX && (
 				<Select
 					value={text}
 					onKeyDown={handleKeyDown}
-					onChange={(value) => onTextChange(id, value)}
+					onChange={(newValue) => onTextChange(id, newValue)}
 				>
 					<option value="">Select an option</option>
 					<option value={CHECKBOX_MARKDOWN_CHECKED}>Checked</option>
@@ -142,18 +142,18 @@ export default function FilterTextInput({
 					isMulti={cellType === CellType.MULTI_TAG}
 					backspaceRemovesValue
 					value={columnTags.filter((tag) => tagIds.includes(tag.id))}
-					onChange={(value) => {
+					onChange={(newValue) => {
 						if (cellType === CellType.MULTI_TAG) {
 							onTagsChange(
 								id,
 								//@ts-expect-error value is not typed
-								value?.map((tag) => tag.id)
+								newValue?.map((tag) => tag.id)
 							);
 						} else {
 							onTagsChange(
 								id,
 								//@ts-expect-error value is not typed
-								[value?.id]
+								[newValue?.id]
 							);
 						}
 					}}

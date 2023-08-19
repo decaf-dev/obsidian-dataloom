@@ -26,7 +26,7 @@ export default function FilterColumnSelect({
 			className="dataloom-filter-column-select"
 			value={value}
 			onKeyDown={handleKeyDown}
-			onChange={() => onChange(id, value)}
+			onChange={(newValue) => onChange(id, newValue)}
 		>
 			{columns.map((column) => {
 				const { id, markdown } = column;
