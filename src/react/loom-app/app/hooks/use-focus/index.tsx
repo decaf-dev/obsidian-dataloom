@@ -9,7 +9,7 @@
 // import {
 // 	// focusNextElement,
 // 	// getFocusableLayerEl,
-// 	removeFocusVisibleClass,
+// 	removeCurrentFocusClass,
 // } from "src/react/loom-app/app/hooks/use-focus/focus-visible";
 import { useMenuOperations } from "src/react/shared/menu/hooks";
 import { nltEventSystem } from "src/shared/event-system/event-system";
@@ -39,7 +39,7 @@ export default function useFocus() {
 
 		// if (e.key === "Tab") {
 		// 	//Remove any class that has focus
-		// 	removeFocusVisibleClass();
+		// 	removeCurrentFocusClass();
 
 		// 	//Prevent default tab behavior
 		// 	//which is to move focus to next element
@@ -130,7 +130,7 @@ export default function useFocus() {
 		// 			}
 		// 	}
 		// 	if (elementToFocus !== null) {
-		// 		removeFocusVisibleClass();
+		// 		removeCurrentFocusClass();
 		// 		(elementToFocus as HTMLElement).focus();
 		// 	}
 		// }

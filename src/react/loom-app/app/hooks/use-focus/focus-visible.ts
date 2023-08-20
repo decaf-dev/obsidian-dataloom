@@ -1,21 +1,31 @@
-export const focusMenuElement = (menuId: string) => {
-	const el = document.querySelector(`#${menuId}`) as HTMLElement | null;
-	if (el) {
-		el.focus();
-		addFocusVisibleClass(el);
-	}
+// export const focusMenuElement = (menuId: string) => {
+// 	const el = document.querySelector(`#${menuId}`) as HTMLElement | null;
+// 	if (el) {
+// 		el.focus();
+// 		addFocusClass(el);
+// 	}
+// };
+
+/**
+ * Adds the focus-visible class to an element
+ * We do this since because :focus-visible only appears when a keyboard event happens e.g. tab is pressed
+ * It will not appear when we click outside of the menu
+ * @param el - The element to add the focus-visible class to
+ * @returns
+ */
+export const addFocusClass = (el: HTMLElement | null) => {
+	if (!el) return;
+	el.classList.add("dataloom-focus-visible");
 };
 
-//Since .focus-visible only appears when a keyboard event happens e.g. tab is pressed
-//to programatically add a visual indicator we need to add a class
-export const addFocusVisibleClass = (el: HTMLElement) => {
-	if (el) el.classList.add("dataloom-focus-visible");
-};
-
-//Once a focus visible class is added, it will stay there until we remove it
-export const removeFocusVisibleClass = () => {
+/**
+ * Removes the focus-visible class from an element
+ * There should only be one element with the focus-visible class at a time
+ */
+export const removeCurrentFocusClass = () => {
 	const el = document.querySelector(".dataloom-focus-visible");
-	if (el) el.classList.remove("dataloom-focus-visible");
+	if (!el) return;
+	el.classList.remove("dataloom-focus-visible");
 };
 
 export const getFocusableLayerEl = (appId: string): HTMLElement | null => {

@@ -38,7 +38,7 @@ import { deserializeLoomState, serializeLoomState } from "./data/serialize";
 import { updateLinkReferences } from "./data/utils";
 import { getBasename } from "./shared/link/link-utils";
 import { hasDarkTheme } from "./shared/render/utils";
-import { removeFocusVisibleClass } from "./react/loom-app/app/hooks/use-focus/focus-visible";
+import { removeCurrentFocusClass } from "./react/loom-app/app/hooks/use-focus/focus-visible";
 import { LoomState } from "./shared/loom-state/types";
 import {
 	loadPreviewModeApps,
@@ -217,7 +217,7 @@ export default class DataLoomPlugin extends Plugin {
 			if (this.settings.shouldDebug) console.log("main handleClick");
 
 			//Clear the focus-visible class from the last focused element
-			removeFocusVisibleClass();
+			removeCurrentFocusClass();
 			this.app.workspace.trigger(EVENT_GLOBAL_CLICK);
 		});
 
