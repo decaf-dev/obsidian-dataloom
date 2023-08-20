@@ -1,5 +1,3 @@
-import { SortDir } from "src/shared/loom-state/types";
-
 import {
 	focusNextElement,
 	getFocusableElements,

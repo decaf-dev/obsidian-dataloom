@@ -34,13 +34,14 @@ export const renderMarkdown = async (
 		const view = leaf?.view;
 
 		if (view instanceof MarkdownView || view instanceof DataLoomView) {
-			if (view.file === null) return div;
+			const file = view.file;
+			if (file === null) return div;
 
 			await MarkdownRenderer.render(
 				app,
 				formattedMarkdown,
 				div,
-				view.file.path,
+				file.path,
 				view
 			);
 
@@ -52,7 +53,7 @@ export const renderMarkdown = async (
 
 				const destination = app.metadataCache.getFirstLinkpathDest(
 					href,
-					view.file!.path
+					file.path
 				);
 				if (!destination) embed.classList.add("is-unresolved");
 

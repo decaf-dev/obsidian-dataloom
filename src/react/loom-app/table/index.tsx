@@ -34,7 +34,7 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 			(
 				ref as React.MutableRefObject<VirtuosoHandle | null>
 			).current?.scrollToIndex(bodyRows.length - 1);
-	}, [previousRowLength, bodyRows.length]);
+	}, [ref, previousRowLength, bodyRows.length]);
 
 	return (
 		<TableVirtuoso
@@ -106,12 +106,12 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 });
 
 const Components: TableComponents = {
-	Table: ({ style, ...props }) => {
+	Table: ({ ...props }) => {
 		return <div className="dataloom-table" {...props} />;
 	},
 	//Don't apply styles because we want to apply sticky positioning
 	//to the cells, not the header container
-	TableHead: React.forwardRef(({ style, ...props }, ref) => (
+	TableHead: React.forwardRef(({ ...props }, ref) => (
 		<div className="dataloom-header" {...props} ref={ref} />
 	)),
 	TableRow: ({ style, ...props }) => {
@@ -122,7 +122,7 @@ const Components: TableComponents = {
 	)),
 	//Don't apply styles because we want to apply sticky positioning
 	//to the cells, not the footer container
-	TableFoot: React.forwardRef(({ style, ...props }, ref) => (
+	TableFoot: React.forwardRef(({ ...props }, ref) => (
 		<div className="dataloom-footer" {...props} ref={ref} />
 	)),
 	FillerRow: ({ height }) => {

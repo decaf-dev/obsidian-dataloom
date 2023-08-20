@@ -10,7 +10,7 @@ export default class WhatsNewModal extends Modal {
 	}
 
 	async onOpen() {
-		let { contentEl } = this;
+		const { contentEl } = this;
 		contentEl.createEl("h2", { text: "DataLoom - What's New" });
 		renderDivider(contentEl);
 		this.renderContent(contentEl);
@@ -85,7 +85,7 @@ export default class WhatsNewModal extends Modal {
 	}
 
 	onClose() {
-		let { contentEl } = this;
+		const { contentEl } = this;
 		contentEl.empty();
 	}
 }

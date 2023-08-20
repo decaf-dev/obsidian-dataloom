@@ -86,7 +86,7 @@ export default class RowSortCommand extends LoomStateCommand {
 	) => {
 		const rowsCopy = [...rows];
 		rowsCopy.sort((a, b) => {
-			for (let column of columnsToSortBy) {
+			for (const column of columnsToSortBy) {
 				const comparison = this.sortByColumn(a, b, column, cells);
 				if (comparison !== 0) {
 					return comparison;

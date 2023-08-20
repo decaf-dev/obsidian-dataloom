@@ -44,7 +44,7 @@ export const useMenu = ({
 				return [...prevMenus, menu];
 			});
 		}, 10);
-	}, [menu, setOpenMenus, shouldRequestOnClose, logger]);
+	}, [menu, setOpenMenus, logger]);
 
 	/**
 	 * Removes the menu from the open menus list.
@@ -63,7 +63,7 @@ export const useMenu = ({
 				addFocusClass(ref.current);
 			}
 		},
-		[menu, setOpenMenus, setCloseRequests, logger]
+		[ref, menu, setOpenMenus, setCloseRequests, logger]
 	);
 
 	/**
@@ -79,7 +79,7 @@ export const useMenu = ({
 				onClose();
 			}
 		},
-		[menu, setCloseRequests, logger]
+		[menu, setCloseRequests, logger, shouldRequestOnClose, onClose]
 	);
 
 	/**
@@ -95,7 +95,7 @@ export const useMenu = ({
 				}
 			};
 		},
-		[isOpen, logger]
+		[isOpen, logger, onClose]
 	);
 
 	return {
@@ -132,7 +132,7 @@ export const useMenuOperations = () => {
 				createCloseRequest(menu.id, "save-and-close")
 			);
 		});
-	}, [openMenus]);
+	}, [openMenus, setOpenMenus, setCloseRequests]);
 
 	const onRequestCloseTop = React.useCallback(() => {
 		if (!topMenu) return;
@@ -144,7 +144,7 @@ export const useMenuOperations = () => {
 				prevMenus.filter((menu) => menu.id !== topMenu.id)
 			);
 		}
-	}, [topMenu]);
+	}, [topMenu, setOpenMenus, setCloseRequests]);
 
 	return {
 		canOpen,
