@@ -59,13 +59,13 @@ export const useFilterRules = (
 	}
 
 	return {
-		handleRuleAddClick,
-		handleRuleColumnChange,
-		handleRuleDeleteClick,
-		handleRuleFilterTypeChange,
-		handleRuleTextChange,
-		handleRuleToggle,
-		handleRuleTagsChange,
+		onRuleAddClick: handleRuleAddClick,
+		onRuleColumnChange: handleRuleColumnChange,
+		onRuleDeleteClick: handleRuleDeleteClick,
+		onRuleFilterTypeChange: handleRuleFilterTypeChange,
+		onRuleTextChange: handleRuleTextChange,
+		onRuleToggle: handleRuleToggle,
+		onRuleTagsChange: handleRuleTagsChange,
 		filterBodyRowsByRules,
 	};
 };

@@ -99,11 +99,11 @@ export const useTag = () => {
 	}
 
 	return {
-		handleTagCellAdd,
-		handleTagAdd,
-		handleTagCellRemove,
-		handleTagColorChange,
-		handleTagCellMultipleRemove,
-		handleTagDeleteClick,
+		onTagCellAdd: handleTagCellAdd,
+		onTagAdd: handleTagAdd,
+		onTagCellRemove: handleTagCellRemove,
+		onTagColorChange: handleTagColorChange,
+		onTagCellMultipleRemove: handleTagCellMultipleRemove,
+		onTagDeleteClick: handleTagDeleteClick,
 	};
 };

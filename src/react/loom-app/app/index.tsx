@@ -59,58 +59,58 @@ export default function App() {
 	useMenuEvents();
 
 	const { onFocusClick, onFocusKeyDown } = useFocus();
-	const { handleFrozenColumnsChange } = useTableSettings();
+	const { onFrozenColumnsChange } = useTableSettings();
 
 	const {
-		handleRuleAddClick,
-		handleRuleColumnChange,
-		handleRuleDeleteClick,
-		handleRuleFilterTypeChange,
-		handleRuleTextChange,
-		handleRuleToggle,
-		handleRuleTagsChange,
+		onRuleAddClick,
+		onRuleColumnChange,
+		onRuleDeleteClick,
+		onRuleFilterTypeChange,
+		onRuleTagsChange,
+		onRuleTextChange,
+		onRuleToggle,
 		filterBodyRowsByRules,
 	} = useFilterRules(setLoomState);
 
 	const {
-		handleNewColumnClick,
-		handleColumnToggle,
-		handleCurrencyChange,
-		handleDateFormatChange,
-		handleColumnDeleteClick,
-		handleColumnHideClick,
-		handleColumnSortClick,
-		handleColumnTypeClick,
-		handleColumnWidthChange,
-		handleSortRemoveClick,
-		handleCalculationTypeChange,
-		handleWrapContentToggle,
-		handleAspectRatioClick,
-		handleHorizontalPaddingClick,
-		handleVerticalPaddingClick,
+		onColumnWidthChange,
+		onColumnTypeClick,
+		onColumnToggle,
+		onColumnSortClick,
+		onColumnHideClick,
+		onColumnDeleteClick,
+		onCalculationTypeChange,
+		onCurrentChange,
+		onAspectRatioClick,
+		onWrapContentToggle,
+		onVerticalPaddingClick,
+		onSortRemoveClick,
+		onNewColumnClick,
+		onHorizontalPaddingClick,
+		onDateFormatChange,
 	} = useColumn();
 
 	const {
-		handleNewRowClick,
-		handleRowDeleteClick,
-		handleRowInsertAboveClick,
-		handleRowInsertBelowClick,
+		onNewRowClick,
+		onRowDeleteClick,
+		onRowInsertAboveClick,
+		onRowInsertBelowClick,
 	} = useRow();
 
 	const {
-		handleBodyCellContentChange,
-		handleCellDateTimeChange,
-		handleHeaderCellContentChange,
-		handleExternalLinkToggle,
+		onCellDateTimeChange,
+		onBodyCellContentChange,
+		onHeaderCellContentChange,
+		onExternalLinkToggle,
 	} = useCell();
 
 	const {
-		handleTagCellAdd,
-		handleTagAdd,
-		handleTagCellRemove,
-		handleTagCellMultipleRemove,
-		handleTagColorChange,
-		handleTagDeleteClick,
+		onTagCellAdd,
+		onTagAdd,
+		onTagCellRemove,
+		onTagCellMultipleRemove,
+		onTagColorChange,
+		onTagDeleteClick,
 	} = useTag();
 
 	const firstColumnId = useUUID();
@@ -179,16 +179,16 @@ export default function App() {
 				columns={columns}
 				filterRules={filterRules}
 				numFrozenColumns={numFrozenColumns}
-				onColumnToggle={handleColumnToggle}
-				onSortRemoveClick={handleSortRemoveClick}
-				onRuleAddClick={handleRuleAddClick}
-				onRuleDeleteClick={handleRuleDeleteClick}
-				onRuleFilterTypeChange={handleRuleFilterTypeChange}
-				onRuleColumnChange={handleRuleColumnChange}
-				onRuleTextChange={handleRuleTextChange}
-				onRuleToggle={handleRuleToggle}
-				onRuleTagsChange={handleRuleTagsChange}
-				onFrozenColumnsChange={handleFrozenColumnsChange}
+				onColumnToggle={onColumnToggle}
+				onSortRemoveClick={onSortRemoveClick}
+				onRuleAddClick={onRuleAddClick}
+				onRuleDeleteClick={onRuleDeleteClick}
+				onRuleFilterTypeChange={onRuleFilterTypeChange}
+				onRuleColumnChange={onRuleColumnChange}
+				onRuleTextChange={onRuleTextChange}
+				onRuleToggle={onRuleToggle}
+				onRuleTagsChange={onRuleTagsChange}
+				onFrozenColumnsChange={onFrozenColumnsChange}
 			/>
 			<Table
 				numFrozenColumns={numFrozenColumns}
@@ -252,36 +252,30 @@ export default function App() {
 											markdown={markdown}
 											type={type}
 											sortDir={sortDir}
-											onSortClick={handleColumnSortClick}
-											onWidthChange={
-												handleColumnWidthChange
-											}
-											onDeleteClick={
-												handleColumnDeleteClick
-											}
-											onTypeSelect={handleColumnTypeClick}
+											onSortClick={onColumnSortClick}
+											onWidthChange={onColumnWidthChange}
+											onDeleteClick={onColumnDeleteClick}
+											onTypeSelect={onColumnTypeClick}
 											onDateFormatChange={
-												handleDateFormatChange
+												onDateFormatChange
 											}
 											onWrapOverflowToggle={
-												handleWrapContentToggle
+												onWrapContentToggle
 											}
 											onNameChange={
-												handleHeaderCellContentChange
+												onHeaderCellContentChange
 											}
-											onCurrencyChange={
-												handleCurrencyChange
-											}
+											onCurrencyChange={onCurrentChange}
 											onVerticalPaddingClick={
-												handleVerticalPaddingClick
+												onVerticalPaddingClick
 											}
 											onHorizontalPaddingClick={
-												handleHorizontalPaddingClick
+												onHorizontalPaddingClick
 											}
 											onAspectRatioClick={
-												handleAspectRatioClick
+												onAspectRatioClick
 											}
-											onHideClick={handleColumnHideClick}
+											onHideClick={onColumnHideClick}
 										/>
 									),
 								};
@@ -291,7 +285,7 @@ export default function App() {
 								columnId: lastColumnId,
 								content: (
 									<NewColumnButton
-										onClick={handleNewColumnClick}
+										onClick={onNewColumnClick}
 									/>
 								),
 							},
@@ -308,12 +302,12 @@ export default function App() {
 								content: (
 									<RowOptions
 										rowId={rowId}
-										onDeleteClick={handleRowDeleteClick}
+										onDeleteClick={onRowDeleteClick}
 										onInsertAboveClick={
-											handleRowInsertAboveClick
+											onRowInsertAboveClick
 										}
 										onInsertBelowClick={
-											handleRowInsertBelowClick
+											onRowInsertBelowClick
 										}
 									/>
 								),
@@ -377,29 +371,25 @@ export default function App() {
 												shouldWrapOverflow
 											}
 											width={width}
-											onTagClick={handleTagCellAdd}
-											onTagRemoveClick={
-												handleTagCellRemove
-											}
+											onTagClick={onTagCellAdd}
+											onTagRemoveClick={onTagCellRemove}
 											onTagMultipleRemove={
-												handleTagCellMultipleRemove
+												onTagCellMultipleRemove
 											}
 											onContentChange={
-												handleBodyCellContentChange
+												onBodyCellContentChange
 											}
-											onTagColorChange={
-												handleTagColorChange
-											}
-											onTagDelete={handleTagDeleteClick}
+											onTagColorChange={onTagColorChange}
+											onTagDelete={onTagDeleteClick}
 											onDateTimeChange={
-												handleCellDateTimeChange
+												onCellDateTimeChange
 											}
 											onDateFormatChange={
-												handleDateFormatChange
+												onDateFormatChange
 											}
-											onTagAdd={handleTagAdd}
+											onTagAdd={onTagAdd}
 											onExternalLinkToggle={
-												handleExternalLinkToggle
+												onExternalLinkToggle
 											}
 										/>
 									),
@@ -467,7 +457,7 @@ export default function App() {
 												width={width}
 												cellType={type}
 												onTypeChange={
-													handleCalculationTypeChange
+													onCalculationTypeChange
 												}
 											/>
 										),
@@ -487,7 +477,7 @@ export default function App() {
 				})}
 			/>
 			<BottomBar
-				onNewRowClick={handleNewRowClick}
+				onNewRowClick={onNewRowClick}
 				onScrollToTopClick={handleScrollToTopClick}
 				onScrollToBottomClick={handleScrollToBottomClick}
 				onUndoClick={onUndo}

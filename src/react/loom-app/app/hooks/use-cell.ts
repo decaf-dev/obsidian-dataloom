@@ -63,9 +63,9 @@ export const useCell = () => {
 	);
 
 	return {
-		handleHeaderCellContentChange,
-		handleBodyCellContentChange,
-		handleCellDateTimeChange,
-		handleExternalLinkToggle,
+		onHeaderCellContentChange: handleHeaderCellContentChange,
+		onBodyCellContentChange: handleBodyCellContentChange,
+		onCellDateTimeChange: handleCellDateTimeChange,
+		onExternalLinkToggle: handleExternalLinkToggle,
 	};
 };
