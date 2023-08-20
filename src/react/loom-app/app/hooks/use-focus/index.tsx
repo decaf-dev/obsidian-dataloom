@@ -76,9 +76,6 @@ export default function useFocus() {
 				(column) => column.isVisible
 			).length;
 			const numBodyRows = loomState.model.bodyRows.length;
-			const numSortedColumns = loomState.model.columns.filter(
-				(column) => column.sortDir !== SortDir.NONE
-			).length;
 
 			let elementToFocus: Element | null = null;
 
