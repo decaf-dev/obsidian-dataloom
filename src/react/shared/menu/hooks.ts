@@ -10,6 +10,7 @@ import { createCloseRequest, createMenu } from "./factory";
 import { useMountState } from "src/react/loom-app/mount-provider";
 import _ from "lodash";
 import { useMenuContext } from "../menu-provider";
+import { useLogger } from "src/shared/logger";
 
 export const useMenu = ({
 	level = LoomMenuLevel.ONE,
@@ -22,11 +23,13 @@ export const useMenu = ({
 	const closeRequest =
 		closeRequests.find((r) => r.menuId === menu.id) ?? null;
 	const { ref, position } = usePosition(isOpen);
+	const logger = useLogger();
 
 	/**
 	 * Adds the menu to the open menus list
 	 */
 	const onOpen = React.useCallback(() => {
+		logger("onOpen");
 		//Wait 10ms so that on mobile, the keyboard can popup and then the menu can already be
 		//positioned correctly
 		setTimeout(() => {
@@ -36,15 +39,16 @@ export const useMenu = ({
 				return [...prevMenus, menu];
 			});
 		}, 10);
-	}, [menu, setOpenMenus, shouldRequestOnClose]);
+	}, [menu, setOpenMenus, shouldRequestOnClose, logger]);
 
 	/**
 	 * Removes the menu from the open menus list.
 	 */
 	const onClose = React.useCallback(
 		(shouldFocusTrigger = true) => {
+			logger("onClose", { shouldFocusTrigger });
 			setOpenMenus((prevMenus) =>
-				prevMenus.filter((menu) => menu.id !== menu.id)
+				prevMenus.filter((m) => m.id !== menu.id)
 			);
 			setCloseRequests((prevRequests) =>
 				prevRequests.filter((request) => request.menuId !== menu.id)
@@ -53,7 +57,7 @@ export const useMenu = ({
 				ref.current.focus();
 			}
 		},
-		[menu, setOpenMenus, setCloseRequests]
+		[menu, setOpenMenus, setCloseRequests, logger]
 	);
 
 	/**
@@ -61,6 +65,7 @@ export const useMenu = ({
 	 */
 	const onRequestClose = React.useCallback(
 		(type: LoomMenuCloseRequestType = "save-and-close") => {
+			logger("onRequestClose", { type });
 			if (shouldRequestOnClose) {
 				const request = createCloseRequest(menu.id, type);
 				setCloseRequests((prevRequests) => [...prevRequests, request]);
@@ -68,20 +73,20 @@ export const useMenu = ({
 				onClose();
 			}
 		},
-		[menu, setCloseRequests]
+		[menu, setCloseRequests, logger]
 	);
 
 	/**
 	 * When the menu is unmounted, remove it from the open menus list.
 	 * This is necessary for support for the virtualized list
 	 */
-	React.useEffect(() => {
-		return () => {
-			if (isOpen) {
-				onClose(false);
-			}
-		};
-	}, [isOpen]);
+	// React.useEffect(() => {
+	// 	return () => {
+	// 		if (isOpen) {
+	// 			onClose(false);
+	// 		}
+	// 	};
+	// }, [isOpen]);
 
 	return {
 		menu,
