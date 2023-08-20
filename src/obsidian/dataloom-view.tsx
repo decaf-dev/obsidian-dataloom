@@ -1,19 +1,12 @@
 import { TextFileView, WorkspaceLeaf } from "obsidian";
 
-if (process.env.ENABLE_REACT_DEVTOOLS === "true") {
-	import("react-devtools");
-}
-
 import { createRoot, Root } from "react-dom/client";
-import { store } from "src/redux/global/store";
-import { LoomState } from "src/shared/types";
-import {
-	deserializeLoomState,
-	serializeLoomState,
-} from "src/data/serialize-loom-state";
+import { store } from "src/redux/store";
+import { LoomState } from "src/shared/loom-state/types";
+import { deserializeLoomState, serializeLoomState } from "src/data/serialize";
 import { EVENT_APP_REFRESH } from "src/shared/events";
-import { v4 as uuidv4 } from "uuid";
 import LoomAppWrapper from "src/react/loom-app";
+import { createAppId } from "./utils";
 
 export const DATA_LOOM_VIEW = "dataloom";
 
@@ -31,7 +24,7 @@ export default class DataLoomView extends TextFileView {
 		this.pluginVersion = pluginVersion;
 		this.root = null;
 		this.data = "";
-		this.appId = uuidv4();
+		this.appId = createAppId();
 	}
 
 	async onOpen() {
@@ -82,15 +75,16 @@ export default class DataLoomView extends TextFileView {
 	}
 
 	getDisplayText() {
-		const fileName = this.file?.name;
-		if (fileName) {
-			const extensionIndex = fileName.lastIndexOf(".");
-			return fileName.substring(0, extensionIndex);
-		}
-		return "";
+		if (!this.file) return "";
+
+		const fileName = this.file.name;
+		const extensionIndex = fileName.lastIndexOf(".");
+		return fileName.substring(0, extensionIndex);
 	}
 
 	private handleSaveLoomState = (appId: string, state: LoomState) => {
+		if (!this.file) return;
+
 		//We need this for when we open a new tab of the same file
 		//so that the data is up to date
 		const serialized = serializeLoomState(state);
@@ -109,6 +103,8 @@ export default class DataLoomView extends TextFileView {
 	};
 
 	private renderApp(appId: string, state: LoomState) {
+		if (!this.file) return;
+
 		if (this.root) {
 			this.root.render(
 				<LoomAppWrapper

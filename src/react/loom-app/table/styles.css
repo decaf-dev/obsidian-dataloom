@@ -6,9 +6,6 @@
 
 .dataloom-header {
     display: table-header-group;
-    position: sticky;
-    top: 0;
-    z-index: 1;
 }
 
 .dataloom-body {
@@ -23,16 +20,35 @@
     display: table-row;
 }
 
-.dataloom-row--header {
-    background-color: var(--background-secondary);
-}
-
 .dataloom-cell {
     display: table-cell;
 }
 
+.dataloom-cell--left-corner {
+    width: 35px;
+}
+
+.dataloom-cell.dataloom-cell--freeze {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background-color: var(--background-primary);
+}
+
+.dataloom-cell.dataloom-cell--freeze-header {
+    background-color: var(--background-secondary);
+    z-index: 3;
+}
+
+.dataloom-cell.dataloom-cell--freeze-footer {
+    z-index: 3;
+}
+
 .dataloom-cell--header {
-    background-color: var(--table-header-background);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: var(--background-secondary);
     border-bottom: 1px solid var(--table-border-color);
     border-right: 1px solid var(--table-border-color);
         
@@ -56,6 +72,9 @@
 }
 
 .dataloom-cell--footer {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
     background-color: var(--background-primary);
     border-top: 1px solid var(--table-border-color);
     border-bottom: 1px solid var(--table-border-color);

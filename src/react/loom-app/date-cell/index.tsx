@@ -1,7 +1,7 @@
-import { DateFormat } from "src/shared/types";
+import { DateFormat } from "src/shared/loom-state/types";
 import { getDateCellContent } from "src/shared/cell-content/date-cell-content";
 
-import { css } from "@emotion/react";
+import "./styles.css";
 
 interface Props {
 	value: number | null;
@@ -10,19 +10,5 @@ interface Props {
 
 export default function DateCell({ value, format }: Props) {
 	const content = getDateCellContent(value, format);
-	return (
-		<div
-			className="dataloom-date-cell"
-			css={css`
-				width: 100%;
-				text-align: left;
-				overflow: hidden;
-				white-space: nowrap;
-				text-overflow: ellipsis;
-				padding: var(--nlt-cell-spacing);
-			`}
-		>
-			{content}
-		</div>
-	);
+	return <div className="dataloom-date-cell">{content}</div>;
 }

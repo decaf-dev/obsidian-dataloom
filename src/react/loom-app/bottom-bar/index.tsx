@@ -6,24 +6,21 @@ import Button from "src/react/shared/button";
 import Flex from "src/react/shared/flex";
 import Padding from "src/react/shared/padding";
 import Icon from "src/react/shared/icon";
-
 import { numToPx } from "src/shared/conversion";
-
-import "./styles.css";
 import { isOnMobile } from "src/shared/render-utils";
 
+import "./styles.css";
+
 interface Props {
-	appId: string;
 	onScrollToTopClick: () => void;
 	onScrollToBottomClick: () => void;
 	onUndoClick: () => void;
 	onRedoClick: () => void;
-	onNewRowClick: () => void;
+	onRowAddClick: () => void;
 }
 
 export default function BottomBar({
-	appId,
-	onNewRowClick,
+	onRowAddClick,
 	onScrollToTopClick,
 	onScrollToBottomClick,
 	onUndoClick,
@@ -38,9 +35,8 @@ export default function BottomBar({
 
 		if (!ref.current) return;
 
-		const tableEl = document.querySelector(
-			`[data-id="${appId}"] .dataloom-table`
-		);
+		const appEl = ref.current.closest(".dataloom-app");
+		const tableEl = appEl?.querySelector(".dataloom-table");
 		if (!tableEl) return;
 
 		const tableContainerEl = tableEl.parentElement;
@@ -55,6 +51,7 @@ export default function BottomBar({
 			setSpaceBetweenTableAndContainer(diff);
 		});
 		observer.observe(tableEl);
+		observer.observe(tableContainerEl);
 
 		return () => {
 			if (tableEl) observer?.unobserve(tableEl);
@@ -81,7 +78,7 @@ export default function BottomBar({
 									onClick={onUndoClick}
 								/>
 							)}
-							<NewRowButton onClick={onNewRowClick} />
+							<NewRowButton onClick={onRowAddClick} />
 						</Stack>
 						<Stack isHorizontal spacing="sm">
 							<Button

@@ -1,0 +1,7 @@
+.dataloom-selectable-tag {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--dataloom-spacing--sm) var(--dataloom-spacing--md);
+    overflow: hidden;
+}

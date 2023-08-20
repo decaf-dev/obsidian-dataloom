@@ -2,11 +2,13 @@ import React from "react";
 
 import { TableComponents, TableVirtuoso, VirtuosoHandle } from "react-virtuoso";
 
-import { HeaderTableRow, TableRow } from "./types";
+import BodyRow from "./body-row";
+import HeaderCell from "./header-cell";
+import BodyCell from "./body-cell";
+import FooterCell from "./footer-cell";
 
-import TableBodyRow from "./table-body-row";
-import TableHeaderCell from "./table-header-cell";
 import { usePrevious } from "src/shared/hooks";
+import { HeaderTableRow, TableRow } from "./types";
 
 import "./styles.css";
 
@@ -14,10 +16,11 @@ interface Props {
 	headerRows: HeaderTableRow[];
 	bodyRows: TableRow[];
 	footerRows: TableRow[];
+	numFrozenColumns: number;
 }
 
 const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
-	{ headerRows, bodyRows, footerRows },
+	{ headerRows, bodyRows, footerRows, numFrozenColumns },
 	ref
 ) {
 	const previousRowLength = usePrevious(bodyRows.length);
@@ -47,15 +50,14 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 				headerRows.map((row) => {
 					const { id: rowId, cells } = row;
 					return (
-						<div
-							key={rowId}
-							className="dataloom-row dataloom-row--header"
-						>
+						<div key={rowId} className="dataloom-row">
 							{cells.map((cell, i) => {
 								const { id: cellId, columnId, content } = cell;
 								return (
-									<TableHeaderCell
+									<HeaderCell
 										key={cellId}
+										index={i}
+										numFrozenColumns={numFrozenColumns}
 										columnId={columnId}
 										content={content}
 										isDraggable={i < cells.length - 1}
@@ -69,15 +71,15 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 			fixedFooterContent={() =>
 				footerRows.map((row) => (
 					<div className="dataloom-row" key={row.id}>
-						{row.cells.map((cell) => {
+						{row.cells.map((cell, i) => {
 							const { id, content } = cell;
 							return (
-								<div
+								<FooterCell
 									key={id}
-									className="dataloom-cell dataloom-cell--footer"
-								>
-									{content}
-								</div>
+									index={i}
+									numFrozenColumns={numFrozenColumns}
+									content={content}
+								/>
 							);
 						})}
 					</div>
@@ -87,15 +89,15 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 				const row = bodyRows[index];
 				const { id: rowId, cells } = row;
 				return cells.map((cell, i) => {
-					const { id: cellId, content } = cell;
+					const { id, content } = cell;
 					return (
-						<div
-							key={cellId}
-							className="dataloom-cell dataloom-cell--body"
-							data-row-id={i === 0 ? rowId : undefined}
-						>
-							{content}
-						</div>
+						<BodyCell
+							key={id}
+							rowId={rowId}
+							content={content}
+							index={i}
+							numFrozenColumns={numFrozenColumns}
+						/>
 					);
 				});
 			}}
@@ -107,17 +109,21 @@ const Components: TableComponents = {
 	Table: ({ style, ...props }) => {
 		return <div className="dataloom-table" {...props} />;
 	},
+	//Don't apply styles because we want to apply sticky positioning
+	//to the cells, not the header container
 	TableHead: React.forwardRef(({ style, ...props }, ref) => (
 		<div className="dataloom-header" {...props} ref={ref} />
 	)),
 	TableRow: ({ style, ...props }) => {
-		return <TableBodyRow {...props} style={style} />;
+		return <BodyRow {...props} style={style} />;
 	},
 	TableBody: React.forwardRef(({ style, ...props }, ref) => (
 		<div className="dataloom-body" {...props} style={style} ref={ref} />
 	)),
+	//Don't apply styles because we want to apply sticky positioning
+	//to the cells, not the footer container
 	TableFoot: React.forwardRef(({ style, ...props }, ref) => (
-		<div className="dataloom-footer" {...props} style={style} ref={ref} />
+		<div className="dataloom-footer" {...props} ref={ref} />
 	)),
 	FillerRow: ({ height }) => {
 		return <div className="dataloom-row" style={{ height }} />;

@@ -41,14 +41,14 @@ export const getDynamicSize = <T>(
 
 	const { base, mobile } = value as DynamicSize<T>;
 
-	if (isMobileSize()) {
+	if (isSmallScreenSize()) {
 		return mobile ?? base;
 	} else {
 		return base;
 	}
 };
 
-export const isMobileSize = () => {
+export const isSmallScreenSize = () => {
 	return window.innerWidth <= 480;
 };
 

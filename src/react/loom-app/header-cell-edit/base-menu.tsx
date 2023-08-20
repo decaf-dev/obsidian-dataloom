@@ -1,17 +1,18 @@
+import React from "react";
+
 import Divider from "src/react/shared/divider";
 import MenuItem from "src/react/shared/menu-item";
 import Padding from "src/react/shared/padding";
 import Stack from "src/react/shared/stack";
-import { CellType, SortDir } from "src/shared/types";
-import { SubmenuType } from "./types";
-import { useInputSelection } from "src/shared/hooks";
-import { getDisplayNameForCellType } from "src/shared/loom-state/display-name";
-import React from "react";
-import Flex from "src/react/shared/flex";
 import Switch from "src/react/shared/switch";
+import Flex from "src/react/shared/flex";
 import Text from "src/react/shared/text";
-import { MenuCloseRequest } from "src/shared/menu/types";
-import { borderInputStyle } from "src/react/loom-app/shared-styles";
+import Input from "src/react/shared/input";
+
+import { CellType, SortDir } from "src/shared/loom-state/types";
+import { SubmenuType } from "./types";
+import { usePlaceCursorAtEnd } from "src/shared/hooks";
+import { getDisplayNameForCellType } from "src/shared/loom-state/type-display-names";
 
 interface Props {
 	canDeleteColumn: boolean;
@@ -21,7 +22,6 @@ interface Props {
 	cellId: string;
 	columnType: CellType;
 	columnSortDir: SortDir;
-	menuCloseRequest: MenuCloseRequest | null;
 	onColumnNameChange: (value: string) => void;
 	onSortClick: (value: SortDir) => void;
 	onSubmenuChange: (value: SubmenuType) => void;
@@ -44,16 +44,17 @@ export default function BaseMenu({
 	onColumnNameChange,
 	onHideClick,
 }: Props) {
-	const lastKeyPressed = React.useRef<string | null>(null);
 	const inputRef = React.useRef<HTMLInputElement | null>(null);
-	useInputSelection(inputRef, columnName);
+	usePlaceCursorAtEnd(inputRef, columnName);
+
+	React.useEffect(() => {
+		if (inputRef.current) {
+			inputRef.current.focus();
+		}
+	}, [inputRef]);
 
 	function handleInputChange(inputValue: string) {
 		onColumnNameChange(inputValue);
-	}
-
-	function handleKeyDown(e: React.KeyboardEvent) {
-		lastKeyPressed.current = e.key;
 	}
 
 	const hasOptions =
@@ -67,15 +68,11 @@ export default function BaseMenu({
 		<Stack spacing="sm">
 			<Stack spacing="sm" width="100%">
 				<Padding px="md" py="sm" width="100%">
-					<input
-						type="text"
-						className="dataloom-focusable"
-						autoFocus
-						css={borderInputStyle}
+					<Input
 						ref={inputRef}
+						showBorder
 						value={columnName}
-						onChange={(e) => handleInputChange(e.target.value)}
-						onKeyDown={handleKeyDown}
+						onChange={handleInputChange}
 					/>
 				</Padding>
 				<MenuItem
@@ -122,22 +119,24 @@ export default function BaseMenu({
 					onClick={() => onDeleteClick()}
 				/>
 			)}
-			{columnType !== CellType.EMBED && (
-				<>
-					<Divider />
-					<Padding px="lg" py="md">
-						<Flex justify="space-between" align="center">
-							<Text value="Wrap content" />
-							<Switch
-								value={shouldWrapOverflow}
-								onToggle={(value) =>
-									onWrapOverflowToggle(columnId, value)
-								}
-							/>
-						</Flex>
-					</Padding>
-				</>
-			)}
+			{columnType !== CellType.EMBED &&
+				columnType !== CellType.NUMBER &&
+				columnType !== CellType.CURRENCY && (
+					<>
+						<Divider />
+						<Padding px="lg" py="md">
+							<Flex justify="space-between" align="center">
+								<Text value="Wrap content" />
+								<Switch
+									value={shouldWrapOverflow}
+									onToggle={(value) =>
+										onWrapOverflowToggle(columnId, value)
+									}
+								/>
+							</Flex>
+						</Padding>
+					</>
+				)}
 		</Stack>
 	);
 }

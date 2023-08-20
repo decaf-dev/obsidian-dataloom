@@ -1,18 +1,21 @@
 import React from "react";
 
-import { css } from "@emotion/react";
 import fuzzysort from "fuzzysort";
 
 import SuggestItem from "./suggest-item";
-import Input from "./input";
+import SuggestInput from "./suggest-input";
 import Text from "src/react/shared/text";
+import ClearButton from "./clear-button";
+import CreateButton from "./create-button";
+import Divider from "../divider";
+import Padding from "../padding";
 
 import { nltEventSystem } from "src/shared/event-system/event-system";
 import { useLogger } from "src/shared/logger";
-import ClearButton from "./clear-button";
-import CreateButton from "./create-button";
-import Padding from "../padding";
 import { TFile } from "obsidian";
+
+import "./styles.css";
+import { useMountState } from "src/react/loom-app/mount-provider";
 
 interface ContentProps {
 	showInput?: boolean;
@@ -41,6 +44,7 @@ export function SuggestList({
 	const highlightItemRef = React.useRef<HTMLDivElement | null>(null);
 	const [highlightIndex, setHighlightIndex] = React.useState(-1);
 
+	const { app } = useMountState();
 	const logger = useLogger();
 
 	React.useEffect(() => {
@@ -103,17 +107,15 @@ export function SuggestList({
 		.includes(localFilterValue);
 
 	return (
-		<div
-			className="dataloom-suggest-menu"
-			css={css`
-				width: 100%;
-			`}
-		>
+		<div className="dataloom-suggest-menu">
 			{showInput && files.length > 0 && (
-				<Input
-					value={localFilterValue}
-					onChange={setLocalFilterValue}
-				/>
+				<>
+					<SuggestInput
+						value={localFilterValue}
+						onChange={setLocalFilterValue}
+					/>
+					<Divider />
+				</>
 			)}
 			{showCreate && !doesFilterFileExist && localFilterValue !== "" && (
 				<CreateButton
@@ -122,12 +124,7 @@ export function SuggestList({
 				/>
 			)}
 			{files.length > 0 && (
-				<div
-					css={css`
-						max-height: 175px;
-						overflow-y: auto;
-					`}
-				>
+				<div className="dataloom-suggest-menu__container">
 					{filteredFiles.length === 0 && !showCreate && (
 						<SuggestItem
 							index={0}

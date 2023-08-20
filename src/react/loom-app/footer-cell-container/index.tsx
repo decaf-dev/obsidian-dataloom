@@ -1,8 +1,6 @@
 import Text from "../../shared/text";
 import CalculationMenu from "./calculation-menu";
 
-import { useMenu } from "src/shared/menu/hooks";
-import { MenuLevel } from "src/shared/menu/types";
 import {
 	BodyCell,
 	BodyRow,
@@ -12,15 +10,15 @@ import {
 	CurrencyType,
 	DateFormat,
 	Tag,
-} from "src/shared/types";
+} from "src/shared/loom-state/types";
 import Stack from "../../shared/stack";
 
 import MenuTrigger from "src/react/shared/menu-trigger";
 import { isNumber, isNumberCalcuation } from "src/shared/match";
-import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
-import { getShortDisplayNameForCalculationType } from "src/shared/loom-state/display-name";
+import { getShortDisplayNameForCalculationType } from "src/shared/loom-state/type-display-names";
 import { getCalculationContent } from "./calculation";
 import { getNumberCalculationContent } from "./number-calculation";
+import { useMenu } from "../../shared/menu/hooks";
 
 import "./styles.css";
 
@@ -50,14 +48,19 @@ export default function FooterCellContainer({
 	cellType,
 	onTypeChange,
 }: Props) {
-	const { menu, isMenuOpen, menuRef, closeTopMenu } = useMenu(MenuLevel.ONE);
-
-	const { triggerPosition, triggerRef } = useMenuTriggerPosition();
-	useShiftMenu(triggerRef, menuRef, isMenuOpen);
+	const {
+		menu,
+		triggerRef,
+		triggerPosition,
+		isOpen,
+		onOpen,
+		onClose,
+		onRequestClose,
+	} = useMenu();
 
 	function handleTypeClick(value: CalculationType) {
 		onTypeChange(columnId, value);
-		closeTopMenu();
+		onClose();
 	}
 
 	const columnCells = bodyCells.filter((cell) => cell.columnId === columnId);
@@ -88,10 +91,9 @@ export default function FooterCellContainer({
 
 	return (
 		<>
-			<MenuTrigger isCell menu={menu}>
+			<MenuTrigger menu={menu} isCell ref={triggerRef} onOpen={onOpen}>
 				<div
 					className="dataloom-cell--footer__container dataloom-selectable"
-					ref={triggerRef}
 					style={{
 						width,
 					}}
@@ -114,13 +116,13 @@ export default function FooterCellContainer({
 			</MenuTrigger>
 			<CalculationMenu
 				id={menu.id}
-				top={triggerPosition.top}
-				ref={menuRef}
+				isOpen={isOpen}
+				triggerPosition={triggerPosition}
 				cellType={cellType}
-				left={triggerPosition.left}
-				isOpen={isMenuOpen}
 				value={calculationType}
 				onClick={handleTypeClick}
+				onRequestClose={onRequestClose}
+				onClose={onClose}
 			/>
 		</>
 	);

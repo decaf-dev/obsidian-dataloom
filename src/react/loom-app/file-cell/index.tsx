@@ -1,8 +1,9 @@
-import { css } from "@emotion/react";
 import { useRenderMarkdown } from "src/shared/render-utils";
 import { getFileCellContent } from "src/shared/cell-content/file-cell-content";
 import { appendOrReplaceFirstChild } from "src/shared/render/utils";
 import { useOverflow } from "src/shared/spacing/hooks";
+
+import "./styles.css";
 
 interface Props {
 	shouldWrapOverflow: boolean;
@@ -13,17 +14,14 @@ export default function FileCell({ markdown, shouldWrapOverflow }: Props) {
 	const content = getFileCellContent(markdown);
 	const { containerRef, renderRef } = useRenderMarkdown(content);
 
-	const overflowStyle = useOverflow(shouldWrapOverflow);
+	const overflowClassName = useOverflow(shouldWrapOverflow);
+
+	let className = "dataloom-file-cell";
+	className += " " + overflowClassName;
 
 	return (
-		<div className="dataloom-file-cell" css={overflowStyle}>
+		<div className={className}>
 			<div
-				css={css`
-					p {
-						margin: 0;
-						text-align: left;
-					}
-				`}
 				ref={(node) => {
 					containerRef.current = node;
 					appendOrReplaceFirstChild(node, renderRef.current);

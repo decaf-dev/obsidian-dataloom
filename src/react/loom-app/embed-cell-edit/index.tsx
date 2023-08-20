@@ -3,86 +3,71 @@ import React from "react";
 import ExternalEmbedInput from "./external-embed-input";
 import InternalEmbedSuggest from "./internal-embed-suggest";
 
-import { useCompare } from "src/shared/hooks";
-import { MenuCloseRequest } from "src/shared/menu/types";
 import Switch from "src/react/shared/switch";
 import Stack from "src/react/shared/stack";
 import Padding from "src/react/shared/padding";
 import Divider from "src/react/shared/divider";
+import { LoomMenuCloseRequest } from "../../shared/menu/types";
 
 interface Props {
-	menuCloseRequest: MenuCloseRequest | null;
+	closeRequest: LoomMenuCloseRequest | null;
 	isExternalLink: boolean;
 	value: string;
 	onChange: (value: string) => void;
 	onExternalLinkToggle: (value: boolean) => void;
-	onMenuClose: () => void;
+	onClose: () => void;
 }
 
 export default function EmbedCellEdit({
-	menuCloseRequest,
+	closeRequest,
 	isExternalLink,
 	value,
 	onChange,
-	onMenuClose,
+	onClose,
 	onExternalLinkToggle,
 }: Props) {
 	const [externalLink, setExternalLink] = React.useState(
 		isExternalLink ? value : ""
 	);
 
-	const hasCloseRequestTimeChanged = useCompare(
-		menuCloseRequest?.requestTime
-	);
-
 	React.useEffect(() => {
-		if (hasCloseRequestTimeChanged && menuCloseRequest !== null) {
+		if (closeRequest !== null) {
 			if (isExternalLink) {
 				if (externalLink !== value) onChange(externalLink);
 			}
-			onMenuClose();
+			onClose();
 		}
-	}, [
-		isExternalLink,
-		value,
-		externalLink,
-		hasCloseRequestTimeChanged,
-		menuCloseRequest,
-		onMenuClose,
-		onChange,
-	]);
+	}, [isExternalLink, value, externalLink, closeRequest, onClose, onChange]);
 
 	function handleSuggestChange(value: string) {
 		onChange(value);
-		onMenuClose();
+		onClose();
 	}
 
 	return (
 		<div className="dataloom-embed-cell-edit">
-			<Stack width="100%" spacing="lg">
-				<Padding width="100%" px="md" pt="md">
-					<Stack spacing="sm" width="100%">
-						<label htmlFor="external-switch">External Link</label>
-						<Switch
-							id="external-switch"
-							value={isExternalLink}
-							onToggle={onExternalLinkToggle}
-						/>
-					</Stack>
+			<Padding width="100%" p="md">
+				<Stack spacing="sm" width="100%">
+					<label htmlFor="external-switch">External Link</label>
+					<Switch
+						id="external-switch"
+						value={isExternalLink}
+						onToggle={onExternalLinkToggle}
+					/>
+				</Stack>
+			</Padding>
+			<Divider />
+			{isExternalLink && (
+				<Padding width="100%" p="md">
+					<ExternalEmbedInput
+						value={externalLink}
+						onChange={setExternalLink}
+					/>
 				</Padding>
-				<Divider />
-				{isExternalLink && (
-					<Padding width="100%" px="md" pb="md">
-						<ExternalEmbedInput
-							value={externalLink}
-							onChange={setExternalLink}
-						/>
-					</Padding>
-				)}
-				{!isExternalLink && (
-					<InternalEmbedSuggest onChange={handleSuggestChange} />
-				)}
-			</Stack>
+			)}
+			{!isExternalLink && (
+				<InternalEmbedSuggest onChange={handleSuggestChange} />
+			)}
 		</div>
 	);
 }

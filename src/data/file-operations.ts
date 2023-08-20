@@ -1,11 +1,11 @@
-import { App } from "obsidian";
+import { App, TFolder } from "obsidian";
 import { splitFileExtension } from "./utils";
 
 export const createFolder = async (
 	app: App,
 	folderPath: string
-): Promise<void> => {
-	return await app.vault.createFolder(folderPath);
+): Promise<TFolder> => {
+	return app.vault.createFolder(folderPath);
 };
 
 export const createFile = async (

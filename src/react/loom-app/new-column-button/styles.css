@@ -1,3 +1,4 @@
 .dataloom-new-column {
-    padding-left: var(--nlt-spacing--md);
+    padding-left: var(--dataloom-spacing--md);
+    width: 50px;
 }

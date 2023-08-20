@@ -1,7 +1,7 @@
 .dataloom-cell--header__container {
     display: flex;
     justify-content: space-between;
-    min-height: var(--nlt-cell-min-height);
+    min-height: var(--dataloom-cell-min-height);
 }
 
 .dataloom-cell--header__inner-container {
@@ -13,5 +13,6 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     user-select: none;
-    padding: var(--nlt-cell-spacing-x) var(--nlt-cell-spacing-y);
+    padding: var(--dataloom-cell-spacing-x) var(--dataloom-cell-spacing-y);
+    color: var(--text-normal); /* Stop dimming of text when mouse leaves embedded loom */
 }

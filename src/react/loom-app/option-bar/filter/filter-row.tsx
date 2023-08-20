@@ -1,13 +1,14 @@
-import FilterRowDropdown from "./filter-type-select";
 import Icon from "src/react/shared/icon";
 import Button from "src/react/shared/button";
 import Switch from "src/react/shared/switch";
-import { CellType, FilterType, Tag } from "src/shared/types";
-import FilterColumnDropdown from "./filter-column-select";
-import FilterTextInput from "./filter-text-input";
-import { ColumnWithMarkdown } from "../types";
 import Wrap from "src/react/shared/wrap";
 import Stack from "src/react/shared/stack";
+import FilterRowSelect from "./filter-type-select";
+import FilterColumnSelect from "./filter-column-select";
+import FilterTextInput from "./filter-text-input";
+
+import { CellType, FilterType, Tag } from "src/shared/loom-state/types";
+import { ColumnWithMarkdown } from "../types";
 
 interface Props {
 	id: string;
@@ -46,13 +47,13 @@ export default function FilterRow({
 }: Props) {
 	return (
 		<Wrap>
-			<FilterColumnDropdown
+			<FilterColumnSelect
 				id={id}
 				columns={columns}
 				value={columnId}
 				onChange={onColumnChange}
 			/>
-			<FilterRowDropdown
+			<FilterRowSelect
 				id={id}
 				cellType={cellType}
 				value={filterType}

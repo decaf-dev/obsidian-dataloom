@@ -1,62 +1,72 @@
-import React from "react";
 import Menu from "src/react/shared/menu";
 import MenuItem from "src/react/shared/menu-item";
+import {
+	LoomMenuCloseRequestType,
+	Position,
+} from "src/react/shared/menu/types";
 import {
 	getAriaLabelForCalculation,
 	getAriaLabelForNumberCalculation,
 	getDisplayNameForCalculation,
 	getDisplayNameForNumberCalculation,
-} from "src/shared/loom-state/display-name";
+} from "src/shared/loom-state/type-display-names";
 import {
 	Calculation,
 	CalculationType,
 	CellType,
 	NumberCalculation,
-} from "src/shared/types";
+} from "src/shared/loom-state/types";
 
 interface Props {
 	id: string;
 	value: CalculationType;
 	cellType: CellType;
 	isOpen: boolean;
-	top: number;
-	left: number;
+	triggerPosition: Position;
 	onClick: (value: CalculationType) => void;
+	onRequestClose: (type: LoomMenuCloseRequestType) => void;
+	onClose: () => void;
 }
-const CalculationMenu = React.forwardRef<HTMLDivElement, Props>(
-	function CalculationMenu(
-		{ id, value, cellType, isOpen, top, left, onClick }: Props,
-		ref
-	) {
-		return (
-			<Menu ref={ref} id={id} isOpen={isOpen} top={top} left={left}>
-				<div className="dataloom-function-menu">
-					{Object.values(Calculation).map((type) => (
+export default function CalculationMenu({
+	id,
+	value,
+	cellType,
+	isOpen,
+	triggerPosition,
+	onClick,
+	onRequestClose,
+	onClose,
+}: Props) {
+	return (
+		<Menu
+			id={id}
+			isOpen={isOpen}
+			triggerPosition={triggerPosition}
+			onRequestClose={onRequestClose}
+			onClose={onClose}
+		>
+			<div className="dataloom-function-menu">
+				{Object.values(Calculation).map((type) => (
+					<MenuItem
+						key={type}
+						name={getDisplayNameForCalculation(type)}
+						ariaLabel={getAriaLabelForCalculation(type)}
+						onClick={() => onClick(type)}
+						isSelected={type === value}
+					/>
+				))}
+				{(cellType === CellType.NUMBER ||
+					cellType === CellType.CURRENCY) &&
+					Object.values(NumberCalculation).map((type) => (
 						<MenuItem
 							key={type}
-							name={getDisplayNameForCalculation(type)}
-							ariaLabel={getAriaLabelForCalculation(type)}
+							ariaLabel={getAriaLabelForNumberCalculation(type)}
+							name={getDisplayNameForNumberCalculation(type)}
 							onClick={() => onClick(type)}
 							isSelected={type === value}
 						/>
 					))}
-					{(cellType === CellType.NUMBER ||
-						cellType === CellType.CURRENCY) &&
-						Object.values(NumberCalculation).map((type) => (
-							<MenuItem
-								key={type}
-								ariaLabel={getAriaLabelForNumberCalculation(
-									type
-								)}
-								name={getDisplayNameForNumberCalculation(type)}
-								onClick={() => onClick(type)}
-								isSelected={type === value}
-							/>
-						))}
-				</div>
-			</Menu>
-		);
-	}
-);
-
-export default CalculationMenu;
+			</div>
+		</Menu>
+	);
+}

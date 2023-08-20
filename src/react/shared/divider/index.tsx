@@ -1,4 +1,4 @@
-import { css } from "@emotion/react";
+import "./styles.css";
 
 interface Props {
 	width?: string;
@@ -13,17 +13,19 @@ export default function Divider({
 }: Props) {
 	return (
 		<hr
-			css={css`
-				margin: 0;
-				width: ${!isVertical ? width : "unset"};
-				height: ${isVertical === true ? height : "unset"};
-				border-top: ${isVertical === false
-					? "1px solid var(--hr-color)"
-					: "unset"};
-				border-left: ${isVertical === true
-					? "1px var(--hr-color) solid"
-					: "unset"};
-			`}
+			className="dataloom-hr"
+			style={{
+				width: !isVertical ? width : undefined,
+				height: isVertical === true ? height : undefined,
+				borderTop:
+					isVertical === false
+						? "1px solid var(--hr-color)"
+						: undefined,
+				borderLeft:
+					isVertical === true
+						? "1px var(--hr-color) solid"
+						: undefined,
+			}}
 		/>
 	);
 }

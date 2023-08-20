@@ -1,0 +1,24 @@
+.dataloom-column-resize {
+    position: relative;
+}
+
+.dataloom-column-resize__handle {
+    position: absolute;
+    height: 100%;
+    right: 0;
+    bottom: 0;
+    width: 5px;
+    cursor: col-resize;
+}
+
+.dataloom-column-resize__handle:hover {
+    background-color: var(--interactive-accent);
+}
+
+.dataloom-column-resize__handle:active {
+     background-color: var(--interactive-accent);
+}
+
+.dataloom-column-resize__handle--dragging {
+    background-color: var(--interactive-accent);
+}

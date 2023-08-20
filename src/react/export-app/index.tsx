@@ -1,20 +1,24 @@
-import { LoomState } from "src/shared/types";
-import Stack from "../shared/stack";
 import React from "react";
-import { ExportType } from "../../shared/export/types";
+
+import Stack from "../shared/stack";
+import Padding from "../shared/padding";
 import ExportTypeSelect from "./export-type-select";
 import ContentTextArea from "./content-textarea";
+import Divider from "../shared/divider";
+
+import { LoomState } from "src/shared/loom-state/types";
+import { ExportType } from "../../shared/export/types";
 import { exportToMarkdown } from "src/shared/export/export-to-markdown";
 import { App, Notice } from "obsidian";
-import Padding from "../shared/padding";
 import {
 	downloadFile,
 	getBlobTypeForExportType,
 	getExportFileName,
 } from "../../shared/export/download-utils";
 import { exportToCSV } from "src/shared/export/export-to-csv";
-import { css } from "@emotion/react";
-import { useAppSelector } from "src/redux/global/hooks";
+import { useAppSelector } from "src/redux/hooks";
+
+import "./styles.css";
 
 interface Props {
 	app: App;
@@ -53,61 +57,48 @@ export function ExportApp({ loomState, loomFilePath }: Props) {
 	return (
 		<div className="dataloom-export-app">
 			<Padding p="xl">
-				<h5
-					css={css`
-						margin-top: 0px;
-						margin-bottom: 0px;
-					`}
-				>
-					DataLoom Export
-				</h5>
-				<hr
-					css={css`
-						margin: 1rem 0;
-					`}
-				/>
-				<Stack spacing="xl">
-					<ExportTypeSelect
-						value={exportType}
-						onChange={setExportType}
-					/>
-					{exportType !== ExportType.UNSELECTED && (
-						<>
-							<ContentTextArea value={content} />
-							<Stack spacing="sm">
-								<label htmlFor="render-markdown">
-									Render markdown
-								</label>
-								<input
-									id="render-markdown"
-									type="checkbox"
-									checked={renderMarkdown}
-									onChange={() =>
-										setRenderMarkdown(!renderMarkdown)
-									}
-								/>
-							</Stack>
+				<Stack spacing="lg" width="100%">
+					<h5>DataLoom Export</h5>
+					<Divider />
+					<Stack spacing="xl" width="100%">
+						<ExportTypeSelect
+							value={exportType}
+							onChange={setExportType}
+						/>
+						{exportType !== ExportType.UNSELECTED && (
+							<>
+								<ContentTextArea value={content} />
+								<Stack spacing="sm">
+									<label htmlFor="render-markdown">
+										Render markdown
+									</label>
+									<input
+										id="render-markdown"
+										type="checkbox"
+										checked={renderMarkdown}
+										onChange={() =>
+											setRenderMarkdown(!renderMarkdown)
+										}
+									/>
+								</Stack>
 
-							<Stack isHorizontal>
-								<button
-									className="mod-cta"
-									onClick={handleDownloadClick}
-								>
-									Download
-								</button>
-								<button
-									css={css`
-										background-color: var(
-											--background-secondary-alt
-										) !important;
-									`}
-									onClick={() => handleCopyClick(content)}
-								>
-									Copy to clipboard
-								</button>
-							</Stack>
-						</>
-					)}
+								<Stack isHorizontal>
+									<button
+										className="mod-cta"
+										onClick={handleDownloadClick}
+									>
+										Download
+									</button>
+									<button
+										className="dataloom-copy-button"
+										onClick={() => handleCopyClick(content)}
+									>
+										Copy to clipboard
+									</button>
+								</Stack>
+							</>
+						)}
+					</Stack>
 				</Stack>
 			</Padding>
 		</div>

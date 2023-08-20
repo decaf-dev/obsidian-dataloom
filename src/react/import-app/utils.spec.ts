@@ -1,4 +1,4 @@
-import { createLoomState } from "src/data/loom-state-factory";
+import { createTestLoomState } from "src/shared/loom-state/loom-state-factory";
 import {
 	getMarkdownListItems,
 	importMarkdownListItems,
@@ -53,7 +53,7 @@ describe("updateMarkdownListItems", () => {
 		//Initial data
 		const list = "- Item 1\n- Item 2";
 		const listItems = getMarkdownListItems(list);
-		const initialState = createLoomState(1, 1);
+		const initialState = createTestLoomState(1, 1);
 
 		const updatedState = importMarkdownListItems(
 			listItems,

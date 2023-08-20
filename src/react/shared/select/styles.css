@@ -1,0 +1,4 @@
+.dataloom-select:focus {
+    box-shadow: none !important;
+    transition: none !important;
+}

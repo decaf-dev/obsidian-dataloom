@@ -1,0 +1,4 @@
+.dataloom-option-bar {
+    width: 100%;
+    border-bottom: 1px solid var(--background-modifier-border);
+}

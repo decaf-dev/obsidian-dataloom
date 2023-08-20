@@ -1,46 +1,36 @@
 import React from "react";
 
-import { useCompare, useInputSelection } from "src/shared/hooks";
+import { usePlaceCursorAtEnd } from "src/shared/hooks";
 import { isNumber, isNumberInput } from "src/shared/match";
-import { MenuCloseRequest } from "src/shared/menu/types";
-import { numberInputStyle } from "src/react/loom-app/shared-styles";
+
+import Input from "src/react/shared/input";
+import { LoomMenuCloseRequest } from "../../shared/menu/types";
 
 interface Props {
-	menuCloseRequest: MenuCloseRequest | null;
+	closeRequest: LoomMenuCloseRequest | null;
 	value: string;
 	onChange: (value: string) => void;
-	onMenuClose: () => void;
+	onClose: () => void;
 }
 
 export default function NumberCellEdit({
-	menuCloseRequest,
+	closeRequest,
 	value,
 	onChange,
-	onMenuClose,
+	onClose,
 }: Props) {
 	const initialValue = isNumber(value) ? value : "";
 	const [localValue, setLocalValue] = React.useState(initialValue);
 	const inputRef = React.useRef<HTMLInputElement | null>(null);
 
-	useInputSelection(inputRef, localValue);
-
-	const hasCloseRequestTimeChanged = useCompare(
-		menuCloseRequest?.requestTime
-	);
+	usePlaceCursorAtEnd(inputRef, localValue);
 
 	React.useEffect(() => {
-		if (hasCloseRequestTimeChanged && menuCloseRequest !== null) {
+		if (closeRequest !== null) {
 			if (localValue !== value) onChange(localValue);
-			onMenuClose();
+			onClose();
 		}
-	}, [
-		value,
-		localValue,
-		hasCloseRequestTimeChanged,
-		menuCloseRequest,
-		onMenuClose,
-		onChange,
-	]);
+	}, [value, localValue, closeRequest, onClose, onChange]);
 
 	function handleChange(inputValue: string) {
 		if (!isNumberInput(inputValue)) return;
@@ -50,14 +40,14 @@ export default function NumberCellEdit({
 
 	return (
 		<div className="dataloom-number-cell-edit">
-			<input
-				autoFocus
-				css={numberInputStyle}
-				type="text" //We use an input of type text so that the selection is available
+			<Input
 				ref={inputRef}
+				focusOutline="default"
+				//Set input mode so that the keyboard is numeric
+				//but selection is still available
 				inputMode="numeric"
 				value={localValue}
-				onChange={(e) => handleChange(e.target.value)}
+				onChange={handleChange}
 				onBlur={(e) => {
 					e.target.classList.add("dataloom-blur--cell");
 				}}

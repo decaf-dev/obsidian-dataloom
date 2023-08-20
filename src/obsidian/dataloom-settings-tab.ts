@@ -1,7 +1,7 @@
 import { PluginSettingTab, App } from "obsidian";
 import { Setting } from "obsidian";
 import DataLoomPlugin from "../main";
-import { renderDonationBadge } from "./html-utils";
+import { renderDonationBadge } from "./shared";
 
 export default class DataLoomSettingsTab extends PluginSettingTab {
 	plugin: DataLoomPlugin;
@@ -18,6 +18,7 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 
 		this.renderDonationHeader(containerEl);
 		this.renderFileSettings(containerEl);
+		this.renderTableSettings(containerEl);
 		this.renderExportSettings(containerEl);
 		this.renderEmbeddedLoomSettings(containerEl);
 		this.renderModalSettings(containerEl);
@@ -51,7 +52,7 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 
 		attachmentsFolderDesc.createSpan({
 			text: " Files & Links -> Default location for new attachments",
-			cls: "Dashboards__setting-emphasize",
+			cls: "dataloom-modal-text--emphasize",
 		});
 		attachmentsFolderDesc.createEl("br");
 		attachmentsFolderDesc.createDiv({
@@ -91,6 +92,34 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 					});
 				});
 		}
+	}
+
+	private renderTableSettings(containerEl: HTMLElement) {
+		const freezeColumnsDesc = new DocumentFragment();
+		freezeColumnsDesc.createSpan({
+			text: "The number of columns to stay in place when the table scrolls horizontally.",
+		});
+
+		new Setting(containerEl).setName("Table").setHeading();
+		new Setting(containerEl)
+			.setName("Frozen columns")
+			.setDesc(freezeColumnsDesc)
+			.addDropdown((cb) => {
+				cb.addOptions({
+					"0": "0",
+					"1": "1",
+					"2": "2",
+					"3": "3",
+				})
+					.setValue(
+						this.plugin.settings.defaultFrozenColumnCount.toString()
+					)
+					.onChange(async (value) => {
+						this.plugin.settings.defaultFrozenColumnCount =
+							parseInt(value);
+						await this.plugin.saveSettings();
+					});
+			});
 	}
 
 	private renderExportSettings(containerEl: HTMLElement) {

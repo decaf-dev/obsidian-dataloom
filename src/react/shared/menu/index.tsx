@@ -1,131 +1,105 @@
 import React from "react";
-
 import ReactDOM from "react-dom";
-import { css } from "@emotion/react";
 
 import { numToPx } from "src/shared/conversion";
-import { useMenuState } from "src/shared/menu/menu-context";
-import { isTextSelected } from "src/shared/menu/utils";
-import { removeFocusVisibleClass } from "src/shared/menu/focus-visible";
+
+import "./styles.css";
+
 import { useLogger } from "src/shared/logger";
-import { useMenuEvents } from "src/shared/loom-state/use-menu-events";
+import {
+	LoomMenuCloseRequestType,
+	LoomMenuOpenDirection,
+	Position,
+} from "./types";
+import { useShiftMenu } from "./utils";
 
 interface Props {
 	id: string;
 	isOpen: boolean;
 	hideBorder?: boolean;
-	top?: number;
-	left?: number;
+	triggerPosition: Position;
+	openDirection?: LoomMenuOpenDirection;
 	width?: number;
+	height?: number;
 	maxWidth?: number;
 	maxHeight?: number;
-	height?: number;
+	onRequestClose: (type: LoomMenuCloseRequestType) => void;
+	onClose: () => void;
 	children: React.ReactNode;
 }
 
-const Menu = React.forwardRef<HTMLDivElement, Props>(function Menu(
-	{
-		id,
-		isOpen,
-		hideBorder = false,
-		top = 0,
-		left = 0,
-		width = 0,
-		height = 0,
-		maxHeight = 0,
-		maxWidth = 0,
-		children,
-	}: Props,
-	ref
-) {
-	const { topMenu, closeTopMenu, requestCloseTopMenu } = useMenuState();
-	const isTextHighlighted = React.useRef(false);
+export default function Menu({
+	id,
+	isOpen,
+	hideBorder = false,
+	openDirection,
+	triggerPosition,
+	width = 0,
+	height = 0,
+	maxHeight = 0,
+	maxWidth = 0,
+	children,
+	onRequestClose,
+	onClose,
+}: Props) {
 	const logger = useLogger();
-
-	useMenuEvents(id, isOpen, isTextHighlighted.current);
-
-	function handleMouseDown() {
-		isTextHighlighted.current = false;
-	}
-
-	function handleSelect() {
-		isTextHighlighted.current = isTextSelected();
-	}
+	const ref = React.useRef<HTMLDivElement>(null);
 
 	function handleKeyDown(e: React.KeyboardEvent) {
 		logger("Menu handleKeyDown");
-
 		if (e.key === "Enter") {
-			requestCloseTopMenu("enter");
+			onRequestClose("close-on-save");
 		} else if (e.key === "Escape") {
-			closeTopMenu();
+			onClose();
 		}
 	}
 
 	function handleClick(e: React.MouseEvent) {
 		logger("Menu handleClick");
 		e.stopPropagation();
-
-		//If we're clicking on the same menu, don't close it
-		if (topMenu?.id === id) {
-			if (topMenu.level === 0) removeFocusVisibleClass();
-			return;
-		}
-		requestCloseTopMenu("click");
 	}
+
+	useShiftMenu(ref, triggerPosition, isOpen, {
+		openDirection,
+	});
+
+	if (!isOpen) return <></>;
 
 	return (
 		<>
-			{isOpen &&
-				ReactDOM.createPortal(
+			{ReactDOM.createPortal(
+				<div
+					id={id}
+					className="dataloom-menu"
+					onClick={handleClick}
+					onKeyDown={handleKeyDown}
+				>
 					<div
-						className="dataloom-menu"
-						data-id={id}
-						css={css`
-							width: 0;
-							height: 0;
-						`}
-					>
-						<div
-							ref={ref}
-							css={css`
-								position: absolute;
-								z-index: var(--layer-menu);
-								top: ${numToPx(top)};
-								left: ${numToPx(left)};
-								width: ${width !== 0
-									? numToPx(width)
-									: "max-content"};
-								height: ${height !== 0
-									? numToPx(height)
-									: "max-content"};
-								max-width: ${maxWidth !== 0
-									? numToPx(maxWidth)
-									: "unset"};
-								max-height: ${maxHeight !== 0
+						ref={ref}
+						className="dataloom-menu__container"
+						style={{
+							top: numToPx(triggerPosition.top),
+							left: numToPx(triggerPosition.left),
+							width: width !== 0 ? numToPx(width) : "max-content",
+							height:
+								height !== 0 ? numToPx(height) : "max-content",
+							maxWidth:
+								maxWidth !== 0 ? numToPx(maxWidth) : undefined,
+							maxHeight:
+								maxHeight !== 0
 									? numToPx(maxHeight)
-									: "unset"};
-								overflow-y: ${maxHeight !== 0
-									? "scroll"
-									: "unset"};
-								background-color: var(--background-primary);
-								box-shadow: ${hideBorder
-									? "unset"
-									: "0px 0px 0px 2px var(--background-modifier-border)"};
-								font-weight: 400;
-							`}
-							onClick={handleClick}
-							onKeyDown={handleKeyDown}
-							onMouseDown={handleMouseDown}
-							onSelect={handleSelect}
-						>
-							{children}
-						</div>
-					</div>,
-					document.body
-				)}
+									: undefined,
+							overflowY: maxHeight !== 0 ? "scroll" : undefined,
+							boxShadow: hideBorder
+								? undefined
+								: "0px 0px 0px 2px var(--background-modifier-border)",
+						}}
+					>
+						{children}
+					</div>
+				</div>,
+				document.body
+			)}
 		</>
 	);
-});
-
-export default Menu;
+}

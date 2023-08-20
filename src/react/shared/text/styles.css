@@ -1,17 +1,17 @@
-.dataloom-p {
+.dataloom-text {
     white-space: nowrap;
     margin: 0;
     color: var(--text-normal);
 }
 
-.dataloom-text-muted {
+.dataloom-text--muted {
     color: var(--text-muted);
 }
 
-.dataloom-text-faint {
+.dataloom-text--faint {
     color: var(--text-faint);
 }
 
-.dataloom-text-semibold {
+.dataloom-text--semibold {
     font-weight: var(--font-semibold);
 }

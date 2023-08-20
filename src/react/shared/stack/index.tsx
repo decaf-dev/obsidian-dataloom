@@ -1,7 +1,8 @@
-import { css } from "@emotion/react";
 import { AlignItems, JustifyContent } from "src/shared/render/types";
 import { getSpacing } from "src/shared/spacing";
 import { SpacingSize } from "src/shared/spacing/types";
+
+import "./styles.css";
 
 interface Props {
 	spacing?: SpacingSize;
@@ -13,6 +14,7 @@ interface Props {
 	width?: string;
 	height?: string;
 	minHeight?: string;
+	overflow?: "auto" | "hidden" | "scroll" | "visible";
 }
 
 export default function Stack({
@@ -20,10 +22,11 @@ export default function Stack({
 	justify,
 	align,
 	grow,
+	overflow,
 	children,
-	width = "unset",
-	height = "unset",
-	minHeight = "unset",
+	width,
+	height,
+	minHeight,
 	isHorizontal = false,
 }: Props) {
 	let justifyContent = justify;
@@ -38,19 +41,18 @@ export default function Stack({
 	}
 	return (
 		<div
-			css={css`
-				display: flex;
-				flex-direction: ${isHorizontal ? "row" : "column"};
-				flex-grow: ${grow ? 1 : 0};
-				justify-content: ${justifyContent};
-				align-items: ${alignItems};
-				${isHorizontal ? "column-gap" : "row-gap"}: ${getSpacing(
-					spacing
-				)};
-				width: ${width};
-				height: ${height};
-				min-height: ${minHeight};
-			`}
+			className="dataloom-stack"
+			style={{
+				flexDirection: isHorizontal ? "row" : "column",
+				flexGrow: grow ? 1 : 0,
+				justifyContent,
+				alignItems,
+				[isHorizontal ? "columnGap" : "rowGap"]: getSpacing(spacing),
+				width,
+				height,
+				minHeight,
+				overflow,
+			}}
 		>
 			{children}
 		</div>

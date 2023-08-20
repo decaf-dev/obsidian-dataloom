@@ -6,6 +6,8 @@ import TypeSubmenu from "./type-submenu";
 import BaseMenu from "./base-menu";
 import CurrencySubmenu from "./currency-submenu";
 import DateFormatSubmenu from "./date-format-submenu";
+import AspectRatioSubmenu from "./aspect-ratio-submenu";
+import PaddingSubmenu from "./padding-submenu";
 
 import {
 	AspectRatio,
@@ -14,22 +16,22 @@ import {
 	DateFormat,
 	SortDir,
 	PaddingSize,
-} from "src/shared/types";
+} from "src/shared/loom-state/types";
 import { SubmenuType } from "./types";
 
-import { MenuCloseRequest } from "src/shared/menu/types";
-import { useCompare } from "src/shared/hooks";
-import { css } from "@emotion/react";
-import AspectRatioSubmenu from "./aspect-ratio-submenu";
-import PaddingSubmenu from "./padding-submenu";
+import {
+	LoomMenuCloseRequest,
+	LoomMenuCloseRequestType,
+	Position,
+} from "../../shared/menu/types";
+import "./styles.css";
 
 interface Props {
 	isOpen: boolean;
 	canDeleteColumn: boolean;
-	top: number;
-	left: number;
 	id: string;
 	dateFormat: DateFormat;
+	triggerPosition: Position;
 	currencyType: CurrencyType;
 	rowId: string;
 	cellId: string;
@@ -40,7 +42,7 @@ interface Props {
 	shouldWrapOverflow: boolean;
 	columnSortDir: SortDir;
 	columnType: CellType;
-	menuCloseRequest: MenuCloseRequest | null;
+	closeRequest: LoomMenuCloseRequest | null;
 	columnId: string;
 	numColumns: number;
 	onTypeSelect: (columnId: string, type: CellType) => void;
@@ -53,108 +55,101 @@ interface Props {
 	onAspectRatioClick: (columnId: string, value: AspectRatio) => void;
 	onHorizontalPaddingClick: (columnId: string, value: PaddingSize) => void;
 	onVerticalPaddingClick: (columnId: string, value: PaddingSize) => void;
-	onMenuClose: () => void;
 	onHideClick: (columnId: string) => void;
+	onRequestClose: (type: LoomMenuCloseRequestType) => void;
+	onClose: () => void;
 }
 
-const HeaderMenu = React.forwardRef<HTMLDivElement, Props>(function HeaderMenu(
-	{
-		isOpen,
-		id,
-		top,
-		left,
-		cellId,
-		markdown,
-		dateFormat,
-		currencyType,
-		horizontalPadding,
-		verticalPadding,
-		aspectRatio,
-		canDeleteColumn,
-		columnType,
-		columnSortDir,
-		columnId,
-		menuCloseRequest,
-		shouldWrapOverflow,
-		onTypeSelect,
-		onVerticalPaddingClick,
-		onHorizontalPaddingClick,
-		onAspectRatioClick,
-		onSortClick,
-		onDeleteClick,
-		onMenuClose,
-		onWrapOverflowToggle,
-		onNameChange,
-		onCurrencyChange,
-		onDateFormatChange,
-		onHideClick,
-	}: Props,
-	ref
-) {
+export default function HeaderMenu({
+	isOpen,
+	id,
+	triggerPosition,
+	cellId,
+	markdown,
+	dateFormat,
+	currencyType,
+	horizontalPadding,
+	verticalPadding,
+	aspectRatio,
+	canDeleteColumn,
+	columnType,
+	columnSortDir,
+	columnId,
+	closeRequest,
+	shouldWrapOverflow,
+	onTypeSelect,
+	onVerticalPaddingClick,
+	onHorizontalPaddingClick,
+	onAspectRatioClick,
+	onSortClick,
+	onDeleteClick,
+	onClose,
+	onWrapOverflowToggle,
+	onNameChange,
+	onCurrencyChange,
+	onDateFormatChange,
+	onHideClick,
+	onRequestClose,
+}: Props) {
 	const [submenu, setSubmenu] = useState<SubmenuType | null>(null);
 	const [localValue, setLocalValue] = useState(markdown);
 
-	const hasCloseRequestTimeChanged = useCompare(
-		menuCloseRequest?.requestTime
-	);
-
 	React.useEffect(() => {
-		if (hasCloseRequestTimeChanged && menuCloseRequest !== null) {
+		if (closeRequest !== null) {
 			//If we're on the base menu
 			if (submenu === null) {
 				if (localValue !== markdown) onNameChange(cellId, localValue);
 			}
-			onMenuClose();
+			onClose();
 		}
 	}, [
 		markdown,
 		cellId,
-		hasCloseRequestTimeChanged,
-		menuCloseRequest,
+		closeRequest,
 		submenu,
 		localValue,
 		onNameChange,
-		onMenuClose,
+		onClose,
 	]);
 
 	function handleSortClick(sortDir: SortDir) {
 		onSortClick(columnId, sortDir);
-		onMenuClose();
+		onClose();
 	}
 
 	function handleAspectRatioClick(value: AspectRatio) {
 		onAspectRatioClick(columnId, value);
-		onMenuClose();
+		onClose();
 		setSubmenu(SubmenuType.OPTIONS);
 	}
 
 	function handleHorizontalPaddingClick(value: PaddingSize) {
 		onHorizontalPaddingClick(columnId, value);
-		onMenuClose();
+		onClose();
 		setSubmenu(SubmenuType.OPTIONS);
 	}
 
 	function handleVerticalPaddingClick(value: PaddingSize) {
 		onVerticalPaddingClick(columnId, value);
-		onMenuClose();
+		onClose();
 		setSubmenu(SubmenuType.OPTIONS);
 	}
 
 	function handleTypeClick(type: CellType) {
 		onTypeSelect(columnId, type);
-		onMenuClose();
+		onClose();
 		setSubmenu(null);
 	}
 
 	function handleHideClick() {
 		onHideClick(columnId);
-		onMenuClose();
+		onClose();
 		setSubmenu(null);
 	}
 
 	function handleDeleteClick() {
 		onDeleteClick(columnId);
-		onMenuClose();
+		onClose();
 		setSubmenu(null);
 	}
 
@@ -172,17 +167,12 @@ const HeaderMenu = React.forwardRef<HTMLDivElement, Props>(function HeaderMenu(
 		<Menu
 			isOpen={isOpen}
 			id={id}
-			top={top}
-			left={left}
-			ref={ref}
+			triggerPosition={triggerPosition}
 			width={175}
+			onRequestClose={onRequestClose}
+			onClose={onClose}
 		>
-			<div
-				className="dataloom-header-menu"
-				css={css`
-					color: var(--text-normal);
-				`}
-			>
+			<div className="dataloom-header-menu">
 				{submenu === null && (
 					<BaseMenu
 						canDeleteColumn={canDeleteColumn}
@@ -191,7 +181,6 @@ const HeaderMenu = React.forwardRef<HTMLDivElement, Props>(function HeaderMenu(
 						columnId={columnId}
 						columnName={localValue}
 						columnType={columnType}
-						menuCloseRequest={menuCloseRequest}
 						columnSortDir={columnSortDir}
 						onColumnNameChange={setLocalValue}
 						onSortClick={handleSortClick}
@@ -267,6 +256,4 @@ const HeaderMenu = React.forwardRef<HTMLDivElement, Props>(function HeaderMenu(
 			</div>
 		</Menu>
 	);
-});
-
-export default HeaderMenu;
+}

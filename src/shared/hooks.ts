@@ -21,7 +21,7 @@ export const usePrevious = <T>(value: T) => {
 	return ref.current;
 };
 
-export const useInputSelection = (
+export const usePlaceCursorAtEnd = (
 	inputRef: React.RefObject<HTMLInputElement | HTMLTextAreaElement | null>,
 	value: string
 ) => {

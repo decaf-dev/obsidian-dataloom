@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import { getSpacing } from "src/shared/spacing";
 import { SpacingSize } from "src/shared/spacing/types";
 
@@ -70,13 +69,14 @@ export default function Padding({
 
 	return (
 		<div
-			css={css`
-				width: ${width};
-				padding-top: ${renderPt};
-				padding-bottom: ${renderPb};
-				padding-left: ${renderPl};
-				padding-right: ${renderPr};
-			`}
+			className="dataloom-padding"
+			style={{
+				width,
+				paddingTop: renderPt,
+				paddingBottom: renderPb,
+				paddingLeft: renderPl,
+				paddingRight: renderPr,
+			}}
 		>
 			{children}
 		</div>

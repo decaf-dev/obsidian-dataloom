@@ -1,0 +1,8 @@
+.dataloom-suggest-item {
+    padding: var(--dataloom-spacing--sm) var(--dataloom-spacing--lg);
+    margin: 2px 0;                        
+}
+
+.dataloom-suggest-item:hover {
+    background-color: var(--background-modifier-hover) !important;
+}

@@ -1,13 +1,13 @@
-import { css } from "@emotion/react";
-
 import Icon from "../icon";
 import Stack from "../stack";
 import Button from "../button";
 import Padding from "../padding";
 
-import { Color } from "src/shared/types";
+import { Color } from "src/shared/loom-state/types";
 import { findColorClassName } from "src/shared/color";
-import { useAppSelector } from "src/redux/global/hooks";
+import { useAppSelector } from "src/redux/hooks";
+
+import "./styles.css";
 
 interface Props {
 	id?: string;
@@ -29,8 +29,8 @@ export default function Tag({
 }: Props) {
 	const { isDarkMode } = useAppSelector((state) => state.global);
 
-	let tagClass = "dataloom-tag";
-	tagClass += " " + findColorClassName(isDarkMode, color);
+	let tagClassName = "dataloom-tag";
+	tagClassName += " " + findColorClassName(isDarkMode, color);
 
 	if (onRemoveClick !== undefined && id === undefined) {
 		throw new Error(
@@ -40,24 +40,16 @@ export default function Tag({
 
 	let contentClassName = "dataloom-tag-content";
 	if (maxWidth !== undefined) {
-		contentClassName += " " + "dataloom-hide-overflow-ellipsis";
+		contentClassName += " " + "dataloom-overflow--ellipsis";
 	}
 	return (
-		<div
-			className={tagClass}
-			css={css`
-				display: flex;
-				align-items: center;
-				border-radius: 8px;
-				padding: var(--nlt-spacing--xs) var(--nlt-spacing--md);
-				width: max-content;
-				color: var(--text-normal);
-			`}
-		>
+		<div className={tagClassName}>
 			<Stack spacing="sm" justify="center" isHorizontal>
 				<div
 					className={contentClassName}
-					{...(maxWidth !== undefined && { style: { maxWidth } })}
+					style={{
+						maxWidth,
+					}}
 				>
 					{markdown}
 				</div>

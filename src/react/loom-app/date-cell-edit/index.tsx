@@ -3,48 +3,47 @@ import React from "react";
 import MenuItem from "src/react/shared/menu-item";
 import Stack from "src/react/shared/stack";
 import Padding from "src/react/shared/padding";
+import MenuTrigger from "src/react/shared/menu-trigger";
+import Input from "src/react/shared/input";
 
 import {
 	dateStringToUnixTime,
 	isValidDateFormat,
 	unixTimeToDateString,
 } from "src/shared/date/date-conversion";
-import { DateFormat } from "src/shared/types";
-import { useCompare } from "src/shared/hooks";
+import { DateFormat } from "src/shared/loom-state/types";
 import DateFormatMenu from "./date-format-menu";
-import { useMenu } from "src/shared/menu/hooks";
-import { MenuCloseRequest, MenuLevel } from "src/shared/menu/types";
 
-import MenuTrigger from "src/react/shared/menu-trigger";
-import { getDisplayNameForDateFormat } from "src/shared/loom-state/display-name";
-import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
-import { borderInputStyle } from "src/react/loom-app/shared-styles";
-import { css } from "@emotion/react";
+import { getDisplayNameForDateFormat } from "src/shared/loom-state/type-display-names";
+import { useMenu } from "../../shared/menu/hooks";
+import { LoomMenuCloseRequest, LoomMenuLevel } from "../../shared/menu/types";
 
 interface Props {
 	value: number | null;
-	menuCloseRequest: MenuCloseRequest | null;
+	closeRequest: LoomMenuCloseRequest | null;
 	dateFormat: DateFormat;
 	onDateTimeChange: (value: number | null) => void;
 	onDateFormatChange: (value: DateFormat) => void;
-	onMenuClose: () => void;
+	onClose: () => void;
 }
 
 export default function DateCellEdit({
 	value,
-	menuCloseRequest,
+	closeRequest,
 	dateFormat,
 	onDateTimeChange,
-	onMenuClose,
+	onClose,
 	onDateFormatChange,
 }: Props) {
-	const { menu, isMenuOpen, menuRef, closeTopMenu } = useMenu(MenuLevel.TWO);
-	const { triggerRef, triggerPosition } = useMenuTriggerPosition();
-	useShiftMenu(triggerRef, menuRef, isMenuOpen, {
-		openDirection: "right",
-		topOffset: 35,
-		leftOffset: -50,
-	});
+	const {
+		menu: dateFormatMenu,
+		triggerRef: dateFormatMenuTriggerRef,
+		triggerPosition: dateFormatMenuTriggerPosition,
+		isOpen: isDateFormatMenuOpen,
+		onOpen: onDateFormatMenuOpen,
+		onClose: onDateFormatMenuClose,
+		onRequestClose: onDateFormatMenuRequestClose,
+	} = useMenu({ level: LoomMenuLevel.TWO });
 
 	const [localValue, setLocalValue] = React.useState(
 		value === null ? "" : unixTimeToDateString(value, dateFormat)
@@ -60,19 +59,17 @@ export default function DateCellEdit({
 		);
 	}, [value, dateFormat]);
 
-	const hasCloseRequestTimeChanged = useCompare(
-		menuCloseRequest?.requestTime
-	);
 	React.useEffect(() => {
-		function validateInput() {
+		if (closeRequest !== null) {
 			let newValue: number | null = null;
+
 			//If the user has not entered a value, we don't need to validate the date format
 			if (localValue !== "") {
 				if (isValidDateFormat(localValue, dateFormat)) {
 					//Convert local value to unix time
 					newValue = dateStringToUnixTime(localValue, dateFormat);
 				} else {
-					if (menuCloseRequest?.type === "enter") {
+					if (closeRequest.type === "close-on-save") {
 						setInputInvalid(true);
 						return;
 					}
@@ -86,17 +83,13 @@ export default function DateCellEdit({
 			}
 			setCloseTime(Date.now());
 		}
-
-		if (hasCloseRequestTimeChanged && menuCloseRequest !== null)
-			validateInput();
 	}, [
 		value,
-		hasCloseRequestTimeChanged,
 		localValue,
-		menuCloseRequest,
+		closeRequest,
 		dateFormat,
 		onDateTimeChange,
-		onMenuClose,
+		onClose,
 	]);
 
 	//If we call onMenuClose directly in the validateInput function, we can see the cell markdown
@@ -105,42 +98,38 @@ export default function DateCellEdit({
 	//This allows us to see the cell markdown change to the new value before the menu closes
 	React.useEffect(() => {
 		if (closeTime !== 0) {
-			onMenuClose();
+			onClose();
 		}
-	}, [closeTime, onMenuClose]);
+	}, [closeTime, onClose]);
 
 	function handleDateFormatChange(value: DateFormat) {
 		onDateFormatChange(value);
-		closeTopMenu();
+		onDateFormatMenuClose();
 	}
 
 	function handleClearClick() {
 		onDateTimeChange(null);
-		onMenuClose();
+		onClose();
 	}
 
 	return (
 		<>
-			<div ref={triggerRef} className="dataloom-date-cell-edit">
+			<div className="dataloom-date-cell-edit">
 				<Stack>
-					<Padding>
-						<input
-							tabIndex={0}
-							type="text"
-							className="dataloom-focusable"
-							css={css`
-								${borderInputStyle}
-								${isInputInvalid
-									? "&:focus-visible { outline: 2px solid var(--background-modifier-error) !important; }"
-									: ""}
-							`}
+					<Padding p="md">
+						<Input
 							ref={inputRef}
-							autoFocus
+							showBorder
+							hasError={isInputInvalid}
 							value={localValue}
-							onChange={(e) => setLocalValue(e.target.value)}
+							onChange={setLocalValue}
 						/>
 					</Padding>
-					<MenuTrigger menu={menu}>
+					<MenuTrigger
+						ref={dateFormatMenuTriggerRef}
+						menu={dateFormatMenu}
+						onOpen={onDateFormatMenuOpen}
+					>
 						<MenuItem
 							isFocusable={false}
 							name="Date format"
@@ -151,13 +140,13 @@ export default function DateCellEdit({
 				</Stack>
 			</div>
 			<DateFormatMenu
-				id={menu.id}
-				isOpen={isMenuOpen}
-				ref={menuRef}
-				top={triggerPosition.top}
-				left={triggerPosition.left}
+				id={dateFormatMenu.id}
+				isOpen={isDateFormatMenuOpen}
+				triggerPosition={dateFormatMenuTriggerPosition}
 				value={dateFormat}
 				onChange={handleDateFormatChange}
+				onRequestClose={onDateFormatMenuRequestClose}
+				onClose={onDateFormatMenuClose}
 			/>
 		</>
 	);

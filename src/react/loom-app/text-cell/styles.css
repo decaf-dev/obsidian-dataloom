@@ -1,0 +1,20 @@
+.dataloom-text-cell {
+    width: 100%;
+    height: 100%;
+}
+
+.dataloom-text-cell__container {
+    text-align: left;
+}
+
+.dataloom-text-cell__container p {
+    margin: 0;
+}
+
+/* .contains-task-list is from DataView. It is what is rendered for a task list */
+.dataloom-text-cell__container ul:not(.contains-task-list) {
+    padding-left: var(--dataloom-spacing--xl);
+    padding-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+}

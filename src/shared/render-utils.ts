@@ -16,22 +16,29 @@ import DataLoomView, { DATA_LOOM_VIEW } from "src/obsidian/dataloom-view";
 import { handleLinkClick } from "src/shared/render/embed";
 import { renderEmbed } from "./render-embed";
 
-export const renderMarkdown = async (leaf: WorkspaceLeaf, markdown: string) => {
+export const renderMarkdown = async (
+	app: App,
+	leaf: WorkspaceLeaf,
+	markdown: string
+) => {
 	const div = document.createElement("div");
 	div.style.height = "100%";
 	div.style.width = "100%";
 
 	//We need to attach this class so that the `is-unresolved` link renders properly by Obsidian
-	const view = leaf?.view;
+	const view = leaf.view;
 	if (view instanceof DataLoomView) div.classList.add("markdown-rendered");
 
 	try {
-		const updated = replaceNewLinesWithBr(markdown);
+		const formattedMarkdown = replaceNewLinesWithBr(markdown);
 		const view = leaf?.view;
 
 		if (view instanceof MarkdownView || view instanceof DataLoomView) {
-			await MarkdownRenderer.renderMarkdown(
-				updated,
+			if (view.file === null) return div;
+
+			await MarkdownRenderer.render(
+				app,
+				formattedMarkdown,
 				div,
 				view.file.path,
 				view
@@ -45,7 +52,7 @@ export const renderMarkdown = async (leaf: WorkspaceLeaf, markdown: string) => {
 
 				const destination = app.metadataCache.getFirstLinkpathDest(
 					href,
-					view.file.path
+					view.file!.path
 				);
 				if (!destination) embed.classList.add("is-unresolved");
 
@@ -77,6 +84,7 @@ export const useRenderMarkdown = (
 		isEmbed?: boolean;
 	}
 ) => {
+	const { app } = useMountState();
 	const { isEmbed = false, isExternalLink = false } = options ?? {};
 	const containerRef = React.useRef<HTMLDivElement | null>(null);
 	const renderRef = React.useRef<HTMLElement | null>(null);
@@ -87,9 +95,9 @@ export const useRenderMarkdown = (
 		async function updateContainerRef() {
 			let el = null;
 			if (isEmbed) {
-				el = await renderEmbed(mountLeaf, markdown);
+				el = await renderEmbed(app, mountLeaf, markdown);
 			} else {
-				el = await renderMarkdown(mountLeaf, markdown);
+				el = await renderMarkdown(app, mountLeaf, markdown);
 			}
 
 			if (el) {
@@ -103,7 +111,7 @@ export const useRenderMarkdown = (
 		}
 
 		updateContainerRef();
-	}, [markdown, mountLeaf, isExternalLink, isEmbed]);
+	}, [app, markdown, mountLeaf, isExternalLink, isEmbed]);
 
 	return {
 		containerRef,

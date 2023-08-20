@@ -1,44 +1,55 @@
 import React from "react";
 
-import { NltMenu } from "src/shared/menu/types";
 import MenuTrigger from "../menu-trigger";
 import Button from "../button";
 import { ButtonVariant } from "../button/types";
+import { LoomMenu } from "../menu/types";
 
-interface MenuButtonProps {
+interface Props {
+	menu: LoomMenu;
 	variant?: ButtonVariant;
-	menu: NltMenu;
 	ariaLabel?: string;
 	icon?: React.ReactNode;
 	children?: React.ReactNode;
 	onClick?: (e: React.MouseEvent) => void;
 	onMouseDown?: (e: React.MouseEvent) => void;
+	onOpen: () => void;
 }
 
-export default function MenuButton({
-	variant,
-	menu,
-	ariaLabel,
-	icon,
-	children,
-	onClick,
-	onMouseDown,
-}: MenuButtonProps) {
-	return (
-		<MenuTrigger
-			isButton
-			menu={menu}
-			onClick={onClick}
-			onMouseDown={onMouseDown}
-		>
-			<Button
-				isFocusable={false}
-				variant={variant}
-				icon={icon}
-				ariaLabel={ariaLabel}
+const MenuButton = React.forwardRef<HTMLDivElement, Props>(
+	(
+		{
+			menu,
+			variant,
+			ariaLabel,
+			icon,
+			children,
+			onClick,
+			onMouseDown,
+			onOpen,
+		}: Props,
+		ref
+	) => {
+		return (
+			<MenuTrigger
+				isButton
+				ref={ref}
+				menu={menu}
+				onClick={onClick}
+				onMouseDown={onMouseDown}
+				onOpen={onOpen}
 			>
-				{children}
-			</Button>
-		</MenuTrigger>
-	);
-}
+				<Button
+					isFocusable={false}
+					variant={variant}
+					icon={icon}
+					ariaLabel={ariaLabel}
+				>
+					{children}
+				</Button>
+			</MenuTrigger>
+		);
+	}
+);
+
+export default MenuButton;

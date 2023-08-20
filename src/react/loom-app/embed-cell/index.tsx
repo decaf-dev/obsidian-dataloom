@@ -1,9 +1,10 @@
-import { css } from "@emotion/react";
 import { getEmbedCellContent } from "src/shared/cell-content/embed-cell-content";
-import { AspectRatio, PaddingSize } from "src/shared/types";
+import { AspectRatio, PaddingSize } from "src/shared/loom-state/types";
 
 import Embed from "./embed";
 import { useMountState } from "../mount-provider";
+
+import "./styles.css";
 
 interface Props {
 	isExternalLink: boolean;
@@ -26,14 +27,7 @@ export default function EmbedCell({
 		isExternalLink,
 	});
 	return (
-		<div
-			className="dataloom-embed-cell"
-			css={css`
-				width: 100%;
-				height: 100%;
-				overflow: hidden;
-			`}
-		>
+		<div className="dataloom-embed-cell">
 			<Embed
 				isExternalLink={isExternalLink}
 				content={content}

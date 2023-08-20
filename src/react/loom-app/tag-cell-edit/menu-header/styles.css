@@ -1,0 +1,4 @@
+.dataloom-tag-cell-edit__menu-header {
+    background-color: var(--background-secondary);
+    border-bottom: 1px solid var(--table-border-color);
+}

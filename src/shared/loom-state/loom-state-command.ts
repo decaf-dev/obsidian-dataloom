@@ -1,7 +1,7 @@
-import { CommandRedoError, CommandUndoError } from "../commands/command-errors";
-import { LoomState } from "../types";
+import { CommandRedoError, CommandUndoError } from "./commands/command-errors";
+import { LoomState } from "./types";
 
-export default abstract class LoomStateCommand {
+abstract class LoomStateCommand {
 	shouldSortRows: boolean;
 	hasExecuteBeenCalled: boolean;
 	hasUndoBeenCalled: boolean;
@@ -30,3 +30,5 @@ export default abstract class LoomStateCommand {
 	abstract redo(prevState: LoomState): LoomState;
 	abstract undo(prevState: LoomState): LoomState;
 }
+
+export default LoomStateCommand;

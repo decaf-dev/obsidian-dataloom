@@ -1,0 +1,21 @@
+.dataloom-text-cell-edit {
+    width: 100%;
+    height: 100%;
+}
+
+.dataloom-text-cell-edit textarea {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    padding: var(--dataloom-cell-spacing-x) var(--dataloom-cell-spacing-y);
+    resize: none;
+    border: 0; /* Clear default Obsidian style */
+    border-radius: 0; /* Clear default Obsidian style */
+    font-size: var(--font-size-normal); /* Reset to default Obsidian style */
+}
+
+.dataloom-text-cell-edit textarea:focus {
+    box-shadow: none; /* Clear default Obsidian style */
+    outline: 2px solid var(--background-modifier-border-focus);
+    outline-offset: -2px;
+}

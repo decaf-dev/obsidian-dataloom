@@ -1,60 +1,32 @@
 import Stack from "../../shared/stack";
-import SortBubble from "./sort-button";
-import ToggleColumn from "./toggle-column";
-import Filter from "./filter/filter";
-import Wrap from "../../shared/wrap";
 import SearchBar from "./search-bar";
 import ActiveFilterBubble from "./active-filter-bubble";
-import { FilterType } from "src/shared/types";
-
-import { SortDir, Column, HeaderCell, FilterRule } from "src/shared/types";
-import {
-	CellNotFoundError,
-	ColumNotFoundError,
-} from "src/shared/loom-state/loom-error";
-import { isCellTypeFilterable } from "src/shared/loom-state/filter-by-rules";
-
-import { ColumnWithMarkdown } from "./types";
 import Padding from "src/react/shared/padding";
-import { css } from "@emotion/react";
-import Button from "src/react/shared/button";
 import Icon from "src/react/shared/icon";
-import { useMountState } from "../mount-provider";
-import ExportModal from "src/obsidian/modal/export-modal";
-import { useAppSelector } from "src/redux/global/hooks";
+import MenuButton from "src/react/shared/menu-button";
+import MoreMenu from "./more-menu";
+import ToggleColumnMenu from "./toggle-column-menu";
+import FilterMenu from "./filter/filter-menu";
+import SortBubbleList from "./sort-bubble-list";
 
-interface SortButtonListProps {
-	headerCells: HeaderCell[];
-	columns: Column[];
-	onRemoveClick: (columnId: string) => void;
-}
+import { FilterType } from "src/shared/loom-state/types";
+import {
+	SortDir,
+	Column,
+	HeaderCell,
+	FilterRule,
+} from "src/shared/loom-state/types";
+import CellNotFoundError from "src/shared/error/cell-not-found-error";
+import ColumNotFoundError from "src/shared/error/column-not-found-error";
+import { isCellTypeFilterable } from "src/react/loom-app/app/filter-by-rules";
+import { ColumnWithMarkdown } from "./types";
+import { isSmallScreenSize } from "src/shared/render/utils";
+import { useMenu } from "../../shared/menu/hooks";
 
-const SortBubbleList = ({
-	headerCells,
-	columns,
-	onRemoveClick,
-}: SortButtonListProps) => {
-	return (
-		<Stack spacing="sm" isHorizontal>
-			{headerCells.map((cell, i) => {
-				const column = columns.find((c) => c.id === cell.columnId);
-				if (!column) throw new ColumNotFoundError(cell.columnId);
-				const { markdown, columnId } = cell;
-				const { sortDir } = column;
-				return (
-					<SortBubble
-						key={i}
-						sortDir={sortDir}
-						markdown={markdown}
-						onRemoveClick={() => onRemoveClick(columnId)}
-					/>
-				);
-			})}
-		</Stack>
-	);
-};
+import "./styles.css";
 
 interface Props {
+	numFrozenColumns: number;
 	headerCells: HeaderCell[];
 	columns: Column[];
 	filterRules: FilterRule[];
@@ -67,8 +39,10 @@ interface Props {
 	onRuleDeleteClick: (ruleId: string) => void;
 	onRuleAddClick: (columnId: string) => void;
 	onRuleTagsChange: (ruleId: string, value: string[]) => void;
+	onFrozenColumnsChange: (value: number) => void;
 }
 export default function OptionBar({
+	numFrozenColumns,
 	headerCells,
 	columns,
 	filterRules,
@@ -81,15 +55,57 @@ export default function OptionBar({
 	onRuleDeleteClick,
 	onRuleAddClick,
 	onRuleTagsChange,
+	onFrozenColumnsChange,
 }: Props) {
-	const { manifestPluginVersion } = useAppSelector((state) => state.global);
-	const { loomFile, app } = useMountState();
 	const sortedCells = headerCells.filter((cell) => {
 		const columnId = cell.columnId;
 		const column = columns.find((c) => c.id === columnId);
 		if (!column) throw new ColumNotFoundError(columnId);
 		return column.sortDir !== SortDir.NONE;
 	});
+
+	const {
+		menu: moreMenu,
+		triggerRef: moreMenuTriggerRef,
+		triggerPosition: moreMenuTriggerPosition,
+		isOpen: isMoreMenuOpen,
+		onOpen: onMoreMenuOpen,
+		onRequestClose: onMoreMenuRequestClose,
+		onClose: onMoreMenuClose,
+	} = useMenu();
+
+	const {
+		menu: toggleMenu,
+		triggerRef: toggleMenuTriggerRef,
+		triggerPosition: toggleMenuTriggerPosition,
+		isOpen: isToggleMenuOpen,
+		onOpen: onToggleMenuOpen,
+		onRequestClose: onToggleMenuRequestClose,
+		onClose: onToggleMenuClose,
+	} = useMenu();
+
+	const {
+		menu: filterMenu,
+		triggerRef: filterMenuTriggerRef,
+		triggerPosition: filterMenuTriggerPosition,
+		isOpen: isFilterMenuOpen,
+		onOpen: onFilterMenuOpen,
+		onRequestClose: onFilterMenuRequestClose,
+		onClose: onFilterMenuClose,
+	} = useMenu();
+
+	// const previousLength = usePrevious(filterRules.length);
+	// React.useEffect(() => {
+	// 	if (previousLength !== undefined) {
+	// 		if (previousLength < filterRules.length) {
+	// 			if (filterMenuRef.current) {
+	// 				//Scroll to the bottom if we're adding a new rule
+	// 				filterMenuRef.current.scrollTop =
+	// 					filterMenuRef.current.scrollHeight;
+	// 			}
+	// 		}
+	// 	}
+	// }, [previousLength, filterRules.length, filterMenuRef]);
 
 	const activeRules = filterRules.filter((rule) => rule.isEnabled);
 
@@ -114,20 +130,25 @@ export default function OptionBar({
 		}
 	);
 
+	const isSmallScreen = isSmallScreenSize();
 	return (
-		<div
-			className="dataloom-option-bar"
-			css={css`
-				width: 100%;
-				border-bottom: 1px solid var(--background-modifier-border);
-			`}
-		>
-			<Padding py="md">
-				<Stack spacing="lg" align="center" minHeight="40px">
-					<Wrap
-						justify={{ base: "space-between", mobile: "flex-end" }}
+		<>
+			<div className="dataloom-option-bar">
+				<Padding py="lg">
+					<Stack
+						isHorizontal={!isSmallScreen}
+						spacing="sm"
+						{...(!isSmallScreen && { justify: "space-between" })}
 					>
-						<Stack spacing="md" isHorizontal>
+						<Stack
+							isHorizontal
+							spacing="md"
+							overflow="auto"
+							{...(isSmallScreen && {
+								width: "100%",
+								justify: "flex-end",
+							})}
+						>
 							<SortBubbleList
 								headerCells={sortedCells}
 								columns={columns}
@@ -137,37 +158,88 @@ export default function OptionBar({
 								numActive={activeRules.length}
 							/>
 						</Stack>
-						<Stack spacing="sm" justify="flex-end" isHorizontal>
+						<Stack
+							isHorizontal
+							spacing="sm"
+							justify="flex-end"
+							{...(isSmallScreen && {
+								height: "40px",
+								width: "100%",
+							})}
+						>
 							<SearchBar />
-							<Filter
-								columns={filterableColumns}
-								filterRules={filterRules}
-								onAddClick={onRuleAddClick}
-								onToggle={onRuleToggle}
-								onColumnChange={onRuleColumnChange}
-								onFilterTypeChange={onRuleFilterTypeChange}
-								onTextChange={onRuleTextChange}
-								onDeleteClick={onRuleDeleteClick}
-								onTagsChange={onRuleTagsChange}
-							/>
-							<ToggleColumn
-								columns={columnsWithMarkdown}
-								onToggle={onColumnToggle}
-							/>
-							<Button
+							{isSmallScreen === false && (
+								<MenuButton
+									ref={filterMenuTriggerRef}
+									menu={filterMenu}
+									onOpen={onFilterMenuOpen}
+								>
+									Filter
+								</MenuButton>
+							)}
+							{isSmallScreen === false && (
+								<MenuButton
+									ref={toggleMenuTriggerRef}
+									menu={toggleMenu}
+									onOpen={onToggleMenuOpen}
+								>
+									Toggle
+								</MenuButton>
+							)}
+							<MenuButton
+								ref={moreMenuTriggerRef}
+								menu={moreMenu}
 								icon={<Icon lucideId="more-vertical" />}
-								onClick={() => {
-									new ExportModal(
-										app,
-										loomFile,
-										manifestPluginVersion
-									).open();
-								}}
-							></Button>
+								onOpen={onMoreMenuOpen}
+							/>
 						</Stack>
-					</Wrap>
-				</Stack>
-			</Padding>
-		</div>
+					</Stack>
+				</Padding>
+			</div>
+			<MoreMenu
+				id={moreMenu.id}
+				isOpen={isMoreMenuOpen}
+				triggerPosition={moreMenuTriggerPosition}
+				numFrozenColumns={numFrozenColumns}
+				onFrozenColumnsChange={onFrozenColumnsChange}
+				onFilterClick={() => onFilterMenuOpen()}
+				onToggleColumnClick={() => onToggleMenuOpen()}
+				onRequestClose={onMoreMenuRequestClose}
+				onClose={onMoreMenuClose}
+			/>
+			<ToggleColumnMenu
+				id={toggleMenu.id}
+				isOpen={isToggleMenuOpen}
+				triggerPosition={
+					isSmallScreen
+						? moreMenuTriggerPosition
+						: toggleMenuTriggerPosition
+				}
+				columns={columnsWithMarkdown}
+				onToggle={onColumnToggle}
+				onRequestClose={onToggleMenuRequestClose}
+				onClose={onToggleMenuClose}
+			/>
+			<FilterMenu
+				id={filterMenu.id}
+				isOpen={isFilterMenuOpen}
+				triggerPosition={
+					isSmallScreen
+						? moreMenuTriggerPosition
+						: filterMenuTriggerPosition
+				}
+				columns={filterableColumns}
+				filterRules={filterRules}
+				onTextChange={onRuleTextChange}
+				onColumnChange={onRuleColumnChange}
+				onFilterTypeChange={onRuleFilterTypeChange}
+				onDeleteClick={onRuleDeleteClick}
+				onTagsChange={onRuleTagsChange}
+				onAddClick={onRuleAddClick}
+				onToggle={onRuleToggle}
+				onRequestClose={onFilterMenuRequestClose}
+				onClose={onFilterMenuClose}
+			/>
+		</>
 	);
 }

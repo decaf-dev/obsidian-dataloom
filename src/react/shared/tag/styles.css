@@ -1,0 +1,8 @@
+.dataloom-tag {
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+    padding: var(--dataloom-spacing--xs) var(--dataloom-spacing--md);
+    width: max-content;
+    color: var(--text-normal);
+}

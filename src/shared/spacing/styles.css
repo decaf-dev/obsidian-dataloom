@@ -1,0 +1,17 @@
+.dataloom-overflow--wrap {
+    overflow-wrap: break-word;
+    overflow: hidden;
+    white-space: normal;
+}
+
+.dataloom-overflow--hide {
+    overflow: hidden;
+    overflow-wrap: normal;
+    white-space: nowrap;
+}
+
+.dataloom-overflow--ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

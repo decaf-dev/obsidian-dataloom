@@ -1,9 +1,9 @@
 import { App, Modal, Notice, TFile } from "obsidian";
 import { Root, createRoot } from "react-dom/client";
-import { deserializeLoomState } from "src/data/serialize-loom-state";
+import { deserializeLoomState } from "src/data/serialize";
 import { ExportApp } from "src/react/export-app";
 import { Provider } from "react-redux";
-import { store } from "src/redux/global/store";
+import { store } from "src/redux/store";
 
 export default class ExportModal extends Modal {
 	root: Root;

@@ -1,5 +1,7 @@
 import React from "react";
 
+import { Notice } from "obsidian";
+
 import TextCell from "../text-cell";
 import TagCell from "../tag-cell";
 import CheckboxCell from "../checkbox-cell";
@@ -11,8 +13,13 @@ import TagCellEdit from "../tag-cell-edit";
 import DateCellEdit from "../date-cell-edit";
 import MultiTagCell from "../multi-tag-cell";
 import Menu from "../../shared/menu";
-
-import "./styles.css";
+import CurrencyCell from "../currency-cell";
+import CurrencyCellEdit from "../currency-cell-edit";
+import MenuTrigger from "src/react/shared/menu-trigger";
+import FileCell from "../file-cell";
+import FileCellEdit from "../file-cell-edit";
+import EmbedCell from "../embed-cell";
+import EmbedCellEdit from "../embed-cell-edit";
 
 import {
 	AspectRatio,
@@ -21,29 +28,18 @@ import {
 	DateFormat,
 	PaddingSize,
 	Tag,
-} from "src/shared/types";
-import { useMenu } from "src/shared/menu/hooks";
-import { MenuLevel } from "src/shared/menu/types";
-
+} from "src/shared/loom-state/types";
 import LastEditedTimeCell from "../last-edited-time-cell";
 import CreationTimeCell from "../creation-time-cell";
 import {
 	CHECKBOX_MARKDOWN_CHECKED,
 	CHECKBOX_MARKDOWN_UNCHECKED,
-} from "src/shared/loom-state/constants";
+} from "src/shared/constants";
 import { isCheckboxChecked } from "src/shared/match";
+import { Color } from "src/shared/loom-state/types";
+import { useMenu } from "../../shared/menu/hooks";
 
-import { Color } from "src/shared/types";
-import CurrencyCell from "../currency-cell";
-import CurrencyCellEdit from "../currency-cell-edit";
-import MenuTrigger from "src/react/shared/menu-trigger";
-
-import { useMenuTriggerPosition, useShiftMenu } from "src/shared/menu/utils";
-import FileCell from "../file-cell";
-import FileCellEdit from "../file-cell-edit";
-import EmbedCell from "../embed-cell";
-import EmbedCellEdit from "../embed-cell-edit";
-import { Notice } from "obsidian";
+import "./styles.css";
 
 interface Props {
 	isExternalLink: boolean;
@@ -140,12 +136,18 @@ export default function BodyCellContainer({
 		columnType === CellType.MULTI_TAG ||
 		columnType === CellType.DATE;
 
-	const { menu, isMenuOpen, menuCloseRequest, menuRef, closeTopMenu } =
-		useMenu(MenuLevel.ONE, {
-			shouldRequestOnClose,
-		});
-	const { triggerPosition, triggerRef } = useMenuTriggerPosition();
-	useShiftMenu(triggerRef, menuRef, isMenuOpen);
+	const {
+		menu,
+		triggerRef,
+		triggerPosition,
+		closeRequest,
+		isOpen,
+		onOpen,
+		onClose,
+		onRequestClose,
+	} = useMenu({
+		shouldRequestOnClose,
+	});
 
 	async function handleCellContextClick() {
 		try {
@@ -251,26 +253,7 @@ export default function BodyCellContainer({
 		[cellId, rowId, onDateTimeChange]
 	);
 
-	const handleMenuClose = React.useCallback(() => {
-		closeTopMenu();
-	}, [closeTopMenu]);
-
-	const { width: measuredWidth, height: measuredHeight } = triggerPosition;
-
-	let menuHeight = measuredHeight;
-	if (
-		columnType === CellType.TAG ||
-		columnType === CellType.MULTI_TAG ||
-		columnType === CellType.DATE ||
-		columnType === CellType.NUMBER ||
-		columnType === CellType.CURRENCY ||
-		columnType === CellType.FILE ||
-		columnType === CellType.EMBED
-	) {
-		menuHeight = 0;
-	}
-
-	let menuWidth = measuredWidth;
+	let menuWidth = triggerPosition.width;
 	if (
 		columnType === CellType.TAG ||
 		columnType === CellType.MULTI_TAG ||
@@ -281,6 +264,19 @@ export default function BodyCellContainer({
 		menuWidth = 275;
 	} else if (columnType === CellType.DATE) {
 		menuWidth = 175;
+	}
+
+	let menuHeight = triggerPosition.height;
+	if (
+		columnType === CellType.TAG ||
+		columnType === CellType.MULTI_TAG ||
+		columnType === CellType.DATE ||
+		columnType === CellType.NUMBER ||
+		columnType === CellType.CURRENCY ||
+		columnType === CellType.FILE ||
+		columnType === CellType.EMBED
+	) {
+		menuHeight = 0;
 	}
 
 	let className = "dataloom-cell--body__container";
@@ -296,19 +292,20 @@ export default function BodyCellContainer({
 	return (
 		<>
 			<MenuTrigger
-				isCell
+				ref={triggerRef}
 				menu={menu}
+				isCell
 				onClick={handleMenuTriggerClick}
 				onEnterDown={handleMenuTriggerEnterDown}
 				onBackspaceDown={handleMenuTriggerBackspaceDown}
-				shouldRun={
+				shouldOpenOnTrigger={
 					columnType !== CellType.CHECKBOX &&
 					columnType !== CellType.CREATION_TIME &&
 					columnType !== CellType.LAST_EDITED_TIME
 				}
+				onOpen={onOpen}
 			>
 				<div
-					ref={triggerRef}
 					onContextMenu={handleCellContextClick}
 					className={className}
 					style={{
@@ -337,16 +334,12 @@ export default function BodyCellContainer({
 						/>
 					)}
 					{columnType === CellType.NUMBER && (
-						<NumberCell
-							value={markdown}
-							shouldWrapOverflow={shouldWrapOverflow}
-						/>
+						<NumberCell value={markdown} />
 					)}
 					{columnType === CellType.CURRENCY && (
 						<CurrencyCell
 							value={markdown}
 							currencyType={columnCurrencyType}
-							shouldWrapOverflow={shouldWrapOverflow}
 						/>
 					)}
 					{columnType === CellType.TAG && cellTags.length === 1 && (
@@ -386,57 +379,57 @@ export default function BodyCellContainer({
 				</div>
 			</MenuTrigger>
 			<Menu
-				ref={menuRef}
 				id={menu.id}
 				hideBorder={
 					columnType === CellType.TEXT ||
 					columnType === CellType.CURRENCY ||
 					columnType === CellType.NUMBER
 				}
-				isOpen={isMenuOpen}
-				top={triggerPosition.top}
-				left={triggerPosition.left}
+				isOpen={isOpen}
+				triggerPosition={triggerPosition}
 				width={menuWidth}
 				height={menuHeight}
+				onRequestClose={onRequestClose}
+				onClose={onClose}
 			>
 				{columnType === CellType.TEXT && (
 					<TextCellEdit
-						menuCloseRequest={menuCloseRequest}
+						closeRequest={closeRequest}
 						shouldWrapOverflow={shouldWrapOverflow}
 						value={markdown}
 						onChange={handleInputChange}
-						onMenuClose={handleMenuClose}
+						onClose={onClose}
 					/>
 				)}
 				{columnType === CellType.EMBED && (
 					<EmbedCellEdit
 						isExternalLink={isExternalLink}
-						menuCloseRequest={menuCloseRequest}
+						closeRequest={closeRequest}
 						value={markdown}
 						onChange={handleInputChange}
-						onMenuClose={handleMenuClose}
+						onClose={onClose}
 						onExternalLinkToggle={handleExternalLinkToggle}
 					/>
 				)}
 				{columnType === CellType.FILE && (
 					<FileCellEdit
 						onChange={handleInputChange}
-						onMenuClose={handleMenuClose}
+						onClose={onClose}
 					/>
 				)}
 				{columnType === CellType.NUMBER && (
 					<NumberCellEdit
-						menuCloseRequest={menuCloseRequest}
+						closeRequest={closeRequest}
 						value={markdown}
 						onChange={handleInputChange}
-						onMenuClose={handleMenuClose}
+						onClose={onClose}
 					/>
 				)}
 				{(columnType === CellType.TAG ||
 					columnType === CellType.MULTI_TAG) && (
 					<TagCellEdit
 						isMulti={columnType === CellType.MULTI_TAG}
-						menuCloseRequest={menuCloseRequest}
+						closeRequest={closeRequest}
 						columnTags={columnTags}
 						cellTags={cellTags}
 						onTagColorChange={handleTagColorChange}
@@ -444,25 +437,25 @@ export default function BodyCellContainer({
 						onRemoveTag={handleRemoveTagClick}
 						onTagClick={handleTagClick}
 						onTagDelete={handleTagDeleteClick}
-						onMenuClose={handleMenuClose}
+						onClose={onClose}
 					/>
 				)}
 				{columnType === CellType.DATE && (
 					<DateCellEdit
 						value={dateTime}
-						menuCloseRequest={menuCloseRequest}
+						closeRequest={closeRequest}
 						dateFormat={dateFormat}
 						onDateTimeChange={handleDateTimeChange}
 						onDateFormatChange={handleDateFormatChange}
-						onMenuClose={handleMenuClose}
+						onClose={onClose}
 					/>
 				)}
 				{columnType === CellType.CURRENCY && (
 					<CurrencyCellEdit
-						menuCloseRequest={menuCloseRequest}
+						closeRequest={closeRequest}
 						value={markdown}
 						onChange={handleInputChange}
-						onMenuClose={handleMenuClose}
+						onClose={onClose}
 					/>
 				)}
 			</Menu>

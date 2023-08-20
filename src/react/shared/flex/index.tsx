@@ -1,14 +1,17 @@
-import { css } from "@emotion/react";
 import {
 	AlignItems,
 	FlexDirection,
 	JustifyContent,
 } from "src/shared/render/types";
 
+import "./styles.css";
+
 interface Props {
 	flexDir?: FlexDirection;
 	justify?: JustifyContent;
 	align?: AlignItems;
+	width?: string;
+	height?: string;
 	children: React.ReactNode;
 }
 
@@ -16,18 +19,20 @@ export default function Flex({
 	flexDir = "row",
 	justify = "flex-start",
 	align = "flex-start",
+	width,
+	height,
 	children,
 }: Props) {
 	return (
 		<div
-			css={css`
-				width: 100%;
-				display: flex;
-				flex-direction: ${flexDir};
-				justify-content: ${justify};
-				align-items: ${align};
-				flex-wrap: wrap;
-			`}
+			className="dataloom-flex"
+			style={{
+				flexDirection: flexDir,
+				justifyContent: justify,
+				alignItems: align,
+				width,
+				height,
+			}}
 		>
 			{children}
 		</div>
