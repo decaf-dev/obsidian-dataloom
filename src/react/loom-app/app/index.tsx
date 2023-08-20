@@ -49,8 +49,8 @@ export default function App() {
 	useRowEvents();
 	useColumnEvents();
 	useMenuEvents();
-	const { handleKeyDown, handleClick } = useFocus();
 
+	const { handleKeyDown, handleClick } = useFocus();
 	const { handleFrozenColumnsChange } = useTableSettings();
 
 	const {

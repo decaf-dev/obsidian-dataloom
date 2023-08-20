@@ -1,15 +1,9 @@
-// export const focusMenuElement = (menuId: string) => {
-// 	const el = document.querySelector(`#${menuId}`) as HTMLElement | null;
-// 	if (el) {
-// 		el.focus();
-// 		addFocusClass(el);
-// 	}
-// };
+import { LoomMenu } from "src/react/shared/menu/types";
 
 /**
- * Adds the focus-visible class to an element
- * We do this since because :focus-visible only appears when a keyboard event happens e.g. tab is pressed
- * It will not appear when we click outside of the menu
+ * Adds the dataloom-focus-visible class to an element
+ * We do this since because want to control the focus-visible class to appear when enter is pressed or we
+ * click outside of the element
  * @param el - The element to add the focus-visible class to
  * @returns
  */
@@ -19,8 +13,8 @@ export const addFocusClass = (el: HTMLElement | null) => {
 };
 
 /**
- * Removes the focus-visible class from an element
- * There should only be one element with the focus-visible class at a time
+ * Removes the dataloom-focus-visible class from an element
+ * There should only be one element with this class at a time
  */
 export const removeCurrentFocusClass = () => {
 	const el = document.querySelector(".dataloom-focus-visible");
@@ -28,21 +22,17 @@ export const removeCurrentFocusClass = () => {
 	el.classList.remove("dataloom-focus-visible");
 };
 
-export const getFocusableLayerEl = (appId: string): HTMLElement | null => {
-	// //Get the parent element
-	// const appEl = document.querySelector(`#${appId}`);
-	// if (!appEl) return null;
-	// let layerEl = appEl;
-	// if (topMenu) {
-	// 	const { id } = topMenu;
-	// 	const menuEl = document.querySelector(
-	// 		`.dataloom-menu[data-id="${id}"]`
-	// 	);
-	// 	if (menuEl) layerEl = menuEl;
-	// }
-	// return layerEl as HTMLElement;
-	console.log(appId);
-	return null;
+/**
+ * Gets the menu element that we should traverse for focusable elements
+ * If the menu element is null, then we return the app element
+ * @param appId - The id of the app instance
+ */
+export const getFocusableMenuEl = (
+	topMenu: LoomMenu | null,
+	appId: string
+): HTMLElement | null => {
+	if (topMenu) return document.getElementById(topMenu.id);
+	return document.getElementById(appId);
 };
 
 export const focusNextElement = (
