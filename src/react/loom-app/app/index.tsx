@@ -20,19 +20,27 @@ import { useColumn } from "./hooks/use-column";
 import { useRow } from "./hooks/use-row";
 import { useCell } from "./hooks/use-cell";
 import { useTag } from "./hooks/use-tag";
-
 import { useMountState } from "../mount-provider";
 import { useExportEvents } from "src/react/loom-app/app/hooks/use-export-events";
 import { useRowEvents } from "src/react/loom-app/app/hooks/use-row-events";
 import { useColumnEvents } from "src/react/loom-app/app/hooks/use-column-events";
 import { useTableSettings } from "./hooks/use-table-settings";
+import useFocus from "./hooks/use-focus";
+import { useMenuEvents } from "./hooks/use-menu-events";
+import { nltEventSystem } from "src/shared/event-system/event-system";
+import {
+	isMacRedoDown,
+	isMacUndoDown,
+	isWindowsRedoDown,
+	isWindowsUndoDown,
+} from "src/shared/keyboard-event";
 
 import "./global.css";
 import "./styles.css";
-import useFocus from "./hooks/use-focus";
-import { useMenuEvents } from "./hooks/use-menu-events";
+import { useLogger } from "src/shared/logger";
 
 export default function App() {
+	const logger = useLogger();
 	const { appId, isMarkdownView } = useMountState();
 	const {
 		loomState,
@@ -50,7 +58,7 @@ export default function App() {
 	useColumnEvents();
 	useMenuEvents();
 
-	const { handleKeyDown, handleClick } = useFocus();
+	const { onFocusClick, onFocusKeyDown } = useFocus();
 	const { handleFrozenColumnsChange } = useTableSettings();
 
 	const {
@@ -114,6 +122,27 @@ export default function App() {
 
 	function handleScrollToBottomClick() {
 		tableRef.current?.scrollToIndex(filteredBodyRows.length - 1);
+	}
+
+	function handleClick(e: React.MouseEvent) {
+		logger("App handleClick");
+		onFocusClick(e);
+	}
+
+	function handleKeyDown(e: React.KeyboardEvent) {
+		logger("App handleKeyDown");
+		if (isWindowsRedoDown(e) || isMacRedoDown(e)) {
+			//Prevent Obsidian action bar from triggering
+			e.preventDefault();
+			onRedo();
+		} else if (isWindowsUndoDown(e) || isMacUndoDown(e)) {
+			//Prevent Obsidian action bar from triggering
+			e.preventDefault();
+			onUndo();
+		} else {
+			onFocusKeyDown(e);
+		}
+		nltEventSystem.dispatchEvent("keydown", e);
 	}
 
 	const {

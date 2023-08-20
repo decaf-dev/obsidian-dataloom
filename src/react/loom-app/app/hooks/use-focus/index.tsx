@@ -1,18 +1,11 @@
 import { SortDir } from "src/shared/loom-state/types";
 
 import {
-	isMacRedoDown,
-	isMacUndoDown,
-	isWindowsRedoDown,
-	isWindowsUndoDown,
-} from "src/shared/keyboard-event";
-import {
 	focusNextElement,
 	getFocusableMenuEl,
 	removeCurrentFocusClass,
 } from "src/react/loom-app/app/hooks/use-focus/focus-visible";
 import { useMenuOperations } from "src/react/shared/menu/hooks";
-import { nltEventSystem } from "src/shared/event-system/event-system";
 import {
 	moveFocusDown,
 	moveFocusLeft,
@@ -28,18 +21,18 @@ import { useMountState } from "src/react/loom-app/mount-provider";
 export default function useFocus() {
 	const logger = useLogger();
 	const { appId } = useMountState();
-	const { onRedo, onUndo, loomState } = useLoomState();
+	const { loomState } = useLoomState();
 	const { onRequestCloseTop, topMenu } = useMenuOperations();
 
 	function handleClick(e: React.MouseEvent) {
-		logger("LoomApp handleClick");
+		logger("useFocus handleClick");
 		//Stop propagation to the global event
 		e.stopPropagation();
 		onRequestCloseTop();
 	}
 
 	function handleKeyDown(e: React.KeyboardEvent) {
-		logger("LoomApp handleKeyDown");
+		logger("useFocus handleKeyDown");
 		e.stopPropagation();
 
 		if (e.key === "Tab") {
@@ -56,14 +49,6 @@ export default function useFocus() {
 			if (focusableEls.length === 0) return;
 
 			focusNextElement(menuEl, focusableEls);
-		} else if (isWindowsRedoDown(e) || isMacRedoDown(e)) {
-			//Prevent Obsidian action bar from triggering
-			e.preventDefault();
-			onRedo();
-		} else if (isWindowsUndoDown(e) || isMacUndoDown(e)) {
-			//Prevent Obsidian action bar from triggering
-			e.preventDefault();
-			onUndo();
 		} else if (
 			e.key === "ArrowDown" ||
 			e.key === "ArrowUp" ||
@@ -135,14 +120,10 @@ export default function useFocus() {
 				(elementToFocus as HTMLElement).focus();
 			}
 		}
-
-		//Send the event to the event system
-		//This is necessary to enabling scrolling with the arrow keys
-		nltEventSystem.dispatchEvent("keydown", e);
 	}
 
 	return {
-		handleClick,
-		handleKeyDown,
+		onFocusClick: handleClick,
+		onFocusKeyDown: handleKeyDown,
 	};
 }

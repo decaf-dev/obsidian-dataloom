@@ -89,8 +89,8 @@ export const useMenu = ({
 	React.useEffect(
 		function closeMenuAfterUnmounting() {
 			return () => {
-				logger("closeMenuAfterUnmounting");
 				if (isOpen) {
+					logger("closeMenuAfterUnmounting");
 					onClose(true);
 				}
 			};
