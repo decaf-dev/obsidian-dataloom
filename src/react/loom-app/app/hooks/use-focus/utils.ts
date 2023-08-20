@@ -23,11 +23,11 @@ export const removeCurrentFocusClass = () => {
 };
 
 /**
- * Gets the menu element that we should traverse for focusable elements
- * If the menu element is null, then we return the app element
+ * Gets the top menu element.
+ * If the top menu is null, then we return the app element.
  * @param appId - The id of the app instance
  */
-export const getFocusableMenuEl = (
+export const getTopMenuEl = (
 	topMenu: LoomMenu | null,
 	appId: string
 ): HTMLElement | null => {
@@ -59,4 +59,24 @@ export const focusNextElement = (
 	} else {
 		(focusableEls[0] as HTMLElement).focus();
 	}
+};
+
+export const getFocusableElements = (el: HTMLElement) => {
+	return el.querySelectorAll(".dataloom-focusable");
+};
+
+export const getNumOptionBarFocusableEls = (appEl: HTMLElement) => {
+	const el = appEl.querySelector(
+		".dataloom-option-bar"
+	) as HTMLElement | null;
+	if (!el) throw Error("No option bar found");
+	return getFocusableElements(el).length;
+};
+
+export const getNumBottomBarFocusableEl = (appEl: HTMLElement) => {
+	const el = appEl.querySelector(
+		".dataloom-bottom-bar"
+	) as HTMLElement | null;
+	if (!el) throw Error("No bottom bar found");
+	return getFocusableElements(el).length;
 };

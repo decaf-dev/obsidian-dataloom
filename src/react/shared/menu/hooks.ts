@@ -14,7 +14,7 @@ import { useLogger } from "src/shared/logger";
 import {
 	addFocusClass,
 	removeCurrentFocusClass,
-} from "src/react/loom-app/app/hooks/use-focus/focus-visible";
+} from "src/react/loom-app/app/hooks/use-focus/utils";
 
 export const useMenu = ({
 	level = LoomMenuLevel.ONE,

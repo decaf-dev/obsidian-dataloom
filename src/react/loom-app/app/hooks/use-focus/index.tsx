@@ -2,9 +2,12 @@ import { SortDir } from "src/shared/loom-state/types";
 
 import {
 	focusNextElement,
-	getFocusableMenuEl,
+	getFocusableElements,
+	getNumBottomBarFocusableEl,
+	getNumOptionBarFocusableEls,
+	getTopMenuEl,
 	removeCurrentFocusClass,
-} from "src/react/loom-app/app/hooks/use-focus/focus-visible";
+} from "src/react/loom-app/app/hooks/use-focus/utils";
 import { useMenuOperations } from "src/react/shared/menu/hooks";
 import {
 	moveFocusDown,
@@ -42,7 +45,7 @@ export default function useFocus() {
 			//We will do that ourselves
 			e.preventDefault();
 
-			const menuEl = getFocusableMenuEl(topMenu, appId);
+			const menuEl = getTopMenuEl(topMenu, appId);
 			if (!menuEl) return;
 
 			const focusableEls = menuEl.querySelectorAll(".dataloom-focusable");
@@ -55,12 +58,10 @@ export default function useFocus() {
 			e.key === "ArrowLeft" ||
 			e.key === "ArrowRight"
 		) {
-			const layerEl = getFocusableMenuEl(topMenu, appId);
+			const layerEl = getTopMenuEl(topMenu, appId);
 			if (!layerEl) return;
 
-			const focusableEls = layerEl.querySelectorAll(
-				".dataloom-focusable"
-			);
+			const focusableEls = getFocusableElements(layerEl);
 			if (focusableEls.length === 0) return;
 
 			//Prevent default scrolling of the table container
@@ -92,11 +93,17 @@ export default function useFocus() {
 					if (topMenu !== null) {
 						elementToFocus = moveMenuFocusUp(focusableEls, index);
 					} else {
+						const numOptionBarFocusableEls =
+							getNumOptionBarFocusableEls(layerEl);
+						const numBottomBarFocusableEls =
+							getNumBottomBarFocusableEl(layerEl);
+
 						elementToFocus = moveFocusUp(
 							focusableEls,
+							numOptionBarFocusableEls,
+							numBottomBarFocusableEls,
 							numVisibleColumns,
 							numBodyRows,
-							numSortedColumns,
 							index
 						);
 					}
@@ -105,11 +112,17 @@ export default function useFocus() {
 					if (topMenu !== null) {
 						elementToFocus = moveMenuFocusDown(focusableEls, index);
 					} else {
+						const numOptionBarFocusableEls =
+							getNumOptionBarFocusableEls(layerEl);
+						const numBottomBarFocusableEls =
+							getNumBottomBarFocusableEl(layerEl);
+
 						elementToFocus = moveFocusDown(
 							focusableEls,
+							numOptionBarFocusableEls,
+							numBottomBarFocusableEls,
 							numVisibleColumns,
 							numBodyRows,
-							numSortedColumns,
 							index
 						);
 						break;
