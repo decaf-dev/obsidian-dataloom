@@ -13,8 +13,6 @@ export const useMenuEvents = () => {
 	const { onCloseAll } = useMenuOperations();
 
 	React.useEffect(() => {
-		let tableContainer: HTMLElement | null;
-
 		const THROTTLE_TIME_MILLIS = 100;
 		const throttleHandleScroll = _.throttle(
 			handleScroll,
@@ -27,7 +25,7 @@ export const useMenuEvents = () => {
 
 			//Since it takes a noticable amount of time for React to update the DOM, we set
 			//the display to none and then wait for React to clean up the DOM
-			for (let menu of openMenus) {
+			for (const menu of openMenus) {
 				(menu as HTMLElement).style.display = "none";
 			}
 			onCloseAll();
@@ -36,7 +34,7 @@ export const useMenuEvents = () => {
 		const appEl = document.getElementById(appId);
 		if (!appEl) return;
 
-		tableContainer = appEl.querySelector(
+		const tableContainer = appEl.querySelector(
 			'[data-virtuoso-scroller="true"]'
 		) as HTMLElement | null;
 		if (!tableContainer) return;
@@ -64,7 +62,7 @@ export const useMenuEvents = () => {
 
 			//Since it takes a noticable amount of time for React to update the DOM, we set
 			//the display to none and then wait for React to clean up the DOM
-			for (let menu of openMenus) {
+			for (const menu of openMenus) {
 				(menu as HTMLElement).style.display = "none";
 			}
 
@@ -97,7 +95,7 @@ export const useMenuEvents = () => {
 		}
 
 		const observer = new MutationObserver((entries) => {
-			for (let entry of entries) {
+			for (const entry of entries) {
 				if (entry.target === document.body) {
 					if (isModalOpen()) {
 						logger(`${hookName} onCloseAll`);

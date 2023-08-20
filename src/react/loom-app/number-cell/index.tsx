@@ -16,5 +16,5 @@ export default function NumberCell({ value }: Props) {
 	let className = "dataloom-number-cell";
 	className += " " + overflowClassName;
 
-	return <div className={overflowClassName}>{valueString}</div>;
+	return <div className={className}>{valueString}</div>;
 }
