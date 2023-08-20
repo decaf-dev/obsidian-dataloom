@@ -39,9 +39,9 @@ export const useRow = () => {
 	}
 
 	return {
-		handleNewRowClick,
-		handleRowDeleteClick,
-		handleRowInsertAboveClick,
-		handleRowInsertBelowClick,
+		onRowAddClick: handleNewRowClick,
+		onRowDeleteClick: handleRowDeleteClick,
+		onRowInsertAboveClick: handleRowInsertAboveClick,
+		onRowInsertBelowClick: handleRowInsertBelowClick,
 	};
 };

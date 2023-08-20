@@ -40,48 +40,36 @@ export const moveFocusRight = (
 
 export const moveFocusUp = (
 	focusableEls: NodeListOf<Element>,
+	numOptionBarFocusableEls: number,
+	numBottomBarFocusableEls: number,
 	numColumns: number,
 	numBodyRows: number,
-	numSortedColumns: number,
 	currentIndex: number
 ) => {
-	const searchInputIndex = numSortedColumns;
-	const optionBarIndexEnd = numSortedColumns + 2;
-	const newRowButtonIndex = focusableEls.length - 1;
+	const optionBarIndexEnd = numOptionBarFocusableEls - 1;
+	const bottomBarIndexStart = focusableEls.length - numBottomBarFocusableEls;
 
-	//Already in the option bar
-	//Don't do anything
-	if (currentIndex <= optionBarIndexEnd) return focusableEls[currentIndex];
-
-	//Column row
-	if (
-		currentIndex > optionBarIndexEnd &&
-		currentIndex <= optionBarIndexEnd + numColumns
-	) {
-		return focusableEls[searchInputIndex];
+	//Header row
+	if (currentIndex <= optionBarIndexEnd + numColumns) {
+		return focusableEls[0];
 	}
 
-	//Function cell
+	//Calculation row
 	if (
-		currentIndex >= newRowButtonIndex - numColumns &&
-		currentIndex < newRowButtonIndex
+		currentIndex >= bottomBarIndexStart - numColumns &&
+		currentIndex < bottomBarIndexStart
 	) {
 		if (numBodyRows === 0)
 			return focusableEls[currentIndex - numColumns - 1];
 		return focusableEls[currentIndex - numColumns];
 	}
 
-	//Add row button row
-	if (currentIndex === newRowButtonIndex)
-		return focusableEls[newRowButtonIndex - numColumns];
-
-	//Header row
-	//Go to the first element
+	//Bottom bar row
 	if (
-		currentIndex > optionBarIndexEnd &&
-		currentIndex <= optionBarIndexEnd + numColumns
+		currentIndex >= bottomBarIndexStart &&
+		currentIndex < focusableEls.length
 	)
-		return focusableEls[0];
+		return focusableEls[bottomBarIndexStart - numColumns];
 
 	//First body row - drag button
 	if (currentIndex === optionBarIndexEnd + numColumns + 2)
@@ -100,29 +88,30 @@ export const moveFocusUp = (
 
 export const moveFocusDown = (
 	focusableEls: NodeListOf<Element>,
+	numOptionBarFocusableEls: number,
+	numBottomBarFocusableEls: number,
 	numColumns: number,
 	numBodyRows: number,
-	numSortedColumns: number,
 	currentIndex: number
 ) => {
-	const firstColumnIndex = numSortedColumns + 3;
-	const optionBarIndexEnd = numSortedColumns + 2;
-	const newRowButtonIndex = focusableEls.length - 1;
+	const optionBarIndexEnd = numOptionBarFocusableEls - 1;
+	const firstColumnIndex = optionBarIndexEnd + 1;
+	const bottomBarIndexStart = focusableEls.length - numBottomBarFocusableEls;
 
-	//At the row button
-	//Don't do anything
-	if (currentIndex === newRowButtonIndex) return focusableEls[currentIndex];
+	//Bottom bar row
+	if (currentIndex >= bottomBarIndexStart)
+		return focusableEls[focusableEls.length - 1];
 
 	//Option bar row
 	if (currentIndex >= 0 && currentIndex <= optionBarIndexEnd)
 		return focusableEls[firstColumnIndex];
 
-	//Function cell
+	//Calculation row
 	if (
-		currentIndex >= newRowButtonIndex - numColumns &&
-		currentIndex < newRowButtonIndex
+		currentIndex >= bottomBarIndexStart - numColumns &&
+		currentIndex < bottomBarIndexStart
 	)
-		return focusableEls[newRowButtonIndex];
+		return focusableEls[bottomBarIndexStart];
 
 	//Header row - columns
 	if (
@@ -136,8 +125,8 @@ export const moveFocusDown = (
 
 	//Last body row
 	if (
-		currentIndex >= newRowButtonIndex - numColumns - numColumns &&
-		currentIndex < newRowButtonIndex - numColumns
+		currentIndex >= bottomBarIndexStart - numColumns - numColumns &&
+		currentIndex < bottomBarIndexStart - numColumns
 	)
 		return focusableEls[currentIndex + numColumns];
 

@@ -14,6 +14,6 @@ export const useTableSettings = () => {
 	}
 
 	return {
-		handleFrozenColumnsChange,
+		onFrozenColumnsChange: handleFrozenColumnsChange,
 	};
 };

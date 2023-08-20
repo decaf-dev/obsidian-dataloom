@@ -16,11 +16,11 @@ interface Props {
 	onScrollToBottomClick: () => void;
 	onUndoClick: () => void;
 	onRedoClick: () => void;
-	onNewRowClick: () => void;
+	onRowAddClick: () => void;
 }
 
 export default function BottomBar({
-	onNewRowClick,
+	onRowAddClick,
 	onScrollToTopClick,
 	onScrollToBottomClick,
 	onUndoClick,
@@ -78,7 +78,7 @@ export default function BottomBar({
 									onClick={onUndoClick}
 								/>
 							)}
-							<NewRowButton onClick={onNewRowClick} />
+							<NewRowButton onClick={onRowAddClick} />
 						</Stack>
 						<Stack isHorizontal spacing="sm">
 							<Button
