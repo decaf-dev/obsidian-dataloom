@@ -39,7 +39,7 @@ export const useRow = () => {
 	}
 
 	return {
-		onNewRowClick: handleNewRowClick,
+		onRowAddClick: handleNewRowClick,
 		onRowDeleteClick: handleRowDeleteClick,
 		onRowInsertAboveClick: handleRowInsertAboveClick,
 		onRowInsertBelowClick: handleRowInsertBelowClick,

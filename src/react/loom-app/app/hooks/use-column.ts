@@ -200,7 +200,7 @@ export const useColumn = () => {
 	}
 
 	return {
-		onNewColumnClick: handleNewColumnClick,
+		onColumnAddClick: handleNewColumnClick,
 		onColumnTypeClick: handleColumnTypeClick,
 		onColumnSortClick: handleColumnSortClick,
 		onColumnToggle: handleColumnToggle,

@@ -85,13 +85,13 @@ export default function App() {
 		onWrapContentToggle,
 		onVerticalPaddingClick,
 		onSortRemoveClick,
-		onNewColumnClick,
+		onColumnAddClick,
 		onHorizontalPaddingClick,
 		onDateFormatChange,
 	} = useColumn();
 
 	const {
-		onNewRowClick,
+		onRowAddClick,
 		onRowDeleteClick,
 		onRowInsertAboveClick,
 		onRowInsertBelowClick,
@@ -285,7 +285,7 @@ export default function App() {
 								columnId: lastColumnId,
 								content: (
 									<NewColumnButton
-										onClick={onNewColumnClick}
+										onClick={onColumnAddClick}
 									/>
 								),
 							},
@@ -477,7 +477,7 @@ export default function App() {
 				})}
 			/>
 			<BottomBar
-				onNewRowClick={onNewRowClick}
+				onRowAddClick={onRowAddClick}
 				onScrollToTopClick={handleScrollToTopClick}
 				onScrollToBottomClick={handleScrollToBottomClick}
 				onUndoClick={onUndo}
