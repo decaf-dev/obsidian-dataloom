@@ -35,15 +35,11 @@ export const useMenu = ({
 	const onOpen = React.useCallback(() => {
 		logger("onOpen");
 		removeCurrentFocusClass();
-		//Wait 10ms so that on mobile, the keyboard can popup and then the menu can already be
-		//positioned correctly
-		setTimeout(() => {
-			setOpenMenus((prevMenus) => {
-				const found = prevMenus.find((m) => m.id === menu.id);
-				if (found) return prevMenus;
-				return [...prevMenus, menu];
-			});
-		}, 10);
+		setOpenMenus((prevMenus) => {
+			const found = prevMenus.find((m) => m.id === menu.id);
+			if (found) return prevMenus;
+			return [...prevMenus, menu];
+		});
 	}, [menu, setOpenMenus, logger]);
 
 	/**
