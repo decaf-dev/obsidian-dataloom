@@ -1,4 +1,5 @@
 import { SortDir, LoomState } from "../loom-state/types";
+import { confirmSortOrderChange } from "../sort-utils";
 import { DragData } from "./types";
 
 export const getRowId = (rowEl: HTMLElement) => {
@@ -15,7 +16,7 @@ export const getRowId = (rowEl: HTMLElement) => {
 export const dropDrag = (
 	targetRowId: string,
 	dragData: DragData | null,
-	LoomState: LoomState,
+	state: LoomState,
 	onLoomStateChange: React.Dispatch<React.SetStateAction<LoomState>>
 ) => {
 	if (dragData === null) throw Error("No drag data found");
@@ -23,18 +24,7 @@ export const dropDrag = (
 	//If we're dragging a column type, then return
 	if (dragData.type !== "row") return;
 
-	const { columns } = LoomState.model;
-	const isSorted = columns.find((column) => column.sortDir !== SortDir.NONE);
-	if (isSorted) {
-		if (
-			!window.confirm(
-				"This will set your default sorting to the current sort filter. Do you wish to continue?" +
-					"\n\n" +
-					"If not, please remove your sort filter before dragging a row."
-			)
-		)
-			return;
-	}
+	if (!confirmSortOrderChange(state)) return;
 
 	onLoomStateChange((prevState) => {
 		const { bodyRows, columns } = prevState.model;
