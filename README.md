@@ -13,6 +13,7 @@ Support development
 ## About
 
 -   [Screenshots](#screenshots)
+-   [FAQ](#faq)
 -   [Installation](#installation)
 -   [Getting started](#getting-started)
 -   [Issues](#issues)
@@ -26,27 +27,80 @@ Support development
 DataLoom supports both light and dark modes and a majority of Obsidian themes.
 
 ![](/docusaurus/static/img/light-mode.png)
+
 ![](/docusaurus/static/img/dark-mode.png)
 
 Choose from 11 different cell types
 
-<img src="./docusaurus/static/img/type-menu.png" width="200">
+<img src="./docusaurus/static/img/type-menu.png" height="350">
 
 Notion-like tag menu system
 
-![](/docusaurus/static/img/tag-menu.png)
+<img src="./docusaurus/static/img/tag-menu.png" width="225">
 
 Toggle visibility of different columns
 
-<img src="./docusaurus/static/img/toggle-menu.png" width="200">
+<img src="./docusaurus/static/img/toggle-menu.png" width="250">
 
 Reference notes directly from the table
 
-![](/docusaurus/static/img/file-menu.png)
+<img src="./docusaurus/static/img/file-menu.png" width="250">
 
 Advanced filtering menu
 
-![](/docusaurus/static/img/filter-menu.png)
+<img src="./docusaurus/static/img/filter-menu.png" width="600">
+
+Export to markdown or CSV
+
+<img src="./docusaurus/static/img/export-modal.png" width="500">
+
+Mobile support
+
+<img src="./docusaurus/static/img/mobile-support.png" width="250">
+
+## FAQ
+
+### What is the purpose of this plugin?
+
+DataLoom offers an interactive WSIWYG user interface for managing tabular data. It allows you to quickly create a table, edit data, and filter data based on specific criteria.
+
+### Why is this plugin called DataLoom?
+
+I wanted a name that would convey the functionality of rendering data from different sources.
+
+Development planned for this plugin includes rendering data from both Obsidian sources such as folders or tags, and external sources such as the YouTube or Instagram API.
+
+### What is the difference between DataLoom and Projects?
+
+[Projects](https://github.com/marcusolsson/obsidian-projects) allows you to create projects from folders and Dataview queries. It offers a table, board, calendar, and gallery view for your data.
+
+While Projects focuses on offering views for managing projects, DataLoom focuses on integrating different data sources.
+
+Projects populates table rows based on existing markdown notes. DataLoom populates table rows based on the data that is entered by the user. All data for a table is stored within a `.loom` file. No markdown notes are required to get started with DataLoom.
+
+### What is the difference between DataLoom and DB Folder?
+
+[DB Folder](https://github.com/RafaelGB/obsidian-db-folder) allows you to create a Notion like database based on folders, links, tags, or dataview queries.
+
+DB Folder is very similar to what DataLoom intends to accomplish.
+
+One major different between DB Folder and DataLoom is that DataLoom does require a folder. You may create a loom file and enter text data to get started.
+
+Another difference is that DataLoom does not depend on [Dataview](https://github.com/blacksmithgu/obsidian-dataview). It can be installed as a standalone plugin.
+
+DataLoom also employs its own menu system rendered in React. This allows for more complicated UIs.
+
+### What is the different between DataLoom and Make.MD?
+
+[Make.MD](https://github.com/Make-md/makemd) contains rich features that enhance the native Obsidian UI to be more like Notion.so. While helpful for some users, not every user will want all of these features.
+
+DataLoom intends to be a more simple application. It does not change the native UI of Obsidian. It is a simple React app that run in its own view. DataLoom also stores data in JSON format in its own `.loom` file.
+
+### Why should I use this plugin?
+
+You should use this plugin if you wish to sort and filter tabular data. I personally use the plugin as an alternative to making markdown lists. It allows me to add tags to my items and sort my ideas.
+
+I recommend you try out the plugin and see if it can help you in organizing your second brain.
 
 ## Installation
 
