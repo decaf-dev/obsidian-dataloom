@@ -126,11 +126,15 @@ export default function App() {
 
 	function handleClick(e: React.MouseEvent) {
 		logger("App handleClick");
-		onFocusClick(e);
+		//Stop propagation to the global event
+		e.stopPropagation();
+		onFocusClick();
 	}
 
 	function handleKeyDown(e: React.KeyboardEvent) {
 		logger("App handleKeyDown");
+		//Stop propagation to the global event
+		e.stopPropagation();
 		if (isWindowsRedoDown(e) || isMacRedoDown(e)) {
 			//Prevent Obsidian action bar from triggering
 			e.preventDefault();
