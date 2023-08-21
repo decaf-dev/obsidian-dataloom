@@ -27,27 +27,36 @@ Support development
 DataLoom supports both light and dark modes and a majority of Obsidian themes.
 
 ![](/docusaurus/static/img/light-mode.png)
+
 ![](/docusaurus/static/img/dark-mode.png)
 
 Choose from 11 different cell types
 
-<img src="./docusaurus/static/img/type-menu.png" width="200">
+<img src="./docusaurus/static/img/type-menu.png" height="350">
 
 Notion-like tag menu system
 
-![](/docusaurus/static/img/tag-menu.png)
+<img src="./docusaurus/static/img/tag-menu.png" width="225">
 
 Toggle visibility of different columns
 
-<img src="./docusaurus/static/img/toggle-menu.png" width="200">
+<img src="./docusaurus/static/img/toggle-menu.png" width="250">
 
 Reference notes directly from the table
 
-![](/docusaurus/static/img/file-menu.png)
+<img src="./docusaurus/static/img/file-menu.png" width="250">
 
 Advanced filtering menu
 
-![](/docusaurus/static/img/filter-menu.png)
+<img src="./docusaurus/static/img/filter-menu.png" width="600">
+
+Export to markdown or CSV
+
+<img src="./docusaurus/static/img/export-modal.png" width="500">
+
+Mobile support
+
+<img src="./docusaurus/static/img/mobile-support.png" width="250">
 
 ## FAQ
 
