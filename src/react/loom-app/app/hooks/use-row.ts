@@ -4,10 +4,11 @@ import RowAddCommand from "src/shared/loom-state/commands/row-add-command";
 import RowDeleteCommand from "src/shared/loom-state/commands/row-delete-command";
 import React from "react";
 import RowInsertCommand from "src/shared/loom-state/commands/row-insert-command";
+import { confirmSortOrderChange } from "src/shared/sort-utils";
 
 export const useRow = () => {
 	const logger = useLogger();
-	const { doCommand } = useLoomState();
+	const { doCommand, loomState } = useLoomState();
 
 	const handleRowDeleteClick = React.useCallback(
 		(rowId: string) => {
@@ -28,14 +29,18 @@ export const useRow = () => {
 		logger("handleRowInsertAboveClick", {
 			rowId,
 		});
-		doCommand(new RowInsertCommand(rowId, "above"));
+		if (confirmSortOrderChange(loomState)) {
+			doCommand(new RowInsertCommand(rowId, "above"));
+		}
 	}
 
 	function handleRowInsertBelowClick(rowId: string) {
 		logger("handleRowInsertBelowClick", {
 			rowId,
 		});
-		doCommand(new RowInsertCommand(rowId, "below"));
+		if (confirmSortOrderChange(loomState)) {
+			doCommand(new RowInsertCommand(rowId, "below"));
+		}
 	}
 
 	return {

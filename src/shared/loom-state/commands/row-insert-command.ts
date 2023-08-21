@@ -3,12 +3,22 @@ import {
 	createBodyRow,
 } from "src/shared/loom-state/loom-state-factory";
 import LoomStateCommand from "../loom-state-command";
-import { BodyCell, BodyRow, LoomState } from "../types";
+import { BodyCell, BodyRow, LoomState, SortDir } from "../types";
 import RowNotFoundError from "src/shared/error/row-not-found-error";
 
 export type RowInsert = "above" | "below";
 
 export default class RowInsertCommand extends LoomStateCommand {
+	/**
+	 * The id of the row to reference when inserting a new row
+	 */
+	private rowId: string;
+
+	/**
+	 * Whether to insert the row above or below the reference row
+	 */
+	private insert: RowInsert;
+
 	/**
 	 * The row that was added
 	 * This is used for `redo` because a unique id is generated each time a row is created.
@@ -26,17 +36,23 @@ export default class RowInsertCommand extends LoomStateCommand {
 	private addedBodyCells: BodyCell[];
 
 	/**
-	 * The id of the row to reference when inserting a new row
+	 *  The column sort before execution
 	 */
-	private rowId: string;
+	private originalRowOrder: {
+		id: string;
+		index: number;
+	}[];
 
 	/**
-	 * Whether to insert the row above or below the reference row
+	 * The column sort before execution
 	 */
-	private insert: RowInsert;
+	private originalColumnSort: {
+		id: string;
+		sortDir: SortDir;
+	}[];
 
 	constructor(rowId: string, insert: RowInsert) {
-		super(true);
+		super();
 		this.rowId = rowId;
 		this.insert = insert;
 	}
@@ -46,48 +62,64 @@ export default class RowInsertCommand extends LoomStateCommand {
 
 		const { bodyRows, bodyCells, columns } = prevState.model;
 
-		//Find the base row
-		const row = bodyRows.find((row) => row.id === this.rowId);
-		if (!row) throw new RowNotFoundError(this.rowId);
-		const { index } = row;
+		//Find the base row index
+		const index = bodyRows.findIndex((row) => row.id === this.rowId);
+		if (index === -1) throw new RowNotFoundError(this.rowId);
 
-		//Find the insertion index
+		//Calculate the insertion index
 		const insertIndex = this.insert === "above" ? index : index + 1;
-		if (insertIndex < 0) throw new Error("Cannot insert above first row");
-		if (insertIndex > bodyRows.length)
-			throw new Error("Cannot insert below last row");
 
-		//Create the new row and cells
-		const newRow = createBodyRow(insertIndex);
-		this.addedRow = newRow;
+		//Create the new row and cells to insert
+		const createdRow = createBodyRow(insertIndex);
+		this.addedRow = createdRow;
 
-		const newBodyCells = columns.map((column) => {
+		const createdBodyCells = columns.map((column) => {
 			const { id, type } = column;
-			return createBodyCell(id, newRow.id, {
+			return createBodyCell(id, createdRow.id, {
 				cellType: type,
 			});
 		});
-		this.addedBodyCells = newBodyCells;
+		//Save the added cells so we can reference them in `redo`
+		this.addedBodyCells = createdBodyCells;
 
-		//Update the indexes of the rows below the insertion index by 1
-		const updatedRows = bodyRows.map((row) => {
-			if (row.index >= insertIndex) {
-				return {
-					...row,
-					index: row.index + 1,
-				};
-			}
-			return row;
+		//Save the previous row order so we can reference it in `undo`
+		this.originalRowOrder = bodyRows.map((row) => ({
+			id: row.id,
+			index: row.index,
+		}));
+
+		//Insert the new row
+		const updatedRows = [
+			...bodyRows.slice(0, insertIndex),
+			createdRow,
+			...bodyRows.slice(insertIndex),
+			//Set the current index of all the values to their current positions
+			//This will allow us to retain the order of sorted rows
+		].map((row, i) => ({ ...row, index: i }));
+
+		//Save the previous column sort so we can reference it in `undo`
+		this.originalColumnSort = columns.map((column) => ({
+			id: column.id,
+			sortDir: column.sortDir,
+		}));
+
+		//Reset the sort
+		const updatedColumns = columns.map((column) => {
+			return {
+				...column,
+				sortDir: SortDir.NONE,
+			};
 		});
-		const newRows = [...updatedRows, newRow];
-		const newCells = [...bodyCells, ...newBodyCells];
+
+		const updatedBodyCells = [...bodyCells, ...createdBodyCells];
 
 		return {
 			...prevState,
 			model: {
 				...prevState.model,
-				bodyRows: newRows,
-				bodyCells: newCells,
+				columns: updatedColumns,
+				bodyRows: updatedRows,
+				bodyCells: updatedBodyCells,
 			},
 		};
 	}
@@ -95,31 +127,33 @@ export default class RowInsertCommand extends LoomStateCommand {
 	redo(prevState: LoomState): LoomState {
 		super.onRedo();
 
-		const { bodyRows, bodyCells } = prevState.model;
+		const { bodyRows, bodyCells, columns } = prevState.model;
 
-		//Increase the indexes of the rows below (higher index) the insertion index by 1
-		const updatedRows = bodyRows.map((row) => {
-			if (row.index >= this.addedRow.index) {
-				return {
-					...row,
-					index: row.index + 1,
-				};
-			}
-			return row;
+		//Insert the new row
+		const insertIndex = this.addedRow.index;
+		const updatedBodyRows = [
+			...bodyRows.slice(0, insertIndex),
+			this.addedRow,
+			...bodyRows.slice(insertIndex),
+		].map((row, i) => ({ ...row, index: i }));
+
+		const updatedBodyCells = [...bodyCells, ...this.addedBodyCells];
+
+		//Reset the sort
+		const updatedColumns = columns.map((column) => {
+			return {
+				...column,
+				sortDir: SortDir.NONE,
+			};
 		});
-
-		//We use the already created row and cells
-		//because the ID is unique. If any commands after this depend on the same id,
-		//they will fail.
-		const newRows = [...updatedRows, this.addedRow];
-		const newCells = [...bodyCells, ...this.addedBodyCells];
 
 		return {
 			...prevState,
 			model: {
 				...prevState.model,
-				bodyRows: newRows,
-				bodyCells: newCells,
+				columns: updatedColumns,
+				bodyRows: updatedBodyRows,
+				bodyCells: updatedBodyCells,
 			},
 		};
 	}
@@ -127,38 +161,53 @@ export default class RowInsertCommand extends LoomStateCommand {
 	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
-		const { bodyRows, bodyCells } = prevState.model;
+		const { bodyRows, bodyCells, columns } = prevState.model;
 
 		//Find the row that was added
 		const row = bodyRows.find((row) => row.id === this.addedRow.id);
 		if (!row) throw new RowNotFoundError(this.addedRow.id);
 
-		//Decrement the indexes of the rows below (higher index) the insertion index by 1
-		const { index } = row;
-		const updatedRows = bodyRows.map((row) => {
-			if (row.index > index) {
+		const updatedBodyRows = bodyRows
+			//Remove the added row
+			.filter((row) => row.id !== this.addedRow.id)
+			//Restore the original row order
+			.map((row) => {
+				const original = this.originalRowOrder.find(
+					(r) => r.id === row.id
+				);
+				if (!original) throw new RowNotFoundError(row.id);
+				const { index } = original;
 				return {
 					...row,
-					index: row.index - 1,
+					index,
 				};
-			}
-			return row;
-		});
+			});
 
-		//Remove the added row and cells
-		const newBodyRows = updatedRows.filter(
-			(row) => row.id !== this.addedRow.id
-		);
-		const newBodyCells = bodyCells.filter(
+		//Remove the added body cells
+		const updatedBodyCells = bodyCells.filter(
 			(cell) => cell.rowId !== this.addedRow.id
 		);
+
+		//Restore the original column sort
+		const updatedColumns = columns.map((column) => {
+			const oldColumn = this.originalColumnSort.find(
+				(c) => c.id === column.id
+			);
+			if (!oldColumn) throw new Error("Column not found");
+			const { sortDir } = oldColumn;
+			return {
+				...column,
+				sortDir,
+			};
+		});
 
 		return {
 			...prevState,
 			model: {
 				...prevState.model,
-				bodyRows: newBodyRows,
-				bodyCells: newBodyCells,
+				columns: updatedColumns,
+				bodyRows: updatedBodyRows,
+				bodyCells: updatedBodyCells,
 			},
 		};
 	}

@@ -31,8 +31,8 @@ describe("row-insert-command", () => {
 		//Assert
 		expect(executeState.model.bodyRows.length).toEqual(2); //make sure that the row was added
 		expect(executeState.model.bodyCells.length).toEqual(2);
-		expect(executeState.model.bodyRows[0].id).toEqual(rowId); //make sure that the row was added above the original row
-		expect(executeState.model.bodyRows[0].index).toEqual(1);
+		expect(executeState.model.bodyRows[1].id).toEqual(rowId); //make sure that the row was added above the original row
+		expect(executeState.model.bodyRows[1].index).toEqual(1);
 	});
 
 	it("should insert a row below when execute() is called", () => {
