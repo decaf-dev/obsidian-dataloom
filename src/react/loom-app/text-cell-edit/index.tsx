@@ -1,6 +1,6 @@
 import React from "react";
 
-import { TFile } from "obsidian";
+import { Platform, TFile } from "obsidian";
 
 import SuggestMenu from "./suggest-menu";
 
@@ -48,6 +48,9 @@ export default function TextCellEdit({
 
 	const [localValue, setLocalValue] = React.useState(value);
 	const inputRef = React.useRef<HTMLTextAreaElement | null>(null);
+	const logger = useLogger();
+
+	usePlaceCursorAtEnd(inputRef, localValue);
 
 	React.useEffect(() => {
 		if (inputRef.current) {
@@ -70,9 +73,6 @@ export default function TextCellEdit({
 			}
 		}
 	}, [inputRef, localValue]);
-	usePlaceCursorAtEnd(inputRef, localValue);
-
-	const logger = useLogger();
 
 	React.useEffect(() => {
 		if (closeRequest !== null) {
@@ -108,11 +108,33 @@ export default function TextCellEdit({
 				e.stopPropagation();
 				return;
 			}
-
 			//Prevent defaults stop enter from inserting a new line
 			e.preventDefault();
+		} else if (e.shiftKey) {
+			//If the user is holding down the `alt + shift` key (Windows or Linux) or the `meta + shift` key (MacOS)
+			//insert a new line
+			if (
+				(Platform.isMacOS && e.metaKey) ||
+				Platform.isWin ||
+				Platform.isLinux
+			) {
+				e.preventDefault();
+				setLocalValue((prevState) => prevState + "\n");
+			}
 		}
 	}
+
+	//Scroll to bottom when the value changes
+	//This is necessary if we press `alt + shift` or `meta + shift` to insert a new line
+	//This is what the browser does with `shift + enter` by default
+	React.useEffect(
+		function scrollToBottom() {
+			if (inputRef.current) {
+				inputRef.current.scrollTop = inputRef.current.scrollHeight;
+			}
+		},
+		[inputRef, localValue]
+	);
 
 	function handleTextareaChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
 		const inputValue = e.target.value;
