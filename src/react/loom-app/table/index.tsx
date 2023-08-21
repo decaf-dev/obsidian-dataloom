@@ -111,9 +111,20 @@ const Components: TableComponents = {
 	},
 	//Don't apply styles because we want to apply sticky positioning
 	//to the cells, not the header container
-	TableHead: React.forwardRef(({ ...props }, ref) => (
-		<div className="dataloom-header" {...props} ref={ref} />
-	)),
+	TableHead: React.forwardRef(({ ...props }, ref) => {
+		return (
+			<div
+				className="dataloom-header"
+				{...props}
+				style={{
+					position: undefined,
+					top: undefined,
+					zIndex: undefined,
+				}}
+				ref={ref}
+			/>
+		);
+	}),
 	TableRow: ({ style, ...props }) => {
 		return <BodyRow {...props} style={style} />;
 	},
@@ -123,7 +134,16 @@ const Components: TableComponents = {
 	//Don't apply styles because we want to apply sticky positioning
 	//to the cells, not the footer container
 	TableFoot: React.forwardRef(({ ...props }, ref) => (
-		<div className="dataloom-footer" {...props} ref={ref} />
+		<div
+			className="dataloom-footer"
+			{...props}
+			style={{
+				position: undefined,
+				bottom: undefined,
+				zIndex: undefined,
+			}}
+			ref={ref}
+		/>
 	)),
 	FillerRow: ({ height }) => {
 		return <div className="dataloom-row" style={{ height }} />;
