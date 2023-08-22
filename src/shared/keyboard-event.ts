@@ -1,3 +1,5 @@
+import { Platform } from "obsidian";
+
 /**
  * Checks if undo keys for Windows are being pressed
  * @param e the keyboard event
@@ -25,3 +27,15 @@ export const isMacUndoDown = (e: React.KeyboardEvent) =>
  */
 export const isMacRedoDown = (e: React.KeyboardEvent) =>
 	e.metaKey && e.shiftKey && e.key === "z";
+
+export const isInsertLineDown = (e: React.KeyboardEvent) => {
+	return e.shiftKey && e.key === "Enter";
+};
+
+export const isInsertLineAltDown = (e: React.KeyboardEvent) => {
+	if (Platform.isMacOS) {
+		return e.metaKey && e.key === "Enter";
+	} else if (Platform.isWin || Platform.isLinux) {
+		return e.altKey && e.key === "Enter";
+	}
+};
