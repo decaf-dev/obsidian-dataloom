@@ -27,9 +27,7 @@ export const useExportEvents = (state: LoomState) => {
 				setTimeout(() => {
 					const data = exportToCSV(app, state, exportRenderMarkdown);
 					const exportFileName = getExportFileName(filePath);
-					const blobType = getBlobTypeForExportType(
-						ExportType.MARKDOWN
-					);
+					const blobType = getBlobTypeForExportType(ExportType.CSV);
 					downloadFile(exportFileName, blobType, data);
 				}, 100);
 			}

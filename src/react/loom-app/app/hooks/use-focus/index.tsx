@@ -25,16 +25,13 @@ export default function useFocus() {
 	const { loomState } = useLoomState();
 	const { onRequestCloseTop, topMenu } = useMenuOperations();
 
-	function handleClick(e: React.MouseEvent) {
+	function handleClick() {
 		logger("useFocus handleClick");
-		//Stop propagation to the global event
-		e.stopPropagation();
 		onRequestCloseTop();
 	}
 
 	function handleKeyDown(e: React.KeyboardEvent) {
 		logger("useFocus handleKeyDown");
-		e.stopPropagation();
 
 		if (e.key === "Tab") {
 			removeCurrentFocusClass();

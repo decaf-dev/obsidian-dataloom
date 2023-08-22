@@ -19,6 +19,10 @@ import { LoomMenuCloseRequest, LoomMenuLevel } from "../../shared/menu/types";
 import { useMenu, useMenuOperations } from "../../shared/menu/hooks";
 
 import "./styles.css";
+import {
+	isInsertLineAltDown,
+	isInsertLineDown,
+} from "src/shared/keyboard-event";
 
 interface Props {
 	closeRequest: LoomMenuCloseRequest | null;
@@ -47,7 +51,13 @@ export default function TextCellEdit({
 	} = useMenu({ level: LoomMenuLevel.TWO });
 
 	const [localValue, setLocalValue] = React.useState(value);
+	const [cursorPosition, setCursorPosition] = React.useState<number | null>(
+		null
+	);
 	const inputRef = React.useRef<HTMLTextAreaElement | null>(null);
+	const logger = useLogger();
+
+	usePlaceCursorAtEnd(inputRef, localValue);
 
 	React.useEffect(() => {
 		if (inputRef.current) {
@@ -70,9 +80,6 @@ export default function TextCellEdit({
 			}
 		}
 	}, [inputRef, localValue]);
-	usePlaceCursorAtEnd(inputRef, localValue);
-
-	const logger = useLogger();
 
 	React.useEffect(() => {
 		if (closeRequest !== null) {
@@ -100,19 +107,43 @@ export default function TextCellEdit({
 				inputEl.selectionStart = cursorPosition;
 				inputEl.selectionEnd = cursorPosition;
 			}
-		} else if (e.key === "Enter") {
-			//If we're pressing the shift key, don't propagate the event
-			//this will stop the menu from closing. And allow the default event,
-			//which is to insert a new line
-			if (e.shiftKey && !isSuggestMenuOpen) {
-				e.stopPropagation();
-				return;
-			}
+		} else if (isInsertLineDown(e)) {
+			if (isSuggestMenuOpen) return;
+			e.stopPropagation();
+		} else if (isInsertLineAltDown(e)) {
+			if (isSuggestMenuOpen) return;
+			e.stopPropagation();
 
-			//Prevent defaults stop enter from inserting a new line
-			e.preventDefault();
+			const cursorPosition = inputRef.current?.selectionStart ?? 0;
+			setLocalValue(
+				(prevState) =>
+					prevState.slice(0, cursorPosition) +
+					"\n" +
+					prevState.slice(cursorPosition)
+			);
+			setCursorPosition(cursorPosition + 1);
 		}
 	}
+
+	React.useEffect(() => {
+		if (cursorPosition !== null && inputRef.current) {
+			inputRef.current.selectionStart = cursorPosition;
+			inputRef.current.selectionEnd = cursorPosition;
+			setCursorPosition(null);
+		}
+	}, [cursorPosition, inputRef]);
+
+	//Scroll to bottom when the value changes
+	//This is necessary if we press `alt + shift` or `meta + shift` to insert a new line
+	//This is what the browser does with `shift + enter` by default
+	React.useEffect(
+		function scrollToBottom() {
+			if (inputRef.current) {
+				inputRef.current.scrollTop = inputRef.current.scrollHeight;
+			}
+		},
+		[inputRef, localValue]
+	);
 
 	function handleTextareaChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
 		const inputValue = e.target.value;
