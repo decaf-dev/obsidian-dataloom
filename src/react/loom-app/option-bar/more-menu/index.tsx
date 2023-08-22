@@ -55,7 +55,7 @@ export default function MoreMenu({
 					onFreezeColumnsClick={() =>
 						setSubmenu(MoreMenuSubmenu.FROZEN_COLUMNS)
 					}
-					onExportClick={() => onClose()}
+					onClose={onClose}
 				/>
 			)}
 			{submenu == MoreMenuSubmenu.FROZEN_COLUMNS && (

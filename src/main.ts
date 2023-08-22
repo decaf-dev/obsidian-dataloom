@@ -17,9 +17,9 @@ import DataLoomView, { DATA_LOOM_VIEW } from "./obsidian/dataloom-view";
 
 import { store } from "./redux/store";
 import {
-	setManifestPluginVersion,
 	setDarkMode,
 	setSettings,
+	setPluginVersion,
 } from "./redux/global-slice";
 import { FILE_EXTENSION, WIKI_LINK_REGEX } from "./data/constants";
 import { createLoomFile } from "src/data/loom-file";
@@ -133,7 +133,7 @@ export default class DataLoomPlugin extends Plugin {
 
 		this.settings.pluginVersion = this.manifest.version;
 		await this.saveSettings();
-		store.dispatch(setManifestPluginVersion(this.manifest.version));
+		store.dispatch(setPluginVersion(this.manifest.version));
 	}
 
 	//TODO remove this in future versions
