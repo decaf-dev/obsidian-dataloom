@@ -26,7 +26,7 @@ interface Props {
 	loomFilePath: string;
 }
 
-export function ExportApp({ loomState, loomFilePath }: Props) {
+export function ExportApp({ app, loomState, loomFilePath }: Props) {
 	const [exportType, setExportType] = React.useState<ExportType>(
 		ExportType.UNSELECTED
 	);

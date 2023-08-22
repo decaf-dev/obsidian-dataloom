@@ -26,6 +26,10 @@ export const downloadFile = (
 	blobType: string,
 	data: string
 ) => {
+	if (blobType === "text/csv") {
+		//Add BOM to force Excel to open the file with UTF-8 encoding
+		data = "\uFEFF" + data;
+	}
 	//Create a blob object
 	const blob = new Blob([data], { type: blobType });
 	const url = window.URL.createObjectURL(blob);
