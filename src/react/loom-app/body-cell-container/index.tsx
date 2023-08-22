@@ -48,6 +48,9 @@ interface Props {
 	rowId: string;
 	dateTime: number | null;
 	dateFormat: DateFormat;
+	numberPrefix: string;
+	numberSuffix: string;
+	numberSeperator: string;
 	columnCurrencyType: CurrencyType;
 	columnId: string;
 	markdown: string;
@@ -107,6 +110,9 @@ export default function BodyCellContainer({
 	horizontalPadding,
 	dateFormat,
 	dateTime,
+	numberPrefix,
+	numberSuffix,
+	numberSeperator,
 	columnCurrencyType,
 	columnType,
 	rowCreationTime,
@@ -334,7 +340,12 @@ export default function BodyCellContainer({
 						/>
 					)}
 					{columnType === CellType.NUMBER && (
-						<NumberCell value={markdown} />
+						<NumberCell 
+							value={markdown} 
+							prefix={numberPrefix}
+							suffix={numberSuffix}
+							seperator={numberSeperator}
+						/>
 					)}
 					{columnType === CellType.CURRENCY && (
 						<CurrencyCell

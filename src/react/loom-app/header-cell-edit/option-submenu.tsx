@@ -19,6 +19,9 @@ import {
 interface Props {
 	title: string;
 	currencyType: CurrencyType;
+	numberPrefix: string;
+	numberSuffix: string;
+	numberSeperator: string;
 	type: CellType;
 	dateFormat: DateFormat;
 	verticalPadding: PaddingSize;
@@ -31,6 +34,9 @@ interface Props {
 export default function OptionSubmenu({
 	type,
 	currencyType,
+	numberPrefix,
+	numberSuffix,
+	numberSeperator,
 	aspectRatio,
 	verticalPadding,
 	horizontalPadding,
@@ -78,6 +84,25 @@ export default function OptionSubmenu({
 								onSubmenuChange(SubmenuType.CURRENCY)
 							}
 						/>
+					)}
+					{type === CellType.NUMBER && (
+						<>
+							<MenuItem
+								name="Prefix"
+								value={numberPrefix}
+								onClick={() => onSubmenuChange(SubmenuType.TEXT_INPUT_NUMBER_PREFIX) }
+							/>
+							<MenuItem
+								name="Suffix"
+								value={numberSuffix}
+								onClick={() => onSubmenuChange(SubmenuType.TEXT_INPUT_NUMBER_SUFFIX) }
+							/>
+							<MenuItem
+								name="Seperator"
+								value={numberSeperator}
+								onClick={() => onSubmenuChange(SubmenuType.TEXT_INPUT_NUMBER_SEPERATOR) }
+							/>
+						</>
 					)}
 					{(type === CellType.CREATION_TIME ||
 						type === CellType.LAST_EDITED_TIME ||
