@@ -67,6 +67,12 @@ interface Props {
 	onClose: () => void;
 }
 
+const SELFHANDLE_CLOSE: SubmenuType[] = [
+	SubmenuType.TEXT_INPUT_NUMBER_SUFFIX,
+	SubmenuType.TEXT_INPUT_NUMBER_PREFIX,
+	SubmenuType.TEXT_INPUT_NUMBER_SEPERATOR
+]
+
 export default function HeaderMenu({
 	isOpen,
 	id,
@@ -113,7 +119,9 @@ export default function HeaderMenu({
 			if (submenu === null) {
 				if (localValue !== markdown) onNameChange(cellId, localValue);
 			}
-			onClose();
+			if(!submenu || !SELFHANDLE_CLOSE.includes(submenu)) {
+				onClose();
+			}
 		}
 	}, [
 		markdown,
@@ -171,17 +179,11 @@ export default function HeaderMenu({
 		setSubmenu(SubmenuType.OPTIONS);
 	}
 
-	function handleNumberPrefixChange(value: string) {
-		onNumberPrefixChange(columnId, value);
-		setSubmenu(SubmenuType.OPTIONS);
-	}
-	function handleNumberSuffixChange(value: string) {
-		onNumberSuffixChange(columnId, value);
-		setSubmenu(SubmenuType.OPTIONS);
-	}
-	function handleNumberSeperatorChange(value: string) {
-		onNumberSeperatorChange(columnId, value);
-		setSubmenu(SubmenuType.OPTIONS);
+	function handleNumberOptionChange(value: string) {
+		submenu === SubmenuType.TEXT_INPUT_NUMBER_PREFIX && onNumberPrefixChange(columnId, value);
+		submenu === SubmenuType.TEXT_INPUT_NUMBER_SUFFIX && onNumberSuffixChange(columnId, value);
+		submenu === SubmenuType.TEXT_INPUT_NUMBER_SEPERATOR && onNumberSeperatorChange(columnId, value);
+		setSubmenu(null);
 	}
 
 	function handleDateFormatClick(value: DateFormat) {
@@ -286,23 +288,29 @@ export default function HeaderMenu({
 					<TextInputSubmenu
 						title="Prefix"
 						value={numberPrefix}
-						onValueChange={handleNumberPrefixChange}
+						closeRequest={closeRequest}
+						onClose={onClose}
+						onValueChange={handleNumberOptionChange}
 						onBackClick={() => setSubmenu(SubmenuType.OPTIONS)}
-					/>
-				)}
+						/>
+						)}
 				{submenu === SubmenuType.TEXT_INPUT_NUMBER_SUFFIX && (
 					<TextInputSubmenu
 						title="Suffix"
+						closeRequest={closeRequest}
+						onClose={onClose}
 						value={numberSuffix}
-						onValueChange={handleNumberSuffixChange}
+						onValueChange={handleNumberOptionChange}
 						onBackClick={() => setSubmenu(SubmenuType.OPTIONS)}
 					/>
-				)}
+					)}
 				{submenu === SubmenuType.TEXT_INPUT_NUMBER_SEPERATOR && (
 					<TextInputSubmenu
 						title="Seperator"
+						closeRequest={closeRequest}
+						onClose={onClose}
 						value={numberSeperator}
-						onValueChange={handleNumberSeperatorChange}
+						onValueChange={handleNumberOptionChange}
 						onBackClick={() => setSubmenu(SubmenuType.OPTIONS)}
 					/>
 				)}

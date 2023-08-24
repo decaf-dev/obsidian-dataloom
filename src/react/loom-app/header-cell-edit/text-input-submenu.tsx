@@ -1,15 +1,16 @@
 import React from "react";
 import Submenu from "../../shared/submenu";
 import Flex from "../../shared/flex";
-import Button from "../../shared/button";
 import Input from "../../shared/input";
-import Icon from "../../shared/icon";
+import { LoomMenuCloseRequest } from "src/react/shared/menu/types";
 
 interface Props {
 	title: string;
 	value: string;
 	onValueChange: (value: string) => void;
 	onBackClick: () => void;
+	closeRequest: LoomMenuCloseRequest | null;
+	onClose: () => void;
 }
 
 export default function TextInputSubmenu({
@@ -17,24 +18,35 @@ export default function TextInputSubmenu({
 	value,
 	onValueChange,
 	onBackClick,
+	closeRequest,
+	onClose
 }: Props) {
 	const [textValue, setTextValue] = React.useState(value || '')
 
-	const submitValue = () => {
-		onValueChange(textValue)
+	React.useEffect(() => {
+		if (closeRequest !== null) {
+			onValueChange(textValue);
+			onClose();
+		}
+	}, [
+		onValueChange,
+		textValue,
+		closeRequest,
+		onClose,
+	]);
+
+	function catchArrowKeys(event: React.KeyboardEvent) {
+		const arrowKeys = ['ArrowLeft', 'ArrowRight']
+		if(arrowKeys.includes(event.key)) {
+			event.stopPropagation()
+		}
 	}
 
-	const handleKeyDown = (event: React.KeyboardEvent) => {
-		if (event.key === 'Enter') {
-			onValueChange(textValue)
-		}
-	};
 
 	return (
 		<Submenu title={title} onBackClick={onBackClick}>
 			<Flex>
-				<Input value={textValue} onChange={setTextValue} onKeyDown={handleKeyDown}/>
-				<Button onClick={submitValue}><Icon lucideId="check"/></Button>
+				<Input value={textValue} onChange={setTextValue} onKeyDown={catchArrowKeys} />
 			</Flex>
 		</Submenu>
 	);

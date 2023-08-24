@@ -86,23 +86,25 @@ export default function OptionSubmenu({
 						/>
 					)}
 					{type === CellType.NUMBER && (
-						<>
-							<MenuItem
-								name="Prefix"
-								value={numberPrefix}
-								onClick={() => onSubmenuChange(SubmenuType.TEXT_INPUT_NUMBER_PREFIX) }
-							/>
-							<MenuItem
-								name="Suffix"
-								value={numberSuffix}
-								onClick={() => onSubmenuChange(SubmenuType.TEXT_INPUT_NUMBER_SUFFIX) }
-							/>
-							<MenuItem
-								name="Seperator"
-								value={numberSeperator}
-								onClick={() => onSubmenuChange(SubmenuType.TEXT_INPUT_NUMBER_SEPERATOR) }
-							/>
-						</>
+						<MenuItem
+							name="Prefix"
+							value={numberPrefix}
+							onClick={() => onSubmenuChange(SubmenuType.TEXT_INPUT_NUMBER_PREFIX) }
+						/>
+					)}
+					{type === CellType.NUMBER && (
+						<MenuItem
+							name="Suffix"
+							value={numberSuffix}
+							onClick={() => onSubmenuChange(SubmenuType.TEXT_INPUT_NUMBER_SUFFIX) }
+						/>
+					)}
+					{type === CellType.NUMBER && (
+						<MenuItem
+							name="Seperator"
+							value={numberSeperator}
+							onClick={() => onSubmenuChange(SubmenuType.TEXT_INPUT_NUMBER_SEPERATOR) }
+						/>	
 					)}
 					{(type === CellType.CREATION_TIME ||
 						type === CellType.LAST_EDITED_TIME ||
