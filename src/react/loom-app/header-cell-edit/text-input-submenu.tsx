@@ -21,7 +21,7 @@ export default function TextInputSubmenu({
 	closeRequest,
 	onClose
 }: Props) {
-	const [textValue, setTextValue] = React.useState(value || '')
+	const [textValue, setTextValue] = React.useState(value)
 
 	React.useEffect(() => {
 		if (closeRequest !== null) {
