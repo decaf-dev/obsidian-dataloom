@@ -49,7 +49,7 @@ export default function BaseContent({
 				name="Import"
 				onClick={() => {
 					onClose();
-					new ImportModal(app, pluginVersion).open();
+					new ImportModal(app, loomFile, pluginVersion).open();
 				}}
 			/>
 			<MenuItem

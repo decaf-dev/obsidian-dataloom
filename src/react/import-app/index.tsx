@@ -50,7 +50,7 @@ export default function ImportApp({ initialState, onStateSave }: Props) {
 
 	return (
 		<div className="dataloom-import-app">
-			<Stack spacing="lg">
+			<Stack spacing="xl">
 				<Stack spacing="lg">
 					<ImportTypeSelect
 						value={importType}
