@@ -1,8 +1,8 @@
-.dataloom-assign-data table {
+.dataloom-match-columns table {
     border-collapse: collapse;
 }   
 
-.dataloom-assign-data th, .dataloom-assign-data td {
+.dataloom-match-columns th, .dataloom-match-columns td {
     border: 1px solid var(--background-modifier-border);
     padding: 0.5em;
 

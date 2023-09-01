@@ -4,10 +4,10 @@ interface Props {
 	data: string[][];
 }
 
-export default function AssignData({ data }: Props) {
+export default function MatchColumns({ data }: Props) {
 	if (data.length === 0) return <></>;
 	return (
-		<div className="dataloom-assign-data">
+		<div className="dataloom-match-columns">
 			<table>
 				<thead>
 					<tr>

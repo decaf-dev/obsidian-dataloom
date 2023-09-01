@@ -11,7 +11,7 @@ import { LoomState } from "src/shared/loom-state/types";
 import { Step } from "../shared/stepper/types";
 import { DataSource, DataType } from "./types";
 
-import AssignData from "./steps/assign-data";
+import MatchColumns from "./steps/match-columns";
 
 import {
 	parseMarkdownTableIntoTokens,
@@ -85,8 +85,8 @@ export default function ImportApp({ initialState, onStateSave }: Props) {
 			},
 		},
 		{
-			title: "Assign data to table columns",
-			content: <AssignData data={data} />,
+			title: "Match columns",
+			content: <MatchColumns data={data} />,
 		},
 	];
 
