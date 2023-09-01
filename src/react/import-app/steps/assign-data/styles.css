@@ -1,0 +1,9 @@
+.dataloom-assign-data table {
+    border-collapse: collapse;
+}   
+
+.dataloom-assign-data th, .dataloom-assign-data td {
+    border: 1px solid var(--background-modifier-border);
+    padding: 0.5em;
+
+}
