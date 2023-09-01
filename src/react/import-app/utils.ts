@@ -20,7 +20,18 @@ export const getDisplayNameForDataSource = (value: DataSource) => {
 		case DataSource.FILE:
 			return "File";
 		case DataSource.COPY_PASTE:
-			return "Copy and paste";
+			return "Paste from clipboard";
+		default:
+			return "";
+	}
+};
+
+export const getAcceptForDataType = (value: DataType) => {
+	switch (value) {
+		case DataType.MARKDOWN:
+			return ".md";
+		case DataType.CSV:
+			return ".csv";
 		default:
 			return "";
 	}

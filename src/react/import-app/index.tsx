@@ -1,15 +1,18 @@
 import React from "react";
 
-import DataTypeSelect from "./import-type-select";
+import Papa from "papaparse";
+
+import DataTypeSelect from "./steps/data-type-select";
 import Stepper from "../shared/stepper";
+import DataSourceSelect from "./steps/data-source-select";
+import UploadData from "./steps/upload-data";
 
 import { LoomState } from "src/shared/loom-state/types";
 import { Step } from "../shared/stepper/types";
-import { ERROR_TEXT_DEFAULT } from "./constants";
 import { DataSource, DataType } from "./types";
 
 import "./styles.css";
-import DataSourceSelect from "./data-source-select";
+import AssignData from "./steps/assign-data";
 
 interface Props {
 	initialState: LoomState;
@@ -17,11 +20,11 @@ interface Props {
 }
 
 export default function ImportApp({ initialState, onStateSave }: Props) {
-	const [inputText, setInputText] = React.useState("");
 	const [dataSource, setDataSource] = React.useState(DataSource.UNSELECTED);
 	const [dataType, setDataType] = React.useState(DataType.UNSELECTED);
-	const [columnId, setColumnId] = React.useState("");
-	const [errorText, setErrorText] = React.useState(ERROR_TEXT_DEFAULT);
+	const [rawData, setRawData] = React.useState("");
+	const [data, setData] = React.useState<(string | number)[][]>([]);
+	const [errorText, setErrorText] = React.useState<string | null>(null);
 
 	const steps: Step[] = [
 		{
@@ -36,66 +39,56 @@ export default function ImportApp({ initialState, onStateSave }: Props) {
 			),
 			canContinue: dataSource !== DataSource.UNSELECTED,
 		},
-		{ title: "Step 3", content: <div>Step 2 content here</div> },
+		{
+			title: "Upload data",
+			content: (
+				<UploadData
+					source={dataSource}
+					dataType={dataType}
+					errorText={errorText}
+					rawData={rawData}
+					onRawDataChange={setRawData}
+				/>
+			),
+			canContinue: rawData !== "",
+			onBack: () => {
+				setRawData("");
+				setErrorText(null);
+			},
+			onContinue: () => {
+				if (dataType === DataType.CSV) {
+					const { data, errors } = Papa.parse(rawData);
+					if (errors.length > 0) {
+						setErrorText(errors[0].message);
+						return false;
+					}
+					setData(data as (string | number)[][]);
+				} else if (dataType === DataType.MARKDOWN) {
+					//TODO support markdown to table
+					//setData(rawData.split("\n"));
+				}
+				return true;
+			},
+		},
+		{
+			title: "Assign data to table columns",
+			content: <AssignData data={data} />,
+		},
 	];
 
-	function handleFinishClick() {
-		// if (dataType === DataType.MARKDOWN_LIST) {
-		// 	if (validateMarkdownList(inputText)) {
-		// 		const listItems = getMarkdownListItems(inputText);
-		// 		const updatedState = importMarkdownListItems(
-		// 			listItems,
-		// 			columnId,
-		// 			initialState
-		// 		);
-		// 		onStateSave(updatedState);
-		// 		return;
-		// 	}
-		// 	setErrorText("Invalid markdown");
-		// }
-	}
+	function handleFinishClick() {}
 
-	let errorTextClassName = "error-text";
-	if (errorText !== ERROR_TEXT_DEFAULT)
-		errorTextClassName += " error-text--visible";
-
-	// const { columns, headerCells } = initialState.model;
+	// <button className="mod-cta" onClick={handleImportClick}>
+	// 	Import
+	// </button>;
 
 	return (
 		<div className="dataloom-import-app">
 			<Stepper
 				steps={steps}
-				finishButtonLabel="Finish Import"
+				finishButtonLabel="Finish"
 				onFinishClick={handleFinishClick}
 			/>
-			{/* <Stack spacing="xl">
-				<Stack spacing="lg">
-					<DataTypeSelect
-						value={dataType}
-						onChange={setDataType}
-					/>
-					{dataType !== -1 && (
-						<ColumnSelect
-							columns={columns}
-							headerCells={headerCells}
-							value={columnId}
-							onChange={setColumnId}
-						/>
-					)}
-				</Stack>
-				{dataType !== -1 && columnId !== "" && (
-					<>
-						<MarkdownInput
-							value={inputText}
-							onChange={setInputText}
-						/>
-						<div className={errorTextClassName}>{errorText}</div>
-						<button className="mod-cta" onClick={handleImportClick}>
-							Import
-						</button>
-					</>
-				)}
-			</Stack> */}
 		</div>
 	);
 }
