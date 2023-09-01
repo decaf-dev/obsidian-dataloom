@@ -1,19 +1,15 @@
-import { LoomState } from "src/shared/loom-state/types";
-import {
-	getMarkdownListItems,
-	importMarkdownListItems,
-	validateMarkdownList,
-} from "./utils";
-import { ImportType } from "./types";
-import { useState } from "react";
+import React from "react";
 
-import ImportTypeSelect from "./import-type-select";
-import ColumnSelect from "./column-select";
+import DataTypeSelect from "./import-type-select";
+import Stepper from "../shared/stepper";
+
+import { LoomState } from "src/shared/loom-state/types";
+import { Step } from "../shared/stepper/types";
 import { ERROR_TEXT_DEFAULT } from "./constants";
-import MarkdownInput from "./markdown-input";
-import Stack from "../shared/stack";
+import { DataSource, DataType } from "./types";
 
 import "./styles.css";
+import DataSourceSelect from "./data-source-select";
 
 interface Props {
 	initialState: LoomState;
@@ -21,42 +17,64 @@ interface Props {
 }
 
 export default function ImportApp({ initialState, onStateSave }: Props) {
-	const [inputText, setInputText] = useState("");
-	const [importType, setImportType] = useState(-1);
-	const [columnId, setColumnId] = useState("");
-	const [errorText, setErrorText] = useState(ERROR_TEXT_DEFAULT);
+	const [inputText, setInputText] = React.useState("");
+	const [dataSource, setDataSource] = React.useState(DataSource.UNSELECTED);
+	const [dataType, setDataType] = React.useState(DataType.UNSELECTED);
+	const [columnId, setColumnId] = React.useState("");
+	const [errorText, setErrorText] = React.useState(ERROR_TEXT_DEFAULT);
 
-	function handleImportClick() {
-		if (importType === ImportType.MARKDOWN_LIST) {
-			if (validateMarkdownList(inputText)) {
-				const listItems = getMarkdownListItems(inputText);
-				const updatedState = importMarkdownListItems(
-					listItems,
-					columnId,
-					initialState
-				);
-				onStateSave(updatedState);
-				return;
-			}
-			setErrorText("Invalid markdown");
-		}
+	const steps: Step[] = [
+		{
+			title: "Select data type",
+			content: <DataTypeSelect value={dataType} onChange={setDataType} />,
+			canContinue: dataType !== DataType.UNSELECTED,
+		},
+		{
+			title: "Select data source",
+			content: (
+				<DataSourceSelect value={dataSource} onChange={setDataSource} />
+			),
+			canContinue: dataSource !== DataSource.UNSELECTED,
+		},
+		{ title: "Step 3", content: <div>Step 2 content here</div> },
+	];
+
+	function handleFinishClick() {
+		// if (dataType === DataType.MARKDOWN_LIST) {
+		// 	if (validateMarkdownList(inputText)) {
+		// 		const listItems = getMarkdownListItems(inputText);
+		// 		const updatedState = importMarkdownListItems(
+		// 			listItems,
+		// 			columnId,
+		// 			initialState
+		// 		);
+		// 		onStateSave(updatedState);
+		// 		return;
+		// 	}
+		// 	setErrorText("Invalid markdown");
+		// }
 	}
 
 	let errorTextClassName = "error-text";
 	if (errorText !== ERROR_TEXT_DEFAULT)
 		errorTextClassName += " error-text--visible";
 
-	const { columns, headerCells } = initialState.model;
+	// const { columns, headerCells } = initialState.model;
 
 	return (
 		<div className="dataloom-import-app">
-			<Stack spacing="xl">
+			<Stepper
+				steps={steps}
+				finishButtonLabel="Finish Import"
+				onFinishClick={handleFinishClick}
+			/>
+			{/* <Stack spacing="xl">
 				<Stack spacing="lg">
-					<ImportTypeSelect
-						value={importType}
-						onChange={setImportType}
+					<DataTypeSelect
+						value={dataType}
+						onChange={setDataType}
 					/>
-					{importType !== -1 && (
+					{dataType !== -1 && (
 						<ColumnSelect
 							columns={columns}
 							headerCells={headerCells}
@@ -65,7 +83,7 @@ export default function ImportApp({ initialState, onStateSave }: Props) {
 						/>
 					)}
 				</Stack>
-				{importType !== -1 && columnId !== "" && (
+				{dataType !== -1 && columnId !== "" && (
 					<>
 						<MarkdownInput
 							value={inputText}
@@ -77,7 +95,7 @@ export default function ImportApp({ initialState, onStateSave }: Props) {
 						</button>
 					</>
 				)}
-			</Stack>
+			</Stack> */}
 		</div>
 	);
 }

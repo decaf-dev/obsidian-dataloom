@@ -1,29 +1,24 @@
-import { ImportType } from "src/react/import-app/types";
-import { getDisplayNameForImportType } from "src/react/import-app/utils";
+import { DataType } from "src/react/import-app/types";
+import { getDisplayNameForDataType } from "src/react/import-app/utils";
 import Stack from "src/react/shared/stack";
 
 interface Props {
-	value: ImportType;
-	onChange: (value: ImportType) => void;
+	value: DataType;
+	onChange: (value: DataType) => void;
 }
 
-export default function ImportTypeSelect({ value, onChange }: Props) {
+export default function DataTypeSelect({ value, onChange }: Props) {
 	return (
 		<Stack>
-			<label htmlFor="import-type-select">Import Type</label>
 			<select
-				id="import-type-select"
 				value={value}
-				onChange={(e) =>
-					onChange(parseInt(e.target.value) as ImportType)
-				}
+				onChange={(e) => onChange(parseInt(e.target.value) as DataType)}
 			>
-				<option value="-1">Select an option</option>
-				{Object.values(ImportType)
+				{Object.values(DataType)
 					.filter((type) => !isNaN(Number(type)))
 					.map((type) => (
 						<option key={type} value={type.toString()}>
-							{getDisplayNameForImportType(type as ImportType)}
+							{getDisplayNameForDataType(type as DataType)}
 						</option>
 					))}
 			</select>
