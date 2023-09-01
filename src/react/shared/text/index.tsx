@@ -2,7 +2,7 @@ import { useOverflow } from "src/shared/spacing/hooks";
 import "./styles.css";
 
 interface Props {
-	variant?: "semibold" | "faint" | "muted" | "normal";
+	variant?: "semibold" | "faint" | "muted" | "on-accent" | "normal";
 	size?: "xs" | "sm" | "md" | "lg" | "xl";
 	value: string | number;
 	maxWidth?: string;
@@ -16,6 +16,7 @@ export default function Text({ value, variant, size = "sm", maxWidth }: Props) {
 	if (variant === "faint") className += " dataloom-text--faint";
 	if (variant === "muted") className += " dataloom-text--muted";
 	if (variant === "semibold") className += " dataloom-text--semibold";
+	if (variant === "on-accent") className += " dataloom-text--on-accent";
 	className += " " + overflowClassName;
 
 	let fontSize = "";
@@ -28,6 +29,7 @@ export default function Text({ value, variant, size = "sm", maxWidth }: Props) {
 	} else if (size === "lg") {
 		fontSize = "var(--dataloom-font-size--lg)";
 	}
+
 	return (
 		<p
 			className={className}
