@@ -19,3 +19,7 @@
 .dataloom-text--on-accent {
     color: var(--text-on-accent);
 }
+
+.dataloom-text--error {
+    color: var(--text-error);
+}
