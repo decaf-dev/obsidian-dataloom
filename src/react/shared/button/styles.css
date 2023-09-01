@@ -47,3 +47,9 @@
 .dataloom-button--text:hover {
     background-color: var(--background-modifier-hover) !important;
 }
+
+.dataloom-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+

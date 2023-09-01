@@ -7,6 +7,7 @@ import { ButtonVariant } from "./types";
 import "./styles.css";
 
 interface ButtonProps {
+	isDisabled?: boolean;
 	variant?: ButtonVariant;
 	isFullWidth?: boolean;
 	isFocusable?: boolean;
@@ -20,6 +21,7 @@ interface ButtonProps {
 }
 
 export default function Button({
+	isDisabled = false,
 	variant = "text",
 	isFullWidth,
 	isFocusable = true,
@@ -63,6 +65,7 @@ export default function Button({
 
 	return (
 		<button
+			disabled={isDisabled}
 			tabIndex={isFocusable ? 0 : -1}
 			className={className}
 			aria-label={ariaLabel}
