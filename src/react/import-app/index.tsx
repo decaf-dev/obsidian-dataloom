@@ -11,8 +11,15 @@ import { LoomState } from "src/shared/loom-state/types";
 import { Step } from "../shared/stepper/types";
 import { DataSource, DataType } from "./types";
 
-import "./styles.css";
 import AssignData from "./steps/assign-data";
+
+import {
+	parseMarkdownTableIntoTokens,
+	tableTokensToArr,
+	validateMarkdownTable,
+} from "./markdown-table";
+
+import "./styles.css";
 
 interface Props {
 	initialState: LoomState;
@@ -23,7 +30,7 @@ export default function ImportApp({ initialState, onStateSave }: Props) {
 	const [dataSource, setDataSource] = React.useState(DataSource.UNSELECTED);
 	const [dataType, setDataType] = React.useState(DataType.UNSELECTED);
 	const [rawData, setRawData] = React.useState("");
-	const [data, setData] = React.useState<(string | number)[][]>([]);
+	const [data, setData] = React.useState<string[][]>([]);
 	const [errorText, setErrorText] = React.useState<string | null>(null);
 
 	const steps: Step[] = [
@@ -62,10 +69,17 @@ export default function ImportApp({ initialState, onStateSave }: Props) {
 						setErrorText(errors[0].message);
 						return false;
 					}
-					setData(data as (string | number)[][]);
+					setData(data as string[][]);
 				} else if (dataType === DataType.MARKDOWN) {
-					//TODO support markdown to table
-					//setData(rawData.split("\n"));
+					try {
+						const tokens = parseMarkdownTableIntoTokens(rawData);
+						validateMarkdownTable(tokens);
+						const data = tableTokensToArr(tokens);
+						setData(data);
+					} catch (err: unknown) {
+						setErrorText((err as Error).message);
+						return false;
+					}
 				}
 				return true;
 			},
