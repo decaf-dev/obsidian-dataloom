@@ -4,14 +4,14 @@ import Text from "../text";
 
 interface Props {
 	index: number;
-	activeStep: number;
+	activeIndex: number;
 }
 
-export default function StepIndicator({ index, activeStep }: Props) {
+export default function StepIndicator({ index, activeIndex }: Props) {
 	return (
 		<div className="dataloom-step__indicator">
 			<Flex justify="center" align="center" height="100%">
-				{activeStep > index ? (
+				{activeIndex > index ? (
 					<Icon lucideId="checkmark" />
 				) : (
 					<Text value={index + 1} />

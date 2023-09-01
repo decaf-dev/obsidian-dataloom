@@ -4,7 +4,7 @@ import Stack from "../stack";
 interface Props {
 	isFirstStep: boolean;
 	isLastStep: boolean;
-	isContinueDisabled?: boolean;
+	isNextDisabled?: boolean;
 	finishButtonLabel: string;
 	onNextClick: () => void;
 	onBackClick: () => void;
@@ -13,7 +13,7 @@ interface Props {
 export default function StepButtons({
 	isFirstStep,
 	isLastStep,
-	isContinueDisabled,
+	isNextDisabled,
 	finishButtonLabel,
 	onNextClick,
 	onBackClick,
@@ -22,11 +22,11 @@ export default function StepButtons({
 		<div className="dataloom-step__buttons">
 			<Stack isHorizontal spacing="md">
 				<Button
-					isDisabled={isContinueDisabled}
+					isDisabled={isNextDisabled}
 					variant="default"
 					onClick={onNextClick}
 				>
-					{isLastStep ? finishButtonLabel : "Continue"}
+					{isLastStep ? finishButtonLabel : "Next"}
 				</Button>
 				{!isFirstStep && <Button onClick={onBackClick}>Back</Button>}
 			</Stack>

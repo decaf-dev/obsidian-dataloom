@@ -6,14 +6,14 @@ interface Props {
 	title: string;
 	description?: string;
 	index: number;
-	activeStep: number;
+	activeIndex: number;
 }
 
 export default function StepHeader({
 	title,
 	description,
 	index,
-	activeStep,
+	activeIndex,
 }: Props) {
 	let className = "dataloom-step__header";
 	if (description === undefined) {
@@ -22,7 +22,7 @@ export default function StepHeader({
 	return (
 		<div className={className}>
 			<Stack isHorizontal>
-				<StepIndicator index={index} activeStep={activeStep} />
+				<StepIndicator index={index} activeIndex={activeIndex} />
 				<Stack spacing="sm">
 					<Text variant="semibold" value={title} />
 					{description && <Text size="sm" value={description} />}

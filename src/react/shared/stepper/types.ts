@@ -3,4 +3,6 @@ export type Step = {
 	description?: string;
 	content: React.ReactNode;
 	canContinue?: boolean;
+	onBack?: () => void;
+	onContinue?: () => boolean;
 };

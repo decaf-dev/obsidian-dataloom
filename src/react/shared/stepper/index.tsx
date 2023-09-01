@@ -22,46 +22,56 @@ export default function Stepper({
 	finishButtonLabel = "Finish",
 	onFinishClick,
 }: Props) {
-	const [activeStep, setActiveStep] = React.useState(0);
+	const [activeIndex, setActiveIndex] = React.useState(0);
+	const activeStep = steps[activeIndex];
 
 	function handleNextClick() {
-		if (activeStep === steps.length - 1) {
+		if (activeIndex === steps.length - 1) {
 			onFinishClick();
 			return;
 		}
-		setActiveStep((prevState) => prevState + 1);
+		if (activeStep.onContinue) {
+			if (activeStep.onContinue() === false) return;
+		}
+		setActiveIndex((prevState) => prevState + 1);
 	}
 
 	function handleBackClick() {
-		if (activeStep === 0) return;
-		setActiveStep((prevState) => prevState - 1);
+		if (activeIndex === 0) return;
+		if (activeStep.onBack) activeStep.onBack();
+		setActiveIndex((prevState) => prevState - 1);
 	}
 
-	const isFirstStep = activeStep === 0;
-	const isLastStep = activeStep === steps.length - 1;
+	const isFirstStep = activeIndex === 0;
+	const isLastStep = activeIndex === steps.length - 1;
 
 	return (
 		<div className="dataloom-stepper">
 			{steps.map((step, i) => {
-				const { title, description, content, canContinue } = step;
+				const {
+					title,
+					description,
+					content,
+					canContinue = true,
+				} = step;
 				return (
 					<div key={i} className="dataloom-step">
 						<StepHeader
 							title={title}
 							description={description}
 							index={i}
-							activeStep={activeStep}
+							activeIndex={activeIndex}
 						/>
-						{i === activeStep && (
+						{i === activeIndex && (
 							<Stack isHorizontal>
 								<StepSeparator hideBorder={isLastStep} />
-								<Stack spacing="lg">
+								<Stack spacing="lg" width="100%">
 									<StepContent
 										content={content}
 										addTopMargin={description !== undefined}
 									/>
 									<StepButtons
-										isContinueDisabled={!canContinue}
+										isNextDisabled={!canContinue}
 										isFirstStep={isFirstStep}
 										isLastStep={isLastStep}
 										finishButtonLabel={finishButtonLabel}
