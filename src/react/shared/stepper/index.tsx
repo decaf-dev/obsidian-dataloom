@@ -37,13 +37,13 @@ export default function Stepper({
 		setActiveStep((prevState) => prevState - 1);
 	}
 
+	const isFirstStep = activeStep === 0;
 	const isLastStep = activeStep === steps.length - 1;
 
 	return (
 		<div className="dataloom-stepper">
 			{steps.map((step, i) => {
-				const { title, description, content, isContinueDisabled } =
-					step;
+				const { title, description, content, canContinue } = step;
 				return (
 					<div key={i} className="dataloom-step">
 						<StepHeader
@@ -61,11 +61,12 @@ export default function Stepper({
 										addTopMargin={description !== undefined}
 									/>
 									<StepButtons
-										isContinueDisabled={isContinueDisabled}
+										isContinueDisabled={!canContinue}
+										isFirstStep={isFirstStep}
 										isLastStep={isLastStep}
 										finishButtonLabel={finishButtonLabel}
-										onBackClick={handleBackClick}
 										onNextClick={handleNextClick}
+										onBackClick={handleBackClick}
 									/>
 								</Stack>
 							</Stack>

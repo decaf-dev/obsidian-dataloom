@@ -2,6 +2,7 @@ import Button from "../button";
 import Stack from "../stack";
 
 interface Props {
+	isFirstStep: boolean;
 	isLastStep: boolean;
 	isContinueDisabled?: boolean;
 	finishButtonLabel: string;
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export default function StepButtons({
+	isFirstStep,
 	isLastStep,
 	isContinueDisabled,
 	finishButtonLabel,
@@ -26,7 +28,7 @@ export default function StepButtons({
 				>
 					{isLastStep ? finishButtonLabel : "Continue"}
 				</Button>
-				<Button onClick={onBackClick}>Back</Button>
+				{!isFirstStep && <Button onClick={onBackClick}>Back</Button>}
 			</Stack>
 		</div>
 	);
