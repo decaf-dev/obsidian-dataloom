@@ -1,11 +1,11 @@
 export enum DataType {
-	UNSELECTED,
-	MARKDOWN,
-	CSV,
+	UNSELECTED = "Select an option",
+	CSV = "CSV",
+	MARKDOWN = "Markdown",
 }
 
 export enum DataSource {
-	UNSELECTED,
-	FILE,
-	COPY_PASTE,
+	UNSELECTED = "Selet an option",
+	FILE = "File",
+	COPY_PASTE = "Paste from clipboard",
 }

@@ -35,11 +35,11 @@ export default function ImportApp({ initialState, onStateSave }: Props) {
 	const [columnsToImport, setColumnsToImport] = React.useState<number[]>([]);
 
 	function handleColumnToggle(index: number) {
-		setColumnsToImport((prev) => {
-			if (prev.includes(index)) {
-				return prev.filter((i) => i !== index);
+		setColumnsToImport((prevState) => {
+			if (prevState.includes(index)) {
+				return prevState.filter((i) => i !== index);
 			} else {
-				return [...prev, index];
+				return [...prevState, index];
 			}
 		});
 	}
