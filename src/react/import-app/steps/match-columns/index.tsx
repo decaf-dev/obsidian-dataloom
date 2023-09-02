@@ -16,7 +16,10 @@ export default function MatchColumns({
 	activeColumns,
 	onColumnToggle,
 }: Props) {
-	const overflowClassName = useOverflow(false);
+	const overflowClassName = useOverflow(false, {
+		ellipsis: true,
+	});
+
 	if (data.length === 0) return <></>;
 	return (
 		<div className="dataloom-match-columns">

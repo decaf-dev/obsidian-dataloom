@@ -12,7 +12,7 @@
 .dataloom-match-columns th, .dataloom-match-columns td {
     border: 1px solid var(--background-modifier-border);
     padding: 0.5em;
-    width: 20em;
+    max-width: 20em;
     height: 1em;
 }
 
