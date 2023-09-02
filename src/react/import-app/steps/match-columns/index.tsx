@@ -3,6 +3,7 @@ import Text from "src/react/shared/text";
 import Padding from "src/react/shared/padding";
 
 import "./styles.css";
+import { useOverflow } from "src/shared/spacing/hooks";
 
 interface Props {
 	activeColumns: number[];
@@ -15,6 +16,7 @@ export default function MatchColumns({
 	activeColumns,
 	onColumnToggle,
 }: Props) {
+	const overflowClassName = useOverflow(false);
 	if (data.length === 0) return <></>;
 	return (
 		<div className="dataloom-match-columns">
@@ -23,9 +25,10 @@ export default function MatchColumns({
 					<tr>
 						{data[0].map((header, i) => {
 							const isColumnActive = activeColumns.includes(i);
-							let className = "";
+							let className = overflowClassName;
 							if (!isColumnActive)
-								className += "dataloom-match-columns--disabled";
+								className +=
+									" dataloom-match-columns--disabled";
 							return (
 								<th key={i} className={className}>
 									<Padding px="md" py="sm">
@@ -56,10 +59,10 @@ export default function MatchColumns({
 						<tr key={i}>
 							{row.map((cell, j) => {
 								const isCellActive = activeColumns.includes(j);
-								let className = "";
+								let className = overflowClassName;
 								if (!isCellActive)
 									className +=
-										"dataloom-match-columns--disabled";
+										" dataloom-match-columns--disabled";
 								return (
 									<td key={j} className={className}>
 										{cell}
