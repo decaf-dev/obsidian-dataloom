@@ -32,6 +32,17 @@ export default function ImportApp({ initialState, onStateSave }: Props) {
 	const [rawData, setRawData] = React.useState("");
 	const [data, setData] = React.useState<string[][]>([]);
 	const [errorText, setErrorText] = React.useState<string | null>(null);
+	const [columnsToImport, setColumnsToImport] = React.useState<number[]>([]);
+
+	function handleColumnToggle(index: number) {
+		setColumnsToImport((prev) => {
+			if (prev.includes(index)) {
+				return prev.filter((i) => i !== index);
+			} else {
+				return [...prev, index];
+			}
+		});
+	}
 
 	const steps: Step[] = [
 		{
@@ -86,7 +97,13 @@ export default function ImportApp({ initialState, onStateSave }: Props) {
 		},
 		{
 			title: "Match columns",
-			content: <MatchColumns data={data} />,
+			content: (
+				<MatchColumns
+					data={data}
+					activeColumns={columnsToImport}
+					onColumnToggle={handleColumnToggle}
+				/>
+			),
 		},
 	];
 
