@@ -23,7 +23,7 @@ export default function UploadData({
 }: Props) {
 	return (
 		<div className="dataloom-upload-data">
-			{source === DataSource.COPY_PASTE && (
+			{source === DataSource.PASTE && (
 				<UploadTextarea value={rawData} onChange={onRawDataChange} />
 			)}
 			{source === DataSource.FILE && (
