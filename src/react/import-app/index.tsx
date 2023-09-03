@@ -69,6 +69,14 @@ export default function ImportApp({ initialState, onStateSave }: Props) {
 		}
 	}
 
+	function handleSelectAllColumns() {
+		setColumnsToImport(data.map((_, i) => i));
+	}
+
+	function handleDeselectAllColumns() {
+		setColumnsToImport([]);
+	}
+
 	/**
 	 * Resets the previous steps to their initial state.
 	 * @param currentIndex
@@ -130,12 +138,14 @@ export default function ImportApp({ initialState, onStateSave }: Props) {
 						return false;
 					}
 					setData(data as string[][]);
+					setColumnsToImport(data.map((_, i) => i));
 				} else if (dataType === DataType.MARKDOWN) {
 					try {
 						const tokens = parseMarkdownTableIntoTokens(rawData);
 						validateMarkdownTable(tokens);
 						const data = tableTokensToArr(tokens);
 						setData(data);
+						setColumnsToImport(data.map((_, i) => i));
 					} catch (err: unknown) {
 						setErrorText((err as Error).message);
 						return false;
@@ -149,8 +159,10 @@ export default function ImportApp({ initialState, onStateSave }: Props) {
 			content: (
 				<MatchColumns
 					data={data}
-					activeColumns={columnsToImport}
+					columnsToImport={columnsToImport}
 					onColumnToggle={handleColumnToggle}
+					onSelectAllColumns={handleSelectAllColumns}
+					onDeselectAllColumns={handleDeselectAllColumns}
 				/>
 			),
 		},
