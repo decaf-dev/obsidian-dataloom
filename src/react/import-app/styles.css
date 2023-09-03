@@ -1,4 +1,5 @@
 .dataloom-import-app {
+    overflow-x: hidden;
     overflow-y: scroll;
     max-height: calc(100vh - 20em);
 }
