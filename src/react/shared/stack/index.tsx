@@ -15,6 +15,7 @@ interface Props {
 	height?: string;
 	minHeight?: string;
 	overflow?: "auto" | "hidden" | "scroll" | "visible";
+	onClick?: (e: React.MouseEvent) => void;
 }
 
 export default function Stack({
@@ -28,6 +29,7 @@ export default function Stack({
 	height,
 	minHeight,
 	isHorizontal = false,
+	onClick,
 }: Props) {
 	let justifyContent = justify;
 	if (justifyContent === undefined) {
@@ -53,6 +55,7 @@ export default function Stack({
 				minHeight,
 				overflow,
 			}}
+			onClick={(e) => onClick?.(e)}
 		>
 			{children}
 		</div>

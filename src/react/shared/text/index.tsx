@@ -9,7 +9,9 @@ interface Props {
 }
 
 export default function Text({ value, variant, size = "sm", maxWidth }: Props) {
-	const overflowClassName = useOverflow(maxWidth !== undefined);
+	const overflowClassName = useOverflow(maxWidth !== undefined, {
+		ellipsis: true,
+	});
 
 	let className = "dataloom-text";
 	if (variant === "faint") className += " dataloom-text--faint";

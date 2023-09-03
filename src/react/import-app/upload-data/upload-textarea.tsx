@@ -3,7 +3,7 @@ interface Props {
 	onChange: (value: string) => void;
 }
 
-export default function PasteFromClipboard({ value, onChange }: Props) {
+export default function UploadTextarea({ value, onChange }: Props) {
 	return (
 		<textarea value={value} onChange={(e) => onChange(e.target.value)} />
 	);

@@ -1,3 +1,10 @@
+export enum StepType {
+	DATA_TYPE,
+	DATA_SOURCE,
+	UPLOAD_DATA,
+	MATCH_COLUMNS,
+}
+
 export enum DataType {
 	UNSELECTED = "Select an option",
 	CSV = "CSV",
@@ -5,7 +12,7 @@ export enum DataType {
 }
 
 export enum DataSource {
-	UNSELECTED = "Selet an option",
+	UNSELECTED = "Select an option",
 	FILE = "File",
-	COPY_PASTE = "Paste from clipboard",
+	PASTE = "Paste from clipboard",
 }

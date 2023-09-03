@@ -2,22 +2,22 @@ import React from "react";
 
 import Papa from "papaparse";
 
-import DataTypeSelect from "./steps/data-type-select";
+import DataTypeSelect from "./data-type-select";
 import Stepper from "../shared/stepper";
-import DataSourceSelect from "./steps/data-source-select";
-import UploadData from "./steps/upload-data";
+import DataSourceSelect from "./data-source-select";
+import UploadData from "./upload-data";
 
 import { LoomState } from "src/shared/loom-state/types";
 import { Step } from "../shared/stepper/types";
-import { DataSource, DataType } from "./types";
+import { DataSource, DataType, StepType } from "./types";
 
-import MatchColumns from "./steps/match-columns";
+import MatchColumns from "./match-columns";
 
 import {
 	parseMarkdownTableIntoTokens,
 	tableTokensToArr,
 	validateMarkdownTable,
-} from "./markdown-table";
+} from "./table-utils";
 
 import "./styles.css";
 
@@ -27,11 +27,19 @@ interface Props {
 }
 
 export default function ImportApp({ initialState, onStateSave }: Props) {
+	//Step 1
 	const [dataSource, setDataSource] = React.useState(DataSource.UNSELECTED);
+
+	//Step 2
 	const [dataType, setDataType] = React.useState(DataType.UNSELECTED);
+
+	//Step 3
+	const [fileName, setFileName] = React.useState<string | null>(null);
 	const [rawData, setRawData] = React.useState("");
 	const [data, setData] = React.useState<string[][]>([]);
 	const [errorText, setErrorText] = React.useState<string | null>(null);
+
+	//Step 4
 	const [columnsToImport, setColumnsToImport] = React.useState<number[]>([]);
 
 	function handleColumnToggle(index: number) {
@@ -44,16 +52,60 @@ export default function ImportApp({ initialState, onStateSave }: Props) {
 		});
 	}
 
+	function handleDataTypeChange(value: DataType) {
+		setDataType(value);
+		resetSubsequentSteps(StepType.DATA_TYPE);
+	}
+
+	function handleDataSourceChange(value: DataSource) {
+		setDataSource(value);
+		resetSubsequentSteps(StepType.DATA_SOURCE);
+	}
+
+	function handleRawDataChange(rawData: string, fileName?: string) {
+		setRawData(rawData);
+		if (fileName !== undefined) {
+			setFileName(fileName);
+		}
+	}
+
+	/**
+	 * Resets the previous steps to their initial state.
+	 * @param currentIndex
+	 */
+	function resetSubsequentSteps(currentType: StepType) {
+		if (currentType !== StepType.DATA_SOURCE) {
+			setDataSource(DataSource.UNSELECTED);
+		}
+		if (currentType !== StepType.UPLOAD_DATA) {
+			setRawData("");
+			setErrorText(null);
+			setFileName(null);
+			setData([]);
+		}
+		if (currentType !== StepType.MATCH_COLUMNS) {
+			setColumnsToImport([]);
+		}
+	}
+
 	const steps: Step[] = [
 		{
 			title: "Select data type",
-			content: <DataTypeSelect value={dataType} onChange={setDataType} />,
+			content: (
+				<DataTypeSelect
+					value={dataType}
+					onChange={handleDataTypeChange}
+				/>
+			),
 			canContinue: dataType !== DataType.UNSELECTED,
 		},
 		{
 			title: "Select data source",
 			content: (
-				<DataSourceSelect value={dataSource} onChange={setDataSource} />
+				<DataSourceSelect
+					value={dataSource}
+					onChange={handleDataSourceChange}
+				/>
 			),
 			canContinue: dataSource !== DataSource.UNSELECTED,
 		},
@@ -62,17 +114,14 @@ export default function ImportApp({ initialState, onStateSave }: Props) {
 			content: (
 				<UploadData
 					source={dataSource}
+					fileName={fileName}
 					dataType={dataType}
 					errorText={errorText}
 					rawData={rawData}
-					onRawDataChange={setRawData}
+					onRawDataChange={handleRawDataChange}
 				/>
 			),
 			canContinue: rawData !== "",
-			onBack: () => {
-				setRawData("");
-				setErrorText(null);
-			},
 			onContinue: () => {
 				if (dataType === DataType.CSV) {
 					const { data, errors } = Papa.parse(rawData);

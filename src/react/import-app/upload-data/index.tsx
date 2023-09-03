@@ -1,33 +1,37 @@
 import Text from "src/react/shared/text";
-import FileInput from "../file-input";
+import FileInput from "./file-input";
+import UploadTextarea from "./upload-textarea";
+
 import { DataSource, DataType } from "../types";
-import PasteFromClipboard from "../paste-from-clipboard";
 
 interface Props {
 	source: DataSource;
 	dataType: DataType;
+	fileName: string | null;
 	rawData: string;
 	errorText: string | null;
-	onRawDataChange: (data: string) => void;
+	onRawDataChange: (rawData: string, fileName?: string) => void;
 }
 
 export default function UploadData({
 	source,
+	fileName,
 	dataType,
 	rawData,
 	errorText,
 	onRawDataChange,
 }: Props) {
 	return (
-		<div>
+		<div className="dataloom-upload-data">
 			{source === DataSource.COPY_PASTE && (
-				<PasteFromClipboard
-					value={rawData}
-					onChange={onRawDataChange}
-				/>
+				<UploadTextarea value={rawData} onChange={onRawDataChange} />
 			)}
 			{source === DataSource.FILE && (
-				<FileInput dataType={dataType} onChange={onRawDataChange} />
+				<FileInput
+					fileName={fileName}
+					dataType={dataType}
+					onChange={onRawDataChange}
+				/>
 			)}
 			{errorText !== null && (
 				<Text variant="error" value={errorText} size="sm" />

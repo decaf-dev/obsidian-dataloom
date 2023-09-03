@@ -2,7 +2,7 @@ import {
 	validateMarkdownTable,
 	parseMarkdownTableIntoTokens,
 	tableTokensToArr,
-} from "./markdown-table";
+} from "./table-utils";
 
 describe("validateMarkdownTable", () => {
 	it("doesn't throw an error for a valid table", () => {
