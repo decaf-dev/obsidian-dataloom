@@ -4,14 +4,24 @@ import Text from "../text";
 
 interface Props {
 	index: number;
-	activeIndex: number;
+	isComplete: boolean;
+	onClick: () => void;
 }
 
-export default function StepIndicator({ index, activeIndex }: Props) {
+export default function StepIndicator({ index, isComplete, onClick }: Props) {
+	function handleClick() {
+		if (!isComplete) return;
+		onClick();
+	}
+
+	let className = "dataloom-step__indicator";
+	if (isComplete) {
+		className += " dataloom-step__indicator--complete";
+	}
 	return (
-		<div className="dataloom-step__indicator">
+		<div className={className} onClick={handleClick}>
 			<Flex justify="center" align="center" height="100%">
-				{activeIndex > index ? (
+				{isComplete ? (
 					<Icon lucideId="checkmark" />
 				) : (
 					<Text value={index + 1} />

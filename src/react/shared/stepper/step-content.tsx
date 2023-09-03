@@ -8,7 +8,7 @@ interface Props {
 export default function StepContent({ content, addTopMargin }: Props) {
 	let className = "dataloom-step__content";
 	if (addTopMargin) {
-		className += " dataloom-step__content--margin";
+		className += " dataloom-step__content--margin-top";
 	}
 	return <div className={className}>{content}</div>;
 }

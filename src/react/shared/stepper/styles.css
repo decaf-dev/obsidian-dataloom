@@ -1,4 +1,4 @@
-.dataloom-step__header--margin {
+.dataloom-step__header--margin-bottom {
     margin-bottom: 5px;
 }
 
@@ -7,7 +7,7 @@
     margin-top: 10px;
 }
 
-.dataloom-step__content--margin {
+.dataloom-step__content--margin-top {
     margin-top: 25px;
 }
 
@@ -16,6 +16,14 @@
     height: 30px;
     border-radius: 50%;
     background-color: var(--background-secondary);
+}
+
+.dataloom-step__indicator--complete {
+    cursor: pointer;
+}
+
+.dataloom-step__text--complete {
+    cursor: pointer;
 }
 
 .dataloom-step__spacer {

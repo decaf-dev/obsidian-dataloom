@@ -25,6 +25,13 @@ export default function Stepper({
 	const [activeIndex, setActiveIndex] = React.useState(0);
 	const activeStep = steps[activeIndex];
 
+	function handleStepHeaderClick(index: number) {
+		for (let i = index; i < activeIndex; i++) {
+			steps[i].onBack?.();
+		}
+		setActiveIndex(index);
+	}
+
 	function handleNextClick() {
 		if (activeIndex === steps.length - 1) {
 			onFinishClick();
@@ -61,6 +68,7 @@ export default function Stepper({
 							description={description}
 							index={i}
 							activeIndex={activeIndex}
+							onClick={handleStepHeaderClick}
 						/>
 						{i === activeIndex && (
 							<Stack isHorizontal>
