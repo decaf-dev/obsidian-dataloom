@@ -35,7 +35,7 @@
 }
 
 .dataloom-step__separator {
-    width: 15px;
+    min-width: 15px;
     margin-left: 15px;
     border-left: 1px solid var(--background-modifier-border);
     align-self: stretch;
