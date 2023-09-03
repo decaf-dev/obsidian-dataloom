@@ -1,4 +1,5 @@
 import { useOverflow } from "src/shared/spacing/hooks";
+
 import "./styles.css";
 
 interface Props {
@@ -6,10 +7,17 @@ interface Props {
 	size?: "xs" | "sm" | "md" | "lg" | "xl";
 	value: string | number;
 	maxWidth?: string;
+	noWrap?: boolean;
 }
 
-export default function Text({ value, variant, size = "sm", maxWidth }: Props) {
-	const overflowClassName = useOverflow(maxWidth !== undefined, {
+export default function Text({
+	value,
+	variant,
+	size = "sm",
+	maxWidth,
+	noWrap = false,
+}: Props) {
+	const overflowClassName = useOverflow(maxWidth !== undefined && !noWrap, {
 		ellipsis: true,
 	});
 

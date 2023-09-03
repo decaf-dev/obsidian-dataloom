@@ -30,7 +30,11 @@ export default function FileInput({ fileName, dataType, onChange }: Props) {
 	return (
 		<div className="dataloom-file-input">
 			<Stack>
-				<Text value={fileName ?? "No file chosen"} maxWidth="25em" />
+				<Text
+					value={fileName ?? "No file chosen"}
+					maxWidth="25em"
+					noWrap
+				/>
 				<input type="file" accept={accept} onChange={handleUpload} />
 			</Stack>
 		</div>
