@@ -1,7 +1,7 @@
 import Stack from "src/react/shared/stack";
 import Switch from "src/react/shared/switch";
 import Text from "src/react/shared/text";
-import { CellType, HeaderCell } from "src/shared/loom-state/types";
+import { HeaderCell } from "src/shared/loom-state/types";
 import { useOverflow } from "src/shared/spacing/hooks";
 import { ImportColumn } from "../types";
 import Icon from "src/react/shared/icon";
@@ -44,13 +44,6 @@ export default function HeaderCell({
 		shouldFocusTriggerOnClose: false,
 	});
 
-	const column = columns.find((column) => column.id === matchId) ?? {
-		id: "-1",
-		type: CellType.TEXT,
-		name: importValue,
-	};
-	const { name } = column;
-
 	return (
 		<>
 			<th className={overflowClassName}>
@@ -73,7 +66,7 @@ export default function HeaderCell({
 							}
 							size="xl"
 						/>
-						<Text value={name} />
+						<Text value={importValue} />
 					</Stack>
 					<Stack isHorizontal spacing="md">
 						<Switch
