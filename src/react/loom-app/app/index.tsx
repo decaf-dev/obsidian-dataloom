@@ -20,7 +20,7 @@ import { useColumn } from "./hooks/use-column";
 import { useRow } from "./hooks/use-row";
 import { useCell } from "./hooks/use-cell";
 import { useTag } from "./hooks/use-tag";
-import { useMountState } from "../mount-provider";
+import { useAppMount } from "../app-mount-provider";
 import { useExportEvents } from "src/react/loom-app/app/hooks/use-export-events";
 import { useRowEvents } from "src/react/loom-app/app/hooks/use-row-events";
 import { useColumnEvents } from "src/react/loom-app/app/hooks/use-column-events";
@@ -41,7 +41,7 @@ import { useLogger } from "src/shared/logger";
 
 export default function App() {
 	const logger = useLogger();
-	const { appId, isMarkdownView } = useMountState();
+	const { appId, isMarkdownView } = useAppMount();
 	const {
 		loomState,
 		resizingColumnId,

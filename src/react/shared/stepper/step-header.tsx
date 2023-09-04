@@ -1,5 +1,4 @@
 import Stack from "../stack";
-import Text from "../text";
 import StepIndicator from "./step-indicator";
 import StepText from "./step-text";
 

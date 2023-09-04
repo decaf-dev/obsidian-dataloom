@@ -9,7 +9,7 @@ import {
 	Position,
 } from "./types";
 import { createCloseRequest, createMenu } from "./factory";
-import { useMountState } from "src/react/loom-app/mount-provider";
+import { useAppMount } from "src/react/loom-app/app-mount-provider";
 import { useMenuContext } from "../menu-provider";
 import { useLogger } from "src/shared/logger";
 import {
@@ -70,7 +70,7 @@ const useAbstractMenu = (
 	 * Removes the menu from the open menus list.
 	 */
 	const onClose = React.useCallback(
-		({ shouldFocusTriggerOnClose = true } = {}) => {
+		(shouldFocusTriggerOnClose = true) => {
 			logger("onClose");
 			setOpenMenus((prevMenus) =>
 				prevMenus.filter((m) => m.id !== menu.id)
@@ -209,7 +209,7 @@ const useModalPosition = () => {
 };
 
 const usePosition = () => {
-	const { mountLeaf, isMarkdownView } = useMountState();
+	const { mountLeaf, isMarkdownView } = useAppMount();
 	const [position, setPosition] = React.useState<Position>({
 		top: 0,
 		left: 0,

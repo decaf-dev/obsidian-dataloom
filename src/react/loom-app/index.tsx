@@ -4,7 +4,7 @@ import { Provider } from "react-redux";
 import { Store } from "@reduxjs/toolkit";
 
 import LoomStateProvider from "./loom-state-provider";
-import MountProvider from "./mount-provider";
+import AppMountProvider from "./app-mount-provider";
 import App from "./app";
 
 import DragProvider from "src/shared/dragging/drag-context";
@@ -33,7 +33,7 @@ export default function LoomApp({
 	onSaveState,
 }: Props) {
 	return (
-		<MountProvider
+		<AppMountProvider
 			app={app}
 			mountLeaf={mountLeaf}
 			appId={appId}
@@ -52,6 +52,6 @@ export default function LoomApp({
 					</DragProvider>
 				</LoomStateProvider>
 			</Provider>
-		</MountProvider>
+		</AppMountProvider>
 	);
 }

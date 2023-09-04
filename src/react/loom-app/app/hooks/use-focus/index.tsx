@@ -17,11 +17,11 @@ import {
 } from "src/react/loom-app/app/hooks/use-focus/move-focus";
 import { useLogger } from "src/shared/logger";
 import { useLoomState } from "src/react/loom-app/loom-state-provider";
-import { useMountState } from "src/react/loom-app/mount-provider";
+import { useAppMount } from "src/react/loom-app/app-mount-provider";
 
 export default function useFocus() {
 	const logger = useLogger();
-	const { appId } = useMountState();
+	const { appId } = useAppMount();
 	const { loomState } = useLoomState();
 	const { onRequestCloseTop, topMenu } = useMenuOperations();
 

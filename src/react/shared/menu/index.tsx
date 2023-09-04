@@ -10,7 +10,7 @@ import {
 import { useShiftMenu } from "./utils";
 
 import "./styles.css";
-import { useMountState } from "src/react/loom-app/mount-provider";
+import { useAppMount } from "src/react/loom-app/app-mount-provider";
 
 interface Props {
 	id: string;
@@ -42,7 +42,7 @@ export default function Menu({
 	onClose,
 }: Props) {
 	const ref = React.useRef<HTMLDivElement>(null);
-	const { mountLeaf } = useMountState();
+	const { mountLeaf } = useAppMount();
 
 	useShiftMenu(
 		false,

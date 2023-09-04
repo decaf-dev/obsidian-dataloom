@@ -3,13 +3,13 @@ import React from "react";
 import { useMenuOperations } from "src/react/shared/menu/hooks";
 import { EVENT_GLOBAL_CLICK } from "src/shared/events";
 import { useLogger } from "src/shared/logger";
-import { useMountState } from "../../mount-provider";
+import { useAppMount } from "../../app-mount-provider";
 import _ from "lodash";
 
 export const useMenuEvents = () => {
 	const hookName = "useMenuEvents";
 	const logger = useLogger();
-	const { appId, isMarkdownView, app } = useMountState();
+	const { appId, isMarkdownView, app } = useAppMount();
 	const { onCloseAll } = useMenuOperations();
 
 	React.useEffect(() => {

@@ -1,10 +1,8 @@
 import React from "react";
 
 import Stack from "../shared/stack";
-import Padding from "../shared/padding";
 import ExportTypeSelect from "./export-type-select";
 import ContentTextArea from "./content-textarea";
-import Divider from "../shared/divider";
 
 import { LoomState } from "src/shared/loom-state/types";
 import { ExportType } from "../../shared/export/types";

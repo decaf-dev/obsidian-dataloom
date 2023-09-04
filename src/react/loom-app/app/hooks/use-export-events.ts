@@ -10,11 +10,11 @@ import { exportToCSV } from "src/shared/export/export-to-csv";
 import { exportToMarkdown } from "src/shared/export/export-to-markdown";
 import { ExportType } from "src/shared/export/types";
 import { LoomState } from "src/shared/loom-state/types";
-import { useMountState } from "../../mount-provider";
+import { useAppMount } from "../../app-mount-provider";
 import { useAppSelector } from "src/redux/hooks";
 
 export const useExportEvents = (state: LoomState) => {
-	const { appId, loomFile, app } = useMountState();
+	const { appId, loomFile, app } = useAppMount();
 	const { exportRenderMarkdown } = useAppSelector(
 		(state) => state.global.settings
 	);

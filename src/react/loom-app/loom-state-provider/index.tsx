@@ -4,7 +4,7 @@ import { LoomState } from "src/shared/loom-state/types";
 import LoomStateCommand from "src/shared/loom-state/loom-state-command";
 import { useLogger } from "src/shared/logger";
 import RowSortCommand from "src/shared/loom-state/commands/row-sort-command";
-import { useMountState } from "src/react/loom-app/mount-provider";
+import { useAppMount } from "src/react/loom-app/app-mount-provider";
 import { EVENT_APP_REFRESH } from "src/shared/events";
 
 interface Props {
@@ -57,7 +57,7 @@ export default function LoomStateProvider({
 	const refreshTime = React.useRef(0);
 
 	const logger = useLogger();
-	const { appId, loomFile, app } = useMountState();
+	const { appId, loomFile, app } = useAppMount();
 
 	// React.useEffect(() => {
 	// 	const jsonSizeInBytes = new TextEncoder().encode(
