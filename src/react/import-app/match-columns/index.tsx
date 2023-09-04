@@ -10,6 +10,7 @@ import "./styles.css";
 import Padding from "src/react/shared/padding";
 import { useMenuOperations } from "src/react/shared/menu/hooks";
 import React from "react";
+import Stack from "src/react/shared/stack";
 
 interface Props {
 	columns: ImportColumn[];
@@ -57,9 +58,11 @@ export default function MatchColumns({
 		};
 	}, []);
 
+	const numUnmatched = enabledColumnIndices.length - columnMatches.length;
+
 	return (
 		<div className="dataloom-match-columns">
-			<Padding py="xl">
+			<Padding pb="lg">
 				<Button variant="default" onClick={onAllColumnsToggle}>
 					Toggle all
 				</Button>
@@ -110,11 +113,23 @@ export default function MatchColumns({
 					</tbody>
 				</table>
 			</div>
-			<Padding pt="2xl" pb="lg">
-				<Text
-					size="sm"
-					value={`Importing ${enabledColumnIndices.length} of ${data[0].length} columns`}
-				/>
+			<Padding pt="3xl" pb="lg">
+				<Stack spacing="lg">
+					<Text
+						size="sm"
+						variant="semibold"
+						value={`Importing ${enabledColumnIndices.length} of ${data[0].length} columns`}
+					/>
+					<Text
+						size="sm"
+						variant="muted"
+						value={
+							"There are " +
+							numUnmatched +
+							" unmatched columns. Please match them to continue."
+						}
+					/>
+				</Stack>
 			</Padding>
 		</div>
 	);

@@ -210,6 +210,7 @@ export default function ImportApp({ state, onStateChange }: Props) {
 					onColumnMatch={handleColumnMatch}
 				/>
 			),
+			canContinue: columnMatches.length === enabledColumnIndices.length,
 		},
 	];
 
@@ -222,11 +223,7 @@ export default function ImportApp({ state, onStateChange }: Props) {
 
 	return (
 		<div className="dataloom-import-app" onClick={handleModalClick}>
-			<Stepper
-				steps={steps}
-				finishButtonLabel="Finish"
-				onFinishClick={handleFinishClick}
-			/>
+			<Stepper steps={steps} onFinishClick={handleFinishClick} />
 		</div>
 	);
 }
