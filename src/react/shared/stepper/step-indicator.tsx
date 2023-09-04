@@ -22,9 +22,9 @@ export default function StepIndicator({ index, isComplete, onClick }: Props) {
 		<div className={className} onClick={handleClick}>
 			<Flex justify="center" align="center" height="100%">
 				{isComplete ? (
-					<Icon lucideId="checkmark" />
+					<Icon lucideId="checkmark" size="lg" />
 				) : (
-					<Text value={index + 1} />
+					<Text value={index + 1} variant="semibold" size="lg" />
 				)}
 			</Flex>
 		</div>

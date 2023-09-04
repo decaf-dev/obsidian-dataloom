@@ -26,8 +26,8 @@ export default function StepText({
 	return (
 		<div className={className}>
 			<Stack spacing="sm" onClick={handleClick}>
-				<Text variant="semibold" value={title} />
-				{description && <Text size="sm" value={description} />}
+				<Text variant="semibold" size="lg" value={title} />
+				{description && <Text size="md" value={description} />}
 			</Stack>
 		</div>
 	);
