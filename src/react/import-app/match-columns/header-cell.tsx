@@ -25,6 +25,7 @@ export default function HeaderCell({
 	index,
 	importValue,
 	matchId,
+	onColumnMatch,
 	onColumnToggle,
 }: Props) {
 	const overflowClassName = useOverflow(false, {
@@ -94,8 +95,11 @@ export default function HeaderCell({
 				id={menu.id}
 				isOpen={isOpen}
 				triggerPosition={triggerPosition}
+				selectedColumnId={matchId}
+				columns={columns}
 				onRequestClose={onRequestClose}
 				onClose={onClose}
+				onColumnClick={(columnId) => onColumnMatch(index, columnId)}
 			/>
 		</>
 	);
