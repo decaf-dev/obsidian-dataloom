@@ -10,6 +10,8 @@ import { store } from "src/redux/store";
 import { renderDivider, setModalTitle } from "../shared";
 import { LoomState } from "src/shared/loom-state/types";
 import { EVENT_APP_REFRESH } from "src/shared/events";
+import MenuProvider from "src/react/shared/menu-provider";
+import ModalMountProvider from "src/react/shared/modal-mount-provider";
 
 export default class ImportModal extends Modal {
 	root: Root;
@@ -37,21 +39,32 @@ export default class ImportModal extends Modal {
 			const data = await this.app.vault.read(this.loomFile);
 			const state = deserializeLoomState(data, this.pluginVersion);
 
+			const modalEl = contentEl.closest(".modal") as HTMLElement | null;
+			if (!modalEl) throw new Error("Modal element not found.");
+
 			this.root = createRoot(contentEl);
 			this.root.render(
 				<Provider store={store}>
-					<ImportApp
-						initialState={state}
-						onStateSave={this.handleStateSave}
-					/>
+					<ModalMountProvider
+						obsidianApp={this.app}
+						modalEl={modalEl}
+					>
+						<MenuProvider>
+							<ImportApp
+								state={state}
+								onStateChange={this.handleStateChange}
+							/>
+						</MenuProvider>
+					</ModalMountProvider>
 				</Provider>
 			);
 		} catch (err) {
+			console.error(err);
 			new Notice("Error reading loom file data.");
 		}
 	}
 
-	private handleStateSave = async (state: LoomState) => {
+	private handleStateChange = async (state: LoomState) => {
 		const serialized = serializeLoomState(state);
 		await this.app.vault.modify(this.loomFile, serialized);
 
@@ -59,7 +72,7 @@ export default class ImportModal extends Modal {
 		this.app.workspace.trigger(
 			EVENT_APP_REFRESH,
 			this.loomFile.path,
-			"",
+			"", //No app id. Target all views of this file
 			state
 		);
 		this.close();

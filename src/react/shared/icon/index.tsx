@@ -4,12 +4,14 @@ import React from "react";
 import { appendOrReplaceFirstChild } from "src/shared/render/utils";
 
 interface Props {
+	ariaLabel?: string;
 	lucideId: string;
 	size?: "sm" | "md" | "lg";
 	color?: string;
 }
 
 export default function Icon({
+	ariaLabel,
 	lucideId,
 	size = "md",
 	color = "unset",
@@ -18,6 +20,7 @@ export default function Icon({
 
 	return (
 		<div
+			aria-label={ariaLabel}
 			ref={(node) => {
 				//Set the reference
 				ref.current = node;

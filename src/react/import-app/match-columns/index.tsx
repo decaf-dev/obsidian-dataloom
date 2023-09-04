@@ -1,110 +1,89 @@
-import Stack from "src/react/shared/stack";
 import Text from "src/react/shared/text";
-import Padding from "src/react/shared/padding";
-
-import { useOverflow } from "src/shared/spacing/hooks";
-
-import "./styles.css";
 import Button from "src/react/shared/button";
 
+import BodyCell from "./body-cell";
+import HeaderCell from "./header-cell";
+
+import { ColumnMatch, ImportColumn } from "../types";
+
+import "./styles.css";
+import Padding from "src/react/shared/padding";
+
 interface Props {
-	columnsToImport: number[];
+	columns: ImportColumn[];
+	columnMatches: ColumnMatch[];
+	enabledColumnIndices: number[];
 	data: string[][];
 	onColumnToggle: (index: number) => void;
-	onSelectAllColumns: () => void;
-	onDeselectAllColumns: () => void;
+	onAllColumnsToggle: () => void;
+	onColumnMatch: (index: number, columnId: string) => void;
 }
 
 export default function MatchColumns({
+	columns,
+	columnMatches,
 	data,
-	columnsToImport,
+	enabledColumnIndices,
 	onColumnToggle,
-	onSelectAllColumns,
-	onDeselectAllColumns,
+	onAllColumnsToggle,
+	onColumnMatch,
 }: Props) {
-	const overflowClassName = useOverflow(false, {
-		ellipsis: true,
-	});
-
-	if (data.length === 0) return <></>;
 	return (
 		<div className="dataloom-match-columns">
-			<Stack spacing="xl">
-				<Stack isHorizontal spacing="md">
-					<Button isSmall variant="text" onClick={onSelectAllColumns}>
-						Select all
-					</Button>
-					<Button
-						isSmall
-						variant="text"
-						onClick={onDeselectAllColumns}
-					>
-						Deselect all
-					</Button>
-				</Stack>
-				<div className="dataloom-match-columns__container">
-					<table>
-						<thead>
-							<tr>
-								{data[0].map((header, i) => {
-									const isColumnActive =
-										columnsToImport.includes(i);
-									let className = overflowClassName;
-									if (!isColumnActive)
-										className +=
-											" dataloom-match-columns--disabled";
-									return (
-										<th key={i} className={className}>
-											<Padding px="md" py="sm">
-												<Stack
-													isHorizontal
-													justify="space-between"
-													spacing="md"
-													width="100%"
-												>
-													<Text value={header} />
-													<input
-														aria-label="Toggle column"
-														type="checkbox"
-														checked={isColumnActive}
-														onChange={() =>
-															onColumnToggle(i)
-														}
-													/>
-												</Stack>
-											</Padding>
-										</th>
-									);
-								})}
+			<Padding py="xl">
+				<Button variant="default" onClick={onAllColumnsToggle}>
+					Toggle all
+				</Button>
+			</Padding>
+			<div className="dataloom-match-columns__container">
+				<table>
+					<thead>
+						<tr>
+							{data[0].map((header, i) => {
+								const matchId =
+									columnMatches.find(
+										(match) => match.index === i
+									)?.columnId ?? null;
+								return (
+									<HeaderCell
+										key={i}
+										isDisabled={
+											!enabledColumnIndices.includes(i)
+										}
+										columns={columns}
+										index={i}
+										matchId={matchId}
+										importValue={header}
+										onColumnToggle={onColumnToggle}
+										onColumnMatch={onColumnMatch}
+									/>
+								);
+							})}
+						</tr>
+					</thead>
+					<tbody>
+						{data.slice(1).map((row, i) => (
+							<tr key={i}>
+								{row.map((cell, j) => (
+									<BodyCell
+										key={j}
+										value={cell}
+										isDisabled={
+											!enabledColumnIndices.includes(j)
+										}
+									/>
+								))}
 							</tr>
-						</thead>
-						<tbody>
-							{data.slice(1).map((row, i) => (
-								<tr key={i}>
-									{row.map((cell, j) => {
-										const isCellActive =
-											columnsToImport.includes(j);
-										let className = overflowClassName;
-										if (!isCellActive)
-											className +=
-												" dataloom-match-columns--disabled";
-										return (
-											<td key={j} className={className}>
-												{cell}
-											</td>
-										);
-									})}
-								</tr>
-							))}
-						</tbody>
-					</table>
-				</div>
+						))}
+					</tbody>
+				</table>
+			</div>
+			<Padding pt="2xl" pb="lg">
 				<Text
-					size="xs"
-					variant="semibold"
-					value={`Importing ${columnsToImport.length} of ${data.length} columns`}
+					size="sm"
+					value={`Importing ${enabledColumnIndices.length} of ${data[0].length} columns`}
 				/>
-			</Stack>
+			</Padding>
 		</div>
 	);
 }

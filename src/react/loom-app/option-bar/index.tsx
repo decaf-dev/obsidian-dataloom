@@ -94,6 +94,7 @@ export default function OptionBar({
 		onClose: onFilterMenuClose,
 	} = useMenu();
 
+	//TODO re-enable
 	// const previousLength = usePrevious(filterRules.length);
 	// React.useEffect(() => {
 	// 	if (previousLength !== undefined) {

@@ -9,8 +9,8 @@ import {
 } from "./types";
 import { useShiftMenu } from "./utils";
 
+import { useModalMount } from "../modal-mount-provider";
 import "./styles.css";
-import { useMountState } from "src/react/loom-app/mount-provider";
 
 interface Props {
 	id: string;
@@ -27,7 +27,7 @@ interface Props {
 	children: React.ReactNode;
 }
 
-export default function Menu({
+export default function ModalMenu({
 	id,
 	isOpen,
 	hideBorder = false,
@@ -42,18 +42,10 @@ export default function Menu({
 	onClose,
 }: Props) {
 	const ref = React.useRef<HTMLDivElement>(null);
-	const { mountLeaf } = useMountState();
-
-	useShiftMenu(
-		false,
-		mountLeaf.view.containerEl,
-		ref,
-		triggerPosition,
-		isOpen,
-		{
-			openDirection,
-		}
-	);
+	const { modalEl } = useModalMount();
+	useShiftMenu(true, modalEl, ref, triggerPosition, isOpen, {
+		openDirection,
+	});
 
 	if (!isOpen) return <></>;
 

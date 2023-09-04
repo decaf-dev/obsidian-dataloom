@@ -9,7 +9,13 @@ import UploadData from "./upload-data";
 
 import { LoomState } from "src/shared/loom-state/types";
 import { Step } from "../shared/stepper/types";
-import { DataSource, DataType, StepType } from "./types";
+import {
+	ImportColumn,
+	DataSource,
+	DataType,
+	StepType,
+	ColumnMatch,
+} from "./types";
 
 import MatchColumns from "./match-columns";
 
@@ -19,14 +25,18 @@ import {
 	validateMarkdownTable,
 } from "./table-utils";
 
+import CellNotFoundError from "src/shared/error/cell-not-found-error";
+import { useMenuOperations } from "../shared/menu/hooks";
 import "./styles.css";
 
 interface Props {
-	initialState: LoomState;
-	onStateSave: (state: LoomState) => void;
+	state: LoomState;
+	onStateChange: (value: LoomState) => void;
 }
 
-export default function ImportApp({ initialState, onStateSave }: Props) {
+export default function ImportApp({ state, onStateChange }: Props) {
+	const { onCloseAll } = useMenuOperations();
+
 	//Step 1
 	const [dataSource, setDataSource] = React.useState(DataSource.UNSELECTED);
 
@@ -40,10 +50,14 @@ export default function ImportApp({ initialState, onStateSave }: Props) {
 	const [errorText, setErrorText] = React.useState<string | null>(null);
 
 	//Step 4
-	const [columnsToImport, setColumnsToImport] = React.useState<number[]>([]);
+	const [enabledColumnIndices, setEnabledColumnIndices] = React.useState<
+		number[]
+	>([]);
+	const [toggleColumns, setToggleColumns] = React.useState(false);
+	const [columnMatches, setColumnMatches] = React.useState<ColumnMatch[]>([]);
 
 	function handleColumnToggle(index: number) {
-		setColumnsToImport((prevState) => {
+		setEnabledColumnIndices((prevState) => {
 			if (prevState.includes(index)) {
 				return prevState.filter((i) => i !== index);
 			} else {
@@ -69,12 +83,21 @@ export default function ImportApp({ initialState, onStateSave }: Props) {
 		}
 	}
 
-	function handleSelectAllColumns() {
-		setColumnsToImport(data.map((_, i) => i));
+	function handleAllColumnsToggle() {
+		if (toggleColumns) {
+			setEnabledColumnIndices(data[0].map((_, i) => i));
+		} else {
+			setEnabledColumnIndices([]);
+		}
+		setToggleColumns((prevState) => !prevState);
 	}
 
-	function handleDeselectAllColumns() {
-		setColumnsToImport([]);
+	function handleColumnMatch(index: number, columnId: string) {
+		setColumnMatches((prevState) => {
+			const filtered = prevState.filter((match) => match.index !== index);
+			const newState = [...filtered, { index, columnId }];
+			return newState;
+		});
 	}
 
 	/**
@@ -92,9 +115,28 @@ export default function ImportApp({ initialState, onStateSave }: Props) {
 			setData([]);
 		}
 		if (currentType !== StepType.MATCH_COLUMNS) {
-			setColumnsToImport([]);
+			setEnabledColumnIndices([]);
+			setToggleColumns(false);
+			setColumnMatches([]);
 		}
 	}
+
+	const columns: ImportColumn[] = [
+		...state.model.columns.map((column) => {
+			const { id, type } = column;
+			const cell = state.model.headerCells.find((c) => c.columnId === id);
+			if (!cell)
+				throw new CellNotFoundError({
+					columnId: id,
+				});
+			const { markdown } = cell;
+			return {
+				id,
+				name: markdown,
+				type,
+			};
+		}),
+	];
 
 	const steps: Step[] = [
 		{
@@ -133,19 +175,20 @@ export default function ImportApp({ initialState, onStateSave }: Props) {
 			onContinue: () => {
 				if (dataType === DataType.CSV) {
 					const { data, errors } = Papa.parse(rawData);
+					const parsedArr = data as string[][];
 					if (errors.length > 0) {
 						setErrorText(errors[0].message);
 						return false;
 					}
-					setData(data as string[][]);
-					setColumnsToImport(data.map((_, i) => i));
+					setData(parsedArr);
+					setEnabledColumnIndices(parsedArr[0].map((_, i) => i));
 				} else if (dataType === DataType.MARKDOWN) {
 					try {
 						const tokens = parseMarkdownTableIntoTokens(rawData);
 						validateMarkdownTable(tokens);
-						const data = tableTokensToArr(tokens);
-						setData(data);
-						setColumnsToImport(data.map((_, i) => i));
+						const parsedArr = tableTokensToArr(tokens);
+						setData(parsedArr);
+						setEnabledColumnIndices(parsedArr[0].map((_, i) => i));
 					} catch (err: unknown) {
 						setErrorText((err as Error).message);
 						return false;
@@ -159,23 +202,26 @@ export default function ImportApp({ initialState, onStateSave }: Props) {
 			content: (
 				<MatchColumns
 					data={data}
-					columnsToImport={columnsToImport}
+					columnMatches={columnMatches}
+					columns={columns}
+					enabledColumnIndices={enabledColumnIndices}
 					onColumnToggle={handleColumnToggle}
-					onSelectAllColumns={handleSelectAllColumns}
-					onDeselectAllColumns={handleDeselectAllColumns}
+					onAllColumnsToggle={handleAllColumnsToggle}
+					onColumnMatch={handleColumnMatch}
 				/>
 			),
 		},
 	];
 
+	function handleModalClick(e: React.MouseEvent) {
+		e.stopPropagation();
+		onCloseAll();
+	}
+
 	function handleFinishClick() {}
 
-	// <button className="mod-cta" onClick={handleImportClick}>
-	// 	Import
-	// </button>;
-
 	return (
-		<div className="dataloom-import-app">
+		<div className="dataloom-import-app" onClick={handleModalClick}>
 			<Stepper
 				steps={steps}
 				finishButtonLabel="Finish"
