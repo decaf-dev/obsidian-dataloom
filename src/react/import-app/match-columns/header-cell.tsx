@@ -70,7 +70,7 @@ export default function HeaderCell({
 									? "shield-check"
 									: "shield-question"
 							}
-							size="lg"
+							size="xl"
 						/>
 						<Text value={name} />
 					</Stack>
