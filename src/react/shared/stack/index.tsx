@@ -5,6 +5,7 @@ import { SpacingSize } from "src/shared/spacing/types";
 import "./styles.css";
 
 interface Props {
+	className?: string;
 	spacing?: SpacingSize;
 	children: React.ReactNode;
 	justify?: JustifyContent;
@@ -19,6 +20,7 @@ interface Props {
 }
 
 export default function Stack({
+	className: customClassName,
 	spacing = "md",
 	justify,
 	align,
@@ -41,9 +43,12 @@ export default function Stack({
 		if (isHorizontal) alignItems = "center";
 		else alignItems = "flex-start";
 	}
+
+	let className = "dataloom-stack";
+	if (customClassName) className += " " + customClassName;
 	return (
 		<div
-			className="dataloom-stack"
+			className={className}
 			style={{
 				flexDirection: isHorizontal ? "row" : "column",
 				flexGrow: grow ? 1 : 0,
