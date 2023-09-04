@@ -400,6 +400,6 @@ export const deserializeLoomState = (
 	}
 
 	const state = currentState as LoomState;
-	state.pluginVersion = versionString;
+	state.pluginVersion = pluginVersion;
 	return state;
 };
