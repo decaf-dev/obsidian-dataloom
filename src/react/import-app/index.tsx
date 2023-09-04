@@ -210,7 +210,10 @@ export default function ImportApp({ state, onStateChange }: Props) {
 					onColumnMatch={handleColumnMatch}
 				/>
 			),
-			canContinue: columnMatches.length === enabledColumnIndices.length,
+			canContinue: () =>
+				enabledColumnIndices.every((index) =>
+					columnMatches.some((match) => match.index === index)
+				),
 		},
 	];
 

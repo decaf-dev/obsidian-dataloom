@@ -61,6 +61,7 @@ export default function Stepper({
 					content,
 					canContinue = true,
 				} = step;
+
 				return (
 					<div key={i} className="dataloom-step">
 						<StepHeader
@@ -79,7 +80,11 @@ export default function Stepper({
 										addTopMargin={description !== undefined}
 									/>
 									<StepButtons
-										isNextDisabled={!canContinue}
+										isNextDisabled={
+											canContinue instanceof Function
+												? !canContinue()
+												: !canContinue
+										}
 										isFirstStep={isFirstStep}
 										isLastStep={isLastStep}
 										finishButtonLabel={finishButtonLabel}
