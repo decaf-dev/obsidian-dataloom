@@ -48,10 +48,12 @@ export default function MatchColumns({
 
 		appEl.addEventListener("scroll", handleScroll);
 		containerEl.addEventListener("scroll", handleScroll);
+		window.addEventListener("resize", handleScroll);
 
 		return () => {
 			appEl.removeEventListener("scroll", handleScroll);
 			containerEl.removeEventListener("scroll", handleScroll);
+			window.removeEventListener("resize", handleScroll);
 		};
 	}, []);
 
