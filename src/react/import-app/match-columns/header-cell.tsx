@@ -44,6 +44,11 @@ export default function HeaderCell({
 		shouldFocusTriggerOnClose: false,
 	});
 
+	function handleColumnClick(columnId: string) {
+		onColumnMatch(index, columnId);
+		onClose();
+	}
+
 	return (
 		<>
 			<th className={overflowClassName}>
@@ -92,7 +97,7 @@ export default function HeaderCell({
 				columns={columns}
 				onRequestClose={onRequestClose}
 				onClose={onClose}
-				onColumnClick={(columnId) => onColumnMatch(index, columnId)}
+				onColumnClick={handleColumnClick}
 			/>
 		</>
 	);
