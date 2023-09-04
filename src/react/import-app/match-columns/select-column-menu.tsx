@@ -6,6 +6,7 @@ import {
 } from "src/react/shared/menu/types";
 import { ImportColumn } from "../types";
 import { getIconIdForCellType } from "src/react/shared/icon/utils";
+import Divider from "src/react/shared/divider";
 
 interface Props {
 	id: string;
@@ -49,6 +50,12 @@ export default function SelectColumnMenu({
 					/>
 				);
 			})}
+			<Divider />
+			<MenuItem
+				name="New column"
+				onClick={() => onColumnClick("-1")}
+				isSelected={selectedColumnId === "-1"}
+			/>
 		</ModalMenu>
 	);
 }
