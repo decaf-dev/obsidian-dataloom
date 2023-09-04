@@ -16,5 +16,5 @@ export default function DateCell({ value, format }: Props) {
 	let className = "dataloom-date-cell";
 	className += " " + overflowClassName;
 	const content = getDateCellContent(value, format);
-	return <div className="dataloom-date-cell">{content}</div>;
+	return <div className={className}>{content}</div>;
 }
