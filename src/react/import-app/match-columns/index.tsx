@@ -8,6 +8,8 @@ import { ColumnMatch, ImportColumn } from "../types";
 
 import "./styles.css";
 import Padding from "src/react/shared/padding";
+import { useMenuOperations } from "src/react/shared/menu/hooks";
+import React from "react";
 
 interface Props {
 	columns: ImportColumn[];
@@ -28,6 +30,31 @@ export default function MatchColumns({
 	onAllColumnsToggle,
 	onColumnMatch,
 }: Props) {
+	const containerRef = React.useRef<HTMLDivElement>(null);
+	const { onCloseAll } = useMenuOperations();
+
+	/**
+	 * Closes all menus when the user scrolls.
+	 */
+	React.useEffect(() => {
+		function handleScroll() {
+			onCloseAll();
+		}
+
+		if (!containerRef.current) return;
+		const containerEl = containerRef.current;
+		const appEl = containerEl.closest(".dataloom-import-app");
+		if (!appEl) return;
+
+		appEl.addEventListener("scroll", handleScroll);
+		containerEl.addEventListener("scroll", handleScroll);
+
+		return () => {
+			appEl.removeEventListener("scroll", handleScroll);
+			containerEl.removeEventListener("scroll", handleScroll);
+		};
+	}, []);
+
 	return (
 		<div className="dataloom-match-columns">
 			<Padding py="xl">
@@ -35,7 +62,10 @@ export default function MatchColumns({
 					Toggle all
 				</Button>
 			</Padding>
-			<div className="dataloom-match-columns__container">
+			<div
+				ref={containerRef}
+				className="dataloom-match-columns__container"
+			>
 				<table>
 					<thead>
 						<tr>
