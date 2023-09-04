@@ -145,7 +145,7 @@ const processLinkEl = async (
  */
 const renderApp = (
 	app: App,
-	appId: string,
+	reactAppId: string,
 	leaf: WorkspaceLeaf,
 	file: TFile,
 	root: Root,
@@ -158,7 +158,7 @@ const renderApp = (
 	root.render(
 		<LoomAppWrapper
 			app={app}
-			appId={appId}
+			reactAppId={reactAppId}
 			isMarkdownView
 			loomFile={file}
 			mountLeaf={leaf}

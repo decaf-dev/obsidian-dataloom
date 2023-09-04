@@ -7,16 +7,16 @@ import { useLoomState } from "src/react/loom-app/loom-state-provider";
 import { useAppMount } from "../../app-mount-provider";
 
 export const useRowEvents = () => {
-	const { appId, app } = useAppMount();
+	const { reactAppId, app } = useAppMount();
 	const { doCommand } = useLoomState();
 
 	React.useEffect(() => {
 		function handleRowAddEvent() {
-			if (isEventForThisApp(appId)) doCommand(new RowAddCommand());
+			if (isEventForThisApp(reactAppId)) doCommand(new RowAddCommand());
 		}
 
 		function handleRowDeleteEvent() {
-			if (isEventForThisApp(appId))
+			if (isEventForThisApp(reactAppId))
 				doCommand(new RowDeleteCommand({ last: true }));
 		}
 
@@ -29,5 +29,5 @@ export const useRowEvents = () => {
 			app.workspace.off(EVENT_ROW_ADD, handleRowAddEvent);
 			app.workspace.off(EVENT_ROW_DELETE, handleRowDeleteEvent);
 		};
-	}, [doCommand, app, appId]);
+	}, [doCommand, app, reactAppId]);
 };

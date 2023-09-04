@@ -5,7 +5,7 @@ import React from "react";
 interface ContextProps {
 	app: App;
 	mountLeaf: WorkspaceLeaf;
-	appId: string;
+	reactAppId: string;
 	loomFile: TFile;
 	isMarkdownView: boolean;
 }
@@ -29,7 +29,7 @@ interface Props extends ContextProps {
 
 export default function AppMountProvider({
 	app,
-	appId,
+	reactAppId,
 	mountLeaf,
 	loomFile,
 	isMarkdownView,
@@ -37,7 +37,7 @@ export default function AppMountProvider({
 }: Props) {
 	return (
 		<MountContext.Provider
-			value={{ app, appId, mountLeaf, loomFile, isMarkdownView }}
+			value={{ app, reactAppId, mountLeaf, loomFile, isMarkdownView }}
 		>
 			{children}
 		</MountContext.Provider>

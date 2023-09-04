@@ -13,7 +13,7 @@ import MenuProvider from "../shared/menu-provider";
 
 interface Props {
 	app: ObsidianApp;
-	appId: string;
+	reactAppId: string;
 	mountLeaf: WorkspaceLeaf;
 	isMarkdownView: boolean;
 	loomFile: TFile;
@@ -24,7 +24,7 @@ interface Props {
 
 export default function LoomApp({
 	app,
-	appId,
+	reactAppId,
 	mountLeaf,
 	isMarkdownView,
 	store,
@@ -36,7 +36,7 @@ export default function LoomApp({
 		<AppMountProvider
 			app={app}
 			mountLeaf={mountLeaf}
-			appId={appId}
+			reactAppId={reactAppId}
 			isMarkdownView={isMarkdownView}
 			loomFile={loomFile}
 		>

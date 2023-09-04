@@ -41,7 +41,7 @@ import { useLogger } from "src/shared/logger";
 
 export default function App() {
 	const logger = useLogger();
-	const { appId, isMarkdownView } = useAppMount();
+	const { reactAppId, isMarkdownView } = useAppMount();
 	const {
 		loomState,
 		resizingColumnId,
@@ -173,7 +173,7 @@ export default function App() {
 	if (isMarkdownView) className += " dataloom-app--markdown-view";
 	return (
 		<div
-			id={appId}
+			id={reactAppId}
 			className={className}
 			onKeyDown={handleKeyDown}
 			onClick={handleClick}

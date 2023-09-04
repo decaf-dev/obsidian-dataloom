@@ -8,20 +8,20 @@ import { useLoomState } from "src/react/loom-app/loom-state-provider";
 import { useAppMount } from "../../app-mount-provider";
 
 export const useColumnEvents = () => {
-	const { appId, app } = useAppMount();
+	const { reactAppId, app } = useAppMount();
 	const { doCommand } = useLoomState();
 	const logger = useLogger();
 
 	React.useEffect(() => {
 		function handleColumnAddEvent() {
-			if (isEventForThisApp(appId)) {
+			if (isEventForThisApp(reactAppId)) {
 				logger("handleColumnAddEvent");
 				doCommand(new ColumnAddCommand());
 			}
 		}
 
 		function handleColumnDeleteEvent() {
-			if (isEventForThisApp(appId)) {
+			if (isEventForThisApp(reactAppId)) {
 				logger("handleColumnDeleteEvent");
 				doCommand(new ColumnDeleteCommand({ last: true }));
 			}
@@ -36,5 +36,5 @@ export const useColumnEvents = () => {
 			app.workspace.off(EVENT_COLUMN_ADD, handleColumnAddEvent);
 			app.workspace.off(EVENT_COLUMN_DELETE, handleColumnDeleteEvent);
 		};
-	}, [doCommand, logger, appId, app]);
+	}, [doCommand, logger, reactAppId, app]);
 };

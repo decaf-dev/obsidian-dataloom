@@ -57,7 +57,7 @@ export default function LoomStateProvider({
 	const refreshTime = React.useRef(0);
 
 	const logger = useLogger();
-	const { appId, loomFile, app } = useAppMount();
+	const { reactAppId, loomFile, app } = useAppMount();
 
 	// React.useEffect(() => {
 	// 	const jsonSizeInBytes = new TextEncoder().encode(
@@ -83,8 +83,8 @@ export default function LoomStateProvider({
 			return;
 		}
 
-		onSaveState(appId, loomState);
-	}, [appId, loomState, onSaveState]);
+		onSaveState(reactAppId, loomState);
+	}, [reactAppId, loomState, onSaveState]);
 
 	React.useEffect(() => {
 		function handleRefreshEvent(
@@ -92,7 +92,7 @@ export default function LoomStateProvider({
 			sourceAppId: string,
 			state: LoomState
 		) {
-			if (appId !== sourceAppId && filePath === loomFile.path) {
+			if (reactAppId !== sourceAppId && filePath === loomFile.path) {
 				refreshTime.current = Date.now();
 				setLoomState(state);
 			}
@@ -104,7 +104,7 @@ export default function LoomStateProvider({
 			handleRefreshEvent
 		);
 		return () => app.workspace.off(EVENT_APP_REFRESH, handleRefreshEvent);
-	}, [appId, loomFile, app]);
+	}, [reactAppId, loomFile, app]);
 
 	function handleToggleSearchBar() {
 		setSearchBarVisible((prevState) => !prevState);
