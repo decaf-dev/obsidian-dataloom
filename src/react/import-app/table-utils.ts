@@ -6,13 +6,10 @@ export const parseMarkdownTableIntoTokens = (markdown: string) => {
 
 	//If any of the lines have a tab, the entire table will be rendered as a code block.
 	//This is a workaround to prevent that.
-	let lines = markdown.split("\n");
-	const trimmedLines = lines.map((line) => {
-		return line.trim();
-	});
-	markdown = trimmedLines.join("\n");
-
-	return md.parse(markdown, {});
+	const lines = markdown.split("\n");
+	const trimmedLines = lines.map((line) => line.trim());
+	const updatedMarkdown = trimmedLines.join("\n");
+	return md.parse(updatedMarkdown, {});
 };
 
 export const tableTokensToArr = (tokens: Token[]) => {
