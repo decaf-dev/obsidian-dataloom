@@ -65,7 +65,7 @@ export default function MenuItem({
 			onClick={handleClick}
 			onKeyDown={handleKeyDown}
 		>
-			<Flex justify="space-between">
+			<Flex justify="space-between" align="center">
 				<Stack isHorizontal>
 					{lucideId !== undefined && (
 						<Padding width="unset" pb="sm">
