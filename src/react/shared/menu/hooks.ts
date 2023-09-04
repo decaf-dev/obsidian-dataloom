@@ -200,12 +200,40 @@ const useModalPosition = () => {
 				height,
 			});
 		}
-		updatePosition();
+
+		const ancestors = findAncestorsUntilModal(el);
+
+		const THROTTLE_TIME_MILLIS = 10;
+		const throttleUpdatePosition = _.throttle(
+			updatePosition,
+			THROTTLE_TIME_MILLIS
+		);
+
+		ancestors.forEach((ancestor) => {
+			ancestor.addEventListener("scroll", throttleUpdatePosition);
+		});
+
+		return () => {
+			ancestors.forEach((ancestor) => {
+				ancestor.removeEventListener("scroll", throttleUpdatePosition);
+			});
+		};
 	}, []);
+
 	return {
 		ref,
 		position,
 	};
+};
+
+const findAncestorsUntilModal = (currentEl: HTMLElement) => {
+	const ancestors: HTMLElement[] = [];
+	let el: HTMLElement | null = currentEl;
+	while (el && !el.classList.contains("modal")) {
+		ancestors.push(el);
+		el = el.parentElement;
+	}
+	return ancestors;
 };
 
 const usePosition = () => {
@@ -222,7 +250,7 @@ const usePosition = () => {
 		if (!ref.current) return;
 		const el = ref.current;
 
-		const THROTTLE_TIME_MILLIS = 100;
+		const THROTTLE_TIME_MILLIS = 10;
 		const throttleUpdatePosition = _.throttle(
 			updatePosition,
 			THROTTLE_TIME_MILLIS
