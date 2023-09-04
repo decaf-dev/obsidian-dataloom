@@ -213,6 +213,8 @@ const useModalPosition = () => {
 			ancestor.addEventListener("scroll", throttleUpdatePosition);
 		});
 
+		updatePosition();
+
 		return () => {
 			ancestors.forEach((ancestor) => {
 				ancestor.removeEventListener("scroll", throttleUpdatePosition);
