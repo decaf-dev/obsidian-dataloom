@@ -212,6 +212,7 @@ const useModalPosition = () => {
 		ancestors.forEach((ancestor) => {
 			ancestor.addEventListener("scroll", throttleUpdatePosition);
 		});
+		window.addEventListener("resize", throttleUpdatePosition);
 
 		updatePosition();
 
@@ -219,6 +220,7 @@ const useModalPosition = () => {
 			ancestors.forEach((ancestor) => {
 				ancestor.removeEventListener("scroll", throttleUpdatePosition);
 			});
+			window.removeEventListener("resize", throttleUpdatePosition);
 		};
 	}, []);
 
