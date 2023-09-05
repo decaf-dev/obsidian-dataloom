@@ -60,7 +60,9 @@ export default function HeaderCell({
 					width="100%"
 				>
 					<Stack isHorizontal spacing="md">
+						<Text value={importValue} />
 						<Icon
+							color={matchId ? "green" : "red"}
 							ariaLabel={
 								matchId !== null ? "Matched" : "Unmatched"
 							}
@@ -71,7 +73,6 @@ export default function HeaderCell({
 							}
 							size="xl"
 						/>
-						<Text value={importValue} />
 					</Stack>
 					<Stack isHorizontal spacing="md">
 						<Switch
