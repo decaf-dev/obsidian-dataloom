@@ -81,6 +81,7 @@ export enum CurrencyType {
 	MEXICO = "MXN",
 	ARGENTINA = "ARS",
 	ISRAEL = "ILS",
+	SWITZERLAND = "CHF",
 }
 
 export enum Calculation {
