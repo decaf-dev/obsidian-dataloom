@@ -17,7 +17,7 @@ interface Props {
 	columnMatches: ColumnMatch[];
 	selectedColumnId: string | null;
 	onRequestClose: (type: LoomMenuCloseRequestType) => void;
-	onColumnClick: (columnId: string) => void;
+	onColumnClick: (columnId: string | null) => void;
 	onClose: () => void;
 }
 
@@ -32,6 +32,11 @@ export default function SelectColumnMenu({
 	onRequestClose,
 	onClose,
 }: Props) {
+	const columnsToDisplay = columns.filter((column) => {
+		const { id } = column;
+		if (id === selectedColumnId) return true;
+		return !columnMatches.some((match) => match.columnId === id);
+	});
 	return (
 		<ModalMenu
 			id={id}
@@ -41,7 +46,13 @@ export default function SelectColumnMenu({
 			openDirection="bottom-left"
 			onClose={onClose}
 		>
-			{columns.map((column) => {
+			<MenuItem
+				name="Create new"
+				onClick={() => onColumnClick(NEW_COLUMN_ID)}
+				isSelected={selectedColumnId === NEW_COLUMN_ID}
+			/>
+			<Divider />
+			{columnsToDisplay.map((column) => {
 				const { id, name, type } = column;
 				return (
 					<MenuItem
@@ -54,11 +65,7 @@ export default function SelectColumnMenu({
 				);
 			})}
 			<Divider />
-			<MenuItem
-				name="New column"
-				onClick={() => onColumnClick(NEW_COLUMN_ID)}
-				isSelected={selectedColumnId === NEW_COLUMN_ID}
-			/>
+			<MenuItem name="Clear" onClick={() => onColumnClick(null)} />
 		</ModalMenu>
 	);
 }

@@ -94,16 +94,14 @@ export default function ImportApp({ state, onStateChange }: Props) {
 		setToggleColumns((prevState) => !prevState);
 	}
 
-	function handleColumnMatch(index: number, columnId: string) {
+	function handleColumnMatch(index: number, columnId: string | null) {
 		setColumnMatches((prevState) => {
 			const filtered = prevState.filter(
 				(match) => match.importColumnIndex !== index
 			);
-			const newState = [
-				...filtered,
-				{ importColumnIndex: index, columnId },
-			];
-			return newState;
+			if (columnId === null) return filtered;
+			const match = { importColumnIndex: index, columnId };
+			return [...filtered, match];
 		});
 	}
 

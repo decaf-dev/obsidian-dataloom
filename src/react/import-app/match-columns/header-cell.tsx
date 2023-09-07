@@ -17,7 +17,7 @@ interface Props {
 	importValue: string;
 	matchId: string | null;
 	onColumnToggle: (index: number) => void;
-	onColumnMatch: (index: number, columnId: string) => void;
+	onColumnMatch: (index: number, columnId: string | null) => void;
 }
 
 export default function HeaderCell({
@@ -46,7 +46,7 @@ export default function HeaderCell({
 		shouldFocusTriggerOnClose: false,
 	});
 
-	function handleColumnClick(columnId: string) {
+	function handleColumnClick(columnId: string | null) {
 		onColumnMatch(index, columnId);
 		onClose();
 	}

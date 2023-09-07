@@ -19,7 +19,7 @@ interface Props {
 	data: string[][];
 	onColumnToggle: (index: number) => void;
 	onAllColumnsToggle: () => void;
-	onColumnMatch: (index: number, columnId: string) => void;
+	onColumnMatch: (index: number, columnId: string | null) => void;
 }
 
 export default function MatchColumns({
