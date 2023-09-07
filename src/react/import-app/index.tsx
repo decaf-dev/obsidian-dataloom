@@ -15,6 +15,7 @@ import {
 	DataType,
 	StepType,
 	ColumnMatch,
+	ImportData,
 } from "./types";
 
 import MatchColumns from "./match-columns";
@@ -28,6 +29,7 @@ import {
 import CellNotFoundError from "src/shared/error/cell-not-found-error";
 import { useMenuOperations } from "../shared/menu/hooks";
 import "./styles.css";
+import { updateStateWithImportData } from "./state-utils";
 
 interface Props {
 	state: LoomState;
@@ -46,7 +48,7 @@ export default function ImportApp({ state, onStateChange }: Props) {
 	//Step 3
 	const [fileName, setFileName] = React.useState<string | null>(null);
 	const [rawData, setRawData] = React.useState("");
-	const [data, setData] = React.useState<string[][]>([]);
+	const [data, setData] = React.useState<ImportData>([]);
 	const [errorText, setErrorText] = React.useState<string | null>(null);
 
 	//Step 4
@@ -94,8 +96,13 @@ export default function ImportApp({ state, onStateChange }: Props) {
 
 	function handleColumnMatch(index: number, columnId: string) {
 		setColumnMatches((prevState) => {
-			const filtered = prevState.filter((match) => match.index !== index);
-			const newState = [...filtered, { index, columnId }];
+			const filtered = prevState.filter(
+				(match) => match.importColumnIndex !== index
+			);
+			const newState = [
+				...filtered,
+				{ importColumnIndex: index, columnId },
+			];
 			return newState;
 		});
 	}
@@ -212,7 +219,9 @@ export default function ImportApp({ state, onStateChange }: Props) {
 			),
 			canContinue: () =>
 				enabledColumnIndices.every((index) =>
-					columnMatches.some((match) => match.index === index)
+					columnMatches.some(
+						(match) => match.importColumnIndex === index
+					)
 				),
 		},
 	];
@@ -222,7 +231,11 @@ export default function ImportApp({ state, onStateChange }: Props) {
 		onCloseAll();
 	}
 
-	function handleFinishClick() {}
+	function handleFinishClick() {
+		const newState = updateStateWithImportData(state, data, columnMatches);
+		//console.log(newState);
+		onStateChange(newState);
+	}
 
 	return (
 		<div className="dataloom-import-app" onClick={handleModalClick}>

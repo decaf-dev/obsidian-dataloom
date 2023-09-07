@@ -16,7 +16,6 @@ describe("validateMarkdownTable", () => {
 
 		//Act
 		const tokens = parseMarkdownTableIntoTokens(table);
-		console.log(tokens);
 
 		//Assert
 		expect(() => validateMarkdownTable(tokens)).not.toThrowError();

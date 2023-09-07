@@ -4,15 +4,17 @@ import {
 	LoomMenuCloseRequestType,
 	Position,
 } from "src/react/shared/menu/types";
-import { ImportColumn } from "../types";
+import { ColumnMatch, ImportColumn } from "../types";
 import { getIconIdForCellType } from "src/react/shared/icon/utils";
 import Divider from "src/react/shared/divider";
+import { NEW_COLUMN_ID } from "../constants";
 
 interface Props {
 	id: string;
 	triggerPosition: Position;
 	isOpen: boolean;
 	columns: ImportColumn[];
+	columnMatches: ColumnMatch[];
 	selectedColumnId: string | null;
 	onRequestClose: (type: LoomMenuCloseRequestType) => void;
 	onColumnClick: (columnId: string) => void;
@@ -24,6 +26,7 @@ export default function SelectColumnMenu({
 	triggerPosition,
 	isOpen,
 	columns,
+	columnMatches,
 	selectedColumnId,
 	onColumnClick,
 	onRequestClose,
@@ -53,8 +56,8 @@ export default function SelectColumnMenu({
 			<Divider />
 			<MenuItem
 				name="New column"
-				onClick={() => onColumnClick("-1")}
-				isSelected={selectedColumnId === "-1"}
+				onClick={() => onColumnClick(NEW_COLUMN_ID)}
+				isSelected={selectedColumnId === NEW_COLUMN_ID}
 			/>
 		</ModalMenu>
 	);

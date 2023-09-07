@@ -26,6 +26,11 @@ export interface ImportColumn {
 }
 
 export interface ColumnMatch {
-	index: number;
+	//The index of the column in the imported data
+	importColumnIndex: number;
+	//The column id of the matching column in the existing state
+	//A null value means that the column is new
 	columnId: string;
 }
+
+export type ImportData = string[][];

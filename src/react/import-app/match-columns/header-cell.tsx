@@ -3,7 +3,7 @@ import Switch from "src/react/shared/switch";
 import Text from "src/react/shared/text";
 import { HeaderCell } from "src/shared/loom-state/types";
 import { useOverflow } from "src/shared/spacing/hooks";
-import { ImportColumn } from "../types";
+import { ColumnMatch, ImportColumn } from "../types";
 import Icon from "src/react/shared/icon";
 import SelectColumnMenu from "./select-column-menu";
 import { useModalMenu } from "src/react/shared/menu/hooks";
@@ -12,6 +12,7 @@ import MenuButton from "src/react/shared/menu-button";
 interface Props {
 	isDisabled: boolean;
 	columns: ImportColumn[];
+	columnMatches: ColumnMatch[];
 	index: number;
 	importValue: string;
 	matchId: string | null;
@@ -22,6 +23,7 @@ interface Props {
 export default function HeaderCell({
 	isDisabled,
 	columns,
+	columnMatches,
 	index,
 	importValue,
 	matchId,
@@ -95,6 +97,7 @@ export default function HeaderCell({
 				isOpen={isOpen}
 				triggerPosition={triggerPosition}
 				selectedColumnId={matchId}
+				columnMatches={columnMatches}
 				columns={columns}
 				onRequestClose={onRequestClose}
 				onClose={onClose}

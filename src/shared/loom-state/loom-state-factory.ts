@@ -80,9 +80,9 @@ export const createHeaderCell = (
 export const createBodyCell = (
 	columnId: string,
 	rowId: string,
-	options: { cellType?: CellType; tagIds?: string[] } = {}
+	options: { cellType?: CellType; tagIds?: string[]; markdown?: string } = {}
 ): BodyCell => {
-	const { cellType, tagIds = [] } = options || {};
+	const { cellType, tagIds = [], markdown = "" } = options ?? {};
 	return {
 		id: uuidv4(),
 		isExternalLink: false,
@@ -90,7 +90,9 @@ export const createBodyCell = (
 		rowId,
 		dateTime: null,
 		markdown:
-			cellType === CellType.CHECKBOX ? CHECKBOX_MARKDOWN_UNCHECKED : "",
+			markdown === "" && cellType === CellType.CHECKBOX
+				? CHECKBOX_MARKDOWN_UNCHECKED
+				: markdown,
 		tagIds,
 	};
 };

@@ -78,7 +78,7 @@ export default function MatchColumns({
 							{data[0].map((header, i) => {
 								const matchId =
 									columnMatches.find(
-										(match) => match.index === i
+										(match) => match.importColumnIndex === i
 									)?.columnId ?? null;
 								return (
 									<HeaderCell
@@ -86,6 +86,7 @@ export default function MatchColumns({
 										isDisabled={
 											!enabledColumnIndices.includes(i)
 										}
+										columnMatches={columnMatches}
 										columns={columns}
 										index={i}
 										matchId={matchId}
