@@ -80,15 +80,25 @@ export const createHeaderCell = (
 export const createBodyCell = (
 	columnId: string,
 	rowId: string,
-	options: { cellType?: CellType; tagIds?: string[]; markdown?: string } = {}
+	options: {
+		cellType?: CellType;
+		tagIds?: string[];
+		markdown?: string;
+		dateTime?: number | null;
+	} = {}
 ): BodyCell => {
-	const { cellType, tagIds = [], markdown = "" } = options ?? {};
+	const {
+		cellType,
+		tagIds = [],
+		markdown = "",
+		dateTime = null,
+	} = options ?? {};
 	return {
 		id: uuidv4(),
 		isExternalLink: false,
 		columnId,
 		rowId,
-		dateTime: null,
+		dateTime,
 		markdown:
 			markdown === "" && cellType === CellType.CHECKBOX
 				? CHECKBOX_MARKDOWN_UNCHECKED
