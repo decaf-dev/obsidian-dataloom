@@ -46,12 +46,6 @@ export default function SelectColumnMenu({
 			openDirection="bottom-left"
 			onClose={onClose}
 		>
-			<MenuItem
-				name="Import as new"
-				onClick={() => onColumnClick(NEW_COLUMN_ID)}
-				isSelected={selectedColumnId === NEW_COLUMN_ID}
-			/>
-			<Divider />
 			{columnsToDisplay.map((column) => {
 				const { id, name, type } = column;
 				return (
@@ -64,6 +58,12 @@ export default function SelectColumnMenu({
 					/>
 				);
 			})}
+			<Divider />
+			<MenuItem
+				name="Import as new"
+				onClick={() => onColumnClick(NEW_COLUMN_ID)}
+				isSelected={selectedColumnId === NEW_COLUMN_ID}
+			/>
 			<Divider />
 			<MenuItem name="Clear" onClick={() => onColumnClick(null)} />
 		</ModalMenu>

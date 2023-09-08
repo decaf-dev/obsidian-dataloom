@@ -8,18 +8,22 @@ interface Props {
 	source: DataSource;
 	dataType: DataType;
 	fileName: string | null;
+	hasHeadersRow: boolean;
 	rawData: string;
 	errorText: string | null;
 	onRawDataChange: (rawData: string, fileName?: string) => void;
+	onHeadersRowToggle: () => void;
 }
 
 export default function UploadData({
 	source,
 	fileName,
 	dataType,
+	hasHeadersRow,
 	rawData,
 	errorText,
 	onRawDataChange,
+	onHeadersRowToggle,
 }: Props) {
 	return (
 		<div className="dataloom-upload-data">
@@ -30,7 +34,9 @@ export default function UploadData({
 				<FileInput
 					fileName={fileName}
 					dataType={dataType}
-					onChange={onRawDataChange}
+					hasHeadersRow={hasHeadersRow}
+					onHeadersRowToggle={onHeadersRowToggle}
+					onDataChange={onRawDataChange}
 				/>
 			)}
 			{errorText !== null && (

@@ -50,6 +50,7 @@ export default function ImportApp({ state, onStateChange }: Props) {
 	const [rawData, setRawData] = React.useState("");
 	const [data, setData] = React.useState<ImportData>([]);
 	const [errorText, setErrorText] = React.useState<string | null>(null);
+	const [hasHeadersRow, setHeadersRow] = React.useState(true);
 
 	//Step 4
 	const [enabledColumnIndices, setEnabledColumnIndices] = React.useState<
@@ -83,6 +84,10 @@ export default function ImportApp({ state, onStateChange }: Props) {
 		if (fileName !== undefined) {
 			setFileName(fileName);
 		}
+	}
+
+	function handleHeadersRowToggle() {
+		setHeadersRow((prevState) => !prevState);
 	}
 
 	function handleAllColumnsToggle() {
@@ -168,37 +173,44 @@ export default function ImportApp({ state, onStateChange }: Props) {
 			title: "Upload data",
 			content: (
 				<UploadData
+					hasHeadersRow={hasHeadersRow}
 					source={dataSource}
 					fileName={fileName}
 					dataType={dataType}
 					errorText={errorText}
 					rawData={rawData}
 					onRawDataChange={handleRawDataChange}
+					onHeadersRowToggle={handleHeadersRowToggle}
 				/>
 			),
 			canContinue: rawData !== "",
 			onContinue: () => {
+				let parsedArr: string[][] = [];
 				if (dataType === DataType.CSV) {
 					const { data, errors } = Papa.parse(rawData);
-					const parsedArr = data as string[][];
+					parsedArr = data as string[][];
 					if (errors.length > 0) {
 						setErrorText(errors[0].message);
 						return false;
 					}
-					setData(parsedArr);
-					setEnabledColumnIndices(parsedArr[0].map((_, i) => i));
 				} else if (dataType === DataType.MARKDOWN) {
 					try {
 						const tokens = parseMarkdownTableIntoTokens(rawData);
 						validateMarkdownTable(tokens);
-						const parsedArr = tableTokensToArr(tokens);
-						setData(parsedArr);
-						setEnabledColumnIndices(parsedArr[0].map((_, i) => i));
+						parsedArr = tableTokensToArr(tokens);
 					} catch (err: unknown) {
 						setErrorText((err as Error).message);
 						return false;
 					}
 				}
+				if (!hasHeadersRow) {
+					parsedArr.unshift(
+						parsedArr[0].map((_, i) => `Unnamed ${i}`)
+					);
+				}
+
+				setData(parsedArr);
+				setEnabledColumnIndices(parsedArr[0].map((_, i) => i));
 				return true;
 			},
 		},
