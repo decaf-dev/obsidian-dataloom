@@ -47,7 +47,7 @@ export default function SelectColumnMenu({
 			onClose={onClose}
 		>
 			<MenuItem
-				name="Create new"
+				name="Import as new"
 				onClick={() => onColumnClick(NEW_COLUMN_ID)}
 				isSelected={selectedColumnId === NEW_COLUMN_ID}
 			/>
