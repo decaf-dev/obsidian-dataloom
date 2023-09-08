@@ -231,7 +231,6 @@ export default function ImportApp({ state, onStateChange }: Props) {
 
 	function handleFinishClick() {
 		const newState = updateStateWithImportData(state, data, columnMatches);
-		//console.log(newState);
 		onStateChange(newState);
 	}
 
