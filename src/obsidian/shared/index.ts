@@ -7,8 +7,7 @@ export const renderDonationBadge = (
 		href: "https://www.buymeacoffee.com/treywallis",
 	});
 	const imgEl = linkEl.createEl("img");
-	imgEl.src =
-		"https://img.buymeacoffee.com/button-api/?text=Buy me a herbal tea&emoji=🍵&slug=treywallis&button_colour=FF5F5F&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00";
+	imgEl.src = `https://img.buymeacoffee.com/button-api/?text=Buy me a herbal tea&emoji=🍵&slug=treywallis&button_colour=FF5F5F&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00&time=${Date.now()}`;
 	imgEl.referrerPolicy = "no-referrer";
 	imgEl.alt = "Buymeacoffee";
 	imgEl.width = 180;
