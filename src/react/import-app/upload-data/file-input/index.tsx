@@ -46,15 +46,17 @@ export default function FileInput({
 						onChange={handleUpload}
 					/>
 				</Stack>
-				<Stack spacing="sm">
-					<label htmlFor="has-headers">Has headers row</label>
-					<input
-						id="has-headers"
-						type="checkbox"
-						checked={hasHeadersRow}
-						onChange={onHeadersRowToggle}
-					/>
-				</Stack>
+				{accept === ".csv" && (
+					<Stack spacing="sm">
+						<label htmlFor="has-headers">Has headers row</label>
+						<input
+							id="has-headers"
+							type="checkbox"
+							checked={hasHeadersRow}
+							onChange={onHeadersRowToggle}
+						/>
+					</Stack>
+				)}
 			</Stack>
 		</div>
 	);
