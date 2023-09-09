@@ -2,7 +2,7 @@ import { App, Component, MarkdownRenderer, Modal } from "obsidian";
 import { getLastestGithubRelease } from "src/data/network";
 
 import "./styles.css";
-import { renderDivider } from "src/obsidian/shared";
+import { renderDivider, setModalTitle } from "src/obsidian/shared";
 
 export default class WhatsNewModal extends Modal {
 	constructor(app: App) {
@@ -10,8 +10,10 @@ export default class WhatsNewModal extends Modal {
 	}
 
 	async onOpen() {
+		const { containerEl } = this;
+		setModalTitle(containerEl, "DataLoom - What's New");
+
 		const { contentEl } = this;
-		contentEl.createEl("h2", { text: "DataLoom - What's New" });
 		renderDivider(contentEl);
 		this.renderContent(contentEl);
 	}

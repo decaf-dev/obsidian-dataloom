@@ -110,7 +110,7 @@ export default class DataLoomView extends TextFileView {
 				<LoomAppWrapper
 					app={this.app}
 					mountLeaf={this.leaf}
-					appId={appId}
+					reactAppId={appId}
 					loomFile={this.file}
 					isMarkdownView={false}
 					store={store}

@@ -10,11 +10,17 @@ interface Props {
 
 export default function Switch({ id, value, ariaLabel, onToggle }: Props) {
 	const { isDarkMode } = useAppSelector((state) => state.global);
+
 	function handleKeyDown(e: React.KeyboardEvent) {
 		if (e.key === "Enter") {
 			e.stopPropagation();
 			onToggle(!value);
 		}
+	}
+
+	function handleClick(e: React.MouseEvent) {
+		e.stopPropagation();
+		onToggle(!value);
 	}
 
 	let className = "checkbox-container dataloom-switch dataloom-focusable";
@@ -26,7 +32,7 @@ export default function Switch({ id, value, ariaLabel, onToggle }: Props) {
 			tabIndex={0}
 			className={className}
 			aria-label={ariaLabel}
-			onClick={() => onToggle(!value)}
+			onClick={handleClick}
 			onKeyDown={handleKeyDown}
 		>
 			<input type="checkbox" />

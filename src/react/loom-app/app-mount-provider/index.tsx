@@ -5,18 +5,18 @@ import React from "react";
 interface ContextProps {
 	app: App;
 	mountLeaf: WorkspaceLeaf;
-	appId: string;
+	reactAppId: string;
 	loomFile: TFile;
 	isMarkdownView: boolean;
 }
 
 const MountContext = React.createContext<ContextProps | null>(null);
 
-export const useMountState = () => {
+export const useAppMount = () => {
 	const value = React.useContext(MountContext);
 	if (value === null) {
 		throw new Error(
-			"useMountState() called without a <MountProvider /> in the tree."
+			"useAppMount() called without a <AppMountProvider /> in the tree."
 		);
 	}
 
@@ -27,9 +27,9 @@ interface Props extends ContextProps {
 	children: React.ReactNode;
 }
 
-export default function MountProvider({
+export default function AppMountProvider({
 	app,
-	appId,
+	reactAppId,
 	mountLeaf,
 	loomFile,
 	isMarkdownView,
@@ -37,7 +37,7 @@ export default function MountProvider({
 }: Props) {
 	return (
 		<MountContext.Provider
-			value={{ app, appId, mountLeaf, loomFile, isMarkdownView }}
+			value={{ app, reactAppId, mountLeaf, loomFile, isMarkdownView }}
 		>
 			{children}
 		</MountContext.Provider>

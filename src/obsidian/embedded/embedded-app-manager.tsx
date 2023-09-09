@@ -38,7 +38,7 @@ let embeddedApps: EmbeddedApp[] = [];
 export const loadPreviewModeApps = (
 	app: App,
 	markdownLeaves: WorkspaceLeaf[],
-	manifestPluginVersion: string
+	pluginVersion: string
 ) => {
 	for (let i = 0; i < markdownLeaves.length; i++) {
 		const leaf = markdownLeaves[i];
@@ -47,7 +47,7 @@ export const loadPreviewModeApps = (
 		const mode = view.getMode();
 
 		if (mode === "preview")
-			loadEmbeddedLoomApps(app, manifestPluginVersion, leaf, "preview");
+			loadEmbeddedLoomApps(app, pluginVersion, leaf, "preview");
 	}
 };
 
@@ -60,14 +60,14 @@ export const loadPreviewModeApps = (
  */
 export const loadEmbeddedLoomApps = (
 	app: App,
-	manifestPluginVersion: string,
+	pluginVersion: string,
 	markdownLeaf: WorkspaceLeaf,
 	mode: "source" | "preview"
 ) => {
 	const view = markdownLeaf.view as MarkdownView;
 	const linkEls = getEmbeddedLoomLinkEls(view, mode);
 	linkEls.forEach((linkEl) =>
-		processLinkEl(app, manifestPluginVersion, markdownLeaf, linkEl, mode)
+		processLinkEl(app, pluginVersion, markdownLeaf, linkEl, mode)
 	);
 };
 
@@ -91,7 +91,7 @@ export const purgeEmbeddedLoomApps = (leaves: WorkspaceLeaf[]) => {
  */
 const processLinkEl = async (
 	app: App,
-	manifestPluginVersion: string,
+	pluginVersion: string,
 	leaf: WorkspaceLeaf,
 	linkEl: HTMLElement,
 	mode: "source" | "preview"
@@ -115,7 +115,7 @@ const processLinkEl = async (
 
 	//Get the loom state
 	const data = await app.vault.read(file);
-	const state = deserializeLoomState(data, manifestPluginVersion);
+	const state = deserializeLoomState(data, pluginVersion);
 
 	//Store the embed in memory
 	const appId = createAppId();
@@ -145,7 +145,7 @@ const processLinkEl = async (
  */
 const renderApp = (
 	app: App,
-	appId: string,
+	reactAppId: string,
 	leaf: WorkspaceLeaf,
 	file: TFile,
 	root: Root,
@@ -158,7 +158,7 @@ const renderApp = (
 	root.render(
 		<LoomAppWrapper
 			app={app}
-			appId={appId}
+			reactAppId={reactAppId}
 			isMarkdownView
 			loomFile={file}
 			mountLeaf={leaf}

@@ -1,17 +1,16 @@
 import React from "react";
-import ReactDOM from "react-dom";
 
-import { numToPx } from "src/shared/conversion";
+import BaseMenu from "./base-menu";
 
-import "./styles.css";
-
-import { useLogger } from "src/shared/logger";
 import {
 	LoomMenuCloseRequestType,
 	LoomMenuOpenDirection,
 	Position,
 } from "./types";
 import { useShiftMenu } from "./utils";
+
+import "./styles.css";
+import { useAppMount } from "src/react/loom-app/app-mount-provider";
 
 interface Props {
 	id: string;
@@ -42,64 +41,37 @@ export default function Menu({
 	onRequestClose,
 	onClose,
 }: Props) {
-	const logger = useLogger();
 	const ref = React.useRef<HTMLDivElement>(null);
+	const { mountLeaf } = useAppMount();
 
-	function handleKeyDown(e: React.KeyboardEvent) {
-		logger("Menu handleKeyDown");
-		if (e.key === "Enter") {
-			onRequestClose("close-on-save");
-		} else if (e.key === "Escape") {
-			onClose();
+	useShiftMenu(
+		false,
+		mountLeaf.view.containerEl,
+		ref,
+		triggerPosition,
+		isOpen,
+		{
+			openDirection,
 		}
-	}
-
-	function handleClick(e: React.MouseEvent) {
-		logger("Menu handleClick");
-		e.stopPropagation();
-	}
-
-	useShiftMenu(ref, triggerPosition, isOpen, {
-		openDirection,
-	});
+	);
 
 	if (!isOpen) return <></>;
 
 	return (
-		<>
-			{ReactDOM.createPortal(
-				<div
-					id={id}
-					className="dataloom-menu"
-					onClick={handleClick}
-					onKeyDown={handleKeyDown}
-				>
-					<div
-						ref={ref}
-						className="dataloom-menu__container"
-						style={{
-							top: numToPx(triggerPosition.top),
-							left: numToPx(triggerPosition.left),
-							width: width !== 0 ? numToPx(width) : "max-content",
-							height:
-								height !== 0 ? numToPx(height) : "max-content",
-							maxWidth:
-								maxWidth !== 0 ? numToPx(maxWidth) : undefined,
-							maxHeight:
-								maxHeight !== 0
-									? numToPx(maxHeight)
-									: undefined,
-							overflowY: maxHeight !== 0 ? "scroll" : undefined,
-							boxShadow: hideBorder
-								? undefined
-								: "0px 0px 0px 2px var(--background-modifier-border)",
-						}}
-					>
-						{children}
-					</div>
-				</div>,
-				document.body
-			)}
-		</>
+		<BaseMenu
+			ref={ref}
+			id={id}
+			isOpen={isOpen}
+			hideBorder={hideBorder}
+			triggerPosition={triggerPosition}
+			width={width}
+			height={height}
+			maxHeight={maxHeight}
+			maxWidth={maxWidth}
+			onRequestClose={onRequestClose}
+			onClose={onClose}
+		>
+			{children}
+		</BaseMenu>
 	);
 }

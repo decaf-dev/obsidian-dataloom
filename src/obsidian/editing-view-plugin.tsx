@@ -3,10 +3,7 @@ import { PluginValue, ViewPlugin, ViewUpdate } from "@codemirror/view";
 import { loadEmbeddedLoomApps } from "./embedded/embedded-app-manager";
 import { App } from "obsidian";
 
-export default function EditingViewPlugin(
-	app: App,
-	manifestPluginVersion: string
-) {
+export default function EditingViewPlugin(app: App, pluginVersion: string) {
 	return ViewPlugin.fromClass(
 		/**
 		 * This plugin is responsible for rendering the loom app in live preview mode.
@@ -24,12 +21,7 @@ export default function EditingViewPlugin(
 					(leaf) => leaf.view.editor.cm === update.view
 				);
 				if (!activeLeaf) return;
-				loadEmbeddedLoomApps(
-					app,
-					manifestPluginVersion,
-					activeLeaf,
-					"source"
-				);
+				loadEmbeddedLoomApps(app, pluginVersion, activeLeaf, "source");
 			}
 		}
 	);

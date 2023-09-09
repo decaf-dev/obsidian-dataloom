@@ -4,7 +4,7 @@ import {
 	appendOrReplaceFirstChild,
 	replaceNewLinesWithBr,
 } from "src/shared/render/utils";
-import { useMountState } from "../react/loom-app/mount-provider";
+import { useAppMount } from "../react/loom-app/app-mount-provider";
 import {
 	App,
 	MarkdownRenderer,
@@ -85,12 +85,12 @@ export const useRenderMarkdown = (
 		isEmbed?: boolean;
 	}
 ) => {
-	const { app } = useMountState();
+	const { app } = useAppMount();
 	const { isEmbed = false, isExternalLink = false } = options ?? {};
 	const containerRef = React.useRef<HTMLDivElement | null>(null);
 	const renderRef = React.useRef<HTMLElement | null>(null);
 
-	const { mountLeaf } = useMountState();
+	const { mountLeaf } = useAppMount();
 
 	React.useEffect(() => {
 		async function updateContainerRef() {

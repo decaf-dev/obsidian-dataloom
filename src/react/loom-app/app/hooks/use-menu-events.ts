@@ -3,13 +3,13 @@ import React from "react";
 import { useMenuOperations } from "src/react/shared/menu/hooks";
 import { EVENT_GLOBAL_CLICK } from "src/shared/events";
 import { useLogger } from "src/shared/logger";
-import { useMountState } from "../../mount-provider";
+import { useAppMount } from "../../app-mount-provider";
 import _ from "lodash";
 
 export const useMenuEvents = () => {
 	const hookName = "useMenuEvents";
 	const logger = useLogger();
-	const { appId, isMarkdownView, app } = useMountState();
+	const { reactAppId, isMarkdownView, app } = useAppMount();
 	const { onCloseAll } = useMenuOperations();
 
 	React.useEffect(() => {
@@ -31,7 +31,7 @@ export const useMenuEvents = () => {
 			onCloseAll();
 		}
 
-		const appEl = document.getElementById(appId);
+		const appEl = document.getElementById(reactAppId);
 		if (!appEl) return;
 
 		const tableContainer = appEl.querySelector(
@@ -42,7 +42,7 @@ export const useMenuEvents = () => {
 		tableContainer.addEventListener("scroll", throttleHandleScroll);
 		return () =>
 			tableContainer?.removeEventListener("scroll", throttleHandleScroll);
-	}, [onCloseAll, appId]);
+	}, [onCloseAll, reactAppId]);
 
 	/**
 	 * If the app is rendered in an MarkdownView, close all menus when the user scrolls
@@ -70,7 +70,7 @@ export const useMenuEvents = () => {
 		}
 
 		if (isMarkdownView) {
-			const appEl = document.getElementById(appId);
+			const appEl = document.getElementById(reactAppId);
 			if (!appEl) return;
 
 			pageScrollerEl =
@@ -80,7 +80,7 @@ export const useMenuEvents = () => {
 		}
 		return () =>
 			pageScrollerEl?.removeEventListener("scroll", throttleHandleScroll);
-	}, [onCloseAll, isMarkdownView, appId]);
+	}, [onCloseAll, isMarkdownView, reactAppId]);
 
 	/**
 	 * If an Obsidian modal is opened, close all menus

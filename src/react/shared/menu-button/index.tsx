@@ -6,6 +6,7 @@ import { ButtonVariant } from "../button/types";
 import { LoomMenu } from "../menu/types";
 
 interface Props {
+	isDisabled?: boolean;
 	menu: LoomMenu;
 	variant?: ButtonVariant;
 	ariaLabel?: string;
@@ -19,6 +20,7 @@ interface Props {
 const MenuButton = React.forwardRef<HTMLDivElement, Props>(
 	(
 		{
+			isDisabled,
 			menu,
 			variant,
 			ariaLabel,
@@ -32,6 +34,7 @@ const MenuButton = React.forwardRef<HTMLDivElement, Props>(
 	) => {
 		return (
 			<MenuTrigger
+				shouldOpenOnTrigger={true}
 				isButton
 				ref={ref}
 				menu={menu}
@@ -40,6 +43,7 @@ const MenuButton = React.forwardRef<HTMLDivElement, Props>(
 				onOpen={onOpen}
 			>
 				<Button
+					isDisabled={isDisabled}
 					isFocusable={false}
 					variant={variant}
 					icon={icon}

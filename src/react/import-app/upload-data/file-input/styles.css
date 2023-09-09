@@ -1,0 +1,3 @@
+.dataloom-file-input input[type='file'] {
+    color: transparent; /* Hide the native title */
+}

@@ -41,22 +41,22 @@ export const serializeLoomState = (state: LoomState): string => {
 
 export const deserializeLoomState = (
 	data: string,
-	manifestPluginVersion: string
+	pluginVersion: string
 ): LoomState => {
 	const parsedState = JSON.parse(data);
 
 	const untypedVersion: unknown = parsedState["pluginVersion"];
 
-	let pluginVersion = "";
+	let versionString = "";
 	if (typeof untypedVersion === "number") {
-		pluginVersion = legacyVersionToString(untypedVersion);
+		versionString = legacyVersionToString(untypedVersion);
 	} else if (typeof untypedVersion === "string") {
-		pluginVersion = untypedVersion;
+		versionString = untypedVersion;
 	}
 
 	let currentState: unknown = parsedState;
 
-	if (isVersionLessThan(pluginVersion, "6.1.0")) {
+	if (isVersionLessThan(versionString, "6.1.0")) {
 		const loomState = currentState as LoomState600;
 		const { columns } = loomState.model;
 
@@ -67,7 +67,7 @@ export const deserializeLoomState = (
 		});
 	}
 
-	if (isVersionLessThan(pluginVersion, "6.2.0")) {
+	if (isVersionLessThan(versionString, "6.2.0")) {
 		const loomState = currentState as LoomState610;
 		const { columns } = loomState.model;
 
@@ -78,7 +78,7 @@ export const deserializeLoomState = (
 		});
 	}
 
-	if (isVersionLessThan(pluginVersion, "6.3.0")) {
+	if (isVersionLessThan(versionString, "6.3.0")) {
 		const loomState = currentState as LoomState620;
 		const { columns, rows, cells } = loomState.model;
 
@@ -111,7 +111,7 @@ export const deserializeLoomState = (
 	}
 
 	//Feat: new loom state structure
-	if (isVersionLessThan(pluginVersion, "6.4.0")) {
+	if (isVersionLessThan(versionString, "6.4.0")) {
 		const loomState = parsedState as LoomState630;
 		const { columns, tags, rows, cells } = loomState.model;
 
@@ -206,7 +206,7 @@ export const deserializeLoomState = (
 	}
 
 	//Feat: filter rules
-	if (isVersionLessThan(pluginVersion, "6.8.0")) {
+	if (isVersionLessThan(versionString, "6.8.0")) {
 		const loomState = currentState as LoomState670;
 		const { model } = loomState;
 		const { bodyCells, columns } = model;
@@ -237,7 +237,7 @@ export const deserializeLoomState = (
 		});
 	}
 
-	if (isVersionLessThan(pluginVersion, "6.9.1")) {
+	if (isVersionLessThan(versionString, "6.9.1")) {
 		const loomState = currentState as LoomState680;
 		const { footerCells } = loomState.model;
 
@@ -253,7 +253,7 @@ export const deserializeLoomState = (
 	}
 
 	//Feat: support tag sorting
-	if (isVersionLessThan(pluginVersion, "6.10.0")) {
+	if (isVersionLessThan(versionString, "6.10.0")) {
 		const loomState = currentState as LoomState691;
 		const { columns, tags, bodyCells, bodyRows } = loomState.model;
 
@@ -311,7 +311,7 @@ export const deserializeLoomState = (
 		});
 	}
 
-	if (isVersionLessThan(pluginVersion, "6.12.3")) {
+	if (isVersionLessThan(versionString, "6.12.3")) {
 		const loomState = currentState as LoomState6122;
 		const { columns, footerCells } = loomState.model;
 
@@ -334,7 +334,7 @@ export const deserializeLoomState = (
 		});
 	}
 
-	if (isVersionLessThan(pluginVersion, "6.17.0")) {
+	if (isVersionLessThan(versionString, "6.17.0")) {
 		const loomState = currentState as LoomState6160;
 		const { columns } = loomState.model;
 
@@ -347,7 +347,7 @@ export const deserializeLoomState = (
 		});
 	}
 
-	if (isVersionLessThan(pluginVersion, "6.18.6")) {
+	if (isVersionLessThan(versionString, "6.18.6")) {
 		const loomState = currentState as LoomState6160;
 		const { columns, bodyRows } = loomState.model;
 
@@ -371,7 +371,7 @@ export const deserializeLoomState = (
 		});
 	}
 
-	if (isVersionLessThan(pluginVersion, "6.19.0")) {
+	if (isVersionLessThan(versionString, "6.19.0")) {
 		const loomState = currentState as LoomState6186;
 		const { columns, bodyCells } = loomState.model;
 
@@ -390,7 +390,7 @@ export const deserializeLoomState = (
 		});
 	}
 
-	if (isVersionLessThan(pluginVersion, "8.2.0")) {
+	if (isVersionLessThan(versionString, "8.2.0")) {
 		const loomState = currentState as LoomState;
 		const untypedModel = loomState.model as unknown;
 		const typedModel = untypedModel as Record<string, unknown>;
@@ -400,6 +400,6 @@ export const deserializeLoomState = (
 	}
 
 	const state = currentState as LoomState;
-	state.pluginVersion = manifestPluginVersion;
+	state.pluginVersion = pluginVersion;
 	return state;
 };

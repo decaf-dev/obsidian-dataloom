@@ -1,0 +1,23 @@
+svg.dataloom-svg {
+    vertical-align: middle;
+}
+
+svg.dataloom-svg--sm {
+    width: var(--icon-s);
+    height: var(--icon-s);
+}
+
+svg.dataloom-svg--md {
+    width: var(--icon-m);
+    height: var(--icon-m);
+}
+
+svg.dataloom-svg--lg {
+    width: var(--icon-l);
+    height: var(--icon-l);
+}
+
+svg.dataloom-svg--xl {
+    width: 20px;
+    height: 20px;
+}

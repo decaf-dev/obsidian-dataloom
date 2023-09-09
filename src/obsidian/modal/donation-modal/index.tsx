@@ -1,5 +1,9 @@
 import { App, Modal } from "obsidian";
-import { renderDivider, renderDonationBadge } from "../../shared";
+import {
+	renderDivider,
+	renderDonationBadge,
+	setModalTitle,
+} from "../../shared";
 
 import "./styles.css";
 
@@ -9,8 +13,10 @@ export default class DonationModal extends Modal {
 	}
 
 	onOpen() {
+		const { containerEl } = this;
+		setModalTitle(containerEl, "Support DataLoom");
+
 		const { contentEl } = this;
-		contentEl.createEl("h2", { text: "Support DataLoom" });
 		renderDivider(contentEl);
 		this.renderText(contentEl);
 		renderDonationBadge(contentEl);

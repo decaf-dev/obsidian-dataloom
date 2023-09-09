@@ -107,6 +107,10 @@
 	background-color: hsl(8, 35%, 30%);
 }
 
+.dataloom-disabled {
+	opacity: 0.5;
+}
+
 /*
  * Selectable and selected
  */

@@ -10,11 +10,11 @@ import { exportToCSV } from "src/shared/export/export-to-csv";
 import { exportToMarkdown } from "src/shared/export/export-to-markdown";
 import { ExportType } from "src/shared/export/types";
 import { LoomState } from "src/shared/loom-state/types";
-import { useMountState } from "../../mount-provider";
+import { useAppMount } from "../../app-mount-provider";
 import { useAppSelector } from "src/redux/hooks";
 
 export const useExportEvents = (state: LoomState) => {
-	const { appId, loomFile, app } = useMountState();
+	const { reactAppId, loomFile, app } = useAppMount();
 	const { exportRenderMarkdown } = useAppSelector(
 		(state) => state.global.settings
 	);
@@ -22,7 +22,7 @@ export const useExportEvents = (state: LoomState) => {
 
 	React.useEffect(() => {
 		function handleDownloadCSV() {
-			if (isEventForThisApp(appId)) {
+			if (isEventForThisApp(reactAppId)) {
 				//Set timeout to wait for the command window to disappear
 				setTimeout(() => {
 					const data = exportToCSV(app, state, exportRenderMarkdown);
@@ -34,7 +34,7 @@ export const useExportEvents = (state: LoomState) => {
 		}
 
 		function handleDownloadMarkdown() {
-			if (isEventForThisApp(appId)) {
+			if (isEventForThisApp(reactAppId)) {
 				//Set timeout to wait for the command window to disappear
 				setTimeout(() => {
 					const data = exportToMarkdown(
@@ -60,5 +60,5 @@ export const useExportEvents = (state: LoomState) => {
 			app.workspace.off(EVENT_DOWNLOAD_CSV, handleDownloadCSV);
 			app.workspace.off(EVENT_DOWNLOAD_MARKDOWN, handleDownloadMarkdown);
 		};
-	}, [filePath, state, appId, exportRenderMarkdown, app]);
+	}, [filePath, state, reactAppId, exportRenderMarkdown, app]);
 };
