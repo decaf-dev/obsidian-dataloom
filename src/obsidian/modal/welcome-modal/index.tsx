@@ -38,6 +38,14 @@ export default class WelcomeModal extends Modal {
 
 		this.renderCard(
 			cardContainerEl,
+			"Import markdown tables and CSV data",
+			"Learn how to import data from markdown tables and CSV files",
+			"https://dataloom.xyz/other/import",
+			"import"
+		);
+
+		this.renderCard(
+			cardContainerEl,
 			"Embedded looms",
 			"Learn how to embed a loom into a markdown note",
 			"https://dataloom.xyz/other/embedding-looms",
