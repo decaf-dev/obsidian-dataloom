@@ -1,4 +1,5 @@
-import importVideo from "../../static/video/new-loom-command-palette.mov";
+import importFullVideo from "../../static/video/import-full.mov";
+import importToggleColumnsVideo from "../../static/video/import-toggle-columns.mov";
 
 # Import
 
@@ -13,6 +14,11 @@ DataLoom allows you to import data from existing Markdown or CSV sources. You ma
 7. A table will be rendered from the imported data. Match each column to a column in your loom
 8. Select **Finish**
 
+<video width="1280" controls>
+	<source src={importFullVideo} type="video/mp4" />
+	Your browser does not support the video tag.
+</video>
+
 ## Matching columns
 
 A column is considered matched when it is assigned to a column in the loom or when it is toggled off. You can toggle a column off by selecting the checkbox in the table header.
@@ -22,3 +28,8 @@ If you wish to toggle all columns off or on, select **Toggle all**.
 To match a column, select the match icon on the right side of each column header. A dropdown will appear with all of the columns in your loom. Select the column you wish to match to. If you wish to create a new column, select **New column**.
 
 After a column has been matched, it cannot be used by other columns. If you wish to assign a column to a different column, you must first unmatch the column. To unmatch a column, select **Unmatch**.
+
+<video width="1280" controls>
+	<source src={importToggleColumnsVideo} type="video/mp4" />
+	Your browser does not support the video tag.
+</video>
