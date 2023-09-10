@@ -56,7 +56,7 @@ export default function MatchColumns({
 			containerEl.removeEventListener("scroll", handleScroll);
 			window.removeEventListener("resize", handleScroll);
 		};
-	}, []);
+	}, [onCloseAll]);
 
 	let numUnmatched = enabledColumnIndices.length - columnMatches.length;
 	if (numUnmatched < 0) numUnmatched = 0;
