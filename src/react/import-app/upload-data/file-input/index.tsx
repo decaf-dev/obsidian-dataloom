@@ -6,6 +6,7 @@ import { DataType } from "../../types";
 import { getAcceptForDataType } from "../../utils";
 
 import "./styles.css";
+import Switch from "src/react/shared/switch";
 
 interface Props {
 	hasHeadersRow: boolean;
@@ -48,12 +49,13 @@ export default function FileInput({
 				</Stack>
 				{accept === ".csv" && (
 					<Stack spacing="sm">
-						<label htmlFor="has-headers">Has headers row</label>
-						<input
+						<label htmlFor="has-headers">
+							First row contains headers
+						</label>
+						<Switch
 							id="has-headers"
-							type="checkbox"
-							checked={hasHeadersRow}
-							onChange={onHeadersRowToggle}
+							value={hasHeadersRow}
+							onToggle={onHeadersRowToggle}
 						/>
 					</Stack>
 				)}

@@ -2,10 +2,11 @@ import { isCheckboxChecked } from "../match";
 
 export const getCheckboxCellContent = (
 	markdown: string,
-	renderMarkdown: boolean
+	shouldRemoveMarkdown: boolean
 ) => {
-	if (renderMarkdown) return markdown;
-
-	if (isCheckboxChecked(markdown)) return "true";
-	return "false";
+	if (shouldRemoveMarkdown) {
+		if (isCheckboxChecked(markdown)) return "true";
+		return "false";
+	}
+	return markdown;
 };

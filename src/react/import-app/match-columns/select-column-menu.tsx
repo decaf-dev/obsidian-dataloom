@@ -60,12 +60,19 @@ export default function SelectColumnMenu({
 			})}
 			<Divider />
 			<MenuItem
-				name="Import as new"
+				name="New column"
 				onClick={() => onColumnClick(NEW_COLUMN_ID)}
 				isSelected={selectedColumnId === NEW_COLUMN_ID}
 			/>
-			<Divider />
-			<MenuItem name="Clear" onClick={() => onColumnClick(null)} />
+			{selectedColumnId !== null && (
+				<>
+					<Divider />
+					<MenuItem
+						name="Unmatch"
+						onClick={() => onColumnClick(null)}
+					/>
+				</>
+			)}
 		</ModalMenu>
 	);
 }

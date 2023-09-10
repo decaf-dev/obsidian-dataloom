@@ -31,6 +31,7 @@
 }
 
 .dataloom-match-columns th {
+    min-width: 14em;
     border-top: 1px solid var(--table-border-color);
 }
 
@@ -41,4 +42,9 @@
 
 .dataloom-match-columns--disabled {
     opacity: 0.5;
+}
+
+.dataloom-match-columns input[type="checkbox"] {
+    margin-top: 1px;
+    margin-right: 0px;
 }

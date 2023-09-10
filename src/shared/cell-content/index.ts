@@ -20,22 +20,22 @@ export const getCellContent = (
 	column: Column,
 	row: BodyRow,
 	cell: BodyCell,
-	renderMarkdown: boolean
+	shouldRemoveMarkdown: boolean
 ) => {
 	switch (column.type) {
 		case CellType.TEXT:
 		case CellType.FILE:
-			return getTextCellContent(cell.markdown, renderMarkdown);
+			return getTextCellContent(cell.markdown, shouldRemoveMarkdown);
 		case CellType.NUMBER:
 			return getNumberCellContent(cell.markdown);
 		case CellType.EMBED:
 			return getEmbedCellContent(app, cell.markdown, {
 				isExport: true,
 				isExternalLink: cell.isExternalLink,
-				shouldRenderMarkdown: renderMarkdown,
+				shouldRemoveMarkdown,
 			});
 		case CellType.CHECKBOX:
-			return getCheckboxCellContent(cell.markdown, renderMarkdown);
+			return getCheckboxCellContent(cell.markdown, shouldRemoveMarkdown);
 		case CellType.CURRENCY:
 			return getCurrencyCellContent(cell.markdown, column.currencyType);
 		case CellType.TAG:

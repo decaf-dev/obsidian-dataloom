@@ -17,6 +17,7 @@ import { exportToCSV } from "src/shared/export/export-to-csv";
 import { useAppSelector } from "src/redux/hooks";
 
 import "./styles.css";
+import Switch from "../shared/switch";
 
 interface Props {
 	app: App;
@@ -28,11 +29,12 @@ export function ExportApp({ app, loomState, loomFilePath }: Props) {
 	const [exportType, setExportType] = React.useState<ExportType>(
 		ExportType.UNSELECTED
 	);
-	const { exportRenderMarkdown } = useAppSelector(
+	const { removeMarkdownOnExport } = useAppSelector(
 		(state) => state.global.settings
 	);
-	const [renderMarkdown, setRenderMarkdown] =
-		React.useState<boolean>(exportRenderMarkdown);
+	const [shouldRemoveMarkdown, setRemoveMarkdown] = React.useState<boolean>(
+		removeMarkdownOnExport
+	);
 
 	async function handleCopyClick(value: string) {
 		await navigator.clipboard.writeText(value);
@@ -47,9 +49,9 @@ export function ExportApp({ app, loomState, loomFilePath }: Props) {
 
 	let content = "";
 	if (exportType === ExportType.MARKDOWN) {
-		content = exportToMarkdown(app, loomState, renderMarkdown);
+		content = exportToMarkdown(app, loomState, shouldRemoveMarkdown);
 	} else if (exportType === ExportType.CSV) {
-		content = exportToCSV(app, loomState, renderMarkdown);
+		content = exportToCSV(app, loomState, shouldRemoveMarkdown);
 	}
 
 	return (
@@ -58,21 +60,19 @@ export function ExportApp({ app, loomState, loomFilePath }: Props) {
 				<ExportTypeSelect value={exportType} onChange={setExportType} />
 				{exportType !== ExportType.UNSELECTED && (
 					<>
-						<ContentTextArea value={content} />
 						<Stack spacing="sm">
-							<label htmlFor="render-markdown">
-								Render markdown
+							<label htmlFor="remove-markdown">
+								Remove markdown
 							</label>
-							<input
-								id="render-markdown"
-								type="checkbox"
-								checked={renderMarkdown}
-								onChange={() =>
-									setRenderMarkdown(!renderMarkdown)
+							<Switch
+								id="remove-markdown"
+								value={shouldRemoveMarkdown}
+								onToggle={() =>
+									setRemoveMarkdown((prevState) => !prevState)
 								}
 							/>
 						</Stack>
-
+						<ContentTextArea value={content} />
 						<Stack isHorizontal>
 							<button
 								className="mod-cta"
