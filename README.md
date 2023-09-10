@@ -84,11 +84,11 @@ Projects populates table rows based on existing markdown notes. DataLoom populat
 
 DB Folder is very similar to what DataLoom intends to accomplish.
 
-One major different between DB Folder and DataLoom is that DataLoom does require a folder. You may create a loom file and enter text data to get started.
+One major different between DB Folder and DataLoom is that DataLoom doesn't require a folder. You only need to create a loom file and enter text data to get started.
 
 Another difference is that DataLoom does not depend on [Dataview](https://github.com/blacksmithgu/obsidian-dataview). It can be installed as a standalone plugin.
 
-DataLoom also employs its own menu system rendered in React. This allows for more complicated UIs.
+DataLoom also employs its own menu system rendered in React. This allows for a more complicated user interface.
 
 ### What is the different between DataLoom and Make.MD?
 
