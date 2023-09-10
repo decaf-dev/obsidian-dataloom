@@ -9,8 +9,6 @@ import { getCellContent } from "../cell-content";
 import ColumNotFoundError from "../error/column-not-found-error";
 import { App } from "obsidian";
 
-const escapePipeCharacters = (value: string) => value.replace(/\|/g, "\\|");
-
 const serializeHeaderCells = (cells: HeaderCell[]): string[] => {
 	return cells.map((cell) => cell.markdown);
 };
@@ -36,10 +34,7 @@ const serializeBodyCells = (
 				cell,
 				shouldRemoveMarkdown
 			);
-			//Markdown table cells can't contain pipe characters, so we escape them
-			//Obsidian will render the escaped pipe characters as normal pipe characters
-			const escapedContent = escapePipeCharacters(content);
-			return escapedContent;
+			return content;
 		});
 	});
 };
