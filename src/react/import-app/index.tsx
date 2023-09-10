@@ -186,6 +186,7 @@ export default function ImportApp({ state, onStateChange }: Props) {
 			canContinue: rawData !== "",
 			onContinue: () => {
 				let parsedArr: string[][] = [];
+				//TODO clean up into separate functions
 				if (dataType === DataType.CSV) {
 					const { data, errors } = Papa.parse(rawData);
 					parsedArr = data as string[][];
