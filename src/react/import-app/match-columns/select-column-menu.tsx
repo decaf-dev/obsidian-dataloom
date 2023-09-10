@@ -64,8 +64,15 @@ export default function SelectColumnMenu({
 				onClick={() => onColumnClick(NEW_COLUMN_ID)}
 				isSelected={selectedColumnId === NEW_COLUMN_ID}
 			/>
-			<Divider />
-			<MenuItem name="Unmatch" onClick={() => onColumnClick(null)} />
+			{selectedColumnId !== null && (
+				<>
+					<Divider />
+					<MenuItem
+						name="Unmatch"
+						onClick={() => onColumnClick(null)}
+					/>
+				</>
+			)}
 		</ModalMenu>
 	);
 }
