@@ -1,5 +1,4 @@
 import Stack from "src/react/shared/stack";
-import Switch from "src/react/shared/switch";
 import Text from "src/react/shared/text";
 import { HeaderCell } from "src/shared/loom-state/types";
 import { useOverflow } from "src/shared/spacing/hooks";
@@ -61,7 +60,7 @@ export default function HeaderCell({
 					spacing="xl"
 					width="100%"
 				>
-					<Stack isHorizontal spacing="md">
+					<Stack isHorizontal spacing="sm">
 						<Text value={importValue} />
 						<Icon
 							color={matchId ? "green" : "red"}
@@ -76,11 +75,12 @@ export default function HeaderCell({
 							size="xl"
 						/>
 					</Stack>
-					<Stack isHorizontal spacing="md">
-						<Switch
-							ariaLabel="Toggle column"
-							value={!isDisabled}
-							onToggle={() => onColumnToggle(index)}
+					<Stack isHorizontal spacing="sm">
+						<input
+							aria-label="Toggle column"
+							type="checkbox"
+							checked={!isDisabled}
+							onChange={() => onColumnToggle(index)}
 						/>
 						<MenuButton
 							menu={menu}
