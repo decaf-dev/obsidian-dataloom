@@ -28,14 +28,13 @@ export default function Switch({ id, value, ariaLabel, onToggle }: Props) {
 	if (isDarkMode) className += " dataloom-switch--dark";
 	return (
 		<div
-			id={id}
 			tabIndex={0}
 			className={className}
 			aria-label={ariaLabel}
 			onClick={handleClick}
 			onKeyDown={handleKeyDown}
 		>
-			<input type="checkbox" />
+			<input id={id} type="checkbox" />
 		</div>
 	);
 }

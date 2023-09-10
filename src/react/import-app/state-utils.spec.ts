@@ -131,3 +131,5 @@ describe("updateStateWithImportData", () => {
 		expect(nextState.model.bodyCells[15].markdown).toEqual("import 3");
 	});
 });
+
+//TODO add tests for tags, date cell, etc
