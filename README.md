@@ -15,7 +15,7 @@ Support development
 -   [Screenshots](#screenshots)
 -   [FAQ](#faq)
 -   [Installation](#installation)
--   [Getting started](#getting-started)
+-   [Create a new loom](#create-a-new-loom)
 -   [Issues](#issues)
 -   [Contributing](#contributing)
 -   [Network Usage](#network-usage)
@@ -104,7 +104,7 @@ I recommend you try out the plugin and see if it can help you in organizing your
 
 ## Installation
 
-### Installing the plugin
+### Install the plugin
 
 1. In Obsidian, open **Settings**
 2. Go to **Community plugins**
@@ -113,25 +113,35 @@ I recommend you try out the plugin and see if it can help you in organizing your
 5. Select **Install**
 6. Then select **Enable**
 
-### Linking loom files
+### Configure Obsidian
 
-By default, Obsidian doesn't display `.loom` files in the modal that opens when you type double brackets `[[`. In order to allow this, you must enable the detection of all file extensions.
+DataLoom saves data in JSON format in `.loom` files.
+
+#### Enable detection of loom files
+
+By default, Obsidian doesn't display `.loom` files in the suggest menu that opens when you type double brackets `[[`. For Obsidian to do this, you must enable the detection of all file extensions.
 
 1. In Obsidian, open **Settings**
 2. Select **File & Links**
 3. Toggle **Detect all file extensions**
 
-![](/docusaurus/static/img/detect-all-extensions.png)
+#### Enable syncing of loom files
 
-## Getting started
+By default, Obsidian doesn't sync `.loom` files between devices. For Obsidian to do this, you must enable syncing of all file extensions.
 
-Start by creating a new loom. You can do this by clicking on the table icon on the sidebar.
+1. In Obsidian, open **Settings**
+2. Select **Sync**
+3. Choose and connect to a remote vault
+4. In the remote vault settings, Toggle **Sync all other types**
+5. Repeat these steps on all devices that you want to sync `.loom` files to
 
-<img src="./docusaurus/static/img/new-loom-sidebar.png"  width="350">
+## Create a new loom
 
-You can also right-click on a folder and click **New loom**
+There are 3 ways to create a new loom
 
-<img src="./docusaurus/static/img/new-loom-folder.png" width="450">
+-   Click on the table icon on the sidebar
+-   Right-click on any folder and click **New loom**
+-   Use the command palette and search for **Create loom**
 
 ## Roadmap
 
