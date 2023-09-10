@@ -30,11 +30,8 @@ export const getTextCellContent = (
 			WIKI_LINK_REGEX,
 			(_match, path) => path
 		);
-		console.log(replaced);
 		const html = markdownToHTML(replaced);
-		console.log(html);
 		const innerHTML = getInnerHTML(html);
-		console.log(innerHTML);
 		return innerHTML;
 	}
 	return markdown;
