@@ -23,7 +23,6 @@ export default function EmbedCell({
 }: Props) {
 	const { app } = useAppMount();
 	const content = getEmbedCellContent(app, markdown, {
-		shouldRenderMarkdown: true,
 		isExternalLink,
 	});
 	return (
