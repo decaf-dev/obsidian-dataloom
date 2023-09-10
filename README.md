@@ -15,7 +15,7 @@ Support development
 -   [Screenshots](#screenshots)
 -   [FAQ](#faq)
 -   [Installation](#installation)
--   [Getting started](#getting-started)
+-   [Create a new loom](#create-a-new-loom)
 -   [Issues](#issues)
 -   [Contributing](#contributing)
 -   [Network Usage](#network-usage)
@@ -62,7 +62,7 @@ Mobile support
 
 ### What is the purpose of this plugin?
 
-DataLoom offers an interactive WSIWYG user interface for managing tabular data. It allows you to quickly create a table, edit data, and filter data based on specific criteria.
+DataLoom offers an interactive WYSIWYG user interface for managing tabular data. It allows you to quickly create a table, edit data, and filter data based on specific criteria.
 
 ### Why is this plugin called DataLoom?
 
@@ -80,31 +80,31 @@ Projects populates table rows based on existing markdown notes. DataLoom populat
 
 ### What is the difference between DataLoom and DB Folder?
 
-[DB Folder](https://github.com/RafaelGB/obsidian-db-folder) allows you to create a Notion like database based on folders, links, tags, or dataview queries.
+[DB Folder](https://github.com/RafaelGB/obsidian-db-folder) allows you to create a Notion-like database based on folders, links, tags, or dataview queries.
 
 DB Folder is very similar to what DataLoom intends to accomplish.
 
-One major different between DB Folder and DataLoom is that DataLoom does require a folder. You may create a loom file and enter text data to get started.
+One major difference between DB Folder and DataLoom is that DataLoom doesn't require a folder. You only need to create a loom file and enter text data to get started.
 
 Another difference is that DataLoom does not depend on [Dataview](https://github.com/blacksmithgu/obsidian-dataview). It can be installed as a standalone plugin.
 
-DataLoom also employs its own menu system rendered in React. This allows for more complicated UIs.
+DataLoom also employs its own menu system rendered in React. This allows for a more complicated user interface.
 
-### What is the different between DataLoom and Make.MD?
+### What is the difference between DataLoom and Make.MD?
 
 [Make.MD](https://github.com/Make-md/makemd) contains rich features that enhance the native Obsidian UI to be more like Notion.so. While helpful for some users, not every user will want all of these features.
 
-DataLoom intends to be a more simple application. It does not change the native UI of Obsidian. It is a simple React app that run in its own view. DataLoom also stores data in JSON format in its own `.loom` file.
+DataLoom intends to be a more simple application. It does not change the native UI of Obsidian. It is a simple React app that runs in its own view. DataLoom also stores data in JSON format in its own `.loom` file.
 
 ### Why should I use this plugin?
 
-You should use this plugin if you wish to sort and filter tabular data. I personally use the plugin as an alternative to making markdown lists. It allows me to add tags to my items and sort my ideas.
+You should use this plugin if you wish to sort and filter tabular data. I use the plugin as an alternative to making markdown lists. It allows me to add tags to my items and sort my ideas.
 
 I recommend you try out the plugin and see if it can help you in organizing your second brain.
 
 ## Installation
 
-### Installing the plugin
+### Install the plugin
 
 1. In Obsidian, open **Settings**
 2. Go to **Community plugins**
@@ -113,25 +113,35 @@ I recommend you try out the plugin and see if it can help you in organizing your
 5. Select **Install**
 6. Then select **Enable**
 
-### Linking loom files
+### Configure Obsidian
 
-By default, Obsidian doesn't display `.loom` files in the modal that opens when you type double brackets `[[`. In order to allow this, you must enable detection of all file extensions.
+DataLoom saves data in JSON format in `.loom` files.
+
+#### Enable detection of loom files
+
+By default, Obsidian doesn't display `.loom` files in the suggest menu that opens when you type double brackets `[[`. For Obsidian to do this, you must enable the detection of all file extensions.
 
 1. In Obsidian, open **Settings**
 2. Select **File & Links**
 3. Toggle **Detect all file extensions**
 
-![](/docusaurus/static/img/detect-all-extensions.png)
+#### Enable syncing of loom files
 
-## Getting started
+By default, Obsidian doesn't sync `.loom` files between devices. For Obsidian to do this, you must enable syncing of all file extensions.
 
-Start by creating a new loom. You can do this by clicking on the table icon on the sidebar.
+1. In Obsidian, open **Settings**
+2. Select **Sync**
+3. Choose and connect to a remote vault
+4. In the remote vault settings, Toggle **Sync all other types**
+5. Repeat these steps on all devices that you want to sync `.loom` files to
 
-<img src="./docusaurus/static/img/new-loom-sidebar.png"  width="350">
+## Create a new loom
 
-You can also right click on a folder and click **New loom**
+There are 3 ways to create a new loom
 
-<img src="./docusaurus/static/img/new-loom-folder.png" width="450">
+-   Click on the table icon on the sidebar
+-   Right-click on any folder and click **New loom**
+-   Use the command palette and search for **Create loom**
 
 ## Roadmap
 
@@ -157,7 +167,7 @@ Please see our [contribution guide](https://github.com/trey-wallis/obsidian-data
 
 According to [Obsidian developer policies](https://docs.obsidian.md/Developer+policies), an Obsidian plugin must explain which network services are used and why.
 
-DataLoom will make one `GET` request to `https://api.github.com/repos/trey-wallis/obsidian-dataloom/releases/latest` to pull the lastest release for the What's New Modal. Besides this, DataLoom does not making any network requests. DataLoom does not include client-side telemetry.
+DataLoom will make one `GET` request to `https://api.github.com/repos/trey-wallis/obsidian-dataloom/releases/latest` to pull the latest release for the What's New Modal. Besides this, DataLoom does not make any network requests. DataLoom does not include client-side telemetry.
 
 ## License
 
@@ -165,4 +175,4 @@ DataLoom is distributed under the [GNU General Public License v3.0](https://gith
 
 ## Disclaimer
 
-This plugin extends the functionality of Obsidian.md. Although tested during development, there may still be bugs in the software. I **strongly** recommend you to make frequent backup copies of your vault. I am not responsible for any data that is lost due to usage of this plugin.
+This plugin extends the functionality of Obsidian.md. Although tested during development, there may still be bugs in the software. I **strongly** recommend you to make frequent backup copies of your vault. I am not responsible for any data that is lost due to the usage of this plugin.
