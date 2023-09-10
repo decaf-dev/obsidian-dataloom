@@ -96,28 +96,30 @@ export const updateStateWithImportData = (
 			//For each row we create, we need to create a body cell. However,
 			//only those cells that have a match will have a value
 			let content = "";
+			let newCell: BodyCell | null = null;
 			if (match) {
 				const { importColumnIndex } = match;
 				content = dataRow[importColumnIndex];
-			}
 
-			if (type === CellType.TAG || type === CellType.MULTI_TAG) {
-				const { cell, newTags } = createTagCell(
-					columnId,
-					rowId,
-					content
-				);
-				newBodyCells.push(cell);
-				column.tags.push(...newTags);
-			} else if (type === CellType.DATE) {
-				const cell = createDateCell(columnId, rowId, content);
-				newBodyCells.push(cell);
-			} else {
-				const cell = createBodyCell(columnId, rowId, {
+				if (type === CellType.TAG || type === CellType.MULTI_TAG) {
+					const { cell, newTags } = createTagCell(
+						columnId,
+						rowId,
+						content
+					);
+					newCell = cell;
+					column.tags.push(...newTags);
+				} else if (type === CellType.DATE) {
+					const cell = createDateCell(columnId, rowId, content);
+					newCell = cell;
+				}
+			}
+			if (!newCell) {
+				newCell = createBodyCell(columnId, rowId, {
 					markdown: content,
 				});
-				newBodyCells.push(cell);
 			}
+			newBodyCells.push(newCell);
 		});
 	});
 
