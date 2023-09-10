@@ -123,22 +123,22 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 	}
 
 	private renderExportSettings(containerEl: HTMLElement) {
-		const exportRenderMarkdownDesc = new DocumentFragment();
-		exportRenderMarkdownDesc.createSpan({
-			text: "If enabled, content will be exported as markdown. For example, if enabled, a checkbox cell's content will be exported as [ ] or [x]. If disabled, the content will be exported as true or false.",
+		const removeMarkdownOnExportDesc = new DocumentFragment();
+		removeMarkdownOnExportDesc.createSpan({
+			text: "If enabled, content will be exported as raw text instead of markdown. For example, if enabled, a checkbox cell's content will be exported true or false instead of [ ] or [x].",
 		});
 
 		new Setting(containerEl).setName("Export").setHeading();
 		new Setting(containerEl)
-			.setName("Export content as markdown")
-			.setDesc(exportRenderMarkdownDesc)
+			.setName("Remove markdown")
+			.setDesc(removeMarkdownOnExportDesc)
 			.addToggle((cb) => {
-				cb.setValue(this.plugin.settings.exportRenderMarkdown).onChange(
-					async (value) => {
-						this.plugin.settings.exportRenderMarkdown = value;
-						await this.plugin.saveSettings();
-					}
-				);
+				cb.setValue(
+					this.plugin.settings.removeMarkdownOnExport
+				).onChange(async (value) => {
+					this.plugin.settings.removeMarkdownOnExport = value;
+					await this.plugin.saveSettings();
+				});
 			});
 	}
 

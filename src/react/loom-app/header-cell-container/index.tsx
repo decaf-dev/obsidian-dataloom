@@ -134,7 +134,7 @@ export default function HeaderCellContainer({
 					}}
 				>
 					<div className={contentClassName}>
-						<Stack spacing="md" align="flex-start" isHorizontal>
+						<Stack isHorizontal spacing="md" align="center">
 							<Icon lucideId={lucideId} size="md" />
 							{markdown}
 						</Stack>

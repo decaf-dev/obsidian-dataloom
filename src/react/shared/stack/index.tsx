@@ -5,6 +5,7 @@ import { SpacingSize } from "src/shared/spacing/types";
 import "./styles.css";
 
 interface Props {
+	className?: string;
 	spacing?: SpacingSize;
 	children: React.ReactNode;
 	justify?: JustifyContent;
@@ -15,9 +16,11 @@ interface Props {
 	height?: string;
 	minHeight?: string;
 	overflow?: "auto" | "hidden" | "scroll" | "visible";
+	onClick?: (e: React.MouseEvent) => void;
 }
 
 export default function Stack({
+	className: customClassName,
 	spacing = "md",
 	justify,
 	align,
@@ -28,6 +31,7 @@ export default function Stack({
 	height,
 	minHeight,
 	isHorizontal = false,
+	onClick,
 }: Props) {
 	let justifyContent = justify;
 	if (justifyContent === undefined) {
@@ -39,9 +43,12 @@ export default function Stack({
 		if (isHorizontal) alignItems = "center";
 		else alignItems = "flex-start";
 	}
+
+	let className = "dataloom-stack";
+	if (customClassName) className += " " + customClassName;
 	return (
 		<div
-			className="dataloom-stack"
+			className={className}
 			style={{
 				flexDirection: isHorizontal ? "row" : "column",
 				flexGrow: grow ? 1 : 0,
@@ -53,6 +60,7 @@ export default function Stack({
 				minHeight,
 				overflow,
 			}}
+			onClick={(e) => onClick?.(e)}
 		>
 			{children}
 		</div>

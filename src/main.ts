@@ -17,9 +17,9 @@ import DataLoomView, { DATA_LOOM_VIEW } from "./obsidian/dataloom-view";
 
 import { store } from "./redux/store";
 import {
-	setManifestPluginVersion,
 	setDarkMode,
 	setSettings,
+	setPluginVersion,
 } from "./redux/global-slice";
 import { FILE_EXTENSION, WIKI_LINK_REGEX } from "./data/constants";
 import { createLoomFile } from "src/data/loom-file";
@@ -49,7 +49,7 @@ export interface DataLoomSettings {
 	shouldDebug: boolean;
 	createAtObsidianAttachmentFolder: boolean;
 	customFolderForNewFiles: string;
-	exportRenderMarkdown: boolean;
+	removeMarkdownOnExport: boolean;
 	defaultEmbedWidth: string;
 	defaultEmbedHeight: string;
 	hasMigratedTo800: boolean;
@@ -64,7 +64,7 @@ export const DEFAULT_SETTINGS: DataLoomSettings = {
 	shouldDebug: false,
 	createAtObsidianAttachmentFolder: false,
 	customFolderForNewFiles: "",
-	exportRenderMarkdown: true,
+	removeMarkdownOnExport: true,
 	defaultEmbedWidth: "100%",
 	defaultEmbedHeight: "340px",
 	hasMigratedTo800: false,
@@ -133,7 +133,7 @@ export default class DataLoomPlugin extends Plugin {
 
 		this.settings.pluginVersion = this.manifest.version;
 		await this.saveSettings();
-		store.dispatch(setManifestPluginVersion(this.manifest.version));
+		store.dispatch(setPluginVersion(this.manifest.version));
 	}
 
 	//TODO remove this in future versions

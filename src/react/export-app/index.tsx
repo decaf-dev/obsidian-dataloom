@@ -1,10 +1,8 @@
 import React from "react";
 
 import Stack from "../shared/stack";
-import Padding from "../shared/padding";
 import ExportTypeSelect from "./export-type-select";
 import ContentTextArea from "./content-textarea";
-import Divider from "../shared/divider";
 
 import { LoomState } from "src/shared/loom-state/types";
 import { ExportType } from "../../shared/export/types";
@@ -19,6 +17,7 @@ import { exportToCSV } from "src/shared/export/export-to-csv";
 import { useAppSelector } from "src/redux/hooks";
 
 import "./styles.css";
+import Switch from "../shared/switch";
 
 interface Props {
 	app: App;
@@ -30,11 +29,12 @@ export function ExportApp({ app, loomState, loomFilePath }: Props) {
 	const [exportType, setExportType] = React.useState<ExportType>(
 		ExportType.UNSELECTED
 	);
-	const { exportRenderMarkdown } = useAppSelector(
+	const { removeMarkdownOnExport } = useAppSelector(
 		(state) => state.global.settings
 	);
-	const [renderMarkdown, setRenderMarkdown] =
-		React.useState<boolean>(exportRenderMarkdown);
+	const [shouldRemoveMarkdown, setRemoveMarkdown] = React.useState<boolean>(
+		removeMarkdownOnExport
+	);
 
 	async function handleCopyClick(value: string) {
 		await navigator.clipboard.writeText(value);
@@ -49,58 +49,47 @@ export function ExportApp({ app, loomState, loomFilePath }: Props) {
 
 	let content = "";
 	if (exportType === ExportType.MARKDOWN) {
-		content = exportToMarkdown(app, loomState, renderMarkdown);
+		content = exportToMarkdown(app, loomState, shouldRemoveMarkdown);
 	} else if (exportType === ExportType.CSV) {
-		content = exportToCSV(app, loomState, renderMarkdown);
+		content = exportToCSV(app, loomState, shouldRemoveMarkdown);
 	}
 
 	return (
 		<div className="dataloom-export-app">
-			<Padding p="xl">
-				<Stack spacing="lg" width="100%">
-					<h5>DataLoom Export</h5>
-					<Divider />
-					<Stack spacing="xl" width="100%">
-						<ExportTypeSelect
-							value={exportType}
-							onChange={setExportType}
-						/>
-						{exportType !== ExportType.UNSELECTED && (
-							<>
-								<ContentTextArea value={content} />
-								<Stack spacing="sm">
-									<label htmlFor="render-markdown">
-										Render markdown
-									</label>
-									<input
-										id="render-markdown"
-										type="checkbox"
-										checked={renderMarkdown}
-										onChange={() =>
-											setRenderMarkdown(!renderMarkdown)
-										}
-									/>
-								</Stack>
-
-								<Stack isHorizontal>
-									<button
-										className="mod-cta"
-										onClick={handleDownloadClick}
-									>
-										Download
-									</button>
-									<button
-										className="dataloom-copy-button"
-										onClick={() => handleCopyClick(content)}
-									>
-										Copy to clipboard
-									</button>
-								</Stack>
-							</>
-						)}
-					</Stack>
-				</Stack>
-			</Padding>
+			<Stack spacing="xl" width="100%">
+				<ExportTypeSelect value={exportType} onChange={setExportType} />
+				{exportType !== ExportType.UNSELECTED && (
+					<>
+						<Stack spacing="sm">
+							<label htmlFor="remove-markdown">
+								Remove markdown
+							</label>
+							<Switch
+								id="remove-markdown"
+								value={shouldRemoveMarkdown}
+								onToggle={() =>
+									setRemoveMarkdown((prevState) => !prevState)
+								}
+							/>
+						</Stack>
+						<ContentTextArea value={content} />
+						<Stack isHorizontal>
+							<button
+								className="mod-cta"
+								onClick={handleDownloadClick}
+							>
+								Download
+							</button>
+							<button
+								className="dataloom-copy-button"
+								onClick={() => handleCopyClick(content)}
+							>
+								Copy to clipboard
+							</button>
+						</Stack>
+					</>
+				)}
+			</Stack>
 		</div>
 	);
 }

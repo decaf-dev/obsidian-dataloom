@@ -1,0 +1,46 @@
+.dataloom-step__header--margin-bottom {
+    margin-bottom: 5px;
+}
+
+.dataloom-step__content {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.dataloom-step__content--margin-top {
+    margin-top: 25px;
+}
+
+.dataloom-step__indicator {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: var(--background-secondary);
+}
+
+.dataloom-step__indicator--complete {
+    cursor: pointer;
+}
+
+.dataloom-step__text--complete {
+    cursor: pointer;
+}
+
+.dataloom-step__spacer {
+    width: 100%;
+    height: 25px;
+    margin-left: 15px;
+    margin-bottom: 10px;
+    border-left: 1px solid var(--background-modifier-border);
+}
+
+.dataloom-step__separator {
+    min-width: 15px;
+    margin-left: 15px;
+    border-left: 1px solid var(--background-modifier-border);
+    align-self: stretch;
+}
+
+.dataloom-step__separator--no-border {
+    border-left: none;
+}

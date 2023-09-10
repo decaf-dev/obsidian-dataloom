@@ -1,5 +1,5 @@
 import { App, Modal, setIcon } from "obsidian";
-import { renderDivider } from "src/obsidian/shared";
+import { renderDivider, setModalTitle } from "src/obsidian/shared";
 
 import "./styles.css";
 
@@ -9,12 +9,16 @@ export default class WelcomeModal extends Modal {
 	}
 
 	onOpen() {
+		const { containerEl } = this;
+		containerEl.addClass("dataloom-welcome-modal");
+		setModalTitle(containerEl, "Welcome to DataLoom");
+
 		const { contentEl } = this;
-		contentEl.createEl("h2", { text: "Welcome to DataLoom" });
 		contentEl.createDiv({
 			text: "Weave together data from diverse sources into a cohesive table view.",
 		});
 		renderDivider(contentEl);
+
 		contentEl.createEl("h5", {
 			text: "Learn how to use",
 			cls: "dataloom-welcome-modal__title",
@@ -30,6 +34,14 @@ export default class WelcomeModal extends Modal {
 			"Learn the basics of creating a loom",
 			"https://dataloom.xyz/getting-started/quick-start",
 			"table"
+		);
+
+		this.renderCard(
+			cardContainerEl,
+			"Import markdown tables and CSV data",
+			"Learn how to import data from markdown tables and CSV files",
+			"https://dataloom.xyz/other/import",
+			"import"
 		);
 
 		this.renderCard(

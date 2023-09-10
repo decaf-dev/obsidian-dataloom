@@ -15,7 +15,7 @@ import { useLogger } from "src/shared/logger";
 import { TFile } from "obsidian";
 
 import "./styles.css";
-import { useMountState } from "src/react/loom-app/mount-provider";
+import { useAppMount } from "src/react/loom-app/app-mount-provider";
 
 interface ContentProps {
 	showInput?: boolean;
@@ -44,7 +44,7 @@ export function SuggestList({
 	const highlightItemRef = React.useRef<HTMLDivElement | null>(null);
 	const [highlightIndex, setHighlightIndex] = React.useState(-1);
 
-	const { app } = useMountState();
+	const { app } = useAppMount();
 	const logger = useLogger();
 
 	React.useEffect(() => {

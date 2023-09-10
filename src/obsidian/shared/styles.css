@@ -1,8 +1,15 @@
 .dataloom-modal__divider {
     margin: 1.5em 0;
-    border-top: 1px solid var(--background-modifier-border);
+}
+
+.dataloom-modal__divider--first-child {
+    margin-top: 0;
 }
 
 .dataloom-modal-text--emphasize {
     color: var(--text-accent);
+}
+
+.dataloom-modal__title {
+    margin-bottom: 0;
 }

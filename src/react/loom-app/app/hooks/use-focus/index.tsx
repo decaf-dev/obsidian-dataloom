@@ -17,11 +17,11 @@ import {
 } from "src/react/loom-app/app/hooks/use-focus/move-focus";
 import { useLogger } from "src/shared/logger";
 import { useLoomState } from "src/react/loom-app/loom-state-provider";
-import { useMountState } from "src/react/loom-app/mount-provider";
+import { useAppMount } from "src/react/loom-app/app-mount-provider";
 
 export default function useFocus() {
 	const logger = useLogger();
-	const { appId } = useMountState();
+	const { reactAppId } = useAppMount();
 	const { loomState } = useLoomState();
 	const { onRequestCloseTop, topMenu } = useMenuOperations();
 
@@ -40,7 +40,7 @@ export default function useFocus() {
 			//We will do that ourselves
 			e.preventDefault();
 
-			const menuEl = getTopMenuEl(topMenu, appId);
+			const menuEl = getTopMenuEl(topMenu, reactAppId);
 			if (!menuEl) return;
 
 			const focusableEls = menuEl.querySelectorAll(".dataloom-focusable");
@@ -53,7 +53,7 @@ export default function useFocus() {
 			e.key === "ArrowLeft" ||
 			e.key === "ArrowRight"
 		) {
-			const layerEl = getTopMenuEl(topMenu, appId);
+			const layerEl = getTopMenuEl(topMenu, reactAppId);
 			if (!layerEl) return;
 
 			const focusableEls = getFocusableElements(layerEl);

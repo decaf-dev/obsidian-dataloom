@@ -4,11 +4,6 @@
     resize: vertical;
 }
 
-.dataloom-export-app h5 {
-    margin-top: 0px;
-    margin-bottom: 0px;
-}
-
 .dataloom-export-app select {
     background-color: var(--background-secondary-alt) !important;
 }

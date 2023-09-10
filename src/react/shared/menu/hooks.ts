@@ -1,5 +1,7 @@
 import React from "react";
 
+import _ from "lodash";
+
 import {
 	LoomMenu,
 	LoomMenuCloseRequestType,
@@ -7,8 +9,7 @@ import {
 	Position,
 } from "./types";
 import { createCloseRequest, createMenu } from "./factory";
-import { useMountState } from "src/react/loom-app/mount-provider";
-import _ from "lodash";
+import { useAppMount } from "src/react/loom-app/app-mount-provider";
 import { useMenuContext } from "../menu-provider";
 import { useLogger } from "src/shared/logger";
 import {
@@ -16,17 +17,40 @@ import {
 	removeCurrentFocusClass,
 } from "src/react/loom-app/app/hooks/use-focus/utils";
 
-export const useMenu = ({
-	level = LoomMenuLevel.ONE,
-	shouldRequestOnClose = false,
-} = {}) => {
+interface MenuOptions {
+	level?: LoomMenuLevel;
+	shouldRequestOnClose?: boolean;
+	shouldFocusTriggerOnClose?: boolean;
+}
+export const useModalMenu = (options?: MenuOptions) => {
+	const { ref, position } = useModalPosition();
+	return useAbstractMenu(ref, position, options);
+};
+
+export const useMenu = (options?: MenuOptions) => {
+	const { ref, position } = usePosition();
+	return useAbstractMenu(ref, position, options);
+};
+
+const useAbstractMenu = (
+	ref: React.RefObject<HTMLDivElement>,
+	position: Position,
+	options?: MenuOptions
+) => {
+	const {
+		level = LoomMenuLevel.ONE,
+		shouldRequestOnClose = false,
+		shouldFocusTriggerOnClose = true,
+	} = options ?? {};
+
 	const { openMenus, closeRequests, setOpenMenus, setCloseRequests } =
 		useMenuContext();
-	const [menu] = React.useState(createMenu(level, shouldRequestOnClose));
+	const [menu] = React.useState(
+		createMenu(level, shouldRequestOnClose, shouldFocusTriggerOnClose)
+	);
 	const isOpen = openMenus.find((m) => m.id === menu.id) !== undefined;
 	const closeRequest =
 		closeRequests.find((r) => r.menuId === menu.id) ?? null;
-	const { ref, position } = usePosition(isOpen);
 	const logger = useLogger();
 
 	/**
@@ -46,15 +70,19 @@ export const useMenu = ({
 	 * Removes the menu from the open menus list.
 	 */
 	const onClose = React.useCallback(
-		(shouldFocusTrigger = true) => {
-			logger("onClose", { shouldFocusTrigger });
+		(shouldFocusTriggerOnClose = true) => {
+			logger("onClose");
 			setOpenMenus((prevMenus) =>
 				prevMenus.filter((m) => m.id !== menu.id)
 			);
 			setCloseRequests((prevRequests) =>
 				prevRequests.filter((request) => request.menuId !== menu.id)
 			);
-			if (shouldFocusTrigger && ref.current) {
+			if (
+				shouldFocusTriggerOnClose &&
+				menu.shouldFocusTriggerOnClose &&
+				ref.current
+			) {
 				ref.current.focus();
 				addFocusClass(ref.current);
 			}
@@ -87,7 +115,7 @@ export const useMenu = ({
 			return () => {
 				if (isOpen) {
 					logger("closeMenuAfterUnmounting");
-					onClose(true);
+					onClose();
 				}
 			};
 		},
@@ -150,8 +178,7 @@ export const useMenuOperations = () => {
 	};
 };
 
-const usePosition = (isOpen: boolean) => {
-	const { mountLeaf, isMarkdownView } = useMountState();
+const useModalPosition = () => {
 	const [position, setPosition] = React.useState<Position>({
 		top: 0,
 		left: 0,
@@ -164,7 +191,70 @@ const usePosition = (isOpen: boolean) => {
 		if (!ref.current) return;
 		const el = ref.current;
 
-		const THROTTLE_TIME_MILLIS = 100;
+		function updatePosition() {
+			const { top, left, width, height } = el.getBoundingClientRect();
+			setPosition({
+				top,
+				left,
+				width,
+				height,
+			});
+		}
+
+		const ancestors = findAncestorsUntilModal(el);
+
+		const THROTTLE_TIME_MILLIS = 10;
+		const throttleUpdatePosition = _.throttle(
+			updatePosition,
+			THROTTLE_TIME_MILLIS
+		);
+
+		ancestors.forEach((ancestor) => {
+			ancestor.addEventListener("scroll", throttleUpdatePosition);
+		});
+		window.addEventListener("resize", throttleUpdatePosition);
+
+		updatePosition();
+
+		return () => {
+			ancestors.forEach((ancestor) => {
+				ancestor.removeEventListener("scroll", throttleUpdatePosition);
+			});
+			window.removeEventListener("resize", throttleUpdatePosition);
+		};
+	}, []);
+
+	return {
+		ref,
+		position,
+	};
+};
+
+const findAncestorsUntilModal = (currentEl: HTMLElement) => {
+	const ancestors: HTMLElement[] = [];
+	let el: HTMLElement | null = currentEl;
+	while (el && !el.classList.contains("modal")) {
+		ancestors.push(el);
+		el = el.parentElement;
+	}
+	return ancestors;
+};
+
+const usePosition = () => {
+	const { mountLeaf, isMarkdownView } = useAppMount();
+	const [position, setPosition] = React.useState<Position>({
+		top: 0,
+		left: 0,
+		width: 0,
+		height: 0,
+	});
+	const ref = React.useRef<HTMLDivElement>(null);
+
+	React.useEffect(() => {
+		if (!ref.current) return;
+		const el = ref.current;
+
+		const THROTTLE_TIME_MILLIS = 10;
 		const throttleUpdatePosition = _.throttle(
 			updatePosition,
 			THROTTLE_TIME_MILLIS
@@ -216,7 +306,7 @@ const usePosition = (isOpen: boolean) => {
 				throttleUpdatePosition
 			);
 		};
-	}, [mountLeaf.view.containerEl, isMarkdownView, isOpen]);
+	}, [mountLeaf.view.containerEl, isMarkdownView]);
 
 	return {
 		ref,

@@ -1,12 +1,13 @@
 import React from "react";
 
 import { numToPx } from "src/shared/conversion";
-import { isOnMobile } from "src/shared/render-utils";
-import { useMountState } from "src/react/loom-app/mount-provider";
 import { LoomMenuOpenDirection, Position } from "./types";
+import { isOnMobile } from "src/shared/render-utils";
 
 export const useShiftMenu = (
-	ref: React.RefObject<HTMLDivElement | null>,
+	isModalMenu: boolean,
+	viewportEl: HTMLElement,
+	menuRef: React.RefObject<HTMLDivElement | null>,
 	triggerPosition: Position,
 	isOpen: boolean,
 	options?: {
@@ -15,9 +16,6 @@ export const useShiftMenu = (
 		leftOffset?: number;
 	}
 ) => {
-	const { mountLeaf } = useMountState();
-	const viewContentEl = mountLeaf.view.containerEl;
-
 	const {
 		openDirection = "normal",
 		topOffset = 0,
@@ -25,37 +23,36 @@ export const useShiftMenu = (
 	} = options || {};
 
 	React.useEffect(() => {
-		if (!ref.current) return;
+		if (!menuRef.current) return;
 		if (!isOpen) return;
 
 		const menuPosition = getMenuPosition(
-			ref.current,
+			menuRef.current,
 			triggerPosition,
 			topOffset,
 			leftOffset,
 			openDirection
 		);
-		const containerPosition =
-			getDataLoomViewContainerPosition(viewContentEl);
+		const viewportPosition = getViewportPosition(viewportEl, isModalMenu);
 
 		const newPosition = shiftElementIntoContainer(
-			containerPosition,
+			viewportPosition,
 			menuPosition
 		);
 
-		ref.current.style.top = numToPx(newPosition.top);
-		ref.current.style.left = numToPx(newPosition.left);
+		menuRef.current.style.top = numToPx(newPosition.top);
+		menuRef.current.style.left = numToPx(newPosition.left);
 	});
 };
 
 const getMenuPosition = (
-	el: HTMLElement,
+	menuEl: HTMLElement,
 	triggerPosition: Position,
 	topOffset: number,
 	leftOffset: number,
 	openDirection: LoomMenuOpenDirection
 ) => {
-	const rect = el.getBoundingClientRect();
+	const rect = menuEl.getBoundingClientRect();
 
 	let top = triggerPosition.top + topOffset;
 	let left = triggerPosition.left + leftOffset;
@@ -83,17 +80,15 @@ const getMenuPosition = (
 	};
 };
 
-const getDataLoomViewContainerPosition = (viewContentEl: HTMLElement) => {
-	/**
-	 * The height of the mobile bar at the bottom of the screen.
-	 */
-	const MOBILE_BAR_HEIGHT = 48;
-
-	const rect = viewContentEl.getBoundingClientRect();
+const getViewportPosition = (viewportEl: HTMLElement, isModalMenu: boolean) => {
+	const rect = viewportEl.getBoundingClientRect();
 	const rectRelativeToDocument = getPositionRelativeToDocument(rect);
 
 	let height = rectRelativeToDocument.height;
-	if (isOnMobile()) height -= MOBILE_BAR_HEIGHT;
+	if (!isModalMenu) {
+		const MOBILE_BAR_HEIGHT = 48;
+		if (isOnMobile()) height -= MOBILE_BAR_HEIGHT;
+	}
 
 	return {
 		top: rectRelativeToDocument.top,

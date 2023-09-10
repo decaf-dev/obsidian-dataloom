@@ -1,0 +1,50 @@
+.dataloom-match-columns {
+    margin-bottom: 10px;
+}
+
+.dataloom-match-columns__container {
+    width: 100%;
+    max-height: 250px;
+    overflow: scroll;
+    padding-right: 3em;
+}
+
+.dataloom-match-columns table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.dataloom-match-columns th, .dataloom-match-columns td {
+    border-bottom: 1px solid var(--table-border-color);
+    border-right: 1px solid var(--table-border-color);
+    padding: 0.5em;
+    max-width: 20em;
+    height: 1em;
+}
+
+.dataloom-match-columns th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: var(--background-secondary);
+    font-weight: 500;
+}
+
+.dataloom-match-columns th {
+    min-width: 14em;
+    border-top: 1px solid var(--table-border-color);
+}
+
+.dataloom-match-columns td:first-child,
+.dataloom-match-columns th:first-child {
+    border-left: 1px solid var(--table-border-color);
+}
+
+.dataloom-match-columns--disabled {
+    opacity: 0.5;
+}
+
+.dataloom-match-columns input[type="checkbox"] {
+    margin-top: 1px;
+    margin-right: 0px;
+}

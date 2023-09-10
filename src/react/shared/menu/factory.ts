@@ -8,12 +8,14 @@ import { v4 as uuidv4 } from "uuid";
 
 export const createMenu = (
 	level: LoomMenuLevel,
-	shouldRequestOnClose: boolean
+	shouldRequestOnClose: boolean,
+	shouldFocusTriggerOnClose: boolean
 ): LoomMenu => {
 	return {
 		id: "m" + uuidv4(),
 		level,
 		shouldRequestOnClose,
+		shouldFocusTriggerOnClose,
 	};
 };
 

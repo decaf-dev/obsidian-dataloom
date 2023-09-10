@@ -8,6 +8,7 @@ export interface LoomMenu {
 	id: string;
 	level: LoomMenuLevel;
 	shouldRequestOnClose: boolean;
+	shouldFocusTriggerOnClose: boolean;
 }
 
 export type LoomMenuCloseRequestType = "save-and-close" | "close-on-save";

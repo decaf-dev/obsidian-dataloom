@@ -2,7 +2,7 @@ import { getEmbedCellContent } from "src/shared/cell-content/embed-cell-content"
 import { AspectRatio, PaddingSize } from "src/shared/loom-state/types";
 
 import Embed from "./embed";
-import { useMountState } from "../mount-provider";
+import { useAppMount } from "../app-mount-provider";
 
 import "./styles.css";
 
@@ -21,9 +21,8 @@ export default function EmbedCell({
 	horizontalPadding,
 	verticalPadding,
 }: Props) {
-	const { app } = useMountState();
+	const { app } = useAppMount();
 	const content = getEmbedCellContent(app, markdown, {
-		shouldRenderMarkdown: true,
 		isExternalLink,
 	});
 	return (

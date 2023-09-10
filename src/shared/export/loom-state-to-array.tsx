@@ -18,7 +18,7 @@ const serializeBodyCells = (
 	columns: Column[],
 	rows: BodyRow[],
 	cells: BodyCell[],
-	renderMarkdown: boolean
+	shouldRemoveMarkdown: boolean
 ): string[][] => {
 	return rows.map((row) => {
 		const rowCells = cells.filter((cell) => cell.rowId === row.id);
@@ -27,7 +27,14 @@ const serializeBodyCells = (
 				(column) => column.id === cell.columnId
 			);
 			if (!column) throw new ColumNotFoundError(cell.columnId);
-			return getCellContent(app, column, row, cell, renderMarkdown);
+			const content = getCellContent(
+				app,
+				column,
+				row,
+				cell,
+				shouldRemoveMarkdown
+			);
+			return content;
 		});
 	});
 };
@@ -35,7 +42,7 @@ const serializeBodyCells = (
 export const loomStateToArray = (
 	app: App,
 	loomState: LoomState,
-	renderMarkdown: boolean
+	shouldRemoveMarkdown: boolean
 ): string[][] => {
 	const { headerCells, bodyCells, bodyRows, columns } = loomState.model;
 	const serializedHeaderCells = serializeHeaderCells(headerCells);
@@ -44,7 +51,7 @@ export const loomStateToArray = (
 		columns,
 		bodyRows,
 		bodyCells,
-		renderMarkdown
+		shouldRemoveMarkdown
 	);
 	return [serializedHeaderCells, ...serializedBodyCells];
 };
