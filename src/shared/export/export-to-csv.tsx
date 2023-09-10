@@ -7,8 +7,8 @@ import { App } from "obsidian";
 export const exportToCSV = (
 	app: App,
 	loomState: LoomState,
-	renderMarkdown: boolean
+	shouldRemoveMarkdown: boolean
 ): string => {
-	const arr = loomStateToArray(app, loomState, renderMarkdown);
+	const arr = loomStateToArray(app, loomState, shouldRemoveMarkdown);
 	return Papa.unparse(arr);
 };

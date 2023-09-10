@@ -49,7 +49,7 @@ export interface DataLoomSettings {
 	shouldDebug: boolean;
 	createAtObsidianAttachmentFolder: boolean;
 	customFolderForNewFiles: string;
-	exportRenderMarkdown: boolean;
+	removeMarkdownOnExport: boolean;
 	defaultEmbedWidth: string;
 	defaultEmbedHeight: string;
 	hasMigratedTo800: boolean;
@@ -64,7 +64,7 @@ export const DEFAULT_SETTINGS: DataLoomSettings = {
 	shouldDebug: false,
 	createAtObsidianAttachmentFolder: false,
 	customFolderForNewFiles: "",
-	exportRenderMarkdown: true,
+	removeMarkdownOnExport: true,
 	defaultEmbedWidth: "100%",
 	defaultEmbedHeight: "340px",
 	hasMigratedTo800: false,

@@ -6,8 +6,8 @@ import { App } from "obsidian";
 export const exportToMarkdown = (
 	app: App,
 	loomState: LoomState,
-	renderMarkdown: boolean
+	shouldRemoveMarkdown: boolean
 ): string => {
-	const arr = loomStateToArray(app, loomState, renderMarkdown);
+	const arr = loomStateToArray(app, loomState, shouldRemoveMarkdown);
 	return markdownTable(arr);
 };

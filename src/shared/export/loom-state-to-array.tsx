@@ -20,7 +20,7 @@ const serializeBodyCells = (
 	columns: Column[],
 	rows: BodyRow[],
 	cells: BodyCell[],
-	renderMarkdown: boolean
+	shouldRemoveMarkdown: boolean
 ): string[][] => {
 	return rows.map((row) => {
 		const rowCells = cells.filter((cell) => cell.rowId === row.id);
@@ -34,7 +34,7 @@ const serializeBodyCells = (
 				column,
 				row,
 				cell,
-				renderMarkdown
+				shouldRemoveMarkdown
 			);
 			//Markdown table cells can't contain pipe characters, so we escape them
 			//Obsidian will render the escaped pipe characters as normal pipe characters
@@ -47,7 +47,7 @@ const serializeBodyCells = (
 export const loomStateToArray = (
 	app: App,
 	loomState: LoomState,
-	renderMarkdown: boolean
+	shouldRemoveMarkdown: boolean
 ): string[][] => {
 	const { headerCells, bodyCells, bodyRows, columns } = loomState.model;
 	const serializedHeaderCells = serializeHeaderCells(headerCells);
@@ -56,7 +56,7 @@ export const loomStateToArray = (
 		columns,
 		bodyRows,
 		bodyCells,
-		renderMarkdown
+		shouldRemoveMarkdown
 	);
 	return [serializedHeaderCells, ...serializedBodyCells];
 };
