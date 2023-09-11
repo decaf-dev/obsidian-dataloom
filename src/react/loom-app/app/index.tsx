@@ -38,6 +38,7 @@ import {
 import "./global.css";
 import "./styles.css";
 import { useLogger } from "src/shared/logger";
+import { useMenuOperations } from "src/react/shared/menu/hooks";
 
 export default function App() {
 	const logger = useLogger();
@@ -52,13 +53,14 @@ export default function App() {
 	} = useLoomState();
 
 	const tableRef = React.useRef<VirtuosoHandle | null>(null);
+	const { onRequestCloseTop, topMenu } = useMenuOperations();
 
 	useExportEvents(loomState);
 	useRowEvents();
 	useColumnEvents();
 	useMenuEvents();
 
-	const { onFocusClick, onFocusKeyDown } = useFocus();
+	const { onFocusKeyDown } = useFocus();
 	const { onFrozenColumnsChange } = useTableSettings();
 
 	const {
@@ -129,7 +131,18 @@ export default function App() {
 		logger("App handleClick");
 		//Stop propagation to the global event
 		e.stopPropagation();
-		onFocusClick();
+
+		const target = e.target as HTMLElement;
+		console.log(target);
+		const menuEl = target.closest(".dataloom-menu");
+		console.log(menuEl);
+		if (!menuEl) return;
+
+		const isTargetTopMenu = menuEl.id === topMenu.id;
+		console.log(isTargetTopMenu);
+		if (isTargetTopMenu) return;
+
+		onRequestCloseTop();
 	}
 
 	function handleKeyDown(e: React.KeyboardEvent) {

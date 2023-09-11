@@ -53,10 +53,10 @@ export default function TagColorMenu({
 	React.useEffect(
 		function saveOnCloseRequest() {
 			if (closeRequest === null) return;
-			if (markdown === localValue) return;
-			onTagNameChange(localValue);
+			if (markdown !== localValue) onTagNameChange(localValue);
+			onClose();
 		},
-		[closeRequest, markdown, localValue]
+		[closeRequest, markdown, localValue, onTagNameChange, onClose]
 	);
 
 	return (
