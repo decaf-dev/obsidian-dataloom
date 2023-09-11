@@ -43,7 +43,7 @@ export default function useFocus() {
 			if (focusableEls.length === 0) return;
 
 			focusNextElement(menuEl, focusableEls);
-		} else if (isArrowKeyPressed(e, topMenu === null)) {
+		} else if (isArrowKeyPressed(e, topMenu !== null)) {
 			const layerEl = getTopMenuEl(topMenu, reactAppId);
 			if (!layerEl) return;
 

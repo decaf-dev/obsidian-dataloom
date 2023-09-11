@@ -83,15 +83,15 @@ export const getNumBottomBarFocusableEl = (appEl: HTMLElement) => {
 
 export const isArrowKeyPressed = (
 	e: React.KeyboardEvent,
-	hasTopMenu: boolean
+	isMenuOpen: boolean
 ) => {
-	if (hasTopMenu) {
-		return (
-			e.key === "ArrowDown" ||
-			e.key === "ArrowUp" ||
-			e.key === "ArrowLeft" ||
-			e.key === "ArrowRight"
-		);
+	if (isMenuOpen) {
+		return e.key === "ArrowDown" || e.key === "ArrowUp";
 	}
-	return e.key === "ArrowDown" || e.key === "ArrowUp";
+	return (
+		e.key === "ArrowDown" ||
+		e.key === "ArrowUp" ||
+		e.key === "ArrowLeft" ||
+		e.key === "ArrowRight"
+	);
 };
