@@ -81,15 +81,17 @@ export default function TagColorMenu({
 					<Padding px="lg" py="sm">
 						<Text value="Colors" />
 					</Padding>
-					{Object.values(Color).map((color) => (
-						<ColorItem
-							isDarkMode={isDarkMode}
-							key={color}
-							color={color}
-							onColorClick={onColorClick}
-							isSelected={selectedColor === color}
-						/>
-					))}
+					<div className="dataloom-tag-color-menu__color-container">
+						{Object.values(Color).map((color) => (
+							<ColorItem
+								isDarkMode={isDarkMode}
+								key={color}
+								color={color}
+								onColorClick={onColorClick}
+								isSelected={selectedColor === color}
+							/>
+						))}
+					</div>
 				</Stack>
 			</div>
 		</Menu>
