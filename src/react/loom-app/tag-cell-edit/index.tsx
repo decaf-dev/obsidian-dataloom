@@ -19,6 +19,7 @@ interface Props {
 	onRemoveTag: (tagId: string) => void;
 	onTagColorChange: (tagId: string, color: Color) => void;
 	onTagDelete: (tagId: string) => void;
+	onTagNameChange: (tagId: string, value: string) => void;
 	onClose: () => void;
 }
 
@@ -32,6 +33,7 @@ export default function TagCellEdit({
 	onTagColorChange,
 	onTagDelete,
 	onRemoveTag,
+	onTagNameChange,
 	onClose,
 }: Props) {
 	const [inputValue, setInputValue] = React.useState("");
@@ -92,6 +94,7 @@ export default function TagCellEdit({
 				onTagClick={handleTagClick}
 				onTagDelete={onTagDelete}
 				onTagColorChange={onTagColorChange}
+				onTagNameChange={onTagNameChange}
 			/>
 		</div>
 	);

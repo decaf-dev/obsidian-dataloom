@@ -1,0 +1,6 @@
+.dataloom-tag-color-menu__color-container {
+    width: 100%;
+    height: 215px;
+    overflow-y: scroll;
+    overflow-x: auto;
+}

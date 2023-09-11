@@ -13,18 +13,24 @@ import Padding from "src/react/shared/padding";
 
 import "./styles.css";
 import {
+	LoomMenuCloseRequest,
 	LoomMenuCloseRequestType,
 	Position,
 } from "src/react/shared/menu/types";
+import Input from "src/react/shared/input";
+import React from "react";
 
 interface Props {
 	id: string;
 	isOpen: boolean;
+	markdown: string;
 	triggerPosition: Position;
 	selectedColor: string;
+	closeRequest: LoomMenuCloseRequest | null;
 	onColorClick: (color: Color) => void;
 	onDeleteClick: () => void;
 	onRequestClose: (type: LoomMenuCloseRequestType) => void;
+	onTagNameChange: (value: string) => void;
 	onClose: () => void;
 }
 
@@ -33,12 +39,25 @@ export default function TagColorMenu({
 	isOpen,
 	triggerPosition,
 	selectedColor,
+	markdown,
+	closeRequest,
 	onColorClick,
 	onDeleteClick,
 	onRequestClose,
+	onTagNameChange,
 	onClose,
 }: Props) {
 	const { isDarkMode } = useAppSelector((state) => state.global);
+	const [localValue, setLocalValue] = React.useState(markdown);
+
+	React.useEffect(
+		function saveOnCloseRequest() {
+			if (closeRequest === null) return;
+			if (markdown !== localValue) onTagNameChange(localValue);
+			onClose();
+		},
+		[closeRequest, markdown, localValue, onTagNameChange, onClose]
+	);
 
 	return (
 		<Menu
@@ -50,10 +69,19 @@ export default function TagColorMenu({
 		>
 			<div className="dataloom-tag-color-menu">
 				<Stack spacing="sm">
-					<Padding px="lg" py="sm">
-						<Text value="Color" />
+					<Padding px="md" py="sm">
+						<Input value={localValue} onChange={setLocalValue} />
 					</Padding>
-					<div>
+					<MenuItem
+						lucideId="trash-2"
+						name="Delete"
+						onClick={onDeleteClick}
+					/>
+					<Divider />
+					<Padding px="lg" py="sm">
+						<Text value="Colors" />
+					</Padding>
+					<div className="dataloom-tag-color-menu__color-container">
 						{Object.values(Color).map((color) => (
 							<ColorItem
 								isDarkMode={isDarkMode}
@@ -64,12 +92,6 @@ export default function TagColorMenu({
 							/>
 						))}
 					</div>
-					<Divider />
-					<MenuItem
-						lucideId="trash-2"
-						name="Delete"
-						onClick={onDeleteClick}
-					/>
 				</Stack>
 			</div>
 		</Menu>
