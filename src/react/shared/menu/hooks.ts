@@ -159,10 +159,8 @@ export const useMenuOperations = () => {
 	}, [openMenus, setOpenMenus, setCloseRequests]);
 
 	const onRequestCloseTop = React.useCallback(() => {
-		console.log(topMenu);
 		if (!topMenu) return;
 		if (topMenu.shouldRequestOnClose) {
-			console.log("requesting close");
 			const request = createCloseRequest(topMenu.id, "save-and-close");
 			setCloseRequests((prevRequests) => [...prevRequests, request]);
 		} else {
