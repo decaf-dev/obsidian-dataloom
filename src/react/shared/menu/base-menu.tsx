@@ -42,13 +42,16 @@ const BaseMenu = React.forwardRef<HTMLDivElement, Props>(
 		const logger = useLogger();
 
 		function handleKeyDown(e: React.KeyboardEvent) {
-			//Don't propagate to the app
-			e.stopPropagation();
-
 			logger("Menu handleKeyDown");
 			if (e.key === "Enter") {
+				//Don't propagate the enter event to the app
+				//it will close all menus
+				e.stopPropagation();
 				onRequestClose("close-on-save");
 			} else if (e.key === "Escape") {
+				//Don't propagate the enter event to the app
+				//it will close all menus
+				e.stopPropagation();
 				onClose();
 			}
 		}
