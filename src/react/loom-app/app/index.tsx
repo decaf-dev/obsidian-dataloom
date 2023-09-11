@@ -53,7 +53,7 @@ export default function App() {
 	} = useLoomState();
 
 	const tableRef = React.useRef<VirtuosoHandle | null>(null);
-	const { onRequestCloseTop, topMenu } = useMenuOperations();
+	const { onRequestCloseTop } = useMenuOperations();
 
 	useExportEvents(loomState);
 	useRowEvents();
