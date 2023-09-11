@@ -165,12 +165,16 @@ export default function App() {
 	} = loomState.model;
 	const { numFrozenColumns } = settings;
 
+	console.log(loomState.model.bodyRows);
 	let filteredBodyRows = filterBodyRowsByRules(loomState);
+	console.log(filteredBodyRows);
 	filteredBodyRows = filterBodyRowsBySearch(
 		loomState,
 		filteredBodyRows,
 		searchText
 	);
+	console.log(filteredBodyRows);
+
 	const visibleColumns = columns.filter((column) => column.isVisible);
 
 	let className = "dataloom-app";

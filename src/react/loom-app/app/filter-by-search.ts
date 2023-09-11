@@ -14,62 +14,46 @@ import { getTimeCellContent } from "src/shared/cell-content/time-content";
 import { getDateCellContent } from "src/shared/cell-content/date-cell-content";
 import { getCurrencyCellContent } from "src/shared/cell-content/currency-cell-content";
 
+type CellWithReferences = {
+	cell: BodyCell;
+	column: Column;
+	row: BodyRow;
+	tags: Tag[];
+};
+
 export const filterBodyRowsBySearch = (
-	LoomState: LoomState,
+	state: LoomState,
 	filteredBodyRows: BodyRow[],
 	searchText: string
 ): BodyRow[] => {
-	const { columns, bodyCells, bodyRows } = LoomState.model;
-	const columnMap = new Map<string, Column>();
-	columns.forEach((column) => columnMap.set(column.id, column));
+	const { columns, bodyCells, bodyRows } = state.model;
 
-	const rowMap = new Map<string, BodyRow>();
-	bodyRows.forEach((row) => rowMap.set(row.id, row));
-
-	const cellToTagMap = new Map<string, Tag[]>();
-	bodyCells.forEach((cell) => {
-		const column = columnMap.get(cell.columnId);
+	const cells: CellWithReferences[] = bodyCells.map((cell) => {
+		const column = columns.find((c) => c.id === cell.columnId);
 		if (!column) throw new ColumNotFoundError(cell.columnId);
 
-		const cellTags = column.tags.filter((tag) =>
-			cell.tagIds.includes(tag.id)
-		);
-		cellToTagMap.set(cell.id, cellTags);
+		const row = bodyRows.find((r) => r.id === cell.rowId);
+		if (!row) throw new RowNotFoundError(cell.rowId);
+
+		const tags = column.tags.filter((tag) => cell.tagIds.includes(tag.id));
+
+		return { cell, column, row, tags };
 	});
 
-	return filteredBodyRows.filter((row) => {
-		const rowCells = bodyCells.filter((cell) => cell.rowId === row.id);
-		return rowCells.some((cell) => {
-			const cellTags = cellToTagMap.get(cell.id);
-			if (!cellTags)
-				throw new Error(`Tags not found for cell ${cell.id}`);
+	if (searchText === "") return filteredBodyRows;
 
-			return doesCellMatch(
-				cell,
-				columnMap,
-				rowMap,
-				cellTags,
-				searchText.toLowerCase()
-			);
+	return filteredBodyRows.filter((row) => {
+		const filteredCells = cells.filter((cell) => cell.row.id === row.id);
+		return filteredCells.some((cell) => {
+			return doesCellMatch(cell, searchText.toLowerCase());
 		});
 	});
 };
 
-const doesCellMatch = (
-	cell: BodyCell,
-	columnMap: Map<string, Column>,
-	rowMap: Map<string, BodyRow>,
-	cellTags: Tag[],
-	searchText: string
-) => {
-	const column = columnMap.get(cell.columnId);
-	if (!column) throw new ColumNotFoundError(cell.columnId);
-	const row = rowMap.get(cell.rowId);
-	if (!row) throw new RowNotFoundError(cell.rowId);
-
-	const { dateTime, markdown } = cell;
-	const { currencyType, type, dateFormat } = column;
-	const { lastEditedTime, creationTime } = row;
+const doesCellMatch = (cell: CellWithReferences, searchText: string) => {
+	const { dateTime, markdown } = cell.cell;
+	const { currencyType, type, dateFormat } = cell.column;
+	const { lastEditedTime, creationTime } = cell.row;
 
 	switch (type) {
 		case CellType.TEXT:
@@ -92,7 +76,7 @@ const doesCellMatch = (
 			);
 		case CellType.TAG:
 		case CellType.MULTI_TAG:
-			return matchTags(cellTags, searchText);
+			return matchTags(cell.tags, searchText);
 		default:
 			throw new Error("Unsupported cell type");
 	}
