@@ -38,6 +38,7 @@ import {
 import "./global.css";
 import "./styles.css";
 import { useLogger } from "src/shared/logger";
+import { useMenuOperations } from "src/react/shared/menu/hooks";
 
 export default function App() {
 	const logger = useLogger();
@@ -52,13 +53,14 @@ export default function App() {
 	} = useLoomState();
 
 	const tableRef = React.useRef<VirtuosoHandle | null>(null);
+	const { onRequestCloseTop, topMenu } = useMenuOperations();
 
 	useExportEvents(loomState);
 	useRowEvents();
 	useColumnEvents();
 	useMenuEvents();
 
-	const { onFocusClick, onFocusKeyDown } = useFocus();
+	const { onFocusKeyDown } = useFocus();
 	const { onFrozenColumnsChange } = useTableSettings();
 
 	const {
@@ -111,6 +113,7 @@ export default function App() {
 		onTagCellMultipleRemove,
 		onTagColorChange,
 		onTagDeleteClick,
+		onTagNameChange,
 	} = useTag();
 
 	const firstColumnId = useUUID();
@@ -128,7 +131,17 @@ export default function App() {
 		logger("App handleClick");
 		//Stop propagation to the global event
 		e.stopPropagation();
-		onFocusClick();
+
+		//If we click on the top menu, don't close it
+		const target = e.target as HTMLElement;
+		const menuEl = target.closest(".dataloom-menu");
+		if (menuEl) {
+			const isTargetTopMenu = menuEl.id === topMenu.id;
+			if (isTargetTopMenu) return;
+		}
+
+		//Otherwise close the top menu
+		onRequestCloseTop();
 	}
 
 	function handleKeyDown(e: React.KeyboardEvent) {
@@ -395,6 +408,7 @@ export default function App() {
 											onExternalLinkToggle={
 												onExternalLinkToggle
 											}
+											onTagNameChange={onTagNameChange}
 										/>
 									),
 								};

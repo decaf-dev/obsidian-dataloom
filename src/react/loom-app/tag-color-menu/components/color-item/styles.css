@@ -1,13 +1,9 @@
 .dataloom-color-item {
-    display: flex;
-    align-items: center;
-    padding: var(--dataloom-spacing--xs) var(--dataloom-spacing--lg);
     width: 100%;
 }
 
-.dataloom-color-item-square {
-    width: 10px;
-    height: 10px;
-    padding: 0;
-    margin: 0 10px 0 0;
+.dataloom-color-item__square {
+    width: 15px;
+    height: 15px;
+    border-radius: 4px;
 }

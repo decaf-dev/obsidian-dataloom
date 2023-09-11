@@ -64,6 +64,19 @@ export const useTag = () => {
 		doCommand(new TagCellRemoveCommand(cellId, rowId, tagId));
 	}
 
+	function handleTagNameChange(
+		columnId: string,
+		tagId: string,
+		name: string
+	) {
+		logFunc("handleTagNameChange", {
+			columnId,
+			tagId,
+			name,
+		});
+		doCommand(new TagUpdateCommand(columnId, tagId, "markdown", name));
+	}
+
 	function handleTagCellMultipleRemove(
 		cellId: string,
 		rowId: string,
@@ -105,5 +118,6 @@ export const useTag = () => {
 		onTagColorChange: handleTagColorChange,
 		onTagCellMultipleRemove: handleTagCellMultipleRemove,
 		onTagDeleteClick: handleTagDeleteClick,
+		onTagNameChange: handleTagNameChange,
 	};
 };

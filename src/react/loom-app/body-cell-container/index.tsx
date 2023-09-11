@@ -72,6 +72,7 @@ interface Props {
 		tagId: string,
 		isMultiTag: boolean
 	) => void;
+	onTagNameChange: (columnId: string, tagId: string, value: string) => void;
 	onContentChange: (cellId: string, rowId: string, value: string) => void;
 	onTagAdd: (
 		cellId: string,
@@ -123,6 +124,7 @@ export default function BodyCellContainer({
 	onContentChange,
 	onDateFormatChange,
 	onDateTimeChange,
+	onTagNameChange,
 	onTagAdd,
 	onExternalLinkToggle,
 }: Props) {
@@ -225,6 +227,10 @@ export default function BodyCellContainer({
 
 	function handleTagDeleteClick(tagId: string) {
 		onTagDelete(columnId, tagId);
+	}
+
+	function handleTagNameChange(tagId: string, value: string) {
+		onTagNameChange(columnId, tagId, value);
 	}
 
 	function handleTagClick(tagId: string) {
@@ -437,6 +443,7 @@ export default function BodyCellContainer({
 						onRemoveTag={handleRemoveTagClick}
 						onTagClick={handleTagClick}
 						onTagDelete={handleTagDeleteClick}
+						onTagNameChange={handleTagNameChange}
 						onClose={onClose}
 					/>
 				)}

@@ -42,17 +42,15 @@ const BaseMenu = React.forwardRef<HTMLDivElement, Props>(
 		const logger = useLogger();
 
 		function handleKeyDown(e: React.KeyboardEvent) {
+			//Don't propagate to the app
+			e.stopPropagation();
+
 			logger("Menu handleKeyDown");
 			if (e.key === "Enter") {
 				onRequestClose("close-on-save");
 			} else if (e.key === "Escape") {
 				onClose();
 			}
-		}
-
-		function handleClick(e: React.MouseEvent) {
-			logger("Menu handleClick");
-			e.stopPropagation();
 		}
 
 		if (!isOpen) return <></>;
@@ -63,7 +61,6 @@ const BaseMenu = React.forwardRef<HTMLDivElement, Props>(
 					<div
 						id={id}
 						className="dataloom-menu"
-						onClick={handleClick}
 						onKeyDown={handleKeyDown}
 					>
 						<div
