@@ -50,11 +50,6 @@ const BaseMenu = React.forwardRef<HTMLDivElement, Props>(
 			}
 		}
 
-		function handleClick(e: React.MouseEvent) {
-			logger("Menu handleClick");
-			e.stopPropagation();
-		}
-
 		if (!isOpen) return <></>;
 
 		return (
@@ -63,7 +58,6 @@ const BaseMenu = React.forwardRef<HTMLDivElement, Props>(
 					<div
 						id={id}
 						className="dataloom-menu"
-						onClick={handleClick}
 						onKeyDown={handleKeyDown}
 					>
 						<div

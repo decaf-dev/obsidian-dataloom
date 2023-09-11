@@ -23,12 +23,7 @@ export default function useFocus() {
 	const logger = useLogger();
 	const { reactAppId } = useAppMount();
 	const { loomState } = useLoomState();
-	const { onRequestCloseTop, topMenu } = useMenuOperations();
-
-	function handleClick() {
-		logger("useFocus handleClick");
-		onRequestCloseTop();
-	}
+	const { topMenu } = useMenuOperations();
 
 	function handleKeyDown(e: React.KeyboardEvent) {
 		logger("useFocus handleKeyDown");
@@ -128,7 +123,6 @@ export default function useFocus() {
 	}
 
 	return {
-		onFocusClick: handleClick,
 		onFocusKeyDown: handleKeyDown,
 	};
 }
