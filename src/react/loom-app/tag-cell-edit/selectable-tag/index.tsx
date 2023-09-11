@@ -16,6 +16,7 @@ interface Props {
 	onClick: (tagId: string) => void;
 	onColorChange: (tagId: string, color: Color) => void;
 	onDeleteClick: (tagId: string) => void;
+	onTagNameChange: (tagId: string, value: string) => void;
 }
 
 export default function SelectableTag({
@@ -25,16 +26,18 @@ export default function SelectableTag({
 	onClick,
 	onColorChange,
 	onDeleteClick,
+	onTagNameChange,
 }: Props) {
 	const {
 		menu,
 		triggerRef,
 		triggerPosition,
 		isOpen,
+		closeRequest,
 		onOpen,
 		onClose,
 		onRequestClose,
-	} = useMenu({ level: LoomMenuLevel.TWO });
+	} = useMenu({ level: LoomMenuLevel.TWO, shouldRequestOnClose: true });
 
 	function handleColorChange(color: Color) {
 		onColorChange(id, color);
@@ -43,6 +46,11 @@ export default function SelectableTag({
 
 	function handleDeleteClick() {
 		onDeleteClick(id);
+		onClose();
+	}
+
+	function handleTagNameChange(value: string) {
+		onTagNameChange(id, value);
 		onClose();
 	}
 
@@ -83,10 +91,13 @@ export default function SelectableTag({
 				isOpen={isOpen}
 				id={menu.id}
 				triggerPosition={triggerPosition}
+				closeRequest={closeRequest}
+				markdown={markdown}
 				selectedColor={color}
 				onColorClick={(color) => handleColorChange(color)}
 				onDeleteClick={handleDeleteClick}
 				onRequestClose={onRequestClose}
+				onTagNameChange={handleTagNameChange}
 				onClose={onClose}
 			/>
 		</>
