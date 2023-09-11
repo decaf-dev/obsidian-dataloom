@@ -80,3 +80,18 @@ export const getNumBottomBarFocusableEl = (appEl: HTMLElement) => {
 	if (!el) throw Error("No bottom bar found");
 	return getFocusableElements(el).length;
 };
+
+export const isArrowKeyPressed = (
+	e: React.KeyboardEvent,
+	isMenuOpen: boolean
+) => {
+	if (isMenuOpen) {
+		return e.key === "ArrowDown" || e.key === "ArrowUp";
+	}
+	return (
+		e.key === "ArrowDown" ||
+		e.key === "ArrowUp" ||
+		e.key === "ArrowLeft" ||
+		e.key === "ArrowRight"
+	);
+};

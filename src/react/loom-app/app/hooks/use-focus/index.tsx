@@ -4,6 +4,7 @@ import {
 	getNumBottomBarFocusableEl,
 	getNumOptionBarFocusableEls,
 	getTopMenuEl,
+	isArrowKeyPressed,
 	removeCurrentFocusClass,
 } from "src/react/loom-app/app/hooks/use-focus/utils";
 import { useMenuOperations } from "src/react/shared/menu/hooks";
@@ -23,12 +24,7 @@ export default function useFocus() {
 	const logger = useLogger();
 	const { reactAppId } = useAppMount();
 	const { loomState } = useLoomState();
-	const { onRequestCloseTop, topMenu } = useMenuOperations();
-
-	function handleClick() {
-		logger("useFocus handleClick");
-		onRequestCloseTop();
-	}
+	const { topMenu } = useMenuOperations();
 
 	function handleKeyDown(e: React.KeyboardEvent) {
 		logger("useFocus handleKeyDown");
@@ -47,12 +43,7 @@ export default function useFocus() {
 			if (focusableEls.length === 0) return;
 
 			focusNextElement(menuEl, focusableEls);
-		} else if (
-			e.key === "ArrowDown" ||
-			e.key === "ArrowUp" ||
-			e.key === "ArrowLeft" ||
-			e.key === "ArrowRight"
-		) {
+		} else if (isArrowKeyPressed(e, topMenu !== null)) {
 			const layerEl = getTopMenuEl(topMenu, reactAppId);
 			if (!layerEl) return;
 
@@ -128,7 +119,6 @@ export default function useFocus() {
 	}
 
 	return {
-		onFocusClick: handleClick,
 		onFocusKeyDown: handleKeyDown,
 	};
 }

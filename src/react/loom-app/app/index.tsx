@@ -38,6 +38,7 @@ import {
 import "./global.css";
 import "./styles.css";
 import { useLogger } from "src/shared/logger";
+import { useMenuOperations } from "src/react/shared/menu/hooks";
 
 export default function App() {
 	const logger = useLogger();
@@ -52,13 +53,14 @@ export default function App() {
 	} = useLoomState();
 
 	const tableRef = React.useRef<VirtuosoHandle | null>(null);
+	const { onRequestCloseTop, topMenu } = useMenuOperations();
 
 	useExportEvents(loomState);
 	useRowEvents();
 	useColumnEvents();
 	useMenuEvents();
 
-	const { onFocusClick, onFocusKeyDown } = useFocus();
+	const { onFocusKeyDown } = useFocus();
 	const { onFrozenColumnsChange } = useTableSettings();
 
 	const {
@@ -111,6 +113,7 @@ export default function App() {
 		onTagCellMultipleRemove,
 		onTagColorChange,
 		onTagDeleteClick,
+		onTagNameChange,
 	} = useTag();
 
 	const firstColumnId = useUUID();
@@ -128,7 +131,8 @@ export default function App() {
 		logger("App handleClick");
 		//Stop propagation to the global event
 		e.stopPropagation();
-		onFocusClick();
+
+		onRequestCloseTop();
 	}
 
 	function handleKeyDown(e: React.KeyboardEvent) {
@@ -395,6 +399,7 @@ export default function App() {
 											onExternalLinkToggle={
 												onExternalLinkToggle
 											}
+											onTagNameChange={onTagNameChange}
 										/>
 									),
 								};

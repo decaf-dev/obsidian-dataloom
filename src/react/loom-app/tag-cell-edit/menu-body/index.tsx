@@ -15,6 +15,7 @@ interface MenuBodyProps {
 	onTagClick: (tagId: string) => void;
 	onTagColorChange: (tagId: string, color: Color) => void;
 	onTagDelete: (tagId: string) => void;
+	onTagNameChange: (tagId: string, value: string) => void;
 }
 
 export default function MenuBody({
@@ -25,6 +26,7 @@ export default function MenuBody({
 	onTagClick,
 	onTagColorChange,
 	onTagDelete,
+	onTagNameChange,
 }: MenuBodyProps) {
 	const hasTagWithSameCase =
 		columnTags.find((tag) => tag.markdown === inputValue) !== undefined;
@@ -54,6 +56,7 @@ export default function MenuBody({
 						onColorChange={onTagColorChange}
 						onClick={onTagClick}
 						onDeleteClick={onTagDelete}
+						onTagNameChange={onTagNameChange}
 					/>
 				))}
 			</div>

@@ -7,6 +7,7 @@ import { useLogger } from "src/shared/logger";
 import { LoomMenuCloseRequestType, Position } from "./types";
 
 import "./styles.css";
+import { useMenuOperations } from "./hooks";
 
 interface Props {
 	id: string;
@@ -40,19 +41,30 @@ const BaseMenu = React.forwardRef<HTMLDivElement, Props>(
 		ref
 	) => {
 		const logger = useLogger();
+		const { topMenu, onRequestCloseTop } = useMenuOperations();
+
+		function handleClick(e: React.MouseEvent) {
+			logger("Menu handleClick");
+			//Don't propagate to the app
+			//it will close the menu again
+			e.stopPropagation();
+			if (topMenu.id === id) return;
+			onRequestCloseTop();
+		}
 
 		function handleKeyDown(e: React.KeyboardEvent) {
 			logger("Menu handleKeyDown");
 			if (e.key === "Enter") {
+				//Don't propagate to the app
+				//it will close the menu again
+				e.stopPropagation();
 				onRequestClose("close-on-save");
 			} else if (e.key === "Escape") {
+				//Don't propagate to the app
+				//it will close the menu again
+				e.stopPropagation();
 				onClose();
 			}
-		}
-
-		function handleClick(e: React.MouseEvent) {
-			logger("Menu handleClick");
-			e.stopPropagation();
 		}
 
 		if (!isOpen) return <></>;
@@ -63,8 +75,8 @@ const BaseMenu = React.forwardRef<HTMLDivElement, Props>(
 					<div
 						id={id}
 						className="dataloom-menu"
-						onClick={handleClick}
 						onKeyDown={handleKeyDown}
+						onClick={handleClick}
 					>
 						<div
 							ref={ref}
