@@ -132,15 +132,6 @@ export default function App() {
 		//Stop propagation to the global event
 		e.stopPropagation();
 
-		//If we click on the top menu, don't close it
-		const target = e.target as HTMLElement;
-		const menuEl = target.closest(".dataloom-menu");
-		if (menuEl) {
-			const isTargetTopMenu = menuEl.id === topMenu.id;
-			if (isTargetTopMenu) return;
-		}
-
-		//Otherwise close the top menu
 		onRequestCloseTop();
 	}
 
