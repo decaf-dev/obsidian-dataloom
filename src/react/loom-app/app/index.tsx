@@ -111,6 +111,7 @@ export default function App() {
 		onTagCellMultipleRemove,
 		onTagColorChange,
 		onTagDeleteClick,
+		onTagNameChange,
 	} = useTag();
 
 	const firstColumnId = useUUID();
@@ -395,6 +396,7 @@ export default function App() {
 											onExternalLinkToggle={
 												onExternalLinkToggle
 											}
+											onTagNameChange={onTagNameChange}
 										/>
 									),
 								};
