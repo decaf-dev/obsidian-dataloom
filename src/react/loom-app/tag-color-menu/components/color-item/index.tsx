@@ -1,8 +1,14 @@
+import React from "react";
+
+import Text from "src/react/shared/text";
+import Stack from "src/react/shared/stack";
+import Padding from "src/react/shared/padding";
+
 import { findColorClassName } from "src/shared/color";
 import { Color } from "src/shared/loom-state/types";
 import { uppercaseFirst } from "src/shared/stringUtils";
+
 import "./styles.css";
-import React from "react";
 
 interface Props {
 	isDarkMode: boolean;
@@ -17,15 +23,6 @@ export default function ColorItem({
 	isSelected,
 	onColorClick,
 }: Props) {
-	const ref = React.useRef(null);
-	React.useEffect(() => {
-		if (!ref.current) return;
-
-		if (isSelected) {
-			(ref.current as HTMLElement).focus();
-		}
-	}, [isSelected]);
-
 	function handleKeyDown(e: React.KeyboardEvent) {
 		if (e.key === "Enter") {
 			//Stop propagation so the the menu doesn't close when pressing enter
@@ -39,12 +36,12 @@ export default function ColorItem({
 	if (isSelected) containerClass += " dataloom-selected";
 
 	const colorClass = findColorClassName(isDarkMode, color);
-	let squareClass = "dataloom-color-item-square";
+
+	let squareClass = "dataloom-color-item__square";
 	squareClass += " " + colorClass;
 
 	return (
 		<div
-			ref={ref}
 			tabIndex={0}
 			className={containerClass}
 			onKeyDown={handleKeyDown}
@@ -52,8 +49,12 @@ export default function ColorItem({
 				onColorClick(color);
 			}}
 		>
-			<div className={squareClass}></div>
-			<div>{uppercaseFirst(color)}</div>
+			<Padding px="lg" py="sm">
+				<Stack isHorizontal spacing="lg">
+					<div className={squareClass}></div>
+					<Text value={uppercaseFirst(color)} size="sm" />
+				</Stack>
+			</Padding>
 		</div>
 	);
 }
