@@ -8,7 +8,7 @@ interface Props {
 	onChange: (id: string, value: FilterType) => void;
 }
 
-export default function FilterRowDropdown({
+export default function FilterTypeSelect({
 	id,
 	value,
 	cellType,
