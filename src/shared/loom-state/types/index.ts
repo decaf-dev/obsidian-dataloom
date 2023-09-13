@@ -121,6 +121,9 @@ export interface Column {
 	isVisible: boolean;
 	dateFormat: DateFormat;
 	currencyType: CurrencyType;
+	numberPrefix: string;
+	numberSuffix: string;
+	numberSeperator: string;
 	shouldWrapOverflow: boolean;
 	tags: Tag[];
 	calculationType: CalculationType;

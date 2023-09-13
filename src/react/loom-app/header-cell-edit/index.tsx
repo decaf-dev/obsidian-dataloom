@@ -5,6 +5,7 @@ import OptionSubmenu from "./option-submenu";
 import TypeSubmenu from "./type-submenu";
 import BaseMenu from "./base-menu";
 import CurrencySubmenu from "./currency-submenu";
+import TextInputSubmenu from "./text-input-submenu";
 import DateFormatSubmenu from "./date-format-submenu";
 import AspectRatioSubmenu from "./aspect-ratio-submenu";
 import PaddingSubmenu from "./padding-submenu";
@@ -33,6 +34,9 @@ interface Props {
 	dateFormat: DateFormat;
 	triggerPosition: Position;
 	currencyType: CurrencyType;
+	numberPrefix: string;
+	numberSuffix: string;
+	numberSeperator: string;
 	rowId: string;
 	cellId: string;
 	aspectRatio: AspectRatio;
@@ -51,6 +55,9 @@ interface Props {
 	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
 	onNameChange: (cellId: string, value: string) => void;
 	onCurrencyChange: (columnId: string, value: CurrencyType) => void;
+	onNumberPrefixChange: (columnId: string, value: string) => void;
+	onNumberSuffixChange: (columnId: string, value: string) => void;
+	onNumberSeperatorChange: (columnId: string, value: string) => void;
 	onDateFormatChange: (columnId: string, value: DateFormat) => void;
 	onAspectRatioClick: (columnId: string, value: AspectRatio) => void;
 	onHorizontalPaddingClick: (columnId: string, value: PaddingSize) => void;
@@ -60,6 +67,12 @@ interface Props {
 	onClose: () => void;
 }
 
+const SELFHANDLE_CLOSE: SubmenuType[] = [
+	SubmenuType.TEXT_INPUT_NUMBER_SUFFIX,
+	SubmenuType.TEXT_INPUT_NUMBER_PREFIX,
+	SubmenuType.TEXT_INPUT_NUMBER_SEPERATOR
+]
+
 export default function HeaderMenu({
 	isOpen,
 	id,
@@ -68,6 +81,9 @@ export default function HeaderMenu({
 	markdown,
 	dateFormat,
 	currencyType,
+	numberPrefix,
+	numberSuffix,
+	numberSeperator,
 	horizontalPadding,
 	verticalPadding,
 	aspectRatio,
@@ -87,6 +103,9 @@ export default function HeaderMenu({
 	onWrapOverflowToggle,
 	onNameChange,
 	onCurrencyChange,
+	onNumberPrefixChange,
+	onNumberSuffixChange,
+	onNumberSeperatorChange,
 	onDateFormatChange,
 	onHideClick,
 	onRequestClose,
@@ -100,7 +119,9 @@ export default function HeaderMenu({
 			if (submenu === null) {
 				if (localValue !== markdown) onNameChange(cellId, localValue);
 			}
-			onClose();
+			if(!submenu || !SELFHANDLE_CLOSE.includes(submenu)) {
+				onClose();
+			}
 		}
 	}, [
 		markdown,
@@ -158,6 +179,13 @@ export default function HeaderMenu({
 		setSubmenu(SubmenuType.OPTIONS);
 	}
 
+	function handleNumberOptionChange(value: string) {
+		submenu === SubmenuType.TEXT_INPUT_NUMBER_PREFIX && onNumberPrefixChange(columnId, value);
+		submenu === SubmenuType.TEXT_INPUT_NUMBER_SUFFIX && onNumberSuffixChange(columnId, value);
+		submenu === SubmenuType.TEXT_INPUT_NUMBER_SEPERATOR && onNumberSeperatorChange(columnId, value);
+		setSubmenu(null);
+	}
+
 	function handleDateFormatClick(value: DateFormat) {
 		onDateFormatChange(columnId, value);
 		setSubmenu(SubmenuType.OPTIONS);
@@ -199,6 +227,9 @@ export default function HeaderMenu({
 						aspectRatio={aspectRatio}
 						dateFormat={dateFormat}
 						currencyType={currencyType}
+						numberPrefix={numberPrefix}
+						numberSuffix={numberSuffix}
+						numberSeperator={numberSeperator}
 						onBackClick={() => setSubmenu(null)}
 						onSubmenuChange={setSubmenu}
 					/>
@@ -250,6 +281,36 @@ export default function HeaderMenu({
 						title="Currency"
 						value={currencyType}
 						onValueClick={handleCurrencyClick}
+						onBackClick={() => setSubmenu(SubmenuType.OPTIONS)}
+					/>
+				)}
+				{submenu === SubmenuType.TEXT_INPUT_NUMBER_PREFIX && (
+					<TextInputSubmenu
+						title="Prefix"
+						value={numberPrefix}
+						closeRequest={closeRequest}
+						onClose={onClose}
+						onValueChange={handleNumberOptionChange}
+						onBackClick={() => setSubmenu(SubmenuType.OPTIONS)}
+						/>
+						)}
+				{submenu === SubmenuType.TEXT_INPUT_NUMBER_SUFFIX && (
+					<TextInputSubmenu
+						title="Suffix"
+						closeRequest={closeRequest}
+						onClose={onClose}
+						value={numberSuffix}
+						onValueChange={handleNumberOptionChange}
+						onBackClick={() => setSubmenu(SubmenuType.OPTIONS)}
+					/>
+					)}
+				{submenu === SubmenuType.TEXT_INPUT_NUMBER_SEPERATOR && (
+					<TextInputSubmenu
+						title="Seperator"
+						closeRequest={closeRequest}
+						onClose={onClose}
+						value={numberSeperator}
+						onValueChange={handleNumberOptionChange}
 						onBackClick={() => setSubmenu(SubmenuType.OPTIONS)}
 					/>
 				)}

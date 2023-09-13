@@ -24,6 +24,9 @@ import "./styles.css";
 interface Props {
 	cellId: string;
 	currencyType: CurrencyType;
+	numberPrefix: string;
+	numberSuffix: string;
+	numberSeperator: string;
 	horizontalPadding: PaddingSize;
 	verticalPadding: PaddingSize;
 	aspectRatio: AspectRatio;
@@ -44,6 +47,9 @@ interface Props {
 	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
 	onNameChange: (cellId: string, value: string) => void;
 	onCurrencyChange: (columnId: string, value: CurrencyType) => void;
+	onNumberPrefixChange: (columnId: string, value: string) => void;
+	onNumberSuffixChange: (columnId: string, value: string) => void;
+	onNumberSeperatorChange: (columnId: string, value: string) => void;
 	onDateFormatChange: (columnId: string, value: DateFormat) => void;
 	onVerticalPaddingClick: (columnId: string, value: PaddingSize) => void;
 	onHorizontalPaddingClick: (columnId: string, value: PaddingSize) => void;
@@ -56,6 +62,9 @@ export default function HeaderCellContainer({
 	rowId,
 	columnId,
 	currencyType,
+	numberPrefix,
+	numberSeperator,
+	numberSuffix,
 	width,
 	dateFormat,
 	horizontalPadding,
@@ -77,6 +86,9 @@ export default function HeaderCellContainer({
 	onWrapOverflowToggle,
 	onNameChange,
 	onCurrencyChange,
+	onNumberPrefixChange,
+	onNumberSeperatorChange,
+	onNumberSuffixChange,
 	onDateFormatChange,
 	onHideClick,
 }: Props) {
@@ -158,6 +170,9 @@ export default function HeaderCellContainer({
 				verticalPadding={verticalPadding}
 				rowId={rowId}
 				currencyType={currencyType}
+				numberPrefix={numberPrefix}
+				numberSuffix={numberSuffix}
+				numberSeperator={numberSeperator}
 				dateFormat={dateFormat}
 				canDeleteColumn={numColumns > 1}
 				columnId={columnId}
@@ -175,6 +190,9 @@ export default function HeaderCellContainer({
 				onWrapOverflowToggle={onWrapOverflowToggle}
 				onNameChange={onNameChange}
 				onCurrencyChange={onCurrencyChange}
+				onNumberPrefixChange={onNumberPrefixChange}
+				onNumberSeperatorChange={onNumberSeperatorChange}
+				onNumberSuffixChange={onNumberSuffixChange}
 				onDateFormatChange={onDateFormatChange}
 				onVerticalPaddingClick={onVerticalPaddingClick}
 				onHorizontalPaddingClick={onHorizontalPaddingClick}
