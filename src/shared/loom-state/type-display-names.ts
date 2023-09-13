@@ -180,6 +180,8 @@ export const getDisplayNameForCurrencyType = (type: CurrencyType) => {
 			return "Ruble";
 		case CurrencyType.ISRAEL:
 			return "Israeli Shekel";
+		case CurrencyType.SWITZERLAND:
+			return "Swiss Franc";
 		default:
 			return "";
 	}
