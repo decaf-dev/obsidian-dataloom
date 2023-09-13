@@ -168,15 +168,12 @@ export default function App() {
 	} = loomState.model;
 	const { numFrozenColumns } = settings;
 
-	console.log(loomState.model.bodyRows);
 	let filteredBodyRows = filterBodyRowsByRules(loomState);
-	console.log(filteredBodyRows);
 	filteredBodyRows = filterBodyRowsBySearch(
 		loomState,
 		filteredBodyRows,
 		searchText
 	);
-	console.log(filteredBodyRows);
 
 	const visibleColumns = columns.filter((column) => column.isVisible);
 
@@ -287,9 +284,15 @@ export default function App() {
 												onHeaderCellContentChange
 											}
 											onCurrencyChange={onCurrentChange}
-											onNumberPrefixChange={onNumberPrefixChange}
-											onNumberSeperatorChange={onNumberSeperatorChange}
-											onNumberSuffixChange={onNumberSuffixChange}
+											onNumberPrefixChange={
+												onNumberPrefixChange
+											}
+											onNumberSeperatorChange={
+												onNumberSeperatorChange
+											}
+											onNumberSuffixChange={
+												onNumberSuffixChange
+											}
 											onVerticalPaddingClick={
 												onVerticalPaddingClick
 											}
