@@ -10,6 +10,7 @@ interface Props {
 	value: string;
 	placeholder?: string;
 	inputMode?: "numeric";
+	onKeyDown?: (event: React.KeyboardEvent) => void;
 	onChange: (value: string) => void;
 	onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
 }
@@ -25,6 +26,7 @@ const Input = React.forwardRef<HTMLInputElement, Props>(
 			placeholder,
 			inputMode,
 			onChange,
+			onKeyDown,
 			onBlur,
 		},
 		ref
@@ -54,6 +56,7 @@ const Input = React.forwardRef<HTMLInputElement, Props>(
 				autoFocus
 				value={value}
 				onChange={(e) => onChange(e.target.value)}
+				onKeyDown={onKeyDown}
 				onBlur={onBlur}
 			/>
 		);

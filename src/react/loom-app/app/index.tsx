@@ -83,6 +83,9 @@ export default function App() {
 		onColumnDeleteClick,
 		onCalculationTypeChange,
 		onCurrentChange,
+		onNumberPrefixChange,
+		onNumberSeperatorChange,
+		onNumberSuffixChange,
 		onAspectRatioClick,
 		onWrapContentToggle,
 		onVerticalPaddingClick,
@@ -224,6 +227,9 @@ export default function App() {
 									sortDir,
 									shouldWrapOverflow,
 									currencyType,
+									numberPrefix,
+									numberSeperator,
+									numberSuffix,
 									dateFormat,
 									verticalPadding,
 									horizontalPadding,
@@ -249,6 +255,9 @@ export default function App() {
 											rowId={rowId}
 											dateFormat={dateFormat}
 											currencyType={currencyType}
+											numberPrefix={numberPrefix}
+											numberSeperator={numberSeperator}
+											numberSuffix={numberSuffix}
 											verticalPadding={verticalPadding}
 											horizontalPadding={
 												horizontalPadding
@@ -278,6 +287,9 @@ export default function App() {
 												onHeaderCellContentChange
 											}
 											onCurrencyChange={onCurrentChange}
+											onNumberPrefixChange={onNumberPrefixChange}
+											onNumberSeperatorChange={onNumberSeperatorChange}
+											onNumberSuffixChange={onNumberSuffixChange}
 											onVerticalPaddingClick={
 												onVerticalPaddingClick
 											}
@@ -331,6 +343,9 @@ export default function App() {
 									type,
 									shouldWrapOverflow,
 									currencyType,
+									numberPrefix,
+									numberSeperator,
+									numberSuffix,
 									dateFormat,
 									tags,
 									verticalPadding,
@@ -375,6 +390,9 @@ export default function App() {
 											rowCreationTime={creationTime}
 											dateFormat={dateFormat}
 											columnCurrencyType={currencyType}
+											numberPrefix={numberPrefix}
+											numberSuffix={numberSuffix}
+											numberSeperator={numberSeperator}
 											rowLastEditedTime={lastEditedTime}
 											dateTime={dateTime}
 											markdown={markdown}

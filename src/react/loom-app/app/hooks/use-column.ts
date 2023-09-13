@@ -132,6 +132,42 @@ export const useColumn = () => {
 		);
 	}
 
+	function handleNumberPrefixChange(
+		columnId: string,
+		prefix: string
+	) {
+		logger("handleNumberPrefixChange", { columnId, prefix });
+		doCommand(
+			new ColumnUpdateCommand(columnId, "numberPrefix", {
+				value: prefix,
+				shouldSortRows: true,
+			})
+		);
+	}
+	function handleNumberSeperatorChange(
+		columnId: string,
+		seperator: string
+	) {
+		logger("handleNumberSeperatorChange", { columnId, seperator});
+		doCommand(
+			new ColumnUpdateCommand(columnId, "numberSeperator", {
+				value: seperator,
+				shouldSortRows: true,
+			})
+		);
+	}
+	function handleNumberSuffixChange(
+		columnId: string,
+		suffix: string
+	) {
+		logger("handleNumberSuffixChange", { columnId, suffix });
+		doCommand(
+			new ColumnUpdateCommand(columnId, "numberSuffix", {
+				value: suffix,
+				shouldSortRows: true,
+			})
+		);
+	}
 	function handleCurrencyChange(
 		columnId: string,
 		currencyType: CurrencyType
@@ -206,6 +242,9 @@ export const useColumn = () => {
 		onColumnToggle: handleColumnToggle,
 		onColumnDeleteClick: handleColumnDeleteClick,
 		onCurrentChange: handleCurrencyChange,
+		onNumberPrefixChange: handleNumberPrefixChange,
+		onNumberSeperatorChange: handleNumberSeperatorChange,
+		onNumberSuffixChange: handleNumberSuffixChange,
 		onDateFormatChange: handleDateFormatChange,
 		onSortRemoveClick: handleSortRemoveClick,
 		onColumnWidthChange: handleColumnWidthChange,
