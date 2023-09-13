@@ -6,7 +6,7 @@ import Icon from "src/react/shared/icon";
 import MenuButton from "src/react/shared/menu-button";
 import MoreMenu from "./more-menu";
 import ToggleColumnMenu from "./toggle-column-menu";
-import FilterMenu from "./filter/filter-menu";
+import FilterMenu from "./filter-menu/filter-menu";
 import SortBubbleList from "./sort-bubble-list";
 
 import { FilterType } from "src/shared/loom-state/types";
