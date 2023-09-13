@@ -25,11 +25,11 @@ export const deleteRule = (prevState: LoomState, id: string): LoomState => {
 	};
 };
 
-export const updateRule = (
+export const updateRule = <K extends keyof FilterRule, V extends FilterRule[K]>(
 	prevState: LoomState,
 	id: string,
-	key: keyof FilterRule,
-	value?: unknown
+	key: K,
+	value?: V
 ): LoomState => {
 	return {
 		...prevState,
@@ -48,9 +48,7 @@ export const updateRule = (
 				if (rule.id === id) {
 					return {
 						...rule,
-						[key as keyof FilterRule]: isBoolean
-							? !rule[key]
-							: value,
+						[key]: isBoolean ? !rule[key] : value,
 					};
 				}
 				return rule;
