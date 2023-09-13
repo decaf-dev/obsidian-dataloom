@@ -1,4 +1,3 @@
-import ReactSelect from "react-select";
 import Select from "src/react/shared/select";
 import Input from "src/react/shared/input";
 
@@ -9,6 +8,7 @@ import {
 } from "src/shared/constants";
 
 import "./styles.css";
+import MultiSelect from "src/react/shared/multi-select";
 
 interface Props {
 	id: string;
@@ -59,105 +59,116 @@ export default function FilterTextInput({
 				</Select>
 			)}
 			{(cellType === CellType.TAG || cellType === CellType.MULTI_TAG) && (
-				<ReactSelect
-					className="react-select dataloom-focusable"
-					styles={{
-						placeholder: (baseStyles) => ({
-							...baseStyles,
-							fontSize: "var(--font-ui-small)",
-						}),
-						control: (base) => ({
-							...base,
-							// This line disable the blue border
-							border: 0,
-							backgroundColor: "var(--interactive-normal)",
-							boxShadow: "var(--input-shadow)",
-							borderRadius: "var(--input-radius)",
-							"&:focus-within": {
-								boxShadow:
-									"0 0 0px 3px var(--background-modifier-border-focus)",
-							},
-							"&:hover": {
-								boxShadow: "var(--input-shadow-hover)",
-								backgroundColor: "var(--interactive-hover)",
-							},
-						}),
-						option: (base, state) => ({
-							...base,
-							fontSize: "var(--font-ui-small)",
-							backgroundColor: state.isSelected
-								? "var(--background-secondary)"
-								: "var(--background-primary)",
-							"&:hover": {
-								backgroundColor: "var(--interactive-hover)",
-							},
-						}),
-						input: (base) => ({
-							...base,
-							color: "var(--text-on-accent)",
-							fontSize: "var(--font-ui-small)",
-						}),
-						menu: (base) => ({
-							...base,
-							backgroundColor: "var(--background-primary)",
-						}),
-						menuList: (base) => ({
-							...base,
-							backgroundColor: "var(--background-primary)",
-							height: "50px",
-							overflowY: "scroll",
-						}),
-						singleValue: (base) => ({
-							...base,
-							borderRadius: "8px",
-							color: "var(--text-on-accent)",
-							backgroundColor: "var(--color-accent)",
-							fontSize: "var(--font-ui-smaller)",
-							padding: "3px",
-							paddingLeft: "6px",
-						}),
-						multiValue: (base) => ({
-							...base,
-							backgroundColor: "var(--color-accent)",
-							borderRadius: "8px",
-						}),
-						multiValueLabel: (base) => ({
-							...base,
-							fontSize: "var(--font-ui-smaller)",
-							color: "var(--text-on-accent)",
-						}),
-						multiValueRemove: (base) => ({
-							...base,
-							"&:hover": {
-								backgroundColor:
-									"var(--background-modifier-hover)",
-								color: "var(--text-on-accent)",
-							},
-						}),
-					}}
-					getOptionLabel={(tag) => tag.markdown}
-					getOptionValue={(tag) => tag.id}
-					options={columnTags}
-					isClearable={false}
-					isMulti={cellType === CellType.MULTI_TAG}
-					backspaceRemovesValue
-					value={columnTags.filter((tag) => tagIds.includes(tag.id))}
-					onChange={(newValue) => {
-						if (cellType === CellType.MULTI_TAG) {
-							onTagsChange(
-								id,
-								//@ts-expect-error value is not typed
-								newValue?.map((tag) => tag.id)
-							);
-						} else {
-							onTagsChange(
-								id,
-								//@ts-expect-error value is not typed
-								[newValue?.id]
-							);
-						}
-					}}
-				/>
+				<MultiSelect
+					value={tagIds}
+					onKeyDown={handleKeyDown}
+					onChange={(value) => onTagsChange(id, value)}
+				>
+					{columnTags.map((tag) => (
+						<option key={tag.id} value={tag.id}>
+							{tag.markdown}
+						</option>
+					))}
+				</MultiSelect>
+				// <ReactSelect
+				// 	className="react-select dataloom-focusable"
+				// 	styles={{
+				// 		placeholder: (baseStyles) => ({
+				// 			...baseStyles,
+				// 			fontSize: "var(--font-ui-small)",
+				// 		}),
+				// 		control: (base) => ({
+				// 			...base,
+				// 			// This line disable the blue border
+				// 			border: 0,
+				// 			backgroundColor: "var(--interactive-normal)",
+				// 			boxShadow: "var(--input-shadow)",
+				// 			borderRadius: "var(--input-radius)",
+				// 			"&:focus-within": {
+				// 				boxShadow:
+				// 					"0 0 0px 3px var(--background-modifier-border-focus)",
+				// 			},
+				// 			"&:hover": {
+				// 				boxShadow: "var(--input-shadow-hover)",
+				// 				backgroundColor: "var(--interactive-hover)",
+				// 			},
+				// 		}),
+				// 		option: (base, state) => ({
+				// 			...base,
+				// 			fontSize: "var(--font-ui-small)",
+				// 			backgroundColor: state.isSelected
+				// 				? "var(--background-secondary)"
+				// 				: "var(--background-primary)",
+				// 			"&:hover": {
+				// 				backgroundColor: "var(--interactive-hover)",
+				// 			},
+				// 		}),
+				// 		input: (base) => ({
+				// 			...base,
+				// 			color: "var(--text-on-accent)",
+				// 			fontSize: "var(--font-ui-small)",
+				// 		}),
+				// 		menu: (base) => ({
+				// 			...base,
+				// 			backgroundColor: "var(--background-primary)",
+				// 		}),
+				// 		menuList: (base) => ({
+				// 			...base,
+				// 			backgroundColor: "var(--background-primary)",
+				// 			height: "50px",
+				// 			overflowY: "scroll",
+				// 		}),
+				// 		singleValue: (base) => ({
+				// 			...base,
+				// 			borderRadius: "8px",
+				// 			color: "var(--text-on-accent)",
+				// 			backgroundColor: "var(--color-accent)",
+				// 			fontSize: "var(--font-ui-smaller)",
+				// 			padding: "3px",
+				// 			paddingLeft: "6px",
+				// 		}),
+				// 		multiValue: (base) => ({
+				// 			...base,
+				// 			backgroundColor: "var(--color-accent)",
+				// 			borderRadius: "8px",
+				// 		}),
+				// 		multiValueLabel: (base) => ({
+				// 			...base,
+				// 			fontSize: "var(--font-ui-smaller)",
+				// 			color: "var(--text-on-accent)",
+				// 		}),
+				// 		multiValueRemove: (base) => ({
+				// 			...base,
+				// 			"&:hover": {
+				// 				backgroundColor:
+				// 					"var(--background-modifier-hover)",
+				// 				color: "var(--text-on-accent)",
+				// 			},
+				// 		}),
+				// 	}}
+				// 	getOptionLabel={(tag) => tag.markdown}
+				// 	getOptionValue={(tag) => tag.id}
+				// 	options={columnTags}
+				// 	isClearable={false}
+				// 	isMulti={cellType === CellType.MULTI_TAG}
+				// 	backspaceRemovesValue
+				// 	value={columnTags.filter((tag) => tagIds.includes(tag.id))}
+				// 	onChange={(newValue) => {
+				// 		if (cellType === CellType.MULTI_TAG) {
+				// 			onTagsChange(
+				// 				id,
+				// 				//@ts-expect-error value is not typed
+				// 				newValue?.map((tag) => tag.id)
+				// 			);
+				// 		} else {
+				// 			onTagsChange(
+				// 				id,
+				// 				//@ts-expect-error value is not typed
+				// 				[newValue?.id]
+				// 			);
+				// 		}
+				// 	}}
+				// />
 			)}
 		</div>
 	);

@@ -1,5 +1,3 @@
-import "./styles.css";
-
 interface Props {
 	className?: string;
 	value: string;
