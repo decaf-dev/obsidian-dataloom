@@ -42,7 +42,7 @@ export enum CellType {
 	LAST_EDITED_TIME = "last-edited-time",
 }
 
-export enum FilterType {
+export enum FilterCondition {
 	IS = "is",
 	IS_NOT = "is-not",
 	CONTAINS = "contains",
@@ -132,14 +132,52 @@ export interface Column {
 	verticalPadding: PaddingSize;
 }
 
-export interface FilterRule {
+interface Filter {
 	id: string;
+	type: CellType;
 	columnId: string;
-	type: FilterType;
-	text: string;
-	tagIds: string[];
 	isEnabled: boolean;
 }
+
+export interface TextFilter extends Filter {
+	condition: FilterCondition;
+	text: string;
+}
+
+export interface FileFilter extends Filter {
+	condition: FilterCondition;
+	text: string;
+}
+
+export interface TagFilter extends Filter {
+	condition:
+		| FilterCondition.IS
+		| FilterCondition.IS_NOT
+		| FilterCondition.IS_EMPTY
+		| FilterCondition.IS_NOT_EMPTY;
+	tagIds: string[];
+}
+
+export interface MultiTagFilter extends Filter {
+	condition:
+		| FilterCondition.CONTAINS
+		| FilterCondition.DOES_NOT_CONTAIN
+		| FilterCondition.IS_EMPTY
+		| FilterCondition.IS_NOT_EMPTY;
+	tagIds: string[];
+}
+
+export interface CheckboxFilter extends Filter {
+	condition: FilterCondition.IS | FilterCondition.IS_NOT;
+	text: string;
+}
+
+export type FilterRule =
+	| TextFilter
+	| FileFilter
+	| TagFilter
+	| MultiTagFilter
+	| CheckboxFilter;
 
 interface Row {
 	id: string;
