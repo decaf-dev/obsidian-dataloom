@@ -3,74 +3,55 @@ import Button from "src/react/shared/button";
 import Switch from "src/react/shared/switch";
 import Wrap from "src/react/shared/wrap";
 import Stack from "src/react/shared/stack";
-import FilterRowSelect from "./filter-type-select";
 import FilterColumnSelect from "./filter-column-select";
-import FilterTextInput from "./filter-text-input";
 
-import { CellType, FilterType, Tag } from "src/shared/loom-state/types";
+import { FilterCondition } from "src/shared/loom-state/types";
 import { ColumnWithMarkdown } from "../types";
+import FilterConditionSelect from "./filter-condition-select";
 
 interface Props {
 	id: string;
 	columns: ColumnWithMarkdown[];
 	isEnabled: boolean;
-	columnId: string;
-	cellType: CellType;
-	columnTags: Tag[];
-	tagIds: string[];
-	filterType: FilterType;
-	text: string;
-	onToggle: (id: string) => void;
+	selectedColumnId: string;
+	conditionOptions: FilterCondition[];
+	selectedCondition: FilterCondition;
+	inputNode?: React.ReactNode;
+	onRuleToggle: (id: string) => void;
 	onColumnChange: (id: string, columnId: string) => void;
-	onFilterTypeChange: (id: string, value: FilterType) => void;
-	onTextChange: (id: string, value: string) => void;
-	onDeleteClick: (id: string) => void;
-	onTagsChange: (id: string, value: string[]) => void;
+	onFilterConditionChange: (id: string, value: FilterCondition) => void;
+	onRuleDeleteClick: (id: string) => void;
+	children?: React.ReactNode;
 }
 
 export default function FilterRow({
 	id,
 	columns,
 	isEnabled,
-	columnId,
-	filterType,
-	columnTags,
-	tagIds,
-	cellType,
-	text,
-	onToggle,
+	selectedColumnId,
+	selectedCondition,
+	conditionOptions,
+	inputNode,
+	onRuleToggle,
 	onColumnChange,
-	onFilterTypeChange,
-	onTextChange,
-	onDeleteClick,
-	onTagsChange,
+	onFilterConditionChange,
+	onRuleDeleteClick,
 }: Props) {
 	return (
 		<Wrap>
 			<FilterColumnSelect
 				id={id}
 				columns={columns}
-				value={columnId}
+				value={selectedColumnId}
 				onChange={onColumnChange}
 			/>
-			<FilterRowSelect
+			<FilterConditionSelect
 				id={id}
-				cellType={cellType}
-				value={filterType}
-				onChange={onFilterTypeChange}
+				options={conditionOptions}
+				value={selectedCondition}
+				onChange={onFilterConditionChange}
 			/>
-			{filterType !== FilterType.IS_EMPTY &&
-				filterType !== FilterType.IS_NOT_EMPTY && (
-					<FilterTextInput
-						id={id}
-						tagIds={tagIds}
-						columnTags={columnTags}
-						cellType={cellType}
-						text={text}
-						onTextChange={onTextChange}
-						onTagsChange={onTagsChange}
-					/>
-				)}
+			{inputNode}
 			<Stack
 				grow
 				justify="flex-end"
@@ -81,14 +62,14 @@ export default function FilterRow({
 				<Button
 					icon={<Icon lucideId="trash-2" />}
 					ariaLabel="Delete filter rule"
-					onClick={() => onDeleteClick(id)}
+					onClick={() => onRuleDeleteClick(id)}
 				/>
 				<Switch
 					value={isEnabled}
 					ariaLabel={
 						isEnabled ? "Disable filter rule" : "Enable filter rule"
 					}
-					onToggle={() => onToggle(id)}
+					onToggle={() => onRuleToggle(id)}
 				/>
 			</Stack>
 		</Wrap>
