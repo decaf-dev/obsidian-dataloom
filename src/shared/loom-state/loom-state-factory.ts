@@ -9,7 +9,7 @@ import {
 	CurrencyType,
 	DateFormat,
 	FilterRule,
-	FilterType,
+	FilterCondition,
 	FooterCell,
 	FooterRow,
 	HeaderCell,
@@ -18,6 +18,7 @@ import {
 	SortDir,
 	LoomState,
 	Tag,
+	TextFilter,
 } from "./types";
 
 import { v4 as uuidv4 } from "uuid";
@@ -32,6 +33,9 @@ export const createColumn = (options?: { cellType?: CellType }): Column => {
 		isVisible: true,
 		width: "140px",
 		type: cellType,
+		numberPrefix: "",
+		numberSuffix: "",
+		numberSeperator: "",
 		currencyType: CurrencyType.UNITED_STATES,
 		dateFormat: DateFormat.MM_DD_YYYY,
 		shouldWrapOverflow: true,
@@ -107,13 +111,13 @@ export const createBodyCell = (
 	};
 };
 
-export const createFilterRule = (columnId: string): FilterRule => {
+export const createFilterRule = (columnId: string): TextFilter => {
 	return {
 		id: uuidv4(),
+		type: CellType.TEXT,
 		columnId,
-		type: FilterType.IS,
+		condition: FilterCondition.IS,
 		text: "",
-		tagIds: [],
 		isEnabled: true,
 	};
 };
