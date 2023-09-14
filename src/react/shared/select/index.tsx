@@ -1,7 +1,7 @@
 interface Props {
 	className?: string;
 	value: string;
-	onKeyDown: (e: React.KeyboardEvent<HTMLSelectElement>) => void;
+	onKeyDown?: (e: React.KeyboardEvent<HTMLSelectElement>) => void;
 	onChange: (value: string) => void;
 	children: React.ReactNode;
 }
