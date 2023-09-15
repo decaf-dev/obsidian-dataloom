@@ -48,7 +48,7 @@ export default function FilterConditionSelect({
 			onChange={(newValue) => onChange(id, newValue as FilterCondition)}
 		>
 			{options.map((option) => (
-				<option value={option}>
+				<option key={option} value={option}>
 					{getDisplayNameForFilterCondition(option)}
 				</option>
 			))}
