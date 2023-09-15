@@ -14,7 +14,7 @@ import {
 	Column,
 	HeaderCell,
 	Filter,
-	FilterCondition,
+	CellType,
 } from "src/shared/loom-state/types";
 import CellNotFoundError from "src/shared/error/cell-not-found-error";
 import ColumNotFoundError from "src/shared/error/column-not-found-error";
@@ -31,13 +31,13 @@ interface Props {
 	filters: Filter[];
 	onSortRemoveClick: (columnId: string) => void;
 	onColumnToggle: (columnId: string) => void;
-	onFilterToggle: (filterId: string) => void;
-	onFilterColumnChange: (filterId: string, columnId: string) => void;
-	onFilterConditionChange: (filterId: string, value: FilterCondition) => void;
-	onFilterTextChange: (filterId: string, value: string) => void;
+	onFilterUpdate: (
+		filterId: string,
+		data: Partial<Filter>,
+		isPartial?: boolean
+	) => void;
 	onFilterDeleteClick: (filterId: string) => void;
-	onFilterAddClick: (columnId: string) => void;
-	onFilterTagsChange: (filterId: string, value: string[]) => void;
+	onFilterAddClick: (columnId: string, cellType: CellType) => void;
 	onFrozenColumnsChange: (value: number) => void;
 }
 export default function OptionBar({
@@ -47,13 +47,9 @@ export default function OptionBar({
 	filters,
 	onSortRemoveClick,
 	onColumnToggle,
-	onFilterToggle,
-	onFilterColumnChange,
-	onFilterConditionChange,
-	onFilterTextChange,
+	onFilterUpdate,
 	onFilterDeleteClick,
 	onFilterAddClick,
-	onFilterTagsChange,
 	onFrozenColumnsChange,
 }: Props) {
 	const sortedCells = headerCells.filter((cell) => {
@@ -223,13 +219,9 @@ export default function OptionBar({
 				}
 				columns={columnsWithMarkdown}
 				filters={filters}
-				onTextChange={onFilterTextChange}
-				onColumnChange={onFilterColumnChange}
-				onConditionChange={onFilterConditionChange}
+				onUpdate={onFilterUpdate}
 				onDeleteClick={onFilterDeleteClick}
-				onTagsChange={onFilterTagsChange}
 				onAddClick={onFilterAddClick}
-				onToggle={onFilterToggle}
 				onRequestClose={onFilterMenuRequestClose}
 				onClose={onFilterMenuClose}
 			/>

@@ -15,6 +15,7 @@ import {
 	TagFilter,
 	MultiTagFilter,
 	Filter,
+	TagFilterCondition,
 } from "src/shared/loom-state/types";
 import { ColumnWithMarkdown } from "../types";
 import { isSmallScreenSize } from "src/shared/render/utils";
@@ -29,6 +30,10 @@ import {
 	CHECKBOX_MARKDOWN_UNCHECKED,
 } from "src/shared/constants";
 import MultiSelect from "src/react/shared/multi-select";
+import {
+	createTagFilter,
+	createTextFilter,
+} from "src/shared/loom-state/loom-state-factory";
 
 interface Props {
 	id: string;
@@ -36,13 +41,9 @@ interface Props {
 	isOpen: boolean;
 	columns: ColumnWithMarkdown[];
 	filters: Filter[];
-	onAddClick: (columnId: string) => void;
-	onToggle: (id: string) => void;
-	onColumnChange: (id: string, columnId: string) => void;
-	onConditionChange: (id: string, value: FilterCondition) => void;
-	onTextChange: (id: string, value: string) => void;
+	onAddClick: (columnId: string, cellType: CellType) => void;
+	onUpdate: (id: string, data: Partial<Filter>, isPartial?: boolean) => void;
 	onDeleteClick: (id: string) => void;
-	onTagsChange: (id: string, value: string[]) => void;
 	onRequestClose: (type: LoomMenuCloseRequestType) => void;
 	onClose: () => void;
 }
@@ -54,15 +55,88 @@ export default function FilterMenu({
 	columns,
 	filters,
 	onAddClick,
-	onToggle,
-	onColumnChange,
-	onConditionChange,
-	onTextChange,
+	onUpdate,
 	onDeleteClick,
-	onTagsChange,
 	onRequestClose,
 	onClose,
 }: Props) {
+	function onColumnChange(id: string, columnId: string) {
+		const filter = filters.find((filter) => filter.id === id);
+		if (!filter) throw new Error("Filter not found");
+		const { condition, isEnabled } = filter;
+
+		const column = columns.find((column) => column.id === columnId);
+		if (!column) throw new ColumNotFoundError(columnId);
+		const { type } = column;
+
+		let newFilter: Filter | null = null;
+		if (
+			type === CellType.TEXT ||
+			type === CellType.FILE ||
+			type === CellType.CHECKBOX
+		) {
+			newFilter = createTextFilter(type, {
+				condition,
+				isEnabled,
+			});
+		} else if (type === CellType.TAG) {
+			let newCondition: TagFilterCondition =
+				condition as TagFilterCondition;
+			if (
+				condition !== FilterCondition.IS &&
+				condition !== FilterCondition.IS_NOT &&
+				condition !== FilterCondition.IS_EMPTY &&
+				condition !== FilterCondition.IS_NOT_EMPTY
+			) {
+				newCondition = FilterCondition.IS;
+			}
+			newFilter = createTagFilter(type, {
+				condition: newCondition,
+				isEnabled,
+			});
+		} else if (type === CellType.MULTI_TAG) {
+			let newCondition: TagFilterCondition =
+				condition as TagFilterCondition;
+			if (
+				condition !== FilterCondition.IS &&
+				condition !== FilterCondition.IS_NOT &&
+				condition !== FilterCondition.IS_EMPTY &&
+				condition !== FilterCondition.IS_NOT_EMPTY
+			) {
+				newCondition = FilterCondition.IS;
+			}
+			newFilter = createTagFilter(type, {
+				condition: newCondition,
+				isEnabled,
+			});
+		} else {
+			throw new Error("Column type not handled");
+		}
+		onUpdate(id, newFilter, false);
+	}
+
+	function onConditionChange(id: string, condition: FilterCondition) {
+		onUpdate(id, { condition });
+	}
+
+	function onTextChange(id: string, text: string) {
+		onUpdate(id, { text });
+	}
+
+	function onTagChange(id: string, tagId: string) {
+		onUpdate(id, { tagId });
+	}
+
+	function onTagsChange(id: string, tagIds: string[]) {
+		onUpdate(id, { tagIds });
+	}
+
+	function onToggle(id: string) {
+		const filter = filters.find((filter) => filter.id === id);
+		if (!filter) throw new Error("Filter not found");
+		onUpdate(id, { isEnabled: !filter.isEnabled });
+	}
+
 	return (
 		<Menu
 			id={id}
@@ -158,7 +232,7 @@ export default function FilterMenu({
 										<Select
 											value={tagId}
 											onChange={(newValue) =>
-												onTagsChange(id, [newValue])
+												onTagChange(id, newValue)
 											}
 										>
 											<option value="">
@@ -233,7 +307,9 @@ export default function FilterMenu({
 							<Button
 								icon={<Icon lucideId="plus" />}
 								ariaLabel="Add filter"
-								onClick={() => onAddClick(columns[0].id)}
+								onClick={() =>
+									onAddClick(columns[0].id, columns[0].type)
+								}
 							/>
 							{filters.length === 0 && (
 								<Text value="No filters to display" />

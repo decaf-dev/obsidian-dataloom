@@ -1,5 +1,5 @@
 import {
-	createFilter,
+	createTextFilter,
 	createTestLoomState,
 } from "src/shared/loom-state/loom-state-factory";
 import RowDeleteCommand from "./row-delete-command";
@@ -35,8 +35,8 @@ describe("column-delete-command", () => {
 		const prevState = createTestLoomState(1, 1);
 
 		const filters = [
-			createFilter(prevState.model.columns[0].id),
-			createFilter(prevState.model.columns[0].id),
+			createTextFilter(prevState.model.columns[0].id),
+			createTextFilter(prevState.model.columns[0].id),
 		];
 		prevState.model.filters = filters;
 
@@ -63,8 +63,8 @@ describe("column-delete-command", () => {
 		const prevState = createTestLoomState(2, 1);
 
 		const filters = [
-			createFilter(prevState.model.columns[0].id),
-			createFilter(prevState.model.columns[0].id),
+			createTextFilter(prevState.model.columns[0].id),
+			createTextFilter(prevState.model.columns[0].id),
 		];
 		prevState.model.filters = filters;
 		const command = new ColumnDeleteCommand({
@@ -87,8 +87,8 @@ describe("column-delete-command", () => {
 		const prevState = createTestLoomState(2, 1);
 
 		const filters = [
-			createFilter(prevState.model.columns[1].id),
-			createFilter(prevState.model.columns[1].id),
+			createTextFilter(prevState.model.columns[1].id),
+			createTextFilter(prevState.model.columns[1].id),
 		];
 		prevState.model.filters = filters;
 		const command = new ColumnDeleteCommand({
@@ -126,8 +126,8 @@ describe("column-delete-command", () => {
 		const prevState = createTestLoomState(2, 1);
 
 		const filters = [
-			createFilter(prevState.model.columns[0].id),
-			createFilter(prevState.model.columns[0].id),
+			createTextFilter(prevState.model.columns[0].id),
+			createTextFilter(prevState.model.columns[0].id),
 		];
 		prevState.model.filters = filters;
 
@@ -156,8 +156,8 @@ describe("column-delete-command", () => {
 		const prevState = createTestLoomState(2, 1);
 
 		const filters = [
-			createFilter(prevState.model.columns[1].id),
-			createFilter(prevState.model.columns[1].id),
+			createTextFilter(prevState.model.columns[1].id),
+			createTextFilter(prevState.model.columns[1].id),
 		];
 		prevState.model.filters = filters;
 

@@ -19,6 +19,10 @@ import {
 	LoomState,
 	Tag,
 	TextFilter,
+	MultiTagFilter,
+	TagFilter,
+	CheckboxFilter,
+	CheckboxFilterCondition,
 } from "./types";
 
 import { v4 as uuidv4 } from "uuid";
@@ -111,14 +115,94 @@ export const createBodyCell = (
 	};
 };
 
-export const createFilter = (columnId: string): TextFilter => {
+export const createTextFilter = (
+	columnId: string,
+	options?: {
+		condition?: FilterCondition;
+		isEnabled?: boolean;
+		text?: string;
+	}
+): TextFilter => {
+	const {
+		condition = FilterCondition.IS,
+		isEnabled = true,
+		text = "",
+	} = options || {};
 	return {
 		id: uuidv4(),
-		type: CellType.TEXT,
 		columnId,
-		condition: FilterCondition.IS,
-		text: "",
-		isEnabled: true,
+		type: CellType.TEXT,
+		condition,
+		text,
+		isEnabled,
+	};
+};
+
+export const createCheckboxFilter = (
+	columnId: string,
+	options?: {
+		condition?: CheckboxFilterCondition;
+		isEnabled?: boolean;
+		text?: string;
+	}
+): CheckboxFilter => {
+	const {
+		condition = FilterCondition.IS,
+		isEnabled = true,
+		text = "",
+	} = options || {};
+	return {
+		id: uuidv4(),
+		columnId,
+		type: CellType.TEXT,
+		condition,
+		text,
+		isEnabled,
+	};
+};
+
+export const createTagFilter = (
+	columnId: string,
+	options?: {
+		condition?:
+			| FilterCondition.IS
+			| FilterCondition.IS_NOT
+			| FilterCondition.IS_EMPTY
+			| FilterCondition.IS_NOT_EMPTY;
+		isEnabled?: boolean;
+	}
+): TagFilter => {
+	const { condition = FilterCondition.IS, isEnabled = true } = options || {};
+	return {
+		id: uuidv4(),
+		columnId,
+		type: CellType.TEXT,
+		condition,
+		tagId: "",
+		isEnabled,
+	};
+};
+
+export const createMultiTagFilter = (
+	columnId: string,
+	options?: {
+		condition?:
+			| FilterCondition.CONTAINS
+			| FilterCondition.DOES_NOT_CONTAIN
+			| FilterCondition.IS_EMPTY
+			| FilterCondition.IS_NOT_EMPTY;
+		isEnabled?: boolean;
+	}
+): MultiTagFilter => {
+	const { condition = FilterCondition.CONTAINS, isEnabled = true } =
+		options || {};
+	return {
+		id: uuidv4(),
+		columnId,
+		type: CellType.TEXT,
+		condition,
+		tagIds: [],
+		isEnabled,
 	};
 };
 

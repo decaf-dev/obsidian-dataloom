@@ -8,7 +8,6 @@ import {
 	LoomState,
 	Tag,
 	TextFilter,
-	FileFilter,
 	CheckboxFilter,
 	TagFilter,
 	MultiTagFilter,
@@ -69,12 +68,9 @@ const doesCellMatchFilter = (
 	if (!isEnabled) return true;
 
 	switch (cellType) {
-		case CellType.TEXT: {
-			const { text } = filter as TextFilter;
-			return doesTextMatch(cell.markdown, text, condition);
-		}
+		case CellType.TEXT:
 		case CellType.FILE: {
-			const { text } = filter as FileFilter;
+			const { text } = filter as TextFilter;
 			return doesTextMatch(cell.markdown, text, condition);
 		}
 		case CellType.CHECKBOX: {

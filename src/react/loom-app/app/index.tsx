@@ -63,16 +63,8 @@ export default function App() {
 	const { onFocusKeyDown } = useFocus();
 	const { onFrozenColumnsChange } = useTableSettings();
 
-	const {
-		onFilterAddClick,
-		onFilterColumnChange,
-		onFilterDeleteClick,
-		onFilterConditionChange,
-		onFilterTagsChange,
-		onFilterTextChange,
-		onFilterToggle,
-		filterByFilters,
-	} = useFilter(setLoomState);
+	const { onFilterAdd, onFilterUpdate, onFilterDelete, filterByFilters } =
+		useFilter(setLoomState);
 
 	const {
 		onColumnWidthChange,
@@ -193,13 +185,9 @@ export default function App() {
 				numFrozenColumns={numFrozenColumns}
 				onColumnToggle={onColumnToggle}
 				onSortRemoveClick={onSortRemoveClick}
-				onFilterAddClick={onFilterAddClick}
-				onFilterDeleteClick={onFilterDeleteClick}
-				onFilterConditionChange={onFilterConditionChange}
-				onFilterColumnChange={onFilterColumnChange}
-				onFilterTextChange={onFilterTextChange}
-				onFilterToggle={onFilterToggle}
-				onFilterTagsChange={onFilterTagsChange}
+				onFilterAddClick={onFilterAdd}
+				onFilterDeleteClick={onFilterDelete}
+				onFilterUpdate={onFilterUpdate}
 				onFrozenColumnsChange={onFrozenColumnsChange}
 			/>
 			<Table

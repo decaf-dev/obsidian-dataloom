@@ -1,7 +1,7 @@
 import {
 	createTestLoomState,
 	createTag,
-	createFilter,
+	createTextFilter,
 } from "src/shared/loom-state/loom-state-factory";
 import { CommandRedoError, CommandUndoError } from "./command-errors";
 import { ColumnTypeUpdateCommand } from "./column-type-update-command";
@@ -211,8 +211,8 @@ describe("column-type-update-command", () => {
 		});
 
 		const filters = [
-			createFilter(prevState.model.columns[0].id),
-			createFilter(prevState.model.columns[0].id),
+			createTextFilter(prevState.model.columns[0].id),
+			createTextFilter(prevState.model.columns[0].id),
 		];
 		prevState.model.filters = filters;
 
@@ -399,8 +399,8 @@ describe("column-type-update-command", () => {
 		});
 
 		const filters = [
-			createFilter(prevState.model.columns[0].id),
-			createFilter(prevState.model.columns[0].id),
+			createTextFilter(prevState.model.columns[0].id),
+			createTextFilter(prevState.model.columns[0].id),
 		];
 		prevState.model.filters = filters;
 
@@ -445,8 +445,8 @@ describe("column-type-update-command", () => {
 		});
 
 		const filters = [
-			createFilter(prevState.model.columns[0].id),
-			createFilter(prevState.model.columns[0].id),
+			createTextFilter(prevState.model.columns[0].id),
+			createTextFilter(prevState.model.columns[0].id),
 		];
 		prevState.model.filters = filters;
 

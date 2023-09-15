@@ -1,4 +1,4 @@
-export enum Color {
+enum Color {
 	LIGHT_GRAY = "light gray",
 	GRAY = "gray",
 	BROWN = "brown",
@@ -11,7 +11,7 @@ export enum Color {
 	RED = "red",
 }
 
-export enum PaddingSize {
+enum PaddingSize {
 	UNSET = "unset",
 	SM = "sm",
 	MD = "md",
@@ -22,13 +22,13 @@ export enum PaddingSize {
 	XXXXL = "4xl",
 }
 
-export enum SortDir {
+enum SortDir {
 	ASC = "asc",
 	DESC = "desc",
 	NONE = "default",
 }
 
-export enum CellType {
+enum CellType {
 	TEXT = "text",
 	EMBED = "embed",
 	FILE = "file",
@@ -42,7 +42,7 @@ export enum CellType {
 	LAST_EDITED_TIME = "last-edited-time",
 }
 
-export enum FilterCondition {
+enum FilterType {
 	IS = "is",
 	IS_NOT = "is-not",
 	CONTAINS = "contains",
@@ -53,7 +53,7 @@ export enum FilterCondition {
 	IS_NOT_EMPTY = "is-not-empty",
 }
 
-export enum DateFormat {
+enum DateFormat {
 	MM_DD_YYYY = "mm/dd/yyyy",
 	DD_MM_YYYY = "dd/mm/yyyy",
 	YYYY_MM_DD = "yyyy/mm/dd",
@@ -61,7 +61,7 @@ export enum DateFormat {
 	RELATIVE = "relative",
 }
 
-export enum CurrencyType {
+enum CurrencyType {
 	UNITED_STATES = "USD",
 	CANADA = "CAD",
 	SINGAPORE = "SGB",
@@ -81,10 +81,9 @@ export enum CurrencyType {
 	MEXICO = "MXN",
 	ARGENTINA = "ARS",
 	ISRAEL = "ILS",
-	SWITZERLAND = "CHF",
 }
 
-export enum Calculation {
+enum Calculation {
 	NONE = "none",
 	COUNT_ALL = "count-all",
 	COUNT_VALUES = "count-values",
@@ -95,7 +94,7 @@ export enum Calculation {
 	PERCENT_NOT_EMPTY = "percent-not-empty",
 }
 
-export enum NumberCalculation {
+enum NumberCalculation {
 	SUM = "sum",
 	AVG = "avg",
 	MIN = "min",
@@ -104,16 +103,16 @@ export enum NumberCalculation {
 	RANGE = "range",
 }
 
-export enum AspectRatio {
+enum AspectRatio {
 	UNSET = "unset",
 	NINE_BY_SIXTEEN = "9/16",
 	FOUR_BY_THREE = "4/3",
 	SIXTEEN_BY_NINE = "16/9",
 }
 
-export type CalculationType = Calculation | NumberCalculation;
+type CalculationType = Calculation | NumberCalculation;
 
-export interface Column {
+interface Column {
 	id: string;
 	sortDir: SortDir;
 	width: string;
@@ -121,9 +120,6 @@ export interface Column {
 	isVisible: boolean;
 	dateFormat: DateFormat;
 	currencyType: CurrencyType;
-	numberPrefix: string;
-	numberSuffix: string;
-	numberSeperator: string;
 	shouldWrapOverflow: boolean;
 	tags: Tag[];
 	calculationType: CalculationType;
@@ -132,94 +128,58 @@ export interface Column {
 	verticalPadding: PaddingSize;
 }
 
-interface BaseFilter {
+interface FilterRule {
 	id: string;
-	type: CellType;
 	columnId: string;
+	type: FilterType;
+	text: string;
+	tagIds: string[];
 	isEnabled: boolean;
 }
-
-export interface TextFilter extends BaseFilter {
-	condition: FilterCondition;
-	text: string;
-}
-
-export type TagFilterCondition =
-	| FilterCondition.IS
-	| FilterCondition.IS_NOT
-	| FilterCondition.IS_EMPTY
-	| FilterCondition.IS_NOT_EMPTY;
-
-export interface TagFilter extends BaseFilter {
-	condition: TagFilterCondition;
-	tagId: string;
-}
-
-export type MultiTagFilterCondition =
-	| FilterCondition.CONTAINS
-	| FilterCondition.DOES_NOT_CONTAIN
-	| FilterCondition.IS_EMPTY
-	| FilterCondition.IS_NOT_EMPTY;
-
-export interface MultiTagFilter extends BaseFilter {
-	condition: MultiTagFilterCondition;
-	tagIds: string[];
-}
-
-export type CheckboxFilterCondition =
-	| FilterCondition.IS
-	| FilterCondition.IS_NOT;
-
-export interface CheckboxFilter extends BaseFilter {
-	condition: CheckboxFilterCondition;
-	text: string;
-}
-
-export type Filter = TextFilter | TagFilter | MultiTagFilter | CheckboxFilter;
 
 interface Row {
 	id: string;
 }
 
-export interface BodyRow extends Row {
+interface BodyRow extends Row {
 	index: number;
 	creationTime: number;
 	lastEditedTime: number;
 }
 
-export type HeaderRow = Row;
-export type FooterRow = Row;
+type HeaderRow = Row;
+type FooterRow = Row;
 
-export interface Cell {
+interface Cell {
 	id: string;
 	columnId: string;
 	rowId: string;
 }
 
-export interface HeaderCell extends Cell {
+interface HeaderCell extends Cell {
 	markdown: string;
 }
 
-export interface BodyCell extends Cell {
+interface BodyCell extends Cell {
 	isExternalLink: boolean;
 	dateTime: number | null;
 	markdown: string;
 	tagIds: string[];
 }
 
-export type FooterCell = Cell;
+type FooterCell = Cell;
 
-export interface Tag {
+interface Tag {
 	id: string;
 	markdown: string;
 	color: Color;
 }
 
-export interface TableSettings {
+interface TableSettings {
 	numFrozenColumns: number;
 }
 
-export interface TableModel {
+interface TableModel {
 	columns: Column[];
 	headerRows: HeaderRow[];
 	bodyRows: BodyRow[];
@@ -227,11 +187,11 @@ export interface TableModel {
 	headerCells: HeaderCell[];
 	bodyCells: BodyCell[];
 	footerCells: FooterCell[];
-	filters: Filter[]; //rename to filters
+	filterRules: FilterRule[];
 	settings: TableSettings;
 }
 
-export interface LoomState {
+export interface LoomState841 {
 	pluginVersion: string;
 	model: TableModel;
 }
