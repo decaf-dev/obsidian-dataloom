@@ -154,7 +154,7 @@ export const createCheckboxFilter = (
 	return {
 		id: uuidv4(),
 		columnId,
-		type: CellType.TEXT,
+		type: CellType.CHECKBOX,
 		condition,
 		text,
 		isEnabled,
@@ -176,7 +176,7 @@ export const createTagFilter = (
 	return {
 		id: uuidv4(),
 		columnId,
-		type: CellType.TEXT,
+		type: CellType.TAG,
 		condition,
 		tagId: "",
 		isEnabled,
@@ -199,7 +199,7 @@ export const createMultiTagFilter = (
 	return {
 		id: uuidv4(),
 		columnId,
-		type: CellType.TEXT,
+		type: CellType.MULTI_TAG,
 		condition,
 		tagIds: [],
 		isEnabled,
