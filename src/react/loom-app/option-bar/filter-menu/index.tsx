@@ -9,12 +9,12 @@ import Button from "src/react/shared/button";
 import ColumNotFoundError from "src/shared/error/column-not-found-error";
 import {
 	CellType,
-	FilterRule,
 	FilterCondition,
 	TextFilter,
 	CheckboxFilter,
 	TagFilter,
 	MultiTagFilter,
+	Filter,
 } from "src/shared/loom-state/types";
 import { ColumnWithMarkdown } from "../types";
 import { isSmallScreenSize } from "src/shared/render/utils";
@@ -35,13 +35,13 @@ interface Props {
 	triggerPosition: Position;
 	isOpen: boolean;
 	columns: ColumnWithMarkdown[];
-	filterRules: FilterRule[];
+	filters: Filter[];
 	onAddClick: (columnId: string) => void;
-	onRuleToggle: (id: string) => void;
+	onToggle: (id: string) => void;
 	onColumnChange: (id: string, columnId: string) => void;
-	onFilterConditionChange: (id: string, value: FilterCondition) => void;
+	onConditionChange: (id: string, value: FilterCondition) => void;
 	onTextChange: (id: string, value: string) => void;
-	onRuleDeleteClick: (id: string) => void;
+	onDeleteClick: (id: string) => void;
 	onTagsChange: (id: string, value: string[]) => void;
 	onRequestClose: (type: LoomMenuCloseRequestType) => void;
 	onClose: () => void;
@@ -52,13 +52,13 @@ export default function FilterMenu({
 	triggerPosition,
 	isOpen,
 	columns,
-	filterRules,
+	filters,
 	onAddClick,
-	onRuleToggle,
+	onToggle,
 	onColumnChange,
-	onFilterConditionChange,
+	onConditionChange,
 	onTextChange,
-	onRuleDeleteClick,
+	onDeleteClick,
 	onTagsChange,
 	onRequestClose,
 	onClose,
@@ -83,9 +83,9 @@ export default function FilterMenu({
 			>
 				<Padding p="md">
 					<Stack spacing="lg">
-						{filterRules.map((rule) => {
+						{filters.map((filter) => {
 							const { id, type, isEnabled, condition, columnId } =
-								rule;
+								filter;
 
 							const column = columns.find(
 								(column) => column.id === columnId
@@ -98,7 +98,7 @@ export default function FilterMenu({
 							switch (type) {
 								case CellType.TEXT:
 								case CellType.FILE:
-									const { text } = rule as TextFilter;
+									const { text } = filter as TextFilter;
 									inputNode = (
 										<Input
 											value={text}
@@ -119,7 +119,7 @@ export default function FilterMenu({
 									];
 									break;
 								case CellType.CHECKBOX: {
-									const { text } = rule as CheckboxFilter;
+									const { text } = filter as CheckboxFilter;
 									inputNode = (
 										<Select
 											value={text}
@@ -153,14 +153,10 @@ export default function FilterMenu({
 									break;
 								}
 								case CellType.TAG: {
-									const { tagIds } = rule as TagFilter;
+									const { tagId } = filter as TagFilter;
 									inputNode = (
 										<Select
-											value={
-												tagIds.length === 1
-													? tagIds[0]
-													: ""
-											}
+											value={tagId}
 											onChange={(newValue) =>
 												onTagsChange(id, [newValue])
 											}
@@ -187,7 +183,7 @@ export default function FilterMenu({
 									break;
 								}
 								case CellType.MULTI_TAG: {
-									const { tagIds } = rule as MultiTagFilter;
+									const { tagIds } = filter as MultiTagFilter;
 									inputNode = (
 										<MultiSelect
 											value={tagIds}
@@ -227,22 +223,20 @@ export default function FilterMenu({
 									inputNode={inputNode}
 									isEnabled={isEnabled}
 									onColumnChange={onColumnChange}
-									onRuleToggle={onRuleToggle}
-									onRuleDeleteClick={onRuleDeleteClick}
-									onFilterConditionChange={
-										onFilterConditionChange
-									}
+									onToggle={onToggle}
+									onDeleteClick={onDeleteClick}
+									onConditionChange={onConditionChange}
 								/>
 							);
 						})}
 						<Stack isHorizontal>
 							<Button
 								icon={<Icon lucideId="plus" />}
-								ariaLabel="Add filter rule"
+								ariaLabel="Add filter"
 								onClick={() => onAddClick(columns[0].id)}
 							/>
-							{filterRules.length === 0 && (
-								<Text value="No rules to display" />
+							{filters.length === 0 && (
+								<Text value="No filters to display" />
 							)}
 						</Stack>
 					</Stack>

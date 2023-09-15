@@ -132,33 +132,33 @@ export interface Column {
 	verticalPadding: PaddingSize;
 }
 
-interface Filter {
+interface BaseFilter {
 	id: string;
 	type: CellType;
 	columnId: string;
 	isEnabled: boolean;
 }
 
-export interface TextFilter extends Filter {
+export interface TextFilter extends BaseFilter {
 	condition: FilterCondition;
 	text: string;
 }
 
-export interface FileFilter extends Filter {
-	condition: FilterCondition;
+export interface FileFilter extends BaseFilter {
+	condition: FilterCondition; //rename to condition
 	text: string;
 }
 
-export interface TagFilter extends Filter {
+export interface TagFilter extends BaseFilter {
 	condition:
 		| FilterCondition.IS
 		| FilterCondition.IS_NOT
 		| FilterCondition.IS_EMPTY
 		| FilterCondition.IS_NOT_EMPTY;
-	tagIds: string[];
+	tagId: string;
 }
 
-export interface MultiTagFilter extends Filter {
+export interface MultiTagFilter extends BaseFilter {
 	condition:
 		| FilterCondition.CONTAINS
 		| FilterCondition.DOES_NOT_CONTAIN
@@ -167,12 +167,12 @@ export interface MultiTagFilter extends Filter {
 	tagIds: string[];
 }
 
-export interface CheckboxFilter extends Filter {
+export interface CheckboxFilter extends BaseFilter {
 	condition: FilterCondition.IS | FilterCondition.IS_NOT;
 	text: string;
 }
 
-export type FilterRule =
+export type Filter =
 	| TextFilter
 	| FileFilter
 	| TagFilter
@@ -229,7 +229,7 @@ export interface TableModel {
 	headerCells: HeaderCell[];
 	bodyCells: BodyCell[];
 	footerCells: FooterCell[];
-	filterRules: FilterRule[];
+	filters: Filter[]; //rename to filters
 	settings: TableSettings;
 }
 

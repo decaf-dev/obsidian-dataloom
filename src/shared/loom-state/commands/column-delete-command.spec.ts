@@ -1,5 +1,5 @@
 import {
-	createFilterRule,
+	createFilter,
 	createTestLoomState,
 } from "src/shared/loom-state/loom-state-factory";
 import RowDeleteCommand from "./row-delete-command";
@@ -34,11 +34,11 @@ describe("column-delete-command", () => {
 		//Arrange
 		const prevState = createTestLoomState(1, 1);
 
-		const filterRules = [
-			createFilterRule(prevState.model.columns[0].id),
-			createFilterRule(prevState.model.columns[0].id),
+		const filters = [
+			createFilter(prevState.model.columns[0].id),
+			createFilter(prevState.model.columns[0].id),
 		];
-		prevState.model.filterRules = filterRules;
+		prevState.model.filters = filters;
 
 		//Act
 		const executeState = new ColumnDeleteCommand({
@@ -55,20 +55,18 @@ describe("column-delete-command", () => {
 		expect(executeState.model.footerCells).toEqual(
 			prevState.model.footerCells
 		);
-		expect(executeState.model.filterRules).toEqual(
-			prevState.model.filterRules
-		);
+		expect(executeState.model.filters).toEqual(prevState.model.filters);
 	});
 
 	it("should delete a column when execute() is called", () => {
 		//Arrange
 		const prevState = createTestLoomState(2, 1);
 
-		const filterRules = [
-			createFilterRule(prevState.model.columns[0].id),
-			createFilterRule(prevState.model.columns[0].id),
+		const filters = [
+			createFilter(prevState.model.columns[0].id),
+			createFilter(prevState.model.columns[0].id),
 		];
-		prevState.model.filterRules = filterRules;
+		prevState.model.filters = filters;
 		const command = new ColumnDeleteCommand({
 			id: prevState.model.columns[0].id,
 		});
@@ -81,18 +79,18 @@ describe("column-delete-command", () => {
 		expect(executeState.model.headerCells.length).toEqual(1);
 		expect(executeState.model.bodyCells.length).toEqual(1);
 		expect(executeState.model.footerCells.length).toEqual(2);
-		expect(executeState.model.filterRules.length).toEqual(0);
+		expect(executeState.model.filters.length).toEqual(0);
 	});
 
 	it("should delete the last column when execute() is called", () => {
 		//Arrange
 		const prevState = createTestLoomState(2, 1);
 
-		const filterRules = [
-			createFilterRule(prevState.model.columns[1].id),
-			createFilterRule(prevState.model.columns[1].id),
+		const filters = [
+			createFilter(prevState.model.columns[1].id),
+			createFilter(prevState.model.columns[1].id),
 		];
-		prevState.model.filterRules = filterRules;
+		prevState.model.filters = filters;
 		const command = new ColumnDeleteCommand({
 			last: true,
 		});
@@ -116,9 +114,9 @@ describe("column-delete-command", () => {
 			prevState.model.footerCells[0],
 			prevState.model.footerCells[2],
 		]);
-		expect(executeState.model.filterRules).toEqual(
-			prevState.model.filterRules.filter(
-				(rule) => rule.columnId !== prevState.model.columns[1].id
+		expect(executeState.model.filters).toEqual(
+			prevState.model.filters.filter(
+				(filter) => filter.columnId !== prevState.model.columns[1].id
 			)
 		);
 	});
@@ -127,11 +125,11 @@ describe("column-delete-command", () => {
 		//Arrange
 		const prevState = createTestLoomState(2, 1);
 
-		const filterRules = [
-			createFilterRule(prevState.model.columns[0].id),
-			createFilterRule(prevState.model.columns[0].id),
+		const filters = [
+			createFilter(prevState.model.columns[0].id),
+			createFilter(prevState.model.columns[0].id),
 		];
-		prevState.model.filterRules = filterRules;
+		prevState.model.filters = filters;
 
 		const command = new ColumnDeleteCommand({
 			id: prevState.model.columns[0].id,
@@ -150,20 +148,18 @@ describe("column-delete-command", () => {
 		expect(undoState.model.footerCells).toEqual(
 			prevState.model.footerCells
 		);
-		expect(undoState.model.filterRules).toEqual(
-			prevState.model.filterRules
-		);
+		expect(undoState.model.filters).toEqual(prevState.model.filters);
 	});
 
 	it("should restore the last deleted column when undo() is called", () => {
 		//Arrange
 		const prevState = createTestLoomState(2, 1);
 
-		const filterRules = [
-			createFilterRule(prevState.model.columns[1].id),
-			createFilterRule(prevState.model.columns[1].id),
+		const filters = [
+			createFilter(prevState.model.columns[1].id),
+			createFilter(prevState.model.columns[1].id),
 		];
-		prevState.model.filterRules = filterRules;
+		prevState.model.filters = filters;
 
 		const command = new RowDeleteCommand({
 			last: true,
@@ -182,8 +178,6 @@ describe("column-delete-command", () => {
 		expect(undoState.model.footerCells).toEqual(
 			prevState.model.footerCells
 		);
-		expect(undoState.model.filterRules).toEqual(
-			prevState.model.filterRules
-		);
+		expect(undoState.model.filters).toEqual(prevState.model.filters);
 	});
 });

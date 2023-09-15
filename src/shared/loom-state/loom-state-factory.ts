@@ -8,7 +8,7 @@ import {
 	Column,
 	CurrencyType,
 	DateFormat,
-	FilterRule,
+	Filter,
 	FilterCondition,
 	FooterCell,
 	FooterRow,
@@ -111,7 +111,7 @@ export const createBodyCell = (
 	};
 };
 
-export const createFilterRule = (columnId: string): TextFilter => {
+export const createFilter = (columnId: string): TextFilter => {
 	return {
 		id: uuidv4(),
 		type: CellType.TEXT,
@@ -220,7 +220,7 @@ const createGenericLoomState = (
 		}
 	}
 
-	const filterRules: FilterRule[] = [];
+	const filters: Filter[] = [];
 
 	return {
 		model: {
@@ -231,7 +231,7 @@ const createGenericLoomState = (
 			headerCells,
 			bodyCells,
 			footerCells,
-			filterRules,
+			filters,
 			settings: {
 				numFrozenColumns: defaultFrozenColumnCount,
 			},

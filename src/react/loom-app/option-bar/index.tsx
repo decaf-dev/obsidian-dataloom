@@ -9,16 +9,15 @@ import ToggleColumnMenu from "./toggle-column-menu";
 import FilterMenu from "./filter-menu";
 import SortBubbleList from "./sort-bubble-list";
 
-import { FilterType } from "src/shared/loom-state/types";
 import {
 	SortDir,
 	Column,
 	HeaderCell,
-	FilterRule,
+	Filter,
+	FilterCondition,
 } from "src/shared/loom-state/types";
 import CellNotFoundError from "src/shared/error/cell-not-found-error";
 import ColumNotFoundError from "src/shared/error/column-not-found-error";
-import { isCellTypeFilterable } from "src/react/loom-app/app/filter-by-rules";
 import { ColumnWithMarkdown } from "./types";
 import { isSmallScreenSize } from "src/shared/render/utils";
 import { useMenu } from "../../shared/menu/hooks";
@@ -29,32 +28,32 @@ interface Props {
 	numFrozenColumns: number;
 	headerCells: HeaderCell[];
 	columns: Column[];
-	filterRules: FilterRule[];
+	filters: Filter[];
 	onSortRemoveClick: (columnId: string) => void;
 	onColumnToggle: (columnId: string) => void;
-	onRuleToggle: (ruleId: string) => void;
-	onRuleColumnChange: (ruleId: string, columnId: string) => void;
-	onRuleFilterTypeChange: (ruleId: string, value: FilterType) => void;
-	onRuleTextChange: (ruleId: string, value: string) => void;
-	onRuleDeleteClick: (ruleId: string) => void;
-	onRuleAddClick: (columnId: string) => void;
-	onRuleTagsChange: (ruleId: string, value: string[]) => void;
+	onFilterToggle: (filterId: string) => void;
+	onFilterColumnChange: (filterId: string, columnId: string) => void;
+	onFilterConditionChange: (filterId: string, value: FilterCondition) => void;
+	onFilterTextChange: (filterId: string, value: string) => void;
+	onFilterDeleteClick: (filterId: string) => void;
+	onFilterAddClick: (columnId: string) => void;
+	onFilterTagsChange: (filterId: string, value: string[]) => void;
 	onFrozenColumnsChange: (value: number) => void;
 }
 export default function OptionBar({
 	numFrozenColumns,
 	headerCells,
 	columns,
-	filterRules,
+	filters,
 	onSortRemoveClick,
 	onColumnToggle,
-	onRuleToggle,
-	onRuleColumnChange,
-	onRuleFilterTypeChange,
-	onRuleTextChange,
-	onRuleDeleteClick,
-	onRuleAddClick,
-	onRuleTagsChange,
+	onFilterToggle,
+	onFilterColumnChange,
+	onFilterConditionChange,
+	onFilterTextChange,
+	onFilterDeleteClick,
+	onFilterAddClick,
+	onFilterTagsChange,
 	onFrozenColumnsChange,
 }: Props) {
 	const sortedCells = headerCells.filter((cell) => {
@@ -100,7 +99,7 @@ export default function OptionBar({
 	// 	if (previousLength !== undefined) {
 	// 		if (previousLength < filterRules.length) {
 	// 			if (filterMenuRef.current) {
-	// 				//Scroll to the bottom if we're adding a new rule
+	// 				//Scroll to the bottom if we're adding a new filter
 	// 				filterMenuRef.current.scrollTop =
 	// 					filterMenuRef.current.scrollHeight;
 	// 			}
@@ -108,7 +107,7 @@ export default function OptionBar({
 	// 	}
 	// }, [previousLength, filterRules.length, filterMenuRef]);
 
-	const activeRules = filterRules.filter((rule) => rule.isEnabled);
+	const activeFilters = filters.filter((filter) => filter.isEnabled);
 
 	const columnsWithMarkdown: ColumnWithMarkdown[] = columns.map((column) => {
 		const headerCell = headerCells.find(
@@ -123,13 +122,6 @@ export default function OptionBar({
 			markdown: headerCell.markdown,
 		};
 	});
-
-	const filterableColumns: ColumnWithMarkdown[] = columnsWithMarkdown.filter(
-		(column) => {
-			const { type } = column;
-			return isCellTypeFilterable(type);
-		}
-	);
 
 	const isSmallScreen = isSmallScreenSize();
 	return (
@@ -156,7 +148,7 @@ export default function OptionBar({
 								onRemoveClick={onSortRemoveClick}
 							/>
 							<ActiveFilterBubble
-								numActive={activeRules.length}
+								numActive={activeFilters.length}
 							/>
 						</Stack>
 						<Stack
@@ -229,15 +221,15 @@ export default function OptionBar({
 						? moreMenuTriggerPosition
 						: filterMenuTriggerPosition
 				}
-				columns={filterableColumns}
-				filterRules={filterRules}
-				onTextChange={onRuleTextChange}
-				onColumnChange={onRuleColumnChange}
-				onFilterTypeChange={onRuleFilterTypeChange}
-				onDeleteClick={onRuleDeleteClick}
-				onTagsChange={onRuleTagsChange}
-				onAddClick={onRuleAddClick}
-				onToggle={onRuleToggle}
+				columns={columnsWithMarkdown}
+				filters={filters}
+				onTextChange={onFilterTextChange}
+				onColumnChange={onFilterColumnChange}
+				onConditionChange={onFilterConditionChange}
+				onDeleteClick={onFilterDeleteClick}
+				onTagsChange={onFilterTagsChange}
+				onAddClick={onFilterAddClick}
+				onToggle={onFilterToggle}
 				onRequestClose={onFilterMenuRequestClose}
 				onClose={onFilterMenuClose}
 			/>

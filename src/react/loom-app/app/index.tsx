@@ -14,7 +14,7 @@ import BottomBar from "../bottom-bar";
 import { useUUID } from "../../../shared/hooks";
 import CellNotFoundError from "src/shared/error/cell-not-found-error";
 import { useLoomState } from "../loom-state-provider";
-import { useFilterRules } from "./hooks/use-filter-rules";
+import { useFilter } from "./hooks/use-filter";
 import { filterBodyRowsBySearch } from "./filter-by-search";
 import { useColumn } from "./hooks/use-column";
 import { useRow } from "./hooks/use-row";
@@ -64,15 +64,15 @@ export default function App() {
 	const { onFrozenColumnsChange } = useTableSettings();
 
 	const {
-		onRuleAddClick,
-		onRuleColumnChange,
-		onRuleDeleteClick,
-		onRuleFilterTypeChange,
-		onRuleTagsChange,
-		onRuleTextChange,
-		onRuleToggle,
-		filterBodyRowsByRules,
-	} = useFilterRules(setLoomState);
+		onFilterAddClick,
+		onFilterColumnChange,
+		onFilterDeleteClick,
+		onFilterConditionChange,
+		onFilterTagsChange,
+		onFilterTextChange,
+		onFilterToggle,
+		filterByFilters,
+	} = useFilter(setLoomState);
 
 	const {
 		onColumnWidthChange,
@@ -163,12 +163,12 @@ export default function App() {
 		headerCells,
 		bodyCells,
 		footerCells,
-		filterRules,
+		filters,
 		settings,
 	} = loomState.model;
 	const { numFrozenColumns } = settings;
 
-	let filteredBodyRows = filterBodyRowsByRules(loomState);
+	let filteredBodyRows = filterByFilters(loomState);
 	filteredBodyRows = filterBodyRowsBySearch(
 		loomState,
 		filteredBodyRows,
@@ -189,17 +189,17 @@ export default function App() {
 			<OptionBar
 				headerCells={headerCells}
 				columns={columns}
-				filterRules={filterRules}
+				filters={filters}
 				numFrozenColumns={numFrozenColumns}
 				onColumnToggle={onColumnToggle}
 				onSortRemoveClick={onSortRemoveClick}
-				onRuleAddClick={onRuleAddClick}
-				onRuleDeleteClick={onRuleDeleteClick}
-				onRuleFilterTypeChange={onRuleFilterTypeChange}
-				onRuleColumnChange={onRuleColumnChange}
-				onRuleTextChange={onRuleTextChange}
-				onRuleToggle={onRuleToggle}
-				onRuleTagsChange={onRuleTagsChange}
+				onFilterAddClick={onFilterAddClick}
+				onFilterDeleteClick={onFilterDeleteClick}
+				onFilterConditionChange={onFilterConditionChange}
+				onFilterColumnChange={onFilterColumnChange}
+				onFilterTextChange={onFilterTextChange}
+				onFilterToggle={onFilterToggle}
+				onFilterTagsChange={onFilterTagsChange}
 				onFrozenColumnsChange={onFrozenColumnsChange}
 			/>
 			<Table
