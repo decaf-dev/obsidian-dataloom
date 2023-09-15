@@ -289,6 +289,7 @@ export default function FilterMenu({
 
 							return (
 								<FilterRow
+									key={id}
 									id={id}
 									columns={columns}
 									selectedColumnId={columnId}
