@@ -16,6 +16,7 @@ import {
 	MultiTagFilter,
 	Filter,
 	TagFilterCondition,
+	MultiTagFilterCondition,
 } from "src/shared/loom-state/types";
 import { ColumnWithMarkdown } from "../types";
 import { isSmallScreenSize } from "src/shared/render/utils";
@@ -31,6 +32,7 @@ import {
 } from "src/shared/constants";
 import MultiSelect from "src/react/shared/multi-select";
 import {
+	createMultiTagFilter,
 	createTagFilter,
 	createTextFilter,
 } from "src/shared/loom-state/loom-state-factory";
@@ -95,17 +97,17 @@ export default function FilterMenu({
 				isEnabled,
 			});
 		} else if (type === CellType.MULTI_TAG) {
-			let newCondition: TagFilterCondition =
-				condition as TagFilterCondition;
+			let newCondition: MultiTagFilterCondition =
+				condition as MultiTagFilterCondition;
 			if (
-				condition !== FilterCondition.IS &&
-				condition !== FilterCondition.IS_NOT &&
+				condition !== FilterCondition.CONTAINS &&
+				condition !== FilterCondition.DOES_NOT_CONTAIN &&
 				condition !== FilterCondition.IS_EMPTY &&
 				condition !== FilterCondition.IS_NOT_EMPTY
 			) {
-				newCondition = FilterCondition.IS;
+				newCondition = FilterCondition.CONTAINS;
 			}
-			newFilter = createTagFilter(columnId, {
+			newFilter = createMultiTagFilter(columnId, {
 				condition: newCondition,
 				isEnabled,
 			});

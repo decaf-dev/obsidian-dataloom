@@ -79,12 +79,11 @@ const doesCellMatchFilter = (
 		}
 		case CellType.TAG: {
 			const { tagId } = filter as TagFilter;
-			const foundTag = columnTags.find((tag) => tagId === tag.id);
-			if (!foundTag) return true;
-
-			const { markdown } = foundTag;
-
-			return doesTextMatch(cell.markdown, markdown, condition);
+			const filterTag =
+				columnTags.find((tag) => tagId === tag.id) ?? null;
+			const cellTag =
+				columnTags.find((tag) => cell.tagIds.includes(tag.id)) ?? null;
+			return doesTagMatch(cellTag, filterTag, condition);
 		}
 		case CellType.MULTI_TAG: {
 			const { tagIds } = filter as MultiTagFilter;
@@ -99,6 +98,27 @@ const doesCellMatchFilter = (
 	}
 };
 
+const doesTagMatch = (
+	cellTag: Tag | null,
+	filterTag: Tag | null,
+	condition: FilterCondition
+) => {
+	switch (condition) {
+		case FilterCondition.IS:
+			if (filterTag === null) return true;
+			return cellTag?.id == filterTag?.id;
+		case FilterCondition.IS_NOT:
+			if (filterTag === null) return true;
+			return cellTag?.id !== filterTag?.id;
+		case FilterCondition.IS_EMPTY:
+			return cellTag === null;
+		case FilterCondition.IS_NOT_EMPTY:
+			return cellTag !== null;
+		default:
+			throw new Error("Filter condition not yet supported");
+	}
+};
+
 const doTagsMatch = (
 	cellTags: Tag[],
 	filterTags: Tag[],
@@ -106,17 +126,13 @@ const doTagsMatch = (
 ) => {
 	switch (condition) {
 		case FilterCondition.CONTAINS:
-			return filterTags.every((filterTag) => {
-				return cellTags.some((cellTag) => {
-					return cellTag.id === filterTag.id;
-				});
-			});
+			return filterTags.every((filterTag) =>
+				cellTags.some((cellTag) => cellTag.id === filterTag.id)
+			);
 		case FilterCondition.DOES_NOT_CONTAIN:
-			return filterTags.every((filterTag) => {
-				return cellTags.every((cellTag) => {
-					return cellTag.id !== filterTag.id;
-				});
-			});
+			return filterTags.every((filterTag) =>
+				cellTags.every((cellTag) => cellTag.id !== filterTag.id)
+			);
 		case FilterCondition.IS_EMPTY:
 			return cellTags.length === 0;
 		case FilterCondition.IS_NOT_EMPTY:
@@ -131,36 +147,26 @@ const doesTextMatch = (
 	filterText: string,
 	condition: FilterCondition
 ) => {
-	const compareCellContent = cellContent.toLowerCase().trim();
-	const compareFilterText = filterText.toLowerCase().trim();
-
-	if (
-		condition !== FilterCondition.IS_NOT_EMPTY &&
-		condition !== FilterCondition.IS_EMPTY
-	) {
-		//If the filter text is empty, there is nothing to compare
-		if (compareFilterText === "") return true;
-		//If the markdown is emtpy, there is nothing to compare
-		if (cellContent === "") return true;
-	}
+	cellContent = cellContent.toLowerCase().trim();
+	filterText = filterText.toLowerCase().trim();
 
 	switch (condition) {
 		case FilterCondition.IS:
-			return compareCellContent === compareFilterText;
+			return cellContent === filterText;
 		case FilterCondition.IS_NOT:
-			return compareCellContent !== compareFilterText;
+			return cellContent !== filterText;
 		case FilterCondition.CONTAINS:
-			return compareCellContent.includes(compareFilterText);
+			return cellContent.includes(filterText);
 		case FilterCondition.DOES_NOT_CONTAIN:
-			return !compareCellContent.includes(compareFilterText);
+			return !cellContent.includes(filterText);
 		case FilterCondition.STARTS_WITH:
-			return compareCellContent.startsWith(compareFilterText);
+			return cellContent.startsWith(filterText);
 		case FilterCondition.ENDS_WITH:
-			return compareCellContent.endsWith(compareFilterText);
+			return cellContent.endsWith(filterText);
 		case FilterCondition.IS_EMPTY:
-			return compareCellContent === "";
+			return cellContent === "";
 		case FilterCondition.IS_NOT_EMPTY:
-			return compareCellContent !== "";
+			return cellContent !== "";
 		default:
 			throw new Error("Filter condition not yet supported");
 	}
