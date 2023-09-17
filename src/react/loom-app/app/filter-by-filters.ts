@@ -49,18 +49,18 @@ export const filterByFilters = (prevState: LoomState): BodyRow[] => {
 const doesCellMatchFilters = (
 	cell: BodyCell,
 	cellType: CellType,
-	tags: Tag[],
+	columnTags: Tag[],
 	filters: Filter[]
 ) => {
 	return filters.every((filter) =>
-		doesCellMatchFilter(cell, cellType, tags, filter)
+		doesCellMatchFilter(cell, cellType, columnTags, filter)
 	);
 };
 
 const doesCellMatchFilter = (
 	cell: BodyCell,
 	cellType: CellType,
-	tags: Tag[],
+	columnTags: Tag[],
 	filter: Filter
 ) => {
 	const { columnId, isEnabled, condition } = filter;
@@ -79,7 +79,7 @@ const doesCellMatchFilter = (
 		}
 		case CellType.TAG: {
 			const { tagId } = filter as TagFilter;
-			const foundTag = tags.find((tag) => tagId === tag.id);
+			const foundTag = columnTags.find((tag) => tagId === tag.id);
 			if (!foundTag) return true;
 
 			const { markdown } = foundTag;
@@ -88,32 +88,41 @@ const doesCellMatchFilter = (
 		}
 		case CellType.MULTI_TAG: {
 			const { tagIds } = filter as MultiTagFilter;
-			const filteredTags = tags.filter((tag) => tagIds.includes(tag.id));
-			return filteredTags.every((tag) =>
-				doesTagMatch(cell.tagIds, tag.markdown, condition)
+			const filterTags = columnTags.filter((tag) =>
+				tagIds.includes(tag.id)
 			);
+			const cellTags = columnTags.filter((tag) =>
+				cell.tagIds.includes(tag.id)
+			);
+			return doTagsMatch(cellTags, filterTags, condition);
 		}
 	}
 };
 
-const doesTagMatch = (
-	tagMarkdown: string[],
-	filterText: string,
+const doTagsMatch = (
+	cellTags: Tag[],
+	filterTags: Tag[],
 	condition: FilterCondition
 ) => {
 	switch (condition) {
-		case FilterCondition.IS:
-			return tagMarkdown[0] === filterText;
-		case FilterCondition.IS_NOT:
-			return tagMarkdown[0] !== filterText;
 		case FilterCondition.CONTAINS:
-			return tagMarkdown.some((tag) => filterText.includes(tag));
+			return filterTags.every((filterTag) => {
+				return cellTags.some((cellTag) => {
+					return cellTag.id === filterTag.id;
+				});
+			});
 		case FilterCondition.DOES_NOT_CONTAIN:
-			return tagMarkdown.every((tag) => !filterText.includes(tag));
+			return filterTags.every((filterTag) => {
+				return cellTags.every((cellTag) => {
+					return cellTag.id !== filterTag.id;
+				});
+			});
 		case FilterCondition.IS_EMPTY:
-			return tagMarkdown.length === 0;
+			return cellTags.length === 0;
 		case FilterCondition.IS_NOT_EMPTY:
-			return tagMarkdown.length !== 0;
+			return cellTags.length !== 0;
+		default:
+			throw new Error("Filter condition not yet supported");
 	}
 };
 
