@@ -1,6 +1,7 @@
 import { CellType, Filter, LoomState } from "src/shared/loom-state/types";
 import {
 	createCheckboxFilter,
+	createFileFilter,
 	createMultiTagFilter,
 	createTagFilter,
 	createTextFilter,
@@ -13,8 +14,10 @@ export const addFilter = (
 ): LoomState => {
 	const { model } = prevState;
 	let filter: Filter | null = null;
-	if (cellType === CellType.TEXT || cellType === CellType.FILE) {
+	if (cellType === CellType.TEXT) {
 		filter = createTextFilter(columnId);
+	} else if (cellType === CellType.FILE) {
+		filter = createFileFilter(columnId);
 	} else if (cellType === CellType.CHECKBOX) {
 		filter = createCheckboxFilter(columnId);
 	} else if (cellType === CellType.TAG) {

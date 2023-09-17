@@ -70,8 +70,8 @@ interface Props {
 const SELFHANDLE_CLOSE: SubmenuType[] = [
 	SubmenuType.TEXT_INPUT_NUMBER_SUFFIX,
 	SubmenuType.TEXT_INPUT_NUMBER_PREFIX,
-	SubmenuType.TEXT_INPUT_NUMBER_SEPERATOR
-]
+	SubmenuType.TEXT_INPUT_NUMBER_SEPERATOR,
+];
 
 export default function HeaderMenu({
 	isOpen,
@@ -119,7 +119,7 @@ export default function HeaderMenu({
 			if (submenu === null) {
 				if (localValue !== markdown) onNameChange(cellId, localValue);
 			}
-			if(!submenu || !SELFHANDLE_CLOSE.includes(submenu)) {
+			if (!submenu || !SELFHANDLE_CLOSE.includes(submenu)) {
 				onClose();
 			}
 		}
@@ -180,9 +180,12 @@ export default function HeaderMenu({
 	}
 
 	function handleNumberOptionChange(value: string) {
-		submenu === SubmenuType.TEXT_INPUT_NUMBER_PREFIX && onNumberPrefixChange(columnId, value);
-		submenu === SubmenuType.TEXT_INPUT_NUMBER_SUFFIX && onNumberSuffixChange(columnId, value);
-		submenu === SubmenuType.TEXT_INPUT_NUMBER_SEPERATOR && onNumberSeperatorChange(columnId, value);
+		submenu === SubmenuType.TEXT_INPUT_NUMBER_PREFIX &&
+			onNumberPrefixChange(columnId, value);
+		submenu === SubmenuType.TEXT_INPUT_NUMBER_SUFFIX &&
+			onNumberSuffixChange(columnId, value);
+		submenu === SubmenuType.TEXT_INPUT_NUMBER_SEPERATOR &&
+			onNumberSeperatorChange(columnId, value);
 		setSubmenu(null);
 	}
 
@@ -292,8 +295,8 @@ export default function HeaderMenu({
 						onClose={onClose}
 						onValueChange={handleNumberOptionChange}
 						onBackClick={() => setSubmenu(SubmenuType.OPTIONS)}
-						/>
-						)}
+					/>
+				)}
 				{submenu === SubmenuType.TEXT_INPUT_NUMBER_SUFFIX && (
 					<TextInputSubmenu
 						title="Suffix"
@@ -303,7 +306,7 @@ export default function HeaderMenu({
 						onValueChange={handleNumberOptionChange}
 						onBackClick={() => setSubmenu(SubmenuType.OPTIONS)}
 					/>
-					)}
+				)}
 				{submenu === SubmenuType.TEXT_INPUT_NUMBER_SEPERATOR && (
 					<TextInputSubmenu
 						title="Seperator"

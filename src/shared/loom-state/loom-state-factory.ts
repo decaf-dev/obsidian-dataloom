@@ -23,6 +23,7 @@ import {
 	TagFilter,
 	CheckboxFilter,
 	CheckboxFilterCondition,
+	FileFilter,
 } from "./types";
 
 import { v4 as uuidv4 } from "uuid";
@@ -138,6 +139,29 @@ export const createTextFilter = (
 	};
 };
 
+export const createFileFilter = (
+	columnId: string,
+	options?: {
+		condition?: FilterCondition;
+		isEnabled?: boolean;
+		text?: string;
+	}
+): FileFilter => {
+	const {
+		condition = FilterCondition.IS,
+		isEnabled = true,
+		text = "",
+	} = options || {};
+	return {
+		id: uuidv4(),
+		columnId,
+		type: CellType.FILE,
+		condition,
+		text,
+		isEnabled,
+	};
+};
+
 export const createCheckboxFilter = (
 	columnId: string,
 	options?: {
@@ -169,16 +193,21 @@ export const createTagFilter = (
 			| FilterCondition.IS_NOT
 			| FilterCondition.IS_EMPTY
 			| FilterCondition.IS_NOT_EMPTY;
+		tagId?: string;
 		isEnabled?: boolean;
 	}
 ): TagFilter => {
-	const { condition = FilterCondition.IS, isEnabled = true } = options || {};
+	const {
+		condition = FilterCondition.IS,
+		isEnabled = true,
+		tagId = "",
+	} = options || {};
 	return {
 		id: uuidv4(),
 		columnId,
 		type: CellType.TAG,
 		condition,
-		tagId: "",
+		tagId,
 		isEnabled,
 	};
 };
@@ -191,17 +220,21 @@ export const createMultiTagFilter = (
 			| FilterCondition.DOES_NOT_CONTAIN
 			| FilterCondition.IS_EMPTY
 			| FilterCondition.IS_NOT_EMPTY;
+		tagIds?: string[];
 		isEnabled?: boolean;
 	}
 ): MultiTagFilter => {
-	const { condition = FilterCondition.CONTAINS, isEnabled = true } =
-		options || {};
+	const {
+		condition = FilterCondition.CONTAINS,
+		isEnabled = true,
+		tagIds = [],
+	} = options || {};
 	return {
 		id: uuidv4(),
 		columnId,
 		type: CellType.MULTI_TAG,
 		condition,
-		tagIds: [],
+		tagIds,
 		isEnabled,
 	};
 };
