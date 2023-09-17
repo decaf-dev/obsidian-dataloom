@@ -75,7 +75,7 @@ export default function FilterMenu({
 			type === CellType.FILE ||
 			type === CellType.CHECKBOX
 		) {
-			newFilter = createTextFilter(type, {
+			newFilter = createTextFilter(columnId, {
 				condition,
 				isEnabled,
 			});
@@ -90,7 +90,7 @@ export default function FilterMenu({
 			) {
 				newCondition = FilterCondition.IS;
 			}
-			newFilter = createTagFilter(type, {
+			newFilter = createTagFilter(columnId, {
 				condition: newCondition,
 				isEnabled,
 			});
@@ -105,7 +105,7 @@ export default function FilterMenu({
 			) {
 				newCondition = FilterCondition.IS;
 			}
-			newFilter = createTagFilter(type, {
+			newFilter = createTagFilter(columnId, {
 				condition: newCondition,
 				isEnabled,
 			});
