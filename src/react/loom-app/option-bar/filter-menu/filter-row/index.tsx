@@ -54,7 +54,10 @@ export default function FilterRow({
 					value={selectedCondition}
 					onChange={onConditionChange}
 				/>
-				{inputNode}
+				{selectedCondition !== FilterCondition.IS_EMPTY &&
+					selectedCondition !== FilterCondition.IS_NOT_EMPTY && (
+						<>{inputNode}</>
+					)}
 				<Stack
 					grow
 					justify="flex-end"
