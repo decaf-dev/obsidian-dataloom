@@ -17,6 +17,8 @@ import {
 	Filter,
 	TagFilterCondition,
 	MultiTagFilterCondition,
+	CheckboxFilterCondition,
+	FileFilter,
 } from "src/shared/loom-state/types";
 import { ColumnWithMarkdown } from "../types";
 import { isSmallScreenSize } from "src/shared/render/utils";
@@ -32,6 +34,8 @@ import {
 } from "src/shared/constants";
 import MultiSelect from "src/react/shared/multi-select";
 import {
+	createCheckboxFilter,
+	createFileFilter,
 	createMultiTagFilter,
 	createTagFilter,
 	createTextFilter,
@@ -72,13 +76,27 @@ export default function FilterMenu({
 		const { type } = column;
 
 		let newFilter: Filter | null = null;
-		if (
-			type === CellType.TEXT ||
-			type === CellType.FILE ||
-			type === CellType.CHECKBOX
-		) {
+		if (type === CellType.TEXT) {
 			newFilter = createTextFilter(columnId, {
 				condition,
+				isEnabled,
+			});
+		} else if (type === CellType.FILE) {
+			newFilter = createFileFilter(columnId, {
+				condition,
+				isEnabled,
+			});
+		} else if (type === CellType.CHECKBOX) {
+			let newCondition: CheckboxFilterCondition =
+				condition as CheckboxFilterCondition;
+			if (
+				condition !== FilterCondition.IS &&
+				condition !== FilterCondition.IS_NOT
+			) {
+				newCondition = FilterCondition.IS;
+			}
+			newFilter = createCheckboxFilter(columnId, {
+				condition: newCondition,
 				isEnabled,
 			});
 		} else if (type === CellType.TAG) {
@@ -172,8 +190,7 @@ export default function FilterMenu({
 							let inputNode: React.ReactNode;
 							let conditionOptions: FilterCondition[] = [];
 							switch (type) {
-								case CellType.TEXT:
-								case CellType.FILE:
+								case CellType.TEXT: {
 									const { text } = filter as TextFilter;
 									inputNode = (
 										<Input
@@ -194,6 +211,29 @@ export default function FilterMenu({
 										FilterCondition.IS_NOT_EMPTY,
 									];
 									break;
+								}
+								case CellType.FILE: {
+									const { text } = filter as FileFilter;
+									inputNode = (
+										<Input
+											value={text}
+											onChange={(newValue) =>
+												onTextChange(id, newValue)
+											}
+										/>
+									);
+									conditionOptions = [
+										FilterCondition.IS,
+										FilterCondition.IS_NOT,
+										FilterCondition.CONTAINS,
+										FilterCondition.DOES_NOT_CONTAIN,
+										FilterCondition.STARTS_WITH,
+										FilterCondition.ENDS_WITH,
+										FilterCondition.IS_EMPTY,
+										FilterCondition.IS_NOT_EMPTY,
+									];
+									break;
+								}
 								case CellType.CHECKBOX: {
 									const { text } = filter as CheckboxFilter;
 									inputNode = (
