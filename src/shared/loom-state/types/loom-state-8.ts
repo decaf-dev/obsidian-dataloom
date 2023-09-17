@@ -1,3 +1,11 @@
+/**
+ * Type definitions for v6.12.3
+ */
+export interface LoomState8 {
+	pluginVersion: string;
+	model: TableModel;
+}
+
 enum Color {
 	LIGHT_GRAY = "light gray",
 	GRAY = "gray",
@@ -11,17 +19,6 @@ enum Color {
 	RED = "red",
 }
 
-enum PaddingSize {
-	UNSET = "unset",
-	SM = "sm",
-	MD = "md",
-	LG = "lg",
-	XL = "xl",
-	XXL = "2xl",
-	XXXL = "3xl",
-	XXXXL = "4xl",
-}
-
 enum SortDir {
 	ASC = "asc",
 	DESC = "desc",
@@ -30,7 +27,6 @@ enum SortDir {
 
 enum CellType {
 	TEXT = "text",
-	EMBED = "embed",
 	FILE = "file",
 	NUMBER = "number",
 	CURRENCY = "currency",
@@ -80,10 +76,9 @@ enum CurrencyType {
 	COLOMBIA = "COP",
 	MEXICO = "MXN",
 	ARGENTINA = "ARS",
-	ISRAEL = "ILS",
 }
 
-enum Calculation {
+enum GeneralFunction {
 	NONE = "none",
 	COUNT_ALL = "count-all",
 	COUNT_VALUES = "count-values",
@@ -94,7 +89,7 @@ enum Calculation {
 	PERCENT_NOT_EMPTY = "percent-not-empty",
 }
 
-enum NumberCalculation {
+enum NumberFunction {
 	SUM = "sum",
 	AVG = "avg",
 	MIN = "min",
@@ -103,14 +98,7 @@ enum NumberCalculation {
 	RANGE = "range",
 }
 
-enum AspectRatio {
-	UNSET = "unset",
-	NINE_BY_SIXTEEN = "9/16",
-	FOUR_BY_THREE = "4/3",
-	SIXTEEN_BY_NINE = "16/9",
-}
-
-type CalculationType = Calculation | NumberCalculation;
+type FunctionType = GeneralFunction | NumberFunction;
 
 interface Column {
 	id: string;
@@ -122,10 +110,7 @@ interface Column {
 	currencyType: CurrencyType;
 	shouldWrapOverflow: boolean;
 	tags: Tag[];
-	calculationType: CalculationType;
-	aspectRatio: AspectRatio;
-	horizontalPadding: PaddingSize;
-	verticalPadding: PaddingSize;
+	functionType: FunctionType;
 }
 
 interface FilterRule {
@@ -161,7 +146,6 @@ interface HeaderCell extends Cell {
 }
 
 interface BodyCell extends Cell {
-	isExternalLink: boolean;
 	dateTime: number | null;
 	markdown: string;
 	tagIds: string[];
@@ -175,10 +159,6 @@ interface Tag {
 	color: Color;
 }
 
-interface TableSettings {
-	numFrozenColumns: number;
-}
-
 interface TableModel {
 	columns: Column[];
 	headerRows: HeaderRow[];
@@ -188,10 +168,4 @@ interface TableModel {
 	bodyCells: BodyCell[];
 	footerCells: FooterCell[];
 	filterRules: FilterRule[];
-	settings: TableSettings;
-}
-
-export interface LoomState841 {
-	pluginVersion: string;
-	model: TableModel;
 }

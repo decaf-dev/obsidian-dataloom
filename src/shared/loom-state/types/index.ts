@@ -144,6 +144,11 @@ export interface TextFilter extends BaseFilter {
 	text: string;
 }
 
+export interface FileFilter extends BaseFilter {
+	condition: FilterCondition;
+	text: string;
+}
+
 export type TagFilterCondition =
 	| FilterCondition.IS
 	| FilterCondition.IS_NOT
@@ -175,7 +180,12 @@ export interface CheckboxFilter extends BaseFilter {
 	text: string;
 }
 
-export type Filter = TextFilter | TagFilter | MultiTagFilter | CheckboxFilter;
+export type Filter =
+	| TextFilter
+	| TagFilter
+	| MultiTagFilter
+	| CheckboxFilter
+	| FileFilter;
 
 interface Row {
 	id: string;

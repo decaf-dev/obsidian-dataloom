@@ -1,3 +1,13 @@
+/**
+ * Type definitions for v6.8.0
+ */
+export interface LoomState5 {
+	pluginVersion: string;
+	model: TableModel;
+}
+
+type FunctionType = GeneralFunction | NumberFunction;
+
 enum Color {
 	LIGHT_GRAY = "light gray",
 	GRAY = "gray",
@@ -53,10 +63,6 @@ enum CurrencyType {
 	CANADA = "CAD",
 	SINGAPORE = "SGB",
 	EUROPE = "EUR",
-	SWEDEN = "SEK",
-	DENMARK = "DKK",
-	NORWAY = "NOK",
-	ICELAND = "ISK",
 	POUND = "GBP",
 	RUSSIA = "RUB",
 	AUSTRALIA = "AUD",
@@ -71,13 +77,13 @@ enum CurrencyType {
 
 enum GeneralFunction {
 	NONE = "none",
-	COUNT_ALL = "count-all",
-	COUNT_VALUES = "count-values",
-	COUNT_UNIQUE = "count-unique",
-	COUNT_EMPTY = "count-empty",
-	COUNT_NOT_EMPTY = "count-not-empty",
-	PERCENT_EMPTY = "percent-empty",
-	PERCENT_NOT_EMPTY = "percent-not-empty",
+	COUNT_ALL = "count_all",
+	COUNT_VALUES = "count_values",
+	COUNT_UNIQUE = "count_unique",
+	COUNT_EMPTY = "count_empty",
+	COUNT_NOT_EMPTY = "count_not_empty",
+	PERCENT_EMPTY = "percent_empty",
+	PERCENT_NOT_EMPTY = "percent_not_empty",
 }
 
 enum NumberFunction {
@@ -88,8 +94,6 @@ enum NumberFunction {
 	MEDIAN = "median",
 	RANGE = "range",
 }
-
-type FunctionType = GeneralFunction | NumberFunction;
 
 interface Column {
 	id: string;
@@ -162,9 +166,4 @@ interface TableModel {
 	footerCells: FooterCell[];
 	tags: Tag[];
 	filterRules: FilterRule[];
-}
-
-export interface LoomState691 {
-	pluginVersion: string;
-	model: TableModel;
 }

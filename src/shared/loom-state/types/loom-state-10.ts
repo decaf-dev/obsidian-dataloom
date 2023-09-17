@@ -1,3 +1,11 @@
+/**
+ * Type definitions for v6.18.6
+ */
+export interface LoomState10 {
+	pluginVersion: string;
+	model: TableModel;
+}
+
 enum Color {
 	LIGHT_GRAY = "light gray",
 	GRAY = "gray",
@@ -11,6 +19,17 @@ enum Color {
 	RED = "red",
 }
 
+enum PaddingSize {
+	SM = "sm",
+	MD = "md",
+	LG = "lg",
+	XL = "xl",
+	XXL = "2xl",
+	XXXL = "3xl",
+	XXXXL = "4xl",
+	UNSET = "unset",
+}
+
 enum SortDir {
 	ASC = "asc",
 	DESC = "desc",
@@ -19,6 +38,8 @@ enum SortDir {
 
 enum CellType {
 	TEXT = "text",
+	EMBED = "embed",
+	FILE = "file",
 	NUMBER = "number",
 	CURRENCY = "currency",
 	TAG = "tag",
@@ -27,6 +48,17 @@ enum CellType {
 	CHECKBOX = "checkbox",
 	CREATION_TIME = "creation-time",
 	LAST_EDITED_TIME = "last-edited-time",
+}
+
+enum FilterType {
+	IS = "is",
+	IS_NOT = "is-not",
+	CONTAINS = "contains",
+	DOES_NOT_CONTAIN = "does-not-contain",
+	STARTS_WITH = "starts-with",
+	ENDS_WITH = "ends-with",
+	IS_EMPTY = "is-empty",
+	IS_NOT_EMPTY = "is-not-empty",
 }
 
 enum DateFormat {
@@ -42,6 +74,10 @@ enum CurrencyType {
 	CANADA = "CAD",
 	SINGAPORE = "SGB",
 	EUROPE = "EUR",
+	SWEDEN = "SEK",
+	DENMARK = "DKK",
+	NORWAY = "NOK",
+	ICELAND = "ISK",
 	POUND = "GBP",
 	RUSSIA = "RUB",
 	AUSTRALIA = "AUD",
@@ -56,16 +92,14 @@ enum CurrencyType {
 
 enum GeneralFunction {
 	NONE = "none",
-	COUNT_ALL = "count_all",
-	COUNT_VALUES = "count_values",
-	COUNT_UNIQUE = "count_unique",
-	COUNT_EMPTY = "count_empty",
-	COUNT_NOT_EMPTY = "count_not_empty",
-	PERCENT_EMPTY = "percent_empty",
-	PERCENT_NOT_EMPTY = "percent_not_empty",
+	COUNT_ALL = "count-all",
+	COUNT_VALUES = "count-values",
+	COUNT_UNIQUE = "count-unique",
+	COUNT_EMPTY = "count-empty",
+	COUNT_NOT_EMPTY = "count-not-empty",
+	PERCENT_EMPTY = "percent-empty",
+	PERCENT_NOT_EMPTY = "percent-not-empty",
 }
-
-export const GeneralFunction670 = GeneralFunction;
 
 enum NumberFunction {
 	SUM = "sum",
@@ -74,6 +108,13 @@ enum NumberFunction {
 	MAX = "max",
 	MEDIAN = "median",
 	RANGE = "range",
+}
+
+enum AspectRatio {
+	ONE_BY_ONE = "1/1",
+	NINE_BY_SIXTEEN = "9/16",
+	FOUR_BY_THREE = "4/3",
+	SIXTEEN_BY_NINE = "16/9",
 }
 
 type FunctionType = GeneralFunction | NumberFunction;
@@ -87,6 +128,20 @@ interface Column {
 	dateFormat: DateFormat;
 	currencyType: CurrencyType;
 	shouldWrapOverflow: boolean;
+	tags: Tag[];
+	functionType: FunctionType;
+	aspectRatio: AspectRatio;
+	horizontalPadding: PaddingSize;
+	verticalPadding: PaddingSize;
+}
+
+interface FilterRule {
+	id: string;
+	columnId: string;
+	type: FilterType;
+	text: string;
+	tagIds: string[];
+	isEnabled: boolean;
 }
 
 interface Row {
@@ -95,7 +150,6 @@ interface Row {
 
 interface BodyRow extends Row {
 	index: number;
-	menuCellId: string;
 	creationTime: number;
 	lastEditedTime: number;
 }
@@ -116,18 +170,15 @@ interface HeaderCell extends Cell {
 interface BodyCell extends Cell {
 	dateTime: number | null;
 	markdown: string;
+	tagIds: string[];
 }
 
-interface FooterCell extends Cell {
-	functionType: FunctionType;
-}
+type FooterCell = Cell;
 
 interface Tag {
 	id: string;
 	markdown: string;
 	color: Color;
-	columnId: string;
-	cellIds: string[];
 }
 
 interface TableModel {
@@ -138,10 +189,5 @@ interface TableModel {
 	headerCells: HeaderCell[];
 	bodyCells: BodyCell[];
 	footerCells: FooterCell[];
-	tags: Tag[];
-}
-
-export interface LoomState670 {
-	pluginVersion: string;
-	model: TableModel;
+	filterRules: FilterRule[];
 }
