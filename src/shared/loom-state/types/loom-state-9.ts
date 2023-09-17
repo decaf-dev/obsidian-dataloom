@@ -1,3 +1,29 @@
+/**
+ * Type definitions for v6.17.0
+ */
+export interface LoomState9 {
+	pluginVersion: string;
+	model: TableModel;
+}
+
+export enum AspectRatio {
+	ONE_BY_ONE = "1/1",
+	NINE_BY_SIXTEEN = "9/16",
+	FOUR_BY_THREE = "4/3",
+	SIXTEEN_BY_NINE = "16/9",
+}
+
+export enum PaddingSize {
+	SM = "sm",
+	MD = "md",
+	LG = "lg",
+	XL = "xl",
+	XXL = "2xl",
+	XXXL = "3xl",
+	XXXXL = "4xl",
+	UNSET = "unset",
+}
+
 enum Color {
 	LIGHT_GRAY = "light gray",
 	GRAY = "gray",
@@ -19,6 +45,7 @@ enum SortDir {
 
 enum CellType {
 	TEXT = "text",
+	EMBED = "embed",
 	FILE = "file",
 	NUMBER = "number",
 	CURRENCY = "currency",
@@ -103,6 +130,9 @@ interface Column {
 	shouldWrapOverflow: boolean;
 	tags: Tag[];
 	functionType: FunctionType;
+	aspectRatio: AspectRatio;
+	horizontalPadding: PaddingSize;
+	verticalPadding: PaddingSize;
 }
 
 interface FilterRule {
@@ -160,8 +190,4 @@ interface TableModel {
 	bodyCells: BodyCell[];
 	footerCells: FooterCell[];
 	filterRules: FilterRule[];
-}
-export interface LoomState6151 {
-	pluginVersion: string;
-	model: TableModel;
 }

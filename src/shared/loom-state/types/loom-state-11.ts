@@ -1,3 +1,38 @@
+/**
+ * Type definitions for v6.19.0
+ */
+export interface LoomState11 {
+	pluginVersion: string;
+	model: TableModel;
+}
+
+export interface Column {
+	id: string;
+	sortDir: SortDir;
+	width: string;
+	type: CellType;
+	isVisible: boolean;
+	dateFormat: DateFormat;
+	currencyType: CurrencyType;
+	shouldWrapOverflow: boolean;
+	tags: Tag[];
+	calculationType: CalculationType;
+	aspectRatio: AspectRatio;
+	horizontalPadding: PaddingSize;
+	verticalPadding: PaddingSize;
+}
+
+enum FilterType {
+	IS = "is",
+	IS_NOT = "is-not",
+	CONTAINS = "contains",
+	DOES_NOT_CONTAIN = "does-not-contain",
+	STARTS_WITH = "starts-with",
+	ENDS_WITH = "ends-with",
+	IS_EMPTY = "is-empty",
+	IS_NOT_EMPTY = "is-not-empty",
+}
+
 enum Color {
 	LIGHT_GRAY = "light gray",
 	GRAY = "gray",
@@ -12,6 +47,7 @@ enum Color {
 }
 
 enum PaddingSize {
+	UNSET = "unset",
 	SM = "sm",
 	MD = "md",
 	LG = "lg",
@@ -19,7 +55,6 @@ enum PaddingSize {
 	XXL = "2xl",
 	XXXL = "3xl",
 	XXXXL = "4xl",
-	UNSET = "unset",
 }
 
 enum SortDir {
@@ -40,17 +75,6 @@ enum CellType {
 	CHECKBOX = "checkbox",
 	CREATION_TIME = "creation-time",
 	LAST_EDITED_TIME = "last-edited-time",
-}
-
-enum FilterType {
-	IS = "is",
-	IS_NOT = "is-not",
-	CONTAINS = "contains",
-	DOES_NOT_CONTAIN = "does-not-contain",
-	STARTS_WITH = "starts-with",
-	ENDS_WITH = "ends-with",
-	IS_EMPTY = "is-empty",
-	IS_NOT_EMPTY = "is-not-empty",
 }
 
 enum DateFormat {
@@ -82,7 +106,7 @@ enum CurrencyType {
 	ARGENTINA = "ARS",
 }
 
-enum GeneralFunction {
+enum Calculation {
 	NONE = "none",
 	COUNT_ALL = "count-all",
 	COUNT_VALUES = "count-values",
@@ -93,7 +117,7 @@ enum GeneralFunction {
 	PERCENT_NOT_EMPTY = "percent-not-empty",
 }
 
-enum NumberFunction {
+enum NumberCalculation {
 	SUM = "sum",
 	AVG = "avg",
 	MIN = "min",
@@ -103,29 +127,13 @@ enum NumberFunction {
 }
 
 enum AspectRatio {
-	ONE_BY_ONE = "1/1",
+	UNSET = "unset",
 	NINE_BY_SIXTEEN = "9/16",
 	FOUR_BY_THREE = "4/3",
 	SIXTEEN_BY_NINE = "16/9",
 }
 
-type FunctionType = GeneralFunction | NumberFunction;
-
-interface Column {
-	id: string;
-	sortDir: SortDir;
-	width: string;
-	type: CellType;
-	isVisible: boolean;
-	dateFormat: DateFormat;
-	currencyType: CurrencyType;
-	shouldWrapOverflow: boolean;
-	tags: Tag[];
-	functionType: FunctionType;
-	aspectRatio: AspectRatio;
-	horizontalPadding: PaddingSize;
-	verticalPadding: PaddingSize;
-}
+type CalculationType = Calculation | NumberCalculation;
 
 interface FilterRule {
 	id: string;
@@ -160,6 +168,7 @@ interface HeaderCell extends Cell {
 }
 
 interface BodyCell extends Cell {
+	isExternalLink: boolean;
 	dateTime: number | null;
 	markdown: string;
 	tagIds: string[];
@@ -182,9 +191,4 @@ interface TableModel {
 	bodyCells: BodyCell[];
 	footerCells: FooterCell[];
 	filterRules: FilterRule[];
-}
-
-export interface LoomState6186 {
-	pluginVersion: string;
-	model: TableModel;
 }
