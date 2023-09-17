@@ -1,3 +1,55 @@
+/**
+ * Type definitions for v6.3.0
+ */
+export interface LoomState3 {
+	pluginVersion: string;
+	model: TableModel;
+}
+
+interface TableModel {
+	columns: Column[];
+	rows: Row[];
+	cells: Cell[];
+	tags: Tag[];
+}
+
+interface Column {
+	id: string;
+	sortDir: SortDir;
+	width: string;
+	type: CellType;
+	isVisible: boolean;
+	dateFormat: DateFormat;
+	currencyType: CurrencyType;
+	shouldWrapOverflow: boolean;
+	footerCellId: string;
+}
+
+interface Row {
+	id: string;
+	index: number;
+	menuCellId: string;
+	creationTime: number;
+	lastEditedTime: number;
+}
+
+interface Cell {
+	id: string;
+	columnId: string;
+	dateTime: number | null;
+	rowId: string;
+	markdown: string;
+	isHeader: boolean;
+}
+
+interface Tag {
+	id: string;
+	markdown: string;
+	color: Color;
+	columnId: string;
+	cellIds: string[];
+}
+
 enum Color {
 	LIGHT_GRAY = "light gray",
 	GRAY = "gray",
@@ -37,8 +89,6 @@ enum DateFormat {
 	RELATIVE = "relative",
 }
 
-export const DateFormat620 = DateFormat;
-
 enum CurrencyType {
 	UNITED_STATES = "USD",
 	CANADA = "CAD",
@@ -54,51 +104,4 @@ enum CurrencyType {
 	COLOMBIA = "COP",
 	MEXICO = "MXN",
 	ARGENTINA = "ARS",
-}
-
-interface Cell {
-	id: string;
-	columnId: string;
-	rowId: string;
-	markdown: string;
-	isHeader: boolean;
-}
-
-interface Tag {
-	id: string;
-	markdown: string;
-	color: Color;
-	columnId: string;
-	cellIds: string[];
-}
-
-interface Column {
-	id: string;
-	sortDir: SortDir;
-	width: string;
-	type: CellType;
-	dateFormat: DateFormat;
-	currencyType: CurrencyType;
-	hasAutoWidth: boolean;
-	shouldWrapOverflow: boolean;
-	footerCellId: string;
-}
-
-interface Row {
-	id: string;
-	menuCellId: string;
-	creationTime: number;
-	lastEditedTime: number;
-}
-
-interface TableModel {
-	columns: Column[];
-	rows: Row[];
-	cells: Cell[];
-	tags: Tag[];
-}
-
-export interface LoomState620 {
-	pluginVersion: string;
-	model: TableModel;
 }
