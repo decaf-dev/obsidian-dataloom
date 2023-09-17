@@ -1,60 +1,47 @@
-import { createFilterRule } from "src/shared/loom-state/loom-state-factory";
-import { FilterRule, LoomState } from "src/shared/loom-state/types";
+import { CellType, Filter, LoomState } from "src/shared/loom-state/types";
+import {
+	createCheckboxFilter,
+	createMultiTagFilter,
+	createTagFilter,
+	createTextFilter,
+} from "./loom-state-factory";
 
-export const addRule = (prevState: LoomState, columnId: string): LoomState => {
-	const { model } = prevState;
-	return {
-		...prevState,
-		model: {
-			...model,
-			filterRules: [...model.filterRules, createFilterRule(columnId)],
-		},
-	};
-};
-
-export const deleteRule = (prevState: LoomState, id: string): LoomState => {
-	const { model } = prevState;
-	const { filterRules } = model;
-
-	return {
-		...prevState,
-		model: {
-			...model,
-			filterRules: filterRules.filter((rule) => rule.id !== id),
-		},
-	};
-};
-
-export const updateRule = (
+export const addFilter = (
 	prevState: LoomState,
-	id: string,
-	key: keyof FilterRule,
-	value?: unknown
+	columnId: string,
+	cellType: CellType
 ): LoomState => {
+	const { model } = prevState;
+	let filter: Filter | null = null;
+	if (cellType === CellType.TEXT || cellType === CellType.FILE) {
+		filter = createTextFilter(columnId);
+	} else if (cellType === CellType.CHECKBOX) {
+		filter = createCheckboxFilter(columnId);
+	} else if (cellType === CellType.TAG) {
+		filter = createTagFilter(columnId);
+	} else if (cellType === CellType.MULTI_TAG) {
+		filter = createMultiTagFilter(columnId);
+	} else {
+		throw new Error("Unhandled cell type");
+	}
 	return {
 		...prevState,
 		model: {
-			...prevState.model,
-			filterRules: prevState.model.filterRules.map((rule) => {
-				const isBoolean = typeof rule[key] === "boolean";
+			...model,
+			filters: [...model.filters, filter],
+		},
+	};
+};
 
-				//If we don't provide a value, we assume that the value is a boolean
-				//and we will toggle it
-				if (!isBoolean && value === undefined)
-					throw new Error(
-						"If the key type is not a boolean, a value must be provided"
-					);
+export const deleteFilter = (prevState: LoomState, id: string): LoomState => {
+	const { model } = prevState;
+	const { filters } = model;
 
-				if (rule.id === id) {
-					return {
-						...rule,
-						[key as keyof FilterRule]: isBoolean
-							? !rule[key]
-							: value,
-					};
-				}
-				return rule;
-			}),
+	return {
+		...prevState,
+		model: {
+			...model,
+			filters: filters.filter((filter) => filter.id !== id),
 		},
 	};
 };

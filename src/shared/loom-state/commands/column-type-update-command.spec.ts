@@ -1,7 +1,7 @@
 import {
-	createFilterRule,
 	createTestLoomState,
 	createTag,
+	createTextFilter,
 } from "src/shared/loom-state/loom-state-factory";
 import { CommandRedoError, CommandUndoError } from "./command-errors";
 import { ColumnTypeUpdateCommand } from "./column-type-update-command";
@@ -204,17 +204,17 @@ describe("column-type-update-command", () => {
 		expect(executeState.model.bodyCells[0].markdown).toEqual("12/31/2019");
 	});
 
-	it("should delete referenced filter rules when execute() is called", async () => {
+	it("should delete referenced filters when execute() is called", async () => {
 		//Arrange
 		const prevState = createTestLoomState(1, 1, {
 			cellType: CellType.TEXT,
 		});
 
-		const filterRules = [
-			createFilterRule(prevState.model.columns[0].id),
-			createFilterRule(prevState.model.columns[0].id),
+		const filters = [
+			createTextFilter(prevState.model.columns[0].id),
+			createTextFilter(prevState.model.columns[0].id),
 		];
-		prevState.model.filterRules = filterRules;
+		prevState.model.filters = filters;
 
 		//Act
 		const executeState = new ColumnTypeUpdateCommand(
@@ -223,7 +223,7 @@ describe("column-type-update-command", () => {
 		).execute(prevState);
 
 		//Assert
-		expect(executeState.model.filterRules).toEqual([]);
+		expect(executeState.model.filters).toEqual([]);
 	});
 
 	it("should handle multi-tag -> text when undo() is called", async () => {
@@ -251,9 +251,7 @@ describe("column-type-update-command", () => {
 		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
 		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
-		expect(undoState.model.filterRules).toEqual(
-			prevState.model.filterRules
-		);
+		expect(undoState.model.filters).toEqual(prevState.model.filters);
 	});
 
 	it("should handle tag -> text when undo() is called", async () => {
@@ -280,9 +278,7 @@ describe("column-type-update-command", () => {
 		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
 		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
-		expect(undoState.model.filterRules).toEqual(
-			prevState.model.filterRules
-		);
+		expect(undoState.model.filters).toEqual(prevState.model.filters);
 	});
 
 	it("should handle text -> tag when undo() is called", async () => {
@@ -302,9 +298,7 @@ describe("column-type-update-command", () => {
 		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
 		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
-		expect(undoState.model.filterRules).toEqual(
-			prevState.model.filterRules
-		);
+		expect(undoState.model.filters).toEqual(prevState.model.filters);
 	});
 
 	it("should handle text -> multi-tag when undo() is called", async () => {
@@ -324,9 +318,7 @@ describe("column-type-update-command", () => {
 		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
 		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
-		expect(undoState.model.filterRules).toEqual(
-			prevState.model.filterRules
-		);
+		expect(undoState.model.filters).toEqual(prevState.model.filters);
 	});
 
 	it("should handle multi-tag -> tag when undo() is called", async () => {
@@ -354,9 +346,7 @@ describe("column-type-update-command", () => {
 		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
 		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
-		expect(undoState.model.filterRules).toEqual(
-			prevState.model.filterRules
-		);
+		expect(undoState.model.filters).toEqual(prevState.model.filters);
 	});
 
 	it("should handle text -> checkbox when undo() is called", async () => {
@@ -375,9 +365,7 @@ describe("column-type-update-command", () => {
 		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
 		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
-		expect(undoState.model.filterRules).toEqual(
-			prevState.model.filterRules
-		);
+		expect(undoState.model.filters).toEqual(prevState.model.filters);
 	});
 
 	it("should handle date -> text when undo() is called", async () => {
@@ -401,22 +389,20 @@ describe("column-type-update-command", () => {
 		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
 		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
-		expect(undoState.model.filterRules).toEqual(
-			prevState.model.filterRules
-		);
+		expect(undoState.model.filters).toEqual(prevState.model.filters);
 	});
 
-	it("should restore deleted filter rules when undo() is called", async () => {
+	it("should restore deleted filters when undo() is called", async () => {
 		//Arrange
 		const prevState = createTestLoomState(1, 1, {
 			cellType: CellType.TEXT,
 		});
 
-		const filterRules = [
-			createFilterRule(prevState.model.columns[0].id),
-			createFilterRule(prevState.model.columns[0].id),
+		const filters = [
+			createTextFilter(prevState.model.columns[0].id),
+			createTextFilter(prevState.model.columns[0].id),
 		];
-		prevState.model.filterRules = filterRules;
+		prevState.model.filters = filters;
 
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
@@ -428,9 +414,7 @@ describe("column-type-update-command", () => {
 		const undoState = command.undo(executeState);
 
 		//Assert
-		expect(undoState.model.filterRules).toEqual(
-			prevState.model.filterRules
-		);
+		expect(undoState.model.filters).toEqual(prevState.model.filters);
 	});
 
 	it("should handle text -> multi-tag when redo() is called", async () => {
@@ -451,22 +435,20 @@ describe("column-type-update-command", () => {
 		//Assert
 		expect(redoState.model.columns).toEqual(executeState.model.columns);
 		expect(redoState.model.bodyCells).toEqual(executeState.model.bodyCells);
-		expect(redoState.model.filterRules).toEqual(
-			executeState.model.filterRules
-		);
+		expect(redoState.model.filters).toEqual(executeState.model.filters);
 	});
 
-	it("should delete filter rules when redo() is called", async () => {
+	it("should delete filters when redo() is called", async () => {
 		//Arrange
 		const prevState = createTestLoomState(1, 1, {
 			cellType: CellType.TEXT,
 		});
 
-		const filterRules = [
-			createFilterRule(prevState.model.columns[0].id),
-			createFilterRule(prevState.model.columns[0].id),
+		const filters = [
+			createTextFilter(prevState.model.columns[0].id),
+			createTextFilter(prevState.model.columns[0].id),
 		];
-		prevState.model.filterRules = filterRules;
+		prevState.model.filters = filters;
 
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
@@ -479,8 +461,6 @@ describe("column-type-update-command", () => {
 		const redoState = command.redo(undoState);
 
 		//Assert
-		expect(redoState.model.filterRules).toEqual(
-			executeState.model.filterRules
-		);
+		expect(redoState.model.filters).toEqual(executeState.model.filters);
 	});
 });

@@ -57,7 +57,7 @@ const useAbstractMenu = (
 	 * Adds the menu to the open menus list
 	 */
 	const onOpen = React.useCallback(() => {
-		logger("onOpen");
+		logger("Menu onOpen");
 		removeCurrentFocusClass();
 		setOpenMenus((prevMenus) => {
 			const found = prevMenus.find((m) => m.id === menu.id);
@@ -71,7 +71,7 @@ const useAbstractMenu = (
 	 */
 	const onClose = React.useCallback(
 		(shouldFocusTriggerOnClose = true) => {
-			logger("onClose");
+			logger("Menu onClose");
 			setOpenMenus((prevMenus) =>
 				prevMenus.filter((m) => m.id !== menu.id)
 			);
@@ -95,7 +95,7 @@ const useAbstractMenu = (
 	 */
 	const onRequestClose = React.useCallback(
 		(type: LoomMenuCloseRequestType = "save-and-close") => {
-			logger("onRequestClose", { type });
+			logger("Menu onRequestClose", { type });
 			if (shouldRequestOnClose) {
 				const request = createCloseRequest(menu.id, type);
 				setCloseRequests((prevRequests) => [...prevRequests, request]);
@@ -114,7 +114,7 @@ const useAbstractMenu = (
 		function closeMenuAfterUnmounting() {
 			return () => {
 				if (isOpen) {
-					logger("closeMenuAfterUnmounting");
+					logger("Menu closeMenuAfterUnmounting");
 					onClose();
 				}
 			};
