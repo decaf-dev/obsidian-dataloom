@@ -12,9 +12,13 @@ export const useFilter = (
 	const logger = useLogger();
 	const { doCommand } = useLoomState();
 
-	function handleFilterUpdate(id: string, data: Partial<Filter>) {
+	function handleFilterUpdate(
+		id: string,
+		data: Partial<Filter>,
+		isPartial?: boolean
+	) {
 		logger("handleFilterUpdate", { id, data });
-		doCommand(new FilterUpdateCommand<Filter>(id, data));
+		doCommand(new FilterUpdateCommand<Filter>(id, data, isPartial));
 	}
 
 	function handleFilterAdd(columnId: string, cellType: CellType) {

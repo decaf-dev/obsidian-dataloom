@@ -227,7 +227,7 @@ export interface TableModel {
 	headerCells: HeaderCell[];
 	bodyCells: BodyCell[];
 	footerCells: FooterCell[];
-	filters: Filter[]; //rename to filters
+	filters: Filter[];
 	settings: TableSettings;
 }
 
