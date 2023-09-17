@@ -1,3 +1,31 @@
+/**
+ * Type definitions for v6.2.0
+ */
+export interface LoomState2 {
+	pluginVersion: string;
+	model: TableModel;
+}
+
+export enum DateFormat {
+	MM_DD_YYYY = "mm/dd/yyyy",
+	DD_MM_YYYY = "dd/mm/yyyy",
+	YYYY_MM_DD = "yyyy/mm/dd",
+	FULL = "full",
+	RELATIVE = "relative",
+}
+
+export interface Column {
+	id: string;
+	sortDir: SortDir;
+	width: string;
+	type: CellType;
+	dateFormat: DateFormat;
+	currencyType: CurrencyType;
+	hasAutoWidth: boolean;
+	shouldWrapOverflow: boolean;
+	footerCellId: string;
+}
+
 enum Color {
 	LIGHT_GRAY = "light gray",
 	GRAY = "gray",
@@ -20,12 +48,30 @@ enum SortDir {
 enum CellType {
 	TEXT = "text",
 	NUMBER = "number",
+	CURRENCY = "currency",
 	TAG = "tag",
+	MULTI_TAG = "multi-tag",
 	DATE = "date",
 	CHECKBOX = "checkbox",
-	MULTI_TAG = "multi-tag",
 	CREATION_TIME = "creation-time",
 	LAST_EDITED_TIME = "last-edited-time",
+}
+
+enum CurrencyType {
+	UNITED_STATES = "USD",
+	CANADA = "CAD",
+	SINGAPORE = "SGB",
+	EUROPE = "EUR",
+	POUND = "GBP",
+	RUSSIA = "RUB",
+	AUSTRALIA = "AUD",
+	JAPAN = "JPY",
+	INDIA = "INR",
+	CHINA = "CNY",
+	BRAZIL = "BRL",
+	COLOMBIA = "COP",
+	MEXICO = "MXN",
+	ARGENTINA = "ARS",
 }
 
 interface Cell {
@@ -43,15 +89,6 @@ interface Tag {
 	columnId: string;
 	cellIds: string[];
 }
-interface Column {
-	id: string;
-	sortDir: SortDir;
-	width: string;
-	type: CellType;
-	hasAutoWidth: boolean;
-	shouldWrapOverflow: boolean;
-	footerCellId: string;
-}
 
 interface Row {
 	id: string;
@@ -65,9 +102,4 @@ interface TableModel {
 	rows: Row[];
 	cells: Cell[];
 	tags: Tag[];
-}
-
-export interface LoomState600 {
-	pluginVersion: string;
-	model: TableModel;
 }

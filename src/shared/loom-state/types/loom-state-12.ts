@@ -1,3 +1,36 @@
+/**
+ * Type definitions for v8.2.0
+ */
+export interface LoomState12 {
+	pluginVersion: string;
+	model: TableModel;
+}
+
+export enum FilterType {
+	IS = "is",
+	IS_NOT = "is-not",
+	CONTAINS = "contains",
+	DOES_NOT_CONTAIN = "does-not-contain",
+	STARTS_WITH = "starts-with",
+	ENDS_WITH = "ends-with",
+	IS_EMPTY = "is-empty",
+	IS_NOT_EMPTY = "is-not-empty",
+}
+
+export enum CellType {
+	TEXT = "text",
+	EMBED = "embed",
+	FILE = "file",
+	NUMBER = "number",
+	CURRENCY = "currency",
+	TAG = "tag",
+	MULTI_TAG = "multi-tag",
+	DATE = "date",
+	CHECKBOX = "checkbox",
+	CREATION_TIME = "creation-time",
+	LAST_EDITED_TIME = "last-edited-time",
+}
+
 enum Color {
 	LIGHT_GRAY = "light gray",
 	GRAY = "gray",
@@ -26,31 +59,6 @@ enum SortDir {
 	ASC = "asc",
 	DESC = "desc",
 	NONE = "default",
-}
-
-enum CellType {
-	TEXT = "text",
-	EMBED = "embed",
-	FILE = "file",
-	NUMBER = "number",
-	CURRENCY = "currency",
-	TAG = "tag",
-	MULTI_TAG = "multi-tag",
-	DATE = "date",
-	CHECKBOX = "checkbox",
-	CREATION_TIME = "creation-time",
-	LAST_EDITED_TIME = "last-edited-time",
-}
-
-enum FilterType {
-	IS = "is",
-	IS_NOT = "is-not",
-	CONTAINS = "contains",
-	DOES_NOT_CONTAIN = "does-not-contain",
-	STARTS_WITH = "starts-with",
-	ENDS_WITH = "ends-with",
-	IS_EMPTY = "is-empty",
-	IS_NOT_EMPTY = "is-not-empty",
 }
 
 enum DateFormat {
@@ -175,6 +183,10 @@ interface Tag {
 	color: Color;
 }
 
+interface TableSettings {
+	numFrozenColumns: number;
+}
+
 interface TableModel {
 	columns: Column[];
 	headerRows: HeaderRow[];
@@ -184,9 +196,5 @@ interface TableModel {
 	bodyCells: BodyCell[];
 	footerCells: FooterCell[];
 	filterRules: FilterRule[];
-}
-
-export interface LoomState {
-	pluginVersion: string;
-	model: TableModel;
+	settings: TableSettings;
 }

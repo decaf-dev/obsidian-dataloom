@@ -1,3 +1,13 @@
+/**
+ * Type definitions for v6.9.1
+ */
+export interface LoomState6 {
+	pluginVersion: string;
+	model: TableModel;
+}
+
+export type FunctionType = GeneralFunction | NumberFunction;
+
 enum Color {
 	LIGHT_GRAY = "light gray",
 	GRAY = "gray",
@@ -29,6 +39,17 @@ enum CellType {
 	LAST_EDITED_TIME = "last-edited-time",
 }
 
+enum FilterType {
+	IS = "is",
+	IS_NOT = "is-not",
+	CONTAINS = "contains",
+	DOES_NOT_CONTAIN = "does-not-contain",
+	STARTS_WITH = "starts-with",
+	ENDS_WITH = "ends-with",
+	IS_EMPTY = "is-empty",
+	IS_NOT_EMPTY = "is-not-empty",
+}
+
 enum DateFormat {
 	MM_DD_YYYY = "mm/dd/yyyy",
 	DD_MM_YYYY = "dd/mm/yyyy",
@@ -42,6 +63,10 @@ enum CurrencyType {
 	CANADA = "CAD",
 	SINGAPORE = "SGB",
 	EUROPE = "EUR",
+	SWEDEN = "SEK",
+	DENMARK = "DKK",
+	NORWAY = "NOK",
+	ICELAND = "ISK",
 	POUND = "GBP",
 	RUSSIA = "RUB",
 	AUSTRALIA = "AUD",
@@ -54,6 +79,26 @@ enum CurrencyType {
 	ARGENTINA = "ARS",
 }
 
+enum GeneralFunction {
+	NONE = "none",
+	COUNT_ALL = "count-all",
+	COUNT_VALUES = "count-values",
+	COUNT_UNIQUE = "count-unique",
+	COUNT_EMPTY = "count-empty",
+	COUNT_NOT_EMPTY = "count-not-empty",
+	PERCENT_EMPTY = "percent-empty",
+	PERCENT_NOT_EMPTY = "percent-not-empty",
+}
+
+enum NumberFunction {
+	SUM = "sum",
+	AVG = "avg",
+	MIN = "min",
+	MAX = "max",
+	MEDIAN = "median",
+	RANGE = "range",
+}
+
 interface Column {
 	id: string;
 	sortDir: SortDir;
@@ -63,24 +108,48 @@ interface Column {
 	dateFormat: DateFormat;
 	currencyType: CurrencyType;
 	shouldWrapOverflow: boolean;
-	footerCellId: string;
+}
+
+interface FilterRule {
+	id: string;
+	columnId: string;
+	type: FilterType;
+	text: string;
+	tagIds: string[];
+	isEnabled: boolean;
 }
 
 interface Row {
 	id: string;
+}
+
+interface BodyRow extends Row {
 	index: number;
 	menuCellId: string;
 	creationTime: number;
 	lastEditedTime: number;
 }
 
+type HeaderRow = Row;
+type FooterRow = Row;
+
 interface Cell {
 	id: string;
 	columnId: string;
-	dateTime: number | null;
 	rowId: string;
+}
+
+interface HeaderCell extends Cell {
 	markdown: string;
-	isHeader: boolean;
+}
+
+interface BodyCell extends Cell {
+	dateTime: number | null;
+	markdown: string;
+}
+
+interface FooterCell extends Cell {
+	functionType: FunctionType;
 }
 
 interface Tag {
@@ -93,12 +162,12 @@ interface Tag {
 
 interface TableModel {
 	columns: Column[];
-	rows: Row[];
-	cells: Cell[];
+	headerRows: HeaderRow[];
+	bodyRows: BodyRow[];
+	footerRows: FooterRow[];
+	headerCells: HeaderCell[];
+	bodyCells: BodyCell[];
+	footerCells: FooterCell[];
 	tags: Tag[];
-}
-
-export interface LoomState630 {
-	pluginVersion: string;
-	model: TableModel;
+	filterRules: FilterRule[];
 }

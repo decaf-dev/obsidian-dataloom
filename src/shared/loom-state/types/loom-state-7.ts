@@ -1,3 +1,17 @@
+/**
+ * Type definitions for v6.10.0
+ */
+export interface LoomState7 {
+	pluginVersion: string;
+	model: TableModel;
+}
+
+export interface BodyRow extends Row {
+	index: number;
+	creationTime: number;
+	lastEditedTime: number;
+}
+
 enum Color {
 	LIGHT_GRAY = "light gray",
 	GRAY = "gray",
@@ -53,6 +67,10 @@ enum CurrencyType {
 	CANADA = "CAD",
 	SINGAPORE = "SGB",
 	EUROPE = "EUR",
+	SWEDEN = "SEK",
+	DENMARK = "DKK",
+	NORWAY = "NOK",
+	ICELAND = "ISK",
 	POUND = "GBP",
 	RUSSIA = "RUB",
 	AUSTRALIA = "AUD",
@@ -67,13 +85,13 @@ enum CurrencyType {
 
 enum GeneralFunction {
 	NONE = "none",
-	COUNT_ALL = "count_all",
-	COUNT_VALUES = "count_values",
-	COUNT_UNIQUE = "count_unique",
-	COUNT_EMPTY = "count_empty",
-	COUNT_NOT_EMPTY = "count_not_empty",
-	PERCENT_EMPTY = "percent_empty",
-	PERCENT_NOT_EMPTY = "percent_not_empty",
+	COUNT_ALL = "count-all",
+	COUNT_VALUES = "count-values",
+	COUNT_UNIQUE = "count-unique",
+	COUNT_EMPTY = "count-empty",
+	COUNT_NOT_EMPTY = "count-not-empty",
+	PERCENT_EMPTY = "percent-empty",
+	PERCENT_NOT_EMPTY = "percent-not-empty",
 }
 
 enum NumberFunction {
@@ -96,6 +114,7 @@ interface Column {
 	dateFormat: DateFormat;
 	currencyType: CurrencyType;
 	shouldWrapOverflow: boolean;
+	tags: Tag[];
 }
 
 interface FilterRule {
@@ -109,13 +128,6 @@ interface FilterRule {
 
 interface Row {
 	id: string;
-}
-
-interface BodyRow extends Row {
-	index: number;
-	menuCellId: string;
-	creationTime: number;
-	lastEditedTime: number;
 }
 
 type HeaderRow = Row;
@@ -134,6 +146,7 @@ interface HeaderCell extends Cell {
 interface BodyCell extends Cell {
 	dateTime: number | null;
 	markdown: string;
+	tagIds: string[];
 }
 
 interface FooterCell extends Cell {
@@ -144,8 +157,6 @@ interface Tag {
 	id: string;
 	markdown: string;
 	color: Color;
-	columnId: string;
-	cellIds: string[];
 }
 
 interface TableModel {
@@ -156,10 +167,5 @@ interface TableModel {
 	headerCells: HeaderCell[];
 	bodyCells: BodyCell[];
 	footerCells: FooterCell[];
-	tags: Tag[];
 	filterRules: FilterRule[];
-}
-
-export interface LoomState680 {
-	model: TableModel;
 }

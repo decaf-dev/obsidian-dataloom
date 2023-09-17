@@ -132,10 +132,7 @@ export const useColumn = () => {
 		);
 	}
 
-	function handleNumberPrefixChange(
-		columnId: string,
-		prefix: string
-	) {
+	function handleNumberPrefixChange(columnId: string, prefix: string) {
 		logger("handleNumberPrefixChange", { columnId, prefix });
 		doCommand(
 			new ColumnUpdateCommand(columnId, "numberPrefix", {
@@ -144,11 +141,8 @@ export const useColumn = () => {
 			})
 		);
 	}
-	function handleNumberSeperatorChange(
-		columnId: string,
-		seperator: string
-	) {
-		logger("handleNumberSeperatorChange", { columnId, seperator});
+	function handleNumberSeperatorChange(columnId: string, seperator: string) {
+		logger("handleNumberSeperatorChange", { columnId, seperator });
 		doCommand(
 			new ColumnUpdateCommand(columnId, "numberSeperator", {
 				value: seperator,
@@ -156,10 +150,7 @@ export const useColumn = () => {
 			})
 		);
 	}
-	function handleNumberSuffixChange(
-		columnId: string,
-		suffix: string
-	) {
+	function handleNumberSuffixChange(columnId: string, suffix: string) {
 		logger("handleNumberSuffixChange", { columnId, suffix });
 		doCommand(
 			new ColumnUpdateCommand(columnId, "numberSuffix", {
