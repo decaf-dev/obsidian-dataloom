@@ -162,7 +162,7 @@ export default function BodyCellContainer({
 			await navigator.clipboard.writeText(markdown);
 			new Notice("Copied text to clipboard");
 		} catch (err) {
-			console.log(err);
+			console.error(err);
 		}
 	}
 
@@ -346,8 +346,8 @@ export default function BodyCellContainer({
 						/>
 					)}
 					{columnType === CellType.NUMBER && (
-						<NumberCell 
-							value={markdown} 
+						<NumberCell
+							value={markdown}
 							prefix={numberPrefix}
 							suffix={numberSuffix}
 							seperator={numberSeperator}

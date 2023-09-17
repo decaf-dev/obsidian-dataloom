@@ -14,7 +14,7 @@ import BottomBar from "../bottom-bar";
 import { useUUID } from "../../../shared/hooks";
 import CellNotFoundError from "src/shared/error/cell-not-found-error";
 import { useLoomState } from "../loom-state-provider";
-import { useFilterRules } from "./hooks/use-filter-rules";
+import { useFilter } from "./hooks/use-filter";
 import { filterBodyRowsBySearch } from "./filter-by-search";
 import { useColumn } from "./hooks/use-column";
 import { useRow } from "./hooks/use-row";
@@ -63,16 +63,8 @@ export default function App() {
 	const { onFocusKeyDown } = useFocus();
 	const { onFrozenColumnsChange } = useTableSettings();
 
-	const {
-		onRuleAddClick,
-		onRuleColumnChange,
-		onRuleDeleteClick,
-		onRuleFilterTypeChange,
-		onRuleTagsChange,
-		onRuleTextChange,
-		onRuleToggle,
-		filterBodyRowsByRules,
-	} = useFilterRules(setLoomState);
+	const { onFilterAdd, onFilterUpdate, onFilterDelete, filterByFilters } =
+		useFilter(setLoomState);
 
 	const {
 		onColumnWidthChange,
@@ -163,20 +155,17 @@ export default function App() {
 		headerCells,
 		bodyCells,
 		footerCells,
-		filterRules,
+		filters,
 		settings,
 	} = loomState.model;
 	const { numFrozenColumns } = settings;
 
-	console.log(loomState.model.bodyRows);
-	let filteredBodyRows = filterBodyRowsByRules(loomState);
-	console.log(filteredBodyRows);
+	let filteredBodyRows = filterByFilters(loomState);
 	filteredBodyRows = filterBodyRowsBySearch(
 		loomState,
 		filteredBodyRows,
 		searchText
 	);
-	console.log(filteredBodyRows);
 
 	const visibleColumns = columns.filter((column) => column.isVisible);
 
@@ -192,17 +181,13 @@ export default function App() {
 			<OptionBar
 				headerCells={headerCells}
 				columns={columns}
-				filterRules={filterRules}
+				filters={filters}
 				numFrozenColumns={numFrozenColumns}
 				onColumnToggle={onColumnToggle}
 				onSortRemoveClick={onSortRemoveClick}
-				onRuleAddClick={onRuleAddClick}
-				onRuleDeleteClick={onRuleDeleteClick}
-				onRuleFilterTypeChange={onRuleFilterTypeChange}
-				onRuleColumnChange={onRuleColumnChange}
-				onRuleTextChange={onRuleTextChange}
-				onRuleToggle={onRuleToggle}
-				onRuleTagsChange={onRuleTagsChange}
+				onFilterAddClick={onFilterAdd}
+				onFilterDeleteClick={onFilterDelete}
+				onFilterUpdate={onFilterUpdate}
 				onFrozenColumnsChange={onFrozenColumnsChange}
 			/>
 			<Table
@@ -287,9 +272,15 @@ export default function App() {
 												onHeaderCellContentChange
 											}
 											onCurrencyChange={onCurrentChange}
-											onNumberPrefixChange={onNumberPrefixChange}
-											onNumberSeperatorChange={onNumberSeperatorChange}
-											onNumberSuffixChange={onNumberSuffixChange}
+											onNumberPrefixChange={
+												onNumberPrefixChange
+											}
+											onNumberSeperatorChange={
+												onNumberSeperatorChange
+											}
+											onNumberSuffixChange={
+												onNumberSuffixChange
+											}
 											onVerticalPaddingClick={
 												onVerticalPaddingClick
 											}

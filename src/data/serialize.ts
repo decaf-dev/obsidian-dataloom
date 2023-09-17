@@ -34,6 +34,7 @@ import { LoomState6122 } from "src/shared/loom-state/types/6.12.2";
 import { LoomState6160 } from "src/shared/loom-state/types/6.16.0";
 import { LoomState6186 } from "src/shared/loom-state/types/6.18.6";
 import { DEFAULT_SETTINGS } from "src/main";
+import { LoomState841 } from "src/shared/loom-state/types/8.4.1";
 
 export const serializeLoomState = (state: LoomState): string => {
 	return JSON.stringify(state, null, 2);
@@ -44,7 +45,6 @@ export const deserializeLoomState = (
 	pluginVersion: string
 ): LoomState => {
 	const parsedState = JSON.parse(data);
-
 	const untypedVersion: unknown = parsedState["pluginVersion"];
 
 	let versionString = "";
@@ -397,6 +397,24 @@ export const deserializeLoomState = (
 		typedModel.settings = {
 			numFrozenColumns: DEFAULT_SETTINGS.defaultFrozenColumnCount,
 		};
+	}
+
+	if (isVersionLessThan(versionString, "8.5.0")) {
+		const loomState = currentState as LoomState841;
+		const { filterRules } = loomState.model;
+		const untypedModel = loomState.model as unknown;
+		const typedModel = untypedModel as Record<string, unknown>;
+
+		filterRules.forEach((rule: unknown) => {
+			const typedRule = rule as Record<string, unknown>;
+			//Rename type to condition
+			typedRule.condition = typedRule.type;
+			delete typedRule.type;
+		});
+
+		//Rename filterRules to filters
+		typedModel.filters = structuredClone(filterRules);
+		delete typedModel.filterRules;
 	}
 
 	const state = currentState as LoomState;
