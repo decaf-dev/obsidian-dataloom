@@ -1,12 +1,18 @@
 import { App, Component, MarkdownRenderer, Modal } from "obsidian";
-import { getLastestGithubRelease } from "src/data/network";
 
-import "./styles.css";
+import { getLastestGithubRelease } from "src/data/network";
 import { renderDivider, setModalTitle } from "src/obsidian/shared";
 
+import "./styles.css";
+
+type ModalClose = () => void;
+
 export default class WhatsNewModal extends Modal {
-	constructor(app: App) {
+	onModalClose: ModalClose;
+
+	constructor(app: App, onModalClose: ModalClose) {
 		super(app);
+		this.onModalClose = onModalClose;
 	}
 
 	async onOpen() {
@@ -89,5 +95,6 @@ export default class WhatsNewModal extends Modal {
 	onClose() {
 		const { contentEl } = this;
 		contentEl.empty();
+		this.onModalClose();
 	}
 }
