@@ -2,7 +2,7 @@ import { App, Notice, normalizePath } from "obsidian";
 import { createFile, createFolder } from "./file-operations";
 import { createLoomState } from "../shared/loom-state/loom-state-factory";
 import { serializeLoomState } from "./serialize";
-import { FILE_EXTENSION, DEFAULT_LOOM_NAME } from "./constants";
+import { LOOM_EXTENSION, DEFAULT_LOOM_NAME } from "./constants";
 
 export const createLoomFile = async (
 	app: App,
@@ -28,7 +28,7 @@ export const createLoomFile = async (
 
 const getFileName = (): string => {
 	const fileName = DEFAULT_LOOM_NAME;
-	return `${fileName}.${FILE_EXTENSION}`;
+	return `${fileName}.${LOOM_EXTENSION}`;
 };
 
 const getFilePath = (folderPath: string) => {
