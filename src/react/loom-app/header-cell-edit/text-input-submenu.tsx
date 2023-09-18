@@ -19,35 +19,20 @@ export default function TextInputSubmenu({
 	onValueChange,
 	onBackClick,
 	closeRequest,
-	onClose
+	onClose,
 }: Props) {
-	const [textValue, setTextValue] = React.useState(value)
+	const [textValue, setTextValue] = React.useState(value);
 
 	React.useEffect(() => {
 		if (closeRequest !== null) {
 			onValueChange(textValue);
 			onClose();
 		}
-	}, [
-		onValueChange,
-		textValue,
-		closeRequest,
-		onClose,
-	]);
-
-	function catchArrowKeys(event: React.KeyboardEvent) {
-		const arrowKeys = ['ArrowLeft', 'ArrowRight']
-		if(arrowKeys.includes(event.key)) {
-			event.stopPropagation()
-		}
-	}
-
+	}, [onValueChange, textValue, closeRequest, onClose]);
 
 	return (
 		<Submenu title={title} onBackClick={onBackClick}>
-			<Flex>
-				<Input value={textValue} onChange={setTextValue} onKeyDown={catchArrowKeys} />
-			</Flex>
+			<Input value={textValue} onChange={setTextValue} />
 		</Submenu>
 	);
 }

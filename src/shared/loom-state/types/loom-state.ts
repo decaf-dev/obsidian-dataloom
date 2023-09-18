@@ -131,7 +131,7 @@ export interface Column {
 	currencyType: CurrencyType;
 	numberPrefix: string;
 	numberSuffix: string;
-	numberSeperator: string;
+	numberSeparator: string;
 	shouldWrapOverflow: boolean;
 	tags: Tag[];
 	calculationType: CalculationType;
