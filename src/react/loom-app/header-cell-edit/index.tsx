@@ -36,7 +36,7 @@ interface Props {
 	currencyType: CurrencyType;
 	numberPrefix: string;
 	numberSuffix: string;
-	numberSeperator: string;
+	numberSeparator: string;
 	rowId: string;
 	cellId: string;
 	aspectRatio: AspectRatio;
@@ -57,7 +57,7 @@ interface Props {
 	onCurrencyChange: (columnId: string, value: CurrencyType) => void;
 	onNumberPrefixChange: (columnId: string, value: string) => void;
 	onNumberSuffixChange: (columnId: string, value: string) => void;
-	onNumberSeperatorChange: (columnId: string, value: string) => void;
+	onNumberSeparatorChange: (columnId: string, value: string) => void;
 	onDateFormatChange: (columnId: string, value: DateFormat) => void;
 	onAspectRatioClick: (columnId: string, value: AspectRatio) => void;
 	onHorizontalPaddingClick: (columnId: string, value: PaddingSize) => void;
@@ -70,7 +70,7 @@ interface Props {
 const SELFHANDLE_CLOSE: SubmenuType[] = [
 	SubmenuType.TEXT_INPUT_NUMBER_SUFFIX,
 	SubmenuType.TEXT_INPUT_NUMBER_PREFIX,
-	SubmenuType.TEXT_INPUT_NUMBER_SEPERATOR,
+	SubmenuType.TEXT_INPUT_NUMBER_SEPARATOR,
 ];
 
 export default function HeaderMenu({
@@ -83,7 +83,7 @@ export default function HeaderMenu({
 	currencyType,
 	numberPrefix,
 	numberSuffix,
-	numberSeperator,
+	numberSeparator,
 	horizontalPadding,
 	verticalPadding,
 	aspectRatio,
@@ -105,7 +105,7 @@ export default function HeaderMenu({
 	onCurrencyChange,
 	onNumberPrefixChange,
 	onNumberSuffixChange,
-	onNumberSeperatorChange,
+	onNumberSeparatorChange,
 	onDateFormatChange,
 	onHideClick,
 	onRequestClose,
@@ -184,8 +184,8 @@ export default function HeaderMenu({
 			onNumberPrefixChange(columnId, value);
 		submenu === SubmenuType.TEXT_INPUT_NUMBER_SUFFIX &&
 			onNumberSuffixChange(columnId, value);
-		submenu === SubmenuType.TEXT_INPUT_NUMBER_SEPERATOR &&
-			onNumberSeperatorChange(columnId, value);
+		submenu === SubmenuType.TEXT_INPUT_NUMBER_SEPARATOR &&
+			onNumberSeparatorChange(columnId, value);
 		setSubmenu(null);
 	}
 
@@ -232,7 +232,7 @@ export default function HeaderMenu({
 						currencyType={currencyType}
 						numberPrefix={numberPrefix}
 						numberSuffix={numberSuffix}
-						numberSeperator={numberSeperator}
+						numberSeparator={numberSeparator}
 						onBackClick={() => setSubmenu(null)}
 						onSubmenuChange={setSubmenu}
 					/>
@@ -307,12 +307,12 @@ export default function HeaderMenu({
 						onBackClick={() => setSubmenu(SubmenuType.OPTIONS)}
 					/>
 				)}
-				{submenu === SubmenuType.TEXT_INPUT_NUMBER_SEPERATOR && (
+				{submenu === SubmenuType.TEXT_INPUT_NUMBER_SEPARATOR && (
 					<TextInputSubmenu
-						title="Seperator"
+						title="Separator"
 						closeRequest={closeRequest}
 						onClose={onClose}
-						value={numberSeperator}
+						value={numberSeparator}
 						onValueChange={handleNumberOptionChange}
 						onBackClick={() => setSubmenu(SubmenuType.OPTIONS)}
 					/>

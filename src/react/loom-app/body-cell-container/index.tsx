@@ -50,7 +50,7 @@ interface Props {
 	dateFormat: DateFormat;
 	numberPrefix: string;
 	numberSuffix: string;
-	numberSeperator: string;
+	numberSeparator: string;
 	columnCurrencyType: CurrencyType;
 	columnId: string;
 	markdown: string;
@@ -113,7 +113,7 @@ export default function BodyCellContainer({
 	dateTime,
 	numberPrefix,
 	numberSuffix,
-	numberSeperator,
+	numberSeparator,
 	columnCurrencyType,
 	columnType,
 	rowCreationTime,
@@ -350,7 +350,7 @@ export default function BodyCellContainer({
 							value={markdown}
 							prefix={numberPrefix}
 							suffix={numberSuffix}
-							seperator={numberSeperator}
+							separator={numberSeparator}
 						/>
 					)}
 					{columnType === CellType.CURRENCY && (

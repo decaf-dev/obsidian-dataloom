@@ -76,7 +76,7 @@ export default function App() {
 		onCalculationTypeChange,
 		onCurrentChange,
 		onNumberPrefixChange,
-		onNumberSeperatorChange,
+		onNumberSeparatorChange,
 		onNumberSuffixChange,
 		onAspectRatioClick,
 		onWrapContentToggle,
@@ -213,7 +213,7 @@ export default function App() {
 									shouldWrapOverflow,
 									currencyType,
 									numberPrefix,
-									numberSeperator,
+									numberSeparator,
 									numberSuffix,
 									dateFormat,
 									verticalPadding,
@@ -241,7 +241,7 @@ export default function App() {
 											dateFormat={dateFormat}
 											currencyType={currencyType}
 											numberPrefix={numberPrefix}
-											numberSeperator={numberSeperator}
+											numberSeparator={numberSeparator}
 											numberSuffix={numberSuffix}
 											verticalPadding={verticalPadding}
 											horizontalPadding={
@@ -275,8 +275,8 @@ export default function App() {
 											onNumberPrefixChange={
 												onNumberPrefixChange
 											}
-											onNumberSeperatorChange={
-												onNumberSeperatorChange
+											onNumberSeparatorChange={
+												onNumberSeparatorChange
 											}
 											onNumberSuffixChange={
 												onNumberSuffixChange
@@ -335,7 +335,7 @@ export default function App() {
 									shouldWrapOverflow,
 									currencyType,
 									numberPrefix,
-									numberSeperator,
+									numberSeparator,
 									numberSuffix,
 									dateFormat,
 									tags,
@@ -383,7 +383,7 @@ export default function App() {
 											columnCurrencyType={currencyType}
 											numberPrefix={numberPrefix}
 											numberSuffix={numberSuffix}
-											numberSeperator={numberSeperator}
+											numberSeparator={numberSeparator}
 											rowLastEditedTime={lastEditedTime}
 											dateTime={dateTime}
 											markdown={markdown}

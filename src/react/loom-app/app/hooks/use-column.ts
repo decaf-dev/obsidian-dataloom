@@ -141,11 +141,11 @@ export const useColumn = () => {
 			})
 		);
 	}
-	function handleNumberSeperatorChange(columnId: string, seperator: string) {
-		logger("handleNumberSeperatorChange", { columnId, seperator });
+	function handleNumberSeparatorChange(columnId: string, separator: string) {
+		logger("handleNumberSeparatorChange", { columnId, separator });
 		doCommand(
-			new ColumnUpdateCommand(columnId, "numberSeperator", {
-				value: seperator,
+			new ColumnUpdateCommand(columnId, "numberSeparator", {
+				value: separator,
 				shouldSortRows: true,
 			})
 		);
@@ -234,7 +234,7 @@ export const useColumn = () => {
 		onColumnDeleteClick: handleColumnDeleteClick,
 		onCurrentChange: handleCurrencyChange,
 		onNumberPrefixChange: handleNumberPrefixChange,
-		onNumberSeperatorChange: handleNumberSeperatorChange,
+		onNumberSeparatorChange: handleNumberSeparatorChange,
 		onNumberSuffixChange: handleNumberSuffixChange,
 		onDateFormatChange: handleDateFormatChange,
 		onSortRemoveClick: handleSortRemoveClick,

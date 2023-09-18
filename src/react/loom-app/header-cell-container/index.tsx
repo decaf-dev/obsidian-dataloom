@@ -26,7 +26,7 @@ interface Props {
 	currencyType: CurrencyType;
 	numberPrefix: string;
 	numberSuffix: string;
-	numberSeperator: string;
+	numberSeparator: string;
 	horizontalPadding: PaddingSize;
 	verticalPadding: PaddingSize;
 	aspectRatio: AspectRatio;
@@ -49,7 +49,7 @@ interface Props {
 	onCurrencyChange: (columnId: string, value: CurrencyType) => void;
 	onNumberPrefixChange: (columnId: string, value: string) => void;
 	onNumberSuffixChange: (columnId: string, value: string) => void;
-	onNumberSeperatorChange: (columnId: string, value: string) => void;
+	onNumberSeparatorChange: (columnId: string, value: string) => void;
 	onDateFormatChange: (columnId: string, value: DateFormat) => void;
 	onVerticalPaddingClick: (columnId: string, value: PaddingSize) => void;
 	onHorizontalPaddingClick: (columnId: string, value: PaddingSize) => void;
@@ -63,7 +63,7 @@ export default function HeaderCellContainer({
 	columnId,
 	currencyType,
 	numberPrefix,
-	numberSeperator,
+	numberSeparator,
 	numberSuffix,
 	width,
 	dateFormat,
@@ -87,7 +87,7 @@ export default function HeaderCellContainer({
 	onNameChange,
 	onCurrencyChange,
 	onNumberPrefixChange,
-	onNumberSeperatorChange,
+	onNumberSeparatorChange,
 	onNumberSuffixChange,
 	onDateFormatChange,
 	onHideClick,
@@ -172,7 +172,7 @@ export default function HeaderCellContainer({
 				currencyType={currencyType}
 				numberPrefix={numberPrefix}
 				numberSuffix={numberSuffix}
-				numberSeperator={numberSeperator}
+				numberSeparator={numberSeparator}
 				dateFormat={dateFormat}
 				canDeleteColumn={numColumns > 1}
 				columnId={columnId}
@@ -191,7 +191,7 @@ export default function HeaderCellContainer({
 				onNameChange={onNameChange}
 				onCurrencyChange={onCurrencyChange}
 				onNumberPrefixChange={onNumberPrefixChange}
-				onNumberSeperatorChange={onNumberSeperatorChange}
+				onNumberSeparatorChange={onNumberSeparatorChange}
 				onNumberSuffixChange={onNumberSuffixChange}
 				onDateFormatChange={onDateFormatChange}
 				onVerticalPaddingClick={onVerticalPaddingClick}

@@ -40,7 +40,7 @@ export const createColumn = (options?: { cellType?: CellType }): Column => {
 		type: cellType,
 		numberPrefix: "",
 		numberSuffix: "",
-		numberSeperator: "",
+		numberSeparator: "",
 		currencyType: CurrencyType.UNITED_STATES,
 		dateFormat: DateFormat.MM_DD_YYYY,
 		shouldWrapOverflow: true,
