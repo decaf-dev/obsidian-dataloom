@@ -1,6 +1,6 @@
 import MigrateState from "./migrate-state";
 import ColumNotFoundError from "src/shared/error/column-not-found-error";
-import { CellType } from "../types";
+import { CellType } from "../types/loom-state";
 import { LoomState4 } from "../types/loom-state-4";
 import { LoomState5 } from "../types/loom-state-5";
 

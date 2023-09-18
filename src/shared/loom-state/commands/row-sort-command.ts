@@ -10,7 +10,7 @@ import {
 	SortDir,
 	LoomState,
 	Tag,
-} from "../types";
+} from "../types/loom-state";
 import { isCheckboxChecked } from "../../match";
 
 export default class RowSortCommand extends LoomStateCommand {

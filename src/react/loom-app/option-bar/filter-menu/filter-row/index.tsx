@@ -5,7 +5,7 @@ import Wrap from "src/react/shared/wrap";
 import Stack from "src/react/shared/stack";
 import FilterColumnSelect from "../filter-column-select";
 
-import { FilterCondition } from "src/shared/loom-state/types";
+import { FilterCondition } from "src/shared/loom-state/types/loom-state";
 import { ColumnWithMarkdown } from "../../types";
 import FilterConditionSelect from "../filter-condition-select";
 

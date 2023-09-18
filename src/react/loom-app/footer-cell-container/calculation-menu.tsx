@@ -15,7 +15,7 @@ import {
 	CalculationType,
 	CellType,
 	NumberCalculation,
-} from "src/shared/loom-state/types";
+} from "src/shared/loom-state/types/loom-state";
 
 interface Props {
 	id: string;

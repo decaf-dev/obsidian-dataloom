@@ -1,4 +1,4 @@
-import { BodyCell, BodyRow, LoomState } from "../types";
+import { BodyCell, BodyRow, LoomState } from "../types/loom-state";
 import RowNotFoundError from "src/shared/error/row-not-found-error";
 import LoomStateCommand from "../loom-state-command";
 import { DeleteCommandArgumentsError } from "./command-errors";

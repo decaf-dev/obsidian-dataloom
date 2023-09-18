@@ -17,7 +17,7 @@ import {
 	DateFormat,
 	SortDir,
 	PaddingSize,
-} from "src/shared/loom-state/types";
+} from "src/shared/loom-state/types/loom-state";
 import { SubmenuType } from "./types";
 
 import {

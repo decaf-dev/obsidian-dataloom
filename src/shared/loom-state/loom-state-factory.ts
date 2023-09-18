@@ -24,11 +24,11 @@ import {
 	CheckboxFilter,
 	CheckboxFilterCondition,
 	FileFilter,
-} from "./types";
+} from "./types/loom-state";
 
 import { v4 as uuidv4 } from "uuid";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/constants";
-import { Color } from "src/shared/loom-state/types";
+import { Color } from "src/shared/loom-state/types/loom-state";
 
 export const createColumn = (options?: { cellType?: CellType }): Column => {
 	const { cellType = CellType.TEXT } = options || {};

@@ -1,6 +1,9 @@
 import { useRenderMarkdown } from "src/shared/render-utils";
 import { getSpacing } from "src/shared/spacing";
-import { AspectRatio, PaddingSize } from "src/shared/loom-state/types";
+import {
+	AspectRatio,
+	PaddingSize,
+} from "src/shared/loom-state/types/loom-state";
 import { appendOrReplaceFirstChild } from "src/shared/render/utils";
 
 import "./styles.css";

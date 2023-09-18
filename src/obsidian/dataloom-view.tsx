@@ -2,7 +2,7 @@ import { TextFileView, WorkspaceLeaf } from "obsidian";
 
 import { createRoot, Root } from "react-dom/client";
 import { store } from "src/redux/store";
-import { LoomState } from "src/shared/loom-state/types";
+import { LoomState } from "src/shared/loom-state/types/loom-state";
 import { deserializeLoomState, serializeLoomState } from "src/data/serialize";
 import { EVENT_APP_REFRESH } from "src/shared/events";
 import LoomAppWrapper from "src/react/loom-app";

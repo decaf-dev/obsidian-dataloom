@@ -13,7 +13,7 @@ import {
 	FooterCell,
 	HeaderCell,
 	LoomState,
-} from "src/shared/loom-state/types";
+} from "src/shared/loom-state/types/loom-state";
 import { ColumnMatch, ImportData } from "./types";
 import { NEW_COLUMN_ID } from "./constants";
 

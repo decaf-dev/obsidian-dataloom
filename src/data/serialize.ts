@@ -1,34 +1,40 @@
-import { LoomState } from "../shared/loom-state/types";
-import { LoomState0 } from "src/shared/loom-state/types/loom-state-0";
-import { LoomState6 } from "src/shared/loom-state/types/loom-state-6";
 import {
 	isVersionLessThan,
 	legacyVersionToString,
 } from "src/shared/versioning";
-import { LoomState9 } from "src/shared/loom-state/types/loom-state-9";
-import { LoomState10 } from "src/shared/loom-state/types/loom-state-10";
-import MigrateState0 from "src/shared/loom-state/migrate/migrate-state-0";
-import { LoomState1 } from "src/shared/loom-state/types/loom-state-1";
-import MigrateState1 from "src/shared/loom-state/migrate/migrate-state-1";
-import MigrateState2 from "src/shared/loom-state/migrate/migrate-state-2";
-import { LoomState2 } from "src/shared/loom-state/types/loom-state-2";
-import { LoomState3 } from "src/shared/loom-state/types/loom-state-3";
-import MigrateState3 from "src/shared/loom-state/migrate/migrate-state-3";
-import { LoomState4 } from "src/shared/loom-state/types/loom-state-4";
-import MigrateState4 from "src/shared/loom-state/migrate/migrate-state-4";
-import MigrateState5 from "src/shared/loom-state/migrate/migrate-state-5";
-import { LoomState5 } from "src/shared/loom-state/types/loom-state-5";
-import MigrateState6 from "src/shared/loom-state/migrate/migrate-state-6";
-import MigrateState7 from "src/shared/loom-state/migrate/migrate-state-7";
-import { LoomState7 } from "src/shared/loom-state/types/loom-state-7";
-import MigrateState8 from "src/shared/loom-state/migrate/migrate-state-8";
-import { LoomState8 } from "src/shared/loom-state/types/loom-state-8";
-import MigrateState9 from "src/shared/loom-state/migrate/migrate-state-9";
-import MigrateState10 from "src/shared/loom-state/migrate/migrate-state-10";
-import MigrateState11 from "src/shared/loom-state/migrate/migrate-state-11";
-import MigrateState12 from "src/shared/loom-state/migrate/migrate-state-12";
-import { LoomState11 } from "src/shared/loom-state/types/loom-state-11";
-import { LoomState12 } from "src/shared/loom-state/types/loom-state-12";
+
+import {
+	LoomState,
+	LoomState0,
+	LoomState1,
+	LoomState2,
+	LoomState3,
+	LoomState4,
+	LoomState5,
+	LoomState6,
+	LoomState7,
+	LoomState8,
+	LoomState9,
+	LoomState10,
+	LoomState11,
+	LoomState12,
+} from "src/shared/loom-state/types";
+
+import {
+	MigrateState0,
+	MigrateState1,
+	MigrateState2,
+	MigrateState3,
+	MigrateState4,
+	MigrateState5,
+	MigrateState6,
+	MigrateState7,
+	MigrateState8,
+	MigrateState9,
+	MigrateState10,
+	MigrateState11,
+	MigrateState12,
+} from "src/shared/loom-state/migrate";
 
 export const serializeLoomState = (state: LoomState): string => {
 	return JSON.stringify(state, null, 2);

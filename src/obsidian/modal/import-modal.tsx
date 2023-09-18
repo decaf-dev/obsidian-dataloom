@@ -8,7 +8,7 @@ import ImportApp from "../../react/import-app";
 import { serializeLoomState } from "src/data/serialize";
 import { store } from "src/redux/store";
 import { renderDivider, setModalTitle } from "../shared";
-import { LoomState } from "src/shared/loom-state/types";
+import { LoomState } from "src/shared/loom-state/types/loom-state";
 import { EVENT_APP_REFRESH } from "src/shared/events";
 import MenuProvider from "src/react/shared/menu-provider";
 import ModalMountProvider from "src/react/shared/modal-mount-provider";

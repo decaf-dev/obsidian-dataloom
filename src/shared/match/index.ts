@@ -1,4 +1,7 @@
-import { Calculation, NumberCalculation } from "src/shared/loom-state/types";
+import {
+	Calculation,
+	NumberCalculation,
+} from "src/shared/loom-state/types/loom-state";
 import {
 	NUMBER_REGEX,
 	DATE_REGEX,

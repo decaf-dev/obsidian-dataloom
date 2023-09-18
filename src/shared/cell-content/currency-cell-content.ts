@@ -1,5 +1,5 @@
 import { stringToCurrencyString } from "../conversion";
-import { CurrencyType } from "../loom-state/types";
+import { CurrencyType } from "../loom-state/types/loom-state";
 import { isNumber } from "../match";
 
 export const getCurrencyCellContent = (

@@ -4,7 +4,7 @@ import Stack from "../shared/stack";
 import ExportTypeSelect from "./export-type-select";
 import ContentTextArea from "./content-textarea";
 
-import { LoomState } from "src/shared/loom-state/types";
+import { LoomState } from "src/shared/loom-state/types/loom-state";
 import { ExportType } from "../../shared/export/types";
 import { exportToMarkdown } from "src/shared/export/export-to-markdown";
 import { App, Notice } from "obsidian";

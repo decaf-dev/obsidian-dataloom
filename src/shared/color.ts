@@ -1,4 +1,4 @@
-import { Color } from "src/shared/loom-state/types";
+import { Color } from "src/shared/loom-state/types/loom-state";
 
 export const findColorClassName = (
 	isDarkMode: boolean,

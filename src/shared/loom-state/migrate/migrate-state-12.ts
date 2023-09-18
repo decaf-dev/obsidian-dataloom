@@ -1,6 +1,6 @@
 import MigrateState from "./migrate-state";
 import ColumNotFoundError from "src/shared/error/column-not-found-error";
-import { FilterCondition, LoomState } from "../types";
+import { LoomState, FilterCondition } from "../types/loom-state";
 import {
 	LoomState12,
 	FilterType as FilterType12,

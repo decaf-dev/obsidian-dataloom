@@ -9,7 +9,7 @@ import Flex from "src/react/shared/flex";
 import Text from "src/react/shared/text";
 import Input from "src/react/shared/input";
 
-import { CellType, SortDir } from "src/shared/loom-state/types";
+import { CellType, SortDir } from "src/shared/loom-state/types/loom-state";
 import { SubmenuType } from "./types";
 import { usePlaceCursorAtEnd } from "src/shared/hooks";
 import { getDisplayNameForCellType } from "src/shared/loom-state/type-display-names";

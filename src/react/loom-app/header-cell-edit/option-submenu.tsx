@@ -6,7 +6,7 @@ import {
 	CurrencyType,
 	DateFormat,
 	PaddingSize,
-} from "src/shared/loom-state/types";
+} from "src/shared/loom-state/types/loom-state";
 import Stack from "src/react/shared/stack";
 import Padding from "src/react/shared/padding";
 import MenuItem from "src/react/shared/menu-item";
