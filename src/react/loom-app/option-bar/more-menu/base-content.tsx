@@ -2,9 +2,9 @@ import Padding from "src/react/shared/padding";
 import MenuItem from "src/react/shared/menu-item";
 import ExportModal from "src/obsidian/modal/export-modal";
 import { useAppMount } from "../../app-mount-provider";
-import { useAppSelector } from "src/redux/hooks";
 import { isSmallScreenSize } from "src/shared/render/utils";
 import ImportModal from "src/obsidian/modal/import-modal";
+import { useLoomState } from "../../loom-state-provider";
 
 interface Props {
 	onClose: () => void;
@@ -20,7 +20,7 @@ export default function BaseContent({
 	onClose,
 }: Props) {
 	const { app, loomFile } = useAppMount();
-	const { pluginVersion } = useAppSelector((state) => state.global);
+	const { loomState } = useLoomState();
 
 	const isSmallScreen = isSmallScreenSize();
 	return (
@@ -49,7 +49,7 @@ export default function BaseContent({
 				name="Import"
 				onClick={() => {
 					onClose();
-					new ImportModal(app, loomFile, pluginVersion).open();
+					new ImportModal(app, loomFile, loomState).open();
 				}}
 			/>
 			<MenuItem
@@ -57,7 +57,7 @@ export default function BaseContent({
 				name="Export"
 				onClick={() => {
 					onClose();
-					new ExportModal(app, loomFile, pluginVersion).open();
+					new ExportModal(app, loomFile, loomState).open();
 				}}
 			/>
 		</Padding>
