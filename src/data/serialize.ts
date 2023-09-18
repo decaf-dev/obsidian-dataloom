@@ -41,101 +41,107 @@ export const deserializeLoomState = (
 	const parsedState = JSON.parse(data);
 	const untypedVersion: unknown = parsedState["pluginVersion"];
 
-	//This is needed for 6.10.0 and less
-	let versionString = "";
+	let fileVersion = "";
 	if (typeof untypedVersion === "number") {
-		versionString = legacyVersionToString(untypedVersion);
+		//This is needed for 6.10.0 and less
+		fileVersion = legacyVersionToString(untypedVersion);
 	} else if (typeof untypedVersion === "string") {
-		versionString = untypedVersion;
+		fileVersion = untypedVersion;
+	}
+
+	if (isVersionLessThan(pluginVersion, fileVersion)) {
+		throw new Error(
+			"Loom was made with a newer plugin version. Please update the DataLoom plugin of this vault."
+		);
 	}
 
 	let currentState: unknown = parsedState;
 
-	if (isVersionLessThan(versionString, "6.1.0")) {
+	if (isVersionLessThan(fileVersion, "6.1.0")) {
 		const nextState = new MigrateState0().migrate(
 			currentState as LoomState0
 		);
 		currentState = nextState;
 	}
 
-	if (isVersionLessThan(versionString, "6.2.0")) {
+	if (isVersionLessThan(fileVersion, "6.2.0")) {
 		const nextState = new MigrateState1().migrate(
 			currentState as LoomState1
 		);
 		currentState = nextState;
 	}
 
-	if (isVersionLessThan(versionString, "6.3.0")) {
+	if (isVersionLessThan(fileVersion, "6.3.0")) {
 		const nextState = new MigrateState2().migrate(
 			currentState as LoomState2
 		);
 		currentState = nextState;
 	}
 
-	if (isVersionLessThan(versionString, "6.4.0")) {
+	if (isVersionLessThan(fileVersion, "6.4.0")) {
 		const nextState = new MigrateState3().migrate(
 			currentState as LoomState3
 		);
 		currentState = nextState;
 	}
 
-	if (isVersionLessThan(versionString, "6.8.0")) {
+	if (isVersionLessThan(fileVersion, "6.8.0")) {
 		const nextState = new MigrateState4().migrate(
 			currentState as LoomState4
 		);
 		currentState = nextState;
 	}
 
-	if (isVersionLessThan(versionString, "6.9.1")) {
+	if (isVersionLessThan(fileVersion, "6.9.1")) {
 		const nextState = new MigrateState5().migrate(
 			currentState as LoomState5
 		);
 		currentState = nextState;
 	}
 
-	if (isVersionLessThan(versionString, "6.10.0")) {
+	if (isVersionLessThan(fileVersion, "6.10.0")) {
 		const nextState = new MigrateState6().migrate(
 			currentState as LoomState6
 		);
 		currentState = nextState;
 	}
 
-	if (isVersionLessThan(versionString, "6.12.3")) {
+	if (isVersionLessThan(fileVersion, "6.12.3")) {
 		const nextState = new MigrateState7().migrate(
 			currentState as LoomState7
 		);
 		currentState = nextState;
 	}
 
-	if (isVersionLessThan(versionString, "6.17.0")) {
+	if (isVersionLessThan(fileVersion, "6.17.0")) {
 		const nextState = new MigrateState8().migrate(
 			currentState as LoomState8
 		);
 		currentState = nextState;
 	}
 
-	if (isVersionLessThan(versionString, "6.18.6")) {
+	if (isVersionLessThan(fileVersion, "6.18.6")) {
 		const nextState = new MigrateState9().migrate(
 			currentState as LoomState9
 		);
 		currentState = nextState;
 	}
 
-	if (isVersionLessThan(versionString, "6.19.0")) {
+	if (isVersionLessThan(fileVersion, "6.19.0")) {
 		const nextState = new MigrateState10().migrate(
 			currentState as LoomState10
 		);
 		currentState = nextState;
 	}
 
-	if (isVersionLessThan(versionString, "8.2.0")) {
+	if (isVersionLessThan(fileVersion, "8.2.0")) {
 		const nextState = new MigrateState11().migrate(
 			currentState as LoomState11
 		);
 		currentState = nextState;
 	}
 
-	if (isVersionLessThan(versionString, "8.5.0")) {
+	if (isVersionLessThan(fileVersion, "8.5.0")) {
 		const nextState = new MigrateState12().migrate(
 			currentState as LoomState12
 		);
