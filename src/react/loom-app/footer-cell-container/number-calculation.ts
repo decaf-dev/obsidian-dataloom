@@ -10,7 +10,7 @@ import {
 	CellType,
 	CurrencyType,
 	NumberCalculation,
-} from "src/shared/loom-state/types";
+} from "src/shared/loom-state/types/loom-state";
 import { round2Digits } from "./utils";
 import { getCurrencyCellContent } from "src/shared/cell-content/currency-cell-content";
 

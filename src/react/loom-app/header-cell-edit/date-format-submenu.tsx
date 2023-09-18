@@ -1,6 +1,6 @@
 import MenuItem from "src/react/shared/menu-item";
 import Submenu from "../../shared/submenu";
-import { DateFormat } from "src/shared/loom-state/types";
+import { DateFormat } from "src/shared/loom-state/types/loom-state";
 import { getDisplayNameForDateFormat } from "src/shared/loom-state/type-display-names";
 
 interface Props {

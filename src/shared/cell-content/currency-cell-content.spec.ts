@@ -1,4 +1,4 @@
-import { CurrencyType } from "../loom-state/types";
+import { CurrencyType } from "../loom-state/types/loom-state";
 import { getCurrencyCellContent } from "./currency-cell-content";
 
 describe("getCurrencyCellContent", () => {

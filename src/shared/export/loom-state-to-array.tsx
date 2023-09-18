@@ -4,7 +4,7 @@ import {
 	Column,
 	HeaderCell,
 	LoomState,
-} from "../loom-state/types";
+} from "../loom-state/types/loom-state";
 import { getCellContent } from "../cell-content";
 import ColumNotFoundError from "../error/column-not-found-error";
 import { App } from "obsidian";
