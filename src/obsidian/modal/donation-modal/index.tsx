@@ -1,7 +1,8 @@
 import { App, Modal } from "obsidian";
 import {
+	renderBuyMeACoffeeBadge,
 	renderDivider,
-	renderDonationBadge,
+	renderGitHubSponsorBadge,
 	setModalTitle,
 } from "../../shared";
 
@@ -19,7 +20,12 @@ export default class DonationModal extends Modal {
 		const { contentEl } = this;
 		renderDivider(contentEl);
 		this.renderText(contentEl);
-		renderDonationBadge(contentEl);
+
+		const badgeContainer = contentEl.createEl("div", {
+			cls: "dataloom-donation-modal__badge-container",
+		});
+		renderGitHubSponsorBadge(badgeContainer);
+		renderBuyMeACoffeeBadge(badgeContainer);
 	}
 
 	private renderText(contentEl: HTMLElement) {
@@ -30,7 +36,7 @@ export default class DonationModal extends Modal {
 			text: "I need your help. I develop this plugin as a free service, however I cannot dedicate adequate time to it without some support.",
 		});
 		containerEl.createEl("p", {
-			text: "If this plugin has helped you, please consider donating.",
+			text: "If this plugin has helped you, please consider supporting.",
 		});
 		containerEl.createEl("p", {
 			text: "- Trey.",
