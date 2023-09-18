@@ -1,6 +1,6 @@
 import MenuItem from "src/react/shared/menu-item";
 import Submenu from "../../shared/submenu";
-import { CellType } from "src/shared/loom-state/types";
+import { CellType } from "src/shared/loom-state/types/loom-state";
 import { getDisplayNameForCellType } from "src/shared/loom-state/type-display-names";
 import { getIconIdForCellType } from "src/react/shared/icon/utils";
 interface Props {

@@ -1,4 +1,8 @@
-import { CellType, Filter, LoomState } from "src/shared/loom-state/types";
+import {
+	LoomState,
+	CellType,
+	Filter,
+} from "src/shared/loom-state/types/loom-state";
 import {
 	createCheckboxFilter,
 	createFileFilter,

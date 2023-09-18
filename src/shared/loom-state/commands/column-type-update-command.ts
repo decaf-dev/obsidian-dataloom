@@ -12,7 +12,7 @@ import {
 	Filter,
 	LoomState,
 	Tag,
-} from "../types";
+} from "../types/loom-state";
 import { isCheckbox, isNumberCalcuation } from "../../match";
 
 export class ColumnTypeUpdateCommand extends LoomStateCommand {

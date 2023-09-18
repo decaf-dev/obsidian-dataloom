@@ -6,7 +6,7 @@ import {
 } from "src/react/shared/menu/types";
 
 import { getDisplayNameForDateFormat } from "src/shared/loom-state/type-display-names";
-import { DateFormat } from "src/shared/loom-state/types";
+import { DateFormat } from "src/shared/loom-state/types/loom-state";
 
 interface Props {
 	id: string;

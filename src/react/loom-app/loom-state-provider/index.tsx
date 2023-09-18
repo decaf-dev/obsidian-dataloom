@@ -1,6 +1,6 @@
 import React from "react";
 
-import { LoomState } from "src/shared/loom-state/types";
+import { LoomState } from "src/shared/loom-state/types/loom-state";
 import LoomStateCommand from "src/shared/loom-state/loom-state-command";
 import { useLogger } from "src/shared/logger";
 import RowSortCommand from "src/shared/loom-state/commands/row-sort-command";

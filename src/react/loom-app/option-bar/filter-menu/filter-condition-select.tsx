@@ -1,5 +1,5 @@
 import Select from "src/react/shared/select";
-import { FilterCondition } from "src/shared/loom-state/types";
+import { FilterCondition } from "src/shared/loom-state/types/loom-state";
 
 interface Props {
 	id: string;

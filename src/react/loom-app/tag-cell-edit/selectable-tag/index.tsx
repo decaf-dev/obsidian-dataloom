@@ -3,7 +3,7 @@ import MenuButton from "src/react/shared/menu-button";
 import Icon from "src/react/shared/icon";
 import Tag from "src/react/shared/tag";
 
-import { Color } from "src/shared/loom-state/types";
+import { Color } from "src/shared/loom-state/types/loom-state";
 import { useMenu } from "../../../shared/menu/hooks";
 import { LoomMenuLevel } from "../../../shared/menu/types";
 

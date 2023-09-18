@@ -1,4 +1,4 @@
-import { DateFormat } from "../loom-state/types";
+import { DateFormat } from "../loom-state/types/loom-state";
 import {
 	isValidDateFormat,
 	dateStringToUnixTime,

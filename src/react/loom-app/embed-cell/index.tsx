@@ -1,5 +1,8 @@
 import { getEmbedCellContent } from "src/shared/cell-content/embed-cell-content";
-import { AspectRatio, PaddingSize } from "src/shared/loom-state/types";
+import {
+	AspectRatio,
+	PaddingSize,
+} from "src/shared/loom-state/types/loom-state";
 
 import Embed from "./embed";
 import { useAppMount } from "../app-mount-provider";

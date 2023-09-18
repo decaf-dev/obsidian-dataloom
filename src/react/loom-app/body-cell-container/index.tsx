@@ -28,7 +28,7 @@ import {
 	DateFormat,
 	PaddingSize,
 	Tag,
-} from "src/shared/loom-state/types";
+} from "src/shared/loom-state/types/loom-state";
 import LastEditedTimeCell from "../last-edited-time-cell";
 import CreationTimeCell from "../creation-time-cell";
 import {
@@ -36,7 +36,7 @@ import {
 	CHECKBOX_MARKDOWN_UNCHECKED,
 } from "src/shared/constants";
 import { isCheckboxChecked } from "src/shared/match";
-import { Color } from "src/shared/loom-state/types";
+import { Color } from "src/shared/loom-state/types/loom-state";
 import { useMenu } from "../../shared/menu/hooks";
 
 import "./styles.css";

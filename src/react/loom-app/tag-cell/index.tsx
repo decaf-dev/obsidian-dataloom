@@ -1,4 +1,4 @@
-import { Color } from "src/shared/loom-state/types";
+import { Color } from "src/shared/loom-state/types/loom-state";
 import { useOverflow } from "src/shared/spacing/hooks";
 import Tag from "../../shared/tag";
 

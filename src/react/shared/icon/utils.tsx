@@ -1,4 +1,4 @@
-import { CellType } from "src/shared/loom-state/types";
+import { CellType } from "src/shared/loom-state/types/loom-state";
 
 export const getIconIdForCellType = (type: CellType) => {
 	switch (type) {

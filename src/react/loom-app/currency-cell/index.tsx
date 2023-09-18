@@ -1,6 +1,6 @@
 import { useOverflow } from "src/shared/spacing/hooks";
 
-import { CurrencyType } from "src/shared/loom-state/types";
+import { CurrencyType } from "src/shared/loom-state/types/loom-state";
 import { getCurrencyCellContent } from "src/shared/cell-content/currency-cell-content";
 import "./styles.css";
 

@@ -4,7 +4,7 @@ import Tag from "src/react/shared/tag";
 import Wrap from "src/react/shared/wrap";
 import Input from "src/react/shared/input";
 
-import { Tag as TagType } from "src/shared/loom-state/types";
+import { Tag as TagType } from "src/shared/loom-state/types/loom-state";
 import Padding from "src/react/shared/padding";
 
 import "./styles.css";
