@@ -1,5 +1,5 @@
 import { App, MarkdownView } from "obsidian";
-import { FILE_EXTENSION } from "src/data/constants";
+import { LOOM_EXTENSION } from "src/data/constants";
 import { numToPx } from "src/shared/conversion";
 
 export const getEmbeddedLoomLinkEls = (
@@ -19,7 +19,7 @@ export const getEmbeddedLoomLinkEls = (
 		for (let i = 0; i < embeddedLinkEls.length; i++) {
 			const linkEl = embeddedLinkEls[i];
 			const src = linkEl.getAttribute("src");
-			if (src?.endsWith(FILE_EXTENSION))
+			if (src?.endsWith(LOOM_EXTENSION))
 				linkEls.push(linkEl as HTMLElement);
 		}
 	}
