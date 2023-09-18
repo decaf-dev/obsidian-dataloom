@@ -1,7 +1,7 @@
 import Padding from "src/react/shared/padding";
 import Text from "src/react/shared/text";
-import { Color } from "src/shared/loom-state/types";
-import { Tag } from "src/shared/loom-state/types";
+import { Color } from "src/shared/loom-state/types/loom-state";
+import { Tag } from "src/shared/loom-state/types/loom-state";
 import CreateTag from "../create-tag";
 import SelectableTag from "../selectable-tag";
 

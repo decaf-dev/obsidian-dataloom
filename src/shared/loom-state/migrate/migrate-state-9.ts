@@ -1,5 +1,5 @@
 import MigrateState from "./migrate-state";
-import { SortDir } from "../types";
+import { SortDir } from "../types/loom-state";
 import { LoomState10 } from "../types/loom-state-10";
 import { LoomState9 } from "../types/loom-state-9";
 

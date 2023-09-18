@@ -5,7 +5,7 @@ import Stack from "src/react/shared/stack";
 import Padding from "src/react/shared/padding";
 
 import { findColorClassName } from "src/shared/color";
-import { Color } from "src/shared/loom-state/types";
+import { Color } from "src/shared/loom-state/types/loom-state";
 import { uppercaseFirst } from "src/shared/stringUtils";
 
 import "./styles.css";

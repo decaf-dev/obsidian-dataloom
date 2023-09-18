@@ -19,7 +19,7 @@ import {
 	MultiTagFilterCondition,
 	CheckboxFilterCondition,
 	FileFilter,
-} from "src/shared/loom-state/types";
+} from "src/shared/loom-state/types/loom-state";
 import { ColumnWithMarkdown } from "../types";
 import { isSmallScreenSize } from "src/shared/render/utils";
 import {

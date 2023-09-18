@@ -8,7 +8,7 @@ import Divider from "../../shared/divider";
 import Stack from "../../shared/stack";
 import MenuItem from "../../shared/menu-item";
 
-import { Color } from "src/shared/loom-state/types";
+import { Color } from "src/shared/loom-state/types/loom-state";
 import Padding from "src/react/shared/padding";
 
 import "./styles.css";

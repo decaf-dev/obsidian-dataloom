@@ -1,4 +1,4 @@
-import { LoomState, SortDir } from "./loom-state/types";
+import { LoomState, SortDir } from "./loom-state/types/loom-state";
 
 /**
  * Confirm that the user wants to change the default sort order

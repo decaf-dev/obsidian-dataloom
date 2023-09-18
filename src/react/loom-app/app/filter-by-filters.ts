@@ -11,7 +11,7 @@ import {
 	CheckboxFilter,
 	TagFilter,
 	MultiTagFilter,
-} from "src/shared/loom-state/types";
+} from "src/shared/loom-state/types/loom-state";
 import ColumNotFoundError from "src/shared/error/column-not-found-error";
 
 export const filterByFilters = (prevState: LoomState): BodyRow[] => {

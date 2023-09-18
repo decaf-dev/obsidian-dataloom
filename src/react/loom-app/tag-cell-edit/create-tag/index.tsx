@@ -2,7 +2,7 @@ import Tag from "src/react/shared/tag";
 import Stack from "src/react/shared/stack";
 import Button from "src/react/shared/button";
 
-import { Color } from "src/shared/loom-state/types";
+import { Color } from "src/shared/loom-state/types/loom-state";
 import Padding from "src/react/shared/padding";
 
 interface Props {

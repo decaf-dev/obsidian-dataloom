@@ -1,5 +1,10 @@
 import { App } from "obsidian";
-import { BodyCell, BodyRow, CellType, Column } from "../loom-state/types";
+import {
+	BodyCell,
+	BodyRow,
+	CellType,
+	Column,
+} from "../loom-state/types/loom-state";
 import { getCheckboxCellContent } from "./checkbox-cell-content";
 import { getCurrencyCellContent } from "./currency-cell-content";
 import { getDateCellContent } from "./date-cell-content";

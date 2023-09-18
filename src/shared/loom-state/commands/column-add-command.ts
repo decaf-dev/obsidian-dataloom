@@ -1,4 +1,10 @@
-import { BodyCell, Column, FooterCell, HeaderCell, LoomState } from "../types";
+import {
+	BodyCell,
+	Column,
+	FooterCell,
+	HeaderCell,
+	LoomState,
+} from "../types/loom-state";
 import {
 	createBodyCell,
 	createColumn,

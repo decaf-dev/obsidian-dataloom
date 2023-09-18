@@ -4,7 +4,7 @@ import {
 } from "src/shared/loom-state/loom-state-factory";
 import { CommandRedoError, CommandUndoError } from "./command-errors";
 import TagAddCommand from "./tag-add-command";
-import { Color } from "../types";
+import { Color } from "../types/loom-state";
 import { advanceBy, clear } from "jest-date-mock";
 
 describe("tag-add-command", () => {

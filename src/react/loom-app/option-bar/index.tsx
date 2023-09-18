@@ -15,7 +15,7 @@ import {
 	HeaderCell,
 	Filter,
 	CellType,
-} from "src/shared/loom-state/types";
+} from "src/shared/loom-state/types/loom-state";
 import CellNotFoundError from "src/shared/error/cell-not-found-error";
 import ColumNotFoundError from "src/shared/error/column-not-found-error";
 import { ColumnWithMarkdown } from "./types";

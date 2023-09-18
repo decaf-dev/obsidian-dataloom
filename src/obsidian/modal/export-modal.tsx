@@ -4,7 +4,7 @@ import { ExportApp } from "src/react/export-app";
 import { Provider } from "react-redux";
 import { store } from "src/redux/store";
 import { renderDivider, setModalTitle } from "../shared";
-import { LoomState } from "src/shared/loom-state/types";
+import { LoomState } from "src/shared/loom-state/types/loom-state";
 
 export default class ExportModal extends Modal {
 	root: Root;

@@ -1,5 +1,9 @@
 import { SetStateAction } from "react";
-import { CellType, Filter, LoomState } from "src/shared/loom-state/types";
+import {
+	CellType,
+	Filter,
+	LoomState,
+} from "src/shared/loom-state/types/loom-state";
 import { useLogger } from "src/shared/logger";
 import { addFilter, deleteFilter } from "src/shared/loom-state/filter-utils";
 import { filterByFilters } from "../filter-by-filters";

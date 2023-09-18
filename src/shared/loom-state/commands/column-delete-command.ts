@@ -6,7 +6,7 @@ import {
 	BodyCell,
 	FooterCell,
 	Filter,
-} from "../types";
+} from "../types/loom-state";
 import LoomStateCommand from "../loom-state-command";
 import { DeleteCommandArgumentsError } from "./command-errors";
 

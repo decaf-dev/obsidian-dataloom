@@ -7,7 +7,7 @@ import Stepper from "../shared/stepper";
 import DataSourceSelect from "./data-source-select";
 import UploadData from "./upload-data";
 
-import { LoomState } from "src/shared/loom-state/types";
+import { LoomState } from "src/shared/loom-state/types/loom-state";
 import { Step } from "../shared/stepper/types";
 import {
 	ImportColumn,

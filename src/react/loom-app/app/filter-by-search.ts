@@ -7,7 +7,7 @@ import {
 	DateFormat,
 	LoomState,
 	Tag,
-} from "src/shared/loom-state/types";
+} from "src/shared/loom-state/types/loom-state";
 import RowNotFoundError from "src/shared/error/row-not-found-error";
 import ColumNotFoundError from "src/shared/error/column-not-found-error";
 import { getTimeCellContent } from "src/shared/cell-content/time-content";

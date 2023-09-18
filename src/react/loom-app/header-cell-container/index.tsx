@@ -17,7 +17,7 @@ import {
 	DateFormat,
 	PaddingSize,
 	SortDir,
-} from "src/shared/loom-state/types";
+} from "src/shared/loom-state/types/loom-state";
 
 import "./styles.css";
 

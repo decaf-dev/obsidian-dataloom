@@ -1,4 +1,4 @@
-import { SortDir, LoomState } from "../loom-state/types";
+import { SortDir, LoomState } from "../loom-state/types/loom-state";
 import { confirmSortOrderChange } from "../sort-utils";
 import { DragData } from "./types";
 

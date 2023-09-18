@@ -6,7 +6,7 @@ import {
 	CurrencyType,
 	DateFormat,
 	NumberCalculation,
-} from "./types";
+} from "./types/loom-state";
 
 const getShortDisplayNameForCalculation = (value: Calculation) => {
 	switch (value) {
