@@ -1,5 +1,5 @@
 import TagNotFoundError from "src/shared/error/tag-not-found-error";
-import LoomStateCommand from "../loom-state-command";
+import LoomStateCommand from "./loom-state-command";
 import { LoomState, Tag } from "../types/loom-state";
 
 export default class TagUpdateCommand extends LoomStateCommand {

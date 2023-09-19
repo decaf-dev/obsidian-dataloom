@@ -3,15 +3,17 @@ import {
 	createTag,
 	createTextFilter,
 } from "src/shared/loom-state/loom-state-factory";
-import { CommandRedoError, CommandUndoError } from "./command-errors";
+import CommandUndoError from "./command-undo-error";
+import CommandRedoError from "./command-redo-error";
 import { ColumnTypeUpdateCommand } from "./column-type-update-command";
 import { CellType } from "../types/loom-state";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "../../constants";
 
 describe("column-type-update-command", () => {
 	it("should throw an error when undo() is called before execute()", () => {
+		const prevState = createTestLoomState(1, 1);
+
 		try {
-			const prevState = createTestLoomState(1, 1);
 			new ColumnTypeUpdateCommand(
 				prevState.model.columns[0].id,
 				CellType.TAG
@@ -21,14 +23,15 @@ describe("column-type-update-command", () => {
 		}
 	});
 
-	it("should throw an error when redo() is called before redo()", () => {
+	it("should throw an error when redo() is called before undo()", () => {
+		const prevState = createTestLoomState(1, 1);
+		const command = new ColumnTypeUpdateCommand(
+			prevState.model.columns[0].id,
+			CellType.TAG
+		);
+		command.execute(prevState);
+
 		try {
-			const prevState = createTestLoomState(1, 1);
-			const command = new ColumnTypeUpdateCommand(
-				prevState.model.columns[0].id,
-				CellType.TAG
-			);
-			command.execute(prevState);
 			command.redo(prevState);
 		} catch (err) {
 			expect(err).toBeInstanceOf(CommandRedoError);

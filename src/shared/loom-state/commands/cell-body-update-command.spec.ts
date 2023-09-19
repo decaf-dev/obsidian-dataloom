@@ -1,18 +1,19 @@
 import { createTestLoomState } from "src/shared/loom-state/loom-state-factory";
-import { CommandUndoError } from "./command-errors";
+import CommandUndoError from "./command-undo-error";
 import CellBodyUpdateCommand from "./cell-body-update-command";
 import { advanceBy, clear } from "jest-date-mock";
 
 describe("row-body-update-command", () => {
 	it("should throw an error when undo() is called before execute()", () => {
+		const prevState = createTestLoomState(1, 1);
+		const command = new CellBodyUpdateCommand(
+			prevState.model.bodyCells[0].id,
+			prevState.model.bodyRows[0].id,
+			"markdown",
+			"test"
+		);
+
 		try {
-			const prevState = createTestLoomState(1, 1);
-			const command = new CellBodyUpdateCommand(
-				prevState.model.bodyCells[0].id,
-				prevState.model.bodyRows[0].id,
-				"markdown",
-				"test"
-			);
 			command.undo(prevState);
 		} catch (err) {
 			expect(err).toBeInstanceOf(CommandUndoError);

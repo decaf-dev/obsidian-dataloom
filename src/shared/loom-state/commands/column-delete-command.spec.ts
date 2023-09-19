@@ -3,27 +3,26 @@ import {
 	createTestLoomState,
 } from "src/shared/loom-state/loom-state-factory";
 import RowDeleteCommand from "./row-delete-command";
-import {
-	DeleteCommandArgumentsError,
-	CommandUndoError,
-} from "./command-errors";
+import CommandUndoError from "./command-undo-error";
 import ColumnDeleteCommand from "./column-delete-command";
+import CommandArgumentsError from "./command-arguments-error";
 
 describe("column-delete-command", () => {
 	it("should throw an error if no arguments are passed to the command object", () => {
 		try {
 			new ColumnDeleteCommand({});
 		} catch (err) {
-			expect(err).toBeInstanceOf(DeleteCommandArgumentsError);
+			expect(err).toBeInstanceOf(CommandArgumentsError);
 		}
 	});
 
 	it("should throw an error when undo() is called before execute()", () => {
+		const prevState = createTestLoomState(2, 1);
+		const command = new ColumnDeleteCommand({
+			last: true,
+		});
+
 		try {
-			const prevState = createTestLoomState(2, 1);
-			const command = new ColumnDeleteCommand({
-				last: true,
-			});
 			command.undo(prevState);
 		} catch (err) {
 			expect(err).toBeInstanceOf(CommandUndoError);

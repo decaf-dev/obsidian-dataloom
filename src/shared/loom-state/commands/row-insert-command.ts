@@ -2,7 +2,7 @@ import {
 	createBodyCell,
 	createBodyRow,
 } from "src/shared/loom-state/loom-state-factory";
-import LoomStateCommand from "../loom-state-command";
+import LoomStateCommand from "./loom-state-command";
 import { BodyCell, BodyRow, LoomState, SortDir } from "../types/loom-state";
 import RowNotFoundError from "src/shared/error/row-not-found-error";
 

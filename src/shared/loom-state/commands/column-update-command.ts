@@ -1,5 +1,5 @@
 import ColumNotFoundError from "src/shared/error/column-not-found-error";
-import LoomStateCommand from "../loom-state-command";
+import LoomStateCommand from "./loom-state-command";
 import { Column, LoomState } from "../types/loom-state";
 
 export default class ColumnUpdateCommand extends LoomStateCommand {
