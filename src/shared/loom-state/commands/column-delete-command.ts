@@ -8,7 +8,7 @@ import {
 	Filter,
 } from "../types/loom-state";
 import LoomStateCommand from "./loom-state-command";
-import { DeleteCommandArgumentsError } from "./command-arguments-error";
+import CommandArgumentsError from "./command-arguments-error";
 
 export default class ColumnDeleteCommand extends LoomStateCommand {
 	private columnId?: string;
@@ -24,7 +24,7 @@ export default class ColumnDeleteCommand extends LoomStateCommand {
 		super();
 		const { id, last } = options;
 		if (id === undefined && last === undefined)
-			throw new DeleteCommandArgumentsError();
+			throw new CommandArgumentsError("delete");
 
 		this.columnId = id;
 		this.last = last;
