@@ -67,7 +67,7 @@ export default class FilterUpdateCommand<
 
 		const { filters } = prevState.model;
 		const nextFilters = filters.map((filter) => {
-			if (filter.id === this.id) {
+			if (filter.id === this.nextFilter.id) {
 				return this.prevFilter;
 			}
 			return filter;
