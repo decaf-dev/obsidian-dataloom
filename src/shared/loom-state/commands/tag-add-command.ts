@@ -1,5 +1,5 @@
 import { createTag } from "src/shared/loom-state/loom-state-factory";
-import LoomStateCommand from "../loom-state-command";
+import LoomStateCommand from "./loom-state-command";
 import { LoomState, Tag } from "../types/loom-state";
 import { Color } from "../types/loom-state";
 import { rowLastEditedTime, rowLastEditedTimeUpdate } from "../row-utils";

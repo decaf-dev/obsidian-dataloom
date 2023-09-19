@@ -2,7 +2,7 @@ import {
 	createBodyCell,
 	createBodyRow,
 } from "src/shared/loom-state/loom-state-factory";
-import LoomStateCommand from "../loom-state-command";
+import LoomStateCommand from "./loom-state-command";
 import { BodyCell, BodyRow, LoomState } from "../types/loom-state";
 
 export default class RowAddCommand extends LoomStateCommand {

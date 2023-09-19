@@ -43,14 +43,8 @@ import { useMenuOperations } from "src/react/shared/menu/hooks";
 export default function App() {
 	const logger = useLogger();
 	const { reactAppId, isMarkdownView } = useAppMount();
-	const {
-		loomState,
-		resizingColumnId,
-		searchText,
-		onRedo,
-		onUndo,
-		setLoomState,
-	} = useLoomState();
+	const { loomState, resizingColumnId, searchText, onRedo, onUndo } =
+		useLoomState();
 
 	const tableRef = React.useRef<VirtuosoHandle | null>(null);
 	const { onRequestCloseTop } = useMenuOperations();
@@ -64,7 +58,7 @@ export default function App() {
 	const { onFrozenColumnsChange } = useTableSettings();
 
 	const { onFilterAdd, onFilterUpdate, onFilterDelete, filterByFilters } =
-		useFilter(setLoomState);
+		useFilter();
 
 	const {
 		onColumnWidthChange,

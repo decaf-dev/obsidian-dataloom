@@ -1,16 +1,14 @@
 import { createTestLoomState } from "src/shared/loom-state/loom-state-factory";
-import { CommandRedoError, CommandUndoError } from "./command-errors";
+import CommandUndoError from "./command-undo-error";
+import CommandRedoError from "./command-redo-error";
 import ColumnAddCommand from "./column-add-command";
 
 describe("column-add-command", () => {
-	let command: ColumnAddCommand;
-	beforeEach(() => {
-		command = new ColumnAddCommand();
-	});
-
 	it("should throw an error when undo() is called before execute()", () => {
+		const prevState = createTestLoomState(1, 1);
+		const command = new ColumnAddCommand();
+
 		try {
-			const prevState = createTestLoomState(1, 1);
 			command.undo(prevState);
 		} catch (err) {
 			expect(err).toBeInstanceOf(CommandUndoError);
@@ -18,9 +16,11 @@ describe("column-add-command", () => {
 	});
 
 	it("should throw an error when redo() is called before undo()", () => {
+		const prevState = createTestLoomState(1, 1);
+		const command = new ColumnAddCommand();
+		const executeState = command.execute(prevState);
+
 		try {
-			const prevState = createTestLoomState(1, 1);
-			const executeState = command.execute(prevState);
 			command.redo(executeState);
 		} catch (err) {
 			expect(err).toBeInstanceOf(CommandRedoError);
@@ -30,6 +30,7 @@ describe("column-add-command", () => {
 	it("should add a column when execute() is called", () => {
 		//Arrange
 		const prevState = createTestLoomState(1, 1);
+		const command = new ColumnAddCommand();
 
 		//Act
 		const executeState = command.execute(prevState);
@@ -44,6 +45,7 @@ describe("column-add-command", () => {
 	it("should remove the added column when undo() is called", () => {
 		//Arrange
 		const prevState = createTestLoomState(1, 1);
+		const command = new ColumnAddCommand();
 
 		//Act
 		const executeState = command.execute(prevState);

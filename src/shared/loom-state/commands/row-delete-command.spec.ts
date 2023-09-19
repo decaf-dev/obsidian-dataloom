@@ -1,16 +1,14 @@
 import { createTestLoomState } from "src/shared/loom-state/loom-state-factory";
 import RowDeleteCommand from "./row-delete-command";
-import {
-	DeleteCommandArgumentsError,
-	CommandUndoError,
-} from "./command-errors";
+import CommandArgumentsError from "./command-arguments-error";
+import CommandUndoError from "./command-undo-error";
 
 describe("row-delete-command", () => {
 	it("should throw an error if no arguments are passed to the command object", () => {
 		try {
 			new RowDeleteCommand({});
 		} catch (err) {
-			expect(err).toBeInstanceOf(DeleteCommandArgumentsError);
+			expect(err).toBeInstanceOf(CommandArgumentsError);
 		}
 	});
 
