@@ -1,6 +1,7 @@
 import { createTestLoomState } from "src/shared/loom-state/loom-state-factory";
 import RowAddCommand from "./row-add-command";
-import { CommandRedoError, CommandUndoError } from "./command-errors";
+import CommandUndoError from "./command-undo-error";
+import CommandRedoError from "./command-redo-error";
 
 describe("row-add-command", () => {
 	let command: RowAddCommand;

@@ -2,7 +2,8 @@ import {
 	createTestLoomState,
 	createTag,
 } from "src/shared/loom-state/loom-state-factory";
-import { CommandRedoError, CommandUndoError } from "./command-errors";
+import CommandUndoError from "./command-undo-error";
+import CommandRedoError from "./command-redo-error";
 import TagUpdateCommand from "./tag-update-command";
 
 describe("tag-update-command", () => {

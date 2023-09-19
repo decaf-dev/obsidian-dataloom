@@ -2,7 +2,8 @@ import {
 	createTestLoomState,
 	createTag,
 } from "src/shared/loom-state/loom-state-factory";
-import { CommandUndoError, CommandRedoError } from "./command-errors";
+import CommandUndoError from "./command-undo-error";
+import CommandRedoError from "./command-redo-error";
 import TagDeleteCommand from "./tag-delete-command";
 
 describe("tag-delete-command", () => {

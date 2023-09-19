@@ -1,4 +1,4 @@
-import LoomStateCommand from "../loom-state-command";
+import LoomStateCommand from "./loom-state-command";
 import { LoomState, TableSettings } from "../types/loom-state";
 
 export default class TableSettingsUpdateCommand<

@@ -2,7 +2,7 @@ import {
 	createTestLoomState,
 	createTag,
 } from "src/shared/loom-state/loom-state-factory";
-import { CommandUndoError } from "./command-errors";
+import CommandUndoError from "./command-undo-error";
 import TagCellRemoveCommand from "./tag-cell-remove-command";
 import { advanceBy, clear } from "jest-date-mock";
 

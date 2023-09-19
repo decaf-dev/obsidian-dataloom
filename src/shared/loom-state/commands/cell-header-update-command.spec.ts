@@ -1,5 +1,5 @@
 import { createTestLoomState } from "src/shared/loom-state/loom-state-factory";
-import { CommandUndoError } from "./command-errors";
+import CommandUndoError from "./command-undo-error";
 import CellHeaderUpdateCommand from "./cell-header-update-command";
 
 describe("row-header-update-command", () => {

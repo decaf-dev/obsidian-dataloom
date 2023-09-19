@@ -3,7 +3,8 @@ import {
 	createTag,
 	createTextFilter,
 } from "src/shared/loom-state/loom-state-factory";
-import { CommandRedoError, CommandUndoError } from "./command-errors";
+import CommandUndoError from "./command-undo-error";
+import CommandRedoError from "./command-redo-error";
 import { ColumnTypeUpdateCommand } from "./column-type-update-command";
 import { CellType } from "../types/loom-state";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "../../constants";

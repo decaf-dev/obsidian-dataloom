@@ -2,7 +2,7 @@ import { createTag } from "src/shared/loom-state/loom-state-factory";
 import { unixTimeToDateString } from "../../date/date-conversion";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "../../constants";
 import ColumNotFoundError from "src/shared/error/column-not-found-error";
-import LoomStateCommand from "../loom-state-command";
+import LoomStateCommand from "./loom-state-command";
 import {
 	BodyCell,
 	Calculation,

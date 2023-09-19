@@ -1,5 +1,6 @@
 import { createTestLoomState } from "src/shared/loom-state/loom-state-factory";
-import { CommandRedoError, CommandUndoError } from "./command-errors";
+import CommandUndoError from "./command-undo-error";
+import CommandRedoError from "./command-redo-error";
 import ColumnAddCommand from "./column-add-command";
 
 describe("column-add-command", () => {

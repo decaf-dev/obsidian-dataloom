@@ -7,8 +7,8 @@ import {
 	FooterCell,
 	Filter,
 } from "../types/loom-state";
-import LoomStateCommand from "../loom-state-command";
-import { DeleteCommandArgumentsError } from "./command-errors";
+import LoomStateCommand from "./loom-state-command";
+import { DeleteCommandArgumentsError } from "./command-arguments-error";
 
 export default class ColumnDeleteCommand extends LoomStateCommand {
 	private columnId?: string;

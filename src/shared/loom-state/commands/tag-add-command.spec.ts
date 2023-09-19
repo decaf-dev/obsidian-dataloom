@@ -2,7 +2,8 @@ import {
 	createTestLoomState,
 	createTag,
 } from "src/shared/loom-state/loom-state-factory";
-import { CommandRedoError, CommandUndoError } from "./command-errors";
+import CommandUndoError from "./command-undo-error";
+import CommandRedoError from "./command-redo-error";
 import TagAddCommand from "./tag-add-command";
 import { Color } from "../types/loom-state";
 import { advanceBy, clear } from "jest-date-mock";
