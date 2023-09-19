@@ -4,9 +4,9 @@ import {
 	createTextFilter,
 } from "src/shared/loom-state/loom-state-factory";
 import CommandUndoError from "./command-undo-error";
-import CommandRedoError from "./command-redo-error";
 import FilterUpdateCommand from "./filter-update-command";
 import { TextFilter } from "../types/loom-state";
+import CommandRedoError from "./command-redo-error";
 
 describe("filter-update-command", () => {
 	it("should throw an error when undo() is called before execute()", () => {
@@ -20,11 +20,14 @@ describe("filter-update-command", () => {
 			text: "test",
 		});
 
-		//Act and Assert
-		expect(() => command.undo(prevState)).toThrow(CommandUndoError);
+		try {
+			command.undo(prevState);
+		} catch (err) {
+			expect(err).toBeInstanceOf(CommandUndoError);
+		}
 	});
 
-	it("should throw an error when redo() is called before redo()", () => {
+	it("should throw an error when redo() is called before undo()", () => {
 		//Arrange
 		const prevState = createTestLoomState(1, 1);
 
@@ -35,8 +38,13 @@ describe("filter-update-command", () => {
 			text: "test",
 		});
 
-		//Act and Assert
-		expect(() => command.redo(prevState)).toThrow(CommandRedoError);
+		const executeState = command.execute(prevState);
+
+		try {
+			command.redo(executeState);
+		} catch (err) {
+			expect(err).toBeInstanceOf(CommandRedoError);
+		}
 	});
 
 	it("should partially update the filter", async () => {

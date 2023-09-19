@@ -5,14 +5,15 @@ import { advanceBy, clear } from "jest-date-mock";
 
 describe("row-body-update-command", () => {
 	it("should throw an error when undo() is called before execute()", () => {
+		const prevState = createTestLoomState(1, 1);
+		const command = new CellBodyUpdateCommand(
+			prevState.model.bodyCells[0].id,
+			prevState.model.bodyRows[0].id,
+			"markdown",
+			"test"
+		);
+
 		try {
-			const prevState = createTestLoomState(1, 1);
-			const command = new CellBodyUpdateCommand(
-				prevState.model.bodyCells[0].id,
-				prevState.model.bodyRows[0].id,
-				"markdown",
-				"test"
-			);
 			command.undo(prevState);
 		} catch (err) {
 			expect(err).toBeInstanceOf(CommandUndoError);

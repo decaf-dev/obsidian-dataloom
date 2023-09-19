@@ -17,11 +17,12 @@ describe("column-delete-command", () => {
 	});
 
 	it("should throw an error when undo() is called before execute()", () => {
+		const prevState = createTestLoomState(2, 1);
+		const command = new ColumnDeleteCommand({
+			last: true,
+		});
+
 		try {
-			const prevState = createTestLoomState(2, 1);
-			const command = new ColumnDeleteCommand({
-				last: true,
-			});
 			command.undo(prevState);
 		} catch (err) {
 			expect(err).toBeInstanceOf(CommandUndoError);

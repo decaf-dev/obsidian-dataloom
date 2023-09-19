@@ -10,18 +10,18 @@ import { advanceBy, clear } from "jest-date-mock";
 
 describe("tag-add-command", () => {
 	it("should throw an error when undo() is called before execute()", () => {
-		try {
-			//Arrange
-			const prevState = createTestLoomState(1, 1);
-			const command = new TagAddCommand(
-				prevState.model.bodyCells[0].id,
-				prevState.model.columns[0].id,
-				prevState.model.bodyRows[0].id,
-				"test1",
-				Color.BLUE,
-				true
-			);
+		//Arrange
+		const prevState = createTestLoomState(1, 1);
+		const command = new TagAddCommand(
+			prevState.model.bodyCells[0].id,
+			prevState.model.columns[0].id,
+			prevState.model.bodyRows[0].id,
+			"test1",
+			Color.BLUE,
+			true
+		);
 
+		try {
 			//Act
 			command.undo(prevState);
 		} catch (err) {

@@ -5,15 +5,15 @@ import ColumnUpdateCommand from "./column-update-command";
 
 describe("column-update-command", () => {
 	it("should throw an error when undo() is called before execute()", () => {
-		try {
-			//Arrange
-			const prevState = createTestLoomState(1, 1);
-			const command = new ColumnUpdateCommand(
-				prevState.model.columns[0].id,
-				"width",
-				{ value: "250px" }
-			);
+		//Arrange
+		const prevState = createTestLoomState(1, 1);
+		const command = new ColumnUpdateCommand(
+			prevState.model.columns[0].id,
+			"width",
+			{ value: "250px" }
+		);
 
+		try {
 			//Act
 			command.undo(prevState);
 		} catch (err) {
@@ -21,16 +21,16 @@ describe("column-update-command", () => {
 		}
 	});
 
-	it("should throw an error when redo() is called before redo()", () => {
-		try {
-			//Arrange
-			const prevState = createTestLoomState(1, 1);
-			const command = new ColumnUpdateCommand(
-				prevState.model.columns[0].id,
-				"width",
-				{ value: "250px" }
-			);
+	it("should throw an error when redo() is called before undo()", () => {
+		//Arrange
+		const prevState = createTestLoomState(1, 1);
+		const command = new ColumnUpdateCommand(
+			prevState.model.columns[0].id,
+			"width",
+			{ value: "250px" }
+		);
 
+		try {
 			//Act
 			command.execute(prevState);
 			command.redo(prevState);

@@ -4,13 +4,14 @@ import CellHeaderUpdateCommand from "./cell-header-update-command";
 
 describe("row-header-update-command", () => {
 	it("should throw an error when undo() is called before execute()", () => {
+		const prevState = createTestLoomState(1, 1);
+		const command = new CellHeaderUpdateCommand(
+			prevState.model.headerCells[0].id,
+			"markdown",
+			"test"
+		);
+
 		try {
-			const prevState = createTestLoomState(1, 1);
-			const command = new CellHeaderUpdateCommand(
-				prevState.model.headerCells[0].id,
-				"markdown",
-				"test"
-			);
 			command.undo(prevState);
 		} catch (err) {
 			expect(err).toBeInstanceOf(CommandUndoError);

@@ -8,23 +8,23 @@ import { advanceBy, clear } from "jest-date-mock";
 
 describe("tag-cell-remove-command", () => {
 	it("should throw an error when undo() is called before execute()", () => {
+		//Arrange
+		const prevState = createTestLoomState(1, 2);
+
+		const tags = [createTag("test1"), createTag("test2")];
+		prevState.model.columns[0].tags = tags;
+
+		const tagIds = tags.map((t) => t.id);
+		prevState.model.bodyCells[0].tagIds = tagIds;
+		prevState.model.bodyCells[1].tagIds = tagIds;
+
+		const command = new TagCellRemoveCommand(
+			prevState.model.bodyCells[0].id,
+			prevState.model.bodyRows[0].id,
+			tags[0].id
+		);
+
 		try {
-			//Arrange
-			const prevState = createTestLoomState(1, 2);
-
-			const tags = [createTag("test1"), createTag("test2")];
-			prevState.model.columns[0].tags = tags;
-
-			const tagIds = tags.map((t) => t.id);
-			prevState.model.bodyCells[0].tagIds = tagIds;
-			prevState.model.bodyCells[1].tagIds = tagIds;
-
-			const command = new TagCellRemoveCommand(
-				prevState.model.bodyCells[0].id,
-				prevState.model.bodyRows[0].id,
-				tags[0].id
-			);
-
 			//Act
 			command.undo(prevState);
 		} catch (err) {

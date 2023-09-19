@@ -4,16 +4,12 @@ import CommandUndoError from "./command-undo-error";
 import CommandRedoError from "./command-redo-error";
 
 describe("row-add-command", () => {
-	let command: RowAddCommand;
-	beforeEach(() => {
-		command = new RowAddCommand();
-	});
-
 	it("should throw an error when undo() is called before execute()", () => {
-		try {
-			//Arrange
-			const prevState = createTestLoomState(1, 1);
+		//Arrange
+		const prevState = createTestLoomState(1, 1);
+		const command = new RowAddCommand();
 
+		try {
 			//Act
 			command.undo(prevState);
 		} catch (err) {
@@ -22,11 +18,12 @@ describe("row-add-command", () => {
 	});
 
 	it("should throw an error when redo() is called before undo()", () => {
-		try {
-			//Arrange
-			const prevState = createTestLoomState(1, 1);
-			const executeState = command.execute(prevState);
+		//Arrange
+		const prevState = createTestLoomState(1, 1);
+		const command = new RowAddCommand();
+		const executeState = command.execute(prevState);
 
+		try {
 			//Act
 			command.redo(executeState);
 		} catch (err) {
@@ -37,6 +34,7 @@ describe("row-add-command", () => {
 	it("should add a row when execute() is called", () => {
 		//Arrange
 		const prevState = createTestLoomState(1, 1);
+		const command = new RowAddCommand();
 
 		//Act
 		const executeState = command.execute(prevState);
@@ -49,6 +47,7 @@ describe("row-add-command", () => {
 	it("should remove the added row when undo() is called", () => {
 		//Arrange
 		const prevState = createTestLoomState(1, 1);
+		const command = new RowAddCommand();
 
 		//Act
 		const executeState = command.execute(prevState);

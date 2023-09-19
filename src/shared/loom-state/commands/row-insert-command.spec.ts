@@ -4,14 +4,14 @@ import RowInsertCommand from "./row-insert-command";
 
 describe("row-insert-command", () => {
 	it("should throw an error when undo() is called before execute()", () => {
-		try {
-			//Arrange
-			const prevState = createTestLoomState(1, 2);
-			const command = new RowInsertCommand(
-				prevState.model.bodyRows[0].id,
-				"above"
-			);
+		//Arrange
+		const prevState = createTestLoomState(1, 2);
+		const command = new RowInsertCommand(
+			prevState.model.bodyRows[0].id,
+			"above"
+		);
 
+		try {
 			//Act
 			command.undo(prevState);
 		} catch (err) {
