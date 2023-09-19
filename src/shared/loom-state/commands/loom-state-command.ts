@@ -17,19 +17,19 @@ abstract class LoomStateCommand {
 		this.hasExecuteBeenCalled = true;
 	}
 
-	onRedo() {
-		if (!this.hasUndoBeenCalled) throw new CommandRedoError();
-		this.hasUndoBeenCalled = false;
-	}
-
 	onUndo() {
 		if (!this.hasExecuteBeenCalled) throw new CommandUndoError();
 		this.hasUndoBeenCalled = true;
 	}
 
+	onRedo() {
+		if (!this.hasUndoBeenCalled) throw new CommandRedoError();
+		this.hasUndoBeenCalled = false;
+	}
+
 	abstract execute(prevState: LoomState): LoomState;
-	abstract redo(prevState: LoomState): LoomState;
 	abstract undo(prevState: LoomState): LoomState;
+	abstract redo(prevState: LoomState): LoomState;
 }
 
 export default LoomStateCommand;
