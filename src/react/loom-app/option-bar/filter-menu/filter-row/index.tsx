@@ -5,43 +5,62 @@ import Wrap from "src/react/shared/wrap";
 import Stack from "src/react/shared/stack";
 import FilterColumnSelect from "../filter-column-select";
 
-import { FilterCondition } from "src/shared/loom-state/types/loom-state";
+import {
+	FilterCondition,
+	FilterOperator as FilterOperatorType,
+} from "src/shared/loom-state/types/loom-state";
 import { ColumnWithMarkdown } from "../../types";
 import FilterConditionSelect from "../filter-condition-select";
 
 import "./styles.css";
+import FilterOperator from "../filter-operator";
 
 interface Props {
+	index: number;
 	id: string;
 	columns: ColumnWithMarkdown[];
 	isEnabled: boolean;
 	selectedColumnId: string;
+	selectedOperator: FilterOperatorType;
 	conditionOptions: FilterCondition[];
 	selectedCondition: FilterCondition;
 	inputNode?: React.ReactNode;
 	onToggle: (id: string) => void;
 	onColumnChange: (id: string, columnId: string) => void;
 	onConditionChange: (id: string, value: FilterCondition) => void;
+	onOperatorChange: (id: string, value: FilterOperatorType) => void;
 	onDeleteClick: (id: string) => void;
 	children?: React.ReactNode;
 }
 
 export default function FilterRow({
+	index,
 	id,
 	columns,
 	isEnabled,
 	selectedColumnId,
+	selectedOperator,
 	selectedCondition,
 	conditionOptions,
 	inputNode,
 	onToggle,
 	onColumnChange,
+	onOperatorChange,
 	onConditionChange,
 	onDeleteClick,
 }: Props) {
 	return (
 		<div className="dataloom-filter-row">
 			<Wrap>
+				{index !== 0 ? (
+					<FilterOperator
+						id={id}
+						value={selectedOperator}
+						onChange={onOperatorChange}
+					/>
+				) : (
+					<div className="dataloom-filter-row__spacer"></div>
+				)}
 				<FilterColumnSelect
 					id={id}
 					columns={columns}
@@ -56,7 +75,9 @@ export default function FilterRow({
 				/>
 				{selectedCondition !== FilterCondition.IS_EMPTY &&
 					selectedCondition !== FilterCondition.IS_NOT_EMPTY && (
-						<>{inputNode}</>
+						<div className="dataloom-filter-row__input">
+							{inputNode}
+						</div>
 					)}
 				<Stack
 					grow

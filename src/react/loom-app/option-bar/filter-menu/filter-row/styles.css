@@ -1,3 +1,11 @@
-.dataloom-filter-row input {
+.dataloom-filter-row__input {
     width: 150px;
+}
+
+.dataloom-filter-row__input > select {
+    width: 100%;
+}
+
+.dataloom-filter-row__spacer {
+    width: 60px;
 }

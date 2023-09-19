@@ -140,10 +140,13 @@ export interface Column {
 	verticalPadding: PaddingSize;
 }
 
+export type FilterOperator = "and" | "or";
+
 interface BaseFilter {
 	id: string;
 	type: CellType;
 	columnId: string;
+	operator: FilterOperator;
 	isEnabled: boolean;
 }
 
