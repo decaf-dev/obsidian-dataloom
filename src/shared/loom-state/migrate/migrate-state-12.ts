@@ -36,7 +36,7 @@ export default class MigrateState12 implements MigrateState {
 				...column,
 				numberPrefix: "",
 				numberSuffix: "",
-				numberSeperator: "",
+				numberSeparator: "",
 			};
 		});
 

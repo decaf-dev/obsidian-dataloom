@@ -19,6 +19,7 @@ import {
 	MultiTagFilterCondition,
 	CheckboxFilterCondition,
 	FileFilter,
+	FilterOperator,
 } from "src/shared/loom-state/types/loom-state";
 import { ColumnWithMarkdown } from "../types";
 import { isSmallScreenSize } from "src/shared/render/utils";
@@ -135,6 +136,10 @@ export default function FilterMenu({
 		onUpdate(id, newFilter, false);
 	}
 
+	function onOperatorChange(id: string, operator: FilterOperator) {
+		onUpdate(id, { operator });
+	}
+
 	function onConditionChange(id: string, condition: FilterCondition) {
 		onUpdate(id, { condition });
 	}
@@ -177,9 +182,15 @@ export default function FilterMenu({
 			>
 				<Padding p="md">
 					<Stack spacing="lg">
-						{filters.map((filter) => {
-							const { id, type, isEnabled, condition, columnId } =
-								filter;
+						{filters.map((filter, i) => {
+							const {
+								id,
+								type,
+								isEnabled,
+								condition,
+								columnId,
+								operator,
+							} = filter;
 
 							const column = columns.find(
 								(column) => column.id === columnId
@@ -331,15 +342,18 @@ export default function FilterMenu({
 
 							return (
 								<FilterRow
+									index={i}
 									key={id}
 									id={id}
 									columns={columns}
 									selectedColumnId={columnId}
 									selectedCondition={condition}
+									selectedOperator={operator}
 									conditionOptions={conditionOptions}
 									inputNode={inputNode}
 									isEnabled={isEnabled}
 									onColumnChange={onColumnChange}
+									onOperatorChange={onOperatorChange}
 									onToggle={onToggle}
 									onDeleteClick={onDeleteClick}
 									onConditionChange={onConditionChange}

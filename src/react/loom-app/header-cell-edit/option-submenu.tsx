@@ -21,7 +21,7 @@ interface Props {
 	currencyType: CurrencyType;
 	numberPrefix: string;
 	numberSuffix: string;
-	numberSeperator: string;
+	numberSeparator: string;
 	type: CellType;
 	dateFormat: DateFormat;
 	verticalPadding: PaddingSize;
@@ -36,7 +36,7 @@ export default function OptionSubmenu({
 	currencyType,
 	numberPrefix,
 	numberSuffix,
-	numberSeperator,
+	numberSeparator,
 	aspectRatio,
 	verticalPadding,
 	horizontalPadding,
@@ -48,7 +48,7 @@ export default function OptionSubmenu({
 	return (
 		<Submenu title={title} onBackClick={onBackClick}>
 			<Padding pt="sm" pb="lg">
-				<Stack spacing="lg">
+				<Stack spacing="sm">
 					{type === CellType.EMBED && (
 						<MenuItem
 							name="Aspect Ratio"
@@ -109,11 +109,11 @@ export default function OptionSubmenu({
 					)}
 					{type === CellType.NUMBER && (
 						<MenuItem
-							name="Seperator"
-							value={numberSeperator}
+							name="Separator"
+							value={numberSeparator}
 							onClick={() =>
 								onSubmenuChange(
-									SubmenuType.TEXT_INPUT_NUMBER_SEPERATOR
+									SubmenuType.TEXT_INPUT_NUMBER_SEPARATOR
 								)
 							}
 						/>
