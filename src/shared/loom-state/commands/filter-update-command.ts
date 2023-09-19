@@ -1,4 +1,4 @@
-import LoomStateCommand from "../loom-state-command";
+import LoomStateCommand from "./loom-state-command";
 import { Filter, LoomState } from "../types/loom-state";
 
 export default class FilterUpdateCommand<
@@ -18,6 +18,8 @@ export default class FilterUpdateCommand<
 		this.isPartial = isPartial;
 	}
 	execute(prevState: LoomState): LoomState {
+		super.onExecute();
+
 		const { filters } = prevState.model;
 		const nextFilters = filters.map((filter) => {
 			if (filter.id === this.id) {
@@ -42,6 +44,8 @@ export default class FilterUpdateCommand<
 	}
 
 	redo(prevState: LoomState): LoomState {
+		super.onRedo();
+
 		const { filters } = prevState.model;
 		const nextFilters = filters.map((filter) => {
 			if (filter.id === this.id) {
@@ -59,6 +63,8 @@ export default class FilterUpdateCommand<
 	}
 
 	undo(prevState: LoomState): LoomState {
+		super.onUndo();
+
 		const { filters } = prevState.model;
 		const nextFilters = filters.map((filter) => {
 			if (filter.id === this.id) {
