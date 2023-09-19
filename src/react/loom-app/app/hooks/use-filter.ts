@@ -1,18 +1,12 @@
-import { SetStateAction } from "react";
-import {
-	CellType,
-	Filter,
-	LoomState,
-} from "src/shared/loom-state/types/loom-state";
+import { CellType, Filter } from "src/shared/loom-state/types/loom-state";
 import { useLogger } from "src/shared/logger";
-import { addFilter, deleteFilter } from "src/shared/loom-state/filter-utils";
 import { filterByFilters } from "../filter-by-filters/filter-by-filters";
 import { useLoomState } from "../../loom-state-provider";
 import FilterUpdateCommand from "src/shared/loom-state/commands/filter-update-command";
+import FilterAddCommand from "src/shared/loom-state/commands/filter-add-command";
+import FilterDeleteCommand from "src/shared/loom-state/commands/filter-delete-command";
 
-export const useFilter = (
-	onChange: React.Dispatch<SetStateAction<LoomState>>
-) => {
+export const useFilter = () => {
 	const logger = useLogger();
 	const { doCommand } = useLoomState();
 
@@ -27,12 +21,12 @@ export const useFilter = (
 
 	function handleFilterAdd(columnId: string, cellType: CellType) {
 		logger("handleFilterAdd", { columnId, cellType });
-		onChange((prevState) => addFilter(prevState, columnId, cellType));
+		doCommand(new FilterAddCommand(columnId, cellType));
 	}
 
 	function handleFilterDelete(id: string) {
 		logger("handleFilterDelete", { id });
-		onChange((prevState) => deleteFilter(prevState, id));
+		doCommand(new FilterDeleteCommand(id));
 	}
 
 	return {

@@ -1,6 +1,5 @@
 import React from "react";
 import Submenu from "../../shared/submenu";
-import Flex from "../../shared/flex";
 import Input from "../../shared/input";
 import { LoomMenuCloseRequest } from "src/react/shared/menu/types";
 
