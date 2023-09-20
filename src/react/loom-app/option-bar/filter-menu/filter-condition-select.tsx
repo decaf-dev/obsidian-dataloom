@@ -1,4 +1,5 @@
 import Select from "src/react/shared/select";
+import { getDisplayNameForFilterCondition } from "src/shared/loom-state/type-display-names";
 import { FilterCondition } from "src/shared/loom-state/types/loom-state";
 
 interface Props {
@@ -17,27 +18,6 @@ export default function FilterConditionSelect({
 	function handleKeyDown(e: React.KeyboardEvent) {
 		if (e.key === "Enter") {
 			e.stopPropagation();
-		}
-	}
-
-	function getDisplayNameForFilterCondition(type: FilterCondition) {
-		switch (type) {
-			case FilterCondition.IS:
-				return "Is";
-			case FilterCondition.IS_NOT:
-				return "Is not";
-			case FilterCondition.CONTAINS:
-				return "Contains";
-			case FilterCondition.DOES_NOT_CONTAIN:
-				return "Does not contain";
-			case FilterCondition.STARTS_WITH:
-				return "Starts with";
-			case FilterCondition.ENDS_WITH:
-				return "Ends with";
-			case FilterCondition.IS_EMPTY:
-				return "Is empty";
-			case FilterCondition.IS_NOT_EMPTY:
-				return "Is not empty";
 		}
 	}
 

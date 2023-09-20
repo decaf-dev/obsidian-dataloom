@@ -50,17 +50,6 @@ export enum CellType {
 	LAST_EDITED_TIME = "last-edited-time",
 }
 
-export enum FilterCondition {
-	IS = "is",
-	IS_NOT = "is-not",
-	CONTAINS = "contains",
-	DOES_NOT_CONTAIN = "does-not-contain",
-	STARTS_WITH = "starts-with",
-	ENDS_WITH = "ends-with",
-	IS_EMPTY = "is-empty",
-	IS_NOT_EMPTY = "is-not-empty",
-}
-
 export enum DateFormat {
 	MM_DD_YYYY = "mm/dd/yyyy",
 	DD_MM_YYYY = "dd/mm/yyyy",
@@ -92,7 +81,15 @@ export enum CurrencyType {
 	SWITZERLAND = "CHF",
 }
 
-export enum Calculation {
+export enum AspectRatio {
+	UNSET = "unset",
+	NINE_BY_SIXTEEN = "9/16",
+	FOUR_BY_THREE = "4/3",
+	SIXTEEN_BY_NINE = "16/9",
+}
+
+/********** CALCULATIONS **********/
+export enum GeneralCalculation {
 	NONE = "none",
 	COUNT_ALL = "count-all",
 	COUNT_VALUES = "count-values",
@@ -112,14 +109,170 @@ export enum NumberCalculation {
 	RANGE = "range",
 }
 
-export enum AspectRatio {
-	UNSET = "unset",
-	NINE_BY_SIXTEEN = "9/16",
-	FOUR_BY_THREE = "4/3",
-	SIXTEEN_BY_NINE = "16/9",
+export type CalculationType = GeneralCalculation | NumberCalculation;
+
+/************* FILTERS ****************/
+export type FilterOperator = "and" | "or";
+
+export enum TextFilterCondition {
+	IS = "is",
+	IS_NOT = "is-not",
+	CONTAINS = "contains",
+	DOES_NOT_CONTAIN = "does-not-contain",
+	STARTS_WITH = "starts-with",
+	ENDS_WITH = "ends-with",
+	IS_EMPTY = "is-empty",
+	IS_NOT_EMPTY = "is-not-empty",
 }
 
-export type CalculationType = Calculation | NumberCalculation;
+export enum NumberFilterCondition {
+	IS_EQUAL = "is-equal",
+	IS_NOT_EQUAL = "is-not-equal",
+	IS_GREATER = "is-greater",
+	IS_LESS = "is-less",
+	IS_GREATER_OR_EQUAL = "is-greater-or-equal",
+	IS_LESS_OR_EQUAL = "is-less-or-equal",
+	IS_EMPTY = "is-empty",
+	IS_NOT_EMPTY = "is-not-empty",
+}
+
+//TODO add support for more date types
+export enum DateFilterCondition {
+	IS = "is",
+	IS_BEFORE = "is-before",
+	IS_AFTER = "is-after",
+	IS_EMPTY = "is-empty",
+	IS_NOT_EMPTY = "is-not-empty",
+}
+
+export enum DateFilterOption {
+	UNSELECTED = "unselected",
+	TODAY = "today",
+	TOMORROW = "tomorrow",
+	YESTERDAY = "yesterday",
+	ONE_WEEK_AGO = "one-week-ago",
+	ONE_WEEK_FROM_NOW = "one-week-from-now",
+	ONE_MONTH_AGO = "one-month-ago",
+	ONE_MONTH_FROM_NOW = "one-month-from-now",
+}
+
+export type FilterCondition =
+	| TextFilterCondition
+	| DateFilterCondition
+	| NumberFilterCondition;
+
+export interface BaseFilter {
+	id: string;
+	columnId: string;
+	operator: FilterOperator;
+	isEnabled: boolean;
+}
+
+export type TextCondition = TextFilterCondition;
+export interface TextFilter extends BaseFilter {
+	type: CellType.TEXT;
+	condition: TextCondition;
+	text: string;
+}
+
+export type FileCondition = TextFilterCondition;
+export interface FileFilter extends BaseFilter {
+	type: CellType.FILE;
+	condition: FileCondition;
+	text: string;
+}
+
+export type CheckboxCondition =
+	| TextFilterCondition.IS
+	| TextFilterCondition.IS_NOT;
+export interface CheckboxFilter extends BaseFilter {
+	type: CellType.CHECKBOX;
+	condition: CheckboxCondition;
+	text: string;
+}
+
+export type TagCondition =
+	| TextFilterCondition.IS
+	| TextFilterCondition.IS_NOT
+	| TextFilterCondition.IS_EMPTY
+	| TextFilterCondition.IS_NOT_EMPTY;
+export interface TagFilter extends BaseFilter {
+	type: CellType.TAG;
+	condition: TagCondition;
+	tagId: string;
+}
+
+export type MultiTagCondition =
+	| TextFilterCondition.CONTAINS
+	| TextFilterCondition.DOES_NOT_CONTAIN
+	| TextFilterCondition.IS_EMPTY
+	| TextFilterCondition.IS_NOT_EMPTY;
+export interface MultiTagFilter extends BaseFilter {
+	type: CellType.MULTI_TAG;
+	condition: MultiTagCondition;
+	tagIds: string[];
+}
+
+export type EmbedCondition =
+	| TextFilterCondition.IS_EMPTY
+	| TextFilterCondition.IS_NOT_EMPTY;
+export interface EmbedFilter extends BaseFilter {
+	type: CellType.EMBED;
+	condition: EmbedCondition;
+	text: string;
+}
+
+export type NumberCondition = NumberFilterCondition;
+export interface NumberFilter extends BaseFilter {
+	type: CellType.NUMBER;
+	condition: NumberCondition;
+	text: string;
+}
+
+export type DateCondition = DateFilterCondition;
+export interface DateFilter extends BaseFilter {
+	type: CellType.DATE;
+	condition: DateCondition;
+	option: DateFilterOption;
+	dateTime: number | null;
+}
+
+export type CreationTimeCondition =
+	| DateFilterCondition.IS
+	| DateFilterCondition.IS_AFTER
+	| DateFilterCondition.IS_BEFORE;
+
+export interface CreationTimeFilter extends BaseFilter {
+	type: CellType.CREATION_TIME;
+	condition: CreationTimeCondition;
+	option: DateFilterOption;
+	dateTime: number | null;
+}
+
+export type LastEditedTimeCondition =
+	| DateFilterCondition.IS
+	| DateFilterCondition.IS_AFTER
+	| DateFilterCondition.IS_BEFORE;
+export interface LastEditedTimeFilter extends BaseFilter {
+	type: CellType.LAST_EDITED_TIME;
+	condition: LastEditedTimeCondition;
+	option: DateFilterOption;
+	dateTime: number | null;
+}
+
+export type Filter =
+	| TextFilter
+	| TagFilter
+	| MultiTagFilter
+	| CheckboxFilter
+	| FileFilter
+	| EmbedFilter
+	| NumberFilter
+	| DateFilter
+	| CreationTimeFilter
+	| LastEditedTimeFilter;
+
+/************ TABLE TYPES ***************/
 
 export interface Column {
 	id: string;
@@ -139,64 +292,6 @@ export interface Column {
 	horizontalPadding: PaddingSize;
 	verticalPadding: PaddingSize;
 }
-
-export type FilterOperator = "and" | "or";
-
-interface BaseFilter {
-	id: string;
-	type: CellType;
-	columnId: string;
-	operator: FilterOperator;
-	isEnabled: boolean;
-}
-
-export interface TextFilter extends BaseFilter {
-	condition: FilterCondition;
-	text: string;
-}
-
-export interface FileFilter extends BaseFilter {
-	condition: FilterCondition;
-	text: string;
-}
-
-export type TagFilterCondition =
-	| FilterCondition.IS
-	| FilterCondition.IS_NOT
-	| FilterCondition.IS_EMPTY
-	| FilterCondition.IS_NOT_EMPTY;
-
-export interface TagFilter extends BaseFilter {
-	condition: TagFilterCondition;
-	tagId: string;
-}
-
-export type MultiTagFilterCondition =
-	| FilterCondition.CONTAINS
-	| FilterCondition.DOES_NOT_CONTAIN
-	| FilterCondition.IS_EMPTY
-	| FilterCondition.IS_NOT_EMPTY;
-
-export interface MultiTagFilter extends BaseFilter {
-	condition: MultiTagFilterCondition;
-	tagIds: string[];
-}
-
-export type CheckboxFilterCondition =
-	| FilterCondition.IS
-	| FilterCondition.IS_NOT;
-
-export interface CheckboxFilter extends BaseFilter {
-	condition: CheckboxFilterCondition;
-	text: string;
-}
-
-export type Filter =
-	| TextFilter
-	| TagFilter
-	| MultiTagFilter
-	| CheckboxFilter
-	| FileFilter;
 
 interface Row {
 	id: string;

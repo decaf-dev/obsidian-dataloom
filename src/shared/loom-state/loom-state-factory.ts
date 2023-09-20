@@ -3,13 +3,12 @@ import {
 	AspectRatio,
 	BodyCell,
 	BodyRow,
-	Calculation,
+	GeneralCalculation,
 	CellType,
 	Column,
 	CurrencyType,
 	DateFormat,
 	Filter,
-	FilterCondition,
 	FooterCell,
 	FooterRow,
 	HeaderCell,
@@ -22,8 +21,27 @@ import {
 	MultiTagFilter,
 	TagFilter,
 	CheckboxFilter,
-	CheckboxFilterCondition,
 	FileFilter,
+	TextFilterCondition,
+	BaseFilter,
+	DateFilterCondition,
+	DateFilter,
+	CreationTimeFilter,
+	LastEditedTimeFilter,
+	EmbedFilter,
+	NumberFilter,
+	NumberFilterCondition,
+	TextCondition,
+	FileCondition,
+	CheckboxCondition,
+	TagCondition,
+	MultiTagCondition,
+	EmbedCondition,
+	NumberCondition,
+	DateCondition,
+	CreationTimeCondition,
+	LastEditedTimeCondition,
+	DateFilterOption,
 } from "./types/loom-state";
 
 import { v4 as uuidv4 } from "uuid";
@@ -45,7 +63,7 @@ export const createColumn = (options?: { cellType?: CellType }): Column => {
 		dateFormat: DateFormat.MM_DD_YYYY,
 		shouldWrapOverflow: true,
 		tags: [],
-		calculationType: Calculation.NONE,
+		calculationType: GeneralCalculation.NONE,
 		aspectRatio: AspectRatio.UNSET,
 		horizontalPadding: PaddingSize.UNSET,
 		verticalPadding: PaddingSize.UNSET,
@@ -119,69 +137,70 @@ export const createBodyCell = (
 export const createTextFilter = (
 	columnId: string,
 	options?: {
-		condition?: FilterCondition;
+		condition?: TextCondition;
 		isEnabled?: boolean;
 		text?: string;
 	}
 ): TextFilter => {
 	const {
-		condition = FilterCondition.IS,
+		condition = TextFilterCondition.IS,
 		isEnabled = true,
 		text = "",
 	} = options || {};
+	const baseFilter = createBaseFilter(columnId, {
+		isEnabled,
+	});
 	return {
-		id: uuidv4(),
-		columnId,
+		...baseFilter,
 		type: CellType.TEXT,
-		operator: "or",
 		condition,
 		text,
-		isEnabled,
 	};
 };
 
 export const createFileFilter = (
 	columnId: string,
 	options?: {
-		condition?: FilterCondition;
+		condition?: FileCondition;
 		isEnabled?: boolean;
 		text?: string;
 	}
 ): FileFilter => {
 	const {
-		condition = FilterCondition.IS,
+		condition = TextFilterCondition.IS,
 		isEnabled = true,
 		text = "",
 	} = options || {};
+	const baseFilter = createBaseFilter(columnId, {
+		isEnabled,
+	});
 	return {
-		id: uuidv4(),
-		columnId,
+		...baseFilter,
 		type: CellType.FILE,
-		operator: "or",
 		condition,
 		text,
-		isEnabled,
 	};
 };
 
 export const createCheckboxFilter = (
 	columnId: string,
 	options?: {
-		condition?: CheckboxFilterCondition;
+		condition?: CheckboxCondition;
 		isEnabled?: boolean;
 		text?: string;
 	}
 ): CheckboxFilter => {
 	const {
-		condition = FilterCondition.IS,
+		condition = TextFilterCondition.IS,
 		isEnabled = true,
 		text = "",
 	} = options || {};
+	const baseFilter = createBaseFilter(columnId, {
+		isEnabled,
+	});
 	return {
-		id: uuidv4(),
-		columnId,
+		...baseFilter,
 		type: CellType.CHECKBOX,
-		operator: "or",
 		condition,
 		text,
 		isEnabled,
@@ -191,25 +210,22 @@ export const createCheckboxFilter = (
 export const createTagFilter = (
 	columnId: string,
 	options?: {
-		condition?:
-			| FilterCondition.IS
-			| FilterCondition.IS_NOT
-			| FilterCondition.IS_EMPTY
-			| FilterCondition.IS_NOT_EMPTY;
+		condition?: TagCondition;
 		tagId?: string;
 		isEnabled?: boolean;
 	}
 ): TagFilter => {
 	const {
-		condition = FilterCondition.IS,
+		condition = TextFilterCondition.IS,
 		isEnabled = true,
 		tagId = "",
 	} = options || {};
+	const baseFilter = createBaseFilter(columnId, {
+		isEnabled,
+	});
 	return {
-		id: uuidv4(),
-		columnId,
+		...baseFilter,
 		type: CellType.TAG,
-		operator: "or",
 		condition,
 		tagId,
 		isEnabled,
@@ -219,27 +235,167 @@ export const createTagFilter = (
 export const createMultiTagFilter = (
 	columnId: string,
 	options?: {
-		condition?:
-			| FilterCondition.CONTAINS
-			| FilterCondition.DOES_NOT_CONTAIN
-			| FilterCondition.IS_EMPTY
-			| FilterCondition.IS_NOT_EMPTY;
+		condition?: MultiTagCondition;
 		tagIds?: string[];
 		isEnabled?: boolean;
 	}
 ): MultiTagFilter => {
 	const {
-		condition = FilterCondition.CONTAINS,
+		condition = TextFilterCondition.CONTAINS,
 		isEnabled = true,
 		tagIds = [],
 	} = options || {};
+	const baseFilter = createBaseFilter(columnId, {
+		isEnabled,
+	});
+	return {
+		...baseFilter,
+		type: CellType.MULTI_TAG,
+		condition,
+		tagIds,
+	};
+};
+
+export const createEmbedFilter = (
+	columnId: string,
+	options?: {
+		condition?: EmbedCondition;
+		isEnabled?: boolean;
+		text?: string;
+	}
+): EmbedFilter => {
+	const {
+		condition = TextFilterCondition.IS_EMPTY,
+		isEnabled = true,
+		text = "",
+	} = options || {};
+	const baseFilter = createBaseFilter(columnId, {
+		isEnabled,
+	});
+	return {
+		...baseFilter,
+		type: CellType.EMBED,
+		condition,
+		text,
+	};
+};
+
+export const createNumberFilter = (
+	columnId: string,
+	options?: {
+		condition?: NumberCondition;
+		isEnabled?: boolean;
+		text?: string;
+	}
+): NumberFilter => {
+	const {
+		condition = NumberFilterCondition.IS_EQUAL,
+		isEnabled = true,
+		text = "",
+	} = options || {};
+	const baseFilter = createBaseFilter(columnId, {
+		isEnabled,
+	});
+	return {
+		...baseFilter,
+		type: CellType.NUMBER,
+		condition,
+		text,
+	};
+};
+
+export const createDateFilter = (
+	columnId: string,
+	options?: {
+		condition?: DateCondition;
+		isEnabled?: boolean;
+		dateTime?: number | null;
+		option?: DateFilterOption;
+	}
+): DateFilter => {
+	const {
+		condition = DateFilterCondition.IS,
+		isEnabled = true,
+		dateTime = null,
+		option = DateFilterOption.UNSELECTED,
+	} = options || {};
+	const baseFilter = createBaseFilter(columnId, {
+		isEnabled,
+	});
+	return {
+		...baseFilter,
+		type: CellType.DATE,
+		condition,
+		option,
+		dateTime,
+	};
+};
+
+export const createCreationTimeFilter = (
+	columnId: string,
+	options?: {
+		condition?: CreationTimeCondition;
+		isEnabled?: boolean;
+		option?: DateFilterOption;
+		dateTime?: number | null;
+	}
+): CreationTimeFilter => {
+	const {
+		condition = DateFilterCondition.IS,
+		isEnabled = true,
+		option = DateFilterOption.UNSELECTED,
+		dateTime = null,
+	} = options || {};
+	const baseFilter = createBaseFilter(columnId, {
+		isEnabled,
+	});
+	return {
+		...baseFilter,
+		type: CellType.CREATION_TIME,
+		option,
+		condition,
+		dateTime,
+	};
+};
+
+export const createLastEditedTimeFilter = (
+	columnId: string,
+	options?: {
+		condition?: LastEditedTimeCondition;
+		isEnabled?: boolean;
+		option?: DateFilterOption;
+		dateTime?: number | null;
+	}
+): LastEditedTimeFilter => {
+	const {
+		condition = DateFilterCondition.IS,
+		isEnabled = true,
+		option = DateFilterOption.UNSELECTED,
+		dateTime = null,
+	} = options || {};
+	const baseFilter = createBaseFilter(columnId, {
+		isEnabled,
+	});
+	return {
+		...baseFilter,
+		type: CellType.LAST_EDITED_TIME,
+		option,
+		condition,
+		dateTime,
+	};
+};
+
+const createBaseFilter = (
+	columnId: string,
+	options?: {
+		isEnabled?: boolean;
+	}
+): BaseFilter => {
+	const { isEnabled = true } = options || {};
 	return {
 		id: uuidv4(),
 		columnId,
-		type: CellType.MULTI_TAG,
 		operator: "or",
-		condition,
-		tagIds,
 		isEnabled,
 	};
 };

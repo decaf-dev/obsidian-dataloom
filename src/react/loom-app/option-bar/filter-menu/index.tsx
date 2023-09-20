@@ -15,11 +15,26 @@ import {
 	TagFilter,
 	MultiTagFilter,
 	Filter,
-	TagFilterCondition,
-	MultiTagFilterCondition,
-	CheckboxFilterCondition,
 	FileFilter,
 	FilterOperator,
+	TextFilterCondition,
+	NumberFilterCondition,
+	DateFilterCondition,
+	MultiTagCondition,
+	TagCondition,
+	CheckboxCondition,
+	FileCondition,
+	TextCondition,
+	NumberCondition,
+	DateCondition,
+	EmbedCondition,
+	LastEditedTimeCondition,
+	CreationTimeCondition,
+	NumberFilter,
+	DateFilter,
+	CreationTimeFilter,
+	LastEditedTimeFilter,
+	DateFilterOption,
 } from "src/shared/loom-state/types/loom-state";
 import { ColumnWithMarkdown } from "../types";
 import { isSmallScreenSize } from "src/shared/render/utils";
@@ -36,11 +51,17 @@ import {
 import MultiSelect from "src/react/shared/multi-select";
 import {
 	createCheckboxFilter,
+	createCreationTimeFilter,
+	createDateFilter,
+	createEmbedFilter,
 	createFileFilter,
+	createLastEditedTimeFilter,
 	createMultiTagFilter,
+	createNumberFilter,
 	createTagFilter,
 	createTextFilter,
 } from "src/shared/loom-state/loom-state-factory";
+import DateFilterSelect from "./date-filter-select";
 
 interface Props {
 	id: string;
@@ -78,55 +99,177 @@ export default function FilterMenu({
 
 		let newFilter: Filter | null = null;
 		if (type === CellType.TEXT) {
+			let newCondition: TextCondition;
+			if (
+				condition !== TextFilterCondition.IS &&
+				condition !== TextFilterCondition.IS_NOT &&
+				condition !== TextFilterCondition.CONTAINS &&
+				condition !== TextFilterCondition.DOES_NOT_CONTAIN &&
+				condition !== TextFilterCondition.STARTS_WITH &&
+				condition !== TextFilterCondition.ENDS_WITH &&
+				condition !== TextFilterCondition.IS_EMPTY &&
+				condition !== TextFilterCondition.IS_NOT_EMPTY
+			) {
+				newCondition = TextFilterCondition.IS;
+			} else {
+				newCondition = condition;
+			}
+
 			newFilter = createTextFilter(columnId, {
-				condition,
+				condition: newCondition,
 				isEnabled,
 			});
 		} else if (type === CellType.FILE) {
+			let newCondition: FileCondition;
+			if (
+				condition !== TextFilterCondition.IS &&
+				condition !== TextFilterCondition.IS_NOT &&
+				condition !== TextFilterCondition.CONTAINS &&
+				condition !== TextFilterCondition.DOES_NOT_CONTAIN &&
+				condition !== TextFilterCondition.STARTS_WITH &&
+				condition !== TextFilterCondition.ENDS_WITH &&
+				condition !== TextFilterCondition.IS_EMPTY &&
+				condition !== TextFilterCondition.IS_NOT_EMPTY
+			) {
+				newCondition = TextFilterCondition.IS;
+			} else {
+				newCondition = condition;
+			}
 			newFilter = createFileFilter(columnId, {
-				condition,
+				condition: newCondition,
 				isEnabled,
 			});
 		} else if (type === CellType.CHECKBOX) {
-			let newCondition: CheckboxFilterCondition =
-				condition as CheckboxFilterCondition;
+			let newCondition: CheckboxCondition;
 			if (
-				condition !== FilterCondition.IS &&
-				condition !== FilterCondition.IS_NOT
+				condition !== TextFilterCondition.IS &&
+				condition !== TextFilterCondition.IS_NOT
 			) {
-				newCondition = FilterCondition.IS;
+				newCondition = TextFilterCondition.IS;
+			} else {
+				newCondition = condition;
 			}
 			newFilter = createCheckboxFilter(columnId, {
 				condition: newCondition,
 				isEnabled,
 			});
 		} else if (type === CellType.TAG) {
-			let newCondition: TagFilterCondition =
-				condition as TagFilterCondition;
+			let newCondition: TagCondition;
 			if (
-				condition !== FilterCondition.IS &&
-				condition !== FilterCondition.IS_NOT &&
-				condition !== FilterCondition.IS_EMPTY &&
-				condition !== FilterCondition.IS_NOT_EMPTY
+				condition !== TextFilterCondition.IS &&
+				condition !== TextFilterCondition.IS_NOT &&
+				condition !== TextFilterCondition.IS_EMPTY &&
+				condition !== TextFilterCondition.IS_NOT_EMPTY
 			) {
-				newCondition = FilterCondition.IS;
+				newCondition = TextFilterCondition.IS;
+			} else {
+				newCondition = condition;
 			}
+
 			newFilter = createTagFilter(columnId, {
 				condition: newCondition,
 				isEnabled,
 			});
 		} else if (type === CellType.MULTI_TAG) {
-			let newCondition: MultiTagFilterCondition =
-				condition as MultiTagFilterCondition;
+			let newCondition: MultiTagCondition;
 			if (
-				condition !== FilterCondition.CONTAINS &&
-				condition !== FilterCondition.DOES_NOT_CONTAIN &&
-				condition !== FilterCondition.IS_EMPTY &&
-				condition !== FilterCondition.IS_NOT_EMPTY
+				condition !== TextFilterCondition.CONTAINS &&
+				condition !== TextFilterCondition.DOES_NOT_CONTAIN &&
+				condition !== TextFilterCondition.IS_EMPTY &&
+				condition !== TextFilterCondition.IS_NOT_EMPTY
 			) {
-				newCondition = FilterCondition.CONTAINS;
+				newCondition = TextFilterCondition.CONTAINS;
+			} else {
+				newCondition = condition;
 			}
+
 			newFilter = createMultiTagFilter(columnId, {
+				condition: newCondition,
+				isEnabled,
+			});
+		} else if (type === CellType.EMBED) {
+			let newCondition: EmbedCondition;
+			if (
+				condition !== TextFilterCondition.IS_EMPTY &&
+				condition !== TextFilterCondition.IS_NOT_EMPTY
+			) {
+				newCondition = TextFilterCondition.IS_EMPTY;
+			} else {
+				newCondition = condition;
+			}
+
+			newFilter = createEmbedFilter(columnId, {
+				condition: newCondition,
+				isEnabled,
+			});
+		} else if (type === CellType.NUMBER) {
+			let newCondition: NumberCondition;
+			if (
+				condition !== NumberFilterCondition.IS_EMPTY &&
+				condition !== NumberFilterCondition.IS_NOT_EQUAL &&
+				condition !== NumberFilterCondition.IS_LESS_OR_EQUAL &&
+				condition !== NumberFilterCondition.IS_LESS &&
+				condition !== NumberFilterCondition.IS_GREATER_OR_EQUAL &&
+				condition !== NumberFilterCondition.IS_GREATER &&
+				condition !== NumberFilterCondition.IS_EQUAL &&
+				condition !== NumberFilterCondition.IS_NOT_EMPTY
+			) {
+				newCondition = NumberFilterCondition.IS_EQUAL;
+			} else {
+				newCondition = condition;
+			}
+
+			newFilter = createNumberFilter(columnId, {
+				condition: newCondition,
+				isEnabled,
+			});
+		} else if (type === CellType.DATE) {
+			let newCondition: DateCondition;
+			if (
+				condition !== DateFilterCondition.IS &&
+				condition !== DateFilterCondition.IS_BEFORE &&
+				condition !== DateFilterCondition.IS_AFTER &&
+				condition !== DateFilterCondition.IS_EMPTY &&
+				condition !== DateFilterCondition.IS_NOT_EMPTY
+			) {
+				newCondition = DateFilterCondition.IS;
+			} else {
+				newCondition = condition;
+			}
+
+			newFilter = createDateFilter(columnId, {
+				condition: newCondition,
+				isEnabled,
+			});
+		} else if (type === CellType.LAST_EDITED_TIME) {
+			let newCondition: LastEditedTimeCondition;
+			if (
+				condition !== DateFilterCondition.IS &&
+				condition !== DateFilterCondition.IS_BEFORE &&
+				condition !== DateFilterCondition.IS_AFTER
+			) {
+				newCondition = DateFilterCondition.IS;
+			} else {
+				newCondition = condition;
+			}
+
+			newFilter = createLastEditedTimeFilter(columnId, {
+				condition: newCondition,
+				isEnabled,
+			});
+		} else if (type === CellType.CREATION_TIME) {
+			let newCondition: CreationTimeCondition;
+			if (
+				condition !== DateFilterCondition.IS &&
+				condition !== DateFilterCondition.IS_BEFORE &&
+				condition !== DateFilterCondition.IS_AFTER
+			) {
+				newCondition = DateFilterCondition.IS;
+			} else {
+				newCondition = condition;
+			}
+
+			newFilter = createCreationTimeFilter(columnId, {
 				condition: newCondition,
 				isEnabled,
 			});
@@ -146,6 +289,10 @@ export default function FilterMenu({
 
 	function onTextChange(id: string, text: string) {
 		onUpdate(id, { text });
+	}
+
+	function onDateFilterOptionChange(id: string, option: DateFilterOption) {
+		onUpdate(id, { option });
 	}
 
 	function onTagChange(id: string, tagId: string) {
@@ -212,14 +359,14 @@ export default function FilterMenu({
 										/>
 									);
 									conditionOptions = [
-										FilterCondition.IS,
-										FilterCondition.IS_NOT,
-										FilterCondition.CONTAINS,
-										FilterCondition.DOES_NOT_CONTAIN,
-										FilterCondition.STARTS_WITH,
-										FilterCondition.ENDS_WITH,
-										FilterCondition.IS_EMPTY,
-										FilterCondition.IS_NOT_EMPTY,
+										TextFilterCondition.IS,
+										TextFilterCondition.IS_NOT,
+										TextFilterCondition.CONTAINS,
+										TextFilterCondition.DOES_NOT_CONTAIN,
+										TextFilterCondition.STARTS_WITH,
+										TextFilterCondition.ENDS_WITH,
+										TextFilterCondition.IS_EMPTY,
+										TextFilterCondition.IS_NOT_EMPTY,
 									];
 									break;
 								}
@@ -234,14 +381,14 @@ export default function FilterMenu({
 										/>
 									);
 									conditionOptions = [
-										FilterCondition.IS,
-										FilterCondition.IS_NOT,
-										FilterCondition.CONTAINS,
-										FilterCondition.DOES_NOT_CONTAIN,
-										FilterCondition.STARTS_WITH,
-										FilterCondition.ENDS_WITH,
-										FilterCondition.IS_EMPTY,
-										FilterCondition.IS_NOT_EMPTY,
+										TextFilterCondition.IS,
+										TextFilterCondition.IS_NOT,
+										TextFilterCondition.CONTAINS,
+										TextFilterCondition.DOES_NOT_CONTAIN,
+										TextFilterCondition.STARTS_WITH,
+										TextFilterCondition.ENDS_WITH,
+										TextFilterCondition.IS_EMPTY,
+										TextFilterCondition.IS_NOT_EMPTY,
 									];
 									break;
 								}
@@ -274,8 +421,8 @@ export default function FilterMenu({
 										</Select>
 									);
 									conditionOptions = [
-										FilterCondition.IS,
-										FilterCondition.IS_NOT,
+										TextFilterCondition.IS,
+										TextFilterCondition.IS_NOT,
 									];
 									break;
 								}
@@ -302,10 +449,10 @@ export default function FilterMenu({
 										</Select>
 									);
 									conditionOptions = [
-										FilterCondition.IS,
-										FilterCondition.IS_NOT,
-										FilterCondition.IS_EMPTY,
-										FilterCondition.IS_NOT_EMPTY,
+										TextFilterCondition.IS,
+										TextFilterCondition.IS_NOT,
+										TextFilterCondition.IS_EMPTY,
+										TextFilterCondition.IS_NOT_EMPTY,
 									];
 									break;
 								}
@@ -329,10 +476,104 @@ export default function FilterMenu({
 										</MultiSelect>
 									);
 									conditionOptions = [
-										FilterCondition.CONTAINS,
-										FilterCondition.DOES_NOT_CONTAIN,
-										FilterCondition.IS_EMPTY,
-										FilterCondition.IS_NOT_EMPTY,
+										TextFilterCondition.CONTAINS,
+										TextFilterCondition.DOES_NOT_CONTAIN,
+										TextFilterCondition.IS_EMPTY,
+										TextFilterCondition.IS_NOT_EMPTY,
+									];
+									break;
+								}
+								case CellType.EMBED: {
+									conditionOptions = [
+										TextFilterCondition.IS_EMPTY,
+										TextFilterCondition.IS_NOT_EMPTY,
+									];
+									break;
+								}
+								case CellType.NUMBER: {
+									const { text } = filter as NumberFilter;
+									inputNode = (
+										<Input
+											inputMode="numeric"
+											value={text}
+											onChange={(newValue) =>
+												onTextChange(id, newValue)
+											}
+										/>
+									);
+									conditionOptions = [
+										NumberFilterCondition.IS_EQUAL,
+										NumberFilterCondition.IS_NOT_EQUAL,
+										NumberFilterCondition.IS_GREATER,
+										NumberFilterCondition.IS_LESS,
+										NumberFilterCondition.IS_GREATER_OR_EQUAL,
+										NumberFilterCondition.IS_LESS_OR_EQUAL,
+										NumberFilterCondition.IS_EMPTY,
+										NumberFilterCondition.IS_NOT_EMPTY,
+									];
+									break;
+								}
+								case CellType.DATE: {
+									const { option } = filter as DateFilter;
+									inputNode = (
+										<DateFilterSelect
+											value={option}
+											onChange={(newValue) =>
+												onDateFilterOptionChange(
+													id,
+													newValue
+												)
+											}
+										/>
+									);
+									conditionOptions = [
+										DateFilterCondition.IS,
+										DateFilterCondition.IS_AFTER,
+										DateFilterCondition.IS_BEFORE,
+										DateFilterCondition.IS_EMPTY,
+										DateFilterCondition.IS_NOT_EMPTY,
+									];
+									break;
+								}
+								case CellType.CREATION_TIME: {
+									const { option } =
+										filter as CreationTimeFilter;
+									inputNode = (
+										<DateFilterSelect
+											value={option}
+											onChange={(newValue) =>
+												onDateFilterOptionChange(
+													id,
+													newValue
+												)
+											}
+										/>
+									);
+									conditionOptions = [
+										DateFilterCondition.IS,
+										DateFilterCondition.IS_AFTER,
+										DateFilterCondition.IS_BEFORE,
+									];
+									break;
+								}
+								case CellType.LAST_EDITED_TIME: {
+									const { option } =
+										filter as LastEditedTimeFilter;
+									inputNode = (
+										<DateFilterSelect
+											value={option}
+											onChange={(newValue) =>
+												onDateFilterOptionChange(
+													id,
+													newValue
+												)
+											}
+										/>
+									);
+									conditionOptions = [
+										DateFilterCondition.IS,
+										DateFilterCondition.IS_AFTER,
+										DateFilterCondition.IS_BEFORE,
 									];
 									break;
 								}
