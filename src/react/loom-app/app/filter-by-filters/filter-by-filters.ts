@@ -13,6 +13,13 @@ import {
 	MultiTagFilter,
 	FileFilter,
 	TextFilterCondition,
+	EmbedFilter,
+	DateFilter,
+	NumberFilter,
+	NumberFilterCondition,
+	CreationTimeFilter,
+	LastEditedTimeFilter,
+	DateFilterCondition,
 } from "src/shared/loom-state/types/loom-state";
 import ColumNotFoundError from "src/shared/error/column-not-found-error";
 import { Expression, evaluateWithPrecedence } from "./evaluate-with-precedence";
@@ -118,21 +125,89 @@ const doesCellMatchFilter = (
 			);
 			return doTagsMatch(cellTags, filterTags, condition);
 		}
+		case CellType.NUMBER: {
+			const { text } = filter as NumberFilter;
+			return doesNumberMatch(cell.markdown, text, condition);
+		}
+		case CellType.EMBED: {
+			const { text } = filter as EmbedFilter;
+			return doesTextMatch(cell.markdown, text, condition);
+		}
 		case CellType.DATE: {
-			//const { text } = filter as TextFilter;
-			return doesDateMatch(cell.markdown, condition);
+			const { dateTime } = filter as DateFilter;
+			return doesDateMatch(cell.dateTime, dateTime, condition);
 		}
 		case CellType.CREATION_TIME: {
-			//const { text } = filter as TextFilter;
-			return doesDateMatch(cell.markdown, condition);
+			const { dateTime } = filter as CreationTimeFilter;
+			return doesDateMatch(cell.dateTime, dateTime, condition);
 		}
 		case CellType.LAST_EDITED_TIME: {
-			//const { text } = filter as TextFilter;
-			return doesDateMatch(cell.markdown, condition);
+			const { dateTime } = filter as LastEditedTimeFilter;
+			return doesDateMatch(cell.dateTime, dateTime, condition);
 		}
 
 		default:
 			throw new Error("Cell type not yet supported");
+	}
+};
+
+const doesNumberMatch = (
+	cellContent: string,
+	filterText: string,
+	condition: FilterCondition
+) => {
+	const cellNumber = Number(cellContent);
+	const filterNumber = Number(filterText);
+	switch (condition) {
+		case NumberFilterCondition.IS_EQUAL:
+			if (cellContent === "") return true;
+			return cellNumber === filterNumber;
+		case NumberFilterCondition.IS_GREATER:
+			if (cellContent === "") return true;
+			return cellNumber > filterNumber;
+		case NumberFilterCondition.IS_GREATER_OR_EQUAL:
+			if (cellContent === "") return true;
+			return cellNumber >= filterNumber;
+		case NumberFilterCondition.IS_LESS:
+			if (cellContent === "") return true;
+			return cellNumber < filterNumber;
+		case NumberFilterCondition.IS_LESS_OR_EQUAL:
+			if (cellContent === "") return true;
+			return cellNumber <= filterNumber;
+		case NumberFilterCondition.IS_NOT_EQUAL:
+			if (cellContent === "") return true;
+			return cellNumber !== filterNumber;
+		case NumberFilterCondition.IS_EMPTY:
+			return cellContent === "";
+		case NumberFilterCondition.IS_NOT_EMPTY:
+			return cellContent !== "";
+		default:
+			throw new Error("Filter condition not yet supported");
+	}
+};
+
+const doesDateMatch = (
+	cellDateTime: number | null,
+	filterDateTime: number | null,
+	condition: FilterCondition
+) => {
+	switch (condition) {
+		case DateFilterCondition.IS:
+			return cellDateTime === filterDateTime;
+		case DateFilterCondition.IS_AFTER:
+			if (filterDateTime === null) return true;
+			if (cellDateTime === null) return false;
+			return cellDateTime > filterDateTime;
+		case DateFilterCondition.IS_BEFORE:
+			if (filterDateTime === null) return true;
+			if (cellDateTime === null) return false;
+			return cellDateTime < filterDateTime;
+		case DateFilterCondition.IS_EMPTY:
+			return cellDateTime === null;
+		case DateFilterCondition.IS_NOT_EMPTY:
+			return cellDateTime !== null;
+		default:
+			throw new Error("Filter condition not yet supported");
 	}
 };
 
@@ -225,17 +300,6 @@ const doesTextMatch = (
 			return cellContent.startsWith(filterText);
 		case TextFilterCondition.ENDS_WITH:
 			return cellContent.endsWith(filterText);
-		case TextFilterCondition.IS_EMPTY:
-			return cellContent === "";
-		case TextFilterCondition.IS_NOT_EMPTY:
-			return cellContent !== "";
-		default:
-			throw new Error("Filter condition not yet supported");
-	}
-};
-
-const doesDateMatch = (cellContent: string, condition: FilterCondition) => {
-	switch (condition) {
 		case TextFilterCondition.IS_EMPTY:
 			return cellContent === "";
 		case TextFilterCondition.IS_NOT_EMPTY:

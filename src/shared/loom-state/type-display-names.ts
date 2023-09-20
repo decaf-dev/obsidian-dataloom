@@ -6,6 +6,11 @@ import {
 	CurrencyType,
 	DateFormat,
 	NumberCalculation,
+	FilterCondition,
+	TextFilterCondition,
+	NumberFilterCondition,
+	DateFilterCondition,
+	DateFilterOption,
 } from "./types/loom-state";
 
 const getShortDisplayNameForCalculation = (value: GeneralCalculation) => {
@@ -211,6 +216,71 @@ export const getDisplayNameForCellType = (type: CellType): string => {
 			return "Multi-tag";
 		case CellType.CURRENCY:
 			return "Currency";
+		default:
+			return "";
+	}
+};
+
+export const getDisplayNameForFilterCondition = (type: FilterCondition) => {
+	switch (type) {
+		case TextFilterCondition.IS:
+		case DateFilterCondition.IS:
+			return "Is";
+		case TextFilterCondition.IS_NOT:
+			return "Is not";
+		case TextFilterCondition.CONTAINS:
+			return "Contains";
+		case TextFilterCondition.DOES_NOT_CONTAIN:
+			return "Does not contain";
+		case TextFilterCondition.STARTS_WITH:
+			return "Starts with";
+		case TextFilterCondition.ENDS_WITH:
+			return "Ends with";
+		case NumberFilterCondition.IS_EQUAL:
+			return "=";
+		case NumberFilterCondition.IS_NOT_EQUAL:
+			return "!=";
+		case NumberFilterCondition.IS_GREATER:
+			return ">";
+		case NumberFilterCondition.IS_GREATER_OR_EQUAL:
+			return ">=";
+		case NumberFilterCondition.IS_LESS:
+			return "<";
+		case NumberFilterCondition.IS_LESS_OR_EQUAL:
+			return "<=";
+		case DateFilterCondition.IS_AFTER:
+			return "Is after";
+		case DateFilterCondition.IS_BEFORE:
+			return "Is before";
+		case TextFilterCondition.IS_EMPTY:
+		case NumberFilterCondition.IS_EMPTY:
+		case DateFilterCondition.IS_EMPTY:
+			return "Is empty";
+		case TextFilterCondition.IS_NOT_EMPTY:
+		case NumberFilterCondition.IS_NOT_EMPTY:
+		case DateFilterCondition.IS_NOT_EMPTY:
+			return "Is not empty";
+		default:
+			return "";
+	}
+};
+
+export const getDisplayNameForDateFilterOption = (value: DateFilterOption) => {
+	switch (value) {
+		case DateFilterOption.TODAY:
+			return "Today";
+		case DateFilterOption.TOMORROW:
+			return "Tomorrow";
+		case DateFilterOption.YESTERDAY:
+			return "Yesterday";
+		case DateFilterOption.ONE_WEEK_AGO:
+			return "One week ago";
+		case DateFilterOption.ONE_WEEK_FROM_NOW:
+			return "One week from now";
+		case DateFilterOption.ONE_MONTH_AGO:
+			return "One month ago";
+		case DateFilterOption.ONE_MONTH_FROM_NOW:
+			return "One month from now";
 		default:
 			return "";
 	}

@@ -139,10 +139,21 @@ export enum NumberFilterCondition {
 //TODO add support for more date types
 export enum DateFilterCondition {
 	IS = "is",
-	BEFORE = "before",
-	AFTER = "after",
+	IS_BEFORE = "is-before",
+	IS_AFTER = "is-after",
 	IS_EMPTY = "is-empty",
 	IS_NOT_EMPTY = "is-not-empty",
+}
+
+export enum DateFilterOption {
+	UNSELECTED = "",
+	TODAY = "today",
+	TOMORROW = "tomorrow",
+	YESTERDAY = "yesterday",
+	ONE_WEEK_AGO = "one-week-ago",
+	ONE_WEEK_FROM_NOW = "one-week-from-now",
+	ONE_MONTH_AGO = "one-month-ago",
+	ONE_MONTH_FROM_NOW = "one-month-from-now",
 }
 
 export type FilterCondition =
@@ -150,45 +161,103 @@ export type FilterCondition =
 	| DateFilterCondition
 	| NumberFilterCondition;
 
-interface BaseFilter {
+export interface BaseFilter {
 	id: string;
-	type: CellType;
 	columnId: string;
 	operator: FilterOperator;
 	isEnabled: boolean;
 }
 
+export type TextCondition = TextFilterCondition;
 export interface TextFilter extends BaseFilter {
-	condition: FilterCondition;
+	type: CellType.TEXT;
+	condition: TextCondition;
 	text: string;
 }
 
-export interface FileFilter extends TextFilter {
-	condition: FilterCondition;
+export type FileCondition = TextFilterCondition;
+export interface FileFilter extends BaseFilter {
+	type: CellType.FILE;
+	condition: FileCondition;
 	text: string;
 }
 
+export type CheckboxCondition =
+	| TextFilterCondition.IS
+	| TextFilterCondition.IS_NOT;
 export interface CheckboxFilter extends BaseFilter {
-	condition: TextFilterCondition.IS | TextFilterCondition.IS_NOT;
+	type: CellType.CHECKBOX;
+	condition: CheckboxCondition;
 	text: string;
 }
 
+export type TagCondition =
+	| TextFilterCondition.IS
+	| TextFilterCondition.IS_NOT
+	| TextFilterCondition.IS_EMPTY
+	| TextFilterCondition.IS_NOT_EMPTY;
 export interface TagFilter extends BaseFilter {
-	condition:
-		| TextFilterCondition.IS
-		| TextFilterCondition.IS_NOT
-		| TextFilterCondition.IS_EMPTY
-		| TextFilterCondition.IS_NOT_EMPTY;
+	type: CellType.TAG;
+	condition: TagCondition;
 	tagId: string;
 }
 
+export type MultiTagCondition =
+	| TextFilterCondition.CONTAINS
+	| TextFilterCondition.DOES_NOT_CONTAIN
+	| TextFilterCondition.IS_EMPTY
+	| TextFilterCondition.IS_NOT_EMPTY;
 export interface MultiTagFilter extends BaseFilter {
-	condition:
-		| TextFilterCondition.CONTAINS
-		| TextFilterCondition.DOES_NOT_CONTAIN
-		| TextFilterCondition.IS_EMPTY
-		| TextFilterCondition.IS_NOT_EMPTY;
+	type: CellType.MULTI_TAG;
+	condition: MultiTagCondition;
 	tagIds: string[];
+}
+
+export type EmbedCondition =
+	| TextFilterCondition.IS_EMPTY
+	| TextFilterCondition.IS_NOT_EMPTY;
+export interface EmbedFilter extends BaseFilter {
+	type: CellType.EMBED;
+	condition: EmbedCondition;
+	text: string;
+}
+
+export type NumberCondition = NumberFilterCondition;
+export interface NumberFilter extends BaseFilter {
+	type: CellType.NUMBER;
+	condition: NumberCondition;
+	text: string;
+}
+
+export type DateCondition = DateFilterCondition;
+export interface DateFilter extends BaseFilter {
+	type: CellType.DATE;
+	condition: DateCondition;
+	matchOption: DateFilterOption;
+	dateTime: number | null;
+}
+
+export type CreationTimeCondition =
+	| DateFilterCondition.IS
+	| DateFilterCondition.IS_AFTER
+	| DateFilterCondition.IS_BEFORE;
+
+export interface CreationTimeFilter extends BaseFilter {
+	type: CellType.CREATION_TIME;
+	condition: CreationTimeCondition;
+	matchOption: DateFilterOption;
+	dateTime: number | null;
+}
+
+export type LastEditedTimeCondition =
+	| DateFilterCondition.IS
+	| DateFilterCondition.IS_AFTER
+	| DateFilterCondition.IS_BEFORE;
+export interface LastEditedTimeFilter extends BaseFilter {
+	type: CellType.LAST_EDITED_TIME;
+	condition: LastEditedTimeCondition;
+	matchOption: DateFilterOption;
+	dateTime: number | null;
 }
 
 export type Filter =
@@ -196,7 +265,12 @@ export type Filter =
 	| TagFilter
 	| MultiTagFilter
 	| CheckboxFilter
-	| FileFilter;
+	| FileFilter
+	| EmbedFilter
+	| NumberFilter
+	| DateFilter
+	| CreationTimeFilter
+	| LastEditedTimeFilter;
 
 /************ TABLE TYPES ***************/
 
