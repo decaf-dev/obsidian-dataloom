@@ -146,7 +146,7 @@ export enum DateFilterCondition {
 }
 
 export enum DateFilterOption {
-	UNSELECTED = "",
+	UNSELECTED = "unselected",
 	TODAY = "today",
 	TOMORROW = "tomorrow",
 	YESTERDAY = "yesterday",
@@ -233,7 +233,7 @@ export type DateCondition = DateFilterCondition;
 export interface DateFilter extends BaseFilter {
 	type: CellType.DATE;
 	condition: DateCondition;
-	matchOption: DateFilterOption;
+	option: DateFilterOption;
 	dateTime: number | null;
 }
 
@@ -245,7 +245,7 @@ export type CreationTimeCondition =
 export interface CreationTimeFilter extends BaseFilter {
 	type: CellType.CREATION_TIME;
 	condition: CreationTimeCondition;
-	matchOption: DateFilterOption;
+	option: DateFilterOption;
 	dateTime: number | null;
 }
 
@@ -256,7 +256,7 @@ export type LastEditedTimeCondition =
 export interface LastEditedTimeFilter extends BaseFilter {
 	type: CellType.LAST_EDITED_TIME;
 	condition: LastEditedTimeCondition;
-	matchOption: DateFilterOption;
+	option: DateFilterOption;
 	dateTime: number | null;
 }
 

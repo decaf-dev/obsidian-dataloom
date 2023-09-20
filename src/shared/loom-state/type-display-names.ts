@@ -267,6 +267,8 @@ export const getDisplayNameForFilterCondition = (type: FilterCondition) => {
 
 export const getDisplayNameForDateFilterOption = (value: DateFilterOption) => {
 	switch (value) {
+		case DateFilterOption.UNSELECTED:
+			return "Select an option";
 		case DateFilterOption.TODAY:
 			return "Today";
 		case DateFilterOption.TOMORROW:

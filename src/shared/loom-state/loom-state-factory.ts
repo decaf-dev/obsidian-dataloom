@@ -310,14 +310,14 @@ export const createDateFilter = (
 		condition?: DateCondition;
 		isEnabled?: boolean;
 		dateTime?: number | null;
-		matchOption?: DateFilterOption;
+		option?: DateFilterOption;
 	}
 ): DateFilter => {
 	const {
 		condition = DateFilterCondition.IS,
 		isEnabled = true,
 		dateTime = null,
-		matchOption = DateFilterOption.UNSELECTED,
+		option = DateFilterOption.UNSELECTED,
 	} = options || {};
 	const baseFilter = createBaseFilter(columnId, {
 		isEnabled,
@@ -326,7 +326,7 @@ export const createDateFilter = (
 		...baseFilter,
 		type: CellType.DATE,
 		condition,
-		matchOption,
+		option,
 		dateTime,
 	};
 };
@@ -336,14 +336,14 @@ export const createCreationTimeFilter = (
 	options?: {
 		condition?: CreationTimeCondition;
 		isEnabled?: boolean;
-		matchOption?: DateFilterOption;
+		option?: DateFilterOption;
 		dateTime?: number | null;
 	}
 ): CreationTimeFilter => {
 	const {
 		condition = DateFilterCondition.IS,
 		isEnabled = true,
-		matchOption = DateFilterOption.UNSELECTED,
+		option = DateFilterOption.UNSELECTED,
 		dateTime = null,
 	} = options || {};
 	const baseFilter = createBaseFilter(columnId, {
@@ -352,7 +352,7 @@ export const createCreationTimeFilter = (
 	return {
 		...baseFilter,
 		type: CellType.CREATION_TIME,
-		matchOption,
+		option,
 		condition,
 		dateTime,
 	};
@@ -363,14 +363,14 @@ export const createLastEditedTimeFilter = (
 	options?: {
 		condition?: LastEditedTimeCondition;
 		isEnabled?: boolean;
-		matchOption?: DateFilterOption;
+		option?: DateFilterOption;
 		dateTime?: number | null;
 	}
 ): LastEditedTimeFilter => {
 	const {
 		condition = DateFilterCondition.IS,
 		isEnabled = true,
-		matchOption = DateFilterOption.UNSELECTED,
+		option = DateFilterOption.UNSELECTED,
 		dateTime = null,
 	} = options || {};
 	const baseFilter = createBaseFilter(columnId, {
@@ -379,7 +379,7 @@ export const createLastEditedTimeFilter = (
 	return {
 		...baseFilter,
 		type: CellType.LAST_EDITED_TIME,
-		matchOption,
+		option,
 		condition,
 		dateTime,
 	};

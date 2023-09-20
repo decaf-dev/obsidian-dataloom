@@ -2,7 +2,6 @@ import {
 	BodyCell,
 	BodyRow,
 	CellType,
-	Column,
 	Filter,
 	FilterCondition,
 	LoomState,
@@ -20,9 +19,15 @@ import {
 	CreationTimeFilter,
 	LastEditedTimeFilter,
 	DateFilterCondition,
+	DateFilterOption,
 } from "src/shared/loom-state/types/loom-state";
 import ColumNotFoundError from "src/shared/error/column-not-found-error";
 import { Expression, evaluateWithPrecedence } from "./evaluate-with-precedence";
+import {
+	getDateAtMidnight,
+	getDateFromDateFilterOption,
+	getDateJustBeforeMidnight,
+} from "./utils";
 
 /**
  * Filters body rows by the filters array
@@ -31,16 +36,16 @@ import { Expression, evaluateWithPrecedence } from "./evaluate-with-precedence";
 export const filterByFilters = (prevState: LoomState): BodyRow[] => {
 	const { columns, bodyCells, bodyRows, filters } = prevState.model;
 
-	const columnMap = new Map<string, Column>();
-	columns.forEach((column) => columnMap.set(column.id, column));
-
 	const cellMatches = new Map<string, boolean>();
 	bodyCells.forEach((cell) => {
-		const column = columnMap.get(cell.columnId);
+		const column = columns.find((column) => column.id === cell.columnId);
 		if (!column) throw new ColumNotFoundError(cell.columnId);
 
+		const row = bodyRows.find((row) => row.id === cell.rowId);
+		if (!row) throw new Error("Row not found");
+
 		const { tags, type } = column;
-		const doesMatch = doesCellMatchFilters(cell, type, tags, filters);
+		const doesMatch = doesCellMatchFilters(cell, row, type, tags, filters);
 		cellMatches.set(cell.id, doesMatch);
 	});
 
@@ -61,6 +66,7 @@ export const filterByFilters = (prevState: LoomState): BodyRow[] => {
  */
 const doesCellMatchFilters = (
 	cell: BodyCell,
+	row: BodyRow,
 	cellType: CellType,
 	columnTags: Tag[],
 	filters: Filter[]
@@ -68,7 +74,7 @@ const doesCellMatchFilters = (
 	const expressions = filters
 		.map((filter) => ({
 			operator: filter.operator,
-			value: doesCellMatchFilter(cell, cellType, columnTags, filter),
+			value: doesCellMatchFilter(cell, row, cellType, columnTags, filter),
 		}))
 		.filter((expression) => expression.value !== null) as Expression[];
 	if (expressions.length === 0) return true;
@@ -86,6 +92,7 @@ const doesCellMatchFilters = (
  */
 const doesCellMatchFilter = (
 	cell: BodyCell,
+	row: BodyRow,
 	cellType: CellType,
 	columnTags: Tag[],
 	filter: Filter
@@ -134,16 +141,18 @@ const doesCellMatchFilter = (
 			return doesTextMatch(cell.markdown, text, condition);
 		}
 		case CellType.DATE: {
-			const { dateTime } = filter as DateFilter;
-			return doesDateMatch(cell.dateTime, dateTime, condition);
+			const { dateTime, option } = filter as DateFilter;
+			return doesDateMatch(cell.dateTime, dateTime, option, condition);
 		}
 		case CellType.CREATION_TIME: {
-			const { dateTime } = filter as CreationTimeFilter;
-			return doesDateMatch(cell.dateTime, dateTime, condition);
+			const { creationTime } = row;
+			const { dateTime, option } = filter as CreationTimeFilter;
+			return doesDateMatch(creationTime, dateTime, option, condition);
 		}
 		case CellType.LAST_EDITED_TIME: {
-			const { dateTime } = filter as LastEditedTimeFilter;
-			return doesDateMatch(cell.dateTime, dateTime, condition);
+			const { lastEditedTime } = row;
+			const { dateTime, option } = filter as LastEditedTimeFilter;
+			return doesDateMatch(lastEditedTime, dateTime, option, condition);
 		}
 
 		default:
@@ -189,23 +198,53 @@ const doesNumberMatch = (
 const doesDateMatch = (
 	cellDateTime: number | null,
 	filterDateTime: number | null,
+	option: DateFilterOption,
 	condition: FilterCondition
 ) => {
+	let cellDate: Date | null = null;
+	if (cellDateTime !== null) {
+		cellDate = new Date(cellDateTime);
+	}
+
+	let compareDate = getDateFromDateFilterOption(option);
+	if (compareDate === null) {
+		if (filterDateTime !== null) {
+			compareDate = new Date(filterDateTime);
+		}
+	}
+
 	switch (condition) {
-		case DateFilterCondition.IS:
-			return cellDateTime === filterDateTime;
-		case DateFilterCondition.IS_AFTER:
-			if (filterDateTime === null) return true;
-			if (cellDateTime === null) return false;
-			return cellDateTime > filterDateTime;
-		case DateFilterCondition.IS_BEFORE:
-			if (filterDateTime === null) return true;
-			if (cellDateTime === null) return false;
-			return cellDateTime < filterDateTime;
+		case DateFilterCondition.IS: {
+			if (compareDate === null) return true;
+			if (cellDate === null) return false;
+
+			const compareDateMidnight = getDateAtMidnight(compareDate);
+			const compareDateJustBeforeMidnight =
+				getDateJustBeforeMidnight(compareDate);
+
+			return (
+				cellDate.getTime() >= compareDateMidnight.getTime() &&
+				cellDate.getTime() <= compareDateJustBeforeMidnight.getTime()
+			);
+		}
+		case DateFilterCondition.IS_AFTER: {
+			if (compareDate === null) return true;
+			if (cellDate === null) return false;
+			const compareDateBeforeMidnight =
+				getDateJustBeforeMidnight(compareDate);
+			return cellDate.getTime() > compareDateBeforeMidnight.getTime();
+		}
+		case DateFilterCondition.IS_BEFORE: {
+			if (compareDate === null) return true;
+			if (cellDate === null) return false;
+
+			const compareDateMidnight = getDateAtMidnight(compareDate);
+			return cellDate.getTime() < compareDateMidnight.getTime();
+		}
 		case DateFilterCondition.IS_EMPTY:
-			return cellDateTime === null;
+			return cellDate === null;
 		case DateFilterCondition.IS_NOT_EMPTY:
-			return cellDateTime !== null;
+			return cellDate !== null;
 		default:
 			throw new Error("Filter condition not yet supported");
 	}

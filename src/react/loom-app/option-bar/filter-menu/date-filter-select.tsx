@@ -14,10 +14,9 @@ export default function DateFilterSelect({ value, onChange }: Props) {
 			onChange={(value) => onChange(value as DateFilterOption)}
 		>
 			{Object.values(DateFilterOption).map((option) => (
-				<option
-					key={option}
-					value={getDisplayNameForDateFilterOption(option)}
-				/>
+				<option key={option} value={option}>
+					{getDisplayNameForDateFilterOption(option)}
+				</option>
 			))}
 		</Select>
 	);

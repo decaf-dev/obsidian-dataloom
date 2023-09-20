@@ -30,7 +30,6 @@ import {
 	EmbedCondition,
 	LastEditedTimeCondition,
 	CreationTimeCondition,
-	EmbedFilter,
 	NumberFilter,
 	DateFilter,
 	CreationTimeFilter,
@@ -293,8 +292,7 @@ export default function FilterMenu({
 	}
 
 	function onDateFilterOptionChange(id: string, option: DateFilterOption) {
-		const newDateTime = 0;
-		onUpdate(id, { matchOption: option, dateTime: newDateTime });
+		onUpdate(id, { option });
 	}
 
 	function onTagChange(id: string, tagId: string) {
@@ -516,11 +514,10 @@ export default function FilterMenu({
 									break;
 								}
 								case CellType.DATE: {
-									const { matchOption } =
-										filter as DateFilter;
+									const { option } = filter as DateFilter;
 									inputNode = (
 										<DateFilterSelect
-											value={matchOption}
+											value={option}
 											onChange={(newValue) =>
 												onDateFilterOptionChange(
 													id,
@@ -539,11 +536,11 @@ export default function FilterMenu({
 									break;
 								}
 								case CellType.CREATION_TIME: {
-									const { matchOption } =
+									const { option } =
 										filter as CreationTimeFilter;
 									inputNode = (
 										<DateFilterSelect
-											value={matchOption}
+											value={option}
 											onChange={(newValue) =>
 												onDateFilterOptionChange(
 													id,
@@ -560,11 +557,11 @@ export default function FilterMenu({
 									break;
 								}
 								case CellType.LAST_EDITED_TIME: {
-									const { matchOption } =
+									const { option } =
 										filter as LastEditedTimeFilter;
 									inputNode = (
 										<DateFilterSelect
-											value={matchOption}
+											value={option}
 											onChange={(newValue) =>
 												onDateFilterOptionChange(
 													id,
