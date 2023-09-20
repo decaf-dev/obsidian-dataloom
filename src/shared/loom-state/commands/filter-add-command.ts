@@ -1,7 +1,12 @@
 import {
 	createCheckboxFilter,
+	createCreationTimeFilter,
+	createDateFilter,
+	createEmbedFilter,
 	createFileFilter,
+	createLastEditedTimeFilter,
 	createMultiTagFilter,
+	createNumberFilter,
 	createTagFilter,
 	createTextFilter,
 } from "../loom-state-factory";
@@ -37,6 +42,16 @@ export default class FilterAddCommand extends LoomStateCommand {
 			newFilter = createTagFilter(columnId);
 		} else if (this.cellType === CellType.MULTI_TAG) {
 			newFilter = createMultiTagFilter(columnId);
+		} else if (this.cellType === CellType.DATE) {
+			newFilter = createDateFilter(columnId);
+		} else if (this.cellType === CellType.NUMBER) {
+			newFilter = createNumberFilter(columnId);
+		} else if (this.cellType === CellType.EMBED) {
+			newFilter = createEmbedFilter(columnId);
+		} else if (this.cellType === CellType.CREATION_TIME) {
+			newFilter = createCreationTimeFilter(columnId);
+		} else if (this.cellType === CellType.LAST_EDITED_TIME) {
+			newFilter = createLastEditedTimeFilter(columnId);
 		} else {
 			throw new Error("Unhandled cell type");
 		}

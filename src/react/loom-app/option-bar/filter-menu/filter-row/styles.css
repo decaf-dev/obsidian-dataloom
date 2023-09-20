@@ -1,13 +1,14 @@
+/** TODO FIX MOBILE **/
 .dataloom-filter-row {
     width: 100%;
 }
 
-.dataloom-filter-row__input {
+.dataloom-filter-row__input input {
     width: 150px;
 }
 
-.dataloom-filter-row__input > select {
-    width: 100%;
+.dataloom-filter-row select {
+   max-width: 175px;
 }
 
 .dataloom-filter-row__spacer {

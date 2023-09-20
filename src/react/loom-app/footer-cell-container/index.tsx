@@ -4,7 +4,7 @@ import CalculationMenu from "./calculation-menu";
 import {
 	BodyCell,
 	BodyRow,
-	Calculation,
+	GeneralCalculation,
 	CalculationType,
 	CellType,
 	CurrencyType,
@@ -98,10 +98,10 @@ export default function FooterCellContainer({
 						width,
 					}}
 				>
-					{calculationType === Calculation.NONE && (
+					{calculationType === GeneralCalculation.NONE && (
 						<Text value="Calculate" variant="faint" />
 					)}
-					{calculationType !== Calculation.NONE && (
+					{calculationType !== GeneralCalculation.NONE && (
 						<Stack spacing="sm" isHorizontal>
 							<Text
 								value={getShortDisplayNameForCalculationType(

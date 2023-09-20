@@ -1,6 +1,10 @@
 import MigrateState from "./migrate-state";
 import ColumNotFoundError from "src/shared/error/column-not-found-error";
-import { LoomState, FilterCondition } from "../types/loom-state";
+import {
+	CalculationType,
+	LoomState,
+	TextFilterCondition,
+} from "../types/loom-state";
 import {
 	LoomState12,
 	FilterType as FilterType12,
@@ -34,6 +38,7 @@ export default class MigrateState12 implements MigrateState {
 		const nextColumns = columns.map((column) => {
 			return {
 				...column,
+				calculationType: column.calculationType as CalculationType,
 				numberPrefix: "",
 				numberSuffix: "",
 				numberSeparator: "",
@@ -50,12 +55,12 @@ export default class MigrateState12 implements MigrateState {
 			if (type === CellType12.MULTI_TAG) {
 				let condition = filterTypeToFilterCondition(rule.type);
 				if (
-					condition !== FilterCondition.CONTAINS &&
-					condition !== FilterCondition.DOES_NOT_CONTAIN &&
-					condition !== FilterCondition.IS_EMPTY &&
-					condition !== FilterCondition.IS_NOT_EMPTY
+					condition !== TextFilterCondition.CONTAINS &&
+					condition !== TextFilterCondition.DOES_NOT_CONTAIN &&
+					condition !== TextFilterCondition.IS_EMPTY &&
+					condition !== TextFilterCondition.IS_NOT_EMPTY
 				) {
-					condition = FilterCondition.CONTAINS;
+					condition = TextFilterCondition.CONTAINS;
 				}
 				const filter = createMultiTagFilter(rule.columnId, {
 					condition,
@@ -66,12 +71,12 @@ export default class MigrateState12 implements MigrateState {
 			} else if (type === CellType12.TAG) {
 				let condition = filterTypeToFilterCondition(rule.type);
 				if (
-					condition !== FilterCondition.IS &&
-					condition !== FilterCondition.IS_NOT &&
-					condition !== FilterCondition.IS_EMPTY &&
-					condition !== FilterCondition.IS_NOT_EMPTY
+					condition !== TextFilterCondition.IS &&
+					condition !== TextFilterCondition.IS_NOT &&
+					condition !== TextFilterCondition.IS_EMPTY &&
+					condition !== TextFilterCondition.IS_NOT_EMPTY
 				) {
-					condition = FilterCondition.IS;
+					condition = TextFilterCondition.IS;
 				}
 				const filter = createTagFilter(rule.columnId, {
 					condition,
@@ -82,10 +87,10 @@ export default class MigrateState12 implements MigrateState {
 			} else if (type === CellType12.CHECKBOX) {
 				let condition = filterTypeToFilterCondition(rule.type);
 				if (
-					condition !== FilterCondition.IS &&
-					condition !== FilterCondition.IS_NOT
+					condition !== TextFilterCondition.IS &&
+					condition !== TextFilterCondition.IS_NOT
 				) {
-					condition = FilterCondition.IS;
+					condition = TextFilterCondition.IS;
 				}
 				const filter = createCheckboxFilter(rule.columnId, {
 					condition,
@@ -132,21 +137,21 @@ export default class MigrateState12 implements MigrateState {
 const filterTypeToFilterCondition = (type: FilterType12) => {
 	switch (type) {
 		case FilterType12.IS:
-			return FilterCondition.IS;
+			return TextFilterCondition.IS;
 		case FilterType12.IS_NOT:
-			return FilterCondition.IS_NOT;
+			return TextFilterCondition.IS_NOT;
 		case FilterType12.CONTAINS:
-			return FilterCondition.CONTAINS;
+			return TextFilterCondition.CONTAINS;
 		case FilterType12.DOES_NOT_CONTAIN:
-			return FilterCondition.DOES_NOT_CONTAIN;
+			return TextFilterCondition.DOES_NOT_CONTAIN;
 		case FilterType12.STARTS_WITH:
-			return FilterCondition.STARTS_WITH;
+			return TextFilterCondition.STARTS_WITH;
 		case FilterType12.ENDS_WITH:
-			return FilterCondition.ENDS_WITH;
+			return TextFilterCondition.ENDS_WITH;
 		case FilterType12.IS_EMPTY:
-			return FilterCondition.IS_EMPTY;
+			return TextFilterCondition.IS_EMPTY;
 		case FilterType12.IS_NOT_EMPTY:
-			return FilterCondition.IS_NOT_EMPTY;
+			return TextFilterCondition.IS_NOT_EMPTY;
 		default:
 			throw new Error("Invalid filter type");
 	}

@@ -8,6 +8,7 @@ import FilterColumnSelect from "../filter-column-select";
 import {
 	FilterCondition,
 	FilterOperator as FilterOperatorType,
+	TextFilterCondition,
 } from "src/shared/loom-state/types/loom-state";
 import { ColumnWithMarkdown } from "../../types";
 import FilterConditionSelect from "../filter-condition-select";
@@ -73,8 +74,8 @@ export default function FilterRow({
 					value={selectedCondition}
 					onChange={onConditionChange}
 				/>
-				{selectedCondition !== FilterCondition.IS_EMPTY &&
-					selectedCondition !== FilterCondition.IS_NOT_EMPTY && (
+				{selectedCondition !== TextFilterCondition.IS_EMPTY &&
+					selectedCondition !== TextFilterCondition.IS_NOT_EMPTY && (
 						<div className="dataloom-filter-row__input">
 							{inputNode}
 						</div>
