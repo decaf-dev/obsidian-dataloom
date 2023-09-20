@@ -3,7 +3,7 @@ import {
 	AspectRatio,
 	BodyCell,
 	BodyRow,
-	Calculation,
+	GeneralCalculation,
 	CellType,
 	Column,
 	CurrencyType,
@@ -22,8 +22,8 @@ import {
 	MultiTagFilter,
 	TagFilter,
 	CheckboxFilter,
-	CheckboxFilterCondition,
 	FileFilter,
+	TextFilterCondition,
 } from "./types/loom-state";
 
 import { v4 as uuidv4 } from "uuid";
@@ -45,7 +45,7 @@ export const createColumn = (options?: { cellType?: CellType }): Column => {
 		dateFormat: DateFormat.MM_DD_YYYY,
 		shouldWrapOverflow: true,
 		tags: [],
-		calculationType: Calculation.NONE,
+		calculationType: GeneralCalculation.NONE,
 		aspectRatio: AspectRatio.UNSET,
 		horizontalPadding: PaddingSize.UNSET,
 		verticalPadding: PaddingSize.UNSET,
@@ -125,7 +125,7 @@ export const createTextFilter = (
 	}
 ): TextFilter => {
 	const {
-		condition = FilterCondition.IS,
+		condition = TextFilterCondition.IS,
 		isEnabled = true,
 		text = "",
 	} = options || {};
@@ -149,7 +149,7 @@ export const createFileFilter = (
 	}
 ): FileFilter => {
 	const {
-		condition = FilterCondition.IS,
+		condition = TextFilterCondition.IS,
 		isEnabled = true,
 		text = "",
 	} = options || {};
@@ -167,13 +167,13 @@ export const createFileFilter = (
 export const createCheckboxFilter = (
 	columnId: string,
 	options?: {
-		condition?: CheckboxFilterCondition;
+		condition?: TextFilterCondition.IS | TextFilterCondition.IS_NOT;
 		isEnabled?: boolean;
 		text?: string;
 	}
 ): CheckboxFilter => {
 	const {
-		condition = FilterCondition.IS,
+		condition = TextFilterCondition.IS,
 		isEnabled = true,
 		text = "",
 	} = options || {};
@@ -192,16 +192,16 @@ export const createTagFilter = (
 	columnId: string,
 	options?: {
 		condition?:
-			| FilterCondition.IS
-			| FilterCondition.IS_NOT
-			| FilterCondition.IS_EMPTY
-			| FilterCondition.IS_NOT_EMPTY;
+			| TextFilterCondition.IS
+			| TextFilterCondition.IS_NOT
+			| TextFilterCondition.IS_EMPTY
+			| TextFilterCondition.IS_NOT_EMPTY;
 		tagId?: string;
 		isEnabled?: boolean;
 	}
 ): TagFilter => {
 	const {
-		condition = FilterCondition.IS,
+		condition = TextFilterCondition.IS,
 		isEnabled = true,
 		tagId = "",
 	} = options || {};
@@ -220,16 +220,16 @@ export const createMultiTagFilter = (
 	columnId: string,
 	options?: {
 		condition?:
-			| FilterCondition.CONTAINS
-			| FilterCondition.DOES_NOT_CONTAIN
-			| FilterCondition.IS_EMPTY
-			| FilterCondition.IS_NOT_EMPTY;
+			| TextFilterCondition.CONTAINS
+			| TextFilterCondition.DOES_NOT_CONTAIN
+			| TextFilterCondition.IS_EMPTY
+			| TextFilterCondition.IS_NOT_EMPTY;
 		tagIds?: string[];
 		isEnabled?: boolean;
 	}
 ): MultiTagFilter => {
 	const {
-		condition = FilterCondition.CONTAINS,
+		condition = TextFilterCondition.CONTAINS,
 		isEnabled = true,
 		tagIds = [],
 	} = options || {};

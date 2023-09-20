@@ -15,11 +15,9 @@ import {
 	TagFilter,
 	MultiTagFilter,
 	Filter,
-	TagFilterCondition,
-	MultiTagFilterCondition,
-	CheckboxFilterCondition,
 	FileFilter,
 	FilterOperator,
+	TextFilterCondition,
 } from "src/shared/loom-state/types/loom-state";
 import { ColumnWithMarkdown } from "../types";
 import { isSmallScreenSize } from "src/shared/render/utils";
@@ -88,46 +86,53 @@ export default function FilterMenu({
 				isEnabled,
 			});
 		} else if (type === CellType.CHECKBOX) {
-			let newCondition: CheckboxFilterCondition =
-				condition as CheckboxFilterCondition;
+			let newCondition: FilterCondition = condition;
 			if (
-				condition !== FilterCondition.IS &&
-				condition !== FilterCondition.IS_NOT
+				condition !== TextFilterCondition.IS &&
+				condition !== TextFilterCondition.IS_NOT
 			) {
-				newCondition = FilterCondition.IS;
+				newCondition = TextFilterCondition.IS;
 			}
 			newFilter = createCheckboxFilter(columnId, {
-				condition: newCondition,
+				condition: newCondition as
+					| TextFilterCondition.IS
+					| TextFilterCondition.IS_NOT,
 				isEnabled,
 			});
 		} else if (type === CellType.TAG) {
-			let newCondition: TagFilterCondition =
-				condition as TagFilterCondition;
+			let newCondition: FilterCondition = condition;
 			if (
-				condition !== FilterCondition.IS &&
-				condition !== FilterCondition.IS_NOT &&
-				condition !== FilterCondition.IS_EMPTY &&
-				condition !== FilterCondition.IS_NOT_EMPTY
+				condition !== TextFilterCondition.IS &&
+				condition !== TextFilterCondition.IS_NOT &&
+				condition !== TextFilterCondition.IS_EMPTY &&
+				condition !== TextFilterCondition.IS_NOT_EMPTY
 			) {
-				newCondition = FilterCondition.IS;
+				newCondition = TextFilterCondition.IS;
 			}
 			newFilter = createTagFilter(columnId, {
-				condition: newCondition,
+				condition: newCondition as
+					| TextFilterCondition.IS
+					| TextFilterCondition.IS_NOT
+					| TextFilterCondition.IS_EMPTY
+					| TextFilterCondition.IS_NOT_EMPTY,
 				isEnabled,
 			});
 		} else if (type === CellType.MULTI_TAG) {
-			let newCondition: MultiTagFilterCondition =
-				condition as MultiTagFilterCondition;
+			let newCondition: FilterCondition = condition;
 			if (
-				condition !== FilterCondition.CONTAINS &&
-				condition !== FilterCondition.DOES_NOT_CONTAIN &&
-				condition !== FilterCondition.IS_EMPTY &&
-				condition !== FilterCondition.IS_NOT_EMPTY
+				condition !== TextFilterCondition.CONTAINS &&
+				condition !== TextFilterCondition.DOES_NOT_CONTAIN &&
+				condition !== TextFilterCondition.IS_EMPTY &&
+				condition !== TextFilterCondition.IS_NOT_EMPTY
 			) {
-				newCondition = FilterCondition.CONTAINS;
+				newCondition = TextFilterCondition.CONTAINS;
 			}
 			newFilter = createMultiTagFilter(columnId, {
-				condition: newCondition,
+				condition: newCondition as
+					| TextFilterCondition.CONTAINS
+					| TextFilterCondition.DOES_NOT_CONTAIN
+					| TextFilterCondition.IS_EMPTY
+					| TextFilterCondition.IS_NOT_EMPTY,
 				isEnabled,
 			});
 		} else {
@@ -212,14 +217,14 @@ export default function FilterMenu({
 										/>
 									);
 									conditionOptions = [
-										FilterCondition.IS,
-										FilterCondition.IS_NOT,
-										FilterCondition.CONTAINS,
-										FilterCondition.DOES_NOT_CONTAIN,
-										FilterCondition.STARTS_WITH,
-										FilterCondition.ENDS_WITH,
-										FilterCondition.IS_EMPTY,
-										FilterCondition.IS_NOT_EMPTY,
+										TextFilterCondition.IS,
+										TextFilterCondition.IS_NOT,
+										TextFilterCondition.CONTAINS,
+										TextFilterCondition.DOES_NOT_CONTAIN,
+										TextFilterCondition.STARTS_WITH,
+										TextFilterCondition.ENDS_WITH,
+										TextFilterCondition.IS_EMPTY,
+										TextFilterCondition.IS_NOT_EMPTY,
 									];
 									break;
 								}
@@ -234,14 +239,14 @@ export default function FilterMenu({
 										/>
 									);
 									conditionOptions = [
-										FilterCondition.IS,
-										FilterCondition.IS_NOT,
-										FilterCondition.CONTAINS,
-										FilterCondition.DOES_NOT_CONTAIN,
-										FilterCondition.STARTS_WITH,
-										FilterCondition.ENDS_WITH,
-										FilterCondition.IS_EMPTY,
-										FilterCondition.IS_NOT_EMPTY,
+										TextFilterCondition.IS,
+										TextFilterCondition.IS_NOT,
+										TextFilterCondition.CONTAINS,
+										TextFilterCondition.DOES_NOT_CONTAIN,
+										TextFilterCondition.STARTS_WITH,
+										TextFilterCondition.ENDS_WITH,
+										TextFilterCondition.IS_EMPTY,
+										TextFilterCondition.IS_NOT_EMPTY,
 									];
 									break;
 								}
@@ -274,8 +279,8 @@ export default function FilterMenu({
 										</Select>
 									);
 									conditionOptions = [
-										FilterCondition.IS,
-										FilterCondition.IS_NOT,
+										TextFilterCondition.IS,
+										TextFilterCondition.IS_NOT,
 									];
 									break;
 								}
@@ -302,10 +307,10 @@ export default function FilterMenu({
 										</Select>
 									);
 									conditionOptions = [
-										FilterCondition.IS,
-										FilterCondition.IS_NOT,
-										FilterCondition.IS_EMPTY,
-										FilterCondition.IS_NOT_EMPTY,
+										TextFilterCondition.IS,
+										TextFilterCondition.IS_NOT,
+										TextFilterCondition.IS_EMPTY,
+										TextFilterCondition.IS_NOT_EMPTY,
 									];
 									break;
 								}
@@ -329,10 +334,10 @@ export default function FilterMenu({
 										</MultiSelect>
 									);
 									conditionOptions = [
-										FilterCondition.CONTAINS,
-										FilterCondition.DOES_NOT_CONTAIN,
-										FilterCondition.IS_EMPTY,
-										FilterCondition.IS_NOT_EMPTY,
+										TextFilterCondition.CONTAINS,
+										TextFilterCondition.DOES_NOT_CONTAIN,
+										TextFilterCondition.IS_EMPTY,
+										TextFilterCondition.IS_NOT_EMPTY,
 									];
 									break;
 								}

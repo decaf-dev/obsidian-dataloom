@@ -2,7 +2,7 @@ import { isCheckboxChecked } from "src/shared/match";
 import {
 	BodyCell,
 	BodyRow,
-	Calculation,
+	GeneralCalculation,
 	CalculationType,
 	CellType,
 	DateFormat,
@@ -39,13 +39,13 @@ export const getCalculation = (
 	calculationType: CalculationType,
 	dateFormat: DateFormat
 ) => {
-	if (calculationType === Calculation.COUNT_ALL) {
+	if (calculationType === GeneralCalculation.COUNT_ALL) {
 		return countAll(bodyRows);
-	} else if (calculationType === Calculation.COUNT_EMPTY) {
+	} else if (calculationType === GeneralCalculation.COUNT_EMPTY) {
 		return countEmpty(columnCells, cellType);
-	} else if (calculationType === Calculation.COUNT_NOT_EMPTY) {
+	} else if (calculationType === GeneralCalculation.COUNT_NOT_EMPTY) {
 		return countNotEmpty(columnCells, cellType);
-	} else if (calculationType === Calculation.COUNT_UNIQUE) {
+	} else if (calculationType === GeneralCalculation.COUNT_UNIQUE) {
 		return countUnique(
 			bodyRows,
 			columnCells,
@@ -53,13 +53,13 @@ export const getCalculation = (
 			cellType,
 			dateFormat
 		);
-	} else if (calculationType === Calculation.COUNT_VALUES) {
+	} else if (calculationType === GeneralCalculation.COUNT_VALUES) {
 		return countValues(columnCells, cellType);
-	} else if (calculationType === Calculation.PERCENT_EMPTY) {
+	} else if (calculationType === GeneralCalculation.PERCENT_EMPTY) {
 		return percentEmpty(columnCells, cellType);
-	} else if (calculationType === Calculation.PERCENT_NOT_EMPTY) {
+	} else if (calculationType === GeneralCalculation.PERCENT_NOT_EMPTY) {
 		return percentNotEmpty(columnCells, cellType);
-	} else if (calculationType === Calculation.NONE) {
+	} else if (calculationType === GeneralCalculation.NONE) {
 		return "";
 	} else {
 		throw new Error("Unhandled calculation type");

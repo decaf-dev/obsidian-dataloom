@@ -12,6 +12,7 @@ import {
 	TagFilter,
 	MultiTagFilter,
 	FileFilter,
+	TextFilterCondition,
 } from "src/shared/loom-state/types/loom-state";
 import ColumNotFoundError from "src/shared/error/column-not-found-error";
 import { Expression, evaluateWithPrecedence } from "./evaluate-with-precedence";
@@ -117,6 +118,19 @@ const doesCellMatchFilter = (
 			);
 			return doTagsMatch(cellTags, filterTags, condition);
 		}
+		case CellType.DATE: {
+			//const { text } = filter as TextFilter;
+			return doesDateMatch(cell.markdown, condition);
+		}
+		case CellType.CREATION_TIME: {
+			//const { text } = filter as TextFilter;
+			return doesDateMatch(cell.markdown, condition);
+		}
+		case CellType.LAST_EDITED_TIME: {
+			//const { text } = filter as TextFilter;
+			return doesDateMatch(cell.markdown, condition);
+		}
+
 		default:
 			throw new Error("Cell type not yet supported");
 	}
@@ -135,15 +149,15 @@ const doesTagMatch = (
 	condition: FilterCondition
 ): boolean => {
 	switch (condition) {
-		case FilterCondition.IS:
+		case TextFilterCondition.IS:
 			if (filterTag === null) return true;
 			return cellTag?.id == filterTag.id;
-		case FilterCondition.IS_NOT:
+		case TextFilterCondition.IS_NOT:
 			if (filterTag === null) return true;
 			return cellTag?.id !== filterTag.id;
-		case FilterCondition.IS_EMPTY:
+		case TextFilterCondition.IS_EMPTY:
 			return cellTag === null;
-		case FilterCondition.IS_NOT_EMPTY:
+		case TextFilterCondition.IS_NOT_EMPTY:
 			return cellTag !== null;
 		default:
 			throw new Error("Filter condition not yet supported");
@@ -162,19 +176,19 @@ const doTagsMatch = (
 	condition: FilterCondition
 ): boolean => {
 	switch (condition) {
-		case FilterCondition.CONTAINS:
+		case TextFilterCondition.CONTAINS:
 			//Union
 			return filterTags.every((filterTag) =>
 				cellTags.some((cellTag) => cellTag.id === filterTag.id)
 			);
-		case FilterCondition.DOES_NOT_CONTAIN:
+		case TextFilterCondition.DOES_NOT_CONTAIN:
 			//Complement
 			return filterTags.every((filterTag) =>
 				cellTags.every((cellTag) => cellTag.id !== filterTag.id)
 			);
-		case FilterCondition.IS_EMPTY:
+		case TextFilterCondition.IS_EMPTY:
 			return cellTags.length === 0;
-		case FilterCondition.IS_NOT_EMPTY:
+		case TextFilterCondition.IS_NOT_EMPTY:
 			return cellTags.length !== 0;
 		default:
 			throw new Error("Filter condition not yet supported");
@@ -196,24 +210,35 @@ const doesTextMatch = (
 	filterText = filterText.toLowerCase().trim();
 
 	switch (condition) {
-		case FilterCondition.IS:
+		case TextFilterCondition.IS:
 			if (filterText === "") return true;
 			return cellContent === filterText;
-		case FilterCondition.IS_NOT:
+		case TextFilterCondition.IS_NOT:
 			if (filterText === "") return true;
 			return cellContent !== filterText;
-		case FilterCondition.CONTAINS:
+		case TextFilterCondition.CONTAINS:
 			return cellContent.includes(filterText);
-		case FilterCondition.DOES_NOT_CONTAIN:
+		case TextFilterCondition.DOES_NOT_CONTAIN:
 			if (filterText === "") return true;
 			return !cellContent.includes(filterText);
-		case FilterCondition.STARTS_WITH:
+		case TextFilterCondition.STARTS_WITH:
 			return cellContent.startsWith(filterText);
-		case FilterCondition.ENDS_WITH:
+		case TextFilterCondition.ENDS_WITH:
 			return cellContent.endsWith(filterText);
-		case FilterCondition.IS_EMPTY:
+		case TextFilterCondition.IS_EMPTY:
 			return cellContent === "";
-		case FilterCondition.IS_NOT_EMPTY:
+		case TextFilterCondition.IS_NOT_EMPTY:
+			return cellContent !== "";
+		default:
+			throw new Error("Filter condition not yet supported");
+	}
+};
+
+const doesDateMatch = (cellContent: string, condition: FilterCondition) => {
+	switch (condition) {
+		case TextFilterCondition.IS_EMPTY:
+			return cellContent === "";
+		case TextFilterCondition.IS_NOT_EMPTY:
 			return cellContent !== "";
 		default:
 			throw new Error("Filter condition not yet supported");

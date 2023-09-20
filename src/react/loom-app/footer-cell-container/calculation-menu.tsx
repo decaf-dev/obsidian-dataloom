@@ -11,7 +11,7 @@ import {
 	getDisplayNameForNumberCalculation,
 } from "src/shared/loom-state/type-display-names";
 import {
-	Calculation,
+	GeneralCalculation,
 	CalculationType,
 	CellType,
 	NumberCalculation,
@@ -46,7 +46,7 @@ export default function CalculationMenu({
 			onClose={onClose}
 		>
 			<div className="dataloom-function-menu">
-				{Object.values(Calculation).map((type) => (
+				{Object.values(GeneralCalculation).map((type) => (
 					<MenuItem
 						key={type}
 						name={getDisplayNameForCalculation(type)}

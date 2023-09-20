@@ -1,6 +1,6 @@
 import { isNumberCalcuation } from "../match";
 import {
-	Calculation,
+	GeneralCalculation,
 	CalculationType,
 	CellType,
 	CurrencyType,
@@ -8,23 +8,23 @@ import {
 	NumberCalculation,
 } from "./types/loom-state";
 
-const getShortDisplayNameForCalculation = (value: Calculation) => {
+const getShortDisplayNameForCalculation = (value: GeneralCalculation) => {
 	switch (value) {
-		case Calculation.COUNT_ALL:
+		case GeneralCalculation.COUNT_ALL:
 			return "Count";
-		case Calculation.COUNT_NOT_EMPTY:
+		case GeneralCalculation.COUNT_NOT_EMPTY:
 			return "Not empty";
-		case Calculation.COUNT_VALUES:
+		case GeneralCalculation.COUNT_VALUES:
 			return "Values";
-		case Calculation.COUNT_EMPTY:
+		case GeneralCalculation.COUNT_EMPTY:
 			return "Empty";
-		case Calculation.COUNT_UNIQUE:
+		case GeneralCalculation.COUNT_UNIQUE:
 			return "Unique";
-		case Calculation.NONE:
+		case GeneralCalculation.NONE:
 			return "None";
-		case Calculation.PERCENT_EMPTY:
+		case GeneralCalculation.PERCENT_EMPTY:
 			return "Empty";
-		case Calculation.PERCENT_NOT_EMPTY:
+		case GeneralCalculation.PERCENT_NOT_EMPTY:
 			return "Not empty";
 		default:
 			return "";
@@ -41,19 +41,19 @@ export const getShortDisplayNameForCalculationType = (
 
 export const getAriaLabelForCalculation = (value: CalculationType) => {
 	switch (value) {
-		case Calculation.COUNT_ALL:
+		case GeneralCalculation.COUNT_ALL:
 			return "Counts the total number of rows";
-		case Calculation.COUNT_EMPTY:
+		case GeneralCalculation.COUNT_EMPTY:
 			return "Counts the number of rows with an empty cell value";
-		case Calculation.COUNT_NOT_EMPTY:
+		case GeneralCalculation.COUNT_NOT_EMPTY:
 			return "Counts the number of rows with a non-empty cell value";
-		case Calculation.COUNT_UNIQUE:
+		case GeneralCalculation.COUNT_UNIQUE:
 			return "Counts the number of unique values in the column";
-		case Calculation.COUNT_VALUES:
+		case GeneralCalculation.COUNT_VALUES:
 			return "Counts the number of values in the column";
-		case Calculation.PERCENT_EMPTY:
+		case GeneralCalculation.PERCENT_EMPTY:
 			return "Displays the percentage of rows with an empty cell value";
-		case Calculation.PERCENT_NOT_EMPTY:
+		case GeneralCalculation.PERCENT_NOT_EMPTY:
 			return "Displays the percentage of rows with a non-empty cell value";
 		default:
 			return "";
@@ -79,23 +79,23 @@ export const getAriaLabelForNumberCalculation = (value: NumberCalculation) => {
 	}
 };
 
-export const getDisplayNameForCalculation = (value: Calculation) => {
+export const getDisplayNameForCalculation = (value: GeneralCalculation) => {
 	switch (value) {
-		case Calculation.COUNT_ALL:
+		case GeneralCalculation.COUNT_ALL:
 			return "Count all";
-		case Calculation.COUNT_NOT_EMPTY:
+		case GeneralCalculation.COUNT_NOT_EMPTY:
 			return "Count not empty";
-		case Calculation.COUNT_VALUES:
+		case GeneralCalculation.COUNT_VALUES:
 			return "Count values";
-		case Calculation.COUNT_EMPTY:
+		case GeneralCalculation.COUNT_EMPTY:
 			return "Count empty";
-		case Calculation.COUNT_UNIQUE:
+		case GeneralCalculation.COUNT_UNIQUE:
 			return "Count unique";
-		case Calculation.NONE:
+		case GeneralCalculation.NONE:
 			return "None";
-		case Calculation.PERCENT_EMPTY:
+		case GeneralCalculation.PERCENT_EMPTY:
 			return "Percent empty";
-		case Calculation.PERCENT_NOT_EMPTY:
+		case GeneralCalculation.PERCENT_NOT_EMPTY:
 			return "Percent not empty";
 		default:
 			return "";

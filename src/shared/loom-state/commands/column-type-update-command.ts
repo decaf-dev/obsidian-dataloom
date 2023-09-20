@@ -5,7 +5,7 @@ import ColumNotFoundError from "src/shared/error/column-not-found-error";
 import LoomStateCommand from "./loom-state-command";
 import {
 	BodyCell,
-	Calculation,
+	GeneralCalculation,
 	CalculationType,
 	CellType,
 	Column,
@@ -76,10 +76,10 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 			if (column.id === this.columnId) {
 				if (isNumberCalcuation(column.calculationType)) {
 					this.previousCalculationType = column.calculationType;
-					this.newCalculationType = Calculation.NONE;
+					this.newCalculationType = GeneralCalculation.NONE;
 					return {
 						...column,
-						calculationType: Calculation.NONE,
+						calculationType: GeneralCalculation.NONE,
 					};
 				}
 			}
