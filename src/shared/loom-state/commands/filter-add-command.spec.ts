@@ -7,7 +7,10 @@ import { TextFilter } from "../types/loom-state";
 describe("filter-add-command", () => {
 	it("should throw an error when undo() is called before execute()", () => {
 		const prevState = createTestLoomState(1, 1);
-		const command = new FilterAddCommand();
+		const { id: columnId, type: cellType } = prevState.model.columns[0];
+
+		const command = new FilterAddCommand(columnId, cellType);
+
 		try {
 			command.undo(prevState);
 		} catch (err) {
@@ -17,7 +20,9 @@ describe("filter-add-command", () => {
 
 	it("should throw an error when redo() is called before undo()", () => {
 		const prevState = createTestLoomState(1, 1);
-		const command = new FilterAddCommand();
+		const { id: columnId, type: cellType } = prevState.model.columns[0];
+
+		const command = new FilterAddCommand(columnId, cellType);
 		const executeState = command.execute(prevState);
 
 		try {
@@ -30,11 +35,13 @@ describe("filter-add-command", () => {
 	it("should add a filter to the model", () => {
 		//Arrange
 		const prevState = createTestLoomState(1, 1);
-		const filter = createTextFilter(prevState.model.columns[0].id, {
+		const { id: columnId, type: cellType } = prevState.model.columns[0];
+
+		const filter = createTextFilter(columnId, {
 			text: "before",
 		});
 		prevState.model.filters.push(filter);
-		const command = new FilterAddCommand();
+		const command = new FilterAddCommand(columnId, cellType);
 
 		//Act
 		const executeState = command.execute(prevState);
@@ -46,9 +53,12 @@ describe("filter-add-command", () => {
 
 	it("should remove the added filter when undo() is called", () => {
 		const prevState = createTestLoomState(1, 1);
-		const filter = createTextFilter(prevState.model.columns[0].id);
+		const { id: columnId, type: cellType } = prevState.model.columns[0];
+
+		const filter = createTextFilter(columnId);
 		prevState.model.filters.push(filter);
-		const command = new FilterAddCommand();
+
+		const command = new FilterAddCommand(columnId, cellType);
 
 		//Act
 		const executeState = command.execute(prevState);
@@ -62,9 +72,12 @@ describe("filter-add-command", () => {
 	it("should add back the removed filter when redo() is called", () => {
 		//Arrange
 		const prevState = createTestLoomState(1, 1);
-		const filter = createTextFilter(prevState.model.columns[0].id);
+		const { id: columnId, type: cellType } = prevState.model.columns[0];
+
+		const filter = createTextFilter(columnId);
 		prevState.model.filters.push(filter);
-		const command = new FilterAddCommand();
+
+		const command = new FilterAddCommand(columnId, cellType);
 
 		//Act
 		const executeState = command.execute(prevState);
