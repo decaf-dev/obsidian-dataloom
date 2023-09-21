@@ -1,4 +1,4 @@
-import { CurrencyType } from "./loom-state/types";
+import { CurrencyType } from "./loom-state/types/loom-state";
 
 export const dateToString = (date: Date): string => {
 	const year = date.getFullYear();

@@ -1,7 +1,11 @@
 import { App } from "obsidian";
-import { BodyCell, BodyRow, CellType, Column } from "../loom-state/types";
+import {
+	BodyCell,
+	BodyRow,
+	CellType,
+	Column,
+} from "../loom-state/types/loom-state";
 import { getCheckboxCellContent } from "./checkbox-cell-content";
-import { getCurrencyCellContent } from "./currency-cell-content";
 import { getDateCellContent } from "./date-cell-content";
 import { getEmbedCellContent } from "./embed-cell-content";
 import { getNumberCellContent } from "./number-cell-content";
@@ -27,7 +31,12 @@ export const getCellContent = (
 		case CellType.FILE:
 			return getTextCellContent(cell.markdown, shouldRemoveMarkdown);
 		case CellType.NUMBER:
-			return getNumberCellContent(cell.markdown);
+			return getNumberCellContent(column.numberFormat, cell.markdown, {
+				currency: column.currencyType,
+				prefix: column.numberPrefix,
+				suffix: column.numberSuffix,
+				separator: column.numberSeparator,
+			});
 		case CellType.EMBED:
 			return getEmbedCellContent(app, cell.markdown, {
 				isExport: true,
@@ -36,8 +45,6 @@ export const getCellContent = (
 			});
 		case CellType.CHECKBOX:
 			return getCheckboxCellContent(cell.markdown, shouldRemoveMarkdown);
-		case CellType.CURRENCY:
-			return getCurrencyCellContent(cell.markdown, column.currencyType);
 		case CellType.TAG:
 		case CellType.MULTI_TAG:
 			return getTagCellContent(column, cell);

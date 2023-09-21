@@ -7,22 +7,25 @@ import {
 	getSum,
 } from "./arithmetic";
 import {
-	CellType,
 	CurrencyType,
 	NumberCalculation,
-} from "src/shared/loom-state/types";
+	NumberFormat,
+} from "src/shared/loom-state/types/loom-state";
 import { round2Digits } from "./utils";
-import { getCurrencyCellContent } from "src/shared/cell-content/currency-cell-content";
+import { getNumberCellContent } from "src/shared/cell-content/number-cell-content";
 
 export const getNumberCalculationContent = (
 	values: number[],
-	cellType: CellType,
-	currencyType: CurrencyType,
-	calculationType: NumberCalculation
+	format: NumberFormat,
+	currency: CurrencyType,
+	calculation: NumberCalculation
 ) => {
-	const value = getNumberCalculation(values, calculationType).toString();
-	if (cellType === CellType.CURRENCY)
-		return getCurrencyCellContent(value, currencyType);
+	const value = getNumberCalculation(values, calculation).toString();
+	if (format === NumberFormat.CURRENCY) {
+		return getNumberCellContent(format, value, {
+			currency,
+		});
+	}
 	return value;
 };
 

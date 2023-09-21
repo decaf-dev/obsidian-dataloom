@@ -1,7 +1,7 @@
 import { createTag } from "src/shared/loom-state/loom-state-factory";
-import LoomStateCommand from "../loom-state-command";
-import { LoomState, Tag } from "../types";
-import { Color } from "../types";
+import LoomStateCommand from "./loom-state-command";
+import { LoomState, Tag } from "../types/loom-state";
+import { Color } from "../types/loom-state";
 import { rowLastEditedTime, rowLastEditedTimeUpdate } from "../row-utils";
 
 export default class TagAddCommand extends LoomStateCommand {

@@ -6,6 +6,9 @@
 	"author": "Trey Wallis",
 	"authorUrl": "https://github.com/trey-wallis",
 	"isDesktopOnly": false,
-	"fundingUrl": "https://www.buymeacoffee.com/treywallis",
-	"version": "8.4.1"
+	"fundingUrl": {
+		"GitHub": "https://github.com/sponsors/trey-wallis",
+		"Buymeacoffee": "https://www.buymeacoffee.com/treywallis"
+	},
+	"version": "8.5.0"
 }

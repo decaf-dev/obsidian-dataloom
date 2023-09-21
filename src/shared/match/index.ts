@@ -1,4 +1,7 @@
-import { Calculation, NumberCalculation } from "src/shared/loom-state/types";
+import {
+	GeneralCalculation,
+	NumberCalculation,
+} from "src/shared/loom-state/types/loom-state";
 import {
 	NUMBER_REGEX,
 	DATE_REGEX,
@@ -43,7 +46,7 @@ export const isTwitterLink = (value: string): boolean => {
 };
 
 export const isNumberCalcuation = (
-	value: Calculation | NumberCalculation
+	value: GeneralCalculation | NumberCalculation
 ): value is NumberCalculation => {
 	return Object.values(NumberCalculation).includes(
 		value as NumberCalculation

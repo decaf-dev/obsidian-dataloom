@@ -1,0 +1,49 @@
+---
+sidebar_position: 6
+---
+
+# Embedding looms
+
+## Basic usage
+
+> Please make sure that you have enabled [detection of loom files](../getting-started/quick-start#enable-detection-of-loom-files)
+
+A loom may be embedded into a note by using the [embedded file syntax](https://help.obsidian.md/Linking+notes+and+files/Embedding+files).
+
+Example loom
+
+```markdown
+![[filename.loom]]
+```
+
+An embedded loom will preform the same functions as a normal loom, the only limitation being a smaller window.
+
+Changes that are made to an embedded loom will be saved to the loom file. Changes made to an embedded loom will also update any open tabs that contain a loom.
+
+## Setting a width and height
+
+An embedded loom has a default width of `100%` and a default height of `340px`. A height of `340px` will render exactly 4 body rows.
+
+If you would like to modify the width or height of a loom, you can use the [embedded image syntax](https://help.obsidian.md/Linking+notes+and+files/Embedding+files#Embed+an+image+in+a+note).
+
+> Note: setting a value of `0` will use the default value.
+
+### Examples
+
+An embedded loom with a width of `300px` and height of `300px`
+
+```markdown
+![[filename.loom|300x300]]
+```
+
+An embedded loom with a default with and height of `300px`
+
+```markdown
+![[filename.loom|0x300]]
+```
+
+An embedded loom with a width of `300px` and a default height
+
+```markdown
+![[filename.loom|300x0]]
+```

@@ -1,29 +1,28 @@
 import {
-	createFilterRule,
+	createTextFilter,
 	createTestLoomState,
 } from "src/shared/loom-state/loom-state-factory";
 import RowDeleteCommand from "./row-delete-command";
-import {
-	DeleteCommandArgumentsError,
-	CommandUndoError,
-} from "./command-errors";
+import CommandUndoError from "./command-undo-error";
 import ColumnDeleteCommand from "./column-delete-command";
+import CommandArgumentsError from "./command-arguments-error";
 
 describe("column-delete-command", () => {
 	it("should throw an error if no arguments are passed to the command object", () => {
 		try {
 			new ColumnDeleteCommand({});
 		} catch (err) {
-			expect(err).toBeInstanceOf(DeleteCommandArgumentsError);
+			expect(err).toBeInstanceOf(CommandArgumentsError);
 		}
 	});
 
 	it("should throw an error when undo() is called before execute()", () => {
+		const prevState = createTestLoomState(2, 1);
+		const command = new ColumnDeleteCommand({
+			last: true,
+		});
+
 		try {
-			const prevState = createTestLoomState(2, 1);
-			const command = new ColumnDeleteCommand({
-				last: true,
-			});
 			command.undo(prevState);
 		} catch (err) {
 			expect(err).toBeInstanceOf(CommandUndoError);
@@ -34,11 +33,11 @@ describe("column-delete-command", () => {
 		//Arrange
 		const prevState = createTestLoomState(1, 1);
 
-		const filterRules = [
-			createFilterRule(prevState.model.columns[0].id),
-			createFilterRule(prevState.model.columns[0].id),
+		const filters = [
+			createTextFilter(prevState.model.columns[0].id),
+			createTextFilter(prevState.model.columns[0].id),
 		];
-		prevState.model.filterRules = filterRules;
+		prevState.model.filters = filters;
 
 		//Act
 		const executeState = new ColumnDeleteCommand({
@@ -55,20 +54,18 @@ describe("column-delete-command", () => {
 		expect(executeState.model.footerCells).toEqual(
 			prevState.model.footerCells
 		);
-		expect(executeState.model.filterRules).toEqual(
-			prevState.model.filterRules
-		);
+		expect(executeState.model.filters).toEqual(prevState.model.filters);
 	});
 
 	it("should delete a column when execute() is called", () => {
 		//Arrange
 		const prevState = createTestLoomState(2, 1);
 
-		const filterRules = [
-			createFilterRule(prevState.model.columns[0].id),
-			createFilterRule(prevState.model.columns[0].id),
+		const filters = [
+			createTextFilter(prevState.model.columns[0].id),
+			createTextFilter(prevState.model.columns[0].id),
 		];
-		prevState.model.filterRules = filterRules;
+		prevState.model.filters = filters;
 		const command = new ColumnDeleteCommand({
 			id: prevState.model.columns[0].id,
 		});
@@ -81,18 +78,18 @@ describe("column-delete-command", () => {
 		expect(executeState.model.headerCells.length).toEqual(1);
 		expect(executeState.model.bodyCells.length).toEqual(1);
 		expect(executeState.model.footerCells.length).toEqual(2);
-		expect(executeState.model.filterRules.length).toEqual(0);
+		expect(executeState.model.filters.length).toEqual(0);
 	});
 
 	it("should delete the last column when execute() is called", () => {
 		//Arrange
 		const prevState = createTestLoomState(2, 1);
 
-		const filterRules = [
-			createFilterRule(prevState.model.columns[1].id),
-			createFilterRule(prevState.model.columns[1].id),
+		const filters = [
+			createTextFilter(prevState.model.columns[1].id),
+			createTextFilter(prevState.model.columns[1].id),
 		];
-		prevState.model.filterRules = filterRules;
+		prevState.model.filters = filters;
 		const command = new ColumnDeleteCommand({
 			last: true,
 		});
@@ -116,9 +113,9 @@ describe("column-delete-command", () => {
 			prevState.model.footerCells[0],
 			prevState.model.footerCells[2],
 		]);
-		expect(executeState.model.filterRules).toEqual(
-			prevState.model.filterRules.filter(
-				(rule) => rule.columnId !== prevState.model.columns[1].id
+		expect(executeState.model.filters).toEqual(
+			prevState.model.filters.filter(
+				(filter) => filter.columnId !== prevState.model.columns[1].id
 			)
 		);
 	});
@@ -127,11 +124,11 @@ describe("column-delete-command", () => {
 		//Arrange
 		const prevState = createTestLoomState(2, 1);
 
-		const filterRules = [
-			createFilterRule(prevState.model.columns[0].id),
-			createFilterRule(prevState.model.columns[0].id),
+		const filters = [
+			createTextFilter(prevState.model.columns[0].id),
+			createTextFilter(prevState.model.columns[0].id),
 		];
-		prevState.model.filterRules = filterRules;
+		prevState.model.filters = filters;
 
 		const command = new ColumnDeleteCommand({
 			id: prevState.model.columns[0].id,
@@ -150,20 +147,18 @@ describe("column-delete-command", () => {
 		expect(undoState.model.footerCells).toEqual(
 			prevState.model.footerCells
 		);
-		expect(undoState.model.filterRules).toEqual(
-			prevState.model.filterRules
-		);
+		expect(undoState.model.filters).toEqual(prevState.model.filters);
 	});
 
 	it("should restore the last deleted column when undo() is called", () => {
 		//Arrange
 		const prevState = createTestLoomState(2, 1);
 
-		const filterRules = [
-			createFilterRule(prevState.model.columns[1].id),
-			createFilterRule(prevState.model.columns[1].id),
+		const filters = [
+			createTextFilter(prevState.model.columns[1].id),
+			createTextFilter(prevState.model.columns[1].id),
 		];
-		prevState.model.filterRules = filterRules;
+		prevState.model.filters = filters;
 
 		const command = new RowDeleteCommand({
 			last: true,
@@ -182,8 +177,6 @@ describe("column-delete-command", () => {
 		expect(undoState.model.footerCells).toEqual(
 			prevState.model.footerCells
 		);
-		expect(undoState.model.filterRules).toEqual(
-			prevState.model.filterRules
-		);
+		expect(undoState.model.filters).toEqual(prevState.model.filters);
 	});
 });

@@ -1,14 +1,14 @@
-import { App, Modal, Notice, TFile } from "obsidian";
+import { App, Modal, TFile } from "obsidian";
 
 import { Root, createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 
 import ImportApp from "../../react/import-app";
 
-import { deserializeLoomState, serializeLoomState } from "src/data/serialize";
+import { serializeLoomState } from "src/data/serialize";
 import { store } from "src/redux/store";
 import { renderDivider, setModalTitle } from "../shared";
-import { LoomState } from "src/shared/loom-state/types";
+import { LoomState } from "src/shared/loom-state/types/loom-state";
 import { EVENT_APP_REFRESH } from "src/shared/events";
 import MenuProvider from "src/react/shared/menu-provider";
 import ModalMountProvider from "src/react/shared/modal-mount-provider";
@@ -16,12 +16,12 @@ import ModalMountProvider from "src/react/shared/modal-mount-provider";
 export default class ImportModal extends Modal {
 	root: Root;
 	loomFile: TFile;
-	pluginVersion: string;
+	loomState: LoomState;
 
-	constructor(app: App, loomFile: TFile, pluginVersion: string) {
+	constructor(app: App, loomFile: TFile, loomState: LoomState) {
 		super(app);
 		this.loomFile = loomFile;
-		this.pluginVersion = pluginVersion;
+		this.loomState = loomState;
 	}
 
 	onOpen() {
@@ -35,33 +35,22 @@ export default class ImportModal extends Modal {
 	}
 
 	private async renderApp(contentEl: HTMLElement) {
-		try {
-			const data = await this.app.vault.read(this.loomFile);
-			const state = deserializeLoomState(data, this.pluginVersion);
+		const modalEl = contentEl.closest(".modal") as HTMLElement | null;
+		if (!modalEl) throw new Error("Modal element not found.");
 
-			const modalEl = contentEl.closest(".modal") as HTMLElement | null;
-			if (!modalEl) throw new Error("Modal element not found.");
-
-			this.root = createRoot(contentEl);
-			this.root.render(
-				<Provider store={store}>
-					<ModalMountProvider
-						obsidianApp={this.app}
-						modalEl={modalEl}
-					>
-						<MenuProvider>
-							<ImportApp
-								state={state}
-								onStateChange={this.handleStateChange}
-							/>
-						</MenuProvider>
-					</ModalMountProvider>
-				</Provider>
-			);
-		} catch (err) {
-			console.error(err);
-			new Notice("Error reading loom file data.");
-		}
+		this.root = createRoot(contentEl);
+		this.root.render(
+			<Provider store={store}>
+				<ModalMountProvider obsidianApp={this.app} modalEl={modalEl}>
+					<MenuProvider>
+						<ImportApp
+							state={this.loomState}
+							onStateChange={this.handleStateChange}
+						/>
+					</MenuProvider>
+				</ModalMountProvider>
+			</Provider>
+		);
 	}
 
 	private handleStateChange = async (state: LoomState) => {

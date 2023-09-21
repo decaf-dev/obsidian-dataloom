@@ -1,6 +1,6 @@
 import CellNotFoundError from "src/shared/error/cell-not-found-error";
-import LoomStateCommand from "../loom-state-command";
-import { HeaderCell, LoomState } from "../types";
+import LoomStateCommand from "./loom-state-command";
+import { HeaderCell, LoomState } from "../types/loom-state";
 
 export default class CellHeaderUpdateCommand extends LoomStateCommand {
 	private cellId: string;

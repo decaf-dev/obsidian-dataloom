@@ -1,0 +1,11 @@
+.dataloom-support-modal__container {
+    margin-bottom: 1.5rem;
+}
+
+.dataloom-support-modal__badge-container {
+    border-top: 1px solid var(--background-modifier-border);
+    padding: 20px 0px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+}

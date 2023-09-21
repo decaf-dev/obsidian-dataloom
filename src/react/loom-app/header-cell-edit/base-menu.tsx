@@ -9,7 +9,7 @@ import Flex from "src/react/shared/flex";
 import Text from "src/react/shared/text";
 import Input from "src/react/shared/input";
 
-import { CellType, SortDir } from "src/shared/loom-state/types";
+import { CellType, SortDir } from "src/shared/loom-state/types/loom-state";
 import { SubmenuType } from "./types";
 import { usePlaceCursorAtEnd } from "src/shared/hooks";
 import { getDisplayNameForCellType } from "src/shared/loom-state/type-display-names";
@@ -60,7 +60,7 @@ export default function BaseMenu({
 	const hasOptions =
 		columnType === CellType.EMBED ||
 		columnType === CellType.DATE ||
-		columnType === CellType.CURRENCY ||
+		columnType === CellType.NUMBER ||
 		columnType === CellType.LAST_EDITED_TIME ||
 		columnType === CellType.CREATION_TIME;
 
@@ -120,8 +120,7 @@ export default function BaseMenu({
 				/>
 			)}
 			{columnType !== CellType.EMBED &&
-				columnType !== CellType.NUMBER &&
-				columnType !== CellType.CURRENCY && (
+				columnType !== CellType.NUMBER && (
 					<>
 						<Divider />
 						<Padding px="lg" py="md">

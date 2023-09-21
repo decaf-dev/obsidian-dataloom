@@ -1,11 +1,17 @@
-import { BodyCell, Column, FooterCell, HeaderCell, LoomState } from "../types";
+import {
+	BodyCell,
+	Column,
+	FooterCell,
+	HeaderCell,
+	LoomState,
+} from "../types/loom-state";
 import {
 	createBodyCell,
 	createColumn,
 	createFooterCell,
 	createHeaderCell,
 } from "src/shared/loom-state/loom-state-factory";
-import LoomStateCommand from "../loom-state-command";
+import LoomStateCommand from "./loom-state-command";
 
 export default class ColumnAddCommand extends LoomStateCommand {
 	private addedColumn: Column;

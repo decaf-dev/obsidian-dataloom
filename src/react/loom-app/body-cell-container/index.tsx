@@ -13,8 +13,6 @@ import TagCellEdit from "../tag-cell-edit";
 import DateCellEdit from "../date-cell-edit";
 import MultiTagCell from "../multi-tag-cell";
 import Menu from "../../shared/menu";
-import CurrencyCell from "../currency-cell";
-import CurrencyCellEdit from "../currency-cell-edit";
 import MenuTrigger from "src/react/shared/menu-trigger";
 import FileCell from "../file-cell";
 import FileCellEdit from "../file-cell-edit";
@@ -26,9 +24,10 @@ import {
 	CellType,
 	CurrencyType,
 	DateFormat,
+	NumberFormat,
 	PaddingSize,
 	Tag,
-} from "src/shared/loom-state/types";
+} from "src/shared/loom-state/types/loom-state";
 import LastEditedTimeCell from "../last-edited-time-cell";
 import CreationTimeCell from "../creation-time-cell";
 import {
@@ -36,7 +35,7 @@ import {
 	CHECKBOX_MARKDOWN_UNCHECKED,
 } from "src/shared/constants";
 import { isCheckboxChecked } from "src/shared/match";
-import { Color } from "src/shared/loom-state/types";
+import { Color } from "src/shared/loom-state/types/loom-state";
 import { useMenu } from "../../shared/menu/hooks";
 
 import "./styles.css";
@@ -48,7 +47,11 @@ interface Props {
 	rowId: string;
 	dateTime: number | null;
 	dateFormat: DateFormat;
-	columnCurrencyType: CurrencyType;
+	numberPrefix: string;
+	numberSuffix: string;
+	numberSeparator: string;
+	numberFormat: NumberFormat;
+	currencyType: CurrencyType;
 	columnId: string;
 	markdown: string;
 	aspectRatio: AspectRatio;
@@ -104,11 +107,15 @@ export default function BodyCellContainer({
 	isExternalLink,
 	markdown,
 	aspectRatio,
+	numberFormat,
 	verticalPadding,
+	currencyType,
 	horizontalPadding,
 	dateFormat,
 	dateTime,
-	columnCurrencyType,
+	numberPrefix,
+	numberSuffix,
+	numberSeparator,
 	columnType,
 	rowCreationTime,
 	rowLastEditedTime,
@@ -133,7 +140,6 @@ export default function BodyCellContainer({
 		columnType === CellType.TEXT ||
 		columnType === CellType.EMBED ||
 		columnType === CellType.NUMBER ||
-		columnType === CellType.CURRENCY ||
 		columnType === CellType.TAG ||
 		columnType === CellType.MULTI_TAG ||
 		columnType === CellType.DATE;
@@ -156,7 +162,7 @@ export default function BodyCellContainer({
 			await navigator.clipboard.writeText(markdown);
 			new Notice("Copied text to clipboard");
 		} catch (err) {
-			console.log(err);
+			console.error(err);
 		}
 	}
 
@@ -175,7 +181,6 @@ export default function BodyCellContainer({
 			columnType === CellType.TEXT ||
 			columnType === CellType.EMBED ||
 			columnType === CellType.NUMBER ||
-			columnType === CellType.CURRENCY ||
 			columnType === CellType.FILE
 		) {
 			onContentChange(cellId, rowId, "");
@@ -278,7 +283,6 @@ export default function BodyCellContainer({
 		columnType === CellType.MULTI_TAG ||
 		columnType === CellType.DATE ||
 		columnType === CellType.NUMBER ||
-		columnType === CellType.CURRENCY ||
 		columnType === CellType.FILE ||
 		columnType === CellType.EMBED
 	) {
@@ -340,12 +344,13 @@ export default function BodyCellContainer({
 						/>
 					)}
 					{columnType === CellType.NUMBER && (
-						<NumberCell value={markdown} />
-					)}
-					{columnType === CellType.CURRENCY && (
-						<CurrencyCell
+						<NumberCell
 							value={markdown}
-							currencyType={columnCurrencyType}
+							currency={currencyType}
+							format={numberFormat}
+							prefix={numberPrefix}
+							suffix={numberSuffix}
+							separator={numberSeparator}
 						/>
 					)}
 					{columnType === CellType.TAG && cellTags.length === 1 && (
@@ -388,7 +393,6 @@ export default function BodyCellContainer({
 				id={menu.id}
 				hideBorder={
 					columnType === CellType.TEXT ||
-					columnType === CellType.CURRENCY ||
 					columnType === CellType.NUMBER
 				}
 				isOpen={isOpen}
@@ -454,14 +458,6 @@ export default function BodyCellContainer({
 						dateFormat={dateFormat}
 						onDateTimeChange={handleDateTimeChange}
 						onDateFormatChange={handleDateFormatChange}
-						onClose={onClose}
-					/>
-				)}
-				{columnType === CellType.CURRENCY && (
-					<CurrencyCellEdit
-						closeRequest={closeRequest}
-						value={markdown}
-						onChange={handleInputChange}
 						onClose={onClose}
 					/>
 				)}

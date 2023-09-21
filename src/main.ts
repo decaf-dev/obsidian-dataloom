@@ -8,7 +8,7 @@ import {
 	normalizePath,
 } from "obsidian";
 
-import DonationModal from "./obsidian/modal/donation-modal";
+import SupportModal from "./obsidian/modal/support-modal";
 import WelcomeModal from "./obsidian/modal/welcome-modal";
 import WhatsNewModal from "./obsidian/modal/whats-new-modal";
 import DataLoomSettingsTab from "./obsidian/dataloom-settings-tab";
@@ -21,7 +21,7 @@ import {
 	setSettings,
 	setPluginVersion,
 } from "./redux/global-slice";
-import { FILE_EXTENSION, WIKI_LINK_REGEX } from "./data/constants";
+import { LOOM_EXTENSION, WIKI_LINK_REGEX } from "./data/constants";
 import { createLoomFile } from "src/data/loom-file";
 import {
 	EVENT_COLUMN_ADD,
@@ -39,7 +39,7 @@ import { updateLinkReferences } from "./data/utils";
 import { getBasename } from "./shared/link/link-utils";
 import { hasDarkTheme } from "./shared/render/utils";
 import { removeCurrentFocusClass } from "./react/loom-app/app/hooks/use-focus/utils";
-import { LoomState } from "./shared/loom-state/types";
+import { LoomState } from "./shared/loom-state/types/loom-state";
 import {
 	loadPreviewModeApps,
 	purgeEmbeddedLoomApps,
@@ -54,7 +54,7 @@ export interface DataLoomSettings {
 	defaultEmbedHeight: string;
 	hasMigratedTo800: boolean;
 	showWelcomeModal: boolean;
-	showDonationModal: boolean;
+	showSupportModal: boolean;
 	showWhatsNewModal: boolean;
 	defaultFrozenColumnCount: number;
 	pluginVersion: string;
@@ -69,7 +69,7 @@ export const DEFAULT_SETTINGS: DataLoomSettings = {
 	defaultEmbedHeight: "340px",
 	hasMigratedTo800: false,
 	showWelcomeModal: true,
-	showDonationModal: true,
+	showSupportModal: true,
 	showWhatsNewModal: true,
 	defaultFrozenColumnCount: 1,
 	pluginVersion: "",
@@ -77,6 +77,7 @@ export const DEFAULT_SETTINGS: DataLoomSettings = {
 
 export default class DataLoomPlugin extends Plugin {
 	settings: DataLoomSettings;
+	displayModalsOnLoomOpen: boolean;
 
 	/**
 	 * Called on plugin load.
@@ -90,7 +91,7 @@ export default class DataLoomPlugin extends Plugin {
 			(leaf) =>
 				new DataLoomView(leaf, this.manifest.id, this.manifest.version)
 		);
-		this.registerExtensions([FILE_EXTENSION], DATA_LOOM_VIEW);
+		this.registerExtensions([LOOM_EXTENSION], DATA_LOOM_VIEW);
 
 		this.addRibbonIcon("table", "Create new loom", async () => {
 			await this.newLoomFile(null);
@@ -101,6 +102,8 @@ export default class DataLoomPlugin extends Plugin {
 		this.registerEditorExtension(
 			EditingViewPlugin(this.app, this.manifest.version)
 		);
+
+		this.setModalDisplay();
 
 		this.registerCommands();
 		this.registerEvents();
@@ -113,20 +116,8 @@ export default class DataLoomPlugin extends Plugin {
 			await this.migrateLoomFiles();
 		});
 
-		if (this.settings.pluginVersion !== this.manifest.version) {
-			if (this.settings.pluginVersion !== "") {
-				if (this.settings.showDonationModal) {
-					new DonationModal(this.app).open();
-				}
-
-				if (this.settings.showWhatsNewModal) {
-					new WhatsNewModal(this.app).open();
-				}
-			}
-		}
-
 		if (this.settings.showWelcomeModal) {
-			new WelcomeModal(app).open();
+			new WelcomeModal(this.app).open();
 			this.settings.showWelcomeModal = false;
 			await this.saveSettings();
 		}
@@ -134,6 +125,16 @@ export default class DataLoomPlugin extends Plugin {
 		this.settings.pluginVersion = this.manifest.version;
 		await this.saveSettings();
 		store.dispatch(setPluginVersion(this.manifest.version));
+	}
+
+	private setModalDisplay() {
+		if (this.settings.pluginVersion !== this.manifest.version) {
+			if (this.settings.pluginVersion !== "") {
+				this.displayModalsOnLoomOpen = true;
+				return;
+			}
+		}
+		this.displayModalsOnLoomOpen = false;
 	}
 
 	//TODO remove this in future versions
@@ -155,7 +156,7 @@ export default class DataLoomPlugin extends Plugin {
 
 				const newFilePath = file.path.replace(
 					`.${file.extension}`,
-					`.${FILE_EXTENSION}`
+					`.${LOOM_EXTENSION}`
 				);
 				try {
 					await this.app.vault.rename(file, newFilePath);
@@ -204,7 +205,7 @@ export default class DataLoomPlugin extends Plugin {
 		if (embedded) return filePath;
 
 		//Open file in a new tab and set it to active
-		await app.workspace.getLeaf(true).setViewState({
+		await this.app.workspace.getLeaf(true).setViewState({
 			type: DATA_LOOM_VIEW,
 			active: true,
 			state: { file: filePath },
@@ -270,113 +271,153 @@ export default class DataLoomPlugin extends Plugin {
 			})
 		);
 
-		this.app.vault.on(
-			"rename",
-			async (file: TAbstractFile, oldPath: string) => {
-				if (file instanceof TFile) {
-					const loomFiles = this.app.vault
-						.getFiles()
-						.filter((file) => file.extension === FILE_EXTENSION);
+		this.registerEvent(
+			this.app.workspace.on("file-open", async (file: TFile | null) => {
+				if (!file) return;
+				if (!this.displayModalsOnLoomOpen) return;
 
-					const loomsToUpdate: {
-						file: TFile;
-						state: LoomState;
-					}[] = [];
+				let shouldOpen = false;
+				if (file.extension === LOOM_EXTENSION) {
+					shouldOpen = true;
+				} else {
+					const data = await this.app.vault.cachedRead(file);
+					const loomEmbedRegex = new RegExp(
+						/!\[\[[^\]]+\.loom(?:\|[0-9]+(?:x[0-9]+)?)?\]\]/
+					);
+					if (data.match(loomEmbedRegex)) {
+						shouldOpen = true;
+					}
+				}
 
-					let numLinks = 0;
-					for (const loomFile of loomFiles) {
-						//For each file read its contents
-						const data = await file.vault.read(loomFile);
-						const state = deserializeLoomState(
-							data,
-							this.manifest.version
-						);
-						//Search for old path in the file
+				if (shouldOpen) {
+					this.displayModalsOnLoomOpen = false;
+					if (this.settings.showWhatsNewModal) {
+						new WhatsNewModal(this.app, () => {
+							if (this.settings.showSupportModal) {
+								new SupportModal(this.app).open();
+							}
+						}).open();
+					}
+				}
+			})
+		);
 
-						state.model.bodyCells.forEach((cell) => {
-							const regex = structuredClone(WIKI_LINK_REGEX);
-							let matches;
-							while (
-								(matches = regex.exec(cell.markdown)) !== null
-							) {
-								const path = matches[1];
+		this.registerEvent(
+			this.app.vault.on(
+				"rename",
+				async (file: TAbstractFile, oldPath: string) => {
+					if (file instanceof TFile) {
+						const loomFiles = this.app.vault
+							.getFiles()
+							.filter(
+								(file) => file.extension === LOOM_EXTENSION
+							);
 
-								//The path will be the relative path e.g. filename.loom
-								//while the old path will be the absolute path in the vault e.g. /looms/filename.loom
-								if (oldPath.includes(path)) {
-									const found = loomsToUpdate.find(
-										(loom) =>
-											loom.file.path === loomFile.path
-									);
-									if (!found) {
-										loomsToUpdate.push({
-											file: loomFile,
-											state,
+						const loomsToUpdate: {
+							file: TFile;
+							state: LoomState;
+						}[] = [];
+
+						let numLinks = 0;
+						for (const loomFile of loomFiles) {
+							//For each file read its contents
+							const data = await file.vault.read(loomFile);
+							const state = deserializeLoomState(
+								data,
+								this.manifest.version
+							);
+							//Search for old path in the file
+
+							state.model.bodyCells.forEach((cell) => {
+								const regex = structuredClone(WIKI_LINK_REGEX);
+								let matches;
+								while (
+									(matches = regex.exec(cell.markdown)) !==
+									null
+								) {
+									const path = matches[1];
+
+									//The path will be the relative path e.g. filename.loom
+									//while the old path will be the absolute path in the vault e.g. /looms/filename.loom
+									if (oldPath.includes(path)) {
+										const found = loomsToUpdate.find(
+											(loom) =>
+												loom.file.path === loomFile.path
+										);
+										if (!found) {
+											loomsToUpdate.push({
+												file: loomFile,
+												state,
+											});
+										}
+										numLinks++;
+									}
+								}
+							});
+						}
+
+						if (numLinks > 0) {
+							new Notice(
+								`Updating ${numLinks} link${
+									numLinks > 1 ? "s" : ""
+								} in ${loomsToUpdate.length} loom file${
+									loomsToUpdate.length > 1 ? "s" : ""
+								}.`
+							);
+						}
+
+						for (let i = 0; i < loomsToUpdate.length; i++) {
+							//If the state has changed, update the file
+							const { file: loomFile, state } = loomsToUpdate[i];
+
+							if (this.settings.shouldDebug)
+								console.log("Updating links in file", {
+									path: loomFile.path,
+								});
+
+							const newState = structuredClone(state);
+							newState.model.bodyCells.map((cell) => {
+								const updatedMarkdown = updateLinkReferences(
+									cell.markdown,
+									file.path,
+									oldPath
+								);
+								if (cell.markdown !== updatedMarkdown) {
+									if (this.settings.shouldDebug) {
+										console.log("Updated link", {
+											oldLink: cell.markdown,
+											newLink: updatedMarkdown,
 										});
 									}
-									numLinks++;
 								}
-							}
-						});
-					}
 
-					if (numLinks > 0) {
-						new Notice(
-							`Updating ${numLinks} link${
-								numLinks > 1 ? "s" : ""
-							} in ${loomsToUpdate.length} loom file${
-								loomsToUpdate.length > 1 ? "s" : ""
-							}.`
-						);
-					}
-
-					for (let i = 0; i < loomsToUpdate.length; i++) {
-						//If the state has changed, update the file
-						const { file: loomFile, state } = loomsToUpdate[i];
-
-						if (this.settings.shouldDebug)
-							console.log("Updating links in file", {
-								path: loomFile.path,
+								cell.markdown = updatedMarkdown;
 							});
 
-						const newState = structuredClone(state);
-						newState.model.bodyCells.map((cell) => {
-							const updatedMarkdown = updateLinkReferences(
-								cell.markdown,
-								file.path,
-								oldPath
-							);
-							if (cell.markdown !== updatedMarkdown) {
-								if (this.settings.shouldDebug) {
-									console.log("Updated link", {
-										oldLink: cell.markdown,
-										newLink: updatedMarkdown,
-									});
-								}
+							if (
+								JSON.stringify(state) !==
+								JSON.stringify(newState)
+							) {
+								const serializedState =
+									serializeLoomState(newState);
+
+								await file.vault.modify(
+									loomFile,
+									serializedState
+								);
+
+								//Update all looms that match this path
+								this.app.workspace.trigger(
+									EVENT_APP_REFRESH,
+									loomFile.path,
+									-1, //update all looms that match this path
+									newState
+								);
 							}
-
-							cell.markdown = updatedMarkdown;
-						});
-
-						if (
-							JSON.stringify(state) !== JSON.stringify(newState)
-						) {
-							const serializedState =
-								serializeLoomState(newState);
-
-							await file.vault.modify(loomFile, serializedState);
-
-							//Update all looms that match this path
-							app.workspace.trigger(
-								EVENT_APP_REFRESH,
-								loomFile.path,
-								-1, //update all looms that match this path
-								newState
-							);
 						}
 					}
 				}
-			}
+			)
 		);
 	}
 

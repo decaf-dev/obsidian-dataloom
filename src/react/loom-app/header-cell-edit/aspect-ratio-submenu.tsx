@@ -1,6 +1,6 @@
 import MenuItem from "src/react/shared/menu-item";
 import Submenu from "../../shared/submenu";
-import { AspectRatio } from "src/shared/loom-state/types";
+import { AspectRatio } from "src/shared/loom-state/types/loom-state";
 
 interface Props {
 	title: string;

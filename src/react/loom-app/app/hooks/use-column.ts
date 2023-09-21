@@ -1,14 +1,13 @@
-import React from "react";
-
 import {
 	AspectRatio,
 	CalculationType,
 	CellType,
 	CurrencyType,
 	DateFormat,
+	NumberFormat,
 	PaddingSize,
 	SortDir,
-} from "src/shared/loom-state/types";
+} from "src/shared/loom-state/types/loom-state";
 import { useLogger } from "src/shared/logger";
 import { useLoomState } from "../../loom-state-provider";
 import ColumnAddCommand from "src/shared/loom-state/commands/column-add-command";
@@ -38,10 +37,15 @@ export const useColumn = () => {
 			sortDir,
 		});
 		doCommand(
-			new ColumnUpdateCommand(columnId, "sortDir", {
-				value: sortDir,
-				shouldSortRows: true,
-			})
+			new ColumnUpdateCommand(
+				columnId,
+				{
+					sortDir,
+				},
+				{
+					shouldSortRows: true,
+				}
+			)
 		);
 	}
 
@@ -54,8 +58,8 @@ export const useColumn = () => {
 			padding,
 		});
 		doCommand(
-			new ColumnUpdateCommand(columnId, "horizontalPadding", {
-				value: padding,
+			new ColumnUpdateCommand(columnId, {
+				horizontalPadding: padding,
 			})
 		);
 	}
@@ -69,43 +73,43 @@ export const useColumn = () => {
 			padding,
 		});
 		doCommand(
-			new ColumnUpdateCommand(columnId, "verticalPadding", {
-				value: padding,
+			new ColumnUpdateCommand(columnId, {
+				verticalPadding: padding,
 			})
 		);
 	}
 
-	function handleAspectRatioClick(
-		columnId: string,
-		aspectRatio: AspectRatio
-	) {
-		logger("handleVerticalPaddingClick", {
+	function handleAspectRatioClick(columnId: string, ratio: AspectRatio) {
+		logger("handleAspectRatioClick", {
 			columnId,
-			aspectRatio,
+			ratio,
 		});
 		doCommand(
-			new ColumnUpdateCommand(columnId, "aspectRatio", {
-				value: aspectRatio,
+			new ColumnUpdateCommand(columnId, {
+				aspectRatio: ratio,
 			})
 		);
 	}
 
-	const handleColumnToggle = React.useCallback(
-		(columnId: string) => {
-			logger("handleColumnToggle", {
-				columnId,
-			});
-			doCommand(new ColumnUpdateCommand(columnId, "isVisible"));
-		},
-		[doCommand, logger]
-	);
+	function handleColumnToggle(columnId: string, isVisible: boolean) {
+		logger("handleColumnToggle", {
+			columnId,
+		});
+		doCommand(
+			new ColumnUpdateCommand(columnId, {
+				isVisible,
+			})
+		);
+	}
 
 	function handleColumnHideClick(columnId: string) {
 		logger("handleColumnHideClick", {
 			columnId,
 		});
 		doCommand(
-			new ColumnUpdateCommand(columnId, "isVisible", { value: false })
+			new ColumnUpdateCommand(columnId, {
+				isVisible: false,
+			})
 		);
 	}
 
@@ -126,38 +130,102 @@ export const useColumn = () => {
 		});
 
 		doCommand(
-			new ColumnUpdateCommand(columnId, "calculationType", {
-				value: calculationType,
-			})
+			new ColumnUpdateCommand(
+				columnId,
+				{
+					calculationType,
+				},
+				{}
+			)
 		);
 	}
 
-	function handleCurrencyChange(
-		columnId: string,
-		currencyType: CurrencyType
-	) {
-		logger("handleCurrencyChange", {
-			columnId,
-			currencyType,
-		});
+	function handleNumberPrefixChange(columnId: string, prefix: string) {
+		logger("handleNumberPrefixChange", { columnId, prefix });
 		doCommand(
-			new ColumnUpdateCommand(columnId, "currencyType", {
-				value: currencyType,
-				shouldSortRows: true,
-			})
+			new ColumnUpdateCommand(
+				columnId,
+				{
+					numberPrefix: prefix,
+				},
+				{
+					shouldSortRows: true,
+				}
+			)
+		);
+	}
+	function handleNumberSeparatorChange(columnId: string, separator: string) {
+		logger("handleNumberSeparatorChange", { columnId, separator });
+		doCommand(
+			new ColumnUpdateCommand(
+				columnId,
+				{
+					numberSeparator: separator,
+				},
+				{
+					shouldSortRows: true,
+				}
+			)
+		);
+	}
+	function handleNumberSuffixChange(columnId: string, suffix: string) {
+		logger("handleNumberSuffixChange", { columnId, suffix });
+		doCommand(
+			new ColumnUpdateCommand(
+				columnId,
+				{
+					numberSuffix: suffix,
+				},
+				{
+					shouldSortRows: true,
+				}
+			)
+		);
+	}
+	function handleNumberFormatChange(
+		columnId: string,
+		format: NumberFormat,
+		options?: {
+			currency: CurrencyType;
+		}
+	) {
+		logger("handleNumberFormatChange", {
+			columnId,
+			format,
+			options,
+		});
+
+		doCommand(
+			new ColumnUpdateCommand(
+				columnId,
+				{
+					numberFormat: format,
+					...(options?.currency && {
+						currencyType: options.currency,
+					}),
+				},
+				{
+					shouldSortRows: true,
+				}
+			)
 		);
 	}
 
-	function handleDateFormatChange(columnId: string, dateFormat: DateFormat) {
+	function handleDateFormatChange(columnId: string, format: DateFormat) {
 		logger("handleDateFormatChange", {
 			columnId,
-			dateFormat,
+			format,
 		});
 		doCommand(
-			new ColumnUpdateCommand(columnId, "dateFormat", {
-				value: dateFormat,
-				shouldSortRows: true,
-			})
+			new ColumnUpdateCommand(
+				columnId,
+				{
+					dateFormat: format,
+				},
+				{
+					shouldSortRows: true,
+				}
+			)
 		);
 	}
 
@@ -166,10 +234,15 @@ export const useColumn = () => {
 			columnId,
 		});
 		doCommand(
-			new ColumnUpdateCommand(columnId, "sortDir", {
-				value: SortDir.NONE,
-				shouldSortRows: true,
-			})
+			new ColumnUpdateCommand(
+				columnId,
+				{
+					sortDir: SortDir.NONE,
+				},
+				{
+					shouldSortRows: true,
+				}
+			)
 		);
 	}
 
@@ -179,10 +252,15 @@ export const useColumn = () => {
 			width,
 		});
 		doCommand(
-			new ColumnUpdateCommand(columnId, "width", {
-				value: width,
-				shouldSortRows: true,
-			})
+			new ColumnUpdateCommand(
+				columnId,
+				{
+					width,
+				},
+				{
+					shouldSortRows: true,
+				}
+			)
 		);
 	}
 
@@ -192,10 +270,15 @@ export const useColumn = () => {
 			shouldWrap,
 		});
 		doCommand(
-			new ColumnUpdateCommand(columnId, "shouldWrapOverflow", {
-				value: shouldWrap,
-				shouldSortRows: true,
-			})
+			new ColumnUpdateCommand(
+				columnId,
+				{
+					shouldWrapOverflow: shouldWrap,
+				},
+				{
+					shouldSortRows: true,
+				}
+			)
 		);
 	}
 
@@ -205,7 +288,10 @@ export const useColumn = () => {
 		onColumnSortClick: handleColumnSortClick,
 		onColumnToggle: handleColumnToggle,
 		onColumnDeleteClick: handleColumnDeleteClick,
-		onCurrentChange: handleCurrencyChange,
+		onNumberFormatChange: handleNumberFormatChange,
+		onNumberPrefixChange: handleNumberPrefixChange,
+		onNumberSeparatorChange: handleNumberSeparatorChange,
+		onNumberSuffixChange: handleNumberSuffixChange,
 		onDateFormatChange: handleDateFormatChange,
 		onSortRemoveClick: handleSortRemoveClick,
 		onColumnWidthChange: handleColumnWidthChange,

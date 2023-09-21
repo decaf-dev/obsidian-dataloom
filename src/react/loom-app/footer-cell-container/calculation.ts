@@ -2,12 +2,12 @@ import { isCheckboxChecked } from "src/shared/match";
 import {
 	BodyCell,
 	BodyRow,
-	Calculation,
+	GeneralCalculation,
 	CalculationType,
 	CellType,
 	DateFormat,
 	Tag,
-} from "src/shared/loom-state/types";
+} from "src/shared/loom-state/types/loom-state";
 import { hashString, round2Digits } from "./utils";
 import RowNotFoundError from "src/shared/error/row-not-found-error";
 import TagNotFoundError from "src/shared/error/tag-not-found-error";
@@ -39,13 +39,13 @@ export const getCalculation = (
 	calculationType: CalculationType,
 	dateFormat: DateFormat
 ) => {
-	if (calculationType === Calculation.COUNT_ALL) {
+	if (calculationType === GeneralCalculation.COUNT_ALL) {
 		return countAll(bodyRows);
-	} else if (calculationType === Calculation.COUNT_EMPTY) {
+	} else if (calculationType === GeneralCalculation.COUNT_EMPTY) {
 		return countEmpty(columnCells, cellType);
-	} else if (calculationType === Calculation.COUNT_NOT_EMPTY) {
+	} else if (calculationType === GeneralCalculation.COUNT_NOT_EMPTY) {
 		return countNotEmpty(columnCells, cellType);
-	} else if (calculationType === Calculation.COUNT_UNIQUE) {
+	} else if (calculationType === GeneralCalculation.COUNT_UNIQUE) {
 		return countUnique(
 			bodyRows,
 			columnCells,
@@ -53,13 +53,13 @@ export const getCalculation = (
 			cellType,
 			dateFormat
 		);
-	} else if (calculationType === Calculation.COUNT_VALUES) {
+	} else if (calculationType === GeneralCalculation.COUNT_VALUES) {
 		return countValues(columnCells, cellType);
-	} else if (calculationType === Calculation.PERCENT_EMPTY) {
+	} else if (calculationType === GeneralCalculation.PERCENT_EMPTY) {
 		return percentEmpty(columnCells, cellType);
-	} else if (calculationType === Calculation.PERCENT_NOT_EMPTY) {
+	} else if (calculationType === GeneralCalculation.PERCENT_NOT_EMPTY) {
 		return percentNotEmpty(columnCells, cellType);
-	} else if (calculationType === Calculation.NONE) {
+	} else if (calculationType === GeneralCalculation.NONE) {
 		return "";
 	} else {
 		throw new Error("Unhandled calculation type");
@@ -149,7 +149,6 @@ const getCellValues = (
 		cellType === CellType.TEXT ||
 		cellType === CellType.EMBED ||
 		cellType === CellType.NUMBER ||
-		cellType === CellType.CURRENCY ||
 		cellType === CellType.CHECKBOX ||
 		cellType === CellType.FILE
 	) {
@@ -177,7 +176,6 @@ const countCellValues = (cell: BodyCell, cellType: CellType): number => {
 		cellType === CellType.TEXT ||
 		cellType === CellType.EMBED ||
 		cellType === CellType.NUMBER ||
-		cellType === CellType.CURRENCY ||
 		cellType === CellType.FILE
 	) {
 		return cell.markdown === "" ? 0 : 1;
@@ -202,7 +200,6 @@ const isCellContentEmpty = (cell: BodyCell, cellType: CellType): boolean => {
 		cellType === CellType.TEXT ||
 		cellType === CellType.EMBED ||
 		cellType === CellType.NUMBER ||
-		cellType === CellType.CURRENCY ||
 		cellType === CellType.FILE
 	) {
 		return cell.markdown === "";

@@ -1,6 +1,6 @@
 import { rowLastEditedTime, rowLastEditedTimeUpdate } from "../row-utils";
-import LoomStateCommand from "../loom-state-command";
-import { LoomState } from "../types";
+import LoomStateCommand from "./loom-state-command";
+import { LoomState } from "../types/loom-state";
 
 export default class TagCellMultipleRemoveCommand extends LoomStateCommand {
 	private cellId: string;

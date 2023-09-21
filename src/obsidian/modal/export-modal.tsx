@@ -1,21 +1,21 @@
-import { App, Modal, Notice, TFile } from "obsidian";
+import { App, Modal, TFile } from "obsidian";
 import { Root, createRoot } from "react-dom/client";
-import { deserializeLoomState } from "src/data/serialize";
 import { ExportApp } from "src/react/export-app";
 import { Provider } from "react-redux";
 import { store } from "src/redux/store";
 import { renderDivider, setModalTitle } from "../shared";
+import { LoomState } from "src/shared/loom-state/types/loom-state";
 
 export default class ExportModal extends Modal {
 	root: Root;
 	loomFile: TFile;
-	pluginVersion: string;
+	loomState: LoomState;
 
-	constructor(app: App, loomFile: TFile, pluginVersion: string) {
+	constructor(app: App, loomFile: TFile, loomState: LoomState) {
 		super(app);
 		this.app = app;
 		this.loomFile = loomFile;
-		this.pluginVersion = pluginVersion;
+		this.loomState = loomState;
 	}
 
 	onOpen() {
@@ -29,23 +29,16 @@ export default class ExportModal extends Modal {
 	}
 
 	private async renderApp(contentEl: HTMLElement) {
-		try {
-			const data = await this.app.vault.read(this.loomFile);
-			const state = deserializeLoomState(data, this.pluginVersion);
-
-			this.root = createRoot(contentEl);
-			this.root.render(
-				<Provider store={store}>
-					<ExportApp
-						app={this.app}
-						loomState={state}
-						loomFilePath={this.loomFile.path}
-					/>
-				</Provider>
-			);
-		} catch (err) {
-			new Notice("Error reading loom file data.");
-		}
+		this.root = createRoot(contentEl);
+		this.root.render(
+			<Provider store={store}>
+				<ExportApp
+					app={this.app}
+					loomState={this.loomState}
+					loomFilePath={this.loomFile.path}
+				/>
+			</Provider>
+		);
 	}
 
 	onClose() {

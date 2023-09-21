@@ -5,10 +5,10 @@ import {
 	HeaderCell,
 	BodyCell,
 	FooterCell,
-	FilterRule,
-} from "../types";
-import LoomStateCommand from "../loom-state-command";
-import { DeleteCommandArgumentsError } from "./command-errors";
+	Filter,
+} from "../types/loom-state";
+import LoomStateCommand from "./loom-state-command";
+import CommandArgumentsError from "./command-arguments-error";
 
 export default class ColumnDeleteCommand extends LoomStateCommand {
 	private columnId?: string;
@@ -18,13 +18,13 @@ export default class ColumnDeleteCommand extends LoomStateCommand {
 	private deletedHeaderCells: { arrIndex: number; cell: HeaderCell }[];
 	private deletedBodyCells: { arrIndex: number; cell: BodyCell }[];
 	private deletedFooterCells: { arrIndex: number; cell: FooterCell }[];
-	private deletedFilterRules: { arrIndex: number; rule: FilterRule }[];
+	private deletedFilters: { arrIndex: number; filter: Filter }[];
 
 	constructor(options: { id?: string; last?: boolean }) {
 		super();
 		const { id, last } = options;
 		if (id === undefined && last === undefined)
-			throw new DeleteCommandArgumentsError();
+			throw new CommandArgumentsError("delete");
 
 		this.columnId = id;
 		this.last = last;
@@ -33,7 +33,7 @@ export default class ColumnDeleteCommand extends LoomStateCommand {
 	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
-		const { columns, headerCells, bodyCells, footerCells, filterRules } =
+		const { columns, headerCells, bodyCells, footerCells, filters } =
 			prevState.model;
 
 		//Maintains at least 1 column in the table
@@ -73,12 +73,12 @@ export default class ColumnDeleteCommand extends LoomStateCommand {
 			cell: structuredClone(cell),
 		}));
 
-		const rulesToDelete = filterRules.filter(
-			(rule) => rule.columnId === id
+		const filtersToDelete = filters.filter(
+			(filter) => filter.columnId === id
 		);
-		this.deletedFilterRules = rulesToDelete.map((rule) => ({
-			arrIndex: filterRules.indexOf(rule),
-			rule: structuredClone(rule),
+		this.deletedFilters = filtersToDelete.map((filter) => ({
+			arrIndex: filters.indexOf(filter),
+			filter: structuredClone(filter),
 		}));
 
 		return {
@@ -89,7 +89,7 @@ export default class ColumnDeleteCommand extends LoomStateCommand {
 				headerCells: headerCells.filter((cell) => cell.columnId !== id),
 				bodyCells: bodyCells.filter((cell) => cell.columnId !== id),
 				footerCells: footerCells.filter((cell) => cell.columnId !== id),
-				filterRules: filterRules.filter((rule) => rule.columnId !== id),
+				filters: filters.filter((filter) => filter.columnId !== id),
 			},
 		};
 	}
@@ -102,7 +102,7 @@ export default class ColumnDeleteCommand extends LoomStateCommand {
 	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
-		const { columns, headerCells, bodyCells, footerCells, filterRules } =
+		const { columns, headerCells, bodyCells, footerCells, filters } =
 			prevState.model;
 
 		const updatedColumns = [...columns];
@@ -127,9 +127,9 @@ export default class ColumnDeleteCommand extends LoomStateCommand {
 			updatedFooterCells.splice(cell.arrIndex, 0, cell.cell);
 		});
 
-		const updatedFilterRules = [...filterRules];
-		this.deletedFilterRules.forEach((rule) => {
-			updatedFilterRules.splice(rule.arrIndex, 0, rule.rule);
+		const updatedFilters = [...filters];
+		this.deletedFilters.forEach((filter) => {
+			updatedFilters.splice(filter.arrIndex, 0, filter.filter);
 		});
 
 		return {
@@ -140,7 +140,7 @@ export default class ColumnDeleteCommand extends LoomStateCommand {
 				headerCells: updatedHeaderCells,
 				bodyCells: updatedBodyCells,
 				footerCells: updatedFooterCells,
-				filterRules: updatedFilterRules,
+				filters: updatedFilters,
 			},
 		};
 	}

@@ -4,13 +4,14 @@ import CalculationMenu from "./calculation-menu";
 import {
 	BodyCell,
 	BodyRow,
-	Calculation,
+	GeneralCalculation,
 	CalculationType,
 	CellType,
 	CurrencyType,
 	DateFormat,
 	Tag,
-} from "src/shared/loom-state/types";
+	NumberFormat,
+} from "src/shared/loom-state/types/loom-state";
 import Stack from "../../shared/stack";
 
 import MenuTrigger from "src/react/shared/menu-trigger";
@@ -28,6 +29,7 @@ interface Props {
 	calculationType: CalculationType;
 	columnTags: Tag[];
 	width: string;
+	numberFormat: NumberFormat;
 	bodyRows: BodyRow[];
 	bodyCells: BodyCell[];
 	currencyType: CurrencyType;
@@ -41,6 +43,7 @@ export default function FooterCellContainer({
 	columnTags,
 	bodyCells,
 	dateFormat,
+	numberFormat,
 	bodyRows,
 	width,
 	calculationType,
@@ -74,7 +77,7 @@ export default function FooterCellContainer({
 		if (cellValues.length !== 0)
 			content = getNumberCalculationContent(
 				cellValues,
-				cellType,
+				numberFormat,
 				currencyType,
 				calculationType
 			);
@@ -98,10 +101,10 @@ export default function FooterCellContainer({
 						width,
 					}}
 				>
-					{calculationType === Calculation.NONE && (
+					{calculationType === GeneralCalculation.NONE && (
 						<Text value="Calculate" variant="faint" />
 					)}
-					{calculationType !== Calculation.NONE && (
+					{calculationType !== GeneralCalculation.NONE && (
 						<Stack spacing="sm" isHorizontal>
 							<Text
 								value={getShortDisplayNameForCalculationType(

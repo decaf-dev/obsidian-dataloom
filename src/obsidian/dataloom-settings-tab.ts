@@ -1,7 +1,7 @@
 import { PluginSettingTab, App } from "obsidian";
 import { Setting } from "obsidian";
 import DataLoomPlugin from "../main";
-import { renderDonationBadge } from "./shared";
+import { renderBuyMeACoffeeBadge, renderGitHubSponsorBadge } from "./shared";
 
 export default class DataLoomSettingsTab extends PluginSettingTab {
 	plugin: DataLoomPlugin;
@@ -33,9 +33,11 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 			text: "I need your support - this project is dependent on donations from people like you",
 		});
 		textEl.style.marginBottom = "1.5em";
-		renderDonationBadge(donationDesc);
+		renderGitHubSponsorBadge(donationDesc);
 
 		new Setting(containerEl).setDesc(donationDesc);
+
+		renderBuyMeACoffeeBadge(containerEl);
 	}
 
 	private renderFileSettings(containerEl: HTMLElement) {
@@ -206,9 +208,9 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 			.setName("Donation modal")
 			.setDesc("Show the donation modal when the plugin is updated.")
 			.addToggle((cb) => {
-				cb.setValue(this.plugin.settings.showDonationModal).onChange(
+				cb.setValue(this.plugin.settings.showSupportModal).onChange(
 					async (value) => {
-						this.plugin.settings.showDonationModal = value;
+						this.plugin.settings.showSupportModal = value;
 						await this.plugin.saveSettings();
 					}
 				);

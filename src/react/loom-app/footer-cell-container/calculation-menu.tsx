@@ -11,11 +11,11 @@ import {
 	getDisplayNameForNumberCalculation,
 } from "src/shared/loom-state/type-display-names";
 import {
-	Calculation,
+	GeneralCalculation,
 	CalculationType,
 	CellType,
 	NumberCalculation,
-} from "src/shared/loom-state/types";
+} from "src/shared/loom-state/types/loom-state";
 
 interface Props {
 	id: string;
@@ -46,7 +46,7 @@ export default function CalculationMenu({
 			onClose={onClose}
 		>
 			<div className="dataloom-function-menu">
-				{Object.values(Calculation).map((type) => (
+				{Object.values(GeneralCalculation).map((type) => (
 					<MenuItem
 						key={type}
 						name={getDisplayNameForCalculation(type)}
@@ -55,8 +55,7 @@ export default function CalculationMenu({
 						isSelected={type === value}
 					/>
 				))}
-				{(cellType === CellType.NUMBER ||
-					cellType === CellType.CURRENCY) &&
+				{cellType === CellType.NUMBER &&
 					Object.values(NumberCalculation).map((type) => (
 						<MenuItem
 							key={type}

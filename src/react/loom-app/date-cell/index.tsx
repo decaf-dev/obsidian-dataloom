@@ -1,4 +1,4 @@
-import { DateFormat } from "src/shared/loom-state/types";
+import { DateFormat } from "src/shared/loom-state/types/loom-state";
 import { getDateCellContent } from "src/shared/cell-content/date-cell-content";
 
 import "./styles.css";

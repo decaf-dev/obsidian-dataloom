@@ -15,18 +15,23 @@ import {
 	CellType,
 	CurrencyType,
 	DateFormat,
+	NumberFormat,
 	PaddingSize,
 	SortDir,
-} from "src/shared/loom-state/types";
+} from "src/shared/loom-state/types/loom-state";
 
 import "./styles.css";
 
 interface Props {
 	cellId: string;
 	currencyType: CurrencyType;
+	numberPrefix: string;
+	numberSuffix: string;
+	numberSeparator: string;
 	horizontalPadding: PaddingSize;
 	verticalPadding: PaddingSize;
 	aspectRatio: AspectRatio;
+	numberFormat: NumberFormat;
 	rowId: string;
 	columnId: string;
 	width: string;
@@ -43,7 +48,16 @@ interface Props {
 	onWidthChange: (columnId: string, width: string) => void;
 	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
 	onNameChange: (cellId: string, value: string) => void;
-	onCurrencyChange: (columnId: string, value: CurrencyType) => void;
+	onNumberFormatChange: (
+		columnId: string,
+		format: NumberFormat,
+		options?: {
+			currency: CurrencyType;
+		}
+	) => void;
+	onNumberPrefixChange: (columnId: string, value: string) => void;
+	onNumberSuffixChange: (columnId: string, value: string) => void;
+	onNumberSeparatorChange: (columnId: string, value: string) => void;
 	onDateFormatChange: (columnId: string, value: DateFormat) => void;
 	onVerticalPaddingClick: (columnId: string, value: PaddingSize) => void;
 	onHorizontalPaddingClick: (columnId: string, value: PaddingSize) => void;
@@ -56,6 +70,10 @@ export default function HeaderCellContainer({
 	rowId,
 	columnId,
 	currencyType,
+	numberFormat,
+	numberPrefix,
+	numberSeparator,
+	numberSuffix,
 	width,
 	dateFormat,
 	horizontalPadding,
@@ -76,7 +94,10 @@ export default function HeaderCellContainer({
 	onDeleteClick,
 	onWrapOverflowToggle,
 	onNameChange,
-	onCurrencyChange,
+	onNumberFormatChange,
+	onNumberPrefixChange,
+	onNumberSeparatorChange,
+	onNumberSuffixChange,
 	onDateFormatChange,
 	onHideClick,
 }: Props) {
@@ -157,7 +178,11 @@ export default function HeaderCellContainer({
 				horizontalPadding={horizontalPadding}
 				verticalPadding={verticalPadding}
 				rowId={rowId}
+				numberFormat={numberFormat}
 				currencyType={currencyType}
+				numberPrefix={numberPrefix}
+				numberSuffix={numberSuffix}
+				numberSeparator={numberSeparator}
 				dateFormat={dateFormat}
 				canDeleteColumn={numColumns > 1}
 				columnId={columnId}
@@ -174,7 +199,10 @@ export default function HeaderCellContainer({
 				onRequestClose={onRequestClose}
 				onWrapOverflowToggle={onWrapOverflowToggle}
 				onNameChange={onNameChange}
-				onCurrencyChange={onCurrencyChange}
+				onNumberFormatChange={onNumberFormatChange}
+				onNumberPrefixChange={onNumberPrefixChange}
+				onNumberSeparatorChange={onNumberSeparatorChange}
+				onNumberSuffixChange={onNumberSuffixChange}
 				onDateFormatChange={onDateFormatChange}
 				onVerticalPaddingClick={onVerticalPaddingClick}
 				onHorizontalPaddingClick={onHorizontalPaddingClick}

@@ -6,13 +6,14 @@ import {
 	CurrencyType,
 	DateFormat,
 	LoomState,
+	NumberFormat,
 	Tag,
-} from "src/shared/loom-state/types";
+} from "src/shared/loom-state/types/loom-state";
 import RowNotFoundError from "src/shared/error/row-not-found-error";
 import ColumNotFoundError from "src/shared/error/column-not-found-error";
 import { getTimeCellContent } from "src/shared/cell-content/time-content";
 import { getDateCellContent } from "src/shared/cell-content/date-cell-content";
-import { getCurrencyCellContent } from "src/shared/cell-content/currency-cell-content";
+import { getNumberCellContent } from "src/shared/cell-content/number-cell-content";
 
 type CellWithReferences = {
 	cell: BodyCell;
@@ -52,18 +53,33 @@ export const filterBodyRowsBySearch = (
 
 const doesCellMatch = (cell: CellWithReferences, searchText: string) => {
 	const { dateTime, markdown } = cell.cell;
-	const { currencyType, type, dateFormat } = cell.column;
+	const {
+		currencyType,
+		type,
+		dateFormat,
+		numberFormat,
+		numberPrefix,
+		numberSuffix,
+		numberSeparator,
+	} = cell.column;
 	const { lastEditedTime, creationTime } = cell.row;
 
 	switch (type) {
 		case CellType.TEXT:
 		case CellType.EMBED:
 		case CellType.FILE:
-		case CellType.NUMBER:
 		case CellType.CHECKBOX:
 			return matchCell(markdown, searchText);
-		case CellType.CURRENCY:
-			return matchCurrencyCell(markdown, currencyType, searchText);
+		case CellType.NUMBER:
+			return matchNumberCell(
+				numberFormat,
+				numberPrefix,
+				numberSuffix,
+				numberSeparator,
+				currencyType,
+				markdown,
+				searchText
+			);
 		case CellType.DATE:
 			return matchDateCell(dateFormat, dateTime, searchText);
 		case CellType.CREATION_TIME:
@@ -82,17 +98,26 @@ const doesCellMatch = (cell: CellWithReferences, searchText: string) => {
 	}
 };
 
-const matchCell = (markdown: string, searchText: string) => {
-	return markdown.toLowerCase().includes(searchText);
+const matchCell = (cellContent: string, searchText: string) => {
+	return cellContent.toLowerCase().includes(searchText);
 };
 
-const matchCurrencyCell = (
-	markdown: string,
+const matchNumberCell = (
+	numberFormat: NumberFormat,
+	prefix: string,
+	suffix: string,
+	separator: string,
 	currencyType: CurrencyType,
+	cellContent: string,
 	searchText: string
 ) => {
-	const content = getCurrencyCellContent(markdown, currencyType);
-	if (content.toLowerCase().includes(searchText.toLowerCase())) return true;
+	const content = getNumberCellContent(numberFormat, cellContent, {
+		currency: currencyType,
+		prefix,
+		suffix,
+		separator,
+	});
+	return content.toLowerCase().includes(searchText.toLowerCase());
 };
 
 const matchTags = (cellTags: Tag[], searchText: string) => {
@@ -105,7 +130,7 @@ const matchDateCell = (
 	dateFormat: DateFormat,
 	dateTime: number | null,
 	searchText: string
-) => {
+): boolean => {
 	const content = getDateCellContent(dateTime, dateFormat);
 	return content.toLowerCase().includes(searchText);
 };
@@ -114,7 +139,7 @@ const matchCreationTimeCell = (
 	creationTime: number,
 	dateFormat: DateFormat,
 	searchText: string
-) => {
+): boolean => {
 	const content = getTimeCellContent(creationTime, dateFormat);
 	return content.toLowerCase().includes(searchText);
 };
@@ -123,7 +148,7 @@ const matchLastEditedTimeCell = (
 	lastEditedTime: number,
 	dateFormat: DateFormat,
 	searchText: string
-) => {
+): boolean => {
 	const content = getTimeCellContent(lastEditedTime, dateFormat);
 	return content.toLowerCase().includes(searchText);
 };

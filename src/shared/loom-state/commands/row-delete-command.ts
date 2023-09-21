@@ -1,7 +1,7 @@
-import { BodyCell, BodyRow, LoomState } from "../types";
+import { BodyCell, BodyRow, LoomState } from "../types/loom-state";
 import RowNotFoundError from "src/shared/error/row-not-found-error";
-import LoomStateCommand from "../loom-state-command";
-import { DeleteCommandArgumentsError } from "./command-errors";
+import LoomStateCommand from "./loom-state-command";
+import CommandArgumentsError from "./command-arguments-error";
 
 export default class RowDeleteCommand extends LoomStateCommand {
 	private rowId?: string;
@@ -25,7 +25,7 @@ export default class RowDeleteCommand extends LoomStateCommand {
 		super();
 		const { id, last } = options;
 		if (id === undefined && last === undefined)
-			throw new DeleteCommandArgumentsError();
+			throw new CommandArgumentsError("delete");
 
 		this.rowId = id;
 		this.last = last;

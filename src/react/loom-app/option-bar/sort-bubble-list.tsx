@@ -2,7 +2,7 @@ import SortBubble from "./sort-bubble";
 import Stack from "src/react/shared/stack";
 
 import ColumNotFoundError from "src/shared/error/column-not-found-error";
-import { Column, HeaderCell } from "src/shared/loom-state/types";
+import { Column, HeaderCell } from "src/shared/loom-state/types/loom-state";
 
 interface Props {
 	headerCells: HeaderCell[];

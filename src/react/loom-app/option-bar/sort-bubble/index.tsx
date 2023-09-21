@@ -1,7 +1,7 @@
 import Icon from "src/react/shared/icon";
 import Bubble from "src/react/shared/bubble";
 
-import { SortDir } from "src/shared/loom-state/types";
+import { SortDir } from "src/shared/loom-state/types/loom-state";
 
 interface SortBubbleProps {
 	sortDir: SortDir;

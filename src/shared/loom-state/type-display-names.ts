@@ -1,30 +1,35 @@
 import { isNumberCalcuation } from "../match";
 import {
-	Calculation,
+	GeneralCalculation,
 	CalculationType,
 	CellType,
 	CurrencyType,
 	DateFormat,
 	NumberCalculation,
-} from "./types";
+	FilterCondition,
+	TextFilterCondition,
+	NumberFilterCondition,
+	DateFilterCondition,
+	DateFilterOption,
+} from "./types/loom-state";
 
-const getShortDisplayNameForCalculation = (value: Calculation) => {
+const getShortDisplayNameForCalculation = (value: GeneralCalculation) => {
 	switch (value) {
-		case Calculation.COUNT_ALL:
+		case GeneralCalculation.COUNT_ALL:
 			return "Count";
-		case Calculation.COUNT_NOT_EMPTY:
+		case GeneralCalculation.COUNT_NOT_EMPTY:
 			return "Not empty";
-		case Calculation.COUNT_VALUES:
+		case GeneralCalculation.COUNT_VALUES:
 			return "Values";
-		case Calculation.COUNT_EMPTY:
+		case GeneralCalculation.COUNT_EMPTY:
 			return "Empty";
-		case Calculation.COUNT_UNIQUE:
+		case GeneralCalculation.COUNT_UNIQUE:
 			return "Unique";
-		case Calculation.NONE:
+		case GeneralCalculation.NONE:
 			return "None";
-		case Calculation.PERCENT_EMPTY:
+		case GeneralCalculation.PERCENT_EMPTY:
 			return "Empty";
-		case Calculation.PERCENT_NOT_EMPTY:
+		case GeneralCalculation.PERCENT_NOT_EMPTY:
 			return "Not empty";
 		default:
 			return "";
@@ -41,19 +46,19 @@ export const getShortDisplayNameForCalculationType = (
 
 export const getAriaLabelForCalculation = (value: CalculationType) => {
 	switch (value) {
-		case Calculation.COUNT_ALL:
+		case GeneralCalculation.COUNT_ALL:
 			return "Counts the total number of rows";
-		case Calculation.COUNT_EMPTY:
+		case GeneralCalculation.COUNT_EMPTY:
 			return "Counts the number of rows with an empty cell value";
-		case Calculation.COUNT_NOT_EMPTY:
+		case GeneralCalculation.COUNT_NOT_EMPTY:
 			return "Counts the number of rows with a non-empty cell value";
-		case Calculation.COUNT_UNIQUE:
+		case GeneralCalculation.COUNT_UNIQUE:
 			return "Counts the number of unique values in the column";
-		case Calculation.COUNT_VALUES:
+		case GeneralCalculation.COUNT_VALUES:
 			return "Counts the number of values in the column";
-		case Calculation.PERCENT_EMPTY:
+		case GeneralCalculation.PERCENT_EMPTY:
 			return "Displays the percentage of rows with an empty cell value";
-		case Calculation.PERCENT_NOT_EMPTY:
+		case GeneralCalculation.PERCENT_NOT_EMPTY:
 			return "Displays the percentage of rows with a non-empty cell value";
 		default:
 			return "";
@@ -79,23 +84,23 @@ export const getAriaLabelForNumberCalculation = (value: NumberCalculation) => {
 	}
 };
 
-export const getDisplayNameForCalculation = (value: Calculation) => {
+export const getDisplayNameForCalculation = (value: GeneralCalculation) => {
 	switch (value) {
-		case Calculation.COUNT_ALL:
+		case GeneralCalculation.COUNT_ALL:
 			return "Count all";
-		case Calculation.COUNT_NOT_EMPTY:
+		case GeneralCalculation.COUNT_NOT_EMPTY:
 			return "Count not empty";
-		case Calculation.COUNT_VALUES:
+		case GeneralCalculation.COUNT_VALUES:
 			return "Count values";
-		case Calculation.COUNT_EMPTY:
+		case GeneralCalculation.COUNT_EMPTY:
 			return "Count empty";
-		case Calculation.COUNT_UNIQUE:
+		case GeneralCalculation.COUNT_UNIQUE:
 			return "Count unique";
-		case Calculation.NONE:
+		case GeneralCalculation.NONE:
 			return "None";
-		case Calculation.PERCENT_EMPTY:
+		case GeneralCalculation.PERCENT_EMPTY:
 			return "Percent empty";
-		case Calculation.PERCENT_NOT_EMPTY:
+		case GeneralCalculation.PERCENT_NOT_EMPTY:
 			return "Percent not empty";
 		default:
 			return "";
@@ -150,10 +155,16 @@ export const getDisplayNameForCurrencyType = (type: CurrencyType) => {
 			return "Australian Dollar";
 		case CurrencyType.SINGAPORE:
 			return "Singapore Dollar";
+		case CurrencyType.SOUTH_KOREA:
+			return "Won";
 		case CurrencyType.CHINA:
 			return "Yuan";
 		case CurrencyType.JAPAN:
 			return "Yen";
+		case CurrencyType.UAE:
+			return "Dirham";
+		case CurrencyType.SAUDI_ARABIA:
+			return "Riyal";
 		case CurrencyType.COLOMBIA:
 			return "Colombian Peso";
 		case CurrencyType.EUROPE:
@@ -168,7 +179,7 @@ export const getDisplayNameForCurrencyType = (type: CurrencyType) => {
 			return "Icelandic Króna";
 		case CurrencyType.BRAZIL:
 			return "Real";
-		case CurrencyType.POUND:
+		case CurrencyType.GREAT_BRITAIN:
 			return "Pound";
 		case CurrencyType.INDIA:
 			return "Rupee";
@@ -180,6 +191,8 @@ export const getDisplayNameForCurrencyType = (type: CurrencyType) => {
 			return "Ruble";
 		case CurrencyType.ISRAEL:
 			return "Israeli Shekel";
+		case CurrencyType.SWITZERLAND:
+			return "Swiss Franc";
 		default:
 			return "";
 	}
@@ -207,8 +220,73 @@ export const getDisplayNameForCellType = (type: CellType): string => {
 			return "Tag";
 		case CellType.MULTI_TAG:
 			return "Multi-tag";
-		case CellType.CURRENCY:
-			return "Currency";
+		default:
+			return "";
+	}
+};
+
+export const getDisplayNameForFilterCondition = (type: FilterCondition) => {
+	switch (type) {
+		case TextFilterCondition.IS:
+		case DateFilterCondition.IS:
+			return "Is";
+		case TextFilterCondition.IS_NOT:
+			return "Is not";
+		case TextFilterCondition.CONTAINS:
+			return "Contains";
+		case TextFilterCondition.DOES_NOT_CONTAIN:
+			return "Does not contain";
+		case TextFilterCondition.STARTS_WITH:
+			return "Starts with";
+		case TextFilterCondition.ENDS_WITH:
+			return "Ends with";
+		case NumberFilterCondition.IS_EQUAL:
+			return "=";
+		case NumberFilterCondition.IS_NOT_EQUAL:
+			return "!=";
+		case NumberFilterCondition.IS_GREATER:
+			return ">";
+		case NumberFilterCondition.IS_GREATER_OR_EQUAL:
+			return ">=";
+		case NumberFilterCondition.IS_LESS:
+			return "<";
+		case NumberFilterCondition.IS_LESS_OR_EQUAL:
+			return "<=";
+		case DateFilterCondition.IS_AFTER:
+			return "Is after";
+		case DateFilterCondition.IS_BEFORE:
+			return "Is before";
+		case TextFilterCondition.IS_EMPTY:
+		case NumberFilterCondition.IS_EMPTY:
+		case DateFilterCondition.IS_EMPTY:
+			return "Is empty";
+		case TextFilterCondition.IS_NOT_EMPTY:
+		case NumberFilterCondition.IS_NOT_EMPTY:
+		case DateFilterCondition.IS_NOT_EMPTY:
+			return "Is not empty";
+		default:
+			return "";
+	}
+};
+
+export const getDisplayNameForDateFilterOption = (value: DateFilterOption) => {
+	switch (value) {
+		case DateFilterOption.UNSELECTED:
+			return "Select an option";
+		case DateFilterOption.TODAY:
+			return "Today";
+		case DateFilterOption.TOMORROW:
+			return "Tomorrow";
+		case DateFilterOption.YESTERDAY:
+			return "Yesterday";
+		case DateFilterOption.ONE_WEEK_AGO:
+			return "One week ago";
+		case DateFilterOption.ONE_WEEK_FROM_NOW:
+			return "One week from now";
+		case DateFilterOption.ONE_MONTH_AGO:
+			return "One month ago";
+		case DateFilterOption.ONE_MONTH_FROM_NOW:
+			return "One month from now";
 		default:
 			return "";
 	}

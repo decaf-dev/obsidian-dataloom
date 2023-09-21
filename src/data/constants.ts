@@ -1,6 +1,6 @@
 export const DEFAULT_LOOM_NAME = "Untitled";
 
-export const FILE_EXTENSION = "loom";
+export const LOOM_EXTENSION = "loom";
 
 /**
  * Matches an extension with a leading period.

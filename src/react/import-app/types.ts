@@ -1,4 +1,4 @@
-import { CellType } from "src/shared/loom-state/types";
+import { CellType } from "src/shared/loom-state/types/loom-state";
 
 export enum StepType {
 	DATA_TYPE,

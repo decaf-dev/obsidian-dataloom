@@ -1,4 +1,4 @@
-import { CellType } from "src/shared/loom-state/types";
+import { CellType } from "src/shared/loom-state/types/loom-state";
 
 export const getIconIdForCellType = (type: CellType) => {
 	switch (type) {
@@ -21,8 +21,6 @@ export const getIconIdForCellType = (type: CellType) => {
 			return "tags";
 		case CellType.DATE:
 			return "calendar";
-		case CellType.CURRENCY:
-			return "banknote";
 		default:
 			return "text";
 	}

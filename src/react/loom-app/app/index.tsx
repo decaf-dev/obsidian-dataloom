@@ -7,14 +7,13 @@ import RowOptions from "../row-options";
 import OptionBar from "../option-bar";
 import HeaderCell from "../header-cell-container";
 import BodyCell from "../body-cell-container";
-import FooterCell from "../footer-cell-container";
 import NewColumnButton from "../new-column-button";
 import BottomBar from "../bottom-bar";
 
 import { useUUID } from "../../../shared/hooks";
 import CellNotFoundError from "src/shared/error/cell-not-found-error";
 import { useLoomState } from "../loom-state-provider";
-import { useFilterRules } from "./hooks/use-filter-rules";
+import { useFilter } from "./hooks/use-filter";
 import { filterBodyRowsBySearch } from "./filter-by-search";
 import { useColumn } from "./hooks/use-column";
 import { useRow } from "./hooks/use-row";
@@ -39,18 +38,13 @@ import "./global.css";
 import "./styles.css";
 import { useLogger } from "src/shared/logger";
 import { useMenuOperations } from "src/react/shared/menu/hooks";
+import FooterCellContainer from "../footer-cell-container";
 
 export default function App() {
 	const logger = useLogger();
 	const { reactAppId, isMarkdownView } = useAppMount();
-	const {
-		loomState,
-		resizingColumnId,
-		searchText,
-		onRedo,
-		onUndo,
-		setLoomState,
-	} = useLoomState();
+	const { loomState, resizingColumnId, searchText, onRedo, onUndo } =
+		useLoomState();
 
 	const tableRef = React.useRef<VirtuosoHandle | null>(null);
 	const { onRequestCloseTop } = useMenuOperations();
@@ -63,16 +57,8 @@ export default function App() {
 	const { onFocusKeyDown } = useFocus();
 	const { onFrozenColumnsChange } = useTableSettings();
 
-	const {
-		onRuleAddClick,
-		onRuleColumnChange,
-		onRuleDeleteClick,
-		onRuleFilterTypeChange,
-		onRuleTagsChange,
-		onRuleTextChange,
-		onRuleToggle,
-		filterBodyRowsByRules,
-	} = useFilterRules(setLoomState);
+	const { onFilterAdd, onFilterUpdate, onFilterDelete, filterByFilters } =
+		useFilter();
 
 	const {
 		onColumnWidthChange,
@@ -82,7 +68,10 @@ export default function App() {
 		onColumnHideClick,
 		onColumnDeleteClick,
 		onCalculationTypeChange,
-		onCurrentChange,
+		onNumberFormatChange,
+		onNumberPrefixChange,
+		onNumberSeparatorChange,
+		onNumberSuffixChange,
 		onAspectRatioClick,
 		onWrapContentToggle,
 		onVerticalPaddingClick,
@@ -160,20 +149,17 @@ export default function App() {
 		headerCells,
 		bodyCells,
 		footerCells,
-		filterRules,
+		filters,
 		settings,
 	} = loomState.model;
 	const { numFrozenColumns } = settings;
 
-	console.log(loomState.model.bodyRows);
-	let filteredBodyRows = filterBodyRowsByRules(loomState);
-	console.log(filteredBodyRows);
+	let filteredBodyRows = filterByFilters(loomState);
 	filteredBodyRows = filterBodyRowsBySearch(
 		loomState,
 		filteredBodyRows,
 		searchText
 	);
-	console.log(filteredBodyRows);
 
 	const visibleColumns = columns.filter((column) => column.isVisible);
 
@@ -189,17 +175,13 @@ export default function App() {
 			<OptionBar
 				headerCells={headerCells}
 				columns={columns}
-				filterRules={filterRules}
+				filters={filters}
 				numFrozenColumns={numFrozenColumns}
 				onColumnToggle={onColumnToggle}
 				onSortRemoveClick={onSortRemoveClick}
-				onRuleAddClick={onRuleAddClick}
-				onRuleDeleteClick={onRuleDeleteClick}
-				onRuleFilterTypeChange={onRuleFilterTypeChange}
-				onRuleColumnChange={onRuleColumnChange}
-				onRuleTextChange={onRuleTextChange}
-				onRuleToggle={onRuleToggle}
-				onRuleTagsChange={onRuleTagsChange}
+				onFilterAddClick={onFilterAdd}
+				onFilterDeleteClick={onFilterDelete}
+				onFilterUpdate={onFilterUpdate}
 				onFrozenColumnsChange={onFrozenColumnsChange}
 			/>
 			<Table
@@ -224,6 +206,10 @@ export default function App() {
 									sortDir,
 									shouldWrapOverflow,
 									currencyType,
+									numberFormat,
+									numberPrefix,
+									numberSeparator,
+									numberSuffix,
 									dateFormat,
 									verticalPadding,
 									horizontalPadding,
@@ -249,6 +235,10 @@ export default function App() {
 											rowId={rowId}
 											dateFormat={dateFormat}
 											currencyType={currencyType}
+											numberPrefix={numberPrefix}
+											numberSeparator={numberSeparator}
+											numberFormat={numberFormat}
+											numberSuffix={numberSuffix}
 											verticalPadding={verticalPadding}
 											horizontalPadding={
 												horizontalPadding
@@ -277,7 +267,18 @@ export default function App() {
 											onNameChange={
 												onHeaderCellContentChange
 											}
-											onCurrencyChange={onCurrentChange}
+											onNumberFormatChange={
+												onNumberFormatChange
+											}
+											onNumberPrefixChange={
+												onNumberPrefixChange
+											}
+											onNumberSeparatorChange={
+												onNumberSeparatorChange
+											}
+											onNumberSuffixChange={
+												onNumberSuffixChange
+											}
 											onVerticalPaddingClick={
 												onVerticalPaddingClick
 											}
@@ -331,6 +332,10 @@ export default function App() {
 									type,
 									shouldWrapOverflow,
 									currencyType,
+									numberPrefix,
+									numberSeparator,
+									numberFormat,
+									numberSuffix,
 									dateFormat,
 									tags,
 									verticalPadding,
@@ -372,9 +377,13 @@ export default function App() {
 											columnTags={tags}
 											cellTagIds={tagIds}
 											columnId={columnId}
+											numberFormat={numberFormat}
 											rowCreationTime={creationTime}
 											dateFormat={dateFormat}
-											columnCurrencyType={currencyType}
+											currencyType={currencyType}
+											numberPrefix={numberPrefix}
+											numberSuffix={numberSuffix}
+											numberSeparator={numberSeparator}
 											rowLastEditedTime={lastEditedTime}
 											dateTime={dateTime}
 											markdown={markdown}
@@ -430,6 +439,7 @@ export default function App() {
 										type,
 										currencyType,
 										dateFormat,
+										numberFormat,
 										width,
 										tags,
 										calculationType,
@@ -456,10 +466,11 @@ export default function App() {
 									return {
 										id: cell.id,
 										content: (
-											<FooterCell
+											<FooterCellContainer
 												columnId={columnId}
 												columnTags={tags}
 												cellId={cellId}
+												numberFormat={numberFormat}
 												currencyType={currencyType}
 												dateFormat={dateFormat}
 												bodyCells={columnBodyCells}

@@ -71,9 +71,16 @@ const config = {
 				},
 				items: [
 					{
-						href: "https://github.com/trey-wallis/obsidian-dataloom",
-						label: "GitHub",
+						href: "https://discord.gg/QaFbepMdN4",
+						ariaLabel: "Discord",
 						position: "right",
+						className: "fa-brands fa-discord fa-xl",
+					},
+					{
+						href: "https://github.com/trey-wallis/obsidian-dataloom",
+						ariaLabel: "GitHub",
+						position: "right",
+						className: "fa-brands fa-github fa-xl",
 					},
 				],
 			},

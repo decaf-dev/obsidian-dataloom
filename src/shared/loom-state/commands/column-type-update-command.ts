@@ -2,17 +2,17 @@ import { createTag } from "src/shared/loom-state/loom-state-factory";
 import { unixTimeToDateString } from "../../date/date-conversion";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "../../constants";
 import ColumNotFoundError from "src/shared/error/column-not-found-error";
-import LoomStateCommand from "../loom-state-command";
+import LoomStateCommand from "./loom-state-command";
 import {
 	BodyCell,
-	Calculation,
+	GeneralCalculation,
 	CalculationType,
 	CellType,
 	Column,
-	FilterRule,
+	Filter,
 	LoomState,
 	Tag,
-} from "../types";
+} from "../types/loom-state";
 import { isCheckbox, isNumberCalcuation } from "../../match";
 
 export class ColumnTypeUpdateCommand extends LoomStateCommand {
@@ -20,7 +20,7 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 	private type: CellType;
 
 	private previousType: CellType;
-	private deletedFilterRules: { arrIndex: number; rule: FilterRule }[] = [];
+	private deletedFilters: { arrIndex: number; filter: Filter }[] = [];
 
 	private previousCalculationType?: CalculationType;
 	private newCalculationType?: CalculationType;
@@ -71,15 +71,15 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 		this.type = type;
 	}
 
-	private fromNumberOrCurrency(columns: Column[]) {
+	private fromNumber(columns: Column[]) {
 		return columns.map((column) => {
 			if (column.id === this.columnId) {
 				if (isNumberCalcuation(column.calculationType)) {
 					this.previousCalculationType = column.calculationType;
-					this.newCalculationType = Calculation.NONE;
+					this.newCalculationType = GeneralCalculation.NONE;
 					return {
 						...column,
-						calculationType: Calculation.NONE,
+						calculationType: GeneralCalculation.NONE,
 					};
 				}
 			}
@@ -297,7 +297,7 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
-		const { columns, bodyCells, filterRules } = prevState.model;
+		const { columns, bodyCells, filters } = prevState.model;
 		const column = columns.find((column) => column.id === this.columnId);
 		if (!column) throw new ColumNotFoundError(this.columnId);
 
@@ -348,11 +348,8 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 			newBodyCells = this.fromDateToText(column, newBodyCells);
 		}
 
-		if (
-			this.previousType === CellType.NUMBER ||
-			this.previousType === CellType.CURRENCY
-		) {
-			newColumns = this.fromNumberOrCurrency(newColumns);
+		if (this.previousType === CellType.NUMBER) {
+			newColumns = this.fromNumber(newColumns);
 		}
 
 		newColumns = newColumns.map((column) => {
@@ -365,18 +362,18 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 			return column;
 		});
 
-		const shouldFilterRule = (rule: FilterRule) =>
-			rule.columnId !== this.columnId;
+		const shouldFilter = (filter: Filter) =>
+			filter.columnId !== this.columnId;
 
-		const filterRulesToDelete = filterRules.filter(
-			(rule) => !shouldFilterRule(rule)
+		const filtersToDelete = filters.filter(
+			(filter) => !shouldFilter(filter)
 		);
-		this.deletedFilterRules = filterRulesToDelete.map((rule) => ({
-			arrIndex: filterRules.indexOf(rule),
-			rule: structuredClone(rule),
+		this.deletedFilters = filtersToDelete.map((filter) => ({
+			arrIndex: filters.indexOf(filter),
+			filter: structuredClone(filter),
 		}));
 
-		const newFilterRules = filterRules.filter(shouldFilterRule);
+		const newFilters = filters.filter(shouldFilter);
 
 		return {
 			...prevState,
@@ -384,14 +381,14 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 				...prevState.model,
 				columns: newColumns,
 				bodyCells: newBodyCells,
-				filterRules: newFilterRules,
+				filters: newFilters,
 			},
 		};
 	}
 
 	redo(prevState: LoomState): LoomState {
 		super.onRedo();
-		const { columns, bodyCells, filterRules } = prevState.model;
+		const { columns, bodyCells, filters } = prevState.model;
 
 		const newBodyCells = bodyCells.map((cell) => {
 			const updatedCellTagIds = this.updatedBodyCellTagIds.current.find(
@@ -430,9 +427,9 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 			return column;
 		});
 
-		const newFilterRules = filterRules.filter(
-			(rule) =>
-				!this.deletedFilterRules.find((r) => r.rule.id === rule.id)
+		const newFilters = filters.filter(
+			(filter) =>
+				!this.deletedFilters.find((f) => f.filter.id === filter.id)
 		);
 
 		return {
@@ -441,7 +438,7 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 				...prevState.model,
 				columns: newColumns,
 				bodyCells: newBodyCells,
-				filterRules: newFilterRules,
+				filters: newFilters,
 			},
 		};
 	}
@@ -449,7 +446,7 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
-		const { columns, bodyCells, filterRules } = prevState.model;
+		const { columns, bodyCells, filters } = prevState.model;
 
 		const newBodyCells = bodyCells.map((cell) => {
 			const updatedCellTagIds = this.updatedBodyCellTagIds.previous.find(
@@ -474,10 +471,10 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 			return cell;
 		});
 
-		const newFilterRules = structuredClone(filterRules);
-		this.deletedFilterRules.forEach((r) => {
-			const { arrIndex, rule } = r;
-			newFilterRules.splice(arrIndex, 0, rule);
+		const newFilters = structuredClone(filters);
+		this.deletedFilters.forEach((f) => {
+			const { arrIndex, filter } = f;
+			newFilters.splice(arrIndex, 0, filter);
 		});
 
 		const newColumns = columns.map((column) => {
@@ -505,7 +502,7 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 				...prevState.model,
 				columns: newColumns,
 				bodyCells: newBodyCells,
-				filterRules: newFilterRules,
+				filters: newFilters,
 			},
 		};
 	}

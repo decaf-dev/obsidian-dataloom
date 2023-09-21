@@ -19,8 +19,8 @@
 }
 
 .dataloom-input--numeric {
-    border: 0 !important;
-    border-radius: 0 !important;
+    /* border: 0 !important;
+    border-radius: 0 !important; */
     text-align: right;
 }
 

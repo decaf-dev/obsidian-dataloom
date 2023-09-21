@@ -1,7 +1,7 @@
 import CellNotFoundError from "src/shared/error/cell-not-found-error";
 import RowNotFoundError from "src/shared/error/row-not-found-error";
 import TagNotFoundError from "src/shared/error/tag-not-found-error";
-import LoomStateCommand from "../loom-state-command";
+import LoomStateCommand from "./loom-state-command";
 import {
 	BodyCell,
 	BodyRow,
@@ -10,7 +10,7 @@ import {
 	SortDir,
 	LoomState,
 	Tag,
-} from "../types";
+} from "../types/loom-state";
 import { isCheckboxChecked } from "../../match";
 
 export default class RowSortCommand extends LoomStateCommand {
@@ -112,7 +112,7 @@ export default class RowSortCommand extends LoomStateCommand {
 		cells: BodyCell[]
 	): number {
 		const { id, type, sortDir, tags } = column;
-		if (type === CellType.NUMBER || type === CellType.CURRENCY) {
+		if (type === CellType.NUMBER) {
 			return this.sortByNumber(a, b, id, cells, sortDir);
 		} else if (type === CellType.TAG || type === CellType.MULTI_TAG) {
 			return this.sortByTag(a, b, id, tags, cells, sortDir);
