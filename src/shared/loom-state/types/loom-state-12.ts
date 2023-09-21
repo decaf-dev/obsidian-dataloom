@@ -31,6 +31,28 @@ export enum CellType {
 	LAST_EDITED_TIME = "last-edited-time",
 }
 
+export enum CurrencyType {
+	UNITED_STATES = "USD",
+	CANADA = "CAD",
+	SINGAPORE = "SGB",
+	EUROPE = "EUR",
+	SWEDEN = "SEK",
+	DENMARK = "DKK",
+	NORWAY = "NOK",
+	ICELAND = "ISK",
+	POUND = "GBP",
+	RUSSIA = "RUB",
+	AUSTRALIA = "AUD",
+	JAPAN = "JPY",
+	INDIA = "INR",
+	CHINA = "CNY",
+	BRAZIL = "BRL",
+	COLOMBIA = "COP",
+	MEXICO = "MXN",
+	ARGENTINA = "ARS",
+	ISRAEL = "ILS",
+}
+
 enum Color {
 	LIGHT_GRAY = "light gray",
 	GRAY = "gray",
@@ -67,28 +89,6 @@ enum DateFormat {
 	YYYY_MM_DD = "yyyy/mm/dd",
 	FULL = "full",
 	RELATIVE = "relative",
-}
-
-enum CurrencyType {
-	UNITED_STATES = "USD",
-	CANADA = "CAD",
-	SINGAPORE = "SGB",
-	EUROPE = "EUR",
-	SWEDEN = "SEK",
-	DENMARK = "DKK",
-	NORWAY = "NOK",
-	ICELAND = "ISK",
-	POUND = "GBP",
-	RUSSIA = "RUB",
-	AUSTRALIA = "AUD",
-	JAPAN = "JPY",
-	INDIA = "INR",
-	CHINA = "CNY",
-	BRAZIL = "BRL",
-	COLOMBIA = "COP",
-	MEXICO = "MXN",
-	ARGENTINA = "ARS",
-	ISRAEL = "ILS",
 }
 
 enum Calculation {
