@@ -155,6 +155,8 @@ export const getDisplayNameForCurrencyType = (type: CurrencyType) => {
 			return "Australian Dollar";
 		case CurrencyType.SINGAPORE:
 			return "Singapore Dollar";
+		case CurrencyType.KOREA:
+			return "South Korean Won";
 		case CurrencyType.CHINA:
 			return "Yuan";
 		case CurrencyType.JAPAN:
