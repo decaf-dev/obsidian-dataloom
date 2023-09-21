@@ -30,7 +30,7 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 
 		const donationDesc = new DocumentFragment();
 		const textEl = donationDesc.createDiv({
-			text: "I need your support - this project is dependent on donations from people like you",
+			text: "Enjoying the plugin? Consider supporting the development of DataLoom by buying me an herbal tea or sponsoring me on GitHub.",
 		});
 		textEl.style.marginBottom = "1.5em";
 		renderGitHubSponsorBadge(donationDesc);
