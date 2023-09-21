@@ -48,6 +48,11 @@ export default function OptionSubmenu({
 	onBackClick,
 	onSubmenuChange,
 }: Props) {
+	const numberFormatDisplayName =
+		numberFormat === NumberFormat.NUMBER
+			? "Number"
+			: getDisplayNameForCurrencyType(currencyType);
+
 	return (
 		<Submenu title={title} onBackClick={onBackClick}>
 			<Padding pt="sm" pb="lg">
@@ -82,13 +87,7 @@ export default function OptionSubmenu({
 					{type === CellType.NUMBER && (
 						<MenuItem
 							name="Number format"
-							value={
-								numberFormat === NumberFormat.NUMBER
-									? "Number"
-									: getDisplayNameForCurrencyType(
-											currencyType
-									  )
-							}
+							value={numberFormatDisplayName}
 							onClick={() =>
 								onSubmenuChange(SubmenuType.CURRENCY)
 							}
