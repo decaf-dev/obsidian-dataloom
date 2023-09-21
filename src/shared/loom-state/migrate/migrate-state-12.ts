@@ -3,6 +3,7 @@ import ColumNotFoundError from "src/shared/error/column-not-found-error";
 import {
 	CalculationType,
 	CellType,
+	CurrencyType,
 	LoomState,
 	NumberFormat,
 	TextFilterCondition,
@@ -11,6 +12,7 @@ import {
 	LoomState12,
 	FilterType as FilterType12,
 	CellType as CellType12,
+	CurrencyType as CurrencyType12,
 } from "../types/loom-state-12";
 import {
 	createMultiTagFilter,
@@ -38,13 +40,26 @@ export default class MigrateState12 implements MigrateState {
 		} = prevState.model;
 
 		const nextColumns = columns.map((column) => {
-			const { type } = column;
+			const { type, currencyType } = column;
+
+			let newType: CellType;
+			if (type === CellType12.CURRENCY) {
+				newType = CellType.NUMBER;
+			} else {
+				newType = type as CellType;
+			}
+
+			let newCurrency: CurrencyType;
+			if (currencyType == CurrencyType12.POUND) {
+				newCurrency = CurrencyType.GREAT_BRITAIN;
+			} else {
+				newCurrency = currencyType as unknown as CurrencyType;
+			}
+
 			return {
 				...column,
-				type:
-					type === CellType12.CURRENCY
-						? CellType.NUMBER
-						: (column.type as CellType),
+				type: newType,
+				currencyType: newCurrency,
 				calculationType: column.calculationType as CalculationType,
 				numberPrefix: "",
 				numberSuffix: "",
