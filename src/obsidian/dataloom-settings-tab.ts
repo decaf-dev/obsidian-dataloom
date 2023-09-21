@@ -16,7 +16,7 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		this.renderDonationHeader(containerEl);
+		this.renderSupportHeader(containerEl);
 		this.renderFileSettings(containerEl);
 		this.renderTableSettings(containerEl);
 		this.renderExportSettings(containerEl);
@@ -25,7 +25,7 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 		this.renderDebugSettings(containerEl);
 	}
 
-	private renderDonationHeader(containerEl: HTMLElement) {
+	private renderSupportHeader(containerEl: HTMLElement) {
 		new Setting(containerEl).setName("DataLoom").setHeading();
 
 		const donationDesc = new DocumentFragment();
@@ -205,8 +205,8 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName("Donation modal")
-			.setDesc("Show the donation modal when the plugin is updated.")
+			.setName("Support modal")
+			.setDesc("Show the support modal when the plugin is updated.")
 			.addToggle((cb) => {
 				cb.setValue(this.plugin.settings.showSupportModal).onChange(
 					async (value) => {
