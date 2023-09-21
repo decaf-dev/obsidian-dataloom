@@ -4,7 +4,7 @@ import Menu from "src/react/shared/menu";
 import OptionSubmenu from "./option-submenu";
 import TypeSubmenu from "./type-submenu";
 import BaseMenu from "./base-menu";
-import CurrencySubmenu from "./currency-submenu";
+import NumberFormatSubmenu from "./number-format-submenu";
 import TextInputSubmenu from "./text-input-submenu";
 import DateFormatSubmenu from "./date-format-submenu";
 import AspectRatioSubmenu from "./aspect-ratio-submenu";
@@ -295,7 +295,7 @@ export default function HeaderMenu({
 					/>
 				)}
 				{submenu === SubmenuType.CURRENCY && (
-					<CurrencySubmenu
+					<NumberFormatSubmenu
 						title="Currency"
 						format={numberFormat}
 						currency={currencyType}
