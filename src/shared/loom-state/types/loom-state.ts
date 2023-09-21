@@ -83,6 +83,7 @@ export enum CurrencyType {
 	ARGENTINA = "ARS",
 	ISRAEL = "ILS",
 	SWITZERLAND = "CHF",
+	KOREA = "KRW",
 }
 
 export enum AspectRatio {
