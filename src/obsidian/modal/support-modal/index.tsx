@@ -8,7 +8,7 @@ import {
 
 import "./styles.css";
 
-export default class DonationModal extends Modal {
+export default class SupportModal extends Modal {
 	constructor(app: App) {
 		super(app);
 	}
@@ -22,7 +22,7 @@ export default class DonationModal extends Modal {
 		this.renderText(contentEl);
 
 		const badgeContainer = contentEl.createEl("div", {
-			cls: "dataloom-donation-modal__badge-container",
+			cls: "dataloom-support-modal__badge-container",
 		});
 		renderGitHubSponsorBadge(badgeContainer);
 		renderBuyMeACoffeeBadge(badgeContainer);
@@ -30,16 +30,16 @@ export default class DonationModal extends Modal {
 
 	private renderText(contentEl: HTMLElement) {
 		const containerEl = contentEl.createEl("div", {
-			cls: "dataloom-donation-modal__container",
+			cls: "dataloom-support-modal__container",
 		});
 		containerEl.createEl("p", {
-			text: "I need your help. I develop this plugin as a free service, however I cannot dedicate adequate time to it without some support.",
+			text: "Fellow loomers, I need your help. I develop this plugin as a free service, however I cannot dedicate adequate time to it without some support.",
 		});
 		containerEl.createEl("p", {
 			text: "If this plugin has helped you, please consider supporting.",
 		});
 		containerEl.createEl("p", {
-			text: "- Trey.",
+			text: "Thank you.",
 		});
 	}
 
