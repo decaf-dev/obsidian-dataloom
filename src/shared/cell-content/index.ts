@@ -33,6 +33,9 @@ export const getCellContent = (
 		case CellType.NUMBER:
 			return getNumberCellContent(column.numberFormat, cell.markdown, {
 				currency: column.currencyType,
+				prefix: column.numberPrefix,
+				suffix: column.numberSuffix,
+				separator: column.numberSeparator,
 			});
 		case CellType.EMBED:
 			return getEmbedCellContent(app, cell.markdown, {

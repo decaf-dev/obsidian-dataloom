@@ -53,7 +53,15 @@ export const filterBodyRowsBySearch = (
 
 const doesCellMatch = (cell: CellWithReferences, searchText: string) => {
 	const { dateTime, markdown } = cell.cell;
-	const { currencyType, type, dateFormat, numberFormat } = cell.column;
+	const {
+		currencyType,
+		type,
+		dateFormat,
+		numberFormat,
+		numberPrefix,
+		numberSuffix,
+		numberSeparator,
+	} = cell.column;
 	const { lastEditedTime, creationTime } = cell.row;
 
 	switch (type) {
@@ -65,6 +73,9 @@ const doesCellMatch = (cell: CellWithReferences, searchText: string) => {
 		case CellType.NUMBER:
 			return matchNumberCell(
 				numberFormat,
+				numberPrefix,
+				numberSuffix,
+				numberSeparator,
 				currencyType,
 				markdown,
 				searchText
@@ -93,12 +104,18 @@ const matchCell = (cellContent: string, searchText: string) => {
 
 const matchNumberCell = (
 	numberFormat: NumberFormat,
+	prefix: string,
+	suffix: string,
+	separator: string,
 	currencyType: CurrencyType,
 	cellContent: string,
 	searchText: string
 ) => {
 	const content = getNumberCellContent(numberFormat, cellContent, {
 		currency: currencyType,
+		prefix,
+		suffix,
+		separator,
 	});
 	return content.toLowerCase().includes(searchText.toLowerCase());
 };
