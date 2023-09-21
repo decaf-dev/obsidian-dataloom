@@ -41,7 +41,6 @@ export enum CellType {
 	EMBED = "embed",
 	FILE = "file",
 	NUMBER = "number",
-	CURRENCY = "currency",
 	TAG = "tag",
 	MULTI_TAG = "multi-tag",
 	DATE = "date",
