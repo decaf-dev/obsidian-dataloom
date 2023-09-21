@@ -16,13 +16,15 @@ import { getNumberCellContent } from "src/shared/cell-content/number-cell-conten
 
 export const getNumberCalculationContent = (
 	values: number[],
-	numberFormat: NumberFormat,
+	format: NumberFormat,
 	currency: CurrencyType,
 	calculation: NumberCalculation
 ) => {
 	const value = getNumberCalculation(values, calculation).toString();
-	if (numberFormat === NumberFormat.CURRENCY) {
-		return getNumberCellContent(numberFormat, currency, value);
+	if (format === NumberFormat.CURRENCY) {
+		return getNumberCellContent(format, value, {
+			currency,
+		});
 	}
 	return value;
 };

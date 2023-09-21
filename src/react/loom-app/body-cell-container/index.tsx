@@ -24,6 +24,7 @@ import {
 	CellType,
 	CurrencyType,
 	DateFormat,
+	NumberFormat,
 	PaddingSize,
 	Tag,
 } from "src/shared/loom-state/types/loom-state";
@@ -49,7 +50,8 @@ interface Props {
 	numberPrefix: string;
 	numberSuffix: string;
 	numberSeparator: string;
-	columnCurrencyType: CurrencyType;
+	numberFormat: NumberFormat;
+	currencyType: CurrencyType;
 	columnId: string;
 	markdown: string;
 	aspectRatio: AspectRatio;
@@ -105,7 +107,9 @@ export default function BodyCellContainer({
 	isExternalLink,
 	markdown,
 	aspectRatio,
+	numberFormat,
 	verticalPadding,
+	currencyType,
 	horizontalPadding,
 	dateFormat,
 	dateTime,
@@ -342,6 +346,8 @@ export default function BodyCellContainer({
 					{columnType === CellType.NUMBER && (
 						<NumberCell
 							value={markdown}
+							currency={currencyType}
+							format={numberFormat}
 							prefix={numberPrefix}
 							suffix={numberSuffix}
 							separator={numberSeparator}

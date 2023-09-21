@@ -7,7 +7,6 @@ import RowOptions from "../row-options";
 import OptionBar from "../option-bar";
 import HeaderCell from "../header-cell-container";
 import BodyCell from "../body-cell-container";
-import FooterCell from "../footer-cell-container";
 import NewColumnButton from "../new-column-button";
 import BottomBar from "../bottom-bar";
 
@@ -69,7 +68,7 @@ export default function App() {
 		onColumnHideClick,
 		onColumnDeleteClick,
 		onCalculationTypeChange,
-		onCurrentChange,
+		onNumberFormatChange,
 		onNumberPrefixChange,
 		onNumberSeparatorChange,
 		onNumberSuffixChange,
@@ -207,6 +206,7 @@ export default function App() {
 									sortDir,
 									shouldWrapOverflow,
 									currencyType,
+									numberFormat,
 									numberPrefix,
 									numberSeparator,
 									numberSuffix,
@@ -237,6 +237,7 @@ export default function App() {
 											currencyType={currencyType}
 											numberPrefix={numberPrefix}
 											numberSeparator={numberSeparator}
+											numberFormat={numberFormat}
 											numberSuffix={numberSuffix}
 											verticalPadding={verticalPadding}
 											horizontalPadding={
@@ -266,7 +267,9 @@ export default function App() {
 											onNameChange={
 												onHeaderCellContentChange
 											}
-											onCurrencyChange={onCurrentChange}
+											onNumberFormatChange={
+												onNumberFormatChange
+											}
 											onNumberPrefixChange={
 												onNumberPrefixChange
 											}
@@ -331,6 +334,7 @@ export default function App() {
 									currencyType,
 									numberPrefix,
 									numberSeparator,
+									numberFormat,
 									numberSuffix,
 									dateFormat,
 									tags,
@@ -373,9 +377,10 @@ export default function App() {
 											columnTags={tags}
 											cellTagIds={tagIds}
 											columnId={columnId}
+											numberFormat={numberFormat}
 											rowCreationTime={creationTime}
 											dateFormat={dateFormat}
-											columnCurrencyType={currencyType}
+											currencyType={currencyType}
 											numberPrefix={numberPrefix}
 											numberSuffix={numberSuffix}
 											numberSeparator={numberSeparator}

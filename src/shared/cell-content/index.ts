@@ -31,11 +31,9 @@ export const getCellContent = (
 		case CellType.FILE:
 			return getTextCellContent(cell.markdown, shouldRemoveMarkdown);
 		case CellType.NUMBER:
-			return getNumberCellContent(
-				column.numberFormat,
-				column.currencyType,
-				cell.markdown
-			);
+			return getNumberCellContent(column.numberFormat, cell.markdown, {
+				currency: column.currencyType,
+			});
 		case CellType.EMBED:
 			return getEmbedCellContent(app, cell.markdown, {
 				isExport: true,

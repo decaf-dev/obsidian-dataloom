@@ -97,11 +97,9 @@ const matchNumberCell = (
 	cellContent: string,
 	searchText: string
 ) => {
-	const content = getNumberCellContent(
-		numberFormat,
-		currencyType,
-		cellContent
-	);
+	const content = getNumberCellContent(numberFormat, cellContent, {
+		currency: currencyType,
+	});
 	return content.toLowerCase().includes(searchText.toLowerCase());
 };
 
