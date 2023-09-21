@@ -76,9 +76,9 @@ export default function OptionSubmenu({
 							}
 						/>
 					)}
-					{type === CellType.CURRENCY && (
+					{type === CellType.NUMBER && (
 						<MenuItem
-							name="Currency"
+							name="Number format"
 							value={getDisplayNameForCurrencyType(currencyType)}
 							onClick={() =>
 								onSubmenuChange(SubmenuType.CURRENCY)

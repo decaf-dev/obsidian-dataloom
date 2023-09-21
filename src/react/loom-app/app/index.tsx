@@ -39,6 +39,7 @@ import "./global.css";
 import "./styles.css";
 import { useLogger } from "src/shared/logger";
 import { useMenuOperations } from "src/react/shared/menu/hooks";
+import FooterCellContainer from "../footer-cell-container";
 
 export default function App() {
 	const logger = useLogger();
@@ -433,6 +434,7 @@ export default function App() {
 										type,
 										currencyType,
 										dateFormat,
+										numberFormat,
 										width,
 										tags,
 										calculationType,
@@ -459,10 +461,11 @@ export default function App() {
 									return {
 										id: cell.id,
 										content: (
-											<FooterCell
+											<FooterCellContainer
 												columnId={columnId}
 												columnTags={tags}
 												cellId={cellId}
+												numberFormat={numberFormat}
 												currencyType={currencyType}
 												dateFormat={dateFormat}
 												bodyCells={columnBodyCells}

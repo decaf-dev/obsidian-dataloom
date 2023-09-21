@@ -60,7 +60,6 @@ export default function BaseMenu({
 	const hasOptions =
 		columnType === CellType.EMBED ||
 		columnType === CellType.DATE ||
-		columnType === CellType.CURRENCY ||
 		columnType === CellType.NUMBER ||
 		columnType === CellType.LAST_EDITED_TIME ||
 		columnType === CellType.CREATION_TIME;
@@ -121,8 +120,7 @@ export default function BaseMenu({
 				/>
 			)}
 			{columnType !== CellType.EMBED &&
-				columnType !== CellType.NUMBER &&
-				columnType !== CellType.CURRENCY && (
+				columnType !== CellType.NUMBER && (
 					<>
 						<Divider />
 						<Padding px="lg" py="md">

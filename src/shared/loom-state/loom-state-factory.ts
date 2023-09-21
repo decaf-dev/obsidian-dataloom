@@ -42,6 +42,7 @@ import {
 	CreationTimeCondition,
 	LastEditedTimeCondition,
 	DateFilterOption,
+	NumberFormat,
 } from "./types/loom-state";
 
 import { v4 as uuidv4 } from "uuid";
@@ -59,6 +60,7 @@ export const createColumn = (options?: { cellType?: CellType }): Column => {
 		numberPrefix: "",
 		numberSuffix: "",
 		numberSeparator: "",
+		numberFormat: NumberFormat.NUMBER,
 		currencyType: CurrencyType.UNITED_STATES,
 		dateFormat: DateFormat.MM_DD_YYYY,
 		shouldWrapOverflow: true,

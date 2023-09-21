@@ -3,6 +3,7 @@ import ColumNotFoundError from "src/shared/error/column-not-found-error";
 import {
 	CalculationType,
 	LoomState,
+	NumberFormat,
 	TextFilterCondition,
 } from "../types/loom-state";
 import {
@@ -42,6 +43,7 @@ export default class MigrateState12 implements MigrateState {
 				numberPrefix: "",
 				numberSuffix: "",
 				numberSeparator: "",
+				numberFormat: NumberFormat.NUMBER,
 			};
 		});
 

@@ -13,8 +13,6 @@ import TagCellEdit from "../tag-cell-edit";
 import DateCellEdit from "../date-cell-edit";
 import MultiTagCell from "../multi-tag-cell";
 import Menu from "../../shared/menu";
-import CurrencyCell from "../currency-cell";
-import CurrencyCellEdit from "../currency-cell-edit";
 import MenuTrigger from "src/react/shared/menu-trigger";
 import FileCell from "../file-cell";
 import FileCellEdit from "../file-cell-edit";
@@ -114,7 +112,6 @@ export default function BodyCellContainer({
 	numberPrefix,
 	numberSuffix,
 	numberSeparator,
-	columnCurrencyType,
 	columnType,
 	rowCreationTime,
 	rowLastEditedTime,
@@ -139,7 +136,6 @@ export default function BodyCellContainer({
 		columnType === CellType.TEXT ||
 		columnType === CellType.EMBED ||
 		columnType === CellType.NUMBER ||
-		columnType === CellType.CURRENCY ||
 		columnType === CellType.TAG ||
 		columnType === CellType.MULTI_TAG ||
 		columnType === CellType.DATE;
@@ -181,7 +177,6 @@ export default function BodyCellContainer({
 			columnType === CellType.TEXT ||
 			columnType === CellType.EMBED ||
 			columnType === CellType.NUMBER ||
-			columnType === CellType.CURRENCY ||
 			columnType === CellType.FILE
 		) {
 			onContentChange(cellId, rowId, "");
@@ -284,7 +279,6 @@ export default function BodyCellContainer({
 		columnType === CellType.MULTI_TAG ||
 		columnType === CellType.DATE ||
 		columnType === CellType.NUMBER ||
-		columnType === CellType.CURRENCY ||
 		columnType === CellType.FILE ||
 		columnType === CellType.EMBED
 	) {
@@ -353,12 +347,6 @@ export default function BodyCellContainer({
 							separator={numberSeparator}
 						/>
 					)}
-					{columnType === CellType.CURRENCY && (
-						<CurrencyCell
-							value={markdown}
-							currencyType={columnCurrencyType}
-						/>
-					)}
 					{columnType === CellType.TAG && cellTags.length === 1 && (
 						<TagCell
 							markdown={cellTags[0].markdown}
@@ -399,7 +387,6 @@ export default function BodyCellContainer({
 				id={menu.id}
 				hideBorder={
 					columnType === CellType.TEXT ||
-					columnType === CellType.CURRENCY ||
 					columnType === CellType.NUMBER
 				}
 				isOpen={isOpen}
@@ -465,14 +452,6 @@ export default function BodyCellContainer({
 						dateFormat={dateFormat}
 						onDateTimeChange={handleDateTimeChange}
 						onDateFormatChange={handleDateFormatChange}
-						onClose={onClose}
-					/>
-				)}
-				{columnType === CellType.CURRENCY && (
-					<CurrencyCellEdit
-						closeRequest={closeRequest}
-						value={markdown}
-						onChange={handleInputChange}
 						onClose={onClose}
 					/>
 				)}

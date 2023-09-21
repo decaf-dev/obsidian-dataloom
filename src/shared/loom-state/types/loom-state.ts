@@ -58,6 +58,11 @@ export enum DateFormat {
 	RELATIVE = "relative",
 }
 
+export enum NumberFormat {
+	NUMBER = "number",
+	CURRENCY = "currency",
+}
+
 export enum CurrencyType {
 	UNITED_STATES = "USD",
 	CANADA = "CAD",
@@ -168,68 +173,84 @@ export interface BaseFilter {
 	isEnabled: boolean;
 }
 
+/* Text filter */
 export type TextCondition = TextFilterCondition;
+
 export interface TextFilter extends BaseFilter {
 	type: CellType.TEXT;
 	condition: TextCondition;
 	text: string;
 }
 
+/* File filter */
 export type FileCondition = TextFilterCondition;
+
 export interface FileFilter extends BaseFilter {
 	type: CellType.FILE;
 	condition: FileCondition;
 	text: string;
 }
 
+/* Checkbox filter */
 export type CheckboxCondition =
 	| TextFilterCondition.IS
 	| TextFilterCondition.IS_NOT;
+
 export interface CheckboxFilter extends BaseFilter {
 	type: CellType.CHECKBOX;
 	condition: CheckboxCondition;
 	text: string;
 }
 
+/* Tag filter */
 export type TagCondition =
 	| TextFilterCondition.IS
 	| TextFilterCondition.IS_NOT
 	| TextFilterCondition.IS_EMPTY
 	| TextFilterCondition.IS_NOT_EMPTY;
+
 export interface TagFilter extends BaseFilter {
 	type: CellType.TAG;
 	condition: TagCondition;
 	tagId: string;
 }
 
+/* Multi-tag filter */
 export type MultiTagCondition =
 	| TextFilterCondition.CONTAINS
 	| TextFilterCondition.DOES_NOT_CONTAIN
 	| TextFilterCondition.IS_EMPTY
 	| TextFilterCondition.IS_NOT_EMPTY;
+
 export interface MultiTagFilter extends BaseFilter {
 	type: CellType.MULTI_TAG;
 	condition: MultiTagCondition;
 	tagIds: string[];
 }
 
+/* Embed filter */
 export type EmbedCondition =
 	| TextFilterCondition.IS_EMPTY
 	| TextFilterCondition.IS_NOT_EMPTY;
+
 export interface EmbedFilter extends BaseFilter {
 	type: CellType.EMBED;
 	condition: EmbedCondition;
 	text: string;
 }
 
+/* Number filter */
 export type NumberCondition = NumberFilterCondition;
+
 export interface NumberFilter extends BaseFilter {
 	type: CellType.NUMBER;
 	condition: NumberCondition;
 	text: string;
 }
 
+/* Date filter */
 export type DateCondition = DateFilterCondition;
+
 export interface DateFilter extends BaseFilter {
 	type: CellType.DATE;
 	condition: DateCondition;
@@ -237,6 +258,7 @@ export interface DateFilter extends BaseFilter {
 	dateTime: number | null;
 }
 
+/* Creation time filter  */
 export type CreationTimeCondition =
 	| DateFilterCondition.IS
 	| DateFilterCondition.IS_AFTER
@@ -249,10 +271,12 @@ export interface CreationTimeFilter extends BaseFilter {
 	dateTime: number | null;
 }
 
+/* Last edited filter  */
 export type LastEditedTimeCondition =
 	| DateFilterCondition.IS
 	| DateFilterCondition.IS_AFTER
 	| DateFilterCondition.IS_BEFORE;
+
 export interface LastEditedTimeFilter extends BaseFilter {
 	type: CellType.LAST_EDITED_TIME;
 	condition: LastEditedTimeCondition;
@@ -281,6 +305,7 @@ export interface Column {
 	type: CellType;
 	isVisible: boolean;
 	dateFormat: DateFormat;
+	numberFormat: NumberFormat;
 	currencyType: CurrencyType;
 	numberPrefix: string;
 	numberSuffix: string;

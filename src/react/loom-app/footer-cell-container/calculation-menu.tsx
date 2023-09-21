@@ -55,8 +55,7 @@ export default function CalculationMenu({
 						isSelected={type === value}
 					/>
 				))}
-				{(cellType === CellType.NUMBER ||
-					cellType === CellType.CURRENCY) &&
+				{cellType === CellType.NUMBER &&
 					Object.values(NumberCalculation).map((type) => (
 						<MenuItem
 							key={type}
