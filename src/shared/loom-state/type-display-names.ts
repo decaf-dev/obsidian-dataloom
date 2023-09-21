@@ -155,12 +155,16 @@ export const getDisplayNameForCurrencyType = (type: CurrencyType) => {
 			return "Australian Dollar";
 		case CurrencyType.SINGAPORE:
 			return "Singapore Dollar";
-		case CurrencyType.KOREA:
-			return "South Korean Won";
+		case CurrencyType.SOUTH_KOREA:
+			return "Won";
 		case CurrencyType.CHINA:
 			return "Yuan";
 		case CurrencyType.JAPAN:
 			return "Yen";
+		case CurrencyType.UAE:
+			return "Dirham";
+		case CurrencyType.SAUDI_ARABIA:
+			return "Riyal";
 		case CurrencyType.COLOMBIA:
 			return "Colombian Peso";
 		case CurrencyType.EUROPE:
@@ -175,7 +179,7 @@ export const getDisplayNameForCurrencyType = (type: CurrencyType) => {
 			return "Icelandic Króna";
 		case CurrencyType.BRAZIL:
 			return "Real";
-		case CurrencyType.POUND:
+		case CurrencyType.GREAT_BRITAIN:
 			return "Pound";
 		case CurrencyType.INDIA:
 			return "Rupee";
