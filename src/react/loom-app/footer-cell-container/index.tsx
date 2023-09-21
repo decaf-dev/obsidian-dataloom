@@ -10,6 +10,7 @@ import {
 	CurrencyType,
 	DateFormat,
 	Tag,
+	NumberFormat,
 } from "src/shared/loom-state/types/loom-state";
 import Stack from "../../shared/stack";
 
@@ -28,6 +29,7 @@ interface Props {
 	calculationType: CalculationType;
 	columnTags: Tag[];
 	width: string;
+	numberFormat: NumberFormat;
 	bodyRows: BodyRow[];
 	bodyCells: BodyCell[];
 	currencyType: CurrencyType;
@@ -41,6 +43,7 @@ export default function FooterCellContainer({
 	columnTags,
 	bodyCells,
 	dateFormat,
+	numberFormat,
 	bodyRows,
 	width,
 	calculationType,
@@ -74,7 +77,7 @@ export default function FooterCellContainer({
 		if (cellValues.length !== 0)
 			content = getNumberCalculationContent(
 				cellValues,
-				cellType,
+				numberFormat,
 				currencyType,
 				calculationType
 			);

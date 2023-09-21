@@ -149,7 +149,6 @@ const getCellValues = (
 		cellType === CellType.TEXT ||
 		cellType === CellType.EMBED ||
 		cellType === CellType.NUMBER ||
-		cellType === CellType.CURRENCY ||
 		cellType === CellType.CHECKBOX ||
 		cellType === CellType.FILE
 	) {
@@ -177,7 +176,6 @@ const countCellValues = (cell: BodyCell, cellType: CellType): number => {
 		cellType === CellType.TEXT ||
 		cellType === CellType.EMBED ||
 		cellType === CellType.NUMBER ||
-		cellType === CellType.CURRENCY ||
 		cellType === CellType.FILE
 	) {
 		return cell.markdown === "" ? 0 : 1;
@@ -202,7 +200,6 @@ const isCellContentEmpty = (cell: BodyCell, cellType: CellType): boolean => {
 		cellType === CellType.TEXT ||
 		cellType === CellType.EMBED ||
 		cellType === CellType.NUMBER ||
-		cellType === CellType.CURRENCY ||
 		cellType === CellType.FILE
 	) {
 		return cell.markdown === "";

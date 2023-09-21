@@ -5,6 +5,7 @@ import {
 	CellType,
 	CurrencyType,
 	DateFormat,
+	NumberFormat,
 	PaddingSize,
 } from "src/shared/loom-state/types/loom-state";
 import Stack from "src/react/shared/stack";
@@ -19,6 +20,7 @@ import {
 interface Props {
 	title: string;
 	currencyType: CurrencyType;
+	numberFormat: NumberFormat;
 	numberPrefix: string;
 	numberSuffix: string;
 	numberSeparator: string;
@@ -34,6 +36,7 @@ interface Props {
 export default function OptionSubmenu({
 	type,
 	currencyType,
+	numberFormat,
 	numberPrefix,
 	numberSuffix,
 	numberSeparator,
@@ -76,48 +79,57 @@ export default function OptionSubmenu({
 							}
 						/>
 					)}
-					{type === CellType.CURRENCY && (
+					{type === CellType.NUMBER && (
 						<MenuItem
-							name="Currency"
-							value={getDisplayNameForCurrencyType(currencyType)}
+							name="Number format"
+							value={
+								numberFormat === NumberFormat.NUMBER
+									? "Number"
+									: getDisplayNameForCurrencyType(
+											currencyType
+									  )
+							}
 							onClick={() =>
 								onSubmenuChange(SubmenuType.CURRENCY)
 							}
 						/>
 					)}
-					{type === CellType.NUMBER && (
-						<MenuItem
-							name="Prefix"
-							value={numberPrefix}
-							onClick={() =>
-								onSubmenuChange(
-									SubmenuType.TEXT_INPUT_NUMBER_PREFIX
-								)
-							}
-						/>
-					)}
-					{type === CellType.NUMBER && (
-						<MenuItem
-							name="Suffix"
-							value={numberSuffix}
-							onClick={() =>
-								onSubmenuChange(
-									SubmenuType.TEXT_INPUT_NUMBER_SUFFIX
-								)
-							}
-						/>
-					)}
-					{type === CellType.NUMBER && (
-						<MenuItem
-							name="Separator"
-							value={numberSeparator}
-							onClick={() =>
-								onSubmenuChange(
-									SubmenuType.TEXT_INPUT_NUMBER_SEPARATOR
-								)
-							}
-						/>
-					)}
+					{type === CellType.NUMBER &&
+						numberFormat == NumberFormat.NUMBER && (
+							<MenuItem
+								name="Prefix"
+								value={numberPrefix}
+								onClick={() =>
+									onSubmenuChange(
+										SubmenuType.TEXT_INPUT_NUMBER_PREFIX
+									)
+								}
+							/>
+						)}
+					{type === CellType.NUMBER &&
+						numberFormat == NumberFormat.NUMBER && (
+							<MenuItem
+								name="Suffix"
+								value={numberSuffix}
+								onClick={() =>
+									onSubmenuChange(
+										SubmenuType.TEXT_INPUT_NUMBER_SUFFIX
+									)
+								}
+							/>
+						)}
+					{type === CellType.NUMBER &&
+						numberFormat == NumberFormat.NUMBER && (
+							<MenuItem
+								name="Separator"
+								value={numberSeparator}
+								onClick={() =>
+									onSubmenuChange(
+										SubmenuType.TEXT_INPUT_NUMBER_SEPARATOR
+									)
+								}
+							/>
+						)}
 					{(type === CellType.CREATION_TIME ||
 						type === CellType.LAST_EDITED_TIME ||
 						type === CellType.DATE) && (

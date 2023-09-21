@@ -2,7 +2,9 @@ import MigrateState from "./migrate-state";
 import ColumNotFoundError from "src/shared/error/column-not-found-error";
 import {
 	CalculationType,
+	CellType,
 	LoomState,
+	NumberFormat,
 	TextFilterCondition,
 } from "../types/loom-state";
 import {
@@ -36,12 +38,18 @@ export default class MigrateState12 implements MigrateState {
 		} = prevState.model;
 
 		const nextColumns = columns.map((column) => {
+			const { type } = column;
 			return {
 				...column,
+				type:
+					type === CellType12.CURRENCY
+						? CellType.NUMBER
+						: (column.type as CellType),
 				calculationType: column.calculationType as CalculationType,
 				numberPrefix: "",
 				numberSuffix: "",
 				numberSeparator: "",
+				numberFormat: NumberFormat.NUMBER,
 			};
 		});
 

@@ -15,6 +15,7 @@ import {
 	CellType,
 	CurrencyType,
 	DateFormat,
+	NumberFormat,
 	PaddingSize,
 	SortDir,
 } from "src/shared/loom-state/types/loom-state";
@@ -30,6 +31,7 @@ interface Props {
 	horizontalPadding: PaddingSize;
 	verticalPadding: PaddingSize;
 	aspectRatio: AspectRatio;
+	numberFormat: NumberFormat;
 	rowId: string;
 	columnId: string;
 	width: string;
@@ -46,7 +48,13 @@ interface Props {
 	onWidthChange: (columnId: string, width: string) => void;
 	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
 	onNameChange: (cellId: string, value: string) => void;
-	onCurrencyChange: (columnId: string, value: CurrencyType) => void;
+	onNumberFormatChange: (
+		columnId: string,
+		format: NumberFormat,
+		options?: {
+			currency: CurrencyType;
+		}
+	) => void;
 	onNumberPrefixChange: (columnId: string, value: string) => void;
 	onNumberSuffixChange: (columnId: string, value: string) => void;
 	onNumberSeparatorChange: (columnId: string, value: string) => void;
@@ -62,6 +70,7 @@ export default function HeaderCellContainer({
 	rowId,
 	columnId,
 	currencyType,
+	numberFormat,
 	numberPrefix,
 	numberSeparator,
 	numberSuffix,
@@ -85,7 +94,7 @@ export default function HeaderCellContainer({
 	onDeleteClick,
 	onWrapOverflowToggle,
 	onNameChange,
-	onCurrencyChange,
+	onNumberFormatChange,
 	onNumberPrefixChange,
 	onNumberSeparatorChange,
 	onNumberSuffixChange,
@@ -169,6 +178,7 @@ export default function HeaderCellContainer({
 				horizontalPadding={horizontalPadding}
 				verticalPadding={verticalPadding}
 				rowId={rowId}
+				numberFormat={numberFormat}
 				currencyType={currencyType}
 				numberPrefix={numberPrefix}
 				numberSuffix={numberSuffix}
@@ -189,7 +199,7 @@ export default function HeaderCellContainer({
 				onRequestClose={onRequestClose}
 				onWrapOverflowToggle={onWrapOverflowToggle}
 				onNameChange={onNameChange}
-				onCurrencyChange={onCurrencyChange}
+				onNumberFormatChange={onNumberFormatChange}
 				onNumberPrefixChange={onNumberPrefixChange}
 				onNumberSeparatorChange={onNumberSeparatorChange}
 				onNumberSuffixChange={onNumberSuffixChange}

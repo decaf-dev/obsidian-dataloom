@@ -30,7 +30,7 @@ interface Props {
 	columns: Column[];
 	filters: Filter[];
 	onSortRemoveClick: (columnId: string) => void;
-	onColumnToggle: (columnId: string) => void;
+	onColumnToggle: (columnId: string, isVisible: boolean) => void;
 	onFilterUpdate: (
 		filterId: string,
 		data: Partial<Filter>,
