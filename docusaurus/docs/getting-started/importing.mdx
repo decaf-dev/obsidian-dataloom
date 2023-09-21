@@ -1,0 +1,39 @@
+---
+sidebar_position: 5
+---
+
+import importFullVideo from "../../static/video/import-full.mov";
+import importToggleColumnsVideo from "../../static/video/import-toggle-columns.mov";
+
+# Importing
+
+DataLoom allows you to import data from existing Markdown or CSV sources. You may import data from a file or from the clipboard.
+
+1. Select the 3 dot menu in the top right corner of the loom
+2. Select **Import**
+3. Choose a data type: _Markdown_ or _CSV_
+4. Choose a data source: _File_ or _Paste from clipboard_
+5. Select the file you wish to import or paste the data from your clipboard
+6. If you are importing by CSV, you may toggle the **First row contains headers** option. If this option is toggled on, the first row of the CSV will be used as the column headers. If this option is toggled off, the columns will be named `Column 1`, `Column 2`, etc.
+7. A table will be rendered from the imported data. Match each column to a column in your loom
+8. Select **Finish**
+
+<video width="1280" controls>
+	<source src={importFullVideo} type="video/mp4" />
+	Your browser does not support the video tag.
+</video>
+
+## Matching columns
+
+A column is considered matched when it is assigned to a column in the loom or when it is toggled off. You can toggle a column off by selecting the checkbox in the table header.
+
+If you wish to toggle all columns off or on, select **Toggle all**.
+
+To match a column, select the match icon on the right side of each column header. A dropdown will appear with all of the columns in your loom. Select the column you wish to match to. If you wish to create a new column, select **New column**.
+
+After a column has been matched, it cannot be used by other columns. If you wish to assign a column to a different column, you must first unmatch the column. To unmatch a column, select **Unmatch**.
+
+<video width="1280" controls>
+	<source src={importToggleColumnsVideo} type="video/mp4" />
+	Your browser does not support the video tag.
+</video>

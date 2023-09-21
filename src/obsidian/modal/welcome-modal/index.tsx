@@ -40,7 +40,7 @@ export default class WelcomeModal extends Modal {
 			cardContainerEl,
 			"Import markdown tables and CSV data",
 			"Learn how to import data from markdown tables and CSV files",
-			"https://dataloom.xyz/other/import",
+			"https://dataloom.xyz/getting-started/importing",
 			"import"
 		);
 
@@ -48,15 +48,15 @@ export default class WelcomeModal extends Modal {
 			cardContainerEl,
 			"Embedded looms",
 			"Learn how to embed a loom into a markdown note",
-			"https://dataloom.xyz/other/embedding-looms",
+			"https://dataloom.xyz/getting-started/embedding-looms",
 			"sticky-note"
 		);
 
 		this.renderCard(
 			cardContainerEl,
-			"Keyboard focus system",
+			"Keyboard navigation",
 			"Learn how to navigate looms with your keyboard",
-			"https://dataloom.xyz/other/keyboard-focus-system",
+			"https://dataloom.xyz/getting-started/keyboard-navigation",
 			"list-plus"
 		);
 	}
