@@ -208,9 +208,9 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 			.setName("Donation modal")
 			.setDesc("Show the donation modal when the plugin is updated.")
 			.addToggle((cb) => {
-				cb.setValue(this.plugin.settings.showDonationModal).onChange(
+				cb.setValue(this.plugin.settings.showSupportModal).onChange(
 					async (value) => {
-						this.plugin.settings.showDonationModal = value;
+						this.plugin.settings.showSupportModal = value;
 						await this.plugin.saveSettings();
 					}
 				);
