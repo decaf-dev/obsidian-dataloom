@@ -1,39 +1,43 @@
 import { useOverflow } from "src/shared/spacing/hooks";
 
 import { isNumber } from "src/shared/match";
+import {
+	CurrencyType,
+	NumberFormat,
+} from "src/shared/loom-state/types/loom-state";
+import { getNumberCellContent } from "src/shared/cell-content/number-cell-content";
 import "./styles.css";
 
 interface Props {
 	value: string;
-	prefix?: string;
-	suffix?: string;
-	separator?: string;
+	currency: CurrencyType;
+	format: NumberFormat;
+	prefix: string;
+	suffix: string;
+	separator: string;
 }
-
-const addCustomThousandsSeparator = (num: string, separator: string) => {
-	const regex = /\B(?=(\d{3})+(?!\d))/g;
-	return num.replace(regex, separator);
-};
 
 export default function NumberCell({
 	value,
+	currency,
+	format,
 	prefix,
 	suffix,
 	separator,
 }: Props) {
 	const overflowClassName = useOverflow(false);
 
-	let valueString = "";
-	if (isNumber(value)) valueString = value;
-	if (separator && valueString.length > 0)
-		valueString = addCustomThousandsSeparator(valueString, separator);
-	if (prefix && valueString.length > 0)
-		valueString = `${prefix} ${valueString}`;
-	if (suffix && valueString.length > 0)
-		valueString = `${valueString} ${suffix}`;
+	if (isNumber(value)) {
+		value = getNumberCellContent(format, value, {
+			currency,
+			prefix,
+			suffix,
+			separator,
+		});
+	}
 
 	let className = "dataloom-number-cell";
 	className += " " + overflowClassName;
 
-	return <div className={className}>{valueString}</div>;
+	return <div className={className}>{value}</div>;
 }

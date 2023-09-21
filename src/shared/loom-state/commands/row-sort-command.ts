@@ -112,7 +112,7 @@ export default class RowSortCommand extends LoomStateCommand {
 		cells: BodyCell[]
 	): number {
 		const { id, type, sortDir, tags } = column;
-		if (type === CellType.NUMBER || type === CellType.CURRENCY) {
+		if (type === CellType.NUMBER) {
 			return this.sortByNumber(a, b, id, cells, sortDir);
 		} else if (type === CellType.TAG || type === CellType.MULTI_TAG) {
 			return this.sortByTag(a, b, id, tags, cells, sortDir);

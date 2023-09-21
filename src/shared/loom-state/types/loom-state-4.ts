@@ -17,6 +17,18 @@ export enum GeneralFunction {
 	PERCENT_NOT_EMPTY = "percent_not_empty",
 }
 
+export enum CellType {
+	TEXT = "text",
+	NUMBER = "number",
+	CURRENCY = "currency",
+	TAG = "tag",
+	MULTI_TAG = "multi-tag",
+	DATE = "date",
+	CHECKBOX = "checkbox",
+	CREATION_TIME = "creation-time",
+	LAST_EDITED_TIME = "last-edited-time",
+}
+
 export type HeaderRow = Row;
 export type FooterRow = Row;
 
@@ -37,18 +49,6 @@ enum SortDir {
 	ASC = "asc",
 	DESC = "desc",
 	NONE = "default",
-}
-
-enum CellType {
-	TEXT = "text",
-	NUMBER = "number",
-	CURRENCY = "currency",
-	TAG = "tag",
-	MULTI_TAG = "multi-tag",
-	DATE = "date",
-	CHECKBOX = "checkbox",
-	CREATION_TIME = "creation-time",
-	LAST_EDITED_TIME = "last-edited-time",
 }
 
 enum DateFormat {

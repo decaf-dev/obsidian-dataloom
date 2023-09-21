@@ -71,7 +71,7 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 		this.type = type;
 	}
 
-	private fromNumberOrCurrency(columns: Column[]) {
+	private fromNumber(columns: Column[]) {
 		return columns.map((column) => {
 			if (column.id === this.columnId) {
 				if (isNumberCalcuation(column.calculationType)) {
@@ -348,11 +348,8 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 			newBodyCells = this.fromDateToText(column, newBodyCells);
 		}
 
-		if (
-			this.previousType === CellType.NUMBER ||
-			this.previousType === CellType.CURRENCY
-		) {
-			newColumns = this.fromNumberOrCurrency(newColumns);
+		if (this.previousType === CellType.NUMBER) {
+			newColumns = this.fromNumber(newColumns);
 		}
 
 		newColumns = newColumns.map((column) => {

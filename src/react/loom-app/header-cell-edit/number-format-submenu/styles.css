@@ -1,0 +1,6 @@
+.dataloom-number-format-submenu {
+    width: 100%;
+    height: 240px;
+    overflow-y: scroll;
+    overflow-x: auto;
+}

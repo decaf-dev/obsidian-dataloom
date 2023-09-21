@@ -4,7 +4,7 @@ import Menu from "src/react/shared/menu";
 import OptionSubmenu from "./option-submenu";
 import TypeSubmenu from "./type-submenu";
 import BaseMenu from "./base-menu";
-import CurrencySubmenu from "./currency-submenu";
+import NumberFormatSubmenu from "./number-format-submenu";
 import TextInputSubmenu from "./text-input-submenu";
 import DateFormatSubmenu from "./date-format-submenu";
 import AspectRatioSubmenu from "./aspect-ratio-submenu";
@@ -17,6 +17,7 @@ import {
 	DateFormat,
 	SortDir,
 	PaddingSize,
+	NumberFormat,
 } from "src/shared/loom-state/types/loom-state";
 import { SubmenuType } from "./types";
 
@@ -39,6 +40,7 @@ interface Props {
 	numberSeparator: string;
 	rowId: string;
 	cellId: string;
+	numberFormat: NumberFormat;
 	aspectRatio: AspectRatio;
 	horizontalPadding: PaddingSize;
 	verticalPadding: PaddingSize;
@@ -54,7 +56,13 @@ interface Props {
 	onDeleteClick: (columnId: string) => void;
 	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
 	onNameChange: (cellId: string, value: string) => void;
-	onCurrencyChange: (columnId: string, value: CurrencyType) => void;
+	onNumberFormatChange: (
+		columnId: string,
+		value: NumberFormat,
+		options?: {
+			currency: CurrencyType;
+		}
+	) => void;
 	onNumberPrefixChange: (columnId: string, value: string) => void;
 	onNumberSuffixChange: (columnId: string, value: string) => void;
 	onNumberSeparatorChange: (columnId: string, value: string) => void;
@@ -81,6 +89,7 @@ export default function HeaderMenu({
 	markdown,
 	dateFormat,
 	currencyType,
+	numberFormat,
 	numberPrefix,
 	numberSuffix,
 	numberSeparator,
@@ -102,7 +111,7 @@ export default function HeaderMenu({
 	onClose,
 	onWrapOverflowToggle,
 	onNameChange,
-	onCurrencyChange,
+	onNumberFormatChange,
 	onNumberPrefixChange,
 	onNumberSuffixChange,
 	onNumberSeparatorChange,
@@ -174,8 +183,13 @@ export default function HeaderMenu({
 		setSubmenu(null);
 	}
 
-	function handleCurrencyClick(value: CurrencyType) {
-		onCurrencyChange(columnId, value);
+	function handleNumberFormatChange(
+		value: NumberFormat,
+		options?: {
+			currency: CurrencyType;
+		}
+	) {
+		onNumberFormatChange(columnId, value, options);
 		setSubmenu(SubmenuType.OPTIONS);
 	}
 
@@ -229,6 +243,7 @@ export default function HeaderMenu({
 						verticalPadding={verticalPadding}
 						aspectRatio={aspectRatio}
 						dateFormat={dateFormat}
+						numberFormat={numberFormat}
 						currencyType={currencyType}
 						numberPrefix={numberPrefix}
 						numberSuffix={numberSuffix}
@@ -280,10 +295,11 @@ export default function HeaderMenu({
 					/>
 				)}
 				{submenu === SubmenuType.CURRENCY && (
-					<CurrencySubmenu
+					<NumberFormatSubmenu
 						title="Currency"
-						value={currencyType}
-						onValueClick={handleCurrencyClick}
+						format={numberFormat}
+						currency={currencyType}
+						onNumberFormatChange={handleNumberFormatChange}
 						onBackClick={() => setSubmenu(SubmenuType.OPTIONS)}
 					/>
 				)}

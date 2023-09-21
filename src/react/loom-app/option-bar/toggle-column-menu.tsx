@@ -16,7 +16,7 @@ interface Props {
 	triggerPosition: Position;
 	isOpen: boolean;
 	columns: ColumnWithMarkdown[];
-	onToggle: (id: string) => void;
+	onToggle: (id: string, isVisible: boolean) => void;
 	onRequestClose: (type: LoomMenuCloseRequestType) => void;
 	onClose: () => void;
 }
@@ -53,7 +53,9 @@ export default function ToggleColumnMenu({
 									<Text value={markdown} maxWidth="250px" />
 									<Switch
 										value={isVisible}
-										onToggle={() => onToggle(id)}
+										onToggle={() =>
+											onToggle(id, !isVisible)
+										}
 									/>
 								</Wrap>
 							);
