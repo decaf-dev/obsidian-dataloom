@@ -28,14 +28,14 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 	private renderSupportHeader(containerEl: HTMLElement) {
 		new Setting(containerEl).setName("DataLoom").setHeading();
 
-		const donationDesc = new DocumentFragment();
-		const textEl = donationDesc.createDiv({
+		const supportDesc = new DocumentFragment();
+		const textEl = supportDesc.createDiv({
 			text: "Enjoying the plugin? Consider supporting the development of DataLoom by buying me an herbal tea or sponsoring me on GitHub.",
 		});
 		textEl.style.marginBottom = "1.5em";
-		renderGitHubSponsorBadge(donationDesc);
+		renderGitHubSponsorBadge(supportDesc);
 
-		new Setting(containerEl).setDesc(donationDesc);
+		new Setting(containerEl).setDesc(supportDesc);
 
 		renderBuyMeACoffeeBadge(containerEl);
 	}
