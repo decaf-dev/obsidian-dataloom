@@ -127,7 +127,7 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 	private renderExportSettings(containerEl: HTMLElement) {
 		const removeMarkdownOnExportDesc = new DocumentFragment();
 		removeMarkdownOnExportDesc.createSpan({
-			text: "If enabled, content will be exported as raw text instead of markdown. For example, if enabled, a checkbox cell's content will be exported true or false instead of [ ] or [x].",
+			text: "If enabled, content will be exported as plain text instead of markdown. For example, if enabled, a checkbox cell's content will be exported true or false instead of [ ] or [x].",
 		});
 
 		new Setting(containerEl).setName("Export").setHeading();
