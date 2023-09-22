@@ -1,10 +1,5 @@
 import { App } from "obsidian";
-import {
-	BodyCell,
-	Row,
-	CellType,
-	Column,
-} from "../loom-state/types/loom-state";
+import { Cell, Row, CellType, Column } from "../loom-state/types/loom-state";
 import { getCheckboxCellContent } from "./checkbox-cell-content";
 import { getDateCellContent } from "./date-cell-content";
 import { getEmbedCellContent } from "./embed-cell-content";
@@ -12,7 +7,7 @@ import { getNumberCellContent } from "./number-cell-content";
 import { getTextCellContent } from "./text-cell-content";
 import { getTimeCellContent } from "./time-content";
 
-const getTagCellContent = (column: Column, cell: BodyCell) => {
+const getTagCellContent = (column: Column, cell: Cell) => {
 	return column.tags
 		.filter((tag) => cell.tagIds.includes(tag.id))
 		.map((tag) => tag.markdown)
@@ -23,7 +18,7 @@ export const getCellContent = (
 	app: App,
 	column: Column,
 	row: Row,
-	cell: BodyCell,
+	cell: Cell,
 	shouldRemoveMarkdown: boolean
 ) => {
 	switch (column.type) {

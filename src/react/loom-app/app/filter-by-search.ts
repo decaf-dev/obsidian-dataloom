@@ -1,5 +1,5 @@
 import {
-	BodyCell,
+	Cell,
 	Row,
 	CellType,
 	Column,
@@ -16,7 +16,7 @@ import { getDateCellContent } from "src/shared/cell-content/date-cell-content";
 import { getNumberCellContent } from "src/shared/cell-content/number-cell-content";
 
 type CellWithReferences = {
-	cell: BodyCell;
+	cell: Cell;
 	column: Column;
 	row: Row;
 	tags: Tag[];

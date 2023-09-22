@@ -1,11 +1,11 @@
 import {
-	createBodyCell,
+	createCell,
 	createRow,
 	createColumn,
 	createTag,
 } from "src/shared/loom-state/loom-state-factory";
 import {
-	BodyCell,
+	Cell,
 	CellType,
 	Column,
 	LoomState,
@@ -25,10 +25,10 @@ export const updateStateWithImportData = (
 	const dataRows = data.slice(1);
 
 	//Create a row for each data entry
-	const newBodyRows = Array(dataRows.length)
+	const newRows = Array(dataRows.length)
 		.fill(null)
 		.map((_val, i) => createRow(rows.length + i));
-	const nextBodyRows = [...rows, ...newBodyRows];
+	const nextRows = [...rows, ...newRows];
 
 	//Create a column for each column that does not have a match
 	const newColumns: Column[] = [];
@@ -41,18 +41,18 @@ export const updateStateWithImportData = (
 	});
 	const nextColumns = [...columns, ...newColumns];
 
-	const newBodyCells: BodyCell[] = [];
+	const newCells: Cell[] = [];
 	newColumns.forEach((column) => {
 		rows.forEach((row) => {
-			const cell = createBodyCell(column.id, row.id);
-			newBodyCells.push(cell);
+			const cell = createCell(column.id, row.id);
+			newCells.push(cell);
 		});
 	});
 
 	//This represents the rows that we are importing
 	dataRows.forEach((dataRow, j) => {
-		const newBodyRow = newBodyRows[j];
-		const { id: rowId } = newBodyRow;
+		const newRow = newRows[j];
+		const { id: rowId } = newRow;
 
 		//This represents the columns in the current data
 		nextColumns.forEach((column) => {
@@ -64,7 +64,7 @@ export const updateStateWithImportData = (
 			//For each row we create, we need to create a body cell. However,
 			//only those cells that have a match will have a value
 			let content = "";
-			let newCell: BodyCell | null = null;
+			let newCell: Cell | null = null;
 			if (match) {
 				const { importColumnIndex } = match;
 				content = dataRow[importColumnIndex];
@@ -83,23 +83,23 @@ export const updateStateWithImportData = (
 				}
 			}
 			if (!newCell) {
-				newCell = createBodyCell(columnId, rowId, {
+				newCell = createCell(columnId, rowId, {
 					markdown: content,
 				});
 			}
-			newBodyCells.push(newCell);
+			newCells.push(newCell);
 		});
 	});
 
-	const nextBodyCells = [...bodyCells, ...newBodyCells];
+	const nextCells = [...bodyCells, ...newCells];
 
 	return {
 		...prevState,
 		model: {
 			...prevState.model,
 			columns: nextColumns,
-			rows: nextBodyRows,
-			bodyCells: nextBodyCells,
+			rows: nextRows,
+			bodyCells: nextCells,
 		},
 	};
 };
@@ -109,7 +109,7 @@ const createTagCell = (columnId: string, rowId: string, content: string) => {
 	const newTags = parsedTags.map((tag) => createTag(tag));
 	const newTagIds = newTags.map((tag) => tag.id);
 
-	const cell = createBodyCell(columnId, rowId, {
+	const cell = createCell(columnId, rowId, {
 		markdown: content,
 		tagIds: newTagIds,
 	});
@@ -121,7 +121,7 @@ const createTagCell = (columnId: string, rowId: string, content: string) => {
 
 const createDateCell = (columnId: string, rowId: string, content: string) => {
 	const dateTime = getDateTimeFromContent(content);
-	const cell = createBodyCell(columnId, rowId, {
+	const cell = createCell(columnId, rowId, {
 		dateTime,
 	});
 	return cell;

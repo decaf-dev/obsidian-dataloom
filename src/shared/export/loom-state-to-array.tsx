@@ -1,9 +1,4 @@
-import {
-	BodyCell,
-	Row,
-	Column,
-	LoomState,
-} from "../loom-state/types/loom-state";
+import { Cell, Row, Column, LoomState } from "../loom-state/types/loom-state";
 import { getCellContent } from "../cell-content";
 import ColumNotFoundError from "../error/column-not-found-error";
 import { App } from "obsidian";
@@ -16,7 +11,7 @@ const serializeBodyCells = (
 	app: App,
 	columns: Column[],
 	rows: Row[],
-	cells: BodyCell[],
+	cells: Cell[],
 	shouldRemoveMarkdown: boolean
 ): string[][] => {
 	return rows.map((row) => {

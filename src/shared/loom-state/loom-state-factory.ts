@@ -1,7 +1,7 @@
 import { randomColor } from "src/shared/color";
 import {
 	AspectRatio,
-	BodyCell,
+	Cell,
 	Row,
 	GeneralCalculation,
 	CellType,
@@ -79,7 +79,7 @@ export const createRow = (index: number): Row => {
 	};
 };
 
-export const createBodyCell = (
+export const createCell = (
 	columnId: string,
 	rowId: string,
 	options: {
@@ -88,7 +88,7 @@ export const createBodyCell = (
 		markdown?: string;
 		dateTime?: number | null;
 	} = {}
-): BodyCell => {
+): Cell => {
 	const {
 		cellType,
 		tagIds = [],
@@ -428,14 +428,14 @@ const createGenericLoomState = (
 	for (let i = 0; i < numColumns; i++)
 		columns.push(createColumn({ cellType }));
 
-	//Create body
+	//Create rows
 	const rows: Row[] = [];
 	for (let i = 0; i < numRows; i++) rows.push(createRow(i));
 
-	const bodyCells: BodyCell[] = [];
+	const cells: Cell[] = [];
 	for (let y = 0; y < numRows; y++) {
 		for (let x = 0; x < numColumns; x++) {
-			bodyCells.push(createBodyCell(columns[x].id, rows[y].id));
+			cells.push(createCell(columns[x].id, rows[y].id));
 		}
 	}
 
@@ -445,7 +445,7 @@ const createGenericLoomState = (
 		model: {
 			columns,
 			rows,
-			bodyCells,
+			bodyCells: cells,
 			filters,
 			settings: {
 				numFrozenColumns: defaultFrozenColumnCount,

@@ -1,5 +1,5 @@
 import {
-	BodyCell,
+	Cell,
 	Row,
 	CellType,
 	Filter,
@@ -65,7 +65,7 @@ export const filterByFilters = (prevState: LoomState): Row[] => {
  * @param filters - The filters to apply to the cell
  */
 const doesCellMatchFilters = (
-	cell: BodyCell,
+	cell: Cell,
 	row: Row,
 	cellType: CellType,
 	columnTags: Tag[],
@@ -91,7 +91,7 @@ const doesCellMatchFilters = (
  * @returns true if the cell matches the filter, false if it does not, null if the filter does not apply to the cell
  */
 const doesCellMatchFilter = (
-	cell: BodyCell,
+	cell: Cell,
 	row: Row,
 	cellType: CellType,
 	columnTags: Tag[],

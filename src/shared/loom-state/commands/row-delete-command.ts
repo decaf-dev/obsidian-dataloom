@@ -1,4 +1,4 @@
-import { BodyCell, Row, LoomState } from "../types/loom-state";
+import { Cell, Row, LoomState } from "../types/loom-state";
 import RowNotFoundError from "src/shared/error/row-not-found-error";
 import LoomStateCommand from "./loom-state-command";
 import CommandArgumentsError from "./command-arguments-error";
@@ -13,7 +13,7 @@ export default class RowDeleteCommand extends LoomStateCommand {
 	};
 	private deletedCells: {
 		arrIndex: number;
-		cell: BodyCell;
+		cell: Cell;
 	}[];
 
 	private previousBodyRows: {

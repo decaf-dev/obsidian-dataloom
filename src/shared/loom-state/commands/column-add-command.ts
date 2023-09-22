@@ -1,13 +1,13 @@
-import { BodyCell, Column, LoomState } from "../types/loom-state";
+import { Cell, Column, LoomState } from "../types/loom-state";
 import {
-	createBodyCell,
+	createCell,
 	createColumn,
 } from "src/shared/loom-state/loom-state-factory";
 import LoomStateCommand from "./loom-state-command";
 
 export default class ColumnAddCommand extends LoomStateCommand {
 	private addedColumn: Column;
-	private addedBodyCells: BodyCell[];
+	private addedBodyCells: Cell[];
 
 	execute(prevState: LoomState): LoomState {
 		super.onExecute();
@@ -17,7 +17,7 @@ export default class ColumnAddCommand extends LoomStateCommand {
 		this.addedColumn = createColumn();
 
 		this.addedBodyCells = rows.map((row) =>
-			createBodyCell(this.addedColumn.id, row.id)
+			createCell(this.addedColumn.id, row.id)
 		);
 
 		return {

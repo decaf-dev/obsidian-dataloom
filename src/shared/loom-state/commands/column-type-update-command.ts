@@ -4,7 +4,7 @@ import { CHECKBOX_MARKDOWN_UNCHECKED } from "../../constants";
 import ColumNotFoundError from "src/shared/error/column-not-found-error";
 import LoomStateCommand from "./loom-state-command";
 import {
-	BodyCell,
+	Cell,
 	GeneralCalculation,
 	CalculationType,
 	CellType,
@@ -87,7 +87,7 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 		});
 	}
 
-	private fromTagOrMultiTag(bodyCells: BodyCell[]) {
+	private fromTagOrMultiTag(bodyCells: Cell[]) {
 		return bodyCells.map((cell) => {
 			if (cell.columnId === this.columnId) {
 				if (cell.tagIds.length > 0) {
@@ -109,7 +109,7 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 		});
 	}
 
-	private fromDateToText(column: Column, bodyCells: BodyCell[]) {
+	private fromDateToText(column: Column, bodyCells: Cell[]) {
 		return bodyCells.map((cell) => {
 			const { dateTime } = cell;
 
@@ -137,7 +137,7 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 		});
 	}
 
-	private toTag(columns: Column[], bodyCells: BodyCell[]) {
+	private toTag(columns: Column[], bodyCells: Cell[]) {
 		const newColumns = structuredClone(columns);
 		let newBodyCells = structuredClone(bodyCells);
 
@@ -199,7 +199,7 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 		};
 	}
 
-	private toMultiTag(columns: Column[], bodyCells: BodyCell[]) {
+	private toMultiTag(columns: Column[], bodyCells: Cell[]) {
 		const newColumns = structuredClone(columns);
 		let newBodyCells = structuredClone(bodyCells);
 
@@ -249,7 +249,7 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 		return { columnsResult: newColumns, bodyCellsResult: newBodyCells };
 	}
 
-	private fromMultiTagToTag(bodyCells: BodyCell[]) {
+	private fromMultiTagToTag(bodyCells: Cell[]) {
 		return bodyCells.map((cell) => {
 			if (cell.columnId === this.columnId) {
 				//Make sure that the cell only has 1 tag id reference
@@ -272,7 +272,7 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 		});
 	}
 
-	private toCheckbox(bodyCells: BodyCell[]) {
+	private toCheckbox(bodyCells: Cell[]) {
 		return bodyCells.map((cell) => {
 			if (cell.columnId === this.columnId) {
 				if (!isCheckbox(cell.markdown)) {

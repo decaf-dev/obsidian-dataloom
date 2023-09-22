@@ -3,7 +3,7 @@ import RowNotFoundError from "src/shared/error/row-not-found-error";
 import TagNotFoundError from "src/shared/error/tag-not-found-error";
 import LoomStateCommand from "./loom-state-command";
 import {
-	BodyCell,
+	Cell,
 	Row,
 	CellType,
 	Column,
@@ -82,7 +82,7 @@ export default class RowSortCommand extends LoomStateCommand {
 	private multiSort = (
 		columnsToSortBy: Column[],
 		rows: Row[],
-		cells: BodyCell[]
+		cells: Cell[]
 	) => {
 		const rowsCopy = [...rows];
 		rowsCopy.sort((a, b) => {
@@ -109,7 +109,7 @@ export default class RowSortCommand extends LoomStateCommand {
 		a: Row,
 		b: Row,
 		column: Column,
-		cells: BodyCell[]
+		cells: Cell[]
 	): number {
 		const { id, type, sortDir, tags } = column;
 		if (type === CellType.NUMBER) {
@@ -133,7 +133,7 @@ export default class RowSortCommand extends LoomStateCommand {
 		a: Row,
 		b: Row,
 		columnId: string,
-		cells: BodyCell[],
+		cells: Cell[],
 		sortDir: SortDir
 	): number {
 		const { cellA, cellB } = this.findCellAB(a, b, columnId, cells);
@@ -159,7 +159,7 @@ export default class RowSortCommand extends LoomStateCommand {
 		a: Row,
 		b: Row,
 		columnId: string,
-		cells: BodyCell[],
+		cells: Cell[],
 		sortDir: SortDir
 	): number {
 		const { cellA, cellB } = this.findCellAB(a, b, columnId, cells);
@@ -186,7 +186,7 @@ export default class RowSortCommand extends LoomStateCommand {
 		b: Row,
 		columnId: string,
 		columnTags: Tag[],
-		cells: BodyCell[],
+		cells: Cell[],
 		sortDir: SortDir
 	): number {
 		const { cellA, cellB } = this.findCellAB(a, b, columnId, cells);
@@ -228,7 +228,7 @@ export default class RowSortCommand extends LoomStateCommand {
 		a: Row,
 		b: Row,
 		columnId: string,
-		cells: BodyCell[],
+		cells: Cell[],
 		sortDir: SortDir
 	): number {
 		const { cellA, cellB } = this.findCellAB(a, b, columnId, cells);
@@ -253,7 +253,7 @@ export default class RowSortCommand extends LoomStateCommand {
 		a: Row,
 		b: Row,
 		columnId: string,
-		cells: BodyCell[],
+		cells: Cell[],
 		sortDir: SortDir
 	): number {
 		const { cellA, cellB } = this.findCellAB(a, b, columnId, cells);
@@ -289,12 +289,7 @@ export default class RowSortCommand extends LoomStateCommand {
 		}
 	}
 
-	private findCellAB = (
-		a: Row,
-		b: Row,
-		columnId: string,
-		cells: BodyCell[]
-	) => {
+	private findCellAB = (a: Row, b: Row, columnId: string, cells: Cell[]) => {
 		const cellA = cells.find(
 			(c) => c.columnId === columnId && c.rowId === a.id
 		);

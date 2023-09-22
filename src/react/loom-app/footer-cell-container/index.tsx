@@ -2,7 +2,7 @@ import Text from "../../shared/text";
 import CalculationMenu from "./calculation-menu";
 
 import {
-	BodyCell,
+	Cell,
 	Row,
 	GeneralCalculation,
 	CalculationType,
@@ -30,7 +30,7 @@ interface Props {
 	width: string;
 	numberFormat: NumberFormat;
 	rows: Row[];
-	bodyCells: BodyCell[];
+	bodyCells: Cell[];
 	currencyType: CurrencyType;
 	cellType: CellType;
 	dateFormat: DateFormat;

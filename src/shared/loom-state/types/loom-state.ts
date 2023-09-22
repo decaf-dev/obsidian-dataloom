@@ -332,9 +332,6 @@ export interface Cell {
 	id: string;
 	columnId: string;
 	rowId: string;
-}
-
-export interface BodyCell extends Cell {
 	isExternalLink: boolean;
 	dateTime: number | null;
 	markdown: string;
@@ -355,7 +352,7 @@ export interface TableSettings {
 export interface TableModel {
 	columns: Column[];
 	rows: Row[];
-	bodyCells: BodyCell[];
+	bodyCells: Cell[];
 	filters: Filter[];
 	settings: TableSettings;
 }

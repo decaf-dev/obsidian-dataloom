@@ -1,12 +1,12 @@
 import { rowLastEditedTime, rowLastEditedTimeUpdate } from "../row-utils";
 import CellNotFoundError from "src/shared/error/cell-not-found-error";
 import LoomStateCommand from "./loom-state-command";
-import { BodyCell, LoomState } from "../types/loom-state";
+import { Cell, LoomState } from "../types/loom-state";
 
 export default class CellBodyUpdateCommand extends LoomStateCommand {
 	private cellId: string;
 	private rowId: string;
-	private key: keyof BodyCell;
+	private key: keyof Cell;
 	private value: unknown;
 
 	private previousValue: unknown;
@@ -15,7 +15,7 @@ export default class CellBodyUpdateCommand extends LoomStateCommand {
 	constructor(
 		cellId: string,
 		rowId: string,
-		key: keyof BodyCell,
+		key: keyof Cell,
 		value: unknown
 	) {
 		super(true);

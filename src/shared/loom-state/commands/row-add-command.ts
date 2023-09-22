@@ -1,13 +1,13 @@
 import {
-	createBodyCell,
+	createCell,
 	createRow,
 } from "src/shared/loom-state/loom-state-factory";
 import LoomStateCommand from "./loom-state-command";
-import { BodyCell, Row, LoomState } from "../types/loom-state";
+import { Cell, Row, LoomState } from "../types/loom-state";
 
 export default class RowAddCommand extends LoomStateCommand {
 	private addedRow: Row;
-	private addedBodyCells: BodyCell[];
+	private addedCells: Cell[];
 
 	constructor() {
 		super(true);
@@ -19,9 +19,9 @@ export default class RowAddCommand extends LoomStateCommand {
 		const { rows, bodyCells, columns } = prevState.model;
 
 		this.addedRow = createRow(rows.length);
-		this.addedBodyCells = columns.map((column) => {
+		this.addedCells = columns.map((column) => {
 			const { id, type } = column;
-			return createBodyCell(id, this.addedRow.id, {
+			return createCell(id, this.addedRow.id, {
 				cellType: type,
 			});
 		});
@@ -30,7 +30,7 @@ export default class RowAddCommand extends LoomStateCommand {
 			...prevState,
 			model: {
 				...prevState.model,
-				bodyCells: [...bodyCells, ...this.addedBodyCells],
+				bodyCells: [...bodyCells, ...this.addedCells],
 				rows: [...rows, this.addedRow],
 			},
 		};
@@ -45,7 +45,7 @@ export default class RowAddCommand extends LoomStateCommand {
 			...prevState,
 			model: {
 				...prevState.model,
-				bodyCells: [...bodyCells, ...this.addedBodyCells],
+				bodyCells: [...bodyCells, ...this.addedCells],
 				rows: [...rows, this.addedRow],
 			},
 		};

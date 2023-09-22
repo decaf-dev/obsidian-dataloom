@@ -1,6 +1,6 @@
 import { isCheckboxChecked } from "src/shared/match";
 import {
-	BodyCell,
+	Cell,
 	Row,
 	GeneralCalculation,
 	CalculationType,
@@ -15,7 +15,7 @@ import { unixTimeToDateTimeString } from "src/shared/date/date-conversion";
 
 export const getCalculationContent = (
 	bodyRows: Row[],
-	columnCells: BodyCell[],
+	columnCells: Cell[],
 	columnTags: Tag[],
 	cellType: CellType,
 	calculationType: CalculationType,
@@ -33,7 +33,7 @@ export const getCalculationContent = (
 
 export const getCalculation = (
 	rows: Row[],
-	columnCells: BodyCell[],
+	columnCells: Cell[],
 	columnTags: Tag[],
 	cellType: CellType,
 	calculationType: CalculationType,
@@ -64,7 +64,7 @@ const countAll = (rows: Row[]) => {
 	return rows.length;
 };
 
-const countEmpty = (columnCells: BodyCell[], cellType: CellType) => {
+const countEmpty = (columnCells: Cell[], cellType: CellType) => {
 	return columnCells
 		.map((cell) => isCellContentEmpty(cell, cellType))
 		.reduce((accum, value) => {
@@ -73,7 +73,7 @@ const countEmpty = (columnCells: BodyCell[], cellType: CellType) => {
 		}, 0);
 };
 
-const countNotEmpty = (columnCells: BodyCell[], cellType: CellType) => {
+const countNotEmpty = (columnCells: Cell[], cellType: CellType) => {
 	return columnCells
 		.map((cell) => isCellContentEmpty(cell, cellType))
 		.reduce((accum, value) => {
@@ -84,7 +84,7 @@ const countNotEmpty = (columnCells: BodyCell[], cellType: CellType) => {
 
 const countUnique = (
 	rows: Row[],
-	columnCells: BodyCell[],
+	columnCells: Cell[],
 	columnTags: Tag[],
 	cellType: CellType,
 	dateFormat: DateFormat
@@ -110,13 +110,13 @@ const countUnique = (
 	return uniqueHashes.size;
 };
 
-const countValues = (columnCells: BodyCell[], cellType: CellType) => {
+const countValues = (columnCells: Cell[], cellType: CellType) => {
 	return columnCells
 		.map((cell) => countCellValues(cell, cellType))
 		.reduce((accum, value) => accum + value, 0);
 };
 
-const percentEmpty = (columnCells: BodyCell[], cellType: CellType) => {
+const percentEmpty = (columnCells: Cell[], cellType: CellType) => {
 	if (columnCells.length === 0) return "0%";
 
 	const percent =
@@ -124,7 +124,7 @@ const percentEmpty = (columnCells: BodyCell[], cellType: CellType) => {
 	return round2Digits(percent) + "%";
 };
 
-const percentNotEmpty = (columnCells: BodyCell[], cellType: CellType) => {
+const percentNotEmpty = (columnCells: Cell[], cellType: CellType) => {
 	if (columnCells.length === 0) return "0%";
 
 	const percent =
@@ -134,7 +134,7 @@ const percentNotEmpty = (columnCells: BodyCell[], cellType: CellType) => {
 
 const getCellValues = (
 	row: Row,
-	cell: BodyCell,
+	cell: Cell,
 	columnTags: Tag[],
 	cellType: CellType,
 	dateFormat: DateFormat
@@ -165,7 +165,7 @@ const getCellValues = (
 	}
 };
 
-const countCellValues = (cell: BodyCell, cellType: CellType): number => {
+const countCellValues = (cell: Cell, cellType: CellType): number => {
 	if (
 		cellType === CellType.TEXT ||
 		cellType === CellType.EMBED ||
@@ -189,7 +189,7 @@ const countCellValues = (cell: BodyCell, cellType: CellType): number => {
 	}
 };
 
-const isCellContentEmpty = (cell: BodyCell, cellType: CellType): boolean => {
+const isCellContentEmpty = (cell: Cell, cellType: CellType): boolean => {
 	if (
 		cellType === CellType.TEXT ||
 		cellType === CellType.EMBED ||

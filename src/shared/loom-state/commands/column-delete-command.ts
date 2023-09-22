@@ -1,5 +1,5 @@
 import ColumNotFoundError from "src/shared/error/column-not-found-error";
-import { Column, LoomState, BodyCell, Filter } from "../types/loom-state";
+import { Column, LoomState, Cell, Filter } from "../types/loom-state";
 import LoomStateCommand from "./loom-state-command";
 import CommandArgumentsError from "./command-arguments-error";
 
@@ -8,7 +8,7 @@ export default class ColumnDeleteCommand extends LoomStateCommand {
 	private last?: boolean;
 
 	private deletedColumn: { arrIndex: number; column: Column };
-	private deletedBodyCells: { arrIndex: number; cell: BodyCell }[];
+	private deletedBodyCells: { arrIndex: number; cell: Cell }[];
 	private deletedFilters: { arrIndex: number; filter: Filter }[];
 
 	constructor(options: { id?: string; last?: boolean }) {

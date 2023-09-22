@@ -1,9 +1,9 @@
 import {
-	createBodyCell,
+	createCell,
 	createRow,
 } from "src/shared/loom-state/loom-state-factory";
 import LoomStateCommand from "./loom-state-command";
-import { BodyCell, Row, LoomState, SortDir } from "../types/loom-state";
+import { Cell, Row, LoomState, SortDir } from "../types/loom-state";
 import RowNotFoundError from "src/shared/error/row-not-found-error";
 
 export type RowInsert = "above" | "below";
@@ -33,7 +33,7 @@ export default class RowInsertCommand extends LoomStateCommand {
 	 * Without this, the cell ids in the `redo` state would be different than the cell ids in the `execute` state.
 	 * This will cause subequent commands that reference these row ids to fail.
 	 */
-	private addedBodyCells: BodyCell[];
+	private addedBodyCells: Cell[];
 
 	/**
 	 *  The column sort before execution
@@ -75,7 +75,7 @@ export default class RowInsertCommand extends LoomStateCommand {
 
 		const createdBodyCells = columns.map((column) => {
 			const { id, type } = column;
-			return createBodyCell(id, createdRow.id, {
+			return createCell(id, createdRow.id, {
 				cellType: type,
 			});
 		});
