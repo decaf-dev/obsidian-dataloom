@@ -35,6 +35,8 @@ import {
 	MigrateState11,
 	MigrateState12,
 } from "src/shared/loom-state/migrate";
+import { LoomState13 } from "src/shared/loom-state/types/loom-state-13";
+import MigrateState13 from "src/shared/loom-state/migrate/migrate-state-13";
 
 export const serializeLoomState = (state: LoomState): string => {
 	return JSON.stringify(state, null, 2);
@@ -150,6 +152,13 @@ export const deserializeLoomState = (
 	if (isVersionLessThan(fileVersion, "8.5.0")) {
 		const nextState = new MigrateState12().migrate(
 			currentState as LoomState12
+		);
+		currentState = nextState;
+	}
+
+	if (isVersionLessThan(fileVersion, "8.6.0")) {
+		const nextState = new MigrateState13().migrate(
+			currentState as LoomState13
 		);
 		currentState = nextState;
 	}

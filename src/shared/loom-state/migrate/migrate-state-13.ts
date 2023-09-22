@@ -5,7 +5,7 @@ import { LoomState13 } from "../types/loom-state-13";
 /**
  * Migrates to 8.6.0
  */
-export default class MigrateState12 implements MigrateState {
+export default class MigrateState13 implements MigrateState {
 	public migrate(prevState: LoomState13): LoomState {
 		const { settings, columns, headerCells, bodyCells, bodyRows, filters } =
 			prevState.model;
