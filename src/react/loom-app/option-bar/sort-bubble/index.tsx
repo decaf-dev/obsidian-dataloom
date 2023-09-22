@@ -5,20 +5,20 @@ import { SortDir } from "src/shared/loom-state/types/loom-state";
 
 interface SortBubbleProps {
 	sortDir: SortDir;
-	markdown: string;
+	content: string;
 	onRemoveClick: () => void;
 }
 
 export default function SortBubble({
 	sortDir,
-	markdown,
+	content,
 	onRemoveClick,
 }: SortBubbleProps) {
 	return (
 		<div className="dataloom-sort-bubble">
 			<Bubble
 				canRemove
-				value={markdown}
+				value={content}
 				icon={
 					sortDir === SortDir.ASC ? (
 						<Icon lucideId="arrow-up" />

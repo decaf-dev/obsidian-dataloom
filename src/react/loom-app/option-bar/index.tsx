@@ -12,13 +12,9 @@ import SortBubbleList from "./sort-bubble-list";
 import {
 	SortDir,
 	Column,
-	HeaderCell,
 	Filter,
 	CellType,
 } from "src/shared/loom-state/types/loom-state";
-import CellNotFoundError from "src/shared/error/cell-not-found-error";
-import ColumNotFoundError from "src/shared/error/column-not-found-error";
-import { ColumnWithMarkdown } from "./types";
 import { isSmallScreenSize } from "src/shared/render/utils";
 import { useMenu } from "../../shared/menu/hooks";
 
@@ -26,7 +22,6 @@ import "./styles.css";
 
 interface Props {
 	numFrozenColumns: number;
-	headerCells: HeaderCell[];
 	columns: Column[];
 	filters: Filter[];
 	showCalculationRow: boolean;
@@ -44,7 +39,6 @@ interface Props {
 }
 export default function OptionBar({
 	numFrozenColumns,
-	headerCells,
 	columns,
 	filters,
 	showCalculationRow,
@@ -56,13 +50,6 @@ export default function OptionBar({
 	onFrozenColumnsChange,
 	onCalculationRowToggle,
 }: Props) {
-	const sortedCells = headerCells.filter((cell) => {
-		const columnId = cell.columnId;
-		const column = columns.find((c) => c.id === columnId);
-		if (!column) throw new ColumNotFoundError(columnId);
-		return column.sortDir !== SortDir.NONE;
-	});
-
 	const {
 		menu: moreMenu,
 		triggerRef: moreMenuTriggerRef,
@@ -109,19 +96,9 @@ export default function OptionBar({
 
 	const activeFilters = filters.filter((filter) => filter.isEnabled);
 
-	const columnsWithMarkdown: ColumnWithMarkdown[] = columns.map((column) => {
-		const headerCell = headerCells.find(
-			(cell) => cell.columnId === column.id
-		);
-		if (!headerCell)
-			throw new CellNotFoundError({
-				columnId: column.id,
-			});
-		return {
-			...column,
-			markdown: headerCell.markdown,
-		};
-	});
+	const sortedColumns = columns.filter(
+		(column) => column.sortDir !== SortDir.NONE
+	);
 
 	const isSmallScreen = isSmallScreenSize();
 	return (
@@ -143,8 +120,7 @@ export default function OptionBar({
 							})}
 						>
 							<SortBubbleList
-								headerCells={sortedCells}
-								columns={columns}
+								sortedColumns={sortedColumns}
 								onRemoveClick={onSortRemoveClick}
 							/>
 							<ActiveFilterBubble
@@ -210,7 +186,7 @@ export default function OptionBar({
 						? moreMenuTriggerPosition
 						: toggleMenuTriggerPosition
 				}
-				columns={columnsWithMarkdown}
+				columns={columns}
 				onToggle={onColumnToggle}
 				onRequestClose={onToggleMenuRequestClose}
 				onClose={onToggleMenuClose}
@@ -223,7 +199,7 @@ export default function OptionBar({
 						? moreMenuTriggerPosition
 						: filterMenuTriggerPosition
 				}
-				columns={columnsWithMarkdown}
+				columns={columns}
 				filters={filters}
 				onUpdate={onFilterUpdate}
 				onDeleteClick={onFilterDeleteClick}

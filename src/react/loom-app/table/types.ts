@@ -1,10 +1,12 @@
 export interface TableRow {
-	id: string;
 	cells: TableCell[];
 }
 
-export interface HeaderTableRow {
+export interface BodyTableRow extends TableRow {
 	id: string;
+}
+
+export interface HeaderTableRow {
 	cells: HeaderTableCell[];
 }
 

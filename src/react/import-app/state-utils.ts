@@ -2,14 +2,12 @@ import {
 	createBodyCell,
 	createBodyRow,
 	createColumn,
-	createHeaderCell,
 	createTag,
 } from "src/shared/loom-state/loom-state-factory";
 import {
 	BodyCell,
 	CellType,
 	Column,
-	HeaderCell,
 	LoomState,
 } from "src/shared/loom-state/types/loom-state";
 import { ColumnMatch, ImportData } from "./types";
@@ -20,8 +18,7 @@ export const updateStateWithImportData = (
 	data: ImportData,
 	columnMatches: ColumnMatch[]
 ): LoomState => {
-	const { headerCells, headerRows, bodyRows, bodyCells, columns } =
-		prevState.model;
+	const { bodyRows, bodyCells, columns } = prevState.model;
 
 	//The first index is the header row
 	//We want only the data rows
@@ -43,12 +40,6 @@ export const updateStateWithImportData = (
 		}
 	});
 	const nextColumns = [...columns, ...newColumns];
-
-	//Create a header cell for each new column
-	const newHeaderCells: HeaderCell[] = newColumns.map((column) =>
-		createHeaderCell(column.id, headerRows[0].id)
-	);
-	const nextHeaderCells = [...headerCells, ...newHeaderCells];
 
 	const newBodyCells: BodyCell[] = [];
 	newColumns.forEach((column) => {
@@ -107,7 +98,6 @@ export const updateStateWithImportData = (
 		model: {
 			...prevState.model,
 			columns: nextColumns,
-			headerCells: nextHeaderCells,
 			bodyRows: nextBodyRows,
 			bodyCells: nextBodyCells,
 		},

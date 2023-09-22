@@ -307,6 +307,7 @@ export interface Column {
 	type: CellType;
 	isVisible: boolean;
 	dateFormat: DateFormat;
+	content: string;
 	numberFormat: NumberFormat;
 	currencyType: CurrencyType;
 	numberPrefix: string;
@@ -330,17 +331,10 @@ export interface BodyRow extends Row {
 	lastEditedTime: number;
 }
 
-export type HeaderRow = Row;
-export type FooterRow = Row;
-
 export interface Cell {
 	id: string;
 	columnId: string;
 	rowId: string;
-}
-
-export interface HeaderCell extends Cell {
-	markdown: string;
 }
 
 export interface BodyCell extends Cell {
@@ -363,9 +357,7 @@ export interface TableSettings {
 
 export interface TableModel {
 	columns: Column[];
-	headerRows: HeaderRow[];
 	bodyRows: BodyRow[];
-	headerCells: HeaderCell[];
 	bodyCells: BodyCell[];
 	filters: Filter[];
 	settings: TableSettings;

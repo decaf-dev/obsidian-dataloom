@@ -9,9 +9,6 @@ import {
 	CurrencyType,
 	DateFormat,
 	Filter,
-	FooterRow,
-	HeaderCell,
-	HeaderRow,
 	PaddingSize,
 	SortDir,
 	LoomState,
@@ -59,6 +56,7 @@ export const createColumn = (options?: { cellType?: CellType }): Column => {
 		numberPrefix: "",
 		numberSuffix: "",
 		numberSeparator: "",
+		content: "New Column",
 		numberFormat: NumberFormat.NUMBER,
 		currencyType: CurrencyType.UNITED_STATES,
 		dateFormat: DateFormat.MM_DD_YYYY,
@@ -71,18 +69,6 @@ export const createColumn = (options?: { cellType?: CellType }): Column => {
 	};
 };
 
-export const createHeaderRow = (): HeaderRow => {
-	return {
-		id: uuidv4(),
-	};
-};
-
-export const createFooterRow = (): FooterRow => {
-	return {
-		id: uuidv4(),
-	};
-};
-
 export const createBodyRow = (index: number): BodyRow => {
 	const currentTime = Date.now();
 	return {
@@ -90,18 +76,6 @@ export const createBodyRow = (index: number): BodyRow => {
 		index,
 		creationTime: currentTime,
 		lastEditedTime: currentTime,
-	};
-};
-
-export const createHeaderCell = (
-	columnId: string,
-	rowId: string
-): HeaderCell => {
-	return {
-		id: uuidv4(),
-		columnId,
-		rowId,
-		markdown: "New Column",
 	};
 };
 
@@ -454,16 +428,6 @@ const createGenericLoomState = (
 	for (let i = 0; i < numColumns; i++)
 		columns.push(createColumn({ cellType }));
 
-	//Create headers
-	const headerRows: HeaderRow[] = [];
-	headerRows.push(createHeaderRow());
-
-	const headerCells: HeaderCell[] = [];
-
-	for (let x = 0; x < numColumns; x++) {
-		headerCells.push(createHeaderCell(columns[x].id, headerRows[0].id));
-	}
-
 	//Create body
 	const bodyRows: BodyRow[] = [];
 	for (let i = 0; i < numRows; i++) bodyRows.push(createBodyRow(i));
@@ -480,9 +444,7 @@ const createGenericLoomState = (
 	return {
 		model: {
 			columns,
-			headerRows,
 			bodyRows,
-			headerCells,
 			bodyCells,
 			filters,
 			settings: {
