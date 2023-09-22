@@ -143,16 +143,8 @@ export default function App() {
 		nltEventSystem.dispatchEvent("keydown", e);
 	}
 
-	const {
-		headerRows,
-		footerRows,
-		columns,
-		headerCells,
-		bodyCells,
-		footerCells,
-		filters,
-		settings,
-	} = loomState.model;
+	const { headerRows, columns, headerCells, bodyCells, filters, settings } =
+		loomState.model;
 	const { numFrozenColumns, showCalculationRow } = settings;
 
 	let filteredBodyRows = filterByFilters(loomState);
@@ -427,81 +419,57 @@ export default function App() {
 						],
 					};
 				})}
-				footerRows={footerRows.map((row, i) => {
-					if (i === 0) {
-						return {
-							id: row.id,
-							cells: [
-								{
-									id: firstColumnId,
-									content: <></>,
-								},
-								...visibleColumns.map((column) => {
-									const {
-										id: columnId,
-										type,
-										currencyType,
-										dateFormat,
-										numberFormat,
-										width,
-										tags,
-										calculationType,
-									} = column;
-									const cell = footerCells.find(
-										(cell) =>
-											cell.rowId === row.id &&
-											cell.columnId === column.id
-									);
-									if (!cell)
-										throw new CellNotFoundError({
-											rowId: row.id,
-											columnId: column.id,
-										});
-									const { id: cellId } = cell;
+				footer={{
+					id: "footer",
+					cells: [
+						{
+							id: firstColumnId,
+							content: <></>,
+						},
+						...visibleColumns.map((column) => {
+							const {
+								id: columnId,
+								type,
+								currencyType,
+								dateFormat,
+								numberFormat,
+								width,
+								tags,
+								calculationType,
+							} = column;
 
-									const columnBodyCells = bodyCells.filter(
-										(cell) =>
-											filteredBodyRows.find(
-												(row) => row.id === cell.rowId
-											) !== undefined
-									);
+							const columnBodyCells = bodyCells.filter(
+								(cell) =>
+									filteredBodyRows.find(
+										(row) => row.id === cell.rowId
+									) !== undefined
+							);
 
-									return {
-										id: cell.id,
-										content: (
-											<FooterCellContainer
-												columnId={columnId}
-												columnTags={tags}
-												cellId={cellId}
-												numberFormat={numberFormat}
-												currencyType={currencyType}
-												dateFormat={dateFormat}
-												bodyCells={columnBodyCells}
-												bodyRows={filteredBodyRows}
-												calculationType={
-													calculationType
-												}
-												width={width}
-												cellType={type}
-												onTypeChange={
-													onCalculationTypeChange
-												}
-											/>
-										),
-									};
-								}),
-								{
-									id: lastColumnId,
-									content: <></>,
-								},
-							],
-						};
-					}
-					return {
-						id: row.id,
-						cells: [],
-					};
-				})}
+							return {
+								id: columnId,
+								content: (
+									<FooterCellContainer
+										columnId={columnId}
+										columnTags={tags}
+										numberFormat={numberFormat}
+										currencyType={currencyType}
+										dateFormat={dateFormat}
+										bodyCells={columnBodyCells}
+										bodyRows={filteredBodyRows}
+										calculationType={calculationType}
+										width={width}
+										cellType={type}
+										onTypeChange={onCalculationTypeChange}
+									/>
+								),
+							};
+						}),
+						{
+							id: lastColumnId,
+							content: <></>,
+						},
+					],
+				}}
 			/>
 			<BottomBar
 				onRowAddClick={onRowAddClick}

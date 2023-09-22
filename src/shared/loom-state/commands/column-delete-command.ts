@@ -4,7 +4,6 @@ import {
 	LoomState,
 	HeaderCell,
 	BodyCell,
-	FooterCell,
 	Filter,
 } from "../types/loom-state";
 import LoomStateCommand from "./loom-state-command";
@@ -17,7 +16,6 @@ export default class ColumnDeleteCommand extends LoomStateCommand {
 	private deletedColumn: { arrIndex: number; column: Column };
 	private deletedHeaderCells: { arrIndex: number; cell: HeaderCell }[];
 	private deletedBodyCells: { arrIndex: number; cell: BodyCell }[];
-	private deletedFooterCells: { arrIndex: number; cell: FooterCell }[];
 	private deletedFilters: { arrIndex: number; filter: Filter }[];
 
 	constructor(options: { id?: string; last?: boolean }) {
@@ -33,8 +31,7 @@ export default class ColumnDeleteCommand extends LoomStateCommand {
 	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
-		const { columns, headerCells, bodyCells, footerCells, filters } =
-			prevState.model;
+		const { columns, headerCells, bodyCells, filters } = prevState.model;
 
 		//Maintains at least 1 column in the table
 		if (columns.length === 1) return prevState;
@@ -65,14 +62,6 @@ export default class ColumnDeleteCommand extends LoomStateCommand {
 			cell: structuredClone(cell),
 		}));
 
-		const footerCellsToDelete = footerCells.filter(
-			(cell) => cell.columnId === id
-		);
-		this.deletedFooterCells = footerCellsToDelete.map((cell) => ({
-			arrIndex: footerCells.indexOf(cell),
-			cell: structuredClone(cell),
-		}));
-
 		const filtersToDelete = filters.filter(
 			(filter) => filter.columnId === id
 		);
@@ -88,7 +77,6 @@ export default class ColumnDeleteCommand extends LoomStateCommand {
 				columns: columns.filter((column) => column.id !== id),
 				headerCells: headerCells.filter((cell) => cell.columnId !== id),
 				bodyCells: bodyCells.filter((cell) => cell.columnId !== id),
-				footerCells: footerCells.filter((cell) => cell.columnId !== id),
 				filters: filters.filter((filter) => filter.columnId !== id),
 			},
 		};
@@ -102,8 +90,7 @@ export default class ColumnDeleteCommand extends LoomStateCommand {
 	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
-		const { columns, headerCells, bodyCells, footerCells, filters } =
-			prevState.model;
+		const { columns, headerCells, bodyCells, filters } = prevState.model;
 
 		const updatedColumns = [...columns];
 		updatedColumns.splice(
@@ -122,11 +109,6 @@ export default class ColumnDeleteCommand extends LoomStateCommand {
 			updatedBodyCells.splice(cell.arrIndex, 0, cell.cell);
 		});
 
-		const updatedFooterCells = [...footerCells];
-		this.deletedFooterCells.forEach((cell) => {
-			updatedFooterCells.splice(cell.arrIndex, 0, cell.cell);
-		});
-
 		const updatedFilters = [...filters];
 		this.deletedFilters.forEach((filter) => {
 			updatedFilters.splice(filter.arrIndex, 0, filter.filter);
@@ -139,7 +121,6 @@ export default class ColumnDeleteCommand extends LoomStateCommand {
 				columns: updatedColumns,
 				headerCells: updatedHeaderCells,
 				bodyCells: updatedBodyCells,
-				footerCells: updatedFooterCells,
 				filters: updatedFilters,
 			},
 		};

@@ -350,8 +350,6 @@ export interface BodyCell extends Cell {
 	tagIds: string[];
 }
 
-export type FooterCell = Cell;
-
 export interface Tag {
 	id: string;
 	markdown: string;
@@ -367,10 +365,8 @@ export interface TableModel {
 	columns: Column[];
 	headerRows: HeaderRow[];
 	bodyRows: BodyRow[];
-	footerRows: FooterRow[];
 	headerCells: HeaderCell[];
 	bodyCells: BodyCell[];
-	footerCells: FooterCell[];
 	filters: Filter[];
 	settings: TableSettings;
 }

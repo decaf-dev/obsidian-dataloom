@@ -163,11 +163,6 @@ enum DateFilterOption {
 	ONE_MONTH_FROM_NOW = "one-month-from-now",
 }
 
-type FilterCondition =
-	| TextFilterCondition
-	| DateFilterCondition
-	| NumberFilterCondition;
-
 interface BaseFilter {
 	id: string;
 	columnId: string;

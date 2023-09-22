@@ -25,7 +25,6 @@ import "./styles.css";
 
 interface Props {
 	columnId: string;
-	cellId: string;
 	calculationType: CalculationType;
 	columnTags: Tag[];
 	width: string;

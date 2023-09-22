@@ -1,4 +1,3 @@
-import Flex from "src/react/shared/flex";
 import Padding from "src/react/shared/padding";
 import Stack from "src/react/shared/stack";
 import Submenu from "src/react/shared/submenu";

@@ -15,12 +15,12 @@ import "./styles.css";
 interface Props {
 	headerRows: HeaderTableRow[];
 	bodyRows: TableRow[];
-	footerRows: TableRow[];
+	footer: TableRow;
 	numFrozenColumns: number;
 }
 
 const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
-	{ headerRows, bodyRows, footerRows, numFrozenColumns },
+	{ headerRows, bodyRows, footer, numFrozenColumns },
 	ref
 ) {
 	const previousRowLength = usePrevious(bodyRows.length);
@@ -68,23 +68,21 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 					);
 				})
 			}
-			fixedFooterContent={() =>
-				footerRows.map((row) => (
-					<div className="dataloom-row" key={row.id}>
-						{row.cells.map((cell, i) => {
-							const { id, content } = cell;
-							return (
-								<FooterCell
-									key={id}
-									index={i}
-									numFrozenColumns={numFrozenColumns}
-									content={content}
-								/>
-							);
-						})}
-					</div>
-				))
-			}
+			fixedFooterContent={() => (
+				<div className="dataloom-row">
+					{footer.cells.map((cell, i) => {
+						const { id, content } = cell;
+						return (
+							<FooterCell
+								key={id}
+								index={i}
+								numFrozenColumns={numFrozenColumns}
+								content={content}
+							/>
+						);
+					})}
+				</div>
+			)}
 			itemContent={(index) => {
 				const row = bodyRows[index];
 				const { id: rowId, cells } = row;
