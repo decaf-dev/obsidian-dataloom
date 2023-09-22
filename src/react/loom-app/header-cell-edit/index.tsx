@@ -254,7 +254,7 @@ export default function HeaderMenu({
 				)}
 				{submenu === SubmenuType.ASPECT_RATIO && (
 					<AspectRatioSubmenu
-						title="Aspect Ratio"
+						title="Aspect ratio"
 						value={aspectRatio}
 						onValueClick={handleAspectRatioClick}
 						onBackClick={() => setSubmenu(null)}
@@ -263,7 +263,7 @@ export default function HeaderMenu({
 
 				{submenu === SubmenuType.HORIZONTAL_PADDING && (
 					<PaddingSubmenu
-						title="Horizontal Padding"
+						title="Horizontal padding"
 						value={horizontalPadding}
 						onValueClick={handleHorizontalPaddingClick}
 						onBackClick={() => setSubmenu(null)}
@@ -272,7 +272,7 @@ export default function HeaderMenu({
 
 				{submenu === SubmenuType.VERTICAL_PADDING && (
 					<PaddingSubmenu
-						title="Vertical Padding"
+						title="Vertical padding"
 						value={verticalPadding}
 						onValueClick={handleVerticalPaddingClick}
 						onBackClick={() => setSubmenu(null)}

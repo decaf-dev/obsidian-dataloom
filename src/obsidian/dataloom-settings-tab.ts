@@ -16,7 +16,7 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		this.renderDonationHeader(containerEl);
+		this.renderSupportHeader(containerEl);
 		this.renderFileSettings(containerEl);
 		this.renderTableSettings(containerEl);
 		this.renderExportSettings(containerEl);
@@ -25,17 +25,17 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 		this.renderDebugSettings(containerEl);
 	}
 
-	private renderDonationHeader(containerEl: HTMLElement) {
+	private renderSupportHeader(containerEl: HTMLElement) {
 		new Setting(containerEl).setName("DataLoom").setHeading();
 
-		const donationDesc = new DocumentFragment();
-		const textEl = donationDesc.createDiv({
-			text: "I need your support - this project is dependent on donations from people like you",
+		const supportDesc = new DocumentFragment();
+		const textEl = supportDesc.createDiv({
+			text: "Enjoying the plugin? Consider supporting the development of DataLoom by buying me an herbal tea or sponsoring me on GitHub.",
 		});
 		textEl.style.marginBottom = "1.5em";
-		renderGitHubSponsorBadge(donationDesc);
+		renderGitHubSponsorBadge(supportDesc);
 
-		new Setting(containerEl).setDesc(donationDesc);
+		new Setting(containerEl).setDesc(supportDesc);
 
 		renderBuyMeACoffeeBadge(containerEl);
 	}
@@ -127,7 +127,7 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 	private renderExportSettings(containerEl: HTMLElement) {
 		const removeMarkdownOnExportDesc = new DocumentFragment();
 		removeMarkdownOnExportDesc.createSpan({
-			text: "If enabled, content will be exported as raw text instead of markdown. For example, if enabled, a checkbox cell's content will be exported true or false instead of [ ] or [x].",
+			text: "If enabled, content will be exported as plain text instead of markdown. For example, if enabled, a checkbox cell's content will be exported true or false instead of [ ] or [x].",
 		});
 
 		new Setting(containerEl).setName("Export").setHeading();
@@ -205,8 +205,8 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName("Donation modal")
-			.setDesc("Show the donation modal when the plugin is updated.")
+			.setName("Support modal")
+			.setDesc("Show the support modal when the plugin is updated.")
 			.addToggle((cb) => {
 				cb.setValue(this.plugin.settings.showSupportModal).onChange(
 					async (value) => {
