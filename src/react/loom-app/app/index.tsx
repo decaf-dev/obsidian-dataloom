@@ -80,6 +80,7 @@ export default function App() {
 		onColumnAddClick,
 		onHorizontalPaddingClick,
 		onDateFormatChange,
+		onColumnContentChange,
 	} = useColumn();
 
 	const {
@@ -92,7 +93,6 @@ export default function App() {
 	const {
 		onCellDateTimeChange,
 		onBodyCellContentChange,
-		onHeaderCellContentChange,
 		onExternalLinkToggle,
 	} = useCell();
 
@@ -143,8 +143,7 @@ export default function App() {
 		nltEventSystem.dispatchEvent("keydown", e);
 	}
 
-	const { headerRows, columns, headerCells, bodyCells, filters, settings } =
-		loomState.model;
+	const { columns, bodyCells, filters, settings } = loomState.model;
 	const { numFrozenColumns, showCalculationRow } = settings;
 
 	let filteredBodyRows = filterByFilters(loomState);
@@ -166,7 +165,6 @@ export default function App() {
 			onClick={handleClick}
 		>
 			<OptionBar
-				headerCells={headerCells}
 				columns={columns}
 				filters={filters}
 				numFrozenColumns={numFrozenColumns}
@@ -182,124 +180,98 @@ export default function App() {
 			<Table
 				numFrozenColumns={numFrozenColumns}
 				ref={tableRef}
-				headerRows={headerRows.map((row) => {
-					return {
-						id: row.id,
-						cells: [
-							{
-								id: firstColumnId,
-								columnId: firstColumnId,
+				headerRow={{
+					cells: [
+						{
+							id: firstColumnId,
+							columnId: firstColumnId,
+							content: (
+								<div className="dataloom-cell--left-corner" />
+							),
+						},
+						...visibleColumns.map((column) => {
+							const {
+								id: columnId,
+								width,
+								type,
+								sortDir,
+								shouldWrapOverflow,
+								content,
+								currencyType,
+								numberFormat,
+								numberPrefix,
+								numberSeparator,
+								numberSuffix,
+								dateFormat,
+								verticalPadding,
+								horizontalPadding,
+								aspectRatio,
+							} = column;
+							return {
+								id: columnId,
+								columnId,
 								content: (
-									<div className="dataloom-cell--left-corner" />
-								),
-							},
-							...visibleColumns.map((column) => {
-								const {
-									id: columnId,
-									width,
-									type,
-									sortDir,
-									shouldWrapOverflow,
-									currencyType,
-									numberFormat,
-									numberPrefix,
-									numberSeparator,
-									numberSuffix,
-									dateFormat,
-									verticalPadding,
-									horizontalPadding,
-									aspectRatio,
-								} = column;
-
-								const cell = headerCells.find(
-									(cell) => cell.columnId === columnId
-								);
-								if (!cell)
-									throw new CellNotFoundError({
-										columnId,
-									});
-
-								const { id: cellId, markdown, rowId } = cell;
-								return {
-									id: cellId,
-									columnId,
-									content: (
-										<HeaderCell
-											key={columnId}
-											cellId={cellId}
-											rowId={rowId}
-											dateFormat={dateFormat}
-											currencyType={currencyType}
-											numberPrefix={numberPrefix}
-											numberSeparator={numberSeparator}
-											numberFormat={numberFormat}
-											numberSuffix={numberSuffix}
-											verticalPadding={verticalPadding}
-											horizontalPadding={
-												horizontalPadding
-											}
-											aspectRatio={aspectRatio}
-											numColumns={columns.length}
-											columnId={cell.columnId}
-											resizingColumnId={resizingColumnId}
-											width={width}
-											shouldWrapOverflow={
-												shouldWrapOverflow
-											}
-											markdown={markdown}
-											type={type}
-											sortDir={sortDir}
-											onSortClick={onColumnSortClick}
-											onWidthChange={onColumnWidthChange}
-											onDeleteClick={onColumnDeleteClick}
-											onTypeSelect={onColumnTypeClick}
-											onDateFormatChange={
-												onDateFormatChange
-											}
-											onWrapOverflowToggle={
-												onWrapContentToggle
-											}
-											onNameChange={
-												onHeaderCellContentChange
-											}
-											onNumberFormatChange={
-												onNumberFormatChange
-											}
-											onNumberPrefixChange={
-												onNumberPrefixChange
-											}
-											onNumberSeparatorChange={
-												onNumberSeparatorChange
-											}
-											onNumberSuffixChange={
-												onNumberSuffixChange
-											}
-											onVerticalPaddingClick={
-												onVerticalPaddingClick
-											}
-											onHorizontalPaddingClick={
-												onHorizontalPaddingClick
-											}
-											onAspectRatioClick={
-												onAspectRatioClick
-											}
-											onHideClick={onColumnHideClick}
-										/>
-									),
-								};
-							}),
-							{
-								id: lastColumnId,
-								columnId: lastColumnId,
-								content: (
-									<NewColumnButton
-										onClick={onColumnAddClick}
+									<HeaderCell
+										key={columnId}
+										dateFormat={dateFormat}
+										currencyType={currencyType}
+										numberPrefix={numberPrefix}
+										numberSeparator={numberSeparator}
+										numberFormat={numberFormat}
+										numberSuffix={numberSuffix}
+										verticalPadding={verticalPadding}
+										horizontalPadding={horizontalPadding}
+										aspectRatio={aspectRatio}
+										numColumns={columns.length}
+										columnId={columnId}
+										resizingColumnId={resizingColumnId}
+										width={width}
+										shouldWrapOverflow={shouldWrapOverflow}
+										content={content}
+										type={type}
+										sortDir={sortDir}
+										onSortClick={onColumnSortClick}
+										onWidthChange={onColumnWidthChange}
+										onDeleteClick={onColumnDeleteClick}
+										onTypeSelect={onColumnTypeClick}
+										onDateFormatChange={onDateFormatChange}
+										onWrapOverflowToggle={
+											onWrapContentToggle
+										}
+										onContentChange={onColumnContentChange}
+										onNumberFormatChange={
+											onNumberFormatChange
+										}
+										onNumberPrefixChange={
+											onNumberPrefixChange
+										}
+										onNumberSeparatorChange={
+											onNumberSeparatorChange
+										}
+										onNumberSuffixChange={
+											onNumberSuffixChange
+										}
+										onVerticalPaddingClick={
+											onVerticalPaddingClick
+										}
+										onHorizontalPaddingClick={
+											onHorizontalPaddingClick
+										}
+										onAspectRatioClick={onAspectRatioClick}
+										onHideClick={onColumnHideClick}
 									/>
 								),
-							},
-						],
-					};
-				})}
+							};
+						}),
+						{
+							id: lastColumnId,
+							columnId: lastColumnId,
+							content: (
+								<NewColumnButton onClick={onColumnAddClick} />
+							),
+						},
+					],
+				}}
 				bodyRows={filteredBodyRows.map((row) => {
 					const { id: rowId, lastEditedTime, creationTime } = row;
 					return {
@@ -422,7 +394,6 @@ export default function App() {
 				footer={
 					showCalculationRow
 						? {
-								id: "footer",
 								cells: [
 									{
 										id: firstColumnId,

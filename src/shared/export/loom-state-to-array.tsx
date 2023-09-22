@@ -2,15 +2,14 @@ import {
 	BodyCell,
 	BodyRow,
 	Column,
-	HeaderCell,
 	LoomState,
 } from "../loom-state/types/loom-state";
 import { getCellContent } from "../cell-content";
 import ColumNotFoundError from "../error/column-not-found-error";
 import { App } from "obsidian";
 
-const serializeHeaderCells = (cells: HeaderCell[]): string[] => {
-	return cells.map((cell) => cell.markdown);
+const serializeHeaderCells = (columns: Column[]): string[] => {
+	return columns.map((column) => column.content);
 };
 
 const serializeBodyCells = (
@@ -44,8 +43,8 @@ export const loomStateToArray = (
 	loomState: LoomState,
 	shouldRemoveMarkdown: boolean
 ): string[][] => {
-	const { headerCells, bodyCells, bodyRows, columns } = loomState.model;
-	const serializedHeaderCells = serializeHeaderCells(headerCells);
+	const { bodyCells, bodyRows, columns } = loomState.model;
+	const serializedHeaderCells = serializeHeaderCells(columns);
 	const serializedBodyCells = serializeBodyCells(
 		app,
 		columns,

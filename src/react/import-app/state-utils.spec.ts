@@ -67,7 +67,6 @@ describe("updateStateWithImportData", () => {
 
 		//Assert
 		expect(nextState.model.columns.length).toEqual(2);
-		expect(nextState.model.headerCells.length).toEqual(2);
 		expect(nextState.model.bodyCells.length).toEqual(6);
 		expect(nextState.model.bodyRows.length).toEqual(3);
 		expect(nextState.model.bodyCells[0].markdown).toEqual("data 1");
@@ -108,7 +107,6 @@ describe("updateStateWithImportData", () => {
 
 		//Assert
 		expect(nextState.model.columns.length).toEqual(4);
-		expect(nextState.model.headerCells.length).toEqual(4);
 		expect(nextState.model.bodyCells.length).toEqual(16);
 		expect(nextState.model.bodyRows.length).toEqual(4);
 		expect(nextState.model.bodyCells[0].markdown).toEqual("data 1");
