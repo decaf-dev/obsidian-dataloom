@@ -419,57 +419,68 @@ export default function App() {
 						],
 					};
 				})}
-				footer={{
-					id: "footer",
-					cells: [
-						{
-							id: firstColumnId,
-							content: <></>,
-						},
-						...visibleColumns.map((column) => {
-							const {
-								id: columnId,
-								type,
-								currencyType,
-								dateFormat,
-								numberFormat,
-								width,
-								tags,
-								calculationType,
-							} = column;
+				footer={
+					showCalculationRow
+						? {
+								id: "footer",
+								cells: [
+									{
+										id: firstColumnId,
+										content: <></>,
+									},
+									...visibleColumns.map((column) => {
+										const {
+											id: columnId,
+											type,
+											currencyType,
+											dateFormat,
+											numberFormat,
+											width,
+											tags,
+											calculationType,
+										} = column;
 
-							const columnBodyCells = bodyCells.filter(
-								(cell) =>
-									filteredBodyRows.find(
-										(row) => row.id === cell.rowId
-									) !== undefined
-							);
+										const columnBodyCells =
+											bodyCells.filter(
+												(cell) =>
+													filteredBodyRows.find(
+														(row) =>
+															row.id ===
+															cell.rowId
+													) !== undefined
+											);
 
-							return {
-								id: columnId,
-								content: (
-									<FooterCellContainer
-										columnId={columnId}
-										columnTags={tags}
-										numberFormat={numberFormat}
-										currencyType={currencyType}
-										dateFormat={dateFormat}
-										bodyCells={columnBodyCells}
-										bodyRows={filteredBodyRows}
-										calculationType={calculationType}
-										width={width}
-										cellType={type}
-										onTypeChange={onCalculationTypeChange}
-									/>
-								),
-							};
-						}),
-						{
-							id: lastColumnId,
-							content: <></>,
-						},
-					],
-				}}
+										return {
+											id: columnId,
+											content: (
+												<FooterCellContainer
+													columnId={columnId}
+													columnTags={tags}
+													numberFormat={numberFormat}
+													currencyType={currencyType}
+													dateFormat={dateFormat}
+													bodyCells={columnBodyCells}
+													bodyRows={filteredBodyRows}
+													calculationType={
+														calculationType
+													}
+													width={width}
+													cellType={type}
+													onTypeChange={
+														onCalculationTypeChange
+													}
+												/>
+											),
+										};
+									}),
+									{
+										id: lastColumnId,
+										content: <></>,
+									},
+								],
+						  }
+						: undefined
+				}
 			/>
 			<BottomBar
 				onRowAddClick={onRowAddClick}
