@@ -8,16 +8,19 @@ import {
 	LoomMenuCloseRequestType,
 	Position,
 } from "src/react/shared/menu/types";
+import SettingsSubmenu from "./settings-submenu";
 
 interface Props {
 	id: string;
 	isOpen: boolean;
 	triggerPosition: Position;
 	numFrozenColumns: number;
+	showCalculationRow: boolean;
 	onFrozenColumnsChange: (value: number) => void;
 	onToggleColumnClick: () => void;
 	onFilterClick: () => void;
 	onRequestClose: (type: LoomMenuCloseRequestType) => void;
+	onCalculationRowToggle: (value: boolean) => void;
 	onClose: () => void;
 }
 
@@ -31,6 +34,8 @@ export default function MoreMenu({
 	onFilterClick,
 	onRequestClose,
 	onClose,
+	showCalculationRow,
+	onCalculationRowToggle,
 }: Props) {
 	const [submenu, setSubmenu] = React.useState<MoreMenuSubmenu | null>(null);
 
@@ -56,6 +61,7 @@ export default function MoreMenu({
 						setSubmenu(MoreMenuSubmenu.FROZEN_COLUMNS)
 					}
 					onClose={onClose}
+					onSettingsClick={() => setSubmenu(MoreMenuSubmenu.SETTINGS)}
 				/>
 			)}
 			{submenu == MoreMenuSubmenu.FROZEN_COLUMNS && (
@@ -63,6 +69,13 @@ export default function MoreMenu({
 					numFrozenColumns={numFrozenColumns}
 					onBackClick={() => setSubmenu(null)}
 					onFrozenColumnsChange={onFrozenColumnsChange}
+				/>
+			)}
+			{submenu === MoreMenuSubmenu.SETTINGS && (
+				<SettingsSubmenu
+					showCalculationRow={showCalculationRow}
+					onBackClick={() => setSubmenu(null)}
+					onCalculationRowToggle={onCalculationRowToggle}
 				/>
 			)}
 		</Menu>
