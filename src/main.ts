@@ -270,7 +270,6 @@ export default class DataLoomPlugin extends Plugin {
 				}
 			})
 		);
-		new WhatsNewModal(this.app, () => null).open();
 
 		this.registerEvent(
 			this.app.workspace.on("file-open", async (file: TFile | null) => {

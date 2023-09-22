@@ -2,7 +2,6 @@ import {
 	createBodyCell,
 	createBodyRow,
 	createColumn,
-	createFooterCell,
 	createHeaderCell,
 	createTag,
 } from "src/shared/loom-state/loom-state-factory";
@@ -10,7 +9,6 @@ import {
 	BodyCell,
 	CellType,
 	Column,
-	FooterCell,
 	HeaderCell,
 	LoomState,
 } from "src/shared/loom-state/types/loom-state";
@@ -22,15 +20,8 @@ export const updateStateWithImportData = (
 	data: ImportData,
 	columnMatches: ColumnMatch[]
 ): LoomState => {
-	const {
-		headerCells,
-		headerRows,
-		bodyRows,
-		bodyCells,
-		footerCells,
-		footerRows,
-		columns,
-	} = prevState.model;
+	const { headerCells, headerRows, bodyRows, bodyCells, columns } =
+		prevState.model;
 
 	//The first index is the header row
 	//We want only the data rows
@@ -58,20 +49,6 @@ export const updateStateWithImportData = (
 		createHeaderCell(column.id, headerRows[0].id)
 	);
 	const nextHeaderCells = [...headerCells, ...newHeaderCells];
-
-	//Create a footer cell for each new column
-	const newFooterCells: FooterCell[] = newColumns.map((column) =>
-		createFooterCell(column.id, footerRows[0].id)
-	);
-	//TODO remove
-	const newFooterCells2: FooterCell[] = newColumns.map((column) =>
-		createFooterCell(column.id, footerRows[1].id)
-	);
-	const nextFooterCells = [
-		...footerCells,
-		...newFooterCells,
-		...newFooterCells2,
-	];
 
 	const newBodyCells: BodyCell[] = [];
 	newColumns.forEach((column) => {
@@ -133,7 +110,6 @@ export const updateStateWithImportData = (
 			headerCells: nextHeaderCells,
 			bodyRows: nextBodyRows,
 			bodyCells: nextBodyCells,
-			footerCells: nextFooterCells,
 		},
 	};
 };

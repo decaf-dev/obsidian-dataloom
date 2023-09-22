@@ -9,7 +9,6 @@ import {
 	CurrencyType,
 	DateFormat,
 	Filter,
-	FooterCell,
 	FooterRow,
 	HeaderCell,
 	HeaderRow,
@@ -402,17 +401,6 @@ const createBaseFilter = (
 	};
 };
 
-export const createFooterCell = (
-	columnId: string,
-	rowId: string
-): FooterCell => {
-	return {
-		id: uuidv4(),
-		columnId,
-		rowId,
-	};
-};
-
 export const createTag = (
 	markdown: string,
 	options?: { color?: Color }
@@ -487,19 +475,6 @@ const createGenericLoomState = (
 		}
 	}
 
-	//Create footers
-	const footerRows: FooterRow[] = [];
-	footerRows.push(createFooterRow());
-	footerRows.push(createFooterRow());
-
-	const footerCells: FooterCell[] = [];
-
-	for (let y = 0; y < 2; y++) {
-		for (let x = 0; x < numColumns; x++) {
-			footerCells.push(createFooterCell(columns[x].id, footerRows[y].id));
-		}
-	}
-
 	const filters: Filter[] = [];
 
 	return {
@@ -507,13 +482,12 @@ const createGenericLoomState = (
 			columns,
 			headerRows,
 			bodyRows,
-			footerRows,
 			headerCells,
 			bodyCells,
-			footerCells,
 			filters,
 			settings: {
 				numFrozenColumns: defaultFrozenColumnCount,
+				showCalculationRow: true,
 			},
 		},
 		pluginVersion,

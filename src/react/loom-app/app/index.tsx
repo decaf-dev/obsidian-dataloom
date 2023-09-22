@@ -55,7 +55,8 @@ export default function App() {
 	useMenuEvents();
 
 	const { onFocusKeyDown } = useFocus();
-	const { onFrozenColumnsChange } = useTableSettings();
+	const { onFrozenColumnsChange, onCalculationRowToggle } =
+		useTableSettings();
 
 	const { onFilterAdd, onFilterUpdate, onFilterDelete, filterByFilters } =
 		useFilter();
@@ -142,17 +143,9 @@ export default function App() {
 		nltEventSystem.dispatchEvent("keydown", e);
 	}
 
-	const {
-		headerRows,
-		footerRows,
-		columns,
-		headerCells,
-		bodyCells,
-		footerCells,
-		filters,
-		settings,
-	} = loomState.model;
-	const { numFrozenColumns } = settings;
+	const { headerRows, columns, headerCells, bodyCells, filters, settings } =
+		loomState.model;
+	const { numFrozenColumns, showCalculationRow } = settings;
 
 	let filteredBodyRows = filterByFilters(loomState);
 	filteredBodyRows = filterBodyRowsBySearch(
@@ -177,12 +170,14 @@ export default function App() {
 				columns={columns}
 				filters={filters}
 				numFrozenColumns={numFrozenColumns}
+				showCalculationRow={showCalculationRow}
 				onColumnToggle={onColumnToggle}
 				onSortRemoveClick={onSortRemoveClick}
 				onFilterAddClick={onFilterAdd}
 				onFilterDeleteClick={onFilterDelete}
 				onFilterUpdate={onFilterUpdate}
 				onFrozenColumnsChange={onFrozenColumnsChange}
+				onCalculationRowToggle={onCalculationRowToggle}
 			/>
 			<Table
 				numFrozenColumns={numFrozenColumns}
@@ -424,81 +419,68 @@ export default function App() {
 						],
 					};
 				})}
-				footerRows={footerRows.map((row, i) => {
-					if (i === 0) {
-						return {
-							id: row.id,
-							cells: [
-								{
-									id: firstColumnId,
-									content: <></>,
-								},
-								...visibleColumns.map((column) => {
-									const {
-										id: columnId,
-										type,
-										currencyType,
-										dateFormat,
-										numberFormat,
-										width,
-										tags,
-										calculationType,
-									} = column;
-									const cell = footerCells.find(
-										(cell) =>
-											cell.rowId === row.id &&
-											cell.columnId === column.id
-									);
-									if (!cell)
-										throw new CellNotFoundError({
-											rowId: row.id,
-											columnId: column.id,
-										});
-									const { id: cellId } = cell;
+				footer={
+					showCalculationRow
+						? {
+								id: "footer",
+								cells: [
+									{
+										id: firstColumnId,
+										content: <></>,
+									},
+									...visibleColumns.map((column) => {
+										const {
+											id: columnId,
+											type,
+											currencyType,
+											dateFormat,
+											numberFormat,
+											width,
+											tags,
+											calculationType,
+										} = column;
 
-									const columnBodyCells = bodyCells.filter(
-										(cell) =>
-											filteredBodyRows.find(
-												(row) => row.id === cell.rowId
-											) !== undefined
-									);
+										const columnBodyCells =
+											bodyCells.filter(
+												(cell) =>
+													filteredBodyRows.find(
+														(row) =>
+															row.id ===
+															cell.rowId
+													) !== undefined
+											);
 
-									return {
-										id: cell.id,
-										content: (
-											<FooterCellContainer
-												columnId={columnId}
-												columnTags={tags}
-												cellId={cellId}
-												numberFormat={numberFormat}
-												currencyType={currencyType}
-												dateFormat={dateFormat}
-												bodyCells={columnBodyCells}
-												bodyRows={filteredBodyRows}
-												calculationType={
-													calculationType
-												}
-												width={width}
-												cellType={type}
-												onTypeChange={
-													onCalculationTypeChange
-												}
-											/>
-										),
-									};
-								}),
-								{
-									id: lastColumnId,
-									content: <></>,
-								},
-							],
-						};
-					}
-					return {
-						id: row.id,
-						cells: [],
-					};
-				})}
+										return {
+											id: columnId,
+											content: (
+												<FooterCellContainer
+													columnId={columnId}
+													columnTags={tags}
+													numberFormat={numberFormat}
+													currencyType={currencyType}
+													dateFormat={dateFormat}
+													bodyCells={columnBodyCells}
+													bodyRows={filteredBodyRows}
+													calculationType={
+														calculationType
+													}
+													width={width}
+													cellType={type}
+													onTypeChange={
+														onCalculationTypeChange
+													}
+												/>
+											),
+										};
+									}),
+									{
+										id: lastColumnId,
+										content: <></>,
+									},
+								],
+						  }
+						: undefined
+				}
 			/>
 			<BottomBar
 				onRowAddClick={onRowAddClick}

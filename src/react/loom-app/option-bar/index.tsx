@@ -29,6 +29,7 @@ interface Props {
 	headerCells: HeaderCell[];
 	columns: Column[];
 	filters: Filter[];
+	showCalculationRow: boolean;
 	onSortRemoveClick: (columnId: string) => void;
 	onColumnToggle: (columnId: string, isVisible: boolean) => void;
 	onFilterUpdate: (
@@ -39,18 +40,21 @@ interface Props {
 	onFilterDeleteClick: (filterId: string) => void;
 	onFilterAddClick: (columnId: string, cellType: CellType) => void;
 	onFrozenColumnsChange: (value: number) => void;
+	onCalculationRowToggle: (value: boolean) => void;
 }
 export default function OptionBar({
 	numFrozenColumns,
 	headerCells,
 	columns,
 	filters,
+	showCalculationRow,
 	onSortRemoveClick,
 	onColumnToggle,
 	onFilterUpdate,
 	onFilterDeleteClick,
 	onFilterAddClick,
 	onFrozenColumnsChange,
+	onCalculationRowToggle,
 }: Props) {
 	const sortedCells = headerCells.filter((cell) => {
 		const columnId = cell.columnId;
@@ -188,12 +192,14 @@ export default function OptionBar({
 			<MoreMenu
 				id={moreMenu.id}
 				isOpen={isMoreMenuOpen}
+				showCalculationRow={showCalculationRow}
 				triggerPosition={moreMenuTriggerPosition}
 				numFrozenColumns={numFrozenColumns}
 				onFrozenColumnsChange={onFrozenColumnsChange}
 				onFilterClick={() => onFilterMenuOpen()}
 				onToggleColumnClick={() => onToggleMenuOpen()}
 				onRequestClose={onMoreMenuRequestClose}
+				onCalculationRowToggle={onCalculationRowToggle}
 				onClose={onMoreMenuClose}
 			/>
 			<ToggleColumnMenu
