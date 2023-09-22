@@ -10,7 +10,7 @@ export default class MigrateState12 implements MigrateState {
 		const { settings } = prevState.model;
 		const nextSettings = {
 			...settings,
-			showCalculationRow: false,
+			showCalculationRow: true,
 		};
 		return {
 			...prevState,
