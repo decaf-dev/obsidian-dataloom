@@ -59,7 +59,7 @@ export default function OptionSubmenu({
 				<Stack spacing="sm">
 					{type === CellType.EMBED && (
 						<MenuItem
-							name="Aspect Ratio"
+							name="Aspect ratio"
 							value={aspectRatio}
 							onClick={() =>
 								onSubmenuChange(SubmenuType.ASPECT_RATIO)
@@ -68,7 +68,7 @@ export default function OptionSubmenu({
 					)}
 					{type === CellType.EMBED && (
 						<MenuItem
-							name="Horizontal Padding"
+							name="Horizontal padding"
 							value={horizontalPadding}
 							onClick={() =>
 								onSubmenuChange(SubmenuType.HORIZONTAL_PADDING)
@@ -77,7 +77,7 @@ export default function OptionSubmenu({
 					)}
 					{type === CellType.EMBED && (
 						<MenuItem
-							name="Vertical Padding"
+							name="Vertical padding"
 							value={verticalPadding}
 							onClick={() =>
 								onSubmenuChange(SubmenuType.VERTICAL_PADDING)
