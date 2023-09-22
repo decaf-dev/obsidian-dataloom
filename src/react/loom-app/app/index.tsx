@@ -55,7 +55,8 @@ export default function App() {
 	useMenuEvents();
 
 	const { onFocusKeyDown } = useFocus();
-	const { onFrozenColumnsChange } = useTableSettings();
+	const { onFrozenColumnsChange, onCalculationRowToggle } =
+		useTableSettings();
 
 	const { onFilterAdd, onFilterUpdate, onFilterDelete, filterByFilters } =
 		useFilter();
@@ -152,7 +153,7 @@ export default function App() {
 		filters,
 		settings,
 	} = loomState.model;
-	const { numFrozenColumns } = settings;
+	const { numFrozenColumns, showCalculationRow } = settings;
 
 	let filteredBodyRows = filterByFilters(loomState);
 	filteredBodyRows = filterBodyRowsBySearch(
@@ -177,12 +178,14 @@ export default function App() {
 				columns={columns}
 				filters={filters}
 				numFrozenColumns={numFrozenColumns}
+				showCalculationRow={showCalculationRow}
 				onColumnToggle={onColumnToggle}
 				onSortRemoveClick={onSortRemoveClick}
 				onFilterAddClick={onFilterAdd}
 				onFilterDeleteClick={onFilterDelete}
 				onFilterUpdate={onFilterUpdate}
 				onFrozenColumnsChange={onFrozenColumnsChange}
+				onCalculationRowToggle={onCalculationRowToggle}
 			/>
 			<Table
 				numFrozenColumns={numFrozenColumns}

@@ -4,7 +4,6 @@ import {
 	CalculationType,
 	CellType,
 	CurrencyType,
-	LoomState,
 	NumberFormat,
 	TextFilterCondition,
 } from "../types/loom-state";
@@ -21,12 +20,13 @@ import {
 	createFileFilter,
 	createTextFilter,
 } from "../loom-state-factory";
+import { LoomState13 } from "../types/loom-state-13";
 
 /**
  * Migrates to 8.5.0
  */
 export default class MigrateState12 implements MigrateState {
-	public migrate(prevState: LoomState12): LoomState {
+	public migrate(prevState: LoomState12): LoomState13 {
 		const {
 			filterRules,
 			columns,

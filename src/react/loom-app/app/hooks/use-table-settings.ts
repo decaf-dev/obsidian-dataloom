@@ -13,7 +13,13 @@ export const useTableSettings = () => {
 		);
 	}
 
+	function handleCalculationRowToggle(value: boolean) {
+		logger("handleCalculationRowToggle");
+		doCommand(new TableSettingsUpdateCommand("showCalculationRow", value));
+	}
+
 	return {
 		onFrozenColumnsChange: handleFrozenColumnsChange,
+		onCalculationRowToggle: handleCalculationRowToggle,
 	};
 };
