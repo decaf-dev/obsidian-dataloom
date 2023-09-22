@@ -1,6 +1,6 @@
 import {
 	BodyCell,
-	BodyRow,
+	Row,
 	Column,
 	LoomState,
 } from "../loom-state/types/loom-state";
@@ -15,7 +15,7 @@ const serializeHeaderCells = (columns: Column[]): string[] => {
 const serializeBodyCells = (
 	app: App,
 	columns: Column[],
-	rows: BodyRow[],
+	rows: Row[],
 	cells: BodyCell[],
 	shouldRemoveMarkdown: boolean
 ): string[][] => {
@@ -43,12 +43,12 @@ export const loomStateToArray = (
 	loomState: LoomState,
 	shouldRemoveMarkdown: boolean
 ): string[][] => {
-	const { bodyCells, bodyRows, columns } = loomState.model;
+	const { bodyCells, rows, columns } = loomState.model;
 	const serializedHeaderCells = serializeHeaderCells(columns);
 	const serializedBodyCells = serializeBodyCells(
 		app,
 		columns,
-		bodyRows,
+		rows,
 		bodyCells,
 		shouldRemoveMarkdown
 	);

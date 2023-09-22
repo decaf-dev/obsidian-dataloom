@@ -8,7 +8,7 @@ describe("row-body-update-command", () => {
 		const prevState = createTestLoomState(1, 1);
 		const command = new CellBodyUpdateCommand(
 			prevState.model.bodyCells[0].id,
-			prevState.model.bodyRows[0].id,
+			prevState.model.rows[0].id,
 			"markdown",
 			"test"
 		);
@@ -25,7 +25,7 @@ describe("row-body-update-command", () => {
 		const prevState = createTestLoomState(1, 1);
 		const command = new CellBodyUpdateCommand(
 			prevState.model.bodyCells[0].id,
-			prevState.model.bodyRows[0].id,
+			prevState.model.rows[0].id,
 			"markdown",
 			"test"
 		);
@@ -36,11 +36,11 @@ describe("row-body-update-command", () => {
 		clear();
 
 		//Assert
-		expect(executeState.model.bodyRows.length).toEqual(1);
+		expect(executeState.model.rows.length).toEqual(1);
 		expect(executeState.model.bodyCells.length).toEqual(1);
 		expect(executeState.model.bodyCells[0].markdown).toEqual("test");
-		expect(executeState.model.bodyRows[0].lastEditedTime).toBeGreaterThan(
-			prevState.model.bodyRows[0].lastEditedTime
+		expect(executeState.model.rows[0].lastEditedTime).toBeGreaterThan(
+			prevState.model.rows[0].lastEditedTime
 		);
 	});
 
@@ -49,7 +49,7 @@ describe("row-body-update-command", () => {
 		const prevState = createTestLoomState(1, 1);
 		const command = new CellBodyUpdateCommand(
 			prevState.model.bodyCells[0].id,
-			prevState.model.bodyRows[0].id,
+			prevState.model.rows[0].id,
 			"markdown",
 			"test"
 		);
@@ -59,7 +59,7 @@ describe("row-body-update-command", () => {
 		const undoState = command.undo(executeState);
 
 		//Assert
-		expect(undoState.model.bodyRows).toEqual(prevState.model.bodyRows);
+		expect(undoState.model.rows).toEqual(prevState.model.rows);
 		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
 	});
 });

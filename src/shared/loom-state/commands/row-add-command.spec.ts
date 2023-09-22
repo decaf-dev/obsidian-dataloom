@@ -40,7 +40,7 @@ describe("row-add-command", () => {
 		const executeState = command.execute(prevState);
 
 		//Assert
-		expect(executeState.model.bodyRows.length).toEqual(2);
+		expect(executeState.model.rows.length).toEqual(2);
 		expect(executeState.model.bodyCells.length).toEqual(2);
 	});
 
@@ -54,7 +54,7 @@ describe("row-add-command", () => {
 		const undoState = command.undo(executeState);
 
 		//Assert
-		expect(undoState.model.bodyRows).toEqual(prevState.model.bodyRows);
+		expect(undoState.model.rows).toEqual(prevState.model.rows);
 		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
 	});
 });

@@ -321,11 +321,8 @@ export interface Column {
 	verticalPadding: PaddingSize;
 }
 
-interface Row {
+export interface Row {
 	id: string;
-}
-
-export interface BodyRow extends Row {
 	index: number;
 	creationTime: number;
 	lastEditedTime: number;
@@ -357,7 +354,7 @@ export interface TableSettings {
 
 export interface TableModel {
 	columns: Column[];
-	bodyRows: BodyRow[];
+	rows: Row[];
 	bodyCells: BodyCell[];
 	filters: Filter[];
 	settings: TableSettings;

@@ -1,7 +1,7 @@
 import { App } from "obsidian";
 import {
 	BodyCell,
-	BodyRow,
+	Row,
 	CellType,
 	Column,
 } from "../loom-state/types/loom-state";
@@ -22,7 +22,7 @@ const getTagCellContent = (column: Column, cell: BodyCell) => {
 export const getCellContent = (
 	app: App,
 	column: Column,
-	row: BodyRow,
+	row: Row,
 	cell: BodyCell,
 	shouldRemoveMarkdown: boolean
 ) => {

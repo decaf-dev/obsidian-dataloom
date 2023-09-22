@@ -19,7 +19,7 @@ describe("tag-cell-add-command", () => {
 
 		const command = new TagCellAddCommand(
 			prevState.model.bodyCells[0].id,
-			prevState.model.bodyRows[0].id,
+			prevState.model.rows[0].id,
 			tags[1].id,
 			false
 		);
@@ -44,7 +44,7 @@ describe("tag-cell-add-command", () => {
 
 			const command = new TagCellAddCommand(
 				prevState.model.bodyCells[0].id,
-				prevState.model.bodyRows[0].id,
+				prevState.model.rows[0].id,
 				tags[1].id,
 				false
 			);
@@ -68,7 +68,7 @@ describe("tag-cell-add-command", () => {
 
 		const command = new TagCellAddCommand(
 			prevState.model.bodyCells[0].id,
-			prevState.model.bodyRows[0].id,
+			prevState.model.rows[0].id,
 			tags[1].id,
 			false
 		);
@@ -81,8 +81,8 @@ describe("tag-cell-add-command", () => {
 		//Assert
 		expect(executeState.model.columns).toEqual(prevState.model.columns);
 		expect(executeState.model.bodyCells[0].tagIds).toEqual([tags[1].id]);
-		expect(executeState.model.bodyRows[0].lastEditedTime).toBeGreaterThan(
-			prevState.model.bodyRows[0].lastEditedTime
+		expect(executeState.model.rows[0].lastEditedTime).toBeGreaterThan(
+			prevState.model.rows[0].lastEditedTime
 		);
 	});
 
@@ -97,7 +97,7 @@ describe("tag-cell-add-command", () => {
 
 		const command = new TagCellAddCommand(
 			prevState.model.bodyCells[0].id,
-			prevState.model.bodyRows[0].id,
+			prevState.model.rows[0].id,
 			tags[1].id,
 			true
 		);
@@ -113,8 +113,8 @@ describe("tag-cell-add-command", () => {
 			tags[0].id,
 			tags[1].id,
 		]);
-		expect(executeState.model.bodyRows[0].lastEditedTime).toBeGreaterThan(
-			prevState.model.bodyRows[0].lastEditedTime
+		expect(executeState.model.rows[0].lastEditedTime).toBeGreaterThan(
+			prevState.model.rows[0].lastEditedTime
 		);
 	});
 
@@ -129,7 +129,7 @@ describe("tag-cell-add-command", () => {
 
 		const command = new TagCellAddCommand(
 			prevState.model.bodyCells[0].id,
-			prevState.model.bodyRows[0].id,
+			prevState.model.rows[0].id,
 			tags[1].id,
 			false
 		);
@@ -143,8 +143,8 @@ describe("tag-cell-add-command", () => {
 		expect(undoState.model.bodyCells[0].tagIds).toEqual(
 			prevState.model.bodyCells[0].tagIds
 		);
-		expect(undoState.model.bodyRows[0].lastEditedTime).toEqual(
-			prevState.model.bodyRows[0].lastEditedTime
+		expect(undoState.model.rows[0].lastEditedTime).toEqual(
+			prevState.model.rows[0].lastEditedTime
 		);
 	});
 });

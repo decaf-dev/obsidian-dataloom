@@ -1,6 +1,6 @@
 import {
 	BodyCell,
-	BodyRow,
+	Row,
 	CellType,
 	Filter,
 	FilterCondition,
@@ -33,15 +33,15 @@ import {
  * Filters body rows by the filters array
  * @param prevState - The previous state of the loom
  */
-export const filterByFilters = (prevState: LoomState): BodyRow[] => {
-	const { columns, bodyCells, bodyRows, filters } = prevState.model;
+export const filterByFilters = (prevState: LoomState): Row[] => {
+	const { columns, bodyCells, rows, filters } = prevState.model;
 
 	const cellMatches = new Map<string, boolean>();
 	bodyCells.forEach((cell) => {
 		const column = columns.find((column) => column.id === cell.columnId);
 		if (!column) throw new ColumNotFoundError(cell.columnId);
 
-		const row = bodyRows.find((row) => row.id === cell.rowId);
+		const row = rows.find((row) => row.id === cell.rowId);
 		if (!row) throw new Error("Row not found");
 
 		const { tags, type } = column;
@@ -49,7 +49,7 @@ export const filterByFilters = (prevState: LoomState): BodyRow[] => {
 		cellMatches.set(cell.id, doesMatch);
 	});
 
-	return bodyRows.filter((row: BodyRow) => {
+	return rows.filter((row: Row) => {
 		const filteredCells = bodyCells.filter((cell) => cell.rowId === row.id);
 		return filteredCells.every((cell) => cellMatches.get(cell.id));
 	});
@@ -66,7 +66,7 @@ export const filterByFilters = (prevState: LoomState): BodyRow[] => {
  */
 const doesCellMatchFilters = (
 	cell: BodyCell,
-	row: BodyRow,
+	row: Row,
 	cellType: CellType,
 	columnTags: Tag[],
 	filters: Filter[]
@@ -92,7 +92,7 @@ const doesCellMatchFilters = (
  */
 const doesCellMatchFilter = (
 	cell: BodyCell,
-	row: BodyRow,
+	row: Row,
 	cellType: CellType,
 	columnTags: Tag[],
 	filter: Filter

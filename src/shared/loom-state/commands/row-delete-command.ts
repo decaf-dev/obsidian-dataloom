@@ -1,4 +1,4 @@
-import { BodyCell, BodyRow, LoomState } from "../types/loom-state";
+import { BodyCell, Row, LoomState } from "../types/loom-state";
 import RowNotFoundError from "src/shared/error/row-not-found-error";
 import LoomStateCommand from "./loom-state-command";
 import CommandArgumentsError from "./command-arguments-error";
@@ -9,7 +9,7 @@ export default class RowDeleteCommand extends LoomStateCommand {
 
 	private deletedRow: {
 		arrIndex: number;
-		row: BodyRow;
+		row: Row;
 	};
 	private deletedCells: {
 		arrIndex: number;
@@ -34,26 +34,26 @@ export default class RowDeleteCommand extends LoomStateCommand {
 	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
-		const { bodyRows, bodyCells } = prevState.model;
+		const { rows, bodyCells } = prevState.model;
 
 		//If there are no rows to delete, return the previous state
-		if (bodyRows.length === 0) return prevState;
+		if (rows.length === 0) return prevState;
 
 		let id = this.rowId;
-		if (this.last) id = bodyRows[bodyRows.length - 1].id;
+		if (this.last) id = rows[rows.length - 1].id;
 
 		//Find the row to delete
-		const rowToDelete = bodyRows.find((row) => row.id === id);
+		const rowToDelete = rows.find((row) => row.id === id);
 		if (!rowToDelete) throw new RowNotFoundError(id);
 
 		//Cache the row to delete
 		this.deletedRow = {
-			arrIndex: bodyRows.indexOf(rowToDelete),
+			arrIndex: rows.indexOf(rowToDelete),
 			row: structuredClone(rowToDelete),
 		};
 
 		//Get a new array of body rows, filtering the row we want to delete
-		let newBodyRows = bodyRows.filter((row) => row.id !== id);
+		let newBodyRows = rows.filter((row) => row.id !== id);
 
 		//Cache the indexes of the rows that were updated
 		this.previousBodyRows = newBodyRows
@@ -91,7 +91,7 @@ export default class RowDeleteCommand extends LoomStateCommand {
 			...prevState,
 			model: {
 				...prevState.model,
-				bodyRows: newBodyRows,
+				rows: newBodyRows,
 				bodyCells: newBodyCells,
 			},
 		};
@@ -105,10 +105,10 @@ export default class RowDeleteCommand extends LoomStateCommand {
 	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
-		const { bodyRows, bodyCells } = prevState.model;
+		const { rows, bodyCells } = prevState.model;
 
 		//Restore the row indexes
-		const updatedBodyRows = [...bodyRows].map((row) => {
+		const updatedBodyRows = [...rows].map((row) => {
 			const wasUpdated = this.previousBodyRows.find(
 				(r) => r.id === row.id
 			);
@@ -138,7 +138,7 @@ export default class RowDeleteCommand extends LoomStateCommand {
 			...prevState,
 			model: {
 				...prevState.model,
-				bodyRows: updatedBodyRows,
+				rows: updatedBodyRows,
 				bodyCells: updatedBodyCells,
 			},
 		};

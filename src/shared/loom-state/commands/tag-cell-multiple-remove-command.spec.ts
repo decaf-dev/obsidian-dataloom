@@ -20,7 +20,7 @@ describe("tag-cell-multiple-remove-command", () => {
 
 		const command = new TagCellMultipleRemoveCommand(
 			prevState.model.bodyCells[0].id,
-			prevState.model.bodyRows[0].id,
+			prevState.model.rows[0].id,
 			[tags[0].id]
 		);
 
@@ -45,7 +45,7 @@ describe("tag-cell-multiple-remove-command", () => {
 
 		const command = new TagCellMultipleRemoveCommand(
 			prevState.model.bodyCells[0].id,
-			prevState.model.bodyRows[0].id,
+			prevState.model.rows[0].id,
 			[tags[0].id]
 		);
 
@@ -62,8 +62,8 @@ describe("tag-cell-multiple-remove-command", () => {
 			tags[0].id,
 			tags[1].id,
 		]);
-		expect(executeState.model.bodyRows[0].lastEditedTime).toBeGreaterThan(
-			prevState.model.bodyRows[0].lastEditedTime
+		expect(executeState.model.rows[0].lastEditedTime).toBeGreaterThan(
+			prevState.model.rows[0].lastEditedTime
 		);
 	});
 
@@ -80,7 +80,7 @@ describe("tag-cell-multiple-remove-command", () => {
 
 		const command = new TagCellMultipleRemoveCommand(
 			prevState.model.bodyCells[0].id,
-			prevState.model.bodyRows[0].id,
+			prevState.model.rows[0].id,
 			[tags[0].id]
 		);
 
@@ -91,8 +91,8 @@ describe("tag-cell-multiple-remove-command", () => {
 		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
 		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
-		expect(undoState.model.bodyRows[0].lastEditedTime).toEqual(
-			prevState.model.bodyRows[0].lastEditedTime
+		expect(undoState.model.rows[0].lastEditedTime).toEqual(
+			prevState.model.rows[0].lastEditedTime
 		);
 	});
 });

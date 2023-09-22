@@ -12,11 +12,11 @@ export default class ColumnAddCommand extends LoomStateCommand {
 	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
-		const { bodyCells, columns, bodyRows } = prevState.model;
+		const { bodyCells, columns, rows } = prevState.model;
 
 		this.addedColumn = createColumn();
 
-		this.addedBodyCells = bodyRows.map((row) =>
+		this.addedBodyCells = rows.map((row) =>
 			createBodyCell(this.addedColumn.id, row.id)
 		);
 

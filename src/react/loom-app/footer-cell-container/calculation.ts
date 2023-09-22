@@ -1,7 +1,7 @@
 import { isCheckboxChecked } from "src/shared/match";
 import {
 	BodyCell,
-	BodyRow,
+	Row,
 	GeneralCalculation,
 	CalculationType,
 	CellType,
@@ -14,7 +14,7 @@ import TagNotFoundError from "src/shared/error/tag-not-found-error";
 import { unixTimeToDateTimeString } from "src/shared/date/date-conversion";
 
 export const getCalculationContent = (
-	bodyRows: BodyRow[],
+	bodyRows: Row[],
 	columnCells: BodyCell[],
 	columnTags: Tag[],
 	cellType: CellType,
@@ -32,7 +32,7 @@ export const getCalculationContent = (
 };
 
 export const getCalculation = (
-	bodyRows: BodyRow[],
+	rows: Row[],
 	columnCells: BodyCell[],
 	columnTags: Tag[],
 	cellType: CellType,
@@ -40,19 +40,13 @@ export const getCalculation = (
 	dateFormat: DateFormat
 ) => {
 	if (calculationType === GeneralCalculation.COUNT_ALL) {
-		return countAll(bodyRows);
+		return countAll(rows);
 	} else if (calculationType === GeneralCalculation.COUNT_EMPTY) {
 		return countEmpty(columnCells, cellType);
 	} else if (calculationType === GeneralCalculation.COUNT_NOT_EMPTY) {
 		return countNotEmpty(columnCells, cellType);
 	} else if (calculationType === GeneralCalculation.COUNT_UNIQUE) {
-		return countUnique(
-			bodyRows,
-			columnCells,
-			columnTags,
-			cellType,
-			dateFormat
-		);
+		return countUnique(rows, columnCells, columnTags, cellType, dateFormat);
 	} else if (calculationType === GeneralCalculation.COUNT_VALUES) {
 		return countValues(columnCells, cellType);
 	} else if (calculationType === GeneralCalculation.PERCENT_EMPTY) {
@@ -66,8 +60,8 @@ export const getCalculation = (
 	}
 };
 
-const countAll = (bodyRows: BodyRow[]) => {
-	return bodyRows.length;
+const countAll = (rows: Row[]) => {
+	return rows.length;
 };
 
 const countEmpty = (columnCells: BodyCell[], cellType: CellType) => {
@@ -89,7 +83,7 @@ const countNotEmpty = (columnCells: BodyCell[], cellType: CellType) => {
 };
 
 const countUnique = (
-	bodyRows: BodyRow[],
+	rows: Row[],
 	columnCells: BodyCell[],
 	columnTags: Tag[],
 	cellType: CellType,
@@ -97,7 +91,7 @@ const countUnique = (
 ) => {
 	const hashes = columnCells
 		.map((cell) => {
-			const row = bodyRows.find((row) => row.id === cell.rowId);
+			const row = rows.find((row) => row.id === cell.rowId);
 			if (!row) throw new RowNotFoundError(cell.rowId);
 
 			const cellValues = getCellValues(
@@ -139,7 +133,7 @@ const percentNotEmpty = (columnCells: BodyCell[], cellType: CellType) => {
 };
 
 const getCellValues = (
-	bodyRow: BodyRow,
+	row: Row,
 	cell: BodyCell,
 	columnTags: Tag[],
 	cellType: CellType,
@@ -163,9 +157,9 @@ const getCellValues = (
 			return tag.markdown;
 		});
 	} else if (cellType === CellType.LAST_EDITED_TIME) {
-		return [unixTimeToDateTimeString(bodyRow.lastEditedTime, dateFormat)];
+		return [unixTimeToDateTimeString(row.lastEditedTime, dateFormat)];
 	} else if (cellType === CellType.CREATION_TIME) {
-		return [unixTimeToDateTimeString(bodyRow.creationTime, dateFormat)];
+		return [unixTimeToDateTimeString(row.creationTime, dateFormat)];
 	} else {
 		throw new Error("Unhandled cell type");
 	}

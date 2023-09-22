@@ -27,7 +27,7 @@ export default class TagCellAddCommand extends LoomStateCommand {
 	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
-		const { bodyCells, bodyRows } = prevState.model;
+		const { bodyCells, rows } = prevState.model;
 
 		const newBodyCells = bodyCells.map((cell) => {
 			if (cell.id === this.cellId) {
@@ -50,14 +50,14 @@ export default class TagCellAddCommand extends LoomStateCommand {
 			return cell;
 		});
 
-		this.previousEditedTime = rowLastEditedTime(bodyRows, this.rowId);
+		this.previousEditedTime = rowLastEditedTime(rows, this.rowId);
 
 		return {
 			...prevState,
 			model: {
 				...prevState.model,
 				bodyCells: newBodyCells,
-				bodyRows: rowLastEditedTimeUpdate(bodyRows, this.rowId),
+				rows: rowLastEditedTimeUpdate(rows, this.rowId),
 			},
 		};
 	}
@@ -69,7 +69,7 @@ export default class TagCellAddCommand extends LoomStateCommand {
 	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
-		const { bodyCells, bodyRows } = prevState.model;
+		const { bodyCells, rows } = prevState.model;
 
 		const newBodyCells = bodyCells.map((cell) => {
 			if (cell.id === this.cellId) {
@@ -86,8 +86,8 @@ export default class TagCellAddCommand extends LoomStateCommand {
 			model: {
 				...prevState.model,
 				bodyCells: newBodyCells,
-				bodyRows: rowLastEditedTimeUpdate(
-					bodyRows,
+				rows: rowLastEditedTimeUpdate(
+					rows,
 					this.rowId,
 					this.previousEditedTime
 				),

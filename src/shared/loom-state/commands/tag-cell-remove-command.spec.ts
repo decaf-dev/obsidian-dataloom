@@ -20,7 +20,7 @@ describe("tag-cell-remove-command", () => {
 
 		const command = new TagCellRemoveCommand(
 			prevState.model.bodyCells[0].id,
-			prevState.model.bodyRows[0].id,
+			prevState.model.rows[0].id,
 			tags[0].id
 		);
 
@@ -45,7 +45,7 @@ describe("tag-cell-remove-command", () => {
 
 		const command = new TagCellRemoveCommand(
 			prevState.model.bodyCells[0].id,
-			prevState.model.bodyRows[0].id,
+			prevState.model.rows[0].id,
 			tags[0].id
 		);
 
@@ -63,8 +63,8 @@ describe("tag-cell-remove-command", () => {
 			tags[1].id,
 		]);
 
-		expect(executeState.model.bodyRows[0].lastEditedTime).toBeGreaterThan(
-			prevState.model.bodyRows[0].lastEditedTime
+		expect(executeState.model.rows[0].lastEditedTime).toBeGreaterThan(
+			prevState.model.rows[0].lastEditedTime
 		);
 	});
 
@@ -81,7 +81,7 @@ describe("tag-cell-remove-command", () => {
 
 		const command = new TagCellRemoveCommand(
 			prevState.model.bodyCells[0].id,
-			prevState.model.bodyRows[0].id,
+			prevState.model.rows[0].id,
 			tags[0].id
 		);
 
@@ -92,8 +92,8 @@ describe("tag-cell-remove-command", () => {
 		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
 		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
-		expect(undoState.model.bodyRows[0].lastEditedTime).toEqual(
-			prevState.model.bodyRows[0].lastEditedTime
+		expect(undoState.model.rows[0].lastEditedTime).toEqual(
+			prevState.model.rows[0].lastEditedTime
 		);
 	});
 });

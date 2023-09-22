@@ -34,7 +34,7 @@ export default class MigrateState13 implements MigrateState {
 			model: {
 				columns: nextColumns,
 				bodyCells,
-				bodyRows,
+				rows: bodyRows,
 				filters,
 				settings: nextSettings,
 			},

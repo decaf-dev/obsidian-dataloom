@@ -15,7 +15,7 @@ describe("tag-add-command", () => {
 		const command = new TagAddCommand(
 			prevState.model.bodyCells[0].id,
 			prevState.model.columns[0].id,
-			prevState.model.bodyRows[0].id,
+			prevState.model.rows[0].id,
 			"test1",
 			Color.BLUE,
 			true
@@ -36,7 +36,7 @@ describe("tag-add-command", () => {
 			const command = new TagAddCommand(
 				prevState.model.bodyCells[0].id,
 				prevState.model.columns[0].id,
-				prevState.model.bodyRows[0].id,
+				prevState.model.rows[0].id,
 				"test1",
 				Color.BLUE,
 				true
@@ -64,7 +64,7 @@ describe("tag-add-command", () => {
 		const command = new TagAddCommand(
 			prevState.model.bodyCells[0].id,
 			prevState.model.columns[0].id,
-			prevState.model.bodyRows[0].id,
+			prevState.model.rows[0].id,
 			"test3",
 			Color.BLUE,
 			false
@@ -88,8 +88,8 @@ describe("tag-add-command", () => {
 			tagIds[1]
 		);
 
-		expect(executeState.model.bodyRows[0].lastEditedTime).toBeGreaterThan(
-			prevState.model.bodyRows[0].lastEditedTime
+		expect(executeState.model.rows[0].lastEditedTime).toBeGreaterThan(
+			prevState.model.rows[0].lastEditedTime
 		);
 	});
 
@@ -106,7 +106,7 @@ describe("tag-add-command", () => {
 		const command = new TagAddCommand(
 			prevState.model.bodyCells[0].id,
 			prevState.model.columns[0].id,
-			prevState.model.bodyRows[0].id,
+			prevState.model.rows[0].id,
 			"test3",
 			Color.BLUE,
 			true
@@ -126,8 +126,8 @@ describe("tag-add-command", () => {
 		expect(executeState.model.bodyCells[0].tagIds).toContain(tags[0].id);
 		expect(executeState.model.bodyCells[0].tagIds).toContain(tags[1].id);
 
-		expect(executeState.model.bodyRows[0].lastEditedTime).toBeGreaterThan(
-			prevState.model.bodyRows[0].lastEditedTime
+		expect(executeState.model.rows[0].lastEditedTime).toBeGreaterThan(
+			prevState.model.rows[0].lastEditedTime
 		);
 	});
 
@@ -144,7 +144,7 @@ describe("tag-add-command", () => {
 		const command = new TagAddCommand(
 			prevState.model.bodyCells[0].id,
 			prevState.model.columns[0].id,
-			prevState.model.bodyRows[0].id,
+			prevState.model.rows[0].id,
 			"test3",
 			Color.BLUE,
 			true
@@ -157,8 +157,8 @@ describe("tag-add-command", () => {
 		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
 		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
-		expect(undoState.model.bodyRows[0].lastEditedTime).toEqual(
-			prevState.model.bodyRows[0].lastEditedTime
+		expect(undoState.model.rows[0].lastEditedTime).toEqual(
+			prevState.model.rows[0].lastEditedTime
 		);
 	});
 
@@ -175,7 +175,7 @@ describe("tag-add-command", () => {
 		const command = new TagAddCommand(
 			prevState.model.bodyCells[0].id,
 			prevState.model.columns[0].id,
-			prevState.model.bodyRows[0].id,
+			prevState.model.rows[0].id,
 			"test3",
 			Color.BLUE,
 			true
@@ -189,8 +189,8 @@ describe("tag-add-command", () => {
 		//Assert
 		expect(executeState.model.columns).toEqual(redoState.model.columns);
 		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
-		expect(executeState.model.bodyRows[0].lastEditedTime).toEqual(
-			redoState.model.bodyRows[0].lastEditedTime
+		expect(executeState.model.rows[0].lastEditedTime).toEqual(
+			redoState.model.rows[0].lastEditedTime
 		);
 	});
 });

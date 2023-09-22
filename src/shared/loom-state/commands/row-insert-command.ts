@@ -1,9 +1,9 @@
 import {
 	createBodyCell,
-	createBodyRow,
+	createRow,
 } from "src/shared/loom-state/loom-state-factory";
 import LoomStateCommand from "./loom-state-command";
-import { BodyCell, BodyRow, LoomState, SortDir } from "../types/loom-state";
+import { BodyCell, Row, LoomState, SortDir } from "../types/loom-state";
 import RowNotFoundError from "src/shared/error/row-not-found-error";
 
 export type RowInsert = "above" | "below";
@@ -25,7 +25,7 @@ export default class RowInsertCommand extends LoomStateCommand {
 	 * Without this, the row id in the `redo` state would be different than the row id in the `execute` state.
 	 * This will cause subequent commands that reference this row id to fail.
 	 */
-	private addedRow: BodyRow;
+	private addedRow: Row;
 
 	/**
 	 * The cells that were added
@@ -60,17 +60,17 @@ export default class RowInsertCommand extends LoomStateCommand {
 	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
-		const { bodyRows, bodyCells, columns } = prevState.model;
+		const { rows, bodyCells, columns } = prevState.model;
 
 		//Find the base row index
-		const index = bodyRows.findIndex((row) => row.id === this.rowId);
+		const index = rows.findIndex((row) => row.id === this.rowId);
 		if (index === -1) throw new RowNotFoundError(this.rowId);
 
 		//Calculate the insertion index
 		const insertIndex = this.insert === "above" ? index : index + 1;
 
 		//Create the new row and cells to insert
-		const createdRow = createBodyRow(insertIndex);
+		const createdRow = createRow(insertIndex);
 		this.addedRow = createdRow;
 
 		const createdBodyCells = columns.map((column) => {
@@ -83,16 +83,16 @@ export default class RowInsertCommand extends LoomStateCommand {
 		this.addedBodyCells = createdBodyCells;
 
 		//Save the previous row order so we can reference it in `undo`
-		this.originalRowOrder = bodyRows.map((row) => ({
+		this.originalRowOrder = rows.map((row) => ({
 			id: row.id,
 			index: row.index,
 		}));
 
 		//Insert the new row
 		const updatedRows = [
-			...bodyRows.slice(0, insertIndex),
+			...rows.slice(0, insertIndex),
 			createdRow,
-			...bodyRows.slice(insertIndex),
+			...rows.slice(insertIndex),
 			//Set the current index of all the values to their current positions
 			//This will allow us to retain the order of sorted rows
 		].map((row, i) => ({ ...row, index: i }));
@@ -118,7 +118,7 @@ export default class RowInsertCommand extends LoomStateCommand {
 			model: {
 				...prevState.model,
 				columns: updatedColumns,
-				bodyRows: updatedRows,
+				rows: updatedRows,
 				bodyCells: updatedBodyCells,
 			},
 		};
@@ -127,14 +127,14 @@ export default class RowInsertCommand extends LoomStateCommand {
 	redo(prevState: LoomState): LoomState {
 		super.onRedo();
 
-		const { bodyRows, bodyCells, columns } = prevState.model;
+		const { rows, bodyCells, columns } = prevState.model;
 
 		//Insert the new row
 		const insertIndex = this.addedRow.index;
-		const updatedBodyRows = [
-			...bodyRows.slice(0, insertIndex),
+		const updatedRows = [
+			...rows.slice(0, insertIndex),
 			this.addedRow,
-			...bodyRows.slice(insertIndex),
+			...rows.slice(insertIndex),
 		].map((row, i) => ({ ...row, index: i }));
 
 		const updatedBodyCells = [...bodyCells, ...this.addedBodyCells];
@@ -152,7 +152,7 @@ export default class RowInsertCommand extends LoomStateCommand {
 			model: {
 				...prevState.model,
 				columns: updatedColumns,
-				bodyRows: updatedBodyRows,
+				rows: updatedRows,
 				bodyCells: updatedBodyCells,
 			},
 		};
@@ -161,13 +161,13 @@ export default class RowInsertCommand extends LoomStateCommand {
 	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
-		const { bodyRows, bodyCells, columns } = prevState.model;
+		const { rows, bodyCells, columns } = prevState.model;
 
 		//Find the row that was added
-		const row = bodyRows.find((row) => row.id === this.addedRow.id);
+		const row = rows.find((row) => row.id === this.addedRow.id);
 		if (!row) throw new RowNotFoundError(this.addedRow.id);
 
-		const updatedBodyRows = bodyRows
+		const updatedRows = rows
 			//Remove the added row
 			.filter((row) => row.id !== this.addedRow.id)
 			//Restore the original row order
@@ -206,7 +206,7 @@ export default class RowInsertCommand extends LoomStateCommand {
 			model: {
 				...prevState.model,
 				columns: updatedColumns,
-				bodyRows: updatedBodyRows,
+				rows: updatedRows,
 				bodyCells: updatedBodyCells,
 			},
 		};

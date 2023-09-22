@@ -28,14 +28,14 @@ export default class CellBodyUpdateCommand extends LoomStateCommand {
 	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
-		const { bodyCells, bodyRows } = prevState.model;
+		const { bodyCells, rows } = prevState.model;
 		const cell = bodyCells.find((cell) => cell.id === this.cellId);
 		if (!cell)
 			throw new CellNotFoundError({
 				id: this.cellId,
 			});
 		this.previousValue = cell[this.key];
-		this.previousEditedTime = rowLastEditedTime(bodyRows, this.rowId);
+		this.previousEditedTime = rowLastEditedTime(rows, this.rowId);
 
 		return {
 			...prevState,
@@ -50,7 +50,7 @@ export default class CellBodyUpdateCommand extends LoomStateCommand {
 					}
 					return cell;
 				}),
-				bodyRows: rowLastEditedTimeUpdate(bodyRows, this.rowId),
+				rows: rowLastEditedTimeUpdate(rows, this.rowId),
 			},
 		};
 	}
@@ -63,7 +63,7 @@ export default class CellBodyUpdateCommand extends LoomStateCommand {
 	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
-		const { bodyCells, bodyRows } = prevState.model;
+		const { bodyCells, rows } = prevState.model;
 		return {
 			...prevState,
 			model: {
@@ -77,8 +77,8 @@ export default class CellBodyUpdateCommand extends LoomStateCommand {
 					}
 					return cell;
 				}),
-				bodyRows: rowLastEditedTimeUpdate(
-					bodyRows,
+				rows: rowLastEditedTimeUpdate(
+					rows,
 					this.rowId,
 					this.previousEditedTime
 				),

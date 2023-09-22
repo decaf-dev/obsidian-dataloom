@@ -58,7 +58,7 @@ export default class TagAddCommand extends LoomStateCommand {
 	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
-		const { bodyRows, bodyCells, columns } = prevState.model;
+		const { rows, bodyCells, columns } = prevState.model;
 
 		this.addedTag = createTag(this.markdown, {
 			color: this.color,
@@ -99,7 +99,7 @@ export default class TagAddCommand extends LoomStateCommand {
 			return cell;
 		});
 
-		this.previousEditedTime = rowLastEditedTime(bodyRows, this.rowId);
+		this.previousEditedTime = rowLastEditedTime(rows, this.rowId);
 		this.newEditedTime = Date.now();
 
 		return {
@@ -108,8 +108,8 @@ export default class TagAddCommand extends LoomStateCommand {
 				...prevState.model,
 				columns: newColumns,
 				bodyCells: newBodyCells,
-				bodyRows: rowLastEditedTimeUpdate(
-					bodyRows,
+				rows: rowLastEditedTimeUpdate(
+					rows,
 					this.rowId,
 					this.newEditedTime
 				),
@@ -118,7 +118,7 @@ export default class TagAddCommand extends LoomStateCommand {
 	}
 	redo(prevState: LoomState): LoomState {
 		super.onRedo();
-		const { bodyRows, columns, bodyCells } = prevState.model;
+		const { rows, columns, bodyCells } = prevState.model;
 
 		const newColumns = columns.map((column) => {
 			if (column.id === this.columnId)
@@ -144,8 +144,8 @@ export default class TagAddCommand extends LoomStateCommand {
 				...prevState.model,
 				columns: newColumns,
 				bodyCells: newBodyCells,
-				bodyRows: rowLastEditedTimeUpdate(
-					bodyRows,
+				rows: rowLastEditedTimeUpdate(
+					rows,
 					this.rowId,
 					this.newEditedTime
 				),
@@ -155,7 +155,7 @@ export default class TagAddCommand extends LoomStateCommand {
 	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
-		const { bodyRows, columns } = prevState.model;
+		const { rows, columns } = prevState.model;
 
 		const newColumns = columns.map((column) => {
 			if (column.id === this.columnId) {
@@ -185,8 +185,8 @@ export default class TagAddCommand extends LoomStateCommand {
 				...prevState.model,
 				columns: newColumns,
 				bodyCells: newBodyCells,
-				bodyRows: rowLastEditedTimeUpdate(
-					bodyRows,
+				rows: rowLastEditedTimeUpdate(
+					rows,
 					this.rowId,
 					this.previousEditedTime
 				),

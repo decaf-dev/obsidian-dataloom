@@ -32,7 +32,7 @@ describe("updateStateWithImportData", () => {
 
 		//Assert
 		expect(nextState.model.bodyCells.length).toEqual(8);
-		expect(nextState.model.bodyRows.length).toEqual(4);
+		expect(nextState.model.rows.length).toEqual(4);
 		expect(nextState.model.bodyCells[0].markdown).toEqual("data 1");
 		expect(nextState.model.bodyCells[1].markdown).toEqual("data 2");
 		expect(nextState.model.bodyCells[2].markdown).toEqual("data 3");
@@ -68,7 +68,7 @@ describe("updateStateWithImportData", () => {
 		//Assert
 		expect(nextState.model.columns.length).toEqual(2);
 		expect(nextState.model.bodyCells.length).toEqual(6);
-		expect(nextState.model.bodyRows.length).toEqual(3);
+		expect(nextState.model.rows.length).toEqual(3);
 		expect(nextState.model.bodyCells[0].markdown).toEqual("data 1");
 		expect(nextState.model.bodyCells[1].markdown).toEqual("");
 		expect(nextState.model.bodyCells[2].markdown).toEqual("import 2");
@@ -108,7 +108,7 @@ describe("updateStateWithImportData", () => {
 		//Assert
 		expect(nextState.model.columns.length).toEqual(4);
 		expect(nextState.model.bodyCells.length).toEqual(16);
-		expect(nextState.model.bodyRows.length).toEqual(4);
+		expect(nextState.model.rows.length).toEqual(4);
 		expect(nextState.model.bodyCells[0].markdown).toEqual("data 1");
 		expect(nextState.model.bodyCells[1].markdown).toEqual("data 2");
 		expect(nextState.model.bodyCells[2].markdown).toEqual("data 3");

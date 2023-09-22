@@ -1,6 +1,6 @@
 import {
 	BodyCell,
-	BodyRow,
+	Row,
 	CellType,
 	Column,
 	CurrencyType,
@@ -18,22 +18,22 @@ import { getNumberCellContent } from "src/shared/cell-content/number-cell-conten
 type CellWithReferences = {
 	cell: BodyCell;
 	column: Column;
-	row: BodyRow;
+	row: Row;
 	tags: Tag[];
 };
 
 export const filterBodyRowsBySearch = (
 	state: LoomState,
-	filteredBodyRows: BodyRow[],
+	filteredBodyRows: Row[],
 	searchText: string
-): BodyRow[] => {
-	const { columns, bodyCells, bodyRows } = state.model;
+): Row[] => {
+	const { columns, bodyCells, rows } = state.model;
 
 	const cells: CellWithReferences[] = bodyCells.map((cell) => {
 		const column = columns.find((c) => c.id === cell.columnId);
 		if (!column) throw new ColumNotFoundError(cell.columnId);
 
-		const row = bodyRows.find((r) => r.id === cell.rowId);
+		const row = rows.find((r) => r.id === cell.rowId);
 		if (!row) throw new RowNotFoundError(cell.rowId);
 
 		const tags = column.tags.filter((tag) => cell.tagIds.includes(tag.id));

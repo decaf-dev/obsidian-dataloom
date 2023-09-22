@@ -431,7 +431,7 @@ export default function App() {
 													currencyType={currencyType}
 													dateFormat={dateFormat}
 													bodyCells={columnBodyCells}
-													bodyRows={filteredBodyRows}
+													rows={filteredBodyRows}
 													calculationType={
 														calculationType
 													}

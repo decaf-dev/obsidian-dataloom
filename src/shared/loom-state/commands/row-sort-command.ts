@@ -4,7 +4,7 @@ import TagNotFoundError from "src/shared/error/tag-not-found-error";
 import LoomStateCommand from "./loom-state-command";
 import {
 	BodyCell,
-	BodyRow,
+	Row,
 	CellType,
 	Column,
 	SortDir,
@@ -25,29 +25,29 @@ export default class RowSortCommand extends LoomStateCommand {
 	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
-		const { columns, bodyRows, bodyCells } = prevState.model;
+		const { columns, rows, bodyCells } = prevState.model;
 		const columnsToSortBy = columns.filter(
 			(columns) => columns.sortDir !== SortDir.NONE
 		);
 
-		this.previousRowSort = bodyRows.map((row) => ({
+		this.previousRowSort = rows.map((row) => ({
 			id: row.id,
 			index: row.index,
 		}));
 
-		let newBodyRows = [...bodyRows];
+		let newRows = [...rows];
 
 		if (columnsToSortBy.length !== 0) {
-			newBodyRows = this.multiSort(columnsToSortBy, bodyRows, bodyCells);
+			newRows = this.multiSort(columnsToSortBy, rows, bodyCells);
 		} else {
-			newBodyRows = this.sortByIndex(bodyRows);
+			newRows = this.sortByIndex(rows);
 		}
 
 		return {
 			...prevState,
 			model: {
 				...prevState.model,
-				bodyRows: newBodyRows,
+				rows: newRows,
 			},
 		};
 	}
@@ -60,9 +60,9 @@ export default class RowSortCommand extends LoomStateCommand {
 	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
-		const { bodyRows } = prevState.model;
-		const newBodyRows = this.previousRowSort.map((prev) => {
-			const row = bodyRows.find((row) => row.id === prev.id);
+		const { rows } = prevState.model;
+		const newRows = this.previousRowSort.map((prev) => {
+			const row = rows.find((row) => row.id === prev.id);
 			if (!row) throw new RowNotFoundError(prev.id);
 			return {
 				...row,
@@ -74,14 +74,14 @@ export default class RowSortCommand extends LoomStateCommand {
 			...prevState,
 			model: {
 				...prevState.model,
-				bodyRows: newBodyRows,
+				rows: newRows,
 			},
 		};
 	}
 
 	private multiSort = (
 		columnsToSortBy: Column[],
-		rows: BodyRow[],
+		rows: Row[],
 		cells: BodyCell[]
 	) => {
 		const rowsCopy = [...rows];
@@ -97,7 +97,7 @@ export default class RowSortCommand extends LoomStateCommand {
 		return rowsCopy;
 	};
 
-	private sortByIndex(rows: BodyRow[]): BodyRow[] {
+	private sortByIndex(rows: Row[]): Row[] {
 		const newRows = [...rows];
 		newRows.sort((a, b) => {
 			return a.index - b.index;
@@ -106,8 +106,8 @@ export default class RowSortCommand extends LoomStateCommand {
 	}
 
 	private sortByColumn(
-		a: BodyRow,
-		b: BodyRow,
+		a: Row,
+		b: Row,
 		column: Column,
 		cells: BodyCell[]
 	): number {
@@ -130,8 +130,8 @@ export default class RowSortCommand extends LoomStateCommand {
 	}
 
 	private sortByText(
-		a: BodyRow,
-		b: BodyRow,
+		a: Row,
+		b: Row,
 		columnId: string,
 		cells: BodyCell[],
 		sortDir: SortDir
@@ -156,8 +156,8 @@ export default class RowSortCommand extends LoomStateCommand {
 	}
 
 	private sortByNumber(
-		a: BodyRow,
-		b: BodyRow,
+		a: Row,
+		b: Row,
 		columnId: string,
 		cells: BodyCell[],
 		sortDir: SortDir
@@ -182,8 +182,8 @@ export default class RowSortCommand extends LoomStateCommand {
 	}
 
 	private sortByTag(
-		a: BodyRow,
-		b: BodyRow,
+		a: Row,
+		b: Row,
 		columnId: string,
 		columnTags: Tag[],
 		cells: BodyCell[],
@@ -225,8 +225,8 @@ export default class RowSortCommand extends LoomStateCommand {
 	}
 
 	private sortByCheckbox(
-		a: BodyRow,
-		b: BodyRow,
+		a: Row,
+		b: Row,
 		columnId: string,
 		cells: BodyCell[],
 		sortDir: SortDir
@@ -250,8 +250,8 @@ export default class RowSortCommand extends LoomStateCommand {
 	}
 
 	private sortByDate(
-		a: BodyRow,
-		b: BodyRow,
+		a: Row,
+		b: Row,
 		columnId: string,
 		cells: BodyCell[],
 		sortDir: SortDir
@@ -269,11 +269,7 @@ export default class RowSortCommand extends LoomStateCommand {
 		}
 	}
 
-	private sortByCreationTime(
-		a: BodyRow,
-		b: BodyRow,
-		sortDir: SortDir
-	): number {
+	private sortByCreationTime(a: Row, b: Row, sortDir: SortDir): number {
 		if (sortDir === SortDir.ASC) {
 			return a.creationTime - b.creationTime;
 		} else if (sortDir === SortDir.DESC) {
@@ -283,11 +279,7 @@ export default class RowSortCommand extends LoomStateCommand {
 		}
 	}
 
-	private sortByLastEditedTime(
-		a: BodyRow,
-		b: BodyRow,
-		sortDir: SortDir
-	): number {
+	private sortByLastEditedTime(a: Row, b: Row, sortDir: SortDir): number {
 		if (sortDir === SortDir.ASC) {
 			return a.lastEditedTime - b.lastEditedTime;
 		} else if (sortDir === SortDir.DESC) {
@@ -298,8 +290,8 @@ export default class RowSortCommand extends LoomStateCommand {
 	}
 
 	private findCellAB = (
-		a: BodyRow,
-		b: BodyRow,
+		a: Row,
+		b: Row,
 		columnId: string,
 		cells: BodyCell[]
 	) => {

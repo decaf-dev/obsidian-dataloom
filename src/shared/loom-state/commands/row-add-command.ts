@@ -1,12 +1,12 @@
 import {
 	createBodyCell,
-	createBodyRow,
+	createRow,
 } from "src/shared/loom-state/loom-state-factory";
 import LoomStateCommand from "./loom-state-command";
-import { BodyCell, BodyRow, LoomState } from "../types/loom-state";
+import { BodyCell, Row, LoomState } from "../types/loom-state";
 
 export default class RowAddCommand extends LoomStateCommand {
-	private addedRow: BodyRow;
+	private addedRow: Row;
 	private addedBodyCells: BodyCell[];
 
 	constructor() {
@@ -16,9 +16,9 @@ export default class RowAddCommand extends LoomStateCommand {
 	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
-		const { bodyRows, bodyCells, columns } = prevState.model;
+		const { rows, bodyCells, columns } = prevState.model;
 
-		this.addedRow = createBodyRow(bodyRows.length);
+		this.addedRow = createRow(rows.length);
 		this.addedBodyCells = columns.map((column) => {
 			const { id, type } = column;
 			return createBodyCell(id, this.addedRow.id, {
@@ -31,7 +31,7 @@ export default class RowAddCommand extends LoomStateCommand {
 			model: {
 				...prevState.model,
 				bodyCells: [...bodyCells, ...this.addedBodyCells],
-				bodyRows: [...bodyRows, this.addedRow],
+				rows: [...rows, this.addedRow],
 			},
 		};
 	}
@@ -39,14 +39,14 @@ export default class RowAddCommand extends LoomStateCommand {
 	redo(prevState: LoomState): LoomState {
 		super.onRedo();
 
-		const { bodyRows, bodyCells } = prevState.model;
+		const { rows, bodyCells } = prevState.model;
 
 		return {
 			...prevState,
 			model: {
 				...prevState.model,
 				bodyCells: [...bodyCells, ...this.addedBodyCells],
-				bodyRows: [...bodyRows, this.addedRow],
+				rows: [...rows, this.addedRow],
 			},
 		};
 	}
@@ -54,13 +54,13 @@ export default class RowAddCommand extends LoomStateCommand {
 	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
-		const { bodyRows, bodyCells } = prevState.model;
+		const { rows, bodyCells } = prevState.model;
 
 		return {
 			...prevState,
 			model: {
 				...prevState.model,
-				bodyRows: bodyRows.filter((row) => row.id !== this.addedRow.id),
+				rows: rows.filter((row) => row.id !== this.addedRow.id),
 				bodyCells: bodyCells.filter(
 					(cell) => cell.rowId !== this.addedRow.id
 				),

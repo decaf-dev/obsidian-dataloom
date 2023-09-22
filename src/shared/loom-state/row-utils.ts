@@ -1,17 +1,17 @@
-import { BodyRow } from "./types/loom-state";
+import { Row } from "./types/loom-state";
 import RowNotFoundError from "../error/row-not-found-error";
 
-export const rowLastEditedTime = (rows: BodyRow[], rowId: string) => {
+export const rowLastEditedTime = (rows: Row[], rowId: string) => {
 	const row = rows.find((row) => row.id === rowId);
 	if (!row) throw new RowNotFoundError(rowId);
 	return row.lastEditedTime;
 };
 
 export const rowLastEditedTimeUpdate = (
-	rows: BodyRow[],
+	rows: Row[],
 	rowId: string,
 	time = Date.now()
-): BodyRow[] => {
+): Row[] => {
 	return rows.map((row) => {
 		if (row.id === rowId) {
 			return {

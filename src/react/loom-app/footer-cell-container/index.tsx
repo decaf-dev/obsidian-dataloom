@@ -3,7 +3,7 @@ import CalculationMenu from "./calculation-menu";
 
 import {
 	BodyCell,
-	BodyRow,
+	Row,
 	GeneralCalculation,
 	CalculationType,
 	CellType,
@@ -29,7 +29,7 @@ interface Props {
 	columnTags: Tag[];
 	width: string;
 	numberFormat: NumberFormat;
-	bodyRows: BodyRow[];
+	rows: Row[];
 	bodyCells: BodyCell[];
 	currencyType: CurrencyType;
 	cellType: CellType;
@@ -43,7 +43,7 @@ export default function FooterCellContainer({
 	bodyCells,
 	dateFormat,
 	numberFormat,
-	bodyRows,
+	rows,
 	width,
 	calculationType,
 	currencyType,
@@ -82,7 +82,7 @@ export default function FooterCellContainer({
 			);
 	} else {
 		content = getCalculationContent(
-			bodyRows,
+			rows,
 			columnCells,
 			columnTags,
 			cellType,

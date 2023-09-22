@@ -1,6 +1,6 @@
 import {
 	createBodyCell,
-	createBodyRow,
+	createRow,
 	createColumn,
 	createTag,
 } from "src/shared/loom-state/loom-state-factory";
@@ -18,7 +18,7 @@ export const updateStateWithImportData = (
 	data: ImportData,
 	columnMatches: ColumnMatch[]
 ): LoomState => {
-	const { bodyRows, bodyCells, columns } = prevState.model;
+	const { rows, bodyCells, columns } = prevState.model;
 
 	//The first index is the header row
 	//We want only the data rows
@@ -27,8 +27,8 @@ export const updateStateWithImportData = (
 	//Create a row for each data entry
 	const newBodyRows = Array(dataRows.length)
 		.fill(null)
-		.map((_val, i) => createBodyRow(bodyRows.length + i));
-	const nextBodyRows = [...bodyRows, ...newBodyRows];
+		.map((_val, i) => createRow(rows.length + i));
+	const nextBodyRows = [...rows, ...newBodyRows];
 
 	//Create a column for each column that does not have a match
 	const newColumns: Column[] = [];
@@ -43,7 +43,7 @@ export const updateStateWithImportData = (
 
 	const newBodyCells: BodyCell[] = [];
 	newColumns.forEach((column) => {
-		bodyRows.forEach((row) => {
+		rows.forEach((row) => {
 			const cell = createBodyCell(column.id, row.id);
 			newBodyCells.push(cell);
 		});
@@ -98,7 +98,7 @@ export const updateStateWithImportData = (
 		model: {
 			...prevState.model,
 			columns: nextColumns,
-			bodyRows: nextBodyRows,
+			rows: nextBodyRows,
 			bodyCells: nextBodyCells,
 		},
 	};
