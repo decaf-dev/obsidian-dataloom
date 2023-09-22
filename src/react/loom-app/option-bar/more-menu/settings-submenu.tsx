@@ -1,5 +1,6 @@
 import Flex from "src/react/shared/flex";
 import Padding from "src/react/shared/padding";
+import Stack from "src/react/shared/stack";
 import Submenu from "src/react/shared/submenu";
 import Switch from "src/react/shared/switch";
 import Text from "src/react/shared/text";
@@ -17,14 +18,14 @@ export default function SettingsSubmenu({
 }: Props) {
 	return (
 		<Submenu title="Settings" onBackClick={onBackClick}>
-			<Padding py="sm">
-				<Flex justify="space-between" align="center">
-					<Text value="Display calculation row" />
+			<Padding px="lg" py="md">
+				<Stack isHorizontal spacing="lg">
+					<Text value="Calculation row" />
 					<Switch
 						value={showCalculationRow}
 						onToggle={onCalculationRowToggle}
 					/>
-				</Flex>
+				</Stack>
 			</Padding>
 		</Submenu>
 	);
