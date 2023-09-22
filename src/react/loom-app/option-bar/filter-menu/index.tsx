@@ -35,8 +35,8 @@ import {
 	CreationTimeFilter,
 	LastEditedTimeFilter,
 	DateFilterOption,
+	Column,
 } from "src/shared/loom-state/types/loom-state";
-import { ColumnWithMarkdown } from "../types";
 import { isSmallScreenSize } from "src/shared/render/utils";
 import {
 	LoomMenuCloseRequestType,
@@ -67,7 +67,7 @@ interface Props {
 	id: string;
 	triggerPosition: Position;
 	isOpen: boolean;
-	columns: ColumnWithMarkdown[];
+	columns: Column[];
 	filters: Filter[];
 	onAddClick: (columnId: string, cellType: CellType) => void;
 	onUpdate: (id: string, data: Partial<Filter>, isPartial?: boolean) => void;

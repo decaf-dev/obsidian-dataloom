@@ -37,7 +37,6 @@ describe("column-add-command", () => {
 
 		//Assert
 		expect(executeState.model.columns.length).toEqual(2);
-		expect(executeState.model.headerCells.length).toEqual(2);
 		expect(executeState.model.bodyCells.length).toEqual(2);
 	});
 
@@ -52,9 +51,6 @@ describe("column-add-command", () => {
 
 		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
-		expect(undoState.model.headerCells).toEqual(
-			prevState.model.headerCells
-		);
 		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
 	});
 });

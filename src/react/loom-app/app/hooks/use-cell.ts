@@ -1,8 +1,8 @@
+import React from "react";
+
 import { useLogger } from "src/shared/logger";
 import { useLoomState } from "src/react/loom-app/loom-state-provider";
 import CellBodyUpdateCommand from "src/shared/loom-state/commands/cell-body-update-command";
-import CellHeaderUpdateCommand from "src/shared/loom-state/commands/cell-header-update-command";
-import React from "react";
 
 export const useCell = () => {
 	const logger = useLogger();
@@ -21,15 +21,6 @@ export const useCell = () => {
 		doCommand(
 			new CellBodyUpdateCommand(cellId, rowId, "isExternalLink", value)
 		);
-	}
-
-	function handleHeaderCellContentChange(cellId: string, value: string) {
-		logger("handleCellContentChange", {
-			cellId,
-			markdown: value,
-		});
-
-		doCommand(new CellHeaderUpdateCommand(cellId, "markdown", value));
 	}
 
 	const handleBodyCellContentChange = React.useCallback(
@@ -63,7 +54,6 @@ export const useCell = () => {
 	);
 
 	return {
-		onHeaderCellContentChange: handleHeaderCellContentChange,
 		onBodyCellContentChange: handleBodyCellContentChange,
 		onCellDateTimeChange: handleCellDateTimeChange,
 		onExternalLinkToggle: handleExternalLinkToggle,

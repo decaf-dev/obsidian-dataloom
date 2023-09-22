@@ -38,13 +38,11 @@ interface Props {
 	numberPrefix: string;
 	numberSuffix: string;
 	numberSeparator: string;
-	rowId: string;
-	cellId: string;
 	numberFormat: NumberFormat;
 	aspectRatio: AspectRatio;
 	horizontalPadding: PaddingSize;
 	verticalPadding: PaddingSize;
-	markdown: string;
+	content: string;
 	shouldWrapOverflow: boolean;
 	columnSortDir: SortDir;
 	columnType: CellType;
@@ -55,7 +53,7 @@ interface Props {
 	onSortClick: (columnId: string, sortDir: SortDir) => void;
 	onDeleteClick: (columnId: string) => void;
 	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
-	onNameChange: (cellId: string, value: string) => void;
+	onContentChange: (columnid: string, value: string) => void;
 	onNumberFormatChange: (
 		columnId: string,
 		value: NumberFormat,
@@ -85,8 +83,7 @@ export default function HeaderMenu({
 	isOpen,
 	id,
 	triggerPosition,
-	cellId,
-	markdown,
+	content,
 	dateFormat,
 	currencyType,
 	numberFormat,
@@ -110,7 +107,7 @@ export default function HeaderMenu({
 	onDeleteClick,
 	onClose,
 	onWrapOverflowToggle,
-	onNameChange,
+	onContentChange,
 	onNumberFormatChange,
 	onNumberPrefixChange,
 	onNumberSuffixChange,
@@ -120,25 +117,26 @@ export default function HeaderMenu({
 	onRequestClose,
 }: Props) {
 	const [submenu, setSubmenu] = useState<SubmenuType | null>(null);
-	const [localValue, setLocalValue] = useState(markdown);
+	const [localValue, setLocalValue] = useState(content);
 
 	React.useEffect(() => {
 		if (closeRequest !== null) {
 			//If we're on the base menu
 			if (submenu === null) {
-				if (localValue !== markdown) onNameChange(cellId, localValue);
+				if (localValue !== content)
+					onContentChange(columnId, localValue);
 			}
 			if (!submenu || !SELFHANDLE_CLOSE.includes(submenu)) {
 				onClose();
 			}
 		}
 	}, [
-		markdown,
-		cellId,
+		content,
+		columnId,
 		closeRequest,
 		submenu,
 		localValue,
-		onNameChange,
+		onContentChange,
 		onClose,
 	]);
 
@@ -221,7 +219,6 @@ export default function HeaderMenu({
 				{submenu === null && (
 					<BaseMenu
 						canDeleteColumn={canDeleteColumn}
-						cellId={cellId}
 						shouldWrapOverflow={shouldWrapOverflow}
 						columnId={columnId}
 						columnName={localValue}

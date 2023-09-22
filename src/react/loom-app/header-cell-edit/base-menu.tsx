@@ -19,7 +19,6 @@ interface Props {
 	columnId: string;
 	shouldWrapOverflow: boolean;
 	columnName: string;
-	cellId: string;
 	columnType: CellType;
 	columnSortDir: SortDir;
 	onColumnNameChange: (value: string) => void;

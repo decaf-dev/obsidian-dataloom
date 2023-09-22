@@ -1,9 +1,9 @@
-import { ColumnWithMarkdown } from "../../types";
 import Select from "src/react/shared/select";
+import { Column } from "src/shared/loom-state/types/loom-state";
 
 interface Props {
 	id: string;
-	columns: ColumnWithMarkdown[];
+	columns: Column[];
 	value: string;
 	onChange: (id: string, columnId: string) => void;
 }
@@ -29,10 +29,10 @@ export default function FilterColumnSelect({
 			onChange={(newValue) => onChange(id, newValue)}
 		>
 			{columns.map((column) => {
-				const { id, markdown } = column;
+				const { id, content } = column;
 				return (
 					<option key={id} value={id}>
-						{markdown}
+						{content}
 					</option>
 				);
 			})}

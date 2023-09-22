@@ -31,6 +31,18 @@ export const useColumn = () => {
 		doCommand(new ColumnTypeUpdateCommand(columnId, type));
 	}
 
+	function handleColumnContentChange(columnId: string, value: string) {
+		logger("handleColumnContentChange", {
+			columnId,
+			value,
+		});
+		doCommand(
+			new ColumnUpdateCommand(columnId, {
+				content: value,
+			})
+		);
+	}
+
 	function handleColumnSortClick(columnId: string, sortDir: SortDir) {
 		logger("handleColumnSortClick", {
 			columnId,
@@ -301,5 +313,6 @@ export const useColumn = () => {
 		onVerticalPaddingClick: handleVerticalPaddingClick,
 		onAspectRatioClick: handleAspectRatioClick,
 		onColumnHideClick: handleColumnHideClick,
+		onColumnContentChange: handleColumnContentChange,
 	};
 };

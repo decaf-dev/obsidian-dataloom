@@ -1,6 +1,5 @@
 import Stack from "src/react/shared/stack";
 import Text from "src/react/shared/text";
-import { HeaderCell } from "src/shared/loom-state/types/loom-state";
 import { useOverflow } from "src/shared/spacing/hooks";
 import { ColumnMatch, ImportColumn } from "../types";
 import Icon from "src/react/shared/icon";

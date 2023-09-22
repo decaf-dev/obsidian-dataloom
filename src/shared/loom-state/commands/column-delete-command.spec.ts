@@ -46,10 +46,6 @@ describe("column-delete-command", () => {
 
 		//Assert
 		expect(executeState.model.columns).toEqual(prevState.model.columns);
-		expect(executeState.model.headerCells).toEqual(
-			prevState.model.headerCells
-		);
-
 		expect(executeState.model.bodyCells).toEqual(prevState.model.bodyCells);
 		expect(executeState.model.filters).toEqual(prevState.model.filters);
 	});
@@ -72,7 +68,6 @@ describe("column-delete-command", () => {
 
 		//Assert
 		expect(executeState.model.columns.length).toEqual(1);
-		expect(executeState.model.headerCells.length).toEqual(1);
 		expect(executeState.model.bodyCells.length).toEqual(1);
 		expect(executeState.model.filters.length).toEqual(0);
 	});
@@ -97,10 +92,6 @@ describe("column-delete-command", () => {
 		expect(executeState.model.columns[0].id).toEqual(
 			prevState.model.columns[0].id
 		);
-		expect(executeState.model.headerCells).toEqual([
-			prevState.model.headerCells[0],
-			prevState.model.headerCells[2],
-		]);
 		expect(executeState.model.bodyCells).toEqual([
 			prevState.model.bodyCells[0],
 			prevState.model.bodyCells[2],
@@ -132,9 +123,6 @@ describe("column-delete-command", () => {
 
 		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
-		expect(undoState.model.headerCells).toEqual(
-			prevState.model.headerCells
-		);
 		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
 		expect(undoState.model.filters).toEqual(prevState.model.filters);
 	});
@@ -159,9 +147,6 @@ describe("column-delete-command", () => {
 
 		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
-		expect(undoState.model.headerCells).toEqual(
-			prevState.model.headerCells
-		);
 		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
 		expect(undoState.model.filters).toEqual(prevState.model.filters);
 	});
