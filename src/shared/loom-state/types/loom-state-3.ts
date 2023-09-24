@@ -1,5 +1,7 @@
+/******* Type definitions for v6.3.0 *******/
+
 /**
- * Type definitions for v6.3.0
+ * v6.3.0
  */
 export interface LoomState3 {
 	pluginVersion: string;
