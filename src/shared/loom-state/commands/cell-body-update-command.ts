@@ -43,6 +43,7 @@ export default class CellBodyUpdateCommand extends LoomStateCommand {
 					let newCell: Cell = this.data as Cell;
 					if (this.isPartial)
 						newCell = { ...cell, ...this.data } as Cell;
+					this.nextCell = newCell;
 					return newCell;
 				}
 				return cell;
