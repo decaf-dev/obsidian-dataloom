@@ -107,6 +107,7 @@ export default class TagDeleteCommand extends LoomStateCommand {
 			return column;
 		});
 
+		//TODO update last edited time for any rows that had a cell with the tag
 		const nextRows: Row[] = rows.map((row) => {
 			const { cells } = row;
 			const newCells = cells.map((cell) => {

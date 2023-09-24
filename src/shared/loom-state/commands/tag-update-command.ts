@@ -27,6 +27,7 @@ export default class TagUpdateCommand<
 	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
+		//TODO update last edited time
 		const { columns } = prevState.model;
 		const newColumns: Column[] = columns.map((column) => {
 			if (column.id === this.columnId) {
