@@ -14,7 +14,7 @@ import { useUUID } from "../../../shared/hooks";
 import CellNotFoundError from "src/shared/error/cell-not-found-error";
 import { useLoomState } from "../loom-state-provider";
 import { useFilter } from "./hooks/use-filter";
-import { filterBodyRowsBySearch } from "./filter-by-search";
+import { filterRowsBySearch } from "./filter-by-search";
 import { useColumn } from "./hooks/use-column";
 import { useRow } from "./hooks/use-row";
 import { useCell } from "./hooks/use-cell";
@@ -39,6 +39,7 @@ import "./styles.css";
 import { useLogger } from "src/shared/logger";
 import { useMenuOperations } from "src/react/shared/menu/hooks";
 import FooterCellContainer from "../footer-cell-container";
+import { Cell } from "src/shared/loom-state/types/loom-state";
 
 export default function App() {
 	const logger = useLogger();
@@ -90,11 +91,8 @@ export default function App() {
 		onRowInsertBelowClick,
 	} = useRow();
 
-	const {
-		onCellDateTimeChange,
-		onBodyCellContentChange,
-		onExternalLinkToggle,
-	} = useCell();
+	const { onCellDateTimeChange, onCellContentChange, onExternalLinkToggle } =
+		useCell();
 
 	const {
 		onTagCellAdd,
@@ -143,11 +141,11 @@ export default function App() {
 		nltEventSystem.dispatchEvent("keydown", e);
 	}
 
-	const { columns, bodyCells, filters, settings } = loomState.model;
+	const { columns, filters, settings } = loomState.model;
 	const { numFrozenColumns, showCalculationRow } = settings;
 
 	let filteredBodyRows = filterByFilters(loomState);
-	filteredBodyRows = filterBodyRowsBySearch(
+	filteredBodyRows = filterRowsBySearch(
 		loomState,
 		filteredBodyRows,
 		searchText
@@ -310,19 +308,18 @@ export default function App() {
 									aspectRatio,
 								} = column;
 
-								const cell = bodyCells.find(
-									(cell) =>
-										cell.columnId === columnId &&
-										cell.rowId === row.id
+								const cell = row.cells.find(
+									(cell) => cell.columnId === columnId
 								);
 								if (!cell)
 									throw new CellNotFoundError({
 										columnId,
 										rowId,
 									});
+
 								const {
 									id: cellId,
-									markdown,
+									content,
 									dateTime,
 									tagIds,
 									isExternalLink,
@@ -340,7 +337,6 @@ export default function App() {
 												horizontalPadding
 											}
 											aspectRatio={aspectRatio}
-											rowId={rowId}
 											columnTags={tags}
 											cellTagIds={tagIds}
 											columnId={columnId}
@@ -353,7 +349,7 @@ export default function App() {
 											numberSeparator={numberSeparator}
 											rowLastEditedTime={lastEditedTime}
 											dateTime={dateTime}
-											markdown={markdown}
+											content={content}
 											columnType={type}
 											shouldWrapOverflow={
 												shouldWrapOverflow
@@ -365,7 +361,7 @@ export default function App() {
 												onTagCellMultipleRemove
 											}
 											onContentChange={
-												onBodyCellContentChange
+												onCellContentChange
 											}
 											onTagColorChange={onTagColorChange}
 											onTagDelete={onTagDeleteClick}
@@ -411,15 +407,22 @@ export default function App() {
 											calculationType,
 										} = column;
 
-										const columnBodyCells =
-											bodyCells.filter(
-												(cell) =>
-													filteredBodyRows.find(
-														(row) =>
-															row.id ===
-															cell.rowId
-													) !== undefined
-											);
+										const columnCells: Cell[] =
+											filteredBodyRows.map((row) => {
+												const cell = row.cells.find(
+													(cell) =>
+														cell.columnId ===
+														columnId
+												);
+												if (!cell)
+													throw new CellNotFoundError(
+														{
+															columnId,
+															rowId: row.id,
+														}
+													);
+												return cell;
+											});
 
 										return {
 											id: columnId,
@@ -430,8 +433,8 @@ export default function App() {
 													numberFormat={numberFormat}
 													currencyType={currencyType}
 													dateFormat={dateFormat}
-													bodyCells={columnBodyCells}
-													bodyRows={filteredBodyRows}
+													columnCells={columnCells}
+													rows={filteredBodyRows}
 													calculationType={
 														calculationType
 													}

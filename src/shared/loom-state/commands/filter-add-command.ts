@@ -15,42 +15,34 @@ import { CellType, Filter } from "../types/loom-state";
 import LoomStateCommand from "./loom-state-command";
 
 export default class FilterAddCommand extends LoomStateCommand {
-	columnId: string;
-	cellType: CellType;
-	addedFilter: Filter;
-
-	constructor(columnId: string, cellType: CellType) {
-		super();
-		this.columnId = columnId;
-		this.cellType = cellType;
-	}
+	private addedFilter: Filter;
 
 	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
 		const { filters, columns } = prevState.model;
-		const { id: columnId } = columns[0];
+		const { id: columnId, type } = columns[0];
 
 		let newFilter: Filter | null = null;
-		if (this.cellType === CellType.TEXT) {
+		if (type === CellType.TEXT) {
 			newFilter = createTextFilter(columnId);
-		} else if (this.cellType === CellType.FILE) {
+		} else if (type === CellType.FILE) {
 			newFilter = createFileFilter(columnId);
-		} else if (this.cellType === CellType.CHECKBOX) {
+		} else if (type === CellType.CHECKBOX) {
 			newFilter = createCheckboxFilter(columnId);
-		} else if (this.cellType === CellType.TAG) {
+		} else if (type === CellType.TAG) {
 			newFilter = createTagFilter(columnId);
-		} else if (this.cellType === CellType.MULTI_TAG) {
+		} else if (type === CellType.MULTI_TAG) {
 			newFilter = createMultiTagFilter(columnId);
-		} else if (this.cellType === CellType.DATE) {
+		} else if (type === CellType.DATE) {
 			newFilter = createDateFilter(columnId);
-		} else if (this.cellType === CellType.NUMBER) {
+		} else if (type === CellType.NUMBER) {
 			newFilter = createNumberFilter(columnId);
-		} else if (this.cellType === CellType.EMBED) {
+		} else if (type === CellType.EMBED) {
 			newFilter = createEmbedFilter(columnId);
-		} else if (this.cellType === CellType.CREATION_TIME) {
+		} else if (type === CellType.CREATION_TIME) {
 			newFilter = createCreationTimeFilter(columnId);
-		} else if (this.cellType === CellType.LAST_EDITED_TIME) {
+		} else if (type === CellType.LAST_EDITED_TIME) {
 			newFilter = createLastEditedTimeFilter(columnId);
 		} else {
 			throw new Error("Unhandled cell type");

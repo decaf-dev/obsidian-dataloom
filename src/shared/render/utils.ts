@@ -1,7 +1,7 @@
 import { DynamicSize } from "../spacing/types";
 
-export const replaceNewLinesWithBr = (markdown: string) => {
-	const lines = markdown.split("\n");
+export const replaceNewLinesWithBr = (content: string) => {
+	const lines = content.split("\n");
 	let updated = "";
 	lines.forEach((line) => {
 		//If the line is empty, that means we want to render just a new line

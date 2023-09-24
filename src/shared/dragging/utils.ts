@@ -27,16 +27,12 @@ export const dropDrag = (
 	if (!confirmSortOrderChange(state)) return;
 
 	onLoomStateChange((prevState) => {
-		const { bodyRows, columns } = prevState.model;
+		const { rows, columns } = prevState.model;
 
-		const draggedElIndex = bodyRows.findIndex(
-			(row) => row.id === dragData.id
-		);
-		const targetElIndex = bodyRows.findIndex(
-			(row) => row.id === targetRowId
-		);
+		const draggedElIndex = rows.findIndex((row) => row.id === dragData.id);
+		const targetElIndex = rows.findIndex((row) => row.id === targetRowId);
 
-		const newRows = structuredClone(bodyRows);
+		const newRows = structuredClone(rows);
 		const draggedEl = newRows[draggedElIndex];
 
 		//Remove the element

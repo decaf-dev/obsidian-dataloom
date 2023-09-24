@@ -61,7 +61,7 @@ export default function useFocus() {
 			const numVisibleColumns = loomState.model.columns.filter(
 				(column) => column.isVisible
 			).length;
-			const numBodyRows = loomState.model.bodyRows.length;
+			const numRows = loomState.model.rows.length;
 
 			let elementToFocus: Element | null = null;
 
@@ -86,7 +86,7 @@ export default function useFocus() {
 							numOptionBarFocusableEls,
 							numBottomBarFocusableEls,
 							numVisibleColumns,
-							numBodyRows,
+							numRows,
 							index
 						);
 					}
@@ -105,7 +105,7 @@ export default function useFocus() {
 							numOptionBarFocusableEls,
 							numBottomBarFocusableEls,
 							numVisibleColumns,
-							numBodyRows,
+							numRows,
 							index
 						);
 						break;

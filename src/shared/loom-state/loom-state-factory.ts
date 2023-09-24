@@ -1,8 +1,8 @@
 import { randomColor } from "src/shared/color";
 import {
 	AspectRatio,
-	BodyCell,
-	BodyRow,
+	Cell,
+	Row,
 	GeneralCalculation,
 	CellType,
 	Column,
@@ -69,42 +69,47 @@ export const createColumn = (options?: { cellType?: CellType }): Column => {
 	};
 };
 
-export const createBodyRow = (index: number): BodyRow => {
+export const createRow = (
+	index: number,
+	options?: {
+		cells?: Cell[];
+	}
+): Row => {
+	const { cells = [] } = options || {};
 	const currentTime = Date.now();
 	return {
 		id: uuidv4(),
 		index,
 		creationTime: currentTime,
 		lastEditedTime: currentTime,
+		cells,
 	};
 };
 
-export const createBodyCell = (
+export const createCell = (
 	columnId: string,
-	rowId: string,
 	options: {
 		cellType?: CellType;
 		tagIds?: string[];
-		markdown?: string;
+		content?: string;
 		dateTime?: number | null;
 	} = {}
-): BodyCell => {
+): Cell => {
 	const {
 		cellType,
 		tagIds = [],
-		markdown = "",
+		content = "",
 		dateTime = null,
 	} = options ?? {};
 	return {
 		id: uuidv4(),
 		isExternalLink: false,
 		columnId,
-		rowId,
 		dateTime,
-		markdown:
-			markdown === "" && cellType === CellType.CHECKBOX
+		content:
+			content === "" && cellType === CellType.CHECKBOX
 				? CHECKBOX_MARKDOWN_UNCHECKED
-				: markdown,
+				: content,
 		tagIds,
 	};
 };
@@ -428,15 +433,18 @@ const createGenericLoomState = (
 	for (let i = 0; i < numColumns; i++)
 		columns.push(createColumn({ cellType }));
 
-	//Create body
-	const bodyRows: BodyRow[] = [];
-	for (let i = 0; i < numRows; i++) bodyRows.push(createBodyRow(i));
-
-	const bodyCells: BodyCell[] = [];
-	for (let y = 0; y < numRows; y++) {
-		for (let x = 0; x < numColumns; x++) {
-			bodyCells.push(createBodyCell(columns[x].id, bodyRows[y].id));
+	//Create rows
+	const rows: Row[] = [];
+	for (let i = 0; i < numRows; i++) {
+		const cells: Cell[] = [];
+		for (let j = 0; j < numColumns; j++) {
+			const newCell = createCell(columns[j].id);
+			cells.push(newCell);
 		}
+		const row = createRow(i, {
+			cells,
+		});
+		rows.push(row);
 	}
 
 	const filters: Filter[] = [];
@@ -444,8 +452,7 @@ const createGenericLoomState = (
 	return {
 		model: {
 			columns,
-			bodyRows,
-			bodyCells,
+			rows,
 			filters,
 			settings: {
 				numFrozenColumns: defaultFrozenColumnCount,

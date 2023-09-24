@@ -1,13 +1,12 @@
 import {
-	createBodyCell,
-	createBodyRow,
+	createCell,
+	createRow,
 } from "src/shared/loom-state/loom-state-factory";
 import LoomStateCommand from "./loom-state-command";
-import { BodyCell, BodyRow, LoomState } from "../types/loom-state";
+import { Row, LoomState } from "../types/loom-state";
 
 export default class RowAddCommand extends LoomStateCommand {
-	private addedRow: BodyRow;
-	private addedBodyCells: BodyCell[];
+	private addedRow: Row;
 
 	constructor() {
 		super(true);
@@ -16,37 +15,21 @@ export default class RowAddCommand extends LoomStateCommand {
 	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
-		const { bodyRows, bodyCells, columns } = prevState.model;
+		const { rows, columns } = prevState.model;
 
-		this.addedRow = createBodyRow(bodyRows.length);
-		this.addedBodyCells = columns.map((column) => {
+		const cells = columns.map((column) => {
 			const { id, type } = column;
-			return createBodyCell(id, this.addedRow.id, {
+			return createCell(id, {
 				cellType: type,
 			});
 		});
+		this.addedRow = createRow(rows.length, { cells });
 
 		return {
 			...prevState,
 			model: {
 				...prevState.model,
-				bodyCells: [...bodyCells, ...this.addedBodyCells],
-				bodyRows: [...bodyRows, this.addedRow],
-			},
-		};
-	}
-
-	redo(prevState: LoomState): LoomState {
-		super.onRedo();
-
-		const { bodyRows, bodyCells } = prevState.model;
-
-		return {
-			...prevState,
-			model: {
-				...prevState.model,
-				bodyCells: [...bodyCells, ...this.addedBodyCells],
-				bodyRows: [...bodyRows, this.addedRow],
+				rows: [...rows, this.addedRow],
 			},
 		};
 	}
@@ -54,16 +37,27 @@ export default class RowAddCommand extends LoomStateCommand {
 	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
-		const { bodyRows, bodyCells } = prevState.model;
+		const { rows } = prevState.model;
 
 		return {
 			...prevState,
 			model: {
 				...prevState.model,
-				bodyRows: bodyRows.filter((row) => row.id !== this.addedRow.id),
-				bodyCells: bodyCells.filter(
-					(cell) => cell.rowId !== this.addedRow.id
-				),
+				rows: rows.filter((row) => row.id !== this.addedRow.id),
+			},
+		};
+	}
+
+	redo(prevState: LoomState): LoomState {
+		super.onRedo();
+
+		const { rows } = prevState.model;
+
+		return {
+			...prevState,
+			model: {
+				...prevState.model,
+				rows: [...rows, this.addedRow],
 			},
 		};
 	}

@@ -3,11 +3,11 @@ import { Filter } from "../types/loom-state";
 import LoomStateCommand from "./loom-state-command";
 
 export default class FilterDeleteCommand extends LoomStateCommand {
-	deletedFilter: {
+	private deletedFilter: {
 		arrIndex: number;
 		filter: Filter;
 	};
-	id: string;
+	private id: string;
 
 	constructor(id: string) {
 		super();
@@ -18,7 +18,7 @@ export default class FilterDeleteCommand extends LoomStateCommand {
 		super.onExecute();
 
 		const { filters } = prevState.model;
-		const nextFilters = filters.filter((f) => {
+		const nextFilters: Filter[] = filters.filter((f) => {
 			if (f.id === this.id) {
 				this.deletedFilter = {
 					arrIndex: filters.indexOf(f),
@@ -37,11 +37,12 @@ export default class FilterDeleteCommand extends LoomStateCommand {
 			},
 		};
 	}
+
 	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
 		const { filters } = prevState.model;
-		const nextFilters = structuredClone(filters);
+		const nextFilters: Filter[] = structuredClone(filters);
 		nextFilters.splice(
 			this.deletedFilter.arrIndex,
 			0,
@@ -55,9 +56,9 @@ export default class FilterDeleteCommand extends LoomStateCommand {
 			},
 		};
 	}
+
 	redo(prevState: LoomState): LoomState {
 		super.onRedo();
-
 		return this.execute(prevState);
 	}
 }

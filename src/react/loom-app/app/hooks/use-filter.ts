@@ -1,4 +1,4 @@
-import { CellType, Filter } from "src/shared/loom-state/types/loom-state";
+import { Filter } from "src/shared/loom-state/types/loom-state";
 import { useLogger } from "src/shared/logger";
 import { filterByFilters } from "../filter-by-filters";
 import { useLoomState } from "../../loom-state-provider";
@@ -19,9 +19,9 @@ export const useFilter = () => {
 		doCommand(new FilterUpdateCommand<Filter>(id, data, isPartial));
 	}
 
-	function handleFilterAdd(columnId: string, cellType: CellType) {
-		logger("handleFilterAdd", { columnId, cellType });
-		doCommand(new FilterAddCommand(columnId, cellType));
+	function handleFilterAdd() {
+		logger("handleFilterAdd");
+		doCommand(new FilterAddCommand());
 	}
 
 	function handleFilterDelete(id: string) {

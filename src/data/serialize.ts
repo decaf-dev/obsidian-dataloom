@@ -156,11 +156,13 @@ export const deserializeLoomState = (
 		currentState = nextState;
 	}
 
+	console.log(fileVersion);
 	if (isVersionLessThan(fileVersion, "8.6.0")) {
 		const nextState = new MigrateState13().migrate(
 			currentState as LoomState13
 		);
 		currentState = nextState;
+		console.log(currentState);
 	}
 
 	const state = currentState as LoomState;

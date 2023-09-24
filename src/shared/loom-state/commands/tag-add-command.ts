@@ -1,12 +1,13 @@
 import { createTag } from "src/shared/loom-state/loom-state-factory";
 import LoomStateCommand from "./loom-state-command";
-import { LoomState, Tag } from "../types/loom-state";
+import { Cell, Column, LoomState, Row, Tag } from "../types/loom-state";
 import { Color } from "../types/loom-state";
-import { rowLastEditedTime, rowLastEditedTimeUpdate } from "../row-utils";
+import RowNotFoundError from "src/shared/error/row-not-found-error";
 
 export default class TagAddCommand extends LoomStateCommand {
 	private cellId: string;
 	private columnId: string;
+
 	private rowId: string;
 	private markdown: string;
 	private color: Color;
@@ -21,7 +22,7 @@ export default class TagAddCommand extends LoomStateCommand {
 	 * The edited time of the row after the command is executed
 	 *
 	 */
-	private newEditedTime: number;
+	private nextEditedTime: number;
 
 	/**
 	 * The tag that was added to the column
@@ -36,12 +37,11 @@ export default class TagAddCommand extends LoomStateCommand {
 	/**
 	 * The cell tag ids after the command is executed
 	 */
-	private newCellTagIds: string[];
+	private nextCellTagIds: string[];
 
 	constructor(
 		cellId: string,
 		columnId: string,
-		rowId: string,
 		markdown: string,
 		color: Color,
 		isMultiTag: boolean
@@ -49,7 +49,6 @@ export default class TagAddCommand extends LoomStateCommand {
 		super(true);
 		this.cellId = cellId;
 		this.columnId = columnId;
-		this.rowId = rowId;
 		this.markdown = markdown;
 		this.color = color;
 		this.isMultiTag = isMultiTag;
@@ -58,106 +57,86 @@ export default class TagAddCommand extends LoomStateCommand {
 	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
-		const { bodyRows, bodyCells, columns } = prevState.model;
+		const { rows, columns } = prevState.model;
+		const row = rows.find((row) =>
+			row.cells.find((cell) => cell.id === this.cellId)
+		);
+		if (!row) throw new RowNotFoundError();
+		this.previousEditedTime = row.lastEditedTime;
+		this.rowId = row.id;
 
-		this.addedTag = createTag(this.markdown, {
+		const newTag = createTag(this.markdown, {
 			color: this.color,
 		});
-
-		const newColumns = columns.map((column) => {
+		this.addedTag = newTag;
+		const nextColumns: Column[] = columns.map((column) => {
 			if (column.id === this.columnId) {
 				return {
 					...column,
-					tags: [...column.tags, this.addedTag],
+					tags: [...column.tags, newTag],
 				};
 			}
 			return column;
 		});
 
-		const newBodyCells = bodyCells.map((cell) => {
-			if (cell.id === this.cellId) {
-				this.previousCellTagIds = [...cell.tagIds];
+		const nextRows: Row[] = rows.map((row) => {
+			const { cells } = row;
+			const nextCells: Cell[] = cells.map((cell) => {
+				const { id, tagIds } = cell;
+				if (id === this.cellId) {
+					this.previousCellTagIds = [...tagIds];
 
-				if (this.isMultiTag === false) {
-					//If there was already a tag attached to the cell, remove it
-					if (cell.tagIds.length > 0) {
-						this.newCellTagIds = [this.addedTag.id];
-						return {
-							...cell,
-							tagIds: this.newCellTagIds,
-						};
+					let updatedTagIds: string[] = [];
+					if (this.isMultiTag === false) {
+						//If there was already a tag attached to the cell, remove it
+						if (cell.tagIds.length > 0) {
+							updatedTagIds = [newTag.id];
+							this.nextCellTagIds = updatedTagIds;
+							return {
+								...cell,
+								tagIds: updatedTagIds,
+							};
+						}
 					}
+
+					updatedTagIds = [...tagIds, newTag.id];
+					this.nextCellTagIds = updatedTagIds;
+
+					return {
+						...cell,
+						tagIds: updatedTagIds,
+					};
 				}
-
-				this.newCellTagIds = [...cell.tagIds, this.addedTag.id];
-
+				return cell;
+			});
+			if (row.id === this.rowId) {
+				const newLastEditedTime = Date.now();
+				this.nextEditedTime = newLastEditedTime;
 				return {
-					...cell,
-					tagIds: [...cell.tagIds, this.addedTag.id],
+					...row,
+					lastEditedTime: newLastEditedTime,
+					cells: nextCells,
 				};
 			}
-			return cell;
-		});
-
-		this.previousEditedTime = rowLastEditedTime(bodyRows, this.rowId);
-		this.newEditedTime = Date.now();
-
-		return {
-			...prevState,
-			model: {
-				...prevState.model,
-				columns: newColumns,
-				bodyCells: newBodyCells,
-				bodyRows: rowLastEditedTimeUpdate(
-					bodyRows,
-					this.rowId,
-					this.newEditedTime
-				),
-			},
-		};
-	}
-	redo(prevState: LoomState): LoomState {
-		super.onRedo();
-		const { bodyRows, columns, bodyCells } = prevState.model;
-
-		const newColumns = columns.map((column) => {
-			if (column.id === this.columnId)
-				return {
-					...column,
-					tags: [...column.tags, this.addedTag],
-				};
-			return column;
-		});
-
-		const newBodyCells = bodyCells.map((cell) => {
-			if (cell.id === this.cellId)
-				return {
-					...cell,
-					tagIds: this.newCellTagIds,
-				};
-			return cell;
+			return row;
 		});
 
 		return {
 			...prevState,
 			model: {
 				...prevState.model,
-				columns: newColumns,
-				bodyCells: newBodyCells,
-				bodyRows: rowLastEditedTimeUpdate(
-					bodyRows,
-					this.rowId,
-					this.newEditedTime
-				),
+				columns: nextColumns,
+				rows: nextRows,
 			},
 		};
 	}
+
 	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
-		const { bodyRows, columns } = prevState.model;
+		const { rows, columns } = prevState.model;
 
-		const newColumns = columns.map((column) => {
+		const nextColumns: Column[] = columns.map((column) => {
 			if (column.id === this.columnId) {
 				return {
 					...column,
@@ -169,27 +148,76 @@ export default class TagAddCommand extends LoomStateCommand {
 			return column;
 		});
 
-		const newBodyCells = prevState.model.bodyCells.map((cell) => {
-			if (cell.id === this.cellId) {
+		const nextRows: Row[] = rows.map((row) => {
+			const { cells } = row;
+			const nextCells = cells.map((cell) => {
+				if (cell.id === this.cellId) {
+					return {
+						...cell,
+						tagIds: this.previousCellTagIds,
+					};
+				}
+				return cell;
+			});
+			if (row.id === this.rowId) {
 				return {
-					...cell,
-					tagIds: this.previousCellTagIds,
+					...row,
+					lastEditedTime: this.previousEditedTime,
+					cells: nextCells,
 				};
 			}
-			return cell;
+			return row;
 		});
 
 		return {
 			...prevState,
 			model: {
 				...prevState.model,
-				columns: newColumns,
-				bodyCells: newBodyCells,
-				bodyRows: rowLastEditedTimeUpdate(
-					bodyRows,
-					this.rowId,
-					this.previousEditedTime
-				),
+				columns: nextColumns,
+				rows: nextRows,
+			},
+		};
+	}
+
+	redo(prevState: LoomState): LoomState {
+		super.onRedo();
+		const { rows, columns } = prevState.model;
+
+		const nextColumns = columns.map((column) => {
+			if (column.id === this.columnId)
+				return {
+					...column,
+					tags: [...column.tags, this.addedTag],
+				};
+			return column;
+		});
+
+		const nextRows: Row[] = rows.map((row) => {
+			const { cells } = row;
+			const nextCells = cells.map((cell) => {
+				if (cell.id === this.cellId)
+					return {
+						...cell,
+						tagIds: this.nextCellTagIds,
+					};
+				return cell;
+			});
+			if (row.id === this.rowId) {
+				return {
+					...row,
+					lastEditedTime: this.nextEditedTime,
+					cells: nextCells,
+				};
+			}
+			return row;
+		});
+
+		return {
+			...prevState,
+			model: {
+				...prevState.model,
+				columns: nextColumns,
+				rows: nextRows,
 			},
 		};
 	}
