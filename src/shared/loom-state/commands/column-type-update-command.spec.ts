@@ -111,8 +111,8 @@ describe("column-type-update-command", () => {
 		expect(executeState.model.columns.length).toEqual(1);
 		expect(executeState.model.columns[0].type).toEqual(CellType.TAG);
 		expect(executeState.model.columns[0].tags.length).toEqual(2);
-		expect(executeState.model.columns[0].tags[0].markdown).toEqual("test1");
-		expect(executeState.model.columns[0].tags[1].markdown).toEqual("test2");
+		expect(executeState.model.columns[0].tags[0].content).toEqual("test1");
+		expect(executeState.model.columns[0].tags[1].content).toEqual("test2");
 		expect(executeState.model.rows[0].cells[0].tagIds.length).toEqual(1);
 	});
 
@@ -132,8 +132,8 @@ describe("column-type-update-command", () => {
 		expect(executeState.model.columns.length).toEqual(1);
 		expect(executeState.model.columns[0].type).toEqual(CellType.MULTI_TAG);
 		expect(executeState.model.columns[0].tags.length).toEqual(2);
-		expect(executeState.model.columns[0].tags[0].markdown).toEqual("test1");
-		expect(executeState.model.columns[0].tags[1].markdown).toEqual("test2");
+		expect(executeState.model.columns[0].tags[0].content).toEqual("test1");
+		expect(executeState.model.columns[0].tags[1].content).toEqual("test2");
 		expect(executeState.model.rows[0].cells[0].tagIds.length).toEqual(2);
 	});
 

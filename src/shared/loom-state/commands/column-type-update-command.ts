@@ -316,7 +316,7 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 							if (!column) throw new ColumNotFoundError(this.id);
 
 							const existingTag = column.tags.find(
-								(tag) => tag.markdown === tagContent
+								(tag) => tag.content === tagContent
 							);
 
 							if (tagIds.length === 0) {
@@ -372,7 +372,7 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 							if (!column) throw new ColumNotFoundError(this.id);
 
 							const existingTag = column.tags.find(
-								(tag) => tag.markdown === tagContent
+								(tag) => tag.content === tagContent
 							);
 
 							if (existingTag) {

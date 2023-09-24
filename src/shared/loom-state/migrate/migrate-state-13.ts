@@ -1,5 +1,5 @@
 import MigrateState from "./migrate-state";
-import { LoomState } from "../types/loom-state";
+import { LoomState, Tag } from "../types/loom-state";
 import { LoomState13, BodyCell as BodyCell13 } from "../types/loom-state-13";
 
 /**
@@ -23,9 +23,20 @@ export default class MigrateState13 implements MigrateState {
 			);
 			if (!cell) throw new Error("Header cell not found");
 			const { markdown } = cell;
+			const { tags } = column;
+			const nextTags: Tag[] = tags.map((tag) => {
+				const { id, markdown, color } = tag;
+				return {
+					id,
+					content: markdown,
+					color,
+				};
+			});
+
 			return {
 				...column,
 				content: markdown,
+				tags: nextTags,
 			};
 		});
 

@@ -15,7 +15,7 @@ interface MenuBodyProps {
 	onTagClick: (tagId: string) => void;
 	onTagColorChange: (tagId: string, color: Color) => void;
 	onTagDelete: (tagId: string) => void;
-	onTagNameChange: (tagId: string, value: string) => void;
+	onTagContentChange: (tagId: string, value: string) => void;
 }
 
 export default function MenuBody({
@@ -26,12 +26,12 @@ export default function MenuBody({
 	onTagClick,
 	onTagColorChange,
 	onTagDelete,
-	onTagNameChange,
+	onTagContentChange,
 }: MenuBodyProps) {
 	const hasTagWithSameCase =
-		columnTags.find((tag) => tag.markdown === inputValue) !== undefined;
+		columnTags.find((tag) => tag.content === inputValue) !== undefined;
 	const filteredTags = columnTags.filter((tag) =>
-		tag.markdown.toLowerCase().includes(inputValue.toLowerCase())
+		tag.content.toLowerCase().includes(inputValue.toLowerCase())
 	);
 
 	return (
@@ -42,7 +42,7 @@ export default function MenuBody({
 			<div className="dataloom-tag-cell-edit__menu-body-container">
 				{!hasTagWithSameCase && inputValue !== "" && (
 					<CreateTag
-						markdown={inputValue}
+						content={inputValue}
 						color={newTagColor}
 						onTagAdd={onTagAdd}
 					/>
@@ -52,11 +52,11 @@ export default function MenuBody({
 						key={tag.id}
 						id={tag.id}
 						color={tag.color}
-						markdown={tag.markdown}
+						content={tag.content}
 						onColorChange={onTagColorChange}
 						onClick={onTagClick}
 						onDeleteClick={onTagDelete}
-						onTagNameChange={onTagNameChange}
+						onTagContentChange={onTagContentChange}
 					/>
 				))}
 			</div>

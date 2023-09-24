@@ -21,7 +21,7 @@ describe("tag-update-command", () => {
 		const command = new TagUpdateCommand(
 			prevState.model.columns[0].id,
 			tags[0].id,
-			"markdown",
+			"content",
 			""
 		);
 
@@ -47,7 +47,7 @@ describe("tag-update-command", () => {
 		const command = new TagUpdateCommand(
 			prevState.model.columns[0].id,
 			tags[0].id,
-			"markdown",
+			"content",
 			""
 		);
 
@@ -74,7 +74,7 @@ describe("tag-update-command", () => {
 		const command = new TagUpdateCommand(
 			prevState.model.columns[0].id,
 			tags[0].id,
-			"markdown",
+			"content",
 			""
 		);
 
@@ -83,8 +83,8 @@ describe("tag-update-command", () => {
 
 		//Assert
 		expect(executeState.model.columns[0].tags.length).toEqual(2);
-		expect(executeState.model.columns[0].tags[0].markdown).toEqual("");
-		expect(executeState.model.columns[0].tags[1].markdown).toEqual("test2");
+		expect(executeState.model.columns[0].tags[0].content).toEqual("");
+		expect(executeState.model.columns[0].tags[1].content).toEqual("test2");
 		expect(executeState.model.rows).toEqual(prevState.model.rows);
 	});
 
@@ -102,7 +102,7 @@ describe("tag-update-command", () => {
 		const command = new TagUpdateCommand(
 			prevState.model.columns[0].id,
 			tags[0].id,
-			"markdown",
+			"content",
 			""
 		);
 
@@ -129,7 +129,7 @@ describe("tag-update-command", () => {
 		const command = new TagUpdateCommand(
 			prevState.model.columns[0].id,
 			tags[0].id,
-			"markdown",
+			"content",
 			""
 		);
 

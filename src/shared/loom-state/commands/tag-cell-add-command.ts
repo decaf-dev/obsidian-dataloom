@@ -14,19 +14,12 @@ export default class TagCellAddCommand extends LoomStateCommand {
 
 	private previousEditedTime: number;
 	private nextEditedTime: number;
-	private debug = false;
 
-	constructor(
-		cellId: string,
-		tagId: string,
-		isMultiTag: boolean,
-		debug = false
-	) {
+	constructor(cellId: string, tagId: string, isMultiTag: boolean) {
 		super(true);
 		this.cellId = cellId;
 		this.tagId = tagId;
 		this.isMultiTag = isMultiTag;
-		this.debug = debug;
 	}
 
 	execute(prevState: LoomState): LoomState {

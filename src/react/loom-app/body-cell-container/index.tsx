@@ -65,7 +65,11 @@ interface Props {
 	onTagRemoveClick: (cellId: string, tagId: string) => void;
 	onTagMultipleRemove: (cellId: string, tagIds: string[]) => void;
 	onTagClick: (cellId: string, tagId: string, isMultiTag: boolean) => void;
-	onTagNameChange: (columnId: string, tagId: string, value: string) => void;
+	onTagContentChange: (
+		columnId: string,
+		tagId: string,
+		value: string
+	) => void;
 	onContentChange: (cellId: string, value: string) => void;
 	onTagAdd: (
 		cellId: string,
@@ -111,7 +115,7 @@ export default function BodyCellContainer({
 	onContentChange,
 	onDateFormatChange,
 	onDateTimeChange,
-	onTagNameChange,
+	onTagContentChange,
 	onTagAdd,
 	onExternalLinkToggle,
 }: Props) {
@@ -213,8 +217,8 @@ export default function BodyCellContainer({
 		onTagDelete(columnId, tagId);
 	}
 
-	function handleTagNameChange(tagId: string, value: string) {
-		onTagNameChange(columnId, tagId, value);
+	function handleTagContentChange(tagId: string, value: string) {
+		onTagContentChange(columnId, tagId, value);
 	}
 
 	function handleTagClick(tagId: string) {
@@ -334,7 +338,7 @@ export default function BodyCellContainer({
 					)}
 					{columnType === CellType.TAG && cellTags.length === 1 && (
 						<TagCell
-							markdown={cellTags[0].markdown}
+							content={cellTags[0].content}
 							color={cellTags[0].color}
 							shouldWrapOverflow={shouldWrapOverflow}
 						/>
@@ -426,7 +430,7 @@ export default function BodyCellContainer({
 						onRemoveTag={handleRemoveTagClick}
 						onTagClick={handleTagClick}
 						onTagDelete={handleTagDeleteClick}
-						onTagNameChange={handleTagNameChange}
+						onTagContentChange={handleTagContentChange}
 						onClose={onClose}
 					/>
 				)}

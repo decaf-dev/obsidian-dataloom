@@ -340,7 +340,7 @@ export interface Cell {
 
 export interface Tag {
 	id: string;
-	markdown: string;
+	content: string;
 	color: Color;
 }
 

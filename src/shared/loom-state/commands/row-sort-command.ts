@@ -212,10 +212,10 @@ export default class RowSortCommand extends LoomStateCommand {
 			if (!tagB) throw new TagNotFoundError(tagIdA);
 
 			if (sortDir === SortDir.ASC) {
-				const result = tagA.markdown.localeCompare(tagB.markdown);
+				const result = tagA.content.localeCompare(tagB.content);
 				if (result !== 0) return result;
 			} else if (sortDir === SortDir.DESC) {
-				const result = tagB.markdown.localeCompare(tagA.markdown);
+				const result = tagB.content.localeCompare(tagA.content);
 				if (result !== 0) return result;
 			}
 		}
