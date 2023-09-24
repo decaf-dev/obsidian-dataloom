@@ -1,5 +1,7 @@
+/******* Type definitions for v6.4.0 *******/
+
 /**
- * Type definitions for v6.4.0
+ * v6.4.0
  */
 export interface LoomState4 {
 	pluginVersion: string;
