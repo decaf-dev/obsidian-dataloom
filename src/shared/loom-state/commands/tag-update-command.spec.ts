@@ -114,4 +114,32 @@ describe("tag-update-command", () => {
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
 		expect(executeState.model.rows).toEqual(prevState.model.rows);
 	});
+
+	it("should update a tag property when redo() is called", async () => {
+		//Arrange
+		const prevState = createTestLoomState(1, 2);
+
+		const tags = [createTag("test1"), createTag("test2")];
+		prevState.model.columns[0].tags = tags;
+
+		const tagIds = tags.map((t) => t.id);
+		prevState.model.rows[0].cells[0].tagIds = tagIds;
+		prevState.model.rows[1].cells[0].tagIds = tagIds;
+
+		const command = new TagUpdateCommand(
+			prevState.model.columns[0].id,
+			tags[0].id,
+			"markdown",
+			""
+		);
+
+		//Act
+		const executeState = command.execute(prevState);
+		const undoState = command.undo(executeState);
+		const redoState = command.redo(undoState);
+
+		//Assert
+		expect(executeState.model.columns).toEqual(redoState.model.columns);
+		expect(executeState.model.rows).toEqual(redoState.model.rows);
+	});
 });

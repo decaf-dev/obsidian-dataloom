@@ -57,9 +57,34 @@ describe("cell-update-command", () => {
 		//Act
 		advanceBy(100);
 		const executeState = command.execute(prevState);
+		advanceBy(100);
 		const undoState = command.undo(executeState);
+		clear();
 
 		//Assert
 		expect(undoState.model.rows).toEqual(prevState.model.rows);
+	});
+
+	it("should update the cell property when redo() is called", () => {
+		//Arrange
+		const prevState = createTestLoomState(1, 1);
+		const command = new CellBodyUpdateCommand(
+			prevState.model.rows[0].cells[0].id,
+			{
+				content: "test",
+			}
+		);
+
+		//Act
+		advanceBy(100);
+		const executeState = command.execute(prevState);
+		advanceBy(100);
+		const undoState = command.undo(executeState);
+		advanceBy(100);
+		const redoState = command.redo(undoState);
+		clear();
+
+		//Assert
+		expect(executeState.model.rows).toEqual(redoState.model.rows);
 	});
 });

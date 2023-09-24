@@ -149,8 +149,11 @@ describe("tag-add-command", () => {
 		);
 
 		//Act
+		advanceBy(100);
 		const executeState = command.execute(prevState);
+		advanceBy(100);
 		const undoState = command.undo(executeState);
+		clear();
 
 		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
@@ -176,9 +179,13 @@ describe("tag-add-command", () => {
 		);
 
 		//Act
+		advanceBy(100);
 		const executeState = command.execute(prevState);
+		advanceBy(100);
 		const undoState = command.undo(executeState);
+		advanceBy(100);
 		const redoState = command.redo(undoState);
+		clear();
 
 		//Assert
 		expect(redoState.model.columns).toEqual(executeState.model.columns);

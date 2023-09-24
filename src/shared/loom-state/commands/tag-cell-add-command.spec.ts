@@ -132,8 +132,11 @@ describe("tag-cell-add-command", () => {
 		);
 
 		//Act
+		advanceBy(100);
 		const executeState = command.execute(prevState);
+		advanceBy(100);
 		const undoState = command.undo(executeState);
+		clear();
 
 		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
@@ -143,5 +146,34 @@ describe("tag-cell-add-command", () => {
 		expect(undoState.model.rows[0].lastEditedTime).toEqual(
 			prevState.model.rows[0].lastEditedTime
 		);
+	});
+
+	it("should add a tag reference to a cell when redo() is called", () => {
+		//Arrange
+		const prevState = createTestLoomState(1, 1);
+
+		const tags = [createTag("test1"), createTag("test2")];
+		prevState.model.columns[0].tags = tags;
+
+		prevState.model.rows[0].cells[0].tagIds = [tags[0].id];
+
+		const command = new TagCellAddCommand(
+			prevState.model.rows[0].cells[0].id,
+			tags[1].id,
+			false
+		);
+
+		//Act
+		advanceBy(100);
+		const executeState = command.execute(prevState);
+		advanceBy(100);
+		const undoState = command.undo(executeState);
+		advanceBy(100);
+		const redoState = command.redo(undoState);
+		clear();
+
+		//Assert
+		expect(executeState.model.columns).toEqual(redoState.model.columns);
+		expect(executeState.model.rows).toEqual(redoState.model.rows);
 	});
 });
