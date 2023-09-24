@@ -23,14 +23,14 @@ import React from "react";
 interface Props {
 	id: string;
 	isOpen: boolean;
-	markdown: string;
+	content: string;
 	triggerPosition: Position;
 	selectedColor: string;
 	closeRequest: LoomMenuCloseRequest | null;
 	onColorClick: (color: Color) => void;
 	onDeleteClick: () => void;
 	onRequestClose: (type: LoomMenuCloseRequestType) => void;
-	onTagNameChange: (value: string) => void;
+	onTagContentChange: (value: string) => void;
 	onClose: () => void;
 }
 
@@ -39,24 +39,24 @@ export default function TagColorMenu({
 	isOpen,
 	triggerPosition,
 	selectedColor,
-	markdown,
+	content,
 	closeRequest,
 	onColorClick,
 	onDeleteClick,
 	onRequestClose,
-	onTagNameChange,
+	onTagContentChange,
 	onClose,
 }: Props) {
 	const { isDarkMode } = useAppSelector((state) => state.global);
-	const [localValue, setLocalValue] = React.useState(markdown);
+	const [localValue, setLocalValue] = React.useState(content);
 
 	React.useEffect(
 		function saveOnCloseRequest() {
 			if (closeRequest === null) return;
-			if (markdown !== localValue) onTagNameChange(localValue);
+			if (content !== localValue) onTagContentChange(localValue);
 			onClose();
 		},
-		[closeRequest, markdown, localValue, onTagNameChange, onClose]
+		[closeRequest, content, localValue, onTagContentChange, onClose]
 	);
 
 	return (

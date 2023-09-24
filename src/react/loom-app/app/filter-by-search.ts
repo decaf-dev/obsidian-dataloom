@@ -126,7 +126,7 @@ const matchNumberCell = (
 
 const matchTags = (cellTags: Tag[], searchText: string) => {
 	return cellTags.some((tag) =>
-		tag.markdown.toLowerCase().includes(searchText)
+		tag.content.toLowerCase().includes(searchText)
 	);
 };
 

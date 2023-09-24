@@ -163,8 +163,8 @@ const getCellValues = (
 		return tagIds.map((tagId) => {
 			const tag = columnTags.find((tag) => tag.id === tagId);
 			if (!tag) throw new TagNotFoundError(tagId);
-			const { markdown } = tag;
-			return markdown;
+			const { content } = tag;
+			return content;
 		});
 	} else if (cellType === CellType.LAST_EDITED_TIME) {
 		return [unixTimeToDateTimeString(lastEditedTime, dateFormat)];

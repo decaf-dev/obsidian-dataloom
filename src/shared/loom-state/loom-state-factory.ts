@@ -381,13 +381,13 @@ const createBaseFilter = (
 };
 
 export const createTag = (
-	markdown: string,
+	content: string,
 	options?: { color?: Color }
 ): Tag => {
 	const { color = randomColor() } = options || {};
 	return {
 		id: uuidv4(),
-		markdown: markdown,
+		content,
 		color,
 	};
 };

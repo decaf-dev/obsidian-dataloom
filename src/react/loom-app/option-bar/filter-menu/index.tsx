@@ -443,7 +443,7 @@ export default function FilterMenu({
 													key={tag.id}
 													value={tag.id}
 												>
-													{tag.markdown}
+													{tag.content}
 												</option>
 											))}
 										</Select>
@@ -470,7 +470,7 @@ export default function FilterMenu({
 													key={tag.id}
 													value={tag.id}
 												>
-													{tag.markdown}
+													{tag.content}
 												</option>
 											))}
 										</MultiSelect>

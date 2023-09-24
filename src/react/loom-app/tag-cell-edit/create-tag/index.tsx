@@ -6,27 +6,23 @@ import { Color } from "src/shared/loom-state/types/loom-state";
 import Padding from "src/react/shared/padding";
 
 interface Props {
-	markdown: string;
+	content: string;
 	color: Color;
-	onTagAdd: (markdown: string, color: Color) => void;
+	onTagAdd: (content: string, color: Color) => void;
 }
 
-export default function CreateTag({ markdown, color, onTagAdd }: Props) {
+export default function CreateTag({ content, color, onTagAdd }: Props) {
 	return (
 		<div className="dataloom-create-tag">
 			<Button
 				variant="text"
 				isFullWidth
-				onClick={() => onTagAdd(markdown, color)}
+				onClick={() => onTagAdd(content, color)}
 			>
 				<Padding px="md">
 					<Stack spacing="sm" isHorizontal>
 						<div>Create</div>
-						<Tag
-							markdown={markdown}
-							color={color}
-							maxWidth="120px"
-						/>
+						<Tag content={content} color={color} maxWidth="120px" />
 					</Stack>
 				</Padding>
 			</Button>

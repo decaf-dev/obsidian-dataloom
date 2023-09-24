@@ -11,22 +11,22 @@ import "./styles.css";
 
 interface Props {
 	id: string;
-	markdown: string;
+	content: string;
 	color: Color;
 	onClick: (tagId: string) => void;
 	onColorChange: (tagId: string, color: Color) => void;
 	onDeleteClick: (tagId: string) => void;
-	onTagNameChange: (tagId: string, value: string) => void;
+	onTagContentChange: (tagId: string, value: string) => void;
 }
 
 export default function SelectableTag({
 	id,
-	markdown,
+	content,
 	color,
 	onClick,
 	onColorChange,
 	onDeleteClick,
-	onTagNameChange,
+	onTagContentChange,
 }: Props) {
 	const {
 		menu,
@@ -49,8 +49,8 @@ export default function SelectableTag({
 		onClose();
 	}
 
-	function handleTagNameChange(value: string) {
-		onTagNameChange(id, value);
+	function handleTagContentChange(value: string) {
+		onTagContentChange(id, value);
 		onClose();
 	}
 
@@ -79,7 +79,7 @@ export default function SelectableTag({
 				onClick={handleClick}
 				onKeyDown={handleKeyDown}
 			>
-				<Tag markdown={markdown} color={color} maxWidth="150px" />
+				<Tag content={content} color={color} maxWidth="150px" />
 				<MenuButton
 					ref={triggerRef}
 					menu={menu}
@@ -92,12 +92,12 @@ export default function SelectableTag({
 				id={menu.id}
 				triggerPosition={triggerPosition}
 				closeRequest={closeRequest}
-				markdown={markdown}
+				content={content}
 				selectedColor={color}
 				onColorClick={(color) => handleColorChange(color)}
 				onDeleteClick={handleDeleteClick}
 				onRequestClose={onRequestClose}
-				onTagNameChange={handleTagNameChange}
+				onTagContentChange={handleTagContentChange}
 				onClose={onClose}
 			/>
 		</>
