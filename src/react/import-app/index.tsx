@@ -28,7 +28,7 @@ import {
 
 import { useMenuOperations } from "../shared/menu/hooks";
 import "./styles.css";
-import { updateStateWithImportData } from "./state-utils";
+import { addImportData } from "./state-utils";
 
 interface Props {
 	state: LoomState;
@@ -236,7 +236,7 @@ export default function ImportApp({ state, onStateChange }: Props) {
 	}
 
 	function handleFinishClick() {
-		const newState = updateStateWithImportData(state, data, columnMatches);
+		const newState = addImportData(state, data, columnMatches);
 		onStateChange(newState);
 	}
 

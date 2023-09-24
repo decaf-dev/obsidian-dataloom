@@ -39,7 +39,6 @@ describe("row-delete-command", () => {
 
 		//Assert
 		expect(executeState.model.rows.length).toEqual(0);
-		expect(executeState.model.bodyCells.length).toEqual(0);
 	});
 
 	it("should delete the last row when execute() is called", () => {
@@ -56,9 +55,6 @@ describe("row-delete-command", () => {
 		expect(executeState.model.rows[0].id).toEqual(
 			prevState.model.rows[0].id
 		);
-		expect(executeState.model.bodyCells).toEqual(
-			prevState.model.bodyCells.slice(0, 1)
-		);
 	});
 
 	it("should restore the deleted row when undo() is called", () => {
@@ -74,7 +70,6 @@ describe("row-delete-command", () => {
 
 		//Assert
 		expect(undoState.model.rows).toEqual(prevState.model.rows);
-		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
 	});
 
 	it("should restore the last deleted row when undo() is called", () => {
@@ -90,6 +85,5 @@ describe("row-delete-command", () => {
 
 		//Assert
 		expect(undoState.model.rows).toEqual(prevState.model.rows);
-		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
 	});
 });

@@ -37,7 +37,7 @@ describe("column-add-command", () => {
 
 		//Assert
 		expect(executeState.model.columns.length).toEqual(2);
-		expect(executeState.model.bodyCells.length).toEqual(2);
+		expect(executeState.model.rows[0].cells.length).toEqual(2);
 	});
 
 	it("should remove the added column when undo() is called", () => {
@@ -51,6 +51,6 @@ describe("column-add-command", () => {
 
 		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
-		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
+		expect(undoState.model.rows).toEqual(prevState.model.rows);
 	});
 });

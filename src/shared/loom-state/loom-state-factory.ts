@@ -69,42 +69,47 @@ export const createColumn = (options?: { cellType?: CellType }): Column => {
 	};
 };
 
-export const createRow = (index: number): Row => {
+export const createRow = (
+	index: number,
+	options?: {
+		cells?: Cell[];
+	}
+): Row => {
+	const { cells = [] } = options || {};
 	const currentTime = Date.now();
 	return {
 		id: uuidv4(),
 		index,
 		creationTime: currentTime,
 		lastEditedTime: currentTime,
+		cells,
 	};
 };
 
 export const createCell = (
 	columnId: string,
-	rowId: string,
 	options: {
 		cellType?: CellType;
 		tagIds?: string[];
-		markdown?: string;
+		content?: string;
 		dateTime?: number | null;
 	} = {}
 ): Cell => {
 	const {
 		cellType,
 		tagIds = [],
-		markdown = "",
+		content = "",
 		dateTime = null,
 	} = options ?? {};
 	return {
 		id: uuidv4(),
 		isExternalLink: false,
 		columnId,
-		rowId,
 		dateTime,
-		markdown:
-			markdown === "" && cellType === CellType.CHECKBOX
+		content:
+			content === "" && cellType === CellType.CHECKBOX
 				? CHECKBOX_MARKDOWN_UNCHECKED
-				: markdown,
+				: content,
 		tagIds,
 	};
 };
@@ -430,13 +435,16 @@ const createGenericLoomState = (
 
 	//Create rows
 	const rows: Row[] = [];
-	for (let i = 0; i < numRows; i++) rows.push(createRow(i));
-
-	const cells: Cell[] = [];
-	for (let y = 0; y < numRows; y++) {
-		for (let x = 0; x < numColumns; x++) {
-			cells.push(createCell(columns[x].id, rows[y].id));
+	for (let i = 0; i < numRows; i++) {
+		const cells: Cell[] = [];
+		for (let j = 0; j < numColumns; j++) {
+			const newCell = createCell(columns[j].id);
+			cells.push(newCell);
 		}
+		const row = createRow(i, {
+			cells,
+		});
+		rows.push(row);
 	}
 
 	const filters: Filter[] = [];
@@ -445,7 +453,6 @@ const createGenericLoomState = (
 		model: {
 			columns,
 			rows,
-			bodyCells: cells,
 			filters,
 			settings: {
 				numFrozenColumns: defaultFrozenColumnCount,

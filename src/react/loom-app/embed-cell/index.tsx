@@ -11,7 +11,7 @@ import "./styles.css";
 
 interface Props {
 	isExternalLink: boolean;
-	markdown: string;
+	value: string;
 	aspectRatio: AspectRatio;
 	horizontalPadding: PaddingSize;
 	verticalPadding: PaddingSize;
@@ -19,13 +19,13 @@ interface Props {
 
 export default function EmbedCell({
 	isExternalLink,
-	markdown,
+	value,
 	aspectRatio,
 	horizontalPadding,
 	verticalPadding,
 }: Props) {
 	const { app } = useAppMount();
-	const content = getEmbedCellContent(app, markdown, {
+	const content = getEmbedCellContent(app, value, {
 		isExternalLink,
 	});
 	return (

@@ -15,8 +15,8 @@ describe("tag-delete-command", () => {
 		prevState.model.columns[0].tags = tags;
 
 		const tagIds = tags.map((t) => t.id);
-		prevState.model.bodyCells[0].tagIds = tagIds;
-		prevState.model.bodyCells[1].tagIds = tagIds;
+		prevState.model.rows[0].cells[0].tagIds = tagIds;
+		prevState.model.rows[1].cells[0].tagIds = tagIds;
 
 		const command = new TagDeleteCommand(
 			prevState.model.columns[0].id,
@@ -40,8 +40,8 @@ describe("tag-delete-command", () => {
 			prevState.model.columns[0].tags = tags;
 
 			const tagIds = tags.map((t) => t.id);
-			prevState.model.bodyCells[0].tagIds = tagIds;
-			prevState.model.bodyCells[1].tagIds = tagIds;
+			prevState.model.rows[0].cells[0].tagIds = tagIds;
+			prevState.model.rows[1].cells[0].tagIds = tagIds;
 
 			const command = new TagDeleteCommand(
 				prevState.model.columns[0].id,
@@ -64,8 +64,8 @@ describe("tag-delete-command", () => {
 		prevState.model.columns[0].tags = tags;
 
 		const tagIds = tags.map((t) => t.id);
-		prevState.model.bodyCells[0].tagIds = tagIds;
-		prevState.model.bodyCells[1].tagIds = tagIds;
+		prevState.model.rows[0].cells[0].tagIds = tagIds;
+		prevState.model.rows[1].cells[0].tagIds = tagIds;
 
 		const command = new TagDeleteCommand(
 			prevState.model.columns[0].id,
@@ -77,8 +77,12 @@ describe("tag-delete-command", () => {
 
 		//Assert
 		expect(executeState.model.columns[0].tags).toEqual([tags[1]]);
-		expect(executeState.model.bodyCells[0].tagIds).toEqual([tags[1].id]);
-		expect(executeState.model.bodyCells[1].tagIds).toEqual([tags[1].id]);
+		expect(executeState.model.rows[0].cells[0].tagIds).toEqual([
+			tags[1].id,
+		]);
+		expect(executeState.model.rows[1].cells[0].tagIds).toEqual([
+			tags[1].id,
+		]);
 	});
 
 	it("should restore the deleted tag when undo() is called", () => {
@@ -89,8 +93,8 @@ describe("tag-delete-command", () => {
 		prevState.model.columns[0].tags = tags;
 
 		const tagIds = tags.map((t) => t.id);
-		prevState.model.bodyCells[0].tagIds = tagIds;
-		prevState.model.bodyCells[1].tagIds = tagIds;
+		prevState.model.rows[0].cells[0].tagIds = tagIds;
+		prevState.model.rows[1].cells[0].tagIds = tagIds;
 
 		const command = new TagDeleteCommand(
 			prevState.model.columns[0].id,
@@ -103,6 +107,6 @@ describe("tag-delete-command", () => {
 
 		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
-		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
+		expect(undoState.model.rows).toEqual(prevState.model.rows);
 	});
 });

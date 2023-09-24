@@ -25,8 +25,8 @@ export default class RowSortCommand extends LoomStateCommand {
 	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
-		const { columns, rows, bodyCells } = prevState.model;
-		const columnsToSortBy = columns.filter(
+		const { columns, rows } = prevState.model;
+		const sortedColumns = columns.filter(
 			(columns) => columns.sortDir !== SortDir.NONE
 		);
 
@@ -37,8 +37,8 @@ export default class RowSortCommand extends LoomStateCommand {
 
 		let newRows = [...rows];
 
-		if (columnsToSortBy.length !== 0) {
-			newRows = this.multiSort(columnsToSortBy, rows, bodyCells);
+		if (sortedColumns.length !== 0) {
+			newRows = this.multiSort(sortedColumns, rows);
 		} else {
 			newRows = this.sortByIndex(rows);
 		}
@@ -79,15 +79,33 @@ export default class RowSortCommand extends LoomStateCommand {
 		};
 	}
 
-	private multiSort = (
-		columnsToSortBy: Column[],
-		rows: Row[],
-		cells: Cell[]
-	) => {
+	private multiSort = (sortedColumns: Column[], rows: Row[]) => {
 		const rowsCopy = [...rows];
 		rowsCopy.sort((a, b) => {
-			for (const column of columnsToSortBy) {
-				const comparison = this.sortByColumn(a, b, column, cells);
+			for (const column of sortedColumns) {
+				const cellA = a.cells.find(
+					(cell) => cell.columnId === column.id
+				);
+				if (!cellA)
+					throw new CellNotFoundError({
+						columnId: column.id,
+						rowId: a.id,
+					});
+				const cellB = b.cells.find(
+					(cell) => cell.columnId === column.id
+				);
+				if (!cellB)
+					throw new CellNotFoundError({
+						columnId: column.id,
+						rowId: b.id,
+					});
+				const comparison = this.sortByColumn(
+					a,
+					b,
+					cellA,
+					cellB,
+					column
+				);
 				if (comparison !== 0) {
 					return comparison;
 				}
@@ -98,99 +116,80 @@ export default class RowSortCommand extends LoomStateCommand {
 	};
 
 	private sortByIndex(rows: Row[]): Row[] {
-		const newRows = [...rows];
-		newRows.sort((a, b) => {
+		const rowsCopy = [...rows];
+		rowsCopy.sort((a, b) => {
 			return a.index - b.index;
 		});
-		return newRows;
+		return rowsCopy;
 	}
 
 	private sortByColumn(
-		a: Row,
-		b: Row,
-		column: Column,
-		cells: Cell[]
+		rowA: Row,
+		rowB: Row,
+		cellA: Cell,
+		cellB: Cell,
+		column: Column
 	): number {
-		const { id, type, sortDir, tags } = column;
+		const { type, sortDir, tags } = column;
 		if (type === CellType.NUMBER) {
-			return this.sortByNumber(a, b, id, cells, sortDir);
+			return this.sortByNumber(cellA, cellB, sortDir);
 		} else if (type === CellType.TAG || type === CellType.MULTI_TAG) {
-			return this.sortByTag(a, b, id, tags, cells, sortDir);
+			return this.sortByTag(cellA, cellB, tags, sortDir);
 		} else if (type === CellType.DATE) {
-			return this.sortByDate(a, b, id, cells, sortDir);
+			return this.sortByDate(cellA, cellB, sortDir);
 		} else if (type === CellType.LAST_EDITED_TIME) {
-			return this.sortByLastEditedTime(a, b, sortDir);
+			return this.sortByLastEditedTime(rowA, rowA, sortDir);
 		} else if (type === CellType.CREATION_TIME) {
-			return this.sortByCreationTime(a, b, sortDir);
+			return this.sortByCreationTime(rowB, rowB, sortDir);
 		} else if (type === CellType.CHECKBOX) {
-			return this.sortByCheckbox(a, b, id, cells, sortDir);
+			return this.sortByCheckbox(cellA, cellB, sortDir);
 		} else {
-			return this.sortByText(a, b, id, cells, sortDir);
+			return this.sortByText(cellA, cellB, sortDir);
 		}
 	}
 
-	private sortByText(
-		a: Row,
-		b: Row,
-		columnId: string,
-		cells: Cell[],
-		sortDir: SortDir
-	): number {
-		const { cellA, cellB } = this.findCellAB(a, b, columnId, cells);
-
-		const markdownA = cellA.markdown;
-		const markdownB = cellB.markdown;
+	private sortByText(a: Cell, b: Cell, sortDir: SortDir): number {
+		const { content: contentA } = a;
+		const { content: contentB } = b;
 
 		//Force empty cells to the bottom
-		if (markdownA === "" && markdownB !== "") return 1;
-		if (markdownA !== "" && markdownB === "") return -1;
-		if (markdownA === "" && markdownB === "") return 0;
+		if (contentA === "" && contentB !== "") return 1;
+		if (contentA !== "" && contentB === "") return -1;
+		if (contentA === "" && contentB === "") return 0;
 
 		if (sortDir === SortDir.ASC) {
-			return markdownA.localeCompare(markdownB);
+			return contentA.localeCompare(contentB);
 		} else if (sortDir === SortDir.DESC) {
-			return markdownB.localeCompare(markdownA);
+			return contentB.localeCompare(contentA);
 		} else {
 			return 0;
 		}
 	}
 
-	private sortByNumber(
-		a: Row,
-		b: Row,
-		columnId: string,
-		cells: Cell[],
-		sortDir: SortDir
-	): number {
-		const { cellA, cellB } = this.findCellAB(a, b, columnId, cells);
-
-		const markdownA = cellA.markdown;
-		const markdownB = cellB.markdown;
+	private sortByNumber(a: Cell, b: Cell, sortDir: SortDir): number {
+		const { content: contentA } = a;
+		const { content: contentB } = b;
 
 		//Force empty cells to the bottom
-		if (markdownA === "" && markdownB !== "") return 1;
-		if (markdownA !== "" && markdownB === "") return -1;
-		if (markdownA === "" && markdownB === "") return 0;
+		if (contentA === "" && contentB !== "") return 1;
+		if (contentA !== "" && contentB === "") return -1;
+		if (contentA === "" && contentB === "") return 0;
 
 		if (sortDir === SortDir.ASC) {
-			return parseFloat(markdownA) - parseFloat(markdownB);
+			return parseFloat(contentA) - parseFloat(contentB);
 		} else if (sortDir === SortDir.DESC) {
-			return parseFloat(markdownB) - parseFloat(markdownA);
+			return parseFloat(contentB) - parseFloat(contentA);
 		} else {
 			return 0;
 		}
 	}
 
 	private sortByTag(
-		a: Row,
-		b: Row,
-		columnId: string,
+		cellA: Cell,
+		cellB: Cell,
 		columnTags: Tag[],
-		cells: Cell[],
 		sortDir: SortDir
 	): number {
-		const { cellA, cellB } = this.findCellAB(a, b, columnId, cells);
-
 		//Force empty cells to the bottom
 		if (cellA.tagIds.length === 0 && cellB.tagIds.length > 0) return 1;
 		if (cellA.tagIds.length > 0 && cellB.tagIds.length === 0) return -1;
@@ -224,17 +223,11 @@ export default class RowSortCommand extends LoomStateCommand {
 		return 0;
 	}
 
-	private sortByCheckbox(
-		a: Row,
-		b: Row,
-		columnId: string,
-		cells: Cell[],
-		sortDir: SortDir
-	): number {
-		const { cellA, cellB } = this.findCellAB(a, b, columnId, cells);
-
-		const isCheckedA = isCheckboxChecked(cellA.markdown);
-		const isCheckedB = isCheckboxChecked(cellB.markdown);
+	private sortByCheckbox(a: Cell, b: Cell, sortDir: SortDir): number {
+		const { content: contentA } = a;
+		const { content: contentB } = b;
+		const isCheckedA = isCheckboxChecked(contentA);
+		const isCheckedB = isCheckboxChecked(contentB);
 
 		if (sortDir === SortDir.ASC) {
 			if (isCheckedA && !isCheckedB) return 1;
@@ -249,16 +242,9 @@ export default class RowSortCommand extends LoomStateCommand {
 		}
 	}
 
-	private sortByDate(
-		a: Row,
-		b: Row,
-		columnId: string,
-		cells: Cell[],
-		sortDir: SortDir
-	): number {
-		const { cellA, cellB } = this.findCellAB(a, b, columnId, cells);
-		const dateTimeA = cellA.dateTime || 0;
-		const dateTimeB = cellB.dateTime || 0;
+	private sortByDate(a: Cell, b: Cell, sortDir: SortDir): number {
+		const dateTimeA = a.dateTime || 0;
+		const dateTimeB = b.dateTime || 0;
 
 		if (sortDir === SortDir.ASC) {
 			return dateTimeA - dateTimeB;
@@ -288,27 +274,4 @@ export default class RowSortCommand extends LoomStateCommand {
 			return 0;
 		}
 	}
-
-	private findCellAB = (a: Row, b: Row, columnId: string, cells: Cell[]) => {
-		const cellA = cells.find(
-			(c) => c.columnId === columnId && c.rowId === a.id
-		);
-
-		if (!cellA)
-			throw new CellNotFoundError({
-				rowId: a.id,
-				columnId,
-			});
-
-		const cellB = cells.find(
-			(c) => c.columnId === columnId && c.rowId === b.id
-		);
-
-		if (!cellB)
-			throw new CellNotFoundError({
-				rowId: b.id,
-				columnId,
-			});
-		return { cellA, cellB };
-	};
 }

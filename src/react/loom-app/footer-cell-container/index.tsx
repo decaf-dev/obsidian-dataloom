@@ -17,7 +17,7 @@ import Stack from "../../shared/stack";
 import MenuTrigger from "src/react/shared/menu-trigger";
 import { isNumber, isNumberCalcuation } from "src/shared/match";
 import { getShortDisplayNameForCalculationType } from "src/shared/loom-state/type-display-names";
-import { getCalculationContent } from "./calculation";
+import { getGeneralCalculationContent } from "./general-calculation";
 import { getNumberCalculationContent } from "./number-calculation";
 import { useMenu } from "../../shared/menu/hooks";
 
@@ -30,7 +30,7 @@ interface Props {
 	width: string;
 	numberFormat: NumberFormat;
 	rows: Row[];
-	bodyCells: Cell[];
+	columnCells: Cell[];
 	currencyType: CurrencyType;
 	cellType: CellType;
 	dateFormat: DateFormat;
@@ -39,8 +39,8 @@ interface Props {
 
 export default function FooterCellContainer({
 	columnId,
+	columnCells,
 	columnTags,
-	bodyCells,
 	dateFormat,
 	numberFormat,
 	rows,
@@ -65,14 +65,12 @@ export default function FooterCellContainer({
 		onClose();
 	}
 
-	const columnCells = bodyCells.filter((cell) => cell.columnId === columnId);
-
 	let content = "";
 
 	if (isNumberCalcuation(calculationType)) {
 		const cellValues = columnCells
-			.filter((cell) => isNumber(cell.markdown))
-			.map((cell) => parseFloat(cell.markdown));
+			.filter((cell) => isNumber(cell.content))
+			.map((cell) => parseFloat(cell.content));
 		if (cellValues.length !== 0)
 			content = getNumberCalculationContent(
 				cellValues,
@@ -81,9 +79,9 @@ export default function FooterCellContainer({
 				calculationType
 			);
 	} else {
-		content = getCalculationContent(
+		content = getGeneralCalculationContent(
+			columnId,
 			rows,
-			columnCells,
 			columnTags,
 			cellType,
 			calculationType,

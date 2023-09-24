@@ -13,17 +13,22 @@ import RowNotFoundError from "src/shared/error/row-not-found-error";
 import TagNotFoundError from "src/shared/error/tag-not-found-error";
 import { unixTimeToDateTimeString } from "src/shared/date/date-conversion";
 
-export const getCalculationContent = (
-	bodyRows: Row[],
-	columnCells: Cell[],
+export const getGeneralCalculationContent = (
+	columnId: string,
+	rows: Row[],
 	columnTags: Tag[],
 	cellType: CellType,
 	calculationType: CalculationType,
 	dateFormat: DateFormat
 ) => {
+	const columnCells = rows.map((row) => {
+		const cell = row.cells.find((cell) => cell.columnId === columnId);
+		if (!cell) throw new RowNotFoundError(row.id);
+		return cell;
+	});
 	return getCalculation(
-		bodyRows,
 		columnCells,
+		rows,
 		columnTags,
 		cellType,
 		calculationType,
@@ -31,9 +36,9 @@ export const getCalculationContent = (
 	).toString();
 };
 
-export const getCalculation = (
-	rows: Row[],
+const getCalculation = (
 	columnCells: Cell[],
+	rows: Row[],
 	columnTags: Tag[],
 	cellType: CellType,
 	calculationType: CalculationType,
@@ -91,8 +96,10 @@ const countUnique = (
 ) => {
 	const hashes = columnCells
 		.map((cell) => {
-			const row = rows.find((row) => row.id === cell.rowId);
-			if (!row) throw new RowNotFoundError(cell.rowId);
+			const row = rows.find((row) =>
+				row.cells.find((cell) => cell.id === cell.id)
+			);
+			if (!row) throw new RowNotFoundError();
 
 			const cellValues = getCellValues(
 				row,
@@ -139,6 +146,8 @@ const getCellValues = (
 	cellType: CellType,
 	dateFormat: DateFormat
 ): string[] => {
+	const { content, dateTime, tagIds } = cell;
+	const { creationTime, lastEditedTime } = row;
 	if (
 		cellType === CellType.TEXT ||
 		cellType === CellType.EMBED ||
@@ -146,39 +155,41 @@ const getCellValues = (
 		cellType === CellType.CHECKBOX ||
 		cellType === CellType.FILE
 	) {
-		return [cell.markdown];
+		return [content];
 	} else if (cellType === CellType.DATE) {
-		if (cell.dateTime) return [cell.dateTime.toString()];
+		if (dateTime) return [dateTime.toString()];
 		return [];
 	} else if (cellType === CellType.TAG || cellType === CellType.MULTI_TAG) {
-		return cell.tagIds.map((tagId) => {
+		return tagIds.map((tagId) => {
 			const tag = columnTags.find((tag) => tag.id === tagId);
 			if (!tag) throw new TagNotFoundError(tagId);
-			return tag.markdown;
+			const { markdown } = tag;
+			return markdown;
 		});
 	} else if (cellType === CellType.LAST_EDITED_TIME) {
-		return [unixTimeToDateTimeString(row.lastEditedTime, dateFormat)];
+		return [unixTimeToDateTimeString(lastEditedTime, dateFormat)];
 	} else if (cellType === CellType.CREATION_TIME) {
-		return [unixTimeToDateTimeString(row.creationTime, dateFormat)];
+		return [unixTimeToDateTimeString(creationTime, dateFormat)];
 	} else {
 		throw new Error("Unhandled cell type");
 	}
 };
 
 const countCellValues = (cell: Cell, cellType: CellType): number => {
+	const { content, dateTime, tagIds } = cell;
 	if (
 		cellType === CellType.TEXT ||
 		cellType === CellType.EMBED ||
 		cellType === CellType.NUMBER ||
 		cellType === CellType.FILE
 	) {
-		return cell.markdown === "" ? 0 : 1;
+		return content === "" ? 0 : 1;
 	} else if (cellType === CellType.DATE) {
-		return cell.dateTime == null ? 0 : 1;
+		return dateTime == null ? 0 : 1;
 	} else if (cellType === CellType.TAG || cellType === CellType.MULTI_TAG) {
-		return cell.tagIds.length;
+		return tagIds.length;
 	} else if (cellType === CellType.CHECKBOX) {
-		return isCheckboxChecked(cell.markdown) ? 1 : 0;
+		return isCheckboxChecked(content) ? 1 : 0;
 	} else if (
 		cellType === CellType.LAST_EDITED_TIME ||
 		cellType === CellType.CREATION_TIME
@@ -190,19 +201,20 @@ const countCellValues = (cell: Cell, cellType: CellType): number => {
 };
 
 const isCellContentEmpty = (cell: Cell, cellType: CellType): boolean => {
+	const { content, dateTime, tagIds } = cell;
 	if (
 		cellType === CellType.TEXT ||
 		cellType === CellType.EMBED ||
 		cellType === CellType.NUMBER ||
 		cellType === CellType.FILE
 	) {
-		return cell.markdown === "";
+		return content === "";
 	} else if (cellType === CellType.DATE) {
-		return cell.dateTime == null;
+		return dateTime == null;
 	} else if (cellType === CellType.TAG || cellType === CellType.MULTI_TAG) {
-		return cell.tagIds.length === 0;
+		return tagIds.length === 0;
 	} else if (cellType === CellType.CHECKBOX) {
-		return !isCheckboxChecked(cell.markdown);
+		return !isCheckboxChecked(content);
 	} else if (
 		cellType === CellType.LAST_EDITED_TIME ||
 		cellType === CellType.CREATION_TIME

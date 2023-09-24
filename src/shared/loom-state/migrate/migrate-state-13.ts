@@ -1,6 +1,6 @@
 import MigrateState from "./migrate-state";
 import { LoomState } from "../types/loom-state";
-import { LoomState13 } from "../types/loom-state-13";
+import { LoomState13, BodyCell as BodyCell13 } from "../types/loom-state-13";
 
 /**
  * Migrates to 8.6.0
@@ -29,12 +29,39 @@ export default class MigrateState13 implements MigrateState {
 			};
 		});
 
+		const nextRows = bodyRows.map((row) => {
+			const cells: BodyCell13[] = bodyCells.filter(
+				(cell) => cell.rowId === row.id
+			);
+			const nextCells = cells.map((cell) => {
+				const {
+					columnId,
+					id,
+					isExternalLink,
+					dateTime,
+					markdown,
+					tagIds,
+				} = cell;
+				return {
+					id,
+					columnId,
+					isExternalLink,
+					dateTime,
+					content: markdown,
+					tagIds,
+				};
+			});
+			return {
+				...row,
+				cells: nextCells,
+			};
+		});
+
 		return {
 			...prevState,
 			model: {
 				columns: nextColumns,
-				bodyCells,
-				rows: bodyRows,
+				rows: nextRows,
 				filters,
 				settings: nextSettings,
 			},

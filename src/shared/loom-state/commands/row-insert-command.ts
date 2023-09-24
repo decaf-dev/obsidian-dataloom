@@ -3,7 +3,7 @@ import {
 	createRow,
 } from "src/shared/loom-state/loom-state-factory";
 import LoomStateCommand from "./loom-state-command";
-import { Cell, Row, LoomState, SortDir } from "../types/loom-state";
+import { Row, LoomState, SortDir } from "../types/loom-state";
 import RowNotFoundError from "src/shared/error/row-not-found-error";
 
 export type RowInsert = "above" | "below";
@@ -26,14 +26,6 @@ export default class RowInsertCommand extends LoomStateCommand {
 	 * This will cause subequent commands that reference this row id to fail.
 	 */
 	private addedRow: Row;
-
-	/**
-	 * The cells that were added
-	 * These are used for `redo` because a unique id is generated each time a cell is created.
-	 * Without this, the cell ids in the `redo` state would be different than the cell ids in the `execute` state.
-	 * This will cause subequent commands that reference these row ids to fail.
-	 */
-	private addedBodyCells: Cell[];
 
 	/**
 	 *  The column sort before execution
@@ -60,7 +52,7 @@ export default class RowInsertCommand extends LoomStateCommand {
 	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
-		const { rows, bodyCells, columns } = prevState.model;
+		const { rows, columns } = prevState.model;
 
 		//Find the base row index
 		const index = rows.findIndex((row) => row.id === this.rowId);
@@ -69,18 +61,15 @@ export default class RowInsertCommand extends LoomStateCommand {
 		//Calculate the insertion index
 		const insertIndex = this.insert === "above" ? index : index + 1;
 
-		//Create the new row and cells to insert
-		const createdRow = createRow(insertIndex);
-		this.addedRow = createdRow;
-
-		const createdBodyCells = columns.map((column) => {
+		const cells = columns.map((column) => {
 			const { id, type } = column;
-			return createCell(id, createdRow.id, {
+			return createCell(id, {
 				cellType: type,
 			});
 		});
-		//Save the added cells so we can reference them in `redo`
-		this.addedBodyCells = createdBodyCells;
+		//Create the new row and cells to insert
+		const createdRow = createRow(insertIndex, { cells });
+		this.addedRow = createdRow;
 
 		//Save the previous row order so we can reference it in `undo`
 		this.originalRowOrder = rows.map((row) => ({
@@ -111,49 +100,12 @@ export default class RowInsertCommand extends LoomStateCommand {
 			};
 		});
 
-		const updatedBodyCells = [...bodyCells, ...createdBodyCells];
-
 		return {
 			...prevState,
 			model: {
 				...prevState.model,
 				columns: updatedColumns,
 				rows: updatedRows,
-				bodyCells: updatedBodyCells,
-			},
-		};
-	}
-
-	redo(prevState: LoomState): LoomState {
-		super.onRedo();
-
-		const { rows, bodyCells, columns } = prevState.model;
-
-		//Insert the new row
-		const insertIndex = this.addedRow.index;
-		const updatedRows = [
-			...rows.slice(0, insertIndex),
-			this.addedRow,
-			...rows.slice(insertIndex),
-		].map((row, i) => ({ ...row, index: i }));
-
-		const updatedBodyCells = [...bodyCells, ...this.addedBodyCells];
-
-		//Reset the sort
-		const updatedColumns = columns.map((column) => {
-			return {
-				...column,
-				sortDir: SortDir.NONE,
-			};
-		});
-
-		return {
-			...prevState,
-			model: {
-				...prevState.model,
-				columns: updatedColumns,
-				rows: updatedRows,
-				bodyCells: updatedBodyCells,
 			},
 		};
 	}
@@ -161,7 +113,7 @@ export default class RowInsertCommand extends LoomStateCommand {
 	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
-		const { rows, bodyCells, columns } = prevState.model;
+		const { rows, columns } = prevState.model;
 
 		//Find the row that was added
 		const row = rows.find((row) => row.id === this.addedRow.id);
@@ -183,11 +135,6 @@ export default class RowInsertCommand extends LoomStateCommand {
 				};
 			});
 
-		//Remove the added body cells
-		const updatedBodyCells = bodyCells.filter(
-			(cell) => cell.rowId !== this.addedRow.id
-		);
-
 		//Restore the original column sort
 		const updatedColumns = columns.map((column) => {
 			const oldColumn = this.originalColumnSort.find(
@@ -207,7 +154,37 @@ export default class RowInsertCommand extends LoomStateCommand {
 				...prevState.model,
 				columns: updatedColumns,
 				rows: updatedRows,
-				bodyCells: updatedBodyCells,
+			},
+		};
+	}
+
+	redo(prevState: LoomState): LoomState {
+		super.onRedo();
+
+		const { rows, columns } = prevState.model;
+
+		//Insert the new row
+		const insertIndex = this.addedRow.index;
+		const updatedRows = [
+			...rows.slice(0, insertIndex),
+			this.addedRow,
+			...rows.slice(insertIndex),
+		].map((row, i) => ({ ...row, index: i }));
+
+		//Reset the sort
+		const updatedColumns = columns.map((column) => {
+			return {
+				...column,
+				sortDir: SortDir.NONE,
+			};
+		});
+
+		return {
+			...prevState,
+			model: {
+				...prevState.model,
+				columns: updatedColumns,
+				rows: updatedRows,
 			},
 		};
 	}

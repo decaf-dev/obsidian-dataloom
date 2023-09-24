@@ -15,11 +15,10 @@ describe("tag-cell-add-command", () => {
 		const tags = [createTag("test1"), createTag("test2")];
 		prevState.model.columns[0].tags = tags;
 
-		prevState.model.bodyCells[0].tagIds = [tags[0].id];
+		prevState.model.rows[0].cells[0].tagIds = [tags[0].id];
 
 		const command = new TagCellAddCommand(
-			prevState.model.bodyCells[0].id,
-			prevState.model.rows[0].id,
+			prevState.model.rows[0].cells[0].id,
 			tags[1].id,
 			false
 		);
@@ -40,11 +39,10 @@ describe("tag-cell-add-command", () => {
 			const tags = [createTag("test1"), createTag("test2")];
 			prevState.model.columns[0].tags = tags;
 
-			prevState.model.bodyCells[0].tagIds = [tags[0].id];
+			prevState.model.rows[0].cells[0].tagIds = [tags[0].id];
 
 			const command = new TagCellAddCommand(
-				prevState.model.bodyCells[0].id,
-				prevState.model.rows[0].id,
+				prevState.model.rows[0].cells[0].id,
 				tags[1].id,
 				false
 			);
@@ -57,18 +55,17 @@ describe("tag-cell-add-command", () => {
 		}
 	});
 
-	it("should add a cell reference to a tag when execute() is called", () => {
+	it("should add a tag reference to a cell when execute() is called", () => {
 		//Arrange
 		const prevState = createTestLoomState(1, 1);
 
 		const tags = [createTag("test1"), createTag("test2")];
 		prevState.model.columns[0].tags = tags;
 
-		prevState.model.bodyCells[0].tagIds = [tags[0].id];
+		prevState.model.rows[0].cells[0].tagIds = [tags[0].id];
 
 		const command = new TagCellAddCommand(
-			prevState.model.bodyCells[0].id,
-			prevState.model.rows[0].id,
+			prevState.model.rows[0].cells[0].id,
 			tags[1].id,
 			false
 		);
@@ -80,24 +77,25 @@ describe("tag-cell-add-command", () => {
 
 		//Assert
 		expect(executeState.model.columns).toEqual(prevState.model.columns);
-		expect(executeState.model.bodyCells[0].tagIds).toEqual([tags[1].id]);
+		expect(executeState.model.rows[0].cells[0].tagIds).toEqual([
+			tags[1].id,
+		]);
 		expect(executeState.model.rows[0].lastEditedTime).toBeGreaterThan(
 			prevState.model.rows[0].lastEditedTime
 		);
 	});
 
-	it("should add a cell reference to a multi-tag when execute() is called", () => {
+	it("should add a multi-tag reference to a cell when execute() is called", () => {
 		//Arrange
 		const prevState = createTestLoomState(1, 1);
 
 		const tags = [createTag("test1"), createTag("test2")];
 		prevState.model.columns[0].tags = tags;
 
-		prevState.model.bodyCells[0].tagIds = [tags[0].id];
+		prevState.model.rows[0].cells[0].tagIds = [tags[0].id];
 
 		const command = new TagCellAddCommand(
-			prevState.model.bodyCells[0].id,
-			prevState.model.rows[0].id,
+			prevState.model.rows[0].cells[0].id,
 			tags[1].id,
 			true
 		);
@@ -109,7 +107,7 @@ describe("tag-cell-add-command", () => {
 
 		//Assert
 		expect(executeState.model.columns).toEqual(prevState.model.columns);
-		expect(executeState.model.bodyCells[0].tagIds).toEqual([
+		expect(executeState.model.rows[0].cells[0].tagIds).toEqual([
 			tags[0].id,
 			tags[1].id,
 		]);
@@ -125,11 +123,10 @@ describe("tag-cell-add-command", () => {
 		const tags = [createTag("test1"), createTag("test2")];
 		prevState.model.columns[0].tags = tags;
 
-		prevState.model.bodyCells[0].tagIds = [tags[0].id];
+		prevState.model.rows[0].cells[0].tagIds = [tags[0].id];
 
 		const command = new TagCellAddCommand(
-			prevState.model.bodyCells[0].id,
-			prevState.model.rows[0].id,
+			prevState.model.rows[0].cells[0].id,
 			tags[1].id,
 			false
 		);
@@ -140,8 +137,8 @@ describe("tag-cell-add-command", () => {
 
 		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
-		expect(undoState.model.bodyCells[0].tagIds).toEqual(
-			prevState.model.bodyCells[0].tagIds
+		expect(undoState.model.rows[0].cells[0].tagIds).toEqual(
+			prevState.model.rows[0].cells[0].tagIds
 		);
 		expect(undoState.model.rows[0].lastEditedTime).toEqual(
 			prevState.model.rows[0].lastEditedTime

@@ -21,25 +21,26 @@ export const getCellContent = (
 	cell: Cell,
 	shouldRemoveMarkdown: boolean
 ) => {
+	const { content: cellContent } = cell;
 	switch (column.type) {
 		case CellType.TEXT:
 		case CellType.FILE:
-			return getTextCellContent(cell.markdown, shouldRemoveMarkdown);
+			return getTextCellContent(cellContent, shouldRemoveMarkdown);
 		case CellType.NUMBER:
-			return getNumberCellContent(column.numberFormat, cell.markdown, {
+			return getNumberCellContent(column.numberFormat, cellContent, {
 				currency: column.currencyType,
 				prefix: column.numberPrefix,
 				suffix: column.numberSuffix,
 				separator: column.numberSeparator,
 			});
 		case CellType.EMBED:
-			return getEmbedCellContent(app, cell.markdown, {
+			return getEmbedCellContent(app, cellContent, {
 				isExport: true,
 				isExternalLink: cell.isExternalLink,
 				shouldRemoveMarkdown,
 			});
 		case CellType.CHECKBOX:
-			return getCheckboxCellContent(cell.markdown, shouldRemoveMarkdown);
+			return getCheckboxCellContent(cellContent, shouldRemoveMarkdown);
 		case CellType.TAG:
 		case CellType.MULTI_TAG:
 			return getTagCellContent(column, cell);

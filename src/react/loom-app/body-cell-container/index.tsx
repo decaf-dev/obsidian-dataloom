@@ -44,7 +44,6 @@ interface Props {
 	isExternalLink: boolean;
 	columnType: string;
 	cellId: string;
-	rowId: string;
 	dateTime: number | null;
 	dateFormat: DateFormat;
 	numberPrefix: string;
@@ -53,7 +52,7 @@ interface Props {
 	numberFormat: NumberFormat;
 	currencyType: CurrencyType;
 	columnId: string;
-	markdown: string;
+	content: string;
 	aspectRatio: AspectRatio;
 	verticalPadding: PaddingSize;
 	horizontalPadding: PaddingSize;
@@ -63,24 +62,14 @@ interface Props {
 	columnTags: Tag[];
 	cellTagIds: string[];
 	shouldWrapOverflow: boolean;
-	onTagRemoveClick: (cellId: string, rowId: string, tagId: string) => void;
-	onTagMultipleRemove: (
-		cellId: string,
-		rowId: string,
-		tagIds: string[]
-	) => void;
-	onTagClick: (
-		cellId: string,
-		rowId: string,
-		tagId: string,
-		isMultiTag: boolean
-	) => void;
+	onTagRemoveClick: (cellId: string, tagId: string) => void;
+	onTagMultipleRemove: (cellId: string, tagIds: string[]) => void;
+	onTagClick: (cellId: string, tagId: string, isMultiTag: boolean) => void;
 	onTagNameChange: (columnId: string, tagId: string, value: string) => void;
-	onContentChange: (cellId: string, rowId: string, value: string) => void;
+	onContentChange: (cellId: string, value: string) => void;
 	onTagAdd: (
 		cellId: string,
 		columnId: string,
-		rowId: string,
 		markdown: string,
 		color: Color,
 		isMultiTag: boolean
@@ -88,24 +77,15 @@ interface Props {
 	onTagDelete: (columnId: string, tagId: string) => void;
 	onTagColorChange: (columnId: string, tagId: string, color: Color) => void;
 	onDateFormatChange: (columnId: string, value: DateFormat) => void;
-	onDateTimeChange: (
-		cellId: string,
-		rowId: string,
-		value: number | null
-	) => void;
-	onExternalLinkToggle: (
-		cellId: string,
-		rowId: string,
-		value: boolean
-	) => void;
+	onDateTimeChange: (cellId: string, value: number | null) => void;
+	onExternalLinkToggle: (cellId: string, value: boolean) => void;
 }
 
 export default function BodyCellContainer({
 	cellId,
 	columnId,
-	rowId,
 	isExternalLink,
-	markdown,
+	content,
 	aspectRatio,
 	numberFormat,
 	verticalPadding,
@@ -159,7 +139,7 @@ export default function BodyCellContainer({
 
 	async function handleCellContextClick() {
 		try {
-			await navigator.clipboard.writeText(markdown);
+			await navigator.clipboard.writeText(content);
 			new Notice("Copied text to clipboard");
 		} catch (err) {
 			console.error(err);
@@ -167,7 +147,7 @@ export default function BodyCellContainer({
 	}
 
 	function toggleCheckbox() {
-		const isChecked = isCheckboxChecked(markdown);
+		const isChecked = isCheckboxChecked(content);
 
 		if (isChecked) {
 			handleCheckboxChange(CHECKBOX_MARKDOWN_UNCHECKED);
@@ -183,16 +163,16 @@ export default function BodyCellContainer({
 			columnType === CellType.NUMBER ||
 			columnType === CellType.FILE
 		) {
-			onContentChange(cellId, rowId, "");
+			onContentChange(cellId, "");
 		} else if (columnType === CellType.DATE) {
-			onDateTimeChange(cellId, rowId, null);
+			onDateTimeChange(cellId, null);
 		} else if (columnType === CellType.CHECKBOX) {
-			onContentChange(cellId, rowId, CHECKBOX_MARKDOWN_UNCHECKED);
+			onContentChange(cellId, CHECKBOX_MARKDOWN_UNCHECKED);
 		} else if (
 			columnType === CellType.TAG ||
 			columnType === CellType.MULTI_TAG
 		) {
-			onTagMultipleRemove(cellId, rowId, cellTagIds);
+			onTagMultipleRemove(cellId, cellTagIds);
 		}
 	}
 
@@ -207,7 +187,7 @@ export default function BodyCellContainer({
 	}
 
 	function handleExternalLinkToggle(value: boolean) {
-		onExternalLinkToggle(cellId, rowId, value);
+		onExternalLinkToggle(cellId, value);
 	}
 
 	function handleTagAdd(markdown: string, color: Color) {
@@ -215,7 +195,6 @@ export default function BodyCellContainer({
 		onTagAdd(
 			cellId,
 			columnId,
-			rowId,
 			markdown.trim(),
 			color,
 			columnType === CellType.MULTI_TAG
@@ -223,7 +202,7 @@ export default function BodyCellContainer({
 	}
 
 	function handleRemoveTagClick(tagId: string) {
-		onTagRemoveClick(cellId, rowId, tagId);
+		onTagRemoveClick(cellId, tagId);
 	}
 
 	function handleTagColorChange(tagId: string, color: Color) {
@@ -239,18 +218,18 @@ export default function BodyCellContainer({
 	}
 
 	function handleTagClick(tagId: string) {
-		onTagClick(cellId, rowId, tagId, columnType === CellType.MULTI_TAG);
+		onTagClick(cellId, tagId, columnType === CellType.MULTI_TAG);
 	}
 
 	const handleInputChange = React.useCallback(
 		(value: string) => {
-			onContentChange(cellId, rowId, value);
+			onContentChange(cellId, value);
 		},
-		[cellId, rowId, onContentChange]
+		[cellId, onContentChange]
 	);
 
 	function handleCheckboxChange(value: string) {
-		onContentChange(cellId, rowId, value);
+		onContentChange(cellId, value);
 	}
 
 	function handleDateFormatChange(value: DateFormat) {
@@ -259,9 +238,9 @@ export default function BodyCellContainer({
 
 	const handleDateTimeChange = React.useCallback(
 		(value: number | null) => {
-			onDateTimeChange(cellId, rowId, value);
+			onDateTimeChange(cellId, value);
 		},
-		[cellId, rowId, onDateTimeChange]
+		[cellId, onDateTimeChange]
 	);
 
 	let menuWidth = triggerPosition.width;
@@ -324,14 +303,14 @@ export default function BodyCellContainer({
 				>
 					{columnType === CellType.TEXT && (
 						<TextCell
-							markdown={markdown}
+							value={content}
 							shouldWrapOverflow={shouldWrapOverflow}
 						/>
 					)}
 					{columnType === CellType.EMBED && (
 						<EmbedCell
 							isExternalLink={isExternalLink}
-							markdown={markdown}
+							value={content}
 							verticalPadding={verticalPadding}
 							horizontalPadding={horizontalPadding}
 							aspectRatio={aspectRatio}
@@ -339,13 +318,13 @@ export default function BodyCellContainer({
 					)}
 					{columnType === CellType.FILE && (
 						<FileCell
-							markdown={markdown}
+							value={content}
 							shouldWrapOverflow={shouldWrapOverflow}
 						/>
 					)}
 					{columnType === CellType.NUMBER && (
 						<NumberCell
-							value={markdown}
+							value={content}
 							currency={currencyType}
 							format={numberFormat}
 							prefix={numberPrefix}
@@ -371,7 +350,7 @@ export default function BodyCellContainer({
 						<DateCell value={dateTime} format={dateFormat} />
 					)}
 					{columnType === CellType.CHECKBOX && (
-						<CheckboxCell value={markdown} />
+						<CheckboxCell value={content} />
 					)}
 					{columnType === CellType.CREATION_TIME && (
 						<CreationTimeCell
@@ -406,7 +385,7 @@ export default function BodyCellContainer({
 					<TextCellEdit
 						closeRequest={closeRequest}
 						shouldWrapOverflow={shouldWrapOverflow}
-						value={markdown}
+						value={content}
 						onChange={handleInputChange}
 						onClose={onClose}
 					/>
@@ -415,7 +394,7 @@ export default function BodyCellContainer({
 					<EmbedCellEdit
 						isExternalLink={isExternalLink}
 						closeRequest={closeRequest}
-						value={markdown}
+						value={content}
 						onChange={handleInputChange}
 						onClose={onClose}
 						onExternalLinkToggle={handleExternalLinkToggle}
@@ -430,7 +409,7 @@ export default function BodyCellContainer({
 				{columnType === CellType.NUMBER && (
 					<NumberCellEdit
 						closeRequest={closeRequest}
-						value={markdown}
+						value={content}
 						onChange={handleInputChange}
 						onClose={onClose}
 					/>

@@ -41,7 +41,8 @@ describe("row-add-command", () => {
 
 		//Assert
 		expect(executeState.model.rows.length).toEqual(2);
-		expect(executeState.model.bodyCells.length).toEqual(2);
+		expect(executeState.model.rows[0].cells.length).toEqual(1);
+		expect(executeState.model.rows[1].cells.length).toEqual(1);
 	});
 
 	it("should remove the added row when undo() is called", () => {
@@ -55,6 +56,5 @@ describe("row-add-command", () => {
 
 		//Assert
 		expect(undoState.model.rows).toEqual(prevState.model.rows);
-		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
 	});
 });

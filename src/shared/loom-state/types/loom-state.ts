@@ -1,5 +1,5 @@
 /**
- * Type definitions for v8.5.0
+ * Type definitions for v8.6.0
  */
 export interface LoomState {
 	pluginVersion: string;
@@ -326,15 +326,15 @@ export interface Row {
 	index: number;
 	creationTime: number;
 	lastEditedTime: number;
+	cells: Cell[];
 }
 
 export interface Cell {
 	id: string;
 	columnId: string;
-	rowId: string;
 	isExternalLink: boolean;
 	dateTime: number | null;
-	markdown: string;
+	content: string;
 	tagIds: string[];
 }
 
@@ -352,7 +352,6 @@ export interface TableSettings {
 export interface TableModel {
 	columns: Column[];
 	rows: Row[];
-	bodyCells: Cell[];
 	filters: Filter[];
 	settings: TableSettings;
 }

@@ -15,12 +15,11 @@ describe("tag-cell-remove-command", () => {
 		prevState.model.columns[0].tags = tags;
 
 		const tagIds = tags.map((t) => t.id);
-		prevState.model.bodyCells[0].tagIds = tagIds;
-		prevState.model.bodyCells[1].tagIds = tagIds;
+		prevState.model.rows[0].cells[0].tagIds = tagIds;
+		prevState.model.rows[1].cells[0].tagIds = tagIds;
 
 		const command = new TagCellRemoveCommand(
-			prevState.model.bodyCells[0].id,
-			prevState.model.rows[0].id,
+			prevState.model.rows[0].cells[0].id,
 			tags[0].id
 		);
 
@@ -39,13 +38,12 @@ describe("tag-cell-remove-command", () => {
 		const tags = [createTag("test1"), createTag("test2")];
 		prevState.model.columns[0].tags = tags;
 
-		const tagIds = tags.map((t) => t.id);
-		prevState.model.bodyCells[0].tagIds = tagIds;
-		prevState.model.bodyCells[1].tagIds = tagIds;
+		const tagIds = tags.map((tag) => tag.id);
+		prevState.model.rows[0].cells[0].tagIds = tagIds;
+		prevState.model.rows[1].cells[0].tagIds = tagIds;
 
 		const command = new TagCellRemoveCommand(
-			prevState.model.bodyCells[0].id,
-			prevState.model.rows[0].id,
+			prevState.model.rows[0].cells[0].id,
 			tags[0].id
 		);
 
@@ -57,8 +55,10 @@ describe("tag-cell-remove-command", () => {
 		//Assert
 		expect(executeState.model.columns).toEqual(prevState.model.columns);
 
-		expect(executeState.model.bodyCells[0].tagIds).toEqual([tags[1].id]);
-		expect(executeState.model.bodyCells[1].tagIds).toEqual([
+		expect(executeState.model.rows[0].cells[0].tagIds).toEqual([
+			tags[1].id,
+		]);
+		expect(executeState.model.rows[1].cells[0].tagIds).toEqual([
 			tags[0].id,
 			tags[1].id,
 		]);
@@ -76,24 +76,22 @@ describe("tag-cell-remove-command", () => {
 		prevState.model.columns[0].tags = tags;
 
 		const tagIds = tags.map((t) => t.id);
-		prevState.model.bodyCells[0].tagIds = tagIds;
-		prevState.model.bodyCells[1].tagIds = tagIds;
+		prevState.model.rows[0].cells[0].tagIds = tagIds;
+		prevState.model.rows[1].cells[0].tagIds = tagIds;
 
 		const command = new TagCellRemoveCommand(
-			prevState.model.bodyCells[0].id,
-			prevState.model.rows[0].id,
+			prevState.model.rows[0].cells[0].id,
 			tags[0].id
 		);
 
 		//Act
+		advanceBy(100);
 		const executeState = command.execute(prevState);
 		const undoState = command.undo(executeState);
+		clear();
 
 		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
-		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
-		expect(undoState.model.rows[0].lastEditedTime).toEqual(
-			prevState.model.rows[0].lastEditedTime
-		);
+		expect(undoState.model.rows).toEqual(prevState.model.rows);
 	});
 });

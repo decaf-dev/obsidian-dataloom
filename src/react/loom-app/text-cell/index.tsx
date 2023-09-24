@@ -5,12 +5,12 @@ import { appendOrReplaceFirstChild } from "src/shared/render/utils";
 import "./styles.css";
 
 interface Props {
-	markdown: string;
+	value: string;
 	shouldWrapOverflow: boolean;
 }
 
-export default function TextCell({ markdown, shouldWrapOverflow }: Props) {
-	const { containerRef, renderRef } = useRenderMarkdown(markdown);
+export default function TextCell({ value, shouldWrapOverflow }: Props) {
+	const { containerRef, renderRef } = useRenderMarkdown(value);
 	const overflowClassName = useOverflow(shouldWrapOverflow);
 
 	let className = "dataloom-text-cell";

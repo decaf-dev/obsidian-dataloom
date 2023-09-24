@@ -15,8 +15,8 @@ describe("tag-update-command", () => {
 		prevState.model.columns[0].tags = tags;
 
 		const tagIds = tags.map((t) => t.id);
-		prevState.model.bodyCells[0].tagIds = tagIds;
-		prevState.model.bodyCells[1].tagIds = tagIds;
+		prevState.model.rows[0].cells[0].tagIds = tagIds;
+		prevState.model.rows[1].cells[0].tagIds = tagIds;
 
 		const command = new TagUpdateCommand(
 			prevState.model.columns[0].id,
@@ -41,8 +41,8 @@ describe("tag-update-command", () => {
 		prevState.model.columns[0].tags = tags;
 
 		const tagIds = tags.map((t) => t.id);
-		prevState.model.bodyCells[0].tagIds = tagIds;
-		prevState.model.bodyCells[1].tagIds = tagIds;
+		prevState.model.rows[0].cells[0].tagIds = tagIds;
+		prevState.model.rows[1].cells[0].tagIds = tagIds;
 
 		const command = new TagUpdateCommand(
 			prevState.model.columns[0].id,
@@ -68,8 +68,8 @@ describe("tag-update-command", () => {
 		prevState.model.columns[0].tags = tags;
 
 		const tagIds = tags.map((t) => t.id);
-		prevState.model.bodyCells[0].tagIds = tagIds;
-		prevState.model.bodyCells[1].tagIds = tagIds;
+		prevState.model.rows[0].cells[0].tagIds = tagIds;
+		prevState.model.rows[1].cells[0].tagIds = tagIds;
 
 		const command = new TagUpdateCommand(
 			prevState.model.columns[0].id,
@@ -85,7 +85,7 @@ describe("tag-update-command", () => {
 		expect(executeState.model.columns[0].tags.length).toEqual(2);
 		expect(executeState.model.columns[0].tags[0].markdown).toEqual("");
 		expect(executeState.model.columns[0].tags[1].markdown).toEqual("test2");
-		expect(executeState.model.bodyCells).toEqual(prevState.model.bodyCells);
+		expect(executeState.model.rows).toEqual(prevState.model.rows);
 	});
 
 	it("should reset the cell property when undo() is called", () => {
@@ -96,8 +96,8 @@ describe("tag-update-command", () => {
 		prevState.model.columns[0].tags = tags;
 
 		const tagIds = tags.map((t) => t.id);
-		prevState.model.bodyCells[0].tagIds = tagIds;
-		prevState.model.bodyCells[1].tagIds = tagIds;
+		prevState.model.rows[0].cells[0].tagIds = tagIds;
+		prevState.model.rows[1].cells[0].tagIds = tagIds;
 
 		const command = new TagUpdateCommand(
 			prevState.model.columns[0].id,
@@ -112,6 +112,6 @@ describe("tag-update-command", () => {
 
 		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
-		expect(executeState.model.bodyCells).toEqual(prevState.model.bodyCells);
+		expect(executeState.model.rows).toEqual(prevState.model.rows);
 	});
 });

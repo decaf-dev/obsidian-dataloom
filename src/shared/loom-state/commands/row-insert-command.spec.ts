@@ -30,7 +30,8 @@ describe("row-insert-command", () => {
 
 		//Assert
 		expect(executeState.model.rows.length).toEqual(2); //make sure that the row was added
-		expect(executeState.model.bodyCells.length).toEqual(2);
+		expect(executeState.model.rows[0].cells.length).toEqual(1);
+		expect(executeState.model.rows[1].cells.length).toEqual(1);
 		expect(executeState.model.rows[1].id).toEqual(rowId); //make sure that the row was added above the original row
 		expect(executeState.model.rows[1].index).toEqual(1);
 	});
@@ -46,7 +47,8 @@ describe("row-insert-command", () => {
 
 		//Assert
 		expect(executeState.model.rows.length).toEqual(2); //make sure that the row was added
-		expect(executeState.model.bodyCells.length).toEqual(2);
+		expect(executeState.model.rows[0].cells.length).toEqual(1);
+		expect(executeState.model.rows[1].cells.length).toEqual(1);
 		expect(executeState.model.rows[0].id).toEqual(rowId); //make sure that the row was added below the original row
 		expect(executeState.model.rows[0].index).toEqual(0);
 	});
@@ -63,7 +65,6 @@ describe("row-insert-command", () => {
 
 		//Assert
 		expect(undoState.model.rows).toEqual(prevState.model.rows); //make sure that nothing has changed
-		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
 	});
 
 	it("should delete the row inserted below when undo() is called", () => {
@@ -78,7 +79,6 @@ describe("row-insert-command", () => {
 
 		//Assert
 		expect(undoState.model.rows).toEqual(prevState.model.rows); //make sure that nothing has changed
-		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
 	});
 
 	it("should restore the row inserted above when redo() is called", () => {
@@ -94,7 +94,6 @@ describe("row-insert-command", () => {
 
 		//Assert
 		expect(redoState.model.rows).toEqual(executeState.model.rows);
-		expect(redoState.model.bodyCells).toEqual(executeState.model.bodyCells);
 	});
 
 	it("should restore the row inserted below when redo() is called", () => {
@@ -110,6 +109,5 @@ describe("row-insert-command", () => {
 
 		//Assert
 		expect(redoState.model.rows).toEqual(executeState.model.rows);
-		expect(redoState.model.bodyCells).toEqual(executeState.model.bodyCells);
 	});
 });

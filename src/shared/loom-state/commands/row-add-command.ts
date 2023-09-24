@@ -3,11 +3,10 @@ import {
 	createRow,
 } from "src/shared/loom-state/loom-state-factory";
 import LoomStateCommand from "./loom-state-command";
-import { Cell, Row, LoomState } from "../types/loom-state";
+import { Row, LoomState } from "../types/loom-state";
 
 export default class RowAddCommand extends LoomStateCommand {
 	private addedRow: Row;
-	private addedCells: Cell[];
 
 	constructor() {
 		super(true);
@@ -16,36 +15,20 @@ export default class RowAddCommand extends LoomStateCommand {
 	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
-		const { rows, bodyCells, columns } = prevState.model;
+		const { rows, columns } = prevState.model;
 
-		this.addedRow = createRow(rows.length);
-		this.addedCells = columns.map((column) => {
+		const cells = columns.map((column) => {
 			const { id, type } = column;
-			return createCell(id, this.addedRow.id, {
+			return createCell(id, {
 				cellType: type,
 			});
 		});
+		this.addedRow = createRow(rows.length, { cells });
 
 		return {
 			...prevState,
 			model: {
 				...prevState.model,
-				bodyCells: [...bodyCells, ...this.addedCells],
-				rows: [...rows, this.addedRow],
-			},
-		};
-	}
-
-	redo(prevState: LoomState): LoomState {
-		super.onRedo();
-
-		const { rows, bodyCells } = prevState.model;
-
-		return {
-			...prevState,
-			model: {
-				...prevState.model,
-				bodyCells: [...bodyCells, ...this.addedCells],
 				rows: [...rows, this.addedRow],
 			},
 		};
@@ -54,16 +37,27 @@ export default class RowAddCommand extends LoomStateCommand {
 	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
-		const { rows, bodyCells } = prevState.model;
+		const { rows } = prevState.model;
 
 		return {
 			...prevState,
 			model: {
 				...prevState.model,
 				rows: rows.filter((row) => row.id !== this.addedRow.id),
-				bodyCells: bodyCells.filter(
-					(cell) => cell.rowId !== this.addedRow.id
-				),
+			},
+		};
+	}
+
+	redo(prevState: LoomState): LoomState {
+		super.onRedo();
+
+		const { rows } = prevState.model;
+
+		return {
+			...prevState,
+			model: {
+				...prevState.model,
+				rows: [...rows, this.addedRow],
 			},
 		};
 	}
