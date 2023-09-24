@@ -69,7 +69,7 @@ interface Props {
 	isOpen: boolean;
 	columns: Column[];
 	filters: Filter[];
-	onAddClick: (columnId: string, cellType: CellType) => void;
+	onAddClick: () => void;
 	onUpdate: (id: string, data: Partial<Filter>, isPartial?: boolean) => void;
 	onDeleteClick: (id: string) => void;
 	onRequestClose: (type: LoomMenuCloseRequestType) => void;
@@ -605,9 +605,7 @@ export default function FilterMenu({
 							<Button
 								icon={<Icon lucideId="plus" />}
 								ariaLabel="Add filter"
-								onClick={() =>
-									onAddClick(columns[0].id, columns[0].type)
-								}
+								onClick={() => onAddClick()}
 							/>
 							{filters.length === 0 && (
 								<Text value="No filters to display" />

@@ -13,7 +13,6 @@ import {
 	SortDir,
 	Column,
 	Filter,
-	CellType,
 } from "src/shared/loom-state/types/loom-state";
 import { isSmallScreenSize } from "src/shared/render/utils";
 import { useMenu } from "../../shared/menu/hooks";
@@ -33,7 +32,7 @@ interface Props {
 		isPartial?: boolean
 	) => void;
 	onFilterDeleteClick: (filterId: string) => void;
-	onFilterAddClick: (columnId: string, cellType: CellType) => void;
+	onFilterAddClick: () => void;
 	onFrozenColumnsChange: (value: number) => void;
 	onCalculationRowToggle: (value: boolean) => void;
 }

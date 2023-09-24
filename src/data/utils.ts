@@ -19,12 +19,12 @@ export const splitFileExtension = (
 };
 
 export const updateLinkReferences = (
-	markdown: string,
+	content: string,
 	newPath: string,
 	oldPath: string
 ) => {
 	//Create a replace function for the markdown
-	return markdown.replace(WIKI_LINK_REGEX, (match, path) => {
+	return content.replace(WIKI_LINK_REGEX, (match, path) => {
 		//The path may or may not contain a file extension
 		//It also may or may not contain a slash, depending on if its a relative or absolute path
 		let comparePath = oldPath;

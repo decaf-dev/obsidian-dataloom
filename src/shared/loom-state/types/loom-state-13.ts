@@ -6,6 +6,13 @@ export interface LoomState13 {
 	model: TableModel;
 }
 
+export interface BodyCell extends Cell {
+	isExternalLink: boolean;
+	dateTime: number | null;
+	markdown: string;
+	tagIds: string[];
+}
+
 enum Color {
 	LIGHT_GRAY = "light gray",
 	GRAY = "gray",
@@ -336,13 +343,6 @@ interface HeaderCell extends Cell {
 	markdown: string;
 }
 
-interface BodyCell extends Cell {
-	isExternalLink: boolean;
-	dateTime: number | null;
-	markdown: string;
-	tagIds: string[];
-}
-
 type FooterCell = Cell;
 
 interface Tag {
@@ -351,7 +351,7 @@ interface Tag {
 	color: Color;
 }
 
-export interface TableSettings {
+interface TableSettings {
 	numFrozenColumns: number;
 }
 

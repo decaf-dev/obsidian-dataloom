@@ -17,6 +17,7 @@ export default class FilterUpdateCommand<
 		this.data = data;
 		this.isPartial = isPartial;
 	}
+
 	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
@@ -43,13 +44,13 @@ export default class FilterUpdateCommand<
 		};
 	}
 
-	redo(prevState: LoomState): LoomState {
-		super.onRedo();
+	undo(prevState: LoomState): LoomState {
+		super.onUndo();
 
 		const { filters } = prevState.model;
 		const nextFilters = filters.map((filter) => {
-			if (filter.id === this.id) {
-				return this.nextFilter;
+			if (filter.id === this.nextFilter.id) {
+				return this.prevFilter;
 			}
 			return filter;
 		});
@@ -62,13 +63,13 @@ export default class FilterUpdateCommand<
 		};
 	}
 
-	undo(prevState: LoomState): LoomState {
-		super.onUndo();
+	redo(prevState: LoomState): LoomState {
+		super.onRedo();
 
 		const { filters } = prevState.model;
 		const nextFilters = filters.map((filter) => {
-			if (filter.id === this.nextFilter.id) {
-				return this.prevFilter;
+			if (filter.id === this.id) {
+				return this.nextFilter;
 			}
 			return filter;
 		});

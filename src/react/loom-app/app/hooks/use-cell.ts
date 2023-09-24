@@ -8,54 +8,50 @@ export const useCell = () => {
 	const logger = useLogger();
 	const { doCommand } = useLoomState();
 
-	function handleExternalLinkToggle(
-		cellId: string,
-		rowId: string,
-		value: boolean
-	) {
+	function handleExternalLinkToggle(id: string, value: boolean) {
 		logger("handleExternalLinkToggle", {
-			cellId,
+			id,
+			value,
+		});
+		doCommand(
+			new CellBodyUpdateCommand(id, {
+				isExternalLink: value,
+			})
+		);
+	}
+
+	function handleCellContentChange(id: string, value: string) {
+		logger("handleCellContentChange", {
+			id,
 			value,
 		});
 
 		doCommand(
-			new CellBodyUpdateCommand(cellId, rowId, "isExternalLink", value)
+			new CellBodyUpdateCommand(id, {
+				content: value,
+			})
 		);
 	}
 
-	const handleBodyCellContentChange = React.useCallback(
-		(cellId: string, rowId: string, value: string) => {
-			logger("handleCellContentChange", {
-				cellId,
-				rowId,
-				markdown: value,
-			});
-
-			doCommand(
-				new CellBodyUpdateCommand(cellId, rowId, "markdown", value)
-			);
-		},
-		[logger, doCommand]
-	);
-
 	const handleCellDateTimeChange = React.useCallback(
-		(cellId: string, rowId: string, value: number | null) => {
+		(id: string, value: number | null) => {
 			logger("handleCellContentChange", {
-				cellId,
-				rowId,
+				id,
 				dateTime: value,
 			});
 
 			doCommand(
-				new CellBodyUpdateCommand(cellId, rowId, "dateTime", value)
+				new CellBodyUpdateCommand(id, {
+					dateTime: value,
+				})
 			);
 		},
 		[logger, doCommand]
 	);
 
 	return {
-		onBodyCellContentChange: handleBodyCellContentChange,
 		onCellDateTimeChange: handleCellDateTimeChange,
+		onCellContentChange: handleCellContentChange,
 		onExternalLinkToggle: handleExternalLinkToggle,
 	};
 };

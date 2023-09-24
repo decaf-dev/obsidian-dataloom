@@ -3,14 +3,14 @@ import CommandUndoError from "./command-undo-error";
 import CellBodyUpdateCommand from "./cell-body-update-command";
 import { advanceBy, clear } from "jest-date-mock";
 
-describe("row-body-update-command", () => {
+describe("cell-update-command", () => {
 	it("should throw an error when undo() is called before execute()", () => {
 		const prevState = createTestLoomState(1, 1);
 		const command = new CellBodyUpdateCommand(
-			prevState.model.bodyCells[0].id,
-			prevState.model.bodyRows[0].id,
-			"markdown",
-			"test"
+			prevState.model.rows[0].cells[0].id,
+			{
+				content: "test",
+			}
 		);
 
 		try {
@@ -24,10 +24,10 @@ describe("row-body-update-command", () => {
 		//Arrange
 		const prevState = createTestLoomState(1, 1);
 		const command = new CellBodyUpdateCommand(
-			prevState.model.bodyCells[0].id,
-			prevState.model.bodyRows[0].id,
-			"markdown",
-			"test"
+			prevState.model.rows[0].cells[0].id,
+			{
+				content: "test",
+			}
 		);
 
 		//Act
@@ -36,11 +36,11 @@ describe("row-body-update-command", () => {
 		clear();
 
 		//Assert
-		expect(executeState.model.bodyRows.length).toEqual(1);
-		expect(executeState.model.bodyCells.length).toEqual(1);
-		expect(executeState.model.bodyCells[0].markdown).toEqual("test");
-		expect(executeState.model.bodyRows[0].lastEditedTime).toBeGreaterThan(
-			prevState.model.bodyRows[0].lastEditedTime
+		expect(executeState.model.rows.length).toEqual(1);
+		expect(executeState.model.rows[0].cells.length).toEqual(1);
+		expect(executeState.model.rows[0].cells[0].content).toEqual("test");
+		expect(executeState.model.rows[0].lastEditedTime).toBeGreaterThan(
+			prevState.model.rows[0].lastEditedTime
 		);
 	});
 
@@ -48,18 +48,43 @@ describe("row-body-update-command", () => {
 		//Arrange
 		const prevState = createTestLoomState(1, 1);
 		const command = new CellBodyUpdateCommand(
-			prevState.model.bodyCells[0].id,
-			prevState.model.bodyRows[0].id,
-			"markdown",
-			"test"
+			prevState.model.rows[0].cells[0].id,
+			{
+				content: "test",
+			}
 		);
 
 		//Act
+		advanceBy(100);
 		const executeState = command.execute(prevState);
+		advanceBy(100);
 		const undoState = command.undo(executeState);
+		clear();
 
 		//Assert
-		expect(undoState.model.bodyRows).toEqual(prevState.model.bodyRows);
-		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
+		expect(undoState.model.rows).toEqual(prevState.model.rows);
+	});
+
+	it("should update the cell property when redo() is called", () => {
+		//Arrange
+		const prevState = createTestLoomState(1, 1);
+		const command = new CellBodyUpdateCommand(
+			prevState.model.rows[0].cells[0].id,
+			{
+				content: "test",
+			}
+		);
+
+		//Act
+		advanceBy(100);
+		const executeState = command.execute(prevState);
+		advanceBy(100);
+		const undoState = command.undo(executeState);
+		advanceBy(100);
+		const redoState = command.redo(undoState);
+		clear();
+
+		//Assert
+		expect(executeState.model.rows).toEqual(redoState.model.rows);
 	});
 });

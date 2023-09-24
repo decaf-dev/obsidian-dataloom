@@ -33,11 +33,6 @@ export default class TableSettingsUpdateCommand<
 		};
 	}
 
-	redo(prevState: LoomState): LoomState {
-		super.onRedo();
-		return this.execute(prevState);
-	}
-
 	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
@@ -53,5 +48,10 @@ export default class TableSettingsUpdateCommand<
 				},
 			},
 		};
+	}
+
+	redo(prevState: LoomState): LoomState {
+		super.onRedo();
+		return this.execute(prevState);
 	}
 }

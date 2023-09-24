@@ -31,15 +31,14 @@ describe("row-delete-command", () => {
 		//Arrange
 		const prevState = createTestLoomState(1, 1);
 		const command = new RowDeleteCommand({
-			id: prevState.model.bodyRows[0].id,
+			id: prevState.model.rows[0].id,
 		});
 
 		//Act
 		const executeState = command.execute(prevState);
 
 		//Assert
-		expect(executeState.model.bodyRows.length).toEqual(0);
-		expect(executeState.model.bodyCells.length).toEqual(0);
+		expect(executeState.model.rows.length).toEqual(0);
 	});
 
 	it("should delete the last row when execute() is called", () => {
@@ -53,11 +52,8 @@ describe("row-delete-command", () => {
 		const executeState = command.execute(prevState);
 
 		//Assert
-		expect(executeState.model.bodyRows[0].id).toEqual(
-			prevState.model.bodyRows[0].id
-		);
-		expect(executeState.model.bodyCells).toEqual(
-			prevState.model.bodyCells.slice(0, 1)
+		expect(executeState.model.rows[0].id).toEqual(
+			prevState.model.rows[0].id
 		);
 	});
 
@@ -65,7 +61,7 @@ describe("row-delete-command", () => {
 		//Arrange
 		const prevState = createTestLoomState(1, 2);
 		const command = new RowDeleteCommand({
-			id: prevState.model.bodyRows[0].id,
+			id: prevState.model.rows[0].id,
 		});
 
 		//Act
@@ -73,8 +69,7 @@ describe("row-delete-command", () => {
 		const undoState = command.undo(executeState);
 
 		//Assert
-		expect(undoState.model.bodyRows).toEqual(prevState.model.bodyRows);
-		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
+		expect(undoState.model.rows).toEqual(prevState.model.rows);
 	});
 
 	it("should restore the last deleted row when undo() is called", () => {
@@ -89,7 +84,6 @@ describe("row-delete-command", () => {
 		const undoState = command.undo(executeState);
 
 		//Assert
-		expect(undoState.model.bodyRows).toEqual(prevState.model.bodyRows);
-		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
+		expect(undoState.model.rows).toEqual(prevState.model.rows);
 	});
 });

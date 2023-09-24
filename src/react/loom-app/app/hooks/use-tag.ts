@@ -15,7 +15,6 @@ export const useTag = () => {
 	function handleTagAdd(
 		cellId: string,
 		columnId: string,
-		rowId: string,
 		markdown: string,
 		color: Color,
 		isMultiTag: boolean
@@ -23,45 +22,34 @@ export const useTag = () => {
 		logFunc("handleTagAdd", {
 			cellId,
 			columnId,
-			rowId,
 			markdown,
 			color,
 			isMultiTag,
 		});
 		doCommand(
-			new TagAddCommand(
-				cellId,
-				columnId,
-				rowId,
-				markdown,
-				color,
-				isMultiTag
-			)
+			new TagAddCommand(cellId, columnId, markdown, color, isMultiTag)
 		);
 	}
 
 	function handleTagCellAdd(
 		cellId: string,
-		rowId: string,
 		tagId: string,
 		isMultiTag: boolean
 	) {
 		logFunc("handleTagCellAdd", {
 			cellId,
-			rowId,
 			tagId,
 			isMultiTag,
 		});
-		doCommand(new TagCellAddCommand(cellId, rowId, tagId, isMultiTag));
+		doCommand(new TagCellAddCommand(cellId, tagId, isMultiTag));
 	}
 
-	function handleTagCellRemove(cellId: string, rowId: string, tagId: string) {
+	function handleTagCellRemove(cellId: string, tagId: string) {
 		logFunc("handleTagCellRemove", {
 			cellId,
-			rowId,
 			tagId,
 		});
-		doCommand(new TagCellRemoveCommand(cellId, rowId, tagId));
+		doCommand(new TagCellRemoveCommand(cellId, tagId));
 	}
 
 	function handleTagNameChange(
@@ -77,17 +65,12 @@ export const useTag = () => {
 		doCommand(new TagUpdateCommand(columnId, tagId, "markdown", name));
 	}
 
-	function handleTagCellMultipleRemove(
-		cellId: string,
-		rowId: string,
-		tagIds: string[]
-	) {
+	function handleTagCellMultipleRemove(cellId: string, tagIds: string[]) {
 		logFunc("handleTagCellMultipleRemove", {
 			cellId,
-			rowId,
 			tagIds,
 		});
-		doCommand(new TagCellMultipleRemoveCommand(cellId, rowId, tagIds));
+		doCommand(new TagCellMultipleRemoveCommand(cellId, tagIds));
 	}
 
 	function handleTagDeleteClick(columnId: string, tagId: string) {

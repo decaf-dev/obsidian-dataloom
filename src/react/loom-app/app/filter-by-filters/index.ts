@@ -1,6 +1,6 @@
 import {
-	BodyCell,
-	BodyRow,
+	Cell,
+	Row,
 	CellType,
 	Filter,
 	FilterCondition,
@@ -20,38 +20,46 @@ import {
 	LastEditedTimeFilter,
 	DateFilterCondition,
 	DateFilterOption,
+	Column,
 } from "src/shared/loom-state/types/loom-state";
-import ColumNotFoundError from "src/shared/error/column-not-found-error";
 import { Expression, evaluateWithPrecedence } from "./evaluate-with-precedence";
 import {
 	getDateAtMidnight,
 	getDateFromDateFilterOption,
 	getDateJustBeforeMidnight,
 } from "./utils";
+import ColumNotFoundError from "src/shared/error/column-not-found-error";
 
 /**
  * Filters body rows by the filters array
  * @param prevState - The previous state of the loom
  */
-export const filterByFilters = (prevState: LoomState): BodyRow[] => {
-	const { columns, bodyCells, bodyRows, filters } = prevState.model;
+export const filterByFilters = (prevState: LoomState): Row[] => {
+	const { columns, rows, filters } = prevState.model;
 
-	const cellMatches = new Map<string, boolean>();
-	bodyCells.forEach((cell) => {
-		const column = columns.find((column) => column.id === cell.columnId);
-		if (!column) throw new ColumNotFoundError(cell.columnId);
-
-		const row = bodyRows.find((row) => row.id === cell.rowId);
-		if (!row) throw new Error("Row not found");
-
-		const { tags, type } = column;
-		const doesMatch = doesCellMatchFilters(cell, row, type, tags, filters);
-		cellMatches.set(cell.id, doesMatch);
+	const columnIdToColumn = new Map<string, Column>();
+	columns.forEach((column) => {
+		columnIdToColumn.set(column.id, column);
 	});
 
-	return bodyRows.filter((row: BodyRow) => {
-		const filteredCells = bodyCells.filter((cell) => cell.rowId === row.id);
-		return filteredCells.every((cell) => cellMatches.get(cell.id));
+	const cellIdToColumn = new Map<string, Column>();
+	rows.forEach((row) => {
+		const { cells } = row;
+		cells.forEach((cell) => {
+			const column = columnIdToColumn.get(cell.columnId);
+			if (!column) throw new ColumNotFoundError();
+			cellIdToColumn.set(cell.id, column);
+		});
+	});
+
+	return rows.filter((row: Row) => {
+		const { cells } = row;
+		return cells.every((cell) => {
+			const column = cellIdToColumn.get(cell.id);
+			if (!column) throw new ColumNotFoundError();
+			const { type, tags } = column;
+			return doesCellMatchFilters(cell, row, type, tags, filters);
+		});
 	});
 };
 
@@ -65,8 +73,8 @@ export const filterByFilters = (prevState: LoomState): BodyRow[] => {
  * @param filters - The filters to apply to the cell
  */
 const doesCellMatchFilters = (
-	cell: BodyCell,
-	row: BodyRow,
+	cell: Cell,
+	row: Row,
 	cellType: CellType,
 	columnTags: Tag[],
 	filters: Filter[]
@@ -91,28 +99,29 @@ const doesCellMatchFilters = (
  * @returns true if the cell matches the filter, false if it does not, null if the filter does not apply to the cell
  */
 const doesCellMatchFilter = (
-	cell: BodyCell,
-	row: BodyRow,
+	cell: Cell,
+	row: Row,
 	cellType: CellType,
 	columnTags: Tag[],
 	filter: Filter
 ): boolean | null => {
 	const { columnId, isEnabled, condition } = filter;
+	const { content: cellContent } = cell;
 	if (columnId !== cell.columnId) return null;
 	if (!isEnabled) return null;
 
 	switch (cellType) {
 		case CellType.TEXT: {
 			const { text } = filter as TextFilter;
-			return doesTextMatch(cell.markdown, text, condition);
+			return doesTextMatch(cellContent, text, condition);
 		}
 		case CellType.FILE: {
 			const { text } = filter as FileFilter;
-			return doesTextMatch(cell.markdown, text, condition);
+			return doesTextMatch(cellContent, text, condition);
 		}
 		case CellType.CHECKBOX: {
 			const { text } = filter as CheckboxFilter;
-			return doesTextMatch(cell.markdown, text, condition);
+			return doesTextMatch(cellContent, text, condition);
 		}
 		case CellType.TAG: {
 			const { tagId } = filter as TagFilter;
@@ -134,11 +143,11 @@ const doesCellMatchFilter = (
 		}
 		case CellType.NUMBER: {
 			const { text } = filter as NumberFilter;
-			return doesNumberMatch(cell.markdown, text, condition);
+			return doesNumberMatch(cellContent, text, condition);
 		}
 		case CellType.EMBED: {
 			const { text } = filter as EmbedFilter;
-			return doesTextMatch(cell.markdown, text, condition);
+			return doesTextMatch(cellContent, text, condition);
 		}
 		case CellType.DATE: {
 			const { dateTime, option } = filter as DateFilter;
