@@ -1,9 +1,67 @@
+/******* Type definitions for v8.6.0 *******/
+
 /**
- * Type definitions for v8.6.0
+ * v8.6.0
  */
 export interface LoomState {
 	pluginVersion: string;
 	model: TableModel;
+}
+
+export interface TableModel {
+	columns: Column[];
+	rows: Row[];
+	filters: Filter[];
+	settings: TableSettings;
+}
+
+export interface TableSettings {
+	numFrozenColumns: number;
+	showCalculationRow: boolean;
+}
+
+export interface Column {
+	id: string;
+	sortDir: SortDir;
+	width: string;
+	type: CellType;
+	isVisible: boolean;
+	dateFormat: DateFormat;
+	content: string;
+	numberFormat: NumberFormat;
+	currencyType: CurrencyType;
+	numberPrefix: string;
+	numberSuffix: string;
+	numberSeparator: string;
+	shouldWrapOverflow: boolean;
+	tags: Tag[];
+	calculationType: CalculationType;
+	aspectRatio: AspectRatio;
+	horizontalPadding: PaddingSize;
+	verticalPadding: PaddingSize;
+}
+
+export interface Row {
+	id: string;
+	index: number;
+	creationTime: number;
+	lastEditedTime: number;
+	cells: Cell[];
+}
+
+export interface Cell {
+	id: string;
+	columnId: string;
+	isExternalLink: boolean;
+	dateTime: number | null;
+	content: string;
+	tagIds: string[];
+}
+
+export interface Tag {
+	id: string;
+	content: string;
+	color: Color;
 }
 
 export enum Color {
@@ -297,61 +355,3 @@ export type Filter =
 	| DateFilter
 	| CreationTimeFilter
 	| LastEditedTimeFilter;
-
-/************ TABLE TYPES ***************/
-
-export interface Column {
-	id: string;
-	sortDir: SortDir;
-	width: string;
-	type: CellType;
-	isVisible: boolean;
-	dateFormat: DateFormat;
-	content: string;
-	numberFormat: NumberFormat;
-	currencyType: CurrencyType;
-	numberPrefix: string;
-	numberSuffix: string;
-	numberSeparator: string;
-	shouldWrapOverflow: boolean;
-	tags: Tag[];
-	calculationType: CalculationType;
-	aspectRatio: AspectRatio;
-	horizontalPadding: PaddingSize;
-	verticalPadding: PaddingSize;
-}
-
-export interface Row {
-	id: string;
-	index: number;
-	creationTime: number;
-	lastEditedTime: number;
-	cells: Cell[];
-}
-
-export interface Cell {
-	id: string;
-	columnId: string;
-	isExternalLink: boolean;
-	dateTime: number | null;
-	content: string;
-	tagIds: string[];
-}
-
-export interface Tag {
-	id: string;
-	content: string;
-	color: Color;
-}
-
-export interface TableSettings {
-	numFrozenColumns: number;
-	showCalculationRow: boolean;
-}
-
-export interface TableModel {
-	columns: Column[];
-	rows: Row[];
-	filters: Filter[];
-	settings: TableSettings;
-}

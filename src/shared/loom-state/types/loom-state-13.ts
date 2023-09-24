@@ -1,5 +1,7 @@
+/******* Type definitions for v8.5.0 *******/
+
 /**
- * Type definitions for v8.5.0
+ * v8.5.0
  */
 export interface LoomState13 {
 	pluginVersion: string;
