@@ -6,6 +6,7 @@ import TextCell from "../text-cell";
 import TagCell from "../tag-cell";
 import CheckboxCell from "../checkbox-cell";
 import DateCell from "../date-cell";
+import FormulaCell from "../formula-cell";
 import NumberCell from "../number-cell";
 import NumberCellEdit from "../number-cell-edit";
 import TextCellEdit from "../text-cell-edit";
@@ -50,6 +51,7 @@ interface Props {
 	numberPrefix: string;
 	numberSuffix: string;
 	numberSeparator: string;
+	formula: string;
 	numberFormat: NumberFormat;
 	currencyType: CurrencyType;
 	columnId: string;
@@ -63,6 +65,7 @@ interface Props {
 	columnTags: Tag[];
 	cellTagIds: string[];
 	shouldWrapOverflow: boolean;
+	getValueByColName: (name: string) => string|undefined
 	onTagRemoveClick: (cellId: string, rowId: string, tagId: string) => void;
 	onTagMultipleRemove: (
 		cellId: string,
@@ -116,6 +119,7 @@ export default function BodyCellContainer({
 	numberPrefix,
 	numberSuffix,
 	numberSeparator,
+	formula,
 	columnType,
 	rowCreationTime,
 	rowLastEditedTime,
@@ -123,6 +127,7 @@ export default function BodyCellContainer({
 	cellTagIds,
 	width,
 	shouldWrapOverflow,
+	getValueByColName,
 	onTagRemoveClick,
 	onTagMultipleRemove,
 	onTagColorChange,
@@ -353,6 +358,9 @@ export default function BodyCellContainer({
 							separator={numberSeparator}
 						/>
 					)}
+					{columnType === CellType.FORMULA && (
+						<FormulaCell formula={formula} getValueByColName={getValueByColName} />
+					)}
 					{columnType === CellType.TAG && cellTags.length === 1 && (
 						<TagCell
 							markdown={cellTags[0].markdown}
@@ -434,6 +442,9 @@ export default function BodyCellContainer({
 						onChange={handleInputChange}
 						onClose={onClose}
 					/>
+				)}
+				{columnType === CellType.FORMULA && (
+					<FormulaCell formula={formula} getValueByColName={getValueByColName} />
 				)}
 				{(columnType === CellType.TAG ||
 					columnType === CellType.MULTI_TAG) && (

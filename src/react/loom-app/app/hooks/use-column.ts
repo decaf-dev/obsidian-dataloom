@@ -194,6 +194,15 @@ export const useColumn = () => {
 			)
 		);
 	}
+	function handleFormulaChange(columnId: string, formula: string) {
+		logger("handleFormulaChange", { columnId, formula });
+		doCommand(
+			new ColumnUpdateCommand(
+				columnId,
+				{ formula: formula, }
+			)
+		);
+	}
 	function handleNumberFormatChange(
 		columnId: string,
 		format: NumberFormat,
@@ -304,6 +313,7 @@ export const useColumn = () => {
 		onNumberPrefixChange: handleNumberPrefixChange,
 		onNumberSeparatorChange: handleNumberSeparatorChange,
 		onNumberSuffixChange: handleNumberSuffixChange,
+		onFormulaChange: handleFormulaChange,
 		onDateFormatChange: handleDateFormatChange,
 		onSortRemoveClick: handleSortRemoveClick,
 		onColumnWidthChange: handleColumnWidthChange,

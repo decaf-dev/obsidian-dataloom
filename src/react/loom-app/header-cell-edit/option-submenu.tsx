@@ -24,6 +24,7 @@ interface Props {
 	numberPrefix: string;
 	numberSuffix: string;
 	numberSeparator: string;
+	formula: string;
 	type: CellType;
 	dateFormat: DateFormat;
 	verticalPadding: PaddingSize;
@@ -40,6 +41,7 @@ export default function OptionSubmenu({
 	numberPrefix,
 	numberSuffix,
 	numberSeparator,
+	formula,
 	aspectRatio,
 	verticalPadding,
 	horizontalPadding,
@@ -129,6 +131,13 @@ export default function OptionSubmenu({
 								}
 							/>
 						)}
+					{type === CellType.FORMULA &&
+						<MenuItem
+							name="Formula"
+							value={formula}
+							onClick={() => onSubmenuChange(SubmenuType.TEXT_INPUT_FORMULA)}
+						/>
+					}
 					{(type === CellType.CREATION_TIME ||
 						type === CellType.LAST_EDITED_TIME ||
 						type === CellType.DATE) && (

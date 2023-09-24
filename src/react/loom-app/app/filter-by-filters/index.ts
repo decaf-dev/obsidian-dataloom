@@ -35,6 +35,7 @@ import {
  */
 export const filterByFilters = (prevState: LoomState): BodyRow[] => {
 	const { columns, bodyCells, bodyRows, filters } = prevState.model;
+	console.log("🚀 ~ file: index.ts:38 ~ filterByFilters ~ prevState.model:", prevState.model)
 
 	const cellMatches = new Map<string, boolean>();
 	bodyCells.forEach((cell) => {
@@ -71,6 +72,7 @@ const doesCellMatchFilters = (
 	columnTags: Tag[],
 	filters: Filter[]
 ) => {
+	console.log("🚀 ~ file: index.ts:74 ~ filters:", filters)
 	const expressions = filters
 		.map((filter) => ({
 			operator: filter.operator,

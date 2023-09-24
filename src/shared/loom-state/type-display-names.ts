@@ -220,6 +220,8 @@ export const getDisplayNameForCellType = (type: CellType): string => {
 			return "Tag";
 		case CellType.MULTI_TAG:
 			return "Multi-tag";
+		case CellType.FORMULA:
+			return "Formula";
 		default:
 			return "";
 	}

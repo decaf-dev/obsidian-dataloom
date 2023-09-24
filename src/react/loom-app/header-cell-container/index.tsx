@@ -27,6 +27,7 @@ interface Props {
 	numberPrefix: string;
 	numberSuffix: string;
 	numberSeparator: string;
+	formula: string;
 	horizontalPadding: PaddingSize;
 	verticalPadding: PaddingSize;
 	aspectRatio: AspectRatio;
@@ -56,6 +57,7 @@ interface Props {
 	onNumberPrefixChange: (columnId: string, value: string) => void;
 	onNumberSuffixChange: (columnId: string, value: string) => void;
 	onNumberSeparatorChange: (columnId: string, value: string) => void;
+	onFormulaChange: (columnId: string, value: string) => void;
 	onDateFormatChange: (columnId: string, value: DateFormat) => void;
 	onVerticalPaddingClick: (columnId: string, value: PaddingSize) => void;
 	onHorizontalPaddingClick: (columnId: string, value: PaddingSize) => void;
@@ -70,6 +72,7 @@ export default function HeaderCellContainer({
 	numberPrefix,
 	numberSeparator,
 	numberSuffix,
+	formula,
 	width,
 	dateFormat,
 	horizontalPadding,
@@ -94,6 +97,7 @@ export default function HeaderCellContainer({
 	onNumberPrefixChange,
 	onNumberSeparatorChange,
 	onNumberSuffixChange,
+	onFormulaChange,
 	onDateFormatChange,
 	onHideClick,
 }: Props) {
@@ -178,6 +182,7 @@ export default function HeaderCellContainer({
 				numberPrefix={numberPrefix}
 				numberSuffix={numberSuffix}
 				numberSeparator={numberSeparator}
+				formula={formula}
 				dateFormat={dateFormat}
 				canDeleteColumn={numColumns > 1}
 				columnId={columnId}
@@ -197,6 +202,7 @@ export default function HeaderCellContainer({
 				onNumberPrefixChange={onNumberPrefixChange}
 				onNumberSeparatorChange={onNumberSeparatorChange}
 				onNumberSuffixChange={onNumberSuffixChange}
+				onFormulaChange={onFormulaChange}
 				onDateFormatChange={onDateFormatChange}
 				onVerticalPaddingClick={onVerticalPaddingClick}
 				onHorizontalPaddingClick={onHorizontalPaddingClick}

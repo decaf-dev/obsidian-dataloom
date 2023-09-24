@@ -38,6 +38,7 @@ interface Props {
 	numberPrefix: string;
 	numberSuffix: string;
 	numberSeparator: string;
+	formula: string;
 	numberFormat: NumberFormat;
 	aspectRatio: AspectRatio;
 	horizontalPadding: PaddingSize;
@@ -64,6 +65,7 @@ interface Props {
 	onNumberPrefixChange: (columnId: string, value: string) => void;
 	onNumberSuffixChange: (columnId: string, value: string) => void;
 	onNumberSeparatorChange: (columnId: string, value: string) => void;
+	onFormulaChange: (columnId: string, value: string) => void;
 	onDateFormatChange: (columnId: string, value: DateFormat) => void;
 	onAspectRatioClick: (columnId: string, value: AspectRatio) => void;
 	onHorizontalPaddingClick: (columnId: string, value: PaddingSize) => void;
@@ -77,6 +79,7 @@ const SELFHANDLE_CLOSE: SubmenuType[] = [
 	SubmenuType.TEXT_INPUT_NUMBER_SUFFIX,
 	SubmenuType.TEXT_INPUT_NUMBER_PREFIX,
 	SubmenuType.TEXT_INPUT_NUMBER_SEPARATOR,
+	SubmenuType.TEXT_INPUT_FORMULA,
 ];
 
 export default function HeaderMenu({
@@ -90,6 +93,7 @@ export default function HeaderMenu({
 	numberPrefix,
 	numberSuffix,
 	numberSeparator,
+	formula,
 	horizontalPadding,
 	verticalPadding,
 	aspectRatio,
@@ -112,6 +116,7 @@ export default function HeaderMenu({
 	onNumberPrefixChange,
 	onNumberSuffixChange,
 	onNumberSeparatorChange,
+	onFormulaChange,
 	onDateFormatChange,
 	onHideClick,
 	onRequestClose,
@@ -201,6 +206,11 @@ export default function HeaderMenu({
 		setSubmenu(null);
 	}
 
+	function handleFormulaChange(value: string) {
+		onFormulaChange(columnId, value);
+		setSubmenu(null);
+	}
+
 	function handleDateFormatClick(value: DateFormat) {
 		onDateFormatChange(columnId, value);
 		setSubmenu(SubmenuType.OPTIONS);
@@ -245,6 +255,7 @@ export default function HeaderMenu({
 						numberPrefix={numberPrefix}
 						numberSuffix={numberSuffix}
 						numberSeparator={numberSeparator}
+						formula={formula}
 						onBackClick={() => setSubmenu(null)}
 						onSubmenuChange={setSubmenu}
 					/>
@@ -327,6 +338,16 @@ export default function HeaderMenu({
 						onClose={onClose}
 						value={numberSeparator}
 						onValueChange={handleNumberOptionChange}
+						onBackClick={() => setSubmenu(SubmenuType.OPTIONS)}
+					/>
+				)}
+				{submenu === SubmenuType.TEXT_INPUT_FORMULA && (
+					<TextInputSubmenu
+						title="Formula"
+						closeRequest={closeRequest}
+						onClose={onClose}
+						value={formula}
+						onValueChange={handleFormulaChange}
 						onBackClick={() => setSubmenu(SubmenuType.OPTIONS)}
 					/>
 				)}

@@ -73,6 +73,7 @@ export default function App() {
 		onNumberPrefixChange,
 		onNumberSeparatorChange,
 		onNumberSuffixChange,
+		onFormulaChange,
 		onAspectRatioClick,
 		onWrapContentToggle,
 		onVerticalPaddingClick,
@@ -144,6 +145,7 @@ export default function App() {
 	}
 
 	const { columns, bodyCells, filters, settings } = loomState.model;
+	console.log("🚀 ~ file: index.tsx:148 ~ columns:", columns)
 	const { numFrozenColumns, showCalculationRow } = settings;
 
 	let filteredBodyRows = filterByFilters(loomState);
@@ -202,6 +204,7 @@ export default function App() {
 								numberPrefix,
 								numberSeparator,
 								numberSuffix,
+								formula,
 								dateFormat,
 								verticalPadding,
 								horizontalPadding,
@@ -219,6 +222,7 @@ export default function App() {
 										numberSeparator={numberSeparator}
 										numberFormat={numberFormat}
 										numberSuffix={numberSuffix}
+										formula={formula}
 										verticalPadding={verticalPadding}
 										horizontalPadding={horizontalPadding}
 										aspectRatio={aspectRatio}
@@ -251,6 +255,7 @@ export default function App() {
 										onNumberSuffixChange={
 											onNumberSuffixChange
 										}
+										onFormulaChange={ onFormulaChange }
 										onVerticalPaddingClick={
 											onVerticalPaddingClick
 										}
@@ -274,6 +279,7 @@ export default function App() {
 				}}
 				bodyRows={filteredBodyRows.map((row) => {
 					const { id: rowId, lastEditedTime, creationTime } = row;
+					console.log("🚀 ~ file: index.tsx:277 ~ bodyRows={filteredBodyRows.map ~ row:", row)
 					return {
 						id: rowId,
 						cells: [
@@ -303,6 +309,7 @@ export default function App() {
 									numberSeparator,
 									numberFormat,
 									numberSuffix,
+									formula,
 									dateFormat,
 									tags,
 									verticalPadding,
@@ -310,11 +317,10 @@ export default function App() {
 									aspectRatio,
 								} = column;
 
-								const cell = bodyCells.find(
-									(cell) =>
-										cell.columnId === columnId &&
-										cell.rowId === row.id
-								);
+								const rowCells = bodyCells.filter(cell => cell.rowId === row.id);
+								const getColByName = (name: string) =>  columns.find(col => col.content === name);
+								const getValueByColName = (name: string) => rowCells.find(row => row.columnId === getColByName(name)?.id)?.markdown;
+								const cell = rowCells.find(cell => cell.columnId === columnId );
 								if (!cell)
 									throw new CellNotFoundError({
 										columnId,
@@ -351,6 +357,7 @@ export default function App() {
 											numberPrefix={numberPrefix}
 											numberSuffix={numberSuffix}
 											numberSeparator={numberSeparator}
+											formula={formula}
 											rowLastEditedTime={lastEditedTime}
 											dateTime={dateTime}
 											markdown={markdown}
@@ -359,6 +366,7 @@ export default function App() {
 												shouldWrapOverflow
 											}
 											width={width}
+											getValueByColName={getValueByColName}
 											onTagClick={onTagCellAdd}
 											onTagRemoveClick={onTagCellRemove}
 											onTagMultipleRemove={
@@ -449,7 +457,7 @@ export default function App() {
 										content: <></>,
 									},
 								],
-						  }
+							}
 						: undefined
 				}
 			/>

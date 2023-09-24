@@ -47,6 +47,7 @@ export enum CellType {
 	CHECKBOX = "checkbox",
 	CREATION_TIME = "creation-time",
 	LAST_EDITED_TIME = "last-edited-time",
+	FORMULA = "formula",
 }
 
 export enum DateFormat {
@@ -313,6 +314,7 @@ export interface Column {
 	numberPrefix: string;
 	numberSuffix: string;
 	numberSeparator: string;
+	formula: string;
 	shouldWrapOverflow: boolean;
 	tags: Tag[];
 	calculationType: CalculationType;
