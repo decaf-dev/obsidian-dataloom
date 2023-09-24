@@ -12,7 +12,7 @@ import "./styles.css";
 interface Props {
 	id?: string;
 	maxWidth?: string;
-	markdown: string;
+	content: string;
 	color: Color;
 	showRemoveButton?: boolean;
 	onRemoveClick?: (id: string) => void;
@@ -23,7 +23,7 @@ export default function Tag({
 	id,
 	color,
 	maxWidth,
-	markdown,
+	content,
 	showRemoveButton,
 	onRemoveClick,
 }: Props) {
@@ -51,7 +51,7 @@ export default function Tag({
 						maxWidth,
 					}}
 				>
-					{markdown}
+					{content}
 				</div>
 				{showRemoveButton && (
 					<Padding width="max-content">

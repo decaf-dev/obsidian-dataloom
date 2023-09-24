@@ -10,7 +10,7 @@ import { getTimeCellContent } from "./time-content";
 const getTagCellContent = (column: Column, cell: Cell) => {
 	return column.tags
 		.filter((tag) => cell.tagIds.includes(tag.id))
-		.map((tag) => tag.markdown)
+		.map((tag) => tag.content)
 		.join(",");
 };
 

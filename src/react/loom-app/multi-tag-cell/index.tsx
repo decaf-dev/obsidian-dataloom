@@ -19,11 +19,7 @@ export default function MultiTagCell({ cellTags, shouldWrapOverflow }: Props) {
 		<div className={className}>
 			<Wrap>
 				{cellTags.map((tag: TagType) => (
-					<Tag
-						key={tag.id}
-						markdown={tag.markdown}
-						color={tag.color}
-					/>
+					<Tag key={tag.id} content={tag.content} color={tag.color} />
 				))}
 			</Wrap>
 		</div>
