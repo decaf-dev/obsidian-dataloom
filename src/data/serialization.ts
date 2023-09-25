@@ -37,7 +37,7 @@ import {
 } from "src/shared/loom-state/migrate";
 import { LoomState13 } from "src/shared/loom-state/types/loom-state-13";
 import MigrateState13 from "src/shared/loom-state/migrate/migrate-state-13";
-import { LoomStateObject } from "src/shared/loom-state/validate/ValidateState";
+import { LoomStateObject } from "src/shared/loom-state/validate/validate-state";
 
 export const serializeState = (state: LoomState): string => {
 	return JSON.stringify(state, null, 2);
@@ -64,8 +64,6 @@ export const deserializeState = (
 		);
 	}
 
-	LoomStateObject.check(parsedState);
-
 	let currentState: unknown = parsedState;
 
 	if (isVersionLessThan(fileVersion, "6.1.0")) {
@@ -73,6 +71,7 @@ export const deserializeState = (
 			currentState as LoomState0
 		);
 		currentState = nextState;
+		console.log("Migrated to 6.1.0");
 	}
 
 	if (isVersionLessThan(fileVersion, "6.2.0")) {
@@ -80,6 +79,7 @@ export const deserializeState = (
 			currentState as LoomState1
 		);
 		currentState = nextState;
+		console.log("Migrated to 6.2.0");
 	}
 
 	if (isVersionLessThan(fileVersion, "6.3.0")) {
@@ -87,6 +87,7 @@ export const deserializeState = (
 			currentState as LoomState2
 		);
 		currentState = nextState;
+		console.log("Migrated to 6.3.0");
 	}
 
 	if (isVersionLessThan(fileVersion, "6.4.0")) {
@@ -94,6 +95,7 @@ export const deserializeState = (
 			currentState as LoomState3
 		);
 		currentState = nextState;
+		console.log("Migrated to 6.4.0");
 	}
 
 	if (isVersionLessThan(fileVersion, "6.8.0")) {
@@ -101,6 +103,7 @@ export const deserializeState = (
 			currentState as LoomState4
 		);
 		currentState = nextState;
+		console.log("Migrated to 6.8.0");
 	}
 
 	if (isVersionLessThan(fileVersion, "6.9.1")) {
@@ -108,6 +111,7 @@ export const deserializeState = (
 			currentState as LoomState5
 		);
 		currentState = nextState;
+		console.log("Migrated to 6.9.1");
 	}
 
 	if (isVersionLessThan(fileVersion, "6.10.0")) {
@@ -115,6 +119,7 @@ export const deserializeState = (
 			currentState as LoomState6
 		);
 		currentState = nextState;
+		console.log("Migrated to 6.10.0");
 	}
 
 	if (isVersionLessThan(fileVersion, "6.12.3")) {
@@ -122,6 +127,7 @@ export const deserializeState = (
 			currentState as LoomState7
 		);
 		currentState = nextState;
+		console.log("Migrated to 6.12.3");
 	}
 
 	if (isVersionLessThan(fileVersion, "6.17.0")) {
@@ -129,6 +135,7 @@ export const deserializeState = (
 			currentState as LoomState8
 		);
 		currentState = nextState;
+		console.log("Migrated to 6.17.0");
 	}
 
 	if (isVersionLessThan(fileVersion, "6.18.6")) {
@@ -136,6 +143,7 @@ export const deserializeState = (
 			currentState as LoomState9
 		);
 		currentState = nextState;
+		console.log("Migrated to 6.18.6");
 	}
 
 	if (isVersionLessThan(fileVersion, "6.19.0")) {
@@ -143,6 +151,7 @@ export const deserializeState = (
 			currentState as LoomState10
 		);
 		currentState = nextState;
+		console.log("Migrated to 6.19.0");
 	}
 
 	if (isVersionLessThan(fileVersion, "8.2.0")) {
@@ -150,6 +159,7 @@ export const deserializeState = (
 			currentState as LoomState11
 		);
 		currentState = nextState;
+		console.log("Migrated to 8.2.0");
 	}
 
 	if (isVersionLessThan(fileVersion, "8.5.0")) {
@@ -157,6 +167,7 @@ export const deserializeState = (
 			currentState as LoomState12
 		);
 		currentState = nextState;
+		console.log("Migrated to 8.5.0");
 	}
 
 	if (isVersionLessThan(fileVersion, "8.6.0")) {
@@ -164,7 +175,11 @@ export const deserializeState = (
 			currentState as LoomState13
 		);
 		currentState = nextState;
+		console.log("Migrated to 8.6.0");
 	}
+
+	//TODO handle previous versions?
+	LoomStateObject.check(parsedState);
 
 	const state = currentState as LoomState;
 	state.pluginVersion = pluginVersion;
