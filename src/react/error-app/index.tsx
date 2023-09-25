@@ -17,15 +17,16 @@ interface Props {
 export default function ErrorApp({ error, isEmbeddedApp = false }: Props) {
 	async function handleCopyClick(
 		message: string,
+		pluginVersion: string,
 		fileVersion: string,
-		pluginVersion: string
+		failedMigration: string
 	) {
-		const value = `Error message: ${message}\nFile version: ${fileVersion}\nPlugin version: ${pluginVersion}`;
+		const value = `Plugin version: ${pluginVersion}\nFile version: ${fileVersion}\nFailed migration: ${failedMigration}\nError message: ${message}`;
 		await navigator.clipboard.writeText(value);
 		new Notice("Copied error to clipboard");
 	}
 
-	const { fileVersion, pluginVersion, message } = error;
+	const { fileVersion, pluginVersion, failedMigration, message } = error;
 
 	let className = "dataloom-error-app";
 	if (isEmbeddedApp) className += " dataloom-error-app--embedded";
@@ -56,13 +57,18 @@ export default function ErrorApp({ error, isEmbeddedApp = false }: Props) {
 					<Divider />
 					<Stack isHorizontal spacing="xl">
 						<Stack>
+							<Text variant="semibold" value="Plugin version" />
+							<Text value={pluginVersion} />
+						</Stack>
+						<Divider isVertical height="60px" />
+						<Stack>
 							<Text variant="semibold" value="File version" />
 							<Text value={fileVersion} />
 						</Stack>
 						<Divider isVertical height="60px" />
 						<Stack>
-							<Text variant="semibold" value="Plugin version" />
-							<Text value={pluginVersion} />
+							<Text variant="semibold" value="Failed migration" />
+							<Text value={failedMigration ?? "None"} />
 						</Stack>
 					</Stack>
 					<Divider />
@@ -78,8 +84,9 @@ export default function ErrorApp({ error, isEmbeddedApp = false }: Props) {
 							onClick={() =>
 								handleCopyClick(
 									message,
+									pluginVersion,
 									fileVersion,
-									pluginVersion
+									failedMigration ?? "None"
 								)
 							}
 						>
