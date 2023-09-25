@@ -4,6 +4,7 @@
 }
 
 .dataloom-bottom-bar > div {
+    border-top: 1px solid var(--table-border-color);
     position: absolute;
     width: 100%;
 }

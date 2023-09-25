@@ -77,7 +77,6 @@
     z-index: 1;
     background-color: var(--background-primary);
     border-top: 1px solid var(--table-border-color);
-    border-bottom: 1px solid var(--table-border-color);
 }
 
 .dataloom-body > .dataloom-row:last-child > .dataloom-cell {
