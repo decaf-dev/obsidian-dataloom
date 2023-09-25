@@ -34,7 +34,7 @@ import {
 	isWindowsUndoDown,
 } from "src/shared/keyboard-event";
 
-import "./global.css";
+import "src/react/global.css";
 import "./styles.css";
 import { useLogger } from "src/shared/logger";
 import { useMenuOperations } from "src/react/shared/menu/hooks";
