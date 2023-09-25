@@ -60,11 +60,30 @@ export default function HeaderCell({
 			//Append it to the new location
 			newColumns.splice(targetElIndex, 0, draggedEl);
 
+			//Set cells of all the rows to the new order of columns
+			const nextRows = prevState.model.rows.map((row) => {
+				const { cells } = row;
+				const nextCells = cells.sort((a, b) => {
+					const aIndex = newColumns.findIndex(
+						(column) => column.id === a.columnId
+					);
+					const bIndex = newColumns.findIndex(
+						(column) => column.id === b.columnId
+					);
+					return aIndex - bIndex;
+				});
+				return {
+					...row,
+					cells: nextCells,
+				};
+			});
+
 			return {
 				...prevState,
 				model: {
 					...prevState.model,
 					columns: newColumns,
+					rows: nextRows,
 				},
 			};
 		});
