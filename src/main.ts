@@ -34,7 +34,7 @@ import {
 	EVENT_ROW_ADD,
 	EVENT_ROW_DELETE,
 } from "./shared/events";
-import { deserializeLoomState, serializeLoomState } from "./data/serialize";
+import { deserializeState, serializeState } from "./data/serialization";
 import { updateLinkReferences } from "./data/utils";
 import { getBasename } from "./shared/link/link-utils";
 import { hasDarkTheme } from "./shared/render/utils";
@@ -322,7 +322,7 @@ export default class DataLoomPlugin extends Plugin {
 						for (const loomFile of loomFiles) {
 							//For each file read its contents
 							const data = await file.vault.read(loomFile);
-							const state = deserializeLoomState(
+							const state = deserializeState(
 								data,
 								this.manifest.version
 							);
@@ -413,7 +413,7 @@ export default class DataLoomPlugin extends Plugin {
 								JSON.stringify(newState)
 							) {
 								const serializedState =
-									serializeLoomState(newState);
+									serializeState(newState);
 
 								await file.vault.modify(
 									loomFile,

@@ -1,7 +1,7 @@
 import { App, Notice, normalizePath } from "obsidian";
 import { createFile, createFolder } from "./file-operations";
 import { createLoomState } from "../shared/loom-state/loom-state-factory";
-import { serializeLoomState } from "./serialize";
+import { serializeState } from "./serialization";
 import { LOOM_EXTENSION, DEFAULT_LOOM_NAME } from "./constants";
 
 export const createLoomFile = async (
@@ -18,7 +18,7 @@ export const createLoomFile = async (
 			pluginVersion,
 			defaultFrozenColumnCount
 		);
-		const serializedState = serializeLoomState(loomState);
+		const serializedState = serializeState(loomState);
 		return await createFile(app, filePath, serializedState);
 	} catch (err) {
 		new Notice("Could not create loom file");

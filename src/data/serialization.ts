@@ -37,12 +37,13 @@ import {
 } from "src/shared/loom-state/migrate";
 import { LoomState13 } from "src/shared/loom-state/types/loom-state-13";
 import MigrateState13 from "src/shared/loom-state/migrate/migrate-state-13";
+import { LoomStateObject } from "src/shared/loom-state/validate/ValidateState";
 
-export const serializeLoomState = (state: LoomState): string => {
+export const serializeState = (state: LoomState): string => {
 	return JSON.stringify(state, null, 2);
 };
 
-export const deserializeLoomState = (
+export const deserializeState = (
 	data: string,
 	pluginVersion: string
 ): LoomState => {
@@ -62,6 +63,8 @@ export const deserializeLoomState = (
 			"Loom was made with a newer plugin version. Please update the DataLoom plugin of this vault."
 		);
 	}
+
+	LoomStateObject.check(parsedState);
 
 	let currentState: unknown = parsedState;
 
@@ -156,13 +159,11 @@ export const deserializeLoomState = (
 		currentState = nextState;
 	}
 
-	console.log(fileVersion);
 	if (isVersionLessThan(fileVersion, "8.6.0")) {
 		const nextState = new MigrateState13().migrate(
 			currentState as LoomState13
 		);
 		currentState = nextState;
-		console.log(currentState);
 	}
 
 	const state = currentState as LoomState;

@@ -4,10 +4,11 @@ import "./styles.css";
 
 interface Props {
 	variant?: "semibold" | "faint" | "muted" | "on-accent" | "error" | "normal";
-	size?: "xs" | "sm" | "md" | "lg" | "xl";
 	value: string | number;
 	maxWidth?: string;
-	noWrap?: boolean;
+	shouldWrap?: boolean;
+	size?: "xs" | "sm" | "md" | "lg" | "xl";
+	whiteSpace?: "normal" | "nowrap" | "pre" | "pre-wrap" | "pre-line";
 }
 
 export default function Text({
@@ -15,11 +16,15 @@ export default function Text({
 	variant,
 	size = "sm",
 	maxWidth,
-	noWrap = false,
+	whiteSpace,
+	shouldWrap = false,
 }: Props) {
-	const overflowClassName = useOverflow(maxWidth !== undefined && !noWrap, {
-		ellipsis: true,
-	});
+	const overflowClassName = useOverflow(
+		shouldWrap || maxWidth !== undefined,
+		{
+			ellipsis: true,
+		}
+	);
 
 	let className = "dataloom-text";
 	if (variant === "faint") className += " dataloom-text--faint";
@@ -38,6 +43,8 @@ export default function Text({
 		fontSize = "var(--dataloom-font-size--md)";
 	} else if (size === "lg") {
 		fontSize = "var(--dataloom-font-size--lg)";
+	} else if (size === "xl") {
+		fontSize = "var(--dataloom-font-size--xl)";
 	}
 
 	return (
@@ -45,7 +52,8 @@ export default function Text({
 			className={className}
 			style={{
 				fontSize,
-				maxWidth: maxWidth !== undefined ? maxWidth : undefined,
+				whiteSpace,
+				maxWidth,
 			}}
 		>
 			{value}

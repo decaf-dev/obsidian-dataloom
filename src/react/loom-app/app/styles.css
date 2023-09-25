@@ -9,3 +9,143 @@
 .dataloom-app--markdown-view {
 	border-bottom: 1px solid var(--background-modifier-border)
 }
+
+/*
+ * Colors
+ */
+.dataloom-light-gray--light {
+	/* background-color: #cfcfc4; */
+	background-color: hsl(0, 3%, 94%);
+}
+
+.dataloom-light-gray--dark {
+	background-color: hsl(0, 0%, 22%);
+}
+
+.dataloom-gray--light {
+	/* background-color: #cfcfc4; */
+	background-color: hsl(40, 5%, 88%);
+}
+
+.dataloom-gray--dark {
+	background-color: hsl(0, 0%, 35%);
+}
+
+.dataloom-brown--light {
+	background-color: hsl(18, 31%, 89%);
+}
+
+.dataloom-brown--dark {
+	background-color: hsl(19, 32%, 27%);
+}
+
+.dataloom-orange--light {
+	background-color: hsl(28, 67%, 88%);
+}
+
+.dataloom-orange--dark {
+	background-color: hsl(28, 52%, 32%);
+}
+
+.dataloom-yellow--light {
+	background-color: hsl(43, 82%, 89%);
+}
+
+.dataloom-yellow--dark {
+	background-color: hsl(37, 43%, 36%);
+}
+
+.dataloom-green--light {
+	background-color: hsl(113, 30%, 89%);
+}
+
+.dataloom-green--dark {
+	background-color: hsl(138, 23%, 28%);
+}
+
+.dataloom-blue--light {
+	background-color: hsl(205, 41%, 89%);
+}
+
+.dataloom-blue--dark {
+	background-color: hsl(218, 38%, 30%);
+}
+
+.dataloom-purple--light {
+	background-color: hsl(272, 29%, 90%);
+}
+
+.dataloom-purple--dark {
+	background-color: hsl(266, 34%, 28%);
+}
+
+.dataloom-pink--light {
+	background-color: hsl(330, 36%, 91%);
+}
+
+.dataloom-pink--dark {
+	background-color: hsl(330, 31%, 30%);
+}
+
+.dataloom-red--light {
+	background-color: hsl(11, 64%, 91%);
+}
+
+.dataloom-red--dark {
+	background-color: hsl(8, 35%, 30%);
+}
+
+.dataloom-disabled {
+	opacity: 0.5;
+}
+
+/*
+ * Selectable and selected
+ */
+.dataloom-selectable {
+	cursor: pointer;
+}
+
+.dataloom-selectable:hover {
+	background-color: var(--color-base-30);
+}
+
+.dataloom-selected {
+	background-color: var(--color-base-20);
+}
+
+.dataloom-default-cursor {
+	cursor: default !important;
+}
+
+.dataloom-focusable:focus-visible,
+.dataloom-focus-visible {
+	outline: 2px solid var(--color-accent);
+	outline-offset: -2px;
+}
+
+.dataloom-focusable--inverted:focus-visible {
+	outline: 2px solid var(--background-modifier-border-focus);
+}
+
+.dataloom-blur--cell {
+	outline: 2px solid var(--background-modifier-border-focus) !important;
+	outline-offset: -2px;
+}
+
+.dataloom-blur {
+	outline: 2px solid var(--color-accent) !important;
+	outline-offset: -2px;
+}
+
+.dataloom-tr--drag-over {
+	/* outline: 2px solid var(--color-accent);
+	outline-offset: -2px; */
+	border-bottom: 1px solid var(--color-accent) !important;
+}
+
+.dataloom-th--drag-over {
+	/* outline: 2px solid var(--color-accent);
+	outline-offset: -2px; */
+	border-bottom: 1px solid var(--color-accent) !important;
+}
