@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-dataloom",
-	"version": "8.5.0",
+	"version": "8.6.0",
 	"description": "Weave together data from diverse sources into a cohesive table view. Inspired by Excel Spreadsheets and Notion.so.",
 	"main": "main.js",
 	"scripts": {
@@ -63,6 +63,7 @@
 		"react-redux": "^8.0.4",
 		"react-virtuoso": "^4.3.5",
 		"recoil": "^0.7.7",
+		"runtypes": "^6.7.0",
 		"ts-node": "^10.9.1",
 		"uuid": "^9.0.0"
 	}

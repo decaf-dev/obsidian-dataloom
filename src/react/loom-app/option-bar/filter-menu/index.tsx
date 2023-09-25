@@ -35,8 +35,8 @@ import {
 	CreationTimeFilter,
 	LastEditedTimeFilter,
 	DateFilterOption,
+	Column,
 } from "src/shared/loom-state/types/loom-state";
-import { ColumnWithMarkdown } from "../types";
 import { isSmallScreenSize } from "src/shared/render/utils";
 import {
 	LoomMenuCloseRequestType,
@@ -67,9 +67,9 @@ interface Props {
 	id: string;
 	triggerPosition: Position;
 	isOpen: boolean;
-	columns: ColumnWithMarkdown[];
+	columns: Column[];
 	filters: Filter[];
-	onAddClick: (columnId: string, cellType: CellType) => void;
+	onAddClick: () => void;
 	onUpdate: (id: string, data: Partial<Filter>, isPartial?: boolean) => void;
 	onDeleteClick: (id: string) => void;
 	onRequestClose: (type: LoomMenuCloseRequestType) => void;
@@ -443,7 +443,7 @@ export default function FilterMenu({
 													key={tag.id}
 													value={tag.id}
 												>
-													{tag.markdown}
+													{tag.content}
 												</option>
 											))}
 										</Select>
@@ -470,7 +470,7 @@ export default function FilterMenu({
 													key={tag.id}
 													value={tag.id}
 												>
-													{tag.markdown}
+													{tag.content}
 												</option>
 											))}
 										</MultiSelect>
@@ -605,9 +605,7 @@ export default function FilterMenu({
 							<Button
 								icon={<Icon lucideId="plus" />}
 								ariaLabel="Add filter"
-								onClick={() =>
-									onAddClick(columns[0].id, columns[0].type)
-								}
+								onClick={() => onAddClick()}
 							/>
 							{filters.length === 0 && (
 								<Text value="No filters to display" />

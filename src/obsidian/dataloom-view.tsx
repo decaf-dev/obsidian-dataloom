@@ -3,10 +3,12 @@ import { TextFileView, WorkspaceLeaf } from "obsidian";
 import { createRoot, Root } from "react-dom/client";
 import { store } from "src/redux/store";
 import { LoomState } from "src/shared/loom-state/types/loom-state";
-import { deserializeLoomState, serializeLoomState } from "src/data/serialize";
+import { deserializeState, serializeState } from "src/data/serialization";
 import { EVENT_APP_REFRESH } from "src/shared/events";
 import LoomAppWrapper from "src/react/loom-app";
 import { createAppId } from "./utils";
+import ErrorApp from "src/react/error-app";
+import DeserializationError from "src/data/deserialization-error";
 
 export const DATA_LOOM_VIEW = "dataloom";
 
@@ -55,10 +57,17 @@ export default class DataLoomView extends TextFileView {
 			if (this.root) {
 				this.root.unmount();
 			}
-			const state = deserializeLoomState(data, this.pluginVersion);
+
 			const container = this.containerEl.children[1];
-			this.root = createRoot(container);
-			this.renderApp(this.appId, state);
+			const root = createRoot(container);
+			this.root = root;
+
+			try {
+				const state = deserializeState(data, this.pluginVersion);
+				this.renderApp(this.appId, state);
+			} catch (err: unknown) {
+				this.renderErrorApp(err as DeserializationError);
+			}
 		}
 	}
 
@@ -87,7 +96,7 @@ export default class DataLoomView extends TextFileView {
 
 		//We need this for when we open a new tab of the same file
 		//so that the data is up to date
-		const serialized = serializeLoomState(state);
+		const serialized = serializeState(state);
 		this.setViewData(serialized, false);
 
 		//Request a save - every 2s
@@ -118,6 +127,12 @@ export default class DataLoomView extends TextFileView {
 					onSaveState={this.handleSaveLoomState}
 				/>
 			);
+		}
+	}
+
+	private renderErrorApp(error: DeserializationError) {
+		if (this.root) {
+			this.root.render(<ErrorApp error={error} />);
 		}
 	}
 }

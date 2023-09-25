@@ -15,13 +15,13 @@ describe("tag-update-command", () => {
 		prevState.model.columns[0].tags = tags;
 
 		const tagIds = tags.map((t) => t.id);
-		prevState.model.bodyCells[0].tagIds = tagIds;
-		prevState.model.bodyCells[1].tagIds = tagIds;
+		prevState.model.rows[0].cells[0].tagIds = tagIds;
+		prevState.model.rows[1].cells[0].tagIds = tagIds;
 
 		const command = new TagUpdateCommand(
 			prevState.model.columns[0].id,
 			tags[0].id,
-			"markdown",
+			"content",
 			""
 		);
 
@@ -41,13 +41,13 @@ describe("tag-update-command", () => {
 		prevState.model.columns[0].tags = tags;
 
 		const tagIds = tags.map((t) => t.id);
-		prevState.model.bodyCells[0].tagIds = tagIds;
-		prevState.model.bodyCells[1].tagIds = tagIds;
+		prevState.model.rows[0].cells[0].tagIds = tagIds;
+		prevState.model.rows[1].cells[0].tagIds = tagIds;
 
 		const command = new TagUpdateCommand(
 			prevState.model.columns[0].id,
 			tags[0].id,
-			"markdown",
+			"content",
 			""
 		);
 
@@ -68,13 +68,13 @@ describe("tag-update-command", () => {
 		prevState.model.columns[0].tags = tags;
 
 		const tagIds = tags.map((t) => t.id);
-		prevState.model.bodyCells[0].tagIds = tagIds;
-		prevState.model.bodyCells[1].tagIds = tagIds;
+		prevState.model.rows[0].cells[0].tagIds = tagIds;
+		prevState.model.rows[1].cells[0].tagIds = tagIds;
 
 		const command = new TagUpdateCommand(
 			prevState.model.columns[0].id,
 			tags[0].id,
-			"markdown",
+			"content",
 			""
 		);
 
@@ -83,9 +83,9 @@ describe("tag-update-command", () => {
 
 		//Assert
 		expect(executeState.model.columns[0].tags.length).toEqual(2);
-		expect(executeState.model.columns[0].tags[0].markdown).toEqual("");
-		expect(executeState.model.columns[0].tags[1].markdown).toEqual("test2");
-		expect(executeState.model.bodyCells).toEqual(prevState.model.bodyCells);
+		expect(executeState.model.columns[0].tags[0].content).toEqual("");
+		expect(executeState.model.columns[0].tags[1].content).toEqual("test2");
+		expect(executeState.model.rows).toEqual(prevState.model.rows);
 	});
 
 	it("should reset the cell property when undo() is called", () => {
@@ -96,13 +96,13 @@ describe("tag-update-command", () => {
 		prevState.model.columns[0].tags = tags;
 
 		const tagIds = tags.map((t) => t.id);
-		prevState.model.bodyCells[0].tagIds = tagIds;
-		prevState.model.bodyCells[1].tagIds = tagIds;
+		prevState.model.rows[0].cells[0].tagIds = tagIds;
+		prevState.model.rows[1].cells[0].tagIds = tagIds;
 
 		const command = new TagUpdateCommand(
 			prevState.model.columns[0].id,
 			tags[0].id,
-			"markdown",
+			"content",
 			""
 		);
 
@@ -112,6 +112,34 @@ describe("tag-update-command", () => {
 
 		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
-		expect(executeState.model.bodyCells).toEqual(prevState.model.bodyCells);
+		expect(executeState.model.rows).toEqual(prevState.model.rows);
+	});
+
+	it("should update a tag property when redo() is called", async () => {
+		//Arrange
+		const prevState = createTestLoomState(1, 2);
+
+		const tags = [createTag("test1"), createTag("test2")];
+		prevState.model.columns[0].tags = tags;
+
+		const tagIds = tags.map((t) => t.id);
+		prevState.model.rows[0].cells[0].tagIds = tagIds;
+		prevState.model.rows[1].cells[0].tagIds = tagIds;
+
+		const command = new TagUpdateCommand(
+			prevState.model.columns[0].id,
+			tags[0].id,
+			"content",
+			""
+		);
+
+		//Act
+		const executeState = command.execute(prevState);
+		const undoState = command.undo(executeState);
+		const redoState = command.redo(undoState);
+
+		//Assert
+		expect(executeState.model.columns).toEqual(redoState.model.columns);
+		expect(executeState.model.rows).toEqual(redoState.model.rows);
 	});
 });

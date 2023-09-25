@@ -1,18 +1,14 @@
 import { randomColor } from "src/shared/color";
 import {
 	AspectRatio,
-	BodyCell,
-	BodyRow,
+	Cell,
+	Row,
 	GeneralCalculation,
 	CellType,
 	Column,
 	CurrencyType,
 	DateFormat,
 	Filter,
-	FooterCell,
-	FooterRow,
-	HeaderCell,
-	HeaderRow,
 	PaddingSize,
 	SortDir,
 	LoomState,
@@ -60,6 +56,7 @@ export const createColumn = (options?: { cellType?: CellType }): Column => {
 		numberPrefix: "",
 		numberSuffix: "",
 		numberSeparator: "",
+		content: "New Column",
 		numberFormat: NumberFormat.NUMBER,
 		currencyType: CurrencyType.UNITED_STATES,
 		dateFormat: DateFormat.MM_DD_YYYY,
@@ -72,66 +69,47 @@ export const createColumn = (options?: { cellType?: CellType }): Column => {
 	};
 };
 
-export const createHeaderRow = (): HeaderRow => {
-	return {
-		id: uuidv4(),
-	};
-};
-
-export const createFooterRow = (): FooterRow => {
-	return {
-		id: uuidv4(),
-	};
-};
-
-export const createBodyRow = (index: number): BodyRow => {
+export const createRow = (
+	index: number,
+	options?: {
+		cells?: Cell[];
+	}
+): Row => {
+	const { cells = [] } = options || {};
 	const currentTime = Date.now();
 	return {
 		id: uuidv4(),
 		index,
 		creationTime: currentTime,
 		lastEditedTime: currentTime,
+		cells,
 	};
 };
 
-export const createHeaderCell = (
+export const createCell = (
 	columnId: string,
-	rowId: string
-): HeaderCell => {
-	return {
-		id: uuidv4(),
-		columnId,
-		rowId,
-		markdown: "New Column",
-	};
-};
-
-export const createBodyCell = (
-	columnId: string,
-	rowId: string,
 	options: {
 		cellType?: CellType;
 		tagIds?: string[];
-		markdown?: string;
+		content?: string;
 		dateTime?: number | null;
 	} = {}
-): BodyCell => {
+): Cell => {
 	const {
 		cellType,
 		tagIds = [],
-		markdown = "",
+		content = "",
 		dateTime = null,
 	} = options ?? {};
 	return {
 		id: uuidv4(),
 		isExternalLink: false,
 		columnId,
-		rowId,
 		dateTime,
-		markdown:
-			markdown === "" && cellType === CellType.CHECKBOX
+		content:
+			content === "" && cellType === CellType.CHECKBOX
 				? CHECKBOX_MARKDOWN_UNCHECKED
-				: markdown,
+				: content,
 		tagIds,
 	};
 };
@@ -402,25 +380,14 @@ const createBaseFilter = (
 	};
 };
 
-export const createFooterCell = (
-	columnId: string,
-	rowId: string
-): FooterCell => {
-	return {
-		id: uuidv4(),
-		columnId,
-		rowId,
-	};
-};
-
 export const createTag = (
-	markdown: string,
+	content: string,
 	options?: { color?: Color }
 ): Tag => {
 	const { color = randomColor() } = options || {};
 	return {
 		id: uuidv4(),
-		markdown: markdown,
+		content,
 		color,
 	};
 };
@@ -466,38 +433,18 @@ const createGenericLoomState = (
 	for (let i = 0; i < numColumns; i++)
 		columns.push(createColumn({ cellType }));
 
-	//Create headers
-	const headerRows: HeaderRow[] = [];
-	headerRows.push(createHeaderRow());
-
-	const headerCells: HeaderCell[] = [];
-
-	for (let x = 0; x < numColumns; x++) {
-		headerCells.push(createHeaderCell(columns[x].id, headerRows[0].id));
-	}
-
-	//Create body
-	const bodyRows: BodyRow[] = [];
-	for (let i = 0; i < numRows; i++) bodyRows.push(createBodyRow(i));
-
-	const bodyCells: BodyCell[] = [];
-	for (let y = 0; y < numRows; y++) {
-		for (let x = 0; x < numColumns; x++) {
-			bodyCells.push(createBodyCell(columns[x].id, bodyRows[y].id));
+	//Create rows
+	const rows: Row[] = [];
+	for (let i = 0; i < numRows; i++) {
+		const cells: Cell[] = [];
+		for (let j = 0; j < numColumns; j++) {
+			const newCell = createCell(columns[j].id);
+			cells.push(newCell);
 		}
-	}
-
-	//Create footers
-	const footerRows: FooterRow[] = [];
-	footerRows.push(createFooterRow());
-	footerRows.push(createFooterRow());
-
-	const footerCells: FooterCell[] = [];
-
-	for (let y = 0; y < 2; y++) {
-		for (let x = 0; x < numColumns; x++) {
-			footerCells.push(createFooterCell(columns[x].id, footerRows[y].id));
-		}
+		const row = createRow(i, {
+			cells,
+		});
+		rows.push(row);
 	}
 
 	const filters: Filter[] = [];
@@ -505,15 +452,11 @@ const createGenericLoomState = (
 	return {
 		model: {
 			columns,
-			headerRows,
-			bodyRows,
-			footerRows,
-			headerCells,
-			bodyCells,
-			footerCells,
+			rows,
 			filters,
 			settings: {
 				numFrozenColumns: defaultFrozenColumnCount,
+				showCalculationRow: true,
 			},
 		},
 		pluginVersion,

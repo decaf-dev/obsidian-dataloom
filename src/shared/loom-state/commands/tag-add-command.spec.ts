@@ -13,9 +13,8 @@ describe("tag-add-command", () => {
 		//Arrange
 		const prevState = createTestLoomState(1, 1);
 		const command = new TagAddCommand(
-			prevState.model.bodyCells[0].id,
+			prevState.model.rows[0].cells[0].id,
 			prevState.model.columns[0].id,
-			prevState.model.bodyRows[0].id,
 			"test1",
 			Color.BLUE,
 			true
@@ -34,9 +33,8 @@ describe("tag-add-command", () => {
 			//Arrange
 			const prevState = createTestLoomState(1, 1);
 			const command = new TagAddCommand(
-				prevState.model.bodyCells[0].id,
+				prevState.model.rows[0].cells[0].id,
 				prevState.model.columns[0].id,
-				prevState.model.bodyRows[0].id,
 				"test1",
 				Color.BLUE,
 				true
@@ -58,13 +56,12 @@ describe("tag-add-command", () => {
 		const tags = [createTag("test1"), createTag("test2")];
 		prevState.model.columns[0].tags = tags;
 
-		const tagIds = tags.map((t) => t.id);
-		prevState.model.bodyCells[0].tagIds = tagIds;
+		const tagIds = tags.map((tag) => tag.id);
+		prevState.model.rows[0].cells[0].tagIds = tagIds;
 
 		const command = new TagAddCommand(
-			prevState.model.bodyCells[0].id,
+			prevState.model.rows[0].cells[0].id,
 			prevState.model.columns[0].id,
-			prevState.model.bodyRows[0].id,
 			"test3",
 			Color.BLUE,
 			false
@@ -80,16 +77,15 @@ describe("tag-add-command", () => {
 		expect(executeState.model.columns[0].tags).toContain(tags[0]);
 		expect(executeState.model.columns[0].tags).toContain(tags[1]);
 
-		expect(executeState.model.bodyCells[0].tagIds.length).toEqual(1);
-		expect(executeState.model.bodyCells[0].tagIds[0]).not.toContain(
-			tagIds[0]
+		expect(executeState.model.rows[0].cells[0].tagIds.length).toEqual(1);
+		expect(executeState.model.rows[0].cells[0].tagIds).not.toContain(
+			tags[0].id
 		);
-		expect(executeState.model.bodyCells[0].tagIds[0]).not.toContain(
-			tagIds[1]
+		expect(executeState.model.rows[0].cells[0].tagIds).not.toContain(
+			tags[1].id
 		);
-
-		expect(executeState.model.bodyRows[0].lastEditedTime).toBeGreaterThan(
-			prevState.model.bodyRows[0].lastEditedTime
+		expect(executeState.model.rows[0].lastEditedTime).toBeGreaterThan(
+			prevState.model.rows[0].lastEditedTime
 		);
 	});
 
@@ -100,13 +96,12 @@ describe("tag-add-command", () => {
 		const tags = [createTag("test1"), createTag("test2")];
 		prevState.model.columns[0].tags = tags;
 
-		const tagIds = tags.map((t) => t.id);
-		prevState.model.bodyCells[0].tagIds = tagIds;
+		const tagIds = tags.map((tag) => tag.id);
+		prevState.model.rows[0].cells[0].tagIds = tagIds;
 
 		const command = new TagAddCommand(
-			prevState.model.bodyCells[0].id,
+			prevState.model.rows[0].cells[0].id,
 			prevState.model.columns[0].id,
-			prevState.model.bodyRows[0].id,
 			"test3",
 			Color.BLUE,
 			true
@@ -122,12 +117,16 @@ describe("tag-add-command", () => {
 		expect(executeState.model.columns[0].tags).toContain(tags[0]);
 		expect(executeState.model.columns[0].tags).toContain(tags[1]);
 
-		expect(executeState.model.bodyCells[0].tagIds.length).toEqual(3);
-		expect(executeState.model.bodyCells[0].tagIds).toContain(tags[0].id);
-		expect(executeState.model.bodyCells[0].tagIds).toContain(tags[1].id);
+		expect(executeState.model.rows[0].cells[0].tagIds.length).toEqual(3);
+		expect(executeState.model.rows[0].cells[0].tagIds).toContain(
+			tags[0].id
+		);
+		expect(executeState.model.rows[0].cells[0].tagIds).toContain(
+			tags[1].id
+		);
 
-		expect(executeState.model.bodyRows[0].lastEditedTime).toBeGreaterThan(
-			prevState.model.bodyRows[0].lastEditedTime
+		expect(executeState.model.rows[0].lastEditedTime).toBeGreaterThan(
+			prevState.model.rows[0].lastEditedTime
 		);
 	});
 
@@ -139,27 +138,26 @@ describe("tag-add-command", () => {
 		prevState.model.columns[0].tags = tags;
 
 		const tagIds = tags.map((t) => t.id);
-		prevState.model.bodyCells[0].tagIds = tagIds;
+		prevState.model.rows[0].cells[0].tagIds = tagIds;
 
 		const command = new TagAddCommand(
-			prevState.model.bodyCells[0].id,
+			prevState.model.rows[0].cells[0].id,
 			prevState.model.columns[0].id,
-			prevState.model.bodyRows[0].id,
 			"test3",
 			Color.BLUE,
 			true
 		);
 
 		//Act
+		advanceBy(100);
 		const executeState = command.execute(prevState);
+		advanceBy(100);
 		const undoState = command.undo(executeState);
+		clear();
 
 		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
-		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
-		expect(undoState.model.bodyRows[0].lastEditedTime).toEqual(
-			prevState.model.bodyRows[0].lastEditedTime
-		);
+		expect(undoState.model.rows).toEqual(prevState.model.rows);
 	});
 
 	it("should restore the added tag when redo() is called", () => {
@@ -170,27 +168,27 @@ describe("tag-add-command", () => {
 		prevState.model.columns[0].tags = tags;
 
 		const tagIds = tags.map((t) => t.id);
-		prevState.model.bodyCells[0].tagIds = tagIds;
+		prevState.model.rows[0].cells[0].tagIds = tagIds;
 
 		const command = new TagAddCommand(
-			prevState.model.bodyCells[0].id,
+			prevState.model.rows[0].cells[0].id,
 			prevState.model.columns[0].id,
-			prevState.model.bodyRows[0].id,
 			"test3",
 			Color.BLUE,
 			true
 		);
 
 		//Act
+		advanceBy(100);
 		const executeState = command.execute(prevState);
+		advanceBy(100);
 		const undoState = command.undo(executeState);
+		advanceBy(100);
 		const redoState = command.redo(undoState);
+		clear();
 
 		//Assert
-		expect(executeState.model.columns).toEqual(redoState.model.columns);
-		expect(undoState.model.bodyCells).toEqual(prevState.model.bodyCells);
-		expect(executeState.model.bodyRows[0].lastEditedTime).toEqual(
-			redoState.model.bodyRows[0].lastEditedTime
-		);
+		expect(redoState.model.columns).toEqual(executeState.model.columns);
+		expect(redoState.model.rows).toEqual(executeState.model.rows);
 	});
 });

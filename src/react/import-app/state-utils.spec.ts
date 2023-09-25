@@ -1,16 +1,16 @@
 import { createTestLoomState } from "src/shared/loom-state/loom-state-factory";
 import { ColumnMatch, ImportData } from "./types";
-import { updateStateWithImportData } from "./state-utils";
+import { addImportData } from "./state-utils";
 import { NEW_COLUMN_ID } from "./constants";
 
-describe("updateStateWithImportData", () => {
+describe("addImportData", () => {
 	it("imports data into a table of the same size", () => {
 		//Arrange
 		const prevState = createTestLoomState(2, 2);
-		prevState.model.bodyCells[0].markdown = "data 1";
-		prevState.model.bodyCells[1].markdown = "data 2";
-		prevState.model.bodyCells[2].markdown = "data 3";
-		prevState.model.bodyCells[3].markdown = "data 4";
+		prevState.model.rows[0].cells[0].content = "data 1";
+		prevState.model.rows[0].cells[1].content = "data 2";
+		prevState.model.rows[1].cells[0].content = "data 3";
+		prevState.model.rows[1].cells[1].content = "data 4";
 
 		const data: ImportData = [
 			["header 1", "header 2"],
@@ -24,28 +24,27 @@ describe("updateStateWithImportData", () => {
 		];
 
 		//Act
-		const nextState = updateStateWithImportData(
-			prevState,
-			data,
-			columnMatches
-		);
+		const nextState = addImportData(prevState, data, columnMatches);
 
 		//Assert
-		expect(nextState.model.bodyCells.length).toEqual(8);
-		expect(nextState.model.bodyRows.length).toEqual(4);
-		expect(nextState.model.bodyCells[0].markdown).toEqual("data 1");
-		expect(nextState.model.bodyCells[1].markdown).toEqual("data 2");
-		expect(nextState.model.bodyCells[2].markdown).toEqual("data 3");
-		expect(nextState.model.bodyCells[3].markdown).toEqual("data 4");
-		expect(nextState.model.bodyCells[4].markdown).toEqual("import 1");
-		expect(nextState.model.bodyCells[5].markdown).toEqual("import 2");
-		expect(nextState.model.bodyCells[6].markdown).toEqual("import 3");
-		expect(nextState.model.bodyCells[7].markdown).toEqual("import 4");
+		expect(nextState.model.rows.length).toEqual(4);
+		expect(nextState.model.rows[0].cells.length).toEqual(2);
+		expect(nextState.model.rows[1].cells.length).toEqual(2);
+		expect(nextState.model.rows[2].cells.length).toEqual(2);
+		expect(nextState.model.rows[3].cells.length).toEqual(2);
+		expect(nextState.model.rows[0].cells[0].content).toEqual("data 1");
+		expect(nextState.model.rows[0].cells[1].content).toEqual("data 2");
+		expect(nextState.model.rows[1].cells[0].content).toEqual("data 3");
+		expect(nextState.model.rows[1].cells[1].content).toEqual("data 4");
+		expect(nextState.model.rows[2].cells[0].content).toEqual("import 1");
+		expect(nextState.model.rows[2].cells[1].content).toEqual("import 2");
+		expect(nextState.model.rows[3].cells[0].content).toEqual("import 3");
+		expect(nextState.model.rows[3].cells[1].content).toEqual("import 4");
 	});
 	it("imports data into a table of smaller size", () => {
 		//Arrange
 		const prevState = createTestLoomState(1, 1);
-		prevState.model.bodyCells[0].markdown = "data 1";
+		prevState.model.rows[0].cells[0].content = "data 1";
 
 		const data: ImportData = [
 			["header 1", "header 2"],
@@ -59,35 +58,28 @@ describe("updateStateWithImportData", () => {
 		];
 
 		//Act
-		const nextState = updateStateWithImportData(
-			prevState,
-			data,
-			columnMatches
-		);
+		const nextState = addImportData(prevState, data, columnMatches);
 
 		//Assert
 		expect(nextState.model.columns.length).toEqual(2);
-		expect(nextState.model.headerCells.length).toEqual(2);
-		expect(nextState.model.footerCells.length).toEqual(4); //TODO remove
-		expect(nextState.model.bodyCells.length).toEqual(6);
-		expect(nextState.model.bodyRows.length).toEqual(3);
-		expect(nextState.model.bodyCells[0].markdown).toEqual("data 1");
-		expect(nextState.model.bodyCells[1].markdown).toEqual("");
-		expect(nextState.model.bodyCells[2].markdown).toEqual("import 2");
-		expect(nextState.model.bodyCells[3].markdown).toEqual("import 1");
-		expect(nextState.model.bodyCells[4].markdown).toEqual("import 4");
-		expect(nextState.model.bodyCells[5].markdown).toEqual("import 3");
+		expect(nextState.model.rows.length).toEqual(3);
+		expect(nextState.model.rows[0].cells[0].content).toEqual("data 1");
+		expect(nextState.model.rows[0].cells[1].content).toEqual("");
+		expect(nextState.model.rows[1].cells[0].content).toEqual("import 2");
+		expect(nextState.model.rows[1].cells[1].content).toEqual("import 1");
+		expect(nextState.model.rows[2].cells[0].content).toEqual("import 4");
+		expect(nextState.model.rows[2].cells[1].content).toEqual("import 3");
 	});
 
 	it("imports data into a table of larger size", () => {
 		//Arrange
 		const prevState = createTestLoomState(3, 2);
-		prevState.model.bodyCells[0].markdown = "data 1";
-		prevState.model.bodyCells[1].markdown = "data 2";
-		prevState.model.bodyCells[2].markdown = "data 3";
-		prevState.model.bodyCells[3].markdown = "data 4";
-		prevState.model.bodyCells[4].markdown = "data 5";
-		prevState.model.bodyCells[5].markdown = "data 6";
+		prevState.model.rows[0].cells[0].content = "data 1";
+		prevState.model.rows[0].cells[1].content = "data 2";
+		prevState.model.rows[0].cells[2].content = "data 3";
+		prevState.model.rows[1].cells[0].content = "data 4";
+		prevState.model.rows[1].cells[1].content = "data 5";
+		prevState.model.rows[1].cells[2].content = "data 6";
 
 		const data: ImportData = [
 			["header 1", "header 2"],
@@ -101,34 +93,27 @@ describe("updateStateWithImportData", () => {
 		];
 
 		//Act
-		const nextState = updateStateWithImportData(
-			prevState,
-			data,
-			columnMatches
-		);
+		const nextState = addImportData(prevState, data, columnMatches);
 
 		//Assert
 		expect(nextState.model.columns.length).toEqual(4);
-		expect(nextState.model.headerCells.length).toEqual(4);
-		expect(nextState.model.footerCells.length).toEqual(8); //TODO remove
-		expect(nextState.model.bodyCells.length).toEqual(16);
-		expect(nextState.model.bodyRows.length).toEqual(4);
-		expect(nextState.model.bodyCells[0].markdown).toEqual("data 1");
-		expect(nextState.model.bodyCells[1].markdown).toEqual("data 2");
-		expect(nextState.model.bodyCells[2].markdown).toEqual("data 3");
-		expect(nextState.model.bodyCells[3].markdown).toEqual("data 4");
-		expect(nextState.model.bodyCells[4].markdown).toEqual("data 5");
-		expect(nextState.model.bodyCells[5].markdown).toEqual("data 6");
-		expect(nextState.model.bodyCells[6].markdown).toEqual("");
-		expect(nextState.model.bodyCells[7].markdown).toEqual("");
-		expect(nextState.model.bodyCells[8].markdown).toEqual("import 2");
-		expect(nextState.model.bodyCells[9].markdown).toEqual("");
-		expect(nextState.model.bodyCells[10].markdown).toEqual("");
-		expect(nextState.model.bodyCells[11].markdown).toEqual("import 1");
-		expect(nextState.model.bodyCells[12].markdown).toEqual("import 4");
-		expect(nextState.model.bodyCells[13].markdown).toEqual("");
-		expect(nextState.model.bodyCells[14].markdown).toEqual("");
-		expect(nextState.model.bodyCells[15].markdown).toEqual("import 3");
+		expect(nextState.model.rows.length).toEqual(4);
+		expect(nextState.model.rows[0].cells[0].content).toEqual("data 1");
+		expect(nextState.model.rows[0].cells[1].content).toEqual("data 2");
+		expect(nextState.model.rows[0].cells[2].content).toEqual("data 3");
+		expect(nextState.model.rows[0].cells[3].content).toEqual("");
+		expect(nextState.model.rows[1].cells[0].content).toEqual("data 4");
+		expect(nextState.model.rows[1].cells[1].content).toEqual("data 5");
+		expect(nextState.model.rows[1].cells[2].content).toEqual("data 6");
+		expect(nextState.model.rows[1].cells[3].content).toEqual("");
+		expect(nextState.model.rows[2].cells[0].content).toEqual("import 2");
+		expect(nextState.model.rows[2].cells[1].content).toEqual("");
+		expect(nextState.model.rows[2].cells[2].content).toEqual("");
+		expect(nextState.model.rows[2].cells[3].content).toEqual("import 1");
+		expect(nextState.model.rows[3].cells[0].content).toEqual("import 4");
+		expect(nextState.model.rows[3].cells[1].content).toEqual("");
+		expect(nextState.model.rows[3].cells[2].content).toEqual("");
+		expect(nextState.model.rows[3].cells[3].content).toEqual("import 3");
 	});
 });
 

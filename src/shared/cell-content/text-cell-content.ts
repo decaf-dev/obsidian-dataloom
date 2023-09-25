@@ -22,11 +22,11 @@ const markdownToHTML = (markdown: string) => {
 };
 
 export const getTextCellContent = (
-	markdown: string,
+	content: string,
 	shouldRemoveMarkdown: boolean
 ) => {
 	if (shouldRemoveMarkdown) {
-		const replaced = markdown.replace(
+		const replaced = content.replace(
 			WIKI_LINK_REGEX,
 			(_match, path) => path
 		);
@@ -34,5 +34,5 @@ export const getTextCellContent = (
 		const innerHTML = getInnerHTML(html);
 		return innerHTML;
 	}
-	return markdown;
+	return content;
 };

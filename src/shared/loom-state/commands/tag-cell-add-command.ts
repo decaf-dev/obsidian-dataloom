@@ -1,96 +1,157 @@
-import { rowLastEditedTime, rowLastEditedTimeUpdate } from "../row-utils";
 import LoomStateCommand from "./loom-state-command";
-import { LoomState } from "../types/loom-state";
+import { Cell, LoomState, Row } from "../types/loom-state";
+import RowNotFoundError from "src/shared/error/row-not-found-error";
 
 export default class TagCellAddCommand extends LoomStateCommand {
 	private cellId: string;
-	private rowId: string;
 	private tagId: string;
 	private isMultiTag: boolean;
 
-	constructor(
-		cellId: string,
-		rowId: string,
-		tagId: string,
-		isMultiTag: boolean
-	) {
+	private rowId: string;
+
+	private previousCellTagIds: string[];
+	private nextCellTagIds: string[];
+
+	private previousEditedTime: number;
+	private nextEditedTime: number;
+
+	constructor(cellId: string, tagId: string, isMultiTag: boolean) {
 		super(true);
 		this.cellId = cellId;
-		this.rowId = rowId;
 		this.tagId = tagId;
 		this.isMultiTag = isMultiTag;
 	}
 
-	private previousCellTagIds: string[];
-	private previousEditedTime: number;
-
 	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
-		const { bodyCells, bodyRows } = prevState.model;
+		const { rows } = prevState.model;
+		const row = rows.find((row) =>
+			row.cells.find((cell) => cell.id === this.cellId)
+		);
+		if (!row) throw new RowNotFoundError();
+		this.rowId = row.id;
+		this.previousEditedTime = row.lastEditedTime;
 
-		const newBodyCells = bodyCells.map((cell) => {
-			if (cell.id === this.cellId) {
-				this.previousCellTagIds = [...cell.tagIds];
+		const nextRows: Row[] = rows.map((row) => {
+			const { cells } = row;
+			const nextCells: Cell[] = cells.map((cell) => {
+				const { tagIds } = cell;
 
-				if (this.isMultiTag === false) {
-					//If there was already a tag attached to the cell, remove it
-					if (cell.tagIds.length > 0) {
-						return {
-							...cell,
-							tagIds: [this.tagId],
-						};
+				let updatedTagIds: string[] = [];
+				if (cell.id === this.cellId) {
+					this.previousCellTagIds = [...tagIds];
+
+					if (this.isMultiTag === false) {
+						updatedTagIds = [this.tagId];
+						this.nextCellTagIds = updatedTagIds;
+						//If there was already a tag attached to the cell, remove it
+						if (tagIds.length > 0) {
+							return {
+								...cell,
+								tagIds: updatedTagIds,
+							};
+						}
 					}
+					updatedTagIds = [...tagIds, this.tagId];
+					this.nextCellTagIds = updatedTagIds;
+					return {
+						...cell,
+						tagIds: updatedTagIds,
+					};
 				}
+				return cell;
+			});
+
+			if (row.id === this.rowId) {
+				const newLastEditedTime = Date.now();
+				this.nextEditedTime = newLastEditedTime;
 				return {
-					...cell,
-					tagIds: [...cell.tagIds, this.tagId],
+					...row,
+					lastEditedTime: newLastEditedTime,
+					cells: nextCells,
 				};
 			}
-			return cell;
+			return row;
 		});
-
-		this.previousEditedTime = rowLastEditedTime(bodyRows, this.rowId);
 
 		return {
 			...prevState,
 			model: {
 				...prevState.model,
-				bodyCells: newBodyCells,
-				bodyRows: rowLastEditedTimeUpdate(bodyRows, this.rowId),
+				rows: nextRows,
 			},
 		};
-	}
-	redo(prevState: LoomState): LoomState {
-		super.onRedo();
-		return this.execute(prevState);
 	}
 
 	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
-		const { bodyCells, bodyRows } = prevState.model;
+		const { rows } = prevState.model;
 
-		const newBodyCells = bodyCells.map((cell) => {
-			if (cell.id === this.cellId) {
+		const nextRows: Row[] = rows.map((row) => {
+			const { cells } = row;
+			const nextCells: Cell[] = cells.map((cell) => {
+				if (cell.id === this.cellId) {
+					return {
+						...cell,
+						tagIds: this.previousCellTagIds,
+					};
+				}
+				return cell;
+			});
+
+			if (row.id === this.rowId) {
 				return {
-					...cell,
-					tagIds: this.previousCellTagIds,
+					...row,
+					lastEditedTime: this.previousEditedTime,
+					cells: nextCells,
 				};
 			}
-			return cell;
+			return row;
 		});
 
 		return {
 			...prevState,
 			model: {
 				...prevState.model,
-				bodyCells: newBodyCells,
-				bodyRows: rowLastEditedTimeUpdate(
-					bodyRows,
-					this.rowId,
-					this.previousEditedTime
-				),
+				rows: nextRows,
+			},
+		};
+	}
+
+	redo(prevState: LoomState): LoomState {
+		super.onRedo();
+
+		const { rows } = prevState.model;
+
+		const nextRows: Row[] = rows.map((row) => {
+			const { cells } = row;
+			const nextCells: Cell[] = cells.map((cell) => {
+				if (cell.id === this.cellId) {
+					return {
+						...cell,
+						tagIds: this.nextCellTagIds,
+					};
+				}
+				return cell;
+			});
+
+			if (row.id === this.rowId) {
+				return {
+					...row,
+					lastEditedTime: this.nextEditedTime,
+					cells: nextCells,
+				};
+			}
+			return row;
+		});
+
+		return {
+			...prevState,
+			model: {
+				...prevState.model,
+				rows: nextRows,
 			},
 		};
 	}

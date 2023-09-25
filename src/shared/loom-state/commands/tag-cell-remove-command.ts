@@ -1,88 +1,146 @@
-import { rowLastEditedTime, rowLastEditedTimeUpdate } from "../row-utils";
 import LoomStateCommand from "./loom-state-command";
-import { LoomState } from "../types/loom-state";
+import { Cell, LoomState, Row } from "../types/loom-state";
+import RowNotFoundError from "src/shared/error/row-not-found-error";
 
 export default class TagCellRemoveCommand extends LoomStateCommand {
 	private cellId: string;
-	private rowId: string;
 	private tagId: string;
 
+	private rowId: string;
+
 	private previousEditedTime: number;
+	private nextEditedTime: number;
 
 	/**
 	 * The index of the tag id in the tag ids array before the command is executed
 	 */
 	private previousTagIdIndex: number;
 
-	constructor(cellId: string, rowId: string, tagId: string) {
+	constructor(cellId: string, tagId: string) {
 		super(true);
 		this.cellId = cellId;
-		this.rowId = rowId;
 		this.tagId = tagId;
 	}
 
 	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
-		const { bodyCells, bodyRows } = prevState.model;
+		const { rows } = prevState.model;
 
-		const newBodyCells = bodyCells.map((cell) => {
-			if (cell.id === this.cellId) {
-				this.previousTagIdIndex = cell.tagIds.indexOf(this.tagId);
+		const row = rows.find((row) =>
+			row.cells.find((cell) => cell.id === this.cellId)
+		);
+		if (!row) throw new RowNotFoundError();
+		this.rowId = row.id;
+		this.previousEditedTime = row.lastEditedTime;
 
-				const { tagIds } = cell;
+		const nextRows: Row[] = rows.map((row) => {
+			const { cells } = row;
+			const nextCells: Cell[] = cells.map((cell) => {
+				if (cell.id === this.cellId) {
+					const { tagIds } = cell;
+
+					this.previousTagIdIndex = tagIds.indexOf(this.tagId);
+					const nextTagIds = tagIds.filter((id) => id !== this.tagId);
+					return {
+						...cell,
+						tagIds: nextTagIds,
+					};
+				}
+				return cell;
+			});
+			if (row.id === this.rowId) {
+				const newEditedTime = Date.now();
+				this.nextEditedTime = newEditedTime;
 				return {
-					...cell,
-					tagIds: tagIds.filter((id) => id !== this.tagId),
+					...row,
+					lastEditedTime: newEditedTime,
+					cells: nextCells,
 				};
 			}
-			return cell;
+			return row;
 		});
-
-		this.previousEditedTime = rowLastEditedTime(bodyRows, this.rowId);
 
 		return {
 			...prevState,
 			model: {
 				...prevState.model,
-				bodyCells: newBodyCells,
-				bodyRows: rowLastEditedTimeUpdate(bodyRows, this.rowId),
+				rows: nextRows,
+			},
+		};
+	}
+
+	undo(prevState: LoomState): LoomState {
+		super.onUndo();
+		const { rows } = prevState.model;
+
+		const nextRows: Row[] = rows.map((row) => {
+			const { cells } = row;
+			const nextCells: Cell[] = cells.map((cell) => {
+				if (cell.id === this.cellId) {
+					const { tagIds } = cell;
+					const nextTagIds = [...tagIds];
+					nextTagIds.splice(this.previousTagIdIndex, 0, this.tagId);
+					return {
+						...cell,
+						tagIds: nextTagIds,
+					};
+				}
+				return cell;
+			});
+			if (row.id === this.rowId) {
+				return {
+					...row,
+					lastEditedTime: this.previousEditedTime,
+					cells: nextCells,
+				};
+			}
+			return row;
+		});
+
+		return {
+			...prevState,
+			model: {
+				...prevState.model,
+				rows: nextRows,
 			},
 		};
 	}
 
 	redo(prevState: LoomState): LoomState {
 		super.onRedo();
-		return this.execute(prevState);
-	}
 
-	undo(prevState: LoomState): LoomState {
-		super.onUndo();
-		const { bodyCells, bodyRows } = prevState.model;
+		const { rows } = prevState.model;
 
-		const newBodyCells = bodyCells.map((cell) => {
-			if (cell.id === this.cellId) {
-				const newTagIds = [...cell.tagIds];
-				newTagIds.splice(this.previousTagIdIndex, 0, this.tagId);
+		const nextRows: Row[] = rows.map((row) => {
+			const { cells } = row;
+			const nextCells: Cell[] = cells.map((cell) => {
+				if (cell.id === this.cellId) {
+					const { tagIds } = cell;
 
+					const nextTagIds = tagIds.filter((id) => id !== this.tagId);
+					return {
+						...cell,
+						tagIds: nextTagIds,
+					};
+				}
+				return cell;
+			});
+			if (row.id === this.rowId) {
 				return {
-					...cell,
-					tagIds: newTagIds,
+					...row,
+					lastEditedTime: this.nextEditedTime,
+					cells: nextCells,
 				};
 			}
-			return cell;
+			return row;
 		});
 
 		return {
 			...prevState,
 			model: {
 				...prevState.model,
-				bodyCells: newBodyCells,
-				bodyRows: rowLastEditedTimeUpdate(
-					bodyRows,
-					this.rowId,
-					this.previousEditedTime
-				),
+				rows: nextRows,
 			},
 		};
 	}

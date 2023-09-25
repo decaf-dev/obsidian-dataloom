@@ -1,7 +1,7 @@
 import { isCheckboxChecked } from "src/shared/match";
 import {
-	BodyCell,
-	BodyRow,
+	Cell,
+	Row,
 	GeneralCalculation,
 	CalculationType,
 	CellType,
@@ -13,17 +13,22 @@ import RowNotFoundError from "src/shared/error/row-not-found-error";
 import TagNotFoundError from "src/shared/error/tag-not-found-error";
 import { unixTimeToDateTimeString } from "src/shared/date/date-conversion";
 
-export const getCalculationContent = (
-	bodyRows: BodyRow[],
-	columnCells: BodyCell[],
+export const getGeneralCalculationContent = (
+	columnId: string,
+	rows: Row[],
 	columnTags: Tag[],
 	cellType: CellType,
 	calculationType: CalculationType,
 	dateFormat: DateFormat
 ) => {
+	const columnCells = rows.map((row) => {
+		const cell = row.cells.find((cell) => cell.columnId === columnId);
+		if (!cell) throw new RowNotFoundError(row.id);
+		return cell;
+	});
 	return getCalculation(
-		bodyRows,
 		columnCells,
+		rows,
 		columnTags,
 		cellType,
 		calculationType,
@@ -31,28 +36,22 @@ export const getCalculationContent = (
 	).toString();
 };
 
-export const getCalculation = (
-	bodyRows: BodyRow[],
-	columnCells: BodyCell[],
+const getCalculation = (
+	columnCells: Cell[],
+	rows: Row[],
 	columnTags: Tag[],
 	cellType: CellType,
 	calculationType: CalculationType,
 	dateFormat: DateFormat
 ) => {
 	if (calculationType === GeneralCalculation.COUNT_ALL) {
-		return countAll(bodyRows);
+		return countAll(rows);
 	} else if (calculationType === GeneralCalculation.COUNT_EMPTY) {
 		return countEmpty(columnCells, cellType);
 	} else if (calculationType === GeneralCalculation.COUNT_NOT_EMPTY) {
 		return countNotEmpty(columnCells, cellType);
 	} else if (calculationType === GeneralCalculation.COUNT_UNIQUE) {
-		return countUnique(
-			bodyRows,
-			columnCells,
-			columnTags,
-			cellType,
-			dateFormat
-		);
+		return countUnique(rows, columnCells, columnTags, cellType, dateFormat);
 	} else if (calculationType === GeneralCalculation.COUNT_VALUES) {
 		return countValues(columnCells, cellType);
 	} else if (calculationType === GeneralCalculation.PERCENT_EMPTY) {
@@ -66,11 +65,11 @@ export const getCalculation = (
 	}
 };
 
-const countAll = (bodyRows: BodyRow[]) => {
-	return bodyRows.length;
+const countAll = (rows: Row[]) => {
+	return rows.length;
 };
 
-const countEmpty = (columnCells: BodyCell[], cellType: CellType) => {
+const countEmpty = (columnCells: Cell[], cellType: CellType) => {
 	return columnCells
 		.map((cell) => isCellContentEmpty(cell, cellType))
 		.reduce((accum, value) => {
@@ -79,7 +78,7 @@ const countEmpty = (columnCells: BodyCell[], cellType: CellType) => {
 		}, 0);
 };
 
-const countNotEmpty = (columnCells: BodyCell[], cellType: CellType) => {
+const countNotEmpty = (columnCells: Cell[], cellType: CellType) => {
 	return columnCells
 		.map((cell) => isCellContentEmpty(cell, cellType))
 		.reduce((accum, value) => {
@@ -89,16 +88,18 @@ const countNotEmpty = (columnCells: BodyCell[], cellType: CellType) => {
 };
 
 const countUnique = (
-	bodyRows: BodyRow[],
-	columnCells: BodyCell[],
+	rows: Row[],
+	columnCells: Cell[],
 	columnTags: Tag[],
 	cellType: CellType,
 	dateFormat: DateFormat
 ) => {
 	const hashes = columnCells
 		.map((cell) => {
-			const row = bodyRows.find((row) => row.id === cell.rowId);
-			if (!row) throw new RowNotFoundError(cell.rowId);
+			const row = rows.find((row) =>
+				row.cells.find((cell) => cell.id === cell.id)
+			);
+			if (!row) throw new RowNotFoundError();
 
 			const cellValues = getCellValues(
 				row,
@@ -116,13 +117,13 @@ const countUnique = (
 	return uniqueHashes.size;
 };
 
-const countValues = (columnCells: BodyCell[], cellType: CellType) => {
+const countValues = (columnCells: Cell[], cellType: CellType) => {
 	return columnCells
 		.map((cell) => countCellValues(cell, cellType))
 		.reduce((accum, value) => accum + value, 0);
 };
 
-const percentEmpty = (columnCells: BodyCell[], cellType: CellType) => {
+const percentEmpty = (columnCells: Cell[], cellType: CellType) => {
 	if (columnCells.length === 0) return "0%";
 
 	const percent =
@@ -130,7 +131,7 @@ const percentEmpty = (columnCells: BodyCell[], cellType: CellType) => {
 	return round2Digits(percent) + "%";
 };
 
-const percentNotEmpty = (columnCells: BodyCell[], cellType: CellType) => {
+const percentNotEmpty = (columnCells: Cell[], cellType: CellType) => {
 	if (columnCells.length === 0) return "0%";
 
 	const percent =
@@ -139,12 +140,14 @@ const percentNotEmpty = (columnCells: BodyCell[], cellType: CellType) => {
 };
 
 const getCellValues = (
-	bodyRow: BodyRow,
-	cell: BodyCell,
+	row: Row,
+	cell: Cell,
 	columnTags: Tag[],
 	cellType: CellType,
 	dateFormat: DateFormat
 ): string[] => {
+	const { content, dateTime, tagIds } = cell;
+	const { creationTime, lastEditedTime } = row;
 	if (
 		cellType === CellType.TEXT ||
 		cellType === CellType.EMBED ||
@@ -152,39 +155,41 @@ const getCellValues = (
 		cellType === CellType.CHECKBOX ||
 		cellType === CellType.FILE
 	) {
-		return [cell.markdown];
+		return [content];
 	} else if (cellType === CellType.DATE) {
-		if (cell.dateTime) return [cell.dateTime.toString()];
+		if (dateTime) return [dateTime.toString()];
 		return [];
 	} else if (cellType === CellType.TAG || cellType === CellType.MULTI_TAG) {
-		return cell.tagIds.map((tagId) => {
+		return tagIds.map((tagId) => {
 			const tag = columnTags.find((tag) => tag.id === tagId);
 			if (!tag) throw new TagNotFoundError(tagId);
-			return tag.markdown;
+			const { content } = tag;
+			return content;
 		});
 	} else if (cellType === CellType.LAST_EDITED_TIME) {
-		return [unixTimeToDateTimeString(bodyRow.lastEditedTime, dateFormat)];
+		return [unixTimeToDateTimeString(lastEditedTime, dateFormat)];
 	} else if (cellType === CellType.CREATION_TIME) {
-		return [unixTimeToDateTimeString(bodyRow.creationTime, dateFormat)];
+		return [unixTimeToDateTimeString(creationTime, dateFormat)];
 	} else {
 		throw new Error("Unhandled cell type");
 	}
 };
 
-const countCellValues = (cell: BodyCell, cellType: CellType): number => {
+const countCellValues = (cell: Cell, cellType: CellType): number => {
+	const { content, dateTime, tagIds } = cell;
 	if (
 		cellType === CellType.TEXT ||
 		cellType === CellType.EMBED ||
 		cellType === CellType.NUMBER ||
 		cellType === CellType.FILE
 	) {
-		return cell.markdown === "" ? 0 : 1;
+		return content === "" ? 0 : 1;
 	} else if (cellType === CellType.DATE) {
-		return cell.dateTime == null ? 0 : 1;
+		return dateTime == null ? 0 : 1;
 	} else if (cellType === CellType.TAG || cellType === CellType.MULTI_TAG) {
-		return cell.tagIds.length;
+		return tagIds.length;
 	} else if (cellType === CellType.CHECKBOX) {
-		return isCheckboxChecked(cell.markdown) ? 1 : 0;
+		return isCheckboxChecked(content) ? 1 : 0;
 	} else if (
 		cellType === CellType.LAST_EDITED_TIME ||
 		cellType === CellType.CREATION_TIME
@@ -195,20 +200,21 @@ const countCellValues = (cell: BodyCell, cellType: CellType): number => {
 	}
 };
 
-const isCellContentEmpty = (cell: BodyCell, cellType: CellType): boolean => {
+const isCellContentEmpty = (cell: Cell, cellType: CellType): boolean => {
+	const { content, dateTime, tagIds } = cell;
 	if (
 		cellType === CellType.TEXT ||
 		cellType === CellType.EMBED ||
 		cellType === CellType.NUMBER ||
 		cellType === CellType.FILE
 	) {
-		return cell.markdown === "";
+		return content === "";
 	} else if (cellType === CellType.DATE) {
-		return cell.dateTime == null;
+		return dateTime == null;
 	} else if (cellType === CellType.TAG || cellType === CellType.MULTI_TAG) {
-		return cell.tagIds.length === 0;
+		return tagIds.length === 0;
 	} else if (cellType === CellType.CHECKBOX) {
-		return !isCheckboxChecked(cell.markdown);
+		return !isCheckboxChecked(content);
 	} else if (
 		cellType === CellType.LAST_EDITED_TIME ||
 		cellType === CellType.CREATION_TIME

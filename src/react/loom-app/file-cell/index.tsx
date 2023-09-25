@@ -7,11 +7,11 @@ import "./styles.css";
 
 interface Props {
 	shouldWrapOverflow: boolean;
-	markdown: string;
+	value: string;
 }
 
-export default function FileCell({ markdown, shouldWrapOverflow }: Props) {
-	const content = getFileCellContent(markdown);
+export default function FileCell({ value, shouldWrapOverflow }: Props) {
+	const content = getFileCellContent(value);
 	const { containerRef, renderRef } = useRenderMarkdown(content);
 
 	const overflowClassName = useOverflow(shouldWrapOverflow);

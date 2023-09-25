@@ -1,5 +1,7 @@
+/******* Type definitions for v6.19.0 *******/
+
 /**
- * Type definitions for v6.19.0
+ * v6.19.0
  */
 export interface LoomState11 {
 	pluginVersion: string;

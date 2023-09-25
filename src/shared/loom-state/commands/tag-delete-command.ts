@@ -1,10 +1,10 @@
 import LoomStateCommand from "./loom-state-command";
-import { LoomState, Tag } from "../types/loom-state";
+import { Cell, Column, LoomState, Row, Tag } from "../types/loom-state";
 import TagNotFoundError from "src/shared/error/tag-not-found-error";
 
 export default class TagDeleteCommand extends LoomStateCommand {
-	private columnId: string;
 	private tagId: string;
+	private columnId: string;
 
 	/**
 	 * The tag that was deleted from the column
@@ -31,9 +31,9 @@ export default class TagDeleteCommand extends LoomStateCommand {
 	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
-		const { bodyCells, columns } = prevState.model;
+		const { rows, columns } = prevState.model;
 
-		const newColumns = columns.map((column) => {
+		const nextColumns: Column[] = columns.map((column) => {
 			if (column.id === this.columnId) {
 				const tag = column.tags.find((tag) => tag.id === this.tagId);
 				if (!tag) throw new TagNotFoundError(this.tagId);
@@ -51,42 +51,46 @@ export default class TagDeleteCommand extends LoomStateCommand {
 			return column;
 		});
 
-		const newBodyCells = bodyCells.map((cell) => {
-			if (cell.tagIds.includes(this.tagId)) {
-				this.previousCellTagIds.push({
-					cellId: cell.id,
-					tagIds: [...cell.tagIds],
-				});
+		const nextRows: Row[] = rows.map((row) => {
+			const { cells } = row;
+			const nextCells: Cell[] = cells.map((cell) => {
+				if (cell.tagIds.includes(this.tagId)) {
+					this.previousCellTagIds.push({
+						cellId: cell.id,
+						tagIds: [...cell.tagIds],
+					});
 
-				return {
-					...cell,
-					tagIds: cell.tagIds.filter((tagId) => tagId !== this.tagId),
-				};
-			}
-			return cell;
+					return {
+						...cell,
+						tagIds: cell.tagIds.filter(
+							(tagId) => tagId !== this.tagId
+						),
+					};
+				}
+				return cell;
+			});
+			return {
+				...row,
+				cells: nextCells,
+			};
 		});
 
 		return {
 			...prevState,
 			model: {
 				...prevState.model,
-				columns: newColumns,
-				bodyCells: newBodyCells,
+				columns: nextColumns,
+				rows: nextRows,
 			},
 		};
-	}
-
-	redo(prevState: LoomState): LoomState {
-		super.onRedo();
-		return this.execute(prevState);
 	}
 
 	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
-		const { columns, bodyCells } = prevState.model;
+		const { columns, rows } = prevState.model;
 
-		const newColumns = columns.map((column) => {
+		const nextColumns: Column[] = columns.map((column) => {
 			if (column.id === this.columnId) {
 				const updatedTags = [...column.tags];
 				updatedTags.splice(
@@ -103,26 +107,39 @@ export default class TagDeleteCommand extends LoomStateCommand {
 			return column;
 		});
 
-		const newBodyCells = bodyCells.map((cell) => {
-			const previousTagIds = this.previousCellTagIds.find(
-				(previousCellTagId) => previousCellTagId.cellId === cell.id
-			);
-			if (previousTagIds) {
-				return {
-					...cell,
-					tagIds: previousTagIds.tagIds,
-				};
-			}
-			return cell;
+		//TODO update last edited time for any rows that had a cell with the tag
+		const nextRows: Row[] = rows.map((row) => {
+			const { cells } = row;
+			const newCells = cells.map((cell) => {
+				const previousTagIds = this.previousCellTagIds.find(
+					(previousCellTagId) => previousCellTagId.cellId === cell.id
+				);
+				if (previousTagIds) {
+					return {
+						...cell,
+						tagIds: previousTagIds.tagIds,
+					};
+				}
+				return cell;
+			});
+			return {
+				...row,
+				cells: newCells,
+			};
 		});
 
 		return {
 			...prevState,
 			model: {
 				...prevState.model,
-				columns: newColumns,
-				bodyCells: newBodyCells,
+				columns: nextColumns,
+				rows: nextRows,
 			},
 		};
+	}
+
+	redo(prevState: LoomState): LoomState {
+		super.onRedo();
+		return this.execute(prevState);
 	}
 }

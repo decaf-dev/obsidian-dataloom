@@ -1,28 +1,21 @@
-import {
-	BodyCell,
-	BodyRow,
-	Column,
-	HeaderCell,
-	LoomState,
-} from "../loom-state/types/loom-state";
+import { Row, Column, LoomState } from "../loom-state/types/loom-state";
 import { getCellContent } from "../cell-content";
 import ColumNotFoundError from "../error/column-not-found-error";
 import { App } from "obsidian";
 
-const serializeHeaderCells = (cells: HeaderCell[]): string[] => {
-	return cells.map((cell) => cell.markdown);
+const serializeColumns = (columns: Column[]): string[] => {
+	return columns.map((column) => column.content);
 };
 
-const serializeBodyCells = (
+const serializeCells = (
 	app: App,
 	columns: Column[],
-	rows: BodyRow[],
-	cells: BodyCell[],
+	rows: Row[],
 	shouldRemoveMarkdown: boolean
 ): string[][] => {
 	return rows.map((row) => {
-		const rowCells = cells.filter((cell) => cell.rowId === row.id);
-		return rowCells.map((cell) => {
+		const { cells } = row;
+		return cells.map((cell) => {
 			const column = columns.find(
 				(column) => column.id === cell.columnId
 			);
@@ -44,14 +37,13 @@ export const loomStateToArray = (
 	loomState: LoomState,
 	shouldRemoveMarkdown: boolean
 ): string[][] => {
-	const { headerCells, bodyCells, bodyRows, columns } = loomState.model;
-	const serializedHeaderCells = serializeHeaderCells(headerCells);
-	const serializedBodyCells = serializeBodyCells(
+	const { rows, columns } = loomState.model;
+	const serializedColumns = serializeColumns(columns);
+	const serializedCells = serializeCells(
 		app,
 		columns,
-		bodyRows,
-		bodyCells,
+		rows,
 		shouldRemoveMarkdown
 	);
-	return [serializedHeaderCells, ...serializedBodyCells];
+	return [serializedColumns, ...serializedCells];
 };

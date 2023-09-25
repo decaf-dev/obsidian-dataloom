@@ -14,7 +14,7 @@ import { useUUID } from "../../../shared/hooks";
 import CellNotFoundError from "src/shared/error/cell-not-found-error";
 import { useLoomState } from "../loom-state-provider";
 import { useFilter } from "./hooks/use-filter";
-import { filterBodyRowsBySearch } from "./filter-by-search";
+import { filterRowsBySearch } from "./filter-by-search";
 import { useColumn } from "./hooks/use-column";
 import { useRow } from "./hooks/use-row";
 import { useCell } from "./hooks/use-cell";
@@ -34,11 +34,12 @@ import {
 	isWindowsUndoDown,
 } from "src/shared/keyboard-event";
 
-import "./global.css";
+import "src/react/global.css";
 import "./styles.css";
 import { useLogger } from "src/shared/logger";
 import { useMenuOperations } from "src/react/shared/menu/hooks";
 import FooterCellContainer from "../footer-cell-container";
+import { Cell } from "src/shared/loom-state/types/loom-state";
 
 export default function App() {
 	const logger = useLogger();
@@ -55,7 +56,8 @@ export default function App() {
 	useMenuEvents();
 
 	const { onFocusKeyDown } = useFocus();
-	const { onFrozenColumnsChange } = useTableSettings();
+	const { onFrozenColumnsChange, onCalculationRowToggle } =
+		useTableSettings();
 
 	const { onFilterAdd, onFilterUpdate, onFilterDelete, filterByFilters } =
 		useFilter();
@@ -79,6 +81,7 @@ export default function App() {
 		onColumnAddClick,
 		onHorizontalPaddingClick,
 		onDateFormatChange,
+		onColumnContentChange,
 	} = useColumn();
 
 	const {
@@ -88,12 +91,8 @@ export default function App() {
 		onRowInsertBelowClick,
 	} = useRow();
 
-	const {
-		onCellDateTimeChange,
-		onBodyCellContentChange,
-		onHeaderCellContentChange,
-		onExternalLinkToggle,
-	} = useCell();
+	const { onCellDateTimeChange, onCellContentChange, onExternalLinkToggle } =
+		useCell();
 
 	const {
 		onTagCellAdd,
@@ -102,7 +101,7 @@ export default function App() {
 		onTagCellMultipleRemove,
 		onTagColorChange,
 		onTagDeleteClick,
-		onTagNameChange,
+		onTagContentChange,
 	} = useTag();
 
 	const firstColumnId = useUUID();
@@ -142,20 +141,11 @@ export default function App() {
 		nltEventSystem.dispatchEvent("keydown", e);
 	}
 
-	const {
-		headerRows,
-		footerRows,
-		columns,
-		headerCells,
-		bodyCells,
-		footerCells,
-		filters,
-		settings,
-	} = loomState.model;
-	const { numFrozenColumns } = settings;
+	const { columns, filters, settings } = loomState.model;
+	const { numFrozenColumns, showCalculationRow } = settings;
 
 	let filteredBodyRows = filterByFilters(loomState);
-	filteredBodyRows = filterBodyRowsBySearch(
+	filteredBodyRows = filterRowsBySearch(
 		loomState,
 		filteredBodyRows,
 		searchText
@@ -173,138 +163,113 @@ export default function App() {
 			onClick={handleClick}
 		>
 			<OptionBar
-				headerCells={headerCells}
 				columns={columns}
 				filters={filters}
 				numFrozenColumns={numFrozenColumns}
+				showCalculationRow={showCalculationRow}
 				onColumnToggle={onColumnToggle}
 				onSortRemoveClick={onSortRemoveClick}
 				onFilterAddClick={onFilterAdd}
 				onFilterDeleteClick={onFilterDelete}
 				onFilterUpdate={onFilterUpdate}
 				onFrozenColumnsChange={onFrozenColumnsChange}
+				onCalculationRowToggle={onCalculationRowToggle}
 			/>
 			<Table
 				numFrozenColumns={numFrozenColumns}
 				ref={tableRef}
-				headerRows={headerRows.map((row) => {
-					return {
-						id: row.id,
-						cells: [
-							{
-								id: firstColumnId,
-								columnId: firstColumnId,
+				headerRow={{
+					cells: [
+						{
+							id: firstColumnId,
+							columnId: firstColumnId,
+							content: (
+								<div className="dataloom-cell--left-corner" />
+							),
+						},
+						...visibleColumns.map((column) => {
+							const {
+								id: columnId,
+								width,
+								type,
+								sortDir,
+								shouldWrapOverflow,
+								content,
+								currencyType,
+								numberFormat,
+								numberPrefix,
+								numberSeparator,
+								numberSuffix,
+								dateFormat,
+								verticalPadding,
+								horizontalPadding,
+								aspectRatio,
+							} = column;
+							return {
+								id: columnId,
+								columnId,
 								content: (
-									<div className="dataloom-cell--left-corner" />
-								),
-							},
-							...visibleColumns.map((column) => {
-								const {
-									id: columnId,
-									width,
-									type,
-									sortDir,
-									shouldWrapOverflow,
-									currencyType,
-									numberFormat,
-									numberPrefix,
-									numberSeparator,
-									numberSuffix,
-									dateFormat,
-									verticalPadding,
-									horizontalPadding,
-									aspectRatio,
-								} = column;
-
-								const cell = headerCells.find(
-									(cell) => cell.columnId === columnId
-								);
-								if (!cell)
-									throw new CellNotFoundError({
-										columnId,
-									});
-
-								const { id: cellId, markdown, rowId } = cell;
-								return {
-									id: cellId,
-									columnId,
-									content: (
-										<HeaderCell
-											key={columnId}
-											cellId={cellId}
-											rowId={rowId}
-											dateFormat={dateFormat}
-											currencyType={currencyType}
-											numberPrefix={numberPrefix}
-											numberSeparator={numberSeparator}
-											numberFormat={numberFormat}
-											numberSuffix={numberSuffix}
-											verticalPadding={verticalPadding}
-											horizontalPadding={
-												horizontalPadding
-											}
-											aspectRatio={aspectRatio}
-											numColumns={columns.length}
-											columnId={cell.columnId}
-											resizingColumnId={resizingColumnId}
-											width={width}
-											shouldWrapOverflow={
-												shouldWrapOverflow
-											}
-											markdown={markdown}
-											type={type}
-											sortDir={sortDir}
-											onSortClick={onColumnSortClick}
-											onWidthChange={onColumnWidthChange}
-											onDeleteClick={onColumnDeleteClick}
-											onTypeSelect={onColumnTypeClick}
-											onDateFormatChange={
-												onDateFormatChange
-											}
-											onWrapOverflowToggle={
-												onWrapContentToggle
-											}
-											onNameChange={
-												onHeaderCellContentChange
-											}
-											onNumberFormatChange={
-												onNumberFormatChange
-											}
-											onNumberPrefixChange={
-												onNumberPrefixChange
-											}
-											onNumberSeparatorChange={
-												onNumberSeparatorChange
-											}
-											onNumberSuffixChange={
-												onNumberSuffixChange
-											}
-											onVerticalPaddingClick={
-												onVerticalPaddingClick
-											}
-											onHorizontalPaddingClick={
-												onHorizontalPaddingClick
-											}
-											onAspectRatioClick={
-												onAspectRatioClick
-											}
-											onHideClick={onColumnHideClick}
-										/>
-									),
-								};
-							}),
-							{
-								id: lastColumnId,
-								columnId: lastColumnId,
-								content: (
-									<NewColumnButton
-										onClick={onColumnAddClick}
+									<HeaderCell
+										key={columnId}
+										dateFormat={dateFormat}
+										currencyType={currencyType}
+										numberPrefix={numberPrefix}
+										numberSeparator={numberSeparator}
+										numberFormat={numberFormat}
+										numberSuffix={numberSuffix}
+										verticalPadding={verticalPadding}
+										horizontalPadding={horizontalPadding}
+										aspectRatio={aspectRatio}
+										numColumns={columns.length}
+										columnId={columnId}
+										resizingColumnId={resizingColumnId}
+										width={width}
+										shouldWrapOverflow={shouldWrapOverflow}
+										content={content}
+										type={type}
+										sortDir={sortDir}
+										onSortClick={onColumnSortClick}
+										onWidthChange={onColumnWidthChange}
+										onDeleteClick={onColumnDeleteClick}
+										onTypeSelect={onColumnTypeClick}
+										onDateFormatChange={onDateFormatChange}
+										onWrapOverflowToggle={
+											onWrapContentToggle
+										}
+										onContentChange={onColumnContentChange}
+										onNumberFormatChange={
+											onNumberFormatChange
+										}
+										onNumberPrefixChange={
+											onNumberPrefixChange
+										}
+										onNumberSeparatorChange={
+											onNumberSeparatorChange
+										}
+										onNumberSuffixChange={
+											onNumberSuffixChange
+										}
+										onVerticalPaddingClick={
+											onVerticalPaddingClick
+										}
+										onHorizontalPaddingClick={
+											onHorizontalPaddingClick
+										}
+										onAspectRatioClick={onAspectRatioClick}
+										onHideClick={onColumnHideClick}
 									/>
 								),
-							},
-						],
-					};
-				})}
+							};
+						}),
+						{
+							id: lastColumnId,
+							columnId: lastColumnId,
+							content: (
+								<NewColumnButton onClick={onColumnAddClick} />
+							),
+						},
+					],
+				}}
 				bodyRows={filteredBodyRows.map((row) => {
 					const { id: rowId, lastEditedTime, creationTime } = row;
 					return {
@@ -343,19 +308,18 @@ export default function App() {
 									aspectRatio,
 								} = column;
 
-								const cell = bodyCells.find(
-									(cell) =>
-										cell.columnId === columnId &&
-										cell.rowId === row.id
+								const cell = row.cells.find(
+									(cell) => cell.columnId === columnId
 								);
 								if (!cell)
 									throw new CellNotFoundError({
 										columnId,
 										rowId,
 									});
+
 								const {
 									id: cellId,
-									markdown,
+									content,
 									dateTime,
 									tagIds,
 									isExternalLink,
@@ -373,7 +337,6 @@ export default function App() {
 												horizontalPadding
 											}
 											aspectRatio={aspectRatio}
-											rowId={rowId}
 											columnTags={tags}
 											cellTagIds={tagIds}
 											columnId={columnId}
@@ -386,7 +349,7 @@ export default function App() {
 											numberSeparator={numberSeparator}
 											rowLastEditedTime={lastEditedTime}
 											dateTime={dateTime}
-											markdown={markdown}
+											content={content}
 											columnType={type}
 											shouldWrapOverflow={
 												shouldWrapOverflow
@@ -398,7 +361,7 @@ export default function App() {
 												onTagCellMultipleRemove
 											}
 											onContentChange={
-												onBodyCellContentChange
+												onCellContentChange
 											}
 											onTagColorChange={onTagColorChange}
 											onTagDelete={onTagDeleteClick}
@@ -412,7 +375,9 @@ export default function App() {
 											onExternalLinkToggle={
 												onExternalLinkToggle
 											}
-											onTagNameChange={onTagNameChange}
+											onTagContentChange={
+												onTagContentChange
+											}
 										/>
 									),
 								};
@@ -424,81 +389,74 @@ export default function App() {
 						],
 					};
 				})}
-				footerRows={footerRows.map((row, i) => {
-					if (i === 0) {
-						return {
-							id: row.id,
-							cells: [
-								{
-									id: firstColumnId,
-									content: <></>,
-								},
-								...visibleColumns.map((column) => {
-									const {
-										id: columnId,
-										type,
-										currencyType,
-										dateFormat,
-										numberFormat,
-										width,
-										tags,
-										calculationType,
-									} = column;
-									const cell = footerCells.find(
-										(cell) =>
-											cell.rowId === row.id &&
-											cell.columnId === column.id
-									);
-									if (!cell)
-										throw new CellNotFoundError({
-											rowId: row.id,
-											columnId: column.id,
-										});
-									const { id: cellId } = cell;
+				footer={
+					showCalculationRow
+						? {
+								cells: [
+									{
+										id: firstColumnId,
+										content: <></>,
+									},
+									...visibleColumns.map((column) => {
+										const {
+											id: columnId,
+											type,
+											currencyType,
+											dateFormat,
+											numberFormat,
+											width,
+											tags,
+											calculationType,
+										} = column;
 
-									const columnBodyCells = bodyCells.filter(
-										(cell) =>
-											filteredBodyRows.find(
-												(row) => row.id === cell.rowId
-											) !== undefined
-									);
+										const columnCells: Cell[] =
+											filteredBodyRows.map((row) => {
+												const cell = row.cells.find(
+													(cell) =>
+														cell.columnId ===
+														columnId
+												);
+												if (!cell)
+													throw new CellNotFoundError(
+														{
+															columnId,
+															rowId: row.id,
+														}
+													);
+												return cell;
+											});
 
-									return {
-										id: cell.id,
-										content: (
-											<FooterCellContainer
-												columnId={columnId}
-												columnTags={tags}
-												cellId={cellId}
-												numberFormat={numberFormat}
-												currencyType={currencyType}
-												dateFormat={dateFormat}
-												bodyCells={columnBodyCells}
-												bodyRows={filteredBodyRows}
-												calculationType={
-													calculationType
-												}
-												width={width}
-												cellType={type}
-												onTypeChange={
-													onCalculationTypeChange
-												}
-											/>
-										),
-									};
-								}),
-								{
-									id: lastColumnId,
-									content: <></>,
-								},
-							],
-						};
-					}
-					return {
-						id: row.id,
-						cells: [],
-					};
-				})}
+										return {
+											id: columnId,
+											content: (
+												<FooterCellContainer
+													columnId={columnId}
+													columnTags={tags}
+													numberFormat={numberFormat}
+													currencyType={currencyType}
+													dateFormat={dateFormat}
+													columnCells={columnCells}
+													rows={filteredBodyRows}
+													calculationType={
+														calculationType
+													}
+													width={width}
+													cellType={type}
+													onTypeChange={
+														onCalculationTypeChange
+													}
+												/>
+											),
+										};
+									}),
+									{
+										id: lastColumnId,
+										content: <></>,
+									},
+								],
+						  }
+						: undefined
+				}
 			/>
 			<BottomBar
 				onRowAddClick={onRowAddClick}

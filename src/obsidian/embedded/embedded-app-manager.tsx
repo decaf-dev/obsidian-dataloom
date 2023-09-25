@@ -9,12 +9,14 @@ import {
 } from "./embed-utils";
 import { Root, createRoot } from "react-dom/client";
 import { store } from "src/redux/store";
-import { deserializeLoomState, serializeLoomState } from "src/data/serialize";
+import { deserializeState, serializeState } from "src/data/serialization";
 import { LoomState } from "src/shared/loom-state/types/loom-state";
 import _ from "lodash";
 import { EVENT_APP_REFRESH } from "src/shared/events";
 import LoomAppWrapper from "src/react/loom-app";
 import { createAppId } from "../utils";
+import ErrorApp from "src/react/error-app";
+import DeserializationError from "src/data/deserialization-error";
 
 interface EmbeddedApp {
 	id: string;
@@ -115,7 +117,6 @@ const processLinkEl = async (
 
 	//Get the loom state
 	const data = await app.vault.read(file);
-	const state = deserializeLoomState(data, pluginVersion);
 
 	//Store the embed in memory
 	const appId = createAppId();
@@ -132,7 +133,13 @@ const processLinkEl = async (
 	//Create the react app
 	const root = createRoot(containerEl);
 	embeddedApp.root = root;
-	renderApp(app, appId, leaf, file, root, state);
+
+	try {
+		const state = deserializeState(data, pluginVersion);
+		renderApp(app, appId, leaf, file, root, state);
+	} catch (err: unknown) {
+		renderErrorApp(root, err as DeserializationError);
+	}
 };
 
 /**
@@ -171,6 +178,10 @@ const renderApp = (
 	);
 };
 
+const renderErrorApp = (root: Root, error: DeserializationError) => {
+	root.render(<ErrorApp error={error} isEmbeddedApp={true} />);
+};
+
 /**
  * Saves the loom state to the loom file
  * @param file - The loom file
@@ -182,7 +193,7 @@ const handleSave = async (
 	appId: string,
 	state: LoomState
 ) => {
-	const serialized = serializeLoomState(state);
+	const serialized = serializeState(state);
 	await app.vault.modify(file, serialized);
 
 	//Trigger an event to refresh the other open views of this file

@@ -1,23 +1,16 @@
 import ColumNotFoundError from "src/shared/error/column-not-found-error";
-import {
-	Column,
-	LoomState,
-	HeaderCell,
-	BodyCell,
-	FooterCell,
-	Filter,
-} from "../types/loom-state";
+import { Column, LoomState, Cell, Filter, Row } from "../types/loom-state";
 import LoomStateCommand from "./loom-state-command";
 import CommandArgumentsError from "./command-arguments-error";
+import CellNotFoundError from "src/shared/error/cell-not-found-error";
 
 export default class ColumnDeleteCommand extends LoomStateCommand {
 	private columnId?: string;
 	private last?: boolean;
 
 	private deletedColumn: { arrIndex: number; column: Column };
-	private deletedHeaderCells: { arrIndex: number; cell: HeaderCell }[];
-	private deletedBodyCells: { arrIndex: number; cell: BodyCell }[];
-	private deletedFooterCells: { arrIndex: number; cell: FooterCell }[];
+	private deletedCells: { rowId: string; arrIndex: number; cell: Cell }[] =
+		[];
 	private deletedFilters: { arrIndex: number; filter: Filter }[];
 
 	constructor(options: { id?: string; last?: boolean }) {
@@ -33,45 +26,41 @@ export default class ColumnDeleteCommand extends LoomStateCommand {
 	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
-		const { columns, headerCells, bodyCells, footerCells, filters } =
-			prevState.model;
+		const { columns, rows, filters } = prevState.model;
 
 		//Maintains at least 1 column in the table
 		if (columns.length === 1) return prevState;
 
 		let id = this.columnId;
 		if (this.last) id = columns[columns.length - 1].id;
+
 		const columnToDelete = columns.find((column) => column.id === id);
 		if (!columnToDelete) throw new ColumNotFoundError(id);
-
 		this.deletedColumn = {
 			arrIndex: columns.indexOf(columnToDelete),
 			column: structuredClone(columnToDelete),
 		};
 
-		const headerCellsToDelete = headerCells.filter(
-			(cell) => cell.columnId === id
-		);
-		this.deletedHeaderCells = headerCellsToDelete.map((cell) => ({
-			arrIndex: headerCells.indexOf(cell),
-			cell: structuredClone(cell),
-		}));
+		const nextColumns = columns.filter((column) => column.id !== id);
 
-		const bodyCellsToDelete = bodyCells.filter(
-			(cell) => cell.columnId === id
-		);
-		this.deletedBodyCells = bodyCellsToDelete.map((cell) => ({
-			arrIndex: bodyCells.indexOf(cell),
-			cell: structuredClone(cell),
-		}));
+		const nextRows: Row[] = rows.map((row) => {
+			const { cells } = row;
+			const cell = row.cells.find((cell) => cell.columnId === id);
+			if (!cell)
+				throw new CellNotFoundError({ columnId: id, rowId: row.id });
 
-		const footerCellsToDelete = footerCells.filter(
-			(cell) => cell.columnId === id
-		);
-		this.deletedFooterCells = footerCellsToDelete.map((cell) => ({
-			arrIndex: footerCells.indexOf(cell),
-			cell: structuredClone(cell),
-		}));
+			this.deletedCells.push({
+				rowId: row.id,
+				cell: structuredClone(cell),
+				arrIndex: row.cells.indexOf(cell),
+			});
+
+			const nextCells = cells.filter((cell) => cell.columnId !== id);
+			return {
+				...row,
+				cells: nextCells,
+			};
+		});
 
 		const filtersToDelete = filters.filter(
 			(filter) => filter.columnId === id
@@ -81,15 +70,58 @@ export default class ColumnDeleteCommand extends LoomStateCommand {
 			filter: structuredClone(filter),
 		}));
 
+		const nextFilters = filters.filter((filter) => filter.columnId !== id);
+
 		return {
 			...prevState,
 			model: {
 				...prevState.model,
-				columns: columns.filter((column) => column.id !== id),
-				headerCells: headerCells.filter((cell) => cell.columnId !== id),
-				bodyCells: bodyCells.filter((cell) => cell.columnId !== id),
-				footerCells: footerCells.filter((cell) => cell.columnId !== id),
-				filters: filters.filter((filter) => filter.columnId !== id),
+				columns: nextColumns,
+				rows: nextRows,
+				filters: nextFilters,
+			},
+		};
+	}
+
+	undo(prevState: LoomState): LoomState {
+		super.onUndo();
+
+		const { columns, rows, filters } = prevState.model;
+
+		const nextColumns: Column[] = [...columns];
+		nextColumns.splice(
+			this.deletedColumn.arrIndex,
+			0,
+			this.deletedColumn.column
+		);
+
+		const nextRows: Row[] = rows.map((row) => {
+			const { cells } = row;
+			const nextCells = structuredClone(cells);
+			const cellsToAdd = this.deletedCells.filter(
+				(cell) => cell.rowId === row.id
+			);
+			cellsToAdd.forEach((cell) => {
+				nextCells.splice(cell.arrIndex, 0, cell.cell);
+			});
+			return {
+				...row,
+				cells: nextCells,
+			};
+		});
+
+		const nextFilters = [...filters];
+		this.deletedFilters.forEach((filter) => {
+			nextFilters.splice(filter.arrIndex, 0, filter.filter);
+		});
+
+		return {
+			...prevState,
+			model: {
+				...prevState.model,
+				columns: nextColumns,
+				rows: nextRows,
+				filters: nextFilters,
 			},
 		};
 	}
@@ -97,51 +129,5 @@ export default class ColumnDeleteCommand extends LoomStateCommand {
 	redo(prevState: LoomState): LoomState {
 		super.onRedo();
 		return this.execute(prevState);
-	}
-
-	undo(prevState: LoomState): LoomState {
-		super.onUndo();
-
-		const { columns, headerCells, bodyCells, footerCells, filters } =
-			prevState.model;
-
-		const updatedColumns = [...columns];
-		updatedColumns.splice(
-			this.deletedColumn.arrIndex,
-			0,
-			this.deletedColumn.column
-		);
-
-		const updatedHeaderCells = [...headerCells];
-		this.deletedHeaderCells.forEach((cell) => {
-			updatedHeaderCells.splice(cell.arrIndex, 0, cell.cell);
-		});
-
-		const updatedBodyCells = [...bodyCells];
-		this.deletedBodyCells.forEach((cell) => {
-			updatedBodyCells.splice(cell.arrIndex, 0, cell.cell);
-		});
-
-		const updatedFooterCells = [...footerCells];
-		this.deletedFooterCells.forEach((cell) => {
-			updatedFooterCells.splice(cell.arrIndex, 0, cell.cell);
-		});
-
-		const updatedFilters = [...filters];
-		this.deletedFilters.forEach((filter) => {
-			updatedFilters.splice(filter.arrIndex, 0, filter.filter);
-		});
-
-		return {
-			...prevState,
-			model: {
-				...prevState.model,
-				columns: updatedColumns,
-				headerCells: updatedHeaderCells,
-				bodyCells: updatedBodyCells,
-				footerCells: updatedFooterCells,
-				filters: updatedFilters,
-			},
-		};
 	}
 }

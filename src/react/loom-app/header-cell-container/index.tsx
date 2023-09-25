@@ -23,7 +23,6 @@ import {
 import "./styles.css";
 
 interface Props {
-	cellId: string;
 	currencyType: CurrencyType;
 	numberPrefix: string;
 	numberSuffix: string;
@@ -32,13 +31,12 @@ interface Props {
 	verticalPadding: PaddingSize;
 	aspectRatio: AspectRatio;
 	numberFormat: NumberFormat;
-	rowId: string;
 	columnId: string;
 	width: string;
 	resizingColumnId: string | null;
 	numColumns: number;
 	dateFormat: DateFormat;
-	markdown: string;
+	content: string;
 	shouldWrapOverflow: boolean;
 	sortDir: SortDir;
 	type: CellType;
@@ -47,7 +45,7 @@ interface Props {
 	onDeleteClick: (columnId: string) => void;
 	onWidthChange: (columnId: string, width: string) => void;
 	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
-	onNameChange: (cellId: string, value: string) => void;
+	onContentChange: (columnId: string, value: string) => void;
 	onNumberFormatChange: (
 		columnId: string,
 		format: NumberFormat,
@@ -66,8 +64,6 @@ interface Props {
 }
 
 export default function HeaderCellContainer({
-	cellId,
-	rowId,
 	columnId,
 	currencyType,
 	numberFormat,
@@ -79,7 +75,7 @@ export default function HeaderCellContainer({
 	horizontalPadding,
 	verticalPadding,
 	aspectRatio,
-	markdown,
+	content,
 	shouldWrapOverflow,
 	resizingColumnId,
 	type,
@@ -93,7 +89,7 @@ export default function HeaderCellContainer({
 	onAspectRatioClick,
 	onDeleteClick,
 	onWrapOverflowToggle,
-	onNameChange,
+	onContentChange,
 	onNumberFormatChange,
 	onNumberPrefixChange,
 	onNumberSeparatorChange,
@@ -157,7 +153,7 @@ export default function HeaderCellContainer({
 					<div className={contentClassName}>
 						<Stack isHorizontal spacing="md" align="center">
 							<Icon lucideId={lucideId} size="md" />
-							{markdown}
+							{content}
 						</Stack>
 					</div>
 					<ResizeContainer
@@ -177,7 +173,6 @@ export default function HeaderCellContainer({
 				aspectRatio={aspectRatio}
 				horizontalPadding={horizontalPadding}
 				verticalPadding={verticalPadding}
-				rowId={rowId}
 				numberFormat={numberFormat}
 				currencyType={currencyType}
 				numberPrefix={numberPrefix}
@@ -186,9 +181,8 @@ export default function HeaderCellContainer({
 				dateFormat={dateFormat}
 				canDeleteColumn={numColumns > 1}
 				columnId={columnId}
-				cellId={cellId}
 				shouldWrapOverflow={shouldWrapOverflow}
-				markdown={markdown}
+				content={content}
 				columnSortDir={sortDir}
 				columnType={type}
 				numColumns={numColumns}
@@ -198,7 +192,7 @@ export default function HeaderCellContainer({
 				onClose={onClose}
 				onRequestClose={onRequestClose}
 				onWrapOverflowToggle={onWrapOverflowToggle}
-				onNameChange={onNameChange}
+				onContentChange={onContentChange}
 				onNumberFormatChange={onNumberFormatChange}
 				onNumberPrefixChange={onNumberPrefixChange}
 				onNumberSeparatorChange={onNumberSeparatorChange}

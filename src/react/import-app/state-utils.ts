@@ -1,46 +1,29 @@
 import {
-	createBodyCell,
-	createBodyRow,
+	createCell,
+	createRow,
 	createColumn,
-	createFooterCell,
-	createHeaderCell,
 	createTag,
 } from "src/shared/loom-state/loom-state-factory";
 import {
-	BodyCell,
+	Cell,
 	CellType,
 	Column,
-	FooterCell,
-	HeaderCell,
 	LoomState,
+	Row,
 } from "src/shared/loom-state/types/loom-state";
 import { ColumnMatch, ImportData } from "./types";
 import { NEW_COLUMN_ID } from "./constants";
 
-export const updateStateWithImportData = (
+export const addImportData = (
 	prevState: LoomState,
 	data: ImportData,
 	columnMatches: ColumnMatch[]
 ): LoomState => {
-	const {
-		headerCells,
-		headerRows,
-		bodyRows,
-		bodyCells,
-		footerCells,
-		footerRows,
-		columns,
-	} = prevState.model;
+	const { rows, columns } = prevState.model;
 
 	//The first index is the header row
 	//We want only the data rows
-	const dataRows = data.slice(1);
-
-	//Create a row for each data entry
-	const newBodyRows = Array(dataRows.length)
-		.fill(null)
-		.map((_val, i) => createBodyRow(bodyRows.length + i));
-	const nextBodyRows = [...bodyRows, ...newBodyRows];
+	const importRows = data.slice(1);
 
 	//Create a column for each column that does not have a match
 	const newColumns: Column[] = [];
@@ -53,39 +36,27 @@ export const updateStateWithImportData = (
 	});
 	const nextColumns = [...columns, ...newColumns];
 
-	//Create a header cell for each new column
-	const newHeaderCells: HeaderCell[] = newColumns.map((column) =>
-		createHeaderCell(column.id, headerRows[0].id)
-	);
-	const nextHeaderCells = [...headerCells, ...newHeaderCells];
-
-	//Create a footer cell for each new column
-	const newFooterCells: FooterCell[] = newColumns.map((column) =>
-		createFooterCell(column.id, footerRows[0].id)
-	);
-	//TODO remove
-	const newFooterCells2: FooterCell[] = newColumns.map((column) =>
-		createFooterCell(column.id, footerRows[1].id)
-	);
-	const nextFooterCells = [
-		...footerCells,
-		...newFooterCells,
-		...newFooterCells2,
-	];
-
-	const newBodyCells: BodyCell[] = [];
-	newColumns.forEach((column) => {
-		bodyRows.forEach((row) => {
-			const cell = createBodyCell(column.id, row.id);
-			newBodyCells.push(cell);
+	//Add a cell for each new column to each row
+	rows.forEach((row) => {
+		const { cells } = row;
+		const newCells = [...cells];
+		newColumns.forEach((column) => {
+			const cell = createCell(column.id);
+			newCells.push(cell);
 		});
+		row.cells = newCells;
 	});
 
-	//This represents the rows that we are importing
-	dataRows.forEach((dataRow, j) => {
-		const newBodyRow = newBodyRows[j];
-		const { id: rowId } = newBodyRow;
+	//Create a new row for each import data entry
+	let newRows: Row[] = Array(importRows.length)
+		.fill(null)
+		.map((_val, i) => createRow(rows.length + i));
 
+	//This represents the rows that we are importing
+	newRows = newRows.map((row, i) => {
+		const importRow = importRows[i];
+
+		const nextCells: Cell[] = [];
 		//This represents the columns in the current data
 		nextColumns.forEach((column) => {
 			const { id: columnId, type } = column;
@@ -96,55 +67,53 @@ export const updateStateWithImportData = (
 			//For each row we create, we need to create a body cell. However,
 			//only those cells that have a match will have a value
 			let content = "";
-			let newCell: BodyCell | null = null;
+			let newCell: Cell | null = null;
 			if (match) {
 				const { importColumnIndex } = match;
-				content = dataRow[importColumnIndex];
+				content = importRow[importColumnIndex];
 
 				if (type === CellType.TAG || type === CellType.MULTI_TAG) {
-					const { cell, newTags } = createTagCell(
-						columnId,
-						rowId,
-						content
-					);
+					const { cell, newTags } = createTagCell(columnId, content);
 					newCell = cell;
 					column.tags.push(...newTags);
 				} else if (type === CellType.DATE) {
-					const cell = createDateCell(columnId, rowId, content);
+					const cell = createDateCell(columnId, content);
 					newCell = cell;
 				}
 			}
 			if (!newCell) {
-				newCell = createBodyCell(columnId, rowId, {
-					markdown: content,
+				newCell = createCell(columnId, {
+					content,
 				});
 			}
-			newBodyCells.push(newCell);
+			nextCells.push(newCell);
 		});
+
+		return {
+			...row,
+			cells: nextCells,
+		};
 	});
 
-	const nextBodyCells = [...bodyCells, ...newBodyCells];
+	const nextRows = [...rows, ...newRows];
 
 	return {
 		...prevState,
 		model: {
 			...prevState.model,
 			columns: nextColumns,
-			headerCells: nextHeaderCells,
-			bodyRows: nextBodyRows,
-			bodyCells: nextBodyCells,
-			footerCells: nextFooterCells,
+			rows: nextRows,
 		},
 	};
 };
 
-const createTagCell = (columnId: string, rowId: string, content: string) => {
+const createTagCell = (columnId: string, content: string) => {
 	const parsedTags = content.split(",");
 	const newTags = parsedTags.map((tag) => createTag(tag));
 	const newTagIds = newTags.map((tag) => tag.id);
 
-	const cell = createBodyCell(columnId, rowId, {
-		markdown: content,
+	const cell = createCell(columnId, {
+		content,
 		tagIds: newTagIds,
 	});
 	return {
@@ -153,9 +122,9 @@ const createTagCell = (columnId: string, rowId: string, content: string) => {
 	};
 };
 
-const createDateCell = (columnId: string, rowId: string, content: string) => {
+const createDateCell = (columnId: string, content: string) => {
 	const dateTime = getDateTimeFromContent(content);
-	const cell = createBodyCell(columnId, rowId, {
+	const cell = createCell(columnId, {
 		dateTime,
 	});
 	return cell;
@@ -165,6 +134,7 @@ const getDateTimeFromContent = (content: string): number | null => {
 	const shouldParseAsNumber = isNumber(content);
 	if (shouldParseAsNumber) return Number(content);
 	if (!isDateParsable(content)) return null;
+
 	const date = new Date(content);
 	return date.getTime();
 };

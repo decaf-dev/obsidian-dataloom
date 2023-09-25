@@ -2,8 +2,8 @@ import Text from "../../shared/text";
 import CalculationMenu from "./calculation-menu";
 
 import {
-	BodyCell,
-	BodyRow,
+	Cell,
+	Row,
 	GeneralCalculation,
 	CalculationType,
 	CellType,
@@ -17,7 +17,7 @@ import Stack from "../../shared/stack";
 import MenuTrigger from "src/react/shared/menu-trigger";
 import { isNumber, isNumberCalcuation } from "src/shared/match";
 import { getShortDisplayNameForCalculationType } from "src/shared/loom-state/type-display-names";
-import { getCalculationContent } from "./calculation";
+import { getGeneralCalculationContent } from "./general-calculation";
 import { getNumberCalculationContent } from "./number-calculation";
 import { useMenu } from "../../shared/menu/hooks";
 
@@ -25,13 +25,12 @@ import "./styles.css";
 
 interface Props {
 	columnId: string;
-	cellId: string;
 	calculationType: CalculationType;
 	columnTags: Tag[];
 	width: string;
 	numberFormat: NumberFormat;
-	bodyRows: BodyRow[];
-	bodyCells: BodyCell[];
+	rows: Row[];
+	columnCells: Cell[];
 	currencyType: CurrencyType;
 	cellType: CellType;
 	dateFormat: DateFormat;
@@ -40,11 +39,11 @@ interface Props {
 
 export default function FooterCellContainer({
 	columnId,
+	columnCells,
 	columnTags,
-	bodyCells,
 	dateFormat,
 	numberFormat,
-	bodyRows,
+	rows,
 	width,
 	calculationType,
 	currencyType,
@@ -66,14 +65,12 @@ export default function FooterCellContainer({
 		onClose();
 	}
 
-	const columnCells = bodyCells.filter((cell) => cell.columnId === columnId);
-
 	let content = "";
 
 	if (isNumberCalcuation(calculationType)) {
 		const cellValues = columnCells
-			.filter((cell) => isNumber(cell.markdown))
-			.map((cell) => parseFloat(cell.markdown));
+			.filter((cell) => isNumber(cell.content))
+			.map((cell) => parseFloat(cell.content));
 		if (cellValues.length !== 0)
 			content = getNumberCalculationContent(
 				cellValues,
@@ -82,9 +79,9 @@ export default function FooterCellContainer({
 				calculationType
 			);
 	} else {
-		content = getCalculationContent(
-			bodyRows,
-			columnCells,
+		content = getGeneralCalculationContent(
+			columnId,
+			rows,
 			columnTags,
 			cellType,
 			calculationType,

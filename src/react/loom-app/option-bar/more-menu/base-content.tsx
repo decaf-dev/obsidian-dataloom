@@ -9,6 +9,7 @@ import { useLoomState } from "../../loom-state-provider";
 interface Props {
 	onClose: () => void;
 	onFreezeColumnsClick: () => void;
+	onSettingsClick: () => void;
 	onToggleColumnClick: () => void;
 	onFilterClick: () => void;
 }
@@ -17,6 +18,7 @@ export default function BaseContent({
 	onFreezeColumnsClick,
 	onToggleColumnClick,
 	onFilterClick,
+	onSettingsClick,
 	onClose,
 }: Props) {
 	const { app, loomFile } = useAppMount();
@@ -59,6 +61,11 @@ export default function BaseContent({
 					onClose();
 					new ExportModal(app, loomFile, loomState).open();
 				}}
+			/>
+			<MenuItem
+				lucideId="gear"
+				name="Settings"
+				onClick={onSettingsClick}
 			/>
 		</Padding>
 	);

@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 
 import ImportApp from "../../react/import-app";
 
-import { serializeLoomState } from "src/data/serialize";
+import { serializeState } from "src/data/serialization";
 import { store } from "src/redux/store";
 import { renderDivider, setModalTitle } from "../shared";
 import { LoomState } from "src/shared/loom-state/types/loom-state";
@@ -54,7 +54,7 @@ export default class ImportModal extends Modal {
 	}
 
 	private handleStateChange = async (state: LoomState) => {
-		const serialized = serializeLoomState(state);
+		const serialized = serializeState(state);
 		await this.app.vault.modify(this.loomFile, serialized);
 
 		//Trigger an event to refresh the other open views of this file

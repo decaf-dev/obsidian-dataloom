@@ -8,19 +8,19 @@ import BodyCell from "./body-cell";
 import FooterCell from "./footer-cell";
 
 import { usePrevious } from "src/shared/hooks";
-import { HeaderTableRow, TableRow } from "./types";
+import { BodyTableRow, HeaderTableRow, TableRow } from "./types";
 
 import "./styles.css";
 
 interface Props {
-	headerRows: HeaderTableRow[];
-	bodyRows: TableRow[];
-	footerRows: TableRow[];
+	headerRow: HeaderTableRow;
+	bodyRows: BodyTableRow[];
+	footer?: TableRow;
 	numFrozenColumns: number;
 }
 
 const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
-	{ headerRows, bodyRows, footerRows, numFrozenColumns },
+	{ headerRow, bodyRows, footer, numFrozenColumns },
 	ref
 ) {
 	const previousRowLength = usePrevious(bodyRows.length);
@@ -46,32 +46,31 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 			}}
 			totalCount={bodyRows.length}
 			components={Components}
-			fixedHeaderContent={() =>
-				headerRows.map((row) => {
-					const { id: rowId, cells } = row;
-					return (
-						<div key={rowId} className="dataloom-row">
-							{cells.map((cell, i) => {
-								const { id: cellId, columnId, content } = cell;
-								return (
-									<HeaderCell
-										key={cellId}
-										index={i}
-										numFrozenColumns={numFrozenColumns}
-										columnId={columnId}
-										content={content}
-										isDraggable={i < cells.length - 1}
-									/>
-								);
-							})}
-						</div>
-					);
-				})
-			}
-			fixedFooterContent={() =>
-				footerRows.map((row) => (
-					<div className="dataloom-row" key={row.id}>
-						{row.cells.map((cell, i) => {
+			fixedHeaderContent={() => {
+				const { cells } = headerRow;
+				return (
+					<div className="dataloom-row">
+						{cells.map((cell, i) => {
+							const { columnId, content } = cell;
+							return (
+								<HeaderCell
+									key={columnId}
+									index={i}
+									numFrozenColumns={numFrozenColumns}
+									columnId={columnId}
+									content={content}
+									isDraggable={i < cells.length - 1}
+								/>
+							);
+						})}
+					</div>
+				);
+			}}
+			fixedFooterContent={() => {
+				if (!footer) return null;
+				return (
+					<div className="dataloom-row">
+						{footer.cells.map((cell, i) => {
 							const { id, content } = cell;
 							return (
 								<FooterCell
@@ -83,8 +82,8 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 							);
 						})}
 					</div>
-				))
-			}
+				);
+			}}
 			itemContent={(index) => {
 				const row = bodyRows[index];
 				const { id: rowId, cells } = row;

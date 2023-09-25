@@ -1,6 +1,6 @@
 import {
-	BodyCell,
-	BodyRow,
+	Cell,
+	Row,
 	CellType,
 	Column,
 	CurrencyType,
@@ -9,50 +9,51 @@ import {
 	NumberFormat,
 	Tag,
 } from "src/shared/loom-state/types/loom-state";
-import RowNotFoundError from "src/shared/error/row-not-found-error";
-import ColumNotFoundError from "src/shared/error/column-not-found-error";
 import { getTimeCellContent } from "src/shared/cell-content/time-content";
 import { getDateCellContent } from "src/shared/cell-content/date-cell-content";
 import { getNumberCellContent } from "src/shared/cell-content/number-cell-content";
+import ColumNotFoundError from "src/shared/error/column-not-found-error";
 
-type CellWithReferences = {
-	cell: BodyCell;
-	column: Column;
-	row: BodyRow;
-	tags: Tag[];
-};
-
-export const filterBodyRowsBySearch = (
+export const filterRowsBySearch = (
 	state: LoomState,
-	filteredBodyRows: BodyRow[],
+	rows: Row[],
 	searchText: string
-): BodyRow[] => {
-	const { columns, bodyCells, bodyRows } = state.model;
+): Row[] => {
+	const { columns } = state.model;
+	if (searchText === "") return rows;
 
-	const cells: CellWithReferences[] = bodyCells.map((cell) => {
-		const column = columns.find((c) => c.id === cell.columnId);
-		if (!column) throw new ColumNotFoundError(cell.columnId);
-
-		const row = bodyRows.find((r) => r.id === cell.rowId);
-		if (!row) throw new RowNotFoundError(cell.rowId);
-
-		const tags = column.tags.filter((tag) => cell.tagIds.includes(tag.id));
-
-		return { cell, column, row, tags };
+	const columnIdToColumn = new Map<string, Column>();
+	columns.forEach((column) => {
+		columnIdToColumn.set(column.id, column);
 	});
 
-	if (searchText === "") return filteredBodyRows;
+	const cellIdToColumn = new Map<string, Column>();
+	rows.forEach((row) => {
+		const { cells } = row;
+		cells.forEach((cell) => {
+			const column = columnIdToColumn.get(cell.columnId);
+			if (!column) throw new ColumNotFoundError();
+			cellIdToColumn.set(cell.id, column);
+		});
+	});
 
-	return filteredBodyRows.filter((row) => {
-		const filteredCells = cells.filter((cell) => cell.row.id === row.id);
-		return filteredCells.some((cell) => {
-			return doesCellMatch(cell, searchText.toLowerCase());
+	return rows.filter((row) => {
+		const { cells } = row;
+		return cells.some((cell) => {
+			const column = cellIdToColumn.get(cell.id);
+			if (!column) throw new ColumNotFoundError();
+			return doesCellMatch(cell, column, row, searchText.toLowerCase());
 		});
 	});
 };
 
-const doesCellMatch = (cell: CellWithReferences, searchText: string) => {
-	const { dateTime, markdown } = cell.cell;
+const doesCellMatch = (
+	cell: Cell,
+	column: Column,
+	row: Row,
+	searchText: string
+) => {
+	const { dateTime, content } = cell;
 	const {
 		currencyType,
 		type,
@@ -61,15 +62,18 @@ const doesCellMatch = (cell: CellWithReferences, searchText: string) => {
 		numberPrefix,
 		numberSuffix,
 		numberSeparator,
-	} = cell.column;
-	const { lastEditedTime, creationTime } = cell.row;
+		tags,
+	} = column;
+
+	const { lastEditedTime, creationTime } = row;
+	const cellTags = tags.filter((tag) => cell.tagIds.includes(tag.id));
 
 	switch (type) {
 		case CellType.TEXT:
 		case CellType.EMBED:
 		case CellType.FILE:
 		case CellType.CHECKBOX:
-			return matchCell(markdown, searchText);
+			return matchTextCell(content, searchText);
 		case CellType.NUMBER:
 			return matchNumberCell(
 				numberFormat,
@@ -77,7 +81,7 @@ const doesCellMatch = (cell: CellWithReferences, searchText: string) => {
 				numberSuffix,
 				numberSeparator,
 				currencyType,
-				markdown,
+				content,
 				searchText
 			);
 		case CellType.DATE:
@@ -92,13 +96,13 @@ const doesCellMatch = (cell: CellWithReferences, searchText: string) => {
 			);
 		case CellType.TAG:
 		case CellType.MULTI_TAG:
-			return matchTags(cell.tags, searchText);
+			return matchTags(cellTags, searchText);
 		default:
 			throw new Error("Unsupported cell type");
 	}
 };
 
-const matchCell = (cellContent: string, searchText: string) => {
+const matchTextCell = (cellContent: string, searchText: string) => {
 	return cellContent.toLowerCase().includes(searchText);
 };
 
@@ -122,7 +126,7 @@ const matchNumberCell = (
 
 const matchTags = (cellTags: Tag[], searchText: string) => {
 	return cellTags.some((tag) =>
-		tag.markdown.toLowerCase().includes(searchText)
+		tag.content.toLowerCase().includes(searchText)
 	);
 };
 

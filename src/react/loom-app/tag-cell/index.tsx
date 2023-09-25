@@ -4,22 +4,18 @@ import Tag from "../../shared/tag";
 
 import "./styles.css";
 interface Props {
-	markdown: string;
+	content: string;
 	color: Color;
 	shouldWrapOverflow: boolean;
 }
 
-export default function TagCell({
-	markdown,
-	color,
-	shouldWrapOverflow,
-}: Props) {
+export default function TagCell({ content, color, shouldWrapOverflow }: Props) {
 	const overflowClassName = useOverflow(shouldWrapOverflow);
 	let className = "dataloom-tag-cell";
 	className += " " + overflowClassName;
 	return (
 		<div className={className}>
-			<Tag markdown={markdown} color={color} />
+			<Tag content={content} color={color} />
 		</div>
 	);
 }

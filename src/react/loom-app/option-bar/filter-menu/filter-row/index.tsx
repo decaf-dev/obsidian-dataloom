@@ -6,11 +6,11 @@ import Stack from "src/react/shared/stack";
 import FilterColumnSelect from "../filter-column-select";
 
 import {
+	Column,
 	FilterCondition,
 	FilterOperator as FilterOperatorType,
 	TextFilterCondition,
 } from "src/shared/loom-state/types/loom-state";
-import { ColumnWithMarkdown } from "../../types";
 import FilterConditionSelect from "../filter-condition-select";
 
 import "./styles.css";
@@ -19,7 +19,7 @@ import FilterOperator from "../filter-operator";
 interface Props {
 	index: number;
 	id: string;
-	columns: ColumnWithMarkdown[];
+	columns: Column[];
 	isEnabled: boolean;
 	selectedColumnId: string;
 	selectedOperator: FilterOperatorType;

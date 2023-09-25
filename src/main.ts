@@ -34,7 +34,7 @@ import {
 	EVENT_ROW_ADD,
 	EVENT_ROW_DELETE,
 } from "./shared/events";
-import { deserializeLoomState, serializeLoomState } from "./data/serialize";
+import { deserializeState, serializeState } from "./data/serialization";
 import { updateLinkReferences } from "./data/utils";
 import { getBasename } from "./shared/link/link-utils";
 import { hasDarkTheme } from "./shared/render/utils";
@@ -322,37 +322,41 @@ export default class DataLoomPlugin extends Plugin {
 						for (const loomFile of loomFiles) {
 							//For each file read its contents
 							const data = await file.vault.read(loomFile);
-							const state = deserializeLoomState(
+							const state = deserializeState(
 								data,
 								this.manifest.version
 							);
 							//Search for old path in the file
+							state.model.rows.forEach((row) => {
+								const { cells } = row;
+								cells.forEach((cell) => {
+									const { content } = cell;
+									const regex =
+										structuredClone(WIKI_LINK_REGEX);
+									let matches;
+									while (
+										(matches = regex.exec(content)) !== null
+									) {
+										const path = matches[1];
 
-							state.model.bodyCells.forEach((cell) => {
-								const regex = structuredClone(WIKI_LINK_REGEX);
-								let matches;
-								while (
-									(matches = regex.exec(cell.markdown)) !==
-									null
-								) {
-									const path = matches[1];
-
-									//The path will be the relative path e.g. filename.loom
-									//while the old path will be the absolute path in the vault e.g. /looms/filename.loom
-									if (oldPath.includes(path)) {
-										const found = loomsToUpdate.find(
-											(loom) =>
-												loom.file.path === loomFile.path
-										);
-										if (!found) {
-											loomsToUpdate.push({
-												file: loomFile,
-												state,
-											});
+										//The path will be the relative path e.g. filename.loom
+										//while the old path will be the absolute path in the vault e.g. /looms/filename.loom
+										if (oldPath.includes(path)) {
+											const found = loomsToUpdate.find(
+												(loom) =>
+													loom.file.path ===
+													loomFile.path
+											);
+											if (!found) {
+												loomsToUpdate.push({
+													file: loomFile,
+													state,
+												});
+											}
+											numLinks++;
 										}
-										numLinks++;
 									}
-								}
+								});
 							});
 						}
 
@@ -376,22 +380,32 @@ export default class DataLoomPlugin extends Plugin {
 								});
 
 							const newState = structuredClone(state);
-							newState.model.bodyCells.map((cell) => {
-								const updatedMarkdown = updateLinkReferences(
-									cell.markdown,
-									file.path,
-									oldPath
-								);
-								if (cell.markdown !== updatedMarkdown) {
-									if (this.settings.shouldDebug) {
-										console.log("Updated link", {
-											oldLink: cell.markdown,
-											newLink: updatedMarkdown,
-										});
+							newState.model.rows.map((row) => {
+								const { cells } = row;
+								const nextCells = cells.map((cell) => {
+									const { content } = cell;
+									const newContent = updateLinkReferences(
+										content,
+										file.path,
+										oldPath
+									);
+									if (content !== newContent) {
+										if (this.settings.shouldDebug) {
+											console.log("Updated link", {
+												oldLink: content,
+												newLink: newContent,
+											});
+										}
 									}
-								}
-
-								cell.markdown = updatedMarkdown;
+									return {
+										...cell,
+										content: newContent,
+									};
+								});
+								return {
+									...row,
+									cells: nextCells,
+								};
 							});
 
 							if (
@@ -399,7 +413,7 @@ export default class DataLoomPlugin extends Plugin {
 								JSON.stringify(newState)
 							) {
 								const serializedState =
-									serializeLoomState(newState);
+									serializeState(newState);
 
 								await file.vault.modify(
 									loomFile,

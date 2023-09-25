@@ -26,10 +26,9 @@ import {
 	validateMarkdownTable,
 } from "./table-utils";
 
-import CellNotFoundError from "src/shared/error/cell-not-found-error";
 import { useMenuOperations } from "../shared/menu/hooks";
 import "./styles.css";
-import { updateStateWithImportData } from "./state-utils";
+import { addImportData } from "./state-utils";
 
 interface Props {
 	state: LoomState;
@@ -133,16 +132,10 @@ export default function ImportApp({ state, onStateChange }: Props) {
 
 	const columns: ImportColumn[] = [
 		...state.model.columns.map((column) => {
-			const { id, type } = column;
-			const cell = state.model.headerCells.find((c) => c.columnId === id);
-			if (!cell)
-				throw new CellNotFoundError({
-					columnId: id,
-				});
-			const { markdown } = cell;
+			const { id, type, content } = column;
 			return {
 				id,
-				name: markdown,
+				name: content,
 				type,
 			};
 		}),
@@ -243,7 +236,7 @@ export default function ImportApp({ state, onStateChange }: Props) {
 	}
 
 	function handleFinishClick() {
-		const newState = updateStateWithImportData(state, data, columnMatches);
+		const newState = addImportData(state, data, columnMatches);
 		onStateChange(newState);
 	}
 
