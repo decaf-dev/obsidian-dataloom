@@ -58,7 +58,7 @@ export const deserializeState = (
 		fileVersion = untypedVersion;
 	}
 
-	if (isVersionLessThan(pluginVersion, fileVersion)) {
+	if (isVersionLessThan(fileVersion, pluginVersion)) {
 		throw new Error(
 			"Loom was made with a newer plugin version. Please update the DataLoom plugin of this vault."
 		);
@@ -120,6 +120,7 @@ export const deserializeState = (
 		);
 		currentState = nextState;
 		console.log("Migrated to 6.10.0");
+		console.log(currentState);
 	}
 
 	if (isVersionLessThan(fileVersion, "6.12.3")) {
