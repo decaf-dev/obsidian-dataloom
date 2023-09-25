@@ -211,7 +211,7 @@ export const deserializeState = (
 		}
 
 		//TODO handle previous versions?
-		LoomStateObject.check(parsedState);
+		LoomStateObject.check(currentState);
 
 		const state = currentState as LoomState;
 		state.pluginVersion = pluginVersion;
