@@ -1,24 +1,20 @@
-# Loom File
+# Loom file
 
-DataLoom saves data in JSON format in a file with a `.loom` extension.
+DataLoom saves application data in JSON format. It is stored in a file with a `.loom` extension.
 
-When updating DataLoom, DataLoom will attempt to update your loom file to the latest file version. If you haven't updated DataLoom in a while, you may get a message indicating that your loom file is corrupt. This may occur when an Obsidian save fails or the file is accidentally edited.
+When updating DataLoom, your loom file will be migrated to the latest plugin version. It is possible that this might fail.
 
-To fix a corrupt loom file, please follow the instructions below.
+To fix a broken loom file, please follow the instructions below.
 
-## Fixing a corrupt file
+## Fixing a broken file
 
 1. Open the file in a text editor
-2. Review each line of the file, making sure that it matches the current JSON format
-3. For each line that doesn't match, make the necessary corrections. Often the problem is that a key is missing or misspelled
+2. Review each line of the file, making sure that it matches the [current](#current-format) JSON format
+3. For each line that doesn't match, make the necessary corrections. The problem is often that a key is missing or misspelled
 
-Note: If you are not sure what to do, please open an [issue](https://github.com/trey-wallis/obsidian-dataloom/issues/new?assignees=&labels=bug&projects=&template=BUG.yml) in GitHub repository or post in the `bugs` channel of the [Discord](https://discord.gg/QaFbepMdN4) community
+Note: If you are not sure what to do, please open an [issue](https://github.com/trey-wallis/obsidian-dataloom/issues/new?assignees=&labels=bug&projects=&template=BUG.yml) in GitHub repository or post in the **bugs** channel of the [Discord](https://discord.gg/QaFbepMdN4) community. Paste the error details. You can get this by clicking the **Copy error details** button.
 
-## JSON format
-
-### Meaning of symbols
-
-Typescript words are used to describe the JSON format.
+## Format guide
 
 -   `string` - a string of characters - `"hello world"`. Always include double quotations.
 -   `number` - a number - `123`
@@ -26,7 +22,179 @@ Typescript words are used to describe the JSON format.
 -   `null` - a null value - `null`
 -   `[]` - a list of values - `[1, 2, 3]`
 
-A word with a capital letter such as `CellType` or `Column` represents a reference to a JSON object or enum. These may bew viewed in the [references](#references) section.
+A word with a capital letter such as `CellType` or `Column` represents a reference to a JSON object or enum.
+
+## Current format
+
+```javascript
+{
+  "model": {
+    "columns": [
+      {
+        "id": string,
+        "sortDir": SortDir,
+        "isVisible": boolean,
+        "width": string,
+        "type": CellType,
+        "numberPrefix": string,
+        "numberSuffix": string,
+        "numberSeparator": string,
+        "content": string",
+        "numberFormat": NumberFormat,
+        "currencyType": CurrencyType,
+        "dateFormat": DateFormat,
+        "shouldWrapOverflow": boolean,
+        "tags": Tag[],
+        "calculationType": CalculationType,
+        "aspectRatio": AspectRatio,
+        "horizontalPadding": PaddingSize,
+        "verticalPadding": PaddingSize
+      },
+      {
+        "id": string,
+        "sortDir": SortDir,
+        "isVisible": boolean,
+        "width": string,
+        "type": CellType,
+        "numberPrefix": string,
+        "numberSuffix": string,
+        "numberSeparator": string,
+        "content": string,
+        "numberFormat": NumberFormat,
+        "currencyType": CurrencyType,
+        "dateFormat": DateFormat,
+        "shouldWrapOverflow": boolean,
+        "tags": [
+          {
+            "id": string,
+            "content": string,
+            "color": Color
+          }
+        ],
+        "calculationType": CalculationType,
+        "aspectRatio": AspectRatio,
+        "horizontalPadding": PaddingSize,
+        "verticalPadding": PaddingSize
+      }
+    ],
+    "rows": [
+      {
+        "id": string,
+        "index": number,
+        "creationTime": number,
+        "lastEditedTime": number,
+        "cells": [
+          {
+            "id": string,
+            "isExternalLink": boolean,
+            "columnId": string,
+            "dateTime": number | null,
+            "content": string,
+            "tagIds": string[]
+          },
+          {
+            "id": string,
+            "isExternalLink": boolean,
+            "columnId": string,
+            "dateTime": number | null,
+            "content": string,
+            "tagIds": string[]
+          }
+        ]
+      }
+    ],
+    "filters": [
+      {
+        "id": string,
+        "columnId": string,
+        "operator": FilterOperator,
+        "isEnabled": boolean,
+        "type": CellType,
+        "condition": TextFilterCondition,
+        "text": string
+      }
+    ],
+    "settings": {
+      "numFrozenColumns": number,
+      "showCalculationRow": boolean
+    }
+  },
+  "pluginVersion": string
+}
+```
+
+```javascript
+interface Tag {
+	id: string;
+	content: string;
+	color: Color;
+}
+```
+
+```javascript
+enum CellType {
+	TEXT = "text",
+	EMBED = "embed",
+	FILE = "file",
+	NUMBER = "number",
+	TAG = "tag",
+	MULTI_TAG = "multi-tag",
+	DATE = "date",
+	CHECKBOX = "checkbox",
+	CREATION_TIME = "creation-time",
+	LAST_EDITED_TIME = "last-edited-time",
+}
+```
+
+```javascript
+enum NumberFormat {
+	NUMBER = "number",
+	CURRENCY = "currency",
+}
+```
+
+```javascript
+enum Color {
+	LIGHT_GRAY = "light gray",
+	GRAY = "gray",
+	BROWN = "brown",
+	ORANGE = "orange",
+	YELLOW = "yellow",
+	GREEN = "green",
+	BLUE = "blue",
+	PURPLE = "purple",
+	PINK = "pink",
+	RED = "red",
+}
+```
+
+```javascript
+enum CurrencyType {
+	ARGENTINA = "ARS",
+	AUSTRALIA = "AUD",
+	CANADA = "CAD",
+	COLOMBIA = "COP",
+	DENMARK = "DKK",
+	UAE = "AED",
+	EUROPE = "EUR",
+	ICELAND = "ISK",
+	ISRAEL = "ILS",
+	MEXICO = "MXN",
+	NORWAY = "NOK",
+	GREAT_BRITAIN = "GBP",
+	BRAZIL = "BRL",
+	SAUDI_ARABIA = "SAR",
+	RUSSIA = "RUB",
+	INDIA = "INR",
+	SINGAPORE = "SGB",
+	SWEDEN = "SEK",
+	SWITZERLAND = "CHF",
+	UNITED_STATES = "USD",
+	SOUTH_KOREA = "KRW",
+	JAPAN = "JPY",
+	CHINA = "CNY",
+}
+```
 
 ## Example file
 
@@ -129,184 +297,8 @@ A word with a capital letter such as `CellType` or `Column` represents a referen
 }
 ```
 
-## Format
-
-```javascript
-{
-  "model": {
-    "columns": [
-      {
-        "id": string,
-        "sortDir": SortDir,
-        "isVisible": boolean,
-        "width": string,
-        "type": CellType,
-        "numberPrefix": string,
-        "numberSuffix": string,
-        "numberSeparator": string,
-        "content": string",
-        "numberFormat": NumberFormat,
-        "currencyType": CurrencyType,
-        "dateFormat": DateFormat,
-        "shouldWrapOverflow": boolean,
-        "tags": Tag[],
-        "calculationType": CalculationType,
-        "aspectRatio": AspectRatio,
-        "horizontalPadding": PaddingSize,
-        "verticalPadding": PaddingSize
-      },
-      {
-        "id": string,
-        "sortDir": SortDir,
-        "isVisible": boolean,
-        "width": string,
-        "type": CellType,
-        "numberPrefix": string,
-        "numberSuffix": string,
-        "numberSeparator": string,
-        "content": string,
-        "numberFormat": NumberFormat,
-        "currencyType": CurrencyType,
-        "dateFormat": DateFormat,
-        "shouldWrapOverflow": boolean,
-        "tags": [
-          {
-            "id": string,
-            "content": string,
-            "color": Color
-          }
-        ],
-        "calculationType": CalculationType,
-        "aspectRatio": AspectRatio,
-        "horizontalPadding": PaddingSize,
-        "verticalPadding": PaddingSize
-      }
-    ],
-    "rows": [
-      {
-        "id": string,
-        "index": number,
-        "creationTime": number,
-        "lastEditedTime": number,
-        "cells": [
-          {
-            "id": string,
-            "isExternalLink": boolean,
-            "columnId": string,
-            "dateTime": number | null,
-            "content": string,
-            "tagIds": string[]
-          },
-          {
-            "id": string,
-            "isExternalLink": boolean,
-            "columnId": string,
-            "dateTime": number | null,
-            "content": string,
-            "tagIds": string[]
-          }
-        ]
-      }
-    ],
-    "filters": [
-      {
-        "id": string,
-        "columnId": string,
-        "operator": FilterOperator,
-        "isEnabled": boolean,
-        "type": CellType,
-        "condition": TextFilterCondition,
-        "text": string
-      }
-    ],
-    "settings": {
-      "numFrozenColumns": number,
-      "showCalculationRow": boolean
-    }
-  },
-  "pluginVersion": string
-}
-```
-
-### References
-
-Here a list of some of the most common references
-
-```javascript
-interface Tag {
-	id: string;
-	content: string;
-	color: Color;
-}
-```
-
-```javascript
-enum CellType {
-	TEXT = "text",
-	EMBED = "embed",
-	FILE = "file",
-	NUMBER = "number",
-	TAG = "tag",
-	MULTI_TAG = "multi-tag",
-	DATE = "date",
-	CHECKBOX = "checkbox",
-	CREATION_TIME = "creation-time",
-	LAST_EDITED_TIME = "last-edited-time",
-}
-```
-
-```javascript
-enum NumberFormat {
-	NUMBER = "number",
-	CURRENCY = "currency",
-}
-```
-
-```javascript
-enum Color {
-	LIGHT_GRAY = "light gray",
-	GRAY = "gray",
-	BROWN = "brown",
-	ORANGE = "orange",
-	YELLOW = "yellow",
-	GREEN = "green",
-	BLUE = "blue",
-	PURPLE = "purple",
-	PINK = "pink",
-	RED = "red",
-}
-```
-
-```javascript
-enum CurrencyType {
-	ARGENTINA = "ARS",
-	AUSTRALIA = "AUD",
-	CANADA = "CAD",
-	COLOMBIA = "COP",
-	DENMARK = "DKK",
-	UAE = "AED",
-	EUROPE = "EUR",
-	ICELAND = "ISK",
-	ISRAEL = "ILS",
-	MEXICO = "MXN",
-	NORWAY = "NOK",
-	GREAT_BRITAIN = "GBP",
-	BRAZIL = "BRL",
-	SAUDI_ARABIA = "SAR",
-	RUSSIA = "RUB",
-	INDIA = "INR",
-	SINGAPORE = "SGB",
-	SWEDEN = "SEK",
-	SWITZERLAND = "CHF",
-	UNITED_STATES = "USD",
-	SOUTH_KOREA = "KRW",
-	JAPAN = "JPY",
-	CHINA = "CNY",
-}
-```
-
 ## Typescript declarations
 
 The examples above are not comprehensive.
 
-If you would like to see full typescript declarations for the file, please see the [GitHub repo](https://github.com/trey-wallis/obsidian-dataloom/blob/master/src/shared/loom-state/types/loom-state.ts)
+If you would like to full typescript declarations for the file, please visit the [GitHub repo](https://github.com/trey-wallis/obsidian-dataloom/blob/master/src/shared/loom-state/types/loom-state.ts)
