@@ -179,7 +179,7 @@ const renderApp = (
 };
 
 const renderErrorApp = (root: Root, error: DeserializationError) => {
-	root.render(<ErrorApp error={error} />);
+	root.render(<ErrorApp error={error} isEmbeddedApp={true} />);
 };
 
 /**

@@ -11,9 +11,10 @@ import DeserializationError from "src/data/deserialization-error";
 
 interface Props {
 	error: DeserializationError;
+	isEmbeddedApp?: boolean;
 }
 
-export default function ErrorApp({ error }: Props) {
+export default function ErrorApp({ error, isEmbeddedApp = false }: Props) {
 	async function handleCopyClick(
 		message: string,
 		fileVersion: string,
@@ -26,8 +27,11 @@ export default function ErrorApp({ error }: Props) {
 
 	const { fileVersion, pluginVersion, message } = error;
 
+	let className = "dataloom-error-app";
+	if (isEmbeddedApp) className += " dataloom-error-app--embedded";
+
 	return (
-		<div className="dataloom-error-app">
+		<div className={className}>
 			<Padding p="2xl">
 				<Stack spacing="xl">
 					<Stack>
