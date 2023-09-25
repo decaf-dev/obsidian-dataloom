@@ -1,0 +1,22 @@
+:root {
+    /** Spacing system **/
+    --dataloom-spacing--xs: 2px;
+    --dataloom-spacing--sm: 4px;
+    --dataloom-spacing--md: 8px;
+    --dataloom-spacing--lg: 12px;
+    --dataloom-spacing--xl: 16px;
+    --dataloom-spacing--2xl: 24px;
+    --dataloom-spacing--3xl: 36px;
+    --dataloom-spacing--4xl: 48px;
+
+    --dataloom-cell-spacing-x: var(--dataloom-spacing--sm);
+    --dataloom-cell-spacing-y: var(--dataloom-spacing--lg);
+    --dataloom-cell-min-height: 1.9rem;
+
+    /** Font system **/
+    --dataloom-font-size--xs: 0.8rem;
+    --dataloom-font-size--sm: 0.9rem;
+    --dataloom-font-size--md: 1rem;
+    --dataloom-font-size--lg: 1.1rem;
+    --dataloom-font-size--xl: 1.3rem;
+}
