@@ -1,7 +1,11 @@
-import { createTestLoomState } from "src/shared/loom-state/loom-state-factory";
+import {
+	createTag,
+	createTestLoomState,
+} from "src/shared/loom-state/loom-state-factory";
 import { ColumnMatch, ImportData } from "./types";
 import { addImportData } from "./state-utils";
 import { NEW_COLUMN_ID } from "./constants";
+import { CellType } from "src/shared/loom-state/types/loom-state";
 
 describe("addImportData", () => {
 	it("imports data into a table of the same size", () => {
@@ -114,6 +118,96 @@ describe("addImportData", () => {
 		expect(nextState.model.rows[3].cells[1].content).toEqual("");
 		expect(nextState.model.rows[3].cells[2].content).toEqual("");
 		expect(nextState.model.rows[3].cells[3].content).toEqual("import 3");
+	});
+
+	it("uses existing column tags", () => {
+		//Arrange
+		const prevState = createTestLoomState(1, 1);
+
+		const tags = [createTag("tag1"), createTag("tag2")];
+
+		prevState.model.columns[0].type = CellType.TAG;
+		prevState.model.columns[0].tags = tags;
+		prevState.model.rows[0].cells[0].tagIds = [tags[0].id];
+
+		const data: ImportData = [["header 1"], ["tag1,tag2"]];
+		const columnMatches: ColumnMatch[] = [
+			{
+				importColumnIndex: 0,
+				columnId: prevState.model.columns[0].id,
+			},
+		];
+
+		//Act
+		const nextState = addImportData(prevState, data, columnMatches);
+		expect(nextState.model.rows.length).toEqual(2);
+		expect(nextState.model.rows[0].cells.length).toEqual(1);
+		expect(nextState.model.rows[1].cells.length).toEqual(1);
+		expect(nextState.model.rows[0].cells[0].content).toEqual("");
+		expect(nextState.model.rows[1].cells[0].content).toEqual("");
+		expect(nextState.model.rows[0].cells[0].tagIds).toEqual([tags[0].id]);
+		expect(nextState.model.rows[1].cells[0].tagIds).toEqual([tags[0].id]);
+	});
+
+	it("uses existing column tags", () => {
+		//Arrange
+		const prevState = createTestLoomState(1, 1);
+
+		const tags = [createTag("tag1"), createTag("tag2")];
+		const tagIds = tags.map((tag) => tag.id);
+
+		prevState.model.columns[0].type = CellType.MULTI_TAG;
+		prevState.model.columns[0].tags = tags;
+		prevState.model.rows[0].cells[0].tagIds = tagIds;
+
+		const data: ImportData = [["header 1"], ["tag1,tag2"]];
+		const columnMatches: ColumnMatch[] = [
+			{
+				importColumnIndex: 0,
+				columnId: prevState.model.columns[0].id,
+			},
+		];
+
+		//Act
+		const nextState = addImportData(prevState, data, columnMatches);
+		expect(nextState.model.rows.length).toEqual(2);
+		expect(nextState.model.rows[0].cells.length).toEqual(1);
+		expect(nextState.model.rows[1].cells.length).toEqual(1);
+		expect(nextState.model.rows[0].cells[0].content).toEqual("");
+		expect(nextState.model.rows[1].cells[0].content).toEqual("");
+		expect(nextState.model.rows[0].cells[0].tagIds).toEqual(tagIds);
+		expect(nextState.model.rows[1].cells[0].tagIds).toEqual(tagIds);
+	});
+
+	it("adds new column tags", () => {
+		//Arrange
+		const prevState = createTestLoomState(1, 1);
+
+		const tags = [createTag("tag1"), createTag("tag2")];
+		const tagIds = tags.map((tag) => tag.id);
+
+		prevState.model.columns[0].type = CellType.MULTI_TAG;
+		prevState.model.columns[0].tags = tags;
+		prevState.model.rows[0].cells[0].tagIds = tagIds;
+
+		const data: ImportData = [["header 1"], ["tag3,tag4"]];
+		const columnMatches: ColumnMatch[] = [
+			{
+				importColumnIndex: 0,
+				columnId: prevState.model.columns[0].id,
+			},
+		];
+
+		//Act
+		const nextState = addImportData(prevState, data, columnMatches);
+		expect(nextState.model.rows.length).toEqual(2);
+		expect(nextState.model.rows[0].cells.length).toEqual(1);
+		expect(nextState.model.rows[1].cells.length).toEqual(1);
+		expect(nextState.model.rows[0].cells[0].content).toEqual("");
+		expect(nextState.model.rows[1].cells[0].content).toEqual("");
+		expect(nextState.model.rows[0].cells[0].tagIds).toEqual(tagIds);
+		expect(nextState.model.rows[1].cells[0].tagIds).not.toEqual(tagIds);
+		expect(nextState.model.columns[0].tags.length).toEqual(4);
 	});
 });
 
