@@ -1,5 +1,10 @@
 .dataloom-error-app {
     background-color: var(--background-secondary);
+    overflow: scroll;
+}
+
+.dataloom-error-app--embedded {
+    height: 100%;
 }
 
 .dataloom-error-app__message {

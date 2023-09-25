@@ -8,6 +8,7 @@ import { EVENT_APP_REFRESH } from "src/shared/events";
 import LoomAppWrapper from "src/react/loom-app";
 import { createAppId } from "./utils";
 import ErrorApp from "src/react/error-app";
+import DeserializationError from "src/data/deserialization-error";
 
 export const DATA_LOOM_VIEW = "dataloom";
 
@@ -64,8 +65,8 @@ export default class DataLoomView extends TextFileView {
 			try {
 				const state = deserializeState(data, this.pluginVersion);
 				this.renderApp(this.appId, state);
-			} catch (err) {
-				this.renderErrorApp(err);
+			} catch (err: unknown) {
+				this.renderErrorApp(err as DeserializationError);
 			}
 		}
 	}
@@ -129,7 +130,7 @@ export default class DataLoomView extends TextFileView {
 		}
 	}
 
-	private renderErrorApp(error: unknown) {
+	private renderErrorApp(error: DeserializationError) {
 		if (this.root) {
 			this.root.render(<ErrorApp error={error} />);
 		}

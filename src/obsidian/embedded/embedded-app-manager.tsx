@@ -16,6 +16,7 @@ import { EVENT_APP_REFRESH } from "src/shared/events";
 import LoomAppWrapper from "src/react/loom-app";
 import { createAppId } from "../utils";
 import ErrorApp from "src/react/error-app";
+import DeserializationError from "src/data/deserialization-error";
 
 interface EmbeddedApp {
 	id: string;
@@ -137,7 +138,7 @@ const processLinkEl = async (
 		const state = deserializeState(data, pluginVersion);
 		renderApp(app, appId, leaf, file, root, state);
 	} catch (err: unknown) {
-		renderErrorApp(root, err);
+		renderErrorApp(root, err as DeserializationError);
 	}
 };
 
@@ -177,8 +178,8 @@ const renderApp = (
 	);
 };
 
-const renderErrorApp = (root: Root, error: unknown) => {
-	root.render(<ErrorApp error={error} />);
+const renderErrorApp = (root: Root, error: DeserializationError) => {
+	root.render(<ErrorApp error={error} isEmbeddedApp={true} />);
 };
 
 /**
