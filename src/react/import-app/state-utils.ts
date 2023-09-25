@@ -73,7 +73,7 @@ export const addImportData = (
 				let newCell: Cell | null = null;
 				if (match) {
 					const { importColumnIndex } = match;
-					content = importRow[importColumnIndex];
+					content = importRow[importColumnIndex].trim();
 
 					if (type === CellType.TAG) {
 						const { cell, newTags } = createTagCell(
@@ -82,7 +82,7 @@ export const addImportData = (
 							content
 						);
 						newCell = cell;
-						column.tags.push(...newTags);
+						columnTags.push(...newTags);
 					} else if (type === CellType.MULTI_TAG) {
 						const { cell, newTags } = createMultiTagCell(
 							columnTags,
@@ -90,7 +90,7 @@ export const addImportData = (
 							content
 						);
 						newCell = cell;
-						column.tags.push(...newTags);
+						columnTags.push(...newTags);
 					} else if (type === CellType.DATE) {
 						const cell = createDateCell(columnId, content);
 						newCell = cell;
@@ -130,10 +130,19 @@ const createMultiTagCell = (
 	const newTags: Tag[] = [];
 	const tagIds: string[] = [];
 
-	const parsedTags = content.split(",");
+	const parsedTags = content.split(",").map((tag) => tag.trim());
 	if (parsedTags.length !== 0) {
 		parsedTags.forEach((tag) => {
-			const existingTag = columnTags.find((t) => t.content === tag);
+			const existingTag = columnTags.find((t) => {
+				if (columnTags.length === 6) {
+					console.log({
+						content: t.content,
+						tag,
+						eq: t.content === tag,
+					});
+				}
+				return t.content === tag;
+			});
 			if (existingTag) {
 				tagIds.push(existingTag.id);
 			} else {
@@ -146,6 +155,10 @@ const createMultiTagCell = (
 
 	const cell = createCell(columnId, {
 		tagIds,
+	});
+	console.log({
+		cell,
+		newTags,
 	});
 	return {
 		cell,
@@ -161,7 +174,7 @@ const createTagCell = (
 	const newTags: Tag[] = [];
 	let tagId: string | null = null;
 
-	const parsedTags = content.split(",");
+	const parsedTags = content.split(",").map((tag) => tag.trim());
 	if (parsedTags.length !== 0) {
 		parsedTags.forEach((tag) => {
 			const existingTag = columnTags.find((t) => t.content === tag);
