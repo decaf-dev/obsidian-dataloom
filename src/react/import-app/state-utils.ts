@@ -10,6 +10,7 @@ import {
 	Column,
 	LoomState,
 	Row,
+	Tag,
 } from "src/shared/loom-state/types/loom-state";
 import { ColumnMatch, ImportData } from "./types";
 import { NEW_COLUMN_ID } from "./constants";
@@ -36,66 +37,80 @@ export const addImportData = (
 	});
 	const nextColumns = [...columns, ...newColumns];
 
-	//Add a cell for each new column to each row
-	rows.forEach((row) => {
+	//Add a cell for each new column
+	const updatedRows = rows.map((row) => {
 		const { cells } = row;
 		const newCells = [...cells];
 		newColumns.forEach((column) => {
 			const cell = createCell(column.id);
 			newCells.push(cell);
 		});
-		row.cells = newCells;
-	});
-
-	//Create a new row for each import data entry
-	let newRows: Row[] = Array(importRows.length)
-		.fill(null)
-		.map((_val, i) => createRow(rows.length + i));
-
-	//This represents the rows that we are importing
-	newRows = newRows.map((row, i) => {
-		const importRow = importRows[i];
-
-		const nextCells: Cell[] = [];
-		//This represents the columns in the current data
-		nextColumns.forEach((column) => {
-			const { id: columnId, type } = column;
-			const match = columnMatches.find(
-				(match) => match.columnId === columnId
-			);
-
-			//For each row we create, we need to create a body cell. However,
-			//only those cells that have a match will have a value
-			let content = "";
-			let newCell: Cell | null = null;
-			if (match) {
-				const { importColumnIndex } = match;
-				content = importRow[importColumnIndex];
-
-				if (type === CellType.TAG || type === CellType.MULTI_TAG) {
-					const { cell, newTags } = createTagCell(columnId, content);
-					newCell = cell;
-					column.tags.push(...newTags);
-				} else if (type === CellType.DATE) {
-					const cell = createDateCell(columnId, content);
-					newCell = cell;
-				}
-			}
-			if (!newCell) {
-				newCell = createCell(columnId, {
-					content,
-				});
-			}
-			nextCells.push(newCell);
-		});
-
 		return {
 			...row,
-			cells: nextCells,
+			cells: newCells,
 		};
 	});
 
-	const nextRows = [...rows, ...newRows];
+	//Create a new row for each import data entry
+	const newRows: Row[] = Array(importRows.length)
+		.fill(null)
+		.map((_val, i) => {
+			const newRow = createRow(rows.length + i);
+
+			const importRow = importRows[i];
+
+			const nextCells: Cell[] = [];
+			//This represents the columns in the current data
+			nextColumns.forEach((column) => {
+				const { id: columnId, type, tags: columnTags } = column;
+				const match = columnMatches.find(
+					(match) => match.columnId === columnId
+				);
+
+				//For each row we create, we need to create a cell. However,
+				//only those cells that have a match will have a value
+				let content = "";
+				let newCell: Cell | null = null;
+				if (match) {
+					const { importColumnIndex } = match;
+					content = importRow[importColumnIndex];
+
+					if (type === CellType.TAG) {
+						const { cell, newTags } = createTagCell(
+							columnTags,
+							columnId,
+							content
+						);
+						newCell = cell;
+						column.tags.push(...newTags);
+					} else if (type === CellType.MULTI_TAG) {
+						const { cell, newTags } = createMultiTagCell(
+							columnTags,
+							columnId,
+							content
+						);
+						newCell = cell;
+						column.tags.push(...newTags);
+					} else if (type === CellType.DATE) {
+						const cell = createDateCell(columnId, content);
+						newCell = cell;
+					}
+				}
+				if (!newCell) {
+					newCell = createCell(columnId, {
+						content,
+					});
+				}
+				nextCells.push(newCell);
+			});
+
+			return {
+				...newRow,
+				cells: nextCells,
+			};
+		});
+
+	const nextRows = [...updatedRows, ...newRows];
 
 	return {
 		...prevState,
@@ -107,14 +122,65 @@ export const addImportData = (
 	};
 };
 
-const createTagCell = (columnId: string, content: string) => {
+const createMultiTagCell = (
+	columnTags: Tag[],
+	columnId: string,
+	content: string
+) => {
+	const newTags: Tag[] = [];
+	const tagIds: string[] = [];
+
 	const parsedTags = content.split(",");
-	const newTags = parsedTags.map((tag) => createTag(tag));
-	const newTagIds = newTags.map((tag) => tag.id);
+	if (parsedTags.length !== 0) {
+		parsedTags.forEach((tag) => {
+			const existingTag = columnTags.find((t) => t.content === tag);
+			if (existingTag) {
+				tagIds.push(existingTag.id);
+			} else {
+				const newTag = createTag(tag);
+				newTags.push(newTag);
+				tagIds.push(newTag.id);
+			}
+		});
+	}
 
 	const cell = createCell(columnId, {
-		content,
-		tagIds: newTagIds,
+		tagIds,
+	});
+	return {
+		cell,
+		newTags,
+	};
+};
+
+const createTagCell = (
+	columnTags: Tag[],
+	columnId: string,
+	content: string
+) => {
+	const newTags: Tag[] = [];
+	let tagId: string | null = null;
+
+	const parsedTags = content.split(",");
+	if (parsedTags.length !== 0) {
+		parsedTags.forEach((tag) => {
+			const existingTag = columnTags.find((t) => t.content === tag);
+			if (existingTag) {
+				if (tagId === null) {
+					tagId = existingTag.id;
+				}
+			} else {
+				const newTag = createTag(tag);
+				newTags.push(newTag);
+				if (tagId === null) {
+					tagId = newTag.id;
+				}
+			}
+		});
+	}
+
+	const cell = createCell(columnId, {
+		tagIds: tagId ? [tagId] : undefined,
 	});
 	return {
 		cell,
