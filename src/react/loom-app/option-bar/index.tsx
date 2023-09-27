@@ -5,7 +5,6 @@ import Padding from "src/react/shared/padding";
 import Icon from "src/react/shared/icon";
 import MenuButton from "src/react/shared/menu-button";
 import MoreMenu from "./more-menu";
-import ToggleColumnMenu from "./toggle-column-menu";
 import FilterMenu from "./filter-menu";
 import SortBubbleList from "./sort-bubble-list";
 
@@ -18,6 +17,7 @@ import { isSmallScreenSize } from "src/shared/render/utils";
 import { useMenu } from "../../shared/menu/hooks";
 
 import "./styles.css";
+import SourcesMenu from "./sources-menu";
 
 interface Props {
 	numFrozenColumns: number;
@@ -60,13 +60,13 @@ export default function OptionBar({
 	} = useMenu();
 
 	const {
-		menu: toggleMenu,
-		triggerRef: toggleMenuTriggerRef,
-		triggerPosition: toggleMenuTriggerPosition,
-		isOpen: isToggleMenuOpen,
-		onOpen: onToggleMenuOpen,
-		onRequestClose: onToggleMenuRequestClose,
-		onClose: onToggleMenuClose,
+		menu: sourcesMenu,
+		triggerRef: sourcesMenuTriggerRef,
+		triggerPosition: sourcesMenuTriggerPosition,
+		isOpen: isSourcesMenuOpen,
+		onOpen: onSourcesMenuOpen,
+		onRequestClose: onSourcesMenuRequestClose,
+		onClose: onSourcesMenuClose,
 	} = useMenu();
 
 	const {
@@ -147,11 +147,11 @@ export default function OptionBar({
 							)}
 							{isSmallScreen === false && (
 								<MenuButton
-									ref={toggleMenuTriggerRef}
-									menu={toggleMenu}
-									onOpen={onToggleMenuOpen}
+									ref={sourcesMenuTriggerRef}
+									menu={sourcesMenu}
+									onOpen={onSourcesMenuOpen}
 								>
-									Toggle
+									Sources
 								</MenuButton>
 							)}
 							<MenuButton
@@ -164,31 +164,27 @@ export default function OptionBar({
 					</Stack>
 				</Padding>
 			</div>
+			<SourcesMenu
+				id={sourcesMenu.id}
+				isOpen={isSourcesMenuOpen}
+				triggerPosition={sourcesMenuTriggerPosition}
+				onRequestClose={onSourcesMenuRequestClose}
+				onClose={onSourcesMenuClose}
+			/>
 			<MoreMenu
 				id={moreMenu.id}
 				isOpen={isMoreMenuOpen}
 				showCalculationRow={showCalculationRow}
 				triggerPosition={moreMenuTriggerPosition}
+				columns={columns}
 				numFrozenColumns={numFrozenColumns}
 				onFrozenColumnsChange={onFrozenColumnsChange}
 				onFilterClick={() => onFilterMenuOpen()}
-				onToggleColumnClick={() => onToggleMenuOpen()}
+				onColumnToggle={onColumnToggle}
 				onRequestClose={onMoreMenuRequestClose}
 				onCalculationRowToggle={onCalculationRowToggle}
 				onClose={onMoreMenuClose}
-			/>
-			<ToggleColumnMenu
-				id={toggleMenu.id}
-				isOpen={isToggleMenuOpen}
-				triggerPosition={
-					isSmallScreen
-						? moreMenuTriggerPosition
-						: toggleMenuTriggerPosition
-				}
-				columns={columns}
-				onToggle={onColumnToggle}
-				onRequestClose={onToggleMenuRequestClose}
-				onClose={onToggleMenuClose}
+				onSourcesClick={() => onSourcesMenuOpen()}
 			/>
 			<FilterMenu
 				id={filterMenu.id}

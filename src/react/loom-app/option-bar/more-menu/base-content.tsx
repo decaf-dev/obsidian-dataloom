@@ -12,6 +12,7 @@ interface Props {
 	onSettingsClick: () => void;
 	onToggleColumnClick: () => void;
 	onFilterClick: () => void;
+	onSourcesClick: () => void;
 }
 
 export default function BaseContent({
@@ -19,6 +20,7 @@ export default function BaseContent({
 	onToggleColumnClick,
 	onFilterClick,
 	onSettingsClick,
+	onSourcesClick,
 	onClose,
 }: Props) {
 	const { app, loomFile } = useAppMount();
@@ -36,11 +38,16 @@ export default function BaseContent({
 			)}
 			{isSmallScreen && (
 				<MenuItem
-					lucideId="eye-off"
-					name="Toggle"
-					onClick={onToggleColumnClick}
+					lucideId="filter"
+					name="Sources"
+					onClick={onSourcesClick}
 				/>
 			)}
+			<MenuItem
+				lucideId="eye-off"
+				name="Toggle"
+				onClick={onToggleColumnClick}
+			/>
 			<MenuItem
 				lucideId="snowflake"
 				name="Freeze"
@@ -63,7 +70,7 @@ export default function BaseContent({
 				}}
 			/>
 			<MenuItem
-				lucideId="gear"
+				lucideId="wrench"
 				name="Settings"
 				onClick={onSettingsClick}
 			/>
