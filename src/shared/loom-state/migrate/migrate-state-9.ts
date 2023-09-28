@@ -2,6 +2,7 @@ import MigrateState from "./migrate-state";
 import { SortDir } from "../types/loom-state";
 import { LoomState10 } from "../types/loom-state-10";
 import { LoomState9 } from "../types/loom-state-9";
+import { cloneDeep } from "lodash";
 
 /**
  * Migrates to 6.18.6
@@ -22,7 +23,7 @@ export default class MigrateState9 implements MigrateState {
 			};
 		});
 
-		const bodyRowsCopy = structuredClone(bodyRows);
+		const bodyRowsCopy = cloneDeep(bodyRows);
 		//Sort by index
 		bodyRowsCopy.sort((a, b) => a.index - b.index);
 

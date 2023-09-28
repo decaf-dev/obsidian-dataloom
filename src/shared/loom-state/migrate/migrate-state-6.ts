@@ -1,6 +1,7 @@
 import MigrateState from "./migrate-state";
 import { LoomState6 } from "../types/loom-state-6";
 import { LoomState7, BodyRow as BodyRow7 } from "../types/loom-state-7";
+import { cloneDeep } from "lodash";
 
 /**
  * Migrates to 6.10.0
@@ -49,7 +50,7 @@ export default class MigrateState6 implements MigrateState {
 		});
 
 		const nextBodyRows = bodyRows.map((row) => {
-			const rowCopy: unknown = structuredClone(row);
+			const rowCopy: unknown = cloneDeep(row);
 			const unknownRow = rowCopy as Record<string, unknown>;
 
 			//Remove old property
