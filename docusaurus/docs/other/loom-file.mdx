@@ -29,91 +29,9 @@ A word with a capital letter such as `CellType` or `Column` represents a referen
 ```javascript
 {
   "model": {
-    "columns": [
-      {
-        "id": string,
-        "sortDir": SortDir,
-        "isVisible": boolean,
-        "width": string,
-        "type": CellType,
-        "numberPrefix": string,
-        "numberSuffix": string,
-        "numberSeparator": string,
-        "content": string",
-        "numberFormat": NumberFormat,
-        "currencyType": CurrencyType,
-        "dateFormat": DateFormat,
-        "shouldWrapOverflow": boolean,
-        "tags": Tag[],
-        "calculationType": CalculationType,
-        "aspectRatio": AspectRatio,
-        "horizontalPadding": PaddingSize,
-        "verticalPadding": PaddingSize
-      },
-      {
-        "id": string,
-        "sortDir": SortDir,
-        "isVisible": boolean,
-        "width": string,
-        "type": CellType,
-        "numberPrefix": string,
-        "numberSuffix": string,
-        "numberSeparator": string,
-        "content": string,
-        "numberFormat": NumberFormat,
-        "currencyType": CurrencyType,
-        "dateFormat": DateFormat,
-        "shouldWrapOverflow": boolean,
-        "tags": [
-          {
-            "id": string,
-            "content": string,
-            "color": Color
-          }
-        ],
-        "calculationType": CalculationType,
-        "aspectRatio": AspectRatio,
-        "horizontalPadding": PaddingSize,
-        "verticalPadding": PaddingSize
-      }
-    ],
-    "rows": [
-      {
-        "id": string,
-        "index": number,
-        "creationTime": number,
-        "lastEditedTime": number,
-        "cells": [
-          {
-            "id": string,
-            "isExternalLink": boolean,
-            "columnId": string,
-            "dateTime": number | null,
-            "content": string,
-            "tagIds": string[]
-          },
-          {
-            "id": string,
-            "isExternalLink": boolean,
-            "columnId": string,
-            "dateTime": number | null,
-            "content": string,
-            "tagIds": string[]
-          }
-        ]
-      }
-    ],
-    "filters": [
-      {
-        "id": string,
-        "columnId": string,
-        "operator": FilterOperator,
-        "isEnabled": boolean,
-        "type": CellType,
-        "condition": TextFilterCondition,
-        "text": string
-      }
-    ],
+    "columns": Column[],
+    "rows": Row[],
+    "filters": Filter[],
     "settings": {
       "numFrozenColumns": number,
       "showCalculationRow": boolean
@@ -124,10 +42,64 @@ A word with a capital letter such as `CellType` or `Column` represents a referen
 ```
 
 ```javascript
+interface Column {
+	id: string;
+	sortDir: SortDir;
+	isVisible: boolean;
+	width: string;
+	type: CellType;
+	numberPrefix: string;
+	numberSuffix: string;
+	numberSeparator: string;
+	content: string;
+	numberFormat: NumberFormat;
+	currencyType: CurrencyType;
+	dateFormat: DateFormat;
+	shouldWrapOverflow: boolean;
+	tags: Tag[];
+	calculationType: CalculationType;
+	aspectRatio: AspectRatio;
+	horizontalPadding: PaddingSize;
+	verticalPadding: PaddingSize;
+}
+```
+
+```javascript
+interface Row {
+	id: string;
+	index: number;
+	creationTime: number;
+	lastEditedTime: number;
+	cells: Cell[];
+}
+```
+
+```javascript
+interface Cell {
+	id: string;
+	columnId: string;
+	isExternalLink: boolean;
+	dateTime: number | null;
+	content: string;
+	tagIds: string[];
+}
+```
+
+```javascript
 interface Tag {
 	id: string;
 	content: string;
 	color: Color;
+}
+```
+
+```javascript
+interface Filter {
+	id: string;
+	columnId: string;
+	operator: FilterOperator;
+	isEnabled: boolean;
+  ...
 }
 ```
 
@@ -196,7 +168,13 @@ enum CurrencyType {
 }
 ```
 
+```javascript
+type FilterOperator = "and" | "or";
+```
+
 ## Example file
+
+This is an example of a loom file. It contains a table with two columns and one row. The first column is a text column. The second column is a tag column.
 
 ```javascript
 {
@@ -261,7 +239,7 @@ enum CurrencyType {
             "isExternalLink": false,
             "columnId": "637bedf7-22df-4d9e-be39-722e28ad9147",
             "dateTime": null,
-            "content": "test",
+            "content": "cell 1,
             "tagIds": []
           },
           {
@@ -269,7 +247,7 @@ enum CurrencyType {
             "isExternalLink": false,
             "columnId": "8456b494-fb1c-42b6-a55d-a0d4db5a6c98",
             "dateTime": null,
-            "content": "",
+            "content": "cell 2",
             "tagIds": [
               "be98ee4e-0f55-4d07-873d-7573b65fb695"
             ]
@@ -299,6 +277,4 @@ enum CurrencyType {
 
 ## Typescript declarations
 
-The examples above are not comprehensive.
-
-If you would like to full typescript declarations for the file, please visit the [GitHub repo](https://github.com/trey-wallis/obsidian-dataloom/blob/master/src/shared/loom-state/types/loom-state.ts)
+The examples above are not comprehensive. If you would like to full Typescript declarations for the loom file, please visit the [GitHub repo](https://github.com/trey-wallis/obsidian-dataloom/blob/master/src/shared/loom-state/types/loom-state.ts).

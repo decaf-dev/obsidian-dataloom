@@ -1,6 +1,7 @@
 import MigrateState from "./migrate-state";
 import { LoomState2, Column as Column2 } from "../types/loom-state-2";
 import { LoomState3 } from "../types/loom-state-3";
+import { cloneDeep } from "lodash";
 
 /**
  * Migrates to 6.3.0
@@ -19,7 +20,7 @@ export default class MigrateState2 implements MigrateState {
 
 		//Feat: Column toggle
 		const nextColumns = columns.map((column) => {
-			const columnCopy: unknown = structuredClone(column);
+			const columnCopy: unknown = cloneDeep(column);
 			const unknownColumn = columnCopy as Record<string, unknown>;
 
 			//Remove old property

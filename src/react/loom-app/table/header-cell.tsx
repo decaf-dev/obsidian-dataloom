@@ -3,6 +3,7 @@ import { useLoomState } from "src/react/loom-app/loom-state-provider";
 import { useStickyOffset } from "./hooks";
 import { numToPx } from "src/shared/conversion";
 import React from "react";
+import { cloneDeep } from "lodash";
 
 interface Props {
 	index: number;
@@ -52,7 +53,7 @@ export default function HeaderCell({
 				(column) => column.id === targetRowId
 			);
 
-			const newColumns = structuredClone(columns);
+			const newColumns = cloneDeep(columns);
 			const draggedEl = newColumns[draggedElIndex];
 
 			//Remove the element

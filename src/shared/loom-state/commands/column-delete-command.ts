@@ -3,6 +3,7 @@ import { Column, LoomState, Cell, Filter, Row } from "../types/loom-state";
 import LoomStateCommand from "./loom-state-command";
 import CommandArgumentsError from "./command-arguments-error";
 import CellNotFoundError from "src/shared/error/cell-not-found-error";
+import { cloneDeep } from "lodash";
 
 export default class ColumnDeleteCommand extends LoomStateCommand {
 	private columnId?: string;
@@ -38,7 +39,7 @@ export default class ColumnDeleteCommand extends LoomStateCommand {
 		if (!columnToDelete) throw new ColumNotFoundError(id);
 		this.deletedColumn = {
 			arrIndex: columns.indexOf(columnToDelete),
-			column: structuredClone(columnToDelete),
+			column: cloneDeep(columnToDelete),
 		};
 
 		const nextColumns = columns.filter((column) => column.id !== id);
@@ -51,7 +52,7 @@ export default class ColumnDeleteCommand extends LoomStateCommand {
 
 			this.deletedCells.push({
 				rowId: row.id,
-				cell: structuredClone(cell),
+				cell: cloneDeep(cell),
 				arrIndex: row.cells.indexOf(cell),
 			});
 
@@ -67,7 +68,7 @@ export default class ColumnDeleteCommand extends LoomStateCommand {
 		);
 		this.deletedFilters = filtersToDelete.map((filter) => ({
 			arrIndex: filters.indexOf(filter),
-			filter: structuredClone(filter),
+			filter: cloneDeep(filter),
 		}));
 
 		const nextFilters = filters.filter((filter) => filter.columnId !== id);
@@ -97,7 +98,7 @@ export default class ColumnDeleteCommand extends LoomStateCommand {
 
 		const nextRows: Row[] = rows.map((row) => {
 			const { cells } = row;
-			const nextCells = structuredClone(cells);
+			const nextCells = cloneDeep(cells);
 			const cellsToAdd = this.deletedCells.filter(
 				(cell) => cell.rowId === row.id
 			);

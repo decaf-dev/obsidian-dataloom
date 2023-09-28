@@ -1,3 +1,4 @@
+import { cloneDeep } from "lodash";
 import { SortDir, LoomState } from "../loom-state/types/loom-state";
 import { confirmSortOrderChange } from "../sort-utils";
 import { DragData } from "./types";
@@ -32,7 +33,7 @@ export const dropDrag = (
 		const draggedElIndex = rows.findIndex((row) => row.id === dragData.id);
 		const targetElIndex = rows.findIndex((row) => row.id === targetRowId);
 
-		const newRows = structuredClone(rows);
+		const newRows = cloneDeep(rows);
 		const draggedEl = newRows[draggedElIndex];
 
 		//Remove the element
