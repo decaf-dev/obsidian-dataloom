@@ -1,3 +1,4 @@
+import { cloneDeep } from "lodash";
 import { LoomState } from "../types";
 import { Filter } from "../types/loom-state";
 import LoomStateCommand from "./loom-state-command";
@@ -22,7 +23,7 @@ export default class FilterDeleteCommand extends LoomStateCommand {
 			if (f.id === this.id) {
 				this.deletedFilter = {
 					arrIndex: filters.indexOf(f),
-					filter: structuredClone(f),
+					filter: cloneDeep(f),
 				};
 				return false;
 			}
@@ -42,7 +43,7 @@ export default class FilterDeleteCommand extends LoomStateCommand {
 		super.onUndo();
 
 		const { filters } = prevState.model;
-		const nextFilters: Filter[] = structuredClone(filters);
+		const nextFilters: Filter[] = cloneDeep(filters);
 		nextFilters.splice(
 			this.deletedFilter.arrIndex,
 			0,

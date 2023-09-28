@@ -1,6 +1,7 @@
 import LoomStateCommand from "./loom-state-command";
 import { Cell, LoomState, Row } from "../types/loom-state";
 import RowNotFoundError from "src/shared/error/row-not-found-error";
+import { cloneDeep } from "lodash";
 
 export default class CellBodyUpdateCommand extends LoomStateCommand {
 	private id: string;
@@ -38,7 +39,7 @@ export default class CellBodyUpdateCommand extends LoomStateCommand {
 			const { cells } = row;
 			const nextCells: Cell[] = cells.map((cell) => {
 				if (cell.id === this.id) {
-					this.prevCell = structuredClone(cell);
+					this.prevCell = cloneDeep(cell);
 
 					let newCell: Cell = this.data as Cell;
 					if (this.isPartial)

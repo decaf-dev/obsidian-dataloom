@@ -1,5 +1,6 @@
 import LoomStateCommand from "./loom-state-command";
 import { Filter, LoomState } from "../types/loom-state";
+import { cloneDeep } from "lodash";
 
 export default class FilterUpdateCommand<
 	T extends Filter
@@ -24,7 +25,7 @@ export default class FilterUpdateCommand<
 		const { filters } = prevState.model;
 		const nextFilters = filters.map((filter) => {
 			if (filter.id === this.id) {
-				this.prevFilter = structuredClone(filter);
+				this.prevFilter = cloneDeep(filter);
 
 				let newFilter: T = this.data as T;
 				if (this.isPartial)
