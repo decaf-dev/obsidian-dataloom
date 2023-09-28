@@ -1,6 +1,7 @@
 import MigrateState from "./migrate-state";
 import { LoomState10 } from "../types/loom-state-10";
 import { LoomState11, Column as Column11 } from "../types/loom-state-11";
+import { cloneDeep } from "lodash";
 
 /**
  * Migrates to 6.19.0
@@ -11,7 +12,7 @@ export default class MigrateState10 implements MigrateState {
 
 		//Migrate from functionType to calculationType
 		const nextColumns = columns.map((column) => {
-			const columnCopy: unknown = structuredClone(column);
+			const columnCopy: unknown = cloneDeep(column);
 			const unknownCopy = columnCopy as Record<string, unknown>;
 			unknownCopy.calculationType = unknownCopy.functionType;
 			delete unknownCopy.functionType;

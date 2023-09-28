@@ -15,6 +15,7 @@ import {
 	CalculationType,
 } from "../types/loom-state";
 import { isCheckbox, isNumberCalcuation } from "../../match";
+import { cloneDeep } from "lodash";
 
 export class ColumnTypeUpdateCommand extends LoomStateCommand {
 	private id: string;
@@ -53,8 +54,8 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 		if (type === this.nextType) return prevState;
 		this.previousType = column.type;
 
-		let nextColumns: Column[] = structuredClone(columns);
-		let nextRows: Row[] = structuredClone(rows);
+		let nextColumns: Column[] = cloneDeep(columns);
+		let nextRows: Row[] = cloneDeep(rows);
 
 		if (
 			(this.previousType === CellType.MULTI_TAG &&
@@ -105,7 +106,7 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 			if (filter.columnId === this.id) {
 				this.deletedFilters.push({
 					arrIndex: filters.indexOf(filter),
-					filter: structuredClone(filter),
+					filter: cloneDeep(filter),
 				});
 				return false;
 			}
@@ -143,7 +144,7 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 			};
 		});
 
-		const nextFilters: Filter[] = structuredClone(filters);
+		const nextFilters: Filter[] = cloneDeep(filters);
 		this.deletedFilters.forEach((f) => {
 			const { arrIndex, filter } = f;
 			nextFilters.splice(arrIndex, 0, filter);
@@ -255,7 +256,7 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 							...cell,
 							tagIds: [],
 						};
-						this.updatedCells.previous.push(structuredClone(cell));
+						this.updatedCells.previous.push(cloneDeep(cell));
 						this.updatedCells.next.push(updatedCell);
 						return updatedCell;
 					}
@@ -286,7 +287,7 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 							...cell,
 							content: dateString,
 						};
-						this.updatedCells.previous.push(structuredClone(cell));
+						this.updatedCells.previous.push(cloneDeep(cell));
 						this.updatedCells.next.push(newCell);
 						return newCell;
 					}
@@ -324,7 +325,7 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 									tagIds.push(existingTag.id);
 								} else {
 									const tag = createTag(tagContent);
-									this.addedTags.push(structuredClone(tag));
+									this.addedTags.push(cloneDeep(tag));
 									column.tags.push(tag);
 									tagIds.push(tag.id);
 								}
@@ -332,7 +333,7 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 								//Create a tag but don't attach it to the cell
 								if (!existingTag) {
 									const tag = createTag(tagContent);
-									this.addedTags.push(structuredClone(tag));
+									this.addedTags.push(cloneDeep(tag));
 									column.tags.push(tag);
 								}
 							}
@@ -343,7 +344,7 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 							tagIds,
 						};
 
-						this.updatedCells.previous.push(structuredClone(cell));
+						this.updatedCells.previous.push(cloneDeep(cell));
 						this.updatedCells.next.push(newCell);
 						return newCell;
 					}
@@ -379,7 +380,7 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 								tagIds.push(existingTag.id);
 							} else {
 								const tag = createTag(tagContent);
-								this.addedTags.push(structuredClone(tag));
+								this.addedTags.push(cloneDeep(tag));
 								column.tags.push(tag);
 								tagIds.push(tag.id);
 							}
@@ -390,7 +391,7 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 							tagIds,
 						};
 
-						this.updatedCells.previous.push(structuredClone(cell));
+						this.updatedCells.previous.push(cloneDeep(cell));
 						this.updatedCells.next.push(newCell);
 						return newCell;
 					}
@@ -416,7 +417,7 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 							...cell,
 							tagIds: [tagIds[0]],
 						};
-						this.updatedCells.previous.push(structuredClone(cell));
+						this.updatedCells.previous.push(cloneDeep(cell));
 						this.updatedCells.next.push(newCell);
 						return newCell;
 					}
@@ -441,7 +442,7 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 							...cell,
 							content: CHECKBOX_MARKDOWN_UNCHECKED,
 						};
-						this.updatedCells.previous.push(structuredClone(cell));
+						this.updatedCells.previous.push(cloneDeep(cell));
 						this.updatedCells.next.push(newCell);
 						return newCell;
 					}

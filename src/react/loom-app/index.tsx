@@ -10,6 +10,7 @@ import App from "./app";
 import DragProvider from "src/shared/dragging/drag-context";
 import { LoomState } from "src/shared/loom-state/types/loom-state";
 import MenuProvider from "../shared/menu-provider";
+import ErrorBoundary from "../shared/error-boundary";
 
 interface Props {
 	app: ObsidianApp;
@@ -33,25 +34,27 @@ export default function LoomApp({
 	onSaveState,
 }: Props) {
 	return (
-		<AppMountProvider
-			app={app}
-			mountLeaf={mountLeaf}
-			reactAppId={reactAppId}
-			isMarkdownView={isMarkdownView}
-			loomFile={loomFile}
-		>
-			<Provider store={store}>
-				<LoomStateProvider
-					initialState={loomState}
-					onSaveState={onSaveState}
-				>
-					<DragProvider>
-						<MenuProvider>
-							<App />
-						</MenuProvider>
-					</DragProvider>
-				</LoomStateProvider>
-			</Provider>
-		</AppMountProvider>
+		<ErrorBoundary>
+			<AppMountProvider
+				app={app}
+				mountLeaf={mountLeaf}
+				reactAppId={reactAppId}
+				isMarkdownView={isMarkdownView}
+				loomFile={loomFile}
+			>
+				<Provider store={store}>
+					<LoomStateProvider
+						initialState={loomState}
+						onSaveState={onSaveState}
+					>
+						<DragProvider>
+							<MenuProvider>
+								<App />
+							</MenuProvider>
+						</DragProvider>
+					</LoomStateProvider>
+				</Provider>
+			</AppMountProvider>
+		</ErrorBoundary>
 	);
 }

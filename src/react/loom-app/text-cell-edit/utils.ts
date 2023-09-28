@@ -1,3 +1,4 @@
+import { cloneDeep } from "lodash";
 import { DOUBLE_BRACKET_REGEX } from "./constants";
 /**
  * Checks if the current position of the input cursor is surrounded by double brackets
@@ -12,7 +13,7 @@ export const isSurroundedByDoubleBrackets = (
 ) => {
 	let match;
 
-	const regex = structuredClone(DOUBLE_BRACKET_REGEX);
+	const regex = cloneDeep(DOUBLE_BRACKET_REGEX);
 	//We create a copy because exec stores state in the regex
 	while ((match = regex.exec(inputValue)) !== null) {
 		//The inner text of the double brackets
@@ -46,7 +47,7 @@ export const doubleBracketsInnerReplace = (
 ) => {
 	let match;
 	//We create a copy because exec stores state in the regex
-	const regex = structuredClone(DOUBLE_BRACKET_REGEX);
+	const regex = cloneDeep(DOUBLE_BRACKET_REGEX);
 	while ((match = regex.exec(inputValue)) !== null) {
 		//The inner text of the double brackets
 		const innerText = match[1];
@@ -94,7 +95,7 @@ export const doubleBracketsInnerReplace = (
 export const getFilterValue = (inputValue: string, selectionStart: number) => {
 	let match;
 
-	const regex = structuredClone(DOUBLE_BRACKET_REGEX);
+	const regex = cloneDeep(DOUBLE_BRACKET_REGEX);
 	//We create a copy because exec stores state in the regex
 	while ((match = regex.exec(inputValue)) !== null) {
 		//The inner text of the double brackets

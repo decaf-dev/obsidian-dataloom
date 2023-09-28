@@ -1,6 +1,7 @@
 import MigrateState from "./migrate-state";
 import { LoomState7 } from "../types/loom-state-7";
 import { LoomState8 } from "../types/loom-state-8";
+import { cloneDeep } from "lodash";
 
 /**
  * Migrates to 6.12.3
@@ -21,7 +22,7 @@ export default class MigrateState7 implements MigrateState {
 		});
 
 		const nextFooterCells = footerCells.map((cell) => {
-			const cellCopy: unknown = structuredClone(cell);
+			const cellCopy: unknown = cloneDeep(cell);
 			const unknownCell = cellCopy as Record<string, unknown>;
 			if (unknownCell["functionType"]) {
 				delete unknownCell.functionType;

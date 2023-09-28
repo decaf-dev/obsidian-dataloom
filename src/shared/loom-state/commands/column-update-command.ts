@@ -1,6 +1,7 @@
 import ColumNotFoundError from "src/shared/error/column-not-found-error";
 import LoomStateCommand from "./loom-state-command";
 import { Column, LoomState } from "../types/loom-state";
+import { cloneDeep } from "lodash";
 
 export default class ColumnUpdateCommand extends LoomStateCommand {
 	private columnId: string;
@@ -35,7 +36,7 @@ export default class ColumnUpdateCommand extends LoomStateCommand {
 
 		const nextColumns = columns.map((column) => {
 			if (column.id === this.columnId) {
-				this.prevColumn = structuredClone(column);
+				this.prevColumn = cloneDeep(column);
 
 				let newColumn: Column = this.data as Column;
 				if (this.isPartial)
