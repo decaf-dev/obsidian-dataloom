@@ -8,7 +8,6 @@ import {
 	Column,
 	CurrencyType,
 	DateFormat,
-	Filter,
 	PaddingSize,
 	SortDir,
 	LoomState,
@@ -39,12 +38,21 @@ import {
 	LastEditedTimeCondition,
 	DateFilterOption,
 	NumberFormat,
+	Source,
+	SourceType,
 } from "./types/loom-state";
 
 import { v4 as uuidv4 } from "uuid";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/constants";
 import { Color } from "src/shared/loom-state/types/loom-state";
 
+export const createSource = (name: string, type: SourceType): Source => {
+	return {
+		id: uuidv4(),
+		type,
+		name,
+	};
+};
 export const createColumn = (options?: { cellType?: CellType }): Column => {
 	const { cellType = CellType.TEXT } = options || {};
 	return {
@@ -447,13 +455,12 @@ const createGenericLoomState = (
 		rows.push(row);
 	}
 
-	const filters: Filter[] = [];
-
 	return {
 		model: {
 			columns,
 			rows,
-			filters,
+			filters: [],
+			sources: [],
 			settings: {
 				numFrozenColumns: defaultFrozenColumnCount,
 				showCalculationRow: true,

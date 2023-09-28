@@ -22,6 +22,7 @@ import {
 	NumberFilterCondition,
 	DateFilterCondition,
 	DateFilterOption,
+	SourceType,
 } from "../types/loom-state";
 
 const FilterOperatorUnion = Union(Literal("and"), Literal("or"));
@@ -344,6 +345,14 @@ const Row = Record({
 	cells: Array(Cell),
 });
 
+const SourceUnion = Union(Literal(SourceType.FOLDER), Literal(SourceType.TAG));
+
+const Source = Record({
+	id: String,
+	type: SourceUnion,
+	name: String,
+});
+
 const TableSettings = Record({
 	numFrozenColumns: Number,
 	showCalculationRow: Boolean,
@@ -354,6 +363,7 @@ const TableModel = Record({
 	rows: Array(Row),
 	filters: Array(Filter),
 	settings: TableSettings,
+	sources: Array(Source),
 });
 
 export const LoomStateObject = Record({

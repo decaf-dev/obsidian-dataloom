@@ -39,6 +39,8 @@ import { LoomState13 } from "src/shared/loom-state/types/loom-state-13";
 import MigrateState13 from "src/shared/loom-state/migrate/migrate-state-13";
 import { LoomStateObject } from "src/shared/loom-state/validate/validate-state";
 import DeserializationError from "./deserialization-error";
+import { LoomState14 } from "src/shared/loom-state/types/loom-state-14";
+import MigrateState14 from "src/shared/loom-state/migrate/migrate-state-14";
 
 export const serializeState = (state: LoomState): string => {
 	return JSON.stringify(state, null, 2);
@@ -205,6 +207,16 @@ export const deserializeState = (
 			failedMigration = VERSION_8_6_0;
 			const nextState = new MigrateState13().migrate(
 				currentState as LoomState13
+			);
+			currentState = nextState;
+			failedMigration = null;
+		}
+
+		const VERSION_8_7_0 = "8.7.0";
+		if (isVersionLessThan(fileVersion, VERSION_8_7_0)) {
+			failedMigration = VERSION_8_7_0;
+			const nextState = new MigrateState14().migrate(
+				currentState as LoomState14
 			);
 			currentState = nextState;
 			failedMigration = null;
