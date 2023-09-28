@@ -23,10 +23,12 @@ import {
 import "./styles.css";
 
 interface Props {
+	index: number;
 	currencyType: CurrencyType;
 	numberPrefix: string;
 	numberSuffix: string;
 	numberSeparator: string;
+	numFrozenColumns: number;
 	horizontalPadding: PaddingSize;
 	verticalPadding: PaddingSize;
 	aspectRatio: AspectRatio;
@@ -61,11 +63,14 @@ interface Props {
 	onHorizontalPaddingClick: (columnId: string, value: PaddingSize) => void;
 	onAspectRatioClick: (columnId: string, value: AspectRatio) => void;
 	onHideClick: (columnId: string) => void;
+	onFrozenColumnsChange: (value: number) => void;
 }
 
 export default function HeaderCellContainer({
+	index,
 	columnId,
 	currencyType,
+	numFrozenColumns,
 	numberFormat,
 	numberPrefix,
 	numberSeparator,
@@ -96,6 +101,7 @@ export default function HeaderCellContainer({
 	onNumberSuffixChange,
 	onDateFormatChange,
 	onHideClick,
+	onFrozenColumnsChange,
 }: Props) {
 	const {
 		menu,
@@ -166,10 +172,12 @@ export default function HeaderCellContainer({
 				</div>
 			</MenuTrigger>
 			<HeaderMenu
+				index={index}
 				isOpen={isOpen}
 				closeRequest={closeRequest}
 				triggerPosition={triggerPosition}
 				id={menu.id}
+				numFrozenColumns={numFrozenColumns}
 				aspectRatio={aspectRatio}
 				horizontalPadding={horizontalPadding}
 				verticalPadding={verticalPadding}
@@ -202,6 +210,7 @@ export default function HeaderCellContainer({
 				onHorizontalPaddingClick={onHorizontalPaddingClick}
 				onAspectRatioClick={onAspectRatioClick}
 				onHideClick={onHideClick}
+				onFrozenColumnsChange={onFrozenColumnsChange}
 			/>
 		</>
 	);

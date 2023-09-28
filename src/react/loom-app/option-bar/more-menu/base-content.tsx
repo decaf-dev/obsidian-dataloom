@@ -8,7 +8,6 @@ import { useLoomState } from "../../loom-state-provider";
 
 interface Props {
 	onClose: () => void;
-	onFreezeColumnsClick: () => void;
 	onSettingsClick: () => void;
 	onToggleColumnClick: () => void;
 	onFilterClick: () => void;
@@ -16,7 +15,6 @@ interface Props {
 }
 
 export default function BaseContent({
-	onFreezeColumnsClick,
 	onToggleColumnClick,
 	onFilterClick,
 	onSettingsClick,
@@ -47,11 +45,6 @@ export default function BaseContent({
 				lucideId="eye-off"
 				name="Toggle"
 				onClick={onToggleColumnClick}
-			/>
-			<MenuItem
-				lucideId="snowflake"
-				name="Freeze"
-				onClick={onFreezeColumnsClick}
 			/>
 			<MenuItem
 				lucideId="import"

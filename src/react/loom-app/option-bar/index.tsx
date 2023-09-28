@@ -20,7 +20,6 @@ import "./styles.css";
 import SourcesMenu from "./sources-menu";
 
 interface Props {
-	numFrozenColumns: number;
 	columns: Column[];
 	filters: Filter[];
 	showCalculationRow: boolean;
@@ -33,11 +32,9 @@ interface Props {
 	) => void;
 	onFilterDeleteClick: (filterId: string) => void;
 	onFilterAddClick: () => void;
-	onFrozenColumnsChange: (value: number) => void;
 	onCalculationRowToggle: (value: boolean) => void;
 }
 export default function OptionBar({
-	numFrozenColumns,
 	columns,
 	filters,
 	showCalculationRow,
@@ -46,7 +43,6 @@ export default function OptionBar({
 	onFilterUpdate,
 	onFilterDeleteClick,
 	onFilterAddClick,
-	onFrozenColumnsChange,
 	onCalculationRowToggle,
 }: Props) {
 	const {
@@ -177,8 +173,6 @@ export default function OptionBar({
 				showCalculationRow={showCalculationRow}
 				triggerPosition={moreMenuTriggerPosition}
 				columns={columns}
-				numFrozenColumns={numFrozenColumns}
-				onFrozenColumnsChange={onFrozenColumnsChange}
 				onFilterClick={() => onFilterMenuOpen()}
 				onColumnToggle={onColumnToggle}
 				onRequestClose={onMoreMenuRequestClose}

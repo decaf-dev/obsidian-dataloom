@@ -165,14 +165,12 @@ export default function App() {
 			<OptionBar
 				columns={columns}
 				filters={filters}
-				numFrozenColumns={numFrozenColumns}
 				showCalculationRow={showCalculationRow}
 				onColumnToggle={onColumnToggle}
 				onSortRemoveClick={onSortRemoveClick}
 				onFilterAddClick={onFilterAdd}
 				onFilterDeleteClick={onFilterDelete}
 				onFilterUpdate={onFilterUpdate}
-				onFrozenColumnsChange={onFrozenColumnsChange}
 				onCalculationRowToggle={onCalculationRowToggle}
 			/>
 			<Table
@@ -187,7 +185,7 @@ export default function App() {
 								<div className="dataloom-cell--left-corner" />
 							),
 						},
-						...visibleColumns.map((column) => {
+						...visibleColumns.map((column, i) => {
 							const {
 								id: columnId,
 								width,
@@ -211,6 +209,7 @@ export default function App() {
 								content: (
 									<HeaderCell
 										key={columnId}
+										index={i}
 										dateFormat={dateFormat}
 										currencyType={currencyType}
 										numberPrefix={numberPrefix}
@@ -224,6 +223,7 @@ export default function App() {
 										columnId={columnId}
 										resizingColumnId={resizingColumnId}
 										width={width}
+										numFrozenColumns={numFrozenColumns}
 										shouldWrapOverflow={shouldWrapOverflow}
 										content={content}
 										type={type}
@@ -257,6 +257,9 @@ export default function App() {
 										}
 										onAspectRatioClick={onAspectRatioClick}
 										onHideClick={onColumnHideClick}
+										onFrozenColumnsChange={
+											onFrozenColumnsChange
+										}
 									/>
 								),
 							};

@@ -29,9 +29,11 @@ import {
 import "./styles.css";
 
 interface Props {
+	index: number;
 	isOpen: boolean;
 	canDeleteColumn: boolean;
 	id: string;
+	numFrozenColumns: number;
 	dateFormat: DateFormat;
 	triggerPosition: Position;
 	currencyType: CurrencyType;
@@ -71,6 +73,7 @@ interface Props {
 	onHideClick: (columnId: string) => void;
 	onRequestClose: (type: LoomMenuCloseRequestType) => void;
 	onClose: () => void;
+	onFrozenColumnsChange: (value: number) => void;
 }
 
 const SELFHANDLE_CLOSE: SubmenuType[] = [
@@ -80,11 +83,13 @@ const SELFHANDLE_CLOSE: SubmenuType[] = [
 ];
 
 export default function HeaderMenu({
+	index,
 	isOpen,
 	id,
 	triggerPosition,
 	content,
 	dateFormat,
+	numFrozenColumns,
 	currencyType,
 	numberFormat,
 	numberPrefix,
@@ -115,6 +120,7 @@ export default function HeaderMenu({
 	onDateFormatChange,
 	onHideClick,
 	onRequestClose,
+	onFrozenColumnsChange,
 }: Props) {
 	const [submenu, setSubmenu] = useState<SubmenuType | null>(null);
 	const [localValue, setLocalValue] = useState(content);
@@ -169,6 +175,12 @@ export default function HeaderMenu({
 		setSubmenu(null);
 	}
 
+	function handleFrozenColumnsChange(value: number) {
+		onFrozenColumnsChange(value);
+		onClose();
+		setSubmenu(null);
+	}
+
 	function handleHideClick() {
 		onHideClick(columnId);
 		onClose();
@@ -218,8 +230,10 @@ export default function HeaderMenu({
 			<div className="dataloom-header-menu">
 				{submenu === null && (
 					<BaseMenu
+						index={index}
 						canDeleteColumn={canDeleteColumn}
 						shouldWrapOverflow={shouldWrapOverflow}
+						numFrozenColumns={numFrozenColumns}
 						columnId={columnId}
 						columnName={localValue}
 						columnType={columnType}
@@ -230,6 +244,7 @@ export default function HeaderMenu({
 						onWrapOverflowToggle={onWrapOverflowToggle}
 						onDeleteClick={handleDeleteClick}
 						onHideClick={handleHideClick}
+						onFrozenColumnsChange={handleFrozenColumnsChange}
 					/>
 				)}
 				{submenu === SubmenuType.OPTIONS && (

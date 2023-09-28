@@ -15,10 +15,12 @@ import { usePlaceCursorAtEnd } from "src/shared/hooks";
 import { getDisplayNameForCellType } from "src/shared/loom-state/type-display-names";
 
 interface Props {
+	index: number;
 	canDeleteColumn: boolean;
 	columnId: string;
 	shouldWrapOverflow: boolean;
 	columnName: string;
+	numFrozenColumns: number;
 	columnType: CellType;
 	columnSortDir: SortDir;
 	onColumnNameChange: (value: string) => void;
@@ -27,10 +29,13 @@ interface Props {
 	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
 	onDeleteClick: () => void;
 	onHideClick: () => void;
+	onFrozenColumnsChange: (value: number) => void;
 }
 
 export default function BaseMenu({
+	index,
 	shouldWrapOverflow,
+	numFrozenColumns,
 	columnName,
 	columnId,
 	columnType,
@@ -42,6 +47,7 @@ export default function BaseMenu({
 	onDeleteClick,
 	onColumnNameChange,
 	onHideClick,
+	onFrozenColumnsChange,
 }: Props) {
 	const inputRef = React.useRef<HTMLInputElement | null>(null);
 	usePlaceCursorAtEnd(inputRef, columnName);
@@ -111,6 +117,20 @@ export default function BaseMenu({
 				name="Hide"
 				onClick={() => onHideClick()}
 			/>
+			{index < 4 && numFrozenColumns !== index + 2 && (
+				<MenuItem
+					lucideId="pin"
+					name="Freeze up to column"
+					onClick={() => onFrozenColumnsChange(index + 2)}
+				/>
+			)}
+			{numFrozenColumns === index + 2 && (
+				<MenuItem
+					lucideId="pin-off"
+					name="Unfreeze columns"
+					onClick={() => onFrozenColumnsChange(1)}
+				/>
+			)}
 			{canDeleteColumn && (
 				<MenuItem
 					lucideId="trash"

@@ -2,7 +2,6 @@ import React from "react";
 
 import Menu from "src/react/shared/menu";
 import { MoreMenuSubmenu } from "./constants";
-import FrozenColumnsSubmenu from "./frozen-columns-submenu";
 import BaseContent from "./base-content";
 import {
 	LoomMenuCloseRequestType,
@@ -17,9 +16,7 @@ interface Props {
 	isOpen: boolean;
 	columns: Column[];
 	triggerPosition: Position;
-	numFrozenColumns: number;
 	showCalculationRow: boolean;
-	onFrozenColumnsChange: (value: number) => void;
 	onFilterClick: () => void;
 	onSourcesClick: () => void;
 	onColumnToggle: (id: string, isVisible: boolean) => void;
@@ -32,10 +29,8 @@ export default function MoreMenu({
 	id,
 	isOpen,
 	triggerPosition,
-	numFrozenColumns,
 	showCalculationRow,
 	columns,
-	onFrozenColumnsChange,
 	onFilterClick,
 	onSourcesClick,
 	onRequestClose,
@@ -66,18 +61,8 @@ export default function MoreMenu({
 					}
 					onFilterClick={onFilterClick}
 					onSourcesClick={onSourcesClick}
-					onFreezeColumnsClick={() =>
-						setSubmenu(MoreMenuSubmenu.FROZEN_COLUMNS)
-					}
 					onClose={onClose}
 					onSettingsClick={() => setSubmenu(MoreMenuSubmenu.SETTINGS)}
-				/>
-			)}
-			{submenu == MoreMenuSubmenu.FROZEN_COLUMNS && (
-				<FrozenColumnsSubmenu
-					numFrozenColumns={numFrozenColumns}
-					onBackClick={() => setSubmenu(null)}
-					onFrozenColumnsChange={onFrozenColumnsChange}
 				/>
 			)}
 			{submenu === MoreMenuSubmenu.SETTINGS && (
