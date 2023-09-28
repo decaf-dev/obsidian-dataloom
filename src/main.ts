@@ -44,6 +44,7 @@ import {
 	loadPreviewModeApps,
 	purgeEmbeddedLoomApps,
 } from "./obsidian/embedded/embedded-app-manager";
+import { cloneDeep } from "lodash";
 
 export interface DataLoomSettings {
 	shouldDebug: boolean;
@@ -331,8 +332,7 @@ export default class DataLoomPlugin extends Plugin {
 								const { cells } = row;
 								cells.forEach((cell) => {
 									const { content } = cell;
-									const regex =
-										structuredClone(WIKI_LINK_REGEX);
+									const regex = cloneDeep(WIKI_LINK_REGEX);
 									let matches;
 									while (
 										(matches = regex.exec(content)) !== null
@@ -379,7 +379,7 @@ export default class DataLoomPlugin extends Plugin {
 									path: loomFile.path,
 								});
 
-							const newState = structuredClone(state);
+							const newState = cloneDeep(state);
 							newState.model.rows.map((row) => {
 								const { cells } = row;
 								const nextCells = cells.map((cell) => {
