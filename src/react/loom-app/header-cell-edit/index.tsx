@@ -223,7 +223,7 @@ export default function HeaderMenu({
 			isOpen={isOpen}
 			id={id}
 			triggerPosition={triggerPosition}
-			width={175}
+			width={190}
 			onRequestClose={onRequestClose}
 			onClose={onClose}
 		>
