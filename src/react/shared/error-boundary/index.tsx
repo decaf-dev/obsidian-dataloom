@@ -38,6 +38,8 @@ class ErrorBoundary extends React.Component<
 					title="DataLoom experienced an error"
 					errorMessage={this.state.errorMessage ?? ""}
 					copyErrorMessage={copyErrorMessage}
+					helpMessage="For help fixing this error please post in the bugs channel on the Discord:"
+					helpURL="https://discord.gg/QaFbepMdN4"
 				/>
 			);
 		}

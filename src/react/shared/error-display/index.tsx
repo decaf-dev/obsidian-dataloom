@@ -12,6 +12,8 @@ interface Props {
 	copyErrorMessage: string;
 	infoSection?: React.ReactNode;
 	isEmbeddedApp?: boolean;
+	helpMessage: string;
+	helpURL: string;
 }
 
 export default function ErrorDisplay({
@@ -20,6 +22,8 @@ export default function ErrorDisplay({
 	errorMessage,
 	isEmbeddedApp,
 	infoSection,
+	helpMessage,
+	helpURL,
 }: Props) {
 	function handleCopyClick() {
 		navigator.clipboard.writeText(copyErrorMessage);
@@ -51,10 +55,8 @@ export default function ErrorDisplay({
 					<Divider />
 					{infoSection}
 					<Stack spacing="sm">
-						<Text value="For help fixing this error please visit:" />
-						<a href="https://dataloom.xyz/other/loom-file">
-							https://dataloom.xyz/other/loom-file
-						</a>
+						<Text value={helpMessage} />
+						<a href={helpURL}>{helpURL}</a>
 					</Stack>
 					<Stack isHorizontal>
 						<button

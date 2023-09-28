@@ -25,6 +25,8 @@ export default function ErrorApp({ error, isEmbeddedApp = false }: Props) {
 			errorMessage={message}
 			copyErrorMessage={copyErrorMessage}
 			isEmbeddedApp={isEmbeddedApp}
+			helpMessage="For help fixing this error please visit:"
+			helpURL="https://dataloom.xyz/other/loom-file"
 			infoSection={
 				<>
 					<Stack isHorizontal spacing="xl">
