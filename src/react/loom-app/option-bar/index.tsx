@@ -12,6 +12,8 @@ import {
 	SortDir,
 	Column,
 	Filter,
+	Source,
+	SourceType,
 } from "src/shared/loom-state/types/loom-state";
 import { isSmallScreenSize } from "src/shared/render/utils";
 import { useMenu } from "../../shared/menu/hooks";
@@ -22,6 +24,7 @@ import SourcesMenu from "./sources-menu";
 interface Props {
 	columns: Column[];
 	filters: Filter[];
+	sources: Source[];
 	showCalculationRow: boolean;
 	onSortRemoveClick: (columnId: string) => void;
 	onColumnToggle: (columnId: string, isVisible: boolean) => void;
@@ -33,10 +36,13 @@ interface Props {
 	onFilterDeleteClick: (filterId: string) => void;
 	onFilterAddClick: () => void;
 	onCalculationRowToggle: (value: boolean) => void;
+	onSourceAdd: (type: SourceType, name: string) => void;
+	onSourceDelete: (id: string) => void;
 }
 export default function OptionBar({
 	columns,
 	filters,
+	sources,
 	showCalculationRow,
 	onSortRemoveClick,
 	onColumnToggle,
@@ -44,6 +50,8 @@ export default function OptionBar({
 	onFilterDeleteClick,
 	onFilterAddClick,
 	onCalculationRowToggle,
+	onSourceAdd,
+	onSourceDelete,
 }: Props) {
 	const {
 		menu: moreMenu,
@@ -164,6 +172,9 @@ export default function OptionBar({
 				id={sourcesMenu.id}
 				isOpen={isSourcesMenuOpen}
 				triggerPosition={sourcesMenuTriggerPosition}
+				sources={sources}
+				onAdd={onSourceAdd}
+				onDelete={onSourceDelete}
 				onRequestClose={onSourcesMenuRequestClose}
 				onClose={onSourcesMenuClose}
 			/>

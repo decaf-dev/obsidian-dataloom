@@ -11,6 +11,7 @@ import {
 	NumberFilterCondition,
 	DateFilterCondition,
 	DateFilterOption,
+	SourceType,
 } from "./types/loom-state";
 
 const getShortDisplayNameForCalculation = (value: GeneralCalculation) => {
@@ -123,6 +124,17 @@ export const getDisplayNameForNumberCalculation = (
 			return "Median";
 		case NumberCalculation.RANGE:
 			return "Range";
+		default:
+			return "";
+	}
+};
+
+export const getDisplayNameForSource = (type: SourceType) => {
+	switch (type) {
+		case SourceType.FOLDER:
+			return "Obsidian folder";
+		case SourceType.TAG:
+			return "Obsidian tag";
 		default:
 			return "";
 	}

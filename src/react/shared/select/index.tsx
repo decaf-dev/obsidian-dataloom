@@ -1,6 +1,7 @@
 import "./styles.css";
 
 interface Props {
+	id?: string;
 	className?: string;
 	value: string;
 	onKeyDown?: (e: React.KeyboardEvent<HTMLSelectElement>) => void;
@@ -9,6 +10,7 @@ interface Props {
 }
 
 export default function Select({
+	id,
 	className,
 	value,
 	onChange,
@@ -21,6 +23,7 @@ export default function Select({
 	}
 	return (
 		<select
+			id={id}
 			tabIndex={0}
 			className={newClassName}
 			value={value}

@@ -40,6 +40,7 @@ import { useLogger } from "src/shared/logger";
 import { useMenuOperations } from "src/react/shared/menu/hooks";
 import FooterCellContainer from "../footer-cell-container";
 import { Cell } from "src/shared/loom-state/types/loom-state";
+import { useSource } from "./hooks/use-source";
 
 export default function App() {
 	const logger = useLogger();
@@ -54,6 +55,7 @@ export default function App() {
 	useRowEvents();
 	useColumnEvents();
 	useMenuEvents();
+	const { onSourceAdd, onSourceDelete } = useSource();
 
 	const { onFocusKeyDown } = useFocus();
 	const { onFrozenColumnsChange, onCalculationRowToggle } =
@@ -141,7 +143,7 @@ export default function App() {
 		nltEventSystem.dispatchEvent("keydown", e);
 	}
 
-	const { columns, filters, settings } = loomState.model;
+	const { columns, filters, settings, sources } = loomState.model;
 	const { numFrozenColumns, showCalculationRow } = settings;
 
 	let filteredBodyRows = filterByFilters(loomState);
@@ -164,6 +166,7 @@ export default function App() {
 		>
 			<OptionBar
 				columns={columns}
+				sources={sources}
 				filters={filters}
 				showCalculationRow={showCalculationRow}
 				onColumnToggle={onColumnToggle}
@@ -172,6 +175,8 @@ export default function App() {
 				onFilterDeleteClick={onFilterDelete}
 				onFilterUpdate={onFilterUpdate}
 				onCalculationRowToggle={onCalculationRowToggle}
+				onSourceAdd={onSourceAdd}
+				onSourceDelete={onSourceDelete}
 			/>
 			<Table
 				numFrozenColumns={numFrozenColumns}

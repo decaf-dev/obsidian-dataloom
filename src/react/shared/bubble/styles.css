@@ -7,6 +7,11 @@
     background-color: var(--color-accent);
 }
 
+.dataloom-bubble.dataloom-bubble--no-fill {
+    background-color: transparent;
+    color: inherit;
+}
+
 .dataloom-bubble span {
     max-width: 150px;
     overflow: hidden;
