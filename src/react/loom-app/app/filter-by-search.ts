@@ -7,7 +7,6 @@ import {
 	DateFormat,
 	NumberFormat,
 	Tag,
-	SourceCell,
 	Source,
 } from "src/shared/loom-state/types/loom-state";
 import { getTimeCellContent } from "src/shared/cell-content/time-content";
@@ -73,7 +72,7 @@ const doesCellMatch = (
 		tags,
 	} = column;
 
-	const { lastEditedTime, creationTime } = row;
+	const { lastEditedTime, creationTime, sourceId } = row;
 
 	switch (type) {
 		case CellType.TEXT:
@@ -106,7 +105,7 @@ const doesCellMatch = (
 			return matchTags(tags, cell, searchText);
 		}
 		case CellType.SOURCE: {
-			return matchSourceCell(sources, cell as SourceCell, searchText);
+			return matchSourceCell(sources, sourceId, searchText);
 		}
 		default:
 			throw new Error("Unsupported cell type");
@@ -115,10 +114,9 @@ const doesCellMatch = (
 
 const matchSourceCell = (
 	sources: Source[],
-	cell: SourceCell,
+	sourceId: string,
 	searchText: string
 ) => {
-	const { sourceId } = cell;
 	const source = sources.find((source) => source.id === sourceId);
 	if (!source) throw new Error("Source not found");
 

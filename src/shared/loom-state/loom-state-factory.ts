@@ -88,6 +88,7 @@ export const createRow = (
 	return {
 		id: uuidv4(),
 		index,
+		sourceId: "",
 		creationTime: currentTime,
 		lastEditedTime: currentTime,
 		cells,
