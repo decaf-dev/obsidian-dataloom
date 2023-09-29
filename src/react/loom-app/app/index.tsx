@@ -150,6 +150,8 @@ export default function App() {
 	});
 
 	const bodyRows = getBodyRows({
+		firstColumnId,
+		lastColumnId,
 		visibleColumns,
 		rows: filteredRows,
 		onCellContentChange,
@@ -165,6 +167,7 @@ export default function App() {
 		onRowDeleteClick,
 		onRowInsertAboveClick,
 		onRowInsertBelowClick,
+		onColumnChange,
 	});
 
 	const footerRow = getFooterRow({
