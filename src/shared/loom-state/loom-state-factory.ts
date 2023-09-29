@@ -107,18 +107,22 @@ export const createCell = (
 	const {
 		cellType,
 		tagIds = [],
-		content = "",
+		content: originalContent = "",
 		dateTime = null,
 	} = options ?? {};
+
+	let content = originalContent;
+	if (cellType === CellType.CHECKBOX) {
+		if (content === "") {
+			content = CHECKBOX_MARKDOWN_UNCHECKED;
+		}
+	}
 	return {
 		id: uuidv4(),
 		isExternalLink: false,
 		columnId,
 		dateTime,
-		content:
-			content === "" && cellType === CellType.CHECKBOX
-				? CHECKBOX_MARKDOWN_UNCHECKED
-				: content,
+		content,
 		tagIds,
 	};
 };
