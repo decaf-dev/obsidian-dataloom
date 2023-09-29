@@ -165,7 +165,7 @@ const doesCellMatchFilter = (
 		}
 
 		default:
-			throw new Error("Cell type not yet supported");
+			return true;
 	}
 };
 

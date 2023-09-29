@@ -148,7 +148,8 @@ export default function App() {
 
 	let filteredBodyRows = filterByFilters(loomState);
 	filteredBodyRows = filterRowsBySearch(
-		loomState,
+		sources,
+		columns,
 		filteredBodyRows,
 		searchText
 	);

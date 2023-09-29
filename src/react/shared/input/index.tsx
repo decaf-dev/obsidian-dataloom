@@ -5,6 +5,7 @@ import "./styles.css";
 interface Props {
 	id?: string;
 	isTransparent?: boolean;
+	isDisabled?: boolean;
 	showBorder?: boolean;
 	autoFocus?: boolean;
 	focusOutline?: "default" | "accent" | "none";
@@ -26,6 +27,7 @@ const Input = React.forwardRef<HTMLInputElement, Props>(
 			hasError,
 			value,
 			autoFocus = true,
+			isDisabled = false,
 			focusOutline = "accent",
 			placeholder,
 			inputMode,
@@ -56,6 +58,7 @@ const Input = React.forwardRef<HTMLInputElement, Props>(
 				ref={ref}
 				className={className}
 				placeholder={placeholder}
+				disabled={isDisabled}
 				type="text"
 				inputMode={inputMode}
 				autoFocus={autoFocus}

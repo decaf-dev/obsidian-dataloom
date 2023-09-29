@@ -32,6 +32,8 @@ export const getIconIdForCellType = (type: CellType) => {
 			return "tags";
 		case CellType.DATE:
 			return "calendar";
+		case CellType.SOURCE:
+			return "rss";
 		default:
 			return "text";
 	}

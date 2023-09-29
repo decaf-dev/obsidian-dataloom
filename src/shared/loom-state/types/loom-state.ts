@@ -59,6 +59,10 @@ export interface Cell {
 	tagIds: string[];
 }
 
+export interface SourceCell extends Cell {
+	sourceId: string;
+}
+
 export interface Tag {
 	id: string;
 	content: string;
@@ -68,7 +72,7 @@ export interface Tag {
 export interface Source {
 	id: string;
 	type: SourceType;
-	name: string;
+	content: string;
 }
 
 export enum SourceType {
@@ -107,6 +111,7 @@ export enum SortDir {
 }
 
 export enum CellType {
+	SOURCE = "source",
 	TEXT = "text",
 	EMBED = "embed",
 	FILE = "file",

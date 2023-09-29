@@ -4,15 +4,15 @@ import { Source, SourceType } from "../types/loom-state";
 import LoomStateCommand from "./loom-state-command";
 
 export default class SourceAddCommand extends LoomStateCommand {
-	private name: string;
 	private type: SourceType;
+	private content: string;
 
 	private addedSource: Source;
 
-	constructor(type: SourceType, name: string) {
+	constructor(type: SourceType, content: string) {
 		super();
 		this.type = type;
-		this.name = name;
+		this.content = content;
 	}
 
 	execute(prevState: LoomState): LoomState {
@@ -20,7 +20,7 @@ export default class SourceAddCommand extends LoomStateCommand {
 
 		const { sources } = prevState.model;
 
-		const newSource = createSource(this.name, this.type);
+		const newSource = createSource(this.type, this.content);
 		this.addedSource = newSource;
 		const nextSources = [...sources, newSource];
 

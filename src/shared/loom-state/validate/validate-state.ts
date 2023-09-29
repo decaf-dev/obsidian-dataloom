@@ -132,6 +132,7 @@ const SortDirUnion = Union(
 
 const CellTypeUnion = Union(
 	Literal(CellType.TEXT),
+	Literal(CellType.SOURCE),
 	Literal(CellType.EMBED),
 	Literal(CellType.FILE),
 	Literal(CellType.NUMBER),

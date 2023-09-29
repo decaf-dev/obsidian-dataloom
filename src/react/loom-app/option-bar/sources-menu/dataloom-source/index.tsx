@@ -10,7 +10,7 @@ import "./styles.css";
 
 interface Props {
 	id: string;
-	name: string;
+	content: string;
 	type: SourceType;
 	isEditing: boolean;
 	onDelete: (id: string) => void;
@@ -18,7 +18,7 @@ interface Props {
 
 export default function SourceItem({
 	id,
-	name,
+	content,
 	type,
 	isEditing,
 	onDelete,
@@ -31,7 +31,7 @@ export default function SourceItem({
 					<Bubble
 						icon={<Icon lucideId={getIconIdForSourceType(type)} />}
 						variant="no-fill"
-						value={name}
+						value={content}
 					/>
 				</Stack>
 				{isEditing && (

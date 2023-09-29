@@ -6,6 +6,7 @@ import { getEmbedCellContent } from "./embed-cell-content";
 import { getNumberCellContent } from "./number-cell-content";
 import { getTextCellContent } from "./text-cell-content";
 import { getTimeCellContent } from "./time-content";
+import { getSourceContent } from "./source-content";
 
 const getTagCellContent = (column: Column, cell: Cell) => {
 	return column.tags
@@ -50,6 +51,8 @@ export const getCellContent = (
 			return getTimeCellContent(row.creationTime, column.dateFormat);
 		case CellType.LAST_EDITED_TIME:
 			return getTimeCellContent(row.lastEditedTime, column.dateFormat);
+		case CellType.SOURCE:
+			return getSourceContent();
 		default:
 			throw new Error("Unsupported cell type");
 	}

@@ -26,12 +26,12 @@ export default function BaseContent({
 			/>
 			<div className="dataloom-source-container">
 				{sources.map((source) => {
-					const { id, name, type } = source;
+					const { id, content, type } = source;
 					return (
 						<SourceItem
 							key={id}
 							id={id}
-							name={name}
+							content={content}
 							type={type}
 							isEditing={isEditing}
 							onDelete={onDeleteClick}

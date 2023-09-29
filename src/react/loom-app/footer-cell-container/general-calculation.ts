@@ -153,7 +153,8 @@ const getCellValues = (
 		cellType === CellType.EMBED ||
 		cellType === CellType.NUMBER ||
 		cellType === CellType.CHECKBOX ||
-		cellType === CellType.FILE
+		cellType === CellType.FILE ||
+		cellType === CellType.SOURCE
 	) {
 		return [content];
 	} else if (cellType === CellType.DATE) {
@@ -181,7 +182,8 @@ const countCellValues = (cell: Cell, cellType: CellType): number => {
 		cellType === CellType.TEXT ||
 		cellType === CellType.EMBED ||
 		cellType === CellType.NUMBER ||
-		cellType === CellType.FILE
+		cellType === CellType.FILE ||
+		cellType === CellType.SOURCE
 	) {
 		return content === "" ? 0 : 1;
 	} else if (cellType === CellType.DATE) {
@@ -206,7 +208,8 @@ const isCellContentEmpty = (cell: Cell, cellType: CellType): boolean => {
 		cellType === CellType.TEXT ||
 		cellType === CellType.EMBED ||
 		cellType === CellType.NUMBER ||
-		cellType === CellType.FILE
+		cellType === CellType.FILE ||
+		cellType === CellType.SOURCE
 	) {
 		return content === "";
 	} else if (cellType === CellType.DATE) {

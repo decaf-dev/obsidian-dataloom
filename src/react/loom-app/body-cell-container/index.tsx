@@ -39,6 +39,7 @@ import { Color } from "src/shared/loom-state/types/loom-state";
 import { useMenu } from "../../shared/menu/hooks";
 
 import "./styles.css";
+import SourceCell from "../source-cell";
 
 interface Props {
 	isExternalLink: boolean;
@@ -294,7 +295,8 @@ export default function BodyCellContainer({
 				shouldOpenOnTrigger={
 					columnType !== CellType.CHECKBOX &&
 					columnType !== CellType.CREATION_TIME &&
-					columnType !== CellType.LAST_EDITED_TIME
+					columnType !== CellType.LAST_EDITED_TIME &&
+					columnType !== CellType.SOURCE
 				}
 				onOpen={onOpen}
 			>
@@ -368,6 +370,12 @@ export default function BodyCellContainer({
 							value={rowLastEditedTime}
 							format={dateFormat}
 							shouldWrapOverflow={shouldWrapOverflow}
+						/>
+					)}
+					{columnType === CellType.SOURCE && (
+						<SourceCell
+							shouldWrapOverflow={shouldWrapOverflow}
+							value={content}
 						/>
 					)}
 				</div>

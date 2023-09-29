@@ -5,9 +5,10 @@ import {
 	Column,
 	CurrencyType,
 	DateFormat,
-	LoomState,
 	NumberFormat,
 	Tag,
+	SourceCell,
+	Source,
 } from "src/shared/loom-state/types/loom-state";
 import { getTimeCellContent } from "src/shared/cell-content/time-content";
 import { getDateCellContent } from "src/shared/cell-content/date-cell-content";
@@ -15,11 +16,11 @@ import { getNumberCellContent } from "src/shared/cell-content/number-cell-conten
 import ColumNotFoundError from "src/shared/error/column-not-found-error";
 
 export const filterRowsBySearch = (
-	state: LoomState,
+	sources: Source[],
+	columns: Column[],
 	rows: Row[],
 	searchText: string
 ): Row[] => {
-	const { columns } = state.model;
 	if (searchText === "") return rows;
 
 	const columnIdToColumn = new Map<string, Column>();
@@ -42,12 +43,19 @@ export const filterRowsBySearch = (
 		return cells.some((cell) => {
 			const column = cellIdToColumn.get(cell.id);
 			if (!column) throw new ColumNotFoundError();
-			return doesCellMatch(cell, column, row, searchText.toLowerCase());
+			return doesCellMatch(
+				sources,
+				cell,
+				column,
+				row,
+				searchText.toLowerCase()
+			);
 		});
 	});
 };
 
 const doesCellMatch = (
+	sources: Source[],
 	cell: Cell,
 	column: Column,
 	row: Row,
@@ -66,7 +74,6 @@ const doesCellMatch = (
 	} = column;
 
 	const { lastEditedTime, creationTime } = row;
-	const cellTags = tags.filter((tag) => cell.tagIds.includes(tag.id));
 
 	switch (type) {
 		case CellType.TEXT:
@@ -95,11 +102,28 @@ const doesCellMatch = (
 				searchText
 			);
 		case CellType.TAG:
-		case CellType.MULTI_TAG:
-			return matchTags(cellTags, searchText);
+		case CellType.MULTI_TAG: {
+			return matchTags(tags, cell, searchText);
+		}
+		case CellType.SOURCE: {
+			return matchSourceCell(sources, cell as SourceCell, searchText);
+		}
 		default:
 			throw new Error("Unsupported cell type");
 	}
+};
+
+const matchSourceCell = (
+	sources: Source[],
+	cell: SourceCell,
+	searchText: string
+) => {
+	const { sourceId } = cell;
+	const source = sources.find((source) => source.id === sourceId);
+	if (!source) throw new Error("Source not found");
+
+	const { content } = source;
+	return content.toLowerCase().includes(searchText);
 };
 
 const matchTextCell = (cellContent: string, searchText: string) => {
@@ -124,7 +148,8 @@ const matchNumberCell = (
 	return content.toLowerCase().includes(searchText.toLowerCase());
 };
 
-const matchTags = (cellTags: Tag[], searchText: string) => {
+const matchTags = (columnTags: Tag[], cell: Cell, searchText: string) => {
+	const cellTags = columnTags.filter((tag) => cell.tagIds.includes(tag.id));
 	return cellTags.some((tag) =>
 		tag.content.toLowerCase().includes(searchText)
 	);

@@ -46,11 +46,11 @@ import { v4 as uuidv4 } from "uuid";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/constants";
 import { Color } from "src/shared/loom-state/types/loom-state";
 
-export const createSource = (name: string, type: SourceType): Source => {
+export const createSource = (type: SourceType, content: string): Source => {
 	return {
 		id: uuidv4(),
 		type,
-		name,
+		content,
 	};
 };
 export const createColumn = (options?: { cellType?: CellType }): Column => {
