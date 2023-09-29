@@ -40,7 +40,7 @@ import getHeaderRow from "./get-header-row";
 
 export default function App() {
 	const logger = useLogger();
-	const { reactAppId, isMarkdownView } = useAppMount();
+	const { reactAppId, isMarkdownView, app } = useAppMount();
 	const { loomState, resizingColumnId, searchText, onRedo, onUndo } =
 		useLoomState();
 
@@ -149,6 +149,8 @@ export default function App() {
 	});
 
 	const bodyRows = getBodyRows({
+		app,
+		sources,
 		firstColumnId,
 		lastColumnId,
 		visibleColumns,

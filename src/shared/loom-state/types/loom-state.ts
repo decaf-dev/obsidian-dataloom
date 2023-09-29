@@ -47,7 +47,7 @@ export interface Row {
 	index: number;
 	creationTime: number;
 	lastEditedTime: number;
-	sourceId: string;
+	sourceId: string | null;
 	cells: Cell[];
 }
 

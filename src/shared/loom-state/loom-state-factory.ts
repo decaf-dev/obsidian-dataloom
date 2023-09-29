@@ -81,14 +81,15 @@ export const createRow = (
 	index: number,
 	options?: {
 		cells?: Cell[];
+		sourceId?: string;
 	}
 ): Row => {
-	const { cells = [] } = options || {};
+	const { cells = [], sourceId = "" } = options || {};
 	const currentTime = Date.now();
 	return {
 		id: uuidv4(),
 		index,
-		sourceId: "",
+		sourceId,
 		creationTime: currentTime,
 		lastEditedTime: currentTime,
 		cells,

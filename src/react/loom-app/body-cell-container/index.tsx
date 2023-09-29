@@ -26,6 +26,7 @@ import {
 	DateFormat,
 	NumberFormat,
 	PaddingSize,
+	Source,
 	Tag,
 } from "src/shared/loom-state/types/loom-state";
 import LastEditedTimeCell from "../last-edited-time-cell";
@@ -45,6 +46,7 @@ import { CellChangeHandler } from "../app/hooks/use-cell/types";
 import { TagChangeHandler } from "../app/hooks/use-tag/types";
 
 interface Props {
+	source: Source | null;
 	isExternalLink: boolean;
 	columnType: string;
 	cellId: string;
@@ -86,6 +88,7 @@ export default function BodyCellContainer({
 	cellId,
 	columnId,
 	isExternalLink,
+	source,
 	content,
 	aspectRatio,
 	numberFormat,
@@ -372,7 +375,7 @@ export default function BodyCellContainer({
 					{columnType === CellType.SOURCE && (
 						<SourceCell
 							shouldWrapOverflow={shouldWrapOverflow}
-							value={content}
+							source={source}
 						/>
 					)}
 				</div>

@@ -23,6 +23,7 @@ export default function getFooterRow({
 }: Props): TableRow | undefined {
 	if (!showCalculationRow) return undefined;
 	return {
+		id: "footer-row",
 		cells: [
 			{
 				id: firstColumnId,

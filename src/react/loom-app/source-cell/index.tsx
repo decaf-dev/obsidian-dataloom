@@ -1,16 +1,40 @@
 import { useOverflow } from "src/shared/spacing/hooks";
-import "./styles.css";
+import { Source, SourceType } from "src/shared/loom-state/types/loom-state";
+import Bubble from "src/react/shared/bubble";
+import Icon from "src/react/shared/icon";
+import { getIconIdForSourceType } from "src/react/shared/icon/utils";
 
 interface Props {
-	value: string;
+	source: Source | null;
 	shouldWrapOverflow: boolean;
 }
 
-export default function SourceCell({ value, shouldWrapOverflow }: Props) {
+export default function SourceCell({ source, shouldWrapOverflow }: Props) {
 	const overflowClassName = useOverflow(shouldWrapOverflow);
 
 	let className = "dataloom-source-cell";
 	className += " " + overflowClassName;
 
-	return <div className={className}>{value}</div>;
+	let content = "";
+	if (source === null) {
+		content = "Internal";
+	} else {
+		content = source.content;
+	}
+
+	return (
+		<div className={className}>
+			<Bubble
+				variant="no-fill"
+				icon={
+					<Icon
+						lucideId={getIconIdForSourceType(
+							source?.type as SourceType
+						)}
+					/>
+				}
+				value={content}
+			/>
+		</div>
+	);
 }

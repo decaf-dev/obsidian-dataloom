@@ -7,7 +7,7 @@ import {
 	ColumnDeleteClickHandler,
 	ColumnTypeClickHandler,
 } from "./hooks/use-column/types";
-import { HeaderTableRow } from "../table/types";
+import { TableRow } from "../table/types";
 
 interface Props {
 	firstColumnId: string;
@@ -35,17 +35,18 @@ export default function getHeaderRow({
 	onColumnAddClick,
 	onColumnTypeChange,
 	onFrozenColumnsChange,
-}: Props): HeaderTableRow {
+}: Props): TableRow {
 	return {
+		id: "header-row",
 		cells: [
 			{
-				columnId: firstColumnId,
+				id: firstColumnId,
 				content: <div className="dataloom-cell--left-corner" />,
 			},
 			...visibleColumns.map((column, i) => {
 				const { id } = column;
 				return {
-					columnId: id,
+					id,
 					content: (
 						<HeaderCellContainer
 							key={id}
@@ -63,7 +64,7 @@ export default function getHeaderRow({
 				};
 			}),
 			{
-				columnId: lastColumnId,
+				id: lastColumnId,
 				content: <NewColumnButton onClick={onColumnAddClick} />,
 			},
 		],
