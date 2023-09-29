@@ -32,7 +32,7 @@ interface Props {
 	onTagDeleteClick: TagDeleteHandler;
 }
 
-export const getBodyRows = ({
+export default function getBodyRows({
 	firstColumnId,
 	lastColumnId,
 	visibleColumns,
@@ -48,7 +48,7 @@ export const getBodyRows = ({
 	onTagCellMultipleRemove,
 	onTagChange,
 	onTagDeleteClick,
-}: Props): BodyTableRow[] => {
+}: Props): BodyTableRow[] {
 	return rows.map((row) => {
 		const { id: rowId, lastEditedTime, creationTime } = row;
 		return {
@@ -145,4 +145,4 @@ export const getBodyRows = ({
 			],
 		};
 	});
-};
+}

@@ -31,11 +31,12 @@ import {
 import { useLogger } from "src/shared/logger";
 import { useMenuOperations } from "src/react/shared/menu/hooks";
 import { useSource } from "./hooks/use-source";
-import { getFooterRow, getHeaderRow } from "./table-utils";
+import getBodyRows from "./get-body-rows";
+import getFooterRow from "./get-footer-row";
 
 import "src/react/global.css";
 import "./styles.css";
-import { getBodyRows } from "./get-body-rows";
+import getHeaderRow from "./get-header-row";
 
 export default function App() {
 	const logger = useLogger();
