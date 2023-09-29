@@ -6,19 +6,11 @@ interface Props {
 	shouldWrapOverflow: boolean;
 }
 
-export default function SourceCell({
-	value: originalValue,
-	shouldWrapOverflow,
-}: Props) {
+export default function SourceCell({ value, shouldWrapOverflow }: Props) {
 	const overflowClassName = useOverflow(shouldWrapOverflow);
 
 	let className = "dataloom-source-cell";
 	className += " " + overflowClassName;
-
-	let value = originalValue;
-	if (value === "") {
-		value = "Internal";
-	}
 
 	return <div className={className}>{value}</div>;
 }
