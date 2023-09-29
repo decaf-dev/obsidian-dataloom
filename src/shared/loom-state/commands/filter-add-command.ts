@@ -21,7 +21,12 @@ export default class FilterAddCommand extends LoomStateCommand {
 		super.onExecute();
 
 		const { filters, columns } = prevState.model;
-		const { id: columnId, type } = columns[0];
+		let { id: columnId, type } = columns[0];
+
+		if (type === CellType.SOURCE) {
+			columnId = columns[1].id;
+			type = columns[1].type;
+		}
 
 		let newFilter: Filter | null = null;
 		if (type === CellType.TEXT) {
