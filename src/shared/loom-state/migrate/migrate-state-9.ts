@@ -1,6 +1,10 @@
 import MigrateState from "./migrate-state";
 import { SortDir } from "../types/loom-state";
-import { LoomState10 } from "../types/loom-state-10";
+import {
+	LoomState10,
+	Column as Column10,
+	BodyRow as BodyRow10,
+} from "../types/loom-state-10";
 import { LoomState9 } from "../types/loom-state-9";
 import { cloneDeep } from "lodash";
 
@@ -11,7 +15,7 @@ export default class MigrateState9 implements MigrateState {
 	public migrate(prevState: LoomState9): LoomState10 {
 		const { columns, bodyRows } = prevState.model;
 
-		const nextColumns = columns.map((column) => {
+		const nextColumns: Column10[] = columns.map((column) => {
 			//Fix: resolve empty rows being inserted but appearing higher up in the loom
 			//This was due to the index being set to the row's position in the array, which
 			//was sometimes less than the highest index value. This is because the index wasn't being
@@ -27,7 +31,7 @@ export default class MigrateState9 implements MigrateState {
 		//Sort by index
 		bodyRowsCopy.sort((a, b) => a.index - b.index);
 
-		const nextBodyRows = bodyRowsCopy.map((row, i) => {
+		const nextBodyRows: BodyRow10[] = bodyRowsCopy.map((row, i) => {
 			//Set the index to the correct value
 			return {
 				...row,

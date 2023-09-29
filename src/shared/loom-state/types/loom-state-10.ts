@@ -121,7 +121,7 @@ enum AspectRatio {
 
 type FunctionType = GeneralFunction | NumberFunction;
 
-interface Column {
+export interface Column {
 	id: string;
 	sortDir: SortDir;
 	width: string;
@@ -150,7 +150,7 @@ interface Row {
 	id: string;
 }
 
-interface BodyRow extends Row {
+export interface BodyRow extends Row {
 	index: number;
 	creationTime: number;
 	lastEditedTime: number;

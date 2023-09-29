@@ -15,12 +15,12 @@ interface TableModel {
 	settings: TableSettings;
 }
 
-interface TableSettings {
+export interface TableSettings {
 	numFrozenColumns: number;
 	showCalculationRow: boolean;
 }
 
-interface Column {
+export interface Column {
 	id: string;
 	sortDir: SortDir;
 	width: string;
@@ -41,7 +41,7 @@ interface Column {
 	verticalPadding: PaddingSize;
 }
 
-interface Row {
+export interface Row {
 	id: string;
 	index: number;
 	creationTime: number;
@@ -49,7 +49,7 @@ interface Row {
 	cells: Cell[];
 }
 
-interface Cell {
+export interface Cell {
 	id: string;
 	columnId: string;
 	isExternalLink: boolean;

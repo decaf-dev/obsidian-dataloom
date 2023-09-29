@@ -1,6 +1,10 @@
 import MigrateState from "./migrate-state";
 import { LoomState10 } from "../types/loom-state-10";
-import { LoomState11, Column as Column11 } from "../types/loom-state-11";
+import {
+	LoomState11,
+	Column as Column11,
+	BodyCell as BodyCell11,
+} from "../types/loom-state-11";
 import { cloneDeep } from "lodash";
 
 /**
@@ -11,7 +15,7 @@ export default class MigrateState10 implements MigrateState {
 		const { columns, bodyCells } = prevState.model;
 
 		//Migrate from functionType to calculationType
-		const nextColumns = columns.map((column) => {
+		const nextColumns: Column11[] = columns.map((column) => {
 			const columnCopy: unknown = cloneDeep(column);
 			const unknownCopy = columnCopy as Record<string, unknown>;
 			unknownCopy.calculationType = unknownCopy.functionType;
@@ -20,7 +24,7 @@ export default class MigrateState10 implements MigrateState {
 			return columnCopy as Column11;
 		});
 
-		const nextBodyCells = bodyCells.map((cell) => {
+		const nextBodyCells: BodyCell11[] = bodyCells.map((cell) => {
 			return {
 				...cell,
 				isExternalLink: true,

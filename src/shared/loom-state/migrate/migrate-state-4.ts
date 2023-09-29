@@ -1,7 +1,7 @@
 import MigrateState from "./migrate-state";
 import ColumNotFoundError from "src/shared/error/column-not-found-error";
 import { LoomState4, CellType as CellType4 } from "../types/loom-state-4";
-import { LoomState5 } from "../types/loom-state-5";
+import { LoomState5, BodyCell as BodyCell5 } from "../types/loom-state-5";
 
 const CHECKBOX_MARKDOWN_UNCHECKED = "[ ]";
 
@@ -13,7 +13,7 @@ export default class MigrateState4 implements MigrateState {
 		const { columns, bodyCells } = prevState.model;
 
 		//Fix: set all checkbox cells to unchecked
-		const nextBodyCells = bodyCells.map((cell) => {
+		const nextBodyCells: BodyCell5[] = bodyCells.map((cell) => {
 			const column = columns.find(
 				(column) => column.id === cell.columnId
 			);

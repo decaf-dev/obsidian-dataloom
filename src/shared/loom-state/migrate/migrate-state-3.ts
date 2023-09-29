@@ -5,20 +5,13 @@ import {
 	HeaderRow as HeaderRow4,
 	FooterRow as FooterRow4,
 	GeneralFunction as GeneralFunction4,
+	Column as Column4,
+	HeaderCell as HeaderCell4,
+	BodyRow as BodyRow4,
+	BodyCell as BodyCell4,
+	FooterCell as FooterCell4,
 } from "../types/loom-state-4";
 import { v4 as uuidv4 } from "uuid";
-
-const createHeaderRow = (): HeaderRow4 => {
-	return {
-		id: uuidv4(),
-	};
-};
-
-const createFooterRow = (): FooterRow4 => {
-	return {
-		id: uuidv4(),
-	};
-};
 
 /**
  * Migrates to 6.4.0
@@ -27,9 +20,9 @@ export default class MigrateState3 implements MigrateState {
 	public migrate(prevState: LoomState3): LoomState4 {
 		const { columns, rows, cells, tags } = prevState.model;
 
-		const nextHeaderRows = [createHeaderRow()];
+		const nextHeaderRows: HeaderRow4[] = [createHeaderRow()];
 
-		const nextBodyRows = rows
+		const nextBodyRows: BodyRow4[] = rows
 			.filter((_row, i) => i !== 0)
 			.map((row) => {
 				return {
@@ -41,10 +34,13 @@ export default class MigrateState3 implements MigrateState {
 				};
 			});
 
-		const nextFooterRows = [createFooterRow(), createFooterRow()];
+		const nextFooterRows: FooterRow4[] = [
+			createFooterRow(),
+			createFooterRow(),
+		];
 
 		//Update columns
-		const nextColumns = columns.map((column) => {
+		const nextColumns: Column4[] = columns.map((column) => {
 			return {
 				id: column.id,
 				sortDir: column.sortDir,
@@ -57,7 +53,7 @@ export default class MigrateState3 implements MigrateState {
 			};
 		});
 
-		const nextHeaderCells = cells
+		const nextHeaderCells: HeaderCell4[] = cells
 			.filter((cell) => cell.isHeader)
 			.map((cell) => {
 				return {
@@ -68,7 +64,7 @@ export default class MigrateState3 implements MigrateState {
 				};
 			});
 
-		const nextBodyCells = cells
+		const nextBodyCells: BodyCell4[] = cells
 			.filter((cell) => !cell.isHeader)
 			.map((cell) => {
 				return {
@@ -80,7 +76,7 @@ export default class MigrateState3 implements MigrateState {
 				};
 			});
 
-		const nextFooterCells = [];
+		const nextFooterCells: FooterCell4[] = [];
 		for (let i = 0; i < 2; i++) {
 			columns.forEach((column) => {
 				nextFooterCells.push({
@@ -108,3 +104,15 @@ export default class MigrateState3 implements MigrateState {
 		};
 	}
 }
+
+const createHeaderRow = (): HeaderRow4 => {
+	return {
+		id: uuidv4(),
+	};
+};
+
+const createFooterRow = (): FooterRow4 => {
+	return {
+		id: uuidv4(),
+	};
+};

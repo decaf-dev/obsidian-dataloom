@@ -1,6 +1,11 @@
 import MigrateState from "./migrate-state";
 import { LoomState2, Column as Column2 } from "../types/loom-state-2";
-import { LoomState3 } from "../types/loom-state-3";
+import {
+	LoomState3,
+	Row as Row3,
+	Column as Column3,
+	Cell as Cell3,
+} from "../types/loom-state-3";
 import { cloneDeep } from "lodash";
 
 /**
@@ -11,7 +16,7 @@ export default class MigrateState2 implements MigrateState {
 		const { columns, rows, cells } = prevState.model;
 
 		//Feat: Drag and drag rows
-		const nextRows = rows.map((row, i) => {
+		const nextRows: Row3[] = rows.map((row, i) => {
 			return {
 				...row,
 				index: i,
@@ -19,7 +24,7 @@ export default class MigrateState2 implements MigrateState {
 		});
 
 		//Feat: Column toggle
-		const nextColumns = columns.map((column) => {
+		const nextColumns: Column3[] = columns.map((column) => {
 			const columnCopy: unknown = cloneDeep(column);
 			const unknownColumn = columnCopy as Record<string, unknown>;
 
@@ -34,7 +39,7 @@ export default class MigrateState2 implements MigrateState {
 		});
 
 		//Feat: Date formats for Date type
-		const nextCells = cells.map((cell) => {
+		const nextCells: Cell3[] = cells.map((cell) => {
 			return {
 				...cell,
 				dateTime: null,

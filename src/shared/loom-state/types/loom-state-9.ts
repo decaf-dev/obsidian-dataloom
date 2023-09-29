@@ -121,7 +121,7 @@ enum NumberFunction {
 
 type FunctionType = GeneralFunction | NumberFunction;
 
-interface Column {
+export interface Column {
 	id: string;
 	sortDir: SortDir;
 	width: string;

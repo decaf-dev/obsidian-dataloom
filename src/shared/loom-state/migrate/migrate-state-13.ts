@@ -1,7 +1,13 @@
 import MigrateState from "./migrate-state";
 import { Tag } from "../types/loom-state";
 import { LoomState13, BodyCell as BodyCell13 } from "../types/loom-state-13";
-import { LoomState14 } from "../types/loom-state-14";
+import {
+	LoomState14,
+	TableSettings as Settings14,
+	Column as Column14,
+	Row as Row14,
+	Cell as Cell14,
+} from "../types/loom-state-14";
 
 /**
  * Migrates to 8.6.0
@@ -12,13 +18,13 @@ export default class MigrateState13 implements MigrateState {
 			prevState.model;
 
 		//Add showCalculationRow to settings
-		const nextSettings = {
+		const nextSettings: Settings14 = {
 			...settings,
 			showCalculationRow: true,
 		};
 
 		//Merge header cells into column
-		const nextColumns = columns.map((column) => {
+		const nextColumns: Column14[] = columns.map((column) => {
 			const cell = headerCells.find(
 				(cell) => cell.columnId === column.id
 			);
@@ -41,11 +47,11 @@ export default class MigrateState13 implements MigrateState {
 			};
 		});
 
-		const nextRows = bodyRows.map((row) => {
+		const nextRows: Row14[] = bodyRows.map((row) => {
 			const cells: BodyCell13[] = bodyCells.filter(
 				(cell) => cell.rowId === row.id
 			);
-			const nextCells = cells.map((cell) => {
+			const nextCells: Cell14[] = cells.map((cell) => {
 				const {
 					columnId,
 					id,
