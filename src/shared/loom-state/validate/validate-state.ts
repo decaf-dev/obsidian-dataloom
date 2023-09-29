@@ -351,7 +351,7 @@ const SourceUnion = Union(Literal(SourceType.FOLDER), Literal(SourceType.TAG));
 const Source = Record({
 	id: String,
 	type: SourceUnion,
-	name: String,
+	content: String,
 });
 
 const TableSettings = Record({
