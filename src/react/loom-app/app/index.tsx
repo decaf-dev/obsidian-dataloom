@@ -3,13 +3,10 @@ import React from "react";
 import { VirtuosoHandle } from "react-virtuoso";
 
 import Table from "../table";
-import RowOptions from "../row-options";
 import OptionBar from "../option-bar";
-import BodyCell from "../body-cell-container";
 import BottomBar from "../bottom-bar";
 
 import { useUUID } from "../../../shared/hooks";
-import CellNotFoundError from "src/shared/error/cell-not-found-error";
 import { useLoomState } from "../loom-state-provider";
 import { useFilter } from "./hooks/use-filter";
 import { filterRowsBySearch } from "./filter-by-search";
