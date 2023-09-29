@@ -47,6 +47,7 @@ export interface Row {
 	index: number;
 	creationTime: number;
 	lastEditedTime: number;
+	sourceId: string;
 	cells: Cell[];
 }
 
@@ -57,10 +58,6 @@ export interface Cell {
 	dateTime: number | null;
 	content: string;
 	tagIds: string[];
-}
-
-export interface SourceCell extends Cell {
-	sourceId: string;
 }
 
 export interface Tag {
