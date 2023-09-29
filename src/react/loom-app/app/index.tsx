@@ -38,6 +38,7 @@ import { getFooterRow, getHeaderRow } from "./table-utils";
 
 import "src/react/global.css";
 import "./styles.css";
+import { getBodyRows } from "./get-body-rows";
 
 export default function App() {
 	const logger = useLogger();
@@ -151,6 +152,24 @@ export default function App() {
 		resizingColumnId,
 	});
 
+	const bodyRows = getBodyRows({
+		visibleColumns,
+		rows: filteredRows,
+		onCellContentChange,
+		onCellDateTimeChange,
+		onTagCellAdd,
+		onTagAdd,
+		onTagCellRemove,
+		onTagCellMultipleRemove,
+		onTagColorChange,
+		onTagDeleteClick,
+		onTagContentChange,
+		onExternalLinkToggle,
+		onRowDeleteClick,
+		onRowInsertAboveClick,
+		onRowInsertBelowClick,
+	});
+
 	const footerRow = getFooterRow({
 		showCalculationRow,
 		firstColumnId,
@@ -187,123 +206,7 @@ export default function App() {
 				numFrozenColumns={numFrozenColumns}
 				ref={tableRef}
 				headerRow={headerRow}
-				bodyRows={filteredRows.map((row) => {
-					const { id: rowId, lastEditedTime, creationTime } = row;
-					return {
-						id: rowId,
-						cells: [
-							{
-								id: firstColumnId,
-								content: (
-									<RowOptions
-										rowId={rowId}
-										onDeleteClick={onRowDeleteClick}
-										onInsertAboveClick={
-											onRowInsertAboveClick
-										}
-										onInsertBelowClick={
-											onRowInsertBelowClick
-										}
-									/>
-								),
-							},
-							...visibleColumns.map((column) => {
-								const {
-									id: columnId,
-									width,
-									type,
-									shouldWrapOverflow,
-									currencyType,
-									numberPrefix,
-									numberSeparator,
-									numberFormat,
-									numberSuffix,
-									dateFormat,
-									tags,
-									verticalPadding,
-									horizontalPadding,
-									aspectRatio,
-								} = column;
-
-								const cell = row.cells.find(
-									(cell) => cell.columnId === columnId
-								);
-								if (!cell)
-									throw new CellNotFoundError({
-										columnId,
-										rowId,
-									});
-
-								const {
-									id: cellId,
-									content,
-									dateTime,
-									tagIds,
-									isExternalLink,
-								} = cell;
-
-								return {
-									id: cellId,
-									content: (
-										<BodyCell
-											key={cellId}
-											cellId={cellId}
-											isExternalLink={isExternalLink}
-											verticalPadding={verticalPadding}
-											horizontalPadding={
-												horizontalPadding
-											}
-											aspectRatio={aspectRatio}
-											columnTags={tags}
-											cellTagIds={tagIds}
-											columnId={columnId}
-											numberFormat={numberFormat}
-											rowCreationTime={creationTime}
-											dateFormat={dateFormat}
-											currencyType={currencyType}
-											numberPrefix={numberPrefix}
-											numberSuffix={numberSuffix}
-											numberSeparator={numberSeparator}
-											rowLastEditedTime={lastEditedTime}
-											dateTime={dateTime}
-											content={content}
-											columnType={type}
-											shouldWrapOverflow={
-												shouldWrapOverflow
-											}
-											width={width}
-											onTagClick={onTagCellAdd}
-											onTagRemoveClick={onTagCellRemove}
-											onTagMultipleRemove={
-												onTagCellMultipleRemove
-											}
-											onContentChange={
-												onCellContentChange
-											}
-											onTagColorChange={onTagColorChange}
-											onTagDelete={onTagDeleteClick}
-											onDateTimeChange={
-												onCellDateTimeChange
-											}
-											onColumnChange={onColumnChange}
-											onTagAdd={onTagAdd}
-											onExternalLinkToggle={
-												onExternalLinkToggle
-											}
-											onTagContentChange={
-												onTagContentChange
-											}
-										/>
-									),
-								};
-							}),
-							{
-								id: lastColumnId,
-								content: <></>,
-							},
-						],
-					};
-				})}
+				bodyRows={bodyRows}
 				footer={footerRow}
 			/>
 			<BottomBar

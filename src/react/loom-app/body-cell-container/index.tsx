@@ -80,7 +80,7 @@ interface Props {
 		color: Color,
 		isMultiTag: boolean
 	) => void;
-	onTagDelete: (columnId: string, tagId: string) => void;
+	onTagDeleteClick: (columnId: string, tagId: string) => void;
 	onTagColorChange: (columnId: string, tagId: string, color: Color) => void;
 	onColumnChange: ColumnChangeHandler;
 	onDateTimeChange: (cellId: string, value: number | null) => void;
@@ -112,7 +112,7 @@ export default function BodyCellContainer({
 	onTagRemoveClick,
 	onTagMultipleRemove,
 	onTagColorChange,
-	onTagDelete,
+	onTagDeleteClick,
 	onTagClick,
 	onContentChange,
 	onColumnChange,
@@ -216,7 +216,7 @@ export default function BodyCellContainer({
 	}
 
 	function handleTagDeleteClick(tagId: string) {
-		onTagDelete(columnId, tagId);
+		onTagDeleteClick(columnId, tagId);
 	}
 
 	function handleTagContentChange(tagId: string, value: string) {
