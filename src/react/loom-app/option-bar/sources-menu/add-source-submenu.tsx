@@ -5,6 +5,7 @@ import Padding from "src/react/shared/padding";
 import Select from "src/react/shared/select";
 import Stack from "src/react/shared/stack";
 import Submenu from "src/react/shared/submenu";
+import Text from "src/react/shared/text";
 import { getDisplayNameForSource } from "src/shared/loom-state/type-display-names";
 import { SourceType } from "src/shared/loom-state/types/loom-state";
 
@@ -19,11 +20,14 @@ export default function AddSourceSubmenu({
 }: Props) {
 	const [type, setType] = React.useState<SourceType | null>(null);
 	const [name, setName] = React.useState("");
+	const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
 	function handleAddClick() {
-		if (type !== null) {
-			onAddSourceClick(type, name);
+		if (type === null) {
+			setErrorMessage("Type is required");
+			return;
 		}
+		onAddSourceClick(type, name);
 	}
 
 	return (
@@ -58,6 +62,9 @@ export default function AddSourceSubmenu({
 							onChange={(value) => setName(value)}
 						/>
 					</Stack>
+					{errorMessage && (
+						<Text value={errorMessage} variant="error" />
+					)}
 					<Button variant="default" onClick={handleAddClick}>
 						Add
 					</Button>
