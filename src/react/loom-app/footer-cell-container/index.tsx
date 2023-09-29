@@ -22,6 +22,7 @@ import { getNumberCalculationContent } from "./number-calculation";
 import { useMenu } from "../../shared/menu/hooks";
 
 import "./styles.css";
+import { ColumnChangeHandler } from "../app/hooks/use-column/types";
 
 interface Props {
 	columnId: string;
@@ -34,7 +35,7 @@ interface Props {
 	currencyType: CurrencyType;
 	cellType: CellType;
 	dateFormat: DateFormat;
-	onTypeChange: (columnId: string, value: CalculationType) => void;
+	onColumnChange: ColumnChangeHandler;
 }
 
 export default function FooterCellContainer({
@@ -48,7 +49,7 @@ export default function FooterCellContainer({
 	calculationType,
 	currencyType,
 	cellType,
-	onTypeChange,
+	onColumnChange,
 }: Props) {
 	const {
 		menu,
@@ -61,7 +62,9 @@ export default function FooterCellContainer({
 	} = useMenu();
 
 	function handleTypeClick(value: CalculationType) {
-		onTypeChange(columnId, value);
+		onColumnChange(columnId, {
+			calculationType: value,
+		});
 		onClose();
 	}
 

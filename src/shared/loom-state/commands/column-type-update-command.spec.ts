@@ -5,7 +5,7 @@ import {
 } from "src/shared/loom-state/loom-state-factory";
 import CommandUndoError from "./command-undo-error";
 import CommandRedoError from "./command-redo-error";
-import { ColumnTypeUpdateCommand } from "./column-type-update-command";
+import ColumnTypeUpdateCommand from "./column-type-update-command";
 import { CellType } from "../types/loom-state";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "../../constants";
 

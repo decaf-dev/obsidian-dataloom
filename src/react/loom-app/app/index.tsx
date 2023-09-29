@@ -5,9 +5,7 @@ import { VirtuosoHandle } from "react-virtuoso";
 import Table from "../table";
 import RowOptions from "../row-options";
 import OptionBar from "../option-bar";
-import HeaderCell from "../header-cell-container";
 import BodyCell from "../body-cell-container";
-import NewColumnButton from "../new-column-button";
 import BottomBar from "../bottom-bar";
 
 import { useUUID } from "../../../shared/hooks";
@@ -41,6 +39,7 @@ import { useMenuOperations } from "src/react/shared/menu/hooks";
 import FooterCellContainer from "../footer-cell-container";
 import { Cell } from "src/shared/loom-state/types/loom-state";
 import { useSource } from "./hooks/use-source";
+import { getHeaderRow } from "./table-utils";
 
 export default function App() {
 	const logger = useLogger();
@@ -65,25 +64,10 @@ export default function App() {
 		useFilter();
 
 	const {
-		onColumnWidthChange,
-		onColumnTypeClick,
-		onColumnToggle,
-		onColumnSortClick,
-		onColumnHideClick,
 		onColumnDeleteClick,
-		onCalculationTypeChange,
-		onNumberFormatChange,
-		onNumberPrefixChange,
-		onNumberSeparatorChange,
-		onNumberSuffixChange,
-		onAspectRatioClick,
-		onWrapContentToggle,
-		onVerticalPaddingClick,
-		onSortRemoveClick,
 		onColumnAddClick,
-		onHorizontalPaddingClick,
-		onDateFormatChange,
-		onColumnContentChange,
+		onColumnTypeChange,
+		onColumnChange,
 	} = useColumn();
 
 	const {
@@ -155,9 +139,23 @@ export default function App() {
 	);
 
 	const visibleColumns = columns.filter((column) => column.isVisible);
+	const headerRow = getHeaderRow({
+		firstColumnId,
+		lastColumnId,
+		visibleColumns,
+		numColumns: columns.length,
+		onColumnChange,
+		onFrozenColumnsChange,
+		onColumnDeleteClick,
+		onColumnAddClick,
+		onColumnTypeChange,
+		numFrozenColumns,
+		resizingColumnId,
+	});
 
 	let className = "dataloom-app";
 	if (isMarkdownView) className += " dataloom-app--markdown-view";
+
 	return (
 		<div
 			id={reactAppId}
@@ -170,8 +168,7 @@ export default function App() {
 				sources={sources}
 				filters={filters}
 				showCalculationRow={showCalculationRow}
-				onColumnToggle={onColumnToggle}
-				onSortRemoveClick={onSortRemoveClick}
+				onColumnChange={onColumnChange}
 				onFilterAddClick={onFilterAdd}
 				onFilterDeleteClick={onFilterDelete}
 				onFilterUpdate={onFilterUpdate}
@@ -182,103 +179,7 @@ export default function App() {
 			<Table
 				numFrozenColumns={numFrozenColumns}
 				ref={tableRef}
-				headerRow={{
-					cells: [
-						{
-							id: firstColumnId,
-							columnId: firstColumnId,
-							content: (
-								<div className="dataloom-cell--left-corner" />
-							),
-						},
-						...visibleColumns.map((column, i) => {
-							const {
-								id: columnId,
-								width,
-								type,
-								sortDir,
-								shouldWrapOverflow,
-								content,
-								currencyType,
-								numberFormat,
-								numberPrefix,
-								numberSeparator,
-								numberSuffix,
-								dateFormat,
-								verticalPadding,
-								horizontalPadding,
-								aspectRatio,
-							} = column;
-							return {
-								id: columnId,
-								columnId,
-								content: (
-									<HeaderCell
-										key={columnId}
-										index={i}
-										dateFormat={dateFormat}
-										currencyType={currencyType}
-										numberPrefix={numberPrefix}
-										numberSeparator={numberSeparator}
-										numberFormat={numberFormat}
-										numberSuffix={numberSuffix}
-										verticalPadding={verticalPadding}
-										horizontalPadding={horizontalPadding}
-										aspectRatio={aspectRatio}
-										numColumns={columns.length}
-										columnId={columnId}
-										resizingColumnId={resizingColumnId}
-										width={width}
-										numFrozenColumns={numFrozenColumns}
-										shouldWrapOverflow={shouldWrapOverflow}
-										content={content}
-										type={type}
-										sortDir={sortDir}
-										onSortClick={onColumnSortClick}
-										onWidthChange={onColumnWidthChange}
-										onDeleteClick={onColumnDeleteClick}
-										onTypeSelect={onColumnTypeClick}
-										onDateFormatChange={onDateFormatChange}
-										onWrapOverflowToggle={
-											onWrapContentToggle
-										}
-										onContentChange={onColumnContentChange}
-										onNumberFormatChange={
-											onNumberFormatChange
-										}
-										onNumberPrefixChange={
-											onNumberPrefixChange
-										}
-										onNumberSeparatorChange={
-											onNumberSeparatorChange
-										}
-										onNumberSuffixChange={
-											onNumberSuffixChange
-										}
-										onVerticalPaddingClick={
-											onVerticalPaddingClick
-										}
-										onHorizontalPaddingClick={
-											onHorizontalPaddingClick
-										}
-										onAspectRatioClick={onAspectRatioClick}
-										onHideClick={onColumnHideClick}
-										onFrozenColumnsChange={
-											onFrozenColumnsChange
-										}
-									/>
-								),
-							};
-						}),
-						{
-							id: lastColumnId,
-							columnId: lastColumnId,
-							content: (
-								<NewColumnButton onClick={onColumnAddClick} />
-							),
-						},
-					],
-				}}
+				headerRow={headerRow}
 				bodyRows={filteredBodyRows.map((row) => {
 					const { id: rowId, lastEditedTime, creationTime } = row;
 					return {
@@ -377,9 +278,7 @@ export default function App() {
 											onDateTimeChange={
 												onCellDateTimeChange
 											}
-											onDateFormatChange={
-												onDateFormatChange
-											}
+											onColumnChange={onColumnChange}
 											onTagAdd={onTagAdd}
 											onExternalLinkToggle={
 												onExternalLinkToggle
@@ -451,8 +350,8 @@ export default function App() {
 													}
 													width={width}
 													cellType={type}
-													onTypeChange={
-														onCalculationTypeChange
+													onColumnChange={
+														onColumnChange
 													}
 												/>
 											),

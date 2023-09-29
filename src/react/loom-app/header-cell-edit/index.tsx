@@ -18,6 +18,7 @@ import {
 	SortDir,
 	PaddingSize,
 	NumberFormat,
+	Column,
 } from "src/shared/loom-state/types/loom-state";
 import { SubmenuType } from "./types";
 
@@ -27,6 +28,7 @@ import {
 	Position,
 } from "../../shared/menu/types";
 import "./styles.css";
+import { ColumnChangeHandler } from "../app/hooks/use-column/types";
 
 interface Props {
 	index: number;
@@ -34,46 +36,16 @@ interface Props {
 	canDeleteColumn: boolean;
 	id: string;
 	numFrozenColumns: number;
-	dateFormat: DateFormat;
 	triggerPosition: Position;
-	currencyType: CurrencyType;
-	numberPrefix: string;
-	numberSuffix: string;
-	numberSeparator: string;
-	numberFormat: NumberFormat;
-	aspectRatio: AspectRatio;
-	horizontalPadding: PaddingSize;
-	verticalPadding: PaddingSize;
-	content: string;
-	shouldWrapOverflow: boolean;
-	columnSortDir: SortDir;
-	columnType: CellType;
+	column: Column;
 	closeRequest: LoomMenuCloseRequest | null;
-	columnId: string;
 	numColumns: number;
-	onTypeSelect: (columnId: string, type: CellType) => void;
-	onSortClick: (columnId: string, sortDir: SortDir) => void;
-	onDeleteClick: (columnId: string) => void;
-	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
-	onContentChange: (columnid: string, value: string) => void;
-	onNumberFormatChange: (
-		columnId: string,
-		value: NumberFormat,
-		options?: {
-			currency: CurrencyType;
-		}
-	) => void;
-	onNumberPrefixChange: (columnId: string, value: string) => void;
-	onNumberSuffixChange: (columnId: string, value: string) => void;
-	onNumberSeparatorChange: (columnId: string, value: string) => void;
-	onDateFormatChange: (columnId: string, value: DateFormat) => void;
-	onAspectRatioClick: (columnId: string, value: AspectRatio) => void;
-	onHorizontalPaddingClick: (columnId: string, value: PaddingSize) => void;
-	onVerticalPaddingClick: (columnId: string, value: PaddingSize) => void;
-	onHideClick: (columnId: string) => void;
+	onColumnChange: ColumnChangeHandler;
+	onColumnTypeChange: (columnId: string, type: CellType) => void;
+	onColumnDeleteClick: (columnId: string) => void;
+	onFrozenColumnsChange: (value: number) => void;
 	onRequestClose: (type: LoomMenuCloseRequestType) => void;
 	onClose: () => void;
-	onFrozenColumnsChange: (value: number) => void;
 }
 
 const SELFHANDLE_CLOSE: SubmenuType[] = [
@@ -85,43 +57,35 @@ const SELFHANDLE_CLOSE: SubmenuType[] = [
 export default function HeaderMenu({
 	index,
 	isOpen,
+	column,
 	id,
 	triggerPosition,
-	content,
-	dateFormat,
 	numFrozenColumns,
-	currencyType,
-	numberFormat,
-	numberPrefix,
-	numberSuffix,
-	numberSeparator,
-	horizontalPadding,
-	verticalPadding,
-	aspectRatio,
 	canDeleteColumn,
-	columnType,
-	columnSortDir,
-	columnId,
 	closeRequest,
-	shouldWrapOverflow,
-	onTypeSelect,
-	onVerticalPaddingClick,
-	onHorizontalPaddingClick,
-	onAspectRatioClick,
-	onSortClick,
-	onDeleteClick,
+	onColumnDeleteClick,
 	onClose,
-	onWrapOverflowToggle,
-	onContentChange,
-	onNumberFormatChange,
-	onNumberPrefixChange,
-	onNumberSuffixChange,
-	onNumberSeparatorChange,
-	onDateFormatChange,
-	onHideClick,
 	onRequestClose,
 	onFrozenColumnsChange,
+	onColumnChange,
+	onColumnTypeChange,
 }: Props) {
+	const {
+		id: columnId,
+		content,
+		type,
+		sortDir,
+		dateFormat,
+		aspectRatio,
+		verticalPadding,
+		horizontalPadding,
+		shouldWrapOverflow,
+		numberFormat,
+		currencyType,
+		numberPrefix,
+		numberSeparator,
+		numberSuffix,
+	} = column;
 	const [submenu, setSubmenu] = useState<SubmenuType | null>(null);
 	const [localValue, setLocalValue] = useState(content);
 
@@ -130,7 +94,7 @@ export default function HeaderMenu({
 			//If we're on the base menu
 			if (submenu === null) {
 				if (localValue !== content)
-					onContentChange(columnId, localValue);
+					onColumnChange(columnId, { content: localValue });
 			}
 			if (!submenu || !SELFHANDLE_CLOSE.includes(submenu)) {
 				onClose();
@@ -142,35 +106,37 @@ export default function HeaderMenu({
 		closeRequest,
 		submenu,
 		localValue,
-		onContentChange,
+		onColumnChange,
 		onClose,
 	]);
 
+	function handleWrapOverflowToggle() {}
+
 	function handleSortClick(sortDir: SortDir) {
-		onSortClick(columnId, sortDir);
+		onColumnChange(columnId, { sortDir }, { shouldSortRows: true });
 		onClose();
 	}
 
 	function handleAspectRatioClick(value: AspectRatio) {
-		onAspectRatioClick(columnId, value);
+		onColumnChange(columnId, { aspectRatio: value });
 		onClose();
 		setSubmenu(SubmenuType.OPTIONS);
 	}
 
 	function handleHorizontalPaddingClick(value: PaddingSize) {
-		onHorizontalPaddingClick(columnId, value);
+		onColumnChange(columnId, { horizontalPadding: value });
 		onClose();
 		setSubmenu(SubmenuType.OPTIONS);
 	}
 
 	function handleVerticalPaddingClick(value: PaddingSize) {
-		onVerticalPaddingClick(columnId, value);
+		onColumnChange(columnId, { verticalPadding: value });
 		onClose();
 		setSubmenu(SubmenuType.OPTIONS);
 	}
 
 	function handleTypeClick(type: CellType) {
-		onTypeSelect(columnId, type);
+		onColumnTypeChange(columnId, type);
 		onClose();
 		setSubmenu(null);
 	}
@@ -182,13 +148,13 @@ export default function HeaderMenu({
 	}
 
 	function handleHideClick() {
-		onHideClick(columnId);
+		onColumnChange(columnId, { isVisible: false });
 		onClose();
 		setSubmenu(null);
 	}
 
 	function handleDeleteClick() {
-		onDeleteClick(columnId);
+		onColumnDeleteClick(columnId);
 		onClose();
 		setSubmenu(null);
 	}
@@ -199,22 +165,43 @@ export default function HeaderMenu({
 			currency: CurrencyType;
 		}
 	) {
-		onNumberFormatChange(columnId, value, options);
+		onColumnChange(
+			columnId,
+			{
+				numberFormat: value,
+				...(options?.currency && {
+					currencyType: options.currency,
+				}),
+			},
+			{ shouldSortRows: true }
+		);
 		setSubmenu(SubmenuType.OPTIONS);
 	}
 
 	function handleNumberOptionChange(value: string) {
 		submenu === SubmenuType.TEXT_INPUT_NUMBER_PREFIX &&
-			onNumberPrefixChange(columnId, value);
+			onColumnChange(
+				columnId,
+				{ numberPrefix: value },
+				{ shouldSortRows: true }
+			);
 		submenu === SubmenuType.TEXT_INPUT_NUMBER_SUFFIX &&
-			onNumberSuffixChange(columnId, value);
+			onColumnChange(
+				columnId,
+				{ numberSuffix: value },
+				{ shouldSortRows: true }
+			);
 		submenu === SubmenuType.TEXT_INPUT_NUMBER_SEPARATOR &&
-			onNumberSeparatorChange(columnId, value);
+			onColumnChange(
+				columnId,
+				{ numberSeparator: value },
+				{ shouldSortRows: true }
+			);
 		setSubmenu(null);
 	}
 
 	function handleDateFormatClick(value: DateFormat) {
-		onDateFormatChange(columnId, value);
+		onColumnChange(columnId, { dateFormat: value });
 		setSubmenu(SubmenuType.OPTIONS);
 	}
 
@@ -236,12 +223,12 @@ export default function HeaderMenu({
 						numFrozenColumns={numFrozenColumns}
 						columnId={columnId}
 						columnName={localValue}
-						columnType={columnType}
-						columnSortDir={columnSortDir}
+						columnType={type}
+						columnSortDir={sortDir}
 						onColumnNameChange={setLocalValue}
 						onSortClick={handleSortClick}
 						onSubmenuChange={setSubmenu}
-						onWrapOverflowToggle={onWrapOverflowToggle}
+						onWrapOverflowToggle={handleWrapOverflowToggle}
 						onDeleteClick={handleDeleteClick}
 						onHideClick={handleHideClick}
 						onFrozenColumnsChange={handleFrozenColumnsChange}
@@ -250,7 +237,7 @@ export default function HeaderMenu({
 				{submenu === SubmenuType.OPTIONS && (
 					<OptionSubmenu
 						title="Options"
-						type={columnType}
+						type={type}
 						horizontalPadding={horizontalPadding}
 						verticalPadding={verticalPadding}
 						aspectRatio={aspectRatio}
@@ -293,7 +280,7 @@ export default function HeaderMenu({
 				{submenu === SubmenuType.TYPE && (
 					<TypeSubmenu
 						title="Type"
-						value={columnType}
+						value={type}
 						onValueClick={handleTypeClick}
 						onBackClick={() => setSubmenu(null)}
 					/>

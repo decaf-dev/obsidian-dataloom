@@ -40,6 +40,7 @@ import { useMenu } from "../../shared/menu/hooks";
 
 import "./styles.css";
 import SourceCell from "../source-cell";
+import { ColumnChangeHandler } from "../app/hooks/use-column/types";
 
 interface Props {
 	isExternalLink: boolean;
@@ -81,7 +82,7 @@ interface Props {
 	) => void;
 	onTagDelete: (columnId: string, tagId: string) => void;
 	onTagColorChange: (columnId: string, tagId: string, color: Color) => void;
-	onDateFormatChange: (columnId: string, value: DateFormat) => void;
+	onColumnChange: ColumnChangeHandler;
 	onDateTimeChange: (cellId: string, value: number | null) => void;
 	onExternalLinkToggle: (cellId: string, value: boolean) => void;
 }
@@ -114,7 +115,7 @@ export default function BodyCellContainer({
 	onTagDelete,
 	onTagClick,
 	onContentChange,
-	onDateFormatChange,
+	onColumnChange,
 	onDateTimeChange,
 	onTagContentChange,
 	onTagAdd,
@@ -238,7 +239,11 @@ export default function BodyCellContainer({
 	}
 
 	function handleDateFormatChange(value: DateFormat) {
-		onDateFormatChange(columnId, value);
+		onColumnChange(
+			columnId,
+			{ dateFormat: value },
+			{ shouldSortRows: true }
+		);
 	}
 
 	const handleDateTimeChange = React.useCallback(

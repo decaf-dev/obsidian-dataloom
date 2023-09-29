@@ -17,7 +17,7 @@ import {
 import { isCheckbox, isNumberCalcuation } from "../../match";
 import { cloneDeep } from "lodash";
 
-export class ColumnTypeUpdateCommand extends LoomStateCommand {
+export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 	private id: string;
 	private nextType: CellType;
 

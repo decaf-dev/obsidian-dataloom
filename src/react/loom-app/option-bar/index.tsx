@@ -20,14 +20,13 @@ import { useMenu } from "../../shared/menu/hooks";
 
 import "./styles.css";
 import SourcesMenu from "./sources-menu";
+import { ColumnChangeHandler } from "../app/hooks/use-column/types";
 
 interface Props {
 	columns: Column[];
 	filters: Filter[];
 	sources: Source[];
 	showCalculationRow: boolean;
-	onSortRemoveClick: (columnId: string) => void;
-	onColumnToggle: (columnId: string, isVisible: boolean) => void;
 	onFilterUpdate: (
 		filterId: string,
 		data: Partial<Filter>,
@@ -38,20 +37,20 @@ interface Props {
 	onCalculationRowToggle: (value: boolean) => void;
 	onSourceAdd: (type: SourceType, name: string) => void;
 	onSourceDelete: (id: string) => void;
+	onColumnChange: ColumnChangeHandler;
 }
 export default function OptionBar({
 	columns,
 	filters,
 	sources,
 	showCalculationRow,
-	onSortRemoveClick,
-	onColumnToggle,
 	onFilterUpdate,
 	onFilterDeleteClick,
 	onFilterAddClick,
 	onCalculationRowToggle,
 	onSourceAdd,
 	onSourceDelete,
+	onColumnChange,
 }: Props) {
 	const {
 		menu: moreMenu,
@@ -97,6 +96,20 @@ export default function OptionBar({
 	// 	}
 	// }, [previousLength, filterRules.length, filterMenuRef]);
 
+	function handleRemoveClick(columnId: string) {
+		onColumnChange(
+			columnId,
+			{ sortDir: SortDir.NONE },
+			{
+				shouldSortRows: true,
+			}
+		);
+	}
+
+	function handleColumnToggle(columnId: string, isVisible: boolean) {
+		onColumnChange(columnId, { isVisible });
+	}
+
 	const activeFilters = filters.filter((filter) => filter.isEnabled);
 
 	const sortedColumns = columns.filter(
@@ -124,7 +137,7 @@ export default function OptionBar({
 						>
 							<SortBubbleList
 								sortedColumns={sortedColumns}
-								onRemoveClick={onSortRemoveClick}
+								onRemoveClick={handleRemoveClick}
 							/>
 							<ActiveFilterBubble
 								numActive={activeFilters.length}
@@ -185,7 +198,7 @@ export default function OptionBar({
 				triggerPosition={moreMenuTriggerPosition}
 				columns={columns}
 				onFilterClick={() => onFilterMenuOpen()}
-				onColumnToggle={onColumnToggle}
+				onColumnToggle={handleColumnToggle}
 				onRequestClose={onMoreMenuRequestClose}
 				onCalculationRowToggle={onCalculationRowToggle}
 				onClose={onMoreMenuClose}
