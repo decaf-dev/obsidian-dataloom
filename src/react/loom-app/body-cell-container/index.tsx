@@ -41,6 +41,7 @@ import { useMenu } from "../../shared/menu/hooks";
 import "./styles.css";
 import SourceCell from "../source-cell";
 import { ColumnChangeHandler } from "../app/hooks/use-column/types";
+import { CellChangeHandler } from "../app/hooks/use-cell/types";
 
 interface Props {
 	isExternalLink: boolean;
@@ -72,7 +73,6 @@ interface Props {
 		tagId: string,
 		value: string
 	) => void;
-	onContentChange: (cellId: string, value: string) => void;
 	onTagAdd: (
 		cellId: string,
 		columnId: string,
@@ -83,8 +83,7 @@ interface Props {
 	onTagDeleteClick: (columnId: string, tagId: string) => void;
 	onTagColorChange: (columnId: string, tagId: string, color: Color) => void;
 	onColumnChange: ColumnChangeHandler;
-	onDateTimeChange: (cellId: string, value: number | null) => void;
-	onExternalLinkToggle: (cellId: string, value: boolean) => void;
+	onCellChange: CellChangeHandler;
 }
 
 export default function BodyCellContainer({
@@ -114,12 +113,10 @@ export default function BodyCellContainer({
 	onTagColorChange,
 	onTagDeleteClick,
 	onTagClick,
-	onContentChange,
 	onColumnChange,
-	onDateTimeChange,
 	onTagContentChange,
 	onTagAdd,
-	onExternalLinkToggle,
+	onCellChange,
 }: Props) {
 	//All of these cells have local values
 	const shouldRequestOnClose =
@@ -169,11 +166,11 @@ export default function BodyCellContainer({
 			columnType === CellType.NUMBER ||
 			columnType === CellType.FILE
 		) {
-			onContentChange(cellId, "");
+			onCellChange(cellId, { content: "" });
 		} else if (columnType === CellType.DATE) {
-			onDateTimeChange(cellId, null);
+			onCellChange(cellId, { dateTime: null });
 		} else if (columnType === CellType.CHECKBOX) {
-			onContentChange(cellId, CHECKBOX_MARKDOWN_UNCHECKED);
+			onCellChange(cellId, { content: CHECKBOX_MARKDOWN_UNCHECKED });
 		} else if (
 			columnType === CellType.TAG ||
 			columnType === CellType.MULTI_TAG
@@ -193,7 +190,7 @@ export default function BodyCellContainer({
 	}
 
 	function handleExternalLinkToggle(value: boolean) {
-		onExternalLinkToggle(cellId, value);
+		onCellChange(cellId, { isExternalLink: value });
 	}
 
 	function handleTagAdd(markdown: string, color: Color) {
@@ -229,13 +226,13 @@ export default function BodyCellContainer({
 
 	const handleInputChange = React.useCallback(
 		(value: string) => {
-			onContentChange(cellId, value);
+			onCellChange(cellId, { content: value });
 		},
-		[cellId, onContentChange]
+		[cellId, onCellChange]
 	);
 
 	function handleCheckboxChange(value: string) {
-		onContentChange(cellId, value);
+		onCellChange(cellId, { content: value });
 	}
 
 	function handleDateFormatChange(value: DateFormat) {
@@ -248,9 +245,9 @@ export default function BodyCellContainer({
 
 	const handleDateTimeChange = React.useCallback(
 		(value: number | null) => {
-			onDateTimeChange(cellId, value);
+			onCellChange(cellId, { dateTime: value });
 		},
-		[cellId, onDateTimeChange]
+		[cellId, onCellChange]
 	);
 
 	let menuWidth = triggerPosition.width;

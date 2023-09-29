@@ -73,8 +73,7 @@ export default function App() {
 		onRowInsertBelowClick,
 	} = useRow();
 
-	const { onCellDateTimeChange, onCellContentChange, onExternalLinkToggle } =
-		useCell();
+	const { onCellChange } = useCell();
 
 	const {
 		onTagCellAdd,
@@ -154,8 +153,6 @@ export default function App() {
 		lastColumnId,
 		visibleColumns,
 		rows: filteredRows,
-		onCellContentChange,
-		onCellDateTimeChange,
 		onTagCellAdd,
 		onTagAdd,
 		onTagCellRemove,
@@ -163,10 +160,10 @@ export default function App() {
 		onTagColorChange,
 		onTagDeleteClick,
 		onTagContentChange,
-		onExternalLinkToggle,
 		onRowDeleteClick,
 		onRowInsertAboveClick,
 		onRowInsertBelowClick,
+		onCellChange,
 		onColumnChange,
 	});
 

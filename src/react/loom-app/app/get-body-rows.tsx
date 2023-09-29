@@ -13,6 +13,7 @@ import {
 	TagContentChangeHandler,
 	TagDeleteHandler,
 } from "./hooks/use-tag/types";
+import { CellChangeHandler } from "./hooks/use-cell/types";
 
 interface Props {
 	firstColumnId: string;
@@ -23,8 +24,7 @@ interface Props {
 	onRowInsertAboveClick: (rowId: string) => void;
 	onRowInsertBelowClick: (rowId: string) => void;
 	onColumnChange: ColumnChangeHandler;
-	onCellContentChange: (cellId: string, value: string) => void;
-	onCellDateTimeChange: (cellId: string, value: number | null) => void;
+	onCellChange: CellChangeHandler;
 	onTagAdd: TagAddHandler;
 	onTagCellAdd: TagCellAddHandler;
 	onTagCellRemove: TagCellRemoveHandler;
@@ -32,7 +32,6 @@ interface Props {
 	onTagContentChange: TagContentChangeHandler;
 	onTagDeleteClick: TagDeleteHandler;
 	onTagColorChange: TagColorChangeHandler;
-	onExternalLinkToggle: (cellId: string, value: boolean) => void;
 }
 
 export const getBodyRows = ({
@@ -44,8 +43,7 @@ export const getBodyRows = ({
 	onRowInsertAboveClick,
 	onRowInsertBelowClick,
 	onColumnChange,
-	onCellContentChange,
-	onCellDateTimeChange,
+	onCellChange,
 	onTagAdd,
 	onTagCellAdd,
 	onTagCellRemove,
@@ -53,7 +51,6 @@ export const getBodyRows = ({
 	onTagContentChange,
 	onTagDeleteClick,
 	onTagColorChange,
-	onExternalLinkToggle,
 }: Props): BodyTableRow[] => {
 	return rows.map((row) => {
 		const { id: rowId, lastEditedTime, creationTime } = row;
@@ -135,14 +132,12 @@ export const getBodyRows = ({
 								onTagClick={onTagCellAdd}
 								onTagRemoveClick={onTagCellRemove}
 								onTagMultipleRemove={onTagCellMultipleRemove}
-								onContentChange={onCellContentChange}
+								onCellChange={onCellChange}
 								onTagColorChange={onTagColorChange}
 								onTagDeleteClick={onTagDeleteClick}
-								onDateTimeChange={onCellDateTimeChange}
 								onTagAdd={onTagAdd}
 								onColumnChange={onColumnChange}
 								onTagContentChange={onTagContentChange}
-								onExternalLinkToggle={onExternalLinkToggle}
 							/>
 						),
 					};
