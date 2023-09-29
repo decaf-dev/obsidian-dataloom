@@ -1,5 +1,5 @@
 import { useLogger } from "src/shared/logger";
-import { Color } from "src/shared/loom-state/types/loom-state";
+import { Color, Tag } from "src/shared/loom-state/types/loom-state";
 import TagDeleteCommand from "src/shared/loom-state/commands/tag-delete-command";
 import { useLoomState } from "../../../loom-state-provider";
 import TagUpdateCommand from "src/shared/loom-state/commands/tag-update-command";
@@ -52,17 +52,18 @@ export const useTag = () => {
 		doCommand(new TagCellRemoveCommand(cellId, tagId));
 	}
 
-	function handleTagContentChange(
+	function handleTagChange(
 		columnId: string,
 		tagId: string,
-		content: string
+		data: Partial<Tag>,
+		isPartial = true
 	) {
-		logFunc("handleTagContentChange", {
+		logFunc("handleTagChange", {
 			columnId,
 			tagId,
-			content,
+			data,
 		});
-		doCommand(new TagUpdateCommand(columnId, tagId, "content", content));
+		doCommand(new TagUpdateCommand(columnId, tagId, data, isPartial));
 	}
 
 	function handleTagCellMultipleRemove(cellId: string, tagIds: string[]) {
@@ -81,26 +82,12 @@ export const useTag = () => {
 		doCommand(new TagDeleteCommand(columnId, tagId));
 	}
 
-	function handleTagColorChange(
-		columnId: string,
-		tagId: string,
-		color: Color
-	) {
-		logFunc("handleTagColorChange", {
-			columnId,
-			tagId,
-			color,
-		});
-		doCommand(new TagUpdateCommand(columnId, tagId, "color", color));
-	}
-
 	return {
 		onTagCellAdd: handleTagCellAdd,
 		onTagAdd: handleTagAdd,
 		onTagCellRemove: handleTagCellRemove,
-		onTagColorChange: handleTagColorChange,
+		onTagChange: handleTagChange,
 		onTagCellMultipleRemove: handleTagCellMultipleRemove,
 		onTagDeleteClick: handleTagDeleteClick,
-		onTagContentChange: handleTagContentChange,
 	};
 };

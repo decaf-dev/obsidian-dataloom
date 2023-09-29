@@ -42,6 +42,7 @@ import "./styles.css";
 import SourceCell from "../source-cell";
 import { ColumnChangeHandler } from "../app/hooks/use-column/types";
 import { CellChangeHandler } from "../app/hooks/use-cell/types";
+import { TagChangeHandler } from "../app/hooks/use-tag/types";
 
 interface Props {
 	isExternalLink: boolean;
@@ -68,11 +69,6 @@ interface Props {
 	onTagRemoveClick: (cellId: string, tagId: string) => void;
 	onTagMultipleRemove: (cellId: string, tagIds: string[]) => void;
 	onTagClick: (cellId: string, tagId: string, isMultiTag: boolean) => void;
-	onTagContentChange: (
-		columnId: string,
-		tagId: string,
-		value: string
-	) => void;
 	onTagAdd: (
 		cellId: string,
 		columnId: string,
@@ -81,9 +77,9 @@ interface Props {
 		isMultiTag: boolean
 	) => void;
 	onTagDeleteClick: (columnId: string, tagId: string) => void;
-	onTagColorChange: (columnId: string, tagId: string, color: Color) => void;
 	onColumnChange: ColumnChangeHandler;
 	onCellChange: CellChangeHandler;
+	onTagChange: TagChangeHandler;
 }
 
 export default function BodyCellContainer({
@@ -110,12 +106,11 @@ export default function BodyCellContainer({
 	shouldWrapOverflow,
 	onTagRemoveClick,
 	onTagMultipleRemove,
-	onTagColorChange,
 	onTagDeleteClick,
 	onTagClick,
 	onColumnChange,
-	onTagContentChange,
 	onTagAdd,
+	onTagChange,
 	onCellChange,
 }: Props) {
 	//All of these cells have local values
@@ -208,8 +203,8 @@ export default function BodyCellContainer({
 		onTagRemoveClick(cellId, tagId);
 	}
 
-	function handleTagColorChange(tagId: string, color: Color) {
-		onTagColorChange(columnId, tagId, color);
+	function handleTagColorChange(tagId: string, value: Color) {
+		onTagChange(columnId, tagId, { color: value });
 	}
 
 	function handleTagDeleteClick(tagId: string) {
@@ -217,7 +212,7 @@ export default function BodyCellContainer({
 	}
 
 	function handleTagContentChange(tagId: string, value: string) {
-		onTagContentChange(columnId, tagId, value);
+		onTagChange(columnId, tagId, { content: value });
 	}
 
 	function handleTagClick(tagId: string) {

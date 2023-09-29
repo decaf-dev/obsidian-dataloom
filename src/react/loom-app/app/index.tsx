@@ -80,9 +80,8 @@ export default function App() {
 		onTagAdd,
 		onTagCellRemove,
 		onTagCellMultipleRemove,
-		onTagColorChange,
 		onTagDeleteClick,
-		onTagContentChange,
+		onTagChange,
 	} = useTag();
 
 	const firstColumnId = useUUID();
@@ -157,14 +156,13 @@ export default function App() {
 		onTagAdd,
 		onTagCellRemove,
 		onTagCellMultipleRemove,
-		onTagColorChange,
 		onTagDeleteClick,
-		onTagContentChange,
 		onRowDeleteClick,
 		onRowInsertAboveClick,
 		onRowInsertBelowClick,
 		onCellChange,
 		onColumnChange,
+		onTagChange,
 	});
 
 	const footerRow = getFooterRow({

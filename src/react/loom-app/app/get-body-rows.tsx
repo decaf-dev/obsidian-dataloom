@@ -9,8 +9,7 @@ import {
 	TagCellAddHandler,
 	TagCellMultipleRemoveHandler,
 	TagCellRemoveHandler,
-	TagColorChangeHandler,
-	TagContentChangeHandler,
+	TagChangeHandler,
 	TagDeleteHandler,
 } from "./hooks/use-tag/types";
 import { CellChangeHandler } from "./hooks/use-cell/types";
@@ -29,9 +28,8 @@ interface Props {
 	onTagCellAdd: TagCellAddHandler;
 	onTagCellRemove: TagCellRemoveHandler;
 	onTagCellMultipleRemove: TagCellMultipleRemoveHandler;
-	onTagContentChange: TagContentChangeHandler;
+	onTagChange: TagChangeHandler;
 	onTagDeleteClick: TagDeleteHandler;
-	onTagColorChange: TagColorChangeHandler;
 }
 
 export const getBodyRows = ({
@@ -48,9 +46,8 @@ export const getBodyRows = ({
 	onTagCellAdd,
 	onTagCellRemove,
 	onTagCellMultipleRemove,
-	onTagContentChange,
+	onTagChange,
 	onTagDeleteClick,
-	onTagColorChange,
 }: Props): BodyTableRow[] => {
 	return rows.map((row) => {
 		const { id: rowId, lastEditedTime, creationTime } = row;
@@ -133,11 +130,10 @@ export const getBodyRows = ({
 								onTagRemoveClick={onTagCellRemove}
 								onTagMultipleRemove={onTagCellMultipleRemove}
 								onCellChange={onCellChange}
-								onTagColorChange={onTagColorChange}
 								onTagDeleteClick={onTagDeleteClick}
 								onTagAdd={onTagAdd}
 								onColumnChange={onColumnChange}
-								onTagContentChange={onTagContentChange}
+								onTagChange={onTagChange}
 							/>
 						),
 					};

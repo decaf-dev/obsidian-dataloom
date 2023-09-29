@@ -1,4 +1,4 @@
-import { Color } from "src/shared/loom-state/types/loom-state";
+import { Color, Tag } from "src/shared/loom-state/types/loom-state";
 
 export type TagAddHandler = (
 	cellId: string,
@@ -23,15 +23,9 @@ export type TagCellMultipleRemoveHandler = (
 
 export type TagDeleteHandler = (columnId: string, tagId: string) => void;
 
-//TODO change to TagChangeHandler
-export type TagColorChangeHandler = (
+export type TagChangeHandler = (
 	columnId: string,
 	tagId: string,
-	color: Color
-) => void;
-
-export type TagContentChangeHandler = (
-	columnId: string,
-	tagId: string,
-	content: string
+	data: Partial<Tag>,
+	isPartial?: boolean
 ) => void;
