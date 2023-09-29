@@ -31,15 +31,13 @@ import {
 	isWindowsRedoDown,
 	isWindowsUndoDown,
 } from "src/shared/keyboard-event";
+import { useLogger } from "src/shared/logger";
+import { useMenuOperations } from "src/react/shared/menu/hooks";
+import { useSource } from "./hooks/use-source";
+import { getFooterRow, getHeaderRow } from "./table-utils";
 
 import "src/react/global.css";
 import "./styles.css";
-import { useLogger } from "src/shared/logger";
-import { useMenuOperations } from "src/react/shared/menu/hooks";
-import FooterCellContainer from "../footer-cell-container";
-import { Cell } from "src/shared/loom-state/types/loom-state";
-import { useSource } from "./hooks/use-source";
-import { getHeaderRow } from "./table-utils";
 
 export default function App() {
 	const logger = useLogger();
@@ -98,7 +96,7 @@ export default function App() {
 	}
 
 	function handleScrollToBottomClick() {
-		tableRef.current?.scrollToIndex(filteredBodyRows.length - 1);
+		tableRef.current?.scrollToIndex(filteredRows.length - 1);
 	}
 
 	function handleClick(e: React.MouseEvent) {
@@ -130,11 +128,11 @@ export default function App() {
 	const { columns, filters, settings, sources } = loomState.model;
 	const { numFrozenColumns, showCalculationRow } = settings;
 
-	let filteredBodyRows = filterByFilters(loomState);
-	filteredBodyRows = filterRowsBySearch(
+	let filteredRows = filterByFilters(loomState);
+	filteredRows = filterRowsBySearch(
 		sources,
 		columns,
-		filteredBodyRows,
+		filteredRows,
 		searchText
 	);
 
@@ -151,6 +149,15 @@ export default function App() {
 		onColumnTypeChange,
 		numFrozenColumns,
 		resizingColumnId,
+	});
+
+	const footerRow = getFooterRow({
+		showCalculationRow,
+		firstColumnId,
+		lastColumnId,
+		visibleColumns,
+		rows: filteredRows,
+		onColumnChange,
 	});
 
 	let className = "dataloom-app";
@@ -180,7 +187,7 @@ export default function App() {
 				numFrozenColumns={numFrozenColumns}
 				ref={tableRef}
 				headerRow={headerRow}
-				bodyRows={filteredBodyRows.map((row) => {
+				bodyRows={filteredRows.map((row) => {
 					const { id: rowId, lastEditedTime, creationTime } = row;
 					return {
 						id: rowId,
@@ -297,74 +304,7 @@ export default function App() {
 						],
 					};
 				})}
-				footer={
-					showCalculationRow
-						? {
-								cells: [
-									{
-										id: firstColumnId,
-										content: <></>,
-									},
-									...visibleColumns.map((column) => {
-										const {
-											id: columnId,
-											type,
-											currencyType,
-											dateFormat,
-											numberFormat,
-											width,
-											tags,
-											calculationType,
-										} = column;
-
-										const columnCells: Cell[] =
-											filteredBodyRows.map((row) => {
-												const cell = row.cells.find(
-													(cell) =>
-														cell.columnId ===
-														columnId
-												);
-												if (!cell)
-													throw new CellNotFoundError(
-														{
-															columnId,
-															rowId: row.id,
-														}
-													);
-												return cell;
-											});
-
-										return {
-											id: columnId,
-											content: (
-												<FooterCellContainer
-													columnId={columnId}
-													columnTags={tags}
-													numberFormat={numberFormat}
-													currencyType={currencyType}
-													dateFormat={dateFormat}
-													columnCells={columnCells}
-													rows={filteredBodyRows}
-													calculationType={
-														calculationType
-													}
-													width={width}
-													cellType={type}
-													onColumnChange={
-														onColumnChange
-													}
-												/>
-											),
-										};
-									}),
-									{
-										id: lastColumnId,
-										content: <></>,
-									},
-								],
-						  }
-						: undefined
-				}
+				footer={footerRow}
 			/>
 			<BottomBar
 				onRowAddClick={onRowAddClick}
