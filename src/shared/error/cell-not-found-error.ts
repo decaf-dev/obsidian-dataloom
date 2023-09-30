@@ -1,15 +1,17 @@
 export default class CellNotFoundError extends Error {
 	constructor(options: { id?: string; rowId?: string; columnId?: string }) {
 		const { id, rowId, columnId } = options || {};
+		let message = "";
 		if (rowId && columnId) {
-			super(`Cell with row: ${rowId}, column: ${columnId} was not found`);
-			return;
+			message = `Cannot find cell with row id: ${rowId} and column id: ${columnId}`;
 		} else if (rowId) {
-			super(`Cell with row: ${rowId} was not found`);
+			message = `Cannot find cell with row id: ${rowId}`;
 		} else if (columnId) {
-			super(`Cell with column: ${columnId} was not found`);
+			message = `Cannot find cell with column id: ${columnId}`;
+		} else {
+			message = `Cannot find cell with id: ${id}`;
 		}
-		super(`Cell ${id} was not found`);
+		super(message);
 		this.name = "CellNotFoundError";
 	}
 }

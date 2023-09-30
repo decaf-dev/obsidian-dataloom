@@ -1,6 +1,6 @@
 export default class SourceNotFoundError extends Error {
 	constructor(id: string) {
-		super(`Source ${id} was not found`);
+		super(`Cannot find source with id: ${id}`);
 		this.name = "SourceNotFoundError";
 	}
 }
