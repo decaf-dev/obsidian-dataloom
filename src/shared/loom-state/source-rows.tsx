@@ -60,5 +60,7 @@ const findRowsFromFolder = (
 };
 
 const findRowsFromTag = (app: App, tagName: string): Row[] => {
+	console.log(app);
+	console.log(tagName);
 	return [];
 };

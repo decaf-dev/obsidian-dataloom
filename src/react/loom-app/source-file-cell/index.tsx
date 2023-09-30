@@ -2,6 +2,7 @@ import { getSourceFileContent } from "src/shared/cell-content/source-file-conten
 import { useRenderMarkdown } from "src/shared/render-utils";
 import { appendOrReplaceFirstChild } from "src/shared/render/utils";
 import { useOverflow } from "src/shared/spacing/hooks";
+import "./styles.css";
 
 interface Props {
 	shouldWrapOverflow: boolean;
@@ -20,6 +21,7 @@ export default function SourceFileCell({
 	className += " " + overflowClassName;
 	return (
 		<div
+			className={className}
 			ref={(node) => {
 				if (content !== "") {
 					containerRef.current = node;
