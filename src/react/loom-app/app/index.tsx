@@ -37,12 +37,19 @@ import getFooterRow from "./get-footer-row";
 import "src/react/global.css";
 import "./styles.css";
 import getHeaderRow from "./get-header-row";
+import addSourceRows from "src/shared/loom-state/add-source-rows";
 
 export default function App() {
 	const logger = useLogger();
 	const { reactAppId, isMarkdownView, app } = useAppMount();
-	const { loomState, resizingColumnId, searchText, onRedo, onUndo } =
-		useLoomState();
+	const {
+		loomState,
+		resizingColumnId,
+		searchText,
+		onRedo,
+		onUndo,
+		setLoomState,
+	} = useLoomState();
 
 	const tableRef = React.useRef<VirtuosoHandle | null>(null);
 	const { onRequestCloseTop } = useMenuOperations();
@@ -84,6 +91,12 @@ export default function App() {
 		onTagDeleteClick,
 		onTagChange,
 	} = useTag();
+
+	//Add source rows on mount
+	React.useEffect(() => {
+		//Set timeout to avoid Obsidian merging file message
+		setLoomState((loomState) => addSourceRows(app, loomState));
+	}, []);
 
 	const firstColumnId = useUUID();
 	const lastColumnId = useUUID();
@@ -149,7 +162,6 @@ export default function App() {
 	});
 
 	const bodyRows = getBodyRows({
-		app,
 		sources,
 		firstColumnId,
 		lastColumnId,

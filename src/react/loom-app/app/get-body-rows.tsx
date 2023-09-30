@@ -1,9 +1,4 @@
-import {
-	Column,
-	Row,
-	Source,
-	SourceType,
-} from "src/shared/loom-state/types/loom-state";
+import { Column, Row, Source } from "src/shared/loom-state/types/loom-state";
 import { TableRow } from "../table/types";
 import BodyCellContainer from "../body-cell-container";
 import CellNotFoundError from "src/shared/error/cell-not-found-error";
@@ -19,10 +14,6 @@ import {
 } from "./hooks/use-tag/types";
 import { CellChangeHandler } from "./hooks/use-cell/types";
 import { App } from "obsidian";
-import {
-	createCell,
-	createRow,
-} from "src/shared/loom-state/loom-state-factory";
 
 interface Props {
 	app: App;
@@ -45,112 +36,6 @@ interface Props {
 }
 
 export default function getBodyRows({
-	app,
-	sources,
-	firstColumnId,
-	lastColumnId,
-	visibleColumns,
-	rows: originalRows,
-	onRowDeleteClick,
-	onRowInsertAboveClick,
-	onRowInsertBelowClick,
-	onColumnChange,
-	onCellChange,
-	onTagAdd,
-	onTagCellAdd,
-	onTagCellRemove,
-	onTagCellMultipleRemove,
-	onTagChange,
-	onTagDeleteClick,
-}: Props): TableRow[] {
-	const rows: Row[] = [
-		...originalRows,
-		...getExternalRows(app, visibleColumns, sources, originalRows.length),
-	];
-
-	return getTableRows({
-		sources,
-		firstColumnId,
-		lastColumnId,
-		visibleColumns,
-		rows,
-		onRowDeleteClick,
-		onRowInsertAboveClick,
-		onRowInsertBelowClick,
-		onColumnChange,
-		onCellChange,
-		onTagAdd,
-		onTagCellAdd,
-		onTagCellRemove,
-		onTagCellMultipleRemove,
-		onTagChange,
-		onTagDeleteClick,
-	});
-}
-
-const getExternalRows = (
-	app: App,
-	visibleColumns: Column[],
-	sources: Source[],
-	numRows: number
-): Row[] => {
-	let rows: Row[] = [];
-	sources.forEach((source) => {
-		const { id, type, content } = source;
-		switch (type) {
-			case SourceType.FOLDER:
-				rows = getRowsFromFolder(
-					app,
-					visibleColumns,
-					id,
-					content,
-					numRows
-				);
-				break;
-			case SourceType.TAG:
-				rows = getRowsFromTag(app, content);
-				break;
-			default:
-				throw new Error(`Source type not handled: ${type}`);
-		}
-	});
-	return rows;
-};
-
-const getRowsFromFolder = (
-	app: App,
-	visibleColumns: Column[],
-	sourceId: string,
-	folderName: string,
-	numRows: number
-): Row[] => {
-	const folder = app.vault.getAbstractFileByPath(folderName);
-	if (!folder) return [];
-	const files = app.vault.getMarkdownFiles().filter((file) => {
-		return file.parent?.path === folder.path;
-	});
-	return files.map((file) => {
-		const cells = visibleColumns.map((column) => {
-			const { name, path } = file;
-			console.log(name);
-			console.log(path);
-			const { id, type } = column;
-			const cell = createCell(id, { cellType: type });
-			return cell;
-		});
-		const row = createRow(numRows, {
-			cells,
-			sourceId,
-		});
-		return row;
-	});
-};
-
-const getRowsFromTag = (app: App, tagName: string): Row[] => {
-	return [];
-};
-
-const getTableRows = ({
 	sources,
 	firstColumnId,
 	lastColumnId,
@@ -167,7 +52,7 @@ const getTableRows = ({
 	onTagCellMultipleRemove,
 	onTagChange,
 	onTagDeleteClick,
-}: Omit<Props, "app">): TableRow[] => {
+}: Omit<Props, "app">): TableRow[] {
 	return rows.map((row) => {
 		const { id: rowId, lastEditedTime, creationTime } = row;
 		return {
@@ -269,4 +154,4 @@ const getTableRows = ({
 			],
 		};
 	});
-};
+}

@@ -11,7 +11,7 @@ export default class MigrateState14 implements MigrateState {
 		const nextRows: Row[] = rows.map((row) => {
 			return {
 				...row,
-				sourceId: "",
+				sourceId: null,
 			};
 		});
 

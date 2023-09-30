@@ -117,7 +117,7 @@ const matchSourceCell = (
 	sourceId: string | null,
 	searchText: string
 ) => {
-	if (sourceId === null) return true;
+	if (sourceId === null) return false;
 
 	const source = sources.find((source) => source.id === sourceId);
 	if (!source) throw new Error("Source not found");

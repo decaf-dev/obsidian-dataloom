@@ -84,7 +84,7 @@ export const createRow = (
 		sourceId?: string;
 	}
 ): Row => {
-	const { cells = [], sourceId = "" } = options || {};
+	const { cells = [], sourceId = null } = options || {};
 	const currentTime = Date.now();
 	return {
 		id: uuidv4(),
