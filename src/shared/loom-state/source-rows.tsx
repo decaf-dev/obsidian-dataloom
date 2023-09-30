@@ -2,38 +2,34 @@ import { App } from "obsidian";
 import { createCell, createRow } from "./loom-state-factory";
 import { CellType, Column, Row, Source, SourceType } from "./types/loom-state";
 
-export default function addSourceRows(
+export default function findSourceRows(
 	app: App,
 	sources: Source[],
 	columns: Column[],
 	rows: Row[]
 ): Row[] {
-	let sourceRows: Row[] = [];
-	sources.forEach((source) => {
-		const { id, type, content } = source;
-		switch (type) {
-			case SourceType.FOLDER:
-				sourceRows = getRowsFromFolder(
-					app,
-					columns,
-					id,
-					content,
-					rows.length
-				);
-				break;
-			case SourceType.TAG:
-				sourceRows = getRowsFromTag(app, content);
-				break;
-			default:
-				throw new Error(`Source type not handled: ${type}`);
-		}
-	});
-	const filteredRows = rows.filter((row) => row.sourceId === null);
-	const nextRows = [...filteredRows, ...sourceRows];
-	return nextRows;
+	return sources
+		.map((source) => {
+			const { id, type, content } = source;
+			switch (type) {
+				case SourceType.FOLDER:
+					return findRowsFromFolder(
+						app,
+						columns,
+						id,
+						content,
+						rows.length
+					);
+				case SourceType.TAG:
+					return findRowsFromTag(app, content);
+				default:
+					throw new Error(`Source type not handled: ${type}`);
+			}
+		})
+		.flat();
 }
 
-const getRowsFromFolder = (
+const findRowsFromFolder = (
 	app: App,
 	columns: Column[],
 	sourceId: string,
@@ -63,6 +59,6 @@ const getRowsFromFolder = (
 	});
 };
 
-const getRowsFromTag = (app: App, tagName: string): Row[] => {
+const findRowsFromTag = (app: App, tagName: string): Row[] => {
 	return [];
 };

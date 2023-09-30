@@ -5,13 +5,15 @@ import {
 	Cell,
 	CellType,
 	Column,
+	Row,
 	Source,
 	SourceType,
 } from "../types/loom-state";
 import LoomStateCommand from "./loom-state-command";
 import CellNotFoundError from "src/shared/error/cell-not-found-error";
-import addSourceRows from "../add-source-rows";
+import findSourceRows from "../source-rows";
 import { App } from "obsidian";
+import { filterUniqueRows } from "../row-utils";
 
 export default class SourceAddCommand extends LoomStateCommand {
 	private app: App;
@@ -31,6 +33,8 @@ export default class SourceAddCommand extends LoomStateCommand {
 		cell: Cell;
 	}[] = [];
 
+	private addedSourceRows: Row[] = [];
+
 	constructor(app: App, type: SourceType, content: string) {
 		super();
 		this.app = app;
@@ -41,16 +45,14 @@ export default class SourceAddCommand extends LoomStateCommand {
 	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
-		const { sources, columns } = prevState.model;
+		const { sources, columns, rows } = prevState.model;
 
 		const newSource = createSource(this.type, this.content);
 		this.addedSource = newSource;
 		const nextSources = [...sources, newSource];
 
 		const nextColumns = cloneDeep(columns);
-
-		let nextRows = cloneDeep(prevState.model.rows);
-
+		let nextRows = cloneDeep(rows);
 		const sourceFileColumn = columns.find(
 			(column) => column.type === CellType.SOURCE_FILE
 		);
@@ -101,7 +103,15 @@ export default class SourceAddCommand extends LoomStateCommand {
 			});
 		}
 
-		nextRows = addSourceRows(this.app, sources, columns, nextRows);
+		const newRows = findSourceRows(
+			this.app,
+			nextSources,
+			columns,
+			nextRows
+		);
+		this.addedSourceRows = newRows;
+		nextRows = [...nextRows, ...newRows];
+		nextRows = filterUniqueRows(nextColumns, nextRows);
 
 		return {
 			...prevState,
@@ -181,7 +191,8 @@ export default class SourceAddCommand extends LoomStateCommand {
 			});
 		}
 
-		nextRows = addSourceRows(this.app, sources, columns, nextRows);
+		nextRows = [...nextRows, ...this.addedSourceRows];
+		nextRows = filterUniqueRows(nextColumns, nextRows);
 
 		return {
 			...prevState,

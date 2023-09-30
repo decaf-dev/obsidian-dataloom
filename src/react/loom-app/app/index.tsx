@@ -37,7 +37,8 @@ import getFooterRow from "./get-footer-row";
 import "src/react/global.css";
 import "./styles.css";
 import getHeaderRow from "./get-header-row";
-import addSourceRows from "src/shared/loom-state/add-source-rows";
+import findSourceRows from "src/shared/loom-state/source-rows";
+import { filterUniqueRows } from "src/shared/loom-state/row-utils";
 
 export default function App() {
 	const logger = useLogger();
@@ -97,7 +98,9 @@ export default function App() {
 		//Set timeout to avoid Obsidian merging file message
 		setLoomState((prevState) => {
 			const { sources, columns, rows } = prevState.model;
-			const nextRows = addSourceRows(app, sources, columns, rows);
+			const newSources = findSourceRows(app, sources, columns, rows);
+			let nextRows = [...rows, ...newSources];
+			nextRows = filterUniqueRows(columns, nextRows);
 			return {
 				...prevState,
 				model: {
