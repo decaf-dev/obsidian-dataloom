@@ -52,76 +52,81 @@ export default class SourceDeleteCommand extends LoomStateCommand {
 		let nextRows: Row[] = cloneDeep(rows);
 		let nextFilters: Filter[] = cloneDeep(filters);
 
-		//Delete source column
-		const sourceColumn = columns.find(
-			(column) => column.type === CellType.SOURCE
-		);
-		if (!sourceColumn)
-			throw new ColumnNotFoundError({ type: CellType.SOURCE });
+		const isLastSource = sources.length === 1;
 
-		const result1 = columnDeleteExecute(
-			columns,
-			rows,
-			filters,
-			sourceColumn.id
-		);
-		if (result1 === null) {
-			throw new Error("Cannot delete source column");
+		//Only delete columns if its the last source
+		if (isLastSource) {
+			//Delete source column
+			const sourceColumn = columns.find(
+				(column) => column.type === CellType.SOURCE
+			);
+			if (!sourceColumn)
+				throw new ColumnNotFoundError({ type: CellType.SOURCE });
+
+			const result1 = columnDeleteExecute(
+				columns,
+				rows,
+				filters,
+				sourceColumn.id
+			);
+			if (result1 === null) {
+				throw new Error("Cannot delete source column");
+			}
+
+			const {
+				nextColumns: nextColumns1,
+				nextFilters: nextFilters1,
+				nextRows: nextRows1,
+				deletedCells: deletedCells1,
+				deletedColumn: deletedColumn1,
+				deletedFilters: deletedFilters1,
+			} = result1;
+			nextRows = nextRows1;
+			nextColumns = nextColumns1;
+			nextFilters = nextFilters1;
+
+			this.deletedSourceColumn = {
+				deletedCells: deletedCells1,
+				deletedColumn: deletedColumn1,
+				deletedFilters: deletedFilters1,
+			};
+
+			//Delete source file column
+			const sourceFileColumn = columns.find(
+				(column) => column.type === CellType.SOURCE_FILE
+			);
+			if (!sourceFileColumn)
+				throw new ColumnNotFoundError({ type: CellType.FILE });
+
+			const result2 = columnDeleteExecute(
+				nextColumns,
+				nextRows,
+				nextFilters,
+				sourceFileColumn.id
+			);
+			if (result2 === null) {
+				throw new Error("Cannot delete source file column");
+			}
+
+			const {
+				nextColumns: nextColumns2,
+				nextFilters: nextFilters2,
+				nextRows: nextRows2,
+				deletedCells: deletedCells2,
+				deletedColumn: deletedColumn2,
+				deletedFilters: deletedFilters2,
+			} = result2;
+
+			nextRows = nextRows2;
+			nextColumns = nextColumns2;
+			nextFilters = nextFilters2;
+
+			this.deletedFileColumn = {
+				deletedCells: deletedCells2,
+				deletedColumn: deletedColumn2,
+				deletedFilters: deletedFilters2,
+			};
 		}
-
-		const {
-			nextColumns: nextColumns1,
-			nextFilters: nextFilters1,
-			nextRows: nextRows1,
-			deletedCells: deletedCells1,
-			deletedColumn: deletedColumn1,
-			deletedFilters: deletedFilters1,
-		} = result1;
-		nextRows = nextRows1;
-		nextColumns = nextColumns1;
-		nextFilters = nextFilters1;
-
-		this.deletedSourceColumn = {
-			deletedCells: deletedCells1,
-			deletedColumn: deletedColumn1,
-			deletedFilters: deletedFilters1,
-		};
-
-		//Delete source file column
-		const sourceFileColumn = columns.find(
-			(column) => column.type === CellType.SOURCE_FILE
-		);
-		if (!sourceFileColumn)
-			throw new ColumnNotFoundError({ type: CellType.FILE });
-
-		const result2 = columnDeleteExecute(
-			nextColumns,
-			nextRows,
-			nextFilters,
-			sourceFileColumn.id
-		);
-		if (result2 === null) {
-			throw new Error("Cannot delete source file column");
-		}
-
-		const {
-			nextColumns: nextColumns2,
-			nextFilters: nextFilters2,
-			nextRows: nextRows2,
-			deletedCells: deletedCells2,
-			deletedColumn: deletedColumn2,
-			deletedFilters: deletedFilters2,
-		} = result2;
-
-		nextRows = nextRows2;
-		nextColumns = nextColumns2;
-		nextFilters = nextFilters2;
-
-		this.deletedFileColumn = {
-			deletedCells: deletedCells2,
-			deletedColumn: deletedColumn2,
-			deletedFilters: deletedFilters2,
-		};
 
 		const nextSources: Source[] = sources.filter((source) => {
 			if (source.id === this.id) {
@@ -162,46 +167,50 @@ export default class SourceDeleteCommand extends LoomStateCommand {
 
 		const { sources, rows, columns, filters } = prevState.model;
 
-		let nextColumns: Column[];
-		let nextRows: Row[];
-		let nextFilters: Filter[];
+		let nextColumns: Column[] = cloneDeep(columns);
+		let nextRows: Row[] = cloneDeep(rows);
+		let nextFilters: Filter[] = cloneDeep(filters);
 
-		//Undo source column deletion
-		const result1 = columnDeleteUndo(
-			columns,
-			rows,
-			filters,
-			this.deletedSourceColumn.deletedColumn,
-			this.deletedSourceColumn.deletedCells,
-			this.deletedSourceColumn.deletedFilters
-		);
-		const {
-			nextColumns: nextColumns1,
-			nextRows: nextRows1,
-			nextFilters: nextFilters1,
-		} = result1;
+		const isLastSource = sources.length === 0;
 
-		nextColumns = nextColumns1;
-		nextRows = nextRows1;
-		nextFilters = nextFilters1;
+		if (isLastSource) {
+			//Undo source column deletion
+			const result1 = columnDeleteUndo(
+				columns,
+				rows,
+				filters,
+				this.deletedSourceColumn.deletedColumn,
+				this.deletedSourceColumn.deletedCells,
+				this.deletedSourceColumn.deletedFilters
+			);
+			const {
+				nextColumns: nextColumns1,
+				nextRows: nextRows1,
+				nextFilters: nextFilters1,
+			} = result1;
 
-		//Undo file column deletion
-		const result2 = columnDeleteUndo(
-			nextColumns,
-			nextRows,
-			nextFilters,
-			this.deletedFileColumn.deletedColumn,
-			this.deletedFileColumn.deletedCells,
-			this.deletedFileColumn.deletedFilters
-		);
-		const {
-			nextColumns: nextColumns2,
-			nextRows: nextRows2,
-			nextFilters: nextFilters2,
-		} = result2;
-		nextColumns = nextColumns2;
-		nextRows = nextRows2;
-		nextFilters = nextFilters2;
+			nextColumns = nextColumns1;
+			nextRows = nextRows1;
+			nextFilters = nextFilters1;
+
+			//Undo file column deletion
+			const result2 = columnDeleteUndo(
+				nextColumns,
+				nextRows,
+				nextFilters,
+				this.deletedFileColumn.deletedColumn,
+				this.deletedFileColumn.deletedCells,
+				this.deletedFileColumn.deletedFilters
+			);
+			const {
+				nextColumns: nextColumns2,
+				nextRows: nextRows2,
+				nextFilters: nextFilters2,
+			} = result2;
+			nextColumns = nextColumns2;
+			nextRows = nextRows2;
+			nextFilters = nextFilters2;
+		}
 
 		//Undo source deletion
 		const nextSources: Source[] = [...sources];
