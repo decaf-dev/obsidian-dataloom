@@ -1,10 +1,10 @@
 import { getBasename } from "../link/link-utils";
 
 export const getSourceFileContent = (
-	content: string | null,
-	shouldRemoveMarkdown: boolean
+	content: string,
+	shouldRemoveMarkdown = false
 ) => {
-	if (content === null) return "";
+	if (content === "") return "None";
 	if (shouldRemoveMarkdown) return content;
 
 	const basename = getBasename(content);

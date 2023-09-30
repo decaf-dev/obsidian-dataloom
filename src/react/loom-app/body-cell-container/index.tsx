@@ -339,7 +339,7 @@ export default function BodyCellContainer({
 					{columnType === CellType.SOURCE_FILE && (
 						<SourceFileCell
 							shouldWrapOverflow={shouldWrapOverflow}
-							value={content}
+							content={content}
 						/>
 					)}
 					{columnType === CellType.NUMBER && (

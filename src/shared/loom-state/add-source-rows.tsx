@@ -53,11 +53,11 @@ const getRowsFromFolder = (
 	});
 	return files.map((file) => {
 		const cells = columns.map((column) => {
-			// const { name, path } = file;
+			const { path } = file;
 			const { id, type } = column;
 
 			let content = "";
-			if (type === CellType.SOURCE_FILE) content = file.path;
+			if (type === CellType.SOURCE_FILE) content = path;
 			const cell = createCell(id, { cellType: type, content });
 			return cell;
 		});

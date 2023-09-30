@@ -1,28 +1,33 @@
+import { getSourceFileContent } from "src/shared/cell-content/source-file-content";
 import { useRenderMarkdown } from "src/shared/render-utils";
 import { appendOrReplaceFirstChild } from "src/shared/render/utils";
 import { useOverflow } from "src/shared/spacing/hooks";
 
 interface Props {
 	shouldWrapOverflow: boolean;
-	value: string;
+	content: string;
 }
 
-export default function SourceFileCell({ shouldWrapOverflow, value }: Props) {
+export default function SourceFileCell({
+	shouldWrapOverflow,
+	content: originalContent,
+}: Props) {
+	const content = getSourceFileContent(originalContent);
 	const overflowClassName = useOverflow(shouldWrapOverflow);
-	const { containerRef, renderRef } = useRenderMarkdown(value);
+	const { containerRef, renderRef } = useRenderMarkdown(content);
 
 	let className = "dataloom-source-file-cell";
 	className += " " + overflowClassName;
 	return (
 		<div
 			ref={(node) => {
-				if (value !== "") {
+				if (content !== "") {
 					containerRef.current = node;
 					appendOrReplaceFirstChild(node, renderRef.current);
 				}
 			}}
 		>
-			{value === "" && "None"}
+			{content === "" && content}
 		</div>
 	);
 }

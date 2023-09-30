@@ -13,6 +13,8 @@ import { getTimeCellContent } from "src/shared/cell-content/time-content";
 import { getDateCellContent } from "src/shared/cell-content/date-cell-content";
 import { getNumberCellContent } from "src/shared/cell-content/number-cell-content";
 import ColumNotFoundError from "src/shared/error/column-not-found-error";
+import { getSourceContent } from "src/shared/cell-content/source-content";
+import { getSourceFileContent } from "src/shared/cell-content/source-file-content";
 
 export const filterRowsBySearch = (
 	sources: Source[],
@@ -79,7 +81,6 @@ const doesCellMatch = (
 		case CellType.EMBED:
 		case CellType.FILE:
 		case CellType.CHECKBOX:
-		case CellType.SOURCE_FILE:
 			return matchTextCell(content, searchText);
 		case CellType.NUMBER:
 			return matchNumberCell(
@@ -108,9 +109,17 @@ const doesCellMatch = (
 		case CellType.SOURCE: {
 			return matchSourceCell(sources, sourceId, searchText);
 		}
+		case CellType.SOURCE_FILE: {
+			return matchSourceFileCell(content, searchText);
+		}
 		default:
 			throw new Error("Unsupported cell type");
 	}
+};
+
+const matchSourceFileCell = (originalContent: string, searchText: string) => {
+	const content = getSourceFileContent(originalContent, true);
+	return content.toLowerCase().includes(searchText);
 };
 
 const matchSourceCell = (
@@ -118,12 +127,8 @@ const matchSourceCell = (
 	sourceId: string | null,
 	searchText: string
 ) => {
-	if (sourceId === null) return false;
-
-	const source = sources.find((source) => source.id === sourceId);
-	if (!source) throw new Error("Source not found");
-
-	const { content } = source;
+	const source = sources.find((source) => source.id === sourceId) ?? null;
+	const content = getSourceContent(source);
 	return content.toLowerCase().includes(searchText);
 };
 
