@@ -12,16 +12,15 @@ export const filterUniqueRows = (columns: Column[], rows: Row[]) => {
 		for (const column of columns) {
 			const { id, type } = column;
 			if (type !== CellType.SOURCE_FILE) continue;
+
 			const cell = cells.find((cell) => cell.columnId === id);
 			if (!cell) throw new CellNotFoundError({ columnId: id });
 
 			const { content } = cell;
-			console.log(content);
 			if (!uniqueValues.includes(content)) {
 				uniqueValues.push(content);
 				return true;
 			}
-			console.log("False");
 			return false;
 		}
 	});

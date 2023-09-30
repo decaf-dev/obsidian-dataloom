@@ -92,7 +92,7 @@ export default class SourceAddCommand extends LoomStateCommand {
 			nextRows = nextRows.map((row) => {
 				const newCell = createCell(newColumn.id, {
 					cellType: CellType.SOURCE,
-					content: "Internal",
+					content: "",
 				});
 				this.addedSourceCells.push({
 					rowId: row.id,
