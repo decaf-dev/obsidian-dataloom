@@ -1,5 +1,5 @@
 import MigrateState from "./migrate-state";
-import ColumNotFoundError from "src/shared/error/column-not-found-error";
+import ColumnNotFoundError from "src/shared/error/column-not-found-error";
 import { LoomState4, CellType as CellType4 } from "../types/loom-state-4";
 import { LoomState5, BodyCell as BodyCell5 } from "../types/loom-state-5";
 
@@ -17,7 +17,7 @@ export default class MigrateState4 implements MigrateState {
 			const column = columns.find(
 				(column) => column.id === cell.columnId
 			);
-			if (!column) throw new ColumNotFoundError(cell.columnId);
+			if (!column) throw new ColumnNotFoundError({ id: cell.columnId });
 
 			let markdown = cell.markdown;
 

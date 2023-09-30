@@ -12,7 +12,7 @@ import {
 import { getTimeCellContent } from "src/shared/cell-content/time-content";
 import { getDateCellContent } from "src/shared/cell-content/date-cell-content";
 import { getNumberCellContent } from "src/shared/cell-content/number-cell-content";
-import ColumNotFoundError from "src/shared/error/column-not-found-error";
+import ColumnNotFoundError from "src/shared/error/column-not-found-error";
 import { getSourceContent } from "src/shared/cell-content/source-content";
 import { getSourceFileContent } from "src/shared/cell-content/source-file-content";
 
@@ -34,7 +34,7 @@ export const filterRowsBySearch = (
 		const { cells } = row;
 		cells.forEach((cell) => {
 			const column = columnIdToColumn.get(cell.columnId);
-			if (!column) throw new ColumNotFoundError();
+			if (!column) throw new ColumnNotFoundError({ id: cell.columnId });
 			cellIdToColumn.set(cell.id, column);
 		});
 	});
@@ -43,7 +43,7 @@ export const filterRowsBySearch = (
 		const { cells } = row;
 		return cells.some((cell) => {
 			const column = cellIdToColumn.get(cell.id);
-			if (!column) throw new ColumNotFoundError();
+			if (!column) throw new ColumnNotFoundError({ id: cell.columnId });
 			return doesCellMatch(
 				sources,
 				cell,

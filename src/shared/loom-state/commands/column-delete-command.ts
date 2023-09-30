@@ -1,4 +1,4 @@
-import ColumNotFoundError from "src/shared/error/column-not-found-error";
+import ColumnNotFoundError from "src/shared/error/column-not-found-error";
 import { Column, LoomState, Cell, Filter, Row } from "../types/loom-state";
 import LoomStateCommand from "./loom-state-command";
 import CommandArgumentsError from "./command-arguments-error";
@@ -36,7 +36,7 @@ export default class ColumnDeleteCommand extends LoomStateCommand {
 		if (this.last) id = columns[columns.length - 1].id;
 
 		const columnToDelete = columns.find((column) => column.id === id);
-		if (!columnToDelete) throw new ColumNotFoundError(id);
+		if (!columnToDelete) throw new ColumnNotFoundError({ id });
 		this.deletedColumn = {
 			arrIndex: columns.indexOf(columnToDelete),
 			column: cloneDeep(columnToDelete),

@@ -28,7 +28,7 @@ import {
 	getDateFromDateFilterOption,
 	getDateJustBeforeMidnight,
 } from "./utils";
-import ColumNotFoundError from "src/shared/error/column-not-found-error";
+import ColumnNotFoundError from "src/shared/error/column-not-found-error";
 
 /**
  * Filters body rows by the filters array
@@ -47,7 +47,7 @@ export const filterByFilters = (prevState: LoomState): Row[] => {
 		const { cells } = row;
 		cells.forEach((cell) => {
 			const column = columnIdToColumn.get(cell.columnId);
-			if (!column) throw new ColumNotFoundError();
+			if (!column) throw new ColumnNotFoundError({ id: cell.columnId });
 			cellIdToColumn.set(cell.id, column);
 		});
 	});
@@ -56,7 +56,7 @@ export const filterByFilters = (prevState: LoomState): Row[] => {
 		const { cells } = row;
 		return cells.every((cell) => {
 			const column = cellIdToColumn.get(cell.id);
-			if (!column) throw new ColumNotFoundError();
+			if (!column) throw new ColumnNotFoundError({ id: cell.columnId });
 			const { type, tags } = column;
 			return doesCellMatchFilters(cell, row, type, tags, filters);
 		});

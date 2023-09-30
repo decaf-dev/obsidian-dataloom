@@ -1,6 +1,10 @@
-export default class ColumNotFoundError extends Error {
-	constructor(id?: string) {
-		super(`Column ${id} was not found`);
-		this.name = "ColumNotFoundError";
+export default class ColumnNotFoundError extends Error {
+	constructor({ id, type }: { id?: string; type?: string }) {
+		if (id) {
+			super(`Cannot find column with id: ${id}`);
+		} else {
+			super(`Cannot find column of type: ${type}`);
+		}
+		this.name = "ColumnNotFoundError";
 	}
 }

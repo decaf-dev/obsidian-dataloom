@@ -1,7 +1,7 @@
 import { createTag } from "src/shared/loom-state/loom-state-factory";
 import { unixTimeToDateString } from "../../date/date-conversion";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "../../constants";
-import ColumNotFoundError from "src/shared/error/column-not-found-error";
+import ColumnNotFoundError from "src/shared/error/column-not-found-error";
 import LoomStateCommand from "./loom-state-command";
 import {
 	GeneralCalculation,
@@ -48,7 +48,7 @@ export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 
 		const { columns, rows, filters } = prevState.model;
 		const column = columns.find((column) => column.id === this.id);
-		if (!column) throw new ColumNotFoundError(this.id);
+		if (!column) throw new ColumnNotFoundError({ id: this.id });
 
 		const { type } = column;
 		if (type === this.nextType) return prevState;
@@ -314,7 +314,8 @@ export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 							const column = columns.find(
 								(column) => column.id === this.id
 							);
-							if (!column) throw new ColumNotFoundError(this.id);
+							if (!column)
+								throw new ColumnNotFoundError({ id: this.id });
 
 							const existingTag = column.tags.find(
 								(tag) => tag.content === tagContent
@@ -370,7 +371,8 @@ export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 							const column = columns.find(
 								(column) => column.id === this.id
 							);
-							if (!column) throw new ColumNotFoundError(this.id);
+							if (!column)
+								throw new ColumnNotFoundError({ id: this.id });
 
 							const existingTag = column.tags.find(
 								(tag) => tag.content === tagContent

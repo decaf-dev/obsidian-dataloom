@@ -1,5 +1,5 @@
 import MigrateState from "./migrate-state";
-import ColumNotFoundError from "src/shared/error/column-not-found-error";
+import ColumnNotFoundError from "src/shared/error/column-not-found-error";
 import {
 	CalculationType as CalculationType13,
 	CellType as CellType13,
@@ -80,7 +80,7 @@ export default class MigrateState12 implements MigrateState {
 			const column = columns.find(
 				(column) => column.id === rule.columnId
 			);
-			if (!column) throw new ColumNotFoundError(rule.columnId);
+			if (!column) throw new ColumnNotFoundError({ id: rule.columnId });
 			const { type } = column;
 
 			if (type === CellType12.MULTI_TAG) {

@@ -1,6 +1,6 @@
 import { Row, Column, LoomState, Source } from "../loom-state/types/loom-state";
 import { getCellContent } from "../cell-content";
-import ColumNotFoundError from "../error/column-not-found-error";
+import ColumnNotFoundError from "../error/column-not-found-error";
 import { App } from "obsidian";
 
 const serializeColumns = (columns: Column[]): string[] => {
@@ -20,7 +20,7 @@ const serializeCells = (
 			const column = columns.find(
 				(column) => column.id === cell.columnId
 			);
-			if (!column) throw new ColumNotFoundError(cell.columnId);
+			if (!column) throw new ColumnNotFoundError({ id: cell.columnId });
 			const source =
 				sources.find((source) => source.id === row.sourceId) ?? null;
 

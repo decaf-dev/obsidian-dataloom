@@ -6,7 +6,7 @@ import FilterRow from "./filter-row";
 import Text from "src/react/shared/text";
 import Button from "src/react/shared/button";
 
-import ColumNotFoundError from "src/shared/error/column-not-found-error";
+import ColumnNotFoundError from "src/shared/error/column-not-found-error";
 import {
 	CellType,
 	FilterCondition,
@@ -94,7 +94,7 @@ export default function FilterMenu({
 		const { condition, isEnabled } = filter;
 
 		const column = columns.find((column) => column.id === columnId);
-		if (!column) throw new ColumNotFoundError(columnId);
+		if (!column) throw new ColumnNotFoundError({ id: columnId });
 		const { type } = column;
 
 		let newFilter: Filter | null = null;
@@ -342,7 +342,8 @@ export default function FilterMenu({
 							const column = columns.find(
 								(column) => column.id === columnId
 							);
-							if (!column) throw new ColumNotFoundError(columnId);
+							if (!column)
+								throw new ColumnNotFoundError({ id: columnId });
 							const { tags } = column;
 
 							let inputNode: React.ReactNode;
