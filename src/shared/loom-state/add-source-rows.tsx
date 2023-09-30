@@ -1,13 +1,13 @@
 import { App } from "obsidian";
 import { createCell, createRow } from "./loom-state-factory";
-import { LoomState } from "./types";
-import { CellType, Column, Row, SourceType } from "./types/loom-state";
+import { CellType, Column, Row, Source, SourceType } from "./types/loom-state";
 
 export default function addSourceRows(
 	app: App,
-	prevState: LoomState
-): LoomState {
-	const { sources, columns, rows } = prevState.model;
+	sources: Source[],
+	columns: Column[],
+	rows: Row[]
+): Row[] {
 	let sourceRows: Row[] = [];
 	sources.forEach((source) => {
 		const { id, type, content } = source;
@@ -30,13 +30,7 @@ export default function addSourceRows(
 	});
 	const filteredRows = rows.filter((row) => row.sourceId === null);
 	const nextRows = [...filteredRows, ...sourceRows];
-	return {
-		...prevState,
-		model: {
-			...prevState.model,
-			rows: nextRows,
-		},
-	};
+	return nextRows;
 }
 
 const getRowsFromFolder = (

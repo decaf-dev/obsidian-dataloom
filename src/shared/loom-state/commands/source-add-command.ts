@@ -10,8 +10,11 @@ import {
 } from "../types/loom-state";
 import LoomStateCommand from "./loom-state-command";
 import CellNotFoundError from "src/shared/error/cell-not-found-error";
+import addSourceRows from "../add-source-rows";
+import { App } from "obsidian";
 
 export default class SourceAddCommand extends LoomStateCommand {
+	private app: App;
 	private type: SourceType;
 	private content: string;
 
@@ -28,8 +31,9 @@ export default class SourceAddCommand extends LoomStateCommand {
 		cell: Cell;
 	}[] = [];
 
-	constructor(type: SourceType, content: string) {
+	constructor(app: App, type: SourceType, content: string) {
 		super();
+		this.app = app;
 		this.type = type;
 		this.content = content;
 	}
@@ -97,6 +101,8 @@ export default class SourceAddCommand extends LoomStateCommand {
 			});
 		}
 
+		nextRows = addSourceRows(this.app, sources, columns, nextRows);
+
 		return {
 			...prevState,
 			model: {
@@ -128,17 +134,9 @@ export default class SourceAddCommand extends LoomStateCommand {
 			);
 		}
 
-		const nextRows = rows.map((row) => {
-			const nextCells = row.cells.filter(
-				(cell) =>
-					cell.columnId !== this.addedSource.id &&
-					cell.columnId !== this.addedFileColumn?.id
-			);
-			return {
-				...row,
-				cells: nextCells,
-			};
-		});
+		const nextRows = rows.filter(
+			(row) => row.sourceId === this.addedSource.id
+		);
 
 		return {
 			...prevState,
@@ -182,6 +180,8 @@ export default class SourceAddCommand extends LoomStateCommand {
 				return row;
 			});
 		}
+
+		nextRows = addSourceRows(this.app, sources, columns, nextRows);
 
 		return {
 			...prevState,

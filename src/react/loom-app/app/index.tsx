@@ -95,7 +95,17 @@ export default function App() {
 	//Add source rows on mount
 	React.useEffect(() => {
 		//Set timeout to avoid Obsidian merging file message
-		setLoomState((loomState) => addSourceRows(app, loomState));
+		setLoomState((prevState) => {
+			const { sources, columns, rows } = prevState.model;
+			const nextRows = addSourceRows(app, sources, columns, rows);
+			return {
+				...prevState,
+				model: {
+					...prevState.model,
+					rows: nextRows,
+				},
+			};
+		});
 	}, []);
 
 	const firstColumnId = useUUID();
