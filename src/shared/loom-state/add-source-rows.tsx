@@ -1,7 +1,7 @@
 import { App } from "obsidian";
 import { createCell, createRow } from "./loom-state-factory";
 import { LoomState } from "./types";
-import { Column, Row, SourceType } from "./types/loom-state";
+import { CellType, Column, Row, SourceType } from "./types/loom-state";
 
 export default function addSourceRows(
 	app: App,
@@ -55,7 +55,10 @@ const getRowsFromFolder = (
 		const cells = columns.map((column) => {
 			// const { name, path } = file;
 			const { id, type } = column;
-			const cell = createCell(id, { cellType: type, content: file.path });
+
+			let content = "";
+			if (type === CellType.SOURCE_FILE) content = file.path;
+			const cell = createCell(id, { cellType: type, content });
 			return cell;
 		});
 		const row = createRow(numRows, {
