@@ -21,6 +21,7 @@ export default function BaseContent({
 	return (
 		<Stack spacing="md">
 			<SourcesHeader
+				showEditButton={sources.length > 0}
 				onAddClick={onAddClick}
 				onEditClick={() => setIsEditing((prevState) => !prevState)}
 			/>

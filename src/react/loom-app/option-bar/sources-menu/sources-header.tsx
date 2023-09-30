@@ -5,19 +5,26 @@ import Stack from "src/react/shared/stack";
 import Text from "src/react/shared/text";
 
 interface Props {
+	showEditButton: boolean;
 	onAddClick: () => void;
 	onEditClick: () => void;
 }
 
-export default function SourcesHeader({ onAddClick, onEditClick }: Props) {
+export default function SourcesHeader({
+	showEditButton,
+	onAddClick,
+	onEditClick,
+}: Props) {
 	return (
 		<Flex justify="space-between" align="center">
 			<Text value="Sources" />
 			<Stack isHorizontal spacing="sm">
-				<Button
-					icon={<Icon lucideId="edit"></Icon>}
-					onClick={() => onEditClick()}
-				/>
+				{showEditButton && (
+					<Button
+						icon={<Icon lucideId="edit"></Icon>}
+						onClick={() => onEditClick()}
+					/>
+				)}
 				<Button
 					icon={<Icon lucideId="plus"></Icon>}
 					onClick={() => onAddClick()}
