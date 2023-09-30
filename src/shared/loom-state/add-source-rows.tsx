@@ -28,7 +28,6 @@ export default function addSourceRows(
 				throw new Error(`Source type not handled: ${type}`);
 		}
 	});
-	console.log(rows);
 	const filteredRows = rows.filter((row) => row.sourceId === null);
 	const nextRows = [...filteredRows, ...sourceRows];
 	return {
