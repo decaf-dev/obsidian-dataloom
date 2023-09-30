@@ -13,7 +13,6 @@ import {
 	Column,
 	Filter,
 	Source,
-	SourceType,
 } from "src/shared/loom-state/types/loom-state";
 import { isSmallScreenSize } from "src/shared/render/utils";
 import { useMenu } from "../../shared/menu/hooks";

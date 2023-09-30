@@ -1,5 +1,5 @@
 import Select from "src/react/shared/select";
-import { CellType, Column } from "src/shared/loom-state/types/loom-state";
+import { Column } from "src/shared/loom-state/types/loom-state";
 
 interface Props {
 	id: string;

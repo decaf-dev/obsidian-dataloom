@@ -10,7 +10,7 @@ import { useLoomState } from "src/react/loom-app/loom-state-provider";
 import { useMenu } from "../../shared/menu/hooks";
 
 import "./styles.css";
-import { CellType, Source } from "src/shared/loom-state/types/loom-state";
+import { Source } from "src/shared/loom-state/types/loom-state";
 
 interface Props {
 	rowId: string;

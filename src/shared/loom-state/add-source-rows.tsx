@@ -55,7 +55,7 @@ const getRowsFromFolder = (
 		const cells = columns.map((column) => {
 			// const { name, path } = file;
 			const { id, type } = column;
-			const cell = createCell(id, { cellType: type });
+			const cell = createCell(id, { cellType: type, content: file.path });
 			return cell;
 		});
 		const row = createRow(numRows, {

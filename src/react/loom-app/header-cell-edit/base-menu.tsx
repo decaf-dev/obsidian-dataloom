@@ -146,7 +146,8 @@ export default function BaseMenu({
 				/>
 			)}
 			{columnType !== CellType.EMBED &&
-				columnType !== CellType.NUMBER && (
+				columnType !== CellType.NUMBER &&
+				columnType !== CellType.SOURCE && (
 					<>
 						<Divider />
 						<Padding px="lg" py="md">
