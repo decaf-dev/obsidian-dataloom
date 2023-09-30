@@ -56,7 +56,10 @@ export default class SourceAddCommand extends LoomStateCommand {
 
 		let nextRows = cloneDeep(prevState.model.rows);
 		if (this.fileColumnId === null) {
-			const newColumn = createColumn({ cellType: CellType.FILE });
+			const newColumn = createColumn({
+				cellType: CellType.FILE,
+				content: "File",
+			});
 			this.addedFileColumn = newColumn;
 			nextColumns.unshift(newColumn);
 
@@ -75,7 +78,10 @@ export default class SourceAddCommand extends LoomStateCommand {
 		}
 
 		if (!sourceColumn) {
-			const newColumn = createColumn({ cellType: CellType.SOURCE });
+			const newColumn = createColumn({
+				cellType: CellType.SOURCE,
+				content: "Source",
+			});
 			this.addedSourceColumn = newColumn;
 			nextColumns.unshift(newColumn);
 

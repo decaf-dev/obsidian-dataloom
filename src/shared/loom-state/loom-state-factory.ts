@@ -53,8 +53,11 @@ export const createSource = (type: SourceType, content: string): Source => {
 		content,
 	};
 };
-export const createColumn = (options?: { cellType?: CellType }): Column => {
-	const { cellType = CellType.TEXT } = options || {};
+export const createColumn = (options?: {
+	cellType?: CellType;
+	content?: string;
+}): Column => {
+	const { cellType = CellType.TEXT, content = "New Column" } = options || {};
 	return {
 		id: uuidv4(),
 		sortDir: SortDir.NONE,
@@ -64,7 +67,7 @@ export const createColumn = (options?: { cellType?: CellType }): Column => {
 		numberPrefix: "",
 		numberSuffix: "",
 		numberSeparator: "",
-		content: "New Column",
+		content,
 		numberFormat: NumberFormat.NUMBER,
 		currencyType: CurrencyType.UNITED_STATES,
 		dateFormat: DateFormat.MM_DD_YYYY,
