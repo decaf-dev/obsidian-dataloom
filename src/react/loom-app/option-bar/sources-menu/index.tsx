@@ -8,19 +8,21 @@ import { SourcesMenuSubmenu } from "./constants";
 import React from "react";
 import AddSourceSubmenu from "./add-source-submenu";
 import BaseContent from "./base-content";
-import { Source, SourceType } from "src/shared/loom-state/types/loom-state";
+import {
+	Column,
+	Source,
+	SourceType,
+} from "src/shared/loom-state/types/loom-state";
+import { SourceAddHandler } from "../../app/hooks/use-source/types";
 
 interface Props {
 	id: string;
 	isOpen: boolean;
 	triggerPosition: Position;
 	sources: Source[];
-	onAdd: (
-		type: SourceType,
-		name: string,
-		fileColumnId: string | null
-	) => void;
-	onDelete: (id: string) => void;
+	columns: Column[];
+	onAddSource: SourceAddHandler;
+	onDeleteSource: (id: string) => void;
 	onRequestClose: (type: LoomMenuCloseRequestType) => void;
 	onClose: () => void;
 }
@@ -29,9 +31,10 @@ export default function SourcesMenu({
 	id,
 	isOpen,
 	triggerPosition,
+	columns,
 	sources,
-	onAdd,
-	onDelete,
+	onAddSource,
+	onDeleteSource,
 	onRequestClose,
 	onClose,
 }: Props) {
@@ -40,7 +43,7 @@ export default function SourcesMenu({
 	);
 
 	function handleAddSourceClick(type: SourceType, name: string) {
-		onAdd(type, name, null);
+		onAddSource(type, name, null);
 		setSubmenu(null);
 		onClose();
 	}
@@ -60,13 +63,14 @@ export default function SourcesMenu({
 					<BaseContent
 						sources={sources}
 						onAddClick={() => setSubmenu(SourcesMenuSubmenu.ADD)}
-						onDeleteClick={onDelete}
+						onDeleteClick={onDeleteSource}
 					/>
 				)}
 				{submenu === SourcesMenuSubmenu.ADD && (
 					<AddSourceSubmenu
-						onBackClick={() => setSubmenu(null)}
+						columns={columns}
 						onAddSourceClick={handleAddSourceClick}
+						onBackClick={() => setSubmenu(null)}
 					/>
 				)}
 			</Padding>

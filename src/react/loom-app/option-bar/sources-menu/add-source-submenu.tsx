@@ -7,28 +7,61 @@ import Stack from "src/react/shared/stack";
 import Submenu from "src/react/shared/submenu";
 import Text from "src/react/shared/text";
 import { getDisplayNameForSource } from "src/shared/loom-state/type-display-names";
-import { SourceType } from "src/shared/loom-state/types/loom-state";
+import {
+	CellType,
+	Column,
+	SourceType,
+} from "src/shared/loom-state/types/loom-state";
+import { SourceAddHandler } from "../../app/hooks/use-source/types";
 
 interface Props {
-	onAddSourceClick: (type: SourceType, name: string) => void;
+	columns: Column[];
+	onAddSourceClick: SourceAddHandler;
 	onBackClick: () => void;
 }
 
+interface Error {
+	message: string;
+	inputId: string;
+}
+
+const NAME_INPUT_ID = "name";
+const TYPE_SELECT_ID = "type";
+const FILE_SELECT_ID = "file";
+
 export default function AddSourceSubmenu({
+	columns,
 	onAddSourceClick,
 	onBackClick,
 }: Props) {
 	const [type, setType] = React.useState<SourceType | null>(null);
 	const [name, setName] = React.useState("");
-	const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
+	const [fileColumnId, setFileColumnId] = React.useState<string | null>(null);
+	const [error, setError] = React.useState<Error | null>(null);
 
-	function handleAddClick() {
+	function handleAddClick(requiresFileColumn: boolean) {
 		if (type === null) {
-			setErrorMessage("Type is required");
+			setError({
+				message: "Please select a type",
+				inputId: TYPE_SELECT_ID,
+			});
 			return;
+		} else if (fileColumnId === null) {
+			if (requiresFileColumn) {
+				setError({
+					message: "Please select a file column",
+					inputId: FILE_SELECT_ID,
+				});
+				return;
+			}
 		}
-		onAddSourceClick(type, name);
+		console.log(fileColumnId);
+		onAddSourceClick(type, name, fileColumnId);
 	}
+
+	const fileColumns = columns.filter(
+		(column) => column.type === CellType.FILE
+	);
 
 	return (
 		<Submenu title="Add source" onBackClick={onBackClick}>
@@ -39,6 +72,7 @@ export default function AddSourceSubmenu({
 						<Select
 							id="type"
 							value={type ?? ""}
+							hasError={error?.inputId === TYPE_SELECT_ID}
 							onChange={(value) =>
 								setType((value as SourceType) || null)
 							}
@@ -54,18 +88,45 @@ export default function AddSourceSubmenu({
 						</Select>
 					</Stack>
 					<Stack spacing="sm">
-						<label htmlFor="name">Name</label>
+						<label htmlFor={NAME_INPUT_ID}>Name</label>
 						<Input
-							id="name"
+							id={NAME_INPUT_ID}
 							autoFocus={false}
+							hasError={error?.inputId === NAME_INPUT_ID}
 							value={name}
 							onChange={(value) => setName(value)}
 						/>
 					</Stack>
-					{errorMessage && (
-						<Text value={errorMessage} variant="error" />
+					{fileColumns.length > 0 && (
+						<Stack spacing="sm">
+							<label htmlFor={FILE_SELECT_ID}>File column</label>
+							<Select
+								id={FILE_SELECT_ID}
+								value={fileColumnId ?? ""}
+								hasError={error?.inputId === FILE_SELECT_ID}
+								onChange={(value) =>
+									setFileColumnId(value || null)
+								}
+							>
+								<option value="">Select an option</option>
+								{fileColumns.map((column) => {
+									const { id, content } = column;
+									return (
+										<option key={id} value={id}>
+											{content}
+										</option>
+									);
+								})}
+							</Select>
+						</Stack>
 					)}
-					<Button variant="default" onClick={handleAddClick}>
+					{error?.message && (
+						<Text value={error.message} variant="error" />
+					)}
+					<Button
+						variant="default"
+						onClick={() => handleAddClick(fileColumns.length > 0)}
+					>
 						Add
 					</Button>
 				</Stack>

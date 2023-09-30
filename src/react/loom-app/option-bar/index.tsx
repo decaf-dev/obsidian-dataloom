@@ -190,8 +190,9 @@ export default function OptionBar({
 				isOpen={isSourcesMenuOpen}
 				triggerPosition={sourcesMenuTriggerPosition}
 				sources={sources}
-				onAdd={onSourceAdd}
-				onDelete={onSourceDelete}
+				columns={columns}
+				onAddSource={onSourceAdd}
+				onDeleteSource={onSourceDelete}
 				onRequestClose={onSourcesMenuRequestClose}
 				onClose={onSourcesMenuClose}
 			/>
