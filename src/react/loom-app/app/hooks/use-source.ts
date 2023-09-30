@@ -8,18 +8,13 @@ export const useSource = () => {
 	const logger = useLogger();
 	const { doCommand } = useLoomState();
 
-	// function handleFilterUpdate(
-	// 	id: string,
-	// 	data: Partial<Filter>,
-	// 	isPartial?: boolean
-	// ) {
-	// 	logger("handleFilterUpdate", { id, data });
-	// 	doCommand(new FilterUpdateCommand<Filter>(id, data, isPartial));
-	// }
-
-	function handleSourceAdd(type: SourceType, name: string) {
+	function handleSourceAdd(
+		type: SourceType,
+		name: string,
+		fileColumnId: string | null
+	) {
 		logger("handleSourceAdd");
-		doCommand(new SourceAddCommand(type, name));
+		doCommand(new SourceAddCommand(type, name, fileColumnId));
 	}
 
 	function handleSourceDelete(id: string) {

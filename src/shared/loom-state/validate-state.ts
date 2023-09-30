@@ -23,7 +23,7 @@ import {
 	DateFilterCondition,
 	DateFilterOption,
 	SourceType,
-} from "../types/loom-state";
+} from "./types/loom-state";
 
 const FilterOperatorUnion = Union(Literal("and"), Literal("or"));
 

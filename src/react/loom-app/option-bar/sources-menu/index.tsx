@@ -15,7 +15,11 @@ interface Props {
 	isOpen: boolean;
 	triggerPosition: Position;
 	sources: Source[];
-	onAdd: (type: SourceType, name: string) => void;
+	onAdd: (
+		type: SourceType,
+		name: string,
+		fileColumnId: string | null
+	) => void;
 	onDelete: (id: string) => void;
 	onRequestClose: (type: LoomMenuCloseRequestType) => void;
 	onClose: () => void;
@@ -36,7 +40,7 @@ export default function SourcesMenu({
 	);
 
 	function handleAddSourceClick(type: SourceType, name: string) {
-		onAdd(type, name);
+		onAdd(type, name, null);
 		setSubmenu(null);
 		onClose();
 	}

@@ -37,7 +37,7 @@ import {
 } from "src/shared/loom-state/migrate";
 import { LoomState13 } from "src/shared/loom-state/types/loom-state-13";
 import MigrateState13 from "src/shared/loom-state/migrate/migrate-state-13";
-import { LoomStateObject } from "src/shared/loom-state/validate/validate-state";
+import { LoomStateObject } from "src/shared/loom-state/validate-state";
 import DeserializationError from "./deserialization-error";
 import { LoomState14 } from "src/shared/loom-state/types/loom-state-14";
 import MigrateState14 from "src/shared/loom-state/migrate/migrate-state-14";

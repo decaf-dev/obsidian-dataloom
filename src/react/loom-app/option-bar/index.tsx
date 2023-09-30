@@ -35,7 +35,11 @@ interface Props {
 	onFilterDeleteClick: (filterId: string) => void;
 	onFilterAddClick: () => void;
 	onCalculationRowToggle: (value: boolean) => void;
-	onSourceAdd: (type: SourceType, name: string) => void;
+	onSourceAdd: (
+		type: SourceType,
+		name: string,
+		fileColumnId: string | null
+	) => void;
 	onSourceDelete: (id: string) => void;
 	onColumnChange: ColumnChangeHandler;
 }
