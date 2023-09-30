@@ -106,7 +106,7 @@ export default class SourceAddCommand extends LoomStateCommand {
 		const newRows = findSourceRows(
 			this.app,
 			nextSources,
-			columns,
+			nextColumns,
 			nextRows
 		);
 		this.addedSourceRows = newRows;
