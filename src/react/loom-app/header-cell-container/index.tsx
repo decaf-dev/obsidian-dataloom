@@ -122,7 +122,11 @@ export default function HeaderCellContainer({
 				id={menu.id}
 				numFrozenColumns={numFrozenColumns}
 				column={column}
-				canDeleteColumn={numColumns > 1}
+				canDeleteColumn={
+					numColumns > 1 &&
+					type !== CellType.SOURCE_FILE &&
+					type !== CellType.SOURCE
+				}
 				numColumns={numColumns}
 				onColumnDeleteClick={onColumnDeleteClick}
 				onColumnChange={onColumnChange}

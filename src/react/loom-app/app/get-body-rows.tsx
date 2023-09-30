@@ -54,7 +54,8 @@ export default function getBodyRows({
 	onTagDeleteClick,
 }: Omit<Props, "app">): TableRow[] {
 	return rows.map((row) => {
-		const { id: rowId, lastEditedTime, creationTime } = row;
+		const { id: rowId, lastEditedTime, creationTime, sourceId } = row;
+		const source = sources.find((source) => source.id === sourceId) ?? null;
 		return {
 			id: rowId,
 			cells: [
@@ -62,6 +63,7 @@ export default function getBodyRows({
 					id: firstColumnId,
 					content: (
 						<RowOptions
+							source={source}
 							rowId={rowId}
 							onDeleteClick={onRowDeleteClick}
 							onInsertAboveClick={onRowInsertAboveClick}

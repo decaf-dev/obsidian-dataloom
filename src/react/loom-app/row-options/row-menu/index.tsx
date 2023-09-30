@@ -9,6 +9,7 @@ interface Props {
 	id: string;
 	isOpen: boolean;
 	triggerPosition: Position;
+	canDeleteRow: boolean;
 	onDeleteClick: () => void;
 	onInsertAboveClick: () => void;
 	onInsertBelowClick: () => void;
@@ -19,6 +20,7 @@ export default function RowOptions({
 	id,
 	isOpen,
 	triggerPosition,
+	canDeleteRow,
 	onDeleteClick,
 	onInsertAboveClick,
 	onInsertBelowClick,
@@ -35,11 +37,13 @@ export default function RowOptions({
 			onClose={onClose}
 		>
 			<div className="dataloom-row-menu">
-				<MenuItem
-					lucideId="trash-2"
-					name="Delete"
-					onClick={() => onDeleteClick()}
-				/>
+				{canDeleteRow && (
+					<MenuItem
+						lucideId="trash-2"
+						name="Delete"
+						onClick={() => onDeleteClick()}
+					/>
+				)}
 				<MenuItem
 					lucideId="chevrons-up"
 					name="Insert above"
