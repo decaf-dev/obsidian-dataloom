@@ -50,7 +50,7 @@ export const deserializeState = (
 	data: string,
 	pluginVersion: string
 ): LoomState => {
-	let fileVersion = "";
+	let fileVersion = "Unknown";
 	let failedMigration: string | null = null;
 
 	try {
