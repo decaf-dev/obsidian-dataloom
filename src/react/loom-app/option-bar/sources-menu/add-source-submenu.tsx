@@ -38,6 +38,12 @@ export default function AddSourceSubmenu({
 				inputId: TYPE_SELECT_ID,
 			});
 			return;
+		} else if (name === "") {
+			setError({
+				message: "Please enter a name",
+				inputId: NAME_INPUT_ID,
+			});
+			return;
 		}
 		onAddSourceClick(type, name);
 	}
