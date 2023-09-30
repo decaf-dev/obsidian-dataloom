@@ -273,13 +273,20 @@ export default function BodyCellContainer({
 		menuHeight = 0;
 	}
 
-	let className = "dataloom-cell--body__container";
+	let className = "dataloom-cell__body-container";
 	if (
 		columnType === CellType.LAST_EDITED_TIME ||
-		columnType === CellType.CREATION_TIME
+		columnType === CellType.CREATION_TIME ||
+		columnType === CellType.SOURCE
 	) {
-		className += " dataloom-default-cursor";
+		className += " dataloom-cell__body-container--default-cursor";
 	}
+	// if (
+	// 	columnType === CellType.SOURCE ||
+	// 	(columnType === CellType.FILE && source !== null)
+	// ) {
+	// 	className += " dataloom-cell__body-container--controlled";
+	// }
 
 	const cellTags = columnTags.filter((tag) => cellTagIds.includes(tag.id));
 
