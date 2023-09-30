@@ -8,13 +8,9 @@ export const useSource = () => {
 	const logger = useLogger();
 	const { doCommand } = useLoomState();
 
-	function handleSourceAdd(
-		type: SourceType,
-		name: string,
-		fileColumnId: string | null
-	) {
+	function handleSourceAdd(type: SourceType, name: string) {
 		logger("handleSourceAdd");
-		doCommand(new SourceAddCommand(type, name, fileColumnId));
+		doCommand(new SourceAddCommand(type, name));
 	}
 
 	function handleSourceDelete(id: string) {

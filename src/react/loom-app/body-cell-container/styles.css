@@ -11,7 +11,3 @@
 .dataloom-cell__body-container--default-cursor {
     cursor: default;
 }
-
-.dataloom-cell__body-container--controlled {
-    background-color: var(--background-secondary-alt);
-}

@@ -14,7 +14,6 @@ import CellNotFoundError from "src/shared/error/cell-not-found-error";
 export default class SourceAddCommand extends LoomStateCommand {
 	private type: SourceType;
 	private content: string;
-	private fileColumnId: string | null;
 
 	private addedSource: Source;
 	private addedSourceColumn: Column | null;
@@ -29,15 +28,10 @@ export default class SourceAddCommand extends LoomStateCommand {
 		cell: Cell;
 	}[] = [];
 
-	constructor(
-		type: SourceType,
-		content: string,
-		fileColumnId: string | null
-	) {
+	constructor(type: SourceType, content: string) {
 		super();
 		this.type = type;
 		this.content = content;
-		this.fileColumnId = fileColumnId;
 	}
 
 	execute(prevState: LoomState): LoomState {
@@ -50,22 +44,23 @@ export default class SourceAddCommand extends LoomStateCommand {
 		const nextSources = [...sources, newSource];
 
 		const nextColumns = cloneDeep(columns);
-		const sourceColumn = columns.find(
-			(column) => column.type === CellType.SOURCE
-		);
 
 		let nextRows = cloneDeep(prevState.model.rows);
-		if (this.fileColumnId === null) {
+
+		const sourceFileColumn = columns.find(
+			(column) => column.type === CellType.SOURCE_FILE
+		);
+		if (!sourceFileColumn) {
 			const newColumn = createColumn({
-				cellType: CellType.FILE,
-				content: "File",
+				cellType: CellType.SOURCE_FILE,
+				content: "Source File",
 			});
 			this.addedFileColumn = newColumn;
 			nextColumns.unshift(newColumn);
 
 			nextRows = nextRows.map((row) => {
 				const newCell = createCell(newColumn.id, {
-					cellType: CellType.FILE,
+					cellType: CellType.SOURCE_FILE,
 				});
 				this.addedFileCells.push({
 					rowId: row.id,
@@ -77,6 +72,9 @@ export default class SourceAddCommand extends LoomStateCommand {
 			});
 		}
 
+		const sourceColumn = columns.find(
+			(column) => column.type === CellType.SOURCE
+		);
 		if (!sourceColumn) {
 			const newColumn = createColumn({
 				cellType: CellType.SOURCE,
@@ -88,6 +86,7 @@ export default class SourceAddCommand extends LoomStateCommand {
 			nextRows = nextRows.map((row) => {
 				const newCell = createCell(newColumn.id, {
 					cellType: CellType.SOURCE,
+					content: "Internal",
 				});
 				this.addedSourceCells.push({
 					rowId: row.id,

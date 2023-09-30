@@ -21,6 +21,7 @@ import { useMenu } from "../../shared/menu/hooks";
 import "./styles.css";
 import SourcesMenu from "./sources-menu";
 import { ColumnChangeHandler } from "../app/hooks/use-column/types";
+import { SourceAddHandler } from "../app/hooks/use-source/types";
 
 interface Props {
 	columns: Column[];
@@ -35,11 +36,7 @@ interface Props {
 	onFilterDeleteClick: (filterId: string) => void;
 	onFilterAddClick: () => void;
 	onCalculationRowToggle: (value: boolean) => void;
-	onSourceAdd: (
-		type: SourceType,
-		name: string,
-		fileColumnId: string | null
-	) => void;
+	onSourceAdd: SourceAddHandler;
 	onSourceDelete: (id: string) => void;
 	onColumnChange: ColumnChangeHandler;
 }
@@ -191,8 +188,8 @@ export default function OptionBar({
 				triggerPosition={sourcesMenuTriggerPosition}
 				sources={sources}
 				columns={columns}
-				onAddSource={onSourceAdd}
-				onDeleteSource={onSourceDelete}
+				onSourceAdd={onSourceAdd}
+				onSourceDelete={onSourceDelete}
 				onRequestClose={onSourcesMenuRequestClose}
 				onClose={onSourcesMenuClose}
 			/>

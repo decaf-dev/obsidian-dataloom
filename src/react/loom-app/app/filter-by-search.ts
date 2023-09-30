@@ -79,6 +79,7 @@ const doesCellMatch = (
 		case CellType.EMBED:
 		case CellType.FILE:
 		case CellType.CHECKBOX:
+		case CellType.SOURCE_FILE:
 			return matchTextCell(content, searchText);
 		case CellType.NUMBER:
 			return matchNumberCell(

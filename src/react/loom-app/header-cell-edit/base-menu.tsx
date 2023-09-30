@@ -75,22 +75,26 @@ export default function BaseMenu({
 				<Padding px="md" py="sm" width="100%">
 					<Input
 						ref={inputRef}
-						isDisabled={columnType === CellType.SOURCE}
+						isDisabled={
+							columnType === CellType.SOURCE ||
+							columnType === CellType.SOURCE_FILE
+						}
 						showBorder
 						value={columnName}
 						onChange={handleInputChange}
 					/>
 				</Padding>
-				{columnType !== CellType.SOURCE && (
-					<MenuItem
-						lucideId="list"
-						name="Type"
-						value={getDisplayNameForCellType(columnType)}
-						onClick={() => {
-							onSubmenuChange(SubmenuType.TYPE);
-						}}
-					/>
-				)}
+				{columnType !== CellType.SOURCE &&
+					columnType !== CellType.SOURCE_FILE && (
+						<MenuItem
+							lucideId="list"
+							name="Type"
+							value={getDisplayNameForCellType(columnType)}
+							onClick={() => {
+								onSubmenuChange(SubmenuType.TYPE);
+							}}
+						/>
+					)}
 				{hasOptions && (
 					<MenuItem
 						lucideId="settings"

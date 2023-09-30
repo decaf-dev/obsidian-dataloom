@@ -17,6 +17,8 @@ export const getIconIdForCellType = (type: CellType) => {
 			return "text";
 		case CellType.EMBED:
 			return "link";
+
+		case CellType.SOURCE_FILE:
 		case CellType.FILE:
 			return "file";
 		case CellType.NUMBER:

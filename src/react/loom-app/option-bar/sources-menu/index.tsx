@@ -21,8 +21,8 @@ interface Props {
 	triggerPosition: Position;
 	sources: Source[];
 	columns: Column[];
-	onAddSource: SourceAddHandler;
-	onDeleteSource: (id: string) => void;
+	onSourceAdd: SourceAddHandler;
+	onSourceDelete: (id: string) => void;
 	onRequestClose: (type: LoomMenuCloseRequestType) => void;
 	onClose: () => void;
 }
@@ -31,10 +31,9 @@ export default function SourcesMenu({
 	id,
 	isOpen,
 	triggerPosition,
-	columns,
 	sources,
-	onAddSource,
-	onDeleteSource,
+	onSourceAdd,
+	onSourceDelete,
 	onRequestClose,
 	onClose,
 }: Props) {
@@ -43,7 +42,7 @@ export default function SourcesMenu({
 	);
 
 	function handleAddSourceClick(type: SourceType, name: string) {
-		onAddSource(type, name, null);
+		onSourceAdd(type, name);
 		setSubmenu(null);
 		onClose();
 	}
@@ -63,12 +62,11 @@ export default function SourcesMenu({
 					<BaseContent
 						sources={sources}
 						onAddClick={() => setSubmenu(SourcesMenuSubmenu.ADD)}
-						onDeleteClick={onDeleteSource}
+						onDeleteClick={onSourceDelete}
 					/>
 				)}
 				{submenu === SourcesMenuSubmenu.ADD && (
 					<AddSourceSubmenu
-						columns={columns}
 						onAddSourceClick={handleAddSourceClick}
 						onBackClick={() => setSubmenu(null)}
 					/>

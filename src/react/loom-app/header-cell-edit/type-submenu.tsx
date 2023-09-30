@@ -20,7 +20,11 @@ export default function TypeSubmenu({
 	return (
 		<Submenu title={title} onBackClick={onBackClick}>
 			{Object.values(CellType)
-				.filter((type) => type !== CellType.SOURCE)
+				.filter(
+					(type) =>
+						type !== CellType.SOURCE &&
+						type !== CellType.SOURCE_FILE
+				)
 				.map((type: CellType) => (
 					<MenuItem
 						key={type}

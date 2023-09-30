@@ -23,11 +23,6 @@ export default class FilterAddCommand extends LoomStateCommand {
 		const { filters, columns } = prevState.model;
 		let { id: columnId, type } = columns[0];
 
-		if (type === CellType.SOURCE) {
-			columnId = columns[1].id;
-			type = columns[1].type;
-		}
-
 		let newFilter: Filter | null = null;
 		if (type === CellType.TEXT) {
 			newFilter = createTextFilter(columnId);
@@ -49,6 +44,9 @@ export default class FilterAddCommand extends LoomStateCommand {
 			newFilter = createCreationTimeFilter(columnId);
 		} else if (type === CellType.LAST_EDITED_TIME) {
 			newFilter = createLastEditedTimeFilter(columnId);
+			//TODO
+			// } else if (type === CellType.SOURCE) {
+			// } else if (type === CellType.SOURCE_FILE) {
 		} else {
 			throw new Error("Unhandled cell type");
 		}

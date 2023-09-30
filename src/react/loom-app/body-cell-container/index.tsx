@@ -44,6 +44,7 @@ import SourceCell from "../source-cell";
 import { ColumnChangeHandler } from "../app/hooks/use-column/types";
 import { CellChangeHandler } from "../app/hooks/use-cell/types";
 import { TagChangeHandler } from "../app/hooks/use-tag/types";
+import SourceFileCell from "../source-file-cell";
 
 interface Props {
 	source: Source | null;
@@ -277,19 +278,24 @@ export default function BodyCellContainer({
 	if (
 		columnType === CellType.LAST_EDITED_TIME ||
 		columnType === CellType.CREATION_TIME ||
-		columnType === CellType.SOURCE
+		columnType === CellType.SOURCE ||
+		columnType === CellType.SOURCE_FILE
 	) {
 		className += " dataloom-cell__body-container--default-cursor";
 	}
-	// if (
-	// 	columnType === CellType.SOURCE ||
-	// 	(columnType === CellType.FILE && source !== null)
-	// ) {
-	// 	className += " dataloom-cell__body-container--controlled";
-	// }
 
 	const cellTags = columnTags.filter((tag) => cellTagIds.includes(tag.id));
 
+	let shouldOpenOnTrigger = true;
+	if (
+		columnType === CellType.CHECKBOX ||
+		columnType === CellType.CREATION_TIME ||
+		columnType === CellType.LAST_EDITED_TIME ||
+		columnType === CellType.SOURCE ||
+		columnType === CellType.SOURCE_FILE
+	) {
+		shouldOpenOnTrigger = false;
+	}
 	return (
 		<>
 			<MenuTrigger
@@ -299,12 +305,7 @@ export default function BodyCellContainer({
 				onClick={handleMenuTriggerClick}
 				onEnterDown={handleMenuTriggerEnterDown}
 				onBackspaceDown={handleMenuTriggerBackspaceDown}
-				shouldOpenOnTrigger={
-					columnType !== CellType.CHECKBOX &&
-					columnType !== CellType.CREATION_TIME &&
-					columnType !== CellType.LAST_EDITED_TIME &&
-					columnType !== CellType.SOURCE
-				}
+				shouldOpenOnTrigger={shouldOpenOnTrigger}
 				onOpen={onOpen}
 			>
 				<div
@@ -333,6 +334,12 @@ export default function BodyCellContainer({
 						<FileCell
 							value={content}
 							shouldWrapOverflow={shouldWrapOverflow}
+						/>
+					)}
+					{columnType === CellType.SOURCE_FILE && (
+						<SourceFileCell
+							shouldWrapOverflow={shouldWrapOverflow}
+							value={content}
 						/>
 					)}
 					{columnType === CellType.NUMBER && (

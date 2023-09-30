@@ -7,15 +7,10 @@ import Stack from "src/react/shared/stack";
 import Submenu from "src/react/shared/submenu";
 import Text from "src/react/shared/text";
 import { getDisplayNameForSource } from "src/shared/loom-state/type-display-names";
-import {
-	CellType,
-	Column,
-	SourceType,
-} from "src/shared/loom-state/types/loom-state";
+import { SourceType } from "src/shared/loom-state/types/loom-state";
 import { SourceAddHandler } from "../../app/hooks/use-source/types";
 
 interface Props {
-	columns: Column[];
 	onAddSourceClick: SourceAddHandler;
 	onBackClick: () => void;
 }
@@ -27,41 +22,25 @@ interface Error {
 
 const NAME_INPUT_ID = "name";
 const TYPE_SELECT_ID = "type";
-const FILE_SELECT_ID = "file";
 
 export default function AddSourceSubmenu({
-	columns,
 	onAddSourceClick,
 	onBackClick,
 }: Props) {
 	const [type, setType] = React.useState<SourceType | null>(null);
 	const [name, setName] = React.useState("");
-	const [fileColumnId, setFileColumnId] = React.useState<string | null>(null);
 	const [error, setError] = React.useState<Error | null>(null);
 
-	function handleAddClick(requiresFileColumn: boolean) {
+	function handleAddClick() {
 		if (type === null) {
 			setError({
 				message: "Please select a type",
 				inputId: TYPE_SELECT_ID,
 			});
 			return;
-		} else if (fileColumnId === null) {
-			if (requiresFileColumn) {
-				setError({
-					message: "Please select a file column",
-					inputId: FILE_SELECT_ID,
-				});
-				return;
-			}
 		}
-		console.log(fileColumnId);
-		onAddSourceClick(type, name, fileColumnId);
+		onAddSourceClick(type, name);
 	}
-
-	const fileColumns = columns.filter(
-		(column) => column.type === CellType.FILE
-	);
 
 	return (
 		<Submenu title="Add source" onBackClick={onBackClick}>
@@ -97,36 +76,10 @@ export default function AddSourceSubmenu({
 							onChange={(value) => setName(value)}
 						/>
 					</Stack>
-					{fileColumns.length > 0 && (
-						<Stack spacing="sm">
-							<label htmlFor={FILE_SELECT_ID}>File column</label>
-							<Select
-								id={FILE_SELECT_ID}
-								value={fileColumnId ?? ""}
-								hasError={error?.inputId === FILE_SELECT_ID}
-								onChange={(value) =>
-									setFileColumnId(value || null)
-								}
-							>
-								<option value="">Select an option</option>
-								{fileColumns.map((column) => {
-									const { id, content } = column;
-									return (
-										<option key={id} value={id}>
-											{content}
-										</option>
-									);
-								})}
-							</Select>
-						</Stack>
-					)}
 					{error?.message && (
 						<Text value={error.message} variant="error" />
 					)}
-					<Button
-						variant="default"
-						onClick={() => handleAddClick(fileColumns.length > 0)}
-					>
+					<Button variant="default" onClick={() => handleAddClick()}>
 						Add
 					</Button>
 				</Stack>

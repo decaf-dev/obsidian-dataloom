@@ -28,16 +28,14 @@ export default function FilterColumnSelect({
 			onKeyDown={handleKeyDown}
 			onChange={(newValue) => onChange(id, newValue)}
 		>
-			{columns
-				.filter((column) => column.type !== CellType.SOURCE)
-				.map((column) => {
-					const { id, content } = column;
-					return (
-						<option key={id} value={id}>
-							{content}
-						</option>
-					);
-				})}
+			{columns.map((column) => {
+				const { id, content } = column;
+				return (
+					<option key={id} value={id}>
+						{content}
+					</option>
+				);
+			})}
 		</Select>
 	);
 }

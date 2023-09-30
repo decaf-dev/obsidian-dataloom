@@ -108,6 +108,7 @@ export enum SortDir {
 }
 
 export enum CellType {
+	SOURCE_FILE = "source-file",
 	SOURCE = "source",
 	TEXT = "text",
 	EMBED = "embed",
