@@ -30,15 +30,15 @@ export default function BaseContent({
 			{isSmallScreen && (
 				<MenuItem
 					lucideId="filter"
-					name="Filter"
-					onClick={onFilterClick}
+					name="Sources"
+					onClick={onSourcesClick}
 				/>
 			)}
 			{isSmallScreen && (
 				<MenuItem
 					lucideId="filter"
-					name="Sources"
-					onClick={onSourcesClick}
+					name="Filter"
+					onClick={onFilterClick}
 				/>
 			)}
 			<MenuItem

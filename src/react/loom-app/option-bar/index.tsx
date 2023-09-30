@@ -156,16 +156,6 @@ export default function OptionBar({
 								width: "100%",
 							})}
 						>
-							<SearchBar />
-							{isSmallScreen === false && (
-								<MenuButton
-									ref={filterMenuTriggerRef}
-									menu={filterMenu}
-									onOpen={onFilterMenuOpen}
-								>
-									Filter
-								</MenuButton>
-							)}
 							{isSmallScreen === false && (
 								<MenuButton
 									ref={sourcesMenuTriggerRef}
@@ -175,6 +165,16 @@ export default function OptionBar({
 									Sources
 								</MenuButton>
 							)}
+							{isSmallScreen === false && (
+								<MenuButton
+									ref={filterMenuTriggerRef}
+									menu={filterMenu}
+									onOpen={onFilterMenuOpen}
+								>
+									Filter
+								</MenuButton>
+							)}
+							<SearchBar />
 							<MenuButton
 								ref={moreMenuTriggerRef}
 								menu={moreMenu}
