@@ -10,7 +10,7 @@ import { CellType, SourceType } from "../types/loom-state";
 import CommandUndoError from "./command-undo-error";
 import CommandRedoError from "./command-redo-error";
 
-describe("column-delete-command", () => {
+describe("source-delete-command", () => {
 	function stateWithOneSource() {
 		const sources = [createSource(SourceType.FOLDER, "test")];
 		const columns = [
