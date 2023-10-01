@@ -14,15 +14,6 @@ import {
 } from "./column-delete-command/types";
 
 export default class SourceDeleteCommand extends LoomStateCommand {
-	private deletedSource: {
-		arrIndex: number;
-		source: Source;
-	};
-	private deletedRows: {
-		arrIndex: number;
-		row: Row;
-	}[] = [];
-
 	private id: string;
 
 	private deletedSourceColumn: {
@@ -36,6 +27,15 @@ export default class SourceDeleteCommand extends LoomStateCommand {
 		deletedColumn: DeletedColumn;
 		deletedFilters: DeletedFilter[];
 	};
+
+	private deletedSource: {
+		arrIndex: number;
+		source: Source;
+	};
+	private deletedRows: {
+		arrIndex: number;
+		row: Row;
+	}[] = [];
 
 	constructor(id: string) {
 		super();
@@ -143,7 +143,7 @@ export default class SourceDeleteCommand extends LoomStateCommand {
 			const { sourceId } = row;
 			if (sourceId === this.id) {
 				this.deletedRows.push({
-					arrIndex: rows.indexOf(row),
+					arrIndex: nextRows.indexOf(row),
 					row: cloneDeep(row),
 				});
 				return false;
@@ -172,8 +172,10 @@ export default class SourceDeleteCommand extends LoomStateCommand {
 		let nextRows: Row[] = cloneDeep(rows);
 		let nextFilters: Filter[] = cloneDeep(filters);
 
-		console.log("INSIDE 0");
-		console.log(nextRows);
+		//Undo row deletion
+		this.deletedRows.forEach(({ arrIndex, row }) => {
+			nextRows.splice(arrIndex, 0, row);
+		});
 
 		const isLastSource = sources.length === 0;
 
@@ -187,15 +189,15 @@ export default class SourceDeleteCommand extends LoomStateCommand {
 				this.deletedFileColumn.deletedCells,
 				this.deletedFileColumn.deletedFilters
 			);
+
 			const {
 				nextColumns: nextColumns2,
 				nextRows: nextRows2,
 				nextFilters: nextFilters2,
 			} = result2;
+
 			nextColumns = nextColumns2;
 			nextRows = nextRows2;
-			console.log("INSIDE 1");
-			console.log(nextRows);
 			nextFilters = nextFilters2;
 
 			//Undo source column deletion
@@ -207,6 +209,7 @@ export default class SourceDeleteCommand extends LoomStateCommand {
 				this.deletedSourceColumn.deletedCells,
 				this.deletedSourceColumn.deletedFilters
 			);
+
 			const {
 				nextColumns: nextColumns1,
 				nextRows: nextRows1,
@@ -215,8 +218,6 @@ export default class SourceDeleteCommand extends LoomStateCommand {
 
 			nextColumns = nextColumns1;
 			nextRows = nextRows1;
-			console.log("INSIDE 2");
-			console.log(nextRows);
 			nextFilters = nextFilters1;
 		}
 
@@ -228,22 +229,14 @@ export default class SourceDeleteCommand extends LoomStateCommand {
 			this.deletedSource.source
 		);
 
-		//Undo row deletion
-		this.deletedRows.forEach(({ arrIndex, row }) => {
-			nextRows.splice(arrIndex, 0, row);
-		});
-
-		console.log("nextColumns", nextColumns);
-		console.log("nextRows", nextRows);
-
 		return {
 			...prevState,
 			model: {
 				...prevState.model,
-				sources: nextSources,
-				rows: nextRows,
 				columns: nextColumns,
+				rows: nextRows,
 				filters: nextFilters,
+				sources: nextSources,
 			},
 		};
 	}

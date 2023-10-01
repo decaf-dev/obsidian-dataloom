@@ -410,6 +410,43 @@ export const createTag = (
 	};
 };
 
+export const createRowWithCells = (
+	index: number,
+	columns: Column[],
+	options?: {
+		sourceId?: string;
+	}
+): Row => {
+	const { sourceId } = options || {};
+	const cells: Cell[] = [];
+	columns.forEach((column) => {
+		const { id } = column;
+		const cell = createCell(id, {
+			cellType: column.type,
+		});
+		cells.push(cell);
+	});
+	return createRow(index, {
+		cells,
+		sourceId,
+	});
+};
+
+export const createCustomTestLoomState = (
+	columns: Column[],
+	rows: Row[],
+	options?: {
+		sources: Source[];
+	}
+) => {
+	const { sources } = options || {};
+	return createGenericLoomState({
+		columns,
+		rows,
+		sources,
+	});
+};
+
 export const createTestLoomState = (
 	numColumns: number,
 	numRows: number,
