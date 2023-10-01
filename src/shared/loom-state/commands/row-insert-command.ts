@@ -1,4 +1,7 @@
-import { createCell, createRow } from "src/shared/loom-state/state-factory";
+import {
+	createCell,
+	createRow,
+} from "src/shared/loom-state/loom-state-factory";
 import LoomStateCommand from "./loom-state-command";
 import { Row, LoomState, SortDir } from "../types/loom-state";
 import RowNotFoundError from "src/shared/error/row-not-found-error";

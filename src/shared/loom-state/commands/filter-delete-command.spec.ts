@@ -4,7 +4,7 @@ import {
 	createTagFilter,
 	createTestLoomState,
 	createTextFilter,
-} from "../state-factory";
+} from "../loom-state-factory";
 import FilterDeleteCommand from "./filter-delete-command";
 
 describe("filter-delete-command", () => {

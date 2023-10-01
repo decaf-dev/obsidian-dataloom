@@ -1,7 +1,7 @@
 import {
 	createTag,
 	createTestLoomState,
-} from "src/shared/loom-state/state-factory";
+} from "src/shared/loom-state/loom-state-factory";
 import { ColumnMatch, ImportData } from "./types";
 import { addImportData } from "./state-utils";
 import { NEW_COLUMN_ID } from "./constants";

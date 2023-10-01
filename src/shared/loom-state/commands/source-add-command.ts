@@ -1,5 +1,5 @@
 import { cloneDeep } from "lodash";
-import { createSource } from "../state-factory";
+import { createSource } from "../loom-state-factory";
 import { LoomState } from "../types";
 import { CellType, Column, Row, Source, SourceType } from "../types/loom-state";
 import LoomStateCommand from "./loom-state-command";

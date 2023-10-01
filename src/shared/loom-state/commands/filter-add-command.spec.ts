@@ -1,6 +1,6 @@
 import CommandUndoError from "./command-undo-error";
 import CommandRedoError from "./command-redo-error";
-import { createTestLoomState, createTextFilter } from "../state-factory";
+import { createTestLoomState, createTextFilter } from "../loom-state-factory";
 import FilterAddCommand from "./filter-add-command";
 import { TextFilter } from "../types/loom-state";
 

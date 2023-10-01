@@ -3,7 +3,7 @@ import {
 	createRow,
 	createColumn,
 	createTag,
-} from "src/shared/loom-state/state-factory";
+} from "src/shared/loom-state/loom-state-factory";
 import {
 	Cell,
 	CellType,

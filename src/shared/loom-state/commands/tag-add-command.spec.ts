@@ -1,7 +1,7 @@
 import {
 	createTestLoomState,
 	createTag,
-} from "src/shared/loom-state/state-factory";
+} from "src/shared/loom-state/loom-state-factory";
 import CommandUndoError from "./command-undo-error";
 import CommandRedoError from "./command-redo-error";
 import TagAddCommand from "./tag-add-command";

@@ -1,4 +1,4 @@
-import { createTestLoomState } from "src/shared/loom-state/state-factory";
+import { createTestLoomState } from "src/shared/loom-state/loom-state-factory";
 import CommandUndoError from "./command-undo-error";
 import CommandRedoError from "./command-redo-error";
 import ColumnUpdateCommand from "./column-update-command";

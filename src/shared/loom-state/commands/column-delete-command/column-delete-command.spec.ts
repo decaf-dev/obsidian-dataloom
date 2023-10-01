@@ -1,7 +1,7 @@
 import {
 	createTextFilter,
 	createTestLoomState,
-} from "src/shared/loom-state/state-factory";
+} from "src/shared/loom-state/loom-state-factory";
 import RowDeleteCommand from "../row-delete-command";
 import CommandUndoError from "../command-undo-error";
 import ColumnDeleteCommand from ".";

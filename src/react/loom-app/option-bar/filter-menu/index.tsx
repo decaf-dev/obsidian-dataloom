@@ -60,7 +60,7 @@ import {
 	createNumberFilter,
 	createTagFilter,
 	createTextFilter,
-} from "src/shared/loom-state/state-factory";
+} from "src/shared/loom-state/loom-state-factory";
 import DateFilterSelect from "./date-filter-select";
 
 interface Props {

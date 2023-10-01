@@ -1,5 +1,5 @@
 import { App } from "obsidian";
-import { createCell, createRow } from "./state-factory";
+import { createCell, createRow } from "./loom-state-factory";
 import { CellType, Column, Row, Source, SourceType } from "./types/loom-state";
 
 export default function findSourceRows(
