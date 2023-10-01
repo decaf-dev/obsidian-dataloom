@@ -1,5 +1,5 @@
 import CellNotFoundError from "src/shared/error/cell-not-found-error";
-import { createCell, createColumn } from "../../loom-state-factory";
+import { createCell, createColumn } from "../../state-factory";
 import { CellType, Column, Row } from "../../types/loom-state";
 import { AddedCell } from "./types";
 

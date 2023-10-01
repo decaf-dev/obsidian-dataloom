@@ -1,4 +1,4 @@
-import { createTestLoomState } from "src/shared/loom-state/loom-state-factory";
+import { createTestLoomState } from "src/shared/loom-state/state-factory";
 import RowDeleteCommand from "./row-delete-command";
 import CommandArgumentsError from "./command-arguments-error";
 import CommandUndoError from "./command-undo-error";

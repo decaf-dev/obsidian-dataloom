@@ -1,16 +1,8 @@
 import { cloneDeep } from "lodash";
-import { createCell, createColumn, createSource } from "../loom-state-factory";
+import { createSource } from "../state-factory";
 import { LoomState } from "../types";
-import {
-	Cell,
-	CellType,
-	Column,
-	Row,
-	Source,
-	SourceType,
-} from "../types/loom-state";
+import { CellType, Column, Row, Source, SourceType } from "../types/loom-state";
 import LoomStateCommand from "./loom-state-command";
-import CellNotFoundError from "src/shared/error/cell-not-found-error";
 import findSourceRows from "../source-rows";
 import { App } from "obsidian";
 import { filterUniqueRows } from "../row-utils";
@@ -148,6 +140,9 @@ export default class SourceAddCommand extends LoomStateCommand {
 		}
 
 		nextRows = rows.filter((row) => row.sourceId === this.addedSource.id);
+
+		console.log(nextColumns);
+		console.log(nextRows);
 
 		return {
 			...prevState,

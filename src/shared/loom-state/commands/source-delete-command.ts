@@ -172,6 +172,9 @@ export default class SourceDeleteCommand extends LoomStateCommand {
 		let nextRows: Row[] = cloneDeep(rows);
 		let nextFilters: Filter[] = cloneDeep(filters);
 
+		console.log("INSIDE 0");
+		console.log(nextRows);
+
 		const isLastSource = sources.length === 0;
 
 		if (isLastSource) {
@@ -191,6 +194,8 @@ export default class SourceDeleteCommand extends LoomStateCommand {
 			} = result2;
 			nextColumns = nextColumns2;
 			nextRows = nextRows2;
+			console.log("INSIDE 1");
+			console.log(nextRows);
 			nextFilters = nextFilters2;
 
 			//Undo source column deletion
@@ -210,6 +215,8 @@ export default class SourceDeleteCommand extends LoomStateCommand {
 
 			nextColumns = nextColumns1;
 			nextRows = nextRows1;
+			console.log("INSIDE 2");
+			console.log(nextRows);
 			nextFilters = nextFilters1;
 		}
 
@@ -225,6 +232,9 @@ export default class SourceDeleteCommand extends LoomStateCommand {
 		this.deletedRows.forEach(({ arrIndex, row }) => {
 			nextRows.splice(arrIndex, 0, row);
 		});
+
+		console.log("nextColumns", nextColumns);
+		console.log("nextRows", nextRows);
 
 		return {
 			...prevState,

@@ -79,7 +79,6 @@ export const columnDeleteUndo = (
 ) => {
 	const nextColumns: Column[] = [...prevColumns];
 	nextColumns.splice(deletedColumn.arrIndex, 0, deletedColumn.column);
-	console.log(nextColumns);
 
 	const nextRows: Row[] = prevRows.map((row) => {
 		const { cells } = row;

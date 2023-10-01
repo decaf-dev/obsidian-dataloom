@@ -1,7 +1,4 @@
-import {
-	createCell,
-	createRow,
-} from "src/shared/loom-state/loom-state-factory";
+import { createCell, createRow } from "src/shared/loom-state/state-factory";
 import LoomStateCommand from "./loom-state-command";
 import { Row, LoomState } from "../types/loom-state";
 

@@ -9,7 +9,7 @@ import {
 	createNumberFilter,
 	createTagFilter,
 	createTextFilter,
-} from "../loom-state-factory";
+} from "../state-factory";
 import { LoomState } from "../types";
 import { CellType, Filter } from "../types/loom-state";
 import LoomStateCommand from "./loom-state-command";

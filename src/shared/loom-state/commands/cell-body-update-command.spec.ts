@@ -1,4 +1,4 @@
-import { createTestLoomState } from "src/shared/loom-state/loom-state-factory";
+import { createTestLoomState } from "src/shared/loom-state/state-factory";
 import CommandUndoError from "./command-undo-error";
 import CellBodyUpdateCommand from "./cell-body-update-command";
 import { advanceBy, clear } from "jest-date-mock";

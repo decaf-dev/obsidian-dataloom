@@ -2,7 +2,7 @@ import {
 	createCheckboxFilter,
 	createTestLoomState,
 	createTextFilter,
-} from "src/shared/loom-state/loom-state-factory";
+} from "src/shared/loom-state/state-factory";
 import CommandUndoError from "./command-undo-error";
 import FilterUpdateCommand from "./filter-update-command";
 import { TextFilter } from "../types/loom-state";
