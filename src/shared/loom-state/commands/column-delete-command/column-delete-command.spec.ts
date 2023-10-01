@@ -2,10 +2,10 @@ import {
 	createTextFilter,
 	createTestLoomState,
 } from "src/shared/loom-state/loom-state-factory";
-import RowDeleteCommand from "./row-delete-command";
-import CommandUndoError from "./command-undo-error";
-import ColumnDeleteCommand from "./column-delete-command";
-import CommandArgumentsError from "./command-arguments-error";
+import RowDeleteCommand from "../row-delete-command";
+import CommandUndoError from "../command-undo-error";
+import ColumnDeleteCommand from ".";
+import CommandArgumentsError from "../command-arguments-error";
 
 describe("column-delete-command", () => {
 	it("should throw an error if no arguments are passed to the command object", () => {

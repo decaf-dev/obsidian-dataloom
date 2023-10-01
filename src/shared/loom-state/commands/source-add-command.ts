@@ -14,6 +14,12 @@ import CellNotFoundError from "src/shared/error/cell-not-found-error";
 import findSourceRows from "../source-rows";
 import { App } from "obsidian";
 import { filterUniqueRows } from "../row-utils";
+import {
+	columnAddExecute,
+	columnAddRedo,
+	columnAddUndo,
+} from "./column-add-command/utils";
+import { AddedCell } from "./column-add-command/types";
 
 export default class SourceAddCommand extends LoomStateCommand {
 	private app: App;
@@ -21,17 +27,11 @@ export default class SourceAddCommand extends LoomStateCommand {
 	private content: string;
 
 	private addedSource: Source;
-	private addedSourceColumn: Column | null;
-	private addedSourceCells: {
-		rowId: string;
-		cell: Cell;
-	}[] = [];
+	private addedSourceColumn: Column | null = null;
+	private addedSourceCells: AddedCell[] = [];
 
-	private addedFileColumn: Column | null;
-	private addedFileCells: {
-		rowId: string;
-		cell: Cell;
-	}[] = [];
+	private addedFileColumn: Column | null = null;
+	private addedFileCells: AddedCell[] = [];
 
 	private addedSourceRows: Row[] = [];
 
@@ -46,61 +46,51 @@ export default class SourceAddCommand extends LoomStateCommand {
 		super.onExecute();
 
 		const { sources, columns, rows } = prevState.model;
+		let nextColumns = cloneDeep(columns);
+		let nextRows = cloneDeep(rows);
 
 		const newSource = createSource(this.type, this.content);
 		this.addedSource = newSource;
 		const nextSources = [...sources, newSource];
 
-		const nextColumns = cloneDeep(columns);
-		let nextRows = cloneDeep(rows);
 		const sourceFileColumn = columns.find(
 			(column) => column.type === CellType.SOURCE_FILE
 		);
 		if (!sourceFileColumn) {
-			const newColumn = createColumn({
-				cellType: CellType.SOURCE_FILE,
-				content: "Source File",
+			const result = columnAddExecute(nextColumns, nextRows, {
+				type: CellType.SOURCE_FILE,
+				insertIndex: 0,
 			});
-			this.addedFileColumn = newColumn;
-			nextColumns.unshift(newColumn);
-
-			nextRows = nextRows.map((row) => {
-				const newCell = createCell(newColumn.id, {
-					cellType: CellType.SOURCE_FILE,
-				});
-				this.addedFileCells.push({
-					rowId: row.id,
-					cell: newCell,
-				});
-
-				row.cells.unshift(newCell);
-				return row;
-			});
+			const {
+				nextColumns: nextColumns1,
+				nextRows: nextRows1,
+				addedCells,
+				addedColumn,
+			} = result;
+			this.addedSourceCells = addedCells;
+			this.addedSourceColumn = addedColumn;
+			nextColumns = nextColumns1;
+			nextRows = nextRows1;
 		}
 
 		const sourceColumn = columns.find(
 			(column) => column.type === CellType.SOURCE
 		);
 		if (!sourceColumn) {
-			const newColumn = createColumn({
-				cellType: CellType.SOURCE,
-				content: "Source",
+			const result = columnAddExecute(nextColumns, nextRows, {
+				type: CellType.SOURCE,
+				insertIndex: 0,
 			});
-			this.addedSourceColumn = newColumn;
-			nextColumns.unshift(newColumn);
-
-			nextRows = nextRows.map((row) => {
-				const newCell = createCell(newColumn.id, {
-					cellType: CellType.SOURCE,
-					content: "",
-				});
-				this.addedSourceCells.push({
-					rowId: row.id,
-					cell: newCell,
-				});
-				row.cells.unshift(newCell);
-				return row;
-			});
+			const {
+				nextColumns: nextColumns1,
+				nextRows: nextRows1,
+				addedCells,
+				addedColumn,
+			} = result;
+			this.addedSourceCells = addedCells;
+			this.addedSourceColumn = addedColumn;
+			nextColumns = nextColumns1;
+			nextRows = nextRows1;
 		}
 
 		const newRows = findSourceRows(
@@ -128,25 +118,36 @@ export default class SourceAddCommand extends LoomStateCommand {
 
 		const { sources, columns, rows } = prevState.model;
 
+		let nextColumns = cloneDeep(columns);
+		let nextRows = cloneDeep(rows);
+
 		const nextSources = sources.filter(
 			(source) => source.id !== this.addedSource.id
 		);
 
-		let nextColumns = cloneDeep(columns);
 		if (this.addedFileColumn !== null) {
-			const id = this.addedFileColumn.id;
-			nextColumns = nextColumns.filter((column) => column.id !== id);
+			const result = columnAddUndo(
+				nextColumns,
+				nextRows,
+				this.addedFileColumn
+			);
+			const { nextColumns: nextColumns1, nextRows: nextRows1 } = result;
+			nextColumns = nextColumns1;
+			nextRows = nextRows1;
 		}
 
 		if (this.addedSourceColumn !== null) {
-			nextColumns = nextColumns.filter(
-				(column) => column.id !== this.addedSource.id
+			const result = columnAddUndo(
+				nextColumns,
+				nextRows,
+				this.addedSourceColumn
 			);
+			const { nextColumns: nextColumns1, nextRows: nextRows1 } = result;
+			nextColumns = nextColumns1;
+			nextRows = nextRows1;
 		}
 
-		const nextRows = rows.filter(
-			(row) => row.sourceId === this.addedSource.id
-		);
+		nextRows = rows.filter((row) => row.sourceId === this.addedSource.id);
 
 		return {
 			...prevState,
@@ -162,33 +163,33 @@ export default class SourceAddCommand extends LoomStateCommand {
 		super.onRedo();
 
 		const { sources, columns, rows } = prevState.model;
-		const nextSources = [...sources, this.addedSource];
-
 		let nextRows = cloneDeep(rows);
 		let nextColumns = cloneDeep(columns);
+
+		const nextSources = [...sources, this.addedSource];
+
 		if (this.addedFileColumn !== null) {
-			nextColumns.unshift(this.addedFileColumn);
-
-			nextRows = nextRows.map((row) => {
-				const cell = this.addedFileCells.find(
-					(cell) => cell.rowId === row.id
-				);
-				if (!cell) throw new CellNotFoundError({ rowId: row.id });
-				row.cells.unshift(cell.cell);
-				return row;
-			});
+			const result = columnAddRedo(
+				nextColumns,
+				nextRows,
+				this.addedFileColumn,
+				this.addedFileCells
+			);
+			const { nextColumns: nextColumns1, nextRows: nextRows1 } = result;
+			nextColumns = nextColumns1;
+			nextRows = nextRows1;
 		}
-		if (this.addedSourceColumn !== null) {
-			nextColumns.unshift(this.addedSourceColumn);
 
-			nextRows = nextRows.map((row) => {
-				const cell = this.addedSourceCells.find(
-					(cell) => cell.rowId === row.id
-				);
-				if (!cell) throw new CellNotFoundError({ rowId: row.id });
-				row.cells.unshift(cell.cell);
-				return row;
-			});
+		if (this.addedSourceColumn !== null) {
+			const result = columnAddRedo(
+				nextColumns,
+				nextRows,
+				this.addedSourceColumn,
+				this.addedSourceCells
+			);
+			const { nextColumns: nextColumns1, nextRows: nextRows1 } = result;
+			nextColumns = nextColumns1;
+			nextRows = nextRows1;
 		}
 
 		nextRows = [...nextRows, ...this.addedSourceRows];

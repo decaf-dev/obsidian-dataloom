@@ -1,7 +1,7 @@
 import { createTestLoomState } from "src/shared/loom-state/loom-state-factory";
-import CommandUndoError from "./command-undo-error";
-import CommandRedoError from "./command-redo-error";
-import ColumnAddCommand from "./column-add-command";
+import CommandUndoError from "../command-undo-error";
+import CommandRedoError from "../command-redo-error";
+import ColumnAddCommand from ".";
 
 describe("column-add-command", () => {
 	it("should throw an error when undo() is called before execute()", () => {
