@@ -27,7 +27,7 @@ export default function SourceItem({
 		<div className="dataloom-source">
 			<Flex justify="space-between" align="center" height="100%">
 				<Stack isHorizontal spacing="sm">
-					<Icon lucideId="grip-vertical" />
+					{/* <Icon lucideId="grip-vertical" /> */}
 					<Bubble
 						icon={<Icon lucideId={getIconIdForSourceType(type)} />}
 						variant="no-fill"
