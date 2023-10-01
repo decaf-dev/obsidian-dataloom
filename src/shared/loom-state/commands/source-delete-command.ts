@@ -240,6 +240,7 @@ export default class SourceDeleteCommand extends LoomStateCommand {
 
 	redo(prevState: LoomState): LoomState {
 		super.onRedo();
+		this.deletedRows = [];
 		return this.execute(prevState);
 	}
 }
