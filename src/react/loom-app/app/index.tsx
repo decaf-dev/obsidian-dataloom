@@ -114,7 +114,7 @@ export default function App() {
 				},
 			};
 		});
-	}, []);
+	}, [setLoomState, app]);
 
 	const firstColumnId = useUUID();
 	const lastColumnId = useUUID();
