@@ -7,13 +7,16 @@ import {
 	CellType,
 	DateFormat,
 	Tag,
+	Source,
 } from "src/shared/loom-state/types/loom-state";
 import { hashString, round2Digits } from "./utils";
 import RowNotFoundError from "src/shared/error/row-not-found-error";
 import TagNotFoundError from "src/shared/error/tag-not-found-error";
 import { unixTimeToDateTimeString } from "src/shared/date/date-conversion";
+import { getSourceCellContent } from "src/shared/cell-content/source-cell-content";
 
 export const getGeneralCalculationContent = (
+	sources: Source[],
 	columnId: string,
 	rows: Row[],
 	columnTags: Tag[],
@@ -27,6 +30,7 @@ export const getGeneralCalculationContent = (
 		return cell;
 	});
 	return getCalculation(
+		sources,
 		columnCells,
 		rows,
 		columnTags,
@@ -37,6 +41,7 @@ export const getGeneralCalculationContent = (
 };
 
 const getCalculation = (
+	sources: Source[],
 	columnCells: Cell[],
 	rows: Row[],
 	columnTags: Tag[],
@@ -51,7 +56,14 @@ const getCalculation = (
 	} else if (calculationType === GeneralCalculation.COUNT_NOT_EMPTY) {
 		return countNotEmpty(columnCells, cellType);
 	} else if (calculationType === GeneralCalculation.COUNT_UNIQUE) {
-		return countUnique(rows, columnCells, columnTags, cellType, dateFormat);
+		return countUnique(
+			sources,
+			rows,
+			columnCells,
+			columnTags,
+			cellType,
+			dateFormat
+		);
 	} else if (calculationType === GeneralCalculation.COUNT_VALUES) {
 		return countValues(columnCells, cellType);
 	} else if (calculationType === GeneralCalculation.PERCENT_EMPTY) {
@@ -88,6 +100,7 @@ const countNotEmpty = (columnCells: Cell[], cellType: CellType) => {
 };
 
 const countUnique = (
+	sources: Source[],
 	rows: Row[],
 	columnCells: Cell[],
 	columnTags: Tag[],
@@ -96,12 +109,17 @@ const countUnique = (
 ) => {
 	const hashes = columnCells
 		.map((cell) => {
-			const row = rows.find((row) =>
-				row.cells.find((cell) => cell.id === cell.id)
-			);
+			const row = rows.find((row) => {
+				const { cells } = row;
+				return cells.find((c) => c.id === cell.id);
+			});
 			if (!row) throw new RowNotFoundError();
 
+			const source =
+				sources.find((source) => source.id === row.sourceId) ?? null;
+
 			const cellValues = getCellValues(
+				source,
 				row,
 				cell,
 				columnTags,
@@ -140,6 +158,7 @@ const percentNotEmpty = (columnCells: Cell[], cellType: CellType) => {
 };
 
 const getCellValues = (
+	source: Source | null,
 	row: Row,
 	cell: Cell,
 	columnTags: Tag[],
@@ -154,7 +173,6 @@ const getCellValues = (
 		cellType === CellType.NUMBER ||
 		cellType === CellType.CHECKBOX ||
 		cellType === CellType.FILE ||
-		cellType === CellType.SOURCE ||
 		cellType === CellType.SOURCE_FILE
 	) {
 		return [content];
@@ -172,6 +190,8 @@ const getCellValues = (
 		return [unixTimeToDateTimeString(lastEditedTime, dateFormat)];
 	} else if (cellType === CellType.CREATION_TIME) {
 		return [unixTimeToDateTimeString(creationTime, dateFormat)];
+	} else if (cellType === CellType.SOURCE) {
+		return [getSourceCellContent(source)];
 	} else {
 		throw new Error("Unhandled cell type");
 	}
@@ -184,7 +204,6 @@ const countCellValues = (cell: Cell, cellType: CellType): number => {
 		cellType === CellType.EMBED ||
 		cellType === CellType.NUMBER ||
 		cellType === CellType.FILE ||
-		cellType === CellType.SOURCE ||
 		cellType === CellType.SOURCE_FILE
 	) {
 		return content === "" ? 0 : 1;
@@ -199,6 +218,8 @@ const countCellValues = (cell: Cell, cellType: CellType): number => {
 		cellType === CellType.CREATION_TIME
 	) {
 		return 1;
+	} else if (cellType === CellType.SOURCE) {
+		return 1;
 	} else {
 		throw new Error("Unhandled cell type");
 	}
@@ -211,7 +232,6 @@ const isCellContentEmpty = (cell: Cell, cellType: CellType): boolean => {
 		cellType === CellType.EMBED ||
 		cellType === CellType.NUMBER ||
 		cellType === CellType.FILE ||
-		cellType === CellType.SOURCE ||
 		cellType === CellType.SOURCE_FILE
 	) {
 		return content === "";
@@ -226,6 +246,8 @@ const isCellContentEmpty = (cell: Cell, cellType: CellType): boolean => {
 		cellType === CellType.CREATION_TIME
 	) {
 		return true;
+	} else if (cellType === CellType.SOURCE) {
+		return false;
 	} else {
 		throw new Error("Unhandled cell type");
 	}
