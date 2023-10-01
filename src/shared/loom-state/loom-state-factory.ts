@@ -55,16 +55,16 @@ export const createSource = (type: SourceType, content: string): Source => {
 	};
 };
 export const createColumn = (options?: {
-	cellType?: CellType;
+	type?: CellType;
 	content?: string;
 }): Column => {
-	const { cellType = CellType.TEXT, content = "New Column" } = options || {};
+	const { type = CellType.TEXT, content = "New Column" } = options || {};
 	return {
 		id: uuidv4(),
 		sortDir: SortDir.NONE,
 		isVisible: true,
 		width: "140px",
-		type: cellType,
+		type,
 		numberPrefix: "",
 		numberSuffix: "",
 		numberSeparator: "",
@@ -498,7 +498,7 @@ const createBasicLoomState = (
 	//Create columns
 	const columns: Column[] = [];
 	for (let i = 0; i < numColumns; i++) {
-		columns.push(createColumn({ cellType }));
+		columns.push(createColumn({ type: cellType }));
 	}
 
 	//Create rows

@@ -14,8 +14,8 @@ describe("source-delete-command", () => {
 	function stateWithOneSource() {
 		const sources = [createSource(SourceType.FOLDER, "test")];
 		const columns = [
-			createColumn({ cellType: CellType.SOURCE }),
-			createColumn({ cellType: CellType.SOURCE_FILE }),
+			createColumn({ type: CellType.SOURCE }),
+			createColumn({ type: CellType.SOURCE_FILE }),
 			createColumn(),
 		];
 		const rows = [
@@ -35,8 +35,8 @@ describe("source-delete-command", () => {
 			createSource(SourceType.FOLDER, "test2"),
 		];
 		const columns = [
-			createColumn({ cellType: CellType.SOURCE }),
-			createColumn({ cellType: CellType.SOURCE_FILE }),
+			createColumn({ type: CellType.SOURCE }),
+			createColumn({ type: CellType.SOURCE_FILE }),
 			createColumn(),
 		];
 		const rows = [

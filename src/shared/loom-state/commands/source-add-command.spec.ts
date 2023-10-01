@@ -33,8 +33,8 @@ describe("source-add-command", () => {
 	function stateWithOneSource() {
 		const sources = [createSource(SourceType.FOLDER, "test1")];
 		const columns = [
-			createColumn({ cellType: CellType.SOURCE }),
-			createColumn({ cellType: CellType.SOURCE_FILE }),
+			createColumn({ type: CellType.SOURCE }),
+			createColumn({ type: CellType.SOURCE_FILE }),
 			createColumn(),
 		];
 		const rows = [

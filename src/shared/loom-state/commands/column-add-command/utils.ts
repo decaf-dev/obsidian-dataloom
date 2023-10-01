@@ -17,7 +17,7 @@ export const columnAddExecute = (
 	const nextColumns = [...prevColumns];
 
 	const newColumn = createColumn({
-		cellType: type,
+		type,
 		content,
 	});
 	nextColumns.splice(insertIndex ?? prevColumns.length, 0, newColumn);
