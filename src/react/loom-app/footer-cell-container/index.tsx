@@ -11,6 +11,7 @@ import {
 	DateFormat,
 	Tag,
 	NumberFormat,
+	Source,
 } from "src/shared/loom-state/types/loom-state";
 import Stack from "../../shared/stack";
 
@@ -25,6 +26,7 @@ import "./styles.css";
 import { ColumnChangeHandler } from "../app/hooks/use-column/types";
 
 interface Props {
+	sources: Source[];
 	columnId: string;
 	calculationType: CalculationType;
 	columnTags: Tag[];
@@ -39,6 +41,7 @@ interface Props {
 }
 
 export default function FooterCellContainer({
+	sources,
 	columnId,
 	columnCells,
 	columnTags,
@@ -83,6 +86,7 @@ export default function FooterCellContainer({
 			);
 	} else {
 		content = getGeneralCalculationContent(
+			sources,
 			columnId,
 			rows,
 			columnTags,

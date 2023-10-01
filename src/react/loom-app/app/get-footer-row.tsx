@@ -1,4 +1,9 @@
-import { Cell, Column, Row } from "src/shared/loom-state/types/loom-state";
+import {
+	Cell,
+	Column,
+	Row,
+	Source,
+} from "src/shared/loom-state/types/loom-state";
 import { ColumnChangeHandler } from "./hooks/use-column/types";
 import { TableRow } from "../table/types";
 import FooterCellContainer from "../footer-cell-container";
@@ -9,6 +14,7 @@ interface Props {
 	firstColumnId: string;
 	lastColumnId: string;
 	visibleColumns: Column[];
+	sources: Source[];
 	rows: Row[];
 	onColumnChange: ColumnChangeHandler;
 }
@@ -18,6 +24,7 @@ export default function getFooterRow({
 	firstColumnId,
 	lastColumnId,
 	visibleColumns,
+	sources,
 	rows,
 	onColumnChange,
 }: Props): TableRow | undefined {
@@ -58,6 +65,7 @@ export default function getFooterRow({
 					id: columnId,
 					content: (
 						<FooterCellContainer
+							sources={sources}
 							columnId={columnId}
 							columnTags={tags}
 							numberFormat={numberFormat}

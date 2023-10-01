@@ -204,6 +204,7 @@ export default function App() {
 		lastColumnId,
 		visibleColumns,
 		rows: filteredRows,
+		sources,
 		onColumnChange,
 	});
 
