@@ -86,8 +86,8 @@ export default function FooterCellContainer({
 			);
 	} else {
 		content = getGeneralCalculationContent(
-			sources,
 			columnId,
+			sources,
 			rows,
 			columnTags,
 			cellType,
