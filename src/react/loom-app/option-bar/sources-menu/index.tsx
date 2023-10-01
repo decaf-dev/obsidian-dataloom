@@ -38,8 +38,15 @@ export default function SourcesMenu({
 	onClose,
 }: Props) {
 	const [submenu, setSubmenu] = React.useState<SourcesMenuSubmenu | null>(
-		null
+		sources.length === 0 ? SourcesMenuSubmenu.ADD : null
 	);
+
+	//Use layout effect to prevent flash
+	React.useLayoutEffect(() => {
+		if (sources.length === 0) {
+			setSubmenu(SourcesMenuSubmenu.ADD);
+		}
+	}, [sources.length]);
 
 	function handleAddSourceClick(type: SourceType, name: string) {
 		onSourceAdd(type, name);

@@ -67,7 +67,11 @@ export default function AddSourceSubmenu({
 	}
 
 	return (
-		<Submenu title="Add source" onBackClick={onBackClick}>
+		<Submenu
+			title="Add source"
+			showBackButton={sources.length > 0}
+			onBackClick={onBackClick}
+		>
 			<Padding py="md">
 				<Stack spacing="lg">
 					<Stack spacing="sm">
