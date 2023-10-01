@@ -43,7 +43,18 @@ import { LoomState14 } from "src/shared/loom-state/types/loom-state-14";
 import MigrateState14 from "src/shared/loom-state/migrate/migrate-state-14";
 
 export const serializeState = (state: LoomState): string => {
-	return JSON.stringify(state, null, 2);
+	//Filter out any source rows, as these are populated by the plugin
+	const filteredRows = state.model.rows.filter(
+		(row) => row.sourceId === null
+	);
+	const filteredState = {
+		...state,
+		model: {
+			...state.model,
+			rows: filteredRows,
+		},
+	};
+	return JSON.stringify(filteredState, null, 2);
 };
 
 export const deserializeState = (
