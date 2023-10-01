@@ -7,10 +7,11 @@ import Stack from "src/react/shared/stack";
 import Submenu from "src/react/shared/submenu";
 import Text from "src/react/shared/text";
 import { getDisplayNameForSource } from "src/shared/loom-state/type-display-names";
-import { SourceType } from "src/shared/loom-state/types/loom-state";
+import { Source, SourceType } from "src/shared/loom-state/types/loom-state";
 import { SourceAddHandler } from "../../app/hooks/use-source/types";
 
 interface Props {
+	sources: Source[];
 	onAddSourceClick: SourceAddHandler;
 	onBackClick: () => void;
 }
@@ -24,6 +25,7 @@ const NAME_INPUT_ID = "name";
 const TYPE_SELECT_ID = "type";
 
 export default function AddSourceSubmenu({
+	sources,
 	onAddSourceClick,
 	onBackClick,
 }: Props) {
@@ -44,8 +46,24 @@ export default function AddSourceSubmenu({
 				inputId: NAME_INPUT_ID,
 			});
 			return;
+		} else if (alreadyHasSource(sources, type, name)) {
+			setError({
+				message: "Source already exists",
+				inputId: NAME_INPUT_ID,
+			});
+			return;
 		}
 		onAddSourceClick(type, name);
+	}
+
+	function alreadyHasSource(
+		sources: Source[],
+		type: SourceType,
+		name: string
+	) {
+		return sources.find(
+			(source) => source.type === type && source.content === name
+		);
 	}
 
 	return (

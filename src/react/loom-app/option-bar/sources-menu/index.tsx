@@ -67,6 +67,7 @@ export default function SourcesMenu({
 				)}
 				{submenu === SourcesMenuSubmenu.ADD && (
 					<AddSourceSubmenu
+						sources={sources}
 						onAddSourceClick={handleAddSourceClick}
 						onBackClick={() => setSubmenu(null)}
 					/>
