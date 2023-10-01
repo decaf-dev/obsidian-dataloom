@@ -20,7 +20,12 @@ export default class ColumnAddCommand extends LoomStateCommand {
 		const { columns, rows } = prevState.model;
 
 		const result = columnAddExecute(columns, rows, { type: this.type });
-		const { nextColumns, nextRows, addedColumn, addedCells } = result;
+		const {
+			columns: nextColumns,
+			rows: nextRows,
+			addedColumn,
+			addedCells,
+		} = result;
 		this.addedColumn = addedColumn;
 		this.addedCells = addedCells;
 
@@ -39,7 +44,7 @@ export default class ColumnAddCommand extends LoomStateCommand {
 
 		const { columns, rows } = prevState.model;
 		const result = columnAddUndo(columns, rows, this.addedColumn);
-		const { nextColumns, nextRows } = result;
+		const { columns: nextColumns, rows: nextRows } = result;
 
 		return {
 			...prevState,
@@ -61,7 +66,7 @@ export default class ColumnAddCommand extends LoomStateCommand {
 			this.addedColumn,
 			this.addedCells
 		);
-		const { nextColumns, nextRows } = result;
+		const { columns: nextColumns, rows: nextRows } = result;
 		return {
 			...prevState,
 			model: {

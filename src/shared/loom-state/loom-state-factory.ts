@@ -415,14 +415,26 @@ export const createRowWithCells = (
 	columns: Column[],
 	options?: {
 		sourceId?: string;
+		defaultContent?: {
+			type: CellType;
+			content: string;
+		};
 	}
 ): Row => {
-	const { sourceId } = options || {};
+	const { sourceId, defaultContent } = options || {};
 	const cells: Cell[] = [];
 	columns.forEach((column) => {
-		const { id } = column;
+		const { id, type } = column;
+
+		let content = "";
+		if (defaultContent) {
+			if (type === defaultContent.type) {
+				content = defaultContent.content;
+			}
+		}
 		const cell = createCell(id, {
 			cellType: column.type,
+			content,
 		});
 		cells.push(cell);
 	});

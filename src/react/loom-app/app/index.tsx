@@ -39,6 +39,7 @@ import "./styles.css";
 import getHeaderRow from "./get-header-row";
 import findSourceRows from "src/shared/loom-state/source-rows";
 import { filterUniqueRows } from "src/shared/loom-state/row-utils";
+import { CellType } from "src/shared/loom-state/types/loom-state";
 
 export default function App() {
 	const logger = useLogger();
@@ -100,7 +101,11 @@ export default function App() {
 			const { sources, columns, rows } = prevState.model;
 			const newSources = findSourceRows(app, sources, columns, rows);
 			let nextRows = [...rows, ...newSources];
-			nextRows = filterUniqueRows(columns, nextRows);
+			nextRows = filterUniqueRows(
+				columns,
+				nextRows,
+				CellType.SOURCE_FILE
+			);
 			return {
 				...prevState,
 				model: {

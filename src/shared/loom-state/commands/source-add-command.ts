@@ -22,8 +22,8 @@ export default class SourceAddCommand extends LoomStateCommand {
 	private addedSourceColumn: Column | null = null;
 	private addedSourceCells: AddedCell[] = [];
 
-	private addedFileColumn: Column | null = null;
-	private addedFileCells: AddedCell[] = [];
+	private addedSourceFileColumn: Column | null = null;
+	private addedSourceFileCells: AddedCell[] = [];
 
 	private addedSourceRows: Row[] = [];
 
@@ -53,16 +53,12 @@ export default class SourceAddCommand extends LoomStateCommand {
 				type: CellType.SOURCE_FILE,
 				insertIndex: 0,
 			});
-			const {
-				nextColumns: nextColumns1,
-				nextRows: nextRows1,
-				addedCells,
-				addedColumn,
-			} = result;
-			this.addedSourceCells = addedCells;
-			this.addedSourceColumn = addedColumn;
-			nextColumns = nextColumns1;
-			nextRows = nextRows1;
+			const { addedCells, addedColumn, columns, rows } = result;
+
+			this.addedSourceFileCells = addedCells;
+			this.addedSourceFileColumn = addedColumn;
+			nextColumns = columns;
+			nextRows = rows;
 		}
 
 		const sourceColumn = columns.find(
@@ -73,16 +69,12 @@ export default class SourceAddCommand extends LoomStateCommand {
 				type: CellType.SOURCE,
 				insertIndex: 0,
 			});
-			const {
-				nextColumns: nextColumns1,
-				nextRows: nextRows1,
-				addedCells,
-				addedColumn,
-			} = result;
+			const { addedCells, addedColumn, columns, rows } = result;
+
 			this.addedSourceCells = addedCells;
 			this.addedSourceColumn = addedColumn;
-			nextColumns = nextColumns1;
-			nextRows = nextRows1;
+			nextColumns = columns;
+			nextRows = rows;
 		}
 
 		const newRows = findSourceRows(
@@ -91,9 +83,14 @@ export default class SourceAddCommand extends LoomStateCommand {
 			nextColumns,
 			nextRows
 		);
+
 		this.addedSourceRows = newRows;
 		nextRows = [...nextRows, ...newRows];
-		nextRows = filterUniqueRows(nextColumns, nextRows);
+		nextRows = filterUniqueRows(
+			nextColumns,
+			nextRows,
+			CellType.SOURCE_FILE
+		);
 
 		return {
 			...prevState,
@@ -117,15 +114,15 @@ export default class SourceAddCommand extends LoomStateCommand {
 			(source) => source.id !== this.addedSource.id
 		);
 
-		if (this.addedFileColumn !== null) {
+		if (this.addedSourceFileColumn !== null) {
 			const result = columnAddUndo(
 				nextColumns,
 				nextRows,
-				this.addedFileColumn
+				this.addedSourceFileColumn
 			);
-			const { nextColumns: nextColumns1, nextRows: nextRows1 } = result;
-			nextColumns = nextColumns1;
-			nextRows = nextRows1;
+			const { columns, rows } = result;
+			nextColumns = columns;
+			nextRows = rows;
 		}
 
 		if (this.addedSourceColumn !== null) {
@@ -134,15 +131,14 @@ export default class SourceAddCommand extends LoomStateCommand {
 				nextRows,
 				this.addedSourceColumn
 			);
-			const { nextColumns: nextColumns1, nextRows: nextRows1 } = result;
-			nextColumns = nextColumns1;
-			nextRows = nextRows1;
+			const { columns, rows } = result;
+			nextColumns = columns;
+			nextRows = rows;
 		}
 
-		nextRows = rows.filter((row) => row.sourceId === this.addedSource.id);
-
-		console.log(nextColumns);
-		console.log(nextRows);
+		nextRows = nextRows.filter(
+			(row) => row.sourceId !== this.addedSource.id
+		);
 
 		return {
 			...prevState,
@@ -154,6 +150,7 @@ export default class SourceAddCommand extends LoomStateCommand {
 			},
 		};
 	}
+
 	redo(prevState: LoomState): LoomState {
 		super.onRedo();
 
@@ -163,16 +160,19 @@ export default class SourceAddCommand extends LoomStateCommand {
 
 		const nextSources = [...sources, this.addedSource];
 
-		if (this.addedFileColumn !== null) {
+		if (this.addedSourceFileColumn !== null) {
 			const result = columnAddRedo(
 				nextColumns,
 				nextRows,
-				this.addedFileColumn,
-				this.addedFileCells
+				this.addedSourceFileColumn,
+				this.addedSourceFileCells,
+				{
+					insertIndex: 0,
+				}
 			);
-			const { nextColumns: nextColumns1, nextRows: nextRows1 } = result;
-			nextColumns = nextColumns1;
-			nextRows = nextRows1;
+			const { columns, rows } = result;
+			nextColumns = columns;
+			nextRows = rows;
 		}
 
 		if (this.addedSourceColumn !== null) {
@@ -180,15 +180,22 @@ export default class SourceAddCommand extends LoomStateCommand {
 				nextColumns,
 				nextRows,
 				this.addedSourceColumn,
-				this.addedSourceCells
+				this.addedSourceCells,
+				{
+					insertIndex: 0,
+				}
 			);
-			const { nextColumns: nextColumns1, nextRows: nextRows1 } = result;
-			nextColumns = nextColumns1;
-			nextRows = nextRows1;
+			const { columns, rows } = result;
+			nextColumns = columns;
+			nextRows = rows;
 		}
 
 		nextRows = [...nextRows, ...this.addedSourceRows];
-		nextRows = filterUniqueRows(nextColumns, nextRows);
+		nextRows = filterUniqueRows(
+			nextColumns,
+			nextRows,
+			CellType.SOURCE_FILE
+		);
 
 		return {
 			...prevState,

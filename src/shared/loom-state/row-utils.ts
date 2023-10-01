@@ -1,7 +1,11 @@
 import CellNotFoundError from "../error/cell-not-found-error";
 import { CellType, Column, Row } from "./types/loom-state";
 
-export const filterUniqueRows = (columns: Column[], rows: Row[]) => {
+export const filterUniqueRows = (
+	columns: Column[],
+	rows: Row[],
+	cellType: CellType
+) => {
 	const uniqueValues: string[] = [];
 
 	// Filter the array to include only objects with unique content values
@@ -11,7 +15,7 @@ export const filterUniqueRows = (columns: Column[], rows: Row[]) => {
 		const { cells } = row;
 		for (const column of columns) {
 			const { id, type } = column;
-			if (type !== CellType.SOURCE_FILE) continue;
+			if (type !== cellType) continue;
 
 			const cell = cells.find((cell) => cell.columnId === id);
 			if (!cell) throw new CellNotFoundError({ columnId: id });

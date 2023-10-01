@@ -47,7 +47,10 @@ const findRowsFromFolder = (
 			const { id, type } = column;
 
 			let content = "";
-			if (type === CellType.SOURCE_FILE) content = path;
+			if (type === CellType.SOURCE_FILE) {
+				content = path;
+			}
+
 			const cell = createCell(id, { cellType: type, content });
 			return cell;
 		});

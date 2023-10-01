@@ -39,8 +39,8 @@ export const columnAddExecute = (
 	});
 
 	return {
-		nextColumns,
-		nextRows,
+		columns: nextColumns,
+		rows: nextRows,
 		addedColumn: newColumn,
 		addedCells,
 	};
@@ -66,8 +66,8 @@ export const columnAddUndo = (
 	});
 
 	return {
-		nextColumns,
-		nextRows,
+		columns: nextColumns,
+		rows: nextRows,
 	};
 };
 
@@ -96,7 +96,7 @@ export const columnAddRedo = (
 	});
 
 	return {
-		nextColumns,
-		nextRows,
+		columns: nextColumns,
+		rows: nextRows,
 	};
 };
