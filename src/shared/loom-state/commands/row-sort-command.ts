@@ -13,7 +13,7 @@ import {
 	Source,
 } from "../types/loom-state";
 import { isCheckboxChecked } from "../../match";
-import { getSourceContent } from "src/shared/cell-content/source-content";
+import { getSourceCellContent } from "src/shared/cell-content/source-cell-content";
 import {
 	forceEmptyCellsToBottom,
 	sortByBoolean,
@@ -181,8 +181,8 @@ export default class RowSortCommand extends LoomStateCommand {
 		sortDir: SortDir
 	): number {
 		//Use empty instead of internal to force the empty cells to the bottom
-		const contentA = a ? getSourceContent(a) : "";
-		const contentB = b ? getSourceContent(b) : "";
+		const contentA = a ? getSourceCellContent(a) : "";
+		const contentB = b ? getSourceCellContent(b) : "";
 
 		return sortByText(contentA, contentB, sortDir, false);
 	}

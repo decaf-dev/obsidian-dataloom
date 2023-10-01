@@ -13,7 +13,7 @@ import { getTimeCellContent } from "src/shared/cell-content/time-content";
 import { getDateCellContent } from "src/shared/cell-content/date-cell-content";
 import { getNumberCellContent } from "src/shared/cell-content/number-cell-content";
 import ColumnNotFoundError from "src/shared/error/column-not-found-error";
-import { getSourceContent } from "src/shared/cell-content/source-content";
+import { getSourceCellContent } from "src/shared/cell-content/source-cell-content";
 import { getSourceFileContent } from "src/shared/cell-content/source-file-content";
 
 export const filterRowsBySearch = (
@@ -128,7 +128,7 @@ const matchSourceCell = (
 	searchText: string
 ) => {
 	const source = sources.find((source) => source.id === sourceId) ?? null;
-	const content = getSourceContent(source);
+	const content = getSourceCellContent(source);
 	return content.toLowerCase().includes(searchText);
 };
 

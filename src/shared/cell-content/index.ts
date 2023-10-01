@@ -12,7 +12,7 @@ import { getEmbedCellContent } from "./embed-cell-content";
 import { getNumberCellContent } from "./number-cell-content";
 import { getTextCellContent } from "./text-cell-content";
 import { getTimeCellContent } from "./time-content";
-import { getSourceContent } from "./source-content";
+import { getSourceCellContent } from "./source-cell-content";
 import { getSourceFileContent } from "./source-file-content";
 
 const getTagCellContent = (column: Column, cell: Cell) => {
@@ -60,7 +60,7 @@ export const getCellContent = (
 		case CellType.LAST_EDITED_TIME:
 			return getTimeCellContent(row.lastEditedTime, column.dateFormat);
 		case CellType.SOURCE: {
-			return getSourceContent(source);
+			return getSourceCellContent(source);
 		}
 		case CellType.SOURCE_FILE:
 			return getSourceFileContent(content, shouldRemoveMarkdown);
