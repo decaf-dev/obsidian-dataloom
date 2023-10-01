@@ -203,6 +203,12 @@ const FileFilter = BaseFilter.extend({
 	text: String,
 });
 
+const SourceFileFilter = BaseFilter.extend({
+	type: Literal(CellType.SOURCE_FILE),
+	condition: TextFilterConditionUnion,
+	text: String,
+});
+
 const CheckboxConditionUnion = Union(
 	Literal(TextFilterCondition.IS),
 	Literal(TextFilterCondition.IS_NOT)
@@ -300,7 +306,8 @@ const Filter = Union(
 	NumberFilter,
 	DateFilter,
 	CreationTimeFilter,
-	LastEditedTimeFilter
+	LastEditedTimeFilter,
+	SourceFileFilter
 );
 
 const Tag = Record({

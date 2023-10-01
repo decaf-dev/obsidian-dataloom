@@ -21,6 +21,7 @@ import {
 	DateFilterCondition,
 	DateFilterOption,
 	Column,
+	SourceFileFilter,
 } from "src/shared/loom-state/types/loom-state";
 import { Expression, evaluateWithPrecedence } from "./evaluate-with-precedence";
 import {
@@ -164,8 +165,13 @@ const doesCellMatchFilter = (
 			return doesDateMatch(lastEditedTime, dateTime, option, condition);
 		}
 
+		case CellType.SOURCE_FILE: {
+			const { text } = filter as SourceFileFilter;
+			return doesTextMatch(cellContent, text, condition);
+		}
+
 		default:
-			return true;
+			throw new Error("Unhandled cell type");
 	}
 };
 

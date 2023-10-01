@@ -359,6 +359,15 @@ export interface LastEditedTimeFilter extends BaseFilter {
 	dateTime: number | null;
 }
 
+/* Source File condition */
+export type SourceFileCondition = TextFilterCondition;
+
+export interface SourceFileFilter extends BaseFilter {
+	type: CellType.SOURCE_FILE;
+	condition: SourceFileCondition;
+	text: string;
+}
+
 export type Filter =
 	| TextFilter
 	| TagFilter
@@ -369,4 +378,5 @@ export type Filter =
 	| NumberFilter
 	| DateFilter
 	| CreationTimeFilter
-	| LastEditedTimeFilter;
+	| LastEditedTimeFilter
+	| SourceFileFilter;

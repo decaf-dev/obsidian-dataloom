@@ -41,6 +41,7 @@ import {
 	Source,
 	SourceType,
 	Filter,
+	SourceFileFilter,
 } from "./types/loom-state";
 
 import { v4 as uuidv4 } from "uuid";
@@ -129,6 +130,30 @@ export const createCell = (
 		dateTime,
 		content,
 		tagIds,
+	};
+};
+
+export const createSourceFileFilter = (
+	columnId: string,
+	options?: {
+		condition?: TextCondition;
+		isEnabled?: boolean;
+		text?: string;
+	}
+): SourceFileFilter => {
+	const {
+		condition = TextFilterCondition.IS,
+		isEnabled = true,
+		text = "",
+	} = options || {};
+	const baseFilter = createBaseFilter(columnId, {
+		isEnabled,
+	});
+	return {
+		...baseFilter,
+		type: CellType.SOURCE_FILE,
+		condition,
+		text,
 	};
 };
 

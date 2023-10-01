@@ -1,5 +1,5 @@
 import Select from "src/react/shared/select";
-import { Column } from "src/shared/loom-state/types/loom-state";
+import { CellType, Column } from "src/shared/loom-state/types/loom-state";
 
 interface Props {
 	id: string;
@@ -28,14 +28,16 @@ export default function FilterColumnSelect({
 			onKeyDown={handleKeyDown}
 			onChange={(newValue) => onChange(id, newValue)}
 		>
-			{columns.map((column) => {
-				const { id, content } = column;
-				return (
-					<option key={id} value={id}>
-						{content}
-					</option>
-				);
-			})}
+			{columns
+				.filter((column) => column.type !== CellType.SOURCE)
+				.map((column) => {
+					const { id, content } = column;
+					return (
+						<option key={id} value={id}>
+							{content}
+						</option>
+					);
+				})}
 		</Select>
 	);
 }
