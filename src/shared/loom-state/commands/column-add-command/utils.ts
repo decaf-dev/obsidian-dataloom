@@ -9,14 +9,16 @@ export const columnAddExecute = (
 	options?: {
 		type?: CellType;
 		insertIndex?: number;
+		content?: string;
 	}
 ) => {
-	const { type = CellType.TEXT, insertIndex } = options || {};
+	const { type = CellType.TEXT, insertIndex, content } = options || {};
 
 	const nextColumns = [...prevColumns];
 
 	const newColumn = createColumn({
 		cellType: type,
+		content,
 	});
 	nextColumns.splice(insertIndex ?? prevColumns.length, 0, newColumn);
 

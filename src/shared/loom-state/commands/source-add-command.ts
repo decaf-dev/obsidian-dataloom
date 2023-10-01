@@ -51,6 +51,7 @@ export default class SourceAddCommand extends LoomStateCommand {
 		if (!sourceFileColumn) {
 			const result = columnAddExecute(nextColumns, nextRows, {
 				type: CellType.SOURCE_FILE,
+				content: "Source File",
 				insertIndex: 0,
 			});
 			const { addedCells, addedColumn, columns, rows } = result;
@@ -67,6 +68,7 @@ export default class SourceAddCommand extends LoomStateCommand {
 		if (!sourceColumn) {
 			const result = columnAddExecute(nextColumns, nextRows, {
 				type: CellType.SOURCE,
+				content: "Source",
 				insertIndex: 0,
 			});
 			const { addedCells, addedColumn, columns, rows } = result;
