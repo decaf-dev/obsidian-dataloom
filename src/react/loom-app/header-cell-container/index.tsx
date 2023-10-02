@@ -18,6 +18,7 @@ import { ColumnChangeHandler } from "../app/hooks/use-column/types";
 interface Props {
 	index: number;
 	column: Column;
+	numSources: number;
 	numColumns: number;
 	numFrozenColumns: number;
 	resizingColumnId: string | null;
@@ -30,6 +31,7 @@ interface Props {
 export default function HeaderCellContainer({
 	index,
 	column,
+	numSources,
 	numColumns,
 	numFrozenColumns,
 	resizingColumnId,
@@ -117,6 +119,7 @@ export default function HeaderCellContainer({
 			<HeaderMenu
 				index={index}
 				isOpen={isOpen}
+				numSources={numSources}
 				closeRequest={closeRequest}
 				triggerPosition={triggerPosition}
 				id={menu.id}

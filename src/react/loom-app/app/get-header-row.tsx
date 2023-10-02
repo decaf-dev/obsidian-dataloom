@@ -14,6 +14,7 @@ interface Props {
 	lastColumnId: string;
 	visibleColumns: Column[];
 	numColumns: number;
+	numSources: number;
 	numFrozenColumns: number;
 	resizingColumnId: string | null;
 	onColumnChange: ColumnChangeHandler;
@@ -28,6 +29,7 @@ export default function getHeaderRow({
 	lastColumnId,
 	visibleColumns,
 	numColumns,
+	numSources,
 	numFrozenColumns,
 	resizingColumnId,
 	onColumnChange,
@@ -53,6 +55,7 @@ export default function getHeaderRow({
 							index={i}
 							column={column}
 							numColumns={numColumns}
+							numSources={numSources}
 							numFrozenColumns={numFrozenColumns}
 							resizingColumnId={resizingColumnId}
 							onColumnChange={onColumnChange}

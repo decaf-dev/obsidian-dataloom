@@ -17,8 +17,10 @@ import { getDisplayNameForCellType } from "src/shared/loom-state/type-display-na
 interface Props {
 	index: number;
 	canDeleteColumn: boolean;
+	numSources: number;
 	columnId: string;
 	shouldWrapOverflow: boolean;
+	frontmatterKey: string | null;
 	columnName: string;
 	numFrozenColumns: number;
 	columnType: CellType;
@@ -30,12 +32,15 @@ interface Props {
 	onDeleteClick: () => void;
 	onHideClick: () => void;
 	onFrozenColumnsChange: (value: number) => void;
+	onFrontmatterKeyChange: (value: string) => void;
 }
 
 export default function BaseMenu({
 	index,
 	shouldWrapOverflow,
 	numFrozenColumns,
+	numSources,
+	frontmatterKey,
 	columnName,
 	columnId,
 	columnType,
@@ -92,6 +97,18 @@ export default function BaseMenu({
 							value={getDisplayNameForCellType(columnType)}
 							onClick={() => {
 								onSubmenuChange(SubmenuType.TYPE);
+							}}
+						/>
+					)}
+				{numSources > 0 &&
+					columnType !== CellType.SOURCE &&
+					columnType !== CellType.SOURCE_FILE && (
+						<MenuItem
+							lucideId="file-key-2"
+							name="Frontmatter key"
+							value={frontmatterKey ?? "None"}
+							onClick={() => {
+								onSubmenuChange(SubmenuType.FRONTMATTER_KEY);
 							}}
 						/>
 					)}

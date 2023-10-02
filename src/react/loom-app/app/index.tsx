@@ -179,6 +179,7 @@ export default function App() {
 		lastColumnId,
 		visibleColumns,
 		numColumns: columns.length,
+		numSources: sources.length,
 		onColumnChange,
 		onFrozenColumnsChange,
 		onColumnDeleteClick,

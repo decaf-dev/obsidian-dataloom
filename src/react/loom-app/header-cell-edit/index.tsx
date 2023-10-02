@@ -29,9 +29,11 @@ import {
 } from "../../shared/menu/types";
 import "./styles.css";
 import { ColumnChangeHandler } from "../app/hooks/use-column/types";
+import FrontmatterKeySubmenu from "./frontmatter-key-submenu";
 
 interface Props {
 	index: number;
+	numSources: number;
 	isOpen: boolean;
 	canDeleteColumn: boolean;
 	id: string;
@@ -57,6 +59,7 @@ const SELFHANDLE_CLOSE: SubmenuType[] = [
 export default function HeaderMenu({
 	index,
 	isOpen,
+	numSources,
 	column,
 	id,
 	triggerPosition,
@@ -85,6 +88,7 @@ export default function HeaderMenu({
 		numberPrefix,
 		numberSeparator,
 		numberSuffix,
+		frontmatterKey,
 	} = column;
 	const [submenu, setSubmenu] = useState<SubmenuType | null>(null);
 	const [localValue, setLocalValue] = useState(content);
@@ -205,6 +209,11 @@ export default function HeaderMenu({
 		setSubmenu(SubmenuType.OPTIONS);
 	}
 
+	function handleFrontmatterKeyChange(value: string | null) {
+		onColumnChange(columnId, { frontmatterKey: value });
+		setSubmenu(null);
+	}
+
 	return (
 		<Menu
 			isOpen={isOpen}
@@ -218,9 +227,11 @@ export default function HeaderMenu({
 				{submenu === null && (
 					<BaseMenu
 						index={index}
+						numSources={numSources}
 						canDeleteColumn={canDeleteColumn}
 						shouldWrapOverflow={shouldWrapOverflow}
 						numFrozenColumns={numFrozenColumns}
+						frontmatterKey={frontmatterKey}
 						columnId={columnId}
 						columnName={localValue}
 						columnType={type}
@@ -232,6 +243,7 @@ export default function HeaderMenu({
 						onDeleteClick={handleDeleteClick}
 						onHideClick={handleHideClick}
 						onFrozenColumnsChange={handleFrozenColumnsChange}
+						onFrontmatterKeyChange={handleFrontmatterKeyChange}
 					/>
 				)}
 				{submenu === SubmenuType.OPTIONS && (
@@ -307,8 +319,8 @@ export default function HeaderMenu({
 						title="Prefix"
 						value={numberPrefix}
 						closeRequest={closeRequest}
-						onClose={onClose}
 						onValueChange={handleNumberOptionChange}
+						onClose={onClose}
 						onBackClick={() => setSubmenu(SubmenuType.OPTIONS)}
 					/>
 				)}
@@ -316,8 +328,8 @@ export default function HeaderMenu({
 					<TextInputSubmenu
 						title="Suffix"
 						closeRequest={closeRequest}
-						onClose={onClose}
 						value={numberSuffix}
+						onClose={onClose}
 						onValueChange={handleNumberOptionChange}
 						onBackClick={() => setSubmenu(SubmenuType.OPTIONS)}
 					/>
@@ -326,10 +338,20 @@ export default function HeaderMenu({
 					<TextInputSubmenu
 						title="Separator"
 						closeRequest={closeRequest}
-						onClose={onClose}
 						value={numberSeparator}
+						onClose={onClose}
 						onValueChange={handleNumberOptionChange}
 						onBackClick={() => setSubmenu(SubmenuType.OPTIONS)}
+					/>
+				)}
+				{submenu === SubmenuType.FRONTMATTER_KEY && (
+					<FrontmatterKeySubmenu
+						title="Frontmatter key"
+						closeRequest={closeRequest}
+						value={frontmatterKey}
+						onClose={onClose}
+						onValueChange={handleFrontmatterKeyChange}
+						onBackClick={() => setSubmenu(null)}
 					/>
 				)}
 			</div>
