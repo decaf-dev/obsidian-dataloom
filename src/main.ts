@@ -45,6 +45,7 @@ import {
 	purgeEmbeddedLoomApps,
 } from "./obsidian/embedded/embedded-app-manager";
 import { cloneDeep } from "lodash";
+import FileCache from "./shared/file-cache";
 
 export interface DataLoomSettings {
 	shouldDebug: boolean;
@@ -115,6 +116,7 @@ export default class DataLoomPlugin extends Plugin {
 			store.dispatch(setDarkMode(isDark));
 
 			await this.migrateLoomFiles();
+			await FileCache.getInstance(this.app).load();
 		});
 
 		if (this.settings.showWelcomeModal) {

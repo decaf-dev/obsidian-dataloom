@@ -37,9 +37,10 @@ import getFooterRow from "./get-footer-row";
 import "src/react/global.css";
 import "./styles.css";
 import getHeaderRow from "./get-header-row";
-import findSourceRows from "src/shared/loom-state/source-rows";
-import { filterUniqueRows } from "src/shared/loom-state/row-utils";
+import { filterUniqueRows } from "src/shared/loom-state/utils/row-utils";
 import { CellType } from "src/shared/loom-state/types/loom-state";
+import FileCache from "src/shared/file-cache";
+import findDataFromSources from "src/shared/loom-state/source-rows";
 
 export default function App() {
 	const logger = useLogger();
@@ -99,8 +100,15 @@ export default function App() {
 		//Set timeout to avoid Obsidian merging file message
 		setLoomState((prevState) => {
 			const { sources, columns, rows } = prevState.model;
-			const newSources = findSourceRows(app, sources, columns, rows);
-			let nextRows = [...rows, ...newSources];
+			const result = findDataFromSources(
+				app,
+				FileCache.getInstance(),
+				sources,
+				columns,
+				rows.length
+			);
+			const { newRows, nextColumns } = result;
+			let nextRows = [...rows, ...newRows];
 			nextRows = filterUniqueRows(
 				columns,
 				nextRows,
@@ -111,6 +119,7 @@ export default function App() {
 				model: {
 					...prevState.model,
 					rows: nextRows,
+					columns: nextColumns,
 				},
 			};
 		});

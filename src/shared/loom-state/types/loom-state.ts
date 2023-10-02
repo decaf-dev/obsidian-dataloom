@@ -40,6 +40,7 @@ export interface Column {
 	aspectRatio: AspectRatio;
 	horizontalPadding: PaddingSize;
 	verticalPadding: PaddingSize;
+	frontmatterKey: string | null;
 }
 
 export interface Row {

@@ -79,6 +79,7 @@ export const createColumn = (options?: {
 		aspectRatio: AspectRatio.UNSET,
 		horizontalPadding: PaddingSize.UNSET,
 		verticalPadding: PaddingSize.UNSET,
+		frontmatterKey: null,
 	};
 };
 

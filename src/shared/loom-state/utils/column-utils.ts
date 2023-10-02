@@ -1,5 +1,5 @@
-import RowNotFoundError from "../error/row-not-found-error";
-import { Cell, Row } from "./types/loom-state";
+import RowNotFoundError from "../../error/row-not-found-error";
+import { Cell, Row } from "../types/loom-state";
 
 export const getColumnCells = (rows: Row[], columnId: string): Cell[] => {
 	return rows.map((row) => {

@@ -1,74 +1,125 @@
 import { App } from "obsidian";
 import { createCell, createRow } from "./loom-state-factory";
-import { CellType, Column, Row, Source, SourceType } from "./types/loom-state";
+import {
+	Cell,
+	CellType,
+	Column,
+	Row,
+	Source,
+	SourceType,
+} from "./types/loom-state";
+import FileCache from "../file-cache";
+import { parseContentFromFrontMatter } from "./parse-content-from-frontmatter";
+import { cloneDeep } from "lodash";
 
-export default function findSourceRows(
+export default function findDataFromSources(
 	app: App,
+	fileCache: FileCache,
 	sources: Source[],
 	columns: Column[],
-	rows: Row[]
-): Row[] {
-	return sources
-		.map((source) => {
-			const { id, type, content } = source;
-			switch (type) {
-				case SourceType.FOLDER:
-					return findRowsFromFolder(
-						app,
-						columns,
-						id,
-						content,
-						rows.length
-					);
-				case SourceType.TAG:
-					return findRowsFromTag(app, content);
-				default:
-					throw new Error(`Source type not handled: ${type}`);
+	numRows: number
+): {
+	newRows: Row[];
+	nextColumns: Column[];
+} {
+	const newRows: Row[] = [];
+	let nextColumns: Column[] = cloneDeep(columns);
+
+	sources.forEach((source) => {
+		const { id, type, content } = source;
+		switch (type) {
+			case SourceType.FOLDER: {
+				const result = findRowsFromFolder(
+					app,
+					fileCache,
+					nextColumns,
+					id,
+					content,
+					numRows + newRows.length
+				);
+				newRows.push(...result.newRows);
+				nextColumns = result.nextColumns;
+				break;
 			}
-		})
-		.flat();
+			default:
+				throw new Error(`Source type not handled: ${type}`);
+		}
+	});
+	return {
+		newRows,
+		nextColumns,
+	};
 }
 
 const findRowsFromFolder = (
 	app: App,
+	fileCache: FileCache,
 	columns: Column[],
 	sourceId: string,
 	folderName: string,
 	numRows: number
-): Row[] => {
+): {
+	newRows: Row[];
+	nextColumns: Column[];
+} => {
 	const folder = app.vault.getAbstractFileByPath(folderName);
-	if (!folder) return [];
-	const files = app.vault.getMarkdownFiles().filter((file) => {
-		return file.parent?.path === folder.path;
-	});
-	return files.map((file) => {
-		// app.fileManager.processFrontMatter(file, (frontmatter: any) => {
-		// 	console.log(frontmatter);
-		// });
-		const cells = columns.map((column) => {
-			const { path } = file;
-			const { id, type } = column;
+	if (!folder)
+		return {
+			nextColumns: columns,
+			newRows: [],
+		};
 
-			let content = "";
+	const files = app.vault
+		.getMarkdownFiles()
+		.filter((file) => file.parent?.path === folder.path);
+
+	const newRows: Row[] = [];
+	const nextColumns = cloneDeep(columns);
+
+	files.forEach((file) => {
+		const cells: Cell[] = [];
+
+		nextColumns.forEach((column) => {
+			const { path } = file;
+			const { id, type, frontmatterKey } = column;
+
+			let newCell: Cell | null = null;
 			if (type === CellType.SOURCE_FILE) {
-				content = path;
+				newCell = createCell(id, { cellType: type, content: path });
+			} else if (frontmatterKey !== null) {
+				const frontmatter = fileCache.getFrontMatter(
+					path,
+					frontmatterKey
+				);
+				if (frontmatter !== null) {
+					const result = parseContentFromFrontMatter(
+						column,
+						type,
+						frontmatter
+					);
+					if (result !== null) {
+						const { newCell: cell, nextTags } = result;
+						newCell = cell;
+						column.tags = nextTags;
+					}
+				}
 			}
 
-			const cell = createCell(id, { cellType: type, content });
-			return cell;
+			if (newCell === null) newCell = createCell(id, { cellType: type });
+			cells.push(newCell);
 		});
+
 		const row = createRow(numRows, {
 			cells,
 			sourceId,
 			creationTime: file.stat.ctime,
 			lastEditedTime: file.stat.mtime,
 		});
-		return row;
+		newRows.push(row);
 	});
-};
 
-const findRowsFromTag = (app: App, tagName: string): Row[] => {
-	console.log(app);
-	console.log(tagName);
-	return [];
+	return {
+		newRows,
+		nextColumns,
+	};
 };

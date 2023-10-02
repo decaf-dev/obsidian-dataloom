@@ -14,7 +14,7 @@ import RowNotFoundError from "src/shared/error/row-not-found-error";
 import TagNotFoundError from "src/shared/error/tag-not-found-error";
 import { unixTimeToDateTimeString } from "src/shared/date/date-conversion";
 import { getSourceCellContent } from "src/shared/cell-content/source-cell-content";
-import { getColumnCells } from "src/shared/loom-state/column-utils";
+import { getColumnCells } from "src/shared/loom-state/utils/column-utils";
 
 export const getGeneralCalculationContent = (
 	columnId: string,

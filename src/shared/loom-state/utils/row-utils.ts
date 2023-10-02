@@ -1,5 +1,5 @@
-import CellNotFoundError from "../error/cell-not-found-error";
-import { CellType, Column, Row } from "./types/loom-state";
+import CellNotFoundError from "../../error/cell-not-found-error";
+import { CellType, Column, Row } from "../types/loom-state";
 
 export const filterUniqueRows = (
 	columns: Column[],

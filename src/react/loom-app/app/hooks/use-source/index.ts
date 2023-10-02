@@ -4,6 +4,7 @@ import { useLoomState } from "../../../loom-state-provider";
 import SourceAddCommand from "src/shared/loom-state/commands/source-add-command";
 import SourceDeleteCommand from "src/shared/loom-state/commands/source-delete-command";
 import { useAppMount } from "src/react/loom-app/app-mount-provider";
+import FileCache from "src/shared/file-cache";
 
 export const useSource = () => {
 	const logger = useLogger();
@@ -12,7 +13,9 @@ export const useSource = () => {
 
 	function handleSourceAdd(type: SourceType, name: string) {
 		logger("handleSourceAdd");
-		doCommand(new SourceAddCommand(app, type, name));
+		doCommand(
+			new SourceAddCommand(app, FileCache.getInstance(), type, name)
+		);
 	}
 
 	function handleSourceDelete(id: string) {

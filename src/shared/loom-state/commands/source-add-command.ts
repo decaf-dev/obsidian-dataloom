@@ -3,18 +3,20 @@ import { createSource } from "../loom-state-factory";
 import { LoomState } from "../types";
 import { CellType, Column, Row, Source, SourceType } from "../types/loom-state";
 import LoomStateCommand from "./loom-state-command";
-import findSourceRows from "../source-rows";
 import { App } from "obsidian";
-import { filterUniqueRows } from "../row-utils";
+import { filterUniqueRows } from "../utils/row-utils";
 import {
 	columnAddExecute,
 	columnAddRedo,
 	columnAddUndo,
 } from "./column-add-command/utils";
 import { AddedCell } from "./column-add-command/types";
+import findDataFromSources from "../source-rows";
+import FileCache from "src/shared/file-cache";
 
 export default class SourceAddCommand extends LoomStateCommand {
 	private app: App;
+	private fileCache: FileCache;
 	private type: SourceType;
 	private content: string;
 
@@ -27,9 +29,15 @@ export default class SourceAddCommand extends LoomStateCommand {
 
 	private addedSourceRows: Row[] = [];
 
-	constructor(app: App, type: SourceType, content: string) {
+	constructor(
+		app: App,
+		fileCache: FileCache,
+		type: SourceType,
+		content: string
+	) {
 		super();
 		this.app = app;
+		this.fileCache = fileCache;
 		this.type = type;
 		this.content = content;
 	}
@@ -79,12 +87,14 @@ export default class SourceAddCommand extends LoomStateCommand {
 			nextRows = rows;
 		}
 
-		const newRows = findSourceRows(
+		const { newRows, nextColumns: updatedColumns } = findDataFromSources(
 			this.app,
+			this.fileCache,
 			nextSources,
 			nextColumns,
-			nextRows
+			nextRows.length
 		);
+		nextColumns = updatedColumns;
 
 		this.addedSourceRows = newRows;
 		nextRows = [...nextRows, ...newRows];
