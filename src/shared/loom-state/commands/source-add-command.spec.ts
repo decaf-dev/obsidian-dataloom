@@ -9,55 +9,8 @@ import { CellType, SourceType } from "../types/loom-state";
 import CommandUndoError from "./command-undo-error";
 import CommandRedoError from "./command-redo-error";
 import SourceAddCommand from "./source-add-command";
-import { App } from "obsidian";
 
 describe("source-add-command", () => {
-	const mockApp = {
-		vault: {
-			getMarkdownFiles: () => {
-				return [
-					{
-						parent: { path: "test1" },
-						path: "test1/file1.md",
-						stat: {
-							mtime: Date.now(),
-							ctime: Date.now(),
-						},
-					},
-					{
-						parent: { path: "test1" },
-						path: "test1/file2.md",
-						stat: {
-							mtime: Date.now(),
-							ctime: Date.now(),
-						},
-					},
-					{
-						parent: { path: "test2" },
-						path: "test2/file1.md",
-						stat: {
-							mtime: Date.now(),
-							ctime: Date.now(),
-						},
-					},
-					{
-						parent: { path: "test2" },
-						path: "test2/file2.md",
-						stat: {
-							mtime: Date.now(),
-							ctime: Date.now(),
-						},
-					},
-				];
-			},
-			getAbstractFileByPath: (path: string) => {
-				return {
-					path,
-				};
-			},
-		},
-	} as unknown as App;
-
 	function stateWithOneSource() {
 		const sources = [createSource(SourceType.FOLDER, "test1")];
 		const columns = [
@@ -97,11 +50,7 @@ describe("source-add-command", () => {
 
 	it("throws an error when undo() is called before execute()", () => {
 		const prevState = createTestLoomState(1, 1);
-		const command = new SourceAddCommand(
-			mockApp,
-			SourceType.FOLDER,
-			"test"
-		);
+		const command = new SourceAddCommand(SourceType.FOLDER, "test");
 
 		try {
 			command.undo(prevState);
@@ -112,11 +61,7 @@ describe("source-add-command", () => {
 
 	it("throws an error when redo() is called before undo()", () => {
 		const prevState = createTestLoomState(1, 1);
-		const command = new SourceAddCommand(
-			mockApp,
-			SourceType.FOLDER,
-			"test"
-		);
+		const command = new SourceAddCommand(SourceType.FOLDER, "test");
 
 		try {
 			const executeState = command.execute(prevState);
@@ -126,22 +71,17 @@ describe("source-add-command", () => {
 		}
 	});
 
-	it("adds a source and its corresponding rows when execute() is called", () => {
+	it("adds a source when execute() is called", () => {
 		//Arrange
 		const prevState = stateWithOneSource();
 
 		//Act
-		const command = new SourceAddCommand(
-			mockApp,
-			SourceType.FOLDER,
-			"test2"
-		);
+		const command = new SourceAddCommand(SourceType.FOLDER, "test2");
 		const executeState = command.execute(prevState);
 
 		//Assert
 		expect(executeState.model.sources).toHaveLength(2);
 		expect(executeState.model.columns).toEqual(prevState.model.columns);
-		expect(executeState.model.rows).toHaveLength(5);
 		expect(executeState.model.rows[0].sourceId).toEqual(null);
 		expect(executeState.model.rows[1].sourceId).toEqual(
 			executeState.model.sources[0].id
@@ -149,24 +89,14 @@ describe("source-add-command", () => {
 		expect(executeState.model.rows[2].sourceId).toEqual(
 			executeState.model.sources[0].id
 		);
-		expect(executeState.model.rows[3].sourceId).toEqual(
-			executeState.model.sources[1].id
-		);
-		expect(executeState.model.rows[4].sourceId).toEqual(
-			executeState.model.sources[1].id
-		);
 	});
 
-	it("adds a source, its corresponding rows, a source column, and a source file column when execute() is called", () => {
+	it("adds a source, a source column, and a source file column when execute() is called", () => {
 		//Arrange
 		const prevState = stateWithZeroSources();
 
 		//Act
-		const command = new SourceAddCommand(
-			mockApp,
-			SourceType.FOLDER,
-			"test1"
-		);
+		const command = new SourceAddCommand(SourceType.FOLDER, "test1");
 		const executeState = command.execute(prevState);
 
 		//Assert
@@ -177,26 +107,16 @@ describe("source-add-command", () => {
 			CellType.SOURCE_FILE
 		);
 		expect(executeState.model.columns[2].type).toEqual(CellType.TEXT);
-		expect(executeState.model.rows).toHaveLength(3);
+		expect(executeState.model.rows).toHaveLength(1);
 		expect(executeState.model.rows[0].sourceId).toEqual(null);
-		expect(executeState.model.rows[1].sourceId).toEqual(
-			executeState.model.sources[0].id
-		);
-		expect(executeState.model.rows[2].sourceId).toEqual(
-			executeState.model.sources[0].id
-		);
 	});
 
-	it("removes the source and its corresponding rows when undo() is called", () => {
+	it("removes the source when undo() is called", () => {
 		//Arrange
 		const prevState = stateWithOneSource();
 
 		//Act
-		const command = new SourceAddCommand(
-			mockApp,
-			SourceType.FOLDER,
-			"test2"
-		);
+		const command = new SourceAddCommand(SourceType.FOLDER, "test2");
 		const executeState = command.execute(prevState);
 		const undoState = command.undo(executeState);
 
@@ -206,16 +126,12 @@ describe("source-add-command", () => {
 		expect(undoState.model.rows).toEqual(prevState.model.rows);
 	});
 
-	it("removes the source, its corresponding rows, and the added columns when undo() is called", () => {
+	it("removes the source, and the added columns when undo() is called", () => {
 		//Arrange
 		const prevState = stateWithZeroSources();
 
 		//Act
-		const command = new SourceAddCommand(
-			mockApp,
-			SourceType.FOLDER,
-			"test1"
-		);
+		const command = new SourceAddCommand(SourceType.FOLDER, "test1");
 		const executeState = command.execute(prevState);
 		const undoState = command.undo(executeState);
 
@@ -225,16 +141,12 @@ describe("source-add-command", () => {
 		expect(undoState.model.rows).toEqual(prevState.model.rows);
 	});
 
-	it("restores the source and its corresponding rows when redo() is called", () => {
+	it("restores the source when redo() is called", () => {
 		//Arrange
 		const prevState = stateWithOneSource();
 
 		//Act
-		const command = new SourceAddCommand(
-			mockApp,
-			SourceType.FOLDER,
-			"test2"
-		);
+		const command = new SourceAddCommand(SourceType.FOLDER, "test2");
 		const executeState = command.execute(prevState);
 		const undoState = command.undo(executeState);
 		const redoState = command.redo(undoState);
@@ -245,16 +157,12 @@ describe("source-add-command", () => {
 		expect(redoState.model.rows).toEqual(executeState.model.rows);
 	});
 
-	it("restores the source, its corresponding rows, and the added columns when redo() is called", () => {
+	it("restores the source, and the added columns when redo() is called", () => {
 		//Arrange
 		const prevState = stateWithZeroSources();
 
 		//Act
-		const command = new SourceAddCommand(
-			mockApp,
-			SourceType.FOLDER,
-			"test1"
-		);
+		const command = new SourceAddCommand(SourceType.FOLDER, "test1");
 		const executeState = command.execute(prevState);
 		const undoState = command.undo(executeState);
 		const redoState = command.redo(undoState);

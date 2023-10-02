@@ -1,22 +1,16 @@
 import { cloneDeep } from "lodash";
 import { createSource } from "../loom-state-factory";
 import { LoomState } from "../types";
-import { CellType, Column, Row, Source, SourceType } from "../types/loom-state";
+import { CellType, Column, Source, SourceType } from "../types/loom-state";
 import LoomStateCommand from "./loom-state-command";
-import { App } from "obsidian";
-import { filterUniqueRows } from "../utils/row-utils";
 import {
 	columnAddExecute,
 	columnAddRedo,
 	columnAddUndo,
 } from "./column-add-command/utils";
 import { AddedCell } from "./column-add-command/types";
-import findDataFromSources from "../source-rows";
-import FileCache from "src/shared/file-cache";
 
 export default class SourceAddCommand extends LoomStateCommand {
-	private app: App;
-	private fileCache: FileCache;
 	private type: SourceType;
 	private content: string;
 
@@ -27,17 +21,8 @@ export default class SourceAddCommand extends LoomStateCommand {
 	private addedSourceFileColumn: Column | null = null;
 	private addedSourceFileCells: AddedCell[] = [];
 
-	private addedSourceRows: Row[] = [];
-
-	constructor(
-		app: App,
-		fileCache: FileCache,
-		type: SourceType,
-		content: string
-	) {
+	constructor(type: SourceType, content: string) {
 		super();
-		this.app = app;
-		this.fileCache = fileCache;
 		this.type = type;
 		this.content = content;
 	}
@@ -86,23 +71,6 @@ export default class SourceAddCommand extends LoomStateCommand {
 			nextColumns = columns;
 			nextRows = rows;
 		}
-
-		const { newRows, nextColumns: updatedColumns } = findDataFromSources(
-			this.app,
-			this.fileCache,
-			nextSources,
-			nextColumns,
-			nextRows.length
-		);
-		nextColumns = updatedColumns;
-
-		this.addedSourceRows = newRows;
-		nextRows = [...nextRows, ...newRows];
-		nextRows = filterUniqueRows(
-			nextColumns,
-			nextRows,
-			CellType.SOURCE_FILE
-		);
 
 		return {
 			...prevState,
@@ -201,13 +169,6 @@ export default class SourceAddCommand extends LoomStateCommand {
 			nextColumns = columns;
 			nextRows = rows;
 		}
-
-		nextRows = [...nextRows, ...this.addedSourceRows];
-		nextRows = filterUniqueRows(
-			nextColumns,
-			nextRows,
-			CellType.SOURCE_FILE
-		);
 
 		return {
 			...prevState,
