@@ -44,13 +44,13 @@ import {
 	SourceFileFilter,
 } from "./types/loom-state";
 
-import { v4 as uuidv4 } from "uuid";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/constants";
 import { Color } from "src/shared/loom-state/types/loom-state";
+import { generateUuid } from "../uuid";
 
 export const createSource = (type: SourceType, content: string): Source => {
 	return {
-		id: uuidv4(),
+		id: generateUuid(),
 		type,
 		content,
 	};
@@ -61,7 +61,7 @@ export const createColumn = (options?: {
 }): Column => {
 	const { type = CellType.TEXT, content = "New Column" } = options || {};
 	return {
-		id: uuidv4(),
+		id: generateUuid(),
 		sortDir: SortDir.NONE,
 		isVisible: true,
 		width: "140px",
@@ -101,7 +101,7 @@ export const createRow = (
 	} = options || {};
 
 	return {
-		id: uuidv4(),
+		id: generateUuid(),
 		index,
 		sourceId,
 		creationTime,
@@ -133,7 +133,7 @@ export const createCell = (
 		}
 	}
 	return {
-		id: uuidv4(),
+		id: generateUuid(),
 		isExternalLink: false,
 		columnId,
 		dateTime,
@@ -425,7 +425,7 @@ const createBaseFilter = (
 ): BaseFilter => {
 	const { isEnabled = true } = options || {};
 	return {
-		id: uuidv4(),
+		id: generateUuid(),
 		columnId,
 		operator: "or",
 		isEnabled,
@@ -438,7 +438,7 @@ export const createTag = (
 ): Tag => {
 	const { color = randomColor() } = options || {};
 	return {
-		id: uuidv4(),
+		id: generateUuid(),
 		content,
 		color,
 	};

@@ -28,7 +28,7 @@ import {
 } from "../types/loom-state-12";
 import { LoomState13 } from "../types/loom-state-13";
 
-import { v4 as uuidv4 } from "uuid";
+import { generateUuid } from "src/shared/uuid";
 
 /**
  * Migrates to 8.5.0
@@ -318,7 +318,7 @@ const createBaseFilter = (
 ): BaseFilter13 => {
 	const { isEnabled = true } = options || {};
 	return {
-		id: uuidv4(),
+		id: generateUuid(),
 		columnId,
 		operator: "or",
 		isEnabled,

@@ -1,5 +1,5 @@
 import React from "react";
-import { v4 as uuidv4 } from "uuid";
+import { generateUuid } from "./uuid";
 
 export const useForceUpdate = (): [number, () => void] => {
 	const [time, setTime] = React.useState(0);
@@ -39,6 +39,6 @@ export const usePlaceCursorAtEnd = (
 };
 
 export const useUUID = (): string => {
-	const [uuid] = React.useState(uuidv4());
+	const [uuid] = React.useState(generateUuid());
 	return uuid;
 };

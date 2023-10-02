@@ -11,7 +11,7 @@ import {
 	BodyCell as BodyCell4,
 	FooterCell as FooterCell4,
 } from "../types/loom-state-4";
-import { v4 as uuidv4 } from "uuid";
+import { generateUuid } from "src/shared/uuid";
 
 /**
  * Migrates to 6.4.0
@@ -80,7 +80,7 @@ export default class MigrateState3 implements MigrateState {
 		for (let i = 0; i < 2; i++) {
 			columns.forEach((column) => {
 				nextFooterCells.push({
-					id: uuidv4(),
+					id: generateUuid(),
 					columnId: column.id,
 					rowId: nextFooterRows[i].id,
 					functionType: GeneralFunction4.NONE,
@@ -107,12 +107,12 @@ export default class MigrateState3 implements MigrateState {
 
 const createHeaderRow = (): HeaderRow4 => {
 	return {
-		id: uuidv4(),
+		id: generateUuid(),
 	};
 };
 
 const createFooterRow = (): FooterRow4 => {
 	return {
-		id: uuidv4(),
+		id: generateUuid(),
 	};
 };

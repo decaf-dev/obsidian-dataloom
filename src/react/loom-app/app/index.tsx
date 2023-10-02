@@ -40,7 +40,7 @@ import getHeaderRow from "./get-header-row";
 import { filterUniqueRows } from "src/shared/loom-state/utils/row-utils";
 import { CellType } from "src/shared/loom-state/types/loom-state";
 import FileCache from "src/shared/file-cache";
-import findDataFromSources from "src/shared/loom-state/source-rows";
+import findDataFromSources from "src/shared/loom-state/find-data-from-sources";
 
 export default function App() {
 	const logger = useLogger();
@@ -94,6 +94,8 @@ export default function App() {
 		onTagDeleteClick,
 		onTagChange,
 	} = useTag();
+
+	// const columnIds = loomState.model.columns.map((column) => column.id);
 
 	//Add source rows on mount
 	React.useEffect(() => {
