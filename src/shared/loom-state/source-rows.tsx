@@ -42,6 +42,9 @@ const findRowsFromFolder = (
 		return file.parent?.path === folder.path;
 	});
 	return files.map((file) => {
+		// app.fileManager.processFrontMatter(file, (frontmatter: any) => {
+		// 	console.log(frontmatter);
+		// });
 		const cells = columns.map((column) => {
 			const { path } = file;
 			const { id, type } = column;
@@ -57,6 +60,8 @@ const findRowsFromFolder = (
 		const row = createRow(numRows, {
 			cells,
 			sourceId,
+			creationTime: file.stat.ctime,
+			lastEditedTime: file.stat.mtime,
 		});
 		return row;
 	});

@@ -16,10 +16,38 @@ describe("source-add-command", () => {
 		vault: {
 			getMarkdownFiles: () => {
 				return [
-					{ parent: { path: "test1" }, path: "test1/file1.md" },
-					{ parent: { path: "test1" }, path: "test1/file2.md" },
-					{ parent: { path: "test2" }, path: "test2/file1.md" },
-					{ parent: { path: "test2" }, path: "test2/file2.md" },
+					{
+						parent: { path: "test1" },
+						path: "test1/file1.md",
+						stat: {
+							mtime: Date.now(),
+							ctime: Date.now(),
+						},
+					},
+					{
+						parent: { path: "test1" },
+						path: "test1/file2.md",
+						stat: {
+							mtime: Date.now(),
+							ctime: Date.now(),
+						},
+					},
+					{
+						parent: { path: "test2" },
+						path: "test2/file1.md",
+						stat: {
+							mtime: Date.now(),
+							ctime: Date.now(),
+						},
+					},
+					{
+						parent: { path: "test2" },
+						path: "test2/file2.md",
+						stat: {
+							mtime: Date.now(),
+							ctime: Date.now(),
+						},
+					},
 				];
 			},
 			getAbstractFileByPath: (path: string) => {
