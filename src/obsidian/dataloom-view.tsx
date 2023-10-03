@@ -92,13 +92,15 @@ export default class DataLoomView extends TextFileView {
 		return fileName.substring(0, extensionIndex);
 	}
 
-	private handleSaveLoomState = (appId: string, state: LoomState) => {
+	private handleSaveLoomState = async (appId: string, state: LoomState) => {
 		if (!this.file) return;
+
+		await saveFrontmatter(this.app, state);
+
+		const serialized = serializeState(state);
 
 		//We need this for when we open a new tab of the same file
 		//so that the data is up to date
-		saveFrontmatter(this.app, state);
-		const serialized = serializeState(state);
 		this.setViewData(serialized, false);
 
 		//Request a save - every 2s

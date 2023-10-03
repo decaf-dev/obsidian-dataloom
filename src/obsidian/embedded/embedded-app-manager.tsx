@@ -17,6 +17,7 @@ import LoomAppWrapper from "src/react/loom-app";
 import { createAppId } from "../utils";
 import ErrorApp from "src/react/error-app";
 import DeserializationError from "src/data/deserialization-error";
+import { saveFrontmatter } from "src/data/frontmatter";
 
 interface EmbeddedApp {
 	id: string;
@@ -193,6 +194,8 @@ const handleSave = async (
 	appId: string,
 	state: LoomState
 ) => {
+	await saveFrontmatter(app, state);
+
 	const serialized = serializeState(state);
 	await app.vault.modify(file, serialized);
 
