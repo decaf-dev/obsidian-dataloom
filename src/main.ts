@@ -116,7 +116,7 @@ export default class DataLoomPlugin extends Plugin {
 			store.dispatch(setDarkMode(isDark));
 
 			await this.migrateLoomFiles();
-			await FileCache.getInstance(this.app).load();
+			//await FileCache.getInstance(this.app).load();
 		});
 
 		if (this.settings.showWelcomeModal) {
@@ -435,7 +435,49 @@ export default class DataLoomPlugin extends Plugin {
 				}
 			)
 		);
+
+		//this.registerFileCacheEvents();
 	}
+
+	// private registerFileCacheEvents() {
+	// 	this.registerEvent(
+	// 		this.app.vault.on(
+	// 			"rename",
+	// 			(file: TAbstractFile, oldPath: string) => {
+	// 				if (file instanceof TFile) {
+	// 					FileCache.getInstance(this.app).onFileRename(
+	// 						file,
+	// 						oldPath
+	// 					);
+	// 				}
+	// 			}
+	// 		)
+	// 	);
+
+	// 	this.registerEvent(
+	// 		this.app.vault.on("create", (file: TAbstractFile) => {
+	// 			if (file instanceof TFile) {
+	// 				FileCache.getInstance(this.app).onFileCreate(file);
+	// 			}
+	// 		})
+	// 	);
+
+	// 	this.registerEvent(
+	// 		this.app.vault.on("delete", (file: TAbstractFile) => {
+	// 			if (file instanceof TFile) {
+	// 				FileCache.getInstance(this.app).onDeleteFile(file);
+	// 			}
+	// 		})
+	// 	);
+
+	// 	this.registerEvent(
+	// 		this.app.metadataCache.on("changed", (file: TAbstractFile) => {
+	// 			if (file instanceof TFile) {
+	// 				FileCache.getInstance(this.app).onFileModify(file);
+	// 			}
+	// 		})
+	// 	);
+	// }
 
 	registerCommands() {
 		this.addCommand({

@@ -37,9 +37,6 @@ import getFooterRow from "./get-footer-row";
 import "src/react/global.css";
 import "./styles.css";
 import getHeaderRow from "./get-header-row";
-import { filterUniqueRows } from "src/shared/loom-state/utils/row-utils";
-import { CellType } from "src/shared/loom-state/types/loom-state";
-import FileCache from "src/shared/file-cache";
 import findDataFromSources from "src/shared/loom-state/find-data-from-sources";
 
 export default function App() {
@@ -108,7 +105,6 @@ export default function App() {
 			const { sources, columns, rows } = prevState.model;
 			const result = findDataFromSources(
 				app,
-				FileCache.getInstance(),
 				sources,
 				columns,
 				rows.length

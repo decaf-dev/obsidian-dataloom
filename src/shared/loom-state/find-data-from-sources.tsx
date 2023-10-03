@@ -8,13 +8,11 @@ import {
 	Source,
 	SourceType,
 } from "./types/loom-state";
-import FileCache from "../file-cache";
 import { parseContentFromFrontMatter } from "./parse-content-from-frontmatter";
 import { cloneDeep } from "lodash";
 
 export default function findDataFromSources(
 	app: App,
-	fileCache: FileCache,
 	sources: Source[],
 	columns: Column[],
 	numRows: number
@@ -31,7 +29,6 @@ export default function findDataFromSources(
 			case SourceType.FOLDER: {
 				const result = findRowsFromFolder(
 					app,
-					fileCache,
 					nextColumns,
 					id,
 					content,
@@ -53,7 +50,6 @@ export default function findDataFromSources(
 
 const findRowsFromFolder = (
 	app: App,
-	fileCache: FileCache,
 	columns: Column[],
 	sourceId: string,
 	folderName: string,
@@ -87,10 +83,10 @@ const findRowsFromFolder = (
 			if (type === CellType.SOURCE_FILE) {
 				newCell = createCell(id, { cellType: type, content: path });
 			} else if (frontmatterKey !== null) {
-				const frontmatter = fileCache.getFrontMatter(
-					path,
-					frontmatterKey
-				);
+				const frontmatter =
+					app.metadataCache.getCache(path)?.frontmatter?.[
+						frontmatterKey
+					];
 				if (frontmatter !== null) {
 					const result = parseContentFromFrontMatter(
 						column,
