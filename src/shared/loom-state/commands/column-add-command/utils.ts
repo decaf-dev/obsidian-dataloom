@@ -27,7 +27,7 @@ export const columnAddExecute = (
 	const nextRows: Row[] = prevRows.map((row) => {
 		const { cells } = row;
 		const newCell = createCell(newColumn.id, {
-			cellType: type,
+			type,
 		});
 		addedCells.push({
 			rowId: row.id,

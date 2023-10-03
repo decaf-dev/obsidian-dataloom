@@ -81,7 +81,7 @@ const findRowsFromFolder = (
 
 			let newCell: Cell | null = null;
 			if (type === CellType.SOURCE_FILE) {
-				newCell = createCell(id, { cellType: type, content: path });
+				newCell = createCell(id, { type, content: path });
 			} else if (frontmatterKey !== null) {
 				const frontmatter =
 					app.metadataCache.getCache(path)?.frontmatter?.[
@@ -101,7 +101,7 @@ const findRowsFromFolder = (
 				}
 			}
 
-			if (newCell === null) newCell = createCell(id, { cellType: type });
+			if (newCell === null) newCell = createCell(id, { type });
 			cells.push(newCell);
 		});
 

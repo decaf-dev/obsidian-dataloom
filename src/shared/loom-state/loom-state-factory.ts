@@ -113,21 +113,21 @@ export const createRow = (
 export const createCell = (
 	columnId: string,
 	options: {
-		cellType?: CellType;
+		type?: CellType;
 		tagIds?: string[];
 		content?: string;
 		dateTime?: number | null;
 	} = {}
 ): Cell => {
 	const {
-		cellType,
+		type,
 		tagIds = [],
 		content: originalContent = "",
 		dateTime = null,
 	} = options ?? {};
 
 	let content = originalContent;
-	if (cellType === CellType.CHECKBOX) {
+	if (type === CellType.CHECKBOX) {
 		if (content === "") {
 			content = CHECKBOX_MARKDOWN_UNCHECKED;
 		}
@@ -467,7 +467,7 @@ export const createRowWithCells = (
 			}
 		}
 		const cell = createCell(id, {
-			cellType: column.type,
+			type: column.type,
 			content,
 		});
 		cells.push(cell);

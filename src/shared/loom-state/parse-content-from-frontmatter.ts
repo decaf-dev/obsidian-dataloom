@@ -20,7 +20,7 @@ export const parseContentFromFrontMatter = (
 	) {
 		if (!Array.isArray(frontmatter)) {
 			const newCell = createCell(id, {
-				cellType: type,
+				type: type,
 				content: frontmatter as string,
 			});
 			return {
@@ -31,7 +31,7 @@ export const parseContentFromFrontMatter = (
 	} else if (type === CellType.DATE) {
 		if (isNumber(frontmatter)) {
 			const newCell = createCell(id, {
-				cellType: type,
+				type: type,
 				dateTime: frontmatter,
 			});
 			return {
@@ -64,7 +64,7 @@ export const parseContentFromFrontMatter = (
 				cellTagIds = cellTagIds.slice(0, 1);
 			}
 			const newCell = createCell(id, {
-				cellType: type,
+				type,
 				tagIds: cellTagIds,
 			});
 			const nextTags = [...column.tags, ...newTags];
