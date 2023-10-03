@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 import { VirtuosoHandle } from "react-virtuoso";
 
@@ -95,11 +95,15 @@ export default function App() {
 		onTagChange,
 	} = useTag();
 
-	// const columnIds = loomState.model.columns.map((column) => column.id);
+	const { columns, filters, settings, sources } = loomState.model;
+	const { numFrozenColumns, showCalculationRow } = settings;
+
+	const frontmatterKeyHash = useMemo(() => {
+		return JSON.stringify(columns.map((column) => column.frontmatterKey));
+	}, [columns]);
 
 	//Add source rows on mount
 	React.useEffect(() => {
-		//Set timeout to avoid Obsidian merging file message
 		setLoomState((prevState) => {
 			const { sources, columns, rows } = prevState.model;
 			const result = findDataFromSources(
@@ -110,12 +114,8 @@ export default function App() {
 				rows.length
 			);
 			const { newRows, nextColumns } = result;
-			let nextRows = [...rows, ...newRows];
-			nextRows = filterUniqueRows(
-				columns,
-				nextRows,
-				CellType.SOURCE_FILE
-			);
+			const internalRows = rows.filter((row) => row.sourceId === null);
+			const nextRows = [...internalRows, ...newRows];
 			return {
 				...prevState,
 				model: {
@@ -125,7 +125,7 @@ export default function App() {
 				},
 			};
 		});
-	}, [setLoomState, app]);
+	}, [setLoomState, app, sources.length, frontmatterKeyHash]);
 
 	const firstColumnId = useUUID();
 	const lastColumnId = useUUID();
@@ -163,9 +163,6 @@ export default function App() {
 		}
 		nltEventSystem.dispatchEvent("keydown", e);
 	}
-
-	const { columns, filters, settings, sources } = loomState.model;
-	const { numFrozenColumns, showCalculationRow } = settings;
 
 	let filteredRows = filterByFilters(loomState);
 	filteredRows = filterRowsBySearch(
