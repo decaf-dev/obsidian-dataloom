@@ -9,6 +9,7 @@ import LoomAppWrapper from "src/react/loom-app";
 import { createAppId } from "./utils";
 import ErrorApp from "src/react/error-app";
 import DeserializationError from "src/data/deserialization-error";
+import { saveFrontmatter } from "src/data/frontmatter";
 
 export const DATA_LOOM_VIEW = "dataloom";
 
@@ -96,6 +97,7 @@ export default class DataLoomView extends TextFileView {
 
 		//We need this for when we open a new tab of the same file
 		//so that the data is up to date
+		saveFrontmatter(this.app, state);
 		const serialized = serializeState(state);
 		this.setViewData(serialized, false);
 
