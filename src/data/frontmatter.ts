@@ -3,17 +3,15 @@ import CellNotFoundError from "src/shared/error/cell-not-found-error";
 import { LoomState } from "src/shared/loom-state/types";
 import { CellType } from "src/shared/loom-state/types/loom-state";
 
-export const saveFrontmatter = (app: App, state: LoomState) => {
+export const saveFrontmatter = async (app: App, state: LoomState) => {
 	const { rows, columns, sources } = state.model;
 	if (sources.length === 0) return;
 
-	let sourceColumnId: string | null = null;
 	let sourceFileColumnId: string | null = null;
 
 	for (const column of columns) {
 		const { id, type } = column;
 		if (type === CellType.SOURCE_FILE) sourceFileColumnId = id;
-		if (type === CellType.SOURCE) sourceColumnId = id;
 	}
 
 	for (const row of rows) {
@@ -54,7 +52,7 @@ export const saveFrontmatter = (app: App, state: LoomState) => {
 				content = cell.content;
 			}
 
-			app.fileManager.processFrontMatter(file, (frontmatter) => {
+			await app.fileManager.processFrontMatter(file, (frontmatter) => {
 				frontmatter[frontmatterKey] = content;
 			});
 		}
