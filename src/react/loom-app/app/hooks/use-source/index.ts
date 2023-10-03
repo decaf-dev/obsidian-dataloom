@@ -5,6 +5,7 @@ import SourceAddCommand from "src/shared/loom-state/commands/source-add-command"
 import SourceDeleteCommand from "src/shared/loom-state/commands/source-delete-command";
 import findDataFromSources from "src/shared/loom-state/find-data-from-sources";
 import { useAppMount } from "src/react/loom-app/app-mount-provider";
+import { useCallback } from "react";
 
 export const useSource = () => {
 	const logger = useLogger();
@@ -21,7 +22,7 @@ export const useSource = () => {
 		doCommand(new SourceDeleteCommand(id));
 	}
 
-	function handleUpdateRowsFromSources() {
+	const handleUpdateRowsFromSources = useCallback(() => {
 		setLoomState((prevState) => {
 			const { sources, columns, rows } = prevState.model;
 			const result = findDataFromSources(
@@ -42,7 +43,7 @@ export const useSource = () => {
 				},
 			};
 		});
-	}
+	}, [setLoomState, app]);
 
 	return {
 		onSourceAdd: handleSourceAdd,
