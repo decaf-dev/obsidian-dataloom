@@ -6,12 +6,14 @@ export interface FileCacheData {
 
 export default class FileCache {
 	private app: App;
+	private hasLoaded: boolean;
 
 	private cache: Map<string, FileCacheData> = new Map();
 	private static instance: FileCache | null = null;
 
 	private constructor(app: App) {
 		this.app = app;
+		this.hasLoaded = false;
 	}
 
 	static getInstance(app?: App): FileCache {
@@ -26,32 +28,42 @@ export default class FileCache {
 		new Notice("Loading DataLoom cache...");
 		const files = this.app.vault.getFiles();
 		for (const file of files) {
-			await this.app.fileManager.processFrontMatter(
-				file,
-				(frontmatter) => {
-					this.cache.set(file.path, { frontmatter });
-				}
-			);
+			await this.loadFrontMatter(file);
 		}
 		new Notice(`DataLoom loaded ${files.length} files.`);
+		this.hasLoaded = true;
 	}
 
-	onFileRename(prevFilePath: string, newFilePath: string) {
-		const data = this.cache.get(prevFilePath);
+	onFileRename(file: TFile, oldPath: string) {
+		if (!this.hasLoaded) return;
+
+		const { path } = file;
+
+		const data = this.cache.get(oldPath);
 		if (data) {
-			this.cache.delete(prevFilePath);
-			this.cache.set(newFilePath, data);
+			this.cache.delete(oldPath);
+			this.cache.set(path, data);
 		}
 	}
 
 	async onFileCreate(file: TFile) {
-		await this.app.fileManager.processFrontMatter(file, (frontmatter) => {
-			this.cache.set(file.path, { frontmatter });
-		});
+		if (!this.hasLoaded) return;
+
+		await this.loadFrontMatter(file);
 	}
 
-	onDeleteFile(filePath: string) {
-		this.cache.delete(filePath);
+	onDeleteFile(file: TFile) {
+		if (!this.hasLoaded) return;
+
+		const { path } = file;
+
+		this.cache.delete(path);
+	}
+
+	async onFileModify(file: TFile) {
+		if (!this.hasLoaded) return;
+
+		await this.loadFrontMatter(file);
 	}
 
 	getFrontMatter(filePath: string, key: string) {
@@ -62,5 +74,15 @@ export default class FileCache {
 			}
 		}
 		return null;
+	}
+
+	hasLoadedCache() {
+		return this.hasLoaded;
+	}
+
+	private async loadFrontMatter(file: TFile) {
+		await this.app.fileManager.processFrontMatter(file, (frontmatter) => {
+			this.cache.set(file.path, { frontmatter });
+		});
 	}
 }
