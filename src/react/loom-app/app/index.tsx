@@ -37,7 +37,14 @@ import getFooterRow from "./get-footer-row";
 import "src/react/global.css";
 import "./styles.css";
 import getHeaderRow from "./get-header-row";
-import findDataFromSources from "src/shared/loom-state/find-data-from-sources";
+import {
+	EVENT_FILE_CREATE,
+	EVENT_FILE_DELETE,
+	EVENT_FILE_FRONTMATTER_CHANGE,
+	EVENT_FILE_RENAME,
+	EVENT_FOLDER_DELETE,
+	EVENT_FOLDER_RENAME,
+} from "src/shared/events";
 
 export default function App() {
 	const logger = useLogger();
@@ -58,7 +65,8 @@ export default function App() {
 	useRowEvents();
 	useColumnEvents();
 	useMenuEvents();
-	const { onSourceAdd, onSourceDelete } = useSource();
+	const { onSourceAdd, onSourceDelete, onUpdateRowsFromSources } =
+		useSource();
 
 	const { onFocusKeyDown } = useFocus();
 	const { onFrozenColumnsChange, onCalculationRowToggle } =
@@ -101,27 +109,44 @@ export default function App() {
 
 	//Add source rows on mount
 	React.useEffect(() => {
-		setLoomState((prevState) => {
-			const { sources, columns, rows } = prevState.model;
-			const result = findDataFromSources(
-				app,
-				sources,
-				columns,
-				rows.length
+		onUpdateRowsFromSources();
+	}, [
+		setLoomState,
+		app,
+		sources.length,
+		frontmatterKeyHash,
+		onUpdateRowsFromSources,
+	]);
+
+	React.useEffect(() => {
+		//@ts-expect-error missing overload
+		app.workspace.on(EVENT_FILE_CREATE, onUpdateRowsFromSources);
+		app.workspace.on(
+			//@ts-expect-error missing overload
+			EVENT_FILE_FRONTMATTER_CHANGE,
+			onUpdateRowsFromSources
+		);
+		//@ts-expect-error missing overload
+		app.workspace.on(EVENT_FILE_DELETE, onUpdateRowsFromSources);
+		//@ts-expect-error missing overload
+		app.workspace.on(EVENT_FOLDER_DELETE, onUpdateRowsFromSources);
+		//@ts-expect-error missing overload
+		app.workspace.on(EVENT_FOLDER_RENAME, onUpdateRowsFromSources);
+		//@ts-expect-error missing overload
+		app.workspace.on(EVENT_FILE_RENAME, onUpdateRowsFromSources);
+
+		return () => {
+			app.workspace.off(EVENT_FILE_CREATE, onUpdateRowsFromSources);
+			app.workspace.off(
+				EVENT_FILE_FRONTMATTER_CHANGE,
+				onUpdateRowsFromSources
 			);
-			const { newRows, nextColumns } = result;
-			const internalRows = rows.filter((row) => row.sourceId === null);
-			const nextRows = [...internalRows, ...newRows];
-			return {
-				...prevState,
-				model: {
-					...prevState.model,
-					rows: nextRows,
-					columns: nextColumns,
-				},
-			};
-		});
-	}, [setLoomState, app, sources.length, frontmatterKeyHash]);
+			app.workspace.off(EVENT_FOLDER_RENAME, onUpdateRowsFromSources);
+			app.workspace.off(EVENT_FILE_RENAME, onUpdateRowsFromSources);
+			app.workspace.off(EVENT_FILE_DELETE, onUpdateRowsFromSources);
+			app.workspace.off(EVENT_FOLDER_DELETE, onUpdateRowsFromSources);
+		};
+	}, [onUpdateRowsFromSources, app]);
 
 	const firstColumnId = useUUID();
 	const lastColumnId = useUUID();

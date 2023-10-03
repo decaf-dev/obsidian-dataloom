@@ -33,6 +33,12 @@ import {
 	EVENT_APP_REFRESH,
 	EVENT_ROW_ADD,
 	EVENT_ROW_DELETE,
+	EVENT_FILE_FRONTMATTER_CHANGE,
+	EVENT_FILE_CREATE,
+	EVENT_FOLDER_DELETE,
+	EVENT_FILE_DELETE,
+	EVENT_FILE_RENAME,
+	EVENT_FOLDER_RENAME,
 } from "./shared/events";
 import { deserializeState, serializeState } from "./data/serialization";
 import { updateLinkReferences } from "./data/utils";
@@ -45,7 +51,6 @@ import {
 	purgeEmbeddedLoomApps,
 } from "./obsidian/embedded/embedded-app-manager";
 import { cloneDeep } from "lodash";
-import FileCache from "./shared/file-cache";
 
 export interface DataLoomSettings {
 	shouldDebug: boolean;
@@ -116,7 +121,6 @@ export default class DataLoomPlugin extends Plugin {
 			store.dispatch(setDarkMode(isDark));
 
 			await this.migrateLoomFiles();
-			//await FileCache.getInstance(this.app).load();
 		});
 
 		if (this.settings.showWelcomeModal) {
@@ -436,48 +440,49 @@ export default class DataLoomPlugin extends Plugin {
 			)
 		);
 
-		//this.registerFileCacheEvents();
+		this.registerSourceEvents();
 	}
 
-	// private registerFileCacheEvents() {
-	// 	this.registerEvent(
-	// 		this.app.vault.on(
-	// 			"rename",
-	// 			(file: TAbstractFile, oldPath: string) => {
-	// 				if (file instanceof TFile) {
-	// 					FileCache.getInstance(this.app).onFileRename(
-	// 						file,
-	// 						oldPath
-	// 					);
-	// 				}
-	// 			}
-	// 		)
-	// 	);
+	/**
+	 * Register events that are needed for updating the rows created by sources
+	 */
+	private registerSourceEvents() {
+		this.registerEvent(
+			this.app.vault.on("rename", (file: TAbstractFile) => {
+				if (file instanceof TFile) {
+					this.app.vault.trigger(EVENT_FILE_RENAME);
+				} else {
+					this.app.vault.trigger(EVENT_FOLDER_RENAME);
+				}
+			})
+		);
 
-	// 	this.registerEvent(
-	// 		this.app.vault.on("create", (file: TAbstractFile) => {
-	// 			if (file instanceof TFile) {
-	// 				FileCache.getInstance(this.app).onFileCreate(file);
-	// 			}
-	// 		})
-	// 	);
+		this.registerEvent(
+			this.app.vault.on("create", (file: TAbstractFile) => {
+				if (file instanceof TFile) {
+					this.app.vault.trigger(EVENT_FILE_CREATE);
+				}
+			})
+		);
 
-	// 	this.registerEvent(
-	// 		this.app.vault.on("delete", (file: TAbstractFile) => {
-	// 			if (file instanceof TFile) {
-	// 				FileCache.getInstance(this.app).onDeleteFile(file);
-	// 			}
-	// 		})
-	// 	);
+		this.registerEvent(
+			this.app.vault.on("delete", (file: TAbstractFile) => {
+				if (file instanceof TFile) {
+					this.app.vault.trigger(EVENT_FILE_DELETE);
+				} else {
+					this.app.vault.trigger(EVENT_FOLDER_DELETE);
+				}
+			})
+		);
 
-	// 	this.registerEvent(
-	// 		this.app.metadataCache.on("changed", (file: TAbstractFile) => {
-	// 			if (file instanceof TFile) {
-	// 				FileCache.getInstance(this.app).onFileModify(file);
-	// 			}
-	// 		})
-	// 	);
-	// }
+		this.registerEvent(
+			this.app.metadataCache.on("changed", (file: TAbstractFile) => {
+				if (file instanceof TFile) {
+					this.app.vault.trigger(EVENT_FILE_FRONTMATTER_CHANGE);
+				}
+			})
+		);
+	}
 
 	registerCommands() {
 		this.addCommand({
