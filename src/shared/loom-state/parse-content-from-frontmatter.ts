@@ -39,14 +39,14 @@ export const parseContentFromFrontMatter = (
 				nextTags: tags,
 			};
 		}
-	} else if (type === CellType.TAG) {
+	} else if (type === CellType.TAG || type === CellType.MULTI_TAG) {
 		if (Array.isArray(frontmatter)) {
 			//Iterate over the frontmatter and create any new tags
 			//If tags already exist, I don't want to create the tag
 			//But either way I want to get the ID of the tag
 
 			const newTags: Tag[] = [];
-			const cellTagIds: string[] = [];
+			let cellTagIds: string[] = [];
 			frontmatter.forEach((tagContent) => {
 				const existingTag = tags.find(
 					(tag) => tag.content === tagContent
@@ -59,6 +59,10 @@ export const parseContentFromFrontMatter = (
 					newTags.push(newTag);
 				}
 			});
+
+			if (type === CellType.TAG) {
+				cellTagIds = cellTagIds.slice(0, 1);
+			}
 			const newCell = createCell(id, {
 				cellType: type,
 				tagIds: cellTagIds,
