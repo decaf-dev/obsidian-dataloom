@@ -44,7 +44,7 @@ export const useSource = () => {
 							const value = frontmatter[key];
 
 							let type: FrontMatterType = "text";
-							if (Array.isArray(value)) {
+							if (key === "tags" || Array.isArray(value)) {
 								type = "array";
 							} else if (typeof value === "number") {
 								type = "number";

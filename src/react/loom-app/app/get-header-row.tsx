@@ -9,6 +9,7 @@ import {
 } from "./hooks/use-column/types";
 import { TableRow } from "../table/types";
 import { FrontMatterType } from "./hooks/use-source/types";
+import { cellTypeToFrontMatterKeyType } from "./hooks/use-source/utils";
 
 interface Props {
 	allFrontMatterKeys: Map<FrontMatterType, string[]>;
@@ -49,9 +50,13 @@ export default function getHeaderRow({
 				content: <div className="dataloom-cell--left-corner" />,
 			},
 			...visibleColumns.map((column, i) => {
-				const { id } = column;
-				console.log(allFrontMatterKeys);
-				const frontmatterKeys = allFrontMatterKeys.get("text") ?? [];
+				const { id, type } = column;
+				const frontmatterType = cellTypeToFrontMatterKeyType(type);
+				let frontmatterKeys: string[] = [];
+				if (frontmatterType) {
+					frontmatterKeys =
+						allFrontMatterKeys.get(frontmatterType) ?? [];
+				}
 				return {
 					id,
 					content: (
