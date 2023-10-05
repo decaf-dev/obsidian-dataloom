@@ -1,0 +1,18 @@
+# Frontmatter
+
+When you add an Obsidian source to your loom, you will have the option to select the property that each column corresponds to. Certain cell types can only accept properties of a certain type. For example, a `Date` cell can only accept properties of type `number`.
+
+When you edit a cell in your loom the corresponding property value will be updated. Similarly, when you edit a property value in Obsidian, the corresponding cells will be updated in your loom.
+
+| Column Type   | Accepted Properties         |
+| ------------- | --------------------------- |
+| `Text`        | `text`                      |
+| `Embed`       | `text`                      |
+| `File`        | `text`                      |
+| `Number`      | `number`                    |
+| `Tag`         | `text`                      |
+| `Multi-tag`   | `tags` or `list`            |
+| `Date`        | `number`                    |
+| `Checkbox`    | `boolean`                   |
+| `Creation`    | Uses file creation time     |
+| `Last edited` | Uses file modification time |
