@@ -1,4 +1,3 @@
-import { isNumber } from "lodash";
 import { createCell, createTag } from "./loom-state-factory";
 import { Cell, CellType, Column, Tag } from "./types/loom-state";
 
@@ -29,7 +28,7 @@ export const parseContentFromFrontMatter = (
 			};
 		}
 	} else if (type === CellType.DATE) {
-		if (isNumber(frontmatter)) {
+		if (typeof frontmatter === "number") {
 			const newCell = createCell(id, {
 				type: type,
 				dateTime: frontmatter,

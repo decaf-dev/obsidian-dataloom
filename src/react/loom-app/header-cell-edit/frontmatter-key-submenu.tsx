@@ -13,10 +13,7 @@ interface Props {
 	frontmatterKey: FrontmatterKey | null;
 	allFrontmatterKeys: string[];
 	closeRequest: LoomMenuCloseRequest | null;
-	onFrontMatterKeyChange: (
-		value: FrontmatterKey | null,
-		shouldResetMenu: boolean
-	) => void;
+	onFrontMatterKeyChange: (value: FrontmatterKey | null) => void;
 	onBackClick: () => void;
 	onClose: () => void;
 }
@@ -38,30 +35,26 @@ export default function FrontmatterKeySubmenu({
 
 	React.useEffect(() => {
 		if (closeRequest !== null) {
-			onFrontMatterKeyChange({ value: inputValue, isCustom: true }, true);
+			if (isCustom) {
+				onFrontMatterKeyChange({ value: inputValue, isCustom: true });
+			}
 			onClose();
 		}
-	}, [onFrontMatterKeyChange, inputValue, closeRequest, onClose]);
+	}, [onFrontMatterKeyChange, inputValue, closeRequest, onClose, isCustom]);
 
 	function handleValueChange(value: string) {
 		if (value === USE_CUSTOM_INPUT_VALUE) {
-			onFrontMatterKeyChange(
-				{
-					value: "",
-					isCustom: true,
-				},
-				false
-			);
+			onFrontMatterKeyChange({
+				value: "",
+				isCustom: true,
+			});
 		} else if (value === "") {
-			onFrontMatterKeyChange(null, false);
+			onFrontMatterKeyChange(null);
 		} else {
-			onFrontMatterKeyChange(
-				{
-					value,
-					isCustom: false,
-				},
-				true
-			);
+			onFrontMatterKeyChange({
+				value,
+				isCustom: false,
+			});
 		}
 	}
 
