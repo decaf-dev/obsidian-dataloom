@@ -49,6 +49,7 @@ import {
 export default function App() {
 	const logger = useLogger();
 	const { reactAppId, isMarkdownView, app } = useAppMount();
+
 	const {
 		loomState,
 		resizingColumnId,
@@ -65,8 +66,12 @@ export default function App() {
 	useRowEvents();
 	useColumnEvents();
 	useMenuEvents();
-	const { onSourceAdd, onSourceDelete, onUpdateRowsFromSources } =
-		useSource();
+	const {
+		allFrontMatterKeys,
+		onSourceAdd,
+		onSourceDelete,
+		onUpdateRowsFromSources,
+	} = useSource();
 
 	const { onFocusKeyDown } = useFocus();
 	const { onFrozenColumnsChange, onCalculationRowToggle } =
@@ -104,7 +109,9 @@ export default function App() {
 	const { numFrozenColumns, showCalculationRow } = settings;
 
 	const frontmatterKeyHash = useMemo(() => {
-		return JSON.stringify(columns.map((column) => column.frontmatterKey));
+		return JSON.stringify(
+			columns.map((column) => column.frontmatterKey?.value)
+		);
 	}, [columns]);
 
 	//Add source rows on mount
@@ -195,6 +202,7 @@ export default function App() {
 
 	const visibleColumns = columns.filter((column) => column.isVisible);
 	const headerRow = getHeaderRow({
+		allFrontMatterKeys,
 		firstColumnId,
 		lastColumnId,
 		visibleColumns,

@@ -19,6 +19,7 @@ interface Props {
 	index: number;
 	column: Column;
 	numSources: number;
+	frontmatterKeys: string[];
 	numColumns: number;
 	numFrozenColumns: number;
 	resizingColumnId: string | null;
@@ -33,6 +34,7 @@ export default function HeaderCellContainer({
 	column,
 	numSources,
 	numColumns,
+	frontmatterKeys,
 	numFrozenColumns,
 	resizingColumnId,
 	onColumnChange,
@@ -121,6 +123,7 @@ export default function HeaderCellContainer({
 				isOpen={isOpen}
 				numSources={numSources}
 				closeRequest={closeRequest}
+				frontmatterKeys={frontmatterKeys}
 				triggerPosition={triggerPosition}
 				id={menu.id}
 				numFrozenColumns={numFrozenColumns}

@@ -8,8 +8,10 @@ import {
 	ColumnTypeClickHandler,
 } from "./hooks/use-column/types";
 import { TableRow } from "../table/types";
+import { FrontMatterType } from "./hooks/use-source/types";
 
 interface Props {
+	allFrontMatterKeys: Map<FrontMatterType, string[]>;
 	firstColumnId: string;
 	lastColumnId: string;
 	visibleColumns: Column[];
@@ -25,6 +27,7 @@ interface Props {
 }
 
 export default function getHeaderRow({
+	allFrontMatterKeys,
 	firstColumnId,
 	lastColumnId,
 	visibleColumns,
@@ -47,6 +50,8 @@ export default function getHeaderRow({
 			},
 			...visibleColumns.map((column, i) => {
 				const { id } = column;
+				console.log(allFrontMatterKeys);
+				const frontmatterKeys = allFrontMatterKeys.get("text") ?? [];
 				return {
 					id,
 					content: (
@@ -54,6 +59,7 @@ export default function getHeaderRow({
 							key={id}
 							index={i}
 							column={column}
+							frontmatterKeys={frontmatterKeys}
 							numColumns={numColumns}
 							numSources={numSources}
 							numFrozenColumns={numFrozenColumns}

@@ -83,10 +83,10 @@ const findRowsFromFolder = (
 			if (type === CellType.SOURCE_FILE) {
 				newCell = createCell(id, { type, content: path });
 			} else if (frontmatterKey !== null) {
-				const frontmatter =
+				const frontmatter: string | string[] | null =
 					app.metadataCache.getCache(path)?.frontmatter?.[
-						frontmatterKey
-					];
+						frontmatterKey.value
+					] ?? null;
 				if (frontmatter !== null) {
 					const result = parseContentFromFrontMatter(
 						column,

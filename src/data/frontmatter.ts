@@ -31,7 +31,8 @@ export const saveFrontmatter = async (app: App, state: LoomState) => {
 			const { type, frontmatterKey, tags } = column;
 			if (type === CellType.SOURCE) continue;
 			if (type === CellType.SOURCE_FILE) continue;
-			if (frontmatterKey === null) continue;
+			//If the frontmatter key is empty or null, skip it
+			if (!frontmatterKey?.value) continue;
 
 			const cell = cells.find((cell) => cell.columnId === column.id);
 			if (!cell)
@@ -53,7 +54,7 @@ export const saveFrontmatter = async (app: App, state: LoomState) => {
 			}
 
 			await app.fileManager.processFrontMatter(file, (frontmatter) => {
-				frontmatter[frontmatterKey] = content;
+				frontmatter[frontmatterKey.value] = content;
 			});
 		}
 	}

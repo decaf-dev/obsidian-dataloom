@@ -19,6 +19,7 @@ import {
 	PaddingSize,
 	NumberFormat,
 	Column,
+	FrontmatterKey,
 } from "src/shared/loom-state/types/loom-state";
 import { SubmenuType } from "./types";
 
@@ -36,6 +37,7 @@ interface Props {
 	numSources: number;
 	isOpen: boolean;
 	canDeleteColumn: boolean;
+	frontmatterKeys: string[];
 	id: string;
 	numFrozenColumns: number;
 	triggerPosition: Position;
@@ -64,6 +66,7 @@ export default function HeaderMenu({
 	id,
 	triggerPosition,
 	numFrozenColumns,
+	frontmatterKeys,
 	canDeleteColumn,
 	closeRequest,
 	onColumnDeleteClick,
@@ -209,9 +212,10 @@ export default function HeaderMenu({
 		setSubmenu(SubmenuType.OPTIONS);
 	}
 
-	function handleFrontmatterKeyChange(value: string | null) {
-		onColumnChange(columnId, { frontmatterKey: value });
-		setSubmenu(null);
+	function handleFrontmatterKeyChange(frontmatterKey: FrontmatterKey | null) {
+		onColumnChange(columnId, {
+			frontmatterKey,
+		});
 	}
 
 	return (
@@ -243,7 +247,6 @@ export default function HeaderMenu({
 						onDeleteClick={handleDeleteClick}
 						onHideClick={handleHideClick}
 						onFrozenColumnsChange={handleFrozenColumnsChange}
-						onFrontmatterKeyChange={handleFrontmatterKeyChange}
 					/>
 				)}
 				{submenu === SubmenuType.OPTIONS && (
@@ -348,9 +351,10 @@ export default function HeaderMenu({
 					<FrontmatterKeySubmenu
 						title="Frontmatter key"
 						closeRequest={closeRequest}
-						value={frontmatterKey}
+						allFrontmatterKeys={frontmatterKeys}
+						frontmatterKey={frontmatterKey}
 						onClose={onClose}
-						onValueChange={handleFrontmatterKeyChange}
+						onFrontMatterKeyChange={handleFrontmatterKeyChange}
 						onBackClick={() => setSubmenu(null)}
 					/>
 				)}

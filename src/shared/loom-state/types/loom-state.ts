@@ -40,7 +40,12 @@ export interface Column {
 	aspectRatio: AspectRatio;
 	horizontalPadding: PaddingSize;
 	verticalPadding: PaddingSize;
-	frontmatterKey: string | null;
+	frontmatterKey: FrontmatterKey | null;
+}
+
+export interface FrontmatterKey {
+	isCustom: boolean;
+	value: string;
 }
 
 export interface Row {
