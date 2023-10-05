@@ -38,30 +38,55 @@ export const parseContentFromFrontMatter = (
 				nextTags: tags,
 			};
 		}
-	} else if (type === CellType.TAG || type === CellType.MULTI_TAG) {
+	} else if (type === CellType.MULTI_TAG) {
 		if (Array.isArray(frontmatter)) {
-			//Iterate over the frontmatter and create any new tags
-			//If tags already exist, I don't want to create the tag
-			//But either way I want to get the ID of the tag
-
 			const newTags: Tag[] = [];
 			let cellTagIds: string[] = [];
+
 			frontmatter.forEach((tagContent) => {
+				if (tagContent !== "") {
+					const existingTag = tags.find(
+						(tag) => tag.content === tagContent
+					);
+					if (existingTag) {
+						cellTagIds.push(existingTag.id);
+					} else {
+						const newTag = createTag(tagContent);
+						cellTagIds.push(newTag.id);
+						newTags.push(newTag);
+					}
+				}
+			});
+
+			const newCell = createCell(id, {
+				type,
+				tagIds: cellTagIds,
+			});
+			const nextTags = [...column.tags, ...newTags];
+			return {
+				newCell,
+				nextTags,
+			};
+		}
+	} else if (type === CellType.TAG) {
+		if (!Array.isArray(frontmatter)) {
+			const newTags: Tag[] = [];
+			let cellTagIds: string[] = [];
+
+			//Don't add a tag for an empty string
+			if (frontmatter !== "") {
 				const existingTag = tags.find(
-					(tag) => tag.content === tagContent
+					(tag) => tag.content === frontmatter
 				);
 				if (existingTag) {
 					cellTagIds.push(existingTag.id);
 				} else {
-					const newTag = createTag(tagContent);
+					const newTag = createTag(frontmatter as string);
 					cellTagIds.push(newTag.id);
 					newTags.push(newTag);
 				}
-			});
-
-			if (type === CellType.TAG) {
-				cellTagIds = cellTagIds.slice(0, 1);
 			}
+
 			const newCell = createCell(id, {
 				type,
 				tagIds: cellTagIds,
