@@ -8,7 +8,7 @@ import {
 	Source,
 	SourceType,
 } from "./types/loom-state";
-import { deserializeFrontmatterForCell } from "./deserialize-frontmatter";
+import { deserializeFrontmatterForCell } from "../deserialize-frontmatter";
 import { cloneDeep } from "lodash";
 
 export default function findDataFromSources(

@@ -8,8 +8,8 @@ import {
 	ColumnTypeClickHandler,
 } from "./hooks/use-column/types";
 import { TableRow } from "../table/types";
-import { FrontMatterType } from "./hooks/use-source/types";
-import { cellTypeToFrontMatterKeyType } from "./hooks/use-source/utils";
+import { FrontMatterType } from "../../../shared/deserialize-frontmatter/types";
+import { cellTypeToFrontMatterKeyType } from "../../../shared/deserialize-frontmatter/utils";
 
 interface Props {
 	allFrontMatterKeys: Map<FrontMatterType, string[]>;

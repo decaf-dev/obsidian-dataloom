@@ -1,7 +1,7 @@
 import { App } from "obsidian";
-import { deserializeFrontmatterForCell } from "./deserialize-frontmatter";
-import { createTestLoomState } from "./loom-state-factory";
-import { CellType } from "./types/loom-state";
+import { deserializeFrontmatterForCell } from ".";
+import { createTestLoomState } from "../loom-state/loom-state-factory";
+import { CellType } from "../loom-state/types/loom-state";
 
 describe("deserializeFrontmatter", () => {
 	const currentTime = Date.now();

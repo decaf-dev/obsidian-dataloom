@@ -1,6 +1,63 @@
 import { App } from "obsidian";
-import { createCell, createTag } from "./loom-state-factory";
-import { Cell, CellType, Column, Tag } from "./types/loom-state";
+import { createCell, createTag } from "../loom-state/loom-state-factory";
+import {
+	Cell,
+	CellType,
+	Column,
+	Row,
+	Tag,
+} from "../loom-state/types/loom-state";
+import CellNotFoundError from "../error/cell-not-found-error";
+import { FrontMatterType } from "src/shared/deserialize-frontmatter/types";
+
+export const deserializeFrontmatterKeys = (
+	app: App,
+	columns: Column[],
+	rows: Row[]
+) => {
+	const keys = new Map<FrontMatterType, string[]>();
+
+	const sourceFileColumn = columns.find(
+		(column) => column.type === CellType.SOURCE_FILE
+	);
+	if (sourceFileColumn) {
+		rows.forEach((row) => {
+			const { cells } = row;
+			const cell = cells.find(
+				(cell) => cell.columnId === sourceFileColumn.id
+			);
+			if (!cell)
+				throw new CellNotFoundError({
+					columnId: sourceFileColumn.id,
+				});
+			const { content } = cell;
+			const frontmatter =
+				app.metadataCache.getCache(content)?.frontmatter;
+			if (frontmatter) {
+				for (const key of Object.keys(frontmatter)) {
+					const value = frontmatter[key];
+
+					let type: FrontMatterType = "text";
+					if (key === "tags" || Array.isArray(value)) {
+						type = "array";
+					} else if (typeof value === "number") {
+						type = "number";
+					} else if (typeof value === "boolean") {
+						type = "boolean";
+					} else {
+						type = "text";
+					}
+
+					const existingKeys = keys.get(type) ?? [];
+					const newKeys = [...existingKeys, key];
+					const newKeysSet = new Set(newKeys);
+					keys.set(type, Array.from(newKeysSet));
+				}
+			}
+		});
+	}
+	return keys;
+};
 
 export const deserializeFrontmatterForCell = (
 	app: App,
@@ -28,7 +85,7 @@ export const deserializeFrontmatterForCell = (
 		if (!Array.isArray(frontmatter)) {
 			const newCell = createCell(id, {
 				type: type,
-				content: String(frontmatter),
+				content: String(frontmatter), //TODO change once we allow content to be other values than just a string
 			});
 			return {
 				nextTags: tags,
@@ -54,7 +111,7 @@ export const deserializeFrontmatterForCell = (
 			frontmatterContent = [frontmatter as string];
 		}
 		const newTags: Tag[] = [];
-		let cellTagIds: string[] = [];
+		const cellTagIds: string[] = [];
 
 		frontmatterContent.forEach((tagContent) => {
 			if (tagContent !== "") {

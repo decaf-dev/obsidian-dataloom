@@ -1,5 +1,5 @@
 import { CellType } from "src/shared/loom-state/types/loom-state";
-import { FrontMatterType } from "./types";
+import { FrontMatterType } from "src/shared/deserialize-frontmatter/types";
 
 export const cellTypeToFrontMatterKeyType = (
 	type: CellType
