@@ -8,7 +8,7 @@ import {
 	Source,
 	SourceType,
 } from "./types/loom-state";
-import { parseContentFromFrontMatter } from "./parse-content-from-frontmatter";
+import { deserializeFrontmatterForCell } from "./deserialize-frontmatter";
 import { cloneDeep } from "lodash";
 
 export default function findDataFromSources(
@@ -83,21 +83,11 @@ const findRowsFromFolder = (
 			if (type === CellType.SOURCE_FILE) {
 				newCell = createCell(id, { type, content: path });
 			} else if (frontmatterKey !== null) {
-				const frontmatter: string | string[] | null =
-					app.metadataCache.getCache(path)?.frontmatter?.[
-						frontmatterKey.value
-					] ?? null;
-				if (frontmatter !== null) {
-					const result = parseContentFromFrontMatter(
-						column,
-						type,
-						frontmatter
-					);
-					if (result !== null) {
-						const { newCell: cell, nextTags } = result;
-						newCell = cell;
-						column.tags = nextTags;
-					}
+				const result = deserializeFrontmatterForCell(app, column, path);
+				if (result !== null) {
+					const { newCell: cell, nextTags } = result;
+					newCell = cell;
+					column.tags = nextTags;
 				}
 			}
 
