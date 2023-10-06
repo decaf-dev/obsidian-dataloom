@@ -42,6 +42,7 @@ import {
 	SourceType,
 	Filter,
 	SourceFileFilter,
+	FrontmatterKey,
 } from "./types/loom-state";
 
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/constants";
@@ -58,8 +59,15 @@ export const createSource = (type: SourceType, content: string): Source => {
 export const createColumn = (options?: {
 	type?: CellType;
 	content?: string;
+	frontmatterKey?: FrontmatterKey | null;
+	tags?: Tag[];
 }): Column => {
-	const { type = CellType.TEXT, content = "New Column" } = options || {};
+	const {
+		type = CellType.TEXT,
+		content = "New Column",
+		frontmatterKey = null,
+		tags = [],
+	} = options || {};
 	return {
 		id: generateUuid(),
 		sortDir: SortDir.NONE,
@@ -74,12 +82,12 @@ export const createColumn = (options?: {
 		currencyType: CurrencyType.UNITED_STATES,
 		dateFormat: DateFormat.MM_DD_YYYY,
 		shouldWrapOverflow: true,
-		tags: [],
+		tags,
 		calculationType: GeneralCalculation.NONE,
 		aspectRatio: AspectRatio.UNSET,
 		horizontalPadding: PaddingSize.UNSET,
 		verticalPadding: PaddingSize.UNSET,
-		frontmatterKey: null,
+		frontmatterKey,
 	};
 };
 
@@ -449,26 +457,47 @@ export const createRowWithCells = (
 	columns: Column[],
 	options?: {
 		sourceId?: string;
-		defaultContent?: {
+		contentForCells?: {
 			type: CellType;
-			content: string;
-		};
+			content?: string;
+			dateTime?: number;
+			tagIds?: string[];
+		}[];
 	}
 ): Row => {
-	const { sourceId, defaultContent } = options || {};
+	const { sourceId, contentForCells = [] } = options || {};
 	const cells: Cell[] = [];
 	columns.forEach((column) => {
 		const { id, type } = column;
 
+		let tagIds: string[] = [];
 		let content = "";
-		if (defaultContent) {
-			if (type === defaultContent.type) {
-				content = defaultContent.content;
+		let dateTime: number | null = null;
+		const cellContent = contentForCells.find((cell) => cell.type === type);
+		if (cellContent) {
+			const {
+				content: customContent,
+				dateTime: customDateTime,
+				tagIds: customTagIds,
+			} = cellContent;
+
+			if (type === CellType.DATE) {
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+				dateTime = customDateTime!;
+			} else if (type === CellType.TAG || type === CellType.MULTI_TAG) {
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+				tagIds = customTagIds!;
+			} else {
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+				content = customContent!;
 			}
 		}
+
 		const cell = createCell(id, {
-			type: column.type,
+			type,
 			content,
+			dateTime,
+			tagIds,
 		});
 		cells.push(cell);
 	});
@@ -497,11 +526,11 @@ export const createTestLoomState = (
 	numColumns: number,
 	numRows: number,
 	options?: {
-		cellType?: CellType;
+		type?: CellType;
 	}
 ): LoomState => {
 	return createBasicLoomState(numColumns, numRows, {
-		cellType: options?.cellType,
+		type: options?.type,
 	});
 };
 
@@ -519,20 +548,20 @@ const createBasicLoomState = (
 	numColumns: number,
 	numRows: number,
 	options?: {
-		cellType?: CellType;
+		type?: CellType;
 		pluginVersion?: string;
 		frozenColumnCount?: number;
 	}
 ): LoomState => {
 	const {
-		cellType,
+		type,
 		pluginVersion = "1.0.0",
 		frozenColumnCount = 1,
 	} = options || {};
 	//Create columns
 	const columns: Column[] = [];
 	for (let i = 0; i < numColumns; i++) {
-		columns.push(createColumn({ type: cellType }));
+		columns.push(createColumn({ type }));
 	}
 
 	//Create rows

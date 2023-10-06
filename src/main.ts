@@ -40,7 +40,7 @@ import {
 	EVENT_FILE_RENAME,
 	EVENT_FOLDER_RENAME,
 } from "./shared/events";
-import { deserializeState, serializeState } from "./data/serialization";
+import { deserializeState, serializeState } from "./data/serialize-state";
 import { updateLinkReferences } from "./data/utils";
 import { getBasename } from "./shared/link/link-utils";
 import { hasDarkTheme } from "./shared/render/utils";

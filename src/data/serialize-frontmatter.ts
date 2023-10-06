@@ -3,7 +3,7 @@ import CellNotFoundError from "src/shared/error/cell-not-found-error";
 import { LoomState } from "src/shared/loom-state/types";
 import { CellType } from "src/shared/loom-state/types/loom-state";
 
-export const saveFrontmatter = async (app: App, state: LoomState) => {
+export const serializeFrontmatter = async (app: App, state: LoomState) => {
 	const { rows, columns, sources } = state.model;
 	if (sources.length === 0) return;
 
@@ -14,6 +14,8 @@ export const saveFrontmatter = async (app: App, state: LoomState) => {
 
 	for (const row of rows) {
 		const { sourceId, cells } = row;
+		//Skip rows that don't have a source since these are stored in the loom file
+		//and not in the frontmatter of individual files
 		if (sourceId === null) continue;
 
 		const sourceFileCell = cells.find(
@@ -27,6 +29,7 @@ export const saveFrontmatter = async (app: App, state: LoomState) => {
 
 		for (const column of columns) {
 			const { type, frontmatterKey, tags } = column;
+			//Skip source and source file columns because they don't have any content that is serialized
 			if (type === CellType.SOURCE) continue;
 			if (type === CellType.SOURCE_FILE) continue;
 
@@ -39,17 +42,19 @@ export const saveFrontmatter = async (app: App, state: LoomState) => {
 					columnId: column.id,
 					rowId: row.id,
 				});
+
 			const { tagIds } = cell;
 
 			let content: unknown;
-			if (type === CellType.MULTI_TAG) {
+			if (type === CellType.TAG || type === CellType.MULTI_TAG) {
 				const cellTags = tags.filter((tag) => tagIds.includes(tag.id));
 				const cellTagContent = cellTags.map((tag) => tag.content);
-				content = cellTagContent;
-			} else if (type === CellType.TAG) {
-				const cellTags = tags.filter((tag) => tagIds.includes(tag.id));
-				const cellTagContent = cellTags.map((tag) => tag.content);
-				content = cellTagContent[0];
+
+				if (type === CellType.MULTI_TAG) {
+					content = cellTagContent;
+				} else {
+					content = cellTagContent[0];
+				}
 			} else if (type === CellType.DATE) {
 				content = cell.dateTime;
 			} else {

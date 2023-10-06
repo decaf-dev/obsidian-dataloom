@@ -3,13 +3,13 @@ import { TextFileView, WorkspaceLeaf } from "obsidian";
 import { createRoot, Root } from "react-dom/client";
 import { store } from "src/redux/store";
 import { LoomState } from "src/shared/loom-state/types/loom-state";
-import { deserializeState, serializeState } from "src/data/serialization";
+import { deserializeState, serializeState } from "src/data/serialize-state";
 import { EVENT_APP_REFRESH } from "src/shared/events";
 import LoomAppWrapper from "src/react/loom-app";
 import { createAppId } from "./utils";
 import ErrorApp from "src/react/error-app";
 import DeserializationError from "src/data/deserialization-error";
-import { saveFrontmatter } from "src/data/frontmatter";
+import { serializeFrontmatter } from "src/data/serialize-frontmatter";
 
 export const DATA_LOOM_VIEW = "dataloom";
 
@@ -95,7 +95,7 @@ export default class DataLoomView extends TextFileView {
 	private handleSaveLoomState = async (appId: string, state: LoomState) => {
 		if (!this.file) return;
 
-		await saveFrontmatter(this.app, state);
+		await serializeFrontmatter(this.app, state);
 
 		const serialized = serializeState(state);
 

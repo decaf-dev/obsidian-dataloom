@@ -41,7 +41,7 @@ describe("column-type-update-command", () => {
 	it("should handle multi-tag -> text when execute() is called", async () => {
 		//Arrange
 		const prevState = createTestLoomState(1, 2, {
-			cellType: CellType.MULTI_TAG,
+			type: CellType.MULTI_TAG,
 		});
 		const tags = [createTag("test1"), createTag("test2")];
 		prevState.model.columns[0].tags = tags;
@@ -69,7 +69,7 @@ describe("column-type-update-command", () => {
 	it("should handle tag -> text when execute() is called", async () => {
 		//Arrange
 		const prevState = createTestLoomState(1, 2, {
-			cellType: CellType.TAG,
+			type: CellType.TAG,
 		});
 
 		const tags = [createTag("test1"), createTag("test2")];
@@ -140,7 +140,7 @@ describe("column-type-update-command", () => {
 	it("should handle multi-tag -> tag when execute() is called", async () => {
 		//Arrange
 		const prevState = createTestLoomState(1, 2, {
-			cellType: CellType.MULTI_TAG,
+			type: CellType.MULTI_TAG,
 		});
 
 		const tags = [createTag("test1"), createTag("test2")];
@@ -187,7 +187,7 @@ describe("column-type-update-command", () => {
 	it("should handle date -> text when execute() is called", async () => {
 		//Arrange
 		const prevState = createTestLoomState(1, 1, {
-			cellType: CellType.DATE,
+			type: CellType.DATE,
 		});
 		prevState.model.rows[0].cells[0].dateTime = new Date(
 			"2020-01-01"
@@ -212,7 +212,7 @@ describe("column-type-update-command", () => {
 	it("should delete referenced filters when execute() is called", async () => {
 		//Arrange
 		const prevState = createTestLoomState(1, 1, {
-			cellType: CellType.TEXT,
+			type: CellType.TEXT,
 		});
 
 		const filters = [
@@ -234,7 +234,7 @@ describe("column-type-update-command", () => {
 	it("should handle multi-tag -> text when undo() is called", async () => {
 		//Arrange
 		const prevState = createTestLoomState(1, 2, {
-			cellType: CellType.MULTI_TAG,
+			type: CellType.MULTI_TAG,
 		});
 
 		const tags = [createTag("test1"), createTag("test2")];
@@ -262,7 +262,7 @@ describe("column-type-update-command", () => {
 	it("should handle tag -> text when undo() is called", async () => {
 		//Arrange
 		const prevState = createTestLoomState(1, 2, {
-			cellType: CellType.TAG,
+			type: CellType.TAG,
 		});
 
 		const tags = [createTag("test1"), createTag("test2")];
@@ -329,7 +329,7 @@ describe("column-type-update-command", () => {
 	it("should handle multi-tag -> tag when undo() is called", async () => {
 		//Arrange
 		const prevState = createTestLoomState(1, 2, {
-			cellType: CellType.MULTI_TAG,
+			type: CellType.MULTI_TAG,
 		});
 
 		const tags = [createTag("test1"), createTag("test2")];
@@ -376,7 +376,7 @@ describe("column-type-update-command", () => {
 	it("should handle date -> text when undo() is called", async () => {
 		//Arrange
 		const prevState = createTestLoomState(1, 1, {
-			cellType: CellType.DATE,
+			type: CellType.DATE,
 		});
 		prevState.model.rows[0].cells[0].dateTime = new Date(
 			"2020-01-01"
@@ -400,7 +400,7 @@ describe("column-type-update-command", () => {
 	it("should restore deleted filters when undo() is called", async () => {
 		//Arrange
 		const prevState = createTestLoomState(1, 1, {
-			cellType: CellType.TEXT,
+			type: CellType.TEXT,
 		});
 
 		const filters = [
@@ -446,7 +446,7 @@ describe("column-type-update-command", () => {
 	it("should delete filters when redo() is called", async () => {
 		//Arrange
 		const prevState = createTestLoomState(1, 1, {
-			cellType: CellType.TEXT,
+			type: CellType.TEXT,
 		});
 
 		const filters = [

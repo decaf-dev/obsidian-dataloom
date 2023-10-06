@@ -22,17 +22,21 @@ describe("source-add-command", () => {
 			createRowWithCells(0, columns),
 			createRowWithCells(1, columns, {
 				sourceId: sources[0].id,
-				defaultContent: {
-					type: CellType.SOURCE_FILE,
-					content: "test1/file1.md",
-				},
+				contentForCells: [
+					{
+						type: CellType.SOURCE_FILE,
+						content: "test1/file1.md",
+					},
+				],
 			}),
 			createRowWithCells(2, columns, {
 				sourceId: sources[0].id,
-				defaultContent: {
-					type: CellType.SOURCE_FILE,
-					content: "test1/file2.md",
-				},
+				contentForCells: [
+					{
+						type: CellType.SOURCE_FILE,
+						content: "test1/file2.md",
+					},
+				],
 			}),
 		];
 		const state = createCustomTestLoomState(columns, rows, {
