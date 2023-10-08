@@ -1,7 +1,7 @@
-/******* Type definitions for v8.6.0 *******/
+/******* Type definitions for v8.7.0 *******/
 
 /**
- * v8.6.0
+ * v8.7.0
  */
 export interface LoomState {
 	pluginVersion: string;
@@ -14,6 +14,13 @@ export interface TableModel {
 	filters: Filter[];
 	settings: TableSettings;
 	sources: Source[];
+	sourcesRowOrder: SourceRowOrder[];
+}
+
+export interface SourceRowOrder {
+	sourceId: string;
+	index: number;
+	uniqueId: string; //This could be a file path, tag name, or url
 }
 
 export interface TableSettings {
@@ -72,15 +79,26 @@ export interface Tag {
 	color: Color;
 }
 
-export interface Source {
+interface BaseSource {
 	id: string;
 	type: SourceType;
-	content: string;
 }
 
+export interface ObsidianFolderSource extends BaseSource {
+	type: SourceType.FOLDER;
+	name: string;
+}
+
+export interface ObsidianTagSource extends BaseSource {
+	type: SourceType.TAG;
+	name: string;
+}
+
+export type Source = ObsidianFolderSource | ObsidianTagSource;
+
 export enum SourceType {
-	FOLDER = "folder",
-	TAG = "tag",
+	FOLDER = "obsidian-folder",
+	TAG = "obsidian-tag",
 }
 
 export enum Color {

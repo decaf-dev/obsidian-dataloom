@@ -1,3 +1,3 @@
-import { SourceType } from "src/shared/loom-state/types/loom-state";
+import { Source } from "src/shared/loom-state/types/loom-state";
 
-export type SourceAddHandler = (type: SourceType, name: string) => void;
+export type SourceAddHandler = (source: Source) => void;

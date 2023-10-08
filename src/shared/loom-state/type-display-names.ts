@@ -132,9 +132,9 @@ export const getDisplayNameForNumberCalculation = (
 export const getDisplayNameForSource = (type: SourceType) => {
 	switch (type) {
 		case SourceType.FOLDER:
-			return "Obsidian folder";
+			return "Folder";
 		case SourceType.TAG:
-			return "Obsidian tag";
+			return "Tag";
 		default:
 			return "";
 	}

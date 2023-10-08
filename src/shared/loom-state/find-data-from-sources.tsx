@@ -4,6 +4,7 @@ import {
 	Cell,
 	CellType,
 	Column,
+	ObsidianFolderSource,
 	Row,
 	Source,
 	SourceType,
@@ -24,14 +25,15 @@ export default function findDataFromSources(
 	let nextColumns: Column[] = cloneDeep(columns);
 
 	sources.forEach((source) => {
-		const { id, type, content } = source;
+		const { id, type } = source;
 		switch (type) {
 			case SourceType.FOLDER: {
+				const { name } = source as ObsidianFolderSource;
 				const result = findRowsFromFolder(
 					app,
 					nextColumns,
 					id,
-					content,
+					name,
 					numRows + newRows.length
 				);
 				newRows.push(...result.newRows);

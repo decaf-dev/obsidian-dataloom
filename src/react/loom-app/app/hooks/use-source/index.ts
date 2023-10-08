@@ -1,4 +1,4 @@
-import { SourceType } from "src/shared/loom-state/types/loom-state";
+import { Source } from "src/shared/loom-state/types/loom-state";
 import { useLogger } from "src/shared/logger";
 import { useLoomState } from "../../../loom-state-provider";
 import SourceAddCommand from "src/shared/loom-state/commands/source-add-command";
@@ -25,9 +25,9 @@ export const useSource = () => {
 		);
 	}, [setFrontMatterKeys, loomState, app]);
 
-	function handleSourceAdd(type: SourceType, name: string) {
+	function handleSourceAdd(source: Source) {
 		logger("handleSourceAdd");
-		doCommand(new SourceAddCommand(type, name));
+		doCommand(new SourceAddCommand(source));
 	}
 
 	function handleSourceDelete(id: string) {

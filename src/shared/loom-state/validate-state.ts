@@ -356,15 +356,32 @@ const Row = Record({
 
 const SourceUnion = Union(Literal(SourceType.FOLDER), Literal(SourceType.TAG));
 
-const Source = Record({
+const BaseSource = Record({
 	id: String,
 	type: SourceUnion,
-	content: String,
 });
+
+const ObsidianFolderSource = BaseSource.extend({
+	type: Literal(SourceType.FOLDER),
+	name: String,
+});
+
+const ObsidianTagSource = BaseSource.extend({
+	type: Literal(SourceType.TAG),
+	name: String,
+});
+
+const Source = Union(ObsidianFolderSource, ObsidianTagSource);
 
 const TableSettings = Record({
 	numFrozenColumns: Number,
 	showCalculationRow: Boolean,
+});
+
+const SourceRowOrder = Record({
+	sourceId: String,
+	index: Number,
+	uniqueId: String,
 });
 
 const TableModel = Record({
@@ -373,6 +390,7 @@ const TableModel = Record({
 	filters: Array(Filter),
 	settings: TableSettings,
 	sources: Array(Source),
+	sourcesRowOrder: Array(SourceRowOrder),
 });
 
 export const LoomStateObject = Record({

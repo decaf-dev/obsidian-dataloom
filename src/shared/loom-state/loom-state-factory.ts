@@ -43,19 +43,42 @@ import {
 	Filter,
 	SourceFileFilter,
 	FrontmatterKey,
+	ObsidianFolderSource,
+	SourceRowOrder,
 } from "./types/loom-state";
 
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/constants";
 import { Color } from "src/shared/loom-state/types/loom-state";
 import { generateUuid } from "../uuid";
 
-export const createSource = (type: SourceType, content: string): Source => {
+export const createFolderSource = (name: string): ObsidianFolderSource => {
 	return {
 		id: generateUuid(),
-		type,
-		content,
+		type: SourceType.FOLDER,
+		name,
 	};
 };
+
+export const createTagSource = (name: string): Source => {
+	return {
+		id: generateUuid(),
+		type: SourceType.TAG,
+		name,
+	};
+};
+
+export const createSourceRowOrder = (
+	sourceId: string,
+	index: number,
+	uniqueId: string
+): SourceRowOrder => {
+	return {
+		sourceId,
+		index,
+		uniqueId,
+	};
+};
+
 export const createColumn = (options?: {
 	type?: CellType;
 	content?: string;
@@ -612,6 +635,7 @@ const createGenericLoomState = (options?: {
 				numFrozenColumns: frozenColumnCount,
 				showCalculationRow: true,
 			},
+			sourcesRowOrder: [],
 		},
 		pluginVersion,
 	};

@@ -1,18 +1,18 @@
 import {
 	createTestLoomState,
-	createSource,
+	createFolderSource,
 	createColumn,
 	createCustomTestLoomState,
 	createRowWithCells,
 } from "src/shared/loom-state/loom-state-factory";
-import { CellType, SourceType } from "../types/loom-state";
+import { CellType } from "../types/loom-state";
 import CommandUndoError from "./command-undo-error";
 import CommandRedoError from "./command-redo-error";
 import SourceAddCommand from "./source-add-command";
 
 describe("source-add-command", () => {
 	function stateWithOneSource() {
-		const sources = [createSource(SourceType.FOLDER, "test1")];
+		const sources = [createFolderSource("test1")];
 		const columns = [
 			createColumn({ type: CellType.SOURCE }),
 			createColumn({ type: CellType.SOURCE_FILE }),
@@ -54,7 +54,7 @@ describe("source-add-command", () => {
 
 	it("throws an error when undo() is called before execute()", () => {
 		const prevState = createTestLoomState(1, 1);
-		const command = new SourceAddCommand(SourceType.FOLDER, "test");
+		const command = new SourceAddCommand(createFolderSource("test"));
 
 		try {
 			command.undo(prevState);
@@ -65,7 +65,7 @@ describe("source-add-command", () => {
 
 	it("throws an error when redo() is called before undo()", () => {
 		const prevState = createTestLoomState(1, 1);
-		const command = new SourceAddCommand(SourceType.FOLDER, "test");
+		const command = new SourceAddCommand(createFolderSource("test"));
 
 		try {
 			const executeState = command.execute(prevState);
@@ -80,7 +80,7 @@ describe("source-add-command", () => {
 		const prevState = stateWithOneSource();
 
 		//Act
-		const command = new SourceAddCommand(SourceType.FOLDER, "test2");
+		const command = new SourceAddCommand(createFolderSource("test2"));
 		const executeState = command.execute(prevState);
 
 		//Assert
@@ -100,7 +100,7 @@ describe("source-add-command", () => {
 		const prevState = stateWithZeroSources();
 
 		//Act
-		const command = new SourceAddCommand(SourceType.FOLDER, "test1");
+		const command = new SourceAddCommand(createFolderSource("test1"));
 		const executeState = command.execute(prevState);
 
 		//Assert
@@ -120,7 +120,7 @@ describe("source-add-command", () => {
 		const prevState = stateWithOneSource();
 
 		//Act
-		const command = new SourceAddCommand(SourceType.FOLDER, "test2");
+		const command = new SourceAddCommand(createFolderSource("test2"));
 		const executeState = command.execute(prevState);
 		const undoState = command.undo(executeState);
 
@@ -135,7 +135,7 @@ describe("source-add-command", () => {
 		const prevState = stateWithZeroSources();
 
 		//Act
-		const command = new SourceAddCommand(SourceType.FOLDER, "test1");
+		const command = new SourceAddCommand(createFolderSource("test1"));
 		const executeState = command.execute(prevState);
 		const undoState = command.undo(executeState);
 
@@ -150,7 +150,7 @@ describe("source-add-command", () => {
 		const prevState = stateWithOneSource();
 
 		//Act
-		const command = new SourceAddCommand(SourceType.FOLDER, "test2");
+		const command = new SourceAddCommand(createFolderSource("test2"));
 		const executeState = command.execute(prevState);
 		const undoState = command.undo(executeState);
 		const redoState = command.redo(undoState);
@@ -166,7 +166,7 @@ describe("source-add-command", () => {
 		const prevState = stateWithZeroSources();
 
 		//Act
-		const command = new SourceAddCommand(SourceType.FOLDER, "test1");
+		const command = new SourceAddCommand(createFolderSource("test1"));
 		const executeState = command.execute(prevState);
 		const undoState = command.undo(executeState);
 		const redoState = command.redo(undoState);

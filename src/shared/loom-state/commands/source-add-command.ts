@@ -1,7 +1,6 @@
 import { cloneDeep } from "lodash";
-import { createSource } from "../loom-state-factory";
 import { LoomState } from "../types";
-import { CellType, Column, Source, SourceType } from "../types/loom-state";
+import { CellType, Column, Source } from "../types/loom-state";
 import LoomStateCommand from "./loom-state-command";
 import {
 	columnAddExecute,
@@ -11,20 +10,17 @@ import {
 import { AddedCell } from "./column-add-command/types";
 
 export default class SourceAddCommand extends LoomStateCommand {
-	private type: SourceType;
-	private content: string;
+	private newSource: Source;
 
-	private addedSource: Source;
 	private addedSourceColumn: Column | null = null;
 	private addedSourceCells: AddedCell[] = [];
 
 	private addedSourceFileColumn: Column | null = null;
 	private addedSourceFileCells: AddedCell[] = [];
 
-	constructor(type: SourceType, content: string) {
+	constructor(source: Source) {
 		super();
-		this.type = type;
-		this.content = content;
+		this.newSource = source;
 	}
 
 	execute(prevState: LoomState): LoomState {
@@ -34,9 +30,7 @@ export default class SourceAddCommand extends LoomStateCommand {
 		let nextColumns = cloneDeep(columns);
 		let nextRows = cloneDeep(rows);
 
-		const newSource = createSource(this.type, this.content);
-		this.addedSource = newSource;
-		const nextSources = [...sources, newSource];
+		const nextSources = [...sources, this.newSource];
 
 		const sourceFileColumn = columns.find(
 			(column) => column.type === CellType.SOURCE_FILE
@@ -91,7 +85,7 @@ export default class SourceAddCommand extends LoomStateCommand {
 		let nextRows = cloneDeep(rows);
 
 		const nextSources = sources.filter(
-			(source) => source.id !== this.addedSource.id
+			(source) => source.id !== this.newSource.id
 		);
 
 		if (this.addedSourceFileColumn !== null) {
@@ -116,9 +110,7 @@ export default class SourceAddCommand extends LoomStateCommand {
 			nextRows = rows;
 		}
 
-		nextRows = nextRows.filter(
-			(row) => row.sourceId !== this.addedSource.id
-		);
+		nextRows = nextRows.filter((row) => row.sourceId !== this.newSource.id);
 
 		return {
 			...prevState,
@@ -138,7 +130,7 @@ export default class SourceAddCommand extends LoomStateCommand {
 		let nextRows = cloneDeep(rows);
 		let nextColumns = cloneDeep(columns);
 
-		const nextSources = [...sources, this.addedSource];
+		const nextSources = [...sources, this.newSource];
 
 		if (this.addedSourceFileColumn !== null) {
 			const result = columnAddRedo(

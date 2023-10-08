@@ -9,6 +9,7 @@ import Text from "src/react/shared/text";
 import { getDisplayNameForSource } from "src/shared/loom-state/type-display-names";
 import { Source, SourceType } from "src/shared/loom-state/types/loom-state";
 import { SourceAddHandler } from "../../app/hooks/use-source/types";
+import { createFolderSource } from "src/shared/loom-state/loom-state-factory";
 
 interface Props {
 	sources: Source[];
@@ -53,7 +54,14 @@ export default function AddSourceSubmenu({
 			});
 			return;
 		}
-		onAddSourceClick(type, name);
+
+		let source: Source;
+		if (type === SourceType.FOLDER) {
+			source = createFolderSource(name);
+		} else {
+			throw new Error("Source not supported");
+		}
+		onAddSourceClick(source);
 	}
 
 	function alreadyHasSource(
@@ -61,9 +69,16 @@ export default function AddSourceSubmenu({
 		type: SourceType,
 		name: string
 	) {
-		return sources.find(
-			(source) => source.type === type && source.content === name
-		);
+		if (type === SourceType.FOLDER) {
+			return sources.find(
+				(source) => source.type === type && source.name === name
+			);
+		} else if (type === SourceType.TAG) {
+			return sources.find(
+				(source) => source.type === type && source.name === name
+			);
+		}
+		throw new Error("Source type not handled");
 	}
 
 	return (

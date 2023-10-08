@@ -2,15 +2,10 @@ import {
 	createColumn,
 	createCustomTestLoomState,
 	createRowWithCells,
-	createSource,
+	createFolderSource,
 	createTag,
 } from "src/shared/loom-state/loom-state-factory";
-import {
-	CellType,
-	Column,
-	SourceType,
-	Tag,
-} from "src/shared/loom-state/types/loom-state";
+import { CellType, Column, Tag } from "src/shared/loom-state/types/loom-state";
 import { serializeFrontmatter } from "./serialize-frontmatter";
 import { App, TFile } from "obsidian";
 
@@ -71,7 +66,7 @@ describe("serializeFrontmatter", () => {
 				tags,
 			}),
 		];
-		const sources = [createSource(SourceType.FOLDER, "test")];
+		const sources = [createFolderSource("test")];
 		const rows = [
 			createRowWithCells(0, columns, {
 				contentForCells: [

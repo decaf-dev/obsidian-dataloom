@@ -1,6 +1,6 @@
 import React from "react";
 import SourcesHeader from "../sources-header";
-import { Source } from "src/shared/loom-state/types/loom-state";
+import { Source, SourceType } from "src/shared/loom-state/types/loom-state";
 import SourceItem from "../dataloom-source";
 import Stack from "src/react/shared/stack";
 
@@ -27,7 +27,14 @@ export default function BaseContent({
 			/>
 			<div className="dataloom-source-container">
 				{sources.map((source) => {
-					const { id, content, type } = source;
+					const { id, type } = source;
+
+					let content = "";
+					if (type === SourceType.FOLDER) {
+						content = source.name;
+					} else if (type === SourceType.TAG) {
+						content = source.name;
+					}
 					return (
 						<SourceItem
 							key={id}

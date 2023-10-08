@@ -1,18 +1,18 @@
 import {
 	createTestLoomState,
-	createSource,
+	createFolderSource,
 	createColumn,
 	createCustomTestLoomState,
 	createRowWithCells,
 } from "src/shared/loom-state/loom-state-factory";
 import SourceDeleteCommand from "./source-delete-command";
-import { CellType, SourceType } from "../types/loom-state";
+import { CellType } from "../types/loom-state";
 import CommandUndoError from "./command-undo-error";
 import CommandRedoError from "./command-redo-error";
 
 describe("source-delete-command", () => {
 	function stateWithOneSource() {
-		const sources = [createSource(SourceType.FOLDER, "test")];
+		const sources = [createFolderSource("test")];
 		const columns = [
 			createColumn({ type: CellType.SOURCE }),
 			createColumn({ type: CellType.SOURCE_FILE }),
@@ -31,8 +31,8 @@ describe("source-delete-command", () => {
 
 	function stateWithTwoSources() {
 		const sources = [
-			createSource(SourceType.FOLDER, "test"),
-			createSource(SourceType.FOLDER, "test2"),
+			createFolderSource("test"),
+			createFolderSource("test2"),
 		];
 		const columns = [
 			createColumn({ type: CellType.SOURCE }),

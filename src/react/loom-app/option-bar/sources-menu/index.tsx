@@ -8,11 +8,7 @@ import { SourcesMenuSubmenu } from "./constants";
 import React from "react";
 import AddSourceSubmenu from "./add-source-submenu";
 import BaseContent from "./base-content";
-import {
-	Column,
-	Source,
-	SourceType,
-} from "src/shared/loom-state/types/loom-state";
+import { Column, Source } from "src/shared/loom-state/types/loom-state";
 import { SourceAddHandler } from "../../app/hooks/use-source/types";
 
 interface Props {
@@ -48,8 +44,8 @@ export default function SourcesMenu({
 		}
 	}, [sources.length]);
 
-	function handleAddSourceClick(type: SourceType, name: string) {
-		onSourceAdd(type, name);
+	function handleAddSourceClick(source: Source) {
+		onSourceAdd(source);
 		setSubmenu(null);
 		onClose();
 	}

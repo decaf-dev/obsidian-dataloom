@@ -2,10 +2,10 @@ import { CellType, SourceType } from "src/shared/loom-state/types/loom-state";
 
 export const getIconIdForSourceType = (type: SourceType) => {
 	switch (type) {
-		case SourceType.TAG:
-			return "tag";
 		case SourceType.FOLDER:
 			return "folder";
+		case SourceType.TAG:
+			return "tag";
 		default:
 			return "";
 	}
@@ -17,7 +17,6 @@ export const getIconIdForCellType = (type: CellType) => {
 			return "text";
 		case CellType.EMBED:
 			return "link";
-
 		case CellType.SOURCE_FILE:
 		case CellType.FILE:
 			return "file";
