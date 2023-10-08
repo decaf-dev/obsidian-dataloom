@@ -205,16 +205,15 @@ export default function App() {
 		allFrontMatterKeys,
 		firstColumnId,
 		lastColumnId,
-		visibleColumns,
-		numColumns: columns.length,
+		columns,
+		numFrozenColumns,
+		resizingColumnId,
 		numSources: sources.length,
 		onColumnChange,
 		onFrozenColumnsChange,
 		onColumnDeleteClick,
 		onColumnAddClick,
 		onColumnTypeChange,
-		numFrozenColumns,
-		resizingColumnId,
 	});
 
 	const bodyRows = getBodyRows({

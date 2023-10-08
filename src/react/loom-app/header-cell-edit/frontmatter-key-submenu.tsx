@@ -11,7 +11,7 @@ import Padding from "src/react/shared/padding";
 interface Props {
 	title: string;
 	frontmatterKey: FrontmatterKey | null;
-	allFrontmatterKeys: string[];
+	frontmatterKeys: string[];
 	closeRequest: LoomMenuCloseRequest | null;
 	onFrontMatterKeyChange: (value: FrontmatterKey | null) => void;
 	onBackClick: () => void;
@@ -23,7 +23,7 @@ const USE_CUSTOM_INPUT_VALUE = "custom-key";
 export default function FrontmatterKeySubmenu({
 	title,
 	frontmatterKey,
-	allFrontmatterKeys,
+	frontmatterKeys,
 	onFrontMatterKeyChange,
 	onBackClick,
 	closeRequest,
@@ -69,7 +69,7 @@ export default function FrontmatterKeySubmenu({
 				<Stack spacing="md">
 					<Select value={selectedValue} onChange={handleValueChange}>
 						<option value="">Select an option</option>
-						{allFrontmatterKeys.map((key) => (
+						{frontmatterKeys.map((key) => (
 							<option key={key} value={key}>
 								{key}
 							</option>

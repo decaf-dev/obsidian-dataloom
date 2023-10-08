@@ -351,7 +351,7 @@ export default function HeaderMenu({
 					<FrontmatterKeySubmenu
 						title="Frontmatter key"
 						closeRequest={closeRequest}
-						allFrontmatterKeys={frontmatterKeys}
+						frontmatterKeys={frontmatterKeys}
 						frontmatterKey={frontmatterKey}
 						onClose={onClose}
 						onFrontMatterKeyChange={handleFrontmatterKeyChange}

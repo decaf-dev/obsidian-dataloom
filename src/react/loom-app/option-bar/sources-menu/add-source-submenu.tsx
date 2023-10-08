@@ -105,7 +105,7 @@ export default function AddSourceSubmenu({
 						>
 							<option value="">Select an option</option>
 							{Object.values(SourceType)
-								.filter((type) => type !== SourceType.TAG)
+								.filter((type) => type !== SourceType.TAG) //TODO remove when tag sources are implemented
 								.map((type) => {
 									return (
 										<option key={type} value={type}>

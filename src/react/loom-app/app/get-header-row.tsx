@@ -15,8 +15,7 @@ interface Props {
 	allFrontMatterKeys: Map<FrontMatterType, string[]>;
 	firstColumnId: string;
 	lastColumnId: string;
-	visibleColumns: Column[];
-	numColumns: number;
+	columns: Column[];
 	numSources: number;
 	numFrozenColumns: number;
 	resizingColumnId: string | null;
@@ -31,8 +30,7 @@ export default function getHeaderRow({
 	allFrontMatterKeys,
 	firstColumnId,
 	lastColumnId,
-	visibleColumns,
-	numColumns,
+	columns,
 	numSources,
 	numFrozenColumns,
 	resizingColumnId,
@@ -42,6 +40,7 @@ export default function getHeaderRow({
 	onColumnTypeChange,
 	onFrozenColumnsChange,
 }: Props): TableRow {
+	const visibleColumns = columns.filter((column) => column.isVisible);
 	return {
 		id: "header-row",
 		cells: [
@@ -52,11 +51,22 @@ export default function getHeaderRow({
 			...visibleColumns.map((column, i) => {
 				const { id, type } = column;
 				const frontmatterTypes = cellTypeToFrontMatterKeyTypes(type);
+
 				let frontmatterKeys: string[] = [];
 				frontmatterTypes.forEach((type) => {
 					frontmatterKeys = frontmatterKeys.concat(
 						allFrontMatterKeys.get(type) ?? []
 					);
+				});
+
+				// Remove any frontmatter keys that are already in use
+				frontmatterKeys = frontmatterKeys.filter((key) => {
+					const columnWithKey = columns.find(
+						(column) => column.frontmatterKey?.value === key
+					);
+					if (!columnWithKey) return true;
+					if (columnWithKey.id === id) return true;
+					return false;
 				});
 				return {
 					id,
@@ -66,7 +76,7 @@ export default function getHeaderRow({
 							index={i}
 							column={column}
 							frontmatterKeys={frontmatterKeys}
-							numColumns={numColumns}
+							numColumns={columns.length}
 							numSources={numSources}
 							numFrozenColumns={numFrozenColumns}
 							resizingColumnId={resizingColumnId}
