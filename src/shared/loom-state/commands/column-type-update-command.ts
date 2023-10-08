@@ -13,6 +13,7 @@ import {
 	Row,
 	Cell,
 	CalculationType,
+	FrontmatterKey,
 } from "../types/loom-state";
 import { isCheckbox, isNumberCalcuation } from "../../match";
 import { cloneDeep } from "lodash";
@@ -36,6 +37,7 @@ export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 	};
 
 	private addedTags: Tag[] = [];
+	private previousFrontmatterKey: FrontmatterKey | null = null;
 
 	constructor(id: string, type: CellType) {
 		super();
@@ -94,9 +96,11 @@ export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 
 		nextColumns = nextColumns.map((column) => {
 			if (column.id === this.id) {
+				this.previousFrontmatterKey = column.frontmatterKey;
 				return {
 					...column,
 					type: this.nextType,
+					frontmatterKey: null,
 				};
 			}
 			return column;
@@ -164,6 +168,7 @@ export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 								(added) => added.id === t.id
 							) === undefined
 					),
+					frontmatterKey: this.previousFrontmatterKey,
 				};
 			}
 			return column;
@@ -208,6 +213,7 @@ export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 						? this.nextCalculationType
 						: column.calculationType,
 					tags: [...column.tags, ...this.addedTags],
+					frontmatterKey: null,
 				};
 			}
 			return column;
