@@ -48,7 +48,11 @@ export const deserializeFrontmatterKeys = (
 					} else if (typeof value === "boolean") {
 						type = "boolean";
 					} else if (!isNaN(Date.parse(value))) {
-						type = "date";
+						if (value.includes("T")) {
+							type = "datetime";
+						} else {
+							type = "date";
+						}
 					} else {
 						type = "text";
 					}
@@ -61,6 +65,7 @@ export const deserializeFrontmatterKeys = (
 			}
 		});
 	}
+	console.log(keys);
 	return keys;
 };
 

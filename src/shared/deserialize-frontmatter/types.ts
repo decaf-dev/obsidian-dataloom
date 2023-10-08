@@ -4,4 +4,5 @@ export type FrontMatterType =
 	| "boolean"
 	| "list"
 	| "tags"
-	| "date";
+	| "date"
+	| "datetime";

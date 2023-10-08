@@ -12,6 +12,7 @@ export const cellTypeToFrontMatterKeyTypes = (
 			return ["text"];
 		case CellType.NUMBER:
 		case CellType.DATE:
+			// return ["number", "date"]; //TODO support date
 			return ["number"];
 		case CellType.CHECKBOX:
 			return ["boolean"];
