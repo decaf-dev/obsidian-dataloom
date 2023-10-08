@@ -1,1 +1,7 @@
-export type FrontMatterType = "text" | "number" | "boolean" | "array" | "tags";
+export type FrontMatterType =
+	| "text"
+	| "number"
+	| "boolean"
+	| "list"
+	| "tags"
+	| "date";

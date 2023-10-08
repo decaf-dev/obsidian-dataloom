@@ -33,17 +33,22 @@ export const deserializeFrontmatterKeys = (
 			const { content } = cell;
 			const frontmatter =
 				app.metadataCache.getCache(content)?.frontmatter;
+
 			if (frontmatter) {
 				for (const key of Object.keys(frontmatter)) {
 					const value = frontmatter[key];
 
 					let type: FrontMatterType = "text";
-					if (key === "tags" || Array.isArray(value)) {
-						type = "array";
+					if (key === "tags") {
+						type = "tags";
+					} else if (Array.isArray(value)) {
+						type = "list";
 					} else if (typeof value === "number") {
 						type = "number";
 					} else if (typeof value === "boolean") {
 						type = "boolean";
+					} else if (!isNaN(Date.parse(value))) {
+						type = "date";
 					} else {
 						type = "text";
 					}

@@ -9,7 +9,7 @@ import {
 } from "./hooks/use-column/types";
 import { TableRow } from "../table/types";
 import { FrontMatterType } from "../../../shared/deserialize-frontmatter/types";
-import { cellTypeToFrontMatterKeyType } from "../../../shared/deserialize-frontmatter/utils";
+import { cellTypeToFrontMatterKeyTypes } from "../../../shared/deserialize-frontmatter/utils";
 
 interface Props {
 	allFrontMatterKeys: Map<FrontMatterType, string[]>;
@@ -51,12 +51,13 @@ export default function getHeaderRow({
 			},
 			...visibleColumns.map((column, i) => {
 				const { id, type } = column;
-				const frontmatterType = cellTypeToFrontMatterKeyType(type);
+				const frontmatterTypes = cellTypeToFrontMatterKeyTypes(type);
 				let frontmatterKeys: string[] = [];
-				if (frontmatterType) {
-					frontmatterKeys =
-						allFrontMatterKeys.get(frontmatterType) ?? [];
-				}
+				frontmatterTypes.forEach((type) => {
+					frontmatterKeys = frontmatterKeys.concat(
+						allFrontMatterKeys.get(type) ?? []
+					);
+				});
 				return {
 					id,
 					content: (
