@@ -87,6 +87,7 @@ export default function getBodyRows({
 						verticalPadding,
 						horizontalPadding,
 						aspectRatio,
+						frontmatterKey,
 					} = column;
 
 					const cell = row.cells.find(
@@ -116,6 +117,7 @@ export default function getBodyRows({
 							<BodyCellContainer
 								key={cellId}
 								cellId={cellId}
+								frontmatterKey={frontmatterKey}
 								isExternalLink={isExternalLink}
 								verticalPadding={verticalPadding}
 								horizontalPadding={horizontalPadding}

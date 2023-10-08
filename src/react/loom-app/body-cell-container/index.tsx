@@ -24,6 +24,7 @@ import {
 	CellType,
 	CurrencyType,
 	DateFormat,
+	FrontmatterKey,
 	NumberFormat,
 	PaddingSize,
 	Source,
@@ -52,6 +53,7 @@ interface Props {
 	columnType: string;
 	cellId: string;
 	dateTime: number | null;
+	frontmatterKey: FrontmatterKey | null;
 	dateFormat: DateFormat;
 	numberPrefix: string;
 	numberSuffix: string;
@@ -94,6 +96,7 @@ export default function BodyCellContainer({
 	aspectRatio,
 	numberFormat,
 	verticalPadding,
+	frontmatterKey,
 	currencyType,
 	horizontalPadding,
 	dateFormat,
@@ -279,7 +282,8 @@ export default function BodyCellContainer({
 		columnType === CellType.LAST_EDITED_TIME ||
 		columnType === CellType.CREATION_TIME ||
 		columnType === CellType.SOURCE ||
-		columnType === CellType.SOURCE_FILE
+		columnType === CellType.SOURCE_FILE ||
+		(source && frontmatterKey === null)
 	) {
 		className += " dataloom-cell__body-container--default-cursor";
 	}
@@ -292,7 +296,8 @@ export default function BodyCellContainer({
 		columnType === CellType.CREATION_TIME ||
 		columnType === CellType.LAST_EDITED_TIME ||
 		columnType === CellType.SOURCE ||
-		columnType === CellType.SOURCE_FILE
+		columnType === CellType.SOURCE_FILE ||
+		(source && frontmatterKey === null)
 	) {
 		shouldOpenOnTrigger = false;
 	}
