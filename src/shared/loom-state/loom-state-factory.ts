@@ -44,7 +44,7 @@ import {
 	SourceFileFilter,
 	FrontmatterKey,
 	ObsidianFolderSource,
-	SourceRowOrder,
+	ExternalRowOrder,
 } from "./types/loom-state";
 
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/constants";
@@ -56,6 +56,8 @@ export const createFolderSource = (name: string): ObsidianFolderSource => {
 		id: generateUuid(),
 		type: SourceType.FOLDER,
 		name,
+		showMarkdownOnly: true,
+		showNested: false,
 	};
 };
 
@@ -67,11 +69,11 @@ export const createTagSource = (name: string): Source => {
 	};
 };
 
-export const createSourceRowOrder = (
+export const createExternalRowOrder = (
 	sourceId: string,
 	index: number,
 	uniqueId: string
-): SourceRowOrder => {
+): ExternalRowOrder => {
 	return {
 		sourceId,
 		index,
@@ -635,7 +637,7 @@ const createGenericLoomState = (options?: {
 				numFrozenColumns: frozenColumnCount,
 				showCalculationRow: true,
 			},
-			sourcesRowOrder: [],
+			externalRowOrder: [],
 		},
 		pluginVersion,
 	};

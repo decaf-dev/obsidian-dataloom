@@ -364,6 +364,8 @@ const BaseSource = Record({
 const ObsidianFolderSource = BaseSource.extend({
 	type: Literal(SourceType.FOLDER),
 	name: String,
+	showNested: Boolean,
+	showMarkdownOnly: Boolean,
 });
 
 const ObsidianTagSource = BaseSource.extend({
@@ -390,7 +392,7 @@ const TableModel = Record({
 	filters: Array(Filter),
 	settings: TableSettings,
 	sources: Array(Source),
-	sourcesRowOrder: Array(SourceRowOrder),
+	externalRowOrder: Array(SourceRowOrder),
 });
 
 export const LoomStateObject = Record({

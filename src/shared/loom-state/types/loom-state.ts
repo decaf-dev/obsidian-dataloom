@@ -14,10 +14,10 @@ export interface TableModel {
 	filters: Filter[];
 	settings: TableSettings;
 	sources: Source[];
-	sourcesRowOrder: SourceRowOrder[];
+	externalRowOrder: ExternalRowOrder[];
 }
 
-export interface SourceRowOrder {
+export interface ExternalRowOrder {
 	sourceId: string;
 	index: number;
 	uniqueId: string; //This could be a file path, tag name, or url
@@ -87,6 +87,8 @@ interface BaseSource {
 export interface ObsidianFolderSource extends BaseSource {
 	type: SourceType.FOLDER;
 	name: string;
+	showNested: boolean;
+	showMarkdownOnly: boolean;
 }
 
 export interface ObsidianTagSource extends BaseSource {
@@ -97,8 +99,8 @@ export interface ObsidianTagSource extends BaseSource {
 export type Source = ObsidianFolderSource | ObsidianTagSource;
 
 export enum SourceType {
-	FOLDER = "obsidian-folder",
-	TAG = "obsidian-tag",
+	FOLDER = "folder",
+	TAG = "tag",
 }
 
 export enum Color {

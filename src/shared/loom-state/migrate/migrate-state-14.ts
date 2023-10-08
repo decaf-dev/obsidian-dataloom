@@ -29,7 +29,7 @@ export default class MigrateState14 implements MigrateState {
 				rows: nextRows,
 				columns: newColumns,
 				sources: [],
-				sourcesRowOrder: [],
+				externalRowOrder: [],
 			},
 		};
 	}
