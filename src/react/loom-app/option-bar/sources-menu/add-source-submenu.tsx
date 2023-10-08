@@ -59,7 +59,11 @@ export default function AddSourceSubmenu({
 		if (type === SourceType.FOLDER) {
 			source = createFolderSource(name);
 		} else {
-			throw new Error("Source not supported");
+			setError({
+				message: "Source not supported",
+				inputId: TYPE_SELECT_ID,
+			});
+			return;
 		}
 		onAddSourceClick(source);
 	}
@@ -100,13 +104,15 @@ export default function AddSourceSubmenu({
 							}
 						>
 							<option value="">Select an option</option>
-							{Object.values(SourceType).map((type) => {
-								return (
-									<option key={type} value={type}>
-										{getDisplayNameForSource(type)}
-									</option>
-								);
-							})}
+							{Object.values(SourceType)
+								.filter((type) => type !== SourceType.TAG)
+								.map((type) => {
+									return (
+										<option key={type} value={type}>
+											{getDisplayNameForSource(type)}
+										</option>
+									);
+								})}
 						</Select>
 					</Stack>
 					<Stack spacing="sm">
