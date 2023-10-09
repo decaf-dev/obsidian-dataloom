@@ -1,3 +1,5 @@
+import VideoEmbed from "@site/src/components/VideoEmbed";
+
 # Sources
 
 A source is a collection of data that DataLoom can use to generate rows. Sources can be folders, tags, or APIs.
@@ -26,11 +28,15 @@ Each column can only have one frontmatter key. Once a key is assigned to a colum
 
 When you edit a cell in your loom the corresponding frontmatter value will be updated. Similarly, when you edit a frontmatter value in Obsidian, the corresponding cells will be updated in your looms.
 
+<VideoEmbed url="https://dataloom.b-cdn.net/folder-source.mov" />
+
 ### Accepted properties
 
-Obsidian adds a validation layer ontop of frontmatter called properties. If you are not familiar with properties please read about them [here](https://help.obsidian.md/Editing+and+formatting/Properties).
+Obsidian adds a validation layer and user interface on top of frontmatter called [properties](https://help.obsidian.md/Editing+and+formatting/Properties).
 
-Cell types can only accept properties of a certain type.
+Cell types can only accept properties of a certain type. For example, a text cell can only accept a text property.
+
+When you choose a frontmatter key for a text cell column, only keys that are a text property will be displayed in the dropdown menu.
 
 | Column Type   | Accepted Properties         | Comments                                                                                                             |
 | ------------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------- |
@@ -44,7 +50,5 @@ Cell types can only accept properties of a certain type.
 | `Checkbox`    | `Checkbox`                  |                                                                                                                      |
 | `Creation`    | Uses file creation time     |                                                                                                                      |
 | `Last edited` | Uses file modification time |
-
-For example, a text cell can only accept a text property. When you choose a frontmatter key for a text cell, only keys that are text properties will be displayed in the dropdown menu.
 
 Use of `Date` with a date string like `12-12-2023` is not currently supported by DataLoom.
