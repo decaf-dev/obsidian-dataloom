@@ -16,7 +16,8 @@ Support development
 
 ## About
 
--   [Screenshots](#screenshots)
+-   [DataLoom](#dataloom)
+-   [Features](#features)
 -   [FAQ](#faq)
 -   [Installation](#installation)
 -   [Create a new loom](#create-a-new-loom)
@@ -26,41 +27,67 @@ Support development
 -   [License](#license)
 -   [Disclaimer](#disclaimer)
 
-## Screenshots
+## DataLoom
 
-DataLoom supports both light and dark modes and a majority of Obsidian themes.
+<video width="1280" controls>
+	<source src="" type="video/mp4" />
+	Your browser does not support the video tag.
+</video>
 
-![](/readme/light-mode.png)
+## Features
 
-![](/readme/dark-mode.png)
+-   Cell types
 
-Choose from 11 different cell types
+    -   [x] Text
+    -   [x] Number
+        -   [x] Currency
+    -   [x] Checkbox
+    -   [x] Embed
+    -   [x] File
+    -   [x] Date
+    -   [x] Tag
+    -   [x] Multi-tag
+    -   [x] Last edited time
+    -   [x] Creation time
 
-<img src="./readme/type-menu.png" height="350">
+-   Columns
 
-Notion-like tag menu system
+    -   [x] Toggle visibility
+    -   [x] Update name
+    -   [x] Update type
+    -   [x] Sort by ascending or descending
 
-<img src="./readme/tag-menu.png" width="225">
+-   Rows
 
-Toggle visibility of different columns
+    -   [x] Filter
+    -   [x] Search
 
-<img src="./readme/toggle-menu.png" width="250">
+-   Import
 
-Reference notes directly from the table
+    -   [x] CSV
+    -   [x] Markdown
 
-<img src="./readme/file-menu.png" width="250">
+-   Export
 
-Advanced filtering menu
+    -   [x] CSV
+    -   [x] Markdown
 
-<img src="./readme/filter-menu.png" width="600">
+-   Color mode
 
-Export to markdown or CSV
+    -   [x] Light mode
+    -   [x] Dark mode
 
-<img src="./readme/export-modal.png" width="500">
+-   Sources
 
-Mobile support
+    -   [x] Folder
+    -   [ ] Tag
+    -   [ ] YouTube API
+    -   [ ] Instagram API
+    -   [ ] Twitter API
 
-<img src="./readme/mobile-support.png" width="250">
+-   [x] Undo/redo
+
+-   [x] Mobile support
 
 ## FAQ
 
@@ -105,47 +132,6 @@ DataLoom intends to be a more simple application. It does not change the native 
 You should use this plugin if you wish to sort and filter tabular data. I use the plugin as an alternative to making markdown lists. It allows me to add tags to my items and sort my ideas.
 
 I recommend you try out the plugin and see if it can help you in organizing your second brain.
-
-## Installation
-
-### Install the plugin
-
-1. In Obsidian, open **Settings**
-2. Go to **Community plugins**
-3. Select **Browse**
-4. Search for **DataLoom** by **Trey Wallis**
-5. Select **Install**
-6. Then select **Enable**
-
-### Configure Obsidian
-
-DataLoom saves data in JSON format in `.loom` files.
-
-#### Enable detection of loom files
-
-By default, Obsidian doesn't display `.loom` files in the suggest menu that opens when you type double brackets `[[`. For Obsidian to do this, you must enable the detection of all file extensions.
-
-1. In Obsidian, open **Settings**
-2. Select **File & Links**
-3. Toggle **Detect all file extensions**
-
-#### Enable syncing of loom files
-
-By default, Obsidian doesn't sync `.loom` files between devices. For Obsidian to do this, you must enable syncing of all file extensions.
-
-1. In Obsidian, open **Settings**
-2. Select **Sync**
-3. Choose and connect to a remote vault
-4. In the remote vault settings, Toggle **Sync all other types**
-5. Repeat these steps on all devices that you want to sync `.loom` files to
-
-## Create a new loom
-
-There are 3 ways to create a new loom
-
--   Click on the table icon on the sidebar
--   Right-click on any folder and click **New loom**
--   Use the command palette and search for **Create loom**
 
 ## Roadmap
 
