@@ -62,6 +62,9 @@ export const serializeFrontmatter = async (app: App, state: LoomState) => {
 			}
 
 			await app.fileManager.processFrontMatter(file, (frontmatter) => {
+				//If it doesn't exist and the content is empty, skip it
+				if (!frontmatter[frontmatterKey.value] && !content) return;
+
 				frontmatter[frontmatterKey.value] = content;
 			});
 		}
