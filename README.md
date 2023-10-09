@@ -49,18 +49,23 @@ Support development
     -   [x] Multi-tag
     -   [x] Last edited time
     -   [x] Creation time
+    -   [x] Source
+    -   [x] Source file
+    -   [ ] Status
+    -   [ ] Location
+    -   [ ] Counter
 
 -   Columns
 
     -   [x] Toggle visibility
     -   [x] Update name
-    -   [x] Update type
-    -   [x] Sort by ascending or descending
+    -   [x] Change type
+    -   [x] Sort ascending or descending
 
 -   Rows
 
-    -   [x] Filter
-    -   [x] Search
+    -   [x] Filter by conditions
+    -   [x] Search by text
 
 -   Import
 
@@ -72,10 +77,10 @@ Support development
     -   [x] CSV
     -   [x] Markdown
 
--   Color mode
+-   Color scheme
 
-    -   [x] Light mode
-    -   [x] Dark mode
+    -   [x] Light
+    -   [x] Dark
 
 -   Sources
 
@@ -86,6 +91,10 @@ Support development
     -   [ ] Twitter API
 
 -   [x] Undo/redo
+
+-   General Obsidian integration
+
+    -   [x] Embedding of notes
 
 -   [x] Mobile support
 
@@ -129,13 +138,13 @@ DataLoom intends to be a more simple application. It does not change the native 
 
 ### Why should I use this plugin?
 
-You should use this plugin if you wish to sort and filter tabular data. I use the plugin as an alternative to making markdown lists. It allows me to add tags to my items and sort my ideas.
+You should use this plugin if you want an easier experience managing tabular data. You should also use this plugin if you wish to create databases similar to Notion.so.
 
 I recommend you try out the plugin and see if it can help you in organizing your second brain.
 
 ## Roadmap
 
-See our [project roadmap](https://github.com/users/trey-wallis/projects/2) for details on:
+See our [project roadmap](https://github.com/users/trey-wallis/projects/2) for details on
 
 -   What is currently in progress
 -   What will be worked on next
@@ -148,8 +157,6 @@ Please see [issues](https://github.com/trey-wallis/obsidian-dataloom/issues) for
 If you are experiencing a problem with the plugin, please search the issues for any open bug reports related to your problem before opening a new issue.
 
 ## Contributing
-
-DataLoom is a community plugin. Contributions are welcome.
 
 Please see our [contribution guide](https://github.com/trey-wallis/obsidian-dataloom/blob/master/CONTRIBUTING.md) for details on how to contribute
 
