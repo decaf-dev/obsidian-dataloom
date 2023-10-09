@@ -1,5 +1,5 @@
-import { v4 as uuidv4 } from "uuid";
+import { generateUuid } from "src/shared/uuid";
 
 export const createAppId = () => {
-	return "a" + uuidv4();
+	return "a" + generateUuid();
 };

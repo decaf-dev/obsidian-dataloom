@@ -134,13 +134,6 @@ const createMultiTagCell = (
 	if (parsedTags.length !== 0) {
 		parsedTags.forEach((tag) => {
 			const existingTag = columnTags.find((t) => {
-				if (columnTags.length === 6) {
-					console.log({
-						content: t.content,
-						tag,
-						eq: t.content === tag,
-					});
-				}
 				return t.content === tag;
 			});
 			if (existingTag) {
@@ -155,10 +148,6 @@ const createMultiTagCell = (
 
 	const cell = createCell(columnId, {
 		tagIds,
-	});
-	console.log({
-		cell,
-		newTags,
 	});
 	return {
 		cell,

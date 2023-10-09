@@ -24,8 +24,10 @@ import {
 	CellType,
 	CurrencyType,
 	DateFormat,
+	FrontmatterKey,
 	NumberFormat,
 	PaddingSize,
+	Source,
 	Tag,
 } from "src/shared/loom-state/types/loom-state";
 import LastEditedTimeCell from "../last-edited-time-cell";
@@ -39,12 +41,19 @@ import { Color } from "src/shared/loom-state/types/loom-state";
 import { useMenu } from "../../shared/menu/hooks";
 
 import "./styles.css";
+import SourceCell from "../source-cell";
+import { ColumnChangeHandler } from "../app/hooks/use-column/types";
+import { CellChangeHandler } from "../app/hooks/use-cell/types";
+import { TagChangeHandler } from "../app/hooks/use-tag/types";
+import SourceFileCell from "../source-file-cell";
 
 interface Props {
+	source: Source | null;
 	isExternalLink: boolean;
 	columnType: string;
 	cellId: string;
 	dateTime: number | null;
+	frontmatterKey: FrontmatterKey | null;
 	dateFormat: DateFormat;
 	numberPrefix: string;
 	numberSuffix: string;
@@ -65,12 +74,6 @@ interface Props {
 	onTagRemoveClick: (cellId: string, tagId: string) => void;
 	onTagMultipleRemove: (cellId: string, tagIds: string[]) => void;
 	onTagClick: (cellId: string, tagId: string, isMultiTag: boolean) => void;
-	onTagContentChange: (
-		columnId: string,
-		tagId: string,
-		value: string
-	) => void;
-	onContentChange: (cellId: string, value: string) => void;
 	onTagAdd: (
 		cellId: string,
 		columnId: string,
@@ -78,21 +81,22 @@ interface Props {
 		color: Color,
 		isMultiTag: boolean
 	) => void;
-	onTagDelete: (columnId: string, tagId: string) => void;
-	onTagColorChange: (columnId: string, tagId: string, color: Color) => void;
-	onDateFormatChange: (columnId: string, value: DateFormat) => void;
-	onDateTimeChange: (cellId: string, value: number | null) => void;
-	onExternalLinkToggle: (cellId: string, value: boolean) => void;
+	onTagDeleteClick: (columnId: string, tagId: string) => void;
+	onColumnChange: ColumnChangeHandler;
+	onCellChange: CellChangeHandler;
+	onTagChange: TagChangeHandler;
 }
 
 export default function BodyCellContainer({
 	cellId,
 	columnId,
 	isExternalLink,
+	source,
 	content,
 	aspectRatio,
 	numberFormat,
 	verticalPadding,
+	frontmatterKey,
 	currencyType,
 	horizontalPadding,
 	dateFormat,
@@ -109,15 +113,12 @@ export default function BodyCellContainer({
 	shouldWrapOverflow,
 	onTagRemoveClick,
 	onTagMultipleRemove,
-	onTagColorChange,
-	onTagDelete,
+	onTagDeleteClick,
 	onTagClick,
-	onContentChange,
-	onDateFormatChange,
-	onDateTimeChange,
-	onTagContentChange,
+	onColumnChange,
 	onTagAdd,
-	onExternalLinkToggle,
+	onTagChange,
+	onCellChange,
 }: Props) {
 	//All of these cells have local values
 	const shouldRequestOnClose =
@@ -167,11 +168,11 @@ export default function BodyCellContainer({
 			columnType === CellType.NUMBER ||
 			columnType === CellType.FILE
 		) {
-			onContentChange(cellId, "");
+			onCellChange(cellId, { content: "" });
 		} else if (columnType === CellType.DATE) {
-			onDateTimeChange(cellId, null);
+			onCellChange(cellId, { dateTime: null });
 		} else if (columnType === CellType.CHECKBOX) {
-			onContentChange(cellId, CHECKBOX_MARKDOWN_UNCHECKED);
+			onCellChange(cellId, { content: CHECKBOX_MARKDOWN_UNCHECKED });
 		} else if (
 			columnType === CellType.TAG ||
 			columnType === CellType.MULTI_TAG
@@ -191,7 +192,7 @@ export default function BodyCellContainer({
 	}
 
 	function handleExternalLinkToggle(value: boolean) {
-		onExternalLinkToggle(cellId, value);
+		onCellChange(cellId, { isExternalLink: value });
 	}
 
 	function handleTagAdd(markdown: string, color: Color) {
@@ -209,16 +210,16 @@ export default function BodyCellContainer({
 		onTagRemoveClick(cellId, tagId);
 	}
 
-	function handleTagColorChange(tagId: string, color: Color) {
-		onTagColorChange(columnId, tagId, color);
+	function handleTagColorChange(tagId: string, value: Color) {
+		onTagChange(columnId, tagId, { color: value });
 	}
 
 	function handleTagDeleteClick(tagId: string) {
-		onTagDelete(columnId, tagId);
+		onTagDeleteClick(columnId, tagId);
 	}
 
 	function handleTagContentChange(tagId: string, value: string) {
-		onTagContentChange(columnId, tagId, value);
+		onTagChange(columnId, tagId, { content: value });
 	}
 
 	function handleTagClick(tagId: string) {
@@ -227,24 +228,28 @@ export default function BodyCellContainer({
 
 	const handleInputChange = React.useCallback(
 		(value: string) => {
-			onContentChange(cellId, value);
+			onCellChange(cellId, { content: value });
 		},
-		[cellId, onContentChange]
+		[cellId, onCellChange]
 	);
 
 	function handleCheckboxChange(value: string) {
-		onContentChange(cellId, value);
+		onCellChange(cellId, { content: value });
 	}
 
 	function handleDateFormatChange(value: DateFormat) {
-		onDateFormatChange(columnId, value);
+		onColumnChange(
+			columnId,
+			{ dateFormat: value },
+			{ shouldSortRows: true }
+		);
 	}
 
 	const handleDateTimeChange = React.useCallback(
 		(value: number | null) => {
-			onDateTimeChange(cellId, value);
+			onCellChange(cellId, { dateTime: value });
 		},
-		[cellId, onDateTimeChange]
+		[cellId, onCellChange]
 	);
 
 	let menuWidth = triggerPosition.width;
@@ -272,16 +277,30 @@ export default function BodyCellContainer({
 		menuHeight = 0;
 	}
 
-	let className = "dataloom-cell--body__container";
+	let className = "dataloom-cell__body-container";
 	if (
 		columnType === CellType.LAST_EDITED_TIME ||
-		columnType === CellType.CREATION_TIME
+		columnType === CellType.CREATION_TIME ||
+		columnType === CellType.SOURCE ||
+		columnType === CellType.SOURCE_FILE ||
+		(source && frontmatterKey === null)
 	) {
-		className += " dataloom-default-cursor";
+		className += " dataloom-cell__body-container--default-cursor";
 	}
 
 	const cellTags = columnTags.filter((tag) => cellTagIds.includes(tag.id));
 
+	let shouldOpenOnTrigger = true;
+	if (
+		columnType === CellType.CHECKBOX ||
+		columnType === CellType.CREATION_TIME ||
+		columnType === CellType.LAST_EDITED_TIME ||
+		columnType === CellType.SOURCE ||
+		columnType === CellType.SOURCE_FILE ||
+		(source && frontmatterKey === null)
+	) {
+		shouldOpenOnTrigger = false;
+	}
 	return (
 		<>
 			<MenuTrigger
@@ -291,11 +310,7 @@ export default function BodyCellContainer({
 				onClick={handleMenuTriggerClick}
 				onEnterDown={handleMenuTriggerEnterDown}
 				onBackspaceDown={handleMenuTriggerBackspaceDown}
-				shouldOpenOnTrigger={
-					columnType !== CellType.CHECKBOX &&
-					columnType !== CellType.CREATION_TIME &&
-					columnType !== CellType.LAST_EDITED_TIME
-				}
+				shouldOpenOnTrigger={shouldOpenOnTrigger}
 				onOpen={onOpen}
 			>
 				<div
@@ -324,6 +339,12 @@ export default function BodyCellContainer({
 						<FileCell
 							value={content}
 							shouldWrapOverflow={shouldWrapOverflow}
+						/>
+					)}
+					{columnType === CellType.SOURCE_FILE && (
+						<SourceFileCell
+							shouldWrapOverflow={shouldWrapOverflow}
+							content={content}
 						/>
 					)}
 					{columnType === CellType.NUMBER && (
@@ -368,6 +389,12 @@ export default function BodyCellContainer({
 							value={rowLastEditedTime}
 							format={dateFormat}
 							shouldWrapOverflow={shouldWrapOverflow}
+						/>
+					)}
+					{columnType === CellType.SOURCE && (
+						<SourceCell
+							shouldWrapOverflow={shouldWrapOverflow}
+							source={source}
 						/>
 					)}
 				</div>

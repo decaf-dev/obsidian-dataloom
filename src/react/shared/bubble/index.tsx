@@ -7,6 +7,7 @@ import Button from "../button";
 import "./styles.css";
 
 interface Props {
+	variant?: "default" | "no-fill";
 	icon?: React.ReactNode;
 	canRemove?: boolean;
 	value: string;
@@ -14,13 +15,19 @@ interface Props {
 }
 
 export default function Bubble({
+	variant = "default",
 	canRemove,
 	icon,
 	value,
 	onRemoveClick,
 }: Props) {
+	let className = "dataloom-bubble";
+	if (variant === "no-fill") {
+		className += " dataloom-bubble--no-fill";
+	}
+
 	return (
-		<div className="dataloom-bubble">
+		<div className={className}>
 			<Stack spacing="lg" isHorizontal>
 				<Stack spacing="sm" isHorizontal>
 					{icon}

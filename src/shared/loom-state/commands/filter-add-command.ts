@@ -7,11 +7,12 @@ import {
 	createLastEditedTimeFilter,
 	createMultiTagFilter,
 	createNumberFilter,
+	createSourceFileFilter,
 	createTagFilter,
 	createTextFilter,
 } from "../loom-state-factory";
 import { LoomState } from "../types";
-import { CellType, Filter } from "../types/loom-state";
+import { CellType, Column, Filter } from "../types/loom-state";
 import LoomStateCommand from "./loom-state-command";
 
 export default class FilterAddCommand extends LoomStateCommand {
@@ -21,29 +22,36 @@ export default class FilterAddCommand extends LoomStateCommand {
 		super.onExecute();
 
 		const { filters, columns } = prevState.model;
-		const { id: columnId, type } = columns[0];
+		let column: Column = columns[0];
+
+		if (column.type === CellType.SOURCE) {
+			column = columns[1];
+		}
+		const { type, id } = column;
 
 		let newFilter: Filter | null = null;
 		if (type === CellType.TEXT) {
-			newFilter = createTextFilter(columnId);
+			newFilter = createTextFilter(id);
 		} else if (type === CellType.FILE) {
-			newFilter = createFileFilter(columnId);
+			newFilter = createFileFilter(id);
 		} else if (type === CellType.CHECKBOX) {
-			newFilter = createCheckboxFilter(columnId);
+			newFilter = createCheckboxFilter(id);
 		} else if (type === CellType.TAG) {
-			newFilter = createTagFilter(columnId);
+			newFilter = createTagFilter(id);
 		} else if (type === CellType.MULTI_TAG) {
-			newFilter = createMultiTagFilter(columnId);
+			newFilter = createMultiTagFilter(id);
 		} else if (type === CellType.DATE) {
-			newFilter = createDateFilter(columnId);
+			newFilter = createDateFilter(id);
 		} else if (type === CellType.NUMBER) {
-			newFilter = createNumberFilter(columnId);
+			newFilter = createNumberFilter(id);
 		} else if (type === CellType.EMBED) {
-			newFilter = createEmbedFilter(columnId);
+			newFilter = createEmbedFilter(id);
 		} else if (type === CellType.CREATION_TIME) {
-			newFilter = createCreationTimeFilter(columnId);
+			newFilter = createCreationTimeFilter(id);
 		} else if (type === CellType.LAST_EDITED_TIME) {
-			newFilter = createLastEditedTimeFilter(columnId);
+			newFilter = createLastEditedTimeFilter(id);
+		} else if (type === CellType.SOURCE_FILE) {
+			newFilter = createSourceFileFilter(id);
 		} else {
 			throw new Error("Unhandled cell type");
 		}
@@ -62,8 +70,10 @@ export default class FilterAddCommand extends LoomStateCommand {
 	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
-		const nextFilters = prevState.model.filters.filter(
-			(f) => f.id !== this.addedFilter.id
+		const { filters } = prevState.model;
+
+		const nextFilters = filters.filter(
+			(filter) => filter.id !== this.addedFilter.id
 		);
 		return {
 			...prevState,

@@ -6,7 +6,7 @@ import FilterRow from "./filter-row";
 import Text from "src/react/shared/text";
 import Button from "src/react/shared/button";
 
-import ColumNotFoundError from "src/shared/error/column-not-found-error";
+import ColumnNotFoundError from "src/shared/error/column-not-found-error";
 import {
 	CellType,
 	FilterCondition,
@@ -36,6 +36,8 @@ import {
 	LastEditedTimeFilter,
 	DateFilterOption,
 	Column,
+	SourceFileFilter,
+	SourceFileCondition,
 } from "src/shared/loom-state/types/loom-state";
 import { isSmallScreenSize } from "src/shared/render/utils";
 import {
@@ -58,6 +60,7 @@ import {
 	createLastEditedTimeFilter,
 	createMultiTagFilter,
 	createNumberFilter,
+	createSourceFileFilter,
 	createTagFilter,
 	createTextFilter,
 } from "src/shared/loom-state/loom-state-factory";
@@ -94,7 +97,7 @@ export default function FilterMenu({
 		const { condition, isEnabled } = filter;
 
 		const column = columns.find((column) => column.id === columnId);
-		if (!column) throw new ColumNotFoundError(columnId);
+		if (!column) throw new ColumnNotFoundError({ id: columnId });
 		const { type } = column;
 
 		let newFilter: Filter | null = null;
@@ -273,6 +276,26 @@ export default function FilterMenu({
 				condition: newCondition,
 				isEnabled,
 			});
+		} else if (type === CellType.SOURCE_FILE) {
+			let newCondition: SourceFileCondition;
+			if (
+				condition !== TextFilterCondition.IS &&
+				condition !== TextFilterCondition.IS_NOT &&
+				condition !== TextFilterCondition.CONTAINS &&
+				condition !== TextFilterCondition.DOES_NOT_CONTAIN &&
+				condition !== TextFilterCondition.STARTS_WITH &&
+				condition !== TextFilterCondition.ENDS_WITH &&
+				condition !== TextFilterCondition.IS_EMPTY &&
+				condition !== TextFilterCondition.IS_NOT_EMPTY
+			) {
+				newCondition = TextFilterCondition.IS;
+			} else {
+				newCondition = condition;
+			}
+			newFilter = createSourceFileFilter(columnId, {
+				condition: newCondition,
+				isEnabled,
+			});
 		} else {
 			throw new Error("Column type not handled");
 		}
@@ -342,7 +365,8 @@ export default function FilterMenu({
 							const column = columns.find(
 								(column) => column.id === columnId
 							);
-							if (!column) throw new ColumNotFoundError(columnId);
+							if (!column)
+								throw new ColumnNotFoundError({ id: columnId });
 							const { tags } = column;
 
 							let inputNode: React.ReactNode;
@@ -372,6 +396,28 @@ export default function FilterMenu({
 								}
 								case CellType.FILE: {
 									const { text } = filter as FileFilter;
+									inputNode = (
+										<Input
+											value={text}
+											onChange={(newValue) =>
+												onTextChange(id, newValue)
+											}
+										/>
+									);
+									conditionOptions = [
+										TextFilterCondition.IS,
+										TextFilterCondition.IS_NOT,
+										TextFilterCondition.CONTAINS,
+										TextFilterCondition.DOES_NOT_CONTAIN,
+										TextFilterCondition.STARTS_WITH,
+										TextFilterCondition.ENDS_WITH,
+										TextFilterCondition.IS_EMPTY,
+										TextFilterCondition.IS_NOT_EMPTY,
+									];
+									break;
+								}
+								case CellType.SOURCE_FILE: {
+									const { text } = filter as SourceFileFilter;
 									inputNode = (
 										<Input
 											value={text}

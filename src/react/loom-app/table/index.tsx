@@ -8,13 +8,13 @@ import BodyCell from "./body-cell";
 import FooterCell from "./footer-cell";
 
 import { usePrevious } from "src/shared/hooks";
-import { BodyTableRow, HeaderTableRow, TableRow } from "./types";
+import { TableRow } from "./types";
 
 import "./styles.css";
 
 interface Props {
-	headerRow: HeaderTableRow;
-	bodyRows: BodyTableRow[];
+	headerRow: TableRow;
+	bodyRows: TableRow[];
 	footer?: TableRow;
 	numFrozenColumns: number;
 }
@@ -51,13 +51,13 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 				return (
 					<div className="dataloom-row">
 						{cells.map((cell, i) => {
-							const { columnId, content } = cell;
+							const { id, content } = cell;
 							return (
 								<HeaderCell
-									key={columnId}
+									key={id}
 									index={i}
 									numFrozenColumns={numFrozenColumns}
-									columnId={columnId}
+									columnId={id}
 									content={content}
 									isDraggable={i < cells.length - 1}
 								/>

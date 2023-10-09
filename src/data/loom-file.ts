@@ -1,7 +1,7 @@
 import { App, Notice, normalizePath } from "obsidian";
 import { createFile, createFolder } from "./file-operations";
 import { createLoomState } from "../shared/loom-state/loom-state-factory";
-import { serializeState } from "./serialization";
+import { serializeState } from "./serialize-state";
 import { LOOM_EXTENSION, DEFAULT_LOOM_NAME } from "./constants";
 
 export const createLoomFile = async (

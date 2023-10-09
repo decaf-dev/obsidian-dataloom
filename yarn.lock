@@ -4650,10 +4650,10 @@ object.values@^1.1.6:
     define-properties "^1.1.4"
     es-abstract "^1.20.4"
 
-obsidian@^1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/obsidian/-/obsidian-1.4.0.tgz#2253b119fd53f675dedd89431d29b9c2f4ab1c02"
-  integrity sha512-fsZMPlxgflGSBSP6P4BjQi5+0MqZl3h6FEDEZ3CNnweNdDw0doyqN3FMO/PGWfuxPT77WicVwUxekuI3e6eCGg==
+obsidian@^1.4.11:
+  version "1.4.11"
+  resolved "https://registry.yarnpkg.com/obsidian/-/obsidian-1.4.11.tgz#5cba594c83a74ebad58b630c610265018abdadaa"
+  integrity sha512-BCVYTvaXxElJMl6MMbDdY/CGK+aq18SdtDY/7vH8v6BxCBQ6KF4kKxL0vG9UZ0o5qh139KpUoJHNm+6O5dllKA==
   dependencies:
     "@types/codemirror" "5.60.8"
     moment "2.29.4"

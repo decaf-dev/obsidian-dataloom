@@ -10,6 +10,7 @@ interface Props {
 	onBackClick: () => void;
 }
 
+//TODO make a cell type is visible function
 export default function TypeSubmenu({
 	title,
 	value,
@@ -18,15 +19,21 @@ export default function TypeSubmenu({
 }: Props) {
 	return (
 		<Submenu title={title} onBackClick={onBackClick}>
-			{Object.values(CellType).map((type: CellType) => (
-				<MenuItem
-					key={type}
-					name={getDisplayNameForCellType(type)}
-					lucideId={getIconIdForCellType(type)}
-					onClick={() => onValueClick(type)}
-					isSelected={type === value}
-				/>
-			))}
+			{Object.values(CellType)
+				.filter(
+					(type) =>
+						type !== CellType.SOURCE &&
+						type !== CellType.SOURCE_FILE
+				)
+				.map((type: CellType) => (
+					<MenuItem
+						key={type}
+						name={getDisplayNameForCellType(type)}
+						lucideId={getIconIdForCellType(type)}
+						onClick={() => onValueClick(type)}
+						isSelected={type === value}
+					/>
+				))}
 		</Submenu>
 	);
 }

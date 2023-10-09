@@ -20,7 +20,7 @@ export default class RowAddCommand extends LoomStateCommand {
 		const cells = columns.map((column) => {
 			const { id, type } = column;
 			return createCell(id, {
-				cellType: type,
+				type,
 			});
 		});
 		this.addedRow = createRow(rows.length, { cells });

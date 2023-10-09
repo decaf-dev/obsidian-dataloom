@@ -4,6 +4,7 @@ import {
 	LoomState9,
 	AspectRatio as AspectRatio9,
 	PaddingSize as PaddingSize9,
+	Column as Column9,
 } from "../types/loom-state-9";
 
 /**
@@ -13,7 +14,7 @@ export default class MigrateState8 implements MigrateState {
 	public migrate(prevState: LoomState8): LoomState9 {
 		const { columns } = prevState.model;
 
-		const nextColumns = columns.map((column) => {
+		const nextColumns: Column9[] = columns.map((column) => {
 			return {
 				...column,
 				isLocked: false,

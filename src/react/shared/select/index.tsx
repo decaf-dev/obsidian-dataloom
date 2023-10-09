@@ -1,6 +1,8 @@
 import "./styles.css";
 
 interface Props {
+	id?: string;
+	hasError?: boolean;
 	className?: string;
 	value: string;
 	onKeyDown?: (e: React.KeyboardEvent<HTMLSelectElement>) => void;
@@ -9,20 +11,26 @@ interface Props {
 }
 
 export default function Select({
-	className,
+	id,
+	hasError,
+	className: customClassName,
 	value,
 	onChange,
 	onKeyDown,
 	children,
 }: Props) {
-	let newClassName = "dataloom-select dataloom-focusable";
-	if (className) {
-		newClassName += " " + className;
+	let className = "dataloom-select dataloom-focusable";
+	if (customClassName) {
+		className += " " + customClassName;
+	}
+	if (hasError) {
+		className += " dataloom-select--error";
 	}
 	return (
 		<select
+			id={id}
 			tabIndex={0}
-			className={newClassName}
+			className={className}
 			value={value}
 			onChange={(e) => onChange(e.target.value)}
 			onKeyDown={onKeyDown}
