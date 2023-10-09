@@ -22,7 +22,7 @@ interface Error {
 	inputId: string;
 }
 
-const NAME_INPUT_ID = "name";
+const PATH_INPUT_ID = "path";
 const TYPE_SELECT_ID = "type";
 
 export default function AddSourceSubmenu({
@@ -31,7 +31,7 @@ export default function AddSourceSubmenu({
 	onBackClick,
 }: Props) {
 	const [type, setType] = React.useState<SourceType | null>(null);
-	const [name, setName] = React.useState("");
+	const [path, setPath] = React.useState("");
 	const [error, setError] = React.useState<Error | null>(null);
 
 	function handleAddClick() {
@@ -41,23 +41,23 @@ export default function AddSourceSubmenu({
 				inputId: TYPE_SELECT_ID,
 			});
 			return;
-		} else if (name === "") {
+		} else if (path === "") {
 			setError({
-				message: "Please enter a name",
-				inputId: NAME_INPUT_ID,
+				message: "Please enter a path",
+				inputId: PATH_INPUT_ID,
 			});
 			return;
-		} else if (alreadyHasSource(sources, type, name)) {
+		} else if (alreadyHasSource(sources, type, path)) {
 			setError({
 				message: "Source already exists",
-				inputId: NAME_INPUT_ID,
+				inputId: PATH_INPUT_ID,
 			});
 			return;
 		}
 
 		let source: Source;
 		if (type === SourceType.FOLDER) {
-			source = createFolderSource(name);
+			source = createFolderSource(path);
 		} else {
 			setError({
 				message: "Source not supported",
@@ -71,19 +71,22 @@ export default function AddSourceSubmenu({
 	function alreadyHasSource(
 		sources: Source[],
 		type: SourceType,
-		name: string
+		path: string
 	) {
+		//TODO fix for tag source
 		if (type === SourceType.FOLDER) {
 			return sources.find(
-				(source) => source.type === type && source.name === name
+				(source) => source.type === type && source.path === path
 			);
 		} else if (type === SourceType.TAG) {
 			return sources.find(
-				(source) => source.type === type && source.name === name
+				(source) => source.type === type && source.name === path
 			);
 		}
 		throw new Error("Source type not handled");
 	}
+
+	//TODO create individual component for tag sources
 
 	return (
 		<Submenu
@@ -116,13 +119,13 @@ export default function AddSourceSubmenu({
 						</Select>
 					</Stack>
 					<Stack spacing="sm">
-						<label htmlFor={NAME_INPUT_ID}>Name</label>
+						<label htmlFor={PATH_INPUT_ID}>Path</label>
 						<Input
-							id={NAME_INPUT_ID}
+							id={PATH_INPUT_ID}
 							autoFocus={false}
-							hasError={error?.inputId === NAME_INPUT_ID}
-							value={name}
-							onChange={(value) => setName(value)}
+							hasError={error?.inputId === PATH_INPUT_ID}
+							value={path}
+							onChange={(value) => setPath(value)}
 						/>
 					</Stack>
 					{error?.message && (

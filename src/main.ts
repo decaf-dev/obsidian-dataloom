@@ -100,7 +100,7 @@ export default class DataLoomPlugin extends Plugin {
 		);
 		this.registerExtensions([LOOM_EXTENSION], DATA_LOOM_VIEW);
 
-		this.addRibbonIcon("table", "Create new loom", async () => {
+		this.addRibbonIcon("table", "Create loom", async () => {
 			await this.newLoomFile(null);
 		});
 

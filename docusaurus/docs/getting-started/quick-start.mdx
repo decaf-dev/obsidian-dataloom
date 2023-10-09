@@ -2,12 +2,7 @@
 sidebar_position: 1
 ---
 
-import pluginInstallationVideo from "../../static/video/plugin-installation.mov";
-import enableSyncVideo from "../../static/video/enable-sync.mov";
-import enableFileExtensionsVideo from "../../static/video/enable-file-extensions.mov";
-import newLoomSidebar from "../../static/video/new-loom-sidebar.mov";
-import newLoomFolder from "../../static/video/new-loom-folder.mov";
-import newLoomCommandPalette from "../../static/video/new-loom-command-palette.mov";
+import VideoEmbed from "@site/src/components/VideoEmbed";
 
 # Quick start
 
@@ -22,31 +17,25 @@ import newLoomCommandPalette from "../../static/video/new-loom-command-palette.m
 5. Select **Install**
 6. Then select **Enable**
 
-<video width="1280" controls>
-	<source src={pluginInstallationVideo} type="video/mp4" />
-	Your browser does not support the video tag.
-</video>
+<VideoEmbed url="https://dataloom.b-cdn.net/plugin-installation.mov" />
 
 ### Configure Obsidian
 
-DataLoom saves data in JSON format in `.loom` files.
+DataLoom saves data in JSON format in `.loom` files. Some changes are required to Obsidian's default settings in order to allow the plugin to work properly.
 
 #### Enable detection of loom files
 
-By default, Obsidian doesn't display `.loom` files in the suggest menu that opens when you type double brackets `[[`. For Obsidian to do this, you must enable the detection of all file extensions.
+By default, Obsidian won't display `.loom` files in the suggest menu that opens when you type double brackets `[[`. To enable this behavior, you must turn on the detection of all file extensions.
 
 1. In Obsidian, open **Settings**
 2. Select **File & Links**
 3. Toggle **Detect all file extensions**
 
-<video width="1280" controls>
-	<source src={enableFileExtensionsVideo} type="video/mp4" />
-	Your browser does not support the video tag.
-</video>
+<VideoEmbed url="https://dataloom.b-cdn.net/enable-file-extensions.mov" />
 
 #### Enable syncing of loom files
 
-By default, Obsidian doesn't sync `.loom` files between devices. For Obsidian to do this, you must enable syncing of all file extensions.
+By default, Obsidian won't sync `.loom` files between devices. To enable this behavior, you must turn on sync for all file extensions.
 
 1. In Obsidian, open **Settings**
 2. Select **Sync**
@@ -54,30 +43,34 @@ By default, Obsidian doesn't sync `.loom` files between devices. For Obsidian to
 4. In the remote vault settings, Toggle **Sync all other types**
 5. Repeat these steps on all devices that you want to sync `.loom` files to
 
-<video width="1280" controls>
-	<source src={enableSyncVideo} type="video/mp4" />
-	Your browser does not support the video tag.
-</video>
+<VideoEmbed url="https://dataloom.b-cdn.net/enable-sync.mov" />
 
-## Create a new loom
+## Create a loom
 
-There are 3 ways to create a new loom
+There are 4 ways to create a loom
 
--   Click on the table icon on the sidebar
--   Right-click on any folder and click **New loom**
--   Use the command palette and search for **Create loom**
+### Sidebar icon
 
-<video width="1280" controls>
-	<source src={newLoomSidebar} type="video/mp4" />
-	Your browser does not support the video tag.
-</video>
+Click the table icon in the sidebar
 
-<video width="1280" controls>
-	<source src={newLoomFolder} type="video/mp4" />
-	Your browser does not support the video tag.
-</video>
+<VideoEmbed url="https://dataloom.b-cdn.net/create-loom-sidebar.mov" />
 
-<video width="1280" controls>
-	<source src={newLoomCommandPalette} type="video/mp4" />
-	Your browser does not support the video tag.
-</video>
+## Right click on a folder
+
+Right-click on any folder and select **New loom**
+
+<VideoEmbed url="https://dataloom.b-cdn.net/create-loom-folder.mov" />
+
+## Command palette
+
+Open the [command palette](https://help.obsidian.md/Plugins/Command+palette) and search for **Create loom**
+
+<VideoEmbed url="https://dataloom.b-cdn.net/create-loom-command-palette.mov" />
+
+### Embed into note
+
+You can also embed a new loom into an existing note. Open a markdown note and move
+the cursor to the line where you wish to insert a loom. Open the command palette
+and search for **Create loom and embed into current file**
+
+<VideoEmbed url="https://dataloom.b-cdn.net/create-loom-command-palette-embed.mov" />
