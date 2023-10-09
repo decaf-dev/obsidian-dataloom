@@ -45,7 +45,7 @@ export const serializeFrontmatter = async (app: App, state: LoomState) => {
 
 			const { tagIds } = cell;
 
-			let content: unknown;
+			let content: string | string[] | number | null = null;
 			if (type === CellType.TAG || type === CellType.MULTI_TAG) {
 				const cellTags = tags.filter((tag) => tagIds.includes(tag.id));
 				const cellTagContent = cellTags.map((tag) => tag.content);
@@ -63,7 +63,10 @@ export const serializeFrontmatter = async (app: App, state: LoomState) => {
 
 			await app.fileManager.processFrontMatter(file, (frontmatter) => {
 				//If it doesn't exist and the content is empty, skip it
-				if (!frontmatter[frontmatterKey.value] && !content) return;
+				if (!frontmatter[frontmatterKey.value]) {
+					if (!content) return; //empty or null
+					if (Array.isArray(content) && content.length === 0) return;
+				}
 
 				frontmatter[frontmatterKey.value] = content;
 			});
