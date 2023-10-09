@@ -16,7 +16,7 @@ Support development
 
 ## About
 
--   [DataLoom](#dataloom)
+-   [Screenshots](#screenshots)
 -   [Features](#features)
 -   [FAQ](#faq)
 -   [Installation](#installation)
@@ -27,7 +27,7 @@ Support development
 -   [License](#license)
 -   [Disclaimer](#disclaimer)
 
-## DataLoom
+## Screenshots
 
 ![](/readme/app.png)
 
@@ -55,14 +55,20 @@ Support development
 -   Columns
 
     -   [x] Toggle visibility
-    -   [x] Update name
+    -   [x] Change name
     -   [x] Change type
     -   [x] Sort ascending or descending
+    -   [x] Reorder columns
+    -   [ ] Insert left
+    -   [ ] Insert right
 
 -   Rows
 
     -   [x] Filter by conditions
     -   [x] Search by text
+    -   [x] Insert above
+    -   [x] Insert below
+    -   [x] Reorder rows
 
 -   Import
 
@@ -91,7 +97,7 @@ Support development
 
 -   General Obsidian integration
 
-    -   [x] Embedding of notes
+    -   [x] Embed notes
 
 -   [x] Mobile support
 
