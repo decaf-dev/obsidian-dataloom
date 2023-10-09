@@ -37,6 +37,7 @@ export default function SourceItem({
 				{isEditing && (
 					<Button
 						icon={<Icon lucideId="trash" />}
+						ariaLabel="Delete source"
 						onClick={() => onDelete(id)}
 					/>
 				)}

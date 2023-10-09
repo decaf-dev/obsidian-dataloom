@@ -12,11 +12,12 @@ Support development
 
 <a href="https://github.com/sponsors/trey-wallis" target="_blank" rel="noopener"><img width="110" src="https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86"></a>
 
-<a href="https://www.buymeacoffee.com/treywallis" target="_blank" rel="noopener"><img width="180" src="https://img.buymeacoffee.com/button-api/?text=Buy me a herbal tea&emoji=%F0%9F%8D%B5&slug=treywallis&button_colour=9478F0&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00&refresh_id=1" /></a>
+<a href="https://www.buymeacoffee.com/treywallis" target="_blank" rel="noopener"><img width="180" src="https://img.buymeacoffee.com/button-api/?text=Buy me a herbal tea&emoji=%F0%9F%8D%B5&slug=treywallis&button_colour=9478F0&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00&refresh_id=2" /></a>
 
 ## About
 
--   [Screenshots](#screenshots)
+-   [DataLoom](#dataloom)
+-   [Features](#features)
 -   [FAQ](#faq)
 -   [Installation](#installation)
 -   [Create a new loom](#create-a-new-loom)
@@ -26,41 +27,73 @@ Support development
 -   [License](#license)
 -   [Disclaimer](#disclaimer)
 
-## Screenshots
+## DataLoom
 
-DataLoom supports both light and dark modes and a majority of Obsidian themes.
+![](/readme/app.png)
 
-![](/docusaurus/static/img/light-mode.png)
+## Features
 
-![](/docusaurus/static/img/dark-mode.png)
+-   Cell types
 
-Choose from 11 different cell types
+    -   [x] Text
+    -   [x] Number
+        -   [x] Currency
+    -   [x] Checkbox
+    -   [x] Embed
+    -   [x] File
+    -   [x] Date
+    -   [x] Tag
+    -   [x] Multi-tag
+    -   [x] Last edited time
+    -   [x] Creation time
+    -   [x] Source
+    -   [x] Source file
+    -   [ ] Status
+    -   [ ] Location
+    -   [ ] Counter
 
-<img src="./docusaurus/static/img/type-menu.png" height="350">
+-   Columns
 
-Notion-like tag menu system
+    -   [x] Toggle visibility
+    -   [x] Update name
+    -   [x] Change type
+    -   [x] Sort ascending or descending
 
-<img src="./docusaurus/static/img/tag-menu.png" width="225">
+-   Rows
 
-Toggle visibility of different columns
+    -   [x] Filter by conditions
+    -   [x] Search by text
 
-<img src="./docusaurus/static/img/toggle-menu.png" width="250">
+-   Import
 
-Reference notes directly from the table
+    -   [x] CSV
+    -   [x] Markdown
 
-<img src="./docusaurus/static/img/file-menu.png" width="250">
+-   Export
 
-Advanced filtering menu
+    -   [x] CSV
+    -   [x] Markdown
 
-<img src="./docusaurus/static/img/filter-menu.png" width="600">
+-   Color scheme
 
-Export to markdown or CSV
+    -   [x] Light
+    -   [x] Dark
 
-<img src="./docusaurus/static/img/export-modal.png" width="500">
+-   Sources
 
-Mobile support
+    -   [x] Folder
+    -   [ ] Tag
+    -   [ ] YouTube API
+    -   [ ] Instagram API
+    -   [ ] Twitter API
 
-<img src="./docusaurus/static/img/mobile-support.png" width="250">
+-   [x] Undo/redo
+
+-   General Obsidian integration
+
+    -   [x] Embedding of notes
+
+-   [x] Mobile support
 
 ## FAQ
 
@@ -102,54 +135,13 @@ DataLoom intends to be a more simple application. It does not change the native 
 
 ### Why should I use this plugin?
 
-You should use this plugin if you wish to sort and filter tabular data. I use the plugin as an alternative to making markdown lists. It allows me to add tags to my items and sort my ideas.
+You should use this plugin if you want an easier experience managing tabular data. You should also use this plugin if you wish to create databases similar to Notion.so.
 
 I recommend you try out the plugin and see if it can help you in organizing your second brain.
 
-## Installation
-
-### Install the plugin
-
-1. In Obsidian, open **Settings**
-2. Go to **Community plugins**
-3. Select **Browse**
-4. Search for **DataLoom** by **Trey Wallis**
-5. Select **Install**
-6. Then select **Enable**
-
-### Configure Obsidian
-
-DataLoom saves data in JSON format in `.loom` files.
-
-#### Enable detection of loom files
-
-By default, Obsidian doesn't display `.loom` files in the suggest menu that opens when you type double brackets `[[`. For Obsidian to do this, you must enable the detection of all file extensions.
-
-1. In Obsidian, open **Settings**
-2. Select **File & Links**
-3. Toggle **Detect all file extensions**
-
-#### Enable syncing of loom files
-
-By default, Obsidian doesn't sync `.loom` files between devices. For Obsidian to do this, you must enable syncing of all file extensions.
-
-1. In Obsidian, open **Settings**
-2. Select **Sync**
-3. Choose and connect to a remote vault
-4. In the remote vault settings, Toggle **Sync all other types**
-5. Repeat these steps on all devices that you want to sync `.loom` files to
-
-## Create a new loom
-
-There are 3 ways to create a new loom
-
--   Click on the table icon on the sidebar
--   Right-click on any folder and click **New loom**
--   Use the command palette and search for **Create loom**
-
 ## Roadmap
 
-See our [project roadmap](https://github.com/users/trey-wallis/projects/2) for details on:
+See our [project roadmap](https://github.com/users/trey-wallis/projects/2) for details on
 
 -   What is currently in progress
 -   What will be worked on next
@@ -162,8 +154,6 @@ Please see [issues](https://github.com/trey-wallis/obsidian-dataloom/issues) for
 If you are experiencing a problem with the plugin, please search the issues for any open bug reports related to your problem before opening a new issue.
 
 ## Contributing
-
-DataLoom is a community plugin. Contributions are welcome.
 
 Please see our [contribution guide](https://github.com/trey-wallis/obsidian-dataloom/blob/master/CONTRIBUTING.md) for details on how to contribute
 

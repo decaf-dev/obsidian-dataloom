@@ -28,12 +28,12 @@ export default function findDataFromSources(
 		const { id, type } = source;
 		switch (type) {
 			case SourceType.FOLDER: {
-				const { name } = source as ObsidianFolderSource;
+				const { path } = source as ObsidianFolderSource;
 				const result = findRowsFromFolder(
 					app,
 					nextColumns,
 					id,
-					name,
+					path,
 					numRows + newRows.length
 				);
 				newRows.push(...result.newRows);
@@ -54,13 +54,13 @@ const findRowsFromFolder = (
 	app: App,
 	columns: Column[],
 	sourceId: string,
-	folderName: string,
+	folderPath: string,
 	numRows: number
 ): {
 	newRows: Row[];
 	nextColumns: Column[];
 } => {
-	const folder = app.vault.getAbstractFileByPath(folderName);
+	const folder = app.vault.getAbstractFileByPath(folderPath);
 	if (!folder)
 		return {
 			nextColumns: columns,

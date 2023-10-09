@@ -22,12 +22,14 @@ export default function SourcesHeader({
 				{showEditButton && (
 					<Button
 						icon={<Icon lucideId="edit"></Icon>}
+						ariaLabel="Edit source"
 						onClick={() => onEditClick()}
 					/>
 				)}
 				<Button
 					icon={<Icon lucideId="plus"></Icon>}
 					onClick={() => onAddClick()}
+					ariaLabel="Add source"
 				/>
 			</Stack>
 		</Flex>
