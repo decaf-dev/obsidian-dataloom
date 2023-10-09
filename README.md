@@ -29,10 +29,7 @@ Support development
 
 ## DataLoom
 
-<video width="1280" controls>
-	<source src="" type="video/mp4" />
-	Your browser does not support the video tag.
-</video>
+![/readme/app.png]
 
 ## Features
 
