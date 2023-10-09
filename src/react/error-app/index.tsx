@@ -14,9 +14,6 @@ interface Props {
 export default function ErrorApp({ error, isEmbeddedApp = false }: Props) {
 	const { fileVersion, pluginVersion, failedMigration, message } = error;
 
-	let className = "dataloom-error-app";
-	if (isEmbeddedApp) className += " dataloom-error-app--embedded";
-
 	const copyErrorMessage = `Plugin version: ${pluginVersion}\nFile version: ${fileVersion}\nFailed migration: ${failedMigration}\nError message: ${message}`;
 
 	return (

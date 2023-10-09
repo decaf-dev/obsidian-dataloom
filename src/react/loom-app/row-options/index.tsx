@@ -10,9 +10,11 @@ import { useLoomState } from "src/react/loom-app/loom-state-provider";
 import { useMenu } from "../../shared/menu/hooks";
 
 import "./styles.css";
+import { Source } from "src/shared/loom-state/types/loom-state";
 
 interface Props {
 	rowId: string;
+	source: Source | null;
 	onDeleteClick: (rowId: string) => void;
 	onInsertAboveClick: (rowId: string) => void;
 	onInsertBelowClick: (rowId: string) => void;
@@ -20,6 +22,7 @@ interface Props {
 
 export default function RowOptions({
 	rowId,
+	source,
 	onDeleteClick,
 	onInsertAboveClick,
 	onInsertBelowClick,
@@ -197,6 +200,7 @@ export default function RowOptions({
 				id={menu.id}
 				isOpen={isOpen}
 				triggerPosition={triggerPosition}
+				canDeleteRow={source === null}
 				onDeleteClick={handleDeleteClick}
 				onInsertAboveClick={handleInsertAboveClick}
 				onInsertBelowClick={handleInsertBelowClick}

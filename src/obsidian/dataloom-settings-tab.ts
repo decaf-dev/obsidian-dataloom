@@ -62,7 +62,7 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 		});
 
 		new Setting(containerEl)
-			.setName("Create new looms in the attachments folder")
+			.setName("Create looms in the attachments folder")
 			.setDesc(attachmentsFolderDesc)
 			.addToggle((cb) => {
 				cb.setValue(

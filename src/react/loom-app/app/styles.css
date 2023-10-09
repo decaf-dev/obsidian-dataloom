@@ -114,10 +114,6 @@
 	background-color: var(--color-base-20);
 }
 
-.dataloom-default-cursor {
-	cursor: default !important;
-}
-
 .dataloom-focusable:focus-visible,
 .dataloom-focus-visible {
 	outline: 2px solid var(--color-accent);

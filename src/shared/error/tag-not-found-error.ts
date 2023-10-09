@@ -1,6 +1,6 @@
 export default class TagNotFoundError extends Error {
 	constructor(id: string) {
-		super(`Tag ${id} was not found`);
+		super(`Cannot find tag with id: ${id}`);
 		this.name = "TagNotFoundError";
 	}
 }

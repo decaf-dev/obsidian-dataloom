@@ -150,7 +150,7 @@ interface BodyCell extends Cell {
 	markdown: string;
 }
 
-interface FooterCell extends Cell {
+export interface FooterCell extends Cell {
 	functionType: FunctionType;
 }
 

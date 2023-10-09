@@ -1,10 +1,10 @@
+import { generateUuid } from "src/shared/uuid";
 import {
 	LoomMenu,
 	LoomMenuCloseRequest,
 	LoomMenuCloseRequestType,
 	LoomMenuLevel,
 } from "./types";
-import { v4 as uuidv4 } from "uuid";
 
 export const createMenu = (
 	level: LoomMenuLevel,
@@ -12,7 +12,7 @@ export const createMenu = (
 	shouldFocusTriggerOnClose: boolean
 ): LoomMenu => {
 	return {
-		id: "m" + uuidv4(),
+		id: "m" + generateUuid(),
 		level,
 		shouldRequestOnClose,
 		shouldFocusTriggerOnClose,

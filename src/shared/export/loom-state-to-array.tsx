@@ -1,6 +1,6 @@
-import { Row, Column, LoomState } from "../loom-state/types/loom-state";
+import { Row, Column, LoomState, Source } from "../loom-state/types/loom-state";
 import { getCellContent } from "../cell-content";
-import ColumNotFoundError from "../error/column-not-found-error";
+import ColumnNotFoundError from "../error/column-not-found-error";
 import { App } from "obsidian";
 
 const serializeColumns = (columns: Column[]): string[] => {
@@ -9,6 +9,7 @@ const serializeColumns = (columns: Column[]): string[] => {
 
 const serializeCells = (
 	app: App,
+	sources: Source[],
 	columns: Column[],
 	rows: Row[],
 	shouldRemoveMarkdown: boolean
@@ -19,9 +20,13 @@ const serializeCells = (
 			const column = columns.find(
 				(column) => column.id === cell.columnId
 			);
-			if (!column) throw new ColumNotFoundError(cell.columnId);
+			if (!column) throw new ColumnNotFoundError({ id: cell.columnId });
+			const source =
+				sources.find((source) => source.id === row.sourceId) ?? null;
+
 			const content = getCellContent(
 				app,
+				source,
 				column,
 				row,
 				cell,
@@ -37,10 +42,11 @@ export const loomStateToArray = (
 	loomState: LoomState,
 	shouldRemoveMarkdown: boolean
 ): string[][] => {
-	const { rows, columns } = loomState.model;
+	const { rows, columns, sources } = loomState.model;
 	const serializedColumns = serializeColumns(columns);
 	const serializedCells = serializeCells(
 		app,
+		sources,
 		columns,
 		rows,
 		shouldRemoveMarkdown

@@ -1,7 +1,7 @@
-/******* Type definitions for v8.6.0 *******/
+/******* Type definitions for v8.7.0 *******/
 
 /**
- * v8.6.0
+ * v8.7.0
  */
 export interface LoomState {
 	pluginVersion: string;
@@ -13,6 +13,14 @@ export interface TableModel {
 	rows: Row[];
 	filters: Filter[];
 	settings: TableSettings;
+	sources: Source[];
+	externalRowOrder: ExternalRowOrder[];
+}
+
+export interface ExternalRowOrder {
+	sourceId: string;
+	index: number;
+	uniqueId: string; //This could be a file path, tag name, or url
 }
 
 export interface TableSettings {
@@ -39,6 +47,12 @@ export interface Column {
 	aspectRatio: AspectRatio;
 	horizontalPadding: PaddingSize;
 	verticalPadding: PaddingSize;
+	frontmatterKey: FrontmatterKey | null;
+}
+
+export interface FrontmatterKey {
+	isCustom: boolean;
+	value: string;
 }
 
 export interface Row {
@@ -46,6 +60,7 @@ export interface Row {
 	index: number;
 	creationTime: number;
 	lastEditedTime: number;
+	sourceId: string | null;
 	cells: Cell[];
 }
 
@@ -62,6 +77,30 @@ export interface Tag {
 	id: string;
 	content: string;
 	color: Color;
+}
+
+interface BaseSource {
+	id: string;
+	type: SourceType;
+}
+
+export interface ObsidianFolderSource extends BaseSource {
+	type: SourceType.FOLDER;
+	path: string;
+	showNested: boolean;
+	showMarkdownOnly: boolean;
+}
+
+export interface ObsidianTagSource extends BaseSource {
+	type: SourceType.TAG;
+	name: string;
+}
+
+export type Source = ObsidianFolderSource | ObsidianTagSource;
+
+export enum SourceType {
+	FOLDER = "folder",
+	TAG = "tag",
 }
 
 export enum Color {
@@ -95,6 +134,8 @@ export enum SortDir {
 }
 
 export enum CellType {
+	SOURCE_FILE = "source-file",
+	SOURCE = "source",
 	TEXT = "text",
 	EMBED = "embed",
 	FILE = "file",
@@ -344,6 +385,15 @@ export interface LastEditedTimeFilter extends BaseFilter {
 	dateTime: number | null;
 }
 
+/* Source File condition */
+export type SourceFileCondition = TextFilterCondition;
+
+export interface SourceFileFilter extends BaseFilter {
+	type: CellType.SOURCE_FILE;
+	condition: SourceFileCondition;
+	text: string;
+}
+
 export type Filter =
 	| TextFilter
 	| TagFilter
@@ -354,4 +404,5 @@ export type Filter =
 	| NumberFilter
 	| DateFilter
 	| CreationTimeFilter
-	| LastEditedTimeFilter;
+	| LastEditedTimeFilter
+	| SourceFileFilter;

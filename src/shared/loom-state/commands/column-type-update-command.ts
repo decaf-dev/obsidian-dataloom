@@ -1,7 +1,7 @@
 import { createTag } from "src/shared/loom-state/loom-state-factory";
 import { unixTimeToDateString } from "../../date/date-conversion";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "../../constants";
-import ColumNotFoundError from "src/shared/error/column-not-found-error";
+import ColumnNotFoundError from "src/shared/error/column-not-found-error";
 import LoomStateCommand from "./loom-state-command";
 import {
 	GeneralCalculation,
@@ -13,11 +13,12 @@ import {
 	Row,
 	Cell,
 	CalculationType,
+	FrontmatterKey,
 } from "../types/loom-state";
 import { isCheckbox, isNumberCalcuation } from "../../match";
 import { cloneDeep } from "lodash";
 
-export class ColumnTypeUpdateCommand extends LoomStateCommand {
+export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 	private id: string;
 	private nextType: CellType;
 
@@ -36,6 +37,7 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 	};
 
 	private addedTags: Tag[] = [];
+	private previousFrontmatterKey: FrontmatterKey | null = null;
 
 	constructor(id: string, type: CellType) {
 		super();
@@ -48,7 +50,7 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 
 		const { columns, rows, filters } = prevState.model;
 		const column = columns.find((column) => column.id === this.id);
-		if (!column) throw new ColumNotFoundError(this.id);
+		if (!column) throw new ColumnNotFoundError({ id: this.id });
 
 		const { type } = column;
 		if (type === this.nextType) return prevState;
@@ -94,9 +96,11 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 
 		nextColumns = nextColumns.map((column) => {
 			if (column.id === this.id) {
+				this.previousFrontmatterKey = column.frontmatterKey;
 				return {
 					...column,
 					type: this.nextType,
+					frontmatterKey: null,
 				};
 			}
 			return column;
@@ -164,6 +168,7 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 								(added) => added.id === t.id
 							) === undefined
 					),
+					frontmatterKey: this.previousFrontmatterKey,
 				};
 			}
 			return column;
@@ -208,6 +213,7 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 						? this.nextCalculationType
 						: column.calculationType,
 					tags: [...column.tags, ...this.addedTags],
+					frontmatterKey: null,
 				};
 			}
 			return column;
@@ -314,7 +320,8 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 							const column = columns.find(
 								(column) => column.id === this.id
 							);
-							if (!column) throw new ColumNotFoundError(this.id);
+							if (!column)
+								throw new ColumnNotFoundError({ id: this.id });
 
 							const existingTag = column.tags.find(
 								(tag) => tag.content === tagContent
@@ -370,7 +377,8 @@ export class ColumnTypeUpdateCommand extends LoomStateCommand {
 							const column = columns.find(
 								(column) => column.id === this.id
 							);
-							if (!column) throw new ColumNotFoundError(this.id);
+							if (!column)
+								throw new ColumnNotFoundError({ id: this.id });
 
 							const existingTag = column.tags.find(
 								(tag) => tag.content === tagContent

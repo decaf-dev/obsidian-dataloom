@@ -33,8 +33,14 @@ import {
 	EVENT_APP_REFRESH,
 	EVENT_ROW_ADD,
 	EVENT_ROW_DELETE,
+	EVENT_FILE_FRONTMATTER_CHANGE,
+	EVENT_FILE_CREATE,
+	EVENT_FOLDER_DELETE,
+	EVENT_FILE_DELETE,
+	EVENT_FILE_RENAME,
+	EVENT_FOLDER_RENAME,
 } from "./shared/events";
-import { deserializeState, serializeState } from "./data/serialization";
+import { deserializeState, serializeState } from "./data/serialize-state";
 import { updateLinkReferences } from "./data/utils";
 import { getBasename } from "./shared/link/link-utils";
 import { hasDarkTheme } from "./shared/render/utils";
@@ -94,7 +100,7 @@ export default class DataLoomPlugin extends Plugin {
 		);
 		this.registerExtensions([LOOM_EXTENSION], DATA_LOOM_VIEW);
 
-		this.addRibbonIcon("table", "Create new loom", async () => {
+		this.addRibbonIcon("table", "Create loom", async () => {
 			await this.newLoomFile(null);
 		});
 
@@ -432,6 +438,49 @@ export default class DataLoomPlugin extends Plugin {
 					}
 				}
 			)
+		);
+
+		this.registerSourceEvents();
+	}
+
+	/**
+	 * Register events that are needed for updating the rows created by sources
+	 */
+	private registerSourceEvents() {
+		this.registerEvent(
+			this.app.vault.on("rename", (file: TAbstractFile) => {
+				if (file instanceof TFile) {
+					this.app.vault.trigger(EVENT_FILE_RENAME);
+				} else {
+					this.app.vault.trigger(EVENT_FOLDER_RENAME);
+				}
+			})
+		);
+
+		this.registerEvent(
+			this.app.vault.on("create", (file: TAbstractFile) => {
+				if (file instanceof TFile) {
+					this.app.vault.trigger(EVENT_FILE_CREATE);
+				}
+			})
+		);
+
+		this.registerEvent(
+			this.app.vault.on("delete", (file: TAbstractFile) => {
+				if (file instanceof TFile) {
+					this.app.vault.trigger(EVENT_FILE_DELETE);
+				} else {
+					this.app.vault.trigger(EVENT_FOLDER_DELETE);
+				}
+			})
+		);
+
+		this.registerEvent(
+			this.app.metadataCache.on("changed", (file: TAbstractFile) => {
+				if (file instanceof TFile) {
+					this.app.vault.trigger(EVENT_FILE_FRONTMATTER_CHANGE);
+				}
+			})
 		);
 	}
 

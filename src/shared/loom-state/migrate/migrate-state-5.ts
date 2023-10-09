@@ -3,6 +3,7 @@ import { LoomState5 } from "../types/loom-state-5";
 import {
 	LoomState6,
 	FunctionType as FunctionType6,
+	FooterCell as FooterCell6,
 } from "../types/loom-state-6";
 
 /**
@@ -12,7 +13,7 @@ export default class MigrateState5 implements MigrateState {
 	public migrate(prevState: LoomState5): LoomState6 {
 		const { footerCells } = prevState.model;
 
-		const nextFooterCells = footerCells.map((cell) => {
+		const nextFooterCells: FooterCell6[] = footerCells.map((cell) => {
 			return {
 				...cell,
 				functionType: cell.functionType.replace(

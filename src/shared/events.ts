@@ -28,6 +28,38 @@ export const EVENT_ROW_DELETE = obsidianEvent("delete-row");
 export const EVENT_APP_REFRESH = obsidianEvent("app-refresh");
 
 /**
+ * Event for when a vault file's frontmatter is changed
+ */
+export const EVENT_FILE_FRONTMATTER_CHANGE = obsidianEvent(
+	"file-frontmatter-change"
+);
+
+/**
+ * Event for when a file is deleted
+ */
+export const EVENT_FILE_DELETE = obsidianEvent("file-delete");
+
+/**
+ * Event for when a folder is deleted
+ */
+export const EVENT_FOLDER_DELETE = obsidianEvent("folder-delete");
+
+/**
+ * Event for when a vault folder is renamed
+ */
+export const EVENT_FOLDER_RENAME = obsidianEvent("folder-rename");
+
+/**
+ * Event for when a vault file is renamed
+ */
+export const EVENT_FILE_RENAME = obsidianEvent("file-rename");
+
+/**
+ * Event for when a vault file is created
+ */
+export const EVENT_FILE_CREATE = obsidianEvent("file-create");
+
+/**
  * Event for handling the global Obsidian click event
  */
 export const EVENT_GLOBAL_CLICK = obsidianEvent("global-click");

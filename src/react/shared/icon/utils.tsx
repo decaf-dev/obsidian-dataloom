@@ -1,4 +1,15 @@
-import { CellType } from "src/shared/loom-state/types/loom-state";
+import { CellType, SourceType } from "src/shared/loom-state/types/loom-state";
+
+export const getIconIdForSourceType = (type: SourceType) => {
+	switch (type) {
+		case SourceType.FOLDER:
+			return "folder";
+		case SourceType.TAG:
+			return "tag";
+		default:
+			return "";
+	}
+};
 
 export const getIconIdForCellType = (type: CellType) => {
 	switch (type) {
@@ -6,6 +17,7 @@ export const getIconIdForCellType = (type: CellType) => {
 			return "text";
 		case CellType.EMBED:
 			return "link";
+		case CellType.SOURCE_FILE:
 		case CellType.FILE:
 			return "file";
 		case CellType.NUMBER:
@@ -21,6 +33,8 @@ export const getIconIdForCellType = (type: CellType) => {
 			return "tags";
 		case CellType.DATE:
 			return "calendar";
+		case CellType.SOURCE:
+			return "rss";
 		default:
 			return "text";
 	}

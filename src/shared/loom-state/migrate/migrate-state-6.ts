@@ -1,6 +1,11 @@
 import MigrateState from "./migrate-state";
 import { LoomState6 } from "../types/loom-state-6";
-import { LoomState7, BodyRow as BodyRow7 } from "../types/loom-state-7";
+import {
+	LoomState7,
+	BodyRow as BodyRow7,
+	BodyCell as BodyCell7,
+	Column as Column7,
+} from "../types/loom-state-7";
 import { cloneDeep } from "lodash";
 
 /**
@@ -20,7 +25,7 @@ export default class MigrateState6 implements MigrateState {
 			filterRules,
 		} = prevState.model;
 
-		const nextColumns = columns.map((column) => {
+		const nextColumns: Column7[] = columns.map((column) => {
 			const filteredTags = tags.filter(
 				(tag) => tag.columnId === column.id
 			);
@@ -38,7 +43,7 @@ export default class MigrateState6 implements MigrateState {
 			};
 		});
 
-		const nextBodyCells = bodyCells.map((cell) => {
+		const nextBodyCells: BodyCell7[] = bodyCells.map((cell) => {
 			const filteredTags = tags.filter((tag) =>
 				tag.cellIds.includes(cell.id)
 			);
@@ -49,7 +54,7 @@ export default class MigrateState6 implements MigrateState {
 			};
 		});
 
-		const nextBodyRows = bodyRows.map((row) => {
+		const nextBodyRows: BodyRow7[] = bodyRows.map((row) => {
 			const rowCopy: unknown = cloneDeep(row);
 			const unknownRow = rowCopy as Record<string, unknown>;
 

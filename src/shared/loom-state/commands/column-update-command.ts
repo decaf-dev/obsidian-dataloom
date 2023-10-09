@@ -1,4 +1,4 @@
-import ColumNotFoundError from "src/shared/error/column-not-found-error";
+import ColumnNotFoundError from "src/shared/error/column-not-found-error";
 import LoomStateCommand from "./loom-state-command";
 import { Column, LoomState } from "../types/loom-state";
 import { cloneDeep } from "lodash";
@@ -32,7 +32,7 @@ export default class ColumnUpdateCommand extends LoomStateCommand {
 
 		const { columns } = prevState.model;
 		const column = columns.find((column) => column.id === this.columnId);
-		if (!column) throw new ColumNotFoundError(this.columnId);
+		if (!column) throw new ColumnNotFoundError({ id: this.columnId });
 
 		const nextColumns = columns.map((column) => {
 			if (column.id === this.columnId) {

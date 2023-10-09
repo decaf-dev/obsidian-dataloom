@@ -9,7 +9,7 @@ import {
 } from "./embed-utils";
 import { Root, createRoot } from "react-dom/client";
 import { store } from "src/redux/store";
-import { deserializeState, serializeState } from "src/data/serialization";
+import { deserializeState, serializeState } from "src/data/serialize-state";
 import { LoomState } from "src/shared/loom-state/types/loom-state";
 import _ from "lodash";
 import { EVENT_APP_REFRESH } from "src/shared/events";
@@ -17,6 +17,7 @@ import LoomAppWrapper from "src/react/loom-app";
 import { createAppId } from "../utils";
 import ErrorApp from "src/react/error-app";
 import DeserializationError from "src/data/deserialization-error";
+import { serializeFrontmatter } from "src/data/serialize-frontmatter";
 
 interface EmbeddedApp {
 	id: string;
@@ -193,6 +194,8 @@ const handleSave = async (
 	appId: string,
 	state: LoomState
 ) => {
+	await serializeFrontmatter(app, state);
+
 	const serialized = serializeState(state);
 	await app.vault.modify(file, serialized);
 

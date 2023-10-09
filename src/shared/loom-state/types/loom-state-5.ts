@@ -141,7 +141,7 @@ interface HeaderCell extends Cell {
 	markdown: string;
 }
 
-interface BodyCell extends Cell {
+export interface BodyCell extends Cell {
 	dateTime: number | null;
 	markdown: string;
 }

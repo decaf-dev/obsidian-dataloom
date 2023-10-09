@@ -9,16 +9,24 @@ import Flex from "src/react/shared/flex";
 import Text from "src/react/shared/text";
 import Input from "src/react/shared/input";
 
-import { CellType, SortDir } from "src/shared/loom-state/types/loom-state";
+import {
+	CellType,
+	FrontmatterKey,
+	SortDir,
+} from "src/shared/loom-state/types/loom-state";
 import { SubmenuType } from "./types";
 import { usePlaceCursorAtEnd } from "src/shared/hooks";
 import { getDisplayNameForCellType } from "src/shared/loom-state/type-display-names";
 
 interface Props {
+	index: number;
 	canDeleteColumn: boolean;
+	numSources: number;
 	columnId: string;
 	shouldWrapOverflow: boolean;
+	frontmatterKey: FrontmatterKey | null;
 	columnName: string;
+	numFrozenColumns: number;
 	columnType: CellType;
 	columnSortDir: SortDir;
 	onColumnNameChange: (value: string) => void;
@@ -27,10 +35,15 @@ interface Props {
 	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
 	onDeleteClick: () => void;
 	onHideClick: () => void;
+	onFrozenColumnsChange: (value: number) => void;
 }
 
 export default function BaseMenu({
+	index,
 	shouldWrapOverflow,
+	numFrozenColumns,
+	numSources,
+	frontmatterKey,
 	columnName,
 	columnId,
 	columnType,
@@ -42,6 +55,7 @@ export default function BaseMenu({
 	onDeleteClick,
 	onColumnNameChange,
 	onHideClick,
+	onFrozenColumnsChange,
 }: Props) {
 	const inputRef = React.useRef<HTMLInputElement | null>(null);
 	usePlaceCursorAtEnd(inputRef, columnName);
@@ -69,19 +83,38 @@ export default function BaseMenu({
 				<Padding px="md" py="sm" width="100%">
 					<Input
 						ref={inputRef}
+						isDisabled={
+							columnType === CellType.SOURCE ||
+							columnType === CellType.SOURCE_FILE
+						}
 						showBorder
 						value={columnName}
 						onChange={handleInputChange}
 					/>
 				</Padding>
-				<MenuItem
-					lucideId="list"
-					name="Type"
-					value={getDisplayNameForCellType(columnType)}
-					onClick={() => {
-						onSubmenuChange(SubmenuType.TYPE);
-					}}
-				/>
+				{columnType !== CellType.SOURCE &&
+					columnType !== CellType.SOURCE_FILE && (
+						<MenuItem
+							lucideId="list"
+							name="Type"
+							value={getDisplayNameForCellType(columnType)}
+							onClick={() => {
+								onSubmenuChange(SubmenuType.TYPE);
+							}}
+						/>
+					)}
+				{numSources > 0 &&
+					columnType !== CellType.SOURCE &&
+					columnType !== CellType.SOURCE_FILE && (
+						<MenuItem
+							lucideId="file-key-2"
+							name="Frontmatter key"
+							value={frontmatterKey?.value || "No key set"}
+							onClick={() => {
+								onSubmenuChange(SubmenuType.FRONTMATTER_KEY);
+							}}
+						/>
+					)}
 				{hasOptions && (
 					<MenuItem
 						lucideId="settings"
@@ -111,6 +144,20 @@ export default function BaseMenu({
 				name="Hide"
 				onClick={() => onHideClick()}
 			/>
+			{index < 4 && numFrozenColumns !== index + 2 && (
+				<MenuItem
+					lucideId="pin"
+					name="Freeze up to column"
+					onClick={() => onFrozenColumnsChange(index + 2)}
+				/>
+			)}
+			{numFrozenColumns === index + 2 && (
+				<MenuItem
+					lucideId="pin-off"
+					name="Unfreeze columns"
+					onClick={() => onFrozenColumnsChange(1)}
+				/>
+			)}
 			{canDeleteColumn && (
 				<MenuItem
 					lucideId="trash"
@@ -119,7 +166,8 @@ export default function BaseMenu({
 				/>
 			)}
 			{columnType !== CellType.EMBED &&
-				columnType !== CellType.NUMBER && (
+				columnType !== CellType.NUMBER &&
+				columnType !== CellType.SOURCE && (
 					<>
 						<Divider />
 						<Padding px="lg" py="md">

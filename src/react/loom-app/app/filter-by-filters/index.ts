@@ -21,6 +21,7 @@ import {
 	DateFilterCondition,
 	DateFilterOption,
 	Column,
+	SourceFileFilter,
 } from "src/shared/loom-state/types/loom-state";
 import { Expression, evaluateWithPrecedence } from "./evaluate-with-precedence";
 import {
@@ -28,7 +29,7 @@ import {
 	getDateFromDateFilterOption,
 	getDateJustBeforeMidnight,
 } from "./utils";
-import ColumNotFoundError from "src/shared/error/column-not-found-error";
+import ColumnNotFoundError from "src/shared/error/column-not-found-error";
 
 /**
  * Filters body rows by the filters array
@@ -47,7 +48,7 @@ export const filterByFilters = (prevState: LoomState): Row[] => {
 		const { cells } = row;
 		cells.forEach((cell) => {
 			const column = columnIdToColumn.get(cell.columnId);
-			if (!column) throw new ColumNotFoundError();
+			if (!column) throw new ColumnNotFoundError({ id: cell.columnId });
 			cellIdToColumn.set(cell.id, column);
 		});
 	});
@@ -56,7 +57,7 @@ export const filterByFilters = (prevState: LoomState): Row[] => {
 		const { cells } = row;
 		return cells.every((cell) => {
 			const column = cellIdToColumn.get(cell.id);
-			if (!column) throw new ColumNotFoundError();
+			if (!column) throw new ColumnNotFoundError({ id: cell.columnId });
 			const { type, tags } = column;
 			return doesCellMatchFilters(cell, row, type, tags, filters);
 		});
@@ -164,8 +165,13 @@ const doesCellMatchFilter = (
 			return doesDateMatch(lastEditedTime, dateTime, option, condition);
 		}
 
+		case CellType.SOURCE_FILE: {
+			const { text } = filter as SourceFileFilter;
+			return doesTextMatch(cellContent, text, condition);
+		}
+
 		default:
-			throw new Error("Cell type not yet supported");
+			throw new Error("Unhandled cell type");
 	}
 };
 

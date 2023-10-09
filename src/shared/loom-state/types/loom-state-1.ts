@@ -32,7 +32,7 @@ interface TableModel {
 	tags: Tag[];
 }
 
-interface Column {
+export interface Column {
 	id: string;
 	sortDir: SortDir;
 	width: string;

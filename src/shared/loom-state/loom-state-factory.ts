@@ -8,7 +8,6 @@ import {
 	Column,
 	CurrencyType,
 	DateFormat,
-	Filter,
 	PaddingSize,
 	SortDir,
 	LoomState,
@@ -39,33 +38,81 @@ import {
 	LastEditedTimeCondition,
 	DateFilterOption,
 	NumberFormat,
+	Source,
+	SourceType,
+	Filter,
+	SourceFileFilter,
+	FrontmatterKey,
+	ObsidianFolderSource,
+	ExternalRowOrder,
 } from "./types/loom-state";
 
-import { v4 as uuidv4 } from "uuid";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/constants";
 import { Color } from "src/shared/loom-state/types/loom-state";
+import { generateUuid } from "../uuid";
 
-export const createColumn = (options?: { cellType?: CellType }): Column => {
-	const { cellType = CellType.TEXT } = options || {};
+export const createFolderSource = (path: string): ObsidianFolderSource => {
 	return {
-		id: uuidv4(),
+		id: generateUuid(),
+		type: SourceType.FOLDER,
+		path,
+		showMarkdownOnly: true,
+		showNested: false,
+	};
+};
+
+export const createTagSource = (name: string): Source => {
+	return {
+		id: generateUuid(),
+		type: SourceType.TAG,
+		name,
+	};
+};
+
+export const createExternalRowOrder = (
+	sourceId: string,
+	index: number,
+	uniqueId: string
+): ExternalRowOrder => {
+	return {
+		sourceId,
+		index,
+		uniqueId,
+	};
+};
+
+export const createColumn = (options?: {
+	type?: CellType;
+	content?: string;
+	frontmatterKey?: FrontmatterKey | null;
+	tags?: Tag[];
+}): Column => {
+	const {
+		type = CellType.TEXT,
+		content = "New Column",
+		frontmatterKey = null,
+		tags = [],
+	} = options || {};
+	return {
+		id: generateUuid(),
 		sortDir: SortDir.NONE,
 		isVisible: true,
 		width: "140px",
-		type: cellType,
+		type,
 		numberPrefix: "",
 		numberSuffix: "",
 		numberSeparator: "",
-		content: "New Column",
+		content,
 		numberFormat: NumberFormat.NUMBER,
 		currencyType: CurrencyType.UNITED_STATES,
 		dateFormat: DateFormat.MM_DD_YYYY,
 		shouldWrapOverflow: true,
-		tags: [],
+		tags,
 		calculationType: GeneralCalculation.NONE,
 		aspectRatio: AspectRatio.UNSET,
 		horizontalPadding: PaddingSize.UNSET,
 		verticalPadding: PaddingSize.UNSET,
+		frontmatterKey,
 	};
 };
 
@@ -73,15 +120,25 @@ export const createRow = (
 	index: number,
 	options?: {
 		cells?: Cell[];
+		sourceId?: string;
+		creationTime?: number;
+		lastEditedTime?: number;
 	}
 ): Row => {
-	const { cells = [] } = options || {};
 	const currentTime = Date.now();
+	const {
+		cells = [],
+		sourceId = null,
+		creationTime = currentTime,
+		lastEditedTime = currentTime,
+	} = options || {};
+
 	return {
-		id: uuidv4(),
+		id: generateUuid(),
 		index,
-		creationTime: currentTime,
-		lastEditedTime: currentTime,
+		sourceId,
+		creationTime,
+		lastEditedTime,
 		cells,
 	};
 };
@@ -89,28 +146,56 @@ export const createRow = (
 export const createCell = (
 	columnId: string,
 	options: {
-		cellType?: CellType;
+		type?: CellType;
 		tagIds?: string[];
 		content?: string;
 		dateTime?: number | null;
 	} = {}
 ): Cell => {
 	const {
-		cellType,
+		type,
 		tagIds = [],
-		content = "",
+		content: originalContent = "",
 		dateTime = null,
 	} = options ?? {};
+
+	let content = originalContent;
+	if (type === CellType.CHECKBOX) {
+		if (content === "") {
+			content = CHECKBOX_MARKDOWN_UNCHECKED;
+		}
+	}
 	return {
-		id: uuidv4(),
+		id: generateUuid(),
 		isExternalLink: false,
 		columnId,
 		dateTime,
-		content:
-			content === "" && cellType === CellType.CHECKBOX
-				? CHECKBOX_MARKDOWN_UNCHECKED
-				: content,
+		content,
 		tagIds,
+	};
+};
+
+export const createSourceFileFilter = (
+	columnId: string,
+	options?: {
+		condition?: TextCondition;
+		isEnabled?: boolean;
+		text?: string;
+	}
+): SourceFileFilter => {
+	const {
+		condition = TextFilterCondition.IS,
+		isEnabled = true,
+		text = "",
+	} = options || {};
+	const baseFilter = createBaseFilter(columnId, {
+		isEnabled,
+	});
+	return {
+		...baseFilter,
+		type: CellType.SOURCE_FILE,
+		condition,
+		text,
 	};
 };
 
@@ -373,7 +458,7 @@ const createBaseFilter = (
 ): BaseFilter => {
 	const { isEnabled = true } = options || {};
 	return {
-		id: uuidv4(),
+		id: generateUuid(),
 		columnId,
 		operator: "or",
 		isEnabled,
@@ -386,52 +471,123 @@ export const createTag = (
 ): Tag => {
 	const { color = randomColor() } = options || {};
 	return {
-		id: uuidv4(),
+		id: generateUuid(),
 		content,
 		color,
 	};
+};
+
+export const createRowWithCells = (
+	index: number,
+	columns: Column[],
+	options?: {
+		sourceId?: string;
+		contentForCells?: {
+			type: CellType;
+			content?: string;
+			dateTime?: number;
+			tagIds?: string[];
+		}[];
+	}
+): Row => {
+	const { sourceId, contentForCells = [] } = options || {};
+	const cells: Cell[] = [];
+	columns.forEach((column) => {
+		const { id, type } = column;
+
+		let tagIds: string[] = [];
+		let content = "";
+		let dateTime: number | null = null;
+		const cellContent = contentForCells.find((cell) => cell.type === type);
+		if (cellContent) {
+			const {
+				content: customContent,
+				dateTime: customDateTime,
+				tagIds: customTagIds,
+			} = cellContent;
+
+			if (type === CellType.DATE) {
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+				dateTime = customDateTime!;
+			} else if (type === CellType.TAG || type === CellType.MULTI_TAG) {
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+				tagIds = customTagIds!;
+			} else {
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+				content = customContent!;
+			}
+		}
+
+		const cell = createCell(id, {
+			type,
+			content,
+			dateTime,
+			tagIds,
+		});
+		cells.push(cell);
+	});
+	return createRow(index, {
+		cells,
+		sourceId,
+	});
+};
+
+export const createCustomTestLoomState = (
+	columns: Column[],
+	rows: Row[],
+	options?: {
+		sources: Source[];
+	}
+) => {
+	const { sources } = options || {};
+	return createGenericLoomState({
+		columns,
+		rows,
+		sources,
+	});
 };
 
 export const createTestLoomState = (
 	numColumns: number,
 	numRows: number,
 	options?: {
-		cellType?: CellType;
+		type?: CellType;
 	}
 ): LoomState => {
-	return createGenericLoomState(numColumns, numRows, {
-		cellType: options?.cellType,
+	return createBasicLoomState(numColumns, numRows, {
+		type: options?.type,
 	});
 };
 
 export const createLoomState = (
 	pluginVersion: string,
-	defaultFrozenColumnCount: number
+	frozenColumnCount: number
 ): LoomState => {
-	return createGenericLoomState(1, 1, {
+	return createBasicLoomState(1, 1, {
 		pluginVersion,
-		defaultFrozenColumnCount,
+		frozenColumnCount,
 	});
 };
 
-const createGenericLoomState = (
+const createBasicLoomState = (
 	numColumns: number,
 	numRows: number,
 	options?: {
-		cellType?: CellType;
+		type?: CellType;
 		pluginVersion?: string;
-		defaultFrozenColumnCount?: number;
+		frozenColumnCount?: number;
 	}
 ): LoomState => {
 	const {
-		cellType,
+		type,
 		pluginVersion = "1.0.0",
-		defaultFrozenColumnCount = 1,
+		frozenColumnCount = 1,
 	} = options || {};
 	//Create columns
 	const columns: Column[] = [];
-	for (let i = 0; i < numColumns; i++)
-		columns.push(createColumn({ cellType }));
+	for (let i = 0; i < numColumns; i++) {
+		columns.push(createColumn({ type }));
+	}
 
 	//Create rows
 	const rows: Row[] = [];
@@ -447,17 +603,41 @@ const createGenericLoomState = (
 		rows.push(row);
 	}
 
-	const filters: Filter[] = [];
+	return createGenericLoomState({
+		columns,
+		rows,
+		pluginVersion,
+		frozenColumnCount,
+	});
+};
 
+const createGenericLoomState = (options?: {
+	sources?: Source[];
+	columns?: Column[];
+	rows?: Row[];
+	filters?: Filter[];
+	pluginVersion?: string;
+	frozenColumnCount?: number;
+}): LoomState => {
+	const {
+		pluginVersion = "1.0.0",
+		frozenColumnCount = 1,
+		filters = [],
+		sources = [],
+		columns = [],
+		rows = [],
+	} = options || {};
 	return {
 		model: {
 			columns,
 			rows,
 			filters,
+			sources,
 			settings: {
-				numFrozenColumns: defaultFrozenColumnCount,
+				numFrozenColumns: frozenColumnCount,
 				showCalculationRow: true,
 			},
+			externalRowOrder: [],
 		},
 		pluginVersion,
 	};

@@ -16,3 +16,68 @@ export const confirmSortOrderChange = (state: LoomState) => {
 	}
 	return true;
 };
+
+export const sortByBoolean = (
+	a: boolean,
+	b: boolean,
+	sortDir: SortDir
+): number => {
+	if (sortDir === SortDir.ASC) {
+		if (a && !b) return 1;
+		if (!a && b) return -1;
+		return 0;
+	} else if (sortDir === SortDir.DESC) {
+		if (b && !a) return 1;
+		if (!b && a) return -1;
+		return 0;
+	} else {
+		return 0;
+	}
+};
+
+export const sortByNumber = (
+	a: number,
+	b: number,
+	sortDir: SortDir
+): number => {
+	if (sortDir === SortDir.ASC) {
+		return a - b;
+	} else if (sortDir === SortDir.DESC) {
+		return b - a;
+	} else {
+		return 0;
+	}
+};
+
+export const sortByText = (
+	a: string,
+	b: string,
+	sortDir: SortDir,
+	forceEmptyToBottom = true
+): number => {
+	const result = forceEmptyCellsToBottom(a, b);
+	if (result !== null) {
+		if (forceEmptyToBottom) {
+			return result;
+		}
+	}
+
+	if (sortDir === SortDir.ASC) {
+		return a.localeCompare(b);
+	} else if (sortDir === SortDir.DESC) {
+		return b.localeCompare(a);
+	} else {
+		return 0;
+	}
+};
+
+export const forceEmptyCellsToBottom = (
+	a: string,
+	b: string
+): number | null => {
+	//Force empty cells to the bottom
+	if (a === "" && b !== "") return 1;
+	if (a !== "" && b === "") return -1;
+	if (a === "" && b === "") return 0;
+	return null;
+};
