@@ -10,8 +10,8 @@ export const getSourceCellContent = (source: Source | null) => {
 	const { type } = source;
 	switch (type) {
 		case SourceType.FOLDER: {
-			const { name } = source as ObsidianFolderSource;
-			return name;
+			const { path } = source as ObsidianFolderSource;
+			return path;
 		}
 		default:
 			throw new Error("Source type not supported");

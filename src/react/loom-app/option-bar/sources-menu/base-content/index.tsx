@@ -31,7 +31,7 @@ export default function BaseContent({
 
 					let content = "";
 					if (type === SourceType.FOLDER) {
-						content = source.name;
+						content = source.path;
 					} else if (type === SourceType.TAG) {
 						content = source.name;
 					}

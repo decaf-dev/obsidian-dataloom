@@ -86,7 +86,7 @@ interface BaseSource {
 
 export interface ObsidianFolderSource extends BaseSource {
 	type: SourceType.FOLDER;
-	name: string;
+	path: string;
 	showNested: boolean;
 	showMarkdownOnly: boolean;
 }
