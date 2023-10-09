@@ -1,6 +1,10 @@
 import MigrateState from "./migrate-state";
 import { LoomState7 } from "../types/loom-state-7";
-import { LoomState8 } from "../types/loom-state-8";
+import {
+	LoomState8,
+	Column as Column8,
+	FooterCell as FooterCell8,
+} from "../types/loom-state-8";
 import { cloneDeep } from "lodash";
 
 /**
@@ -10,7 +14,7 @@ export default class MigrateState7 implements MigrateState {
 	public migrate(prevState: LoomState7): LoomState8 {
 		const { columns, footerCells } = prevState.model;
 
-		const nextColumns = columns.map((column) => {
+		const nextColumns: Column8[] = columns.map((column) => {
 			const footerCell = footerCells.find(
 				(cell) => cell.columnId === column.id
 			);
@@ -21,7 +25,7 @@ export default class MigrateState7 implements MigrateState {
 			};
 		});
 
-		const nextFooterCells = footerCells.map((cell) => {
+		const nextFooterCells: FooterCell8[] = footerCells.map((cell) => {
 			const cellCopy: unknown = cloneDeep(cell);
 			const unknownCell = cellCopy as Record<string, unknown>;
 			if (unknownCell["functionType"]) {

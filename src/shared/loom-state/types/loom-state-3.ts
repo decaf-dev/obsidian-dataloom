@@ -15,7 +15,7 @@ interface TableModel {
 	tags: Tag[];
 }
 
-interface Column {
+export interface Column {
 	id: string;
 	sortDir: SortDir;
 	width: string;
@@ -27,7 +27,7 @@ interface Column {
 	footerCellId: string;
 }
 
-interface Row {
+export interface Row {
 	id: string;
 	index: number;
 	menuCellId: string;
@@ -35,7 +35,7 @@ interface Row {
 	lastEditedTime: number;
 }
 
-interface Cell {
+export interface Cell {
 	id: string;
 	columnId: string;
 	dateTime: number | null;

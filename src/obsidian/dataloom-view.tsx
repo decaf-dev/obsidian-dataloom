@@ -3,12 +3,13 @@ import { TextFileView, WorkspaceLeaf } from "obsidian";
 import { createRoot, Root } from "react-dom/client";
 import { store } from "src/redux/store";
 import { LoomState } from "src/shared/loom-state/types/loom-state";
-import { deserializeState, serializeState } from "src/data/serialization";
+import { deserializeState, serializeState } from "src/data/serialize-state";
 import { EVENT_APP_REFRESH } from "src/shared/events";
 import LoomAppWrapper from "src/react/loom-app";
 import { createAppId } from "./utils";
 import ErrorApp from "src/react/error-app";
 import DeserializationError from "src/data/deserialization-error";
+import { serializeFrontmatter } from "src/data/serialize-frontmatter";
 
 export const DATA_LOOM_VIEW = "dataloom";
 
@@ -91,12 +92,15 @@ export default class DataLoomView extends TextFileView {
 		return fileName.substring(0, extensionIndex);
 	}
 
-	private handleSaveLoomState = (appId: string, state: LoomState) => {
+	private handleSaveLoomState = async (appId: string, state: LoomState) => {
 		if (!this.file) return;
+
+		await serializeFrontmatter(this.app, state);
+
+		const serialized = serializeState(state);
 
 		//We need this for when we open a new tab of the same file
 		//so that the data is up to date
-		const serialized = serializeState(state);
 		this.setViewData(serialized, false);
 
 		//Request a save - every 2s

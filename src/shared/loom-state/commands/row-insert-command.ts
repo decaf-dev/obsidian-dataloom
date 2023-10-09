@@ -64,7 +64,7 @@ export default class RowInsertCommand extends LoomStateCommand {
 		const cells = columns.map((column) => {
 			const { id, type } = column;
 			return createCell(id, {
-				cellType: type,
+				type,
 			});
 		});
 		//Create the new row and cells to insert

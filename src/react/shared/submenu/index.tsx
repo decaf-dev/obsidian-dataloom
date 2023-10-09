@@ -6,21 +6,29 @@ import Stack from "src/react/shared/stack";
 
 interface Props {
 	title: string;
+	showBackButton?: boolean;
 	children: React.ReactNode;
 	onBackClick: () => void;
 }
 
-export default function Submenu({ title, children, onBackClick }: Props) {
+export default function Submenu({
+	title,
+	showBackButton = true,
+	children,
+	onBackClick,
+}: Props) {
 	return (
 		<Padding p="sm">
 			<Stack spacing="md">
 				<Stack isHorizontal>
-					<Button
-						icon={<Icon lucideId="arrow-left" />}
-						onClick={() => {
-							onBackClick();
-						}}
-					/>
+					{showBackButton && (
+						<Button
+							icon={<Icon lucideId="arrow-left" />}
+							onClick={() => {
+								onBackClick();
+							}}
+						/>
+					)}
 					<Padding pr="md">{title}</Padding>
 				</Stack>
 				<Divider />

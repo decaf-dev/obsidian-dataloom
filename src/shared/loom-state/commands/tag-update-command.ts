@@ -1,51 +1,49 @@
-import TagNotFoundError from "src/shared/error/tag-not-found-error";
 import LoomStateCommand from "./loom-state-command";
 import { Column, LoomState, Tag } from "../types/loom-state";
+import { cloneDeep } from "lodash";
 
-export default class TagUpdateCommand<
-	K extends keyof Tag,
-	V extends Tag[K]
-> extends LoomStateCommand {
+export default class TagUpdateCommand extends LoomStateCommand {
 	private columnId: string;
 	private tagId: string;
-	private key: K;
-	private value: V;
+	private data: Partial<Tag>;
+	private isPartial: boolean;
 
-	/**
-	 * The previous value of the tag before the command is executed
-	 */
-	private previousValue: unknown;
+	private prevTag: Tag;
+	private nextTag: Tag;
 
-	constructor(columnId: string, tagId: string, key: K, value: V) {
-		super(true);
+	constructor(
+		columnId: string,
+		tagId: string,
+		data: Partial<Tag>,
+		isPartial = true
+	) {
+		super();
 		this.columnId = columnId;
 		this.tagId = tagId;
-		this.key = key;
-		this.value = value;
+		this.data = data;
+		this.isPartial = isPartial;
 	}
 
 	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
-		//TODO update last edited time
 		const { columns } = prevState.model;
-		const newColumns: Column[] = columns.map((column) => {
+		const nextColumns: Column[] = columns.map((column) => {
 			if (column.id === this.columnId) {
-				const tag = column.tags.find((tag) => tag.id === this.tagId);
-				if (!tag) throw new TagNotFoundError(this.tagId);
-				this.previousValue = tag[this.key];
-				return {
-					...column,
-					tags: column.tags.map((tag) => {
-						if (tag.id === this.tagId) {
-							return {
-								...tag,
-								[this.key]: this.value,
-							};
-						}
-						return tag;
-					}),
-				};
+				const { tags } = column;
+				const nextTags: Tag[] = tags.map((tag) => {
+					if (tag.id === this.tagId) {
+						this.prevTag = cloneDeep(tag);
+
+						let newTag: Tag = this.data as Tag;
+						if (this.isPartial)
+							newTag = { ...tag, ...this.data } as Tag;
+						this.nextTag = newTag;
+						return newTag;
+					}
+					return tag;
+				});
+				return { ...column, tags: nextTags };
 			}
 			return column;
 		});
@@ -54,7 +52,7 @@ export default class TagUpdateCommand<
 			...prevState,
 			model: {
 				...prevState.model,
-				columns: newColumns,
+				columns: nextColumns,
 			},
 		};
 	}
@@ -63,21 +61,16 @@ export default class TagUpdateCommand<
 		super.onUndo();
 
 		const { columns } = prevState.model;
-
-		const newColumns: Column[] = columns.map((column) => {
+		const nextColumns: Column[] = columns.map((column) => {
 			if (column.id === this.columnId) {
-				return {
-					...column,
-					tags: column.tags.map((tag) => {
-						if (tag.id === this.tagId) {
-							return {
-								...tag,
-								[this.key]: this.previousValue,
-							};
-						}
-						return tag;
-					}),
-				};
+				const { tags } = column;
+				const nextTags: Tag[] = tags.map((tag) => {
+					if (tag.id === this.nextTag.id) {
+						return this.prevTag;
+					}
+					return tag;
+				});
+				return { ...column, tags: nextTags };
 			}
 			return column;
 		});
@@ -86,13 +79,34 @@ export default class TagUpdateCommand<
 			...prevState,
 			model: {
 				...prevState.model,
-				columns: newColumns,
+				columns: nextColumns,
 			},
 		};
 	}
 
 	redo(prevState: LoomState): LoomState {
 		super.onRedo();
-		return this.execute(prevState);
+
+		const { columns } = prevState.model;
+		const nextColumns: Column[] = columns.map((column) => {
+			if (column.id === this.columnId) {
+				const { tags } = column;
+				const nextTags: Tag[] = tags.map((tag) => {
+					if (tag.id === this.tagId) {
+						return this.nextTag;
+					}
+					return tag;
+				});
+				return { ...column, tags: nextTags };
+			}
+			return column;
+		});
+		return {
+			...prevState,
+			model: {
+				...prevState.model,
+				columns: nextColumns,
+			},
+		};
 	}
 }

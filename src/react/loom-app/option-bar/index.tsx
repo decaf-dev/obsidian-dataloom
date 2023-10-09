@@ -5,7 +5,6 @@ import Padding from "src/react/shared/padding";
 import Icon from "src/react/shared/icon";
 import MenuButton from "src/react/shared/menu-button";
 import MoreMenu from "./more-menu";
-import ToggleColumnMenu from "./toggle-column-menu";
 import FilterMenu from "./filter-menu";
 import SortBubbleList from "./sort-bubble-list";
 
@@ -13,19 +12,21 @@ import {
 	SortDir,
 	Column,
 	Filter,
+	Source,
 } from "src/shared/loom-state/types/loom-state";
 import { isSmallScreenSize } from "src/shared/render/utils";
 import { useMenu } from "../../shared/menu/hooks";
 
 import "./styles.css";
+import SourcesMenu from "./sources-menu";
+import { ColumnChangeHandler } from "../app/hooks/use-column/types";
+import { SourceAddHandler } from "../app/hooks/use-source/types";
 
 interface Props {
-	numFrozenColumns: number;
 	columns: Column[];
 	filters: Filter[];
+	sources: Source[];
 	showCalculationRow: boolean;
-	onSortRemoveClick: (columnId: string) => void;
-	onColumnToggle: (columnId: string, isVisible: boolean) => void;
 	onFilterUpdate: (
 		filterId: string,
 		data: Partial<Filter>,
@@ -33,21 +34,23 @@ interface Props {
 	) => void;
 	onFilterDeleteClick: (filterId: string) => void;
 	onFilterAddClick: () => void;
-	onFrozenColumnsChange: (value: number) => void;
 	onCalculationRowToggle: (value: boolean) => void;
+	onSourceAdd: SourceAddHandler;
+	onSourceDelete: (id: string) => void;
+	onColumnChange: ColumnChangeHandler;
 }
 export default function OptionBar({
-	numFrozenColumns,
 	columns,
 	filters,
+	sources,
 	showCalculationRow,
-	onSortRemoveClick,
-	onColumnToggle,
 	onFilterUpdate,
 	onFilterDeleteClick,
 	onFilterAddClick,
-	onFrozenColumnsChange,
 	onCalculationRowToggle,
+	onSourceAdd,
+	onSourceDelete,
+	onColumnChange,
 }: Props) {
 	const {
 		menu: moreMenu,
@@ -60,13 +63,13 @@ export default function OptionBar({
 	} = useMenu();
 
 	const {
-		menu: toggleMenu,
-		triggerRef: toggleMenuTriggerRef,
-		triggerPosition: toggleMenuTriggerPosition,
-		isOpen: isToggleMenuOpen,
-		onOpen: onToggleMenuOpen,
-		onRequestClose: onToggleMenuRequestClose,
-		onClose: onToggleMenuClose,
+		menu: sourcesMenu,
+		triggerRef: sourcesMenuTriggerRef,
+		triggerPosition: sourcesMenuTriggerPosition,
+		isOpen: isSourcesMenuOpen,
+		onOpen: onSourcesMenuOpen,
+		onRequestClose: onSourcesMenuRequestClose,
+		onClose: onSourcesMenuClose,
 	} = useMenu();
 
 	const {
@@ -92,6 +95,20 @@ export default function OptionBar({
 	// 		}
 	// 	}
 	// }, [previousLength, filterRules.length, filterMenuRef]);
+
+	function handleRemoveClick(columnId: string) {
+		onColumnChange(
+			columnId,
+			{ sortDir: SortDir.NONE },
+			{
+				shouldSortRows: true,
+			}
+		);
+	}
+
+	function handleColumnToggle(columnId: string, isVisible: boolean) {
+		onColumnChange(columnId, { isVisible });
+	}
 
 	const activeFilters = filters.filter((filter) => filter.isEnabled);
 
@@ -120,7 +137,7 @@ export default function OptionBar({
 						>
 							<SortBubbleList
 								sortedColumns={sortedColumns}
-								onRemoveClick={onSortRemoveClick}
+								onRemoveClick={handleRemoveClick}
 							/>
 							<ActiveFilterBubble
 								numActive={activeFilters.length}
@@ -135,7 +152,15 @@ export default function OptionBar({
 								width: "100%",
 							})}
 						>
-							<SearchBar />
+							{isSmallScreen === false && (
+								<MenuButton
+									ref={sourcesMenuTriggerRef}
+									menu={sourcesMenu}
+									onOpen={onSourcesMenuOpen}
+								>
+									Sources
+								</MenuButton>
+							)}
 							{isSmallScreen === false && (
 								<MenuButton
 									ref={filterMenuTriggerRef}
@@ -145,15 +170,7 @@ export default function OptionBar({
 									Filter
 								</MenuButton>
 							)}
-							{isSmallScreen === false && (
-								<MenuButton
-									ref={toggleMenuTriggerRef}
-									menu={toggleMenu}
-									onOpen={onToggleMenuOpen}
-								>
-									Toggle
-								</MenuButton>
-							)}
+							<SearchBar />
 							<MenuButton
 								ref={moreMenuTriggerRef}
 								menu={moreMenu}
@@ -164,31 +181,29 @@ export default function OptionBar({
 					</Stack>
 				</Padding>
 			</div>
+			<SourcesMenu
+				id={sourcesMenu.id}
+				isOpen={isSourcesMenuOpen}
+				triggerPosition={sourcesMenuTriggerPosition}
+				sources={sources}
+				columns={columns}
+				onSourceAdd={onSourceAdd}
+				onSourceDelete={onSourceDelete}
+				onRequestClose={onSourcesMenuRequestClose}
+				onClose={onSourcesMenuClose}
+			/>
 			<MoreMenu
 				id={moreMenu.id}
 				isOpen={isMoreMenuOpen}
 				showCalculationRow={showCalculationRow}
 				triggerPosition={moreMenuTriggerPosition}
-				numFrozenColumns={numFrozenColumns}
-				onFrozenColumnsChange={onFrozenColumnsChange}
+				columns={columns}
 				onFilterClick={() => onFilterMenuOpen()}
-				onToggleColumnClick={() => onToggleMenuOpen()}
+				onColumnToggle={handleColumnToggle}
 				onRequestClose={onMoreMenuRequestClose}
 				onCalculationRowToggle={onCalculationRowToggle}
 				onClose={onMoreMenuClose}
-			/>
-			<ToggleColumnMenu
-				id={toggleMenu.id}
-				isOpen={isToggleMenuOpen}
-				triggerPosition={
-					isSmallScreen
-						? moreMenuTriggerPosition
-						: toggleMenuTriggerPosition
-				}
-				columns={columns}
-				onToggle={onColumnToggle}
-				onRequestClose={onToggleMenuRequestClose}
-				onClose={onToggleMenuClose}
+				onSourcesClick={() => onSourcesMenuOpen()}
 			/>
 			<FilterMenu
 				id={filterMenu.id}

@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 
 import ImportApp from "../../react/import-app";
 
-import { serializeState } from "src/data/serialization";
+import { serializeState } from "src/data/serialize-state";
 import { store } from "src/redux/store";
 import { renderDivider, setModalTitle } from "../shared";
 import { LoomState } from "src/shared/loom-state/types/loom-state";

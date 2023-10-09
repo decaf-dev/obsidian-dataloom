@@ -107,7 +107,7 @@ enum NumberFunction {
 
 type FunctionType = GeneralFunction | NumberFunction;
 
-interface Column {
+export interface Column {
 	id: string;
 	sortDir: SortDir;
 	width: string;
@@ -145,7 +145,7 @@ interface HeaderCell extends Cell {
 	markdown: string;
 }
 
-interface BodyCell extends Cell {
+export interface BodyCell extends Cell {
 	dateTime: number | null;
 	markdown: string;
 	tagIds: string[];

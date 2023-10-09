@@ -21,8 +21,9 @@ describe("tag-update-command", () => {
 		const command = new TagUpdateCommand(
 			prevState.model.columns[0].id,
 			tags[0].id,
-			"content",
-			""
+			{
+				content: "",
+			}
 		);
 
 		//Act
@@ -47,8 +48,9 @@ describe("tag-update-command", () => {
 		const command = new TagUpdateCommand(
 			prevState.model.columns[0].id,
 			tags[0].id,
-			"content",
-			""
+			{
+				content: "",
+			}
 		);
 
 		//Act
@@ -74,8 +76,9 @@ describe("tag-update-command", () => {
 		const command = new TagUpdateCommand(
 			prevState.model.columns[0].id,
 			tags[0].id,
-			"content",
-			""
+			{
+				content: "",
+			}
 		);
 
 		//Act
@@ -102,8 +105,9 @@ describe("tag-update-command", () => {
 		const command = new TagUpdateCommand(
 			prevState.model.columns[0].id,
 			tags[0].id,
-			"content",
-			""
+			{
+				content: "",
+			}
 		);
 
 		//Act
@@ -129,8 +133,9 @@ describe("tag-update-command", () => {
 		const command = new TagUpdateCommand(
 			prevState.model.columns[0].id,
 			tags[0].id,
-			"content",
-			""
+			{
+				content: "",
+			}
 		);
 
 		//Act

@@ -3,8 +3,11 @@ import React from "react";
 import "./styles.css";
 
 interface Props {
+	id?: string;
 	isTransparent?: boolean;
+	isDisabled?: boolean;
 	showBorder?: boolean;
+	autoFocus?: boolean;
 	focusOutline?: "default" | "accent" | "none";
 	hasError?: boolean;
 	value: string;
@@ -18,10 +21,13 @@ interface Props {
 const Input = React.forwardRef<HTMLInputElement, Props>(
 	(
 		{
+			id,
 			isTransparent,
 			showBorder,
 			hasError,
 			value,
+			autoFocus = true,
+			isDisabled = false,
 			focusOutline = "accent",
 			placeholder,
 			inputMode,
@@ -48,12 +54,14 @@ const Input = React.forwardRef<HTMLInputElement, Props>(
 		if (hasError) className += " dataloom-input--error";
 		return (
 			<input
+				id={id}
 				ref={ref}
 				className={className}
 				placeholder={placeholder}
+				disabled={isDisabled}
 				type="text"
 				inputMode={inputMode}
-				autoFocus
+				autoFocus={autoFocus}
 				value={value}
 				onChange={(e) => onChange(e.target.value)}
 				onKeyDown={onKeyDown}

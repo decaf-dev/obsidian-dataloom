@@ -10,93 +10,40 @@ import { useCompare, useForceUpdate } from "src/shared/hooks";
 import { getIconIdForCellType } from "src/react/shared/icon/utils";
 import { useMenu } from "../../shared/menu/hooks";
 import { numToPx } from "src/shared/conversion";
-import {
-	AspectRatio,
-	CellType,
-	CurrencyType,
-	DateFormat,
-	NumberFormat,
-	PaddingSize,
-	SortDir,
-} from "src/shared/loom-state/types/loom-state";
+import { CellType, Column } from "src/shared/loom-state/types/loom-state";
 
 import "./styles.css";
+import { ColumnChangeHandler } from "../app/hooks/use-column/types";
 
 interface Props {
-	currencyType: CurrencyType;
-	numberPrefix: string;
-	numberSuffix: string;
-	numberSeparator: string;
-	horizontalPadding: PaddingSize;
-	verticalPadding: PaddingSize;
-	aspectRatio: AspectRatio;
-	numberFormat: NumberFormat;
-	columnId: string;
-	width: string;
-	resizingColumnId: string | null;
+	index: number;
+	column: Column;
+	numSources: number;
+	frontmatterKeys: string[];
 	numColumns: number;
-	dateFormat: DateFormat;
-	content: string;
-	shouldWrapOverflow: boolean;
-	sortDir: SortDir;
-	type: CellType;
-	onSortClick: (columnId: string, sortDir: SortDir) => void;
-	onTypeSelect: (columnId: string, type: CellType) => void;
-	onDeleteClick: (columnId: string) => void;
-	onWidthChange: (columnId: string, width: string) => void;
-	onWrapOverflowToggle: (columnId: string, value: boolean) => void;
-	onContentChange: (columnId: string, value: string) => void;
-	onNumberFormatChange: (
-		columnId: string,
-		format: NumberFormat,
-		options?: {
-			currency: CurrencyType;
-		}
-	) => void;
-	onNumberPrefixChange: (columnId: string, value: string) => void;
-	onNumberSuffixChange: (columnId: string, value: string) => void;
-	onNumberSeparatorChange: (columnId: string, value: string) => void;
-	onDateFormatChange: (columnId: string, value: DateFormat) => void;
-	onVerticalPaddingClick: (columnId: string, value: PaddingSize) => void;
-	onHorizontalPaddingClick: (columnId: string, value: PaddingSize) => void;
-	onAspectRatioClick: (columnId: string, value: AspectRatio) => void;
-	onHideClick: (columnId: string) => void;
+	numFrozenColumns: number;
+	resizingColumnId: string | null;
+	onColumnDeleteClick: (columnId: string) => void;
+	onColumnChange: ColumnChangeHandler;
+	onFrozenColumnsChange: (value: number) => void;
+	onColumnTypeChange: (columnId: string, type: CellType) => void;
 }
 
 export default function HeaderCellContainer({
-	columnId,
-	currencyType,
-	numberFormat,
-	numberPrefix,
-	numberSeparator,
-	numberSuffix,
-	width,
-	dateFormat,
-	horizontalPadding,
-	verticalPadding,
-	aspectRatio,
-	content,
-	shouldWrapOverflow,
-	resizingColumnId,
-	type,
-	sortDir,
+	index,
+	column,
+	numSources,
 	numColumns,
-	onWidthChange,
-	onSortClick,
-	onTypeSelect,
-	onVerticalPaddingClick,
-	onHorizontalPaddingClick,
-	onAspectRatioClick,
-	onDeleteClick,
-	onWrapOverflowToggle,
-	onContentChange,
-	onNumberFormatChange,
-	onNumberPrefixChange,
-	onNumberSeparatorChange,
-	onNumberSuffixChange,
-	onDateFormatChange,
-	onHideClick,
+	frontmatterKeys,
+	numFrozenColumns,
+	resizingColumnId,
+	onColumnChange,
+	onColumnDeleteClick,
+	onFrozenColumnsChange,
+	onColumnTypeChange,
 }: Props) {
+	const { id: columnId, type, width, content } = column;
+
 	const {
 		menu,
 		triggerRef,
@@ -125,7 +72,9 @@ export default function HeaderCellContainer({
 	React.useEffect(() => {
 		if (shouldUpdateWidth) {
 			const newWidth = numToPx(triggerPosition.width);
-			onWidthChange(columnId, newWidth);
+			onColumnChange(columnId, {
+				width: newWidth,
+			});
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [columnId, shouldUpdateWidth, triggerPosition]);
@@ -160,48 +109,37 @@ export default function HeaderCellContainer({
 						currentResizingId={resizingColumnId}
 						columnId={columnId}
 						width={width}
-						onWidthChange={onWidthChange}
+						onWidthChange={(id, value) => {
+							onColumnChange(id, {
+								width: value,
+							});
+						}}
 						onMenuClose={() => onClose(false)}
 					/>
 				</div>
 			</MenuTrigger>
 			<HeaderMenu
+				index={index}
 				isOpen={isOpen}
+				numSources={numSources}
 				closeRequest={closeRequest}
+				frontmatterKeys={frontmatterKeys}
 				triggerPosition={triggerPosition}
 				id={menu.id}
-				aspectRatio={aspectRatio}
-				horizontalPadding={horizontalPadding}
-				verticalPadding={verticalPadding}
-				numberFormat={numberFormat}
-				currencyType={currencyType}
-				numberPrefix={numberPrefix}
-				numberSuffix={numberSuffix}
-				numberSeparator={numberSeparator}
-				dateFormat={dateFormat}
-				canDeleteColumn={numColumns > 1}
-				columnId={columnId}
-				shouldWrapOverflow={shouldWrapOverflow}
-				content={content}
-				columnSortDir={sortDir}
-				columnType={type}
+				numFrozenColumns={numFrozenColumns}
+				column={column}
+				canDeleteColumn={
+					numColumns > 1 &&
+					type !== CellType.SOURCE_FILE &&
+					type !== CellType.SOURCE
+				}
 				numColumns={numColumns}
-				onSortClick={onSortClick}
-				onTypeSelect={onTypeSelect}
-				onDeleteClick={onDeleteClick}
+				onColumnDeleteClick={onColumnDeleteClick}
+				onColumnChange={onColumnChange}
 				onClose={onClose}
 				onRequestClose={onRequestClose}
-				onWrapOverflowToggle={onWrapOverflowToggle}
-				onContentChange={onContentChange}
-				onNumberFormatChange={onNumberFormatChange}
-				onNumberPrefixChange={onNumberPrefixChange}
-				onNumberSeparatorChange={onNumberSeparatorChange}
-				onNumberSuffixChange={onNumberSuffixChange}
-				onDateFormatChange={onDateFormatChange}
-				onVerticalPaddingClick={onVerticalPaddingClick}
-				onHorizontalPaddingClick={onHorizontalPaddingClick}
-				onAspectRatioClick={onAspectRatioClick}
-				onHideClick={onHideClick}
+				onFrozenColumnsChange={onFrozenColumnsChange}
+				onColumnTypeChange={onColumnTypeChange}
 			/>
 		</>
 	);

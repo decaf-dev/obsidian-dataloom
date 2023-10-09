@@ -8,17 +8,17 @@ import { useLoomState } from "../../loom-state-provider";
 
 interface Props {
 	onClose: () => void;
-	onFreezeColumnsClick: () => void;
 	onSettingsClick: () => void;
 	onToggleColumnClick: () => void;
 	onFilterClick: () => void;
+	onSourcesClick: () => void;
 }
 
 export default function BaseContent({
-	onFreezeColumnsClick,
 	onToggleColumnClick,
 	onFilterClick,
 	onSettingsClick,
+	onSourcesClick,
 	onClose,
 }: Props) {
 	const { app, loomFile } = useAppMount();
@@ -30,21 +30,21 @@ export default function BaseContent({
 			{isSmallScreen && (
 				<MenuItem
 					lucideId="filter"
-					name="Filter"
-					onClick={onFilterClick}
+					name="Sources"
+					onClick={onSourcesClick}
 				/>
 			)}
 			{isSmallScreen && (
 				<MenuItem
-					lucideId="eye-off"
-					name="Toggle"
-					onClick={onToggleColumnClick}
+					lucideId="filter"
+					name="Filter"
+					onClick={onFilterClick}
 				/>
 			)}
 			<MenuItem
-				lucideId="snowflake"
-				name="Freeze"
-				onClick={onFreezeColumnsClick}
+				lucideId="eye-off"
+				name="Toggle"
+				onClick={onToggleColumnClick}
 			/>
 			<MenuItem
 				lucideId="import"
@@ -63,7 +63,7 @@ export default function BaseContent({
 				}}
 			/>
 			<MenuItem
-				lucideId="gear"
+				lucideId="wrench"
 				name="Settings"
 				onClick={onSettingsClick}
 			/>
