@@ -29,7 +29,7 @@ Support development
 
 ## DataLoom
 
-![/readme/app.png]
+![](/readme/app.png)
 
 ## Features
 
