@@ -113,7 +113,7 @@ describe("serializeFrontmatter", () => {
 		return state;
 	}
 
-	it("doesn't load content if frontmatter key is null", async () => {
+	it("doesn't serialize content if frontmatter key is null", async () => {
 		//Arrange
 		const state = createState(CellType.TEXT, null, [
 			{ content: "text-cell-1" },
@@ -128,7 +128,7 @@ describe("serializeFrontmatter", () => {
 		expect(frontmatterTest2).toEqual({});
 	});
 
-	it("doesn't load content if frontmatter key is empty", async () => {
+	it("doesn't serialize content if frontmatter key is empty", async () => {
 		//Arrange
 		const state = createState(CellType.TEXT, "", [
 			{ content: "text-cell-1" },
@@ -226,5 +226,20 @@ describe("serializeFrontmatter", () => {
 		expect(frontmatterTest2).toEqual({
 			tags: ["tag-1", "tag-2"],
 		});
+	});
+
+	it("doesn't serialize content if the frontmatter key doesn't exist and the content is empty", async () => {
+		//Arrange
+		const state = createState(CellType.TEXT, "text", [
+			{ content: "" },
+			{ content: "" },
+		]);
+
+		//Act
+		await serializeFrontmatter(app, state);
+
+		//Assert
+		expect(frontmatterTest1).toEqual({});
+		expect(frontmatterTest2).toEqual({});
 	});
 });
