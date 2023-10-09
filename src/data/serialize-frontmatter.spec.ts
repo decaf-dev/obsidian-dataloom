@@ -242,4 +242,16 @@ describe("serializeFrontmatter", () => {
 		expect(frontmatterTest1).toEqual({});
 		expect(frontmatterTest2).toEqual({});
 	});
+
+	it("doesn't serialize content if the frontmatter key doesn't exist and the content is empty", async () => {
+		//Arrange
+		const tags = [createTag("tag-1"), createTag("tag-2")];
+		const state = createState(CellType.MULTI_TAG, "tags", [], tags);
+		//Act
+		await serializeFrontmatter(app, state);
+
+		//Assert
+		expect(frontmatterTest1).toEqual({});
+		expect(frontmatterTest2).toEqual({});
+	});
 });
