@@ -8,7 +8,7 @@ export const renderBuyMeACoffeeBadge = (
 	});
 	const imgEl = linkEl.createEl("img");
 	imgEl.src =
-		"https://img.buymeacoffee.com/button-api/?text=Buy me a herbal tea&emoji=🍵&slug=treywallis&button_colour=9478F0&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00&refresh_id=1";
+		"https://img.buymeacoffee.com/button-api/?text=Buy me a herbal tea&emoji=🍵&slug=treywallis&button_colour=9478F0&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00&refresh_id=2";
 	imgEl.referrerPolicy = "no-referrer";
 	imgEl.alt = "Buymeacoffee";
 	imgEl.width = 180;
