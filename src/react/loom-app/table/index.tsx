@@ -59,7 +59,7 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 									numFrozenColumns={numFrozenColumns}
 									columnId={id}
 									content={content}
-									isDraggable={i < cells.length - 1}
+									isDraggable={i > 0 && i < cells.length - 1}
 								/>
 							);
 						})}
