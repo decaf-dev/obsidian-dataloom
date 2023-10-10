@@ -85,6 +85,7 @@ export default function App() {
 		onColumnAddClick,
 		onColumnTypeChange,
 		onColumnChange,
+		onColumnReorder,
 	} = useColumn();
 
 	const {
@@ -269,11 +270,12 @@ export default function App() {
 				onSourceDelete={onSourceDelete}
 			/>
 			<Table
-				numFrozenColumns={numFrozenColumns}
 				ref={tableRef}
+				numFrozenColumns={numFrozenColumns}
 				headerRow={headerRow}
 				bodyRows={bodyRows}
 				footer={footerRow}
+				onColumnReorder={onColumnReorder}
 			/>
 			<BottomBar
 				onRowAddClick={onRowAddClick}

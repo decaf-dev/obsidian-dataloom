@@ -11,16 +11,18 @@ import { usePrevious } from "src/shared/hooks";
 import { TableRow } from "./types";
 
 import "./styles.css";
+import { ColumnReorderHandler } from "../app/hooks/use-column/types";
 
 interface Props {
 	headerRow: TableRow;
 	bodyRows: TableRow[];
 	footer?: TableRow;
 	numFrozenColumns: number;
+	onColumnReorder: ColumnReorderHandler;
 }
 
 const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
-	{ headerRow, bodyRows, footer, numFrozenColumns },
+	{ headerRow, bodyRows, footer, numFrozenColumns, onColumnReorder },
 	ref
 ) {
 	const previousRowLength = usePrevious(bodyRows.length);
@@ -60,6 +62,7 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 									columnId={id}
 									content={content}
 									isDraggable={i > 0 && i < cells.length - 1}
+									onColumnReorder={onColumnReorder}
 								/>
 							);
 						})}
