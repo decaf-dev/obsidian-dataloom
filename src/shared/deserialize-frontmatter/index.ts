@@ -65,7 +65,6 @@ export const deserializeFrontmatterKeys = (
 			}
 		});
 	}
-	console.log(keys);
 	return keys;
 };
 
