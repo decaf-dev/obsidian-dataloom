@@ -5,6 +5,7 @@ import RowDeleteCommand from "src/shared/loom-state/commands/row-delete-command"
 import React from "react";
 import RowInsertCommand from "src/shared/loom-state/commands/row-insert-command";
 import { confirmSortOrderChange } from "src/shared/sort-utils";
+import RowReorderCommand from "src/shared/loom-state/commands/row-reorder-command";
 
 export const useRow = () => {
 	const logger = useLogger();
@@ -43,10 +44,19 @@ export const useRow = () => {
 		}
 	}
 
+	function handleRowReorder(dragId: string, targetId: string) {
+		logger("handleRowReorder", {
+			dragId,
+			targetId,
+		});
+		doCommand(new RowReorderCommand(dragId, targetId));
+	}
+
 	return {
 		onRowAddClick: handleNewRowClick,
 		onRowDeleteClick: handleRowDeleteClick,
 		onRowInsertAboveClick: handleRowInsertAboveClick,
 		onRowInsertBelowClick: handleRowInsertBelowClick,
+		onRowReorder: handleRowReorder,
 	};
 };

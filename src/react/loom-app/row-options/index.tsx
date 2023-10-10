@@ -4,13 +4,15 @@ import RowMenu from "./row-menu";
 import Padding from "src/react/shared/padding";
 
 import { useDragContext } from "src/shared/dragging/drag-context";
-import { dropDrag, getRowId } from "src/shared/dragging/utils";
+import { getRowId } from "src/shared/dragging/utils";
 import { useLoomState } from "src/react/loom-app/loom-state-provider";
 
 import { useMenu } from "../../shared/menu/hooks";
 
 import "./styles.css";
 import { Source } from "src/shared/loom-state/types/loom-state";
+import { confirmSortOrderChange } from "src/shared/sort-utils";
+import { RowReorderHandler } from "../app/hooks/use-row/types";
 
 interface Props {
 	rowId: string;
@@ -18,6 +20,7 @@ interface Props {
 	onDeleteClick: (rowId: string) => void;
 	onInsertAboveClick: (rowId: string) => void;
 	onInsertBelowClick: (rowId: string) => void;
+	onRowReorder: RowReorderHandler;
 }
 
 export default function RowOptions({
@@ -26,6 +29,7 @@ export default function RowOptions({
 	onDeleteClick,
 	onInsertAboveClick,
 	onInsertBelowClick,
+	onRowReorder,
 }: Props) {
 	const {
 		menu,
@@ -39,7 +43,7 @@ export default function RowOptions({
 
 	const { dragData, touchDropZone, setDragData, setTouchDropZone } =
 		useDragContext();
-	const { loomState, setLoomState } = useLoomState();
+	const { loomState } = useLoomState();
 
 	function handleDeleteClick() {
 		onDeleteClick(rowId);
@@ -144,7 +148,14 @@ export default function RowOptions({
 				touchY <= touchDropZone.bottom;
 
 			if (isInsideDropZone) {
-				dropDrag(touchDropZone.id, dragData, loomState, setLoomState);
+				if (dragData === null) throw Error("No drag data found");
+
+				//If we're dragging a column type, then return
+				if (dragData.type !== "row") return;
+
+				if (!confirmSortOrderChange(loomState)) return;
+
+				onRowReorder(dragData.id, touchDropZone.id);
 			}
 		}
 		endDrag();

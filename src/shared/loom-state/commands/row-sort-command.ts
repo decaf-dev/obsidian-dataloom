@@ -60,11 +60,6 @@ export default class RowSortCommand extends LoomStateCommand {
 		};
 	}
 
-	redo(prevState: LoomState): LoomState {
-		super.onRedo();
-		return this.execute(prevState);
-	}
-
 	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
@@ -85,6 +80,11 @@ export default class RowSortCommand extends LoomStateCommand {
 				rows: newRows,
 			},
 		};
+	}
+
+	redo(prevState: LoomState): LoomState {
+		super.onRedo();
+		return this.execute(prevState);
 	}
 
 	private multiSort = (

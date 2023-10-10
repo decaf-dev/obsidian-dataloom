@@ -41,7 +41,7 @@ export default function HeaderCell({
 	function dropDrag(targetRowId: string) {
 		if (dragData == null) throw new Error("No drag data found");
 
-		//If we're dragging a column type, then return
+		//Make sure that we're dragging a column type
 		if (dragData.type !== "column") return;
 
 		onColumnReorder(dragData.id, targetRowId);

@@ -93,6 +93,7 @@ export default function App() {
 		onRowDeleteClick,
 		onRowInsertAboveClick,
 		onRowInsertBelowClick,
+		onRowReorder,
 	} = useRow();
 
 	const { onCellChange } = useCell();
@@ -276,6 +277,7 @@ export default function App() {
 				bodyRows={bodyRows}
 				footer={footerRow}
 				onColumnReorder={onColumnReorder}
+				onRowReorder={onRowReorder}
 			/>
 			<BottomBar
 				onRowAddClick={onRowAddClick}

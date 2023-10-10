@@ -68,7 +68,7 @@ describe("column-update-command", () => {
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
 	});
 
-	it("updates the column order to the modified order redo() is called", () => {
+	it("updates the column order to the modified order when redo() is called", () => {
 		//Arrange
 		const prevState = createTestLoomState(3, 1);
 		const firstColumn = prevState.model.columns[0].id;

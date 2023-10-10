@@ -14,6 +14,7 @@ import {
 } from "./hooks/use-tag/types";
 import { CellChangeHandler } from "./hooks/use-cell/types";
 import { App } from "obsidian";
+import { RowReorderHandler } from "./hooks/use-row/types";
 
 interface Props {
 	app: App;
@@ -33,6 +34,7 @@ interface Props {
 	onTagCellMultipleRemove: TagCellMultipleRemoveHandler;
 	onTagChange: TagChangeHandler;
 	onTagDeleteClick: TagDeleteHandler;
+	onRowReorder: RowReorderHandler;
 }
 
 export default function getBodyRows({
@@ -52,6 +54,7 @@ export default function getBodyRows({
 	onTagCellMultipleRemove,
 	onTagChange,
 	onTagDeleteClick,
+	onRowReorder,
 }: Omit<Props, "app">): TableRow[] {
 	return rows.map((row) => {
 		const { id: rowId, lastEditedTime, creationTime, sourceId } = row;
@@ -68,6 +71,7 @@ export default function getBodyRows({
 							onDeleteClick={onRowDeleteClick}
 							onInsertAboveClick={onRowInsertAboveClick}
 							onInsertBelowClick={onRowInsertBelowClick}
+							onRowReorder={onRowReorder}
 						/>
 					),
 				},

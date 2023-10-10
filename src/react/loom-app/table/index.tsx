@@ -1,6 +1,6 @@
 import React from "react";
 
-import { TableComponents, TableVirtuoso, VirtuosoHandle } from "react-virtuoso";
+import { TableVirtuoso, VirtuosoHandle } from "react-virtuoso";
 
 import BodyRow from "./body-row";
 import HeaderCell from "./header-cell";
@@ -12,6 +12,7 @@ import { TableRow } from "./types";
 
 import "./styles.css";
 import { ColumnReorderHandler } from "../app/hooks/use-column/types";
+import { RowReorderHandler } from "../app/hooks/use-row/types";
 
 interface Props {
 	headerRow: TableRow;
@@ -19,10 +20,18 @@ interface Props {
 	footer?: TableRow;
 	numFrozenColumns: number;
 	onColumnReorder: ColumnReorderHandler;
+	onRowReorder: RowReorderHandler;
 }
 
 const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
-	{ headerRow, bodyRows, footer, numFrozenColumns, onColumnReorder },
+	{
+		headerRow,
+		bodyRows,
+		footer,
+		numFrozenColumns,
+		onColumnReorder,
+		onRowReorder,
+	},
 	ref
 ) {
 	const previousRowLength = usePrevious(bodyRows.length);
@@ -47,7 +56,61 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 				height: "100%",
 			}}
 			totalCount={bodyRows.length}
-			components={Components}
+			components={{
+				Table: ({ ...props }) => {
+					return <div className="dataloom-table" {...props} />;
+				},
+				//Don't apply styles because we want to apply sticky positioning
+				//to the cells, not the header container
+				TableHead: React.forwardRef(({ ...props }, ref) => {
+					return (
+						<div
+							className="dataloom-header"
+							{...props}
+							style={{
+								position: undefined,
+								top: undefined,
+								zIndex: undefined,
+							}}
+							ref={ref}
+						/>
+					);
+				}),
+				TableRow: ({ style, ...props }) => {
+					return (
+						<BodyRow
+							{...props}
+							style={style}
+							onRowReorder={onRowReorder}
+						/>
+					);
+				},
+				TableBody: React.forwardRef(({ style, ...props }, ref) => (
+					<div
+						className="dataloom-body"
+						{...props}
+						style={style}
+						ref={ref}
+					/>
+				)),
+				//Don't apply styles because we want to apply sticky positioning
+				//to the cells, not the footer container
+				TableFoot: React.forwardRef(({ ...props }, ref) => (
+					<div
+						className="dataloom-footer"
+						{...props}
+						style={{
+							position: undefined,
+							bottom: undefined,
+							zIndex: undefined,
+						}}
+						ref={ref}
+					/>
+				)),
+				FillerRow: ({ height }) => {
+					return <div className="dataloom-row" style={{ height }} />;
+				},
+			}}
 			fixedHeaderContent={() => {
 				const { cells } = headerRow;
 				return (
@@ -106,50 +169,5 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 		/>
 	);
 });
-
-const Components: TableComponents = {
-	Table: ({ ...props }) => {
-		return <div className="dataloom-table" {...props} />;
-	},
-	//Don't apply styles because we want to apply sticky positioning
-	//to the cells, not the header container
-	TableHead: React.forwardRef(({ ...props }, ref) => {
-		return (
-			<div
-				className="dataloom-header"
-				{...props}
-				style={{
-					position: undefined,
-					top: undefined,
-					zIndex: undefined,
-				}}
-				ref={ref}
-			/>
-		);
-	}),
-	TableRow: ({ style, ...props }) => {
-		return <BodyRow {...props} style={style} />;
-	},
-	TableBody: React.forwardRef(({ style, ...props }, ref) => (
-		<div className="dataloom-body" {...props} style={style} ref={ref} />
-	)),
-	//Don't apply styles because we want to apply sticky positioning
-	//to the cells, not the footer container
-	TableFoot: React.forwardRef(({ ...props }, ref) => (
-		<div
-			className="dataloom-footer"
-			{...props}
-			style={{
-				position: undefined,
-				bottom: undefined,
-				zIndex: undefined,
-			}}
-			ref={ref}
-		/>
-	)),
-	FillerRow: ({ height }) => {
-		return <div className="dataloom-row" style={{ height }} />;
-	},
-};
 
 export default Table;
