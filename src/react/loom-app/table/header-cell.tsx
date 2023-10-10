@@ -1,9 +1,9 @@
+import React from "react";
+
 import { useDragContext } from "src/shared/dragging/drag-context";
-import { useLoomState } from "src/react/loom-app/loom-state-provider";
 import { useStickyOffset } from "./hooks";
 import { numToPx } from "src/shared/conversion";
-import React from "react";
-import { cloneDeep } from "lodash";
+import { ColumnReorderHandler } from "../app/hooks/use-column/types";
 
 interface Props {
 	index: number;
@@ -11,6 +11,7 @@ interface Props {
 	isDraggable: boolean;
 	numFrozenColumns: number;
 	content: React.ReactNode;
+	onColumnReorder: ColumnReorderHandler;
 }
 
 export default function HeaderCell({
@@ -19,8 +20,8 @@ export default function HeaderCell({
 	isDraggable,
 	numFrozenColumns,
 	content,
+	onColumnReorder,
 }: Props) {
-	const { setLoomState } = useLoomState();
 	const { dragData, touchDropZone, setDragData, setTouchDropZone } =
 		useDragContext();
 	const ref = React.useRef<HTMLDivElement>(null);
@@ -43,51 +44,7 @@ export default function HeaderCell({
 		//If we're dragging a column type, then return
 		if (dragData.type !== "column") return;
 
-		setLoomState((prevState) => {
-			const { columns } = prevState.model;
-
-			const draggedElIndex = columns.findIndex(
-				(column) => column.id === dragData.id
-			);
-			const targetElIndex = columns.findIndex(
-				(column) => column.id === targetRowId
-			);
-
-			const newColumns = cloneDeep(columns);
-			const draggedEl = newColumns[draggedElIndex];
-
-			//Remove the element
-			newColumns.splice(draggedElIndex, 1);
-			//Append it to the new location
-			newColumns.splice(targetElIndex, 0, draggedEl);
-
-			//Set cells of all the rows to the new order of columns
-			const nextRows = prevState.model.rows.map((row) => {
-				const { cells } = row;
-				const nextCells = cells.sort((a, b) => {
-					const aIndex = newColumns.findIndex(
-						(column) => column.id === a.columnId
-					);
-					const bIndex = newColumns.findIndex(
-						(column) => column.id === b.columnId
-					);
-					return aIndex - bIndex;
-				});
-				return {
-					...row,
-					cells: nextCells,
-				};
-			});
-
-			return {
-				...prevState,
-				model: {
-					...prevState.model,
-					columns: newColumns,
-					rows: nextRows,
-				},
-			};
-		});
+		onColumnReorder(dragData.id, targetRowId);
 	}
 
 	function addDragHover(thEl: HTMLElement) {

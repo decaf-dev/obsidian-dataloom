@@ -11,3 +11,5 @@ export type ColumnTypeClickHandler = (id: string, type: CellType) => void;
 export type ColumnDeleteClickHandler = (id: string) => void;
 
 export type ColumnAddClickHandler = () => void;
+
+export type ColumnReorderHandler = (dragId: string, targetId: string) => void;
