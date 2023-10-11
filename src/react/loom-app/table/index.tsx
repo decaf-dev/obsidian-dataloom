@@ -21,6 +21,7 @@ interface Props {
 	numFrozenColumns: number;
 	onColumnReorder: ColumnReorderHandler;
 	onRowReorder: RowReorderHandler;
+	onTableRender: () => void;
 }
 
 const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
@@ -31,6 +32,7 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 		numFrozenColumns,
 		onColumnReorder,
 		onRowReorder,
+		onTableRender,
 	},
 	ref
 ) {
@@ -46,6 +48,10 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 				ref as React.MutableRefObject<VirtuosoHandle | null>
 			).current?.scrollToIndex(bodyRows.length - 1);
 	}, [ref, previousRowLength, bodyRows.length]);
+
+	React.useLayoutEffect(() => {
+		onTableRender();
+	});
 
 	return (
 		<TableVirtuoso

@@ -1,5 +1,3 @@
-import React from "react";
-
 import NewRowButton from "../new-row-button";
 import Stack from "src/react/shared/stack";
 import Button from "src/react/shared/button";
@@ -12,6 +10,7 @@ import { isOnMobile } from "src/shared/render-utils";
 import "./styles.css";
 
 interface Props {
+	bottomBarOffset: number;
 	onScrollToTopClick: () => void;
 	onScrollToBottomClick: () => void;
 	onUndoClick: () => void;
@@ -20,52 +19,20 @@ interface Props {
 }
 
 export default function BottomBar({
+	bottomBarOffset,
 	onRowAddClick,
 	onScrollToTopClick,
 	onScrollToBottomClick,
 	onUndoClick,
 	onRedoClick,
 }: Props) {
-	const ref = React.useRef<HTMLDivElement>(null);
-	const [spaceBetweenTableAndContainer, setSpaceBetweenTableAndContainer] =
-		React.useState(0);
-
-	React.useEffect(() => {
-		let observer: ResizeObserver | null = null;
-
-		if (!ref.current) return;
-
-		const appEl = ref.current.closest(".dataloom-app");
-		const tableEl = appEl?.querySelector(".dataloom-table");
-		if (!tableEl) return;
-
-		const tableContainerEl = tableEl.parentElement;
-		if (!tableContainerEl) return;
-
-		observer = new ResizeObserver(() => {
-			const containerRect = tableContainerEl.getBoundingClientRect();
-			const tableRect = tableEl.getBoundingClientRect();
-
-			let diff = containerRect.height - tableRect.height;
-			if (diff < 0) diff = 0;
-			setSpaceBetweenTableAndContainer(diff);
-		});
-		observer.observe(tableEl);
-		observer.observe(tableContainerEl);
-
-		return () => {
-			if (tableEl) observer?.unobserve(tableEl);
-		};
-	}, [ref]);
-
 	const isMobile = isOnMobile();
 
 	return (
 		<div className="dataloom-bottom-bar">
 			<div
-				ref={ref}
 				style={{
-					top: numToPx(-spaceBetweenTableAndContainer),
+					top: numToPx(-bottomBarOffset),
 				}}
 			>
 				<Padding pt="md" width="100%">

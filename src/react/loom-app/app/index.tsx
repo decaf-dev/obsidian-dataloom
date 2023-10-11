@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 
 import { VirtuosoHandle } from "react-virtuoso";
 
@@ -33,6 +33,7 @@ import { useMenuOperations } from "src/react/shared/menu/hooks";
 import { useSource } from "./hooks/use-source";
 import getBodyRows from "./get-body-rows";
 import getFooterRow from "./get-footer-row";
+import _ from "lodash";
 
 import "src/react/global.css";
 import "./styles.css";
@@ -49,6 +50,7 @@ import {
 export default function App() {
 	const logger = useLogger();
 	const { reactAppId, isMarkdownView, app } = useAppMount();
+	const [bottomBarOffset, setBottomBarOffset] = React.useState(0);
 
 	const {
 		loomState,
@@ -60,6 +62,7 @@ export default function App() {
 	} = useLoomState();
 
 	const tableRef = React.useRef<VirtuosoHandle | null>(null);
+	const appRef = React.useRef<HTMLDivElement | null>(null);
 	const { onRequestCloseTop } = useMenuOperations();
 
 	useExportEvents(loomState);
@@ -235,6 +238,7 @@ export default function App() {
 		onCellChange,
 		onColumnChange,
 		onTagChange,
+		onRowReorder,
 	});
 
 	const footerRow = getFooterRow({
@@ -250,8 +254,30 @@ export default function App() {
 	let className = "dataloom-app";
 	if (isMarkdownView) className += " dataloom-app--markdown-view";
 
+	const handleTableRender = useCallback(
+		_.debounce(() => {
+			const appEl = appRef.current;
+			if (!appEl) return;
+
+			const tableEl = appEl.querySelector(".dataloom-table");
+			if (!tableEl) return;
+
+			const tableContainerEl = tableEl.parentElement;
+			if (!tableContainerEl) return;
+
+			const tableRect = tableEl.getBoundingClientRect();
+			const tableContainerRect = tableContainerEl.getBoundingClientRect();
+
+			let diff = tableContainerRect.height - tableRect.height;
+			if (diff < 0) diff = 0;
+			setBottomBarOffset(diff);
+		}, 10),
+		[setBottomBarOffset, appRef]
+	);
+
 	return (
 		<div
+			ref={appRef}
 			id={reactAppId}
 			className={className}
 			onKeyDown={handleKeyDown}
@@ -278,8 +304,10 @@ export default function App() {
 				footer={footerRow}
 				onColumnReorder={onColumnReorder}
 				onRowReorder={onRowReorder}
+				onTableRender={handleTableRender}
 			/>
 			<BottomBar
+				bottomBarOffset={bottomBarOffset}
 				onRowAddClick={onRowAddClick}
 				onScrollToTopClick={handleScrollToTopClick}
 				onScrollToBottomClick={handleScrollToBottomClick}
