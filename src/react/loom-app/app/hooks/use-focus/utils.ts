@@ -1,4 +1,4 @@
-import { LoomMenu } from "src/react/shared/menu/types";
+import { LoomMenu } from "src/react/shared/menu-provider/types";
 
 /**
  * Adds the dataloom-focus-visible class to an element

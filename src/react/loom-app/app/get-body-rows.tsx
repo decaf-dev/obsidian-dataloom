@@ -13,11 +13,9 @@ import {
 	TagDeleteHandler,
 } from "./hooks/use-tag/types";
 import { CellChangeHandler } from "./hooks/use-cell/types";
-import { App } from "obsidian";
 import { RowReorderHandler } from "./hooks/use-row/types";
 
 interface Props {
-	app: App;
 	sources: Source[];
 	firstColumnId: string;
 	lastColumnId: string;
@@ -55,7 +53,8 @@ export default function getBodyRows({
 	onTagChange,
 	onTagDeleteClick,
 	onRowReorder,
-}: Omit<Props, "app">): TableRow[] {
+}: Props): TableRow[] {
+	console.count("getBodyRows render");
 	return rows.map((row) => {
 		const { id: rowId, lastEditedTime, creationTime, sourceId } = row;
 		const source = sources.find((source) => source.id === sourceId) ?? null;

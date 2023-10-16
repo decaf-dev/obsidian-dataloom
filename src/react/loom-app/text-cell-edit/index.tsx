@@ -15,16 +15,23 @@ import {
 } from "./utils";
 import { getWikiLinkText } from "src/shared/link/link-utils";
 import { useLogger } from "src/shared/logger";
-import { LoomMenuCloseRequest, LoomMenuLevel } from "../../shared/menu/types";
-import { useMenu, useMenuOperations } from "../../shared/menu/hooks";
 
 import "./styles.css";
 import {
 	isInsertLineAltDown,
 	isInsertLineDown,
 } from "src/shared/keyboard-event";
+import {
+	LoomMenuCloseRequest,
+	LoomMenuLevel,
+} from "src/react/shared/menu-provider/types";
+import {
+	useMenu,
+	useMenuOperations,
+} from "src/react/shared/menu-provider/hooks";
 
 interface Props {
+	cellId: string;
 	closeRequest: LoomMenuCloseRequest | null;
 	value: string;
 	shouldWrapOverflow: boolean;
@@ -33,22 +40,18 @@ interface Props {
 }
 
 export default function TextCellEdit({
+	cellId,
 	shouldWrapOverflow,
 	closeRequest,
 	value,
 	onChange,
 	onClose,
 }: Props) {
-	const { onCloseAll } = useMenuOperations();
-	const {
-		menu: suggestMenu,
-		triggerRef: suggestMenuTriggerRef,
-		triggerPosition: suggestMenuTriggerPosition,
-		isOpen: isSuggestMenuOpen,
-		onOpen: onSuggestMenuOpen,
-		onRequestClose: onSuggestMenuRequestClose,
-		onClose: onSuggestMenuClose,
-	} = useMenu({ level: LoomMenuLevel.TWO });
+	const COMPONENT_ID = `suggest-menu-${cellId}`;
+	const menu = useMenu(COMPONENT_ID);
+	const menuOperations = useMenuOperations();
+
+	console.count("TextCellEdit render");
 
 	const [localValue, setLocalValue] = React.useState(value);
 	const [cursorPosition, setCursorPosition] = React.useState<number | null>(
@@ -84,9 +87,10 @@ export default function TextCellEdit({
 	React.useEffect(() => {
 		if (closeRequest !== null) {
 			if (localValue !== value) onChange(localValue);
+			logger("TextCellEdit onClose");
 			onClose();
 		}
-	}, [value, localValue, closeRequest, onClose, onChange]);
+	}, [logger, value, localValue, closeRequest, onClose, onChange]);
 
 	function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
 		const el = e.target as HTMLTextAreaElement;
@@ -95,7 +99,7 @@ export default function TextCellEdit({
 		if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
 			const cursorPosition = el.selectionStart;
 
-			if (isSuggestMenuOpen) {
+			if (menu.isOpen) {
 				//Close menu if cursor is outside of double brackets
 				if (!isSurroundedByDoubleBrackets(value, cursorPosition))
 					onClose();
@@ -108,10 +112,10 @@ export default function TextCellEdit({
 				inputEl.selectionEnd = cursorPosition;
 			}
 		} else if (isInsertLineDown(e)) {
-			if (isSuggestMenuOpen) return;
+			if (menu.isOpen) return;
 			e.stopPropagation();
 		} else if (isInsertLineAltDown(e)) {
-			if (isSuggestMenuOpen) return;
+			if (menu.isOpen) return;
 			e.stopPropagation();
 
 			const cursorPosition = inputRef.current?.selectionStart ?? 0;
@@ -145,6 +149,10 @@ export default function TextCellEdit({
 		[inputRef, localValue]
 	);
 
+	function handleMenuOpen() {
+		menu.onOpen(LoomMenuLevel.TWO);
+	}
+
 	function handleTextareaChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
 		const inputValue = e.target.value;
 		let newValue = inputValue;
@@ -165,7 +173,7 @@ export default function TextCellEdit({
 			if (
 				isSurroundedByDoubleBrackets(newValue, inputEl.selectionStart)
 			) {
-				onSuggestMenuOpen();
+				handleMenuOpen();
 			}
 		}
 
@@ -184,7 +192,7 @@ export default function TextCellEdit({
 
 			onChange(newValue);
 		}
-		onCloseAll();
+		menuOperations.onCloseAll();
 	}
 
 	const overflowClassName = useOverflow(shouldWrapOverflow);
@@ -193,10 +201,7 @@ export default function TextCellEdit({
 
 	return (
 		<>
-			<div
-				className="dataloom-text-cell-edit"
-				ref={suggestMenuTriggerRef}
-			>
+			<div className="dataloom-text-cell-edit" ref={menu.positionRef}>
 				<textarea
 					className={overflowClassName}
 					autoFocus
@@ -210,13 +215,11 @@ export default function TextCellEdit({
 				/>
 			</div>
 			<SuggestMenu
-				id={suggestMenu.id}
-				isOpen={isSuggestMenuOpen}
-				triggerPosition={suggestMenuTriggerPosition}
+				id={menu.id}
+				isOpen={menu.isOpen}
+				position={menu.position}
 				filterValue={filterValue}
 				onItemClick={handleSuggestItemClick}
-				onRequestClose={onSuggestMenuRequestClose}
-				onClose={onSuggestMenuClose}
 			/>
 		</>
 	);

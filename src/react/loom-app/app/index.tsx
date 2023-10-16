@@ -20,7 +20,6 @@ import { useRowEvents } from "src/react/loom-app/app/hooks/use-row-events";
 import { useColumnEvents } from "src/react/loom-app/app/hooks/use-column-events";
 import { useTableSettings } from "./hooks/use-table-settings";
 import useFocus from "./hooks/use-focus";
-import { useMenuEvents } from "./hooks/use-menu-events";
 import { nltEventSystem } from "src/shared/event-system/event-system";
 import {
 	isMacRedoDown,
@@ -29,15 +28,12 @@ import {
 	isWindowsUndoDown,
 } from "src/shared/keyboard-event";
 import { useLogger } from "src/shared/logger";
-import { useMenuOperations } from "src/react/shared/menu/hooks";
 import { useSource } from "./hooks/use-source";
 import getBodyRows from "./get-body-rows";
-import getFooterRow from "./get-footer-row";
 import _ from "lodash";
 
 import "src/react/global.css";
 import "./styles.css";
-import getHeaderRow from "./get-header-row";
 import {
 	EVENT_FILE_CREATE,
 	EVENT_FILE_DELETE,
@@ -46,6 +42,7 @@ import {
 	EVENT_FOLDER_DELETE,
 	EVENT_FOLDER_RENAME,
 } from "src/shared/events";
+import { useAppEvents } from "./hooks/use-app-events";
 
 export default function App() {
 	const logger = useLogger();
@@ -61,16 +58,17 @@ export default function App() {
 		setLoomState,
 	} = useLoomState();
 
+	console.log("App render");
+
 	const tableRef = React.useRef<VirtuosoHandle | null>(null);
 	const appRef = React.useRef<HTMLDivElement | null>(null);
-	const { onRequestCloseTop } = useMenuOperations();
 
 	useExportEvents(loomState);
 	useRowEvents();
 	useColumnEvents();
-	useMenuEvents();
+	//useMenuEvents();
 	const {
-		allFrontMatterKeys,
+		frontmatterKeys,
 		onSourceAdd,
 		onSourceDelete,
 		onUpdateRowsFromSources,
@@ -160,9 +158,6 @@ export default function App() {
 		};
 	}, [onUpdateRowsFromSources, app]);
 
-	const firstColumnId = useUUID();
-	const lastColumnId = useUUID();
-
 	function handleScrollToTopClick() {
 		tableRef.current?.scrollToIndex(0);
 	}
@@ -171,13 +166,7 @@ export default function App() {
 		tableRef.current?.scrollToIndex(filteredRows.length - 1);
 	}
 
-	function handleClick(e: React.MouseEvent) {
-		logger("App handleClick");
-		//Stop propagation to the global event
-		e.stopPropagation();
-
-		onRequestCloseTop();
-	}
+	const { onClick } = useAppEvents();
 
 	function handleKeyDown(e: React.KeyboardEvent) {
 		logger("App handleKeyDown");
@@ -205,73 +194,29 @@ export default function App() {
 		searchText
 	);
 
-	const visibleColumns = columns.filter((column) => column.isVisible);
-	const headerRow = getHeaderRow({
-		allFrontMatterKeys,
-		firstColumnId,
-		lastColumnId,
-		columns,
-		numFrozenColumns,
-		resizingColumnId,
-		numSources: sources.length,
-		onColumnChange,
-		onFrozenColumnsChange,
-		onColumnDeleteClick,
-		onColumnAddClick,
-		onColumnTypeChange,
-	});
-
-	const bodyRows = getBodyRows({
-		sources,
-		firstColumnId,
-		lastColumnId,
-		visibleColumns,
-		rows: filteredRows,
-		onTagCellAdd,
-		onTagAdd,
-		onTagCellRemove,
-		onTagCellMultipleRemove,
-		onTagDeleteClick,
-		onRowDeleteClick,
-		onRowInsertAboveClick,
-		onRowInsertBelowClick,
-		onCellChange,
-		onColumnChange,
-		onTagChange,
-		onRowReorder,
-	});
-
-	const footerRow = getFooterRow({
-		showCalculationRow,
-		firstColumnId,
-		lastColumnId,
-		visibleColumns,
-		rows: filteredRows,
-		sources,
-		onColumnChange,
-	});
-
 	let className = "dataloom-app";
 	if (isMarkdownView) className += " dataloom-app--markdown-view";
 
 	const handleTableRender = useCallback(
-		_.debounce(() => {
-			const appEl = appRef.current;
-			if (!appEl) return;
+		() =>
+			_.debounce(() => {
+				const appEl = appRef.current;
+				if (!appEl) return;
 
-			const tableEl = appEl.querySelector(".dataloom-table");
-			if (!tableEl) return;
+				const tableEl = appEl.querySelector(".dataloom-table");
+				if (!tableEl) return;
 
-			const tableContainerEl = tableEl.parentElement;
-			if (!tableContainerEl) return;
+				const tableContainerEl = tableEl.parentElement;
+				if (!tableContainerEl) return;
 
-			const tableRect = tableEl.getBoundingClientRect();
-			const tableContainerRect = tableContainerEl.getBoundingClientRect();
+				const tableRect = tableEl.getBoundingClientRect();
+				const tableContainerRect =
+					tableContainerEl.getBoundingClientRect();
 
-			let diff = tableContainerRect.height - tableRect.height;
-			if (diff < 0) diff = 0;
-			setBottomBarOffset(diff);
-		}, 10),
+				let diff = tableContainerRect.height - tableRect.height;
+				if (diff < 0) diff = 0;
+				setBottomBarOffset(diff);
+			}, 5)(),
 		[setBottomBarOffset, appRef]
 	);
 
@@ -281,7 +226,7 @@ export default function App() {
 			id={reactAppId}
 			className={className}
 			onKeyDown={handleKeyDown}
-			onClick={handleClick}
+			onClick={onClick}
 		>
 			<OptionBar
 				columns={columns}
@@ -298,13 +243,31 @@ export default function App() {
 			/>
 			<Table
 				ref={tableRef}
+				sources={sources}
+				rows={filteredRows}
+				frontmatterKeys={frontmatterKeys}
+				columns={columns}
 				numFrozenColumns={numFrozenColumns}
-				headerRow={headerRow}
-				bodyRows={bodyRows}
-				footer={footerRow}
+				resizingColumnId={resizingColumnId}
+				showCalculationRow={showCalculationRow}
+				onColumnDeleteClick={onColumnDeleteClick}
+				onColumnAddClick={onColumnAddClick}
+				onColumnTypeChange={onColumnTypeChange}
+				onFrozenColumnsChange={onFrozenColumnsChange}
 				onColumnReorder={onColumnReorder}
-				onRowReorder={onRowReorder}
 				onTableRender={handleTableRender}
+				onRowDeleteClick={onRowDeleteClick}
+				onRowInsertAboveClick={onRowInsertAboveClick}
+				onRowInsertBelowClick={onRowInsertBelowClick}
+				onColumnChange={onColumnChange}
+				onCellChange={onCellChange}
+				onTagAdd={onTagAdd}
+				onTagCellAdd={onTagCellAdd}
+				onTagCellRemove={onTagCellRemove}
+				onTagCellMultipleRemove={onTagCellMultipleRemove}
+				onTagChange={onTagChange}
+				onTagDeleteClick={onTagDeleteClick}
+				onRowReorder={onRowReorder}
 			/>
 			<BottomBar
 				bottomBarOffset={bottomBarOffset}

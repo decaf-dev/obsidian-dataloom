@@ -1,11 +1,13 @@
+import React from "react";
+
 import TagColorMenu from "src/react/loom-app/tag-color-menu";
 import MenuButton from "src/react/shared/menu-button";
 import Icon from "src/react/shared/icon";
 import Tag from "src/react/shared/tag";
 
 import { Color } from "src/shared/loom-state/types/loom-state";
-import { useMenu } from "../../../shared/menu/hooks";
-import { LoomMenuLevel } from "../../../shared/menu/types";
+import { LoomMenuLevel } from "src/react/shared/menu-provider/types";
+import { useMenu } from "src/react/shared/menu-provider/hooks";
 
 import "./styles.css";
 
@@ -28,30 +30,22 @@ export default function SelectableTag({
 	onDeleteClick,
 	onTagContentChange,
 }: Props) {
-	const {
-		menu,
-		triggerRef,
-		triggerPosition,
-		isOpen,
-		closeRequest,
-		onOpen,
-		onClose,
-		onRequestClose,
-	} = useMenu({ level: LoomMenuLevel.TWO, shouldRequestOnClose: true });
+	const COMPONENT_ID = `selectable-tag-${id}`;
+	const menu = useMenu(COMPONENT_ID);
 
 	function handleColorChange(color: Color) {
 		onColorChange(id, color);
-		onClose();
+		menu.onClose();
 	}
 
 	function handleDeleteClick() {
 		onDeleteClick(id);
-		onClose();
+		menu.onClose();
 	}
 
 	function handleTagContentChange(value: string) {
 		onTagContentChange(id, value);
-		onClose();
+		menu.onClose();
 	}
 
 	function handleKeyDown(e: React.KeyboardEvent) {
@@ -60,6 +54,12 @@ export default function SelectableTag({
 			e.stopPropagation();
 			onClick(id);
 		}
+	}
+
+	function handleMenuOpen() {
+		menu.onOpen(LoomMenuLevel.TWO, {
+			shouldRequestOnClose: true,
+		});
 	}
 
 	function handleClick(e: React.MouseEvent) {
@@ -81,24 +81,22 @@ export default function SelectableTag({
 			>
 				<Tag content={content} color={color} maxWidth="150px" />
 				<MenuButton
-					ref={triggerRef}
-					menu={menu}
+					ref={menu.positionRef}
 					icon={<Icon lucideId="more-horizontal" />}
-					onOpen={onOpen}
+					onOpen={handleMenuOpen}
 				/>
 			</div>
 			<TagColorMenu
-				isOpen={isOpen}
+				isOpen={menu.isOpen}
 				id={menu.id}
-				triggerPosition={triggerPosition}
-				closeRequest={closeRequest}
+				position={menu.position}
+				closeRequest={menu.closeRequest}
 				content={content}
 				selectedColor={color}
 				onColorClick={(color) => handleColorChange(color)}
 				onDeleteClick={handleDeleteClick}
-				onRequestClose={onRequestClose}
 				onTagContentChange={handleTagContentChange}
-				onClose={onClose}
+				onClose={menu.onClose}
 			/>
 		</>
 	);

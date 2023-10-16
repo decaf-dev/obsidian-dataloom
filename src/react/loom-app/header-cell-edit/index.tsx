@@ -23,14 +23,11 @@ import {
 } from "src/shared/loom-state/types/loom-state";
 import { SubmenuType } from "./types";
 
-import {
-	LoomMenuCloseRequest,
-	LoomMenuCloseRequestType,
-	Position,
-} from "../../shared/menu/types";
+import { LoomMenuPosition } from "../../shared/menu/types";
 import "./styles.css";
 import { ColumnChangeHandler } from "../app/hooks/use-column/types";
 import FrontmatterKeySubmenu from "./frontmatter-key-submenu";
+import { LoomMenuCloseRequest } from "src/react/shared/menu-provider/types";
 
 interface Props {
 	index: number;
@@ -40,7 +37,7 @@ interface Props {
 	frontmatterKeys: string[];
 	id: string;
 	numFrozenColumns: number;
-	triggerPosition: Position;
+	position: LoomMenuPosition;
 	column: Column;
 	closeRequest: LoomMenuCloseRequest | null;
 	numColumns: number;
@@ -48,15 +45,8 @@ interface Props {
 	onColumnTypeChange: (columnId: string, type: CellType) => void;
 	onColumnDeleteClick: (columnId: string) => void;
 	onFrozenColumnsChange: (value: number) => void;
-	onRequestClose: (type: LoomMenuCloseRequestType) => void;
 	onClose: () => void;
 }
-
-const SELFHANDLE_CLOSE: SubmenuType[] = [
-	SubmenuType.TEXT_INPUT_NUMBER_SUFFIX,
-	SubmenuType.TEXT_INPUT_NUMBER_PREFIX,
-	SubmenuType.TEXT_INPUT_NUMBER_SEPARATOR,
-];
 
 export default function HeaderMenu({
 	index,
@@ -64,14 +54,13 @@ export default function HeaderMenu({
 	numSources,
 	column,
 	id,
-	triggerPosition,
+	position,
 	numFrozenColumns,
 	frontmatterKeys,
 	canDeleteColumn,
 	closeRequest,
 	onColumnDeleteClick,
 	onClose,
-	onRequestClose,
 	onFrozenColumnsChange,
 	onColumnChange,
 	onColumnTypeChange,
@@ -103,9 +92,8 @@ export default function HeaderMenu({
 				if (localValue !== content)
 					onColumnChange(columnId, { content: localValue });
 			}
-			if (!submenu || !SELFHANDLE_CLOSE.includes(submenu)) {
-				onClose();
-			}
+			console.log("HeaderMenu onClose");
+			onClose();
 		}
 	}, [
 		content,
@@ -117,7 +105,9 @@ export default function HeaderMenu({
 		onClose,
 	]);
 
-	function handleWrapOverflowToggle() {}
+	function handleWrapOverflowToggle() {
+		onColumnChange(columnId, { shouldWrapOverflow: !shouldWrapOverflow });
+	}
 
 	function handleSortClick(sortDir: SortDir) {
 		onColumnChange(columnId, { sortDir }, { shouldSortRows: true });
@@ -219,14 +209,7 @@ export default function HeaderMenu({
 	}
 
 	return (
-		<Menu
-			isOpen={isOpen}
-			id={id}
-			triggerPosition={triggerPosition}
-			width={190}
-			onRequestClose={onRequestClose}
-			onClose={onClose}
-		>
+		<Menu isOpen={isOpen} id={id} position={position} width={190}>
 			<div className="dataloom-header-menu">
 				{submenu === null && (
 					<BaseMenu

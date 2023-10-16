@@ -4,8 +4,10 @@ import { useOverflow } from "src/shared/spacing/hooks";
 import { ColumnMatch, ImportColumn } from "../types";
 import Icon from "src/react/shared/icon";
 import SelectColumnMenu from "./select-column-menu";
-import { useModalMenu } from "src/react/shared/menu/hooks";
 import MenuButton from "src/react/shared/menu-button";
+import { useModalMenuPosition } from "src/react/shared/menu/hooks";
+import { LoomMenuLevel } from "src/react/shared/menu-provider/types";
+import { useMenu } from "src/react/shared/menu-provider/hooks";
 
 interface Props {
 	isDisabled: boolean;
@@ -32,21 +34,13 @@ export default function HeaderCell({
 		ellipsis: true,
 	});
 
-	const {
-		menu,
-		triggerPosition,
-		triggerRef,
-		isOpen,
-		onOpen,
-		onClose,
-		onRequestClose,
-	} = useModalMenu({
-		shouldFocusTriggerOnClose: false,
-	});
+	const COMPONENT_ID = `header-cell-${index}`;
+	const menu = useMenu(COMPONENT_ID);
+	const menuPosition = useModalMenuPosition();
 
 	function handleColumnClick(columnId: string | null) {
 		onColumnMatch(index, columnId);
-		onClose();
+		menu.onClose();
 	}
 
 	return (
@@ -82,24 +76,21 @@ export default function HeaderCell({
 							onChange={() => onColumnToggle(index)}
 						/>
 						<MenuButton
-							menu={menu}
-							ref={triggerRef}
+							ref={menuPosition.ref}
 							ariaLabel="Match column"
 							icon={<Icon lucideId="columns" size="lg" />}
-							onOpen={onOpen}
+							onOpen={() => menu.onOpen(LoomMenuLevel.ONE)}
 						/>
 					</Stack>
 				</Stack>
 			</th>
 			<SelectColumnMenu
 				id={menu.id}
-				isOpen={isOpen}
-				triggerPosition={triggerPosition}
+				isOpen={menu.isOpen}
+				position={menuPosition.position}
 				selectedColumnId={matchId}
 				columnMatches={columnMatches}
 				columns={columns}
-				onRequestClose={onRequestClose}
-				onClose={onClose}
 				onColumnClick={handleColumnClick}
 			/>
 		</>

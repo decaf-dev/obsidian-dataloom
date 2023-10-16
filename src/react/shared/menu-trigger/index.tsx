@@ -7,15 +7,10 @@ import {
 	isWindowsUndoDown,
 } from "src/shared/keyboard-event";
 import { useLogger } from "src/shared/logger";
-import { useMenuOperations } from "../menu/hooks";
-import { LoomMenu } from "../menu/types";
 
 interface Props {
-	menu: LoomMenu;
+	canOpen?: boolean;
 	isButton?: boolean;
-	/** If the trigger should open a menu */
-	shouldOpenOnTrigger?: boolean;
-	/** Should the trigger be 100% width and 100% height of the parent */
 	isCell?: boolean;
 	children: React.ReactNode;
 	onEnterDown?: () => void;
@@ -28,10 +23,9 @@ interface Props {
 const MenuTrigger = React.forwardRef<HTMLDivElement, Props>(
 	(
 		{
-			menu,
 			isButton = false,
 			isCell = false,
-			shouldOpenOnTrigger = true,
+			canOpen = true,
 			children,
 			onEnterDown,
 			onBackspaceDown,
@@ -42,7 +36,6 @@ const MenuTrigger = React.forwardRef<HTMLDivElement, Props>(
 		ref
 	) => {
 		const logger = useLogger();
-		const { onRequestCloseTop, canOpen } = useMenuOperations();
 
 		function handleKeyDown(e: React.KeyboardEvent) {
 			logger("MenuTrigger handleKeyDown");
@@ -55,21 +48,14 @@ const MenuTrigger = React.forwardRef<HTMLDivElement, Props>(
 				e.preventDefault();
 
 				//Is the trigger isn't active, return
-				if (shouldOpenOnTrigger) {
-					if (canOpen(menu)) {
-						const tag = (e.target as HTMLElement).tagName;
-						if (tag === "A") return;
-						onOpen();
-						return;
-					}
+				if (canOpen) {
+					const tag = (e.target as HTMLElement).tagName;
+					if (tag === "A") return;
+					onOpen();
 				}
-
-				onRequestCloseTop();
 			} else if (e.key === "Backspace") {
 				onBackspaceDown?.();
-			}
-
-			if (e.key.length === 1) {
+			} else if (e.key.length === 1) {
 				if (
 					isWindowsRedoDown(e) ||
 					isWindowsUndoDown(e) ||
@@ -91,16 +77,12 @@ const MenuTrigger = React.forwardRef<HTMLDivElement, Props>(
 			e.stopPropagation();
 			onClick?.(e);
 
-			if (shouldOpenOnTrigger) {
-				if (canOpen(menu)) {
-					const tag = (e.target as HTMLElement).tagName;
-					if (tag === "A") return;
-					onOpen();
-					return;
-				}
+			if (canOpen) {
+				const tag = (e.target as HTMLElement).tagName;
+				if (tag === "A") return;
+				onOpen();
+				return;
 			}
-
-			onRequestCloseTop();
 		}
 
 		return (
@@ -113,9 +95,9 @@ const MenuTrigger = React.forwardRef<HTMLDivElement, Props>(
 					height: isCell ? "100%" : undefined,
 					borderRadius: isButton ? "var(--button-radius)" : undefined,
 				}}
-				onClick={handleClick}
-				onKeyDown={handleKeyDown}
 				onMouseDown={onMouseDown}
+				onKeyDown={handleKeyDown}
+				onClick={handleClick}
 			>
 				{children}
 			</div>

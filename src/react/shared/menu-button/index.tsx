@@ -2,12 +2,11 @@ import React from "react";
 
 import MenuTrigger from "../menu-trigger";
 import Button from "../button";
+
 import { ButtonVariant } from "../button/types";
-import { LoomMenu } from "../menu/types";
 
 interface Props {
 	isDisabled?: boolean;
-	menu: LoomMenu;
 	variant?: ButtonVariant;
 	ariaLabel?: string;
 	icon?: React.ReactNode;
@@ -21,7 +20,6 @@ const MenuButton = React.forwardRef<HTMLDivElement, Props>(
 	(
 		{
 			isDisabled,
-			menu,
 			variant,
 			ariaLabel,
 			icon,
@@ -34,10 +32,9 @@ const MenuButton = React.forwardRef<HTMLDivElement, Props>(
 	) => {
 		return (
 			<MenuTrigger
-				shouldOpenOnTrigger={true}
+				canOpen={true}
 				isButton
 				ref={ref}
-				menu={menu}
 				onClick={onClick}
 				onMouseDown={onMouseDown}
 				onOpen={onOpen}

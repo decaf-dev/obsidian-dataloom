@@ -6,8 +6,8 @@ import { numToPx } from "src/shared/conversion";
 import { ColumnReorderHandler } from "../app/hooks/use-column/types";
 
 interface Props {
+	columnId?: string;
 	index: number;
-	columnId: string;
 	isDraggable: boolean;
 	numFrozenColumns: number;
 	content: React.ReactNode;

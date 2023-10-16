@@ -19,6 +19,8 @@ export default function BodyRow({
 	const { loomState } = useLoomState();
 	const { dragData, setDragData } = useDragContext();
 
+	console.log("BodyRow render");
+
 	function handleDragStart(e: React.DragEvent) {
 		const el = e.target as HTMLElement;
 

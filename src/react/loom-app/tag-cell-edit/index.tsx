@@ -6,8 +6,7 @@ import MenuBody from "./menu-body";
 import { Tag as TagType } from "src/shared/loom-state/types/loom-state";
 import { Color } from "src/shared/loom-state/types/loom-state";
 import { randomColor } from "src/shared/color";
-
-import { LoomMenuCloseRequest } from "../../shared/menu/types";
+import { LoomMenuCloseRequest } from "src/react/shared/menu-provider/types";
 
 interface Props {
 	isMulti: boolean;

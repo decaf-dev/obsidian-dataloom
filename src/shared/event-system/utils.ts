@@ -1,3 +1,4 @@
+//TODO fix
 export const isEventForThisApp = (
 	appId: string,
 	allowOutsideEvents = false

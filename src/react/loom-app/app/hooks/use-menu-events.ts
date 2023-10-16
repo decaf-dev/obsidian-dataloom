@@ -1,10 +1,10 @@
 import React from "react";
 
-import { useMenuOperations } from "src/react/shared/menu/hooks";
 import { EVENT_GLOBAL_CLICK } from "src/shared/events";
 import { useLogger } from "src/shared/logger";
 import { useAppMount } from "../../app-mount-provider";
 import _ from "lodash";
+import { useMenuOperations } from "src/react/shared/menu-provider/hooks";
 
 export const useMenuEvents = () => {
 	const hookName = "useMenuEvents";

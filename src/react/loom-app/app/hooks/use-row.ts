@@ -21,36 +21,45 @@ export const useRow = () => {
 		[doCommand, logger]
 	);
 
-	function handleNewRowClick() {
+	const handleNewRowClick = React.useCallback(() => {
 		logger("handleNewRowClick");
 		doCommand(new RowAddCommand());
-	}
+	}, [doCommand, logger]);
 
-	function handleRowInsertAboveClick(rowId: string) {
-		logger("handleRowInsertAboveClick", {
-			rowId,
-		});
-		if (confirmSortOrderChange(loomState)) {
-			doCommand(new RowInsertCommand(rowId, "above"));
-		}
-	}
+	const handleRowInsertAboveClick = React.useCallback(
+		(rowId: string) => {
+			logger("handleRowInsertAboveClick", {
+				rowId,
+			});
+			if (confirmSortOrderChange(loomState)) {
+				doCommand(new RowInsertCommand(rowId, "above"));
+			}
+		},
+		[doCommand, logger, loomState]
+	);
 
-	function handleRowInsertBelowClick(rowId: string) {
-		logger("handleRowInsertBelowClick", {
-			rowId,
-		});
-		if (confirmSortOrderChange(loomState)) {
-			doCommand(new RowInsertCommand(rowId, "below"));
-		}
-	}
+	const handleRowInsertBelowClick = React.useCallback(
+		(rowId: string) => {
+			logger("handleRowInsertBelowClick", {
+				rowId,
+			});
+			if (confirmSortOrderChange(loomState)) {
+				doCommand(new RowInsertCommand(rowId, "below"));
+			}
+		},
+		[doCommand, logger, loomState]
+	);
 
-	function handleRowReorder(dragId: string, targetId: string) {
-		logger("handleRowReorder", {
-			dragId,
-			targetId,
-		});
-		doCommand(new RowReorderCommand(dragId, targetId));
-	}
+	const handleRowReorder = React.useCallback(
+		(dragId: string, targetId: string) => {
+			logger("handleRowReorder", {
+				dragId,
+				targetId,
+			});
+			doCommand(new RowReorderCommand(dragId, targetId));
+		},
+		[doCommand, logger]
+	);
 
 	return {
 		onRowAddClick: handleNewRowClick,
