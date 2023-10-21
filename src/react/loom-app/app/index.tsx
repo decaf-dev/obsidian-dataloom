@@ -6,7 +6,6 @@ import Table from "../table";
 import OptionBar from "../option-bar";
 import BottomBar from "../bottom-bar";
 
-import { useUUID } from "../../../shared/hooks";
 import { useLoomState } from "../loom-state-provider";
 import { useFilter } from "./hooks/use-filter";
 import { filterRowsBySearch } from "./filter-by-search";
@@ -29,7 +28,6 @@ import {
 } from "src/shared/keyboard-event";
 import { useLogger } from "src/shared/logger";
 import { useSource } from "./hooks/use-source";
-import getBodyRows from "./get-body-rows";
 import _ from "lodash";
 
 import "src/react/global.css";
@@ -43,6 +41,7 @@ import {
 	EVENT_FOLDER_RENAME,
 } from "src/shared/events";
 import { useAppEvents } from "./hooks/use-app-events";
+import { useMenuEvents } from "./hooks/use-menu-events";
 
 export default function App() {
 	const logger = useLogger();
@@ -58,15 +57,15 @@ export default function App() {
 		setLoomState,
 	} = useLoomState();
 
-	console.log("App render");
-
 	const tableRef = React.useRef<VirtuosoHandle | null>(null);
 	const appRef = React.useRef<HTMLDivElement | null>(null);
 
 	useExportEvents(loomState);
 	useRowEvents();
 	useColumnEvents();
-	//useMenuEvents();
+	useMenuEvents();
+	const { onClick } = useAppEvents();
+
 	const {
 		frontmatterKeys,
 		onSourceAdd,
@@ -165,8 +164,6 @@ export default function App() {
 	function handleScrollToBottomClick() {
 		tableRef.current?.scrollToIndex(filteredRows.length - 1);
 	}
-
-	const { onClick } = useAppEvents();
 
 	function handleKeyDown(e: React.KeyboardEvent) {
 		logger("App handleKeyDown");

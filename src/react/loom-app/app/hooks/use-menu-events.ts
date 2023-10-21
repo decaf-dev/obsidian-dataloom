@@ -7,46 +7,19 @@ import _ from "lodash";
 import { useMenuOperations } from "src/react/shared/menu-provider/hooks";
 
 export const useMenuEvents = () => {
-	const hookName = "useMenuEvents";
-	const logger = useLogger();
-	const { reactAppId, isMarkdownView, app } = useAppMount();
+	useCloseOnOutsideClick();
+	useCloseOnObsidianModalOpen();
+	useCloseOnTableScroll();
+	useCloseOnMarkdownViewScroll();
+};
+
+/**
+ * If the app is rendered in an MarkdownView, close all menus when the user scrolls
+ */
+const useCloseOnMarkdownViewScroll = () => {
+	const { reactAppId, isMarkdownView } = useAppMount();
 	const { onCloseAll } = useMenuOperations();
 
-	React.useEffect(() => {
-		const THROTTLE_TIME_MILLIS = 100;
-		const throttleHandleScroll = _.throttle(
-			handleScroll,
-			THROTTLE_TIME_MILLIS
-		);
-
-		function handleScroll() {
-			//Find any open menus
-			const openMenus = document.querySelectorAll(".dataloom-menu");
-
-			//Since it takes a noticable amount of time for React to update the DOM, we set
-			//the display to none and then wait for React to clean up the DOM
-			for (const menu of openMenus) {
-				(menu as HTMLElement).style.display = "none";
-			}
-			onCloseAll();
-		}
-
-		const appEl = document.getElementById(reactAppId);
-		if (!appEl) return;
-
-		const tableContainer = appEl.querySelector(
-			'[data-virtuoso-scroller="true"]'
-		) as HTMLElement | null;
-		if (!tableContainer) return;
-
-		tableContainer.addEventListener("scroll", throttleHandleScroll);
-		return () =>
-			tableContainer?.removeEventListener("scroll", throttleHandleScroll);
-	}, [onCloseAll, reactAppId]);
-
-	/**
-	 * If the app is rendered in an MarkdownView, close all menus when the user scrolls
-	 */
 	React.useEffect(() => {
 		let pageScrollerEl: HTMLElement | null;
 
@@ -59,6 +32,7 @@ export const useMenuEvents = () => {
 		function handleScroll() {
 			//Find any open menus
 			const openMenus = document.querySelectorAll(".dataloom-menu");
+			if (openMenus.length === 0) return;
 
 			//Since it takes a noticable amount of time for React to update the DOM, we set
 			//the display to none and then wait for React to clean up the DOM
@@ -81,40 +55,57 @@ export const useMenuEvents = () => {
 		return () =>
 			pageScrollerEl?.removeEventListener("scroll", throttleHandleScroll);
 	}, [onCloseAll, isMarkdownView, reactAppId]);
+};
 
-	/**
-	 * If an Obsidian modal is opened, close all menus
-	 */
+const useCloseOnTableScroll = () => {
+	const { reactAppId } = useAppMount();
+	const { onCloseAll } = useMenuOperations();
+
 	React.useEffect(() => {
-		function isModalOpen() {
-			//A model is open if there is a modal-container element in the body of the document
-			return (
-				document.body.querySelector(":scope > .modal-container") !==
-				null
-			);
+		const THROTTLE_TIME_MILLIS = 100;
+		const throttleHandleScroll = _.throttle(
+			handleScroll,
+			THROTTLE_TIME_MILLIS
+		);
+
+		function handleScroll() {
+			//Find any open menus
+			const openMenus = document.querySelectorAll(".dataloom-menu");
+			if (openMenus.length === 0) return;
+
+			//Since it takes a noticable amount of time for React to update the DOM, we set
+			//the display to none and then wait for React to clean up the DOM
+			for (const menu of openMenus) {
+				(menu as HTMLElement).style.display = "none";
+			}
+			onCloseAll();
 		}
 
-		const observer = new MutationObserver((entries) => {
-			for (const entry of entries) {
-				if (entry.target === document.body) {
-					if (isModalOpen()) {
-						logger(`${hookName} onCloseAll`);
-						onCloseAll();
-						break;
-					}
-				}
-			}
-		});
+		const appEl = document.getElementById(reactAppId);
+		if (!appEl) return;
 
-		// Start observing the body element
-		observer.observe(document.body, { childList: true });
+		const tableContainer = appEl.querySelector(
+			'[data-virtuoso-scroller="true"]'
+		) as HTMLElement | null;
+		if (!tableContainer) return;
 
-		return () => observer.disconnect();
-	}, [logger, onCloseAll]);
+		tableContainer.addEventListener("scroll", throttleHandleScroll);
+		return () =>
+			tableContainer?.removeEventListener("scroll", throttleHandleScroll);
+	}, [onCloseAll, reactAppId]);
+};
+
+/**
+ * If the user clicks outside the app, close all menus
+ */
+const useCloseOnOutsideClick = () => {
+	const { app } = useAppMount();
+	const logger = useLogger();
+	const { onCloseAll } = useMenuOperations();
 
 	React.useEffect(() => {
 		function handleGlobalClick() {
-			logger(`${hookName} handleGlobalClick`);
+			logger("handleGlobalClick");
 
 			//If the user selected text and then released outside the app
 			//we don't want to close the menu
@@ -129,4 +120,43 @@ export const useMenuEvents = () => {
 
 		return () => app.workspace.off(EVENT_GLOBAL_CLICK, handleGlobalClick);
 	}, [app, logger, onCloseAll]);
+};
+
+/**
+ * If an Obsidian modal is opened, close all menus
+ */
+const useCloseOnObsidianModalOpen = () => {
+	const logger = useLogger();
+	const { topMenu, onCloseAll } = useMenuOperations();
+	const hasCloseLock = React.useRef(false);
+
+	React.useEffect(() => {
+		if (!topMenu) hasCloseLock.current = false;
+	}, [topMenu]);
+
+	React.useEffect(() => {
+		function hasOpenModal() {
+			return document.querySelector("body > .modal-container") !== null;
+		}
+
+		const observer = new MutationObserver((entries) => {
+			if (hasCloseLock.current) return;
+
+			for (const entry of entries) {
+				if (entry.target === document.body) {
+					if (hasOpenModal()) {
+						logger("obsidian modal opened. closing all menus");
+						hasCloseLock.current = true;
+						onCloseAll();
+						break;
+					}
+				}
+			}
+		});
+
+		// Start observing the body element
+		observer.observe(document.body, { childList: true });
+
+		return () => observer.disconnect();
+	}, [logger, onCloseAll]);
 };
