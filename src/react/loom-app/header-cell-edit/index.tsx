@@ -292,7 +292,7 @@ export default function HeaderMenu({
 				)}
 				{submenu === SubmenuType.CURRENCY && (
 					<NumberFormatSubmenu
-						title="Currency"
+						title="Number format"
 						format={numberFormat}
 						currency={currencyType}
 						onNumberFormatChange={handleNumberFormatChange}
