@@ -192,6 +192,7 @@ export default function RowOptions({
 						onTouchCancel={handleTouchCancel}
 					>
 						<MenuButton
+							menuId={menu.id}
 							ref={menu.positionRef}
 							level={LoomMenuLevel.ONE}
 							icon={<Icon lucideId="grip-vertical" />}

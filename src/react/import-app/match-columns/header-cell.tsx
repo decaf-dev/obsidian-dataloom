@@ -75,6 +75,7 @@ export default function HeaderCell({
 							onChange={() => onColumnToggle(index)}
 						/>
 						<MenuButton
+							menuId={menu.id}
 							ref={menu.positionRef}
 							level={LoomMenuLevel.ONE}
 							ariaLabel="Match column"

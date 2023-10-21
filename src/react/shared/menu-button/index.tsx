@@ -7,6 +7,7 @@ import { ButtonVariant } from "../button/types";
 import { LoomMenuLevel } from "../menu-provider/types";
 
 interface Props {
+	menuId: string;
 	level: LoomMenuLevel;
 	isDisabled?: boolean;
 	variant?: ButtonVariant;
@@ -21,6 +22,7 @@ interface Props {
 const MenuButton = React.forwardRef<HTMLDivElement, Props>(
 	(
 		{
+			menuId,
 			isDisabled,
 			variant,
 			level,
@@ -35,6 +37,7 @@ const MenuButton = React.forwardRef<HTMLDivElement, Props>(
 	) => {
 		return (
 			<MenuTrigger
+				menuId={menuId}
 				ref={ref}
 				variant="button"
 				level={level}

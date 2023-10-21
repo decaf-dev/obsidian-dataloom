@@ -130,6 +130,7 @@ export default function DateCellEdit({
 						/>
 					</Padding>
 					<MenuTrigger
+						menuId={menu.id}
 						variant="cell"
 						level={LoomMenuLevel.TWO}
 						ref={menu.positionRef}

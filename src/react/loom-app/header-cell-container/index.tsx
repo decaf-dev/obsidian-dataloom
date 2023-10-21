@@ -78,6 +78,7 @@ export default function HeaderCellContainer({
 	return (
 		<>
 			<MenuTrigger
+				menuId={menu.id}
 				ref={menu.positionRef}
 				variant="cell"
 				level={LoomMenuLevel.ONE}

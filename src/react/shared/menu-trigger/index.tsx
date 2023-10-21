@@ -11,6 +11,7 @@ import { useMenuOperations } from "../menu-provider/hooks";
 import { LoomMenuLevel } from "../menu-provider/types";
 
 interface Props {
+	menuId: string;
 	level: LoomMenuLevel;
 	shouldRunTrigger?: boolean;
 	variant: "button" | "cell";
@@ -25,6 +26,7 @@ interface Props {
 const MenuTrigger = React.forwardRef<HTMLDivElement, Props>(
 	(
 		{
+			menuId,
 			level,
 			variant,
 			shouldRunTrigger = true,
@@ -96,6 +98,7 @@ const MenuTrigger = React.forwardRef<HTMLDivElement, Props>(
 
 		return (
 			<div
+				data-menu-id={menuId}
 				tabIndex={0}
 				className="dataloom-menu-trigger dataloom-focusable"
 				ref={ref}

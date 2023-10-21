@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import Menu from "src/react/shared/menu";
 import OptionSubmenu from "./option-submenu";
 import TypeSubmenu from "./type-submenu";
-import BaseMenu from "./base-menu";
 import NumberFormatSubmenu from "./number-format-submenu";
 import TextInputSubmenu from "./text-input-submenu";
 import DateFormatSubmenu from "./date-format-submenu";
@@ -28,6 +27,7 @@ import "./styles.css";
 import { ColumnChangeHandler } from "../app/hooks/use-column/types";
 import FrontmatterKeySubmenu from "./frontmatter-key-submenu";
 import { LoomMenuCloseRequest } from "src/react/shared/menu-provider/types";
+import BaseSubmenu from "./base-submenu";
 
 interface Props {
 	index: number;
@@ -211,7 +211,7 @@ export default function HeaderMenu({
 		<Menu isOpen={isOpen} id={id} position={position} width={190}>
 			<div className="dataloom-header-menu">
 				{submenu === null && (
-					<BaseMenu
+					<BaseSubmenu
 						index={index}
 						numSources={numSources}
 						canDeleteColumn={canDeleteColumn}

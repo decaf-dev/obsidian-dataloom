@@ -95,6 +95,7 @@ export default function FooterCellContainer({
 	return (
 		<>
 			<MenuTrigger
+				menuId={menu.id}
 				ref={menu.positionRef}
 				level={LoomMenuLevel.ONE}
 				variant="cell"

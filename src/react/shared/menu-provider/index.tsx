@@ -8,7 +8,11 @@ import {
 	LoomMenuLevel,
 } from "./types";
 import { useLogger } from "src/shared/logger";
-import { getPositionFromEl } from "./utils";
+import { findMenuTriggerEl, getPositionFromEl } from "./utils";
+import {
+	addFocusClass,
+	removeCurrentFocusClass,
+} from "src/react/loom-app/app/hooks/use-focus/utils";
 
 interface ContextProps {
 	topMenu: LoomMenu | null;
@@ -24,7 +28,7 @@ interface ContextProps {
 	onOpen: (
 		parentComponentId: string,
 		level: LoomMenuLevel,
-		ref: React.RefObject<HTMLElement>,
+		triggerRef: React.RefObject<HTMLElement>,
 		options?: {
 			name?: string;
 			shouldRequestOnClose?: boolean;
@@ -66,7 +70,7 @@ export default function MenuProvider({ children }: Props) {
 	function handleOpen(
 		parentComponentId: string,
 		level: LoomMenuLevel,
-		ref: React.RefObject<HTMLElement>,
+		triggerRef: React.RefObject<HTMLElement>,
 		options?: {
 			name?: string;
 			shouldRequestOnClose?: boolean;
@@ -76,22 +80,29 @@ export default function MenuProvider({ children }: Props) {
 
 		const { name, shouldRequestOnClose } = options ?? {};
 
-		if (ref.current === null) return;
+		if (!triggerRef.current) return;
 		if (!canOpen(level)) return;
 
-		const position = getPositionFromEl(ref.current);
+		const position = getPositionFromEl(triggerRef.current);
 		const menu = createMenu(parentComponentId, level, position, {
 			name,
 			shouldRequestOnClose,
 		});
 
-		//removeCurrentFocusClass();
+		removeCurrentFocusClass();
 		setOpenMenus((prevMenus) => [...prevMenus, menu]);
 	}
 
 	const handleClose = React.useCallback(
 		(id: string) => {
 			logger("MenuProvider onClose");
+
+			const menuTriggerEl = findMenuTriggerEl(id);
+			if (!menuTriggerEl) return;
+
+			menuTriggerEl.focus();
+			addFocusClass(menuTriggerEl);
+
 			setOpenMenus((prevMenus) =>
 				prevMenus.filter((menu) => menu.id !== id)
 			);

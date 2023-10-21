@@ -295,6 +295,7 @@ export default function BodyCellContainer({
 	return (
 		<>
 			<MenuTrigger
+				menuId={menu.id}
 				ref={menu.positionRef}
 				variant="cell"
 				level={LoomMenuLevel.ONE}

@@ -8,8 +8,7 @@ import { LoomMenu } from "src/react/shared/menu-provider/types";
  * @returns
  */
 export const addFocusClass = (el: HTMLElement | null) => {
-	if (!el) return;
-	el.classList.add("dataloom-focus-visible");
+	el?.classList.add("dataloom-focus-visible");
 };
 
 /**
