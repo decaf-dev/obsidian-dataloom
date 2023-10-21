@@ -75,6 +75,7 @@ export default function SelectableTag({
 			>
 				<Tag content={content} color={color} maxWidth="150px" />
 				<MenuButton
+					menuId={menu.id}
 					ref={menu.positionRef}
 					level={LoomMenuLevel.TWO}
 					icon={<Icon lucideId="more-horizontal" />}
