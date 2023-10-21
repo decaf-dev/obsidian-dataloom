@@ -2,6 +2,7 @@ import React from "react";
 import { useMenuContext } from ".";
 import { useMenuPosition } from "../menu/hooks";
 import { LoomMenuLevel } from "./types";
+import { LoomMenuPosition } from "../menu/types";
 
 export const useMenu = (
 	parentComponentId: string,
@@ -11,27 +12,32 @@ export const useMenu = (
 	}
 ) => {
 	const { name, isParentObsidianModal = false } = options || {};
-	const { onOpen, getMenu, onClose, onPositionUpdate, onCloseRequestClear } =
+	const { onOpen, getMenu, onClose, onCloseRequestClear, onPositionUpdate } =
 		useMenuContext();
 	const { id, isOpen, position, closeRequest } = getMenu(
 		parentComponentId,
 		name
 	);
-	const menuPosition = useMenuPosition(isOpen, isParentObsidianModal);
 
-	React.useEffect(() => {
-		const { top, left } = menuPosition.position;
-		if (top !== 0 && left !== 0) {
-			onPositionUpdate(id, menuPosition.position);
-		}
-	}, [onPositionUpdate, id, menuPosition.position]);
+	const handlePositionUpdate = React.useCallback(
+		(newPosition: LoomMenuPosition) => {
+			onPositionUpdate(id, newPosition);
+		},
+		[id, onPositionUpdate]
+	);
+
+	const positionRef = useMenuPosition(
+		isOpen,
+		isParentObsidianModal,
+		handlePositionUpdate
+	);
 
 	function handleOpen(
 		level: LoomMenuLevel,
 		options?: { shouldRequestOnClose?: boolean }
 	) {
 		const { shouldRequestOnClose } = options || {};
-		onOpen(parentComponentId, level, menuPosition.ref, {
+		onOpen(parentComponentId, level, positionRef, {
 			name,
 			shouldRequestOnClose,
 		});
@@ -50,7 +56,7 @@ export const useMenu = (
 		isOpen,
 		closeRequest,
 		position,
-		positionRef: menuPosition.ref,
+		positionRef: positionRef,
 		onOpen: handleOpen,
 		onClose: handleClose,
 		onCloseRequestClear: handleCloseRequestClear,

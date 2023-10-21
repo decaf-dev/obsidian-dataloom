@@ -2,25 +2,24 @@ import React from "react";
 
 import _ from "lodash";
 
-import { LoomMenuPosition } from "./types";
 import { getPositionFromEl } from "../menu-provider/utils";
+import { PositionUpdateHandler } from "../menu-provider/types";
 
 export const useMenuPosition = (
 	isOpen: boolean,
-	isParentObsidianModal: boolean
+	isParentObsidianModal: boolean,
+	onPositionUpdate: PositionUpdateHandler
 ) => {
 	const className = isParentObsidianModal ? "modal" : "view-content";
-	const position = useBasePosition(className, isOpen);
-	return position;
+	const ref = useBasePosition(className, isOpen, onPositionUpdate);
+	return ref;
 };
 
-const useBasePosition = (className: string, isOpen: boolean) => {
-	const [position, setPosition] = React.useState<LoomMenuPosition>({
-		top: 0,
-		left: 0,
-		width: 0,
-		height: 0,
-	});
+const useBasePosition = (
+	className: string,
+	isOpen: boolean,
+	onPositionUpdate: PositionUpdateHandler
+) => {
 	const ref = React.useRef<HTMLDivElement>(null);
 
 	React.useEffect(() => {
@@ -35,49 +34,31 @@ const useBasePosition = (className: string, isOpen: boolean) => {
 
 		function updatePosition() {
 			const position = getPositionFromEl(positionEl);
-			setPosition(position);
-		}
-
-		function handleScroll(e: Event) {
-			//console.log("handleScroll", e.target);
-			throttleUpdatePosition();
-		}
-
-		function handleResize(e: Event) {
-			//console.log("handleResize", e.target);
-			throttleUpdatePosition();
-		}
-
-		function handleWindowResize() {
-			//console.log("handleWindowResize");
-			throttleUpdatePosition();
+			onPositionUpdate(position);
 		}
 
 		const ancestors = findAncestorsUntilClassName(positionEl, className);
 
 		if (isOpen) {
 			ancestors.forEach((ancestor) => {
-				ancestor.addEventListener("scroll", handleScroll);
-				ancestor.addEventListener("resize", handleResize);
+				ancestor.addEventListener("scroll", throttleUpdatePosition);
+				ancestor.addEventListener("resize", throttleUpdatePosition);
 			});
-			window.addEventListener("resize", handleWindowResize);
+			window.addEventListener("resize", throttleUpdatePosition);
 
 			updatePosition();
 		}
 
 		return () => {
 			ancestors.forEach((ancestor) => {
-				ancestor.removeEventListener("scroll", handleScroll);
-				ancestor.removeEventListener("resize", handleResize);
+				ancestor.removeEventListener("scroll", throttleUpdatePosition);
+				ancestor.removeEventListener("resize", throttleUpdatePosition);
 			});
-			window.removeEventListener("resize", handleWindowResize);
+			window.removeEventListener("resize", throttleUpdatePosition);
 		};
-	}, [isOpen]);
+	}, [isOpen, onPositionUpdate]);
 
-	return {
-		ref,
-		position,
-	};
+	return ref;
 };
 
 const findAncestorsUntilClassName = (

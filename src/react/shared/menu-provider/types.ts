@@ -22,3 +22,5 @@ export interface LoomMenuCloseRequest {
 	menuId: string;
 	type: LoomMenuCloseRequestType;
 }
+
+export type PositionUpdateHandler = (value: LoomMenuPosition) => void;
