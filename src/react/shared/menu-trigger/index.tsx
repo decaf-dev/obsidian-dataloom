@@ -52,9 +52,11 @@ const MenuTrigger = React.forwardRef<HTMLDivElement, Props>(
 
 				//Is the trigger isn't active, return
 				if (shouldRunTrigger) {
-					const tag = (e.target as HTMLElement).tagName;
-					if (tag === "A") return;
-					onOpen();
+					if (canOpen(level)) {
+						const tag = (e.target as HTMLElement).tagName;
+						if (tag === "A") return;
+						onOpen();
+					}
 				}
 			} else if (e.key === "Backspace") {
 				onBackspaceDown?.();
