@@ -5,13 +5,12 @@ import _ from "lodash";
 import { LoomMenuPosition } from "./types";
 import { getPositionFromEl } from "../menu-provider/utils";
 
-export const useModalMenuPosition = () => {
-	const position = useBasePosition("modal", true);
-	return position;
-};
-
-export const useMenuPosition = (isOpen: boolean) => {
-	const position = useBasePosition("view-content", isOpen);
+export const useMenuPosition = (
+	isOpen: boolean,
+	isParentObsidianModal: boolean
+) => {
+	const className = isParentObsidianModal ? "modal" : "view-content";
+	const position = useBasePosition(className, isOpen);
 	return position;
 };
 

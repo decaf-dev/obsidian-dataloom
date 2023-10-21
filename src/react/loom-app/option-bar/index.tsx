@@ -58,9 +58,9 @@ export default function OptionBar({
 	const MORE_MENU_ID = "more-menu";
 	const FILTER_MENU_ID = "filter-menu";
 
-	const sourcesMenu = useMenu(COMPONENT_ID, SOURCE_MENU_ID);
-	const moreMenu = useMenu(COMPONENT_ID, MORE_MENU_ID);
-	const filterMenu = useMenu(COMPONENT_ID, FILTER_MENU_ID);
+	const sourcesMenu = useMenu(COMPONENT_ID, { name: SOURCE_MENU_ID });
+	const moreMenu = useMenu(COMPONENT_ID, { name: MORE_MENU_ID });
+	const filterMenu = useMenu(COMPONENT_ID, { name: FILTER_MENU_ID });
 
 	//TODO re-enable
 	// const previousLength = usePrevious(filterRules.length);

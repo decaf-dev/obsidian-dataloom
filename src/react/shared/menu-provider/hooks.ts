@@ -3,22 +3,27 @@ import { useMenuContext } from ".";
 import { useMenuPosition } from "../menu/hooks";
 import { LoomMenuLevel } from "./types";
 
-export const useMenu = (parentComponentId: string, name?: string) => {
+export const useMenu = (
+	parentComponentId: string,
+	options?: {
+		name?: string;
+		isParentObsidianModal?: boolean;
+	}
+) => {
+	const { name, isParentObsidianModal = false } = options || {};
 	const { onOpen, getMenu, onClose, onPositionUpdate } = useMenuContext();
 	const { id, isOpen, position, closeRequest } = getMenu(
 		parentComponentId,
 		name
 	);
-	const menuPosition = useMenuPosition(isOpen);
+	const menuPosition = useMenuPosition(isOpen, isParentObsidianModal);
 
-	// React.useEffect(() => {
-	// 	if (!isOpen) return;
-
-	// 	const { top, left } = menuPosition.position;
-	// 	if (top !== 0 && left !== 0) {
-	// 		onPositionUpdate(id, menuPosition.position);
-	// 	}
-	// }, [onPositionUpdate, id, menuPosition.position, isOpen]);
+	React.useEffect(() => {
+		const { top, left } = menuPosition.position;
+		if (top !== 0 && left !== 0) {
+			onPositionUpdate(id, menuPosition.position);
+		}
+	}, [onPositionUpdate, id, menuPosition.position]);
 
 	function handleOpen(
 		level: LoomMenuLevel,
