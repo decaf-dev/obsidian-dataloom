@@ -58,8 +58,12 @@ const MenuTrigger = React.forwardRef<HTMLDivElement, Props>(
 						const tag = (e.target as HTMLElement).tagName;
 						if (tag === "A") return;
 						onOpen();
+						return;
 					}
 				}
+
+				if (!topMenu) return;
+				onRequestClose(topMenu?.id, "close-on-save");
 			} else if (e.key === "Backspace") {
 				onBackspaceDown?.();
 			} else if (e.key.length === 1) {
@@ -93,7 +97,8 @@ const MenuTrigger = React.forwardRef<HTMLDivElement, Props>(
 				}
 			}
 
-			if (topMenu) onRequestClose(topMenu.id, "close-on-save");
+			if (!topMenu) return;
+			onRequestClose(topMenu.id, "close-on-save");
 		}
 
 		return (

@@ -1,11 +1,11 @@
 import {
 	focusNextElement,
-	getFocusableElements,
 	getNumBottomBarFocusableEl,
 	getNumOptionBarFocusableEls,
-	getTopMenuEl,
 	isArrowKeyPressed,
 	removeCurrentFocusClass,
+	getFocusLayerEl,
+	getFocusableEls,
 } from "src/react/loom-app/app/hooks/use-focus/utils";
 
 import {
@@ -37,18 +37,15 @@ export default function useFocus() {
 			//We will do that ourselves
 			e.preventDefault();
 
-			const menuEl = getTopMenuEl(topMenu, reactAppId);
-			if (!menuEl) return;
-
-			const focusableEls = menuEl.querySelectorAll(".dataloom-focusable");
+			const layerEl = getFocusLayerEl(topMenu, reactAppId);
+			const focusableEls = getFocusableEls(layerEl);
 			if (focusableEls.length === 0) return;
 
-			focusNextElement(menuEl, focusableEls);
+			focusNextElement(layerEl, focusableEls);
 		} else if (isArrowKeyPressed(e, topMenu !== null)) {
-			const layerEl = getTopMenuEl(topMenu, reactAppId);
-			if (!layerEl) return;
+			const layerEl = getFocusLayerEl(topMenu, reactAppId);
 
-			const focusableEls = getFocusableElements(layerEl);
+			const focusableEls = getFocusableEls(layerEl);
 			if (focusableEls.length === 0) return;
 
 			//Prevent default scrolling of the table container
