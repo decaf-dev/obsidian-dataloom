@@ -9,9 +9,11 @@ import { useAppMount } from "src/react/loom-app/app-mount-provider";
 interface Props {
 	id: string;
 	isOpen: boolean;
-	hideBorder?: boolean;
 	position: LoomMenuPosition;
+	hideBorder?: boolean;
 	openDirection?: LoomMenuOpenDirection;
+	topOffset?: number;
+	leftOffset?: number;
 	width?: number;
 	height?: number;
 	maxWidth?: number;
@@ -27,6 +29,8 @@ export default function Menu({
 	position,
 	width = 0,
 	height = 0,
+	leftOffset = 0,
+	topOffset = 0,
 	maxHeight = 0,
 	maxWidth = 0,
 	children,
@@ -36,6 +40,8 @@ export default function Menu({
 
 	useShiftMenu(false, mountLeaf.view.containerEl, ref, position, isOpen, {
 		openDirection,
+		leftOffset,
+		topOffset,
 	});
 
 	return (

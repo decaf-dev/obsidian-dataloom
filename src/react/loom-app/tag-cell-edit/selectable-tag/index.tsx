@@ -56,12 +56,6 @@ export default function SelectableTag({
 		}
 	}
 
-	function handleMenuOpen() {
-		menu.onOpen(LoomMenuLevel.TWO, {
-			shouldRequestOnClose: true,
-		});
-	}
-
 	function handleClick(e: React.MouseEvent) {
 		const target = e.target as HTMLElement;
 		if (target.classList.contains("dataloom-menu-trigger")) return;

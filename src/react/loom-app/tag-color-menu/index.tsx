@@ -55,7 +55,13 @@ export default function TagColorMenu({
 	);
 
 	return (
-		<Menu id={id} isOpen={isOpen} position={position}>
+		<Menu
+			id={id}
+			isOpen={isOpen}
+			position={position}
+			topOffset={-75}
+			leftOffset={-50}
+		>
 			<div className="dataloom-tag-color-menu">
 				<Stack spacing="sm">
 					<Padding px="md" py="sm">
