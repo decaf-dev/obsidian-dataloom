@@ -223,7 +223,7 @@ export default class DataLoomPlugin extends Plugin {
 	private registerDOMEvents() {
 		//This event is guaranteed to fire after our React synthetic event handlers
 		this.registerDomEvent(document, "click", () => {
-			log(this.settings.shouldDebug)("main handleClick");
+			log(this.settings.shouldDebug, "main handleClick");
 
 			//Clear the focus-visible class from the last focused element
 			removeCurrentFocusClass();
@@ -232,7 +232,7 @@ export default class DataLoomPlugin extends Plugin {
 
 		//This event is guaranteed to fire after our React synthetic event handlers
 		this.registerDomEvent(document, "keydown", (e) => {
-			log(this.settings.shouldDebug)("main handleKeyDown");
+			log(this.settings.shouldDebug, "main handleKeyDown");
 			this.app.workspace.trigger(EVENT_GLOBAL_KEYDOWN, e);
 		});
 	}
@@ -381,7 +381,8 @@ export default class DataLoomPlugin extends Plugin {
 							//If the state has changed, update the file
 							const { file: loomFile, state } = loomsToUpdate[i];
 
-							log(this.settings.shouldDebug)(
+							log(
+								this.settings.shouldDebug,
 								"Updating links in file",
 								{
 									path: loomFile.path,
@@ -399,7 +400,8 @@ export default class DataLoomPlugin extends Plugin {
 										oldPath
 									);
 									if (content !== newContent) {
-										log(this.settings.shouldDebug)(
+										log(
+											this.settings.shouldDebug,
 											"Updated link",
 											{
 												oldLink: content,
