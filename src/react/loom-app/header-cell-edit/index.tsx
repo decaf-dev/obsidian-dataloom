@@ -92,7 +92,6 @@ export default function HeaderMenu({
 				if (localValue !== content)
 					onColumnChange(columnId, { content: localValue });
 			}
-			console.log("HeaderMenu onClose");
 			onClose();
 		}
 	}, [

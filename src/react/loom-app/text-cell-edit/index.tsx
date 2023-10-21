@@ -51,8 +51,6 @@ export default function TextCellEdit({
 	const menu = useMenu(COMPONENT_ID);
 	const menuOperations = useMenuOperations();
 
-	console.count("TextCellEdit render");
-
 	const [localValue, setLocalValue] = React.useState(value);
 	const [cursorPosition, setCursorPosition] = React.useState<number | null>(
 		null

@@ -10,7 +10,7 @@ export const useAppEvents = () => {
 			logger("App handleClick");
 			e.stopPropagation();
 
-			if (topMenu === null) return;
+			if (!topMenu) return;
 			onRequestClose(topMenu.id, "close-on-save");
 		},
 		[topMenu, logger, onRequestClose]

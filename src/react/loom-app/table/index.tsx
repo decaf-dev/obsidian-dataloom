@@ -107,19 +107,17 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 	/**
 	 * Scrolls to the bottom of the page when the "New Row" button is pressed
 	 */
-	React.useEffect(() => {
-		if (previousRowLength === undefined) return;
-		if (previousRowLength < rows.length)
-			(
-				ref as React.MutableRefObject<VirtuosoHandle | null>
-			).current?.scrollToIndex(rows.length - 1);
-	}, [ref, previousRowLength, rows.length]);
+	// React.useEffect(() => {
+	// 	if (previousRowLength === undefined) return;
+	// 	if (previousRowLength < rows.length)
+	// 		(
+	// 			ref as React.MutableRefObject<VirtuosoHandle | null>
+	// 		).current?.scrollToIndex(rows.length - 1);
+	// }, [ref, previousRowLength, rows.length]);
 
 	React.useLayoutEffect(() => {
 		onTableRender();
 	});
-
-	console.log("Table render");
 
 	const visibleColumns = columns.filter((column) => column.isVisible);
 

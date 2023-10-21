@@ -30,6 +30,7 @@ interface ContextProps {
 			shouldRequestOnClose?: boolean;
 		}
 	) => void;
+	canOpen: (level: LoomMenuLevel) => boolean;
 	onClose: (id: string) => void;
 	onRequestClose: (id: string, type: LoomMenuCloseRequestType) => void;
 	onPositionUpdate: (id: string, value: LoomMenuPosition) => void;
@@ -75,7 +76,7 @@ export default function MenuProvider({ children }: Props) {
 		const { name, shouldRequestOnClose } = options ?? {};
 
 		if (ref.current === null) return;
-		if (!_canOpen(level)) return;
+		if (!canOpen(level)) return;
 
 		const position = getPositionFromEl(ref.current);
 		const menu = createMenu(parentComponentId, level, position, {
@@ -176,7 +177,7 @@ export default function MenuProvider({ children }: Props) {
 		return openMenus[openMenus.length - 1] ?? null;
 	}
 
-	function _canOpen(level: LoomMenuLevel) {
+	function canOpen(level: LoomMenuLevel) {
 		const topMenu = _getTopMenu();
 		if (topMenu === null) return true;
 		if (level > topMenu.level) return true;
@@ -187,6 +188,7 @@ export default function MenuProvider({ children }: Props) {
 		<MenuContext.Provider
 			value={{
 				topMenu: _getTopMenu(),
+				canOpen,
 				getMenu,
 				onOpen: handleOpen,
 				onClose: handleClose,

@@ -47,10 +47,12 @@ export const useMenu = (parentComponentId: string, name?: string) => {
 };
 
 export const useMenuOperations = () => {
-	const { topMenu, onCloseAll, onRequestClose, onClose } = useMenuContext();
+	const { topMenu, canOpen, onCloseAll, onRequestClose, onClose } =
+		useMenuContext();
 
 	return {
 		topMenu,
+		canOpen,
 		onCloseAll,
 		onClose,
 		onRequestClose,

@@ -4,8 +4,10 @@ import MenuTrigger from "../menu-trigger";
 import Button from "../button";
 
 import { ButtonVariant } from "../button/types";
+import { LoomMenuLevel } from "../menu-provider/types";
 
 interface Props {
+	level: LoomMenuLevel;
 	isDisabled?: boolean;
 	variant?: ButtonVariant;
 	ariaLabel?: string;
@@ -21,6 +23,7 @@ const MenuButton = React.forwardRef<HTMLDivElement, Props>(
 		{
 			isDisabled,
 			variant,
+			level,
 			ariaLabel,
 			icon,
 			children,
@@ -32,9 +35,9 @@ const MenuButton = React.forwardRef<HTMLDivElement, Props>(
 	) => {
 		return (
 			<MenuTrigger
-				canOpen={true}
-				isButton
 				ref={ref}
+				variant="button"
+				level={level}
 				onClick={onClick}
 				onMouseDown={onMouseDown}
 				onOpen={onOpen}

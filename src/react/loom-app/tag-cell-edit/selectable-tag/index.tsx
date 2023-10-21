@@ -82,8 +82,13 @@ export default function SelectableTag({
 				<Tag content={content} color={color} maxWidth="150px" />
 				<MenuButton
 					ref={menu.positionRef}
+					level={LoomMenuLevel.TWO}
 					icon={<Icon lucideId="more-horizontal" />}
-					onOpen={handleMenuOpen}
+					onOpen={() =>
+						menu.onOpen(LoomMenuLevel.TWO, {
+							shouldRequestOnClose: true,
+						})
+					}
 				/>
 			</div>
 			<TagColorMenu

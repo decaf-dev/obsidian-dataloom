@@ -77,6 +77,7 @@ export default function HeaderCell({
 						/>
 						<MenuButton
 							ref={menuPosition.ref}
+							level={LoomMenuLevel.ONE}
 							ariaLabel="Match column"
 							icon={<Icon lucideId="columns" size="lg" />}
 							onOpen={() => menu.onOpen(LoomMenuLevel.ONE)}

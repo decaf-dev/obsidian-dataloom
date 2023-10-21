@@ -95,8 +95,9 @@ export default function FooterCellContainer({
 	return (
 		<>
 			<MenuTrigger
-				isCell
 				ref={menu.positionRef}
+				level={LoomMenuLevel.ONE}
+				variant="cell"
 				onOpen={() => menu.onOpen(LoomMenuLevel.ONE)}
 			>
 				<div

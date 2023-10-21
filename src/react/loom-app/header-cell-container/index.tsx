@@ -70,12 +70,6 @@ export default function HeaderCellContainer({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [columnId, shouldUpdateWidth, menu.position]);
 
-	function handleMenuOpen() {
-		menu.onOpen(LoomMenuLevel.ONE, {
-			shouldRequestOnClose: true,
-		});
-	}
-
 	const lucideId = getIconIdForCellType(type);
 
 	let contentClassName = "dataloom-cell--header__inner-container";
@@ -85,9 +79,14 @@ export default function HeaderCellContainer({
 		<>
 			<MenuTrigger
 				ref={menu.positionRef}
-				isCell
-				canOpen={resizingColumnId === null}
-				onOpen={handleMenuOpen}
+				variant="cell"
+				level={LoomMenuLevel.ONE}
+				shouldRunTrigger={resizingColumnId === null}
+				onOpen={() =>
+					menu.onOpen(LoomMenuLevel.ONE, {
+						shouldRequestOnClose: true,
+					})
+				}
 			>
 				<div
 					className="dataloom-cell--header__container"

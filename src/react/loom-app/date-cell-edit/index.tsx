@@ -107,10 +107,6 @@ export default function DateCellEdit({
 		menu.onClose();
 	}
 
-	function handleMenuOpen() {
-		menu.onOpen(LoomMenuLevel.TWO);
-	}
-
 	function handleClearClick() {
 		onDateTimeChange(null);
 		onClose();
@@ -129,7 +125,12 @@ export default function DateCellEdit({
 							onChange={setLocalValue}
 						/>
 					</Padding>
-					<MenuTrigger ref={menu.positionRef} onOpen={handleMenuOpen}>
+					<MenuTrigger
+						variant="cell"
+						level={LoomMenuLevel.TWO}
+						ref={menu.positionRef}
+						onOpen={() => menu.onOpen(LoomMenuLevel.TWO)}
+					>
 						<MenuItem
 							isFocusable={false}
 							name="Date format"

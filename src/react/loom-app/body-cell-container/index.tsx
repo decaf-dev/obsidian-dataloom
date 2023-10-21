@@ -133,12 +133,6 @@ export default function BodyCellContainer({
 	const COMPONENT_ID = `body-cell-${cellId}`;
 	const menu = useMenu(COMPONENT_ID);
 
-	function handleMenuOpen() {
-		menu.onOpen(LoomMenuLevel.ONE, {
-			shouldRequestOnClose,
-		});
-	}
-
 	async function handleCellContextClick() {
 		try {
 			await navigator.clipboard.writeText(content);
@@ -287,7 +281,7 @@ export default function BodyCellContainer({
 
 	const cellTags = columnTags.filter((tag) => cellTagIds.includes(tag.id));
 
-	let canOpenMenu = true;
+	let shouldRunTrigger = true;
 	if (
 		columnType === CellType.CHECKBOX ||
 		columnType === CellType.CREATION_TIME ||
@@ -296,18 +290,23 @@ export default function BodyCellContainer({
 		columnType === CellType.SOURCE_FILE ||
 		(source && frontmatterKey === null)
 	) {
-		canOpenMenu = false;
+		shouldRunTrigger = false;
 	}
 	return (
 		<>
 			<MenuTrigger
 				ref={menu.positionRef}
-				isCell
+				variant="cell"
+				level={LoomMenuLevel.ONE}
 				onClick={handleMenuTriggerClick}
 				onEnterDown={handleMenuTriggerEnterDown}
 				onBackspaceDown={handleMenuTriggerBackspaceDown}
-				canOpen={canOpenMenu}
-				onOpen={handleMenuOpen}
+				shouldRunTrigger={shouldRunTrigger}
+				onOpen={() =>
+					menu.onOpen(LoomMenuLevel.ONE, {
+						shouldRequestOnClose,
+					})
+				}
 			>
 				<div
 					onContextMenu={handleCellContextClick}

@@ -40,10 +40,6 @@ export default function RowOptions({
 		useDragContext();
 	const { loomState } = useLoomState();
 
-	function handleMenuOpen() {
-		menu.onOpen(LoomMenuLevel.ONE);
-	}
-
 	function handleDeleteClick() {
 		onDeleteClick(rowId);
 		menu.onClose();
@@ -197,10 +193,11 @@ export default function RowOptions({
 					>
 						<MenuButton
 							ref={menu.positionRef}
+							level={LoomMenuLevel.ONE}
 							icon={<Icon lucideId="grip-vertical" />}
 							ariaLabel="Drag to move or click to open"
 							onMouseDown={handleMouseDown}
-							onOpen={handleMenuOpen}
+							onOpen={() => menu.onOpen(LoomMenuLevel.ONE)}
 						/>
 					</div>
 				</Padding>

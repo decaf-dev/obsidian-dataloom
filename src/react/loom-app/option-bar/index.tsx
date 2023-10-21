@@ -147,6 +147,7 @@ export default function OptionBar({
 							{isSmallScreen === false && (
 								<MenuButton
 									ref={sourcesMenu.positionRef}
+									level={LoomMenuLevel.ONE}
 									onOpen={handleSourceMenuOpen}
 								>
 									Sources
@@ -155,6 +156,7 @@ export default function OptionBar({
 							{isSmallScreen === false && (
 								<MenuButton
 									ref={filterMenu.positionRef}
+									level={LoomMenuLevel.ONE}
 									onOpen={handleFilterMenuOpen}
 								>
 									Filter
@@ -163,6 +165,7 @@ export default function OptionBar({
 							<SearchBar />
 							<MenuButton
 								ref={moreMenu.positionRef}
+								level={LoomMenuLevel.ONE}
 								icon={<Icon lucideId="more-vertical" />}
 								onOpen={handleMoreMenuOpen}
 							/>

@@ -7,11 +7,13 @@ import {
 	isWindowsUndoDown,
 } from "src/shared/keyboard-event";
 import { useLogger } from "src/shared/logger";
+import { useMenuOperations } from "../menu-provider/hooks";
+import { LoomMenuLevel } from "../menu-provider/types";
 
 interface Props {
-	canOpen?: boolean;
-	isButton?: boolean;
-	isCell?: boolean;
+	level: LoomMenuLevel;
+	shouldRunTrigger?: boolean;
+	variant: "button" | "cell";
 	children: React.ReactNode;
 	onEnterDown?: () => void;
 	onBackspaceDown?: () => void;
@@ -23,9 +25,9 @@ interface Props {
 const MenuTrigger = React.forwardRef<HTMLDivElement, Props>(
 	(
 		{
-			isButton = false,
-			isCell = false,
-			canOpen = true,
+			level,
+			variant,
+			shouldRunTrigger = true,
 			children,
 			onEnterDown,
 			onBackspaceDown,
@@ -36,6 +38,7 @@ const MenuTrigger = React.forwardRef<HTMLDivElement, Props>(
 		ref
 	) => {
 		const logger = useLogger();
+		const { topMenu, canOpen, onRequestClose } = useMenuOperations();
 
 		function handleKeyDown(e: React.KeyboardEvent) {
 			logger("MenuTrigger handleKeyDown");
@@ -48,7 +51,7 @@ const MenuTrigger = React.forwardRef<HTMLDivElement, Props>(
 				e.preventDefault();
 
 				//Is the trigger isn't active, return
-				if (canOpen) {
+				if (shouldRunTrigger) {
 					const tag = (e.target as HTMLElement).tagName;
 					if (tag === "A") return;
 					onOpen();
@@ -65,7 +68,7 @@ const MenuTrigger = React.forwardRef<HTMLDivElement, Props>(
 					return;
 
 				//Unless the trigger is for a cell, don't open it when a user presses any key
-				if (!isCell) return;
+				if (variant !== "cell") return;
 
 				onOpen();
 			}
@@ -77,12 +80,16 @@ const MenuTrigger = React.forwardRef<HTMLDivElement, Props>(
 			e.stopPropagation();
 			onClick?.(e);
 
-			if (canOpen) {
-				const tag = (e.target as HTMLElement).tagName;
-				if (tag === "A") return;
-				onOpen();
-				return;
+			if (shouldRunTrigger) {
+				if (canOpen(level)) {
+					const tag = (e.target as HTMLElement).tagName;
+					if (tag === "A") return;
+					onOpen();
+					return;
+				}
 			}
+
+			if (topMenu) onRequestClose(topMenu.id, "close-on-save");
 		}
 
 		return (
@@ -91,9 +98,12 @@ const MenuTrigger = React.forwardRef<HTMLDivElement, Props>(
 				className="dataloom-menu-trigger dataloom-focusable"
 				ref={ref}
 				style={{
-					width: isCell ? "100%" : undefined,
-					height: isCell ? "100%" : undefined,
-					borderRadius: isButton ? "var(--button-radius)" : undefined,
+					width: variant === "cell" ? "100%" : undefined,
+					height: variant === "cell" ? "100%" : undefined,
+					borderRadius:
+						variant === "button"
+							? "var(--button-radius)"
+							: undefined,
 				}}
 				onMouseDown={onMouseDown}
 				onKeyDown={handleKeyDown}
