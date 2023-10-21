@@ -27,6 +27,7 @@ interface Props {
 	closeRequest: LoomMenuCloseRequest | null;
 	dateFormat: DateFormat;
 	onDateTimeChange: (value: number | null) => void;
+	onCloseRequestClear: () => void;
 	onDateFormatChange: (value: DateFormat) => void;
 	onClose: () => void;
 }
@@ -38,6 +39,7 @@ export default function DateCellEdit({
 	dateFormat,
 	onDateTimeChange,
 	onClose,
+	onCloseRequestClear,
 	onDateFormatChange,
 }: Props) {
 	const COMPONENT_ID = `date-format-menu-${cellId}`;
@@ -69,6 +71,7 @@ export default function DateCellEdit({
 				} else {
 					if (closeRequest.type === "close-on-save") {
 						setInputInvalid(true);
+						onCloseRequestClear();
 						return;
 					}
 					newValue = value;
@@ -87,6 +90,7 @@ export default function DateCellEdit({
 		closeRequest,
 		dateFormat,
 		onDateTimeChange,
+		onCloseRequestClear,
 		onClose,
 	]);
 

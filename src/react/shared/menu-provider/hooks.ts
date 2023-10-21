@@ -11,7 +11,8 @@ export const useMenu = (
 	}
 ) => {
 	const { name, isParentObsidianModal = false } = options || {};
-	const { onOpen, getMenu, onClose, onPositionUpdate } = useMenuContext();
+	const { onOpen, getMenu, onClose, onPositionUpdate, onCloseRequestClear } =
+		useMenuContext();
 	const { id, isOpen, position, closeRequest } = getMenu(
 		parentComponentId,
 		name
@@ -36,9 +37,13 @@ export const useMenu = (
 		});
 	}
 
-	function handleClose() {
+	const handleClose = React.useCallback(() => {
 		onClose(id);
-	}
+	}, [id, onClose]);
+
+	const handleCloseRequestClear = React.useCallback(() => {
+		onCloseRequestClear(id);
+	}, [id, onCloseRequestClear]);
 
 	return {
 		id,
@@ -48,6 +53,7 @@ export const useMenu = (
 		positionRef: menuPosition.ref,
 		onOpen: handleOpen,
 		onClose: handleClose,
+		onCloseRequestClear: handleCloseRequestClear,
 	};
 };
 

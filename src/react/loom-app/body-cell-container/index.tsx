@@ -464,6 +464,7 @@ export default function BodyCellContainer({
 						onDateTimeChange={handleDateTimeChange}
 						onDateFormatChange={handleDateFormatChange}
 						onClose={menu.onClose}
+						onCloseRequestClear={menu.onCloseRequestClear}
 					/>
 				)}
 			</Menu>

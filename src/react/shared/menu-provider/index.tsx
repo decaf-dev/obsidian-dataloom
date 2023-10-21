@@ -35,6 +35,7 @@ interface ContextProps {
 	onRequestClose: (id: string, type: LoomMenuCloseRequestType) => void;
 	onPositionUpdate: (id: string, value: LoomMenuPosition) => void;
 	onCloseAll: () => void;
+	onCloseRequestClear: (id: string) => void;
 }
 
 const MenuContext = React.createContext<ContextProps | null>(null);
@@ -177,11 +178,20 @@ export default function MenuProvider({ children }: Props) {
 		return openMenus[openMenus.length - 1] ?? null;
 	}
 
-	function canOpen(level: LoomMenuLevel) {
-		const topMenu = _getTopMenu();
-		if (topMenu === null) return true;
-		if (level > topMenu.level) return true;
-		return false;
+	const canOpen = React.useCallback(
+		(level: LoomMenuLevel) => {
+			const topMenu = _getTopMenu();
+			if (topMenu === null) return true;
+			if (level > topMenu.level) return true;
+			return false;
+		},
+		[_getTopMenu]
+	);
+
+	function handleCloseRequestClear(id: string) {
+		setCloseRequests((prevRequests) =>
+			prevRequests.filter((request) => request.menuId !== id)
+		);
 	}
 
 	return (
@@ -195,6 +205,7 @@ export default function MenuProvider({ children }: Props) {
 				onRequestClose: handleRequestClose,
 				onPositionUpdate: handlePositionUpdate,
 				onCloseAll: handleCloseAll,
+				onCloseRequestClear: handleCloseRequestClear,
 			}}
 		>
 			{children}
