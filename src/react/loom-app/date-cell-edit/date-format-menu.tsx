@@ -22,7 +22,14 @@ export default function DateFormatMenu({
 }: Props) {
 	//TODO add all formats
 	return (
-		<Menu isOpen={isOpen} id={id} position={position} width={175}>
+		<Menu
+			isOpen={isOpen}
+			id={id}
+			position={position}
+			width={175}
+			topOffset={10}
+			leftOffset={75}
+		>
 			<div className="dataloom-date-format-menu">
 				{Object.values([
 					DateFormat.DD_MM_YYYY,
