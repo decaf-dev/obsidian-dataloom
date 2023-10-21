@@ -185,18 +185,18 @@ export default function MenuProvider({ children }: Props) {
 		});
 	}, [openMenus, setOpenMenus]);
 
-	function _getTopMenu() {
+	const getTopMenu = React.useCallback(() => {
 		return openMenus[openMenus.length - 1] ?? null;
-	}
+	}, [openMenus]);
 
 	const canOpen = React.useCallback(
 		(level: LoomMenuLevel) => {
-			const topMenu = _getTopMenu();
+			const topMenu = getTopMenu();
 			if (topMenu === null) return true;
 			if (level > topMenu.level) return true;
 			return false;
 		},
-		[_getTopMenu]
+		[getTopMenu]
 	);
 
 	function handleCloseRequestClear(id: string) {
@@ -208,7 +208,7 @@ export default function MenuProvider({ children }: Props) {
 	return (
 		<MenuContext.Provider
 			value={{
-				topMenu: _getTopMenu(),
+				topMenu: getTopMenu(),
 				canOpen,
 				getMenu,
 				onOpen: handleOpen,

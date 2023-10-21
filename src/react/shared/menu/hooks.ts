@@ -56,7 +56,7 @@ const useBasePosition = (
 			});
 			window.removeEventListener("resize", throttleUpdatePosition);
 		};
-	}, [isOpen, onPositionUpdate]);
+	}, [className, isOpen, onPositionUpdate]);
 
 	return ref;
 };

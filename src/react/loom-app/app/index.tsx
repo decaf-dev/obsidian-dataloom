@@ -28,7 +28,6 @@ import {
 } from "src/shared/keyboard-event";
 import { useLogger } from "src/shared/logger";
 import { useSource } from "./hooks/use-source";
-import _ from "lodash";
 
 import "src/react/global.css";
 import "./styles.css";
