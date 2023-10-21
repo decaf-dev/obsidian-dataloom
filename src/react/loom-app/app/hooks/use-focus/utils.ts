@@ -18,8 +18,7 @@ export const addFocusClass = (el: HTMLElement | null) => {
  */
 export const removeCurrentFocusClass = () => {
 	const el = document.querySelector(".dataloom-focus-visible");
-	if (!el) return;
-	el.classList.remove("dataloom-focus-visible");
+	el?.classList.remove("dataloom-focus-visible");
 };
 
 /**

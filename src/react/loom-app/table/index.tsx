@@ -57,7 +57,6 @@ interface Props {
 	onColumnTypeChange: ColumnTypeClickHandler;
 	onFrozenColumnsChange: (value: number) => void;
 	onColumnReorder: ColumnReorderHandler;
-	onTableRender: () => void;
 	onRowDeleteClick: (rowId: string) => void;
 	onRowInsertAboveClick: (rowId: string) => void;
 	onRowInsertBelowClick: (rowId: string) => void;
@@ -86,7 +85,6 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 		onColumnTypeChange,
 		onFrozenColumnsChange,
 		onColumnReorder,
-		onTableRender,
 		onRowDeleteClick,
 		onRowInsertAboveClick,
 		onRowInsertBelowClick,
@@ -107,16 +105,16 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 	/**
 	 * Scrolls to the bottom of the page when the "New Row" button is pressed
 	 */
-	// React.useEffect(() => {
-	// 	if (previousRowLength === undefined) return;
-	// 	if (previousRowLength < rows.length)
-	// 		(
-	// 			ref as React.MutableRefObject<VirtuosoHandle | null>
-	// 		).current?.scrollToIndex(rows.length - 1);
-	// }, [ref, previousRowLength, rows.length]);
+	React.useEffect(() => {
+		if (previousRowLength === undefined) return;
+		if (previousRowLength < rows.length)
+			(
+				ref as React.MutableRefObject<VirtuosoHandle | null>
+			).current?.scrollToIndex(rows.length - 1);
+	}, [ref, previousRowLength, rows.length]);
 
 	React.useLayoutEffect(() => {
-		onTableRender();
+		//onTableRender();
 	});
 
 	const visibleColumns = columns.filter((column) => column.isVisible);

@@ -62,7 +62,7 @@ export default function OptionBar({
 	const moreMenu = useMenu(COMPONENT_ID, { name: MORE_MENU_ID });
 	const filterMenu = useMenu(COMPONENT_ID, { name: FILTER_MENU_ID });
 
-	//TODO re-enable
+	// TODO re-enable
 	// const previousLength = usePrevious(filterRules.length);
 	// React.useEffect(() => {
 	// 	if (previousLength !== undefined) {

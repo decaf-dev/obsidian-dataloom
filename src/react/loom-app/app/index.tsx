@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React from "react";
 
 import { VirtuosoHandle } from "react-virtuoso";
 
@@ -46,7 +46,6 @@ import { useMenuEvents } from "./hooks/use-menu-events";
 export default function App() {
 	const logger = useLogger();
 	const { reactAppId, isMarkdownView, app } = useAppMount();
-	const [bottomBarOffset, setBottomBarOffset] = React.useState(0);
 
 	const {
 		loomState,
@@ -110,7 +109,7 @@ export default function App() {
 	const { columns, filters, settings, sources } = loomState.model;
 	const { numFrozenColumns, showCalculationRow } = settings;
 
-	const frontmatterKeyHash = useMemo(() => {
+	const frontmatterKeyHash = React.useMemo(() => {
 		return JSON.stringify(
 			columns.map((column) => column.frontmatterKey?.value)
 		);
@@ -194,29 +193,6 @@ export default function App() {
 	let className = "dataloom-app";
 	if (isMarkdownView) className += " dataloom-app--markdown-view";
 
-	const handleTableRender = useCallback(
-		() =>
-			_.debounce(() => {
-				const appEl = appRef.current;
-				if (!appEl) return;
-
-				const tableEl = appEl.querySelector(".dataloom-table");
-				if (!tableEl) return;
-
-				const tableContainerEl = tableEl.parentElement;
-				if (!tableContainerEl) return;
-
-				const tableRect = tableEl.getBoundingClientRect();
-				const tableContainerRect =
-					tableContainerEl.getBoundingClientRect();
-
-				let diff = tableContainerRect.height - tableRect.height;
-				if (diff < 0) diff = 0;
-				setBottomBarOffset(diff);
-			}, 5)(),
-		[setBottomBarOffset, appRef]
-	);
-
 	return (
 		<div
 			ref={appRef}
@@ -252,7 +228,6 @@ export default function App() {
 				onColumnTypeChange={onColumnTypeChange}
 				onFrozenColumnsChange={onFrozenColumnsChange}
 				onColumnReorder={onColumnReorder}
-				onTableRender={handleTableRender}
 				onRowDeleteClick={onRowDeleteClick}
 				onRowInsertAboveClick={onRowInsertAboveClick}
 				onRowInsertBelowClick={onRowInsertBelowClick}
@@ -267,7 +242,6 @@ export default function App() {
 				onRowReorder={onRowReorder}
 			/>
 			<BottomBar
-				bottomBarOffset={bottomBarOffset}
 				onRowAddClick={onRowAddClick}
 				onScrollToTopClick={handleScrollToTopClick}
 				onScrollToBottomClick={handleScrollToBottomClick}
