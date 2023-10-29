@@ -14,6 +14,7 @@ interface Props {
 	menuId: string;
 	level: LoomMenuLevel;
 	shouldRunTrigger?: boolean;
+	isFocused: boolean;
 	variant: "button" | "cell";
 	children: React.ReactNode;
 	onEnterDown?: () => void;
@@ -29,6 +30,7 @@ const MenuTrigger = React.forwardRef<HTMLDivElement, Props>(
 			menuId,
 			level,
 			variant,
+			isFocused,
 			shouldRunTrigger = true,
 			children,
 			onEnterDown,
@@ -101,11 +103,15 @@ const MenuTrigger = React.forwardRef<HTMLDivElement, Props>(
 			onRequestClose(topMenu.id, "close-on-save");
 		}
 
+		let className = "dataloom-menu-trigger dataloom-focusable";
+		if (isFocused) {
+			className += " dataloom-focus-visible";
+		}
 		return (
 			<div
 				data-menu-id={menuId}
 				tabIndex={0}
-				className="dataloom-menu-trigger dataloom-focusable"
+				className={className}
 				ref={ref}
 				style={{
 					width: variant === "cell" ? "100%" : undefined,

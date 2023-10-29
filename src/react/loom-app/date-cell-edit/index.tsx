@@ -130,10 +130,11 @@ export default function DateCellEdit({
 						/>
 					</Padding>
 					<MenuTrigger
+						ref={menu.triggerRef}
 						menuId={menu.id}
 						variant="cell"
+						isFocused={menu.isTriggerFocused}
 						level={LoomMenuLevel.TWO}
-						ref={menu.positionRef}
 						onOpen={() => menu.onOpen(LoomMenuLevel.TWO)}
 					>
 						<MenuItem

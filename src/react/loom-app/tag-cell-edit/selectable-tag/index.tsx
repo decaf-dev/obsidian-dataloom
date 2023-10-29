@@ -75,8 +75,9 @@ export default function SelectableTag({
 			>
 				<Tag content={content} color={color} maxWidth="150px" />
 				<MenuButton
+					isFocused={menu.isTriggerFocused}
 					menuId={menu.id}
-					ref={menu.positionRef}
+					ref={menu.triggerRef}
 					level={LoomMenuLevel.TWO}
 					icon={<Icon lucideId="more-horizontal" />}
 					onOpen={() =>

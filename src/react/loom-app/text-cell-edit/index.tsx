@@ -84,48 +84,48 @@ export default function TextCellEdit({
 
 	React.useEffect(() => {
 		if (closeRequest !== null) {
-			if (localValue !== value) onChange(localValue);
 			logger("TextCellEdit onClose");
+			if (localValue !== value) onChange(localValue);
 			onClose();
 		}
 	}, [logger, value, localValue, closeRequest, onClose, onChange]);
 
-	function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
-		const el = e.target as HTMLTextAreaElement;
-		logger("TextCellEdit handleKeyDown");
+	// function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+	// 	const el = e.target as HTMLTextAreaElement;
+	// 	logger("TextCellEdit handleKeyDown");
 
-		if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
-			const cursorPosition = el.selectionStart;
+	// 	if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+	// 		const cursorPosition = el.selectionStart;
 
-			if (menu.isOpen) {
-				//Close menu if cursor is outside of double brackets
-				if (!isSurroundedByDoubleBrackets(value, cursorPosition))
-					onClose();
-			}
+	// 		if (menu.isOpen) {
+	// 			//Close menu if cursor is outside of double brackets
+	// 			if (!isSurroundedByDoubleBrackets(value, cursorPosition))
+	// 				onClose();
+	// 		}
 
-			if (inputRef.current) {
-				//Update cursor position for filterValue calculation
-				const inputEl = inputRef.current;
-				inputEl.selectionStart = cursorPosition;
-				inputEl.selectionEnd = cursorPosition;
-			}
-		} else if (isInsertLineDown(e)) {
-			if (menu.isOpen) return;
-			e.stopPropagation();
-		} else if (isInsertLineAltDown(e)) {
-			if (menu.isOpen) return;
-			e.stopPropagation();
+	// 		if (inputRef.current) {
+	// 			//Update cursor position for filterValue calculation
+	// 			const inputEl = inputRef.current;
+	// 			inputEl.selectionStart = cursorPosition;
+	// 			inputEl.selectionEnd = cursorPosition;
+	// 		}
+	// 	} else if (isInsertLineDown(e)) {
+	// 		if (menu.isOpen) return;
+	// 		e.stopPropagation();
+	// 	} else if (isInsertLineAltDown(e)) {
+	// 		if (menu.isOpen) return;
+	// 		e.stopPropagation();
 
-			const cursorPosition = inputRef.current?.selectionStart ?? 0;
-			setLocalValue(
-				(prevState) =>
-					prevState.slice(0, cursorPosition) +
-					"\n" +
-					prevState.slice(cursorPosition)
-			);
-			setCursorPosition(cursorPosition + 1);
-		}
-	}
+	// 		const cursorPosition = inputRef.current?.selectionStart ?? 0;
+	// 		setLocalValue(
+	// 			(prevState) =>
+	// 				prevState.slice(0, cursorPosition) +
+	// 				"\n" +
+	// 				prevState.slice(cursorPosition)
+	// 		);
+	// 		setCursorPosition(cursorPosition + 1);
+	// 	}
+	// }
 
 	React.useEffect(() => {
 		if (cursorPosition !== null && inputRef.current) {
@@ -152,6 +152,8 @@ export default function TextCellEdit({
 	}
 
 	function handleTextareaChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+		logger("TextCellEdit handleTextareaChange");
+
 		const inputValue = e.target.value;
 		let newValue = inputValue;
 
@@ -174,7 +176,6 @@ export default function TextCellEdit({
 				handleMenuOpen();
 			}
 		}
-
 		setLocalValue(newValue);
 	}
 
@@ -199,13 +200,13 @@ export default function TextCellEdit({
 
 	return (
 		<>
-			<div className="dataloom-text-cell-edit" ref={menu.positionRef}>
+			<div className="dataloom-text-cell-edit" ref={menu.triggerRef}>
 				<textarea
 					className={overflowClassName}
 					autoFocus
 					ref={inputRef}
 					value={localValue}
-					onKeyDown={handleKeyDown}
+					// onKeyDown={handleKeyDown}
 					onChange={handleTextareaChange}
 					onBlur={(e) => {
 						e.target.classList.add("dataloom-blur--cell");

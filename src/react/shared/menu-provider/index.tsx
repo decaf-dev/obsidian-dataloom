@@ -1,7 +1,9 @@
 import React from "react";
+
 import { LoomMenuPosition } from "../menu/types";
 import { createCloseRequest, createMenu } from "./factory";
 import {
+	FocusedMenuTrigger,
 	LoomMenu,
 	LoomMenuCloseRequest,
 	LoomMenuCloseRequestType,
@@ -9,10 +11,6 @@ import {
 } from "./types";
 import { useLogger } from "src/shared/logger";
 import { findMenuTriggerEl, getPositionFromEl } from "./utils";
-import {
-	addFocusClass,
-	removeCurrentFocusClass,
-} from "src/react/loom-app/app/hooks/use-focus/utils";
 
 interface ContextProps {
 	topMenu: LoomMenu | null;
@@ -23,6 +21,7 @@ interface ContextProps {
 		id: string;
 		isOpen: boolean;
 		position: LoomMenuPosition;
+		isTriggerFocused: boolean;
 		closeRequest: LoomMenuCloseRequest | null;
 	};
 	onOpen: (
@@ -60,10 +59,11 @@ interface Props {
 
 export default function MenuProvider({ children }: Props) {
 	const [openMenus, setOpenMenus] = React.useState<LoomMenu[]>([]);
-
 	const [closeRequests, setCloseRequests] = React.useState<
 		LoomMenuCloseRequest[]
 	>([]);
+	const [focusedMenuTrigger, setFocusedMenuTrigger] =
+		React.useState<FocusedMenuTrigger | null>(null);
 
 	const logger = useLogger();
 
@@ -89,8 +89,21 @@ export default function MenuProvider({ children }: Props) {
 			shouldRequestOnClose,
 		});
 
-		removeCurrentFocusClass();
+		clearMenuTriggerFocus();
 		setOpenMenus((prevMenus) => [...prevMenus, menu]);
+	}
+
+	function focusMenuTrigger(parentComponentId: string, name?: string) {
+		logger("MenuProvider focusMenuTrigger");
+		setFocusedMenuTrigger({
+			parentComponentId,
+			name,
+		});
+	}
+
+	function clearMenuTriggerFocus() {
+		logger("MenuProvider clearMenuTriggerFocus");
+		setFocusedMenuTrigger(null);
 	}
 
 	const handleClose = React.useCallback(
@@ -100,9 +113,10 @@ export default function MenuProvider({ children }: Props) {
 			const menuTriggerEl = findMenuTriggerEl(id);
 			if (!menuTriggerEl) return;
 
-			menuTriggerEl.focus();
-			addFocusClass(menuTriggerEl);
+			const menu = openMenus.find((menu) => menu.id === id);
+			if (!menu) throw new Error("Menu not found");
 
+			focusMenuTrigger(menu.parentComponentId, menu.name);
 			setOpenMenus((prevMenus) =>
 				prevMenus.filter((menu) => menu.id !== id)
 			);
@@ -110,7 +124,7 @@ export default function MenuProvider({ children }: Props) {
 				prevRequests.filter((request) => request.menuId !== id)
 			);
 		},
-		[logger]
+		[logger, openMenus]
 	);
 
 	const handleRequestClose = React.useCallback(
@@ -155,16 +169,21 @@ export default function MenuProvider({ children }: Props) {
 			}
 			return false;
 		});
+
 		let closeRequest: LoomMenuCloseRequest | null = null;
 		if (menu) {
 			closeRequest =
 				closeRequests.find((request) => request.menuId === menu.id) ??
 				null;
 		}
+
 		return {
 			id: menu?.id ?? "",
 			isOpen: menu !== undefined,
 			closeRequest,
+			isTriggerFocused:
+				focusedMenuTrigger?.parentComponentId === parentComponentId &&
+				focusedMenuTrigger?.name === name,
 			position: menu?.position ?? {
 				top: 0,
 				left: 0,

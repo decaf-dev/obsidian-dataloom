@@ -100,8 +100,9 @@ const useCloseOnTableScroll = () => {
  */
 const useCloseOnOutsideClick = () => {
 	const { app } = useAppMount();
-	const logger = useLogger();
 	const { onCloseAll } = useMenuOperations();
+
+	const logger = useLogger();
 
 	React.useEffect(() => {
 		function handleGlobalClick() {
@@ -126,9 +127,10 @@ const useCloseOnOutsideClick = () => {
  * If an Obsidian modal is opened, close all menus
  */
 const useCloseOnObsidianModalOpen = () => {
-	const logger = useLogger();
-	const { topMenu, onCloseAll } = useMenuOperations();
 	const hasCloseLock = React.useRef(false);
+	const { topMenu, onCloseAll } = useMenuOperations();
+
+	const logger = useLogger();
 
 	React.useEffect(() => {
 		if (!topMenu) hasCloseLock.current = false;

@@ -292,12 +292,14 @@ export default function BodyCellContainer({
 	) {
 		shouldRunTrigger = false;
 	}
+
 	return (
 		<>
 			<MenuTrigger
-				menuId={menu.id}
-				ref={menu.positionRef}
+				ref={menu.triggerRef}
 				variant="cell"
+				menuId={menu.id}
+				isFocused={menu.isTriggerFocused}
 				level={LoomMenuLevel.ONE}
 				onClick={handleMenuTriggerClick}
 				onEnterDown={handleMenuTriggerEnterDown}

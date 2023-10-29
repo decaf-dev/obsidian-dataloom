@@ -78,9 +78,10 @@ export default function HeaderCellContainer({
 	return (
 		<>
 			<MenuTrigger
+				ref={menu.triggerRef}
 				menuId={menu.id}
-				ref={menu.positionRef}
 				variant="cell"
+				isFocused={menu.isTriggerFocused}
 				level={LoomMenuLevel.ONE}
 				shouldRunTrigger={resizingColumnId === null}
 				onOpen={() =>

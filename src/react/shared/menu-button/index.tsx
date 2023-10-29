@@ -9,6 +9,7 @@ import { LoomMenuLevel } from "../menu-provider/types";
 interface Props {
 	menuId: string;
 	level: LoomMenuLevel;
+	isFocused: boolean;
 	isDisabled?: boolean;
 	variant?: ButtonVariant;
 	ariaLabel?: string;
@@ -24,6 +25,7 @@ const MenuButton = React.forwardRef<HTMLDivElement, Props>(
 		{
 			menuId,
 			isDisabled,
+			isFocused,
 			variant,
 			level,
 			ariaLabel,
@@ -37,8 +39,9 @@ const MenuButton = React.forwardRef<HTMLDivElement, Props>(
 	) => {
 		return (
 			<MenuTrigger
-				menuId={menuId}
 				ref={ref}
+				menuId={menuId}
+				isFocused={isFocused}
 				variant="button"
 				level={level}
 				onClick={onClick}

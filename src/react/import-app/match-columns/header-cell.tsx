@@ -75,8 +75,9 @@ export default function HeaderCell({
 							onChange={() => onColumnToggle(index)}
 						/>
 						<MenuButton
+							ref={menu.triggerRef}
+							isFocused={menu.isTriggerFocused}
 							menuId={menu.id}
-							ref={menu.positionRef}
 							level={LoomMenuLevel.ONE}
 							ariaLabel="Match column"
 							icon={<Icon lucideId="columns" size="lg" />}

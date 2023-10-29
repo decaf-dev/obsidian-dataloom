@@ -23,4 +23,9 @@ export interface LoomMenuCloseRequest {
 	type: LoomMenuCloseRequestType;
 }
 
+export interface FocusedMenuTrigger {
+	parentComponentId: string;
+	name?: string;
+}
+
 export type PositionUpdateHandler = (value: LoomMenuPosition) => void;

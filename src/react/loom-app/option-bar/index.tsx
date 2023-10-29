@@ -146,8 +146,9 @@ export default function OptionBar({
 						>
 							{isSmallScreen === false && (
 								<MenuButton
+									isFocused={sourcesMenu.isTriggerFocused}
 									menuId={sourcesMenu.id}
-									ref={sourcesMenu.positionRef}
+									ref={sourcesMenu.triggerRef}
 									level={LoomMenuLevel.ONE}
 									onOpen={handleSourceMenuOpen}
 								>
@@ -156,8 +157,9 @@ export default function OptionBar({
 							)}
 							{isSmallScreen === false && (
 								<MenuButton
+									isFocused={filterMenu.isTriggerFocused}
 									menuId={filterMenu.id}
-									ref={filterMenu.positionRef}
+									ref={filterMenu.triggerRef}
 									level={LoomMenuLevel.ONE}
 									onOpen={handleFilterMenuOpen}
 								>
@@ -166,8 +168,9 @@ export default function OptionBar({
 							)}
 							<SearchBar />
 							<MenuButton
+								isFocused={moreMenu.isTriggerFocused}
 								menuId={moreMenu.id}
-								ref={moreMenu.positionRef}
+								ref={moreMenu.triggerRef}
 								level={LoomMenuLevel.ONE}
 								icon={<Icon lucideId="more-vertical" />}
 								onOpen={handleMoreMenuOpen}

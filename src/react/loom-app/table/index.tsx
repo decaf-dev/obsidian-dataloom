@@ -458,11 +458,8 @@ const Components: TableComponents = {
 	),
 };
 
-const arePropsEqual = (
-	prevProps: Record<string, unknown>,
-	nextProps: Record<string, unknown>
-) => {
+const areEqual = (prevProps: Readonly<Props>, nextProps: Readonly<Props>) => {
 	return _.isEqual(prevProps, nextProps);
 };
 
-export default React.memo(Table, arePropsEqual);
+export default React.memo(Table, areEqual);

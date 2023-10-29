@@ -192,8 +192,9 @@ export default function RowOptions({
 						onTouchCancel={handleTouchCancel}
 					>
 						<MenuButton
+							isFocused={menu.isTriggerFocused}
 							menuId={menu.id}
-							ref={menu.positionRef}
+							ref={menu.triggerRef}
 							level={LoomMenuLevel.ONE}
 							icon={<Icon lucideId="grip-vertical" />}
 							ariaLabel="Drag to move or click to open"
