@@ -204,7 +204,7 @@ export default function TextCellEdit({
 	return (
 		<>
 			<div
-				className="dataloom-text-cell-edit"
+				className="dataloom-text-cell-edit dataloom-focusable"
 				ref={menu.triggerRef}
 				data-menu-id={menu.isOpen ? menu.id : undefined}
 			>

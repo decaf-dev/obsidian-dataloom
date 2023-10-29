@@ -1,5 +1,6 @@
 import React from "react";
 
+import { TFile } from "obsidian";
 import fuzzysort from "fuzzysort";
 
 import SuggestItem from "./suggest-item";
@@ -11,10 +12,9 @@ import Divider from "../divider";
 import Padding from "../padding";
 
 import { useLogger } from "src/shared/logger";
-import { TFile } from "obsidian";
+import { useAppMount } from "src/react/loom-app/app-mount-provider";
 
 import "./styles.css";
-import { useAppMount } from "src/react/loom-app/app-mount-provider";
 
 interface ContentProps {
 	showInput?: boolean;

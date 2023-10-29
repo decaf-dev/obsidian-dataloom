@@ -105,7 +105,7 @@ const MenuTrigger = React.forwardRef<HTMLDivElement, Props>(
 
 		let className = "dataloom-menu-trigger dataloom-focusable";
 		if (isFocused) {
-			className += " dataloom-focus-visible";
+			className += " dataloom-focusable--focused";
 		}
 		return (
 			<div
