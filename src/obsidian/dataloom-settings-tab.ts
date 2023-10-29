@@ -1,7 +1,7 @@
 import { PluginSettingTab, App } from "obsidian";
 import { Setting } from "obsidian";
 import DataLoomPlugin from "../main";
-import { renderBuyMeACoffeeBadge, renderGitHubSponsorBadge } from "./shared";
+import { renderBuyMeACoffeeBadge } from "./shared";
 
 export default class DataLoomSettingsTab extends PluginSettingTab {
 	plugin: DataLoomPlugin;
@@ -30,10 +30,10 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 
 		const supportDesc = new DocumentFragment();
 		const textEl = supportDesc.createDiv({
-			text: "Enjoying the plugin? Consider supporting the development of DataLoom by buying me an herbal tea or sponsoring me on GitHub.",
+			text: "Enjoying the plugin? Please support the development of DataLoom by buying me an herbal tea.",
 		});
 		textEl.style.marginBottom = "1.5em";
-		renderGitHubSponsorBadge(supportDesc);
+		//renderGitHubSponsorBadge(supportDesc);
 
 		new Setting(containerEl).setDesc(supportDesc);
 
