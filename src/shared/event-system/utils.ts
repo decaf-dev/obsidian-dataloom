@@ -1,3 +1,5 @@
+import { findMenuTriggerEl } from "src/react/shared/menu-provider/utils";
+
 //TODO fix
 export const isEventForThisApp = (
 	appId: string,
@@ -18,10 +20,9 @@ export const isEventForThisApp = (
 	const menuEl = activeEl.closest(".dataloom-menu");
 	if (menuEl) {
 		const menuId = menuEl.id;
-		const menuTrigger = document.querySelector(
-			`[data-menu-id="${menuId}"]`
-		);
+		const menuTrigger = findMenuTriggerEl(menuId);
 		if (!menuTrigger) return false;
+
 		const appEl = menuTrigger.closest(".dataloom-app");
 		if (appEl) return appEl.getAttribute("data-id") === appId;
 	}

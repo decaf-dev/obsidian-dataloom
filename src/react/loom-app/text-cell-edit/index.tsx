@@ -49,6 +49,7 @@ export default function TextCellEdit({
 }: Props) {
 	const COMPONENT_ID = `suggest-menu-${cellId}`;
 	const menu = useMenu(COMPONENT_ID);
+
 	const menuOperations = useMenuOperations();
 
 	const [localValue, setLocalValue] = React.useState(value);
@@ -202,7 +203,11 @@ export default function TextCellEdit({
 
 	return (
 		<>
-			<div className="dataloom-text-cell-edit" ref={menu.triggerRef}>
+			<div
+				className="dataloom-text-cell-edit"
+				ref={menu.triggerRef}
+				data-menu-id={menu.isOpen ? menu.id : undefined}
+			>
 				<textarea
 					className={overflowClassName}
 					autoFocus
