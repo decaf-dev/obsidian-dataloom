@@ -7,7 +7,6 @@
 	"authorUrl": "https://github.com/trey-wallis",
 	"isDesktopOnly": false,
 	"fundingUrl": {
-		"GitHub": "https://github.com/sponsors/trey-wallis",
 		"Buymeacoffee": "https://www.buymeacoffee.com/treywallis"
 	},
 	"version": "8.8.0"
