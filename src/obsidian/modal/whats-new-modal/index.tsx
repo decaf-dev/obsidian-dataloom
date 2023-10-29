@@ -1,7 +1,11 @@
 import { App, Component, MarkdownRenderer, Modal } from "obsidian";
 
 import { getLastestGithubRelease } from "src/data/network";
-import { renderDivider, setModalTitle } from "src/obsidian/shared";
+import {
+	renderBuyMeACoffeeBadge,
+	renderDivider,
+	setModalTitle,
+} from "src/obsidian/shared";
 
 import "./styles.css";
 
@@ -12,28 +16,41 @@ export default class WhatsNewModal extends Modal {
 
 	async onOpen() {
 		const { containerEl } = this;
-		setModalTitle(containerEl, "DataLoom - What's New");
+		const data = await getLastestGithubRelease();
+		const { body, tag_name } = data;
+		setModalTitle(containerEl, `DataLoom ${tag_name}`);
 
 		const { contentEl } = this;
+		this.renderDescription(contentEl);
 		renderDivider(contentEl);
-		this.renderContent(contentEl);
+		this.renderContent(contentEl, body);
 	}
 
-	async renderContent(contentEl: HTMLElement) {
+	async renderDescription(containerEl: HTMLElement) {
+		containerEl.createDiv({
+			text: "Thank you for using DataLoom! If you like the plugin, please consider supporting me by buying an herbal tea. With your sponsorship, I'll be able to continue to add features, fix bugs, and respond to issues on Github",
+		});
+		const badgeContainer = containerEl.createDiv({
+			cls: "dataloom-whats-new-modal__badge-container",
+		});
+		renderBuyMeACoffeeBadge(badgeContainer, 200);
+
+		containerEl.createDiv({
+			text: "DataLoom now has a Discord. Please join to get help, report bugs, and participate in the community.",
+		});
+		containerEl.createDiv({
+			cls: "dataloom-whats-new-modal__spacer",
+		});
+		containerEl.createEl("a", {
+			text: "Join Discord",
+			href: "https://discord.gg/QaFbepMdN4",
+		});
+	}
+
+	async renderContent(contentEl: HTMLElement, body: string) {
 		const data = await getLastestGithubRelease();
-		const { body, published_at, tag_name } = data;
+
 		if (data) {
-			const tagEl = contentEl.createEl("h5", {
-				text: `v${tag_name}`,
-				cls: "dataloom-whats-new-modal__tag",
-			});
-
-			const date = new Date(published_at);
-			tagEl.createSpan({
-				text: date.toLocaleDateString(),
-				cls: "dataloom-whats-new-modal__date",
-			});
-
 			const bodyEl = contentEl.createDiv();
 			const replacedText = this.replaceIssueNumbersWithLinks(body);
 			MarkdownRenderer.render(
@@ -48,6 +65,10 @@ export default class WhatsNewModal extends Modal {
 				if (issueNumber) {
 					a.setText(issueNumber);
 				}
+			});
+
+			contentEl.createDiv({
+				cls: "dataloom-whats-new-modal__spacer",
 			});
 
 			contentEl.createEl("a", {
