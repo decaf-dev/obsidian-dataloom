@@ -8,12 +8,13 @@ import HeaderMenu from "../header-cell-edit";
 
 import { useCompare, useForceUpdate } from "src/shared/hooks";
 import { getIconIdForCellType } from "src/react/shared/icon/utils";
-import { useMenu } from "../../shared/menu/hooks";
 import { numToPx } from "src/shared/conversion";
 import { CellType, Column } from "src/shared/loom-state/types/loom-state";
 
 import "./styles.css";
 import { ColumnChangeHandler } from "../app/hooks/use-column/types";
+import { LoomMenuLevel } from "src/react/shared/menu-provider/types";
+import { useMenu } from "src/react/shared/menu-provider/hooks";
 
 interface Props {
 	index: number;
@@ -44,18 +45,8 @@ export default function HeaderCellContainer({
 }: Props) {
 	const { id: columnId, type, width, content } = column;
 
-	const {
-		menu,
-		triggerRef,
-		triggerPosition,
-		isOpen,
-		closeRequest,
-		onOpen,
-		onClose,
-		onRequestClose,
-	} = useMenu({
-		shouldRequestOnClose: true,
-	});
+	const COMPONENT_ID = `header-cell-${columnId}`;
+	const menu = useMenu(COMPONENT_ID);
 
 	const [forceUpdateTime, forceUpdate] = useForceUpdate();
 
@@ -71,13 +62,13 @@ export default function HeaderCellContainer({
 	const shouldUpdateWidth = useCompare(forceUpdateTime, false);
 	React.useEffect(() => {
 		if (shouldUpdateWidth) {
-			const newWidth = numToPx(triggerPosition.width);
+			const newWidth = numToPx(menu.position.width);
 			onColumnChange(columnId, {
 				width: newWidth,
 			});
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [columnId, shouldUpdateWidth, triggerPosition]);
+	}, [columnId, shouldUpdateWidth, menu.position]);
 
 	const lucideId = getIconIdForCellType(type);
 
@@ -87,11 +78,17 @@ export default function HeaderCellContainer({
 	return (
 		<>
 			<MenuTrigger
-				ref={triggerRef}
-				menu={menu}
-				isCell
-				shouldOpenOnTrigger={resizingColumnId === null}
-				onOpen={onOpen}
+				ref={menu.triggerRef}
+				menuId={menu.id}
+				variant="cell"
+				isFocused={menu.isTriggerFocused}
+				level={LoomMenuLevel.ONE}
+				shouldRunTrigger={resizingColumnId === null}
+				onOpen={() =>
+					menu.onOpen(LoomMenuLevel.ONE, {
+						shouldRequestOnClose: true,
+					})
+				}
 			>
 				<div
 					className="dataloom-cell--header__container"
@@ -114,18 +111,18 @@ export default function HeaderCellContainer({
 								width: value,
 							});
 						}}
-						onMenuClose={() => onClose(false)}
+						onMenuClose={menu.onClose}
 					/>
 				</div>
 			</MenuTrigger>
 			<HeaderMenu
-				index={index}
-				isOpen={isOpen}
-				numSources={numSources}
-				closeRequest={closeRequest}
-				frontmatterKeys={frontmatterKeys}
-				triggerPosition={triggerPosition}
 				id={menu.id}
+				index={index}
+				isOpen={menu.isOpen}
+				numSources={numSources}
+				closeRequest={menu.closeRequest}
+				frontmatterKeys={frontmatterKeys}
+				position={menu.position}
 				numFrozenColumns={numFrozenColumns}
 				column={column}
 				canDeleteColumn={
@@ -136,8 +133,7 @@ export default function HeaderCellContainer({
 				numColumns={numColumns}
 				onColumnDeleteClick={onColumnDeleteClick}
 				onColumnChange={onColumnChange}
-				onClose={onClose}
-				onRequestClose={onRequestClose}
+				onClose={menu.onClose}
 				onFrozenColumnsChange={onFrozenColumnsChange}
 				onColumnTypeChange={onColumnTypeChange}
 			/>

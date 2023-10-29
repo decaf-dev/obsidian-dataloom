@@ -1,7 +1,7 @@
 import React from "react";
 import Submenu from "../../shared/submenu";
 import Input from "../../shared/input";
-import { LoomMenuCloseRequest } from "src/react/shared/menu/types";
+import { LoomMenuCloseRequest } from "src/react/shared/menu-provider/types";
 
 interface Props {
 	title: string;

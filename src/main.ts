@@ -51,6 +51,7 @@ import {
 	purgeEmbeddedLoomApps,
 } from "./obsidian/embedded/embedded-app-manager";
 import { cloneDeep } from "lodash";
+import { log } from "./shared/logger";
 
 export interface DataLoomSettings {
 	shouldDebug: boolean;
@@ -222,7 +223,7 @@ export default class DataLoomPlugin extends Plugin {
 	private registerDOMEvents() {
 		//This event is guaranteed to fire after our React synthetic event handlers
 		this.registerDomEvent(document, "click", () => {
-			if (this.settings.shouldDebug) console.log("main handleClick");
+			log(this.settings.shouldDebug, "main handleClick");
 
 			//Clear the focus-visible class from the last focused element
 			removeCurrentFocusClass();
@@ -231,7 +232,7 @@ export default class DataLoomPlugin extends Plugin {
 
 		//This event is guaranteed to fire after our React synthetic event handlers
 		this.registerDomEvent(document, "keydown", (e) => {
-			if (this.settings.shouldDebug) console.log("main handleKeyDown");
+			log(this.settings.shouldDebug, "main handleKeyDown");
 			this.app.workspace.trigger(EVENT_GLOBAL_KEYDOWN, e);
 		});
 	}
@@ -380,10 +381,13 @@ export default class DataLoomPlugin extends Plugin {
 							//If the state has changed, update the file
 							const { file: loomFile, state } = loomsToUpdate[i];
 
-							if (this.settings.shouldDebug)
-								console.log("Updating links in file", {
+							log(
+								this.settings.shouldDebug,
+								"Updating links in file",
+								{
 									path: loomFile.path,
-								});
+								}
+							);
 
 							const newState = cloneDeep(state);
 							newState.model.rows.map((row) => {
@@ -396,12 +400,14 @@ export default class DataLoomPlugin extends Plugin {
 										oldPath
 									);
 									if (content !== newContent) {
-										if (this.settings.shouldDebug) {
-											console.log("Updated link", {
+										log(
+											this.settings.shouldDebug,
+											"Updated link",
+											{
 												oldLink: content,
 												newLink: newContent,
-											});
-										}
+											}
+										);
 									}
 									return {
 										...cell,

@@ -40,10 +40,7 @@ import {
 	SourceFileCondition,
 } from "src/shared/loom-state/types/loom-state";
 import { isSmallScreenSize } from "src/shared/render/utils";
-import {
-	LoomMenuCloseRequestType,
-	Position,
-} from "src/react/shared/menu/types";
+import { LoomMenuPosition } from "src/react/shared/menu/types";
 import Input from "src/react/shared/input";
 import Select from "src/react/shared/select";
 import {
@@ -68,28 +65,24 @@ import DateFilterSelect from "./date-filter-select";
 
 interface Props {
 	id: string;
-	triggerPosition: Position;
 	isOpen: boolean;
+	position: LoomMenuPosition;
 	columns: Column[];
 	filters: Filter[];
 	onAddClick: () => void;
 	onUpdate: (id: string, data: Partial<Filter>, isPartial?: boolean) => void;
 	onDeleteClick: (id: string) => void;
-	onRequestClose: (type: LoomMenuCloseRequestType) => void;
-	onClose: () => void;
 }
 
 export default function FilterMenu({
 	id,
-	triggerPosition,
 	isOpen,
+	position,
 	columns,
 	filters,
 	onAddClick,
 	onUpdate,
 	onDeleteClick,
-	onRequestClose,
-	onClose,
 }: Props) {
 	function onColumnChange(id: string, columnId: string) {
 		const filter = filters.find((filter) => filter.id === id);
@@ -336,11 +329,9 @@ export default function FilterMenu({
 		<Menu
 			id={id}
 			isOpen={isOpen}
-			triggerPosition={triggerPosition}
+			position={position}
 			openDirection="bottom-left"
 			maxHeight={255}
-			onRequestClose={onRequestClose}
-			onClose={onClose}
 		>
 			<div
 				className="dataloom-filter-menu"

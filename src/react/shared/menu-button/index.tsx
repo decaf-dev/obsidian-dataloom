@@ -2,12 +2,15 @@ import React from "react";
 
 import MenuTrigger from "../menu-trigger";
 import Button from "../button";
+
 import { ButtonVariant } from "../button/types";
-import { LoomMenu } from "../menu/types";
+import { LoomMenuLevel } from "../menu-provider/types";
 
 interface Props {
+	menuId: string;
+	level: LoomMenuLevel;
+	isFocused: boolean;
 	isDisabled?: boolean;
-	menu: LoomMenu;
 	variant?: ButtonVariant;
 	ariaLabel?: string;
 	icon?: React.ReactNode;
@@ -20,9 +23,11 @@ interface Props {
 const MenuButton = React.forwardRef<HTMLDivElement, Props>(
 	(
 		{
+			menuId,
 			isDisabled,
-			menu,
+			isFocused,
 			variant,
+			level,
 			ariaLabel,
 			icon,
 			children,
@@ -34,10 +39,11 @@ const MenuButton = React.forwardRef<HTMLDivElement, Props>(
 	) => {
 		return (
 			<MenuTrigger
-				shouldOpenOnTrigger={true}
-				isButton
 				ref={ref}
-				menu={menu}
+				menuId={menuId}
+				isFocused={isFocused}
+				variant="button"
+				level={level}
 				onClick={onClick}
 				onMouseDown={onMouseDown}
 				onOpen={onOpen}

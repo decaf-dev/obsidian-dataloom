@@ -1,4 +1,5 @@
 import { TFile } from "obsidian";
+
 import { SuggestList } from "src/react/shared/suggest-list";
 import { getBasename } from "src/shared/link/link-utils";
 

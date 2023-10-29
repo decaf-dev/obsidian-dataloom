@@ -7,7 +7,7 @@ import Switch from "src/react/shared/switch";
 import Stack from "src/react/shared/stack";
 import Padding from "src/react/shared/padding";
 import Divider from "src/react/shared/divider";
-import { LoomMenuCloseRequest } from "../../shared/menu/types";
+import { LoomMenuCloseRequest } from "src/react/shared/menu-provider/types";
 
 interface Props {
 	closeRequest: LoomMenuCloseRequest | null;

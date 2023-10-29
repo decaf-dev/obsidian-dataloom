@@ -1,67 +1,217 @@
 import React from "react";
 
 import { TableComponents, TableVirtuoso, VirtuosoHandle } from "react-virtuoso";
+import _ from "lodash";
 
+import FooterCellContainer from "../footer-cell-container";
+import HeaderCellContainer from "../header-cell-container";
 import BodyRow from "./body-row";
 import HeaderCell from "./header-cell";
 import BodyCell from "./body-cell";
 import FooterCell from "./footer-cell";
+import NewColumnButton from "../new-column-button";
+import RowOptions from "../row-options";
+import BodyCellContainer from "../body-cell-container";
 
 import { usePrevious } from "src/shared/hooks";
-import { TableRow } from "./types";
+import {
+	ColumnAddClickHandler,
+	ColumnChangeHandler,
+	ColumnDeleteClickHandler,
+	ColumnReorderHandler,
+	ColumnTypeClickHandler,
+} from "../app/hooks/use-column/types";
+import { RowReorderHandler } from "../app/hooks/use-row/types";
+
+import {
+	Column,
+	Source,
+	Row,
+	Cell,
+} from "src/shared/loom-state/types/loom-state";
+import CellNotFoundError from "src/shared/error/cell-not-found-error";
+import { FrontMatterType } from "src/shared/deserialize-frontmatter/types";
+import { cellTypeToFrontMatterKeyTypes } from "src/shared/deserialize-frontmatter/utils";
+import { CellChangeHandler } from "../app/hooks/use-cell/types";
+import {
+	TagAddHandler,
+	TagCellAddHandler,
+	TagCellRemoveHandler,
+	TagCellMultipleRemoveHandler,
+	TagChangeHandler,
+	TagDeleteHandler,
+} from "../app/hooks/use-tag/types";
 
 import "./styles.css";
-import { ColumnReorderHandler } from "../app/hooks/use-column/types";
 
 interface Props {
-	headerRow: TableRow;
-	bodyRows: TableRow[];
-	footer?: TableRow;
+	showCalculationRow: boolean;
 	numFrozenColumns: number;
+	frontmatterKeys: Map<FrontMatterType, string[]>;
+	columns: Column[];
+	resizingColumnId: string | null;
+	sources: Source[];
+	rows: Row[];
+	onColumnDeleteClick: ColumnDeleteClickHandler;
+	onColumnAddClick: ColumnAddClickHandler;
+	onColumnTypeChange: ColumnTypeClickHandler;
+	onFrozenColumnsChange: (value: number) => void;
 	onColumnReorder: ColumnReorderHandler;
+	onRowDeleteClick: (rowId: string) => void;
+	onRowInsertAboveClick: (rowId: string) => void;
+	onRowInsertBelowClick: (rowId: string) => void;
+	onColumnChange: ColumnChangeHandler;
+	onCellChange: CellChangeHandler;
+	onTagAdd: TagAddHandler;
+	onTagCellAdd: TagCellAddHandler;
+	onTagCellRemove: TagCellRemoveHandler;
+	onTagCellMultipleRemove: TagCellMultipleRemoveHandler;
+	onTagChange: TagChangeHandler;
+	onTagDeleteClick: TagDeleteHandler;
+	onRowReorder: RowReorderHandler;
 }
 
 const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
-	{ headerRow, bodyRows, footer, numFrozenColumns, onColumnReorder },
+	{
+		sources,
+		rows,
+		frontmatterKeys,
+		columns,
+		numFrozenColumns,
+		resizingColumnId,
+		showCalculationRow,
+		onColumnDeleteClick,
+		onColumnAddClick,
+		onColumnTypeChange,
+		onFrozenColumnsChange,
+		onColumnReorder,
+		onRowDeleteClick,
+		onRowInsertAboveClick,
+		onRowInsertBelowClick,
+		onColumnChange,
+		onCellChange,
+		onTagAdd,
+		onTagCellAdd,
+		onTagCellRemove,
+		onTagCellMultipleRemove,
+		onTagChange,
+		onTagDeleteClick,
+		onRowReorder,
+	},
 	ref
 ) {
-	const previousRowLength = usePrevious(bodyRows.length);
+	const previousRowLength = usePrevious(rows.length);
 
 	/**
 	 * Scrolls to the bottom of the page when the "New Row" button is pressed
 	 */
 	React.useEffect(() => {
 		if (previousRowLength === undefined) return;
-		if (previousRowLength < bodyRows.length)
+		if (previousRowLength < rows.length)
 			(
 				ref as React.MutableRefObject<VirtuosoHandle | null>
-			).current?.scrollToIndex(bodyRows.length - 1);
-	}, [ref, previousRowLength, bodyRows.length]);
+			).current?.scrollToIndex(rows.length - 1);
+	}, [ref, previousRowLength, rows.length]);
+
+	React.useLayoutEffect(() => {
+		//onTableRender();
+	});
+
+	const visibleColumns = columns.filter((column) => column.isVisible);
 
 	return (
 		<TableVirtuoso
 			ref={ref}
-			overscan={10}
+			overscan={30}
 			style={{
 				width: "100%",
 				height: "100%",
 			}}
-			totalCount={bodyRows.length}
-			components={Components}
+			totalCount={rows.length}
+			components={{
+				...Components,
+				TableRow: ({ style, ...props }) => (
+					<BodyRow
+						{...props}
+						style={style}
+						onRowReorder={onRowReorder}
+					/>
+				),
+			}}
 			fixedHeaderContent={() => {
-				const { cells } = headerRow;
+				const tableColumns = [null, ...visibleColumns, null];
 				return (
 					<div className="dataloom-row">
-						{cells.map((cell, i) => {
-							const { id, content } = cell;
+						{tableColumns.map((column, i) => {
+							let content: React.ReactNode;
+							let key: string;
+
+							if (column === null) {
+								key = `filler-${i}`;
+								if (i === 0) {
+									content = <></>;
+								} else {
+									content = (
+										<NewColumnButton
+											onClick={onColumnAddClick}
+										/>
+									);
+								}
+							} else {
+								const { id, type } = column;
+								const frontmatterTypes =
+									cellTypeToFrontMatterKeyTypes(type);
+
+								let columnKeys: string[] = [];
+								frontmatterTypes.forEach((type) => {
+									columnKeys = columnKeys.concat(
+										frontmatterKeys.get(type) ?? []
+									);
+								});
+
+								// Remove any frontmatter keys that are already in use
+								columnKeys = columnKeys.filter((key) => {
+									const columnWithKey = columns.find(
+										(column) =>
+											column.frontmatterKey?.value === key
+									);
+									if (!columnWithKey) return true;
+									if (columnWithKey.id === id) return true;
+									return false;
+								});
+
+								key = id;
+								content = (
+									<HeaderCellContainer
+										key={id}
+										index={i}
+										column={column}
+										frontmatterKeys={columnKeys}
+										numColumns={columns.length}
+										numSources={sources.length}
+										numFrozenColumns={numFrozenColumns}
+										resizingColumnId={resizingColumnId}
+										onColumnChange={onColumnChange}
+										onColumnDeleteClick={
+											onColumnDeleteClick
+										}
+										onColumnTypeChange={onColumnTypeChange}
+										onFrozenColumnsChange={
+											onFrozenColumnsChange
+										}
+									/>
+								);
+							}
 							return (
 								<HeaderCell
-									key={id}
+									key={key}
 									index={i}
 									numFrozenColumns={numFrozenColumns}
-									columnId={id}
+									columnId={column?.id}
 									content={content}
-									isDraggable={i > 0 && i < cells.length - 1}
+									isDraggable={
+										i > 0 && i < columns.length - 1
+									}
 									onColumnReorder={onColumnReorder}
 								/>
 							);
@@ -70,14 +220,65 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 				);
 			}}
 			fixedFooterContent={() => {
-				if (!footer) return null;
+				if (!showCalculationRow) return undefined;
+
+				const columns = [null, ...visibleColumns, null];
 				return (
 					<div className="dataloom-row">
-						{footer.cells.map((cell, i) => {
-							const { id, content } = cell;
+						{columns.map((column, i) => {
+							let content: React.ReactNode;
+							let key: string;
+
+							if (column === null) {
+								key = `filler-${i}`;
+								content = <></>;
+							} else {
+								const {
+									id: columnId,
+									type,
+									currencyType,
+									dateFormat,
+									numberFormat,
+									width,
+									tags,
+									calculationType,
+								} = column;
+
+								const columnCells: Cell[] = rows.map((row) => {
+									const { id: rowId, cells } = row;
+									const cell = cells.find(
+										(cell) => cell.columnId === columnId
+									);
+									if (!cell)
+										throw new CellNotFoundError({
+											columnId,
+											rowId,
+										});
+									return cell;
+								});
+
+								key = columnId;
+								content = (
+									<FooterCellContainer
+										sources={sources}
+										columnId={columnId}
+										columnTags={tags}
+										numberFormat={numberFormat}
+										currencyType={currencyType}
+										dateFormat={dateFormat}
+										columnCells={columnCells}
+										rows={rows}
+										calculationType={calculationType}
+										width={width}
+										cellType={type}
+										onColumnChange={onColumnChange}
+									/>
+								);
+							}
+
 							return (
 								<FooterCell
-									key={id}
+									key={key}
 									index={i}
 									numFrozenColumns={numFrozenColumns}
 									content={content}
@@ -88,13 +289,119 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 				);
 			}}
 			itemContent={(index) => {
-				const row = bodyRows[index];
-				const { id: rowId, cells } = row;
-				return cells.map((cell, i) => {
-					const { id, content } = cell;
+				const row = rows[index];
+				const {
+					id: rowId,
+					lastEditedTime,
+					creationTime,
+					sourceId,
+				} = row;
+				const source =
+					sources.find((source) => source.id === sourceId) ?? null;
+
+				const columns = [null, ...visibleColumns, null];
+				return columns.map((column, i) => {
+					let content: React.ReactNode;
+					let key: string;
+
+					if (column === null) {
+						key = `filler-${i}`;
+						if (i === 0) {
+							content = (
+								<RowOptions
+									source={source}
+									rowId={rowId}
+									onDeleteClick={onRowDeleteClick}
+									onInsertAboveClick={onRowInsertAboveClick}
+									onInsertBelowClick={onRowInsertBelowClick}
+									onRowReorder={onRowReorder}
+								/>
+							);
+						} else {
+							content = <></>;
+						}
+					} else {
+						const {
+							id: columnId,
+							width,
+							type,
+							shouldWrapOverflow,
+							currencyType,
+							numberPrefix,
+							numberSeparator,
+							numberFormat,
+							numberSuffix,
+							dateFormat,
+							tags,
+							verticalPadding,
+							horizontalPadding,
+							aspectRatio,
+							frontmatterKey,
+						} = column;
+
+						const cell = row.cells.find(
+							(cell) => cell.columnId === columnId
+						);
+						if (!cell)
+							throw new CellNotFoundError({
+								columnId,
+								rowId,
+							});
+
+						const {
+							id: cellId,
+							content: cellContent,
+							dateTime,
+							tagIds,
+							isExternalLink,
+						} = cell;
+
+						const source =
+							sources.find(
+								(source) => source.id === row.sourceId
+							) ?? null;
+
+						key = column.id;
+						content = (
+							<BodyCellContainer
+								key={cellId}
+								cellId={cellId}
+								frontmatterKey={frontmatterKey}
+								isExternalLink={isExternalLink}
+								verticalPadding={verticalPadding}
+								horizontalPadding={horizontalPadding}
+								aspectRatio={aspectRatio}
+								columnTags={tags}
+								cellTagIds={tagIds}
+								columnId={columnId}
+								source={source}
+								numberFormat={numberFormat}
+								rowCreationTime={creationTime}
+								dateFormat={dateFormat}
+								currencyType={currencyType}
+								numberPrefix={numberPrefix}
+								numberSuffix={numberSuffix}
+								numberSeparator={numberSeparator}
+								rowLastEditedTime={lastEditedTime}
+								dateTime={dateTime}
+								content={cellContent}
+								columnType={type}
+								shouldWrapOverflow={shouldWrapOverflow}
+								width={width}
+								onTagClick={onTagCellAdd}
+								onTagRemoveClick={onTagCellRemove}
+								onTagMultipleRemove={onTagCellMultipleRemove}
+								onCellChange={onCellChange}
+								onTagDeleteClick={onTagDeleteClick}
+								onTagAdd={onTagAdd}
+								onColumnChange={onColumnChange}
+								onTagChange={onTagChange}
+							/>
+						);
+					}
 					return (
 						<BodyCell
-							key={id}
+							key={key}
 							rowId={rowId}
 							content={content}
 							index={i}
@@ -107,6 +414,8 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 	);
 });
 
+//Placing this outside of the table prevents the table from re-rendering
+//when a menu changes
 const Components: TableComponents = {
 	Table: ({ ...props }) => {
 		return <div className="dataloom-table" {...props} />;
@@ -127,18 +436,15 @@ const Components: TableComponents = {
 			/>
 		);
 	}),
-	TableRow: ({ style, ...props }) => {
-		return <BodyRow {...props} style={style} />;
-	},
 	TableBody: React.forwardRef(({ style, ...props }, ref) => (
 		<div className="dataloom-body" {...props} style={style} ref={ref} />
 	)),
-	//Don't apply styles because we want to apply sticky positioning
-	//to the cells, not the footer container
 	TableFoot: React.forwardRef(({ ...props }, ref) => (
 		<div
 			className="dataloom-footer"
 			{...props}
+			//Don't apply styles because we want to apply sticky positioning
+			//to the cells, not the footer container
 			style={{
 				position: undefined,
 				bottom: undefined,
@@ -147,9 +453,13 @@ const Components: TableComponents = {
 			ref={ref}
 		/>
 	)),
-	FillerRow: ({ height }) => {
-		return <div className="dataloom-row" style={{ height }} />;
-	},
+	FillerRow: ({ height }) => (
+		<div className="dataloom-row" style={{ height }} />
+	),
 };
 
-export default Table;
+const areEqual = (prevProps: Readonly<Props>, nextProps: Readonly<Props>) => {
+	return _.isEqual(prevProps, nextProps);
+};
+
+export default React.memo(Table, areEqual);

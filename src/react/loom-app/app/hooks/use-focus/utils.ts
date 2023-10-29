@@ -1,25 +1,24 @@
-import { LoomMenu } from "src/react/shared/menu/types";
+import { LoomMenu } from "src/react/shared/menu-provider/types";
+import { findMenuTriggerEl } from "src/react/shared/menu-provider/utils";
 
 /**
- * Adds the dataloom-focus-visible class to an element
+ * Adds the dataloom-focusable--focused class to an element
  * We do this since because want to control the focus-visible class to appear when enter is pressed or we
  * click outside of the element
  * @param el - The element to add the focus-visible class to
  * @returns
  */
 export const addFocusClass = (el: HTMLElement | null) => {
-	if (!el) return;
-	el.classList.add("dataloom-focus-visible");
+	el?.classList.add("dataloom-focusable--focused");
 };
 
 /**
- * Removes the dataloom-focus-visible class from an element
+ * Removes the dataloom-focusable--focused class from an element
  * There should only be one element with this class at a time
  */
 export const removeCurrentFocusClass = () => {
-	const el = document.querySelector(".dataloom-focus-visible");
-	if (!el) return;
-	el.classList.remove("dataloom-focus-visible");
+	const el = document.querySelector(".dataloom-focusable--focused");
+	el?.classList.remove("dataloom-focusable--focused");
 };
 
 /**
@@ -27,17 +26,40 @@ export const removeCurrentFocusClass = () => {
  * If the top menu is null, then we return the app element.
  * @param appId - The id of the app instance
  */
-export const getTopMenuEl = (
+export const getFocusLayerEl = (
 	topMenu: LoomMenu | null,
 	appId: string
-): HTMLElement | null => {
-	if (topMenu) return document.getElementById(topMenu.id);
-	return document.getElementById(appId);
+): HTMLElement => {
+	if (topMenu) {
+		const topMenuEl = document.getElementById(topMenu.id);
+		if (!topMenuEl) throw Error("No top menu element found");
+		return topMenuEl;
+	}
+
+	const appEl = document.getElementById(appId);
+	if (!appEl) throw Error("No app element found");
+	return appEl;
+};
+
+export const getFocusableEls = (layerEl: HTMLElement) => {
+	const focusableEls = layerEl.querySelectorAll(".dataloom-focusable");
+	const arr = Array.from(focusableEls);
+
+	if (isMenuEl(layerEl)) {
+		const menuId = layerEl.id;
+		const menuTrigger = findMenuTriggerEl(menuId);
+
+		//Some menu's don't have a menu trigger
+		if (menuTrigger) {
+			return [menuTrigger, ...arr];
+		}
+	}
+	return arr;
 };
 
 export const focusNextElement = (
 	layerEl: HTMLElement,
-	focusableEls: NodeListOf<Element>
+	focusableEls: Element[]
 ) => {
 	const focusedEl = document.activeElement;
 
@@ -61,16 +83,12 @@ export const focusNextElement = (
 	}
 };
 
-export const getFocusableElements = (el: HTMLElement) => {
-	return el.querySelectorAll(".dataloom-focusable");
-};
-
 export const getNumOptionBarFocusableEls = (appEl: HTMLElement) => {
 	const el = appEl.querySelector(
 		".dataloom-option-bar"
 	) as HTMLElement | null;
 	if (!el) throw Error("No option bar found");
-	return getFocusableElements(el).length;
+	return getFocusableEls(el).length;
 };
 
 export const getNumBottomBarFocusableEl = (appEl: HTMLElement) => {
@@ -78,7 +96,7 @@ export const getNumBottomBarFocusableEl = (appEl: HTMLElement) => {
 		".dataloom-bottom-bar"
 	) as HTMLElement | null;
 	if (!el) throw Error("No bottom bar found");
-	return getFocusableElements(el).length;
+	return getFocusableEls(el).length;
 };
 
 export const isArrowKeyPressed = (
@@ -94,4 +112,8 @@ export const isArrowKeyPressed = (
 		e.key === "ArrowLeft" ||
 		e.key === "ArrowRight"
 	);
+};
+
+const isMenuEl = (el: HTMLElement) => {
+	return el.classList.contains("dataloom-menu");
 };
