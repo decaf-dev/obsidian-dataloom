@@ -19,7 +19,7 @@ import { useRowEvents } from "src/react/loom-app/app/hooks/use-row-events";
 import { useColumnEvents } from "src/react/loom-app/app/hooks/use-column-events";
 import { useTableSettings } from "./hooks/use-table-settings";
 import useFocus from "./hooks/use-focus";
-import { nltEventSystem } from "src/shared/event-system/event-system";
+
 import {
 	isMacRedoDown,
 	isMacUndoDown,
@@ -178,7 +178,6 @@ export default function App() {
 		} else {
 			onFocusKeyDown(e);
 		}
-		nltEventSystem.dispatchEvent("keydown", e);
 	}
 
 	let filteredRows = filterByFilters(loomState);
