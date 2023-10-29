@@ -48,8 +48,11 @@ export const getFocusableEls = (layerEl: HTMLElement) => {
 	if (isMenuEl(layerEl)) {
 		const menuId = layerEl.id;
 		const menuTrigger = findMenuTriggerEl(menuId);
-		if (!menuTrigger) throw Error("No menu trigger found");
-		return [menuTrigger, ...arr];
+
+		//Some menu's don't have a menu trigger
+		if (menuTrigger) {
+			return [menuTrigger, ...arr];
+		}
 	}
 	return arr;
 };

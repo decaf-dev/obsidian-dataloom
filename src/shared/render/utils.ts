@@ -21,7 +21,8 @@ export const appendOrReplaceFirstChild = (
 	container: HTMLElement | null,
 	child: HTMLElement | null
 ) => {
-	if (container == null || child === null) return;
+	if (container === null) return;
+	if (child === null) return;
 
 	//If there is no first child, append the child
 	if (container && !container.firstChild) {

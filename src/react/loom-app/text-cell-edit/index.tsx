@@ -203,11 +203,7 @@ export default function TextCellEdit({
 
 	return (
 		<>
-			<div
-				className="dataloom-text-cell-edit dataloom-focusable"
-				ref={menu.triggerRef}
-				data-menu-id={menu.isOpen ? menu.id : undefined}
-			>
+			<div className="dataloom-text-cell-edit" ref={menu.triggerRef}>
 				<textarea
 					className={overflowClassName}
 					autoFocus
