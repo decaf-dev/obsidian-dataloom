@@ -1,7 +1,8 @@
 import "./styles.css";
 
 export const renderBuyMeACoffeeBadge = (
-	contentEl: HTMLElement | DocumentFragment
+	contentEl: HTMLElement | DocumentFragment,
+	width = 180
 ) => {
 	const linkEl = contentEl.createEl("a", {
 		href: "https://www.buymeacoffee.com/treywallis",
@@ -11,7 +12,7 @@ export const renderBuyMeACoffeeBadge = (
 		"https://img.buymeacoffee.com/button-api/?text=Buy me a herbal tea&emoji=🍵&slug=treywallis&button_colour=9478F0&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00&refresh_id=2";
 	imgEl.referrerPolicy = "no-referrer";
 	imgEl.alt = "Buymeacoffee";
-	imgEl.width = 180;
+	imgEl.width = width;
 };
 
 export const renderGitHubSponsorBadge = (
