@@ -110,9 +110,6 @@ export default function MenuProvider({ children }: Props) {
 		(id: string) => {
 			logger("MenuProvider onClose");
 
-			const menuTriggerEl = findMenuTriggerEl(id);
-			if (!menuTriggerEl) return;
-
 			const menu = openMenus.find((menu) => menu.id === id);
 			if (!menu) throw new Error("Menu not found");
 

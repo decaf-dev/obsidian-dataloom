@@ -50,8 +50,6 @@ export default function TextCellEdit({
 	const COMPONENT_ID = `suggest-menu-${cellId}`;
 	const menu = useMenu(COMPONENT_ID);
 
-	const menuOperations = useMenuOperations();
-
 	const [localValue, setLocalValue] = React.useState(value);
 	const [cursorPosition, setCursorPosition] = React.useState<number | null>(
 		null
@@ -109,7 +107,7 @@ export default function TextCellEdit({
 			if (menu.isOpen) {
 				//Close menu if cursor is outside of double brackets
 				if (!isSurroundedByDoubleBrackets(value, cursorPosition))
-					onClose();
+					menu.onClose();
 			}
 
 			if (inputRef.current) {
@@ -138,17 +136,17 @@ export default function TextCellEdit({
 		}
 	}, [cursorPosition, inputRef]);
 
-	//Scroll to bottom when the value changes
-	//This is necessary if we press `alt + shift` or `meta + shift` to insert a new line
-	//This is what the browser does with `shift + enter` by default
-	React.useEffect(
-		function scrollToBottom() {
-			if (inputRef.current) {
-				inputRef.current.scrollTop = inputRef.current.scrollHeight;
-			}
-		},
-		[inputRef, localValue]
-	);
+	// //Scroll to bottom when the value changes
+	// //This is necessary if we press `alt + shift` or `meta + shift` to insert a new line
+	// //This is what the browser does with `shift + enter` by default
+	// React.useEffect(
+	// 	function scrollToBottom() {
+	// 		if (inputRef.current) {
+	// 			inputRef.current.scrollTop = inputRef.current.scrollHeight;
+	// 		}
+	// 	},
+	// 	[inputRef, localValue]
+	// );
 
 	function handleMenuOpen() {
 		menu.onOpen(LoomMenuLevel.TWO);
@@ -194,7 +192,7 @@ export default function TextCellEdit({
 
 			onChange(newValue);
 		}
-		menuOperations.onCloseAll();
+		menu.onClose();
 	}
 
 	const overflowClassName = useOverflow(shouldWrapOverflow);
