@@ -51,7 +51,9 @@ export default class WhatsNewModal extends Modal {
 		const data = await getLastestGithubRelease();
 
 		if (data) {
-			const bodyEl = contentEl.createDiv();
+			const bodyEl = contentEl.createDiv({
+				cls: "dataloom-whats-new-modal__content",
+			});
 			const replacedText = this.replaceIssueNumbersWithLinks(body);
 			MarkdownRenderer.render(
 				this.app,
