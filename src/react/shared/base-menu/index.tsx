@@ -88,7 +88,7 @@ const BaseMenu = React.forwardRef<HTMLDivElement, Props>(
 				onClick={handleClick}
 				onKeyDown={handleKeyDown}
 			>
-				<div>{children}</div>
+				{children}
 			</div>,
 			document.body
 		);
