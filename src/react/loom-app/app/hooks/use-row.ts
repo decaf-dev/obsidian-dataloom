@@ -5,6 +5,7 @@ import RowDeleteCommand from "src/shared/loom-state/commands/row-delete-command"
 import React from "react";
 import RowInsertCommand from "src/shared/loom-state/commands/row-insert-command";
 import { confirmSortOrderChange } from "src/shared/sort-utils";
+import RowReorderCommand from "src/shared/loom-state/commands/row-reorder-command";
 
 export const useRow = () => {
 	const logger = useLogger();
@@ -20,33 +21,51 @@ export const useRow = () => {
 		[doCommand, logger]
 	);
 
-	function handleNewRowClick() {
+	const handleNewRowClick = React.useCallback(() => {
 		logger("handleNewRowClick");
 		doCommand(new RowAddCommand());
-	}
+	}, [doCommand, logger]);
 
-	function handleRowInsertAboveClick(rowId: string) {
-		logger("handleRowInsertAboveClick", {
-			rowId,
-		});
-		if (confirmSortOrderChange(loomState)) {
-			doCommand(new RowInsertCommand(rowId, "above"));
-		}
-	}
+	const handleRowInsertAboveClick = React.useCallback(
+		(rowId: string) => {
+			logger("handleRowInsertAboveClick", {
+				rowId,
+			});
+			if (confirmSortOrderChange(loomState)) {
+				doCommand(new RowInsertCommand(rowId, "above"));
+			}
+		},
+		[doCommand, logger, loomState]
+	);
 
-	function handleRowInsertBelowClick(rowId: string) {
-		logger("handleRowInsertBelowClick", {
-			rowId,
-		});
-		if (confirmSortOrderChange(loomState)) {
-			doCommand(new RowInsertCommand(rowId, "below"));
-		}
-	}
+	const handleRowInsertBelowClick = React.useCallback(
+		(rowId: string) => {
+			logger("handleRowInsertBelowClick", {
+				rowId,
+			});
+			if (confirmSortOrderChange(loomState)) {
+				doCommand(new RowInsertCommand(rowId, "below"));
+			}
+		},
+		[doCommand, logger, loomState]
+	);
+
+	const handleRowReorder = React.useCallback(
+		(dragId: string, targetId: string) => {
+			logger("handleRowReorder", {
+				dragId,
+				targetId,
+			});
+			doCommand(new RowReorderCommand(dragId, targetId));
+		},
+		[doCommand, logger]
+	);
 
 	return {
 		onRowAddClick: handleNewRowClick,
 		onRowDeleteClick: handleRowDeleteClick,
 		onRowInsertAboveClick: handleRowInsertAboveClick,
 		onRowInsertBelowClick: handleRowInsertBelowClick,
+		onRowReorder: handleRowReorder,
 	};
 };

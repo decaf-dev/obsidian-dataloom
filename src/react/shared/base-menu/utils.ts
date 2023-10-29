@@ -1,14 +1,14 @@
 import React from "react";
 
 import { numToPx } from "src/shared/conversion";
-import { LoomMenuOpenDirection, Position } from "./types";
+import { LoomMenuOpenDirection, LoomMenuPosition } from "../menu/types";
 import { isOnMobile } from "src/shared/render-utils";
 
 export const useShiftMenu = (
 	isModalMenu: boolean,
 	viewportEl: HTMLElement,
 	menuRef: React.RefObject<HTMLDivElement | null>,
-	triggerPosition: Position,
+	position: LoomMenuPosition,
 	isOpen: boolean,
 	options?: {
 		openDirection?: LoomMenuOpenDirection;
@@ -28,7 +28,7 @@ export const useShiftMenu = (
 
 		const menuPosition = getMenuPosition(
 			menuRef.current,
-			triggerPosition,
+			position,
 			topOffset,
 			leftOffset,
 			openDirection
@@ -47,28 +47,28 @@ export const useShiftMenu = (
 
 const getMenuPosition = (
 	menuEl: HTMLElement,
-	triggerPosition: Position,
+	position: LoomMenuPosition,
 	topOffset: number,
 	leftOffset: number,
 	openDirection: LoomMenuOpenDirection
 ) => {
 	const rect = menuEl.getBoundingClientRect();
 
-	let top = triggerPosition.top + topOffset;
-	let left = triggerPosition.left + leftOffset;
+	let top = position.top + topOffset;
+	let left = position.left + leftOffset;
 
 	if (openDirection === "left") {
 		left = left - rect.width;
 	} else if (openDirection === "right") {
-		left = left + triggerPosition.width;
+		left = left + position.width;
 	} else if (openDirection === "bottom-left") {
-		top = top + triggerPosition.height;
+		top = top + position.height;
 		left = left - rect.width;
 	} else if (openDirection === "bottom-right") {
-		top = top + triggerPosition.height;
-		left = left + triggerPosition.width;
+		top = top + position.height;
+		left = left + position.width;
 	} else if (openDirection === "bottom") {
-		top = top + triggerPosition.height;
+		top = top + position.height;
 		left = left + rect.width;
 	}
 
@@ -104,7 +104,7 @@ const getViewportPosition = (viewportEl: HTMLElement, isModalMenu: boolean) => {
  * So if the page is scrolled, the values will reflect the position relative to the visible part of the page,
  * not its absolute position in the document.
  */
-const getPositionRelativeToDocument = (rect: DOMRect): Position => {
+const getPositionRelativeToDocument = (rect: DOMRect): LoomMenuPosition => {
 	const left = rect.left + window.scrollX - document.body.clientLeft;
 	const top = rect.top + window.scrollY - document.body.clientTop;
 	return {
@@ -120,7 +120,10 @@ const getPositionRelativeToDocument = (rect: DOMRect): Position => {
  * @param container - The container that the element should be shifted into
  * @param element  - The element that should be shifted into the container
  */
-const shiftElementIntoContainer = (container: Position, element: Position) => {
+const shiftElementIntoContainer = (
+	container: LoomMenuPosition,
+	element: LoomMenuPosition
+) => {
 	/**
 	 * When a menu is shifted, it will be moved into the view container. This offset
 	 * is how much padding we want between the menu and the edge of the view container.

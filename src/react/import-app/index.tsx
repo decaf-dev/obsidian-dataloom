@@ -26,9 +26,9 @@ import {
 	validateMarkdownTable,
 } from "./table-utils";
 
-import { useMenuOperations } from "../shared/menu/hooks";
 import "./styles.css";
 import { addImportData } from "./state-utils";
+import { useMenuOperations } from "../shared/menu-provider/hooks";
 
 interface Props {
 	state: LoomState;
@@ -36,7 +36,7 @@ interface Props {
 }
 
 export default function ImportApp({ state, onStateChange }: Props) {
-	const { onCloseAll } = useMenuOperations();
+	const menuOperations = useMenuOperations();
 
 	//Step 1
 	const [dataSource, setDataSource] = React.useState(DataSource.UNSELECTED);
@@ -232,7 +232,7 @@ export default function ImportApp({ state, onStateChange }: Props) {
 
 	function handleModalClick(e: React.MouseEvent) {
 		e.stopPropagation();
-		onCloseAll();
+		menuOperations.onCloseAll();
 	}
 
 	function handleFinishClick() {

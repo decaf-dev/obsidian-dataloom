@@ -1,16 +1,20 @@
+import React from "react";
+
 import Icon from "../../shared/icon";
 import MenuButton from "../../shared/menu-button";
 import RowMenu from "./row-menu";
 import Padding from "src/react/shared/padding";
 
 import { useDragContext } from "src/shared/dragging/drag-context";
-import { dropDrag, getRowId } from "src/shared/dragging/utils";
+import { getRowId } from "src/shared/dragging/utils";
 import { useLoomState } from "src/react/loom-app/loom-state-provider";
-
-import { useMenu } from "../../shared/menu/hooks";
+import { Source } from "src/shared/loom-state/types/loom-state";
+import { confirmSortOrderChange } from "src/shared/sort-utils";
+import { RowReorderHandler } from "../app/hooks/use-row/types";
+import { LoomMenuLevel } from "src/react/shared/menu-provider/types";
+import { useMenu } from "src/react/shared/menu-provider/hooks";
 
 import "./styles.css";
-import { Source } from "src/shared/loom-state/types/loom-state";
 
 interface Props {
 	rowId: string;
@@ -18,6 +22,7 @@ interface Props {
 	onDeleteClick: (rowId: string) => void;
 	onInsertAboveClick: (rowId: string) => void;
 	onInsertBelowClick: (rowId: string) => void;
+	onRowReorder: RowReorderHandler;
 }
 
 export default function RowOptions({
@@ -26,34 +31,28 @@ export default function RowOptions({
 	onDeleteClick,
 	onInsertAboveClick,
 	onInsertBelowClick,
+	onRowReorder,
 }: Props) {
-	const {
-		menu,
-		triggerRef,
-		triggerPosition,
-		isOpen,
-		onOpen,
-		onClose,
-		onRequestClose,
-	} = useMenu();
+	const COMPONENT_ID = `row-options-${rowId}`;
+	const menu = useMenu(COMPONENT_ID);
 
 	const { dragData, touchDropZone, setDragData, setTouchDropZone } =
 		useDragContext();
-	const { loomState, setLoomState } = useLoomState();
+	const { loomState } = useLoomState();
 
 	function handleDeleteClick() {
 		onDeleteClick(rowId);
-		onClose();
+		menu.onClose();
 	}
 
 	function handleInsertAboveClick() {
 		onInsertAboveClick(rowId);
-		onClose();
+		menu.onClose();
 	}
 
 	function handleInsertBelowClick() {
 		onInsertBelowClick(rowId);
-		onClose();
+		menu.onClose();
 	}
 
 	function handleMouseDown(e: React.MouseEvent) {
@@ -144,7 +143,14 @@ export default function RowOptions({
 				touchY <= touchDropZone.bottom;
 
 			if (isInsideDropZone) {
-				dropDrag(touchDropZone.id, dragData, loomState, setLoomState);
+				if (dragData === null) throw Error("No drag data found");
+
+				//If we're dragging a column type, then return
+				if (dragData.type !== "row") return;
+
+				if (!confirmSortOrderChange(loomState)) return;
+
+				onRowReorder(dragData.id, touchDropZone.id);
 			}
 		}
 		endDrag();
@@ -186,26 +192,26 @@ export default function RowOptions({
 						onTouchCancel={handleTouchCancel}
 					>
 						<MenuButton
-							ref={triggerRef}
-							menu={menu}
+							isFocused={menu.isTriggerFocused}
+							menuId={menu.id}
+							ref={menu.triggerRef}
+							level={LoomMenuLevel.ONE}
 							icon={<Icon lucideId="grip-vertical" />}
 							ariaLabel="Drag to move or click to open"
 							onMouseDown={handleMouseDown}
-							onOpen={onOpen}
+							onOpen={() => menu.onOpen(LoomMenuLevel.ONE)}
 						/>
 					</div>
 				</Padding>
 			</div>
 			<RowMenu
 				id={menu.id}
-				isOpen={isOpen}
-				triggerPosition={triggerPosition}
+				isOpen={menu.isOpen}
+				position={menu.position}
 				canDeleteRow={source === null}
 				onDeleteClick={handleDeleteClick}
 				onInsertAboveClick={handleInsertAboveClick}
 				onInsertBelowClick={handleInsertBelowClick}
-				onRequestClose={onRequestClose}
-				onClose={onClose}
 			/>
 		</>
 	);

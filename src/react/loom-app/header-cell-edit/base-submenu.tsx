@@ -38,7 +38,7 @@ interface Props {
 	onFrozenColumnsChange: (value: number) => void;
 }
 
-export default function BaseMenu({
+export default function BaseSubmenu({
 	index,
 	shouldWrapOverflow,
 	numFrozenColumns,

@@ -19,7 +19,7 @@ export default function SettingsSubmenu({
 		<Submenu title="Settings" onBackClick={onBackClick}>
 			<Padding px="lg" py="md">
 				<Stack isHorizontal spacing="lg">
-					<Text value="Display calculation row" />
+					<Text value="Calculation row" />
 					<Switch
 						value={showCalculationRow}
 						onToggle={onCalculationRowToggle}

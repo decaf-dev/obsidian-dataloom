@@ -44,7 +44,7 @@ esbuild
 						if (error) console.error("watch build failed:", error);
 						else
 							fs.rename("main.css", "styles.css", (err) => {
-								if (err) console.log(err);
+								if (err) console.error(err);
 							});
 					},
 			  },
@@ -63,7 +63,7 @@ esbuild
 	.then(() => {
 		if (prod) {
 			fs.rename("main.css", "styles.css", (err) => {
-				if (err) console.log(err);
+				if (err) console.error(err);
 			});
 		}
 	})

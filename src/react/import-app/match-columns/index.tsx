@@ -1,16 +1,16 @@
+import React from "react";
+
 import Text from "src/react/shared/text";
 import Button from "src/react/shared/button";
-
 import BodyCell from "./body-cell";
 import HeaderCell from "./header-cell";
+import Padding from "src/react/shared/padding";
+import Stack from "src/react/shared/stack";
 
 import { ColumnMatch, ImportColumn } from "../types";
 
 import "./styles.css";
-import Padding from "src/react/shared/padding";
-import { useMenuOperations } from "src/react/shared/menu/hooks";
-import React from "react";
-import Stack from "src/react/shared/stack";
+import { useMenuOperations } from "src/react/shared/menu-provider/hooks";
 
 interface Props {
 	columns: ImportColumn[];
@@ -32,14 +32,15 @@ export default function MatchColumns({
 	onColumnMatch,
 }: Props) {
 	const containerRef = React.useRef<HTMLDivElement>(null);
-	const { onCloseAll } = useMenuOperations();
+
+	const menuOperations = useMenuOperations();
 
 	/**
 	 * Closes all menus when the user scrolls.
 	 */
 	React.useEffect(() => {
 		function handleScroll() {
-			onCloseAll();
+			menuOperations.onCloseAll();
 		}
 
 		if (!containerRef.current) return;
@@ -56,7 +57,7 @@ export default function MatchColumns({
 			containerEl.removeEventListener("scroll", handleScroll);
 			window.removeEventListener("resize", handleScroll);
 		};
-	}, [onCloseAll]);
+	}, [menuOperations]);
 
 	let numUnmatched = enabledColumnIndices.length - columnMatches.length;
 	if (numUnmatched < 0) numUnmatched = 0;

@@ -1,7 +1,6 @@
 import React from "react";
 
 import Text from "src/react/shared/text";
-import { nltEventSystem } from "src/shared/event-system/event-system";
 import { TFile } from "obsidian";
 
 import "./styles.css";
@@ -27,17 +26,14 @@ const SuggestItem = React.forwardRef<HTMLDivElement, Props>(
 			[file, onItemClick]
 		);
 
-		React.useEffect(() => {
-			function handleKeyDown(e: KeyboardEvent) {
-				if (e.key === "Enter") onItemClick(file);
+		function handleKeyDown(e: React.KeyboardEvent) {
+			console.log("SuggestItem handleKeyDown", e.key);
+			if (e.key === "Enter") {
+				//Don't insert a new line
+				e.preventDefault();
+				onItemClick(file);
 			}
-
-			if (isHighlighted)
-				nltEventSystem.addEventListener("keydown", handleKeyDown, 1);
-
-			return () =>
-				nltEventSystem.removeEventListener("keydown", handleKeyDown);
-		}, [isHighlighted, onItemClick, file]);
+		}
 
 		let name = "No match found";
 		if (file) {
@@ -69,6 +65,7 @@ const SuggestItem = React.forwardRef<HTMLDivElement, Props>(
 						: "var(--background-primary)",
 				}}
 				onClick={handleClick}
+				onKeyDown={handleKeyDown}
 			>
 				<Text
 					variant="semibold"

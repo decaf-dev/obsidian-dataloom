@@ -4,7 +4,7 @@ import { usePlaceCursorAtEnd } from "src/shared/hooks";
 import { isNumber, isNumberInput } from "src/shared/match";
 
 import Input from "src/react/shared/input";
-import { LoomMenuCloseRequest } from "../../shared/menu/types";
+import { LoomMenuCloseRequest } from "src/react/shared/menu-provider/types";
 
 interface Props {
 	closeRequest: LoomMenuCloseRequest | null;

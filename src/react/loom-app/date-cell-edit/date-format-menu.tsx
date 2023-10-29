@@ -1,41 +1,34 @@
 import Menu from "src/react/shared/menu";
 import MenuItem from "src/react/shared/menu-item";
-import {
-	LoomMenuCloseRequestType,
-	Position,
-} from "src/react/shared/menu/types";
+import { LoomMenuPosition } from "src/react/shared/menu/types";
 
 import { getDisplayNameForDateFormat } from "src/shared/loom-state/type-display-names";
 import { DateFormat } from "src/shared/loom-state/types/loom-state";
 
 interface Props {
 	id: string;
-	triggerPosition: Position;
 	isOpen: boolean;
+	position: LoomMenuPosition;
 	value: DateFormat;
 	onChange: (value: DateFormat) => void;
-	onRequestClose: (type: LoomMenuCloseRequestType) => void;
-	onClose: () => void;
 }
 
 export default function DateFormatMenu({
 	id,
-	triggerPosition,
+	position,
 	isOpen,
 	value,
 	onChange,
-	onRequestClose,
-	onClose,
 }: Props) {
 	//TODO add all formats
 	return (
 		<Menu
 			isOpen={isOpen}
 			id={id}
-			triggerPosition={triggerPosition}
+			position={position}
 			width={175}
-			onRequestClose={onRequestClose}
-			onClose={onClose}
+			topOffset={10}
+			leftOffset={75}
 		>
 			<div className="dataloom-date-format-menu">
 				{Object.values([

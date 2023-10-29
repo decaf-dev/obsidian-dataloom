@@ -1,40 +1,31 @@
 import Menu from "src/react/shared/menu";
 import MenuItem from "src/react/shared/menu-item";
-import {
-	LoomMenuCloseRequestType,
-	Position,
-} from "src/react/shared/menu/types";
+import { LoomMenuPosition } from "src/react/shared/menu/types";
 
 interface Props {
 	id: string;
 	isOpen: boolean;
-	triggerPosition: Position;
+	position: LoomMenuPosition;
 	canDeleteRow: boolean;
 	onDeleteClick: () => void;
 	onInsertAboveClick: () => void;
 	onInsertBelowClick: () => void;
-	onRequestClose: (type: LoomMenuCloseRequestType) => void;
-	onClose: () => void;
 }
 export default function RowOptions({
 	id,
 	isOpen,
-	triggerPosition,
+	position,
 	canDeleteRow,
 	onDeleteClick,
 	onInsertAboveClick,
 	onInsertBelowClick,
-	onRequestClose,
-	onClose,
 }: Props) {
 	return (
 		<Menu
 			id={id}
 			isOpen={isOpen}
 			openDirection="bottom-right"
-			triggerPosition={triggerPosition}
-			onRequestClose={onRequestClose}
-			onClose={onClose}
+			position={position}
 		>
 			<div className="dataloom-row-menu">
 				{canDeleteRow && (

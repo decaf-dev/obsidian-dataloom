@@ -14,7 +14,7 @@ export const useSource = () => {
 	const { app } = useAppMount();
 	const { doCommand, setLoomState, loomState } = useLoomState();
 
-	const [allFrontMatterKeys, setFrontMatterKeys] = React.useState(
+	const [frontmatterKeys, setFrontMatterKeys] = React.useState(
 		new Map<FrontMatterType, string[]>()
 	);
 
@@ -59,7 +59,7 @@ export const useSource = () => {
 	}, [setLoomState, app]);
 
 	return {
-		allFrontMatterKeys,
+		frontmatterKeys,
 		onSourceAdd: handleSourceAdd,
 		onSourceDelete: handleSourceDelete,
 		onUpdateRowsFromSources: handleUpdateRowsFromSources,
