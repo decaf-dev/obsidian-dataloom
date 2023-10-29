@@ -92,11 +92,14 @@ export default function TextCellEdit({
 	function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
 		const el = e.target as HTMLTextAreaElement;
 		logger("TextCellEdit handleKeyDown");
+		console.log(e.key);
 
 		//Prevent enter from creating a new line
 		//unless shift or alt is pressed
 		if (e.key === "Enter") {
+			console.log("HERE1");
 			if (!isInsertLineDown(e) && !isInsertLineAltDown(e)) {
+				console.log("HERE2");
 				e.preventDefault();
 			}
 		}

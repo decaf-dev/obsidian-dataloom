@@ -29,6 +29,8 @@ const SuggestItem = React.forwardRef<HTMLDivElement, Props>(
 		function handleKeyDown(e: React.KeyboardEvent) {
 			console.log("SuggestItem handleKeyDown", e.key);
 			if (e.key === "Enter") {
+				//Don't insert a new line
+				e.preventDefault();
 				onItemClick(file);
 			}
 		}
