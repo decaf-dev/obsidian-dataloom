@@ -6,6 +6,6 @@
 	margin: 20px 0px;
 }
 
-.dataloom-whats-new-modal strong {
+.dataloom-whats-new-modal__content strong {
 	font-size: var(--font-ui-large);
 }
