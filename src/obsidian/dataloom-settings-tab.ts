@@ -203,18 +203,6 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 					}
 				);
 			});
-
-		new Setting(containerEl)
-			.setName("Support modal")
-			.setDesc("Show the support modal when the plugin is updated.")
-			.addToggle((cb) => {
-				cb.setValue(this.plugin.settings.showSupportModal).onChange(
-					async (value) => {
-						this.plugin.settings.showSupportModal = value;
-						await this.plugin.saveSettings();
-					}
-				);
-			});
 	}
 
 	private renderDebugSettings(containerEl: HTMLElement) {

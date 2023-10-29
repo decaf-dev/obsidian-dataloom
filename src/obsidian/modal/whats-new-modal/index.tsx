@@ -5,14 +5,9 @@ import { renderDivider, setModalTitle } from "src/obsidian/shared";
 
 import "./styles.css";
 
-type ModalClose = () => void;
-
 export default class WhatsNewModal extends Modal {
-	onModalClose: ModalClose;
-
-	constructor(app: App, onModalClose: ModalClose) {
+	constructor(app: App) {
 		super(app);
-		this.onModalClose = onModalClose;
 	}
 
 	async onOpen() {
@@ -95,6 +90,5 @@ export default class WhatsNewModal extends Modal {
 	onClose() {
 		const { contentEl } = this;
 		contentEl.empty();
-		this.onModalClose();
 	}
 }
