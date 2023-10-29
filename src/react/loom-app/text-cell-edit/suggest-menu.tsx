@@ -19,7 +19,14 @@ export default function SuggestMenu({
 	onItemClick,
 }: Props) {
 	return (
-		<Menu id={id} isOpen={isOpen} position={position} width={275}>
+		<Menu
+			id={id}
+			isOpen={isOpen}
+			position={position}
+			width={275}
+			topOffset={30}
+			leftOffset={30}
+		>
 			<SuggestList filterValue={filterValue} onItemClick={onItemClick} />
 		</Menu>
 	);

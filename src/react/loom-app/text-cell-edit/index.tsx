@@ -117,22 +117,16 @@ export default function TextCellEdit({
 				inputEl.selectionStart = cursorPosition;
 				inputEl.selectionEnd = cursorPosition;
 			}
-		} else if (isInsertLineDown(e)) {
-			if (menu.isOpen) return;
-			e.stopPropagation();
-		} else if (isInsertLineAltDown(e)) {
-			if (menu.isOpen) return;
-			e.stopPropagation();
-
-			const cursorPosition = inputRef.current?.selectionStart ?? 0;
-			setLocalValue(
-				(prevState) =>
-					prevState.slice(0, cursorPosition) +
-					"\n" +
-					prevState.slice(cursorPosition)
-			);
-			setCursorPosition(cursorPosition + 1);
 		}
+
+		// const cursorPosition = inputRef.current?.selectionStart ?? 0;
+		// setLocalValue(
+		// 	(prevState) =>
+		// 		prevState.slice(0, cursorPosition) +
+		// 		"\n" +
+		// 		prevState.slice(cursorPosition)
+		// );
+		// setCursorPosition(cursorPosition + 1);
 	}
 
 	React.useEffect(() => {
