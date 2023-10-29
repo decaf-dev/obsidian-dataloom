@@ -1,11 +1,14 @@
 import React from "react";
 
+import _ from "lodash";
+
 import NewRowButton from "../new-row-button";
 import Stack from "src/react/shared/stack";
 import Button from "src/react/shared/button";
 import Flex from "src/react/shared/flex";
 import Padding from "src/react/shared/padding";
 import Icon from "src/react/shared/icon";
+
 import { numToPx } from "src/shared/conversion";
 import { isOnMobile } from "src/shared/render-utils";
 
@@ -26,46 +29,60 @@ export default function BottomBar({
 	onUndoClick,
 	onRedoClick,
 }: Props) {
-	const ref = React.useRef<HTMLDivElement>(null);
-	const [spaceBetweenTableAndContainer, setSpaceBetweenTableAndContainer] =
-		React.useState(0);
+	const ref = React.useRef<HTMLDivElement | null>(null);
+	const [bottomBarOffset, setBottomBarOffset] = React.useState(0);
+	const isMobile = isOnMobile();
 
 	React.useEffect(() => {
-		let observer: ResizeObserver | null = null;
+		const el = ref.current;
+		if (!el) return;
 
-		if (!ref.current) return;
+		const appEl = el.closest(".dataloom-app");
+		if (!appEl) return;
 
-		const appEl = ref.current.closest(".dataloom-app");
-		const tableEl = appEl?.querySelector(".dataloom-table");
+		const tableEl = appEl.querySelector(
+			".dataloom-table"
+		) as HTMLElement | null;
 		if (!tableEl) return;
 
 		const tableContainerEl = tableEl.parentElement;
 		if (!tableContainerEl) return;
 
-		observer = new ResizeObserver(() => {
-			const containerRect = tableContainerEl.getBoundingClientRect();
+		function updateBottomBar(
+			tableEl: HTMLElement,
+			tableContainerEl: HTMLElement
+		) {
+			//TODO optimize?
 			const tableRect = tableEl.getBoundingClientRect();
+			const tableContainerRect = tableContainerEl.getBoundingClientRect();
 
-			let diff = containerRect.height - tableRect.height;
+			let diff = tableContainerRect.height - tableRect.height;
 			if (diff < 0) diff = 0;
-			setSpaceBetweenTableAndContainer(diff);
+			setBottomBarOffset(diff);
+		}
+
+		const DEBOUNCE_TIME_MILLIS = 100;
+		const debounceUpdate = _.debounce(
+			updateBottomBar,
+			DEBOUNCE_TIME_MILLIS
+		);
+
+		const observer = new ResizeObserver(() => {
+			debounceUpdate(tableEl, tableContainerEl);
 		});
+
 		observer.observe(tableEl);
-		observer.observe(tableContainerEl);
 
 		return () => {
-			if (tableEl) observer?.unobserve(tableEl);
+			observer.disconnect();
 		};
-	}, [ref]);
-
-	const isMobile = isOnMobile();
+	}, []);
 
 	return (
-		<div className="dataloom-bottom-bar">
+		<div ref={ref} className="dataloom-bottom-bar">
 			<div
-				ref={ref}
 				style={{
-					top: numToPx(-spaceBetweenTableAndContainer),
+					top: numToPx(-bottomBarOffset),
 				}}
 			>
 				<Padding pt="md" width="100%">

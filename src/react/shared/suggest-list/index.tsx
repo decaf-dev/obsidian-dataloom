@@ -1,5 +1,6 @@
 import React from "react";
 
+import { TFile } from "obsidian";
 import fuzzysort from "fuzzysort";
 
 import SuggestItem from "./suggest-item";
@@ -10,12 +11,10 @@ import CreateButton from "./create-button";
 import Divider from "../divider";
 import Padding from "../padding";
 
-import { nltEventSystem } from "src/shared/event-system/event-system";
 import { useLogger } from "src/shared/logger";
-import { TFile } from "obsidian";
+import { useAppMount } from "src/react/loom-app/app-mount-provider";
 
 import "./styles.css";
-import { useAppMount } from "src/react/loom-app/app-mount-provider";
 
 interface ContentProps {
 	showInput?: boolean;
@@ -79,35 +78,28 @@ export function SuggestList({
 		filteredFiles = filteredFiles.slice(0, 20);
 	}
 
-	React.useEffect(() => {
-		function handleKeyDown() {
-			logger("SuggestMenuContent handleKeyDown");
+	function handleKeyDown() {
+		logger("SuggestMenuContent handleKeyDown");
+		const focusedEl = document.activeElement;
+		if (!focusedEl) return;
 
-			const focusedEl = document.activeElement;
-			if (!focusedEl) return;
+		if (focusedEl.classList.contains("dataloom-suggest-item")) {
+			const index = focusedEl.getAttribute("data-index");
+			if (!index) return;
 
-			if (focusedEl.classList.contains("dataloom-suggest-item")) {
-				const index = focusedEl.getAttribute("data-index");
-				if (!index) return;
-
-				setHighlightIndex(parseInt(index));
-				return;
-			}
-
-			setHighlightIndex(-1);
+			setHighlightIndex(parseInt(index));
+			return;
 		}
 
-		nltEventSystem.addEventListener("keydown", handleKeyDown);
-		return () =>
-			nltEventSystem.removeEventListener("keydown", handleKeyDown);
-	}, [filteredFiles.length, logger, highlightIndex]);
+		setHighlightIndex(-1);
+	}
 
 	const doesFilterFileExist = filteredFiles
 		.map((file) => file.path)
 		.includes(localFilterValue);
 
 	return (
-		<div className="dataloom-suggest-menu">
+		<div className="dataloom-suggest-menu" onKeyDown={handleKeyDown}>
 			{showInput && files.length > 0 && (
 				<>
 					<SuggestInput

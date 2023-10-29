@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 
 import { VirtuosoHandle } from "react-virtuoso";
 
@@ -6,7 +6,6 @@ import Table from "../table";
 import OptionBar from "../option-bar";
 import BottomBar from "../bottom-bar";
 
-import { useUUID } from "../../../shared/hooks";
 import { useLoomState } from "../loom-state-provider";
 import { useFilter } from "./hooks/use-filter";
 import { filterRowsBySearch } from "./filter-by-search";
@@ -20,8 +19,7 @@ import { useRowEvents } from "src/react/loom-app/app/hooks/use-row-events";
 import { useColumnEvents } from "src/react/loom-app/app/hooks/use-column-events";
 import { useTableSettings } from "./hooks/use-table-settings";
 import useFocus from "./hooks/use-focus";
-import { useMenuEvents } from "./hooks/use-menu-events";
-import { nltEventSystem } from "src/shared/event-system/event-system";
+
 import {
 	isMacRedoDown,
 	isMacUndoDown,
@@ -29,14 +27,10 @@ import {
 	isWindowsUndoDown,
 } from "src/shared/keyboard-event";
 import { useLogger } from "src/shared/logger";
-import { useMenuOperations } from "src/react/shared/menu/hooks";
 import { useSource } from "./hooks/use-source";
-import getBodyRows from "./get-body-rows";
-import getFooterRow from "./get-footer-row";
 
 import "src/react/global.css";
 import "./styles.css";
-import getHeaderRow from "./get-header-row";
 import {
 	EVENT_FILE_CREATE,
 	EVENT_FILE_DELETE,
@@ -45,6 +39,8 @@ import {
 	EVENT_FOLDER_DELETE,
 	EVENT_FOLDER_RENAME,
 } from "src/shared/events";
+import { useAppEvents } from "./hooks/use-app-events";
+import { useMenuEvents } from "./hooks/use-menu-events";
 
 export default function App() {
 	const logger = useLogger();
@@ -60,14 +56,16 @@ export default function App() {
 	} = useLoomState();
 
 	const tableRef = React.useRef<VirtuosoHandle | null>(null);
-	const { onRequestCloseTop } = useMenuOperations();
+	const appRef = React.useRef<HTMLDivElement | null>(null);
 
 	useExportEvents(loomState);
 	useRowEvents();
 	useColumnEvents();
 	useMenuEvents();
+	const { onClick } = useAppEvents();
+
 	const {
-		allFrontMatterKeys,
+		frontmatterKeys,
 		onSourceAdd,
 		onSourceDelete,
 		onUpdateRowsFromSources,
@@ -85,6 +83,7 @@ export default function App() {
 		onColumnAddClick,
 		onColumnTypeChange,
 		onColumnChange,
+		onColumnReorder,
 	} = useColumn();
 
 	const {
@@ -92,6 +91,7 @@ export default function App() {
 		onRowDeleteClick,
 		onRowInsertAboveClick,
 		onRowInsertBelowClick,
+		onRowReorder,
 	} = useRow();
 
 	const { onCellChange } = useCell();
@@ -108,7 +108,7 @@ export default function App() {
 	const { columns, filters, settings, sources } = loomState.model;
 	const { numFrozenColumns, showCalculationRow } = settings;
 
-	const frontmatterKeyHash = useMemo(() => {
+	const frontmatterKeyHash = React.useMemo(() => {
 		return JSON.stringify(
 			columns.map((column) => column.frontmatterKey?.value)
 		);
@@ -155,23 +155,12 @@ export default function App() {
 		};
 	}, [onUpdateRowsFromSources, app]);
 
-	const firstColumnId = useUUID();
-	const lastColumnId = useUUID();
-
 	function handleScrollToTopClick() {
 		tableRef.current?.scrollToIndex(0);
 	}
 
 	function handleScrollToBottomClick() {
 		tableRef.current?.scrollToIndex(filteredRows.length - 1);
-	}
-
-	function handleClick(e: React.MouseEvent) {
-		logger("App handleClick");
-		//Stop propagation to the global event
-		e.stopPropagation();
-
-		onRequestCloseTop();
 	}
 
 	function handleKeyDown(e: React.KeyboardEvent) {
@@ -189,7 +178,6 @@ export default function App() {
 		} else {
 			onFocusKeyDown(e);
 		}
-		nltEventSystem.dispatchEvent("keydown", e);
 	}
 
 	let filteredRows = filterByFilters(loomState);
@@ -200,60 +188,16 @@ export default function App() {
 		searchText
 	);
 
-	const visibleColumns = columns.filter((column) => column.isVisible);
-	const headerRow = getHeaderRow({
-		allFrontMatterKeys,
-		firstColumnId,
-		lastColumnId,
-		columns,
-		numFrozenColumns,
-		resizingColumnId,
-		numSources: sources.length,
-		onColumnChange,
-		onFrozenColumnsChange,
-		onColumnDeleteClick,
-		onColumnAddClick,
-		onColumnTypeChange,
-	});
-
-	const bodyRows = getBodyRows({
-		sources,
-		firstColumnId,
-		lastColumnId,
-		visibleColumns,
-		rows: filteredRows,
-		onTagCellAdd,
-		onTagAdd,
-		onTagCellRemove,
-		onTagCellMultipleRemove,
-		onTagDeleteClick,
-		onRowDeleteClick,
-		onRowInsertAboveClick,
-		onRowInsertBelowClick,
-		onCellChange,
-		onColumnChange,
-		onTagChange,
-	});
-
-	const footerRow = getFooterRow({
-		showCalculationRow,
-		firstColumnId,
-		lastColumnId,
-		visibleColumns,
-		rows: filteredRows,
-		sources,
-		onColumnChange,
-	});
-
 	let className = "dataloom-app";
 	if (isMarkdownView) className += " dataloom-app--markdown-view";
 
 	return (
 		<div
+			ref={appRef}
 			id={reactAppId}
 			className={className}
 			onKeyDown={handleKeyDown}
-			onClick={handleClick}
+			onClick={onClick}
 		>
 			<OptionBar
 				columns={columns}
@@ -269,11 +213,31 @@ export default function App() {
 				onSourceDelete={onSourceDelete}
 			/>
 			<Table
-				numFrozenColumns={numFrozenColumns}
 				ref={tableRef}
-				headerRow={headerRow}
-				bodyRows={bodyRows}
-				footer={footerRow}
+				sources={sources}
+				rows={filteredRows}
+				frontmatterKeys={frontmatterKeys}
+				columns={columns}
+				numFrozenColumns={numFrozenColumns}
+				resizingColumnId={resizingColumnId}
+				showCalculationRow={showCalculationRow}
+				onColumnDeleteClick={onColumnDeleteClick}
+				onColumnAddClick={onColumnAddClick}
+				onColumnTypeChange={onColumnTypeChange}
+				onFrozenColumnsChange={onFrozenColumnsChange}
+				onColumnReorder={onColumnReorder}
+				onRowDeleteClick={onRowDeleteClick}
+				onRowInsertAboveClick={onRowInsertAboveClick}
+				onRowInsertBelowClick={onRowInsertBelowClick}
+				onColumnChange={onColumnChange}
+				onCellChange={onCellChange}
+				onTagAdd={onTagAdd}
+				onTagCellAdd={onTagCellAdd}
+				onTagCellRemove={onTagCellRemove}
+				onTagCellMultipleRemove={onTagCellMultipleRemove}
+				onTagChange={onTagChange}
+				onTagDeleteClick={onTagDeleteClick}
+				onRowReorder={onRowReorder}
 			/>
 			<BottomBar
 				onRowAddClick={onRowAddClick}

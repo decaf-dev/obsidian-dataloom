@@ -20,10 +20,11 @@ import { isNumber, isNumberCalcuation } from "src/shared/match";
 import { getShortDisplayNameForCalculationType } from "src/shared/loom-state/type-display-names";
 import { getGeneralCalculationContent } from "./general-calculation";
 import { getNumberCalculationContent } from "./number-calculation";
-import { useMenu } from "../../shared/menu/hooks";
+import { ColumnChangeHandler } from "../app/hooks/use-column/types";
 
 import "./styles.css";
-import { ColumnChangeHandler } from "../app/hooks/use-column/types";
+import { LoomMenuLevel } from "src/react/shared/menu-provider/types";
+import { useMenu } from "src/react/shared/menu-provider/hooks";
 
 interface Props {
 	sources: Source[];
@@ -54,21 +55,16 @@ export default function FooterCellContainer({
 	cellType,
 	onColumnChange,
 }: Props) {
-	const {
-		menu,
-		triggerRef,
-		triggerPosition,
-		isOpen,
-		onOpen,
-		onClose,
-		onRequestClose,
-	} = useMenu();
+	const COMPONENT_ID = `footer-cell-${columnId}`;
+	const menu = useMenu(COMPONENT_ID);
 
 	function handleTypeClick(value: CalculationType) {
+		if (menu === null) return;
+
 		onColumnChange(columnId, {
 			calculationType: value,
 		});
-		onClose();
+		menu.onClose();
 	}
 
 	let content = "";
@@ -98,7 +94,14 @@ export default function FooterCellContainer({
 
 	return (
 		<>
-			<MenuTrigger menu={menu} isCell ref={triggerRef} onOpen={onOpen}>
+			<MenuTrigger
+				ref={menu.triggerRef}
+				menuId={menu.id}
+				isFocused={menu.isTriggerFocused}
+				level={LoomMenuLevel.ONE}
+				variant="cell"
+				onOpen={() => menu.onOpen(LoomMenuLevel.ONE)}
+			>
 				<div
 					className="dataloom-cell--footer__container dataloom-selectable"
 					style={{
@@ -123,13 +126,11 @@ export default function FooterCellContainer({
 			</MenuTrigger>
 			<CalculationMenu
 				id={menu.id}
-				isOpen={isOpen}
-				triggerPosition={triggerPosition}
+				isOpen={menu.isOpen}
+				position={menu.position}
 				cellType={cellType}
 				value={calculationType}
 				onClick={handleTypeClick}
-				onRequestClose={onRequestClose}
-				onClose={onClose}
 			/>
 		</>
 	);

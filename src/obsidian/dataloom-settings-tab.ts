@@ -1,7 +1,7 @@
 import { PluginSettingTab, App } from "obsidian";
 import { Setting } from "obsidian";
 import DataLoomPlugin from "../main";
-import { renderBuyMeACoffeeBadge, renderGitHubSponsorBadge } from "./shared";
+import { renderBuyMeACoffeeBadge } from "./shared";
 
 export default class DataLoomSettingsTab extends PluginSettingTab {
 	plugin: DataLoomPlugin;
@@ -29,15 +29,16 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 		new Setting(containerEl).setName("DataLoom").setHeading();
 
 		const supportDesc = new DocumentFragment();
-		const textEl = supportDesc.createDiv({
-			text: "Enjoying the plugin? Consider supporting the development of DataLoom by buying me an herbal tea or sponsoring me on GitHub.",
+		supportDesc.createDiv({
+			text: "Enjoying the plugin? Please buy me an herbal tea to support the development of DataLoom.",
 		});
-		textEl.style.marginBottom = "1.5em";
-		renderGitHubSponsorBadge(supportDesc);
+		//renderGitHubSponsorBadge(supportDesc);
 
 		new Setting(containerEl).setDesc(supportDesc);
 
 		renderBuyMeACoffeeBadge(containerEl);
+		const spacing = containerEl.createDiv();
+		spacing.style.marginBottom = "0.75em";
 	}
 
 	private renderFileSettings(containerEl: HTMLElement) {
@@ -199,18 +200,6 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 				cb.setValue(this.plugin.settings.showWhatsNewModal).onChange(
 					async (value) => {
 						this.plugin.settings.showWhatsNewModal = value;
-						await this.plugin.saveSettings();
-					}
-				);
-			});
-
-		new Setting(containerEl)
-			.setName("Support modal")
-			.setDesc("Show the support modal when the plugin is updated.")
-			.addToggle((cb) => {
-				cb.setValue(this.plugin.settings.showSupportModal).onChange(
-					async (value) => {
-						this.plugin.settings.showSupportModal = value;
 						await this.plugin.saveSettings();
 					}
 				);

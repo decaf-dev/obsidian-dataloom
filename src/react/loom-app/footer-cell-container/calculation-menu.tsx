@@ -1,9 +1,6 @@
 import Menu from "src/react/shared/menu";
 import MenuItem from "src/react/shared/menu-item";
-import {
-	LoomMenuCloseRequestType,
-	Position,
-} from "src/react/shared/menu/types";
+import { LoomMenuPosition } from "src/react/shared/menu/types";
 import {
 	getAriaLabelForCalculation,
 	getAriaLabelForNumberCalculation,
@@ -22,29 +19,19 @@ interface Props {
 	value: CalculationType;
 	cellType: CellType;
 	isOpen: boolean;
-	triggerPosition: Position;
+	position: LoomMenuPosition;
 	onClick: (value: CalculationType) => void;
-	onRequestClose: (type: LoomMenuCloseRequestType) => void;
-	onClose: () => void;
 }
 export default function CalculationMenu({
 	id,
 	value,
 	cellType,
 	isOpen,
-	triggerPosition,
+	position,
 	onClick,
-	onRequestClose,
-	onClose,
 }: Props) {
 	return (
-		<Menu
-			id={id}
-			isOpen={isOpen}
-			triggerPosition={triggerPosition}
-			onRequestClose={onRequestClose}
-			onClose={onClose}
-		>
+		<Menu id={id} isOpen={isOpen} position={position}>
 			<div className="dataloom-function-menu">
 				{Object.values(GeneralCalculation).map((type) => (
 					<MenuItem

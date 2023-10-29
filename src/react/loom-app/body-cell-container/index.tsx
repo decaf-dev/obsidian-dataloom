@@ -18,6 +18,10 @@ import FileCell from "../file-cell";
 import FileCellEdit from "../file-cell-edit";
 import EmbedCell from "../embed-cell";
 import EmbedCellEdit from "../embed-cell-edit";
+import LastEditedTimeCell from "../last-edited-time-cell";
+import CreationTimeCell from "../creation-time-cell";
+import SourceFileCell from "../source-file-cell";
+import SourceCell from "../source-cell";
 
 import {
 	AspectRatio,
@@ -30,22 +34,19 @@ import {
 	Source,
 	Tag,
 } from "src/shared/loom-state/types/loom-state";
-import LastEditedTimeCell from "../last-edited-time-cell";
-import CreationTimeCell from "../creation-time-cell";
 import {
 	CHECKBOX_MARKDOWN_CHECKED,
 	CHECKBOX_MARKDOWN_UNCHECKED,
 } from "src/shared/constants";
 import { isCheckboxChecked } from "src/shared/match";
 import { Color } from "src/shared/loom-state/types/loom-state";
-import { useMenu } from "../../shared/menu/hooks";
-
-import "./styles.css";
-import SourceCell from "../source-cell";
 import { ColumnChangeHandler } from "../app/hooks/use-column/types";
 import { CellChangeHandler } from "../app/hooks/use-cell/types";
 import { TagChangeHandler } from "../app/hooks/use-tag/types";
-import SourceFileCell from "../source-file-cell";
+import { LoomMenuLevel } from "src/react/shared/menu-provider/types";
+import { useMenu } from "src/react/shared/menu-provider/hooks";
+
+import "./styles.css";
 
 interface Props {
 	source: Source | null;
@@ -129,18 +130,8 @@ export default function BodyCellContainer({
 		columnType === CellType.MULTI_TAG ||
 		columnType === CellType.DATE;
 
-	const {
-		menu,
-		triggerRef,
-		triggerPosition,
-		closeRequest,
-		isOpen,
-		onOpen,
-		onClose,
-		onRequestClose,
-	} = useMenu({
-		shouldRequestOnClose,
-	});
+	const COMPONENT_ID = `body-cell-${cellId}`;
+	const menu = useMenu(COMPONENT_ID);
 
 	async function handleCellContextClick() {
 		try {
@@ -252,7 +243,7 @@ export default function BodyCellContainer({
 		[cellId, onCellChange]
 	);
 
-	let menuWidth = triggerPosition.width;
+	let menuWidth = menu.position.width;
 	if (
 		columnType === CellType.TAG ||
 		columnType === CellType.MULTI_TAG ||
@@ -265,7 +256,7 @@ export default function BodyCellContainer({
 		menuWidth = 175;
 	}
 
-	let menuHeight = triggerPosition.height;
+	let menuHeight = menu.position.height;
 	if (
 		columnType === CellType.TAG ||
 		columnType === CellType.MULTI_TAG ||
@@ -290,7 +281,7 @@ export default function BodyCellContainer({
 
 	const cellTags = columnTags.filter((tag) => cellTagIds.includes(tag.id));
 
-	let shouldOpenOnTrigger = true;
+	let shouldRunTrigger = true;
 	if (
 		columnType === CellType.CHECKBOX ||
 		columnType === CellType.CREATION_TIME ||
@@ -299,19 +290,26 @@ export default function BodyCellContainer({
 		columnType === CellType.SOURCE_FILE ||
 		(source && frontmatterKey === null)
 	) {
-		shouldOpenOnTrigger = false;
+		shouldRunTrigger = false;
 	}
+
 	return (
 		<>
 			<MenuTrigger
-				ref={triggerRef}
-				menu={menu}
-				isCell
+				ref={menu.triggerRef}
+				variant="cell"
+				menuId={menu.id}
+				isFocused={menu.isTriggerFocused}
+				level={LoomMenuLevel.ONE}
 				onClick={handleMenuTriggerClick}
 				onEnterDown={handleMenuTriggerEnterDown}
 				onBackspaceDown={handleMenuTriggerBackspaceDown}
-				shouldOpenOnTrigger={shouldOpenOnTrigger}
-				onOpen={onOpen}
+				shouldRunTrigger={shouldRunTrigger}
+				onOpen={() =>
+					menu.onOpen(LoomMenuLevel.ONE, {
+						shouldRequestOnClose,
+					})
+				}
 			>
 				<div
 					onContextMenu={handleCellContextClick}
@@ -405,51 +403,50 @@ export default function BodyCellContainer({
 					columnType === CellType.TEXT ||
 					columnType === CellType.NUMBER
 				}
-				isOpen={isOpen}
-				triggerPosition={triggerPosition}
+				isOpen={menu.isOpen}
+				position={menu.position}
 				width={menuWidth}
 				height={menuHeight}
-				onRequestClose={onRequestClose}
-				onClose={onClose}
 			>
 				{columnType === CellType.TEXT && (
 					<TextCellEdit
-						closeRequest={closeRequest}
+						cellId={cellId}
+						closeRequest={menu.closeRequest}
 						shouldWrapOverflow={shouldWrapOverflow}
 						value={content}
 						onChange={handleInputChange}
-						onClose={onClose}
+						onClose={menu.onClose}
 					/>
 				)}
 				{columnType === CellType.EMBED && (
 					<EmbedCellEdit
 						isExternalLink={isExternalLink}
-						closeRequest={closeRequest}
+						closeRequest={menu.closeRequest}
 						value={content}
 						onChange={handleInputChange}
-						onClose={onClose}
+						onClose={menu.onClose}
 						onExternalLinkToggle={handleExternalLinkToggle}
 					/>
 				)}
 				{columnType === CellType.FILE && (
 					<FileCellEdit
 						onChange={handleInputChange}
-						onClose={onClose}
+						onClose={menu.onClose}
 					/>
 				)}
 				{columnType === CellType.NUMBER && (
 					<NumberCellEdit
-						closeRequest={closeRequest}
+						closeRequest={menu.closeRequest}
 						value={content}
 						onChange={handleInputChange}
-						onClose={onClose}
+						onClose={menu.onClose}
 					/>
 				)}
 				{(columnType === CellType.TAG ||
 					columnType === CellType.MULTI_TAG) && (
 					<TagCellEdit
 						isMulti={columnType === CellType.MULTI_TAG}
-						closeRequest={closeRequest}
+						closeRequest={menu.closeRequest}
 						columnTags={columnTags}
 						cellTags={cellTags}
 						onTagColorChange={handleTagColorChange}
@@ -458,17 +455,19 @@ export default function BodyCellContainer({
 						onTagClick={handleTagClick}
 						onTagDelete={handleTagDeleteClick}
 						onTagContentChange={handleTagContentChange}
-						onClose={onClose}
+						onClose={menu.onClose}
 					/>
 				)}
 				{columnType === CellType.DATE && (
 					<DateCellEdit
+						cellId={cellId}
 						value={dateTime}
-						closeRequest={closeRequest}
+						closeRequest={menu.closeRequest}
 						dateFormat={dateFormat}
 						onDateTimeChange={handleDateTimeChange}
 						onDateFormatChange={handleDateFormatChange}
-						onClose={onClose}
+						onClose={menu.onClose}
+						onCloseRequestClear={menu.onCloseRequestClear}
 					/>
 				)}
 			</Menu>

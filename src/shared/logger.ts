@@ -1,21 +1,19 @@
 import React from "react";
 import { useAppSelector } from "src/redux/hooks";
 
-export const log =
-	(shouldDebug: boolean) =>
-	(message: string, args = {}) => {
-		if (shouldDebug) {
-			console.log(message);
-			if (Object.keys(args).length !== 0) console.log(args);
-		}
-	};
+export const log = (shouldDebug: boolean, message: string, args = {}) => {
+	if (shouldDebug) {
+		console.log(message);
+		if (Object.keys(args).length !== 0) console.log(args);
+	}
+};
 
 export const useLogger = () => {
 	const { shouldDebug } = useAppSelector((state) => state.global.settings);
 
 	const logger = React.useCallback(
 		(message: string, args?: Record<string, any>) =>
-			log(shouldDebug)(message, args),
+			log(shouldDebug, message, args),
 		[shouldDebug]
 	);
 

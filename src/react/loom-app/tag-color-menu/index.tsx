@@ -1,35 +1,31 @@
-import Menu from "src/react/shared/menu";
-import ColorItem from "./components/color-item";
-import Text from "src/react/shared/text";
+import React from "react";
 
 import { useAppSelector } from "src/redux/hooks";
 
-import Divider from "../../shared/divider";
-import Stack from "../../shared/stack";
-import MenuItem from "../../shared/menu-item";
+import Menu from "src/react/shared/menu";
+import ColorItem from "./components/color-item";
+import Text from "src/react/shared/text";
+import Divider from "src/react/shared/divider";
+import Stack from "src/react/shared/stack";
+import MenuItem from "src/react/shared/menu-item";
+import Padding from "src/react/shared/padding";
+import Input from "src/react/shared/input";
 
 import { Color } from "src/shared/loom-state/types/loom-state";
-import Padding from "src/react/shared/padding";
+import { LoomMenuCloseRequest } from "src/react/shared/menu-provider/types";
+import { LoomMenuPosition } from "src/react/shared/menu/types";
 
 import "./styles.css";
-import {
-	LoomMenuCloseRequest,
-	LoomMenuCloseRequestType,
-	Position,
-} from "src/react/shared/menu/types";
-import Input from "src/react/shared/input";
-import React from "react";
 
 interface Props {
 	id: string;
 	isOpen: boolean;
 	content: string;
-	triggerPosition: Position;
+	position: LoomMenuPosition;
 	selectedColor: string;
 	closeRequest: LoomMenuCloseRequest | null;
 	onColorClick: (color: Color) => void;
 	onDeleteClick: () => void;
-	onRequestClose: (type: LoomMenuCloseRequestType) => void;
 	onTagContentChange: (value: string) => void;
 	onClose: () => void;
 }
@@ -37,13 +33,12 @@ interface Props {
 export default function TagColorMenu({
 	id,
 	isOpen,
-	triggerPosition,
+	position,
 	selectedColor,
 	content,
 	closeRequest,
 	onColorClick,
 	onDeleteClick,
-	onRequestClose,
 	onTagContentChange,
 	onClose,
 }: Props) {
@@ -63,9 +58,9 @@ export default function TagColorMenu({
 		<Menu
 			id={id}
 			isOpen={isOpen}
-			triggerPosition={triggerPosition}
-			onRequestClose={onRequestClose}
-			onClose={onClose}
+			position={position}
+			topOffset={-75}
+			leftOffset={-50}
 		>
 			<div className="dataloom-tag-color-menu">
 				<Stack spacing="sm">

@@ -3,10 +3,10 @@ import React from "react";
 import Submenu from "../../shared/submenu";
 import Input from "../../shared/input";
 import Select from "src/react/shared/select";
-import { LoomMenuCloseRequest } from "src/react/shared/menu/types";
 import { FrontmatterKey } from "src/shared/loom-state/types/loom-state";
 import Stack from "src/react/shared/stack";
 import Padding from "src/react/shared/padding";
+import { LoomMenuCloseRequest } from "src/react/shared/menu-provider/types";
 
 interface Props {
 	title: string;

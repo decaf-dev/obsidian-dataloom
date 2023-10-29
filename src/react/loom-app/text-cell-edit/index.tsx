@@ -15,16 +15,20 @@ import {
 } from "./utils";
 import { getWikiLinkText } from "src/shared/link/link-utils";
 import { useLogger } from "src/shared/logger";
-import { LoomMenuCloseRequest, LoomMenuLevel } from "../../shared/menu/types";
-import { useMenu, useMenuOperations } from "../../shared/menu/hooks";
 
 import "./styles.css";
 import {
 	isInsertLineAltDown,
 	isInsertLineDown,
 } from "src/shared/keyboard-event";
+import {
+	LoomMenuCloseRequest,
+	LoomMenuLevel,
+} from "src/react/shared/menu-provider/types";
+import { useMenu } from "src/react/shared/menu-provider/hooks";
 
 interface Props {
+	cellId: string;
 	closeRequest: LoomMenuCloseRequest | null;
 	value: string;
 	shouldWrapOverflow: boolean;
@@ -33,22 +37,15 @@ interface Props {
 }
 
 export default function TextCellEdit({
+	cellId,
 	shouldWrapOverflow,
 	closeRequest,
 	value,
 	onChange,
 	onClose,
 }: Props) {
-	const { onCloseAll } = useMenuOperations();
-	const {
-		menu: suggestMenu,
-		triggerRef: suggestMenuTriggerRef,
-		triggerPosition: suggestMenuTriggerPosition,
-		isOpen: isSuggestMenuOpen,
-		onOpen: onSuggestMenuOpen,
-		onRequestClose: onSuggestMenuRequestClose,
-		onClose: onSuggestMenuClose,
-	} = useMenu({ level: LoomMenuLevel.TWO });
+	const COMPONENT_ID = `suggest-menu-${cellId}`;
+	const menu = useMenu(COMPONENT_ID);
 
 	const [localValue, setLocalValue] = React.useState(value);
 	const [cursorPosition, setCursorPosition] = React.useState<number | null>(
@@ -83,22 +80,31 @@ export default function TextCellEdit({
 
 	React.useEffect(() => {
 		if (closeRequest !== null) {
+			logger("TextCellEdit onClose");
 			if (localValue !== value) onChange(localValue);
 			onClose();
 		}
-	}, [value, localValue, closeRequest, onClose, onChange]);
+	}, [logger, value, localValue, closeRequest, onClose, onChange]);
 
 	function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
 		const el = e.target as HTMLTextAreaElement;
 		logger("TextCellEdit handleKeyDown");
 
+		//Prevent enter from creating a new line
+		//unless shift or alt is pressed
+		if (e.key === "Enter") {
+			if (!isInsertLineDown(e) && !isInsertLineAltDown(e)) {
+				e.preventDefault();
+			}
+		}
+
 		if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
 			const cursorPosition = el.selectionStart;
 
-			if (isSuggestMenuOpen) {
+			if (menu.isOpen) {
 				//Close menu if cursor is outside of double brackets
 				if (!isSurroundedByDoubleBrackets(value, cursorPosition))
-					onClose();
+					menu.onClose();
 			}
 
 			if (inputRef.current) {
@@ -107,22 +113,16 @@ export default function TextCellEdit({
 				inputEl.selectionStart = cursorPosition;
 				inputEl.selectionEnd = cursorPosition;
 			}
-		} else if (isInsertLineDown(e)) {
-			if (isSuggestMenuOpen) return;
-			e.stopPropagation();
-		} else if (isInsertLineAltDown(e)) {
-			if (isSuggestMenuOpen) return;
-			e.stopPropagation();
-
-			const cursorPosition = inputRef.current?.selectionStart ?? 0;
-			setLocalValue(
-				(prevState) =>
-					prevState.slice(0, cursorPosition) +
-					"\n" +
-					prevState.slice(cursorPosition)
-			);
-			setCursorPosition(cursorPosition + 1);
 		}
+
+		// const cursorPosition = inputRef.current?.selectionStart ?? 0;
+		// setLocalValue(
+		// 	(prevState) =>
+		// 		prevState.slice(0, cursorPosition) +
+		// 		"\n" +
+		// 		prevState.slice(cursorPosition)
+		// );
+		// setCursorPosition(cursorPosition + 1);
 	}
 
 	React.useEffect(() => {
@@ -133,19 +133,25 @@ export default function TextCellEdit({
 		}
 	}, [cursorPosition, inputRef]);
 
-	//Scroll to bottom when the value changes
-	//This is necessary if we press `alt + shift` or `meta + shift` to insert a new line
-	//This is what the browser does with `shift + enter` by default
-	React.useEffect(
-		function scrollToBottom() {
-			if (inputRef.current) {
-				inputRef.current.scrollTop = inputRef.current.scrollHeight;
-			}
-		},
-		[inputRef, localValue]
-	);
+	// //Scroll to bottom when the value changes
+	// //This is necessary if we press `alt + shift` or `meta + shift` to insert a new line
+	// //This is what the browser does with `shift + enter` by default
+	// React.useEffect(
+	// 	function scrollToBottom() {
+	// 		if (inputRef.current) {
+	// 			inputRef.current.scrollTop = inputRef.current.scrollHeight;
+	// 		}
+	// 	},
+	// 	[inputRef, localValue]
+	// );
+
+	function handleMenuOpen() {
+		menu.onOpen(LoomMenuLevel.TWO);
+	}
 
 	function handleTextareaChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+		logger("TextCellEdit handleTextareaChange");
+
 		const inputValue = e.target.value;
 		let newValue = inputValue;
 
@@ -165,10 +171,9 @@ export default function TextCellEdit({
 			if (
 				isSurroundedByDoubleBrackets(newValue, inputEl.selectionStart)
 			) {
-				onSuggestMenuOpen();
+				handleMenuOpen();
 			}
 		}
-
 		setLocalValue(newValue);
 	}
 
@@ -184,21 +189,24 @@ export default function TextCellEdit({
 
 			onChange(newValue);
 		}
-		onCloseAll();
+		menu.onClose();
 	}
 
 	const overflowClassName = useOverflow(shouldWrapOverflow);
 	const filterValue =
 		getFilterValue(localValue, inputRef.current?.selectionStart ?? 0) ?? "";
 
+	let className = overflowClassName + " dataloom-focusable";
+	if (menu.isTriggerFocused) {
+		className += " dataloom-focusable--focused";
+	}
+
 	return (
 		<>
-			<div
-				className="dataloom-text-cell-edit"
-				ref={suggestMenuTriggerRef}
-			>
+			<div className="dataloom-text-cell-edit" ref={menu.triggerRef}>
 				<textarea
-					className={overflowClassName}
+					data-menu-id={menu.id}
+					className={className}
 					autoFocus
 					ref={inputRef}
 					value={localValue}
@@ -210,13 +218,11 @@ export default function TextCellEdit({
 				/>
 			</div>
 			<SuggestMenu
-				id={suggestMenu.id}
-				isOpen={isSuggestMenuOpen}
-				triggerPosition={suggestMenuTriggerPosition}
+				id={menu.id}
+				isOpen={menu.isOpen}
+				position={menu.position}
 				filterValue={filterValue}
 				onItemClick={handleSuggestItemClick}
-				onRequestClose={onSuggestMenuRequestClose}
-				onClose={onSuggestMenuClose}
 			/>
 		</>
 	);

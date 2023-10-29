@@ -1,9 +1,6 @@
 import MenuItem from "src/react/shared/menu-item";
-import ModalMenu from "src/react/shared/menu/modal-menu";
-import {
-	LoomMenuCloseRequestType,
-	Position,
-} from "src/react/shared/menu/types";
+import ModalMenu from "src/react/shared/model-menu";
+import { LoomMenuPosition } from "src/react/shared/menu/types";
 import { ColumnMatch, ImportColumn } from "../types";
 import { getIconIdForCellType } from "src/react/shared/icon/utils";
 import Divider from "src/react/shared/divider";
@@ -11,40 +8,35 @@ import { NEW_COLUMN_ID } from "../constants";
 
 interface Props {
 	id: string;
-	triggerPosition: Position;
 	isOpen: boolean;
+	position: LoomMenuPosition;
 	columns: ImportColumn[];
 	columnMatches: ColumnMatch[];
 	selectedColumnId: string | null;
-	onRequestClose: (type: LoomMenuCloseRequestType) => void;
 	onColumnClick: (columnId: string | null) => void;
-	onClose: () => void;
 }
 
 export default function SelectColumnMenu({
 	id,
-	triggerPosition,
+	position,
 	isOpen,
 	columns,
 	columnMatches,
 	selectedColumnId,
 	onColumnClick,
-	onRequestClose,
-	onClose,
 }: Props) {
 	const columnsToDisplay = columns.filter((column) => {
 		const { id } = column;
 		if (id === selectedColumnId) return true;
 		return !columnMatches.some((match) => match.columnId === id);
 	});
+
 	return (
 		<ModalMenu
 			id={id}
 			isOpen={isOpen}
-			triggerPosition={triggerPosition}
-			onRequestClose={onRequestClose}
+			position={position}
 			openDirection="bottom-left"
-			onClose={onClose}
 		>
 			{columnsToDisplay.map((column) => {
 				const { id, name, type } = column;

@@ -33,6 +33,16 @@ const config = {
 		locales: ["en"],
 	},
 
+	scripts: [
+		{
+			src: "https://plausible.io/js/script.js",
+			async: true,
+			defer: true,
+			dataDomain: "dataloom.xyz",
+		},
+		// <script defer data-domain="dataloom.xyz" src="https://plausible.io/js/script.js"></script>
+	],
+
 	presets: [
 		[
 			"classic",

@@ -5,46 +5,70 @@ import ColumnAddCommand from "src/shared/loom-state/commands/column-add-command"
 import ColumnDeleteCommand from "src/shared/loom-state/commands/column-delete-command";
 import ColumnUpdateCommand from "src/shared/loom-state/commands/column-update-command";
 import ColumnTypeUpdateCommand from "src/shared/loom-state/commands/column-type-update-command";
+import ColumnReorderCommand from "src/shared/loom-state/commands/column-reorder-command";
+import React from "react";
 
 export const useColumn = () => {
 	const logger = useLogger();
 	const { doCommand } = useLoomState();
 
-	function handleNewColumnClick() {
+	const handleNewColumnClick = React.useCallback(() => {
 		logger("handleNewColumnClick");
 		doCommand(new ColumnAddCommand());
-	}
-	function handleColumnTypeChange(columnId: string, type: CellType) {
-		logger("handleColumnTypeChange", {
-			columnId,
-			type,
-		});
-		doCommand(new ColumnTypeUpdateCommand(columnId, type));
-	}
+	}, [doCommand, logger]);
 
-	function handleColumnChange(
-		columnId: string,
-		data: Partial<Column>,
-		options?: { shouldSortRows: boolean }
-	) {
-		logger("handleColumnChange", {
-			columnId,
-			data,
-		});
-		doCommand(new ColumnUpdateCommand(columnId, data, options));
-	}
+	const handleColumnTypeChange = React.useCallback(
+		(columnId: string, type: CellType) => {
+			logger("handleColumnTypeChange", {
+				columnId,
+				type,
+			});
+			doCommand(new ColumnTypeUpdateCommand(columnId, type));
+		},
+		[doCommand, logger]
+	);
 
-	function handleColumnDeleteClick(columnId: string) {
-		logger("handleColumnDeleteClick", {
-			columnId,
-		});
-		doCommand(new ColumnDeleteCommand({ id: columnId }));
-	}
+	const handleColumnChange = React.useCallback(
+		(
+			columnId: string,
+			data: Partial<Column>,
+			options?: { shouldSortRows: boolean }
+		) => {
+			logger("handleColumnChange", {
+				columnId,
+				data,
+			});
+			doCommand(new ColumnUpdateCommand(columnId, data, options));
+		},
+		[doCommand, logger]
+	);
+
+	const handleColumnDeleteClick = React.useCallback(
+		(columnId: string) => {
+			logger("handleColumnDeleteClick", {
+				columnId,
+			});
+			doCommand(new ColumnDeleteCommand({ id: columnId }));
+		},
+		[doCommand, logger]
+	);
+
+	const handleColumnReorder = React.useCallback(
+		(dragId: string, targetId: string) => {
+			logger("handleColumnReorder", {
+				dragId,
+				targetId,
+			});
+			doCommand(new ColumnReorderCommand(dragId, targetId));
+		},
+		[doCommand, logger]
+	);
 
 	return {
 		onColumnAddClick: handleNewColumnClick,
 		onColumnTypeChange: handleColumnTypeChange,
 		onColumnDeleteClick: handleColumnDeleteClick,
 		onColumnChange: handleColumnChange,
+		onColumnReorder: handleColumnReorder,
 	};
 };

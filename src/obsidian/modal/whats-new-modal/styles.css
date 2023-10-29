@@ -1,10 +1,11 @@
-.dataloom-whats-new-modal__tag {
-    margin-top: 0.5em;
-    margin-bottom: 0;
+.dataloom-whats-new-modal__spacer {
+	height: 10px;
 }
 
-.dataloom-whats-new-modal__date {
-    margin-left: 0.75em;
-    font-size: 0.75em;
-    color: var(--text-muted);
+.dataloom-whats-new-modal__badge-container {
+	margin: 20px 0px;
+}
+
+.dataloom-whats-new-modal__content strong {
+	font-size: var(--font-ui-large);
 }

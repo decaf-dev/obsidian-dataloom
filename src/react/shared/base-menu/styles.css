@@ -1,11 +1,7 @@
 .dataloom-menu {
-    width: 0;
-    height: 0;
-}
-
-.dataloom-menu__container {
     position: absolute;
     z-index: var(--layer-menu);
     background-color: var(--background-primary);
     font-weight: 400;
 }
+

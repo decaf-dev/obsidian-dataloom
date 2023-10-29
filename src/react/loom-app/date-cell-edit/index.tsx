@@ -15,35 +15,35 @@ import { DateFormat } from "src/shared/loom-state/types/loom-state";
 import DateFormatMenu from "./date-format-menu";
 
 import { getDisplayNameForDateFormat } from "src/shared/loom-state/type-display-names";
-import { useMenu } from "../../shared/menu/hooks";
-import { LoomMenuCloseRequest, LoomMenuLevel } from "../../shared/menu/types";
+import {
+	LoomMenuCloseRequest,
+	LoomMenuLevel,
+} from "src/react/shared/menu-provider/types";
+import { useMenu } from "src/react/shared/menu-provider/hooks";
 
 interface Props {
+	cellId: string;
 	value: number | null;
 	closeRequest: LoomMenuCloseRequest | null;
 	dateFormat: DateFormat;
 	onDateTimeChange: (value: number | null) => void;
+	onCloseRequestClear: () => void;
 	onDateFormatChange: (value: DateFormat) => void;
 	onClose: () => void;
 }
 
 export default function DateCellEdit({
+	cellId,
 	value,
 	closeRequest,
 	dateFormat,
 	onDateTimeChange,
 	onClose,
+	onCloseRequestClear,
 	onDateFormatChange,
 }: Props) {
-	const {
-		menu: dateFormatMenu,
-		triggerRef: dateFormatMenuTriggerRef,
-		triggerPosition: dateFormatMenuTriggerPosition,
-		isOpen: isDateFormatMenuOpen,
-		onOpen: onDateFormatMenuOpen,
-		onClose: onDateFormatMenuClose,
-		onRequestClose: onDateFormatMenuRequestClose,
-	} = useMenu({ level: LoomMenuLevel.TWO });
+	const COMPONENT_ID = `date-format-menu-${cellId}`;
+	const menu = useMenu(COMPONENT_ID);
 
 	const [localValue, setLocalValue] = React.useState(
 		value === null ? "" : unixTimeToDateString(value, dateFormat)
@@ -71,6 +71,7 @@ export default function DateCellEdit({
 				} else {
 					if (closeRequest.type === "close-on-save") {
 						setInputInvalid(true);
+						onCloseRequestClear();
 						return;
 					}
 					newValue = value;
@@ -89,6 +90,7 @@ export default function DateCellEdit({
 		closeRequest,
 		dateFormat,
 		onDateTimeChange,
+		onCloseRequestClear,
 		onClose,
 	]);
 
@@ -103,8 +105,10 @@ export default function DateCellEdit({
 	}, [closeTime, onClose]);
 
 	function handleDateFormatChange(value: DateFormat) {
+		if (menu === null) return;
+
 		onDateFormatChange(value);
-		onDateFormatMenuClose();
+		menu.onClose();
 	}
 
 	function handleClearClick() {
@@ -126,9 +130,12 @@ export default function DateCellEdit({
 						/>
 					</Padding>
 					<MenuTrigger
-						ref={dateFormatMenuTriggerRef}
-						menu={dateFormatMenu}
-						onOpen={onDateFormatMenuOpen}
+						ref={menu.triggerRef}
+						menuId={menu.id}
+						variant="cell"
+						isFocused={menu.isTriggerFocused}
+						level={LoomMenuLevel.TWO}
+						onOpen={() => menu.onOpen(LoomMenuLevel.TWO)}
 					>
 						<MenuItem
 							isFocusable={false}
@@ -140,13 +147,11 @@ export default function DateCellEdit({
 				</Stack>
 			</div>
 			<DateFormatMenu
-				id={dateFormatMenu.id}
-				isOpen={isDateFormatMenuOpen}
-				triggerPosition={dateFormatMenuTriggerPosition}
+				id={menu.id}
+				isOpen={menu.isOpen}
+				position={menu.position}
 				value={dateFormat}
 				onChange={handleDateFormatChange}
-				onRequestClose={onDateFormatMenuRequestClose}
-				onClose={onDateFormatMenuClose}
 			/>
 		</>
 	);

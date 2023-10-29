@@ -8,7 +8,6 @@ import {
 	normalizePath,
 } from "obsidian";
 
-import SupportModal from "./obsidian/modal/support-modal";
 import WelcomeModal from "./obsidian/modal/welcome-modal";
 import WhatsNewModal from "./obsidian/modal/whats-new-modal";
 import DataLoomSettingsTab from "./obsidian/dataloom-settings-tab";
@@ -51,6 +50,7 @@ import {
 	purgeEmbeddedLoomApps,
 } from "./obsidian/embedded/embedded-app-manager";
 import { cloneDeep } from "lodash";
+import { log } from "./shared/logger";
 
 export interface DataLoomSettings {
 	shouldDebug: boolean;
@@ -61,7 +61,6 @@ export interface DataLoomSettings {
 	defaultEmbedHeight: string;
 	hasMigratedTo800: boolean;
 	showWelcomeModal: boolean;
-	showSupportModal: boolean;
 	showWhatsNewModal: boolean;
 	defaultFrozenColumnCount: number;
 	pluginVersion: string;
@@ -76,7 +75,6 @@ export const DEFAULT_SETTINGS: DataLoomSettings = {
 	defaultEmbedHeight: "340px",
 	hasMigratedTo800: false,
 	showWelcomeModal: true,
-	showSupportModal: true,
 	showWhatsNewModal: true,
 	defaultFrozenColumnCount: 1,
 	pluginVersion: "",
@@ -222,7 +220,7 @@ export default class DataLoomPlugin extends Plugin {
 	private registerDOMEvents() {
 		//This event is guaranteed to fire after our React synthetic event handlers
 		this.registerDomEvent(document, "click", () => {
-			if (this.settings.shouldDebug) console.log("main handleClick");
+			log(this.settings.shouldDebug, "main handleClick");
 
 			//Clear the focus-visible class from the last focused element
 			removeCurrentFocusClass();
@@ -231,7 +229,7 @@ export default class DataLoomPlugin extends Plugin {
 
 		//This event is guaranteed to fire after our React synthetic event handlers
 		this.registerDomEvent(document, "keydown", (e) => {
-			if (this.settings.shouldDebug) console.log("main handleKeyDown");
+			log(this.settings.shouldDebug, "main handleKeyDown");
 			this.app.workspace.trigger(EVENT_GLOBAL_KEYDOWN, e);
 		});
 	}
@@ -299,11 +297,7 @@ export default class DataLoomPlugin extends Plugin {
 				if (shouldOpen) {
 					this.displayModalsOnLoomOpen = false;
 					if (this.settings.showWhatsNewModal) {
-						new WhatsNewModal(this.app, () => {
-							if (this.settings.showSupportModal) {
-								new SupportModal(this.app).open();
-							}
-						}).open();
+						new WhatsNewModal(this.app).open();
 					}
 				}
 			})
@@ -380,10 +374,13 @@ export default class DataLoomPlugin extends Plugin {
 							//If the state has changed, update the file
 							const { file: loomFile, state } = loomsToUpdate[i];
 
-							if (this.settings.shouldDebug)
-								console.log("Updating links in file", {
+							log(
+								this.settings.shouldDebug,
+								"Updating links in file",
+								{
 									path: loomFile.path,
-								});
+								}
+							);
 
 							const newState = cloneDeep(state);
 							newState.model.rows.map((row) => {
@@ -396,12 +393,14 @@ export default class DataLoomPlugin extends Plugin {
 										oldPath
 									);
 									if (content !== newContent) {
-										if (this.settings.shouldDebug) {
-											console.log("Updated link", {
+										log(
+											this.settings.shouldDebug,
+											"Updated link",
+											{
 												oldLink: content,
 												newLink: newContent,
-											});
-										}
+											}
+										);
 									}
 									return {
 										...cell,

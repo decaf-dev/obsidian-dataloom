@@ -1,5 +1,5 @@
 export const moveMenuFocusUp = (
-	focusableEls: NodeListOf<Element>,
+	focusableEls: Element[],
 	currentIndex: number
 ) => {
 	let index = currentIndex - 1;
@@ -9,7 +9,7 @@ export const moveMenuFocusUp = (
 };
 
 export const moveMenuFocusDown = (
-	focusableEls: NodeListOf<Element>,
+	focusableEls: Element[],
 	currentIndex: number
 ) => {
 	let index = currentIndex + 1;
@@ -19,7 +19,7 @@ export const moveMenuFocusDown = (
 };
 
 export const moveFocusLeft = (
-	focusableEls: NodeListOf<Element>,
+	focusableEls: Element[],
 	currentIndex: number
 ) => {
 	let index = currentIndex - 1;
@@ -29,7 +29,7 @@ export const moveFocusLeft = (
 };
 
 export const moveFocusRight = (
-	focusableEls: NodeListOf<Element>,
+	focusableEls: Element[],
 	currentIndex: number
 ) => {
 	let index = currentIndex + 1;
@@ -39,7 +39,7 @@ export const moveFocusRight = (
 };
 
 export const moveFocusUp = (
-	focusableEls: NodeListOf<Element>,
+	focusableEls: Element[],
 	numOptionBarFocusableEls: number,
 	numBottomBarFocusableEls: number,
 	numColumns: number,
@@ -87,7 +87,7 @@ export const moveFocusUp = (
 };
 
 export const moveFocusDown = (
-	focusableEls: NodeListOf<Element>,
+	focusableEls: Element[],
 	numOptionBarFocusableEls: number,
 	numBottomBarFocusableEls: number,
 	numColumns: number,

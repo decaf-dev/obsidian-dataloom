@@ -1,14 +1,22 @@
 import { useLoomState } from "src/react/loom-app/loom-state-provider";
 import { useDragContext } from "src/shared/dragging/drag-context";
-import { dropDrag, getRowId } from "src/shared/dragging/utils";
+import { getRowId } from "src/shared/dragging/utils";
+import { confirmSortOrderChange } from "src/shared/sort-utils";
+import { RowReorderHandler } from "../app/hooks/use-row/types";
 
 interface Props {
 	style?: React.CSSProperties;
 	children?: React.ReactNode;
+	onRowReorder: RowReorderHandler;
 }
 
-export default function BodyRow({ style, children, ...props }: Props) {
-	const { loomState, setLoomState } = useLoomState();
+export default function BodyRow({
+	style,
+	children,
+	onRowReorder,
+	...props
+}: Props) {
+	const { loomState } = useLoomState();
 	const { dragData, setDragData } = useDragContext();
 
 	function handleDragStart(e: React.DragEvent) {
@@ -39,7 +47,14 @@ export default function BodyRow({ style, children, ...props }: Props) {
 		const targetId = getRowId(target);
 		if (!targetId) return;
 
-		dropDrag(targetId, dragData, loomState, setLoomState);
+		if (dragData === null) throw Error("No drag data found");
+
+		//If we're dragging a column type, then return
+		if (dragData.type !== "row") return;
+
+		if (!confirmSortOrderChange(loomState)) return;
+
+		onRowReorder(dragData.id, targetId);
 	}
 
 	function handleDragOver(e: React.DragEvent) {
