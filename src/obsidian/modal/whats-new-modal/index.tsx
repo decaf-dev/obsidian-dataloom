@@ -28,7 +28,7 @@ export default class WhatsNewModal extends Modal {
 
 	async renderDescription(containerEl: HTMLElement) {
 		containerEl.createDiv({
-			text: "Thank you for using DataLoom! If you like the plugin, please consider supporting me by buying an herbal tea. With your sponsorship, I'll be able to continue to add features, fix bugs, and respond to issues on Github",
+			text: "Thank you for using DataLoom! If you like the plugin, please consider supporting me by buying an herbal tea. With your sponsorship, I'll be able to continue to add features, fix bugs, and respond to issues on Github.",
 		});
 		const badgeContainer = containerEl.createDiv({
 			cls: "dataloom-whats-new-modal__badge-container",
