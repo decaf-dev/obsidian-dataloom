@@ -5,9 +5,10 @@ import { numToPx } from "src/shared/conversion";
 
 import { LoomMenuPosition } from "../menu/types";
 
-import "./styles.css";
 import { useLogger } from "src/shared/logger";
 import { useMenuOperations } from "../menu-provider/hooks";
+
+import "./styles.css";
 
 interface Props {
 	id: string;
