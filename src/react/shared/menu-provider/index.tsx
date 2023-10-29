@@ -10,7 +10,7 @@ import {
 	LoomMenuLevel,
 } from "./types";
 import { useLogger } from "src/shared/logger";
-import { findMenuTriggerEl, getPositionFromEl } from "./utils";
+import { getPositionFromEl } from "./utils";
 
 interface ContextProps {
 	topMenu: LoomMenu | null;
@@ -93,13 +93,16 @@ export default function MenuProvider({ children }: Props) {
 		setOpenMenus((prevMenus) => [...prevMenus, menu]);
 	}
 
-	function focusMenuTrigger(parentComponentId: string, name?: string) {
-		logger("MenuProvider focusMenuTrigger");
-		setFocusedMenuTrigger({
-			parentComponentId,
-			name,
-		});
-	}
+	const focusMenuTrigger = React.useCallback(
+		(parentComponentId: string, name?: string) => {
+			logger("MenuProvider focusMenuTrigger");
+			setFocusedMenuTrigger({
+				parentComponentId,
+				name,
+			});
+		},
+		[logger]
+	);
 
 	function clearMenuTriggerFocus() {
 		logger("MenuProvider clearMenuTriggerFocus");
@@ -123,7 +126,7 @@ export default function MenuProvider({ children }: Props) {
 				prevRequests.filter((request) => request.menuId !== id)
 			);
 		},
-		[logger, openMenus]
+		[logger, openMenus, focusMenuTrigger]
 	);
 
 	const handleRequestClose = React.useCallback(
