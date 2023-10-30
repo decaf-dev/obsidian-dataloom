@@ -54,8 +54,10 @@ export const useMenu = (
 	}
 
 	const handleClose = React.useCallback(() => {
+		if (!isOpen) return;
+
 		onClose(id);
-	}, [id, onClose]);
+	}, [id, isOpen, onClose]);
 
 	const handleCloseRequestClear = React.useCallback(() => {
 		onCloseRequestClear(id);
