@@ -6,14 +6,35 @@ import { LOOM_EXTENSION, DEFAULT_LOOM_NAME } from "./constants";
 
 export const createLoomFile = async (
 	app: App,
-	folderPath: string,
 	pluginVersion: string,
-	defaultFrozenColumnCount: number
+	defaultFrozenColumnCount: number,
+	folderOptions: {
+		contextMenuFolderPath: string | null;
+		createAtAttachmentsFolder: boolean;
+		customFolderForNewFiles: string;
+	}
 ) => {
+	const {
+		contextMenuFolderPath,
+		createAtAttachmentsFolder,
+		customFolderForNewFiles,
+	} = folderOptions;
+
 	try {
+		const fileName = getFileName();
+		const folderPath = await getFolderForNewLoomFile(app, {
+			contextMenuFolderPath,
+			createAtAttachmentsFolder,
+			customFolderForNewFiles,
+		});
+
 		await createFolder(app, folderPath);
 
-		const filePath = getFilePath(folderPath);
+		const filePath = normalizePath(folderPath + "/" + fileName);
+
+		//This is needed because a path with a leading period will cause app.vault.create() to return null.
+		//This is a bug in Obsidian.
+		//TODO report this bug the Obsidian team
 		const formattedPath = removeLeadingPeriod(filePath);
 		const loomState = createLoomState(
 			pluginVersion,
@@ -28,9 +49,37 @@ export const createLoomFile = async (
 		throw err;
 	}
 };
-const getFilePath = (folderPath: string) => {
-	const fileName = getFileName();
-	return normalizePath(folderPath + "/" + fileName);
+
+const getFolderForNewLoomFile = async (
+	app: App,
+	options: {
+		contextMenuFolderPath: string | null;
+		createAtAttachmentsFolder: boolean;
+		customFolderForNewFiles: string;
+	}
+) => {
+	const {
+		contextMenuFolderPath,
+		createAtAttachmentsFolder,
+		customFolderForNewFiles,
+	} = options;
+
+	let folderPath = "";
+
+	if (contextMenuFolderPath) {
+		folderPath = contextMenuFolderPath;
+	} else if (createAtAttachmentsFolder) {
+		const openFile = app.workspace.getActiveFile();
+		folderPath = await (app.vault as any).getAvailablePathForAttachments(
+			"",
+			"",
+			openFile
+		);
+	} else {
+		folderPath = customFolderForNewFiles;
+	}
+	const normalized = normalizePath(folderPath);
+	return normalized;
 };
 
 const getFileName = (): string => {
