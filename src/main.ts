@@ -5,7 +5,6 @@ import {
 	TAbstractFile,
 	TFile,
 	TFolder,
-	normalizePath,
 } from "obsidian";
 
 import WelcomeModal from "./obsidian/modal/welcome-modal";
