@@ -190,7 +190,6 @@ export default class DataLoomPlugin extends Plugin {
 			folderPath = this.settings.customFolderForNewFiles;
 		}
 		const normalized = normalizePath(folderPath);
-		if (normalized === ".") return "/";
 		return normalized;
 	}
 
@@ -199,7 +198,7 @@ export default class DataLoomPlugin extends Plugin {
 		embedded?: boolean
 	) {
 		const folderPath = this.getFolderForNewLoomFile(contextMenuFolderPath);
-		const filePath = await createLoomFile(
+		const file = await createLoomFile(
 			this.app,
 			folderPath,
 			this.manifest.version,
@@ -207,14 +206,10 @@ export default class DataLoomPlugin extends Plugin {
 		);
 
 		//If the file is embedded, we don't need to open it
-		if (embedded) return filePath;
+		if (embedded) return file.path;
 
-		//Open file in a new tab and set it to active
-		await this.app.workspace.getLeaf(true).setViewState({
-			type: DATA_LOOM_VIEW,
-			active: true,
-			state: { file: filePath },
-		});
+		//Open the file in a new tab
+		await this.app.workspace.getLeaf(true).openFile(file);
 	}
 
 	private registerDOMEvents() {
