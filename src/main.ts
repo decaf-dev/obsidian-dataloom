@@ -177,32 +177,20 @@ export default class DataLoomPlugin extends Plugin {
 		}
 	}
 
-	private getFolderForNewLoomFile(contextMenuFolderPath: string | null) {
-		let folderPath = "";
-
-		if (contextMenuFolderPath) {
-			folderPath = contextMenuFolderPath;
-		} else if (this.settings.createAtObsidianAttachmentFolder) {
-			folderPath = (this.app.vault as any).getConfig(
-				"attachmentFolderPath"
-			);
-		} else {
-			folderPath = this.settings.customFolderForNewFiles;
-		}
-		const normalized = normalizePath(folderPath);
-		return normalized;
-	}
-
 	private async newLoomFile(
 		contextMenuFolderPath: string | null,
 		embedded?: boolean
 	) {
-		const folderPath = this.getFolderForNewLoomFile(contextMenuFolderPath);
 		const file = await createLoomFile(
 			this.app,
-			folderPath,
 			this.manifest.version,
-			this.settings.defaultFrozenColumnCount
+			this.settings.defaultFrozenColumnCount,
+			{
+				contextMenuFolderPath,
+				createAtAttachmentsFolder:
+					this.settings.createAtObsidianAttachmentFolder,
+				customFolderForNewFiles: this.settings.customFolderForNewFiles,
+			}
 		);
 
 		//If the file is embedded, we don't need to open it
