@@ -11,32 +11,35 @@ export const createLoomFile = async (
 	defaultFrozenColumnCount: number
 ) => {
 	try {
-		await createFolderIfNotExists(app, folderPath);
-		const filePath = getFilePath(folderPath);
+		await createFolder(app, folderPath);
 
+		const filePath = getFilePath(folderPath);
+		const formattedPath = removeLeadingPeriod(filePath);
 		const loomState = createLoomState(
 			pluginVersion,
 			defaultFrozenColumnCount
 		);
 		const serializedState = serializeState(loomState);
-		return await createFile(app, filePath, serializedState);
+
+		const file = await createFile(app, formattedPath, serializedState);
+		return file;
 	} catch (err) {
 		new Notice("Could not create loom file");
 		throw err;
 	}
 };
-
-const getFileName = (): string => {
-	const fileName = DEFAULT_LOOM_NAME;
-	return `${fileName}.${LOOM_EXTENSION}`;
-};
-
 const getFilePath = (folderPath: string) => {
 	const fileName = getFileName();
 	return normalizePath(folderPath + "/" + fileName);
 };
 
-const createFolderIfNotExists = async (app: App, folderPath: string) => {
-	if (app.vault.getAbstractFileByPath(folderPath) == null)
-		await createFolder(app, folderPath);
+const getFileName = (): string => {
+	return `${DEFAULT_LOOM_NAME}.${LOOM_EXTENSION}`;
+};
+
+const removeLeadingPeriod = (path: string) => {
+	if (path.startsWith(".")) {
+		return path.substring(1);
+	}
+	return path;
 };
