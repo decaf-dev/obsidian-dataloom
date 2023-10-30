@@ -32,7 +32,6 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 		supportDesc.createDiv({
 			text: "Enjoying the plugin? Please buy me an herbal tea to support the development of DataLoom.",
 		});
-		//renderGitHubSponsorBadge(supportDesc);
 
 		new Setting(containerEl).setDesc(supportDesc);
 

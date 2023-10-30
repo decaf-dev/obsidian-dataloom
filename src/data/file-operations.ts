@@ -1,11 +1,14 @@
-import { App, TFolder } from "obsidian";
+import { App, TFile } from "obsidian";
 import { splitFileExtension } from "./utils";
 
-export const createFolder = async (
-	app: App,
-	folderPath: string
-): Promise<TFolder> => {
-	return app.vault.createFolder(folderPath);
+export const createFolder = async (app: App, folderPath: string) => {
+	try {
+		await app.vault.createFolder(folderPath);
+	} catch (err) {
+		const error = err as Error;
+		if (error.message.includes("already exists")) return;
+		throw err;
+	}
 };
 
 export const createFile = async (
@@ -13,7 +16,7 @@ export const createFile = async (
 	filePath: string,
 	data: string,
 	numExisting = 0
-): Promise<string> => {
+): Promise<TFile> => {
 	try {
 		const filePathExtension = splitFileExtension(filePath);
 		if (filePathExtension == null)
@@ -23,15 +26,13 @@ export const createFile = async (
 		const filePathWithIteration =
 			filePathExtension[0] + numIterations + filePathExtension[1];
 
-		await app.vault.create(filePathWithIteration, data);
-		return filePathWithIteration;
+		const file = await app.vault.create(filePathWithIteration, data);
+		return file;
 	} catch (err: unknown) {
 		const error = err as Error;
-
-		if (error.message.includes("File already exists")) {
+		if (error.message.includes("already exists")) {
 			return createFile(app, filePath, data, numExisting + 1);
-		} else {
-			throw err;
 		}
+		throw err;
 	}
 };
