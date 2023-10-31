@@ -1,20 +1,17 @@
-import { Color } from "src/shared/loom-state/types/loom-state";
-import { useOverflow } from "src/shared/spacing/hooks";
 import Tag from "../../shared/tag";
 
+import { Color } from "src/shared/loom-state/types/loom-state";
+
 import "./styles.css";
+
 interface Props {
 	content: string;
 	color: Color;
-	shouldWrapOverflow: boolean;
 }
 
-export default function TagCell({ content, color, shouldWrapOverflow }: Props) {
-	const overflowClassName = useOverflow(shouldWrapOverflow);
-	let className = "dataloom-tag-cell";
-	className += " " + overflowClassName;
+export default function TagCell({ content, color }: Props) {
 	return (
-		<div className={className}>
+		<div className="dataloom-tag-cell">
 			<Tag content={content} color={color} />
 		</div>
 	);

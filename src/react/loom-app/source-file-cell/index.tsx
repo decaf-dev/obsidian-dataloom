@@ -5,23 +5,16 @@ import { useOverflow } from "src/shared/spacing/hooks";
 import "./styles.css";
 
 interface Props {
-	shouldWrapOverflow: boolean;
 	content: string;
 }
 
-export default function SourceFileCell({
-	shouldWrapOverflow,
-	content: originalContent,
-}: Props) {
+export default function SourceFileCell({ content: originalContent }: Props) {
 	const content = getSourceFileContent(originalContent);
-	const overflowClassName = useOverflow(shouldWrapOverflow);
 	const { containerRef, renderRef } = useRenderMarkdown(content);
 
-	let className = "dataloom-source-file-cell";
-	className += " " + overflowClassName;
 	return (
 		<div
-			className={className}
+			className="dataloom-source-file-cell"
 			ref={(node) => {
 				if (content !== "") {
 					containerRef.current = node;

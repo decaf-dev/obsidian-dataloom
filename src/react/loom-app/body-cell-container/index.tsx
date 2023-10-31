@@ -47,6 +47,7 @@ import { LoomMenuLevel } from "src/react/shared/menu-provider/types";
 import { useMenu } from "src/react/shared/menu-provider/hooks";
 
 import "./styles.css";
+import { useOverflow } from "src/shared/spacing/hooks";
 
 interface Props {
 	source: Source | null;
@@ -269,6 +270,12 @@ export default function BodyCellContainer({
 	}
 
 	let className = "dataloom-cell--body__container";
+
+	const overflowClass = useOverflow(shouldWrapOverflow, {
+		ellipsis: columnType === CellType.DATE,
+	});
+	className += " " + overflowClass;
+
 	if (
 		columnType === CellType.LAST_EDITED_TIME ||
 		columnType === CellType.CREATION_TIME ||
@@ -319,10 +326,7 @@ export default function BodyCellContainer({
 					}}
 				>
 					{columnType === CellType.TEXT && (
-						<TextCell
-							value={content}
-							shouldWrapOverflow={shouldWrapOverflow}
-						/>
+						<TextCell value={content} />
 					)}
 					{columnType === CellType.EMBED && (
 						<EmbedCell
@@ -334,16 +338,10 @@ export default function BodyCellContainer({
 						/>
 					)}
 					{columnType === CellType.FILE && (
-						<FileCell
-							value={content}
-							shouldWrapOverflow={shouldWrapOverflow}
-						/>
+						<FileCell value={content} />
 					)}
 					{columnType === CellType.SOURCE_FILE && (
-						<SourceFileCell
-							shouldWrapOverflow={shouldWrapOverflow}
-							content={content}
-						/>
+						<SourceFileCell content={content} />
 					)}
 					{columnType === CellType.NUMBER && (
 						<NumberCell
@@ -359,15 +357,11 @@ export default function BodyCellContainer({
 						<TagCell
 							content={cellTags[0].content}
 							color={cellTags[0].color}
-							shouldWrapOverflow={shouldWrapOverflow}
 						/>
 					)}
 					{columnType === CellType.MULTI_TAG &&
 						cellTags.length !== 0 && (
-							<MultiTagCell
-								cellTags={cellTags}
-								shouldWrapOverflow={shouldWrapOverflow}
-							/>
+							<MultiTagCell cellTags={cellTags} />
 						)}
 					{columnType === CellType.DATE && (
 						<DateCell value={dateTime} format={dateFormat} />
@@ -379,21 +373,16 @@ export default function BodyCellContainer({
 						<CreationTimeCell
 							value={rowCreationTime}
 							format={dateFormat}
-							shouldWrapOverflow={shouldWrapOverflow}
 						/>
 					)}
 					{columnType === CellType.LAST_EDITED_TIME && (
 						<LastEditedTimeCell
 							value={rowLastEditedTime}
 							format={dateFormat}
-							shouldWrapOverflow={shouldWrapOverflow}
 						/>
 					)}
 					{columnType === CellType.SOURCE && (
-						<SourceCell
-							shouldWrapOverflow={shouldWrapOverflow}
-							source={source}
-						/>
+						<SourceCell source={source} />
 					)}
 				</div>
 			</MenuTrigger>

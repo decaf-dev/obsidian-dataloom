@@ -26,3 +26,7 @@
 .dataloom-auto-width {
 	width: auto !important;
 }
+
+.dataloom-nowrap {
+	white-space: nowrap !important;
+}
