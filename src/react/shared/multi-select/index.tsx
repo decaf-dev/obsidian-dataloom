@@ -1,43 +1,56 @@
+import Stack from "../stack";
+import Text from "../text";
+
 import "./styles.css";
+import { MultiSelectOption } from "./types";
+import Icon from "../icon";
+import MultiSelectMenu from "./multi-select-menu";
+import { useMenu } from "../menu-provider/hooks";
+import { LoomMenuLevel } from "../menu-provider/types";
+import MenuTrigger from "../menu-trigger";
 
 interface Props {
-	className?: string;
-	value: string[];
-	onKeyDown?: (e: React.KeyboardEvent<HTMLSelectElement>) => void;
-	onChange: (value: string[]) => void;
-	children: React.ReactNode;
+	id: string;
+	title: string;
+	selectedOptionIds: string[];
+	options: MultiSelectOption[];
+	onChange: (keys: string[]) => void;
 }
 
 export default function MultiSelect({
-	className: customClassName,
-	value,
+	id,
+	title,
+	selectedOptionIds,
+	options,
 	onChange,
-	onKeyDown,
-	children,
 }: Props) {
-	function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
-		const selectedValues = Array.from(
-			e.target.selectedOptions,
-			(option) => option.value
-		);
-		onChange(selectedValues);
-	}
-
-	let className = "dataloom-multi-select dataloom-focusable";
-	if (customClassName) {
-		className += " " + customClassName;
-	}
+	const COMPONENT_ID = `multi-select-${id}`;
+	const menu = useMenu(COMPONENT_ID);
 
 	return (
-		<select
-			tabIndex={0}
-			multiple={true}
-			className={className}
-			value={value}
-			onChange={handleChange}
-			onKeyDown={onKeyDown}
-		>
-			{children}
-		</select>
+		<>
+			<MenuTrigger
+				variant="cell"
+				menuId={menu.id}
+				level={LoomMenuLevel.TWO}
+				isFocused={menu.isTriggerFocused}
+				onOpen={() => menu.onOpen(LoomMenuLevel.TWO)}
+			>
+				<div className="dataloom-multi-select" ref={menu.triggerRef}>
+					<Stack isHorizontal height="100%" align="center">
+						<Text value={`${selectedOptionIds.length} ${title}`} />
+						<Icon lucideId="chevron-down" />
+					</Stack>
+				</div>
+			</MenuTrigger>
+			<MultiSelectMenu
+				id={menu.id}
+				isOpen={menu.isOpen}
+				position={menu.position}
+				options={options}
+				selectedOptionIds={selectedOptionIds}
+				onChange={onChange}
+			/>
+		</>
 	);
 }

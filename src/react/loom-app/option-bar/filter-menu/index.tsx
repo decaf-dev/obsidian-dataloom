@@ -62,6 +62,7 @@ import {
 	createTextFilter,
 } from "src/shared/loom-state/loom-state-factory";
 import DateFilterSelect from "./date-filter-select";
+import Tag from "src/react/shared/tag";
 
 interface Props {
 	id: string;
@@ -497,20 +498,23 @@ export default function FilterMenu({
 									const { tagIds } = filter as MultiTagFilter;
 									inputNode = (
 										<MultiSelect
-											value={tagIds}
+											id={id}
+											title="tags"
+											options={tags.map((tag) => ({
+												id: tag.id,
+												name: tag.content,
+												component: (
+													<Tag
+														content={tag.content}
+														color={tag.color}
+													/>
+												),
+											}))}
+											selectedOptionIds={tagIds}
 											onChange={(value) =>
 												onTagsChange(id, value)
 											}
-										>
-											{tags.map((tag) => (
-												<option
-													key={tag.id}
-													value={tag.id}
-												>
-													{tag.content}
-												</option>
-											))}
-										</MultiSelect>
+										/>
 									);
 									conditionOptions = [
 										TextFilterCondition.CONTAINS,
