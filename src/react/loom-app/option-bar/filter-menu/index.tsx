@@ -499,7 +499,7 @@ export default function FilterMenu({
 									inputNode = (
 										<MultiSelect
 											id={id}
-											title="tags"
+											title="Tags"
 											options={tags.map((tag) => ({
 												id: tag.id,
 												name: tag.content,
