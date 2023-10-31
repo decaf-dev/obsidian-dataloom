@@ -1,5 +1,3 @@
-import { useOverflow } from "src/shared/spacing/hooks";
-
 import { isNumber } from "src/shared/match";
 import {
 	CurrencyType,
@@ -25,8 +23,6 @@ export default function NumberCell({
 	suffix,
 	separator,
 }: Props) {
-	const overflowClassName = useOverflow(false);
-
 	if (isNumber(value)) {
 		value = getNumberCellContent(format, value, {
 			currency,
@@ -36,8 +32,5 @@ export default function NumberCell({
 		});
 	}
 
-	let className = "dataloom-number-cell";
-	className += " " + overflowClassName;
-
-	return <div className={className}>{value}</div>;
+	return <div className="dataloom-number-cell">{value}</div>;
 }
