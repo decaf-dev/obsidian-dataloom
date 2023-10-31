@@ -5,7 +5,7 @@
 	font-size: var(--font-ui-small);
 	background-color: var(--interactive-normal);
 	color: var(--text-normal);
-	padding: 0 1.9em 0 0.8em;
+	padding: 0 0.8em;
 }
 
 .dataloom-multi-select:hover {
