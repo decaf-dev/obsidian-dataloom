@@ -54,8 +54,10 @@ export default function ColumnResize({
 
 			if (shouldAdd) {
 				containerEl.classList.add("dataloom-auto-width");
+				containerEl.classList.add("dataloom-nowrap");
 			} else {
 				containerEl.classList.remove("dataloom-auto-width");
+				containerEl.classList.remove("dataloom-nowrap");
 			}
 		});
 	}
