@@ -37,7 +37,12 @@ export default function MultiSelect({
 				onOpen={() => menu.onOpen(LoomMenuLevel.TWO)}
 			>
 				<div className="dataloom-multi-select" ref={menu.triggerRef}>
-					<Stack isHorizontal height="100%" align="center">
+					<Stack
+						isHorizontal
+						justify="space-between"
+						align="center"
+						height="100%"
+					>
 						<Text value={`${selectedOptionIds.length} ${title}`} />
 						<Icon lucideId="chevron-down" />
 					</Stack>
