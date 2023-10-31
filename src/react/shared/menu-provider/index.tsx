@@ -116,8 +116,6 @@ export default function MenuProvider({ children }: Props) {
 			const menu = openMenus.find((menu) => menu.id === id);
 			if (!menu) throw new Error("Menu not found");
 
-			console.log("Closing menu", menu);
-
 			focusMenuTrigger(menu.parentComponentId, menu.name);
 			setOpenMenus((prevMenus) =>
 				prevMenus.filter((menu) => menu.id !== id)

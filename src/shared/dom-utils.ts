@@ -18,7 +18,6 @@ export const findAncestorWithClassName = (
 ) => {
 	let el: HTMLElement | null = currentEl;
 
-	console.log("Parent", el);
 	while (el && !el.classList.contains(className)) {
 		if (el.classList.contains(className)) {
 			return el;
