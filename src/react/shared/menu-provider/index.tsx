@@ -194,6 +194,7 @@ export default function MenuProvider({ children }: Props) {
 	}
 
 	const handleCloseAll = React.useCallback(() => {
+		logger("MenuProvider onCloseAll");
 		setOpenMenus((prevState) =>
 			prevState.filter((menu) => menu.shouldRequestOnClose)
 		);
@@ -202,7 +203,7 @@ export default function MenuProvider({ children }: Props) {
 				createCloseRequest(menu.id, "save-and-close")
 			);
 		});
-	}, [openMenus, setOpenMenus]);
+	}, [openMenus, setOpenMenus, logger]);
 
 	const getTopMenu = React.useCallback(() => {
 		return openMenus[openMenus.length - 1] ?? null;
