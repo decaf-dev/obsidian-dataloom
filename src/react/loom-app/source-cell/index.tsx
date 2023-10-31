@@ -1,4 +1,3 @@
-import { useOverflow } from "src/shared/spacing/hooks";
 import { Source, SourceType } from "src/shared/loom-state/types/loom-state";
 import Bubble from "src/react/shared/bubble";
 import Icon from "src/react/shared/icon";
@@ -7,19 +6,13 @@ import { getSourceCellContent } from "src/shared/cell-content/source-cell-conten
 
 interface Props {
 	source: Source | null;
-	shouldWrapOverflow: boolean;
 }
 
-export default function SourceCell({ source, shouldWrapOverflow }: Props) {
-	const overflowClassName = useOverflow(shouldWrapOverflow);
-
-	let className = "dataloom-source-cell";
-	className += " " + overflowClassName;
-
+export default function SourceCell({ source }: Props) {
 	const content = getSourceCellContent(source);
 
 	return (
-		<div className={className}>
+		<div className="dataloom-source-cell">
 			<Bubble
 				variant="no-fill"
 				icon={
