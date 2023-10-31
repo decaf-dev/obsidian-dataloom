@@ -16,6 +16,9 @@
 .dataloom-multi-select__options {
 	width: 100%;
 	cursor: pointer;
+	max-height: 300px;
+	overflow-x: auto;
+	overflow-y: scroll;
 }
 
 .dataloom-multi-select__option {
