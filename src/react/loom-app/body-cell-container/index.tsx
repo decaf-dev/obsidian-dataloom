@@ -268,7 +268,7 @@ export default function BodyCellContainer({
 		menuHeight = 0;
 	}
 
-	let className = "dataloom-cell__body-container";
+	let className = "dataloom-cell--body__container";
 	if (
 		columnType === CellType.LAST_EDITED_TIME ||
 		columnType === CellType.CREATION_TIME ||
@@ -276,7 +276,7 @@ export default function BodyCellContainer({
 		columnType === CellType.SOURCE_FILE ||
 		(source && frontmatterKey === null)
 	) {
-		className += " dataloom-cell__body-container--default-cursor";
+		className += " dataloom-cell--body__container--default-cursor";
 	}
 
 	const cellTags = columnTags.filter((tag) => cellTagIds.includes(tag.id));

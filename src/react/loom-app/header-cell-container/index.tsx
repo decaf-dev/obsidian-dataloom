@@ -1,14 +1,10 @@
-import React from "react";
-
 import Icon from "../../shared/icon";
 import Stack from "../../shared/stack";
 import MenuTrigger from "src/react/shared/menu-trigger";
 import ResizeContainer from "./column-resize";
 import HeaderMenu from "../header-cell-edit";
 
-import { useCompare, useForceUpdate } from "src/shared/hooks";
 import { getIconIdForCellType } from "src/react/shared/icon/utils";
-import { numToPx } from "src/shared/conversion";
 import { CellType, Column } from "src/shared/loom-state/types/loom-state";
 
 import "./styles.css";
@@ -48,28 +44,6 @@ export default function HeaderCellContainer({
 	const COMPONENT_ID = `header-cell-${columnId}`;
 	const menu = useMenu(COMPONENT_ID);
 
-	const [forceUpdateTime, forceUpdate] = useForceUpdate();
-
-	//A width of "unset" means that we have double clicked to fore the column to resize
-	//to the width of the cell contents
-	//We need to force an update so that the menu ref will have the correct width
-	React.useEffect(() => {
-		if (width === "unset") forceUpdate();
-	}, [width, forceUpdate]);
-
-	//We will then need to update the width of the column so that the header cell will
-	//have a value set in pixels
-	const shouldUpdateWidth = useCompare(forceUpdateTime, false);
-	React.useEffect(() => {
-		if (shouldUpdateWidth) {
-			const newWidth = numToPx(menu.position.width);
-			onColumnChange(columnId, {
-				width: newWidth,
-			});
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [columnId, shouldUpdateWidth, menu.position]);
-
 	const lucideId = getIconIdForCellType(type);
 
 	let contentClassName = "dataloom-cell--header__inner-container";
@@ -103,6 +77,7 @@ export default function HeaderCellContainer({
 						</Stack>
 					</div>
 					<ResizeContainer
+						columnIndex={index}
 						currentResizingId={resizingColumnId}
 						columnId={columnId}
 						width={width}

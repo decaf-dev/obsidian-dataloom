@@ -1,4 +1,4 @@
-.dataloom-cell__body-container {
+.dataloom-cell--body__container {
     display: flex;
     width: 100%;
     height: 100%;
@@ -8,6 +8,6 @@
     color: var(--text-normal); /* Stop dimming of text when mouse leaves embedded loom */
 }
 
-.dataloom-cell__body-container--default-cursor {
+.dataloom-cell--body__container--default-cursor {
     cursor: default;
 }
