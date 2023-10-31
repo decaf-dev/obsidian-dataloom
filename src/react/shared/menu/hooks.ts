@@ -4,6 +4,7 @@ import _ from "lodash";
 
 import { getPositionFromEl } from "../menu-provider/utils";
 import { PositionUpdateHandler } from "../menu-provider/types";
+import { findAncestorsUntilClassName } from "src/shared/dom-utils";
 
 export const useMenuPosition = (
 	isOpen: boolean,
@@ -59,18 +60,4 @@ const useBasePosition = (
 	}, [className, isOpen, onPositionUpdate]);
 
 	return ref;
-};
-
-const findAncestorsUntilClassName = (
-	currentEl: HTMLElement,
-	className: string
-) => {
-	const ancestors: HTMLElement[] = [];
-	let el: HTMLElement | null = currentEl;
-
-	while (el && !el.classList.contains(className)) {
-		ancestors.push(el);
-		el = el.parentElement;
-	}
-	return ancestors;
 };
