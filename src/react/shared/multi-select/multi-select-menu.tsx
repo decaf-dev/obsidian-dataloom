@@ -4,6 +4,9 @@ import Menu from "../menu";
 import { LoomMenuPosition } from "../menu/types";
 import MultiSelectOption from "./multi-select-option";
 import { MultiSelectOptionType } from "./types";
+import Input from "../input";
+import React from "react";
+import Padding from "../padding";
 
 interface Props {
 	id: string;
@@ -22,7 +25,13 @@ export default function MultiSelectMenu({
 	selectedOptionIds,
 	onChange,
 }: Props) {
-	// const [inputValue, setInputValue] = React.useState("");
+	const [inputValue, setInputValue] = React.useState("");
+
+	React.useEffect(() => {
+		if (!isOpen) {
+			setInputValue("");
+		}
+	}, [isOpen]);
 
 	function handleOptionClick(id: string) {
 		const isSelected = selectedOptionIds.includes(id);
@@ -36,33 +45,39 @@ export default function MultiSelectMenu({
 		}
 	}
 
-	// const filteredValues = options.filter((option) =>
-	// 	option.name.toLowerCase().includes(inputValue.toLocaleLowerCase())
-	// );
+	const filteredOptions = options.filter((option) =>
+		option.name.toLowerCase().includes(inputValue.toLocaleLowerCase())
+	);
 	return (
 		<Menu id={id} isOpen={isOpen} position={position} topOffset={35}>
 			<div className="dataloom-multi-select-menu">
-				{/* <Stack spacing="md"> */}
-				{/* <Input value={inputValue} onChange={setInputValue} /> */}
-				<div className="dataloom-multi-select__options">
-					{options.map((option) => {
-						const { id, component } = option;
-						const isChecked = selectedOptionIds.includes(id);
-						return (
-							<MultiSelectOption
-								key={id}
-								id={id}
-								isChecked={isChecked}
-								component={component}
-								handleOptionClick={handleOptionClick}
-							/>
-						);
-					})}
-					{options.length === 0 && (
-						<Text value="No options to select" />
-					)}
-				</div>
-				{/* </Stack> */}
+				<Stack spacing="md">
+					<Padding px="md" pt="sm">
+						<Input
+							value={inputValue}
+							placeholder="Type to filter..."
+							onChange={setInputValue}
+						/>
+					</Padding>
+					<div className="dataloom-multi-select__options">
+						{filteredOptions.map((option) => {
+							const { id, component } = option;
+							const isChecked = selectedOptionIds.includes(id);
+							return (
+								<MultiSelectOption
+									key={id}
+									id={id}
+									isChecked={isChecked}
+									component={component}
+									handleOptionClick={handleOptionClick}
+								/>
+							);
+						})}
+						{options.length === 0 && (
+							<Text value="No options to select" />
+						)}
+					</div>
+				</Stack>
 			</div>
 		</Menu>
 	);
