@@ -1,19 +1,20 @@
 import Stack from "../stack";
 import Text from "../text";
-
-import "./styles.css";
-import { MultiSelectOption } from "./types";
 import Icon from "../icon";
+
 import MultiSelectMenu from "./multi-select-menu";
 import { useMenu } from "../menu-provider/hooks";
 import { LoomMenuLevel } from "../menu-provider/types";
 import MenuTrigger from "../menu-trigger";
+import { MultiSelectOptionType } from "./types";
+
+import "./styles.css";
 
 interface Props {
 	id: string;
 	title: string;
 	selectedOptionIds: string[];
-	options: MultiSelectOption[];
+	options: MultiSelectOptionType[];
 	onChange: (keys: string[]) => void;
 }
 

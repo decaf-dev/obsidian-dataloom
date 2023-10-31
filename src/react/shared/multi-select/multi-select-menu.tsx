@@ -1,14 +1,15 @@
 import Stack from "../stack";
 import Text from "../text";
-import { MultiSelectOption } from "./types";
 import Menu from "../menu";
 import { LoomMenuPosition } from "../menu/types";
+import MultiSelectOption from "./multi-select-option";
+import { MultiSelectOptionType } from "./types";
 
 interface Props {
 	id: string;
 	isOpen: boolean;
 	position: LoomMenuPosition;
-	options: MultiSelectOption[];
+	options: MultiSelectOptionType[];
 	selectedOptionIds: string[];
 	onChange: (keys: string[]) => void;
 }
@@ -41,35 +42,27 @@ export default function MultiSelectMenu({
 	return (
 		<Menu id={id} isOpen={isOpen} position={position} topOffset={35}>
 			<div className="dataloom-multi-select-menu">
-				<Stack spacing="md">
-					{/* <Input value={inputValue} onChange={setInputValue} /> */}
-					<div className="dataloom-multi-select__options">
-						{options.map((option) => {
-							const { id, component } = option;
-							const isChecked = selectedOptionIds.includes(id);
-							return (
-								<Stack
-									key={id}
-									isHorizontal
-									className="dataloom-multi-select__option dataloom-focusable dataloom-selectable"
-									width="100%"
-									onClick={() => handleOptionClick(id)}
-								>
-									<input
-										className="task-list-item-checkbox"
-										type="checkbox"
-										checked={isChecked}
-										onChange={() => {}}
-									/>
-									{component}
-								</Stack>
-							);
-						})}
-						{options.length === 0 && (
-							<Text value="No options to select" />
-						)}
-					</div>
-				</Stack>
+				{/* <Stack spacing="md"> */}
+				{/* <Input value={inputValue} onChange={setInputValue} /> */}
+				<div className="dataloom-multi-select__options">
+					{options.map((option) => {
+						const { id, component } = option;
+						const isChecked = selectedOptionIds.includes(id);
+						return (
+							<MultiSelectOption
+								key={id}
+								id={id}
+								isChecked={isChecked}
+								component={component}
+								handleOptionClick={handleOptionClick}
+							/>
+						);
+					})}
+					{options.length === 0 && (
+						<Text value="No options to select" />
+					)}
+				</div>
+				{/* </Stack> */}
 			</div>
 		</Menu>
 	);
