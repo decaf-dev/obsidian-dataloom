@@ -74,7 +74,9 @@ export default function MultiSelectMenu({
 							);
 						})}
 						{options.length === 0 && (
-							<Text value="No options to select" />
+							<Padding px="md" pb="sm">
+								<Text value="No options to select" />
+							</Padding>
 						)}
 					</div>
 				</Stack>
