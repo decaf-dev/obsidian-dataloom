@@ -10,12 +10,14 @@ export const useMenuEvents = () => {
 	useCloseOnOutsideClick();
 	useCloseOnObsidianModalOpen();
 	useCloseOnMarkdownViewScroll();
-	useStopTableScroll();
+	useLockTableScroll();
 };
 
-const useStopTableScroll = () => {
+const useLockTableScroll = () => {
 	const { reactAppId } = useAppMount();
 	const { topMenu } = useMenuOperations();
+	const logger = useLogger();
+	const hasLockRef = React.useRef(false);
 
 	React.useEffect(() => {
 		const appEl = document.getElementById(reactAppId);
@@ -26,18 +28,23 @@ const useStopTableScroll = () => {
 		) as HTMLElement | null;
 		if (!tableContainerEl) return;
 
-		const { parentComponentId } = topMenu ?? {};
-		//Only stop table scroll when the menu is opened from a cell
-		if (!parentComponentId?.includes("cell")) return;
-
 		if (topMenu) {
-			tableContainerEl.style.overflowX = "hidden";
-			tableContainerEl.style.overflowY = "hidden";
+			if (hasLockRef.current) return;
+			hasLockRef.current = true;
+
+			const { parentComponentId } = topMenu;
+			if (!parentComponentId?.includes("cell")) return;
+
+			logger("useLockTableScroll cell menu opened. locking table scroll");
+			tableContainerEl.style.overflow = "hidden";
 		} else {
-			tableContainerEl.style.overflowX = "auto";
-			tableContainerEl.style.overflowY = "auto";
+			hasLockRef.current = false;
+			logger(
+				"useLockTableScroll cell menu closed. unlocking table scroll"
+			);
+			tableContainerEl.style.overflow = "auto";
 		}
-	}, [topMenu]);
+	}, [topMenu, logger]);
 };
 
 /**
