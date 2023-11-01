@@ -28,16 +28,21 @@ export default function MultiSelect({
 	const COMPONENT_ID = `multi-select-${id}`;
 	const menu = useMenu(COMPONENT_ID);
 
+	function openMenu() {
+		menu.onOpen(LoomMenuLevel.TWO);
+	}
+
 	return (
 		<>
 			<MenuTrigger
+				ref={menu.triggerRef}
 				variant="cell"
 				menuId={menu.id}
 				level={LoomMenuLevel.TWO}
 				isFocused={menu.isTriggerFocused}
-				onOpen={() => menu.onOpen(LoomMenuLevel.TWO)}
+				onOpen={() => openMenu()}
 			>
-				<div className="dataloom-multi-select" ref={menu.triggerRef}>
+				<div className="dataloom-multi-select">
 					<Stack
 						isHorizontal
 						justify="space-between"
