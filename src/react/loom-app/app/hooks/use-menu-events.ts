@@ -16,6 +16,7 @@ export const useMenuEvents = () => {
 const useStopTableScroll = () => {
 	const { reactAppId } = useAppMount();
 	const { topMenu } = useMenuOperations();
+	const logger = useLogger();
 
 	React.useEffect(() => {
 		const appEl = document.getElementById(reactAppId);
@@ -26,18 +27,16 @@ const useStopTableScroll = () => {
 		) as HTMLElement | null;
 		if (!tableContainerEl) return;
 
-		const { parentComponentId } = topMenu ?? {};
-		//Only stop table scroll when the menu is opened from a cell
-		if (!parentComponentId?.includes("cell")) return;
-
 		if (topMenu) {
-			tableContainerEl.style.overflowX = "hidden";
-			tableContainerEl.style.overflowY = "hidden";
+			const { parentComponentId } = topMenu ?? {};
+			if (!parentComponentId?.includes("cell")) return;
+			logger("useStopTableScroll cell menu opened. Locking table scroll");
+			tableContainerEl.style.overflow = "hidden";
 		} else {
-			tableContainerEl.style.overflowX = "auto";
-			tableContainerEl.style.overflowY = "auto";
+			logger("useStopTableScroll unlocking table scroll");
+			tableContainerEl.style.overflow = "auto";
 		}
-	}, [topMenu]);
+	}, [topMenu, logger]);
 };
 
 /**
