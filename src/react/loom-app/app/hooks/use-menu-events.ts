@@ -9,8 +9,35 @@ import { useMenuOperations } from "src/react/shared/menu-provider/hooks";
 export const useMenuEvents = () => {
 	useCloseOnOutsideClick();
 	useCloseOnObsidianModalOpen();
-	useCloseOnTableScroll();
 	useCloseOnMarkdownViewScroll();
+	useStopTableScroll();
+};
+
+const useStopTableScroll = () => {
+	const { reactAppId } = useAppMount();
+	const { topMenu } = useMenuOperations();
+
+	React.useEffect(() => {
+		const appEl = document.getElementById(reactAppId);
+		if (!appEl) return;
+
+		const tableContainerEl = appEl.querySelector(
+			'[data-virtuoso-scroller="true"]'
+		) as HTMLElement | null;
+		if (!tableContainerEl) return;
+
+		const { parentComponentId } = topMenu ?? {};
+		//Only stop table scroll when the menu is opened from a cell
+		if (!parentComponentId?.includes("cell")) return;
+
+		if (topMenu) {
+			tableContainerEl.style.overflowX = "hidden";
+			tableContainerEl.style.overflowY = "hidden";
+		} else {
+			tableContainerEl.style.overflowX = "auto";
+			tableContainerEl.style.overflowY = "auto";
+		}
+	}, [topMenu]);
 };
 
 /**
@@ -55,44 +82,6 @@ const useCloseOnMarkdownViewScroll = () => {
 		return () =>
 			pageScrollerEl?.removeEventListener("scroll", throttleHandleScroll);
 	}, [onCloseAll, isMarkdownView, reactAppId]);
-};
-
-const useCloseOnTableScroll = () => {
-	const { reactAppId } = useAppMount();
-	const { onCloseAll } = useMenuOperations();
-
-	React.useEffect(() => {
-		const THROTTLE_TIME_MILLIS = 100;
-		const throttleHandleScroll = _.throttle(
-			handleScroll,
-			THROTTLE_TIME_MILLIS
-		);
-
-		function handleScroll() {
-			//Find any open menus
-			const openMenus = document.querySelectorAll(".dataloom-menu");
-			if (openMenus.length === 0) return;
-
-			//Since it takes a noticable amount of time for React to update the DOM, we set
-			//the display to none and then wait for React to clean up the DOM
-			for (const menu of openMenus) {
-				(menu as HTMLElement).style.display = "none";
-			}
-			onCloseAll();
-		}
-
-		const appEl = document.getElementById(reactAppId);
-		if (!appEl) return;
-
-		const tableContainer = appEl.querySelector(
-			'[data-virtuoso-scroller="true"]'
-		) as HTMLElement | null;
-		if (!tableContainer) return;
-
-		tableContainer.addEventListener("scroll", throttleHandleScroll);
-		return () =>
-			tableContainer?.removeEventListener("scroll", throttleHandleScroll);
-	}, [onCloseAll, reactAppId]);
 };
 
 /**

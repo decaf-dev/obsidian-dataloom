@@ -1,43 +1,67 @@
+import Stack from "../stack";
+import Text from "../text";
+import Icon from "../icon";
+
+import MultiSelectMenu from "./multi-select-menu";
+import { useMenu } from "../menu-provider/hooks";
+import { LoomMenuLevel } from "../menu-provider/types";
+import MenuTrigger from "../menu-trigger";
+import { MultiSelectOptionType } from "./types";
+
 import "./styles.css";
 
 interface Props {
-	className?: string;
-	value: string[];
-	onKeyDown?: (e: React.KeyboardEvent<HTMLSelectElement>) => void;
-	onChange: (value: string[]) => void;
-	children: React.ReactNode;
+	id: string;
+	title: string;
+	selectedOptionIds: string[];
+	options: MultiSelectOptionType[];
+	onChange: (keys: string[]) => void;
 }
 
 export default function MultiSelect({
-	className: customClassName,
-	value,
+	id,
+	title,
+	selectedOptionIds,
+	options,
 	onChange,
-	onKeyDown,
-	children,
 }: Props) {
-	function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
-		const selectedValues = Array.from(
-			e.target.selectedOptions,
-			(option) => option.value
-		);
-		onChange(selectedValues);
-	}
+	const COMPONENT_ID = `multi-select-${id}`;
+	const menu = useMenu(COMPONENT_ID);
 
-	let className = "dataloom-multi-select dataloom-focusable";
-	if (customClassName) {
-		className += " " + customClassName;
+	function openMenu() {
+		menu.onOpen(LoomMenuLevel.TWO);
 	}
 
 	return (
-		<select
-			tabIndex={0}
-			multiple={true}
-			className={className}
-			value={value}
-			onChange={handleChange}
-			onKeyDown={onKeyDown}
-		>
-			{children}
-		</select>
+		<>
+			<MenuTrigger
+				ref={menu.triggerRef}
+				variant="cell"
+				menuId={menu.id}
+				level={LoomMenuLevel.TWO}
+				isFocused={menu.isTriggerFocused}
+				onOpen={() => openMenu()}
+			>
+				<div className="dataloom-multi-select">
+					<Stack
+						isHorizontal
+						justify="space-between"
+						align="center"
+						height="100%"
+					>
+						<Text value={`${selectedOptionIds.length} ${title}`} />
+						<Icon lucideId="chevron-down" />
+					</Stack>
+				</div>
+			</MenuTrigger>
+			<MultiSelectMenu
+				id={menu.id}
+				isOpen={menu.isOpen}
+				position={menu.position}
+				options={options}
+				selectedOptionIds={selectedOptionIds}
+				onChange={onChange}
+			/>
+		</>
 	);
 }
