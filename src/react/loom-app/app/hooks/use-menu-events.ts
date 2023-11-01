@@ -44,7 +44,7 @@ const useLockTableScroll = () => {
 			);
 			tableContainerEl.style.overflow = "auto";
 		}
-	}, [topMenu, logger]);
+	}, [topMenu, logger, reactAppId]);
 };
 
 /**
