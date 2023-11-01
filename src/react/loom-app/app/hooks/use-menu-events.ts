@@ -10,13 +10,14 @@ export const useMenuEvents = () => {
 	useCloseOnOutsideClick();
 	useCloseOnObsidianModalOpen();
 	useCloseOnMarkdownViewScroll();
-	useStopTableScroll();
+	useLockTableScroll();
 };
 
-const useStopTableScroll = () => {
+const useLockTableScroll = () => {
 	const { reactAppId } = useAppMount();
 	const { topMenu } = useMenuOperations();
 	const logger = useLogger();
+	const hasLockRef = React.useRef(false);
 
 	React.useEffect(() => {
 		const appEl = document.getElementById(reactAppId);
@@ -28,12 +29,19 @@ const useStopTableScroll = () => {
 		if (!tableContainerEl) return;
 
 		if (topMenu) {
-			const { parentComponentId } = topMenu ?? {};
+			if (hasLockRef.current) return;
+			hasLockRef.current = true;
+
+			const { parentComponentId } = topMenu;
 			if (!parentComponentId?.includes("cell")) return;
-			logger("useStopTableScroll cell menu opened. Locking table scroll");
+
+			logger("useLockTableScroll cell menu opened. locking table scroll");
 			tableContainerEl.style.overflow = "hidden";
 		} else {
-			logger("useStopTableScroll unlocking table scroll");
+			hasLockRef.current = false;
+			logger(
+				"useLockTableScroll cell menu closed. unlocking table scroll"
+			);
 			tableContainerEl.style.overflow = "auto";
 		}
 	}, [topMenu, logger]);
