@@ -1,6 +1,6 @@
 import React from "react";
+
 import Button from "src/react/shared/button";
-import Input from "src/react/shared/input";
 import Padding from "src/react/shared/padding";
 import Select from "src/react/shared/select";
 import Stack from "src/react/shared/stack";
@@ -8,22 +8,16 @@ import Submenu from "src/react/shared/submenu";
 import Text from "src/react/shared/text";
 import { getDisplayNameForSource } from "src/shared/loom-state/type-display-names";
 import { Source, SourceType } from "src/shared/loom-state/types/loom-state";
-import { SourceAddHandler } from "../../app/hooks/use-source/types";
+import { SourceAddHandler } from "../../../app/hooks/use-source/types";
 import { createFolderSource } from "src/shared/loom-state/loom-state-factory";
+import FolderSourceOptions from "./folder-source-options";
+import { AddSourceError } from "./types";
 
 interface Props {
 	sources: Source[];
 	onAddSourceClick: SourceAddHandler;
 	onBackClick: () => void;
 }
-
-interface Error {
-	message: string;
-	inputId: string;
-}
-
-const PATH_INPUT_ID = "path";
-const TYPE_SELECT_ID = "type";
 
 export default function AddSourceSubmenu({
 	sources,
@@ -32,36 +26,43 @@ export default function AddSourceSubmenu({
 }: Props) {
 	const [type, setType] = React.useState<SourceType | null>(null);
 	const [path, setPath] = React.useState("");
-	const [error, setError] = React.useState<Error | null>(null);
+	const [showMarkdownOnly, setShowMarkdownOnly] = React.useState(false);
+	const [showNested, setShowNested] = React.useState(false);
+	const [error, setError] = React.useState<AddSourceError | null>(null);
+
+	const typeSelectId = React.useId();
+	const pathInputId = React.useId();
+	const showNestedToggleId = React.useId();
+	const showMarkdownOnlyToggleId = React.useId();
 
 	function handleAddClick() {
 		if (type === null) {
 			setError({
 				message: "Please select a type",
-				inputId: TYPE_SELECT_ID,
+				inputId: typeSelectId,
 			});
 			return;
 		} else if (path === "") {
 			setError({
 				message: "Please enter a path",
-				inputId: PATH_INPUT_ID,
+				inputId: pathInputId,
 			});
 			return;
 		} else if (alreadyHasSource(sources, type, path)) {
 			setError({
 				message: "Source already exists",
-				inputId: PATH_INPUT_ID,
+				inputId: pathInputId,
 			});
 			return;
 		}
 
 		let source: Source;
 		if (type === SourceType.FOLDER) {
-			source = createFolderSource(path);
+			source = createFolderSource(path, showNested, showMarkdownOnly);
 		} else {
 			setError({
 				message: "Source not supported",
-				inputId: TYPE_SELECT_ID,
+				inputId: pathInputId,
 			});
 			return;
 		}
@@ -101,7 +102,7 @@ export default function AddSourceSubmenu({
 						<Select
 							id="type"
 							value={type ?? ""}
-							hasError={error?.inputId === TYPE_SELECT_ID}
+							hasError={error?.inputId === typeSelectId}
 							onChange={(value) =>
 								setType((value as SourceType) || null)
 							}
@@ -118,16 +119,18 @@ export default function AddSourceSubmenu({
 								})}
 						</Select>
 					</Stack>
-					<Stack spacing="sm">
-						<label htmlFor={PATH_INPUT_ID}>Path</label>
-						<Input
-							id={PATH_INPUT_ID}
-							autoFocus={false}
-							hasError={error?.inputId === PATH_INPUT_ID}
-							value={path}
-							onChange={(value) => setPath(value)}
-						/>
-					</Stack>
+					<FolderSourceOptions
+						pathInputId={pathInputId}
+						showNestedToggleId={showNestedToggleId}
+						showMarkdownOnlyToggleId={showMarkdownOnlyToggleId}
+						error={error}
+						showMarkdownOnly={showMarkdownOnly}
+						showNested={showNested}
+						path={path}
+						onShowMarkdownToggle={setShowMarkdownOnly}
+						onShowNestedToggle={setShowNested}
+						onPathChange={(value) => setPath(value)}
+					/>
 					{error?.message && (
 						<Text value={error.message} variant="error" />
 					)}
