@@ -4,9 +4,9 @@
 
 Find detailed documentation at [dataloom.xyz](https://dataloom.xyz)
 
-Join the [Discord](https://discord.gg/QaFbepMdN4) community
-
 DataLoom is an [Obsidian.md](https://obsidian.md/) plugin for desktop and mobile. DataLoom allows you to weave together data from diverse sources into a cohesive table view.
+
+Join the [Discord](https://discord.gg/QaFbepMdN4) community
 
 Support development
 
