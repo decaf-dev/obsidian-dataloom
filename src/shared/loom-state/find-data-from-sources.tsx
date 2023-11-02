@@ -9,6 +9,7 @@ import {
 	Source,
 	SourceType,
 } from "./types/loom-state";
+
 import { deserializeFrontmatterForCell } from "../deserialize-frontmatter";
 import { cloneDeep } from "lodash";
 
@@ -28,13 +29,17 @@ export default function findDataFromSources(
 		const { id, type } = source;
 		switch (type) {
 			case SourceType.FOLDER: {
-				const { path } = source as ObsidianFolderSource;
+				const { path, shouldIncludeSubfolders } =
+					source as ObsidianFolderSource;
 				const result = findRowsFromFolder(
 					app,
 					nextColumns,
+					numRows + newRows.length,
 					id,
-					path,
-					numRows + newRows.length
+					{
+						path,
+						shouldIncludeSubfolders,
+					}
 				);
 				newRows.push(...result.newRows);
 				nextColumns = result.nextColumns;
@@ -53,23 +58,30 @@ export default function findDataFromSources(
 const findRowsFromFolder = (
 	app: App,
 	columns: Column[],
+	numRows: number,
 	sourceId: string,
-	folderPath: string,
-	numRows: number
+	folderOptions: {
+		path: string;
+		shouldIncludeSubfolders: boolean;
+	}
 ): {
 	newRows: Row[];
 	nextColumns: Column[];
 } => {
-	const folder = app.vault.getAbstractFileByPath(folderPath);
+	const { path, shouldIncludeSubfolders } = folderOptions;
+	const folder = app.vault.getAbstractFileByPath(path);
 	if (!folder)
 		return {
 			nextColumns: columns,
 			newRows: [],
 		};
 
-	const files = app.vault
-		.getMarkdownFiles()
-		.filter((file) => file.parent?.path === folder.path);
+	const files = app.vault.getFiles().filter((file) => {
+		if (shouldIncludeSubfolders) {
+			return file.parent?.path.startsWith(folder.path);
+		}
+		return file.parent?.path === folder.path;
+	});
 
 	const newRows: Row[] = [];
 	const nextColumns = cloneDeep(columns);

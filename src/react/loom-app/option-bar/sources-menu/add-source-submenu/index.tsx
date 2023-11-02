@@ -26,14 +26,13 @@ export default function AddSourceSubmenu({
 }: Props) {
 	const [type, setType] = React.useState<SourceType | null>(null);
 	const [path, setPath] = React.useState("");
-	const [showMarkdownOnly, setShowMarkdownOnly] = React.useState(false);
-	const [showNested, setShowNested] = React.useState(false);
+	const [shouldIncludeSubfolders, setIncludeSubfolders] =
+		React.useState(true);
 	const [error, setError] = React.useState<AddSourceError | null>(null);
 
 	const typeSelectId = React.useId();
 	const pathInputId = React.useId();
-	const showNestedToggleId = React.useId();
-	const showMarkdownOnlyToggleId = React.useId();
+	const includeSubfoldersInputId = React.useId();
 
 	function handleAddClick() {
 		if (type === null) {
@@ -58,7 +57,7 @@ export default function AddSourceSubmenu({
 
 		let source: Source;
 		if (type === SourceType.FOLDER) {
-			source = createFolderSource(path, showNested, showMarkdownOnly);
+			source = createFolderSource(path, shouldIncludeSubfolders);
 		} else {
 			setError({
 				message: "Source not supported",
@@ -121,14 +120,11 @@ export default function AddSourceSubmenu({
 					</Stack>
 					<FolderSourceOptions
 						pathInputId={pathInputId}
-						showNestedToggleId={showNestedToggleId}
-						showMarkdownOnlyToggleId={showMarkdownOnlyToggleId}
+						includeSubfoldersInputId={includeSubfoldersInputId}
 						error={error}
-						showMarkdownOnly={showMarkdownOnly}
-						showNested={showNested}
+						shouldIncludeSubfolders={shouldIncludeSubfolders}
 						path={path}
-						onShowMarkdownToggle={setShowMarkdownOnly}
-						onShowNestedToggle={setShowNested}
+						onIncludeSubfoldersToggle={setIncludeSubfolders}
 						onPathChange={(value) => setPath(value)}
 					/>
 					{error?.message && (

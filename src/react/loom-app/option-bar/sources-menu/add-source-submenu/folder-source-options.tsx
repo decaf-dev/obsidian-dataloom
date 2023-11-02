@@ -6,27 +6,21 @@ import { AddSourceError } from "./types";
 
 interface Props {
 	pathInputId: string;
-	showNestedToggleId: string;
-	showMarkdownOnlyToggleId: string;
-	showMarkdownOnly: boolean;
-	showNested: boolean;
+	includeSubfoldersInputId: string;
+	shouldIncludeSubfolders: boolean;
 	path: string;
 	error: AddSourceError | null;
-	onShowMarkdownToggle: (value: boolean) => void;
-	onShowNestedToggle: (value: boolean) => void;
+	onIncludeSubfoldersToggle: (value: boolean) => void;
 	onPathChange: (value: string) => void;
 }
 
 export default function FolderSourceOptions({
 	pathInputId,
-	showNestedToggleId,
-	showMarkdownOnlyToggleId,
+	includeSubfoldersInputId,
 	error,
-	showMarkdownOnly,
-	showNested,
+	shouldIncludeSubfolders,
 	path,
-	onShowMarkdownToggle,
-	onShowNestedToggle,
+	onIncludeSubfoldersToggle,
 	onPathChange,
 }: Props) {
 	return (
@@ -42,16 +36,12 @@ export default function FolderSourceOptions({
 				/>
 			</Stack>
 			<Stack spacing="sm">
-				<label htmlFor={showNestedToggleId}>Show nested</label>
-				<Switch value={showNested} onToggle={onShowNestedToggle} />
-			</Stack>
-			<Stack spacing="sm">
-				<label htmlFor={showMarkdownOnlyToggleId}>
-					Show markdown only
+				<label htmlFor={includeSubfoldersInputId}>
+					Include subfolders
 				</label>
 				<Switch
-					value={showMarkdownOnly}
-					onToggle={onShowMarkdownToggle}
+					value={shouldIncludeSubfolders}
+					onToggle={onIncludeSubfoldersToggle}
 				/>
 			</Stack>
 		</>
