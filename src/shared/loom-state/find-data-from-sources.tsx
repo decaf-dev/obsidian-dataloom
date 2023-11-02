@@ -76,7 +76,7 @@ const findRowsFromFolder = (
 			newRows: [],
 		};
 
-	const files = app.vault.getFiles().filter((file) => {
+	const files = app.vault.getMarkdownFiles().filter((file) => {
 		if (shouldIncludeSubfolders) {
 			return file.parent?.path.startsWith(folder.path);
 		}
