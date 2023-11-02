@@ -14,3 +14,4 @@ export type { LoomState11 } from "./loom-state-11";
 export type { LoomState12 } from "./loom-state-12";
 export type { LoomState13 } from "./loom-state-13";
 export type { LoomState14 } from "./loom-state-14";
+export type { LoomState15 } from "./loom-state-15";

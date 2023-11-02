@@ -51,13 +51,15 @@ import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/constants";
 import { Color } from "src/shared/loom-state/types/loom-state";
 import { generateUuid } from "../uuid";
 
-export const createFolderSource = (path: string): ObsidianFolderSource => {
+export const createFolderSource = (
+	path: string,
+	includeSubfolders: boolean
+): ObsidianFolderSource => {
 	return {
 		id: generateUuid(),
 		type: SourceType.FOLDER,
 		path,
-		showMarkdownOnly: true,
-		showNested: false,
+		includeSubfolders,
 	};
 };
 
