@@ -26,8 +26,7 @@ export default function AddSourceSubmenu({
 }: Props) {
 	const [type, setType] = React.useState<SourceType | null>(null);
 	const [path, setPath] = React.useState("");
-	const [shouldIncludeSubfolders, setIncludeSubfolders] =
-		React.useState(true);
+	const [includeSubfolders, setIncludeSubfolders] = React.useState(true);
 	const [error, setError] = React.useState<AddSourceError | null>(null);
 
 	const typeSelectId = React.useId();
@@ -57,7 +56,7 @@ export default function AddSourceSubmenu({
 
 		let source: Source;
 		if (type === SourceType.FOLDER) {
-			source = createFolderSource(path, shouldIncludeSubfolders);
+			source = createFolderSource(path, includeSubfolders);
 		} else {
 			setError({
 				message: "Source not supported",
@@ -122,7 +121,7 @@ export default function AddSourceSubmenu({
 						pathInputId={pathInputId}
 						includeSubfoldersInputId={includeSubfoldersInputId}
 						error={error}
-						shouldIncludeSubfolders={shouldIncludeSubfolders}
+						includeSubfolders={includeSubfolders}
 						path={path}
 						onIncludeSubfoldersToggle={setIncludeSubfolders}
 						onPathChange={(value) => setPath(value)}

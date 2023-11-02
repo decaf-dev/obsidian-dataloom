@@ -53,13 +53,13 @@ import { generateUuid } from "../uuid";
 
 export const createFolderSource = (
 	path: string,
-	shouldIncludeSubfolders: boolean
+	includeSubfolders: boolean
 ): ObsidianFolderSource => {
 	return {
 		id: generateUuid(),
 		type: SourceType.FOLDER,
 		path,
-		shouldIncludeSubfolders,
+		includeSubfolders,
 	};
 };
 

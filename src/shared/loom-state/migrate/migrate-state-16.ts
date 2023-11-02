@@ -16,7 +16,8 @@ export default class MigrateState15 implements MigrateState {
 					id,
 					path,
 					type,
-					shouldIncludeSubfolders: true,
+					//Set default value
+					includeSubfolders: true,
 				};
 			}
 			return source;

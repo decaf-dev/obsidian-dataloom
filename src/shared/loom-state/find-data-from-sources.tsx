@@ -29,7 +29,7 @@ export default function findDataFromSources(
 		const { id, type } = source;
 		switch (type) {
 			case SourceType.FOLDER: {
-				const { path, shouldIncludeSubfolders } =
+				const { path, includeSubfolders } =
 					source as ObsidianFolderSource;
 				const result = findRowsFromFolder(
 					app,
@@ -38,7 +38,7 @@ export default function findDataFromSources(
 					id,
 					{
 						path,
-						shouldIncludeSubfolders,
+						includeSubfolders,
 					}
 				);
 				newRows.push(...result.newRows);
@@ -62,13 +62,13 @@ const findRowsFromFolder = (
 	sourceId: string,
 	folderOptions: {
 		path: string;
-		shouldIncludeSubfolders: boolean;
+		includeSubfolders: boolean;
 	}
 ): {
 	newRows: Row[];
 	nextColumns: Column[];
 } => {
-	const { path, shouldIncludeSubfolders } = folderOptions;
+	const { path, includeSubfolders } = folderOptions;
 	const folder = app.vault.getAbstractFileByPath(path);
 	if (!folder)
 		return {
@@ -77,7 +77,7 @@ const findRowsFromFolder = (
 		};
 
 	const files = app.vault.getMarkdownFiles().filter((file) => {
-		if (shouldIncludeSubfolders) {
+		if (includeSubfolders) {
 			return file.parent?.path.startsWith(folder.path);
 		}
 		return file.parent?.path === folder.path;

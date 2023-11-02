@@ -87,7 +87,7 @@ interface BaseSource {
 export interface ObsidianFolderSource extends BaseSource {
 	type: SourceType.FOLDER;
 	path: string;
-	shouldIncludeSubfolders: boolean;
+	includeSubfolders: boolean;
 }
 
 export interface ObsidianTagSource extends BaseSource {

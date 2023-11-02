@@ -7,7 +7,7 @@ import { AddSourceError } from "./types";
 interface Props {
 	pathInputId: string;
 	includeSubfoldersInputId: string;
-	shouldIncludeSubfolders: boolean;
+	includeSubfolders: boolean;
 	path: string;
 	error: AddSourceError | null;
 	onIncludeSubfoldersToggle: (value: boolean) => void;
@@ -18,7 +18,7 @@ export default function FolderSourceOptions({
 	pathInputId,
 	includeSubfoldersInputId,
 	error,
-	shouldIncludeSubfolders,
+	includeSubfolders,
 	path,
 	onIncludeSubfoldersToggle,
 	onPathChange,
@@ -40,7 +40,7 @@ export default function FolderSourceOptions({
 					Include subfolders
 				</label>
 				<Switch
-					value={shouldIncludeSubfolders}
+					value={includeSubfolders}
 					onToggle={onIncludeSubfoldersToggle}
 				/>
 			</Stack>
