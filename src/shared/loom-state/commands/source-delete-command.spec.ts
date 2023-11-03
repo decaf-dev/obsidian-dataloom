@@ -12,7 +12,7 @@ import CommandRedoError from "./command-redo-error";
 
 describe("source-delete-command", () => {
 	function stateWithOneSource() {
-		const sources = [createFolderSource("test")];
+		const sources = [createFolderSource("test", false)];
 		const columns = [
 			createColumn({ type: CellType.SOURCE }),
 			createColumn({ type: CellType.SOURCE_FILE }),
@@ -31,8 +31,8 @@ describe("source-delete-command", () => {
 
 	function stateWithTwoSources() {
 		const sources = [
-			createFolderSource("test"),
-			createFolderSource("test2"),
+			createFolderSource("test", false),
+			createFolderSource("test2", false),
 		];
 		const columns = [
 			createColumn({ type: CellType.SOURCE }),

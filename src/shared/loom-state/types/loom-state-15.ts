@@ -1,14 +1,14 @@
-/******* Type definitions for v8.11.0 *******/
+/******* Type definitions for v8.7.0 *******/
 
 /**
- * v8.11.0
+ * v8.7.0
  */
-export interface LoomState {
+export interface LoomState15 {
 	pluginVersion: string;
 	model: TableModel;
 }
 
-export interface TableModel {
+interface TableModel {
 	columns: Column[];
 	rows: Row[];
 	filters: Filter[];
@@ -17,18 +17,18 @@ export interface TableModel {
 	externalRowOrder: ExternalRowOrder[];
 }
 
-export interface ExternalRowOrder {
+interface ExternalRowOrder {
 	sourceId: string;
 	index: number;
 	uniqueId: string; //This could be a file path, tag name, or url
 }
 
-export interface TableSettings {
+interface TableSettings {
 	numFrozenColumns: number;
 	showCalculationRow: boolean;
 }
 
-export interface Column {
+interface Column {
 	id: string;
 	sortDir: SortDir;
 	width: string;
@@ -50,12 +50,12 @@ export interface Column {
 	frontmatterKey: FrontmatterKey | null;
 }
 
-export interface FrontmatterKey {
+interface FrontmatterKey {
 	isCustom: boolean;
 	value: string;
 }
 
-export interface Row {
+interface Row {
 	id: string;
 	index: number;
 	creationTime: number;
@@ -64,7 +64,7 @@ export interface Row {
 	cells: Cell[];
 }
 
-export interface Cell {
+interface Cell {
 	id: string;
 	columnId: string;
 	isExternalLink: boolean;
@@ -73,7 +73,7 @@ export interface Cell {
 	tagIds: string[];
 }
 
-export interface Tag {
+interface Tag {
 	id: string;
 	content: string;
 	color: Color;
@@ -87,22 +87,23 @@ interface BaseSource {
 export interface ObsidianFolderSource extends BaseSource {
 	type: SourceType.FOLDER;
 	path: string;
-	includeSubfolders: boolean;
+	showNested: boolean;
+	showMarkdownOnly: boolean;
 }
 
-export interface ObsidianTagSource extends BaseSource {
+interface ObsidianTagSource extends BaseSource {
 	type: SourceType.TAG;
 	name: string;
 }
 
-export type Source = ObsidianFolderSource | ObsidianTagSource;
+type Source = ObsidianFolderSource | ObsidianTagSource;
 
-export enum SourceType {
+enum SourceType {
 	FOLDER = "folder",
 	TAG = "tag",
 }
 
-export enum Color {
+enum Color {
 	LIGHT_GRAY = "light gray",
 	GRAY = "gray",
 	BROWN = "brown",
@@ -115,7 +116,7 @@ export enum Color {
 	RED = "red",
 }
 
-export enum PaddingSize {
+enum PaddingSize {
 	UNSET = "unset",
 	SM = "sm",
 	MD = "md",
@@ -126,13 +127,13 @@ export enum PaddingSize {
 	XXXXL = "4xl",
 }
 
-export enum SortDir {
+enum SortDir {
 	ASC = "asc",
 	DESC = "desc",
 	NONE = "default",
 }
 
-export enum CellType {
+enum CellType {
 	SOURCE_FILE = "source-file",
 	SOURCE = "source",
 	TEXT = "text",
@@ -147,7 +148,7 @@ export enum CellType {
 	LAST_EDITED_TIME = "last-edited-time",
 }
 
-export enum DateFormat {
+enum DateFormat {
 	MM_DD_YYYY = "mm/dd/yyyy",
 	DD_MM_YYYY = "dd/mm/yyyy",
 	YYYY_MM_DD = "yyyy/mm/dd",
@@ -155,12 +156,12 @@ export enum DateFormat {
 	RELATIVE = "relative",
 }
 
-export enum NumberFormat {
+enum NumberFormat {
 	NUMBER = "number",
 	CURRENCY = "currency",
 }
 
-export enum CurrencyType {
+enum CurrencyType {
 	ARGENTINA = "ARS",
 	AUSTRALIA = "AUD",
 	CANADA = "CAD",
@@ -186,7 +187,7 @@ export enum CurrencyType {
 	CHINA = "CNY",
 }
 
-export enum AspectRatio {
+enum AspectRatio {
 	UNSET = "unset",
 	NINE_BY_SIXTEEN = "9/16",
 	FOUR_BY_THREE = "4/3",
@@ -194,7 +195,7 @@ export enum AspectRatio {
 }
 
 /********** CALCULATIONS **********/
-export enum GeneralCalculation {
+enum GeneralCalculation {
 	NONE = "none",
 	COUNT_ALL = "count-all",
 	COUNT_VALUES = "count-values",
@@ -205,7 +206,7 @@ export enum GeneralCalculation {
 	PERCENT_NOT_EMPTY = "percent-not-empty",
 }
 
-export enum NumberCalculation {
+enum NumberCalculation {
 	SUM = "sum",
 	AVG = "avg",
 	MIN = "min",
@@ -214,12 +215,12 @@ export enum NumberCalculation {
 	RANGE = "range",
 }
 
-export type CalculationType = GeneralCalculation | NumberCalculation;
+type CalculationType = GeneralCalculation | NumberCalculation;
 
 /************* FILTERS ****************/
-export type FilterOperator = "and" | "or";
+type FilterOperator = "and" | "or";
 
-export enum TextFilterCondition {
+enum TextFilterCondition {
 	IS = "is",
 	IS_NOT = "is-not",
 	CONTAINS = "contains",
@@ -230,7 +231,7 @@ export enum TextFilterCondition {
 	IS_NOT_EMPTY = "is-not-empty",
 }
 
-export enum NumberFilterCondition {
+enum NumberFilterCondition {
 	IS_EQUAL = "is-equal",
 	IS_NOT_EQUAL = "is-not-equal",
 	IS_GREATER = "is-greater",
@@ -242,7 +243,7 @@ export enum NumberFilterCondition {
 }
 
 //TODO add support for more date types
-export enum DateFilterCondition {
+enum DateFilterCondition {
 	IS = "is",
 	IS_BEFORE = "is-before",
 	IS_AFTER = "is-after",
@@ -250,7 +251,7 @@ export enum DateFilterCondition {
 	IS_NOT_EMPTY = "is-not-empty",
 }
 
-export enum DateFilterOption {
+enum DateFilterOption {
 	UNSELECTED = "unselected",
 	TODAY = "today",
 	TOMORROW = "tomorrow",
@@ -261,12 +262,13 @@ export enum DateFilterOption {
 	ONE_MONTH_FROM_NOW = "one-month-from-now",
 }
 
-export type FilterCondition =
+//@ts-expect-error not used
+type FilterCondition =
 	| TextFilterCondition
 	| DateFilterCondition
 	| NumberFilterCondition;
 
-export interface BaseFilter {
+interface BaseFilter {
 	id: string;
 	columnId: string;
 	operator: FilterOperator;
@@ -274,84 +276,82 @@ export interface BaseFilter {
 }
 
 /* Text filter */
-export type TextCondition = TextFilterCondition;
+type TextCondition = TextFilterCondition;
 
-export interface TextFilter extends BaseFilter {
+interface TextFilter extends BaseFilter {
 	type: CellType.TEXT;
 	condition: TextCondition;
 	text: string;
 }
 
 /* File filter */
-export type FileCondition = TextFilterCondition;
+type FileCondition = TextFilterCondition;
 
-export interface FileFilter extends BaseFilter {
+interface FileFilter extends BaseFilter {
 	type: CellType.FILE;
 	condition: FileCondition;
 	text: string;
 }
 
 /* Checkbox filter */
-export type CheckboxCondition =
-	| TextFilterCondition.IS
-	| TextFilterCondition.IS_NOT;
+type CheckboxCondition = TextFilterCondition.IS | TextFilterCondition.IS_NOT;
 
-export interface CheckboxFilter extends BaseFilter {
+interface CheckboxFilter extends BaseFilter {
 	type: CellType.CHECKBOX;
 	condition: CheckboxCondition;
 	text: string;
 }
 
 /* Tag filter */
-export type TagCondition =
+type TagCondition =
 	| TextFilterCondition.IS
 	| TextFilterCondition.IS_NOT
 	| TextFilterCondition.IS_EMPTY
 	| TextFilterCondition.IS_NOT_EMPTY;
 
-export interface TagFilter extends BaseFilter {
+interface TagFilter extends BaseFilter {
 	type: CellType.TAG;
 	condition: TagCondition;
 	tagId: string;
 }
 
 /* Multi-tag filter */
-export type MultiTagCondition =
+type MultiTagCondition =
 	| TextFilterCondition.CONTAINS
 	| TextFilterCondition.DOES_NOT_CONTAIN
 	| TextFilterCondition.IS_EMPTY
 	| TextFilterCondition.IS_NOT_EMPTY;
 
-export interface MultiTagFilter extends BaseFilter {
+interface MultiTagFilter extends BaseFilter {
 	type: CellType.MULTI_TAG;
 	condition: MultiTagCondition;
 	tagIds: string[];
 }
 
 /* Embed filter */
-export type EmbedCondition =
+type EmbedCondition =
 	| TextFilterCondition.IS_EMPTY
 	| TextFilterCondition.IS_NOT_EMPTY;
 
-export interface EmbedFilter extends BaseFilter {
+interface EmbedFilter extends BaseFilter {
 	type: CellType.EMBED;
 	condition: EmbedCondition;
 	text: string;
 }
 
 /* Number filter */
-export type NumberCondition = NumberFilterCondition;
+type NumberCondition = NumberFilterCondition;
 
-export interface NumberFilter extends BaseFilter {
+interface NumberFilter extends BaseFilter {
 	type: CellType.NUMBER;
 	condition: NumberCondition;
 	text: string;
 }
 
 /* Date filter */
-export type DateCondition = DateFilterCondition;
+type DateCondition = DateFilterCondition;
 
-export interface DateFilter extends BaseFilter {
+interface DateFilter extends BaseFilter {
 	type: CellType.DATE;
 	condition: DateCondition;
 	option: DateFilterOption;
@@ -359,12 +359,12 @@ export interface DateFilter extends BaseFilter {
 }
 
 /* Creation time filter  */
-export type CreationTimeCondition =
+type CreationTimeCondition =
 	| DateFilterCondition.IS
 	| DateFilterCondition.IS_AFTER
 	| DateFilterCondition.IS_BEFORE;
 
-export interface CreationTimeFilter extends BaseFilter {
+interface CreationTimeFilter extends BaseFilter {
 	type: CellType.CREATION_TIME;
 	condition: CreationTimeCondition;
 	option: DateFilterOption;
@@ -372,12 +372,12 @@ export interface CreationTimeFilter extends BaseFilter {
 }
 
 /* Last edited filter  */
-export type LastEditedTimeCondition =
+type LastEditedTimeCondition =
 	| DateFilterCondition.IS
 	| DateFilterCondition.IS_AFTER
 	| DateFilterCondition.IS_BEFORE;
 
-export interface LastEditedTimeFilter extends BaseFilter {
+interface LastEditedTimeFilter extends BaseFilter {
 	type: CellType.LAST_EDITED_TIME;
 	condition: LastEditedTimeCondition;
 	option: DateFilterOption;
@@ -385,15 +385,15 @@ export interface LastEditedTimeFilter extends BaseFilter {
 }
 
 /* Source File condition */
-export type SourceFileCondition = TextFilterCondition;
+type SourceFileCondition = TextFilterCondition;
 
-export interface SourceFileFilter extends BaseFilter {
+interface SourceFileFilter extends BaseFilter {
 	type: CellType.SOURCE_FILE;
 	condition: SourceFileCondition;
 	text: string;
 }
 
-export type Filter =
+type Filter =
 	| TextFilter
 	| TagFilter
 	| MultiTagFilter

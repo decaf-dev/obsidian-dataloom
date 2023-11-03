@@ -364,8 +364,7 @@ const BaseSource = Record({
 const ObsidianFolderSource = BaseSource.extend({
 	type: Literal(SourceType.FOLDER),
 	path: String,
-	showNested: Boolean,
-	showMarkdownOnly: Boolean,
+	includeSubfolders: Boolean,
 });
 
 const ObsidianTagSource = BaseSource.extend({

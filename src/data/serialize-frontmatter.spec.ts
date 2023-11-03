@@ -66,7 +66,7 @@ describe("serializeFrontmatter", () => {
 				tags,
 			}),
 		];
-		const sources = [createFolderSource("test")];
+		const sources = [createFolderSource("test", false)];
 		const rows = [
 			createRowWithCells(0, columns, {
 				contentForCells: [
