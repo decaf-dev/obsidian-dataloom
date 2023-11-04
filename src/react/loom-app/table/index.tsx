@@ -202,6 +202,7 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 									/>
 								);
 							}
+
 							return (
 								<HeaderCell
 									key={key}
@@ -210,7 +211,7 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 									columnId={column?.id}
 									content={content}
 									isDraggable={
-										i > 0 && i < columns.length - 1
+										i > 0 && i < tableColumns.length - 1
 									}
 									onColumnReorder={onColumnReorder}
 								/>
