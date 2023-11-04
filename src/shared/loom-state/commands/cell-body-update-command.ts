@@ -17,7 +17,7 @@ export default class CellBodyUpdateCommand extends LoomStateCommand {
 	private nextLastEditedTime: number;
 
 	constructor(id: string, data: Partial<Cell>, isPartial = true) {
-		super();
+		super(true);
 		this.id = id;
 		this.data = data;
 		this.isPartial = isPartial;
