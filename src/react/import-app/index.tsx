@@ -55,17 +55,8 @@ export default function ImportApp({ state, onStateChange }: Props) {
 	const [enabledColumnIndices, setEnabledColumnIndices] = React.useState<
 		number[]
 	>([]);
-	const [toggleColumns, setToggleColumns] = React.useState(false);
-	const [columnMatches, setColumnMatches] = React.useState<ColumnMatch[]>([]);
 
-	function handleColumnToggle(index: number) {
-		setEnabledColumnIndices((prevState) => {
-			if (prevState.includes(index)) {
-				return prevState.filter((i) => i !== index);
-			}
-			return [...prevState, index];
-		});
-	}
+	const [columnMatches, setColumnMatches] = React.useState<ColumnMatch[]>([]);
 
 	function handleDataTypeChange(value: DataType) {
 		setDataType(value);
@@ -118,13 +109,12 @@ export default function ImportApp({ state, onStateChange }: Props) {
 		setHeadersRow((prevState) => !prevState);
 	}
 
-	function handleAllColumnsToggle() {
-		if (toggleColumns) {
+	function handleAllColumnsEnabledToggle(value: boolean) {
+		if (value) {
 			setEnabledColumnIndices(data[0].map((_, i) => i));
 		} else {
 			setEnabledColumnIndices([]);
 		}
-		setToggleColumns((prevState) => !prevState);
 	}
 
 	function handleColumnMatch(index: number, columnId: string | null) {
@@ -135,6 +125,25 @@ export default function ImportApp({ state, onStateChange }: Props) {
 			if (columnId === null) return filtered;
 			const match = { importColumnIndex: index, columnId };
 			return [...filtered, match];
+		});
+	}
+
+	function handleAllColumnsMatch(columnId: string | null) {
+		setColumnMatches(() => {
+			if (columnId === null) return [];
+			return data[0].map((_, i) => ({
+				importColumnIndex: i,
+				columnId,
+			}));
+		});
+	}
+
+	function handleColumnEnabledToggle(index: number) {
+		setEnabledColumnIndices((prevState) => {
+			if (prevState.includes(index)) {
+				return prevState.filter((i) => i !== index);
+			}
+			return [...prevState, index];
 		});
 	}
 
@@ -154,7 +163,6 @@ export default function ImportApp({ state, onStateChange }: Props) {
 		}
 		if (currentType !== StepType.MATCH_COLUMNS) {
 			setEnabledColumnIndices([]);
-			setToggleColumns(false);
 			setColumnMatches([]);
 		}
 	}
@@ -216,8 +224,9 @@ export default function ImportApp({ state, onStateChange }: Props) {
 					columnMatches={columnMatches}
 					columns={columns}
 					enabledColumnIndices={enabledColumnIndices}
-					onColumnToggle={handleColumnToggle}
-					onAllColumnsToggle={handleAllColumnsToggle}
+					onColumnEnabledToggle={handleColumnEnabledToggle}
+					onAllColumnsEnabledToggle={handleAllColumnsEnabledToggle}
+					onAllColumnsMatch={handleAllColumnsMatch}
 					onColumnMatch={handleColumnMatch}
 				/>
 			),

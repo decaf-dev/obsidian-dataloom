@@ -1,25 +1,31 @@
 import React from "react";
 
 import Text from "src/react/shared/text";
-import Button from "src/react/shared/button";
 import BodyCell from "./body-cell";
 import HeaderCell from "./header-cell";
 import Padding from "src/react/shared/padding";
 import Stack from "src/react/shared/stack";
+import MenuButton from "src/react/shared/menu-button";
+import ImportOptionsMenu from "./import-options-menu";
 
 import { ColumnMatch, ImportColumn } from "../types";
+import {
+	useMenu,
+	useMenuOperations,
+} from "src/react/shared/menu-provider/hooks";
+import { LoomMenuLevel } from "src/react/shared/menu-provider/types";
 
 import "./styles.css";
-import { useMenuOperations } from "src/react/shared/menu-provider/hooks";
 
 interface Props {
 	columns: ImportColumn[];
 	columnMatches: ColumnMatch[];
 	enabledColumnIndices: number[];
 	data: string[][];
-	onColumnToggle: (index: number) => void;
-	onAllColumnsToggle: () => void;
+	onColumnEnabledToggle: (index: number) => void;
+	onAllColumnsEnabledToggle: (isEnabled: boolean) => void;
 	onColumnMatch: (index: number, columnId: string | null) => void;
+	onAllColumnsMatch: (columnId: string | null) => void;
 }
 
 export default function MatchColumns({
@@ -27,11 +33,15 @@ export default function MatchColumns({
 	columnMatches,
 	data,
 	enabledColumnIndices,
-	onColumnToggle,
-	onAllColumnsToggle,
+	onColumnEnabledToggle,
+	onAllColumnsEnabledToggle,
+	onAllColumnsMatch,
 	onColumnMatch,
 }: Props) {
 	const containerRef = React.useRef<HTMLDivElement>(null);
+
+	const COMPONENT_ID = "match-columns";
+	const menu = useMenu(COMPONENT_ID);
 
 	const menuOperations = useMenuOperations();
 
@@ -59,6 +69,16 @@ export default function MatchColumns({
 		};
 	}, [menuOperations]);
 
+	function handleAllColumnsMatch(columnId: string | null) {
+		onAllColumnsMatch(columnId);
+		menu.onClose();
+	}
+
+	function handleAllColumnsEnabledToggle(isEnabled: boolean) {
+		onAllColumnsEnabledToggle(isEnabled);
+		menu.onClose();
+	}
+
 	let numUnmatched = enabledColumnIndices.length - columnMatches.length;
 	if (numUnmatched < 0) numUnmatched = 0;
 
@@ -73,70 +93,99 @@ export default function MatchColumns({
 		infoMessage = `There are ${numUnmatched} unmatched columns. Please match them to continue`;
 	}
 
+	console.log(menu.triggerRef.current);
 	return (
-		<div className="dataloom-match-columns">
-			<Padding pb="lg">
-				<Button variant="default" onClick={onAllColumnsToggle}>
-					Toggle all
-				</Button>
-			</Padding>
-			<div
-				ref={containerRef}
-				className="dataloom-match-columns__container"
-			>
-				<table>
-					<thead>
-						<tr>
-							{data[0].map((header, i) => {
-								const matchId =
-									columnMatches.find(
-										(match) => match.importColumnIndex === i
-									)?.columnId ?? null;
-								return (
-									<HeaderCell
-										key={i}
-										isDisabled={
-											!enabledColumnIndices.includes(i)
-										}
-										columnMatches={columnMatches}
-										columns={columns}
-										index={i}
-										matchId={matchId}
-										importValue={header}
-										onColumnToggle={onColumnToggle}
-										onColumnMatch={onColumnMatch}
-									/>
-								);
-							})}
-						</tr>
-					</thead>
-					<tbody>
-						{data.slice(1).map((row, i) => (
-							<tr key={i}>
-								{row.map((cell, j) => (
-									<BodyCell
-										key={j}
-										value={cell}
-										isDisabled={
-											!enabledColumnIndices.includes(j)
-										}
-									/>
-								))}
+		<>
+			<div className="dataloom-match-columns">
+				<Padding pb="lg">
+					<div style={{ width: "fit-content" }}>
+						<MenuButton
+							menuId={menu.id}
+							isFocused={menu.isTriggerFocused}
+							ref={menu.triggerRef}
+							level={LoomMenuLevel.TWO}
+							onOpen={() =>
+								menu.onOpen(LoomMenuLevel.TWO, {
+									shouldFocusTriggerOnClose: false,
+								})
+							}
+						>
+							Bulk operations
+						</MenuButton>
+					</div>
+				</Padding>
+				<div
+					ref={containerRef}
+					className="dataloom-match-columns__container"
+				>
+					<table>
+						<thead>
+							<tr>
+								{data[0].map((header, i) => {
+									const matchId =
+										columnMatches.find(
+											(match) =>
+												match.importColumnIndex === i
+										)?.columnId ?? null;
+									return (
+										<HeaderCell
+											key={i}
+											isDisabled={
+												!enabledColumnIndices.includes(
+													i
+												)
+											}
+											columnMatches={columnMatches}
+											columns={columns}
+											index={i}
+											matchId={matchId}
+											importValue={header}
+											onColumnEnabledToggle={
+												onColumnEnabledToggle
+											}
+											onColumnMatch={onColumnMatch}
+										/>
+									);
+								})}
 							</tr>
-						))}
-					</tbody>
-				</table>
+						</thead>
+						<tbody>
+							{data.slice(1).map((row, i) => (
+								<tr key={i}>
+									{row.map((cell, j) => (
+										<BodyCell
+											key={j}
+											value={cell}
+											isDisabled={
+												!enabledColumnIndices.includes(
+													j
+												)
+											}
+										/>
+									))}
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</div>
+				<Padding pt="3xl">
+					<Stack spacing="sm">
+						<Text
+							size="sm"
+							variant="semibold"
+							value={`Importing ${enabledColumnIndices.length} of ${data[0].length} columns`}
+						/>
+						<Text size="sm" variant="muted" value={infoMessage} />
+					</Stack>
+				</Padding>
 			</div>
-			<Padding pt="3xl">
-				<Stack spacing="sm">
-					<Text
-						size="sm"
-						variant="semibold"
-						value={`Importing ${enabledColumnIndices.length} of ${data[0].length} columns`}
-					/>
-					<Text size="sm" variant="muted" value={infoMessage} />
-				</Stack>
-			</Padding>
-		</div>
+			<ImportOptionsMenu
+				id={menu.id}
+				isOpen={menu.isOpen}
+				position={menu.position}
+				onAllColumnsEnabledToggle={handleAllColumnsEnabledToggle}
+				onAllColumnsMatch={handleAllColumnsMatch}
+			/>
+		</>
 	);
 }

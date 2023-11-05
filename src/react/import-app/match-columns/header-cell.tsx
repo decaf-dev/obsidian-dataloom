@@ -16,7 +16,7 @@ interface Props {
 	index: number;
 	importValue: string;
 	matchId: string | null;
-	onColumnToggle: (index: number) => void;
+	onColumnEnabledToggle: (index: number) => void;
 	onColumnMatch: (index: number, columnId: string | null) => void;
 }
 
@@ -28,7 +28,7 @@ export default function HeaderCell({
 	importValue,
 	matchId,
 	onColumnMatch,
-	onColumnToggle,
+	onColumnEnabledToggle,
 }: Props) {
 	const overflowClassName = useOverflow(false, {
 		ellipsis: true,
@@ -69,10 +69,12 @@ export default function HeaderCell({
 					</Stack>
 					<Stack isHorizontal spacing="sm">
 						<input
-							aria-label="Toggle column"
+							aria-label={
+								isDisabled ? "Enable column" : "Disable column"
+							}
 							type="checkbox"
 							checked={!isDisabled}
-							onChange={() => onColumnToggle(index)}
+							onChange={() => onColumnEnabledToggle(index)}
 						/>
 						<MenuButton
 							ref={menu.triggerRef}

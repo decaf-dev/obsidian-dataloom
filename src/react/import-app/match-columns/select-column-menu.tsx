@@ -51,7 +51,7 @@ export default function SelectColumnMenu({
 			})}
 			<Divider />
 			<MenuItem
-				name="Insert new column"
+				name="Match as new"
 				onClick={() => onColumnClick(NEW_COLUMN_ID)}
 				isSelected={selectedColumnId === NEW_COLUMN_ID}
 			/>
