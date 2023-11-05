@@ -144,14 +144,14 @@ export default function BaseSubmenu({
 				name="Hide"
 				onClick={() => onHideClick()}
 			/>
-			{index < 4 && numFrozenColumns !== index + 2 && (
+			{index < 4 && numFrozenColumns !== index + 1 && (
 				<MenuItem
 					lucideId="pin"
 					name="Freeze up to column"
-					onClick={() => onFrozenColumnsChange(index + 2)}
+					onClick={() => onFrozenColumnsChange(index + 1)}
 				/>
 			)}
-			{numFrozenColumns === index + 2 && (
+			{numFrozenColumns === index + 1 && (
 				<MenuItem
 					lucideId="pin-off"
 					name="Unfreeze columns"
