@@ -221,12 +221,16 @@ export default function ImportApp({ state, onStateChange }: Props) {
 					onColumnMatch={handleColumnMatch}
 				/>
 			),
-			canContinue: () =>
-				enabledColumnIndices.every((index) =>
-					columnMatches.some(
-						(match) => match.importColumnIndex === index
-					)
-				),
+			canContinue: () => {
+				if (enabledColumnIndices.length === 0) return false;
+				const everyColumnMatched = enabledColumnIndices.every(
+					(index) =>
+						columnMatches.find(
+							(match) => match.importColumnIndex === index
+						) ?? false
+				);
+				return everyColumnMatched;
+			},
 		},
 	];
 
