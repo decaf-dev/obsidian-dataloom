@@ -62,6 +62,17 @@ export default function MatchColumns({
 	let numUnmatched = enabledColumnIndices.length - columnMatches.length;
 	if (numUnmatched < 0) numUnmatched = 0;
 
+	let infoMessage = "";
+	if (enabledColumnIndices.length === 0) {
+		infoMessage = "You must enable at least one column";
+	} else if (numUnmatched === 0) {
+		infoMessage = "All columns matched";
+	} else if (numUnmatched === 1) {
+		infoMessage = `There is 1 unmatched column. Please match it to continue`;
+	} else {
+		infoMessage = `There are ${numUnmatched} unmatched columns. Please match them to continue`;
+	}
+
 	return (
 		<div className="dataloom-match-columns">
 			<Padding pb="lg">
@@ -123,17 +134,7 @@ export default function MatchColumns({
 						variant="semibold"
 						value={`Importing ${enabledColumnIndices.length} of ${data[0].length} columns`}
 					/>
-					{numUnmatched > 0 && (
-						<Text
-							size="sm"
-							variant="muted"
-							value={
-								"There are " +
-								numUnmatched +
-								" unmatched columns. Please match them to continue."
-							}
-						/>
-					)}
+					<Text size="sm" variant="muted" value={infoMessage} />
 				</Stack>
 			</Padding>
 		</div>

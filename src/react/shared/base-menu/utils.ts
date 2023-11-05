@@ -69,7 +69,6 @@ const getMenuPosition = (
 		left = left + position.width;
 	} else if (openDirection === "bottom") {
 		top = top + position.height;
-		left = left + rect.width;
 	}
 
 	return {
