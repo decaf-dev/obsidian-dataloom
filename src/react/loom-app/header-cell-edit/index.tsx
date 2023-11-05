@@ -87,11 +87,7 @@ export default function HeaderMenu({
 
 	React.useEffect(() => {
 		if (closeRequest !== null) {
-			//If we're on the base menu
-			if (submenu === null) {
-				if (localValue !== content)
-					onColumnChange(columnId, { content: localValue });
-			}
+			saveLocalValue();
 			onClose();
 		}
 	}, [
@@ -104,53 +100,66 @@ export default function HeaderMenu({
 		onClose,
 	]);
 
+	function saveLocalValue() {
+		if (localValue !== content)
+			onColumnChange(columnId, { content: localValue });
+	}
+
 	function handleWrapOverflowToggle() {
 		onColumnChange(columnId, { shouldWrapOverflow: !shouldWrapOverflow });
 	}
 
 	function handleSortClick(sortDir: SortDir) {
 		onColumnChange(columnId, { sortDir }, { shouldSortRows: true });
+		saveLocalValue();
 		onClose();
 	}
 
 	function handleAspectRatioClick(value: AspectRatio) {
 		onColumnChange(columnId, { aspectRatio: value });
+		saveLocalValue();
 		onClose();
 		setSubmenu(SubmenuType.OPTIONS);
 	}
 
 	function handleHorizontalPaddingClick(value: PaddingSize) {
 		onColumnChange(columnId, { horizontalPadding: value });
+		saveLocalValue();
 		onClose();
 		setSubmenu(SubmenuType.OPTIONS);
 	}
 
 	function handleVerticalPaddingClick(value: PaddingSize) {
 		onColumnChange(columnId, { verticalPadding: value });
+		saveLocalValue();
 		onClose();
 		setSubmenu(SubmenuType.OPTIONS);
 	}
 
 	function handleTypeClick(type: CellType) {
 		onColumnTypeChange(columnId, type);
+		saveLocalValue();
 		onClose();
 		setSubmenu(null);
 	}
 
 	function handleFrozenColumnsChange(value: number) {
 		onFrozenColumnsChange(value);
+		saveLocalValue();
 		onClose();
 		setSubmenu(null);
 	}
 
 	function handleHideClick() {
 		onColumnChange(columnId, { isVisible: false });
+		saveLocalValue();
 		onClose();
 		setSubmenu(null);
 	}
 
 	function handleDeleteClick() {
 		onColumnDeleteClick(columnId);
+		saveLocalValue();
 		onClose();
 		setSubmenu(null);
 	}
