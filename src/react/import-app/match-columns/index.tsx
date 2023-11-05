@@ -116,8 +116,8 @@ export default function MatchColumns({
 					</tbody>
 				</table>
 			</div>
-			<Padding pt="3xl" pb="lg">
-				<Stack spacing="lg">
+			<Padding pt="3xl">
+				<Stack spacing="sm">
 					<Text
 						size="sm"
 						variant="semibold"
