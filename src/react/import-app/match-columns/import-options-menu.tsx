@@ -24,7 +24,7 @@ export default function ImportOptionsMenu({
 			id={id}
 			isOpen={isOpen}
 			position={position}
-			openDirection="bottom"
+			openDirection="bottom-right"
 		>
 			<MenuItem
 				name="Enable all"
