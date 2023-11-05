@@ -60,8 +60,9 @@ export default function ImportApp({ state, onStateChange }: Props) {
 
 	function handleColumnToggle(index: number) {
 		setEnabledColumnIndices((prevState) => {
-			if (prevState.includes(index))
+			if (prevState.includes(index)) {
 				return prevState.filter((i) => i !== index);
+			}
 			return [...prevState, index];
 		});
 	}

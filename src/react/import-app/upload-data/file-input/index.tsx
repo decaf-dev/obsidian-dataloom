@@ -30,7 +30,8 @@ export default function FileInput({
 		const reader = new FileReader();
 
 		reader.onload = (e) => {
-			onDataChange((e.target?.result as string) ?? "", file.name);
+			const rawData = (e.target?.result as string) ?? "";
+			onDataChange(rawData, file.name);
 		};
 
 		reader.readAsText(file);
