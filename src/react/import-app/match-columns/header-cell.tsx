@@ -81,7 +81,11 @@ export default function HeaderCell({
 							level={LoomMenuLevel.ONE}
 							ariaLabel="Match column"
 							icon={<Icon lucideId="columns" size="lg" />}
-							onOpen={() => menu.onOpen(LoomMenuLevel.ONE)}
+							onOpen={() =>
+								menu.onOpen(LoomMenuLevel.ONE, {
+									shouldFocusTriggerOnClose: false,
+								})
+							}
 						/>
 					</Stack>
 				</Stack>

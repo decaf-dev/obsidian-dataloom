@@ -31,6 +31,7 @@ interface ContextProps {
 		options?: {
 			name?: string;
 			shouldRequestOnClose?: boolean;
+			shouldFocusTriggerOnClose?: boolean;
 		}
 	) => void;
 	canOpen: (level: LoomMenuLevel) => boolean;
@@ -74,11 +75,13 @@ export default function MenuProvider({ children }: Props) {
 		options?: {
 			name?: string;
 			shouldRequestOnClose?: boolean;
+			shouldFocusTriggerOnClose?: boolean;
 		}
 	) {
 		logger("MenuProvider handleOpenMenu");
 
-		const { name, shouldRequestOnClose } = options ?? {};
+		const { name, shouldRequestOnClose, shouldFocusTriggerOnClose } =
+			options ?? {};
 
 		if (!triggerRef.current) {
 			logger("No trigger ref. Cannot open menu");
@@ -93,6 +96,7 @@ export default function MenuProvider({ children }: Props) {
 		const position = getPositionFromEl(triggerRef.current);
 		const menu = createMenu(parentComponentId, level, position, {
 			name,
+			shouldFocusTriggerOnClose,
 			shouldRequestOnClose,
 		});
 
@@ -126,7 +130,9 @@ export default function MenuProvider({ children }: Props) {
 			const menu = openMenus.find((menu) => menu.id === id);
 			if (!menu) throw new Error("Menu not found");
 
-			focusMenuTrigger(menu.parentComponentId, menu.name);
+			if (menu.shouldFocusTriggerOnClose) {
+				focusMenuTrigger(menu.parentComponentId, menu.name);
+			}
 			setOpenMenus((prevMenus) =>
 				prevMenus.filter((menu) => menu.id !== id)
 			);
