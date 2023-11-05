@@ -60,11 +60,9 @@ export default function ImportApp({ state, onStateChange }: Props) {
 
 	function handleColumnToggle(index: number) {
 		setEnabledColumnIndices((prevState) => {
-			if (prevState.includes(index)) {
+			if (prevState.includes(index))
 				return prevState.filter((i) => i !== index);
-			} else {
-				return [...prevState, index];
-			}
+			return [...prevState, index];
 		});
 	}
 
@@ -79,10 +77,40 @@ export default function ImportApp({ state, onStateChange }: Props) {
 	}
 
 	function handleRawDataChange(rawData: string, fileName?: string) {
+		//Save values
 		setRawData(rawData);
-		if (fileName !== undefined) {
-			setFileName(fileName);
+		if (fileName !== undefined) setFileName(fileName);
+
+		let parsedArr: string[][] = [];
+
+		if (dataType === DataType.CSV) {
+			//Trim trailing whitespace
+			//There is a bug in Papa.parse where it will parse an empty string as a single empty row
+			const rawDataTrimmed = rawData.trim();
+			const { data, errors } = Papa.parse(rawDataTrimmed, {
+				skipEmptyLines: true,
+			});
+			parsedArr = data as string[][];
+			if (errors.length > 0) {
+				setErrorText(errors[0].message);
+				return;
+			}
+		} else if (dataType === DataType.MARKDOWN) {
+			try {
+				const tokens = parseMarkdownTableIntoTokens(rawData);
+				validateMarkdownTable(tokens);
+				parsedArr = tableTokensToArr(tokens);
+			} catch (err: unknown) {
+				setErrorText((err as Error).message);
+				return;
+			}
 		}
+		if (!hasHeadersRow) {
+			parsedArr.unshift(parsedArr[0].map((_, i) => `Unnamed ${i}`));
+		}
+
+		setData(parsedArr);
+		setEnabledColumnIndices(parsedArr[0].map((_, i) => i));
 	}
 
 	function handleHeadersRowToggle() {
@@ -177,36 +205,7 @@ export default function ImportApp({ state, onStateChange }: Props) {
 				/>
 			),
 			canContinue: rawData !== "",
-			onContinue: () => {
-				let parsedArr: string[][] = [];
-				//TODO clean up into separate functions
-				if (dataType === DataType.CSV) {
-					const { data, errors } = Papa.parse(rawData);
-					parsedArr = data as string[][];
-					if (errors.length > 0) {
-						setErrorText(errors[0].message);
-						return false;
-					}
-				} else if (dataType === DataType.MARKDOWN) {
-					try {
-						const tokens = parseMarkdownTableIntoTokens(rawData);
-						validateMarkdownTable(tokens);
-						parsedArr = tableTokensToArr(tokens);
-					} catch (err: unknown) {
-						setErrorText((err as Error).message);
-						return false;
-					}
-				}
-				if (!hasHeadersRow) {
-					parsedArr.unshift(
-						parsedArr[0].map((_, i) => `Unnamed ${i}`)
-					);
-				}
-
-				setData(parsedArr);
-				setEnabledColumnIndices(parsedArr[0].map((_, i) => i));
-				return true;
-			},
+			onContinue: () => errorText === null,
 		},
 		{
 			title: "Match columns",
