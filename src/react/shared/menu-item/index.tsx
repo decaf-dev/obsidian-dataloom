@@ -9,17 +9,19 @@ import Padding from "../padding";
 import "./styles.css";
 
 interface Props {
+	isSelected?: boolean;
 	isFocusable?: boolean;
+	isDisabled?: boolean;
 	lucideId?: string;
 	ariaLabel?: string;
 	name: string;
 	value?: string;
-	isSelected?: boolean;
 	onClick?: () => void;
 }
 
 export default function MenuItem({
 	isFocusable = true,
+	isDisabled = false,
 	lucideId,
 	ariaLabel,
 	name,
@@ -38,6 +40,7 @@ export default function MenuItem({
 
 	function handleClick(e: React.MouseEvent) {
 		if (!onClick) return;
+		if (isDisabled) return;
 
 		//Stop propagation so the the menu doesn't remove the focus class
 		e.stopPropagation();
@@ -45,6 +48,8 @@ export default function MenuItem({
 	}
 
 	function handleKeyDown(e: React.KeyboardEvent) {
+		if (isDisabled) return;
+
 		if (e.key === "Enter") {
 			//Stop propagation so the the menu doesn't close when pressing enter
 			e.stopPropagation();
@@ -55,6 +60,7 @@ export default function MenuItem({
 	let className = "dataloom-menu-item dataloom-selectable";
 	if (isSelected) className += " dataloom-selected";
 	if (isFocusable) className += " dataloom-focusable";
+	if (isDisabled) className += " dataloom-disabled";
 
 	return (
 		<div

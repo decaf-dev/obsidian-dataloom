@@ -25,12 +25,6 @@ export default function SelectColumnMenu({
 	selectedColumnId,
 	onColumnClick,
 }: Props) {
-	const columnsToDisplay = columns.filter((column) => {
-		const { id } = column;
-		if (id === selectedColumnId) return true;
-		return !columnMatches.some((match) => match.columnId === id);
-	});
-
 	return (
 		<ModalMenu
 			id={id}
@@ -38,12 +32,17 @@ export default function SelectColumnMenu({
 			position={position}
 			openDirection="bottom-left"
 		>
-			{columnsToDisplay.map((column) => {
+			{columns.map((column) => {
 				const { id, name, type } = column;
+				const isDisabled = columnMatches.some(
+					(match) => match.columnId === id
+				);
+
 				return (
 					<MenuItem
 						key={id}
 						name={name}
+						isDisabled={isDisabled}
 						lucideId={getIconIdForCellType(type)}
 						onClick={() => onColumnClick(id)}
 						isSelected={id === selectedColumnId}
