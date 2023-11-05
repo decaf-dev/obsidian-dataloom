@@ -61,14 +61,14 @@ export default function BottomBar({
 			setBottomBarOffset(diff);
 		}
 
-		const DEBOUNCE_TIME_MILLIS = 100;
-		const debounceUpdate = _.debounce(
+		const THROTTLE_TIME_MILLIS = 50;
+		const throttleUpdate = _.throttle(
 			updateBottomBar,
-			DEBOUNCE_TIME_MILLIS
+			THROTTLE_TIME_MILLIS
 		);
 
 		const observer = new ResizeObserver(() => {
-			debounceUpdate(tableEl, tableContainerEl);
+			throttleUpdate(tableEl, tableContainerEl);
 		});
 
 		observer.observe(tableEl);
