@@ -24,19 +24,19 @@ export default function ImportOptionsMenu({
 			id={id}
 			isOpen={isOpen}
 			position={position}
-			openDirection="bottom-right"
+			openDirection="bottom"
 		>
 			<MenuItem
-				name="Enable all"
-				onClick={() => onAllColumnsEnabledToggle(true)}
+				name="Match all as new"
+				onClick={() => onAllColumnsMatch(NEW_COLUMN_ID)}
 			/>
 			<MenuItem
 				name="Disable all"
 				onClick={() => onAllColumnsEnabledToggle(false)}
 			/>
 			<MenuItem
-				name="Match all as new"
-				onClick={() => onAllColumnsMatch(NEW_COLUMN_ID)}
+				name="Enable all"
+				onClick={() => onAllColumnsEnabledToggle(true)}
 			/>
 			<MenuItem
 				name="Unmatch all"

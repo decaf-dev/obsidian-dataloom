@@ -19,12 +19,6 @@ export enum DataSource {
 	PASTE = "Paste from clipboard",
 }
 
-export interface ImportColumn {
-	id: string;
-	name: string;
-	type: CellType;
-}
-
 export interface ColumnMatch {
 	//The index of the column in the imported data
 	importColumnIndex: number;

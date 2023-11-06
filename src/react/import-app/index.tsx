@@ -15,7 +15,6 @@ import {
 } from "src/shared/loom-state/types/loom-state";
 import { Step } from "../shared/stepper/types";
 import {
-	ImportColumn,
 	DataSource,
 	DataType,
 	StepType,
@@ -30,12 +29,11 @@ import {
 	tableTokensToArr,
 	validateMarkdownTable,
 } from "./table-utils";
-
 import "./styles.css";
+
 import { addImportData } from "./state-utils";
 import { useMenuOperations } from "../shared/menu-provider/hooks";
 import FinalizeImport from "./finalize-import";
-import ColumnNotFoundError from "src/shared/error/column-not-found-error";
 
 interface Props {
 	state: LoomState;
@@ -146,16 +144,7 @@ export default function ImportApp({ state, onStateChange }: Props) {
 		}
 	}
 
-	const columns: ImportColumn[] = [
-		...state.model.columns.map((column) => {
-			const { id, type, content } = column;
-			return {
-				id,
-				name: content,
-				type,
-			};
-		}),
-	];
+	const { columns } = state.model;
 
 	const hasDateColumnMatch = columnMatches.some((match) => {
 		const { columnId } = match;
@@ -272,6 +261,14 @@ export default function ImportApp({ state, onStateChange }: Props) {
 					onDateFormatChange={setDateFormat}
 				/>
 			),
+			canContinue: () => {
+				if (hasDateColumnMatch) {
+					if (dateFormat === null || dateFormatSeparator === null) {
+						return false;
+					}
+				}
+				return true;
+			},
 		},
 	];
 
@@ -281,7 +278,13 @@ export default function ImportApp({ state, onStateChange }: Props) {
 	}
 
 	function handleFinishClick() {
-		const newState = addImportData(state, data, columnMatches);
+		const newState = addImportData(
+			state,
+			data,
+			columnMatches,
+			dateFormat,
+			dateFormatSeparator
+		);
 		onStateChange(newState);
 	}
 

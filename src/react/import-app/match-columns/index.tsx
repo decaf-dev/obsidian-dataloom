@@ -8,7 +8,8 @@ import Stack from "src/react/shared/stack";
 import MenuButton from "src/react/shared/menu-button";
 import ImportOptionsMenu from "./import-options-menu";
 
-import { ColumnMatch, ImportColumn } from "../types";
+import { Column } from "src/shared/loom-state/types/loom-state";
+import { ColumnMatch } from "../types";
 import {
 	useMenu,
 	useMenuOperations,
@@ -18,7 +19,7 @@ import { LoomMenuLevel } from "src/react/shared/menu-provider/types";
 import "./styles.css";
 
 interface Props {
-	columns: ImportColumn[];
+	columns: Column[];
 	columnMatches: ColumnMatch[];
 	enabledColumnIndices: number[];
 	data: string[][];
@@ -101,6 +102,7 @@ export default function MatchColumns({
 					<div style={{ width: "fit-content" }}>
 						<MenuButton
 							menuId={menu.id}
+							variant="link"
 							isFocused={menu.isTriggerFocused}
 							ref={menu.triggerRef}
 							level={LoomMenuLevel.ONE}
