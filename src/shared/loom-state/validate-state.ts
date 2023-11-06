@@ -147,12 +147,12 @@ const CellTypeUnion = Union(
 	Literal(CellType.LAST_EDITED_TIME)
 );
 
-const DateFormatDisplayUnion = Union(
+const DateFormatUnion = Union(
 	Literal(DateFormat.MM_DD_YYYY),
 	Literal(DateFormat.DD_MM_YYYY),
 	Literal(DateFormat.YYYY_MM_DD),
-	Literal("full"),
-	Literal("relative")
+	Literal(DateFormat.FULL),
+	Literal(DateFormat.RELATIVE)
 );
 
 const DateFormatSeparatorUnion = Union(
@@ -335,7 +335,7 @@ const Column = Record({
 	width: String,
 	type: CellTypeUnion,
 	isVisible: Boolean,
-	dateFormatDisplay: DateFormatDisplayUnion,
+	dateFormat: DateFormatUnion,
 	dateFormatSeparator: DateFormatSeparatorUnion,
 	timeFormat: TimeFormatUnion,
 	includeTime: Boolean,
