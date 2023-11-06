@@ -7,7 +7,12 @@ import Stepper from "../shared/stepper";
 import DataSourceSelect from "./data-source-select";
 import UploadData from "./upload-data";
 
-import { LoomState } from "src/shared/loom-state/types/loom-state";
+import {
+	CellType,
+	DateFormat,
+	DateFormatSeparator,
+	LoomState,
+} from "src/shared/loom-state/types/loom-state";
 import { Step } from "../shared/stepper/types";
 import {
 	ImportColumn,
@@ -29,6 +34,8 @@ import {
 import "./styles.css";
 import { addImportData } from "./state-utils";
 import { useMenuOperations } from "../shared/menu-provider/hooks";
+import FinalizeImport from "./finalize-import";
+import ColumnNotFoundError from "src/shared/error/column-not-found-error";
 
 interface Props {
 	state: LoomState;
@@ -55,6 +62,10 @@ export default function ImportApp({ state, onStateChange }: Props) {
 	const [enabledColumnIndices, setEnabledColumnIndices] = React.useState<
 		number[]
 	>([]);
+
+	const [dateFormat, setDateFormat] = React.useState<DateFormat | null>(null);
+	const [dateFormatSeparator, setDateFormatSeparator] =
+		React.useState<DateFormatSeparator | null>(null);
 
 	const [columnMatches, setColumnMatches] = React.useState<ColumnMatch[]>([]);
 
@@ -145,6 +156,13 @@ export default function ImportApp({ state, onStateChange }: Props) {
 			};
 		}),
 	];
+
+	const hasDateColumnMatch = columnMatches.some((match) => {
+		const { columnId } = match;
+		const column = columns.find((column) => column.id === columnId);
+		if (!column) return false;
+		return column.type === CellType.DATE;
+	});
 
 	const steps: Step[] = [
 		{
@@ -242,6 +260,18 @@ export default function ImportApp({ state, onStateChange }: Props) {
 				);
 				return everyColumnMatched;
 			},
+		},
+		{
+			title: "Finalize import",
+			content: (
+				<FinalizeImport
+					hasDateColumnMatch={hasDateColumnMatch}
+					dateFormat={dateFormat}
+					dateFormatSeparator={dateFormatSeparator}
+					onDateFormatSeparatorChange={setDateFormatSeparator}
+					onDateFormatChange={setDateFormat}
+				/>
+			),
 		},
 	];
 
