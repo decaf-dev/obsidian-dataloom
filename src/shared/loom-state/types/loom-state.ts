@@ -151,9 +151,9 @@ export enum CellType {
 }
 
 export enum DateFormat {
-	MM_DD_YYYY = "mm-dd-yyyy",
-	DD_MM_YYYY = "dd-mm-yyyy",
-	YYYY_MM_DD = "yyyy-mm-dd",
+	MM_DD_YYYY = "mmddyyyy",
+	DD_MM_YYYY = "ddmmyyyy",
+	YYYY_MM_DD = "yyyymmdd",
 	FULL = "full",
 	RELATIVE = "relative",
 }
