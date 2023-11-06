@@ -4,6 +4,7 @@ import {
 	DateFormatSeparator,
 	DateFormat,
 	LoomState,
+	TimeFormat,
 } from "../types/loom-state";
 import {
 	LoomState16,
@@ -22,6 +23,8 @@ export default class MigrateState17 implements MigrateState {
 				...column,
 				dateFormat: getDateFormatDisplay(dateFormat),
 				dateFormatSeparator: DateFormatSeparator.HYPHEN,
+				timeFormat: TimeFormat.TWELVE_HOUR,
+				includeTime: false,
 			};
 		});
 

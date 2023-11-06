@@ -36,6 +36,8 @@ export interface Column {
 	isVisible: boolean;
 	dateFormat: DateFormat;
 	dateFormatSeparator: DateFormatSeparator;
+	timeFormat: TimeFormat;
+	includeTime: boolean;
 	content: string;
 	numberFormat: NumberFormat;
 	currencyType: CurrencyType;
@@ -154,6 +156,11 @@ export enum DateFormat {
 	YYYY_MM_DD = "yyyy-mm-dd",
 	FULL = "full",
 	RELATIVE = "relative",
+}
+
+export enum TimeFormat {
+	TWELVE_HOUR = "12-hour",
+	TWENTY_FOUR_HOUR = "24-hour",
 }
 
 export enum DateFormatSeparator {

@@ -24,6 +24,7 @@ import {
 	DateFilterOption,
 	SourceType,
 	DateFormatSeparator,
+	TimeFormat,
 } from "./types/loom-state";
 
 const FilterOperatorUnion = Union(Literal("and"), Literal("or"));
@@ -158,6 +159,11 @@ const DateFormatSeparatorUnion = Union(
 	Literal(DateFormatSeparator.HYPHEN),
 	Literal(DateFormatSeparator.SLASH),
 	Literal(DateFormatSeparator.DOT)
+);
+
+const TimeFormatUnion = Union(
+	Literal(TimeFormat.TWELVE_HOUR),
+	Literal(TimeFormat.TWENTY_FOUR_HOUR)
 );
 
 const NumberFormatUnion = Union(
@@ -331,6 +337,8 @@ const Column = Record({
 	isVisible: Boolean,
 	dateFormatDisplay: DateFormatDisplayUnion,
 	dateFormatSeparator: DateFormatSeparatorUnion,
+	timeFormat: TimeFormatUnion,
+	includeTime: Boolean,
 	content: String,
 	numberFormat: NumberFormatUnion,
 	currencyType: CurrencyUnion,
