@@ -45,6 +45,7 @@ import {
 	FrontmatterKey,
 	ObsidianFolderSource,
 	ExternalRowOrder,
+	DateFormatSeparator,
 } from "./types/loom-state";
 
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/constants";
@@ -108,6 +109,7 @@ export const createColumn = (options?: {
 		numberFormat: NumberFormat.NUMBER,
 		currencyType: CurrencyType.UNITED_STATES,
 		dateFormat: DateFormat.MM_DD_YYYY,
+		dateFormatSeparator: DateFormatSeparator.HYPHEN,
 		shouldWrapOverflow: true,
 		tags,
 		calculationType: GeneralCalculation.NONE,

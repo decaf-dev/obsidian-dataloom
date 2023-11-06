@@ -23,6 +23,7 @@ import {
 	DateFilterCondition,
 	DateFilterOption,
 	SourceType,
+	DateFormatSeparator,
 } from "./types/loom-state";
 
 const FilterOperatorUnion = Union(Literal("and"), Literal("or"));
@@ -145,12 +146,18 @@ const CellTypeUnion = Union(
 	Literal(CellType.LAST_EDITED_TIME)
 );
 
-const DateFormatUnion = Union(
+const DateFormatDisplayUnion = Union(
 	Literal(DateFormat.MM_DD_YYYY),
 	Literal(DateFormat.DD_MM_YYYY),
 	Literal(DateFormat.YYYY_MM_DD),
-	Literal(DateFormat.FULL),
-	Literal(DateFormat.RELATIVE)
+	Literal("full"),
+	Literal("relative")
+);
+
+const DateFormatSeparatorUnion = Union(
+	Literal(DateFormatSeparator.HYPHEN),
+	Literal(DateFormatSeparator.SLASH),
+	Literal(DateFormatSeparator.DOT)
 );
 
 const NumberFormatUnion = Union(
@@ -322,7 +329,8 @@ const Column = Record({
 	width: String,
 	type: CellTypeUnion,
 	isVisible: Boolean,
-	dateFormat: DateFormatUnion,
+	dateFormatDisplay: DateFormatDisplayUnion,
+	dateFormatSeparator: DateFormatSeparatorUnion,
 	content: String,
 	numberFormat: NumberFormatUnion,
 	currencyType: CurrencyUnion,

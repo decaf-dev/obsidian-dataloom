@@ -28,7 +28,7 @@ interface TableSettings {
 	showCalculationRow: boolean;
 }
 
-interface Column {
+export interface Column {
 	id: string;
 	sortDir: SortDir;
 	width: string;
@@ -55,7 +55,7 @@ interface FrontmatterKey {
 	value: string;
 }
 
-interface Row {
+export interface Row {
 	id: string;
 	index: number;
 	creationTime: number;
