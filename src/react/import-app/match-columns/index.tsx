@@ -103,9 +103,9 @@ export default function MatchColumns({
 							menuId={menu.id}
 							isFocused={menu.isTriggerFocused}
 							ref={menu.triggerRef}
-							level={LoomMenuLevel.TWO}
+							level={LoomMenuLevel.ONE}
 							onOpen={() =>
-								menu.onOpen(LoomMenuLevel.TWO, {
+								menu.onOpen(LoomMenuLevel.ONE, {
 									shouldFocusTriggerOnClose: false,
 								})
 							}
