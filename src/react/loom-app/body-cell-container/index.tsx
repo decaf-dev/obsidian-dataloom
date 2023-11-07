@@ -28,6 +28,7 @@ import {
 	CellType,
 	CurrencyType,
 	DateFormat,
+	DateFormatSeparator,
 	FrontmatterKey,
 	NumberFormat,
 	PaddingSize,
@@ -54,11 +55,13 @@ interface Props {
 	isExternalLink: boolean;
 	columnType: string;
 	cellId: string;
-	dateTime: number | null;
+	includeTime: boolean;
+	dateTime: string | null;
 	frontmatterKey: FrontmatterKey | null;
 	dateFormat: DateFormat;
 	numberPrefix: string;
 	numberSuffix: string;
+	dateFormatSeparator: DateFormatSeparator;
 	numberSeparator: string;
 	numberFormat: NumberFormat;
 	currencyType: CurrencyType;
@@ -67,8 +70,8 @@ interface Props {
 	aspectRatio: AspectRatio;
 	verticalPadding: PaddingSize;
 	horizontalPadding: PaddingSize;
-	rowCreationTime: number;
-	rowLastEditedTime: number;
+	rowCreationTime: string;
+	rowLastEditedTime: string;
 	width: string;
 	columnTags: Tag[];
 	cellTagIds: string[];
@@ -94,8 +97,10 @@ export default function BodyCellContainer({
 	columnId,
 	isExternalLink,
 	source,
+	includeTime,
 	content,
 	aspectRatio,
+	dateFormatSeparator,
 	numberFormat,
 	verticalPadding,
 	frontmatterKey,
@@ -237,8 +242,16 @@ export default function BodyCellContainer({
 		);
 	}
 
+	function handleIncludeTimeToggle(value: boolean) {
+		onColumnChange(
+			columnId,
+			{ includeTime: value },
+			{ shouldSortRows: true }
+		);
+	}
+
 	const handleDateTimeChange = React.useCallback(
-		(value: number | null) => {
+		(value: string | null) => {
 			onCellChange(cellId, { dateTime: value });
 		},
 		[cellId, onCellChange]
@@ -364,7 +377,11 @@ export default function BodyCellContainer({
 							<MultiTagCell cellTags={cellTags} />
 						)}
 					{columnType === CellType.DATE && (
-						<DateCell value={dateTime} format={dateFormat} />
+						<DateCell
+							value={dateTime}
+							format={dateFormat}
+							formatSeparator={dateFormatSeparator}
+						/>
 					)}
 					{columnType === CellType.CHECKBOX && (
 						<CheckboxCell value={content} />
@@ -373,12 +390,14 @@ export default function BodyCellContainer({
 						<CreationTimeCell
 							value={rowCreationTime}
 							format={dateFormat}
+							formatSeparator={dateFormatSeparator}
 						/>
 					)}
 					{columnType === CellType.LAST_EDITED_TIME && (
 						<LastEditedTimeCell
 							value={rowLastEditedTime}
 							format={dateFormat}
+							formatSeparator={dateFormatSeparator}
 						/>
 					)}
 					{columnType === CellType.SOURCE && (
@@ -451,12 +470,15 @@ export default function BodyCellContainer({
 					<DateCellEdit
 						cellId={cellId}
 						value={dateTime}
+						includeTime={includeTime}
 						closeRequest={menu.closeRequest}
 						dateFormat={dateFormat}
+						dateFormatSeparator={dateFormatSeparator}
 						onDateTimeChange={handleDateTimeChange}
 						onDateFormatChange={handleDateFormatChange}
 						onClose={menu.onClose}
 						onCloseRequestClear={menu.onCloseRequestClear}
+						onIncludeTimeToggle={handleIncludeTimeToggle}
 					/>
 				)}
 			</Menu>

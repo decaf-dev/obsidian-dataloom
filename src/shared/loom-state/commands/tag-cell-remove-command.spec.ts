@@ -63,9 +63,14 @@ describe("tag-cell-remove-command", () => {
 			tags[1].id,
 		]);
 
-		expect(executeState.model.rows[0].lastEditedTime).toBeGreaterThan(
+		const executeLastEditedTime = new Date(
+			executeState.model.rows[0].lastEditedTime
+		).getTime();
+		const prevLastEditedTime = new Date(
 			prevState.model.rows[0].lastEditedTime
-		);
+		).getTime();
+
+		expect(executeLastEditedTime).toBeGreaterThan(prevLastEditedTime);
 	});
 
 	it("should restore the deleted cell reference when undo() is called", () => {

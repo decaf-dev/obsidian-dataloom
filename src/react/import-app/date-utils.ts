@@ -4,16 +4,16 @@ import {
 	DateFormatSeparator,
 } from "src/shared/loom-state/types/loom-state";
 
-export const dateStringToUnixTime = (
+export const dateStringToDateTime = (
 	value: string,
 	dateFormat: DateFormat,
 	separator: DateFormatSeparator
-): number | null => {
+): string | null => {
 	const dayjsFormat = getDateFormatForDayJS(dateFormat, separator);
 	const dayjsDate = dayjs(value, dayjsFormat, true);
 
 	if (dayjsDate.isValid()) {
-		return dayjsDate.toDate().getTime();
+		return dayjsDate.toDate().toISOString();
 	}
 	return null;
 };

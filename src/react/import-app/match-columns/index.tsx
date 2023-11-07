@@ -94,7 +94,6 @@ export default function MatchColumns({
 		infoMessage = `There are ${numUnmatched} unmatched columns. Please match them to continue`;
 	}
 
-	console.log(menu.triggerRef.current);
 	return (
 		<>
 			<div className="dataloom-match-columns">

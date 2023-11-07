@@ -262,17 +262,20 @@ export default class RowSortCommand extends LoomStateCommand {
 	}
 
 	private sortByDateCell(a: Cell, b: Cell, sortDir: SortDir): number {
-		const dateTimeA = a.dateTime || 0;
-		const dateTimeB = b.dateTime || 0;
-
+		const dateTimeA = a.dateTime ? new Date(a.dateTime).getTime() : 0;
+		const dateTimeB = b.dateTime ? new Date(b.dateTime).getTime() : 0;
 		return sortByNumber(dateTimeA, dateTimeB, sortDir);
 	}
 
 	private sortByCreationTimeCell(a: Row, b: Row, sortDir: SortDir): number {
-		return sortByNumber(a.creationTime, b.creationTime, sortDir);
+		const creationTimeA = new Date(a.creationTime).getTime();
+		const creationTimeB = new Date(b.creationTime).getTime();
+		return sortByNumber(creationTimeA, creationTimeB, sortDir);
 	}
 
 	private sortByLastEditedTimeCell(a: Row, b: Row, sortDir: SortDir): number {
-		return sortByNumber(a.lastEditedTime, b.lastEditedTime, sortDir);
+		const creationTimeA = new Date(a.lastEditedTime).getTime();
+		const creationTimeB = new Date(b.lastEditedTime).getTime();
+		return sortByNumber(creationTimeA, creationTimeB, sortDir);
 	}
 }

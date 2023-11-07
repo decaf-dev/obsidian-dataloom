@@ -1,15 +1,23 @@
-import { DateFormat } from "src/shared/loom-state/types/loom-state";
-import { unixTimeToDateTimeString } from "src/shared/date/date-conversion";
+import {
+	DateFormat,
+	DateFormatSeparator,
+} from "src/shared/loom-state/types/loom-state";
+import { dateTimeToDateTimeString } from "src/shared/date/date-conversion";
 
 interface Props {
-	value: number;
+	value: string;
 	format: DateFormat;
+	formatSeparator: DateFormatSeparator;
 }
 
-export default function CreationTimeCell({ value, format }: Props) {
+export default function CreationTimeCell({
+	value,
+	format,
+	formatSeparator,
+}: Props) {
 	return (
 		<div className="dataloom-creation-time-cell">
-			{unixTimeToDateTimeString(value, format)}
+			{dateTimeToDateTimeString(value, format, formatSeparator)}
 		</div>
 	);
 }

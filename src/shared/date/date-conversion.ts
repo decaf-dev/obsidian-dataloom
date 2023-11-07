@@ -1,4 +1,7 @@
-import { DateFormat } from "../loom-state/types/loom-state";
+import {
+	DateFormat,
+	DateFormatSeparator,
+} from "../loom-state/types/loom-state";
 import { MILLIS_IN_DAY } from "./constants";
 import { DD_MM_YYYY_REGEX, MM_DD_YYYY_REGEX, YYYY_MM_DD_REGEX } from "./regex";
 import {
@@ -21,17 +24,21 @@ export const dateStringToUnixTime = (value: string, dateFormat: DateFormat) => {
 	}
 };
 
-export const unixTimeToDateString = (unixTime: number, format: DateFormat) => {
-	const date = new Date(unixTime);
+export const dateTimeToDateString = (
+	dateTime: string,
+	format: DateFormat,
+	separator: DateFormatSeparator
+) => {
+	const date = new Date(dateTime);
 	const { year, month, day } = getDateParts(date);
 
 	switch (format) {
 		case DateFormat.MM_DD_YYYY:
-			return `${month}/${day}/${year}`;
+			return month + separator + day + separator + year;
 		case DateFormat.DD_MM_YYYY:
-			return `${day}/${month}/${year}`;
+			return day + separator + month + separator + year;
 		case DateFormat.YYYY_MM_DD:
-			return `${year}/${month}/${day}`;
+			return year + separator + month + separator + day;
 		case DateFormat.FULL:
 			return date.toLocaleString("en-US", {
 				month: "short",
@@ -61,20 +68,21 @@ export const unixTimeToDateString = (unixTime: number, format: DateFormat) => {
 };
 
 //TODO refactor with optional time format
-export const unixTimeToDateTimeString = (
-	unixTime: number,
-	format: DateFormat
+export const dateTimeToDateTimeString = (
+	dateTime: string,
+	format: DateFormat,
+	separator: DateFormatSeparator
 ) => {
-	const date = new Date(unixTime);
+	const date = new Date(dateTime);
 	const { year, month, day, time } = getDateParts(date);
 
 	switch (format) {
 		case DateFormat.MM_DD_YYYY:
-			return `${month}/${day}/${year} ${time}`;
+			return month + separator + day + separator + year + " " + time;
 		case DateFormat.DD_MM_YYYY:
-			return `${day}/${month}/${year} ${time}`;
+			return day + separator + month + separator + year + " " + time;
 		case DateFormat.YYYY_MM_DD:
-			return `${year}/${month}/${day} ${time}`;
+			return year + separator + month + separator + day + " " + time;
 		case DateFormat.FULL: {
 			const value = date.toLocaleString("en-US", {
 				month: "short",

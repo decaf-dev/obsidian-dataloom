@@ -8,8 +8,8 @@ export default class TagCellRemoveCommand extends LoomStateCommand {
 
 	private rowId: string;
 
-	private previousEditedTime: number;
-	private nextEditedTime: number;
+	private previousEditedTime: string;
+	private nextEditedTime: string;
 
 	/**
 	 * The index of the tag id in the tag ids array before the command is executed
@@ -50,7 +50,7 @@ export default class TagCellRemoveCommand extends LoomStateCommand {
 				return cell;
 			});
 			if (row.id === this.rowId) {
-				const newEditedTime = Date.now();
+				const newEditedTime = new Date().toISOString();
 				this.nextEditedTime = newEditedTime;
 				return {
 					...row,

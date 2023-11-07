@@ -1,5 +1,5 @@
 import { createTag } from "src/shared/loom-state/loom-state-factory";
-import { unixTimeToDateString } from "../../date/date-conversion";
+import { dateTimeToDateString } from "../../date/date-conversion";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "../../constants";
 import ColumnNotFoundError from "src/shared/error/column-not-found-error";
 import LoomStateCommand from "./loom-state-command";
@@ -281,13 +281,15 @@ export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 			const { cells } = row;
 
 			const nextCells: Cell[] = cells.map((cell) => {
-				const { dateTime } = cell;
+				const { dateTime, columnId } = cell;
+				const { dateFormat, dateFormatSeparator, id } = column;
 
-				if (cell.columnId === column.id) {
+				if (columnId === id) {
 					if (dateTime !== null) {
-						const dateString = unixTimeToDateString(
+						const dateString = dateTimeToDateString(
 							dateTime,
-							column.dateFormat
+							dateFormat,
+							dateFormatSeparator
 						);
 						const newCell = {
 							...cell,

@@ -13,8 +13,8 @@ export default class CellBodyUpdateCommand extends LoomStateCommand {
 	private prevCell: Cell;
 	private nextCell: Cell;
 
-	private previousEditedTime: number;
-	private nextLastEditedTime: number;
+	private previousEditedTime: string;
+	private nextLastEditedTime: string;
 
 	constructor(id: string, data: Partial<Cell>, isPartial = true) {
 		super(true);
@@ -51,7 +51,7 @@ export default class CellBodyUpdateCommand extends LoomStateCommand {
 			});
 
 			if (row.id === this.rowId) {
-				const newLastEditedTime = Date.now();
+				const newLastEditedTime = new Date().toISOString();
 				this.nextLastEditedTime = newLastEditedTime;
 				return {
 					...row,

@@ -112,8 +112,8 @@ const findRowsFromFolder = (
 		const row = createRow(numRows, {
 			cells,
 			sourceId,
-			creationTime: file.stat.ctime,
-			lastEditedTime: file.stat.mtime,
+			creationTime: new Date(file.stat.ctime).toISOString(),
+			lastEditedTime: new Date(file.stat.mtime).toISOString(),
 		});
 		newRows.push(row);
 	});

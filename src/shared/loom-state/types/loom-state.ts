@@ -61,8 +61,8 @@ export interface FrontmatterKey {
 export interface Row {
 	id: string;
 	index: number;
-	creationTime: number;
-	lastEditedTime: number;
+	creationTime: string;
+	lastEditedTime: string;
 	sourceId: string | null;
 	cells: Cell[];
 }
@@ -71,7 +71,7 @@ export interface Cell {
 	id: string;
 	columnId: string;
 	isExternalLink: boolean;
-	dateTime: number | null;
+	dateTime: string | null;
 	content: string;
 	tagIds: string[];
 }
@@ -369,7 +369,7 @@ export interface DateFilter extends BaseFilter {
 	type: CellType.DATE;
 	condition: DateCondition;
 	option: DateFilterOption;
-	dateTime: number | null;
+	dateTime: string | null;
 }
 
 /* Creation time filter  */
@@ -382,7 +382,7 @@ export interface CreationTimeFilter extends BaseFilter {
 	type: CellType.CREATION_TIME;
 	condition: CreationTimeCondition;
 	option: DateFilterOption;
-	dateTime: number | null;
+	dateTime: string | null;
 }
 
 /* Last edited filter  */
@@ -395,7 +395,7 @@ export interface LastEditedTimeFilter extends BaseFilter {
 	type: CellType.LAST_EDITED_TIME;
 	condition: LastEditedTimeCondition;
 	option: DateFilterOption;
-	dateTime: number | null;
+	dateTime: string | null;
 }
 
 /* Source File condition */

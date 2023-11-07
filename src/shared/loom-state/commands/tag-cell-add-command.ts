@@ -12,8 +12,8 @@ export default class TagCellAddCommand extends LoomStateCommand {
 	private previousCellTagIds: string[];
 	private nextCellTagIds: string[];
 
-	private previousEditedTime: number;
-	private nextEditedTime: number;
+	private previousEditedTime: string;
+	private nextEditedTime: string;
 
 	constructor(cellId: string, tagId: string, isMultiTag: boolean) {
 		super(true);
@@ -64,7 +64,7 @@ export default class TagCellAddCommand extends LoomStateCommand {
 			});
 
 			if (row.id === this.rowId) {
-				const newLastEditedTime = Date.now();
+				const newLastEditedTime = new Date().toISOString();
 				this.nextEditedTime = newLastEditedTime;
 				return {
 					...row,

@@ -8,11 +8,12 @@ import {
 	DateFormat,
 	Tag,
 	Source,
+	DateFormatSeparator,
 } from "src/shared/loom-state/types/loom-state";
 import { hashString, round2Digits } from "./utils";
 import RowNotFoundError from "src/shared/error/row-not-found-error";
 import TagNotFoundError from "src/shared/error/tag-not-found-error";
-import { unixTimeToDateTimeString } from "src/shared/date/date-conversion";
+import { dateTimeToDateTimeString } from "src/shared/date/date-conversion";
 import { getSourceCellContent } from "src/shared/cell-content/source-cell-content";
 import { getColumnCells } from "src/shared/loom-state/utils/column-utils";
 
@@ -23,7 +24,8 @@ export const getGeneralCalculationContent = (
 	columnTags: Tag[],
 	cellType: CellType,
 	calculationType: CalculationType,
-	dateFormat: DateFormat
+	dateFormat: DateFormat,
+	dateFormatSeparator: DateFormatSeparator
 ): string => {
 	const columnCells = getColumnCells(rows, columnId);
 
@@ -34,7 +36,8 @@ export const getGeneralCalculationContent = (
 		columnTags,
 		cellType,
 		calculationType,
-		dateFormat
+		dateFormat,
+		dateFormatSeparator
 	).toString();
 };
 
@@ -45,7 +48,8 @@ const getCalculation = (
 	columnTags: Tag[],
 	cellType: CellType,
 	calculationType: CalculationType,
-	dateFormat: DateFormat
+	dateFormat: DateFormat,
+	dateFormatSeparator: DateFormatSeparator
 ) => {
 	if (calculationType === GeneralCalculation.COUNT_ALL) {
 		return countAll(rows);
@@ -60,7 +64,8 @@ const getCalculation = (
 			columnCells,
 			columnTags,
 			cellType,
-			dateFormat
+			dateFormat,
+			dateFormatSeparator
 		);
 	} else if (calculationType === GeneralCalculation.COUNT_VALUES) {
 		return countValues(columnCells, cellType);
@@ -103,7 +108,8 @@ const countUnique = (
 	columnCells: Cell[],
 	columnTags: Tag[],
 	cellType: CellType,
-	dateFormat: DateFormat
+	dateFormat: DateFormat,
+	dateFormatSeparator: DateFormatSeparator
 ) => {
 	const hashes = columnCells
 		.map((cell) => {
@@ -120,6 +126,7 @@ const countUnique = (
 				cell,
 				cellType,
 				dateFormat,
+				dateFormatSeparator,
 				row,
 				source,
 				columnTags
@@ -159,6 +166,7 @@ const getCellValues = (
 	cell: Cell,
 	type: CellType,
 	dateFormat: DateFormat,
+	dateFormatSeparator: DateFormatSeparator,
 	row: Row,
 	source: Source | null,
 	columnTags: Tag[]
@@ -185,9 +193,21 @@ const getCellValues = (
 			return content;
 		});
 	} else if (type === CellType.LAST_EDITED_TIME) {
-		return [unixTimeToDateTimeString(lastEditedTime, dateFormat)];
+		return [
+			dateTimeToDateTimeString(
+				lastEditedTime,
+				dateFormat,
+				dateFormatSeparator
+			),
+		];
 	} else if (type === CellType.CREATION_TIME) {
-		return [unixTimeToDateTimeString(creationTime, dateFormat)];
+		return [
+			dateTimeToDateTimeString(
+				creationTime,
+				dateFormat,
+				dateFormatSeparator
+			),
+		];
 	} else if (type === CellType.SOURCE) {
 		return [getSourceCellContent(source)];
 	} else {

@@ -128,11 +128,11 @@ export const createRow = (
 	options?: {
 		cells?: Cell[];
 		sourceId?: string;
-		creationTime?: number;
-		lastEditedTime?: number;
+		creationTime?: string;
+		lastEditedTime?: string;
 	}
 ): Row => {
-	const currentTime = Date.now();
+	const currentTime = new Date().toISOString();
 	const {
 		cells = [],
 		sourceId = null,
@@ -156,7 +156,7 @@ export const createCell = (
 		type?: CellType;
 		tagIds?: string[];
 		content?: string;
-		dateTime?: number | null;
+		dateTime?: string | null;
 	} = {}
 ): Cell => {
 	const {
@@ -381,7 +381,7 @@ export const createDateFilter = (
 	options?: {
 		condition?: DateCondition;
 		isEnabled?: boolean;
-		dateTime?: number | null;
+		dateTime?: string | null;
 		option?: DateFilterOption;
 	}
 ): DateFilter => {
@@ -409,7 +409,7 @@ export const createCreationTimeFilter = (
 		condition?: CreationTimeCondition;
 		isEnabled?: boolean;
 		option?: DateFilterOption;
-		dateTime?: number | null;
+		dateTime?: string | null;
 	}
 ): CreationTimeFilter => {
 	const {
@@ -436,7 +436,7 @@ export const createLastEditedTimeFilter = (
 		condition?: LastEditedTimeCondition;
 		isEnabled?: boolean;
 		option?: DateFilterOption;
-		dateTime?: number | null;
+		dateTime?: string | null;
 	}
 ): LastEditedTimeFilter => {
 	const {
@@ -492,7 +492,7 @@ export const createRowWithCells = (
 		contentForCells?: {
 			type: CellType;
 			content?: string;
-			dateTime?: number;
+			dateTime?: string;
 			tagIds?: string[];
 		}[];
 	}
@@ -504,7 +504,7 @@ export const createRowWithCells = (
 
 		let tagIds: string[] = [];
 		let content = "";
-		let dateTime: number | null = null;
+		let dateTime: string | null = null;
 		const cellContent = contentForCells.find((cell) => cell.type === type);
 		if (cellContent) {
 			const {

@@ -1,16 +1,17 @@
 import MenuItem from "src/react/shared/menu-item";
 import ModalMenu from "src/react/shared/model-menu";
 import { LoomMenuPosition } from "src/react/shared/menu/types";
-import { ColumnMatch, ImportColumn } from "../types";
+import { ColumnMatch } from "../types";
 import { getIconIdForCellType } from "src/react/shared/icon/utils";
 import Divider from "src/react/shared/divider";
 import { NEW_COLUMN_ID } from "../constants";
+import { Column } from "src/shared/loom-state/types/loom-state";
 
 interface Props {
 	id: string;
 	isOpen: boolean;
 	position: LoomMenuPosition;
-	columns: ImportColumn[];
+	columns: Column[];
 	columnMatches: ColumnMatch[];
 	selectedColumnId: string | null;
 	onColumnClick: (columnId: string | null) => void;
@@ -33,7 +34,7 @@ export default function SelectColumnMenu({
 			openDirection="bottom-left"
 		>
 			{columns.map((column) => {
-				const { id, name, type } = column;
+				const { id, content, type } = column;
 				const isDisabled = columnMatches.some(
 					(match) => match.columnId === id
 				);
@@ -41,7 +42,7 @@ export default function SelectColumnMenu({
 				return (
 					<MenuItem
 						key={id}
-						name={name}
+						name={content}
 						isDisabled={isDisabled}
 						lucideId={getIconIdForCellType(type)}
 						onClick={() => onColumnClick(id)}

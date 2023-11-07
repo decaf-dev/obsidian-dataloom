@@ -7,8 +7,8 @@ export default class TagCellMultipleRemoveCommand extends LoomStateCommand {
 	private tagIds: string[];
 
 	private rowId: string;
-	private previousEditedTime: number;
-	private nextEditedTime: number;
+	private previousEditedTime: string;
+	private nextEditedTime: string;
 
 	private previousTagIds: string[];
 
@@ -48,7 +48,7 @@ export default class TagCellMultipleRemoveCommand extends LoomStateCommand {
 				return cell;
 			});
 			if (row.id === this.rowId) {
-				const newEditedTime = Date.now();
+				const newEditedTime = new Date().toISOString();
 				this.nextEditedTime = newEditedTime;
 				return {
 					...row,

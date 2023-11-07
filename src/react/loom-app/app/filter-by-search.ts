@@ -8,6 +8,7 @@ import {
 	NumberFormat,
 	Tag,
 	Source,
+	DateFormatSeparator,
 } from "src/shared/loom-state/types/loom-state";
 import { getTimeCellContent } from "src/shared/cell-content/time-content";
 import { getDateCellContent } from "src/shared/cell-content/date-cell-content";
@@ -71,6 +72,7 @@ const doesCellMatch = (
 		numberPrefix,
 		numberSuffix,
 		numberSeparator,
+		dateFormatSeparator,
 		tags,
 	} = column;
 
@@ -93,13 +95,24 @@ const doesCellMatch = (
 				searchText
 			);
 		case CellType.DATE:
-			return matchDateCell(dateFormat, dateTime, searchText);
+			return matchDateCell(
+				dateTime,
+				dateFormat,
+				dateFormatSeparator,
+				searchText
+			);
 		case CellType.CREATION_TIME:
-			return matchCreationTimeCell(creationTime, dateFormat, searchText);
+			return matchCreationTimeCell(
+				creationTime,
+				dateFormat,
+				dateFormatSeparator,
+				searchText
+			);
 		case CellType.LAST_EDITED_TIME:
 			return matchLastEditedTimeCell(
 				lastEditedTime,
 				dateFormat,
+				dateFormatSeparator,
 				searchText
 			);
 		case CellType.TAG:
@@ -162,28 +175,43 @@ const matchTags = (columnTags: Tag[], cell: Cell, searchText: string) => {
 };
 
 const matchDateCell = (
+	dateTime: string | null,
 	dateFormat: DateFormat,
-	dateTime: number | null,
+	dateFormatSeparator: DateFormatSeparator,
 	searchText: string
 ): boolean => {
-	const content = getDateCellContent(dateTime, dateFormat);
+	const content = getDateCellContent(
+		dateTime,
+		dateFormat,
+		dateFormatSeparator
+	);
 	return content.toLowerCase().includes(searchText);
 };
 
 const matchCreationTimeCell = (
-	creationTime: number,
+	creationTime: string,
 	dateFormat: DateFormat,
+	dateFormatSeparator: DateFormatSeparator,
 	searchText: string
 ): boolean => {
-	const content = getTimeCellContent(creationTime, dateFormat);
+	const content = getTimeCellContent(
+		creationTime,
+		dateFormat,
+		dateFormatSeparator
+	);
 	return content.toLowerCase().includes(searchText);
 };
 
 const matchLastEditedTimeCell = (
-	lastEditedTime: number,
+	lastEditedTime: string,
 	dateFormat: DateFormat,
+	dateFormatSeparator: DateFormatSeparator,
 	searchText: string
 ): boolean => {
-	const content = getTimeCellContent(lastEditedTime, dateFormat);
+	const content = getTimeCellContent(
+		lastEditedTime,
+		dateFormat,
+		dateFormatSeparator
+	);
 	return content.toLowerCase().includes(searchText);
 };

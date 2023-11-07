@@ -5,13 +5,14 @@ import SelectColumnMenu from "./select-column-menu";
 import MenuButton from "src/react/shared/menu-button";
 
 import { useOverflow } from "src/shared/spacing/hooks";
-import { ColumnMatch, ImportColumn } from "../types";
+import { ColumnMatch } from "../types";
 import { LoomMenuLevel } from "src/react/shared/menu-provider/types";
 import { useMenu } from "src/react/shared/menu-provider/hooks";
+import { Column } from "src/shared/loom-state/types/loom-state";
 
 interface Props {
 	isDisabled: boolean;
-	columns: ImportColumn[];
+	columns: Column[];
 	columnMatches: ColumnMatch[];
 	index: number;
 	importValue: string;

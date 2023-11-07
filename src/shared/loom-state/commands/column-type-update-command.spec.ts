@@ -191,7 +191,7 @@ describe("column-type-update-command", () => {
 		});
 		prevState.model.rows[0].cells[0].dateTime = new Date(
 			"2020-01-01"
-		).getTime();
+		).toISOString();
 
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
@@ -380,7 +380,7 @@ describe("column-type-update-command", () => {
 		});
 		prevState.model.rows[0].cells[0].dateTime = new Date(
 			"2020-01-01"
-		).getTime();
+		).toISOString();
 
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,

@@ -1,10 +1,16 @@
-import { unixTimeToDateTimeString } from "../date/date-conversion";
-import { DateFormat } from "../loom-state/types/loom-state";
+import { dateTimeToDateTimeString } from "../date/date-conversion";
+import {
+	DateFormat,
+	DateFormatSeparator,
+} from "../loom-state/types/loom-state";
 
 export const getTimeCellContent = (
-	dateTime: number | null,
-	format: DateFormat
+	dateTime: string | null,
+	format: DateFormat,
+	separator: DateFormatSeparator
 ) => {
-	if (dateTime !== null) return unixTimeToDateTimeString(dateTime, format);
+	if (dateTime !== null) {
+		return dateTimeToDateTimeString(dateTime, format, separator);
+	}
 	return "";
 };

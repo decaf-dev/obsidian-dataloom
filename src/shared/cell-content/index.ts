@@ -30,22 +30,32 @@ export const getCellContent = (
 	cell: Cell,
 	shouldRemoveMarkdown: boolean
 ) => {
-	const { content } = cell;
+	const { content, isExternalLink, dateTime } = cell;
+	const {
+		currencyType,
+		numberPrefix,
+		numberSuffix,
+		numberSeparator,
+		dateFormat,
+		dateFormatSeparator,
+	} = column;
+	const { creationTime, lastEditedTime } = row;
+
 	switch (column.type) {
 		case CellType.TEXT:
 		case CellType.FILE:
 			return getTextCellContent(content, shouldRemoveMarkdown);
 		case CellType.NUMBER:
 			return getNumberCellContent(column.numberFormat, content, {
-				currency: column.currencyType,
-				prefix: column.numberPrefix,
-				suffix: column.numberSuffix,
-				separator: column.numberSeparator,
+				currency: currencyType,
+				prefix: numberPrefix,
+				suffix: numberSuffix,
+				separator: numberSeparator,
 			});
 		case CellType.EMBED:
 			return getEmbedCellContent(app, content, {
 				isExport: true,
-				isExternalLink: cell.isExternalLink,
+				isExternalLink,
 				shouldRemoveMarkdown,
 			});
 		case CellType.CHECKBOX:
@@ -54,11 +64,23 @@ export const getCellContent = (
 		case CellType.MULTI_TAG:
 			return getTagCellContent(column, cell);
 		case CellType.DATE:
-			return getDateCellContent(cell.dateTime, column.dateFormat);
+			return getDateCellContent(
+				dateTime,
+				dateFormat,
+				dateFormatSeparator
+			);
 		case CellType.CREATION_TIME:
-			return getTimeCellContent(row.creationTime, column.dateFormat);
+			return getTimeCellContent(
+				creationTime,
+				dateFormat,
+				dateFormatSeparator
+			);
 		case CellType.LAST_EDITED_TIME:
-			return getTimeCellContent(row.lastEditedTime, column.dateFormat);
+			return getTimeCellContent(
+				lastEditedTime,
+				dateFormat,
+				dateFormatSeparator
+			);
 		case CellType.SOURCE: {
 			return getSourceCellContent(source);
 		}

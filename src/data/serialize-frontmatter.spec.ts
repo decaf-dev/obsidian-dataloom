@@ -45,7 +45,7 @@ describe("serializeFrontmatter", () => {
 		frontmatterKey: string | null,
 		cellContent: {
 			content?: string;
-			dateTime?: number;
+			dateTime?: string;
 			tagIds?: string[];
 		}[],
 		tags?: Tag[]
@@ -166,8 +166,8 @@ describe("serializeFrontmatter", () => {
 		const now = Date.now();
 		//Arrange
 		const state = createState(CellType.DATE, "time", [
-			{ dateTime: now + 1 },
-			{ dateTime: now + 2 },
+			{ dateTime: new Date(1699331756).toISOString() },
+			{ dateTime: new Date(1699331757).toISOString() },
 		]);
 
 		//Act

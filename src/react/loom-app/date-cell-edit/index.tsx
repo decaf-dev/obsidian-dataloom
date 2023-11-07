@@ -7,11 +7,13 @@ import MenuTrigger from "src/react/shared/menu-trigger";
 import Input from "src/react/shared/input";
 
 import {
-	dateStringToUnixTime,
 	isValidDateFormat,
-	unixTimeToDateString,
+	dateTimeToDateString,
 } from "src/shared/date/date-conversion";
-import { DateFormat } from "src/shared/loom-state/types/loom-state";
+import {
+	DateFormat,
+	DateFormatSeparator,
+} from "src/shared/loom-state/types/loom-state";
 import DateFormatMenu from "./date-format-menu";
 
 import { getDisplayNameForDateFormat } from "src/shared/loom-state/type-display-names";
@@ -20,33 +22,46 @@ import {
 	LoomMenuLevel,
 } from "src/react/shared/menu-provider/types";
 import { useMenu } from "src/react/shared/menu-provider/hooks";
+import Switch from "src/react/shared/switch";
+import { dateStringToDateTime } from "src/react/import-app/date-utils";
 
 interface Props {
 	cellId: string;
-	value: number | null;
+	value: string | null;
 	closeRequest: LoomMenuCloseRequest | null;
+	dateFormatSeparator: DateFormatSeparator;
 	dateFormat: DateFormat;
-	onDateTimeChange: (value: number | null) => void;
+	includeTime: boolean;
+	onDateTimeChange: (value: string | null) => void;
 	onCloseRequestClear: () => void;
 	onDateFormatChange: (value: DateFormat) => void;
+	onIncludeTimeToggle: (value: boolean) => void;
 	onClose: () => void;
 }
 
 export default function DateCellEdit({
 	cellId,
 	value,
+	includeTime,
+	dateFormatSeparator,
 	closeRequest,
 	dateFormat,
 	onDateTimeChange,
 	onClose,
 	onCloseRequestClear,
 	onDateFormatChange,
+	onIncludeTimeToggle,
 }: Props) {
 	const COMPONENT_ID = `date-format-menu-${cellId}`;
-	const menu = useMenu(COMPONENT_ID);
+	const dateFormatMenu = useMenu(COMPONENT_ID, { name: "date-format" });
+	const dateFormatSeparatorMenu = useMenu(COMPONENT_ID, {
+		name: "date-separator",
+	});
 
 	const [localValue, setLocalValue] = React.useState(
-		value === null ? "" : unixTimeToDateString(value, dateFormat)
+		value === null
+			? ""
+			: dateTimeToDateString(value, dateFormat, dateFormatSeparator)
 	);
 
 	const [isInputInvalid, setInputInvalid] = React.useState(false);
@@ -55,19 +70,25 @@ export default function DateCellEdit({
 
 	React.useEffect(() => {
 		setLocalValue(
-			value === null ? "" : unixTimeToDateString(value, dateFormat)
+			value === null
+				? ""
+				: dateTimeToDateString(value, dateFormat, dateFormatSeparator)
 		);
 	}, [value, dateFormat]);
 
 	React.useEffect(() => {
 		if (closeRequest !== null) {
-			let newValue: number | null = null;
+			let newValue: string | null = null;
 
 			//If the user has not entered a value, we don't need to validate the date format
 			if (localValue !== "") {
 				if (isValidDateFormat(localValue, dateFormat)) {
 					//Convert local value to unix time
-					newValue = dateStringToUnixTime(localValue, dateFormat);
+					newValue = dateStringToDateTime(
+						localValue,
+						dateFormat,
+						dateFormatSeparator
+					);
 				} else {
 					if (closeRequest.type === "close-on-save") {
 						setInputInvalid(true);
@@ -105,10 +126,8 @@ export default function DateCellEdit({
 	}, [closeTime, onClose]);
 
 	function handleDateFormatChange(value: DateFormat) {
-		if (menu === null) return;
-
 		onDateFormatChange(value);
-		menu.onClose();
+		dateFormatMenu.onClose();
 	}
 
 	function handleClearClick() {
@@ -130,12 +149,12 @@ export default function DateCellEdit({
 						/>
 					</Padding>
 					<MenuTrigger
-						ref={menu.triggerRef}
-						menuId={menu.id}
+						ref={dateFormatMenu.triggerRef}
+						menuId={dateFormatMenu.id}
 						variant="cell"
-						isFocused={menu.isTriggerFocused}
+						isFocused={dateFormatMenu.isTriggerFocused}
 						level={LoomMenuLevel.TWO}
-						onOpen={() => menu.onOpen(LoomMenuLevel.TWO)}
+						onOpen={() => dateFormatMenu.onOpen(LoomMenuLevel.TWO)}
 					>
 						<MenuItem
 							isFocusable={false}
@@ -143,13 +162,38 @@ export default function DateCellEdit({
 							value={getDisplayNameForDateFormat(dateFormat)}
 						/>
 					</MenuTrigger>
+					<MenuTrigger
+						ref={dateFormatSeparatorMenu.triggerRef}
+						menuId={dateFormatSeparatorMenu.id}
+						variant="cell"
+						isFocused={dateFormatSeparatorMenu.isTriggerFocused}
+						level={LoomMenuLevel.TWO}
+						onOpen={() =>
+							dateFormatSeparatorMenu.onOpen(LoomMenuLevel.TWO)
+						}
+					>
+						<MenuItem
+							isFocusable={false}
+							name="Date separator"
+							value={dateFormatSeparator}
+						/>
+					</MenuTrigger>
+					<Padding px="lg">
+						<Stack spacing="sm">
+							<label htmlFor="includeTimeId">Include time</label>
+							<Switch
+								value={includeTime}
+								onToggle={onIncludeTimeToggle}
+							/>
+						</Stack>
+					</Padding>
 					<MenuItem name="Clear" onClick={handleClearClick} />
 				</Stack>
 			</div>
 			<DateFormatMenu
-				id={menu.id}
-				isOpen={menu.isOpen}
-				position={menu.position}
+				id={dateFormatMenu.id}
+				isOpen={dateFormatMenu.isOpen}
+				position={dateFormatMenu.position}
 				value={dateFormat}
 				onChange={handleDateFormatChange}
 			/>

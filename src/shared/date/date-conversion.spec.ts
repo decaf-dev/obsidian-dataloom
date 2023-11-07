@@ -2,8 +2,8 @@ import { DateFormat } from "../loom-state/types/loom-state";
 import {
 	isValidDateFormat,
 	dateStringToUnixTime,
-	unixTimeToDateString,
-	unixTimeToDateTimeString,
+	dateTimeToDateString,
+	dateTimeToDateTimeString,
 } from "./date-conversion";
 
 describe("isValidDateFormat", () => {
@@ -118,42 +118,42 @@ describe("dateStringToUnixTime", () => {
 	});
 });
 
-describe("unixTimeToDateString", () => {
+describe("dateTimeToDateString", () => {
 	it("returns the correct date string for MM/DD/YYYY", () => {
-		expect(unixTimeToDateString(1704006000000, DateFormat.MM_DD_YYYY)).toBe(
+		expect(dateTimeToDateString(1704006000000, DateFormat.MM_DD_YYYY)).toBe(
 			"12/31/2023"
 		);
 	});
 
 	it("returns the correct date string for DD/MM/YYYY", () => {
-		expect(unixTimeToDateString(1704006000000, DateFormat.DD_MM_YYYY)).toBe(
+		expect(dateTimeToDateString(1704006000000, DateFormat.DD_MM_YYYY)).toBe(
 			"31/12/2023"
 		);
 	});
 
 	it("returns the correct date string for YYYY/MM/DD", () => {
-		expect(unixTimeToDateString(1704006000000, DateFormat.YYYY_MM_DD)).toBe(
+		expect(dateTimeToDateString(1704006000000, DateFormat.YYYY_MM_DD)).toBe(
 			"2023/12/31"
 		);
 	});
 });
 
-describe("unixTimeToDateTimeString", () => {
+describe("dateTimeToDateTimeString", () => {
 	it("returns the correct date string for MM/DD/YYYY", () => {
 		expect(
-			unixTimeToDateTimeString(1704006000000, DateFormat.MM_DD_YYYY)
+			dateTimeToDateTimeString(1704006000000, DateFormat.MM_DD_YYYY)
 		).toBe("12/31/2023 12:00 AM");
 	});
 
 	it("returns the correct date string for DD/MM/YYYY", () => {
 		expect(
-			unixTimeToDateTimeString(1704006000000, DateFormat.DD_MM_YYYY)
+			dateTimeToDateTimeString(1704006000000, DateFormat.DD_MM_YYYY)
 		).toBe("31/12/2023 12:00 AM");
 	});
 
 	it("returns the correct date string for YYYY/MM/DD", () => {
 		expect(
-			unixTimeToDateTimeString(1704006000000, DateFormat.YYYY_MM_DD)
+			dateTimeToDateTimeString(1704006000000, DateFormat.YYYY_MM_DD)
 		).toBe("2023/12/31 12:00 AM");
 	});
 });

@@ -280,7 +280,7 @@ const DateFilter = BaseFilter.extend({
 	type: Literal(CellType.DATE),
 	condition: DateFilterConditionUnion,
 	option: DateFilterOptionUnion,
-	dateTime: Union(Number, Literal(null)),
+	dateTime: Union(String, Literal(null)),
 });
 
 const CreationTimeConditionUnion = Union(
@@ -293,7 +293,7 @@ const CreationTimeFilter = BaseFilter.extend({
 	type: Literal(CellType.CREATION_TIME),
 	condition: CreationTimeConditionUnion,
 	option: DateFilterOptionUnion,
-	dateTime: Union(Number, Literal(null)),
+	dateTime: Union(String, Literal(null)),
 });
 
 const LastEditedTimeConditionUnion = Union(
@@ -306,7 +306,7 @@ const LastEditedTimeFilter = BaseFilter.extend({
 	type: Literal(CellType.LAST_EDITED_TIME),
 	condition: LastEditedTimeConditionUnion,
 	option: DateFilterOptionUnion,
-	dateTime: Union(Number, Literal(null)),
+	dateTime: Union(String, Literal(null)),
 });
 
 const Filter = Union(
@@ -357,7 +357,7 @@ const Cell = Record({
 	id: String,
 	columnId: String,
 	isExternalLink: Boolean,
-	dateTime: Union(Number, Literal(null)),
+	dateTime: Union(String, Literal(null)),
 	content: String,
 	tagIds: Array(String),
 });
@@ -365,8 +365,8 @@ const Cell = Record({
 const Row = Record({
 	id: String,
 	index: Number,
-	creationTime: Number,
-	lastEditedTime: Number,
+	creationTime: String,
+	lastEditedTime: String,
 	cells: Array(Cell),
 });
 

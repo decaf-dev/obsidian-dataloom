@@ -80,9 +80,14 @@ describe("tag-cell-add-command", () => {
 		expect(executeState.model.rows[0].cells[0].tagIds).toEqual([
 			tags[1].id,
 		]);
-		expect(executeState.model.rows[0].lastEditedTime).toBeGreaterThan(
+
+		const executeLastEditedTime = new Date(
+			executeState.model.rows[0].lastEditedTime
+		).getTime();
+		const prevLastEditedTime = new Date(
 			prevState.model.rows[0].lastEditedTime
-		);
+		).getTime();
+		expect(executeLastEditedTime).toBeGreaterThan(prevLastEditedTime);
 	});
 
 	it("should add a multi-tag reference to a cell when execute() is called", () => {
@@ -111,9 +116,15 @@ describe("tag-cell-add-command", () => {
 			tags[0].id,
 			tags[1].id,
 		]);
-		expect(executeState.model.rows[0].lastEditedTime).toBeGreaterThan(
+
+		const executeLastEditedTime = new Date(
+			executeState.model.rows[0].lastEditedTime
+		).getTime();
+		const prevLastEditedTime = new Date(
 			prevState.model.rows[0].lastEditedTime
-		);
+		).getTime();
+
+		expect(executeLastEditedTime).toBeGreaterThan(prevLastEditedTime);
 	});
 
 	it("should remove the added reference when undo() is called", () => {

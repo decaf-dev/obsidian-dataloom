@@ -39,9 +39,15 @@ describe("cell-update-command", () => {
 		expect(executeState.model.rows.length).toEqual(1);
 		expect(executeState.model.rows[0].cells.length).toEqual(1);
 		expect(executeState.model.rows[0].cells[0].content).toEqual("test");
-		expect(executeState.model.rows[0].lastEditedTime).toBeGreaterThan(
+
+		const executeLastEditedTime = new Date(
+			executeState.model.rows[0].lastEditedTime
+		).getTime();
+		const prevLastEditedTime = new Date(
 			prevState.model.rows[0].lastEditedTime
-		);
+		).getTime();
+
+		expect(executeLastEditedTime).toBeGreaterThan(prevLastEditedTime);
 	});
 
 	it("should reset the cell property when undo() is called", () => {

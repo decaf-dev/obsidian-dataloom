@@ -239,6 +239,7 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 									type,
 									currencyType,
 									dateFormat,
+									dateFormatSeparator,
 									numberFormat,
 									width,
 									tags,
@@ -265,6 +266,9 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 										columnId={columnId}
 										columnTags={tags}
 										numberFormat={numberFormat}
+										dateFormatSeparator={
+											dateFormatSeparator
+										}
 										currencyType={currencyType}
 										dateFormat={dateFormat}
 										columnCells={columnCells}
@@ -328,6 +332,8 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 							type,
 							shouldWrapOverflow,
 							currencyType,
+							includeTime,
+							dateFormatSeparator,
 							numberPrefix,
 							numberSeparator,
 							numberFormat,
@@ -370,6 +376,8 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 								frontmatterKey={frontmatterKey}
 								isExternalLink={isExternalLink}
 								verticalPadding={verticalPadding}
+								includeTime={includeTime}
+								dateFormatSeparator={dateFormatSeparator}
 								horizontalPadding={horizontalPadding}
 								aspectRatio={aspectRatio}
 								columnTags={tags}

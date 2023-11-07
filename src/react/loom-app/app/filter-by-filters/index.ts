@@ -211,8 +211,8 @@ const doesNumberMatch = (
 };
 
 const doesDateMatch = (
-	cellDateTime: number | null,
-	filterDateTime: number | null,
+	cellDateTime: string | null,
+	filterDateTime: string | null,
 	option: DateFilterOption,
 	condition: FilterCondition
 ) => {

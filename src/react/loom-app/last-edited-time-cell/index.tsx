@@ -1,15 +1,23 @@
-import { unixTimeToDateTimeString } from "src/shared/date/date-conversion";
-import { DateFormat } from "src/shared/loom-state/types/loom-state";
+import { dateTimeToDateTimeString } from "src/shared/date/date-conversion";
+import {
+	DateFormat,
+	DateFormatSeparator,
+} from "src/shared/loom-state/types/loom-state";
 
 interface Props {
-	value: number;
+	value: string;
 	format: DateFormat;
+	formatSeparator: DateFormatSeparator;
 }
 
-export default function LastEditedTimeCell({ value, format }: Props) {
+export default function LastEditedTimeCell({
+	value,
+	format,
+	formatSeparator,
+}: Props) {
 	return (
 		<div className="dataloom-last-edited-time-cell">
-			{unixTimeToDateTimeString(value, format)}
+			{dateTimeToDateTimeString(value, format, formatSeparator)}
 		</div>
 	);
 }

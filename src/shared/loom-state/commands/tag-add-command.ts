@@ -16,13 +16,13 @@ export default class TagAddCommand extends LoomStateCommand {
 	/**
 	 * The edited time of the row before the command is executed
 	 */
-	private previousEditedTime: number;
+	private previousEditedTime: string;
 
 	/**
 	 * The edited time of the row after the command is executed
 	 *
 	 */
-	private nextEditedTime: number;
+	private nextEditedTime: string;
 
 	/**
 	 * The tag that was added to the column
@@ -110,7 +110,7 @@ export default class TagAddCommand extends LoomStateCommand {
 				return cell;
 			});
 			if (row.id === this.rowId) {
-				const newLastEditedTime = Date.now();
+				const newLastEditedTime = new Date().toISOString();
 				this.nextEditedTime = newLastEditedTime;
 				return {
 					...row,

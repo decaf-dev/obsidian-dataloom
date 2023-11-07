@@ -28,7 +28,13 @@ describe("addImportData", () => {
 		];
 
 		//Act
-		const nextState = addImportData(prevState, data, columnMatches);
+		const nextState = addImportData(
+			prevState,
+			data,
+			columnMatches,
+			null,
+			null
+		);
 
 		//Assert
 		expect(nextState.model.rows.length).toEqual(4);
@@ -62,7 +68,13 @@ describe("addImportData", () => {
 		];
 
 		//Act
-		const nextState = addImportData(prevState, data, columnMatches);
+		const nextState = addImportData(
+			prevState,
+			data,
+			columnMatches,
+			null,
+			null
+		);
 
 		//Assert
 		expect(nextState.model.columns.length).toEqual(2);
@@ -97,7 +109,13 @@ describe("addImportData", () => {
 		];
 
 		//Act
-		const nextState = addImportData(prevState, data, columnMatches);
+		const nextState = addImportData(
+			prevState,
+			data,
+			columnMatches,
+			null,
+			null
+		);
 
 		//Assert
 		expect(nextState.model.columns.length).toEqual(4);
@@ -139,7 +157,13 @@ describe("addImportData", () => {
 		];
 
 		//Act
-		const nextState = addImportData(prevState, data, columnMatches);
+		const nextState = addImportData(
+			prevState,
+			data,
+			columnMatches,
+			null,
+			null
+		);
 		expect(nextState.model.rows.length).toEqual(2);
 		expect(nextState.model.rows[0].cells.length).toEqual(1);
 		expect(nextState.model.rows[1].cells.length).toEqual(1);
@@ -169,7 +193,13 @@ describe("addImportData", () => {
 		];
 
 		//Act
-		const nextState = addImportData(prevState, data, columnMatches);
+		const nextState = addImportData(
+			prevState,
+			data,
+			columnMatches,
+			null,
+			null
+		);
 		expect(nextState.model.rows.length).toEqual(2);
 		expect(nextState.model.rows[0].cells.length).toEqual(1);
 		expect(nextState.model.rows[1].cells.length).toEqual(1);
@@ -199,7 +229,13 @@ describe("addImportData", () => {
 		];
 
 		//Act
-		const nextState = addImportData(prevState, data, columnMatches);
+		const nextState = addImportData(
+			prevState,
+			data,
+			columnMatches,
+			null,
+			null
+		);
 		expect(nextState.model.rows.length).toEqual(2);
 		expect(nextState.model.rows[0].cells.length).toEqual(1);
 		expect(nextState.model.rows[1].cells.length).toEqual(1);

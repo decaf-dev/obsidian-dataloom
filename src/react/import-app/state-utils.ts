@@ -16,7 +16,7 @@ import {
 } from "src/shared/loom-state/types/loom-state";
 import { ColumnMatch, ImportData } from "./types";
 import { NEW_COLUMN_ID } from "./constants";
-import { dateStringToUnixTime } from "./date-utils";
+import { dateStringToDateTime } from "./date-utils";
 
 export const addImportData = (
 	prevState: LoomState,
@@ -206,16 +206,16 @@ const createDateCell = (
 	dateFormat: DateFormat | null,
 	dateFormatSeparator: DateFormatSeparator | null
 ) => {
-	let unixTime = null;
+	let dateTime = null;
 	if (dateFormat && dateFormatSeparator) {
-		unixTime = dateStringToUnixTime(
+		dateTime = dateStringToDateTime(
 			content,
 			dateFormat,
 			dateFormatSeparator
 		);
 	}
 	const cell = createCell(columnId, {
-		dateTime: unixTime,
+		dateTime,
 	});
 	return cell;
 };
