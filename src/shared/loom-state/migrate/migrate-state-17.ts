@@ -43,12 +43,14 @@ export default class MigrateState17 implements MigrateState {
 					dateTime: nextDateTime,
 				};
 			});
-			const nextCreationTime = new Date(creationTime).toISOString();
-			const nextLastEditedTime = new Date(lastEditedTime).toISOString();
+			const nextCreationDateTime = new Date(creationTime).toISOString();
+			const nextLastEditedDateTime = new Date(
+				lastEditedTime
+			).toISOString();
 			return {
 				...row,
-				lastEditedTime: nextLastEditedTime,
-				creationTime: nextCreationTime,
+				lastEditedDateTime: nextLastEditedDateTime,
+				creationDateTime: nextCreationDateTime,
 				cells: nextCells,
 			};
 		});

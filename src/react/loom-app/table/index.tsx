@@ -297,8 +297,8 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 				const row = rows[index];
 				const {
 					id: rowId,
-					lastEditedTime,
-					creationTime,
+					lastEditedDateTime,
+					creationDateTime,
 					sourceId,
 				} = row;
 				const source =
@@ -385,13 +385,13 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 								columnId={columnId}
 								source={source}
 								numberFormat={numberFormat}
-								rowCreationTime={creationTime}
+								rowCreationTime={creationDateTime}
 								dateFormat={dateFormat}
 								currencyType={currencyType}
 								numberPrefix={numberPrefix}
 								numberSuffix={numberSuffix}
 								numberSeparator={numberSeparator}
-								rowLastEditedTime={lastEditedTime}
+								rowLastEditedTime={lastEditedDateTime}
 								dateTime={dateTime}
 								content={cellContent}
 								columnType={type}

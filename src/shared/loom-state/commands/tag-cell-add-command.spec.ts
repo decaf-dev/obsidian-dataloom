@@ -82,10 +82,10 @@ describe("tag-cell-add-command", () => {
 		]);
 
 		const executeLastEditedTime = new Date(
-			executeState.model.rows[0].lastEditedTime
+			executeState.model.rows[0].lastEditedDateTime
 		).getTime();
 		const prevLastEditedTime = new Date(
-			prevState.model.rows[0].lastEditedTime
+			prevState.model.rows[0].lastEditedDateTime
 		).getTime();
 		expect(executeLastEditedTime).toBeGreaterThan(prevLastEditedTime);
 	});
@@ -118,10 +118,10 @@ describe("tag-cell-add-command", () => {
 		]);
 
 		const executeLastEditedTime = new Date(
-			executeState.model.rows[0].lastEditedTime
+			executeState.model.rows[0].lastEditedDateTime
 		).getTime();
 		const prevLastEditedTime = new Date(
-			prevState.model.rows[0].lastEditedTime
+			prevState.model.rows[0].lastEditedDateTime
 		).getTime();
 
 		expect(executeLastEditedTime).toBeGreaterThan(prevLastEditedTime);
@@ -154,8 +154,8 @@ describe("tag-cell-add-command", () => {
 		expect(undoState.model.rows[0].cells[0].tagIds).toEqual(
 			prevState.model.rows[0].cells[0].tagIds
 		);
-		expect(undoState.model.rows[0].lastEditedTime).toEqual(
-			prevState.model.rows[0].lastEditedTime
+		expect(undoState.model.rows[0].lastEditedDateTime).toEqual(
+			prevState.model.rows[0].lastEditedDateTime
 		);
 	});
 

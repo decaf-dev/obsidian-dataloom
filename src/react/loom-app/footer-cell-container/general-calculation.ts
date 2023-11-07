@@ -172,7 +172,7 @@ const getCellValues = (
 	columnTags: Tag[]
 ): string[] => {
 	const { content, dateTime, tagIds } = cell;
-	const { creationTime, lastEditedTime } = row;
+	const { creationDateTime, lastEditedDateTime } = row;
 	if (
 		type === CellType.TEXT ||
 		type === CellType.EMBED ||
@@ -195,7 +195,7 @@ const getCellValues = (
 	} else if (type === CellType.LAST_EDITED_TIME) {
 		return [
 			dateTimeToDateTimeString(
-				lastEditedTime,
+				lastEditedDateTime,
 				dateFormat,
 				dateFormatSeparator
 			),
@@ -203,7 +203,7 @@ const getCellValues = (
 	} else if (type === CellType.CREATION_TIME) {
 		return [
 			dateTimeToDateTimeString(
-				creationTime,
+				creationDateTime,
 				dateFormat,
 				dateFormatSeparator
 			),

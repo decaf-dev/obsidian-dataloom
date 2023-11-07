@@ -62,7 +62,7 @@ export default class TagAddCommand extends LoomStateCommand {
 			row.cells.find((cell) => cell.id === this.cellId)
 		);
 		if (!row) throw new RowNotFoundError();
-		this.previousEditedTime = row.lastEditedTime;
+		this.previousEditedTime = row.lastEditedDateTime;
 		this.rowId = row.id;
 
 		const newTag = createTag(this.markdown, {

@@ -61,8 +61,8 @@ export interface FrontmatterKey {
 export interface Row {
 	id: string;
 	index: number;
-	creationTime: string;
-	lastEditedTime: string;
+	creationDateTime: string;
+	lastEditedDateTime: string;
 	sourceId: string | null;
 	cells: Cell[];
 }

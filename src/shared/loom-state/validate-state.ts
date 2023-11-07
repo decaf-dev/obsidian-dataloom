@@ -365,8 +365,8 @@ const Cell = Record({
 const Row = Record({
 	id: String,
 	index: Number,
-	creationTime: String,
-	lastEditedTime: String,
+	creationDateTime: String,
+	lastEditedDateTime: String,
 	cells: Array(Cell),
 });
 

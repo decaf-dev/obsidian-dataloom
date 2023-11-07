@@ -64,10 +64,10 @@ describe("tag-cell-remove-command", () => {
 		]);
 
 		const executeLastEditedTime = new Date(
-			executeState.model.rows[0].lastEditedTime
+			executeState.model.rows[0].lastEditedDateTime
 		).getTime();
 		const prevLastEditedTime = new Date(
-			prevState.model.rows[0].lastEditedTime
+			prevState.model.rows[0].lastEditedDateTime
 		).getTime();
 
 		expect(executeLastEditedTime).toBeGreaterThan(prevLastEditedTime);

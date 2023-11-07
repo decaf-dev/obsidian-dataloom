@@ -39,7 +39,7 @@ export const getCellContent = (
 		dateFormat,
 		dateFormatSeparator,
 	} = column;
-	const { creationTime, lastEditedTime } = row;
+	const { creationDateTime, lastEditedDateTime } = row;
 
 	switch (column.type) {
 		case CellType.TEXT:
@@ -71,13 +71,13 @@ export const getCellContent = (
 			);
 		case CellType.CREATION_TIME:
 			return getTimeCellContent(
-				creationTime,
+				creationDateTime,
 				dateFormat,
 				dateFormatSeparator
 			);
 		case CellType.LAST_EDITED_TIME:
 			return getTimeCellContent(
-				lastEditedTime,
+				lastEditedDateTime,
 				dateFormat,
 				dateFormatSeparator
 			);

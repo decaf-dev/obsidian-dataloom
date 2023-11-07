@@ -155,14 +155,19 @@ const doesCellMatchFilter = (
 			return doesDateMatch(cell.dateTime, dateTime, option, condition);
 		}
 		case CellType.CREATION_TIME: {
-			const { creationTime } = row;
+			const { creationDateTime } = row;
 			const { dateTime, option } = filter as CreationTimeFilter;
-			return doesDateMatch(creationTime, dateTime, option, condition);
+			return doesDateMatch(creationDateTime, dateTime, option, condition);
 		}
 		case CellType.LAST_EDITED_TIME: {
-			const { lastEditedTime } = row;
+			const { lastEditedDateTime } = row;
 			const { dateTime, option } = filter as LastEditedTimeFilter;
-			return doesDateMatch(lastEditedTime, dateTime, option, condition);
+			return doesDateMatch(
+				lastEditedDateTime,
+				dateTime,
+				option,
+				condition
+			);
 		}
 
 		case CellType.SOURCE_FILE: {

@@ -268,14 +268,14 @@ export default class RowSortCommand extends LoomStateCommand {
 	}
 
 	private sortByCreationTimeCell(a: Row, b: Row, sortDir: SortDir): number {
-		const creationTimeA = new Date(a.creationTime).getTime();
-		const creationTimeB = new Date(b.creationTime).getTime();
+		const creationTimeA = new Date(a.creationDateTime).getTime();
+		const creationTimeB = new Date(b.creationDateTime).getTime();
 		return sortByNumber(creationTimeA, creationTimeB, sortDir);
 	}
 
 	private sortByLastEditedTimeCell(a: Row, b: Row, sortDir: SortDir): number {
-		const creationTimeA = new Date(a.lastEditedTime).getTime();
-		const creationTimeB = new Date(b.lastEditedTime).getTime();
+		const creationTimeA = new Date(a.lastEditedDateTime).getTime();
+		const creationTimeB = new Date(b.lastEditedDateTime).getTime();
 		return sortByNumber(creationTimeA, creationTimeB, sortDir);
 	}
 }

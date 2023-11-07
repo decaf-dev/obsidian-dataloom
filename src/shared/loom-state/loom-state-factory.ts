@@ -128,24 +128,24 @@ export const createRow = (
 	options?: {
 		cells?: Cell[];
 		sourceId?: string;
-		creationTime?: string;
-		lastEditedTime?: string;
+		creationDateTime?: string;
+		lastEditedDateTime?: string;
 	}
 ): Row => {
-	const currentTime = new Date().toISOString();
+	const currentDateTime = new Date().toISOString();
 	const {
 		cells = [],
 		sourceId = null,
-		creationTime = currentTime,
-		lastEditedTime = currentTime,
+		creationDateTime = currentDateTime,
+		lastEditedDateTime = currentDateTime,
 	} = options || {};
 
 	return {
 		id: generateUuid(),
 		index,
 		sourceId,
-		creationTime,
-		lastEditedTime,
+		creationDateTime,
+		lastEditedDateTime,
 		cells,
 	};
 };

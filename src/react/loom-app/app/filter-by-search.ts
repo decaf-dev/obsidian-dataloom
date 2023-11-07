@@ -76,7 +76,7 @@ const doesCellMatch = (
 		tags,
 	} = column;
 
-	const { lastEditedTime, creationTime, sourceId } = row;
+	const { lastEditedDateTime, creationDateTime, sourceId } = row;
 
 	switch (type) {
 		case CellType.TEXT:
@@ -103,14 +103,14 @@ const doesCellMatch = (
 			);
 		case CellType.CREATION_TIME:
 			return matchCreationTimeCell(
-				creationTime,
+				creationDateTime,
 				dateFormat,
 				dateFormatSeparator,
 				searchText
 			);
 		case CellType.LAST_EDITED_TIME:
 			return matchLastEditedTimeCell(
-				lastEditedTime,
+				lastEditedDateTime,
 				dateFormat,
 				dateFormatSeparator,
 				searchText

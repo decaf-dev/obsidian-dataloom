@@ -33,7 +33,7 @@ export default class CellBodyUpdateCommand extends LoomStateCommand {
 		);
 		if (!row) throw new RowNotFoundError();
 		this.rowId = row.id;
-		this.previousEditedTime = row.lastEditedTime;
+		this.previousEditedTime = row.lastEditedDateTime;
 
 		const nextRows: Row[] = rows.map((row) => {
 			const { cells } = row;
