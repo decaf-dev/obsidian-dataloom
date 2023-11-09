@@ -19,6 +19,7 @@ import {
 	NumberFormat,
 	Column,
 	FrontmatterKey,
+	DateFormatSeparator,
 } from "src/shared/loom-state/types/loom-state";
 import { SubmenuType } from "./types";
 
@@ -28,6 +29,7 @@ import { ColumnChangeHandler } from "../app/hooks/use-column/types";
 import FrontmatterKeySubmenu from "./frontmatter-key-submenu";
 import { LoomMenuCloseRequest } from "src/react/shared/menu-provider/types";
 import BaseSubmenu from "./base-submenu";
+import DateFormatSeparatorSubmenu from "./date-format-separator-submenu";
 
 interface Props {
 	index: number;
@@ -72,6 +74,7 @@ export default function HeaderMenu({
 		sortDir,
 		dateFormat,
 		aspectRatio,
+		dateFormatSeparator,
 		verticalPadding,
 		horizontalPadding,
 		shouldWrapOverflow,
@@ -210,6 +213,11 @@ export default function HeaderMenu({
 		setSubmenu(SubmenuType.OPTIONS);
 	}
 
+	function handleDateFormatSeparatorClick(value: DateFormatSeparator) {
+		onColumnChange(columnId, { dateFormatSeparator: value });
+		setSubmenu(SubmenuType.OPTIONS);
+	}
+
 	function handleFrontmatterKeyChange(frontmatterKey: FrontmatterKey | null) {
 		onColumnChange(columnId, {
 			frontmatterKey,
@@ -246,6 +254,7 @@ export default function HeaderMenu({
 						type={type}
 						horizontalPadding={horizontalPadding}
 						verticalPadding={verticalPadding}
+						dateFormatSeparator={dateFormatSeparator}
 						aspectRatio={aspectRatio}
 						dateFormat={dateFormat}
 						numberFormat={numberFormat}
@@ -293,9 +302,17 @@ export default function HeaderMenu({
 				)}
 				{submenu === SubmenuType.DATE_FORMAT && (
 					<DateFormatSubmenu
-						title="Date Format"
+						title="Date format"
 						value={dateFormat}
 						onValueClick={handleDateFormatClick}
+						onBackClick={() => setSubmenu(SubmenuType.OPTIONS)}
+					/>
+				)}
+				{submenu === SubmenuType.DATE_FORMAT_SEPARATOR && (
+					<DateFormatSeparatorSubmenu
+						title="Date separator"
+						value={dateFormatSeparator}
+						onValueClick={handleDateFormatSeparatorClick}
 						onBackClick={() => setSubmenu(SubmenuType.OPTIONS)}
 					/>
 				)}

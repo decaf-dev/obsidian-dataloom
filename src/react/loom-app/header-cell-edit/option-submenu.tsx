@@ -5,6 +5,7 @@ import {
 	CellType,
 	CurrencyType,
 	DateFormat,
+	DateFormatSeparator,
 	NumberFormat,
 	PaddingSize,
 } from "src/shared/loom-state/types/loom-state";
@@ -15,6 +16,7 @@ import { SubmenuType } from "./types";
 import {
 	getDisplayNameForCurrencyType,
 	getDisplayNameForDateFormat,
+	getDisplayNameForDateFormatSeparator,
 } from "src/shared/loom-state/type-display-names";
 
 interface Props {
@@ -24,6 +26,7 @@ interface Props {
 	numberPrefix: string;
 	numberSuffix: string;
 	numberSeparator: string;
+	dateFormatSeparator: DateFormatSeparator;
 	type: CellType;
 	dateFormat: DateFormat;
 	verticalPadding: PaddingSize;
@@ -41,6 +44,7 @@ export default function OptionSubmenu({
 	numberSuffix,
 	numberSeparator,
 	aspectRatio,
+	dateFormatSeparator,
 	verticalPadding,
 	horizontalPadding,
 	title,
@@ -131,13 +135,26 @@ export default function OptionSubmenu({
 						)}
 					{(type === CellType.CREATION_TIME ||
 						type === CellType.LAST_EDITED_TIME) && (
-						<MenuItem
-							name="Date format"
-							value={getDisplayNameForDateFormat(dateFormat)}
-							onClick={() =>
-								onSubmenuChange(SubmenuType.DATE_FORMAT)
-							}
-						/>
+						<>
+							<MenuItem
+								name="Date format"
+								value={getDisplayNameForDateFormat(dateFormat)}
+								onClick={() =>
+									onSubmenuChange(SubmenuType.DATE_FORMAT)
+								}
+							/>
+							<MenuItem
+								name="Date separator"
+								value={getDisplayNameForDateFormatSeparator(
+									dateFormatSeparator
+								)}
+								onClick={() =>
+									onSubmenuChange(
+										SubmenuType.DATE_FORMAT_SEPARATOR
+									)
+								}
+							/>
+						</>
 					)}
 				</Stack>
 			</Padding>
