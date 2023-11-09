@@ -1,40 +1,53 @@
+import React from "react";
+
+import Stack from "../shared/stack";
+import Text from "../shared/text";
+import Padding from "../shared/padding";
+import Switch from "../shared/switch";
+import Select from "../shared/select";
+
 import {
 	DateFormat,
 	DateFormatSeparator,
 } from "src/shared/loom-state/types/loom-state";
-import Select from "../shared/select";
 import { getDisplayNameForDateFormat } from "src/shared/loom-state/type-display-names";
-import React from "react";
-import Stack from "../shared/stack";
-import Text from "../shared/text";
-import Padding from "../shared/padding";
+import { dateTimeToDateString } from "src/shared/date/date-conversion";
 
 interface Props {
 	hasDateColumnMatch: boolean;
 	dateFormat: DateFormat | null;
 	dateFormatSeparator: DateFormatSeparator | null;
+	includeTime: boolean;
 	onDateFormatChange: (value: DateFormat | null) => void;
 	onDateFormatSeparatorChange: (value: DateFormatSeparator | null) => void;
+	onIncludeTimeToggle: (value: boolean) => void;
 }
 
 export default function FinalizeImport({
 	hasDateColumnMatch,
 	dateFormat,
 	dateFormatSeparator,
+	includeTime,
 	onDateFormatChange,
 	onDateFormatSeparatorChange,
+	onIncludeTimeToggle,
 }: Props) {
 	const dateFormatId = React.useId();
 	const dateFormatSeparatorId = React.useId();
-	const importColumnDateFormat = React.useId();
+	const includeTimeId = React.useId();
 
 	if (!hasDateColumnMatch) return <Text value="Everything looks good!" />;
 
-	let exampleDateFormat = "Unknown";
+	let expectedDateFormat = "Unknown";
 	if (dateFormat && dateFormatSeparator) {
-		exampleDateFormat = getExampleDateFormat(
+		const EXAMPLE_DATE_TIME = "2020-12-31T23:00:00";
+		expectedDateFormat = dateTimeToDateString(
+			EXAMPLE_DATE_TIME,
 			dateFormat,
-			dateFormatSeparator
+			dateFormatSeparator,
+			{
+				includeTime,
+			}
 		);
 	}
 	return (
@@ -98,45 +111,30 @@ export default function FinalizeImport({
 							</Select>
 						</Stack>
 						<Stack spacing="sm">
-							<label htmlFor={importColumnDateFormat}>
-								Import column date format
-							</label>
+							<label htmlFor={includeTimeId}>Includes time</label>
+							<Switch
+								id={includeTimeId}
+								value={includeTime}
+								onToggle={onIncludeTimeToggle}
+							/>
+						</Stack>
+						<Stack spacing="sm">
+							<label>Expected date format</label>
 							<Text
 								variant="semibold"
 								size="sm"
-								value={exampleDateFormat}
+								value={expectedDateFormat}
 							/>
 						</Stack>
+						<Padding pr="md">
+							<Text
+								shouldWrap
+								value="If a value in your column does not match this format, its table cell after import will be empty."
+							/>
+						</Padding>
 					</Stack>
 				</>
 			)}
 		</div>
 	);
 }
-
-const getExampleDateFormat = (
-	format: DateFormat,
-	separator: DateFormatSeparator
-) => {
-	const day = "01";
-	const month = "12";
-	const year = "2023";
-
-	var dateString = "";
-
-	switch (format) {
-		case DateFormat.MM_DD_YYYY:
-			dateString = month + separator + day + separator + year;
-			break;
-		case DateFormat.DD_MM_YYYY:
-			dateString = day + separator + month + separator + year;
-			break;
-		case DateFormat.YYYY_MM_DD:
-			dateString = year + separator + month + separator + day;
-			break;
-		default:
-			throw new Error(`Unexpected date format: ${format}`);
-	}
-
-	return dateString;
-};

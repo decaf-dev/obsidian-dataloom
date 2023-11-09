@@ -19,6 +19,14 @@ export const getDateFormatString = (
 	}
 };
 
+export const getDateTimeFromUnixTime = (unixTime: number) => {
+	return new Date(unixTime).toISOString();
+};
+
 export const getCurrentDateTime = () => {
 	return new Date().toISOString();
+};
+
+export const padToTwoDigits = (value: string | number) => {
+	return ("0" + value).slice(-2);
 };

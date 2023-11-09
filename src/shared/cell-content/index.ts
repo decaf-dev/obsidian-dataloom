@@ -38,6 +38,8 @@ export const getCellContent = (
 		numberSeparator,
 		dateFormat,
 		dateFormatSeparator,
+		includeTime,
+		hour12,
 	} = column;
 	const { creationDateTime, lastEditedDateTime } = row;
 
@@ -67,7 +69,9 @@ export const getCellContent = (
 			return getDateCellContent(
 				dateTime,
 				dateFormat,
-				dateFormatSeparator
+				dateFormatSeparator,
+				includeTime,
+				hour12
 			);
 		case CellType.CREATION_TIME:
 			return getTimeCellContent(

@@ -46,7 +46,6 @@ import {
 	ObsidianFolderSource,
 	ExternalRowOrder,
 	DateFormatSeparator,
-	TimeFormat,
 } from "./types/loom-state";
 
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/constants";
@@ -91,10 +90,12 @@ export const createColumn = (options?: {
 	content?: string;
 	frontmatterKey?: FrontmatterKey | null;
 	tags?: Tag[];
+	includeTime?: boolean;
 }): Column => {
 	const {
 		type = CellType.TEXT,
 		content = "New Column",
+		includeTime = false,
 		frontmatterKey = null,
 		tags = [],
 	} = options || {};
@@ -112,8 +113,8 @@ export const createColumn = (options?: {
 		currencyType: CurrencyType.UNITED_STATES,
 		dateFormat: DateFormat.MM_DD_YYYY,
 		dateFormatSeparator: DateFormatSeparator.HYPHEN,
-		timeFormat: TimeFormat.TWELVE_HOUR,
-		includeTime: false,
+		hour12: true,
+		includeTime,
 		shouldWrapOverflow: true,
 		tags,
 		calculationType: GeneralCalculation.NONE,

@@ -7,11 +7,11 @@ import { getTimeCellContent } from "./time-content";
 describe("getTimeCellContent", () => {
 	it("should return a datetime string if the time is a number", () => {
 		const result = getTimeCellContent(
-			"2023-12-31T00:00:00Z",
+			"2020-12-31T00:00:00Z",
 			DateFormat.MM_DD_YYYY,
 			DateFormatSeparator.HYPHEN
 		);
-		expect(result).toEqual("12-31-2023");
+		expect(result).toEqual("12-30-2020 5:00 PM");
 	});
 
 	it("should return an empty string if time is null", () => {

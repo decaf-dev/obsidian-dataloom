@@ -4,7 +4,6 @@ import {
 	DateFormatSeparator,
 	DateFormat,
 	LoomState,
-	TimeFormat,
 	Row,
 	Filter,
 	CellType,
@@ -13,6 +12,7 @@ import {
 	LoomState16,
 	DateFormat as DateFormat16,
 } from "../types/loom-state-16";
+import { getDateTimeFromUnixTime } from "src/shared/date/utils";
 
 /**
  * Migrates to 8.12.0
@@ -26,7 +26,7 @@ export default class MigrateState17 implements MigrateState {
 				...column,
 				dateFormat: getDateFormatDisplay(dateFormat),
 				dateFormatSeparator: DateFormatSeparator.HYPHEN,
-				timeFormat: TimeFormat.TWELVE_HOUR,
+				hour12: true,
 				includeTime: false,
 			};
 		});
@@ -36,17 +36,16 @@ export default class MigrateState17 implements MigrateState {
 				const { dateTime } = cell;
 				let nextDateTime = null;
 				if (dateTime !== null) {
-					nextDateTime = new Date(dateTime).toISOString();
+					nextDateTime = getDateTimeFromUnixTime(dateTime);
 				}
 				return {
 					...cell,
 					dateTime: nextDateTime,
 				};
 			});
-			const nextCreationDateTime = new Date(creationTime).toISOString();
-			const nextLastEditedDateTime = new Date(
-				lastEditedTime
-			).toISOString();
+			const nextCreationDateTime = getDateTimeFromUnixTime(creationTime);
+			const nextLastEditedDateTime =
+				getDateTimeFromUnixTime(lastEditedTime);
 			return {
 				...row,
 				lastEditedDateTime: nextLastEditedDateTime,
@@ -64,7 +63,7 @@ export default class MigrateState17 implements MigrateState {
 			) {
 				let nextDateTime = null;
 				if (filter.dateTime !== null) {
-					nextDateTime = new Date(filter.dateTime).toISOString();
+					nextDateTime = getDateTimeFromUnixTime(filter.dateTime);
 				}
 				return {
 					...filter,

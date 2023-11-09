@@ -60,6 +60,7 @@ interface Props {
 	frontmatterKey: FrontmatterKey | null;
 	dateFormat: DateFormat;
 	numberPrefix: string;
+	hour12: boolean;
 	numberSuffix: string;
 	dateFormatSeparator: DateFormatSeparator;
 	numberSeparator: string;
@@ -108,6 +109,7 @@ export default function BodyCellContainer({
 	horizontalPadding,
 	dateFormat,
 	dateTime,
+	hour12,
 	numberPrefix,
 	numberSuffix,
 	numberSeparator,
@@ -250,6 +252,10 @@ export default function BodyCellContainer({
 		);
 	}
 
+	function handleTimeFormatChange(value: boolean) {
+		onColumnChange(columnId, { hour12: value }, { shouldSortRows: true });
+	}
+
 	function handleIncludeTimeToggle(value: boolean) {
 		onColumnChange(
 			columnId,
@@ -275,7 +281,7 @@ export default function BodyCellContainer({
 	} else if (columnType === CellType.FILE) {
 		menuWidth = 275;
 	} else if (columnType === CellType.DATE) {
-		menuWidth = 175;
+		menuWidth = 225;
 	}
 
 	let menuHeight = menu.position.height;
@@ -389,6 +395,8 @@ export default function BodyCellContainer({
 							value={dateTime}
 							format={dateFormat}
 							formatSeparator={dateFormatSeparator}
+							includeTime={includeTime}
+							hour12={hour12}
 						/>
 					)}
 					{columnType === CellType.CHECKBOX && (
@@ -481,6 +489,7 @@ export default function BodyCellContainer({
 						includeTime={includeTime}
 						closeRequest={menu.closeRequest}
 						dateFormat={dateFormat}
+						hour12={hour12}
 						dateFormatSeparator={dateFormatSeparator}
 						onDateTimeChange={handleDateTimeChange}
 						onDateFormatChange={handleDateFormatChange}
@@ -490,6 +499,7 @@ export default function BodyCellContainer({
 						onDateFormatSeparatorChange={
 							handleDateFormatSeparatorChange
 						}
+						onTimeFormatChange={handleTimeFormatChange}
 					/>
 				)}
 			</Menu>

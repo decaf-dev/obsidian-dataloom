@@ -26,8 +26,12 @@ import DateFormatSeparatorMenu from "./date-format-separator-menu";
 import {
 	dateStringToDateTime,
 	dateTimeToDateString,
+	dateTimeToTimeString,
 } from "src/shared/date/date-conversion";
 import { isValidDateString } from "src/shared/date/date-validation";
+import TimeFormatMenu from "./time-format.menu";
+
+import "./styles.css";
 
 interface Props {
 	cellId: string;
@@ -35,12 +39,14 @@ interface Props {
 	closeRequest: LoomMenuCloseRequest | null;
 	dateFormatSeparator: DateFormatSeparator;
 	dateFormat: DateFormat;
+	hour12: boolean;
 	includeTime: boolean;
 	onDateTimeChange: (value: string | null) => void;
 	onCloseRequestClear: () => void;
 	onDateFormatChange: (value: DateFormat) => void;
 	onDateFormatSeparatorChange: (value: DateFormatSeparator) => void;
 	onIncludeTimeToggle: (value: boolean) => void;
+	onTimeFormatChange: (value: boolean) => void;
 	onClose: () => void;
 }
 
@@ -48,34 +54,60 @@ export default function DateCellEdit({
 	cellId,
 	value,
 	includeTime,
-	dateFormatSeparator,
 	closeRequest,
+	dateFormatSeparator,
 	dateFormat,
+	hour12,
 	onDateTimeChange,
 	onClose,
 	onCloseRequestClear,
 	onDateFormatSeparatorChange,
 	onDateFormatChange,
 	onIncludeTimeToggle,
+	onTimeFormatChange,
 }: Props) {
 	const COMPONENT_ID = `date-format-menu-${cellId}`;
+
 	const dateFormatMenu = useMenu(COMPONENT_ID, { name: "date-format" });
 	const dateFormatSeparatorMenu = useMenu(COMPONENT_ID, {
 		name: "date-separator",
 	});
+	const timeFormatMenu = useMenu(COMPONENT_ID, {
+		name: "time-format",
+	});
 
-	const [localValue, setLocalValue] = React.useState(
+	const includeTimeToggleId = React.useId();
+
+	const [date, setDate] = React.useState(
 		value === null
 			? ""
 			: dateTimeToDateString(value, dateFormat, dateFormatSeparator)
 	);
+	const [time, setTime] = React.useState(
+		value === null
+			? ""
+			: dateTimeToTimeString(value, {
+					hour12,
+			  })
+	);
 
-	const [isInputInvalid, setInputInvalid] = React.useState(false);
-	const [closeTime, setCloseTime] = React.useState(0);
-	const inputRef = React.useRef<HTMLInputElement | null>(null);
+	const [isDateInputInvalid, setDateInputInvalid] = React.useState(false);
+	const [isTimeInputInvalid, setTimeInputInvalid] = React.useState(false);
+	const dateInputRef = React.useRef<HTMLInputElement>(null);
+	const timeInputRef = React.useRef<HTMLInputElement>(null);
 
 	React.useEffect(() => {
-		setLocalValue(
+		setDate(
+			value === null
+				? ""
+				: dateTimeToTimeString(value, {
+						hour12,
+				  })
+		);
+	}, [value, hour12]);
+
+	React.useEffect(() => {
+		setDate(
 			value === null
 				? ""
 				: dateTimeToDateString(value, dateFormat, dateFormatSeparator)
@@ -87,23 +119,17 @@ export default function DateCellEdit({
 			let newValue: string | null = null;
 
 			//If the user has not entered a value, we don't need to validate the date format
-			if (localValue !== "") {
-				if (
-					isValidDateString(
-						localValue,
-						dateFormat,
-						dateFormatSeparator
-					)
-				) {
+			if (date !== "") {
+				if (isValidDateString(date, dateFormat, dateFormatSeparator)) {
 					//Convert local value to unix time
 					newValue = dateStringToDateTime(
-						localValue,
+						date,
 						dateFormat,
 						dateFormatSeparator
 					);
 				} else {
 					if (closeRequest.type === "close-on-save") {
-						setInputInvalid(true);
+						setDateInputInvalid(true);
 						onCloseRequestClear();
 						return;
 					}
@@ -112,14 +138,14 @@ export default function DateCellEdit({
 			}
 
 			if (newValue !== value) {
-				setInputInvalid(false);
+				setDateInputInvalid(false);
 				onDateTimeChange(newValue);
 			}
-			setCloseTime(Date.now());
+			onClose();
 		}
 	}, [
 		value,
-		localValue,
+		date,
 		closeRequest,
 		dateFormat,
 		dateFormatSeparator,
@@ -127,16 +153,6 @@ export default function DateCellEdit({
 		onCloseRequestClear,
 		onClose,
 	]);
-
-	//If we call onMenuClose directly in the validateInput function, we can see the cell markdown
-	//change to the new value as the menu closes
-	//If we call onMenuClose in a useEffect, we wait an entire render cycle before closing the menu
-	//This allows us to see the cell markdown change to the new value before the menu closes
-	React.useEffect(() => {
-		if (closeTime !== 0) {
-			onClose();
-		}
-	}, [closeTime, onClose]);
 
 	function handleDateFormatChange(value: DateFormat) {
 		onDateFormatChange(value);
@@ -146,6 +162,11 @@ export default function DateCellEdit({
 	function handleDateFormatSeparatorChange(value: DateFormatSeparator) {
 		onDateFormatSeparatorChange(value);
 		dateFormatSeparatorMenu.onClose();
+	}
+
+	function handleTimeFormatChange(value: boolean) {
+		onTimeFormatChange(value);
+		timeFormatMenu.onClose();
 	}
 
 	function handleClearClick() {
@@ -158,13 +179,24 @@ export default function DateCellEdit({
 			<div className="dataloom-date-cell-edit">
 				<Stack>
 					<Padding p="md">
-						<Input
-							ref={inputRef}
-							showBorder
-							hasError={isInputInvalid}
-							value={localValue}
-							onChange={setLocalValue}
-						/>
+						<Stack isHorizontal spacing="sm">
+							<Input
+								ref={dateInputRef}
+								showBorder
+								autoFocus={false}
+								hasError={isDateInputInvalid}
+								value={date}
+								onChange={setDate}
+							/>
+							<Input
+								ref={timeInputRef}
+								showBorder
+								autoFocus={false}
+								hasError={isTimeInputInvalid}
+								value={time}
+								onChange={setTime}
+							/>
+						</Stack>
 					</Padding>
 					<MenuTrigger
 						ref={dateFormatMenu.triggerRef}
@@ -200,13 +232,34 @@ export default function DateCellEdit({
 					</MenuTrigger>
 					<Padding px="lg">
 						<Stack spacing="sm">
-							<label htmlFor="includeTimeId">Include time</label>
+							<label htmlFor={includeTimeToggleId}>
+								Include time
+							</label>
 							<Switch
+								id={includeTimeToggleId}
 								value={includeTime}
 								onToggle={onIncludeTimeToggle}
 							/>
 						</Stack>
 					</Padding>
+					{includeTime && (
+						<MenuTrigger
+							ref={timeFormatMenu.triggerRef}
+							menuId={timeFormatMenu.id}
+							variant="cell"
+							isFocused={timeFormatMenu.isTriggerFocused}
+							level={LoomMenuLevel.TWO}
+							onOpen={() =>
+								timeFormatMenu.onOpen(LoomMenuLevel.TWO)
+							}
+						>
+							<MenuItem
+								isFocusable={false}
+								name="Time format"
+								value={hour12 ? "12 hour" : "24 hour"}
+							/>
+						</MenuTrigger>
+					)}
 					<MenuItem name="Clear" onClick={handleClearClick} />
 				</Stack>
 			</div>
@@ -223,6 +276,13 @@ export default function DateCellEdit({
 				position={dateFormatSeparatorMenu.position}
 				value={dateFormatSeparator}
 				onChange={handleDateFormatSeparatorChange}
+			/>
+			<TimeFormatMenu
+				id={timeFormatMenu.id}
+				isOpen={timeFormatMenu.isOpen}
+				position={timeFormatMenu.position}
+				value={hour12}
+				onChange={handleTimeFormatChange}
 			/>
 		</>
 	);

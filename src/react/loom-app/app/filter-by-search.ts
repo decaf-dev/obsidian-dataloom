@@ -74,6 +74,8 @@ const doesCellMatch = (
 		numberSeparator,
 		dateFormatSeparator,
 		tags,
+		includeTime,
+		hour12,
 	} = column;
 
 	const { lastEditedDateTime, creationDateTime, sourceId } = row;
@@ -99,6 +101,8 @@ const doesCellMatch = (
 				dateTime,
 				dateFormat,
 				dateFormatSeparator,
+				includeTime,
+				hour12,
 				searchText
 			);
 		case CellType.CREATION_TIME:
@@ -178,12 +182,16 @@ const matchDateCell = (
 	dateTime: string | null,
 	dateFormat: DateFormat,
 	dateFormatSeparator: DateFormatSeparator,
+	includeTime: boolean,
+	hour12: boolean,
 	searchText: string
 ): boolean => {
 	const content = getDateCellContent(
 		dateTime,
 		dateFormat,
-		dateFormatSeparator
+		dateFormatSeparator,
+		includeTime,
+		hour12
 	);
 	return content.toLowerCase().includes(searchText);
 };

@@ -61,9 +61,11 @@ export default function ImportApp({ state, onStateChange }: Props) {
 		number[]
 	>([]);
 
+	//Step 5
 	const [dateFormat, setDateFormat] = React.useState<DateFormat | null>(null);
 	const [dateFormatSeparator, setDateFormatSeparator] =
 		React.useState<DateFormatSeparator | null>(null);
+	const [includeTime, setIncludeTime] = React.useState(false);
 
 	const [columnMatches, setColumnMatches] = React.useState<ColumnMatch[]>([]);
 
@@ -257,8 +259,10 @@ export default function ImportApp({ state, onStateChange }: Props) {
 					hasDateColumnMatch={hasDateColumnMatch}
 					dateFormat={dateFormat}
 					dateFormatSeparator={dateFormatSeparator}
+					includeTime={includeTime}
 					onDateFormatSeparatorChange={setDateFormatSeparator}
 					onDateFormatChange={setDateFormat}
+					onIncludeTimeToggle={setIncludeTime}
 				/>
 			),
 			canContinue: () => {

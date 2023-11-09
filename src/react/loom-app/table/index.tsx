@@ -339,6 +339,7 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 							numberFormat,
 							numberSuffix,
 							dateFormat,
+							hour12,
 							tags,
 							verticalPadding,
 							horizontalPadding,
@@ -384,6 +385,7 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 								cellTagIds={tagIds}
 								columnId={columnId}
 								source={source}
+								hour12={hour12}
 								numberFormat={numberFormat}
 								rowCreationTime={creationDateTime}
 								dateFormat={dateFormat}

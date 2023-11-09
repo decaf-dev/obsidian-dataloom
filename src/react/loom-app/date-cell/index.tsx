@@ -10,9 +10,23 @@ interface Props {
 	value: string | null;
 	format: DateFormat;
 	formatSeparator: DateFormatSeparator;
+	includeTime: boolean;
+	hour12: boolean;
 }
 
-export default function DateCell({ value, format, formatSeparator }: Props) {
-	const content = getDateCellContent(value, format, formatSeparator);
+export default function DateCell({
+	value,
+	format,
+	formatSeparator,
+	includeTime,
+	hour12,
+}: Props) {
+	const content = getDateCellContent(
+		value,
+		format,
+		formatSeparator,
+		includeTime,
+		hour12
+	);
 	return <div className="dataloom-date-cell">{content}</div>;
 }

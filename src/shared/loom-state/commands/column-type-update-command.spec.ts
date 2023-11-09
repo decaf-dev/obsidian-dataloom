@@ -205,7 +205,7 @@ describe("column-type-update-command", () => {
 		expect(executeState.model.columns.length).toEqual(1);
 		expect(executeState.model.columns[0].type).toEqual(CellType.TEXT);
 		expect(executeState.model.rows[0].cells[0].content).toEqual(
-			"12/31/2019"
+			"12-31-2019"
 		);
 	});
 

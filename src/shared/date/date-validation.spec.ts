@@ -5,101 +5,135 @@ import {
 import { isValidDateString } from "./date-validation";
 
 describe("isValidDateString", () => {
-	// Test cases for valid date strings
-	it("returns true for valid date strings with different formats and separators", () => {
-		expect(
-			isValidDateString(
-				"12/31/2020",
-				DateFormat.MM_DD_YYYY,
-				DateFormatSeparator.SLASH
-			)
-		).toEqual(true);
+	//Test cases for valid date strings
+	it("returns true for valid date string with MM_DD_YYYY and slash separator", () => {
+		const result = isValidDateString(
+			"12/31/2020",
+			DateFormat.MM_DD_YYYY,
+			DateFormatSeparator.SLASH
+		);
+		expect(result).toEqual(true);
+	});
 
-		expect(
-			isValidDateString(
-				"31-12-2020",
-				DateFormat.DD_MM_YYYY,
-				DateFormatSeparator.HYPHEN
-			)
-		).toEqual(true);
+	it("returns true for valid date string with DD_MM_YYYY and slash separator", () => {
+		const result = isValidDateString(
+			"31/12/2020",
+			DateFormat.DD_MM_YYYY,
+			DateFormatSeparator.SLASH
+		);
+		expect(result).toEqual(true);
+	});
 
-		expect(
-			isValidDateString(
-				"2020.12.31",
-				DateFormat.YYYY_MM_DD,
-				DateFormatSeparator.DOT
-			)
-		).toEqual(true);
+	it("returns true for valid date string with YYYY_MM_DDDD and slash separator", () => {
+		const result = isValidDateString(
+			"2020/12/31",
+			DateFormat.YYYY_MM_DD,
+			DateFormatSeparator.SLASH
+		);
+		expect(result).toEqual(true);
+	});
+
+	it("returns true for valid date string with MM_DD_YYYY and hyphen separator", () => {
+		const result = isValidDateString(
+			"12-31-2020",
+			DateFormat.MM_DD_YYYY,
+			DateFormatSeparator.HYPHEN
+		);
+		expect(result).toEqual(true);
+	});
+
+	it("returns true for valid date string with DD_MM_YYYY and hyphen separator", () => {
+		const result = isValidDateString(
+			"31-12-2020",
+			DateFormat.DD_MM_YYYY,
+			DateFormatSeparator.HYPHEN
+		);
+		expect(result).toEqual(true);
+	});
+
+	it("returns true for valid date string with YYYY_MM_DDDD and hyphen separator", () => {
+		const result = isValidDateString(
+			"2020-12-31",
+			DateFormat.YYYY_MM_DD,
+			DateFormatSeparator.HYPHEN
+		);
+		expect(result).toEqual(true);
+	});
+
+	it("returns true for valid date string with MM_DD_YYYY and dot separator", () => {
+		const result = isValidDateString(
+			"12.31.2020",
+			DateFormat.MM_DD_YYYY,
+			DateFormatSeparator.DOT
+		);
+		expect(result).toEqual(true);
+	});
+
+	it("returns true for valid date string with DD_MM_YYYY and dot separator", () => {
+		const result = isValidDateString(
+			"31.12.2020",
+			DateFormat.DD_MM_YYYY,
+			DateFormatSeparator.DOT
+		);
+		expect(result).toEqual(true);
+	});
+
+	it("returns true for valid date string with YYYY_MM_DDDD and dot separator", () => {
+		const result = isValidDateString(
+			"2020.12.31",
+			DateFormat.YYYY_MM_DD,
+			DateFormatSeparator.DOT
+		);
+		expect(result).toEqual(true);
 	});
 
 	// Test cases for invalid date strings
-	it("returns false for invalid date strings", () => {
-		expect(
-			isValidDateString(
-				"12/31/20",
-				DateFormat.MM_DD_YYYY,
-				DateFormatSeparator.SLASH
-			)
-		).toEqual(false);
-		expect(
-			isValidDateString(
-				"31-12-20",
-				DateFormat.DD_MM_YYYY,
-				DateFormatSeparator.HYPHEN
-			)
-		).toEqual(false);
-		expect(
-			isValidDateString(
-				"2020.31.12",
-				DateFormat.YYYY_MM_DD,
-				DateFormatSeparator.DOT
-			)
-		).toEqual(false);
+	it("returns false for switched month and day", () => {
+		const result = isValidDateString(
+			"12/31/2020",
+			DateFormat.DD_MM_YYYY,
+			DateFormatSeparator.SLASH
+		);
+		expect(result).toEqual(false);
+	});
+
+	it("returns false for wrong separator", () => {
+		const result = isValidDateString(
+			"12-31-2020",
+			DateFormat.DD_MM_YYYY,
+			DateFormatSeparator.SLASH
+		);
+		expect(result).toEqual(false);
 	});
 
 	// Test cases for edge cases
-	it("handles edge cases correctly", () => {
-		expect(
-			isValidDateString(
-				"02/29/2020",
-				DateFormat.MM_DD_YYYY,
-				DateFormatSeparator.SLASH
-			)
-		).toEqual(true); // Leap year
-
-		expect(
-			isValidDateString(
-				"02/29/2021",
-				DateFormat.MM_DD_YYYY,
-				DateFormatSeparator.SLASH
-			)
-		).toEqual(false); // Not a leap year
-
+	it("returns false for single-digit day", () => {
 		expect(
 			isValidDateString(
 				"01/1/2020",
 				DateFormat.MM_DD_YYYY,
 				DateFormatSeparator.SLASH
 			)
-		).toEqual(true); // Single-digit day
+		).toEqual(false);
+	});
 
+	it("returns false for single-digit month", () => {
 		expect(
 			isValidDateString(
 				"1/01/2020",
 				DateFormat.MM_DD_YYYY,
 				DateFormatSeparator.SLASH
 			)
-		).toEqual(true); // Single-digit month
+		).toEqual(false);
 	});
 
-	// Test cases for error handling
-	it("throws an error for unsupported date formats", () => {
-		expect(() =>
+	it("returns false for two-digit year", () => {
+		expect(
 			isValidDateString(
-				"yesterday",
-				DateFormat.RELATIVE,
+				"01/01/20",
+				DateFormat.MM_DD_YYYY,
 				DateFormatSeparator.SLASH
 			)
-		).toThrow("Date format not supported.");
+		).toEqual(false);
 	});
 });

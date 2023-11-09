@@ -5,20 +5,26 @@ import {
 import { getDateCellContent } from "./date-cell-content";
 
 describe("getDateCellContent", () => {
-	it("should return a date string if the time is a number", () => {
+	// Normal cases
+	it('returns formatted date string with MM_DD_YYYY format and "-" separator', () => {
 		const result = getDateCellContent(
-			"2023-12-31T00:00:00Z",
+			"2020-01-01T23:00:00Z",
 			DateFormat.MM_DD_YYYY,
-			DateFormatSeparator.HYPHEN
+			DateFormatSeparator.HYPHEN,
+			false,
+			true
 		);
-		expect(result).toEqual("12/31/2023");
+		expect(result).toEqual("01-01-2020");
 	});
 
-	it("should return an empty string if time is null", () => {
+	// Invalid cases
+	it("returns an empty string when dateTime is null", () => {
 		const result = getDateCellContent(
 			null,
-			DateFormat.DD_MM_YYYY,
-			DateFormatSeparator.HYPHEN
+			DateFormat.MM_DD_YYYY,
+			DateFormatSeparator.HYPHEN,
+			false,
+			true
 		);
 		expect(result).toEqual("");
 	});
