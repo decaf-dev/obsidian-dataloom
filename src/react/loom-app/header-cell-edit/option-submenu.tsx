@@ -130,8 +130,7 @@ export default function OptionSubmenu({
 							/>
 						)}
 					{(type === CellType.CREATION_TIME ||
-						type === CellType.LAST_EDITED_TIME ||
-						type === CellType.DATE) && (
+						type === CellType.LAST_EDITED_TIME) && (
 						<MenuItem
 							name="Date format"
 							value={getDisplayNameForDateFormat(dateFormat)}
