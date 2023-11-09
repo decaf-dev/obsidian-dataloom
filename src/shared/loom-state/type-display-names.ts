@@ -12,6 +12,7 @@ import {
 	DateFilterCondition,
 	DateFilterOption,
 	SourceType,
+	DateFormatSeparator,
 } from "./types/loom-state";
 
 const getShortDisplayNameForCalculation = (value: GeneralCalculation) => {
@@ -148,10 +149,21 @@ export const getDisplayNameForDateFormat = (format: DateFormat) => {
 			return "Month Day Year";
 		case DateFormat.YYYY_MM_DD:
 			return "Year Month Day";
-		case DateFormat.FULL:
-			return "Full";
-		case DateFormat.RELATIVE:
-			return "Relative";
+		default:
+			return "";
+	}
+};
+
+export const getDisplayNameForDateFormatSeparator = (
+	format: DateFormatSeparator
+) => {
+	switch (format) {
+		case DateFormatSeparator.SLASH:
+			return "Slash";
+		case DateFormatSeparator.DOT:
+			return "Dot";
+		case DateFormatSeparator.HYPHEN:
+			return "Hyphen";
 		default:
 			return "";
 	}

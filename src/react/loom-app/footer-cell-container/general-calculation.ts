@@ -13,7 +13,7 @@ import {
 import { hashString, round2Digits } from "./utils";
 import RowNotFoundError from "src/shared/error/row-not-found-error";
 import TagNotFoundError from "src/shared/error/tag-not-found-error";
-import { dateTimeToDateTimeString } from "src/shared/date/date-conversion";
+import { dateTimeToDateString } from "src/shared/date/date-conversion";
 import { getSourceCellContent } from "src/shared/cell-content/source-cell-content";
 import { getColumnCells } from "src/shared/loom-state/utils/column-utils";
 
@@ -194,18 +194,24 @@ const getCellValues = (
 		});
 	} else if (type === CellType.LAST_EDITED_TIME) {
 		return [
-			dateTimeToDateTimeString(
+			dateTimeToDateString(
 				lastEditedDateTime,
 				dateFormat,
-				dateFormatSeparator
+				dateFormatSeparator,
+				{
+					includeTime: true,
+				}
 			),
 		];
 	} else if (type === CellType.CREATION_TIME) {
 		return [
-			dateTimeToDateTimeString(
+			dateTimeToDateString(
 				creationDateTime,
 				dateFormat,
-				dateFormatSeparator
+				dateFormatSeparator,
+				{
+					includeTime: true,
+				}
 			),
 		];
 	} else if (type === CellType.SOURCE) {

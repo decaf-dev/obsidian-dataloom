@@ -189,13 +189,13 @@ const matchDateCell = (
 };
 
 const matchCreationTimeCell = (
-	creationTime: string,
+	creationDateTime: string,
 	dateFormat: DateFormat,
 	dateFormatSeparator: DateFormatSeparator,
 	searchText: string
 ): boolean => {
 	const content = getTimeCellContent(
-		creationTime,
+		creationDateTime,
 		dateFormat,
 		dateFormatSeparator
 	);
@@ -203,13 +203,13 @@ const matchCreationTimeCell = (
 };
 
 const matchLastEditedTimeCell = (
-	lastEditedTime: string,
+	lastEditedDateTime: string,
 	dateFormat: DateFormat,
 	dateFormatSeparator: DateFormatSeparator,
 	searchText: string
 ): boolean => {
 	const content = getTimeCellContent(
-		lastEditedTime,
+		lastEditedDateTime,
 		dateFormat,
 		dateFormatSeparator
 	);

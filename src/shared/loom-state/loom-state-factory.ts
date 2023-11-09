@@ -52,6 +52,7 @@ import {
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/constants";
 import { Color } from "src/shared/loom-state/types/loom-state";
 import { generateUuid } from "../uuid";
+import { getCurrentDateTime } from "../date/utils";
 
 export const createFolderSource = (
 	path: string,
@@ -132,7 +133,7 @@ export const createRow = (
 		lastEditedDateTime?: string;
 	}
 ): Row => {
-	const currentDateTime = new Date().toISOString();
+	const currentDateTime = getCurrentDateTime();
 	const {
 		cells = [],
 		sourceId = null,

@@ -150,9 +150,7 @@ const CellTypeUnion = Union(
 const DateFormatUnion = Union(
 	Literal(DateFormat.MM_DD_YYYY),
 	Literal(DateFormat.DD_MM_YYYY),
-	Literal(DateFormat.YYYY_MM_DD),
-	Literal(DateFormat.FULL),
-	Literal(DateFormat.RELATIVE)
+	Literal(DateFormat.YYYY_MM_DD)
 );
 
 const DateFormatSeparatorUnion = Union(

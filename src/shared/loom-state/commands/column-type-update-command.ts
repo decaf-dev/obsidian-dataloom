@@ -1,5 +1,4 @@
 import { createTag } from "src/shared/loom-state/loom-state-factory";
-import { dateTimeToDateString } from "../../date/date-conversion";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "../../constants";
 import ColumnNotFoundError from "src/shared/error/column-not-found-error";
 import LoomStateCommand from "./loom-state-command";
@@ -17,6 +16,7 @@ import {
 } from "../types/loom-state";
 import { isCheckbox, isNumberCalcuation } from "../../match";
 import { cloneDeep } from "lodash";
+import { dateTimeToDateString } from "src/shared/date/date-conversion";
 
 export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 	private id: string;

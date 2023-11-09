@@ -3,6 +3,7 @@ import LoomStateCommand from "./loom-state-command";
 import { Cell, Column, LoomState, Row, Tag } from "../types/loom-state";
 import { Color } from "../types/loom-state";
 import RowNotFoundError from "src/shared/error/row-not-found-error";
+import { getCurrentDateTime } from "src/shared/date/utils";
 
 export default class TagAddCommand extends LoomStateCommand {
 	private cellId: string;
@@ -16,13 +17,13 @@ export default class TagAddCommand extends LoomStateCommand {
 	/**
 	 * The edited time of the row before the command is executed
 	 */
-	private previousEditedTime: string;
+	private previousEditedDateTime: string;
 
 	/**
 	 * The edited time of the row after the command is executed
 	 *
 	 */
-	private nextEditedTime: string;
+	private nextEditedDateTime: string;
 
 	/**
 	 * The tag that was added to the column
@@ -62,7 +63,7 @@ export default class TagAddCommand extends LoomStateCommand {
 			row.cells.find((cell) => cell.id === this.cellId)
 		);
 		if (!row) throw new RowNotFoundError();
-		this.previousEditedTime = row.lastEditedDateTime;
+		this.previousEditedDateTime = row.lastEditedDateTime;
 		this.rowId = row.id;
 
 		const newTag = createTag(this.markdown, {
@@ -110,11 +111,11 @@ export default class TagAddCommand extends LoomStateCommand {
 				return cell;
 			});
 			if (row.id === this.rowId) {
-				const newLastEditedTime = new Date().toISOString();
-				this.nextEditedTime = newLastEditedTime;
+				const newLastEditedDateTime = getCurrentDateTime();
+				this.nextEditedDateTime = newLastEditedDateTime;
 				return {
 					...row,
-					lastEditedTime: newLastEditedTime,
+					lastEditedDateTime: newLastEditedDateTime,
 					cells: nextCells,
 				};
 			}
@@ -162,7 +163,7 @@ export default class TagAddCommand extends LoomStateCommand {
 			if (row.id === this.rowId) {
 				return {
 					...row,
-					lastEditedTime: this.previousEditedTime,
+					lastEditedDateTime: this.previousEditedDateTime,
 					cells: nextCells,
 				};
 			}
@@ -205,7 +206,7 @@ export default class TagAddCommand extends LoomStateCommand {
 			if (row.id === this.rowId) {
 				return {
 					...row,
-					lastEditedTime: this.nextEditedTime,
+					lastEditedDateTime: this.nextEditedDateTime,
 					cells: nextCells,
 				};
 			}

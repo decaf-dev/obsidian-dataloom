@@ -2,18 +2,18 @@ import Menu from "src/react/shared/menu";
 import MenuItem from "src/react/shared/menu-item";
 import { LoomMenuPosition } from "src/react/shared/menu/types";
 
-import { getDisplayNameForDateFormat } from "src/shared/loom-state/type-display-names";
-import { DateFormat } from "src/shared/loom-state/types/loom-state";
+import { getDisplayNameForDateFormatSeparator } from "src/shared/loom-state/type-display-names";
+import { DateFormatSeparator } from "src/shared/loom-state/types/loom-state";
 
 interface Props {
 	id: string;
 	isOpen: boolean;
 	position: LoomMenuPosition;
-	value: DateFormat;
-	onChange: (value: DateFormat) => void;
+	value: DateFormatSeparator;
+	onChange: (value: DateFormatSeparator) => void;
 }
 
-export default function DateFormatMenu({
+export default function DateFormatSeparatorMenu({
 	id,
 	position,
 	isOpen,
@@ -29,11 +29,11 @@ export default function DateFormatMenu({
 			topOffset={10}
 			leftOffset={75}
 		>
-			<div className="dataloom-date-format-menu">
-				{Object.values(DateFormat).map((format) => (
+			<div className="dataloom-date-format-separator-menu">
+				{Object.values(DateFormatSeparator).map((format) => (
 					<MenuItem
 						key={format}
-						name={getDisplayNameForDateFormat(format)}
+						name={getDisplayNameForDateFormatSeparator(format)}
 						isSelected={value === format}
 						onClick={() => {
 							onChange(format);

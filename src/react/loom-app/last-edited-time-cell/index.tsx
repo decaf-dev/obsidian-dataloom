@@ -1,4 +1,4 @@
-import { dateTimeToDateTimeString } from "src/shared/date/date-conversion";
+import { dateTimeToDateString } from "src/shared/date/date-conversion";
 import {
 	DateFormat,
 	DateFormatSeparator,
@@ -17,7 +17,9 @@ export default function LastEditedTimeCell({
 }: Props) {
 	return (
 		<div className="dataloom-last-edited-time-cell">
-			{dateTimeToDateTimeString(value, format, formatSeparator)}
+			{dateTimeToDateString(value, format, formatSeparator, {
+				includeTime: true,
+			})}
 		</div>
 	);
 }

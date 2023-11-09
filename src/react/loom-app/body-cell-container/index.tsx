@@ -242,6 +242,14 @@ export default function BodyCellContainer({
 		);
 	}
 
+	function handleDateFormatSeparatorChange(value: DateFormatSeparator) {
+		onColumnChange(
+			columnId,
+			{ dateFormatSeparator: value },
+			{ shouldSortRows: true }
+		);
+	}
+
 	function handleIncludeTimeToggle(value: boolean) {
 		onColumnChange(
 			columnId,
@@ -479,6 +487,9 @@ export default function BodyCellContainer({
 						onClose={menu.onClose}
 						onCloseRequestClear={menu.onCloseRequestClear}
 						onIncludeTimeToggle={handleIncludeTimeToggle}
+						onDateFormatSeparatorChange={
+							handleDateFormatSeparatorChange
+						}
 					/>
 				)}
 			</Menu>

@@ -67,19 +67,11 @@ export default function FinalizeImport({
 								}
 							>
 								<option value="">Select an option</option>
-								{Object.values(DateFormat)
-									.filter(
-										(format) =>
-											format !== DateFormat.RELATIVE &&
-											format !== DateFormat.FULL
-									)
-									.map((format) => (
-										<option key={format} value={format}>
-											{getDisplayNameForDateFormat(
-												format
-											)}
-										</option>
-									))}
+								{Object.values(DateFormat).map((format) => (
+									<option key={format} value={format}>
+										{getDisplayNameForDateFormat(format)}
+									</option>
+								))}
 							</Select>
 						</Stack>
 						<Stack spacing="sm">

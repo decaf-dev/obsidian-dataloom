@@ -16,7 +16,7 @@ import {
 } from "src/shared/loom-state/types/loom-state";
 import { ColumnMatch, ImportData } from "./types";
 import { NEW_COLUMN_ID } from "./constants";
-import { dateStringToDateTime } from "./date-utils";
+import { dateStringToDateTime } from "src/shared/date/date-conversion";
 
 export const addImportData = (
 	prevState: LoomState,

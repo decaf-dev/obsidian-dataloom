@@ -40,14 +40,16 @@ describe("cell-update-command", () => {
 		expect(executeState.model.rows[0].cells.length).toEqual(1);
 		expect(executeState.model.rows[0].cells[0].content).toEqual("test");
 
-		const executeLastEditedTime = new Date(
+		const executeLastEditedDateTime = new Date(
 			executeState.model.rows[0].lastEditedDateTime
 		).getTime();
-		const prevLastEditedTime = new Date(
+		const prevLastEditedDateTime = new Date(
 			prevState.model.rows[0].lastEditedDateTime
 		).getTime();
 
-		expect(executeLastEditedTime).toBeGreaterThan(prevLastEditedTime);
+		expect(executeLastEditedDateTime).toBeGreaterThan(
+			prevLastEditedDateTime
+		);
 	});
 
 	it("should reset the cell property when undo() is called", () => {

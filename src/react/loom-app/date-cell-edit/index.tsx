@@ -7,23 +7,27 @@ import MenuTrigger from "src/react/shared/menu-trigger";
 import Input from "src/react/shared/input";
 
 import {
-	isValidDateFormat,
-	dateTimeToDateString,
-} from "src/shared/date/date-conversion";
-import {
 	DateFormat,
 	DateFormatSeparator,
 } from "src/shared/loom-state/types/loom-state";
 import DateFormatMenu from "./date-format-menu";
 
-import { getDisplayNameForDateFormat } from "src/shared/loom-state/type-display-names";
+import {
+	getDisplayNameForDateFormat,
+	getDisplayNameForDateFormatSeparator,
+} from "src/shared/loom-state/type-display-names";
 import {
 	LoomMenuCloseRequest,
 	LoomMenuLevel,
 } from "src/react/shared/menu-provider/types";
 import { useMenu } from "src/react/shared/menu-provider/hooks";
 import Switch from "src/react/shared/switch";
-import { dateStringToDateTime } from "src/react/import-app/date-utils";
+import DateFormatSeparatorMenu from "./date-format-separator-menu";
+import {
+	dateStringToDateTime,
+	dateTimeToDateString,
+} from "src/shared/date/date-conversion";
+import { isValidDateString } from "src/shared/date/date-validation";
 
 interface Props {
 	cellId: string;
@@ -35,6 +39,7 @@ interface Props {
 	onDateTimeChange: (value: string | null) => void;
 	onCloseRequestClear: () => void;
 	onDateFormatChange: (value: DateFormat) => void;
+	onDateFormatSeparatorChange: (value: DateFormatSeparator) => void;
 	onIncludeTimeToggle: (value: boolean) => void;
 	onClose: () => void;
 }
@@ -49,6 +54,7 @@ export default function DateCellEdit({
 	onDateTimeChange,
 	onClose,
 	onCloseRequestClear,
+	onDateFormatSeparatorChange,
 	onDateFormatChange,
 	onIncludeTimeToggle,
 }: Props) {
@@ -82,7 +88,13 @@ export default function DateCellEdit({
 
 			//If the user has not entered a value, we don't need to validate the date format
 			if (localValue !== "") {
-				if (isValidDateFormat(localValue, dateFormat)) {
+				if (
+					isValidDateString(
+						localValue,
+						dateFormat,
+						dateFormatSeparator
+					)
+				) {
 					//Convert local value to unix time
 					newValue = dateStringToDateTime(
 						localValue,
@@ -110,6 +122,7 @@ export default function DateCellEdit({
 		localValue,
 		closeRequest,
 		dateFormat,
+		dateFormatSeparator,
 		onDateTimeChange,
 		onCloseRequestClear,
 		onClose,
@@ -128,6 +141,11 @@ export default function DateCellEdit({
 	function handleDateFormatChange(value: DateFormat) {
 		onDateFormatChange(value);
 		dateFormatMenu.onClose();
+	}
+
+	function handleDateFormatSeparatorChange(value: DateFormatSeparator) {
+		onDateFormatSeparatorChange(value);
+		dateFormatSeparatorMenu.onClose();
 	}
 
 	function handleClearClick() {
@@ -175,7 +193,9 @@ export default function DateCellEdit({
 						<MenuItem
 							isFocusable={false}
 							name="Date separator"
-							value={dateFormatSeparator}
+							value={getDisplayNameForDateFormatSeparator(
+								dateFormatSeparator
+							)}
 						/>
 					</MenuTrigger>
 					<Padding px="lg">
@@ -196,6 +216,13 @@ export default function DateCellEdit({
 				position={dateFormatMenu.position}
 				value={dateFormat}
 				onChange={handleDateFormatChange}
+			/>
+			<DateFormatSeparatorMenu
+				id={dateFormatSeparatorMenu.id}
+				isOpen={dateFormatSeparatorMenu.isOpen}
+				position={dateFormatSeparatorMenu.position}
+				value={dateFormatSeparator}
+				onChange={handleDateFormatSeparatorChange}
 			/>
 		</>
 	);

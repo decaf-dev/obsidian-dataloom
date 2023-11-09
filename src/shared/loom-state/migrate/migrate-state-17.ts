@@ -92,6 +92,9 @@ const getDateFormatDisplay = (format: DateFormat16): DateFormat => {
 		case DateFormat16.DD_MM_YYYY:
 		case DateFormat16.YYYY_MM_DD:
 			return format.replaceAll("/", "") as DateFormat;
+		case DateFormat16.FULL:
+		case DateFormat16.RELATIVE:
+			return DateFormat.YYYY_MM_DD;
 		default:
 			return format;
 	}

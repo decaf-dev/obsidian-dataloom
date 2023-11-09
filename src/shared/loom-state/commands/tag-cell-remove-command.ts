@@ -1,6 +1,7 @@
 import LoomStateCommand from "./loom-state-command";
 import { Cell, LoomState, Row } from "../types/loom-state";
 import RowNotFoundError from "src/shared/error/row-not-found-error";
+import { getCurrentDateTime } from "src/shared/date/utils";
 
 export default class TagCellRemoveCommand extends LoomStateCommand {
 	private cellId: string;
@@ -8,8 +9,8 @@ export default class TagCellRemoveCommand extends LoomStateCommand {
 
 	private rowId: string;
 
-	private previousEditedTime: string;
-	private nextEditedTime: string;
+	private previousEditedDateTime: string;
+	private nextEditedDateTime: string;
 
 	/**
 	 * The index of the tag id in the tag ids array before the command is executed
@@ -32,7 +33,7 @@ export default class TagCellRemoveCommand extends LoomStateCommand {
 		);
 		if (!row) throw new RowNotFoundError();
 		this.rowId = row.id;
-		this.previousEditedTime = row.lastEditedDateTime;
+		this.previousEditedDateTime = row.lastEditedDateTime;
 
 		const nextRows: Row[] = rows.map((row) => {
 			const { cells } = row;
@@ -50,11 +51,11 @@ export default class TagCellRemoveCommand extends LoomStateCommand {
 				return cell;
 			});
 			if (row.id === this.rowId) {
-				const newEditedTime = new Date().toISOString();
-				this.nextEditedTime = newEditedTime;
+				const newEditedDateTime = getCurrentDateTime();
+				this.nextEditedDateTime = newEditedDateTime;
 				return {
 					...row,
-					lastEditedTime: newEditedTime,
+					lastEditedDateTime: newEditedDateTime,
 					cells: nextCells,
 				};
 			}
@@ -91,7 +92,7 @@ export default class TagCellRemoveCommand extends LoomStateCommand {
 			if (row.id === this.rowId) {
 				return {
 					...row,
-					lastEditedTime: this.previousEditedTime,
+					lastEditedDateTime: this.previousEditedDateTime,
 					cells: nextCells,
 				};
 			}
@@ -129,7 +130,7 @@ export default class TagCellRemoveCommand extends LoomStateCommand {
 			if (row.id === this.rowId) {
 				return {
 					...row,
-					lastEditedTime: this.nextEditedTime,
+					lastEditedDateTime: this.nextEditedDateTime,
 					cells: nextCells,
 				};
 			}

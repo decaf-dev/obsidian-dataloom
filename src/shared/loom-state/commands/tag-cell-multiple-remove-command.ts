@@ -1,14 +1,15 @@
 import LoomStateCommand from "./loom-state-command";
 import { Cell, LoomState, Row } from "../types/loom-state";
 import RowNotFoundError from "src/shared/error/row-not-found-error";
+import { getCurrentDateTime } from "src/shared/date/utils";
 
 export default class TagCellMultipleRemoveCommand extends LoomStateCommand {
 	private cellId: string;
 	private tagIds: string[];
 
 	private rowId: string;
-	private previousEditedTime: string;
-	private nextEditedTime: string;
+	private previousEditedDateTime: string;
+	private nextEditedDateTime: string;
 
 	private previousTagIds: string[];
 
@@ -28,7 +29,7 @@ export default class TagCellMultipleRemoveCommand extends LoomStateCommand {
 		);
 		if (!row) throw new RowNotFoundError();
 		this.rowId = row.id;
-		this.previousEditedTime = row.lastEditedDateTime;
+		this.previousEditedDateTime = row.lastEditedDateTime;
 
 		const nextRows: Row[] = rows.map((row) => {
 			const { cells } = row;
@@ -48,11 +49,11 @@ export default class TagCellMultipleRemoveCommand extends LoomStateCommand {
 				return cell;
 			});
 			if (row.id === this.rowId) {
-				const newEditedTime = new Date().toISOString();
-				this.nextEditedTime = newEditedTime;
+				const newEditedDateTime = getCurrentDateTime();
+				this.nextEditedDateTime = newEditedDateTime;
 				return {
 					...row,
-					lastEditedTime: newEditedTime,
+					lastEditedDateTime: newEditedDateTime,
 					cells: nextCells,
 				};
 			}
@@ -86,7 +87,7 @@ export default class TagCellMultipleRemoveCommand extends LoomStateCommand {
 			if (row.id === this.rowId) {
 				return {
 					...row,
-					lastEditedTime: this.previousEditedTime,
+					lastEditedDateTime: this.previousEditedDateTime,
 					cells: nextCells,
 				};
 			}
@@ -124,7 +125,7 @@ export default class TagCellMultipleRemoveCommand extends LoomStateCommand {
 			if (row.id === this.rowId) {
 				return {
 					...row,
-					lastEditedTime: this.nextEditedTime,
+					lastEditedDateTime: this.nextEditedDateTime,
 					cells: nextCells,
 				};
 			}

@@ -1,61 +1,85 @@
+import dayjs from "dayjs";
+import { getDateFormatString } from "./utils";
 import {
 	DateFormat,
 	DateFormatSeparator,
 } from "../loom-state/types/loom-state";
-import { MILLIS_IN_DAY } from "./constants";
-import { DD_MM_YYYY_REGEX, MM_DD_YYYY_REGEX, YYYY_MM_DD_REGEX } from "./regex";
-import {
-	getDateParts,
-	getUTCTimeFromDateParts,
-	removeLastComma,
-} from "./utils";
 
-export const dateStringToUnixTime = (value: string, dateFormat: DateFormat) => {
-	const parts = value.split("/");
-	switch (dateFormat) {
-		case DateFormat.MM_DD_YYYY:
-			return getUTCTimeFromDateParts(parts[2], parts[0], parts[1]);
-		case DateFormat.DD_MM_YYYY:
-			return getUTCTimeFromDateParts(parts[2], parts[1], parts[0]);
-		case DateFormat.YYYY_MM_DD:
-			return getUTCTimeFromDateParts(parts[0], parts[1], parts[2]);
-		default:
-			throw new Error("Date format not supported.");
-	}
+export const dateStringToDateTime = (
+	dateString: string,
+	format: DateFormat,
+	separator: DateFormatSeparator
+) => {
+	const dayjsFormat = getDateFormatString(format, separator);
+	const dayjsDate = dayjs(dateString, dayjsFormat, true);
+	return dayjsDate.toISOString();
 };
 
 export const dateTimeToDateString = (
 	dateTime: string,
 	format: DateFormat,
-	separator: DateFormatSeparator
+	separator: DateFormatSeparator,
+	options?: {
+		locale?: string;
+		includeTime?: boolean;
+		hour12?: boolean;
+	}
 ) => {
+	const {
+		locale = navigator.language,
+		includeTime = false,
+		hour12 = true,
+	} = options || {};
+
+	const MILLIS_SECOND = 1000;
+	const MILLIS_MINUTE = MILLIS_SECOND * 60;
+	const MILLIS_HOUR = MILLIS_MINUTE * 60;
+	const MILLIS_DAY = MILLIS_HOUR * 24;
+
 	const date = new Date(dateTime);
-	const { year, month, day } = getDateParts(date);
+	const year = date.getFullYear();
+	const month = date.getMonth() + 1;
+	const day = date.getDate();
+
+	const time = date.toLocaleString(locale, {
+		hour: "numeric",
+		minute: "numeric",
+		hour12,
+	});
 
 	switch (format) {
-		case DateFormat.MM_DD_YYYY:
-			return month + separator + day + separator + year;
-		case DateFormat.DD_MM_YYYY:
-			return day + separator + month + separator + year;
-		case DateFormat.YYYY_MM_DD:
-			return year + separator + month + separator + day;
-		case DateFormat.FULL:
-			return date.toLocaleString("en-US", {
-				month: "short",
-				day: "numeric",
-				year: "numeric",
-			});
+		case DateFormat.MM_DD_YYYY: {
+			let format = month + separator + day + separator + year;
+			if (includeTime) {
+				format += " " + time;
+			}
+			return format;
+		}
+		case DateFormat.DD_MM_YYYY: {
+			let format = day + separator + month + separator + year;
+			if (includeTime) {
+				format += " " + time;
+			}
+			return format;
+		}
+		case DateFormat.YYYY_MM_DD: {
+			let format = year + separator + month + separator + day;
+			if (includeTime) {
+				format += " " + time;
+			}
+			return format;
+		}
 		case DateFormat.RELATIVE: {
 			const diff = Date.now() - date.getTime();
 
-			if (diff < MILLIS_IN_DAY) {
+			if (diff < MILLIS_DAY) {
 				return "Today";
-			} else if (diff < MILLIS_IN_DAY * 2) {
+			} else if (diff < MILLIS_DAY * 2) {
 				return "Yesterday";
-			} else if (diff < MILLIS_IN_DAY * 7) {
-				return date.toLocaleString("en-US", { weekday: "long" });
+			} else if (diff < MILLIS_DAY * 7) {
+				return date.toLocaleString(locale, { weekday: "long" });
 			} else {
-				return date.toLocaleString("en-US", {
+				return date.toLocaleString(locale, {
 					month: "short",
 					day: "numeric",
 					year: "numeric",
@@ -63,81 +87,6 @@ export const dateTimeToDateString = (
 			}
 		}
 		default:
-			return "";
-	}
-};
-
-//TODO refactor with optional time format
-export const dateTimeToDateTimeString = (
-	dateTime: string,
-	format: DateFormat,
-	separator: DateFormatSeparator
-) => {
-	const date = new Date(dateTime);
-	const { year, month, day, time } = getDateParts(date);
-
-	switch (format) {
-		case DateFormat.MM_DD_YYYY:
-			return month + separator + day + separator + year + " " + time;
-		case DateFormat.DD_MM_YYYY:
-			return day + separator + month + separator + year + " " + time;
-		case DateFormat.YYYY_MM_DD:
-			return year + separator + month + separator + day + " " + time;
-		case DateFormat.FULL: {
-			const value = date.toLocaleString("en-US", {
-				month: "short",
-				day: "numeric",
-				year: "numeric",
-				hour: "numeric",
-				minute: "numeric",
-				hour12: true,
-			});
-			return removeLastComma(value);
-		}
-		case DateFormat.RELATIVE: {
-			const diff = Date.now() - date.getTime();
-			const time = date.toLocaleString("en-US", {
-				hour: "numeric",
-				minute: "numeric",
-				hour12: true,
-			});
-
-			if (diff < MILLIS_IN_DAY) {
-				return "Today" + " " + time;
-			} else if (diff < MILLIS_IN_DAY * 2) {
-				return "Yesterday" + " " + time;
-			} else if (diff < MILLIS_IN_DAY * 7) {
-				return (
-					date.toLocaleString("en-US", { weekday: "long" }) +
-					" " +
-					time
-				);
-			} else {
-				const value = date.toLocaleString("en-US", {
-					month: "short",
-					day: "numeric",
-					year: "numeric",
-					hour: "numeric",
-					minute: "numeric",
-					hour12: true,
-				});
-				return removeLastComma(value);
-			}
-		}
-		default:
-			return "";
-	}
-};
-
-export const isValidDateFormat = (value: string, dateFormat: DateFormat) => {
-	switch (dateFormat) {
-		case DateFormat.MM_DD_YYYY:
-			return value.match(MM_DD_YYYY_REGEX) !== null;
-		case DateFormat.DD_MM_YYYY:
-			return value.match(DD_MM_YYYY_REGEX) !== null;
-		case DateFormat.YYYY_MM_DD:
-			return value.match(YYYY_MM_DD_REGEX) !== null;
-		default:
-			return false;
+			throw new Error("Date format not supported.");
 	}
 };

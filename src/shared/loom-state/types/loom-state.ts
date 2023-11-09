@@ -154,7 +154,6 @@ export enum DateFormat {
 	MM_DD_YYYY = "mmddyyyy",
 	DD_MM_YYYY = "ddmmyyyy",
 	YYYY_MM_DD = "yyyymmdd",
-	FULL = "full",
 	RELATIVE = "relative",
 }
 

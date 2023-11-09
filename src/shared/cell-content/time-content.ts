@@ -1,4 +1,4 @@
-import { dateTimeToDateTimeString } from "../date/date-conversion";
+import { dateTimeToDateString } from "../date/date-conversion";
 import {
 	DateFormat,
 	DateFormatSeparator,
@@ -10,7 +10,9 @@ export const getTimeCellContent = (
 	separator: DateFormatSeparator
 ) => {
 	if (dateTime !== null) {
-		return dateTimeToDateTimeString(dateTime, format, separator);
+		return dateTimeToDateString(dateTime, format, separator, {
+			includeTime: true,
+		});
 	}
 	return "";
 };
