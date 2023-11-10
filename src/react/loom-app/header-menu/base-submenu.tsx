@@ -72,7 +72,6 @@ export default function BaseSubmenu({
 
 	const hasOptions =
 		columnType === CellType.EMBED ||
-		columnType === CellType.DATE ||
 		columnType === CellType.NUMBER ||
 		columnType === CellType.LAST_EDITED_TIME ||
 		columnType === CellType.CREATION_TIME;
