@@ -20,7 +20,6 @@ export default function DateFormatMenu({
 	value,
 	onChange,
 }: Props) {
-	//TODO add all formats
 	return (
 		<Menu
 			isOpen={isOpen}
@@ -31,11 +30,7 @@ export default function DateFormatMenu({
 			leftOffset={75}
 		>
 			<div className="dataloom-date-format-menu">
-				{Object.values([
-					DateFormat.DD_MM_YYYY,
-					DateFormat.MM_DD_YYYY,
-					DateFormat.YYYY_MM_DD,
-				]).map((format) => (
+				{Object.values(DateFormat).map((format) => (
 					<MenuItem
 						key={format}
 						name={getDisplayNameForDateFormat(format)}

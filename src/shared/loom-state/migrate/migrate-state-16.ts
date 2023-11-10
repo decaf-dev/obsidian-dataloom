@@ -1,12 +1,12 @@
 import MigrateState from "./migrate-state";
-import { LoomState, Source, SourceType } from "../types/loom-state";
-import { LoomState15 } from "../types";
+import { Source, SourceType } from "../types/loom-state";
+import { LoomState15, LoomState16 } from "../types";
 
 /**
  * Migrates to 8.11.0
  */
-export default class MigrateState15 implements MigrateState {
-	public migrate(prevState: LoomState15): LoomState {
+export default class MigrateState16 implements MigrateState {
+	public migrate(prevState: LoomState15): LoomState16 {
 		const { sources } = prevState.model;
 
 		const nextSources: Source[] = sources.map((source) => {

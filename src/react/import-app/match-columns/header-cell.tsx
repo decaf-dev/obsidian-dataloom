@@ -1,22 +1,23 @@
 import Stack from "src/react/shared/stack";
 import Text from "src/react/shared/text";
 import Icon from "src/react/shared/icon";
-import SelectColumnMenu from "./select-column-menu";
 import MenuButton from "src/react/shared/menu-button";
 
 import { useOverflow } from "src/shared/spacing/hooks";
-import { ColumnMatch, ImportColumn } from "../types";
+import { ColumnMatch } from "../types";
 import { LoomMenuLevel } from "src/react/shared/menu-provider/types";
 import { useMenu } from "src/react/shared/menu-provider/hooks";
+import { Column } from "src/shared/loom-state/types/loom-state";
+import MatchColumnMenu from "./match-column-menu";
 
 interface Props {
 	isDisabled: boolean;
-	columns: ImportColumn[];
+	columns: Column[];
 	columnMatches: ColumnMatch[];
 	index: number;
 	importValue: string;
 	matchId: string | null;
-	onColumnToggle: (index: number) => void;
+	onColumnEnabledToggle: (index: number) => void;
 	onColumnMatch: (index: number, columnId: string | null) => void;
 }
 
@@ -28,7 +29,7 @@ export default function HeaderCell({
 	importValue,
 	matchId,
 	onColumnMatch,
-	onColumnToggle,
+	onColumnEnabledToggle,
 }: Props) {
 	const overflowClassName = useOverflow(false, {
 		ellipsis: true,
@@ -69,10 +70,12 @@ export default function HeaderCell({
 					</Stack>
 					<Stack isHorizontal spacing="sm">
 						<input
-							aria-label="Toggle column"
+							aria-label={
+								isDisabled ? "Enable column" : "Disable column"
+							}
 							type="checkbox"
 							checked={!isDisabled}
-							onChange={() => onColumnToggle(index)}
+							onChange={() => onColumnEnabledToggle(index)}
 						/>
 						<MenuButton
 							ref={menu.triggerRef}
@@ -81,12 +84,16 @@ export default function HeaderCell({
 							level={LoomMenuLevel.ONE}
 							ariaLabel="Match column"
 							icon={<Icon lucideId="columns" size="lg" />}
-							onOpen={() => menu.onOpen(LoomMenuLevel.ONE)}
+							onOpen={() =>
+								menu.onOpen(LoomMenuLevel.ONE, {
+									shouldFocusTriggerOnClose: false,
+								})
+							}
 						/>
 					</Stack>
 				</Stack>
 			</th>
-			<SelectColumnMenu
+			<MatchColumnMenu
 				id={menu.id}
 				isOpen={menu.isOpen}
 				position={menu.position}

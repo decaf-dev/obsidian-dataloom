@@ -45,11 +45,18 @@ describe("serializeFrontmatter", () => {
 		frontmatterKey: string | null,
 		cellContent: {
 			content?: string;
-			dateTime?: number;
+			dateTime?: string;
 			tagIds?: string[];
 		}[],
-		tags?: Tag[]
+		options?: {
+			tags?: Tag[];
+			column?: {
+				includeTime?: boolean;
+			};
+		}
 	) {
+		const { tags = [], column } = options ?? {};
+		const { includeTime = false } = column ?? {};
 		//Arrange
 		const columns: Column[] = [
 			createColumn({
@@ -64,6 +71,7 @@ describe("serializeFrontmatter", () => {
 					? { value: frontmatterKey, isCustom: true }
 					: null,
 				tags,
+				includeTime,
 			}),
 		];
 		const sources = [createFolderSource("test", false)];
@@ -163,22 +171,30 @@ describe("serializeFrontmatter", () => {
 	});
 
 	it("loads date cell content into frontmatter", async () => {
-		const now = Date.now();
 		//Arrange
-		const state = createState(CellType.DATE, "time", [
-			{ dateTime: now + 1 },
-			{ dateTime: now + 2 },
-		]);
+		const state = createState(
+			CellType.DATE,
+			"time",
+			[
+				{ dateTime: "2020-12-31T22:00:00Z" },
+				{ dateTime: "2020-12-31T23:00:00Z" },
+			],
+			{
+				column: {
+					includeTime: true,
+				},
+			}
+		);
 
 		//Act
 		await serializeFrontmatter(app, state);
 
 		//Assert
 		expect(frontmatterTest1).toEqual({
-			time: now + 1,
+			time: "2020-12-31T15:00:00",
 		});
 		expect(frontmatterTest2).toEqual({
-			time: now + 2,
+			time: "2020-12-31T16:00:00",
 		});
 	});
 
@@ -190,7 +206,9 @@ describe("serializeFrontmatter", () => {
 			CellType.TAG,
 			"tag",
 			[{ tagIds }, { tagIds }],
-			tags
+			{
+				tags,
+			}
 		);
 
 		//Act
@@ -213,7 +231,9 @@ describe("serializeFrontmatter", () => {
 			CellType.MULTI_TAG,
 			"tags",
 			[{ tagIds }, { tagIds }],
-			tags
+			{
+				tags,
+			}
 		);
 
 		//Act
@@ -246,7 +266,7 @@ describe("serializeFrontmatter", () => {
 	it("doesn't serialize content if the frontmatter key doesn't exist and the content is empty", async () => {
 		//Arrange
 		const tags = [createTag("tag-1"), createTag("tag-2")];
-		const state = createState(CellType.MULTI_TAG, "tags", [], tags);
+		const state = createState(CellType.MULTI_TAG, "tags", [], { tags });
 		//Act
 		await serializeFrontmatter(app, state);
 

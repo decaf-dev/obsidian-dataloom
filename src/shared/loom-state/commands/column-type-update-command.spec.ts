@@ -191,7 +191,7 @@ describe("column-type-update-command", () => {
 		});
 		prevState.model.rows[0].cells[0].dateTime = new Date(
 			"2020-01-01"
-		).getTime();
+		).toISOString();
 
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
@@ -205,7 +205,7 @@ describe("column-type-update-command", () => {
 		expect(executeState.model.columns.length).toEqual(1);
 		expect(executeState.model.columns[0].type).toEqual(CellType.TEXT);
 		expect(executeState.model.rows[0].cells[0].content).toEqual(
-			"12/31/2019"
+			"12-31-2019"
 		);
 	});
 
@@ -380,7 +380,7 @@ describe("column-type-update-command", () => {
 		});
 		prevState.model.rows[0].cells[0].dateTime = new Date(
 			"2020-01-01"
-		).getTime();
+		).toISOString();
 
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,

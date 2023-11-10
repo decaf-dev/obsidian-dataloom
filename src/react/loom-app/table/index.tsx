@@ -239,6 +239,7 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 									type,
 									currencyType,
 									dateFormat,
+									dateFormatSeparator,
 									numberFormat,
 									width,
 									tags,
@@ -265,6 +266,9 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 										columnId={columnId}
 										columnTags={tags}
 										numberFormat={numberFormat}
+										dateFormatSeparator={
+											dateFormatSeparator
+										}
 										currencyType={currencyType}
 										dateFormat={dateFormat}
 										columnCells={columnCells}
@@ -293,8 +297,8 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 				const row = rows[index];
 				const {
 					id: rowId,
-					lastEditedTime,
-					creationTime,
+					lastEditedDateTime,
+					creationDateTime,
 					sourceId,
 				} = row;
 				const source =
@@ -328,11 +332,14 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 							type,
 							shouldWrapOverflow,
 							currencyType,
+							includeTime,
+							dateFormatSeparator,
 							numberPrefix,
 							numberSeparator,
 							numberFormat,
 							numberSuffix,
 							dateFormat,
+							hour12,
 							tags,
 							verticalPadding,
 							horizontalPadding,
@@ -370,20 +377,23 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 								frontmatterKey={frontmatterKey}
 								isExternalLink={isExternalLink}
 								verticalPadding={verticalPadding}
+								includeTime={includeTime}
+								dateFormatSeparator={dateFormatSeparator}
 								horizontalPadding={horizontalPadding}
 								aspectRatio={aspectRatio}
 								columnTags={tags}
 								cellTagIds={tagIds}
 								columnId={columnId}
 								source={source}
+								hour12={hour12}
 								numberFormat={numberFormat}
-								rowCreationTime={creationTime}
+								rowCreationTime={creationDateTime}
 								dateFormat={dateFormat}
 								currencyType={currencyType}
 								numberPrefix={numberPrefix}
 								numberSuffix={numberSuffix}
 								numberSeparator={numberSeparator}
-								rowLastEditedTime={lastEditedTime}
+								rowLastEditedTime={lastEditedDateTime}
 								dateTime={dateTime}
 								content={cellContent}
 								columnType={type}

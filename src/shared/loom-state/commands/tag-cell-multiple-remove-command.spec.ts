@@ -62,9 +62,14 @@ describe("tag-cell-multiple-remove-command", () => {
 			tags[0].id,
 			tags[1].id,
 		]);
-		expect(executeState.model.rows[0].lastEditedTime).toBeGreaterThan(
-			prevState.model.rows[0].lastEditedTime
-		);
+
+		const executeLastEditedTime = new Date(
+			executeState.model.rows[0].lastEditedDateTime
+		).getTime();
+		const prevLastEditedTime = new Date(
+			prevState.model.rows[0].lastEditedDateTime
+		).getTime();
+		expect(executeLastEditedTime).toBeGreaterThan(prevLastEditedTime);
 	});
 
 	it("should restore the deleted cell reference when undo() is called", () => {

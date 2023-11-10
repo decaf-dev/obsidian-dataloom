@@ -5,6 +5,7 @@ import {
 	CellType,
 	CurrencyType,
 	DateFormat,
+	DateFormatSeparator,
 	NumberFormat,
 	PaddingSize,
 } from "src/shared/loom-state/types/loom-state";
@@ -15,15 +16,18 @@ import { SubmenuType } from "./types";
 import {
 	getDisplayNameForCurrencyType,
 	getDisplayNameForDateFormat,
+	getDisplayNameForDateFormatSeparator,
 } from "src/shared/loom-state/type-display-names";
 
 interface Props {
 	title: string;
+	hour12: boolean;
 	currencyType: CurrencyType;
 	numberFormat: NumberFormat;
 	numberPrefix: string;
 	numberSuffix: string;
 	numberSeparator: string;
+	dateFormatSeparator: DateFormatSeparator;
 	type: CellType;
 	dateFormat: DateFormat;
 	verticalPadding: PaddingSize;
@@ -35,12 +39,14 @@ interface Props {
 
 export default function OptionSubmenu({
 	type,
+	hour12,
 	currencyType,
 	numberFormat,
 	numberPrefix,
 	numberSuffix,
 	numberSeparator,
 	aspectRatio,
+	dateFormatSeparator,
 	verticalPadding,
 	horizontalPadding,
 	title,
@@ -130,15 +136,34 @@ export default function OptionSubmenu({
 							/>
 						)}
 					{(type === CellType.CREATION_TIME ||
-						type === CellType.LAST_EDITED_TIME ||
-						type === CellType.DATE) && (
-						<MenuItem
-							name="Date format"
-							value={getDisplayNameForDateFormat(dateFormat)}
-							onClick={() =>
-								onSubmenuChange(SubmenuType.DATE_FORMAT)
-							}
-						/>
+						type === CellType.LAST_EDITED_TIME) && (
+						<>
+							<MenuItem
+								name="Date format"
+								value={getDisplayNameForDateFormat(dateFormat)}
+								onClick={() =>
+									onSubmenuChange(SubmenuType.DATE_FORMAT)
+								}
+							/>
+							<MenuItem
+								name="Date separator"
+								value={getDisplayNameForDateFormatSeparator(
+									dateFormatSeparator
+								)}
+								onClick={() =>
+									onSubmenuChange(
+										SubmenuType.DATE_FORMAT_SEPARATOR
+									)
+								}
+							/>
+							<MenuItem
+								name="Time format"
+								value={hour12 ? "12 hour" : "24 hour"}
+								onClick={() =>
+									onSubmenuChange(SubmenuType.TIME_FORMAT)
+								}
+							/>
+						</>
 					)}
 				</Stack>
 			</Padding>

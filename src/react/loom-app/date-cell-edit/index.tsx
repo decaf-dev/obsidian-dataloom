@@ -7,108 +7,193 @@ import MenuTrigger from "src/react/shared/menu-trigger";
 import Input from "src/react/shared/input";
 
 import {
-	dateStringToUnixTime,
-	isValidDateFormat,
-	unixTimeToDateString,
-} from "src/shared/date/date-conversion";
-import { DateFormat } from "src/shared/loom-state/types/loom-state";
+	DateFormat,
+	DateFormatSeparator,
+} from "src/shared/loom-state/types/loom-state";
 import DateFormatMenu from "./date-format-menu";
 
-import { getDisplayNameForDateFormat } from "src/shared/loom-state/type-display-names";
+import {
+	getDisplayNameForDateFormat,
+	getDisplayNameForDateFormatSeparator,
+} from "src/shared/loom-state/type-display-names";
 import {
 	LoomMenuCloseRequest,
 	LoomMenuLevel,
 } from "src/react/shared/menu-provider/types";
 import { useMenu } from "src/react/shared/menu-provider/hooks";
+import Switch from "src/react/shared/switch";
+import DateFormatSeparatorMenu from "./date-format-separator-menu";
+import {
+	dateTimeToDateString,
+	dateTimeToTimeString,
+} from "src/shared/date/date-time-conversion";
+import {
+	isValidDateString,
+	isValidTimeString,
+} from "src/shared/date/date-validation";
+import TimeFormatMenu from "./time-format.menu";
+
+import "./styles.css";
+import { dateStringToDateTime } from "src/shared/date/date-string-conversion";
+import { getCurrentDateTime } from "src/shared/date/utils";
 
 interface Props {
 	cellId: string;
-	value: number | null;
+	value: string | null;
 	closeRequest: LoomMenuCloseRequest | null;
+	dateFormatSeparator: DateFormatSeparator;
 	dateFormat: DateFormat;
-	onDateTimeChange: (value: number | null) => void;
+	hour12: boolean;
+	includeTime: boolean;
+	onDateTimeChange: (value: string | null) => void;
 	onCloseRequestClear: () => void;
 	onDateFormatChange: (value: DateFormat) => void;
+	onDateFormatSeparatorChange: (value: DateFormatSeparator) => void;
+	onIncludeTimeToggle: (value: boolean) => void;
+	onTimeFormatChange: (value: boolean) => void;
 	onClose: () => void;
 }
 
 export default function DateCellEdit({
 	cellId,
 	value,
+	includeTime,
 	closeRequest,
+	dateFormatSeparator,
 	dateFormat,
+	hour12,
 	onDateTimeChange,
 	onClose,
 	onCloseRequestClear,
+	onDateFormatSeparatorChange,
 	onDateFormatChange,
+	onIncludeTimeToggle,
+	onTimeFormatChange,
 }: Props) {
 	const COMPONENT_ID = `date-format-menu-${cellId}`;
-	const menu = useMenu(COMPONENT_ID);
 
-	const [localValue, setLocalValue] = React.useState(
-		value === null ? "" : unixTimeToDateString(value, dateFormat)
+	const dateFormatMenu = useMenu(COMPONENT_ID, { name: "date-format" });
+	const dateFormatSeparatorMenu = useMenu(COMPONENT_ID, {
+		name: "date-separator",
+	});
+	const timeFormatMenu = useMenu(COMPONENT_ID, {
+		name: "time-format",
+	});
+
+	const includeTimeToggleId = React.useId();
+
+	const [dateString, setDateString] = React.useState(
+		value === null
+			? ""
+			: dateTimeToDateString(value, dateFormat, dateFormatSeparator)
+	);
+	const [timeString, setTimeString] = React.useState(
+		value === null
+			? ""
+			: dateTimeToTimeString(value, {
+					hour12,
+			  })
 	);
 
-	const [isInputInvalid, setInputInvalid] = React.useState(false);
-	const [closeTime, setCloseTime] = React.useState(0);
-	const inputRef = React.useRef<HTMLInputElement | null>(null);
+	console.log("dateString", dateString);
+	console.log("timeString", timeString);
+
+	const [isDateInputInvalid, setDateInputInvalid] = React.useState(false);
+	const [isTimeInputInvalid, setTimeInputInvalid] = React.useState(false);
+	const dateInputRef = React.useRef<HTMLInputElement>(null);
+	const timeInputRef = React.useRef<HTMLInputElement>(null);
 
 	React.useEffect(() => {
-		setLocalValue(
-			value === null ? "" : unixTimeToDateString(value, dateFormat)
+		setTimeString(
+			value === null
+				? ""
+				: dateTimeToTimeString(value, {
+						hour12,
+				  })
 		);
-	}, [value, dateFormat]);
+	}, [value, hour12, setTimeString]);
 
 	React.useEffect(() => {
-		if (closeRequest !== null) {
-			let newValue: number | null = null;
+		setDateString(
+			value === null
+				? ""
+				: dateTimeToDateString(value, dateFormat, dateFormatSeparator)
+		);
+	}, [value, dateFormat, setDateString]);
 
-			//If the user has not entered a value, we don't need to validate the date format
-			if (localValue !== "") {
-				if (isValidDateFormat(localValue, dateFormat)) {
-					//Convert local value to unix time
-					newValue = dateStringToUnixTime(localValue, dateFormat);
-				} else {
-					if (closeRequest.type === "close-on-save") {
-						setInputInvalid(true);
-						onCloseRequestClear();
-						return;
-					}
-					newValue = value;
+	React.useEffect(() => {
+		if (closeRequest === null) return;
+
+		//If the user has not entered a value, we don't need to validate the date format
+		if (dateString !== "") {
+			if (
+				!isValidDateString(dateString, dateFormat, dateFormatSeparator)
+			) {
+				if (closeRequest.type === "close-on-save") {
+					setDateInputInvalid(true);
+					onCloseRequestClear();
+					return;
 				}
 			}
-
-			if (newValue !== value) {
-				setInputInvalid(false);
-				onDateTimeChange(newValue);
-			}
-			setCloseTime(Date.now());
 		}
+
+		//If the user has not entered a value, we don't need to validate the date format
+		if (dateString !== "" || timeString !== "") {
+			if (!isValidTimeString(timeString, hour12)) {
+				if (closeRequest.type === "close-on-save") {
+					setTimeInputInvalid(true);
+					onCloseRequestClear();
+					return;
+				}
+			}
+		}
+
+		let newValue: string | null = value;
+		if (dateString !== "" && timeString !== "") {
+			//Convert local value to unix time
+			newValue = dateStringToDateTime(
+				dateString,
+				dateFormat,
+				dateFormatSeparator,
+				{
+					timeString,
+					hour12,
+				}
+			);
+		}
+
+		if (newValue !== value) {
+			setDateInputInvalid(false);
+			setTimeInputInvalid(false);
+			onDateTimeChange(newValue);
+		}
+		onClose();
 	}, [
 		value,
-		localValue,
+		dateString,
+		,
+		timeString,
 		closeRequest,
 		dateFormat,
+		dateFormatSeparator,
 		onDateTimeChange,
 		onCloseRequestClear,
 		onClose,
 	]);
 
-	//If we call onMenuClose directly in the validateInput function, we can see the cell markdown
-	//change to the new value as the menu closes
-	//If we call onMenuClose in a useEffect, we wait an entire render cycle before closing the menu
-	//This allows us to see the cell markdown change to the new value before the menu closes
-	React.useEffect(() => {
-		if (closeTime !== 0) {
-			onClose();
-		}
-	}, [closeTime, onClose]);
-
 	function handleDateFormatChange(value: DateFormat) {
-		if (menu === null) return;
-
 		onDateFormatChange(value);
-		menu.onClose();
+		dateFormatMenu.onClose();
+	}
+
+	function handleDateFormatSeparatorChange(value: DateFormatSeparator) {
+		onDateFormatSeparatorChange(value);
+		dateFormatSeparatorMenu.onClose();
+	}
+
+	function handleTimeFormatChange(value: boolean) {
+		onTimeFormatChange(value);
+		timeFormatMenu.onClose();
 	}
 
 	function handleClearClick() {
@@ -121,21 +206,42 @@ export default function DateCellEdit({
 			<div className="dataloom-date-cell-edit">
 				<Stack>
 					<Padding p="md">
-						<Input
-							ref={inputRef}
-							showBorder
-							hasError={isInputInvalid}
-							value={localValue}
-							onChange={setLocalValue}
-						/>
+						<Stack isHorizontal spacing="sm">
+							<Input
+								ref={dateInputRef}
+								showBorder
+								placeholder={dateTimeToDateString(
+									getCurrentDateTime(),
+									dateFormat,
+									dateFormatSeparator
+								)}
+								hasError={isDateInputInvalid}
+								value={dateString}
+								onChange={setDateString}
+							/>
+							<Input
+								ref={timeInputRef}
+								showBorder
+								autoFocus={false}
+								placeholder={dateTimeToTimeString(
+									getCurrentDateTime(),
+									{
+										hour12,
+									}
+								)}
+								hasError={isTimeInputInvalid}
+								value={timeString}
+								onChange={setTimeString}
+							/>
+						</Stack>
 					</Padding>
 					<MenuTrigger
-						ref={menu.triggerRef}
-						menuId={menu.id}
+						ref={dateFormatMenu.triggerRef}
+						menuId={dateFormatMenu.id}
 						variant="cell"
-						isFocused={menu.isTriggerFocused}
+						isFocused={dateFormatMenu.isTriggerFocused}
 						level={LoomMenuLevel.TWO}
-						onOpen={() => menu.onOpen(LoomMenuLevel.TWO)}
+						onOpen={() => dateFormatMenu.onOpen(LoomMenuLevel.TWO)}
 					>
 						<MenuItem
 							isFocusable={false}
@@ -143,15 +249,77 @@ export default function DateCellEdit({
 							value={getDisplayNameForDateFormat(dateFormat)}
 						/>
 					</MenuTrigger>
+					<MenuTrigger
+						ref={dateFormatSeparatorMenu.triggerRef}
+						menuId={dateFormatSeparatorMenu.id}
+						variant="cell"
+						isFocused={dateFormatSeparatorMenu.isTriggerFocused}
+						level={LoomMenuLevel.TWO}
+						onOpen={() =>
+							dateFormatSeparatorMenu.onOpen(LoomMenuLevel.TWO)
+						}
+					>
+						<MenuItem
+							isFocusable={false}
+							name="Date separator"
+							value={getDisplayNameForDateFormatSeparator(
+								dateFormatSeparator
+							)}
+						/>
+					</MenuTrigger>
+					<Padding px="lg">
+						<Stack spacing="sm">
+							<label htmlFor={includeTimeToggleId}>
+								Include time
+							</label>
+							<Switch
+								id={includeTimeToggleId}
+								value={includeTime}
+								onToggle={onIncludeTimeToggle}
+							/>
+						</Stack>
+					</Padding>
+					{includeTime && (
+						<MenuTrigger
+							ref={timeFormatMenu.triggerRef}
+							menuId={timeFormatMenu.id}
+							variant="cell"
+							isFocused={timeFormatMenu.isTriggerFocused}
+							level={LoomMenuLevel.TWO}
+							onOpen={() =>
+								timeFormatMenu.onOpen(LoomMenuLevel.TWO)
+							}
+						>
+							<MenuItem
+								isFocusable={false}
+								name="Time format"
+								value={hour12 ? "12 hour" : "24 hour"}
+							/>
+						</MenuTrigger>
+					)}
 					<MenuItem name="Clear" onClick={handleClearClick} />
 				</Stack>
 			</div>
 			<DateFormatMenu
-				id={menu.id}
-				isOpen={menu.isOpen}
-				position={menu.position}
+				id={dateFormatMenu.id}
+				isOpen={dateFormatMenu.isOpen}
+				position={dateFormatMenu.position}
 				value={dateFormat}
 				onChange={handleDateFormatChange}
+			/>
+			<DateFormatSeparatorMenu
+				id={dateFormatSeparatorMenu.id}
+				isOpen={dateFormatSeparatorMenu.isOpen}
+				position={dateFormatSeparatorMenu.position}
+				value={dateFormatSeparator}
+				onChange={handleDateFormatSeparatorChange}
+			/>
+			<TimeFormatMenu
+				id={timeFormatMenu.id}
+				isOpen={timeFormatMenu.isOpen}
+				position={timeFormatMenu.position}
+				value={hour12}
+				onChange={handleTimeFormatChange}
 			/>
 		</>
 	);

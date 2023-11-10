@@ -1,5 +1,3 @@
-import { CellType } from "src/shared/loom-state/types/loom-state";
-
 export enum StepType {
 	DATA_TYPE,
 	DATA_SOURCE,
@@ -17,12 +15,6 @@ export enum DataSource {
 	UNSELECTED = "Select an option",
 	FILE = "File",
 	PASTE = "Paste from clipboard",
-}
-
-export interface ImportColumn {
-	id: string;
-	name: string;
-	type: CellType;
 }
 
 export interface ColumnMatch {

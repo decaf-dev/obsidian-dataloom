@@ -2,6 +2,7 @@ import { App, TFile } from "obsidian";
 import CellNotFoundError from "src/shared/error/cell-not-found-error";
 import { LoomState } from "src/shared/loom-state/types";
 import { CellType } from "src/shared/loom-state/types/loom-state";
+import { dateTimeToObsidianDateTime } from "./date-utils";
 
 export const serializeFrontmatter = async (app: App, state: LoomState) => {
 	const { rows, columns, sources } = state.model;
@@ -28,7 +29,7 @@ export const serializeFrontmatter = async (app: App, state: LoomState) => {
 		if (!(file instanceof TFile)) throw new Error("Expected TFile");
 
 		for (const column of columns) {
-			const { type, frontmatterKey, tags } = column;
+			const { type, frontmatterKey, tags, includeTime } = column;
 			//Skip source and source file columns because they don't have any content that is serialized
 			if (type === CellType.SOURCE) continue;
 			if (type === CellType.SOURCE_FILE) continue;
@@ -45,7 +46,7 @@ export const serializeFrontmatter = async (app: App, state: LoomState) => {
 
 			const { tagIds } = cell;
 
-			let content: string | string[] | number | null = null;
+			let content: string | string[] | null = null;
 			if (type === CellType.TAG || type === CellType.MULTI_TAG) {
 				const cellTags = tags.filter((tag) => tagIds.includes(tag.id));
 				const cellTagContent = cellTags.map((tag) => tag.content);
@@ -56,7 +57,12 @@ export const serializeFrontmatter = async (app: App, state: LoomState) => {
 					content = cellTagContent[0];
 				}
 			} else if (type === CellType.DATE) {
-				content = cell.dateTime;
+				if (cell.dateTime) {
+					content = dateTimeToObsidianDateTime(
+						cell.dateTime,
+						includeTime
+					);
+				}
 			} else {
 				content = cell.content;
 			}

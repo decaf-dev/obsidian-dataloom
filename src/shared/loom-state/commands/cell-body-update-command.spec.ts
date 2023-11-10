@@ -39,8 +39,16 @@ describe("cell-update-command", () => {
 		expect(executeState.model.rows.length).toEqual(1);
 		expect(executeState.model.rows[0].cells.length).toEqual(1);
 		expect(executeState.model.rows[0].cells[0].content).toEqual("test");
-		expect(executeState.model.rows[0].lastEditedTime).toBeGreaterThan(
-			prevState.model.rows[0].lastEditedTime
+
+		const executeLastEditedDateTime = new Date(
+			executeState.model.rows[0].lastEditedDateTime
+		).getTime();
+		const prevLastEditedDateTime = new Date(
+			prevState.model.rows[0].lastEditedDateTime
+		).getTime();
+
+		expect(executeLastEditedDateTime).toBeGreaterThan(
+			prevLastEditedDateTime
 		);
 	});
 

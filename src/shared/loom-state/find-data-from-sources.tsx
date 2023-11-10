@@ -12,6 +12,7 @@ import {
 
 import { deserializeFrontmatterForCell } from "../deserialize-frontmatter";
 import { cloneDeep } from "lodash";
+import { getDateTimeFromUnixTime } from "../date/utils";
 
 export default function findDataFromSources(
 	app: App,
@@ -112,8 +113,8 @@ const findRowsFromFolder = (
 		const row = createRow(numRows, {
 			cells,
 			sourceId,
-			creationTime: file.stat.ctime,
-			lastEditedTime: file.stat.mtime,
+			creationDateTime: getDateTimeFromUnixTime(file.stat.ctime),
+			lastEditedDateTime: getDateTimeFromUnixTime(file.stat.mtime),
 		});
 		newRows.push(row);
 	});

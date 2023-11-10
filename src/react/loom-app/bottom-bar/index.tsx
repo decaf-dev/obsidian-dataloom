@@ -52,7 +52,6 @@ export default function BottomBar({
 			tableEl: HTMLElement,
 			tableContainerEl: HTMLElement
 		) {
-			//TODO optimize?
 			const tableRect = tableEl.getBoundingClientRect();
 			const tableContainerRect = tableContainerEl.getBoundingClientRect();
 

@@ -21,6 +21,7 @@ import {
 	LoomState13,
 	LoomState14,
 	LoomState15,
+	LoomState16,
 } from "src/shared/loom-state/types";
 
 import {
@@ -41,6 +42,7 @@ import {
 	MigrateState14,
 	MigrateState15,
 	MigrateState16,
+	MigrateState17,
 } from "src/shared/loom-state/migrate";
 import { LoomStateObject } from "src/shared/loom-state/validate-state";
 import DeserializationError from "./deserialization-error";
@@ -251,6 +253,16 @@ export const deserializeState = (
 			failedMigration = VERSION_8_11_0;
 			const nextState = new MigrateState16().migrate(
 				currentState as LoomState15
+			);
+			currentState = nextState;
+			failedMigration = null;
+		}
+
+		const VERSION_8_12_0 = "8.12.0";
+		if (isVersionLessThan(fileVersion, VERSION_8_12_0)) {
+			failedMigration = VERSION_8_12_0;
+			const nextState = new MigrateState17().migrate(
+				currentState as LoomState16
 			);
 			currentState = nextState;
 			failedMigration = null;
