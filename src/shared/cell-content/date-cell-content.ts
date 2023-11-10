@@ -1,4 +1,4 @@
-import { dateTimeToDateString } from "../date/date-conversion";
+import { dateTimeToDateString } from "../date/date-time-conversion";
 import {
 	DateFormat,
 	DateFormatSeparator,

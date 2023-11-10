@@ -5,9 +5,8 @@ import {
 	DateFormatSeparator,
 } from "src/shared/loom-state/types/loom-state";
 import { getDateFormatString } from "./utils";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 
-// Extend dayjs with the customParseFormat plugin
-const customParseFormat = require("dayjs/plugin/customParseFormat");
 dayjs.extend(customParseFormat);
 
 export const isValidDateString = (
@@ -15,9 +14,12 @@ export const isValidDateString = (
 	format: DateFormat,
 	separator: DateFormatSeparator
 ) => {
-	switch (format) {
-	}
 	const dateFormatString = getDateFormatString(format, separator);
 	const dayjsDate = dayjs(value, dateFormatString, true);
+	return dayjsDate.isValid();
+};
+
+export const isValidTimeString = (value: string, hour12: boolean) => {
+	const dayjsDate = dayjs(value, hour12 ? "h:mm A" : "HH:mm", true);
 	return dayjsDate.isValid();
 };

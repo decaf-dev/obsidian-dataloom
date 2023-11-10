@@ -2,7 +2,7 @@ import {
 	DateFormat,
 	DateFormatSeparator,
 } from "src/shared/loom-state/types/loom-state";
-import { dateTimeToDateString } from "src/shared/date/date-conversion";
+import { dateTimeToDateString } from "src/shared/date/date-time-conversion";
 
 interface Props {
 	value: string;

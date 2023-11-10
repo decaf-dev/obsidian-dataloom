@@ -11,7 +11,7 @@ import {
 	DateFormatSeparator,
 } from "src/shared/loom-state/types/loom-state";
 import { getDisplayNameForDateFormat } from "src/shared/loom-state/type-display-names";
-import { dateTimeToDateString } from "src/shared/date/date-conversion";
+import { dateTimeToDateString } from "src/shared/date/date-time-conversion";
 
 interface Props {
 	hasDateColumnMatch: boolean;

@@ -16,7 +16,8 @@ import {
 } from "src/shared/loom-state/types/loom-state";
 import { ColumnMatch, ImportData } from "./types";
 import { NEW_COLUMN_ID } from "./constants";
-import { dateStringToDateTime } from "src/shared/date/date-conversion";
+import { dateStringToDateTime } from "src/shared/date/date-string-conversion";
+import { isValidDateString } from "src/shared/date/date-validation";
 
 export const addImportData = (
 	prevState: LoomState,
@@ -208,11 +209,13 @@ const createDateCell = (
 ) => {
 	let dateTime = null;
 	if (dateFormat && dateFormatSeparator) {
-		dateTime = dateStringToDateTime(
-			content,
-			dateFormat,
-			dateFormatSeparator
-		);
+		if (isValidDateString(content, dateFormat, dateFormatSeparator)) {
+			dateTime = dateStringToDateTime(
+				content,
+				dateFormat,
+				dateFormatSeparator
+			);
+		}
 	}
 	const cell = createCell(columnId, {
 		dateTime,

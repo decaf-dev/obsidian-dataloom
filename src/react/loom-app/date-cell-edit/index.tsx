@@ -24,14 +24,17 @@ import { useMenu } from "src/react/shared/menu-provider/hooks";
 import Switch from "src/react/shared/switch";
 import DateFormatSeparatorMenu from "./date-format-separator-menu";
 import {
-	dateStringToDateTime,
 	dateTimeToDateString,
 	dateTimeToTimeString,
-} from "src/shared/date/date-conversion";
-import { isValidDateString } from "src/shared/date/date-validation";
+} from "src/shared/date/date-time-conversion";
+import {
+	isValidDateString,
+	isValidTimeString,
+} from "src/shared/date/date-validation";
 import TimeFormatMenu from "./time-format.menu";
 
 import "./styles.css";
+import { dateStringToDateTime } from "src/shared/date/date-string-conversion";
 
 interface Props {
 	cellId: string;
@@ -78,12 +81,12 @@ export default function DateCellEdit({
 
 	const includeTimeToggleId = React.useId();
 
-	const [date, setDate] = React.useState(
+	const [dateString, setDateString] = React.useState(
 		value === null
 			? ""
 			: dateTimeToDateString(value, dateFormat, dateFormatSeparator)
 	);
-	const [time, setTime] = React.useState(
+	const [timeString, setTimeString] = React.useState(
 		value === null
 			? ""
 			: dateTimeToTimeString(value, {
@@ -91,61 +94,84 @@ export default function DateCellEdit({
 			  })
 	);
 
+	console.log("dateString", dateString);
+	console.log("timeString", timeString);
+
 	const [isDateInputInvalid, setDateInputInvalid] = React.useState(false);
 	const [isTimeInputInvalid, setTimeInputInvalid] = React.useState(false);
 	const dateInputRef = React.useRef<HTMLInputElement>(null);
 	const timeInputRef = React.useRef<HTMLInputElement>(null);
 
 	React.useEffect(() => {
-		setDate(
+		setTimeString(
 			value === null
 				? ""
 				: dateTimeToTimeString(value, {
 						hour12,
 				  })
 		);
-	}, [value, hour12]);
+	}, [value, hour12, setTimeString]);
 
 	React.useEffect(() => {
-		setDate(
+		setDateString(
 			value === null
 				? ""
 				: dateTimeToDateString(value, dateFormat, dateFormatSeparator)
 		);
-	}, [value, dateFormat]);
+	}, [value, dateFormat, setDateString]);
 
 	React.useEffect(() => {
-		if (closeRequest !== null) {
-			let newValue: string | null = null;
+		if (closeRequest === null) return;
 
-			//If the user has not entered a value, we don't need to validate the date format
-			if (date !== "") {
-				if (isValidDateString(date, dateFormat, dateFormatSeparator)) {
-					//Convert local value to unix time
-					newValue = dateStringToDateTime(
-						date,
-						dateFormat,
-						dateFormatSeparator
-					);
-				} else {
-					if (closeRequest.type === "close-on-save") {
-						setDateInputInvalid(true);
-						onCloseRequestClear();
-						return;
-					}
-					newValue = value;
+		//If the user has not entered a value, we don't need to validate the date format
+		if (dateString !== "") {
+			if (
+				!isValidDateString(dateString, dateFormat, dateFormatSeparator)
+			) {
+				if (closeRequest.type === "close-on-save") {
+					setDateInputInvalid(true);
+					onCloseRequestClear();
+					return;
 				}
 			}
-
-			if (newValue !== value) {
-				setDateInputInvalid(false);
-				onDateTimeChange(newValue);
-			}
-			onClose();
 		}
+
+		//If the user has not entered a value, we don't need to validate the date format
+		if (timeString !== "") {
+			if (!isValidTimeString(timeString, hour12)) {
+				if (closeRequest.type === "close-on-save") {
+					setTimeInputInvalid(true);
+					onCloseRequestClear();
+					return;
+				}
+			}
+		}
+
+		let newValue: string | null = value;
+		if (dateString !== "" && timeString !== "") {
+			//Convert local value to unix time
+			newValue = dateStringToDateTime(
+				dateString,
+				dateFormat,
+				dateFormatSeparator,
+				{
+					timeString,
+					hour12,
+				}
+			);
+		}
+
+		if (newValue !== value) {
+			setDateInputInvalid(false);
+			setTimeInputInvalid(false);
+			onDateTimeChange(newValue);
+		}
+		onClose();
 	}, [
 		value,
-		date,
+		dateString,
+		,
+		timeString,
 		closeRequest,
 		dateFormat,
 		dateFormatSeparator,
@@ -185,16 +211,16 @@ export default function DateCellEdit({
 								showBorder
 								autoFocus={false}
 								hasError={isDateInputInvalid}
-								value={date}
-								onChange={setDate}
+								value={dateString}
+								onChange={setDateString}
 							/>
 							<Input
 								ref={timeInputRef}
 								showBorder
 								autoFocus={false}
 								hasError={isTimeInputInvalid}
-								value={time}
-								onChange={setTime}
+								value={timeString}
+								onChange={setTimeString}
 							/>
 						</Stack>
 					</Padding>

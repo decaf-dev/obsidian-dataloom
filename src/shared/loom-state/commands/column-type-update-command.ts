@@ -16,7 +16,7 @@ import {
 } from "../types/loom-state";
 import { isCheckbox, isNumberCalcuation } from "../../match";
 import { cloneDeep } from "lodash";
-import { dateTimeToDateString } from "src/shared/date/date-conversion";
+import { dateTimeToDateString } from "src/shared/date/date-time-conversion";
 
 export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 	private id: string;

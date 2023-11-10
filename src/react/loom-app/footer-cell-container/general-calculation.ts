@@ -13,7 +13,7 @@ import {
 import { hashString, round2Digits } from "./utils";
 import RowNotFoundError from "src/shared/error/row-not-found-error";
 import TagNotFoundError from "src/shared/error/tag-not-found-error";
-import { dateTimeToDateString } from "src/shared/date/date-conversion";
+import { dateTimeToDateString } from "src/shared/date/date-time-conversion";
 import { getSourceCellContent } from "src/shared/cell-content/source-cell-content";
 import { getColumnCells } from "src/shared/loom-state/utils/column-utils";
 

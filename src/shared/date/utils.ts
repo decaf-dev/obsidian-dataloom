@@ -19,6 +19,10 @@ export const getDateFormatString = (
 	}
 };
 
+export const getTimeFormatString = (hour12: boolean) => {
+	return hour12 ? "h:mm A" : "HH:mm";
+};
+
 export const getDateTimeFromUnixTime = (unixTime: number) => {
 	return new Date(unixTime).toISOString();
 };

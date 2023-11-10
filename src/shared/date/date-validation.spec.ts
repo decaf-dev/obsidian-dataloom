@@ -2,7 +2,7 @@ import {
 	DateFormat,
 	DateFormatSeparator,
 } from "../loom-state/types/loom-state";
-import { isValidDateString } from "./date-validation";
+import { isValidDateString, isValidTimeString } from "./date-validation";
 
 describe("isValidDateString", () => {
 	//Test cases for valid date strings
@@ -135,5 +135,115 @@ describe("isValidDateString", () => {
 				DateFormatSeparator.SLASH
 			)
 		).toEqual(false);
+	});
+});
+
+describe("isValidTimeString", () => {
+	// Normal cases
+	describe("Normal cases", () => {
+		it("should return true for a valid 24-hour format time string", () => {
+			//Arrange
+			const time = "13:45";
+			const hour12 = false;
+
+			//Act
+			const result = isValidTimeString(time, hour12);
+
+			//Assert
+			expect(result).toEqual(true);
+		});
+
+		it("should return true for a valid 12-hour format time string", () => {
+			//Arrange
+			const time = "1:45 PM";
+			const hour12 = true;
+
+			//Act
+			const result = isValidTimeString(time, hour12);
+
+			//Assert
+			expect(result).toEqual(true);
+		});
+	});
+
+	// Invalid cases
+	describe("Invalid cases", () => {
+		it("should return false for an invalid time string", () => {
+			//Arrange
+			const time = "25:67";
+			const hour12 = false;
+
+			//Act
+			const result = isValidTimeString(time, hour12);
+
+			//Assert
+			expect(result).toEqual(false);
+		});
+
+		it("should return false for a valid time string with incorrect hour12 flag", () => {
+			//Arrange
+			const time = "13:45";
+			const hour12 = true;
+
+			//Act
+			const result = isValidTimeString(time, hour12);
+
+			//Assert
+			expect(result).toEqual(false);
+		});
+	});
+
+	// Edge cases
+	describe("Edge cases", () => {
+		it("should return true for the start of the day in 24-hour format", () => {
+			//Arrange
+			const time = "00:00";
+			const hour12 = false;
+
+			//Act
+			const result = isValidTimeString(time, hour12);
+
+			//Assert
+			expect(result).toEqual(true);
+		});
+
+		it("should return true for the end of the day in 12-hour format", () => {
+			//Arrange
+			const time = "11:59 PM";
+			const hour12 = true;
+
+			//Act
+			const result = isValidTimeString(time, hour12);
+
+			//Assert
+			expect(result).toEqual(true);
+		});
+
+		it("should return true for a single-digit hour in 24-hour format", () => {
+			//Arrange
+			const time = "01:00";
+			const hour12 = false;
+
+			//Act
+			const result = isValidTimeString(time, hour12);
+
+			//Assert
+			expect(result).toEqual(true);
+		});
+	});
+
+	// Error cases
+	describe("Error cases", () => {
+		it("should return false for a string that does not match any time format", () => {
+			//Arrange
+			const time = "not a time";
+			const hour12 = false;
+
+			//Act
+			const result = isValidTimeString(time, hour12);
+
+			//Assert
+			expect(result).toEqual(false);
+		});
 	});
 });

@@ -1,4 +1,4 @@
-import { dateTimeToDateString } from "src/shared/date/date-conversion";
+import { dateTimeToDateString } from "src/shared/date/date-time-conversion";
 import {
 	DateFormat,
 	DateFormatSeparator,
