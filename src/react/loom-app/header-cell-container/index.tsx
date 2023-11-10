@@ -2,7 +2,7 @@ import Icon from "../../shared/icon";
 import Stack from "../../shared/stack";
 import MenuTrigger from "src/react/shared/menu-trigger";
 import ResizeContainer from "./column-resize";
-import HeaderMenu from "../header-cell-edit";
+import HeaderMenu from "../header-menu";
 
 import { getIconIdForCellType } from "src/react/shared/icon/utils";
 import { CellType, Column } from "src/shared/loom-state/types/loom-state";
