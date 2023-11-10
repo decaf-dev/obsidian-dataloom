@@ -6,7 +6,6 @@ import HeaderCell from "./header-cell";
 import Padding from "src/react/shared/padding";
 import Stack from "src/react/shared/stack";
 import MenuButton from "src/react/shared/menu-button";
-import ImportOptionsMenu from "./import-options-menu";
 
 import { Column } from "src/shared/loom-state/types/loom-state";
 import { ColumnMatch } from "../types";
@@ -17,6 +16,7 @@ import {
 import { LoomMenuLevel } from "src/react/shared/menu-provider/types";
 
 import "./styles.css";
+import BulkOptionsMenu from "./bulk-options-menu";
 
 interface Props {
 	columns: Column[];
@@ -180,7 +180,7 @@ export default function MatchColumns({
 					</Stack>
 				</Padding>
 			</div>
-			<ImportOptionsMenu
+			<BulkOptionsMenu
 				id={menu.id}
 				isOpen={menu.isOpen}
 				position={menu.position}

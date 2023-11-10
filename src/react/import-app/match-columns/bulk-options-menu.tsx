@@ -12,7 +12,7 @@ interface Props {
 	onAllColumnsMatch: (columnId: string | null) => void;
 }
 
-export default function ImportOptionsMenu({
+export default function BulkOptionsMenu({
 	id,
 	position,
 	isOpen,
