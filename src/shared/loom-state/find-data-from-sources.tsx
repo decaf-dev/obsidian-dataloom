@@ -10,7 +10,7 @@ import {
 	SourceType,
 } from "./types/loom-state";
 
-import { deserializeFrontmatterForCell } from "../deserialize-frontmatter";
+import { deserializeFrontmatterForCell } from "../frontmatter";
 import { cloneDeep } from "lodash";
 import { getDateTimeFromUnixTime } from "../date/utils";
 
@@ -99,6 +99,7 @@ const findRowsFromFolder = (
 				newCell = createCell(id, { type, content: path });
 			} else if (frontmatterKey !== null) {
 				const result = deserializeFrontmatterForCell(app, column, path);
+				console.log(result);
 				if (result !== null) {
 					const { newCell: cell, nextTags } = result;
 					newCell = cell;

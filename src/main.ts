@@ -37,7 +37,7 @@ import {
 	EVENT_FILE_DELETE,
 	EVENT_FILE_RENAME,
 	EVENT_FOLDER_RENAME,
-} from "./shared/events";
+} from "./shared/event/constants";
 import { deserializeState, serializeState } from "./data/serialize-state";
 import { updateLinkReferences } from "./data/utils";
 import { getBasename } from "./shared/link/link-utils";
@@ -50,6 +50,7 @@ import {
 } from "./obsidian/embedded/embedded-app-manager";
 import { cloneDeep } from "lodash";
 import { log } from "./shared/logger";
+import FrontmatterCache from "./shared/frontmatter/frontmatter-cache";
 
 export interface DataLoomSettings {
 	shouldDebug: boolean;
@@ -118,6 +119,7 @@ export default class DataLoomPlugin extends Plugin {
 			store.dispatch(setDarkMode(isDark));
 
 			await this.migrateLoomFiles();
+			FrontmatterCache.getInstance().loadProperties(this.app);
 		});
 
 		if (this.settings.showWelcomeModal) {
@@ -457,11 +459,15 @@ export default class DataLoomPlugin extends Plugin {
 		);
 
 		this.registerEvent(
-			this.app.metadataCache.on("changed", (file: TAbstractFile) => {
-				if (file instanceof TFile) {
-					this.app.vault.trigger(EVENT_FILE_FRONTMATTER_CHANGE);
+			this.app.metadataCache.on(
+				"changed",
+				async (file: TAbstractFile) => {
+					if (file instanceof TFile) {
+						console.log("metadataCache changed event");
+						this.app.vault.trigger(EVENT_FILE_FRONTMATTER_CHANGE);
+					}
 				}
-			})
+			)
 		);
 	}
 

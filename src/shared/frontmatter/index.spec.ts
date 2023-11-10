@@ -4,7 +4,7 @@ import { createTestLoomState } from "../loom-state/loom-state-factory";
 import { CellType } from "../loom-state/types/loom-state";
 
 describe("deserializeFrontmatter", () => {
-	const currentTime = Date.now();
+	const currentTime = "2020-01-01T00:00:00";
 	const app = {
 		metadataCache: {
 			getCache: (path: string) => {
@@ -109,7 +109,7 @@ describe("deserializeFrontmatter", () => {
 
 		//Assert
 		expect(result).not.toBeNull();
-		expect(result?.newCell.content).toEqual(currentTime.toString()); //TODO fix this. Content doesn't have to be just a string value
+		expect(result?.newCell.content).toEqual(currentTime);
 		expect(result?.nextTags).toEqual([]);
 	});
 
