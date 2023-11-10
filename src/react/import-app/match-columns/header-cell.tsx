@@ -1,7 +1,6 @@
 import Stack from "src/react/shared/stack";
 import Text from "src/react/shared/text";
 import Icon from "src/react/shared/icon";
-import SelectColumnMenu from "./select-column-menu";
 import MenuButton from "src/react/shared/menu-button";
 
 import { useOverflow } from "src/shared/spacing/hooks";
@@ -9,6 +8,7 @@ import { ColumnMatch } from "../types";
 import { LoomMenuLevel } from "src/react/shared/menu-provider/types";
 import { useMenu } from "src/react/shared/menu-provider/hooks";
 import { Column } from "src/shared/loom-state/types/loom-state";
+import MatchColumnMenu from "./match-column-menu";
 
 interface Props {
 	isDisabled: boolean;
@@ -93,7 +93,7 @@ export default function HeaderCell({
 					</Stack>
 				</Stack>
 			</th>
-			<SelectColumnMenu
+			<MatchColumnMenu
 				id={menu.id}
 				isOpen={menu.isOpen}
 				position={menu.position}

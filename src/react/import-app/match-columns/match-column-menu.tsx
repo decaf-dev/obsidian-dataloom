@@ -17,7 +17,7 @@ interface Props {
 	onColumnClick: (columnId: string | null) => void;
 }
 
-export default function SelectColumnMenu({
+export default function MatchColumnMenu({
 	id,
 	position,
 	isOpen,
