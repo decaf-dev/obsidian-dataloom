@@ -210,7 +210,6 @@ export default function DateCellEdit({
 							<Input
 								ref={dateInputRef}
 								showBorder
-								autoFocus={false}
 								placeholder={dateTimeToDateString(
 									getCurrentDateTime(),
 									dateFormat,
