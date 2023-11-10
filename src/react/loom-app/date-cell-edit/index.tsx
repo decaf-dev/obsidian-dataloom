@@ -95,9 +95,6 @@ export default function DateCellEdit({
 			  })
 	);
 
-	console.log("dateString", dateString);
-	console.log("timeString", timeString);
-
 	const [isDateInputInvalid, setDateInputInvalid] = React.useState(false);
 	const [isTimeInputInvalid, setTimeInputInvalid] = React.useState(false);
 	const dateInputRef = React.useRef<HTMLInputElement>(null);

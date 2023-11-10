@@ -9,7 +9,6 @@ import { serializeState } from "src/data/serialize-state";
 import { store } from "src/redux/store";
 import { renderDivider, setModalTitle } from "../shared";
 import { LoomState } from "src/shared/loom-state/types/loom-state";
-import { EVENT_APP_REFRESH } from "src/shared/events";
 import MenuProvider from "src/react/shared/menu-provider";
 import ModalMountProvider from "src/react/shared/modal-mount-provider";
 
@@ -59,7 +58,7 @@ export default class ImportModal extends Modal {
 
 		//Trigger an event to refresh the other open views of this file
 		this.app.workspace.trigger(
-			EVENT_APP_REFRESH,
+			"app-refresh",
 			this.loomFile.path,
 			"", //No app id. Target all views of this file
 			state

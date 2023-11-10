@@ -1,10 +1,10 @@
 import React from "react";
 
-import { EVENT_GLOBAL_CLICK } from "src/shared/events";
 import { useLogger } from "src/shared/logger";
 import { useAppMount } from "../../app-mount-provider";
 import _ from "lodash";
 import { useMenuOperations } from "src/react/shared/menu-provider/hooks";
+import EventListener from "src/shared/event/event-listener";
 
 export const useMenuEvents = () => {
 	useCloseOnOutsideClick();
@@ -112,10 +112,10 @@ const useCloseOnOutsideClick = () => {
 			onCloseAll();
 		}
 
-		//@ts-expect-error not a native Obsidian event
-		app.workspace.on(EVENT_GLOBAL_CLICK, handleGlobalClick);
+		EventListener.getInstance().on("global-click", handleGlobalClick);
 
-		return () => app.workspace.off(EVENT_GLOBAL_CLICK, handleGlobalClick);
+		return () =>
+			EventListener.getInstance().off("global-click", handleGlobalClick);
 	}, [app, logger, onCloseAll]);
 };
 

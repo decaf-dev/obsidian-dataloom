@@ -12,7 +12,6 @@ import { store } from "src/redux/store";
 import { deserializeState, serializeState } from "src/data/serialize-state";
 import { LoomState } from "src/shared/loom-state/types/loom-state";
 import _ from "lodash";
-import { EVENT_APP_REFRESH } from "src/shared/events";
 import LoomAppWrapper from "src/react/loom-app";
 import { createAppId } from "../utils";
 import ErrorApp from "src/react/error-app";
@@ -200,7 +199,7 @@ const handleSave = async (
 	await app.vault.modify(file, serialized);
 
 	//Trigger an event to refresh the other open views of this file
-	app.workspace.trigger(EVENT_APP_REFRESH, file.path, appId, state);
+	app.workspace.trigger("app-refresh", file.path, appId, state);
 };
 
 /**

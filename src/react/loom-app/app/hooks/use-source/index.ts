@@ -1,29 +1,17 @@
+import React from "react";
+
 import { Source } from "src/shared/loom-state/types/loom-state";
 import { useLogger } from "src/shared/logger";
-import { useLoomState } from "../../../loom-state-provider";
+import { useLoomState } from "src/react/loom-app/loom-state-provider";
 import SourceAddCommand from "src/shared/loom-state/commands/source-add-command";
 import SourceDeleteCommand from "src/shared/loom-state/commands/source-delete-command";
 import findDataFromSources from "src/shared/loom-state/find-data-from-sources";
 import { useAppMount } from "src/react/loom-app/app-mount-provider";
-import React, { useCallback } from "react";
-import { FrontMatterType } from "../../../../../shared/deserialize-frontmatter/types";
-import { deserializeFrontmatterKeys } from "src/shared/deserialize-frontmatter";
 
 export const useSource = () => {
 	const logger = useLogger();
 	const { app } = useAppMount();
-	const { doCommand, setLoomState, loomState } = useLoomState();
-
-	const [frontmatterKeys, setFrontMatterKeys] = React.useState(
-		new Map<FrontMatterType, string[]>()
-	);
-
-	React.useEffect(() => {
-		const { columns, rows } = loomState.model;
-		setFrontMatterKeys(() =>
-			deserializeFrontmatterKeys(app, columns, rows)
-		);
-	}, [setFrontMatterKeys, loomState, app]);
+	const { doCommand, setLoomState } = useLoomState();
 
 	function handleSourceAdd(source: Source) {
 		logger("handleSourceAdd");
@@ -35,7 +23,7 @@ export const useSource = () => {
 		doCommand(new SourceDeleteCommand(id));
 	}
 
-	const handleUpdateRowsFromSources = useCallback(() => {
+	const handleUpdateRowsFromSources = React.useCallback(() => {
 		setLoomState((prevState) => {
 			const { sources, columns, rows } = prevState.model;
 			const result = findDataFromSources(
@@ -59,7 +47,6 @@ export const useSource = () => {
 	}, [setLoomState, app]);
 
 	return {
-		frontmatterKeys,
 		onSourceAdd: handleSourceAdd,
 		onSourceDelete: handleSourceDelete,
 		onUpdateRowsFromSources: handleUpdateRowsFromSources,

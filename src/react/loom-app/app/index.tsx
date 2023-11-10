@@ -31,16 +31,9 @@ import { useSource } from "./hooks/use-source";
 
 import "src/react/global.css";
 import "./styles.css";
-import {
-	EVENT_FILE_CREATE,
-	EVENT_FILE_DELETE,
-	EVENT_FILE_FRONTMATTER_CHANGE,
-	EVENT_FILE_RENAME,
-	EVENT_FOLDER_DELETE,
-	EVENT_FOLDER_RENAME,
-} from "src/shared/events";
 import { useAppEvents } from "./hooks/use-app-events";
 import { useMenuEvents } from "./hooks/use-menu-events";
+import EventListener from "src/shared/event/event-listener";
 
 export default function App() {
 	const logger = useLogger();
@@ -64,12 +57,8 @@ export default function App() {
 	useMenuEvents();
 	const { onClick } = useAppEvents();
 
-	const {
-		frontmatterKeys,
-		onSourceAdd,
-		onSourceDelete,
-		onUpdateRowsFromSources,
-	} = useSource();
+	const { onSourceAdd, onSourceDelete, onUpdateRowsFromSources } =
+		useSource();
 
 	const { onFocusKeyDown } = useFocus();
 	const { onFrozenColumnsChange, onCalculationRowToggle } =
@@ -126,32 +115,47 @@ export default function App() {
 	]);
 
 	React.useEffect(() => {
-		//@ts-expect-error missing overload
-		app.workspace.on(EVENT_FILE_CREATE, onUpdateRowsFromSources);
-		app.workspace.on(
-			//@ts-expect-error missing overload
-			EVENT_FILE_FRONTMATTER_CHANGE,
+		EventListener.getInstance().on("file-create", onUpdateRowsFromSources);
+		EventListener.getInstance().on(
+			"file-frontmatter-change",
 			onUpdateRowsFromSources
 		);
-		//@ts-expect-error missing overload
-		app.workspace.on(EVENT_FILE_DELETE, onUpdateRowsFromSources);
-		//@ts-expect-error missing overload
-		app.workspace.on(EVENT_FOLDER_DELETE, onUpdateRowsFromSources);
-		//@ts-expect-error missing overload
-		app.workspace.on(EVENT_FOLDER_RENAME, onUpdateRowsFromSources);
-		//@ts-expect-error missing overload
-		app.workspace.on(EVENT_FILE_RENAME, onUpdateRowsFromSources);
+		EventListener.getInstance().on("file-delete", onUpdateRowsFromSources);
+		EventListener.getInstance().on(
+			"folder-delete",
+			onUpdateRowsFromSources
+		);
+		EventListener.getInstance().on(
+			"folder-rename",
+			onUpdateRowsFromSources
+		);
+		EventListener.getInstance().on("file-rename", onUpdateRowsFromSources);
 
 		return () => {
-			app.workspace.off(EVENT_FILE_CREATE, onUpdateRowsFromSources);
-			app.workspace.off(
-				EVENT_FILE_FRONTMATTER_CHANGE,
+			EventListener.getInstance().off(
+				"file-create",
 				onUpdateRowsFromSources
 			);
-			app.workspace.off(EVENT_FOLDER_RENAME, onUpdateRowsFromSources);
-			app.workspace.off(EVENT_FILE_RENAME, onUpdateRowsFromSources);
-			app.workspace.off(EVENT_FILE_DELETE, onUpdateRowsFromSources);
-			app.workspace.off(EVENT_FOLDER_DELETE, onUpdateRowsFromSources);
+			EventListener.getInstance().off(
+				"file-frontmatter-change",
+				onUpdateRowsFromSources
+			);
+			EventListener.getInstance().off(
+				"folder-rename",
+				onUpdateRowsFromSources
+			);
+			EventListener.getInstance().off(
+				"file-rename",
+				onUpdateRowsFromSources
+			);
+			EventListener.getInstance().off(
+				"file-delete",
+				onUpdateRowsFromSources
+			);
+			EventListener.getInstance().off(
+				"folder-delete",
+				onUpdateRowsFromSources
+			);
 		};
 	}, [onUpdateRowsFromSources, app]);
 
@@ -216,7 +220,6 @@ export default function App() {
 				ref={tableRef}
 				sources={sources}
 				rows={filteredRows}
-				frontmatterKeys={frontmatterKeys}
 				columns={columns}
 				numFrozenColumns={numFrozenColumns}
 				resizingColumnId={resizingColumnId}

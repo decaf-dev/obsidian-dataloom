@@ -30,8 +30,6 @@ import {
 	Cell,
 } from "src/shared/loom-state/types/loom-state";
 import CellNotFoundError from "src/shared/error/cell-not-found-error";
-import { FrontMatterType } from "src/shared/deserialize-frontmatter/types";
-import { cellTypeToFrontMatterKeyTypes } from "src/shared/deserialize-frontmatter/utils";
 import { CellChangeHandler } from "../app/hooks/use-cell/types";
 import {
 	TagAddHandler,
@@ -43,11 +41,12 @@ import {
 } from "../app/hooks/use-tag/types";
 
 import "./styles.css";
+import { getAcceptedFrontmatterTypes } from "src/shared/frontmatter/utils";
+import FrontmatterCache from "src/shared/frontmatter/frontmatter-cache";
 
 interface Props {
 	showCalculationRow: boolean;
 	numFrozenColumns: number;
-	frontmatterKeys: Map<FrontMatterType, string[]>;
 	columns: Column[];
 	resizingColumnId: string | null;
 	sources: Source[];
@@ -75,7 +74,6 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 	{
 		sources,
 		rows,
-		frontmatterKeys,
 		columns,
 		numFrozenColumns,
 		resizingColumnId,
@@ -160,12 +158,14 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 							} else {
 								const { id, type } = column;
 								const frontmatterTypes =
-									cellTypeToFrontMatterKeyTypes(type);
+									getAcceptedFrontmatterTypes(type);
 
 								let columnKeys: string[] = [];
 								frontmatterTypes.forEach((type) => {
 									columnKeys = columnKeys.concat(
-										frontmatterKeys.get(type) ?? []
+										FrontmatterCache.getInstance().getPropertyNames(
+											type
+										) ?? []
 									);
 								});
 

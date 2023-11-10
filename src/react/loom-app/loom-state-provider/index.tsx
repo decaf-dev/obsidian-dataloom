@@ -5,7 +5,7 @@ import LoomStateCommand from "src/shared/loom-state/commands/loom-state-command"
 import { useLogger } from "src/shared/logger";
 import RowSortCommand from "src/shared/loom-state/commands/row-sort-command";
 import { useAppMount } from "src/react/loom-app/app-mount-provider";
-import { EVENT_APP_REFRESH } from "src/shared/events";
+import EventListener from "src/shared/event/event-listener";
 
 interface Props {
 	initialState: LoomState;
@@ -98,12 +98,9 @@ export default function LoomStateProvider({
 			}
 		}
 
-		app.workspace.on(
-			// @ts-expect-error: not a native Obsidian event
-			EVENT_APP_REFRESH,
-			handleRefreshEvent
-		);
-		return () => app.workspace.off(EVENT_APP_REFRESH, handleRefreshEvent);
+		EventListener.getInstance().on("app-refresh", handleRefreshEvent);
+		return () =>
+			EventListener.getInstance().off("app-refresh", handleRefreshEvent);
 	}, [reactAppId, loomFile, app]);
 
 	function handleToggleSearchBar() {

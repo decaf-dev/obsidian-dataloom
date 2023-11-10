@@ -1,11 +1,11 @@
 import React from "react";
 import ColumnAddCommand from "src/shared/loom-state/commands/column-add-command";
 import ColumnDeleteCommand from "src/shared/loom-state/commands/column-delete-command";
-import { isEventForThisApp } from "src/shared/event-system/utils";
-import { EVENT_COLUMN_ADD, EVENT_COLUMN_DELETE } from "src/shared/events";
+import { isEventForThisApp } from "src/shared/event/utils";
 import { useLogger } from "src/shared/logger";
 import { useLoomState } from "src/react/loom-app/loom-state-provider";
 import { useAppMount } from "../../app-mount-provider";
+import EventListener from "src/shared/event/event-listener";
 
 export const useColumnEvents = () => {
 	const { reactAppId, app } = useAppMount();
@@ -26,15 +26,18 @@ export const useColumnEvents = () => {
 				doCommand(new ColumnDeleteCommand({ last: true }));
 			}
 		}
-		//@ts-expect-error missing overload
-		app.workspace.on(EVENT_COLUMN_ADD, handleColumnAddEvent);
-
-		//@ts-expect-error missing overload
-		app.workspace.on(EVENT_COLUMN_DELETE, handleColumnDeleteEvent);
+		EventListener.getInstance().on("add-column", handleColumnAddEvent);
+		EventListener.getInstance().on(
+			"delete-column",
+			handleColumnDeleteEvent
+		);
 
 		return () => {
-			app.workspace.off(EVENT_COLUMN_ADD, handleColumnAddEvent);
-			app.workspace.off(EVENT_COLUMN_DELETE, handleColumnDeleteEvent);
+			EventListener.getInstance().off("add-column", handleColumnAddEvent);
+			EventListener.getInstance().off(
+				"delete-column",
+				handleColumnDeleteEvent
+			);
 		};
 	}, [doCommand, logger, reactAppId, app]);
 };

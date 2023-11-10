@@ -4,7 +4,6 @@ import { createRoot, Root } from "react-dom/client";
 import { store } from "src/redux/store";
 import { LoomState } from "src/shared/loom-state/types/loom-state";
 import { deserializeState, serializeState } from "src/data/serialize-state";
-import { EVENT_APP_REFRESH } from "src/shared/events";
 import LoomAppWrapper from "src/react/loom-app";
 import { createAppId } from "./utils";
 import ErrorApp from "src/react/error-app";
@@ -107,12 +106,7 @@ export default class DataLoomView extends TextFileView {
 		this.requestSave();
 
 		//Trigger an event to refresh the other open views of this file
-		this.app.workspace.trigger(
-			EVENT_APP_REFRESH,
-			this.file.path,
-			appId,
-			state
-		);
+		this.app.workspace.trigger("app-refresh", this.file.path, appId, state);
 	};
 
 	private renderApp(appId: string, state: LoomState) {
