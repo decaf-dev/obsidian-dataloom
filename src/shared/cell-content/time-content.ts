@@ -7,11 +7,13 @@ import {
 export const getTimeCellContent = (
 	dateTime: string | null,
 	format: DateFormat,
-	separator: DateFormatSeparator
+	separator: DateFormatSeparator,
+	hour12: boolean
 ) => {
 	if (dateTime !== null) {
 		return dateTimeToDateString(dateTime, format, separator, {
 			includeTime: true,
+			hour12,
 		});
 	}
 	return "";

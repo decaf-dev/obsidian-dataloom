@@ -407,6 +407,7 @@ export default function BodyCellContainer({
 							value={rowCreationTime}
 							format={dateFormat}
 							formatSeparator={dateFormatSeparator}
+							hour12={hour12}
 						/>
 					)}
 					{columnType === CellType.LAST_EDITED_TIME && (
@@ -414,6 +415,7 @@ export default function BodyCellContainer({
 							value={rowLastEditedTime}
 							format={dateFormat}
 							formatSeparator={dateFormatSeparator}
+							hour12={hour12}
 						/>
 					)}
 					{columnType === CellType.SOURCE && (

@@ -9,7 +9,8 @@ describe("getTimeCellContent", () => {
 		const result = getTimeCellContent(
 			"2020-12-31T00:00:00Z",
 			DateFormat.MM_DD_YYYY,
-			DateFormatSeparator.HYPHEN
+			DateFormatSeparator.HYPHEN,
+			true
 		);
 		expect(result).toEqual("12-30-2020 5:00 PM");
 	});
@@ -18,7 +19,8 @@ describe("getTimeCellContent", () => {
 		const result = getTimeCellContent(
 			null,
 			DateFormat.DD_MM_YYYY,
-			DateFormatSeparator.HYPHEN
+			DateFormatSeparator.HYPHEN,
+			true
 		);
 		expect(result).toEqual("");
 	});

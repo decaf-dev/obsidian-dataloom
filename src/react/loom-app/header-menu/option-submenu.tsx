@@ -21,6 +21,7 @@ import {
 
 interface Props {
 	title: string;
+	hour12: boolean;
 	currencyType: CurrencyType;
 	numberFormat: NumberFormat;
 	numberPrefix: string;
@@ -38,6 +39,7 @@ interface Props {
 
 export default function OptionSubmenu({
 	type,
+	hour12,
 	currencyType,
 	numberFormat,
 	numberPrefix,
@@ -152,6 +154,13 @@ export default function OptionSubmenu({
 									onSubmenuChange(
 										SubmenuType.DATE_FORMAT_SEPARATOR
 									)
+								}
+							/>
+							<MenuItem
+								name="Time format"
+								value={hour12 ? "12 hour" : "24 hour"}
+								onClick={() =>
+									onSubmenuChange(SubmenuType.TIME_FORMAT)
 								}
 							/>
 						</>

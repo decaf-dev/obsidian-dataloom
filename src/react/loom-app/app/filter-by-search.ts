@@ -110,6 +110,7 @@ const doesCellMatch = (
 				creationDateTime,
 				dateFormat,
 				dateFormatSeparator,
+				hour12,
 				searchText
 			);
 		case CellType.LAST_EDITED_TIME:
@@ -117,6 +118,7 @@ const doesCellMatch = (
 				lastEditedDateTime,
 				dateFormat,
 				dateFormatSeparator,
+				hour12,
 				searchText
 			);
 		case CellType.TAG:
@@ -200,12 +202,14 @@ const matchCreationTimeCell = (
 	creationDateTime: string,
 	dateFormat: DateFormat,
 	dateFormatSeparator: DateFormatSeparator,
+	hour12: boolean,
 	searchText: string
 ): boolean => {
 	const content = getTimeCellContent(
 		creationDateTime,
 		dateFormat,
-		dateFormatSeparator
+		dateFormatSeparator,
+		hour12
 	);
 	return content.toLowerCase().includes(searchText);
 };
@@ -214,12 +218,14 @@ const matchLastEditedTimeCell = (
 	lastEditedDateTime: string,
 	dateFormat: DateFormat,
 	dateFormatSeparator: DateFormatSeparator,
+	hour12: boolean,
 	searchText: string
 ): boolean => {
 	const content = getTimeCellContent(
 		lastEditedDateTime,
 		dateFormat,
-		dateFormatSeparator
+		dateFormatSeparator,
+		hour12
 	);
 	return content.toLowerCase().includes(searchText);
 };

@@ -77,13 +77,15 @@ export const getCellContent = (
 			return getTimeCellContent(
 				creationDateTime,
 				dateFormat,
-				dateFormatSeparator
+				dateFormatSeparator,
+				hour12
 			);
 		case CellType.LAST_EDITED_TIME:
 			return getTimeCellContent(
 				lastEditedDateTime,
 				dateFormat,
-				dateFormatSeparator
+				dateFormatSeparator,
+				hour12
 			);
 		case CellType.SOURCE: {
 			return getSourceCellContent(source);
