@@ -281,7 +281,7 @@ export default function BodyCellContainer({
 	} else if (columnType === CellType.FILE) {
 		menuWidth = 275;
 	} else if (columnType === CellType.DATE) {
-		menuWidth = 225;
+		menuWidth = 235;
 	}
 
 	let menuHeight = menu.position.height;
