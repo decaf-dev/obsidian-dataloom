@@ -2,10 +2,10 @@ import { DataLoomEvent } from "./types";
 
 export default class EventManager {
 	private static instance: EventManager;
-	private events: Record<DataLoomEvent, Function[]>;
+	private eventListeners: Record<DataLoomEvent, Function[]>;
 
 	private constructor() {
-		this.events = {} as Record<DataLoomEvent, Function[]>;
+		this.eventListeners = {} as Record<DataLoomEvent, Function[]>;
 	}
 
 	// Ensures only one instance is created
@@ -18,18 +18,18 @@ export default class EventManager {
 
 	// Method to add an event listener
 	public on(eventName: DataLoomEvent, callback: Function): void {
-		if (!this.events[eventName]) {
-			this.events[eventName] = [];
+		if (!this.eventListeners[eventName]) {
+			this.eventListeners[eventName] = [];
 		}
-		this.events[eventName].push(callback);
+		this.eventListeners[eventName].push(callback);
 	}
 
 	// Method to remove an event listener
 	public off(eventName: DataLoomEvent, callbackToRemove: Function): void {
-		if (!this.events[eventName]) {
+		if (!this.eventListeners[eventName]) {
 			return;
 		}
-		this.events[eventName] = this.events[eventName].filter(
+		this.eventListeners[eventName] = this.eventListeners[eventName].filter(
 			(callback) => callback !== callbackToRemove
 		);
 	}
@@ -37,10 +37,10 @@ export default class EventManager {
 	// Method to trigger all callbacks associated with an event
 	public emit(eventName: DataLoomEvent, ...data: any[]): void {
 		console.log("Emiting event", eventName);
-		if (!this.events[eventName]) {
+		if (!this.eventListeners[eventName]) {
 			return;
 		}
-		this.events[eventName].forEach((callback) => {
+		this.eventListeners[eventName].forEach((callback) => {
 			callback(data);
 		});
 	}
