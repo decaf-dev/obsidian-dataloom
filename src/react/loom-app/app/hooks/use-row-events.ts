@@ -4,7 +4,7 @@ import RowDeleteCommand from "src/shared/loom-state/commands/row-delete-command"
 import { isEventForThisApp } from "src/shared/event/utils";
 import { useLoomState } from "src/react/loom-app/loom-state-provider";
 import { useAppMount } from "../../app-mount-provider";
-import EventListener from "src/shared/event/event-listener";
+import EventManager from "src/shared/event/event-manager";
 
 export const useRowEvents = () => {
 	const { reactAppId, app } = useAppMount();
@@ -20,12 +20,12 @@ export const useRowEvents = () => {
 				doCommand(new RowDeleteCommand({ last: true }));
 		}
 
-		EventListener.getInstance().on("add-row", handleRowAddEvent);
-		EventListener.getInstance().on("delete-row", handleRowDeleteEvent);
+		EventManager.getInstance().on("add-row", handleRowAddEvent);
+		EventManager.getInstance().on("delete-row", handleRowDeleteEvent);
 
 		return () => {
-			EventListener.getInstance().off("add-row", handleRowAddEvent);
-			EventListener.getInstance().off("delete-row", handleRowDeleteEvent);
+			EventManager.getInstance().off("add-row", handleRowAddEvent);
+			EventManager.getInstance().off("delete-row", handleRowDeleteEvent);
 		};
 	}, [doCommand, app, reactAppId]);
 };

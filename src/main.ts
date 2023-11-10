@@ -34,7 +34,7 @@ import {
 import { cloneDeep } from "lodash";
 import { log } from "./shared/logger";
 import FrontmatterCache from "./shared/frontmatter/frontmatter-cache";
-import EventListener from "./shared/event/event-listener";
+import EventManager from "./shared/event/event-manager";
 
 export interface DataLoomSettings {
 	shouldDebug: boolean;
@@ -192,13 +192,13 @@ export default class DataLoomPlugin extends Plugin {
 
 			//Clear the focus-visible class from the last focused element
 			removeCurrentFocusClass();
-			EventListener.getInstance().emit("global-click");
+			EventManager.getInstance().emit("global-click");
 		});
 
 		//This event is guaranteed to fire after our React synthetic event handlers
 		this.registerDomEvent(document, "keydown", (e) => {
 			log(this.settings.shouldDebug, "main handleKeyDown");
-			EventListener.getInstance().emit("global-keydown", e);
+			EventManager.getInstance().emit("global-keydown", e);
 		});
 	}
 
@@ -394,7 +394,7 @@ export default class DataLoomPlugin extends Plugin {
 								);
 
 								//Update all looms that match this path
-								EventListener.getInstance().emit(
+								EventManager.getInstance().emit(
 									"app-refresh",
 									loomFile.path,
 									-1, //update all looms that match this path
@@ -417,9 +417,9 @@ export default class DataLoomPlugin extends Plugin {
 		this.registerEvent(
 			this.app.vault.on("rename", (file: TAbstractFile) => {
 				if (file instanceof TFile) {
-					EventListener.getInstance().emit("file-rename");
+					EventManager.getInstance().emit("file-rename");
 				} else {
-					EventListener.getInstance().emit("folder-rename");
+					EventManager.getInstance().emit("folder-rename");
 				}
 			})
 		);
@@ -427,7 +427,7 @@ export default class DataLoomPlugin extends Plugin {
 		this.registerEvent(
 			this.app.vault.on("create", (file: TAbstractFile) => {
 				if (file instanceof TFile) {
-					EventListener.getInstance().emit("file-create");
+					EventManager.getInstance().emit("file-create");
 				}
 			})
 		);
@@ -435,9 +435,9 @@ export default class DataLoomPlugin extends Plugin {
 		this.registerEvent(
 			this.app.vault.on("delete", (file: TAbstractFile) => {
 				if (file instanceof TFile) {
-					EventListener.getInstance().emit("file-delete");
+					EventManager.getInstance().emit("file-delete");
 				} else {
-					EventListener.getInstance().emit("folder-delete");
+					EventManager.getInstance().emit("folder-delete");
 				}
 			})
 		);
@@ -447,7 +447,7 @@ export default class DataLoomPlugin extends Plugin {
 				"changed",
 				async (file: TAbstractFile) => {
 					if (file instanceof TFile) {
-						EventListener.getInstance().emit(
+						EventManager.getInstance().emit(
 							"file-frontmatter-change"
 						);
 					}
@@ -503,7 +503,7 @@ export default class DataLoomPlugin extends Plugin {
 					this.app.workspace.getActiveViewOfType(MarkdownView);
 				if (loomView || markdownView) {
 					if (!checking) {
-						EventListener.getInstance().emit("add-column");
+						EventManager.getInstance().emit("add-column");
 					}
 					return true;
 				}
@@ -522,7 +522,7 @@ export default class DataLoomPlugin extends Plugin {
 					this.app.workspace.getActiveViewOfType(MarkdownView);
 				if (loomView || markdownView) {
 					if (!checking) {
-						EventListener.getInstance().emit("delete-column");
+						EventManager.getInstance().emit("delete-column");
 					}
 					return true;
 				}
@@ -540,7 +540,7 @@ export default class DataLoomPlugin extends Plugin {
 				const markdownView =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
 				if (loomView || markdownView) {
-					if (!checking) EventListener.getInstance().emit("add-row");
+					if (!checking) EventManager.getInstance().emit("add-row");
 					return true;
 				}
 				return false;
@@ -558,7 +558,7 @@ export default class DataLoomPlugin extends Plugin {
 					this.app.workspace.getActiveViewOfType(MarkdownView);
 				if (loomView || markdownView) {
 					if (!checking) {
-						EventListener.getInstance().emit("delete-row");
+						EventManager.getInstance().emit("delete-row");
 					}
 					return true;
 				}
@@ -576,7 +576,7 @@ export default class DataLoomPlugin extends Plugin {
 					this.app.workspace.getActiveViewOfType(MarkdownView);
 				if (loomView || markdownView) {
 					if (!checking) {
-						EventListener.getInstance().emit("download-markdown");
+						EventManager.getInstance().emit("download-markdown");
 					}
 					return true;
 				}
@@ -594,7 +594,7 @@ export default class DataLoomPlugin extends Plugin {
 					this.app.workspace.getActiveViewOfType(MarkdownView);
 				if (loomView || markdownView) {
 					if (!checking) {
-						EventListener.getInstance().emit("download-csv");
+						EventManager.getInstance().emit("download-csv");
 					}
 					return true;
 				}

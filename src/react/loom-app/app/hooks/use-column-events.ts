@@ -5,7 +5,7 @@ import { isEventForThisApp } from "src/shared/event/utils";
 import { useLogger } from "src/shared/logger";
 import { useLoomState } from "src/react/loom-app/loom-state-provider";
 import { useAppMount } from "../../app-mount-provider";
-import EventListener from "src/shared/event/event-listener";
+import EventManager from "src/shared/event/event-manager";
 
 export const useColumnEvents = () => {
 	const { reactAppId, app } = useAppMount();
@@ -26,15 +26,12 @@ export const useColumnEvents = () => {
 				doCommand(new ColumnDeleteCommand({ last: true }));
 			}
 		}
-		EventListener.getInstance().on("add-column", handleColumnAddEvent);
-		EventListener.getInstance().on(
-			"delete-column",
-			handleColumnDeleteEvent
-		);
+		EventManager.getInstance().on("add-column", handleColumnAddEvent);
+		EventManager.getInstance().on("delete-column", handleColumnDeleteEvent);
 
 		return () => {
-			EventListener.getInstance().off("add-column", handleColumnAddEvent);
-			EventListener.getInstance().off(
+			EventManager.getInstance().off("add-column", handleColumnAddEvent);
+			EventManager.getInstance().off(
 				"delete-column",
 				handleColumnDeleteEvent
 			);

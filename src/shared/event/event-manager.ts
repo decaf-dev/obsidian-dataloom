@@ -1,7 +1,7 @@
 import { DataLoomEvent } from "./types";
 
-export default class EventListener {
-	private static instance: EventListener;
+export default class EventManager {
+	private static instance: EventManager;
 	private events: Record<DataLoomEvent, Function[]>;
 
 	private constructor() {
@@ -9,11 +9,11 @@ export default class EventListener {
 	}
 
 	// Ensures only one instance is created
-	public static getInstance(): EventListener {
-		if (!EventListener.instance) {
-			EventListener.instance = new EventListener();
+	public static getInstance(): EventManager {
+		if (!EventManager.instance) {
+			EventManager.instance = new EventManager();
 		}
-		return EventListener.instance;
+		return EventManager.instance;
 	}
 
 	// Method to add an event listener

@@ -4,7 +4,7 @@ import { useLogger } from "src/shared/logger";
 import { useAppMount } from "../../app-mount-provider";
 import _ from "lodash";
 import { useMenuOperations } from "src/react/shared/menu-provider/hooks";
-import EventListener from "src/shared/event/event-listener";
+import EventManager from "src/shared/event/event-manager";
 
 export const useMenuEvents = () => {
 	useCloseOnOutsideClick();
@@ -112,10 +112,10 @@ const useCloseOnOutsideClick = () => {
 			onCloseAll();
 		}
 
-		EventListener.getInstance().on("global-click", handleGlobalClick);
+		EventManager.getInstance().on("global-click", handleGlobalClick);
 
 		return () =>
-			EventListener.getInstance().off("global-click", handleGlobalClick);
+			EventManager.getInstance().off("global-click", handleGlobalClick);
 	}, [app, logger, onCloseAll]);
 };
 

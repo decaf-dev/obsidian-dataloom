@@ -11,7 +11,7 @@ import { ExportType } from "src/shared/export/types";
 import { LoomState } from "src/shared/loom-state/types/loom-state";
 import { useAppMount } from "../../app-mount-provider";
 import { useAppSelector } from "src/redux/hooks";
-import EventListener from "src/shared/event/event-listener";
+import EventManager from "src/shared/event/event-manager";
 
 export const useExportEvents = (state: LoomState) => {
 	const { reactAppId, loomFile, app } = useAppMount();
@@ -55,15 +55,15 @@ export const useExportEvents = (state: LoomState) => {
 			}
 		}
 
-		EventListener.getInstance().on("download-csv", handleDownloadCSV);
-		EventListener.getInstance().on(
+		EventManager.getInstance().on("download-csv", handleDownloadCSV);
+		EventManager.getInstance().on(
 			"download-markdown",
 			handleDownloadMarkdown
 		);
 
 		return () => {
-			EventListener.getInstance().off("download-csv", handleDownloadCSV);
-			EventListener.getInstance().off(
+			EventManager.getInstance().off("download-csv", handleDownloadCSV);
+			EventManager.getInstance().off(
 				"download-markdown",
 				handleDownloadMarkdown
 			);

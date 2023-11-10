@@ -33,7 +33,7 @@ import "src/react/global.css";
 import "./styles.css";
 import { useAppEvents } from "./hooks/use-app-events";
 import { useMenuEvents } from "./hooks/use-menu-events";
-import EventListener from "src/shared/event/event-listener";
+import EventManager from "src/shared/event/event-manager";
 
 export default function App() {
 	const logger = useLogger();
@@ -115,44 +115,38 @@ export default function App() {
 	]);
 
 	React.useEffect(() => {
-		EventListener.getInstance().on("file-create", onUpdateRowsFromSources);
-		EventListener.getInstance().on(
+		EventManager.getInstance().on("file-create", onUpdateRowsFromSources);
+		EventManager.getInstance().on(
 			"file-frontmatter-change",
 			onUpdateRowsFromSources
 		);
-		EventListener.getInstance().on("file-delete", onUpdateRowsFromSources);
-		EventListener.getInstance().on(
-			"folder-delete",
-			onUpdateRowsFromSources
-		);
-		EventListener.getInstance().on(
-			"folder-rename",
-			onUpdateRowsFromSources
-		);
-		EventListener.getInstance().on("file-rename", onUpdateRowsFromSources);
+		EventManager.getInstance().on("file-delete", onUpdateRowsFromSources);
+		EventManager.getInstance().on("folder-delete", onUpdateRowsFromSources);
+		EventManager.getInstance().on("folder-rename", onUpdateRowsFromSources);
+		EventManager.getInstance().on("file-rename", onUpdateRowsFromSources);
 
 		return () => {
-			EventListener.getInstance().off(
+			EventManager.getInstance().off(
 				"file-create",
 				onUpdateRowsFromSources
 			);
-			EventListener.getInstance().off(
+			EventManager.getInstance().off(
 				"file-frontmatter-change",
 				onUpdateRowsFromSources
 			);
-			EventListener.getInstance().off(
+			EventManager.getInstance().off(
 				"folder-rename",
 				onUpdateRowsFromSources
 			);
-			EventListener.getInstance().off(
+			EventManager.getInstance().off(
 				"file-rename",
 				onUpdateRowsFromSources
 			);
-			EventListener.getInstance().off(
+			EventManager.getInstance().off(
 				"file-delete",
 				onUpdateRowsFromSources
 			);
-			EventListener.getInstance().off(
+			EventManager.getInstance().off(
 				"folder-delete",
 				onUpdateRowsFromSources
 			);

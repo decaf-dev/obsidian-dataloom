@@ -5,7 +5,7 @@ import LoomStateCommand from "src/shared/loom-state/commands/loom-state-command"
 import { useLogger } from "src/shared/logger";
 import RowSortCommand from "src/shared/loom-state/commands/row-sort-command";
 import { useAppMount } from "src/react/loom-app/app-mount-provider";
-import EventListener from "src/shared/event/event-listener";
+import EventManager from "src/shared/event/event-manager";
 
 interface Props {
 	initialState: LoomState;
@@ -98,9 +98,9 @@ export default function LoomStateProvider({
 			}
 		}
 
-		EventListener.getInstance().on("app-refresh", handleRefreshEvent);
+		EventManager.getInstance().on("app-refresh", handleRefreshEvent);
 		return () =>
-			EventListener.getInstance().off("app-refresh", handleRefreshEvent);
+			EventManager.getInstance().off("app-refresh", handleRefreshEvent);
 	}, [reactAppId, loomFile, app]);
 
 	function handleToggleSearchBar() {
