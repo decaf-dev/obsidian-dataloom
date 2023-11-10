@@ -35,6 +35,7 @@ import TimeFormatMenu from "./time-format.menu";
 
 import "./styles.css";
 import { dateStringToDateTime } from "src/shared/date/date-string-conversion";
+import { getCurrentDateTime } from "src/shared/date/utils";
 
 interface Props {
 	cellId: string;
@@ -137,7 +138,7 @@ export default function DateCellEdit({
 		}
 
 		//If the user has not entered a value, we don't need to validate the date format
-		if (timeString !== "") {
+		if (dateString !== "" || timeString !== "") {
 			if (!isValidTimeString(timeString, hour12)) {
 				if (closeRequest.type === "close-on-save") {
 					setTimeInputInvalid(true);
@@ -210,6 +211,11 @@ export default function DateCellEdit({
 								ref={dateInputRef}
 								showBorder
 								autoFocus={false}
+								placeholder={dateTimeToDateString(
+									getCurrentDateTime(),
+									dateFormat,
+									dateFormatSeparator
+								)}
 								hasError={isDateInputInvalid}
 								value={dateString}
 								onChange={setDateString}
@@ -218,6 +224,12 @@ export default function DateCellEdit({
 								ref={timeInputRef}
 								showBorder
 								autoFocus={false}
+								placeholder={dateTimeToTimeString(
+									getCurrentDateTime(),
+									{
+										hour12,
+									}
+								)}
 								hasError={isTimeInputInvalid}
 								value={timeString}
 								onChange={setTimeString}
