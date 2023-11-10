@@ -144,11 +144,11 @@ export const getDisplayNameForSource = (type: SourceType) => {
 export const getDisplayNameForDateFormat = (format: DateFormat) => {
 	switch (format) {
 		case DateFormat.DD_MM_YYYY:
-			return "Day Month Year";
+			return "DD MM YYYY";
 		case DateFormat.MM_DD_YYYY:
-			return "Month Day Year";
+			return "MM DD YYYY";
 		case DateFormat.YYYY_MM_DD:
-			return "Year Month Day";
+			return "YYYY MM DD";
 		default:
 			return "";
 	}
