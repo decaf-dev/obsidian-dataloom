@@ -53,8 +53,9 @@ describe("deserializeFrontmatter", () => {
 		//Arrange
 		const state = createTestLoomState(1, 1, { type: CellType.TEXT });
 		state.model.columns[0].frontmatterKey = {
-			value: "text",
+			key: "text",
 			isCustom: false,
+			customType: null,
 		};
 
 		//Act
@@ -67,15 +68,16 @@ describe("deserializeFrontmatter", () => {
 		//Assert
 		expect(result).not.toBeNull();
 		expect(result?.newCell.content).toEqual("text");
-		expect(result?.nextTags).toEqual([]);
+		expect(result?.nextTags).toEqual(undefined);
 	});
 
 	it("deserializes number content", () => {
 		//Arrange
 		const state = createTestLoomState(1, 1, { type: CellType.DATE });
 		state.model.columns[0].frontmatterKey = {
-			value: "date",
+			key: "date",
 			isCustom: false,
+			customType: null,
 		};
 
 		//Act
@@ -88,7 +90,9 @@ describe("deserializeFrontmatter", () => {
 		//Assert
 		expect(result).not.toBeNull();
 		expect(result?.newCell.content).toEqual("");
-		expect(result?.newCell.dateTime).toEqual(currentTime);
+		expect(result?.newCell.dateTime).toEqual(
+			new Date(currentTime).toISOString()
+		);
 		expect(result?.nextTags).toEqual([]);
 	});
 
@@ -96,8 +100,9 @@ describe("deserializeFrontmatter", () => {
 		//Arrange
 		const state = createTestLoomState(1, 1, { type: CellType.NUMBER });
 		state.model.columns[0].frontmatterKey = {
-			value: "date",
+			key: "date",
 			isCustom: false,
+			customType: null,
 		};
 
 		//Act
@@ -117,8 +122,9 @@ describe("deserializeFrontmatter", () => {
 		//Arrange
 		const state = createTestLoomState(1, 1, { type: CellType.TAG });
 		state.model.columns[0].frontmatterKey = {
-			value: "tag",
+			key: "tag",
 			isCustom: false,
+			customType: null,
 		};
 
 		//Act
@@ -132,15 +138,16 @@ describe("deserializeFrontmatter", () => {
 		expect(result).not.toBeNull();
 		expect(result?.newCell.content).toEqual("");
 		expect(result?.nextTags).toHaveLength(1);
-		expect(result?.nextTags[0].content).toEqual("tag1");
+		expect(result?.nextTags?.[0].content).toEqual("tag1");
 	});
 
 	it("deserializes multi-tag content", () => {
 		//Arrange
 		const state = createTestLoomState(1, 1, { type: CellType.MULTI_TAG });
 		state.model.columns[0].frontmatterKey = {
-			value: "tags",
+			key: "tags",
 			isCustom: false,
+			customType: null,
 		};
 
 		//Act
@@ -154,8 +161,8 @@ describe("deserializeFrontmatter", () => {
 		expect(result).not.toBeNull();
 		expect(result?.newCell.content).toEqual("");
 		expect(result?.nextTags).toHaveLength(2);
-		expect(result?.nextTags[0].content).toEqual("tag1");
-		expect(result?.nextTags[1].content).toEqual("tag2");
+		expect(result?.nextTags?.[0].content).toEqual("tag1");
+		expect(result?.nextTags?.[1].content).toEqual("tag2");
 	});
 
 	it("returns null if frontmatter key is null", () => {

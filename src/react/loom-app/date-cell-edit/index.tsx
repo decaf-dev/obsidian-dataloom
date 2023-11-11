@@ -106,21 +106,25 @@ export default function DateCellEdit({
 	const timeInputRef = React.useRef<HTMLInputElement>(null);
 
 	React.useEffect(() => {
-		setTimeString(
-			value === null
-				? ""
-				: dateTimeToTimeString(value, {
-						hour12,
-				  })
-		);
+		let timeString = "";
+		if (value !== null) {
+			timeString = dateTimeToTimeString(value, {
+				hour12,
+			});
+		}
+		setTimeString(timeString);
 	}, [value, hour12, setTimeString]);
 
 	React.useEffect(() => {
-		setDateString(
-			value === null
-				? ""
-				: dateTimeToDateString(value, dateFormat, dateFormatSeparator)
-		);
+		let dateString = "";
+		if (value !== null) {
+			dateString = dateTimeToDateString(
+				value,
+				dateFormat,
+				dateFormatSeparator
+			);
+		}
+		setDateString(dateString);
 	}, [value, dateFormat, dateFormatSeparator, setDateString]);
 
 	React.useEffect(() => {

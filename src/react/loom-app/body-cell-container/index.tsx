@@ -49,6 +49,7 @@ import { useMenu } from "src/react/shared/menu-provider/hooks";
 
 import "./styles.css";
 import { useOverflow } from "src/shared/spacing/hooks";
+import { ObsidianPropertyType } from "src/shared/frontmatter/types";
 
 interface Props {
 	source: Source | null;
@@ -257,9 +258,19 @@ export default function BodyCellContainer({
 	}
 
 	function handleIncludeTimeToggle(value: boolean) {
+		let newFrontmatterKey: FrontmatterKey | null = null;
+		if (frontmatterKey !== null) {
+			newFrontmatterKey = {
+				key: frontmatterKey.key,
+				isCustom: frontmatterKey.isCustom,
+				customType: value
+					? ObsidianPropertyType.DATETIME
+					: ObsidianPropertyType.DATE,
+			};
+		}
 		onColumnChange(
 			columnId,
-			{ includeTime: value },
+			{ includeTime: value, frontmatterKey: newFrontmatterKey },
 			{ shouldSortRows: true }
 		);
 	}

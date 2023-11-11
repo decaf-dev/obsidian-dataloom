@@ -76,6 +76,7 @@ export default function HeaderMenu({
 		dateFormat,
 		aspectRatio,
 		hour12,
+		includeTime,
 		dateFormatSeparator,
 		verticalPadding,
 		horizontalPadding,
@@ -375,6 +376,8 @@ export default function HeaderMenu({
 				{submenu === SubmenuType.FRONTMATTER_KEY && (
 					<FrontmatterKeySubmenu
 						title="Frontmatter key"
+						columnType={type}
+						includeTime={includeTime}
 						closeRequest={closeRequest}
 						frontmatterKeys={frontmatterKeys}
 						frontmatterKey={frontmatterKey}

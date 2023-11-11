@@ -21,13 +21,23 @@ export default class MigrateState17 implements MigrateState {
 	public migrate(prevState: LoomState16): LoomState {
 		const { columns, rows, filters } = prevState.model;
 		const nextColumns: Column[] = columns.map((column) => {
-			const { dateFormat } = column;
+			const { dateFormat, frontmatterKey } = column;
+
+			let newFrontmatterKey = null;
+			if (frontmatterKey) {
+				newFrontmatterKey = {
+					isCustom: frontmatterKey.isCustom,
+					key: frontmatterKey.value,
+					customType: null,
+				};
+			}
 			return {
 				...column,
 				dateFormat: getDateFormatDisplay(dateFormat),
 				dateFormatSeparator: DateFormatSeparator.HYPHEN,
 				hour12: true,
 				includeTime: false,
+				frontmatterKey: newFrontmatterKey,
 			};
 		});
 		const nextRows: Row[] = rows.map((row) => {

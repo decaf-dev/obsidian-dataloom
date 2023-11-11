@@ -68,7 +68,7 @@ describe("serializeFrontmatter", () => {
 			createColumn({
 				type,
 				frontmatterKey: frontmatterKey
-					? { value: frontmatterKey, isCustom: true }
+					? { key: frontmatterKey, isCustom: true, customType: null }
 					: null,
 				tags,
 				includeTime,

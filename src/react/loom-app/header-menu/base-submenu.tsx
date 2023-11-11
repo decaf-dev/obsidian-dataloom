@@ -108,7 +108,7 @@ export default function BaseSubmenu({
 						<MenuItem
 							lucideId="file-key-2"
 							name="Frontmatter key"
-							value={frontmatterKey?.value || "No key set"}
+							value={frontmatterKey?.key || "No key set"}
 							onClick={() => {
 								onSubmenuChange(SubmenuType.FRONTMATTER_KEY);
 							}}

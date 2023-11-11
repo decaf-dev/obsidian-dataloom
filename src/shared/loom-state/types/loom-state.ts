@@ -1,5 +1,7 @@
 /******* Type definitions for v8.12.0 *******/
 
+import { ObsidianPropertyType } from "src/shared/frontmatter/types";
+
 /**
  * v8.12.0
  */
@@ -55,7 +57,8 @@ export interface Column {
 
 export interface FrontmatterKey {
 	isCustom: boolean;
-	value: string;
+	key: string;
+	customType: ObsidianPropertyType | null;
 }
 
 export interface Row {

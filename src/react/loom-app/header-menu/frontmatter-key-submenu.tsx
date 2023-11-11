@@ -3,13 +3,20 @@ import React from "react";
 import Submenu from "../../shared/submenu";
 import Input from "../../shared/input";
 import Select from "src/react/shared/select";
-import { FrontmatterKey } from "src/shared/loom-state/types/loom-state";
+import {
+	CellType,
+	FrontmatterKey,
+} from "src/shared/loom-state/types/loom-state";
 import Stack from "src/react/shared/stack";
 import Padding from "src/react/shared/padding";
 import { LoomMenuCloseRequest } from "src/react/shared/menu-provider/types";
+import { ObsidianPropertyType } from "src/shared/frontmatter/types";
+import { getAcceptedFrontmatterTypes } from "src/shared/frontmatter/utils";
 
 interface Props {
 	title: string;
+	columnType: CellType;
+	includeTime: boolean;
 	frontmatterKey: FrontmatterKey | null;
 	frontmatterKeys: string[];
 	closeRequest: LoomMenuCloseRequest | null;
@@ -18,10 +25,12 @@ interface Props {
 	onClose: () => void;
 }
 
-const USE_CUSTOM_INPUT_VALUE = "custom-key";
+const CUSTOM_KEY = "custom-key";
 
 export default function FrontmatterKeySubmenu({
 	title,
+	columnType,
+	includeTime,
 	frontmatterKey,
 	frontmatterKeys,
 	onFrontMatterKeyChange,
@@ -29,55 +38,91 @@ export default function FrontmatterKeySubmenu({
 	closeRequest,
 	onClose,
 }: Props) {
-	const { value = "", isCustom = false } = frontmatterKey ?? {};
+	const {
+		key: initialKey = "",
+		customType: initialKeyType = null,
+		isCustom = false,
+	} = frontmatterKey ?? {};
 
-	const [inputValue, setInputValue] = React.useState(value);
+	const [key, setKey] = React.useState(initialKey);
+
+	const [keyType, setKeyType] = React.useState<ObsidianPropertyType | null>(
+		initialKeyType
+	);
 
 	React.useEffect(() => {
 		if (closeRequest !== null) {
 			if (isCustom) {
-				onFrontMatterKeyChange({ value: inputValue, isCustom: true });
+				onFrontMatterKeyChange({
+					key,
+					isCustom: true,
+					customType: keyType,
+				});
 			}
 			onClose();
 		}
-	}, [onFrontMatterKeyChange, inputValue, closeRequest, onClose, isCustom]);
+	}, [onFrontMatterKeyChange, key, keyType, closeRequest, onClose, isCustom]);
 
 	function handleValueChange(value: string) {
-		if (value === USE_CUSTOM_INPUT_VALUE) {
+		if (value === CUSTOM_KEY) {
 			onFrontMatterKeyChange({
-				value: "",
+				key: "",
 				isCustom: true,
+				customType: keyType,
 			});
 		} else if (value === "") {
 			onFrontMatterKeyChange(null);
 		} else {
 			onFrontMatterKeyChange({
-				value,
+				key,
 				isCustom: false,
+				customType: keyType,
 			});
 		}
 	}
 
-	let selectedValue = value;
+	let selectedKey = key;
 	if (isCustom) {
-		selectedValue = USE_CUSTOM_INPUT_VALUE;
+		selectedKey = CUSTOM_KEY;
 	}
 
 	return (
 		<Submenu title={title} onBackClick={onBackClick}>
 			<Padding px="lg" py="md">
 				<Stack spacing="md">
-					<Select value={selectedValue} onChange={handleValueChange}>
+					<Select value={selectedKey} onChange={handleValueChange}>
 						<option value="">Select an option</option>
 						{frontmatterKeys.map((key) => (
 							<option key={key} value={key}>
 								{key}
 							</option>
 						))}
-						<option value={USE_CUSTOM_INPUT_VALUE}>Custom</option>
+						<option value={CUSTOM_KEY}>Custom</option>
 					</Select>
 					{isCustom && (
-						<Input value={inputValue} onChange={setInputValue} />
+						<>
+							<Input value={key} onChange={setKey} />
+							{columnType !== CellType.DATE && (
+								<Select
+									value={keyType ?? ""}
+									onChange={(value) =>
+										setKeyType(
+											(value as ObsidianPropertyType) ||
+												null
+										)
+									}
+								>
+									<option value="">Select an option</option>
+									{getAcceptedFrontmatterTypes(
+										columnType
+									).map((type) => (
+										<option key={type} value={type}>
+											{type}
+										</option>
+									))}
+								</Select>
+							)}
+						</>
 					)}
 				</Stack>
 			</Padding>

@@ -18,7 +18,7 @@ export const useSource = () => {
 
 	const frontmatterKeyHash = React.useMemo(() => {
 		return JSON.stringify(
-			columns.map((column) => column.frontmatterKey?.value)
+			columns.map((column) => column.frontmatterKey?.key)
 		);
 	}, [columns]);
 
@@ -53,7 +53,7 @@ export const useSource = () => {
 				time: Date.now(),
 			};
 		});
-	}, [setLoomState, logger]);
+	}, [app, setLoomState, logger]);
 
 	React.useEffect(() => {
 		updateRowsFromSources();
