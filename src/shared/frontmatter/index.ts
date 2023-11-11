@@ -41,10 +41,11 @@ export const deserializeFrontmatterForCell = (
 			};
 		}
 		case CellType.DATE: {
-			console.log(frontmatterValue);
+			//The formatterValue will return either YYYY-MM-DD or YYYY-MM-DDTHH:MM
+			//the date object will take this in as local time as output an ISO string
 			const newCell = createCell(id, {
 				type: type,
-				dateTime: frontmatterValue as string,
+				dateTime: new Date(frontmatterValue as string).toISOString(),
 			});
 			return {
 				newCell,
