@@ -21,7 +21,8 @@ const LoomStateContext = React.createContext<{
 	setLoomState: React.Dispatch<
 		React.SetStateAction<{
 			state: LoomState;
-			shouldSave: boolean;
+			shouldSaveToDisk: boolean;
+			time: number;
 		}>
 	>;
 	toggleSearchBar: () => void;
@@ -50,7 +51,8 @@ export default function LoomStateProvider({
 }: Props) {
 	const [loomState, setLoomState] = React.useState({
 		state: initialState,
-		shouldSave: false,
+		shouldSaveToDisk: false,
+		time: 0,
 	});
 
 	// const [loomState, setLoomState] = React.useState(initialState);
@@ -84,12 +86,12 @@ export default function LoomStateProvider({
 			return;
 		}
 
-		const { shouldSave, state } = loomState;
-		if (shouldSave) {
-			console.log("Saving state!");
+		const { shouldSaveToDisk, state } = loomState;
+		if (shouldSaveToDisk) {
+			logger("LoomStateProvider saving state to disk!");
 			onSaveState(reactAppId, state);
 		}
-	}, [reactAppId, loomState, onSaveState]);
+	}, [logger, reactAppId, loomState, onSaveState]);
 
 	React.useEffect(() => {
 		function handleRefreshEvent(
@@ -100,7 +102,8 @@ export default function LoomStateProvider({
 			if (reactAppId !== sourceAppId && filePath === loomFile.path) {
 				setLoomState({
 					state,
-					shouldSave: false,
+					shouldSaveToDisk: false,
+					time: Date.now(),
 				});
 			}
 		}
@@ -130,7 +133,8 @@ export default function LoomStateProvider({
 				}
 				setLoomState({
 					state: newState,
-					shouldSave: true,
+					shouldSaveToDisk: true,
+					time: Date.now(),
 				});
 			}
 		}
@@ -152,7 +156,8 @@ export default function LoomStateProvider({
 				}
 				setLoomState({
 					state: newState,
-					shouldSave: true,
+					shouldSaveToDisk: true,
+					time: Date.now(),
 				});
 			}
 		}
@@ -178,7 +183,8 @@ export default function LoomStateProvider({
 			}
 			setLoomState({
 				state: newState,
-				shouldSave: true,
+				shouldSaveToDisk: true,
+				time: Date.now(),
 			});
 		},
 		[position, history, loomState]

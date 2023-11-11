@@ -23,7 +23,12 @@ export const useSource = () => {
 	}, [columns]);
 
 	const updateRowsFromSources = React.useCallback(() => {
+		logger("updateRowsFromSources called");
 		setLoomState((prevState) => {
+			if (Date.now() - prevState.time < 100) {
+				logger("Less than 100ms since last save. Returning...");
+				return prevState;
+			}
 			const { sources, columns, rows } = prevState.state.model;
 			const result = findDataFromSources(
 				app,
@@ -44,10 +49,11 @@ export const useSource = () => {
 						columns: nextColumns,
 					},
 				},
-				shouldSave: false,
+				shouldSaveToDisk: false,
+				time: Date.now(),
 			};
 		});
-	}, [setLoomState]);
+	}, [setLoomState, logger]);
 
 	React.useEffect(() => {
 		updateRowsFromSources();
