@@ -100,9 +100,10 @@ const findRowsFromFolder = (
 			} else if (frontmatterKey !== null) {
 				const result = deserializeFrontmatterForCell(app, column, path);
 				if (result !== null) {
-					const { newCell: cell, nextTags } = result;
+					const { newCell: cell, nextTags, includeTime } = result;
 					newCell = cell;
-					column.tags = nextTags;
+					if (nextTags) column.tags = nextTags;
+					if (includeTime) column.includeTime = true;
 				}
 			}
 

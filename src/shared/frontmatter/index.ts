@@ -7,7 +7,8 @@ export const deserializeFrontmatterForCell = (
 	column: Column,
 	path: string
 ): {
-	nextTags: Tag[];
+	includeTime?: boolean;
+	nextTags?: Tag[];
 	newCell: Cell;
 } | null => {
 	const { frontmatterKey } = column;
@@ -36,20 +37,20 @@ export const deserializeFrontmatterForCell = (
 				content: frontmatterValue as string,
 			});
 			return {
-				nextTags: tags,
 				newCell,
 			};
 		}
 		case CellType.DATE: {
 			//The formatterValue will return either YYYY-MM-DD or YYYY-MM-DDTHH:MM
 			//the date object will take this in as local time as output an ISO string
+			const dateString = frontmatterValue as string;
 			const newCell = createCell(id, {
 				type: type,
-				dateTime: new Date(frontmatterValue as string).toISOString(),
+				dateTime: new Date(dateString).toISOString(),
 			});
 			return {
 				newCell,
-				nextTags: tags,
+				includeTime: dateString.includes("T"),
 			};
 		}
 		case CellType.TAG: {
