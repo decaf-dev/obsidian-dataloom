@@ -82,18 +82,23 @@ export default function DateCellEdit({
 
 	const includeTimeToggleId = React.useId();
 
-	const [dateString, setDateString] = React.useState(
-		value === null
-			? ""
-			: dateTimeToDateString(value, dateFormat, dateFormatSeparator)
-	);
-	const [timeString, setTimeString] = React.useState(
-		value === null
-			? ""
-			: dateTimeToTimeString(value, {
-					hour12,
-			  })
-	);
+	let initialDateString = "";
+	if (value !== null) {
+		initialDateString = dateTimeToDateString(
+			value,
+			dateFormat,
+			dateFormatSeparator
+		);
+	}
+	const [dateString, setDateString] = React.useState(initialDateString);
+
+	let initialTimeString = "";
+	if (value !== null) {
+		initialTimeString = dateTimeToTimeString(value, {
+			hour12,
+		});
+	}
+	const [timeString, setTimeString] = React.useState(initialTimeString);
 
 	const [isDateInputInvalid, setDateInputInvalid] = React.useState(false);
 	const [isTimeInputInvalid, setTimeInputInvalid] = React.useState(false);
@@ -116,7 +121,7 @@ export default function DateCellEdit({
 				? ""
 				: dateTimeToDateString(value, dateFormat, dateFormatSeparator)
 		);
-	}, [value, dateFormat, setDateString]);
+	}, [value, dateFormat, dateFormatSeparator, setDateString]);
 
 	React.useEffect(() => {
 		if (closeRequest === null) return;
@@ -168,7 +173,7 @@ export default function DateCellEdit({
 	}, [
 		value,
 		dateString,
-		,
+		hour12,
 		timeString,
 		closeRequest,
 		dateFormat,
