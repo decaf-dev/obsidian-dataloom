@@ -90,6 +90,11 @@ export default function HeaderMenu({
 	const [submenu, setSubmenu] = useState<SubmenuType | null>(null);
 	const [localValue, setLocalValue] = useState(content);
 
+	const saveLocalValue = React.useCallback(() => {
+		if (localValue !== content)
+			onColumnChange(columnId, { content: localValue });
+	}, [columnId, content, localValue, onColumnChange]);
+
 	React.useEffect(() => {
 		if (closeRequest !== null) {
 			saveLocalValue();
@@ -99,16 +104,12 @@ export default function HeaderMenu({
 		content,
 		columnId,
 		closeRequest,
+		saveLocalValue,
 		submenu,
 		localValue,
 		onColumnChange,
 		onClose,
 	]);
-
-	function saveLocalValue() {
-		if (localValue !== content)
-			onColumnChange(columnId, { content: localValue });
-	}
 
 	function handleWrapOverflowToggle() {
 		onColumnChange(columnId, { shouldWrapOverflow: !shouldWrapOverflow });
