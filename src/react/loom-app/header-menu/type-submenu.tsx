@@ -10,7 +10,6 @@ interface Props {
 	onBackClick: () => void;
 }
 
-//TODO make a cell type is visible function
 export default function TypeSubmenu({
 	title,
 	value,
