@@ -192,6 +192,7 @@ export default function App() {
 	return (
 		<div
 			ref={appRef}
+			tabIndex={0}
 			id={reactAppId}
 			className={className}
 			onKeyDown={handleKeyDown}
