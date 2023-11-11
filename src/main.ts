@@ -103,7 +103,17 @@ export default class DataLoomPlugin extends Plugin {
 			store.dispatch(setDarkMode(isDark));
 
 			await this.migrateLoomFiles();
-			FrontmatterCache.getInstance().loadProperties(this.app);
+			await FrontmatterCache.getInstance().loadProperties(this.app);
+
+			//This will run once when the plugin is first loaded
+			//unless it is placed in the onLayoutReady function
+			this.registerEvent(
+				this.app.vault.on("create", (file: TAbstractFile) => {
+					if (file instanceof TFile) {
+						EventManager.getInstance().emit("file-create");
+					}
+				})
+			);
 		});
 
 		if (this.settings.showWelcomeModal) {
@@ -420,14 +430,6 @@ export default class DataLoomPlugin extends Plugin {
 					EventManager.getInstance().emit("file-rename");
 				} else {
 					EventManager.getInstance().emit("folder-rename");
-				}
-			})
-		);
-
-		this.registerEvent(
-			this.app.vault.on("create", (file: TAbstractFile) => {
-				if (file instanceof TFile) {
-					EventManager.getInstance().emit("file-create");
 				}
 			})
 		);
