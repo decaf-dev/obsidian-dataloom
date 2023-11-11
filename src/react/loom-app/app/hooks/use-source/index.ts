@@ -7,11 +7,90 @@ import SourceAddCommand from "src/shared/loom-state/commands/source-add-command"
 import SourceDeleteCommand from "src/shared/loom-state/commands/source-delete-command";
 import findDataFromSources from "src/shared/loom-state/find-data-from-sources";
 import { useAppMount } from "src/react/loom-app/app-mount-provider";
+import EventManager from "src/shared/event/event-manager";
 
 export const useSource = () => {
 	const logger = useLogger();
 	const { app } = useAppMount();
-	const { doCommand, setLoomState } = useLoomState();
+	const { doCommand, loomState, setLoomState } = useLoomState();
+
+	const { sources, columns } = loomState.model;
+
+	const frontmatterKeyHash = React.useMemo(() => {
+		return JSON.stringify(
+			columns.map((column) => column.frontmatterKey?.value)
+		);
+	}, [columns]);
+
+	const updateRowsFromSources = React.useCallback(() => {
+		setLoomState((prevState) => {
+			const { sources, columns, rows } = prevState.state.model;
+			const result = findDataFromSources(
+				app,
+				sources,
+				columns,
+				rows.length
+			);
+			const { newRows, nextColumns } = result;
+			const internalRows = rows.filter((row) => row.sourceId === null);
+			const nextRows = [...internalRows, ...newRows];
+
+			return {
+				state: {
+					...prevState.state,
+					model: {
+						...prevState.state.model,
+						rows: nextRows,
+						columns: nextColumns,
+					},
+				},
+				shouldSave: false,
+			};
+		});
+	}, [setLoomState]);
+
+	React.useEffect(() => {
+		updateRowsFromSources();
+	}, [sources.length, frontmatterKeyHash, updateRowsFromSources]);
+
+	React.useEffect(() => {
+		EventManager.getInstance().on("file-create", updateRowsFromSources);
+		EventManager.getInstance().on(
+			"file-frontmatter-change",
+			updateRowsFromSources
+		);
+		EventManager.getInstance().on("file-delete", updateRowsFromSources);
+		EventManager.getInstance().on("folder-delete", updateRowsFromSources);
+		EventManager.getInstance().on("folder-rename", updateRowsFromSources);
+		EventManager.getInstance().on("file-rename", updateRowsFromSources);
+
+		return () => {
+			EventManager.getInstance().off(
+				"file-create",
+				updateRowsFromSources
+			);
+			EventManager.getInstance().off(
+				"file-frontmatter-change",
+				updateRowsFromSources
+			);
+			EventManager.getInstance().off(
+				"folder-rename",
+				updateRowsFromSources
+			);
+			EventManager.getInstance().off(
+				"file-rename",
+				updateRowsFromSources
+			);
+			EventManager.getInstance().off(
+				"file-delete",
+				updateRowsFromSources
+			);
+			EventManager.getInstance().off(
+				"folder-delete",
+				updateRowsFromSources
+			);
+		};
+	}, [updateRowsFromSources, app]);
 
 	function handleSourceAdd(source: Source) {
 		logger("handleSourceAdd");
@@ -23,32 +102,8 @@ export const useSource = () => {
 		doCommand(new SourceDeleteCommand(id));
 	}
 
-	const handleUpdateRowsFromSources = React.useCallback(() => {
-		setLoomState((prevState) => {
-			const { sources, columns, rows } = prevState.model;
-			const result = findDataFromSources(
-				app,
-				sources,
-				columns,
-				rows.length
-			);
-			const { newRows, nextColumns } = result;
-			const internalRows = rows.filter((row) => row.sourceId === null);
-			const nextRows = [...internalRows, ...newRows];
-			return {
-				...prevState,
-				model: {
-					...prevState.model,
-					rows: nextRows,
-					columns: nextColumns,
-				},
-			};
-		});
-	}, [setLoomState, app]);
-
 	return {
 		onSourceAdd: handleSourceAdd,
 		onSourceDelete: handleSourceDelete,
-		onUpdateRowsFromSources: handleUpdateRowsFromSources,
 	};
 };

@@ -262,12 +262,6 @@ enum DateFilterOption {
 	ONE_MONTH_FROM_NOW = "one-month-from-now",
 }
 
-//@ts-expect-error not used
-type FilterCondition =
-	| TextFilterCondition
-	| DateFilterCondition
-	| NumberFilterCondition;
-
 interface BaseFilter {
 	id: string;
 	columnId: string;

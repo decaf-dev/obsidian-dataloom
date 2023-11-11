@@ -33,20 +33,13 @@ import "src/react/global.css";
 import "./styles.css";
 import { useAppEvents } from "./hooks/use-app-events";
 import { useMenuEvents } from "./hooks/use-menu-events";
-import EventManager from "src/shared/event/event-manager";
 
 export default function App() {
 	const logger = useLogger();
-	const { reactAppId, isMarkdownView, app } = useAppMount();
+	const { reactAppId, isMarkdownView } = useAppMount();
 
-	const {
-		loomState,
-		resizingColumnId,
-		searchText,
-		onRedo,
-		onUndo,
-		setLoomState,
-	} = useLoomState();
+	const { loomState, resizingColumnId, searchText, onRedo, onUndo } =
+		useLoomState();
 
 	const tableRef = React.useRef<VirtuosoHandle | null>(null);
 	const appRef = React.useRef<HTMLDivElement | null>(null);
@@ -57,8 +50,7 @@ export default function App() {
 	useMenuEvents();
 	const { onClick } = useAppEvents();
 
-	const { onSourceAdd, onSourceDelete, onUpdateRowsFromSources } =
-		useSource();
+	const { onSourceAdd, onSourceDelete } = useSource();
 
 	const { onFocusKeyDown } = useFocus();
 	const { onFrozenColumnsChange, onCalculationRowToggle } =
@@ -96,62 +88,6 @@ export default function App() {
 
 	const { columns, filters, settings, sources } = loomState.model;
 	const { numFrozenColumns, showCalculationRow } = settings;
-
-	const frontmatterKeyHash = React.useMemo(() => {
-		return JSON.stringify(
-			columns.map((column) => column.frontmatterKey?.value)
-		);
-	}, [columns]);
-
-	//Add source rows on mount
-	React.useEffect(() => {
-		onUpdateRowsFromSources();
-	}, [
-		setLoomState,
-		app,
-		sources.length,
-		frontmatterKeyHash,
-		onUpdateRowsFromSources,
-	]);
-
-	React.useEffect(() => {
-		EventManager.getInstance().on("file-create", onUpdateRowsFromSources);
-		EventManager.getInstance().on(
-			"file-frontmatter-change",
-			onUpdateRowsFromSources
-		);
-		EventManager.getInstance().on("file-delete", onUpdateRowsFromSources);
-		EventManager.getInstance().on("folder-delete", onUpdateRowsFromSources);
-		EventManager.getInstance().on("folder-rename", onUpdateRowsFromSources);
-		EventManager.getInstance().on("file-rename", onUpdateRowsFromSources);
-
-		return () => {
-			EventManager.getInstance().off(
-				"file-create",
-				onUpdateRowsFromSources
-			);
-			EventManager.getInstance().off(
-				"file-frontmatter-change",
-				onUpdateRowsFromSources
-			);
-			EventManager.getInstance().off(
-				"folder-rename",
-				onUpdateRowsFromSources
-			);
-			EventManager.getInstance().off(
-				"file-rename",
-				onUpdateRowsFromSources
-			);
-			EventManager.getInstance().off(
-				"file-delete",
-				onUpdateRowsFromSources
-			);
-			EventManager.getInstance().off(
-				"folder-delete",
-				onUpdateRowsFromSources
-			);
-		};
-	}, [onUpdateRowsFromSources, app]);
 
 	function handleScrollToTopClick() {
 		tableRef.current?.scrollToIndex(0);

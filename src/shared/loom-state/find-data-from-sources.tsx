@@ -99,7 +99,6 @@ const findRowsFromFolder = (
 				newCell = createCell(id, { type, content: path });
 			} else if (frontmatterKey !== null) {
 				const result = deserializeFrontmatterForCell(app, column, path);
-				console.log(result);
 				if (result !== null) {
 					const { newCell: cell, nextTags } = result;
 					newCell = cell;
