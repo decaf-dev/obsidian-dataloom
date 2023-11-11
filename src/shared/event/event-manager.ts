@@ -1,11 +1,11 @@
-import { DataLoomEvent } from "./types";
+import { DataLoomEvent, EventCallback } from "./types";
 
 export default class EventManager {
 	private static instance: EventManager;
-	private eventListeners: Record<DataLoomEvent, Function[]>;
+	private eventListeners: Record<DataLoomEvent, EventCallback[]>;
 
 	private constructor() {
-		this.eventListeners = {} as Record<DataLoomEvent, Function[]>;
+		this.eventListeners = {} as Record<DataLoomEvent, EventCallback[]>;
 	}
 
 	// Ensures only one instance is created
@@ -17,7 +17,7 @@ export default class EventManager {
 	}
 
 	// Method to add an event listener
-	public on(eventName: DataLoomEvent, callback: Function): void {
+	public on(eventName: DataLoomEvent, callback: EventCallback): void {
 		if (!this.eventListeners[eventName]) {
 			this.eventListeners[eventName] = [];
 		}
@@ -25,7 +25,10 @@ export default class EventManager {
 	}
 
 	// Method to remove an event listener
-	public off(eventName: DataLoomEvent, callbackToRemove: Function): void {
+	public off(
+		eventName: DataLoomEvent,
+		callbackToRemove: EventCallback
+	): void {
 		if (!this.eventListeners[eventName]) {
 			return;
 		}
@@ -36,7 +39,7 @@ export default class EventManager {
 
 	// Method to trigger all callbacks associated with an event
 	public emit(eventName: DataLoomEvent, ...data: any[]): void {
-		console.log("Emiting event", eventName);
+		console.log("[EventManager] emiting event:", eventName);
 		if (!this.eventListeners[eventName]) {
 			return;
 		}

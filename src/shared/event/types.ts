@@ -14,3 +14,5 @@ export type DataLoomEvent =
 	| "global-keydown"
 	| "download-csv"
 	| "download-markdown";
+
+export type EventCallback = (...data: any[]) => void;
