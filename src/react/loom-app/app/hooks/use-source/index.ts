@@ -22,41 +22,51 @@ export const useSource = () => {
 		);
 	}, [columns]);
 
-	const updateRowsFromSources = React.useCallback(() => {
-		logger("updateRowsFromSources called");
-		setLoomState((prevState) => {
-			if (Date.now() - prevState.time < 100) {
-				logger("Less than 100ms since last save. Returning...");
-				return prevState;
-			}
-			const { sources, columns, rows } = prevState.state.model;
-			const result = findDataFromSources(
-				app,
-				sources,
-				columns,
-				rows.length
-			);
-			const { newRows, nextColumns } = result;
-			const internalRows = rows.filter((row) => row.sourceId === null);
-			const nextRows = [...internalRows, ...newRows];
+	const updateRowsFromSources = React.useCallback(
+		(fromObsidianEvent = true) => {
+			logger("updateRowsFromSources called");
+			setLoomState((prevState) => {
+				if (fromObsidianEvent) {
+					if (Date.now() - prevState.time < 100) {
+						// console.log(
+						// 	"updateRowsFromSources called in the last 100ms. returning..."
+						// );
+						return prevState;
+					}
+				}
+				const { sources, columns, rows } = prevState.state.model;
+				const result = findDataFromSources(
+					app,
+					sources,
+					columns,
+					rows.length
+				);
+				const { newRows, nextColumns } = result;
+				const internalRows = rows.filter(
+					(row) => row.sourceId === null
+				);
+				const nextRows = [...internalRows, ...newRows];
 
-			return {
-				state: {
-					...prevState.state,
-					model: {
-						...prevState.state.model,
-						rows: nextRows,
-						columns: nextColumns,
+				return {
+					state: {
+						...prevState.state,
+						model: {
+							...prevState.state.model,
+							rows: nextRows,
+							columns: nextColumns,
+						},
 					},
-				},
-				shouldSaveToDisk: false,
-				time: Date.now(),
-			};
-		});
-	}, [app, setLoomState, logger]);
+					shouldSaveToDisk: false,
+					shouldSaveFrontmatter: true,
+					time: Date.now(),
+				};
+			});
+		},
+		[app, setLoomState, logger]
+	);
 
 	React.useEffect(() => {
-		updateRowsFromSources();
+		updateRowsFromSources(false);
 	}, [sources.length, frontmatterKeyHash, updateRowsFromSources]);
 
 	React.useEffect(() => {
