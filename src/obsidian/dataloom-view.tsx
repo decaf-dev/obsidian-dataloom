@@ -91,10 +91,16 @@ export default class DataLoomView extends TextFileView {
 		return fileName.substring(0, extensionIndex);
 	}
 
-	private handleSaveLoomState = async (appId: string, state: LoomState) => {
+	private handleSaveLoomState = async (
+		appId: string,
+		state: LoomState,
+		shouldSaveFrontmatter: boolean
+	) => {
 		if (!this.file) return;
 
-		await serializeFrontmatter(this.app, state);
+		if (shouldSaveFrontmatter) {
+			await serializeFrontmatter(this.app, state);
+		}
 
 		const serialized = serializeState(state);
 

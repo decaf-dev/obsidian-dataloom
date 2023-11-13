@@ -124,7 +124,6 @@ export default function App() {
 
 	let className = "dataloom-app";
 	if (isMarkdownView) className += " dataloom-app--markdown-view";
-
 	return (
 		<div
 			ref={appRef}

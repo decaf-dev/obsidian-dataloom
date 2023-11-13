@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import Menu from "src/react/shared/menu";
 import OptionSubmenu from "./option-submenu";
@@ -8,6 +8,10 @@ import TextInputSubmenu from "./text-input-submenu";
 import DateFormatSubmenu from "./date-format-submenu";
 import AspectRatioSubmenu from "./aspect-ratio-submenu";
 import PaddingSubmenu from "./padding-submenu";
+import FrontmatterKeySubmenu from "./frontmatter-key-submenu";
+import BaseSubmenu from "./base-submenu";
+import DateFormatSeparatorSubmenu from "./date-format-separator-submenu";
+import TimeFormatSubmenu from "./time-format-submenu";
 
 import {
 	AspectRatio,
@@ -22,15 +26,11 @@ import {
 	DateFormatSeparator,
 } from "src/shared/loom-state/types/loom-state";
 import { SubmenuType } from "./types";
-
 import { LoomMenuPosition } from "../../shared/menu/types";
-import "./styles.css";
 import { ColumnChangeHandler } from "../app/hooks/use-column/types";
-import FrontmatterKeySubmenu from "./frontmatter-key-submenu";
 import { LoomMenuCloseRequest } from "src/react/shared/menu-provider/types";
-import BaseSubmenu from "./base-submenu";
-import DateFormatSeparatorSubmenu from "./date-format-separator-submenu";
-import TimeFormatSubmenu from "./time-format-submenu";
+
+import "./styles.css";
 
 interface Props {
 	index: number;
@@ -76,7 +76,6 @@ export default function HeaderMenu({
 		dateFormat,
 		aspectRatio,
 		hour12,
-		includeTime,
 		dateFormatSeparator,
 		verticalPadding,
 		horizontalPadding,
@@ -88,8 +87,8 @@ export default function HeaderMenu({
 		numberSuffix,
 		frontmatterKey,
 	} = column;
-	const [submenu, setSubmenu] = useState<SubmenuType | null>(null);
-	const [localValue, setLocalValue] = useState(content);
+	const [submenu, setSubmenu] = React.useState<SubmenuType | null>(null);
+	const [localValue, setLocalValue] = React.useState(content);
 
 	const saveLocalValue = React.useCallback(() => {
 		if (localValue !== content)
@@ -228,9 +227,15 @@ export default function HeaderMenu({
 	}
 
 	function handleFrontmatterKeyChange(frontmatterKey: FrontmatterKey | null) {
-		onColumnChange(columnId, {
-			frontmatterKey,
-		});
+		onColumnChange(
+			columnId,
+			{
+				frontmatterKey,
+			},
+			{
+				shouldSaveFrontmatter: false,
+			}
+		);
 	}
 
 	return (
@@ -377,7 +382,6 @@ export default function HeaderMenu({
 					<FrontmatterKeySubmenu
 						title="Frontmatter key"
 						columnType={type}
-						includeTime={includeTime}
 						closeRequest={closeRequest}
 						frontmatterKeys={frontmatterKeys}
 						frontmatterKey={frontmatterKey}

@@ -21,7 +21,7 @@ export default class RowReorderCommand extends LoomStateCommand {
 	}[] = [];
 
 	constructor(dragId: string, targetId: string) {
-		super();
+		super(false);
 		this.dragId = dragId;
 		this.targetId = targetId;
 	}

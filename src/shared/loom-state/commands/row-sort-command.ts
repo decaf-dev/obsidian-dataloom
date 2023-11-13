@@ -30,6 +30,10 @@ export default class RowSortCommand extends LoomStateCommand {
 		index: number;
 	}[] = [];
 
+	constructor() {
+		super(false);
+	}
+
 	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 

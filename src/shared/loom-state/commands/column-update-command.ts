@@ -17,11 +17,16 @@ export default class ColumnUpdateCommand extends LoomStateCommand {
 		options?: {
 			isPartial?: boolean;
 			shouldSortRows?: boolean;
+			shouldSaveFrontmatter?: boolean;
 		}
 	) {
-		const { shouldSortRows = false, isPartial = true } = options || {};
+		const {
+			shouldSortRows = false,
+			isPartial = true,
+			shouldSaveFrontmatter = true,
+		} = options || {};
 
-		super(shouldSortRows);
+		super(shouldSortRows, { shouldSaveFrontmatter });
 		this.columnId = columnId;
 		this.data = data;
 		this.isPartial = isPartial;

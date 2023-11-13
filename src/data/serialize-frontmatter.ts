@@ -6,7 +6,7 @@ import { dateTimeToObsidianDateTime } from "./date-utils";
 import { updateObsidianPropertyType } from "src/shared/frontmatter/obsidian-utils";
 
 export const serializeFrontmatter = async (app: App, state: LoomState) => {
-	console.log("serializing frontmatter...");
+	// console.log("serializing frontmatter...");
 	const { rows, columns, sources } = state.model;
 	if (sources.length === 0) return;
 

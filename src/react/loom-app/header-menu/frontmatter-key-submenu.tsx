@@ -1,14 +1,14 @@
 import React from "react";
 
 import Submenu from "../../shared/submenu";
-import Input from "../../shared/input";
 import Select from "src/react/shared/select";
+import Stack from "src/react/shared/stack";
+import Padding from "src/react/shared/padding";
+
 import {
 	CellType,
 	FrontmatterKey,
 } from "src/shared/loom-state/types/loom-state";
-import Stack from "src/react/shared/stack";
-import Padding from "src/react/shared/padding";
 import { LoomMenuCloseRequest } from "src/react/shared/menu-provider/types";
 import { ObsidianPropertyType } from "src/shared/frontmatter/types";
 import { getAcceptedFrontmatterTypes } from "src/shared/frontmatter/utils";
@@ -16,7 +16,6 @@ import { getAcceptedFrontmatterTypes } from "src/shared/frontmatter/utils";
 interface Props {
 	title: string;
 	columnType: CellType;
-	includeTime: boolean;
 	frontmatterKey: FrontmatterKey | null;
 	frontmatterKeys: string[];
 	closeRequest: LoomMenuCloseRequest | null;
@@ -30,7 +29,6 @@ const CUSTOM_KEY = "custom-key";
 export default function FrontmatterKeySubmenu({
 	title,
 	columnType,
-	includeTime,
 	frontmatterKey,
 	frontmatterKeys,
 	onFrontMatterKeyChange,
@@ -39,31 +37,31 @@ export default function FrontmatterKeySubmenu({
 	onClose,
 }: Props) {
 	const {
-		key: initialKey = "",
+		key = "",
 		customType: initialKeyType = null,
 		isCustom = false,
 	} = frontmatterKey ?? {};
 
-	const [key, setKey] = React.useState(initialKey);
+	// const [key, setKey] = React.useState(initialKey);
 
 	const [keyType, setKeyType] = React.useState<ObsidianPropertyType | null>(
 		initialKeyType
 	);
 
-	React.useEffect(() => {
-		if (closeRequest !== null) {
-			if (isCustom) {
-				onFrontMatterKeyChange({
-					key,
-					isCustom: true,
-					customType: keyType,
-				});
-			}
-			onClose();
-		}
-	}, [onFrontMatterKeyChange, key, keyType, closeRequest, onClose, isCustom]);
+	// React.useEffect(() => {
+	// 	if (closeRequest !== null) {
+	// 		if (isCustom) {
+	// 			onFrontMatterKeyChange({
+	// 				key,
+	// 				isCustom: true,
+	// 				customType: keyType,
+	// 			});
+	// 		}
+	// 		onClose();
+	// 	}
+	// }, [onFrontMatterKeyChange, key, keyType, closeRequest, onClose, isCustom]);
 
-	function handleValueChange(value: string) {
+	function handleSelectValueChange(value: string) {
 		if (value === CUSTOM_KEY) {
 			onFrontMatterKeyChange({
 				key: "",
@@ -74,7 +72,7 @@ export default function FrontmatterKeySubmenu({
 			onFrontMatterKeyChange(null);
 		} else {
 			onFrontMatterKeyChange({
-				key,
+				key: value,
 				isCustom: false,
 				customType: keyType,
 			});
@@ -90,7 +88,10 @@ export default function FrontmatterKeySubmenu({
 		<Submenu title={title} onBackClick={onBackClick}>
 			<Padding px="lg" py="md">
 				<Stack spacing="md">
-					<Select value={selectedKey} onChange={handleValueChange}>
+					<Select
+						value={selectedKey}
+						onChange={handleSelectValueChange}
+					>
 						<option value="">Select an option</option>
 						{frontmatterKeys.map((key) => (
 							<option key={key} value={key}>
@@ -101,7 +102,7 @@ export default function FrontmatterKeySubmenu({
 					</Select>
 					{isCustom && (
 						<>
-							<Input value={key} onChange={setKey} />
+							{/* <Input value={key} onChange={setKey} /> */}
 							{columnType !== CellType.DATE && (
 								<Select
 									value={keyType ?? ""}

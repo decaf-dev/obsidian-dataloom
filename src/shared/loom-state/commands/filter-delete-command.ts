@@ -11,7 +11,7 @@ export default class FilterDeleteCommand extends LoomStateCommand {
 	private id: string;
 
 	constructor(id: string) {
-		super();
+		super(false);
 		this.id = id;
 	}
 

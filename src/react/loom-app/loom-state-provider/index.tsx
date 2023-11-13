@@ -10,7 +10,11 @@ import EventManager from "src/shared/event/event-manager";
 interface Props {
 	initialState: LoomState;
 	children: React.ReactNode;
-	onSaveState: (appId: string, state: LoomState) => void;
+	onSaveState: (
+		appId: string,
+		state: LoomState,
+		shouldSaveFrontmatter: boolean
+	) => void;
 }
 
 const LoomStateContext = React.createContext<{
@@ -22,6 +26,7 @@ const LoomStateContext = React.createContext<{
 		React.SetStateAction<{
 			state: LoomState;
 			shouldSaveToDisk: boolean;
+			shouldSaveFrontmatter: boolean;
 			time: number;
 		}>
 	>;
@@ -52,10 +57,10 @@ export default function LoomStateProvider({
 	const [loomState, setLoomState] = React.useState({
 		state: initialState,
 		shouldSaveToDisk: false,
-		time: 0,
+		shouldSaveFrontmatter: true,
+		time: Date.now(),
 	});
 
-	// const [loomState, setLoomState] = React.useState(initialState);
 	const [searchText, setSearchText] = React.useState("");
 	const [isSearchBarVisible, setSearchBarVisible] = React.useState(false);
 	const [resizingColumnId, setResizingColumnId] = React.useState<
@@ -86,10 +91,10 @@ export default function LoomStateProvider({
 			return;
 		}
 
-		const { shouldSaveToDisk, state } = loomState;
+		const { shouldSaveToDisk, state, shouldSaveFrontmatter } = loomState;
 		if (shouldSaveToDisk) {
 			logger("LoomStateProvider saving state to disk!");
-			onSaveState(reactAppId, state);
+			onSaveState(reactAppId, state, shouldSaveFrontmatter);
 		}
 	}, [logger, reactAppId, loomState, onSaveState]);
 
@@ -103,6 +108,7 @@ export default function LoomStateProvider({
 				setLoomState({
 					state,
 					shouldSaveToDisk: false,
+					shouldSaveFrontmatter: true,
 					time: Date.now(),
 				});
 			}
@@ -134,6 +140,7 @@ export default function LoomStateProvider({
 				setLoomState({
 					state: newState,
 					shouldSaveToDisk: true,
+					shouldSaveFrontmatter: command.shouldSaveFrontmatter,
 					time: Date.now(),
 				});
 			}
@@ -157,6 +164,7 @@ export default function LoomStateProvider({
 				setLoomState({
 					state: newState,
 					shouldSaveToDisk: true,
+					shouldSaveFrontmatter: command.shouldSaveFrontmatter,
 					time: Date.now(),
 				});
 			}
@@ -184,6 +192,7 @@ export default function LoomStateProvider({
 			setLoomState({
 				state: newState,
 				shouldSaveToDisk: true,
+				shouldSaveFrontmatter: command.shouldSaveFrontmatter,
 				time: Date.now(),
 			});
 		},

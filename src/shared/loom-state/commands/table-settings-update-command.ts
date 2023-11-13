@@ -10,7 +10,7 @@ export default class TableSettingsUpdateCommand<
 	private previousValue: unknown;
 
 	constructor(key: K, value: TableSettings[K]) {
-		super();
+		super(false);
 		this.key = key;
 		this.value = value;
 	}

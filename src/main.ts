@@ -449,6 +449,9 @@ export default class DataLoomPlugin extends Plugin {
 				"changed",
 				async (file: TAbstractFile) => {
 					if (file instanceof TFile) {
+						await FrontmatterCache.getInstance().loadProperties(
+							this.app
+						);
 						EventManager.getInstance().emit(
 							"file-frontmatter-change"
 						);

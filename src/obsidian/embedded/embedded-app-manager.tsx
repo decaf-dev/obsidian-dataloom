@@ -171,8 +171,14 @@ const renderApp = (
 			mountLeaf={leaf}
 			store={store}
 			loomState={state}
-			onSaveState={(appId, state) =>
-				throttleHandleSave(app, file, appId, state)
+			onSaveState={(appId, state, shouldSaveFrontmatter) =>
+				throttleHandleSave(
+					app,
+					file,
+					appId,
+					state,
+					shouldSaveFrontmatter
+				)
 			}
 		/>
 	);
@@ -191,9 +197,12 @@ const handleSave = async (
 	app: App,
 	file: TFile,
 	appId: string,
-	state: LoomState
+	state: LoomState,
+	shouldSaveFrontmatter: boolean
 ) => {
-	await serializeFrontmatter(app, state);
+	if (shouldSaveFrontmatter) {
+		await serializeFrontmatter(app, state);
+	}
 
 	const serialized = serializeState(state);
 	await app.vault.modify(file, serialized);

@@ -6,11 +6,19 @@ abstract class LoomStateCommand {
 	shouldSortRows: boolean;
 	hasExecuteBeenCalled: boolean;
 	hasUndoBeenCalled: boolean;
+	shouldSaveFrontmatter: boolean;
 
-	constructor(shouldSortRows = false) {
+	constructor(
+		shouldSortRows: boolean,
+		options?: {
+			shouldSaveFrontmatter?: boolean;
+		}
+	) {
+		const { shouldSaveFrontmatter = true } = options ?? {};
 		this.hasExecuteBeenCalled = false;
 		this.hasUndoBeenCalled = false;
 		this.shouldSortRows = shouldSortRows;
+		this.shouldSaveFrontmatter = shouldSaveFrontmatter;
 	}
 
 	onExecute() {

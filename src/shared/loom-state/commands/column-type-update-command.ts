@@ -40,7 +40,7 @@ export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 	private previousFrontmatterKey: FrontmatterKey | null = null;
 
 	constructor(id: string, type: CellType) {
-		super();
+		super(false);
 		this.id = id;
 		this.nextType = type;
 	}

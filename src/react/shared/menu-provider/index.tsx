@@ -211,6 +211,8 @@ export default function MenuProvider({ children }: Props) {
 
 	const handleCloseAll = React.useCallback(() => {
 		logger("MenuProvider onCloseAll");
+		//TODO fix
+		// setOpenMenus([]);
 		setOpenMenus((prevState) =>
 			prevState.filter((menu) => menu.shouldRequestOnClose)
 		);
