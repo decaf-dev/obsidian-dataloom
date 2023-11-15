@@ -25,10 +25,9 @@ export const deserializeFrontmatterForCell = (
 	const frontmatterValue = frontmatter[frontmatterKey];
 	if (!frontmatterValue) return null;
 
-	const assignedType = getAssignedPropertyType(app, frontmatterKey);
-	if (assignedType === null) {
-		throw new Error("Frontmatter type is null for " + frontmatterKey);
-	}
+	const assignedType =
+		getAssignedPropertyType(app, frontmatterKey) ??
+		ObsidianPropertyType.TEXT;
 
 	const { id, tags, type } = column;
 
