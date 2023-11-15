@@ -18,13 +18,13 @@ Start by cloning the repository
 git clone https://github.com/trey-wallis/obsidian-dataloom.git
 ```
 
-We use yarn for dependency management instead of npm. Please make sure that you have installed yarn.
+We use Bun.sh for dependency management instead of npm. Please make sure that you have installed Bun.
 
 ```shell
-npm install -g yarn
+curl -fsSL https://bun.sh/install | bash
 ```
 
-Cd to the clone repository
+Change directories to the cloned repository
 
 ```shell
 cd obsidian-dataloom
@@ -33,7 +33,7 @@ cd obsidian-dataloom
 Install dependencies
 
 ```shell
-yarn install
+bun install
 ```
 
 Create a symbolic link from the cloned repository to your Obsidan vault.
@@ -64,7 +64,7 @@ Enable DataLoom
 Run esbuild in development mode
 
 ```shell
-yarn run dev
+bun run dev
 ```
 
 Restart Obsidian to see your code changes
