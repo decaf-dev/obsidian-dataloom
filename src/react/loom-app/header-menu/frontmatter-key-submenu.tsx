@@ -1,7 +1,7 @@
 import Submenu from "../../shared/submenu";
 import Stack from "src/react/shared/stack";
 import Padding from "src/react/shared/padding";
-import Select from "src/react/shared/select";
+import MenuItem from "src/react/shared/menu-item";
 
 interface Props {
 	title: string;
@@ -18,29 +18,18 @@ export default function FrontmatterKeySubmenu({
 	onBackClick,
 	onFrontmatterKeyChange,
 }: Props) {
-	function handleKeyChange(value: string) {
-		if (value === "") {
-			onFrontmatterKeyChange(null);
-		} else {
-			onFrontmatterKeyChange(value);
-		}
-	}
-
 	return (
 		<Submenu title={title} onBackClick={onBackClick}>
-			<Padding px="lg" py="md">
-				<Stack spacing="md">
-					<Select
-						value={selectedKey ?? ""}
-						onChange={(value) => handleKeyChange(value)}
-					>
-						<option value="">Select an option</option>
-						{frontmatterKeys.map((key) => (
-							<option key={key} value={key}>
-								{key}
-							</option>
-						))}
-					</Select>
+			<Padding py="md">
+				<Stack spacing="sm">
+					{frontmatterKeys.map((key) => (
+						<MenuItem
+							key={key}
+							isSelected={selectedKey === key}
+							name={key}
+							onClick={() => onFrontmatterKeyChange(key)}
+						/>
+					))}
 				</Stack>
 			</Padding>
 		</Submenu>
