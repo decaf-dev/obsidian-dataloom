@@ -1,6 +1,8 @@
 import { App } from "obsidian";
 import { createCell, createTag } from "../loom-state/loom-state-factory";
 import { Cell, CellType, Column, Tag } from "../loom-state/types/loom-state";
+import { getAssignedPropertyType } from "./obsidian-utils";
+import { ObsidianPropertyType } from "./types";
 
 export const deserializeFrontmatterForCell = (
 	app: App,
@@ -22,6 +24,11 @@ export const deserializeFrontmatterForCell = (
 
 	const frontmatterValue = frontmatter[frontmatterKey];
 	if (!frontmatterValue) return null;
+
+	const assignedType = getAssignedPropertyType(app, frontmatterKey);
+	if (assignedType === null) {
+		throw new Error("Frontmatter type is null for " + frontmatterKey);
+	}
 
 	const { id, tags, type } = column;
 
@@ -47,9 +54,11 @@ export const deserializeFrontmatterForCell = (
 				type: type,
 				dateTime: new Date(dateString).toISOString(),
 			});
+			const includeTime = assignedType === ObsidianPropertyType.DATETIME;
+
 			return {
 				newCell,
-				includeTime: dateString.includes("T"),
+				includeTime,
 			};
 		}
 		case CellType.TAG: {
