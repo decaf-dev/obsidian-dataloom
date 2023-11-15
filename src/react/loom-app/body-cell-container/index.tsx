@@ -264,17 +264,8 @@ export default function BodyCellContainer({
 		onColumnChange(
 			columnId,
 			{ includeTime: value, frontmatterKey },
-			{ shouldSortRows: true, shouldSaveFrontmatter: false } //TODO change?
+			{ shouldSortRows: true }
 		);
-		if (frontmatterKey) {
-			await updateObsidianPropertyType(
-				app,
-				frontmatterKey,
-				value
-					? ObsidianPropertyType.DATETIME
-					: ObsidianPropertyType.DATE
-			);
-		}
 	}
 
 	const handleDateTimeChange = React.useCallback(
