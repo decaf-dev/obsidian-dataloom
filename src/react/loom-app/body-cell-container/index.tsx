@@ -136,6 +136,13 @@ export default function BodyCellContainer({
 		columnType === CellType.TAG ||
 		columnType === CellType.MULTI_TAG ||
 		columnType === CellType.DATE;
+	const isDisabled = source !== null && frontmatterKey === null;
+	const isUneditable =
+		columnType === CellType.CHECKBOX ||
+		columnType === CellType.CREATION_TIME ||
+		columnType === CellType.LAST_EDITED_TIME ||
+		columnType === CellType.SOURCE ||
+		columnType === CellType.SOURCE_FILE;
 
 	const COMPONENT_ID = `body-cell-${cellId}`;
 	const menu = useMenu(COMPONENT_ID);
@@ -180,13 +187,13 @@ export default function BodyCellContainer({
 	}
 
 	function handleMenuTriggerEnterDown() {
+		if (isDisabled) return;
 		if (columnType === CellType.CHECKBOX) toggleCheckbox();
 	}
 
 	function handleMenuTriggerClick() {
-		if (columnType === CellType.CHECKBOX) {
-			toggleCheckbox();
-		}
+		if (isDisabled) return;
+		if (columnType === CellType.CHECKBOX) toggleCheckbox();
 	}
 
 	function handleExternalLinkToggle(value: boolean) {
@@ -300,35 +307,32 @@ export default function BodyCellContainer({
 	const overflowClass = useOverflow(shouldWrapOverflow, {
 		ellipsis: columnType === CellType.DATE,
 	});
+
 	className += " " + overflowClass;
 
-	if (
-		columnType === CellType.LAST_EDITED_TIME ||
-		columnType === CellType.CREATION_TIME ||
-		columnType === CellType.SOURCE ||
-		columnType === CellType.SOURCE_FILE ||
-		(source && frontmatterKey === null)
-	) {
-		className += " dataloom-cell--body__container--default-cursor";
+	if (isUneditable) {
+		className += " dataloom-cell--uneditable";
+	} else if (isDisabled) {
+		className += " dataloom-cell--disabled";
 	}
 
 	const cellTags = columnTags.filter((tag) => cellTagIds.includes(tag.id));
 
 	let shouldRunTrigger = true;
-	if (
-		columnType === CellType.CHECKBOX ||
-		columnType === CellType.CREATION_TIME ||
-		columnType === CellType.LAST_EDITED_TIME ||
-		columnType === CellType.SOURCE ||
-		columnType === CellType.SOURCE_FILE ||
-		(source && frontmatterKey === null)
-	) {
+	if (isUneditable || isDisabled) {
 		shouldRunTrigger = false;
+	}
+
+	let ariaLabel = "";
+	if (isDisabled) {
+		ariaLabel =
+			"This cell is disabled until you choose a frontmatter key for this column";
 	}
 
 	return (
 		<>
 			<MenuTrigger
+				ariaLabel={ariaLabel}
 				ref={menu.triggerRef}
 				variant="cell"
 				menuId={menu.id}

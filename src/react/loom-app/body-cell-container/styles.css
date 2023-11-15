@@ -8,6 +8,11 @@
     color: var(--text-normal); /* Stop dimming of text when mouse leaves embedded loom */
 }
 
-.dataloom-cell--body__container--default-cursor {
-    cursor: default;
+.dataloom-cell--uneditable {
+	cursor: default;
+}
+
+.dataloom-cell--disabled {
+	cursor: default;
+	background-color: var(--background-secondary);
 }

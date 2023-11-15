@@ -11,6 +11,7 @@ import { useMenuOperations } from "../menu-provider/hooks";
 import { LoomMenuLevel } from "../menu-provider/types";
 
 interface Props {
+	ariaLabel?: string;
 	menuId: string;
 	level: LoomMenuLevel;
 	shouldRunTrigger?: boolean;
@@ -27,6 +28,7 @@ interface Props {
 const MenuTrigger = React.forwardRef<HTMLDivElement, Props>(
 	(
 		{
+			ariaLabel,
 			menuId,
 			level,
 			variant,
@@ -109,6 +111,7 @@ const MenuTrigger = React.forwardRef<HTMLDivElement, Props>(
 		}
 		return (
 			<div
+				aria-label={ariaLabel}
 				data-menu-id={menuId}
 				tabIndex={0}
 				className={className}
