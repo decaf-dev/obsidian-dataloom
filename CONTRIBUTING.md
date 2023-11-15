@@ -18,7 +18,7 @@ Start by cloning the repository
 git clone https://github.com/trey-wallis/obsidian-dataloom.git
 ```
 
-We use Bun.sh for dependency management instead of npm. Please make sure that you have installed Bun.
+We use [Bun](https://bun.sh/) for dependency management instead of npm. Please make sure that you have installed Bun.
 
 ```shell
 curl -fsSL https://bun.sh/install | bash
