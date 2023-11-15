@@ -11,7 +11,7 @@ export default class FrontmatterCache {
 	>();
 
 	loadProperties(app: App) {
-		// console.log("Loading frontmatter properties...");
+		console.log("Loading frontmatter properties...");
 		this.cache.clear();
 
 		const properties = getAllObsidianProperties(app);
@@ -38,7 +38,11 @@ export default class FrontmatterCache {
 		return this.cache.get(name);
 	}
 
-	setPropertyType(name: string, type: ObsidianPropertyType) {
+	setPropertyType(name: string, type: ObsidianPropertyType | null) {
+		if (type === null) {
+			this.cache.delete(name);
+			return;
+		}
 		this.cache.set(name, type);
 	}
 
