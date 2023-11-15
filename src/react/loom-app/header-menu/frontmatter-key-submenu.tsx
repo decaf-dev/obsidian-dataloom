@@ -2,6 +2,7 @@ import Submenu from "../../shared/submenu";
 import Stack from "src/react/shared/stack";
 import Padding from "src/react/shared/padding";
 import MenuItem from "src/react/shared/menu-item";
+import Divider from "src/react/shared/divider";
 
 interface Props {
 	title: string;
@@ -23,19 +24,11 @@ export default function FrontmatterKeySubmenu({
 }: Props) {
 	return (
 		<Submenu title={title} onBackClick={onBackClick}>
-			<Padding py="md">
+			<Padding pt="md">
 				<Stack spacing="sm">
 					{frontmatterKeys.map((key) => {
 						const { value, isSelectable } = key;
 						const isSelected = selectedKey === value;
-
-						function handleClick() {
-							if (isSelected) {
-								onFrontmatterKeyChange(null);
-								return;
-							}
-							onFrontmatterKeyChange(value);
-						}
 
 						return (
 							<MenuItem
@@ -43,10 +36,15 @@ export default function FrontmatterKeySubmenu({
 								isDisabled={!isSelectable}
 								isSelected={isSelected}
 								name={value}
-								onClick={handleClick}
+								onClick={() => onFrontmatterKeyChange(value)}
 							/>
 						);
 					})}
+					<Divider />
+					<MenuItem
+						name="Clear"
+						onClick={() => onFrontmatterKeyChange(null)}
+					/>
 				</Stack>
 			</Padding>
 		</Submenu>
