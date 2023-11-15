@@ -17,7 +17,7 @@ export default class TagUpdateCommand extends LoomStateCommand {
 		data: Partial<Tag>,
 		isPartial = true
 	) {
-		super();
+		super(false);
 		this.columnId = columnId;
 		this.tagId = tagId;
 		this.data = data;

@@ -2,6 +2,7 @@ import LoomStateCommand from "./loom-state-command";
 import { Cell, LoomState, Row } from "../types/loom-state";
 import RowNotFoundError from "src/shared/error/row-not-found-error";
 import { cloneDeep } from "lodash";
+import { getCurrentDateTime } from "src/shared/date/utils";
 
 export default class CellBodyUpdateCommand extends LoomStateCommand {
 	private id: string;
@@ -13,8 +14,8 @@ export default class CellBodyUpdateCommand extends LoomStateCommand {
 	private prevCell: Cell;
 	private nextCell: Cell;
 
-	private previousEditedTime: number;
-	private nextLastEditedTime: number;
+	private previousEditedDateTime: string;
+	private nextLastEditedDateTime: string;
 
 	constructor(id: string, data: Partial<Cell>, isPartial = true) {
 		super(true);
@@ -33,7 +34,7 @@ export default class CellBodyUpdateCommand extends LoomStateCommand {
 		);
 		if (!row) throw new RowNotFoundError();
 		this.rowId = row.id;
-		this.previousEditedTime = row.lastEditedTime;
+		this.previousEditedDateTime = row.lastEditedDateTime;
 
 		const nextRows: Row[] = rows.map((row) => {
 			const { cells } = row;
@@ -51,11 +52,11 @@ export default class CellBodyUpdateCommand extends LoomStateCommand {
 			});
 
 			if (row.id === this.rowId) {
-				const newLastEditedTime = Date.now();
-				this.nextLastEditedTime = newLastEditedTime;
+				const newLastEditedDateTime = getCurrentDateTime();
+				this.nextLastEditedDateTime = newLastEditedDateTime;
 				return {
 					...row,
-					lastEditedTime: newLastEditedTime,
+					lastEditedDateTime: newLastEditedDateTime,
 					cells: nextCells,
 				};
 			}
@@ -87,7 +88,7 @@ export default class CellBodyUpdateCommand extends LoomStateCommand {
 			if (row.id === this.rowId) {
 				return {
 					...row,
-					lastEditedTime: this.previousEditedTime,
+					lastEditedDateTime: this.previousEditedDateTime,
 					cells: nextCells,
 				};
 			}
@@ -119,7 +120,7 @@ export default class CellBodyUpdateCommand extends LoomStateCommand {
 			if (row.id === this.rowId) {
 				return {
 					...row,
-					lastEditedTime: this.nextLastEditedTime,
+					lastEditedDateTime: this.nextLastEditedDateTime,
 					cells: nextCells,
 				};
 			}

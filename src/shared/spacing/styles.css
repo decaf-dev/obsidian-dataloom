@@ -1,7 +1,7 @@
 .dataloom-overflow--wrap {
     overflow: hidden;
     overflow-wrap: break-word;
-    white-space: normal;
+    white-space: normal !important;
 }
 
 .dataloom-overflow--hide {

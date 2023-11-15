@@ -44,12 +44,17 @@ export const useMenu = (
 
 	function handleOpen(
 		level: LoomMenuLevel,
-		options?: { shouldRequestOnClose?: boolean }
+		options?: {
+			shouldRequestOnClose?: boolean;
+			shouldFocusTriggerOnClose?: boolean;
+		}
 	) {
-		const { shouldRequestOnClose } = options || {};
+		const { shouldRequestOnClose, shouldFocusTriggerOnClose } =
+			options || {};
 		onOpen(parentComponentId, level, triggerRef, {
 			name,
 			shouldRequestOnClose,
+			shouldFocusTriggerOnClose,
 		});
 	}
 

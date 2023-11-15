@@ -23,6 +23,7 @@ import {
 	DateFilterCondition,
 	DateFilterOption,
 	SourceType,
+	DateFormatSeparator,
 } from "./types/loom-state";
 
 const FilterOperatorUnion = Union(Literal("and"), Literal("or"));
@@ -148,9 +149,13 @@ const CellTypeUnion = Union(
 const DateFormatUnion = Union(
 	Literal(DateFormat.MM_DD_YYYY),
 	Literal(DateFormat.DD_MM_YYYY),
-	Literal(DateFormat.YYYY_MM_DD),
-	Literal(DateFormat.FULL),
-	Literal(DateFormat.RELATIVE)
+	Literal(DateFormat.YYYY_MM_DD)
+);
+
+const DateFormatSeparatorUnion = Union(
+	Literal(DateFormatSeparator.HYPHEN),
+	Literal(DateFormatSeparator.SLASH),
+	Literal(DateFormatSeparator.DOT)
 );
 
 const NumberFormatUnion = Union(
@@ -267,7 +272,7 @@ const DateFilter = BaseFilter.extend({
 	type: Literal(CellType.DATE),
 	condition: DateFilterConditionUnion,
 	option: DateFilterOptionUnion,
-	dateTime: Union(Number, Literal(null)),
+	dateTime: Union(String, Literal(null)),
 });
 
 const CreationTimeConditionUnion = Union(
@@ -280,7 +285,7 @@ const CreationTimeFilter = BaseFilter.extend({
 	type: Literal(CellType.CREATION_TIME),
 	condition: CreationTimeConditionUnion,
 	option: DateFilterOptionUnion,
-	dateTime: Union(Number, Literal(null)),
+	dateTime: Union(String, Literal(null)),
 });
 
 const LastEditedTimeConditionUnion = Union(
@@ -293,7 +298,7 @@ const LastEditedTimeFilter = BaseFilter.extend({
 	type: Literal(CellType.LAST_EDITED_TIME),
 	condition: LastEditedTimeConditionUnion,
 	option: DateFilterOptionUnion,
-	dateTime: Union(Number, Literal(null)),
+	dateTime: Union(String, Literal(null)),
 });
 
 const Filter = Union(
@@ -323,6 +328,9 @@ const Column = Record({
 	type: CellTypeUnion,
 	isVisible: Boolean,
 	dateFormat: DateFormatUnion,
+	dateFormatSeparator: DateFormatSeparatorUnion,
+	hour12: Boolean,
+	includeTime: Boolean,
 	content: String,
 	numberFormat: NumberFormatUnion,
 	currencyType: CurrencyUnion,
@@ -341,7 +349,7 @@ const Cell = Record({
 	id: String,
 	columnId: String,
 	isExternalLink: Boolean,
-	dateTime: Union(Number, Literal(null)),
+	dateTime: Union(String, Literal(null)),
 	content: String,
 	tagIds: Array(String),
 });
@@ -349,8 +357,8 @@ const Cell = Record({
 const Row = Record({
 	id: String,
 	index: Number,
-	creationTime: Number,
-	lastEditedTime: Number,
+	creationDateTime: String,
+	lastEditedDateTime: String,
 	cells: Array(Cell),
 });
 

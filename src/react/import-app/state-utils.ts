@@ -8,17 +8,23 @@ import {
 	Cell,
 	CellType,
 	Column,
+	DateFormat,
+	DateFormatSeparator,
 	LoomState,
 	Row,
 	Tag,
 } from "src/shared/loom-state/types/loom-state";
 import { ColumnMatch, ImportData } from "./types";
 import { NEW_COLUMN_ID } from "./constants";
+import { dateStringToDateTime } from "src/shared/date/date-string-conversion";
+import { isValidDateString } from "src/shared/date/date-validation";
 
 export const addImportData = (
 	prevState: LoomState,
 	data: ImportData,
-	columnMatches: ColumnMatch[]
+	columnMatches: ColumnMatch[],
+	dateFormat: DateFormat | null,
+	dateFormatSeparator: DateFormatSeparator | null
 ): LoomState => {
 	const { rows, columns } = prevState.model;
 
@@ -92,7 +98,12 @@ export const addImportData = (
 						newCell = cell;
 						columnTags.push(...newTags);
 					} else if (type === CellType.DATE) {
-						const cell = createDateCell(columnId, content);
+						const cell = createDateCell(
+							columnId,
+							content,
+							dateFormat,
+							dateFormatSeparator
+						);
 						newCell = cell;
 					}
 				}
@@ -190,32 +201,24 @@ const createTagCell = (
 	};
 };
 
-const createDateCell = (columnId: string, content: string) => {
-	const dateTime = getDateTimeFromContent(content);
+const createDateCell = (
+	columnId: string,
+	content: string,
+	dateFormat: DateFormat | null,
+	dateFormatSeparator: DateFormatSeparator | null
+) => {
+	let dateTime = null;
+	if (dateFormat && dateFormatSeparator) {
+		if (isValidDateString(content, dateFormat, dateFormatSeparator)) {
+			dateTime = dateStringToDateTime(
+				content,
+				dateFormat,
+				dateFormatSeparator
+			);
+		}
+	}
 	const cell = createCell(columnId, {
 		dateTime,
 	});
 	return cell;
-};
-
-const getDateTimeFromContent = (content: string): number | null => {
-	const shouldParseAsNumber = isNumber(content);
-	if (shouldParseAsNumber) return Number(content);
-	if (!isDateParsable(content)) return null;
-
-	const date = new Date(content);
-	return date.getTime();
-};
-
-const isNumber = (value: string) => {
-	return !isNaN(Number(value));
-};
-
-const isDateParsable = (value: string) => {
-	try {
-		const date = new Date(value);
-		return !isNaN(date.getTime());
-	} catch (e) {
-		return false;
-	}
 };

@@ -7,10 +7,14 @@ import Stepper from "../shared/stepper";
 import DataSourceSelect from "./data-source-select";
 import UploadData from "./upload-data";
 
-import { LoomState } from "src/shared/loom-state/types/loom-state";
+import {
+	CellType,
+	DateFormat,
+	DateFormatSeparator,
+	LoomState,
+} from "src/shared/loom-state/types/loom-state";
 import { Step } from "../shared/stepper/types";
 import {
-	ImportColumn,
 	DataSource,
 	DataType,
 	StepType,
@@ -25,10 +29,11 @@ import {
 	tableTokensToArr,
 	validateMarkdownTable,
 } from "./table-utils";
-
 import "./styles.css";
+
 import { addImportData } from "./state-utils";
 import { useMenuOperations } from "../shared/menu-provider/hooks";
+import FinalizeImport from "./finalize-import";
 
 interface Props {
 	state: LoomState;
@@ -55,18 +60,14 @@ export default function ImportApp({ state, onStateChange }: Props) {
 	const [enabledColumnIndices, setEnabledColumnIndices] = React.useState<
 		number[]
 	>([]);
-	const [toggleColumns, setToggleColumns] = React.useState(false);
-	const [columnMatches, setColumnMatches] = React.useState<ColumnMatch[]>([]);
 
-	function handleColumnToggle(index: number) {
-		setEnabledColumnIndices((prevState) => {
-			if (prevState.includes(index)) {
-				return prevState.filter((i) => i !== index);
-			} else {
-				return [...prevState, index];
-			}
-		});
-	}
+	//Step 5
+	const [dateFormat, setDateFormat] = React.useState<DateFormat | null>(null);
+	const [dateFormatSeparator, setDateFormatSeparator] =
+		React.useState<DateFormatSeparator | null>(null);
+	const [includeTime, setIncludeTime] = React.useState(false);
+
+	const [columnMatches, setColumnMatches] = React.useState<ColumnMatch[]>([]);
 
 	function handleDataTypeChange(value: DataType) {
 		setDataType(value);
@@ -80,22 +81,19 @@ export default function ImportApp({ state, onStateChange }: Props) {
 
 	function handleRawDataChange(rawData: string, fileName?: string) {
 		setRawData(rawData);
-		if (fileName !== undefined) {
-			setFileName(fileName);
-		}
+		if (fileName !== undefined) setFileName(fileName);
 	}
 
 	function handleHeadersRowToggle() {
 		setHeadersRow((prevState) => !prevState);
 	}
 
-	function handleAllColumnsToggle() {
-		if (toggleColumns) {
+	function handleAllColumnsEnabledToggle(value: boolean) {
+		if (value) {
 			setEnabledColumnIndices(data[0].map((_, i) => i));
 		} else {
 			setEnabledColumnIndices([]);
 		}
-		setToggleColumns((prevState) => !prevState);
 	}
 
 	function handleColumnMatch(index: number, columnId: string | null) {
@@ -106,6 +104,25 @@ export default function ImportApp({ state, onStateChange }: Props) {
 			if (columnId === null) return filtered;
 			const match = { importColumnIndex: index, columnId };
 			return [...filtered, match];
+		});
+	}
+
+	function handleAllColumnsMatch(columnId: string | null) {
+		setColumnMatches(() => {
+			if (columnId === null) return [];
+			return data[0].map((_, i) => ({
+				importColumnIndex: i,
+				columnId,
+			}));
+		});
+	}
+
+	function handleColumnEnabledToggle(index: number) {
+		setEnabledColumnIndices((prevState) => {
+			if (prevState.includes(index)) {
+				return prevState.filter((i) => i !== index);
+			}
+			return [...prevState, index];
 		});
 	}
 
@@ -125,21 +142,18 @@ export default function ImportApp({ state, onStateChange }: Props) {
 		}
 		if (currentType !== StepType.MATCH_COLUMNS) {
 			setEnabledColumnIndices([]);
-			setToggleColumns(false);
 			setColumnMatches([]);
 		}
 	}
 
-	const columns: ImportColumn[] = [
-		...state.model.columns.map((column) => {
-			const { id, type, content } = column;
-			return {
-				id,
-				name: content,
-				type,
-			};
-		}),
-	];
+	const { columns } = state.model;
+
+	const hasDateColumnMatch = columnMatches.some((match) => {
+		const { columnId } = match;
+		const column = columns.find((column) => column.id === columnId);
+		if (!column) return false;
+		return column.type === CellType.DATE;
+	});
 
 	const steps: Step[] = [
 		{
@@ -179,9 +193,14 @@ export default function ImportApp({ state, onStateChange }: Props) {
 			canContinue: rawData !== "",
 			onContinue: () => {
 				let parsedArr: string[][] = [];
-				//TODO clean up into separate functions
+
 				if (dataType === DataType.CSV) {
-					const { data, errors } = Papa.parse(rawData);
+					//Trim trailing whitespace
+					//There is a bug in Papa.parse where it will parse an empty string as a single empty row
+					const rawDataTrimmed = rawData.trim();
+					const { data, errors } = Papa.parse(rawDataTrimmed, {
+						skipEmptyLines: true,
+					});
 					parsedArr = data as string[][];
 					if (errors.length > 0) {
 						setErrorText(errors[0].message);
@@ -216,17 +235,44 @@ export default function ImportApp({ state, onStateChange }: Props) {
 					columnMatches={columnMatches}
 					columns={columns}
 					enabledColumnIndices={enabledColumnIndices}
-					onColumnToggle={handleColumnToggle}
-					onAllColumnsToggle={handleAllColumnsToggle}
+					onColumnEnabledToggle={handleColumnEnabledToggle}
+					onAllColumnsEnabledToggle={handleAllColumnsEnabledToggle}
+					onAllColumnsMatch={handleAllColumnsMatch}
 					onColumnMatch={handleColumnMatch}
 				/>
 			),
-			canContinue: () =>
-				enabledColumnIndices.every((index) =>
-					columnMatches.some(
-						(match) => match.importColumnIndex === index
-					)
-				),
+			canContinue: () => {
+				if (enabledColumnIndices.length === 0) return false;
+				const everyColumnMatched = enabledColumnIndices.every(
+					(index) =>
+						columnMatches.find(
+							(match) => match.importColumnIndex === index
+						) ?? false
+				);
+				return everyColumnMatched;
+			},
+		},
+		{
+			title: "Finalize import",
+			content: (
+				<FinalizeImport
+					hasDateColumnMatch={hasDateColumnMatch}
+					dateFormat={dateFormat}
+					dateFormatSeparator={dateFormatSeparator}
+					includeTime={includeTime}
+					onDateFormatSeparatorChange={setDateFormatSeparator}
+					onDateFormatChange={setDateFormat}
+					onIncludeTimeToggle={setIncludeTime}
+				/>
+			),
+			canContinue: () => {
+				if (hasDateColumnMatch) {
+					if (dateFormat === null || dateFormatSeparator === null) {
+						return false;
+					}
+				}
+				return true;
+			},
 		},
 	];
 
@@ -236,7 +282,13 @@ export default function ImportApp({ state, onStateChange }: Props) {
 	}
 
 	function handleFinishClick() {
-		const newState = addImportData(state, data, columnMatches);
+		const newState = addImportData(
+			state,
+			data,
+			columnMatches,
+			dateFormat,
+			dateFormatSeparator
+		);
 		onStateChange(newState);
 	}
 

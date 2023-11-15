@@ -13,7 +13,7 @@ export default class FilterUpdateCommand<
 	private nextFilter: Filter;
 
 	constructor(id: string, data: Partial<T>, isPartial = true) {
-		super();
+		super(false);
 		this.id = id;
 		this.data = data;
 		this.isPartial = isPartial;

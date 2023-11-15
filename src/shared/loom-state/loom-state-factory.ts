@@ -42,14 +42,15 @@ import {
 	SourceType,
 	Filter,
 	SourceFileFilter,
-	FrontmatterKey,
 	ObsidianFolderSource,
 	ExternalRowOrder,
+	DateFormatSeparator,
 } from "./types/loom-state";
 
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/constants";
 import { Color } from "src/shared/loom-state/types/loom-state";
 import { generateUuid } from "../uuid";
+import { getCurrentDateTime } from "../date/utils";
 
 export const createFolderSource = (
 	path: string,
@@ -86,12 +87,14 @@ export const createExternalRowOrder = (
 export const createColumn = (options?: {
 	type?: CellType;
 	content?: string;
-	frontmatterKey?: FrontmatterKey | null;
+	frontmatterKey?: string | null;
 	tags?: Tag[];
+	includeTime?: boolean;
 }): Column => {
 	const {
 		type = CellType.TEXT,
 		content = "New Column",
+		includeTime = false,
 		frontmatterKey = null,
 		tags = [],
 	} = options || {};
@@ -108,6 +111,9 @@ export const createColumn = (options?: {
 		numberFormat: NumberFormat.NUMBER,
 		currencyType: CurrencyType.UNITED_STATES,
 		dateFormat: DateFormat.MM_DD_YYYY,
+		dateFormatSeparator: DateFormatSeparator.HYPHEN,
+		hour12: true,
+		includeTime,
 		shouldWrapOverflow: true,
 		tags,
 		calculationType: GeneralCalculation.NONE,
@@ -123,24 +129,24 @@ export const createRow = (
 	options?: {
 		cells?: Cell[];
 		sourceId?: string;
-		creationTime?: number;
-		lastEditedTime?: number;
+		creationDateTime?: string;
+		lastEditedDateTime?: string;
 	}
 ): Row => {
-	const currentTime = Date.now();
+	const currentDateTime = getCurrentDateTime();
 	const {
 		cells = [],
 		sourceId = null,
-		creationTime = currentTime,
-		lastEditedTime = currentTime,
+		creationDateTime = currentDateTime,
+		lastEditedDateTime = currentDateTime,
 	} = options || {};
 
 	return {
 		id: generateUuid(),
 		index,
 		sourceId,
-		creationTime,
-		lastEditedTime,
+		creationDateTime,
+		lastEditedDateTime,
 		cells,
 	};
 };
@@ -151,7 +157,7 @@ export const createCell = (
 		type?: CellType;
 		tagIds?: string[];
 		content?: string;
-		dateTime?: number | null;
+		dateTime?: string | null;
 	} = {}
 ): Cell => {
 	const {
@@ -376,7 +382,7 @@ export const createDateFilter = (
 	options?: {
 		condition?: DateCondition;
 		isEnabled?: boolean;
-		dateTime?: number | null;
+		dateTime?: string | null;
 		option?: DateFilterOption;
 	}
 ): DateFilter => {
@@ -404,7 +410,7 @@ export const createCreationTimeFilter = (
 		condition?: CreationTimeCondition;
 		isEnabled?: boolean;
 		option?: DateFilterOption;
-		dateTime?: number | null;
+		dateTime?: string | null;
 	}
 ): CreationTimeFilter => {
 	const {
@@ -431,7 +437,7 @@ export const createLastEditedTimeFilter = (
 		condition?: LastEditedTimeCondition;
 		isEnabled?: boolean;
 		option?: DateFilterOption;
-		dateTime?: number | null;
+		dateTime?: string | null;
 	}
 ): LastEditedTimeFilter => {
 	const {
@@ -487,7 +493,7 @@ export const createRowWithCells = (
 		contentForCells?: {
 			type: CellType;
 			content?: string;
-			dateTime?: number;
+			dateTime?: string;
 			tagIds?: string[];
 		}[];
 	}
@@ -499,7 +505,7 @@ export const createRowWithCells = (
 
 		let tagIds: string[] = [];
 		let content = "";
-		let dateTime: number | null = null;
+		let dateTime: string | null = null;
 		const cellContent = contentForCells.find((cell) => cell.type === type);
 		if (cellContent) {
 			const {

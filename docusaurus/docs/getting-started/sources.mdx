@@ -38,17 +38,15 @@ Cell types can only accept properties of a certain type. For example, a text cel
 
 When you choose a frontmatter key for a text cell column, only keys that are a text property will be displayed in the dropdown menu.
 
-| Column Type   | Accepted Properties         | Comments                                                                                                             |
-| ------------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `Text`        | `Text`                      |                                                                                                                      |
-| `Embed`       | `Text`                      |                                                                                                                      |
-| `File`        | `Text`                      |                                                                                                                      |
-| `Number`      | `Number`                    |                                                                                                                      |
-| `Tag`         | `Text`                      | Obsidian does not have a single tag property yet                                                                     |
-| `Multi-tag`   | `Tags`, `List`              | Obsidian does not have an additional tags property, so list can be used as an alternative                            |
-| `Date`        | `Number`                    | Loads the date from a [unix timestamp](https://en.wikipedia.org/wiki/Unix_time). Dates strings are not yet supported |
-| `Checkbox`    | `Checkbox`                  |                                                                                                                      |
-| `Creation`    | Uses file creation time     |                                                                                                                      |
-| `Last edited` | Uses file modification time |
-
-Use of `Date` with a date string like `12-12-2023` is not currently supported by DataLoom.
+| Column Type   | Accepted Properties                     | Comments                                                                                  |
+| ------------- | --------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `Text`        | `Text`                                  |                                                                                           |
+| `Embed`       | `Text`                                  |                                                                                           |
+| `File`        | `Text`                                  |                                                                                           |
+| `Number`      | `Number`                                |                                                                                           |
+| `Tag`         | `Text`                                  | Obsidian does not have a single tag property yet                                          |
+| `Multi-tag`   | `tags`, `List`, `aliases`, `cssclasses` | Obsidian does not have an additional tags property, so list can be used as an alternative |
+| `Date`        | `Date`, `Date & time`                   |                                                                                           |
+| `Checkbox`    | `Checkbox`                              |                                                                                           |
+| `Creation`    | Uses file creation time                 |                                                                                           |
+| `Last edited` | Uses file modification time             |

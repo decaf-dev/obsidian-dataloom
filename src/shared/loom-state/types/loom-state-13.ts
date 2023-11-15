@@ -152,7 +152,6 @@ enum NumberFilterCondition {
 	IS_NOT_EMPTY = "is-not-empty",
 }
 
-//TODO add support for more date types
 export enum DateFilterCondition {
 	IS = "is",
 	IS_BEFORE = "is-before",

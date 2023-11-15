@@ -1,14 +1,31 @@
-import { DateFormat } from "../loom-state/types/loom-state";
+import {
+	DateFormat,
+	DateFormatSeparator,
+} from "../loom-state/types/loom-state";
 import { getDateCellContent } from "./date-cell-content";
 
 describe("getDateCellContent", () => {
-	it("should return a date string if the time is a number", () => {
-		const result = getDateCellContent(1704006000000, DateFormat.MM_DD_YYYY);
-		expect(result).toEqual("12/31/2023");
+	// Normal cases
+	it('returns formatted date string with MM_DD_YYYY format and "-" separator', () => {
+		const result = getDateCellContent(
+			"2020-01-01T23:00:00Z",
+			DateFormat.MM_DD_YYYY,
+			DateFormatSeparator.HYPHEN,
+			false,
+			true
+		);
+		expect(result).toEqual("01-01-2020");
 	});
 
-	it("should return an empty string if time is null", () => {
-		const result = getDateCellContent(null, DateFormat.DD_MM_YYYY);
+	// Invalid cases
+	it("returns an empty string when dateTime is null", () => {
+		const result = getDateCellContent(
+			null,
+			DateFormat.MM_DD_YYYY,
+			DateFormatSeparator.HYPHEN,
+			false,
+			true
+		);
 		expect(result).toEqual("");
 	});
 });

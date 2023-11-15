@@ -30,8 +30,6 @@ import {
 	Cell,
 } from "src/shared/loom-state/types/loom-state";
 import CellNotFoundError from "src/shared/error/cell-not-found-error";
-import { FrontMatterType } from "src/shared/deserialize-frontmatter/types";
-import { cellTypeToFrontMatterKeyTypes } from "src/shared/deserialize-frontmatter/utils";
 import { CellChangeHandler } from "../app/hooks/use-cell/types";
 import {
 	TagAddHandler,
@@ -43,11 +41,12 @@ import {
 } from "../app/hooks/use-tag/types";
 
 import "./styles.css";
+import { getAcceptedFrontmatterTypes } from "src/shared/frontmatter/utils";
+import FrontmatterCache from "src/shared/frontmatter/frontmatter-cache";
 
 interface Props {
 	showCalculationRow: boolean;
 	numFrozenColumns: number;
-	frontmatterKeys: Map<FrontMatterType, string[]>;
 	columns: Column[];
 	resizingColumnId: string | null;
 	sources: Source[];
@@ -75,7 +74,6 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 	{
 		sources,
 		rows,
-		frontmatterKeys,
 		columns,
 		numFrozenColumns,
 		resizingColumnId,
@@ -160,25 +158,34 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 							} else {
 								const { id, type } = column;
 								const frontmatterTypes =
-									cellTypeToFrontMatterKeyTypes(type);
+									getAcceptedFrontmatterTypes(type);
 
-								let columnKeys: string[] = [];
-								frontmatterTypes.forEach((type) => {
-									columnKeys = columnKeys.concat(
-										frontmatterKeys.get(type) ?? []
-									);
+								let frontmatterKeys: string[] = [];
+								frontmatterTypes.forEach((frontmatterType) => {
+									frontmatterKeys = [
+										...frontmatterKeys,
+										...FrontmatterCache.getInstance().getPropertyNames(
+											frontmatterType
+										),
+									];
 								});
 
-								// Remove any frontmatter keys that are already in use
-								columnKeys = columnKeys.filter((key) => {
+								const isKeySelectable = (key: string) => {
 									const columnWithKey = columns.find(
 										(column) =>
-											column.frontmatterKey?.value === key
+											column.frontmatterKey === key
 									);
 									if (!columnWithKey) return true;
 									if (columnWithKey.id === id) return true;
 									return false;
-								});
+								};
+
+								const columnKeys = frontmatterKeys.map(
+									(key) => ({
+										value: key,
+										isSelectable: isKeySelectable(key),
+									})
+								);
 
 								key = id;
 								content = (
@@ -239,6 +246,7 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 									type,
 									currencyType,
 									dateFormat,
+									dateFormatSeparator,
 									numberFormat,
 									width,
 									tags,
@@ -265,6 +273,9 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 										columnId={columnId}
 										columnTags={tags}
 										numberFormat={numberFormat}
+										dateFormatSeparator={
+											dateFormatSeparator
+										}
 										currencyType={currencyType}
 										dateFormat={dateFormat}
 										columnCells={columnCells}
@@ -293,8 +304,8 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 				const row = rows[index];
 				const {
 					id: rowId,
-					lastEditedTime,
-					creationTime,
+					lastEditedDateTime,
+					creationDateTime,
 					sourceId,
 				} = row;
 				const source =
@@ -328,11 +339,14 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 							type,
 							shouldWrapOverflow,
 							currencyType,
+							includeTime,
+							dateFormatSeparator,
 							numberPrefix,
 							numberSeparator,
 							numberFormat,
 							numberSuffix,
 							dateFormat,
+							hour12,
 							tags,
 							verticalPadding,
 							horizontalPadding,
@@ -370,20 +384,23 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 								frontmatterKey={frontmatterKey}
 								isExternalLink={isExternalLink}
 								verticalPadding={verticalPadding}
+								includeTime={includeTime}
+								dateFormatSeparator={dateFormatSeparator}
 								horizontalPadding={horizontalPadding}
 								aspectRatio={aspectRatio}
 								columnTags={tags}
 								cellTagIds={tagIds}
 								columnId={columnId}
 								source={source}
+								hour12={hour12}
 								numberFormat={numberFormat}
-								rowCreationTime={creationTime}
+								rowCreationTime={creationDateTime}
 								dateFormat={dateFormat}
 								currencyType={currencyType}
 								numberPrefix={numberPrefix}
 								numberSuffix={numberSuffix}
 								numberSeparator={numberSeparator}
-								rowLastEditedTime={lastEditedTime}
+								rowLastEditedTime={lastEditedDateTime}
 								dateTime={dateTime}
 								content={cellContent}
 								columnType={type}

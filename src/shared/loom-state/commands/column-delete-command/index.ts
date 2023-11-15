@@ -13,7 +13,7 @@ export default class ColumnDeleteCommand extends LoomStateCommand {
 	private deletedFilters: DeletedFilter[];
 
 	constructor(options: { id?: string; last?: boolean }) {
-		super();
+		super(false);
 		const { id, last } = options;
 		if (id === undefined && last === undefined)
 			throw new CommandArgumentsError("delete");

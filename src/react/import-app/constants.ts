@@ -1,1 +1,1 @@
-export const NEW_COLUMN_ID = "-1";
+export const NEW_COLUMN_ID = "new-column";

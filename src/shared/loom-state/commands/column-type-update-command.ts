@@ -1,5 +1,4 @@
 import { createTag } from "src/shared/loom-state/loom-state-factory";
-import { unixTimeToDateString } from "../../date/date-conversion";
 import { CHECKBOX_MARKDOWN_UNCHECKED } from "../../constants";
 import ColumnNotFoundError from "src/shared/error/column-not-found-error";
 import LoomStateCommand from "./loom-state-command";
@@ -13,10 +12,10 @@ import {
 	Row,
 	Cell,
 	CalculationType,
-	FrontmatterKey,
 } from "../types/loom-state";
 import { isCheckbox, isNumberCalcuation } from "../../match";
 import { cloneDeep } from "lodash";
+import { dateTimeToDateString } from "src/shared/date/date-time-conversion";
 
 export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 	private id: string;
@@ -37,10 +36,10 @@ export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 	};
 
 	private addedTags: Tag[] = [];
-	private previousFrontmatterKey: FrontmatterKey | null = null;
+	private previousFrontmatterKey: string | null = null;
 
 	constructor(id: string, type: CellType) {
-		super();
+		super(false);
 		this.id = id;
 		this.nextType = type;
 	}
@@ -281,13 +280,15 @@ export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 			const { cells } = row;
 
 			const nextCells: Cell[] = cells.map((cell) => {
-				const { dateTime } = cell;
+				const { dateTime, columnId } = cell;
+				const { dateFormat, dateFormatSeparator, id } = column;
 
-				if (cell.columnId === column.id) {
+				if (columnId === id) {
 					if (dateTime !== null) {
-						const dateString = unixTimeToDateString(
+						const dateString = dateTimeToDateString(
 							dateTime,
-							column.dateFormat
+							dateFormat,
+							dateFormatSeparator
 						);
 						const newCell = {
 							...cell,

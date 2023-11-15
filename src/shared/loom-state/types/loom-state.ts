@@ -1,7 +1,7 @@
-/******* Type definitions for v8.11.0 *******/
+/******* Type definitions for v8.12.0 *******/
 
 /**
- * v8.11.0
+ * v8.12.0
  */
 export interface LoomState {
 	pluginVersion: string;
@@ -35,6 +35,9 @@ export interface Column {
 	type: CellType;
 	isVisible: boolean;
 	dateFormat: DateFormat;
+	dateFormatSeparator: DateFormatSeparator;
+	hour12: boolean;
+	includeTime: boolean;
 	content: string;
 	numberFormat: NumberFormat;
 	currencyType: CurrencyType;
@@ -47,19 +50,14 @@ export interface Column {
 	aspectRatio: AspectRatio;
 	horizontalPadding: PaddingSize;
 	verticalPadding: PaddingSize;
-	frontmatterKey: FrontmatterKey | null;
-}
-
-export interface FrontmatterKey {
-	isCustom: boolean;
-	value: string;
+	frontmatterKey: string | null;
 }
 
 export interface Row {
 	id: string;
 	index: number;
-	creationTime: number;
-	lastEditedTime: number;
+	creationDateTime: string;
+	lastEditedDateTime: string;
 	sourceId: string | null;
 	cells: Cell[];
 }
@@ -68,7 +66,7 @@ export interface Cell {
 	id: string;
 	columnId: string;
 	isExternalLink: boolean;
-	dateTime: number | null;
+	dateTime: string | null;
 	content: string;
 	tagIds: string[];
 }
@@ -148,11 +146,15 @@ export enum CellType {
 }
 
 export enum DateFormat {
-	MM_DD_YYYY = "mm/dd/yyyy",
-	DD_MM_YYYY = "dd/mm/yyyy",
-	YYYY_MM_DD = "yyyy/mm/dd",
-	FULL = "full",
-	RELATIVE = "relative",
+	MM_DD_YYYY = "mmddyyyy",
+	DD_MM_YYYY = "ddmmyyyy",
+	YYYY_MM_DD = "yyyymmdd",
+}
+
+export enum DateFormatSeparator {
+	HYPHEN = "-",
+	SLASH = "/",
+	DOT = ".",
 }
 
 export enum NumberFormat {
@@ -355,7 +357,7 @@ export interface DateFilter extends BaseFilter {
 	type: CellType.DATE;
 	condition: DateCondition;
 	option: DateFilterOption;
-	dateTime: number | null;
+	dateTime: string | null;
 }
 
 /* Creation time filter  */
@@ -368,7 +370,7 @@ export interface CreationTimeFilter extends BaseFilter {
 	type: CellType.CREATION_TIME;
 	condition: CreationTimeCondition;
 	option: DateFilterOption;
-	dateTime: number | null;
+	dateTime: string | null;
 }
 
 /* Last edited filter  */
@@ -381,7 +383,7 @@ export interface LastEditedTimeFilter extends BaseFilter {
 	type: CellType.LAST_EDITED_TIME;
 	condition: LastEditedTimeCondition;
 	option: DateFilterOption;
-	dateTime: number | null;
+	dateTime: string | null;
 }
 
 /* Source File condition */

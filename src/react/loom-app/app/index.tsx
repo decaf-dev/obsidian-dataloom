@@ -31,29 +31,15 @@ import { useSource } from "./hooks/use-source";
 
 import "src/react/global.css";
 import "./styles.css";
-import {
-	EVENT_FILE_CREATE,
-	EVENT_FILE_DELETE,
-	EVENT_FILE_FRONTMATTER_CHANGE,
-	EVENT_FILE_RENAME,
-	EVENT_FOLDER_DELETE,
-	EVENT_FOLDER_RENAME,
-} from "src/shared/events";
 import { useAppEvents } from "./hooks/use-app-events";
 import { useMenuEvents } from "./hooks/use-menu-events";
 
 export default function App() {
 	const logger = useLogger();
-	const { reactAppId, isMarkdownView, app } = useAppMount();
+	const { reactAppId, isMarkdownView } = useAppMount();
 
-	const {
-		loomState,
-		resizingColumnId,
-		searchText,
-		onRedo,
-		onUndo,
-		setLoomState,
-	} = useLoomState();
+	const { loomState, resizingColumnId, searchText, onRedo, onUndo } =
+		useLoomState();
 
 	const tableRef = React.useRef<VirtuosoHandle | null>(null);
 	const appRef = React.useRef<HTMLDivElement | null>(null);
@@ -64,12 +50,7 @@ export default function App() {
 	useMenuEvents();
 	const { onClick } = useAppEvents();
 
-	const {
-		frontmatterKeys,
-		onSourceAdd,
-		onSourceDelete,
-		onUpdateRowsFromSources,
-	} = useSource();
+	const { onSourceAdd, onSourceDelete } = useSource();
 
 	const { onFocusKeyDown } = useFocus();
 	const { onFrozenColumnsChange, onCalculationRowToggle } =
@@ -108,53 +89,6 @@ export default function App() {
 	const { columns, filters, settings, sources } = loomState.model;
 	const { numFrozenColumns, showCalculationRow } = settings;
 
-	const frontmatterKeyHash = React.useMemo(() => {
-		return JSON.stringify(
-			columns.map((column) => column.frontmatterKey?.value)
-		);
-	}, [columns]);
-
-	//Add source rows on mount
-	React.useEffect(() => {
-		onUpdateRowsFromSources();
-	}, [
-		setLoomState,
-		app,
-		sources.length,
-		frontmatterKeyHash,
-		onUpdateRowsFromSources,
-	]);
-
-	React.useEffect(() => {
-		//@ts-expect-error missing overload
-		app.workspace.on(EVENT_FILE_CREATE, onUpdateRowsFromSources);
-		app.workspace.on(
-			//@ts-expect-error missing overload
-			EVENT_FILE_FRONTMATTER_CHANGE,
-			onUpdateRowsFromSources
-		);
-		//@ts-expect-error missing overload
-		app.workspace.on(EVENT_FILE_DELETE, onUpdateRowsFromSources);
-		//@ts-expect-error missing overload
-		app.workspace.on(EVENT_FOLDER_DELETE, onUpdateRowsFromSources);
-		//@ts-expect-error missing overload
-		app.workspace.on(EVENT_FOLDER_RENAME, onUpdateRowsFromSources);
-		//@ts-expect-error missing overload
-		app.workspace.on(EVENT_FILE_RENAME, onUpdateRowsFromSources);
-
-		return () => {
-			app.workspace.off(EVENT_FILE_CREATE, onUpdateRowsFromSources);
-			app.workspace.off(
-				EVENT_FILE_FRONTMATTER_CHANGE,
-				onUpdateRowsFromSources
-			);
-			app.workspace.off(EVENT_FOLDER_RENAME, onUpdateRowsFromSources);
-			app.workspace.off(EVENT_FILE_RENAME, onUpdateRowsFromSources);
-			app.workspace.off(EVENT_FILE_DELETE, onUpdateRowsFromSources);
-			app.workspace.off(EVENT_FOLDER_DELETE, onUpdateRowsFromSources);
-		};
-	}, [onUpdateRowsFromSources, app]);
-
 	function handleScrollToTopClick() {
 		tableRef.current?.scrollToIndex(0);
 	}
@@ -190,10 +124,10 @@ export default function App() {
 
 	let className = "dataloom-app";
 	if (isMarkdownView) className += " dataloom-app--markdown-view";
-
 	return (
 		<div
 			ref={appRef}
+			tabIndex={0}
 			id={reactAppId}
 			className={className}
 			onKeyDown={handleKeyDown}
@@ -216,7 +150,6 @@ export default function App() {
 				ref={tableRef}
 				sources={sources}
 				rows={filteredRows}
-				frontmatterKeys={frontmatterKeys}
 				columns={columns}
 				numFrozenColumns={numFrozenColumns}
 				resizingColumnId={resizingColumnId}

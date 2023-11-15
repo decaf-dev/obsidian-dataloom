@@ -10,8 +10,9 @@ import {
 	SourceType,
 } from "./types/loom-state";
 
-import { deserializeFrontmatterForCell } from "../deserialize-frontmatter";
+import { deserializeFrontmatterForCell } from "../frontmatter";
 import { cloneDeep } from "lodash";
+import { getDateTimeFromUnixTime } from "../date/utils";
 
 export default function findDataFromSources(
 	app: App,
@@ -99,9 +100,10 @@ const findRowsFromFolder = (
 			} else if (frontmatterKey !== null) {
 				const result = deserializeFrontmatterForCell(app, column, path);
 				if (result !== null) {
-					const { newCell: cell, nextTags } = result;
+					const { newCell: cell, nextTags, includeTime } = result;
 					newCell = cell;
-					column.tags = nextTags;
+					if (nextTags) column.tags = nextTags;
+					if (includeTime) column.includeTime = true;
 				}
 			}
 
@@ -112,8 +114,8 @@ const findRowsFromFolder = (
 		const row = createRow(numRows, {
 			cells,
 			sourceId,
-			creationTime: file.stat.ctime,
-			lastEditedTime: file.stat.mtime,
+			creationDateTime: getDateTimeFromUnixTime(file.stat.ctime),
+			lastEditedDateTime: getDateTimeFromUnixTime(file.stat.mtime),
 		});
 		newRows.push(row);
 	});

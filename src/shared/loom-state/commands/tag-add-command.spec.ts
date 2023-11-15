@@ -84,9 +84,15 @@ describe("tag-add-command", () => {
 		expect(executeState.model.rows[0].cells[0].tagIds).not.toContain(
 			tags[1].id
 		);
-		expect(executeState.model.rows[0].lastEditedTime).toBeGreaterThan(
-			prevState.model.rows[0].lastEditedTime
-		);
+
+		const executeLastEditedTime = new Date(
+			executeState.model.rows[0].lastEditedDateTime
+		).getTime();
+		const prevLastEditedTime = new Date(
+			prevState.model.rows[0].lastEditedDateTime
+		).getTime();
+
+		expect(executeLastEditedTime).toBeGreaterThan(prevLastEditedTime);
 	});
 
 	it("should add a multi-tag when execute() is called", () => {
@@ -125,9 +131,14 @@ describe("tag-add-command", () => {
 			tags[1].id
 		);
 
-		expect(executeState.model.rows[0].lastEditedTime).toBeGreaterThan(
-			prevState.model.rows[0].lastEditedTime
-		);
+		const executeLastEditedTime = new Date(
+			executeState.model.rows[0].lastEditedDateTime
+		).getTime();
+		const prevLastEditedTime = new Date(
+			prevState.model.rows[0].lastEditedDateTime
+		).getTime();
+
+		expect(executeLastEditedTime).toBeGreaterThan(prevLastEditedTime);
 	});
 
 	it("should remove the added tag when undo() is called", () => {

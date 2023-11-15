@@ -28,7 +28,7 @@ import {
 	CellType,
 	CurrencyType,
 	DateFormat,
-	FrontmatterKey,
+	DateFormatSeparator,
 	NumberFormat,
 	PaddingSize,
 	Source,
@@ -54,11 +54,14 @@ interface Props {
 	isExternalLink: boolean;
 	columnType: string;
 	cellId: string;
-	dateTime: number | null;
-	frontmatterKey: FrontmatterKey | null;
+	includeTime: boolean;
+	dateTime: string | null;
+	frontmatterKey: string | null;
 	dateFormat: DateFormat;
 	numberPrefix: string;
+	hour12: boolean;
 	numberSuffix: string;
+	dateFormatSeparator: DateFormatSeparator;
 	numberSeparator: string;
 	numberFormat: NumberFormat;
 	currencyType: CurrencyType;
@@ -67,8 +70,8 @@ interface Props {
 	aspectRatio: AspectRatio;
 	verticalPadding: PaddingSize;
 	horizontalPadding: PaddingSize;
-	rowCreationTime: number;
-	rowLastEditedTime: number;
+	rowCreationTime: string;
+	rowLastEditedTime: string;
 	width: string;
 	columnTags: Tag[];
 	cellTagIds: string[];
@@ -94,8 +97,10 @@ export default function BodyCellContainer({
 	columnId,
 	isExternalLink,
 	source,
+	includeTime,
 	content,
 	aspectRatio,
+	dateFormatSeparator,
 	numberFormat,
 	verticalPadding,
 	frontmatterKey,
@@ -103,6 +108,7 @@ export default function BodyCellContainer({
 	horizontalPadding,
 	dateFormat,
 	dateTime,
+	hour12,
 	numberPrefix,
 	numberSuffix,
 	numberSeparator,
@@ -237,8 +243,28 @@ export default function BodyCellContainer({
 		);
 	}
 
+	function handleDateFormatSeparatorChange(value: DateFormatSeparator) {
+		onColumnChange(
+			columnId,
+			{ dateFormatSeparator: value },
+			{ shouldSortRows: true }
+		);
+	}
+
+	function handleTimeFormatChange(value: boolean) {
+		onColumnChange(columnId, { hour12: value }, { shouldSortRows: true });
+	}
+
+	async function handleIncludeTimeToggle(value: boolean) {
+		onColumnChange(
+			columnId,
+			{ includeTime: value, frontmatterKey },
+			{ shouldSortRows: true }
+		);
+	}
+
 	const handleDateTimeChange = React.useCallback(
-		(value: number | null) => {
+		(value: string | null) => {
 			onCellChange(cellId, { dateTime: value });
 		},
 		[cellId, onCellChange]
@@ -254,7 +280,7 @@ export default function BodyCellContainer({
 	} else if (columnType === CellType.FILE) {
 		menuWidth = 275;
 	} else if (columnType === CellType.DATE) {
-		menuWidth = 175;
+		menuWidth = 235;
 	}
 
 	let menuHeight = menu.position.height;
@@ -364,7 +390,13 @@ export default function BodyCellContainer({
 							<MultiTagCell cellTags={cellTags} />
 						)}
 					{columnType === CellType.DATE && (
-						<DateCell value={dateTime} format={dateFormat} />
+						<DateCell
+							value={dateTime}
+							format={dateFormat}
+							formatSeparator={dateFormatSeparator}
+							includeTime={includeTime}
+							hour12={hour12}
+						/>
 					)}
 					{columnType === CellType.CHECKBOX && (
 						<CheckboxCell value={content} />
@@ -373,12 +405,16 @@ export default function BodyCellContainer({
 						<CreationTimeCell
 							value={rowCreationTime}
 							format={dateFormat}
+							formatSeparator={dateFormatSeparator}
+							hour12={hour12}
 						/>
 					)}
 					{columnType === CellType.LAST_EDITED_TIME && (
 						<LastEditedTimeCell
 							value={rowLastEditedTime}
 							format={dateFormat}
+							formatSeparator={dateFormatSeparator}
+							hour12={hour12}
 						/>
 					)}
 					{columnType === CellType.SOURCE && (
@@ -451,12 +487,20 @@ export default function BodyCellContainer({
 					<DateCellEdit
 						cellId={cellId}
 						value={dateTime}
+						includeTime={includeTime}
 						closeRequest={menu.closeRequest}
 						dateFormat={dateFormat}
+						hour12={hour12}
+						dateFormatSeparator={dateFormatSeparator}
 						onDateTimeChange={handleDateTimeChange}
 						onDateFormatChange={handleDateFormatChange}
 						onClose={menu.onClose}
 						onCloseRequestClear={menu.onCloseRequestClear}
+						onIncludeTimeToggle={handleIncludeTimeToggle}
+						onDateFormatSeparatorChange={
+							handleDateFormatSeparatorChange
+						}
+						onTimeFormatChange={handleTimeFormatChange}
 					/>
 				)}
 			</Menu>

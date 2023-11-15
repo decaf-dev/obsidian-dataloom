@@ -5,12 +5,16 @@ import LoomStateCommand from "src/shared/loom-state/commands/loom-state-command"
 import { useLogger } from "src/shared/logger";
 import RowSortCommand from "src/shared/loom-state/commands/row-sort-command";
 import { useAppMount } from "src/react/loom-app/app-mount-provider";
-import { EVENT_APP_REFRESH } from "src/shared/events";
+import EventManager from "src/shared/event/event-manager";
 
 interface Props {
 	initialState: LoomState;
 	children: React.ReactNode;
-	onSaveState: (appId: string, state: LoomState) => void;
+	onSaveState: (
+		appId: string,
+		state: LoomState,
+		shouldSaveFrontmatter: boolean
+	) => void;
 }
 
 const LoomStateContext = React.createContext<{
@@ -18,7 +22,14 @@ const LoomStateContext = React.createContext<{
 	isSearchBarVisible: boolean;
 	resizingColumnId: string | null;
 	loomState: LoomState;
-	setLoomState: React.Dispatch<React.SetStateAction<LoomState>>;
+	setLoomState: React.Dispatch<
+		React.SetStateAction<{
+			state: LoomState;
+			shouldSaveToDisk: boolean;
+			shouldSaveFrontmatter: boolean;
+			time: number;
+		}>
+	>;
 	toggleSearchBar: () => void;
 	setResizingColumnId: React.Dispatch<React.SetStateAction<string | null>>;
 	setSearchText: React.Dispatch<React.SetStateAction<string>>;
@@ -43,7 +54,13 @@ export default function LoomStateProvider({
 	onSaveState,
 	children,
 }: Props) {
-	const [loomState, setLoomState] = React.useState(initialState);
+	const [loomState, setLoomState] = React.useState({
+		state: initialState,
+		shouldSaveToDisk: false,
+		shouldSaveFrontmatter: true,
+		time: Date.now(),
+	});
+
 	const [searchText, setSearchText] = React.useState("");
 	const [isSearchBarVisible, setSearchBarVisible] = React.useState(false);
 	const [resizingColumnId, setResizingColumnId] = React.useState<
@@ -54,7 +71,6 @@ export default function LoomStateProvider({
 		null,
 	]);
 	const [position, setPosition] = React.useState(0);
-	const refreshTime = React.useRef(0);
 
 	const logger = useLogger();
 	const { reactAppId, loomFile, app } = useAppMount();
@@ -75,16 +91,12 @@ export default function LoomStateProvider({
 			return;
 		}
 
-		//If the refresh time is not 0, then we know that the state was updated by a refresh event
-		//and we don't want to save it to disk, as it was already saved by the app instance that
-		//sent the refresh event
-		if (refreshTime.current !== 0) {
-			refreshTime.current = 0;
-			return;
+		const { shouldSaveToDisk, state, shouldSaveFrontmatter } = loomState;
+		if (shouldSaveToDisk) {
+			logger("LoomStateProvider saving state to disk!");
+			onSaveState(reactAppId, state, shouldSaveFrontmatter);
 		}
-
-		onSaveState(reactAppId, loomState);
-	}, [reactAppId, loomState, onSaveState]);
+	}, [logger, reactAppId, loomState, onSaveState]);
 
 	React.useEffect(() => {
 		function handleRefreshEvent(
@@ -93,17 +105,18 @@ export default function LoomStateProvider({
 			state: LoomState
 		) {
 			if (reactAppId !== sourceAppId && filePath === loomFile.path) {
-				refreshTime.current = Date.now();
-				setLoomState(state);
+				setLoomState({
+					state,
+					shouldSaveToDisk: false,
+					shouldSaveFrontmatter: true,
+					time: Date.now(),
+				});
 			}
 		}
 
-		app.workspace.on(
-			// @ts-expect-error: not a native Obsidian event
-			EVENT_APP_REFRESH,
-			handleRefreshEvent
-		);
-		return () => app.workspace.off(EVENT_APP_REFRESH, handleRefreshEvent);
+		EventManager.getInstance().on("app-refresh", handleRefreshEvent);
+		return () =>
+			EventManager.getInstance().off("app-refresh", handleRefreshEvent);
 	}, [reactAppId, loomFile, app]);
 
 	function handleToggleSearchBar() {
@@ -120,11 +133,16 @@ export default function LoomStateProvider({
 			const command = history[position];
 			if (command !== null) {
 				logger(command.constructor.name + ".undo");
-				let newState = command.undo(loomState);
+				let newState = command.undo(loomState.state);
 				if (command.shouldSortRows) {
 					newState = new RowSortCommand().execute(newState);
 				}
-				setLoomState(newState);
+				setLoomState({
+					state: newState,
+					shouldSaveToDisk: true,
+					shouldSaveFrontmatter: command.shouldSaveFrontmatter,
+					time: Date.now(),
+				});
 			}
 		}
 	}, [position, history, loomState, logger]);
@@ -139,11 +157,16 @@ export default function LoomStateProvider({
 			const command = history[currentPosition];
 			if (command !== null) {
 				logger(command.constructor.name + ".redo");
-				let newState = command.redo(loomState);
+				let newState = command.redo(loomState.state);
 				if (command.shouldSortRows) {
 					newState = new RowSortCommand().execute(newState);
 				}
-				setLoomState(newState);
+				setLoomState({
+					state: newState,
+					shouldSaveToDisk: true,
+					shouldSaveFrontmatter: command.shouldSaveFrontmatter,
+					time: Date.now(),
+				});
 			}
 		}
 	}, [position, history, loomState, logger]);
@@ -162,11 +185,16 @@ export default function LoomStateProvider({
 			setPosition((prevState) => prevState + 1);
 
 			//Execute command
-			let newState = command.execute(loomState);
+			let newState = command.execute(loomState.state);
 			if (command.shouldSortRows) {
 				newState = new RowSortCommand().execute(newState);
 			}
-			setLoomState(newState);
+			setLoomState({
+				state: newState,
+				shouldSaveToDisk: true,
+				shouldSaveFrontmatter: command.shouldSaveFrontmatter,
+				time: Date.now(),
+			});
 		},
 		[position, history, loomState]
 	);
@@ -174,7 +202,7 @@ export default function LoomStateProvider({
 	return (
 		<LoomStateContext.Provider
 			value={{
-				loomState,
+				loomState: loomState.state,
 				setLoomState,
 				doCommand,
 				onRedo: redo,
