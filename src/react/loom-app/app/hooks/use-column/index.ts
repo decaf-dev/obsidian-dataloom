@@ -32,11 +32,15 @@ export const useColumn = () => {
 		(
 			columnId: string,
 			data: Partial<Column>,
-			options?: { shouldSortRows: boolean }
+			options?: {
+				shouldSortRows?: boolean;
+				shouldSaveFrontmatter?: boolean;
+			}
 		) => {
 			logger("handleColumnChange", {
 				columnId,
 				data,
+				options,
 			});
 			doCommand(new ColumnUpdateCommand(columnId, data, options));
 		},

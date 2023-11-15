@@ -29,7 +29,6 @@ import {
 	CurrencyType,
 	DateFormat,
 	DateFormatSeparator,
-	FrontmatterKey,
 	NumberFormat,
 	PaddingSize,
 	Source,
@@ -49,6 +48,9 @@ import { useMenu } from "src/react/shared/menu-provider/hooks";
 
 import "./styles.css";
 import { useOverflow } from "src/shared/spacing/hooks";
+import { ObsidianPropertyType } from "src/shared/frontmatter/types";
+import { updateObsidianPropertyType } from "src/shared/frontmatter/obsidian-utils";
+import { useAppMount } from "../app-mount-provider";
 
 interface Props {
 	source: Source | null;
@@ -57,7 +59,7 @@ interface Props {
 	cellId: string;
 	includeTime: boolean;
 	dateTime: string | null;
-	frontmatterKey: FrontmatterKey | null;
+	frontmatterKey: string | null;
 	dateFormat: DateFormat;
 	numberPrefix: string;
 	hour12: boolean;
@@ -140,6 +142,8 @@ export default function BodyCellContainer({
 
 	const COMPONENT_ID = `body-cell-${cellId}`;
 	const menu = useMenu(COMPONENT_ID);
+
+	const { app } = useAppMount();
 
 	async function handleCellContextClick() {
 		try {
@@ -256,12 +260,21 @@ export default function BodyCellContainer({
 		onColumnChange(columnId, { hour12: value }, { shouldSortRows: true });
 	}
 
-	function handleIncludeTimeToggle(value: boolean) {
+	async function handleIncludeTimeToggle(value: boolean) {
 		onColumnChange(
 			columnId,
-			{ includeTime: value },
-			{ shouldSortRows: true }
+			{ includeTime: value, frontmatterKey },
+			{ shouldSortRows: true, shouldSaveFrontmatter: false } //TODO change?
 		);
+		if (frontmatterKey) {
+			await updateObsidianPropertyType(
+				app,
+				frontmatterKey,
+				value
+					? ObsidianPropertyType.DATETIME
+					: ObsidianPropertyType.DATE
+			);
+		}
 	}
 
 	const handleDateTimeChange = React.useCallback(

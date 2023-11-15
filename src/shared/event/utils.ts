@@ -1,6 +1,5 @@
 import { findMenuTriggerEl } from "src/react/shared/menu-provider/utils";
 
-//TODO fix
 export const isEventForThisApp = (
 	appId: string,
 	allowOutsideEvents = false
@@ -24,7 +23,7 @@ export const isEventForThisApp = (
 		if (!menuTrigger) return false;
 
 		const appEl = menuTrigger.closest(".dataloom-app");
-		if (appEl) return appEl.getAttribute("data-id") === appId;
+		if (appEl) return appEl.id === appId;
 	}
 	return false;
 };

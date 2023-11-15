@@ -50,12 +50,7 @@ export interface Column {
 	aspectRatio: AspectRatio;
 	horizontalPadding: PaddingSize;
 	verticalPadding: PaddingSize;
-	frontmatterKey: FrontmatterKey | null;
-}
-
-export interface FrontmatterKey {
-	isCustom: boolean;
-	value: string;
+	frontmatterKey: string | null;
 }
 
 export interface Row {

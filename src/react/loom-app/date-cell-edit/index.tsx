@@ -82,21 +82,23 @@ export default function DateCellEdit({
 
 	const includeTimeToggleId = React.useId();
 
-	const [dateString, setDateString] = React.useState(
-		value === null
-			? ""
-			: dateTimeToDateString(value, dateFormat, dateFormatSeparator)
-	);
-	const [timeString, setTimeString] = React.useState(
-		value === null
-			? ""
-			: dateTimeToTimeString(value, {
-					hour12,
-			  })
-	);
+	let initialDateString = "";
+	if (value !== null) {
+		initialDateString = dateTimeToDateString(
+			value,
+			dateFormat,
+			dateFormatSeparator
+		);
+	}
+	const [dateString, setDateString] = React.useState(initialDateString);
 
-	console.log("dateString", dateString);
-	console.log("timeString", timeString);
+	let initialTimeString = "";
+	if (value !== null) {
+		initialTimeString = dateTimeToTimeString(value, {
+			hour12,
+		});
+	}
+	const [timeString, setTimeString] = React.useState(initialTimeString);
 
 	const [isDateInputInvalid, setDateInputInvalid] = React.useState(false);
 	const [isTimeInputInvalid, setTimeInputInvalid] = React.useState(false);
@@ -104,22 +106,26 @@ export default function DateCellEdit({
 	const timeInputRef = React.useRef<HTMLInputElement>(null);
 
 	React.useEffect(() => {
-		setTimeString(
-			value === null
-				? ""
-				: dateTimeToTimeString(value, {
-						hour12,
-				  })
-		);
+		let timeString = "";
+		if (value !== null) {
+			timeString = dateTimeToTimeString(value, {
+				hour12,
+			});
+		}
+		setTimeString(timeString);
 	}, [value, hour12, setTimeString]);
 
 	React.useEffect(() => {
-		setDateString(
-			value === null
-				? ""
-				: dateTimeToDateString(value, dateFormat, dateFormatSeparator)
-		);
-	}, [value, dateFormat, setDateString]);
+		let dateString = "";
+		if (value !== null) {
+			dateString = dateTimeToDateString(
+				value,
+				dateFormat,
+				dateFormatSeparator
+			);
+		}
+		setDateString(dateString);
+	}, [value, dateFormat, dateFormatSeparator, setDateString]);
 
 	React.useEffect(() => {
 		if (closeRequest === null) return;
@@ -171,7 +177,7 @@ export default function DateCellEdit({
 	}, [
 		value,
 		dateString,
-		,
+		hour12,
 		timeString,
 		closeRequest,
 		dateFormat,

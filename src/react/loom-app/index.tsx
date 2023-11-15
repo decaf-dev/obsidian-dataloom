@@ -20,7 +20,11 @@ interface Props {
 	loomFile: TFile;
 	store: Store;
 	loomState: LoomState;
-	onSaveState: (appId: string, state: LoomState) => void;
+	onSaveState: (
+		appId: string,
+		state: LoomState,
+		shouldSaveFrontmatter: boolean
+	) => void;
 }
 
 export default function LoomApp({

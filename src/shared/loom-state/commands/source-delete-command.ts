@@ -38,7 +38,7 @@ export default class SourceDeleteCommand extends LoomStateCommand {
 	}[] = [];
 
 	constructor(id: string) {
-		super();
+		super(false);
 		this.id = id;
 	}
 

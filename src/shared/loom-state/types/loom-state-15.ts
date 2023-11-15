@@ -242,7 +242,6 @@ enum NumberFilterCondition {
 	IS_NOT_EMPTY = "is-not-empty",
 }
 
-//TODO add support for more date types
 enum DateFilterCondition {
 	IS = "is",
 	IS_BEFORE = "is-before",
@@ -261,12 +260,6 @@ enum DateFilterOption {
 	ONE_MONTH_AGO = "one-month-ago",
 	ONE_MONTH_FROM_NOW = "one-month-from-now",
 }
-
-//@ts-expect-error not used
-type FilterCondition =
-	| TextFilterCondition
-	| DateFilterCondition
-	| NumberFilterCondition;
 
 interface BaseFilter {
 	id: string;

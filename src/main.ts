@@ -21,23 +21,6 @@ import {
 } from "./redux/global-slice";
 import { LOOM_EXTENSION, WIKI_LINK_REGEX } from "./data/constants";
 import { createLoomFile } from "src/data/loom-file";
-import {
-	EVENT_COLUMN_ADD,
-	EVENT_COLUMN_DELETE,
-	EVENT_DOWNLOAD_CSV,
-	EVENT_DOWNLOAD_MARKDOWN,
-	EVENT_GLOBAL_CLICK,
-	EVENT_GLOBAL_KEYDOWN,
-	EVENT_APP_REFRESH,
-	EVENT_ROW_ADD,
-	EVENT_ROW_DELETE,
-	EVENT_FILE_FRONTMATTER_CHANGE,
-	EVENT_FILE_CREATE,
-	EVENT_FOLDER_DELETE,
-	EVENT_FILE_DELETE,
-	EVENT_FILE_RENAME,
-	EVENT_FOLDER_RENAME,
-} from "./shared/events";
 import { deserializeState, serializeState } from "./data/serialize-state";
 import { updateLinkReferences } from "./data/utils";
 import { getBasename } from "./shared/link/link-utils";
@@ -50,6 +33,9 @@ import {
 } from "./obsidian/embedded/embedded-app-manager";
 import { cloneDeep } from "lodash";
 import { log } from "./shared/logger";
+import FrontmatterCache from "./shared/frontmatter/frontmatter-cache";
+import EventManager from "./shared/event/event-manager";
+import { getAssignedPropertyType } from "./shared/frontmatter/obsidian-utils";
 
 export interface DataLoomSettings {
 	shouldDebug: boolean;
@@ -118,6 +104,17 @@ export default class DataLoomPlugin extends Plugin {
 			store.dispatch(setDarkMode(isDark));
 
 			await this.migrateLoomFiles();
+			await FrontmatterCache.getInstance().loadProperties(this.app);
+
+			//This will run once when the plugin is first loaded
+			//unless it is placed in the onLayoutReady function
+			this.registerEvent(
+				this.app.vault.on("create", (file: TAbstractFile) => {
+					if (file instanceof TFile) {
+						EventManager.getInstance().emit("file-create");
+					}
+				})
+			);
 		});
 
 		if (this.settings.showWelcomeModal) {
@@ -206,13 +203,13 @@ export default class DataLoomPlugin extends Plugin {
 
 			//Clear the focus-visible class from the last focused element
 			removeCurrentFocusClass();
-			this.app.workspace.trigger(EVENT_GLOBAL_CLICK);
+			EventManager.getInstance().emit("global-click");
 		});
 
 		//This event is guaranteed to fire after our React synthetic event handlers
 		this.registerDomEvent(document, "keydown", (e) => {
 			log(this.settings.shouldDebug, "main handleKeyDown");
-			this.app.workspace.trigger(EVENT_GLOBAL_KEYDOWN, e);
+			EventManager.getInstance().emit("global-keydown", e);
 		});
 	}
 
@@ -408,8 +405,8 @@ export default class DataLoomPlugin extends Plugin {
 								);
 
 								//Update all looms that match this path
-								this.app.workspace.trigger(
-									EVENT_APP_REFRESH,
+								EventManager.getInstance().emit(
+									"app-refresh",
 									loomFile.path,
 									-1, //update all looms that match this path
 									newState
@@ -431,17 +428,9 @@ export default class DataLoomPlugin extends Plugin {
 		this.registerEvent(
 			this.app.vault.on("rename", (file: TAbstractFile) => {
 				if (file instanceof TFile) {
-					this.app.vault.trigger(EVENT_FILE_RENAME);
+					EventManager.getInstance().emit("file-rename");
 				} else {
-					this.app.vault.trigger(EVENT_FOLDER_RENAME);
-				}
-			})
-		);
-
-		this.registerEvent(
-			this.app.vault.on("create", (file: TAbstractFile) => {
-				if (file instanceof TFile) {
-					this.app.vault.trigger(EVENT_FILE_CREATE);
+					EventManager.getInstance().emit("folder-rename");
 				}
 			})
 		);
@@ -449,19 +438,47 @@ export default class DataLoomPlugin extends Plugin {
 		this.registerEvent(
 			this.app.vault.on("delete", (file: TAbstractFile) => {
 				if (file instanceof TFile) {
-					this.app.vault.trigger(EVENT_FILE_DELETE);
+					EventManager.getInstance().emit("file-delete");
 				} else {
-					this.app.vault.trigger(EVENT_FOLDER_DELETE);
+					EventManager.getInstance().emit("folder-delete");
 				}
 			})
 		);
 
+		//This runs whenever a property changes types
 		this.registerEvent(
-			this.app.metadataCache.on("changed", (file: TAbstractFile) => {
-				if (file instanceof TFile) {
-					this.app.vault.trigger(EVENT_FILE_FRONTMATTER_CHANGE);
+			(this.app as any).metadataTypeManager.on(
+				"changed",
+				async (propertyName: string) => {
+					const updatedType = getAssignedPropertyType(
+						this.app,
+						propertyName
+					);
+					FrontmatterCache.getInstance().setPropertyType(
+						propertyName,
+						updatedType
+					);
+					EventManager.getInstance().emit("property-type-change");
 				}
-			})
+			)
+		);
+
+		this.registerEvent(
+			this.app.metadataCache.on(
+				"changed",
+				async (file: TAbstractFile) => {
+					if (file instanceof TFile) {
+						//Wait until metadataTypeManager has the updated properties
+						//This is a bug. Bug #1
+						//TODO tell the Obsiidan team
+						await new Promise((resolve) => setTimeout(resolve, 50));
+						FrontmatterCache.getInstance().loadProperties(this.app);
+						EventManager.getInstance().emit(
+							"file-frontmatter-change"
+						);
+					}
+				}
+			)
 		);
 	}
 
@@ -512,7 +529,7 @@ export default class DataLoomPlugin extends Plugin {
 					this.app.workspace.getActiveViewOfType(MarkdownView);
 				if (loomView || markdownView) {
 					if (!checking) {
-						this.app.workspace.trigger(EVENT_COLUMN_ADD);
+						EventManager.getInstance().emit("add-column");
 					}
 					return true;
 				}
@@ -531,7 +548,7 @@ export default class DataLoomPlugin extends Plugin {
 					this.app.workspace.getActiveViewOfType(MarkdownView);
 				if (loomView || markdownView) {
 					if (!checking) {
-						this.app.workspace.trigger(EVENT_COLUMN_DELETE);
+						EventManager.getInstance().emit("delete-column");
 					}
 					return true;
 				}
@@ -549,7 +566,7 @@ export default class DataLoomPlugin extends Plugin {
 				const markdownView =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
 				if (loomView || markdownView) {
-					if (!checking) this.app.workspace.trigger(EVENT_ROW_ADD);
+					if (!checking) EventManager.getInstance().emit("add-row");
 					return true;
 				}
 				return false;
@@ -567,7 +584,7 @@ export default class DataLoomPlugin extends Plugin {
 					this.app.workspace.getActiveViewOfType(MarkdownView);
 				if (loomView || markdownView) {
 					if (!checking) {
-						this.app.workspace.trigger(EVENT_ROW_DELETE);
+						EventManager.getInstance().emit("delete-row");
 					}
 					return true;
 				}
@@ -585,7 +602,7 @@ export default class DataLoomPlugin extends Plugin {
 					this.app.workspace.getActiveViewOfType(MarkdownView);
 				if (loomView || markdownView) {
 					if (!checking) {
-						this.app.workspace.trigger(EVENT_DOWNLOAD_MARKDOWN);
+						EventManager.getInstance().emit("download-markdown");
 					}
 					return true;
 				}
@@ -603,7 +620,7 @@ export default class DataLoomPlugin extends Plugin {
 					this.app.workspace.getActiveViewOfType(MarkdownView);
 				if (loomView || markdownView) {
 					if (!checking) {
-						this.app.workspace.trigger(EVENT_DOWNLOAD_CSV);
+						EventManager.getInstance().emit("download-csv");
 					}
 					return true;
 				}

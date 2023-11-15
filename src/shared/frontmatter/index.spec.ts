@@ -4,7 +4,7 @@ import { createTestLoomState } from "../loom-state/loom-state-factory";
 import { CellType } from "../loom-state/types/loom-state";
 
 describe("deserializeFrontmatter", () => {
-	const currentTime = Date.now();
+	const currentTime = "2020-01-01T00:00:00";
 	const app = {
 		metadataCache: {
 			getCache: (path: string) => {
@@ -52,10 +52,7 @@ describe("deserializeFrontmatter", () => {
 	it("deserializes text content", () => {
 		//Arrange
 		const state = createTestLoomState(1, 1, { type: CellType.TEXT });
-		state.model.columns[0].frontmatterKey = {
-			value: "text",
-			isCustom: false,
-		};
+		state.model.columns[0].frontmatterKey = "text";
 
 		//Act
 		const result = deserializeFrontmatterForCell(
@@ -67,16 +64,13 @@ describe("deserializeFrontmatter", () => {
 		//Assert
 		expect(result).not.toBeNull();
 		expect(result?.newCell.content).toEqual("text");
-		expect(result?.nextTags).toEqual([]);
+		expect(result?.nextTags).toEqual(undefined);
 	});
 
 	it("deserializes number content", () => {
 		//Arrange
 		const state = createTestLoomState(1, 1, { type: CellType.DATE });
-		state.model.columns[0].frontmatterKey = {
-			value: "date",
-			isCustom: false,
-		};
+		state.model.columns[0].frontmatterKey = "date";
 
 		//Act
 		const result = deserializeFrontmatterForCell(
@@ -88,17 +82,16 @@ describe("deserializeFrontmatter", () => {
 		//Assert
 		expect(result).not.toBeNull();
 		expect(result?.newCell.content).toEqual("");
-		expect(result?.newCell.dateTime).toEqual(currentTime);
+		expect(result?.newCell.dateTime).toEqual(
+			new Date(currentTime).toISOString()
+		);
 		expect(result?.nextTags).toEqual([]);
 	});
 
 	it("deserializes date content", () => {
 		//Arrange
 		const state = createTestLoomState(1, 1, { type: CellType.NUMBER });
-		state.model.columns[0].frontmatterKey = {
-			value: "date",
-			isCustom: false,
-		};
+		state.model.columns[0].frontmatterKey = "date";
 
 		//Act
 		const result = deserializeFrontmatterForCell(
@@ -109,17 +102,14 @@ describe("deserializeFrontmatter", () => {
 
 		//Assert
 		expect(result).not.toBeNull();
-		expect(result?.newCell.content).toEqual(currentTime.toString()); //TODO fix this. Content doesn't have to be just a string value
+		expect(result?.newCell.content).toEqual(currentTime);
 		expect(result?.nextTags).toEqual([]);
 	});
 
 	it("deserializes tag content", () => {
 		//Arrange
 		const state = createTestLoomState(1, 1, { type: CellType.TAG });
-		state.model.columns[0].frontmatterKey = {
-			value: "tag",
-			isCustom: false,
-		};
+		state.model.columns[0].frontmatterKey = "tag";
 
 		//Act
 		const result = deserializeFrontmatterForCell(
@@ -132,17 +122,13 @@ describe("deserializeFrontmatter", () => {
 		expect(result).not.toBeNull();
 		expect(result?.newCell.content).toEqual("");
 		expect(result?.nextTags).toHaveLength(1);
-		expect(result?.nextTags[0].content).toEqual("tag1");
+		expect(result?.nextTags?.[0].content).toEqual("tag1");
 	});
 
 	it("deserializes multi-tag content", () => {
 		//Arrange
 		const state = createTestLoomState(1, 1, { type: CellType.MULTI_TAG });
-		state.model.columns[0].frontmatterKey = {
-			value: "tags",
-			isCustom: false,
-		};
-
+		state.model.columns[0].frontmatterKey = "tags";
 		//Act
 		const result = deserializeFrontmatterForCell(
 			app,
@@ -154,8 +140,8 @@ describe("deserializeFrontmatter", () => {
 		expect(result).not.toBeNull();
 		expect(result?.newCell.content).toEqual("");
 		expect(result?.nextTags).toHaveLength(2);
-		expect(result?.nextTags[0].content).toEqual("tag1");
-		expect(result?.nextTags[1].content).toEqual("tag2");
+		expect(result?.nextTags?.[0].content).toEqual("tag1");
+		expect(result?.nextTags?.[1].content).toEqual("tag2");
 	});
 
 	it("returns null if frontmatter key is null", () => {

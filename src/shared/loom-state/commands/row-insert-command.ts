@@ -44,7 +44,7 @@ export default class RowInsertCommand extends LoomStateCommand {
 	}[];
 
 	constructor(rowId: string, insert: RowInsert) {
-		super();
+		super(false);
 		this.rowId = rowId;
 		this.insert = insert;
 	}

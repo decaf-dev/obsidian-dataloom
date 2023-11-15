@@ -19,7 +19,7 @@ export default class SourceAddCommand extends LoomStateCommand {
 	private addedSourceFileCells: AddedCell[] = [];
 
 	constructor(source: Source) {
-		super();
+		super(false);
 		this.newSource = source;
 	}
 

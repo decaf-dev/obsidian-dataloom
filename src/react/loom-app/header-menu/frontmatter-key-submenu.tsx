@@ -1,84 +1,46 @@
-import React from "react";
-
 import Submenu from "../../shared/submenu";
-import Input from "../../shared/input";
-import Select from "src/react/shared/select";
-import { FrontmatterKey } from "src/shared/loom-state/types/loom-state";
 import Stack from "src/react/shared/stack";
 import Padding from "src/react/shared/padding";
-import { LoomMenuCloseRequest } from "src/react/shared/menu-provider/types";
+import Select from "src/react/shared/select";
 
 interface Props {
 	title: string;
-	frontmatterKey: FrontmatterKey | null;
+	selectedKey: string | null;
 	frontmatterKeys: string[];
-	closeRequest: LoomMenuCloseRequest | null;
-	onFrontMatterKeyChange: (value: FrontmatterKey | null) => void;
 	onBackClick: () => void;
-	onClose: () => void;
+	onFrontmatterKeyChange: (key: string | null) => void;
 }
-
-const USE_CUSTOM_INPUT_VALUE = "custom-key";
 
 export default function FrontmatterKeySubmenu({
 	title,
-	frontmatterKey,
+	selectedKey,
 	frontmatterKeys,
-	onFrontMatterKeyChange,
 	onBackClick,
-	closeRequest,
-	onClose,
+	onFrontmatterKeyChange,
 }: Props) {
-	const { value = "", isCustom = false } = frontmatterKey ?? {};
-
-	const [inputValue, setInputValue] = React.useState(value);
-
-	React.useEffect(() => {
-		if (closeRequest !== null) {
-			if (isCustom) {
-				onFrontMatterKeyChange({ value: inputValue, isCustom: true });
-			}
-			onClose();
-		}
-	}, [onFrontMatterKeyChange, inputValue, closeRequest, onClose, isCustom]);
-
-	function handleValueChange(value: string) {
-		if (value === USE_CUSTOM_INPUT_VALUE) {
-			onFrontMatterKeyChange({
-				value: "",
-				isCustom: true,
-			});
-		} else if (value === "") {
-			onFrontMatterKeyChange(null);
+	function handleKeyChange(value: string) {
+		if (value === "") {
+			onFrontmatterKeyChange(null);
 		} else {
-			onFrontMatterKeyChange({
-				value,
-				isCustom: false,
-			});
+			onFrontmatterKeyChange(value);
 		}
-	}
-
-	let selectedValue = value;
-	if (isCustom) {
-		selectedValue = USE_CUSTOM_INPUT_VALUE;
 	}
 
 	return (
 		<Submenu title={title} onBackClick={onBackClick}>
 			<Padding px="lg" py="md">
 				<Stack spacing="md">
-					<Select value={selectedValue} onChange={handleValueChange}>
+					<Select
+						value={selectedKey ?? ""}
+						onChange={(value) => handleKeyChange(value)}
+					>
 						<option value="">Select an option</option>
 						{frontmatterKeys.map((key) => (
 							<option key={key} value={key}>
 								{key}
 							</option>
 						))}
-						<option value={USE_CUSTOM_INPUT_VALUE}>Custom</option>
 					</Select>
-					{isCustom && (
-						<Input value={inputValue} onChange={setInputValue} />
-					)}
 				</Stack>
 			</Padding>
 		</Submenu>

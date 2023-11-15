@@ -18,6 +18,10 @@ import LoomStateCommand from "./loom-state-command";
 export default class FilterAddCommand extends LoomStateCommand {
 	private addedFilter: Filter;
 
+	constructor() {
+		super(false);
+	}
+
 	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 

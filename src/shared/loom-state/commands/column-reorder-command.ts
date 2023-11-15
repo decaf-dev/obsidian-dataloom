@@ -10,7 +10,7 @@ export default class ColumnReorderCommand extends LoomStateCommand {
 	private targetIndex: number;
 
 	constructor(dragId: string, targetId: string) {
-		super();
+		super(false);
 		this.dragId = dragId;
 		this.targetId = targetId;
 	}

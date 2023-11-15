@@ -5,6 +5,7 @@ import { CellType } from "src/shared/loom-state/types/loom-state";
 import { dateTimeToObsidianDateTime } from "./date-utils";
 
 export const serializeFrontmatter = async (app: App, state: LoomState) => {
+	//console.log("serializing frontmatter...");
 	const { rows, columns, sources } = state.model;
 	if (sources.length === 0) return;
 
@@ -33,9 +34,7 @@ export const serializeFrontmatter = async (app: App, state: LoomState) => {
 			//Skip source and source file columns because they don't have any content that is serialized
 			if (type === CellType.SOURCE) continue;
 			if (type === CellType.SOURCE_FILE) continue;
-
-			//If the frontmatter key is empty or null, skip it
-			if (!frontmatterKey?.value) continue;
+			if (!frontmatterKey) continue;
 
 			const cell = cells.find((cell) => cell.columnId === column.id);
 			if (!cell)
@@ -68,13 +67,13 @@ export const serializeFrontmatter = async (app: App, state: LoomState) => {
 			}
 
 			await app.fileManager.processFrontMatter(file, (frontmatter) => {
-				//If it doesn't exist and the content is empty, skip it
-				if (!frontmatter[frontmatterKey.value]) {
-					if (!content) return; //empty or null
-					if (Array.isArray(content) && content.length === 0) return;
+				if (!frontmatter[frontmatterKey]) {
+					//If the content is empty, skip
+					//because we don't want to create an empty frontmatter key
+					if (!content) return;
 				}
 
-				frontmatter[frontmatterKey.value] = content;
+				frontmatter[frontmatterKey] = content;
 			});
 		}
 	}

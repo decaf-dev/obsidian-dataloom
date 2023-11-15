@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import Menu from "src/react/shared/menu";
 import OptionSubmenu from "./option-submenu";
@@ -8,6 +8,10 @@ import TextInputSubmenu from "./text-input-submenu";
 import DateFormatSubmenu from "./date-format-submenu";
 import AspectRatioSubmenu from "./aspect-ratio-submenu";
 import PaddingSubmenu from "./padding-submenu";
+import FrontmatterKeySubmenu from "./frontmatter-key-submenu";
+import BaseSubmenu from "./base-submenu";
+import DateFormatSeparatorSubmenu from "./date-format-separator-submenu";
+import TimeFormatSubmenu from "./time-format-submenu";
 
 import {
 	AspectRatio,
@@ -18,19 +22,14 @@ import {
 	PaddingSize,
 	NumberFormat,
 	Column,
-	FrontmatterKey,
 	DateFormatSeparator,
 } from "src/shared/loom-state/types/loom-state";
 import { SubmenuType } from "./types";
-
 import { LoomMenuPosition } from "../../shared/menu/types";
-import "./styles.css";
 import { ColumnChangeHandler } from "../app/hooks/use-column/types";
-import FrontmatterKeySubmenu from "./frontmatter-key-submenu";
 import { LoomMenuCloseRequest } from "src/react/shared/menu-provider/types";
-import BaseSubmenu from "./base-submenu";
-import DateFormatSeparatorSubmenu from "./date-format-separator-submenu";
-import TimeFormatSubmenu from "./time-format-submenu";
+
+import "./styles.css";
 
 interface Props {
 	index: number;
@@ -87,8 +86,13 @@ export default function HeaderMenu({
 		numberSuffix,
 		frontmatterKey,
 	} = column;
-	const [submenu, setSubmenu] = useState<SubmenuType | null>(null);
-	const [localValue, setLocalValue] = useState(content);
+	const [submenu, setSubmenu] = React.useState<SubmenuType | null>(null);
+	const [localValue, setLocalValue] = React.useState(content);
+
+	const saveLocalValue = React.useCallback(() => {
+		if (localValue !== content)
+			onColumnChange(columnId, { content: localValue });
+	}, [columnId, content, localValue, onColumnChange]);
 
 	React.useEffect(() => {
 		if (closeRequest !== null) {
@@ -99,16 +103,12 @@ export default function HeaderMenu({
 		content,
 		columnId,
 		closeRequest,
+		saveLocalValue,
 		submenu,
 		localValue,
 		onColumnChange,
 		onClose,
 	]);
-
-	function saveLocalValue() {
-		if (localValue !== content)
-			onColumnChange(columnId, { content: localValue });
-	}
 
 	function handleWrapOverflowToggle() {
 		onColumnChange(columnId, { shouldWrapOverflow: !shouldWrapOverflow });
@@ -225,10 +225,16 @@ export default function HeaderMenu({
 		setSubmenu(SubmenuType.OPTIONS);
 	}
 
-	function handleFrontmatterKeyChange(frontmatterKey: FrontmatterKey | null) {
-		onColumnChange(columnId, {
-			frontmatterKey,
-		});
+	function handleFrontmatterKeyChange(frontmatterKey: string | null) {
+		onColumnChange(
+			columnId,
+			{
+				frontmatterKey,
+			},
+			{
+				shouldSaveFrontmatter: false,
+			}
+		);
 	}
 
 	return (
@@ -374,11 +380,9 @@ export default function HeaderMenu({
 				{submenu === SubmenuType.FRONTMATTER_KEY && (
 					<FrontmatterKeySubmenu
 						title="Frontmatter key"
-						closeRequest={closeRequest}
+						selectedKey={frontmatterKey}
 						frontmatterKeys={frontmatterKeys}
-						frontmatterKey={frontmatterKey}
-						onClose={onClose}
-						onFrontMatterKeyChange={handleFrontmatterKeyChange}
+						onFrontmatterKeyChange={handleFrontmatterKeyChange}
 						onBackClick={() => setSubmenu(null)}
 					/>
 				)}

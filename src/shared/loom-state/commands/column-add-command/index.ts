@@ -10,7 +10,7 @@ export default class ColumnAddCommand extends LoomStateCommand {
 	private addedCells: AddedCell[];
 
 	constructor(type?: CellType) {
-		super();
+		super(false);
 		this.type = type;
 	}
 
