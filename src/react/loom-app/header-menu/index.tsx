@@ -238,6 +238,9 @@ export default function HeaderMenu({
 				shouldSaveFrontmatter: false,
 			}
 		);
+		if (frontmatterKey !== null) {
+			onClose();
+		}
 	}
 
 	return (
