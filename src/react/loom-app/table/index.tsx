@@ -161,24 +161,24 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 									getAcceptedFrontmatterTypes(type);
 
 								let columnKeys: string[] = [];
-								frontmatterTypes.forEach((type) => {
+								frontmatterTypes.forEach((frontmatterType) => {
 									columnKeys = columnKeys.concat(
 										FrontmatterCache.getInstance().getPropertyNames(
-											type
-										) ?? []
+											frontmatterType
+										)
 									);
 								});
 
-								// Remove any frontmatter keys that are already in use
-								columnKeys = columnKeys.filter((key) => {
-									const columnWithKey = columns.find(
-										(column) =>
-											column.frontmatterKey === key
-									);
-									if (!columnWithKey) return true;
-									if (columnWithKey.id === id) return true;
-									return false;
-								});
+								// // Remove any frontmatter keys that are already in use
+								// columnKeys = columnKeys.filter((key) => {
+								// 	const columnWithKey = columns.find(
+								// 		(column) =>
+								// 			column.frontmatterKey === key
+								// 	);
+								// 	if (!columnWithKey) return true;
+								// 	if (columnWithKey.id === id) return true;
+								// 	return false;
+								// });
 
 								key = id;
 								content = (
