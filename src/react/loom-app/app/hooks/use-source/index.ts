@@ -17,9 +17,7 @@ export const useSource = () => {
 	const { sources, columns } = loomState.model;
 
 	const frontmatterKeyHash = React.useMemo(() => {
-		return JSON.stringify(
-			columns.map((column) => column.frontmatterKey?.key)
-		);
+		return JSON.stringify(columns.map((column) => column.frontmatterKey));
 	}, [columns]);
 
 	const updateRowsFromSources = React.useCallback(
@@ -75,6 +73,10 @@ export const useSource = () => {
 			"file-frontmatter-change",
 			updateRowsFromSources
 		);
+		EventManager.getInstance().on(
+			"property-type-change",
+			updateRowsFromSources
+		);
 		EventManager.getInstance().on("file-delete", updateRowsFromSources);
 		EventManager.getInstance().on("folder-delete", updateRowsFromSources);
 		EventManager.getInstance().on("folder-rename", updateRowsFromSources);
@@ -87,6 +89,10 @@ export const useSource = () => {
 			);
 			EventManager.getInstance().off(
 				"file-frontmatter-change",
+				updateRowsFromSources
+			);
+			EventManager.getInstance().off(
+				"property-type-change",
 				updateRowsFromSources
 			);
 			EventManager.getInstance().off(

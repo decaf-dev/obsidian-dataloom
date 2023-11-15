@@ -22,7 +22,6 @@ import {
 	PaddingSize,
 	NumberFormat,
 	Column,
-	FrontmatterKey,
 	DateFormatSeparator,
 } from "src/shared/loom-state/types/loom-state";
 import { SubmenuType } from "./types";
@@ -226,7 +225,7 @@ export default function HeaderMenu({
 		setSubmenu(SubmenuType.OPTIONS);
 	}
 
-	function handleFrontmatterKeyChange(frontmatterKey: FrontmatterKey | null) {
+	function handleFrontmatterKeyChange(frontmatterKey: string | null) {
 		onColumnChange(
 			columnId,
 			{
@@ -381,12 +380,9 @@ export default function HeaderMenu({
 				{submenu === SubmenuType.FRONTMATTER_KEY && (
 					<FrontmatterKeySubmenu
 						title="Frontmatter key"
-						columnType={type}
-						closeRequest={closeRequest}
+						selectedKey={frontmatterKey}
 						frontmatterKeys={frontmatterKeys}
-						frontmatterKey={frontmatterKey}
-						onClose={onClose}
-						onFrontMatterKeyChange={handleFrontmatterKeyChange}
+						onFrontmatterKeyChange={handleFrontmatterKeyChange}
 						onBackClick={() => setSubmenu(null)}
 					/>
 				)}

@@ -9,11 +9,7 @@ import Flex from "src/react/shared/flex";
 import Text from "src/react/shared/text";
 import Input from "src/react/shared/input";
 
-import {
-	CellType,
-	FrontmatterKey,
-	SortDir,
-} from "src/shared/loom-state/types/loom-state";
+import { CellType, SortDir } from "src/shared/loom-state/types/loom-state";
 import { SubmenuType } from "./types";
 import { usePlaceCursorAtEnd } from "src/shared/hooks";
 import { getDisplayNameForCellType } from "src/shared/loom-state/type-display-names";
@@ -24,7 +20,7 @@ interface Props {
 	numSources: number;
 	columnId: string;
 	shouldWrapOverflow: boolean;
-	frontmatterKey: FrontmatterKey | null;
+	frontmatterKey: string | null;
 	columnName: string;
 	numFrozenColumns: number;
 	columnType: CellType;
@@ -108,7 +104,7 @@ export default function BaseSubmenu({
 						<MenuItem
 							lucideId="file-key-2"
 							name="Frontmatter key"
-							value={frontmatterKey?.key || "No key set"}
+							value={frontmatterKey || "No key set"}
 							onClick={() => {
 								onSubmenuChange(SubmenuType.FRONTMATTER_KEY);
 							}}

@@ -3,10 +3,9 @@ import CellNotFoundError from "src/shared/error/cell-not-found-error";
 import { LoomState } from "src/shared/loom-state/types";
 import { CellType } from "src/shared/loom-state/types/loom-state";
 import { dateTimeToObsidianDateTime } from "./date-utils";
-import { updateObsidianPropertyType } from "src/shared/frontmatter/obsidian-utils";
 
 export const serializeFrontmatter = async (app: App, state: LoomState) => {
-	// console.log("serializing frontmatter...");
+	//console.log("serializing frontmatter...");
 	const { rows, columns, sources } = state.model;
 	if (sources.length === 0) return;
 
@@ -36,12 +35,6 @@ export const serializeFrontmatter = async (app: App, state: LoomState) => {
 			if (type === CellType.SOURCE) continue;
 			if (type === CellType.SOURCE_FILE) continue;
 			if (!frontmatterKey) continue;
-
-			const { key, isCustom, customType } = frontmatterKey;
-			//If key is empty, skip
-			if (key === "") continue;
-			//If the column is not custom and the key is not a valid frontmatter key, skip
-			if (isCustom && !customType) continue;
 
 			const cell = cells.find((cell) => cell.columnId === column.id);
 			if (!cell)
@@ -74,18 +67,14 @@ export const serializeFrontmatter = async (app: App, state: LoomState) => {
 			}
 
 			await app.fileManager.processFrontMatter(file, (frontmatter) => {
-				if (!frontmatter[key]) {
+				if (!frontmatter[frontmatterKey]) {
 					//If the content is empty, skip
 					//because we don't want to create an empty frontmatter key
 					if (!content) return;
 				}
 
-				frontmatter[key] = content;
+				frontmatter[frontmatterKey] = content;
 			});
-
-			if (customType) {
-				await updateObsidianPropertyType(app, key, customType);
-			}
 		}
 	}
 };

@@ -10,18 +10,17 @@ export default class FrontmatterCache {
 		ObsidianPropertyType
 	>();
 
-	async loadProperties(app: App) {
+	loadProperties(app: App) {
 		// console.log("Loading frontmatter properties...");
 		this.cache.clear();
 
-		const properties = await getAllObsidianProperties(app);
-
+		const properties = getAllObsidianProperties(app);
 		Object.values(properties).forEach((value) => {
 			const { name, type } = value as {
 				name: string;
 				type: ObsidianPropertyType;
 			};
-			this.cache.set(name, type);
+			this.cache.set(name, type ?? ObsidianPropertyType.TEXT);
 		});
 	}
 
@@ -33,6 +32,14 @@ export default class FrontmatterCache {
 
 	getPropertyType(name: string) {
 		return this.cache.get(name);
+	}
+
+	setPropertyType(name: string, type: ObsidianPropertyType) {
+		this.cache.set(name, type);
+	}
+
+	getCache() {
+		return this.cache;
 	}
 
 	static getInstance() {

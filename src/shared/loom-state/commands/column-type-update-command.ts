@@ -12,7 +12,6 @@ import {
 	Row,
 	Cell,
 	CalculationType,
-	FrontmatterKey,
 } from "../types/loom-state";
 import { isCheckbox, isNumberCalcuation } from "../../match";
 import { cloneDeep } from "lodash";
@@ -37,7 +36,7 @@ export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 	};
 
 	private addedTags: Tag[] = [];
-	private previousFrontmatterKey: FrontmatterKey | null = null;
+	private previousFrontmatterKey: string | null = null;
 
 	constructor(id: string, type: CellType) {
 		super(false);

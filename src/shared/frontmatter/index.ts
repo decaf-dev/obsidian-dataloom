@@ -20,8 +20,7 @@ export const deserializeFrontmatterForCell = (
 	const frontmatter = fileMetadata.frontmatter;
 	if (!frontmatter) return null;
 
-	const { key } = frontmatterKey;
-	const frontmatterValue = frontmatter[key];
+	const frontmatterValue = frontmatter[frontmatterKey];
 	if (!frontmatterValue) return null;
 
 	const { id, tags, type } = column;

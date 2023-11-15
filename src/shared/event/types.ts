@@ -13,6 +13,7 @@ export type DataLoomEvent =
 	| "global-click"
 	| "global-keydown"
 	| "download-csv"
-	| "download-markdown";
+	| "download-markdown"
+	| "property-type-change";
 
 export type EventCallback = (...data: any[]) => void;

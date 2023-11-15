@@ -25,11 +25,7 @@ export default class MigrateState17 implements MigrateState {
 
 			let newFrontmatterKey = null;
 			if (frontmatterKey) {
-				newFrontmatterKey = {
-					isCustom: frontmatterKey.isCustom,
-					key: frontmatterKey.value,
-					customType: null,
-				};
+				newFrontmatterKey = frontmatterKey.value;
 			}
 			return {
 				...column,

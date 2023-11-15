@@ -42,7 +42,6 @@ import {
 	SourceType,
 	Filter,
 	SourceFileFilter,
-	FrontmatterKey,
 	ObsidianFolderSource,
 	ExternalRowOrder,
 	DateFormatSeparator,
@@ -88,7 +87,7 @@ export const createExternalRowOrder = (
 export const createColumn = (options?: {
 	type?: CellType;
 	content?: string;
-	frontmatterKey?: FrontmatterKey | null;
+	frontmatterKey?: string | null;
 	tags?: Tag[];
 	includeTime?: boolean;
 }): Column => {

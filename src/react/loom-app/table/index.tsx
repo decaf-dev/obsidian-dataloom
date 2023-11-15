@@ -173,7 +173,7 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 								columnKeys = columnKeys.filter((key) => {
 									const columnWithKey = columns.find(
 										(column) =>
-											column.frontmatterKey?.key === key
+											column.frontmatterKey === key
 									);
 									if (!columnWithKey) return true;
 									if (columnWithKey.id === id) return true;

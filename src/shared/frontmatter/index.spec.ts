@@ -52,11 +52,7 @@ describe("deserializeFrontmatter", () => {
 	it("deserializes text content", () => {
 		//Arrange
 		const state = createTestLoomState(1, 1, { type: CellType.TEXT });
-		state.model.columns[0].frontmatterKey = {
-			key: "text",
-			isCustom: false,
-			customType: null,
-		};
+		state.model.columns[0].frontmatterKey = "text";
 
 		//Act
 		const result = deserializeFrontmatterForCell(
@@ -74,11 +70,7 @@ describe("deserializeFrontmatter", () => {
 	it("deserializes number content", () => {
 		//Arrange
 		const state = createTestLoomState(1, 1, { type: CellType.DATE });
-		state.model.columns[0].frontmatterKey = {
-			key: "date",
-			isCustom: false,
-			customType: null,
-		};
+		state.model.columns[0].frontmatterKey = "date";
 
 		//Act
 		const result = deserializeFrontmatterForCell(
@@ -99,11 +91,7 @@ describe("deserializeFrontmatter", () => {
 	it("deserializes date content", () => {
 		//Arrange
 		const state = createTestLoomState(1, 1, { type: CellType.NUMBER });
-		state.model.columns[0].frontmatterKey = {
-			key: "date",
-			isCustom: false,
-			customType: null,
-		};
+		state.model.columns[0].frontmatterKey = "date";
 
 		//Act
 		const result = deserializeFrontmatterForCell(
@@ -121,11 +109,7 @@ describe("deserializeFrontmatter", () => {
 	it("deserializes tag content", () => {
 		//Arrange
 		const state = createTestLoomState(1, 1, { type: CellType.TAG });
-		state.model.columns[0].frontmatterKey = {
-			key: "tag",
-			isCustom: false,
-			customType: null,
-		};
+		state.model.columns[0].frontmatterKey = "tag";
 
 		//Act
 		const result = deserializeFrontmatterForCell(
@@ -144,12 +128,7 @@ describe("deserializeFrontmatter", () => {
 	it("deserializes multi-tag content", () => {
 		//Arrange
 		const state = createTestLoomState(1, 1, { type: CellType.MULTI_TAG });
-		state.model.columns[0].frontmatterKey = {
-			key: "tags",
-			isCustom: false,
-			customType: null,
-		};
-
+		state.model.columns[0].frontmatterKey = "tags";
 		//Act
 		const result = deserializeFrontmatterForCell(
 			app,

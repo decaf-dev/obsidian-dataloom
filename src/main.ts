@@ -35,6 +35,7 @@ import { cloneDeep } from "lodash";
 import { log } from "./shared/logger";
 import FrontmatterCache from "./shared/frontmatter/frontmatter-cache";
 import EventManager from "./shared/event/event-manager";
+import { getAssignedPropertyType } from "./shared/frontmatter/obsidian-utils";
 
 export interface DataLoomSettings {
 	shouldDebug: boolean;
@@ -444,14 +445,34 @@ export default class DataLoomPlugin extends Plugin {
 			})
 		);
 
+		//This runs whenever a property changes types
+		this.registerEvent(
+			(this.app as any).metadataTypeManager.on(
+				"changed",
+				async (propertyName: string) => {
+					const updatedType = getAssignedPropertyType(
+						this.app,
+						propertyName
+					);
+					FrontmatterCache.getInstance().setPropertyType(
+						propertyName,
+						updatedType
+					);
+					EventManager.getInstance().emit("property-type-change");
+				}
+			)
+		);
+
 		this.registerEvent(
 			this.app.metadataCache.on(
 				"changed",
 				async (file: TAbstractFile) => {
 					if (file instanceof TFile) {
-						await FrontmatterCache.getInstance().loadProperties(
-							this.app
-						);
+						//Wait until metadataTypeManager has the updated properties
+						//This is a bug. Bug #1
+						//TODO tell the Obsiidan team
+						await new Promise((resolve) => setTimeout(resolve, 50));
+						FrontmatterCache.getInstance().loadProperties(this.app);
 						EventManager.getInstance().emit(
 							"file-frontmatter-change"
 						);

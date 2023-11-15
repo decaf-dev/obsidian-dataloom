@@ -1,7 +1,5 @@
 /******* Type definitions for v8.12.0 *******/
 
-import { ObsidianPropertyType } from "src/shared/frontmatter/types";
-
 /**
  * v8.12.0
  */
@@ -52,13 +50,7 @@ export interface Column {
 	aspectRatio: AspectRatio;
 	horizontalPadding: PaddingSize;
 	verticalPadding: PaddingSize;
-	frontmatterKey: FrontmatterKey | null;
-}
-
-export interface FrontmatterKey {
-	isCustom: boolean;
-	key: string;
-	customType: ObsidianPropertyType | null;
+	frontmatterKey: string | null;
 }
 
 export interface Row {
