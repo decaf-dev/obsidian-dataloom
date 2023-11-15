@@ -48,9 +48,6 @@ import { useMenu } from "src/react/shared/menu-provider/hooks";
 
 import "./styles.css";
 import { useOverflow } from "src/shared/spacing/hooks";
-import { ObsidianPropertyType } from "src/shared/frontmatter/types";
-import { updateObsidianPropertyType } from "src/shared/frontmatter/obsidian-utils";
-import { useAppMount } from "../app-mount-provider";
 
 interface Props {
 	source: Source | null;
@@ -142,8 +139,6 @@ export default function BodyCellContainer({
 
 	const COMPONENT_ID = `body-cell-${cellId}`;
 	const menu = useMenu(COMPONENT_ID);
-
-	const { app } = useAppMount();
 
 	async function handleCellContextClick() {
 		try {
