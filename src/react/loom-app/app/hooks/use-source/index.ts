@@ -25,10 +25,10 @@ export const useSource = () => {
 			logger("updateRowsFromSources called");
 			setLoomState((prevState) => {
 				if (fromObsidianEvent) {
-					if (Date.now() - prevState.time < 100) {
-						// console.log(
-						// 	"updateRowsFromSources called in the last 100ms. returning..."
-						// );
+					if (Date.now() - prevState.time < 1000) {
+						console.log(
+							"updateRowsFromSources called in the last 1000ms. returning..."
+						);
 						return prevState;
 					}
 				}

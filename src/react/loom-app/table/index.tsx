@@ -160,25 +160,32 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 								const frontmatterTypes =
 									getAcceptedFrontmatterTypes(type);
 
-								let columnKeys: string[] = [];
+								let frontmatterKeys: string[] = [];
 								frontmatterTypes.forEach((frontmatterType) => {
-									columnKeys = columnKeys.concat(
-										FrontmatterCache.getInstance().getPropertyNames(
+									frontmatterKeys = [
+										...frontmatterKeys,
+										...FrontmatterCache.getInstance().getPropertyNames(
 											frontmatterType
-										)
-									);
+										),
+									];
 								});
 
-								// // Remove any frontmatter keys that are already in use
-								// columnKeys = columnKeys.filter((key) => {
-								// 	const columnWithKey = columns.find(
-								// 		(column) =>
-								// 			column.frontmatterKey === key
-								// 	);
-								// 	if (!columnWithKey) return true;
-								// 	if (columnWithKey.id === id) return true;
-								// 	return false;
-								// });
+								const isKeySelectable = (key: string) => {
+									const columnWithKey = columns.find(
+										(column) =>
+											column.frontmatterKey === key
+									);
+									if (!columnWithKey) return true;
+									if (columnWithKey.id === id) return true;
+									return false;
+								};
+
+								const columnKeys = frontmatterKeys.map(
+									(key) => ({
+										value: key,
+										isSelectable: isKeySelectable(key),
+									})
+								);
 
 								key = id;
 								content = (

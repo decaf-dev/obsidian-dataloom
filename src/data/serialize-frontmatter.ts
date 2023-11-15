@@ -3,6 +3,8 @@ import CellNotFoundError from "src/shared/error/cell-not-found-error";
 import { LoomState } from "src/shared/loom-state/types";
 import { CellType } from "src/shared/loom-state/types/loom-state";
 import { dateTimeToObsidianDateTime } from "./date-utils";
+import { updateObsidianPropertyType } from "src/shared/frontmatter/obsidian-utils";
+import { ObsidianPropertyType } from "src/shared/frontmatter/types";
 
 export const serializeFrontmatter = async (app: App, state: LoomState) => {
 	//console.log("serializing frontmatter...");
@@ -75,6 +77,18 @@ export const serializeFrontmatter = async (app: App, state: LoomState) => {
 
 				frontmatter[frontmatterKey] = content;
 			});
+
+			//Consider the situation where you have a date property and you have a date time column
+			//If you save a datetime value, the date property will need to be converted to a date time value
+			if (type === CellType.DATE) {
+				await updateObsidianPropertyType(
+					app,
+					frontmatterKey,
+					includeTime
+						? ObsidianPropertyType.DATETIME
+						: ObsidianPropertyType.DATE
+				);
+			}
 		}
 	}
 };

@@ -36,7 +36,10 @@ interface Props {
 	numSources: number;
 	isOpen: boolean;
 	canDeleteColumn: boolean;
-	frontmatterKeys: string[];
+	frontmatterKeys: {
+		value: string;
+		isSelectable: boolean;
+	}[];
 	id: string;
 	numFrozenColumns: number;
 	position: LoomMenuPosition;
@@ -235,6 +238,9 @@ export default function HeaderMenu({
 				shouldSaveFrontmatter: false,
 			}
 		);
+		if (frontmatterKey !== null) {
+			onClose();
+		}
 	}
 
 	return (

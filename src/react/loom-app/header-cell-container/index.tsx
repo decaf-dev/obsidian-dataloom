@@ -16,7 +16,10 @@ interface Props {
 	index: number;
 	column: Column;
 	numSources: number;
-	frontmatterKeys: string[];
+	frontmatterKeys: {
+		value: string;
+		isSelectable: boolean;
+	}[];
 	numColumns: number;
 	numFrozenColumns: number;
 	resizingColumnId: string | null;
