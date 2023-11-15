@@ -25,9 +25,13 @@ export default class FrontmatterCache {
 	}
 
 	getPropertyNames(type: ObsidianPropertyType) {
-		return [...this.cache.entries()]
-			.filter(([, propertyType]) => propertyType === type)
-			.map(([name]) => name);
+		const keys = [];
+		for (const [key, value] of this.cache.entries()) {
+			if (value === type) {
+				keys.push(key);
+			}
+		}
+		return keys;
 	}
 
 	getPropertyType(name: string) {

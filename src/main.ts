@@ -104,7 +104,12 @@ export default class DataLoomPlugin extends Plugin {
 			store.dispatch(setDarkMode(isDark));
 
 			await this.migrateLoomFiles();
-			await FrontmatterCache.getInstance().loadProperties(this.app);
+
+			//If there are any views open with a loom, they will load before onLayoutReady
+			//is called. To make sure that the looms get the loaded properties, we need to
+			//emit an event to update them
+			FrontmatterCache.getInstance().loadProperties(this.app);
+			EventManager.getInstance().emit("file-frontmatter-change");
 
 			//This will run once when the plugin is first loaded
 			//unless it is placed in the onLayoutReady function
@@ -470,8 +475,10 @@ export default class DataLoomPlugin extends Plugin {
 					if (file instanceof TFile) {
 						//Wait until metadataTypeManager has the updated properties
 						//This is a bug. Bug #1
-						//TODO tell the Obsiidan team
-						await new Promise((resolve) => setTimeout(resolve, 50));
+						//TODO tell the Obsidian team
+						await new Promise((resolve) =>
+							setTimeout(resolve, 100)
+						);
 						FrontmatterCache.getInstance().loadProperties(this.app);
 						EventManager.getInstance().emit(
 							"file-frontmatter-change"

@@ -2,7 +2,7 @@ import { App } from "obsidian";
 import { ObsidianPropertyType } from "./types";
 
 /**
- * Updates the type of an existing Obsidian property
+ * Updates the type of an existing Obsidian property.
  * NOTE: This is an undocumented API function and may break in future versions of Obsidian
  */
 export const updateObsidianPropertyType = (
@@ -14,7 +14,7 @@ export const updateObsidianPropertyType = (
 };
 
 /**
- * Gets all Obsidian properties
+ * Gets all Obsidian properties.
  * NOTE: This is an undocumented API function and may break in future versions of Obsidian
  */
 export const getAllObsidianProperties = (app: App) => {
@@ -22,7 +22,7 @@ export const getAllObsidianProperties = (app: App) => {
 };
 
 /**
- * Gets the type of an Obsidian property
+ * Gets the type of an Obsidian property.
  * NOTE: This is an undocumented API function and may break in future versions of Obsidian
  */
 export const getAssignedPropertyType = (app: App, name: string) => {
