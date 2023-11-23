@@ -1,5 +1,4 @@
 import CellNotFoundError from "src/shared/error/cell-not-found-error";
-import RowNotFoundError from "src/shared/error/row-not-found-error";
 import TagNotFoundError from "src/shared/error/tag-not-found-error";
 import LoomStateCommand from "./loom-state-command";
 import {
@@ -32,30 +31,15 @@ import { getFileNameFromPath } from "src/shared/link/path-utils";
 import { isRelativePath } from "src/shared/link/check-link";
 
 export default class RowSortCommand extends LoomStateCommand {
-	/**
-	 * The previous row sort state
-	 */
-	private previousRowSort: {
-		id: string;
-		index: number;
-	}[] = [];
-
 	constructor() {
 		super(false);
 	}
 
 	execute(prevState: LoomState): LoomState {
-		super.onExecute();
-
 		const { columns, rows, sources } = prevState.model;
 		const sortedColumns = columns.filter(
 			(columns) => columns.sortDir !== SortDir.NONE
 		);
-
-		this.previousRowSort = rows.map((row) => ({
-			id: row.id,
-			index: row.index,
-		}));
 
 		let newRows = [...rows];
 
@@ -65,40 +49,15 @@ export default class RowSortCommand extends LoomStateCommand {
 			newRows = this.sortByIndex(rows);
 		}
 
-		return {
+		const nextState = {
 			...prevState,
 			model: {
 				...prevState.model,
 				rows: newRows,
 			},
 		};
-	}
-
-	undo(prevState: LoomState): LoomState {
-		super.onUndo();
-
-		const { rows } = prevState.model;
-		const newRows = this.previousRowSort.map((prev) => {
-			const row = rows.find((row) => row.id === prev.id);
-			if (!row) throw new RowNotFoundError(prev.id);
-			return {
-				...row,
-				index: prev.index,
-			};
-		});
-
-		return {
-			...prevState,
-			model: {
-				...prevState.model,
-				rows: newRows,
-			},
-		};
-	}
-
-	redo(prevState: LoomState): LoomState {
-		super.onRedo();
-		return this.execute(prevState);
+		this.onExecute(prevState, nextState);
+		return nextState;
 	}
 
 	private multiSort = (

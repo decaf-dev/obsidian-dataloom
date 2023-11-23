@@ -16,15 +16,11 @@ import { CellType, Column, Filter } from "../types/loom-state";
 import LoomStateCommand from "./loom-state-command";
 
 export default class FilterAddCommand extends LoomStateCommand {
-	private addedFilter: Filter;
-
 	constructor() {
 		super(false);
 	}
 
 	execute(prevState: LoomState): LoomState {
-		super.onExecute();
-
 		const { filters, columns } = prevState.model;
 		let column: Column = columns[0];
 
@@ -60,45 +56,16 @@ export default class FilterAddCommand extends LoomStateCommand {
 			throw new Error("Unhandled cell type");
 		}
 
-		this.addedFilter = newFilter;
 		const nextFilters = [...filters, newFilter];
 
-		return {
+		const nextState = {
 			...prevState,
 			model: {
 				...prevState.model,
 				filters: nextFilters,
 			},
 		};
-	}
-	undo(prevState: LoomState): LoomState {
-		super.onUndo();
-
-		const { filters } = prevState.model;
-
-		const nextFilters = filters.filter(
-			(filter) => filter.id !== this.addedFilter.id
-		);
-		return {
-			...prevState,
-			model: {
-				...prevState.model,
-				filters: nextFilters,
-			},
-		};
-	}
-	redo(prevState: LoomState): LoomState {
-		super.onRedo();
-
-		const { filters } = prevState.model;
-		const nextFilters = [...filters, this.addedFilter];
-
-		return {
-			...prevState,
-			model: {
-				...prevState.model,
-				filters: nextFilters,
-			},
-		};
+		this.onExecute(prevState, nextState);
+		return nextState;
 	}
 }

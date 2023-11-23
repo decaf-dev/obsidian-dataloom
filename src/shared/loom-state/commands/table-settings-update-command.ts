@@ -7,8 +7,6 @@ export default class TableSettingsUpdateCommand<
 	private key: K;
 	private value: TableSettings[K];
 
-	private previousValue: unknown;
-
 	constructor(key: K, value: TableSettings[K]) {
 		super(false);
 		this.key = key;
@@ -16,12 +14,9 @@ export default class TableSettingsUpdateCommand<
 	}
 
 	execute(prevState: LoomState): LoomState {
-		super.onExecute();
-
 		const { settings } = prevState.model;
-		this.previousValue = settings[this.key];
 
-		return {
+		const nextState = {
 			...prevState,
 			model: {
 				...prevState.model,
@@ -31,27 +26,7 @@ export default class TableSettingsUpdateCommand<
 				},
 			},
 		};
-	}
-
-	undo(prevState: LoomState): LoomState {
-		super.onUndo();
-
-		const { settings } = prevState.model;
-
-		return {
-			...prevState,
-			model: {
-				...prevState.model,
-				settings: {
-					...settings,
-					[this.key]: this.previousValue,
-				},
-			},
-		};
-	}
-
-	redo(prevState: LoomState): LoomState {
-		super.onRedo();
-		return this.execute(prevState);
+		this.onExecute(prevState, nextState);
+		return nextState;
 	}
 }

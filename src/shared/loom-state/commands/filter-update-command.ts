@@ -1,6 +1,5 @@
 import LoomStateCommand from "./loom-state-command";
 import { Filter, LoomState } from "../types/loom-state";
-import { cloneDeep } from "lodash";
 
 export default class FilterUpdateCommand<
 	T extends Filter
@@ -8,9 +7,6 @@ export default class FilterUpdateCommand<
 	private id: string;
 	private data: Partial<T>;
 	private isPartial: boolean;
-
-	private prevFilter: Filter;
-	private nextFilter: Filter;
 
 	constructor(id: string, data: Partial<T>, isPartial = true) {
 		super(false);
@@ -20,66 +16,25 @@ export default class FilterUpdateCommand<
 	}
 
 	execute(prevState: LoomState): LoomState {
-		super.onExecute();
-
 		const { filters } = prevState.model;
 		const nextFilters = filters.map((filter) => {
 			if (filter.id === this.id) {
-				this.prevFilter = cloneDeep(filter);
-
 				let newFilter: T = this.data as T;
 				if (this.isPartial)
 					newFilter = { ...filter, ...this.data } as T;
-				this.nextFilter = newFilter;
 				return newFilter;
 			}
 			return filter;
 		});
 
-		return {
+		const nextState = {
 			...prevState,
 			model: {
 				...prevState.model,
 				filters: nextFilters,
 			},
 		};
-	}
-
-	undo(prevState: LoomState): LoomState {
-		super.onUndo();
-
-		const { filters } = prevState.model;
-		const nextFilters = filters.map((filter) => {
-			if (filter.id === this.nextFilter.id) {
-				return this.prevFilter;
-			}
-			return filter;
-		});
-		return {
-			...prevState,
-			model: {
-				...prevState.model,
-				filters: nextFilters,
-			},
-		};
-	}
-
-	redo(prevState: LoomState): LoomState {
-		super.onRedo();
-
-		const { filters } = prevState.model;
-		const nextFilters = filters.map((filter) => {
-			if (filter.id === this.id) {
-				return this.nextFilter;
-			}
-			return filter;
-		});
-		return {
-			...prevState,
-			model: {
-				...prevState.model,
-				filters: nextFilters,
-			},
-		};
+		this.onExecute(prevState, nextState);
+		return nextState;
 	}
 }

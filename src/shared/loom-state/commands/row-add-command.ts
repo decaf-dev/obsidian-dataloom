@@ -13,8 +13,6 @@ export default class RowAddCommand extends LoomStateCommand {
 	}
 
 	execute(prevState: LoomState): LoomState {
-		super.onExecute();
-
 		const { rows, columns } = prevState.model;
 
 		const cells = columns.map((column) => {
@@ -23,40 +21,14 @@ export default class RowAddCommand extends LoomStateCommand {
 		});
 		this.addedRow = createRow(rows.length, { cells });
 
-		return {
+		const nextState = {
 			...prevState,
 			model: {
 				...prevState.model,
 				rows: [...rows, this.addedRow],
 			},
 		};
-	}
-
-	undo(prevState: LoomState): LoomState {
-		super.onUndo();
-
-		const { rows } = prevState.model;
-
-		return {
-			...prevState,
-			model: {
-				...prevState.model,
-				rows: rows.filter((row) => row.id !== this.addedRow.id),
-			},
-		};
-	}
-
-	redo(prevState: LoomState): LoomState {
-		super.onRedo();
-
-		const { rows } = prevState.model;
-
-		return {
-			...prevState,
-			model: {
-				...prevState.model,
-				rows: [...rows, this.addedRow],
-			},
-		};
+		this.onExecute(prevState, nextState);
+		return nextState;
 	}
 }
