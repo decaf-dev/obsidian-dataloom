@@ -5,8 +5,6 @@ import {
 	createRow,
 	createTag,
 } from "src/shared/loom-state/loom-state-factory";
-import CommandUndoError from "./command-undo-error";
-import CommandRedoError from "./command-redo-error";
 import TagCellAddCommand from "./tag-cell-add-command";
 import { advanceBy, clear } from "jest-date-mock";
 import { Column, MultiTagCell, Row } from "../types/loom-state";

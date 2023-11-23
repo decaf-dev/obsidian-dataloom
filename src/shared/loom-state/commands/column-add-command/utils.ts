@@ -1,6 +1,5 @@
 import { createCellForType, createColumn } from "../../loom-state-factory";
 import { CellType, Column, Row } from "../../types/loom-state";
-import { AddedCell } from "./types";
 
 export const columnAddExecute = (
 	prevColumns: Column[],
@@ -21,15 +20,9 @@ export const columnAddExecute = (
 	});
 	nextColumns.splice(insertIndex ?? prevColumns.length, 0, newColumn);
 
-	const addedCells: AddedCell[] = [];
-
 	const nextRows: Row[] = prevRows.map((row) => {
 		const { cells } = row;
 		const newCell = createCellForType(newColumn.id, type);
-		addedCells.push({
-			rowId: row.id,
-			cell: newCell,
-		});
 		const nextCells = [...cells, newCell];
 		return {
 			...row,
@@ -40,7 +33,5 @@ export const columnAddExecute = (
 	return {
 		columns: nextColumns,
 		rows: nextRows,
-		addedColumn: newColumn,
-		addedCells,
 	};
 };
