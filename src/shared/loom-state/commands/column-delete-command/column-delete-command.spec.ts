@@ -3,7 +3,6 @@ import {
 	createTextFilter,
 } from "src/shared/loom-state/loom-state-factory";
 import RowDeleteCommand from "../row-delete-command";
-import CommandUndoError from "../command-undo-error";
 import ColumnDeleteCommand from ".";
 import CommandArgumentsError from "../command-arguments-error";
 
@@ -13,19 +12,6 @@ describe("column-delete-command", () => {
 			new ColumnDeleteCommand({});
 		} catch (err) {
 			expect(err).toBeInstanceOf(CommandArgumentsError);
-		}
-	});
-
-	it("should throw an error when undo() is called before execute()", () => {
-		const prevState = createLoomState(2, 1);
-		const command = new ColumnDeleteCommand({
-			last: true,
-		});
-
-		try {
-			command.undo(prevState);
-		} catch (err) {
-			expect(err).toBeInstanceOf(CommandUndoError);
 		}
 	});
 

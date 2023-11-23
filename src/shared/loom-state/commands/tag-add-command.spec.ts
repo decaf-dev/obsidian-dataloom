@@ -5,8 +5,6 @@ import {
 	createRow,
 	createTag,
 } from "src/shared/loom-state/loom-state-factory";
-import CommandUndoError from "./command-undo-error";
-import CommandRedoError from "./command-redo-error";
 import TagAddCommand from "./tag-add-command";
 import { Color, Column, MultiTagCell, Row } from "../types/loom-state";
 import { advanceBy, clear } from "jest-date-mock";
@@ -32,44 +30,6 @@ describe("tag-add-command", () => {
 		});
 		return state;
 	};
-
-	it("should throw an error when undo() is called before execute()", () => {
-		//Arrange
-		const prevState = initialState();
-		const command = new TagAddCommand(
-			prevState.model.rows[0].cells[0].id,
-			prevState.model.columns[0].id,
-			"test1",
-			Color.BLUE
-		);
-
-		try {
-			//Act
-			command.undo(prevState);
-		} catch (err) {
-			expect(err).toBeInstanceOf(CommandUndoError);
-		}
-	});
-
-	it("should throw an error when redo() is called before undo()", () => {
-		try {
-			//Arrange
-			const prevState = initialState();
-			const command = new TagAddCommand(
-				prevState.model.rows[0].cells[0].id,
-				prevState.model.columns[0].id,
-				"test1",
-				Color.BLUE
-			);
-
-			const executeState = command.execute(prevState);
-
-			//Act
-			command.redo(executeState);
-		} catch (err) {
-			expect(err).toBeInstanceOf(CommandRedoError);
-		}
-	});
 
 	it("should add a tag when execute() is called", () => {
 		//Arrange

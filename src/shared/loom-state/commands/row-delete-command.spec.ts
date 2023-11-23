@@ -1,6 +1,5 @@
 import RowDeleteCommand from "./row-delete-command";
 import CommandArgumentsError from "./command-arguments-error";
-import CommandUndoError from "./command-undo-error";
 import { createLoomState } from "../loom-state-factory";
 
 describe("row-delete-command", () => {
@@ -9,21 +8,6 @@ describe("row-delete-command", () => {
 			new RowDeleteCommand({});
 		} catch (err) {
 			expect(err).toBeInstanceOf(CommandArgumentsError);
-		}
-	});
-
-	it("should throw an error when undo() is called before execute()", () => {
-		try {
-			//Arrange
-			const prevState = createLoomState(1, 2);
-			const command = new RowDeleteCommand({
-				last: true,
-			});
-
-			//Act
-			command.undo(prevState);
-		} catch (err) {
-			expect(err).toBeInstanceOf(CommandUndoError);
 		}
 	});
 

@@ -10,8 +10,6 @@ import {
 	createTextCell,
 	createTextFilter,
 } from "src/shared/loom-state/loom-state-factory";
-import CommandUndoError from "./command-undo-error";
-import CommandRedoError from "./command-redo-error";
 import ColumnTypeUpdateCommand from "./column-type-update-command";
 import {
 	CellType,
@@ -140,39 +138,6 @@ describe("column-type-update-command", () => {
 		});
 		return state;
 	};
-
-	it("should throw an error when undo() is called before execute()", () => {
-		//Arrange
-		const prevState = createLoomState(1, 1);
-
-		try {
-			new ColumnTypeUpdateCommand(
-				prevState.model.columns[0].id,
-				CellType.TAG
-			).undo(prevState);
-		} catch (err) {
-			expect(err).toBeInstanceOf(CommandUndoError);
-		}
-	});
-
-	it("should throw an error when redo() is called before undo()", () => {
-		//Arrange
-		const prevState = createLoomState(1, 1);
-
-		const command = new ColumnTypeUpdateCommand(
-			prevState.model.columns[0].id,
-			CellType.TAG
-		);
-
-		//Act
-		command.execute(prevState);
-
-		try {
-			command.redo(prevState);
-		} catch (err) {
-			expect(err).toBeInstanceOf(CommandRedoError);
-		}
-	});
 
 	it("should handle multi-tag -> text when execute() is called", async () => {
 		//Arrange

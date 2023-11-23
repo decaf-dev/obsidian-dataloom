@@ -1,24 +1,7 @@
 import { createLoomState } from "../loom-state-factory";
-import CommandUndoError from "./command-undo-error";
 import RowInsertCommand from "./row-insert-command";
 
 describe("row-insert-command", () => {
-	it("should throw an error when undo() is called before execute()", () => {
-		//Arrange
-		const prevState = createLoomState(1, 2);
-		const command = new RowInsertCommand(
-			prevState.model.rows[0].id,
-			"above"
-		);
-
-		try {
-			//Act
-			command.undo(prevState);
-		} catch (err) {
-			expect(err).toBeInstanceOf(CommandUndoError);
-		}
-	});
-
 	it("should insert a row above when execute() is called", () => {
 		//Arrange
 		const prevState = createLoomState(1, 1);

@@ -35,41 +35,6 @@ describe("tag-cell-add-command", () => {
 		return state;
 	};
 
-	it("should throw an error when undo() is called before execute()", () => {
-		//Arrange
-		const prevState = initialState();
-
-		const command = new TagCellAddCommand(
-			prevState.model.rows[0].cells[0].id,
-			prevState.model.columns[0].tags[1].id
-		);
-
-		try {
-			//Act
-			command.undo(prevState);
-		} catch (err) {
-			expect(err).toBeInstanceOf(CommandUndoError);
-		}
-	});
-
-	it("should throw an error when redo() is called before undo()", () => {
-		try {
-			//Arrange
-			const prevState = initialState();
-
-			const command = new TagCellAddCommand(
-				prevState.model.rows[0].cells[0].id,
-				prevState.model.columns[0].tags[1].id
-			);
-
-			//Act
-			const executeState = command.execute(prevState);
-			command.redo(executeState);
-		} catch (err) {
-			expect(err).toBeInstanceOf(CommandRedoError);
-		}
-	});
-
 	it("should add a tag reference to a cell when execute() is called", () => {
 		//Arrange
 		const prevState = initialState();

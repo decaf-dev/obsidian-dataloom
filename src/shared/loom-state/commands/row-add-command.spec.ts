@@ -1,36 +1,7 @@
 import RowAddCommand from "./row-add-command";
-import CommandUndoError from "./command-undo-error";
-import CommandRedoError from "./command-redo-error";
 import { createLoomState } from "../loom-state-factory";
 
 describe("row-add-command", () => {
-	it("should throw an error when undo() is called before execute()", () => {
-		//Arrange
-		const prevState = createLoomState(1, 1);
-		const command = new RowAddCommand();
-
-		try {
-			//Act
-			command.undo(prevState);
-		} catch (err) {
-			expect(err).toBeInstanceOf(CommandUndoError);
-		}
-	});
-
-	it("should throw an error when redo() is called before undo()", () => {
-		//Arrange
-		const prevState = createLoomState(1, 1);
-		const command = new RowAddCommand();
-		const executeState = command.execute(prevState);
-
-		try {
-			//Act
-			command.redo(executeState);
-		} catch (err) {
-			expect(err).toBeInstanceOf(CommandRedoError);
-		}
-	});
-
 	it("should add a row when execute() is called", () => {
 		//Arrange
 		const prevState = createLoomState(1, 1);

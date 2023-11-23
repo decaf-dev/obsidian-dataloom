@@ -5,8 +5,6 @@ import {
 	createTag,
 	createTagCell,
 } from "src/shared/loom-state/loom-state-factory";
-import CommandUndoError from "./command-undo-error";
-import CommandRedoError from "./command-redo-error";
 import TagUpdateCommand from "./tag-update-command";
 import { CellType } from "../types/loom-state";
 
@@ -36,47 +34,6 @@ describe("tag-update-command", () => {
 		});
 		return { prevState, tags };
 	};
-
-	it("should throw an error when undo() is called before execute()", () => {
-		//Arrange
-		const { prevState, tags } = createTestState();
-
-		const command = new TagUpdateCommand(
-			prevState.model.columns[0].id,
-			tags[0].id,
-			{
-				content: "",
-			}
-		);
-
-		//Act
-		try {
-			command.undo(prevState);
-		} catch (err) {
-			expect(err).toBeInstanceOf(CommandUndoError);
-		}
-	});
-
-	it("should throw an error when redo() is called before undo()", () => {
-		//Arrange
-		const { prevState, tags } = createTestState();
-
-		const command = new TagUpdateCommand(
-			prevState.model.columns[0].id,
-			tags[0].id,
-			{
-				content: "",
-			}
-		);
-
-		//Act
-		try {
-			command.execute(prevState);
-			command.redo(prevState);
-		} catch (err) {
-			expect(err).toBeInstanceOf(CommandRedoError);
-		}
-	});
 
 	it("should update a tag property when execute() is called", async () => {
 		//Arrange

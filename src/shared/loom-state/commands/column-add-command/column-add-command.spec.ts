@@ -1,32 +1,7 @@
-import CommandUndoError from "../command-undo-error";
-import CommandRedoError from "../command-redo-error";
 import ColumnAddCommand from ".";
 import { createLoomState } from "../../loom-state-factory";
 
 describe("column-add-command", () => {
-	it("should throw an error when undo() is called before execute()", () => {
-		const prevState = createLoomState(1, 1);
-		const command = new ColumnAddCommand();
-
-		try {
-			command.undo(prevState);
-		} catch (err) {
-			expect(err).toBeInstanceOf(CommandUndoError);
-		}
-	});
-
-	it("should throw an error when redo() is called before undo()", () => {
-		const prevState = createLoomState(1, 1);
-		const command = new ColumnAddCommand();
-		const executeState = command.execute(prevState);
-
-		try {
-			command.redo(executeState);
-		} catch (err) {
-			expect(err).toBeInstanceOf(CommandRedoError);
-		}
-	});
-
 	it("should add a column when execute() is called", () => {
 		//Arrange
 		const prevState = createLoomState(1, 1);

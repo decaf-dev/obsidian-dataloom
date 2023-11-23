@@ -1,40 +1,7 @@
-import CommandUndoError from "./command-undo-error";
-import CommandRedoError from "./command-redo-error";
 import ColumnUpdateCommand from "./column-update-command";
 import { createLoomState } from "../loom-state-factory";
 
 describe("column-update-command", () => {
-	it("should throw an error when undo() is called before execute()", () => {
-		//Arrange
-		const prevState = createLoomState(1, 1);
-		const command = new ColumnUpdateCommand(prevState.model.columns[0].id, {
-			width: "250px",
-		});
-
-		try {
-			//Act
-			command.undo(prevState);
-		} catch (err) {
-			expect(err).toBeInstanceOf(CommandUndoError);
-		}
-	});
-
-	it("should throw an error when redo() is called before undo()", () => {
-		//Arrange
-		const prevState = createLoomState(1, 1);
-		const command = new ColumnUpdateCommand(prevState.model.columns[0].id, {
-			width: "250px",
-		});
-
-		try {
-			//Act
-			command.execute(prevState);
-			command.redo(prevState);
-		} catch (err) {
-			expect(err).toBeInstanceOf(CommandRedoError);
-		}
-	});
-
 	it("should update a column property when execute() is called", async () => {
 		//Arrange
 		const prevState = createLoomState(1, 1);

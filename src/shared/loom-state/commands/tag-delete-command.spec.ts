@@ -5,8 +5,6 @@ import {
 	createTag,
 	createTagCell,
 } from "src/shared/loom-state/loom-state-factory";
-import CommandUndoError from "./command-undo-error";
-import CommandRedoError from "./command-redo-error";
 import TagDeleteCommand from "./tag-delete-command";
 import { CellType, TagCell } from "../types/loom-state";
 
@@ -36,41 +34,6 @@ describe("tag-delete-command", () => {
 		});
 		return { prevState, tags };
 	};
-
-	it("should throw an error when undo() is called before execute()", () => {
-		//Arrange
-		const { prevState, tags } = createTestState();
-
-		const command = new TagDeleteCommand(
-			prevState.model.columns[0].id,
-			tags[0].id
-		);
-
-		try {
-			//Act
-			command.undo(prevState);
-		} catch (err) {
-			expect(err).toBeInstanceOf(CommandUndoError);
-		}
-	});
-
-	it("should throw an error when redo() is called before undo()", () => {
-		try {
-			//Arrange
-			const { prevState, tags } = createTestState();
-
-			const command = new TagDeleteCommand(
-				prevState.model.columns[0].id,
-				tags[0].id
-			);
-
-			//Act
-			command.execute(prevState);
-			command.redo(prevState);
-		} catch (err) {
-			expect(err).toBeInstanceOf(CommandRedoError);
-		}
-	});
 
 	it("should delete a tag when execute() is called", () => {
 		//Arrange

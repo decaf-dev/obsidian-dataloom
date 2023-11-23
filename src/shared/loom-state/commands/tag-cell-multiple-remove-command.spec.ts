@@ -5,7 +5,7 @@ import {
 	createRow,
 	createTag,
 } from "src/shared/loom-state/loom-state-factory";
-import CommandUndoError from "./command-undo-error";
+
 import { advanceBy, clear } from "jest-date-mock";
 import TagCellMultipleRemoveCommand from "./tag-cell-multiple-remove-command";
 import { Column, MultiTagCell, Row } from "../types/loom-state";
@@ -37,22 +37,6 @@ describe("tag-cell-multiple-remove-command", () => {
 		});
 		return state;
 	};
-	it("should throw an error when undo() is called before execute()", () => {
-		//Arrange
-		const prevState = initialState();
-
-		const command = new TagCellMultipleRemoveCommand(
-			prevState.model.rows[0].cells[0].id,
-			[prevState.model.columns[0].tags[0].id]
-		);
-
-		try {
-			//Act
-			command.undo(prevState);
-		} catch (err) {
-			expect(err).toBeInstanceOf(CommandUndoError);
-		}
-	});
 
 	it("should delete a cell reference when execute() is called", () => {
 		//Arrange

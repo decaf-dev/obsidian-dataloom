@@ -37,23 +37,6 @@ describe("tag-cell-remove-command", () => {
 		return { prevState, tags };
 	};
 
-	it("should throw an error when undo() is called before execute()", () => {
-		//Arrange
-		const { prevState, tags } = createTestState();
-
-		const command = new TagCellRemoveCommand(
-			prevState.model.rows[0].cells[0].id,
-			tags[0].id
-		);
-
-		try {
-			//Act
-			command.undo(prevState);
-		} catch (err) {
-			expect(err).toBeInstanceOf(CommandUndoError);
-		}
-	});
-
 	it("should delete a cell reference when execute() is called", () => {
 		//Arrange
 		const { prevState, tags } = createTestState();

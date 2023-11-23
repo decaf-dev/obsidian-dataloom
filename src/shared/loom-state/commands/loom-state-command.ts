@@ -38,11 +38,6 @@ abstract class LoomStateCommand {
 		this.hasExecuteBeenCalled = true;
 
 		const patch = jsondiffpatch.diff(prevState, nextState);
-		console.log({
-			patch,
-			prevState,
-			nextState,
-		});
 		if (patch === undefined) throw new Error("No patch changes detected");
 		this.statePatch = patch;
 	}

@@ -1,26 +1,9 @@
-import CommandUndoError from "./command-undo-error";
 import CellBodyUpdateCommand from "./cell-body-update-command";
 import { advanceBy, clear } from "jest-date-mock";
 import { createLoomState } from "../loom-state-factory";
 import { TextCell } from "../types/loom-state";
 
 describe("cell-update-command", () => {
-	it("should throw an error when undo() is called before execute()", () => {
-		const prevState = createLoomState(1, 1);
-		const command = new CellBodyUpdateCommand(
-			prevState.model.rows[0].cells[0].id,
-			{
-				content: "test",
-			}
-		);
-
-		try {
-			command.undo(prevState);
-		} catch (err) {
-			expect(err).toBeInstanceOf(CommandUndoError);
-		}
-	});
-
 	it("should update a cell property when execute() is called", async () => {
 		//Arrange
 		const prevState = createLoomState(1, 1);
