@@ -1,6 +1,6 @@
 import { LoomState } from "../../types/loom-state";
 import LoomStateCommand from "../loom-state-command";
-import CommandArgumentsError from "../command-arguments-error";
+import CommandArgumentsError from "../error/command-arguments-error";
 import { columnDeleteExecute } from "./utils";
 
 export default class ColumnDeleteCommand extends LoomStateCommand {

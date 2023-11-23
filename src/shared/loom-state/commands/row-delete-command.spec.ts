@@ -1,5 +1,5 @@
 import RowDeleteCommand from "./row-delete-command";
-import CommandArgumentsError from "./command-arguments-error";
+import CommandArgumentsError from "./error/command-arguments-error";
 import { createLoomState } from "../loom-state-factory";
 
 describe("row-delete-command", () => {

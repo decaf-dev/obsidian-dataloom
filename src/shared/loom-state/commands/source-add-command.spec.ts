@@ -9,8 +9,8 @@ import {
 	createGenericLoomState,
 } from "src/shared/loom-state/loom-state-factory";
 import { CellType } from "../types/loom-state";
-import CommandUndoError from "./command-undo-error";
-import CommandRedoError from "./command-redo-error";
+import CommandUndoError from "./error/command-undo-error";
+import CommandRedoError from "./error/command-redo-error";
 import SourceAddCommand from "./source-add-command";
 
 describe("source-add-command", () => {

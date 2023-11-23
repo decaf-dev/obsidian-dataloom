@@ -4,7 +4,7 @@ import {
 } from "src/shared/loom-state/loom-state-factory";
 import RowDeleteCommand from "../row-delete-command";
 import ColumnDeleteCommand from ".";
-import CommandArgumentsError from "../command-arguments-error";
+import CommandArgumentsError from "../error/command-arguments-error";
 
 describe("column-delete-command", () => {
 	it("should throw an error if no arguments are passed to the command object", () => {
