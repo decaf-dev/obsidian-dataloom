@@ -1,7 +1,14 @@
 import { App } from "obsidian";
 import { deserializeFrontmatterForCell } from ".";
-import { createTestLoomState } from "../loom-state/loom-state-factory";
-import { CellType } from "../loom-state/types/loom-state";
+import {
+	CellType,
+	DateCell,
+	MultiTagCell,
+	NumberCell,
+	TagCell,
+	TextCell,
+} from "../loom-state/types/loom-state";
+import { createLoomState } from "../loom-state/loom-state-factory";
 
 describe("deserializeFrontmatter", () => {
 	const currentTime = "2020-01-01T00:00:00";
@@ -51,7 +58,7 @@ describe("deserializeFrontmatter", () => {
 
 	it("deserializes text content", () => {
 		//Arrange
-		const state = createTestLoomState(1, 1, { type: CellType.TEXT });
+		const state = createLoomState(1, 1, { type: CellType.TEXT });
 		state.model.columns[0].frontmatterKey = "text";
 
 		//Act
@@ -63,13 +70,13 @@ describe("deserializeFrontmatter", () => {
 
 		//Assert
 		expect(result).not.toBeNull();
-		expect(result?.newCell.content).toEqual("text");
+		expect((result?.newCell as TextCell).content).toEqual("text");
 		expect(result?.nextTags).toEqual(undefined);
 	});
 
-	it("deserializes number content", () => {
+	it("deserializes date content", () => {
 		//Arrange
-		const state = createTestLoomState(1, 1, { type: CellType.DATE });
+		const state = createLoomState(1, 1, { type: CellType.DATE });
 		state.model.columns[0].frontmatterKey = "date";
 
 		//Act
@@ -81,34 +88,33 @@ describe("deserializeFrontmatter", () => {
 
 		//Assert
 		expect(result).not.toBeNull();
-		expect(result?.newCell.content).toEqual("");
-		expect(result?.newCell.dateTime).toEqual(
+		expect((result?.newCell as DateCell).dateTime).toEqual(
 			new Date(currentTime).toISOString()
 		);
 		expect(result?.nextTags).toEqual([]);
 	});
 
-	it("deserializes date content", () => {
+	it("deserializes number content", () => {
 		//Arrange
-		const state = createTestLoomState(1, 1, { type: CellType.NUMBER });
-		state.model.columns[0].frontmatterKey = "date";
+		const state = createLoomState(1, 1, { type: CellType.NUMBER });
+		state.model.columns[0].frontmatterKey = "number";
 
 		//Act
 		const result = deserializeFrontmatterForCell(
 			app,
 			state.model.columns[0],
-			"date.md"
+			"number.md"
 		);
 
 		//Assert
 		expect(result).not.toBeNull();
-		expect(result?.newCell.content).toEqual(currentTime);
+		expect((result?.newCell as NumberCell).value).toEqual(123456);
 		expect(result?.nextTags).toEqual([]);
 	});
 
 	it("deserializes tag content", () => {
 		//Arrange
-		const state = createTestLoomState(1, 1, { type: CellType.TAG });
+		const state = createLoomState(1, 1, { type: CellType.TAG });
 		state.model.columns[0].frontmatterKey = "tag";
 
 		//Act
@@ -120,14 +126,14 @@ describe("deserializeFrontmatter", () => {
 
 		//Assert
 		expect(result).not.toBeNull();
-		expect(result?.newCell.content).toEqual("");
+		expect((result?.newCell as TagCell).tagId).not.toBeNull();
 		expect(result?.nextTags).toHaveLength(1);
 		expect(result?.nextTags?.[0].content).toEqual("tag1");
 	});
 
 	it("deserializes multi-tag content", () => {
 		//Arrange
-		const state = createTestLoomState(1, 1, { type: CellType.MULTI_TAG });
+		const state = createLoomState(1, 1, { type: CellType.MULTI_TAG });
 		state.model.columns[0].frontmatterKey = "tags";
 		//Act
 		const result = deserializeFrontmatterForCell(
@@ -138,7 +144,7 @@ describe("deserializeFrontmatter", () => {
 
 		//Assert
 		expect(result).not.toBeNull();
-		expect(result?.newCell.content).toEqual("");
+		expect((result?.newCell as MultiTagCell).tagIds).toHaveLength(2);
 		expect(result?.nextTags).toHaveLength(2);
 		expect(result?.nextTags?.[0].content).toEqual("tag1");
 		expect(result?.nextTags?.[1].content).toEqual("tag2");
@@ -146,7 +152,7 @@ describe("deserializeFrontmatter", () => {
 
 	it("returns null if frontmatter key is null", () => {
 		//Arrange
-		const state = createTestLoomState(1, 1, { type: CellType.TEXT });
+		const state = createLoomState(1, 1, { type: CellType.TEXT });
 
 		//Act
 		const result = deserializeFrontmatterForCell(
@@ -161,7 +167,7 @@ describe("deserializeFrontmatter", () => {
 
 	it("returns null if no frontmatter for the specified key exists", () => {
 		//Arrange
-		const state = createTestLoomState(1, 1, { type: CellType.TEXT });
+		const state = createLoomState(1, 1, { type: CellType.TEXT });
 
 		//Act
 		const result = deserializeFrontmatterForCell(

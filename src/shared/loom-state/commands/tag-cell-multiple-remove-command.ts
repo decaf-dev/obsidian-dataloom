@@ -1,17 +1,26 @@
 import LoomStateCommand from "./loom-state-command";
-import { Cell, LoomState, Row } from "../types/loom-state";
+import {
+	Cell,
+	CellType,
+	LoomState,
+	MultiTagCell,
+	Row,
+} from "../types/loom-state";
 import RowNotFoundError from "src/shared/error/row-not-found-error";
 import { getCurrentDateTime } from "src/shared/date/utils";
+import { mapCellsToColumn } from "../utils/column-utils";
+import ColumnNotFoundError from "src/shared/error/column-not-found-error";
 
 export default class TagCellMultipleRemoveCommand extends LoomStateCommand {
 	private cellId: string;
 	private tagIds: string[];
 
-	private rowId: string;
-	private previousEditedDateTime: string;
-	private nextEditedDateTime: string;
+	private targetRowId: string;
 
-	private previousTagIds: string[];
+	private originalLastEditedDateTime: string;
+	private updatedLastEditedDateTime: string;
+
+	private originalTagIds: string[];
 
 	constructor(cellId: string, tagIds: string[]) {
 		super(true);
@@ -22,35 +31,50 @@ export default class TagCellMultipleRemoveCommand extends LoomStateCommand {
 	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
-		const { rows } = prevState.model;
+		const { columns, rows } = prevState.model;
 
 		const row = rows.find((row) =>
 			row.cells.find((cell) => cell.id === this.cellId)
 		);
 		if (!row) throw new RowNotFoundError();
-		this.rowId = row.id;
-		this.previousEditedDateTime = row.lastEditedDateTime;
 
+		this.targetRowId = row.id;
+		this.originalLastEditedDateTime = row.lastEditedDateTime;
+
+		const cellsToColumn = mapCellsToColumn(columns, rows);
 		const nextRows: Row[] = rows.map((row) => {
 			const { cells } = row;
 			const nextCells: Cell[] = cells.map((cell) => {
-				const { tagIds } = cell;
-				if (cell.id === this.cellId) {
-					this.previousTagIds = [...tagIds];
+				const { id } = cell;
 
-					const nextTagIds = tagIds.filter(
-						(id) => !this.tagIds.includes(id)
-					);
-					return {
-						...cell,
-						tagIds: nextTagIds,
-					};
+				if (id === this.cellId) {
+					const column = cellsToColumn.get(cell.columnId);
+					if (!column)
+						throw new ColumnNotFoundError({
+							id: cell.columnId,
+						});
+
+					const { type } = column;
+					if (type === CellType.MULTI_TAG) {
+						const { tagIds } = cell as MultiTagCell;
+						this.originalTagIds = [...tagIds];
+
+						const updatedTagIds = tagIds.filter(
+							(id) => !this.tagIds.includes(id)
+						);
+						return {
+							...cell,
+							tagIds: updatedTagIds,
+						};
+					} else {
+						throw new Error("Cell type is not multi tag.");
+					}
 				}
 				return cell;
 			});
-			if (row.id === this.rowId) {
+			if (row.id === this.targetRowId) {
 				const newEditedDateTime = getCurrentDateTime();
-				this.nextEditedDateTime = newEditedDateTime;
+				this.updatedLastEditedDateTime = newEditedDateTime;
 				return {
 					...row,
 					lastEditedDateTime: newEditedDateTime,
@@ -71,23 +95,36 @@ export default class TagCellMultipleRemoveCommand extends LoomStateCommand {
 
 	undo(prevState: LoomState): LoomState {
 		super.onUndo();
-		const { rows } = prevState.model;
+		const { columns, rows } = prevState.model;
 
+		const cellsToColumn = mapCellsToColumn(columns, rows);
 		const nextRows: Row[] = rows.map((row) => {
 			const { cells } = row;
 			const nextCells: Cell[] = cells.map((cell) => {
-				if (cell.id === this.cellId) {
-					return {
-						...cell,
-						tagIds: this.previousTagIds,
-					};
+				const { id } = cell;
+				if (id === this.cellId) {
+					const column = cellsToColumn.get(cell.columnId);
+					if (!column)
+						throw new ColumnNotFoundError({
+							id: cell.columnId,
+						});
+
+					const { type } = column;
+					if (type === CellType.MULTI_TAG) {
+						return {
+							...cell,
+							tagIds: this.originalTagIds,
+						};
+					} else {
+						throw new Error("Cell type is not multi tag.");
+					}
 				}
 				return cell;
 			});
-			if (row.id === this.rowId) {
+			if (row.id === this.targetRowId) {
 				return {
 					...row,
-					lastEditedDateTime: this.previousEditedDateTime,
+					lastEditedDateTime: this.originalLastEditedDateTime,
 					cells: nextCells,
 				};
 			}
@@ -106,26 +143,40 @@ export default class TagCellMultipleRemoveCommand extends LoomStateCommand {
 	redo(prevState: LoomState): LoomState {
 		super.onRedo();
 
-		const { rows } = prevState.model;
+		const { columns, rows } = prevState.model;
 
+		const cellsToColumn = mapCellsToColumn(columns, rows);
 		const nextRows: Row[] = rows.map((row) => {
 			const { cells } = row;
 			const nextCells: Cell[] = cells.map((cell) => {
-				if (cell.id === this.cellId) {
-					const nextTagIds = cell.tagIds.filter(
-						(id) => !this.tagIds.includes(id)
-					);
-					return {
-						...cell,
-						tagIds: nextTagIds,
-					};
+				const { id } = cell;
+				if (id === this.cellId) {
+					const column = cellsToColumn.get(cell.columnId);
+					if (!column)
+						throw new ColumnNotFoundError({
+							id: cell.columnId,
+						});
+
+					const { type } = column;
+					if (type === CellType.MULTI_TAG) {
+						const { tagIds } = cell as MultiTagCell;
+						const updatedTagIds = tagIds.filter(
+							(id) => !this.tagIds.includes(id)
+						);
+						return {
+							...cell,
+							tagIds: updatedTagIds,
+						};
+					} else {
+						throw new Error("Cell type is not multi tag.");
+					}
 				}
 				return cell;
 			});
-			if (row.id === this.rowId) {
+			if (row.id === this.targetRowId) {
 				return {
 					...row,
-					lastEditedDateTime: this.nextEditedDateTime,
+					lastEditedDateTime: this.updatedLastEditedDateTime,
 					cells: nextCells,
 				};
 			}

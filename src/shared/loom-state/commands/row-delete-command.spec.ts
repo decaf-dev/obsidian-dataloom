@@ -1,7 +1,7 @@
-import { createTestLoomState } from "src/shared/loom-state/loom-state-factory";
 import RowDeleteCommand from "./row-delete-command";
 import CommandArgumentsError from "./command-arguments-error";
 import CommandUndoError from "./command-undo-error";
+import { createLoomState } from "../loom-state-factory";
 
 describe("row-delete-command", () => {
 	it("should throw an error if no arguments are passed to the command object", () => {
@@ -15,7 +15,7 @@ describe("row-delete-command", () => {
 	it("should throw an error when undo() is called before execute()", () => {
 		try {
 			//Arrange
-			const prevState = createTestLoomState(1, 2);
+			const prevState = createLoomState(1, 2);
 			const command = new RowDeleteCommand({
 				last: true,
 			});
@@ -29,7 +29,7 @@ describe("row-delete-command", () => {
 
 	it("should delete a row when execute() is called", () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1);
+		const prevState = createLoomState(1, 1);
 		const command = new RowDeleteCommand({
 			id: prevState.model.rows[0].id,
 		});
@@ -43,7 +43,7 @@ describe("row-delete-command", () => {
 
 	it("should delete the last row when execute() is called", () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 2);
+		const prevState = createLoomState(1, 2);
 		const command = new RowDeleteCommand({
 			last: true,
 		});
@@ -59,7 +59,7 @@ describe("row-delete-command", () => {
 
 	it("should restore the deleted row when undo() is called", () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 2);
+		const prevState = createLoomState(1, 2);
 		const command = new RowDeleteCommand({
 			id: prevState.model.rows[0].id,
 		});
@@ -74,7 +74,7 @@ describe("row-delete-command", () => {
 
 	it("should restore the last deleted row when undo() is called", () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 2);
+		const prevState = createLoomState(1, 2);
 		const command = new RowDeleteCommand({
 			last: true,
 		});

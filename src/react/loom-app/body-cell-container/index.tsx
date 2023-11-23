@@ -24,6 +24,21 @@ import SourceFileCell from "../source-file-cell";
 import SourceCell from "../source-cell";
 
 import {
+	TextCell as TextCellInterface,
+	NumberCell as NumberCellInterface,
+	TagCell as TagCellInterface,
+	MultiTagCell as MultiTagCellInterface,
+	DateCell as DateCellInterface,
+	CheckboxCell as CheckboxCellInterface,
+	CreationTimeCell as CreationTimeCellInterface,
+	LastEditedTimeCell as LastEditedTimeCellInterface,
+	SourceCell as SourceCellInterface,
+	SourceFileCell as SourceFileCellInterface,
+	FileCell as FileCellInterface,
+	EmbedCell as EmbedCellInterface,
+} from "src/shared/loom-state/types/loom-state";
+
+import {
 	AspectRatio,
 	CellType,
 	CurrencyType,
@@ -34,270 +49,222 @@ import {
 	Source,
 	Tag,
 } from "src/shared/loom-state/types/loom-state";
-import {
-	CHECKBOX_MARKDOWN_CHECKED,
-	CHECKBOX_MARKDOWN_UNCHECKED,
-} from "src/shared/constants";
-import { isCheckboxChecked } from "src/shared/match";
 import { Color } from "src/shared/loom-state/types/loom-state";
 import { ColumnChangeHandler } from "../app/hooks/use-column/types";
 import { CellChangeHandler } from "../app/hooks/use-cell/types";
-import { TagChangeHandler } from "../app/hooks/use-tag/types";
+import {
+	TagAddHandler,
+	TagCellAddHandler,
+	TagChangeHandler,
+} from "../app/hooks/use-tag/types";
 import { LoomMenuLevel } from "src/react/shared/menu-provider/types";
 import { useMenu } from "src/react/shared/menu-provider/hooks";
 
 import "./styles.css";
 import { useOverflow } from "src/shared/spacing/hooks";
 
-interface Props {
-	source: Source | null;
-	isExternalLink: boolean;
-	columnType: string;
-	cellId: string;
-	includeTime: boolean;
-	dateTime: string | null;
+interface BaseCellProps {
 	frontmatterKey: string | null;
+	aspectRatio: AspectRatio;
+	verticalPadding: PaddingSize;
+	horizontalPadding: PaddingSize;
 	dateFormat: DateFormat;
 	numberPrefix: string;
 	hour12: boolean;
-	numberSuffix: string;
+	includeTime: boolean;
 	dateFormatSeparator: DateFormatSeparator;
+	numberSuffix: string;
 	numberSeparator: string;
 	numberFormat: NumberFormat;
 	currencyType: CurrencyType;
 	columnId: string;
-	content: string;
-	aspectRatio: AspectRatio;
-	verticalPadding: PaddingSize;
-	horizontalPadding: PaddingSize;
+	width: string;
 	rowCreationTime: string;
 	rowLastEditedTime: string;
-	width: string;
-	columnTags: Tag[];
-	cellTagIds: string[];
 	shouldWrapOverflow: boolean;
-	onTagRemoveClick: (cellId: string, tagId: string) => void;
-	onTagMultipleRemove: (cellId: string, tagIds: string[]) => void;
-	onTagClick: (cellId: string, tagId: string, isMultiTag: boolean) => void;
-	onTagAdd: (
-		cellId: string,
-		columnId: string,
-		markdown: string,
-		color: Color,
-		isMultiTag: boolean
-	) => void;
-	onTagDeleteClick: (columnId: string, tagId: string) => void;
-	onColumnChange: ColumnChangeHandler;
+	columnTags: Tag[];
+	source: Source | null;
 	onCellChange: CellChangeHandler;
-	onTagChange: TagChangeHandler;
 }
 
-export default function BodyCellContainer({
-	cellId,
-	columnId,
-	isExternalLink,
-	source,
-	includeTime,
-	content,
-	aspectRatio,
-	dateFormatSeparator,
-	numberFormat,
-	verticalPadding,
-	frontmatterKey,
-	currencyType,
-	horizontalPadding,
-	dateFormat,
-	dateTime,
-	hour12,
-	numberPrefix,
-	numberSuffix,
-	numberSeparator,
-	columnType,
-	rowCreationTime,
-	rowLastEditedTime,
-	columnTags,
-	cellTagIds,
-	width,
-	shouldWrapOverflow,
-	onTagRemoveClick,
-	onTagMultipleRemove,
-	onTagDeleteClick,
-	onTagClick,
-	onColumnChange,
-	onTagAdd,
-	onTagChange,
-	onCellChange,
-}: Props) {
-	//All of these cells have local values
-	const shouldRequestOnClose =
-		columnType === CellType.TEXT ||
-		columnType === CellType.EMBED ||
-		columnType === CellType.NUMBER ||
-		columnType === CellType.TAG ||
-		columnType === CellType.MULTI_TAG ||
-		columnType === CellType.DATE;
-	const isDisabled = source !== null && frontmatterKey === null;
-	const isUneditable =
-		columnType === CellType.CHECKBOX ||
-		columnType === CellType.CREATION_TIME ||
-		columnType === CellType.LAST_EDITED_TIME ||
-		columnType === CellType.SOURCE ||
-		columnType === CellType.SOURCE_FILE;
+type TextCellProps = BaseCellProps &
+	TextCellInterface & {
+		type: CellType.TEXT;
+	};
 
-	const COMPONENT_ID = `body-cell-${cellId}`;
+type EmbedCellProps = BaseCellProps &
+	EmbedCellInterface & {
+		type: CellType.EMBED;
+	};
+
+type FileCellProps = BaseCellProps &
+	FileCellInterface & {
+		type: CellType.FILE;
+	};
+
+type TagCellProps = BaseCellProps &
+	TagCellInterface & {
+		type: CellType.TAG;
+		onTagCellRemove: (cellId: string, tagId: string) => void;
+		onTagCellMultipleRemove: (cellId: string, tagIds: string[]) => void;
+		onTagCellAdd: TagCellAddHandler;
+		onTagAdd: TagAddHandler;
+		onTagDeleteClick: (columnId: string, tagId: string) => void;
+		onTagChange: TagChangeHandler;
+	};
+
+type MultiTagCellProps = BaseCellProps &
+	MultiTagCellInterface & {
+		type: CellType.MULTI_TAG;
+		onTagCellRemove: (cellId: string, tagId: string) => void;
+		onTagCellMultipleRemove: (cellId: string, tagIds: string[]) => void;
+		onTagCellAdd: TagCellAddHandler;
+		onTagAdd: TagAddHandler;
+		onTagDeleteClick: (columnId: string, tagId: string) => void;
+		onTagChange: TagChangeHandler;
+	};
+
+type NumberCellProps = BaseCellProps &
+	NumberCellInterface & {
+		type: CellType.NUMBER;
+	};
+
+type DateCellProps = BaseCellProps &
+	DateCellInterface & {
+		type: CellType.DATE;
+		onColumnChange: ColumnChangeHandler;
+	};
+
+type CheckboxCellProps = BaseCellProps &
+	CheckboxCellInterface & {
+		type: CellType.CHECKBOX;
+	};
+
+type CreationTimeCellProps = BaseCellProps &
+	CreationTimeCellInterface & {
+		type: CellType.CREATION_TIME;
+	};
+
+type LastEditedTimeCellProps = BaseCellProps &
+	LastEditedTimeCellInterface & {
+		type: CellType.LAST_EDITED_TIME;
+	};
+
+type SourceCellProps = BaseCellProps &
+	SourceCellInterface & {
+		type: CellType.SOURCE;
+	};
+
+type SourceFileCellProps = BaseCellProps &
+	SourceFileCellInterface & {
+		type: CellType.SOURCE_FILE;
+	};
+
+type Props =
+	| TextCellProps
+	| EmbedCellProps
+	| FileCellProps
+	| TagCellProps
+	| MultiTagCellProps
+	| NumberCellProps
+	| DateCellProps
+	| CheckboxCellProps
+	| CreationTimeCellProps
+	| LastEditedTimeCellProps
+	| SourceCellProps
+	| SourceFileCellProps;
+
+export default function BodyCellContainer(props: Props) {
+	const {
+		id,
+		columnId,
+		source,
+		includeTime,
+		aspectRatio,
+		dateFormatSeparator,
+		numberFormat,
+		verticalPadding,
+		frontmatterKey,
+		currencyType,
+		horizontalPadding,
+		dateFormat,
+		hour12,
+		numberPrefix,
+		numberSuffix,
+		numberSeparator,
+		type,
+		rowCreationTime,
+		rowLastEditedTime,
+		columnTags,
+		width,
+		shouldWrapOverflow,
+		onCellChange,
+	} = props;
+
+	const shouldRequestOnClose =
+		type === CellType.TEXT ||
+		type === CellType.EMBED ||
+		type === CellType.NUMBER ||
+		type === CellType.TAG ||
+		type === CellType.MULTI_TAG ||
+		type === CellType.DATE;
+
+	const isDisabled = source !== null && frontmatterKey === null;
+
+	const isUneditable =
+		type === CellType.CHECKBOX ||
+		type === CellType.CREATION_TIME ||
+		type === CellType.LAST_EDITED_TIME ||
+		type === CellType.SOURCE ||
+		type === CellType.SOURCE_FILE;
+
+	const COMPONENT_ID = `body-cell-${id}`;
 	const menu = useMenu(COMPONENT_ID);
 
-	async function handleCellContextClick() {
+	async function copyTextToClipboard(value: string) {
 		try {
-			await navigator.clipboard.writeText(content);
+			await navigator.clipboard.writeText(value);
 			new Notice("Copied text to clipboard");
 		} catch (err) {
 			console.error(err);
 		}
 	}
 
-	function toggleCheckbox() {
-		const isChecked = isCheckboxChecked(content);
-
-		if (isChecked) {
-			handleCheckboxChange(CHECKBOX_MARKDOWN_UNCHECKED);
-		} else {
-			handleCheckboxChange(CHECKBOX_MARKDOWN_CHECKED);
-		}
+	function onMenuTriggerEnterDown(cellActionCallback: () => void) {
+		return () => {
+			if (isDisabled) return;
+			cellActionCallback();
+		};
 	}
 
-	function handleMenuTriggerBackspaceDown() {
-		if (
-			columnType === CellType.TEXT ||
-			columnType === CellType.EMBED ||
-			columnType === CellType.NUMBER ||
-			columnType === CellType.FILE
-		) {
-			onCellChange(cellId, { content: "" });
-		} else if (columnType === CellType.DATE) {
-			onCellChange(cellId, { dateTime: null });
-		} else if (columnType === CellType.CHECKBOX) {
-			onCellChange(cellId, { content: CHECKBOX_MARKDOWN_UNCHECKED });
-		} else if (
-			columnType === CellType.TAG ||
-			columnType === CellType.MULTI_TAG
-		) {
-			onTagMultipleRemove(cellId, cellTagIds);
-		}
+	function onMenuTriggerClick(cellActionCallback: () => void) {
+		return () => {
+			if (isDisabled) return;
+			cellActionCallback();
+		};
 	}
-
-	function handleMenuTriggerEnterDown() {
-		if (isDisabled) return;
-		if (columnType === CellType.CHECKBOX) toggleCheckbox();
-	}
-
-	function handleMenuTriggerClick() {
-		if (isDisabled) return;
-		if (columnType === CellType.CHECKBOX) toggleCheckbox();
-	}
-
-	function handleExternalLinkToggle(value: boolean) {
-		onCellChange(cellId, { isExternalLink: value });
-	}
-
-	function handleTagAdd(markdown: string, color: Color) {
-		if (markdown === "") return;
-		onTagAdd(
-			cellId,
-			columnId,
-			markdown.trim(),
-			color,
-			columnType === CellType.MULTI_TAG
-		);
-	}
-
-	function handleRemoveTagClick(tagId: string) {
-		onTagRemoveClick(cellId, tagId);
-	}
-
-	function handleTagColorChange(tagId: string, value: Color) {
-		onTagChange(columnId, tagId, { color: value });
-	}
-
-	function handleTagDeleteClick(tagId: string) {
-		onTagDeleteClick(columnId, tagId);
-	}
-
-	function handleTagContentChange(tagId: string, value: string) {
-		onTagChange(columnId, tagId, { content: value });
-	}
-
-	function handleTagClick(tagId: string) {
-		onTagClick(cellId, tagId, columnType === CellType.MULTI_TAG);
-	}
-
-	const handleInputChange = React.useCallback(
-		(value: string) => {
-			onCellChange(cellId, { content: value });
-		},
-		[cellId, onCellChange]
-	);
-
-	function handleCheckboxChange(value: string) {
-		onCellChange(cellId, { content: value });
-	}
-
-	function handleDateFormatChange(value: DateFormat) {
-		onColumnChange(
-			columnId,
-			{ dateFormat: value },
-			{ shouldSortRows: true }
-		);
-	}
-
-	function handleDateFormatSeparatorChange(value: DateFormatSeparator) {
-		onColumnChange(
-			columnId,
-			{ dateFormatSeparator: value },
-			{ shouldSortRows: true }
-		);
-	}
-
-	function handleTimeFormatChange(value: boolean) {
-		onColumnChange(columnId, { hour12: value }, { shouldSortRows: true });
-	}
-
-	async function handleIncludeTimeToggle(value: boolean) {
-		onColumnChange(
-			columnId,
-			{ includeTime: value, frontmatterKey },
-			{ shouldSortRows: true }
-		);
-	}
-
-	const handleDateTimeChange = React.useCallback(
-		(value: string | null) => {
-			onCellChange(cellId, { dateTime: value });
-		},
-		[cellId, onCellChange]
-	);
 
 	let menuWidth = menu.position.width;
 	if (
-		columnType === CellType.TAG ||
-		columnType === CellType.MULTI_TAG ||
-		columnType === CellType.EMBED
+		type === CellType.TAG ||
+		type === CellType.MULTI_TAG ||
+		type === CellType.EMBED
 	) {
 		menuWidth = 250;
-	} else if (columnType === CellType.FILE) {
+	} else if (type === CellType.FILE) {
 		menuWidth = 275;
-	} else if (columnType === CellType.DATE) {
+	} else if (type === CellType.DATE) {
 		menuWidth = 235;
 	}
 
 	let menuHeight = menu.position.height;
 	if (
-		columnType === CellType.TAG ||
-		columnType === CellType.MULTI_TAG ||
-		columnType === CellType.DATE ||
-		columnType === CellType.NUMBER ||
-		columnType === CellType.FILE ||
-		columnType === CellType.EMBED
+		type === CellType.TAG ||
+		type === CellType.MULTI_TAG ||
+		type === CellType.DATE ||
+		type === CellType.NUMBER ||
+		type === CellType.FILE ||
+		type === CellType.EMBED
 	) {
 		menuHeight = 0;
 	}
@@ -305,7 +272,7 @@ export default function BodyCellContainer({
 	let className = "dataloom-cell--body__container";
 
 	const overflowClass = useOverflow(shouldWrapOverflow, {
-		ellipsis: columnType === CellType.DATE,
+		ellipsis: type === CellType.DATE,
 	});
 
 	className += " " + overflowClass;
@@ -316,8 +283,6 @@ export default function BodyCellContainer({
 		className += " dataloom-cell--disabled";
 	}
 
-	const cellTags = columnTags.filter((tag) => cellTagIds.includes(tag.id));
-
 	let shouldRunTrigger = true;
 	if (isUneditable || isDisabled) {
 		shouldRunTrigger = false;
@@ -327,6 +292,411 @@ export default function BodyCellContainer({
 	if (isDisabled) {
 		ariaLabel =
 			"This cell is disabled until you choose a frontmatter key for this column";
+	}
+
+	let contentNode: React.ReactNode;
+	let menuNode: React.ReactNode | null = null;
+	let handleCellContextClick: () => void = () => undefined;
+	let handleMenuTriggerEnterDown: () => void = () => undefined;
+	let handleMenuTriggerClick: () => void = () => undefined;
+	let handleMenuTriggerBackspaceDown: () => void = () => undefined;
+
+	switch (type) {
+		case CellType.TEXT: {
+			const { content } = props as TextCellProps;
+
+			handleMenuTriggerBackspaceDown = () => {
+				onCellChange(id, { content: "" });
+			};
+
+			handleCellContextClick = () => {
+				copyTextToClipboard(content);
+			};
+
+			const handleInputChange = React.useCallback(
+				(value: string) => {
+					onCellChange(id, { content: value });
+				},
+				[id, onCellChange]
+			);
+
+			contentNode = <TextCell value={content} />;
+			menuNode = (
+				<TextCellEdit
+					cellId={id}
+					closeRequest={menu.closeRequest}
+					shouldWrapOverflow={shouldWrapOverflow}
+					value={content}
+					onChange={handleInputChange}
+					onClose={menu.onClose}
+				/>
+			);
+			break;
+		}
+		case CellType.NUMBER: {
+			const { value } = props as NumberCellProps;
+
+			handleMenuTriggerBackspaceDown = () => {
+				onCellChange(id, { value: null });
+			};
+
+			handleCellContextClick = () => {
+				//TODO fix
+				//This is a get content function?
+				copyTextToClipboard(value?.toString() ?? "");
+			};
+
+			const handleInputChange = React.useCallback(
+				(value: number | null) => {
+					onCellChange(id, { value });
+				},
+				[id, onCellChange]
+			);
+
+			contentNode = (
+				<NumberCell
+					value={value}
+					currency={currencyType}
+					format={numberFormat}
+					prefix={numberPrefix}
+					suffix={numberSuffix}
+					separator={numberSeparator}
+				/>
+			);
+			menuNode = (
+				<NumberCellEdit
+					closeRequest={menu.closeRequest}
+					value={value}
+					onChange={handleInputChange}
+					onClose={menu.onClose}
+				/>
+			);
+			break;
+		}
+		case CellType.TAG:
+		case CellType.MULTI_TAG: {
+			const {
+				tagId,
+				onTagCellRemove,
+				onTagAdd,
+				onTagChange,
+				onTagCellAdd,
+				onTagDeleteClick,
+				onTagCellMultipleRemove,
+			} = props as TagCellProps;
+
+			const { tagIds } = props as MultiTagCellProps;
+
+			const cellTags = columnTags.filter(
+				(tag) => tagIds.includes(tag.id) || tag.id === tagId
+			);
+
+			handleMenuTriggerBackspaceDown = () => {
+				if (type === CellType.TAG) {
+					if (tagId !== null) {
+						onTagCellRemove(id, tagId);
+					}
+				} else {
+					onTagCellMultipleRemove(id, tagIds);
+				}
+			};
+
+			handleCellContextClick = () => {
+				const content = cellTags.map((tag) => tag.content).join(", ");
+				copyTextToClipboard(content);
+			};
+
+			function handleTagAdd(markdown: string, color: Color) {
+				if (markdown === "") return;
+				onTagAdd(id, columnId, markdown.trim(), color);
+			}
+
+			function handleRemoveTagClick(tagId: string) {
+				onTagCellRemove(id, tagId);
+			}
+
+			function handleTagColorChange(tagId: string, value: Color) {
+				onTagChange(columnId, tagId, { color: value });
+			}
+
+			function handleTagDeleteClick(tagId: string) {
+				onTagDeleteClick(columnId, tagId);
+			}
+
+			function handleTagContentChange(tagId: string, value: string) {
+				onTagChange(columnId, tagId, { content: value });
+			}
+
+			function handleTagClick(tagId: string) {
+				onTagCellAdd(id, tagId);
+			}
+
+			if (type === CellType.TAG) {
+				contentNode = (
+					<TagCell
+						content={cellTags[0].content}
+						color={cellTags[0].color}
+					/>
+				);
+			} else {
+				contentNode = contentNode = (
+					<MultiTagCell cellTags={cellTags} />
+				);
+			}
+
+			menuNode = (
+				<TagCellEdit
+					isMulti={type === CellType.MULTI_TAG}
+					closeRequest={menu.closeRequest}
+					columnTags={columnTags}
+					cellTags={cellTags}
+					onTagColorChange={handleTagColorChange}
+					onTagAdd={handleTagAdd}
+					onRemoveTag={handleRemoveTagClick}
+					onTagClick={handleTagClick}
+					onTagDelete={handleTagDeleteClick}
+					onTagContentChange={handleTagContentChange}
+					onClose={menu.onClose}
+				/>
+			);
+			break;
+		}
+		case CellType.DATE: {
+			const { dateTime, onColumnChange } = props as DateCellProps;
+
+			handleMenuTriggerBackspaceDown = () => {
+				onCellChange(id, { dateTime: null });
+			};
+
+			//TODO fix
+			handleCellContextClick = () => {
+				copyTextToClipboard(dateTime ?? "");
+			};
+
+			const handleDateTimeChange = React.useCallback(
+				(value: string | null) => {
+					onCellChange(id, { dateTime: value });
+				},
+				[id, onCellChange]
+			);
+
+			function handleDateFormatChange(value: DateFormat) {
+				onColumnChange(
+					columnId,
+					{ dateFormat: value },
+					{ shouldSortRows: true }
+				);
+			}
+
+			function handleDateFormatSeparatorChange(
+				value: DateFormatSeparator
+			) {
+				onColumnChange(
+					columnId,
+					{ dateFormatSeparator: value },
+					{ shouldSortRows: true }
+				);
+			}
+
+			function handleTimeFormatChange(value: boolean) {
+				onColumnChange(
+					columnId,
+					{ hour12: value },
+					{ shouldSortRows: true }
+				);
+			}
+
+			async function handleIncludeTimeToggle(value: boolean) {
+				onColumnChange(
+					columnId,
+					{ includeTime: value, frontmatterKey },
+					{ shouldSortRows: true }
+				);
+			}
+			contentNode = (
+				<DateCell
+					value={dateTime}
+					format={dateFormat}
+					formatSeparator={dateFormatSeparator}
+					includeTime={includeTime}
+					hour12={hour12}
+				/>
+			);
+
+			menuNode = (
+				<DateCellEdit
+					cellId={id}
+					value={dateTime}
+					includeTime={includeTime}
+					closeRequest={menu.closeRequest}
+					dateFormat={dateFormat}
+					hour12={hour12}
+					dateFormatSeparator={dateFormatSeparator}
+					onDateTimeChange={handleDateTimeChange}
+					onDateFormatChange={handleDateFormatChange}
+					onClose={menu.onClose}
+					onCloseRequestClear={menu.onCloseRequestClear}
+					onIncludeTimeToggle={handleIncludeTimeToggle}
+					onDateFormatSeparatorChange={
+						handleDateFormatSeparatorChange
+					}
+					onTimeFormatChange={handleTimeFormatChange}
+				/>
+			);
+			break;
+		}
+		case CellType.CHECKBOX: {
+			const { value } = props as CheckboxCellProps;
+
+			handleMenuTriggerBackspaceDown = () => {
+				onCellChange(id, { value: false });
+			};
+
+			handleCellContextClick = () => {
+				copyTextToClipboard(value ? "true" : "false");
+			};
+
+			handleMenuTriggerClick = onMenuTriggerClick(() => {
+				if (value) {
+					handleCheckboxChange(false);
+				} else {
+					handleCheckboxChange(true);
+				}
+			});
+
+			handleMenuTriggerEnterDown = onMenuTriggerEnterDown(() => {
+				if (value) {
+					handleCheckboxChange(false);
+				} else {
+					handleCheckboxChange(true);
+				}
+			});
+
+			function handleCheckboxChange(value: boolean) {
+				onCellChange(id, { value });
+			}
+
+			contentNode = <CheckboxCell value={value} />;
+			break;
+		}
+		case CellType.CREATION_TIME: {
+			//TODO fix
+			handleCellContextClick = () => {
+				copyTextToClipboard(rowCreationTime);
+			};
+
+			contentNode = (
+				<CreationTimeCell
+					value={rowCreationTime}
+					format={dateFormat}
+					formatSeparator={dateFormatSeparator}
+					hour12={hour12}
+				/>
+			);
+			break;
+		}
+		case CellType.LAST_EDITED_TIME: {
+			//TODO fix
+			handleCellContextClick = () => {
+				copyTextToClipboard(rowLastEditedTime);
+			};
+
+			contentNode = (
+				<LastEditedTimeCell
+					value={rowLastEditedTime}
+					format={dateFormat}
+					formatSeparator={dateFormatSeparator}
+					hour12={hour12}
+				/>
+			);
+			break;
+		}
+		case CellType.SOURCE: {
+			contentNode = <SourceCell source={source} />;
+			break;
+		}
+		case CellType.SOURCE_FILE: {
+			const { path } = props as SourceFileCellProps;
+
+			handleCellContextClick = () => {
+				copyTextToClipboard(path);
+			};
+
+			contentNode = <SourceFileCell path={path} />;
+			break;
+		}
+		case CellType.EMBED: {
+			const { pathOrUrl, isExternal } = props as EmbedCellProps;
+
+			handleCellContextClick = () => {
+				copyTextToClipboard(pathOrUrl);
+			};
+
+			handleMenuTriggerBackspaceDown = () => {
+				onCellChange(id, { pathOrUrl: "", alias: null });
+			};
+
+			function handleExternalLinkToggle(value: boolean) {
+				onCellChange(id, { isExternal: value });
+			}
+
+			const handleInputChange = React.useCallback(
+				(value: string) => {
+					onCellChange(id, { content: value });
+				},
+				[id, onCellChange]
+			);
+
+			contentNode = (
+				<EmbedCell
+					isExternal={isExternal}
+					pathOrUrl={pathOrUrl}
+					verticalPadding={verticalPadding}
+					horizontalPadding={horizontalPadding}
+					aspectRatio={aspectRatio}
+				/>
+			);
+			menuNode = (
+				<EmbedCellEdit
+					isExternalLink={isExternal}
+					closeRequest={menu.closeRequest}
+					value={pathOrUrl}
+					onChange={handleInputChange}
+					onClose={menu.onClose}
+					onExternalLinkToggle={handleExternalLinkToggle}
+				/>
+			);
+			break;
+		}
+		case CellType.FILE: {
+			const { path } = props as FileCellProps;
+
+			handleMenuTriggerBackspaceDown = () => {
+				onCellChange(id, { path: "", alias: null });
+			};
+
+			const handleInputChange = React.useCallback(
+				(value: string) => {
+					onCellChange(id, { content: value });
+				},
+				[id, onCellChange]
+			);
+
+			handleCellContextClick = () => {
+				copyTextToClipboard(path);
+			};
+
+			contentNode = <FileCell path={path} />;
+			menuNode = (
+				<FileCellEdit
+					onChange={handleInputChange}
+					onClose={menu.onClose}
+				/>
+			);
+			break;
+		}
+		default:
+			throw new Error("Unhandled cell type");
 	}
 
 	return (
@@ -355,158 +725,18 @@ export default function BodyCellContainer({
 						width,
 					}}
 				>
-					{columnType === CellType.TEXT && (
-						<TextCell value={content} />
-					)}
-					{columnType === CellType.EMBED && (
-						<EmbedCell
-							isExternalLink={isExternalLink}
-							value={content}
-							verticalPadding={verticalPadding}
-							horizontalPadding={horizontalPadding}
-							aspectRatio={aspectRatio}
-						/>
-					)}
-					{columnType === CellType.FILE && (
-						<FileCell value={content} />
-					)}
-					{columnType === CellType.SOURCE_FILE && (
-						<SourceFileCell content={content} />
-					)}
-					{columnType === CellType.NUMBER && (
-						<NumberCell
-							value={content}
-							currency={currencyType}
-							format={numberFormat}
-							prefix={numberPrefix}
-							suffix={numberSuffix}
-							separator={numberSeparator}
-						/>
-					)}
-					{columnType === CellType.TAG && cellTags.length === 1 && (
-						<TagCell
-							content={cellTags[0].content}
-							color={cellTags[0].color}
-						/>
-					)}
-					{columnType === CellType.MULTI_TAG &&
-						cellTags.length !== 0 && (
-							<MultiTagCell cellTags={cellTags} />
-						)}
-					{columnType === CellType.DATE && (
-						<DateCell
-							value={dateTime}
-							format={dateFormat}
-							formatSeparator={dateFormatSeparator}
-							includeTime={includeTime}
-							hour12={hour12}
-						/>
-					)}
-					{columnType === CellType.CHECKBOX && (
-						<CheckboxCell value={content} />
-					)}
-					{columnType === CellType.CREATION_TIME && (
-						<CreationTimeCell
-							value={rowCreationTime}
-							format={dateFormat}
-							formatSeparator={dateFormatSeparator}
-							hour12={hour12}
-						/>
-					)}
-					{columnType === CellType.LAST_EDITED_TIME && (
-						<LastEditedTimeCell
-							value={rowLastEditedTime}
-							format={dateFormat}
-							formatSeparator={dateFormatSeparator}
-							hour12={hour12}
-						/>
-					)}
-					{columnType === CellType.SOURCE && (
-						<SourceCell source={source} />
-					)}
+					{contentNode}
 				</div>
 			</MenuTrigger>
 			<Menu
 				id={menu.id}
-				hideBorder={
-					columnType === CellType.TEXT ||
-					columnType === CellType.NUMBER
-				}
+				hideBorder={type === CellType.TEXT || type === CellType.NUMBER}
 				isOpen={menu.isOpen}
 				position={menu.position}
 				width={menuWidth}
 				height={menuHeight}
 			>
-				{columnType === CellType.TEXT && (
-					<TextCellEdit
-						cellId={cellId}
-						closeRequest={menu.closeRequest}
-						shouldWrapOverflow={shouldWrapOverflow}
-						value={content}
-						onChange={handleInputChange}
-						onClose={menu.onClose}
-					/>
-				)}
-				{columnType === CellType.EMBED && (
-					<EmbedCellEdit
-						isExternalLink={isExternalLink}
-						closeRequest={menu.closeRequest}
-						value={content}
-						onChange={handleInputChange}
-						onClose={menu.onClose}
-						onExternalLinkToggle={handleExternalLinkToggle}
-					/>
-				)}
-				{columnType === CellType.FILE && (
-					<FileCellEdit
-						onChange={handleInputChange}
-						onClose={menu.onClose}
-					/>
-				)}
-				{columnType === CellType.NUMBER && (
-					<NumberCellEdit
-						closeRequest={menu.closeRequest}
-						value={content}
-						onChange={handleInputChange}
-						onClose={menu.onClose}
-					/>
-				)}
-				{(columnType === CellType.TAG ||
-					columnType === CellType.MULTI_TAG) && (
-					<TagCellEdit
-						isMulti={columnType === CellType.MULTI_TAG}
-						closeRequest={menu.closeRequest}
-						columnTags={columnTags}
-						cellTags={cellTags}
-						onTagColorChange={handleTagColorChange}
-						onTagAdd={handleTagAdd}
-						onRemoveTag={handleRemoveTagClick}
-						onTagClick={handleTagClick}
-						onTagDelete={handleTagDeleteClick}
-						onTagContentChange={handleTagContentChange}
-						onClose={menu.onClose}
-					/>
-				)}
-				{columnType === CellType.DATE && (
-					<DateCellEdit
-						cellId={cellId}
-						value={dateTime}
-						includeTime={includeTime}
-						closeRequest={menu.closeRequest}
-						dateFormat={dateFormat}
-						hour12={hour12}
-						dateFormatSeparator={dateFormatSeparator}
-						onDateTimeChange={handleDateTimeChange}
-						onDateFormatChange={handleDateFormatChange}
-						onClose={menu.onClose}
-						onCloseRequestClear={menu.onCloseRequestClear}
-						onIncludeTimeToggle={handleIncludeTimeToggle}
-						onDateFormatSeparatorChange={
-							handleDateFormatSeparatorChange
-						}
-						onTimeFormatChange={handleTimeFormatChange}
-					/>
-				)}
+				{menuNode}
 			</Menu>
 		</>
 	);

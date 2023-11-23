@@ -1,22 +1,45 @@
 import {
-	createTestLoomState,
+	createColumn,
+	createGenericLoomState,
+	createRow,
 	createTag,
+	createTagCell,
 } from "src/shared/loom-state/loom-state-factory";
 import CommandUndoError from "./command-undo-error";
 import CommandRedoError from "./command-redo-error";
 import TagUpdateCommand from "./tag-update-command";
+import { CellType } from "../types/loom-state";
 
 describe("tag-update-command", () => {
+	const createTestState = () => {
+		const tags = [createTag("test1"), createTag("test2")];
+		const column = createColumn({ type: CellType.TAG, tags });
+
+		const prevState = createGenericLoomState({
+			columns: [column],
+			rows: [
+				createRow(0, {
+					cells: [
+						createTagCell(column.id, {
+							tagId: tags[0].id,
+						}),
+					],
+				}),
+				createRow(1, {
+					cells: [
+						createTagCell(column.id, {
+							tagId: tags[1].id,
+						}),
+					],
+				}),
+			],
+		});
+		return { prevState, tags };
+	};
+
 	it("should throw an error when undo() is called before execute()", () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 2);
-
-		const tags = [createTag("test1"), createTag("test2")];
-		prevState.model.columns[0].tags = tags;
-
-		const tagIds = tags.map((t) => t.id);
-		prevState.model.rows[0].cells[0].tagIds = tagIds;
-		prevState.model.rows[1].cells[0].tagIds = tagIds;
+		const { prevState, tags } = createTestState();
 
 		const command = new TagUpdateCommand(
 			prevState.model.columns[0].id,
@@ -36,14 +59,7 @@ describe("tag-update-command", () => {
 
 	it("should throw an error when redo() is called before undo()", () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 2);
-
-		const tags = [createTag("test1"), createTag("test2")];
-		prevState.model.columns[0].tags = tags;
-
-		const tagIds = tags.map((t) => t.id);
-		prevState.model.rows[0].cells[0].tagIds = tagIds;
-		prevState.model.rows[1].cells[0].tagIds = tagIds;
+		const { prevState, tags } = createTestState();
 
 		const command = new TagUpdateCommand(
 			prevState.model.columns[0].id,
@@ -64,14 +80,7 @@ describe("tag-update-command", () => {
 
 	it("should update a tag property when execute() is called", async () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 2);
-
-		const tags = [createTag("test1"), createTag("test2")];
-		prevState.model.columns[0].tags = tags;
-
-		const tagIds = tags.map((t) => t.id);
-		prevState.model.rows[0].cells[0].tagIds = tagIds;
-		prevState.model.rows[1].cells[0].tagIds = tagIds;
+		const { prevState, tags } = createTestState();
 
 		const command = new TagUpdateCommand(
 			prevState.model.columns[0].id,
@@ -93,14 +102,7 @@ describe("tag-update-command", () => {
 
 	it("should reset the cell property when undo() is called", () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 2);
-
-		const tags = [createTag("test1"), createTag("test2")];
-		prevState.model.columns[0].tags = tags;
-
-		const tagIds = tags.map((t) => t.id);
-		prevState.model.rows[0].cells[0].tagIds = tagIds;
-		prevState.model.rows[1].cells[0].tagIds = tagIds;
+		const { prevState, tags } = createTestState();
 
 		const command = new TagUpdateCommand(
 			prevState.model.columns[0].id,
@@ -121,14 +123,7 @@ describe("tag-update-command", () => {
 
 	it("should update a tag property when redo() is called", async () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 2);
-
-		const tags = [createTag("test1"), createTag("test2")];
-		prevState.model.columns[0].tags = tags;
-
-		const tagIds = tags.map((t) => t.id);
-		prevState.model.rows[0].cells[0].tagIds = tagIds;
-		prevState.model.rows[1].cells[0].tagIds = tagIds;
+		const { prevState, tags } = createTestState();
 
 		const command = new TagUpdateCommand(
 			prevState.model.columns[0].id,

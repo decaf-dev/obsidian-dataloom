@@ -2,8 +2,7 @@ import MigrateState from "./migrate-state";
 import ColumnNotFoundError from "src/shared/error/column-not-found-error";
 import { LoomState4, CellType as CellType4 } from "../types/loom-state-4";
 import { LoomState5, BodyCell as BodyCell5 } from "../types/loom-state-5";
-
-const CHECKBOX_MARKDOWN_UNCHECKED = "[ ]";
+import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/markdown/constants";
 
 /**
  * Migrates to 6.8.0

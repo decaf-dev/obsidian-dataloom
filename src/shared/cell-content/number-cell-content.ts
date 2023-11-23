@@ -1,33 +1,44 @@
 import { addThousandsSeparator } from "src/react/loom-app/number-cell/utils";
-import { stringToCurrencyString } from "../conversion";
 import { NumberFormat, CurrencyType } from "../loom-state/types/loom-state";
-import { isNumber } from "../match";
 
 export const getNumberCellContent = (
 	format: NumberFormat,
-	value: string,
+	value: number | null,
 	options?: {
 		currency?: CurrencyType;
 		prefix?: string;
 		suffix?: string;
 		separator?: string;
 	}
-) => {
+): string => {
 	const { currency, separator, suffix, prefix } = options ?? {};
 
-	if (!isNumber(value)) {
+	if (value === null) {
 		return "";
 	}
 
+	let formattedValue = value.toString();
+
 	if (format === NumberFormat.CURRENCY) {
-		if (currency === undefined) {
-			throw new Error("currency is required when format is currency");
+		if (!currency) {
+			throw new Error(
+				"a currency is required when number format is set to currency"
+			);
 		}
-		return stringToCurrencyString(value, currency);
+		return toCurrencyString(value, currency);
 	}
-	if (separator && value.length > 0)
-		value = addThousandsSeparator(value, separator);
-	if (prefix && value.length > 0) value = `${prefix} ${value}`;
-	if (suffix && value.length > 0) value = `${value} ${suffix}`;
-	return value;
+	if (separator && formattedValue.length > 0)
+		formattedValue = addThousandsSeparator(formattedValue, separator);
+	if (prefix && formattedValue.length > 0)
+		formattedValue = `${prefix} ${value}`;
+	if (suffix && formattedValue.length > 0)
+		formattedValue = `${value} ${suffix}`;
+	return formattedValue;
+};
+
+const toCurrencyString = (value: number, type: CurrencyType) => {
+	return new Intl.NumberFormat("en-US", {
+		style: "currency",
+		currency: type,
+	}).format(value);
 };

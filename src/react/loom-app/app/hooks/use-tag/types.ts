@@ -4,15 +4,10 @@ export type TagAddHandler = (
 	cellId: string,
 	columnId: string,
 	markdown: string,
-	color: Color,
-	isMultiTag: boolean
+	color: Color
 ) => void;
 
-export type TagCellAddHandler = (
-	cellId: string,
-	tagId: string,
-	isMultiTag: boolean
-) => void;
+export type TagCellAddHandler = (cellId: string, tagId: string) => void;
 
 export type TagCellRemoveHandler = (cellId: string, tagId: string) => void;
 

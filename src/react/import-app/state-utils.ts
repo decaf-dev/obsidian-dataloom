@@ -1,8 +1,11 @@
 import {
-	createCell,
 	createRow,
 	createColumn,
 	createTag,
+	createTextCell,
+	createDateCell,
+	createMultiTagCell,
+	createTagCell,
 } from "src/shared/loom-state/loom-state-factory";
 import {
 	Cell,
@@ -48,7 +51,7 @@ export const addImportData = (
 		const { cells } = row;
 		const newCells = [...cells];
 		newColumns.forEach((column) => {
-			const cell = createCell(column.id);
+			const cell = createTextCell(column.id);
 			newCells.push(cell);
 		});
 		return {
@@ -81,8 +84,10 @@ export const addImportData = (
 					const { importColumnIndex } = match;
 					content = importRow[importColumnIndex].trim();
 
+					//TODO THIS BUILD: handle all cell types
+
 					if (type === CellType.TAG) {
-						const { cell, newTags } = createTagCell(
+						const { cell, newTags } = findTagCell(
 							columnTags,
 							columnId,
 							content
@@ -90,7 +95,7 @@ export const addImportData = (
 						newCell = cell;
 						columnTags.push(...newTags);
 					} else if (type === CellType.MULTI_TAG) {
-						const { cell, newTags } = createMultiTagCell(
+						const { cell, newTags } = findMultiTagCell(
 							columnTags,
 							columnId,
 							content
@@ -98,7 +103,7 @@ export const addImportData = (
 						newCell = cell;
 						columnTags.push(...newTags);
 					} else if (type === CellType.DATE) {
-						const cell = createDateCell(
+						const cell = findDateCell(
 							columnId,
 							content,
 							dateFormat,
@@ -108,7 +113,7 @@ export const addImportData = (
 					}
 				}
 				if (!newCell) {
-					newCell = createCell(columnId, {
+					newCell = createTextCell(columnId, {
 						content,
 					});
 				}
@@ -133,7 +138,7 @@ export const addImportData = (
 	};
 };
 
-const createMultiTagCell = (
+const findMultiTagCell = (
 	columnTags: Tag[],
 	columnId: string,
 	content: string
@@ -157,7 +162,7 @@ const createMultiTagCell = (
 		});
 	}
 
-	const cell = createCell(columnId, {
+	const cell = createMultiTagCell(columnId, {
 		tagIds,
 	});
 	return {
@@ -166,11 +171,7 @@ const createMultiTagCell = (
 	};
 };
 
-const createTagCell = (
-	columnTags: Tag[],
-	columnId: string,
-	content: string
-) => {
+const findTagCell = (columnTags: Tag[], columnId: string, content: string) => {
 	const newTags: Tag[] = [];
 	let tagId: string | null = null;
 
@@ -192,8 +193,8 @@ const createTagCell = (
 		});
 	}
 
-	const cell = createCell(columnId, {
-		tagIds: tagId ? [tagId] : undefined,
+	const cell = createTagCell(columnId, {
+		tagId,
 	});
 	return {
 		cell,
@@ -201,7 +202,7 @@ const createTagCell = (
 	};
 };
 
-const createDateCell = (
+const findDateCell = (
 	columnId: string,
 	content: string,
 	dateFormat: DateFormat | null,
@@ -217,7 +218,7 @@ const createDateCell = (
 			);
 		}
 	}
-	const cell = createCell(columnId, {
+	const cell = createDateCell(columnId, {
 		dateTime,
 	});
 	return cell;

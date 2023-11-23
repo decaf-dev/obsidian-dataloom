@@ -4,8 +4,8 @@ export const getSourceFileContent = (
 	content: string,
 	shouldRemoveMarkdown = false
 ) => {
-	if (content === "") return "";
 	if (shouldRemoveMarkdown) return content;
+	if (content === "") return "";
 
 	const basename = getBasename(content);
 

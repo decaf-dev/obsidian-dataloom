@@ -1,6 +1,6 @@
 import {
 	createCheckboxFilter,
-	createTestLoomState,
+	createLoomState,
 	createTextFilter,
 } from "src/shared/loom-state/loom-state-factory";
 import CommandUndoError from "./command-undo-error";
@@ -11,7 +11,7 @@ import CommandRedoError from "./command-redo-error";
 describe("filter-update-command", () => {
 	it("should throw an error when undo() is called before execute()", () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1);
+		const prevState = createLoomState(1, 1);
 
 		const filter = createTextFilter(prevState.model.columns[0].id);
 		prevState.model.filters.push(filter);
@@ -29,7 +29,7 @@ describe("filter-update-command", () => {
 
 	it("should throw an error when redo() is called before undo()", () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1);
+		const prevState = createLoomState(1, 1);
 
 		const filter = createTextFilter(prevState.model.columns[0].id);
 		prevState.model.filters.push(filter);
@@ -49,7 +49,7 @@ describe("filter-update-command", () => {
 
 	it("should partially update the filter", async () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1);
+		const prevState = createLoomState(1, 1);
 
 		const filter = createTextFilter(prevState.model.columns[0].id);
 		prevState.model.filters.push(filter);
@@ -70,7 +70,7 @@ describe("filter-update-command", () => {
 
 	it("should fully update the filter", () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1);
+		const prevState = createLoomState(1, 1);
 
 		const filter = createTextFilter(prevState.model.columns[0].id, {
 			text: "test",
@@ -90,7 +90,7 @@ describe("filter-update-command", () => {
 
 	it("should undo the filter update", () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1);
+		const prevState = createLoomState(1, 1);
 
 		const filter = createTextFilter(prevState.model.columns[0].id, {
 			text: "test",
@@ -111,7 +111,7 @@ describe("filter-update-command", () => {
 
 	it("should redo the filter update", () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1);
+		const prevState = createLoomState(1, 1);
 
 		const filter = createTextFilter(prevState.model.columns[0].id, {
 			text: "test",

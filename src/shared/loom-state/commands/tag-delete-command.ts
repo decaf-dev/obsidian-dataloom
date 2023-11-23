@@ -1,6 +1,16 @@
 import LoomStateCommand from "./loom-state-command";
-import { Cell, Column, LoomState, Row, Tag } from "../types/loom-state";
+import {
+	Cell,
+	CellType,
+	Column,
+	LoomState,
+	MultiTagCell,
+	Row,
+	Tag,
+	TagCell,
+} from "../types/loom-state";
 import TagNotFoundError from "src/shared/error/tag-not-found-error";
+import ColumnNotFoundError from "src/shared/error/column-not-found-error";
 
 export default class TagDeleteCommand extends LoomStateCommand {
 	private tagId: string;
@@ -43,29 +53,65 @@ export default class TagDeleteCommand extends LoomStateCommand {
 					tag,
 				};
 
+				const nextTags = column.tags.filter(
+					(tag) => tag.id !== this.tagId
+				);
+
 				return {
 					...column,
-					tags: column.tags.filter((tag) => tag.id !== this.tagId),
+					tags: nextTags,
 				};
 			}
 			return column;
 		});
 
+		const cellsToColumn = new Map<string, Column>();
+		const cells = rows.flatMap((row) => row.cells);
+		cells.forEach((cell) => {
+			const column = columns.find(
+				(column) => column.id === cell.columnId
+			);
+			if (!column) throw new ColumnNotFoundError({ id: cell.columnId });
+			cellsToColumn.set(cell.columnId, column);
+		});
+
 		const nextRows: Row[] = rows.map((row) => {
 			const { cells } = row;
 			const nextCells: Cell[] = cells.map((cell) => {
-				if (cell.tagIds.includes(this.tagId)) {
-					this.previousCellTagIds.push({
-						cellId: cell.id,
-						tagIds: [...cell.tagIds],
-					});
+				const column = cellsToColumn.get(cell.columnId);
+				if (!column)
+					throw new ColumnNotFoundError({ id: cell.columnId });
 
-					return {
-						...cell,
-						tagIds: cell.tagIds.filter(
-							(tagId) => tagId !== this.tagId
-						),
-					};
+				const { type } = column;
+
+				if (type === CellType.TAG) {
+					const { tagId } = cell as TagCell;
+					if (tagId === this.tagId) {
+						this.previousCellTagIds.push({
+							cellId: cell.id,
+							tagIds: [tagId],
+						});
+
+						return {
+							...cell,
+							tagId: null,
+						};
+					}
+				} else if (type === CellType.MULTI_TAG) {
+					const { tagIds } = cell as MultiTagCell;
+					if (tagIds.includes(this.tagId)) {
+						this.previousCellTagIds.push({
+							cellId: cell.id,
+							tagIds: [...tagIds],
+						});
+
+						return {
+							...cell,
+							tagIds: tagIds.filter(
+								(tagId) => tagId !== this.tagId
+							),
+						};
+					}
 				}
 				return cell;
 			});

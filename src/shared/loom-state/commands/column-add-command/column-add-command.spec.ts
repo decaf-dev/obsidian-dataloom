@@ -1,11 +1,11 @@
-import { createTestLoomState } from "src/shared/loom-state/loom-state-factory";
 import CommandUndoError from "../command-undo-error";
 import CommandRedoError from "../command-redo-error";
 import ColumnAddCommand from ".";
+import { createLoomState } from "../../loom-state-factory";
 
 describe("column-add-command", () => {
 	it("should throw an error when undo() is called before execute()", () => {
-		const prevState = createTestLoomState(1, 1);
+		const prevState = createLoomState(1, 1);
 		const command = new ColumnAddCommand();
 
 		try {
@@ -16,7 +16,7 @@ describe("column-add-command", () => {
 	});
 
 	it("should throw an error when redo() is called before undo()", () => {
-		const prevState = createTestLoomState(1, 1);
+		const prevState = createLoomState(1, 1);
 		const command = new ColumnAddCommand();
 		const executeState = command.execute(prevState);
 
@@ -29,7 +29,7 @@ describe("column-add-command", () => {
 
 	it("should add a column when execute() is called", () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1);
+		const prevState = createLoomState(1, 1);
 		const command = new ColumnAddCommand();
 
 		//Act
@@ -42,7 +42,7 @@ describe("column-add-command", () => {
 
 	it("should remove the added column when undo() is called", () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1);
+		const prevState = createLoomState(1, 1);
 		const command = new ColumnAddCommand();
 
 		//Act

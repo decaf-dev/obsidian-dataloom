@@ -1,5 +1,5 @@
 import {
-	createCell,
+	createCellForType,
 	createRow,
 } from "src/shared/loom-state/loom-state-factory";
 import LoomStateCommand from "./loom-state-command";
@@ -63,9 +63,7 @@ export default class RowInsertCommand extends LoomStateCommand {
 
 		const cells = columns.map((column) => {
 			const { id, type } = column;
-			return createCell(id, {
-				type,
-			});
+			return createCellForType(id, type);
 		});
 		//Create the new row and cells to insert
 		const createdRow = createRow(insertIndex, { cells });

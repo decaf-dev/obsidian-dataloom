@@ -1,72 +1,93 @@
 import LoomStateCommand from "./loom-state-command";
-import { Cell, LoomState, Row } from "../types/loom-state";
+import {
+	Cell,
+	CellType,
+	LoomState,
+	MultiTagCell,
+	Row,
+	TagCell,
+} from "../types/loom-state";
 import RowNotFoundError from "src/shared/error/row-not-found-error";
 import { getCurrentDateTime } from "src/shared/date/utils";
+import { mapCellsToColumn } from "../utils/column-utils";
+import ColumnNotFoundError from "src/shared/error/column-not-found-error";
 
 export default class TagCellAddCommand extends LoomStateCommand {
 	private cellId: string;
 	private tagId: string;
-	private isMultiTag: boolean;
 
-	private rowId: string;
+	private targetRowId: string;
 
-	private previousCellTagIds: string[];
-	private nextCellTagIds: string[];
+	private originalCellTagIds: string[];
+	private updatedCellTagIds: string[];
 
-	private previousEditedDateTime: string;
-	private nextEditedDateTime: string;
+	private originalLastEditedDateTime: string;
+	private updatedLastEditedDateTime: string;
 
-	constructor(cellId: string, tagId: string, isMultiTag: boolean) {
+	constructor(cellId: string, tagId: string) {
 		super(true);
 		this.cellId = cellId;
 		this.tagId = tagId;
-		this.isMultiTag = isMultiTag;
 	}
 
 	execute(prevState: LoomState): LoomState {
 		super.onExecute();
 
-		const { rows } = prevState.model;
+		const { rows, columns } = prevState.model;
 		const row = rows.find((row) =>
 			row.cells.find((cell) => cell.id === this.cellId)
 		);
 		if (!row) throw new RowNotFoundError();
-		this.rowId = row.id;
-		this.previousEditedDateTime = row.lastEditedDateTime;
 
+		this.targetRowId = row.id;
+		this.originalLastEditedDateTime = row.lastEditedDateTime;
+
+		const cellsToColumn = mapCellsToColumn(columns, rows);
 		const nextRows: Row[] = rows.map((row) => {
 			const { cells } = row;
 			const nextCells: Cell[] = cells.map((cell) => {
-				const { tagIds } = cell;
+				const { id } = cell;
 
-				let updatedTagIds: string[] = [];
-				if (cell.id === this.cellId) {
-					this.previousCellTagIds = [...tagIds];
+				if (id === this.cellId) {
+					const column = cellsToColumn.get(cell.columnId);
+					if (!column)
+						throw new ColumnNotFoundError({
+							id: cell.columnId,
+						});
 
-					if (this.isMultiTag === false) {
-						updatedTagIds = [this.tagId];
-						this.nextCellTagIds = updatedTagIds;
-						//If there was already a tag attached to the cell, remove it
-						if (tagIds.length > 0) {
-							return {
-								...cell,
-								tagIds: updatedTagIds,
-							};
+					const { type } = column;
+					if (type === CellType.TAG) {
+						const { tagId } = cell as TagCell;
+						if (tagId) {
+							this.originalCellTagIds = [tagId];
+						} else {
+							this.originalCellTagIds = [];
 						}
+						this.updatedCellTagIds = [this.tagId];
+
+						return {
+							...cell,
+							tagId: this.tagId,
+						};
+					} else if (type === CellType.MULTI_TAG) {
+						const { tagIds } = cell as MultiTagCell;
+						this.originalCellTagIds = [...tagIds];
+						this.updatedCellTagIds = [...tagIds, this.tagId];
+
+						return {
+							...cell,
+							tagIds: [...tagIds, this.tagId],
+						};
+					} else {
+						throw new Error("Cell type is not a tag or multi tag");
 					}
-					updatedTagIds = [...tagIds, this.tagId];
-					this.nextCellTagIds = updatedTagIds;
-					return {
-						...cell,
-						tagIds: updatedTagIds,
-					};
 				}
 				return cell;
 			});
 
-			if (row.id === this.rowId) {
+			if (row.id === this.targetRowId) {
 				const newLastEditedTime = getCurrentDateTime();
-				this.nextEditedDateTime = newLastEditedTime;
+				this.updatedLastEditedDateTime = newLastEditedTime;
 				return {
 					...row,
 					lastEditedDateTime: newLastEditedTime,
@@ -88,24 +109,46 @@ export default class TagCellAddCommand extends LoomStateCommand {
 	undo(prevState: LoomState): LoomState {
 		super.onUndo();
 
-		const { rows } = prevState.model;
+		const { columns, rows } = prevState.model;
 
+		const cellsToColumn = mapCellsToColumn(columns, rows);
 		const nextRows: Row[] = rows.map((row) => {
 			const { cells } = row;
 			const nextCells: Cell[] = cells.map((cell) => {
-				if (cell.id === this.cellId) {
-					return {
-						...cell,
-						tagIds: this.previousCellTagIds,
-					};
+				const { id } = cell;
+
+				if (id === this.cellId) {
+					const column = cellsToColumn.get(cell.columnId);
+					if (!column)
+						throw new ColumnNotFoundError({
+							id: cell.columnId,
+						});
+
+					const { type } = column;
+					if (type === CellType.TAG) {
+						return {
+							...cell,
+							tagId:
+								this.originalCellTagIds.length !== 0
+									? this.originalCellTagIds[0]
+									: null,
+						};
+					} else if (type === CellType.MULTI_TAG) {
+						return {
+							...cell,
+							tagIds: this.originalCellTagIds,
+						};
+					} else {
+						throw new Error("Cell type is not a tag or multi tag");
+					}
 				}
 				return cell;
 			});
 
-			if (row.id === this.rowId) {
+			if (row.id === this.targetRowId) {
 				return {
 					...row,
-					lastEditedDateTime: this.previousEditedDateTime,
+					lastEditedDateTime: this.originalLastEditedDateTime,
 					cells: nextCells,
 				};
 			}
@@ -124,24 +167,46 @@ export default class TagCellAddCommand extends LoomStateCommand {
 	redo(prevState: LoomState): LoomState {
 		super.onRedo();
 
-		const { rows } = prevState.model;
+		const { columns, rows } = prevState.model;
 
+		const cellsToColumn = mapCellsToColumn(columns, rows);
 		const nextRows: Row[] = rows.map((row) => {
 			const { cells } = row;
 			const nextCells: Cell[] = cells.map((cell) => {
-				if (cell.id === this.cellId) {
-					return {
-						...cell,
-						tagIds: this.nextCellTagIds,
-					};
+				const { id } = cell;
+
+				if (id === this.cellId) {
+					const column = cellsToColumn.get(cell.columnId);
+					if (!column)
+						throw new ColumnNotFoundError({
+							id: cell.columnId,
+						});
+
+					const { type } = column;
+					if (type === CellType.TAG) {
+						return {
+							...cell,
+							tagId:
+								this.updatedCellTagIds.length !== 0
+									? this.updatedCellTagIds[0]
+									: null,
+						};
+					} else if (type === CellType.MULTI_TAG) {
+						return {
+							...cell,
+							tagIds: this.updatedCellTagIds,
+						};
+					} else {
+						throw new Error("Cell type is not a tag or multi tag");
+					}
 				}
 				return cell;
 			});
 
-			if (row.id === this.rowId) {
+			if (row.id === this.targetRowId) {
 				return {
 					...row,
-					lastEditedDateTime: this.nextEditedDateTime,
+					lastEditedDateTime: this.updatedLastEditedDateTime,
 					cells: nextCells,
 				};
 			}

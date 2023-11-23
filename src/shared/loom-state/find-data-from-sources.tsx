@@ -1,5 +1,9 @@
 import { App } from "obsidian";
-import { createCell, createRow } from "./loom-state-factory";
+import {
+	createCellForType,
+	createRow,
+	createSourceFileCell,
+} from "./loom-state-factory";
 import {
 	Cell,
 	CellType,
@@ -96,7 +100,7 @@ const findRowsFromFolder = (
 
 			let newCell: Cell | null = null;
 			if (type === CellType.SOURCE_FILE) {
-				newCell = createCell(id, { type, content: path });
+				newCell = createSourceFileCell(id, { path });
 			} else if (frontmatterKey !== null) {
 				const result = deserializeFrontmatterForCell(app, column, path);
 				if (result !== null) {
@@ -107,7 +111,7 @@ const findRowsFromFolder = (
 				}
 			}
 
-			if (newCell === null) newCell = createCell(id, { type });
+			if (newCell === null) newCell = createCellForType(id, type);
 			cells.push(newCell);
 		});
 

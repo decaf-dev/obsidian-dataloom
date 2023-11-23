@@ -5,13 +5,12 @@ import { appendOrReplaceFirstChild } from "src/shared/render/utils";
 import "./styles.css";
 
 interface Props {
-	value: string;
+	path: string;
 }
 
-export default function FileCell({ value }: Props) {
-	const content = getFileCellContent(value);
+export default function FileCell({ path }: Props) {
+	const content = getFileCellContent(path, false);
 	const { containerRef, renderRef } = useRenderMarkdown(content);
-
 	return (
 		<div className="dataloom-file-cell">
 			<div

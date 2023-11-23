@@ -11,15 +11,25 @@ import {
 	LoomState,
 	Tag,
 	Source,
+	DateCell,
+	CheckboxCell,
+	NumberCell,
+	TextCell,
+	FileCell,
+	EmbedCell,
+	SourceFileCell,
+	TagCell,
+	MultiTagCell,
 } from "../types/loom-state";
-import { isCheckboxChecked } from "../../match";
 import { getSourceCellContent } from "src/shared/cell-content/source-cell-content";
 import {
-	forceEmptyCellsToBottom,
+	forceEmptyNumberCellsToBottom,
 	sortByBoolean,
 	sortByNumber,
 	sortByText,
 } from "src/shared/sort-utils";
+import { getFileNameFromPath } from "src/shared/link/path-utils";
+import { isRelativePath } from "src/shared/link/check-link";
 
 export default class RowSortCommand extends LoomStateCommand {
 	/**
@@ -159,23 +169,69 @@ export default class RowSortCommand extends LoomStateCommand {
 	): number {
 		const { type, sortDir, tags } = column;
 		if (type === CellType.NUMBER) {
-			return this.sortByNumberCell(cellA, cellB, sortDir);
-		} else if (type === CellType.TAG || type === CellType.MULTI_TAG) {
-			return this.sortByTag(cellA, cellB, tags, sortDir);
+			return this.sortByNumberCell(
+				cellA as NumberCell,
+				cellB as NumberCell,
+				sortDir
+			);
+		} else if (type === CellType.MULTI_TAG) {
+			return this.sortByMultiTag(
+				cellA as MultiTagCell,
+				cellB as MultiTagCell,
+				tags,
+				sortDir
+			);
+		} else if (type === CellType.TAG) {
+			return this.sortByTag(
+				cellA as TagCell,
+				cellB as TagCell,
+				tags,
+				sortDir
+			);
 		} else if (type === CellType.DATE) {
-			return this.sortByDateCell(cellA, cellB, sortDir);
+			return this.sortByDateCell(
+				cellA as DateCell,
+				cellB as DateCell,
+				sortDir
+			);
 		} else if (type === CellType.LAST_EDITED_TIME) {
 			return this.sortByLastEditedTimeCell(rowA, rowA, sortDir);
 		} else if (type === CellType.CREATION_TIME) {
 			return this.sortByCreationTimeCell(rowB, rowB, sortDir);
 		} else if (type === CellType.CHECKBOX) {
-			return this.sortByCheckboxCell(cellA, cellB, sortDir);
+			return this.sortByCheckboxCell(
+				cellA as CheckboxCell,
+				cellB as CheckboxCell,
+				sortDir
+			);
 		} else if (type === CellType.SOURCE_FILE) {
-			return this.sortBySourceFileCell(cellA, cellB, sortDir);
+			return this.sortBySourceFileCell(
+				cellA as SourceFileCell,
+				cellB as SourceFileCell,
+				sortDir
+			);
 		} else if (type === CellType.SOURCE) {
 			return this.sortBySourceCell(sourceA, sourceB, sortDir);
+		} else if (type === CellType.TEXT) {
+			return this.sortByTextCell(
+				cellA as TextCell,
+				cellB as TextCell,
+				sortDir
+			);
+		} else if (type === CellType.FILE) {
+			return this.sortByFileCell(
+				cellA as FileCell,
+				cellB as FileCell,
+				sortDir
+			);
+		} else if (type === CellType.EMBED) {
+			return this.sortByEmbedCell(
+				cellA as EmbedCell,
+				cellB as EmbedCell,
+				sortDir
+			);
 		} else {
-			return this.sortByTextCell(cellA, cellB, sortDir);
+			throw new Error("Unhandled cell type");
 		}
 	}
 
@@ -191,35 +247,74 @@ export default class RowSortCommand extends LoomStateCommand {
 		return sortByText(contentA, contentB, sortDir, false);
 	}
 
-	private sortBySourceFileCell(a: Cell, b: Cell, sortDir: SortDir): number {
-		const { content: contentA } = a;
-		const { content: contentB } = b;
+	private sortBySourceFileCell(
+		a: SourceFileCell,
+		b: SourceFileCell,
+		sortDir: SortDir
+	): number {
+		const { path: pathA } = a;
+		const { path: pathB } = b;
+
+		const contentA = getFileNameFromPath(pathA);
+		const contentB = getFileNameFromPath(pathB);
+
 		return sortByText(contentA, contentB, sortDir, false);
 	}
 
-	private sortByTextCell(a: Cell, b: Cell, sortDir: SortDir): number {
+	private sortByTextCell(a: TextCell, b: TextCell, sortDir: SortDir): number {
 		const { content: contentA } = a;
 		const { content: contentB } = b;
-
 		return sortByText(contentA, contentB, sortDir);
 	}
 
-	private sortByNumberCell(a: Cell, b: Cell, sortDir: SortDir): number {
-		const { content: contentA } = a;
-		const { content: contentB } = b;
+	private sortByFileCell(a: FileCell, b: FileCell, sortDir: SortDir): number {
+		const { path: pathA } = a;
+		const { path: pathB } = b;
 
-		const result = forceEmptyCellsToBottom(contentA, contentB);
-		if (result !== null) return result;
-
-		const numberA = parseFloat(contentA);
-		const numberB = parseFloat(contentB);
-
-		return sortByNumber(numberA, numberB, sortDir);
+		const contentA = getFileNameFromPath(pathA);
+		const contentB = getFileNameFromPath(pathB);
+		return sortByText(contentA, contentB, sortDir);
 	}
 
-	private sortByTag(
-		cellA: Cell,
-		cellB: Cell,
+	private sortByEmbedCell(
+		a: EmbedCell,
+		b: EmbedCell,
+		sortDir: SortDir
+	): number {
+		const { pathOrUrl: pathOrUrlA } = a;
+		const { pathOrUrl: pathOrUrlB } = b;
+
+		let contentA = pathOrUrlA;
+		if (isRelativePath(pathOrUrlA)) {
+			contentA = getFileNameFromPath(pathOrUrlA);
+		}
+
+		let contentB = pathOrUrlB;
+		if (isRelativePath(pathOrUrlB)) {
+			contentB = getFileNameFromPath(pathOrUrlB);
+		}
+		return sortByText(contentA, contentB, sortDir);
+	}
+
+	private sortByNumberCell(
+		a: NumberCell,
+		b: NumberCell,
+		sortDir: SortDir
+	): number {
+		const { value: valueA } = a;
+		const { value: valueB } = b;
+
+		const result = forceEmptyNumberCellsToBottom(valueA, valueB);
+		if (result !== null) {
+			return result;
+		}
+
+		return sortByNumber(valueA as number, valueB as number, sortDir);
+	}
+
+	private sortByMultiTag(
+		cellA: MultiTagCell,
+		cellB: MultiTagCell,
 		columnTags: Tag[],
 		sortDir: SortDir
 	): number {
@@ -256,16 +351,47 @@ export default class RowSortCommand extends LoomStateCommand {
 		return 0;
 	}
 
-	private sortByCheckboxCell(a: Cell, b: Cell, sortDir: SortDir): number {
-		const { content: contentA } = a;
-		const { content: contentB } = b;
-		const isCheckedA = isCheckboxChecked(contentA);
-		const isCheckedB = isCheckboxChecked(contentB);
+	private sortByTag(
+		cellA: TagCell,
+		cellB: TagCell,
+		columnTags: Tag[],
+		sortDir: SortDir
+	): number {
+		const { tagId: tagIdA } = cellA;
+		const { tagId: tagIdB } = cellB;
+		//Force empty cells to the bottom
+		if (tagIdA === null && tagIdB !== null) return 1;
+		if (tagIdA !== null && tagIdB == null) return -1;
+		if (tagIdA === null && tagIdB === null) return 0;
 
-		return sortByBoolean(isCheckedA, isCheckedB, sortDir);
+		const tagA = columnTags.find((t) => t.id === tagIdA);
+		if (!tagA) throw new TagNotFoundError(tagIdA as string);
+
+		const tagB = columnTags.find((t) => t.id === tagIdB);
+		if (!tagB) throw new TagNotFoundError(tagIdB as string);
+
+		if (sortDir === SortDir.ASC) {
+			const result = tagA.content.localeCompare(tagB.content);
+			if (result !== 0) return result;
+		} else if (sortDir === SortDir.DESC) {
+			const result = tagB.content.localeCompare(tagA.content);
+			if (result !== 0) return result;
+		}
+		//If we got here, that means the cells have the exact same tags
+		return 0;
 	}
 
-	private sortByDateCell(a: Cell, b: Cell, sortDir: SortDir): number {
+	private sortByCheckboxCell(
+		a: CheckboxCell,
+		b: CheckboxCell,
+		sortDir: SortDir
+	): number {
+		const { value: valueA } = a;
+		const { value: valueB } = b;
+		return sortByBoolean(valueA, valueB, sortDir);
+	}
+
+	private sortByDateCell(a: DateCell, b: DateCell, sortDir: SortDir): number {
 		const dateTimeA = a.dateTime ? new Date(a.dateTime).getTime() : 0;
 		const dateTimeB = b.dateTime ? new Date(b.dateTime).getTime() : 0;
 		return sortByNumber(dateTimeA, dateTimeB, sortDir);

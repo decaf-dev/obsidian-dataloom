@@ -1,9 +1,12 @@
 import {
-	createTestLoomState,
 	createFolderSource,
 	createColumn,
-	createCustomTestLoomState,
-	createRowWithCells,
+	createLoomState,
+	createTextCell,
+	createRow,
+	createSourceCell,
+	createSourceFileCell,
+	createGenericLoomState,
 } from "src/shared/loom-state/loom-state-factory";
 import { CellType } from "../types/loom-state";
 import CommandUndoError from "./command-undo-error";
@@ -19,41 +22,45 @@ describe("source-add-command", () => {
 			createColumn(),
 		];
 		const rows = [
-			createRowWithCells(0, columns),
-			createRowWithCells(1, columns, {
-				sourceId: sources[0].id,
-				contentForCells: [
-					{
-						type: CellType.SOURCE_FILE,
-						content: "test1/file1.md",
-					},
+			createRow(0, {
+				cells: [
+					createSourceCell(columns[0].id),
+					createSourceFileCell(columns[1].id),
+					createTextCell(columns[2].id),
 				],
 			}),
-			createRowWithCells(2, columns, {
+			createRow(1, {
 				sourceId: sources[0].id,
-				contentForCells: [
-					{
-						type: CellType.SOURCE_FILE,
-						content: "test1/file2.md",
-					},
+				cells: [
+					createSourceCell(columns[0].id),
+					createSourceFileCell(columns[1].id, {
+						path: "test1/file1.md",
+					}),
+					createTextCell(columns[2].id),
+				],
+			}),
+			createRow(2, {
+				sourceId: sources[0].id,
+				cells: [
+					createSourceCell(columns[0].id),
+					createSourceFileCell(columns[1].id, {
+						path: "test1/file2.md",
+					}),
+					createTextCell(columns[2].id),
 				],
 			}),
 		];
-		const state = createCustomTestLoomState(columns, rows, {
-			sources,
-		});
+		const state = createGenericLoomState({ columns, rows, sources });
 		return state;
 	}
 
 	function stateWithZeroSources() {
-		const columns = [createColumn()];
-		const rows = [createRowWithCells(0, columns)];
-		const state = createCustomTestLoomState(columns, rows);
+		const state = createLoomState(1, 1);
 		return state;
 	}
 
 	it("throws an error when undo() is called before execute()", () => {
-		const prevState = createTestLoomState(1, 1);
+		const prevState = stateWithZeroSources();
 		const command = new SourceAddCommand(createFolderSource("test", false));
 
 		try {
@@ -64,7 +71,7 @@ describe("source-add-command", () => {
 	});
 
 	it("throws an error when redo() is called before undo()", () => {
-		const prevState = createTestLoomState(1, 1);
+		const prevState = stateWithZeroSources();
 		const command = new SourceAddCommand(createFolderSource("test", false));
 
 		try {

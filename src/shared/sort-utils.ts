@@ -55,7 +55,7 @@ export const sortByText = (
 	sortDir: SortDir,
 	forceEmptyToBottom = true
 ): number => {
-	const result = forceEmptyCellsToBottom(a, b);
+	const result = forceEmptyTextCellsToBottom(a, b);
 	if (result !== null) {
 		if (forceEmptyToBottom) {
 			return result;
@@ -71,7 +71,18 @@ export const sortByText = (
 	}
 };
 
-export const forceEmptyCellsToBottom = (
+export const forceEmptyNumberCellsToBottom = (
+	a: number | null,
+	b: number | null
+): number | null => {
+	//Force empty cells to the bottom
+	if (a === null && b !== null) return 1;
+	if (a !== null && b === null) return -1;
+	if (a === null && b === null) return 0;
+	return null;
+};
+
+export const forceEmptyTextCellsToBottom = (
 	a: string,
 	b: string
 ): number | null => {

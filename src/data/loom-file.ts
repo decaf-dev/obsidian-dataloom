@@ -36,10 +36,10 @@ export const createLoomFile = async (
 		//This is a bug in Obsidian.
 		//TODO report this bug the Obsidian team
 		const formattedPath = removeLeadingPeriod(filePath);
-		const loomState = createLoomState(
+		const loomState = createLoomState(1, 1, {
 			pluginVersion,
-			defaultFrozenColumnCount
-		);
+			frozenColumnCount: defaultFrozenColumnCount,
+		});
 		const serializedState = serializeState(loomState);
 
 		const file = await createFile(app, formattedPath, serializedState);

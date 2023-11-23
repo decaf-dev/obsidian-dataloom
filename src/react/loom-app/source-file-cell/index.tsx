@@ -5,10 +5,10 @@ import { appendOrReplaceFirstChild } from "src/shared/render/utils";
 import "./styles.css";
 
 interface Props {
-	content: string;
+	path: string;
 }
 
-export default function SourceFileCell({ content: originalContent }: Props) {
+export default function SourceFileCell({ path: originalContent }: Props) {
 	const content = getSourceFileContent(originalContent);
 	const { containerRef, renderRef } = useRenderMarkdown(content);
 

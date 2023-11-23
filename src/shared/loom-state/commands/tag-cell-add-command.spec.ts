@@ -1,26 +1,47 @@
 import {
-	createTestLoomState,
+	createColumn,
+	createGenericLoomState,
+	createMultiTagCell,
+	createRow,
 	createTag,
 } from "src/shared/loom-state/loom-state-factory";
 import CommandUndoError from "./command-undo-error";
 import CommandRedoError from "./command-redo-error";
 import TagCellAddCommand from "./tag-cell-add-command";
 import { advanceBy, clear } from "jest-date-mock";
+import { Column, MultiTagCell, Row } from "../types/loom-state";
 
 describe("tag-cell-add-command", () => {
+	const initialState = () => {
+		const columns: Column[] = [
+			createColumn({ tags: [createTag("test1"), createTag("test2")] }),
+		];
+		const rows: Row[] = [
+			createRow(0, {
+				cells: [
+					createMultiTagCell(columns[0].id, {
+						tagIds: [columns[0].tags[0].id],
+					}),
+				],
+			}),
+			createRow(1, {
+				cells: [createMultiTagCell(columns[0].id)],
+			}),
+		];
+		const state = createGenericLoomState({
+			columns,
+			rows,
+		});
+		return state;
+	};
+
 	it("should throw an error when undo() is called before execute()", () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1);
-
-		const tags = [createTag("test1"), createTag("test2")];
-		prevState.model.columns[0].tags = tags;
-
-		prevState.model.rows[0].cells[0].tagIds = [tags[0].id];
+		const prevState = initialState();
 
 		const command = new TagCellAddCommand(
 			prevState.model.rows[0].cells[0].id,
-			tags[1].id,
-			false
+			prevState.model.columns[0].tags[1].id
 		);
 
 		try {
@@ -34,17 +55,11 @@ describe("tag-cell-add-command", () => {
 	it("should throw an error when redo() is called before undo()", () => {
 		try {
 			//Arrange
-			const prevState = createTestLoomState(1, 1);
-
-			const tags = [createTag("test1"), createTag("test2")];
-			prevState.model.columns[0].tags = tags;
-
-			prevState.model.rows[0].cells[0].tagIds = [tags[0].id];
+			const prevState = initialState();
 
 			const command = new TagCellAddCommand(
 				prevState.model.rows[0].cells[0].id,
-				tags[1].id,
-				false
+				prevState.model.columns[0].tags[1].id
 			);
 
 			//Act
@@ -57,17 +72,11 @@ describe("tag-cell-add-command", () => {
 
 	it("should add a tag reference to a cell when execute() is called", () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1);
-
-		const tags = [createTag("test1"), createTag("test2")];
-		prevState.model.columns[0].tags = tags;
-
-		prevState.model.rows[0].cells[0].tagIds = [tags[0].id];
+		const prevState = initialState();
 
 		const command = new TagCellAddCommand(
 			prevState.model.rows[0].cells[0].id,
-			tags[1].id,
-			false
+			prevState.model.columns[0].tags[1].id
 		);
 
 		//Act
@@ -77,9 +86,9 @@ describe("tag-cell-add-command", () => {
 
 		//Assert
 		expect(executeState.model.columns).toEqual(prevState.model.columns);
-		expect(executeState.model.rows[0].cells[0].tagIds).toEqual([
-			tags[1].id,
-		]);
+		expect(
+			(executeState.model.rows[0].cells[0] as MultiTagCell).tagIds
+		).toEqual([prevState.model.columns[0].tags[1].id]);
 
 		const executeLastEditedTime = new Date(
 			executeState.model.rows[0].lastEditedDateTime
@@ -92,17 +101,11 @@ describe("tag-cell-add-command", () => {
 
 	it("should add a multi-tag reference to a cell when execute() is called", () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1);
-
-		const tags = [createTag("test1"), createTag("test2")];
-		prevState.model.columns[0].tags = tags;
-
-		prevState.model.rows[0].cells[0].tagIds = [tags[0].id];
+		const prevState = initialState();
 
 		const command = new TagCellAddCommand(
 			prevState.model.rows[0].cells[0].id,
-			tags[1].id,
-			true
+			prevState.model.columns[0].tags[1].id
 		);
 
 		//Act
@@ -112,9 +115,11 @@ describe("tag-cell-add-command", () => {
 
 		//Assert
 		expect(executeState.model.columns).toEqual(prevState.model.columns);
-		expect(executeState.model.rows[0].cells[0].tagIds).toEqual([
-			tags[0].id,
-			tags[1].id,
+		expect(
+			(executeState.model.rows[0].cells[0] as MultiTagCell).tagIds
+		).toEqual([
+			prevState.model.columns[0].tags[0].id,
+			prevState.model.columns[0].tags[1].id,
 		]);
 
 		const executeLastEditedTime = new Date(
@@ -129,17 +134,11 @@ describe("tag-cell-add-command", () => {
 
 	it("should remove the added reference when undo() is called", () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1);
-
-		const tags = [createTag("test1"), createTag("test2")];
-		prevState.model.columns[0].tags = tags;
-
-		prevState.model.rows[0].cells[0].tagIds = [tags[0].id];
+		const prevState = initialState();
 
 		const command = new TagCellAddCommand(
 			prevState.model.rows[0].cells[0].id,
-			tags[1].id,
-			false
+			prevState.model.columns[0].tags[1].id
 		);
 
 		//Act
@@ -151,9 +150,9 @@ describe("tag-cell-add-command", () => {
 
 		//Assert
 		expect(undoState.model.columns).toEqual(prevState.model.columns);
-		expect(undoState.model.rows[0].cells[0].tagIds).toEqual(
-			prevState.model.rows[0].cells[0].tagIds
-		);
+		expect(
+			(undoState.model.rows[0].cells[0] as MultiTagCell).tagIds
+		).toEqual((prevState.model.rows[0].cells[0] as MultiTagCell).tagIds);
 		expect(undoState.model.rows[0].lastEditedDateTime).toEqual(
 			prevState.model.rows[0].lastEditedDateTime
 		);
@@ -161,17 +160,11 @@ describe("tag-cell-add-command", () => {
 
 	it("should add a tag reference to a cell when redo() is called", () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1);
-
-		const tags = [createTag("test1"), createTag("test2")];
-		prevState.model.columns[0].tags = tags;
-
-		prevState.model.rows[0].cells[0].tagIds = [tags[0].id];
+		const prevState = initialState();
 
 		const command = new TagCellAddCommand(
 			prevState.model.rows[0].cells[0].id,
-			tags[1].id,
-			false
+			prevState.model.columns[0].tags[1].id
 		);
 
 		//Act

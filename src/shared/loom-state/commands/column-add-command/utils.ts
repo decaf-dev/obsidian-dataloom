@@ -1,5 +1,5 @@
 import CellNotFoundError from "src/shared/error/cell-not-found-error";
-import { createCell, createColumn } from "../../loom-state-factory";
+import { createCellForType, createColumn } from "../../loom-state-factory";
 import { CellType, Column, Row } from "../../types/loom-state";
 import { AddedCell } from "./types";
 
@@ -26,9 +26,7 @@ export const columnAddExecute = (
 
 	const nextRows: Row[] = prevRows.map((row) => {
 		const { cells } = row;
-		const newCell = createCell(newColumn.id, {
-			type,
-		});
+		const newCell = createCellForType(newColumn.id, type);
 		addedCells.push({
 			rowId: row.id,
 			cell: newCell,

@@ -1,4 +1,3 @@
-import { isNumber } from "src/shared/match";
 import {
 	CurrencyType,
 	NumberFormat,
@@ -7,7 +6,7 @@ import { getNumberCellContent } from "src/shared/cell-content/number-cell-conten
 import "./styles.css";
 
 interface Props {
-	value: string;
+	value: number | null;
 	currency: CurrencyType;
 	format: NumberFormat;
 	prefix: string;
@@ -23,8 +22,9 @@ export default function NumberCell({
 	suffix,
 	separator,
 }: Props) {
-	if (isNumber(value)) {
-		value = getNumberCellContent(format, value, {
+	let formattedValue = "";
+	if (value !== null) {
+		formattedValue = getNumberCellContent(format, value, {
 			currency,
 			prefix,
 			suffix,
@@ -32,5 +32,5 @@ export default function NumberCell({
 		});
 	}
 
-	return <div className="dataloom-number-cell">{value}</div>;
+	return <div className="dataloom-number-cell">{formattedValue}</div>;
 }
