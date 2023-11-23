@@ -78,7 +78,7 @@ export default class TagCellMultipleRemoveCommand extends LoomStateCommand {
 				rows: nextRows,
 			},
 		};
-		this.onExecute(prevState, newState);
+		this.finishExecute(prevState, newState);
 		return newState;
 	}
 }

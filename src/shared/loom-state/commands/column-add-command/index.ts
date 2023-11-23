@@ -24,7 +24,7 @@ export default class ColumnAddCommand extends LoomStateCommand {
 				rows: nextRows,
 			},
 		};
-		this.onExecute(prevState, nextState);
+		this.finishExecute(prevState, nextState);
 		return nextState;
 	}
 }

@@ -99,7 +99,7 @@ export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 				filters: nextFilters,
 			},
 		};
-		this.onExecute(prevState, nextState);
+		this.finishExecute(prevState, nextState);
 		return nextState;
 	}
 

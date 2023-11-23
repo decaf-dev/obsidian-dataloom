@@ -34,7 +34,7 @@ export default class FilterUpdateCommand<
 				filters: nextFilters,
 			},
 		};
-		this.onExecute(prevState, nextState);
+		this.finishExecute(prevState, nextState);
 		return nextState;
 	}
 }

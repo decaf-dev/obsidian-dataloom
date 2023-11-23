@@ -33,8 +33,12 @@ abstract class LoomStateCommand {
 	 * @param prevState - The state before the command is executed
 	 * @param nextState - The state after the command is executed
 	 */
-	onExecute(prevState: LoomState, nextState: LoomState) {
+	finishExecute(prevState: LoomState, nextState: LoomState) {
+		this.hasExecuteBeenCalled = true;
+
 		const patch = jsondiffpatch.diff(prevState, nextState);
+		console.log({ prevState });
+		console.log({ nextState });
 		if (patch === undefined) throw new Error("No patch changes detected");
 		this.statePatch = patch;
 	}

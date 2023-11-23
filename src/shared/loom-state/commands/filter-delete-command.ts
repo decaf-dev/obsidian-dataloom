@@ -21,7 +21,7 @@ export default class FilterDeleteCommand extends LoomStateCommand {
 				filters: nextFilters,
 			},
 		};
-		this.onExecute(prevState, newState);
+		this.finishExecute(prevState, newState);
 		return newState;
 	}
 }

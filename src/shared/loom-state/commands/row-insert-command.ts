@@ -67,7 +67,7 @@ export default class RowInsertCommand extends LoomStateCommand {
 				rows: updatedRows,
 			},
 		};
-		this.onExecute(prevState, nextState);
+		this.finishExecute(prevState, nextState);
 		return nextState;
 	}
 }

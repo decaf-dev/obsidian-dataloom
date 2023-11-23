@@ -52,7 +52,7 @@ export default class RowDeleteCommand extends LoomStateCommand {
 				rows: newRows,
 			},
 		};
-		this.onExecute(prevState, nextState);
+		this.finishExecute(prevState, nextState);
 		return nextState;
 	}
 }

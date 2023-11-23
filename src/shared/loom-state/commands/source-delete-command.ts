@@ -102,7 +102,7 @@ export default class SourceDeleteCommand extends LoomStateCommand {
 				filters: nextFilters,
 			},
 		};
-		this.onExecute(prevState, nextState);
+		this.finishExecute(prevState, nextState);
 		return nextState;
 	}
 }

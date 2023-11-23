@@ -28,7 +28,7 @@ export default class RowAddCommand extends LoomStateCommand {
 				rows: [...rows, this.addedRow],
 			},
 		};
-		this.onExecute(prevState, nextState);
+		this.finishExecute(prevState, nextState);
 		return nextState;
 	}
 }

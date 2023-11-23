@@ -46,7 +46,7 @@ export default class TagUpdateCommand extends LoomStateCommand {
 				columns: nextColumns,
 			},
 		};
-		this.onExecute(prevState, nextState);
+		this.finishExecute(prevState, nextState);
 		return nextState;
 	}
 }

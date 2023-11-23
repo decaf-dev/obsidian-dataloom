@@ -79,7 +79,7 @@ export default class TagCellAddCommand extends LoomStateCommand {
 				rows: nextRows,
 			},
 		};
-		this.onExecute(prevState, newState);
+		this.finishExecute(prevState, newState);
 		return newState;
 	}
 }

@@ -111,7 +111,7 @@ export default class TagAddCommand extends LoomStateCommand {
 				rows: nextRows,
 			},
 		};
-		this.onExecute(prevState, nextState);
+		this.finishExecute(prevState, nextState);
 		return nextState;
 	}
 }

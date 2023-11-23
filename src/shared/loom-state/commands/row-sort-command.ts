@@ -56,7 +56,7 @@ export default class RowSortCommand extends LoomStateCommand {
 				rows: newRows,
 			},
 		};
-		this.onExecute(prevState, nextState);
+		this.finishExecute(prevState, nextState);
 		return nextState;
 	}
 

@@ -95,7 +95,7 @@ export default class TagDeleteCommand extends LoomStateCommand {
 				rows: nextRows,
 			},
 		};
-		this.onExecute(prevState, nextState);
+		this.finishExecute(prevState, nextState);
 		return nextState;
 	}
 }
