@@ -294,7 +294,7 @@ export default function BodyCellContainer(props: Props) {
 			"This cell is disabled until you choose a frontmatter key for this column";
 	}
 
-	let contentNode: React.ReactNode;
+	let contentNode: React.ReactNode | null = null;
 	let menuNode: React.ReactNode | null = null;
 	let handleCellContextClick: () => void = () => undefined;
 	let handleMenuTriggerEnterDown: () => void = () => undefined;
@@ -432,16 +432,16 @@ export default function BodyCellContainer(props: Props) {
 			}
 
 			if (type === CellType.TAG) {
-				contentNode = (
-					<TagCell
-						content={cellTags[0].content}
-						color={cellTags[0].color}
-					/>
-				);
+				if (cellTags.length > 0) {
+					contentNode = (
+						<TagCell
+							content={cellTags[0].content}
+							color={cellTags[0].color}
+						/>
+					);
+				}
 			} else {
-				contentNode = contentNode = (
-					<MultiTagCell cellTags={cellTags} />
-				);
+				contentNode = <MultiTagCell cellTags={cellTags} />;
 			}
 
 			menuNode = (
