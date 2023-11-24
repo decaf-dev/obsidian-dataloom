@@ -238,9 +238,7 @@ export default function HeaderMenu({
 				shouldSaveFrontmatter: false,
 			}
 		);
-		if (frontmatterKey !== null) {
-			onClose();
-		}
+		onClose();
 	}
 
 	return (
