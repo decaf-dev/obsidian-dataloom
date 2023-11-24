@@ -3,7 +3,6 @@ import {
 	getNumBottomBarFocusableEl,
 	getNumOptionBarFocusableEls,
 	isArrowKeyPressed,
-	removeCurrentFocusClass,
 	getFocusLayerEl,
 	getFocusableEls,
 } from "src/react/loom-app/app/hooks/use-focus/utils";
@@ -25,13 +24,13 @@ export default function useFocus() {
 	const logger = useLogger();
 	const { reactAppId } = useAppMount();
 	const { loomState } = useLoomState();
-	const { topMenu } = useMenuOperations();
+	const { topMenu, onClearMenuTriggerFocus } = useMenuOperations();
 
 	function handleKeyDown(e: React.KeyboardEvent) {
 		logger("useFocus handleKeyDown");
 
 		if (e.key === "Tab") {
-			removeCurrentFocusClass();
+			onClearMenuTriggerFocus();
 
 			//Prevent default tab behavior which is to move focus to next element
 			//We will do that ourselves
@@ -110,7 +109,7 @@ export default function useFocus() {
 					}
 			}
 			if (elementToFocus !== null) {
-				removeCurrentFocusClass();
+				onClearMenuTriggerFocus();
 				(elementToFocus as HTMLElement).focus();
 			}
 		}

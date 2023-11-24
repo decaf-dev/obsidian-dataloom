@@ -14,6 +14,7 @@ export type DataLoomEvent =
 	| "global-keydown"
 	| "download-csv"
 	| "download-markdown"
-	| "property-type-change";
+	| "property-type-change"
+	| "clear-menu-trigger-focus";
 
 export type EventCallback = (...data: any[]) => void;

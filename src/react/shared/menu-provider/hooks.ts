@@ -82,8 +82,14 @@ export const useMenu = (
 };
 
 export const useMenuOperations = () => {
-	const { topMenu, canOpen, onCloseAll, onRequestClose, onClose } =
-		useMenuContext();
+	const {
+		topMenu,
+		canOpen,
+		onCloseAll,
+		onRequestClose,
+		onClose,
+		onClearMenuTriggerFocus,
+	} = useMenuContext();
 
 	return {
 		topMenu,
@@ -91,5 +97,6 @@ export const useMenuOperations = () => {
 		onCloseAll,
 		onClose,
 		onRequestClose,
+		onClearMenuTriggerFocus,
 	};
 };

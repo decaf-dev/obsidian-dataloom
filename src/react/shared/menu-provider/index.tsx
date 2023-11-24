@@ -11,6 +11,7 @@ import {
 } from "./types";
 import { useLogger } from "src/shared/logger";
 import { getPositionFromEl } from "./utils";
+import EventManager from "src/shared/event/event-manager";
 
 interface ContextProps {
 	topMenu: LoomMenu | null;
@@ -40,6 +41,7 @@ interface ContextProps {
 	onPositionUpdate: (id: string, value: LoomMenuPosition) => void;
 	onCloseAll: () => void;
 	onCloseRequestClear: (id: string) => void;
+	onClearMenuTriggerFocus: () => void;
 }
 
 const MenuContext = React.createContext<ContextProps | null>(null);
@@ -67,6 +69,23 @@ export default function MenuProvider({ children }: Props) {
 		React.useState<FocusedMenuTrigger | null>(null);
 
 	const logger = useLogger();
+
+	const clearMenuTriggerFocus = React.useCallback(() => {
+		logger("MenuProvider clearMenuTriggerFocus");
+		setFocusedMenuTrigger(null);
+	}, [logger]);
+
+	React.useEffect(() => {
+		EventManager.getInstance().on(
+			"clear-menu-trigger-focus",
+			clearMenuTriggerFocus
+		);
+		return () =>
+			EventManager.getInstance().off(
+				"clear-menu-trigger-focus",
+				clearMenuTriggerFocus
+			);
+	}, [clearMenuTriggerFocus]);
 
 	function handleOpen(
 		parentComponentId: string,
@@ -117,11 +136,6 @@ export default function MenuProvider({ children }: Props) {
 		},
 		[logger]
 	);
-
-	function clearMenuTriggerFocus() {
-		logger("MenuProvider clearMenuTriggerFocus");
-		setFocusedMenuTrigger(null);
-	}
 
 	const handleClose = React.useCallback(
 		(id: string) => {
@@ -253,6 +267,7 @@ export default function MenuProvider({ children }: Props) {
 				onPositionUpdate: handlePositionUpdate,
 				onCloseAll: handleCloseAll,
 				onCloseRequestClear: handleCloseRequestClear,
+				onClearMenuTriggerFocus: clearMenuTriggerFocus,
 			}}
 		>
 			{children}
