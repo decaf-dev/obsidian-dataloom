@@ -3,6 +3,10 @@
     height: 60px;
 }
 
+.dataloom-bottom-bar--mobile {
+	height: 100px;
+}
+
 .dataloom-bottom-bar > div {
     border-top: 1px solid var(--table-border-color);
     position: absolute;

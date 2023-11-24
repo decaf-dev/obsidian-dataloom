@@ -56,7 +56,7 @@ export default function Tag({
 				{showRemoveButton && (
 					<Padding width="max-content">
 						<Button
-							isSmall
+							size="sm"
 							icon={<Icon lucideId="x" />}
 							onClick={() => {
 								if (id && onRemoveClick) onRemoveClick(id);

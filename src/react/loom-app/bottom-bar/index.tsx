@@ -77,45 +77,52 @@ export default function BottomBar({
 		};
 	}, []);
 
+	let className = "dataloom-bottom-bar";
+	if (isMobile) {
+		className += " dataloom-bottom-bar--mobile";
+	}
+
 	return (
-		<div ref={ref} className="dataloom-bottom-bar">
+		<div ref={ref} className={className}>
 			<div
 				style={{
 					top: numToPx(-bottomBarOffset),
 				}}
 			>
 				<Padding pt="md" width="100%">
-					<Flex justify="space-between">
-						<Stack spacing="md" isHorizontal>
-							{isMobile && (
+					<Stack spacing="sm">
+						<Flex justify="space-between">
+							<NewRowButton onClick={onRowAddClick} />
+							<Stack isHorizontal spacing="sm">
+								<Button
+									ariaLabel="Scroll to top"
+									icon={<Icon lucideId="chevron-up" />}
+									onClick={onScrollToTopClick}
+								/>
+								<Button
+									ariaLabel="Scroll to bottom"
+									onClick={onScrollToBottomClick}
+									icon={<Icon lucideId="chevron-down" />}
+								/>
+							</Stack>
+						</Flex>
+						{isMobile && (
+							<Flex justify="space-between">
 								<Button
 									ariaLabel="Undo"
+									size="lg"
 									icon={<Icon lucideId="undo" />}
 									onClick={onUndoClick}
 								/>
-							)}
-							<NewRowButton onClick={onRowAddClick} />
-						</Stack>
-						<Stack isHorizontal spacing="sm">
-							<Button
-								ariaLabel="Scroll to top"
-								icon={<Icon lucideId="chevron-up" />}
-								onClick={onScrollToTopClick}
-							/>
-							<Button
-								ariaLabel="Scroll to bottom"
-								onClick={onScrollToBottomClick}
-								icon={<Icon lucideId="chevron-down" />}
-							/>
-							{isMobile && (
 								<Button
 									ariaLabel="Redo"
+									size="lg"
 									icon={<Icon lucideId="redo" />}
 									onClick={onRedoClick}
 								/>
-							)}
-						</Stack>
-					</Flex>
+							</Flex>
+						)}
+					</Stack>
 				</Padding>
 			</div>
 		</div>
