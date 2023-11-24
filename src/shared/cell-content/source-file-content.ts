@@ -1,5 +1,6 @@
 import {
 	isMarkdownFile,
+	stripDirectory,
 	stripFileExtension,
 } from "../link-and-path/file-path-utils";
 import { componentsToWikiLink } from "../link-and-path/markdown-link-utils";
@@ -11,9 +12,10 @@ export const getSourceFileContent = (
 	if (shouldRemoveMarkdown) return path;
 	if (path === "") return "";
 
+	let fileName = stripDirectory(path);
 	if (isMarkdownFile(path)) {
-		path = stripFileExtension(path);
+		fileName = stripFileExtension(fileName);
 	}
 
-	return componentsToWikiLink(path, null);
+	return componentsToWikiLink(fileName, null);
 };
