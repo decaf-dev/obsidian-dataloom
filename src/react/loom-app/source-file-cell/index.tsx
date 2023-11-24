@@ -8,8 +8,8 @@ interface Props {
 	path: string;
 }
 
-export default function SourceFileCell({ path: originalContent }: Props) {
-	const content = getSourceFileContent(originalContent);
+export default function SourceFileCell({ path }: Props) {
+	const content = getSourceFileContent(path);
 	const { containerRef, renderRef } = useRenderMarkdown(content);
 
 	return (

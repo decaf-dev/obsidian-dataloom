@@ -13,8 +13,8 @@ import {
 import { Cell, CellType, Column, Tag } from "../loom-state/types/loom-state";
 import { getAssignedPropertyType } from "./obsidian-utils";
 import { ObsidianPropertyType } from "./types";
-import { extractObsidianLinkComponents } from "../link/obsidian-link";
-import { isExternalLink, isUrlLink } from "../link/check-link";
+import { isExternalLink, isUrlLink } from "../link-and-path/link-predicates";
+import { extractObsidianLinkComponents } from "../link-and-path/markdown-link-utils";
 
 export const deserializeFrontmatterForCell = (
 	app: App,

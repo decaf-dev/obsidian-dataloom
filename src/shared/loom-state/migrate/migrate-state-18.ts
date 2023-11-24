@@ -18,8 +18,8 @@ import {
 	TagCell,
 	TextCell,
 } from "../types/loom-state";
-import { isUrlLink } from "src/shared/link/check-link";
-import { extractObsidianLinkComponents } from "src/shared/link/obsidian-link";
+import { isUrlLink } from "src/shared/link-and-path/link-predicates";
+import { extractObsidianLinkComponents } from "src/shared/link-and-path/markdown-link-utils";
 
 /**
  * Migrates to 8.13.0

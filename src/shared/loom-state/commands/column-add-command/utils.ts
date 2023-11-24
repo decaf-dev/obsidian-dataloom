@@ -31,7 +31,7 @@ export const columnAddExecute = (
 	});
 
 	return {
-		nextColumns,
-		nextRows,
+		columns: nextColumns,
+		rows: nextRows,
 	};
 };

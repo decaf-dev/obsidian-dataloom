@@ -24,7 +24,7 @@ import TagNotFoundError from "src/shared/error/tag-not-found-error";
 import { dateTimeToDateString } from "src/shared/date/date-time-conversion";
 import { getSourceCellContent } from "src/shared/cell-content/source-cell-content";
 import { getColumnCells } from "src/shared/loom-state/utils/column-utils";
-import { getFileNameFromPath } from "src/shared/link/path-utils";
+import { getFileName } from "src/shared/link-and-path/file-path-utils";
 
 export const getGeneralCalculationContent = (
 	columnId: string,
@@ -197,12 +197,12 @@ const getCellValues = (
 		}
 		case CellType.FILE: {
 			const { path } = cell as FileCell;
-			const fileName = getFileNameFromPath(path);
+			const fileName = getFileName(path);
 			return [fileName];
 		}
 		case CellType.SOURCE_FILE: {
 			const { path } = cell as SourceFileCell;
-			const fileName = getFileNameFromPath(path);
+			const fileName = getFileName(path);
 			return [fileName];
 		}
 		case CellType.CHECKBOX: {

@@ -38,8 +38,8 @@ import {
 	getDateJustBeforeMidnight,
 } from "./utils";
 import ColumnNotFoundError from "src/shared/error/column-not-found-error";
-import { getFileNameFromPath } from "src/shared/link/path-utils";
-import { isRelativePath } from "src/shared/link/check-link";
+import { getFileName } from "src/shared/link-and-path/file-path-utils";
+import { isRelativePath } from "src/shared/link-and-path/link-predicates";
 
 /**
  * Filters body rows by the filters array
@@ -166,7 +166,7 @@ const doesCellMatchFilter = (
 
 			let compareValue = pathOrUrl;
 			if (isRelativePath(pathOrUrl)) {
-				compareValue = getFileNameFromPath(pathOrUrl);
+				compareValue = getFileName(pathOrUrl);
 			}
 			return doesTextMatch(compareValue, text, condition);
 		}
@@ -199,7 +199,7 @@ const doesCellMatchFilter = (
 		case CellType.SOURCE_FILE: {
 			const { text } = filter as SourceFileFilter;
 			const { path } = cell as SourceFileCell;
-			const fileName = getFileNameFromPath(path);
+			const fileName = getFileName(path);
 			return doesTextMatch(fileName ?? "", text, condition);
 		}
 

@@ -1,6 +1,6 @@
 import { getResourcePath } from "src/shared/render-utils";
 import { App } from "obsidian";
-import { isObsidianLink } from "../link/check-link";
+import { isObsidianLink } from "../link-and-path/link-predicates";
 
 /**
  * Gets the embed cell content

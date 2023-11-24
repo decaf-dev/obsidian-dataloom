@@ -27,8 +27,8 @@ import { getSourceCellContent } from "src/shared/cell-content/source-cell-conten
 import { getSourceFileContent } from "src/shared/cell-content/source-file-content";
 import { getCheckboxCellContent } from "src/shared/cell-content/checkbox-cell-content";
 import TagNotFoundError from "src/shared/error/tag-not-found-error";
-import { getFileNameFromPath } from "src/shared/link/path-utils";
-import { isRelativePath } from "src/shared/link/check-link";
+import { getFileName } from "src/shared/link-and-path/file-path-utils";
+import { isRelativePath } from "src/shared/link-and-path/link-predicates";
 
 export const filterRowsBySearch = (
 	sources: Source[],
@@ -101,13 +101,13 @@ const doesCellMatch = (
 			const { pathOrUrl } = cell as EmbedCell;
 			let searchValue = "";
 			if (isRelativePath(pathOrUrl)) {
-				searchValue = getFileNameFromPath(pathOrUrl);
+				searchValue = getFileName(pathOrUrl);
 			}
 			return matchTextCell(searchValue, searchText);
 		}
 		case CellType.FILE: {
 			const { path } = cell as FileCell;
-			const fileName = getFileNameFromPath(path);
+			const fileName = getFileName(path);
 			return matchTextCell(fileName, searchText);
 		}
 		case CellType.CHECKBOX: {
@@ -166,7 +166,7 @@ const doesCellMatch = (
 		}
 		case CellType.SOURCE_FILE: {
 			const { path } = cell as SourceFileCell;
-			const fileName = getFileNameFromPath(path);
+			const fileName = getFileName(path);
 			return matchSourceFileCell(fileName, searchText);
 		}
 		default:

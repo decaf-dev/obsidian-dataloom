@@ -15,17 +15,9 @@ export const isUrlLink = (link: string) => {
 };
 
 export const isObsidianLink = (link: string) => {
-	// Check if the link starts with 'obsidian://'
-	if (link.startsWith("obsidian://")) {
-		return true;
-	}
-	return false;
+	return link.startsWith("obsidian://");
 };
 
 export const isHttpLink = (link: string) => {
-	// Check if the link starts with 'http://' or 'https://'
-	if (link.startsWith("http://") || link.startsWith("https://")) {
-		return true;
-	}
-	return false;
+	return link.startsWith("http://") || link.startsWith("https://");
 };

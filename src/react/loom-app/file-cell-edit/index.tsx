@@ -1,7 +1,6 @@
 import { TFile } from "obsidian";
 
 import { SuggestList } from "src/react/shared/suggest-list";
-import { getBasename } from "src/shared/link/link-utils";
 
 interface Props {
 	onChange: (value: string) => void;
@@ -27,10 +26,10 @@ export default function FileCellEdit({ onChange, onClose }: Props) {
 
 	function handleCreateClick(value: string) {
 		let link = `[[${value}]]`;
-		if (value.includes("/")) {
-			const fileName = getBasename(value);
-			link = `${value}|${fileName}`;
-		}
+		// if (value.includes("/")) {
+		// 	// const fileName = getBasename(value);
+		// 	link = `${value}|${fileName}`;
+		// }
 		onChange(link);
 		onClose();
 	}

@@ -21,7 +21,6 @@ import {
 } from "./redux/global-slice";
 import { LOOM_EXTENSION } from "./data/constants";
 import { createLoomFile } from "src/data/loom-file";
-import { getBasename } from "./shared/link/link-utils";
 import { hasDarkTheme } from "./shared/render/utils";
 import { removeCurrentFocusClass } from "./react/loom-app/app/hooks/use-focus/utils";
 import {
@@ -33,6 +32,7 @@ import FrontmatterCache from "./shared/frontmatter/frontmatter-cache";
 import EventManager from "./shared/event/event-manager";
 import { getAssignedPropertyType } from "./shared/frontmatter/obsidian-utils";
 import { handleFileRename } from "./data/main-utils";
+import { getBasename } from "./shared/link-and-path/file-path-utils";
 
 export interface DataLoomSettings {
 	shouldDebug: boolean;

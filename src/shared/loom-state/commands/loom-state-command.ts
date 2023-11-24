@@ -1,6 +1,5 @@
 import { cloneDeep } from "lodash";
 import { LoomState } from "../types/loom-state";
-import CommandPatchError from "./error/command-patch-error";
 import CommandRedoError from "./error/command-redo-error";
 import CommandUndoError from "./error/command-undo-error";
 import jsondiffpatch from "jsondiffpatch";

@@ -13,7 +13,7 @@ import {
 	isSurroundedByDoubleBrackets,
 	removeClosingBracket,
 } from "./utils";
-import { getWikiLinkText } from "src/shared/link/link-utils";
+import { getWikiLinkText } from "src/shared/link-and-path/markdown-link-utils";
 import { useLogger } from "src/shared/logger";
 
 import "./styles.css";

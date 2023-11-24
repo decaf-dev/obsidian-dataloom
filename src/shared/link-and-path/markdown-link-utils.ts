@@ -1,3 +1,12 @@
+import { MARKDOWN_EXTENSION } from "./constants";
+import {
+	getBasename,
+	getFileExtension,
+	isMarkdownFile,
+	stripDirectory,
+	stripFileExtension,
+} from "./file-path-utils";
+
 export const extractObsidianLinkComponents = (
 	markdown: string
 ): {
@@ -45,4 +54,28 @@ export const linkComponentsToObsidianLink = (
 ): string => {
 	if (alias === null) return `[[${path}]]`;
 	return `[[${path}|${alias}]]`;
+};
+
+/**
+ * Gets the text for a wiki link, which may include the path and an alias
+ * @param fileInfo the file info
+ */
+export const getWikiLinkText = (path: string) => {
+	const basename = getBasename(path);
+	const extension = getFileExtension(path);
+
+	//The initial name is the basename, which doesn't include an extension
+	let text = basename;
+
+	if (extension === MARKDOWN_EXTENSION) {
+		//If the file is a not markdown file, use the name, which includes the extension
+		text = stripDirectory(path);
+
+		if (path.includes("/")) text = `${path}|${basename}`;
+	} else {
+		//If the file is a markdown file, use the path without the extension
+		const pathWithoutExtension = stripFileExtension(path);
+		if (path.includes("/")) text = `${pathWithoutExtension}|${basename}`;
+	}
+	return text;
 };

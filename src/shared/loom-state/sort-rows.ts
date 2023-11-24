@@ -26,8 +26,8 @@ import {
 	sortByNumber,
 	sortByText,
 } from "src/shared/sort-utils";
-import { getFileNameFromPath } from "src/shared/link/path-utils";
-import { isRelativePath } from "src/shared/link/check-link";
+import { isRelativePath } from "src/shared/link-and-path/link-predicates";
+import { getFileName } from "../link-and-path/file-path-utils";
 
 export const sortRows = (prevState: LoomState): LoomState => {
 	const { columns, rows, sources } = prevState.model;
@@ -178,8 +178,8 @@ const sortBySourceFileCell = (
 	const { path: pathA } = a;
 	const { path: pathB } = b;
 
-	const contentA = getFileNameFromPath(pathA);
-	const contentB = getFileNameFromPath(pathB);
+	const contentA = getFileName(pathA);
+	const contentB = getFileName(pathB);
 
 	return sortByText(contentA, contentB, sortDir, false);
 };
@@ -194,8 +194,8 @@ const sortByFileCell = (a: FileCell, b: FileCell, sortDir: SortDir): number => {
 	const { path: pathA } = a;
 	const { path: pathB } = b;
 
-	const contentA = getFileNameFromPath(pathA);
-	const contentB = getFileNameFromPath(pathB);
+	const contentA = getFileName(pathA);
+	const contentB = getFileName(pathB);
 	return sortByText(contentA, contentB, sortDir);
 };
 
@@ -209,12 +209,12 @@ const sortByEmbedCell = (
 
 	let contentA = pathOrUrlA;
 	if (isRelativePath(pathOrUrlA)) {
-		contentA = getFileNameFromPath(pathOrUrlA);
+		contentA = getFileName(pathOrUrlA);
 	}
 
 	let contentB = pathOrUrlB;
 	if (isRelativePath(pathOrUrlB)) {
-		contentB = getFileNameFromPath(pathOrUrlB);
+		contentB = getFileName(pathOrUrlB);
 	}
 	return sortByText(contentA, contentB, sortDir);
 };
