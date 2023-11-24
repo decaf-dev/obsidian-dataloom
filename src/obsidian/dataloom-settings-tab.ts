@@ -194,7 +194,9 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 		new Setting(containerEl).setName("Modal").setHeading();
 		new Setting(containerEl)
 			.setName("Release notes")
-			.setDesc("Show release notes when the plugin is updated.")
+			.setDesc(
+				"Display release notes the first time a loom file is opened after the plugin is updated."
+			)
 			.addToggle((cb) => {
 				cb.setValue(this.plugin.settings.showWhatsNewModal).onChange(
 					async (value) => {
