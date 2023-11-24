@@ -6,8 +6,6 @@ import {
 } from "src/shared/loom-state/types/loom-state";
 import { appendOrReplaceFirstChild } from "src/shared/render/utils";
 
-import "./styles.css";
-
 interface Props {
 	isExternalLink: boolean;
 	content: string;
