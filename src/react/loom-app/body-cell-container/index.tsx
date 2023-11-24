@@ -376,30 +376,32 @@ export default function BodyCellContainer(props: Props) {
 		case CellType.TAG:
 		case CellType.MULTI_TAG: {
 			const {
-				tagId,
 				onTagCellRemove,
 				onTagAdd,
 				onTagChange,
 				onTagCellAdd,
 				onTagDeleteClick,
 				onTagCellMultipleRemove,
-			} = props as TagCellProps;
+			} = props as TagCellProps | MultiTagCellProps;
 
-			const { tagIds } = props as MultiTagCellProps;
+			let cellTags: Tag[] = [];
+			if (type === CellType.TAG) {
+				const { tagId } = props as TagCellProps;
+				cellTags = columnTags.filter((tag) => tag.id === tagId);
 
-			const cellTags = columnTags.filter(
-				(tag) => tagIds.includes(tag.id) || tag.id === tagId
-			);
-
-			handleMenuTriggerBackspaceDown = () => {
-				if (type === CellType.TAG) {
+				handleMenuTriggerBackspaceDown = () => {
 					if (tagId !== null) {
 						onTagCellRemove(id, tagId);
 					}
-				} else {
+				};
+			} else {
+				const { tagIds } = props as MultiTagCellProps;
+				cellTags = columnTags.filter((tag) => tagIds.includes(tag.id));
+
+				handleMenuTriggerBackspaceDown = () => {
 					onTagCellMultipleRemove(id, tagIds);
-				}
-			};
+				};
+			}
 
 			handleCellContextClick = () => {
 				const content = cellTags.map((tag) => tag.content).join(", ");
