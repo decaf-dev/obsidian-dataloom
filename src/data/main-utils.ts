@@ -112,7 +112,6 @@ const updateLoomFileState = async (
 						oldPath,
 						newPath
 					);
-					console.log({ nextCell, didUpdate });
 					if (didUpdate) numLinksUpdated++;
 					return nextCell;
 				}

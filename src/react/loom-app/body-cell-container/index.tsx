@@ -641,8 +641,8 @@ export default function BodyCellContainer(props: Props) {
 			}
 
 			const handleInputChange = React.useCallback(
-				(value: string) => {
-					onCellChange(id, { content: value });
+				(pathOrUrl: string) => {
+					onCellChange(id, { pathOrUrl });
 				},
 				[id, onCellChange]
 			);
@@ -675,9 +675,10 @@ export default function BodyCellContainer(props: Props) {
 				onCellChange(id, { path: "", alias: null });
 			};
 
-			const handleInputChange = React.useCallback(
-				(value: string) => {
-					onCellChange(id, { content: value });
+			const handlePathChange = React.useCallback(
+				(path: string) => {
+					//TODO add types
+					onCellChange(id, { path });
 				},
 				[id, onCellChange]
 			);
@@ -689,7 +690,7 @@ export default function BodyCellContainer(props: Props) {
 			contentNode = <FileCell path={path} />;
 			menuNode = (
 				<FileCellEdit
-					onChange={handleInputChange}
+					onChange={handlePathChange}
 					onClose={menu.onClose}
 				/>
 			);

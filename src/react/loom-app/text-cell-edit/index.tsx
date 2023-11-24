@@ -29,7 +29,6 @@ import {
 	isMarkdownFile,
 	stripFileExtension,
 } from "src/shared/link-and-path/file-path-utils";
-import { useAppMount } from "../app-mount-provider";
 
 interface Props {
 	cellId: string;
@@ -56,7 +55,6 @@ export default function TextCellEdit({
 		null
 	);
 	const inputRef = React.useRef<HTMLTextAreaElement | null>(null);
-	const { loomFile } = useAppMount();
 	const logger = useLogger();
 
 	usePlaceCursorAtEnd(inputRef, localValue);
@@ -188,13 +186,6 @@ export default function TextCellEdit({
 			if (isMarkdownFile(path)) {
 				path = stripFileExtension(path);
 			}
-
-			//This will create the minimal markdown link
-			const newPath = app.fileManager.generateMarkdownLink(
-				file,
-				loomFile.path
-			);
-			console.log(newPath);
 
 			const newValue = doubleBracketsInnerReplace(
 				localValue,

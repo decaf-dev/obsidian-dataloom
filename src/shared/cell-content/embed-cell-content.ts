@@ -1,6 +1,7 @@
 import { getResourcePath } from "src/shared/render-utils";
 import { App } from "obsidian";
 import { isObsidianLink } from "../link-and-path/link-predicates";
+import { isTwitterLink, isYouTubeLink } from "../match";
 
 /**
  * Gets the embed cell content
@@ -27,7 +28,11 @@ export const getEmbedCellContent = (
 	if (pathOrUrl === "") return pathOrUrl;
 
 	if (isExternal) {
-		if (isObsidianLink(pathOrUrl)) {
+		if (
+			isObsidianLink(pathOrUrl) ||
+			isTwitterLink(pathOrUrl) ||
+			isYouTubeLink(pathOrUrl)
+		) {
 			return `![](${pathOrUrl})`;
 		}
 		return `<iframe src="${pathOrUrl}"></iframe>`;

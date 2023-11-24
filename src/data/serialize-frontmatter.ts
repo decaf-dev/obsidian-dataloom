@@ -19,7 +19,7 @@ import { ObsidianPropertyType } from "src/shared/frontmatter/types";
 import TagNotFoundError from "src/shared/error/tag-not-found-error";
 
 export const serializeFrontmatter = async (app: App, state: LoomState) => {
-	console.log("serializing frontmatter...");
+	// console.log("serializing frontmatter...");
 	const { rows, columns, sources } = state.model;
 	if (sources.length === 0) return;
 
