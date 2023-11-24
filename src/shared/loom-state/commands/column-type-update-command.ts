@@ -31,8 +31,11 @@ export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 			const { cells } = row;
 			const nextCells = cells.map((cell) => {
 				const { columnId } = cell;
-				const newCell = createCellForType(columnId, this.nextType);
-				return newCell;
+				if (columnId === this.targetColumnId) {
+					const newCell = createCellForType(columnId, this.nextType);
+					return newCell;
+				}
+				return cell;
 			});
 			return {
 				...row,
