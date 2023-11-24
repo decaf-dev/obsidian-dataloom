@@ -11,6 +11,10 @@ import {
 } from "src/shared/loom-state/types/loom-state";
 import { mapCellsToColumn } from "src/shared/loom-state/utils/column-utils";
 import ColumnNotFoundError from "src/shared/error/column-not-found-error";
+import {
+	isMarkdownFile,
+	stripFileExtension,
+} from "src/shared/link-and-path/file-path-utils";
 
 //TODO test
 
@@ -28,7 +32,6 @@ export const handleFileRename = async (
 	oldPath: string,
 	currentAppVersion: string
 ) => {
-	console.log("Handling file rename");
 	const loomFiles = getAllVaultLoomFiles(app);
 
 	let totalLinksUpdated = 0;
@@ -43,12 +46,6 @@ export const handleFileRename = async (
 				file.path,
 				currentAppVersion
 			);
-		console.log({
-			loomFile: loomFile.path,
-			updatedState,
-			didUpdate,
-			numLinksUpdated,
-		});
 		if (didUpdate) {
 			totalLinksUpdated += numLinksUpdated;
 			numFilesUpdated++;
@@ -87,6 +84,14 @@ const updateLoomFileState = async (
 	const data = await app.vault.read(loomFile);
 	const state = deserializeState(data, currentAppVersion);
 
+	if (isMarkdownFile(oldPath)) {
+		oldPath = stripFileExtension(oldPath);
+	}
+
+	if (isMarkdownFile(newPath)) {
+		newPath = stripFileExtension(newPath);
+	}
+
 	const { columns, rows } = state.model;
 	const cellsToColumn = mapCellsToColumn(columns, rows);
 
@@ -106,6 +111,7 @@ const updateLoomFileState = async (
 						oldPath,
 						newPath
 					);
+					console.log({ nextCell, didUpdate });
 					if (didUpdate) numLinksUpdated++;
 					return nextCell;
 				}
@@ -155,7 +161,6 @@ const updateLoomFileState = async (
 //Text
 //content: [[/path/to/file|alias]]
 const updateTextCell = (cell: TextCell, oldPath: string, newPath: string) => {
-	console.log("updateTextCell", cell, oldPath, newPath);
 	const { content } = cell;
 
 	const { replacedString, replacementCount } = replaceWikiLinks(
@@ -167,7 +172,6 @@ const updateTextCell = (cell: TextCell, oldPath: string, newPath: string) => {
 			return `[[${path}${alias ? `|${alias}` : ""}]]`;
 		}
 	);
-	console.log(replacementCount);
 	if (replacementCount > 0) {
 		const nextCell = {
 			...cell,
@@ -198,10 +202,8 @@ const updateEmbedCell = (cell: EmbedCell, oldPath: string, newPath: string) => {
 //path: /path/to/file
 //alias: alias
 const updateFileCell = (cell: FileCell, oldPath: string, newPath: string) => {
-	console.log("updateFileCell", cell, oldPath, newPath);
 	const { path } = cell;
 	if (path === oldPath) {
-		console.log("path === oldPath");
 		const nextCell = {
 			...cell,
 			path: newPath,
