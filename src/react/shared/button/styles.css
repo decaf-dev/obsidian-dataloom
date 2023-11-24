@@ -3,7 +3,6 @@
     align-items: center;
     width: max-content !important;
     height: max-content;
-    padding: 6px !important;
     white-space: nowrap;
     color: var(--text-normal);
     font-size: var(--font-size-normal); /* Clear default Obsidian style */
@@ -28,8 +27,16 @@
     box-shadow: var(--input-shadow) !important;
 }
 
-.dataloom-button--small {
+.dataloom-button--sm {
     padding: 2px !important;
+}
+
+.dataloom-button--md {
+	padding: 6px !important;
+}
+
+.dataloom-button--lg {
+	padding: 10px !important;
 }
 
 .dataloom-button--full-width {
