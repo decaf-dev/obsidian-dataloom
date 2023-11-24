@@ -289,7 +289,11 @@ export default function BodyCellContainer(props: Props) {
 	}
 
 	let ariaLabel = "";
-	if (isDisabled) {
+	if (
+		isDisabled &&
+		type !== CellType.SOURCE &&
+		type !== CellType.SOURCE_FILE
+	) {
 		ariaLabel =
 			"This cell is disabled until you choose a frontmatter key for this column";
 	}
