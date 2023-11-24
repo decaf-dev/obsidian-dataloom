@@ -19,7 +19,7 @@ import {
 	TextCell,
 } from "../types/loom-state";
 import { isUrlLink } from "src/shared/link-and-path/link-predicates";
-import { extractObsidianLinkComponents } from "src/shared/link-and-path/markdown-link-utils";
+import { extractWikiLinkComponents } from "src/shared/link-and-path/markdown-link-utils";
 
 /**
  * Migrates to 8.13.0
@@ -77,7 +77,7 @@ export default class MigrateState18 implements MigrateState {
 						pathOrUrl = content;
 					} else {
 						const { path, alias } =
-							extractObsidianLinkComponents(content);
+							extractWikiLinkComponents(content);
 						if (path !== null) {
 							pathOrUrl = path;
 							saveAlias = alias;
@@ -92,8 +92,7 @@ export default class MigrateState18 implements MigrateState {
 					};
 					return newCell;
 				} else if (type === CellType.FILE) {
-					const { path, alias } =
-						extractObsidianLinkComponents(content);
+					const { path, alias } = extractWikiLinkComponents(content);
 					const newCell: FileCell = {
 						id,
 						columnId,
@@ -134,7 +133,7 @@ export default class MigrateState18 implements MigrateState {
 					};
 					return newCell;
 				} else if (type === CellType.SOURCE_FILE) {
-					const { path } = extractObsidianLinkComponents(content);
+					const { path } = extractWikiLinkComponents(content);
 					const newCell: SourceFileCell = {
 						id,
 						columnId,

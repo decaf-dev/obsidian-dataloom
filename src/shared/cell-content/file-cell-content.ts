@@ -1,3 +1,5 @@
+import { componentsToWikiLink } from "../link-and-path/markdown-link-utils";
+
 export const getFileCellContent = (
 	path: string,
 	shouldRemoveMarkdown: boolean
@@ -5,5 +7,5 @@ export const getFileCellContent = (
 	if (shouldRemoveMarkdown) {
 		return path;
 	}
-	return `[[${path}]]`;
+	return componentsToWikiLink(path, null);
 };

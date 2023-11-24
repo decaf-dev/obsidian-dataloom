@@ -14,7 +14,7 @@ import { Cell, CellType, Column, Tag } from "../loom-state/types/loom-state";
 import { getAssignedPropertyType } from "./obsidian-utils";
 import { ObsidianPropertyType } from "./types";
 import { isExternalLink, isUrlLink } from "../link-and-path/link-predicates";
-import { extractObsidianLinkComponents } from "../link-and-path/markdown-link-utils";
+import { extractWikiLinkComponents } from "../link-and-path/markdown-link-utils";
 
 export const deserializeFrontmatterForCell = (
 	app: App,
@@ -61,7 +61,7 @@ export const deserializeFrontmatterForCell = (
 			if (isUrlLink(frontmatterValue as string)) {
 				pathOrUrl = frontmatterValue as string;
 			} else {
-				const { path, alias } = extractObsidianLinkComponents(
+				const { path, alias } = extractWikiLinkComponents(
 					frontmatterValue as string
 				);
 				if (path !== null) {
@@ -79,7 +79,7 @@ export const deserializeFrontmatterForCell = (
 			};
 		}
 		case CellType.FILE: {
-			const { path, alias } = extractObsidianLinkComponents(
+			const { path, alias } = extractWikiLinkComponents(
 				frontmatterValue as string
 			);
 			const newCell = createFileCell(id, {

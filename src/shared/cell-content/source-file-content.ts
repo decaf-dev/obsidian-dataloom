@@ -1,3 +1,5 @@
+import { componentsToWikiLink } from "../link-and-path/markdown-link-utils";
+
 export const getSourceFileContent = (
 	content: string,
 	shouldRemoveMarkdown = false
@@ -5,5 +7,5 @@ export const getSourceFileContent = (
 	if (shouldRemoveMarkdown) return content;
 	if (content === "") return "";
 
-	return `[[${content}]]`;
+	return componentsToWikiLink(content, null);
 };

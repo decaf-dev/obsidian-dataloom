@@ -15,6 +15,7 @@ import {
 	isMarkdownFile,
 	stripFileExtension,
 } from "src/shared/link-and-path/file-path-utils";
+import { componentsToWikiLink } from "src/shared/link-and-path/markdown-link-utils";
 
 //TODO test
 
@@ -167,9 +168,9 @@ const updateTextCell = (cell: TextCell, oldPath: string, newPath: string) => {
 		content,
 		(path, alias) => {
 			if (path === oldPath) {
-				return `[[${newPath}${alias ? `|${alias}` : ""}]]`;
+				return componentsToWikiLink(newPath, alias);
 			}
-			return `[[${path}${alias ? `|${alias}` : ""}]]`;
+			return componentsToWikiLink(path, alias);
 		}
 	);
 	if (replacementCount > 0) {

@@ -13,7 +13,6 @@ import {
 	isSurroundedByDoubleBrackets,
 	removeClosingBracket,
 } from "./utils";
-import { getWikiLinkText } from "src/shared/link-and-path/markdown-link-utils";
 import { useLogger } from "src/shared/logger";
 
 import "./styles.css";
@@ -26,6 +25,11 @@ import {
 	LoomMenuLevel,
 } from "src/react/shared/menu-provider/types";
 import { useMenu } from "src/react/shared/menu-provider/hooks";
+import {
+	isMarkdownFile,
+	stripFileExtension,
+} from "src/shared/link-and-path/file-path-utils";
+import { useAppMount } from "../app-mount-provider";
 
 interface Props {
 	cellId: string;
@@ -52,6 +56,7 @@ export default function TextCellEdit({
 		null
 	);
 	const inputRef = React.useRef<HTMLTextAreaElement | null>(null);
+	const { loomFile } = useAppMount();
 	const logger = useLogger();
 
 	usePlaceCursorAtEnd(inputRef, localValue);
@@ -179,12 +184,22 @@ export default function TextCellEdit({
 
 	function handleSuggestItemClick(file: TFile | null) {
 		if (file) {
-			const fileName = getWikiLinkText(file.path);
+			let path = file.path;
+			if (isMarkdownFile(path)) {
+				path = stripFileExtension(path);
+			}
+
+			//This will create the minimal markdown link
+			const newPath = app.fileManager.generateMarkdownLink(
+				file,
+				loomFile.path
+			);
+			console.log(newPath);
 
 			const newValue = doubleBracketsInnerReplace(
 				localValue,
 				inputRef.current?.selectionStart ?? 0,
-				fileName
+				path
 			);
 
 			onChange(newValue);
