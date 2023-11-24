@@ -104,15 +104,7 @@ export default function LoomStateProvider({
 			sourceAppId: string,
 			state: LoomState
 		) {
-			console.log("Handling refresh event");
-			console.log({
-				reactAppId,
-				sourceAppId,
-				filePath,
-				path: loomFile.path,
-			});
 			if (reactAppId !== sourceAppId && filePath === loomFile.path) {
-				console.log("updating state");
 				setLoomState({
 					state,
 					shouldSaveToDisk: false,
