@@ -193,8 +193,8 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 	private renderModalSettings(containerEl: HTMLElement) {
 		new Setting(containerEl).setName("Modal").setHeading();
 		new Setting(containerEl)
-			.setName("What's new modal")
-			.setDesc("Show the what's new modal when the plugin is updated.")
+			.setName("Release notes")
+			.setDesc("Show release notes when the plugin is updated.")
 			.addToggle((cb) => {
 				cb.setValue(this.plugin.settings.showWhatsNewModal).onChange(
 					async (value) => {
