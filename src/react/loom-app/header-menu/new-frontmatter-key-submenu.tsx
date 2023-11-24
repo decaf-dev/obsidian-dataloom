@@ -49,7 +49,7 @@ export default function NewFrontmatterKeySubmenu({
 		// await updateObsidianPropertyType(app, key, keyType);
 		// onFrontmatterKeyChange(key);
 		onResetSubmenu();
-	}, []);
+	}, [onResetSubmenu]);
 
 	React.useEffect(() => {
 		if (closeRequest !== null) {

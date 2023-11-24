@@ -71,7 +71,7 @@ export default class MigrateState18 implements MigrateState {
 				} else if (type === CellType.EMBED) {
 					const isUrl = isUrlLink(content);
 
-					let pathOrUrl: string = "";
+					let pathOrUrl = "";
 					let saveAlias: string | null = null;
 					if (isUrl) {
 						pathOrUrl = content;

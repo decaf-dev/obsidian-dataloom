@@ -5,8 +5,8 @@ import CommandUndoError from "./error/command-undo-error";
 import jsondiffpatch from "jsondiffpatch";
 
 abstract class LoomStateCommand {
-	hasExecuteBeenCalled: boolean = false;
-	hasUndoBeenCalled: boolean = false;
+	hasExecuteBeenCalled = false;
+	hasUndoBeenCalled = false;
 
 	/**
 	 * Represents the difference between the original state and the state after execute() is called.

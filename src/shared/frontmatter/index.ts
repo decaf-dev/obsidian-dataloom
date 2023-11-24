@@ -55,7 +55,7 @@ export const deserializeFrontmatterForCell = (
 		}
 		case CellType.EMBED: {
 			const isExternal = isExternalLink(frontmatterValue as string);
-			let pathOrUrl: string = "";
+			let pathOrUrl = "";
 			let pathAlias: string | null = null;
 
 			if (isUrlLink(frontmatterValue as string)) {

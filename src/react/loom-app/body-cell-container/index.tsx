@@ -64,7 +64,6 @@ import { useMenu } from "src/react/shared/menu-provider/hooks";
 import "./styles.css";
 import { useOverflow } from "src/shared/spacing/hooks";
 import { getNumberCellContent } from "src/shared/cell-content/number-cell-content";
-import { dateTimeToDateString } from "src/shared/date/date-time-conversion";
 import { getTimeCellContent } from "src/shared/cell-content/time-content";
 import { getSourceCellContent } from "src/shared/cell-content/source-cell-content";
 import { getSourceFileContent } from "src/shared/cell-content/source-file-content";
@@ -252,6 +251,42 @@ export default function BodyCellContainer(props: Props) {
 		};
 	}
 
+	const handleTextChange = React.useCallback(
+		(value: string) => {
+			onCellChange(id, { content: value });
+		},
+		[id, onCellChange]
+	);
+
+	const handleNumberChange = React.useCallback(
+		(value: number | null) => {
+			onCellChange(id, { value });
+		},
+		[id, onCellChange]
+	);
+
+	const handleDateTimeChange = React.useCallback(
+		(value: string | null) => {
+			onCellChange(id, { dateTime: value });
+		},
+		[id, onCellChange]
+	);
+
+	const handleEmbedChange = React.useCallback(
+		(pathOrUrl: string) => {
+			onCellChange(id, { pathOrUrl });
+		},
+		[id, onCellChange]
+	);
+
+	const handleFileChange = React.useCallback(
+		(path: string) => {
+			//TODO add types
+			onCellChange(id, { path });
+		},
+		[id, onCellChange]
+	);
+
 	let menuWidth = menu.position.width;
 	if (
 		type === CellType.TAG ||
@@ -325,13 +360,6 @@ export default function BodyCellContainer(props: Props) {
 				copyTextToClipboard(content);
 			};
 
-			const handleInputChange = React.useCallback(
-				(value: string) => {
-					onCellChange(id, { content: value });
-				},
-				[id, onCellChange]
-			);
-
 			contentNode = <TextCell value={content} />;
 			menuNode = (
 				<TextCellEdit
@@ -339,7 +367,7 @@ export default function BodyCellContainer(props: Props) {
 					closeRequest={menu.closeRequest}
 					shouldWrapOverflow={shouldWrapOverflow}
 					value={content}
-					onChange={handleInputChange}
+					onChange={handleTextChange}
 					onClose={menu.onClose}
 				/>
 			);
@@ -362,13 +390,6 @@ export default function BodyCellContainer(props: Props) {
 			handleCellContextClick = () => {
 				copyTextToClipboard(content);
 			};
-
-			const handleNumberChange = React.useCallback(
-				(value: number | null) => {
-					onCellChange(id, { value });
-				},
-				[id, onCellChange]
-			);
 
 			contentNode = <NumberCell content={content} />;
 			menuNode = (
@@ -489,13 +510,6 @@ export default function BodyCellContainer(props: Props) {
 			handleCellContextClick = () => {
 				copyTextToClipboard(content);
 			};
-
-			const handleDateTimeChange = React.useCallback(
-				(value: string | null) => {
-					onCellChange(id, { dateTime: value });
-				},
-				[id, onCellChange]
-			);
 
 			function handleDateFormatChange(value: DateFormat) {
 				onColumnChange(
@@ -659,13 +673,6 @@ export default function BodyCellContainer(props: Props) {
 				onCellChange(id, { isExternal: value });
 			}
 
-			const handleInputChange = React.useCallback(
-				(pathOrUrl: string) => {
-					onCellChange(id, { pathOrUrl });
-				},
-				[id, onCellChange]
-			);
-
 			contentNode = (
 				<EmbedCell
 					isExternal={isExternal}
@@ -680,7 +687,7 @@ export default function BodyCellContainer(props: Props) {
 					isExternalLink={isExternal}
 					closeRequest={menu.closeRequest}
 					value={pathOrUrl}
-					onChange={handleInputChange}
+					onChange={handleEmbedChange}
 					onClose={menu.onClose}
 					onExternalLinkToggle={handleExternalLinkToggle}
 				/>
@@ -695,14 +702,6 @@ export default function BodyCellContainer(props: Props) {
 				onCellChange(id, { path: "", alias: null });
 			};
 
-			const handlePathChange = React.useCallback(
-				(path: string) => {
-					//TODO add types
-					onCellChange(id, { path });
-				},
-				[id, onCellChange]
-			);
-
 			handleCellContextClick = () => {
 				copyTextToClipboard(content);
 			};
@@ -710,7 +709,7 @@ export default function BodyCellContainer(props: Props) {
 			contentNode = <FileCell content={content} />;
 			menuNode = (
 				<FileCellEdit
-					onChange={handlePathChange}
+					onChange={handleFileChange}
 					onClose={menu.onClose}
 				/>
 			);

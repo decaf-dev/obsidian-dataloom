@@ -1,4 +1,3 @@
-import { getSourceFileContent } from "src/shared/cell-content/source-file-content";
 import { useRenderMarkdown } from "src/shared/render-utils";
 import { appendOrReplaceFirstChild } from "src/shared/render/utils";
 
