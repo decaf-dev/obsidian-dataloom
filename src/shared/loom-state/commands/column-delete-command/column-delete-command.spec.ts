@@ -1,11 +1,10 @@
 import {
+	createLoomState,
 	createTextFilter,
-	createTestLoomState,
 } from "src/shared/loom-state/loom-state-factory";
 import RowDeleteCommand from "../row-delete-command";
-import CommandUndoError from "../command-undo-error";
 import ColumnDeleteCommand from ".";
-import CommandArgumentsError from "../command-arguments-error";
+import CommandArgumentsError from "../error/command-arguments-error";
 
 describe("column-delete-command", () => {
 	it("should throw an error if no arguments are passed to the command object", () => {
@@ -16,22 +15,9 @@ describe("column-delete-command", () => {
 		}
 	});
 
-	it("should throw an error when undo() is called before execute()", () => {
-		const prevState = createTestLoomState(2, 1);
-		const command = new ColumnDeleteCommand({
-			last: true,
-		});
-
-		try {
-			command.undo(prevState);
-		} catch (err) {
-			expect(err).toBeInstanceOf(CommandUndoError);
-		}
-	});
-
 	it("should return the same state when only 1 column is in the table", () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1);
+		const prevState = createLoomState(1, 1);
 
 		const filters = [
 			createTextFilter(prevState.model.columns[0].id),
@@ -52,7 +38,7 @@ describe("column-delete-command", () => {
 
 	it("should delete a column when execute() is called", () => {
 		//Arrange
-		const prevState = createTestLoomState(2, 1);
+		const prevState = createLoomState(2, 1);
 
 		const filters = [
 			createTextFilter(prevState.model.columns[0].id),
@@ -73,7 +59,7 @@ describe("column-delete-command", () => {
 
 	it("should delete the last column when execute() is called", () => {
 		//Arrange
-		const prevState = createTestLoomState(2, 1);
+		const prevState = createLoomState(2, 1);
 
 		const filters = [
 			createTextFilter(prevState.model.columns[1].id),
@@ -103,7 +89,7 @@ describe("column-delete-command", () => {
 
 	it("should restore the deleted column when undo() is called", () => {
 		//Arrange
-		const prevState = createTestLoomState(2, 1);
+		const prevState = createLoomState(2, 1);
 
 		const filters = [
 			createTextFilter(prevState.model.columns[0].id),
@@ -127,7 +113,7 @@ describe("column-delete-command", () => {
 
 	it("should restore the last deleted column when undo() is called", () => {
 		//Arrange
-		const prevState = createTestLoomState(2, 1);
+		const prevState = createLoomState(2, 1);
 
 		const filters = [
 			createTextFilter(prevState.model.columns[1].id),

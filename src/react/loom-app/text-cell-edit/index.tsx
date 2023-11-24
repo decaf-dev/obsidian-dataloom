@@ -13,7 +13,6 @@ import {
 	isSurroundedByDoubleBrackets,
 	removeClosingBracket,
 } from "./utils";
-import { getWikiLinkText } from "src/shared/link/link-utils";
 import { useLogger } from "src/shared/logger";
 
 import "./styles.css";
@@ -26,6 +25,10 @@ import {
 	LoomMenuLevel,
 } from "src/react/shared/menu-provider/types";
 import { useMenu } from "src/react/shared/menu-provider/hooks";
+import {
+	isMarkdownFile,
+	stripFileExtension,
+} from "src/shared/link-and-path/file-path-utils";
 
 interface Props {
 	cellId: string;
@@ -179,12 +182,15 @@ export default function TextCellEdit({
 
 	function handleSuggestItemClick(file: TFile | null) {
 		if (file) {
-			const fileName = getWikiLinkText(file.path);
+			let path = file.path;
+			if (isMarkdownFile(path)) {
+				path = stripFileExtension(path);
+			}
 
 			const newValue = doubleBracketsInnerReplace(
 				localValue,
 				inputRef.current?.selectionStart ?? 0,
-				fileName
+				path
 			);
 
 			onChange(newValue);

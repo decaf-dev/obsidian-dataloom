@@ -19,23 +19,20 @@ import {
 	setSettings,
 	setPluginVersion,
 } from "./redux/global-slice";
-import { LOOM_EXTENSION, WIKI_LINK_REGEX } from "./data/constants";
+import { LOOM_EXTENSION } from "./data/constants";
 import { createLoomFile } from "src/data/loom-file";
-import { deserializeState, serializeState } from "./data/serialize-state";
-import { updateLinkReferences } from "./data/utils";
-import { getBasename } from "./shared/link/link-utils";
 import { hasDarkTheme } from "./shared/render/utils";
 import { removeCurrentFocusClass } from "./react/loom-app/app/hooks/use-focus/utils";
-import { LoomState } from "./shared/loom-state/types/loom-state";
 import {
 	loadPreviewModeApps,
 	purgeEmbeddedLoomApps,
 } from "./obsidian/embedded/embedded-app-manager";
-import { cloneDeep } from "lodash";
 import { log } from "./shared/logger";
 import FrontmatterCache from "./shared/frontmatter/frontmatter-cache";
 import EventManager from "./shared/event/event-manager";
 import { getAssignedPropertyType } from "./shared/frontmatter/obsidian-utils";
+import { handleFileRename } from "./data/main-utils";
+import { getBasename } from "./shared/link-and-path/file-path-utils";
 
 export interface DataLoomSettings {
 	shouldDebug: boolean;
@@ -292,132 +289,12 @@ export default class DataLoomPlugin extends Plugin {
 				"rename",
 				async (file: TAbstractFile, oldPath: string) => {
 					if (file instanceof TFile) {
-						const loomFiles = this.app.vault
-							.getFiles()
-							.filter(
-								(file) => file.extension === LOOM_EXTENSION
-							);
-
-						const loomsToUpdate: {
-							file: TFile;
-							state: LoomState;
-						}[] = [];
-
-						let numLinks = 0;
-						for (const loomFile of loomFiles) {
-							//For each file read its contents
-							const data = await file.vault.read(loomFile);
-							const state = deserializeState(
-								data,
-								this.manifest.version
-							);
-							//Search for old path in the file
-							state.model.rows.forEach((row) => {
-								const { cells } = row;
-								cells.forEach((cell) => {
-									const { content } = cell;
-									const regex = cloneDeep(WIKI_LINK_REGEX);
-									let matches;
-									while (
-										(matches = regex.exec(content)) !== null
-									) {
-										const path = matches[1];
-
-										//The path will be the relative path e.g. filename.loom
-										//while the old path will be the absolute path in the vault e.g. /looms/filename.loom
-										if (oldPath.includes(path)) {
-											const found = loomsToUpdate.find(
-												(loom) =>
-													loom.file.path ===
-													loomFile.path
-											);
-											if (!found) {
-												loomsToUpdate.push({
-													file: loomFile,
-													state,
-												});
-											}
-											numLinks++;
-										}
-									}
-								});
-							});
-						}
-
-						if (numLinks > 0) {
-							new Notice(
-								`Updating ${numLinks} link${
-									numLinks > 1 ? "s" : ""
-								} in ${loomsToUpdate.length} loom file${
-									loomsToUpdate.length > 1 ? "s" : ""
-								}.`
-							);
-						}
-
-						for (let i = 0; i < loomsToUpdate.length; i++) {
-							//If the state has changed, update the file
-							const { file: loomFile, state } = loomsToUpdate[i];
-
-							log(
-								this.settings.shouldDebug,
-								"Updating links in file",
-								{
-									path: loomFile.path,
-								}
-							);
-
-							const newState = cloneDeep(state);
-							newState.model.rows.map((row) => {
-								const { cells } = row;
-								const nextCells = cells.map((cell) => {
-									const { content } = cell;
-									const newContent = updateLinkReferences(
-										content,
-										file.path,
-										oldPath
-									);
-									if (content !== newContent) {
-										log(
-											this.settings.shouldDebug,
-											"Updated link",
-											{
-												oldLink: content,
-												newLink: newContent,
-											}
-										);
-									}
-									return {
-										...cell,
-										content: newContent,
-									};
-								});
-								return {
-									...row,
-									cells: nextCells,
-								};
-							});
-
-							if (
-								JSON.stringify(state) !==
-								JSON.stringify(newState)
-							) {
-								const serializedState =
-									serializeState(newState);
-
-								await file.vault.modify(
-									loomFile,
-									serializedState
-								);
-
-								//Update all looms that match this path
-								EventManager.getInstance().emit(
-									"app-refresh",
-									loomFile.path,
-									-1, //update all looms that match this path
-									newState
-								);
-							}
-						}
+						handleFileRename(
+							this.app,
+							file,
+							oldPath,
+							this.manifest.version
+						);
 					}
 				}
 			)

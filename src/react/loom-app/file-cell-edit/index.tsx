@@ -1,7 +1,10 @@
 import { TFile } from "obsidian";
 
 import { SuggestList } from "src/react/shared/suggest-list";
-import { getBasename } from "src/shared/link/link-utils";
+import {
+	isMarkdownFile,
+	stripFileExtension,
+} from "src/shared/link-and-path/file-path-utils";
 
 interface Props {
 	onChange: (value: string) => void;
@@ -11,11 +14,9 @@ interface Props {
 export default function FileCellEdit({ onChange, onClose }: Props) {
 	function handleSuggestItemClick(file: TFile | null) {
 		if (file) {
-			//The basename does not include an extension
-			let fileName = file.basename;
-			if (file.path.includes("/"))
-				fileName = `${file.path}|${file.basename}`;
-			onChange(`[[${fileName}]]`);
+			let path = file.path;
+			if (isMarkdownFile(path)) path = stripFileExtension(path);
+			onChange(path);
 		}
 		onClose();
 	}
@@ -26,12 +27,8 @@ export default function FileCellEdit({ onChange, onClose }: Props) {
 	}
 
 	function handleCreateClick(value: string) {
-		let link = `[[${value}]]`;
-		if (value.includes("/")) {
-			const fileName = getBasename(value);
-			link = `${value}|${fileName}`;
-		}
-		onChange(link);
+		if (isMarkdownFile(value)) value = stripFileExtension(value);
+		onChange(value);
 		onClose();
 	}
 

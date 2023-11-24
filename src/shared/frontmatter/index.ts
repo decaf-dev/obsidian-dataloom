@@ -1,8 +1,20 @@
 import { App } from "obsidian";
-import { createCell, createTag } from "../loom-state/loom-state-factory";
+import {
+	createCheckboxCell,
+	createDateCell,
+	createEmbedCell,
+	createFileCell,
+	createMultiTagCell,
+	createNumberCell,
+	createTag,
+	createTagCell,
+	createTextCell,
+} from "../loom-state/loom-state-factory";
 import { Cell, CellType, Column, Tag } from "../loom-state/types/loom-state";
 import { getAssignedPropertyType } from "./obsidian-utils";
 import { ObsidianPropertyType } from "./types";
+import { isExternalLink, isUrlLink } from "../link-and-path/link-predicates";
+import { extractWikiLinkComponents } from "../link-and-path/markdown-link-utils";
 
 export const deserializeFrontmatterForCell = (
 	app: App,
@@ -22,7 +34,8 @@ export const deserializeFrontmatterForCell = (
 	const frontmatter = fileMetadata.frontmatter;
 	if (!frontmatter) return null;
 
-	const frontmatterValue = frontmatter[frontmatterKey];
+	const frontmatterValue: string | number | boolean | string[] | undefined =
+		frontmatter[frontmatterKey];
 	if (!frontmatterValue) return null;
 
 	const assignedType =
@@ -32,14 +45,62 @@ export const deserializeFrontmatterForCell = (
 	const { id, tags, type } = column;
 
 	switch (type) {
-		case CellType.TEXT:
-		case CellType.EMBED:
-		case CellType.FILE:
-		case CellType.NUMBER:
-		case CellType.CHECKBOX: {
-			const newCell = createCell(id, {
-				type: type,
+		case CellType.TEXT: {
+			const newCell = createTextCell(id, {
 				content: frontmatterValue as string,
+			});
+			return {
+				newCell,
+			};
+		}
+		case CellType.EMBED: {
+			const isExternal = isExternalLink(frontmatterValue as string);
+			let pathOrUrl = "";
+			let pathAlias: string | null = null;
+
+			if (isUrlLink(frontmatterValue as string)) {
+				pathOrUrl = frontmatterValue as string;
+			} else {
+				const { path, alias } = extractWikiLinkComponents(
+					frontmatterValue as string
+				);
+				if (path !== null) {
+					pathOrUrl = path;
+					pathAlias = alias;
+				}
+			}
+			const newCell = createEmbedCell(id, {
+				isExternal,
+				pathOrUrl,
+				alias: pathAlias,
+			});
+			return {
+				newCell,
+			};
+		}
+		case CellType.FILE: {
+			const { path, alias } = extractWikiLinkComponents(
+				frontmatterValue as string
+			);
+			const newCell = createFileCell(id, {
+				path: path ?? "",
+				alias: alias ?? "",
+			});
+			return {
+				newCell,
+			};
+		}
+		case CellType.NUMBER: {
+			const newCell = createNumberCell(id, {
+				value: Number(frontmatterValue), //Convert to Number for redundancy
+			});
+			return {
+				newCell,
+			};
+		}
+		case CellType.CHECKBOX: {
+			const newCell = createCheckboxCell(id, {
+				value: Boolean(frontmatterValue), //Convert to Boolean for redundancy
 			});
 			return {
 				newCell,
@@ -49,8 +110,7 @@ export const deserializeFrontmatterForCell = (
 			//The formatterValue will return either YYYY-MM-DD or YYYY-MM-DDTHH:MM
 			//the date object will take this in as local time as output an ISO string
 			const dateString = frontmatterValue as string;
-			const newCell = createCell(id, {
-				type: type,
+			const newCell = createDateCell(id, {
 				dateTime: new Date(dateString).toISOString(),
 			});
 			const includeTime = assignedType === ObsidianPropertyType.DATETIME;
@@ -61,25 +121,24 @@ export const deserializeFrontmatterForCell = (
 			};
 		}
 		case CellType.TAG: {
-			const newTags: Tag[] = [];
-			const cellTagIds: string[] = [];
+			let newTag: Tag | null = null;
+			let cellTagId: string | null = null;
 			if (frontmatterValue !== "") {
 				const existingTag = tags.find(
 					(tag) => tag.content === frontmatterValue
 				);
 				if (existingTag) {
-					cellTagIds.push(existingTag.id);
+					cellTagId = existingTag.id;
 				} else {
-					const newTag = createTag(frontmatterValue as string);
-					cellTagIds.push(newTag.id);
-					newTags.push(newTag);
+					const tag = createTag(frontmatterValue as string);
+					cellTagId = tag.id;
+					newTag = tag;
 				}
 			}
-			const newCell = createCell(id, {
-				type,
-				tagIds: cellTagIds,
+			const newCell = createTagCell(id, {
+				tagId: cellTagId,
 			});
-			const nextTags = [...column.tags, ...newTags];
+			const nextTags = [...column.tags, ...(newTag ? [newTag] : [])];
 			return {
 				newCell,
 				nextTags,
@@ -104,8 +163,7 @@ export const deserializeFrontmatterForCell = (
 				}
 			});
 
-			const newCell = createCell(id, {
-				type,
+			const newCell = createMultiTagCell(id, {
 				tagIds: cellTagIds,
 			});
 			const nextTags = [...column.tags, ...newTags];

@@ -1,54 +1,147 @@
 import {
-	createTestLoomState,
+	createColumn,
+	createDateCell,
+	createGenericLoomState,
+	createLoomState,
+	createMultiTagCell,
+	createRow,
 	createTag,
+	createTagCell,
+	createTextCell,
 	createTextFilter,
 } from "src/shared/loom-state/loom-state-factory";
-import CommandUndoError from "./command-undo-error";
-import CommandRedoError from "./command-redo-error";
 import ColumnTypeUpdateCommand from "./column-type-update-command";
-import { CellType } from "../types/loom-state";
-import { CHECKBOX_MARKDOWN_UNCHECKED } from "../../constants";
+import {
+	CellType,
+	CheckboxCell,
+	Column,
+	Filter,
+	MultiTagCell,
+	Row,
+	TagCell,
+	TextCell,
+} from "../types/loom-state";
 
 describe("column-type-update-command", () => {
-	it("should throw an error when undo() is called before execute()", () => {
-		const prevState = createTestLoomState(1, 1);
+	const generateStateWithTextColumn = () => {
+		const columns: Column[] = [createColumn()];
+		const rows: Row[] = [
+			createRow(0, {
+				cells: [
+					createTextCell(columns[0].id, {
+						content: "test1,test2",
+					}),
+				],
+			}),
+		];
+		const state = createGenericLoomState({
+			columns,
+			rows,
+		});
+		return state;
+	};
 
-		try {
-			new ColumnTypeUpdateCommand(
-				prevState.model.columns[0].id,
-				CellType.TAG
-			).undo(prevState);
-		} catch (err) {
-			expect(err).toBeInstanceOf(CommandUndoError);
-		}
-	});
+	const generateStateWithTextColumnAndFilters = () => {
+		const columns: Column[] = [createColumn()];
+		const rows: Row[] = [
+			createRow(0, {
+				cells: [createTextCell(columns[0].id)],
+			}),
+		];
+		const filters: Filter[] = [
+			createTextFilter(columns[0].id),
+			createTextFilter(columns[0].id),
+		];
 
-	it("should throw an error when redo() is called before undo()", () => {
-		const prevState = createTestLoomState(1, 1);
-		const command = new ColumnTypeUpdateCommand(
-			prevState.model.columns[0].id,
-			CellType.TAG
-		);
-		command.execute(prevState);
+		const state = createGenericLoomState({
+			columns,
+			rows,
+			filters,
+		});
+		return state;
+	};
 
-		try {
-			command.redo(prevState);
-		} catch (err) {
-			expect(err).toBeInstanceOf(CommandRedoError);
-		}
-	});
+	const generateStateWithTagColumn = () => {
+		const columns: Column[] = [
+			createColumn({
+				type: CellType.TAG,
+				tags: [createTag("test1"), createTag("test2")],
+			}),
+		];
+		const rows: Row[] = [
+			createRow(0, {
+				cells: [
+					createTagCell(columns[0].id, {
+						tagId: columns[0].tags[0].id,
+					}),
+				],
+			}),
+			createRow(1, {
+				cells: [
+					createTagCell(columns[0].id, {
+						tagId: columns[0].tags[0].id,
+					}),
+				],
+			}),
+		];
+		const state = createGenericLoomState({
+			columns,
+			rows,
+		});
+		return state;
+	};
+
+	const generateStateWithMultiTagColumn = () => {
+		const columns: Column[] = [
+			createColumn({
+				type: CellType.MULTI_TAG,
+				tags: [createTag("test1"), createTag("test2")],
+			}),
+		];
+		const rows: Row[] = [
+			createRow(0, {
+				cells: [
+					createMultiTagCell(columns[0].id, {
+						tagIds: [columns[0].tags[0].id, columns[0].tags[1].id],
+					}),
+				],
+			}),
+			createRow(1, {
+				cells: [
+					createMultiTagCell(columns[0].id, {
+						tagIds: [columns[0].tags[0].id, columns[0].tags[1].id],
+					}),
+				],
+			}),
+		];
+		const state = createGenericLoomState({
+			columns,
+			rows,
+		});
+		return state;
+	};
+
+	const generateStateWithDateColumn = () => {
+		const columns: Column[] = [];
+		const rows: Row[] = [
+			createRow(0, {
+				cells: [
+					createDateCell(columns[0].id, {
+						dateTime: new Date("2020-01-01").toISOString(),
+					}),
+				],
+			}),
+		];
+		const state = createGenericLoomState({
+			columns,
+			rows,
+		});
+		return state;
+	};
 
 	it("should handle multi-tag -> text when execute() is called", async () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 2, {
-			type: CellType.MULTI_TAG,
-		});
-		const tags = [createTag("test1"), createTag("test2")];
-		prevState.model.columns[0].tags = tags;
-
-		const tagIds = tags.map((t) => t.id);
-		prevState.model.rows[0].cells[0].tagIds = tagIds;
-		prevState.model.rows[1].cells[0].tagIds = tagIds;
+		const prevState = generateStateWithMultiTagColumn();
 
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
@@ -62,22 +155,17 @@ describe("column-type-update-command", () => {
 		expect(executeState.model.columns.length).toEqual(1);
 		expect(executeState.model.columns[0].type).toEqual(CellType.TEXT);
 		expect(executeState.model.columns[0].tags.length).toEqual(2);
-		expect(executeState.model.rows[0].cells[0].tagIds).toEqual([]);
-		expect(executeState.model.rows[1].cells[0].tagIds).toEqual([]);
+		expect(
+			(executeState.model.rows[0].cells[0] as TextCell).content
+		).toEqual("test1,test2");
+		expect(
+			(executeState.model.rows[1].cells[0] as TextCell).content
+		).toEqual("test1,test2");
 	});
 
 	it("should handle tag -> text when execute() is called", async () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 2, {
-			type: CellType.TAG,
-		});
-
-		const tags = [createTag("test1"), createTag("test2")];
-		prevState.model.columns[0].tags = tags;
-
-		const tagIds = tags.map((tag) => tag.id);
-		prevState.model.rows[0].cells[0].tagIds = tagIds;
-		prevState.model.rows[1].cells[0].tagIds = tagIds;
+		const prevState = generateStateWithTagColumn();
 
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
@@ -91,14 +179,18 @@ describe("column-type-update-command", () => {
 		expect(executeState.model.columns.length).toEqual(1);
 		expect(executeState.model.columns[0].type).toEqual(CellType.TEXT);
 		expect(executeState.model.columns[0].tags.length).toEqual(2);
-		expect(executeState.model.rows[0].cells[0].tagIds).toEqual([]);
-		expect(executeState.model.rows[1].cells[0].tagIds).toEqual([]);
+		expect(
+			(executeState.model.rows[0].cells[0] as TextCell).content
+		).toEqual("test1");
+		expect(
+			(executeState.model.rows[1].cells[0] as TextCell).content
+		).toEqual("test1");
 	});
 
 	it("should handle text -> tag when execute() is called", async () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1);
-		prevState.model.rows[0].cells[0].content = "test1,test2";
+		const prevState = generateStateWithTextColumn();
+
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
 			CellType.TAG
@@ -113,13 +205,16 @@ describe("column-type-update-command", () => {
 		expect(executeState.model.columns[0].tags.length).toEqual(2);
 		expect(executeState.model.columns[0].tags[0].content).toEqual("test1");
 		expect(executeState.model.columns[0].tags[1].content).toEqual("test2");
-		expect(executeState.model.rows[0].cells[0].tagIds.length).toEqual(1);
+		expect(
+			(executeState.model.rows[0].cells[0] as TagCell).tagId
+		).not.toBeNull();
+		expect(executeState.model.columns[0].tags).toHaveLength(2);
 	});
 
 	it("should handle text -> multi-tag when execute() is called", async () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1);
-		prevState.model.rows[0].cells[0].content = "test1,test2";
+		const prevState = generateStateWithTextColumn();
+
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
 			CellType.MULTI_TAG
@@ -134,21 +229,15 @@ describe("column-type-update-command", () => {
 		expect(executeState.model.columns[0].tags.length).toEqual(2);
 		expect(executeState.model.columns[0].tags[0].content).toEqual("test1");
 		expect(executeState.model.columns[0].tags[1].content).toEqual("test2");
-		expect(executeState.model.rows[0].cells[0].tagIds.length).toEqual(2);
+		expect(
+			(executeState.model.rows[0].cells[0] as MultiTagCell).tagIds
+		).toHaveLength(2);
+		expect(executeState.model.columns[0].tags).toHaveLength(2);
 	});
 
 	it("should handle multi-tag -> tag when execute() is called", async () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 2, {
-			type: CellType.MULTI_TAG,
-		});
-
-		const tags = [createTag("test1"), createTag("test2")];
-		prevState.model.columns[0].tags = tags;
-
-		const tagIds = tags.map((t) => t.id);
-		prevState.model.rows[0].cells[0].tagIds = tagIds;
-		prevState.model.rows[1].cells[0].tagIds = tagIds;
+		const prevState = generateStateWithMultiTagColumn();
 
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
@@ -162,12 +251,15 @@ describe("column-type-update-command", () => {
 		expect(executeState.model.columns.length).toEqual(1);
 		expect(executeState.model.columns[0].type).toEqual(CellType.TAG);
 		expect(executeState.model.columns[0].tags.length).toEqual(2);
-		expect(executeState.model.rows[0].cells[0].tagIds.length).toEqual(1);
+		expect(
+			(executeState.model.rows[0].cells[0] as TagCell).tagId
+		).not.toBeNull();
 	});
 
 	it("should handle text -> checkbox when execute() is called", async () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1);
+		const prevState = createLoomState(1, 1);
+
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
 			CellType.CHECKBOX
@@ -179,19 +271,14 @@ describe("column-type-update-command", () => {
 		//Assert
 		expect(executeState.model.columns.length).toEqual(1);
 		expect(executeState.model.columns[0].type).toEqual(CellType.CHECKBOX);
-		expect(executeState.model.rows[0].cells[0].content).toEqual(
-			CHECKBOX_MARKDOWN_UNCHECKED
-		);
+		expect(
+			(executeState.model.rows[0].cells[0] as CheckboxCell).value
+		).toEqual(false);
 	});
 
 	it("should handle date -> text when execute() is called", async () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1, {
-			type: CellType.DATE,
-		});
-		prevState.model.rows[0].cells[0].dateTime = new Date(
-			"2020-01-01"
-		).toISOString();
+		const prevState = generateStateWithDateColumn();
 
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
@@ -204,22 +291,14 @@ describe("column-type-update-command", () => {
 		//Assert
 		expect(executeState.model.columns.length).toEqual(1);
 		expect(executeState.model.columns[0].type).toEqual(CellType.TEXT);
-		expect(executeState.model.rows[0].cells[0].content).toEqual(
-			"12-31-2019"
-		);
+		expect(
+			(executeState.model.rows[0].cells[0] as TextCell).content
+		).toEqual("12-31-2019");
 	});
 
 	it("should delete referenced filters when execute() is called", async () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1, {
-			type: CellType.TEXT,
-		});
-
-		const filters = [
-			createTextFilter(prevState.model.columns[0].id),
-			createTextFilter(prevState.model.columns[0].id),
-		];
-		prevState.model.filters = filters;
+		const prevState = generateStateWithTextColumnAndFilters();
 
 		//Act
 		const executeState = new ColumnTypeUpdateCommand(
@@ -233,16 +312,7 @@ describe("column-type-update-command", () => {
 
 	it("should handle multi-tag -> text when undo() is called", async () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 2, {
-			type: CellType.MULTI_TAG,
-		});
-
-		const tags = [createTag("test1"), createTag("test2")];
-		prevState.model.columns[0].tags = tags;
-
-		const tagIds = tags.map((t) => t.id);
-		prevState.model.rows[0].cells[0].tagIds = tagIds;
-		prevState.model.rows[1].cells[0].tagIds = tagIds;
+		const prevState = generateStateWithMultiTagColumn();
 
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
@@ -261,16 +331,8 @@ describe("column-type-update-command", () => {
 
 	it("should handle tag -> text when undo() is called", async () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 2, {
-			type: CellType.TAG,
-		});
+		const prevState = generateStateWithTagColumn();
 
-		const tags = [createTag("test1"), createTag("test2")];
-		prevState.model.columns[0].tags = tags;
-
-		const tagIds = tags.map((t) => t.id);
-		prevState.model.rows[0].cells[0].tagIds = tagIds;
-		prevState.model.rows[1].cells[0].tagIds = tagIds;
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
 			CellType.TEXT
@@ -288,8 +350,7 @@ describe("column-type-update-command", () => {
 
 	it("should handle text -> tag when undo() is called", async () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1);
-		prevState.model.rows[0].cells[0].content = "test1,test2";
+		const prevState = generateStateWithTextColumn();
 
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
@@ -308,8 +369,7 @@ describe("column-type-update-command", () => {
 
 	it("should handle text -> multi-tag when undo() is called", async () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1);
-		prevState.model.rows[0].cells[0].content = "test1,test2";
+		const prevState = generateStateWithTextColumn();
 
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
@@ -328,16 +388,7 @@ describe("column-type-update-command", () => {
 
 	it("should handle multi-tag -> tag when undo() is called", async () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 2, {
-			type: CellType.MULTI_TAG,
-		});
-
-		const tags = [createTag("test1"), createTag("test2")];
-		prevState.model.columns[0].tags = tags;
-
-		const tagIds = tags.map((tag) => tag.id);
-		prevState.model.rows[0].cells[0].tagIds = tagIds;
-		prevState.model.rows[1].cells[0].tagIds = tagIds;
+		const prevState = generateStateWithMultiTagColumn();
 
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
@@ -356,7 +407,7 @@ describe("column-type-update-command", () => {
 
 	it("should handle text -> checkbox when undo() is called", async () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1);
+		const prevState = generateStateWithTextColumn();
 
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
@@ -375,12 +426,7 @@ describe("column-type-update-command", () => {
 
 	it("should handle date -> text when undo() is called", async () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1, {
-			type: CellType.DATE,
-		});
-		prevState.model.rows[0].cells[0].dateTime = new Date(
-			"2020-01-01"
-		).toISOString();
+		const prevState = generateStateWithDateColumn();
 
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
@@ -399,15 +445,7 @@ describe("column-type-update-command", () => {
 
 	it("should restore deleted filters when undo() is called", async () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1, {
-			type: CellType.TEXT,
-		});
-
-		const filters = [
-			createTextFilter(prevState.model.columns[0].id),
-			createTextFilter(prevState.model.columns[0].id),
-		];
-		prevState.model.filters = filters;
+		const prevState = generateStateWithTextColumnAndFilters();
 
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
@@ -424,8 +462,7 @@ describe("column-type-update-command", () => {
 
 	it("should handle text -> multi-tag when redo() is called", async () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1);
-		prevState.model.rows[0].cells[0].content = "test1,test2";
+		const prevState = generateStateWithTextColumn();
 
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,
@@ -445,15 +482,7 @@ describe("column-type-update-command", () => {
 
 	it("should delete filters when redo() is called", async () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1, {
-			type: CellType.TEXT,
-		});
-
-		const filters = [
-			createTextFilter(prevState.model.columns[0].id),
-			createTextFilter(prevState.model.columns[0].id),
-		];
-		prevState.model.filters = filters;
+		const prevState = generateStateWithTextColumnAndFilters();
 
 		const command = new ColumnTypeUpdateCommand(
 			prevState.model.columns[0].id,

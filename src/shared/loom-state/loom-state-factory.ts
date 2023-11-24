@@ -45,9 +45,20 @@ import {
 	ObsidianFolderSource,
 	ExternalRowOrder,
 	DateFormatSeparator,
+	TextCell,
+	NumberCell,
+	DateCell,
+	CreationTimeCell,
+	EmbedCell,
+	LastEditedTimeCell,
+	SourceCell,
+	SourceFileCell,
+	CheckboxCell,
+	FileCell,
+	TagCell,
+	MultiTagCell,
 } from "./types/loom-state";
 
-import { CHECKBOX_MARKDOWN_UNCHECKED } from "src/shared/constants";
 import { Color } from "src/shared/loom-state/types/loom-state";
 import { generateUuid } from "../uuid";
 import { getCurrentDateTime } from "../date/utils";
@@ -151,34 +162,157 @@ export const createRow = (
 	};
 };
 
-export const createCell = (
+export const createTextCell = (
 	columnId: string,
-	options: {
-		type?: CellType;
-		tagIds?: string[];
+	options?: {
 		content?: string;
-		dateTime?: string | null;
-	} = {}
-): Cell => {
-	const {
-		type,
-		tagIds = [],
-		content: originalContent = "",
-		dateTime = null,
-	} = options ?? {};
-
-	let content = originalContent;
-	if (type === CellType.CHECKBOX) {
-		if (content === "") {
-			content = CHECKBOX_MARKDOWN_UNCHECKED;
-		}
 	}
+): TextCell => {
+	const { content = "" } = options ?? {};
 	return {
 		id: generateUuid(),
-		isExternalLink: false,
+		columnId,
+		content,
+	};
+};
+
+export const createNumberCell = (
+	columnId: string,
+	options?: {
+		value?: number;
+	}
+): NumberCell => {
+	const { value = null } = options ?? {};
+	return {
+		id: generateUuid(),
+		columnId,
+		value,
+	};
+};
+
+export const createDateCell = (
+	columnId: string,
+	options?: {
+		dateTime?: string | null;
+	}
+): DateCell => {
+	const { dateTime = null } = options ?? {};
+	return {
+		id: generateUuid(),
 		columnId,
 		dateTime,
-		content,
+	};
+};
+
+export const createLastEditedTimeCell = (
+	columnId: string
+): LastEditedTimeCell => {
+	return {
+		id: generateUuid(),
+		columnId,
+	};
+};
+
+export const createCreationTimeCell = (columnId: string): CreationTimeCell => {
+	return {
+		id: generateUuid(),
+		columnId,
+	};
+};
+
+export const createSourceCell = (columnId: string): SourceCell => {
+	return {
+		id: generateUuid(),
+		columnId,
+	};
+};
+
+export const createSourceFileCell = (
+	columnId: string,
+	options?: {
+		path?: string;
+	}
+): SourceFileCell => {
+	const { path = "" } = options || {};
+	return {
+		id: generateUuid(),
+		columnId,
+		path,
+	};
+};
+
+export const createEmbedCell = (
+	columnId: string,
+	options?: {
+		isExternal?: boolean;
+		pathOrUrl?: string;
+		alias?: string | null;
+	}
+): EmbedCell => {
+	const { isExternal = false, pathOrUrl = "", alias = null } = options || {};
+	return {
+		id: generateUuid(),
+		columnId,
+		isExternal,
+		pathOrUrl,
+		alias,
+	};
+};
+
+export const createFileCell = (
+	columnId: string,
+	options?: {
+		path?: string;
+		alias?: string;
+	}
+): FileCell => {
+	const { path = "", alias = null } = options || {};
+	return {
+		id: generateUuid(),
+		columnId,
+		path,
+		alias,
+	};
+};
+
+export const createCheckboxCell = (
+	columnId: string,
+	options?: {
+		value?: boolean;
+	}
+): CheckboxCell => {
+	const { value = false } = options || {};
+	return {
+		id: generateUuid(),
+		columnId,
+		value,
+	};
+};
+
+export const createTagCell = (
+	columnId: string,
+	options?: {
+		tagId?: string | null;
+	}
+): TagCell => {
+	const { tagId = null } = options || {};
+	return {
+		id: generateUuid(),
+		columnId,
+		tagId,
+	};
+};
+
+export const createMultiTagCell = (
+	columnId: string,
+	options?: {
+		tagIds?: string[];
+	}
+): MultiTagCell => {
+	const { tagIds = [] } = options || {};
+	return {
+		id: generateUuid(),
+		columnId,
 		tagIds,
 	};
 };
@@ -260,13 +394,13 @@ export const createCheckboxFilter = (
 	options?: {
 		condition?: CheckboxCondition;
 		isEnabled?: boolean;
-		text?: string;
+		value?: boolean;
 	}
 ): CheckboxFilter => {
 	const {
 		condition = TextFilterCondition.IS,
 		isEnabled = true,
-		text = "",
+		value = false,
 	} = options || {};
 	const baseFilter = createBaseFilter(columnId, {
 		isEnabled,
@@ -275,8 +409,8 @@ export const createCheckboxFilter = (
 		...baseFilter,
 		type: CellType.CHECKBOX,
 		condition,
-		text,
 		isEnabled,
+		value,
 	};
 };
 
@@ -485,99 +619,38 @@ export const createTag = (
 	};
 };
 
-export const createRowWithCells = (
-	index: number,
-	columns: Column[],
-	options?: {
-		sourceId?: string;
-		contentForCells?: {
-			type: CellType;
-			content?: string;
-			dateTime?: string;
-			tagIds?: string[];
-		}[];
+export const createCellForType = (columnId: string, type: CellType): Cell => {
+	switch (type) {
+		case CellType.TEXT:
+			return createTextCell(columnId);
+		case CellType.NUMBER:
+			return createNumberCell(columnId);
+		case CellType.DATE:
+			return createDateCell(columnId);
+		case CellType.CREATION_TIME:
+			return createCreationTimeCell(columnId);
+		case CellType.LAST_EDITED_TIME:
+			return createLastEditedTimeCell(columnId);
+		case CellType.EMBED:
+			return createEmbedCell(columnId);
+		case CellType.FILE:
+			return createFileCell(columnId);
+		case CellType.CHECKBOX:
+			return createCheckboxCell(columnId);
+		case CellType.TAG:
+			return createTagCell(columnId);
+		case CellType.MULTI_TAG:
+			return createMultiTagCell(columnId);
+		case CellType.SOURCE:
+			return createSourceCell(columnId);
+		case CellType.SOURCE_FILE:
+			return createSourceFileCell(columnId);
+		default:
+			throw new Error("Unhandled cell type");
 	}
-): Row => {
-	const { sourceId, contentForCells = [] } = options || {};
-	const cells: Cell[] = [];
-	columns.forEach((column) => {
-		const { id, type } = column;
-
-		let tagIds: string[] = [];
-		let content = "";
-		let dateTime: string | null = null;
-		const cellContent = contentForCells.find((cell) => cell.type === type);
-		if (cellContent) {
-			const {
-				content: customContent,
-				dateTime: customDateTime,
-				tagIds: customTagIds,
-			} = cellContent;
-
-			if (type === CellType.DATE) {
-				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-				dateTime = customDateTime!;
-			} else if (type === CellType.TAG || type === CellType.MULTI_TAG) {
-				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-				tagIds = customTagIds!;
-			} else {
-				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-				content = customContent!;
-			}
-		}
-
-		const cell = createCell(id, {
-			type,
-			content,
-			dateTime,
-			tagIds,
-		});
-		cells.push(cell);
-	});
-	return createRow(index, {
-		cells,
-		sourceId,
-	});
-};
-
-export const createCustomTestLoomState = (
-	columns: Column[],
-	rows: Row[],
-	options?: {
-		sources: Source[];
-	}
-) => {
-	const { sources } = options || {};
-	return createGenericLoomState({
-		columns,
-		rows,
-		sources,
-	});
-};
-
-export const createTestLoomState = (
-	numColumns: number,
-	numRows: number,
-	options?: {
-		type?: CellType;
-	}
-): LoomState => {
-	return createBasicLoomState(numColumns, numRows, {
-		type: options?.type,
-	});
 };
 
 export const createLoomState = (
-	pluginVersion: string,
-	frozenColumnCount: number
-): LoomState => {
-	return createBasicLoomState(1, 1, {
-		pluginVersion,
-		frozenColumnCount,
-	});
-};
-
-const createBasicLoomState = (
 	numColumns: number,
 	numRows: number,
 	options?: {
@@ -602,7 +675,7 @@ const createBasicLoomState = (
 	for (let i = 0; i < numRows; i++) {
 		const cells: Cell[] = [];
 		for (let j = 0; j < numColumns; j++) {
-			const newCell = createCell(columns[j].id);
+			const newCell = createTextCell(columns[j].id);
 			cells.push(newCell);
 		}
 		const row = createRow(i, {
@@ -619,10 +692,10 @@ const createBasicLoomState = (
 	});
 };
 
-const createGenericLoomState = (options?: {
-	sources?: Source[];
+export const createGenericLoomState = (options?: {
 	columns?: Column[];
 	rows?: Row[];
+	sources?: Source[];
 	filters?: Filter[];
 	pluginVersion?: string;
 	frozenColumnCount?: number;

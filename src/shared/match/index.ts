@@ -6,7 +6,6 @@ import {
 	NUMBER_REGEX,
 	DATE_REGEX,
 	CHECKBOX_REGEX,
-	CHECKBOX_CHECKED_REGEX,
 	NUMBER_INPUT_REGEX,
 	TWITTER_LINK_REGEX,
 	YOUTUBE_LINK_REGEX,
@@ -27,10 +26,6 @@ export const isDate = (value: string): boolean => {
 
 export const isCheckbox = (value: string): boolean => {
 	return value.match(CHECKBOX_REGEX) !== null;
-};
-
-export const isCheckboxChecked = (value: string): boolean => {
-	return value.match(CHECKBOX_CHECKED_REGEX) !== null;
 };
 
 export const isImage = (value: string): boolean => {

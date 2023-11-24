@@ -6,9 +6,6 @@ export default class ColumnReorderCommand extends LoomStateCommand {
 	private dragId: string;
 	private targetId: string;
 
-	private dragIndex: number;
-	private targetIndex: number;
-
 	constructor(dragId: string, targetId: string) {
 		super(false);
 		this.dragId = dragId;
@@ -16,8 +13,6 @@ export default class ColumnReorderCommand extends LoomStateCommand {
 	}
 
 	execute(prevState: LoomState): LoomState {
-		super.onExecute();
-
 		const { columns } = prevState.model;
 
 		const dragIndex = columns.findIndex(
@@ -26,9 +21,6 @@ export default class ColumnReorderCommand extends LoomStateCommand {
 		const targetIndex = columns.findIndex(
 			(column) => column.id === this.targetId
 		);
-
-		this.dragIndex = dragIndex;
-		this.targetIndex = targetIndex;
 
 		const newColumns = [...columns];
 		const draggedEl = newColumns[dragIndex];
@@ -43,7 +35,7 @@ export default class ColumnReorderCommand extends LoomStateCommand {
 			newColumns
 		);
 
-		return {
+		const nextState = {
 			...prevState,
 			model: {
 				...prevState.model,
@@ -51,60 +43,8 @@ export default class ColumnReorderCommand extends LoomStateCommand {
 				rows: nextRows,
 			},
 		};
-	}
-
-	undo(prevState: LoomState): LoomState {
-		super.onUndo();
-
-		const { columns } = prevState.model;
-
-		const newColumns = [...columns];
-		const draggedEl = newColumns[this.targetIndex];
-
-		//Remove the element
-		newColumns.splice(this.targetIndex, 1);
-		//Append it to the new location
-		newColumns.splice(this.dragIndex, 0, draggedEl);
-
-		const nextRows = this.sortCellsByColumns(
-			prevState.model.rows,
-			newColumns
-		);
-
-		return {
-			...prevState,
-			model: {
-				...prevState.model,
-				columns: newColumns,
-				rows: nextRows,
-			},
-		};
-	}
-	redo(prevState: LoomState): LoomState {
-		super.onRedo();
-
-		const { columns } = prevState.model;
-		const newColumns = [...columns];
-		const draggedEl = newColumns[this.dragIndex];
-
-		//Remove the element
-		newColumns.splice(this.dragIndex, 1);
-		//Append it to the new location
-		newColumns.splice(this.targetIndex, 0, draggedEl);
-
-		const nextRows = this.sortCellsByColumns(
-			prevState.model.rows,
-			newColumns
-		);
-
-		return {
-			...prevState,
-			model: {
-				...prevState.model,
-				columns: newColumns,
-				rows: nextRows,
-			},
-		};
+		this.finishExecute(prevState, nextState);
+		return nextState;
 	}
 
 	private sortCellsByColumns(prevRows: Row[], columns: Column[]): Row[] {

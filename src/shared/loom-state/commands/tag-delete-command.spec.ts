@@ -1,71 +1,43 @@
 import {
-	createTestLoomState,
+	createColumn,
+	createGenericLoomState,
+	createRow,
 	createTag,
+	createTagCell,
 } from "src/shared/loom-state/loom-state-factory";
-import CommandUndoError from "./command-undo-error";
-import CommandRedoError from "./command-redo-error";
 import TagDeleteCommand from "./tag-delete-command";
+import { CellType, TagCell } from "../types/loom-state";
 
 describe("tag-delete-command", () => {
-	it("should throw an error when undo() is called before execute()", () => {
-		//Arrange
-		const prevState = createTestLoomState(1, 2);
-
+	const createTestState = () => {
 		const tags = [createTag("test1"), createTag("test2")];
-		prevState.model.columns[0].tags = tags;
+		const column = createColumn({ type: CellType.TAG, tags });
 
-		const tagIds = tags.map((t) => t.id);
-		prevState.model.rows[0].cells[0].tagIds = tagIds;
-		prevState.model.rows[1].cells[0].tagIds = tagIds;
-
-		const command = new TagDeleteCommand(
-			prevState.model.columns[0].id,
-			tags[0].id
-		);
-
-		try {
-			//Act
-			command.undo(prevState);
-		} catch (err) {
-			expect(err).toBeInstanceOf(CommandUndoError);
-		}
-	});
-
-	it("should throw an error when redo() is called before undo()", () => {
-		try {
-			//Arrange
-			const prevState = createTestLoomState(1, 2);
-
-			const tags = [createTag("test1"), createTag("test2")];
-			prevState.model.columns[0].tags = tags;
-
-			const tagIds = tags.map((t) => t.id);
-			prevState.model.rows[0].cells[0].tagIds = tagIds;
-			prevState.model.rows[1].cells[0].tagIds = tagIds;
-
-			const command = new TagDeleteCommand(
-				prevState.model.columns[0].id,
-				tags[0].id
-			);
-
-			//Act
-			command.execute(prevState);
-			command.redo(prevState);
-		} catch (err) {
-			expect(err).toBeInstanceOf(CommandRedoError);
-		}
-	});
+		const prevState = createGenericLoomState({
+			columns: [column],
+			rows: [
+				createRow(0, {
+					cells: [
+						createTagCell(column.id, {
+							tagId: tags[0].id,
+						}),
+					],
+				}),
+				createRow(1, {
+					cells: [
+						createTagCell(column.id, {
+							tagId: tags[1].id,
+						}),
+					],
+				}),
+			],
+		});
+		return { prevState, tags };
+	};
 
 	it("should delete a tag when execute() is called", () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 2);
-
-		const tags = [createTag("test1"), createTag("test2")];
-		prevState.model.columns[0].tags = tags;
-
-		const tagIds = tags.map((t) => t.id);
-		prevState.model.rows[0].cells[0].tagIds = tagIds;
-		prevState.model.rows[1].cells[0].tagIds = tagIds;
+		const { prevState, tags } = createTestState();
 
 		const command = new TagDeleteCommand(
 			prevState.model.columns[0].id,
@@ -77,24 +49,17 @@ describe("tag-delete-command", () => {
 
 		//Assert
 		expect(executeState.model.columns[0].tags).toEqual([tags[1]]);
-		expect(executeState.model.rows[0].cells[0].tagIds).toEqual([
+		expect((executeState.model.rows[0].cells[0] as TagCell).tagId).toEqual([
 			tags[1].id,
 		]);
-		expect(executeState.model.rows[1].cells[0].tagIds).toEqual([
+		expect((executeState.model.rows[1].cells[0] as TagCell).tagId).toEqual([
 			tags[1].id,
 		]);
 	});
 
 	it("should restore the deleted tag when undo() is called", () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 2);
-
-		const tags = [createTag("test1"), createTag("test2")];
-		prevState.model.columns[0].tags = tags;
-
-		const tagIds = tags.map((t) => t.id);
-		prevState.model.rows[0].cells[0].tagIds = tagIds;
-		prevState.model.rows[1].cells[0].tagIds = tagIds;
+		const { prevState, tags } = createTestState();
 
 		const command = new TagDeleteCommand(
 			prevState.model.columns[0].id,
@@ -112,14 +77,7 @@ describe("tag-delete-command", () => {
 
 	it("should delete a tag when redo() is called", () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 2);
-
-		const tags = [createTag("test1"), createTag("test2")];
-		prevState.model.columns[0].tags = tags;
-
-		const tagIds = tags.map((t) => t.id);
-		prevState.model.rows[0].cells[0].tagIds = tagIds;
-		prevState.model.rows[1].cells[0].tagIds = tagIds;
+		const { prevState, tags } = createTestState();
 
 		const command = new TagDeleteCommand(
 			prevState.model.columns[0].id,

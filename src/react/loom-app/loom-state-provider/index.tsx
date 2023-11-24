@@ -3,7 +3,7 @@ import React from "react";
 import { LoomState } from "src/shared/loom-state/types/loom-state";
 import LoomStateCommand from "src/shared/loom-state/commands/loom-state-command";
 import { useLogger } from "src/shared/logger";
-import RowSortCommand from "src/shared/loom-state/commands/row-sort-command";
+import { sortRows } from "src/shared/loom-state/sort-rows";
 import { useAppMount } from "src/react/loom-app/app-mount-provider";
 import EventManager from "src/shared/event/event-manager";
 
@@ -135,7 +135,7 @@ export default function LoomStateProvider({
 				logger(command.constructor.name + ".undo");
 				let newState = command.undo(loomState.state);
 				if (command.shouldSortRows) {
-					newState = new RowSortCommand().execute(newState);
+					newState = sortRows(newState);
 				}
 				setLoomState({
 					state: newState,
@@ -159,7 +159,7 @@ export default function LoomStateProvider({
 				logger(command.constructor.name + ".redo");
 				let newState = command.redo(loomState.state);
 				if (command.shouldSortRows) {
-					newState = new RowSortCommand().execute(newState);
+					newState = sortRows(newState);
 				}
 				setLoomState({
 					state: newState,
@@ -187,7 +187,7 @@ export default function LoomStateProvider({
 			//Execute command
 			let newState = command.execute(loomState.state);
 			if (command.shouldSortRows) {
-				newState = new RowSortCommand().execute(newState);
+				newState = sortRows(newState);
 			}
 			setLoomState({
 				state: newState,

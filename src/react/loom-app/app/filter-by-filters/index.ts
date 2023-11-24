@@ -7,7 +7,6 @@ import {
 	LoomState,
 	Tag,
 	TextFilter,
-	CheckboxFilter,
 	TagFilter,
 	MultiTagFilter,
 	FileFilter,
@@ -22,6 +21,15 @@ import {
 	DateFilterOption,
 	Column,
 	SourceFileFilter,
+	TextCell,
+	FileCell,
+	CheckboxCell,
+	TagCell,
+	MultiTagCell,
+	NumberCell,
+	DateCell,
+	SourceFileCell,
+	EmbedCell,
 } from "src/shared/loom-state/types/loom-state";
 import { Expression, evaluateWithPrecedence } from "./evaluate-with-precedence";
 import {
@@ -30,6 +38,8 @@ import {
 	getDateJustBeforeMidnight,
 } from "./utils";
 import ColumnNotFoundError from "src/shared/error/column-not-found-error";
+import { getFileName } from "src/shared/link-and-path/file-path-utils";
+import { isRelativePath } from "src/shared/link-and-path/link-predicates";
 
 /**
  * Filters body rows by the filters array
@@ -107,52 +117,68 @@ const doesCellMatchFilter = (
 	filter: Filter
 ): boolean | null => {
 	const { columnId, isEnabled, condition } = filter;
-	const { content: cellContent } = cell;
 	if (columnId !== cell.columnId) return null;
 	if (!isEnabled) return null;
 
 	switch (cellType) {
 		case CellType.TEXT: {
+			const { content } = cell as TextCell;
 			const { text } = filter as TextFilter;
-			return doesTextMatch(cellContent, text, condition);
+			return doesTextMatch(content, text, condition);
 		}
 		case CellType.FILE: {
+			const { alias, path } = cell as FileCell;
 			const { text } = filter as FileFilter;
-			return doesTextMatch(cellContent, text, condition);
+			return doesTextMatch(alias ?? path, text, condition);
 		}
 		case CellType.CHECKBOX: {
-			const { text } = filter as CheckboxFilter;
-			return doesTextMatch(cellContent, text, condition);
+			const { value } = cell as CheckboxCell;
+			return doesBooleanMatch(value, condition);
 		}
 		case CellType.TAG: {
-			const { tagId } = filter as TagFilter;
+			const { tagId: cellTagId } = cell as TagCell;
+			const { tagId: filterTagId } = filter as TagFilter;
 			const filterTag =
-				columnTags.find((tag) => tagId === tag.id) ?? null;
+				columnTags.find((tag) => filterTagId === tag.id) ?? null;
 			const cellTag =
-				columnTags.find((tag) => cell.tagIds.includes(tag.id)) ?? null;
+				columnTags.find((tag) => cellTagId === tag.id) ?? null;
 			return doesTagMatch(cellTag, filterTag, condition);
 		}
 		case CellType.MULTI_TAG: {
-			const { tagIds } = filter as MultiTagFilter;
+			const { tagIds: cellTagIds } = cell as MultiTagCell;
+			const { tagIds: filterTagIds } = filter as MultiTagFilter;
 			const filterTags = columnTags.filter((tag) =>
-				tagIds.includes(tag.id)
+				filterTagIds.includes(tag.id)
 			);
 			const cellTags = columnTags.filter((tag) =>
-				cell.tagIds.includes(tag.id)
+				cellTagIds.includes(tag.id)
 			);
 			return doTagsMatch(cellTags, filterTags, condition);
 		}
 		case CellType.NUMBER: {
+			const { value } = cell as NumberCell;
 			const { text } = filter as NumberFilter;
-			return doesNumberMatch(cellContent, text, condition);
+			return doesNumberMatch(value, text, condition);
 		}
 		case CellType.EMBED: {
+			const { pathOrUrl } = cell as EmbedCell;
 			const { text } = filter as EmbedFilter;
-			return doesTextMatch(cellContent, text, condition);
+
+			let compareValue = pathOrUrl;
+			if (isRelativePath(pathOrUrl)) {
+				compareValue = getFileName(pathOrUrl);
+			}
+			return doesTextMatch(compareValue, text, condition);
 		}
 		case CellType.DATE: {
-			const { dateTime, option } = filter as DateFilter;
-			return doesDateMatch(cell.dateTime, dateTime, option, condition);
+			const { dateTime: cellDateTime } = cell as DateCell;
+			const { dateTime: filterDateTime, option } = filter as DateFilter;
+			return doesDateMatch(
+				cellDateTime,
+				filterDateTime,
+				option,
+				condition
+			);
 		}
 		case CellType.CREATION_TIME: {
 			const { creationDateTime } = row;
@@ -172,7 +198,9 @@ const doesCellMatchFilter = (
 
 		case CellType.SOURCE_FILE: {
 			const { text } = filter as SourceFileFilter;
-			return doesTextMatch(cellContent, text, condition);
+			const { path } = cell as SourceFileCell;
+			const fileName = getFileName(path);
+			return doesTextMatch(fileName ?? "", text, condition);
 		}
 
 		default:
@@ -180,36 +208,46 @@ const doesCellMatchFilter = (
 	}
 };
 
+const doesBooleanMatch = (value: boolean, condition: FilterCondition) => {
+	switch (condition) {
+		case TextFilterCondition.IS:
+			return value === true;
+		case TextFilterCondition.IS_NOT:
+			return value === false;
+		default:
+			throw new Error("Filter condition not yet supported");
+	}
+};
+
 const doesNumberMatch = (
-	cellContent: string,
+	cellValue: number | null,
 	filterText: string,
 	condition: FilterCondition
 ) => {
-	const cellNumber = Number(cellContent);
 	const filterNumber = Number(filterText);
 	switch (condition) {
 		case NumberFilterCondition.IS_EQUAL:
-			if (cellContent === "") return true;
-			return cellNumber === filterNumber;
+			if (cellValue === null) return true;
+			return cellValue === filterNumber;
 		case NumberFilterCondition.IS_GREATER:
-			if (cellContent === "") return true;
-			return cellNumber > filterNumber;
+			if (cellValue === null) return true;
+			return cellValue > filterNumber;
 		case NumberFilterCondition.IS_GREATER_OR_EQUAL:
-			if (cellContent === "") return true;
-			return cellNumber >= filterNumber;
+			if (cellValue === null) return true;
+			return cellValue >= filterNumber;
 		case NumberFilterCondition.IS_LESS:
-			if (cellContent === "") return true;
-			return cellNumber < filterNumber;
+			if (cellValue === null) return true;
+			return cellValue < filterNumber;
 		case NumberFilterCondition.IS_LESS_OR_EQUAL:
-			if (cellContent === "") return true;
-			return cellNumber <= filterNumber;
+			if (cellValue === null) return true;
+			return cellValue <= filterNumber;
 		case NumberFilterCondition.IS_NOT_EQUAL:
-			if (cellContent === "") return true;
-			return cellNumber !== filterNumber;
+			if (cellValue === null) return true;
+			return cellValue !== filterNumber;
 		case NumberFilterCondition.IS_EMPTY:
-			return cellContent === "";
+			return cellValue === null;
 		case NumberFilterCondition.IS_NOT_EMPTY:
-			return cellContent !== "";
+			return cellValue !== null;
 		default:
 			throw new Error("Filter condition not yet supported");
 	}

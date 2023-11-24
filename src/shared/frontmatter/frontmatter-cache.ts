@@ -11,7 +11,7 @@ export default class FrontmatterCache {
 	>();
 
 	loadProperties(app: App) {
-		console.log("Loading frontmatter properties...");
+		// console.log("Loading frontmatter properties...");
 		this.cache.clear();
 
 		const properties = getAllObsidianProperties(app);

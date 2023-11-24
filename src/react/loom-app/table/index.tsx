@@ -28,6 +28,16 @@ import {
 	Source,
 	Row,
 	Cell,
+	CellType,
+	TextCell,
+	NumberCell,
+	TagCell,
+	MultiTagCell,
+	SourceFileCell,
+	DateCell,
+	CheckboxCell,
+	EmbedCell,
+	FileCell,
 } from "src/shared/loom-state/types/loom-state";
 import CellNotFoundError from "src/shared/error/cell-not-found-error";
 import { CellChangeHandler } from "../app/hooks/use-cell/types";
@@ -110,10 +120,6 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 				ref as React.MutableRefObject<VirtuosoHandle | null>
 			).current?.scrollToIndex(rows.length - 1);
 	}, [ref, previousRowLength, rows.length]);
-
-	React.useLayoutEffect(() => {
-		//onTableRender();
-	});
 
 	const visibleColumns = columns.filter((column) => column.isVisible);
 
@@ -313,13 +319,13 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 
 				const columns = [null, ...visibleColumns, null];
 				return columns.map((column, i) => {
-					let content: React.ReactNode;
+					let contentNode: React.ReactNode;
 					let key: string;
 
 					if (column === null) {
 						key = `filler-${i}`;
 						if (i === 0) {
-							content = (
+							contentNode = (
 								<RowOptions
 									source={source}
 									rowId={rowId}
@@ -330,7 +336,7 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 								/>
 							);
 						} else {
-							content = <></>;
+							contentNode = <></>;
 						}
 					} else {
 						const {
@@ -363,65 +369,212 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 								rowId,
 							});
 
-						const {
-							id: cellId,
-							content: cellContent,
-							dateTime,
-							tagIds,
-							isExternalLink,
-						} = cell;
-
 						const source =
 							sources.find(
 								(source) => source.id === row.sourceId
 							) ?? null;
 
 						key = column.id;
-						content = (
-							<BodyCellContainer
-								key={cellId}
-								cellId={cellId}
-								frontmatterKey={frontmatterKey}
-								isExternalLink={isExternalLink}
-								verticalPadding={verticalPadding}
-								includeTime={includeTime}
-								dateFormatSeparator={dateFormatSeparator}
-								horizontalPadding={horizontalPadding}
-								aspectRatio={aspectRatio}
-								columnTags={tags}
-								cellTagIds={tagIds}
-								columnId={columnId}
-								source={source}
-								hour12={hour12}
-								numberFormat={numberFormat}
-								rowCreationTime={creationDateTime}
-								dateFormat={dateFormat}
-								currencyType={currencyType}
-								numberPrefix={numberPrefix}
-								numberSuffix={numberSuffix}
-								numberSeparator={numberSeparator}
-								rowLastEditedTime={lastEditedDateTime}
-								dateTime={dateTime}
-								content={cellContent}
-								columnType={type}
-								shouldWrapOverflow={shouldWrapOverflow}
-								width={width}
-								onTagClick={onTagCellAdd}
-								onTagRemoveClick={onTagCellRemove}
-								onTagMultipleRemove={onTagCellMultipleRemove}
-								onCellChange={onCellChange}
-								onTagDeleteClick={onTagDeleteClick}
-								onTagAdd={onTagAdd}
-								onColumnChange={onColumnChange}
-								onTagChange={onTagChange}
-							/>
-						);
+
+						const { id } = cell;
+
+						const commonProps = {
+							id,
+							columnId,
+							frontmatterKey,
+							verticalPadding,
+							includeTime,
+							dateFormatSeparator,
+							horizontalPadding,
+							aspectRatio,
+							columnTags: tags,
+							source,
+							hour12,
+							numberFormat,
+							rowCreationTime: creationDateTime,
+							dateFormat,
+							currencyType,
+							numberPrefix,
+							numberSuffix,
+							numberSeparator,
+							rowLastEditedTime: lastEditedDateTime,
+							shouldWrapOverflow,
+							width,
+							onCellChange,
+						};
+
+						switch (type) {
+							case CellType.TEXT: {
+								const { content } = cell as TextCell;
+								contentNode = (
+									<BodyCellContainer
+										key={id}
+										{...commonProps}
+										type={type}
+										content={content}
+									/>
+								);
+								break;
+							}
+							case CellType.NUMBER: {
+								const { value } = cell as NumberCell;
+								contentNode = (
+									<BodyCellContainer
+										key={id}
+										{...commonProps}
+										type={type}
+										value={value}
+									/>
+								);
+								break;
+							}
+							case CellType.TAG: {
+								const { tagId } = cell as TagCell;
+								contentNode = (
+									<BodyCellContainer
+										key={id}
+										{...commonProps}
+										type={type}
+										tagId={tagId}
+										onTagAdd={onTagAdd}
+										onTagCellAdd={onTagCellAdd}
+										onTagCellRemove={onTagCellRemove}
+										onTagCellMultipleRemove={
+											onTagCellMultipleRemove
+										}
+										onTagChange={onTagChange}
+										onTagDeleteClick={onTagDeleteClick}
+									/>
+								);
+								break;
+							}
+							case CellType.MULTI_TAG: {
+								const { tagIds } = cell as MultiTagCell;
+								contentNode = (
+									<BodyCellContainer
+										key={id}
+										{...commonProps}
+										type={type}
+										tagIds={tagIds}
+										onCellChange={onCellChange}
+										onTagAdd={onTagAdd}
+										onTagCellAdd={onTagCellAdd}
+										onTagCellRemove={onTagCellRemove}
+										onTagCellMultipleRemove={
+											onTagCellMultipleRemove
+										}
+										onTagChange={onTagChange}
+										onTagDeleteClick={onTagDeleteClick}
+									/>
+								);
+								break;
+							}
+							case CellType.FILE: {
+								const { path, alias } = cell as FileCell;
+								contentNode = (
+									<BodyCellContainer
+										key={id}
+										{...commonProps}
+										type={type}
+										path={path}
+										alias={alias}
+									/>
+								);
+								break;
+							}
+							case CellType.EMBED: {
+								const { pathOrUrl, alias, isExternal } =
+									cell as EmbedCell;
+								contentNode = (
+									<BodyCellContainer
+										key={id}
+										{...commonProps}
+										type={type}
+										pathOrUrl={pathOrUrl}
+										alias={alias}
+										isExternal={isExternal}
+									/>
+								);
+								break;
+							}
+							case CellType.CHECKBOX: {
+								const { value } = cell as CheckboxCell;
+								contentNode = (
+									<BodyCellContainer
+										key={id}
+										{...commonProps}
+										type={type}
+										value={value}
+									/>
+								);
+								break;
+							}
+							case CellType.DATE: {
+								const { dateTime } = cell as DateCell;
+								contentNode = (
+									<BodyCellContainer
+										key={id}
+										{...commonProps}
+										type={type}
+										dateTime={dateTime}
+										onColumnChange={onColumnChange}
+									/>
+								);
+								break;
+							}
+							case CellType.CREATION_TIME: {
+								contentNode = (
+									<BodyCellContainer
+										key={id}
+										{...commonProps}
+										type={type}
+									/>
+								);
+								break;
+							}
+							case CellType.LAST_EDITED_TIME: {
+								contentNode = (
+									<BodyCellContainer
+										key={id}
+										{...commonProps}
+										type={type}
+									/>
+								);
+								break;
+							}
+							case CellType.SOURCE: {
+								contentNode = (
+									<BodyCellContainer
+										key={id}
+										{...commonProps}
+										type={type}
+									/>
+								);
+								break;
+							}
+							case CellType.SOURCE_FILE: {
+								const { path } = cell as SourceFileCell;
+								contentNode = (
+									<BodyCellContainer
+										key={id}
+										{...commonProps}
+										type={type}
+										path={path}
+									/>
+								);
+								break;
+							}
+							default:
+								throw new Error(
+									`Cell type ${type} not implemented`
+								);
+						}
 					}
 					return (
 						<BodyCell
 							key={key}
 							rowId={rowId}
-							content={content}
+							contentNode={contentNode}
 							index={i}
 							numFrozenColumns={numFrozenColumns}
 						/>

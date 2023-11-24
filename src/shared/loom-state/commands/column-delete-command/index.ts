@@ -1,16 +1,11 @@
 import { LoomState } from "../../types/loom-state";
 import LoomStateCommand from "../loom-state-command";
-import CommandArgumentsError from "../command-arguments-error";
-import { DeletedCell, DeletedColumn, DeletedFilter } from "./types";
-import { columnDeleteExecute, columnDeleteUndo } from "./utils";
+import CommandArgumentsError from "../error/command-arguments-error";
+import { columnDeleteExecute } from "./utils";
 
 export default class ColumnDeleteCommand extends LoomStateCommand {
 	private columnId?: string;
 	private last?: boolean;
-
-	private deletedColumn: DeletedColumn;
-	private deletedCells: DeletedCell[] = [];
-	private deletedFilters: DeletedFilter[];
 
 	constructor(options: { id?: string; last?: boolean }) {
 		super(false);
@@ -23,8 +18,6 @@ export default class ColumnDeleteCommand extends LoomStateCommand {
 	}
 
 	execute(prevState: LoomState): LoomState {
-		super.onExecute();
-
 		const { columns, rows, filters } = prevState.model;
 
 		let id = this.columnId;
@@ -36,19 +29,9 @@ export default class ColumnDeleteCommand extends LoomStateCommand {
 			return prevState;
 		}
 
-		const {
-			nextColumns,
-			nextFilters,
-			nextRows,
-			deletedCells,
-			deletedColumn,
-			deletedFilters,
-		} = result;
-		this.deletedColumn = deletedColumn;
-		this.deletedCells = deletedCells;
-		this.deletedFilters = deletedFilters;
+		const { nextColumns, nextFilters, nextRows } = result;
 
-		return {
+		const nextState = {
 			...prevState,
 			model: {
 				...prevState.model,
@@ -57,34 +40,7 @@ export default class ColumnDeleteCommand extends LoomStateCommand {
 				filters: nextFilters,
 			},
 		};
-	}
-
-	undo(prevState: LoomState): LoomState {
-		super.onUndo();
-
-		const { columns, rows, filters } = prevState.model;
-		const { nextColumns, nextFilters, nextRows } = columnDeleteUndo(
-			columns,
-			rows,
-			filters,
-			this.deletedColumn,
-			this.deletedCells,
-			this.deletedFilters
-		);
-
-		return {
-			...prevState,
-			model: {
-				...prevState.model,
-				columns: nextColumns,
-				rows: nextRows,
-				filters: nextFilters,
-			},
-		};
-	}
-
-	redo(prevState: LoomState): LoomState {
-		super.onRedo();
-		return this.execute(prevState);
+		this.finishExecute(prevState, nextState);
+		return nextState;
 	}
 }

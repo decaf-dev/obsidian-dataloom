@@ -43,10 +43,6 @@ import { isSmallScreenSize } from "src/shared/render/utils";
 import { LoomMenuPosition } from "src/react/shared/menu/types";
 import Input from "src/react/shared/input";
 import Select from "src/react/shared/select";
-import {
-	CHECKBOX_MARKDOWN_CHECKED,
-	CHECKBOX_MARKDOWN_UNCHECKED,
-} from "src/shared/constants";
 import MultiSelect from "src/react/shared/multi-select";
 import {
 	createCheckboxFilter,
@@ -308,6 +304,10 @@ export default function FilterMenu({
 		onUpdate(id, { text });
 	}
 
+	function onCheckboxChange(id: string, text: string) {
+		onUpdate(id, { text });
+	}
+
 	function onDateFilterOptionChange(id: string, option: DateFilterOption) {
 		onUpdate(id, { option });
 	}
@@ -431,29 +431,21 @@ export default function FilterMenu({
 									break;
 								}
 								case CellType.CHECKBOX: {
-									const { text } = filter as CheckboxFilter;
+									const { value } = filter as CheckboxFilter;
 									inputNode = (
 										<Select
-											value={text}
+											value={value ? "true" : "false"}
 											onChange={(newValue) =>
-												onTextChange(id, newValue)
+												onCheckboxChange(id, newValue)
 											}
 										>
 											<option value="">
 												Select an option
 											</option>
-											<option
-												value={
-													CHECKBOX_MARKDOWN_CHECKED
-												}
-											>
+											<option value="true">
 												Checked
 											</option>
-											<option
-												value={
-													CHECKBOX_MARKDOWN_UNCHECKED
-												}
-											>
+											<option value="false">
 												Unchecked
 											</option>
 										</Select>

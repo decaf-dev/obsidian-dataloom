@@ -14,35 +14,25 @@ export const useTag = () => {
 	const logger = useLogger();
 
 	const handleTagAdd = React.useCallback(
-		(
-			cellId: string,
-			columnId: string,
-			markdown: string,
-			color: Color,
-			isMultiTag: boolean
-		) => {
+		(cellId: string, columnId: string, markdown: string, color: Color) => {
 			logger("handleTagAdd", {
 				cellId,
 				columnId,
 				markdown,
 				color,
-				isMultiTag,
 			});
-			doCommand(
-				new TagAddCommand(cellId, columnId, markdown, color, isMultiTag)
-			);
+			doCommand(new TagAddCommand(cellId, columnId, markdown, color));
 		},
 		[doCommand, logger]
 	);
 
 	const handleTagCellAdd = React.useCallback(
-		(cellId: string, tagId: string, isMultiTag: boolean) => {
+		(cellId: string, tagId: string) => {
 			logger("handleTagCellAdd", {
 				cellId,
 				tagId,
-				isMultiTag,
 			});
-			doCommand(new TagCellAddCommand(cellId, tagId, isMultiTag));
+			doCommand(new TagCellAddCommand(cellId, tagId));
 		},
 		[doCommand, logger]
 	);

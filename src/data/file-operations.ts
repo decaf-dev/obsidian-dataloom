@@ -1,5 +1,5 @@
 import { App, TFile } from "obsidian";
-import { splitFileExtension } from "./utils";
+import { EXTENSION_REGEX } from "./constants";
 
 export const createFolder = async (app: App, folderPath: string) => {
 	try {
@@ -35,4 +35,17 @@ export const createFile = async (
 		}
 		throw err;
 	}
+};
+
+export const splitFileExtension = (
+	filePath: string
+): [string, string] | null => {
+	if (filePath.match(EXTENSION_REGEX)) {
+		const periodIndex = filePath.lastIndexOf(".");
+		return [
+			filePath.substring(0, periodIndex),
+			filePath.substring(periodIndex),
+		];
+	}
+	return null;
 };

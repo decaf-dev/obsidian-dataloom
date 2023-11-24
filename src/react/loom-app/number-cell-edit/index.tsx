@@ -1,15 +1,15 @@
 import React from "react";
 
 import { usePlaceCursorAtEnd } from "src/shared/hooks";
-import { isNumber, isNumberInput } from "src/shared/match";
+import { isNumberInput } from "src/shared/match";
 
 import Input from "src/react/shared/input";
 import { LoomMenuCloseRequest } from "src/react/shared/menu-provider/types";
 
 interface Props {
 	closeRequest: LoomMenuCloseRequest | null;
-	value: string;
-	onChange: (value: string) => void;
+	value: number | null;
+	onChange: (value: number | null) => void;
 	onClose: () => void;
 }
 
@@ -19,7 +19,7 @@ export default function NumberCellEdit({
 	onChange,
 	onClose,
 }: Props) {
-	const initialValue = isNumber(value) ? value : "";
+	const initialValue = value?.toString() ?? "";
 	const [localValue, setLocalValue] = React.useState(initialValue);
 	const inputRef = React.useRef<HTMLInputElement | null>(null);
 
@@ -27,10 +27,12 @@ export default function NumberCellEdit({
 
 	React.useEffect(() => {
 		if (closeRequest !== null) {
-			if (localValue !== value) onChange(localValue);
+			if (localValue !== initialValue) {
+				onChange(localValue === "" ? null : parseFloat(localValue));
+			}
 			onClose();
 		}
-	}, [value, localValue, closeRequest, onClose, onChange]);
+	}, [initialValue, localValue, closeRequest, onClose, onChange]);
 
 	function handleChange(inputValue: string) {
 		if (!isNumberInput(inputValue)) return;
@@ -43,9 +45,7 @@ export default function NumberCellEdit({
 			<Input
 				ref={inputRef}
 				focusOutline="default"
-				//Set input mode so that the keyboard is numeric
-				//but selection is still available
-				inputMode="numeric"
+				inputMode="numeric" //Set input mode so that the keyboard is numeric but selection is still available
 				value={localValue}
 				onChange={handleChange}
 				onBlur={(e) => {

@@ -9,7 +9,7 @@ import { randomColor } from "src/shared/color";
 import { LoomMenuCloseRequest } from "src/react/shared/menu-provider/types";
 
 interface Props {
-	isMulti: boolean;
+	isMulti?: boolean;
 	columnTags: TagType[];
 	cellTags: TagType[];
 	closeRequest: LoomMenuCloseRequest | null;
@@ -23,7 +23,7 @@ interface Props {
 }
 
 export default function TagCellEdit({
-	isMulti,
+	isMulti = false,
 	columnTags,
 	cellTags,
 	closeRequest,
