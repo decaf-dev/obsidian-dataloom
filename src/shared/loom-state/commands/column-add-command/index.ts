@@ -14,7 +14,7 @@ export default class ColumnAddCommand extends LoomStateCommand {
 		const { columns, rows } = prevState.model;
 
 		const result = columnAddExecute(columns, rows, { type: this.type });
-		const { columns: nextColumns, rows: nextRows } = result;
+		const { nextColumns, nextRows } = result;
 
 		const nextState = {
 			...prevState,

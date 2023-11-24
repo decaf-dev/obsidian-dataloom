@@ -39,11 +39,9 @@ export default function NewFrontmatterKeySubmenu({
 	);
 
 	const handleCreateClick = React.useCallback(async () => {
-		// console.log(keyType);
 		// if (keyType === null) {
 		// 	return;
 		// }
-		// console.log("HERE1");
 		// //Create the new key
 		// await app.fileManager.processFrontMatter(loomFile, (frontmatter) => {
 		// 	frontmatter[key] = "";

@@ -121,10 +121,6 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 			).current?.scrollToIndex(rows.length - 1);
 	}, [ref, previousRowLength, rows.length]);
 
-	React.useLayoutEffect(() => {
-		//onTableRender();
-	});
-
 	const visibleColumns = columns.filter((column) => column.isVisible);
 
 	return (

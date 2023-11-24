@@ -10,7 +10,7 @@ export const columnAddExecute = (
 		content?: string;
 	}
 ) => {
-	const { type = CellType.TEXT, insertIndex, content } = options || {};
+	const { type = CellType.TEXT, insertIndex, content } = options ?? {};
 
 	const nextColumns = [...prevColumns];
 
@@ -31,7 +31,7 @@ export const columnAddExecute = (
 	});
 
 	return {
-		columns: nextColumns,
-		rows: nextRows,
+		nextColumns,
+		nextRows,
 	};
 };

@@ -16,7 +16,6 @@ export default class CellBodyUpdateCommand extends LoomStateCommand {
 	}
 
 	execute(prevState: LoomState): LoomState {
-		console.log("CellBodyUpdateCommand.execute()");
 		//Set the rowId of the cell
 		const { rows } = prevState.model;
 		const row = rows.find((row) =>
