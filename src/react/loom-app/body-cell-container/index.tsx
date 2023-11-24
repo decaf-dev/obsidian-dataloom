@@ -36,6 +36,7 @@ import {
 	SourceFileCell as SourceFileCellInterface,
 	FileCell as FileCellInterface,
 	EmbedCell as EmbedCellInterface,
+	SourceType,
 } from "src/shared/loom-state/types/loom-state";
 
 import {
@@ -62,6 +63,13 @@ import { useMenu } from "src/react/shared/menu-provider/hooks";
 
 import "./styles.css";
 import { useOverflow } from "src/shared/spacing/hooks";
+import { getNumberCellContent } from "src/shared/cell-content/number-cell-content";
+import { dateTimeToDateString } from "src/shared/date/date-time-conversion";
+import { getTimeCellContent } from "src/shared/cell-content/time-content";
+import { getSourceCellContent } from "src/shared/cell-content/source-cell-content";
+import { getSourceFileContent } from "src/shared/cell-content/source-file-content";
+import { getFileCellContent } from "src/shared/cell-content/file-cell-content";
+import { getDateCellContent } from "src/shared/cell-content/date-cell-content";
 
 interface BaseCellProps {
 	frontmatterKey: string | null;
@@ -340,38 +348,34 @@ export default function BodyCellContainer(props: Props) {
 		case CellType.NUMBER: {
 			const { value } = props as NumberCellProps;
 
+			const content = getNumberCellContent(numberFormat, value, {
+				currency: currencyType,
+				prefix: numberPrefix,
+				suffix: numberSuffix,
+				separator: numberSeparator,
+			});
+
 			handleMenuTriggerBackspaceDown = () => {
 				onCellChange(id, { value: null });
 			};
 
 			handleCellContextClick = () => {
-				//TODO fix
-				//This is a get content function?
-				copyTextToClipboard(value?.toString() ?? "");
+				copyTextToClipboard(content);
 			};
 
-			const handleInputChange = React.useCallback(
+			const handleNumberChange = React.useCallback(
 				(value: number | null) => {
 					onCellChange(id, { value });
 				},
 				[id, onCellChange]
 			);
 
-			contentNode = (
-				<NumberCell
-					value={value}
-					currency={currencyType}
-					format={numberFormat}
-					prefix={numberPrefix}
-					suffix={numberSuffix}
-					separator={numberSeparator}
-				/>
-			);
+			contentNode = <NumberCell content={content} />;
 			menuNode = (
 				<NumberCellEdit
 					closeRequest={menu.closeRequest}
 					value={value}
-					onChange={handleInputChange}
+					onChange={handleNumberChange}
 					onClose={menu.onClose}
 				/>
 			);
@@ -408,7 +412,7 @@ export default function BodyCellContainer(props: Props) {
 			}
 
 			handleCellContextClick = () => {
-				const content = cellTags.map((tag) => tag.content).join(", ");
+				const content = cellTags.map((tag) => tag.content).join(",");
 				copyTextToClipboard(content);
 			};
 
@@ -470,13 +474,20 @@ export default function BodyCellContainer(props: Props) {
 		case CellType.DATE: {
 			const { dateTime, onColumnChange } = props as DateCellProps;
 
+			const content = getDateCellContent(
+				dateTime,
+				dateFormat,
+				dateFormatSeparator,
+				includeTime,
+				hour12
+			);
+
 			handleMenuTriggerBackspaceDown = () => {
 				onCellChange(id, { dateTime: null });
 			};
 
-			//TODO fix
 			handleCellContextClick = () => {
-				copyTextToClipboard(dateTime ?? "");
+				copyTextToClipboard(content);
 			};
 
 			const handleDateTimeChange = React.useCallback(
@@ -519,15 +530,7 @@ export default function BodyCellContainer(props: Props) {
 					{ shouldSortRows: true }
 				);
 			}
-			contentNode = (
-				<DateCell
-					value={dateTime}
-					format={dateFormat}
-					formatSeparator={dateFormatSeparator}
-					includeTime={includeTime}
-					hour12={hour12}
-				/>
-			);
+			contentNode = <DateCell content={content} />;
 
 			menuNode = (
 				<DateCellEdit
@@ -586,49 +589,59 @@ export default function BodyCellContainer(props: Props) {
 			break;
 		}
 		case CellType.CREATION_TIME: {
-			//TODO fix
+			const content = getTimeCellContent(
+				rowCreationTime,
+				dateFormat,
+				dateFormatSeparator,
+				hour12
+			);
+
 			handleCellContextClick = () => {
-				copyTextToClipboard(rowCreationTime);
+				copyTextToClipboard(content);
 			};
 
-			contentNode = (
-				<CreationTimeCell
-					value={rowCreationTime}
-					format={dateFormat}
-					formatSeparator={dateFormatSeparator}
-					hour12={hour12}
-				/>
-			);
+			contentNode = <CreationTimeCell value={content} />;
 			break;
 		}
 		case CellType.LAST_EDITED_TIME: {
-			//TODO fix
+			const content = getTimeCellContent(
+				rowLastEditedTime,
+				dateFormat,
+				dateFormatSeparator,
+				hour12
+			);
+
 			handleCellContextClick = () => {
-				copyTextToClipboard(rowLastEditedTime);
+				copyTextToClipboard(content);
 			};
 
-			contentNode = (
-				<LastEditedTimeCell
-					value={rowLastEditedTime}
-					format={dateFormat}
-					formatSeparator={dateFormatSeparator}
-					hour12={hour12}
-				/>
-			);
+			contentNode = <LastEditedTimeCell value={content} />;
 			break;
 		}
 		case CellType.SOURCE: {
-			contentNode = <SourceCell source={source} />;
+			const content = getSourceCellContent(source);
+
+			handleCellContextClick = () => {
+				copyTextToClipboard(content);
+			};
+
+			contentNode = (
+				<SourceCell
+					type={source?.type as SourceType}
+					content={content}
+				/>
+			);
 			break;
 		}
 		case CellType.SOURCE_FILE: {
 			const { path } = props as SourceFileCellProps;
+			const content = getSourceFileContent(path);
 
 			handleCellContextClick = () => {
-				copyTextToClipboard(path);
+				copyTextToClipboard(content);
 			};
 
-			contentNode = <SourceFileCell path={path} />;
+			contentNode = <SourceFileCell content={content} />;
 			break;
 		}
 		case CellType.EMBED: {
@@ -676,6 +689,7 @@ export default function BodyCellContainer(props: Props) {
 		}
 		case CellType.FILE: {
 			const { path } = props as FileCellProps;
+			const content = getFileCellContent(path, false);
 
 			handleMenuTriggerBackspaceDown = () => {
 				onCellChange(id, { path: "", alias: null });
@@ -690,10 +704,10 @@ export default function BodyCellContainer(props: Props) {
 			);
 
 			handleCellContextClick = () => {
-				copyTextToClipboard(path);
+				copyTextToClipboard(content);
 			};
 
-			contentNode = <FileCell path={path} />;
+			contentNode = <FileCell content={content} />;
 			menuNode = (
 				<FileCellEdit
 					onChange={handlePathChange}

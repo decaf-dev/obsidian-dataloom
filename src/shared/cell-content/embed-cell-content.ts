@@ -35,7 +35,9 @@ export const getEmbedCellContent = (
 		) {
 			return `![](${pathOrUrl})`;
 		}
-		return `<iframe src="${pathOrUrl}"></iframe>`;
+		return `<a href="${pathOrUrl}">${pathOrUrl}</a>`;
+		// return `![](${pathOrUrl})`;
+		// return `<iframe src="${pathOrUrl}"></iframe>`;
 	}
 
 	//Export will use the normal embedded image syntax
