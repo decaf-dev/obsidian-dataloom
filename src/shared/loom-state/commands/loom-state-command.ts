@@ -1,3 +1,4 @@
+import { cloneDeep } from "lodash";
 import { LoomState } from "../types/loom-state";
 import CommandPatchError from "./error/command-patch-error";
 import CommandRedoError from "./error/command-redo-error";
@@ -34,7 +35,6 @@ abstract class LoomStateCommand {
 	 * @param nextState - The state after the command is executed
 	 */
 	finishExecute(prevState: LoomState, nextState: LoomState) {
-		console.log("Finish execute!");
 		this.hasExecuteBeenCalled = true;
 
 		const patch = jsondiffpatch.diff(prevState, nextState);
@@ -47,8 +47,9 @@ abstract class LoomStateCommand {
 		if (!this.statePatch) throw new CommandPatchError();
 		this.hasUndoBeenCalled = true;
 
-		const nextState = jsondiffpatch.unpatch(executeState, this.statePatch);
-		return nextState;
+		const stateCopy = cloneDeep(executeState);
+		jsondiffpatch.unpatch(stateCopy, this.statePatch);
+		return stateCopy;
 	}
 
 	redo(undoState: LoomState): LoomState {
@@ -56,8 +57,9 @@ abstract class LoomStateCommand {
 		if (!this.statePatch) throw new CommandPatchError();
 		this.hasUndoBeenCalled = false;
 
-		const nextState = jsondiffpatch.patch(undoState, this.statePatch);
-		return nextState;
+		const stateCopy = cloneDeep(undoState);
+		jsondiffpatch.patch(stateCopy, this.statePatch);
+		return stateCopy;
 	}
 
 	abstract execute(originalState: LoomState): LoomState;
