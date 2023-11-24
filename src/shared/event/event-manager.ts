@@ -44,7 +44,7 @@ export default class EventManager {
 			return;
 		}
 		this.eventListeners[eventName].forEach((callback) => {
-			callback(data);
+			callback(...data);
 		});
 	}
 }
