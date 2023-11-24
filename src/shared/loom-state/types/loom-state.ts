@@ -1,7 +1,7 @@
-/******* Type definitions for v8.12.0 *******/
+/******* Type definitions for v8.13.0 *******/
 
 /**
- * v8.12.0
+ * v8.13.0
  */
 export interface LoomState {
 	pluginVersion: string;
@@ -62,14 +62,80 @@ export interface Row {
 	cells: Cell[];
 }
 
-export interface Cell {
+export interface BaseCell {
 	id: string;
 	columnId: string;
-	isExternalLink: boolean;
-	dateTime: string | null;
+}
+
+export interface TextCell extends BaseCell {
 	content: string;
+}
+
+export interface EmbedCell extends BaseCell {
+	isExternal: boolean;
+	pathOrUrl: string;
+	alias: string | null;
+}
+
+export interface EmbedUrl {
+	type: "url";
+	url: string;
+}
+
+export interface EmbedPath {
+	type: "path";
+	path: string;
+	alias: string | null;
+}
+
+export interface FileCell extends BaseCell {
+	path: string;
+	alias: string | null; //We save an alias to be able to serialize into the frontmatter
+}
+
+export interface CheckboxCell extends BaseCell {
+	value: boolean;
+}
+
+export interface TagCell extends BaseCell {
+	tagId: string | null;
+}
+
+export interface MultiTagCell extends BaseCell {
 	tagIds: string[];
 }
+
+export interface NumberCell extends BaseCell {
+	value: number | null;
+}
+
+export interface DateCell extends BaseCell {
+	dateTime: string | null;
+}
+
+export type CreationTimeCell = BaseCell;
+
+export type LastEditedTimeCell = BaseCell;
+
+export type SourceCell = BaseCell;
+
+export interface SourceFileCell extends BaseCell {
+	path: string;
+}
+
+export type Cell =
+	| TextCell
+	| EmbedCell
+	| FileCell
+	| CheckboxCell
+	| TagCell
+	| MultiTagCell
+	| NumberCell
+	| DateCell
+	| CreationTimeCell
+	| LastEditedTimeCell
+	| SourceCell
+	| SourceFileCell;
 
 export interface Tag {
 	id: string;
@@ -301,7 +367,7 @@ export type CheckboxCondition =
 export interface CheckboxFilter extends BaseFilter {
 	type: CellType.CHECKBOX;
 	condition: CheckboxCondition;
-	text: string;
+	value: boolean;
 }
 
 /* Tag filter */

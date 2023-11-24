@@ -1,12 +1,15 @@
-import { isCheckboxChecked } from "../match";
+import {
+	CHECKBOX_MARKDOWN_CHECKED,
+	CHECKBOX_MARKDOWN_UNCHECKED,
+} from "../markdown/constants";
 
 export const getCheckboxCellContent = (
-	content: string,
+	value: boolean,
 	shouldRemoveMarkdown: boolean
 ) => {
 	if (shouldRemoveMarkdown) {
-		if (isCheckboxChecked(content)) return "true";
+		if (value) return "true";
 		return "false";
 	}
-	return content;
+	return value ? CHECKBOX_MARKDOWN_CHECKED : CHECKBOX_MARKDOWN_UNCHECKED;
 };

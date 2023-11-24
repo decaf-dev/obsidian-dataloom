@@ -17,6 +17,7 @@ import { createAppId } from "../utils";
 import ErrorApp from "src/react/error-app";
 import DeserializationError from "src/data/deserialization-error";
 import { serializeFrontmatter } from "src/data/serialize-frontmatter";
+import EventManager from "src/shared/event/event-manager";
 
 interface EmbeddedApp {
 	id: string;
@@ -208,7 +209,7 @@ const handleSave = async (
 	await app.vault.modify(file, serialized);
 
 	//Trigger an event to refresh the other open views of this file
-	app.workspace.trigger("app-refresh", file.path, appId, state);
+	EventManager.getInstance().emit("app-refresh", file.path, appId, state);
 };
 
 /**

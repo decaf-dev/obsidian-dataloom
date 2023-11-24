@@ -6,14 +6,14 @@ interface Props {
 	rowId: string;
 	index: number;
 	numFrozenColumns: number;
-	content: React.ReactNode;
+	contentNode: React.ReactNode;
 }
 
 export default function BodyCell({
 	rowId,
 	index,
 	numFrozenColumns,
-	content,
+	contentNode,
 }: Props) {
 	const ref = React.useRef<HTMLDivElement>(null);
 	const leftOffset = useStickyOffset(ref, numFrozenColumns, index);
@@ -28,7 +28,7 @@ export default function BodyCell({
 			data-row-id={index === 0 ? rowId : undefined}
 			style={{ left: shouldFreeze ? numToPx(leftOffset) : undefined }}
 		>
-			{content}
+			{contentNode}
 		</div>
 	);
 }

@@ -1,75 +1,56 @@
 import { createTag } from "src/shared/loom-state/loom-state-factory";
 import LoomStateCommand from "./loom-state-command";
-import { Cell, Column, LoomState, Row, Tag } from "../types/loom-state";
+import {
+	Cell,
+	CellType,
+	Column,
+	LoomState,
+	MultiTagCell,
+	Row,
+} from "../types/loom-state";
 import { Color } from "../types/loom-state";
 import RowNotFoundError from "src/shared/error/row-not-found-error";
 import { getCurrentDateTime } from "src/shared/date/utils";
+import { mapCellsToColumn } from "../utils/column-utils";
+import ColumnNotFoundError from "src/shared/error/column-not-found-error";
 
+/**
+ * Adds a tag to a cell
+ */
 export default class TagAddCommand extends LoomStateCommand {
 	private cellId: string;
 	private columnId: string;
-
-	private rowId: string;
 	private markdown: string;
 	private color: Color;
-	private isMultiTag: boolean;
-
-	/**
-	 * The edited time of the row before the command is executed
-	 */
-	private previousEditedDateTime: string;
-
-	/**
-	 * The edited time of the row after the command is executed
-	 *
-	 */
-	private nextEditedDateTime: string;
-
-	/**
-	 * The tag that was added to the column
-	 */
-	private addedTag: Tag;
-
-	/**
-	 * The cell tag ids before the command is executed
-	 */
-	private previousCellTagIds: string[];
-
-	/**
-	 * The cell tag ids after the command is executed
-	 */
-	private nextCellTagIds: string[];
 
 	constructor(
 		cellId: string,
 		columnId: string,
 		markdown: string,
-		color: Color,
-		isMultiTag: boolean
+		color: Color
 	) {
 		super(true);
 		this.cellId = cellId;
 		this.columnId = columnId;
 		this.markdown = markdown;
 		this.color = color;
-		this.isMultiTag = isMultiTag;
 	}
 
 	execute(prevState: LoomState): LoomState {
-		super.onExecute();
-
 		const { rows, columns } = prevState.model;
+
 		const row = rows.find((row) =>
 			row.cells.find((cell) => cell.id === this.cellId)
 		);
 		if (!row) throw new RowNotFoundError();
-		this.previousEditedDateTime = row.lastEditedDateTime;
-		this.rowId = row.id;
 
+		const targetRowId = row.id;
+
+		//Create a new tag
 		const newTag = createTag(this.markdown, {
 			color: this.color,
 		});
-		this.addedTag = newTag;
+
 		const nextColumns: Column[] = columns.map((column) => {
 			if (column.id === this.columnId) {
 				return {
@@ -80,49 +61,49 @@ export default class TagAddCommand extends LoomStateCommand {
 			return column;
 		});
 
+		const cellsToColumn = mapCellsToColumn(columns, rows);
 		const nextRows: Row[] = rows.map((row) => {
 			const { cells } = row;
 			const nextCells: Cell[] = cells.map((cell) => {
-				const { id, tagIds } = cell;
+				const { id } = cell;
+
 				if (id === this.cellId) {
-					this.previousCellTagIds = [...tagIds];
+					const column = cellsToColumn.get(cell.columnId);
+					if (!column)
+						throw new ColumnNotFoundError({
+							id: cell.columnId,
+						});
 
-					let updatedTagIds: string[] = [];
-					if (this.isMultiTag === false) {
-						//If there was already a tag attached to the cell, remove it
-						if (cell.tagIds.length > 0) {
-							updatedTagIds = [newTag.id];
-							this.nextCellTagIds = updatedTagIds;
-							return {
-								...cell,
-								tagIds: updatedTagIds,
-							};
-						}
+					const { type } = column;
+					if (type === CellType.TAG) {
+						return {
+							...cell,
+							tagId: newTag.id,
+						};
+					} else if (type === CellType.MULTI_TAG) {
+						const { tagIds } = cell as MultiTagCell;
+
+						return {
+							...cell,
+							tagIds: [...tagIds, newTag.id],
+						};
+					} else {
+						throw new Error("Cell type is not a tag or multi tag");
 					}
-
-					updatedTagIds = [...tagIds, newTag.id];
-					this.nextCellTagIds = updatedTagIds;
-
-					return {
-						...cell,
-						tagIds: updatedTagIds,
-					};
 				}
 				return cell;
 			});
-			if (row.id === this.rowId) {
-				const newLastEditedDateTime = getCurrentDateTime();
-				this.nextEditedDateTime = newLastEditedDateTime;
+			if (row.id === targetRowId) {
 				return {
 					...row,
-					lastEditedDateTime: newLastEditedDateTime,
+					lastEditedDateTime: getCurrentDateTime(),
 					cells: nextCells,
 				};
 			}
 			return row;
 		});
 
-		return {
+		const nextState = {
 			...prevState,
 			model: {
 				...prevState.model,
@@ -130,96 +111,7 @@ export default class TagAddCommand extends LoomStateCommand {
 				rows: nextRows,
 			},
 		};
-	}
-
-	undo(prevState: LoomState): LoomState {
-		super.onUndo();
-
-		const { rows, columns } = prevState.model;
-
-		const nextColumns: Column[] = columns.map((column) => {
-			if (column.id === this.columnId) {
-				return {
-					...column,
-					tags: column.tags.filter(
-						(tag) => tag.id !== this.addedTag.id
-					),
-				};
-			}
-			return column;
-		});
-
-		const nextRows: Row[] = rows.map((row) => {
-			const { cells } = row;
-			const nextCells = cells.map((cell) => {
-				if (cell.id === this.cellId) {
-					return {
-						...cell,
-						tagIds: this.previousCellTagIds,
-					};
-				}
-				return cell;
-			});
-			if (row.id === this.rowId) {
-				return {
-					...row,
-					lastEditedDateTime: this.previousEditedDateTime,
-					cells: nextCells,
-				};
-			}
-			return row;
-		});
-
-		return {
-			...prevState,
-			model: {
-				...prevState.model,
-				columns: nextColumns,
-				rows: nextRows,
-			},
-		};
-	}
-
-	redo(prevState: LoomState): LoomState {
-		super.onRedo();
-		const { rows, columns } = prevState.model;
-
-		const nextColumns = columns.map((column) => {
-			if (column.id === this.columnId)
-				return {
-					...column,
-					tags: [...column.tags, this.addedTag],
-				};
-			return column;
-		});
-
-		const nextRows: Row[] = rows.map((row) => {
-			const { cells } = row;
-			const nextCells = cells.map((cell) => {
-				if (cell.id === this.cellId)
-					return {
-						...cell,
-						tagIds: this.nextCellTagIds,
-					};
-				return cell;
-			});
-			if (row.id === this.rowId) {
-				return {
-					...row,
-					lastEditedDateTime: this.nextEditedDateTime,
-					cells: nextCells,
-				};
-			}
-			return row;
-		});
-
-		return {
-			...prevState,
-			model: {
-				...prevState.model,
-				columns: nextColumns,
-				rows: nextRows,
-			},
-		};
+		this.finishExecute(prevState, nextState);
+		return nextState;
 	}
 }

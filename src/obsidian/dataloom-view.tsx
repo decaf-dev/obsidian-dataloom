@@ -9,6 +9,7 @@ import { createAppId } from "./utils";
 import ErrorApp from "src/react/error-app";
 import DeserializationError from "src/data/deserialization-error";
 import { serializeFrontmatter } from "src/data/serialize-frontmatter";
+import EventManager from "src/shared/event/event-manager";
 
 export const DATA_LOOM_VIEW = "dataloom";
 
@@ -112,7 +113,12 @@ export default class DataLoomView extends TextFileView {
 		this.requestSave();
 
 		//Trigger an event to refresh the other open views of this file
-		this.app.workspace.trigger("app-refresh", this.file.path, appId, state);
+		EventManager.getInstance().emit(
+			"app-refresh",
+			this.file.path,
+			appId,
+			state
+		);
 	};
 
 	private renderApp(appId: string, state: LoomState) {

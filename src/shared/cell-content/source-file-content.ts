@@ -1,13 +1,19 @@
-import { getBasename } from "../link/link-utils";
+import {
+	isMarkdownFile,
+	stripFileExtension,
+} from "../link-and-path/file-path-utils";
+import { componentsToWikiLink } from "../link-and-path/markdown-link-utils";
 
 export const getSourceFileContent = (
-	content: string,
+	path: string,
 	shouldRemoveMarkdown = false
 ) => {
-	if (content === "") return "";
-	if (shouldRemoveMarkdown) return content;
+	if (shouldRemoveMarkdown) return path;
+	if (path === "") return "";
 
-	const basename = getBasename(content);
+	if (isMarkdownFile(path)) {
+		path = stripFileExtension(path);
+	}
 
-	return `[[${content}|${basename}]]`;
+	return componentsToWikiLink(path, null);
 };

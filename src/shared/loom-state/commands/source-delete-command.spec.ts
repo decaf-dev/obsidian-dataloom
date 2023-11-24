@@ -1,14 +1,17 @@
 import {
-	createTestLoomState,
 	createFolderSource,
 	createColumn,
-	createCustomTestLoomState,
-	createRowWithCells,
+	createGenericLoomState,
+	createRow,
+	createSourceCell,
+	createSourceFileCell,
+	createTextCell,
+	createLoomState,
 } from "src/shared/loom-state/loom-state-factory";
 import SourceDeleteCommand from "./source-delete-command";
 import { CellType } from "../types/loom-state";
-import CommandUndoError from "./command-undo-error";
-import CommandRedoError from "./command-redo-error";
+import CommandUndoError from "./error/command-undo-error";
+import CommandRedoError from "./error/command-redo-error";
 
 describe("source-delete-command", () => {
 	function stateWithOneSource() {
@@ -16,16 +19,34 @@ describe("source-delete-command", () => {
 		const columns = [
 			createColumn({ type: CellType.SOURCE }),
 			createColumn({ type: CellType.SOURCE_FILE }),
-			createColumn(),
+			createColumn({ type: CellType.TEXT }),
 		];
 		const rows = [
-			createRowWithCells(0, columns),
-			createRowWithCells(1, columns, { sourceId: sources[0].id }),
-			createRowWithCells(2, columns, { sourceId: sources[0].id }),
+			createRow(0, {
+				cells: [
+					createSourceCell(columns[0].id),
+					createSourceFileCell(columns[1].id),
+					createTextCell(columns[2].id),
+				],
+			}),
+			createRow(1, {
+				sourceId: sources[0].id,
+				cells: [
+					createSourceCell(columns[0].id),
+					createSourceFileCell(columns[1].id),
+					createTextCell(columns[2].id),
+				],
+			}),
+			createRow(2, {
+				sourceId: sources[0].id,
+				cells: [
+					createSourceCell(columns[0].id),
+					createSourceFileCell(columns[1].id),
+					createTextCell(columns[2].id),
+				],
+			}),
 		];
-		const state = createCustomTestLoomState(columns, rows, {
-			sources,
-		});
+		const state = createGenericLoomState({ columns, rows, sources });
 		return state;
 	}
 
@@ -37,21 +58,39 @@ describe("source-delete-command", () => {
 		const columns = [
 			createColumn({ type: CellType.SOURCE }),
 			createColumn({ type: CellType.SOURCE_FILE }),
-			createColumn(),
+			createColumn({ type: CellType.TEXT }),
 		];
 		const rows = [
-			createRowWithCells(0, columns),
-			createRowWithCells(1, columns, { sourceId: sources[0].id }),
-			createRowWithCells(2, columns, { sourceId: sources[0].id }),
+			createRow(0, {
+				cells: [
+					createSourceCell(columns[0].id),
+					createSourceFileCell(columns[1].id),
+					createTextCell(columns[2].id),
+				],
+			}),
+			createRow(1, {
+				sourceId: sources[0].id,
+				cells: [
+					createSourceCell(columns[0].id),
+					createSourceFileCell(columns[1].id),
+					createTextCell(columns[2].id),
+				],
+			}),
+			createRow(2, {
+				sourceId: sources[0].id,
+				cells: [
+					createSourceCell(columns[0].id),
+					createSourceFileCell(columns[1].id),
+					createTextCell(columns[2].id),
+				],
+			}),
 		];
-		const state = createCustomTestLoomState(columns, rows, {
-			sources,
-		});
+		const state = createGenericLoomState({ columns, rows, sources });
 		return state;
 	}
 
 	it("throws an error when undo() is called before execute()", () => {
-		const prevState = createTestLoomState(1, 1);
+		const prevState = createLoomState(1, 1);
 		const command = new SourceDeleteCommand("");
 
 		try {
@@ -62,7 +101,7 @@ describe("source-delete-command", () => {
 	});
 
 	it("throws an error when redo() is called before undo()", () => {
-		const prevState = createTestLoomState(1, 1);
+		const prevState = createLoomState(1, 1);
 		const command = new SourceDeleteCommand("");
 
 		try {

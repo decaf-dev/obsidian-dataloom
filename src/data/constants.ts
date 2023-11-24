@@ -18,4 +18,4 @@ export const EXTENSION_REGEX = new RegExp(/\.[a-z]*$/);
  * @example
  * [[my-file|]]
  */
-export const WIKI_LINK_REGEX = new RegExp(/\[\[([^|\]]+)(?:\|([\w-]+))?\]\]/g);
+export const WIKI_LINK_REGEX = new RegExp(/\[\[([^|\]]+)(\|([\w-]*))?\]\]/g);

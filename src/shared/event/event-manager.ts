@@ -39,12 +39,12 @@ export default class EventManager {
 
 	// Method to trigger all callbacks associated with an event
 	public emit(eventName: DataLoomEvent, ...data: any[]): void {
-		console.log("[EventManager] emiting event:", eventName);
+		// console.log("[EventManager] emiting event:", eventName);
 		if (!this.eventListeners[eventName]) {
 			return;
 		}
 		this.eventListeners[eventName].forEach((callback) => {
-			callback(data);
+			callback(...data);
 		});
 	}
 }

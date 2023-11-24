@@ -1,11 +1,22 @@
 import {
 	createColumn,
-	createCustomTestLoomState,
-	createRowWithCells,
+	createDateCell,
 	createFolderSource,
+	createGenericLoomState,
+	createMultiTagCell,
+	createRow,
+	createSourceCell,
+	createSourceFileCell,
 	createTag,
+	createTagCell,
+	createTextCell,
 } from "src/shared/loom-state/loom-state-factory";
-import { CellType, Column, Tag } from "src/shared/loom-state/types/loom-state";
+import {
+	CellType,
+	Column,
+	Row,
+	Source,
+} from "src/shared/loom-state/types/loom-state";
 import { serializeFrontmatter } from "./serialize-frontmatter";
 import { App, TFile } from "obsidian";
 
@@ -40,90 +51,183 @@ describe("serializeFrontmatter", () => {
 		frontmatterTest2 = {};
 	});
 
-	function createState(
-		type: CellType,
+	/**
+	 * Returns a 3x2 state with a source column, source file column, and text column
+	 * @param frontmatterKey - The frontmatter key to use in the text column
+	 * @param textCellContent - The content of the text cells
+	 */
+	const generateStateWithTextColumn = (
 		frontmatterKey: string | null,
-		cellContent: {
-			content?: string;
-			dateTime?: string;
-			tagIds?: string[];
-		}[],
-		options?: {
-			tags?: Tag[];
-			column?: {
-				includeTime?: boolean;
-			};
-		}
-	) {
-		const { tags = [], column } = options ?? {};
-		const { includeTime = false } = column ?? {};
+		textCellContent: string[]
+	) => {
 		//Arrange
 		const columns: Column[] = [
-			createColumn({
-				type: CellType.SOURCE,
-			}),
-			createColumn({
-				type: CellType.SOURCE_FILE,
-			}),
-			createColumn({
-				type,
-				frontmatterKey: frontmatterKey ?? null,
-				tags,
-				includeTime,
-			}),
+			createColumn({ type: CellType.SOURCE }),
+			createColumn({ type: CellType.SOURCE_FILE }),
+			createColumn({ frontmatterKey }),
 		];
-		const sources = [createFolderSource("test", false)];
-		const rows = [
-			createRowWithCells(0, columns, {
-				contentForCells: [
-					{
-						type,
-						content: "text-cell-0",
-					},
+		const sources: Source[] = [createFolderSource("test", false)];
+
+		const rows: Row[] = [
+			createRow(0, {
+				cells: [
+					createSourceCell(columns[0].id),
+					createSourceFileCell(columns[1].id),
+					createTextCell(columns[2].id, {
+						content: textCellContent[0],
+					}),
 				],
 			}),
-			createRowWithCells(1, columns, {
-				sourceId: sources[0].id,
-				contentForCells: [
-					{
-						type: CellType.SOURCE_FILE,
-						content: "test1.md",
-					},
-					{
-						type,
-						content: cellContent[0]?.content,
-						dateTime: cellContent[0]?.dateTime,
-						tagIds: cellContent[0]?.tagIds,
-					},
-				],
-			}),
-			createRowWithCells(2, columns, {
-				sourceId: sources[0].id,
-				contentForCells: [
-					{
-						type: CellType.SOURCE_FILE,
-						content: "test2.md",
-					},
-					{
-						type,
-						content: cellContent[1]?.content,
-						dateTime: cellContent[1]?.dateTime,
-						tagIds: cellContent[1]?.tagIds,
-					},
+			createRow(1, {
+				cells: [
+					createSourceCell(columns[0].id),
+					createSourceFileCell(columns[1].id),
+					createTextCell(columns[2].id, {
+						content: textCellContent[1],
+					}),
 				],
 			}),
 		];
-		const state = createCustomTestLoomState(columns, rows, {
-			sources,
-		});
+		const state = createGenericLoomState({ columns, rows, sources });
 		return state;
-	}
+	};
+
+	/**
+	 * Returns a 3x2 state with a source column, source file column, and date column
+	 * - date cell 0 - "2020-12-31T22:00:00Z"
+	 * - date cell 1 - "2020-12-31T23:00:00Z"
+	 * @param frontmatterKey - The frontmatter key to use in the date column
+	 */
+	const generateStateWithDateColumn = (frontmatterKey: string | null) => {
+		//Arrange
+		const columns: Column[] = [
+			createColumn({ type: CellType.SOURCE }),
+			createColumn({ type: CellType.SOURCE_FILE }),
+			createColumn({
+				type: CellType.DATE,
+				includeTime: true,
+				frontmatterKey,
+			}),
+		];
+		const sources: Source[] = [createFolderSource("test", false)];
+
+		const rows: Row[] = [
+			createRow(0, {
+				cells: [
+					createSourceCell(columns[0].id),
+					createSourceFileCell(columns[1].id),
+					createDateCell(columns[2].id, {
+						dateTime: "2020-12-31T22:00:00Z",
+					}),
+				],
+			}),
+			createRow(1, {
+				cells: [
+					createSourceCell(columns[0].id),
+					createSourceFileCell(columns[1].id),
+					createDateCell(columns[2].id, {
+						dateTime: "2020-12-31T23:00:00Z",
+					}),
+				],
+			}),
+		];
+		const state = createGenericLoomState({ columns, rows, sources });
+		return state;
+	};
+
+	/**
+	 * Returns a 3x2 state with a source column, source file column, and tag column
+	 * - tag cell 0 - "tag1"
+	 * - tag cell 1 - "tag2"
+	 * @param frontmatterKey - The frontmatter key to use in the tag column
+	 */
+	const generateStateWithTagColumn = (frontmatterKey: string | null) => {
+		//Arrange
+		//Arrange
+		const columns: Column[] = [
+			createColumn({ type: CellType.SOURCE }),
+			createColumn({ type: CellType.SOURCE_FILE }),
+			createColumn({
+				type: CellType.TAG,
+				tags: [createTag("tag1"), createTag("tag2")],
+				frontmatterKey,
+			}),
+		];
+		const sources: Source[] = [createFolderSource("test", false)];
+
+		const rows: Row[] = [
+			createRow(0, {
+				cells: [
+					createSourceCell(columns[0].id),
+					createSourceFileCell(columns[1].id),
+					createTagCell(columns[2].id, {
+						tagId: columns[2].tags[0].id,
+					}),
+				],
+			}),
+			createRow(1, {
+				cells: [
+					createSourceCell(columns[0].id),
+					createSourceFileCell(columns[1].id),
+					createTagCell(columns[2].id, {
+						tagId: columns[2].tags[0].id,
+					}),
+				],
+			}),
+		];
+		const state = createGenericLoomState({ columns, rows, sources });
+		return state;
+	};
+
+	/**
+	 * Returns a 3x2 state with a source column, source file column, and multi-tag column
+	 * - multi tag cell 0 - "tag1"
+	 * - multi tag cell 1 - "tag2"
+	 * @param frontmatterKey - The frontmatter key to use in the multi-tag column
+	 */
+	const generateStateWithMultiTagColumn = (frontmatterKey: string | null) => {
+		//Arrange
+		//Arrange
+		const columns: Column[] = [
+			createColumn({ type: CellType.SOURCE }),
+			createColumn({ type: CellType.SOURCE_FILE }),
+			createColumn({
+				type: CellType.MULTI_TAG,
+				tags: [createTag("tag1"), createTag("tag2")],
+				frontmatterKey,
+			}),
+		];
+		const sources: Source[] = [createFolderSource("test", false)];
+
+		const rows: Row[] = [
+			createRow(0, {
+				cells: [
+					createSourceCell(columns[0].id),
+					createSourceFileCell(columns[1].id),
+					createMultiTagCell(columns[2].id, {
+						tagIds: [columns[2].tags[0].id, columns[2].tags[1].id],
+					}),
+				],
+			}),
+			createRow(1, {
+				cells: [
+					createSourceCell(columns[0].id),
+					createSourceFileCell(columns[1].id),
+					createMultiTagCell(columns[2].id, {
+						tagIds: [columns[2].tags[0].id, columns[2].tags[1].id],
+					}),
+				],
+			}),
+		];
+		const state = createGenericLoomState({ columns, rows, sources });
+		return state;
+	};
 
 	it("doesn't serialize content if frontmatter key is null", async () => {
 		//Arrange
-		const state = createState(CellType.TEXT, null, [
-			{ content: "text-cell-1" },
-			{ content: "text-cell-2" },
+		const state = generateStateWithTextColumn(null, [
+			"text-cell-0",
+			"text-cell-1",
 		]);
 
 		//Act
@@ -136,9 +240,9 @@ describe("serializeFrontmatter", () => {
 
 	it("doesn't serialize content if frontmatter key is empty", async () => {
 		//Arrange
-		const state = createState(CellType.TEXT, "", [
-			{ content: "text-cell-1" },
-			{ content: "text-cell-2" },
+		const state = generateStateWithTextColumn("", [
+			"text-cell-0",
+			"text-cell-1",
 		]);
 
 		//Act
@@ -151,9 +255,9 @@ describe("serializeFrontmatter", () => {
 
 	it("loads text cell content into frontmatter", async () => {
 		//Arrange
-		const state = createState(CellType.TEXT, "text", [
-			{ content: "text-cell-1" },
-			{ content: "text-cell-2" },
+		const state = generateStateWithTextColumn("text", [
+			"text-cell-0",
+			"text-cell-1",
 		]);
 
 		//Act
@@ -161,28 +265,16 @@ describe("serializeFrontmatter", () => {
 
 		//Assert
 		expect(frontmatterTest1).toEqual({
-			text: "text-cell-1",
+			text: "text-cell-0",
 		});
 		expect(frontmatterTest2).toEqual({
-			text: "text-cell-2",
+			text: "text-cell-1",
 		});
 	});
 
 	it("loads date cell content into frontmatter", async () => {
 		//Arrange
-		const state = createState(
-			CellType.DATE,
-			"time",
-			[
-				{ dateTime: "2020-12-31T22:00:00Z" },
-				{ dateTime: "2020-12-31T23:00:00Z" },
-			],
-			{
-				column: {
-					includeTime: true,
-				},
-			}
-		);
+		const state = generateStateWithDateColumn("time");
 
 		//Act
 		await serializeFrontmatter(app, state);
@@ -198,41 +290,23 @@ describe("serializeFrontmatter", () => {
 
 	it("loads tag cell content into frontmatter", async () => {
 		//Arrange
-		const tags = [createTag("tag-1"), createTag("tag-2")];
-		const tagIds = tags.map((tag) => tag.id);
-		const state = createState(
-			CellType.TAG,
-			"tag",
-			[{ tagIds }, { tagIds }],
-			{
-				tags,
-			}
-		);
+		const state = generateStateWithTagColumn("tag");
 
 		//Act
 		await serializeFrontmatter(app, state);
 
 		//Assert
 		expect(frontmatterTest1).toEqual({
-			tag: "tag-1",
+			tag: "tag1",
 		});
 		expect(frontmatterTest2).toEqual({
-			tag: "tag-1",
+			tag: "tag1",
 		});
 	});
 
 	it("loads multi-tag cell content into frontmatter", async () => {
 		//Arrange
-		const tags = [createTag("tag-1"), createTag("tag-2")];
-		const tagIds = tags.map((tag) => tag.id);
-		const state = createState(
-			CellType.MULTI_TAG,
-			"tags",
-			[{ tagIds }, { tagIds }],
-			{
-				tags,
-			}
-		);
+		const state = generateStateWithMultiTagColumn("tags");
 
 		//Act
 		await serializeFrontmatter(app, state);
@@ -248,10 +322,7 @@ describe("serializeFrontmatter", () => {
 
 	it("doesn't serialize content if the frontmatter key doesn't exist and the content is empty", async () => {
 		//Arrange
-		const state = createState(CellType.TEXT, "text", [
-			{ content: "" },
-			{ content: "" },
-		]);
+		const state = generateStateWithTextColumn("text", ["", ""]);
 
 		//Act
 		await serializeFrontmatter(app, state);
@@ -263,8 +334,8 @@ describe("serializeFrontmatter", () => {
 
 	it("doesn't serialize content if the frontmatter key doesn't exist and the content is empty", async () => {
 		//Arrange
-		const tags = [createTag("tag-1"), createTag("tag-2")];
-		const state = createState(CellType.MULTI_TAG, "tags", [], { tags });
+		const state = generateStateWithMultiTagColumn("tags");
+
 		//Act
 		await serializeFrontmatter(app, state);
 

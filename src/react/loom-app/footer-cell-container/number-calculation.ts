@@ -19,17 +19,22 @@ export const getNumberCalculationContent = (
 	format: NumberFormat,
 	currency: CurrencyType,
 	calculation: NumberCalculation
-) => {
-	const value = getNumberCalculation(values, calculation).toString();
+): string => {
+	const value = getNumberCalculation(values, calculation);
 	if (format === NumberFormat.CURRENCY) {
 		return getNumberCellContent(format, value, {
 			currency,
 		});
 	}
-	return value;
+	return value.toString();
 };
 
-const getNumberCalculation = (values: number[], type: NumberCalculation) => {
+const getNumberCalculation = (
+	values: number[],
+	type: NumberCalculation
+): number => {
+	if (values.length === 0) return 0;
+
 	if (type === NumberCalculation.AVG) {
 		return round2Digits(getAverage(values));
 	} else if (type === NumberCalculation.MAX) {

@@ -16,6 +16,7 @@ interface Props {
 	verticalPadding: PaddingSize;
 }
 
+//TODO move out of separate file?
 export default function Embed({
 	isExternalLink,
 	content,

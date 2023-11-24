@@ -1,40 +1,12 @@
-import CommandUndoError from "./command-undo-error";
-import CommandRedoError from "./command-redo-error";
-import { createTestLoomState, createTextFilter } from "../loom-state-factory";
+import { createLoomState, createTextFilter } from "../loom-state-factory";
 import FilterAddCommand from "./filter-add-command";
 import { TextFilter } from "../types/loom-state";
 
 describe("filter-add-command", () => {
-	it("should throw an error when undo() is called before execute()", () => {
-		const prevState = createTestLoomState(1, 1);
-		const command = new FilterAddCommand();
-
-		try {
-			command.undo(prevState);
-		} catch (err) {
-			expect(err).toBeInstanceOf(CommandUndoError);
-		}
-	});
-
-	it("should throw an error when redo() is called before undo()", () => {
-		const prevState = createTestLoomState(1, 1);
-
-		const command = new FilterAddCommand();
-		const executeState = command.execute(prevState);
-
-		try {
-			command.redo(executeState);
-		} catch (err) {
-			expect(err).toBeInstanceOf(CommandRedoError);
-		}
-	});
-
 	it("should add a filter to the model", () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1);
-		const { id: columnId } = prevState.model.columns[0];
-
-		const filter = createTextFilter(columnId, {
+		const prevState = createLoomState(1, 1);
+		const filter = createTextFilter(prevState.model.columns[0].id, {
 			text: "before",
 		});
 		prevState.model.filters.push(filter);
@@ -49,10 +21,8 @@ describe("filter-add-command", () => {
 	});
 
 	it("should remove the added filter when undo() is called", () => {
-		const prevState = createTestLoomState(1, 1);
-		const { id: columnId } = prevState.model.columns[0];
-
-		const filter = createTextFilter(columnId);
+		const prevState = createLoomState(1, 1);
+		const filter = createTextFilter(prevState.model.columns[0].id);
 		prevState.model.filters.push(filter);
 
 		const command = new FilterAddCommand();
@@ -68,10 +38,8 @@ describe("filter-add-command", () => {
 
 	it("should add back the removed filter when redo() is called", () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1);
-		const { id: columnId } = prevState.model.columns[0];
-
-		const filter = createTextFilter(columnId);
+		const prevState = createLoomState(1, 1);
+		const filter = createTextFilter(prevState.model.columns[0].id);
 		prevState.model.filters.push(filter);
 
 		const command = new FilterAddCommand();

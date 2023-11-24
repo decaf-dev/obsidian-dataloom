@@ -345,14 +345,66 @@ const Column = Record({
 	verticalPadding: PaddingSizeUnion,
 });
 
-const Cell = Record({
+const BaseCell = Record({
 	id: String,
 	columnId: String,
-	isExternalLink: Boolean,
-	dateTime: Union(String, Literal(null)),
+});
+
+const TextCell = BaseCell.extend({
 	content: String,
+});
+
+const EmbedCell = BaseCell.extend({
+	content: String,
+});
+
+const FileCell = BaseCell.extend({
+	isExternalLink: Boolean,
+	content: String,
+});
+
+const NumberCell = BaseCell.extend({
+	content: Union(Number, Literal(null)),
+});
+
+const TagCell = BaseCell.extend({
+	tagId: Union(String, Literal(null)),
+});
+
+const MultiTagCell = BaseCell.extend({
 	tagIds: Array(String),
 });
+
+const DateCell = BaseCell.extend({
+	dateTime: Union(String, Literal(null)),
+});
+
+const CheckboxCell = BaseCell.extend({
+	content: Boolean,
+});
+
+const CreationTimeCell = BaseCell.extend({});
+
+const LastEditedTimeCell = BaseCell.extend({});
+
+const SourceFileCell = BaseCell.extend({});
+
+const SourceCell = BaseCell.extend({});
+
+const Cell = Union(
+	TextCell,
+	TagCell,
+	MultiTagCell,
+	CheckboxCell,
+	FileCell,
+	EmbedCell,
+	NumberCell,
+	DateCell,
+	CreationTimeCell,
+	LastEditedTimeCell,
+	SourceCell,
+	SourceFileCell
+);
 
 const Row = Record({
 	id: String,

@@ -1,13 +1,25 @@
 import { App, TFile } from "obsidian";
 import CellNotFoundError from "src/shared/error/cell-not-found-error";
 import { LoomState } from "src/shared/loom-state/types";
-import { CellType } from "src/shared/loom-state/types/loom-state";
+import {
+	CellType,
+	CheckboxCell,
+	DateCell,
+	EmbedCell,
+	FileCell,
+	MultiTagCell,
+	NumberCell,
+	SourceFileCell,
+	TagCell,
+	TextCell,
+} from "src/shared/loom-state/types/loom-state";
 import { dateTimeToObsidianDateTime } from "./date-utils";
 import { updateObsidianPropertyType } from "src/shared/frontmatter/obsidian-utils";
 import { ObsidianPropertyType } from "src/shared/frontmatter/types";
+import TagNotFoundError from "src/shared/error/tag-not-found-error";
 
 export const serializeFrontmatter = async (app: App, state: LoomState) => {
-	//console.log("serializing frontmatter...");
+	// console.log("serializing frontmatter...");
 	const { rows, columns, sources } = state.model;
 	if (sources.length === 0) return;
 
@@ -22,12 +34,12 @@ export const serializeFrontmatter = async (app: App, state: LoomState) => {
 		//and not in the frontmatter of individual files
 		if (sourceId === null) continue;
 
-		const sourceFileCell = cells.find(
+		const sourceFileCell: SourceFileCell | undefined = cells.find(
 			(cell) => cell.columnId === sourceFileColumn.id
-		);
+		) as SourceFileCell | undefined;
 		if (!sourceFileCell) throw new Error("Source file cell not found");
 
-		const file = app.vault.getAbstractFileByPath(sourceFileCell.content);
+		const file = app.vault.getAbstractFileByPath(sourceFileCell.path);
 		if (!file) throw new Error("Source file not found");
 		if (!(file instanceof TFile)) throw new Error("Expected TFile");
 
@@ -45,37 +57,53 @@ export const serializeFrontmatter = async (app: App, state: LoomState) => {
 					rowId: row.id,
 				});
 
-			const { tagIds } = cell;
-
-			let content: string | string[] | null = null;
-			if (type === CellType.TAG || type === CellType.MULTI_TAG) {
+			let saveValue: unknown = null;
+			if (type === CellType.TEXT) {
+				const { content } = cell as TextCell;
+				saveValue = content;
+			} else if (type === CellType.EMBED) {
+				//TODO handle alias
+				const { pathOrUrl } = cell as EmbedCell;
+				saveValue = pathOrUrl;
+			} else if (type === CellType.FILE) {
+				const { path } = cell as FileCell;
+				saveValue = path;
+			} else if (type === CellType.NUMBER) {
+				const { value } = cell as NumberCell;
+				saveValue = value;
+			} else if (type === CellType.CHECKBOX) {
+				const { value } = cell as CheckboxCell;
+				saveValue = value;
+			} else if (type === CellType.TAG) {
+				const { tagId } = cell as TagCell;
+				if (tagId) {
+					const tag = tags.find((t) => t.id === tagId);
+					if (!tag) throw new TagNotFoundError(tagId);
+					saveValue = tag.content;
+				}
+			} else if (type === CellType.MULTI_TAG) {
+				const { tagIds } = cell as MultiTagCell;
 				const cellTags = tags.filter((tag) => tagIds.includes(tag.id));
 				const cellTagContent = cellTags.map((tag) => tag.content);
-
-				if (type === CellType.MULTI_TAG) {
-					content = cellTagContent;
-				} else {
-					content = cellTagContent[0];
-				}
+				saveValue = cellTagContent;
 			} else if (type === CellType.DATE) {
-				if (cell.dateTime) {
-					content = dateTimeToObsidianDateTime(
-						cell.dateTime,
+				const { dateTime } = cell as DateCell;
+				if (dateTime) {
+					saveValue = dateTimeToObsidianDateTime(
+						dateTime,
 						includeTime
 					);
 				}
-			} else {
-				content = cell.content;
 			}
 
 			await app.fileManager.processFrontMatter(file, (frontmatter) => {
 				if (!frontmatter[frontmatterKey]) {
 					//If the content is empty, skip
 					//because we don't want to create an empty frontmatter key
-					if (!content) return;
+					if (!saveValue) return;
 				}
 
-				frontmatter[frontmatterKey] = content;
+				frontmatter[frontmatterKey] = saveValue;
 			});
 
 			//Consider the situation where you have a date property and you have a date time column

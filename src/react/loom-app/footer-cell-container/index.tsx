@@ -13,11 +13,12 @@ import {
 	NumberFormat,
 	Source,
 	DateFormatSeparator,
+	NumberCell,
 } from "src/shared/loom-state/types/loom-state";
 import Stack from "../../shared/stack";
 
 import MenuTrigger from "src/react/shared/menu-trigger";
-import { isNumber, isNumberCalcuation } from "src/shared/match";
+import { isNumberCalcuation } from "src/shared/match";
 import { getShortDisplayNameForCalculationType } from "src/shared/loom-state/type-display-names";
 import { getGeneralCalculationContent } from "./general-calculation";
 import { getNumberCalculationContent } from "./number-calculation";
@@ -73,16 +74,17 @@ export default function FooterCellContainer({
 	let content = "";
 
 	if (isNumberCalcuation(calculationType)) {
-		const cellValues = columnCells
-			.filter((cell) => isNumber(cell.content))
-			.map((cell) => parseFloat(cell.content));
-		if (cellValues.length !== 0)
-			content = getNumberCalculationContent(
-				cellValues,
-				numberFormat,
-				currencyType,
-				calculationType
-			);
+		//This assumes that a number calculation will only be used on a column with number cells
+		const values: number[] = columnCells
+			.map((cell) => (cell as NumberCell).value)
+			.filter((value): value is number => value !== null);
+
+		content = getNumberCalculationContent(
+			values,
+			numberFormat,
+			currencyType,
+			calculationType
+		);
 	} else {
 		content = getGeneralCalculationContent(
 			columnId,

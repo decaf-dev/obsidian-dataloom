@@ -1,17 +1,14 @@
 import { useRenderMarkdown } from "src/shared/render-utils";
-import { getFileCellContent } from "src/shared/cell-content/file-cell-content";
 import { appendOrReplaceFirstChild } from "src/shared/render/utils";
 
 import "./styles.css";
 
 interface Props {
-	value: string;
+	content: string;
 }
 
-export default function FileCell({ value }: Props) {
-	const content = getFileCellContent(value);
+export default function FileCell({ content }: Props) {
 	const { containerRef, renderRef } = useRenderMarkdown(content);
-
 	return (
 		<div className="dataloom-file-cell">
 			<div

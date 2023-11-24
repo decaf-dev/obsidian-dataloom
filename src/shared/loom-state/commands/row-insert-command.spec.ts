@@ -1,27 +1,10 @@
-import { createTestLoomState } from "src/shared/loom-state/loom-state-factory";
-import CommandUndoError from "./command-undo-error";
+import { createLoomState } from "../loom-state-factory";
 import RowInsertCommand from "./row-insert-command";
 
 describe("row-insert-command", () => {
-	it("should throw an error when undo() is called before execute()", () => {
-		//Arrange
-		const prevState = createTestLoomState(1, 2);
-		const command = new RowInsertCommand(
-			prevState.model.rows[0].id,
-			"above"
-		);
-
-		try {
-			//Act
-			command.undo(prevState);
-		} catch (err) {
-			expect(err).toBeInstanceOf(CommandUndoError);
-		}
-	});
-
 	it("should insert a row above when execute() is called", () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1);
+		const prevState = createLoomState(1, 1);
 		const rowId = prevState.model.rows[0].id;
 		const command = new RowInsertCommand(rowId, "above");
 
@@ -38,7 +21,7 @@ describe("row-insert-command", () => {
 
 	it("should insert a row below when execute() is called", () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1);
+		const prevState = createLoomState(1, 1);
 		const rowId = prevState.model.rows[0].id;
 		const command = new RowInsertCommand(rowId, "below");
 
@@ -55,7 +38,7 @@ describe("row-insert-command", () => {
 
 	it("should delete the row inserted above when undo() is called", () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1);
+		const prevState = createLoomState(1, 1);
 		const rowId = prevState.model.rows[0].id;
 		const command = new RowInsertCommand(rowId, "above");
 
@@ -69,7 +52,7 @@ describe("row-insert-command", () => {
 
 	it("should delete the row inserted below when undo() is called", () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1);
+		const prevState = createLoomState(1, 1);
 		const rowId = prevState.model.rows[0].id;
 		const command = new RowInsertCommand(rowId, "below");
 
@@ -83,7 +66,7 @@ describe("row-insert-command", () => {
 
 	it("should restore the row inserted above when redo() is called", () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1);
+		const prevState = createLoomState(1, 1);
 		const rowId = prevState.model.rows[0].id;
 		const command = new RowInsertCommand(rowId, "above");
 
@@ -98,7 +81,7 @@ describe("row-insert-command", () => {
 
 	it("should restore the row inserted below when redo() is called", () => {
 		//Arrange
-		const prevState = createTestLoomState(1, 1);
+		const prevState = createLoomState(1, 1);
 		const rowId = prevState.model.rows[0].id;
 		const command = new RowInsertCommand(rowId, "below");
 

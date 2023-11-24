@@ -1,4 +1,3 @@
-import { isCheckboxChecked } from "src/shared/match";
 import {
 	Cell,
 	Row,
@@ -9,6 +8,15 @@ import {
 	Tag,
 	Source,
 	DateFormatSeparator,
+	CheckboxCell,
+	TextCell,
+	EmbedCell,
+	NumberCell,
+	FileCell,
+	DateCell,
+	TagCell,
+	MultiTagCell,
+	SourceFileCell,
 } from "src/shared/loom-state/types/loom-state";
 import { hashString, round2Digits } from "./utils";
 import RowNotFoundError from "src/shared/error/row-not-found-error";
@@ -16,6 +24,7 @@ import TagNotFoundError from "src/shared/error/tag-not-found-error";
 import { dateTimeToDateString } from "src/shared/date/date-time-conversion";
 import { getSourceCellContent } from "src/shared/cell-content/source-cell-content";
 import { getColumnCells } from "src/shared/loom-state/utils/column-utils";
+import { getFileName } from "src/shared/link-and-path/file-path-utils";
 
 export const getGeneralCalculationContent = (
 	columnId: string,
@@ -171,108 +180,194 @@ const getCellValues = (
 	source: Source | null,
 	columnTags: Tag[]
 ): string[] => {
-	const { content, dateTime, tagIds } = cell;
 	const { creationDateTime, lastEditedDateTime } = row;
-	if (
-		type === CellType.TEXT ||
-		type === CellType.EMBED ||
-		type === CellType.NUMBER ||
-		type === CellType.CHECKBOX ||
-		type === CellType.FILE ||
-		type === CellType.SOURCE_FILE
-	) {
-		return [content];
-	} else if (type === CellType.DATE) {
-		if (dateTime) return [dateTime.toString()];
-		return [];
-	} else if (type === CellType.TAG || type === CellType.MULTI_TAG) {
-		return tagIds.map((tagId) => {
-			const tag = columnTags.find((tag) => tag.id === tagId);
-			if (!tag) throw new TagNotFoundError(tagId);
-			const { content } = tag;
-			return content;
-		});
-	} else if (type === CellType.LAST_EDITED_TIME) {
-		return [
-			dateTimeToDateString(
-				lastEditedDateTime,
-				dateFormat,
-				dateFormatSeparator,
-				{
-					includeTime: true,
-				}
-			),
-		];
-	} else if (type === CellType.CREATION_TIME) {
-		return [
-			dateTimeToDateString(
-				creationDateTime,
-				dateFormat,
-				dateFormatSeparator,
-				{
-					includeTime: true,
-				}
-			),
-		];
-	} else if (type === CellType.SOURCE) {
-		return [getSourceCellContent(source)];
-	} else {
-		throw new Error("Unhandled cell type");
+	switch (type) {
+		case CellType.TEXT: {
+			const { content } = cell as TextCell;
+			return [content];
+		}
+		case CellType.EMBED: {
+			const { pathOrUrl } = cell as EmbedCell;
+			return [pathOrUrl];
+		}
+		case CellType.NUMBER: {
+			const { value } = cell as NumberCell;
+			if (value) return [value.toString()];
+			return [];
+		}
+		case CellType.FILE: {
+			const { path } = cell as FileCell;
+			const fileName = getFileName(path);
+			return [fileName];
+		}
+		case CellType.SOURCE_FILE: {
+			const { path } = cell as SourceFileCell;
+			const fileName = getFileName(path);
+			return [fileName];
+		}
+		case CellType.CHECKBOX: {
+			const { value } = cell as CheckboxCell;
+			return [value ? "true" : "false"];
+		}
+		case CellType.DATE: {
+			const { dateTime } = cell as DateCell;
+			if (dateTime) return [dateTime.toString()];
+			return [];
+		}
+		case CellType.TAG: {
+			const { tagId } = cell as TagCell;
+			if (tagId) {
+				const tag = columnTags.find((tag) => tag.id === tagId);
+				if (!tag) throw new TagNotFoundError(tagId);
+				const { content } = tag;
+				return [content];
+			}
+			return [];
+		}
+		case CellType.MULTI_TAG: {
+			const { tagIds } = cell as MultiTagCell;
+			return tagIds.map((tagId) => {
+				const tag = columnTags.find((tag) => tag.id === tagId);
+				if (!tag) throw new TagNotFoundError(tagId);
+				const { content } = tag;
+				return content;
+			});
+		}
+		case CellType.LAST_EDITED_TIME: {
+			return [
+				dateTimeToDateString(
+					lastEditedDateTime,
+					dateFormat,
+					dateFormatSeparator,
+					{
+						includeTime: true,
+					}
+				),
+			];
+		}
+		case CellType.CREATION_TIME: {
+			return [
+				dateTimeToDateString(
+					creationDateTime,
+					dateFormat,
+					dateFormatSeparator,
+					{
+						includeTime: true,
+					}
+				),
+			];
+		}
+		case CellType.SOURCE: {
+			return [getSourceCellContent(source)];
+		}
+		default:
+			throw new Error("Unhandled cell type");
 	}
 };
 
 const countCellValues = (cell: Cell, type: CellType): number => {
-	const { content, dateTime, tagIds } = cell;
-	if (
-		type === CellType.TEXT ||
-		type === CellType.EMBED ||
-		type === CellType.NUMBER ||
-		type === CellType.FILE ||
-		type === CellType.SOURCE_FILE
-	) {
-		return content === "" ? 0 : 1;
-	} else if (type === CellType.DATE) {
-		return dateTime == null ? 0 : 1;
-	} else if (type === CellType.TAG || type === CellType.MULTI_TAG) {
-		return tagIds.length;
-	} else if (type === CellType.CHECKBOX) {
-		return isCheckboxChecked(content) ? 1 : 0;
-	} else if (
-		type === CellType.LAST_EDITED_TIME ||
-		type === CellType.CREATION_TIME
-	) {
-		return 1;
-	} else if (type === CellType.SOURCE) {
-		return 1;
-	} else {
-		throw new Error("Unhandled cell type");
+	switch (type) {
+		case CellType.TEXT: {
+			const { content } = cell as TextCell;
+			return content === "" ? 0 : 1;
+		}
+		case CellType.EMBED: {
+			const { pathOrUrl } = cell as EmbedCell;
+			return pathOrUrl === "" ? 0 : 1;
+		}
+
+		case CellType.NUMBER: {
+			const { value } = cell as NumberCell;
+			return value === null ? 0 : 1;
+		}
+		case CellType.FILE: {
+			const { path } = cell as FileCell;
+			return path === "" ? 0 : 1;
+		}
+		case CellType.SOURCE_FILE: {
+			const { path } = cell as SourceFileCell;
+			return path === "" ? 0 : 1;
+		}
+		case CellType.CHECKBOX: {
+			const { value } = cell as CheckboxCell;
+			return value ? 1 : 0;
+		}
+		case CellType.DATE: {
+			const { dateTime } = cell as DateCell;
+			return dateTime == null ? 0 : 1;
+		}
+
+		case CellType.TAG: {
+			const { tagId } = cell as TagCell;
+			return tagId === null ? 0 : 1;
+		}
+
+		case CellType.MULTI_TAG: {
+			const { tagIds } = cell as MultiTagCell;
+			return tagIds.length;
+		}
+		case CellType.LAST_EDITED_TIME: {
+			return 1;
+		}
+		case CellType.CREATION_TIME: {
+			return 1;
+		}
+		case CellType.SOURCE: {
+			return 1;
+		}
+		default:
+			throw new Error("Unhandled cell type");
 	}
 };
 
 const isCellEmpty = (cell: Cell, type: CellType): boolean => {
-	const { content, dateTime, tagIds } = cell;
-	if (
-		type === CellType.TEXT ||
-		type === CellType.EMBED ||
-		type === CellType.NUMBER ||
-		type === CellType.FILE ||
-		type === CellType.SOURCE_FILE
-	) {
-		return content === "";
-	} else if (type === CellType.DATE) {
-		return dateTime == null;
-	} else if (type === CellType.TAG || type === CellType.MULTI_TAG) {
-		return tagIds.length === 0;
-	} else if (type === CellType.CHECKBOX) {
-		return !isCheckboxChecked(content);
-	} else if (
-		type === CellType.LAST_EDITED_TIME ||
-		type === CellType.CREATION_TIME
-	) {
-		return true;
-	} else if (type === CellType.SOURCE) {
-		return false;
-	} else {
-		throw new Error("Unhandled cell type");
+	switch (type) {
+		case CellType.TEXT: {
+			const { content } = cell as TextCell;
+			return content === "";
+		}
+		case CellType.EMBED: {
+			const { pathOrUrl } = cell as EmbedCell;
+			return pathOrUrl === "";
+		}
+		case CellType.NUMBER: {
+			const { value } = cell as NumberCell;
+			return value === null;
+		}
+		case CellType.FILE: {
+			const { path } = cell as FileCell;
+			return path === "";
+		}
+		case CellType.SOURCE_FILE: {
+			const { path } = cell as FileCell;
+			return path === "";
+		}
+		case CellType.DATE: {
+			const { dateTime } = cell as DateCell;
+			return dateTime == null;
+		}
+		case CellType.TAG: {
+			const { tagId } = cell as TagCell;
+			return tagId === null;
+		}
+		case CellType.MULTI_TAG: {
+			const { tagIds } = cell as MultiTagCell;
+			return tagIds.length === 0;
+		}
+		case CellType.CHECKBOX: {
+			const { value } = cell as CheckboxCell;
+			return value === false;
+		}
+		case CellType.SOURCE: {
+			return false;
+		}
+		case CellType.LAST_EDITED_TIME: {
+			return true;
+		}
+		case CellType.CREATION_TIME: {
+			return true;
+		}
+		default:
+			throw new Error("Unhandled cell type");
 	}
 };

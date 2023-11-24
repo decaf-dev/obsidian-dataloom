@@ -9,8 +9,6 @@ import Input from "src/react/shared/input";
 import { CellType } from "src/shared/loom-state/types/loom-state";
 import { LoomMenuCloseRequest } from "src/react/shared/menu-provider/types";
 import Button from "src/react/shared/button";
-import { updateObsidianPropertyType } from "src/shared/frontmatter/obsidian-utils";
-import { useAppMount } from "../app-mount-provider";
 
 interface Props {
 	title: string;
@@ -33,7 +31,7 @@ export default function NewFrontmatterKeySubmenu({
 }: Props) {
 	const keyNameId = React.useId();
 	const keyTypeId = React.useId();
-	const { app, loomFile } = useAppMount();
+	// const { app, loomFile } = useAppMount();
 
 	const [key, setKey] = React.useState("");
 	const [keyType, setKeyType] = React.useState<ObsidianPropertyType | null>(
@@ -41,23 +39,17 @@ export default function NewFrontmatterKeySubmenu({
 	);
 
 	const handleCreateClick = React.useCallback(async () => {
-		console.log(keyType);
-		if (keyType === null) {
-			return;
-		}
-
-		console.log("HERE1");
-		//Create the new key
-		await app.fileManager.processFrontMatter(loomFile, (frontmatter) => {
-			frontmatter[key] = "";
-		});
-		console.log("HERE2");
-		await updateObsidianPropertyType(app, key, keyType);
-		console.log("HERE3");
-		onFrontmatterKeyChange(key);
-		console.log("HERE4");
+		// if (keyType === null) {
+		// 	return;
+		// }
+		// //Create the new key
+		// await app.fileManager.processFrontMatter(loomFile, (frontmatter) => {
+		// 	frontmatter[key] = "";
+		// });
+		// await updateObsidianPropertyType(app, key, keyType);
+		// onFrontmatterKeyChange(key);
 		onResetSubmenu();
-	}, [app, onFrontmatterKeyChange, key, keyType, onClose, onResetSubmenu]);
+	}, [onResetSubmenu]);
 
 	React.useEffect(() => {
 		if (closeRequest !== null) {
