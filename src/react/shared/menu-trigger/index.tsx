@@ -69,6 +69,9 @@ const MenuTrigger = React.forwardRef<HTMLDivElement, Props>(
 				if (!topMenu) return;
 				onRequestClose(topMenu?.id, "close-on-save");
 			} else if (e.key === "Backspace") {
+				//Stop propagation to the global event
+				//This prevents the focused from being lost
+				e.stopPropagation();
 				onBackspaceDown?.();
 			} else if (e.key.length === 1) {
 				if (

@@ -12,6 +12,7 @@ import { SourceAddHandler } from "../../../app/hooks/use-source/types";
 import { createFolderSource } from "src/shared/loom-state/loom-state-factory";
 import FolderSourceOptions from "./folder-source-options";
 import { AddSourceError } from "./types";
+import { normalizePath } from "obsidian";
 
 interface Props {
 	sources: Source[];
@@ -34,6 +35,9 @@ export default function AddSourceSubmenu({
 	const includeSubfoldersInputId = React.useId();
 
 	function handleAddClick() {
+		//Make sure that the path doesn't have a trailing slash
+		const formattedPath = normalizePath(path);
+
 		if (type === null) {
 			setError({
 				message: "Please select a type",
@@ -46,7 +50,7 @@ export default function AddSourceSubmenu({
 				inputId: pathInputId,
 			});
 			return;
-		} else if (alreadyHasSource(sources, type, path)) {
+		} else if (alreadyHasSource(sources, type, formattedPath)) {
 			setError({
 				message: "Source already exists",
 				inputId: pathInputId,
@@ -56,7 +60,7 @@ export default function AddSourceSubmenu({
 
 		let source: Source;
 		if (type === SourceType.FOLDER) {
-			source = createFolderSource(path, includeSubfolders);
+			source = createFolderSource(formattedPath, includeSubfolders);
 		} else {
 			setError({
 				message: "Source not supported",

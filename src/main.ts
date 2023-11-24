@@ -22,7 +22,6 @@ import {
 import { LOOM_EXTENSION } from "./data/constants";
 import { createLoomFile } from "src/data/loom-file";
 import { hasDarkTheme } from "./shared/render/utils";
-import { removeCurrentFocusClass } from "./react/loom-app/app/hooks/use-focus/utils";
 import {
 	loadPreviewModeApps,
 	purgeEmbeddedLoomApps,
@@ -203,8 +202,7 @@ export default class DataLoomPlugin extends Plugin {
 		this.registerDomEvent(document, "click", () => {
 			log(this.settings.shouldDebug, "main handleClick");
 
-			//Clear the focus-visible class from the last focused element
-			removeCurrentFocusClass();
+			EventManager.getInstance().emit("clear-menu-trigger-focus");
 			EventManager.getInstance().emit("global-click");
 		});
 

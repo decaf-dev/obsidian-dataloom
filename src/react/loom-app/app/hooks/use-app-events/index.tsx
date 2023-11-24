@@ -1,10 +1,10 @@
 import React from "react";
 import { useMenuOperations } from "src/react/shared/menu-provider/hooks";
 import { useLogger } from "src/shared/logger";
-import { removeCurrentFocusClass } from "../use-focus/utils";
 
 export const useAppEvents = () => {
-	const { topMenu, onRequestClose } = useMenuOperations();
+	const { topMenu, onRequestClose, onClearMenuTriggerFocus } =
+		useMenuOperations();
 	const logger = useLogger();
 	const handleClick = React.useCallback(
 		(e: React.MouseEvent) => {
@@ -12,12 +12,12 @@ export const useAppEvents = () => {
 			e.stopPropagation();
 
 			if (!topMenu) {
-				removeCurrentFocusClass();
+				onClearMenuTriggerFocus();
 				return;
 			}
 			onRequestClose(topMenu.id, "close-on-save");
 		},
-		[topMenu, logger, onRequestClose]
+		[topMenu, logger, onRequestClose, onClearMenuTriggerFocus]
 	);
 	return {
 		onClick: handleClick,

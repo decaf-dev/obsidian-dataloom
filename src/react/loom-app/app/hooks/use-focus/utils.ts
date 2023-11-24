@@ -2,26 +2,6 @@ import { LoomMenu } from "src/react/shared/menu-provider/types";
 import { findMenuTriggerEl } from "src/react/shared/menu-provider/utils";
 
 /**
- * Adds the dataloom-focusable--focused class to an element
- * We do this since because want to control the focus-visible class to appear when enter is pressed or we
- * click outside of the element
- * @param el - The element to add the focus-visible class to
- * @returns
- */
-export const addFocusClass = (el: HTMLElement | null) => {
-	el?.classList.add("dataloom-focusable--focused");
-};
-
-/**
- * Removes the dataloom-focusable--focused class from an element
- * There should only be one element with this class at a time
- */
-export const removeCurrentFocusClass = () => {
-	const el = document.querySelector(".dataloom-focusable--focused");
-	el?.classList.remove("dataloom-focusable--focused");
-};
-
-/**
  * Gets the top menu element.
  * If the top menu is null, then we return the app element.
  * @param appId - The id of the app instance
