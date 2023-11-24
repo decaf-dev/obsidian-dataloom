@@ -231,7 +231,7 @@ export default function BodyCellContainer(props: Props) {
 	async function copyTextToClipboard(value: string) {
 		try {
 			await navigator.clipboard.writeText(value);
-			new Notice("Copied text to clipboard");
+			new Notice("Copied cell content to clipboard");
 		} catch (err) {
 			console.error(err);
 		}
