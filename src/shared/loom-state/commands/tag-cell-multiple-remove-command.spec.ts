@@ -8,12 +8,15 @@ import {
 
 import { advanceBy, clear } from "jest-date-mock";
 import TagCellMultipleRemoveCommand from "./tag-cell-multiple-remove-command";
-import { Column, MultiTagCell, Row } from "../types/loom-state";
+import { CellType, Column, MultiTagCell, Row } from "../types/loom-state";
 
 describe("tag-cell-multiple-remove-command", () => {
 	const initialState = () => {
 		const columns: Column[] = [
-			createColumn({ tags: [createTag("test1"), createTag("test2")] }),
+			createColumn({
+				type: CellType.MULTI_TAG,
+				tags: [createTag("test1"), createTag("test2")],
+			}),
 		];
 		const rows: Row[] = [
 			createRow(0, {

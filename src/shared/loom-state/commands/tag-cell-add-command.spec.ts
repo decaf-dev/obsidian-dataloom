@@ -7,12 +7,15 @@ import {
 } from "src/shared/loom-state/loom-state-factory";
 import TagCellAddCommand from "./tag-cell-add-command";
 import { advanceBy, clear } from "jest-date-mock";
-import { Column, MultiTagCell, Row } from "../types/loom-state";
+import { CellType, Column, MultiTagCell, Row } from "../types/loom-state";
 
 describe("tag-cell-add-command", () => {
 	const initialState = () => {
 		const columns: Column[] = [
-			createColumn({ tags: [createTag("test1"), createTag("test2")] }),
+			createColumn({
+				type: CellType.MULTI_TAG,
+				tags: [createTag("test1"), createTag("test2")],
+			}),
 		];
 		const rows: Row[] = [
 			createRow(0, {

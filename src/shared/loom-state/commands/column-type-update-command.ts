@@ -311,12 +311,12 @@ export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 		let tagIds: string[] = [];
 		if (content !== "") {
 			const { tags: columnTags } = column;
-			tagIds = content.split(",").map((content) => {
+			tagIds = content.split(",").map((tagContent) => {
 				let tagId =
-					columnTags.find((tag) => tag.content === content)?.id ??
+					columnTags.find((tag) => tag.content === tagContent)?.id ??
 					null;
 				if (!tagId) {
-					const newTag = createTag(content);
+					const newTag = createTag(tagContent);
 					tagId = newTag.id;
 					column.tags = [...columnTags, newTag];
 				}

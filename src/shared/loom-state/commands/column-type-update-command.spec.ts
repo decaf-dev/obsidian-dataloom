@@ -65,7 +65,7 @@ describe("column-type-update-command", () => {
 		const columns: Column[] = [
 			createColumn({
 				type: CellType.TAG,
-				tags: [createTag("test1"), createTag("test2")],
+				tags: [createTag("test1")],
 			}),
 		];
 		const rows: Row[] = [
@@ -122,7 +122,11 @@ describe("column-type-update-command", () => {
 	};
 
 	const generateStateWithDateColumn = () => {
-		const columns: Column[] = [];
+		const columns: Column[] = [
+			createColumn({
+				type: CellType.DATE,
+			}),
+		];
 		const rows: Row[] = [
 			createRow(0, {
 				cells: [
@@ -178,7 +182,7 @@ describe("column-type-update-command", () => {
 		//Assert
 		expect(executeState.model.columns.length).toEqual(1);
 		expect(executeState.model.columns[0].type).toEqual(CellType.TEXT);
-		expect(executeState.model.columns[0].tags.length).toEqual(2);
+		expect(executeState.model.columns[0].tags.length).toEqual(1);
 		expect(
 			(executeState.model.rows[0].cells[0] as TextCell).content
 		).toEqual("test1");
@@ -202,13 +206,13 @@ describe("column-type-update-command", () => {
 		//Assert
 		expect(executeState.model.columns.length).toEqual(1);
 		expect(executeState.model.columns[0].type).toEqual(CellType.TAG);
-		expect(executeState.model.columns[0].tags.length).toEqual(2);
-		expect(executeState.model.columns[0].tags[0].content).toEqual("test1");
-		expect(executeState.model.columns[0].tags[1].content).toEqual("test2");
+		expect(executeState.model.columns[0].tags.length).toEqual(1);
+		expect(executeState.model.columns[0].tags[0].content).toEqual(
+			"test1,test2"
+		);
 		expect(
 			(executeState.model.rows[0].cells[0] as TagCell).tagId
 		).not.toBeNull();
-		expect(executeState.model.columns[0].tags).toHaveLength(2);
 	});
 
 	it("should handle text -> multi-tag when execute() is called", async () => {
