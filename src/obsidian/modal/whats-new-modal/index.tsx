@@ -28,23 +28,19 @@ export default class WhatsNewModal extends Modal {
 
 	async renderDescription(containerEl: HTMLElement) {
 		containerEl.createDiv({
-			text: "Thank you for using DataLoom! If you like the plugin, please consider supporting development. With your sponsorship, I'll be able to continue to add features, fix bugs, and respond to issues on GitHub.",
+			text: "Latest release notes",
 		});
-		const badgeContainer = containerEl.createDiv({
-			cls: "dataloom-whats-new-modal__badge-container",
-		});
-		renderBuyMeACoffeeBadge(badgeContainer, 200);
 
-		containerEl.createDiv({
-			text: "DataLoom is now on Discord. Please join to get help, report bugs, and participate in the community.",
-		});
-		containerEl.createDiv({
-			cls: "dataloom-whats-new-modal__spacer",
-		});
-		containerEl.createEl("a", {
-			text: "Join Discord",
-			href: "https://discord.gg/QaFbepMdN4",
-		});
+		// containerEl.createDiv({
+		// 	text: "DataLoom is now on Discord. Please join to get help, report bugs, and participate in the community.",
+		// });
+		// containerEl.createDiv({
+		// 	cls: "dataloom-whats-new-modal__spacer",
+		// });
+		// containerEl.createEl("a", {
+		// 	text: "Join Discord",
+		// 	href: "https://discord.gg/QaFbepMdN4",
+		// });
 	}
 
 	async renderContent(contentEl: HTMLElement, body: string) {

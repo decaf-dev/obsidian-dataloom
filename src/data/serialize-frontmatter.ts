@@ -103,8 +103,6 @@ export const serializeFrontmatter = async (app: App, state: LoomState) => {
 				}
 			}
 
-			console.log(saveValue);
-
 			await app.fileManager.processFrontMatter(file, (frontmatter) => {
 				if (!frontmatter[frontmatterKey]) {
 					//If the content is empty, skip
