@@ -1,0 +1,52 @@
+import VideoEmbed from "@site/src/components/VideoEmbed";
+
+# Sources
+
+A source is a collection of data that DataLoom can use to generate rows. Sources can be folders, tags, or APIs.
+
+## Adding a source
+
+To add a source, click the **Sources** button in the upper right corner of the application. This will open the **Sources** menu. Choose a source type and then enter required source information. An error will display if you do not provide sufficient information or if the source has already been added. Once finished, click **Add source**.
+
+When you add your first source, a [Source](../views/table/cells/source) column and [Source file](../views/table/cells/source-file) column will be added to the table. The **Source** column will contain the name of the source. The **Source file** column will contain the name of the file that contains the source data.
+
+## Deleting a source
+
+To delete a source, click the **Sources button** and then click the edit button. Then click **Delete** for each source you would like to remove. If you delete the last source, the **Source** and **Source file** columns will be removed from the table.
+
+## Frontmatter
+
+Frontmatter is metadata that is stored at the top of a markdown file. Sources that originate from folders or tags will store data in the frontmatter of the file that contains the source data.
+
+### Frontmatter key
+
+If a column does not have a frontmatter key assigned to it, you will not be able to edit the cells in that column that belong to folder or tag source generated rows.
+
+To select a key, click on the column header to open the column menu. Then click **Frontmatter key**. Select a key from the dropdown menu. If you would like to add a new key, click **Custom** and enter your key name.
+
+Each column can only have one frontmatter key. Once a key is assigned to a column, it cannot be assigned to other columns. If you would like to use a key on a different column, you will need to remove the key and assign it to the new column.
+
+When you edit a cell in your loom the corresponding frontmatter value will be updated. Similarly, when you edit a frontmatter value in Obsidian, the corresponding cells will be updated in your looms.
+
+<VideoEmbed url="https://dataloom.b-cdn.net/folder-source.mov" />
+
+### Accepted properties
+
+Obsidian adds a validation layer and user interface on top of frontmatter called [properties](https://help.obsidian.md/Editing+and+formatting/Properties).
+
+Cell types can only accept properties of a certain type. For example, a text cell can only accept a text property.
+
+When you choose a frontmatter key for a text cell column, only keys that are a text property will be displayed in the dropdown menu.
+
+| Column Type   | Accepted Properties                     | Comments                                                                                  |
+| ------------- | --------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `Text`        | `Text`                                  |                                                                                           |
+| `Embed`       | `Text`                                  |                                                                                           |
+| `File`        | `Text`                                  |                                                                                           |
+| `Number`      | `Number`                                |                                                                                           |
+| `Tag`         | `Text`                                  | Obsidian does not have a single tag property yet                                          |
+| `Multi-tag`   | `tags`, `List`, `aliases`, `cssclasses` | Obsidian does not have an additional tags property, so list can be used as an alternative |
+| `Date`        | `Date`, `Date & time`                   |                                                                                           |
+| `Checkbox`    | `Checkbox`                              |                                                                                           |
+| `Creation`    | Uses file creation time                 |                                                                                           |
+| `Last edited` | Uses file modification time             |
