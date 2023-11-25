@@ -1,8 +1,35 @@
-import { createCellForType } from "src/shared/loom-state/loom-state-factory";
+import {
+	createCellForType,
+	createCheckboxCell,
+	createDateCell,
+	createEmbedCell,
+	createFileCell,
+	createMultiTagCell,
+	createNumberCell,
+	createTag,
+	createTagCell,
+	createTextCell,
+} from "src/shared/loom-state/loom-state-factory";
 import ColumnNotFoundError from "src/shared/error/column-not-found-error";
 import LoomStateCommand from "./loom-state-command";
-import { CellType, Column, Filter, LoomState, Row } from "../types/loom-state";
-import { cloneDeep } from "lodash";
+import {
+	CellType,
+	CheckboxCell,
+	Column,
+	DateCell,
+	EmbedCell,
+	FileCell,
+	Filter,
+	LoomState,
+	MultiTagCell,
+	NumberCell,
+	Tag,
+	TagCell,
+	TextCell,
+} from "../types/loom-state";
+import { dateTimeToDateString } from "src/shared/date/date-time-conversion";
+import { isNumber } from "src/shared/match";
+import { parseDateTime } from "src/shared/date/date-validation";
 
 export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 	private targetColumnId: string;
@@ -21,17 +48,74 @@ export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 		);
 		if (!column) throw new ColumnNotFoundError({ id: this.targetColumnId });
 
-		const { type } = column;
-		if (type === this.nextType) return prevState;
+		const { type: previousType } = column;
+		if (previousType === this.nextType) return prevState;
 
-		let nextColumns: Column[] = cloneDeep(columns);
-		let nextRows: Row[] = cloneDeep(rows);
-
-		nextRows = rows.map((row) => {
+		const nextRows = rows.map((row) => {
 			const { cells } = row;
 			const nextCells = cells.map((cell) => {
 				const { columnId } = cell;
 				if (columnId === this.targetColumnId) {
+					if (this.nextType === CellType.TEXT) {
+						if (previousType === CellType.CHECKBOX) {
+							return this.fromCheckboxToText(
+								cell as CheckboxCell
+							);
+						} else if (previousType === CellType.DATE) {
+							return this.fromDateToText(
+								column,
+								cell as DateCell
+							);
+						} else if (previousType === CellType.NUMBER) {
+							return this.fromNumberToText(cell as NumberCell);
+						} else if (previousType === CellType.TAG) {
+							return this.fromTagToText(
+								column.tags,
+								cell as TagCell
+							);
+						} else if (previousType === CellType.MULTI_TAG) {
+							return this.fromMultiTagToText(
+								column.tags,
+								cell as MultiTagCell
+							);
+						} else if (previousType === CellType.FILE) {
+							return this.fromFileToText(cell as FileCell);
+						} else if (previousType === CellType.EMBED) {
+							return this.fromEmbedToText(cell as EmbedCell);
+						}
+					} else if (this.nextType === CellType.CHECKBOX) {
+						if (previousType === CellType.TEXT) {
+							return this.fromTextToCheckbox(cell as TextCell);
+						}
+					} else if (this.nextType === CellType.DATE) {
+						if (previousType === CellType.TEXT) {
+							return this.fromTextToDate(cell as TextCell);
+						}
+					} else if (this.nextType === CellType.NUMBER) {
+						if (previousType === CellType.TEXT) {
+							return this.fromTextToNumber(cell as TextCell);
+						}
+					} else if (this.nextType === CellType.TAG) {
+						if (previousType === CellType.TEXT) {
+							return this.fromTextToTag(column, cell as TextCell);
+						}
+					} else if (this.nextType === CellType.MULTI_TAG) {
+						if (previousType === CellType.TEXT) {
+							return this.fromTextToMultiTag(
+								column,
+								cell as TextCell
+							);
+						}
+					} else if (this.nextType === CellType.EMBED) {
+						if (previousType === CellType.TEXT) {
+							return this.fromTextToEmbed(cell as TextCell);
+						}
+					} else if (this.nextType === CellType.FILE) {
+						if (previousType === CellType.TEXT) {
+							return this.fromTextToFile(cell as TextCell);
+						}
+					}
+
 					const newCell = createCellForType(columnId, this.nextType);
 					return newCell;
 				}
@@ -43,42 +127,7 @@ export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 			};
 		});
 
-		// if (
-		// 	(this.previousType === CellType.MULTI_TAG &&
-		// 		this.nextType !== CellType.TAG) ||
-		// 	(this.previousType === CellType.TAG &&
-		// 		this.nextType !== CellType.MULTI_TAG)
-		// ) {
-		// 	nextRows = this.fromTagOrMultiTag(nextRows);
-		// } else if (
-		// 	this.previousType !== CellType.MULTI_TAG &&
-		// 	this.nextType === CellType.TAG
-		// ) {
-		// 	nextRows = this.toTag(nextColumns, nextRows);
-		// } else if (
-		// 	this.previousType !== CellType.TAG &&
-		// 	this.nextType === CellType.MULTI_TAG
-		// ) {
-		// 	nextRows = this.toMultiTag(column, nextRows);
-		// } else if (
-		// 	this.previousType === CellType.MULTI_TAG &&
-		// 	this.nextType === CellType.TAG
-		// ) {
-		// 	nextRows = this.fromMultiTagToTag(nextRows);
-		// } else if (this.nextType === CellType.CHECKBOX) {
-		// 	nextRows = this.toCheckbox(column, nextRows);
-		// } else if (
-		// 	this.previousType === CellType.DATE &&
-		// 	this.nextType === CellType.TEXT
-		// ) {
-		// 	nextRows = this.fromDateToText(column, nextRows);
-		// }
-
-		// if (this.previousType === CellType.NUMBER) {
-		// 	nextColumns = this.fromNumber(nextColumns);
-		// }
-
-		nextColumns = nextColumns.map((column) => {
+		const nextColumns = columns.map((column) => {
 			if (column.id === this.targetColumnId) {
 				return {
 					...column,
@@ -106,246 +155,171 @@ export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 		return nextState;
 	}
 
-	// private fromNumber(prevColumns: Column[]): Column[] {
-	// 	return prevColumns.map((column) => {
-	// 		const { id, calculationType } = column;
-	// 		if (id === this.targetColumnId) {
-	// 			if (isNumberCalcuation(calculationType)) {
-	// 				this.previousCalculationType = calculationType;
-	// 				this.nextCalculationType = GeneralCalculation.NONE;
-	// 				return {
-	// 					...column,
-	// 					calculationType: GeneralCalculation.NONE,
-	// 				};
-	// 			}
-	// 		}
-	// 		return column;
-	// 	});
-	// }
+	private fromCheckboxToText(cell: CheckboxCell): TextCell {
+		const { columnId, value } = cell;
+		const content = value ? "true" : "false";
+		const newCell = createTextCell(columnId, {
+			content,
+		});
+		return newCell;
+	}
 
-	// private fromTagOrMultiTag(rows: Row[]): Row[] {
-	// 	return rows.map((row) => {
-	// 		const { cells } = row;
-	// 		const nextCells: Cell[] = cells.map((cell) => {
-	// 			if (cell.columnId === this.targetColumnId) {
-	// 				if (cell.tagIds.length > 0) {
-	// 					const updatedCell: Cell = {
-	// 						...cell,
-	// 						tagIds: [],
-	// 					};
-	// 					this.updatedCells.previous.push(cloneDeep(cell));
-	// 					this.updatedCells.next.push(updatedCell);
-	// 					return updatedCell;
-	// 				}
-	// 			}
-	// 			return cell;
-	// 		});
-	// 		return {
-	// 			...row,
-	// 			cells: nextCells,
-	// 		};
-	// 	});
-	// }
+	private fromNumberToText(cell: NumberCell): TextCell {
+		const { columnId, value } = cell;
+		const content = value?.toString() ?? "";
+		const newCell = createTextCell(columnId, {
+			content,
+		});
+		return newCell;
+	}
 
-	// private fromDateToText(column: Column, rows: Row[]): Row[] {
-	// 	return rows.map((row) => {
-	// 		const { cells } = row;
+	private fromTagToText(columnTags: Tag[], cell: TagCell): TextCell {
+		const { columnId, tagId } = cell;
+		const tag = columnTags.find((tag) => tag.id === tagId);
+		const newCell = createTextCell(columnId, {
+			content: tag?.content ?? "",
+		});
+		return newCell;
+	}
 
-	// 		const nextCells: Cell[] = cells.map((cell) => {
-	// 			const { dateFormat, dateFormatSeparator, id } = column;
+	private fromMultiTagToText(
+		columnTags: Tag[],
+		cell: MultiTagCell
+	): TextCell {
+		const { columnId, tagIds } = cell;
+		const content = tagIds
+			.map((tagId) => {
+				const tag = columnTags.find((tag) => tag.id === tagId);
+				return tag?.content ?? "";
+			})
+			.join(",");
+		const newCell = createTextCell(columnId, {
+			content,
+		});
+		return newCell;
+	}
 
-	// 			const { columnId } = cell;
-	// 			if (columnId === id) {
-	// 				const { dateTime } = cell as DateCell;
-	// 				if (dateTime !== null) {
-	// 					const dateString = dateTimeToDateString(
-	// 						dateTime,
-	// 						dateFormat,
-	// 						dateFormatSeparator
-	// 					);
-	// 					const newCell = {
-	// 						...cell,
-	// 						content: dateString,
-	// 					};
-	// 					this.updatedCells.previous.push(cloneDeep(cell));
-	// 					this.updatedCells.next.push(newCell);
-	// 					return newCell;
-	// 				}
-	// 			}
-	// 			return cell;
-	// 		});
-	// 		return {
-	// 			...row,
-	// 			cells: nextCells,
-	// 		};
-	// 	});
-	// }
+	private fromDateToText(column: Column, cell: DateCell): TextCell {
+		const { includeTime, hour12, dateFormat, dateFormatSeparator } = column;
+		const { columnId, dateTime } = cell;
 
-	// private toTag(columns: Column[], prevRows: Row[]): Row[] {
-	// 	return prevRows.map((row) => {
-	// 		const { cells } = row;
-	// 		const nextCells: Cell[] = cells.map((cell) => {
-	// 			const { columnId, content } = cell;
-	// 			if (columnId === this.targetColumnId) {
-	// 				if (content !== "") {
-	// 					const tagIds: string[] = [];
+		let content = "";
+		if (dateTime !== null) {
+			content = dateTimeToDateString(
+				dateTime,
+				dateFormat,
+				dateFormatSeparator,
+				{
+					includeTime,
+					hour12,
+				}
+			);
+		}
+		const newCell = createTextCell(columnId, {
+			content,
+		});
+		return newCell;
+	}
 
-	// 					content.split(",").forEach((tagContent) => {
-	// 						const column = columns.find(
-	// 							(column) => column.id === this.targetColumnId
-	// 						);
-	// 						if (!column)
-	// 							throw new ColumnNotFoundError({
-	// 								id: this.targetColumnId,
-	// 							});
+	private fromFileToText(cell: FileCell): TextCell {
+		const { columnId, path } = cell;
+		const newCell = createTextCell(columnId, {
+			content: path,
+		});
+		return newCell;
+	}
 
-	// 						const existingTag = column.tags.find(
-	// 							(tag) => tag.content === tagContent
-	// 						);
+	private fromEmbedToText(cell: EmbedCell): TextCell {
+		const { columnId, pathOrUrl } = cell;
+		const newCell = createTextCell(columnId, {
+			content: pathOrUrl,
+		});
+		return newCell;
+	}
 
-	// 						if (tagIds.length === 0) {
-	// 							if (existingTag) {
-	// 								tagIds.push(existingTag.id);
-	// 							} else {
-	// 								const tag = createTag(tagContent);
-	// 								this.addedTags.push(cloneDeep(tag));
-	// 								column.tags.push(tag);
-	// 								tagIds.push(tag.id);
-	// 							}
-	// 						} else {
-	// 							//Create a tag but don't attach it to the cell
-	// 							if (!existingTag) {
-	// 								const tag = createTag(tagContent);
-	// 								this.addedTags.push(cloneDeep(tag));
-	// 								column.tags.push(tag);
-	// 							}
-	// 						}
-	// 					});
+	private fromTextToCheckbox(cell: TextCell): CheckboxCell {
+		const { columnId, content } = cell;
+		const newCell = createCheckboxCell(columnId, {
+			value: content === "true",
+		});
+		return newCell;
+	}
 
-	// 					const newCell = {
-	// 						...cell,
-	// 						tagIds,
-	// 					};
+	private fromTextToNumber(cell: TextCell): NumberCell {
+		const { columnId, content } = cell;
+		const newCell = createNumberCell(columnId, {
+			value: isNumber(content) ? Number(content) : null,
+		});
+		return newCell;
+	}
 
-	// 					this.updatedCells.previous.push(cloneDeep(cell));
-	// 					this.updatedCells.next.push(newCell);
-	// 					return newCell;
-	// 				}
-	// 			}
-	// 			return cell;
-	// 		});
-	// 		return {
-	// 			...row,
-	// 			cells: nextCells,
-	// 		};
-	// 	});
-	// }
+	private fromTextToDate(cell: TextCell): DateCell {
+		const { columnId, content } = cell;
+		const dateTime = parseDateTime(content);
+		const newCell = createDateCell(columnId, {
+			dateTime,
+		});
+		return newCell;
+	}
 
-	// private toMultiTag(column: Column, prevRows: Row[]): Row[] {
-	// 	return prevRows.map((row) => {
-	// 		const { cells } = row;
-	// 		const nextCells: Cell[] = cells.map((cell) => {
-	// 			const { columnId, content } = cell;
-	// 			if (columnId === this.targetColumnId) {
-	// 				if (content !== "") {
-	// 					const tagIds: string[] = [];
-	// 					content.split(",").forEach((tagContent) => {
-	// 						const column = columns.find(
-	// 							(column) => column.id === this.id
-	// 						);
-	// 						if (!column)
-	// 							throw new ColumnNotFoundError({ id: this.id });
+	private fromTextToTag(column: Column, cell: TextCell): TagCell {
+		const { columnId, content } = cell;
+		const { tags: columnTags } = column;
+		let tagId =
+			columnTags.find((tag) => tag.content === content)?.id ?? null;
 
-	// 						const existingTag = column.tags.find(
-	// 							(tag) => tag.content === tagContent
-	// 						);
+		if (content !== "") {
+			if (!tagId) {
+				const newTag = createTag(content);
+				tagId = newTag.id;
+				column.tags = [...columnTags, newTag];
+			}
+		}
+		const newCell = createTagCell(columnId, {
+			tagId,
+		});
+		return newCell;
+	}
 
-	// 						if (existingTag) {
-	// 							tagIds.push(existingTag.id);
-	// 						} else {
-	// 							const tag = createTag(tagContent);
-	// 							this.addedTags.push(cloneDeep(tag));
-	// 							column.tags.push(tag);
-	// 							tagIds.push(tag.id);
-	// 						}
-	// 					});
+	private fromTextToMultiTag(column: Column, cell: TextCell): MultiTagCell {
+		const { columnId, content } = cell;
 
-	// 					const newCell = {
-	// 						...cell,
-	// 						tagIds,
-	// 					};
+		let tagIds: string[] = [];
+		if (content !== "") {
+			const { tags: columnTags } = column;
+			tagIds = content.split(",").map((content) => {
+				let tagId =
+					columnTags.find((tag) => tag.content === content)?.id ??
+					null;
+				if (!tagId) {
+					const newTag = createTag(content);
+					tagId = newTag.id;
+					column.tags = [...columnTags, newTag];
+				}
+				return tagId;
+			});
+		}
+		const newCell = createMultiTagCell(columnId, {
+			tagIds,
+		});
+		return newCell;
+	}
 
-	// 					this.updatedCells.previous.push(cloneDeep(cell));
-	// 					this.updatedCells.next.push(newCell);
-	// 					return newCell;
-	// 				}
-	// 			}
-	// 			return cell;
-	// 		});
-	// 		return {
-	// 			...row,
-	// 			cells: nextCells,
-	// 		};
-	// 	});
-	// }
+	private fromTextToFile(cell: TextCell): FileCell {
+		//TODO validate
+		const { columnId, content } = cell;
+		const newCell = createFileCell(columnId, {
+			path: content,
+		});
+		return newCell;
+	}
 
-	// private fromMultiTagToTag(rows: Row[]): Row[] {
-	// 	return rows.map((row) => {
-	// 		const { cells } = row;
-	// 		const nextCells: Cell[] = cells.map((cell) => {
-	// 			const { columnId, tagIds } = cell as MultiTagCell;
-	// 			if (columnId === this.targetColumnId) {
-	// 				//Make sure that the cell only has 1 tag id reference
-	// 				if (tagIds.length > 0) {
-	// 					const newCell: TagCell = {
-	// 						...cell,
-	// 						tagId: tagIds[0],
-	// 					};
-	// 					this.updatedCells.previous.push(cloneDeep(cell));
-	// 					this.updatedCells.next.push(newCell);
-	// 					return newCell;
-	// 				}
-	// 			}
-	// 			return cell;
-	// 		});
-	// 		return {
-	// 			...row,
-	// 			cells: nextCells,
-	// 		};
-	// 	});
-	// }
-
-	// private toCheckbox(column: Column, rows: Row[]): Row[] {
-	// 	return rows.map((row) => {
-	// 		const { cells } = row;
-	// 		const nextCells: Cell[] = cells.map((cell) => {
-	// 			const { columnId } = cell;
-	// 			if (columnId === this.targetColumnId) {
-	// 				const { type } = column;
-
-	// 				let newCell: CheckboxCell;
-	// 				if (type === CellType.TEXT) {
-	// 					const { content } = cell as TextCell;
-	// 					newCell = {
-	// 						...cell,
-	// 						value: content === "true" ? true : false,
-	// 					};
-	// 				} else {
-	// 					newCell = {
-	// 						...cell,
-	// 						value: false,
-	// 					};
-	// 				}
-	// 				this.updatedCells.previous.push(cloneDeep(cell));
-	// 				this.updatedCells.next.push(newCell);
-	// 				return newCell;
-	// 			}
-	// 			return cell;
-	// 		});
-	// 		return {
-	// 			...row,
-	// 			cells: nextCells,
-	// 		};
-	// 	});
-	// }
+	private fromTextToEmbed(cell: TextCell): EmbedCell {
+		//TODO validate
+		const { columnId, content } = cell;
+		const newCell = createEmbedCell(columnId, {
+			pathOrUrl: content,
+		});
+		return newCell;
+	}
 }

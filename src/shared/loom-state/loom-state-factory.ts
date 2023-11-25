@@ -179,7 +179,7 @@ export const createTextCell = (
 export const createNumberCell = (
 	columnId: string,
 	options?: {
-		value?: number;
+		value?: number | null;
 	}
 ): NumberCell => {
 	const { value = null } = options ?? {};
