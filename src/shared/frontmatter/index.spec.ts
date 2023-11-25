@@ -1,15 +1,3 @@
-import { App } from "obsidian";
-import { deserializeFrontmatterForCell } from ".";
-import {
-	CellType,
-	DateCell,
-	MultiTagCell,
-	NumberCell,
-	TagCell,
-	TextCell,
-} from "../loom-state/types/loom-state";
-import { createLoomState } from "../loom-state/loom-state-factory";
-
 describe("deserializeFrontmatter", () => {
 	it("deserializes text content", () => {});
 	//TODO fix
