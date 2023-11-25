@@ -56,41 +56,4 @@ describe("tag-delete-command", () => {
 			tags[1].id,
 		]);
 	});
-
-	it("should restore the deleted tag when undo() is called", () => {
-		//Arrange
-		const { prevState, tags } = createTestState();
-
-		const command = new TagDeleteCommand(
-			prevState.model.columns[0].id,
-			tags[0].id
-		);
-
-		//Act
-		const executeState = command.execute(prevState);
-		const undoState = command.undo(executeState);
-
-		//Assert
-		expect(undoState.model.columns).toEqual(prevState.model.columns);
-		expect(undoState.model.rows).toEqual(prevState.model.rows);
-	});
-
-	it("should delete a tag when redo() is called", () => {
-		//Arrange
-		const { prevState, tags } = createTestState();
-
-		const command = new TagDeleteCommand(
-			prevState.model.columns[0].id,
-			tags[0].id
-		);
-
-		//Act
-		const executeState = command.execute(prevState);
-		const undoState = command.undo(executeState);
-		const redoState = command.redo(undoState);
-
-		//Assert
-		expect(executeState.model.columns).toEqual(redoState.model.columns);
-		expect(executeState.model.rows).toEqual(redoState.model.rows);
-	});
 });

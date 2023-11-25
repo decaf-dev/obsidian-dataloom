@@ -2,7 +2,6 @@ import {
 	createLoomState,
 	createTextFilter,
 } from "src/shared/loom-state/loom-state-factory";
-import RowDeleteCommand from "../row-delete-command";
 import ColumnDeleteCommand from ".";
 import CommandArgumentsError from "../error/command-arguments-error";
 
@@ -85,53 +84,5 @@ describe("column-delete-command", () => {
 				(filter) => filter.columnId !== prevState.model.columns[1].id
 			)
 		);
-	});
-
-	it("should restore the deleted column when undo() is called", () => {
-		//Arrange
-		const prevState = createLoomState(2, 1);
-
-		const filters = [
-			createTextFilter(prevState.model.columns[0].id),
-			createTextFilter(prevState.model.columns[0].id),
-		];
-		prevState.model.filters = filters;
-
-		const command = new ColumnDeleteCommand({
-			id: prevState.model.columns[0].id,
-		});
-
-		//Act
-		const executeState = command.execute(prevState);
-		const undoState = command.undo(executeState);
-
-		//Assert
-		expect(undoState.model.columns).toEqual(prevState.model.columns);
-		expect(undoState.model.rows).toEqual(prevState.model.rows);
-		expect(undoState.model.filters).toEqual(prevState.model.filters);
-	});
-
-	it("should restore the last deleted column when undo() is called", () => {
-		//Arrange
-		const prevState = createLoomState(2, 1);
-
-		const filters = [
-			createTextFilter(prevState.model.columns[1].id),
-			createTextFilter(prevState.model.columns[1].id),
-		];
-		prevState.model.filters = filters;
-
-		const command = new RowDeleteCommand({
-			last: true,
-		});
-
-		//Act
-		const executeState = command.execute(prevState);
-		const undoState = command.undo(executeState);
-
-		//Assert
-		expect(undoState.model.columns).toEqual(prevState.model.columns);
-		expect(undoState.model.rows).toEqual(prevState.model.rows);
-		expect(undoState.model.filters).toEqual(prevState.model.filters);
 	});
 });

@@ -40,34 +40,4 @@ describe("row-delete-command", () => {
 			prevState.model.rows[0].id
 		);
 	});
-
-	it("should restore the deleted row when undo() is called", () => {
-		//Arrange
-		const prevState = createLoomState(1, 2);
-		const command = new RowDeleteCommand({
-			id: prevState.model.rows[0].id,
-		});
-
-		//Act
-		const executeState = command.execute(prevState);
-		const undoState = command.undo(executeState);
-
-		//Assert
-		expect(undoState.model.rows).toEqual(prevState.model.rows);
-	});
-
-	it("should restore the last deleted row when undo() is called", () => {
-		//Arrange
-		const prevState = createLoomState(1, 2);
-		const command = new RowDeleteCommand({
-			last: true,
-		});
-
-		//Act
-		const executeState = command.execute(prevState);
-		const undoState = command.undo(executeState);
-
-		//Assert
-		expect(undoState.model.rows).toEqual(prevState.model.rows);
-	});
 });

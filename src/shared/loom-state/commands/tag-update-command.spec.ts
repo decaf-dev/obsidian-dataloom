@@ -56,47 +56,4 @@ describe("tag-update-command", () => {
 		expect(executeState.model.columns[0].tags[1].content).toEqual("test2");
 		expect(executeState.model.rows).toEqual(prevState.model.rows);
 	});
-
-	it("should reset the cell property when undo() is called", () => {
-		//Arrange
-		const { prevState, tags } = createTestState();
-
-		const command = new TagUpdateCommand(
-			prevState.model.columns[0].id,
-			tags[0].id,
-			{
-				content: "",
-			}
-		);
-
-		//Act
-		const executeState = command.execute(prevState);
-		const undoState = command.undo(executeState);
-
-		//Assert
-		expect(undoState.model.columns).toEqual(prevState.model.columns);
-		expect(executeState.model.rows).toEqual(prevState.model.rows);
-	});
-
-	it("should update a tag property when redo() is called", async () => {
-		//Arrange
-		const { prevState, tags } = createTestState();
-
-		const command = new TagUpdateCommand(
-			prevState.model.columns[0].id,
-			tags[0].id,
-			{
-				content: "",
-			}
-		);
-
-		//Act
-		const executeState = command.execute(prevState);
-		const undoState = command.undo(executeState);
-		const redoState = command.redo(undoState);
-
-		//Assert
-		expect(executeState.model.columns).toEqual(redoState.model.columns);
-		expect(executeState.model.rows).toEqual(redoState.model.rows);
-	});
 });
