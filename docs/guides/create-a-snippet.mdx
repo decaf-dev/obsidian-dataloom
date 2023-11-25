@@ -1,0 +1,42 @@
+# Create a snippet
+
+A [snippet](https://help.obsidian.md/Extending+Obsidian/CSS+snippets) is a `css` file that overrides existing styles in Obsidian.
+
+## Change the padding of cells
+
+For example, if you wanted to change the padding size of cells, you could create a snippet that targets all of the cell containers
+
+```css
+/* dataloom-padding-snippet.css */
+
+.dataloom-cell--header__inner-container {
+	padding: 10px;
+}
+
+.dataloom-cell--body__container {
+	padding: 20px 10px;
+}
+
+.dataloom-cell--footer__container {
+	padding: 20px 10px;
+}
+```
+
+## Classes
+
+The following table is a list of various plugin classes that you may override.
+
+| Class                                     | Element                     |
+| ----------------------------------------- | --------------------------- |
+| `.dataloom-app`                           | App                         |
+| `.dataloom-option-bar`                    | Option bar                  |
+| `.dataloom-table`                         | Table                       |
+| `.dataloom-cell--header`                  | Header cell                 |
+| `.dataloom-cell--header__container`       | Header cell container       |
+| `.dataloom-cell--header__inner-container` | Header cell inner container |
+| `.dataloom-cell--body`                    | Body cell                   |
+| `.dataloom-cell--body__container`         | Body cell container         |
+| `.dataloom-cell--footer`                  | Footer cell                 |
+| `.dataloom-cell--footer__container`       | Footer cell container       |
+| `.dataloom-button`                        | Button                      |
+| `.dataloom-p`                             | Text                        |

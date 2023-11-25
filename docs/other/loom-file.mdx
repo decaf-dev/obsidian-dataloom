@@ -1,0 +1,288 @@
+---
+sidebar_position: 1
+---
+
+import VideoEmbed from "@site/src/components/VideoEmbed";
+
+# Loom file
+
+DataLoom saves application data in JSON format. It is stored in a file with a `.loom` extension.
+
+When updating DataLoom, your loom file will be migrated to the latest plugin version. It is possible that this might fail.
+
+To fix a broken loom file, please follow the instructions below.
+
+## Fixing a broken file
+
+1. Open the file in a text editor
+2. Review each line of the file, making sure that it matches the [current](#current-format) JSON format
+3. For each line that doesn't match, make the necessary corrections. The problem is often that a key is missing or misspelled
+
+Note: If you are not sure what to do, please open an [issue](https://github.com/trey-wallis/obsidian-dataloom/issues/new?assignees=&labels=bug&projects=&template=BUG.yml) in GitHub repository or post in the **bugs** channel of the [Discord](https://discord.gg/QaFbepMdN4) community. Paste the error details. You can get this by clicking the **Copy error details** button.
+
+<VideoEmbed url="https://dataloom.b-cdn.net/fix-loom-file.mov" />
+
+## Format guide
+
+-   `string` - a string of characters - `"hello world"`. Always include double quotations.
+-   `number` - a number - `123`
+-   `boolean` - `true` or `false`
+-   `null` - a null value - `null`
+-   `[]` - a list of values - `[1, 2, 3]`
+
+A word with a capital letter such as `CellType` or `Column` represents a reference to a JSON object or enum.
+
+## Current format
+
+```javascript
+{
+  "model": {
+    "columns": Column[],
+    "rows": Row[],
+    "filters": Filter[],
+    "settings": {
+      "numFrozenColumns": number,
+      "showCalculationRow": boolean
+    }
+  },
+  "pluginVersion": string
+}
+```
+
+```javascript
+interface Column {
+	id: string;
+	sortDir: SortDir;
+	isVisible: boolean;
+	width: string;
+	type: CellType;
+	numberPrefix: string;
+	numberSuffix: string;
+	numberSeparator: string;
+	content: string;
+	numberFormat: NumberFormat;
+	currencyType: CurrencyType;
+	dateFormat: DateFormat;
+	shouldWrapOverflow: boolean;
+	tags: Tag[];
+	calculationType: CalculationType;
+	aspectRatio: AspectRatio;
+	horizontalPadding: PaddingSize;
+	verticalPadding: PaddingSize;
+}
+```
+
+```javascript
+interface Row {
+	id: string;
+	index: number;
+	creationTime: number;
+	lastEditedTime: number;
+	cells: Cell[];
+}
+```
+
+```javascript
+interface Cell {
+	id: string;
+	columnId: string;
+	isExternalLink: boolean;
+	dateTime: number | null;
+	content: string;
+	tagIds: string[];
+}
+```
+
+```javascript
+interface Tag {
+	id: string;
+	content: string;
+	color: Color;
+}
+```
+
+```javascript
+interface Filter {
+	id: string;
+	columnId: string;
+	operator: FilterOperator;
+	isEnabled: boolean;
+  ...
+}
+```
+
+```javascript
+enum CellType {
+	TEXT = "text",
+	EMBED = "embed",
+	FILE = "file",
+	NUMBER = "number",
+	TAG = "tag",
+	MULTI_TAG = "multi-tag",
+	DATE = "date",
+	CHECKBOX = "checkbox",
+	CREATION_TIME = "creation-time",
+	LAST_EDITED_TIME = "last-edited-time",
+}
+```
+
+```javascript
+enum NumberFormat {
+	NUMBER = "number",
+	CURRENCY = "currency",
+}
+```
+
+```javascript
+enum Color {
+	LIGHT_GRAY = "light gray",
+	GRAY = "gray",
+	BROWN = "brown",
+	ORANGE = "orange",
+	YELLOW = "yellow",
+	GREEN = "green",
+	BLUE = "blue",
+	PURPLE = "purple",
+	PINK = "pink",
+	RED = "red",
+}
+```
+
+```javascript
+enum CurrencyType {
+	ARGENTINA = "ARS",
+	AUSTRALIA = "AUD",
+	CANADA = "CAD",
+	COLOMBIA = "COP",
+	DENMARK = "DKK",
+	UAE = "AED",
+	EUROPE = "EUR",
+	ICELAND = "ISK",
+	ISRAEL = "ILS",
+	MEXICO = "MXN",
+	NORWAY = "NOK",
+	GREAT_BRITAIN = "GBP",
+	BRAZIL = "BRL",
+	SAUDI_ARABIA = "SAR",
+	RUSSIA = "RUB",
+	INDIA = "INR",
+	SINGAPORE = "SGB",
+	SWEDEN = "SEK",
+	SWITZERLAND = "CHF",
+	UNITED_STATES = "USD",
+	SOUTH_KOREA = "KRW",
+	JAPAN = "JPY",
+	CHINA = "CNY",
+}
+```
+
+```javascript
+type FilterOperator = "and" | "or";
+```
+
+## Example file
+
+This is an example of a loom file. It contains a table with two columns and one row. The first column is a text column. The second column is a tag column.
+
+```javascript
+{
+  "model": {
+    "columns": [
+      {
+        "id": "637bedf7-22df-4d9e-be39-722e28ad9147",
+        "sortDir": "default",
+        "isVisible": true,
+        "width": "140px",
+        "type": "text",
+        "numberPrefix": "",
+        "numberSuffix": "",
+        "numberSeparator": "",
+        "content": "New Column",
+        "numberFormat": "number",
+        "currencyType": "USD",
+        "dateFormat": "mm/dd/yyyy",
+        "shouldWrapOverflow": true,
+        "tags": [],
+        "calculationType": "none",
+        "aspectRatio": "unset",
+        "horizontalPadding": "unset",
+        "verticalPadding": "unset"
+      },
+      {
+        "id": "8456b494-fb1c-42b6-a55d-a0d4db5a6c98",
+        "sortDir": "default",
+        "isVisible": true,
+        "width": "140px",
+        "type": "tag",
+        "numberPrefix": "",
+        "numberSuffix": "",
+        "numberSeparator": "",
+        "content": "New Column",
+        "numberFormat": "number",
+        "currencyType": "USD",
+        "dateFormat": "mm/dd/yyyy",
+        "shouldWrapOverflow": true,
+        "tags": [
+          {
+            "id": "be98ee4e-0f55-4d07-873d-7573b65fb695",
+            "markdown": "tag1",
+            "color": "gray"
+          }
+        ],
+        "calculationType": "none",
+        "aspectRatio": "unset",
+        "horizontalPadding": "unset",
+        "verticalPadding": "unset"
+      }
+    ],
+    "rows": [
+      {
+        "id": "f4c063b9-a456-4d1c-81ef-0e1dd950103e",
+        "index": 0,
+        "creationTime": 1695580079305,
+        "lastEditedTime": 1695580097547,
+        "cells": [
+          {
+            "id": "91d434b5-76f6-44ea-b1f0-a670f1a66549",
+            "isExternalLink": false,
+            "columnId": "637bedf7-22df-4d9e-be39-722e28ad9147",
+            "dateTime": null,
+            "content": "cell 1,
+            "tagIds": []
+          },
+          {
+            "id": "4fd2a1e9-b02e-4034-b162-d47681ba0a44",
+            "isExternalLink": false,
+            "columnId": "8456b494-fb1c-42b6-a55d-a0d4db5a6c98",
+            "dateTime": null,
+            "content": "cell 2",
+            "tagIds": [
+              "be98ee4e-0f55-4d07-873d-7573b65fb695"
+            ]
+          }
+        ]
+      }
+    ],
+    "filters": [
+      {
+        "id": "118adfb5-2c6b-46be-b370-782fd06d730e",
+        "columnId": "637bedf7-22df-4d9e-be39-722e28ad9147",
+        "operator": "or",
+        "isEnabled": true,
+        "type": "text",
+        "condition": "is",
+        "text": "test"
+      }
+    ],
+    "settings": {
+      "numFrozenColumns": 1,
+      "showCalculationRow": true
+    }
+  },
+  "pluginVersion": "8.6.0"
+}
+```
+
+## Typescript declarations
+
+The examples above are not comprehensive. If you would like to full Typescript declarations for the loom file, please visit the [GitHub repository](https://github.com/trey-wallis/obsidian-dataloom/blob/master/src/shared/loom-state/types/loom-state.ts).
