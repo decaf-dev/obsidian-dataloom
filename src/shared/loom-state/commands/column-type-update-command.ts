@@ -98,6 +98,8 @@ export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 					} else if (this.nextType === CellType.TAG) {
 						if (previousType === CellType.TEXT) {
 							return this.fromTextToTag(column, cell as TextCell);
+						} else if (previousType === CellType.MULTI_TAG) {
+							return this.fromMultiTagToTag(cell as MultiTagCell);
 						}
 					} else if (this.nextType === CellType.MULTI_TAG) {
 						if (previousType === CellType.TEXT) {
@@ -105,6 +107,8 @@ export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 								column,
 								cell as TextCell
 							);
+						} else if (previousType === CellType.TAG) {
+							return this.fromTagToMultiTag(cell as TagCell);
 						}
 					} else if (this.nextType === CellType.EMBED) {
 						if (previousType === CellType.TEXT) {
@@ -182,6 +186,14 @@ export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 		return newCell;
 	}
 
+	private fromTagToMultiTag(cell: TagCell): MultiTagCell {
+		const { columnId, tagId } = cell;
+		const newCell = createMultiTagCell(columnId, {
+			tagIds: tagId ? [tagId] : [],
+		});
+		return newCell;
+	}
+
 	private fromMultiTagToText(
 		columnTags: Tag[],
 		cell: MultiTagCell
@@ -195,6 +207,18 @@ export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 			.join(",");
 		const newCell = createTextCell(columnId, {
 			content,
+		});
+		return newCell;
+	}
+
+	private fromMultiTagToTag(cell: MultiTagCell): TagCell {
+		const { columnId, tagIds } = cell;
+		let tagId = null;
+		if (tagIds.length > 0) {
+			tagId = tagIds[0];
+		}
+		const newCell = createTagCell(columnId, {
+			tagId,
 		});
 		return newCell;
 	}
