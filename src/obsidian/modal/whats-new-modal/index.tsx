@@ -28,7 +28,7 @@ export default class WhatsNewModal extends Modal {
 
 	async renderDescription(containerEl: HTMLElement) {
 		containerEl.createDiv({
-			text: "Thank you for using DataLoom! If you like the plugin, please consider supporting me by buying an herbal tea. With your sponsorship, I'll be able to continue to add features, fix bugs, and respond to issues on Github.",
+			text: "Thank you for using DataLoom! If you like the plugin, please consider supporting development. With your sponsorship, I'll be able to continue to add features, fix bugs, and respond to issues on GitHub.",
 		});
 		const badgeContainer = containerEl.createDiv({
 			cls: "dataloom-whats-new-modal__badge-container",
@@ -36,7 +36,7 @@ export default class WhatsNewModal extends Modal {
 		renderBuyMeACoffeeBadge(badgeContainer, 200);
 
 		containerEl.createDiv({
-			text: "DataLoom now has a Discord. Please join to get help, report bugs, and participate in the community.",
+			text: "DataLoom is now on Discord. Please join to get help, report bugs, and participate in the community.",
 		});
 		containerEl.createDiv({
 			cls: "dataloom-whats-new-modal__spacer",

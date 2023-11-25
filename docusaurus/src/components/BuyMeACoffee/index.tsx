@@ -8,9 +8,9 @@ export default function BuyMeACoffee(): JSX.Element {
 			rel="noopener"
 		>
 			<img
-				width="180"
-				src="https://img.buymeacoffee.com/button-api/?text=Buy me a herbal tea&emoji=🍵&slug=treywallis&button_colour=9478F0&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00&refresh_id=2"
-				alt="Buymeacoffee"
+				width="175"
+				src="https://github.com/trey-wallis/obsidian-dataloom/assets/40307803/dee919ac-1065-4595-8511-7e7e7a962356"
+				alt="Buy me a coffee"
 			/>
 		</a>
 	);

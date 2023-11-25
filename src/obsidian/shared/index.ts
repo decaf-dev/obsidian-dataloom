@@ -2,16 +2,15 @@ import "./styles.css";
 
 export const renderBuyMeACoffeeBadge = (
 	contentEl: HTMLElement | DocumentFragment,
-	width = 180
+	width = 175
 ) => {
 	const linkEl = contentEl.createEl("a", {
 		href: "https://www.buymeacoffee.com/treywallis",
 	});
 	const imgEl = linkEl.createEl("img");
 	imgEl.src =
-		"https://img.buymeacoffee.com/button-api/?text=Buy me a herbal tea&emoji=🍵&slug=treywallis&button_colour=9478F0&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00&refresh_id=2";
-	imgEl.referrerPolicy = "no-referrer";
-	imgEl.alt = "Buymeacoffee";
+		"https://github.com/trey-wallis/obsidian-dataloom/assets/40307803/dee919ac-1065-4595-8511-7e7e7a962356";
+	imgEl.alt = "Buy me a coffee";
 	imgEl.width = width;
 };
 
