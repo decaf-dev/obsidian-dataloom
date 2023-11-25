@@ -1,4 +1,4 @@
-import { App } from "obsidian";
+import { App, TFile } from "obsidian";
 import {
 	createCellForType,
 	createRow,
@@ -9,6 +9,7 @@ import {
 	CellType,
 	Column,
 	ObsidianFolderSource,
+	ObsidianFrontmatterSource,
 	Row,
 	Source,
 	SourceType,
@@ -18,7 +19,7 @@ import { deserializeFrontmatterForCell } from "../frontmatter";
 import { cloneDeep } from "lodash";
 import { getDateTimeFromUnixTime } from "../date/utils";
 
-export default function findDataFromSources(
+export default function updateStateFromSources(
 	app: App,
 	sources: Source[],
 	columns: Column[],
@@ -27,71 +28,46 @@ export default function findDataFromSources(
 	newRows: Row[];
 	nextColumns: Column[];
 } {
-	const newRows: Row[] = [];
-	let nextColumns: Column[] = cloneDeep(columns);
+	const sourceFileMap: Map<TFile, string> = new Map();
 
 	sources.forEach((source) => {
 		const { id, type } = source;
+
+		let sourceFiles = [];
 		switch (type) {
 			case SourceType.FOLDER: {
-				const { path, includeSubfolders } =
-					source as ObsidianFolderSource;
-				const result = findRowsFromFolder(
+				sourceFiles = findRowsFromFolderSource(
 					app,
-					nextColumns,
-					numRows + newRows.length,
-					id,
-					{
-						path,
-						includeSubfolders,
-					}
+					source as ObsidianFolderSource
 				);
-				newRows.push(...result.newRows);
-				nextColumns = result.nextColumns;
 				break;
 			}
+			case SourceType.FRONTMATTER:
+				sourceFiles = findRowsFromFrontmatterSource(app, source);
+				break;
 			default:
 				throw new Error(`Source type not handled: ${type}`);
 		}
-	});
-	return {
-		newRows,
-		nextColumns,
-	};
-}
-
-const findRowsFromFolder = (
-	app: App,
-	columns: Column[],
-	numRows: number,
-	sourceId: string,
-	folderOptions: {
-		path: string;
-		includeSubfolders: boolean;
-	}
-): {
-	newRows: Row[];
-	nextColumns: Column[];
-} => {
-	const { path, includeSubfolders } = folderOptions;
-	const folder = app.vault.getAbstractFileByPath(path);
-	if (!folder)
-		return {
-			nextColumns: columns,
-			newRows: [],
-		};
-
-	const files = app.vault.getMarkdownFiles().filter((file) => {
-		if (includeSubfolders) {
-			return file.parent?.path.startsWith(folder.path);
-		}
-		return file.parent?.path === folder.path;
+		sourceFiles.forEach((file) => {
+			sourceFileMap.set(file, id);
+		});
 	});
 
 	const newRows: Row[] = [];
-	const nextColumns = cloneDeep(columns);
+	let nextColumns: Column[] = cloneDeep(columns);
 
-	files.forEach((file) => {
+	const uniqueMap: Map<TFile, string> = new Map();
+	const seenValues: Set<string> = new Set();
+
+	sourceFileMap.forEach((value, key) => {
+		const { path } = key;
+		if (!seenValues.has(path)) {
+			seenValues.add(path);
+			uniqueMap.set(key, value);
+		}
+	});
+
+	uniqueMap.forEach((sourceId, file) => {
 		const cells: Cell[] = [];
 
 		nextColumns.forEach((column) => {
@@ -115,7 +91,7 @@ const findRowsFromFolder = (
 			cells.push(newCell);
 		});
 
-		const row = createRow(numRows, {
+		const row = createRow(numRows + newRows.length, {
 			cells,
 			sourceId,
 			creationDateTime: getDateTimeFromUnixTime(file.stat.ctime),
@@ -128,4 +104,41 @@ const findRowsFromFolder = (
 		newRows,
 		nextColumns,
 	};
+}
+
+const findRowsFromFolderSource = (
+	app: App,
+	source: ObsidianFolderSource
+): TFile[] => {
+	const { path, includeSubfolders } = source;
+	const folder = app.vault.getAbstractFileByPath(path);
+	if (!folder) return [];
+
+	const files = app.vault.getMarkdownFiles().filter((file) => {
+		if (includeSubfolders) {
+			return file.parent?.path.startsWith(folder.path);
+		}
+		return file.parent?.path === folder.path;
+	});
+
+	return files;
+};
+
+const findRowsFromFrontmatterSource = (
+	app: App,
+	source: ObsidianFrontmatterSource
+): TFile[] => {
+	const { propertyKey } = source;
+
+	const files = app.vault.getMarkdownFiles().filter((file) => {
+		const { path } = file;
+		const fileMetadata = app.metadataCache.getCache(path);
+		if (!fileMetadata) return false;
+
+		const frontmatter = fileMetadata.frontmatter;
+		if (!frontmatter) return false;
+
+		if (frontmatter.hasOwnProperty(propertyKey)) return true;
+	});
+	return files;
 };

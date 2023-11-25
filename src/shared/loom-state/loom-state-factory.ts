@@ -62,6 +62,7 @@ import {
 import { Color } from "src/shared/loom-state/types/loom-state";
 import { generateUuid } from "../uuid";
 import { getCurrentDateTime } from "../date/utils";
+import { ObsidianPropertyType } from "../frontmatter/types";
 
 export const createFolderSource = (
 	path: string,
@@ -75,11 +76,23 @@ export const createFolderSource = (
 	};
 };
 
-export const createTagSource = (name: string): Source => {
+export const createFrontmatterSource = (
+	propertyType: ObsidianPropertyType,
+	propertyKey: string,
+	options?: {
+		filterCondition?: TextFilterCondition;
+		filterText?: string;
+	}
+): Source => {
+	const { filterCondition = TextFilterCondition.IS, filterText = "" } =
+		options || {};
 	return {
 		id: generateUuid(),
-		type: SourceType.TAG,
-		name,
+		type: SourceType.FRONTMATTER,
+		propertyType,
+		propertyKey,
+		filterCondition,
+		filterText,
 	};
 };
 

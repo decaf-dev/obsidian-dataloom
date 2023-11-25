@@ -5,7 +5,7 @@ import { useLogger } from "src/shared/logger";
 import { useLoomState } from "src/react/loom-app/loom-state-provider";
 import SourceAddCommand from "src/shared/loom-state/commands/source-add-command";
 import SourceDeleteCommand from "src/shared/loom-state/commands/source-delete-command";
-import findDataFromSources from "src/shared/loom-state/find-data-from-sources";
+import updateStateFromSources from "src/shared/loom-state/find-data-from-sources";
 import { useAppMount } from "src/react/loom-app/app-mount-provider";
 import EventManager from "src/shared/event/event-manager";
 
@@ -33,7 +33,7 @@ export const useSource = () => {
 					}
 				}
 				const { sources, columns, rows } = prevState.state.model;
-				const result = findDataFromSources(
+				const result = updateStateFromSources(
 					app,
 					sources,
 					columns,

@@ -4,7 +4,7 @@ export const getIconIdForSourceType = (type: SourceType) => {
 	switch (type) {
 		case SourceType.FOLDER:
 			return "folder";
-		case SourceType.TAG:
+		case SourceType.FRONTMATTER:
 			return "tag";
 		default:
 			return "";

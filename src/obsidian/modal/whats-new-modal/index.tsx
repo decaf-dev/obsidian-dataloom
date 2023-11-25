@@ -1,11 +1,7 @@
 import { App, Component, MarkdownRenderer, Modal } from "obsidian";
 
 import { getLastestGithubRelease } from "src/data/network";
-import {
-	renderBuyMeACoffeeBadge,
-	renderDivider,
-	setModalTitle,
-} from "src/obsidian/shared";
+import { renderDivider, setModalTitle } from "src/obsidian/shared";
 
 import "./styles.css";
 

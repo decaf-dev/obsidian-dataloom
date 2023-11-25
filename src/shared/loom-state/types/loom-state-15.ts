@@ -96,9 +96,9 @@ interface ObsidianTagSource extends BaseSource {
 	name: string;
 }
 
-type Source = ObsidianFolderSource | ObsidianTagSource;
+export type Source = ObsidianFolderSource | ObsidianTagSource;
 
-enum SourceType {
+export enum SourceType {
 	FOLDER = "folder",
 	TAG = "tag",
 }

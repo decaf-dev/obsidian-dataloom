@@ -134,8 +134,8 @@ export const getDisplayNameForSource = (type: SourceType) => {
 	switch (type) {
 		case SourceType.FOLDER:
 			return "Folder";
-		case SourceType.TAG:
-			return "Tag";
+		case SourceType.FRONTMATTER:
+			return "Frontmatter";
 		default:
 			return "";
 	}

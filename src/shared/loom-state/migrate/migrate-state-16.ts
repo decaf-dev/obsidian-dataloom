@@ -1,5 +1,6 @@
 import MigrateState from "./migrate-state";
-import { Source, SourceType } from "../types/loom-state";
+import { SourceType } from "../types/loom-state-15";
+import { Source } from "../types/loom-state-16";
 import { LoomState15, LoomState16 } from "../types";
 
 /**

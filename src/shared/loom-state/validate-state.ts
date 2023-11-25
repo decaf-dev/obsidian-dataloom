@@ -25,6 +25,7 @@ import {
 	SourceType,
 	DateFormatSeparator,
 } from "./types/loom-state";
+import { ObsidianPropertyType } from "../frontmatter/types";
 
 const FilterOperatorUnion = Union(Literal("and"), Literal("or"));
 
@@ -414,7 +415,10 @@ const Row = Record({
 	cells: Array(Cell),
 });
 
-const SourceUnion = Union(Literal(SourceType.FOLDER), Literal(SourceType.TAG));
+const SourceUnion = Union(
+	Literal(SourceType.FOLDER),
+	Literal(SourceType.FRONTMATTER)
+);
 
 const BaseSource = Record({
 	id: String,
@@ -427,12 +431,26 @@ const ObsidianFolderSource = BaseSource.extend({
 	includeSubfolders: Boolean,
 });
 
-const ObsidianTagSource = BaseSource.extend({
-	type: Literal(SourceType.TAG),
-	name: String,
+const ObsidianPropertyTypeUnion = Union(
+	Literal(ObsidianPropertyType.ALIASES),
+	Literal(ObsidianPropertyType.CHECKBOX),
+	Literal(ObsidianPropertyType.DATE),
+	Literal(ObsidianPropertyType.DATETIME),
+	Literal(ObsidianPropertyType.NUMBER),
+	Literal(ObsidianPropertyType.TEXT),
+	Literal(ObsidianPropertyType.TAGS),
+	Literal(ObsidianPropertyType.MULTITEXT)
+);
+
+const ObsidianFrontmatterSource = BaseSource.extend({
+	type: Literal(SourceType.FRONTMATTER),
+	propertyType: ObsidianPropertyTypeUnion,
+	propertyKey: String,
+	filterCondition: Union(TextFilterConditionUnion, MultiTagConditionUnion),
+	filterText: String,
 });
 
-const Source = Union(ObsidianFolderSource, ObsidianTagSource);
+const Source = Union(ObsidianFolderSource, ObsidianFrontmatterSource);
 
 const TableSettings = Record({
 	numFrozenColumns: Number,

@@ -32,8 +32,8 @@ export default function BaseContent({
 					let content = "";
 					if (type === SourceType.FOLDER) {
 						content = source.path;
-					} else if (type === SourceType.TAG) {
-						content = source.name;
+					} else if (type === SourceType.FRONTMATTER) {
+						content = source.propertyKey;
 					}
 					return (
 						<SourceItem
